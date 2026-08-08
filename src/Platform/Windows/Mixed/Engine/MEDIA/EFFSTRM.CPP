@@ -289,10 +289,6 @@ struct GameEffTransportRuntimeWindow {
 	int m_nSecondaryHandleCount;
 	int m_nSecondaryHandleStride;
 
-	void SetPrimaryHandleParams(int nPrimaryHandleCount, int nPrimaryHandleStride, int nFlags);
-	void SetSecondaryHandleParams(int nSecondaryHandleCount, int nSecondaryHandleStride);
-	void RegisterEffTransportEventClient(void* pClient);
-	void UnregisterEffTransportEventClient(void);
 };
 
 struct GameEffTransportRuntimeWindowVtable {
@@ -373,8 +369,12 @@ extern void* g_pNonZrleVariantRenderEntryInitializeVtable[2];
 struct VsNetEffTransportPeer {
 	void Close(void);
 };
-struct VsNetRuntimeStartView {
-	int StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket);
+struct CBaseNetwork {
+	int Initialise(int nRuntimeKey, int cbMaxPacket);
+	void SetNCBuffers(unsigned long nPrimaryHandleCount, unsigned long nPrimaryHandleStride, int nFlags);
+	void SetCBuffers(int nSecondaryHandleCount, int nSecondaryHandleStride);
+	void AttachMessageQueue(void* pClient);
+	void DetachMessageQueue(void);
 };
 extern void* LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void* pRenderQueueNode);
 extern int StartFileBasedNetworkMessageThread(void);
@@ -668,10 +668,10 @@ GameNetworkLobbyVsnetRuntime* GameNetworkLobbyVsnetRuntime::Construct(char* pszF
 			ConfigureFileBasedNetworkPathsWrapper(pszFileBasedNetworkRoot, (char*) g_EFF_DefaultNetworkPath);
 		}
 
-		if (((VsNetRuntimeStartView*) g_pActiveNetworkRuntimeWindow)
-				->StartEffTransportRuntimeAndWaitReady((int) (unsigned long) g_EFF_NetworkRuntimeKey, 0x400) != 0) {
-			((GameEffTransportRuntimeWindow*) g_pActiveNetworkRuntimeWindow)->SetSecondaryHandleParams(100, 0x10);
-			((GameEffTransportRuntimeWindow*) g_pActiveNetworkRuntimeWindow)->SetPrimaryHandleParams(4, 4, 0);
+		if (((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)
+				->Initialise((int) (unsigned long) g_EFF_NetworkRuntimeKey, 0x400) != 0) {
+			((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->SetCBuffers(100, 0x10);
+			((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->SetNCBuffers(4, 4, 0);
 			pRuntime->m_fSelectedPeerDisconnected = 0;
 			g_nSelectedNetworkLobbyPeerId = 0;
 			pRuntime->m_fSelectionNeedsReset = 0;
@@ -935,7 +935,7 @@ void LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void* pController)
 		return;
 	}
 	pEventClient = pController == 0 ? 0 : (char*) pController + 0xc;
-	((GameEffTransportRuntimeWindow*) g_pActiveNetworkRuntimeWindow)->RegisterEffTransportEventClient(pEventClient);
+	((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->AttachMessageQueue(pEventClient);
 	pnControllerFields[0x2c / 4] = 1;
 }
 // FUNCTION: LEMBALL 0x004552a0
@@ -1082,40 +1082,6 @@ void LEMBALL_FASTCALL LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPe
 #define LEMBALL_CREADNCBUFF_EFFSTRM
 #include "../../../../../Visos/Generic/CReadNCBuff.cpp"
 #undef LEMBALL_CREADNCBUFF_EFFSTRM
-// FUNCTION: LEMBALL 0x00462550
-void GameEffTransportRuntimeWindow::SetPrimaryHandleParams(int nPrimaryHandleCount,
-														   int nPrimaryHandleStride,
-														   int nFlags)
-{
-	m_nPrimaryHandleCount = nPrimaryHandleCount;
-	m_nPrimaryHandleStride = nPrimaryHandleStride;
-	m_nPrimaryHandleFlags = nFlags;
-}
-// FUNCTION: LEMBALL 0x00462570
-void GameEffTransportRuntimeWindow::SetSecondaryHandleParams(int nSecondaryHandleCount, int nSecondaryHandleStride)
-{
-	m_nSecondaryHandleCount = nSecondaryHandleCount;
-	m_nSecondaryHandleStride = nSecondaryHandleStride;
-}
-// FUNCTION: LEMBALL 0x00462590
-void GameEffTransportRuntimeWindow::RegisterEffTransportEventClient(void* pClient)
-{
-	m_pSecondaryDispatchClient = pClient;
-	((GameRenderDispatchQueue*) g_pEffTransportSecondaryDispatchQueue)->RegisterOrderedRenderDispatchClient(pClient, 0);
-}
-// FUNCTION: LEMBALL 0x004625b0
-void GameEffTransportRuntimeWindow::UnregisterEffTransportEventClient(void)
-{
-	void* pClient;
-
-	pClient = m_pSecondaryDispatchClient;
-	if (pClient != 0) {
-		((GameRenderDispatchQueue*) g_pEffTransportSecondaryDispatchQueue)
-			->UnregisterOrderedRenderDispatchClient(pClient, 0);
-		m_pSecondaryDispatchClient = 0;
-	}
-}
-
 #define DEFINE_EFFSTRM_AUTO_DELETE(name)                                                                               \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
 	{                                                                                                                  \

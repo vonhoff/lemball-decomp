@@ -720,7 +720,7 @@ struct CBaseNetwork {
 	int m_nReserved38;
 	int m_nReserved3C;
 	int m_nReserved40;
-	int m_nReserved44;
+	void* m_pMessageQueueClient;
 	int m_nReserved48;
 	int m_nPrimaryHandleGroupCount;
 	int m_nPrimaryHandleGroupBytes;
@@ -731,6 +731,7 @@ struct CBaseNetwork {
 	unsigned int m_nTimerId64;
 
 	void* ConstructEffTransportRuntimeState(void);
+	int Initialise(int nRuntimeKey, int cbMaxPacket);
 	void InitializeFileBasedNetworkTransport(void);
 	void ShutdownFileBasedNetworkTransport(void);
 	void ServiceFileBasedNetworkTransport(void);
@@ -749,6 +750,10 @@ struct CBaseNetwork {
 	void DestroyEffTransportRuntimeGlobals(void);
 	int DoInitialise(void);
 	int ProcessMsg(VsNetEffDispatchEvent* pEvent);
+	void SetNCBuffers(unsigned long nPrimaryHandleCount, unsigned long nPrimaryHandleStride, int nFlags);
+	void SetCBuffers(int nSecondaryHandleCount, int nSecondaryHandleStride);
+	void AttachMessageQueue(void* pClient);
+	void DetachMessageQueue(void);
 	int Exists(VsNetEffTransportPeer* pTargetPeer);
 	int FindConnection(void* pPeerKey);
 	void KillUnBornConnection(void* pPeerKey);
@@ -760,6 +765,7 @@ struct CBaseNetwork {
 	void CtoSGOConnect(void* pPeerKey);
 	int SendAll(int* pStream);
 	void ShutDown(void);
+	int NewConnect(void);
 	void Delete(int nPeer);
 };
 
@@ -878,9 +884,6 @@ VsNetTcpipRuntimeStateVtable g_NETWORK_TcpipRuntimeStateVtable = {
 static CBaseNetworkVtable* g_NETWORK_EffTransportRuntimeStateVtable =
 	(CBaseNetworkVtable*) g_NETWORK_RuntimeConstructionStateVtable;
 
-struct VsNetRuntimeStartView {
-	int StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket);
-};
 
 struct VsNetRuntimeWindowBase {
 	char m_abWindowBase[0x10];
@@ -990,9 +993,6 @@ extern void* g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(void* pDispatchQueue, int nUnused, unsigned int cEntries);
 extern void CheckEffTransportIdleTimeout(void* pObject);
 
-struct GameEffTransportRuntimeWindow {
-	void UnregisterEffTransportEventClient(void);
-};
 
 struct VsNetErrorDispatchQueue {
 	virtual void Reserved00(void) = 0;
@@ -2778,7 +2778,7 @@ void* CBaseNetwork::ConstructEffTransportRuntimeState(void)
 	pState->m_nReserved40 = 0;
 	pState->m_nReserved3C = 0;
 	pState->m_nReserved38 = 0;
-	pState->m_nReserved44 = 0;
+	pState->m_pMessageQueueClient = 0;
 	pState->m_nReserved48 = 0;
 	pState->m_nRuntimeKey = 0;
 	pState->m_fShutdownRequested = 0;
@@ -2806,7 +2806,7 @@ void* CBaseNetwork::ConstructEffTransportRuntimeState(void)
 }
 
 // FUNCTION: LEMBALL 0x00461aa0
-int VsNetRuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket)
+int CBaseNetwork::Initialise(int nRuntimeKey, int cbMaxPacket)
 {
 	CBaseNetwork* pState;
 	CBaseNetworkVtable* pVtable;
@@ -3007,7 +3007,7 @@ int CBaseNetwork::DoInitialise(void)
 void CBaseNetwork::DestroyEffTransportRuntimeGlobals(void)
 {
 	*(void**) this = g_NETWORK_RuntimeConstructionStateVtable;
-	((GameEffTransportRuntimeWindow*) this)->UnregisterEffTransportEventClient();
+	DetachMessageQueue();
 	if (g_pEffTransportSecondaryDispatchQueue != 0) {
 		(*(void (**)(int))(*(void***) g_pEffTransportSecondaryDispatchQueue + 4))(1);
 	}
@@ -3179,7 +3179,7 @@ void CBaseNetwork::Delete(int nPeer)
 }
 
 // FUNCTION: LEMBALL 0x00462040
-int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
+int CBaseNetwork::NewConnect(void)
 {
 	CBaseNetwork* pState;
 	VsNetChannelOwnerObject* pOwner;
@@ -3190,7 +3190,7 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 	int nSecondaryHandleBytes;
 	int fPeerListLocked;
 
-	pState = (CBaseNetwork*) pRuntimeState;
+	pState = this;
 	pOwner = (VsNetChannelOwnerObject*) pState->m_pActiveChannelOwner;
 	fPeerListLocked = 0;
 
@@ -3200,7 +3200,7 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 		if (pPeer->m_fClosed != 0) {
 			if (fPeerListLocked == 0) {
 				fPeerListLocked = 1;
-				pOwner->m_pVtable->m_pLockPeerList(pRuntimeState);
+				pOwner->m_pVtable->m_pLockPeerList(this);
 			}
 			pState->Delete((int) (unsigned long) pPeer);
 		}
@@ -3208,10 +3208,10 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 	}
 
 	if (fPeerListLocked != 0) {
-		pOwner->m_pVtable->m_pUnlockPeerList(pRuntimeState);
+		pOwner->m_pVtable->m_pUnlockPeerList(this);
 	}
 
-	pPeer = (VsNetEffTransportPeer*) (unsigned long) pOwner->m_pVtable->m_pAllocatePeer(pRuntimeState);
+	pPeer = (VsNetEffTransportPeer*) (unsigned long) pOwner->m_pVtable->m_pAllocatePeer(this);
 	if (pState->m_pFirstPeer == 0) {
 		pState->m_pFirstPeer = pPeer;
 	}
@@ -3323,7 +3323,7 @@ void CBaseNetwork::CtoSRequestConnect(void* pPeerKey)
 		return;
 	}
 
-	pPeer = (VsNetEffTransportPeer*) (unsigned long) AllocateEffTransportPeerEntry(this);
+	pPeer = (VsNetEffTransportPeer*) (unsigned long) NewConnect();
 	nAssignedPort = ((VsNetChannelOwnerObject*) pState->m_pActiveChannelOwner)
 						->m_pVtable->m_pAllocatePort(pRequestConnectStream->m_pPortBinding);
 	if (nAssignedPort != -1) {
@@ -3442,7 +3442,7 @@ void CBaseNetwork::StoCOKConnect(void* pPeerKey)
 	}
 
 	*pbAssignedPort = 1;
-	pNewPeer = (VsNetEffTransportPeer*) (unsigned long) AllocateEffTransportPeerEntry(this);
+	pNewPeer = (VsNetEffTransportPeer*) (unsigned long) NewConnect();
 	pPayloadSenderSlot =
 		(VsNetPeerPayloadSenderSlot*) ((char*) pNewPeer + pNewPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
 	pPayloadSender = &pPayloadSenderSlot->m_Sender;
@@ -3494,6 +3494,41 @@ void CBaseNetwork::Establish(void* pPeerKey, int nSourceBuffer)
 	}
 	if (((GameEffStream*) g_pEffTransportFailedConnectControlStream)->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
 		StoCFAILEDConnect(pPeerKey);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00462550
+void CBaseNetwork::SetNCBuffers(unsigned long nPrimaryHandleCount, unsigned long nPrimaryHandleStride, int nFlags)
+{
+	m_nPrimaryHandleGroupCount = nPrimaryHandleCount;
+	m_nPrimaryHandleGroupBytes = nPrimaryHandleStride;
+	m_nPrimaryHandleGroupMode = nFlags;
+}
+
+// FUNCTION: LEMBALL 0x00462570
+void CBaseNetwork::SetCBuffers(int nSecondaryHandleCount, int nSecondaryHandleStride)
+{
+	m_nSecondaryHandleGroupBytes = nSecondaryHandleCount;
+	m_nReserved5c = nSecondaryHandleStride;
+}
+
+// FUNCTION: LEMBALL 0x00462590
+void CBaseNetwork::AttachMessageQueue(void* pClient)
+{
+	m_pMessageQueueClient = pClient;
+	((GameRenderDispatchQueue*) g_pEffTransportSecondaryDispatchQueue)->RegisterOrderedRenderDispatchClient(pClient, 0);
+}
+
+// FUNCTION: LEMBALL 0x004625b0
+void CBaseNetwork::DetachMessageQueue(void)
+{
+	void* pClient;
+
+	pClient = m_pMessageQueueClient;
+	if (pClient != 0) {
+		((GameRenderDispatchQueue*) g_pEffTransportSecondaryDispatchQueue)
+			->UnregisterOrderedRenderDispatchClient(pClient, 0);
+		m_pMessageQueueClient = 0;
 	}
 }
 

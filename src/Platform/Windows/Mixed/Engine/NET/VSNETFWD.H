@@ -37,7 +37,7 @@ void* ConstructRangeEffTransportRecordBufferTable(void* pObject,
 												  unsigned int cbRecord);
 void* ConstructRingLockedRecordSlotTable(void* pObject, int cRecords, unsigned int cbRecord);
 void* ConstructRingEffTransportRecordBufferTable(void* pObject, int cRecords, int cbPayload, unsigned int cbRecord);
-int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState);
+
 void* LEMBALL_FASTCALL DeleteEffTransportRecordBufferBaseWrapper(VsNetEffTransportRecordBuffer* pObject,
 																 int,
 																 BYTE fFreeMemory);

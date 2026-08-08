@@ -535,9 +535,9 @@ void* g_pNetworkLobbyTransportController = 0;
 // GLOBAL: LEMBALL 0x0049f144
 void* g_pActiveNetworkLobbyScreen = 0;
 
-struct GameEffTransportRuntimeWindow {
-	void RegisterEffTransportEventClient(void* pClient);
-	void UnregisterEffTransportEventClient(void);
+struct CBaseNetwork {
+	void AttachMessageQueue(void* pClient);
+	void DetachMessageQueue(void);
 };
 extern void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(void* pObject);
 extern void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerDirtyConfirmStream(void* pObject);
@@ -5167,8 +5167,8 @@ GameBaseModeObject* GameBaseModeObject::Initialize(GameMainContext* pMainContext
 		m_fNetworkLobbyActive = 0;
 	}
 	if (g_pActiveNetworkRuntimeWindow != 0) {
-		((GameEffTransportRuntimeWindow*) g_pActiveNetworkRuntimeWindow)
-			->RegisterEffTransportEventClient(&m_pRenderQueueNodeVtable);
+		((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)
+			->AttachMessageQueue(&m_pRenderQueueNodeVtable);
 	}
 	g_pActiveNetworkLobbyTransportController = this;
 	return this;
@@ -5183,7 +5183,7 @@ void LEMBALL_FASTCALL DestroyBaseModeObject(void* pObject)
 	pMode[3] = g_GAME_StartupModeEventClientVtable;
 	g_pActiveNetworkLobbyTransportController = 0;
 	if (g_pActiveNetworkRuntimeWindow != 0) {
-		((GameEffTransportRuntimeWindow*) g_pActiveNetworkRuntimeWindow)->UnregisterEffTransportEventClient();
+		((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->DetachMessageQueue();
 	}
 	if (pMode[8] != 0) {
 		((void(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pMode[8])[5])(pMode[8], 0, 1);
