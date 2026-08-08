@@ -49,6 +49,18 @@ public:
 	void DrawKey(CViewData& ViewData, int nPlayer);
 	void DrawBonus(CViewData& ViewData);
 	void DrawHand(CViewData& ViewData);
+	void DrawLemmingOnBalloon(CViewData& ViewData, int nPlayer, unsigned char fUseRemap);
+	void DrawMover(CViewData& ViewData);
+	void DrawPaintGun(CViewData& ViewData);
+	void DrawLaser(CViewData& ViewData);
+	void DrawDuplicator(CViewData& ViewData);
+	void DrawSheep(CViewData& ViewData, int nUnused);
+	void DrawSwitch(CViewData& ViewData);
+	void DrawDemo(void);
+	void DrawTime(void);
+	void DrawScore(void);
+	void NewPauseWindow(int nMessage);
+	void SendCursorMsg(void);
 	void DrawTrampoline(CViewData& ViewData);
 	void DrawLaserFire(CViewData& ViewData);
 	void DrawCrate(CViewData& ViewData, int nUnused);
