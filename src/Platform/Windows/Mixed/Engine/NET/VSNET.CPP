@@ -741,26 +741,26 @@ struct CBaseNetwork {
 	void ServiceTcpipNetworkTransport(void);
 	void TcpipLoadFileRangeNoop(void);
 	void TcpipWriteFileRangeNoop(void);
-	void CleanupEffTransportRuntimeState(void);
+	void Process(void);
 	int LoadActiveFileRange(void);
 	int WriteActiveFileRange(void);
 	void* CreateGlobalStateFileBackedComposite(void);
 	void* DeleteEffTransportRuntimeWindow(BYTE fFreeMemory);
 	void DestroyEffTransportRuntimeGlobals(void);
-	int InitializeEffTransportRuntimeGlobals(void);
-	int ProcessEffTransportDispatchEvent(VsNetEffDispatchEvent* pEvent);
-	int MarkExistingEffTransportPeerActive(VsNetEffTransportPeer* pTargetPeer);
-	int FindMatchingActiveEffTransportPeer(void* pPeerKey);
-	void CloseMatchingEffTransportPeer(void* pPeerKey);
-	void HandleEffTransportRequestConnect(void* pPeerKey);
-	void HandleEffTransportRequestNewPort(void* pPeerKey);
-	void DispatchEffTransportConnectControlStream(void* pPeerKey, int nSourceBuffer);
-	void ForwardEffTransportFailedConnect(void* pPeerKey);
-	void HandleEffTransportAuthoriseConnect(void* pPeerKey);
-	void HandleEffTransportGoAheadConnect(void* pPeerKey);
-	int BroadcastEffStreamToActivePeers(int* pStream);
-	void ReleaseEffTransportRuntimeOwnerState(void);
-	void UnlinkAndDeleteEffTransportPeer(int nPeer);
+	int DoInitialise(void);
+	int ProcessMsg(VsNetEffDispatchEvent* pEvent);
+	int Exists(VsNetEffTransportPeer* pTargetPeer);
+	int FindConnection(void* pPeerKey);
+	void KillUnBornConnection(void* pPeerKey);
+	void CtoSRequestConnect(void* pPeerKey);
+	void CtoSRequestNewPort(void* pPeerKey);
+	void Establish(void* pPeerKey, int nSourceBuffer);
+	void StoCFAILEDConnect(void* pPeerKey);
+	void StoCOKConnect(void* pPeerKey);
+	void CtoSGOConnect(void* pPeerKey);
+	int SendAll(int* pStream);
+	void ShutDown(void);
+	void Delete(int nPeer);
 };
 
 struct VsNetEffTransportRuntimeOwnerDispatch {
@@ -826,10 +826,10 @@ static void* g_NETWORK_RuntimeConstructionStateVtable[14] = {
 static CBaseNetworkVtable g_NETWORK_FileBasedRuntimeStateVtable = {
 	(void*) InitializeNonZrleVariantRenderEntry,
 	&CBaseNetwork::DeleteEffTransportRuntimeWindow,
-	&CBaseNetwork::ProcessEffTransportDispatchEvent,
+	&CBaseNetwork::ProcessMsg,
 	&CBaseNetwork::InitializeFileBasedNetworkTransport,
 	&CBaseNetwork::ShutdownFileBasedNetworkTransport,
-	&CBaseNetwork::CleanupEffTransportRuntimeState,
+	&CBaseNetwork::Process,
 	&CBaseNetwork::LoadActiveFileRange,
 	&CBaseNetwork::WriteActiveFileRange,
 	&CBaseNetwork::ServiceFileBasedNetworkTransport,
@@ -862,10 +862,10 @@ struct VsNetTcpipRuntimeStateVtable {
 VsNetTcpipRuntimeStateVtable g_NETWORK_TcpipRuntimeStateVtable = {
 	(void*) InitializeNonZrleVariantRenderEntry,
 	(void*) DeleteTcpipRuntimeStateWindowAdjustedThunk,
-	&CBaseNetwork::ProcessEffTransportDispatchEvent,
+	&CBaseNetwork::ProcessMsg,
 	&CBaseNetwork::InitializeTcpipNetworkTransport,
 	&CBaseNetwork::ShutdownTcpipNetworkTransport,
-	&CBaseNetwork::CleanupEffTransportRuntimeState,
+	&CBaseNetwork::Process,
 	&CBaseNetwork::TcpipLoadFileRangeNoop,
 	&CBaseNetwork::TcpipWriteFileRangeNoop,
 	&CBaseNetwork::ServiceTcpipNetworkTransport,
@@ -1805,7 +1805,7 @@ void VsNetRuntimeChannelStack::ClearPendingWrite(void* pUnused)
 	pbAdjusted = (char*) pObject;
 	pbAdjusted += *(int*) (*(int*) (pbAdjusted - 0x20) + 8);
 	pPeerKey = *(void**) (pbAdjusted + 0x50);
-	((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->CloseMatchingEffTransportPeer(pPeerKey);
+	((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->KillUnBornConnection(pPeerKey);
 }
 
 // FUNCTION: LEMBALL 0x00460610
@@ -1903,7 +1903,7 @@ void VsNetRuntimeChannelStack::DualStreamRet8(int nDispatchType, void* pEvent)
 				 g_pszEffTransportBroadcastStatusPayload + 0x10,
 				 g_cbEffTransportBroadcastStatusPayload + 1) == 0)) {
 		((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)
-			->DispatchEffTransportConnectControlStream(g_pEffTransportPeerAddressState,
+			->Establish(g_pEffTransportPeerAddressState,
 													   nPayloadBuffer + g_cbEffTransportBroadcastStatusPayload + 0x11);
 	}
 
@@ -2899,7 +2899,7 @@ int VsNetRuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey,
 }
 
 // FUNCTION: LEMBALL 0x00461bd0
-int CBaseNetwork::InitializeEffTransportRuntimeGlobals(void)
+int CBaseNetwork::DoInitialise(void)
 {
 	CBaseNetwork* pState;
 	CBaseNetworkVtable* pVtable;
@@ -3021,7 +3021,7 @@ void CBaseNetwork::DestroyEffTransportRuntimeGlobals(void)
 }
 
 // FUNCTION: LEMBALL 0x00461e10
-void CBaseNetwork::ReleaseEffTransportRuntimeOwnerState(void)
+void CBaseNetwork::ShutDown(void)
 {
 	CBaseNetwork* pState;
 	VsNetEffTransportPeer* pPeer;
@@ -3118,7 +3118,7 @@ void CBaseNetwork::ReleaseEffTransportRuntimeOwnerState(void)
 }
 
 // FUNCTION: LEMBALL 0x00461fc0
-void CBaseNetwork::UnlinkAndDeleteEffTransportPeer(int nPeer)
+void CBaseNetwork::Delete(int nPeer)
 {
 	CBaseNetwork* pState;
 	VsNetChannelOwnerObject* pOwner;
@@ -3202,7 +3202,7 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 				fPeerListLocked = 1;
 				pOwner->m_pVtable->m_pLockPeerList(pRuntimeState);
 			}
-			pState->UnlinkAndDeleteEffTransportPeer((int) (unsigned long) pPeer);
+			pState->Delete((int) (unsigned long) pPeer);
 		}
 		pPeer = pNextPeer;
 	}
@@ -3246,7 +3246,7 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 }
 
 // FUNCTION: LEMBALL 0x00462130
-int CBaseNetwork::MarkExistingEffTransportPeerActive(VsNetEffTransportPeer* pTargetPeer)
+int CBaseNetwork::Exists(VsNetEffTransportPeer* pTargetPeer)
 {
 	CBaseNetwork* pState;
 	VsNetEffTransportPeer* pPeer;
@@ -3270,7 +3270,7 @@ int CBaseNetwork::MarkExistingEffTransportPeerActive(VsNetEffTransportPeer* pTar
 }
 
 // FUNCTION: LEMBALL 0x00462180
-int CBaseNetwork::FindMatchingActiveEffTransportPeer(void* pPeerKey)
+int CBaseNetwork::FindConnection(void* pPeerKey)
 {
 	CBaseNetwork* pState;
 	VsNetEffTransportPeer* pPeer;
@@ -3294,18 +3294,18 @@ int CBaseNetwork::FindMatchingActiveEffTransportPeer(void* pPeerKey)
 }
 
 // FUNCTION: LEMBALL 0x004621c0
-void CBaseNetwork::CloseMatchingEffTransportPeer(void* pPeerKey)
+void CBaseNetwork::KillUnBornConnection(void* pPeerKey)
 {
 	int nPeer;
 
-	nPeer = FindMatchingActiveEffTransportPeer(pPeerKey);
+	nPeer = FindConnection(pPeerKey);
 	if (nPeer != 0) {
 		((VsNetEffTransportPeer*) (unsigned long) nPeer)->Close();
 	}
 }
 
 // FUNCTION: LEMBALL 0x004621e0
-void CBaseNetwork::HandleEffTransportRequestConnect(void* pPeerKey)
+void CBaseNetwork::CtoSRequestConnect(void* pPeerKey)
 {
 	CBaseNetwork* pState;
 	VsNetEffTransportPeer* pPeer;
@@ -3318,7 +3318,7 @@ void CBaseNetwork::HandleEffTransportRequestConnect(void* pPeerKey)
 	pState = this;
 	pRequestConnectStream = (VsNetRequestConnectControlStream*) g_pEffTransportRequestConnectControlStream;
 	pAuthoriseConnectStream = (VsNetAuthoriseConnectControlStream*) g_pEffTransportAuthoriseConnectControlStream;
-	pPeer = (VsNetEffTransportPeer*) (unsigned long) FindMatchingActiveEffTransportPeer(pPeerKey);
+	pPeer = (VsNetEffTransportPeer*) (unsigned long) FindConnection(pPeerKey);
 	if (pPeer != 0 && pPeer->m_fClosed == 0 && pPeer->IsEffTransportPeerStillConnecting() != 0) {
 		return;
 	}
@@ -3341,7 +3341,7 @@ void CBaseNetwork::HandleEffTransportRequestConnect(void* pPeerKey)
 }
 
 // FUNCTION: LEMBALL 0x00462280
-void CBaseNetwork::HandleEffTransportRequestNewPort(void* pPeerKey)
+void CBaseNetwork::CtoSRequestNewPort(void* pPeerKey)
 {
 	CBaseNetwork* pState;
 	VsNetChannelOwnerObject* pOwner;
@@ -3363,7 +3363,7 @@ void CBaseNetwork::HandleEffTransportRequestNewPort(void* pPeerKey)
 	pAuthoriseConnectStream = (VsNetAuthoriseConnectControlStream*) g_pEffTransportAuthoriseConnectControlStream;
 	pFailedConnectStream = (VsNetFailedConnectControlStream*) g_pEffTransportFailedConnectControlStream;
 	pPeer = pRequestNewPortStream->m_pPeer;
-	if (MarkExistingEffTransportPeerActive(pPeer) == 0) {
+	if (Exists(pPeer) == 0) {
 		return;
 	}
 
@@ -3396,7 +3396,7 @@ void CBaseNetwork::HandleEffTransportRequestNewPort(void* pPeerKey)
 }
 
 // FUNCTION: LEMBALL 0x00462340
-void CBaseNetwork::HandleEffTransportAuthoriseConnect(void* pPeerKey)
+void CBaseNetwork::StoCOKConnect(void* pPeerKey)
 {
 	CBaseNetwork* pState;
 	VsNetRuntimeServiceObject* pRuntimeService;
@@ -3418,7 +3418,7 @@ void CBaseNetwork::HandleEffTransportAuthoriseConnect(void* pPeerKey)
 	pAuthoriseConnectStream = (VsNetAuthoriseConnectControlStream*) g_pEffTransportAuthoriseConnectControlStream;
 	pGoAheadConnectStream = (VsNetAuthoriseConnectControlStream*) g_pEffTransportGoAheadConnectControlStream;
 
-	pPeer = (VsNetEffTransportPeer*) (unsigned long) FindMatchingActiveEffTransportPeer(pPeerKey);
+	pPeer = (VsNetEffTransportPeer*) (unsigned long) FindConnection(pPeerKey);
 	if (pPeer != 0 && pPeer->m_fClosed == 0 && pPeer->IsEffTransportPeerStillConnecting() != 0) {
 		if (pRuntimeService->m_pVtable->m_pValidatePeerKey(pPeerKey) != 0) {
 			return;
@@ -3454,51 +3454,51 @@ void CBaseNetwork::HandleEffTransportAuthoriseConnect(void* pPeerKey)
 }
 
 // FUNCTION: LEMBALL 0x00462460
-void CBaseNetwork::ForwardEffTransportFailedConnect(void* pPeerKey)
+void CBaseNetwork::StoCFAILEDConnect(void* pPeerKey)
 {
 	((VsNetChannelOwnerObject*) m_pActiveChannelOwner)
 		->SendLoadedEffEventToPeer(pPeerKey, g_pEffTransportFailedConnectControlStream);
 }
 
 // FUNCTION: LEMBALL 0x00462480
-void CBaseNetwork::HandleEffTransportGoAheadConnect(void*)
+void CBaseNetwork::CtoSGOConnect(void*)
 {
 	VsNetEffTransportPeer* pPeer;
 
 	pPeer = ((VsNetAuthoriseConnectControlStream*) g_pEffTransportGoAheadConnectControlStream)->m_pPeer;
-	if (MarkExistingEffTransportPeerActive(pPeer) != 0) {
+	if (Exists(pPeer) != 0) {
 		((void(LEMBALL_FASTCALL*)(void*))((VsNetEffTransportPeerVtable*) pPeer->m_pVtable)->m_pCompleteConnect)(pPeer);
 	}
 }
 
 // FUNCTION: LEMBALL 0x004624a0
-void CBaseNetwork::DispatchEffTransportConnectControlStream(void* pPeerKey, int nSourceBuffer)
+void CBaseNetwork::Establish(void* pPeerKey, int nSourceBuffer)
 
 {
 	((void(LEMBALL_FASTCALL*)(void*)) * *(void***) pPeerKey)(pPeerKey);
 	if (((GameEffStream*) g_pEffTransportRequestConnectControlStream)->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
-		HandleEffTransportRequestConnect(pPeerKey);
+		CtoSRequestConnect(pPeerKey);
 		return;
 	}
 	if (((GameEffStream*) g_pEffTransportRequestNewPortControlStream)->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
-		HandleEffTransportRequestNewPort(pPeerKey);
+		CtoSRequestNewPort(pPeerKey);
 		return;
 	}
 	if (((GameEffStream*) g_pEffTransportAuthoriseConnectControlStream)->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
-		HandleEffTransportAuthoriseConnect(pPeerKey);
+		StoCOKConnect(pPeerKey);
 		return;
 	}
 	if (((GameEffStream*) g_pEffTransportGoAheadConnectControlStream)->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
-		HandleEffTransportGoAheadConnect(pPeerKey);
+		CtoSGOConnect(pPeerKey);
 		return;
 	}
 	if (((GameEffStream*) g_pEffTransportFailedConnectControlStream)->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
-		ForwardEffTransportFailedConnect(pPeerKey);
+		StoCFAILEDConnect(pPeerKey);
 	}
 }
 
 // FUNCTION: LEMBALL 0x004625e0
-void CBaseNetwork::CleanupEffTransportRuntimeState(void)
+void CBaseNetwork::Process(void)
 {
 	CBaseNetwork* pActiveState;
 	void* pOwner;
@@ -3523,11 +3523,11 @@ void CBaseNetwork::CleanupEffTransportRuntimeState(void)
 
 	pActiveState = (CBaseNetwork*) g_pActiveNetworkRuntimeWindow;
 	if (pActiveState != 0 && pActiveState->m_fTransportInitialized != 0) {
-		pActiveState->InitializeEffTransportRuntimeGlobals();
+		pActiveState->DoInitialise();
 		return;
 	}
 	if (m_fShutdownRequested != 0) {
-		ReleaseEffTransportRuntimeOwnerState();
+		ShutDown();
 		return;
 	}
 
@@ -3552,7 +3552,7 @@ void CBaseNetwork::CleanupEffTransportRuntimeState(void)
 }
 
 // FUNCTION: LEMBALL 0x00462720
-int CBaseNetwork::BroadcastEffStreamToActivePeers(int* pStream)
+int CBaseNetwork::SendAll(int* pStream)
 {
 	VsNetEffTransportPeer* pPeer;
 	int cActivePeers;
@@ -3589,7 +3589,7 @@ int CBaseNetwork::BroadcastEffStreamToActivePeers(int* pStream)
 }
 
 // FUNCTION: LEMBALL 0x004627b0
-int CBaseNetwork::ProcessEffTransportDispatchEvent(VsNetEffDispatchEvent* pEvent)
+int CBaseNetwork::ProcessMsg(VsNetEffDispatchEvent* pEvent)
 {
 	if (pEvent->m_nType == 0xb) {
 		if (pEvent->m_nCode == 1) {
@@ -3600,7 +3600,7 @@ int CBaseNetwork::ProcessEffTransportDispatchEvent(VsNetEffDispatchEvent* pEvent
 	}
 	else if (pEvent->m_nType == 0xc) {
 		if (pEvent->m_nCode == 1) {
-			BroadcastEffStreamToActivePeers(pEvent->m_pStream);
+			SendAll(pEvent->m_pStream);
 			((GameEffStream*) pEvent->m_pStream)->EndEffStreamWriteSession();
 			return 1;
 		}
@@ -3740,7 +3740,7 @@ DWORD FileBasedNetworkMessageThreadMain(void)
 	}
 
 	if (pActiveRuntime->m_fStartRequested != 0) {
-		((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->InitializeEffTransportRuntimeGlobals();
+		((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->DoInitialise();
 	}
 
 	fRuntimeStarted = pActiveRuntime->m_fRuntimeActive;
@@ -4083,7 +4083,7 @@ DWORD TcpipNetworkMessageThreadMain(void)
 	}
 
 	if (pActiveRuntime->m_fStartRequested != 0) {
-		((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->InitializeEffTransportRuntimeGlobals();
+		((CBaseNetwork*) g_pActiveNetworkRuntimeWindow)->DoInitialise();
 	}
 
 	fRuntimeStarted = pActiveRuntime->m_fRuntimeActive;

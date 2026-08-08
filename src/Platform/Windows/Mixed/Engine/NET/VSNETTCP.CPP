@@ -669,10 +669,10 @@ struct VsNetEffDispatchEvent;
 
 struct CBaseNetwork {
 	void DestroyEffTransportRuntimeGlobals(void);
-	int ProcessEffTransportDispatchEvent(VsNetEffDispatchEvent* pEvent);
+	int ProcessMsg(VsNetEffDispatchEvent* pEvent);
 	void InitializeTcpipNetworkTransport(void);
 	void ShutdownTcpipNetworkTransport(void);
-	void CleanupEffTransportRuntimeState(void);
+	void Process(void);
 	void TcpipLoadFileRangeNoop(void);
 	void TcpipWriteFileRangeNoop(void);
 	void ServiceTcpipNetworkTransport(void);
@@ -1005,10 +1005,10 @@ static VsNetTcpipSocketStackRuntimeRecoveredVtableData g_NETWORK_TcpipSocketStac
 	&VsNetInetAddressEntry::IsAddressGreaterOrEqual,
 	(void*) InitializeNonZrleVariantRenderEntry,
 	(void*) DeleteTcpipRuntimeStateWindowAdjustedThunk,
-	&CBaseNetwork::ProcessEffTransportDispatchEvent,
+	&CBaseNetwork::ProcessMsg,
 	&CBaseNetwork::InitializeTcpipNetworkTransport,
 	&CBaseNetwork::ShutdownTcpipNetworkTransport,
-	&CBaseNetwork::CleanupEffTransportRuntimeState,
+	&CBaseNetwork::Process,
 	&CBaseNetwork::TcpipLoadFileRangeNoop,
 	&CBaseNetwork::TcpipWriteFileRangeNoop,
 	&CBaseNetwork::ServiceTcpipNetworkTransport,
