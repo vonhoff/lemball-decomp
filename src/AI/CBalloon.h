@@ -18,6 +18,9 @@ public:
 	int Activate(void* pTarget);
 	void DoActivate(void);
 	int* ActivatePosition(int* pPoint);
+#ifdef LEMBALL_CBALLOON_HARDTAIL_METHODS
+	int Process(void);
+#endif
 };
 
 #endif

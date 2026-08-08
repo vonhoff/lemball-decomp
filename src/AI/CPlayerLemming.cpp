@@ -360,3 +360,108 @@ void CPlayerLemming::StartStanding(void)
 		m_nJumpOriginZFC = nHeight << 12;
 	}
 }
+
+extern int __fastcall GetLastQueuedProjectileRequestCode(void* pObject);
+extern void __fastcall RemoveQueuedProjectileRequestCode(void* pObject, int nUnusedEdx, int nCode);
+extern void* g_pLevelProgressState;
+
+struct LevelVtSmallFunctionView {
+	void AddLevelScoreClamped(int nValue);
+};
+
+// FUNCTION: LEMBALL 0x0040ff70
+void CPlayerLemming::RequestBalloon(void)
+{
+	int aTargetPoint[3];
+	int nRequestCode;
+
+	aTargetPoint[0] = (int) 0xaa55aa55;
+	aTargetPoint[1] = (int) 0xaa55aa55;
+	aTargetPoint[2] = (int) 0xaa55aa55;
+	nRequestCode = GetLastQueuedProjectileRequestCode(this);
+	if (nRequestCode <= 0xffff) {
+		if (nRequestCode == 0xffff) {
+			m_fAirborne30 = 0;
+			return;
+		}
+		switch (nRequestCode) {
+		case 0x27:
+			*(int*) ((char*) this + 0x16c) = 0x28;
+			RemoveQueuedProjectileRequestCode(this, 0, 0x27);
+			m_nActionPhaseBC = 3;
+			break;
+		case 0x29:
+			*(int*) ((char*) this + 0x16c) = 0x2a;
+			RemoveQueuedProjectileRequestCode(this, 0, 0x29);
+			m_nActionPhaseBC = 1;
+			break;
+		case 0x2b:
+			*(int*) ((char*) this + 0x16c) = 0x2c;
+			RemoveQueuedProjectileRequestCode(this, 0, 0x2b);
+			m_nActionPhaseBC = 4;
+			break;
+		case 0x2d:
+			*(int*) ((char*) this + 0x16c) = 0x2e;
+			RemoveQueuedProjectileRequestCode(this, 0, 0x2d);
+			m_nActionPhaseBC = 0;
+			break;
+		}
+	}
+	m_fAirborne30 = ((int(__fastcall*)(void*, int, int, int*)) 0x401983)(
+		*(void**) ((char*) g_pActiveManagedEntityOwner + 0x1a8),
+		0,
+		*(int*) ((char*) this + 0x16c),
+		aTargetPoint);
+	m_nMotionStartTickC8 = g_nLevelFrameClockTick;
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(10);
+}
+
+// FUNCTION: LEMBALL 0x0040f310
+void CPlayerLemming::Fire(void)
+{
+	int aSourcePoint[3];
+	int nDirection;
+	int nState;
+
+	aSourcePoint[0] = m_WorldPosition9C.x;
+	aSourcePoint[1] = m_WorldPosition9C.y;
+	aSourcePoint[2] = m_WorldPosition9C.z + 0xa000;
+	nDirection = (int) m_nHeadingOctantB4;
+	nState = m_nStateB8;
+	switch (nState) {
+	case 4:
+	case 5:
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+	case 0x0b:
+	case 0x0c:
+	case 0x0e:
+	case 0x0f:
+		break;
+	default:
+		if (*(int*) ((char*) g_pLevelProgressState + 0x24) != 0 || m_nLatchObjectType228 != 0) {
+			((void(__fastcall*)(void*, int, int)) (*(void***) this)[0x84 / 4])(this, 0, 4000);
+			((void(__fastcall*)(void*, int, int, int, int, int, int, int, int, int, int, int)) 0x402eff)(
+				g_pActiveManagedEntityOwner,
+				0,
+				aSourcePoint[0],
+				aSourcePoint[1],
+				aSourcePoint[2],
+				m_nTargetWorldX1B4,
+				m_nTargetWorldY1B8,
+				*(int*) ((char*) this + 0x1bc),
+				(unsigned int) m_nSlotId6C,
+				0,
+				0,
+				nDirection);
+			m_nRuntimeField98 = 0x0d;
+			if (*(int*) ((char*) g_pLevelProgressState + 0x24) == 0) {
+				--m_nLatchObjectType228;
+			}
+		}
+		break;
+	}
+	*(int*) ((char*) this + 0x184) = 0;
+}

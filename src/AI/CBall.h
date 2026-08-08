@@ -30,6 +30,10 @@ public:
 
 	void Set(AICOORD oCurrent, AICOORD oTarget, int nSpeed);
 	void SetHeightCorrect(void);
+#ifdef LEMBALL_CBALL_HARDTAIL_METHODS
+	void StartMovement(int nUseTarget);
+	void LoadLevel(void* pStreamCursor);
+#endif
 };
 
 #endif

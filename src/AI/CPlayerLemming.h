@@ -46,6 +46,8 @@ public:
 	void AddData(void);
 #ifdef LEMBALL_CPLAYERLEMMING_START_STANDING
 	void StartStanding(void);
+	void RequestBalloon(void);
+	void Fire(void);
 #endif
 };
 

@@ -1,3 +1,4 @@
+#define LEMBALL_CBALLOON_HARDTAIL_METHODS
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CCatapult.h"
 #include "AI/CAmmo.h"
@@ -237,4 +238,70 @@ void CBalloon::DoActivate(void)
 	pSelf = (BalloonSelfView*) this;
 	(pSelf->*pSelf->m_pVtable00->m_pAction34)(0x2a);
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(50);
+}
+
+struct BalloonProcessActionView {
+	virtual void ReservedSlot0(int nValue);
+	virtual void ReservedSlot1(int nValue);
+	virtual void SetManagedEntityStateId(int nStateId);
+	virtual void ReservedSlot3(int nValue);
+	virtual void ReservedSlot4(int nValue);
+	virtual void ReservedSlot5(int nValue);
+	virtual void ReservedSlot6(int nValue);
+	virtual void ReservedSlot7(int nValue);
+	virtual void ReservedSlot8(int nValue);
+	virtual void ReservedSlot9(int nValue);
+	virtual void ReservedSlot10(int nValue);
+	virtual void ReservedSlot11(int nValue);
+	virtual void ReservedSlot12(int nValue);
+	virtual void SetActionState(int nStateId);
+};
+
+extern void* g_pLevelTileGrid;
+
+// FUNCTION: LEMBALL 0x0041d650
+int CBalloon::Process(void)
+{
+	char* pObjectBytes;
+	char* pGrid;
+	int nLocalY;
+	int nLocalX;
+	int nTileX;
+	int nTileY;
+	unsigned short nHeightOffset;
+	int nStateId;
+
+	pObjectBytes = (char*) this;
+	pGrid = (char*) g_pLevelTileGrid;
+	nLocalY = *(int*) (pObjectBytes + 0xa0) >> 12;
+	nLocalX = *(int*) (pObjectBytes + 0x9c) >> 12;
+	nTileX = nLocalX >> 4;
+	nTileY = nLocalY >> 4;
+	if (nLocalX < 0 || nLocalY < 0 || nTileX >= *(int*) (pGrid + 0x10) || nTileY >= *(int*) (pGrid + 0x14)) {
+		nHeightOffset = 0;
+	}
+	else {
+		void* pTile;
+
+		pTile = *(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12;
+		nHeightOffset = ((unsigned short(__fastcall*)(void*, int, int, int)) 0x4029a5)(
+			pTile, 0, nLocalX & 15, nLocalY & 15);
+	}
+	*(int*) (pObjectBytes + 0xa4) = nHeightOffset << 12;
+	nStateId = *(int*) (pObjectBytes + 0xb8);
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		if (*(int*) (pObjectBytes + 0x128) != nStateId) {
+			if (nStateId == 0x1a) {
+				((BalloonProcessActionView*) this)->SetActionState(0x2a);
+			}
+			*(int*) (pObjectBytes + 0x128) = *(int*) (pObjectBytes + 0xb8);
+		}
+		return 1;
+	}
+	if (nStateId == 0x1a) {
+		((BalloonProcessActionView*) this)->SetManagedEntityStateId(0x18);
+		*(int*) (pObjectBytes + 0x38) = 0;
+		return 1;
+	}
+	return 1;
 }

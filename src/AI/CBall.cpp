@@ -1,3 +1,4 @@
+#define LEMBALL_CBALL_HARDTAIL_METHODS
 #include "AI/CBall.h"
 
 extern void* g_pActiveManagedEntityOwner;
@@ -50,4 +51,82 @@ void CBall::SetHeightCorrect(void)
 			yq & 0xf);
 	}
 	*(unsigned int*) ((char*) this + 0xa4) = (z & 0xffff) << 12;
+}
+
+extern int g_nLevelFrameClockTick;
+extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
+
+// FUNCTION: LEMBALL 0x00421770
+void CBall::StartMovement(int nUseTarget)
+{
+	AICOORD oCurrent;
+	AICOORD oTarget;
+	int nTargetX;
+	int nTargetY;
+	int nDistance;
+	int nDuration;
+
+	*(int*) ((char*) this + 0x138) = nUseTarget;
+	if (nUseTarget == 0) {
+		nTargetX = m_nSavedPosX40;
+		nTargetY = m_nSavedPosY44;
+	}
+	else {
+		nTargetX = m_nTargetX124;
+		nTargetY = m_nTargetY128;
+	}
+	nDistance = Distance2DIntPixels(
+		m_nPositionX9C >> 12, m_nPositionYA0 >> 12, nTargetX >> 12, nTargetY >> 12);
+	*(int*) ((char*) this + 0xc8) = g_nLevelFrameClockTick;
+	nDuration = (int) ((unsigned short) m_wSpeed130 * nDistance) / 50;
+	*(int*) ((char*) this + 0x88) = nDuration;
+	if (nDuration == 0) {
+		*(int*) ((char*) this + 0x88) = 1;
+	}
+	*(int*) ((char*) this + 0xcc) = *(int*) ((char*) this + 0x88) + g_nLevelFrameClockTick;
+	oCurrent.x = m_nPositionX9C;
+	oCurrent.y = m_nPositionYA0;
+	oTarget.x = nTargetX;
+	oTarget.y = nTargetY;
+	((void(__fastcall*)(void*, int, int, int, int, int)) 0x40326f)(
+		(char*) this + 0x78, 0, oTarget.x, oTarget.y, oCurrent.x, oCurrent.y);
+}
+
+// FUNCTION: LEMBALL 0x00421da0
+void CBall::LoadLevel(void* pStreamCursor)
+{
+	AICOORD oCurrent;
+	AICOORD oTarget;
+	unsigned short** ppCursor;
+	unsigned short* pCursor;
+	unsigned short nSpeed;
+
+	oCurrent.x = (int) 0xaa55aa55;
+	oCurrent.y = (int) 0xaa55aa55;
+	oCurrent.z = (int) 0xaa55aa55;
+	oTarget.x = (int) 0xaa55aa55;
+	oTarget.y = (int) 0xaa55aa55;
+	oTarget.z = (int) 0xaa55aa55;
+	ppCursor = (unsigned short**) pStreamCursor;
+	if (*(unsigned short*) ((char*) g_pActiveManagedEntityOwner + 0x54) > 1) {
+		pCursor = *ppCursor;
+		((void(__fastcall*)(void*, int, int)) 0x402293)(this, 0, (unsigned int) *pCursor);
+		*ppCursor = pCursor + 1;
+	}
+	pCursor = *ppCursor;
+	oCurrent.x = (unsigned int) pCursor[0] << 12;
+	*ppCursor = pCursor + 1;
+	oCurrent.y = (unsigned int) pCursor[1] << 12;
+	*ppCursor = pCursor + 2;
+	oCurrent.z = (unsigned int) pCursor[2] << 12;
+	*ppCursor = pCursor + 3;
+	oTarget.x = (unsigned int) pCursor[3] << 12;
+	*ppCursor = pCursor + 4;
+	oTarget.y = (unsigned int) pCursor[4] << 12;
+	*ppCursor = pCursor + 5;
+	oTarget.z = (unsigned int) pCursor[5] << 12;
+	*ppCursor = pCursor + 6;
+	nSpeed = pCursor[6];
+	*ppCursor = pCursor + 7;
+	Set(oCurrent, oTarget, nSpeed);
 }

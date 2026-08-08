@@ -11,6 +11,9 @@ public:
 	void** m_apChildObjects128;    // 0x128 child object pointer table
 
 	int Process(void);
+#ifdef LEMBALL_CSHEEPGROUP_HARDTAIL_METHODS
+	void CheckAgainstLemmings(void);
+#endif
 };
 
 #endif
