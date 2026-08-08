@@ -126,7 +126,7 @@ void CGameObject::Restart(void)
 	Initialise();
 	m_WorldPosition9C.z = 0;
 	m_nRestartValue120 = 0xffff;
-	((int*) m_abReservedD4)[0xf] = 0xffff;
+	m_nRuntimeRestartField110 = 0xffff;
 	m_WorldPosition9C.y = 0;
 	m_WorldPosition9C.x = 0;
 	pPendingEntryCount = (unsigned short*) m_pCommandQueue70;
