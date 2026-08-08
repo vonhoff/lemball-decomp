@@ -180,6 +180,7 @@ set(LEMBALL_SOURCES
     src/AI/PlasChild.cpp
     src/AI/CEnemyGrp.cpp
     src/AI/CMine.cpp
+    src/AI/CObjectManager.cpp
     src/AI/GroupPlas.cpp
     src/AI/CHUNKOBJVT.CPP
     src/AI/CLiftRun.cpp
