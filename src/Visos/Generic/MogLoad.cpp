@@ -1728,3 +1728,36 @@ void* __fastcall construct_int_zrle_list_resource(void* pObject, void* pUnusedEd
 	*(unsigned int*) ((char*) pObject + 0x18) = 1;
 	return pObject;
 }
+
+// FUNCTION: LEMBALL 0x45e160
+void* load_gami_resource(int nResourceId)
+{
+	MogLoadStringResourceObject* pResourceObject;
+	MogLoadStringResourceObject* pLoadedObject;
+
+	pResourceObject = (MogLoadStringResourceObject*) ((MogLoadResourceArchive*) g_pResourceArchive)
+					  ->FindCachedResourceObjectById(nResourceId);
+	if (pResourceObject != 0) {
+		if (pResourceObject->m_uTypeTag != 0x494d4147) {
+			ReleaseTypedResourceObjectReference(pResourceObject);
+			return 0;
+		}
+		return pResourceObject;
+	}
+
+	pResourceObject = (MogLoadStringResourceObject*) AllocateVSMemBlock(0x54);
+	if (pResourceObject != 0) {
+		pResourceObject->m_pVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
+		pResourceObject->m_nReserved18 = 0;
+		pResourceObject->m_pVtable = g_MOGLOAD_TypedResourceObjectVtable;
+		*(unsigned short*) ((char*) pResourceObject + 0x4a) = 0;
+		*(unsigned short*) ((char*) pResourceObject + 0x48) = 0;
+		pResourceObject->m_pVtable = (void**) 0x498ce0;
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+		pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(pResourceObject, 0);
+		return pLoadedObject;
+	}
+
+	pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(0, 0);
+	return pLoadedObject;
+}
