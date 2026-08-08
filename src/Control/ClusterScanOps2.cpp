@@ -2481,3 +2481,109 @@ void __cdecl ClearPlasChildRuntimeFlag_0x30WithOptionalVirtualCleanup(void* pUnu
 	}
 	((void (__fastcall*) (void*, int)) *(void**) ((char*) pVtbl + 0xd8))(pObject, 0);
 }
+// FUNCTION: LEMBALL 0x00474050
+int __fastcall refresh_debug_text_client_width(void* pThis, int nEdxSlop)
+{
+	DebugTextRect rc;
+	void** vtbl = *(void***)pThis;
+	(*(void (__fastcall**)(void*, int))vtbl[0])(pThis, 0);
+	GetClientRect(*(HWND*)((char*)pThis + 0x1c), &rc);
+	int nWidth = rc.nRight - rc.nLeft;
+	*(int*)((char*)pThis + 0x40) = nWidth;
+	(*(void (__fastcall**)(void*, int))vtbl[1])(pThis, 0);
+	return *(int*)((char*)pThis + 0x40);
+}
+
+// FUNCTION: LEMBALL 0x00473f80
+void __fastcall invalidate_debug_text_line_range(void* pThis, int nEdxSlop, int nLine, int nCount)
+{
+	void** vtbl = *(void***)pThis;
+	(*(void (__fastcall**)(void*, int))vtbl[0])(pThis, 0);
+	int nVisible = nLine - *(int*)((char*)pThis + 0x38);
+	if (nVisible >= 0 && nVisible < *(int*)((char*)pThis + 0x34)) {
+		DebugTextRect rc;
+		int nLineHeight = *(int*)((char*)pThis + 0x3c);
+		rc.nLeft  = 0;
+		rc.nTop   = nVisible * nLineHeight;
+		rc.nRight = *(int*)((char*)pThis + 0x40);
+		rc.nBottom = nLineHeight * nCount + rc.nTop;
+		if (InvalidateRect(*(HWND*)((char*)pThis + 0x1c), &rc, 0) == 0) {
+			MessageBoxA(0, (const char*)0x4a2c74, (const char*)0x4a2c6c, 0);
+		}
+	}
+	(*(void (__fastcall**)(void*, int))vtbl[1])(pThis, 0);
+}
+
+// FUNCTION: LEMBALL 0x004744a0
+void __fastcall update_text_selection_drag(void* pThis, int nEdxSlop, int nUnused, int nScreenX, int nScreenY)
+{
+	void** vtbl = *(void***)pThis;
+	(*(void (__fastcall**)(void*, int))vtbl[0])(pThis, 0);
+	if (*(int*)((char*)pThis + 0x44) != 0) {
+		int nIdx = ((int(__fastcall*)(void*, int, int, int)) 0x473f00)(pThis, 0, nScreenX, nScreenY);
+		*(int*)((char*)pThis + 0x48) = nIdx;
+		if (*(int*)((char*)pThis + 0x2c) <= *(int*)((char*)pThis + 0x48)) {
+			*(int*)((char*)pThis + 0x48) = *(int*)((char*)pThis + 0x2c) - 1;
+		}
+		if (*(int*)((char*)pThis + 0x48) < 0) {
+			(*(void (__fastcall**)(void*, int))vtbl[1])(pThis, 0);
+			return;
+		}
+		((void(__fastcall*)(void*, int, int)) 0x4743e0)(pThis, 0, 0);
+		int nCur = *(int*)((char*)pThis + 0x48);
+		if (nCur <= *(int*)((char*)pThis + 0x4c)) {
+			*(int*)((char*)pThis + 0x50) = nCur;
+		}
+		if (*(int*)((char*)pThis + 0x4c) <= nCur) {
+			*(int*)((char*)pThis + 0x54) = nCur;
+		}
+		((void(__fastcall*)(void*, int, int)) 0x4743e0)(pThis, 0, 1);
+		((void(__fastcall*)(void*, int, int)) 0x474430)(pThis, 0, *(int*)((char*)pThis + 0x48));
+	}
+	(*(void (__fastcall**)(void*, int))vtbl[1])(pThis, 0);
+}
+
+// FUNCTION: LEMBALL 0x004421d0
+void* __fastcall construct_text_aligned_zrle_child_overlay(
+	void* pThis, unsigned long ulTextId,
+	unsigned short* pPoint, unsigned long ulA, int nB, int nC)
+{
+	((void* (__fastcall*)(void*, unsigned short*, unsigned long, int, int))0x00468530)(
+		pThis, pPoint, ulA, nB, nC);
+	*(unsigned long*)pThis                = 0x004973e0;
+	*(unsigned long*)((char*)pThis+0x130) = 0;
+	*(unsigned long*)pThis                = 0x004972b8;
+	*(unsigned long*)((char*)pThis+0x134) = ulTextId;
+	*(unsigned long*)((char*)pThis+0x138) = 0;
+	*(unsigned long*)((char*)pThis+0x90)  = 0x004973b8;
+	*(unsigned long*)((char*)pThis+0x90)  = 0x00497290;
+	*(int*)((char*)pThis+0xb8)            = 1;
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x00469530
+void __fastcall queue_resource_sprite_window_owner_if_dirty(int* pThis)
+{
+	int* pBuffer;
+	void* pQueue;
+	int nRet;
+	int nHelper;
+	if (pThis[0x52] != pThis[0x51]) {
+		pThis[0x36] = 1;
+	}
+	pBuffer = (int*) pThis[0x13];
+	if ((*(int*)((char*)pBuffer + 4) == 0) &&
+	    ((pThis[0x3e] != 0) || (pThis[0x36] != 0) || (pThis[0x34] != pThis[0x35]))) {
+		nRet = (**(int(__fastcall**)(void*))(*pThis + 0x68))(pThis);
+		if (nRet != 0) {
+			(**(void(__fastcall**)(void*))(*pThis + 0xb8))(pThis);
+			((void(__fastcall*)(int))0x468c50)((int)pThis);
+			(**(void(__fastcall**)(void*))(*pThis + 0xbc))(pThis);
+		}
+		pQueue = *(void**)((char*)pBuffer + 0xc);
+		nHelper = (**(int(__fastcall**)(void*))(*(int*)pQueue + 8))(pQueue);
+		((void(__fastcall*)(void*, int, int))0x4670f0)(pBuffer, 0, pThis[0x38]);
+		((void(__fastcall*)(int))0x466b60)(nHelper);
+		pThis[0x3f] = 1;
+	}
+}
