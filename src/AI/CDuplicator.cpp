@@ -1,28 +1,30 @@
+#include "AI/CDuplicator.h"
+
 extern void* g_pLevelTileGrid;
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 
 // FUNCTION: LEMBALL 0x004275f0
-void __fastcall CDuplicator_Restart(void* pObject)
+void CDuplicator::Restart(void)
 {
-	ResetManagedEntityRuntimeStateThunk(pObject);
-	*(unsigned short*) ((char*) pObject + 0xbc) = 0;
-	*(int*) ((char*) pObject + 0x94) = 0;
-	*(int*) ((char*) pObject + 0x13c) = 0;
-	*(int*) ((char*) pObject + 0x138) = 0;
-	*(int*) ((char*) pObject + 0xb8) = 0x18;
-	((void(__fastcall*)(void*, void*)) 0x4023e2)(pObject, (char*) pObject + 0x40);
+	ResetManagedEntityRuntimeStateThunk(this);
+	m_nActionPhaseBC = 0;
+	m_nFrameTime94 = 0;
+	m_nActive13C = 0;
+	m_nPlaced138 = 0;
+	m_nStateB8 = 0x18;
+	((void(__fastcall*)(void*, void*)) 0x4023e2)(this, m_anInitialPosition40);
 }
 // FUNCTION: LEMBALL 0x00427630
-void __fastcall CDuplicator_Set(void* pObject, int nUnused, int* pPos)
+void CDuplicator::Set(const AICOORD& position)
 {
-	int iVar3 = *pPos;
-	*(int*) ((char*) pObject + 0x9c) = iVar3;
-	int iVar4 = pPos[1];
-	*(int*) ((char*) pObject + 0xa0) = iVar4;
-	int iVar2 = pPos[2];
-	*(int*) ((char*) pObject + 0x138) = 1;
-	*(int*) ((char*) pObject + 0x13c) = 1;
-	*(int*) ((char*) pObject + 0xa4) = iVar2;
+	int iVar3 = position.x;
+	m_xPosWorld9C = iVar3;
+	int iVar4 = position.y;
+	m_yPosWorldA0 = iVar4;
+	int iVar2 = position.z;
+	m_nPlaced138 = 1;
+	m_nActive13C = 1;
+	m_zPosWorldA4 = iVar2;
 	iVar3 = (iVar3 >> 12) / 16;
 	iVar4 = (iVar4 >> 12) / 16;
 	if (iVar3 > -1) {
@@ -38,10 +40,10 @@ void __fastcall CDuplicator_Set(void* pObject, int nUnused, int* pPos)
 	}
 }
 // FUNCTION: LEMBALL 0x004276f0
-void __fastcall CDuplicator_Delete(void* pObject, int nUnused)
+void CDuplicator::Delete(void)
 {
-	int iVar2 = (*(int*) ((char*) pObject + 0x9c) >> 12) / 16;
-	int iVar3 = (*(int*) ((char*) pObject + 0xa0) >> 12) / 16;
+	int iVar2 = (m_xPosWorld9C >> 12) / 16;
+	int iVar3 = (m_yPosWorldA0 >> 12) / 16;
 	if (iVar2 > -1) {
 		if (iVar3 > -1 && iVar2 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
 			*(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar3 + iVar2) * 0xc) &= 0xfffe;
