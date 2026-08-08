@@ -1796,3 +1796,131 @@ int __fastcall set_directdraw_palette_entries(void* pObject, int param_2)
 	}
 	return 1;
 }
+// FUNCTION: LEMBALL 0x00468b20
+void* __fastcall ConstructBufferedResourceGeometryChild(void* pThis, int nUnused, void* param_2, void* param_3)
+{
+	((void(__fastcall*)(void*, int, void*))0x467cd0)(pThis, 0, param_2);
+	*(void**)pThis = (void*)0x497630;
+	*(int*)((char*)pThis + 0x108) = 0;
+	*(int*)((char*)pThis + 0x104) = 0;
+	*(void**)pThis = (void*)0x499838;
+	*(void**)((char*)pThis + 0x90) = (void*)0x497608;
+	*(void**)((char*)pThis + 0x90) = (void*)0x499818;
+	*(void**)((char*)pThis + 0x114) = param_3;
+	((void(__fastcall*)(void*))0x468b80)(pThis);
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x00468e50
+void* __fastcall ConstructSingleChildOverlayOwnerFromRect(void* pThis, int nUnused, void* param_2, void* param_3, void* param_4, void* param_5, void* param_6)
+{
+	((void(__fastcall*)(void*, int, void*, void*, void*))0x468a40)(pThis, 0, param_2, param_3, param_5);
+	*(void**)pThis = (void*)0x499928;
+	*(void**)((char*)pThis + 0x90) = (void*)0x499908;
+	void* pBlock = ((void*(__cdecl*)(int))0x45a780)(0x130);
+	if (pBlock != 0) {
+		*(void**)((char*)pThis + 0x118) = ((void*(__fastcall*)(void*, int, void*, void*, void*, void*))0x468410)(pBlock, 0, param_2, param_3, param_4, param_6);
+	} else {
+		*(void**)((char*)pThis + 0x118) = 0;
+	}
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x00468f90
+void* __fastcall ConstructResourceSpriteGeometryChildFromRect(void* pThis, int nUnused, void* param_2, void* param_3, void* param_4, void* param_5)
+{
+	ConstructBufferedResourceGeometryChild(pThis, 0, (void*)0xf7, param_3);
+	*(unsigned short*)((char*)pThis + 0x12a) = 0;
+	*(unsigned short*)((char*)pThis + 0x128) = 0;
+	*(void**)pThis = (void*)0x499a18;
+	*(unsigned short*)((char*)pThis + 0x12e) = 0;
+	*(unsigned short*)((char*)pThis + 0x12c) = 0;
+	*(unsigned short*)((char*)pThis + 0x142) = 0;
+	*(void**)((char*)pThis + 0x90) = (void*)0x4999f8;
+	*(unsigned short*)((char*)pThis + 0x140) = 0;
+	unsigned short* pRect = (unsigned short*)param_2;
+	unsigned short* pRectWH = (unsigned short*)(param_2 != 0 ? (char*)param_2 + 4 : 0);
+	*(unsigned short*)((char*)pThis + 0xdc) = (unsigned short)(param_2 != 0 ? pRectWH[0] : 0);
+	*(unsigned short*)((char*)pThis + 0xde) = (unsigned short)(param_2 != 0 ? pRectWH[1] : 0);
+	*(unsigned short*)((char*)pThis + 0xc0) = (unsigned short)(param_2 != 0 ? pRect[0] : 0);
+	*(unsigned short*)((char*)pThis + 0xc2) = (unsigned short)(param_2 != 0 ? pRect[1] : 0);
+	*(unsigned short*)((char*)pThis + 0xc4) = 0;
+	*(unsigned short*)((char*)pThis + 0xc6) = 0;
+	((void(__fastcall*)(void*, int, int))0x46a530)((char*)pThis + 0x90, 0, 1);
+	*(void**)((char*)pThis + 0x130) = param_4;
+	*(void**)((char*)pThis + 0x138) = param_5;
+	((void(__fastcall*)(void*))0x4693b0)(pThis);
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x0044f970
+void __fastcall record_queued_variant_child_slot_state(void* pObject, int nUnused, int param_1, int param_2, int param_3)
+{
+	int iSlot = *(int*) ((char*) pObject + 0x80);
+	*(int*) ((char*) pObject + 0xbc + iSlot * 0x10) = 1;
+	*(int*) ((char*) pObject + 0xc0 + iSlot * 0x10) = param_1;
+	*(int*) ((char*) pObject + 0xc4 + iSlot * 0x10) = param_2;
+	*(int*) ((char*) pObject + 0xc8 + iSlot * 0x10) = param_3;
+}
+
+// FUNCTION: LEMBALL 0x0044d080
+void __fastcall append_non_zrle_selector_child(void* pObject, int nUnused, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9, unsigned short* param_10, int param_11, int param_12)
+{
+	int iCounter = *(int*) ((char*) pObject + 0x218) + 1;
+	int nChild = *(int*) ((char*) pObject + 0x80);
+	*(int*) ((char*) pObject + 0x218) = iCounter;
+	void* pEntry = ((void* (__cdecl*) (unsigned int)) 0x45a780)(0x60);
+	if (pEntry == 0) {
+		*(int*) ((char*) pObject + nChild * 4 + 0x1e0) = 0;
+	} else {
+		*(int*) ((char*) pObject + nChild * 4 + 0x1e0) = (int) ((int* (__fastcall*) (void*, unsigned short*, int, int, int, int, int, int, int, int, int, int)) 0x402617)
+			(pEntry, param_10, *(int*) ((char*) pObject + 0x214), *(int*) ((char*) pObject + 0x210), param_2, param_3, param_4, param_5, param_8, iCounter, param_9, param_11);
+	}
+	((void (__fastcall*) (void*, int, int, int, int)) 0x40165e)
+		(pObject, param_2, param_3, 1, *(int*) (*(int*) ((char*) pObject + nChild * 4 + 0x1e0) + 0x30));
+	*(int*) (*(int*) (*(int*) (*(int*) ((char*) pObject + nChild * 4 + 0x1e0) + 0x54) + 0x134) + 0x130) = param_12;
+	*(int*) ((char*) pObject + 0x80) = nChild + 1;
+}
+
+// FUNCTION: LEMBALL 0x0044e700
+void __fastcall emit_variant_render_entry_with_temporary_context(void* pObject, int nUnused, unsigned short* param_1, int param_2, unsigned short* param_3, int param_4, int param_5, int* param_6, int param_7)
+{
+	int nPrevContext = *(int*) ((char*) pObject + 0x1c);
+	*(int*) ((char*) pObject + 0x1c) = param_2;
+	unsigned short localRect[4];
+	((void (__fastcall*) (void*, unsigned short*, unsigned short*, int, int, int*, int)) 0x467730)
+		(pObject, &localRect[0], param_3, param_4, param_5, param_6, param_7);
+	*(int*) ((char*) pObject + 0x1c) = nPrevContext;
+	param_1[0] = localRect[0];
+	param_1[1] = localRect[1];
+	param_1[2] = localRect[2];
+	param_1[3] = localRect[3];
+}
+
+// FUNCTION: LEMBALL 0x004316c0
+void __fastcall DestroyPrimaryContext(void* pObject)
+{
+	void* pRenderQueueBase = (char*) pObject - 0x90;
+	*(void**) pObject = (void*) 0x496ba8;
+	*(void**) pRenderQueueBase = (void*) 0x496bb8;
+	((void(__fastcall*)(void*)) 0x45d180)(*(void**) ((char*) pObject + 0x20));
+	((void(__fastcall*)(void*)) 0x45d180)(*(void**) ((char*) pObject + 0x1c));
+	((void(__fastcall*)(void*)) 0x45d180)(*(void**) ((char*) pObject + 0x18));
+	((void(__fastcall*)(void*, int, void*, int)) 0x4633b0)(
+		g_pSharedRenderDispatchQueue, 0,
+		pRenderQueueBase != 0 ? pObject : 0, -0x19);
+	*(void**) ((char*) pObject + 0x40) = (void*) 0x496ca8;
+	*(void**) (pRenderQueueBase != 0 ? pObject : 0) = (void*) 0x493110;
+	((void(__fastcall*)(void*)) 0x463bd0)(pRenderQueueBase);
+}
+
+// FUNCTION: LEMBALL 0x0043a1d0
+void __fastcall SetTextOwnerStringAndLayout(void* pThis, int nUnused, char* pszText)
+{
+	if (*(void**) ((char*) pThis + 0x14c) != 0) {
+		FreeVSMemBlock(*(void**) ((char*) pThis + 0x14c));
+	}
+	*(void**) ((char*) pThis + 0x14c) = AllocateVSMemBlock((unsigned int) strlen(pszText) + 1);
+	memcpy(*(void**) ((char*) pThis + 0x14c), pszText, strlen(pszText) + 1);
+	((void(__fastcall*)(void*, int, void*, int)) 0x469210)(pThis, 0, *(void**) ((char*) pThis + 0x14c), 0);
+}
