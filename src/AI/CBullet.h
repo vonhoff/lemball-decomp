@@ -6,7 +6,13 @@
 // stream lives at +0x138; AddData/GetData are compiled against that
 // secondary base, so their member bodies address this + 0x138.
 
-class CNetworkMessage;
+struct CNetworkMessage;
+
+struct CBulletNetworkStreamState {
+	unsigned char m_abReserved00[0x20];
+	void* m_pPayload20;
+	unsigned char m_abReserved24[8];
+};
 
 struct CBullet {
 	virtual void vf0(void);
@@ -21,7 +27,6 @@ struct CBullet {
 	unsigned short m_nSlotId6C;             // 0x6C
 	unsigned char m_abReserved6E[0x2a];
 	int m_nHeading98;                       // 0x98
-	unsigned char m_abReserved9C[0x1c];
 	int m_nWorldX9C;                        // 0x9C
 	int m_nWorldYA0;                        // 0xA0
 	int m_nWorldZA4;                        // 0xA4
@@ -37,8 +42,7 @@ struct CBullet {
 	unsigned char m_abReservedD0[0x44];
 	int m_nPendingState114;                 // 0x114
 	unsigned char m_abReserved118[0x20];
-	unsigned char* m_pStream138;            // 0x138 embedded network stream
-	unsigned char m_abReserved13C[0x1c];
+	CBulletNetworkStreamState m_NetworkStream138; // 0x138
 	int m_nRuntimeFlag164;                  // 0x164
 	int m_nBulletType168;                   // 0x168 (stream + 0x30)
 	int m_nOwner16C;                        // 0x16C (stream + 0x34)
@@ -53,5 +57,8 @@ struct CBullet {
 	void GetData(void);
 	void Free(void);
 };
+
+typedef char CBulletNetworkStreamStateSizeCheck[sizeof(CBulletNetworkStreamState) == 0x2c ? 1 : -1];
+typedef char CBulletSizeCheck[sizeof(CBullet) == 0x1a4 ? 1 : -1];
 
 #endif
