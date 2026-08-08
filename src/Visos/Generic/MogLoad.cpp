@@ -1701,3 +1701,30 @@ void* LEMBALL_FASTCALL DestroyEffResource(void* pObject, int nUnused, int fDelet
 	}
 	return pObject;
 }
+
+
+// FUNCTION: LEMBALL 0x45d760
+void* __fastcall construct_int_zrle_list_resource(void* pObject, void* pUnusedEdx)
+{
+	unsigned int dwField48;
+	unsigned int zero;
+
+	(void) pUnusedEdx;
+	dwField48 = (unsigned int) g_pSecondaryResourceTypeTable;
+	*(void**) pObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
+	*(unsigned int*) ((char*) pObject + 0x48) = dwField48;
+	*(void**) pObject = (void*) 0x4989c0;
+	zero = 0;
+	*(void**) pObject = (void*) 0x498af0;
+	*(unsigned int*) ((char*) pObject + 0x18) = zero;
+	*(unsigned int*) ((char*) pObject + 0x5c) = zero;
+	*(unsigned int*) ((char*) pObject + 0x58) = zero;
+	*(unsigned int*) ((char*) pObject + 0x54) = zero;
+	*(unsigned int*) ((char*) pObject + 0x60) = zero;
+	*(unsigned int*) ((char*) pObject + 0x7c) = zero;
+	*(unsigned int*) ((char*) pObject + 0x80) = zero;
+	*(unsigned int*) ((char*) pObject + 0x78) = zero;
+	ResetTypedResourceObjectState(pObject);
+	*(unsigned int*) ((char*) pObject + 0x18) = 1;
+	return pObject;
+}
