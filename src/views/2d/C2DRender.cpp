@@ -2,6 +2,7 @@
 #include "views/2d/C2DRender.h"
 
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
 
 extern void EmitLevelScreenVariantEntry(void* pObject,
 										short x,
@@ -97,6 +98,8 @@ extern int g_nLevelScreenMultiPhaseSequenceResourceId;
 extern int g_nLevelScreenCompositeSequencePrimaryResourceId;
 extern int g_nLevelScreenCompositeSequenceSecondaryResourceId;
 extern int g_nLevelFrameClockTimeMs;
+extern int g_nLevelFrameClockTick;
+extern "C" unsigned long __stdcall timeGetTime(void);
 
 #pragma auto_inline(off)
 void CAnimsManagerView::EmitLevelScreenVariantEntry(short x,
@@ -890,6 +893,111 @@ void C2D::DrawLemmingOnBalloon(CViewData& ViewData, int nPlayer, unsigned char f
 									  0,
 									  0,
 									  nRemap);
+}
+
+// FUNCTION: LEMBALL 0x0043fce0
+void C2D::DrawDemo(void)
+{
+	unsigned char* pFlags = (unsigned char*) 0x4a78c8;
+	unsigned long* pLastUpdate = (unsigned long*) 0x4a78c4;
+	int* pVisible = (int*) 0x49efc8;
+	if ((*pFlags & 1) == 0) {
+		*pFlags |= 1;
+		*pLastUpdate = timeGetTime();
+	}
+	if (timeGetTime() - *pLastUpdate > 500) {
+		*pVisible = *pVisible == 0;
+		*pLastUpdate = timeGetTime();
+	}
+	if (*pVisible != 0) {
+		const short* pPoint = (const short*) ((char*) this + 0x8e6);
+		short RelativePoint[2] = {0, 0};
+		if ((int) this == -0x8e2) {
+			pPoint = 0;
+		}
+		((CTextManager*) *(void**) ((char*) this + 0x78))
+			->DrawString(m_pRenderQueue0970,
+						 pPoint,
+						 RelativePoint,
+						 0xf8,
+						 *(void**) 0x49ee70,
+						 0x20,
+						 *(int*) ((char*) this + 0x74));
+	}
+}
+
+// FUNCTION: LEMBALL 0x0043fd80
+void C2D::DrawTime(void)
+{
+	char* pMode = (char*) m_pLevelMode096C;
+	unsigned short nBaseTime = *(unsigned short*) (pMode + 0xe4);
+	short nTime = (short) (*(int*) (pMode + 0xe8) + nBaseTime);
+	if (nTime < 0) {
+		nTime = 0;
+	}
+	if (nTime >= 600) {
+		if (nBaseTime >= 600) {
+			return;
+		}
+		if (nTime >= 600) {
+			nTime = 599;
+		}
+	}
+	if (nTime != *(int*) 0x49efcc) {
+		int nSeconds = nTime % 60;
+		*(char*) 0x4a78bc = (char) (nTime / 60 + '0');
+		*(char*) 0x4a78bd = ':';
+		*(char*) 0x4a78be = (char) (nSeconds / 10 + '0');
+		*(char*) 0x4a78bf = (char) (nSeconds % 10 + '0');
+		*(char*) 0x4a78c0 = 0;
+		*(int*) 0x49efcc = nTime;
+	}
+	const short* pPoint = (const short*) ((char*) this + 0x8d6);
+	short RelativePoint[2] = {-4, 0};
+	if ((int) this == -0x8d2) {
+		pPoint = 0;
+	}
+	((CTextManager*) *(void**) ((char*) this + 0x78))
+		->DrawString(m_pRenderQueue0970, pPoint, RelativePoint, 0x115, (void*) 0x4a78bc, 0x20, 0);
+}
+
+// FUNCTION: LEMBALL 0x0043fe80
+void C2D::DrawScore(void)
+{
+	char* pMode = (char*) m_pLevelMode096C;
+	int nTargetScore = *(int*) (pMode + 0xf0);
+	int nScore = *(int*) ((char*) this + 0x8f0);
+	if (*(unsigned int*) ((char*) this + 0x8f8) <= (unsigned int) g_nLevelFrameClockTick) {
+		if (nScore != nTargetScore) {
+			if (*(int*) (pMode + 0x108) == 2) {
+				nScore += 10;
+			}
+			else {
+				nScore += 100;
+			}
+			if (nScore >= nTargetScore) {
+				nScore = nTargetScore;
+			}
+			*(int*) ((char*) this + 0x8f0) = nScore;
+		}
+		*(unsigned int*) ((char*) this + 0x8f8) = g_nLevelFrameClockTick + 1;
+	}
+	if (nScore > 9999999) {
+		nScore = 9999999;
+	}
+	char Text[8];
+	Text[7] = 0;
+	for (int i = 1; i < 8; ++i) {
+		Text[7 - i] = (char) (nScore % 10 + '0');
+		nScore /= 10;
+	}
+	const short* pPoint = (const short*) ((char*) this + 0x8de);
+	short RelativePoint[2] = {-4, 0};
+	if ((int) this == -0x8da) {
+		pPoint = 0;
+	}
+	((CTextManager*) *(void**) ((char*) this + 0x78))
+		->DrawString(m_pRenderQueue0970, pPoint, RelativePoint, 0x115, Text, 0x20, 0);
 }
 
 // MACINTOSH: C2D::ResetPrimitives()
