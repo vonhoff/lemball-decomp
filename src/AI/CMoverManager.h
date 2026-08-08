@@ -20,6 +20,7 @@ struct CMoverManager {
 	CMover* Find(int x, int y, int* pHeight);
 	int HasTriggeredObject(void* pEntity, const int* pPosition);
 	void ResetObjectCount(void);
+	void Initialise(int nCapacity);
 
 	void Add(unsigned short nSlotId, unsigned short nFlags, void* pParam3, int nParam4, void* pParam5);
 	int GetViewData(CViewData* pViewData);

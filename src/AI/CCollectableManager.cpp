@@ -61,6 +61,26 @@ void CCollectableManager::Restart(void)
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x00422550
+void CCollectableManager::Process(void)
+{
+	int nObjectOffset = 0;
+	int i = 0;
+
+	if (m_nCurrentObjectCount3c > 0) {
+		int nActive = 1;
+		do {
+			void* pObject;
+			nObjectOffset += sizeof(void*);
+			++i;
+			pObject = *(void**) ((char*) m_apObjects34 + nObjectOffset - sizeof(void*));
+			*(int*) ((char*) pObject + 0x124) = nActive;
+			pObject = *(void**) ((char*) m_apObjects34 + nObjectOffset - sizeof(void*));
+			((void(__fastcall*)(void*)) (*(void***) pObject)[0x14 / sizeof(void*)])(pObject);
+		} while (i < m_nCurrentObjectCount3c);
+	}
+}
 // FUNCTION: LEMBALL 0x00422790
 void CCollectableManager::LoadLevel(unsigned short* pLevelData, int nFormat)
 {

@@ -55,6 +55,7 @@ struct CCollectableManager {
 	CCollectableManager* ConstructCollChunkManagerThunk(void* pLevelMode, int nCapacity);
 	void Restart(void);
 #ifdef LEMBALL_CCOLLECTABLEMANAGER_ADD
+	void Process(void);
 	void Add(unsigned short nSlot, int nWorldX, int nWorldY, int nWorldZ, eObjectType nType);
 #endif
 	void LoadLevel(unsigned short* pLevelData, int nFormat);
@@ -172,10 +173,7 @@ struct LinkScfBoonChunkManagerView {
 
 
 
-// MACINTOSH: CCollectableManager::Restart()
-// MACINTOSH: CCollectableManager::Process()
-// STUB: LEMBALL 0x00422550
-// RefreshActiveCollChunkObjects
+
 
 // RefreshActiveMineChunkObjects
 // EmitMineChunkManagerRenderEntries

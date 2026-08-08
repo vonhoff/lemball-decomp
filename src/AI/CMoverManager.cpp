@@ -1,5 +1,46 @@
 #include "AI/CMoverManager.h"
 #include "AI/CMover.h"
+#include "Visos/Generic/Memory.h"
+
+// FUNCTION: LEMBALL 0x0042f220
+void CMoverManager::Initialise(int nCapacity)
+{
+	m_nCapacity30 = nCapacity;
+	m_cObjects34 = 0;
+	if (nCapacity == 0) {
+		m_pObjects38 = 0;
+		return;
+	}
+
+	if (m_pObjects38 == 0) {
+		int* pAllocation = (int*) AllocateVSMemBlock(nCapacity * sizeof(CMover) + sizeof(int));
+		if (pAllocation != 0) {
+			CMover* pObjects = (CMover*) (pAllocation + 1);
+			CMover* pObject = pObjects;
+			*pAllocation = nCapacity;
+			while (--nCapacity >= 0) {
+				((void(__fastcall*)(void*)) 0x40256d)(pObject);
+				++pObject;
+			}
+			m_pObjects38 = pObjects;
+		}
+		else {
+			m_pObjects38 = 0;
+		}
+
+		int nObjectOffset = 0;
+		int i = 0;
+		if (m_nCapacity30 > 0) {
+			do {
+				CMover* pObject = (CMover*) ((char*) m_pObjects38 + nObjectOffset);
+				++i;
+				nObjectOffset += sizeof(CMover);
+				((void(__fastcall*)(void*)) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
+				*(CMoverManager**) ((char*) m_pObjects38 + nObjectOffset - 0x140) = this;
+			} while (i < m_nCapacity30);
+		}
+	}
+}
 
 // FUNCTION: LEMBALL 0x0042f5e0
 void CMoverManager::Add(unsigned short nSlotId, unsigned short nFlags, void* pParam3, int nParam4, void* pParam5)

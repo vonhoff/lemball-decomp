@@ -19,6 +19,7 @@ public:
 
 	int GetViewData(CViewData* pViewData);
 	void Process(void);
+	void Initialise(int nCapacity);
 	void Add(unsigned short nSlotId, int nWorldX, int nWorldY, int nWorldZ);
 	int StepOn(const AICOORD& position, CGameObject* pObject);
 	void LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat);

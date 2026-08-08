@@ -1,4 +1,46 @@
 #include "AI/CRocketManager.h"
+#include "AI/CRocket.h"
+#include "Visos/Generic/Memory.h"
+
+// FUNCTION: LEMBALL 0x00426b50
+void CRocketManager::Initialise(int nCapacity)
+{
+	m_nCapacity30 = nCapacity;
+	m_nObjectCount34 = 0;
+	if (nCapacity == 0) {
+		m_pObjects38 = 0;
+		return;
+	}
+
+	if (m_pObjects38 == 0) {
+		int* pAllocation = (int*) AllocateVSMemBlock(nCapacity * sizeof(CRocket) + sizeof(int));
+		if (pAllocation != 0) {
+			CRocket* pObjects = (CRocket*) (pAllocation + 1);
+			CRocket* pObject = pObjects;
+			*pAllocation = nCapacity;
+			while (--nCapacity >= 0) {
+				((void(__fastcall*)(void*)) 0x40317f)(pObject);
+				++pObject;
+			}
+			m_pObjects38 = (unsigned char*) pObjects;
+		}
+		else {
+			m_pObjects38 = 0;
+		}
+
+		int nObjectOffset = 0;
+		int i = 0;
+		if (m_nCapacity30 > 0) {
+			do {
+				CRocket* pObject = (CRocket*) (m_pObjects38 + nObjectOffset);
+				++i;
+				nObjectOffset += sizeof(CRocket);
+				((void(__fastcall*)(void*)) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
+				*(CRocketManager**) (m_pObjects38 + nObjectOffset - 0xe4) = this;
+			} while (i < m_nCapacity30);
+		}
+	}
+}
 
 // FUNCTION: LEMBALL 0x00427050
 int CRocketManager::GetViewData(CViewData* pViewData)
