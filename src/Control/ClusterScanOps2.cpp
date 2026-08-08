@@ -9,6 +9,8 @@ extern void* g_pActiveManagedEntityOwner;
 extern void* g_pSharedRenderDispatchQueue;
 extern void* g_pVariantResourceEntryManager;
 extern int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
+extern void* g_pActiveNetworkLobbyTransportController;
+extern char g_szNetworkLobbyLocalPlayerName[0x10];
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 extern void __fastcall ResetTypedResourceObjectState(void* pObject);
 extern void* g_pCachedChunkManagerLevelMode;
@@ -2658,4 +2660,70 @@ void __fastcall initialize_password_entry_render_context(void* pThis)
 	((void(__fastcall*)(void*, int, short*, int, int))(*(int*)(*(int*)pCtx + 4)))
 		(pCtx, 0, region, *(int*)((char*)pThis + 0x84), 0);
 	*(int*)((char*)pThis + 0x474) = *(int*)((char*)pCtx + 0x4c);
+}// FUNCTION: LEMBALL 0x00412800
+void* __fastcall find_counted_level_child_containing_point(void* this_, int nUnused, int x, int y, int z)
+{
+	int pt[3];
+	((void(__fastcall*)(int*, int*))0x0040161d)(pt, &x);
+	return ((void*(__fastcall*)(void*, int, int))0x00403206)(
+		*(void**)((char*)this_ + 0x158), pt[0], pt[1]);
+	(void) y; (void) z;
+}
+
+// FUNCTION: LEMBALL 0x00412830
+void* __fastcall find_level_mode_managed_entity_at_point_by_type(void* this_, int nUnused, int x, int y, int z, int type)
+{
+	int pt[3];
+	((void(__fastcall*)(int*, int*))0x0040161d)(pt, &x);
+	return ((void*(__fastcall*)(void*, int, int, int, int))0x00402504)(
+		*(void**)((char*)this_ + 0x158), pt[0], pt[1], pt[2], type);
+	(void) y;
+}
+
+// FUNCTION: LEMBALL 0x00471e80
+void* __fastcall delete_timed_socket_window_channel_stack_wrapper(void* pThis, void* nUnused, char param_1)
+{
+	((void(__fastcall*)(void*))0x46fd70)((char*)pThis + 0xc8);
+	((void(__fastcall*)(void*))0x45fd80)((char*)pThis + 0x30);
+	((void(__fastcall*)(void*))0x45f6c0)(pThis);
+	if (param_1 & 1) {
+		((void(__cdecl*)(void*))0x45a790)((char*)pThis - 0x18);
+	}
+	return (char*)pThis - 0x18;
+	(void) nUnused;
+}
+
+// FUNCTION: LEMBALL 0x004327b0
+void __fastcall emit_inertial_source_marker_render_entry(void* this_, void* nUnused, int arg)
+{
+	((void(__fastcall*)(void*, int, int, int, int, int, int))0x004016a9)(
+		*(void**)((char*)this_ + 0x10),
+		(*(int*)((char*)this_ + 0x34) >> 12) - *(int*)((char*)this_ + 0x70),
+		(*(int*)((char*)this_ + 0x38) >> 12) - *(int*)((char*)this_ + 0x74),
+		0xfd, 0, 0, 0);
+	(void) arg;
+}
+
+// FUNCTION: LEMBALL 0x00454520
+void __fastcall begin_network_lobby_text_prompt(void* this_, void* nUnused, int param_1)
+{
+	if (*(int*)((char*)this_ + 0x39c) != 0 &&
+	    ((*(int*)((char*)this_ + 0x3bc) != 0 && param_1 != 0) ||
+	     (*(int*)((char*)this_ + 0x3bc) == 0 && param_1 == 0))) {
+		((void(__fastcall*)(void*))0x0040118b)(this_);
+		return;
+	}
+	*(int*)((char*)this_ + 0x3bc) = param_1;
+	*(int*)((char*)this_ + 0x3b8) = 0;
+	*(int*)((char*)this_ + 0x39c) = 0;
+	*(int*)((char*)this_ + 0x430) = 0;
+	((void(__fastcall*)(void*))0x00402c11)(g_pActiveNetworkLobbyTransportController);
+	if (g_szNetworkLobbyLocalPlayerName[0] == '\0') {
+		((void(__fastcall*)(void*, int, int))0x00403085)(this_, 1, 1);
+		return;
+	}
+	((void(__fastcall*)(void*, char*))0x00402243)(
+		*(void**)((char*)this_ + 0x398), g_szNetworkLobbyLocalPlayerName);
+	((void(__fastcall*)(void*, int, int))0x00403085)(this_, 1, 0);
+	(void) nUnused;
 }
