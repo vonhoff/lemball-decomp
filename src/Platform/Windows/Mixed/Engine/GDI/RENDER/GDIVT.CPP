@@ -1,6 +1,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
-#include "Control/CGame.h"
+#define LEMBALL_CSTRING_COMPILER_LIFETIME
+#include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
 
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.
@@ -20,6 +21,32 @@ void __fastcall initialize_resource_sprite_window_owner_variant_c_state(void* pO
 void __fastcall CTextManagerResetPrimitives(void* pTable)
 {
 	*(int*) ((char*) pTable + 0x18) = 0;
+}
+
+// FUNCTION: LEMBALL 0x00469fd0
+void CTextManager::DrawString(void* pRenderQueue,
+	const short* pPoint,
+	const short* pRelativePoint,
+	int nResourceId,
+	CString Text,
+	unsigned int nDrawFlags,
+	int nDrawValue)
+{
+	LevelScreenDrawEntry* pEntry;
+
+	pEntry = m_apDrawEntries20[m_nCurrentSlot18++];
+	if (pRelativePoint[0] != 0 || pRelativePoint[1] != 0) {
+		pEntry->m_nReserved18 = pRelativePoint[0];
+		pEntry->m_nReserved1A = pRelativePoint[1];
+		nDrawFlags |= 0x200;
+	}
+	pEntry->InitializeFromPointAndDynamicText(
+		pPoint,
+		m_apResources00[m_aiResourceSlots04[nResourceId]],
+		Text,
+		nDrawFlags,
+		nDrawValue);
+	pEntry->AppendToQueue(pRenderQueue);
 }
 
 // FUNCTION: LEMBALL 0x0046db30

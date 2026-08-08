@@ -164,6 +164,13 @@ public:
 						   void* pText,
 						   unsigned int nDrawFlags,
 						   int nDrawValue);
+	void DrawString(void* pRenderQueue,
+						   const short* pPoint,
+						   const short* pRelativePoint,
+						   int nResourceId,
+						   CString Text,
+						   unsigned int nDrawFlags,
+						   int nDrawValue);
 	void Destroy(void);
 	void ResetDrawEntryPool(void) { m_nCurrentSlot18 = 0; }
 

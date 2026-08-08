@@ -31,6 +31,7 @@ public:
 	void SetGroup(int fGrouped);
 	void SetBored(int nBaseTime);
 	int RandomAction(void);
+	void Die(void);
 	void HitMine(void);
 	int HasObject(int nObjectType);
 	int AddObject(int nObjectType, int nObject);

@@ -21,6 +21,11 @@ struct CString {
 	char* m_pszText;
 	int m_cchCapacity;
 
+#ifdef LEMBALL_CSTRING_COMPILER_LIFETIME
+	CString(const CString& source) { CopyConstructDynamicCString(&source); }
+	~CString() { DestroyDynamicCString(); }
+#endif
+
 	CString* ConstructDynamicCString(void);
 	CString* ConstructDynamicCStringFromCString(const char* pszText);
 	CString* CopyConstructDynamicCString(const CString* pSource);

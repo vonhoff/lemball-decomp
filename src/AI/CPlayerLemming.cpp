@@ -7,6 +7,8 @@ extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTimeMs;
 extern void* g_pLevelDemoPlaybackController;
 extern void* g_pLevelTileGrid;
+extern int g_cActiveManagedEntities;
+extern void RequestLocalLevelGameStateChange(void* pLevelMode, int nState);
 
 struct LevelTileGridOwnerView {
 	unsigned short GetZ(int x, int y, void** ppMoveChunk);
@@ -78,6 +80,51 @@ int CPlayerLemming::RandomAction(void)
 	nRandom = g_nLevelFrameClockTick + 0x21;
 	m_nNextUpdateTickCC = nRandom;
 	return nRandom;
+}
+
+// FUNCTION: LEMBALL 0x0040f500
+void CPlayerLemming::Die(void)
+{
+	typedef void RequestStateProc(int nState);
+	void* pChild;
+	void** ppActive;
+	int cActive;
+	int i;
+
+	for (i = 0; i < m_nObjectCount220; ++i) {
+		pChild = (void*) m_anObjectValues1F0[i];
+		switch (*(int*) ((char*) pChild + 0x64)) {
+		case 0x15:
+		case 0x16:
+		case 0x17:
+		case 0x27:
+		case 0x29:
+		case 0x2b:
+		case 0x2d:
+			((void(__fastcall*)(void*)) 0x401415)(pChild);
+			break;
+		}
+	}
+
+	cActive = *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118);
+	if (cActive > 0) {
+		ppActive = *(void***) ((char*) g_pActiveManagedEntityOwner + 0x120);
+		for (i = 0; i < cActive; ++i) {
+			if (ppActive[i] == this) {
+				--*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118);
+				while (i < *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118)) {
+					ppActive[i] = ppActive[i + 1];
+					++i;
+				}
+				ppActive[*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118)] = 0;
+				break;
+			}
+		}
+	}
+	--g_cActiveManagedEntities;
+	if (g_cActiveManagedEntities == 0) {
+		((RequestStateProc*) RequestLocalLevelGameStateChange)(5);
+	}
 }
 
 // FUNCTION: LEMBALL 0x0040f600
