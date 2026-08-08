@@ -1983,7 +1983,7 @@ void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void* pObject
 		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xb0);
 	}
 
-	((MogLoadResourceArchive*) g_pMainResourceArchive)->PruneUnreferencedCachedResourceObjects();
+	((CMogRes*) g_pMainResourceArchive)->CleanUpResources();
 }
 // FUNCTION: LEMBALL 0x00433fc0
 void EmitLevelScreenVariantEntry(void* pObject,

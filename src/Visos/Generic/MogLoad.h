@@ -11,7 +11,7 @@ enum {
 
 class MogLoadDirectoryNode;
 struct MogLoadStringResourceObject;
-class MogLoadResourceArchive;
+class CMogRes;
 
 struct MogLoadEntrySearchState {
 	long m_iIndex;
@@ -55,17 +55,17 @@ public:
 	int m_nReserved34;
 };
 
-class MogLoadResourceArchive {
+class CMogRes {
 public:
 	void* ConstructResourceArchive(const char* pszArchiveName, unsigned int cbArenaSize);
-	unsigned int AllocateResourceDataBufferWithEviction(unsigned int cbBuffer);
-	void FreeResourceObjectDataBuffer(unsigned int pBuffer, int fReleaseMode);
-	int LoadResourceObjectById(int nResourceId, void* pObject, int fCacheObject);
+	unsigned int AllocateMainMem(unsigned int cbBuffer);
+	void DeallocateMem(unsigned int pBuffer, int fReleaseMode);
+	int Load(int nResourceId, void* pObject, int fCacheObject);
 	int LoadResourceArchiveEntryDataIntoBuffer(int* plFileOffset, unsigned int* pcbBuffer, void* pUnused);
-	void RemoveCachedResourceObject(void* pResourceObject);
-	void AdvanceCachedResourceObjectFrameCounters(void);
-	void PruneUnreferencedCachedResourceObjects(void);
-	void* FindCachedResourceObjectById(int nResourceId);
+	void Remove(void* pResourceObject);
+	void AgeResources(void);
+	void CleanUpResources(void);
+	void* Find(int nResourceId);
 
 	MogLoadDirectoryNode* m_pRootDirectory;
 	MogLoadDirectoryNode* m_pCurrentDirectory;

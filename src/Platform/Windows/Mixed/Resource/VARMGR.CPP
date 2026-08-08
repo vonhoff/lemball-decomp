@@ -565,7 +565,7 @@ void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void* pBundle)
 	FreeVSMemBlock(pVariantBundle->m_ppBitmapResources);
 	FreeVSMemBlock(pVariantBundle->m_ppListResources);
 	FreeVSMemBlock(pVariantBundle->m_ppZrleListResources);
-	((MogLoadResourceArchive*) g_pMainResourceArchive)->PruneUnreferencedCachedResourceObjects();
+	((CMogRes*) g_pMainResourceArchive)->CleanUpResources();
 }
 
 // FUNCTION: LEMBALL 0x00447d80

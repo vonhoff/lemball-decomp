@@ -2608,7 +2608,7 @@ GameMainContext* GameMainContext::InitializeMainGameContext(const char* pszCmdLi
 	pPrimaryStorage = CMogloadArenaNew(0x28);
 	if (pPrimaryStorage != 0) {
 		g_pMainResourceArchive =
-			((MogLoadResourceArchive*) pPrimaryStorage)->ConstructResourceArchive(g_GAME_MainArchiveName, 0x177000);
+			((CMogRes*) pPrimaryStorage)->ConstructResourceArchive(g_GAME_MainArchiveName, 0x177000);
 	}
 	else {
 		g_pMainResourceArchive = 0;
@@ -5519,7 +5519,7 @@ int __stdcall PumpMessagesAndRunFrame(void)
 										*(unsigned int*) ((char*) g_pSharedRenderDispatchQueue + 0x28));
 	}
 	if (g_pMainResourceArchive != 0) {
-		((MogLoadResourceArchive*) g_pMainResourceArchive)->AdvanceCachedResourceObjectFrameCounters();
+		((CMogRes*) g_pMainResourceArchive)->AgeResources();
 	}
 	if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
 		((CBaseCursor*) g_pArrowCursorStatusIndicatorRenderClient)->Process();

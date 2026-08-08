@@ -423,7 +423,7 @@ void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(void* pObject,
 	if ((int) ((char*) pObject - (char*) pRelatedObject) == -0x4c) {
 		if (*(unsigned int*) ((char*) pObject + 0x4c) == 0) {
 			pTarget =
-				((MogLoadResourceArchive*) g_pMainResourceArchive)->AllocateResourceDataBufferWithEviction(cbBuffer);
+				((CMogRes*) g_pMainResourceArchive)->AllocateMainMem(cbBuffer);
 			*(unsigned int*) ((char*) pObject + 0x4c) = pTarget;
 			pFrom = (char*) pSource;
 			pTo = (char*) (unsigned long) pTarget;
@@ -436,7 +436,7 @@ void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(void* pObject,
 	else {
 		if (*(unsigned int*) ((char*) pObject + 0x38) == 0) {
 			pTarget =
-				((MogLoadResourceArchive*) g_pMainResourceArchive)->AllocateResourceDataBufferWithEviction(cbBuffer);
+				((CMogRes*) g_pMainResourceArchive)->AllocateMainMem(cbBuffer);
 			*(unsigned int*) ((char*) pObject + 0x38) = pTarget;
 			pFrom = (char*) pSource;
 			pTo = (char*) (unsigned long) pTarget;
@@ -469,8 +469,8 @@ void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(void* pObject,
 				((int(LEMBALL_FASTCALL*)(void*, int, int, int*, int*))
 					 pVtable[0x13])(pObject, 0, i, &DescriptorCursor, &DataCursor);
 			}
-			((MogLoadResourceArchive*) g_pResourceArchive)
-				->FreeResourceObjectDataBuffer(*(unsigned int*) ((char*) pObject + 0x4c), 1);
+			((CMogRes*) g_pResourceArchive)
+				->DeallocateMem(*(unsigned int*) ((char*) pObject + 0x4c), 1);
 			*(int*) ((char*) pObject + 0x4c) = 0;
 			*(int*) ((char*) pObject + 0x54) = 1;
 		}
@@ -505,7 +505,7 @@ void LEMBALL_FASTCALL LoadListEntryArraysFromArchive(void* pObject)
 				aArchiveRange[0] = pList[0xb];
 				aArchiveRange[1] = pList[0x1c];
 				pBuffer = (unsigned int*) (pList + 0x13);
-				if (((MogLoadResourceArchive*) g_pResourceArchive)
+				if (((CMogRes*) g_pResourceArchive)
 						->LoadResourceArchiveEntryDataIntoBuffer(aArchiveRange, pBuffer, pList) != 0) {
 					((CopyDataProc) pVtable[1])(pList, 0, *pBuffer, pBuffer, (unsigned int) pList[0x1c]);
 				}
@@ -513,7 +513,7 @@ void LEMBALL_FASTCALL LoadListEntryArraysFromArchive(void* pObject)
 			aArchiveRange[0] = pList[0xb] + pList[0x1c];
 			aArchiveRange[1] = pList[0x1d];
 			pBuffer = (unsigned int*) (pList + 0xe);
-			if (((MogLoadResourceArchive*) g_pResourceArchive)
+			if (((CMogRes*) g_pResourceArchive)
 					->LoadResourceArchiveEntryDataIntoBuffer(aArchiveRange, pBuffer, pList) != 0) {
 				((CopyDataProc) pVtable[1])(pList, 0, *pBuffer, pBuffer, (unsigned int) pList[0x1c]);
 			}
@@ -572,7 +572,7 @@ void LEMBALL_FASTCALL ReleaseListEntriesAndStreamBuffer(void* pObject, void* pUn
 	else {
 		*(int*) ((char*) pObject + 0x10) = 0;
 		pBuffer = *(unsigned int*) ((char*) pObject + 0x38);
-		((MogLoadResourceArchive*) g_pResourceArchive)->FreeResourceObjectDataBuffer(pBuffer, 1);
+		((CMogRes*) g_pResourceArchive)->DeallocateMem(pBuffer, 1);
 		*(unsigned int*) ((char*) pObject + 0x38) = 0;
 	}
 
@@ -612,7 +612,7 @@ void* LoadZrleOnlyListResource(int nResourceId)
 	int* pResourceObject;
 
 	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+		(int*) ((CMogRes*) g_pResourceArchive)->Find(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_GAME_ListResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -712,7 +712,7 @@ void* LoadListResource(int nResourceId)
 	int* pResourceObject;
 
 	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+		(int*) ((CMogRes*) g_pResourceArchive)->Find(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_GAME_ListResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -734,7 +734,7 @@ void* LoadPalResource(int nResourceId)
 	int* pResourceObject;
 
 	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+		(int*) ((CMogRes*) g_pResourceArchive)->Find(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_GAME_PaletteResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -760,7 +760,7 @@ void* LoadTwoArrayListResource(int nResourceId)
 	int* pResourceObject;
 
 	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+		(int*) ((CMogRes*) g_pResourceArchive)->Find(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_GAME_ListResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -895,7 +895,7 @@ void* LoadBitmapResource(int nResourceId)
 	int* pResourceObject;
 
 	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+		(int*) ((CMogRes*) g_pResourceArchive)->Find(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_GAME_BitmapResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -924,7 +924,7 @@ void* LoadZrleResource(int nResourceId)
 	int* pResourceObject;
 
 	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+		(int*) ((CMogRes*) g_pResourceArchive)->Find(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_GAME_ZrleResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);

@@ -1784,7 +1784,7 @@ __inline static void DestroyPasswordEntryScreen(GamePasswordEntryScreenView* pSc
 		FreeVSMemBlock(pScreen->m_pMappedListResources98);
 		pScreen->m_pMappedListResources98 = 0;
 	}
-	((MogLoadResourceArchive*) g_pMainResourceArchive)->PruneUnreferencedCachedResourceObjects();
+	((CMogRes*) g_pMainResourceArchive)->CleanUpResources();
 	DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
 	DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
 }
@@ -2533,7 +2533,7 @@ void LEMBALL_FASTCALL DestroyFramedScreenBase(void* pObject)
 		pMappedListResources->Destroy();
 		FreeVSMemBlock(pMappedListResources);
 	}
-	((MogLoadResourceArchive*) g_pMainResourceArchive)->PruneUnreferencedCachedResourceObjects();
+	((CMogRes*) g_pMainResourceArchive)->CleanUpResources();
 	DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
 	DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
 	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_RenderQueueNodeVtableSlots;

@@ -71,8 +71,8 @@ inline static void* LoadTypedSoundResource(int nResourceId, unsigned int uTypeTa
 {
 	MogLoadStringResourceObject* pResourceObject;
 
-	pResourceObject = (MogLoadStringResourceObject*) ((MogLoadResourceArchive*) g_pResourceArchive)
-						  ->FindCachedResourceObjectById(nResourceId);
+	pResourceObject = (MogLoadStringResourceObject*) ((CMogRes*) g_pResourceArchive)
+						  ->Find(nResourceId);
 	if (pResourceObject == 0) {
 		pResourceObject = (MogLoadStringResourceObject*) AllocateVSMemBlock(0x48);
 		if (pResourceObject != 0) {

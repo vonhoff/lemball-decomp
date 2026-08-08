@@ -172,7 +172,7 @@ int* load_bool_resource(int nResourceId)
 {
 	int* pResourceObject;
 
-	pResourceObject = (int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+	pResourceObject = (int*) ((CMogRes*) g_pResourceArchive)->Find(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_DRAWTEXT_BoolResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -224,7 +224,7 @@ int* load_int_resource(int nResourceId)
 {
 	int* pResourceObject;
 
-	pResourceObject = (int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+	pResourceObject = (int*) ((CMogRes*) g_pResourceArchive)->Find(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_DRAWTEXT_IntResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
