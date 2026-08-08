@@ -2227,3 +2227,139 @@ int __fastcall refresh_debug_text_visible_line_counts(void* pThis, int nEdxSlop)
 	(*(void (__fastcall**)(void*, int))vtbl[1])(pThis, 0);
 	return *(int*)((char*)pThis + 0x34);
 }
+// FUNCTION: LEMBALL 0x004695d0
+void* __fastcall construct_resource_sprite_window_owner_variant_a(void* pThis, void* pUnusedEdx,
+	void* param_2, void* param_3, void* param_4, void* param_5, void* param_6)
+{
+	((void*(__fastcall*)(void*, int, void*, void*, void*, void*)) 0x468f90)(pThis, 0, param_3, param_4, param_5, param_6);
+	*(void**) pThis = (void*) 0x499b28;
+	*(void**) ((char*) pThis + 0x90) = (void*) 0x499b08;
+	((void(__fastcall*)(void*)) 0x469670)(pThis);
+	*(void**) ((char*) pThis + 0xcc) = param_2;
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x00469620
+void* __fastcall construct_resource_sprite_window_owner_variant_b(void* pThis, void* pUnusedEdx,
+	void* param_2, void* param_3, void* param_4, void* param_5, void* param_6)
+{
+	((void*(__fastcall*)(void*, int, void*, void*, void*, void*)) 0x469070)(pThis, 0, param_3, param_4, param_5, param_6);
+	*(void**) pThis = (void*) 0x499b28;
+	*(void**) ((char*) pThis + 0x90) = (void*) 0x499b08;
+	((void(__fastcall*)(void*)) 0x469670)(pThis);
+	*(void**) ((char*) pThis + 0xcc) = param_2;
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x00469810
+void* __fastcall construct_resource_sprite_window_owner_variant_c(void* pThis, void* pUnusedEdx,
+	void* param_2, void* param_3, void* param_4, void* param_5, void* param_6)
+{
+	((void*(__fastcall*)(void*, int, void*, void*, void*, void*)) 0x469070)(pThis, 0, param_3, param_4, param_5, param_6);
+	*(void**) pThis = (void*) 0x499c18;
+	*(void**) ((char*) pThis + 0x90) = (void*) 0x499bf8;
+	((void(__fastcall*)(void*)) 0x469860)(pThis);
+	*(void**) ((char*) pThis + 0xcc) = param_2;
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x00475bc0
+int __fastcall classify_circle_against_helper_clip_rect(
+	void* pThis, int nEdxSlop, int nCX, int nCY, int nRad)
+{
+	int iRect = *(int*)(*(int*)((char*)pThis + 0x40) + 4);
+	char* pRect = (char*)pThis + iRect;
+	short w = *(short*)(pRect + 0x64);
+	short h = *(short*)(pRect + 0x66);
+	int nLeft  = *(short*)(pRect + 0x68);
+	int nTop   = *(short*)(pRect + 0x6a);
+	if (h < 1 || w < 1)
+		return 1;
+	int nRight  = nLeft + w - 1;
+	int nBottom = nTop + h - 1;
+	int nMinX = nCX - nRad;
+	int nMaxX = nCX + nRad;
+	int nMinY = nCY - nRad;
+	int nMaxY = nCY + nRad;
+	if (nMaxX < nLeft || nRight < nMinX || nMaxY < nTop || nBottom < nMinY)
+		return 1;
+	if (nLeft <= nMinX && nMaxX <= nRight && nTop <= nMinY && nMaxY <= nBottom)
+		return 2;
+	return 3;
+}
+
+// FUNCTION: LEMBALL 0x00451630
+void __fastcall rotate_password_keypad_selection(void* pThis, int nEdxSlop, int nUnusedArg)
+{
+	if (*(int*)((char*)pThis + 0x488) == 1)
+		return;
+	int nSel = *(int*)((char*)pThis + 0x480);
+	void* pWidget = *(void**)((char*)pThis + 0x424 + *(int*)(0x4a0028 + nSel * 4) * 4);
+	void* pSub = (char*)pWidget + 0x90;
+	void** pVt = *(void***)pSub;
+	unsigned short auPoint[2] = { 0, 0 };
+	((void(__fastcall*)(void*, unsigned short*, int))pVt[2])(pSub, auPoint, 0);
+	int nNew = nSel + auPoint[0];
+	if (nNew < 0)
+		nNew += 12;
+	if (nNew > 11)
+		nNew -= 12;
+	*(int*)((char*)pThis + 0x480) = nNew;
+	*(int*)((char*)pThis + 0x478) = *(int*)((char*)pThis + 0x3c0 + nNew * 8);
+	*(int*)((char*)pThis + 0x47c) = *(int*)((char*)pThis + 0x3c4 + nNew * 8);
+	((void(__fastcall*)(void*, int)) 0x401479)(g_pVariantResourceEntryManager, 0x1b);
+}
+
+// FUNCTION: LEMBALL 0x00469120
+void __fastcall expand_text_owner_bounds_for_extent(void* pThis, int nEdxSlop, short* pExtent)
+{
+	short sW, sH;
+	if ((int)*(short*)((char*)pThis + 0x140) * (int)*(short*)((char*)pThis + 0x142) != 0) {
+		sW = *(short*)((char*)pThis + 0x140) * 2 + pExtent[0];
+		sH = pExtent[1] + *(short*)((char*)pThis + 0x142) * 2;
+		if (*(short*)((char*)pThis + 0xc0) < sW)
+			*(short*)((char*)pThis + 0xc0) = sW;
+		if (*(short*)((char*)pThis + 0xc2) < sH)
+			*(short*)((char*)pThis + 0xc2) = sH;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00469180
+void __fastcall align_text_owner_extent_within_bounds(void* pThis, int nEdxSlop, short* pPos, short* pExtent)
+{
+	if ((*(unsigned int*)((char*)pThis + 0x138) & 0x10) == 0) {
+		if ((*(unsigned int*)((char*)pThis + 0x138) & 4) != 0) {
+			pPos[0] = (short)(((int)*(short*)((char*)pThis + 0xc0) - (int)pExtent[0]) / 2);
+		}
+	} else {
+		pPos[0] = *(short*)((char*)pThis + 0xc0) - pExtent[0];
+	}
+	if ((*(unsigned int*)((char*)pThis + 0x138) & 0x20) == 0) {
+		if ((*(unsigned int*)((char*)pThis + 0x138) & 8) != 0) {
+			pPos[1] = (short)(((int)*(short*)((char*)pThis + 0xc2) - (int)pExtent[1]) / 2);
+		}
+	} else {
+		pPos[1] = *(short*)((char*)pThis + 0xc2) - pExtent[1];
+	}
+	*(unsigned int*)((char*)pThis + 0xd8) = 1;
+}
+
+// FUNCTION: LEMBALL 0x0044a330
+void __fastcall initialize_level_selection_palette_remap(void* pThis, int nEdxSlop)
+{
+	unsigned char* pMap;
+	int hPal;
+	int i;
+	hPal = ((int(__cdecl*)(int)) 0x45dd90)(0x10a);
+	pMap = (unsigned char*) ((void*(__cdecl*)(int)) 0x45a780)(0x100);
+	*(unsigned int*)((char*)pThis + 0x3cc) = (unsigned int)pMap;
+	for (i = 0; i < 0x100; i++)
+		pMap[i] = (char) i;
+	for (i = 0; i < 0x28; i += 4) {
+		if (*(int*)(0x49f880 + i) != 0)
+			pMap[*(int*)(0x49f858 + i)] = (char) *(int*)(0x49f880 + i);
+	}
+	*(unsigned int*)((char*)pThis + 0x3d0) =
+		((unsigned int(__fastcall*)(void*, int, int, void*, int)) 0x46ad70)((void*) 0x4a2000, 0, 0x10a, pMap, 0);
+	((void(__fastcall*)(void*)) 0x45d180)((void*) hPal);
+}
