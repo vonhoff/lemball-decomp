@@ -3,9 +3,9 @@
 
 #include "Visos/Generic/MogLoad.h"
 
-struct MogLoadTypedResourceObject : MogLoadStringResourceObject {
-	int LoadTypedResourceObjectFromStreamDescriptor(int* pDataCursor, void* pOwner);
-	int LoadTypedResourceObjectFromBufferDescriptor(int* pDescriptorCursor, int* pDataCursor, void* pOwner);
+struct CResBase : MogLoadStringResourceObject {
+	int Direct(int* pDataCursor, void* pOwner);
+	int Direct(int* pDescriptorCursor, int* pDataCursor, void* pOwner);
 };
 
 #endif

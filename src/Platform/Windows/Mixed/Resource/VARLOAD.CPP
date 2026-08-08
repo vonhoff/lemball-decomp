@@ -347,7 +347,7 @@ void LoadMainGameVariantTwoArrayListResource(void* pBundle, int nResourceId)
 }
 
 // FUNCTION: LEMBALL 0x0045cf70
-int MogLoadTypedResourceObject::LoadTypedResourceObjectFromStreamDescriptor(int* pDataCursor, void* pOwner)
+int CResBase::Direct(int* pDataCursor, void* pOwner)
 {
 	void** pVtable;
 
@@ -365,7 +365,7 @@ int MogLoadTypedResourceObject::LoadTypedResourceObjectFromStreamDescriptor(int*
 }
 
 // FUNCTION: LEMBALL 0x0045cfb0
-int MogLoadTypedResourceObject::LoadTypedResourceObjectFromBufferDescriptor(int* pDescriptorCursor,
+int CResBase::Direct(int* pDescriptorCursor,
 																			int* pDataCursor,
 																			void* pOwner)
 {
@@ -859,10 +859,10 @@ void LEMBALL_FASTCALL AllocateTwoArrayListEntryArrays(void* pObject, int, int cE
 int LEMBALL_FASTCALL
 LoadTwoArrayListEntryPairFromBuffers(void* pObject, int, int iEntry, int* pDescriptorCursor, int* pDataCursor)
 {
-	if (((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x48))
-			->LoadTypedResourceObjectFromBufferDescriptor(pDescriptorCursor, pDataCursor, pObject) == 0) {
-		if (((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x7c) + iEntry * 0x4c))
-				->LoadTypedResourceObjectFromBufferDescriptor(pDescriptorCursor, pDataCursor, pObject) == 0) {
+	if (((CResBase*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x48))
+			->Direct(pDescriptorCursor, pDataCursor, pObject) == 0) {
+		if (((CResBase*) ((char*) *(void**) ((char*) pObject + 0x7c) + iEntry * 0x4c))
+				->Direct(pDescriptorCursor, pDataCursor, pObject) == 0) {
 			return 0;
 		}
 	}
@@ -872,10 +872,10 @@ LoadTwoArrayListEntryPairFromBuffers(void* pObject, int, int iEntry, int* pDescr
 // FUNCTION: LEMBALL 0x0045e0c0
 int LEMBALL_FASTCALL LoadTwoArrayListEntryPairFromStream(void* pObject, int, int iEntry, int* pDataCursor)
 {
-	if (((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x48))
-			->LoadTypedResourceObjectFromStreamDescriptor(pDataCursor, pObject) == 0) {
-		if (((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x7c) + iEntry * 0x4c))
-				->LoadTypedResourceObjectFromStreamDescriptor(pDataCursor, pObject) == 0) {
+	if (((CResBase*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x48))
+			->Direct(pDataCursor, pObject) == 0) {
+		if (((CResBase*) ((char*) *(void**) ((char*) pObject + 0x7c) + iEntry * 0x4c))
+				->Direct(pDataCursor, pObject) == 0) {
 			return 0;
 		}
 	}
@@ -1023,16 +1023,16 @@ int LEMBALL_FASTCALL ListIsFirstEntryLoaded(void* pResource)
 // FUNCTION: LEMBALL 0x0045e730
 void LEMBALL_FASTCALL LoadZrleOnlyListEntryFromStream(void* pObject, int, int iEntry, int* pDescriptor)
 {
-	((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x54))
-		->LoadTypedResourceObjectFromStreamDescriptor(pDescriptor, pObject);
+	((CResBase*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x54))
+		->Direct(pDescriptor, pObject);
 }
 
 // FUNCTION: LEMBALL 0x0045e750
 void LEMBALL_FASTCALL
 LoadZrleOnlyListEntryFromBuffer(void* pObject, int, int iEntry, int* pDescriptorCursor, int* pDataCursor)
 {
-	((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x54))
-		->LoadTypedResourceObjectFromBufferDescriptor(pDescriptorCursor, pDataCursor, pObject);
+	((CResBase*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x54))
+		->Direct(pDescriptorCursor, pDataCursor, pObject);
 }
 
 // FUNCTION: LEMBALL 0x0045e780
