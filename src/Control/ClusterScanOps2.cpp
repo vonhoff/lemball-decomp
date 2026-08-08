@@ -2170,3 +2170,23 @@ void __fastcall select_pause_option_at_point(void* pThis, int nUnused, short* pa
 		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(3);
 	}
 }
+// FUNCTION: LEMBALL 0x00468f00
+void* __fastcall construct_single_child_overlay_owner_from_point(void* self, int nEdxSlop, void* pPoint, void* argColor, int argOriginX, void* argRes, int argOriginY)
+{
+	void* block;
+	int* child;
+	((void (__fastcall*)(void*, void*, void*))0x468b20)(self, argColor, argRes);
+	*(void**)self = (void*)0x499928;
+	*(void**)((char*)self + 0x90) = (void*)0x499908;
+	block = (void*)((void* (__cdecl*)(int))0x45a780)(0x130);
+	if (block == 0) {
+		*(int*)((char*)self + 0x118) = 0;
+	} else {
+		child = ((int* (__fastcall*)(void*, void*, void*, int, int))0x468530)(
+			block, pPoint, argColor, argOriginX, argOriginY);
+		*(int**)((char*)self + 0x118) = child;
+	}
+	*(unsigned short*)((char*)self + 0xdc) = *(unsigned short*)pPoint;
+	*(unsigned short*)((char*)self + 0xde) = *(unsigned short*)((char*)pPoint + 2);
+	return self;
+}
