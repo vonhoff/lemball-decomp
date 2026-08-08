@@ -1615,3 +1615,98 @@ void __cdecl add_fixed12_2d_vectors(int* pOut, const int* pA, const int* pB)
 	pOut[0] = pA[0] + pB[0];
 	pOut[1] = pA[1] + pB[1];
 }
+
+extern void* RegisterPaletteRemapVariant(int nPaletteResourceId, unsigned char* pRemapTable, int nBuildMode);
+
+// FUNCTION: LEMBALL 0x004448c0
+void __fastcall RegisterPauseDialogPaletteRemaps(void* pObject)
+{
+	unsigned char** ppRemapTables = (unsigned char**) 0x49f058;
+	int i;
+	for (i = 0; i < 4; i++) {
+		*(void**) ((char*) pObject + 0x1e0 + i * 4) = RegisterPaletteRemapVariant(
+			*(int*) (*(char**) ((char*) pObject + 0x114) + 0x54),
+			ppRemapTables[i],
+			2);
+	}
+}
+
+struct LobbyActionButtonFrameRect {
+	short m_nX;
+	short m_nY;
+	short m_nCX;
+	short m_nCY;
+};
+
+// FUNCTION: LEMBALL 0x004536b0
+void __fastcall DrawNetworkLobbyActionButtonFrame(void* pObject, int nUnused, int param_1)
+{
+	unsigned int* pEntry = (unsigned int*) (*(unsigned int*) ((char*) pObject + 0x42c) + param_1 * 8);
+	LobbyActionButtonFrameRect Rect;
+	((LobbyActionButtonFrameRect* (__fastcall*)(LobbyActionButtonFrameRect*, int, short, short, short, short)) 0x403594)(
+		&Rect, 0, (short) pEntry[0], (short) pEntry[1], (short) pEntry[2], (short) pEntry[3]);
+	((void (__fastcall*)(void*, int, LobbyActionButtonFrameRect)) 0x4020e0)(pObject, 0, Rect);
+}
+
+// FUNCTION: LEMBALL 0x00412740
+void __fastcall CollectLevelModeManagerEntries(void* pLevelModeManager, int nUnused, int* pOutCount)
+{
+	int nFirstCount;
+	*pOutCount = 0;
+	nFirstCount = (*(int (__fastcall**)(void*, int, int*)) (*(void***) ((char*) pLevelModeManager + 0x170) + 0x12))((void*) ((char*) pLevelModeManager + 0x170), 0, pOutCount + 1);
+	*pOutCount = nFirstCount;
+	*(int*) pOutCount += (*(int (__fastcall**)(void*, int, int*)) (*(void***) ((char*) pLevelModeManager + 0x15c) + 0x12))((void*) ((char*) pLevelModeManager + 0x15c), 0, pOutCount + nFirstCount + 1);
+}
+
+// FUNCTION: LEMBALL 0x0042de40
+int __fastcall copy_ice_chunk_object_aux_records(void* pObject, int nUnused, void* pDstAux)
+{
+	int iVar2 = 0;
+	int iVar3 = 0;
+	while (iVar2 < *(int*) ((char*) pObject + 0x34)) {
+		int iVar1 = *(int*) ((char*) pObject + 0x38) + iVar3;
+		iVar2++;
+		iVar3 += 0x188;
+		*(int*) ((char*) pDstAux + iVar3 - 0x188) = *(int*) (iVar1 + 0x17c);
+		*(unsigned short*) ((char*) pDstAux + (iVar3 - 0x188) + 4) = *(unsigned short*) (iVar1 + 0x180);
+		*(int*) ((char*) pDstAux + (iVar3 - 0x188) + 6) = *(int*) (iVar1 + 0x182);
+		*(unsigned short*) ((char*) pDstAux + (iVar3 - 0x188) + 10) = *(unsigned short*) (iVar1 + 0x186);
+	}
+	return *(int*) ((char*) pObject + 0x34);
+}
+
+// FUNCTION: LEMBALL 0x0046d560
+void __fastcall apply_point_delta_to_child_helper(void* pThis, int nUnused, short* pDelta)
+{
+	int iBase = *(int*) (*(int*) ((char*) pThis + 0x40) + 4);
+	short* pPt = (short*) (iBase + 0x50 + (int) pThis);
+	char* pTmp = (char*) (iBase + 0x4c + (int) pThis);
+	*pPt += pDelta[0];
+	*(short*) (pTmp + 6) += pDelta[1];
+	void* pOwner = (char*) pThis + *(int*) (*(int*) ((char*) pThis + 0x40) + 4) + 0x40;
+	void* pArg = (iBase + 0x4c + (int) pThis == 1) ? 0 : pPt;
+	(*( void(**)(void*)) (*(void***) *(void**) pOwner + 0x2c / 4))(pArg);
+}
+
+// FUNCTION: LEMBALL 0x0044c100
+void __fastcall expand_rect_to_cover_rect(void* pThis, int nUnused, short* pRect)
+{
+	int nW = pRect[0];
+	int nH = pRect[1];
+	if (nW * nH != 0) {
+		if (pRect[2] < *(short*) ((char*) pThis + 4)) {
+			*(short*) pThis = *(short*) pThis + (*(short*) ((char*) pThis + 4) - pRect[2]);
+			*(short*) ((char*) pThis + 4) = pRect[2];
+		}
+		if ((short) (*(short*) pThis + *(short*) ((char*) pThis + 4)) < (short) (pRect[0] + pRect[2])) {
+			*(short*) pThis = (pRect[2] - *(short*) ((char*) pThis + 4)) + pRect[0];
+		}
+		if (pRect[3] < *(short*) ((char*) pThis + 6)) {
+			*(short*) ((char*) pThis + 2) = *(short*) ((char*) pThis + 2) + (*(short*) ((char*) pThis + 6) - pRect[3]);
+			*(short*) ((char*) pThis + 6) = pRect[3];
+		}
+		if ((short) (*(short*) ((char*) pThis + 2) + *(short*) ((char*) pThis + 6)) < (short) (pRect[3] + pRect[1])) {
+			*(short*) ((char*) pThis + 2) = (pRect[1] - *(short*) ((char*) pThis + 6)) + pRect[3];
+		}
+	}
+}
