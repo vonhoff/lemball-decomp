@@ -31,10 +31,8 @@ struct PaletteRemapPointerTableMemberView {
 struct LevelTileGridOwnerView {
 	unsigned short GetZ(int x, int y, void** ppMoveChunk);
 };
-
-// MACINTOSH: append_type_0x18_chunk_object_from_tile_coords(int, int, int, int)
 // FUNCTION: LEMBALL 0x00412eb0
-void __fastcall AppendType18ChunkObjectFromTileCoords(void* pObject, int nUnused, int param_1, int param_2, int param_3, int param_4)
+void __fastcall CAI_AddNewTrapDoor(void* pObject, int nUnused, int param_1, int param_2, int param_3, int param_4)
 {
 	int nSlot = ((int(__fastcall*)()) 0x40227a)();
 	int local_c = param_1 << 12;
@@ -42,10 +40,8 @@ void __fastcall AppendType18ChunkObjectFromTileCoords(void* pObject, int nUnused
 	int local_4 = param_3 << 12;
 	AppendType18ChunkObject(*(void**) ((char*) pObject + 0x1c4), nUnused, (unsigned short) nSlot, &local_c, 0, param_4);
 }
-
-// MACINTOSH: start_door_chunk_object_vertical_motion()
 // FUNCTION: LEMBALL 0x0040f600
-void __fastcall StartDoorChunkObjectVerticalMotion(void* pObject)
+void __fastcall CPlayerLemming_HitMine(void* pObject)
 {
 	int vec[3];
 	vec[0] = 0;
@@ -55,8 +51,6 @@ void __fastcall StartDoorChunkObjectVerticalMotion(void* pObject)
 	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
 	*(int*) ((char*) pObject + 0x2c) = 1;
 }
-
-// MACINTOSH: count_active_network_lobby_peer_streams()
 // FUNCTION: LEMBALL 0x00452bc0
 int __fastcall CountActiveNetworkLobbyPeerStreams(void* pObject)
 {
@@ -69,10 +63,8 @@ int __fastcall CountActiveNetworkLobbyPeerStreams(void* pObject)
 	}
 	return iVar1;
 }
-
-// MACINTOSH: has_projectile_request_code_queued(int)
 // FUNCTION: LEMBALL 0x0040f960
-int __fastcall HasProjectileRequestCodeQueued(void* pObject, int nUnused, int param_1)
+int __fastcall CPlayerLemming_HasObject(void* pObject, int nUnused, int param_1)
 {
 	if (param_1 == 5) {
 		if (*(short*) ((char*) pObject + 0x228) == 0x32) {
@@ -94,8 +86,6 @@ int __fastcall HasProjectileRequestCodeQueued(void* pObject, int nUnused, int pa
 	}
 	return 0;
 }
-
-// MACINTOSH: forward_queued_zrle_variant_range_point(ushort, ushort)
 // FUNCTION: LEMBALL 0x0044f240
 void __fastcall ForwardQueuedZrleVariantRangePoint(void* pObject, int nUnused, unsigned short param_2, unsigned short param_3)
 {
@@ -106,8 +96,6 @@ void __fastcall ForwardQueuedZrleVariantRangePoint(void* pObject, int nUnused, u
 		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pObject + 0x4c) + 0x38 / 4))(&pt);
 	}
 }
-
-// MACINTOSH: construct_palette_remap_variant(int, byte*, int)
 // FUNCTION: LEMBALL 0x0046aa80
 void* __fastcall ConstructPaletteRemapVariant(void* pThis, int nUnused, int param_1, unsigned char* param_2, int param_3)
 {
@@ -123,8 +111,6 @@ void* __fastcall ConstructPaletteRemapVariant(void* pThis, int nUnused, int para
 	((void(__fastcall*)(void*, unsigned char*)) 0x46aaf0)(pThis, param_2);
 	return pThis;
 }
-
-// MACINTOSH: finish_paintball_sequence_to_level_selection()
 // FUNCTION: LEMBALL 0x00450a10
 void __fastcall FinishPaintballSequenceToLevelSelection(void* pObject)
 {
@@ -137,8 +123,6 @@ void __fastcall FinishPaintballSequenceToLevelSelection(void* pObject)
 	*(int*) ((char*) pObject + 0x378) = 1;
 	*(int*) ((char*) pObject + 0x374) = 4;
 }
-
-// MACINTOSH: deactivate_embedded_media_if_active()
 // FUNCTION: LEMBALL 0x00450820
 void __fastcall DeactivateEmbeddedMediaIfActive(void* pObject)
 {
@@ -148,8 +132,6 @@ void __fastcall DeactivateEmbeddedMediaIfActive(void* pObject)
 		*(int*) ((char*) pObject + 0x5f8) = ((unsigned(*)(void)) 0x462e80)() + 0x28;
 	}
 }
-
-// MACINTOSH: point_in_helper_clip_rect(int, int)
 // FUNCTION: LEMBALL 0x00475f60
 int __fastcall PointInHelperClipRect(void* pObject, int nUnused, int param_1, int param_2)
 {
@@ -163,8 +145,6 @@ int __fastcall PointInHelperClipRect(void* pObject, int nUnused, int param_1, in
 	}
 	return 0;
 }
-
-// MACINTOSH: destroy_lift_chunk_manager_0x190_stride_array()
 // FUNCTION: LEMBALL 0x00425dc0
 void __fastcall DestroyLiftChunkManager0x190StrideArray(void* pObject)
 {
@@ -175,10 +155,8 @@ void __fastcall DestroyLiftChunkManager0x190StrideArray(void* pObject)
 		}
 	}
 }
-
-// MACINTOSH: handle_queue_cursor_event(short*)
 // FUNCTION: LEMBALL 0x00414e80
-int __fastcall HandleQueueCursorEvent(void* pObject, int nUnused, short* param_1)
+int __fastcall CAICursor_ProcessMsg(void* pObject, int nUnused, short* param_1)
 {
 	if (*param_1 != 1) {
 		*(int*) ((char*) pObject + 0xc) = *(int*) ((char*) pObject + 0xc) + 1;
@@ -187,10 +165,8 @@ int __fastcall HandleQueueCursorEvent(void* pObject, int nUnused, short* param_1
 	((void(__fastcall*)(void*, int, int)) 0x40281f)(pObject, *(int*) ((char*) param_1 + 8), *(int*) ((char*) param_1 + 0xc));
 	return 1;
 }
-
-// MACINTOSH: service_type_0x35_chunk_objects()
 // FUNCTION: LEMBALL 0x0040be20
-void __fastcall ServiceType35ChunkObjects(void* pObject)
+void __fastcall CSlinkyManager_Process(void* pObject)
 {
 	int i;
 	if (*(int*) ((char*) pObject + 0xc) > 0) {
@@ -199,8 +175,6 @@ void __fastcall ServiceType35ChunkObjects(void* pObject)
 		}
 	}
 }
-
-// MACINTOSH: find_resource_geometry_helper_slot_by_resource_owner(int)
 // FUNCTION: LEMBALL 0x0046bfa0
 int __fastcall FindResourceGeometryHelperSlotByResourceOwner(void* pObject, int nUnused, int param_2)
 {
@@ -214,8 +188,6 @@ int __fastcall FindResourceGeometryHelperSlotByResourceOwner(void* pObject, int 
 	}
 	return -1;
 }
-
-// MACINTOSH: delete_fixed_buffer_formatted_output_stream(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x00407e80
 void* __fastcall DeleteFixedBufferFormattedOutputStream(void* pThis, int nUnused, unsigned char param_1)
 {
@@ -229,8 +201,6 @@ void* __fastcall DeleteFixedBufferFormattedOutputStream(void* pThis, int nUnused
 	}
 	return pi;
 }
-
-// MACINTOSH: delete_projectile_object_scalar_wrapper(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x0041af10
 void* __fastcall DeleteProjectileObjectScalarWrapper(void* pThis, int nUnused, unsigned char param_1)
 {
@@ -245,8 +215,6 @@ void* __fastcall DeleteProjectileObjectScalarWrapper(void* pThis, int nUnused, u
 	}
 	return pThis;
 }
-
-// MACINTOSH: get_helper_upload_rect_entry_and_state(int, undefined4*)
 // FUNCTION: LEMBALL 0x00466fd0
 int __fastcall GetHelperUploadRectEntryAndState(void* pObject, int nUnused, int param_2, int* param_3)
 {
@@ -256,8 +224,6 @@ int __fastcall GetHelperUploadRectEntryAndState(void* pObject, int nUnused, int 
 	*param_3 = *(int*) (*(int*) ((char*) pObject + 0xc) + 8 + param_2 * 0xc);
 	return param_2 * 0xc + *(int*) ((char*) pObject + 0xc);
 }
-
-// MACINTOSH: is_point_inside_level_screen_action_panel(short*)
 // FUNCTION: LEMBALL 0x00443360
 int __fastcall IsPointInsideLevelScreenActionPanel(void* pObject, int nUnused, short* param_1)
 {
@@ -269,8 +235,6 @@ int __fastcall IsPointInsideLevelScreenActionPanel(void* pObject, int nUnused, s
 	}
 	return 0;
 }
-
-// MACINTOSH: activate_shpg_chunk_object()
 // FUNCTION: LEMBALL 0x0041fa00
 void __fastcall ActivateShpgChunkObject(void* pObject)
 {
@@ -297,8 +261,6 @@ void __fastcall ActivateShpgChunkObject(void* pObject)
 	*(int*) (*(int*) ((char*) g_pActiveManagedEntityOwner + 0x120) + *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) * 4) = (int) pObject;
 	*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) = *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) + 1;
 }
-
-// MACINTOSH: append_node_chunk_record_from_level_data(int, int)
 // FUNCTION: LEMBALL 0x00421440
 int __fastcall AppendNodeChunkRecordFromLevelData(void* pObject, int nUnused, int param_2, int param_3)
 {
@@ -307,10 +269,8 @@ int __fastcall AppendNodeChunkRecordFromLevelData(void* pObject, int nUnused, in
 	((void(__fastcall*)(void*, int, int, int)) 0x402572)((void*) (iVar1 * 0x14 + *(int*) pObject), param_2, param_3, 0);
 	return iVar1;
 }
-
-// MACINTOSH: set_level_screen_pause_requested_state(int)
 // FUNCTION: LEMBALL 0x00437da0
-void __fastcall SetLevelScreenPauseRequestedState(void* pObject, int nUnused, int param_1)
+void __fastcall C2D_TriggerPause(void* pObject, int nUnused, int param_1)
 {
 	if (param_1 == 0) {
 		((void(__fastcall*)(void*, int)) 0x4021a8)(pObject, 0);
@@ -321,10 +281,8 @@ void __fastcall SetLevelScreenPauseRequestedState(void* pObject, int nUnused, in
 		}
 	}
 }
-
-// MACINTOSH: reset_tile_flag_1c_object()
 // FUNCTION: LEMBALL 0x004275f0
-void __fastcall ResetTileFlag1cObject(void* pObject)
+void __fastcall CDuplicator_Restart(void* pObject)
 {
 	ResetManagedEntityRuntimeStateThunk(pObject);
 	*(unsigned short*) ((char*) pObject + 0xbc) = 0;
@@ -334,8 +292,6 @@ void __fastcall ResetTileFlag1cObject(void* pObject)
 	*(int*) ((char*) pObject + 0xb8) = 0x18;
 	((void(__fastcall*)(void*, void*)) 0x4023e2)(pObject, (char*) pObject + 0x40);
 }
-
-// MACINTOSH: sync_attached_move_chunk_entities_to_current_position()
 // FUNCTION: LEMBALL 0x0042eac0
 void __fastcall SyncAttachedMoveChunkEntitiesToCurrentPosition(void* pObject)
 {
@@ -348,8 +304,6 @@ void __fastcall SyncAttachedMoveChunkEntitiesToCurrentPosition(void* pObject)
 		}
 	}
 }
-
-// MACINTOSH: set_selector_manager_action_keyframes(int, int, int)
 // FUNCTION: LEMBALL 0x0044da30
 void __fastcall SetSelectorManagerActionKeyframes(void* pObject, int nUnused, int param_2, int param_3, int param_4)
 {
@@ -361,24 +315,18 @@ void __fastcall SetSelectorManagerActionKeyframes(void* pObject, int nUnused, in
 	*(int*) ((char*) pObject + 0x9c) = param_3;
 	*(int*) ((char*) pObject + 0xa0) = param_4;
 }
-
-// MACINTOSH: release_list_entry_pair(int, int)
 // FUNCTION: LEMBALL 0x0045da50
-void __fastcall ReleaseListEntryPair(void* pObject, int nUnused, int param_2, int param_3)
+void __fastcall CResFONT_UnLoadResources(void* pObject, int nUnused, int param_2, int param_3)
 {
 	ReleaseTypedResourceObjectIfLoaded((void*) (*(int*) ((char*) pObject + 0x80) + param_2 * 0x4c), 0, param_3);
 	ReleaseTypedResourceObjectIfLoaded((void*) (*(int*) ((char*) pObject + 0x7c) + param_2 * 0x54), 0, param_3);
 }
-
-// MACINTOSH: set_level_mode_profile_range_selector(int)
 // FUNCTION: LEMBALL 0x004131b0
 void __fastcall SetLevelModeProfileRangeSelector(void* pObject, int nUnused, int param_2)
 {
 	*(int*) ((char*) pObject + 0xd0) = param_2;
 	((void(__fastcall*)(void*, int, int, int, int, int)) 0x401d25)(pObject, param_2, *(int*) ((char*) pObject + 0xc0), *(int*) ((char*) pObject + 0xc4), *(int*) ((char*) pObject + 0xc8), *(int*) ((char*) pObject + 0xcc));
 }
-
-// MACINTOSH: select_single_entity_and_dispatch_selection(int*)
 // FUNCTION: LEMBALL 0x00438380
 void __fastcall SelectSingleEntityAndDispatchSelection(void* pObject, int nUnused, void* param_1)
 {
@@ -389,8 +337,6 @@ void __fastcall SelectSingleEntityAndDispatchSelection(void* pObject, int nUnuse
 		(*( void(**)(void)) (*(void***) param_1 + 0xd4 / 4))();
 	}
 }
-
-// MACINTOSH: refresh_level_screen_action_panel()
 // FUNCTION: LEMBALL 0x00443250
 void __fastcall RefreshLevelScreenActionPanel(void* pObject)
 {
@@ -399,22 +345,16 @@ void __fastcall RefreshLevelScreenActionPanel(void* pObject)
 		((void(__fastcall*)(void*)) 0x4032bf)(*(void**) ((char*) pObject + 0x1c + i * 4));
 	}
 }
-
-// MACINTOSH: try_apply_tram_chunk_overlap_impulse(int*, int*)
 // FUNCTION: LEMBALL 0x004125c0
-void __fastcall TryApplyTramChunkOverlapImpulse(void* pObject, int nUnused, void* param_1, void* param_2)
+void __fastcall CAI_HitTrampoline(void* pObject, int nUnused, void* param_1, void* param_2)
 {
 	((void(__fastcall*)(void*, void*, void*)) 0x402bd5)(*(void**) ((char*) pObject + 0x1b4), param_1, param_2);
 }
-
-// MACINTOSH: find_level_mode_move_chunk_containing_point(int, int, int*)
 // FUNCTION: LEMBALL 0x004130d0
-void __fastcall FindLevelModeMoveChunkContainingPoint(void* pObject, int nUnused, void* param_1, void* param_2, void* param_3)
+void __fastcall CAI_FindMoverHeight(void* pObject, int nUnused, void* param_1, void* param_2, void* param_3)
 {
 	((void(__fastcall*)(void*, void*, void*, void*)) 0x402e55)(*(void**) ((char*) pObject + 0x1c0), param_1, param_2, param_3);
 }
-
-// MACINTOSH: construct_network_lobby_player_entry_child()
 // FUNCTION: LEMBALL 0x00455da0
 void* __fastcall ConstructNetworkLobbyPlayerEntryChild(void* pObject)
 {
@@ -423,25 +363,19 @@ void* __fastcall ConstructNetworkLobbyPlayerEntryChild(void* pObject)
 	((void(__fastcall*)(void*)) 0x4014dd)(pObject);
 	return pObject;
 }
-
-// MACINTOSH: find_projectile_position_in_rect_from_level_mode(short*, undefined4*)
 // FUNCTION: LEMBALL 0x004127e0
-void __fastcall FindProjectilePositionInRectFromLevelMode(void* pObject, int nUnused, void* param_1, void* param_2)
+void __fastcall CAI_BulletCheckGroupIntersection(void* pObject, int nUnused, void* param_1, void* param_2)
 {
 	((void(__fastcall*)(void*, void*, void*)) 0x402680)(*(void**) ((char*) pObject + 0x168), param_1, param_2);
 }
-
-// MACINTOSH: release_level_screen_palette_remap_variants()
 // FUNCTION: LEMBALL 0x00436480
-void __fastcall ReleaseLevelScreenPaletteRemapVariants(void* pObject)
+void __fastcall C2D_UnRegisterRemaps(void* pObject)
 {
 	int i;
 	for (i = 0; i < 5; i++) {
 		((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant((void*) *(int*) ((char*) pObject + 0x64 + i * 4));
 	}
 }
-
-// MACINTOSH: select_pause_dialog_palette_remap_for_index(int)
 // FUNCTION: LEMBALL 0x00444930
 int __fastcall SelectPauseDialogPaletteRemapForIndex(void* pObject, int nUnused, int param_1)
 {
@@ -456,8 +390,6 @@ int __fastcall SelectPauseDialogPaletteRemapForIndex(void* pObject, int nUnused,
 	}
 	return *(int*) ((char*) pObject + 0x1e4);
 }
-
-// MACINTOSH: refresh_queued_zrle_variant_range_selection()
 // FUNCTION: LEMBALL 0x0044f3d0
 void __fastcall RefreshQueuedZrleVariantRangeSelection(void* pObject)
 {
@@ -466,20 +398,16 @@ void __fastcall RefreshQueuedZrleVariantRangeSelection(void* pObject)
 	}
 	((void(__cdecl*)(void*, int)) 0x4688e0)(*(void**) ((char*) pObject + 0x4c), *(int*) (*(int*) ((char*) pObject + 0x48) + (*(int*) ((char*) pObject + 0x40) - *(int*) ((char*) pObject + 0x3c)) * 4));
 }
-
-// MACINTOSH: append_move_chunk_object(ushort, ushort, int, int, int)
 // FUNCTION: LEMBALL 0x0042f5e0
-void __fastcall AppendMoveChunkObject(void* pObject, int nUnused, unsigned short param_1, unsigned short param_2, void* param_3, int param_4, void* param_5)
+void __fastcall CMoverManager_Add(void* pObject, int nUnused, unsigned short param_1, unsigned short param_2, void* param_3, int param_4, void* param_5)
 {
 	if (*(int*) ((char*) pObject + 0x34) < *(int*) ((char*) pObject + 0x30)) {
 		((void(__fastcall*)(void*, unsigned short, unsigned short, void*, int, void*)) 0x40128a)((void*) (*(int*) ((char*) pObject + 0x38) + *(int*) ((char*) pObject + 0x34) * 0x1a0), param_1, param_2, param_3, param_4, param_5);
 		*(int*) ((char*) pObject + 0x34) = *(int*) ((char*) pObject + 0x34) + 1;
 	}
 }
-
-// MACINTOSH: append_projectile_request_code(int, int)
 // FUNCTION: LEMBALL 0x0040f9b0
-int __fastcall AppendProjectileRequestCode(void* pObject, int nUnused, int param_1, int param_2)
+int __fastcall CPlayerLemming_AddObject(void* pObject, int nUnused, int param_1, int param_2)
 {
 	if (*(int*) ((char*) pObject + 0x220) == 0xc) {
 		return 0;
@@ -492,10 +420,8 @@ int __fastcall AppendProjectileRequestCode(void* pObject, int nUnused, int param
 	*(int*) ((char*) pObject + 0x220) = *(int*) ((char*) pObject + 0x220) + 1;
 	return 1;
 }
-
-// MACINTOSH: release_linked_gmob_chunk_object()
 // FUNCTION: LEMBALL 0x0041ccc0
-void __fastcall ReleaseLinkedGmobChunkObject(void* pObject)
+void __fastcall CCrate_TriggerContents(void* pObject)
 {
 	if (*(int*) ((char*) pObject + 0x14c) != 0xffff) {
 		void* pvVar1 = *(void**) ((char*) pObject + 0x148);
@@ -506,10 +432,8 @@ void __fastcall ReleaseLinkedGmobChunkObject(void* pObject)
 		*(int*) ((char*) pObject + 0x14c) = 0xffff;
 	}
 }
-
-// MACINTOSH: dispatch_projectile_packet_by_type(short, int)
 // FUNCTION: LEMBALL 0x0041aca0
-int __fastcall DispatchProjectilePacketByType(void* pObject, int nUnused, short param_1, void* param_2)
+int __fastcall CBullet_Receive(void* pObject, int nUnused, short param_1, void* param_2)
 {
 	if (param_1 != 0x2b) {
 		return ((int(__fastcall*)(void*, short, void*)) 0x402342)(pObject, param_1, param_2);
@@ -522,8 +446,6 @@ int __fastcall DispatchProjectilePacketByType(void* pObject, int nUnused, short 
 	((void(__fastcall*)(void*)) 0x40303a)(pObject);
 	return 1;
 }
-
-// MACINTOSH: refresh_aligned_zrle_child_and_queue_if_dirty(int)
 // FUNCTION: LEMBALL 0x00442a40
 void __fastcall RefreshAlignedZrleChildAndQueueIfDirty(void* pObject, int nUnused, void* param_1)
 {
@@ -537,8 +459,6 @@ void __fastcall RefreshAlignedZrleChildAndQueueIfDirty(void* pObject, int nUnuse
 	}
 	((void(__fastcall*)(void*, void*)) 0x468360)(pObject, param_1);
 }
-
-// MACINTOSH: sync_level_screen_action_panel_child_values()
 // FUNCTION: LEMBALL 0x004431c0
 void __fastcall SyncLevelScreenActionPanelChildValues(void* pObject)
 {
@@ -548,10 +468,8 @@ void __fastcall SyncLevelScreenActionPanelChildValues(void* pObject)
 		*(int*) ((char*) pChild + 8) = *(int*) (*(int*) ((char*) pObject + 0x18) + 0x1cc + i * 4 + 4);
 	}
 }
-
-// MACINTOSH: remove_ball_chunk_entry_from_active_list(int)
 // FUNCTION: LEMBALL 0x00421ff0
-void __fastcall RemoveBallChunkEntryFromActiveList(void* pObject, int nUnused, int param_1)
+void __fastcall CBallManager_Delete(void* pObject, int nUnused, int param_1)
 {
 	int n = *(int*) ((char*) pObject + 8);
 	int i = 0;
@@ -574,8 +492,6 @@ void __fastcall RemoveBallChunkEntryFromActiveList(void* pObject, int nUnused, i
 		*(int*) (*(int**) ((char*) pObject + 4) + *(int*) ((char*) pObject + 8) * 4) = param_1;
 		}
 		}
-
-// MACINTOSH: release_network_lobby_palette_remaps()
 // FUNCTION: LEMBALL 0x00454b10
 void __fastcall ReleaseNetworkLobbyPaletteRemaps(void* pObject)
 {
@@ -584,8 +500,6 @@ void __fastcall ReleaseNetworkLobbyPaletteRemaps(void* pObject)
 		((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant((void*) *(int*) ((char*) pObject + 0x414 + i * 4));
 	}
 }
-
-// MACINTOSH: mark_network_lobby_player_entry_dirty(int)
 // FUNCTION: LEMBALL 0x00454b40
 void __fastcall MarkNetworkLobbyPlayerEntryDirty(void* pObject, int nUnused, int param_1)
 {
@@ -593,25 +507,19 @@ void __fastcall MarkNetworkLobbyPlayerEntryDirty(void* pObject, int nUnused, int
 		*(int*) (*(int*) ((char*) pObject + 0x3cc) + 0x40 + param_1 * 0x44) = 1;
 	}
 }
-
-// MACINTOSH: pop_first_managed_entity_move_command_and_reset_motion()
 // FUNCTION: LEMBALL 0x00415780
-void __fastcall PopFirstManagedEntityMoveCommandAndResetMotion(void* pObject)
+void __fastcall CGameObject_StopMoving(void* pObject)
 {
 	((void(__fastcall*)(void*)) 0x402351)(pObject);
 	*(int*) ((char*) pObject + 0x88) = 0;
 	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick;
 	*(int*) ((char*) pObject + 0xc8) = g_nLevelFrameClockTick;
 }
-
-// MACINTOSH: dispatch_zrle_list_entry(int, int)
 // FUNCTION: LEMBALL 0x0045da90
-void __fastcall DispatchZrleListEntry(void* pObject, int nUnused, int param_2, int param_3)
+void __fastcall CResFONT_UnLoadVramData(void* pObject, int nUnused, int param_2, int param_3)
 {
 	(*( void(**)(int)) (*(void***) (*(int*) ((char*) pObject + 0x7c) + param_2 * 0x54) + 0x24 / 4))(param_3);
 }
-
-// MACINTOSH: initialize_level_screen_hotspot_entry()
 // FUNCTION: LEMBALL 0x00439340
 void* __fastcall InitializeLevelScreenHotspotEntry(void* pObject)
 {
@@ -625,8 +533,6 @@ void* __fastcall InitializeLevelScreenHotspotEntry(void* pObject)
 	*(int*) ((char*) pObject + 0x20) = 0;
 	return pObject;
 }
-
-// MACINTOSH: delete_timed_eff_stream_with_channel_state_wrapper(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x00462990
 void* __fastcall DeleteTimedEffStreamWithChannelStateWrapper(void* pThis, int nUnused, char param_1)
 {
@@ -637,8 +543,6 @@ void* __fastcall DeleteTimedEffStreamWithChannelStateWrapper(void* pThis, int nU
 	}
 	return pThis;
 }
-
-// MACINTOSH: parse_gami_resource_descriptor()
 // FUNCTION: LEMBALL 0x0045e1e0
 void __fastcall ParseGamiResourceDescriptor(void* pObject)
 {
@@ -650,16 +554,12 @@ void __fastcall ParseGamiResourceDescriptor(void* pObject)
 	*(char*) ((char*) pObject + 0x4d) = *(char*) ((char*) puVar2 + 9);
 	*(unsigned int*) ((char*) pObject + 0x50) = puVar2[3];
 }
-
-// MACINTOSH: construct_palette_remap_variant_wrapper(int, byte*, int)
 // FUNCTION: LEMBALL 0x00473610
 void* __fastcall ConstructPaletteRemapVariantWrapper(void* pThis, int nUnused, int param_1, unsigned char* param_2, int param_3)
 {
 	ConstructPaletteRemapVariant(pThis, nUnused, param_1, param_2, param_3);
 	return pThis;
 }
-
-// MACINTOSH: refresh_resource_sprite_text_owner_layout()
 // FUNCTION: LEMBALL 0x00469690
 void __fastcall RefreshResourceSpriteTextOwnerLayout(void* pObject)
 {
@@ -669,8 +569,6 @@ void __fastcall RefreshResourceSpriteTextOwnerLayout(void* pObject)
 	}
 	((void(__cdecl*)(void*, int)) 0x469210)(*(void**) ((char*) pObject + 0x150), 0);
 }
-
-// MACINTOSH: restore_inertial_event_source_sink_vtables()
 // FUNCTION: LEMBALL 0x00432650
 void __fastcall RestoreInertialEventSourceSinkVtables(void* pObject)
 {
@@ -680,30 +578,22 @@ void __fastcall RestoreInertialEventSourceSinkVtables(void* pObject)
 		((void(__fastcall*)(void*)) 0x401307)((char*) pObject + 0x34 - i * 0x10);
 	}
 }
-
-// MACINTOSH: emit_variant_child_slot_render_marker(int, short*)
 // FUNCTION: LEMBALL 0x004327e0
 void __fastcall EmitVariantChildSlotRenderMarker(void* pObject, int nUnused, void* param_2, void* param_3)
 {
 	((void(__fastcall*)(void*, short, short, int, int, int, int)) 0x4016a9)(*(void**) ((char*) pObject + 0x10), *(short*) param_3, *(short*) ((char*) param_3 + 2), 0xfd, 0, 0, 0);
 }
-
-// MACINTOSH: configure_level_mode_managed_entity_profiles(int, int, int, int, int)
 // FUNCTION: LEMBALL 0x00413130
 void __fastcall ConfigureLevelModeManagedEntityProfiles(void* pObject, int nUnused, int param_2, int param_3, int param_4, int param_5, int param_6)
 {
 	((void(__fastcall*)(void*, int, int, int, int, int)) 0x402720)(*(void**) ((char*) pObject + 0x15c), param_2, param_3, param_4, param_5, param_6);
 }
-
-// MACINTOSH: dispatch_managed_entity_chunk_contacts_from_current_tile()
 // FUNCTION: LEMBALL 0x00416820
-void __fastcall DispatchManagedEntityChunkContactsFromCurrentTile(void* param_1)
+void __fastcall CGameObject_StartLand(void* param_1)
 {
 	*(int*) ((char*) param_1 + 0xcc) = g_nLevelFrameClockTick + 8;
 	((void(__fastcall*)(void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) param_1 + 0x9c, param_1, *(unsigned short*) ((char*) param_1 + 0x68));
 }
-
-// MACINTOSH: refresh_level_selection_navigation_locks()
 // FUNCTION: LEMBALL 0x0044a3e0
 void __fastcall RefreshLevelSelectionNavigationLocks(void* param_1)
 {
@@ -720,8 +610,6 @@ void __fastcall RefreshLevelSelectionNavigationLocks(void* param_1)
 	((void(__fastcall*)(void*, int)) 0x40329c)(*(void**) ((char*) param_1 + 0x338), 0xacef000e);
 	((void(__fastcall*)(void*, int)) 0x40329c)(*(void**) ((char*) param_1 + 0x338), 0xacef000f);
 }
-
-// MACINTOSH: remove_pointer_from_level_mode_list_0x120(int)
 // FUNCTION: LEMBALL 0x00410a20
 void __fastcall RemovePointerFromLevelModeList0x120(void* param_1)
 {
@@ -747,8 +635,6 @@ void __fastcall RemovePointerFromLevelModeList0x120(void* param_1)
 		*(int*) (*(int**) ((char*) g_pActiveManagedEntityOwner + 0x120) + *piVar2 * 4) = 0;
 		}
 		}
-
-// MACINTOSH: dispatch_level_screen_projectile_request_by_index(int)
 // FUNCTION: LEMBALL 0x00438330
 void __fastcall DispatchLevelScreenProjectileRequestByIndex(void* pObject, int nUnused, int param_1)
 {
@@ -759,10 +645,8 @@ void __fastcall DispatchLevelScreenProjectileRequestByIndex(void* pObject, int n
 		SelectSingleEntityAndDispatchSelection(pObject, nUnused, *(void**) pHolder);
 	}
 }
-
-// MACINTOSH: refresh_viewport_anchor()
 // FUNCTION: LEMBALL 0x004381c0
-void __fastcall RefreshViewportAnchor(void* pObject, int nUnused, void* param_2)
+void __fastcall C2D_OnButtonUp(void* pObject, int nUnused, void* param_2)
 {
 	*(int*) ((char*) pObject + 0x178) = 0;
 	if (*(int*) ((char*) pObject + 0xa68) == 0) {
@@ -772,10 +656,8 @@ void __fastcall RefreshViewportAnchor(void* pObject, int nUnused, void* param_2)
 		((void(__fastcall*)(void*)) 0x4019ec)((char*) pObject - 0x14);
 	}
 }
-
-// MACINTOSH: load_ball_chunk_entries(ushort*)
 // FUNCTION: LEMBALL 0x00422060
-void __fastcall LoadBallChunkEntries(void* pObject, int nUnused, unsigned short* param_1)
+void __fastcall CBallManager_LoadLevel(void* pObject, int nUnused, unsigned short* param_1)
 {
 	unsigned short uVar1 = *param_1;
 	param_1 = param_1 + 1;
@@ -792,8 +674,6 @@ void __fastcall LoadBallChunkEntries(void* pObject, int nUnused, unsigned short*
 		} while (iVar2 < *(int*) ((char*) pObject + 8));
 	}
 }
-
-// MACINTOSH: destroy_managed_entity_pointer_array()
 // FUNCTION: LEMBALL 0x00422510
 void __fastcall DestroyManagedEntityPointerArray(void* pObject)
 {
@@ -806,10 +686,8 @@ void __fastcall DestroyManagedEntityPointerArray(void* pObject)
 	}
 	*(int*) ((char*) pObject + 0x3c) = 0;
 }
-
-// MACINTOSH: emit_plas_chunk_manager_render_entries(int)
 // FUNCTION: LEMBALL 0x00419490
-int __fastcall EmitPlasChunkManagerRenderEntries(void* pObject, int nUnused, int param_1)
+int __fastcall CPlayerLemmingGroupManager_GetViewData(void* pObject, int nUnused, int param_1)
 {
 	int local_4 = 0;
 	if (*(int*) 0x4a011c != 0) {
@@ -825,10 +703,8 @@ int __fastcall EmitPlasChunkManagerRenderEntries(void* pObject, int nUnused, int
 	int iVar2 = ((int(__fastcall*)(void*, int)) 0x401f64)(pObject, param_1);
 	return iVar2 + local_4;
 }
-
-// MACINTOSH: start_level_game_mode_session()
 // FUNCTION: LEMBALL 0x00411b10
-void __fastcall StartLevelGameModeSession(void* param_1)
+void __fastcall CAI_Start(void* param_1)
 {
 	if (*(int*) ((char*) param_1 + 0x64) != 0) {
 		*(int*) ((char*) param_1 + 0x6c) = 1;
@@ -845,8 +721,6 @@ void __fastcall StartLevelGameModeSession(void* param_1)
 	((void(__fastcall*)(void*, int)) 0x4013ed)(param_1, 2);
 	*(int*) ((char*) param_1 + 0x68) = 1;
 }
-
-// MACINTOSH: is_managed_entity_within_followup_activation_range(int, int, int, int, int, int)
 // FUNCTION: LEMBALL 0x004140d0
 int __cdecl IsManagedEntityWithinFollowupActivationRange(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6)
 {
@@ -861,8 +735,6 @@ int __cdecl IsManagedEntityWithinFollowupActivationRange(int param_1, int param_
 	}
 	return 0;
 }
-
-// MACINTOSH: pop_move_command_and_copy_next_position(undefined4*)
 // FUNCTION: LEMBALL 0x00416050
 void* __fastcall PopMoveCommandAndCopyNextPosition(void* param_1, int nUnused, void* param_2)
 {
@@ -888,10 +760,8 @@ void* __fastcall PopMoveCommandAndCopyNextPosition(void* param_1, int nUnused, v
 	((void(__cdecl*)(void*, void*)) 0x40336e)(param_1, param_2);
 	return param_2;
 }
-
-// MACINTOSH: set_managed_entity_ice_attachment(int, int, int)
 // FUNCTION: LEMBALL 0x00410250
-void __fastcall SetManagedEntityIceAttachment(void* pThis, int nUnused, int param_1, void* param_2, int param_3)
+void __fastcall CPlayerLemming_OnConveyor(void* pThis, int nUnused, int param_1, void* param_2, int param_3)
 {
 	if (param_1 == 0 && *(int*) ((char*) pThis + 0x188) != 0 && param_3 != 0) {
 		((void(__fastcall*)(void*, void*)) 0x402c16)(*(void**) ((char*) pThis + 0x18c), pThis);
@@ -906,8 +776,6 @@ void __fastcall SetManagedEntityIceAttachment(void* pThis, int nUnused, int para
 		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pThis + 0x224) + 0x150 / 4))(*(void**) ((char*) pThis + 0x224));
 	}
 }
-
-// MACINTOSH: set_text_selection_range_state(int)
 // FUNCTION: LEMBALL 0x004743e0
 void __fastcall SetTextSelectionRangeState(void* pThis, int nUnused, int param_1)
 {
@@ -926,10 +794,8 @@ void __fastcall SetTextSelectionRangeState(void* pThis, int nUnused, int param_1
 	}
 	(*( void(**)(void*)) (*(void***) pThis + 4 / 4))(pThis);
 }
-
-// MACINTOSH: activate_or_queue_managed_entity_for_level_entity_id(uint)
 // FUNCTION: LEMBALL 0x00418ab0
-void __fastcall ActivateOrQueueManagedEntityForLevelEntityId(void* pOwner, int nUnused, unsigned int param_1)
+void __fastcall CPlayerLemmingGroupManager_UseObject(void* pOwner, int nUnused, unsigned int param_1)
 {
 	void* this_00 = (void*) ((int(__fastcall*)(void*)) 0x4021df)(pOwner);
 	if (this_00 != 0) {
@@ -947,10 +813,8 @@ void __fastcall ActivateOrQueueManagedEntityForLevelEntityId(void* pOwner, int n
 		}
 	}
 }
-
-// MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
-void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
+void __fastcall CPlayerLemmingGroupManager_PlayerGroupRequestFire(void* pObject, int nUnused, int param_1, int param_2)
 {
 	void* pEntity = (void*) ((int(__fastcall*)(void*)) 0x4021df)(pObject);
 	if (pEntity != 0) {
@@ -961,8 +825,6 @@ void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int 
 		}
 	}
 }
-
-// MACINTOSH: reset_then_forward_managed_entity_vslot_0x60()
 // FUNCTION: LEMBALL 0x00419ed0
 void __cdecl ResetThenForwardManagedEntityVslot0x60(int param_1, int* param_2)
 {
@@ -973,10 +835,8 @@ void __cdecl ResetThenForwardManagedEntityVslot0x60(int param_1, int* param_2)
 	}
 	(*( void(**)(void)) (*(void***) iVar1 + 0x60 / 4))();
 }
-
-// MACINTOSH: ensure_list_glyph_lookup_table()
 // FUNCTION: LEMBALL 0x0045daf0
-void __fastcall EnsureListGlyphLookupTable(void* pObject)
+void __fastcall CResFONT_OnLoad(void* pObject)
 {
 	if (*(int*) ((char*) pObject + 0x78) == 0) {
 		void* pThis = (void*) ((void*(__cdecl*)(int)) 0x45baf0)(8);
@@ -987,8 +847,6 @@ void __fastcall EnsureListGlyphLookupTable(void* pObject)
 		*(int*) ((char*) pObject + 0x78) = 0;
 	}
 }
-
-// MACINTOSH: cancel_network_lobby_prompt()
 // FUNCTION: LEMBALL 0x00454620
 void __fastcall CancelNetworkLobbyPrompt(void* param_1)
 {
@@ -999,8 +857,6 @@ void __fastcall CancelNetworkLobbyPrompt(void* param_1)
 	((void(__fastcall*)(void*, int)) 0x4012da)(param_1, 0);
 	*(int*) ((char*) param_1 + 0x39c) = 0;
 }
-
-// MACINTOSH: set_dual_child_overlay_positions(short, short)
 // FUNCTION: LEMBALL 0x0044c5b0
 void __fastcall SetDualChildOverlayPositions(void* pThis, int nUnused, short param_2, short param_3)
 {
@@ -1014,8 +870,6 @@ void __fastcall SetDualChildOverlayPositions(void* pThis, int nUnused, short par
 		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pThis + 0x54) + 0x38 / 4))(pos);
 	}
 }
-
-// MACINTOSH: coalesce_free_memory_block_with_trailing_neighbor(int)
 // FUNCTION: LEMBALL 0x00459b90
 int __fastcall CoalesceFreeMemoryBlockWithTrailingNeighbor(void* pThis, int nUnused, void* param_2)
 {
@@ -1027,10 +881,8 @@ int __fastcall CoalesceFreeMemoryBlockWithTrailingNeighbor(void* pThis, int nUnu
 	}
 	return 0;
 }
-
-// MACINTOSH: service_composite_children_and_seek_target()
 // FUNCTION: LEMBALL 0x0041f820
-int __fastcall ServiceCompositeChildrenAndSeekTarget(void* pObject)
+int __fastcall CSheepGroup_Process(void* pObject)
 {
 	int iVar3 = 0;
 	(*( void(**)(int)) (*(void***) pObject + 0x138 / 4))(0x18);
@@ -1045,8 +897,6 @@ int __fastcall ServiceCompositeChildrenAndSeekTarget(void* pObject)
 	((void(__fastcall*)(void*)) 0x402577)(pObject);
 	return 0;
 }
-
-// MACINTOSH: activate_embedded_media_and_restore_music()
 // FUNCTION: LEMBALL 0x00450d30
 void __fastcall ActivateEmbeddedMediaAndRestoreMusic(void* param_1)
 {
@@ -1058,10 +908,8 @@ void __fastcall ActivateEmbeddedMediaAndRestoreMusic(void* param_1)
 		*(int*) ((char*) param_1 + 0xd4) = 1;
 	}
 }
-
-// MACINTOSH: award_150_points_and_emit_object_callback()
 // FUNCTION: LEMBALL 0x0041fad0
-void __fastcall Award150PointsAndEmitObjectCallback(void* pObject)
+void __fastcall CSheep_HitMine(void* pObject)
 {
 	((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, 0x96);
 	int vec[3];
@@ -1070,8 +918,6 @@ void __fastcall Award150PointsAndEmitObjectCallback(void* pObject)
 	vec[2] = 0xa000;
 	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
 }
-
-// MACINTOSH: set_invs_chunk_object_point_bounds(int, int, int)
 // FUNCTION: LEMBALL 0x00409d20
 void __fastcall SetInvsChunkObjectPointBounds(void* pObject, int nUnused, unsigned short param_2, unsigned short param_3, unsigned short param_4)
 {
@@ -1085,8 +931,6 @@ void __fastcall SetInvsChunkObjectPointBounds(void* pObject, int nUnused, unsign
 	p2[2] = param_4;
 	((void(__fastcall*)(void*, void*, void*)) 0x40237e)(pObject, p1, p2);
 }
-
-// MACINTOSH: rebuild_level_screen_pause_dialog_layout()
 // FUNCTION: LEMBALL 0x00443d80
 void __fastcall RebuildLevelScreenPauseDialogLayout(void* param_1)
 {
@@ -1096,10 +940,8 @@ void __fastcall RebuildLevelScreenPauseDialogLayout(void* param_1)
 	((void(__fastcall*)(void*, short*)) 0x4030fd)(param_1, layout);
 	((void(__fastcall*)(void*, short*)) 0x401c85)(param_1, layout);
 }
-
-// MACINTOSH: turn_chunk_opposite_target_facing(int)
 // FUNCTION: LEMBALL 0x00420600
-void __fastcall TurnChunkOppositeTargetFacing(void* pThis, int nUnused, void* param_1)
+void __fastcall CEnemy_HitBullet(void* pThis, int nUnused, void* param_1)
 {
 	if (*(int*) ((char*) param_1 + 0x16c) != 1) {
 		*(int*) ((char*) pThis + 0x124) = 1;
@@ -1109,10 +951,8 @@ void __fastcall TurnChunkOppositeTargetFacing(void* pThis, int nUnused, void* pa
 		*(unsigned short*) ((char*) pThis + 0xb4) = sVar1 + 4U & 7;
 	}
 }
-
-// MACINTOSH: set_level_screen_viewport_anchor_point(short*)
 // FUNCTION: LEMBALL 0x00438170
-void __fastcall SetLevelScreenViewportAnchorPoint(void* pThis, int nUnused, unsigned short* param_1)
+void __fastcall C2D_OnInside(void* pThis, int nUnused, unsigned short* param_1)
 {
 	if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pThis + 0x964) + 0x60 / 4))(*(void**) ((char*) pThis + 0x964)) == 0) {
 		return;
@@ -1121,8 +961,6 @@ void __fastcall SetLevelScreenViewportAnchorPoint(void* pThis, int nUnused, unsi
 	*(unsigned short*) ((char*) pThis + 0x92a) = param_1[1];
 	((void(__fastcall*)(void*)) 0x4019ec)((char*) pThis - 0x14);
 }
-
-// MACINTOSH: emit_main_game_status_stream_separators()
 // FUNCTION: LEMBALL 0x004079e0
 void __fastcall EmitMainGameStatusStreamSeparators(void* param_1)
 {
@@ -1133,8 +971,6 @@ void __fastcall EmitMainGameStatusStreamSeparators(void* param_1)
 	void* pvVar2 = (void*) (*( void*(**)(void*, int)) **(void***) *(void**) ((char*) param_1 + 0x54))(pStatus2, 10);
 	((void(__fastcall*)(void*, char)) 0x4585d0)(pvVar2, (char) pStatus2);
 }
-
-// MACINTOSH: is_saved_target_within_probe_boxes_and_directional_band()
 // FUNCTION: LEMBALL 0x00420090
 unsigned int __fastcall IsSavedTargetWithinProbeBoxesAndDirectionalBand(void* param_1)
 {
@@ -1150,10 +986,8 @@ unsigned int __fastcall IsSavedTargetWithinProbeBoxesAndDirectionalBand(void* pa
 	unsigned int uVar2 = ((unsigned int(__fastcall*)(void*, int, int, int)) 0x403346)(param_1, copy[0], copy[1], copy[2]);
 	return bVar1 & uVar2;
 }
-
-// MACINTOSH: activate_projectile_object()
 // FUNCTION: LEMBALL 0x0041a760
-void __fastcall ActivateProjectileObject(void* param_1)
+void __fastcall CBullet_FireBullet(void* param_1)
 {
 	*(int*) ((char*) param_1 + 0xc8) = g_nLevelFrameClockTick;
 	((void(__fastcall*)(void*)) 0x40303a)(param_1);
@@ -1161,8 +995,6 @@ void __fastcall ActivateProjectileObject(void* param_1)
 		((void(__fastcall*)(void*, void*)) 0x40126c)(*(void**) ((char*) param_1 + 0x60), param_1 != 0 ? (char*) param_1 + 0x138 : 0);
 	}
 }
-
-// MACINTOSH: reset_schedule_and_advance_managed_entity()
 // FUNCTION: LEMBALL 0x00419d90
 void __cdecl ResetScheduleAndAdvanceManagedEntity(int param_1, int* param_2)
 {
@@ -1171,8 +1003,6 @@ void __cdecl ResetScheduleAndAdvanceManagedEntity(int param_1, int* param_2)
 	(*( void(**)(void*, int)) (*(void***) iVar1 + 0x84 / 4))(param_2, 4000);
 	((void(__cdecl*)(int, int*, int)) 0x40385a)(param_1, param_2, 0);
 }
-
-// MACINTOSH: flush_network_lobby_deferred_status()
 // FUNCTION: LEMBALL 0x00454830
 void __fastcall FlushNetworkLobbyDeferredStatus(void* param_1)
 {
@@ -1182,8 +1012,6 @@ void __fastcall FlushNetworkLobbyDeferredStatus(void* param_1)
 	((void(__fastcall*)(void*, int, int)) 0x401d61)(param_1, *(int*) ((char*) param_1 + 0x430), 6000);
 	*(int*) ((char*) param_1 + 0x430) = 0;
 }
-
-// MACINTOSH: selection_sort_records_with_comparator(void*, void*, int, void*)
 // FUNCTION: LEMBALL 0x00463ac0
 void __cdecl SelectionSortRecordsWithComparator(char* param_1, char* param_2, int param_3, void* pComparator)
 {
@@ -1201,10 +1029,8 @@ void __cdecl SelectionSortRecordsWithComparator(char* param_1, char* param_2, in
 		end -= param_3;
 	}
 }
-
-// MACINTOSH: emit_rock_chunk_manager_render_entries(int)
 // FUNCTION: LEMBALL 0x00427050
-int __fastcall EmitRockChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
+int __fastcall CRocketManager_GetViewData(void* pThis, int nUnused, int param_1)
 {
 	int iVar2 = 0;
 	int local_4 = 0;
@@ -1225,8 +1051,6 @@ int __fastcall EmitRockChunkManagerRenderEntries(void* pThis, int nUnused, int p
 	}
 	return local_4;
 }
-
-// MACINTOSH: emit_coll_chunk_manager_render_entries(int)
 // FUNCTION: LEMBALL 0x00422ef0
 int __fastcall EmitCollChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
 {
@@ -1249,10 +1073,8 @@ int __fastcall EmitCollChunkManagerRenderEntries(void* pThis, int nUnused, int p
 	}
 	return local_4;
 }
-
-// MACINTOSH: emit_tram_chunk_manager_render_entries(int)
 // FUNCTION: LEMBALL 0x0042b4f0
-int __fastcall EmitTramChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
+int __fastcall CTrampolineManager_GetViewData(void* pThis, int nUnused, int param_1)
 {
 	int local_4 = 0;
 	int iVar2 = 0;
@@ -1273,10 +1095,8 @@ int __fastcall EmitTramChunkManagerRenderEntries(void* pThis, int nUnused, int p
 	}
 	return local_4;
 }
-
-// MACINTOSH: emit_active_pgun_chunk_manager_render_entries(int)
 // FUNCTION: LEMBALL 0x0042c520
-int __fastcall EmitActivePgunChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
+int __fastcall CPaintGunManager_GetViewData(void* pThis, int nUnused, int param_1)
 {
 	int local_4 = 0;
 	int iVar2 = 0;
@@ -1297,10 +1117,8 @@ int __fastcall EmitActivePgunChunkManagerRenderEntries(void* pThis, int nUnused,
 	}
 	return local_4;
 }
-
-// MACINTOSH: emit_move_chunk_manager_render_entries(int)
 // FUNCTION: LEMBALL 0x0042f540
-int __fastcall EmitMoveChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
+int __fastcall CMoverManager_GetViewData(void* pThis, int nUnused, int param_1)
 {
 	int iVar2 = 0;
 	int iVar3 = 0;
@@ -1317,10 +1135,8 @@ int __fastcall EmitMoveChunkManagerRenderEntries(void* pThis, int nUnused, int p
 	}
 	return local_4;
 }
-
-// MACINTOSH: emit_door_chunk_render_entries(int)
 // FUNCTION: LEMBALL 0x0040e080
-int __fastcall EmitDoorChunkRenderEntries(void* pThis, int nUnused, int param_1)
+int __fastcall CDoorManager_GetViewData(void* pThis, int nUnused, int param_1)
 {
 	int iVar2 = 0;
 	int iVar3 = 0;
@@ -1335,10 +1151,8 @@ int __fastcall EmitDoorChunkRenderEntries(void* pThis, int nUnused, int param_1)
 	}
 	return *(int*) ((char*) pThis + 0x34);
 }
-
-// MACINTOSH: service_active_door_chunk_objects()
 // FUNCTION: LEMBALL 0x0040e550
-void __fastcall ServiceActiveDoorChunkObjects(void* param_1)
+void __fastcall CDoorManager_Process(void* param_1)
 {
 	int iVar3 = 0;
 	if (*(int*) ((char*) param_1 + 0x34) > 0) {
@@ -1354,10 +1168,8 @@ void __fastcall ServiceActiveDoorChunkObjects(void* param_1)
 		} while (iVar3 < *(int*) ((char*) param_1 + 0x34));
 	}
 }
-
-// MACINTOSH: refresh_active_pgun_chunk_objects()
 // FUNCTION: LEMBALL 0x0042c4d0
-void __fastcall RefreshActivePgunChunkObjects(void* param_1)
+void __fastcall CPaintGunManager_Process(void* param_1)
 {
 	int iVar3 = 0;
 	if (*(int*) ((char*) param_1 + 0x34) > 0) {
@@ -1373,10 +1185,8 @@ void __fastcall RefreshActivePgunChunkObjects(void* param_1)
 		} while (iVar3 < *(int*) ((char*) param_1 + 0x34));
 	}
 }
-
-// MACINTOSH: refresh_active_rock_chunk_objects()
 // FUNCTION: LEMBALL 0x00427010
-void __fastcall RefreshActiveRockChunkObjects(void* param_1)
+void __fastcall CRocketManager_Process(void* param_1)
 {
 	int iVar3 = 0;
 	if (*(int*) ((char*) param_1 + 0x34) > 0) {
@@ -1390,10 +1200,8 @@ void __fastcall RefreshActiveRockChunkObjects(void* param_1)
 		} while (iVar3 < *(int*) ((char*) param_1 + 0x34));
 	}
 }
-
-// MACINTOSH: activate_coll_chunk_objects()
 // FUNCTION: LEMBALL 0x00422420
-void __fastcall ActivateCollChunkObjects(void* param_1)
+void __fastcall CCollectableManager_Restart(void* param_1)
 {
 	if (*(int*) ((char*) param_1 + 0x34) != 0 && *(int*) ((char*) param_1 + 0x38) > 0) {
 		int i;
@@ -1405,10 +1213,8 @@ void __fastcall ActivateCollChunkObjects(void* param_1)
 		}
 	}
 }
-
-// MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
-void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
+void __fastcall CEnemy_HitMine(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x10c) = 1;
 	((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, 300);
@@ -1419,8 +1225,6 @@ void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
 	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
 	*(int*) ((char*) pObject + 0x2c) = 1;
 }
-
-// MACINTOSH: copy_next_level_title_word_to_line(int, int, int*, int*)
 // FUNCTION: LEMBALL 0x0044a2d0
 int __cdecl CopyNextLevelTitleWordToLine(int param_1, int param_2, int* param_3, int* param_4)
 {
@@ -1438,10 +1242,8 @@ int __cdecl CopyNextLevelTitleWordToLine(int param_1, int param_2, int* param_3,
 	}
 	return 1;
 }
-
-// MACINTOSH: load_list_entry_pair_from_buffers(int, int*, int*)
 // FUNCTION: LEMBALL 0x0045d990
-int __fastcall LoadListEntryPairFromBuffers(void* pObject, int nUnused, int param_2, void* param_3, void* param_4)
+int __fastcall CResFONT_DirectResources(void* pObject, int nUnused, int param_2, void* param_3, void* param_4)
 {
 	int iVar1 = ((int(__cdecl*)(void*, void*, void*, void*)) 0x45cfb0)((void*) (*(int*) ((char*) pObject + 0x80) + param_2 * 0x4c), param_3, param_4, pObject);
 	if (iVar1 == 0) {
@@ -1452,16 +1254,12 @@ int __fastcall LoadListEntryPairFromBuffers(void* pObject, int nUnused, int para
 	}
 	return 1;
 }
-
-// MACINTOSH: append_type_0x18_object_with_free_slot(undefined4*, int)
 // FUNCTION: LEMBALL 0x00412e80
 void __fastcall AppendType18ObjectWithFreeSlot(void* pObject, int nUnused, void* param_2, int param_3)
 {
 	int nSlot = ((int(__fastcall*)()) 0x40227a)();
 	AppendType18ChunkObject(*(void**) ((char*) pObject + 0x1c4), nUnused, (unsigned short) nSlot, param_2, 0, param_3);
 }
-
-// MACINTOSH: delete_lobby_player_entries(uint)
 // FUNCTION: LEMBALL 0x00455e10
 void* __fastcall DeleteLobbyPlayerEntries(void* pThis, int nUnused, unsigned int param_1)
 {
@@ -1480,8 +1278,6 @@ void* __fastcall DeleteLobbyPlayerEntries(void* pThis, int nUnused, unsigned int
 	FreeVSMemBlock((char*) pThis - 4);
 	return pThis;
 }
-
-// MACINTOSH: route_level_chunk_stream_payload(int)
 // FUNCTION: LEMBALL 0x0040b290
 int __fastcall RouteLevelChunkStreamPayload(void* pObject, int nUnused, void* param_1)
 {
@@ -1493,8 +1289,6 @@ int __fastcall RouteLevelChunkStreamPayload(void* pObject, int nUnused, void* pa
 	*(int*) ((char*) param_1 + 0x24) = 0;
 	return 1;
 }
-
-// MACINTOSH: set_type18_chunk_object_position_by_index(int, int, int, int)
 // FUNCTION: LEMBALL 0x0040ca10
 void __fastcall SetType18ChunkObjectPositionByIndex(void* pObject, int nUnused, int param_2, int param_3, int param_4, int param_5)
 {
@@ -1502,10 +1296,8 @@ void __fastcall SetType18ChunkObjectPositionByIndex(void* pObject, int nUnused, 
 		((void(__cdecl*)(void*, int, int, int)) 0x401cdf)(*(void**) ((char*) pObject + 0x30 + param_5 * 4), param_2, param_3, param_4);
 	}
 }
-
-// MACINTOSH: activate_door_chunk_object_trigger()
 // FUNCTION: LEMBALL 0x0040dec0
-void __fastcall ActivateDoorChunkObjectTrigger(void* pObject)
+void __fastcall CDoor_DoActivate(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x144) = 1;
 	*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
@@ -1523,10 +1315,8 @@ void __fastcall ActivateDoorChunkObjectTrigger(void* pObject)
 		((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, iVar2);
 	}
 }
-
-// MACINTOSH: append_rock_chunk_object(ushort, int, int, int)
 // FUNCTION: LEMBALL 0x004270b0
-void __fastcall AppendRockChunkObject(void* pObject, int nUnused, unsigned short param_1, int param_2, int param_3, int param_4)
+void __fastcall CRocketManager_Add(void* pObject, int nUnused, unsigned short param_1, int param_2, int param_3, int param_4)
 {
 	if (*(int*) ((char*) pObject + 0x34) < *(int*) ((char*) pObject + 0x30)) {
 		int vec[3];
@@ -1537,10 +1327,8 @@ void __fastcall AppendRockChunkObject(void* pObject, int nUnused, unsigned short
 		*(int*) ((char*) pObject + 0x34) = *(int*) ((char*) pObject + 0x34) + 1;
 	}
 }
-
-// MACINTOSH: set_managed_entity_state_id_with_timestamp(int)
 // FUNCTION: LEMBALL 0x00410220
-void __fastcall SetManagedEntityStateIdWithTimestamp(void* pObject, int nUnused, int param_1)
+void __fastcall CPlayerLemming_Action(void* pObject, int nUnused, int param_1)
 {
 	*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
 	if (param_1 == 8) {
@@ -1549,8 +1337,6 @@ void __fastcall SetManagedEntityStateIdWithTimestamp(void* pObject, int nUnused,
 	}
 	*(int*) ((char*) pObject + 0xb8) = param_1;
 }
-
-// MACINTOSH: activate_first_pending_tram_chunk_object_at_nearby_point(int*, int)
 // FUNCTION: LEMBALL 0x0042b440
 int __fastcall ActivateFirstPendingTramChunkObjectAtNearbyPoint(void* pObject, int nUnused, void* param_2, int param_3)
 {
@@ -1565,8 +1351,6 @@ int __fastcall ActivateFirstPendingTramChunkObjectAtNearbyPoint(void* pObject, i
 	}
 	return 0;
 }
-
-// MACINTOSH: deactivate_boon_chunk_object_in_manager(int)
 // FUNCTION: LEMBALL 0x0042a460
 void __fastcall DeactivateBoonChunkObjectInManager(void* param_1, int nUnused, int param_2)
 {
@@ -1582,8 +1366,6 @@ void __fastcall DeactivateBoonChunkObjectInManager(void* param_1, int nUnused, i
 	*(unsigned short*) param_1 = *(unsigned short*) param_1 & uVar1;
 	*(int*) (*(int*) ((char*) param_1 + iVar2 * 2 + 0x1a) + 0x124) = 0;
 }
-
-// MACINTOSH: serialize_lift_chunk_start_points(undefined4*)
 // FUNCTION: LEMBALL 0x004257e0
 int __fastcall SerializeLiftChunkStartPoints(void* pObject, int nUnused, void* param_1)
 {
@@ -1598,10 +1380,8 @@ int __fastcall SerializeLiftChunkStartPoints(void* pObject, int nUnused, void* p
 	}
 	return *(int*) ((char*) pObject + 0x34);
 }
-
-// MACINTOSH: dispatch_rock_chunk_contacts_for_entity(int*, int)
 // FUNCTION: LEMBALL 0x00426fb0
-int __fastcall DispatchRockChunkContactsForEntity(void* pObject, int nUnused, void* param_1, int param_2)
+int __fastcall CRocketManager_StepOn(void* pObject, int nUnused, void* param_1, int param_2)
 {
 	int i;
 	for (i = 0; i < *(int*) ((char*) pObject + 0x34); i++) {
@@ -1614,10 +1394,8 @@ int __fastcall DispatchRockChunkContactsForEntity(void* pObject, int nUnused, vo
 	}
 	return 0;
 }
-
-// MACINTOSH: load_list_entry_pair_from_stream(int, int*)
 // FUNCTION: LEMBALL 0x0045d9f0
-int __fastcall LoadListEntryPairFromStream(void* pObject, int nUnused, int param_2, void* param_3)
+int __fastcall CResFONT_DirectResources(void* pObject, int nUnused, int param_2, void* param_3)
 {
 	int iVar1 = ((int(__cdecl*)(void*, void*, void*)) 0x45cf70)((void*) (*(int*) ((char*) pObject + 0x80) + param_2 * 0x4c), param_3, pObject);
 	if (iVar1 == 0) {
@@ -1628,10 +1406,8 @@ int __fastcall LoadListEntryPairFromStream(void* pObject, int nUnused, int param
 	}
 	return 1;
 }
-
-// MACINTOSH: append_managed_entity_group_from_ids(unsigned short, unsigned short*)
 // FUNCTION: LEMBALL 0x0041ebe0
-void __fastcall AppendManagedEntityGroupFromIds(void* pObject, int nUnused, unsigned short nIdCount, unsigned short* pIdList)
+void __fastcall CGenericGroupManager_CreateNewGroup(void* pObject, int nUnused, unsigned short nIdCount, unsigned short* pIdList)
 {
 	void* pMsg;
 	void* pGroup;
@@ -1655,8 +1431,6 @@ void __fastcall AppendManagedEntityGroupFromIds(void* pObject, int nUnused, unsi
 		}
 	}
 }
-
-// MACINTOSH: destroy_level_selection_screen()
 // FUNCTION: LEMBALL 0x004496d0
 void __fastcall DestroyLevelSelectionScreen(void* param_1)
 {
@@ -1678,8 +1452,6 @@ void __fastcall DestroyLevelSelectionScreen(void* param_1)
 	}
 	((void(__fastcall*)(void*)) 0x402081)(param_1);
 }
-
-// MACINTOSH: destroy_password_entry_screen()
 // FUNCTION: LEMBALL 0x004515c0
 void __fastcall DestroyPasswordEntryScreen(void* param_1)
 {
@@ -1692,8 +1464,6 @@ void __fastcall DestroyPasswordEntryScreen(void* param_1)
 	*(void**) ((char*) param_1 + 0x454) = (void*) 0x496ca8;
 	((void(__fastcall*)(void*)) 0x402081)(param_1);
 }
-
-// MACINTOSH: destroy_network_lobby_transport_controller()
 // FUNCTION: LEMBALL 0x004550c0
 void __fastcall DestroyNetworkLobbyTransportController(void* param_1)
 {
@@ -1716,8 +1486,6 @@ void __fastcall DestroyNetworkLobbyTransportController(void* param_1)
 	}
 	((void(__fastcall*)(void*)) 0x403062)(param_1);
 }
-
-// MACINTOSH: destroy_network_lobby_screen()
 // FUNCTION: LEMBALL 0x004535c0
 void __fastcall DestroyNetworkLobbyScreen(void* param_1)
 {
@@ -1751,8 +1519,6 @@ void __fastcall DestroyNetworkLobbyScreen(void* param_1)
 	*(void**) ((char*) param_1 + 0x3ec) = (void*) 0x496ca8;
 	((void(__fastcall*)(void*)) 0x402081)(param_1);
 }
-
-// MACINTOSH: dispatch_indexed_entry_by_mode(unsigned short*)
 // FUNCTION: LEMBALL 0x0043a2e0
 int __fastcall DispatchIndexedEntryByMode(void* pThis, int nUnused, unsigned short* param_1)
 {
@@ -1780,10 +1546,8 @@ int __fastcall DispatchIndexedEntryByMode(void* pThis, int nUnused, unsigned sho
 	}
 	return 0;
 }
-
-// MACINTOSH: dispatch_object_state_variant_callback()
 // FUNCTION: LEMBALL 0x0040fcd0
-void __fastcall DispatchObjectStateVariantCallback(void* pThis)
+void __fastcall CPlayerLemming_ExternalControlEnd(void* pThis)
 {
 	if (*(unsigned short*) ((char*) pThis + 0xbc) != 0 && *(unsigned short*) ((char*) pThis + 0xbc) < 3) {
 		(*( void(**)(void)) (*(void***) pThis + 0x68 / 4))();
@@ -1792,20 +1556,16 @@ void __fastcall DispatchObjectStateVariantCallback(void* pThis)
 		(*( void(**)(int)) (*(void***) pThis + 8 / 4))(0);
 	}
 }
-
-// MACINTOSH: with_two_dword_queue_cursor_points_toward_target_tile()
 // FUNCTION: LEMBALL 0x0040f4b0
-int __fastcall IsDoorChunkObjectFacingTowardTargetTile(void* pThis)
+int __fastcall CPlayerLemming_FacingTarget(void* pThis)
 {
 	unsigned int uDir = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(
 		(*(int*) ((char*) pThis + 0x9c)) >> 12, (*(int*) ((char*) pThis + 0xa0)) >> 12,
 		(*(int*) ((char*) pThis + 0x1b4)) >> 12, (*(int*) ((char*) pThis + 0x1b8)) >> 12);
 	return (int) (short) (*(short*) ((char*) pThis + 0xb4)) - (int) uDir == 1;
 }
-
-// MACINTOSH: with_two_dword_queue_cursor_direction_in_sync()
 // FUNCTION: LEMBALL 0x0040f430
-int __fastcall IsDoorChunkObjectFacingTowardQueueCursor(void* pThis)
+int __fastcall CPlayerLemming_FacingCursor(void* pThis)
 {
 	if (*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) != 0) {
 		return 1;
@@ -1818,8 +1578,6 @@ int __fastcall IsDoorChunkObjectFacingTowardQueueCursor(void* pThis)
 		local_4, local_8);
 	return (int) (short) (*(short*) ((char*) pThis + 0xb4)) - (int) uDir == 1;
 }
-
-// MACINTOSH: get_type_0x18_chunk_object_tile_position(int, int*, int)
 // FUNCTION: LEMBALL 0x0040c950
 int __fastcall GetType18ChunkObjectTilePosition(void* pThis, int nUnused, int* pOut, int nIndex)
 {
@@ -1843,8 +1601,6 @@ int __fastcall GetType18ChunkObjectTilePosition(void* pThis, int nUnused, int* p
 	pOut[2] = (z & 0xffff) << 12;
 	return 1;
 }
-
-// MACINTOSH: remove_anim_chunk_records_at_tile(short*)
 // FUNCTION: LEMBALL 0x0040d230
 void __fastcall RemoveAnimChunkRecordsAtTile(void* pThis, int nUnused, short* pTile)
 {
@@ -1861,10 +1617,8 @@ void __fastcall RemoveAnimChunkRecordsAtTile(void* pThis, int nUnused, short* pT
 		i++;
 	}
 }
-
-// MACINTOSH: destroy_cdoor_manager_object() [dtor]
 // FUNCTION: LEMBALL 0x0040e060
-void __fastcall DestroyCDoorManagerObject(void* pThis, int nUnused)
+void __fastcall CDoorManager_dtor(void* pThis, int nUnused)
 {
 	*(int*) pThis = 0x493840;
 	if (*(void**) ((char*) pThis + 0x3c) != 0) {
@@ -1873,10 +1627,8 @@ void __fastcall DestroyCDoorManagerObject(void* pThis, int nUnused)
 	}
 	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
 }
-
-// MACINTOSH: destroy_cbullet_manager_object() [dtor]
 // FUNCTION: LEMBALL 0x00417ec0
-void __fastcall DestroyCBulletManagerObject(void* pThis, int nUnused)
+void __fastcall CBulletManager_dtor(void* pThis, int nUnused)
 {
 	*(int*) pThis = 0x494008;
 	if (*(void**) ((char*) pThis + 0x30) != 0) {
@@ -1885,10 +1637,8 @@ void __fastcall DestroyCBulletManagerObject(void* pThis, int nUnused)
 	}
 	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
 }
-
-// MACINTOSH: destroy_crocket_manager_object() [dtor]
 // FUNCTION: LEMBALL 0x00426c00
-void __fastcall DestroyCRocketManagerObject(void* pThis, int nUnused)
+void __fastcall CRocketManager_dtor(void* pThis, int nUnused)
 {
 	*(int*) pThis = 0x496020;
 	if (*(void**) ((char*) pThis + 0x38) != 0) {
@@ -1897,10 +1647,8 @@ void __fastcall DestroyCRocketManagerObject(void* pThis, int nUnused)
 	}
 	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
 }
-
-// MACINTOSH: destroy_ctrampoline_manager_object() [dtor]
 // FUNCTION: LEMBALL 0x0042b090
-void __fastcall DestroyCTrampolineManagerObject(void* pThis, int nUnused)
+void __fastcall CTrampolineManager_dtor(void* pThis, int nUnused)
 {
 	*(int*) pThis = 0x496710;
 	if (*(void**) ((char*) pThis + 0x38) != 0) {
@@ -1909,10 +1657,8 @@ void __fastcall DestroyCTrampolineManagerObject(void* pThis, int nUnused)
 	}
 	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
 }
-
-// MACINTOSH: destroy_cpaint_gun_manager_object() [dtor]
 // FUNCTION: LEMBALL 0x0042c120
-void __fastcall DestroyCPaintGunManagerObject(void* pThis, int nUnused)
+void __fastcall CPaintGunManager_dtor(void* pThis, int nUnused)
 {
 	*(int*) pThis = 0x496888;
 	if (*(void**) ((char*) pThis + 0x38) != 0) {
@@ -1921,10 +1667,8 @@ void __fastcall DestroyCPaintGunManagerObject(void* pThis, int nUnused)
 	}
 	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
 }
-
-// MACINTOSH: reform_altered_groups(CPlayerLemmingGroup*)
 // FUNCTION: LEMBALL 0x00418b20
-void __fastcall ReformAlteredGroups(void* pThis, int nUnused, int* param_1)
+void __fastcall CPlayerLemmingGroupManager_ReformAlteredGroups(void* pThis, int nUnused, int* param_1)
 {
 	int* pi;
 	pi = (int*) ((int(__fastcall*)(void*)) 0x401078)(pThis);
@@ -1935,10 +1679,8 @@ void __fastcall ReformAlteredGroups(void* pThis, int nUnused, int* param_1)
 		pi = (int*) ((int(__fastcall*)(void*)) 0x403549)(pThis);
 	}
 }
-
-// MACINTOSH: res_font_force_load_vram(int)
 // FUNCTION: LEMBALL 0x0045dab0
-int __fastcall ResFONTForceLoadVram(void* pThis, int nUnused, int param_2)
+int __fastcall CResFONT_ForceLoadVram(void* pThis, int nUnused, int param_2)
 {
 	void* pSlot = *(void**) (*(int*) ((char*) pThis + 0x7c) + param_2 * 0x54);
 	int r = ((int(__fastcall*)(void*)) (*(int*) pSlot + 0xc))(pSlot);
@@ -1947,10 +1689,8 @@ int __fastcall ResFONTForceLoadVram(void* pThis, int nUnused, int param_2)
 	}
 	return ((int(__fastcall*)(void*)) (*(int*) pSlot + 0xc))(pSlot);
 }
-
-// MACINTOSH: remove_lemming_from_group(CPlayerLemming*)
 // FUNCTION: LEMBALL 0x004147d0
-int __fastcall RemoveLemmingFromGroup(void* pThis, int nUnused, int param_1)
+int __fastcall CPlayerLemmingGroup_RemoveLemmingFromGroup(void* pThis, int nUnused, int param_1)
 {
 	void* pChild;
 	((void(__fastcall*)(void*, int)) 0x402879)(pThis, param_1);
@@ -1961,10 +1701,8 @@ int __fastcall RemoveLemmingFromGroup(void* pThis, int nUnused, int param_1)
 	*(int*) ((char*) pThis + 0x164) = 1;
 	return 1;
 }
-
-// MACINTOSH: player_lemming_group_emit_child_render_entries(int*)
 // FUNCTION: LEMBALL 0x00414080
-int __fastcall PlayerLemmingGroupEmitChildRenderEntries(void* pThis, int nUnused, int param_1)
+int __fastcall CPlayerLemmingGroup_GetViewData(void* pThis, int nUnused, int param_1)
 {
 	int nVtbl = *(int*) pThis;
 	int nCount = 0;
@@ -1984,10 +1722,8 @@ int __fastcall PlayerLemmingGroupEmitChildRenderEntries(void* pThis, int nUnused
 	}
 	return nCount;
 }
-
-// MACINTOSH: enemy_facing_target() [predicate]
 // FUNCTION: LEMBALL 0x00420650
-int __fastcall CEnemyFacingTarget(void* pThis)
+int __fastcall CEnemy_FacingTarget(void* pThis)
 {
 	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
 		*(int*) ((char*) pThis + 0x9c) >> 12,
@@ -1996,10 +1732,8 @@ int __fastcall CEnemyFacingTarget(void* pThis)
 		*(int*) ((char*) pThis + 0x160) >> 12);
 	return (int) *(short*) ((char*) pThis + 0xb4) == nOct;
 }
-
-// MACINTOSH: slinky_manager_add(ushort, int, int, int, int)
 // FUNCTION: LEMBALL 0x0040b9e0
-void __fastcall CSlinkyManagerAdd(void* pThis, int nUnused, unsigned short param_1, int param_2, int param_3, int param_4, int param_5)
+void __fastcall CSlinkyManager_Add(void* pThis, int nUnused, unsigned short param_1, int param_2, int param_3, int param_4, int param_5)
 {
 	if (*(int*) ((char*) pThis + 0xc) < *(int*) ((char*) pThis + 8)) {
 		((void(__fastcall*)(void*, unsigned short)) 0x402293)(
@@ -2010,8 +1744,6 @@ void __fastcall CSlinkyManagerAdd(void* pThis, int nUnused, unsigned short param
 		*(int*) ((char*) pThis + 0xc) = *(int*) ((char*) pThis + 0xc) + 1;
 	}
 }
-
-// MACINTOSH: clear_existing_waypoints()
 // FUNCTION: LEMBALL 0x004148f0
 void __fastcall ClearExistingWaypoints(void* pThis)
 {
@@ -2031,8 +1763,6 @@ void __fastcall ClearExistingWaypoints(void* pThis)
 			((int(__fastcall*)(void*)) (*(int*) (nVtbl + 0x108)))(pThis);
 	}
 }
-
-// MACINTOSH: arena_shrink(int)
 // FUNCTION: LEMBALL 0x0045a180
 void* __fastcall ArenaShrink(void* pThis, int nUnused, int param_1)
 {
@@ -2047,11 +1777,8 @@ void* __fastcall ArenaShrink(void* pThis, int nUnused, int param_1)
 	}
 	return 0;
 }
-
-
-// MACINTOSH: CEnemy::TurnToFaceTarget()
 // FUNCTION: LEMBALL 0x00420350
-void __fastcall CEnemyTurnToFaceTarget(void* pThis)
+void __fastcall CEnemy_TurnToFaceTarget(void* pThis)
 {
 	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
 		*(int*) ((char*) pThis + 0x9c) >> 12,
@@ -2068,11 +1795,8 @@ void __fastcall CEnemyTurnToFaceTarget(void* pThis)
 	*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick +
 		*(int*) ((char*) 0x49d0b0 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
 }
-
-
-// MACINTOSH: CBall::SetHeightCorrect()
 // FUNCTION: LEMBALL 0x00421b40
-void __fastcall CBallSetHeightCorrect(void* pThis)
+void __fastcall CBall_SetHeightCorrect(void* pThis)
 {
 	int xq = *(int*) ((char*) pThis + 0x9c) >> 12;
 	int yq = *(int*) ((char*) pThis + 0xa0) >> 12;
@@ -2088,10 +1812,8 @@ void __fastcall CBallSetHeightCorrect(void* pThis)
 	}
 	*(unsigned int*) ((char*) pThis + 0xa4) = (z & 0xffff) << 12;
 }
-
-// MACINTOSH: CTower::Process()
 // FUNCTION: LEMBALL 0x0041cf70
-int __fastcall CTowerProcess(void* pThis)
+int __fastcall CTower_Process(void* pThis)
 {
 	int xq = *(int*) ((char*) pThis + 0x9c) >> 12;
 	int yq = *(int*) ((char*) pThis + 0xa0) >> 12;
@@ -2108,10 +1830,8 @@ int __fastcall CTowerProcess(void* pThis)
 	*(unsigned int*) ((char*) pThis + 0xa4) = (z & 0xffff) << 12;
 	return 1;
 }
-
-// MACINTOSH: CSlinky::Set(unsigned short, unsigned short, unsigned short, unsigned short)
 // FUNCTION: LEMBALL 0x0040b4d0
-void __fastcall CSlinkySet(void* pThis, int nUnused, int param_1, int param_2, int param_3, int param_4)
+void __fastcall CSlinky_Set(void* pThis, int nUnused, int param_1, int param_2, int param_3, int param_4)
 {
 	*(int*) ((char*) pThis + 0x124) = param_1;
 	*(int*) ((char*) pThis + 0x128) = param_3;
@@ -2132,8 +1852,6 @@ void __fastcall CSlinkySet(void* pThis, int nUnused, int param_1, int param_2, i
 	*(int*) ((char*) pThis + 0x94) = g_nLevelFrameClockTimeMs;
 	((void(__fastcall*)(void*, int)) (*(void***) pThis)[2])(pThis, 0x18);
 }
-
-// MACINTOSH: CGlobalGameObject::DeleteMessages()
 // FUNCTION: LEMBALL 0x00417150
 void __cdecl CGlobalGameObjectDeleteMessages(void)
 {
@@ -2175,10 +1893,8 @@ void __cdecl CGlobalGameObjectDeleteMessages(void)
 		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
 	}
 }
-
-// MACINTOSH: CPlayerLemmingGroupManager::~CPlayerLemmingGroupManager()
 // FUNCTION: LEMBALL 0x00418540
-void __fastcall DestroyCPlayerLemmingGroupManager(void* pThis, int nUnused)
+void __fastcall CPlayerLemmingGroupManager_dtor(void* pThis, int nUnused)
 {
 	*(int*) pThis = 0x494038;
 	void* pSub = ((char*) pThis) - 0xb0;
@@ -2200,10 +1916,8 @@ void __fastcall DestroyCPlayerLemmingGroupManager(void* pThis, int nUnused)
 	((void(__fastcall*)(void*)) 0x45eea0)(((unsigned int) pSub >= 1) ? pThis : 0);
 	((void(__fastcall*)(void*)) 0x402de7)(pSub);
 }
-
-// MACINTOSH: CAI::SetNetworkTrapDoors(int, int, int, int, int, int)
 // FUNCTION: LEMBALL 0x004131e0
-void __fastcall CAISetNetworkTrapDoors(void* pThis, int nUnused, int param_1, int param_2, int param_3, int param_4, int param_5)
+void __fastcall CAI_SetNetworkTrapDoors(void* pThis, int nUnused, int param_1, int param_2, int param_3, int param_4, int param_5)
 {
 	*(int*) ((char*) pThis + 0xd0) = param_1;
 	if (param_2 == -1) {
@@ -2233,10 +1947,8 @@ void __fastcall CAISetNetworkTrapDoors(void* pThis, int nUnused, int param_1, in
 		} while (--count != 0);
 	}
 }
-
-// MACINTOSH: CPlayerLemming::TurnToFaceTarget()
 // FUNCTION: LEMBALL 0x0040f220
-void __fastcall CPlayerLemmingTurnToFaceTarget(void* pThis, int nUnused)
+void __fastcall CPlayerLemming_TurnToFaceTarget(void* pThis, int nUnused)
 {
 	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
 		*(int*) ((char*) pThis + 0x9c) >> 12,
@@ -2254,10 +1966,8 @@ void __fastcall CPlayerLemmingTurnToFaceTarget(void* pThis, int nUnused)
 	*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick +
 		*(int*) ((char*) 0x49d0b0 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
 }
-
-// MACINTOSH: CPlayerLemming::TurnToFaceCursor()
 // FUNCTION: LEMBALL 0x0040f160
-void __fastcall CPlayerLemmingTurnToFaceCursor(void* pThis, int nUnused)
+void __fastcall CPlayerLemming_TurnToFaceCursor(void* pThis, int nUnused)
 {
 	if (*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) {
 		int local_4 = 0;
@@ -2280,10 +1990,8 @@ void __fastcall CPlayerLemmingTurnToFaceCursor(void* pThis, int nUnused)
 			*(int*) ((char*) 0x49d070 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
 	}
 }
-
-// MACINTOSH: CSlinky::Move()
 // FUNCTION: LEMBALL 0x0040b670
-void __fastcall CSlinkyMove(void* pThis, int nUnused)
+void __fastcall CSlinky_Move(void* pThis, int nUnused)
 {
 	int* pState = *(int**) 0x4a1bcc;
 	int v = (*pState * 45 + 31) & 0x7fffff;
@@ -2313,10 +2021,8 @@ void __fastcall CSlinkyMove(void* pThis, int nUnused)
 		*(int*) ((char*) pThis + 0xb0) = (*(int*) ((char*) pThis + 0xa4) >> 12) << 12;
 	} while (i < 8 && ((int(__fastcall*)(void*, int*)) 0x403229)(pThis, (int*) ((char*) pThis + 0xa8)) == 0);
 }
-
-// MACINTOSH: CAI::ProcessMsg(short*)
 // FUNCTION: LEMBALL 0x00412660
-int __fastcall CAIProcessMsg(void* pThis, int nUnused, short* param_1)
+int __fastcall CAI_ProcessMsg(void* pThis, int nUnused, short* param_1)
 {
 	if (param_1[0] == 4) {
 		((void(__fastcall*)(void*, int, int)) 0x402d74)(
@@ -2353,10 +2059,8 @@ int __fastcall CAIProcessMsg(void* pThis, int nUnused, short* param_1)
 		return 0;
 	}
 }
-
-// MACINTOSH: CPlayerLemming::GetData()
 // FUNCTION: LEMBALL 0x0040f640
-void __fastcall CPlayerLemmingGetData(void* pThis, int nUnused)
+void __fastcall CPlayerLemming_GetData(void* pThis, int nUnused)
 {
 	unsigned short local_e[2];
 	*(unsigned int*) ((char*) pThis - 0x9c) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis) << 12;
@@ -2370,10 +2074,8 @@ void __fastcall CPlayerLemmingGetData(void* pThis, int nUnused)
 	*(unsigned int*) ((char*) pThis - 0xa0) = (unsigned int) (local_e[0] >> 8);
 	*(unsigned int*) ((char*) pThis - 0xa4) = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis);
 }
-
-// MACINTOSH: CPlayerLemming::AddData()
 // FUNCTION: LEMBALL 0x0040f6f0
-void __fastcall CPlayerLemmingAddData(void* pThis, int nUnused)
+void __fastcall CPlayerLemming_AddData(void* pThis, int nUnused)
 {
 	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, 0x2c);
 	((void(__fastcall*) (void*, unsigned char)) 0x45ef60)(pThis, *(unsigned short*) ((char*) pThis + 0x30));
@@ -2388,10 +2090,8 @@ void __fastcall CPlayerLemmingAddData(void* pThis, int nUnused)
 	((void(__fastcall*) (void*, unsigned int)) 0x45ef10)(pThis, *(unsigned int*) ((char*) pThis - 0x5c));
 	*(unsigned int*) ((char*) pThis + 0x2c) = 0;
 }
-
-// MACINTOSH: CBullet::TriggerBullet()
 // FUNCTION: LEMBALL 0x0041a6d0
-void __fastcall CBulletTriggerBullet(void* pThis, int nUnused)
+void __fastcall CBullet_TriggerBullet(void* pThis, int nUnused)
 {
 	int aPos[3] = {
 		*(int*) ((char*) pThis + 0x9c) >> 12,
@@ -2407,10 +2107,8 @@ void __fastcall CBulletTriggerBullet(void* pThis, int nUnused)
 	*(int*) ((char*) pThis + 0xb8) = 0x1b;
 	*(int*) ((char*) pThis + 0xcc) = *(int*) ((char*) pThis + 0xc8) + 10;
 }
-
-// MACINTOSH: CGameObject::Jump()
 // FUNCTION: LEMBALL 0x00416130
-void __fastcall CGameObjectJump(void* pThis, int nUnused)
+void __fastcall CGameObject_Jump(void* pThis, int nUnused)
 {
 	if (*(unsigned short*) ((char*) pThis + 0xbc) != 0) {
 		return;
@@ -2436,11 +2134,8 @@ void __fastcall CGameObjectJump(void* pThis, int nUnused)
 		((void(__fastcall*) (void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) pThis + 0x9c, pThis, *(unsigned short*) ((char*) pThis + 0x68));
 	}
 }
-
-
-// MACINTOSH: CAI::SendGameState(int, int)
 // FUNCTION: LEMBALL 0x00411b70
-void __fastcall CAISendGameState(void* pThis, int nUnused, int param_1, int param_2)
+void __fastcall CAI_SendGameState(void* pThis, int nUnused, int param_1, int param_2)
 {
 	if (g_nSelectedNetworkLobbyPeerId == 0) {
 		return;
@@ -2461,10 +2156,8 @@ void __fastcall CAISendGameState(void* pThis, int nUnused, int param_1, int para
 		((void(__fastcall*) (void*, int)) 0x45f2b0)(*(void**) ((char*) pThis + 0x74), g_nSelectedNetworkLobbyPeerId);
 	}
 }
-
-// MACINTOSH: CAI::OpenDoor(int*, int*, unsigned char)
 // FUNCTION: LEMBALL 0x00412ad0
-int __fastcall CAIOpenDoor(void* pThis, int nUnused, int* param_1, int* param_2, unsigned char param_3)
+int __fastcall CAI_OpenDoor(void* pThis, int nUnused, int* param_1, int* param_2, unsigned char param_3)
 {
 	int tileX = ((param_1[0] >> 12) + ((param_1[0] >> 12) >> 31 & 0xf)) >> 4;
 	int tileY = ((param_1[1] >> 12) + ((param_1[1] >> 12) >> 31 & 0xf)) >> 4;
@@ -2485,10 +2178,8 @@ int __fastcall CAIOpenDoor(void* pThis, int nUnused, int* param_1, int* param_2,
 struct LevelChunkObjectRuntimeStateView {
 	void ResetRuntimeStateThunk(void);
 };
-
-// MACINTOSH: CEnemy::Restart()
 // FUNCTION: LEMBALL 0x0041fcd0
-void __fastcall CEnemyRestart(void* pThis, int nUnused)
+void __fastcall CEnemy_Restart(void* pThis, int nUnused)
 {
 	((LevelChunkObjectRuntimeStateView*) pThis)->ResetRuntimeStateThunk();
 	*(int*) ((char*) pThis + 0x9c) = *(int*) ((char*) pThis + 0x40);
@@ -2515,10 +2206,8 @@ void __fastcall CEnemyRestart(void* pThis, int nUnused)
 		*(int*) (*(int*) ((char*) pThis + 0x14c) + 0xc) = 1;
 	}
 }
-
-// MACINTOSH: CBullet::AddData()
 // FUNCTION: LEMBALL 0x0041aaa0
-void __fastcall CBulletAddData(void* pThis, int nUnused)
+void __fastcall CBullet_AddData(void* pThis, int nUnused)
 {
 	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, 0x2b);
 	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(unsigned short*) ((char*) pThis - 0xcc));
@@ -2536,10 +2225,8 @@ void __fastcall CBulletAddData(void* pThis, int nUnused)
 	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(pThis, nUnused, *(unsigned int*) ((char*) pThis + 0x34));
 	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(unsigned short*) ((char*) pThis + 0x38));
 }
-
-// MACINTOSH: CBullet::GetData()
 // FUNCTION: LEMBALL 0x0041ab80
-void __fastcall CBulletGetData(void* pThis, int nUnused)
+void __fastcall CBullet_GetData(void* pThis, int nUnused)
 {
 	((void(__cdecl*) (unsigned int)) 0x403107)(((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis));
 	*(unsigned int*) ((char*) pThis - 0x9c) = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis)) << 12;
@@ -2561,10 +2248,8 @@ void __fastcall CBulletGetData(void* pThis, int nUnused)
 	*(int*) ((char*) pThis + 0x2c) = 1;
 	*(int*) ((char*) pThis - 0x24) = 1;
 }
-
-// MACINTOSH: CBall::Set()
 // FUNCTION: LEMBALL 0x004216c0
-void __fastcall CBallSet(void* pObject, int nUnused, int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7)
+void __fastcall CBall_Set(void* pObject, int nUnused, int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7)
 {
 	*(int*) ((char*) pObject + 0x9c) = param_1;
 	*(int*) ((char*) pObject + 0xa0) = param_2;
@@ -2590,10 +2275,8 @@ void __fastcall CBallSet(void* pObject, int nUnused, int param_1, int param_2, i
 	}
 	*(int*) ((char*) pObject + 0x134) = 1;
 }
-
-// MACINTOSH: CRocket::Set()
 // FUNCTION: LEMBALL 0x00426840
-void __fastcall CRocketSet(void* pObject, int nUnused, unsigned short slotId, int* pVec)
+void __fastcall CRocket_Set(void* pObject, int nUnused, unsigned short slotId, int* pVec)
 {
 	((void(__fastcall*) (void*, unsigned short)) 0x402293)(pObject, slotId);
 	*(int*) ((char*) pObject + 0x9c) = pVec[0];
@@ -2611,10 +2294,8 @@ void __fastcall CRocketSet(void* pObject, int nUnused, unsigned short slotId, in
 	int nIndex = *(int*) ((char*) pGrid + 0x10) * ytile + xtile;
 	*(char*) (*(int*) ((char*) pGrid + 0xc) + nIndex * 12 + 7) |= (char) 0x80;
 }
-
-// MACINTOSH: CRocket::StepOn()
 // FUNCTION: LEMBALL 0x004269d0
-int __fastcall CRocketStepOn(void* pObject, int nUnused, int* pOther, void* param_2)
+int __fastcall CRocket_StepOn(void* pObject, int nUnused, int* pOther, void* param_2)
 {
 	int nDist = ((int(__cdecl*) (int, int, int, int)) 0x40254a)(*(int*) ((char*) pObject + 0x9c) >> 12, *(int*) ((char*) pObject + 0xa0) >> 12, pOther[0] >> 12, pOther[1] >> 12);
 	if (nDist < 0x20) {
@@ -2629,10 +2310,8 @@ int __fastcall CRocketStepOn(void* pObject, int nUnused, int* pOther, void* para
 	}
 	return 0;
 }
-
-// MACINTOSH: CRocket::DoActivate()
 // FUNCTION: LEMBALL 0x00426a60
-void __fastcall CRocketDoActivate(void* pObject, int nUnused)
+void __fastcall CRocket_DoActivate(void* pObject, int nUnused)
 {
 	*(int*) ((char*) pObject + 0xc8) += g_nLevelFrameClockTick;
 	*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
@@ -2644,11 +2323,8 @@ void __fastcall CRocketDoActivate(void* pObject, int nUnused)
 		((void(__fastcall*) (void*, void*)) 0x4032dd)(*(void**) 0x49d128, pObject);
 	}
 }
-
-
-// MACINTOSH: CDuplicator::Set(int*, int, int)
 // FUNCTION: LEMBALL 0x00427630
-void __fastcall CDuplicatorSet(void* pObject, int nUnused, int* pPos)
+void __fastcall CDuplicator_Set(void* pObject, int nUnused, int* pPos)
 {
 	int iVar3 = *pPos;
 	*(int*) ((char*) pObject + 0x9c) = iVar3;
@@ -2672,10 +2348,8 @@ void __fastcall CDuplicatorSet(void* pObject, int nUnused, int* pPos)
 		}
 	}
 }
-
-// MACINTOSH: CDuplicator::Delete()
 // FUNCTION: LEMBALL 0x004276f0
-void __fastcall CDuplicatorDelete(void* pObject, int nUnused)
+void __fastcall CDuplicator_Delete(void* pObject, int nUnused)
 {
 	int iVar2 = (*(int*) ((char*) pObject + 0x9c) >> 12) / 16;
 	int iVar3 = (*(int*) ((char*) pObject + 0xa0) >> 12) / 16;
@@ -2691,10 +2365,8 @@ void __fastcall CDuplicatorDelete(void* pObject, int nUnused)
 		}
 	}
 }
-
-// MACINTOSH: CEnemy::LineOfSight(int, int)
 // FUNCTION: LEMBALL 0x004202a0
-int __fastcall EnemyLineOfSight(void* pObject, int nUnused, int param_1, int param_2)
+int __fastcall CEnemy_LineOfSight(void* pObject, int nUnused, int param_1, int param_2)
 {
 	unsigned int local_8 = param_1 - *(int*) ((char*) pObject + 0x9c);
 	unsigned int uVar4 = param_2 - *(int*) ((char*) pObject + 0xa0);
@@ -2713,10 +2385,8 @@ int __fastcall EnemyLineOfSight(void* pObject, int nUnused, int param_1, int par
 	}
 	return 0;
 }
-
-// MACINTOSH: CSlinkyManager::LoadLevel(ushort*)
 // FUNCTION: LEMBALL 0x0040be50
-void __fastcall CSlinkyManagerLoadLevel(void* pThis, int nUnused, unsigned short* pStream)
+void __fastcall CSlinkyManager_LoadLevel(void* pThis, int nUnused, unsigned short* pStream)
 {
 	unsigned short nCount = *pStream;
 	pStream++;
@@ -2744,10 +2414,8 @@ void __fastcall CSlinkyManagerLoadLevel(void* pThis, int nUnused, unsigned short
 		} while (nCount != 0);
 	}
 }
-
-// MACINTOSH: CCollectableManager::LoadLevel(ushort*, int)
 // FUNCTION: LEMBALL 0x00422790
-void __fastcall CCollectableManagerLoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_3)
+void __fastcall CCollectableManager_LoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_3)
 {
 	unsigned short nCount = *pStream;
 	pStream++;
@@ -2789,8 +2457,6 @@ void __fastcall CCollectableManagerLoadLevel(void* pThis, int nUnused, unsigned 
 		} while (nCount != 0);
 	}
 }
-
-// MACINTOSH: CBalloonPost::FindPost()
 // FUNCTION: LEMBALL 0x0042a0b0
 unsigned int __fastcall CBalloonPostFindPost(void* pThis, int nUnused, unsigned int subtype, void** pOut)
 {
@@ -2818,10 +2484,8 @@ unsigned int __fastcall CBalloonPostFindPost(void* pThis, int nUnused, unsigned 
 	}
 	return 0;
 }
-
-// MACINTOSH: CBalloonPost::LoadLevel()
 // FUNCTION: LEMBALL 0x0042a4e0
-void __fastcall CBalloonPostLoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_4, int param_5)
+void __fastcall CBalloonPost_LoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_4, int param_5)
 {
 	unsigned short* pData;
 	unsigned int* pDst;
@@ -2852,10 +2516,8 @@ void __fastcall CBalloonPostLoadLevel(void* pThis, int nUnused, unsigned short* 
 	if (*(unsigned char*) pThis & 4) *(int*) ((char*) *(void**) ((char*) pThis + 0x3c) + 0x124) = 1;
 	if (*(unsigned char*) pThis & 8) *(int*) ((char*) *(void**) ((char*) pThis + 0x40) + 0x124) = 1;
 }
-
-// MACINTOSH: CMoverManager::LoadLevel()
 // FUNCTION: LEMBALL 0x0042f680
-void __fastcall CMoverManagerLoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_4, int param_5)
+void __fastcall CMoverManager_LoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_4, int param_5)
 {
 	unsigned short nCount;
 	unsigned int uSlot;
@@ -2896,10 +2558,8 @@ void __fastcall CMoverManagerLoadLevel(void* pThis, int nUnused, unsigned short*
 		} while (nCount != 0);
 	}
 }
-
-// MACINTOSH: C2D::Restart()
 // FUNCTION: LEMBALL 0x00436850
-void __fastcall C2DRestart(void* pThis, int nUnused)
+void __fastcall C2D_Restart(void* pThis, int nUnused)
 {
 	*(int*) ((char*) pThis + 0x918) = 0;
 	*(int*) ((char*) pThis + 0x91c) = 0;
@@ -2913,10 +2573,8 @@ void __fastcall C2DRestart(void* pThis, int nUnused)
 	((void(__fastcall*) (void*)) 0x4029aa)(*(void**) ((char*) pThis + 0x96c));
 	*(int*) ((char*) pThis + 0x8f0) = *(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0);
 }
-
-// MACINTOSH: CEnemy::EnemyAction_PATROL()
 // FUNCTION: LEMBALL 0x004200f0
-void __fastcall CEnemyEnemyActionPatrol(void* pThis, int nUnused, void* pDesc)
+void __fastcall CEnemy_EnemyAction_PATROL(void* pThis, int nUnused, void* pDesc)
 {
 	unsigned int local_18 = 0xaa55aa55;
 	unsigned int local_14 = 0xaa55aa55;
@@ -2947,10 +2605,8 @@ void __fastcall CEnemyEnemyActionPatrol(void* pThis, int nUnused, void* pDesc)
 		((void(__fastcall*) (void*, unsigned int*)) 0x401d52)(pThis, &local_18);
 	}
 }
-
-// MACINTOSH: CMover::FindObjectsOnTopOfMe()
 // FUNCTION: LEMBALL 0x0042e980
-void __fastcall CMoverFindObjectsOnTopOfMe(void* pThis, int nUnused)
+void __fastcall CMover_FindObjectsOnTopOfMe(void* pThis, int nUnused)
 {
 	int minX;
 	int maxX;
@@ -2982,9 +2638,6 @@ void __fastcall CMoverFindObjectsOnTopOfMe(void* pThis, int nUnused)
 		}
 	}
 }
-
-
-// MACINTOSH: CResFONT::AllocateResources(unsigned long)
 // FUNCTION: LEMBALL 0x0045d8b0
 void __fastcall CResFONT_AllocateResources(void* pThis, int nUnused, unsigned int cEntries)
 {
@@ -3016,8 +2669,6 @@ void __fastcall CResFONT_AllocateResources(void* pThis, int nUnused, unsigned in
 		*(void**) ((char*) pThis + 0x7c) = (void*) 0x0;
 	}
 }
-
-// MACINTOSH: CBallManager::Initialise(int)
 // FUNCTION: LEMBALL 0x00421ef0
 void __fastcall CBallManager_Initialise(void* pThis, int nUnused, int nCapacity)
 {
@@ -3052,8 +2703,6 @@ void __fastcall CBallManager_Initialise(void* pThis, int nUnused, int nCapacity)
 		}
 	}
 }
-
-// MACINTOSH: CVSOStream::__ls(char)
 // FUNCTION: LEMBALL 0x00458d40
 int __fastcall CVSOStream___ls(void* pThis, int nUnused, unsigned int value)
 {
@@ -3081,8 +2730,6 @@ struct CNetworkMessage {
 struct GameEffStream {
 	int LoadEffStreamFromMemory(int nSourceBuffer);
 };
-
-// MACINTOSH: load_level_mode_manager_stream_ranges_0x1b4()
 // FUNCTION: LEMBALL 0x00412b80
 void __fastcall LoadLevelModeManagerStreamRanges0x1b4(void* pThis)
 {
@@ -3101,8 +2748,6 @@ void __fastcall LoadLevelModeManagerStreamRanges0x1b4(void* pThis)
 		*(int*) (uBase + 0x1c) += *(int*) (mgr + 0x154) - *(int*) (mgr + 0x140);
 	} while (--count != 0);
 }
-
-// MACINTOSH: load_level_mode_manager_streams_0x1c4()
 // FUNCTION: LEMBALL 0x00412be0
 void __fastcall LoadLevelModeManagerStreams0x1c4(void* pThis)
 {
@@ -3123,10 +2768,8 @@ void __fastcall LoadLevelModeManagerStreams0x1c4(void* pThis)
 		}
 	} while (--count != 0);
 }
-
-// MACINTOSH: CRocketManager::LoadLevel(ushort*)
 // FUNCTION: LEMBALL 0x00427110
-void __fastcall CRocketManagerLoadLevel(void* pThis, int nUnused, int uArg1, int uArg2, unsigned short* pStream)
+void __fastcall CRocketManager_LoadLevel(void* pThis, int nUnused, int uArg1, int uArg2, unsigned short* pStream)
 {
 	unsigned short nCount = *pStream;
 	unsigned int nRemain = (unsigned int) nCount;
@@ -3153,10 +2796,8 @@ void __fastcall CRocketManagerLoadLevel(void* pThis, int nUnused, int uArg1, int
 		} while (nRemain != 0);
 	}
 }
-
-// MACINTOSH: CBaseRemap::MapRemap(byte*)
 // FUNCTION: LEMBALL 0x0046aaf0
-void __fastcall CBaseRemapMapRemap(void* pThis, int nUnused, unsigned char* param_1)
+void __fastcall CBaseRemap_MapRemap(void* pThis, int nUnused, unsigned char* param_1)
 {
 	int* pi = *(int**) ((char*) pThis + 4);
 	if (pi[4] == 0) {
@@ -3188,10 +2829,6 @@ void __fastcall CBaseRemapMapRemap(void* pThis, int nUnused, unsigned char* para
 	}
 	*(int*) (*(int*) ((char*) pThis + 4) + 8) = *(int*) (*(int*) ((char*) pThis + 4) + 8) - 1;
 }
-
-
-
-// MACINTOSH: reset_managed_entity_motion_with_4000_tick_delay(void*)
 // FUNCTION: LEMBALL 0x00419dd0
 void __fastcall ResetManagedEntityMotionWith4000TickDelay(void* pThis, int nUnused, void* pObject)
 {
@@ -3201,8 +2838,6 @@ void __fastcall ResetManagedEntityMotionWith4000TickDelay(void* pThis, int nUnus
 	((void (__fastcall*) (void*, int)) (pVtbl[0x84 / 4]))(pObject, 4000);
 	((void (__fastcall*) (void*)) (pVtbl[0x30 / 4]))(pObject);
 }
-
-// MACINTOSH: find_counted_child_containing_fixed_point(int, int)
 // FUNCTION: LEMBALL 0x0041b9f0
 void* __fastcall FindCountedChildContainingFixedPoint(void* pThis, int nUnused, int x, int y)
 {
@@ -3220,8 +2855,6 @@ void* __fastcall FindCountedChildContainingFixedPoint(void* pThis, int nUnused, 
 	}
 	return 0;
 }
-
-// MACINTOSH: find_managed_entity_at_tile_by_type(int, int, int, int)
 // FUNCTION: LEMBALL 0x0041ba80
 void* __fastcall FindManagedEntityAtTileByType(void* pThis, int nUnused, int x, int y, int pUnused, int nType)
 {
@@ -3244,8 +2877,6 @@ void* __fastcall FindManagedEntityAtTileByType(void* pThis, int nUnused, int x, 
 		i++;
 	}
 }
-
-// MACINTOSH: load_gmob_chunk_type_0x14_action_list(unsigned short**)
 // FUNCTION: LEMBALL 0x0041d430
 unsigned short* __fastcall LoadGmobChunkType0x14ActionList(void* pThis, int nUnused, unsigned short** ppStream)
 {

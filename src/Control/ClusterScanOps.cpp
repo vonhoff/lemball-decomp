@@ -9,8 +9,6 @@ extern void* g_pActiveManagedEntityOwner;
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
 extern void __cdecl DispatchPlasChildStateTableVariant1(void* pContext, PlasChildStateEntityView* pEntity);
-
-// MACINTOSH: append_static_anim_chunk_record_if_unique(short*)
 // FUNCTION: LEMBALL 0x0040d0c0
 void __fastcall AppendStaticAnimChunkRecordIfUnique(void* pObject, int nUnused, short* param_1)
 {
@@ -32,8 +30,6 @@ void __fastcall AppendStaticAnimChunkRecordIfUnique(void* pObject, int nUnused, 
 		}
 	}
 }
-
-// MACINTOSH: get_last_queued_projectile_request_code()
 // FUNCTION: LEMBALL 0x0040fbe0
 int __fastcall GetLastQueuedProjectileRequestCode(void* pObject)
 {
@@ -52,8 +48,6 @@ int __fastcall GetLastQueuedProjectileRequestCode(void* pObject)
 	}
 	return 0xffff;
 }
-
-// MACINTOSH: remove_queued_projectile_request_code(int)
 // FUNCTION: LEMBALL 0x0040fc50
 void __fastcall RemoveQueuedProjectileRequestCode(void* pObject, int nUnused, int param_1)
 {
@@ -78,8 +72,6 @@ void __fastcall RemoveQueuedProjectileRequestCode(void* pObject, int nUnused, in
 		*(int*) ((char*) pObject + 0x220) = *(int*) ((char*) pObject + 0x220) - 1;
 	}
 }
-
-// MACINTOSH: destroy_managed_entity_group(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x00419930
 void* __fastcall DestroyManagedEntityGroup(void* pThis, int nUnused, unsigned char param_1)
 {
@@ -89,8 +81,6 @@ void* __fastcall DestroyManagedEntityGroup(void* pThis, int nUnused, unsigned ch
 	}
 	return (void*) ((char*) pThis - 0xb0);
 }
-
-// MACINTOSH: get_network_lobby_peer_entry_stream_by_peer(int)
 // FUNCTION: LEMBALL 0x00452b90
 void* __fastcall GetNetworkLobbyPeerEntryStreamByPeer(void* pObject, int nUnused, int param_1)
 {
@@ -100,8 +90,6 @@ void* __fastcall GetNetworkLobbyPeerEntryStreamByPeer(void* pObject, int nUnused
 	}
 	return (void*) (*(int*) ((char*) pObject + 0x14) + iVar1 * 0x50);
 }
-
-// MACINTOSH: activate_coll_chunk_object()
 // FUNCTION: LEMBALL 0x004228b0
 void __fastcall ActivateCollChunkObject(void* pObject)
 {
@@ -112,8 +100,6 @@ void __fastcall ActivateCollChunkObject(void* pObject)
 	*(int*) ((char*) pObject + 0x138) = 1;
 	*(int*) ((char*) pObject + 0xb8) = 0x18;
 }
-
-// MACINTOSH: initialize_enmy_chunk_object_behavior_fields(int, int, int, int, int, int)
 // FUNCTION: LEMBALL 0x0041fe30
 void __fastcall InitializeEnmyChunkObjectBehaviorFields(void* pObject, int nUnused, int param_1, int param_2, int param_3, int param_4, int param_5, int param_6)
 {
@@ -124,8 +110,6 @@ void __fastcall InitializeEnmyChunkObjectBehaviorFields(void* pObject, int nUnus
 	*(int*) ((char*) pObject + 0x144) = param_5;
 	*(int*) ((char*) pObject + 0x148) = param_6;
 }
-
-// MACINTOSH: destroy_cached_chunk_object_children()
 // FUNCTION: LEMBALL 0x0041e9a0
 void __fastcall DestroyCachedChunkObjectChildren(void* pObject)
 {
@@ -142,8 +126,6 @@ void __fastcall DestroyCachedChunkObjectChildren(void* pObject)
 	*(int*) ((char*) pObject + 0xa4) = 0;
 	*(int*) ((char*) pObject + 0xa8) = 0;
 }
-
-// MACINTOSH: deactivate_managed_entity_group_child_by_slot(short)
 // FUNCTION: LEMBALL 0x0041b940
 void __fastcall DeactivateManagedEntityGroupChildBySlot(void* pObject, int nUnused, short param_2)
 {
@@ -161,8 +143,6 @@ void __fastcall DeactivateManagedEntityGroupChildBySlot(void* pObject, int nUnus
 		}
 	}
 }
-
-// MACINTOSH: get_managed_entity_geometry_fields(undefined4*, undefined4*, undefined4*, undefined4*, undefined4*, undefined4*)
 // FUNCTION: LEMBALL 0x0041fe70
 void __fastcall GetManagedEntityGeometryFields(void* pObject, int nUnused, int* param_2, int* param_3, int* param_4, int* param_5, int* param_6, int* param_7)
 {
@@ -173,8 +153,6 @@ void __fastcall GetManagedEntityGeometryFields(void* pObject, int nUnused, int* 
 	*param_6 = *(int*) ((char*) pObject + 0x144);
 	*param_7 = *(int*) ((char*) pObject + 0x148);
 }
-
-// MACINTOSH: dispatch_counted_child_slot_0x18_by_id(uint, int)
 // FUNCTION: LEMBALL 0x0041b8a0
 void __fastcall DispatchCountedChildSlot0x18ById(void* pObject, int nUnused, unsigned int param_1, int param_2)
 {
@@ -188,8 +166,6 @@ void __fastcall DispatchCountedChildSlot0x18ById(void* pObject, int nUnused, uns
 		}
 	}
 }
-
-// MACINTOSH: delete_linked_type_0x11_chunk_object(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x0041c540
 void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsigned char param_1)
 {
@@ -204,8 +180,6 @@ void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsig
 	}
 	return pObject;
 }
-
-// MACINTOSH: advance_active_ball_chunk_entries()
 // FUNCTION: LEMBALL 0x00421fc0
 int __fastcall AdvanceActiveBallChunkEntries(void* pObject)
 {
@@ -217,8 +191,6 @@ int __fastcall AdvanceActiveBallChunkEntries(void* pObject)
 	}
 	return 1;
 }
-
-// MACINTOSH: evaluate_managed_entity_probe_condition_code(int)
 // FUNCTION: LEMBALL 0x00420000
 int __fastcall EvaluateManagedEntityProbeConditionCode(void* pObject, int nUnused, int param_1)
 {
@@ -231,8 +203,6 @@ int __fastcall EvaluateManagedEntityProbeConditionCode(void* pObject, int nUnuse
 	default: return 0;
 	}
 }
-
-// MACINTOSH: destroy_managed_entity_group_children()
 // FUNCTION: LEMBALL 0x0041b160
 void __fastcall DestroyManagedEntityGroupChildren(void* pObject)
 {
@@ -249,8 +219,6 @@ void __fastcall DestroyManagedEntityGroupChildren(void* pObject)
 	*(unsigned short*) ((char*) pObject + 0x36) = 0;
 	*(unsigned short*) ((char*) pObject + 0x38) = 0;
 }
-
-// MACINTOSH: append_debug_text_lines_split_newlines(char*, int)
 // FUNCTION: LEMBALL 0x00473a10
 void __fastcall AppendDebugTextLinesSplitNewlines(void* pObject, int nUnused, char* param_1, int param_2)
 {
@@ -267,8 +235,6 @@ void __fastcall AppendDebugTextLinesSplitNewlines(void* pObject, int nUnused, ch
 		((void(__fastcall*)(void*, char*, int)) 0x4738e0)(pObject, pcVar2, param_2);
 	}
 }
-
-// MACINTOSH: resize_registration_info_screen_viewport(short*)
 // FUNCTION: LEMBALL 0x0044bc50
 void __fastcall ResizeRegistrationInfoScreenViewport(void* pObject, int nUnused, short* param_1)
 {
@@ -281,8 +247,6 @@ void __fastcall ResizeRegistrationInfoScreenViewport(void* pObject, int nUnused,
 		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pObject + 0x8c) + 0x38 / 4))(&pt);
 	}
 }
-
-// MACINTOSH: get_timed_frame_sequence_index()
 // FUNCTION: LEMBALL 0x0044aa20
 unsigned int __fastcall GetTimedFrameSequenceIndex(void* pObject)
 {
@@ -303,8 +267,6 @@ unsigned int __fastcall GetTimedFrameSequenceIndex(void* pObject)
 	}
 	return uVar2;
 }
-
-// MACINTOSH: resolve_variant_render_frame_pointer(int, undefined4*)
 // FUNCTION: LEMBALL 0x004676a0
 int __fastcall ResolveVariantRenderFramePointer(void* pObject, int nUnused, int param_2, void** param_3)
 {
@@ -320,8 +282,6 @@ int __fastcall ResolveVariantRenderFramePointer(void* pObject, int nUnused, int 
 	}
 	return *(int*) (iVar1 + 0x78) + iVar2 * 0x54;
 }
-
-// MACINTOSH: activate_saved_position_chunk_object()
 // FUNCTION: LEMBALL 0x0041c670
 void __fastcall ActivateSavedPositionChunkObject(void* pObject)
 {
@@ -333,8 +293,6 @@ void __fastcall ActivateSavedPositionChunkObject(void* pObject)
 		((void(__fastcall*)(void*, void*)) 0x4032dd)(*(void**) 0x49d128, pObject);
 	}
 }
-
-// MACINTOSH: set_door_chunk_object_target_tile(int, int)
 // FUNCTION: LEMBALL 0x0040f2c0
 void __fastcall SetDoorChunkObjectTargetTile(void* pObject, int nUnused, int param_1, int param_2)
 {
@@ -347,8 +305,6 @@ void __fastcall SetDoorChunkObjectTargetTile(void* pObject, int nUnused, int par
 		}
 	}
 }
-
-// MACINTOSH: dispatch_door_chunk_object_plas_state_table_variant_0_or_1()
 // FUNCTION: LEMBALL 0x0040f120
 int __fastcall DispatchDoorChunkObjectPlasStateTableVariant0or1(void* pObject)
 {
@@ -361,8 +317,6 @@ int __fastcall DispatchDoorChunkObjectPlasStateTableVariant0or1(void* pObject)
 	}
 	return 0;
 }
-
-// MACINTOSH: CCollectableManager::Initialise(int)
 // FUNCTION: LEMBALL 0x00422460
 void __fastcall CollectableManagerInitialise(void* pObject, int nUnused, int param_1)
 {
@@ -383,8 +337,6 @@ void __fastcall CollectableManagerInitialise(void* pObject, int nUnused, int par
 		}
 	}
 }
-
-// MACINTOSH: register_ui_palette_remap_variant_table() [vs-append]
 // FUNCTION: LEMBALL 0x00454ad0
 void __fastcall RegisterUiPaletteRemapVariantTable(void* pObject)
 {
@@ -395,8 +347,6 @@ void __fastcall RegisterUiPaletteRemapVariantTable(void* pObject)
 			*(unsigned char**) (0x4a02f0 + i * 4), 0x2);
 	}
 }
-
-// MACINTOSH: CSlinkyManager::Initialise(int)
 // FUNCTION: LEMBALL 0x0040b930
 void __fastcall SlinkyManagerInitialise(void* pObject, int nUnused, int param_1)
 {
