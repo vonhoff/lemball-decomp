@@ -3402,6 +3402,63 @@ void LEMBALL_FASTCALL DestroyAlignedZrleChildOverlay(void* pChildOwner)
 	RestoreQueuedRenderPointSinkVtable(pObject + 0x128);
 	DestroyResourceGeometryChild(pChildOwner);
 }
+
+// FUNCTION: LEMBALL 0x00468c10
+void LEMBALL_FASTCALL DestroyBufferedResourceGeometryChild(void* pChildOwner)
+{
+	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
+	char* pObject;
+	void* pChild;
+
+	pObject = (char*) pChildOwner - 0x90;
+	*(void***) pChildOwner = (void**) 0x499818;
+	*(void***) pObject = (void**) 0x499838;
+	pChild = *(void**) ((char*) pChildOwner + 0x80);
+	if (pChild != 0) {
+		((DeleteProc) (*(void***) pChild)[0])((char*) pChild + 0x90, 0, 3);
+	}
+	pChild = *(void**) ((char*) pChildOwner + 0x7c);
+	if (pChild != 0) {
+		((DeleteProc) (*(void***) pChild)[0])((char*) pChild + 0x90, 0, 3);
+	}
+	DestroyResourceGeometryChild(pChildOwner);
+}
+
+// FUNCTION: LEMBALL 0x00468ec0
+void LEMBALL_FASTCALL DestroySingleChildOverlayOwner(void* pChildOwner)
+{
+	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
+	char* pObject;
+	void* pChild;
+
+	pObject = (char*) pChildOwner - 0x90;
+	*(void***) pChildOwner = (void**) 0x499908;
+	*(void***) pObject = (void**) 0x499928;
+	pChild = *(void**) ((char*) pChildOwner + 0x88);
+	if (pChild != 0) {
+		((DeleteProc) (*(void***) ((char*) pChild + 0x90))[0])((char*) pChild + 0x90, 0, 1);
+	}
+	DestroyResourceGeometryChild(pChildOwner);
+}
+
+// FUNCTION: LEMBALL 0x00469440
+void LEMBALL_FASTCALL DestroyResourceSpriteGeometryChild(void* pChildOwner)
+{
+	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
+	char* pObject;
+	void* pChild;
+
+	pObject = (char*) pChildOwner - 0x90;
+	*(void***) pChildOwner = (void**) 0x4999f8;
+	*(void***) pObject = (void**) 0x499a18;
+	pChild = *(void**) ((char*) pChildOwner + 0xa4);
+	((void (LEMBALL_FASTCALL *)(void*)) 0x45d180)(pChild);
+	pChild = *(void**) ((char*) pChildOwner + 0x94);
+	if (pChild != 0) {
+		((DeleteProc) (*(void***) pChild)[0])(pChild, 0, 3);
+	}
+	DestroyResourceGeometryChild(pChildOwner);
+}
 // FUNCTION: LEMBALL 0x00468980
 void GameAlignedZrleChildOverlayView::ReleaseFrameResource(void)
 {

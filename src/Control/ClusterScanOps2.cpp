@@ -1378,3 +1378,15 @@ unsigned short* __fastcall LoadGmobChunkType0x14ActionList(void* pThis, int nUnu
 	}
 	return *ppStream;
 }
+
+// FUNCTION: LEMBALL 0x0040acf0
+void __cdecl invoke_callback_grid(int nBase, int nStride, int nCount, void (__fastcall* pCallback)(int))
+{
+	int value = nBase + nCount * nStride;
+	while (nCount > 0) {
+		value = value - nStride;
+		pCallback(value);
+		nCount = nCount - 1;
+	}
+}
+
