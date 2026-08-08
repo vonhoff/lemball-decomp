@@ -40,6 +40,7 @@ extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void* pObje
 extern void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtable(void* pObject);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void* pResourceObject);
 extern void* LoadZrleOnlyListResource(int nResourceId);
+extern void* LoadListResource(int nResourceId);
 extern void* g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern void* g_GAME_RenderQueueNodeVtableSlots[4];
 extern void* g_pQueuedRenderPointSinkFinalizeThunk;
@@ -3514,6 +3515,24 @@ void LEMBALL_FASTCALL DestroySingleChildOverlayOwner(void* pChildOwner)
 		((DeleteProc) (*(void***) ((char*) pChild + 0x90))[0])((char*) pChild + 0x90, 0, 1);
 	}
 	DestroyResourceGeometryChild(pChildOwner);
+}
+
+// FUNCTION: LEMBALL 0x004693b0
+void LEMBALL_FASTCALL InitializeResourceSpriteGeometryFrames(void* pObject)
+{
+	LevelScreenDrawEntry* pFrame;
+
+	pFrame = new LevelScreenDrawEntry[1];
+	*(LevelScreenDrawEntry**) ((char*) pObject + 0x124) = pFrame;
+	++*(int*) ((char*) pObject + 0x50);
+	*(int*) ((char*) pObject + 0x11c) = 0;
+	*(int*) ((char*) pObject + 0x118) = 0;
+	*(int*) ((char*) pObject + 0x120) = 0;
+	*(int*) ((char*) pObject + 0x148) = 0;
+	*(int*) ((char*) pObject + 0x144) = 0;
+	*(void**) ((char*) pObject + 0x134) =
+		LoadListResource(*(int*) ((char*) pObject + 0x130));
+	*(int*) ((char*) pObject + 0x13c) = 0;
 }
 
 // FUNCTION: LEMBALL 0x00469440

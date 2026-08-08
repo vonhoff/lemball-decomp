@@ -1438,6 +1438,57 @@ void __fastcall remove_cached_enmy_chunk_object_and_destroy(void* pThis, int nUn
 	}
 }
 
+struct CountedU16Record {
+	unsigned int m_nType00;
+	unsigned int m_cValues04;
+	unsigned int m_nFlags08;
+	int m_nSignedValue0C;
+	unsigned short* m_pValues10;
+};
+
+// FUNCTION: LEMBALL 0x00420f90
+unsigned char* __fastcall ParseCountedU16RecordFromStream(void*,
+	int,
+	unsigned char* pStream,
+	CountedU16Record** ppRecord)
+{
+	unsigned int cValues;
+	unsigned char bSigned;
+	unsigned char* pSource;
+	int nOffset;
+	int cRemaining;
+
+	((void(__cdecl*)(const unsigned char*)) 0x40168b)(pStream);
+	pStream += 4;
+	*ppRecord = (CountedU16Record*) AllocateVSMemBlock(sizeof(CountedU16Record));
+	cValues = pStream[1];
+	(*ppRecord)->m_nType00 = pStream[0];
+	(*ppRecord)->m_cValues04 = cValues;
+	(*ppRecord)->m_nFlags08 = pStream[2];
+	bSigned = pStream[3];
+	if ((bSigned & 0x80) != 0) {
+		(*ppRecord)->m_nSignedValue0C = (int) bSigned | ~0xff;
+	}
+	else {
+		(*ppRecord)->m_nSignedValue0C = bSigned;
+	}
+	(*ppRecord)->m_pValues10 =
+		(unsigned short*) AllocateVSMemBlock(cValues * sizeof(unsigned short));
+	if (cValues > 0) {
+		pSource = pStream + 4;
+		nOffset = 0;
+		cRemaining = cValues;
+		do {
+			unsigned short nValue = *(unsigned short*) pSource;
+			pSource += 2;
+			nOffset += 2;
+			--cRemaining;
+			*(unsigned short*) ((char*) (*ppRecord)->m_pValues10 + nOffset - 2) = nValue;
+		} while (cRemaining != 0);
+	}
+	return pStream + cValues * 2 + 4;
+}
+
 // FUNCTION: LEMBALL 0x0041d390
 void __fastcall append_gmob_type_0x14_lift_or_door_actions(void* pThis, int nUnusedEdx)
 {
