@@ -2,6 +2,9 @@
 
 extern void* g_pLevelTileGrid;
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern int g_nLevelFrameClockTick;
+extern int g_nLevelFrameClockTimeMs;
+extern void* g_pActiveManagedEntityOwner;
 
 // FUNCTION: LEMBALL 0x004275f0
 void CDuplicator::Restart(void)
@@ -55,4 +58,27 @@ void CDuplicator::Delete(void)
 			}
 		}
 	}
+}
+
+
+// FUNCTION: LEMBALL 0x00427910
+void CDuplicator::DoActivate(void)
+{
+	char* pChild;
+	int nYOffset;
+	int* pChildPos;
+
+	nYOffset = m_yPosWorldA0 - 0x3c000;
+	m_nFrameTime94 = g_nLevelFrameClockTimeMs;
+	pChild = *(char**) ((char*) this + 0x5c);
+	*(int*) ((char*) this + 0xcc) += g_nLevelFrameClockTick;
+	*(void**) ((char*) this + 0x140) = pChild;
+	*(int*) (pChild + 0xc0) = 1;
+	*(int*) (pChild + 0xb8) = 5;
+	pChild = *(char**) ((char*) this + 0x140);
+	*(int*) (pChild + 0x9c) = m_xPosWorld9C;
+	*(int*) (pChild + 0xa0) = nYOffset;
+	*(int*) (pChild + 0xa4) = m_zPosWorldA4;
+	((void (__fastcall*)(void*)) (*(void***) this)[0x34 / 4])(this);
+	((void (__fastcall*)(void*, int, int)) 0x402f22)(g_pActiveManagedEntityOwner, 0, 100);
 }

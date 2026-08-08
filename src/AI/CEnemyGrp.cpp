@@ -165,3 +165,50 @@ void CEnemy::EnemyAction_PATROL(void* pDesc)
 		((void(__fastcall*) (void*, unsigned int*)) 0x401d52)(this, &local_18);
 	}
 }
+
+
+// FUNCTION: LEMBALL 0x0041ff60
+void CEnemy::ProcessAction(int nRules, int nActions, void* pUnion)
+{
+	if (((int(__cdecl*)(int)) 0x4030f3)(nRules) == 1) {
+		if (++m_nReserved128 > 2) {
+			m_nReserved128 = 0;
+		}
+		return;
+	}
+	switch (nRules - 1) {
+	case 0:
+		((void (__fastcall*)(void*, int)) 0x402bda)(this, nActions);
+		break;
+	case 1:
+		((void (__fastcall*)(void*, int)) 0x401663)(this, nActions);
+		break;
+	case 2:
+		((void (__fastcall*)(void*, int)) 0x401681)(this, nActions);
+		break;
+	case 3:
+		((void (__fastcall*)(void*, int)) 0x4010b4)(this, nActions);
+		break;
+	default:
+		((void (__fastcall*)(void*)) 0x40207c)(this);
+		break;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00420200
+int CEnemy::CheckRadius(int nRadius)
+{
+	unsigned short aRect[4];
+	void* pOwner = g_pActiveManagedEntityOwner;
+
+	aRect[0] = 0;
+	aRect[1] = 0;
+	aRect[2] = (unsigned short) ((m_nWorldX9C >> 12) - nRadius);
+	aRect[3] = (unsigned short) ((m_nWorldYA0 >> 12) - nRadius);
+	if (((int (__fastcall*)(void*, void*, void*, int)) 0x4020b3)(pOwner, aRect, (char*) this + 0x150, 2)) {
+		return 1;
+	}
+	aRect[0] = 0;
+	aRect[1] = 0;
+	return ((int (__fastcall*)(void*, void*, void*, int)) 0x40175d)(pOwner, aRect, (char*) this + 0x150, 2);
+}

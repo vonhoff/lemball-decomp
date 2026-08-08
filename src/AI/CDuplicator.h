@@ -27,6 +27,7 @@ public:
 	void Restart(void);
 	void Set(const AICOORD& position);
 	void Delete(void);
+	void DoActivate(void);
 };
 
 typedef char CDuplicatorSizeCheck[sizeof(CDuplicator) == 0x140 ? 1 : -1];

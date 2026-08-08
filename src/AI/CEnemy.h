@@ -45,6 +45,8 @@ public:
 	void HitBullet(void* pBullet);
 	int FacingTarget(void);
 	void HitMine(void);
+	void ProcessAction(int nRules, int nActions, void* pUnion);
+	int CheckRadius(int nRadius);
 };
 
 #endif // LEMBALL_CENEMY_H
