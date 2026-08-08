@@ -2587,3 +2587,137 @@ void __fastcall queue_resource_sprite_window_owner_if_dirty(int* pThis)
 		pThis[0x3f] = 1;
 	}
 }
+// FUNCTION: LEMBALL 0x00474290
+void __fastcall scroll_debug_text_window(void* pThis, int nEdxSlop, unsigned int nCommand, int param_2)
+{
+	void** ppVtbl = *(void***)pThis;
+	((void(__fastcall*)(void*))ppVtbl[0])(pThis);
+	switch (nCommand) {
+	case 0:
+		*(int*) ((char*) pThis + 0x38) = *(int*) ((char*) pThis + 0x38) - 1;
+		break;
+	case 1:
+		*(int*) ((char*) pThis + 0x38) = *(int*) ((char*) pThis + 0x38) + 1;
+		break;
+	case 2:
+		*(int*) ((char*) pThis + 0x38) = *(int*) ((char*) pThis + 0x38) - *(int*) ((char*) pThis + 0x34);
+		break;
+	case 3:
+		*(int*) ((char*) pThis + 0x38) = *(int*) ((char*) pThis + 0x38) + *(int*) ((char*) pThis + 0x34);
+		break;
+	case 4:
+	case 5:
+		goto lblWriteTopLine;
+	case 6:
+		*(int*) ((char*) pThis + 0x38) = 0;
+		break;
+	case 7:
+		param_2 = *(int*) ((char*) pThis + 0x2c);
+	lblWriteTopLine:
+		*(int*) ((char*) pThis + 0x38) = param_2;
+		break;
+	}
+	if (*(int*) ((char*) pThis + 0x2c) <= *(int*) ((char*) pThis + 0x38)) {
+		*(int*) ((char*) pThis + 0x38) = *(int*) ((char*) pThis + 0x2c) - 1;
+	}
+	if (*(int*) ((char*) pThis + 0x38) < 0) {
+		*(int*) ((char*) pThis + 0x38) = 0;
+	}
+	((int(__cdecl*)(HWND, int, int, int))*(void**)0x4ac8f0)(*(HWND*) ((char*) pThis + 0x1c), 1, *(int*) ((char*) pThis + 0x38), 1);
+	((void(__fastcall*)(void*))0x473f60)(pThis);
+	((void(__fastcall*)(void*))ppVtbl[1])(pThis);
+}
+
+// FUNCTION: LEMBALL 0x00473cf0
+void __fastcall destroy_debug_text_window(void* pThis)
+{
+	unsigned int uVar1;
+	int iVar2;
+	int iVar3;
+	int iVar4;
+	*(void**) pThis = (void*) 0x49a4a0;
+	if (*(int*) ((char*) pThis + 0x44) != 0) {
+		((void(*)(void))*(void**)0x4ac88c)();
+		*(int*) ((char*) pThis + 0x44) = 0;
+	}
+	uVar1 = *(unsigned int*) ((char*) pThis + 0x24);
+	if (uVar1 != 0) {
+		iVar2 = *(int*) (uVar1 + 4);
+		if (iVar2 != 0) {
+			iVar3 = *(int*) (iVar2 - 4);
+			iVar4 = iVar2 + iVar3 * 0xc;
+			while (iVar3 = iVar3 - 1, iVar3 > -1) {
+				iVar4 = iVar4 - 0xc;
+				((void(__fastcall*)(void*))0x4564c0)((void*) iVar4);
+			}
+			((void(__cdecl*)(void*))0x45a790)((void*)(iVar2 - 4));
+		}
+		((void(__cdecl*)(void*))0x45a790)((void*) uVar1);
+	}
+	*(int*) 0x4a2b7c = 0;
+	*(int*) ((char*) pThis + 0x18) = 0;
+	((void(__cdecl*)(void*))*(void**)0x4ac624)(*(void**) ((char*) pThis + 0x1c));
+	*(void**) pThis = (void*) 0x4988d0;
+	((void(__cdecl*)(void*))*(void**)0x4ac7b8)((char*) pThis + 4);
+}
+
+// FUNCTION: LEMBALL 0x004743b0
+void __fastcall release_debug_text_mouse_capture(void* pThis, int nEdxSlop, int param_1, int param_2, int param_3)
+{
+	void** ppVtbl = *(void***)pThis;
+	((void(__fastcall*)(void*))ppVtbl[0])(pThis);
+	if (*(int*) ((char*) pThis + 0x44) != 0) {
+		((void(*)(void))*(void**)0x4ac88c)();
+		*(int*) ((char*) pThis + 0x44) = 0;
+	}
+	((void(__fastcall*)(void*))ppVtbl[1])(pThis);
+	(void) param_1; (void) param_2; (void) param_3;
+}
+
+// FUNCTION: LEMBALL 0x00444a90
+void __fastcall update_pause_dialog_hovered_option_at_point(void* p, short* param_1)
+{
+	int i;
+	*(int*)((char*)p + 0x64) = 0;
+	i = *(int*)((char*)p + 0x80);
+	if (i < *(int*)((char*)p + 0x7c)) {
+		short sx = (short)(param_1[0] - *(short*)((char*)p - 0x8c));
+		short sy = (short)(param_1[1] - *(short*)((char*)p - 0x8a));
+		short* r = (short*)(*(int*)((char*)p + 0x154) + 4 + i * 8);
+		do {
+			if ((r[-2] <= sx && sx < (short)(r[-2] + r[0])) &&
+			    (r[-1] <= sy && sy < (short)(r[-1] + r[1]))) {
+				*(int*)((char*)p + 0x64) = 4;
+				*(int*)((char*)p + 0x74) = i;
+				break;
+			}
+			r += 4;
+			++i;
+		} while (i < *(int*)((char*)p + 0x7c));
+	}
+	((void(__cdecl*)(int, int))0x401b72)(1, *(int*)((char*)p + 0x64));
+}
+
+// FUNCTION: LEMBALL 0x00451f10
+void __fastcall initialize_password_entry_render_context(void* pThis)
+{
+	void* pLayout;
+	int* pCtxSlot;
+	void* pCtx;
+	short vSum;
+	short region[4];
+	pLayout = *(void**)((char*)pThis + 0x3a8);
+	vSum = (short)(*(int*)((char*)pLayout + 0x60)) + (short)(*(int*)((char*)pLayout + 0x10));
+	pCtxSlot = (int*)((char*)pThis + 0x3a4);
+	pCtx = ((void*(__cdecl*)(int))0x45a780)(0x90);
+	if (pCtx != 0)
+		pCtx = ((void*(__fastcall*)(void*))0x403571)(pCtx);
+	*pCtxSlot = (int)pCtx;
+	region[0] = vSum * 3;
+	region[1] = vSum * 4;
+	region[2] = (short)(*(int*)((char*)pLayout + 8)) - 1;
+	region[3] = (short)(*(int*)((char*)pLayout + 0xc)) - 1;
+	((void(__fastcall*)(void*, int, short*, int, int))(*(int*)(*(int*)pCtx + 4)))
+		(pCtx, 0, region, *(int*)((char*)pThis + 0x84), 0);
+	*(int*)((char*)pThis + 0x474) = *(int*)((char*)pCtx + 0x4c);
+}
