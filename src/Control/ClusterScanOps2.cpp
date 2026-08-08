@@ -1924,3 +1924,134 @@ void __fastcall SetTextOwnerStringAndLayout(void* pThis, int nUnused, char* pszT
 	memcpy(*(void**) ((char*) pThis + 0x14c), pszText, strlen(pszText) + 1);
 	((void(__fastcall*)(void*, int, void*, int)) 0x469210)(pThis, 0, *(void**) ((char*) pThis + 0x14c), 0);
 }
+// FUNCTION: LEMBALL 0x00432590
+void* __fastcall ConstructQueuedVariantChildSlotRenderPointSink(void* pThis, int nUnused, int param_2, int param_3, int param_4)
+{
+	int i;
+	for (i = 0; i < 2; i++) {
+		((void(__fastcall*)(void*)) 0x401c7b)((char*) pThis + 0x14 + i * 0x10);
+	}
+	*(int*) ((char*) pThis + 0x34) = 0xaa55aa55;
+	*(int*) ((char*) pThis + 0x38) = 0xaa55aa55;
+	*(int*) ((char*) pThis + 0x3c) = 0xaa55aa55;
+	*(int*) ((char*) pThis + 0x40) = 0xaa55aa55;
+	*(int*) ((char*) pThis + 0x44) = 0xaa55aa55;
+	*(int*) ((char*) pThis + 0x48) = 0xaa55aa55;
+	*(void**) ((char*) pThis + 0x60) = (void*) 0x496ca8;
+	*(void**) ((char*) pThis + 0x60) = (void*) 0x496cb8;
+	*(short*) ((char*) pThis + 0x66) = 0;
+	*(int*) ((char*) pThis + 8) = param_3;
+	*(short*) ((char*) pThis + 100) = 0;
+	*(short*) ((char*) pThis + 0x6a) = 0;
+	*(short*) ((char*) pThis + 0x68) = 0;
+	*(int*) ((char*) pThis + 4) = param_4;
+	*(int*) ((char*) pThis + 0x10) = param_2;
+	*(int*) ((char*) pThis + 0xc) = *(int*) ((char*) param_3 + 0x164);
+	*(int*) ((char*) pThis + 0x3c) = 0;
+	*(int*) ((char*) pThis + 0x40) = 0;
+	*(int*) ((char*) pThis + 0x44) = 0;
+	*(int*) ((char*) pThis + 0x48) = 0;
+	*(int*) ((char*) pThis + 0x54) = 0;
+	*(int*) ((char*) pThis + 0x58) = 0;
+	*(int*) ((char*) pThis + 0x34) = 0xa0000;
+	*(int*) ((char*) pThis + 0x38) = 0x64000;
+	((void(__fastcall*)(void*)) 0x401a78)(pThis);
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x004349e0
+void __fastcall EmitLevelScreenVariantEntryWithContext(void* pThis, int nUnused, int param_2,
+	unsigned short param_3, unsigned short param_4, int param_5, int param_6, int param_7)
+{
+	unsigned short uStack_c = param_3;
+	unsigned short uStack_a = param_4;
+	char auStack_8[8];
+	void* puVar1;
+	switch (param_5) {
+	case 0x22: case 0x23: case 0x24: case 0x25: case 0x26: case 0x27:
+	case 0xb5: case 0xb6: case 0xb7: case 0xb8: case 0xb9: case 0xba:
+	case 0xbb: case 0xbc: case 0xbd: case 0xbe: case 0xbf: case 0xc0:
+	case 0xc1: case 0xc2: case 0xc3: case 0xc4: case 0xc5: case 0xc6:
+	case 0xc7: case 0xc8: case 0xc9: case 0xca: case 0xcb: case 0xcc:
+	case 0xcd: case 0xce: case 0xcf: case 0xd0: case 0xd1: case 0xd2:
+	case 0xd3: case 0xd4: case 0xd5: case 0xd6: case 0xd7: case 0xd8:
+	case 0xd9: case 0xda: case 0xdb: case 0xdc: case 0xdd: case 0xde:
+	case 0xdf: case 0xe0: case 0xe1: case 0xe4: case 0xe5: case 0x103: case 0x105:
+		puVar1 = *(void**) (*(int*) ((char*) pThis + 0x74) +
+			(short) *(short*) (*(int*) ((char*) pThis + 0x28) + param_5 * 2) * 4);
+		*(int*) ((char*) puVar1 + 0xc) = param_6;
+		uStack_c = param_3;
+		uStack_a = param_4;
+		{
+			int uSaved = *(int*) ((char*) pThis + 0x1c);
+			*(int*) ((char*) pThis + 0x1c) = param_2;
+			((int(__fastcall*)(void*, void*, void*, int, int, void*, int)) 0x467730)
+				(pThis, auStack_8, &uStack_c, param_5, 0, puVar1, param_7);
+			*(int*) ((char*) pThis + 0x1c) = uSaved;
+		}
+		return;
+	case 0xe7: case 0x104: case 0x106:
+		puVar1 = *(void**) (*(int*) ((char*) pThis + 0x74) +
+			(short) *(short*) (*(int*) ((char*) pThis + 0x28) + param_5 * 2) * 4);
+		uStack_c = param_3;
+		uStack_a = param_4;
+		{
+			int uSaved = *(int*) ((char*) pThis + 0x1c);
+			*(int*) ((char*) pThis + 0x1c) = param_2;
+			((int(__fastcall*)(void*, void*, void*, int, int, void*, int)) 0x467730)
+				(pThis, auStack_8, &uStack_c, param_5, 0, puVar1, param_7);
+			*(int*) ((char*) pThis + 0x1c) = uSaved;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00432880
+void __fastcall StartDirectionalOffsetAnimationIfIdle(void* pObject, int nUnusedEdx, int direction)
+{
+	if (*(int*) ((char*) pObject + 0x54) == 0) {
+		*(int*) ((char*) pObject + 0x44) = (direction == 0) ? -0xcc : 0xcc;
+		*(unsigned long*) ((char*) pObject + 0x4c) = timeGetTime();
+		*(int*) ((char*) pObject + 0x54) = 1;
+	}
+}
+
+// FUNCTION: LEMBALL 0x004328d0
+void __fastcall StartSignedOffsetAnimationIfIdle(void* pObject, int nUnusedEdx, int direction)
+{
+	if (*(int*) ((char*) pObject + 0x58) == 0) {
+		*(int*) ((char*) pObject + 0x48) = (direction == 0) ? -0xcc : 0xcc;
+		*(unsigned long*) ((char*) pObject + 0x50) = timeGetTime();
+		*(int*) ((char*) pObject + 0x58) = 1;
+	}
+}
+
+// FUNCTION: LEMBALL 0x004326e0
+void __fastcall IntegrateInertialCoordinateEventSource(void* pObject, int nUnusedEdx)
+{
+	unsigned long uNow = timeGetTime();
+	if (*(int*) ((char*) pObject + 0x54) != 0) {
+		int nStamp = *(int*) ((char*) pObject + 0x4c);
+		*(unsigned long*) ((char*) pObject + 0x4c) = uNow;
+		int v = *(int*) ((char*) pObject + 0x44) * (uNow - nStamp) / 0x14 + *(int*) ((char*) pObject + 0x3c);
+		*(int*) ((char*) pObject + 0x3c) = v;
+		if (v > 0x5000) *(int*) ((char*) pObject + 0x3c) = 0x5000;
+		if (v < -0x5000) *(int*) ((char*) pObject + 0x3c) = -0x5000;
+	}
+	int nSignedBusy = *(int*) ((char*) pObject + 0x58);
+	if (nSignedBusy != 0) {
+		int nStamp = *(int*) ((char*) pObject + 0x50);
+		*(unsigned long*) ((char*) pObject + 0x50) = uNow;
+		int v = *(int*) ((char*) pObject + 0x48) * (uNow - nStamp) / 0x14 + *(int*) ((char*) pObject + 0x40);
+		*(int*) ((char*) pObject + 0x40) = v;
+		if (v > 0x5000) *(int*) ((char*) pObject + 0x40) = 0x5000;
+		if (v < -0x5000) *(int*) ((char*) pObject + 0x40) = -0x5000;
+	}
+	if (*(int*) ((char*) pObject + 0x54) == 0 && nSignedBusy == 0 && *(int*) ((char*) pObject + 0x5c) == 0)
+		return;
+	if (*(int*) ((char*) pObject + 0x54) != 0 || nSignedBusy != 0) {
+		*(int*) ((char*) pObject + 0x34) += *(int*) ((char*) pObject + 0x3c);
+		*(int*) ((char*) pObject + 0x38) += *(int*) ((char*) pObject + 0x40);
+	}
+	((void(__fastcall*)(void*)) 0x432680)(pObject);
+	*(int*) ((char*) pObject + 0x5c) = 0;
+}
