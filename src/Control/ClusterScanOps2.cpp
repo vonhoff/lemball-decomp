@@ -3115,3 +3115,367 @@ void __fastcall decode_zrle_rows(void* pThis, int nUnused, int param_1, int* par
 	}
 	(void) nUnused;
 }
+
+// FUNCTION: LEMBALL 0x00477660
+void __fastcall decode_zrle_rows_mirrored(void* pThis, int nUnused, int param_1, int* param_2, int param_3)
+{
+	int baseOffset;
+	int step;
+	int rowOffset;
+	int rowIndex;
+	unsigned char* pSrc;
+
+	baseOffset = (int) *(short*) (param_1 + 4) + (int) *(short*) param_1 - 1;
+	step = 1;
+	rowOffset = (int) *(short*) (param_1 + 6);
+	if (param_3 != 0) {
+		step = -1;
+		rowOffset += *(short*) (param_1 + 2) - 1;
+	}
+	pSrc = (unsigned char*) (*(unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
+	rowIndex = 0;
+	if (0 < *(short*) (param_1 + 2)) {
+		rowOffset <<= 2;
+		step <<= 2;
+		do {
+			unsigned char* pDst;
+			unsigned char b;
+			unsigned char* p;
+			unsigned char* d;
+			int n;
+
+			pDst = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + rowOffset) + baseOffset);
+			do {
+				b = *pSrc++;
+				if (b < 0x80) {
+					pDst -= (unsigned char) b;
+				} else if (b > 0x80) {
+					b &= 0x7f;
+					p = pSrc;
+					d = pDst;
+					for (n = (int) b; n > 0; --n) {
+						*d-- = *p++;
+					}
+					pSrc += (unsigned char) b;
+					pDst -= (unsigned char) b;
+				}
+			} while (b != 0x80);
+			rowOffset += step;
+			++rowIndex;
+		} while (rowIndex < *(short*) (param_1 + 2));
+	}
+	(void) nUnused;
+}
+
+// FUNCTION: LEMBALL 0x004781e0
+void __fastcall decode_zrle_rows_palette(
+	void* pThis, int nUnused, int param_1, int* param_2, int param_3, unsigned char* pPalette)
+{
+	short sRowBits;
+	int step;
+	int rowOffset;
+	int rowIndex;
+	unsigned char* pSrc;
+
+	sRowBits = *(short*) (param_1 + 4);
+	rowOffset = (int) *(short*) (param_1 + 6);
+	step = 1;
+	if (param_3 != 0) {
+		step = -1;
+		rowOffset += *(short*) (param_1 + 2) - 1;
+	}
+	pSrc = (unsigned char*) (*(unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
+	rowIndex = 0;
+	if (0 < *(short*) (param_1 + 2)) {
+		rowOffset <<= 2;
+		do {
+			unsigned char* pDst;
+			unsigned char b;
+			unsigned char* p;
+			unsigned char* d;
+			unsigned int n;
+
+			pDst = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + rowOffset) + (int) sRowBits);
+			do {
+				b = *pSrc++;
+				if (b < 0x80) {
+					pDst += (unsigned char) b;
+				} else if (b > 0x80) {
+					b &= 0x7f;
+					p = pSrc;
+					d = pDst;
+					for (n = (unsigned int) b; n != 0; --n) {
+						*d++ = pPalette[*p++];
+					}
+					pSrc += (unsigned char) b;
+					pDst += (unsigned char) b;
+				}
+			} while (b != 0x80);
+			rowOffset += step * 4;
+			++rowIndex;
+		} while (rowIndex < *(short*) (param_1 + 2));
+	}
+	(void) nUnused;
+}
+
+// FUNCTION: LEMBALL 0x004782d0
+void __fastcall decode_zrle_rows_palette_mirrored(
+	void* pThis, int nUnused, int param_1, int* param_2, int param_3, unsigned char* pPalette)
+{
+	short sRowBits;
+	short sBaseX;
+	int step;
+	int rowOffset;
+	int rowIndex;
+	unsigned char* pSrc;
+
+	sRowBits = *(short*) (param_1 + 4);
+	sBaseX = *(short*) param_1;
+	rowOffset = (int) *(short*) (param_1 + 6);
+	step = 1;
+	if (param_3 != 0) {
+		step = -1;
+		rowOffset += *(short*) (param_1 + 2) - 1;
+	}
+	pSrc = (unsigned char*) (*(unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
+	rowIndex = 0;
+	if (0 < *(short*) (param_1 + 2)) {
+		rowOffset <<= 2;
+		do {
+			unsigned char* pDst;
+			unsigned char b;
+			unsigned char* p;
+			unsigned char* d;
+			unsigned int n;
+
+			pDst = (unsigned char*)
+				(*(int*) (*(int*) ((char*) pThis + 4) + rowOffset) + (int) sBaseX + (int) sRowBits - 1);
+			do {
+				b = *pSrc++;
+				if (b < 0x80) {
+					pDst -= (unsigned char) b;
+				} else if (b > 0x80) {
+					b &= 0x7f;
+					p = pSrc;
+					d = pDst;
+					for (n = (unsigned int) b; n != 0; --n) {
+						*d-- = pPalette[*p++];
+					}
+					pSrc += (unsigned char) b;
+					pDst -= (unsigned char) b;
+				}
+			} while (b != 0x80);
+			rowOffset += step * 4;
+			++rowIndex;
+		} while (rowIndex < *(short*) (param_1 + 2));
+	}
+	(void) nUnused;
+}
+
+// FUNCTION: LEMBALL 0x00477200
+void __fastcall decode_zrle_rows_write_mask(
+	void* pThis, int nUnused, int param_1, int* param_2, unsigned short nMaskValue)
+{
+	short sRowBits;
+	short sRowOff;
+	unsigned char* pSrc;
+	int rowIndex;
+	int rowOffset;
+	unsigned int nMaskPattern;
+
+	sRowBits = *(short*) (param_1 + 4);
+	sRowOff = *(short*) (param_1 + 6);
+	pSrc = (unsigned char*) (*(unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
+	rowIndex = 0;
+	nMaskPattern = (unsigned int) nMaskValue | ((unsigned int) nMaskValue << 16);
+	if (0 < *(short*) (param_1 + 2)) {
+		rowOffset = (int) sRowOff << 2;
+		do {
+			unsigned char* pDst;
+			unsigned short* pMask;
+			unsigned char b;
+			unsigned char* p;
+			unsigned char* d;
+			unsigned int* m;
+			unsigned int n;
+			unsigned int nCount;
+
+			pDst = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + rowOffset) + (int) sRowBits);
+			pMask = (unsigned short*)
+				(*(int*) (*(int*) ((char*) pThis + 0x50) + rowOffset) + (int) sRowBits * 2);
+			do {
+				b = *pSrc++;
+				if (b < 0x80) {
+					pDst += (unsigned char) b;
+					pMask += (unsigned char) b;
+				} else if (b > 0x80) {
+					b &= 0x7f;
+					nCount = (unsigned int) b;
+					p = pSrc;
+					d = pDst;
+					for (n = nCount >> 2; n != 0; --n) {
+						*(unsigned int*) d = *(unsigned int*) p;
+						p += 4;
+						d += 4;
+					}
+					for (n = nCount & 3; n != 0; --n) {
+						*d++ = *p++;
+					}
+					if (b != 0) {
+						m = (unsigned int*) pMask;
+						for (n = nCount >> 1; n != 0; --n) {
+							*m++ = nMaskPattern;
+						}
+						for (n = nCount & 1; n != 0; --n) {
+							*(unsigned short*) m = nMaskValue;
+							m = (unsigned int*) ((char*) m + 2);
+						}
+					}
+					pDst += nCount;
+					pMask += nCount;
+					pSrc += nCount;
+				}
+			} while (b != 0x80);
+			++rowIndex;
+			rowOffset += 4;
+		} while (rowIndex < *(short*) (param_1 + 2));
+	}
+	(void) nUnused;
+}
+
+// FUNCTION: LEMBALL 0x00477540
+void __fastcall decode_zrle_rows_palette_gated_by_mask(
+	void* pThis,
+	int nUnused,
+	int param_1,
+	int* param_2,
+	unsigned short nMaskLimit,
+	unsigned char* pPalette)
+{
+	short sRowBits;
+	short sRowOff;
+	unsigned char* pSrc;
+	int rowIndex;
+	int rowOffset;
+
+	sRowBits = *(short*) (param_1 + 4);
+	sRowOff = *(short*) (param_1 + 6);
+	pSrc = (unsigned char*) (*(unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
+	rowIndex = 0;
+	if (0 < *(short*) (param_1 + 2)) {
+		rowOffset = (int) sRowOff << 2;
+		do {
+			unsigned char* pDst;
+			unsigned short* pMask;
+			unsigned char b;
+			unsigned char* p;
+			unsigned char* d;
+			unsigned short* m;
+			unsigned int n;
+			unsigned int nCount;
+
+			pDst = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + rowOffset) + (int) sRowBits);
+			pMask = (unsigned short*)
+				(*(int*) (*(int*) ((char*) pThis + 0x50) + rowOffset) + (int) sRowBits * 2);
+			do {
+				b = *pSrc++;
+				if (b < 0x80) {
+					nCount = (unsigned int) b;
+					pDst += nCount;
+					pMask += nCount;
+				} else if (b > 0x80) {
+					b &= 0x7f;
+					nCount = (unsigned int) b;
+					p = pSrc;
+					d = pDst;
+					m = pMask;
+					for (n = nCount; n != 0; --n) {
+						if (*m <= nMaskLimit) {
+							*d = pPalette[*p];
+						}
+						++m;
+						++d;
+						++p;
+					}
+					pSrc += nCount;
+					pDst += nCount;
+					pMask += nCount;
+				}
+			} while (b != 0x80);
+			++rowIndex;
+			rowOffset += 4;
+		} while (rowIndex < *(short*) (param_1 + 2));
+	}
+	(void) nUnused;
+}
+
+// FUNCTION: LEMBALL 0x00477310
+void __fastcall decode_zrle_rows_palette_write_mask(
+	void* pThis,
+	int nUnused,
+	int param_1,
+	int* param_2,
+	unsigned short nMaskValue,
+	unsigned char* pPalette)
+{
+	short sRowBits;
+	short sRowOff;
+	unsigned char* pSrc;
+	int rowIndex;
+	int rowOffset;
+	unsigned int nMaskPattern;
+
+	sRowBits = *(short*) (param_1 + 4);
+	sRowOff = *(short*) (param_1 + 6);
+	pSrc = (unsigned char*) (*(unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
+	rowIndex = 0;
+	nMaskPattern = (unsigned int) nMaskValue | ((unsigned int) nMaskValue << 16);
+	if (0 < *(short*) (param_1 + 2)) {
+		rowOffset = (int) sRowOff << 2;
+		do {
+			unsigned char* pDst;
+			unsigned short* pMask;
+			unsigned char b;
+			unsigned char* p;
+			unsigned char* d;
+			unsigned int* m;
+			unsigned int n;
+			unsigned int nCount;
+
+			pDst = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + rowOffset) + (int) sRowBits);
+			pMask = (unsigned short*)
+				(*(int*) (*(int*) ((char*) pThis + 0x50) + rowOffset) + (int) sRowBits * 2);
+			do {
+				b = *pSrc++;
+				if (b < 0x80) {
+					pDst += (unsigned char) b;
+					pMask += (unsigned char) b;
+				} else if (b > 0x80) {
+					b &= 0x7f;
+					nCount = (unsigned int) b;
+					p = pSrc;
+					d = pDst;
+					for (n = nCount; n != 0; --n) {
+						*d++ = pPalette[*p++];
+					}
+					if (b != 0) {
+						m = (unsigned int*) pMask;
+						for (n = nCount >> 1; n != 0; --n) {
+							*m++ = nMaskPattern;
+						}
+						for (n = nCount & 1; n != 0; --n) {
+							*(unsigned short*) m = nMaskValue;
+							m = (unsigned int*) ((char*) m + 2);
+						}
+					}
+					pDst += nCount;
+					pMask += nCount;
+					pSrc += nCount;
+				}
+			} while (b != 0x80);
+			++rowIndex;
+			rowOffset += 4;
+		} while (rowIndex < *(short*) (param_1 + 2));
+	}
+	(void) nUnused;
+}
