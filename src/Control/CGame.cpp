@@ -2651,8 +2651,8 @@ GameMainContext* GameMainContext::InitializeMainGameContext(const char* pszCmdLi
 
 	InitializeGlobalAudioManager(g_fMusicEnabled, g_fEffectsEnabled, 0x32, pMainContext->m_pPrimaryContext);
 	if (g_fMusicEnabled != 0) {
-		((VsSoundManager*) g_pAudioManager)->SetAudioManagerMusicEnabledFlag(1);
-		((VsSoundManager*) g_pAudioManager)->SetAudioManagerStartupMusicName(g_GAME_StartupMusicName);
+		((CSoundManager*) g_pAudioManager)->UseMusicCD(1);
+		((CSoundManager*) g_pAudioManager)->SetAudioManagerStartupMusicName(g_GAME_StartupMusicName);
 	}
 
 	pPrimaryStorage = AllocateVSMemBlock(0x2cc);
@@ -4847,12 +4847,12 @@ __declspec(naked) void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(void*,
 // FUNCTION: LEMBALL 0x00439f50
 void PASCAL SetAudioMusicAndEffectVolumeByte(unsigned char nVolume)
 {
-	((VsSoundManager*) g_pAudioManager)->SetAudioManagerMusicAndEffectVolume(nVolume, -1);
+	((CSoundManager*) g_pAudioManager)->SetVolumes(nVolume, -1);
 }
 // FUNCTION: LEMBALL 0x00439f70
 void PASCAL SetVariantResourceEffectMasterVolume(unsigned char nVolume)
 {
-	((VsSoundManager*) g_pAudioManager)->SetAudioManagerMusicAndEffectVolume(-1, nVolume);
+	((CSoundManager*) g_pAudioManager)->SetVolumes(-1, nVolume);
 }
 
 struct GameAudioCallbackOwnerView {
@@ -4866,7 +4866,7 @@ extern int g_fVariantResourceMusicEnabled;
 void LEMBALL_FASTCALL DispatchGameAudioChildCallback(GameAudioCallbackOwnerView* pOwner)
 {
 	if (g_fVariantResourceMusicEnabled != 0) {
-		((VsSoundManager*) g_pAudioManager)->DispatchChildInterfaceSlot18IfReady(pOwner->m_hMusic2C4);
+		((CSoundManager*) g_pAudioManager)->DispatchChildInterfaceSlot18IfReady(pOwner->m_hMusic2C4);
 	}
 }
 
@@ -4874,7 +4874,7 @@ void LEMBALL_FASTCALL DispatchGameAudioChildCallback(GameAudioCallbackOwnerView*
 void LEMBALL_FASTCALL NotifyGameAudioMusicIfActive(GameAudioCallbackOwnerView* pOwner)
 {
 	if (g_fVariantResourceMusicEnabled != 0) {
-		((VsSoundManager*) g_pAudioManager)->InvokeAudioManagerEmbeddedSlot1cIfMusicActive(pOwner->m_hMusic2C4);
+		((CSoundManager*) g_pAudioManager)->InvokeAudioManagerEmbeddedSlot1cIfMusicActive(pOwner->m_hMusic2C4);
 	}
 }
 // Macintosh: Draw__3C2DFRC7CVSRect

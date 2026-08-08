@@ -24,32 +24,32 @@ int SelectAudioManagerBackends(void** ppEffectBackends,
 
 extern void* g_pAudioManager;
 
-struct VsSoundManager {
+struct CSoundManager {
 	void* ConstructAudioManager(int nMusicResourceBase,
 								int cMusicResources,
 								int fMusicBackendEnabled,
 								int cEffectResources,
 								void* pPrimaryContext);
 	void InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2);
-	void SetAudioManagerPrimaryContext(void* pPrimaryContext);
-	void StopAllAudioManagerBackends(void);
-	int CreateVariantResourceEffectInstance(int nEffectResourceId);
-	void InvokeAudioManagerEffectSlot48IfActive(int nEffect);
-	unsigned char GetVariantResourceEffectMasterVolume(void);
-	void SetAudioManagerEffectResourceContext(void* pPrimaryContext);
-	void SetAudioManagerMusicResourceContext(void* pPrimaryContext);
-	int RegisterVariantResourceMusicHandle(int nMusicResourceId, int nUnused);
-	void StartRegisteredVariantResourceMusic(int hMusic);
+	void SetResId(void* pPrimaryContext);
+	void Background(void);
+	int PrepareEffect(int nEffectResourceId);
+	void FreeEffect(int nEffect);
+	unsigned char GetEffectVolume(void);
+	void SetEffectsWnd(void* pPrimaryContext);
+	void SetMusicWnd(void* pPrimaryContext);
+	int PrepareMusic(int nMusicResourceId, int nUnused);
+	void PlayMusic(int hMusic);
 	void ProcessMusic(unsigned long nDuration);
 	void DispatchChildInterfaceSlot18IfReady(int hMusic);
 	void InvokeAudioManagerEmbeddedSlot1cIfMusicActive(int hMusic);
-	void StopVariantResourceMusicPlayback(int hMusic);
-	void UnregisterVariantResourceMusicHandle(int hMusic);
+	void StopMusic(int hMusic);
+	void FreeMusic(int hMusic);
 	void SetAudioManagerStartupMusicName(const char* pszMusicName);
-	void SetAudioManagerMusicEnabledFlag(int fEnabled);
-	void PlayVariantResourceEffectId(int nEffectResourceId);
-	void SetVariantResourceEffectInstanceVolume(int nEffectInstanceId, int nVolume);
-	void SetAudioManagerMusicAndEffectVolume(int nMusicVolume, int nEffectVolume);
+	void UseMusicCD(int fEnabled);
+	void PlayEffect(int nEffectResourceId);
+	void PlayEffect(int nEffectInstanceId, int nVolume);
+	void SetVolumes(int nMusicVolume, int nEffectVolume);
 };
 
 #endif

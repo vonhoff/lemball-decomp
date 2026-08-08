@@ -183,7 +183,7 @@ void* LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void* pManager)
 	pVariantManager[0xb2] = 0;
 	pVariantManager[1] = 0;
 	if (g_fMusicEnabled != 0) {
-		((VsSoundManager*) g_pAudioManager)->InvokeAudioManagerEmbeddedSlot04(0x2220, 0xb482);
+		((CSoundManager*) g_pAudioManager)->InvokeAudioManagerEmbeddedSlot04(0x2220, 0xb482);
 		g_fVariantResourceMusicEnabled = 0;
 	}
 	((GameVariantResourceEntryManager*) pManager)->SetVariantResourceEffectsEnabledThunk(1);
@@ -234,8 +234,8 @@ void GameVariantResourceEntryManager::SetVariantResourceEffectsEnabled(int fEnab
 void GameVariantResourceEntryManager::PlayVariantResourceEffect(int nEffectSlot)
 {
 	if (g_fVariantResourceEffectsEnabled != 0) {
-		((VsSoundManager*) g_pAudioManager)
-			->PlayVariantResourceEffectId(*(int*) ((char*) this + nEffectSlot * 0x0c + 0x6c));
+		((CSoundManager*) g_pAudioManager)
+			->PlayEffect(*(int*) ((char*) this + nEffectSlot * 0x0c + 0x6c));
 	}
 }
 
@@ -260,15 +260,15 @@ void GameVariantResourceEntryManager::SetVariantResourceMusicEnabled(int fEnable
 
 	if (g_fMusicEnabled != 0 && *(int*) ((char*) pManager + 0x2c0) != 0) {
 		if (fEnabled != 0) {
-			hMusic = ((VsSoundManager*) g_pAudioManager)
-						 ->RegisterVariantResourceMusicHandle(*(int*) ((char*) pManager + 0x2c0), 1);
+			hMusic = ((CSoundManager*) g_pAudioManager)
+						 ->PrepareMusic(*(int*) ((char*) pManager + 0x2c0), 1);
 			*(int*) ((char*) pManager + 0x2c4) = hMusic;
-			((VsSoundManager*) g_pAudioManager)->StartRegisteredVariantResourceMusic(hMusic);
+			((CSoundManager*) g_pAudioManager)->PlayMusic(hMusic);
 			g_fVariantResourceMusicEnabled = fEnabled;
 			return;
 		}
-		((VsSoundManager*) g_pAudioManager)->StopVariantResourceMusicPlayback(*(int*) ((char*) pManager + 0x2c4));
-		((VsSoundManager*) g_pAudioManager)->UnregisterVariantResourceMusicHandle(*(int*) ((char*) pManager + 0x2c4));
+		((CSoundManager*) g_pAudioManager)->StopMusic(*(int*) ((char*) pManager + 0x2c4));
+		((CSoundManager*) g_pAudioManager)->FreeMusic(*(int*) ((char*) pManager + 0x2c4));
 		g_fVariantResourceMusicEnabled = fEnabled;
 	}
 }
@@ -285,7 +285,7 @@ void GameVariantResourceEntryManager::ClearActiveVariantResourceEntries(void)
 	i = 0x32;
 	do {
 		if (*pEntry != -1) {
-			((VsSoundManager*) g_pAudioManager)->InvokeAudioManagerEffectSlot48IfActive(*pEntry);
+			((CSoundManager*) g_pAudioManager)->FreeEffect(*pEntry);
 			*pEntry = -1;
 		}
 		pEntry += 3;
@@ -309,8 +309,8 @@ void GameVariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask(
 		i = 0x32;
 		do {
 			if (*pEntry != 0 && ((*(unsigned short*) (unsigned long) (*pEntry + 10) & nMask) != 0)) {
-				pEntry[1] = ((VsSoundManager*) g_pAudioManager)
-								->CreateVariantResourceEffectInstance(*(int*) (unsigned long) (*pEntry + 4));
+				pEntry[1] = ((CSoundManager*) g_pAudioManager)
+								->PrepareEffect(*(int*) (unsigned long) (*pEntry + 4));
 			}
 			pEntry[2] = (int) dwNow;
 			if (*(void**) ((char*) this + 4) != 0) {
@@ -364,7 +364,7 @@ void GameVariantResourceEntryManager::SwitchVariantResourceEntryMode(unsigned sh
 		else {
 			SetVariantResourceMusicEnabled(0);
 			ClearActiveVariantResourceEntries();
-			((VsSoundManager*) g_pAudioManager)->StopAllAudioManagerBackends();
+			((CSoundManager*) g_pAudioManager)->Background();
 		}
 
 		*(unsigned short*) ((char*) pManager + 0x0c) = nMask;
@@ -377,11 +377,11 @@ void GameVariantResourceEntryManager::SwitchVariantResourceEntryMode(unsigned sh
 			nMask = 3;
 			fEnableMusic = 0;
 		case 3:
-			((VsSoundManager*) g_pAudioManager)->SetAudioManagerPrimaryContext((void*) 0x243);
+			((CSoundManager*) g_pAudioManager)->SetResId((void*) 0x243);
 			nMusicResourceId = 0x242;
 			break;
 		case 4:
-			((VsSoundManager*) g_pAudioManager)->SetAudioManagerPrimaryContext((void*) 0x243);
+			((CSoundManager*) g_pAudioManager)->SetResId((void*) 0x243);
 			nMusicResourceId = *(int*) ((char*) pManager + 0x2c8) + 0x239;
 			nNextRandom = (*(int*) g_pSessionRandomState * 0x29 + 0x1f) & 0x7fffff;
 			*(int*) g_pSessionRandomState = nNextRandom;

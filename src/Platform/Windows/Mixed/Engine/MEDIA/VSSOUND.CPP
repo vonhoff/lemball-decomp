@@ -451,7 +451,7 @@ struct VsSoundBackendOpenInterface {
 	virtual int OpenPrimaryContext(int nResourceBase, int cResources, void* pPrimaryContext) = 0;
 };
 
-struct VsSoundManagerLayout {
+struct CSoundManagerLayout {
 	void* m_pVtable00;
 	void* m_pBackendControl04;
 	int m_fBackendsStopped08;
@@ -905,7 +905,7 @@ static const char g_AUDIO_MusicExtension[] = ".mid";
 static const char g_AUDIO_PathSeparator[] = "\\";
 
 // FUNCTION: LEMBALL 0x0045af80
-void* VsSoundManager::ConstructAudioManager(int nMusicResourceBase,
+void* CSoundManager::ConstructAudioManager(int nMusicResourceBase,
 											int cMusicResources,
 											int fMusicBackendEnabled,
 											int cEffectResources,
@@ -968,10 +968,10 @@ void* VsSoundManager::ConstructAudioManager(int nMusicResourceBase,
 		}
 	}
 	if (*(int*) ((char*) pAudioManager + 0x18) != 0) {
-		SetAudioManagerEffectResourceContext(pPrimaryContext);
+		SetEffectsWnd(pPrimaryContext);
 	}
 	if (*(int*) ((char*) pAudioManager + 0x14) != 0) {
-		SetAudioManagerMusicResourceContext(pPrimaryContext);
+		SetMusicWnd(pPrimaryContext);
 	}
 	RefreshAudioManagerBackendHandles(pAudioManager);
 
@@ -1048,7 +1048,7 @@ void __fastcall DestroyAudioManager(void* pAudioManager)
 }
 
 // FUNCTION: LEMBALL 0x0045b190
-void VsSoundManager::SetAudioManagerPrimaryContext(void* pPrimaryContext)
+void CSoundManager::SetResId(void* pPrimaryContext)
 {
 	int fAccepted;
 	VsSoundBackendOpenInterface* pBackend;
@@ -1068,7 +1068,7 @@ void VsSoundManager::SetAudioManagerPrimaryContext(void* pPrimaryContext)
 }
 
 // FUNCTION: LEMBALL 0x0045b1d0
-void VsSoundManager::StopAllAudioManagerBackends(void)
+void CSoundManager::Background(void)
 {
 	VsSoundEffectBackendSlots00Through24* pBackend;
 	unsigned int i;
@@ -1089,13 +1089,13 @@ void VsSoundManager::StopAllAudioManagerBackends(void)
 // FUNCTION: LEMBALL 0x0045b210
 void __fastcall RefreshAudioManagerBackendHandles(void* pAudioManager)
 {
-	VsSoundManagerLayout* pManager;
+	CSoundManagerLayout* pManager;
 	VsSoundBackendOpenInterface* pMusicBackend;
 	int fAccepted;
 	int nMusicResourceBase;
 	int cEffectResources;
 
-	pManager = (VsSoundManagerLayout*) pAudioManager;
+	pManager = (CSoundManagerLayout*) pAudioManager;
 	if (pManager->m_fBackendsStopped08 != 0) {
 		nMusicResourceBase = pManager->m_nMusicResourceBase14;
 		pManager->m_fBackendsStopped08 = 0;
@@ -1130,7 +1130,7 @@ void __fastcall RefreshAudioManagerBackendHandles(void* pAudioManager)
 }
 
 // FUNCTION: LEMBALL 0x0045b2c0
-void VsSoundManager::InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2)
+void CSoundManager::InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2)
 {
 	VsSoundBackendControlDispatch* pControl;
 
@@ -1139,7 +1139,7 @@ void VsSoundManager::InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2)
 }
 
 // FUNCTION: LEMBALL 0x0045b2e0
-int VsSoundManager::RegisterVariantResourceMusicHandle(int nMusicResourceId, int)
+int CSoundManager::PrepareMusic(int nMusicResourceId, int)
 
 {
 	int hMusic;
@@ -1160,7 +1160,7 @@ int VsSoundManager::RegisterVariantResourceMusicHandle(int nMusicResourceId, int
 }
 
 // FUNCTION: LEMBALL 0x0045b330
-void VsSoundManager::StartRegisteredVariantResourceMusic(int hMusic)
+void CSoundManager::PlayMusic(int hMusic)
 
 {
 	VsSoundBackendControlDispatch* pControl;
@@ -1172,7 +1172,7 @@ void VsSoundManager::StartRegisteredVariantResourceMusic(int hMusic)
 }
 
 // FUNCTION: LEMBALL 0x0045b350
-void VsSoundManager::ProcessMusic(unsigned long nDuration)
+void CSoundManager::ProcessMusic(unsigned long nDuration)
 {
 	void* pControl;
 
@@ -1184,7 +1184,7 @@ void VsSoundManager::ProcessMusic(unsigned long nDuration)
 }
 
 // FUNCTION: LEMBALL 0x0045b370
-void VsSoundManager::DispatchChildInterfaceSlot18IfReady(int hMusic)
+void CSoundManager::DispatchChildInterfaceSlot18IfReady(int hMusic)
 
 {
 	VsSoundBackendControlDispatch* pControl;
@@ -1196,7 +1196,7 @@ void VsSoundManager::DispatchChildInterfaceSlot18IfReady(int hMusic)
 }
 
 // FUNCTION: LEMBALL 0x0045b390
-void VsSoundManager::InvokeAudioManagerEmbeddedSlot1cIfMusicActive(int hMusic)
+void CSoundManager::InvokeAudioManagerEmbeddedSlot1cIfMusicActive(int hMusic)
 
 {
 	VsSoundBackendControlDispatch* pControl;
@@ -1208,7 +1208,7 @@ void VsSoundManager::InvokeAudioManagerEmbeddedSlot1cIfMusicActive(int hMusic)
 }
 
 // FUNCTION: LEMBALL 0x0045b3b0
-void VsSoundManager::StopVariantResourceMusicPlayback(int hMusic)
+void CSoundManager::StopMusic(int hMusic)
 
 {
 	VsSoundBackendControlDispatch* pControl;
@@ -1220,7 +1220,7 @@ void VsSoundManager::StopVariantResourceMusicPlayback(int hMusic)
 }
 
 // FUNCTION: LEMBALL 0x0045b3d0
-void VsSoundManager::UnregisterVariantResourceMusicHandle(int hMusic)
+void CSoundManager::FreeMusic(int hMusic)
 
 {
 	VsSoundBackendControlDispatch* pControl;
@@ -1232,7 +1232,7 @@ void VsSoundManager::UnregisterVariantResourceMusicHandle(int hMusic)
 }
 
 // FUNCTION: LEMBALL 0x0045b3f0
-int VsSoundManager::CreateVariantResourceEffectInstance(int nEffectResourceId)
+int CSoundManager::PrepareEffect(int nEffectResourceId)
 {
 	VsSoundResourceObject* pEffectResource;
 	void** pEffectResourceVtable;
@@ -1267,13 +1267,13 @@ int VsSoundManager::CreateVariantResourceEffectInstance(int nEffectResourceId)
 }
 
 // FUNCTION: LEMBALL 0x0045b460
-void VsSoundManager::PlayVariantResourceEffectId(int nEffectResourceId)
+void CSoundManager::PlayEffect(int nEffectResourceId)
 {
 	int nReserved;
-	VsSoundManagerLayout* pManager;
+	CSoundManagerLayout* pManager;
 
 	nReserved = 0;
-	pManager = (VsSoundManagerLayout*) this;
+	pManager = (CSoundManagerLayout*) this;
 	if (pManager->m_cAcceptedEffectResources10 == 1) {
 		((VsSoundEffectPlaybackInterface*) pManager->m_pEffectBackend78)
 			->PlayEffect(nEffectResourceId,
@@ -1283,7 +1283,7 @@ void VsSoundManager::PlayVariantResourceEffectId(int nEffectResourceId)
 }
 
 // FUNCTION: LEMBALL 0x0045b490
-void VsSoundManager::SetVariantResourceEffectInstanceVolume(int nEffectInstanceId, int nVolume)
+void CSoundManager::PlayEffect(int nEffectInstanceId, int nVolume)
 {
 	VsSoundEffectVolumeInterface* pBackend;
 
@@ -1294,7 +1294,7 @@ void VsSoundManager::SetVariantResourceEffectInstanceVolume(int nEffectInstanceI
 }
 
 // FUNCTION: LEMBALL 0x0045b4f0
-void VsSoundManager::InvokeAudioManagerEffectSlot48IfActive(int nEffect)
+void CSoundManager::FreeEffect(int nEffect)
 {
 	VsSoundEffectBackendSlots00Through24* pBackend;
 	void* pAudioManager;
@@ -1307,7 +1307,7 @@ void VsSoundManager::InvokeAudioManagerEffectSlot48IfActive(int nEffect)
 }
 
 // FUNCTION: LEMBALL 0x0045b510
-void VsSoundManager::SetAudioManagerMusicAndEffectVolume(int nMusicVolume, int nEffectVolume)
+void CSoundManager::SetVolumes(int nMusicVolume, int nEffectVolume)
 {
 	VsSoundMusicVolumeInterface* pMusicBackend;
 	VsSoundEffectBackendSlots00Through24* pEffectBackend;
@@ -1335,7 +1335,7 @@ void VsSoundManager::SetAudioManagerMusicAndEffectVolume(int nMusicVolume, int n
 }
 
 // FUNCTION: LEMBALL 0x0045b560
-unsigned char VsSoundManager::GetVariantResourceEffectMasterVolume(void)
+unsigned char CSoundManager::GetEffectVolume(void)
 {
 	VsSoundEffectMasterVolumeInterface* pBackend;
 	void* pAudioManager;
@@ -1350,7 +1350,7 @@ unsigned char VsSoundManager::GetVariantResourceEffectMasterVolume(void)
 
 #pragma auto_inline(off)
 // FUNCTION: LEMBALL 0x0045b580
-void VsSoundManager::SetAudioManagerEffectResourceContext(void* pPrimaryContext)
+void CSoundManager::SetEffectsWnd(void* pPrimaryContext)
 {
 	VsSoundEffectContextInterface* pBackend;
 	void* pAudioManager;
@@ -1361,7 +1361,7 @@ void VsSoundManager::SetAudioManagerEffectResourceContext(void* pPrimaryContext)
 }
 
 // FUNCTION: LEMBALL 0x0045b5a0
-void VsSoundManager::SetAudioManagerMusicResourceContext(void* pPrimaryContext)
+void CSoundManager::SetMusicWnd(void* pPrimaryContext)
 {
 	VsSoundEffectContextInterface* pBackend;
 	void* pAudioManager;
@@ -1375,7 +1375,7 @@ void VsSoundManager::SetAudioManagerMusicResourceContext(void* pPrimaryContext)
 #pragma auto_inline(on)
 
 // FUNCTION: LEMBALL 0x0045b5c0
-void VsSoundManager::SetAudioManagerStartupMusicName(const char* pszMusicName)
+void CSoundManager::SetAudioManagerStartupMusicName(const char* pszMusicName)
 {
 	VsSoundBackendControl* pControl;
 
@@ -1385,7 +1385,7 @@ void VsSoundManager::SetAudioManagerStartupMusicName(const char* pszMusicName)
 }
 
 // FUNCTION: LEMBALL 0x0045b5f0
-void VsSoundManager::SetAudioManagerMusicEnabledFlag(int fEnabled)
+void CSoundManager::UseMusicCD(int fEnabled)
 {
 	VsSoundBackendControl* pControl;
 
@@ -1450,7 +1450,7 @@ int InitializeGlobalAudioManager(int nMusicResourceBase,
 	pAudioManager = AllocateVSMemBlock(0xc90);
 	if (pAudioManager != 0) {
 		g_pAudioManager =
-			((VsSoundManager*) pAudioManager)
+			((CSoundManager*) pAudioManager)
 				->ConstructAudioManager(nMusicResourceBase, cMusicResources, 1, cEffectResources, pPrimaryContext);
 		return 1;
 	}
