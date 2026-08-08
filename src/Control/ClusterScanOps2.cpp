@@ -57,6 +57,9 @@ struct DebugTextRect {
 
 extern "C" BOOL WINAPI GetClientRect(HWND hWnd, DebugTextRect* lpRect);
 extern BOOL WINAPI ClientToScreen(HWND hWnd, tagPOINT* lpPoint);
+extern "C" int WINAPI GetSystemMetrics(int nIndex);
+extern "C" BOOL WINAPI AdjustWindowRect(DebugTextRect* lpRect, long dwStyle, BOOL bMenu);
+extern "C" BOOL WINAPI SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, unsigned int uFlags);
 
 
 // FUNCTION: LEMBALL 0x00452bc0
@@ -2810,4 +2813,148 @@ void* __fastcall construct_resource_sprite_geometry_child_from_point_size(
 	*(unsigned short*)((char*)pThis + 0x142) = pSize[1];
 	((void(__fastcall*)(void*))0x4693b0)(pThis);
 	return pThis;
+}
+// FUNCTION: LEMBALL 0x00441fe0
+void __fastcall mark_level_screen_update_grid_rect(void* pThis, int nEdxSlop, short* pRect)
+{
+	int nX0 = pRect[2] / 16;
+	int nY0 = pRect[3] / 16;
+	int nWidth = (pRect[0] + pRect[2] - 1) / 16 - nX0 + 1;
+	int nHeight = (pRect[1] + pRect[3] - 1) / 16 - nY0 + 1;
+	int nGridW = *(short*) ((char*) pThis + 0x8);
+	int nGridH = *(short*) ((char*) pThis + 0xa);
+	if (nX0 < nGridW && nY0 < nGridH) {
+		if (nX0 < 0) { nWidth += nX0; nX0 = 0; }
+		if (nY0 < 0) { nHeight += nY0; nY0 = 0; }
+		if (nGridW <= nX0 + nWidth) nWidth = nGridW - nX0;
+		if (nGridH <= nY0 + nHeight) nHeight = nGridH - nY0;
+		if (nWidth > 0 && nHeight > 0) {
+			int nBase = nX0 + nY0 * nGridW;
+			char* pBuf1 = *(char**) ((char*) pThis + 0x10) + nBase;
+			char* pBuf2 = *(char**) ((char*) pThis + 0x14) + nBase;
+			do {
+				memset(pBuf1, 1, nWidth);
+				memset(pBuf2, 1, nWidth);
+				pBuf1 += nGridW;
+				pBuf2 += nGridW;
+			} while (--nHeight != 0);
+		}
+	}
+	(void) nEdxSlop;
+}
+
+// FUNCTION: LEMBALL 0x00474090
+void __fastcall resize_debug_text_window_to_line_height(void* pThis, int nEdxSlop, int xPos, int nRequestH)
+{
+	void** vtbl = *(void***) pThis;
+	(*(void (__fastcall**)(void*, int)) vtbl[0])(pThis, 0);
+	HWND hwnd = *(HWND*) ((char*) pThis + 0x1c);
+	int nLineH = *(int*) ((char*) pThis + 0x3c);
+	if (nRequestH % nLineH == 0) {
+		refresh_debug_text_visible_line_counts(pThis, 0);
+		refresh_debug_text_client_width(pThis, 0);
+	} else {
+		DebugTextRect rc;
+		rc.nLeft   = 0;
+		rc.nTop    = 0;
+		rc.nRight  = xPos + GetSystemMetrics(2);
+		rc.nBottom = nRequestH - nRequestH % nLineH + nLineH;
+		AdjustWindowRect(&rc, GetWindowLongA(hwnd, -16), 0);
+		SetWindowPos(hwnd, 0, 0, 0, rc.nRight - rc.nLeft, rc.nBottom - rc.nTop, 6);
+	}
+	(*(void (__fastcall**)(void*, int)) vtbl[1])(pThis, 0);
+	(void) nEdxSlop;
+}
+
+// FUNCTION: LEMBALL 0x004432c0
+int __fastcall handle_level_screen_pause_action_button_event(void* pThis, int nUnused, short* pActionButtonEvent)
+{
+	void* pBase = *(void**)((char*)pThis + 0x10);
+	if (*(int*)((char*)pBase + 0xa7c) == 0 &&
+	    *(int*)(*(char**)((char*)pBase + 0x96c) + 0x108) != 1) {
+		if (*(short*)pActionButtonEvent == 4) {
+			if (((int(__fastcall*)(void*, int, int))0x00402a81)(pThis, 0, *(int*)((char*)pActionButtonEvent + 8)) == 8) {
+				*(int*)((char*)g_pVariantResourceEntryManager + 0x10) = 3;
+				((void(__fastcall*)(void*, int, int))0x00402ed7)(pBase, 0, (unsigned int)(*(int*)((char*)pBase + 0xa7c) == 0));
+				void* pCur = *(void**)((char*)pThis + 0x2c);
+				int nPause = *(int*)((char*)pBase + 0xa7c);
+				*(int*)((char*)pCur + 0x130) = nPause;
+				*(int*)((char*)pCur + 0x104) = nPause;
+				return 1;
+			}
+		}
+	}
+	return 0;
+}// FUNCTION: LEMBALL 0x004422b0
+void __fastcall toggle_level_pause_state(void* pThis, int nUnused, int bEnablePause)
+{
+	if (bEnablePause == 0) {
+		unsigned int uVar3;
+		int uVar1;
+		int doSet;
+		void* pObj;
+		void* vSub;
+		uVar3 = *(unsigned int*)((char*)pThis + 0x130) ^ 1;
+		*(unsigned int*)((char*)pThis + 0x130) = uVar3;
+		*(unsigned int*)((char*)pThis + 0x104) = uVar3;
+		pObj = *(void**)((char*)pThis + 0x134);
+		vSub = *(void**)((char*)pObj + 0x10);
+		doSet = 0;
+		if (uVar3 == 0) {
+			void** pVt = *(void***)((char*)vSub + 0x4c);
+			if (((int(__fastcall*)(void*))pVt[1])((char*)vSub + 0x4c) != 0)
+				doSet = 1;
+		} else if (*(int*)(*(char**)((char*)vSub + 0x96c) + 0x108) != 1) {
+			doSet = 1;
+		}
+		if (doSet)
+			((void(__fastcall*)(void*, int, int))0x00402ed7)(vSub, 0, uVar3);
+		uVar1 = *(int*)((char*)vSub + 0xa7c);
+		*(unsigned int*)((char*)pThis + 0x130) = uVar1;
+		*(unsigned int*)((char*)pThis + 0x104) = uVar1;
+		*(unsigned int*)((char*)pThis + 0x138) = 0;
+		((void(__fastcall*)(void*, int, int, int))0x00401b72)(vSub, 0, 1, 0);
+	}
+	(void) nUnused;
+}// FUNCTION: LEMBALL 0x00477440
+void __fastcall decode_zrle_rows_gated_by_mask(void* pThis, int nUnused, int param_1, int* param_2, unsigned short param_3)
+{
+	short sRowBits = *(short*)(param_1 + 4);
+	short sRowOff = *(short*)(param_1 + 6);
+	unsigned char* pSrc = (unsigned char*) (*( unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
+	int rowIndex = 0;
+	if (0 < *(short*)(param_1 + 2)) {
+		int rowOffset = (int)sRowOff << 2;
+		do {
+			unsigned char* pDst = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + rowOffset) + (int)sRowBits);
+			unsigned short* pMask = (unsigned short*) (*(int*) (*(int*) ((char*) pThis + 0x50) + rowOffset) + (int)sRowBits * 2);
+			unsigned char b;
+			do {
+				b = *pSrc++;
+				if (b < 0x80) {
+					pDst = pDst + (unsigned char)b;
+					pMask = pMask + (unsigned char)b;
+				} else if (b > 0x80) {
+					b = b & 0x7f;
+					unsigned char* p = pSrc;
+					unsigned char* d = pDst;
+					unsigned short* m = pMask;
+					for (unsigned char n = b; n != 0; n = n - 1) {
+						if (*m <= param_3) {
+							*d = *p;
+						}
+						d = d + 1;
+						m = m + 1;
+						p = p + 1;
+					}
+					pSrc = pSrc + (unsigned char)b;
+					pDst = pDst + (unsigned char)b;
+					pMask = pMask + (unsigned char)b;
+				}
+			} while (b != 0x80);
+			rowIndex = rowIndex + 1;
+			rowOffset = rowOffset + 4;
+		} while (rowIndex < *(short*)(param_1 + 2));
+	}
+	(void) nUnused;
 }
