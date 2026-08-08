@@ -5384,6 +5384,18 @@ void LEMBALL_FASTCALL sample_signed_sine_table(void* pTable, int nUnused, int* p
 	}
 }
 
+// FUNCTION: LEMBALL 0x0044b6f0
+void LEMBALL_FASTCALL sample_signed_cosine_table(void* pTable, int, int* pOut, int nAngle)
+{
+	int nIndex = nAngle + 0x80;
+	if (nIndex < 0) {
+		*pOut = -((int*) pTable)[(-nIndex) % 0x200];
+	}
+	else {
+		*pOut = ((int*) pTable)[nIndex % 0x200];
+	}
+}
+
 // FUNCTION: LEMBALL 0x0044b8f0
 void LEMBALL_FASTCALL DestroyRegistrationInfoScreen(void* pObject)
 {
