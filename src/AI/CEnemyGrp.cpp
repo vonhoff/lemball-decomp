@@ -1,5 +1,6 @@
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "AI/CGenericGroup.h"
+#include "AI/CEnemy.h"
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 
@@ -34,89 +35,89 @@ CEnemyGroup::CEnemyGroup(int nAI, unsigned short nObjectManager, unsigned short 
 }
 
 // FUNCTION: LEMBALL 0x00420600
-void __fastcall CEnemy_HitBullet(void* pThis, int nUnused, void* param_1)
+void CEnemy::HitBullet(void* pBullet)
 {
-	if (*(int*) ((char*) param_1 + 0x16c) != 1) {
-		*(int*) ((char*) pThis + 0x124) = 1;
-		*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick + 0x3c;
-		short sVar1 = *(short*) ((char*) param_1 + 0xb4);
-		*(int*) ((char*) pThis + 0x2c) = 1;
-		*(unsigned short*) ((char*) pThis + 0xb4) = sVar1 + 4U & 7;
+	if (*(int*) ((char*) pBullet + 0x16c) != 1) {
+		m_nHitBulletState124 = 1;
+		m_nUpdateTickCC = g_nLevelFrameClockTick + 0x3c;
+		short sVar1 = *(short*) ((char*) pBullet + 0xb4);
+		m_nState2C = 1;
+		m_wHeadingDirB4 = sVar1 + 4U & 7;
 	}
 }
 // FUNCTION: LEMBALL 0x004206a0
-void __fastcall CEnemy_HitMine(void* pObject)
+void CEnemy::HitMine(void)
 {
-	*(int*) ((char*) pObject + 0x10c) = 1;
+	m_nHitMinScore10C = 1;
 	((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, 300);
 	int vec[3];
 	vec[0] = 0;
 	vec[1] = 0;
 	vec[2] = 0xa000;
-	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
-	*(int*) ((char*) pObject + 0x2c) = 1;
+	(*( void(**)(void*, int)) (*(void***) this + 0x20 / 4))(vec, 0);
+	m_nState2C = 1;
 }
 // FUNCTION: LEMBALL 0x00420650
-int __fastcall CEnemy_FacingTarget(void* pThis)
+int CEnemy::FacingTarget(void)
 {
 	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
-		*(int*) ((char*) pThis + 0x9c) >> 12,
-		*(int*) ((char*) pThis + 0xa0) >> 12,
-		*(int*) ((char*) pThis + 0x15c) >> 12,
-		*(int*) ((char*) pThis + 0x160) >> 12);
-	return (int) *(short*) ((char*) pThis + 0xb4) == nOct;
+		m_nWorldX9C >> 12,
+		m_nWorldYA0 >> 12,
+		m_nTargetX15C >> 12,
+		m_nTargetY160 >> 12);
+	return (int) m_wHeadingDirB4 == nOct;
 }
 // FUNCTION: LEMBALL 0x00420350
-void __fastcall CEnemy_TurnToFaceTarget(void* pThis)
+void CEnemy::TurnToFaceTarget(void)
 {
 	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
-		*(int*) ((char*) pThis + 0x9c) >> 12,
-		*(int*) ((char*) pThis + 0xa0) >> 12,
-		*(int*) ((char*) pThis + 0x15c) >> 12,
-		*(int*) ((char*) pThis + 0x160) >> 12);
-	if (nOct != (int) *(short*) ((char*) pThis + 0xb4)) {
-		if (*(int*) ((char*) 0x49d020 + (nOct - (int) *(short*) ((char*) pThis + 0xb4) & 7) * 4) < 0) {
-			((void(__fastcall*)(void*)) 0x4023e7)(pThis);
+		m_nWorldX9C >> 12,
+		m_nWorldYA0 >> 12,
+		m_nTargetX15C >> 12,
+		m_nTargetY160 >> 12);
+	if (nOct != (int) m_wHeadingDirB4) {
+		if (*(int*) ((char*) 0x49d020 + (nOct - (int) m_wHeadingDirB4 & 7) * 4) < 0) {
+			((void(__fastcall*)(void*)) 0x4023e7)(this);
 		} else {
-			((void(__fastcall*)(void*)) 0x402068)(pThis);
+			((void(__fastcall*)(void*)) 0x402068)(this);
 		}
 	}
-	*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick +
-		*(int*) ((char*) 0x49d0b0 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
+	m_nUpdateTickCC = g_nLevelFrameClockTick +
+		*(int*) ((char*) 0x49d0b0 + m_nForm64 * 4) / 0x32;
 }
 // FUNCTION: LEMBALL 0x0041fcd0
-void __fastcall CEnemy_Restart(void* pThis, int nUnused)
+void CEnemy::Restart(void)
 {
-	((LevelChunkObjectRuntimeStateView*) pThis)->ResetRuntimeStateThunk();
-	*(int*) ((char*) pThis + 0x9c) = *(int*) ((char*) pThis + 0x40);
-	*(int*) ((char*) pThis + 0xa0) = *(int*) ((char*) pThis + 0x44);
-	*(int*) ((char*) pThis + 0xa4) = *(int*) ((char*) pThis + 0x48);
-	*(unsigned short*) ((char*) pThis + 0xb4) = *(unsigned short*) ((char*) pThis + 0xb6);
-	*(int*) ((char*) pThis + 0x128) = 0;
-	*(int*) ((char*) pThis + 0x168) = 0;
-	*(int*) ((char*) pThis + 0x124) = 0;
-	*(int*) ((char*) pThis + 0x2c) = 0;
+	((LevelChunkObjectRuntimeStateView*) this)->ResetRuntimeStateThunk();
+	m_nWorldX9C = m_nSpawnX40;
+	m_nWorldYA0 = m_nSpawnY44;
+	m_nWorldZA4 = m_nSpawnZ48;
+	m_wHeadingDirB4 = m_wSaveHeadingB6;
+	m_nReserved128 = 0;
+	m_nReserved168 = 0;
+	m_nHitBulletState124 = 0;
+	m_nState2C = 0;
 	void** ppReg = *(void***) ((char*) g_pActiveManagedEntityOwner + 0x120);
-	ppReg[*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118)] = pThis;
+	ppReg[*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118)] = this;
 	*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) += 1;
-	if (*(int*) ((char*) pThis + 0x134) != 0) {
-		*(int*) (*(int*) ((char*) pThis + 0x134) + 0x8) = 0;
-		*(int*) (*(int*) ((char*) pThis + 0x134) + 0xc) = 1;
+	if (m_pDesc134 != 0) {
+		*(int*) ((char*) m_pDesc134 + 0x8) = 0;
+		*(int*) ((char*) m_pDesc134 + 0xc) = 1;
 	}
-	if (*(int*) ((char*) pThis + 0x140) != 0) {
-		*(int*) (*(int*) ((char*) pThis + 0x140) + 0x8) = 0;
-		*(int*) (*(int*) ((char*) pThis + 0x140) + 0xc) = 1;
+	if (m_pDesc140 != 0) {
+		*(int*) ((char*) m_pDesc140 + 0x8) = 0;
+		*(int*) ((char*) m_pDesc140 + 0xc) = 1;
 	}
-	if (*(int*) ((char*) pThis + 0x14c) != 0) {
-		*(int*) (*(int*) ((char*) pThis + 0x14c) + 0x8) = 0;
-		*(int*) (*(int*) ((char*) pThis + 0x14c) + 0xc) = 1;
+	if (m_pDesc14C != 0) {
+		*(int*) ((char*) m_pDesc14C + 0x8) = 0;
+		*(int*) ((char*) m_pDesc14C + 0xc) = 1;
 	}
 }
 // FUNCTION: LEMBALL 0x004202a0
-int __fastcall CEnemy_LineOfSight(void* pObject, int nUnused, int param_1, int param_2)
+int CEnemy::LineOfSight(int param_1, int param_2)
 {
-	unsigned int local_8 = param_1 - *(int*) ((char*) pObject + 0x9c);
-	unsigned int uVar4 = param_2 - *(int*) ((char*) pObject + 0xa0);
+	unsigned int local_8 = param_1 - m_nWorldX9C;
+	unsigned int uVar4 = param_2 - m_nWorldYA0;
 	unsigned int local_4;
 	unsigned int* puVar1;
 	unsigned int* puVar2;
@@ -133,7 +134,7 @@ int __fastcall CEnemy_LineOfSight(void* pObject, int nUnused, int param_1, int p
 	return 0;
 }
 // FUNCTION: LEMBALL 0x004200f0
-void __fastcall CEnemy_EnemyAction_PATROL(void* pThis, int nUnused, void* pDesc)
+void CEnemy::EnemyAction_PATROL(void* pDesc)
 {
 	unsigned int local_18 = 0xaa55aa55;
 	unsigned int local_14 = 0xaa55aa55;
@@ -161,6 +162,6 @@ void __fastcall CEnemy_EnemyAction_PATROL(void* pThis, int nUnused, void* pDesc)
 				}
 			}
 		}
-		((void(__fastcall*) (void*, unsigned int*)) 0x401d52)(pThis, &local_18);
+		((void(__fastcall*) (void*, unsigned int*)) 0x401d52)(this, &local_18);
 	}
 }

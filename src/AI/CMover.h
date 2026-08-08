@@ -24,6 +24,7 @@ public:
 	void StopObjectsMoving(void);
 	int IsAt(int x, int y, int* pHeight);
 	void Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
+	void FindObjectsOnTopOfMe(void);
 
 private:
 	char m_abReserved6E[0x2e];

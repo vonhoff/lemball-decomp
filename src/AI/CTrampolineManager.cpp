@@ -47,14 +47,14 @@ void CTrampolineManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigne
 }
 
 // FUNCTION: LEMBALL 0x0042b4f0
-int __fastcall CTrampolineManager_GetViewData(void* pThis, int nUnused, int param_1)
+int CTrampolineManager::GetViewData(int param_1)
 {
 	int local_4 = 0;
 	int iVar2 = 0;
-	if (*(int*) ((char*) pThis + 0x34) > 0) {
+	if (m_nObjectCount34 > 0) {
 		int iVar3 = 0;
 		do {
-			int* piVar1 = (int*) (*(int*) ((char*) pThis + 0x38) + iVar3);
+			int* piVar1 = (int*) (m_pObjects38 + iVar3);
 			int iVar4 = param_1;
 			if (piVar1[0x4e] != 0) {
 				iVar4 = param_1 + 0x4c;
@@ -64,7 +64,7 @@ int __fastcall CTrampolineManager_GetViewData(void* pThis, int nUnused, int para
 			iVar3 = iVar3 + 0x144;
 			iVar2 = iVar2 + 1;
 			param_1 = iVar4;
-		} while (iVar2 < *(int*) ((char*) pThis + 0x34));
+		} while (iVar2 < m_nObjectCount34);
 	}
 	return local_4;
 }
