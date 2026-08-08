@@ -45,6 +45,16 @@ struct GameVariantResourceEntryManager {
 	void PlayVariantResourceEffect(int nEffectSlot);
 };
 
+struct DebugTextRect {
+	long nLeft;
+	long nTop;
+	long nRight;
+	long nBottom;
+};
+
+extern "C" BOOL WINAPI GetClientRect(HWND hWnd, DebugTextRect* lpRect);
+extern BOOL WINAPI ClientToScreen(HWND hWnd, tagPOINT* lpPoint);
+
 
 // FUNCTION: LEMBALL 0x00452bc0
 int __fastcall CountActiveNetworkLobbyPeerStreams(void* pObject)
@@ -2189,4 +2199,31 @@ void* __fastcall construct_single_child_overlay_owner_from_point(void* self, int
 	*(unsigned short*)((char*)self + 0xdc) = *(unsigned short*)pPoint;
 	*(unsigned short*)((char*)self + 0xde) = *(unsigned short*)((char*)pPoint + 2);
 	return self;
+}
+// FUNCTION: LEMBALL 0x00473eb0
+void __cdecl get_window_client_rect_in_screen_coords(HWND hwnd, DebugTextRect* pRect)
+{
+	tagPOINT pt;
+	pt.x = 0;
+	pt.y = 0;
+	ClientToScreen(hwnd, &pt);
+	GetClientRect(hwnd, pRect);
+	pRect->nTop += pt.y;
+	pRect->nBottom += pt.y;
+	pRect->nLeft += pt.x;
+	pRect->nRight += pt.x;
+}
+
+// FUNCTION: LEMBALL 0x00474000
+int __fastcall refresh_debug_text_visible_line_counts(void* pThis, int nEdxSlop)
+{
+	DebugTextRect rc;
+	void** vtbl = *(void***)pThis;
+	(*(void (__fastcall**)(void*, int))vtbl[0])(pThis, 0);
+	GetClientRect(*(HWND*)((char*)pThis + 0x1c), &rc);
+	int lineHeight = *(int*)((char*)pThis + 0x3c);
+	*(int*)((char*)pThis + 0x30) = (rc.nBottom - rc.nTop) / lineHeight;
+	*(int*)((char*)pThis + 0x34) = (lineHeight - 1 + (rc.nBottom - rc.nTop)) / lineHeight;
+	(*(void (__fastcall**)(void*, int))vtbl[1])(pThis, 0);
+	return *(int*)((char*)pThis + 0x34);
 }
