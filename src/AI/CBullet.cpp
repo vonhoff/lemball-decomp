@@ -6,6 +6,43 @@ typedef unsigned long DWORD;
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nSelectedNetworkLobbyPeerId;
+extern void* g_pLevelTileGrid;
+
+// FUNCTION: LEMBALL 0x0041a5c0
+void CBullet::Set(unsigned short nCaller, int nBulletType, int nOwner, int nDirection,
+	AICOORD source, AICOORD target)
+{
+	int nTileX;
+	int nTileY;
+	unsigned short nHeight;
+
+	(void) nDirection;
+	m_nBulletType168 = nBulletType;
+	m_nOwner16C = nOwner;
+	m_nWorldX9C = source.x;
+	m_nWorldYA0 = source.y;
+	m_nWorldZA4 = source.z;
+	m_nDestXA8 = target.x;
+	m_nDestYAC = target.y;
+	m_nRuntimeFlag164 = 1;
+	nTileX = (target.x >> 12) >> 4;
+	nTileY = (target.y >> 12) >> 4;
+	if ((target.x >> 12) < 0 || (target.y >> 12) < 0 ||
+		*(int*) ((char*) g_pLevelTileGrid + 0x10) <= nTileX ||
+		*(int*) ((char*) g_pLevelTileGrid + 0x14) <= nTileY) {
+		nHeight = 0;
+	}
+	else {
+		void* pTile = (char*) *(void**) ((char*) g_pLevelTileGrid + 0x0c) +
+			(nTileY * *(int*) ((char*) g_pLevelTileGrid + 0x10) + nTileX) * 12;
+		nHeight = ((unsigned short(__fastcall*)(void*, int, int)) 0x4029a5)(
+			pTile, target.x >> 12 & 0xf, target.y >> 12 & 0xf);
+	}
+	m_sCaller170 = nCaller;
+	m_nDestZB0 = (nHeight + 12) << 12;
+	m_nHeadingOctantB4 = (unsigned short) ((int(__cdecl*)(int, int, int, int)) 0x401532)(
+		m_nWorldX9C >> 12, m_nWorldYA0 >> 12, m_nDestXA8 >> 12, m_nDestYAC >> 12);
+}
 
 // FUNCTION: LEMBALL 0x0041aca0
 int CBullet::Receive(unsigned short nMessage, CNetworkMessage* pMessage)

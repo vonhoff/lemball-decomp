@@ -1,6 +1,8 @@
 #ifndef LEMBALL_CBULLETMANAGER_H
 #define LEMBALL_CBULLETMANAGER_H
 
+#include "AI/AICoord.h"
+
 // Shared CBulletManager view modeled on the Macintosh blueprint class `CBulletManager`.
 // Consolidates the formerly-duplicate local structs (ProjectilePool / CBulletManagerOwnerView)
 // into a single definition so both the pool-iteration (Reset/GetFreeProjectilePoolObject) and
@@ -24,6 +26,8 @@ struct CBulletManager {
 	void* GetNextBullet(void);
 	void Process(void);
 	void* GetFreeProjectilePoolObject(void);
+	int RequestBullet(unsigned short nSlotId, int nBulletType, int nOwner, int nDirection,
+		AICOORD source, AICOORD target);
 	void ResetProjectilePool(void);
 	int EmitProjectileRenderEntries(void* pRenderEntry);
 };

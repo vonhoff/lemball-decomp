@@ -98,6 +98,8 @@ public:
 	void HitTrampoline(const AICOORD& position, CGameObject* pGameObject);
 	void FindMoverHeight(int nX, int nY, int& nHeight);
 	void BulletCheckGroupIntersection(CVSRect* pRect, AICOORD* pOutput);
+	void FireBullet(unsigned short nSlotId, int nBulletType, int nOwner, int nDirection,
+		AICOORD source, AICOORD target);
 	void Start(void);
 	void SetNetworkTrapDoors(int nProfile, int nMinX, int nMinY, int nMaxX, int nMaxY);
 	int ProcessMsg(tagMESSAGE* pMsg);

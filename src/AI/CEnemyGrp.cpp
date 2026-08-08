@@ -1,6 +1,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "AI/CGenericGroup.h"
 #include "AI/CEnemy.h"
+#include "AI/CAI.h"
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 
@@ -44,6 +45,20 @@ void CEnemy::HitBullet(void* pBullet)
 		m_nState2C = 1;
 		m_wHeadingDirB4 = sVar1 + 4U & 7;
 	}
+}
+
+// FUNCTION: LEMBALL 0x00420430
+void CEnemy::Fire(void)
+{
+	AICOORD source;
+	source.x = m_nWorldX9C;
+	source.y = m_nWorldYA0;
+	source.z = m_nWorldZA4 + 0xc000;
+	((CAI*) g_pActiveManagedEntityOwner)->FireBullet(
+		m_nSlotId6C, 0, 1, (int) m_wHeadingDirB4,
+		source, *(AICOORD*) ((char*) this + 0x15c));
+	m_nReserved168 = 2;
+	m_nUpdateTickCC = g_nLevelFrameClockTick + *(int*) ((char*) this + 0x16c) / 0x32;
 }
 // FUNCTION: LEMBALL 0x004206a0
 void CEnemy::HitMine(void)

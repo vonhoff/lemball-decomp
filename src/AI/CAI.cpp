@@ -1,10 +1,19 @@
 #include "AI/CAI.h"
+#include "AI/CBulletManager.h"
 
 extern void* g_pLevelDemoPlaybackController;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern void __fastcall AppendType18ChunkObject(void* pStream, int nUnused, unsigned short param_1, void* param_2, int param_3, int param_4);
 extern "C" unsigned long __stdcall timeGetTime();
+
+// FUNCTION: LEMBALL 0x00412600
+void CAI::FireBullet(unsigned short nSlotId, int nBulletType, int nOwner, int nDirection,
+	AICOORD source, AICOORD target)
+{
+	((CBulletManager*) m_pProjectileMgr168)->RequestBullet(
+		nSlotId, nBulletType, nOwner, nDirection, source, target);
+}
 
 // FUNCTION: LEMBALL 0x00412eb0
 void CAI::AddNewTrapDoor(int nX, int nY, int nZ, unsigned long nParam4)

@@ -2,6 +2,7 @@
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 #include "AI/CBulletManager.h"
+#include "AI/CBullet.h"
 
 void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
@@ -10,6 +11,25 @@ typedef void(LEMBALL_FASTCALL* ResetProjectileObjectProc)(void* pObject);
 void LEMBALL_FASTCALL DestroyProjectileObject(void* pObject);
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
+
+// FUNCTION: LEMBALL 0x00417fa0
+int CBulletManager::RequestBullet(
+	unsigned short nSlotId, int nBulletType, int nOwner, int nDirection,
+	AICOORD source, AICOORD target)
+{
+	int nIndex = m_nCountD4;
+	if (nIndex < 40) {
+		m_apObjects[nIndex] = GetFreeProjectilePoolObject();
+		CBullet* pBullet = (CBullet*) m_apObjects[m_nCountD4];
+		if (pBullet != 0) {
+			pBullet->Set(nSlotId, nBulletType, nOwner, nDirection, source, target);
+			((CBullet*) m_apObjects[m_nCountD4])->FireBullet();
+			++m_nCountD4;
+		}
+		return 1;
+	}
+	return 0;
+}
 
 // FUNCTION: LEMBALL 0x00417e80
 void CBulletManager::ResetProjectilePool(void)

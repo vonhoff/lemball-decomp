@@ -4,6 +4,7 @@
 #include "AI/CLaser.h"
 #include "AI/CLift.h"
 #include "AI/CGameObject.h"
+#include "AI/CAI.h"
 #include "AI/CGenericGroup.h"
 #include "AI/CPlayerLemmingGroup.h"
 #include "AI/CPlayerLemming.h"
@@ -87,11 +88,6 @@ struct IceObjectStateView {
 	virtual void ReservedSlot0(int nValue);
 	virtual void ReservedSlot1(int nValue);
 	virtual void SetState(int nState);
-};
-
-struct PgunProjectileSpawnerView {
-	void FireBullet(
-		unsigned short nSlotId, int nZero, int nOne, int nDirection, AICOORD target, AICOORD source);
 };
 
 struct LevelModeNodeView {
@@ -856,7 +852,7 @@ int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 	int nCoordinate;
 	AICOORD source;
 	AICOORD target;
-	PgunProjectileSpawnerView* pSpawner;
+	CAI* pSpawner;
 
 	pFields = (int*) pObject;
 	if (pFields[0x45] != 0) {
@@ -894,7 +890,7 @@ int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 			((IceObjectStateView*) pObject)->SetState(0x1b);
 		}
 		else if ((unsigned int) pFields[0x32] < (unsigned int) g_nLevelFrameClockTick) {
-			pSpawner = (PgunProjectileSpawnerView*) g_pActiveManagedEntityOwner;
+			pSpawner = (CAI*) g_pActiveManagedEntityOwner;
 			source.x = pFields[0x27] + 0x10000;
 			source.y = pFields[0x28];
 			source.z = pFields[0x29] + 0x8000;
@@ -905,7 +901,8 @@ int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 			target.x = nCoordinate << 12;
 			target.y = source.y;
 			target.z = source.z;
-			pSpawner->FireBullet(*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 2, target, source);
+			pSpawner->FireBullet(
+				*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 2, source, target);
 
 			source.x = pFields[0x27] - 0x10000;
 			nCoordinate = (pFields[0x27] >> 12) - 200;
@@ -913,7 +910,8 @@ int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 				nCoordinate = 0;
 			}
 			target.x = nCoordinate << 12;
-			pSpawner->FireBullet(*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 6, target, source);
+			pSpawner->FireBullet(
+				*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 6, source, target);
 
 			source.x = pFields[0x27];
 			source.y = pFields[0x28] + 0x10000;
@@ -923,7 +921,8 @@ int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 				nCoordinate = 0x3ff;
 			}
 			target.y = nCoordinate << 12;
-			pSpawner->FireBullet(*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 8, target, source);
+			pSpawner->FireBullet(
+				*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 8, source, target);
 
 			source.y = pFields[0x28] - 0x10000;
 			nCoordinate = (pFields[0x28] >> 12) - 200;
@@ -931,7 +930,8 @@ int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 				nCoordinate = 0;
 			}
 			target.y = nCoordinate << 12;
-			pSpawner->FireBullet(*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 4, target, source);
+			pSpawner->FireBullet(
+				*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 4, source, target);
 
 			((ObjectSlotProc) (*(void***) pObject)[0x34 / sizeof(void*)])(pObject, 0, 7);
 			pFields[0x32] = pFields[0x33];
@@ -939,18 +939,6 @@ int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 		}
 	}
 	return 1;
-}
-
-// STUB: LEMBALL 0x00412600
-void PgunProjectileSpawnerView::FireBullet(
-	unsigned short nSlotId, int nZero, int nOne, int nDirection, AICOORD target, AICOORD source)
-{
-	(void) nSlotId;
-	(void) nZero;
-	(void) nOne;
-	(void) nDirection;
-	(void) target;
-	(void) source;
 }
 
 // FUNCTION: LEMBALL 0x0042c9e0

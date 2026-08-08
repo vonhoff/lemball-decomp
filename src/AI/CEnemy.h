@@ -12,7 +12,9 @@ public:
 	int m_nSpawnZ48;              // +0x48
 	char m_abReserved4C[0x18];
 	int m_nForm64;                // +0x64 (index into heading-speed table)
-	char m_abReserved68[0x34];
+	char m_abReserved68[4];
+	unsigned short m_nSlotId6C;   // +0x6c
+	char m_abReserved6E[0x2e];
 	int m_nWorldX9C;              // +0x9c (<<12 fixed point)
 	int m_nWorldYA0;              // +0xa0
 	int m_nWorldZA4;              // +0xa4
@@ -45,6 +47,7 @@ public:
 	void HitBullet(void* pBullet);
 	int FacingTarget(void);
 	void HitMine(void);
+	void Fire(void);
 	void ProcessAction(int nRules, int nActions, void* pUnion);
 	int CheckRadius(int nRadius);
 };

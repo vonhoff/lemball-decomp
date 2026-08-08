@@ -1,6 +1,8 @@
 #ifndef LEMBALL_CBULLET_H
 #define LEMBALL_CBULLET_H
 
+#include "AI/AICoord.h"
+
 // CBullet view modeled on the Macintosh blueprint class `CBullet`.
 // Fields reuse the shared chunk-object conventions. The embedded network
 // stream lives at +0x138; AddData/GetData are compiled against that
@@ -51,6 +53,8 @@ struct CBullet {
 	unsigned char m_abSegmentFixpoint184[0x184 + 0x20 - 0x184];
 
 	int Receive(unsigned short nMessage, CNetworkMessage* pMessage);
+	void Set(unsigned short nCaller, int nBulletType, int nOwner, int nDirection,
+		AICOORD source, AICOORD target);
 	void FireBullet(void);
 	void TriggerBullet(void);
 	void AddData(void);
