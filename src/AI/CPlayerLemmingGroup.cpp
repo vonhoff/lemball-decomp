@@ -4,6 +4,9 @@
 #include "AI/LevelManagedEntityStateIdView.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
+extern int g_GAME_ManagedEntityRegistryTable[1000];
+extern unsigned short g_GAME_ManagedEntityRegistryCount;
+
 struct LevelManagedEntityTargetView {
 	unsigned char m_abReserved00[0x8c];
 	int m_fActiveTarget8C;
@@ -135,6 +138,40 @@ int CPlayerLemmingGroup::GetViewData(int pViewData)
 		} while (pi != 0);
 	}
 	return nCount;
+}
+
+// FUNCTION: LEMBALL 0x00414660
+void CPlayerLemmingGroup::AddUseObject(int nId)
+{
+	AICOORD destination;
+	CGameObject* pObject;
+	unsigned short i;
+
+	pObject = 0;
+	i = 0;
+	while (i < g_GAME_ManagedEntityRegistryCount) {
+		pObject = (CGameObject*) g_GAME_ManagedEntityRegistryTable[i];
+		if (pObject != 0 && (unsigned int) pObject->m_nRegistryIndex6A == (unsigned int) nId) {
+			break;
+		}
+		++i;
+	}
+
+	((AICOORD * (__fastcall*) (void*, int, AICOORD*) )((void**) pObject->m_pVtable00)[0x2c / 4])(
+		pObject, 0, &destination);
+	if (m_pCommandQueue70->m_cEntries < m_pCommandQueue70->m_cCapacity) {
+		CGameObjectCommand* pCommand =
+			&m_pCommandQueue70->m_pEntries[m_pCommandQueue70->m_cEntries++];
+		pCommand->m_nType = 1;
+		pCommand->m_Position = destination;
+	}
+	if (m_pCommandQueue70->m_cEntries < m_pCommandQueue70->m_cCapacity) {
+		CGameObjectCommand* pCommand =
+			&m_pCommandQueue70->m_pEntries[m_pCommandQueue70->m_cEntries++];
+		pCommand->m_nType = 2;
+		pCommand->m_Position = destination;
+		pCommand->m_nFlags = (unsigned short) nId;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00414730

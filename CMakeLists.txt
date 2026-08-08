@@ -103,6 +103,7 @@ set(LEMBALL_SOURCES
     src/Visos/Windows/CGDI240.cpp
     src/Visos/Generic/Memory.cpp
     src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWING.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/CBaseQueue.cpp
     src/Visos/Windows/VSWINGRECT.CPP
     src/Visos/Windows/VGAIO.CPP
     src/Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
