@@ -41,8 +41,14 @@ struct LinkScfDoorChunkManagerView {
 
 
 struct CCollectableManager {
+	void* m_pLevelMode30;         // 0x30
+	void** m_apObjects34;         // 0x34
+	int m_nObjectCount38;         // 0x38
+
 	CCollectableManager* ConstructCollChunkManager(void* pLevelMode, int nCapacity);
 	CCollectableManager* ConstructCollChunkManagerThunk(void* pLevelMode, int nCapacity);
+	void Restart(void);
+	void LoadLevel(unsigned short* pLevelData, int nFormat);
 };
 
 class CAI;
@@ -80,6 +86,7 @@ struct CGenericGroupManager {
 	CGenericGroup* GetGroupElementIsMemberOf(CGameObject* pObject);
 	void AddNewGroup(CGenericGroup* pGroup);
 	void CreateNewGroup(void);
+	void CreateNewGroup(unsigned short nIdCount, unsigned short* pIdList);
 	void DeleteGroup(CGenericGroup* pGroup);
 	void AddElementToGroup(CGameObject* pObject, CGenericGroup* pGroup);
 	int RemoveElementFromGroup(CGameObject* pObject, CGenericGroup* pGroup);

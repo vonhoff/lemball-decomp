@@ -1,10 +1,12 @@
+#include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
+
 // FUNCTION: LEMBALL 0x00422420
-void __fastcall CCollectableManager_Restart(void* param_1)
+void CCollectableManager::Restart(void)
 {
-	if (*(int*) ((char*) param_1 + 0x34) != 0 && *(int*) ((char*) param_1 + 0x38) > 0) {
+	if (m_apObjects34 != 0 && m_nObjectCount38 > 0) {
 		int i;
-		for (i = 0; i < *(int*) ((char*) param_1 + 0x38); i++) {
-			void* pElem = *(void**) (*(int*) ((char*) param_1 + 0x34) + i * 4);
+		for (i = 0; i < m_nObjectCount38; i++) {
+			void* pElem = m_apObjects34[i];
 			if (pElem != 0) {
 				(*( void(**)(void)) (*(void***) pElem + 0x104 / 4))();
 			}
@@ -12,34 +14,34 @@ void __fastcall CCollectableManager_Restart(void* param_1)
 	}
 }
 // FUNCTION: LEMBALL 0x00422790
-void __fastcall CCollectableManager_LoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_3)
+void CCollectableManager::LoadLevel(unsigned short* pLevelData, int nFormat)
 {
-	unsigned short nCount = *pStream;
-	pStream++;
-	if (param_3 == 0) {
-		((void(__fastcall*) (void*, int, int)) 0x40187f)(pThis, 0, nCount);
+	unsigned short nCount = *pLevelData;
+	pLevelData++;
+	if (nFormat == 0) {
+		((void(__fastcall*) (void*, int, int)) 0x40187f)(this, 0, nCount);
 	}
 	if (nCount != 0) {
 		do {
 			unsigned short uSlot;
-			if (*(unsigned short*) (*(int*) ((char*) pThis + 0x30) + 0x54) < 2) {
+			if (*(unsigned short*) ((char*) m_pLevelMode30 + 0x54) < 2) {
 				uSlot = (unsigned short) ((int(__fastcall*) ()) 0x40214e)();
 			}
 			else {
-				uSlot = *pStream;
-				pStream++;
+				uSlot = *pLevelData;
+				pLevelData++;
 			}
-			unsigned int subtype = *(pStream);
-			pStream++;
-			unsigned int coord2 = *(pStream);
-			pStream++;
-			unsigned int coord3 = *(pStream);
-			pStream++;
-			unsigned int coord4 = *(pStream);
-			pStream++;
+			unsigned int subtype = *(pLevelData);
+			pLevelData++;
+			unsigned int coord2 = *(pLevelData);
+			pLevelData++;
+			unsigned int coord3 = *(pLevelData);
+			pLevelData++;
+			unsigned int coord4 = *(pLevelData);
+			pLevelData++;
 			int appendType = (int) subtype;
-			if (param_3 == 0) {
-				void* pBase = *(void**) ((char*) pThis + 0x30);
+			if (nFormat == 0) {
+				void* pBase = m_pLevelMode30;
 				if ((subtype == 0xc || subtype == 0xb) && *(int*) ((char*) pBase + 0x64) == 1) {
 					if (*(int*) ((char*) pBase + 0x7c) == 1) {
 						if (subtype == 0xc) appendType = 0xc; else appendType = 0xb;
@@ -49,7 +51,7 @@ void __fastcall CCollectableManager_LoadLevel(void* pThis, int nUnused, unsigned
 					}
 				}
 			}
-			((void(__fastcall*) (void*, int, int, int, int, int, int)) 0x401afa)(*(void**) ((char*) pThis + 0x30), 0, uSlot, coord2, coord3, coord4, appendType);
+			((void(__fastcall*) (void*, int, int, int, int, int, int)) 0x401afa)(m_pLevelMode30, 0, uSlot, coord2, coord3, coord4, appendType);
 			nCount--;
 		} while (nCount != 0);
 	}

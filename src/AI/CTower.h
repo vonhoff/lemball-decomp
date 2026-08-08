@@ -10,6 +10,7 @@ public:
 
 	int Activate(void* pTarget);
 	void ActivatePosition(int* pPoint);
+	int Process(void);
 };
 
 #endif

@@ -36,7 +36,7 @@ void CSlinky::Move(void)
 	int heading = v % 4;
 	m_wFacingDirBC = (short) heading;
 	int dx, dy;
-	switch (heading) {
+	switch (m_wFacingDirBC) {
 	case 0:
 		dx = 0x10; dy = 0;
 		break;
@@ -46,7 +46,7 @@ void CSlinky::Move(void)
 	case 2:
 		dx = 0; dy = 0x10;
 		break;
-	default:
+	case 3:
 		dx = 0; dy = -0x10;
 		break;
 	}

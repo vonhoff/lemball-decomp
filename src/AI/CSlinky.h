@@ -3,7 +3,7 @@
 
 class CSlinky {
 public:
-	int m_vtable;                 // vtable pointer (slot 0 = vtbl)
+	int m_vtable;                 // +0x00 real vptr (slot 0 = vtbl)
 	int m_field04;
 	int m_field08;
 	int m_field0C;
@@ -39,6 +39,7 @@ public:
 	int m_field84;
 	int m_field88;
 	int m_field8C;
+	int m_field90;
 	int m_motionTimeMs94;         // +0x94
 	int m_field98;
 	int m_xPosWorld9C;            // +0x9c (<<12 fixed point)
@@ -49,8 +50,9 @@ public:
 	int m_moveTargetZB0;          // +0xb0
 	int m_fieldB4;
 	int m_fieldB8;
-	short m_wFacingDirBC;         // +0xbc (0..3)
+	unsigned short m_wFacingDirBC;   // +0xbc (0..3)
 	int m_fieldC0;
+	int m_fieldC4;
 	int m_fieldC8;
 	int m_nFrameClockTickCC;      // +0xcc
 	int m_fieldD0;

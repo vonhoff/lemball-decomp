@@ -2,6 +2,7 @@
 #define LEMBALL_CDOORMANAGER_H
 
 struct CDoor;
+class CViewData;
 
 // Shared CDoorManager modeled on the Macintosh blueprint class `CDoorManager`.
 // Consolidates the four formerly-duplicate local struct definitions
@@ -22,6 +23,8 @@ struct CDoorManager {
 	int Add(short nSlot, void* pObjectType, unsigned short nDoorType, int nWorldX, int nWorldY, int nWorldZ);
 	void LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat);
 	void Delete(unsigned char fDelete);
+	int GetViewData(CViewData* pViewData);
+	void Process(void);
 };
 
 #endif
