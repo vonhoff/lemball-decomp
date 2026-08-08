@@ -5590,3 +5590,85 @@ void LEMBALL_FASTCALL fill_circle_scanline_pair_unclipped(void* pBuffer, int nX,
 		nRem--;
 	}
 }
+
+// FUNCTION: LEMBALL 0x00476470
+void LEMBALL_FASTCALL FillCircleScanlinePairClipped(
+	void* pThis, int nUnusedEdx, int nX, int nY, int nRadius, int nYOffset, unsigned char nPixel)
+{
+	int nRowLo;
+	int nRowHi;
+	int nLeft;
+	int nRight;
+	int nClipX;
+	int nClipY;
+	int nClipRight;
+	int nClipBottom;
+	int nActiveOffset;
+	int nWidth;
+	unsigned int nQuad;
+	unsigned int nRem;
+	unsigned int nPixelQuad;
+	unsigned int* pDest;
+	char* pActive;
+	char** ppRows;
+
+	nRowLo = nY - nYOffset;
+	nRowHi = nY + nYOffset;
+	nActiveOffset = *(int*) (*(int*) ((char*) pThis + 0x40) + 4);
+	pActive = (char*) pThis + nActiveOffset;
+	nClipY = (int) *(short*) (pActive + 0x6a);
+	nClipBottom = nClipY + (int) *(short*) (pActive + 0x66) - 1;
+	if (nRowLo > nClipBottom || nRowHi < nClipY) {
+		return;
+	}
+
+	nLeft = nX - nRadius;
+	nRight = nX + nRadius;
+	nClipX = (int) *(short*) (pActive + 0x68);
+	nClipRight = nClipX + (int) *(short*) (pActive + 0x64) - 1;
+	if (nClipX > nRight || nLeft > nClipRight) {
+		return;
+	}
+	if (nClipRight < nRight) {
+		nRight = nClipRight;
+	}
+	if (nLeft < nClipX) {
+		nLeft = nClipX;
+	}
+
+	ppRows = *(char***) ((char*) pThis + 4);
+	nWidth = nRight - nLeft + 1;
+	nPixelQuad = (unsigned int) nPixel * 0x01010101;
+	if (nRowLo >= nClipY) {
+		pDest = (unsigned int*) (ppRows[nRowLo] + nLeft);
+		nQuad = (unsigned int) nWidth >> 2;
+		while (nQuad != 0) {
+			*pDest++ = nPixelQuad;
+			--nQuad;
+		}
+		nRem = (unsigned int) nWidth & 3;
+		while (nRem != 0) {
+			*(unsigned char*) pDest = nPixel;
+			pDest = (unsigned int*) ((char*) pDest + 1);
+			--nRem;
+		}
+	}
+
+	nActiveOffset = *(int*) (*(int*) ((char*) pThis + 0x40) + 4);
+	pActive = (char*) pThis + nActiveOffset;
+	nClipBottom = (int) *(short*) (pActive + 0x6a) + (int) *(short*) (pActive + 0x66) - 1;
+	if (nRowHi <= nClipBottom) {
+		pDest = (unsigned int*) (ppRows[nRowHi] + nLeft);
+		nQuad = (unsigned int) nWidth >> 2;
+		while (nQuad != 0) {
+			*pDest++ = nPixelQuad;
+			--nQuad;
+		}
+		nRem = (unsigned int) nWidth & 3;
+		while (nRem != 0) {
+			*(unsigned char*) pDest = nPixel;
+			pDest = (unsigned int*) ((char*) pDest + 1);
+			--nRem;
+		}
+	}
+}

@@ -393,6 +393,47 @@ void LEMBALL_FASTCALL EmitLevelChunkObjectRenderEntry(void* pObject, void* pUnus
 	*(int*) (pObjectBytes + 0x10) = 0;
 }
 
+// FUNCTION: LEMBALL 0x004108b0
+void LEMBALL_FASTCALL EmitPlasChunkObjectRenderEntry(void* pObject, void* pUnused, void* pRenderEntry)
+{
+	char* pObjectBytes;
+	char* pEntryBytes;
+	int nFrameClockTimeMs;
+	int nFlags;
+
+	pObjectBytes = (char*) pObject;
+	pEntryBytes = (char*) pRenderEntry;
+	*(unsigned short*) (pEntryBytes + 0x2c) = *(unsigned short*) (pObjectBytes + 0x6a);
+	*(unsigned short*) (pEntryBytes + 0x2e) = 0;
+	*(int*) (pEntryBytes + 0x28) = *(int*) (pObjectBytes + 0x64);
+	*(int*) (pEntryBytes + 0x04) = *(int*) (pObjectBytes + 0x9c) >> 12;
+	*(int*) (pEntryBytes + 0x08) = *(int*) (pObjectBytes + 0xa0) >> 12;
+	*(int*) (pEntryBytes + 0x0c) = *(int*) (pObjectBytes + 0xa4) >> 12;
+	*(unsigned short*) pEntryBytes = *(unsigned short*) (pObjectBytes + 0xb4);
+	*(unsigned short*) (pEntryBytes + 0x1c) = *(unsigned short*) (pObjectBytes + 0xbc);
+	*(int*) (pEntryBytes + 0x18) = *(int*) (pObjectBytes + 0xb8);
+	*(int*) (pEntryBytes + 0x14) = 0;
+	*(int*) (pEntryBytes + 0x20) = *(int*) (pObjectBytes + 0x94);
+	*(int*) (pEntryBytes + 0x30) = *(int*) (pObjectBytes + 0xc0);
+	*(int*) (pEntryBytes + 0x38) = *(int*) (pObjectBytes + 0xe4);
+	*(int*) (pEntryBytes + 0x3c) = *(int*) (pObjectBytes + 0xe8);
+	*(int*) (pEntryBytes + 0x40) = *(int*) (pObjectBytes + 0xec);
+	*(int*) (pEntryBytes + 0x44) = *(int*) (pObjectBytes + 0x98);
+	nFrameClockTimeMs = g_nLevelFrameClockTimeMs;
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		nFrameClockTimeMs = g_nNetworkFrameClockTimeMs;
+	}
+	*(int*) (pEntryBytes + 0x24) = nFrameClockTimeMs;
+	((RockChunkObjectStateView*) pObject)->SetActionState(0);
+	*(int*) (pEntryBytes + 0x34) = *(int*) (pObjectBytes + 0x10);
+	*(int*) (pObjectBytes + 0x10) = 0;
+	nFlags = (*(unsigned int*) (pObjectBytes + 0x17c) >= 1);
+	nFlags |= (*(unsigned int*) (pObjectBytes + 0x180) >= 1) << 1;
+	*(int*) (pEntryBytes + 0x14) = nFlags;
+	*(unsigned short*) (pEntryBytes + 0x2e) = *(unsigned short*) (pObjectBytes + 0x168);
+	(void) pUnused;
+}
+
 // FUNCTION: LEMBALL 0x0040ac60
 void* LEMBALL_FASTCALL DeleteInvsChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
@@ -512,6 +553,51 @@ int LEMBALL_FASTCALL AdvanceGmobChunkType14StateMachine(void* pObject)
 		return 1;
 	}
 	((GmobChunkType14ActionView*) pObject)->SetManagedEntityStateId(nStateId);
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x0041d480
+int LEMBALL_FASTCALL AdvanceGmobStateMachineAction29(void* pObject)
+{
+	char* pObjectBytes;
+	char* pGrid;
+	int nLocalY;
+	int nLocalX;
+	int nTileX;
+	int nTileY;
+	unsigned short nHeightOffset;
+	int nStateId;
+
+	pObjectBytes = (char*) pObject;
+	pGrid = (char*) g_pLevelTileGrid;
+	nLocalY = *(int*) (pObjectBytes + 0xa0) >> 12;
+	nLocalX = *(int*) (pObjectBytes + 0x9c) >> 12;
+	nTileX = nLocalX >> 4;
+	nTileY = nLocalY >> 4;
+	if (nLocalX < 0 || nLocalY < 0 || nTileX >= *(int*) (pGrid + 0x10) || nTileY >= *(int*) (pGrid + 0x14)) {
+		nHeightOffset = 0;
+	}
+	else {
+		CGround* pTile;
+
+		pTile = (CGround*) (*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12);
+		nHeightOffset = (unsigned short) pTile->GetZ(nLocalX & 15, nLocalY & 15);
+	}
+	*(int*) (pObjectBytes + 0xa4) = nHeightOffset << 12;
+	nStateId = *(int*) (pObjectBytes + 0xb8);
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		if (*(int*) (pObjectBytes + 0x128) != nStateId) {
+			if (nStateId == 0x1a) {
+				((GmobChunkType14ActionView*) pObject)->SetActionState(0x29);
+			}
+			*(int*) (pObjectBytes + 0x128) = *(int*) (pObjectBytes + 0xb8);
+		}
+		return 1;
+	}
+	if (nStateId == 0x1a) {
+		((GmobChunkType14ActionView*) pObject)->SetManagedEntityStateId(0x18);
+		*(int*) (pObjectBytes + 0x38) = 0;
+	}
 	return 1;
 }
 

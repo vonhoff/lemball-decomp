@@ -3479,3 +3479,89 @@ void __fastcall decode_zrle_rows_palette_write_mask(
 	}
 	(void) nUnused;
 }
+extern void* g_pCachedChunkManagerEntityLookup;
+class CFormationManager;
+extern CFormationManager* g_pGenericGroupFormationManager;
+extern void __fastcall AppendGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChildOwner);
+
+// FUNCTION: LEMBALL 0x0041f170
+void __fastcall CreateShpgGroupWithFourChildren(
+	void* pManager, int nUnusedEdx, int nX, int nY, int nZ)
+{
+	typedef void(__fastcall* NoArgVirtualProc)(void*);
+	typedef void(__fastcall* OneArgVirtualProc)(void*, int, int);
+	void* pGroup;
+	void* pChild;
+	void* pMemory;
+	int nRemaining;
+
+	pGroup = 0;
+	pMemory = AllocateVSMemBlock(0x16c);
+	if (pMemory != 0) {
+		pGroup = ((void*(__fastcall*)(void*, int, void*, void*, void*)) 0x402e2d)(
+			pMemory,
+			0,
+			g_pCachedChunkManagerLevelMode,
+			g_pCachedChunkManagerEntityLookup,
+			g_pGenericGroupFormationManager);
+	}
+	((NoArgVirtualProc) (*(void***) pGroup)[0x104 / 4])(pGroup);
+	((OneArgVirtualProc) (*(void***) pGroup)[0x110 / 4])(pGroup, 0, 1);
+	((void(__fastcall*)(void*, int, void*)) 0x4027e8)(pManager, 0, pGroup);
+	nRemaining = 4;
+	do {
+		pChild = 0;
+		pMemory = AllocateVSMemBlock(0x124);
+		if (pMemory != 0) {
+			pChild = ((void*(__fastcall*)(void*, int, void*, int, int, int, int)) 0x40234c)(
+				pMemory, 0, g_pCachedChunkManagerLevelMode, nX, nY, nZ, 0);
+		}
+		nX -= 12;
+		nY -= 12;
+		((NoArgVirtualProc) (*(void***) pChild)[0x104 / 4])(pChild);
+		((void(__fastcall*)(void*, int, void*, void*)) 0x4017df)(pManager, 0, pChild, pGroup);
+		--nRemaining;
+	} while (nRemaining != 0);
+	((OneArgVirtualProc) (*(void***) pGroup)[0x154 / 4])(
+		pGroup, 0, (int) g_pGenericGroupFormationManager);
+	(void) nUnusedEdx;
+}
+
+struct BufferedGeometryChildWindowView {
+	virtual void ReservedSlot0(void);
+	virtual void ConfigureBufferedGeometryChild(short* pRect, void* pOwner, const char* pszName);
+};
+
+// FUNCTION: LEMBALL 0x00468a40
+void* __fastcall ConstructBufferedGeometryChildOverlay(
+	void* pThis, int nUnusedEdx, void* pRect, void* pRenderOwner, void* pOverlayOwner)
+{
+	short aRect[4];
+	char* pChildSubobject;
+	char* pBytes;
+	void* pAdjustedChild;
+
+	pChildSubobject = (char*) pThis + 0x90;
+	pBytes = (char*) pThis;
+	((void(__fastcall*)(void*, int, void*, void*)) 0x467c10)(pThis, 0, pRect, pRenderOwner);
+	*(void**) pBytes = (void*) 0x497630;
+	*(void**) pChildSubobject = (void*) 0x497608;
+	*(int*) (pBytes + 0x108) = 0;
+	*(int*) (pBytes + 0x104) = 0;
+	*(void**) pBytes = (void*) 0x499838;
+	*(void**) pChildSubobject = (void*) 0x499818;
+	*(void**) (pBytes + 0x114) = pOverlayOwner;
+	initialize_buffered_geometry_child_storage(pThis);
+	aRect[0] = *(short*) (pBytes + 0xc0);
+	aRect[1] = *(short*) (pBytes + 0xc2);
+	aRect[2] = *(short*) (pBytes + 0xdc);
+	aRect[3] = *(short*) (pBytes + 0xde);
+	((BufferedGeometryChildWindowView*) pThis)
+		->ConfigureBufferedGeometryChild(aRect, *(void**) (pBytes + 0xc8), (const char*) 0x49f02c);
+	*(short*) (pBytes + 0xc4) += *(short*) (pBytes + 0x18);
+	*(short*) (pBytes + 0xc6) += *(short*) (pBytes + 0x1a);
+	pAdjustedChild = pThis != 0 ? pChildSubobject : 0;
+	AppendGeometryOwnerChild(*(void**) (*(int*) (pBytes + 0xc8) + 0x1c), 0, pAdjustedChild);
+	(void) nUnusedEdx;
+	return pThis;
+}
