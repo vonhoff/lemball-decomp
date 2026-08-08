@@ -60,6 +60,11 @@ public:
 	void DrawTime(void);
 	void DrawScore(void);
 	void NewPauseWindow(int nMessage);
+	void TriggerPause(int fPause);
+	void UnRegisterRemaps(void);
+	void OnInside(unsigned short* pPoint);
+	void OnButtonUp(void* pButtonFlags);
+	void Restart(void);
 	void SendCursorMsg(void);
 	void DrawTrampoline(CViewData& ViewData);
 	void DrawLaserFire(CViewData& ViewData);

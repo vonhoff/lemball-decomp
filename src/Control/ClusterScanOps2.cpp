@@ -235,19 +235,6 @@ int __fastcall AppendNodeChunkRecordFromLevelData(void* pObject, int nUnused, in
 	((void(__fastcall*)(void*, int, int, int)) 0x402572)((void*) (iVar1 * 0x14 + *(int*) pObject), param_2, param_3, 0);
 	return iVar1;
 }
-// FUNCTION: LEMBALL 0x00437da0
-void __fastcall C2D_TriggerPause(void* pObject, int nUnused, int param_1)
-{
-	if (param_1 == 0) {
-		((void(__fastcall*)(void*, int)) 0x4021a8)(pObject, 0);
-	} else {
-		int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x96c) + 0x108);
-		if (iVar1 >= 1 && iVar1 <= 2) {
-			((void(__fastcall*)(void*, int)) 0x4013ed)(*(void**) ((char*) pObject + 0x96c), 1);
-		}
-	}
-}
-
 // FUNCTION: LEMBALL 0x0042eac0
 void __fastcall SyncAttachedMoveChunkEntitiesToCurrentPosition(void* pObject)
 {
@@ -307,14 +294,6 @@ void* __fastcall ConstructNetworkLobbyPlayerEntryChild(void* pObject)
 	return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00436480
-void __fastcall C2D_UnRegisterRemaps(void* pObject)
-{
-	int i;
-	for (i = 0; i < 5; i++) {
-		((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant((void*) *(int*) ((char*) pObject + 0x64 + i * 4));
-	}
-}
 // FUNCTION: LEMBALL 0x00444930
 int __fastcall SelectPauseDialogPaletteRemapForIndex(void* pObject, int nUnused, int param_1)
 {
@@ -501,18 +480,6 @@ void __fastcall DispatchLevelScreenProjectileRequestByIndex(void* pObject, int n
 		SelectSingleEntityAndDispatchSelection(pObject, nUnused, *(void**) pHolder);
 	}
 }
-// FUNCTION: LEMBALL 0x004381c0
-void __fastcall C2D_OnButtonUp(void* pObject, int nUnused, void* param_2)
-{
-	*(int*) ((char*) pObject + 0x178) = 0;
-	if (*(int*) ((char*) pObject + 0xa68) == 0) {
-		if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pObject + 0x964) + 0x60 / 4))(*(void**) ((char*) pObject + 0x964)) == 0) {
-			return;
-		}
-		((void(__fastcall*)(void*)) 0x4019ec)((char*) pObject - 0x14);
-	}
-}
-
 // FUNCTION: LEMBALL 0x00422510
 void __fastcall DestroyManagedEntityPointerArray(void* pObject)
 {
@@ -668,16 +635,6 @@ void __fastcall RebuildLevelScreenPauseDialogLayout(void* param_1)
 	((void(__fastcall*)(void*, short*)) 0x401c85)(param_1, layout);
 }
 
-// FUNCTION: LEMBALL 0x00438170
-void __fastcall C2D_OnInside(void* pThis, int nUnused, unsigned short* param_1)
-{
-	if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pThis + 0x964) + 0x60 / 4))(*(void**) ((char*) pThis + 0x964)) == 0) {
-		return;
-	}
-	*(unsigned short*) ((char*) pThis + 0x928) = param_1[0];
-	*(unsigned short*) ((char*) pThis + 0x92a) = param_1[1];
-	((void(__fastcall*)(void*)) 0x4019ec)((char*) pThis - 0x14);
-}
 // FUNCTION: LEMBALL 0x004079e0
 void __fastcall EmitMainGameStatusStreamSeparators(void* param_1)
 {
@@ -1248,25 +1205,6 @@ unsigned int __fastcall CBalloonPostFindPost(void* pThis, int nUnused, unsigned 
 	}
 	return 0;
 }
-
-
-// FUNCTION: LEMBALL 0x00436850
-void __fastcall C2D_Restart(void* pThis, int nUnused)
-{
-	*(int*) ((char*) pThis + 0x918) = 0;
-	*(int*) ((char*) pThis + 0x91c) = 0;
-	*(int*) ((char*) pThis + 0x2214) = 1;
-	((void(__fastcall*) (void*, int, int)) 0x402f2c)(*(void**) ((char*) pThis + 0x97c), 0, 0);
-	((void(__fastcall*) (void*)) 0x4021ee)(*(void**) ((char*) pThis + 0x96c));
-	((void(__fastcall*) (void*, int, int)) 0x465aa0)(*(void**) ((char*) pThis + 0x978), 0, 0);
-	*(int*) ((char*) pThis + 0x8f8) = *(int*) 0x49ce04;
-	*(int*) (*(int*) 0x49cb68 + 4) = *(int*) ((char*) pThis + 0x8f4);
-	*(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0) = *(int*) ((char*) pThis + 0x8f4);
-	((void(__fastcall*) (void*)) 0x4029aa)(*(void**) ((char*) pThis + 0x96c));
-	*(int*) ((char*) pThis + 0x8f0) = *(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0);
-}
-
-
 
 
 // FUNCTION: LEMBALL 0x00458d40

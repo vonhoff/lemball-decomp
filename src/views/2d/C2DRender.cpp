@@ -13,6 +13,7 @@ extern void EmitLevelScreenVariantEntry(void* pObject,
 										void* pFrameSelector,
 										int nValue);
 extern void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
+extern void* g_pLevelDemoPlaybackController;
 
 class CAnimsManagerView {
 public:
@@ -1187,4 +1188,75 @@ int C2D::LemmingFly(CViewData& RawViewData, int& nFrame)
 		}
 	}
 	return *(int*) (0x49eef8 + nDirection * 4);
+}
+struct PaletteRemapPointerTableMemberView {
+	void** m_ppItems;
+	int m_nCursor;
+	void ReleasePaletteRemapVariant(void* pVariant);
+};
+
+// FUNCTION: LEMBALL 0x00436480
+void C2D::UnRegisterRemaps(void)
+{
+	void* pObject = this;
+	int i;
+	for (i = 0; i < 5; i++) {
+		((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant((void*) *(int*) ((char*) pObject + 0x64 + i * 4));
+	}
+}
+
+// FUNCTION: LEMBALL 0x00437da0
+void C2D::TriggerPause(int param_1)
+{
+	void* pObject = this;
+	if (param_1 == 0) {
+		((void(__fastcall*)(void*, int)) 0x4021a8)(pObject, 0);
+	} else {
+		int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x96c) + 0x108);
+		if (iVar1 >= 1 && iVar1 <= 2) {
+			((void(__fastcall*)(void*, int)) 0x4013ed)(*(void**) ((char*) pObject + 0x96c), 1);
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x004381c0
+void C2D::OnButtonUp(void* param_2)
+{
+	void* pObject = this;
+	*(int*) ((char*) pObject + 0x178) = 0;
+	if (*(int*) ((char*) pObject + 0xa68) == 0) {
+		if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pObject + 0x964) + 0x60 / 4))(*(void**) ((char*) pObject + 0x964)) == 0) {
+			return;
+		}
+		((void(__fastcall*)(void*)) 0x4019ec)((char*) pObject - 0x14);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00438170
+void C2D::OnInside(unsigned short* param_1)
+{
+	void* pThis = this;
+	if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pThis + 0x964) + 0x60 / 4))(*(void**) ((char*) pThis + 0x964)) == 0) {
+		return;
+	}
+	*(unsigned short*) ((char*) pThis + 0x928) = param_1[0];
+	*(unsigned short*) ((char*) pThis + 0x92a) = param_1[1];
+	((void(__fastcall*)(void*)) 0x4019ec)((char*) pThis - 0x14);
+}
+
+// FUNCTION: LEMBALL 0x00436850
+void C2D::Restart(void)
+{
+	void* pThis = this;
+	*(int*) ((char*) pThis + 0x918) = 0;
+	*(int*) ((char*) pThis + 0x91c) = 0;
+	*(int*) ((char*) pThis + 0x2214) = 1;
+	((void(__fastcall*) (void*, int, int)) 0x402f2c)(*(void**) ((char*) pThis + 0x97c), 0, 0);
+	((void(__fastcall*) (void*)) 0x4021ee)(*(void**) ((char*) pThis + 0x96c));
+	((void(__fastcall*) (void*, int, int)) 0x465aa0)(*(void**) ((char*) pThis + 0x978), 0, 0);
+	*(int*) ((char*) pThis + 0x8f8) = *(int*) 0x49ce04;
+	*(int*) (*(int*) 0x49cb68 + 4) = *(int*) ((char*) pThis + 0x8f4);
+	*(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0) = *(int*) ((char*) pThis + 0x8f4);
+	((void(__fastcall*) (void*)) 0x4029aa)(*(void**) ((char*) pThis + 0x96c));
+	*(int*) ((char*) pThis + 0x8f0) = *(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0);
 }
