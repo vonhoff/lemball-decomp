@@ -1,51 +1,54 @@
+#include "AI/CSlinkyManager.h"
+
 // FUNCTION: LEMBALL 0x0040be20
-void __fastcall CSlinkyManager_Process(void* pObject)
+void CSlinkyManager::Process(void)
 {
 	int i;
-	if (*(int*) ((char*) pObject + 0xc) > 0) {
-		for (i = 0; i < *(int*) ((char*) pObject + 0xc); i++) {
-			(*( void(**)(void)) (*(void***) (*(int*) ((char*) pObject + 4) + i * 0x150) + 0x14 / 4))();
+	if (m_nObjectCount0C > 0) {
+		for (i = 0; i < m_nObjectCount0C; i++) {
+			(*( void(**)(void)) (*(void***) (m_pObjects04 + i * 0x150) + 0x14 / 4))();
 		}
 	}
 }
 // FUNCTION: LEMBALL 0x0040b9e0
-void __fastcall CSlinkyManager_Add(void* pThis, int nUnused, unsigned short param_1, int param_2, int param_3, int param_4, int param_5)
+void CSlinkyManager::Add(int nSlotId, int n2, int n3, int n4, int n5)
 {
-	if (*(int*) ((char*) pThis + 0xc) < *(int*) ((char*) pThis + 8)) {
-		((void(__fastcall*)(void*, unsigned short)) 0x402293)(
-			(void*) (*(int*) ((char*) pThis + 0xc) * 0x150 + *(int*) ((char*) pThis + 4)), param_1);
+	if (m_nObjectCount0C < m_nCapacity08) {
+		((void(__fastcall*)(void*, unsigned short)) 0x402293)((void*) (m_pObjects04 + m_nObjectCount0C * 0x150), (unsigned short) nSlotId);
 		((void(__fastcall*)(void*, int, int, int, int)) 0x402892)(
-			(void*) (*(int*) ((char*) pThis + 0xc) * 0x150 + *(int*) ((char*) pThis + 4)),
-			param_2, param_4, param_3, param_5);
-		*(int*) ((char*) pThis + 0xc) = *(int*) ((char*) pThis + 0xc) + 1;
+			(void*) (m_pObjects04 + m_nObjectCount0C * 0x150),
+			n2, n4, n3, n5);
+		m_nObjectCount0C = m_nObjectCount0C + 1;
 	}
 }
 // FUNCTION: LEMBALL 0x0040be50
-void __fastcall CSlinkyManager_LoadLevel(void* pThis, int nUnused, unsigned short* pStream)
+void CSlinkyManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat)
 {
-	unsigned short nCount = *pStream;
-	pStream++;
-	((void(__fastcall*) (void*, int, int)) 0x403396)(pThis, 0, nCount);
+	unsigned short nCount = *pLevelData;
+	pLevelData++;
+	((void(__fastcall*) (void*, int, int)) 0x403396)(this, 0, nCount);
 	if (nCount != 0) {
 		do {
 			unsigned short uSlot;
-			if (*(unsigned short*) (*(int*) ((char*) pThis) + 0x54) < 2) {
+			if (*(unsigned short*) ((char*) m_vtable00 + 0x54) < 2) {
 				uSlot = (unsigned short) ((int(__fastcall*) ()) 0x40214e)();
 			}
 			else {
-				uSlot = *pStream;
-				pStream++;
+				uSlot = *pLevelData;
+				pLevelData++;
 			}
-			unsigned int word1 = *(pStream);
-			pStream++;
-			unsigned int word2 = *(pStream);
-			pStream++;
-			unsigned int word3 = *(pStream);
-			pStream++;
-			unsigned int word4 = *(pStream);
-			pStream++;
-			((void(__fastcall*) (void*, int, int, int, int, int, int)) 0x402c6b)(pThis, 0, uSlot, word1, word2, word3, word4);
+			unsigned int word1 = *(pLevelData);
+			pLevelData++;
+			unsigned int word2 = *(pLevelData);
+			pLevelData++;
+			unsigned int word3 = *(pLevelData);
+			pLevelData++;
+			unsigned int word4 = *(pLevelData);
+			pLevelData++;
+			((void(__fastcall*) (void*, int, int, int, int, int, int)) 0x402c6b)(this, 0, uSlot, word1, word2, word3, word4);
 			nCount--;
 		} while (nCount != 0);
 	}
+	(void) nLen;
+	(void) nFormat;
 }
