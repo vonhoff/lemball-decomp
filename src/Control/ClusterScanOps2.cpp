@@ -3064,3 +3064,54 @@ void __fastcall HandlePasswordEntryAction(void* pObject, int nUnused, int nActio
 	}
 	(void) nUnused;
 }
+
+// FUNCTION: LEMBALL 0x00477130
+void __fastcall decode_zrle_rows(void* pThis, int nUnused, int param_1, int* param_2, int param_3)
+{
+	short sRowBits = *(short*)(param_1 + 4);
+	short sRowOff = *(short*)(param_1 + 6);
+	int step = 1;
+	int rowOffset = (int)sRowOff;
+	int rowIndex = 0;
+	unsigned char* pSrc = (unsigned char*) (*( unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
+	if (param_3 != 0) {
+		step = -1;
+		rowOffset = rowOffset + *(short*)(param_1 + 2) - 1;
+	}
+	if (0 < *(short*)(param_1 + 2)) {
+		rowOffset = rowOffset << 2;
+		do {
+			unsigned char* pDst;
+			unsigned char b;
+			pDst = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + rowOffset) + (int)sRowBits);
+			do {
+				b = *pSrc++;
+				if (b < 0x80) {
+					pDst = pDst + (unsigned char)b;
+				} else if (b > 0x80) {
+					unsigned char* p;
+					unsigned char* d;
+					unsigned int nDwords;
+					b = b & 0x7f;
+					p = pSrc;
+					d = pDst;
+					for (nDwords = (unsigned int)b >> 2; nDwords != 0; nDwords = nDwords - 1) {
+						*(unsigned int*)d = *(unsigned int*)p;
+						p = p + 4;
+						d = d + 4;
+					}
+					for (nDwords = (unsigned int)b & 3; nDwords != 0; nDwords = nDwords - 1) {
+						*d = *p;
+						p = p + 1;
+						d = d + 1;
+					}
+					pSrc = pSrc + (unsigned char)b;
+					pDst = pDst + (unsigned char)b;
+				}
+			} while (b != 0x80);
+			rowIndex = rowIndex + 1;
+			rowOffset = rowOffset + step * 4;
+		} while (rowIndex < *(short*)(param_1 + 2));
+	}
+	(void) nUnused;
+}
