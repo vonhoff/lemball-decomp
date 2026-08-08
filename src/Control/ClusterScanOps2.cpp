@@ -2084,3 +2084,58 @@ void __fastcall initialize_buffered_geometry_child_storage(void* self)
 	}
 	*(int*)((char*)self + 0x50) += 4;
 }
+// FUNCTION: LEMBALL 0x00469480
+void __fastcall refresh_resource_sprite_window_owner_frame_draw_entry(void* pObject)
+{
+	short uStack_4;
+	short uStack_2;
+	int iVar1;
+	int iVar3;
+	bool bVar2 = (*(int*) ((char*) pObject + 0xd0) != 0) && (*(int*) ((char*) pObject + 0x94) != 0);
+	if (bVar2) {
+		uStack_4 = *(unsigned short*) ((char*) pObject + 0x128);
+		iVar3 = *(int*) ((char*) pObject + 0x11c);
+		uStack_2 = *(unsigned short*) ((char*) pObject + 0x12a);
+	} else {
+		uStack_4 = *(unsigned short*) ((char*) pObject + 0x12c);
+		iVar3 = *(int*) ((char*) pObject + 0x118);
+		uStack_2 = *(unsigned short*) ((char*) pObject + 0x12e);
+	}
+	if (iVar3 != 0) {
+		iVar1 = *(int*) (*(int*) ((char*) pObject + 0x4c) + 0xc);
+		(*(void(**)(void)) (*(void***) (*(int*) (*(int*) (iVar1 + 0x40) + 4) + iVar1 + 0x40) + 0x38 / 4))();
+		(*(void(**)(short*, int, int, int, int)) (*(void***) *(void**) ((char*) pObject + 0x124) + 0x14 / 4))
+			(&uStack_4, *(int*) ((char*) pObject + 0x134), iVar3, 0x20, *(int*) ((char*) pObject + 0x144));
+		(*(void(**)(void*)) (*(void***) *(void**) ((char*) pObject + 0x124) + 4 / 4))(*(void**) ((char*) pObject + 0x4c));
+	}
+}
+
+// FUNCTION: LEMBALL 0x004429b0
+void __fastcall sync_action_button_state(void* pObject, int nUnused, void* param_1)
+{
+	void* iVar1 = *(void**) ((char*) pObject + 0x110);
+	if ((unsigned int) *(unsigned short*) (*(int*) ((char*) iVar1 + 8) + 0x228) != *(int*) ((char*) pObject + 0x164)) {
+		*(int*) ((char*) pObject + 0xd8) = 1;
+		*(int*) ((char*) pObject + 0x164) = (unsigned int) *(unsigned short*) (*(int*) ((char*) iVar1 + 8) + 0x228);
+	}
+	if (*(int*) ((char*) iVar1 + 0x1c) != *(int*) ((char*) pObject + 0x174)) {
+		*(int*) ((char*) pObject + 0xd8) = 1;
+		*(int*) ((char*) pObject + 0x174) = *(int*) ((char*) iVar1 + 0x1c);
+	}
+	if ((unsigned int) (*(int*) (*(int*) ((char*) iVar1 + 8) + 0xb8) == 8) != *(int*) ((char*) pObject + 0x168)) {
+		*(int*) ((char*) pObject + 0xd8) = 1;
+		*(int*) ((char*) pObject + 0x168) = (unsigned int) (*(int*) ((char*) pObject + 0x168) == 0);
+	}
+	{
+		int iVar2 = (*(int(**)(void*, int)) (*(void***) *(void**) ((char*) iVar1 + 8) + 0xb4 / 4))(*(void**) ((char*) iVar1 + 8), 0xc);
+		if (iVar2 != *(int*) ((char*) pObject + 0x16c)) {
+			*(int*) ((char*) pObject + 0xd8) = 1;
+			*(int*) ((char*) pObject + 0x16c) = (unsigned int) (*(int*) ((char*) pObject + 0x16c) == 0);
+		}
+	}
+	if (*(int*) ((char*) *(void**) ((char*) pObject + 0x110) + 0x18) != *(int*) ((char*) pObject + 0x170)) {
+		*(int*) ((char*) pObject + 0xd8) = 1;
+		*(int*) ((char*) pObject + 0x170) = *(int*) ((char*) *(void**) ((char*) pObject + 0x110) + 0x18);
+	}
+	((void(__fastcall*)(void*, void*)) 0x468360)(pObject, param_1);
+}
