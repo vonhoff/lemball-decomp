@@ -30,6 +30,10 @@ public:
 	void InitialiseNetwork(void);
 	int HasSFXChanged(void);
 	void AddPlayerLemmingToGroup(CPlayerLemming* pLemming, CPlayerLemmingGroup* pGroup);
+	int GetViewData(int pViewData);
+	void UseObject(unsigned int nObject);
+	void PlayerGroupRequestFire(int nX, int nY);
+	void ReformAlteredGroups(CPlayerLemmingGroup* pGroup);
 };
 
 typedef char CPlayerLemmingGroupManagerSizeCheck[sizeof(CPlayerLemmingGroupManager) == 0x150 ? 1 : -1];

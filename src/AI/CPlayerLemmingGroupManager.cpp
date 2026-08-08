@@ -239,7 +239,7 @@ int CPlayerLemmingGroupManager::HasSFXChanged(void)
 }
 
 // FUNCTION: LEMBALL 0x00419490
-int __fastcall CPlayerLemmingGroupManager_GetViewData(void* pObject, int nUnused, int param_1)
+int CPlayerLemmingGroupManager::GetViewData(int pViewData)
 {
 	int local_4 = 0;
 	if (*(int*) 0x4a011c != 0) {
@@ -247,22 +247,22 @@ int __fastcall CPlayerLemmingGroupManager_GetViewData(void* pObject, int nUnused
 		local_4 = 4;
 		int i;
 		for (i = 0; i < 4; i++) {
-			void* pElem = *(void**) ((char*) pObject + 0x13c + i * 4);
-			(*( void(**)(int)) (*(void***) pElem + 0xc / 4))(param_1);
-			param_1 += 0x4c;
+			void* pElem = *(void**) ((char*) this + 0x13c + i * 4);
+			(*( void(**)(int)) (*(void***) pElem + 0xc / 4))(pViewData);
+			pViewData += 0x4c;
 		}
 	}
-	int iVar2 = ((int(__fastcall*)(void*, int)) 0x401f64)(pObject, param_1);
+	int iVar2 = ((int(__fastcall*)(void*, int)) 0x401f64)(this, pViewData);
 	return iVar2 + local_4;
 }
 // FUNCTION: LEMBALL 0x00418ab0
-void __fastcall CPlayerLemmingGroupManager_UseObject(void* pOwner, int nUnused, unsigned int param_1)
+void CPlayerLemmingGroupManager::UseObject(unsigned int nObject)
 {
-	void* this_00 = (void*) ((int(__fastcall*)(void*)) 0x4021df)(pOwner);
+	void* this_00 = (void*) ((int(__fastcall*)(void*)) 0x4021df)(this);
 	if (this_00 != 0) {
-		void* pvVar1 = (void*) (*(void**) (0x4a6510 + (param_1 & 0xffff) * 4));
+		void* pvVar1 = (void*) (*(void**) (0x4a6510 + (nObject & 0xffff) * 4));
 		if (*(int*) ((char*) pvVar1 + 0x64) != 2) {
-			((void(__fastcall*)(void*, unsigned int)) 0x401c62)(this_00, param_1);
+			((void(__fastcall*)(void*, unsigned int)) 0x401c62)(this_00, nObject);
 			return;
 		}
 		if (*(int*) ((char*) pvVar1 + 0xb8) != 8) {
@@ -275,26 +275,26 @@ void __fastcall CPlayerLemmingGroupManager_UseObject(void* pOwner, int nUnused, 
 	}
 }
 // FUNCTION: LEMBALL 0x00418b60
-void __fastcall CPlayerLemmingGroupManager_PlayerGroupRequestFire(void* pObject, int nUnused, int param_1, int param_2)
+void CPlayerLemmingGroupManager::PlayerGroupRequestFire(int nX, int nY)
 {
-	void* pEntity = (void*) ((int(__fastcall*)(void*)) 0x4021df)(pObject);
+	void* pEntity = (void*) ((int(__fastcall*)(void*)) 0x4021df)(this);
 	if (pEntity != 0) {
 		void* pChild = (void*) ((int(__fastcall*)(void*)) 0x40241e)(pEntity);
 		while (pChild != 0) {
-			((void(__fastcall*)(void*, int, int)) 0x401659)(pChild, param_1, param_2);
+			((void(__fastcall*)(void*, int, int)) 0x401659)(pChild, nX, nY);
 			pChild = (void*) ((int(__fastcall*)(void*)) 0x401816)(pEntity);
 		}
 	}
 }
 // FUNCTION: LEMBALL 0x00418b20
-void __fastcall CPlayerLemmingGroupManager_ReformAlteredGroups(void* pThis, int nUnused, int* param_1)
+void CPlayerLemmingGroupManager::ReformAlteredGroups(CPlayerLemmingGroup* pGroup)
 {
 	int* pi;
-	pi = (int*) ((int(__fastcall*)(void*)) 0x401078)(pThis);
+	pi = (int*) ((int(__fastcall*)(void*)) 0x401078)(this);
 	while (pi != 0) {
-		if (pi != param_1) {
+		if (pi != (int*) pGroup) {
 			((void(__fastcall*)(void*, int)) (*(int*) *pi + 0x154))(pi, *(int*) 0x4a7834);
 		}
-		pi = (int*) ((int(__fastcall*)(void*)) 0x403549)(pThis);
+		pi = (int*) ((int(__fastcall*)(void*)) 0x403549)(this);
 	}
 }
