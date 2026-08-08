@@ -1,3 +1,4 @@
+#include "Visos/Generic/Memory.h"
 #include "AI/LevelNodePoint.h"
 extern void* AllocateVSMemBlock(unsigned int cbBlock);
 extern void FreeVSMemBlock(void* pMemory);

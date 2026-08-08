@@ -1,3 +1,4 @@
+#include "Visos/Generic/Memory.h"
 #include "AI/CGameObject.h"
 
 extern void* AllocateVSMemBlock(unsigned int nBytes);

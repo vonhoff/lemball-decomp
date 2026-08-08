@@ -53,6 +53,27 @@ set(LEMBALL_SOURCES
     src/AI/CPlayerLemmingGroup.cpp
     src/AI/CPlayerLemmingGroupManager.cpp
     src/AI/CPlayerLemming.cpp
+    src/AI/CAI.cpp
+    src/AI/CAICursor.cpp
+    src/AI/CBall.cpp
+    src/AI/CBallManager.cpp
+    src/AI/CBalloonPost.cpp
+    src/AI/CBaseRemap.cpp
+    src/AI/CBullet.cpp
+    src/AI/CCollectableManager.cpp
+    src/AI/CCrate.cpp
+    src/AI/CDoorManager.cpp
+    src/AI/CDuplicator.cpp
+    src/AI/CGenericGroupManager.cpp
+    src/AI/CMoverManager.cpp
+    src/AI/CResFONT.cpp
+    src/AI/CRocket.cpp
+    src/AI/CRocketManager.cpp
+    src/AI/CSheep.cpp
+    src/AI/CSheepGroup.cpp
+    src/AI/CSlinky.cpp
+    src/AI/CSlinkyManager.cpp
+    src/AI/CTower.cpp
     src/AI/LVMOVEVT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP
     src/AI/LVPROJVT.CPP

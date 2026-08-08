@@ -102,3 +102,37 @@ int CPlayerLemmingGroup::HasSFXChanged(void)
 	}
 	return fDirty;
 }
+
+// FUNCTION: LEMBALL 0x004147d0
+int __fastcall CPlayerLemmingGroup_RemoveLemmingFromGroup(void* pThis, int nUnused, int param_1)
+{
+	void* pChild;
+	((void(__fastcall*)(void*, int)) 0x402879)(pThis, param_1);
+	pChild = (void*) ((int(__fastcall*)(void*)) 0x40241e)(pThis);
+	if (*(int*) ((char*) pThis + 0x168) == 1 && pChild != 0) {
+		((void(__fastcall*)(void*, int)) 0x402667)(pChild, 1);
+	}
+	*(int*) ((char*) pThis + 0x164) = 1;
+	return 1;
+}
+// FUNCTION: LEMBALL 0x00414080
+int __fastcall CPlayerLemmingGroup_GetViewData(void* pThis, int nUnused, int param_1)
+{
+	int nVtbl = *(int*) pThis;
+	int nCount = 0;
+	int* pi = (int*) ((int(__fastcall*)(void*)) (*(int*) (nVtbl + 0x114)))(pThis);
+	if (pi != 0) {
+		void* pGetNext = (void*) *(int*) (nVtbl + 0x118);
+		do {
+			int nOut = param_1;
+			if (pi[0x2e] != 0xc) {
+				nOut = param_1 + 0x4c;
+				nCount++;
+				((void(__fastcall*)(void*, int)) (*(int*) *pi + 0xc))(pi, param_1);
+			}
+			pi = (int*) ((int(__fastcall*)(void*)) pGetNext)(pThis);
+			param_1 = nOut;
+		} while (pi != 0);
+	}
+	return nCount;
+}

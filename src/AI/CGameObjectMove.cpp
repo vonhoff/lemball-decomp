@@ -3,6 +3,7 @@
 
 extern int g_nLevelFrameClockTick;
 extern void* g_pLevelTileGrid;
+extern void* g_pActiveManagedEntityOwner;
 extern void* g_pManagedEntityReachabilityHelper;
 extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
@@ -312,4 +313,46 @@ void __cdecl ThunkUpdateManagedEntityFacingTowardFirstMoveCommand(void* pUnused,
 {
 	(void) pUnused;
 	pEntity->TurnToFaceDestination();
+}
+
+// FUNCTION: LEMBALL 0x00415780
+void __fastcall CGameObject_StopMoving(void* pObject)
+{
+	((void(__fastcall*)(void*)) 0x402351)(pObject);
+	*(int*) ((char*) pObject + 0x88) = 0;
+	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick;
+	*(int*) ((char*) pObject + 0xc8) = g_nLevelFrameClockTick;
+}
+// FUNCTION: LEMBALL 0x00416820
+void __fastcall CGameObject_StartLand(void* param_1)
+{
+	*(int*) ((char*) param_1 + 0xcc) = g_nLevelFrameClockTick + 8;
+	((void(__fastcall*)(void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) param_1 + 0x9c, param_1, *(unsigned short*) ((char*) param_1 + 0x68));
+}
+// FUNCTION: LEMBALL 0x00416130
+void __fastcall CGameObject_Jump(void* pThis, int nUnused)
+{
+	if (*(unsigned short*) ((char*) pThis + 0xbc) != 0) {
+		return;
+	}
+	void* pMoveChunk = 0;
+	int nTick = g_nLevelFrameClockTick - *(int*) ((char*) pThis + 0xc8);
+	unsigned int nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)->GetZ(
+		*(int*) ((char*) pThis + 0xf4) >> 12, *(int*) ((char*) pThis + 0xf8) >> 12, &pMoveChunk);
+	nHeight &= 0xffff;
+	int nFall = (nTick * 3 + *(int*) ((char*) pThis + 0x100)) << 12;
+	*(int*) ((char*) pThis + 0xa4) = nFall;
+	if ((int) (nHeight << 12) <= nFall) {
+		*(int*) ((char*) pThis + 0xa4) = nHeight << 12;
+		*(int*) ((char*) pThis + 0x9c) = *(int*) ((char*) pThis + 0xf4);
+		*(int*) ((char*) pThis + 0xa0) = *(int*) ((char*) pThis + 0xf8);
+		*(int*) ((char*) pThis + 0x104) = 0;
+		if (*(int*) ((char*) pThis + 0x11c) == 0 && pMoveChunk != 0) {
+			if (((int(__fastcall*) (void*, void*)) 0x4036b1)(pMoveChunk, pThis) == 0) {
+				((void(__fastcall*) (void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) pThis + 0x9c, pThis, *(unsigned short*) ((char*) pThis + 0x68));
+				return;
+			}
+		}
+		((void(__fastcall*) (void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) pThis + 0x9c, pThis, *(unsigned short*) ((char*) pThis + 0x68));
+	}
 }

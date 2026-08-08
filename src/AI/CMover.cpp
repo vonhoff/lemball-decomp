@@ -268,3 +268,37 @@ void CMover::StopObjectsMoving(void)
 		} while (i < m_cAttachedEntities174);
 	}
 }
+
+// FUNCTION: LEMBALL 0x0042e980
+void __fastcall CMover_FindObjectsOnTopOfMe(void* pThis, int nUnused)
+{
+	int minX;
+	int maxX;
+	int minY;
+	int maxY;
+	unsigned int count;
+	unsigned int i;
+	void* pObj;
+
+	minX = (*(int*) ((char*) pThis + 0x9c) >> 0xc) - 8;
+	maxX = minX + 0xf;
+	minY = (*(int*) ((char*) pThis + 0xa0) >> 0xc) - 8;
+	maxY = minY + 0xf;
+	count = (unsigned int) *(unsigned short*) 0x4a74bc;
+	for (i = 0; (int) i < (int) count; i++) {
+		pObj = *(void**) (0x4a6510 + i * 4);
+		if (pObj != (void*) 0x0) {
+			if ((short) ((short(__fastcall*) (void*)) 0x401794)(pObj) != (short) -1) {
+				if ((short) ((short(__fastcall*) (void*)) 0x401794)(pThis) != (short) ((short(__fastcall*) (void*)) 0x401794)(pObj)) {
+					if (*(int*) ((char*) pObj + 0x64) != 7) {
+						int ex = *(int*) ((char*) pObj + 0x9c) >> 0xc;
+						int ey = *(int*) ((char*) pObj + 0xa0) >> 0xc;
+						if (minX <= ex && ex <= maxX && minY <= ey && ey <= maxY) {
+							((void(__fastcall*) (void*, void*)) 0x4036b1)(pThis, pObj);
+						}
+					}
+				}
+			}
+		}
+	}
+}

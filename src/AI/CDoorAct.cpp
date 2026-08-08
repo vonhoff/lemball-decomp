@@ -3,6 +3,7 @@
 #include "AI/CDoorManager.h"
 #include "AI/AICoord.h"
 #include "AI/CGameObject.h"
+extern void* g_pActiveManagedEntityOwner;
 
 // TU-local view (matches CHandManager.cpp) of the EFF stream common base.
 struct VsNetEffStreamCommon {
@@ -438,5 +439,25 @@ void CDoorManager::Switch(int nAction, unsigned int nSlot)
 		if (nAction == 3) {
 			((CDoor*) ((char*) m_pObjects3C + iObject * 0x14c))->DoActivate();
 		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0040dec0
+void __fastcall CDoor_DoActivate(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x144) = 1;
+	*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
+	*(int*) ((char*) pObject + 0xcc) = *(int*) ((char*) pObject + 0xcc) + g_nLevelFrameClockTick;
+	if (*(int*) ((char*) pObject + 0xb8) != 0x1c) {
+		unsigned short uVar1 = *(unsigned short*) ((char*) pObject + 0xbc);
+		int iVar2;
+		if (uVar1 == 0x14) {
+			iVar2 = 0x19;
+		} else if (uVar1 < 0x15 || uVar1 > 0x17) {
+			iVar2 = 0x19;
+		} else {
+			iVar2 = 0x4b;
+		}
+		((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, iVar2);
 	}
 }
