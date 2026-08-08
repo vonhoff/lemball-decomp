@@ -6,6 +6,8 @@ extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* pUnusedEdx, int fReleaseMode);
 extern void* g_pActiveManagedEntityOwner;
+extern void* g_pSharedRenderDispatchQueue;
+extern void __fastcall ResetTypedResourceObjectState(void* pObject);
 extern void* g_pCachedChunkManagerLevelMode;
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
@@ -1709,4 +1711,88 @@ void __fastcall expand_rect_to_cover_rect(void* pThis, int nUnused, short* pRect
 			*(short*) ((char*) pThis + 2) = (pRect[1] - *(short*) ((char*) pThis + 6)) + pRect[3];
 		}
 	}
+}
+
+
+// FUNCTION: LEMBALL 0x0045ded0
+void* __fastcall ConstructTwoArrayListResource(void* pObject, int nUnused)
+{
+	unsigned int dwTable = *(unsigned int*) 0x4a1d6c;
+	*(void**) pObject = (void*) 0x498980;
+	*(unsigned int*) ((char*) pObject + 0x48) = dwTable;
+	*(void**) pObject = (void*) 0x4989c0;
+	*(int*) ((char*) pObject + 0x18) = 0;
+	*(int*) ((char*) pObject + 0x5c) = 0;
+	*(int*) ((char*) pObject + 0x58) = 0;
+	*(int*) ((char*) pObject + 0x54) = 0;
+	*(int*) ((char*) pObject + 0x60) = 0;
+	*(void**) pObject = (void*) 0x498c88;
+	*(int*) ((char*) pObject + 0x78) = 0;
+	*(int*) ((char*) pObject + 0x7c) = 0;
+	ResetTypedResourceObjectState(pObject);
+	*(int*) ((char*) pObject + 0x18) = 0;
+	return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0043a130
+void* __fastcall ConstructResourceWindowOwnerBuffer(void* pThis, void* pUnusedEdx,
+	unsigned int param_2, unsigned int param_3, unsigned int param_4, unsigned int param_5)
+{
+	((void(__cdecl*)(unsigned int, unsigned int, int, int)) 0x468f90)(param_2, param_3, 0x30, 0xc);
+	*(void**) pThis = (void*) 0x497108;
+	*(void**) ((char*) pThis + 0x90) = (void*) 0x4970e0;
+	*(int*) ((char*) pThis + 0x14c) = 0;
+	((void(__fastcall*)(void*, int, unsigned int)) 0x403017)(pThis, 0, param_2);
+	*(void**) ((char*) pThis + 0xf4) = g_pSharedRenderDispatchQueue;
+	*(void**) ((char*) pThis + 0xcc) = (void*) param_2;
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x0043a250
+void* __fastcall ConstructRegisteredRenderSlotArray(void* pThis, int nUnused, int param_1)
+{
+	void* pAlloc;
+	int i;
+	((void*(__fastcall*)(void*, int)) 0x462ea0)(pThis, 0);
+	*(void**) pThis = (void*) 0x497208;
+	pAlloc = AllocateVSMemBlock((unsigned int) param_1 * 8);
+	*(void**) ((char*) pThis + 0x10) = pAlloc;
+	*(int*) ((char*) pThis + 0x18) = param_1;
+	*(int*) ((char*) pThis + 0x14) = 0;
+	for (i = 0; i < param_1; i++) {
+		*(int*) ((char*) pAlloc + i * 8) = 0;
+		*(int*) ((char*) pAlloc + i * 8 + 4) = 0;
+	}
+	((void(__fastcall*)(void*, int, void*, int)) 0x4632a0)(g_pSharedRenderDispatchQueue, 0, pThis, -0x19);
+	return pThis;
+}
+
+// FUNCTION: LEMBALL 0x00462cb0
+void* __fastcall DeleteEffChannelStreamStackWrapper(void* pThis, int nUnused, char param_1)
+{
+	((void(__fastcall*)(void*)) 0x45f8a0)((char*) pThis + 0xa8);
+	((void(__fastcall*)(void*)) 0x45fd80)((char*) pThis + 0x30);
+	((void(__fastcall*)(void*)) 0x45f6c0)(pThis);
+	if ((param_1 & 1) != 0) {
+		FreeVSMemBlock((char*) pThis - 8);
+	}
+	return (char*) pThis - 8;
+}
+
+// FUNCTION: LEMBALL 0x00457d00
+int __fastcall set_directdraw_palette_entries(void* pObject, int param_2)
+{
+	unsigned int uResult;
+	void* pStream;
+	char* pError;
+	uResult = ((unsigned int(__stdcall*)(void*, int, int, unsigned short)) (*(void***) pObject)[0x18 / 4])(pObject, 0, 0, *(unsigned short*) ((char*) param_2 + 2));
+	if (uResult != 0) {
+		pError = ((char* (__cdecl*)(unsigned int)) 0x456720)(uResult & 0xfff);
+		pStream = *(void**) 0x4a93a8;
+		pStream = ((void* (__fastcall*)(void*, int, const char*)) 0x4585b0)(pStream, 0, "Direct Draw Set Palette Entries failed ");
+		pStream = ((void* (__fastcall*)(void*, int, const char*)) 0x4585b0)(pStream, 0, pError);
+		((void* (__fastcall*)(void*, int, const char*)) 0x4585b0)(pStream, 0, "\n");
+		return 0;
+	}
+	return 1;
 }
