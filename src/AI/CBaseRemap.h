@@ -9,6 +9,7 @@ public:
 	void* m_pRemapObject04;       // 0x04 remap/palette table object
 
 	void MapRemap(const unsigned char* param_1);
+	void CalculateGreyScale(void);
 };
 
 #endif

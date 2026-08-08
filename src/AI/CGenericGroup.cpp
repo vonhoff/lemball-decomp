@@ -1,4 +1,7 @@
+#define LEMBALL_CGENERICGROUP_REFORM
 #include "AI/CGenericGroup.h"
+#undef LEMBALL_CGENERICGROUP_REFORM
+
 #include "AI/CFormationManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
@@ -279,6 +282,40 @@ void CGenericGroup::SetFormationIndex(int nIndex)
 int CGenericGroup::GetFormationIndex(void)
 {
 	return m_nFormationIndex160;
+}
+
+// FUNCTION: LEMBALL 0x0041e420
+void CGenericGroup::ReformAlteredGroup(CFormationManager* pFormationManager)
+{
+	typedef int(LEMBALL_FASTCALL * GroupCountProc)(CGenericGroup*);
+	typedef CGameObject*(LEMBALL_FASTCALL * ElementIteratorProc)(CGenericGroup*);
+	if (m_nUnused164 != 0) {
+		void** pVtable = *(void***) this;
+		CGameObject* pObject = ((ElementIteratorProc) pVtable[0x114 / sizeof(void*)])(this);
+		if (pObject != 0) {
+			AICOORD position;
+			pObject->GetDestination(&position);
+			unsigned int nDirection = ReturnFacingDirection(pObject->m_WorldPosition9C.x >> 12,
+															pObject->m_WorldPosition9C.y >> 12,
+															position.x >> 12,
+															position.y >> 12);
+			pFormationManager->TransformFormation(m_nFormationIndex160, (nDirection - 2) << 6);
+			int nElements = ((GroupCountProc) pVtable[0x108 / sizeof(void*)])(this);
+			if (nElements > 0) {
+				ElementIteratorProc pGetNext = (ElementIteratorProc) pVtable[0x118 / sizeof(void*)];
+				for (int i = 0; i < nElements; ++i) {
+					CFormationVector* pVector = pFormationManager->GetAVector(i);
+					AICOORD destination;
+					destination.x = pVector->x + position.x;
+					destination.y = pVector->y + position.y;
+					destination.z = position.z;
+					pObject->AddDestination(destination);
+					pObject = pGetNext(this);
+				}
+			}
+		}
+		m_nUnused164 = 0;
+	}
 }
 
 // FUNCTION: LEMBALL 0x0041e530

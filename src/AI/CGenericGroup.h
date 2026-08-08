@@ -42,6 +42,9 @@ public:
 	void ClearExistingWaypoints(void);
 	void SetFormationIndex(int nIndex);
 	int GetFormationIndex(void);
+#ifdef LEMBALL_CGENERICGROUP_REFORM
+	void ReformAlteredGroup(CFormationManager* pFormationManager);
+#endif
 	int CheckGroupIntersection(CVSRect* pRect, AICOORD* pPosition);
 	int GetViewData(CViewData* pViewData);
 };
