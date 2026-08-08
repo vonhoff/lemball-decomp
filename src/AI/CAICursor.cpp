@@ -1,10 +1,13 @@
+#include "AI/CAICursor.h"
+
 // FUNCTION: LEMBALL 0x00414e80
-int __fastcall CAICursor_ProcessMsg(void* pObject, int nUnused, short* param_1)
+int CAICursor::ProcessMsg(tagMESSAGE* pMsg)
 {
-	if (*param_1 != 1) {
-		*(int*) ((char*) pObject + 0xc) = *(int*) ((char*) pObject + 0xc) + 1;
+	short* raw = (short*) pMsg;
+	if (*raw != 1) {
+		m_nUnhandledCount0C++;
 		return 0;
 	}
-	((void(__fastcall*)(void*, int, int)) 0x40281f)(pObject, *(int*) ((char*) param_1 + 8), *(int*) ((char*) param_1 + 0xc));
+	((void(__fastcall*)(void*, int, int)) 0x40281f)(this, *(int*) ((char*) raw + 8), *(int*) ((char*) raw + 0xc));
 	return 1;
 }
