@@ -2726,4 +2726,37 @@ void __fastcall begin_network_lobby_text_prompt(void* this_, void* nUnused, int 
 		*(void**)((char*)this_ + 0x398), g_szNetworkLobbyLocalPlayerName);
 	((void(__fastcall*)(void*, int, int))0x00403085)(this_, 1, 0);
 	(void) nUnused;
+}// FUNCTION: LEMBALL 0x0043a190
+void __fastcall destroy_resource_window_owner_buffer_0043a190(void* pThis)
+{
+	*(void**)((char*)pThis + 0x000) = (void*)0x004970e0;
+	*(void**)((char*)pThis - 0x090) = (void*)0x00497108;
+	if (*(void**)((char*)pThis + 0x0bc) != 0) {
+		((void(__cdecl*)(void*))0x45a790)(*(void**)((char*)pThis + 0x0bc));
+	}
+	((void(__fastcall*)(void*))0x47fccc)(pThis);
+}
+
+// FUNCTION: LEMBALL 0x00469070
+void* __fastcall construct_resource_sprite_geometry_child_from_point_size(
+	void* pThis, int nEdxSlop, const short* pPoint, const short* pSize,
+	int nBufferSize, int nColor)
+{
+	((void(__fastcall*)(void*, int, int))0x468b20)(pThis, nBufferSize, 0xf7);
+	*(unsigned short*)((char*)pThis + 0x128) = 0;
+	*(unsigned short*)((char*)pThis + 0x12a) = 0;
+	*(unsigned short*)((char*)pThis + 0x12c) = 0;
+	*(unsigned short*)((char*)pThis + 0x12e) = 0;
+	*(unsigned short*)((char*)pThis + 0x140) = 0;
+	*(unsigned short*)((char*)pThis + 0x142) = 0;
+	*(void**)((char*)pThis + 0x000) = (void*)0x00499a18;
+	*(void**)((char*)pThis + 0x090) = (void*)0x004999f8;
+	*(unsigned short*)((char*)pThis + 0x0dc) = pPoint[0];
+	*(unsigned short*)((char*)pThis + 0x0de) = pPoint[1];
+	*(int*)((char*)pThis + 0x130) = nColor;
+	*(int*)((char*)pThis + 0x138) = 0x0c;
+	*(unsigned short*)((char*)pThis + 0x140) = pSize[0];
+	*(unsigned short*)((char*)pThis + 0x142) = pSize[1];
+	((void(__fastcall*)(void*))0x4693b0)(pThis);
+	return pThis;
 }
