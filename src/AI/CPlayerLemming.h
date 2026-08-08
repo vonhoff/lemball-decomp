@@ -43,6 +43,9 @@ public:
 	void TurnToFaceCursor(void);
 	void GetData(void);
 	void AddData(void);
+#ifdef LEMBALL_CPLAYERLEMMING_START_STANDING
+	void StartStanding(void);
+#endif
 };
 
 typedef char CPlayerLemmingSizeCheck[sizeof(CPlayerLemming) == 0x22c ? 1 : -1];

@@ -1,3 +1,4 @@
+#define LEMBALL_CPLAYERLEMMING_START_STANDING
 #include "AI/CPlayerLemming.h"
 
 extern void* g_pSessionRandomState;
@@ -5,6 +6,11 @@ extern int g_nLevelFrameClockTick;
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTimeMs;
 extern void* g_pLevelDemoPlaybackController;
+extern void* g_pLevelTileGrid;
+
+struct LevelTileGridOwnerView {
+	unsigned short GetZ(int x, int y, void** ppMoveChunk);
+};
 
 // FUNCTION: LEMBALL 0x0040f0d0
 void CPlayerLemming::SetGroup(CPlayerLemmingGroup* pGroup)
@@ -271,4 +277,39 @@ void CPlayerLemming::AddData(void)
 	}
 	((void(__fastcall*)(void*, unsigned int)) 0x45ef10)(this, *(unsigned int*) ((char*) this - 0x5c));
 	*(unsigned int*) ((char*) this + 0x2c) = 0;
+}
+
+// FUNCTION: LEMBALL 0x00410100
+void CPlayerLemming::StartStanding(void)
+{
+	void* pMoveChunk = 0;
+	int nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)
+						->GetZ(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, &pMoveChunk);
+	int nCurrentHeight = m_WorldPosition9C.z >> 12;
+
+	if (m_fOnMover11C == 0 && pMoveChunk != 0) {
+		((void(__fastcall*)(void*, void*)) 0x4036b1)(pMoveChunk, this);
+	}
+	if (nCurrentHeight <= nHeight + 2) {
+		if (pMoveChunk == 0) {
+			m_WorldPosition9C.z = nHeight << 12;
+		}
+		((void(__fastcall*)(void*, void*, void*, unsigned short)) 0x40341d)(
+			g_pActiveManagedEntityOwner, &m_WorldPosition9C, this, m_nBehaviourFlags68);
+		return;
+	}
+
+	m_nNextUpdateTickCC = g_nLevelFrameClockTick;
+	if ((m_nBehaviourFlags68 & 4) != 0) {
+		m_nJumpVelY50 = 0;
+		m_nJumpAirborne108 = 1;
+		m_nJumpVelX4C = 0x3000;
+		m_nJumpVelZ54 = ((nCurrentHeight - nHeight) / 8 + 1) * 0x1000;
+		m_nActionPhaseBC = 0;
+		m_nMotionStartTickC8 = g_nLevelFrameClockTick;
+		m_nJumpElevation100 = nCurrentHeight;
+		m_nJumpOriginXF4 = m_WorldPosition9C.x;
+		m_nJumpOriginYF8 = m_WorldPosition9C.y;
+		m_nJumpOriginZFC = nHeight << 12;
+	}
 }

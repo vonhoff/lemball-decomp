@@ -153,6 +153,7 @@ set(LEMBALL_SOURCES
     src/AI/CLaserManager.cpp
     src/AI/CLift.cpp
     src/AI/CLiftManager.cpp
+    src/AI/CTrapDoor.cpp
     src/AI/CDoorAct.cpp
     src/AI/CDoorSlot.cpp
     src/AI/CHand.cpp
