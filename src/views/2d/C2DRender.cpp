@@ -817,6 +817,30 @@ void C2D::DrawBonus(CViewData& ViewData)
 									  0);
 }
 
+
+// MACINTOSH: C2D::DrawLemmingOnBalloon(CViewData&, int, unsigned char)
+// FUNCTION: LEMBALL 0x0043c8a0
+void C2D::DrawLemmingOnBalloon(CViewData& ViewData, int nPlayer, unsigned char fUseRemap)
+{
+	int nRemap = fUseRemap ? m_nLemmingRemap0968 : 0;
+	((void (__fastcall*)(void*, int, void*)) 0x401f4b)(this, 0, &ViewData);
+	int nPlayerRemap = nPlayer < 4 ? m_anPlayerRemaps0064[nPlayer] : 0;
+	((CAnimsManagerView*) m_pAnimsManager0A40)
+		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - 0x10),
+									  (short) (ViewData.m_nY08 - 0x40),
+									  0x94,
+									  0,
+									  0,
+									  nPlayerRemap);
+	((CAnimsManagerView*) m_pAnimsManager0A40)
+		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - 0x16),
+									  (short) (ViewData.m_nY08 - 0x1e),
+									  0x75,
+									  0,
+									  0,
+									  nRemap);
+}
+
 // MACINTOSH: C2D::ResetPrimitives()
 // FUNCTION: LEMBALL 0x00440400
 void C2D::ResetPrimitives(void)
