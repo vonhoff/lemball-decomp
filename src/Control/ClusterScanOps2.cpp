@@ -8,6 +8,7 @@ extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* p
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pSharedRenderDispatchQueue;
 extern void* g_pVariantResourceEntryManager;
+extern void* g_pLevelProgressState;
 extern int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
 extern void* g_pActiveNetworkLobbyTransportController;
 extern char g_szNetworkLobbyLocalPlayerName[0x10];
@@ -2955,6 +2956,111 @@ void __fastcall decode_zrle_rows_gated_by_mask(void* pThis, int nUnused, int par
 			rowIndex = rowIndex + 1;
 			rowOffset = rowOffset + 4;
 		} while (rowIndex < *(short*)(param_1 + 2));
+	}
+	(void) nUnused;
+}
+
+// Minimal view of GameLevelProgressState (links to CGame.cpp def; member mangling via name+signature).
+struct GameLevelProgressState {
+	int ValidateAndApplyPassword(char* pszPassword);
+	void Snapshot(void);
+};
+
+// FUNCTION: LEMBALL 0x0040d130
+void __fastcall AppendAnimChunkRecordIfUnique(void* pObject, int nUnusedEdx, short* pTile, unsigned short nFirstFrame, unsigned short nLastFrame)
+{
+	int nCount;
+	int nIndex;
+	int nRow;
+	int nColumn;
+	unsigned short* pWord;
+
+	// ILT has_anim_chunk_record_at_tile (0x40291e) forwards to HasAnimChunkRecordAtTile (0x40d080).
+	if (((int (__fastcall*) (void*, int, short*)) 0x0040291e)(pObject, 0, pTile) == 0) {
+		nCount = *(int*) ((char*) pObject + 4);
+		if (nCount < 200) {
+			*(int*) ((char*) pObject + nCount * 0x18 + 0x1c) = 1;
+			nIndex = *(int*) ((char*) pObject + 4);
+			*(int*) ((char*) pObject + nIndex * 0x18 + 8) = *(int*) pTile;
+			*(short*) ((char*) pObject + nIndex * 0x18 + 0x0c) = pTile[2];
+			*(unsigned short*) ((char*) pObject + nCount * 0x18 + 0x14) = nFirstFrame;
+			*(unsigned short*) ((char*) pObject + nCount * 0x18 + 0x16) = nFirstFrame;
+			*(unsigned short*) ((char*) pObject + nCount * 0x18 + 0x18) = nLastFrame;
+			*(short*) ((char*) pObject + nCount * 0x18 + 0x1a) = (nLastFrame < nFirstFrame) ? -1 : 1;
+			nRow = ((int) (short) pTile[1] + ((int) (short) pTile[1] >> 31 & 0x0f)) >> 4;
+			nColumn = ((int) (short) pTile[0] + ((int) (short) pTile[0] >> 31 & 0x0f)) >> 4;
+			*(int*) ((char*) pObject + nCount * 0x18 + 0x10) =
+				(nRow * *(int*) ((char*) g_pAnimChunkTileGrid + 0x10) + nColumn) * 0x0c
+				+ *(int*) ((char*) g_pAnimChunkTileGrid + 0x0c);
+			nCount = *(int*) ((char*) pObject + 4) + 1;
+			*(int*) ((char*) pObject + 4) = nCount;
+			if (nCount > 0) {
+				pWord = (unsigned short*) ((char*) pObject + 0x14);
+				nIndex = 0;
+				do {
+					*pWord = pWord[1];
+					++nIndex;
+					pWord = (unsigned short*) ((char*) pWord + 0x18);
+				} while (nIndex < *(int*) ((char*) pObject + 4));
+			}
+		}
+	}
+	(void) nUnusedEdx;
+}
+
+// FUNCTION: LEMBALL 0x00451d20
+void __fastcall HandlePasswordEntryAction(void* pObject, int nUnused, int nAction)
+{
+	int nResult;
+	unsigned long nTime;
+	int nLength;
+
+	if (*(int*) ((char*) pObject + 0x488) == 1) {
+		return;
+	}
+	switch (nAction) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+		nLength = *(int*) ((char*) pObject + 0x420);
+		if (nLength > 9) {
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x19);
+			return;
+		}
+		*(char*) ((char*) pObject + nLength + 0x3b0) = (char) nAction + '0';
+		*(int*) ((char*) pObject + 0x420) = nLength + 1;
+		return;
+	case 10:
+		nLength = *(int*) ((char*) pObject + 0x420);
+		if (nLength < 1) {
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x19);
+		} else {
+			*(int*) ((char*) pObject + 0x420) = nLength - 1;
+		}
+		nLength = *(int*) ((char*) pObject + 0x420);
+		if (nLength >= 0 && nLength < 10) {
+			*(char*) ((char*) pObject + nLength + 0x3b0) = 0x2d;
+			return;
+		}
+		break;
+	case 11:
+		nResult = ((GameLevelProgressState*) g_pLevelProgressState)->ValidateAndApplyPassword((char*) ((char*) pObject + 0x3b0));
+		*(int*) ((char*) pObject + 0x484) = nResult;
+		((void (__fastcall*) (void*)) (*(void***) *(void**) pObject + 0x4c / 4))(pObject);
+		((GameLevelProgressState*) g_pLevelProgressState)->Snapshot();
+		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect((nResult == 0) ? 0x22 : 0x13);
+		nTime = ((unsigned (*) (void)) 0x00462e80)();
+		*(int*) ((char*) pObject + 0x488) = 1;
+		*(unsigned long*) ((char*) pObject + 0x48c) = nTime;
+		*(unsigned long*) ((char*) pObject + 0x490) = nTime + 1000;
+		break;
 	}
 	(void) nUnused;
 }
