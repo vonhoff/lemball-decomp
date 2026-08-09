@@ -128,7 +128,7 @@ void CRocketManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned ch
 			pLevelData++;
 			unsigned int z = *(pLevelData);
 			pLevelData++;
-			((void(__fastcall*) (void*, unsigned short, int, int, int)) 0x4017b7)(this, uSlot, x, y, z);
+			Add(uSlot, x, y, z);
 			nRemain--;
 		} while (nRemain != 0);
 	}
