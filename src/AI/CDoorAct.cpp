@@ -451,15 +451,17 @@ void CDoor::DoActivate(void)
 	*(int*) ((char*) this + 0x94) = g_nLevelFrameClockTimeMs;
 	*(int*) ((char*) this + 0xcc) = m_nFrameTickCC + g_nLevelFrameClockTick;
 	if (m_nStateB8 != 0x1c) {
-		unsigned short uVar1 = *(unsigned short*) ((char*) this + 0xbc);
-		int iVar2;
-		if (uVar1 == 0x14) {
-			iVar2 = 0x19;
-		} else if (uVar1 < 0x15 || uVar1 > 0x17) {
-			iVar2 = 0x19;
-		} else {
-			iVar2 = 0x4b;
+		unsigned short nActionPhase = *(unsigned short*) ((char*) this + 0xbc);
+		int nSoundId;
+		if (nActionPhase == 0x14) {
+			nSoundId = 0x19;
 		}
-		((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, iVar2);
+		else if (nActionPhase < 0x15 || nActionPhase > 0x17) {
+			nSoundId = 0x19;
+		}
+		else {
+			nSoundId = 0x4b;
+		}
+		((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, nSoundId);
 	}
 }

@@ -907,36 +907,36 @@ int LEMBALL_FASTCALL prune_anim_chunk_records_to_supported_special_tile_types(vo
 
 	if (*(int*) ((char*) param_1 + 4) > 0) {
 		do {
-			int* piVar1 = (int*) ((char*) param_1 + 0x1c + i * 0x18);
-			if (*piVar1 != 0) {
+			int* pActiveFlag = (int*) ((char*) param_1 + 0x1c + i * 0x18);
+			if (*pActiveFlag != 0) {
 				switch (**(int**) ((char*) param_1 + i * 0x18 + 0x10)) {
 				case 0x210:
 				case 0x219:
 				case 0x21a:
-					*piVar1 = 1;
+					*pActiveFlag = 1;
 					break;
 				default: {
-					int iVar5 = i + 1;
-					*piVar1 = 0;
-					if (iVar5 < *(int*) ((char*) param_1 + 4)) {
-						unsigned int* puVar2 = (unsigned int*) ((char*) pBase + iVar5 * 0x18);
+					int iSourceRecord = i + 1;
+					*pActiveFlag = 0;
+					if (iSourceRecord < *(int*) ((char*) param_1 + 4)) {
+						unsigned int* pDestinationRecord = (unsigned int*) ((char*) pBase + iSourceRecord * 0x18);
 						do {
-							iVar5++;
-							puVar2[0] = puVar2[6];
-							puVar2[1] = puVar2[7];
-							puVar2[2] = puVar2[8];
-							puVar2[3] = puVar2[9];
-							puVar2[4] = puVar2[10];
-							puVar2[5] = puVar2[11];
-							puVar2 = puVar2 + 6;
-						} while (iVar5 < *(int*) ((char*) param_1 + 4));
+							iSourceRecord++;
+							pDestinationRecord[0] = pDestinationRecord[6];
+							pDestinationRecord[1] = pDestinationRecord[7];
+							pDestinationRecord[2] = pDestinationRecord[8];
+							pDestinationRecord[3] = pDestinationRecord[9];
+							pDestinationRecord[4] = pDestinationRecord[10];
+							pDestinationRecord[5] = pDestinationRecord[11];
+							pDestinationRecord = pDestinationRecord + 6;
+						} while (iSourceRecord < *(int*) ((char*) param_1 + 4));
 					}
 					i = i - 1;
 					*(int*) ((char*) param_1 + 4) = *(int*) ((char*) param_1 + 4) - 1;
 				} break;
 				case 0x215:
 				case 0x216:
-					*piVar1 = 0;
+					*pActiveFlag = 0;
 					break;
 				}
 			}

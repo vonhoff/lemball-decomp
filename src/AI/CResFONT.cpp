@@ -29,10 +29,16 @@ void CResFONT::OnLoad(void)
 // FUNCTION: LEMBALL 0x0045d990
 int CResFONT::DirectResources(unsigned long nIndex, unsigned char*& pIntCodeData, unsigned char*& pGlyphData)
 {
-	int iVar1 = ((int(__cdecl*)(void*, void*, void*, void*)) 0x45cfb0)(m_pGlyphData80 + nIndex * 0x4c, pGlyphData, pIntCodeData, this);
-	if (iVar1 == 0) {
-		iVar1 = ((int(__cdecl*)(void*, void*, void*, void*)) 0x45cfb0)(m_pIntCodeData7C + nIndex * 0x54, pGlyphData, pIntCodeData, this);
-		if (iVar1 == 0) {
+	int fDirected = ((int(__cdecl*)(void*, void*, void*, void*)) 0x45cfb0)(m_pGlyphData80 + nIndex * 0x4c,
+																		   pGlyphData,
+																		   pIntCodeData,
+																		   this);
+	if (fDirected == 0) {
+		fDirected = ((int(__cdecl*)(void*, void*, void*, void*)) 0x45cfb0)(m_pIntCodeData7C + nIndex * 0x54,
+																		   pGlyphData,
+																		   pIntCodeData,
+																		   this);
+		if (fDirected == 0) {
 			return 0;
 		}
 	}
@@ -41,10 +47,10 @@ int CResFONT::DirectResources(unsigned long nIndex, unsigned char*& pIntCodeData
 // FUNCTION: LEMBALL 0x0045d9f0
 int CResFONT::DirectResources(unsigned long nIndex, unsigned char*& pGlyphData)
 {
-	int iVar1 = ((int(__cdecl*)(void*, void*, void*)) 0x45cf70)(m_pGlyphData80 + nIndex * 0x4c, pGlyphData, this);
-	if (iVar1 == 0) {
-		iVar1 = ((int(__cdecl*)(void*, void*, void*)) 0x45cf70)(m_pIntCodeData7C + nIndex * 0x54, pGlyphData, this);
-		if (iVar1 == 0) {
+	int fDirected = ((int(__cdecl*)(void*, void*, void*)) 0x45cf70)(m_pGlyphData80 + nIndex * 0x4c, pGlyphData, this);
+	if (fDirected == 0) {
+		fDirected = ((int(__cdecl*)(void*, void*, void*)) 0x45cf70)(m_pIntCodeData7C + nIndex * 0x54, pGlyphData, this);
+		if (fDirected == 0) {
 			return 0;
 		}
 	}
