@@ -2,6 +2,10 @@
 #include "AI/CTrampoline.h"
 #include "Visos/Generic/Memory.h"
 
+struct CGameObject {
+	static unsigned short NextId(void);
+};
+
 // Mac blueprint: CTrampolineManager::Add(ushort, int, int, int)
 
 // FUNCTION: LEMBALL 0x0042b5a0
@@ -22,7 +26,6 @@ void CTrampolineManager::Add(unsigned short nSlot, int nWorldX, int nWorldY, int
 // FUNCTION: LEMBALL 0x0042b600
 void CTrampolineManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat)
 {
-	typedef unsigned int(__fastcall* FindFreeSlotProc)(void);
 	unsigned int nCount = (unsigned int) *pLevelData;
 	unsigned short nSlot;
 	int nX;
@@ -33,7 +36,7 @@ void CTrampolineManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigne
 	((void(__fastcall*)(void*, unsigned int)) 0x4019f6)(this, nCount);
 	while (nCount != 0) {
 		if (*(unsigned short*) ((char*) m_pLevelMode3C + 0x54) <= 1) {
-			nSlot = (unsigned short) ((FindFreeSlotProc) 0x40214e)();
+			nSlot = CGameObject::NextId();
 		}
 		else {
 			nSlot = *pLevelData++;
