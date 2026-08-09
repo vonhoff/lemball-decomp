@@ -4,7 +4,9 @@
 
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
-struct CBallManager;
+struct CBallManager {
+	void Delete(CBall* pBall);
+};
 extern CBallManager* g_pBallChunkManager;
 
 // FUNCTION: LEMBALL 0x004216c0
@@ -152,7 +154,7 @@ int CBall::Process(void)
 		if ((unsigned int) *(int*) (pThis + 0xcc) >= (unsigned int) g_nLevelFrameClockTick) {
 			return 1;
 		}
-		((void(__fastcall*)(void*, int, void*)) 0x40302b)(g_pBallChunkManager, 0, this);
+		g_pBallChunkManager->Delete(this);
 		return 0;
 	}
 	nPhase = *(unsigned short*) (pThis + 0xbc);
