@@ -9,6 +9,10 @@ struct CBallManager {
 };
 extern CBallManager* g_pBallChunkManager;
 
+struct LevelVtSmallFunctionView {
+	void SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom);
+};
+
 // FUNCTION: LEMBALL 0x004216c0
 void CBall::Set(AICOORD oCurrent, AICOORD oTarget, int nSpeed)
 {
@@ -93,12 +97,8 @@ void CBall::StartMovement(int nUseTarget)
 	oCurrent.y = m_nPositionYA0;
 	oTarget.x = nTargetX;
 	oTarget.y = nTargetY;
-	((void(__fastcall*)(void*, int, int, int, int, int)) 0x40326f)((char*) this + 0x78,
-																   0,
-																   oTarget.x,
-																   oTarget.y,
-																   oCurrent.x,
-																   oCurrent.y);
+	((LevelVtSmallFunctionView*) ((char*) this + 0x78))
+		->SetRectFromBounds(oTarget.x, oTarget.y, oCurrent.x, oCurrent.y);
 }
 
 // FUNCTION: LEMBALL 0x00421da0
