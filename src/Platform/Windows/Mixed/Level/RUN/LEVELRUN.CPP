@@ -162,7 +162,7 @@ public:
 	virtual void Reserved44(void) = 0;
 	virtual void Reserved48(void) = 0;
 	virtual void Reserved4C(void) = 0;
-	virtual void FindObjectPositionInRect(void* pRect, void* pPosition) = 0;
+	virtual int FindObjectPositionInRect(void* pRect, void* pPosition) = 0;
 };
 
 class LevelManagedEntityChildIterator {
@@ -196,9 +196,9 @@ struct LevelManagedEntityOwnerView {
 	LevelPositionQueryView* m_pEnmyManager174;
 
 	int GetManagedEntityActiveState(void* pObject);
-	void FindPlasChunkObjectPositionInRect(void* pRect, void* pPosition);
-	void FindEnmyChunkObjectPositionInRect(void* pRect, void* pPosition);
-	void FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition);
+	int FindPlasChunkObjectPositionInRect(void* pRect, void* pPosition);
+	int FindEnmyChunkObjectPositionInRect(void* pRect, void* pPosition);
+	int FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition);
 };
 
 
@@ -1506,23 +1506,23 @@ int LevelManagedEntityOwnerView::GetManagedEntityActiveState(void* pObject)
 
 // MACINTOSH: CAI::PlayerCheckGroupIntersection(CVSRect*, AICOORD*)
 // FUNCTION: LEMBALL 0x00412780
-void LevelManagedEntityOwnerView::FindPlasChunkObjectPositionInRect(void* pRect, void* pPosition)
+int LevelManagedEntityOwnerView::FindPlasChunkObjectPositionInRect(void* pRect, void* pPosition)
 {
-	m_pPlasManager15C->FindObjectPositionInRect(pRect, pPosition);
+	return m_pPlasManager15C->FindObjectPositionInRect(pRect, pPosition);
 }
 
 // MACINTOSH: CAI::EnemyCheckGroupIntersection(CVSRect*, AICOORD*)
 // FUNCTION: LEMBALL 0x004127a0
-void LevelManagedEntityOwnerView::FindEnmyChunkObjectPositionInRect(void* pRect, void* pPosition)
+int LevelManagedEntityOwnerView::FindEnmyChunkObjectPositionInRect(void* pRect, void* pPosition)
 {
-	m_pEnmyManager174->FindObjectPositionInRect(pRect, pPosition);
+	return m_pEnmyManager174->FindObjectPositionInRect(pRect, pPosition);
 }
 
 // MACINTOSH: CAI::SheepCheckGroupIntersection(CVSRect*, AICOORD*)
 // FUNCTION: LEMBALL 0x004127c0
-void LevelManagedEntityOwnerView::FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition)
+int LevelManagedEntityOwnerView::FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition)
 {
-	m_pShpgManager170->FindObjectPositionInRect(pRect, pPosition);
+	return m_pShpgManager170->FindObjectPositionInRect(pRect, pPosition);
 }
 
 // FUNCTION: LEMBALL 0x00412c40

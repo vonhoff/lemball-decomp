@@ -74,6 +74,12 @@ struct SheepGroupQueryView {
 	virtual void BuildTargetQueryRect(CVSRect* pRect);
 };
 
+struct LevelManagedEntityOwnerView {
+	int FindPlasChunkObjectPositionInRect(void* pRect, void* pPosition);
+	int FindEnmyChunkObjectPositionInRect(void* pRect, void* pPosition);
+	int FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition);
+};
+
 // FUNCTION: LEMBALL 0x0041f730
 void CSheepGroup::CheckAgainstLemmings(void)
 {
@@ -91,20 +97,20 @@ void CSheepGroup::CheckAgainstLemmings(void)
 	Rect.y = 0;
 	((SheepGroupQueryView*) this)->BuildTargetQueryRect(&Rect);
 	pLevelMode = *(void**) 0x4a7824;
-	fFound = ((int(__fastcall*)(void*, int, CVSRect*, AICOORD*)) 0x4020b3)(
-		pLevelMode, 0, &Rect, &TargetPoint);
+	fFound = ((LevelManagedEntityOwnerView*) pLevelMode)
+		->FindPlasChunkObjectPositionInRect(&Rect, &TargetPoint);
 	if (fFound == 1) {
 		((void(__fastcall*)(void*, int, AICOORD)) 0x401c30)(this, 0, TargetPoint);
 		return;
 	}
-	fFound = ((int(__fastcall*)(void*, int, CVSRect*, AICOORD*)) 0x402f81)(
-		pLevelMode, 0, &Rect, &TargetPoint);
+	fFound = ((LevelManagedEntityOwnerView*) pLevelMode)
+		->FindEnmyChunkObjectPositionInRect(&Rect, &TargetPoint);
 	if (fFound == 1) {
 		((void(__fastcall*)(void*, int, AICOORD)) 0x401c30)(this, 0, TargetPoint);
 		return;
 	}
-	fFound = ((int(__fastcall*)(void*, int, CVSRect*, AICOORD*)) 0x4030da)(
-		pLevelMode, 0, &Rect, &TargetPoint);
+	fFound = ((LevelManagedEntityOwnerView*) pLevelMode)
+		->FindShpgChunkObjectPositionInRect(&Rect, &TargetPoint);
 	if (fFound == 1) {
 		((void(__fastcall*)(void*, int, AICOORD)) 0x401c30)(this, 0, TargetPoint);
 	}
