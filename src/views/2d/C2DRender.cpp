@@ -16,6 +16,7 @@ extern void EmitLevelScreenVariantEntry(void* pObject,
 										int nValue);
 extern void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 extern void LEMBALL_FASTCALL SetLevelScreenActionPanelPauseActive(void* pObject, int nUnused, int fPaused);
+extern int LEMBALL_FASTCALL IsPointInsideLevelScreenActionPanel(void* pObject, int nUnused, short* pPoint);
 extern void* g_pLevelDemoPlaybackController;
 
 class CAnimsManagerView {
@@ -1879,7 +1880,7 @@ void C2D::SetMouseShape(void)
 	nScale = *(int*) (pWindow + 0x38);
 	Cursor[0] = (short) ((*(short*) (*(char**) 0x4a9bf4 + 0x10) - *(short*) pOrigin) / nScale);
 	Cursor[1] = (short) ((*(short*) (*(char**) 0x4a9bf4 + 0x12) - *(short*) (pOrigin + 2)) / nScale);
-	if (((int(__fastcall*)(void*, int, short*)) 0x40294b)(*(void**) (pThis + 0x97c), 0, Cursor)) {
+	if (IsPointInsideLevelScreenActionPanel(*(void**) (pThis + 0x97c), 0, Cursor)) {
 		*(int*) (pThis + 0x1a4) = 3;
 		return;
 	}
