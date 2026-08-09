@@ -3,6 +3,8 @@
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern void* g_pLevelTileGrid;
+extern void* g_pSessionRandomState;
+extern void* g_pActiveManagedEntityOwner;
 
 // FUNCTION: LEMBALL 0x0040b4d0
 void CSlinky::Set(int nSlinkX, int nSlinkY, int nSlinkZ, int nSlinkW)
@@ -30,7 +32,7 @@ void CSlinky::Set(int nSlinkX, int nSlinkY, int nSlinkZ, int nSlinkW)
 // FUNCTION: LEMBALL 0x0040b670
 void CSlinky::Move(void)
 {
-	int* pState = *(int**) 0x4a1bcc;
+	int* pState = (int*) g_pSessionRandomState;
 	int v = (*pState * 45 + 31) & 0x7fffff;
 	*pState = v;
 	int heading = v % 4;
@@ -88,7 +90,7 @@ int CSlinky::Process(void)
 		m_nFrameClockTickCC = g_nLevelFrameClockTick + 0x14;
 	}
 
-	pOwner = *(int**) 0x004A74B0;
+	pOwner = (int*) g_pActiveManagedEntityOwner;
 	pBounds = pOwner + 0x134 / 4;
 	pBounds[0] = (m_xPosWorld9C >> 12) - 4;
 	pBounds[1] = (m_yPosWorldA0 >> 12) - 4;

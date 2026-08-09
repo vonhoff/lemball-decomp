@@ -186,7 +186,7 @@ void CEnemy::EnemyAction_PATROL(void* pDesc)
 
 	if (((int(__fastcall*) ()) 0x401f37)() != 1) {
 		unsigned int nWaypointIndex = (unsigned int) *(unsigned short*) (*(int*) (*(int**) pDesc + 0x10) + *(int*) (*(int**) pDesc + 8) * 2);
-		pPoint = (unsigned int*) ((unsigned int*(__fastcall*) (void*, unsigned int*, unsigned int)) 0x401410)(*(void**) 0x4a74b0, targetPosition, nWaypointIndex);
+		pPoint = (unsigned int*) ((unsigned int*(__fastcall*) (void*, unsigned int*, unsigned int)) 0x401410)(g_pActiveManagedEntityOwner, targetPosition, nWaypointIndex);
 		nTargetX = pPoint[0];
 		nTargetY = pPoint[1];
 		nTargetZ = pPoint[2];

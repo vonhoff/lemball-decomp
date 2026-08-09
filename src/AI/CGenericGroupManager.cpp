@@ -1,4 +1,9 @@
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
+#include "AI/CFormationManager.h"
+
+extern void* g_pCachedChunkManagerLevelMode;
+extern void* g_pCachedChunkManagerEntityLookup;
+extern CFormationManager* g_pGenericGroupFormationManager;
 
 // FUNCTION: LEMBALL 0x0041ebe0
 void CGenericGroupManager::CreateNewGroup(unsigned short nIdCount, unsigned short* pIdList)
@@ -10,7 +15,8 @@ void CGenericGroupManager::CreateNewGroup(unsigned short nIdCount, unsigned shor
 		pGroup = (void*) ((void* (__cdecl*)(int)) 0x45a780)(0x168);
 		if (pGroup != 0) {
 			pMsg = ((void* (__fastcall*)(void*, void*, void*, void*, void*)) 0x402103)(pGroup, 0,
-				(void*) (*(int*) 0x4a782c), (void*) (*(int*) 0x4a7830), (void*) (*(int*) 0x4a7834));
+				g_pCachedChunkManagerLevelMode, g_pCachedChunkManagerEntityLookup,
+				g_pGenericGroupFormationManager);
 		}
 		m_apGroups04[m_nGroupCountA4] = (CGenericGroup*) pMsg;
 		m_nGroupCountA4 += 1;

@@ -12,6 +12,9 @@ extern void __fastcall ResetMoveChunkObjectRuntimeStateThunk(void* pObject);
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
+extern unsigned short g_GAME_ManagedEntityRegistryCount;
+extern int g_GAME_ManagedEntityRegistryTable[1000];
+
 
 
 
@@ -284,9 +287,9 @@ void CMover::FindObjectsOnTopOfMe(void)
 	maxX = minX + 0xf;
 	minY = (m_nWorldYA0 >> 0xc) - 8;
 	maxY = minY + 0xf;
-	count = (unsigned int) *(unsigned short*) 0x4a74bc;
+	count = g_GAME_ManagedEntityRegistryCount;
 	for (i = 0; (int) i < (int) count; i++) {
-		pObj = *(void**) (0x4a6510 + i * 4);
+		pObj = (void*) g_GAME_ManagedEntityRegistryTable[i];
 		if (pObj != (void*) 0x0) {
 			if ((short) ((short(__fastcall*) (void*)) 0x401794)(pObj) != (short) -1) {
 				if ((short) ((short(__fastcall*) (void*)) 0x401794)(this) != (short) ((short(__fastcall*) (void*)) 0x401794)(pObj)) {
