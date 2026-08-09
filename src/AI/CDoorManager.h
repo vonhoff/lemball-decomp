@@ -21,6 +21,7 @@ struct CDoorManager {
 	int Open(void* pCoord, void* pGameObject);
 	void Initialise(int nCount);
 	int Add(short nSlot, void* pObjectType, unsigned short nDoorType, int nWorldX, int nWorldY, int nWorldZ);
+	void Remove(CDoor* pDoor);
 	void LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat);
 	void Delete(unsigned char fDelete);
 	int GetViewData(CViewData* pViewData);
