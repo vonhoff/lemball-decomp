@@ -24,6 +24,10 @@ struct LevelManagedEntityStateFields {
 	void DecrementHeadingOctant(void);
 };
 
+struct CMover {
+	int GetOn(CGameObject* pObject);
+};
+
 // FUNCTION: LEMBALL 0x0040f0d0
 void CPlayerLemming::SetGroup(CPlayerLemmingGroup* pGroup)
 {
@@ -341,7 +345,7 @@ void CPlayerLemming::StartStanding(void)
 	int nCurrentHeight = m_WorldPosition9C.z >> 12;
 
 	if (m_fOnMover11C == 0 && pMoveChunk != 0) {
-		((void(__fastcall*)(void*, void*)) 0x4036b1)(pMoveChunk, this);
+		((CMover*) pMoveChunk)->GetOn(this);
 	}
 	if (nCurrentHeight <= nHeight + 2) {
 		if (pMoveChunk == 0) {
