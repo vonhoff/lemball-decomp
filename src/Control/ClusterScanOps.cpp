@@ -51,23 +51,24 @@ int __fastcall GetLastQueuedProjectileRequestCode(void* pObject)
 // FUNCTION: LEMBALL 0x0040fc50
 void __fastcall RemoveQueuedProjectileRequestCode(void* pObject, int nUnused, int param_1)
 {
-	int iVar1 = *(int*) ((char*) pObject + 0x220);
-	int iVar4 = 0;
-	if (iVar1 > 0) {
-		int* piVar3 = (int*) ((char*) pObject + 0x1c0);
-		while (piVar3[0] != param_1) {
-			piVar3++;
-			iVar4++;
-			if (iVar1 <= iVar4) {
+	int nRequestCount = *(int*) ((char*) pObject + 0x220);
+	int iRequest = 0;
+	if (nRequestCount > 0) {
+		int* pRequestCode = (int*) ((char*) pObject + 0x1c0);
+		while (pRequestCode[0] != param_1) {
+			pRequestCode++;
+			iRequest++;
+			if (nRequestCount <= iRequest) {
 				return;
 			}
 		}
-		iVar4++;
-		if (iVar4 < iVar1) {
+		iRequest++;
+		if (iRequest < nRequestCount) {
 			do {
-				*(int*) ((char*) pObject + iVar4 * 4 + 0x1bc) = *(int*) ((char*) pObject + (iVar4 + 1) * 4 + 0x1bc);
-				iVar4++;
-			} while (iVar4 < *(int*) ((char*) pObject + 0x220));
+				*(int*) ((char*) pObject + iRequest * 4 + 0x1bc) =
+					*(int*) ((char*) pObject + (iRequest + 1) * 4 + 0x1bc);
+				iRequest++;
+			} while (iRequest < *(int*) ((char*) pObject + 0x220));
 		}
 		*(int*) ((char*) pObject + 0x220) = *(int*) ((char*) pObject + 0x220) - 1;
 	}
@@ -84,11 +85,11 @@ void* __fastcall DestroyManagedEntityGroup(void* pThis, int nUnused, unsigned ch
 // FUNCTION: LEMBALL 0x00452b90
 void* __fastcall GetNetworkLobbyPeerEntryStreamByPeer(void* pObject, int nUnused, int param_1)
 {
-	int iVar1 = FindNetworkLobbyPeerSlotByPeer(pObject, nUnused, param_1);
-	if (iVar1 == -1) {
+	int iPeerSlot = FindNetworkLobbyPeerSlotByPeer(pObject, nUnused, param_1);
+	if (iPeerSlot == -1) {
 		return 0;
 	}
-	return (void*) (*(int*) ((char*) pObject + 0x14) + iVar1 * 0x50);
+	return (void*) (*(int*) ((char*) pObject + 0x14) + iPeerSlot * 0x50);
 }
 // FUNCTION: LEMBALL 0x004228b0
 void __fastcall ActivateCollChunkObject(void* pObject)
@@ -131,9 +132,9 @@ void __fastcall DeactivateManagedEntityGroupChildBySlot(void* pObject, int nUnus
 {
 	int i;
 	if (*(unsigned short*) ((char*) pObject + 0x36) != 0) {
-		for (i = 0; ; i++) {
-			int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x3c) + i * 4);
-			if (iVar1 != 0 && ((char(__fastcall*)(void*)) 0x401794)((void*) iVar1) == (char) param_2) {
+		for (i = 0;; i++) {
+			int nChildAddress = *(int*) (*(int*) ((char*) pObject + 0x3c) + i * 4);
+			if (nChildAddress != 0 && ((char(__fastcall*)(void*)) 0x401794)((void*) nChildAddress) == (char) param_2) {
 				((void(__fastcall*)(void*, int)) 0x4024ff)(pObject, i);
 				break;
 			}
@@ -222,17 +223,17 @@ void __fastcall DestroyManagedEntityGroupChildren(void* pObject)
 // FUNCTION: LEMBALL 0x00473a10
 void __fastcall AppendDebugTextLinesSplitNewlines(void* pObject, int nUnused, char* param_1, int param_2)
 {
-	char* pcVar2 = param_1;
+	char* pLineStart = param_1;
 	while (*param_1 != '\0') {
 		if (*param_1 == '\n') {
 			*param_1 = '\0';
-			((void(__fastcall*)(void*, char*, int)) 0x4738e0)(pObject, pcVar2, param_2);
-			pcVar2 = param_1 + 1;
+			((void(__fastcall*)(void*, char*, int)) 0x4738e0)(pObject, pLineStart, param_2);
+			pLineStart = param_1 + 1;
 		}
 		param_1++;
 	}
-	if (pcVar2 < param_1) {
-		((void(__fastcall*)(void*, char*, int)) 0x4738e0)(pObject, pcVar2, param_2);
+	if (pLineStart < param_1) {
+		((void(__fastcall*)(void*, char*, int)) 0x4738e0)(pObject, pLineStart, param_2);
 	}
 }
 // FUNCTION: LEMBALL 0x0044bc50
@@ -253,34 +254,36 @@ unsigned int __fastcall GetTimedFrameSequenceIndex(void* pObject)
 	if (*(int*) ((char*) pObject + 0x1c) != 0) {
 		return *(unsigned int*) ((char*) pObject + 8);
 	}
-	unsigned int uVar2 = *(unsigned int*) ((char*) pObject + 0x10);
-	unsigned int uVar1 = *(unsigned int*) ((char*) pObject + 0x14) - *(unsigned int*) ((char*) pObject + 0xc);
-	if (uVar2 <= uVar1) {
-		uVar2 = *(unsigned int*) ((char*) pObject + 4) - 1;
+	unsigned int nFrameValue = *(unsigned int*) ((char*) pObject + 0x10);
+	unsigned int nElapsedTime = *(unsigned int*) ((char*) pObject + 0x14) - *(unsigned int*) ((char*) pObject + 0xc);
+	if (nFrameValue <= nElapsedTime) {
+		nFrameValue = *(unsigned int*) ((char*) pObject + 4) - 1;
 		*(int*) ((char*) pObject + 0x1c) = 1;
-		*(unsigned int*) ((char*) pObject + 8) = uVar2;
-		return uVar2;
+		*(unsigned int*) ((char*) pObject + 8) = nFrameValue;
+		return nFrameValue;
 	}
-	uVar2 = ((uVar1 % uVar2) * *(unsigned int*) ((char*) pObject + 4)) / uVar2;
+	nFrameValue = ((nElapsedTime % nFrameValue) * *(unsigned int*) ((char*) pObject + 4)) / nFrameValue;
 	if (*(int*) ((char*) pObject + 0x18) != 1) {
-		uVar2 = (*(unsigned int*) ((char*) pObject + 4) - uVar2) - 1;
+		nFrameValue = (*(unsigned int*) ((char*) pObject + 4) - nFrameValue) - 1;
 	}
-	return uVar2;
+	return nFrameValue;
 }
 // FUNCTION: LEMBALL 0x004676a0
 int __fastcall ResolveVariantRenderFramePointer(void* pObject, int nUnused, int param_2, void** param_3)
 {
-	int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x24) + *(short*) (*(int*) ((char*) pObject + 0x28) + param_2 * 2) * 4);
-	int iVar2;
+	int nVariantAddress =
+		*(int*) (*(int*) ((char*) pObject + 0x24) + *(short*) (*(int*) ((char*) pObject + 0x28) + param_2 * 2) * 4);
+	int nFrameIndex;
 	if (param_3 == 0) {
-		iVar2 = 0;
-	} else {
-		iVar2 = (*( int(**)(void)) *param_3)();
+		nFrameIndex = 0;
 	}
-	if (*(int*) (iVar1 + 0x40) == 0x5a524c45) {
-		return iVar1;
+	else {
+		nFrameIndex = (*(int (**)(void)) *param_3)();
 	}
-	return *(int*) (iVar1 + 0x78) + iVar2 * 0x54;
+	if (*(int*) (nVariantAddress + 0x40) == 0x5a524c45) {
+		return nVariantAddress;
+	}
+	return *(int*) (nVariantAddress + 0x78) + nFrameIndex * 0x54;
 }
 // FUNCTION: LEMBALL 0x0041c670
 void __fastcall ActivateSavedPositionChunkObject(void* pObject)
@@ -297,8 +300,8 @@ void __fastcall ActivateSavedPositionChunkObject(void* pObject)
 void __fastcall SetDoorChunkObjectTargetTile(void* pObject, int nUnused, int param_1, int param_2)
 {
 	if (*(int*) ((char*) pObject + 0x184) == 0) {
-		int iVar1 = *(int*) ((char*) pObject + 0xb8);
-		if (iVar1 == 0 || iVar1 == 2 || iVar1 == 6) {
+		int nState = *(int*) ((char*) pObject + 0xb8);
+		if (nState == 0 || nState == 2 || nState == 6) {
 			*(int*) ((char*) pObject + 0x184) = 1;
 			*(int*) ((char*) pObject + 0x1b4) = param_1 << 12;
 			*(int*) ((char*) pObject + 0x1b8) = param_2 << 12;
