@@ -13,6 +13,7 @@ extern void* g_pLevelDemoPlaybackController;
 extern void* g_pLevelTileGrid;
 extern int g_cActiveManagedEntities;
 extern void RequestLocalLevelGameStateChange(void* pLevelMode, int nState);
+extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
 
 struct LevelTileGridOwnerView {
 	unsigned short GetZ(int x, int y, void** ppMoveChunk);
@@ -226,7 +227,7 @@ void CPlayerLemming::ExternalControlEnd(void)
 // FUNCTION: LEMBALL 0x0040f4b0
 int CPlayerLemming::FacingTarget(void)
 {
-	unsigned int uDir = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(m_WorldPosition9C.x >> 12,
+	unsigned int uDir = ReturnFacingDirection(m_WorldPosition9C.x >> 12,
 																				m_WorldPosition9C.y >> 12,
 																				m_nTargetWorldX1B4 >> 12,
 																				m_nTargetWorldY1B8 >> 12);
@@ -243,7 +244,7 @@ int CPlayerLemming::FacingCursor(void)
 	((void(__fastcall*)(void*, void*, void*)) 0x401e65)(*(void**) ((char*) g_pActiveManagedEntityOwner + 0x160),
 														&nCursorX,
 														&nCursorY);
-	unsigned int nTargetOctant = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(m_WorldPosition9C.x >> 12,
+	unsigned int nTargetOctant = ReturnFacingDirection(m_WorldPosition9C.x >> 12,
 																						 m_WorldPosition9C.y >> 12,
 																						 nCursorX,
 																						 nCursorY);
@@ -252,7 +253,7 @@ int CPlayerLemming::FacingCursor(void)
 // FUNCTION: LEMBALL 0x0040f220
 void CPlayerLemming::TurnToFaceTarget(void)
 {
-	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(m_WorldPosition9C.x >> 12,
+	int nOct = ReturnFacingDirection(m_WorldPosition9C.x >> 12,
 															  m_WorldPosition9C.y >> 12,
 															  m_nTargetWorldX1B4 >> 12,
 															  m_nTargetWorldY1B8 >> 12);
@@ -276,7 +277,7 @@ void CPlayerLemming::TurnToFaceCursor(void)
 		((void(__fastcall*)(void*, int*, int*)) 0x401e65)(*(void**) ((char*) g_pActiveManagedEntityOwner + 0x160),
 														  &nCursorX,
 														  &nCursorY);
-		int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(m_WorldPosition9C.x >> 12,
+		int nOct = ReturnFacingDirection(m_WorldPosition9C.x >> 12,
 																  m_WorldPosition9C.y >> 12,
 																  nCursorX,
 																  nCursorY);
