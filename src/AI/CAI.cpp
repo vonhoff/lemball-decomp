@@ -1,19 +1,30 @@
 #include "AI/CAI.h"
+
 #include "AI/CBulletManager.h"
+#include "AI/CDoorManager.h"
+#include "AI/CMoverManager.h"
 #include "AI/CPlayerLemmingGroupManager.h"
 
 extern void* g_pLevelDemoPlaybackController;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void* g_pActiveNetworkRuntimeWindow;
-extern void __fastcall AppendType18ChunkObject(void* pStream, int nUnused, unsigned short param_1, void* param_2, int param_3, int param_4);
+extern void __fastcall AppendType18ChunkObject(void* pStream,
+											   int nUnused,
+											   unsigned short param_1,
+											   void* param_2,
+											   int param_3,
+											   int param_4);
 extern "C" unsigned long __stdcall timeGetTime();
 
 // FUNCTION: LEMBALL 0x00412600
-void CAI::FireBullet(unsigned short nSlotId, int nBulletType, int nOwner, int nDirection,
-	AICOORD source, AICOORD target)
+void CAI::FireBullet(unsigned short nSlotId,
+					 int nBulletType,
+					 int nOwner,
+					 int nDirection,
+					 AICOORD source,
+					 AICOORD target)
 {
-	((CBulletManager*) m_pProjectileMgr168)->RequestBullet(
-		nSlotId, nBulletType, nOwner, nDirection, source, target);
+	((CBulletManager*) m_pProjectileMgr168)->RequestBullet(nSlotId, nBulletType, nOwner, nDirection, source, target);
 }
 
 // FUNCTION: LEMBALL 0x00412eb0
@@ -29,19 +40,20 @@ void CAI::AddNewTrapDoor(int nX, int nY, int nZ, unsigned long nParam4)
 // FUNCTION: LEMBALL 0x004125c0
 void CAI::HitTrampoline(const AICOORD& position, CGameObject* pGameObject)
 {
-	((void(__fastcall*)(void*, void*, void*)) 0x402bd5)(m_pObjectMgr1B4, (void*) &position, pGameObject);
+	((CTrampolineManager*) m_pObjectMgr1B4)->Hit((void*) &position, pGameObject);
 }
 
 // FUNCTION: LEMBALL 0x004130d0
 void CAI::FindMoverHeight(int nX, int nY, int& nHeight)
 {
-	((void(__fastcall*)(void*, int, int, void*)) 0x402e55)(m_pMoveMgr1C0, nX, nY, &nHeight);
+	((CMoverManager*) m_pMoveMgr1C0)->Find(nX, nY, &nHeight);
 }
 
 // FUNCTION: LEMBALL 0x004127e0
 void CAI::BulletCheckGroupIntersection(CVSRect* pRect, AICOORD* pOutput)
 {
-	((void(__fastcall*)(void*, void*, void*)) 0x402680)(m_pProjectileMgr168, pRect, pOutput);
+	((CBulletManager*) m_pProjectileMgr168)
+		->FindProjectilePositionInRect((const LevelShortRect*) pRect, (LevelProjectilePosition*) pOutput);
 }
 
 // FUNCTION: LEMBALL 0x00411b10
@@ -152,7 +164,7 @@ void CAI::SendGameState(int nState, int nStage)
 		*(int*) (*(int*) ((char*) m_pRuntime74 + 0x30)) = nStage;
 		*(int*) (*(int*) ((char*) m_pRuntime74 + 0x34)) = m_nTimeScoreE8;
 		*(int*) (*(int*) ((char*) m_pRuntime74 + 0x38)) = m_nTimeScoreF0;
-		((void(__fastcall*) (void*, int)) 0x45f2b0)(m_pRuntime74, g_nSelectedNetworkLobbyPeerId);
+		((void(__fastcall*)(void*, int)) 0x45f2b0)(m_pRuntime74, g_nSelectedNetworkLobbyPeerId);
 	}
 }
 
@@ -165,11 +177,12 @@ int CAI::OpenDoor(const AICOORD& position, CGameObject* pGameObject, unsigned sh
 	if (tileX >= 0 && tileY >= 0) {
 		void* grid = m_pTileGrid110;
 		if (tileX < *(int*) ((char*) grid + 0x10) && tileY < *(int*) ((char*) grid + 0x14)) {
-			tile = *(unsigned short*) (*(int*) ((char*) grid + 0xc) + 6 + (*(int*) ((char*) grid + 0x10) * tileY + tileX) * 0xc);
+			tile = *(unsigned short*) (*(int*) ((char*) grid + 0xc) + 6 +
+									   (*(int*) ((char*) grid + 0x10) * tileY + tileX) * 0xc);
 		}
 	}
 	if ((tile & 0x8000) && (nFlags & 0x20)) {
-		return ((int(__fastcall*) (void*, int, void*, void*)) 0x401fa5)(m_pDoorMgr190, 0, (void*) &position, pGameObject);
+		return ((CDoorManager*) m_pDoorMgr190)->Open((void*) &position, pGameObject);
 	}
 	return 0;
 }
