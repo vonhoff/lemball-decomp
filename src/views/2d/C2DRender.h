@@ -93,6 +93,8 @@ public:
 	void DrawBalloon(CViewData& ViewData);
 	void DrawExit(CViewData& ViewData);
 	void ResetPrimitives(void);
+	int ScreenToGame(int nX, int nY, int* pTileX, int* pTileY);
+	void DrawObjectsZBuff(void);
 	void DrawZBuff_Sprite(int nViewDataIndex, unsigned short nValue);
 	void DrawLemmingJump(unsigned short* pViewData, int nFrameIndex);
 	void DrawLemmingFall(unsigned short* pViewData, int nUnused);

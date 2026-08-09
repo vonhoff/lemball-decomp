@@ -1647,3 +1647,147 @@ void C2D::DrawTrapDoor(CViewData& ViewData)
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x00437970
+int C2D::ScreenToGame(int nX, int nY, int* pTileX, int* pTileY)
+{
+	char* pThis;
+	char* pLevel;
+	int nMaxX;
+	int nMaxY;
+	int nScanY;
+	int nStartX;
+	int nEndX;
+	int nScanX;
+	int nCellX;
+	int nCellY;
+	int nScreenX;
+	int nScreenY;
+	int nPixelX;
+	int nPixelY;
+
+	pThis = (char*) this;
+	pLevel = (char*) m_pLevel0914;
+	nMaxX = *(int*) (pLevel + 0x10) * 0x10 - 1;
+	nMaxY = *(int*) (pLevel + 0x14) * 0x10 - 1;
+	nScanY = nY + 0x50;
+	nStartX = nX - 0x20;
+	nEndX = nX + 0x20;
+	while (nScanY >= nY) {
+		nScanX = nStartX;
+		while (nScanX <= nEndX) {
+			((LevelViewRotationTransform*) m_pLevel0914)->ScreenToGame(nScanX, nScanY, &nCellX, &nCellY);
+			if (nCellX >= 0 && nCellX <= nMaxX && nCellY >= 0 && nCellY <= nMaxY) {
+				nCellX = (nCellX + ((nCellX >> 31) & 0x0f)) >> 4;
+				nCellY = (nCellY + ((nCellY >> 31) & 0x0f)) >> 4;
+				nScreenX = nCellX << 4;
+				nScreenY = nCellY << 4;
+				((LevelViewRotationTransform*) m_pLevel0914)->GameToScreen(&nScreenX, &nScreenY);
+				pLevel = (char*) m_pLevel0914;
+				nScreenY -= *(unsigned short*) (*(char**) (pLevel + 0x0c) +
+												(*(int*) (pLevel + 0x10) * nCellY + nCellX) * 0x0c + 8);
+				if (nX >= nScreenX - 0x10 && nX <= nScreenX + 0x0f && nY >= nScreenY - 0x10 && nY <= nScreenY + 0x0f) {
+					nPixelX = nX - (nScreenX - 0x10);
+					nPixelY = nY - (nScreenY - 0x10);
+					if (nPixelX >= 0 && nPixelY >= 0 && nPixelX < 0x20 && nPixelY < 0x20 &&
+						((int(__fastcall*)(void*, int, int, int, int)) 0x40159b)(
+							*(char**) (pLevel + 0x0c) + (*(int*) (pLevel + 0x10) * nCellY + nCellX) * 0x0c,
+							0,
+							nPixelX,
+							nPixelY,
+							*(short*) (pThis + 0x218c) != 0)) {
+						*pTileX = nCellX * 0x10 + 8;
+						*pTileY = nCellY * 0x10 + 8;
+						return 1;
+					}
+				}
+			}
+			nScanX += 0x10;
+		}
+		nScanY -= 8;
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00440560
+void C2D::DrawObjectsZBuff(void)
+{
+	char* pThis;
+	char* pEntry;
+	char* pStatic;
+	int nDynamic;
+	int nStatic;
+	int nOffset;
+	int nDynamicKeyValid;
+	int nStaticKeyValid;
+	unsigned short nDynamicKey;
+	unsigned short nStaticKey;
+	int Point[3];
+
+	pThis = (char*) this;
+	nStatic = m_nStaticEntryCount2188++;
+	pEntry = pThis + 0x1468 + nStatic * 0x10;
+	*(short*) (pEntry + 4) = *(short*) (pThis + 0x958);
+	*(short*) (pEntry + 6) = *(short*) (pThis + 0x95a);
+	*(short*) (pEntry + 8) = 0;
+	*(short*) (pEntry + 10) = 0;
+	*(int*) (pEntry + 12) = 0;
+	((void(__fastcall*)(void*, int, void*))(*(void***) pEntry)[1])(pEntry, 0, m_pRenderQueue0970);
+	for (nDynamic = 0, nOffset = 0; nDynamic < (int) m_nViewDataCount0964; ++nDynamic, nOffset += 0x4c) {
+		pEntry = (char*) m_pViewData095C + nOffset;
+		*(short*) (pEntry + 0x10) = (short) *(int*) (pEntry + 4);
+		*(short*) (pEntry + 0x12) = (short) *(int*) (pEntry + 8);
+		Point[0] = *(int*) (pEntry + 4);
+		Point[1] = *(int*) (pEntry + 8);
+		Point[2] = *(int*) (pEntry + 0x0c);
+		((void(__fastcall*)(void*, int, int*, int*)) 0x40199c)(m_pLevel0914, 0, &Point[0], &Point[1]);
+		Point[0] -= m_nCameraOriginX0918;
+		Point[1] = Point[1] - Point[2] - m_nCameraOriginY091C;
+		*(int*) (pEntry + 4) = Point[0];
+		*(int*) (pEntry + 8) = Point[1];
+		*(int*) (pEntry + 0x0c) = Point[2];
+	}
+	((void(__fastcall*)(void*, int)) 0x40226b)(this, 0);
+	*(int*) ((char*) m_pAnimsManager0A40 + 0xac) = 0x80000;
+	pStatic = *(char**) ((char*) m_pLevelMode096C + 0x8c);
+	*(char**) (pThis + 0x2220) = *(char**) pStatic;
+	*(int*) (pThis + 0x2224) = *(int*) (pStatic + 4);
+	nDynamic = 0;
+	nStatic = 0;
+	nOffset = 0;
+	nDynamicKeyValid = 0;
+	nStaticKeyValid = 0;
+	while (nDynamic < (int) m_nViewDataCount0964 && nStatic < *(int*) (pThis + 0x2224)) {
+		if (!nDynamicKeyValid) {
+			nDynamicKey = ((unsigned short(__fastcall*)(void*, int, int)) 0x4032b5)(this, 0, nDynamic);
+			nDynamicKeyValid = 1;
+		}
+		if (!nStaticKeyValid) {
+			pStatic = *(char**) (pThis + 0x2220) + nOffset;
+			nStaticKey = *(short*) (*(char**) (pStatic + 8) + 8) + *(short*) (pStatic + 4);
+			nStaticKeyValid = 1;
+		}
+		if (nStaticKey < nDynamicKey) {
+			((void(__fastcall*)(void*, int, int, unsigned short)) 0x40319d)(this, 0, nStatic, nStaticKey);
+			nOffset += 0x0c;
+			++nStatic;
+			nStaticKeyValid = 0;
+		}
+		else {
+			((void(__fastcall*)(void*, int, int, unsigned short)) 0x401f46)(this, 0, nDynamic, nDynamicKey);
+			++nDynamic;
+			nDynamicKeyValid = 0;
+		}
+	}
+	while (nDynamic < (int) m_nViewDataCount0964) {
+		nDynamicKey = ((unsigned short(__fastcall*)(void*, int, int)) 0x4032b5)(this, 0, nDynamic);
+		((void(__fastcall*)(void*, int, int, unsigned short)) 0x401f46)(this, 0, nDynamic, nDynamicKey);
+		++nDynamic;
+	}
+	while (nStatic < *(int*) (pThis + 0x2224)) {
+		pStatic = *(char**) (pThis + 0x2220) + nStatic * 0x0c;
+		nStaticKey = *(short*) (*(char**) (pStatic + 8) + 8) + *(short*) (pStatic + 4);
+		((void(__fastcall*)(void*, int, int, unsigned short)) 0x40319d)(this, 0, nStatic, nStaticKey);
+		++nStatic;
+	}
+}
