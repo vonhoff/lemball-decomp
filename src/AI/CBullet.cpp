@@ -50,8 +50,8 @@ int CBullet::Receive(unsigned short nMessage, CNetworkMessage* pMessage)
 	if (nMessage != 0x2b) {
 		return ((int(__fastcall*)(void*, short, void*)) 0x402342)(this, nMessage, pMessage);
 	}
-	int iVar2 = ((int(__fastcall*)(void*, void*)) 0x45f280)(&m_NetworkStream138, pMessage->m_nReserved20);
-	if (iVar2 != 0) {
+	int fStreamOpened = ((int(__fastcall*)(void*, void*)) 0x45f280)(&m_NetworkStream138, pMessage->m_nReserved20);
+	if (fStreamOpened != 0) {
 		pMessage->m_nReserved20 = (unsigned char*) m_NetworkStream138.m_pPayload20;
 	}
 	((void(__fastcall*)(void*, void*)) 0x401299)(m_pSourceContext60, this);

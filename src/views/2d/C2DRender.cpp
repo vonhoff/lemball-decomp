@@ -1272,9 +1272,10 @@ void C2D::TriggerPause(int param_1)
 	void* pObject = this;
 	if (param_1 == 0) {
 		((void(__fastcall*)(void*, int)) 0x4021a8)(pObject, 0);
-	} else {
-		int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x96c) + 0x108);
-		if (iVar1 >= 1 && iVar1 <= 2) {
+	}
+	else {
+		int nPauseState = *(int*) (*(int*) ((char*) pObject + 0x96c) + 0x108);
+		if (nPauseState >= 1 && nPauseState <= 2) {
 			((void(__fastcall*)(void*, int)) 0x4013ed)(*(void**) ((char*) pObject + 0x96c), 1);
 		}
 	}
