@@ -76,10 +76,10 @@ void CPlayerLemmingGroupManager::Process(void)
 
 	pGroup = (CPlayerLemmingGroup*) pManager->GetFirstGroup();
 	while (pGroup != 0) {
-		pLemming = (CPlayerLemming*) ((void*(__fastcall*) (void*) ) 0x40173f)(pGroup);
+		pLemming = pGroup->GetFirstDeadLemming();
 		while (pLemming != 0) {
 			pGetCount = (GetCountProc) ((void**) pGroup->m_pVtable00)[0x108 / 4];
-			((void(__fastcall*)(void*, int, void*)) 0x402590)(pGroup, 0, pLemming);
+			pGroup->RemoveLemmingFromGroup(pLemming);
 			*(CPlayerLemming**) ((char*) this + 0x7c + *(int*) ((char*) this + 0x78) * sizeof(CPlayerLemming*)) =
 				pLemming;
 			++*(int*) ((char*) this + 0x78);
@@ -91,13 +91,13 @@ void CPlayerLemmingGroupManager::Process(void)
 				pLemming = 0;
 			}
 			else {
-				pLemming = (CPlayerLemming*) ((void*(__fastcall*) (void*) ) 0x40173f)(pGroup);
+				pLemming = pGroup->GetFirstDeadLemming();
 			}
 		}
 		pGroup = (CPlayerLemmingGroup*) pManager->GetNextGroup();
 	}
 	if (fSelectedGroupRemoved != 0) {
-		((void(__fastcall*)(void*)) 0x402d47)(pManager);
+		pManager->MakePreviousGroupPlayerControlled();
 	}
 	pManager->ProcessDead();
 }
@@ -327,10 +327,10 @@ int CPlayerLemmingGroupManager::HasSFXChanged(void)
 // FUNCTION: LEMBALL 0x00419490
 int CPlayerLemmingGroupManager::GetViewData(int pViewData)
 {
-	int local_4 = 0;
+	int nViewDataCount = 0;
 	if (g_nSelectedNetworkLobbyPeerId != 0) {
-		int iVar3 = 4;
-		local_4 = 4;
+		int nNetworkLemmingCount = 4;
+		nViewDataCount = 4;
 		int i;
 		for (i = 0; i < 4; i++) {
 			CPlayerLemming* pElem = m_apNetworkLemmings13C[i];
@@ -338,8 +338,8 @@ int CPlayerLemmingGroupManager::GetViewData(int pViewData)
 			pViewData += 0x4c;
 		}
 	}
-	int iVar2 = ((int(__fastcall*)(void*, int)) 0x401f64)(this, pViewData);
-	return iVar2 + local_4;
+	int nGroupViewDataCount = ((int(__fastcall*)(void*, int)) 0x401f64)(this, pViewData);
+	return nGroupViewDataCount + nViewDataCount;
 }
 // FUNCTION: LEMBALL 0x00418ab0
 void CPlayerLemmingGroupManager::UseObject(unsigned int nObject)
