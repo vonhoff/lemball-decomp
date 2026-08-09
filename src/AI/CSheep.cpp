@@ -7,6 +7,10 @@ struct LevelChunkObjectRuntimeStateView {
 	void ResetRuntimeStateThunk(void);
 };
 
+struct LevelVtSmallFunctionView {
+	void AddLevelScoreClamped(int nValue);
+};
+
 // FUNCTION: LEMBALL 0x0041f9f0
 void CSheep::Restart(void)
 {
@@ -42,7 +46,7 @@ void CSheep::Restart(void)
 // FUNCTION: LEMBALL 0x0041fad0
 void CSheep::HitMine(void)
 {
-	((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, 0x96);
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x96);
 	int vec[3];
 	vec[0] = 0;
 	vec[1] = 0;
