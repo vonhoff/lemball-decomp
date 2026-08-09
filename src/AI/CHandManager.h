@@ -17,6 +17,7 @@ public:
 	void Process(void);
 	int GetViewData(CViewData* pViewData);
 	void Add(unsigned short nSlotId, int x, int y, int z);
+	void Remove(CHand* pHand);
 	void LoadLevel(unsigned char* pData, int, unsigned char);
 
 private:
