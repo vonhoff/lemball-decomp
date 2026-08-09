@@ -6,6 +6,7 @@ extern int g_nLevelFrameClockTimeMs;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ResetRockChunkObjectRuntimeStateThunk(void* pObject);
+extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 
 // FUNCTION: LEMBALL 0x00426840
 void CRocket::Set(unsigned short nSlotId, const AICOORD& position)
@@ -29,7 +30,8 @@ void CRocket::Set(unsigned short nSlotId, const AICOORD& position)
 // FUNCTION: LEMBALL 0x004269d0
 int CRocket::StepOn(const AICOORD& position, CGameObject* pObject)
 {
-	int nDist = ((int(__cdecl*) (int, int, int, int)) 0x40254a)(m_xPosWorld9C >> 12, m_yPosWorldA0 >> 12, position.x >> 12, position.y >> 12);
+	int nDist = Distance2DIntPixels(m_xPosWorld9C >> 12, m_yPosWorldA0 >> 12,
+		position.x >> 12, position.y >> 12);
 	if (nDist < 0x20) {
 		m_xPosWorld9C = position.x + 0x4000;
 		m_yPosWorldA0 = position.y + 0x4000;

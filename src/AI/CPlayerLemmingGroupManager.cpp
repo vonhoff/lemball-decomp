@@ -99,7 +99,7 @@ void CPlayerLemmingGroupManager::Process(void)
 	if (fSelectedGroupRemoved != 0) {
 		((void(__fastcall*)(void*)) 0x402d47)(pManager);
 	}
-	((void(__fastcall*)(void*)) 0x4020c2)(pManager);
+	pManager->ProcessDead();
 }
 
 // FUNCTION: LEMBALL 0x00418730
@@ -112,7 +112,7 @@ void CPlayerLemmingGroupManager::CreateNewGroup(unsigned short cLemmings,
 	int cAdded;
 	unsigned short i;
 
-	((void(__fastcall*)(void*)) 0x401da7)(this);
+	ProcessDead();
 	pGroup = 0;
 	iGroup = 0;
 	if (m_nGroupCountA4 > 0) {

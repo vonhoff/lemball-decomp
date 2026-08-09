@@ -1,5 +1,6 @@
 #define LEMBALL_CBALL_HARDTAIL_METHODS
 #include "AI/CBall.h"
+#include "AI/CGameObject.h"
 
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
@@ -114,7 +115,7 @@ void CBall::LoadLevel(void* pStreamCursor)
 	ppCursor = (unsigned short**) pStreamCursor;
 	if (*(unsigned short*) ((char*) g_pActiveManagedEntityOwner + 0x54) > 1) {
 		pCursor = *ppCursor;
-		((void(__fastcall*)(void*, int, int)) 0x402293)(this, 0, (unsigned int) *pCursor);
+		((CGameObject*) this)->SetId(*pCursor);
 		*ppCursor = pCursor + 1;
 	}
 	pCursor = *ppCursor;

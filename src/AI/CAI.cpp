@@ -1,5 +1,6 @@
 #include "AI/CAI.h"
 #include "AI/CBulletManager.h"
+#include "AI/CPlayerLemmingGroupManager.h"
 
 extern void* g_pLevelDemoPlaybackController;
 extern int g_nSelectedNetworkLobbyPeerId;
@@ -113,7 +114,7 @@ int CAI::ProcessMsg(tagMESSAGE* pMsg)
 		((void(__fastcall*)(void*)) 0x40121c)(m_pMsgTarget15C);
 		return 0;
 	case 6:
-		((void(__fastcall*)(void*)) 0x402d47)(m_pMsgTarget15C);
+		((CPlayerLemmingGroupManager*) m_pMsgTarget15C)->MakeNextGroupPlayerControlled();
 		return 0;
 	case 7:
 		((void(__fastcall*)(void*)) 0x402509)(m_pMsgTarget15C);

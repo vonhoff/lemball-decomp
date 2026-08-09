@@ -111,7 +111,7 @@ int CPlayerLemmingGroup::RemoveLemmingFromGroup(CPlayerLemming* pLemming)
 {
 	void* pChild;
 	((void(__fastcall*)(void*, int)) 0x402879)(this, (int) pLemming);
-	pChild = (void*) ((int(__fastcall*)(void*)) 0x40241e)(this);
+	pChild = GetFirstElementInGroup();
 	if (m_nRuntimeState168 == 1 && pChild != 0) {
 		((void(__fastcall*)(void*, int)) 0x402667)(pChild, 1);
 	}
