@@ -1791,3 +1791,127 @@ void C2D::DrawObjectsZBuff(void)
 		++nStatic;
 	}
 }
+
+// FUNCTION: LEMBALL 0x004364d0
+void C2D::OnLoaded(void)
+{
+	char* pThis;
+	char* pWindow;
+	char* pObject;
+	void* pPanel;
+	unsigned short nOldScale;
+	unsigned int nScale;
+	short Rect[4];
+
+	pThis = (char*) this;
+	((void(__fastcall*)(void*, int, int, int)) 0x403585)(this, 0, 1, 0);
+	nScale = 2;
+	if (*(int*) 0x4a630c || *(int*) 0x4a6304 || *(int*) 0x4a6288) {
+		nScale = 1;
+	}
+	nOldScale = *(unsigned short*) (pThis + 0x160);
+	*(short*) (pThis + 0x160) = (short) nScale;
+	pWindow = *(char**) (pThis + 0x978);
+	*(short*) (pThis + 0x940) = *(short*) (pWindow + 8);
+	*(short*) (pThis + 0x942) = *(short*) (pWindow + 10);
+	*(short*) (pThis + 0x940) = (short) (*(short*) (pThis + 0x940) / (int) nScale);
+	*(short*) (pThis + 0x942) = (short) (*(short*) (pThis + 0x942) / (int) nScale);
+	((void(__fastcall*)(void*, int)) 0x4036ca)(this, 0);
+	if (*(short*) (pThis + 0x940) != *(short*) (pThis + 0x958) ||
+		*(short*) (pThis + 0x942) != *(short*) (pThis + 0x95a)) {
+		Rect[0] = *(short*) (pThis + 0x958);
+		Rect[1] = *(short*) (pThis + 0x95a);
+		Rect[2] = *(short*) (pThis + 0x950);
+		Rect[3] = *(short*) (pThis + 0x954);
+		((void(__fastcall*)(void*, int, short*))(*(void***) pWindow)[2])(pWindow, 0, Rect);
+	}
+	pPanel = AllocateVSMemBlock(0x58);
+	if (pPanel) {
+		pPanel = ((void*(__fastcall*) (void*, int, void*) ) 0x4016f4)(pPanel, 0, this);
+	}
+	*(void**) (pThis + 0x97c) = pPanel;
+	if (nOldScale == nScale) {
+		((void(__fastcall*)(void*, int, void*))(*(void***) this)[4])(this, 0, pWindow + 8);
+	}
+	else {
+		((void(__fastcall*)(void*, int, unsigned int)) 0x4662b0)(pWindow, 0, *(unsigned short*) (pThis + 0x160));
+	}
+	pObject = *(char**) (*(char**) (pWindow + 0x4c) + 0x0c);
+	pObject = (char*) *(int*) (*(char**) (pObject + 0x40) + 4) + (int) pObject + 0x40;
+	((void(__fastcall*)(void*, int, int))(*(void***) pObject)[0x11])(pObject, 0, 3000);
+	pObject = *(char**) (*(char**) ((char*) m_pRenderQueue0970 + 0x0c) + 0x44);
+	((void(__fastcall*)(void*, int, int)) 0x466840)(pObject, 0, 1);
+	*(int*) (pThis + 0x2214) = 1;
+	*(int*) (pThis + 0x2218) = 0;
+	if (*(void**) 0x4a6408) {
+		*(void**) (*(char**) 0x4a6408 + 0x34) = pWindow;
+	}
+	((void(__fastcall*)(void*, int, int)) 0x465aa0)(pWindow, 0, 0);
+	((void(__fastcall*)(void*, int)) 0x4029aa)(m_pLevelMode096C, 0);
+}
+
+// FUNCTION: LEMBALL 0x00437e90
+void C2D::SetMouseShape(void)
+{
+	char* pThis;
+	char* pWindow;
+	char* pOrigin;
+	short Cursor[2];
+	short Point[2];
+	int nHotspot;
+	int nScale;
+	int nHit;
+	unsigned short nBlink;
+
+	pThis = (char*) this;
+	if (*(int*) (pThis + 0xa7c)) {
+		return;
+	}
+	pWindow = *(char**) (pThis + 0x978);
+	pOrigin = pWindow + 0x0c;
+	nScale = *(int*) (pWindow + 0x38);
+	Cursor[0] = (short) ((*(short*) (*(char**) 0x4a9bf4 + 0x10) - *(short*) pOrigin) / nScale);
+	Cursor[1] = (short) ((*(short*) (*(char**) 0x4a9bf4 + 0x12) - *(short*) (pOrigin + 2)) / nScale);
+	if (((int(__fastcall*)(void*, int, short*)) 0x40294b)(*(void**) (pThis + 0x97c), 0, Cursor)) {
+		*(int*) (pThis + 0x1a4) = 3;
+		return;
+	}
+	Point[0] = (short) (m_nCameraOriginX0918 + *(short*) (pThis + 0x93c));
+	Point[1] = (short) (m_nCameraOriginY091C + *(short*) (pThis + 0x93e));
+	if (Cursor[0] < *(short*) (pThis + 0x48) ||
+		Cursor[0] >= (short) (*(short*) (pThis + 0x44) + *(short*) (pThis + 0x48)) ||
+		Cursor[1] < *(short*) (pThis + 0x4a) ||
+		Cursor[1] >= (short) (*(short*) (pThis + 0x46) + *(short*) (pThis + 0x4a))) {
+		((void(__fastcall*)(void*, int, int, int)) 0x403585)(this, 0, 1, 0);
+		return;
+	}
+	nHit = ((int(__fastcall*)(void*, int, short*, int*, int)) 0x4025ef)(this, 0, Point, &nHotspot, 0);
+	if (nHit) {
+		if (*(int*) (pThis + 0x1a4) != 2) {
+			*(int*) (pThis + 0x1a4) = 2;
+			*(int*) (pThis + 0x1a8) = g_nLevelFrameClockTimeMs;
+			((void(__fastcall*)(void*, int, int, int)) 0x403585)(this, 0, 1, 4);
+		}
+		return;
+	}
+	nHit = ScreenToGame(Point[0], Point[1], (int*) 0x49ea14, (int*) 0x49ea18);
+	*(int*) 0x49ea1c = nHit;
+	if (nHit) {
+		*(int*) (pThis + 0x1a4) = 0;
+		*(int*) (pThis + 0x1a8) = g_nLevelFrameClockTimeMs;
+		((void(__fastcall*)(void*, int, int, int)) 0x403585)(this, 0, 1, *(int*) (pThis + 0x18c) ? 1 : 0);
+		return;
+	}
+	if (*(int*) (pThis + 0x1a4) != 1) {
+		*(int*) (pThis + 0x1a4) = 1;
+		*(int*) (pThis + 0x1a8) = g_nLevelFrameClockTimeMs;
+		((void(__fastcall*)(void*, int, int, int)) 0x403585)(this, 0, 1, 2);
+		return;
+	}
+	if ((unsigned int) (*(int*) (pThis + 0x1a8) + 100) < (unsigned int) g_nLevelFrameClockTimeMs) {
+		nBlink = *(unsigned short*) (pThis + 0x1ac) ^ 1;
+		*(unsigned short*) (pThis + 0x1ac) = nBlink;
+		*(int*) (pThis + 0x1a8) = g_nLevelFrameClockTimeMs;
+		((void(__fastcall*)(void*, int, int, int)) 0x403585)(this, 0, 1, nBlink + 2);
+	}
+}

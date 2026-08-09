@@ -95,6 +95,8 @@ public:
 	void ResetPrimitives(void);
 	int ScreenToGame(int nX, int nY, int* pTileX, int* pTileY);
 	void DrawObjectsZBuff(void);
+	void OnLoaded(void);
+	void SetMouseShape(void);
 	void DrawZBuff_Sprite(int nViewDataIndex, unsigned short nValue);
 	void DrawLemmingJump(unsigned short* pViewData, int nFrameIndex);
 	void DrawLemmingFall(unsigned short* pViewData, int nUnused);
