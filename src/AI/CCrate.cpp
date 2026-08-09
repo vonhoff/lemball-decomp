@@ -2,6 +2,15 @@
 
 extern int g_nLevelFrameClockTick;
 extern void* g_pLevelTileGrid;
+extern void* g_pLINKSCF_GmobChunkManager;
+
+class CGlobalGameObject;
+
+class CObjectManager {
+public:
+	CGlobalGameObject* AddObject(
+		unsigned short nId, CGlobalGameObject* pObject, unsigned char nState);
+};
 
 struct CGround {
 	short GetZThunk(int nLocalX, int nLocalY);
@@ -64,7 +73,8 @@ void CCrate::TriggerContents(void)
 		m_nPositionX9C = *(int*) ((char*) pContents + 0x9c);
 		m_nPositionYA0 = *(int*) ((char*) pContents + 0xa0);
 		m_nPositionZA4 = *(int*) ((char*) pContents + 0xa4);
-		((void(__fastcall*)(void*, int, void*, int)) 0x402cac)(*(void**) 0x4a74c0, -1, pContents, 0);
+		((CObjectManager*) g_pLINKSCF_GmobChunkManager)
+			->AddObject(0xffff, (CGlobalGameObject*) pContents, 0);
 		m_nContentsType14C = 0xffff;
 	}
 }
