@@ -4,18 +4,19 @@
 #include "AI/AICoord.h"
 
 class CGameObject;
+class CRocket;
 class CViewData;
 
 // Mac blueprint: CRocketManager owns an array of CRocket (stride 0x144).
 
 class CRocketManager {
 public:
-	int m_vtable00;                 // vtable pointer
+	int m_vtable00; // vtable pointer
 	unsigned char m_abReserved04[0x2c];
-	int m_nCapacity30;              // 0x30
-	int m_nObjectCount34;           // 0x34
-	unsigned char* m_pObjects38;    // 0x38
-	void* m_pLevelMode3C;           // 0x3c
+	int m_nCapacity30;           // 0x30
+	int m_nObjectCount34;        // 0x34
+	unsigned char* m_pObjects38; // 0x38
+	void* m_pLevelMode3C;        // 0x3c
 
 	int GetViewData(CViewData* pViewData);
 	void Process(void);
@@ -23,6 +24,7 @@ public:
 	void Add(unsigned short nSlotId, int nWorldX, int nWorldY, int nWorldZ);
 	int StepOn(const AICOORD& position, CGameObject* pObject);
 	void LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat);
+	void Remove(CRocket* pRocket);
 	~CRocketManager(void);
 };
 
