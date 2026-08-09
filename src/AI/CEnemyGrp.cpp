@@ -10,6 +10,11 @@ extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant3(void* pContext, PlasChildStateEntityView* pEntity);
 
+struct LevelManagedEntityStateFields {
+	void IncrementHeadingOctant(void);
+	void DecrementHeadingOctant(void);
+};
+
 struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
 };
@@ -117,20 +122,16 @@ int CEnemy::FacingTarget(void)
 // FUNCTION: LEMBALL 0x00420350
 void CEnemy::TurnToFaceTarget(void)
 {
-	int nOct = ReturnFacingDirection(
-		m_nWorldX9C >> 12,
-		m_nWorldYA0 >> 12,
-		m_nTargetX15C >> 12,
-		m_nTargetY160 >> 12);
+	int nOct = ReturnFacingDirection(m_nWorldX9C >> 12, m_nWorldYA0 >> 12, m_nTargetX15C >> 12, m_nTargetY160 >> 12);
 	if (nOct != (int) m_wHeadingDirB4) {
 		if (*(int*) ((char*) 0x49d020 + (nOct - (int) m_wHeadingDirB4 & 7) * 4) < 0) {
-			((void(__fastcall*)(void*)) 0x4023e7)(this);
-		} else {
-			((void(__fastcall*)(void*)) 0x402068)(this);
+			((LevelManagedEntityStateFields*) this)->DecrementHeadingOctant();
+		}
+		else {
+			((LevelManagedEntityStateFields*) this)->IncrementHeadingOctant();
 		}
 	}
-	m_nUpdateTickCC = g_nLevelFrameClockTick +
-		*(int*) ((char*) 0x49d0b0 + m_nForm64 * 4) / 0x32;
+	m_nUpdateTickCC = g_nLevelFrameClockTick + *(int*) ((char*) 0x49d0b0 + m_nForm64 * 4) / 0x32;
 }
 // FUNCTION: LEMBALL 0x0041fcd0
 void CEnemy::Restart(void)
