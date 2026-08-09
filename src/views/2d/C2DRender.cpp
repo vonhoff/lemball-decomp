@@ -1,9 +1,10 @@
 #define LEMBALL_C2D_LEMMING_FLY
 #include "views/2d/C2DRender.h"
-#include "Visos/Generic/CVSPoint.h"
 
+#include "AI/CAI.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
+#include "Visos/Generic/CVSPoint.h"
 #include "Visos/Generic/Memory.h"
 
 extern void EmitLevelScreenVariantEntry(void* pObject,
@@ -14,6 +15,7 @@ extern void EmitLevelScreenVariantEntry(void* pObject,
 										void* pFrameSelector,
 										int nValue);
 extern void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
+extern void LEMBALL_FASTCALL SetLevelScreenActionPanelPauseActive(void* pObject, int nUnused, int fPaused);
 extern void* g_pLevelDemoPlaybackController;
 
 class CAnimsManagerView {
@@ -1363,13 +1365,13 @@ void C2D::Restart(void)
 	*(int*) ((char*) pThis + 0x918) = 0;
 	*(int*) ((char*) pThis + 0x91c) = 0;
 	*(int*) ((char*) pThis + 0x2214) = 1;
-	((void(__fastcall*) (void*, int, int)) 0x402f2c)(*(void**) ((char*) pThis + 0x97c), 0, 0);
-	((void(__fastcall*) (void*)) 0x4021ee)(*(void**) ((char*) pThis + 0x96c));
-	((void(__fastcall*) (void*, int, int)) 0x465aa0)(*(void**) ((char*) pThis + 0x978), 0, 0);
+	SetLevelScreenActionPanelPauseActive(*(void**) ((char*) pThis + 0x97c), 0, 0);
+	((void(__fastcall*)(void*)) 0x4021ee)(*(void**) ((char*) pThis + 0x96c));
+	((void(__fastcall*)(void*, int, int)) 0x465aa0)(*(void**) ((char*) pThis + 0x978), 0, 0);
 	*(int*) ((char*) pThis + 0x8f8) = *(int*) 0x49ce04;
 	*(int*) (*(int*) 0x49cb68 + 4) = *(int*) ((char*) pThis + 0x8f4);
 	*(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0) = *(int*) ((char*) pThis + 0x8f4);
-	((void(__fastcall*) (void*)) 0x4029aa)(*(void**) ((char*) pThis + 0x96c));
+	((CAI*) *(void**) ((char*) pThis + 0x96c))->Start();
 	*(int*) ((char*) pThis + 0x8f0) = *(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0);
 }
 
