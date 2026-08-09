@@ -56,7 +56,7 @@ void CAI::Start(void)
 		return;
 	}
 	if (g_pLevelDemoPlaybackController != 0 && *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) != 0) {
-		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x38) = (int) ((unsigned(__fastcall*)()) 0x462e80)();
+		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x38) = (int) timeGetTime();
 		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x3c) = 0;
 	}
 	((void(__fastcall*)(void*, int)) 0x4013ed)(this, 2);
