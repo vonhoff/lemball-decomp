@@ -93,7 +93,7 @@ void CCollectableManager::LoadLevel(unsigned short* pLevelData, int nFormat)
 		do {
 			unsigned short uSlot;
 			if (*(unsigned short*) ((char*) m_pLevelMode30 + 0x54) < 2) {
-				uSlot = (unsigned short) ((int(__fastcall*) ()) 0x40214e)();
+				uSlot = CGameObject::NextId();
 			}
 			else {
 				uSlot = *pLevelData;
