@@ -45,7 +45,7 @@ void CSlinkyManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned ch
 			pLevelData++;
 			unsigned int word4 = *(pLevelData);
 			pLevelData++;
-			((void(__fastcall*) (void*, int, int, int, int, int, int)) 0x402c6b)(this, 0, uSlot, word1, word2, word3, word4);
+			Add(uSlot, word1, word2, word3, word4);
 			nCount--;
 		} while (nCount != 0);
 	}
