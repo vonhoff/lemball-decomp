@@ -18,6 +18,7 @@ public:
 	void Process(void);
 	int GetViewData(CViewData* pViewData);
 	void Add(unsigned short nSlot, int x, int y, int z, eObjectType objectType);
+	void Remove(CLaser* pLaser);
 	void LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion);
 	void ResetObjectCount(void);
 
