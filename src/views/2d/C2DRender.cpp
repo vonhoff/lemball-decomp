@@ -1369,3 +1369,123 @@ void C2D::Restart(void)
 	((void(__fastcall*) (void*)) 0x4029aa)(*(void**) ((char*) pThis + 0x96c));
 	*(int*) ((char*) pThis + 0x8f0) = *(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0);
 }
+
+// FUNCTION: LEMBALL 0x0043cbb0
+void C2D::DrawSlinky(CViewData& ViewData)
+{
+	static const int anResources[4] = {0x9c, 0x9e, 0x9d, 0x9f};
+	unsigned int nVariant;
+	int nFrame;
+	short nX;
+	short nY;
+
+	nVariant = (unsigned short) ViewData.m_nVariant1C;
+	nX = (short) (ViewData.m_nX04 - g_anC2DTrapOffsets[nVariant * 2]);
+	nY = (short) (ViewData.m_nY08 - g_anC2DTrapOffsets[nVariant * 2 + 1]);
+	if (ViewData.m_nState18 == 0x18) {
+		if (nVariant < 4) {
+			((CAnimsManagerView*) m_pAnimsManager0A40)
+				->EmitLevelScreenVariantEntry(nX, nY, anResources[nVariant], 0, 0, 0);
+		}
+		return;
+	}
+	if (ViewData.m_nState18 != 0x1b) {
+		return;
+	}
+	nFrame = ((int) ViewData.m_pFrameSelector24 - ViewData.m_nFrame20) * 15 / 1000;
+	if (nFrame > 12) {
+		nFrame = 12;
+	}
+	if (nVariant < 4) {
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry(nX, nY, anResources[nVariant], nFrame, 0, 0);
+	}
+}
+
+// FUNCTION: LEMBALL 0x0043d130
+void C2D::DrawCatapult(CViewData& ViewData)
+{
+	int nRemap = ViewData.m_nVariant1C != 0 ? m_nLemmingRemap0968 : 0;
+	int nFrame = ViewData.m_nFrame20;
+	short nX = (short) ViewData.m_nX04;
+	short nY = (short) ViewData.m_nY08;
+	switch (ViewData.m_nState18) {
+	case 0x18:
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x28),
+										  (short) (nY - 0x3c),
+										  g_nLevelScreenCompositeSequencePrimaryResourceId,
+										  1,
+										  0,
+										  0);
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x28),
+										  (short) (nY - 0x3c),
+										  g_nLevelScreenCompositeSequencePrimaryResourceId,
+										  0,
+										  0,
+										  0);
+		return;
+	case 0x19:
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x28),
+										  (short) (nY - 0x3c),
+										  g_nLevelScreenCompositeSequencePrimaryResourceId,
+										  1,
+										  0,
+										  0);
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x28),
+										  (short) (nY - 0x3c),
+										  g_nLevelScreenCompositeSequencePrimaryResourceId,
+										  0,
+										  0,
+										  0);
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x30),
+										  (short) (nY - 0x3c),
+										  0x74,
+										  nFrame,
+										  ViewData.m_pFrameSelector24,
+										  nRemap);
+		return;
+	case 0x1a:
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x28),
+										  (short) (nY - 0x3c),
+										  g_nLevelScreenCompositeSequencePrimaryResourceId,
+										  1,
+										  0,
+										  0);
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x28),
+										  (short) (nY - 0x3c),
+										  g_nLevelScreenCompositeSequenceSecondaryResourceId,
+										  nFrame + 0x640,
+										  ViewData.m_pFrameSelector24,
+										  0);
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x30),
+										  (short) (nY - 0x3c),
+										  0x74,
+										  nFrame,
+										  ViewData.m_pFrameSelector24,
+										  nRemap);
+		return;
+	case 0x1b:
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x28),
+										  (short) (nY - 0x3c),
+										  g_nLevelScreenCompositeSequencePrimaryResourceId,
+										  1,
+										  0,
+										  0);
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x28),
+										  (short) (nY - 0x3c),
+										  g_nLevelScreenCompositeSequenceSecondaryResourceId,
+										  nFrame + 0x640,
+										  ViewData.m_pFrameSelector24,
+										  0);
+	}
+}

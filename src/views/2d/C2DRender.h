@@ -56,6 +56,8 @@ public:
 	void DrawLemmingExternal(CViewData& ViewData, int nUseRemap);
 	void DrawLemmingOnBalloon(CViewData& ViewData, int nPlayer, unsigned char fUseRemap);
 	void DrawMover(CViewData& ViewData);
+	void DrawSlinky(CViewData& ViewData);
+	void DrawCatapult(CViewData& ViewData);
 	void DrawPaintGun(CViewData& ViewData);
 	void DrawLaser(CViewData& ViewData);
 	void DrawDuplicator(CViewData& ViewData);
