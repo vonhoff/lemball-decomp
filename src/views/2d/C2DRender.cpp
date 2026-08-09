@@ -1289,10 +1289,12 @@ void C2D::OnButtonUp(void* param_2)
 	void* pObject = this;
 	*(int*) ((char*) pObject + 0x178) = 0;
 	if (*(int*) ((char*) pObject + 0xa68) == 0) {
-		if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pObject + 0x964) + 0x60 / 4))(*(void**) ((char*) pObject + 0x964)) == 0) {
+		if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) &&
+			((int(__fastcall*)(void*))(*(void***) *(void**) ((char*) pObject + 0x964) + 0x60 / 4))(
+				*(void**) ((char*) pObject + 0x964)) == 0) {
 			return;
 		}
-		((void(__fastcall*)(void*)) 0x4019ec)((char*) pObject - 0x14);
+		((C2D*) ((char*) pObject - 0x14))->SendCursorMsg();
 	}
 }
 
@@ -1350,12 +1352,14 @@ void C2D::OnButtonDown(const CVSPoint& Point, int nButtonFlags)
 void C2D::OnInside(unsigned short* param_1)
 {
 	void* pThis = this;
-	if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pThis + 0x964) + 0x60 / 4))(*(void**) ((char*) pThis + 0x964)) == 0) {
+	if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) &&
+		((int(__fastcall*)(void*))(*(void***) *(void**) ((char*) pThis + 0x964) + 0x60 / 4))(
+			*(void**) ((char*) pThis + 0x964)) == 0) {
 		return;
 	}
 	*(unsigned short*) ((char*) pThis + 0x928) = param_1[0];
 	*(unsigned short*) ((char*) pThis + 0x92a) = param_1[1];
-	((void(__fastcall*)(void*)) 0x4019ec)((char*) pThis - 0x14);
+	((C2D*) ((char*) pThis - 0x14))->SendCursorMsg();
 }
 
 // FUNCTION: LEMBALL 0x00436850
