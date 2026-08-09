@@ -151,17 +151,17 @@ int CPlayerLemming::HasObject(int nObjectType)
 		}
 	}
 	else {
-		int iVar1 = m_nObjectCount220;
-		if (iVar1 != 0xc && iVar1 > 0) {
-			int* piVar3 = m_anObjectTypes1C0;
-			int iVar2 = 0;
+		int nObjectCount = m_nObjectCount220;
+		if (nObjectCount != 0xc && nObjectCount > 0) {
+			int* pObjectType = m_anObjectTypes1C0;
+			int iObject = 0;
 			do {
-				if (*piVar3 == nObjectType) {
+				if (*pObjectType == nObjectType) {
 					return 1;
 				}
-				piVar3++;
-				iVar2++;
-			} while (iVar2 < iVar1);
+				pObjectType++;
+				iObject++;
+			} while (iObject < nObjectCount);
 		}
 	}
 	return 0;
@@ -189,9 +189,9 @@ void CPlayerLemming::OnConveyor(int nOnConveyor, void* pIce, int nDetach)
 	*(int*) ((char*) this + 0x188) = nOnConveyor;
 	*(void**) ((char*) this + 0x18c) = pIce;
 	if (nOnConveyor != 0) {
-		int iVar1 = ((int(__fastcall*)(void*))(*(void***) *(void**) ((char*) this + 0x224) + 0x108 / 4))(
+		int nGroupLemmingCount = ((int(__fastcall*)(void*))(*(void***) *(void**) ((char*) this + 0x224) + 0x108 / 4))(
 			*(void**) ((char*) this + 0x224));
-		if (iVar1 > 1) {
+		if (nGroupLemmingCount > 1) {
 			(*(void (**)(int, void*))(*(void***) *(void**) ((char*) g_pActiveManagedEntityOwner + 0x15c) +
 									  0x34 / 4))(1, (char*) this + 0x6a);
 		}
@@ -235,16 +235,16 @@ int CPlayerLemming::FacingCursor(void)
 	if (*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) != 0) {
 		return 1;
 	}
-	int local_4;
-	int local_8;
+	int nCursorX;
+	int nCursorY;
 	((void(__fastcall*)(void*, void*, void*)) 0x401e65)(*(void**) ((char*) g_pActiveManagedEntityOwner + 0x160),
-														&local_4,
-														&local_8);
-	unsigned int uDir = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(m_WorldPosition9C.x >> 12,
-																				m_WorldPosition9C.y >> 12,
-																				local_4,
-																				local_8);
-	return (int) m_nHeadingOctantB4 - (int) uDir == 1;
+														&nCursorX,
+														&nCursorY);
+	unsigned int nTargetOctant = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(m_WorldPosition9C.x >> 12,
+																						 m_WorldPosition9C.y >> 12,
+																						 nCursorX,
+																						 nCursorY);
+	return (int) m_nHeadingOctantB4 - (int) nTargetOctant == 1;
 }
 // FUNCTION: LEMBALL 0x0040f220
 void CPlayerLemming::TurnToFaceTarget(void)
@@ -269,15 +269,15 @@ void CPlayerLemming::TurnToFaceTarget(void)
 void CPlayerLemming::TurnToFaceCursor(void)
 {
 	if (*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) {
-		int local_4 = 0;
-		int local_8 = 0;
+		int nCursorX = 0;
+		int nCursorY = 0;
 		((void(__fastcall*)(void*, int*, int*)) 0x401e65)(*(void**) ((char*) g_pActiveManagedEntityOwner + 0x160),
-														  &local_4,
-														  &local_8);
+														  &nCursorX,
+														  &nCursorY);
 		int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(m_WorldPosition9C.x >> 12,
 																  m_WorldPosition9C.y >> 12,
-																  local_4,
-																  local_8);
+																  nCursorX,
+																  nCursorY);
 		if (nOct != (int) m_nHeadingOctantB4) {
 			if (*(int*) ((char*) 0x49d020 + (nOct - (int) m_nHeadingOctantB4 & 7) * 4) < 0) {
 				((void(__fastcall*)(void*)) 0x4023e7)(this);
@@ -293,19 +293,19 @@ void CPlayerLemming::TurnToFaceCursor(void)
 // FUNCTION: LEMBALL 0x0040f640
 void CPlayerLemming::GetData(void)
 {
-	unsigned short local_e[2];
+	unsigned short aPackedStateWords[2];
 	*(unsigned int*) ((char*) this - 0x9c) =
 		(unsigned int) (unsigned short) ((CNetworkMessage*) this)->ReadEffStreamU16BEValue() << 12;
 	*(unsigned int*) ((char*) this - 0x98) =
 		(unsigned int) (unsigned short) ((CNetworkMessage*) this)->ReadEffStreamU16BEValue() << 12;
 	*(unsigned int*) ((char*) this - 0x94) =
 		(unsigned int) (unsigned short) ((CNetworkMessage*) this)->ReadEffStreamU16BEValue() << 12;
-	((CNetworkMessage*) this)->ReadEffStreamU16BE((unsigned char*) local_e);
-	*(unsigned short*) ((char*) this - 0x84) = (unsigned short) (local_e[0] & 7);
-	*(unsigned short*) ((char*) this - 0x7c) = (unsigned short) ((local_e[0] & 0x38) >> 3);
-	((CNetworkMessage*) this)->ReadEffStreamU16BE((unsigned char*) local_e);
-	*(unsigned int*) ((char*) this - 0x80) = (unsigned int) (local_e[0] & 0xff);
-	*(unsigned int*) ((char*) this - 0xa0) = (unsigned int) (local_e[0] >> 8);
+	((CNetworkMessage*) this)->ReadEffStreamU16BE((unsigned char*) aPackedStateWords);
+	*(unsigned short*) ((char*) this - 0x84) = (unsigned short) (aPackedStateWords[0] & 7);
+	*(unsigned short*) ((char*) this - 0x7c) = (unsigned short) ((aPackedStateWords[0] & 0x38) >> 3);
+	((CNetworkMessage*) this)->ReadEffStreamU16BE((unsigned char*) aPackedStateWords);
+	*(unsigned int*) ((char*) this - 0x80) = (unsigned int) (aPackedStateWords[0] & 0xff);
+	*(unsigned int*) ((char*) this - 0xa0) = (unsigned int) (aPackedStateWords[0] >> 8);
 	*(unsigned int*) ((char*) this - 0xa4) = ((CNetworkMessage*) this)->ReadEffStreamU32BEValue();
 }
 // FUNCTION: LEMBALL 0x0040f6f0

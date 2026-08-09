@@ -791,30 +791,31 @@ int LEMBALL_FASTCALL RemoveGroupChildOrSelectPrevious(void* pGroup, int nUnused,
 // FUNCTION: LEMBALL 0x0040b180
 void LEMBALL_FASTCALL RemoveManagedEntityGroupChild(void* pObject, int nUnused, void* param_2)
 {
-	int iVar3 = 0;
-	int iVar4 = *(int*) ((char*) pObject + 0x18);
-	if (iVar4 > 0) {
-		int* piVar1 = *(int**) ((char*) pObject + 0x10);
-		while (piVar1[0] != *(int*) param_2) {
-			piVar1++;
-			iVar3++;
-			if (iVar4 <= iVar3) {
+	int iChild = 0;
+	int nChildCount = *(int*) ((char*) pObject + 0x18);
+	if (nChildCount > 0) {
+		int* pChild = *(int**) ((char*) pObject + 0x10);
+		while (pChild[0] != *(int*) param_2) {
+			pChild++;
+			iChild++;
+			if (nChildCount <= iChild) {
 				return;
 			}
 		}
-		if (iVar3 < iVar4 - 1) {
-			iVar4 = iVar3 * 4;
+		if (iChild < nChildCount - 1) {
+			int nChildOffset = iChild * 4;
 			do {
-				iVar3++;
-				*(int*) (*(int*) ((char*) pObject + 0x10) + iVar4) = *(int*) (*(int*) ((char*) pObject + 0x10) + iVar4 + 4);
-				iVar4 += 4;
-			} while (iVar3 < *(int*) ((char*) pObject + 0x18) - 1);
+				iChild++;
+				*(int*) (*(int*) ((char*) pObject + 0x10) + nChildOffset) =
+					*(int*) (*(int*) ((char*) pObject + 0x10) + nChildOffset + 4);
+				nChildOffset += 4;
+			} while (iChild < *(int*) ((char*) pObject + 0x18) - 1);
 		}
 		*(int*) (*(int*) ((char*) pObject + 0x1c) + *(int*) ((char*) param_2 + 0x2c) * 4) = 0xffffffff;
-		*(int*) (*(int*) ((char*) pObject + 0x10) + iVar3 * 4) = 0;
+		*(int*) (*(int*) ((char*) pObject + 0x10) + iChild * 4) = 0;
 		*(int*) ((char*) pObject + 0x18) = *(int*) ((char*) pObject + 0x18) - 1;
-		}
-		}
+	}
+}
 
 		// MACINTOSH: append_type_0x18_chunk_object(ushort, int*, int, int)
 		// FUNCTION: LEMBALL 0x0040c810
