@@ -291,7 +291,7 @@ void CGameObject::AlterDestination(const AICOORD& position)
 		pDestination->m_Position.y = position.y;
 		pDestination->m_Position.z = position.z;
 	}
-	((void(__fastcall*)(void*)) 0x40360c)(this);
+	StartMoving();
 }
 
 // Macintosh: CGameObject::GetDestination()
