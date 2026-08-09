@@ -209,7 +209,7 @@ int CBall::Process(void)
 		}
 		((void(__fastcall*)(void*, int))(*(void***) this)[0x11])(this, 0);
 	}
-	((void(__fastcall*)(void*, int)) 0x401500)(this, 0);
+	((CGameObject*) this)->UpdateCollision();
 	return 1;
 }
 
