@@ -370,7 +370,8 @@ static void* g_LINKSCF_ProjectilePoolVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(Delet
 																		   CBulletManagerProcess,
 																		   ReturnFalseChunkStreamCommandThunk,
 																		   EmitProjectilePoolRenderEntries);
-static void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];
+// GLOBAL: LEMBALL 0x00493c08
+void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];
 struct CachedChunkObjectManagerVtable {
 	int (CGenericGroupManager::*m_pGetNumberOfGroups00)(void);
 	CGenericGroup* (CGenericGroupManager::*m_pGetFirstGroup04)(void);

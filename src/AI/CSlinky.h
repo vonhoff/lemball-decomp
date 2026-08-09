@@ -83,6 +83,7 @@ public:
 
 	void Set(int nSlinkX, int nSlinkY, int nSlinkZ, int nSlinkW);
 	void Move(void);
+	int Process(void);
 };
 
 #endif // LEMBALL_CSLINKY_H

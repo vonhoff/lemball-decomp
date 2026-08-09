@@ -58,3 +58,61 @@ void CSlinky::Move(void)
 		m_moveTargetZB0 = (m_zPosWorldA4 >> 12) << 12;
 	} while (i < 8 && ((int(__fastcall*)(void*, int*)) 0x403229)(this, (int*) &m_moveTargetXA8) == 0);
 }
+
+// FUNCTION: LEMBALL 0x0040b760
+int CSlinky::Process(void)
+{
+	typedef void(__fastcall * NoArgProc)(void*);
+	typedef void(__fastcall * SetStateProc)(void*, int, int);
+	typedef int(__fastcall * IntersectsProc)(void*, int, int*);
+	int* pOwner;
+	int* pObject;
+	int* pHit;
+	int* pBounds;
+	int i;
+
+	if (m_fieldB8 == 0x18) {
+		if ((unsigned int) g_nLevelFrameClockTick >= (unsigned int) m_nFrameClockTickCC) {
+			((NoArgProc) ((void**) m_vtable)[0x44 / 4])(this);
+			m_motionTimeMs94 = g_nLevelFrameClockTimeMs;
+			((SetStateProc) ((void**) m_vtable)[2])(this, 0, 0x1b);
+			m_nFrameClockTickCC = g_nLevelFrameClockTick + 0x10;
+		}
+	}
+	else if (m_fieldB8 == 0x1b && (unsigned int) g_nLevelFrameClockTick >= (unsigned int) m_nFrameClockTickCC) {
+		m_xPosWorld9C = m_moveTargetXA8;
+		m_yPosWorldA0 = m_moveTargetYAC;
+		m_zPosWorldA4 = m_moveTargetZB0;
+		m_motionTimeMs94 = g_nLevelFrameClockTimeMs;
+		((SetStateProc) ((void**) m_vtable)[2])(this, 0, 0x18);
+		m_nFrameClockTickCC = g_nLevelFrameClockTick + 0x14;
+	}
+
+	pOwner = *(int**) 0x004A74B0;
+	pBounds = pOwner + 0x134 / 4;
+	pBounds[0] = (m_xPosWorld9C >> 12) - 4;
+	pBounds[1] = (m_yPosWorldA0 >> 12) - 4;
+	pBounds[2] = (m_zPosWorldA4 >> 12) - 4;
+	pBounds[3] = (m_xPosWorld9C >> 12) + 3;
+	pBounds[4] = (m_yPosWorldA0 >> 12) + 3;
+	pBounds[5] = (m_zPosWorldA4 >> 12) + 3;
+	pOwner[0x150 / 4] = (int) this;
+	pOwner[0x14c / 4] = 0;
+	pHit = 0;
+	i = 0;
+	while (i < pOwner[0x118 / 4]) {
+		pObject = *(int**) (pOwner[0x120 / 4] + i * 4);
+		if (pObject != (int*) pOwner[0x150 / 4] &&
+			((IntersectsProc) ((void**) *pObject)[0x4c / 4])(pObject, 0, pBounds) != 0) {
+			++pOwner[0x14c / 4];
+			pHit = pObject;
+			break;
+		}
+		++i;
+		pOwner[0x14c / 4] = i;
+	}
+	if (pHit != 0) {
+		((NoArgProc) ((void**) *pHit)[0x58 / 4])(pHit);
+	}
+	return 1;
+}
