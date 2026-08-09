@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 extern void* AllocateVSMemBlock(unsigned int nBytes);
 
 extern "C"
@@ -16,6 +17,7 @@ extern "C"
 	__declspec(dllimport) void* __stdcall SetClipboardData(unsigned int, void*);
 	__declspec(dllimport) int __stdcall CloseClipboard(void);
 	__declspec(dllimport) int __stdcall MessageBoxA(void*, const char*, const char*, unsigned int);
+	__declspec(dllimport) int __stdcall BitBlt(void*, int, int, int, int, void*, int, int, unsigned long);
 	__declspec(dllimport) int __stdcall GetClientRect(void*, void*);
 	__declspec(dllimport) void* __stdcall SelectObject(void*, void*);
 	__declspec(dllimport) unsigned long __stdcall SetTextColor(void*, unsigned long);
@@ -1035,4 +1037,190 @@ void __fastcall prepare_registration_info_screen_active_upload(char* pThis)
 	}
 	((void(__fastcall*)(void*, int)) 0x466b60)(pUpload, 0);
 	((void(__fastcall*)(void*, int, void*)) 0x4670f0)(*(void**) (pThis + 0x20), 0, pThis + 0x34);
+}
+
+// FUNCTION: LEMBALL 0x00450160
+void __fastcall layout_password_entry_text(char* pThis)
+{
+	void* pFont;
+	char** pTable;
+	char* pSource;
+	char* pSeparator;
+	char* pSplit;
+	short aExtent[4];
+	short nTop;
+	short nLeft;
+	short nHeight;
+	char* pPreviousSplit;
+	int* pLayout;
+	pFont = ((void*(__fastcall*) (void*, int, int) ) 0x469ef0)(*(void**) (pThis + 0x98), 0, *(int*) (pThis + 0x384));
+	if (*(int*) (pThis + 0x8c)) {
+		pTable = *(int*) (pThis + 0x518) ? (char**) 0x49fb58 : (char**) 0x49fb98;
+	}
+	else {
+		pTable = *(int*) (pThis + 0x518) ? (char**) 0x49fb38 : (char**) 0x49fb78;
+	}
+	pSource = pTable[*(int*) (*(char**) 0x49cb68 + 0x0c)];
+	pSeparator = strchr(pSource, '#');
+	if (!pSeparator) {
+		strcpy(pThis + 0x3e0, pSource);
+	}
+	else {
+		if (pSeparator != pSource) {
+			strncpy(pThis + 0x3e0, pSource, pSeparator - pSource);
+		}
+		pThis[0x3e0 + pSeparator - pSource] = 0;
+		if (*(int*) 0x4a011c) {
+			char* pPeer =
+				(char*) ((void*(__fastcall*) (void*, int, int) ) 0x402a31)(*(void**) 0x4a0120, 0, *(int*) 0x4a011c);
+			strcat(pThis + 0x3e0, pPeer + 0x2c);
+		}
+		strcat(pThis + 0x3e0, pSeparator + 1);
+	}
+	pLayout = *(int**) (pThis + 0x510);
+	nLeft = *(short*) ((char*) pLayout + 0x48);
+	nTop = *(short*) ((char*) pLayout + 0x4c);
+	*(char**) (pThis + 0x4e0) = pThis + 0x3e0;
+	*(char**) (pThis + 0x4e4) = 0;
+	for (;;) {
+		short* pSize = ((short*(__fastcall*) (void*, int, short*, char*, int) ) 0x45db30)(pFont,
+																						  0,
+																						  aExtent,
+																						  *(char**) (pThis + 0x4e0),
+																						  0x20);
+		nHeight = pSize[1];
+		nLeft = (short) pLayout[14] + (short) ((pLayout[16] - pSize[0]) / 2);
+		pPreviousSplit = *(char**) (pThis + 0x4e4);
+		if (pPreviousSplit) {
+			--pPreviousSplit;
+		}
+		if (nLeft >= *(short*) ((char*) pLayout + 0x48)) {
+			break;
+		}
+		pSplit = strrchr(*(char**) (pThis + 0x4e0), ' ');
+		*(char**) (pThis + 0x4e4) = pSplit;
+		*pSplit = 0;
+		*(char**) (pThis + 0x4e4) = pSplit + 1;
+		if (pPreviousSplit) {
+			*pPreviousSplit = ' ';
+		}
+	}
+	*(short*) (pThis + 0x4e8) = nLeft;
+	*(short*) (pThis + 0x4ea) = nTop;
+	if (!*(char**) (pThis + 0x4e4)) {
+		*(short*) (pThis + 0x4ea) = nTop + nHeight / 2;
+	}
+	else {
+		short* pSize;
+		nTop += nHeight;
+		pSize = ((short*(__fastcall*) (void*, int, short*, char*, int) ) 0x45db30)(pFont,
+																				   0,
+																				   aExtent,
+																				   *(char**) (pThis + 0x4e4),
+																				   0x20);
+		*(short*) (pThis + 0x4ec) = (short) pLayout[14] + (short) ((pLayout[16] - pSize[0]) / 2);
+		*(short*) (pThis + 0x4ee) = nTop;
+	}
+	{
+		short* pSize = ((
+			short*(__fastcall*) (void*, int, short*, char*, int) ) 0x45db30)(pFont, 0, aExtent, (char*) 0x49fc88, 0x20);
+		short nPasswordHeight = pSize[1];
+		short nPasswordTop = *(short*) ((char*) pLayout + 0x64);
+		*(short*) (pThis + 0x4f0) = (short) pLayout[14] + (short) ((pLayout[16] - pSize[0]) / 2);
+		*(short*) (pThis + 0x4f2) = nPasswordTop;
+		pSize = ((short*(__fastcall*) (void*, int, short*, char*, int) ) 0x45db30)(pFont,
+																				   0,
+																				   aExtent,
+																				   *(char**) (pThis + 0x4f8),
+																				   0x20);
+		*(short*) (pThis + 0x4f4) = (short) pLayout[14] + (short) ((pLayout[16] - pSize[0]) / 2);
+		*(short*) (pThis + 0x4f6) = nPasswordTop + nPasswordHeight;
+	}
+}
+
+extern void __stdcall WriteVgaSequencerMapMask(unsigned char nPlaneMask);
+extern void __stdcall copy_low_bytes_from_dword_stride(unsigned char* pDst, const unsigned char* pSrc, int nCount);
+
+// FUNCTION: LEMBALL 0x004570B0
+int __fastcall vs_gdi_dib240_display_state_copy_display_rect(void* pState,
+															 int,
+															 void* pDst,
+															 short* pRect,
+															 void* pSrc,
+															 short* pPoint)
+{
+	short nWidth = pRect[0];
+	short nHeight = pRect[1];
+	short nDstX = pRect[2];
+	short nDstY = pRect[3];
+	short nSrcX = pPoint[0];
+	short nSrcY = pPoint[1];
+	int nPitch;
+	int nSourceOffset;
+	int nDest;
+	int nLast;
+	int y;
+	int plane;
+	int pRow;
+	int nPlaneDst;
+	int nPlaneSrc;
+	int nDwords;
+	if (*(int*) 0x4a0770 != 0) {
+		return BitBlt(*(void**) ((char*) pDst + 4),
+					  nDstX,
+					  nDstY,
+					  nWidth,
+					  nHeight,
+					  *(void**) ((char*) pSrc + 4),
+					  nSrcX,
+					  nSrcY,
+					  0xcc0020);
+	}
+	if (nDstX < 0) {
+		nWidth += nDstX;
+		nDstX = 0;
+	}
+	if (*(short*) ((char*) pState + 0x14) < (short) (nWidth + nDstX)) {
+		nWidth = *(short*) ((char*) pState + 0x14) - nDstX;
+	}
+	if (nDstY < 0) {
+		nHeight += nDstY;
+		nDstY = 0;
+	}
+	if (*(short*) ((char*) pState + 0x16) < (short) (nHeight + nDstY)) {
+		nHeight = *(short*) ((char*) pState + 0x16) - nDstY;
+	}
+	if (nWidth < 1 || nHeight < 1) {
+		nWidth = nHeight = 0;
+	}
+	if (nWidth * nHeight == 0) {
+		return 1;
+	}
+	{
+		void* pLock = *(void**) ((char*) pSrc + 8);
+		((void(__fastcall*)(void*, int))(*(void***) pLock)[4])(pLock, 0);
+	}
+	nLast = nSrcX + nWidth - 1;
+	nPitch = ((int) *(short*) ((char*) pState + 0x14) + (((int) *(short*) ((char*) pState + 0x14) >> 31) & 3)) >> 2;
+	nSourceOffset = nSrcY << 2;
+	nDest = nDstY * nPitch + *(int*) ((char*) pState + 0x1c);
+	for (y = 0; y < nHeight; ++y) {
+		pRow = *(int*) (*(int*) (*(int*) ((char*) pState + 0x18) + 4) + nSourceOffset);
+		for (plane = 0; plane < 4; ++plane) {
+			nPlaneDst = nDstX + plane;
+			nPlaneSrc = nSrcX + plane;
+			if (nPlaneSrc <= nLast) {
+				nDwords = ((nLast - nPlaneSrc + (((nLast - nPlaneSrc) >> 31) & 3)) >> 2) + 1;
+				WriteVgaSequencerMapMask((unsigned char) (1 << (nPlaneDst & 3)));
+				copy_low_bytes_from_dword_stride(
+					(unsigned char*) (((nPlaneDst + ((nPlaneDst >> 31) & 3)) >> 2) + nDest),
+					(unsigned char*) (nPlaneSrc + pRow),
+					nDwords);
+			}
+		}
+		nSourceOffset += 4;
+		nDest += nPitch;
+	}
+	WriteVgaSequencerMapMask(0xf);
+	return 1;
 }
