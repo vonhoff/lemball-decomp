@@ -1,7 +1,8 @@
-#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
-#include "AI/CGenericGroup.h"
-#include "AI/CEnemy.h"
 #include "AI/CAI.h"
+#include "AI/CEnemy.h"
+#include "AI/CGameObject.h"
+#include "AI/CGenericGroup.h"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
@@ -184,9 +185,13 @@ void CEnemy::EnemyAction_PATROL(void* pDesc)
 	unsigned int targetPosition[3];
 	unsigned int* pPoint;
 
-	if (((int(__fastcall*) ()) 0x401f37)() != 1) {
-		unsigned int nWaypointIndex = (unsigned int) *(unsigned short*) (*(int*) (*(int**) pDesc + 0x10) + *(int*) (*(int**) pDesc + 8) * 2);
-		pPoint = (unsigned int*) ((unsigned int*(__fastcall*) (void*, unsigned int*, unsigned int)) 0x401410)(g_pActiveManagedEntityOwner, targetPosition, nWaypointIndex);
+	if (((CGameObject*) this)->DestinationExists() != 1) {
+		unsigned int nWaypointIndex =
+			(unsigned int) *(unsigned short*) (*(int*) (*(int**) pDesc + 0x10) + *(int*) (*(int**) pDesc + 8) * 2);
+		pPoint = (unsigned int*) ((unsigned int*(__fastcall*) (void*, unsigned int*, unsigned int) ) 0x401410)(
+			g_pActiveManagedEntityOwner,
+			targetPosition,
+			nWaypointIndex);
 		nTargetX = pPoint[0];
 		nTargetY = pPoint[1];
 		nTargetZ = pPoint[2];
@@ -204,10 +209,9 @@ void CEnemy::EnemyAction_PATROL(void* pDesc)
 				}
 			}
 		}
-		((void(__fastcall*) (void*, unsigned int*)) 0x401d52)(this, &nTargetX);
+		((CGameObject*) this)->AddDestination(*(AICOORD*) &nTargetX);
 	}
 }
-
 
 // FUNCTION: LEMBALL 0x0041ff60
 void CEnemy::ProcessAction(int nRules, int nActions, void* pUnion)
@@ -220,19 +224,19 @@ void CEnemy::ProcessAction(int nRules, int nActions, void* pUnion)
 	}
 	switch (nRules - 1) {
 	case 0:
-		((void (__fastcall*)(void*, int)) 0x402bda)(this, nActions);
+		EnemyAction_PATROL((void*) nActions);
 		break;
 	case 1:
-		((void (__fastcall*)(void*, int)) 0x401663)(this, nActions);
+		((void(__fastcall*)(void*, int)) 0x401663)(this, nActions);
 		break;
 	case 2:
-		((void (__fastcall*)(void*, int)) 0x401681)(this, nActions);
+		((void(__fastcall*)(void*, int)) 0x401681)(this, nActions);
 		break;
 	case 3:
-		((void (__fastcall*)(void*, int)) 0x4010b4)(this, nActions);
+		((void(__fastcall*)(void*, int)) 0x4010b4)(this, nActions);
 		break;
 	default:
-		((void (__fastcall*)(void*)) 0x40207c)(this);
+		((CGameObject*) this)->StopMoving();
 		break;
 	}
 }
