@@ -4,6 +4,11 @@
 #include "AI/CAI.h"
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
+extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
+
+struct LevelVtSmallFunctionView {
+	void AddLevelScoreClamped(int nValue);
+};
 
 struct LevelChunkObjectRuntimeStateView {
 	void ResetRuntimeStateThunk(void);
@@ -41,9 +46,9 @@ void CEnemy::HitBullet(void* pBullet)
 	if (*(int*) ((char*) pBullet + 0x16c) != 1) {
 		m_nHitBulletState124 = 1;
 		m_nUpdateTickCC = g_nLevelFrameClockTick + 0x3c;
-		short sVar1 = *(short*) ((char*) pBullet + 0xb4);
+		short nBulletHeading = *(short*) ((char*) pBullet + 0xb4);
 		m_nState2C = 1;
-		m_wHeadingDirB4 = sVar1 + 4U & 7;
+		m_wHeadingDirB4 = nBulletHeading + 4U & 7;
 	}
 }
 
@@ -86,7 +91,7 @@ void CEnemy::Fire(void)
 void CEnemy::HitMine(void)
 {
 	m_nHitMinScore10C = 1;
-	((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, 300);
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(300);
 	int vec[3];
 	vec[0] = 0;
 	vec[1] = 0;
@@ -97,7 +102,7 @@ void CEnemy::HitMine(void)
 // FUNCTION: LEMBALL 0x00420650
 int CEnemy::FacingTarget(void)
 {
-	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
+	int nOct = ReturnFacingDirection(
 		m_nWorldX9C >> 12,
 		m_nWorldYA0 >> 12,
 		m_nTargetX15C >> 12,
@@ -107,7 +112,7 @@ int CEnemy::FacingTarget(void)
 // FUNCTION: LEMBALL 0x00420350
 void CEnemy::TurnToFaceTarget(void)
 {
-	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
+	int nOct = ReturnFacingDirection(
 		m_nWorldX9C >> 12,
 		m_nWorldYA0 >> 12,
 		m_nTargetX15C >> 12,
@@ -151,21 +156,21 @@ void CEnemy::Restart(void)
 	}
 }
 // FUNCTION: LEMBALL 0x004202a0
-int CEnemy::LineOfSight(int param_1, int param_2)
+int CEnemy::LineOfSight(int nTargetX, int nTargetY)
 {
-	unsigned int local_8 = param_1 - m_nWorldX9C;
-	unsigned int uVar4 = param_2 - m_nWorldYA0;
-	unsigned int local_4;
-	unsigned int* puVar1;
-	unsigned int* puVar2;
-	if ((int) local_8 < 0) { local_4 = -(int) local_8; puVar1 = &local_4; }
-	else { puVar1 = &local_8; }
-	if ((int) uVar4 < 0) { puVar2 = &local_4; local_4 = -(int) uVar4; }
-	else { puVar2 = &local_8; local_8 = uVar4; }
-	int iVar3 = (int) *puVar2 >> 12;
-	unsigned int uVar5 = *puVar2 & 0xfff;
-	int iVar5 = (int) ((uVar5 * 0x6a0u) >> 12);
-	if (iVar3 * 0x6a0 + iVar5 < (int) *puVar1 && (int) *puVar1 < iVar5 + (iVar3 * 0x1350 + (int) uVar5) * 2) {
+	unsigned int nDeltaX = nTargetX - m_nWorldX9C;
+	unsigned int nDeltaY = nTargetY - m_nWorldYA0;
+	unsigned int nAbsoluteDelta;
+	unsigned int* pHorizontalDelta;
+	unsigned int* pVerticalDelta;
+	if ((int) nDeltaX < 0) { nAbsoluteDelta = -(int) nDeltaX; pHorizontalDelta = &nAbsoluteDelta; }
+	else { pHorizontalDelta = &nDeltaX; }
+	if ((int) nDeltaY < 0) { pVerticalDelta = &nAbsoluteDelta; nAbsoluteDelta = -(int) nDeltaY; }
+	else { pVerticalDelta = &nDeltaX; nDeltaX = nDeltaY; }
+	int nWholeTiles = (int) *pVerticalDelta >> 12;
+	unsigned int nSubTile = *pVerticalDelta & 0xfff;
+	int nLowerBoundOffset = (int) ((nSubTile * 0x6a0u) >> 12);
+	if (nWholeTiles * 0x6a0 + nLowerBoundOffset < (int) *pHorizontalDelta && (int) *pHorizontalDelta < nLowerBoundOffset + (nWholeTiles * 0x1350 + (int) nSubTile) * 2) {
 		return 1;
 	}
 	return 0;
@@ -173,23 +178,23 @@ int CEnemy::LineOfSight(int param_1, int param_2)
 // FUNCTION: LEMBALL 0x004200f0
 void CEnemy::EnemyAction_PATROL(void* pDesc)
 {
-	unsigned int local_18 = 0xaa55aa55;
-	unsigned int local_14 = 0xaa55aa55;
-	unsigned int local_10 = 0xaa55aa55;
-	unsigned int local_c[3];
+	unsigned int nTargetX = 0xaa55aa55;
+	unsigned int nTargetY = 0xaa55aa55;
+	unsigned int nTargetZ = 0xaa55aa55;
+	unsigned int targetPosition[3];
 	unsigned int* pPoint;
 
 	if (((int(__fastcall*) ()) 0x401f37)() != 1) {
-		unsigned int idx = (unsigned int) *(unsigned short*) (*(int*) (*(int**) pDesc + 0x10) + *(int*) (*(int**) pDesc + 8) * 2);
-		pPoint = (unsigned int*) ((unsigned int*(__fastcall*) (void*, unsigned int*, unsigned int)) 0x401410)(*(void**) 0x4a74b0, local_c, idx);
-		local_18 = pPoint[0];
-		local_14 = pPoint[1];
-		local_10 = pPoint[2];
+		unsigned int nWaypointIndex = (unsigned int) *(unsigned short*) (*(int*) (*(int**) pDesc + 0x10) + *(int*) (*(int**) pDesc + 8) * 2);
+		pPoint = (unsigned int*) ((unsigned int*(__fastcall*) (void*, unsigned int*, unsigned int)) 0x401410)(*(void**) 0x4a74b0, targetPosition, nWaypointIndex);
+		nTargetX = pPoint[0];
+		nTargetY = pPoint[1];
+		nTargetZ = pPoint[2];
 		*(int*) (*(int**) pDesc + 8) += *(int*) (*(int**) pDesc + 0xc);
 		{
 			int* pBase = *(int**) pDesc;
-			int cur = *(int*) ((char*) pBase + 8);
-			if (*(int*) ((char*) pBase + 4) <= cur || cur < 0) {
+			int nCurrentWaypoint = *(int*) ((char*) pBase + 8);
+			if (*(int*) ((char*) pBase + 4) <= nCurrentWaypoint || nCurrentWaypoint < 0) {
 				if (*(int*) pBase == 0) {
 					*(int*) ((char*) pBase + 0xc) = -*(int*) ((char*) pBase + 0xc);
 					*(int*) ((char*) pBase + 8) += *(int*) ((char*) pBase + 0xc);
@@ -199,7 +204,7 @@ void CEnemy::EnemyAction_PATROL(void* pDesc)
 				}
 			}
 		}
-		((void(__fastcall*) (void*, unsigned int*)) 0x401d52)(this, &local_18);
+		((void(__fastcall*) (void*, unsigned int*)) 0x401d52)(this, &nTargetX);
 	}
 }
 

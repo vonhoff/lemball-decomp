@@ -22,24 +22,24 @@ void CDuplicator::Restart(void)
 // FUNCTION: LEMBALL 0x00427630
 void CDuplicator::Set(const AICOORD& position)
 {
-	int iVar3 = position.x;
-	m_xPosWorld9C = iVar3;
-	int iVar4 = position.y;
-	m_yPosWorldA0 = iVar4;
-	int iVar2 = position.z;
+	int nWorldX = position.x;
+	m_xPosWorld9C = nWorldX;
+	int nWorldY = position.y;
+	m_yPosWorldA0 = nWorldY;
+	int nWorldZ = position.z;
 	m_nPlaced138 = 1;
 	m_nActive13C = 1;
-	m_zPosWorldA4 = iVar2;
-	iVar3 = (iVar3 >> 12) / 16;
-	iVar4 = (iVar4 >> 12) / 16;
-	if (iVar3 > -1) {
-		if (iVar4 > -1 && iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar4 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
-			*(unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (iVar4 * *(int*) ((char*) g_pLevelTileGrid + 0x10) + iVar3) * 0xc) |= 1;
+	m_zPosWorldA4 = nWorldZ;
+	nWorldX = (nWorldX >> 12) / 16;
+	nWorldY = (nWorldY >> 12) / 16;
+	if (nWorldX > -1) {
+		if (nWorldY > -1 && nWorldX < *(int*) ((char*) g_pLevelTileGrid + 0x10) && nWorldY < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+			*(unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (nWorldY * *(int*) ((char*) g_pLevelTileGrid + 0x10) + nWorldX) * 0xc) |= 1;
 		}
-		iVar4--;
-		if (iVar4 > -1) {
-			if (iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar4 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
-				*(unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar4 + iVar3) * 0xc) |= 1;
+		nWorldY--;
+		if (nWorldY > -1) {
+			if (nWorldX < *(int*) ((char*) g_pLevelTileGrid + 0x10) && nWorldY < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+				*(unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * nWorldY + nWorldX) * 0xc) |= 1;
 			}
 		}
 	}
@@ -47,16 +47,16 @@ void CDuplicator::Set(const AICOORD& position)
 // FUNCTION: LEMBALL 0x004276f0
 void CDuplicator::Delete(void)
 {
-	int iVar2 = (m_xPosWorld9C >> 12) / 16;
-	int iVar3 = (m_yPosWorldA0 >> 12) / 16;
-	if (iVar2 > -1) {
-		if (iVar3 > -1 && iVar2 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
-			*(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar3 + iVar2) * 0xc) &= 0xfffe;
+	int nTileX = (m_xPosWorld9C >> 12) / 16;
+	int nTileY = (m_yPosWorldA0 >> 12) / 16;
+	if (nTileX > -1) {
+		if (nTileY > -1 && nTileX < *(int*) ((char*) g_pLevelTileGrid + 0x10) && nTileY < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+			*(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * nTileY + nTileX) * 0xc) &= 0xfffe;
 		}
-		iVar3--;
-		if (iVar3 > -1) {
-			if (iVar2 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
-				*(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar3 + iVar2) * 0xc) &= 0xfffe;
+		nTileY--;
+		if (nTileY > -1) {
+			if (nTileX < *(int*) ((char*) g_pLevelTileGrid + 0x10) && nTileY < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+				*(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * nTileY + nTileX) * 0xc) &= 0xfffe;
 			}
 		}
 	}

@@ -20,35 +20,35 @@ struct LevelTileGridOwnerView {
 // FUNCTION: LEMBALL 0x004157b0
 int CGameObject::MapCheck(int nX, int nY)
 {
-	int iVar1;
-	int iVar2;
-	int iVar3;
-	int iVar4;
-	unsigned short uVar5;
-	int iVar6;
+	int nTileY;
+	int nAdjustedX;
+	int nFinalTileX;
+	int nTileFlags;
+	unsigned short nCellFlags;
+	int nScanY;
 
-	iVar1 = (nY + (nY >> 31 & 0xf)) >> 4;
-	iVar2 = nX + (nX >> 31 & 0xf);
-	iVar3 = iVar2 >> 4;
-	iVar4 = (unsigned int) (unsigned short) (iVar2 >> 0x14) << 0x10;
-	iVar2 = iVar3;
+	nTileY = (nY + (nY >> 31 & 0xf)) >> 4;
+	nAdjustedX = nX + (nX >> 31 & 0xf);
+	nFinalTileX = nAdjustedX >> 4;
+	nTileFlags = (unsigned int) (unsigned short) (nAdjustedX >> 0x14) << 0x10;
+	nAdjustedX = nFinalTileX;
 	do {
-		iVar6 = iVar1;
-		if (iVar1 >= 0) {
+		nScanY = nTileY;
+		if (nTileY >= 0) {
 			do {
-				if (iVar2 < 0 || iVar6 < 0 || *(int*) ((char*) g_pLevelTileGrid + 0x10) <= iVar2 || *(int*) ((char*) g_pLevelTileGrid + 0x14) <= iVar6) {
-					uVar5 = 3;
+				if (nAdjustedX < 0 || nScanY < 0 || *(int*) ((char*) g_pLevelTileGrid + 0x10) <= nAdjustedX || *(int*) ((char*) g_pLevelTileGrid + 0x14) <= nScanY) {
+					nCellFlags = 3;
 				}
 				else {
-					uVar5 = *(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar6 + iVar2) * 0xc);
+					nCellFlags = *(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * nScanY + nAdjustedX) * 0xc);
 				}
-				iVar4 = ((unsigned int) (short) (iVar4 >> 0x10) << 0x10) | (unsigned short) (iVar4 | uVar5);
-				iVar6 = iVar6 + 1;
-			} while (iVar6 <= iVar1);
+				nTileFlags = ((unsigned int) (short) (nTileFlags >> 0x10) << 0x10) | (unsigned short) (nTileFlags | nCellFlags);
+				nScanY = nScanY + 1;
+			} while (nScanY <= nTileY);
 		}
-		iVar2 = iVar2 + 1;
-	} while (iVar2 <= iVar3);
-	return iVar4;
+		nAdjustedX = nAdjustedX + 1;
+	} while (nAdjustedX <= nFinalTileX);
+	return nTileFlags;
 }
 
 // GLOBAL: LEMBALL 0x0049d020

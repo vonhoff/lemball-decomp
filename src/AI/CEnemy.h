@@ -47,7 +47,7 @@ public:
 
 	void Restart(void);
 	void EnemyAction_PATROL(void* pDesc);
-	int LineOfSight(int param_1, int param_2);
+	int LineOfSight(int nTargetX, int nTargetY);
 	void TurnToFaceTarget(void);
 	void HitBullet(void* pBullet);
 	int FacingTarget(void);
