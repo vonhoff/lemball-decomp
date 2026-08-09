@@ -13,6 +13,7 @@ public:
 	void Initialise(int nCount);
 	~CIceManager(void);
 	void Process(void);
+	void Remove(CIce* pObject);
 	int GetViewData(CViewData* pViewData);
 	void Switch(int nAction, unsigned int nSlot);
 	int StepOn(void* pCoord, void* pGameObject);
