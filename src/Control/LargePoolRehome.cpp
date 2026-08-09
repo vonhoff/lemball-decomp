@@ -1,3 +1,5 @@
+#include <string.h>
+
 struct LargePoolSixDwords
 {
 	unsigned long m_values[6];
@@ -281,4 +283,162 @@ void __fastcall layout_resource_sprite_text_owner(void* pObject, int, char* pPri
 		*(int*)(pThis + 0x13c) = 1;
 	}
 	*(int*)(pThis + 0xd8) = 1;
+}
+
+extern void* g_pSharedRenderDispatchQueue;
+
+// FUNCTION: LEMBALL 0x00443AF0
+void __fastcall configure_level_screen_pause_dialog_options(void* pObject)
+{
+	char* pThis;
+	const char** ppText;
+	short* pRects;
+	short* pRect;
+	int nMode;
+	int nIndex;
+	int nRemaining;
+	int nRectCount;
+	int nChild;
+
+	pThis = (char*)pObject;
+	nIndex = 0;
+	nMode = *(int*)(pThis + 0x104);
+	if (nMode >= 0)
+	{
+		nRemaining = nMode + 1;
+		do
+		{
+			*(int*)(pThis + 0x120) = 0;
+			ppText = (const char**)0x0049F068 + nIndex;
+			do
+			{
+				++ppText;
+				++*(int*)(pThis + 0x120);
+				++nIndex;
+			} while (*ppText != 0);
+			++nIndex;
+			--nRemaining;
+		} while (nRemaining != 0);
+	}
+	*(int*)(pThis + 0x124) = 0;
+	*(int*)(pThis + 0x11c) = 0;
+	*(const char***)(pThis + 0x100) = (const char**)0x0049F064 +
+		(nIndex - *(int*)(pThis + 0x120));
+	switch (nMode)
+	{
+	case 0:
+		*(int*)(pThis + 0x124) = 1;
+		if (((int(__fastcall*)(void*))(*(void***)*(void**)(pThis + 0x110))[1])(
+			*(void**)(pThis + 0x110)) == 0)
+		{
+			++*(int*)(pThis + 0x124);
+			++*(int*)(pThis + 0x11c);
+		}
+		*(int*)(pThis + 0x118) = *(int*)(pThis + 0x124);
+		break;
+	case 1:
+	case 2:
+	case 4:
+		*(int*)(pThis + 0x124) = 1;
+		*(int*)(pThis + 0x118) = 1;
+		break;
+	case 3:
+		*(int*)(pThis + 0x124) = 1;
+		*(int*)(pThis + 0x118) = 2;
+		break;
+	default:
+		*(int*)(pThis + 0x118) = 0;
+		break;
+	}
+	*(int*)(pThis + 0x128) = *(int*)(pThis + 0x118);
+	nChild = pThis != 0 ? (int)(pThis + 0x90) : 0;
+	((void(__fastcall*)(void*, int, int, int))0x004632A0)(
+		g_pSharedRenderDispatchQueue, 0, nChild, 0);
+
+	nRectCount = *(int*)(pThis + 0x120);
+	*(int*)(pThis + 500) = 0;
+	pRects = (short*)((void*(__cdecl*)(unsigned int))0x0045A780)(nRectCount * 8);
+	if (pRects == 0)
+		*(short**)(pThis + 0x1f8) = 0;
+	else
+	{
+		pRect = pRects;
+		while (--nRectCount >= 0)
+		{
+			((void(__fastcall*)(void*))0x004017C6)(pRect);
+			pRect += 4;
+		}
+		*(short**)(pThis + 0x1f8) = pRects;
+	}
+	((void(__fastcall*)(void*))0x00402F54)(pThis);
+	*(int*)(pThis + 0x208) = 0;
+	*(int*)(pThis + 0x1dc) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0043F480
+void __fastcall mark_level_screen_occupancy_rect(void* pObject)
+{
+	char* pThis;
+	char* pGrid;
+	unsigned char* pFirst;
+	unsigned char* pSecond;
+
+	int nX;
+	int nY;
+	int nWidth;
+	int nHeight;
+	int nGridWidth;
+	int nGridHeight;
+	int nRight;
+	int nBottom;
+
+
+	pThis = (char*)pObject;
+	pGrid = *(char**)(pThis + 0x930);
+	*(short*)(pThis + 0x9b8) = 0x10;
+	*(short*)(pThis + 0x9ba) = 0x10;
+	*(short*)(pThis + 0x9bc) = *(short*)(pThis + 0x938) - *(short*)(pThis + 0x950) - 3;
+	*(short*)(pThis + 0x9be) = *(short*)(pThis + 0x93a) - *(short*)(pThis + 0x954) - 3;
+
+	nX = *(short*)(pThis + 0x8d6);
+	nY = *(short*)(pThis + 0x8d8);
+	nX = (nX + ((nX >> 31) & 0x0f)) >> 4;
+	nY = (nY + ((nY >> 31) & 0x0f)) >> 4;
+	nRight = *(short*)(pThis + 0x8d6) + *(short*)(pThis + 0x8d2) - 1;
+	nBottom = *(short*)(pThis + 0x8d8) + *(short*)(pThis + 0x8d4) - 1;
+	nWidth = ((nRight + ((nRight >> 31) & 0x0f)) >> 4) - nX + 1;
+	nHeight = ((nBottom + ((nBottom >> 31) & 0x0f)) >> 4) - nY + 1;
+	nGridWidth = *(short*)(pGrid + 8);
+	nGridHeight = *(short*)(pGrid + 0x0a);
+	if (nX < nGridWidth && nY < nGridHeight)
+	{
+		if (nX < 0)
+		{
+			nWidth += nX;
+			nX = 0;
+		}
+		if (nY < 0)
+		{
+			nHeight += nY;
+			nY = 0;
+		}
+		if (nX + nWidth >= nGridWidth)
+			nWidth = nGridWidth - nX;
+		if (nY + nHeight >= nGridHeight)
+			nHeight = nGridHeight - nY;
+		if (nWidth > 0 && nHeight > 0)
+		{
+			pFirst = *(unsigned char**)(pGrid + 0x10) + nX + nY * nGridWidth;
+			pSecond = *(unsigned char**)(pGrid + 0x14) + nX + nY * nGridWidth;
+			while (nHeight-- != 0)
+			{
+				memset(pFirst, 1, nWidth);
+				memset(pSecond, 1, nWidth);
+				pFirst += nGridWidth;
+				pSecond += nGridWidth;
+			}
+		}
+	}
+	((void(__fastcall*)(void*, int, short*))0x00401D1B)(
+		pGrid, 0, (short*)(pThis + 0x8da));
 }
