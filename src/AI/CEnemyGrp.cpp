@@ -6,6 +6,7 @@
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
+extern int __fastcall EvaluateManagedEntityProbeConditionCode(void* pObject, int nUnused, int nCondition);
 
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant3(void* pContext, PlasChildStateEntityView* pEntity);
@@ -221,7 +222,7 @@ void CEnemy::EnemyAction_PATROL(void* pDesc)
 // FUNCTION: LEMBALL 0x0041ff60
 void CEnemy::ProcessAction(int nRules, int nActions, void* pUnion)
 {
-	if (((int(__cdecl*)(int)) 0x4030f3)(nRules) == 1) {
+	if (EvaluateManagedEntityProbeConditionCode(this, 0, nRules) == 1) {
 		if (++m_nReserved128 > 2) {
 			m_nReserved128 = 0;
 		}
