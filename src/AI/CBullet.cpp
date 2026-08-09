@@ -87,42 +87,42 @@ void CBullet::TriggerBullet(void)
 // FUNCTION: LEMBALL 0x0041aaa0
 void CBullet::AddData(void)
 {
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, 0x2b);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_nSlotId6C);
-	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(&m_NetworkStream138, 0, g_nLevelFrameClockTimeMs);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_nWorldX9C >> 12);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_nWorldYA0 >> 12);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_nWorldZA4 >> 12);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_nDestXA8 >> 12);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_nDestYAC >> 12);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_nDestZB0 >> 12);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_nHeadingOctantB4);
-	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(&m_NetworkStream138, 0, m_nHeading98);
-	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(&m_NetworkStream138, 0, m_nStartTickC8);
-	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(&m_NetworkStream138, 0, m_nBulletType168);
-	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(&m_NetworkStream138, 0, m_nOwner16C);
-	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(&m_NetworkStream138, 0, m_sCaller170);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(0x2b);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_nSlotId6C);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU32BE(g_nLevelFrameClockTimeMs);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_nWorldX9C >> 12);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_nWorldYA0 >> 12);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_nWorldZA4 >> 12);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_nDestXA8 >> 12);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_nDestYAC >> 12);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_nDestZB0 >> 12);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_nHeadingOctantB4);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU32BE(m_nHeading98);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU32BE(m_nStartTickC8);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU32BE(m_nBulletType168);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU32BE(m_nOwner16C);
+	((CNetworkMessage*) &m_NetworkStream138)->WriteEffStreamU16BE(m_sCaller170);
 }
 // FUNCTION: LEMBALL 0x0041ab80
 void CBullet::GetData(void)
 {
-	((void(__cdecl*) (unsigned int)) 0x403107)(((unsigned int(__fastcall*) (void*)) 0x45eff0)(&m_NetworkStream138));
-	m_nWorldX9C = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(&m_NetworkStream138)) << 12;
-	m_nWorldYA0 = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(&m_NetworkStream138)) << 12;
-	m_nWorldZA4 = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(&m_NetworkStream138)) << 12;
-	m_nDestXA8 = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(&m_NetworkStream138)) << 12;
-	m_nDestYAC = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(&m_NetworkStream138)) << 12;
-	m_nDestZB0 = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(&m_NetworkStream138)) << 12;
-	m_nHeadingOctantB4 = ((unsigned short(__fastcall*) (void*)) 0x45f070)(&m_NetworkStream138);
-	m_nHeading98 = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(&m_NetworkStream138);
-	m_nStartTickC8 = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(&m_NetworkStream138);
-	m_nBulletType168 = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(&m_NetworkStream138);
-	unsigned int nData = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(&m_NetworkStream138);
+	((void(__cdecl*) (unsigned int)) 0x403107)(((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU32BEValue());
+	m_nWorldX9C = (unsigned int) (unsigned short) (((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue()) << 12;
+	m_nWorldYA0 = (unsigned int) (unsigned short) (((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue()) << 12;
+	m_nWorldZA4 = (unsigned int) (unsigned short) (((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue()) << 12;
+	m_nDestXA8 = (unsigned int) (unsigned short) (((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue()) << 12;
+	m_nDestYAC = (unsigned int) (unsigned short) (((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue()) << 12;
+	m_nDestZB0 = (unsigned int) (unsigned short) (((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue()) << 12;
+	m_nHeadingOctantB4 = ((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue();
+	m_nHeading98 = ((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU32BEValue();
+	m_nStartTickC8 = ((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU32BEValue();
+	m_nBulletType168 = ((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU32BEValue();
+	unsigned int nData = ((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU32BEValue();
 	m_nOwner16C = nData;
 	if (nData == 0) {
 		m_nOwner16C = 2;
 	}
-	m_sCaller170 = ((unsigned short(__fastcall*) (void*)) 0x45f070)(&m_NetworkStream138);
+	m_sCaller170 = ((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue();
 	m_nRuntimeFlag164 = 1;
 	m_nPendingState114 = 1;
 }
