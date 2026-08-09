@@ -139,7 +139,7 @@ int CIceManager::StepOn(void* pCoord, void* pGameObject)
 	}
 	for (i = 0, nOffset = 0; i < m_nObjectCount34; ++i, nOffset += sizeof(CIce)) {
 		pObject = (char*) m_pObjects38 + nOffset;
-		if (((int(__stdcall*)(void*, void*, void*)) 0x40155a)(pObject, pCoord, pGameObject) != 0) {
+		if (((CIce*) pObject)->StepOn(*(AICOORD*) pCoord, (CGameObject*) pGameObject) != 0) {
 			return 1;
 		}
 	}
