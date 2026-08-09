@@ -45,38 +45,38 @@ void CRocketManager::Initialise(int nCapacity)
 // FUNCTION: LEMBALL 0x00427050
 int CRocketManager::GetViewData(CViewData* pViewData)
 {
-	int iVar2 = 0;
-	int local_4 = 0;
+	int iObject = 0;
+	int cViewData = 0;
 	if (m_nObjectCount34 > 0) {
-		int iVar3 = 0;
+		int nObjectOffset = 0;
 		do {
-			int* piVar1 = (int*) (m_pObjects38 + iVar3);
-			int iVar4 = (int) pViewData;
-			if (piVar1[0x2e] != 0x18) {
-				iVar4 = (int) pViewData + 0x4c;
-				(*( void(**)(int)) (*(void***) *piVar1 + 0xc / 4))((int) pViewData);
-				local_4 = local_4 + 1;
+			int* pObjectWords = (int*) (m_pObjects38 + nObjectOffset);
+			int nNextViewDataAddress = (int) pViewData;
+			if (pObjectWords[0x2e] != 0x18) {
+				nNextViewDataAddress = (int) pViewData + 0x4c;
+				(*( void(**)(int)) (*(void***) *pObjectWords + 0xc / 4))((int) pViewData);
+				cViewData = cViewData + 1;
 			}
-			iVar3 = iVar3 + 0x144;
-			iVar2 = iVar2 + 1;
-			pViewData = (CViewData*) iVar4;
-		} while (iVar2 < m_nObjectCount34);
+			nObjectOffset = nObjectOffset + 0x144;
+			iObject = iObject + 1;
+			pViewData = (CViewData*) nNextViewDataAddress;
+		} while (iObject < m_nObjectCount34);
 	}
-	return local_4;
+	return cViewData;
 }
 // FUNCTION: LEMBALL 0x00427010
 void CRocketManager::Process(void)
 {
-	int iVar3 = 0;
+	int iObject = 0;
 	if (m_nObjectCount34 > 0) {
-		int iVar2 = 0;
+		int nObjectOffset = 0;
 		do {
-			*(int*) (m_pObjects38 + 0x124 + iVar2) = 1;
-			void* piVar1 = (void*) (m_pObjects38 + iVar2);
-			(*( void(**)(void)) (*(void***) piVar1 + 0x14 / 4))();
-			iVar2 = iVar2 + 0x144;
-			iVar3 = iVar3 + 1;
-		} while (iVar3 < m_nObjectCount34);
+			*(int*) (m_pObjects38 + 0x124 + nObjectOffset) = 1;
+			void* pObject = (void*) (m_pObjects38 + nObjectOffset);
+			(*( void(**)(void)) (*(void***) pObject + 0x14 / 4))();
+			nObjectOffset = nObjectOffset + 0x144;
+			iObject = iObject + 1;
+		} while (iObject < m_nObjectCount34);
 	}
 }
 // FUNCTION: LEMBALL 0x004270b0

@@ -55,18 +55,18 @@ void CPaintGunManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned 
 // FUNCTION: LEMBALL 0x0042c4d0
 void CPaintGunManager::Process(void)
 {
-	int iVar3 = 0;
+	int iObject = 0;
 	if (m_nObjectCount34 > 0) {
-		int iVar2 = 0;
+		int nObjectOffset = 0;
 		do {
-			*(int*) ((char*) m_pObjects38 + 0x124 + iVar2) = 1;
-			void* piVar1 = (void*) ((char*) m_pObjects38 + iVar2);
-			if (*(int*) ((char*) piVar1 + 0x4e * 4) != 0) {
-				(*( void(**)(void)) (*(void***) piVar1 + 0x14 / 4))();
+			*(int*) ((char*) m_pObjects38 + 0x124 + nObjectOffset) = 1;
+			void* pObject = (void*) ((char*) m_pObjects38 + nObjectOffset);
+			if (*(int*) ((char*) pObject + 0x4e * 4) != 0) {
+				(*( void(**)(void)) (*(void***) pObject + 0x14 / 4))();
 			}
-			iVar2 = iVar2 + 0x144;
-			iVar3 = iVar3 + 1;
-		} while (iVar3 < m_nObjectCount34);
+			nObjectOffset = nObjectOffset + 0x144;
+			iObject = iObject + 1;
+		} while (iObject < m_nObjectCount34);
 	}
 }
 
@@ -77,15 +77,15 @@ int CPaintGunManager::GetViewData(CViewData* pViewData)
 	int nCount = 0;
 	int iChild = 0;
 	if (m_nObjectCount34 > 0) {
-		int iVar2 = 0;
+		int nObjectOffset = 0;
 		do {
-			void* pChild = (void*) ((char*) m_pObjects38 + iVar2);
+			void* pChild = (void*) ((char*) m_pObjects38 + nObjectOffset);
 			if (*(int*) ((char*) pChild + 0x138) != 0) {
 				((void(__fastcall*)(void*, CViewData*)) (*(void***) pChild)[0xc / 4])(pChild, pViewData);
 				nCount = nCount + 1;
 				pViewData = (CViewData*) ((char*) pViewData + 0x4c);
 			}
-			iVar2 = iVar2 + 0x144;
+			nObjectOffset = nObjectOffset + 0x144;
 			iChild = iChild + 1;
 		} while (iChild < m_nObjectCount34);
 	}

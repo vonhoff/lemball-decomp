@@ -64,18 +64,18 @@ void CBallManager::Delete(CBall* pBall)
 // FUNCTION: LEMBALL 0x00422060
 void CBallManager::LoadLevel(unsigned short* pStream)
 {
-	unsigned short uVar1 = *pStream;
+	unsigned short nStreamCount = *pStream;
 	pStream = pStream + 1;
-	unsigned int uVar3 = (unsigned int) uVar1;
-	((void(__fastcall*)(void*, unsigned int)) 0x4032f6)(this, uVar3);
-	m_nActiveCount08 = uVar3;
-	if (uVar3 != 0) {
-		unsigned int iVar4 = 0;
-		int iVar2 = 0;
+	unsigned int nBallCount = (unsigned int) nStreamCount;
+	((void(__fastcall*)(void*, unsigned int)) 0x4032f6)(this, nBallCount);
+	m_nActiveCount08 = nBallCount;
+	if (nBallCount != 0) {
+		unsigned int nBallOffset = 0;
+		int iBall = 0;
 		do {
-			iVar4 = iVar4 + 4;
-			iVar2++;
-			((void(__fastcall*)(void*, unsigned short**)) 0x403030)(*((void**) m_apBalls04 + iVar2 - 1), &pStream);
-		} while (iVar2 < m_nActiveCount08);
+			nBallOffset = nBallOffset + 4;
+			iBall++;
+			((void(__fastcall*)(void*, unsigned short**)) 0x403030)(*((void**) m_apBalls04 + iBall - 1), &pStream);
+		} while (iBall < m_nActiveCount08);
 	}
 }

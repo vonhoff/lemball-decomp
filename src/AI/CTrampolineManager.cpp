@@ -47,26 +47,26 @@ void CTrampolineManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigne
 }
 
 // FUNCTION: LEMBALL 0x0042b4f0
-int CTrampolineManager::GetViewData(int param_1)
+int CTrampolineManager::GetViewData(int nViewDataAddress)
 {
-	int local_4 = 0;
-	int iVar2 = 0;
+	int cViewData = 0;
+	int iObject = 0;
 	if (m_nObjectCount34 > 0) {
-		int iVar3 = 0;
+		int nObjectOffset = 0;
 		do {
-			int* piVar1 = (int*) (m_pObjects38 + iVar3);
-			int iVar4 = param_1;
-			if (piVar1[0x4e] != 0) {
-				iVar4 = param_1 + 0x4c;
-				(*( void(**)(int)) (*(void***) *piVar1 + 0xc / 4))(param_1);
-				local_4 = local_4 + 1;
+			int* pObjectWords = (int*) (m_pObjects38 + nObjectOffset);
+			int nNextViewDataAddress = nViewDataAddress;
+			if (pObjectWords[0x4e] != 0) {
+				nNextViewDataAddress = nViewDataAddress + 0x4c;
+				(*( void(**)(int)) (*(void***) *pObjectWords + 0xc / 4))(nViewDataAddress);
+				cViewData = cViewData + 1;
 			}
-			iVar3 = iVar3 + 0x144;
-			iVar2 = iVar2 + 1;
-			param_1 = iVar4;
-		} while (iVar2 < m_nObjectCount34);
+			nObjectOffset = nObjectOffset + 0x144;
+			iObject = iObject + 1;
+			nViewDataAddress = nNextViewDataAddress;
+		} while (iObject < m_nObjectCount34);
 	}
-	return local_4;
+	return cViewData;
 }
 
 
