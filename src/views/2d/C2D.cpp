@@ -64,6 +64,10 @@ struct VariantResourceEntryManagerView {
 	int m_nSelectionMode10;
 };
 
+void LEMBALL_FASTCALL SelectNextReadyManagedEntityFromLevelScreen(LevelScreenManagedEntitySelectionView* pScreen);
+void LEMBALL_FASTCALL SelectPreviousReadyManagedEntityFromLevelScreen(LevelScreenManagedEntitySelectionView* pScreen);
+void LEMBALL_FASTCALL DispatchLevelScreenProjectileRequestByIndex(void* pObject, int nUnused, int nIndex);
+
 // FUNCTION: LEMBALL 0x00437B60
 int C2D::ProcessMsg(short* pMessage)
 {
@@ -72,10 +76,8 @@ int C2D::ProcessMsg(short* pMessage)
 	int nCommand;
 
 	pThis = (char*) this;
-	if ((g_pLevelDemoPlaybackController == 0 ||
-		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) &&
-		((int(__fastcall*)(void*)) (*(void***) *(void**) (pThis + 0x974))[0x60 / 4])(
-			*(void**) (pThis + 0x974)) == 0) {
+	if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) &&
+		((int(__fastcall*)(void*))(*(void***) *(void**) (pThis + 0x974))[0x60 / 4])(*(void**) (pThis + 0x974)) == 0) {
 		return 0;
 	}
 	if (*(int*) (pThis + 0xa78) != 0) {
@@ -89,13 +91,13 @@ int C2D::ProcessMsg(short* pMessage)
 	nCommand = *(int*) (pMessage + 4);
 	switch (nCommand) {
 	case 3:
-		((void(__fastcall*)(void*)) 0x00403481)(pOwner);
+		SelectPreviousReadyManagedEntityFromLevelScreen((LevelScreenManagedEntitySelectionView*) pOwner);
 		return 1;
 	case 4:
-		((void(__fastcall*)(void*)) 0x00402982)(pOwner);
+		SelectNextReadyManagedEntityFromLevelScreen((LevelScreenManagedEntitySelectionView*) pOwner);
 		return 1;
 	case 0x39:
-		((void(__fastcall*)(void*, int, int)) 0x00402D60)(pOwner, 0, 3);
+		DispatchLevelScreenProjectileRequestByIndex(pOwner, 0, 3);
 		return 1;
 	case 0x3a:
 	case 0x3b:
@@ -106,7 +108,7 @@ int C2D::ProcessMsg(short* pMessage)
 	case 0x40:
 	case 0x41:
 	case 0x42:
-		((void(__fastcall*)(void*, int, int)) 0x00402D60)(pOwner, 0, nCommand - 0x40);
+		DispatchLevelScreenProjectileRequestByIndex(pOwner, 0, nCommand - 0x40);
 		return 1;
 	default:
 		return 0;
