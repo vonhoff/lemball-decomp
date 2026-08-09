@@ -302,3 +302,47 @@ void CMover::FindObjectsOnTopOfMe(void)
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x0042eff0
+int CMover::GetOn(CGameObject* pObject)
+{
+	AICOORD position;
+	AICOORD destination;
+	int nMoverZ;
+	int nObjectZ;
+	int i;
+
+	position = pObject->m_WorldPosition9C;
+	nMoverZ = m_nWorldZA4 >> 12;
+	nObjectZ = position.z >> 12;
+	if (nObjectZ < nMoverZ - 0x10 || nMoverZ + 0x10 < nObjectZ) {
+		return 0;
+	}
+	if (!IsOn(position)) {
+		return 0;
+	}
+	if (m_cAttachedEntities174 >= 10) {
+		return 0;
+	}
+	for (i = 0; i < m_cAttachedEntities174; ++i) {
+		if (m_apAttachedEntities178[i] == pObject) {
+			return 1;
+		}
+	}
+	m_apAttachedEntities178[m_cAttachedEntities174] = pObject;
+	pObject->m_fOnMover11C = 1;
+	++m_cAttachedEntities174;
+	VerifyObjects();
+	if (m_nFieldB8 != 2 && pObject->m_nEntityType64 == 2) {
+		destination.x = m_nWorldX9C;
+		destination.y = m_nWorldYA0;
+		destination.z = position.z;
+		pObject->AddDestination(destination);
+		pObject->StartMoving();
+		return 1;
+	}
+	pObject->m_WorldPosition9C.x = position.x;
+	pObject->m_WorldPosition9C.y = position.y;
+	pObject->m_WorldPosition9C.z = m_nWorldZA4 + 0x8000;
+	return 1;
+}

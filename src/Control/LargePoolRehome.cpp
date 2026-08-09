@@ -1,24 +1,33 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
-extern "C" {
-__declspec(dllimport) void* __stdcall GlobalAlloc(unsigned long, unsigned long);
-__declspec(dllimport) void* __stdcall GlobalFree(void*);
-__declspec(dllimport) void* __stdcall GlobalLock(void*);
-__declspec(dllimport) int __stdcall GlobalUnlock(void*);
-__declspec(dllimport) int __stdcall OpenClipboard(void*);
-__declspec(dllimport) int __stdcall EmptyClipboard(void);
-__declspec(dllimport) void* __stdcall SetClipboardData(unsigned int, void*);
-__declspec(dllimport) int __stdcall CloseClipboard(void);
-__declspec(dllimport) int __stdcall MessageBoxA(void*, const char*, const char*, unsigned int);
-__declspec(dllimport) int __stdcall GetClientRect(void*, void*);
-__declspec(dllimport) void* __stdcall SelectObject(void*, void*);
-__declspec(dllimport) unsigned long __stdcall SetTextColor(void*, unsigned long);
-__declspec(dllimport) unsigned long __stdcall SetBkColor(void*, unsigned long);
-__declspec(dllimport) int __stdcall ExtTextOutA(
-	void*, int, int, unsigned int, const void*, const char*, unsigned int, const int*);
+extern void* AllocateVSMemBlock(unsigned int nBytes);
+
+extern "C"
+{
+	__declspec(dllimport) void* __stdcall GlobalAlloc(unsigned long, unsigned long);
+	__declspec(dllimport) void* __stdcall GlobalFree(void*);
+	__declspec(dllimport) void* __stdcall GlobalLock(void*);
+	__declspec(dllimport) int __stdcall GlobalUnlock(void*);
+	__declspec(dllimport) int __stdcall OpenClipboard(void*);
+	__declspec(dllimport) int __stdcall EmptyClipboard(void);
+	__declspec(dllimport) void* __stdcall SetClipboardData(unsigned int, void*);
+	__declspec(dllimport) int __stdcall CloseClipboard(void);
+	__declspec(dllimport) int __stdcall MessageBoxA(void*, const char*, const char*, unsigned int);
+	__declspec(dllimport) int __stdcall GetClientRect(void*, void*);
+	__declspec(dllimport) void* __stdcall SelectObject(void*, void*);
+	__declspec(dllimport) unsigned long __stdcall SetTextColor(void*, unsigned long);
+	__declspec(dllimport) unsigned long __stdcall SetBkColor(void*, unsigned long);
+	__declspec(dllimport) int __stdcall ExtTextOutA(void*,
+													int,
+													int,
+													unsigned int,
+													const void*,
+													const char*,
+													unsigned int,
+													const int*);
 }
 
 struct LargePoolRect
@@ -742,5 +751,67 @@ void __fastcall load_shpg_chunk_objects(void* pThis, int, unsigned char* pData, 
 			pData += 6;
 			--nRecords;
 		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00434D40
+void __fastcall load_level_screen_variant_state_wrapper_range(void* pObject, int, int nFirst, int nLast, int nMode)
+{
+	char* pThis;
+	void* pSelector;
+	void* pAllocator;
+	int nFrameCount;
+	int i;
+
+	pThis = (char*) pObject;
+	if (*(int*) (pThis + 0x94) != 0) {
+		*(int*) (pThis + 0x90) += nLast - nFirst;
+		return;
+	}
+	if (nFirst > nLast) {
+		return;
+	}
+	pAllocator = *(void**) (*(char**) (pThis + 0x70));
+	for (i = nFirst; i <= nLast; ++i) {
+		((void(__fastcall*)(void*, int, int)) 0x467490)(pObject, 0, i);
+		pSelector = 0;
+		switch (nMode) {
+		case 0:
+			pSelector = AllocateVSMemBlock(0x10);
+			if (pSelector) {
+				*(void**) pSelector = (void*) 0x496ce4;
+				*(int*) ((char*) pSelector + 4) = 1;
+				*(int*) ((char*) pSelector + 0x0c) = 0;
+			}
+			break;
+		case 1:
+			nFrameCount = ((int(__fastcall*)(void*, int, int)) 0x467540)(pObject, 0, i);
+			pSelector = AllocateVSMemBlock(0x1c);
+			if (pSelector) {
+				*(void**) pSelector = (void*) 0x496ce8;
+				*(int*) ((char*) pSelector + 4) = nFrameCount;
+				*(int*) ((char*) pSelector + 0x18) = 1;
+			}
+			break;
+		case 2:
+			pSelector = AllocateVSMemBlock(0x10);
+			if (pSelector) {
+				*(void**) pSelector = (void*) 0x496d04;
+				*(int*) ((char*) pSelector + 4) = 1;
+				*(int*) ((char*) pSelector + 0x0c) = 0;
+			}
+			break;
+		case 3:
+			nFrameCount = ((int(__fastcall*)(void*, int, int)) 0x467540)(pObject, 0, i);
+			pSelector = AllocateVSMemBlock(0x1c);
+			if (pSelector) {
+				*(void**) pSelector = (void*) 0x496d20;
+				*(int*) ((char*) pSelector + 4) = nFrameCount;
+				*(int*) ((char*) pSelector + 0x18) = 1;
+			}
+			break;
+		}
+		*(void**) (*(char**) (pThis + 0x74) + *(short*) (*(char**) (pThis + 0x28) + i * 2) * 4) = pSelector;
+		((void(__fastcall*)(void*, int)) pAllocator)(pThis + 0x70, 0);
 	}
 }

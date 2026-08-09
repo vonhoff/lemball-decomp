@@ -4,6 +4,8 @@
 #include "AI/AICoord.h"
 #include "AI/CMove3d.h"
 
+class CGameObject;
+
 struct ManagedEntitySlotOwnerView {
 	char m_abReserved00[0x6c];
 	unsigned short m_nSlotId6C;
@@ -20,6 +22,7 @@ public:
 	void MoveObjects(int nDeltaX, int nDeltaY, int nDeltaZ);
 	void Switch(void);
 	int IsOn(AICOORD& point);
+	int GetOn(CGameObject* pObject);
 	void VerifyObjects(void);
 	void StopObjectsMoving(void);
 	int IsAt(int x, int y, int* pHeight);
