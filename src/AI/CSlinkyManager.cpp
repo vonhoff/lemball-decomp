@@ -1,5 +1,9 @@
 #include "AI/CSlinkyManager.h"
 
+struct CSlinky {
+	void Set(int nSlinkX, int nSlinkY, int nSlinkZ, int nSlinkW);
+};
+
 // FUNCTION: LEMBALL 0x0040be20
 void CSlinkyManager::Process(void)
 {
@@ -15,9 +19,7 @@ void CSlinkyManager::Add(int nSlotId, int n2, int n3, int n4, int n5)
 {
 	if (m_nObjectCount0C < m_nCapacity08) {
 		((void(__fastcall*)(void*, unsigned short)) 0x402293)((void*) (m_pObjects04 + m_nObjectCount0C * 0x150), (unsigned short) nSlotId);
-		((void(__fastcall*)(void*, int, int, int, int)) 0x402892)(
-			(void*) (m_pObjects04 + m_nObjectCount0C * 0x150),
-			n2, n4, n3, n5);
+		((CSlinky*) (m_pObjects04 + m_nObjectCount0C * 0x150))->Set(n2, n4, n3, n5);
 		m_nObjectCount0C = m_nObjectCount0C + 1;
 	}
 }
