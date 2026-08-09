@@ -2,23 +2,14 @@
 #include "AI/CGlobalGameObject.h"
 #undef LEMBALL_CGLOBALGAMEOBJECT_SETMESSAGES
 
+#include "Platform/Windows/Mixed/Level/LVPKT.H"
 #include "Visos/Generic/Memory.h"
 
-struct GameEffStream {
-	void* m_pVtable00;
-	int m_nEventCode04;
-	int m_pvOwnedBuffer08;
-	int m_pvBufferEnd0c;
-	int m_cWriteSessions10;
-	int m_fOwnsBuffer14;
-	int m_cbSerializedLength18;
-	int m_pvWriteCursor1c;
-	int m_pvReadCursor20;
-	int m_fHasPayload24;
-	int m_fWritePending28;
-
-	int LoadEffStreamFromMemory(int nSourceBuffer);
-};
+#if defined(_MSC_VER) && (_MSC_VER < 1100)
+#include <new.h>
+#else
+#include <new>
+#endif
 
 struct ManagedEntityPacketStreamView {
 	void BindManagedEntityPacketTarget(void* pEntity);
@@ -39,56 +30,56 @@ void CGlobalGameObject::SetMessages(void)
 {
 	void* pPacket = AllocateVSMemBlock(0x34);
 	if (pPacket != 0) {
-		((void(__fastcall*)(void*, int, int)) 0x4018d4)(pPacket, 0, 0);
+		new (pPacket) ManagedEntityPacketBase(0);
 		*(void**) pPacket = (void*) 0x493fe8;
 	}
 	*(void**) 0x49d110 = pPacket;
 
-	pPacket = AllocateVSMemBlock(0x30);
+	pPacket = AllocateVSMemBlock(sizeof(ManagedEntityPacket23));
 	if (pPacket != 0) {
-		pPacket = ((void*(__fastcall*) (void*) ) 0x401cda)(pPacket);
+		pPacket = new (pPacket) ManagedEntityPacket23;
 	}
 	*(void**) 0x49d114 = pPacket;
 
-	pPacket = AllocateVSMemBlock(0x30);
+	pPacket = AllocateVSMemBlock(sizeof(ManagedEntityPacket2A));
 	if (pPacket != 0) {
-		pPacket = ((void*(__fastcall*) (void*) ) 0x403684)(pPacket);
+		pPacket = new (pPacket) ManagedEntityPacket2A;
 	}
 	*(void**) 0x49d118 = pPacket;
 
-	pPacket = AllocateVSMemBlock(0x30);
+	pPacket = AllocateVSMemBlock(sizeof(ManagedEntityPacket27));
 	if (pPacket != 0) {
-		pPacket = ((void*(__fastcall*) (void*) ) 0x40228e)(pPacket);
+		pPacket = new (pPacket) ManagedEntityPacket27;
 	}
 	*(void**) 0x49d11c = pPacket;
 
-	pPacket = AllocateVSMemBlock(0x30);
+	pPacket = AllocateVSMemBlock(sizeof(ManagedEntityPacket28));
 	if (pPacket != 0) {
-		pPacket = ((void*(__fastcall*) (void*) ) 0x402d6f)(pPacket);
+		pPacket = new (pPacket) ManagedEntityPacket28;
 	}
 	*(void**) 0x49d120 = pPacket;
 
-	pPacket = AllocateVSMemBlock(0x30);
+	pPacket = AllocateVSMemBlock(sizeof(ManagedEntityStateResetPacket));
 	if (pPacket != 0) {
-		pPacket = ((void*(__fastcall*) (void*) ) 0x401d6b)(pPacket);
+		pPacket = new (pPacket) ManagedEntityStateResetPacket;
 	}
 	*(void**) 0x49d124 = pPacket;
 
-	pPacket = AllocateVSMemBlock(0x30);
+	pPacket = AllocateVSMemBlock(sizeof(ManagedEntityPacket24));
 	if (pPacket != 0) {
-		pPacket = ((void*(__fastcall*) (void*) ) 0x401b45)(pPacket);
+		pPacket = new (pPacket) ManagedEntityPacket24;
 	}
 	*(void**) 0x49d128 = pPacket;
 
-	pPacket = AllocateVSMemBlock(0x30);
+	pPacket = AllocateVSMemBlock(sizeof(ManagedEntityPacket25));
 	if (pPacket != 0) {
-		pPacket = ((void*(__fastcall*) (void*) ) 0x402d4c)(pPacket);
+		pPacket = new (pPacket) ManagedEntityPacket25;
 	}
 	*(void**) 0x49d12c = pPacket;
 
-	pPacket = AllocateVSMemBlock(0x30);
+	pPacket = AllocateVSMemBlock(sizeof(ManagedEntityPacket26));
 	if (pPacket != 0) {
-		pPacket = ((void*(__fastcall*) (void*) ) 0x402a04)(pPacket);
+		pPacket = new (pPacket) ManagedEntityPacket26;
 	}
 	*(void**) 0x49d130 = pPacket;
 }
@@ -121,7 +112,7 @@ int CGlobalGameObject::Receive(unsigned short nMessage, CNetworkMessage* pMessag
 	}
 	pPacket->m_pManagedEntity2c = this;
 	if (pPacket->LoadEffStreamFromMemory(*(int*) ((char*) pMessage + 0x20)) != 0) {
-		*(int*) ((char*) pMessage + 0x20) = pPacket->m_pvReadCursor20;
+		*(int*) ((char*) pMessage + 0x20) = pPacket->m_pvReadCursor;
 	}
 	return 1;
 }
