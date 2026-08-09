@@ -183,20 +183,18 @@ int CPlayerLemming::AddObject(int nObjectType, int nObject)
 // FUNCTION: LEMBALL 0x00410250
 void CPlayerLemming::OnConveyor(int nOnConveyor, void* pIce, int nDetach)
 {
-	if (nOnConveyor == 0 && *(int*) ((char*) this + 0x188) != 0 && nDetach != 0) {
-		((void(__fastcall*)(void*, void*)) 0x402c16)(*(void**) ((char*) this + 0x18c), this);
+	if (nOnConveyor == 0 && m_fOnIce188 != 0 && nDetach != 0) {
+		((void(__fastcall*)(void*, void*)) 0x402c16)(m_pIce18C, this);
 	}
-	*(int*) ((char*) this + 0x188) = nOnConveyor;
-	*(void**) ((char*) this + 0x18c) = pIce;
+	m_fOnIce188 = nOnConveyor;
+	m_pIce18C = pIce;
 	if (nOnConveyor != 0) {
-		int nGroupLemmingCount = ((int(__fastcall*)(void*))(*(void***) *(void**) ((char*) this + 0x224) + 0x108 / 4))(
-			*(void**) ((char*) this + 0x224));
+		int nGroupLemmingCount = ((int(__fastcall*)(void*))(*(void***) m_pGroup224 + 0x108 / 4))(m_pGroup224);
 		if (nGroupLemmingCount > 1) {
 			(*(void (**)(int, void*))(*(void***) *(void**) ((char*) g_pActiveManagedEntityOwner + 0x15c) +
-									  0x34 / 4))(1, (char*) this + 0x6a);
+									  0x34 / 4))(1, &m_nRegistryIndex6A);
 		}
-		(*(void (**)(void*))(*(void***) *(void**) ((char*) this + 0x224) + 0x150 / 4))(
-			*(void**) ((char*) this + 0x224));
+		(*(void (**)(void*))(*(void***) m_pGroup224 + 0x150 / 4))(m_pGroup224);
 	}
 }
 // FUNCTION: LEMBALL 0x00410220
@@ -249,12 +247,12 @@ int CPlayerLemming::FacingCursor(void)
 // FUNCTION: LEMBALL 0x0040f220
 void CPlayerLemming::TurnToFaceTarget(void)
 {
-	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(*(int*) ((char*) this + 0x9c) >> 12,
-															  *(int*) ((char*) this + 0xa0) >> 12,
-															  *(int*) ((char*) this + 0x1b4) >> 12,
-															  *(int*) ((char*) this + 0x1b8) >> 12);
-	if (nOct != (int) *(short*) ((char*) this + 0xb4)) {
-		if (*(int*) ((char*) 0x49d020 + (nOct - (int) *(short*) ((char*) this + 0xb4) & 7) * 4) < 0) {
+	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(m_WorldPosition9C.x >> 12,
+															  m_WorldPosition9C.y >> 12,
+															  m_nTargetWorldX1B4 >> 12,
+															  m_nTargetWorldY1B8 >> 12);
+	if (nOct != (int) m_nHeadingOctantB4) {
+		if (*(int*) ((char*) 0x49d020 + (nOct - (int) m_nHeadingOctantB4 & 7) * 4) < 0) {
 			((void(__fastcall*)(void*)) 0x4023e7)(this);
 		}
 		else {
@@ -262,8 +260,7 @@ void CPlayerLemming::TurnToFaceTarget(void)
 		}
 		(*(void (**)(void*, int))(*(void***) this + 0x84 / 4))(this, 0xfa0);
 	}
-	*(int*) ((char*) this + 0xcc) =
-		g_nLevelFrameClockTick + *(int*) ((char*) 0x49d0b0 + *(int*) ((char*) this + 0x64) * 4) / 0x32;
+	m_nNextUpdateTickCC = g_nLevelFrameClockTick + *(int*) ((char*) 0x49d0b0 + m_nEntityType64 * 4) / 0x32;
 }
 // FUNCTION: LEMBALL 0x0040f160
 void CPlayerLemming::TurnToFaceCursor(void)
