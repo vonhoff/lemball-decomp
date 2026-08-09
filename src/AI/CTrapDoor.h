@@ -16,6 +16,7 @@ public:
 	int m_nTransitionDuration14C;
 
 	void GetViewData(CViewData& ViewData);
+	int Process(void);
 };
 
 typedef char CTrapDoorSizeCheck[(sizeof(CTrapDoor) == 0x150) ? 1 : -1];

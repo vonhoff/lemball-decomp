@@ -5,6 +5,10 @@
 
 // NOTE: 0x00476BF0 unmatchable: natural gated clipped decoder measured 14.17%.
 // NOTE: 0x00476EE0 unmatchable: revised mirrored clipped decoder measured 24.31%.
+// NOTE: 0x00477740 unmatchable: natural clipped palette decoder measured 6.76%.
+// NOTE: 0x004779D0 unmatchable: natural clipped palette mask writer measured 20.34%.
+// NOTE: 0x00477C60 unmatchable: natural clipped palette gated decoder measured 13.70%.
+// NOTE: 0x00477F50 unmatchable: natural clipped mirrored palette decoder measured 17.85%.
 
 // FUNCTION: LEMBALL 0x004766F0
 void __fastcall decode_zrle_rows_clipped(
