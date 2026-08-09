@@ -17,6 +17,7 @@ extern void EmitLevelScreenVariantEntry(void* pObject,
 extern void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 extern void LEMBALL_FASTCALL SetLevelScreenActionPanelPauseActive(void* pObject, int nUnused, int fPaused);
 extern int LEMBALL_FASTCALL IsPointInsideLevelScreenActionPanel(void* pObject, int nUnused, short* pPoint);
+extern void* LEMBALL_FASTCALL ConstructLevelScreenActionPanelResources(void* pObject, int nUnused, void* pLevelScreen);
 extern void* g_pLevelDemoPlaybackController;
 
 class CAnimsManagerView {
@@ -1835,7 +1836,7 @@ void C2D::OnLoaded(void)
 	}
 	pPanel = AllocateVSMemBlock(0x58);
 	if (pPanel) {
-		pPanel = ((void*(__fastcall*) (void*, int, void*) ) 0x4016f4)(pPanel, 0, this);
+		pPanel = ConstructLevelScreenActionPanelResources(pPanel, 0, this);
 	}
 	*(void**) (pThis + 0x97c) = pPanel;
 	if (nOldScale == nScale) {
