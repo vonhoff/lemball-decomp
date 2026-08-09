@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 extern void* AllocateVSMemBlock(unsigned int nBytes);
+extern void __fastcall expand_text_owner_bounds_for_extent(void* pThis, int nEdxSlop, short* pExtent);
 
 extern "C"
 {
@@ -274,27 +274,30 @@ void __fastcall layout_resource_sprite_text_owner(void* pObject, int, char* pPri
 	short aSecondaryPosition[2];
 	void* pChild;
 
-	pThis = (char*)pObject;
-	*(char**)(pThis + 0x11c) = pSecondaryText;
-	*(char**)(pThis + 0x118) = pPrimaryText;
-	((void(__fastcall*)(void*, int, short*, char*, int))0x0045DB30)(
-		*(void**)(pThis + 0x134), 0, aPrimaryExtent, pPrimaryText, 0x20);
-	((void(__fastcall*)(void*, int, short*))0x00469120)(pThis, 0, aPrimaryExtent);
+	pThis = (char*) pObject;
+	*(char**) (pThis + 0x11c) = pSecondaryText;
+	*(char**) (pThis + 0x118) = pPrimaryText;
+	((void(__fastcall*)(void*, int, short*, char*, int)) 0x0045DB30)(*(void**) (pThis + 0x134),
+																	 0,
+																	 aPrimaryExtent,
+																	 pPrimaryText,
+																	 0x20);
+	expand_text_owner_bounds_for_extent(pThis, 0, aPrimaryExtent);
 
 	aSecondaryExtent[0] = aPrimaryExtent[0];
 	aSecondaryExtent[1] = aPrimaryExtent[1];
-	if (pSecondaryText != 0)
-	{
-		((void(__fastcall*)(void*, int, short*, char*, int))0x0045DB30)(
-			*(void**)(pThis + 0x134), 0, aSecondaryExtent, pSecondaryText, 0x20);
-		((void(__fastcall*)(void*, int, short*))0x00469120)(pThis, 0, aSecondaryExtent);
+	if (pSecondaryText != 0) {
+		((void(__fastcall*)(void*, int, short*, char*, int)) 0x0045DB30)(*(void**) (pThis + 0x134),
+																		 0,
+																		 aSecondaryExtent,
+																		 pSecondaryText,
+																		 0x20);
+		expand_text_owner_bounds_for_extent(pThis, 0, aSecondaryExtent);
 	}
 
-	((void(__fastcall*)(void*, int, short*, short*))0x00469180)(
-		pThis, 0, (short*)(pThis + 0x12c), aPrimaryPosition);
-	if (pSecondaryText == 0)
-	{
-		*(char**)(pThis + 0x11c) = pPrimaryText;
+	((void(__fastcall*)(void*, int, short*, short*)) 0x00469180)(pThis, 0, (short*) (pThis + 0x12c), aPrimaryPosition);
+	if (pSecondaryText == 0) {
+		*(char**) (pThis + 0x11c) = pPrimaryText;
 		*(short*)(pThis + 0x128) = *(short*)(pThis + 0x12c);
 		*(short*)(pThis + 0x12a) = *(short*)(pThis + 0x12e);
 	}
