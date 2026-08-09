@@ -87,7 +87,7 @@ void CRocketManager::Add(unsigned short nSlotId, int nWorldX, int nWorldY, int n
 		vec[0] = nWorldX << 12;
 		vec[1] = nWorldY << 12;
 		vec[2] = nWorldZ << 12;
-		((void(__cdecl*)(void*, unsigned short, void*)) 0x402707)(m_pObjects38 + m_nObjectCount34 * 0x144, nSlotId, vec);
+		((CRocket*) (m_pObjects38 + m_nObjectCount34 * 0x144))->Set(nSlotId, *(AICOORD*) vec);
 		m_nObjectCount34 = m_nObjectCount34 + 1;
 	}
 }
