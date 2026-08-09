@@ -8,6 +8,10 @@ extern int g_nLevelFrameClockTimeMs;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void* g_pLevelTileGrid;
 
+struct CGround {
+	short GetZThunk(int nLocalX, int nLocalY);
+};
+
 // FUNCTION: LEMBALL 0x0041a5c0
 void CBullet::Set(unsigned short nCaller, int nBulletType, int nOwner, int nDirection,
 	AICOORD source, AICOORD target)
@@ -35,8 +39,7 @@ void CBullet::Set(unsigned short nCaller, int nBulletType, int nOwner, int nDire
 	else {
 		void* pTile = (char*) *(void**) ((char*) g_pLevelTileGrid + 0x0c) +
 			(nTileY * *(int*) ((char*) g_pLevelTileGrid + 0x10) + nTileX) * 12;
-		nHeight = ((unsigned short(__fastcall*)(void*, int, int)) 0x4029a5)(
-			pTile, target.x >> 12 & 0xf, target.y >> 12 & 0xf);
+		nHeight = ((CGround*) pTile)->GetZThunk(target.x >> 12 & 0xf, target.y >> 12 & 0xf);
 	}
 	m_sCaller170 = nCaller;
 	m_nDestZB0 = (nHeight + 12) << 12;
