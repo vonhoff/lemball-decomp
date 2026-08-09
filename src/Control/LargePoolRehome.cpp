@@ -815,3 +815,91 @@ void __fastcall load_level_screen_variant_state_wrapper_range(void* pObject, int
 		((void(__fastcall*)(void*, int)) pAllocator)(pThis + 0x70, 0);
 	}
 }
+
+// FUNCTION: LEMBALL 0x0043ED20
+void __fastcall keep_level_screen_follow_target_in_view(char* pThis)
+{
+	int aPosition[3];
+	int nExtra;
+	int nTileX;
+	int nTileY;
+	int nHeight;
+	int nMode;
+	int nMarginX;
+	int nMarginY;
+	int nViewX;
+	int nViewY;
+	int nOldX;
+	int nOldY;
+	int nDx;
+	int nDy;
+	int fChanged;
+	char* pGrid;
+	aPosition[0] = aPosition[1] = aPosition[2] = 0xaa55aa55;
+	fChanged = 0;
+	if (*(int*) (pThis + 0xa48) == 1 && *(unsigned short*) (pThis + 0xa4e) != 0) {
+		((void(__fastcall*)(void*, int, unsigned int, int*)) 0x403148)(
+			*(void**) (pThis + 0x96c),
+			0,
+			*(unsigned short*) (pThis + 0xa4e + *(unsigned short*) (pThis + 0xa4e) * 2),
+			aPosition);
+	}
+	else if (!((int(__fastcall*)(void*, int, int*, int*)) 0x4028d8)(*(void**) (pThis + 0x96c), 0, aPosition, &nExtra)) {
+		return;
+	}
+	pGrid = *(char**) (pThis + 0x914);
+	nTileX = aPosition[0] >> 12;
+	nTileY = aPosition[1] >> 12;
+	if (nTileX < 0 || nTileY < 0 || nTileX >> 4 >= *(int*) (pGrid + 0x10) || nTileY >> 4 >= *(int*) (pGrid + 0x14)) {
+		nHeight = 0;
+	}
+	else {
+		nHeight = ((unsigned short(__fastcall*)(void*, int, int, int)) 0x4029a5)(
+			*(char**) (pGrid + 0x0c) + ((nTileY >> 4) * *(int*) (pGrid + 0x10) + (nTileX >> 4)) * 12,
+			0,
+			nTileX & 0x0f,
+			nTileY & 0x0f);
+	}
+	aPosition[2] = nHeight << 12;
+	nMode = *(int*) (*(char**) (pThis + 0x96c) + 0x108);
+	if (nMode != 0 && nMode != 2) {
+		return;
+	}
+	nMarginX = *(short*) (pThis + 0x958) * 2 / 5;
+	nMarginY = *(short*) (pThis + 0x95a) * 2 / 5;
+	*(int*) (pThis + 0x944) = aPosition[0];
+	*(int*) (pThis + 0x948) = aPosition[1];
+	*(int*) (pThis + 0x94c) = aPosition[2];
+	nTileX = aPosition[0] >> 12;
+	nTileY = aPosition[1] >> 12;
+	nHeight = aPosition[2] >> 12;
+	((void(__fastcall*)(void*, int, int*, int*)) 0x40199c)(pGrid, 0, &nTileX, &nTileY);
+	nViewX = nTileX;
+	nViewY = nTileY - nHeight;
+	nOldX = *(int*) (pThis + 0x918);
+	nOldY = *(int*) (pThis + 0x91c);
+	nDx = nViewX - nOldX;
+	nDy = nViewY - nOldY;
+	if (nDx < nMarginX) {
+		fChanged = 1;
+		*(int*) (pThis + 0x918) = nViewX - nMarginX;
+	}
+	if (nDy < nMarginY) {
+		fChanged = 1;
+		*(int*) (pThis + 0x91c) = nViewY - nMarginY;
+	}
+	if (*(short*) (pThis + 0x958) - nMarginX < nDx) {
+		fChanged = 1;
+		*(int*) (pThis + 0x918) = nViewX - *(short*) (pThis + 0x958) + nMarginX;
+	}
+	if (*(short*) (pThis + 0x95a) - nMarginY < nDy) {
+		fChanged = 1;
+		*(int*) (pThis + 0x91c) = nViewY - *(short*) (pThis + 0x95a) + nMarginY;
+	}
+	if (fChanged) {
+		((void(__fastcall*)(void*, int)) 0x4019ec)(pThis, 0);
+		*(int*) (pThis + 0x2218) = 1;
+		*(short*) (pThis + 0x221c) = (short) nOldX - *(short*) (pThis + 0x918);
+		*(short*) (pThis + 0x221e) = (short) nOldY - *(short*) (pThis + 0x91c);
+	}
+}

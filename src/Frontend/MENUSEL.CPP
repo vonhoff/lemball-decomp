@@ -1,14 +1,14 @@
-#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Control/CGame.h"
 #include "Frontend/GameMenuActionFramePointSink.h"
-#include "Visos/Generic/Memory.h"
-#include "Visos/Generic/CVSRect.h"
+#include "Frontend/MENUSEL.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGEOM.H"
-#include "Frontend/MENUSEL.H"
-#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
 #include "Platform/Windows/Mixed/Resource/VARMGR.H"
+#include "Visos/Generic/CVSRect.h"
+#include "Visos/Generic/Memory.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -371,9 +371,7 @@ int LEMBALL_FASTCALL GetMenuSelectorStartTimeThunk(GameProgressiveVariantFrameSe
 }
 
 int LEMBALL_FASTCALL GetTimedAnimFrameNo(GameProgressiveVariantFrameSelector* pSelector);
-void LEMBALL_FASTCALL StartPlayThruAnim(GameProgressiveVariantFrameSelector* pSelector,
-														 int,
-														 int dwDuration);
+void LEMBALL_FASTCALL StartPlayThruAnim(GameProgressiveVariantFrameSelector* pSelector, int, int dwDuration);
 int LEMBALL_FASTCALL GetPlayThruAnimFrameNo(GameProgressiveVariantFrameSelector* pSelector);
 
 static void LEMBALL_FASTCALL SetMenuSelectorDurationFieldThunk(GameProgressiveVariantFrameSelector* pSelector,
@@ -432,8 +430,6 @@ static void* g_MenuSelectorVariantRenderManagerVtable[1] = {(void*) VariantResou
 static void* g_MenuSelectorManagerVtable[3] = {(void*) InitializeNonZrleVariantRenderEntry,
 											   (void*) DeleteMenuSelectorManagerThunk,
 											   (void*) HandleMenuSelectorEventThunk};
-
-
 
 class GameResourceGeometryChildView {
 public:
@@ -949,8 +945,7 @@ inline static GameProgressiveVariantFrameSelector* AllocateFrameSelector(void* p
 	pSelector = (GameProgressiveVariantFrameSelector*) AllocateVSMemBlock(0x1c);
 	if (pSelector != 0) {
 		pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
-		pSelector->m_cFrames =
-			((CAnimsManager*) pVariantManager)->GetnAnims(nResourceId);
+		pSelector->m_cFrames = ((CAnimsManager*) pVariantManager)->GetnAnims(nResourceId);
 		pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
 		pSelector->m_nDirection = 1;
 		pSelector->m_pVtable = g_MenuSelectorProgressiveFrameSelectorVtable;
@@ -1657,8 +1652,7 @@ GameMenuSelectorManager::GameMenuSelectorManager(void* pRenderOwner, void* pRend
 	pManager = this;
 	InitializeRenderQueueNodeBase(pManager);
 	pVariantManager = (char*) pManager + 0x10;
-	((CAnimsManager*) pVariantManager)
-		->Construct((int) (unsigned long) pRenderContext, 0x2b6, 10, 5, 0, 0);
+	((CAnimsManager*) pVariantManager)->Construct((int) (unsigned long) pRenderContext, 0x2b6, 10, 5, 0, 0);
 	pLocalRectEntry = pManager->m_abLocalRectEntry200;
 	for (iLocalRect = 0; iLocalRect >= 0; --iLocalRect) {
 		InitializeHelperLocalRectUpdateEntry(pLocalRectEntry);
@@ -2007,10 +2001,9 @@ void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(GameMenuSelectorManager* p
 		pManager->m_fCompactLayout274 != 1 ? g_anMenuSelectorActionOffsetsMode0 : g_anMenuSelectorActionOffsetsMode1;
 	if (pManager->m_nActionStateA4 == 0) {
 		pManager->m_nCurrentFrameCallbackFrame264 =
-			pManager->m_nCurrentSide94 == 0 ? 0
-											: ((CAnimsManager*) pManager->m_abVariantRenderManager10)
-													  ->GetnAnims(g_nMenuSelectorResourceId6) -
-												  1;
+			pManager->m_nCurrentSide94 == 0
+				? 0
+				: ((CAnimsManager*) pManager->m_abVariantRenderManager10)->GetnAnims(g_nMenuSelectorResourceId6) - 1;
 		Point[0] = (short) (pManager->m_xCenteredAction88 + pOffsets[0]);
 		Point[1] = (short) (pManager->m_nCurrentPosition8C + pOffsets[1]);
 		nOwner = *(int*) (pManager->m_abVariantRenderManager10 + 0x1c);
@@ -2113,8 +2106,7 @@ void GameMenuSelectorManager::InitializeCurrentState(int iMetadata)
 	short cxOwner;
 	int nSide;
 
-	pExtent = ((CAnimsManager*) ((char*) this + 0x10))
-				  ->GetAnimSize(Extent, g_nMenuSelectorResourceId6, 0);
+	pExtent = ((CAnimsManager*) ((char*) this + 0x10))->GetAnimSize(Extent, g_nMenuSelectorResourceId6, 0);
 	cxOwner = *(short*) ((char*) m_pRenderOwner214 + 8);
 	m_xCenteredAction88 = cxOwner / 2 - pExtent[0] / 2;
 	m_nCurrentPosition8C = m_aMetadataE0[iMetadata].m_nPosition;
@@ -2991,9 +2983,7 @@ int LEMBALL_FASTCALL GetTimedAnimFrameNo(GameProgressiveVariantFrameSelector* pS
 	return (int) iFrame;
 }
 // FUNCTION: LEMBALL 0x004671e0
-void LEMBALL_FASTCALL StartPlayThruAnim(GameProgressiveVariantFrameSelector* pSelector,
-														 int,
-														 int dwDuration)
+void LEMBALL_FASTCALL StartPlayThruAnim(GameProgressiveVariantFrameSelector* pSelector, int, int dwDuration)
 {
 	pSelector->m_dwDuration = dwDuration;
 	if (pSelector->m_dwFixedTime == -1) {
@@ -3031,10 +3021,8 @@ int LEMBALL_FASTCALL GetPlayThruAnimFrameNo(GameProgressiveVariantFrameSelector*
 	return (int) iFrame;
 }
 
-
 // FUNCTION: LEMBALL 0x004675d0
-void LEMBALL_FASTCALL compute_max_variant_render_frame_extent(void* pView, int nUnused,
-                                                               short* pOut, int nFrame)
+void LEMBALL_FASTCALL compute_max_variant_render_frame_extent(void* pView, int nUnused, short* pOut, int nFrame)
 {
 	int iVariant;
 	int cVariants;
@@ -3045,10 +3033,10 @@ void LEMBALL_FASTCALL compute_max_variant_render_frame_extent(void* pView, int n
 	(void) nUnused;
 	sMaxW = 0;
 	sMaxH = 0;
-	cVariants = ((int (__fastcall*)(void*, int)) 0x467540)(pView, nFrame);
+	cVariants = ((int(__fastcall*)(void*, int)) 0x467540)(pView, nFrame);
 	iVariant = 0;
 	while (cVariants > iVariant) {
-		((void (__fastcall*)(void*, int, short*, int, int)) 0x467570)(pView, 0, sExtent, iVariant, nFrame);
+		((void(__fastcall*)(void*, int, short*, int, int)) 0x467570)(pView, 0, sExtent, iVariant, nFrame);
 		if (sExtent[0] > sMaxW) {
 			sMaxW = sExtent[0];
 		}
@@ -3056,7 +3044,7 @@ void LEMBALL_FASTCALL compute_max_variant_render_frame_extent(void* pView, int n
 			sMaxH = sExtent[1];
 		}
 		iVariant++;
-		cVariants = ((int (__fastcall*)(void*, int)) 0x467540)(pView, nFrame);
+		cVariants = ((int(__fastcall*)(void*, int)) 0x467540)(pView, nFrame);
 	}
 	pOut[0] = sMaxW;
 	pOut[1] = sMaxH;
@@ -3530,8 +3518,7 @@ void LEMBALL_FASTCALL InitializeResourceSpriteGeometryFrames(void* pObject)
 	*(int*) ((char*) pObject + 0x120) = 0;
 	*(int*) ((char*) pObject + 0x148) = 0;
 	*(int*) ((char*) pObject + 0x144) = 0;
-	*(void**) ((char*) pObject + 0x134) =
-		LoadListResource(*(int*) ((char*) pObject + 0x130));
+	*(void**) ((char*) pObject + 0x134) = LoadListResource(*(int*) ((char*) pObject + 0x130));
 	*(int*) ((char*) pObject + 0x13c) = 0;
 }
 
@@ -3546,7 +3533,7 @@ void LEMBALL_FASTCALL DestroyResourceSpriteGeometryChild(void* pChildOwner)
 	*(void***) pChildOwner = (void**) 0x4999f8;
 	*(void***) pObject = (void**) 0x499a18;
 	pChild = *(void**) ((char*) pChildOwner + 0xa4);
-	((void (LEMBALL_FASTCALL *)(void*)) 0x45d180)(pChild);
+	((void(LEMBALL_FASTCALL*)(void*)) 0x45d180)(pChild);
 	pChild = *(void**) ((char*) pChildOwner + 0x94);
 	if (pChild != 0) {
 		((DeleteProc) (*(void***) pChild)[0])(pChild, 0, 3);
@@ -3751,4 +3738,74 @@ void noop_menu_selector_animation_callback(void)
 // FUNCTION: LEMBALL 0x0044fca0
 void noop_queued_variant_child_refresh_callback(void)
 {
+}
+
+// FUNCTION: LEMBALL 0x00443DB0
+void LEMBALL_FASTCALL ApplyLevelScreenPauseDialogLayout(void* pObject, int, short* pRect)
+{
+	char* pThis;
+	short* pItems;
+	short nY;
+	short nX;
+	short aPoint[2];
+	short aOuter[4];
+	short aInset[2];
+	int i;
+	pThis = (char*) pObject;
+	pItems = *(short**) (pThis + 0x1f8);
+	nY = (short) *(int*) (pThis + 0x12c);
+	if (*(int*) (pThis + 0x104) == 3) {
+		nX = (short) ((pRect[0] - pItems[0]) / 2);
+		pItems[2] = nX;
+		pItems[3] = nY;
+		nY += pItems[1] + *(short*) (pThis + 0x14e);
+		pItems[6] = nX;
+		pItems[7] = nY;
+		pItems[10] = nX + pItems[0] - pItems[8];
+		pItems[11] = nY;
+	}
+	else {
+		for (i = 0; i < *(int*) (pThis + 0x120); ++i) {
+			short* pItem = pItems + i * 4;
+			pItem[2] = (short) ((pRect[0] - pItem[0]) / 2);
+			pItem[3] = nY;
+			nY += pItem[1] + *(short*) (pThis + 0x14e);
+		}
+	}
+	*(short*) (pThis + 0xd4) = pRect[0];
+	*(short*) (pThis + 0xd6) = pRect[1];
+	*(short*) (pThis + 0xd8) = pRect[2];
+	*(short*) (pThis + 0xda) = pRect[3];
+	((void(LEMBALL_FASTCALL*)(void*, int, int)) 0x46a530)(pThis + 0xa4, 0, 1);
+	*(int*) (pThis + 0xcc) = 1;
+	if (*(int*) (pThis + 4) == 1) {
+		((void(LEMBALL_FASTCALL*)(void*, int, short*)) 0x465df0)(pObject, 0, pRect);
+	}
+	else {
+		*(int*) (pThis + 0x50) = *(int*) (pThis + 0x134) * 2 + 0x3ed;
+		((void(LEMBALL_FASTCALL*)(void*, int, short*, void*, const char*))(
+			*(void***) pObject)[1])(pObject, 0, pRect, *(void**) (pThis + 0x114), (const char*) 0x49f108);
+		((void(LEMBALL_FASTCALL*)(void*, int, void*)) 0x46a9a0)(*(void**) (*(char**) (pThis + 0x114) + 0x1c),
+																0,
+																pThis + 0xa4);
+	}
+	((void(LEMBALL_FASTCALL*)(short*, int, short*)) 0x402248)(aPoint, 0, pRect);
+	*(short*) (pThis + 0x150) = 4;
+	*(short*) (pThis + 0x152) = 4;
+	if (*(int*) (pThis + 0x10c) == 0) {
+		*(short*) (pThis + 0x150) = 8;
+		*(short*) (pThis + 0x152) = 8;
+	}
+	aOuter[0] = aPoint[0];
+	aOuter[1] = aPoint[1];
+	aOuter[2] = 0;
+	aOuter[3] = 0;
+	aInset[0] = *(short*) (pThis + 0x150);
+	aInset[1] = *(short*) (pThis + 0x152);
+	((void(LEMBALL_FASTCALL*)(short*, int, short*)) 0x402996)(aOuter + 2, 0, aInset);
+	aInset[0] *= 2;
+	aInset[1] *= 2;
+	((void(LEMBALL_FASTCALL*)(short*, int, short*)) 0x403837)(aOuter, 0, aInset);
+	((void(LEMBALL_FASTCALL*)(void*, int, short*)) 0x4012d0)(pThis + 0x13c, 0, aOuter);
+	*(int*) (pThis + 0x144) = 0x0c;
 }
