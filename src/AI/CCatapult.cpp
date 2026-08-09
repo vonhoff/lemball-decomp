@@ -4,6 +4,10 @@ extern int g_nLevelFrameClockTick;
 extern void* g_pLevelTileGrid;
 extern void* g_pSessionRandomState;
 
+struct CGround {
+	short GetZThunk(int nLocalX, int nLocalY);
+};
+
 class CCatapult {
 public:
 	int Process(void);
@@ -36,8 +40,7 @@ int CCatapult::Process(void)
 		nTileX < *(int*) (pGrid + 0x10) && nTileY < *(int*) (pGrid + 0x14)) {
 		void* pTile = (void*) (*(int*) (pGrid + 0x0c) +
 			(nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0x0c);
-		nHeight = ((unsigned short(__fastcall*)(void*, int, int, int)) 0x4029a5)(
-			pTile, 0, nPixelX & 0x0f, nPixelY & 0x0f);
+		nHeight = ((CGround*) pTile)->GetZThunk(nPixelX & 0x0f, nPixelY & 0x0f);
 	}
 	int nGroundZ = (unsigned int) nHeight << 12;
 	pThis[0x29] = nGroundZ;
