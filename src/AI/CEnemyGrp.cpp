@@ -7,6 +7,9 @@ extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
 
+struct PlasChildStateEntityView;
+extern void __cdecl DispatchPlasChildStateTableVariant3(void* pContext, PlasChildStateEntityView* pEntity);
+
 struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
 };
@@ -68,9 +71,10 @@ int CEnemy::Process(void)
 			ProcessAction(m_nAction2Kind148, m_nAction2Rules144, &m_pDesc14C);
 			break;
 		}
-		((void(__cdecl*)(void*, void*)) 0x4032ba)(g_pActiveManagedEntityOwner, this);
-		((void(__cdecl*)(AICOORD*, void*, unsigned short)) 0x40341d)(
-			(AICOORD*) ((char*) this + 0x9c), this, m_nRegistryId68);
+		DispatchPlasChildStateTableVariant3(g_pActiveManagedEntityOwner, (PlasChildStateEntityView*) this);
+		((void(__cdecl*)(AICOORD*, void*, unsigned short)) 0x40341d)((AICOORD*) ((char*) this + 0x9c),
+																	 this,
+																	 m_nRegistryId68);
 	}
 	return 0;
 }
