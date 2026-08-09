@@ -62,6 +62,7 @@ public:
 	void DrawSheep(CViewData& ViewData, int nUnused);
 	void DrawSwitch(CViewData& ViewData);
 	void DrawDemo(void);
+	int ProcessMsg(short* pMessage);
 	void DrawTime(void);
 	void DrawScore(void);
 	void NewPauseWindow(int nMessage);

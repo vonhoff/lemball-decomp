@@ -13,7 +13,21 @@ __declspec(dllimport) int __stdcall EmptyClipboard(void);
 __declspec(dllimport) void* __stdcall SetClipboardData(unsigned int, void*);
 __declspec(dllimport) int __stdcall CloseClipboard(void);
 __declspec(dllimport) int __stdcall MessageBoxA(void*, const char*, const char*, unsigned int);
+__declspec(dllimport) int __stdcall GetClientRect(void*, void*);
+__declspec(dllimport) void* __stdcall SelectObject(void*, void*);
+__declspec(dllimport) unsigned long __stdcall SetTextColor(void*, unsigned long);
+__declspec(dllimport) unsigned long __stdcall SetBkColor(void*, unsigned long);
+__declspec(dllimport) int __stdcall ExtTextOutA(
+	void*, int, int, unsigned int, const void*, const char*, unsigned int, const int*);
 }
+
+struct LargePoolRect
+{
+	long left;
+	long top;
+	long right;
+	long bottom;
+};
 
 struct LargePoolSixDwords
 {
@@ -539,4 +553,70 @@ void __fastcall copy_selected_text_to_clipboard(int* pWindow)
 	pWindow[0x15] = -1;
 	pWindow[0x14] = -1;
 	((void(__fastcall*)(int*))(*(void***)pWindow)[1])(pWindow);
+}
+
+// NOTE: 0x004750C0 unmatchable: natural clipped line rasterizer measured 17.81%.
+// NOTE: 0x00475290 unmatchable: natural circle-outline command structure measured 8.40%.
+
+// FUNCTION: LEMBALL 0x00474130
+void __fastcall paint_debug_text_window_lines(void* pObject, int, void* hdc, char* pPaint)
+{
+	char* pThis;
+	LargePoolRect ClientRect;
+	LargePoolRect LineRect;
+	int nVisible;
+	int nFirst;
+	int nLine;
+	int nOffset;
+	int* pRecord;
+	unsigned long nTextColor;
+	unsigned long nBackgroundColor;
+	const char* pText;
+
+	pThis = (char*)pObject;
+	((void(__fastcall*)(void*))(*(void***)pThis)[0])(pThis);
+	if (pPaint == 0)
+		GetClientRect(*(void**)(pThis + 0x1c), &ClientRect);
+	else
+	{
+		ClientRect.left = *(long*)(pPaint + 8);
+		ClientRect.top = *(long*)(pPaint + 0x0c);
+		ClientRect.right = *(long*)(pPaint + 0x10);
+		ClientRect.bottom = *(long*)(pPaint + 0x14);
+	}
+	SelectObject(hdc, *(void**)(pThis + 0x20));
+	nVisible = (ClientRect.bottom - ClientRect.top - 1 + *(int*)(pThis + 0x3c)) /
+		*(int*)(pThis + 0x3c);
+	nFirst = *(int*)(pThis + 0x38) + ClientRect.top / *(int*)(pThis + 0x3c);
+	nLine = nFirst;
+	nOffset = nFirst * 0x0c;
+	while (nLine < nFirst + nVisible)
+	{
+		nTextColor = 0;
+		nBackgroundColor = 0x00ffffff;
+		if (nLine < *(int*)(pThis + 0x2c))
+		{
+			pRecord = (int*)(nOffset + *(int*)(*(int*)(pThis + 0x24) + 4));
+			pText = (const char*)pRecord[1];
+			nTextColor = pRecord[0];
+			if (pRecord[2] != 0)
+			{
+				nBackgroundColor = 0;
+				nTextColor = 0x00ffffff;
+			}
+		}
+		else
+			pText = (const char*)0x004A2C98;
+		LineRect.top = (nLine - *(int*)(pThis + 0x38)) * *(int*)(pThis + 0x3c);
+		LineRect.left = 0;
+		LineRect.right = *(int*)(pThis + 0x40);
+		LineRect.bottom = LineRect.top + *(int*)(pThis + 0x3c);
+		SetTextColor(hdc, nTextColor);
+		SetBkColor(hdc, nBackgroundColor);
+		ExtTextOutA(hdc, LineRect.left, LineRect.top, 2, &LineRect,
+			pText, strlen(pText), 0);
+		++nLine;
+		nOffset += 0x0c;
+	}
+	((void(__fastcall*)(void*))(*(void***)pThis)[1])(pThis);
 }

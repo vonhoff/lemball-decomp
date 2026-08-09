@@ -6,6 +6,7 @@
 #include <string.h>
 
 extern void* g_pVariantResourceEntryManager;
+extern void* g_pLevelDemoPlaybackController;
 extern int g_GAME_ManagedEntityRegistryTable[1000];
 
 struct LevelScreenInputEvent {
@@ -62,6 +63,55 @@ struct VariantResourceEntryManagerView {
 	unsigned char m_abReserved00[0x10];
 	int m_nSelectionMode10;
 };
+
+// FUNCTION: LEMBALL 0x00437B60
+int C2D::ProcessMsg(short* pMessage)
+{
+	char* pThis;
+	void* pOwner;
+	int nCommand;
+
+	pThis = (char*) this;
+	if ((g_pLevelDemoPlaybackController == 0 ||
+		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) &&
+		((int(__fastcall*)(void*)) (*(void***) *(void**) (pThis + 0x974))[0x60 / 4])(
+			*(void**) (pThis + 0x974)) == 0) {
+		return 0;
+	}
+	if (*(int*) (pThis + 0xa78) != 0) {
+		return 0;
+	}
+	if (*pMessage != 4 && *pMessage != 0x0c) {
+		++*(int*) (pThis + 0x0c);
+		return 0;
+	}
+	pOwner = pThis - 4;
+	nCommand = *(int*) (pMessage + 4);
+	switch (nCommand) {
+	case 3:
+		((void(__fastcall*)(void*)) 0x00403481)(pOwner);
+		return 1;
+	case 4:
+		((void(__fastcall*)(void*)) 0x00402982)(pOwner);
+		return 1;
+	case 0x39:
+		((void(__fastcall*)(void*, int, int)) 0x00402D60)(pOwner, 0, 3);
+		return 1;
+	case 0x3a:
+	case 0x3b:
+	case 0x3c:
+	case 0x3d:
+		((void(__fastcall*)(void*, int, int)) 0x00401CFD)(pOwner, 0, nCommand - 0x3a);
+		return 1;
+	case 0x40:
+	case 0x41:
+	case 0x42:
+		((void(__fastcall*)(void*, int, int)) 0x00402D60)(pOwner, 0, nCommand - 0x40);
+		return 1;
+	default:
+		return 0;
+	}
+}
 
 class LevelScreenViewportRectSnapshot {
 public:
