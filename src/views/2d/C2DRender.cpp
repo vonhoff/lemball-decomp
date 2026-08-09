@@ -103,6 +103,8 @@ extern int g_nLevelScreenMappedVariantResourceId0x209;
 extern int g_nLevelScreenMultiPhaseSequenceResourceId;
 extern int g_nLevelScreenCompositeSequencePrimaryResourceId;
 extern int g_nLevelScreenCompositeSequenceSecondaryResourceId;
+extern int g_nLevelScreenMultiStageSequencePrimaryResourceId;
+extern int g_nLevelScreenMultiStageSequenceSecondaryResourceId;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nLevelFrameClockTick;
 extern "C" unsigned long __stdcall timeGetTime(void);
@@ -1487,5 +1489,161 @@ void C2D::DrawCatapult(CViewData& ViewData)
 										  nFrame + 0x640,
 										  ViewData.m_pFrameSelector24,
 										  0);
+	}
+}
+
+// FUNCTION: LEMBALL 0x0043d590
+void C2D::DrawDoor(CViewData& ViewData)
+{
+	CAnimsManagerView* pManager;
+	int nElapsed;
+	int nResource;
+	int nFrame;
+	int nRemap;
+	short nX;
+	short nY;
+
+	pManager = (CAnimsManagerView*) m_pAnimsManager0A40;
+	nX = (short) ViewData.m_nX04;
+	nY = (short) ViewData.m_nY08;
+	nElapsed = (int) ViewData.m_pFrameSelector24 - ViewData.m_nFrame20;
+	if (ViewData.m_nObjectType28 == 0x19) {
+		nResource = 0x29;
+	}
+	else if (ViewData.m_nObjectType28 == 0x1a) {
+		nResource = 0x28;
+	}
+	switch (ViewData.m_nState18) {
+	case 0x1c:
+		nRemap = -1;
+		switch (ViewData.m_nVariant1C) {
+		case 0x15:
+			nRemap = 3;
+			break;
+		case 0x16:
+			nRemap = 1;
+			break;
+		case 0x17:
+			nRemap = 4;
+			break;
+		}
+		if (nRemap >= 0) {
+			nRemap = nRemap < 4 ? m_anPlayerRemaps0064[nRemap] : 0;
+			pManager->EmitLevelScreenVariantEntry((short) (nX - 10), (short) (nY - 0x2c), 0xb2, 0, 0, nRemap);
+		}
+		pManager->EmitLevelScreenVariantEntry((short) (nX - 0x1a), (short) (nY - 0x18), nResource, 0, 0, 0);
+		pManager->EmitLevelScreenVariantEntry((short) (nX - 0x1a), (short) (nY - 0x18), nResource, 1, 0, 0);
+		return;
+	case 0x1d:
+	case 0x1e:
+		pManager->EmitLevelScreenVariantEntry((short) (nX - 0x1a), (short) (nY - 0x18), nResource, 0, 0, 0);
+		pManager->EmitLevelScreenVariantEntry((short) (nX - 0x1a), (short) (nY - 0x18), nResource, 1, 0, 0);
+		return;
+	case 0x20:
+	case 0x22:
+		nFrame = nElapsed * 15;
+		nFrame = (nFrame + ((nFrame >> 31) & 0x3ff)) >> 10;
+		if (nFrame > 7) {
+			nFrame = 7;
+		}
+		pManager->EmitLevelScreenVariantEntry((short) (nX - 0x1a), (short) (nY - 0x18), nResource, 0, 0, 0);
+		pManager->EmitLevelScreenVariantEntry((short) (nX - 0x1a),
+											  (short) (nY - 0x18),
+											  nResource,
+											  ViewData.m_nState18 == 0x20 ? nFrame + 1 : 8 - nFrame,
+											  0,
+											  0);
+		return;
+	case 0x21:
+		pManager->EmitLevelScreenVariantEntry((short) (nX - 0x1a), (short) (nY - 0x18), nResource, 0, 0, 0);
+		pManager->EmitLevelScreenVariantEntry((short) (nX - 0x1a), (short) (nY - 0x18), nResource, 8, 0, 0);
+	}
+}
+
+// FUNCTION: LEMBALL 0x0043d990
+void C2D::DrawTrapDoor(CViewData& ViewData)
+{
+	CAnimsManagerView* pManager;
+	unsigned int nFrame;
+	unsigned int nTopFrame;
+	int nResource;
+	short nX;
+	short nY;
+	short nFxX;
+	short nFxY;
+
+	pManager = (CAnimsManagerView*) m_pAnimsManager0A40;
+	nX = (short) (ViewData.m_nX04 - 0x30);
+	nY = (short) (ViewData.m_nY08 - 0x28);
+	nFxX = (short) (ViewData.m_nX04 - 0x20);
+	nFxY = (short) (ViewData.m_nY08 + 0x26);
+	nFrame = (unsigned int) ((int) ViewData.m_pFrameSelector24 - ViewData.m_nFrame20) / 0x42;
+	switch (ViewData.m_nState18) {
+	case 0x1f:
+		if (nFrame > 0x28) {
+			nFrame = 0x28;
+		}
+		nTopFrame = nFrame;
+		if (nFrame > 0x20) {
+			pManager
+				->EmitLevelScreenVariantEntry(nX, nY, g_nLevelScreenMultiStageSequencePrimaryResourceId, 0x21, 0, 0);
+			nTopFrame = nFrame + 1;
+		}
+		pManager
+			->EmitLevelScreenVariantEntry(nX, nY, g_nLevelScreenMultiStageSequencePrimaryResourceId, nTopFrame, 0, 0);
+		if (nFrame > 0x17) {
+			if (nFrame > 0x21) {
+				nFrame = 0x21;
+			}
+			pManager->EmitLevelScreenVariantEntry(nFxX, nFxY, 0x1f, nFrame - 0x17, 0, 0);
+		}
+		return;
+	case 0x20:
+	case 0x21:
+	case 0x22:
+		if (ViewData.m_nState18 == 0x20) {
+			if (nFrame > 0xe) {
+				nFrame = 0xe;
+			}
+			nTopFrame = nFrame + 1;
+		}
+		else if (ViewData.m_nState18 == 0x21) {
+			nTopFrame = 0xf;
+		}
+		else {
+			if (nFrame > 7) {
+				nFrame = 7;
+			}
+			nTopFrame = 8 - nFrame;
+		}
+		pManager->EmitLevelScreenVariantEntry(nX, nY, g_nLevelScreenMultiStageSequenceSecondaryResourceId, 0, 0, 0);
+		pManager
+			->EmitLevelScreenVariantEntry(nX, nY, g_nLevelScreenMultiStageSequenceSecondaryResourceId, nTopFrame, 0, 0);
+		pManager->EmitLevelScreenVariantEntry(nFxX, nFxY, 0x1f, 10, 0, 0);
+		return;
+	case 0x23:
+		if (nFrame > 0x28) {
+			nFrame = 0x28;
+		}
+		if ((int) (0x28 - nFrame) < 0x21) {
+			nResource = 0x28;
+		}
+		else {
+			pManager
+				->EmitLevelScreenVariantEntry(nX, nY, g_nLevelScreenMultiStageSequencePrimaryResourceId, 0x21, 0, 0);
+			nResource = 0x29;
+		}
+		pManager->EmitLevelScreenVariantEntry(nX,
+											  nY,
+											  g_nLevelScreenMultiStageSequencePrimaryResourceId,
+											  nResource - nFrame,
+											  0,
+											  0);
+		if (nFrame < 0xd) {
+			pManager->EmitLevelScreenVariantEntry(nFxX, nFxY, 0x1f, 10, 0, 0);
+		}
+		else if (nFrame < 0x17) {
+			pManager->EmitLevelScreenVariantEntry(nFxX, nFxY, 0x1f, 0x17 - nFrame, 0, 0);
+		}
 	}
 }

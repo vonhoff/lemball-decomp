@@ -58,6 +58,8 @@ public:
 	void DrawMover(CViewData& ViewData);
 	void DrawSlinky(CViewData& ViewData);
 	void DrawCatapult(CViewData& ViewData);
+	void DrawDoor(CViewData& ViewData);
+	void DrawTrapDoor(CViewData& ViewData);
 	void DrawPaintGun(CViewData& ViewData);
 	void DrawLaser(CViewData& ViewData);
 	void DrawDuplicator(CViewData& ViewData);
