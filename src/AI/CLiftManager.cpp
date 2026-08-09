@@ -5,6 +5,8 @@
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 
+#include <string.h>
+
 extern LiftManagerVtableLayout g_LINKSCF_LiftChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
@@ -15,6 +17,21 @@ extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedE
 typedef void(LEMBALL_FASTCALL* LiftRestartProc)(void* pObject);
 typedef int(LEMBALL_FASTCALL* LiftProcessProc)(void* pObject);
 typedef void(LEMBALL_FASTCALL* LiftViewStateProc)(void* pObject, int nState);
+
+struct LevelThreeDwordPoint {
+	int m_anValues[3];
+	LevelThreeDwordPoint* CopyThunk(const LevelThreeDwordPoint* pSource);
+};
+
+struct LevelThreeDwordPointVariant {
+	int m_anValues[3];
+	LevelThreeDwordPointVariant* CopyThunk(const LevelThreeDwordPointVariant* pSource);
+};
+
+struct FourDwordValue {
+	int m_anValues[4];
+	FourDwordValue* CopyFrom(const int* pSource);
+};
 
 struct LiftManagerDeletableChild {
 	virtual void Delete(unsigned char fDelete);
@@ -101,6 +118,125 @@ CLiftManager::~CLiftManager(void)
 		((LiftManagerDeletableChild*) m_pObjects3C)->Delete(3);
 	}
 	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
+
+// FUNCTION: LEMBALL 0x00425890
+void CLiftManager::Remove(CLift* pLift)
+{
+	int i;
+	int j;
+	int nOffset;
+	int nSourceIndex;
+	char* pDestination;
+	char* pSource;
+
+	i = 0;
+	if (m_cObjects34 <= 0) {
+		return;
+	}
+	nOffset = 0;
+	while ((char*) m_pObjects3C - (char*) pLift != nOffset) {
+		nOffset -= sizeof(CLift);
+		++i;
+		if (m_cObjects34 <= i) {
+			return;
+		}
+	}
+
+	((CGameObject*) ((char*) m_pObjects3C + i * sizeof(CLift)))->SetId(0xffff);
+	nSourceIndex = i + 1;
+	if (nSourceIndex < m_cObjects34) {
+		nOffset = nSourceIndex * sizeof(CLift);
+		do {
+			pSource = (char*) m_pObjects3C + nOffset;
+			pDestination = pSource - sizeof(CLift);
+
+			*(short*) (pDestination + 4) = *(short*) (pSource + 4);
+			*(int*) (pDestination + 8) = *(int*) (pSource + 8);
+			*(int*) (pDestination + 0x0c) = *(int*) (pSource + 0x0c);
+			*(int*) (pDestination + 0x10) = *(int*) (pSource + 0x10);
+			memcpy(pDestination + 0x14, pSource + 0x14, 0x18);
+			*(int*) (pDestination + 0x2c) = *(int*) (pSource + 0x2c);
+			*(int*) (pDestination + 0x30) = *(int*) (pSource + 0x30);
+			*(int*) (pDestination + 0x34) = *(int*) (pSource + 0x34);
+			*(int*) (pDestination + 0x38) = *(int*) (pSource + 0x38);
+			*(int*) (pDestination + 0x3c) = *(int*) (pSource + 0x3c);
+			((LevelThreeDwordPointVariant*) (pDestination + 0x40))
+				->CopyThunk((LevelThreeDwordPointVariant*) (pSource + 0x40));
+			((LevelThreeDwordPoint*) (pDestination + 0x4c))->CopyThunk((LevelThreeDwordPoint*) (pSource + 0x4c));
+			*(int*) (pDestination + 0x58) = *(int*) (pSource + 0x58);
+			*(int*) (pDestination + 0x5c) = *(int*) (pSource + 0x5c);
+			*(int*) (pDestination + 0x60) = *(int*) (pSource + 0x60);
+			*(int*) (pDestination + 0x64) = *(int*) (pSource + 0x64);
+			*(short*) (pDestination + 0x68) = *(short*) (pSource + 0x68);
+			*(short*) (pDestination + 0x6a) = *(short*) (pSource + 0x6a);
+			*(short*) (pDestination + 0x6c) = *(short*) (pSource + 0x6c);
+			*(short*) (pDestination + 0x6e) = *(short*) (pSource + 0x6e);
+			*(int*) (pDestination + 0x70) = *(int*) (pSource + 0x70);
+			*(int*) (pDestination + 0x74) = *(int*) (pSource + 0x74);
+			((FourDwordValue*) (pDestination + 0x78))->CopyFrom((int*) (pSource + 0x78));
+			*(int*) (pDestination + 0x88) = *(int*) (pSource + 0x88);
+			*(int*) (pDestination + 0x8c) = *(int*) (pSource + 0x8c);
+			*(int*) (pDestination + 0x90) = *(int*) (pSource + 0x90);
+			*(int*) (pDestination + 0x94) = *(int*) (pSource + 0x94);
+			*(int*) (pDestination + 0x98) = *(int*) (pSource + 0x98);
+			((LevelThreeDwordPointVariant*) (pDestination + 0x9c))
+				->CopyThunk((LevelThreeDwordPointVariant*) (pSource + 0x9c));
+			((LevelThreeDwordPointVariant*) (pDestination + 0xa8))
+				->CopyThunk((LevelThreeDwordPointVariant*) (pSource + 0xa8));
+			*(short*) (pDestination + 0xb4) = *(short*) (pSource + 0xb4);
+			*(short*) (pDestination + 0xb6) = *(short*) (pSource + 0xb6);
+			*(int*) (pDestination + 0xb8) = *(int*) (pSource + 0xb8);
+			*(short*) (pDestination + 0xbc) = *(short*) (pSource + 0xbc);
+			*(int*) (pDestination + 0xc0) = *(int*) (pSource + 0xc0);
+			*(short*) (pDestination + 0xc4) = *(short*) (pSource + 0xc4);
+			*(int*) (pDestination + 0xc8) = *(int*) (pSource + 0xc8);
+			*(int*) (pDestination + 0xcc) = *(int*) (pSource + 0xcc);
+			*(int*) (pDestination + 0xd0) = *(int*) (pSource + 0xd0);
+			*(int*) (pDestination + 0xd4) = *(int*) (pSource + 0xd4);
+			((LevelThreeDwordPoint*) (pDestination + 0xd8))->CopyThunk((LevelThreeDwordPoint*) (pSource + 0xd8));
+			((LevelThreeDwordPoint*) (pDestination + 0xe4))->CopyThunk((LevelThreeDwordPoint*) (pSource + 0xe4));
+			*(int*) (pDestination + 0xf0) = *(int*) (pSource + 0xf0);
+			((LevelThreeDwordPointVariant*) (pDestination + 0xf4))
+				->CopyThunk((LevelThreeDwordPointVariant*) (pSource + 0xf4));
+			*(int*) (pDestination + 0x100) = *(int*) (pSource + 0x100);
+			*(int*) (pDestination + 0x104) = *(int*) (pSource + 0x104);
+			*(int*) (pDestination + 0x108) = *(int*) (pSource + 0x108);
+			*(int*) (pDestination + 0x10c) = *(int*) (pSource + 0x10c);
+			*(int*) (pDestination + 0x110) = *(int*) (pSource + 0x110);
+			*(int*) (pDestination + 0x114) = *(int*) (pSource + 0x114);
+			*(int*) (pDestination + 0x118) = *(int*) (pSource + 0x118);
+			*(int*) (pDestination + 0x11c) = *(int*) (pSource + 0x11c);
+			*(short*) (pDestination + 0x120) = *(short*) (pSource + 0x120);
+			*(int*) (pDestination + 0x124) = *(int*) (pSource + 0x124);
+			*(int*) (pDestination + 0x128) = *(int*) (pSource + 0x128);
+			*(int*) (pDestination + 0x12c) = *(int*) (pSource + 0x12c);
+			*(int*) (pDestination + 0x130) = *(int*) (pSource + 0x130);
+			*(int*) (pDestination + 0x134) = *(int*) (pSource + 0x134);
+			*(short*) (pDestination + 0x138) = *(short*) (pSource + 0x138);
+			*(int*) (pDestination + 0x13a) = *(int*) (pSource + 0x13a);
+			*(short*) (pDestination + 0x13e) = *(short*) (pSource + 0x13e);
+			*(int*) (pDestination + 0x140) = *(int*) (pSource + 0x140);
+			*(short*) (pDestination + 0x144) = *(short*) (pSource + 0x144);
+			*(int*) (pDestination + 0x148) = *(int*) (pSource + 0x148);
+			*(int*) (pDestination + 0x14c) = *(int*) (pSource + 0x14c);
+			*(int*) (pDestination + 0x150) = *(int*) (pSource + 0x150);
+			*(short*) (pDestination + 0x154) = *(short*) (pSource + 0x154);
+			*(int*) (pDestination + 0x158) = *(int*) (pSource + 0x158);
+			*(int*) (pDestination + 0x15c) = *(int*) (pSource + 0x15c);
+			*(int*) (pDestination + 0x160) = *(int*) (pSource + 0x160);
+			*(int*) (pDestination + 0x164) = *(int*) (pSource + 0x164);
+			*(int*) (pDestination + 0x168) = *(int*) (pSource + 0x168);
+			*(int*) (pDestination + 0x16c) = *(int*) (pSource + 0x16c);
+			for (j = 0; j < 8; ++j) {
+				*(int*) (pDestination + 0x170 + j * 4) = *(int*) (pSource + 0x170 + j * 4);
+			}
+
+			++nSourceIndex;
+			nOffset += sizeof(CLift);
+		} while (nSourceIndex < m_cObjects34);
+	}
+	--m_cObjects34;
 }
 
 // FUNCTION: LEMBALL 0x00425d30
@@ -290,11 +426,14 @@ void CLiftManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVe
 }
 
 // FUNCTION: LEMBALL 0x00425ce0
-void CLiftManager::AppendLiftChunkObjectBetweenEndpoints(unsigned short nSlotId, const tCoord3d& start, const tCoord3d& end)
+void CLiftManager::AppendLiftChunkObjectBetweenEndpoints(unsigned short nSlotId,
+														 const tCoord3d& start,
+														 const tCoord3d& end)
 {
 	if (m_cObjects34 < m_cCapacity38) {
 		((CGameObject*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))->SetId(nSlotId);
-		((CLift*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))->Set((tCoord3d&) start, (tCoord3d&) end, 1, -1, 0x30, (eLiftActivateType) 2, 1);
+		((CLift*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))
+			->Set((tCoord3d&) start, (tCoord3d&) end, 1, -1, 0x30, (eLiftActivateType) 2, 1);
 		m_cObjects34++;
 	}
 }
@@ -304,7 +443,8 @@ void CLiftManager::AppendLegacyLiftChunkObject(unsigned short nSlotId, int nPara
 {
 	if (m_cObjects34 < m_cCapacity38) {
 		((CGameObject*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))->SetId(nSlotId);
-		((CLift*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))->Set(nParam1, nParam2, nParam3, 1, -1, 0x30, (eLiftActivateType) 2, 1);
+		((CLift*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))
+			->Set(nParam1, nParam2, nParam3, 1, -1, 0x30, (eLiftActivateType) 2, 1);
 		m_cObjects34++;
 	}
 }
