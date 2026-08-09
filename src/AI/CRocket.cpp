@@ -8,6 +8,10 @@ extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ResetRockChunkObjectRuntimeStateThunk(void* pObject);
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 
+struct ManagedEntityPacketStreamView {
+	void BindManagedEntityPacketTarget(void* pEntity);
+};
+
 // FUNCTION: LEMBALL 0x00426840
 void CRocket::Set(unsigned short nSlotId, const AICOORD& position)
 {
@@ -54,7 +58,7 @@ void CRocket::DoActivate(void)
 	pTarget->m_nNextUpdateTickCC = g_nLevelFrameClockTick + 0x3c;
 	((void(__fastcall*)(void*, int))((void**) m_vtable00)[0x34 / 4])(this, 0x12);
 	if (g_nSelectedNetworkLobbyPeerId != 0) {
-		((void(__fastcall*)(void*, void*)) 0x4032dd)(*(void**) 0x49d128, this);
+		((ManagedEntityPacketStreamView*) *(void**) 0x49d128)->BindManagedEntityPacketTarget(this);
 	}
 }
 
