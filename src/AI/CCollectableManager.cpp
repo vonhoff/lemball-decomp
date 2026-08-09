@@ -8,6 +8,7 @@ typedef int eObjectType;
 
 extern void* LEMBALL_FASTCALL ConstructCollChunkObject(
 	void* pObject, int nUnused, int nWorldX, int nWorldY, int nWorldZ, int nEntityType);
+extern void LEMBALL_FASTCALL CollectableManagerInitialise(void* pObject, int nUnused, int nCount);
 
 // FUNCTION: LEMBALL 0x00422590
 void CCollectableManager::Add(
@@ -87,7 +88,7 @@ void CCollectableManager::LoadLevel(unsigned short* pLevelData, int nFormat)
 	unsigned short nCount = *pLevelData;
 	pLevelData++;
 	if (nFormat == 0) {
-		((void(__fastcall*) (void*, int, int)) 0x40187f)(this, 0, nCount);
+		CollectableManagerInitialise(this, 0, nCount);
 	}
 	if (nCount != 0) {
 		do {
