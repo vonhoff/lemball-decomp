@@ -4,6 +4,8 @@
 #include "AI/CDoorManager.h"
 #include "AI/CMoverManager.h"
 #include "AI/CPlayerLemmingGroupManager.h"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 
 extern void* g_pLevelDemoPlaybackController;
 extern int g_nSelectedNetworkLobbyPeerId;
@@ -15,6 +17,7 @@ extern void __fastcall AppendType18ChunkObject(void* pStream,
 											   int param_3,
 											   int param_4);
 extern "C" unsigned long __stdcall timeGetTime();
+extern void RequestLocalLevelGameStateChange(void* pLevelMode, int nState);
 
 // FUNCTION: LEMBALL 0x00412600
 void CAI::FireBullet(unsigned short nSlotId,
@@ -30,7 +33,7 @@ void CAI::FireBullet(unsigned short nSlotId,
 // FUNCTION: LEMBALL 0x00412eb0
 void CAI::AddNewTrapDoor(int nX, int nY, int nZ, unsigned long nParam4)
 {
-	int nSlot = ((int(__fastcall*)()) 0x40227a)();
+	int nSlot = CGameObject::NextLoadingId();
 	int nXFixed = nX << 12;
 	int nYFixed = nY << 12;
 	int nZFixed = nZ << 12;
@@ -71,7 +74,7 @@ void CAI::Start(void)
 		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x38) = (int) timeGetTime();
 		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x3c) = 0;
 	}
-	((void(__fastcall*)(void*, int)) 0x4013ed)(this, 2);
+	RequestLocalLevelGameStateChange(this, 2);
 	m_nFlags68 = 1;
 }
 
@@ -153,9 +156,9 @@ void CAI::SendGameState(int nState, int nStage)
 	}
 	if (*(int*) (*(int*) ((char*) m_pRuntime74 + 0x28)) != 0) {
 		unsigned long start = timeGetTime();
-		while (*(int*) (*(int*) ((char*) m_pRuntime74 + 0x28)) != 0 &&
-		       timeGetTime() - start < 2000) {
-			(*(void(**)(void*)) (*(int*) *(int*) g_pActiveNetworkRuntimeWindow + 0x30))(*(void**) g_pActiveNetworkRuntimeWindow);
+		while (*(int*) (*(int*) ((char*) m_pRuntime74 + 0x28)) != 0 && timeGetTime() - start < 2000) {
+			(*(void (**)(void*))(*(int*) *(int*) g_pActiveNetworkRuntimeWindow + 0x30))(
+				*(void**) g_pActiveNetworkRuntimeWindow);
 		}
 	}
 	if (*(int*) (*(int*) ((char*) m_pRuntime74 + 0x28)) == 0) {
@@ -164,7 +167,7 @@ void CAI::SendGameState(int nState, int nStage)
 		*(int*) (*(int*) ((char*) m_pRuntime74 + 0x30)) = nStage;
 		*(int*) (*(int*) ((char*) m_pRuntime74 + 0x34)) = m_nTimeScoreE8;
 		*(int*) (*(int*) ((char*) m_pRuntime74 + 0x38)) = m_nTimeScoreF0;
-		((void(__fastcall*)(void*, int)) 0x45f2b0)(m_pRuntime74, g_nSelectedNetworkLobbyPeerId);
+		((GameEffStream*) m_pRuntime74)->QueueEffStreamWriteEvent(g_nSelectedNetworkLobbyPeerId);
 	}
 }
 
