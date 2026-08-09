@@ -18,6 +18,11 @@ struct LevelTileGridOwnerView {
 	unsigned short GetZ(int x, int y, void** ppMoveChunk);
 };
 
+struct LevelManagedEntityStateFields {
+	void IncrementHeadingOctant(void);
+	void DecrementHeadingOctant(void);
+};
+
 // FUNCTION: LEMBALL 0x0040f0d0
 void CPlayerLemming::SetGroup(CPlayerLemmingGroup* pGroup)
 {
@@ -253,10 +258,10 @@ void CPlayerLemming::TurnToFaceTarget(void)
 															  m_nTargetWorldY1B8 >> 12);
 	if (nOct != (int) m_nHeadingOctantB4) {
 		if (*(int*) ((char*) 0x49d020 + (nOct - (int) m_nHeadingOctantB4 & 7) * 4) < 0) {
-			((void(__fastcall*)(void*)) 0x4023e7)(this);
+			((LevelManagedEntityStateFields*) this)->DecrementHeadingOctant();
 		}
 		else {
-			((void(__fastcall*)(void*)) 0x402068)(this);
+			((LevelManagedEntityStateFields*) this)->IncrementHeadingOctant();
 		}
 		(*(void (**)(void*, int))(*(void***) this + 0x84 / 4))(this, 0xfa0);
 	}
@@ -277,10 +282,10 @@ void CPlayerLemming::TurnToFaceCursor(void)
 																  nCursorY);
 		if (nOct != (int) m_nHeadingOctantB4) {
 			if (*(int*) ((char*) 0x49d020 + (nOct - (int) m_nHeadingOctantB4 & 7) * 4) < 0) {
-				((void(__fastcall*)(void*)) 0x4023e7)(this);
+				((LevelManagedEntityStateFields*) this)->DecrementHeadingOctant();
 			}
 			else {
-				((void(__fastcall*)(void*)) 0x402068)(this);
+				((LevelManagedEntityStateFields*) this)->IncrementHeadingOctant();
 			}
 			((void (**)(void*, int)) m_pVtable00)[0x84 / 4](this, 0xfa0);
 		}
