@@ -25,7 +25,9 @@ struct CBullet {
 	virtual int ServiceProjectile(void);
 	unsigned char m_abReserved04[0x5c];
 	void* m_pSourceContext60;              // 0x60
-	unsigned char m_abReserved64[8];
+	int m_nEntityType64;
+	unsigned short m_nBehaviourFlags68;
+	unsigned char m_abReserved6A[2];
 	unsigned short m_nSlotId6C;             // 0x6C
 	unsigned char m_abReserved6E[0x2a];
 	int m_nHeading98;                       // 0x98
@@ -57,6 +59,7 @@ struct CBullet {
 		AICOORD source, AICOORD target);
 	void FireBullet(void);
 	void TriggerBullet(void);
+	int Process(void);
 	void AddData(void);
 	void GetData(void);
 	void Free(void);

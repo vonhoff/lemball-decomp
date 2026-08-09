@@ -5,8 +5,10 @@ typedef unsigned long DWORD;
 
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
+extern int g_nNetworkFrameClockTick;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void* g_pLevelTileGrid;
+extern void* g_pActiveManagedEntityOwner;
 
 struct CGround {
 	short GetZThunk(int nLocalX, int nLocalY);
@@ -128,4 +130,105 @@ void CBullet::GetData(void)
 	m_sCaller170 = ((CNetworkMessage*) &m_NetworkStream138)->ReadEffStreamU16BEValue();
 	m_nRuntimeFlag164 = 1;
 	m_nPendingState114 = 1;
+}
+// FUNCTION: LEMBALL 0x0041A7A0
+int CBullet::Process(void)
+{
+	int position[3];
+	int nTick;
+	int nCurrentTick;
+	int nTileX;
+	int nTileY;
+	int nHeight;
+	unsigned short nFlags;
+	char* pOwner;
+	char* pObject;
+	char* pPrevious;
+	int nIndex;
+
+	nCurrentTick = m_nPendingState114 != 0 ? g_nNetworkFrameClockTick : g_nLevelFrameClockTick;
+	if (m_nStateB8 == 8) {
+		return 0;
+	}
+	position[0] = 0;
+	position[1] = 0;
+	position[2] = 0;
+	nTick = m_nStartTickC8;
+	while (nTick <= nCurrentTick) {
+		if ((unsigned int) m_nTerminalTickCC < (unsigned int) nTick) {
+			return 0;
+		}
+		((void(LEMBALL_FASTCALL*)(void*, int, int*, int)) 0x00402540)(m_abSegmentFixpoint184, 0, position, nTick);
+		if (position[0] < 0 || position[0] > 0x3ff || position[1] < 0 || position[1] > 0x3ff) {
+			return 0;
+		}
+		nTileX = (position[0] + ((position[0] >> 31) & 0x0f)) >> 4;
+		nTileY = (position[1] + ((position[1] >> 31) & 0x0f)) >> 4;
+		if (nTileX < 0 || nTileY < 0 || *(int*) ((char*) g_pLevelTileGrid + 0x10) <= nTileX ||
+			*(int*) ((char*) g_pLevelTileGrid + 0x14) <= nTileY) {
+			nFlags = 3;
+		}
+		else {
+			nFlags = *(unsigned short*) (*(char**) ((char*) g_pLevelTileGrid + 0x0c) +
+										 (*(int*) ((char*) g_pLevelTileGrid + 0x10) * nTileY + nTileX) * 0x0c + 6);
+		}
+		if ((nFlags & 2) != 0) {
+			return 0;
+		}
+		if (m_nPendingState114 == 0) {
+			nHeight = 0;
+			nTileX = position[0] >> 4;
+			nTileY = position[1] >> 4;
+			if (position[0] >= 0 && position[1] >= 0 && nTileX < *(int*) ((char*) g_pLevelTileGrid + 0x10) &&
+				nTileY < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+				CGround* pGround = (CGround*) (*(char**) ((char*) g_pLevelTileGrid + 0x0c) +
+											   (nTileY * *(int*) ((char*) g_pLevelTileGrid + 0x10) + nTileX) * 0x0c);
+				nHeight = (unsigned short) pGround->GetZThunk(position[0] & 0x0f, position[1] & 0x0f);
+			}
+			if (position[2] <= nHeight) {
+				m_nWorldX9C = position[0] << 12;
+				m_nWorldYA0 = position[1] << 12;
+				m_nWorldZA4 = position[2] << 12;
+				((void(LEMBALL_FASTCALL*)(void*, int, int*, CBullet*, unsigned short)) 0x0040341d)(
+					g_pActiveManagedEntityOwner,
+					0,
+					&m_nWorldX9C,
+					this,
+					m_nBehaviourFlags68);
+				return 0;
+			}
+		}
+
+		pOwner = (char*) g_pActiveManagedEntityOwner;
+		pPrevious = 0;
+		*(char**) (pOwner + 0x150) = 0;
+		*(int*) (pOwner + 0x124) = position[0];
+		*(int*) (pOwner + 0x128) = position[1];
+		*(int*) (pOwner + 0x12c) = position[2];
+		*(int*) (pOwner + 0x130) = 0;
+		pObject = 0;
+		for (nIndex = 0; nIndex < *(int*) (pOwner + 0x118); ++nIndex) {
+			pObject = *(char**) (*(char**) (pOwner + 0x120) + nIndex * 4);
+			if (pPrevious != pObject && ((int(LEMBALL_FASTCALL*)(void*, int, void*))(
+											*(void***) pObject)[0x50 / 4])(pObject, 0, pOwner + 0x124) != 0) {
+				*(int*) (pOwner + 0x130) = nIndex + 1;
+				break;
+			}
+			pObject = 0;
+			*(int*) (pOwner + 0x130) = nIndex + 1;
+		}
+		if (pObject != 0 &&
+			((unsigned short(LEMBALL_FASTCALL*)(void*)) 0x00401794)(pObject) != (unsigned short) m_sCaller170) {
+			if (m_nOwner16C != 2 || *(int*) (pObject + 0x64) == 2) {
+				((void(LEMBALL_FASTCALL*)(void*, int, CBullet*))(*(void***) pObject)[0x54 / 4])(pObject, 0, this);
+			}
+			return 0;
+		}
+		++nTick;
+	}
+	m_nWorldX9C = position[0] << 12;
+	m_nWorldYA0 = position[1] << 12;
+	m_nStartTickC8 = nCurrentTick;
+	m_nWorldZA4 = position[2] << 12;
+	return 1;
 }
