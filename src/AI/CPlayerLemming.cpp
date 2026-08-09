@@ -1,6 +1,10 @@
 #define LEMBALL_CPLAYERLEMMING_START_STANDING
 #include "AI/CPlayerLemming.h"
 
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
+typedef unsigned long DWORD;
+#include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
+
 extern void* g_pSessionRandomState;
 extern int g_nLevelFrameClockTick;
 extern void* g_pActiveManagedEntityOwner;
@@ -291,38 +295,37 @@ void CPlayerLemming::GetData(void)
 {
 	unsigned short local_e[2];
 	*(unsigned int*) ((char*) this - 0x9c) =
-		(unsigned int) (unsigned short) ((unsigned short(__fastcall*)(void*)) 0x45f070)(this) << 12;
+		(unsigned int) (unsigned short) ((CNetworkMessage*) this)->ReadEffStreamU16BEValue() << 12;
 	*(unsigned int*) ((char*) this - 0x98) =
-		(unsigned int) (unsigned short) ((unsigned short(__fastcall*)(void*)) 0x45f070)(this) << 12;
+		(unsigned int) (unsigned short) ((CNetworkMessage*) this)->ReadEffStreamU16BEValue() << 12;
 	*(unsigned int*) ((char*) this - 0x94) =
-		(unsigned int) (unsigned short) ((unsigned short(__fastcall*)(void*)) 0x45f070)(this) << 12;
-	((void(__fastcall*)(void*, unsigned short*)) 0x45f090)(this, local_e);
+		(unsigned int) (unsigned short) ((CNetworkMessage*) this)->ReadEffStreamU16BEValue() << 12;
+	((CNetworkMessage*) this)->ReadEffStreamU16BE((unsigned char*) local_e);
 	*(unsigned short*) ((char*) this - 0x84) = (unsigned short) (local_e[0] & 7);
 	*(unsigned short*) ((char*) this - 0x7c) = (unsigned short) ((local_e[0] & 0x38) >> 3);
-	((void(__fastcall*)(void*, unsigned short*)) 0x45f090)(this, local_e);
+	((CNetworkMessage*) this)->ReadEffStreamU16BE((unsigned char*) local_e);
 	*(unsigned int*) ((char*) this - 0x80) = (unsigned int) (local_e[0] & 0xff);
 	*(unsigned int*) ((char*) this - 0xa0) = (unsigned int) (local_e[0] >> 8);
-	*(unsigned int*) ((char*) this - 0xa4) = ((unsigned int(__fastcall*)(void*)) 0x45eff0)(this);
+	*(unsigned int*) ((char*) this - 0xa4) = ((CNetworkMessage*) this)->ReadEffStreamU32BEValue();
 }
 // FUNCTION: LEMBALL 0x0040f6f0
 void CPlayerLemming::AddData(void)
 {
-	((void(__fastcall*)(void*, unsigned short)) 0x45ef40)(this, 0x2c);
-	((void(__fastcall*)(void*, unsigned char)) 0x45ef60)(this, *(unsigned short*) ((char*) this + 0x30));
-	((void(__fastcall*)(void*, unsigned short)) 0x45ef40)(this, *(int*) ((char*) this - 0x9c) >> 12);
-	((void(__fastcall*)(void*, unsigned short)) 0x45ef40)(this, *(int*) ((char*) this - 0x98) >> 12);
-	((void(__fastcall*)(void*, unsigned short)) 0x45ef40)(this, *(int*) ((char*) this - 0x94) >> 12);
-	((void(__fastcall*)(void*, unsigned short)) 0x45ef40)(
-		this,
-		(unsigned short) (((*(unsigned short*) ((char*) this - 0x7c) & 7) << 3) |
-						  (*(unsigned short*) ((char*) this - 0x84) & 7)));
-	((void(__fastcall*)(void*, unsigned short)) 0x45ef40)(
-		this,
-		(unsigned short) ((*(unsigned char*) ((char*) this - 0xa0) << 8) | *(unsigned char*) ((char*) this - 0x80)));
+	((CNetworkMessage*) this)->WriteEffStreamU16BE(0x2c);
+	((CNetworkMessage*) this)->WriteEffStreamU8(*(unsigned short*) ((char*) this + 0x30));
+	((CNetworkMessage*) this)->WriteEffStreamU16BE(*(int*) ((char*) this - 0x9c) >> 12);
+	((CNetworkMessage*) this)->WriteEffStreamU16BE(*(int*) ((char*) this - 0x98) >> 12);
+	((CNetworkMessage*) this)->WriteEffStreamU16BE(*(int*) ((char*) this - 0x94) >> 12);
+	((CNetworkMessage*) this)
+		->WriteEffStreamU16BE((unsigned short) (((*(unsigned short*) ((char*) this - 0x7c) & 7) << 3) |
+												(*(unsigned short*) ((char*) this - 0x84) & 7)));
+	((CNetworkMessage*) this)
+		->WriteEffStreamU16BE((unsigned short) ((*(unsigned char*) ((char*) this - 0xa0) << 8) |
+												*(unsigned char*) ((char*) this - 0x80)));
 	if (*(unsigned int*) ((char*) this - 0x5c) > (unsigned int) g_nLevelFrameClockTimeMs) {
 		*(unsigned int*) ((char*) this - 0x5c) = g_nLevelFrameClockTimeMs;
 	}
-	((void(__fastcall*)(void*, unsigned int)) 0x45ef10)(this, *(unsigned int*) ((char*) this - 0x5c));
+	((CNetworkMessage*) this)->WriteEffStreamU32BE(*(unsigned int*) ((char*) this - 0x5c));
 	*(unsigned int*) ((char*) this + 0x2c) = 0;
 }
 
