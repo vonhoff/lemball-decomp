@@ -54,6 +54,7 @@ void CBall::SetHeightCorrect(void)
 }
 
 extern int g_nLevelFrameClockTick;
+extern int g_nLevelFrameClockTimeMs;
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 
 // FUNCTION: LEMBALL 0x00421770
@@ -204,5 +205,79 @@ int CBall::Process(void)
 		((void(__fastcall*)(void*, int))(*(void***) this)[0x11])(this, 0);
 	}
 	((void(__fastcall*)(void*, int)) 0x401500)(this, 0);
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x00421870
+int CBall::Move(void)
+{
+	char* pThis = (char*) this;
+	char* pGrid;
+	char* pOwner;
+	int aDelta[2];
+	int aPoint[3];
+	int* pHit;
+	int nTileX;
+	int nTileY;
+	int nHeight;
+	int i;
+	((void(__cdecl*)(int*, int*, int)) 0x40312a)(aDelta,
+												 (int*) (pThis + 0x80),
+												 g_nLevelFrameClockTick - *(int*) (pThis + 0xc8));
+	aDelta[0] /= *(int*) (pThis + 0x88);
+	aDelta[1] /= *(int*) (pThis + 0x88);
+	aPoint[0] = (*(int*) (pThis + 0x78) + aDelta[0]) >> 12;
+	aPoint[1] = (*(int*) (pThis + 0x7c) + aDelta[1]) >> 12;
+	pGrid = (char*) g_pLevelTileGrid;
+	nTileX = aPoint[0] >> 4;
+	nTileY = aPoint[1] >> 4;
+	if (aPoint[0] < 0 || aPoint[1] < 0 || nTileX >= *(int*) (pGrid + 0x10) || nTileY >= *(int*) (pGrid + 0x14)) {
+		nHeight = 0;
+	}
+	else {
+		nHeight = ((unsigned short(__fastcall*)(void*, int, int, int)) 0x4029a5)(
+			*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0x0c,
+			0,
+			aPoint[0] & 0xf,
+			aPoint[1] & 0xf);
+	}
+	aPoint[2] = nHeight;
+	pOwner = (char*) g_pActiveManagedEntityOwner;
+	*(void**) (pOwner + 0x150) = this;
+	*(int*) (pOwner + 0x124) = aPoint[0];
+	*(int*) (pOwner + 0x128) = aPoint[1];
+	*(int*) (pOwner + 0x12c) = aPoint[2];
+	*(int*) (pOwner + 0x130) = 0;
+	pHit = 0;
+	for (i = 0; i < *(int*) (pOwner + 0x118); ++i) {
+		pHit = *(int**) (*(char**) (pOwner + 0x120) + i * 4);
+		if (pHit != *(int**) (pOwner + 0x150) &&
+			((int(__fastcall*)(void*, int, void*))(*(void***) pHit)[0x14])(pHit, 0, pOwner + 0x124)) {
+			*(int*) (pOwner + 0x130) = i + 1;
+			break;
+		}
+		pHit = 0;
+	}
+	if (pHit) {
+		((void(__fastcall*)(void*, int))(*(void***) pHit)[0x16])(pHit, 0);
+		m_nStateB8 = 0x26;
+		*(int*) (pThis + 0x94) = g_nLevelFrameClockTimeMs;
+		*(int*) (pThis + 0xcc) = g_nLevelFrameClockTick + 0x16;
+		return 1;
+	}
+	if (nHeight > (m_nPositionZA4 >> 12) + 0x0c) {
+		if (*(short*) (pThis + 0xbc) == 2) {
+			*(short*) (pThis + 0xbc) = 5;
+			StartMovement(0);
+		}
+		else if (*(short*) (pThis + 0xbc) == 5) {
+			*(short*) (pThis + 0xbc) = 2;
+			StartMovement(1);
+		}
+		return 1;
+	}
+	m_nPositionZA4 = nHeight << 12;
+	m_nPositionX9C = aPoint[0] << 12;
+	m_nPositionYA0 = aPoint[1] << 12;
 	return 1;
 }

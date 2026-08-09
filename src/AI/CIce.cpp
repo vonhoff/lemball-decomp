@@ -180,3 +180,86 @@ void CIce::Switch(void)
 {
 	((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
 }
+
+// FUNCTION: LEMBALL 0x0042d560
+void CIce::Switched(void)
+{
+	char* pIce;
+	char* pGrid;
+	CGameObject* pObject;
+	void** pVtable;
+	int aPosition[3];
+	int aVelocity[3];
+	int nTileX;
+	int nTileY;
+	int nHeight;
+	int i;
+	int j;
+
+	pIce = (char*) this;
+	if (*(int*) (pIce + 0x138) != 0) {
+		*(int*) (pIce + 0xc8) = g_nLevelFrameClockTick;
+		return;
+	}
+	i = 0;
+	while (i < *(int*) (pIce + 0x150)) {
+		pObject = *(CGameObject**) (pIce + 0x154 + i * 4);
+		pVtable = (void**) pObject->m_pVtable00;
+		aPosition[0] = pObject->m_WorldPosition9C.x;
+		aPosition[1] = pObject->m_WorldPosition9C.y;
+		aPosition[2] = pObject->m_WorldPosition9C.z;
+		*(int*) ((char*) pObject + 0xc0) = 0;
+		pObject->m_nStateB8 = 0;
+		pObject->m_nNextUpdateTickCC = g_nLevelFrameClockTick;
+		pGrid = (char*) g_pLevelTileGrid;
+		if (pObject->m_nEntityType64 == 2) {
+			((IceObjectOneArgProc) pVtable[0x84 / 4])(pObject, 0, 0xfa0);
+			((IceObjectTwoArgProc) pVtable[0xe8 / 4])(pObject, 0, 0, 0);
+			nTileX = (aPosition[0] >> 12) >> 4;
+			nTileY = (aPosition[1] >> 12) >> 4;
+			if ((aPosition[0] >> 12) < 0 || (aPosition[1] >> 12) < 0 || nTileX >= *(int*) (pGrid + 0x10) ||
+				nTileY >= *(int*) (pGrid + 0x14)) {
+				nHeight = 0;
+			}
+			else {
+				nHeight = ((unsigned short(__fastcall*)(void*, int, int, int)) 0x4029a5)(
+					*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0x0c,
+					0,
+					(aPosition[0] >> 12) & 0xf,
+					(aPosition[1] >> 12) & 0xf);
+			}
+			if (nHeight < (aPosition[2] >> 12)) {
+				aVelocity[0] = (*(int*) (pIce + 0x144) << 12) / 6;
+				aVelocity[1] = (*(int*) (pIce + 0x148) << 12) / 6;
+				aVelocity[2] = 0;
+				((void(__fastcall*)(void*, int, int*, int)) pVtable[0x20 / 4])(pObject, 0, aVelocity, 0);
+			}
+		}
+		for (j = i + 1; j < *(int*) (pIce + 0x150); ++j) {
+			*(void**) (pIce + 0x150 + j * 4) = *(void**) (pIce + 0x154 + j * 4);
+		}
+		--*(int*) (pIce + 0x150);
+		--i;
+		nTileX = (aPosition[0] >> 12) >> 4;
+		nTileY = (aPosition[1] >> 12) >> 4;
+		if ((aPosition[0] >> 12) < 0 || (aPosition[1] >> 12) < 0 || nTileX >= *(int*) (pGrid + 0x10) ||
+			nTileY >= *(int*) (pGrid + 0x14)) {
+			nHeight = 0;
+		}
+		else {
+			nHeight = ((unsigned short(__fastcall*)(void*, int, int, int)) 0x4029a5)(
+				*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0x0c,
+				0,
+				(aPosition[0] >> 12) & 0xf,
+				(aPosition[1] >> 12) & 0xf);
+		}
+		if ((aPosition[2] >> 12) <= nHeight) {
+			((void(__fastcall*)(void*, int, int*, void*, unsigned short)) 0x40341d)(*(void**) 0x4a74b0,
+																					0,
+																					aPosition,
+																					pObject,
+																					pObject->m_nBehaviourFlags68);
+		}
+		++i;
+	}
+}

@@ -32,6 +32,7 @@ public:
 	void SetHeightCorrect(void);
 #ifdef LEMBALL_CBALL_HARDTAIL_METHODS
 	void StartMovement(int nUseTarget);
+	int Move(void);
 	int Process(void);
 	void LoadLevel(void* pStreamCursor);
 #endif

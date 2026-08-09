@@ -17,6 +17,7 @@ public:
 	int StepOn(const AICOORD& position, CGameObject* pObject);
 	void Leave(CPlayerLemming* pLemming);
 	void Switch(void);
+	void Switched(void);
 
 private:
 	unsigned char m_abReserved00[0x60];

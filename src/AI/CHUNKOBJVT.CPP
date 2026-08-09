@@ -1,18 +1,19 @@
-#include "AI/CHand.h"
 #include "AI/AICoord.h"
-#include "AI/LevelPoint3.h"
+#include "AI/CAI.h"
+#include "AI/CGameObject.h"
+#include "AI/CGenericGroup.h"
+#include "AI/CHand.h"
+#include "AI/CIce.h"
 #include "AI/CLaser.h"
 #include "AI/CLift.h"
-#include "AI/CGameObject.h"
-#include "AI/CAI.h"
-#include "AI/CGenericGroup.h"
-#include "AI/CPlayerLemmingGroup.h"
-#include "AI/CPlayerLemming.h"
 #include "AI/CMover.h"
+#include "AI/CPlayerLemming.h"
+#include "AI/CPlayerLemmingGroup.h"
 #include "AI/LevelNodePoint.h"
-#include "Visos/Generic/Memory.h"
+#include "AI/LevelPoint3.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
+#include "Visos/Generic/Memory.h"
 
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nLevelFrameClockTick;
@@ -93,8 +94,6 @@ struct IceObjectStateView {
 struct LevelModeNodeView {
 	LevelNodePoint* CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex);
 };
-
-void LEMBALL_FASTCALL ReleaseIceChunkObjectEntities(void* pObject);
 
 struct GmobChunkType14ActionView {
 	virtual void ReservedSlot0(int nValue);
@@ -1070,14 +1069,14 @@ int LEMBALL_FASTCALL AdvanceIceChunkObjectStateMachine(void* pObject)
 		if (pFields[0x4a] != pFields[0x2e]) {
 			if (pFields[0x2e] == 0x1a) {
 				pFields[0x4e] = pFields[0x4e] == 0;
-				ReleaseIceChunkObjectEntities(pObject);
+				((CIce*) pObject)->Switched();
 			}
 			pFields[0x4a] = pFields[0x2e];
 		}
 	}
 	else if (pFields[0x2e] == 0x1a) {
 		pFields[0x4e] = pFields[0x4e] == 0;
-		ReleaseIceChunkObjectEntities(pObject);
+		((CIce*) pObject)->Switched();
 		((IceObjectStateView*) pObject)->SetState(0x18);
 	}
 	if (pFields[0x4e] == 0) {
@@ -1277,12 +1276,6 @@ int LEMBALL_FASTCALL AdvanceIceChunkObjectStateMachine(void* pObject)
 	return 1;
 }
 
-// STUB: LEMBALL 0x0042d560
-void LEMBALL_FASTCALL ReleaseIceChunkObjectEntities(void* pObject)
-{
-	(void) pObject;
-}
-
 // STUB: LEMBALL 0x00412890
 void IceContactDispatcherView::StepOn(LevelPoint3* pPosition, void* pEntity, unsigned short nTileFlags)
 {
@@ -1297,8 +1290,6 @@ void* LEMBALL_FASTCALL DeleteIceChunkObjectAuto(void* pObject, void* pUnused, un
 	(void) pUnused;
 	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x188, DestroyCIce);
 }
-
-
 
 // MACINTOSH: CMover::Process()
 // FUNCTION: LEMBALL 0x0042eb00
