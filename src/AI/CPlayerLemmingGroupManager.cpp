@@ -68,33 +68,33 @@ void CPlayerLemmingGroupManager::Process(void)
 
 	pManager = (CPlayerLemmingGroupManager*) ((char*) this - 0xb0);
 	fSelectedGroupRemoved = 0;
-	pGroup = (CPlayerLemmingGroup*) ((void* (__fastcall*)(void*)) 0x401078)(pManager);
+	pGroup = (CPlayerLemmingGroup*) pManager->GetFirstGroup();
 	while (pGroup != 0) {
-		((void(__fastcall*)(void*)) ((void**) pGroup->m_pVtable00)[0x14 / 4])(pGroup);
-		pGroup = (CPlayerLemmingGroup*) ((void* (__fastcall*)(void*)) 0x403549)(pManager);
+		((void(__fastcall*)(void*))((void**) pGroup->m_pVtable00)[0x14 / 4])(pGroup);
+		pGroup = (CPlayerLemmingGroup*) pManager->GetNextGroup();
 	}
 
-	pGroup = (CPlayerLemmingGroup*) ((void* (__fastcall*)(void*)) 0x401078)(pManager);
+	pGroup = (CPlayerLemmingGroup*) pManager->GetFirstGroup();
 	while (pGroup != 0) {
-		pLemming = (CPlayerLemming*) ((void* (__fastcall*)(void*)) 0x40173f)(pGroup);
+		pLemming = (CPlayerLemming*) ((void*(__fastcall*) (void*) ) 0x40173f)(pGroup);
 		while (pLemming != 0) {
 			pGetCount = (GetCountProc) ((void**) pGroup->m_pVtable00)[0x108 / 4];
 			((void(__fastcall*)(void*, int, void*)) 0x402590)(pGroup, 0, pLemming);
-			*(CPlayerLemming**) ((char*) this + 0x7c +
-				*(int*) ((char*) this + 0x78) * sizeof(CPlayerLemming*)) = pLemming;
+			*(CPlayerLemming**) ((char*) this + 0x7c + *(int*) ((char*) this + 0x78) * sizeof(CPlayerLemming*)) =
+				pLemming;
 			++*(int*) ((char*) this + 0x78);
 			if (pGetCount(pGroup) == 0) {
-				if (((void* (__fastcall*)(void*)) 0x4021df)(pManager) == pGroup) {
+				if (pManager->GetPlayerControlledGroup() == pGroup) {
 					fSelectedGroupRemoved = 1;
 				}
 				((void(__fastcall*)(void*, int, void*)) 0x40281a)(pManager, 0, pGroup);
 				pLemming = 0;
 			}
 			else {
-				pLemming = (CPlayerLemming*) ((void* (__fastcall*)(void*)) 0x40173f)(pGroup);
+				pLemming = (CPlayerLemming*) ((void*(__fastcall*) (void*) ) 0x40173f)(pGroup);
 			}
 		}
-		pGroup = (CPlayerLemmingGroup*) ((void* (__fastcall*)(void*)) 0x403549)(pManager);
+		pGroup = (CPlayerLemmingGroup*) pManager->GetNextGroup();
 	}
 	if (fSelectedGroupRemoved != 0) {
 		((void(__fastcall*)(void*)) 0x402d47)(pManager);
@@ -103,8 +103,7 @@ void CPlayerLemmingGroupManager::Process(void)
 }
 
 // FUNCTION: LEMBALL 0x00418730
-void CPlayerLemmingGroupManager::CreateNewGroup(unsigned short cLemmings,
-	unsigned short* pLemmingIds)
+void CPlayerLemmingGroupManager::CreateNewGroup(unsigned short cLemmings, unsigned short* pLemmingIds)
 {
 	CPlayerLemmingGroup* pGroup;
 	CPlayerLemming* pLemming;
@@ -118,10 +117,8 @@ void CPlayerLemmingGroupManager::CreateNewGroup(unsigned short cLemmings,
 	if (m_nGroupCountA4 > 0) {
 		do {
 			CPlayerLemmingGroup* pCandidate = (CPlayerLemmingGroup*) m_apGroups04[iGroup];
-			if (((int(__fastcall*)(void*)) ((void**) pCandidate->m_pVtable00)[0x108 / 4])(
-				pCandidate) == 0) {
-				pGroup = (CPlayerLemmingGroup*)
-					((void* (__fastcall*)(void*, int, int)) 0x402eb9)(this, 0, iGroup);
+			if (((int(__fastcall*)(void*))((void**) pCandidate->m_pVtable00)[0x108 / 4])(pCandidate) == 0) {
+				pGroup = (CPlayerLemmingGroup*) ((void*(__fastcall*) (void*, int, int) ) 0x402eb9)(this, 0, iGroup);
 				break;
 			}
 			++iGroup;
@@ -130,10 +127,8 @@ void CPlayerLemmingGroupManager::CreateNewGroup(unsigned short cLemmings,
 
 	cAdded = 0;
 	for (i = 0; i < cLemmings; ++i) {
-		pLemming = (CPlayerLemming*)
-			(int) g_GAME_ManagedEntityRegistryTable[pLemmingIds[i]];
-		if (((int(__fastcall*)(void*)) ((void**) ((CGameObject*) pLemming)->m_pVtable00)[0x70 / 4])(
-			pLemming) != 0) {
+		pLemming = (CPlayerLemming*) (int) g_GAME_ManagedEntityRegistryTable[pLemmingIds[i]];
+		if (((int(__fastcall*)(void*))((void**) ((CGameObject*) pLemming)->m_pVtable00)[0x70 / 4])(pLemming) != 0) {
 			((void(__fastcall*)(void*)) 0x402446)(pLemming);
 			((void(__fastcall*)(void*, int, void*, void*)) 0x4024b4)(this, 0, pLemming, pGroup);
 			((void(__fastcall*)(void*)) 0x4011ef)(pLemming);
@@ -349,31 +344,31 @@ int CPlayerLemmingGroupManager::GetViewData(int pViewData)
 // FUNCTION: LEMBALL 0x00418ab0
 void CPlayerLemmingGroupManager::UseObject(unsigned int nObject)
 {
-	void* this_00 = (void*) ((int(__fastcall*)(void*)) 0x4021df)(this);
-	if (this_00 != 0) {
-		void* pvVar1 = (void*) (*(void**) (0x4a6510 + (nObject & 0xffff) * 4));
-		if (*(int*) ((char*) pvVar1 + 0x64) != 2) {
-			((void(__fastcall*)(void*, unsigned int)) 0x401c62)(this_00, nObject);
+	CPlayerLemmingGroup* pCurrentGroup = GetPlayerControlledGroup();
+	if (pCurrentGroup != 0) {
+		void* pObject = (void*) (*(void**) (0x4a6510 + (nObject & 0xffff) * 4));
+		if (*(int*) ((char*) pObject + 0x64) != 2) {
+			((void(__fastcall*)(void*, unsigned int)) 0x401c62)(pCurrentGroup, nObject);
 			return;
 		}
-		if (*(int*) ((char*) pvVar1 + 0xb8) != 8) {
-			void* this_01 = (void*) ((int(__fastcall*)(void*)) 0x4037ba)(pvVar1);
-			if (this_01 != this_00) {
-				((void(__fastcall*)(void*, int, void*)) 0x4014bf)(this_00, 0, 0);
+		if (*(int*) ((char*) pObject + 0xb8) != 8) {
+			CPlayerLemmingGroup* pObjectGroup = (CPlayerLemmingGroup*) ((int(__fastcall*)(void*)) 0x4037ba)(pObject);
+			if (pObjectGroup != pCurrentGroup) {
+				pCurrentGroup->SetPlayerControlled(0, 0);
 			}
-			((void(__fastcall*)(void*, int, void*)) 0x4014bf)(this_01, 1, pvVar1);
+			pObjectGroup->SetPlayerControlled(1, (CPlayerLemming*) pObject);
 		}
 	}
 }
 // FUNCTION: LEMBALL 0x00418b60
 void CPlayerLemmingGroupManager::PlayerGroupRequestFire(int nX, int nY)
 {
-	void* pEntity = (void*) ((int(__fastcall*)(void*)) 0x4021df)(this);
-	if (pEntity != 0) {
-		void* pChild = (void*) ((int(__fastcall*)(void*)) 0x40241e)(pEntity);
+	CPlayerLemmingGroup* pGroup = GetPlayerControlledGroup();
+	if (pGroup != 0) {
+		CGameObject* pChild = pGroup->GetFirstElementInGroup();
 		while (pChild != 0) {
 			((void(__fastcall*)(void*, int, int)) 0x401659)(pChild, nX, nY);
-			pChild = (void*) ((int(__fastcall*)(void*)) 0x401816)(pEntity);
+			pChild = pGroup->GetNextElementInGroup();
 		}
 	}
 }
@@ -381,15 +376,14 @@ void CPlayerLemmingGroupManager::PlayerGroupRequestFire(int nX, int nY)
 void CPlayerLemmingGroupManager::ReformAlteredGroups(CPlayerLemmingGroup* pGroup)
 {
 	int* pi;
-	pi = (int*) ((int(__fastcall*)(void*)) 0x401078)(this);
+	pi = (int*) GetFirstGroup();
 	while (pi != 0) {
 		if (pi != (int*) pGroup) {
 			((void(__fastcall*)(void*, int))(*(int*) *pi + 0x154))(pi, *(int*) 0x4a7834);
 		}
-		pi = (int*) ((int(__fastcall*)(void*)) 0x403549)(this);
+		pi = (int*) GetNextGroup();
 	}
 }
-
 
 // FUNCTION: LEMBALL 0x00418540
 CPlayerLemmingGroupManager::~CPlayerLemmingGroupManager(void)
@@ -403,12 +397,16 @@ CPlayerLemmingGroupManager::~CPlayerLemmingGroupManager(void)
 	*(int*) pSub = 0x494068;
 	for (i = 0; i < *(int*) ((char*) pThis + 0x78); i++) {
 		p = *(void**) ((char*) pThis + 0x7c + i * 4);
-		if (p != 0) ((void(__fastcall*)(void*, int)) *(int*) p)(p, 1);
+		if (p != 0) {
+			((void(__fastcall*)(void*, int)) * (int*) p)(p, 1);
+		}
 	}
 	if (*(int*) ((char*) pThis + 0x9c) != 0) {
 		for (i = 0; i < 4; i++) {
 			p = *(void**) ((char*) pThis + 0x8c + i * 4);
-			if (p != 0) ((void(__fastcall*)(void*, int)) *(int*) p)(p, 1);
+			if (p != 0) {
+				((void(__fastcall*)(void*, int)) * (int*) p)(p, 1);
+			}
 		}
 	}
 	((void(__fastcall*)(void*)) 0x45eea0)(((unsigned int) pSub >= 1) ? pThis : 0);
