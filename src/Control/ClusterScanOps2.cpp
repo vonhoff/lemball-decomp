@@ -3565,3 +3565,36 @@ void* __fastcall ConstructBufferedGeometryChildOverlay(
 	(void) nUnusedEdx;
 	return pThis;
 }
+// FUNCTION: LEMBALL 0x00413380
+void __fastcall refresh_level_mode_lift_boundary_columns(void* pObject)
+{
+	((void(__fastcall*)(void*)) 0x40282e)(*(void**) ((char*) pObject + 0x18c));
+}
+
+// FUNCTION: LEMBALL 0x00412870
+void* __fastcall find_level_mode_entity_by_type_in_rect(void* pObject, int nUnused, short* param_2, int param_3)
+{
+	return ((void*(__fastcall*)(void*, short*, int)) 0x401e51)(*(void**) ((char*) pObject + 0x158), param_2, param_3);
+	(void) nUnused;
+}
+
+// FUNCTION: LEMBALL 0x0044f400
+void* __fastcall construct_queued_variant_child_context_object(void* pObject)
+{
+	((void(__fastcall*)(void*)) 0x463b50)(pObject);
+	*(void**) pObject = (void*) 0x498160;
+	*(int*) ((char*) pObject + 0x50) = *(int*) ((char*) pObject + 0x50) + 1;
+	return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00439840
+void __fastcall delete_large_render_adjusted(void* pObject)
+{
+	((void(__fastcall*)(void*)) 0x403521)((char*)pObject - 4);
+}
+
+// FUNCTION: LEMBALL 0x004511f0
+void __fastcall delete_paintball_screen_adjusted(void* pObject)
+{
+	((void(__fastcall*)(void*)) 0x403035)((char*)pObject - 0xc);
+}
