@@ -100,7 +100,7 @@ int CAI::ProcessMsg(tagMESSAGE* pMsg)
 {
 	short* raw = (short*) pMsg;
 	if (raw[0] == 4) {
-		((void(__fastcall*)(void*, int, int)) 0x402d74)(m_pMsgTarget15C, *(int*) (raw + 4), *(int*) (raw + 6));
+		((CPlayerLemmingGroupManager*) m_pMsgTarget15C)->PlayerGroupRequestFire(*(int*) (raw + 4), *(int*) (raw + 6));
 		return 0;
 	}
 	if (m_nMode58 == 0) {
@@ -108,22 +108,24 @@ int CAI::ProcessMsg(tagMESSAGE* pMsg)
 	}
 	switch (raw[0]) {
 	case 2:
-		((void(__fastcall*)(void*, int, int)) 0x40201d)(m_pMsgTarget15C, *(int*) (raw + 4), *(int*) (raw + 6));
+		((CPlayerLemmingGroupManager*) m_pMsgTarget15C)
+			->AddNewWaypointToCurrentGroup(*(int*) (raw + 4), *(int*) (raw + 6));
 		return 0;
 	case 3:
-		((void(__fastcall*)(void*)) 0x40121c)(m_pMsgTarget15C);
+		((CPlayerLemmingGroupManager*) m_pMsgTarget15C)->RemoveWaypointsFromCurrentGroup();
 		return 0;
 	case 6:
 		((CPlayerLemmingGroupManager*) m_pMsgTarget15C)->MakeNextGroupPlayerControlled();
 		return 0;
 	case 7:
-		((void(__fastcall*)(void*)) 0x402509)(m_pMsgTarget15C);
+		((CPlayerLemmingGroupManager*) m_pMsgTarget15C)->MakeNextGroupPlayerControlled();
 		return 0;
 	case 8:
-		((void(__fastcall*)(void*, int)) 0x40378d)(m_pMsgTarget15C, *(int*) (raw + 4));
+		((CPlayerLemmingGroupManager*) m_pMsgTarget15C)->UseObject(*(int*) (raw + 4));
 		return 0;
 	case 5:
-		(*( void(**)(void*, int, int)) (*(void***) m_pMsgTarget15C + 0x34 / 4))(m_pMsgTarget15C, *(int*) (raw + 4), *(int*) (raw + 6));
+		(*(void (**)(void*, int, int))(*(void***) m_pMsgTarget15C +
+									   0x34 / 4))(m_pMsgTarget15C, *(int*) (raw + 4), *(int*) (raw + 6));
 		return 0;
 	default:
 		m_nMsgCounter0C++;
