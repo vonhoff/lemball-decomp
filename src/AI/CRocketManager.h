@@ -23,6 +23,7 @@ public:
 	void Add(unsigned short nSlotId, int nWorldX, int nWorldY, int nWorldZ);
 	int StepOn(const AICOORD& position, CGameObject* pObject);
 	void LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat);
+	~CRocketManager(void);
 };
 
 typedef char CRocketManagerSizeCheck[sizeof(CRocketManager) == 0x40 ? 1 : -1];

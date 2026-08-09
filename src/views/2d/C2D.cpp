@@ -731,3 +731,9 @@ void C2D::DrawItemHandBoundaryPair(CViewData& ViewData, int nPlayer)
 								0,
 								0);
 }
+
+// FUNCTION: LEMBALL 0x00436830
+void C2D::KillRemapPalettes(void)
+{
+	((void(__fastcall*)(void*, int, void*)) 0x46add0)(*(void**) 0x4a2000, 0, (void*) *(int*) ((char*) this + 0x968));
+}

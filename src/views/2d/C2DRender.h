@@ -99,6 +99,7 @@ public:
 #ifdef LEMBALL_C2D_LEMMING_FLY
 	int LemmingFly(CViewData& ViewData, int& nFrame);
 #endif
+	void KillRemapPalettes(void);
 };
 
 typedef char CViewDataSizeCheck[(sizeof(CViewData) == 0x4c) ? 1 : -1];

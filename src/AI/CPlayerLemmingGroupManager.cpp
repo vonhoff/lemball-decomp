@@ -389,3 +389,28 @@ void CPlayerLemmingGroupManager::ReformAlteredGroups(CPlayerLemmingGroup* pGroup
 		pi = (int*) ((int(__fastcall*)(void*)) 0x403549)(this);
 	}
 }
+
+
+// FUNCTION: LEMBALL 0x00418540
+CPlayerLemmingGroupManager::~CPlayerLemmingGroupManager(void)
+{
+	void* pThis = this;
+	void* pSub;
+	void* p;
+	int i;
+	*(int*) pThis = 0x494038;
+	pSub = ((char*) pThis) - 0xb0;
+	*(int*) pSub = 0x494068;
+	for (i = 0; i < *(int*) ((char*) pThis + 0x78); i++) {
+		p = *(void**) ((char*) pThis + 0x7c + i * 4);
+		if (p != 0) ((void(__fastcall*)(void*, int)) *(int*) p)(p, 1);
+	}
+	if (*(int*) ((char*) pThis + 0x9c) != 0) {
+		for (i = 0; i < 4; i++) {
+			p = *(void**) ((char*) pThis + 0x8c + i * 4);
+			if (p != 0) ((void(__fastcall*)(void*, int)) *(int*) p)(p, 1);
+		}
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(((unsigned int) pSub >= 1) ? pThis : 0);
+	((void(__fastcall*)(void*)) 0x402de7)(pSub);
+}

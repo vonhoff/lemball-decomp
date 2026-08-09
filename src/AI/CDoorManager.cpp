@@ -33,3 +33,15 @@ void CDoorManager::Process(void)
 		} while (iVar3 < m_nObjectCount34);
 	}
 }
+
+
+// FUNCTION: LEMBALL 0x0040e060
+CDoorManager::~CDoorManager(void)
+{
+	*(int*) this = 0x493840;
+	if (*(void**) ((char*) this + 0x3c) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) this + 0x3c))[0])(
+			*(void**) ((char*) this + 0x3c), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(this);
+}

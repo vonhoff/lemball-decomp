@@ -68,3 +68,15 @@ int CTrampolineManager::GetViewData(int param_1)
 	}
 	return local_4;
 }
+
+
+// FUNCTION: LEMBALL 0x0042b090
+CTrampolineManager::~CTrampolineManager(void)
+{
+	*(int*) this = 0x496710;
+	if (*(void**) ((char*) this + 0x38) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) this + 0x38))[0])(
+			*(void**) ((char*) this + 0x38), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(this);
+}

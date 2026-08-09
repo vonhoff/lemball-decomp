@@ -30,6 +30,7 @@ struct CBulletManager {
 		AICOORD source, AICOORD target);
 	void ResetProjectilePool(void);
 	int EmitProjectileRenderEntries(void* pRenderEntry);
+	~CBulletManager(void);
 };
 
 #endif

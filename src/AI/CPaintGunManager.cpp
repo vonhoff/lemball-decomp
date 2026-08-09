@@ -91,3 +91,15 @@ int CPaintGunManager::GetViewData(CViewData* pViewData)
 	}
 	return nCount;
 }
+
+
+// FUNCTION: LEMBALL 0x0042c120
+CPaintGunManager::~CPaintGunManager(void)
+{
+	*(int*) this = 0x496888;
+	if (*(void**) ((char*) this + 0x38) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) this + 0x38))[0])(
+			*(void**) ((char*) this + 0x38), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(this);
+}

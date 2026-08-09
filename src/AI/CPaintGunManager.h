@@ -17,6 +17,7 @@ private:
 	int m_nObjectCount34;                   // 0x34
 	unsigned char* m_pObjects38;            // 0x38
 	void* m_pLevelMode3C;                    // 0x3c
+	~CPaintGunManager(void);
 };
 
 #endif

@@ -15,6 +15,7 @@ public:
 
 	void Process(void);
 	void LoadLevel(unsigned short* pStream);
+	unsigned int FindPost(unsigned int subtype, void** pOut);
 };
 
 #endif

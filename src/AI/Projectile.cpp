@@ -115,3 +115,15 @@ void LEMBALL_FASTCALL DestroyProjectileObject(void* pObject)
 	pStream->CNetworkMessage::~CNetworkMessage();
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
+
+
+// FUNCTION: LEMBALL 0x00417ec0
+CBulletManager::~CBulletManager(void)
+{
+	*(int*) this = 0x494008;
+	if (*(void**) ((char*) this + 0x30) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) this + 0x30))[0])(
+			*(void**) ((char*) this + 0x30), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(this);
+}

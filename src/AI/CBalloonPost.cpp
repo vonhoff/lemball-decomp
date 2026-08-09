@@ -74,3 +74,32 @@ void CBalloonPost::LoadLevel(unsigned short* pStream)
 		*(int*) ((char*) *(void**) ((char*) this + 0x40) + 0x124) = 1;
 	}
 }
+
+
+// FUNCTION: LEMBALL 0x0042a0b0
+unsigned int CBalloonPost::FindPost(unsigned int subtype, void** pOut)
+{
+	switch (subtype) {
+	case 0x28:
+		pOut[0] = *(void**) ((char*) this + 4);
+		pOut[1] = *(void**) ((char*) this + 8);
+		pOut[2] = *(void**) ((char*) this + 0xc);
+		return *(unsigned short*) this & 1;
+	case 0x2a:
+		pOut[0] = *(void**) ((char*) this + 0x10);
+		pOut[1] = *(void**) ((char*) this + 0x14);
+		pOut[2] = *(void**) ((char*) this + 0x18);
+		return *(unsigned short*) this & 2;
+	case 0x2c:
+		pOut[0] = *(void**) ((char*) this + 0x1c);
+		pOut[1] = *(void**) ((char*) this + 0x20);
+		pOut[2] = *(void**) ((char*) this + 0x24);
+		return *(unsigned short*) this & 4;
+	case 0x2e:
+		pOut[0] = *(void**) ((char*) this + 0x28);
+		pOut[1] = *(void**) ((char*) this + 0x2c);
+		pOut[2] = *(void**) ((char*) this + 0x30);
+		return *(unsigned short*) this & 8;
+	}
+	return 0;
+}

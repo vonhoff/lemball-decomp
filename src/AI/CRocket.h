@@ -30,6 +30,7 @@ public:
 	void Set(unsigned short nSlotId, const AICOORD& position);
 	int StepOn(const AICOORD& position, CGameObject* pObject);
 	void DoActivate(void);
+	void Restart(void);
 };
 
 typedef char CRocketSizeCheck[sizeof(CRocket) == 0x144 ? 1 : -1];

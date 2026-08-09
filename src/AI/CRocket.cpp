@@ -4,6 +4,8 @@
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nSelectedNetworkLobbyPeerId;
+extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern void __fastcall ResetRockChunkObjectRuntimeStateThunk(void* pObject);
 
 // FUNCTION: LEMBALL 0x00426840
 void CRocket::Set(unsigned short nSlotId, const AICOORD& position)
@@ -52,4 +54,12 @@ void CRocket::DoActivate(void)
 	if (g_nSelectedNetworkLobbyPeerId != 0) {
 		((void(__fastcall*)(void*, void*)) 0x4032dd)(*(void**) 0x49d128, this);
 	}
+}
+
+
+// FUNCTION: LEMBALL 0x00426810
+void CRocket::Restart(void)
+{
+	ResetManagedEntityRuntimeStateThunk(this);
+	ResetRockChunkObjectRuntimeStateThunk(this);
 }

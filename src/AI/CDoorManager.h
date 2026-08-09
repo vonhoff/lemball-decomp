@@ -25,6 +25,7 @@ struct CDoorManager {
 	void Delete(unsigned char fDelete);
 	int GetViewData(CViewData* pViewData);
 	void Process(void);
+	~CDoorManager(void);
 };
 
 #endif

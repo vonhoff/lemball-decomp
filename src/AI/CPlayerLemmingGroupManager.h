@@ -36,6 +36,7 @@ public:
 	void UseObject(unsigned int nObject);
 	void PlayerGroupRequestFire(int nX, int nY);
 	void ReformAlteredGroups(CPlayerLemmingGroup* pGroup);
+	~CPlayerLemmingGroupManager(void);
 };
 
 typedef char CPlayerLemmingGroupManagerSizeCheck[sizeof(CPlayerLemmingGroupManager) == 0x150 ? 1 : -1];

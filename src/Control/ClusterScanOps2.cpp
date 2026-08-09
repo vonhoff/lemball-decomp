@@ -1003,64 +1003,7 @@ void __fastcall RemoveAnimChunkRecordsAtTile(void* pThis, int nUnused, short* pT
 		}
 		i++;
 	}
-}
-// FUNCTION: LEMBALL 0x0040e060
-void __fastcall CDoorManager_dtor(void* pThis, int nUnused)
-{
-	*(int*) pThis = 0x493840;
-	if (*(void**) ((char*) pThis + 0x3c) != 0) {
-		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x3c))[0])(
-			*(void**) ((char*) pThis + 0x3c), 3);
-	}
-	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
-}
-// FUNCTION: LEMBALL 0x00417ec0
-void __fastcall CBulletManager_dtor(void* pThis, int nUnused)
-{
-	*(int*) pThis = 0x494008;
-	if (*(void**) ((char*) pThis + 0x30) != 0) {
-		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x30))[0])(
-			*(void**) ((char*) pThis + 0x30), 3);
-	}
-	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
-}
-// FUNCTION: LEMBALL 0x00426c00
-void __fastcall CRocketManager_dtor(void* pThis, int nUnused)
-{
-	*(int*) pThis = 0x496020;
-	if (*(void**) ((char*) pThis + 0x38) != 0) {
-		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x38))[0])(
-			*(void**) ((char*) pThis + 0x38), 3);
-	}
-	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
-}
-// FUNCTION: LEMBALL 0x0042b090
-void __fastcall CTrampolineManager_dtor(void* pThis, int nUnused)
-{
-	*(int*) pThis = 0x496710;
-	if (*(void**) ((char*) pThis + 0x38) != 0) {
-		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x38))[0])(
-			*(void**) ((char*) pThis + 0x38), 3);
-	}
-	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
-}
-// FUNCTION: LEMBALL 0x0042c120
-void __fastcall CPaintGunManager_dtor(void* pThis, int nUnused)
-{
-	*(int*) pThis = 0x496888;
-	if (*(void**) ((char*) pThis + 0x38) != 0) {
-		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x38))[0])(
-			*(void**) ((char*) pThis + 0x38), 3);
-	}
-	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
-}
-
-
-
-
-
-
-// FUNCTION: LEMBALL 0x004148f0
+}// FUNCTION: LEMBALL 0x004148f0
 void __fastcall ClearExistingWaypoints(void* pThis)
 {
 	int nVtbl = *(int*) pThis;
@@ -1137,88 +1080,11 @@ void __cdecl CGlobalGameObjectDeleteMessages(void)
 	if (p != 0) {
 		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
 	}
-}
-// FUNCTION: LEMBALL 0x00418540
-void __fastcall CPlayerLemmingGroupManager_dtor(void* pThis, int nUnused)
-{
-	*(int*) pThis = 0x494038;
-	void* pSub = ((char*) pThis) - 0xb0;
-	*(int*) pSub = 0x494068;
-	for (int i = 0; i < *(int*) ((char*) pThis + 0x78); i++) {
-		void* p = *(void**) ((char*) pThis + 0x7c + i * 4);
-		if (p != 0) {
-			((void(__fastcall*)(void*, int)) *(int*) p)(p, 1);
-		}
-	}
-	if (*(int*) ((char*) pThis + 0x9c) != 0) {
-		for (int i = 0; i < 4; i++) {
-			void* p = *(void**) ((char*) pThis + 0x8c + i * 4);
-			if (p != 0) {
-				((void(__fastcall*)(void*, int)) *(int*) p)(p, 1);
-			}
-		}
-	}
-	((void(__fastcall*)(void*)) 0x45eea0)(((unsigned int) pSub >= 1) ? pThis : 0);
-	((void(__fastcall*)(void*)) 0x402de7)(pSub);
-}
-
-
-
-
-
-
-
-
-
-
-
-// Minimal view of the LEVELVT runtime-state resetter so Restart can emit
+}// Minimal view of the LEVELVT runtime-state resetter so Restart can emit
 // a direct `call LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk` (orig ILT 0x40209f).
 struct LevelChunkObjectRuntimeStateView {
 	void ResetRuntimeStateThunk(void);
-};
-
-
-
-
-
-
-
-
-
-
-
-
-// FUNCTION: LEMBALL 0x0042a0b0
-unsigned int __fastcall CBalloonPostFindPost(void* pThis, int nUnused, unsigned int subtype, void** pOut)
-{
-	switch (subtype) {
-	case 0x28:
-		pOut[0] = *(void**) ((char*) pThis + 4);
-		pOut[1] = *(void**) ((char*) pThis + 8);
-		pOut[2] = *(void**) ((char*) pThis + 0xc);
-		return *(unsigned short*) pThis & 1;
-	case 0x2a:
-		pOut[0] = *(void**) ((char*) pThis + 0x10);
-		pOut[1] = *(void**) ((char*) pThis + 0x14);
-		pOut[2] = *(void**) ((char*) pThis + 0x18);
-		return *(unsigned short*) pThis & 2;
-	case 0x2c:
-		pOut[0] = *(void**) ((char*) pThis + 0x1c);
-		pOut[1] = *(void**) ((char*) pThis + 0x20);
-		pOut[2] = *(void**) ((char*) pThis + 0x24);
-		return *(unsigned short*) pThis & 4;
-	case 0x2e:
-		pOut[0] = *(void**) ((char*) pThis + 0x28);
-		pOut[1] = *(void**) ((char*) pThis + 0x2c);
-		pOut[2] = *(void**) ((char*) pThis + 0x30);
-		return *(unsigned short*) pThis & 8;
-	}
-	return 0;
-}
-
-
-// FUNCTION: LEMBALL 0x00458d40
+};// FUNCTION: LEMBALL 0x00458d40
 int __fastcall CVSOStream___ls(void* pThis, int nUnused, unsigned int value)
 {
 	int i;
@@ -3796,27 +3662,11 @@ void __fastcall update_registration_info_screen_upload(void* pObject, int nUnuse
 	}
 	(void) nUnused;
 	(void) param_3;
-}
-
-// FUNCTION: LEMBALL 0x00426810
-void __fastcall CRocket_Restart(void* pObject)
-{
-	ResetManagedEntityRuntimeStateThunk(pObject);
-	ResetRockChunkObjectRuntimeStateThunk(pObject);
-}
-
-// FUNCTION: LEMBALL 0x00451fb0
+}// FUNCTION: LEMBALL 0x00451fb0
 void* __fastcall construct_password_entry_render_context_object(void* pObject)
 {
 	((void(__fastcall*)(void*)) 0x463b50)(pObject);
 	*(void**) pObject = (void*) 0x498478;
 	*(int*) ((char*) pObject + 0x50) = *(int*) ((char*) pObject + 0x50) + 0xa;
 	return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00436830
-void __fastcall C2D_KillRemapPalettes(void* pObject)
-{
-	((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant(
-		(void*) *(int*) ((char*) pObject + 0x968));
 }

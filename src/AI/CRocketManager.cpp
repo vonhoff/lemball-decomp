@@ -135,3 +135,15 @@ void CRocketManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned ch
 	(void) nLen;
 	(void) nFormat;
 }
+
+
+// FUNCTION: LEMBALL 0x00426c00
+CRocketManager::~CRocketManager(void)
+{
+	*(int*) this = 0x496020;
+	if (*(void**) ((char*) this + 0x38) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) this + 0x38))[0])(
+			*(void**) ((char*) this + 0x38), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(this);
+}
