@@ -33,7 +33,7 @@ void CTrampolineManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigne
 	int nZ;
 
 	pLevelData = pLevelData + 1;
-	((void(__fastcall*)(void*, unsigned int)) 0x4019f6)(this, nCount);
+	Initialise(nCount);
 	while (nCount != 0) {
 		if (*(unsigned short*) ((char*) m_pLevelMode3C + 0x54) <= 1) {
 			nSlot = CGameObject::NextId();

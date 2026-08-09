@@ -5,6 +5,7 @@
 class CTrampolineManager {
 public:
 	void Add(unsigned short nSlot, int nWorldX, int nWorldY, int nWorldZ);
+	void Initialise(int nCapacity);
 	void LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat);
 	int GetViewData(int nViewDataAddress);
 
