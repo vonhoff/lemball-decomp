@@ -98,7 +98,7 @@ int CRocketManager::StepOn(const AICOORD& position, CGameObject* pObject)
 	for (i = 0; i < m_nObjectCount34; i++) {
 		void* pElem = (void*) (m_pObjects38 + i * 0x144);
 		if (*(int*) ((char*) pElem + 0x13c) != 0 && *(int*) ((char*) pElem + 0xb8) == 0x18 && *(int*) ((char*) pElem + 0x12c) == 0x18) {
-			if (((int(__cdecl*)(void*, void*, int)) 0x401375)(pElem, (void*) &position, (int) pObject) != 0) {
+			if (((CRocket*) pElem)->StepOn(position, pObject) != 0) {
 				return 1;
 			}
 		}
