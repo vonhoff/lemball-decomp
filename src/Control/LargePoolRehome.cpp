@@ -1,4 +1,19 @@
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+
 #include <string.h>
+#include <stdlib.h>
+
+extern "C" {
+__declspec(dllimport) void* __stdcall GlobalAlloc(unsigned long, unsigned long);
+__declspec(dllimport) void* __stdcall GlobalFree(void*);
+__declspec(dllimport) void* __stdcall GlobalLock(void*);
+__declspec(dllimport) int __stdcall GlobalUnlock(void*);
+__declspec(dllimport) int __stdcall OpenClipboard(void*);
+__declspec(dllimport) int __stdcall EmptyClipboard(void);
+__declspec(dllimport) void* __stdcall SetClipboardData(unsigned int, void*);
+__declspec(dllimport) int __stdcall CloseClipboard(void);
+__declspec(dllimport) int __stdcall MessageBoxA(void*, const char*, const char*, unsigned int);
+}
 
 struct LargePoolSixDwords
 {
@@ -441,4 +456,87 @@ void __fastcall mark_level_screen_occupancy_rect(void* pObject)
 	}
 	((void(__fastcall*)(void*, int, short*))0x00401D1B)(
 		pGrid, 0, (short*)(pThis + 0x8da));
+}
+
+// FUNCTION: LEMBALL 0x004738E0
+void __fastcall append_debug_text_line_record(void* pObject, int, char* pText, int nStyle)
+{
+	char* pThis;
+	int* pRecord;
+	int nIndex;
+	int nOffset;
+	char* pSource;
+
+	pThis = (char*)pObject;
+	if (*(int*)(pThis + 8) == *(int*)pThis && *(int*)pThis > 1)
+	{
+		nIndex = 0;
+		nOffset = 0;
+		do
+		{
+			pRecord = (int*)(*(char**)(pThis + 4) + nOffset);
+			nStyle = pRecord[3];
+			pSource = (char*)pRecord[4];
+			if (pRecord[1] != 0)
+				free((void*)pRecord[1]);
+			pRecord[1] = (int)malloc(strlen(pSource) + 1);
+			strcpy((char*)pRecord[1], pSource);
+			++nIndex;
+			nOffset += 0x0c;
+			pRecord[0] = nStyle;
+			pRecord[2] = 0;
+		} while (nIndex < *(int*)pThis - 1);
+	}
+	pRecord = (int*)(*(char**)(pThis + 4) + *(int*)(pThis + 8) * 0x0c);
+	if (pRecord[1] != 0)
+		free((void*)pRecord[1]);
+	pRecord[1] = (int)malloc(strlen(pText) + 1);
+	strcpy((char*)pRecord[1], pText);
+	pRecord[0] = nStyle;
+	pRecord[2] = 0;
+	if (*(int*)pThis - *(int*)(pThis + 8) != 1)
+		++*(int*)(pThis + 8);
+}
+
+// FUNCTION: LEMBALL 0x00474620
+void __fastcall copy_selected_text_to_clipboard(int* pWindow)
+{
+	char* pText;
+	char* pTarget;
+	void* hMemory;
+
+	((void(__fastcall*)(int*))(*(void***)pWindow)[0])(pWindow);
+	if (pWindow[0x14] == -1 || pWindow[0x15] == -1)
+	{
+		((void(__fastcall*)(int*))(*(void***)pWindow)[1])(pWindow);
+		return;
+	}
+	pText = ((char*(__fastcall*)(int*))0x00474520)(pWindow);
+	hMemory = GlobalAlloc(0x2002, strlen(pText) + 1);
+	if (hMemory == 0)
+	{
+		free(pText);
+		MessageBoxA(0, (const char*)0x004A2CE0, (const char*)0x004A2CD8, 0);
+		((void(__fastcall*)(int*))(*(void***)pWindow)[1])(pWindow);
+		return;
+	}
+	pTarget = (char*)GlobalLock(hMemory);
+	strcpy(pTarget, pText);
+	GlobalUnlock(hMemory);
+	free(pText);
+	if (!OpenClipboard((void*)pWindow[7]))
+	{
+		MessageBoxA(0, (const char*)0x004A2D08, (const char*)0x004A2D00, 0);
+		GlobalFree(hMemory);
+	}
+	else
+	{
+		EmptyClipboard();
+		SetClipboardData(1, hMemory);
+		CloseClipboard();
+	}
+	((void(__fastcall*)(int*, int, int))0x004743E0)(pWindow, 0, 0);
+	pWindow[0x15] = -1;
+	pWindow[0x14] = -1;
+	((void(__fastcall*)(int*))(*(void***)pWindow)[1])(pWindow);
 }
