@@ -30,6 +30,7 @@ public:
 	void AddNewWaypointToCurrentGroup(int nX, int nY);
 	void RemoveWaypointsFromCurrentGroup(void);
 	void InitialiseNetwork(void);
+	void LoadAdditionalPlayerStartPositions(unsigned short* pData, int nUnused, int fReuseNetworkObjects);
 	int HasSFXChanged(void);
 	void AddPlayerLemmingToGroup(CPlayerLemming* pLemming, CPlayerLemmingGroup* pGroup);
 	int GetViewData(int pViewData);

@@ -302,6 +302,153 @@ void CPlayerLemmingGroupManager::InitialiseNetwork(void)
 		m_fNetworkInitialised14C = 1;
 	}
 }
+
+// FUNCTION: LEMBALL 0x00419060
+void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned short* pData,
+																	int nUnused,
+																	int fReuseNetworkObjects)
+{
+	typedef void(LEMBALL_FASTCALL * RestartProc)(void* pLemming);
+	char* pLevel;
+	char* pMode;
+	unsigned short* pSource;
+	int* pStart;
+	CPlayerLemming** ppReuse;
+	CPlayerLemming* pLemming;
+	void* pGroup;
+	void* pStorage;
+	int nTotal;
+	int nRemaining;
+	int nDelay;
+	int nCount;
+	int nListIndex;
+	int nListCount;
+	int* pList;
+	int nHeight;
+	int i;
+	int j;
+
+	(void) nUnused;
+	pLevel = *(char**) 0x004a74b4;
+	pMode = *(char**) 0x004a782c;
+	m_nReserved124 = *pData++;
+	nTotal = 0;
+	i = 0;
+	if (m_nReserved124 > 0) {
+		pStart = (int*) ((char*) this + 0xe0);
+		pSource = pData;
+		do {
+			pStart[0] = pSource[0];
+			pStart[4] = pSource[1];
+			pStart[8] = pSource[2];
+			if (pStart[0] < 0 || pStart[4] < 0 || *(int*) (pLevel + 0x10) <= pStart[0] >> 4 ||
+				*(int*) (pLevel + 0x14) <= pStart[4] >> 4) {
+				nHeight = 0;
+			}
+			else {
+				nHeight = ((unsigned short(LEMBALL_FASTCALL*)(void*, int, int, int)) 0x004029a5)(
+					*(char**) (pLevel + 0x0c) + ((pStart[4] >> 4) * *(int*) (pLevel + 0x10) + (pStart[0] >> 4)) * 0x0c,
+					0,
+					pStart[0] & 0x0f,
+					pStart[4] & 0x0f);
+			}
+			pStart[8] = (unsigned short) nHeight;
+			pStart[12] = pSource[3];
+			nTotal += pSource[3];
+			++i;
+			++pStart;
+			pSource += 4;
+		} while (i < m_nReserved124);
+	}
+
+	((void(LEMBALL_FASTCALL*)(void*, int, int)) 0x004011fe)(pMode, 0, nTotal);
+	nRemaining = 4 - nTotal;
+	ppReuse = fReuseNetworkObjects != 0 ? (CPlayerLemming**) (pMode + 0x1d0) : 0;
+	m_nDeadCount128 = 0;
+	pStart = (int*) ((char*) this + 0x100);
+	while (nRemaining > 0) {
+		if (ppReuse == 0) {
+			pStorage = AllocateVSMemBlock(0x22c);
+			pLemming =
+				pStorage == 0
+					? 0
+					: (CPlayerLemming*)
+						  ConstructPlasChunkObjectForLevelThunk(pStorage, 0, pStart[-8], pStart[-4], *pStart, 0, 0, 0);
+		}
+		else {
+			pLemming = *ppReuse++;
+		}
+		((RestartProc) ((void**) ((CGameObject*) pLemming)->m_pVtable00)[0x104 / 4])(pLemming);
+		*(int*) ((char*) pLemming + 0xb8) = 8;
+		nListCount = *(int*) (pMode + 0x118);
+		nListIndex = 0;
+		if (nListCount > 0) {
+			pList = *(int**) (pMode + 0x120);
+			while (nListIndex < nListCount && pList[nListIndex] != (int) pLemming) {
+				++nListIndex;
+			}
+			if (nListIndex < nListCount) {
+				--*(int*) (pMode + 0x118);
+				while (nListIndex < *(int*) (pMode + 0x118)) {
+					pList[nListIndex] = pList[nListIndex + 1];
+					++nListIndex;
+				}
+				pList[*(int*) (pMode + 0x118)] = 0;
+			}
+		}
+		--*(int*) 0x004a640c;
+		((CGameObject*) pLemming)->m_pOwningChunkStream60 = this == 0 ? 0 : m_abReservedB0;
+		m_apDeadLemmings12C[m_nDeadCount128++] = pLemming;
+		++pStart;
+		--nRemaining;
+	}
+
+	i = 0;
+	pStart = (int*) ((char*) this + 0x110);
+	while (i < m_nReserved124) {
+		nDelay = 0xf3c;
+		j = 0;
+		while (j < *pStart) {
+			if (ppReuse == 0) {
+				pStorage = AllocateVSMemBlock(0x22c);
+				pLemming = pStorage == 0 ? 0
+										 : (CPlayerLemming*) ConstructPlasChunkObjectForLevelThunk(pStorage,
+																								   0,
+																								   pStart[-12],
+																								   pStart[-8],
+																								   pStart[-4],
+																								   0,
+																								   0,
+																								   nDelay / 0x32);
+			}
+			else {
+				pLemming = *ppReuse++;
+			}
+			((RestartProc) ((void**) ((CGameObject*) pLemming)->m_pVtable00)[0x104 / 4])(pLemming);
+			((CGameObject*) pLemming)->m_pOwningChunkStream60 = this == 0 ? 0 : m_abReservedB0;
+			pGroup = ((void*(LEMBALL_FASTCALL*) (void*, int, int) ) 0x00402eb9)(this, 0, i);
+			((void(LEMBALL_FASTCALL*)(void*, int, void*, void*)) 0x004024b4)(this, 0, pLemming, pGroup);
+			nDelay += 800;
+			++j;
+		}
+		nCount = (*pStart * 800 + 0xf3c) / 0x32;
+		if (*(int*) (pMode + 0x5c) < nCount) {
+			*(int*) (pMode + 0x5c) = nCount;
+		}
+		if (fReuseNetworkObjects == 0) {
+			((void(LEMBALL_FASTCALL*)(void*, int, int, int, int, int)) 0x004033b9)(pMode,
+																				   0,
+																				   pStart[-12],
+																				   pStart[-8],
+																				   pStart[-4],
+																				   (*pStart * 800 + 0x1004) / 0x32);
+		}
+		++pStart;
+		++i;
+	}
+	pLemming = (CPlayerLemming*) ((void*(LEMBALL_FASTCALL*) (void*, int) ) 0x00401078)(this, 0);
+	((void(LEMBALL_FASTCALL*)(void*, int, void*)) 0x004011f9)(this, 0, pLemming);
+}
 // FUNCTION: LEMBALL 0x004193f0
 int CPlayerLemmingGroupManager::HasSFXChanged(void)
 {
