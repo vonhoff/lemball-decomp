@@ -149,6 +149,7 @@ set(LEMBALL_SOURCES
     src/AI/CInvisibleSwitch.cpp
     src/Control/ClusterScanOps.cpp
     src/Control/ClusterScanOps2.cpp
+    src/Control/LargePoolRehome.cpp
     src/AI/CInvisibleSwitchManager.cpp
     src/AI/CLaser.cpp
     src/AI/CLaserManager.cpp
