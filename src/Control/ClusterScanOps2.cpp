@@ -4,6 +4,7 @@
 extern void __fastcall AppendType18ChunkObject(void* pStream, int nUnused, unsigned short param_1, void* param_2, int param_3, int param_4);
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern void __fastcall ResetRockChunkObjectRuntimeStateThunk(void* pObject);
 extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* pUnusedEdx, int fReleaseMode);
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pSharedRenderDispatchQueue;
@@ -12,6 +13,10 @@ extern void* g_pLevelProgressState;
 extern int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
 extern void* g_pActiveNetworkLobbyTransportController;
 extern char g_szNetworkLobbyLocalPlayerName[0x10];
+extern char g_szNetworkLobbyJoinAddress[0x10];
+extern void* g_pAudioManager;
+extern int g_fEffectsOptionAvailable;
+extern int g_fVariantResourceEffectsEnabled;
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 extern void __fastcall ResetTypedResourceObjectState(void* pObject);
 extern void* g_pCachedChunkManagerLevelMode;
@@ -3597,4 +3602,221 @@ void __fastcall delete_large_render_adjusted(void* pObject)
 void __fastcall delete_paintball_screen_adjusted(void* pObject)
 {
 	((void(__fastcall*)(void*)) 0x403035)((char*)pObject - 0xc);
+}
+// FUNCTION: LEMBALL 0x00473f00
+int __fastcall map_screen_y_to_debug_text_line_index(void* pThis, int nEdxSlop, int screenY)
+{
+	DebugTextRect rc;
+	void** vtbl = *(void***) pThis;
+	int nLine;
+	int nTopLine;
+	(*(void (__fastcall**)(void*, int)) vtbl[0])(pThis, 0);
+	get_window_client_rect_in_screen_coords(*(HWND*) ((char*) pThis + 0x1c), &rc);
+	nLine = screenY - rc.nTop;
+	if (nLine < 0) {
+		nLine = -1;
+	} else if (rc.nBottom - rc.nTop < nLine) {
+		nLine = *(int*) ((char*) pThis + 0x34) + 1;
+	} else {
+		nLine = nLine / *(int*) ((char*) pThis + 0x3c);
+	}
+	nTopLine = *(int*) ((char*) pThis + 0x38);
+	(*(void (__fastcall**)(void*, int)) vtbl[1])(pThis, 0);
+	return nTopLine + nLine;
+	(void) nEdxSlop;
+}
+
+// FUNCTION: LEMBALL 0x00454740
+void __fastcall commit_network_lobby_text_prompt(void* pThis, int nEdxSlop)
+{
+	char* pszText;
+	char* pBuffer;
+	*(int*) ((char*) pThis + 0x39c) = 0;
+	if (*(int*) ((char*) pThis + 0x3a0) == 1) {
+		pBuffer = *(char**) (*(int*) ((char*) pThis + 0x398) + 0x0c);
+		if (pBuffer[0] == '\0') {
+			((void (__fastcall*)(void*)) 0x401d61)(pThis);
+			return;
+		}
+		strcpy(g_szNetworkLobbyLocalPlayerName, pBuffer);
+		if (*(int*) ((char*) pThis + 0x3bc) == 0) {
+			g_szNetworkLobbyJoinAddress[0] = '\0';
+			*(int*) ((char*) pThis + 0x3e0) = 1;
+		} else {
+			*(int*) ((char*) pThis + 0x3a4) = 2;
+		}
+		if (*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x2c) == 0 ||
+			*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) != 0) {
+			((void (__fastcall*)(void*)) 0x4012da)(pThis);
+			return;
+		}
+	} else if (*(int*) ((char*) pThis + 0x3a0) == 2) {
+		pszText = *(char**) (*(int*) ((char*) pThis + 0x398) + 0x0c);
+		strcpy(g_szNetworkLobbyJoinAddress, pszText);
+		*(int*) ((char*) pThis + 0x3e0) = 1;
+	}
+	(void) nEdxSlop;
+}
+
+// FUNCTION: LEMBALL 0x00439c40
+void __fastcall update_variant_resource_effect_volumes(void* pThis, int nEdxSlop, void* pEffectArray, int nCount, int* pPlayerPos)
+{
+	unsigned long dwNow;
+	int nEffectId;
+	int nEffectSlot;
+	unsigned int uMasterVolume;
+	int nDistance;
+	unsigned int uChildVolume;
+	int* pEntry;
+	int nPlayerX;
+	int nPlayerY;
+	int nQueuedEffect;
+	if (g_fEffectsOptionAvailable != 0 && g_fVariantResourceEffectsEnabled != 0) {
+		nQueuedEffect = *(int*) ((char*) pThis + 0x10);
+		if (nQueuedEffect != 0) {
+			*(int*) ((char*) pThis + 0x10) = 0;
+			((void (__fastcall*)(void*, int)) 0x45b460)(g_pAudioManager, *(int*) ((char*) pThis + nQueuedEffect * 0x0c + 0x6c));
+		}
+		dwNow = ((unsigned long (*) (void)) 0x00462e80)();
+		nPlayerX = *pPlayerPos;
+		nPlayerY = pPlayerPos[1];
+		uMasterVolume = (unsigned int) ((unsigned char (*) (void*)) 0x45b560)(g_pAudioManager);
+		uMasterVolume = uMasterVolume & 0xff;
+		if (nCount > 0) {
+			pEntry = (int*) ((char*) pEffectArray + 0x44);
+			do {
+				nEffectId = *pEntry;
+				if (nEffectId != 0) {
+					nDistance = ((int (__cdecl*) (int, int, int, int)) 0x40254a)(
+						nPlayerX >> 12, nPlayerY >> 12,
+						(unsigned int) *(unsigned short*) ((char*) pEntry - 0x34),
+						(unsigned int) *(unsigned short*) ((char*) pEntry - 0x32));
+					uChildVolume = uMasterVolume;
+					if (nDistance - 200 > 0) {
+						uChildVolume = uMasterVolume + (unsigned int) ((nDistance - 200) * (int) uMasterVolume * -40) / 0x1e780;
+						if ((int) uChildVolume > (int) uMasterVolume) {
+							uChildVolume = uMasterVolume;
+						}
+					}
+					nEffectSlot = nEffectId * 0x0c;
+					if ((int) (dwNow - *(unsigned long*) ((char*) pThis + nEffectSlot + 0x70)) > 100) {
+						((void (__fastcall*)(void*, int, int)) 0x45b490)(g_pAudioManager, *(int*) ((char*) pThis + nEffectSlot + 0x6c), (int) uChildVolume);
+						*(unsigned long*) ((char*) pThis + nEffectSlot + 0x70) = dwNow;
+					}
+				}
+				pEntry += 0x13;
+				--nCount;
+			} while (nCount != 0);
+		}
+	}
+	(void) nEdxSlop;
+}
+
+// FUNCTION: LEMBALL 0x00471cd0
+void* __fastcall delete_tcpip_socket_channel_stack_wrapper(void* pThis, void* nUnused, char param_1)
+{
+	((void(__fastcall*)(void*))0x46fd70)((char*)pThis + 0x128);
+	((void(__fastcall*)(void*))0x45f8a0)((char*)pThis + 0xa8);
+	((void(__fastcall*)(void*))0x45fd80)((char*)pThis + 0x30);
+	((void(__fastcall*)(void*))0x45f6c0)(pThis);
+	if (param_1 & 1) {
+		((void(__cdecl*)(void*))0x45a790)((char*)pThis - 0x8);
+	}
+	return (char*)pThis - 0x8;
+	(void) nUnused;
+}
+
+// FUNCTION: LEMBALL 0x00471f60
+void* __fastcall delete_tcpip_eff_transport_composite_wrapper(void* pThis, void* nUnused, char param_1)
+{
+	((void(__fastcall*)(void*))0x4704e0)(pThis);
+	((void(__fastcall*)(void*))0x46fd70)((char*)pThis + 0x128);
+	((void(__fastcall*)(void*))0x45f8a0)((char*)pThis + 0xa8);
+	((void(__fastcall*)(void*))0x45fd80)((char*)pThis + 0x30);
+	((void(__fastcall*)(void*))0x45f6c0)(pThis);
+	if (param_1 & 1) {
+		((void(__cdecl*)(void*))0x45a790)((char*)pThis - 0x30);
+	}
+	return (char*)pThis - 0x30;
+	(void) nUnused;
+}
+// FUNCTION: LEMBALL 0x00442dd0
+void __fastcall refresh_level_screen_action_button(char* param_1)
+{
+	void* this_;
+	int iVar2;
+	int iVar3;
+	unsigned int uVar4;
+	iVar3 = *(int*)((char*)param_1 + 8);
+	if (*(int*)((char*)iVar3 + 0xb8) == 8) {
+		uVar4 = 0;
+	} else {
+		this_ = *(void**)(*(int*)((char*)param_1 + 0xc) + 0x10);
+		if (*(int*)((char*)this_ + 0xa48) == 1) {
+			uVar4 = ((unsigned int(__fastcall*)(void*, void*))0x4021c6)(this_, (void*)iVar3);
+		} else {
+			iVar2 = ((int(__fastcall*)(void*))0x4021df)(*(void**)(*(int*)((char*)this_ + 0x96c) + 0x15c));
+			iVar3 = ((int(__fastcall*)(int))0x4037ba)(iVar3);
+			uVar4 = (unsigned int)(iVar2 == iVar3);
+		}
+	}
+	switch(((unsigned int(__fastcall*)(void*))0x4015d2)(*(void**)((char*)param_1 + 8))) {
+	case 0x27: *(int*)((char*)param_1 + 0x18) = 3; break;
+	case 0x29: *(int*)((char*)param_1 + 0x18) = 1; break;
+	case 0x2b: *(int*)((char*)param_1 + 0x18) = 4; break;
+	case 0x2d: *(int*)((char*)param_1 + 0x18) = 0; break;
+	default:  *(int*)((char*)param_1 + 0x18) = -1; break;
+	}
+	iVar3 = 0;
+	*(int*)((char*)param_1 + 0x1c) = 0;
+	if (0 < *(int*)(*(int*)((char*)param_1 + 8) + 0x220)) {
+		do {
+			iVar2 = ((int(__fastcall*)(void*, int))0x40269e)(*(void**)((char*)param_1 + 8), iVar3);
+			if (iVar2 == 0x15) {
+				*(int*)((char*)param_1 + 0x20 + *(int*)((char*)param_1 + 0x1c) * 4) = 3;
+				*(int*)((char*)param_1 + 0x1c) += 1;
+			} else if (iVar2 == 0x16) {
+				*(int*)((char*)param_1 + 0x20 + *(int*)((char*)param_1 + 0x1c) * 4) = 1;
+				*(int*)((char*)param_1 + 0x1c) += 1;
+			} else if (iVar2 == 0x17) {
+				*(int*)((char*)param_1 + 0x20 + *(int*)((char*)param_1 + 0x1c) * 4) = 4;
+				*(int*)((char*)param_1 + 0x1c) += 1;
+			}
+			iVar3 = iVar3 + 1;
+		} while (iVar3 < *(int*)(*(int*)((char*)param_1 + 8) + 0x220));
+	}
+	*(unsigned int*)(*(int*)((char*)param_1 + 4) + 0x104) = uVar4;
+}
+
+// FUNCTION: LEMBALL 0x0044b9e0
+void __fastcall update_registration_info_screen_upload(void* pObject, int nUnused, int param_3)
+{
+	if (*(int*) ((char*) pObject + 0x20) != 0) {
+		((void(__fastcall*)(void*)) 0x401d57)(pObject);
+	}
+	(void) nUnused;
+	(void) param_3;
+}
+
+// FUNCTION: LEMBALL 0x00426810
+void __fastcall CRocket_Restart(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	ResetRockChunkObjectRuntimeStateThunk(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00451fb0
+void* __fastcall construct_password_entry_render_context_object(void* pObject)
+{
+	((void(__fastcall*)(void*)) 0x463b50)(pObject);
+	*(void**) pObject = (void*) 0x498478;
+	*(int*) ((char*) pObject + 0x50) = *(int*) ((char*) pObject + 0x50) + 0xa;
+	return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00436830
+void __fastcall C2D_KillRemapPalettes(void* pObject)
+{
+	((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant(
+		(void*) *(int*) ((char*) pObject + 0x968));
 }
