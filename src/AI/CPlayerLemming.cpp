@@ -331,7 +331,7 @@ void CPlayerLemming::StartStanding(void)
 {
 	void* pMoveChunk = 0;
 	int nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)
-						->GetZ(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, &pMoveChunk);
+					  ->GetZ(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, &pMoveChunk);
 	int nCurrentHeight = m_WorldPosition9C.z >> 12;
 
 	if (m_fOnMover11C == 0 && pMoveChunk != 0) {
@@ -341,8 +341,10 @@ void CPlayerLemming::StartStanding(void)
 		if (pMoveChunk == 0) {
 			m_WorldPosition9C.z = nHeight << 12;
 		}
-		((void(__fastcall*)(void*, void*, void*, unsigned short)) 0x40341d)(
-			g_pActiveManagedEntityOwner, &m_WorldPosition9C, this, m_nBehaviourFlags68);
+		((void(__fastcall*)(void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner,
+																			&m_WorldPosition9C,
+																			this,
+																			m_nBehaviourFlags68);
 		return;
 	}
 
@@ -407,11 +409,11 @@ void CPlayerLemming::RequestBalloon(void)
 			break;
 		}
 	}
-	m_fAirborne30 = ((int(__fastcall*)(void*, int, int, int*)) 0x401983)(
-		*(void**) ((char*) g_pActiveManagedEntityOwner + 0x1a8),
-		0,
-		*(int*) ((char*) this + 0x16c),
-		aTargetPoint);
+	m_fAirborne30 =
+		((int(__fastcall*)(void*, int, int, int*)) 0x401983)(*(void**) ((char*) g_pActiveManagedEntityOwner + 0x1a8),
+															 0,
+															 *(int*) ((char*) this + 0x16c),
+															 aTargetPoint);
 	m_nMotionStartTickC8 = g_nLevelFrameClockTick;
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(10);
 }
@@ -442,7 +444,7 @@ void CPlayerLemming::Fire(void)
 		break;
 	default:
 		if (*(int*) ((char*) g_pLevelProgressState + 0x24) != 0 || m_nLatchObjectType228 != 0) {
-			((void(__fastcall*)(void*, int, int)) (*(void***) this)[0x84 / 4])(this, 0, 4000);
+			((void(__fastcall*)(void*, int, int))(*(void***) this)[0x84 / 4])(this, 0, 4000);
 			((void(__fastcall*)(void*, int, int, int, int, int, int, int, int, int, int, int)) 0x402eff)(
 				g_pActiveManagedEntityOwner,
 				0,
@@ -464,4 +466,86 @@ void CPlayerLemming::Fire(void)
 		break;
 	}
 	*(int*) ((char*) this + 0x184) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0040fd10
+void CPlayerLemming::OnBalloon(void)
+{
+	char* pGrid;
+	int Target[3];
+	int nDistance;
+	int nHeight;
+	int nCurrentZ;
+	int nDelta;
+	int nTileX;
+	int nTileY;
+
+	Target[0] = (int) 0xaa55aa55;
+	Target[1] = (int) 0xaa55aa55;
+	Target[2] = (int) 0xaa55aa55;
+	((void(__fastcall*)(void*, int, int, int*)) 0x401983)(*(void**) ((char*) g_pActiveManagedEntityOwner + 0x1a8),
+														  0,
+														  *(int*) ((char*) this + 0x16c),
+														  Target);
+	nDistance = ((int(__cdecl*)(int, int, int, int)) 0x40254a)(m_WorldPosition9C.x >> 12,
+															   m_WorldPosition9C.y >> 12,
+															   Target[0] >> 12,
+															   Target[1] >> 12);
+	pGrid = (char*) g_pLevelTileGrid;
+	if (nDistance < 0x10) {
+		*(int*) ((char*) this + 0x30) = 0;
+		((void(__fastcall*)(void*, int, int))(*(void***) this)[0x0d])(this, 0, 0x2b);
+		*(int*) ((char*) this + 0x108) = 1;
+		m_nActionPhaseBC = 0;
+		m_nMotionStartTickC8 = g_nLevelFrameClockTick;
+		m_nStateB8 = 0x0b;
+		m_nJumpElevation100 = m_WorldPosition9C.z >> 12;
+		((void(__fastcall*)(void*, int)) 0x402446)(this, 0);
+		m_nJumpOriginXF4 = m_WorldPosition9C.x;
+		m_nJumpOriginYF8 = m_WorldPosition9C.y;
+		nTileX = (m_WorldPosition9C.x >> 12) >> 4;
+		nTileY = (m_WorldPosition9C.y >> 12) >> 4;
+		if ((m_WorldPosition9C.x >> 12) < 0 || (m_WorldPosition9C.y >> 12) < 0 || nTileX >= *(int*) (pGrid + 0x10) ||
+			nTileY >= *(int*) (pGrid + 0x14)) {
+			nHeight = 0;
+		}
+		else {
+			nHeight = ((unsigned short(__fastcall*)(void*, int, int, int)) 0x4029a5)(
+				*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0x0c,
+				0,
+				(m_WorldPosition9C.x >> 12) & 0xf,
+				(m_WorldPosition9C.y >> 12) & 0xf);
+		}
+		m_nJumpOriginZFC = nHeight << 12;
+		return;
+	}
+	nTileX = (m_WorldPosition9C.x >> 12) >> 4;
+	nTileY = (m_WorldPosition9C.y >> 12) >> 4;
+	if ((m_WorldPosition9C.x >> 12) < 0 || (m_WorldPosition9C.y >> 12) < 0 || nTileX >= *(int*) (pGrid + 0x10) ||
+		nTileY >= *(int*) (pGrid + 0x14)) {
+		nHeight = 0;
+	}
+	else {
+		nHeight = ((unsigned short(__fastcall*)(void*, int, int, int)) 0x4029a5)(
+			*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0x0c,
+			0,
+			(m_WorldPosition9C.x >> 12) & 0xf,
+			(m_WorldPosition9C.y >> 12) & 0xf);
+	}
+	nHeight += 0x20;
+	nCurrentZ = m_WorldPosition9C.z >> 12;
+	nDelta = (g_nLevelFrameClockTick - m_nMotionStartTickC8) * 2;
+	if (nDistance) {
+		m_WorldPosition9C.x += (Target[0] - m_WorldPosition9C.x) * nDelta / nDistance;
+		m_WorldPosition9C.y += (Target[1] - m_WorldPosition9C.y) * nDelta / nDistance;
+	}
+	if (nCurrentZ < nHeight - 6 || nCurrentZ > nHeight + 6) {
+		if (nCurrentZ > nHeight) {
+			m_WorldPosition9C.z -= 0x2000;
+		}
+		else {
+			m_WorldPosition9C.z += 0x2000;
+		}
+	}
+	m_nMotionStartTickC8 = g_nLevelFrameClockTick;
 }

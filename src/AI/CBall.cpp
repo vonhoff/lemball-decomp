@@ -75,8 +75,7 @@ void CBall::StartMovement(int nUseTarget)
 		nTargetX = m_nTargetX124;
 		nTargetY = m_nTargetY128;
 	}
-	nDistance = Distance2DIntPixels(
-		m_nPositionX9C >> 12, m_nPositionYA0 >> 12, nTargetX >> 12, nTargetY >> 12);
+	nDistance = Distance2DIntPixels(m_nPositionX9C >> 12, m_nPositionYA0 >> 12, nTargetX >> 12, nTargetY >> 12);
 	*(int*) ((char*) this + 0xc8) = g_nLevelFrameClockTick;
 	nDuration = (int) ((unsigned short) m_wSpeed130 * nDistance) / 50;
 	*(int*) ((char*) this + 0x88) = nDuration;
@@ -88,8 +87,12 @@ void CBall::StartMovement(int nUseTarget)
 	oCurrent.y = m_nPositionYA0;
 	oTarget.x = nTargetX;
 	oTarget.y = nTargetY;
-	((void(__fastcall*)(void*, int, int, int, int, int)) 0x40326f)(
-		(char*) this + 0x78, 0, oTarget.x, oTarget.y, oCurrent.x, oCurrent.y);
+	((void(__fastcall*)(void*, int, int, int, int, int)) 0x40326f)((char*) this + 0x78,
+																   0,
+																   oTarget.x,
+																   oTarget.y,
+																   oCurrent.x,
+																   oCurrent.y);
 }
 
 // FUNCTION: LEMBALL 0x00421da0
@@ -129,4 +132,77 @@ void CBall::LoadLevel(void* pStreamCursor)
 	nSpeed = pCursor[6];
 	*ppCursor = pCursor + 7;
 	Set(oCurrent, oTarget, nSpeed);
+}
+
+// FUNCTION: LEMBALL 0x00421bc0
+int CBall::Process(void)
+{
+	char* pThis;
+	unsigned short nPhase;
+
+	pThis = (char*) this;
+	if (m_nStateB8 != 0x25) {
+		if (m_nStateB8 != 0x26) {
+			return 1;
+		}
+		if ((unsigned int) *(int*) (pThis + 0xcc) >= (unsigned int) g_nLevelFrameClockTick) {
+			return 1;
+		}
+		((void(__fastcall*)(void*, int, void*)) 0x40302b)(*(void**) 0x49e1bc, 0, this);
+		return 0;
+	}
+	nPhase = *(unsigned short*) (pThis + 0xbc);
+	switch (nPhase) {
+	case 0:
+		*(int*) (pThis + 0xcc) = g_nLevelFrameClockTick;
+		m_nPositionX9C = m_nSavedPosX40;
+		m_nPositionYA0 = m_nSavedPosY44;
+		m_nPositionZA4 = m_nSavedPosZ48;
+		SetHeightCorrect();
+		*(unsigned short*) (pThis + 0xbc) = 1;
+		break;
+	case 1:
+		if ((unsigned int) *(int*) (pThis + 0xcc) < (unsigned int) g_nLevelFrameClockTick) {
+			*(unsigned short*) (pThis + 0xbc) = 2;
+			StartMovement(1);
+		}
+		break;
+	case 2:
+		if ((unsigned int) *(int*) (pThis + 0xcc) < (unsigned int) g_nLevelFrameClockTick) {
+			m_nPositionX9C = m_nTargetX124;
+			m_nPositionYA0 = m_nTargetY128;
+			m_nPositionZA4 = m_nTargetZ12C;
+			SetHeightCorrect();
+			*(unsigned short*) (pThis + 0xbc) = 3;
+			break;
+		}
+		((void(__fastcall*)(void*, int))(*(void***) this)[0x11])(this, 0);
+		break;
+	case 3:
+		*(int*) (pThis + 0xcc) = g_nLevelFrameClockTick;
+		m_nPositionX9C = m_nTargetX124;
+		m_nPositionYA0 = m_nTargetY128;
+		m_nPositionZA4 = m_nTargetZ12C;
+		SetHeightCorrect();
+		*(unsigned short*) (pThis + 0xbc) = 4;
+		break;
+	case 4:
+		if ((unsigned int) *(int*) (pThis + 0xcc) < (unsigned int) g_nLevelFrameClockTick) {
+			*(unsigned short*) (pThis + 0xbc) = 5;
+			StartMovement(0);
+		}
+		break;
+	case 5:
+		if ((unsigned int) *(int*) (pThis + 0xcc) < (unsigned int) g_nLevelFrameClockTick) {
+			m_nPositionX9C = m_nSavedPosX40;
+			m_nPositionYA0 = m_nSavedPosY44;
+			m_nPositionZA4 = m_nSavedPosZ48;
+			SetHeightCorrect();
+			*(unsigned short*) (pThis + 0xbc) = 0;
+			break;
+		}
+		((void(__fastcall*)(void*, int))(*(void***) this)[0x11])(this, 0);
+	}
+	((void(__fastcall*)(void*, int)) 0x401500)(this, 0);
+	return 1;
 }
