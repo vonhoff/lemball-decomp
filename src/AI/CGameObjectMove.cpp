@@ -16,6 +16,10 @@ struct LevelTileGridOwnerView {
 	unsigned short GetZ(int x, int y, void** ppMoveChunk);
 };
 
+struct CMover {
+	int GetOn(CGameObject* pObject);
+};
+
 // Macintosh: CGameObject::MapCheck(int, int)
 // FUNCTION: LEMBALL 0x004157b0
 int CGameObject::MapCheck(int nX, int nY)
@@ -82,17 +86,20 @@ void CGameObject::StartMoving(void)
 	int nDest[2];
 
 	if (m_pCommandQueue70 != 0) {
-		nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)->GetZ(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, &pMoveChunk) & 0xffff;
-		nDestHeight = m_WorldPosition9C.z >> 12;   /* 0xa4 */
+		nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)
+					  ->GetZ(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, &pMoveChunk) &
+				  0xffff;
+		nDestHeight = m_WorldPosition9C.z >> 12; /* 0xa4 */
 		if (m_fOnMover11C == 0 && pMoveChunk != 0) {
-			((void(__fastcall*)(void*, void*)) 0x4036b1)(pMoveChunk, this);
+			((CMover*) pMoveChunk)->GetOn(this);
 		}
 		if (nDestHeight == nHeight) {
-			pDest = (int*) ((void* (__fastcall*)(CGameObject*, int*)) 0x40336e)(this, &nHeight);
+			pDest = (int*) ((void*(__fastcall*) (CGameObject*, int*) ) 0x40336e)(this, &nHeight);
 			nPos[0] = pDest[0];
 			nPos[1] = pDest[1];
 			*(int*) ((char*) this + 0xb0) = pDest[2];
-			nDist = Distance2DIntPixels(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, nPos[0] >> 12, nPos[1] >> 12);
+			nDist =
+				Distance2DIntPixels(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, nPos[0] >> 12, nPos[1] >> 12);
 			m_nMotionStartTickC8 = g_nLevelFrameClockTick;
 			nSpeedIndex = *((int*) ((char*) this + 0x64));
 			m_nMotionDuration88 = (*(int*) (0x49d070 + nSpeedIndex * 4) * nDist) / 0x32;
@@ -389,8 +396,9 @@ void CGameObject::Jump(void)
 	}
 	void* pMoveChunk = 0;
 	int nTick = g_nLevelFrameClockTick - m_nMotionStartTickC8;
-	unsigned int nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)->GetZ(
-		*(int*) ((char*) this + 0xf4) >> 12, *(int*) ((char*) this + 0xf8) >> 12, &pMoveChunk);
+	unsigned int nHeight =
+		((LevelTileGridOwnerView*) g_pLevelTileGrid)
+			->GetZ(*(int*) ((char*) this + 0xf4) >> 12, *(int*) ((char*) this + 0xf8) >> 12, &pMoveChunk);
 	nHeight &= 0xffff;
 	int nFall = (nTick * 3 + *(int*) ((char*) this + 0x100)) << 12;
 	m_WorldPosition9C.z = nFall;
@@ -400,8 +408,12 @@ void CGameObject::Jump(void)
 		m_WorldPosition9C.y = *(int*) ((char*) this + 0xf8);
 		*(int*) ((char*) this + 0x104) = 0;
 		if (m_fOnMover11C == 0 && pMoveChunk != 0) {
-			if (((int(__fastcall*) (void*, void*)) 0x4036b1)(pMoveChunk, this) == 0) {
-				((void (__fastcall*) (void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) this + 0x9c, this, *(unsigned short*) ((char*) this + 0x68));
+			if (((CMover*) pMoveChunk)->GetOn(this) == 0) {
+				((void(__fastcall*)(void*, void*, void*, unsigned short)) 0x40341d)(
+					g_pActiveManagedEntityOwner,
+					(char*) this + 0x9c,
+					this,
+					*(unsigned short*) ((char*) this + 0x68));
 				return;
 			}
 		}
