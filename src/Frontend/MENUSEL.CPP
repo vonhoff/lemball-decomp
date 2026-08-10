@@ -696,6 +696,18 @@ void LEMBALL_FASTCALL destroy_queued_variant_child_slot_manager(void* pObject)
 
 struct GameQueuedVariantRangeEntry {
 	void RebuildSourceRect(int fForce);
+	GameQueuedVariantRangeEntry* Construct(void* pRenderOwner,
+										   void* pRenderContext,
+										   int x,
+										   int y,
+										   int nResourceId,
+										   int nActivationMode,
+										   int nFirstResource,
+										   int nLastResource,
+										   int nReserved,
+										   int nToken,
+										   int* pSelection,
+										   int nCommand);
 
 	void** m_pVtable00;
 	int m_nQueueTag04;
@@ -2719,6 +2731,52 @@ void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(void* pDeleteI
 	}
 	return pOwner - 0x90;
 }
+// FUNCTION: LEMBALL 0x0044f070
+GameQueuedVariantRangeEntry* GameQueuedVariantRangeEntry::Construct(void* pRenderOwner,
+																	void* pRenderContext,
+																	int x,
+																	int y,
+																	int nResourceId,
+																	int nActivationMode,
+																	int nFirstResource,
+																	int nLastResource,
+																	int nReserved,
+																	int nToken,
+																	int* pSelection,
+																	int nCommand)
+{
+	typedef void(LEMBALL_FASTCALL * LoadProc)(void*, int, int);
+
+	InitializeRenderQueueNodeBase(this);
+	m_pVtable00 = g_QueuedVariantRangeEntryVtable;
+	m_nReserved10 = 0;
+	m_nReserved12 = 0;
+	m_nReserved14 = 0;
+	m_nReserved16 = 0;
+	m_pRenderOwner24 = pRenderOwner;
+	m_pRenderContext20 = pRenderContext;
+	m_cResources34 = nLastResource - nFirstResource + 1;
+	if (m_cResources34 < 2) {
+		m_cResources34 = 1;
+	}
+	m_nFirstResource3C = nFirstResource;
+	m_nToken2C = nToken;
+	m_nLastResource38 = nLastResource;
+	m_x18 = x;
+	m_y1C = y;
+	m_nSelectedResource40 = pSelection == 0 ? 0 : *pSelection;
+	if (nCommand != -1) {
+		m_nCommand30 = nCommand;
+	}
+	m_pSelection44 = pSelection;
+	m_nActivationMode28 = nActivationMode;
+	m_fEnabled54 = 1;
+	(void) nReserved;
+	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->RegisterOrderedRenderDispatchClient(this, 0);
+	((LoadProc) 0x00401bd1)(this, 0, nResourceId);
+	return this;
+}
+
 // FUNCTION: LEMBALL 0x0044f130
 void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAuto(void* pObject)
 {
