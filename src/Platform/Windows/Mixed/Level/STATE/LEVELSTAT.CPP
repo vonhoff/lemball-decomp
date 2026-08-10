@@ -5618,3 +5618,113 @@ int LEMBALL_FASTCALL CAI_GetObjectRequired(void* pObject, int nUnused, int nObje
 	return 1;
 }
 
+#define MARK_LEVEL_OCCUPANCY_RECT(pGrid, xStart, yStart, cxMark, cyMark)                                               \
+	do {                                                                                                               \
+		int _x = (xStart);                                                                                             \
+		int _y = (yStart);                                                                                             \
+		int _cx = (cxMark);                                                                                            \
+		int _cy = (cyMark);                                                                                            \
+		int _gridWidth = (int) *(short*) ((char*) (pGrid) + 8);                                                        \
+		int _gridHeight = (int) *(short*) ((char*) (pGrid) + 10);                                                      \
+		unsigned char* _pFirst;                                                                                        \
+		unsigned char* _pSecond;                                                                                       \
+		if (_x < _gridWidth && _y < _gridHeight) {                                                                     \
+			if (_x < 0) {                                                                                              \
+				_cx += _x;                                                                                             \
+				_x = 0;                                                                                                \
+			}                                                                                                          \
+			if (_y < 0) {                                                                                              \
+				_cy += _y;                                                                                             \
+				_y = 0;                                                                                                \
+			}                                                                                                          \
+			if (_x + _cx >= _gridWidth) {                                                                              \
+				_cx = _gridWidth - _x;                                                                                 \
+			}                                                                                                          \
+			if (_y + _cy >= _gridHeight) {                                                                             \
+				_cy = _gridHeight - _y;                                                                                \
+			}                                                                                                          \
+			if (_cx > 0 && _cy > 0) {                                                                                  \
+				_pFirst = *(unsigned char**) ((char*) (pGrid) + 0x10) + _x + _y * _gridWidth;                          \
+				_pSecond = *(unsigned char**) ((char*) (pGrid) + 0x14) + _x + _y * _gridWidth;                         \
+				while (_cy-- != 0) {                                                                                   \
+					memset(_pFirst, 1, (unsigned int) _cx);                                                            \
+					memset(_pSecond, 1, (unsigned int) _cx);                                                           \
+					_pFirst += _gridWidth;                                                                             \
+					_pSecond += _gridWidth;                                                                            \
+				}                                                                                                      \
+			}                                                                                                          \
+		}                                                                                                              \
+	} while (0)
+
+// FUNCTION: LEMBALL 0x0043F060
+void LEMBALL_FASTCALL RasterizeAnimAndLiftChunkOccupancyMasks(void* pObject)
+{
+	typedef int(LEMBALL_FASTCALL * SerializeRecords)(void*, int, short*);
+	typedef void(LEMBALL_FASTCALL * TransformPoint)(void*, int, int*, int*);
+	char* pBytes;
+	short* pRecords;
+	short* pRecord;
+	void* pManager;
+	void* pTransform;
+	void* pGrid;
+	int nCount;
+	int x0;
+	int y0;
+	int x1;
+	int y1;
+	int height;
+	int xCell;
+	int yCell;
+	int cxCells;
+	int cyCells;
+
+	pBytes = (char*) pObject;
+	pRecords = (short*) (pBytes + 0x1ae);
+	pManager = *(void**) (pBytes + 0x96c);
+	pTransform = *(void**) (pBytes + 0x914);
+	pGrid = *(void**) (pBytes + 0x930);
+	nCount = ((SerializeRecords) 0x004018a2)(pManager, 0, pRecords);
+	pRecord = pRecords;
+	while (nCount-- > 0) {
+		x0 = pRecord[0];
+		y0 = pRecord[1];
+		height = pRecord[2];
+		((TransformPoint) 0x0040199c)(pTransform, 0, &x0, &y0);
+		x0 -= *(int*) (pBytes + 0x918);
+		y0 -= *(int*) (pBytes + 0x91c) + height;
+		x0 = (short) x0 - 0x10;
+		y0 = (short) y0 - 0x18;
+		xCell = (short) (x0 / 16);
+		yCell = (short) (y0 / 16);
+		cxCells = (x0 + 0x1f) / 16 - xCell + 1;
+		cyCells = (y0 + (short) (height + 0x30) - 1) / 16 - yCell + 1;
+		MARK_LEVEL_OCCUPANCY_RECT(pGrid, xCell, yCell, cxCells, cyCells);
+		pRecord += 3;
+	}
+
+	nCount = ((SerializeRecords) 0x0040109b)(pManager, 0, pRecords);
+	pRecord = pRecords;
+	while (nCount-- > 0) {
+		height = pRecord[2];
+		x0 = pRecord[0];
+		y0 = pRecord[1];
+		((TransformPoint) 0x0040199c)(pTransform, 0, &x0, &y0);
+		x0 -= *(int*) (pBytes + 0x918);
+		y0 -= *(int*) (pBytes + 0x91c) + height;
+		x1 = pRecord[3];
+		y1 = pRecord[1];
+		((TransformPoint) 0x0040199c)(pTransform, 0, &x1, &y1);
+		x1 -= *(int*) (pBytes + 0x918);
+		y1 -= *(int*) (pBytes + 0x91c) + height;
+		xCell = (short) (((short) x0 - 0x10) / 16);
+		yCell = (short) (((short) y0 - 0x18) / 16);
+		cxCells = ((short) (x1 - x0 + 0x20) - 1 + (short) (x0 - 0x10)) / 16 - xCell + 1;
+		y1 = pRecord[4];
+		x1 = pRecord[3];
+		((TransformPoint) 0x0040199c)(pTransform, 0, &x1, &y1);
+		y1 -= *(int*) (pBytes + 0x91c) + height;
+		cyCells = ((short) (height - (short) y0 + (short) y1 + 0x20) - 1 + (short) (y0 - 0x18)) / 16 - yCell + 1;
+		MARK_LEVEL_OCCUPANCY_RECT(pGrid, xCell, yCell, cxCells, cyCells);
+		pRecord += 6;
+	}
+}
