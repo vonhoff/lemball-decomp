@@ -1825,8 +1825,7 @@ address,size,name,unit
 0x004511F0,8,delete_paintball_screen_adjusted,Frontend/MAINMENU.CPP
 0x00451200,8,delete_paintball_sequence_screen_adjusted,Frontend/MAINMENU.CPP
 0x00451210,269,construct_password_entry_screen,Frontend/MAINMENU.CPP
-0x00451320,96,initialize_password_entry_screen_resources,Frontend/MAINMENU.CPP
-0x00451380,455,initialize_password_entry_overlay_grid,Frontend/MAINMENU.CPP
+0x00451320,551,initialize_password_entry_screen_resources,Frontend/MAINMENU.CPP
 0x00451550,106,release_password_entry_screen_resources,Frontend/MAINMENU.CPP
 0x004515C0,56,destroy_password_entry_screen,Frontend/MAINMENU.CPP
 0x00451600,5,rebuild_owner_source_rects_thunk,Frontend/MAINMENU.CPP
