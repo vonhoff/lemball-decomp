@@ -1230,6 +1230,43 @@ CObjectManager::~CObjectManager()
 	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }
 
+// FUNCTION: LEMBALL 0x0041b1b0
+void LEMBALL_FASTCALL RemoveCountedChildPointerRecursive(void* pObject, int, CGameObject* pTarget)
+{
+	CGameObject** ppChildren;
+	CGameObject* pChild;
+	unsigned short* pcChildren;
+	int i;
+	int j;
+
+	pcChildren = (unsigned short*) ((char*) pObject + 0x36);
+	if (*pcChildren == 0) {
+		return;
+	}
+	ppChildren = *(CGameObject***) ((char*) pObject + 0x3c);
+	for (i = 0; i < (int) *pcChildren; ++i) {
+		if (ppChildren[i] == pTarget) {
+			((void(LEMBALL_FASTCALL*)(void*))(*(void***) pTarget)[0x32])(pTarget);
+			pTarget->SetId(0xffff);
+			if (pTarget != 0) {
+				((void(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pTarget)[0])(pTarget, 0, 1);
+			}
+			for (j = i + 1; j < (int) *pcChildren; ++j) {
+				ppChildren[j - 1] = ppChildren[j];
+			}
+			--*pcChildren;
+			return;
+		}
+		for (j = 0; j < (int) *pcChildren; ++j) {
+			pChild = ppChildren[j];
+			if (*(int*) ((char*) pChild + 0x64) == 0x11 &&
+				pTarget->GetId() == *(unsigned short*) ((char*) pChild + 0x144)) {
+				RemoveCountedChildPointerRecursive(pObject, 0, pChild);
+			}
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0041b2a0
 CGlobalGameObject* CObjectManager::AddObject(
 	unsigned short nId, CGlobalGameObject* pObject, unsigned char nState)
