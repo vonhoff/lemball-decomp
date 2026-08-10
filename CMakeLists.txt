@@ -203,6 +203,7 @@ set(LEMBALL_SOURCES
     src/AI/LVPRJGEOM.CPP
     src/AI/LVGMOBPT.CPP
     src/views/2d/LVRUNEXT.CPP
+    src/Platform/Windows/Mixed/Level/STATE/LevelStatusPanelRender.cpp
 )
 
 set(LEMBALL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/LEMBALL.RES")
