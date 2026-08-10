@@ -545,9 +545,9 @@ int LEMBALL_FASTCALL IsDisplayModeWindowedRangeCompatibility(const int* pnDispla
 }
 
 // FUNCTION: LEMBALL 0x00463000
-int PackEventXYWords(unsigned int uLowWord, int nHighWord)
+int PackEventXYWords(unsigned short uLowWord, unsigned short uHighWord)
 {
-	return (nHighWord << 16) + (uLowWord & 0xffff);
+	return (uHighWord << 16) + uLowWord;
 }
 
 // FUNCTION: LEMBALL 0x00463c20

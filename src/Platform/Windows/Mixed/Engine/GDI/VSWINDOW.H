@@ -127,7 +127,7 @@ protected:
 extern int g_nLiveWindowOwnerBaseCount;
 extern void* g_pRootZrleGeometryOwnerRegistry;
 
-int PackEventXYWords(unsigned int uLowWord, int nHighWord);
+int PackEventXYWords(unsigned short uLowWord, unsigned short uHighWord);
 void LEMBALL_STDCALL PollCursorPositionEvent(void);
 void LEMBALL_FASTCALL UpdateWindowOwnerRootGeometrySourceRect(void* pOwner, int nUnused, const VS_XYPair* pRect);
 void LEMBALL_FASTCALL RefreshWindowOwnerRenderScale(void* pOwner, int nUnused, int nPreviousScaleFactor);
