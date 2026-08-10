@@ -88,7 +88,6 @@ public:
 	void DrawBoobyTrap(CViewData& ViewData);
 	void DrawCrusher(CViewData& ViewData);
 	void DrawBurner(CViewData& ViewData);
-	void DrawTeleporter(CViewData& ViewData);
 	void DrawExit(CViewData& ViewData);
 	void ResetPrimitives(void);
 	int ScreenToGame(int nX, int nY, int* pTileX, int* pTileY);

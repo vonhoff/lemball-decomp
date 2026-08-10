@@ -629,10 +629,9 @@ void C2D::DrawLaserFire(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2D::DrawTeleporter(CViewData&)
-
-// FUNCTION: LEMBALL 0x0043ced0
-void C2D::DrawTeleporter(CViewData& ViewData)
+// MACINTOSH: C2D::DrawLaser(CViewData&)
+// FUNCTION: LEMBALL 0x0043cea0
+void C2D::DrawLaser(CViewData& ViewData)
 {
 	int nResource;
 	int nX;
