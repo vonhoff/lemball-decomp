@@ -5784,3 +5784,129 @@ void LEMBALL_FASTCALL decode_zrle_rows_clipped_palette_write_mask(void* pThis,
 		nRowOffset += 4;
 	}
 }
+
+// FUNCTION: LEMBALL 0x00476bf0
+void LEMBALL_FASTCALL decode_zrle_rows_clipped_gated_by_mask(void* pThis,
+															 int nUnused,
+															 short* pRect,
+															 char* pClip,
+															 int* pStream,
+															 unsigned short nThreshold)
+{
+	unsigned char* pSource;
+	unsigned char* pRun;
+	unsigned char* pDestination;
+	unsigned char* pWrite;
+	unsigned short* pMask;
+	unsigned short* pMaskRun;
+	unsigned char nCode;
+	unsigned char nCount;
+	short nSourceX;
+	int nSkipRows;
+	int iRow;
+	int nRowOffset;
+	int nClipLeft;
+	unsigned int nRemaining;
+	unsigned int nRun;
+	unsigned int nVisible;
+
+	(void) nUnused;
+	pSource = (*(unsigned char*(LEMBALL_FASTCALL**) (int*) )(*(void***) pStream + 10))(pStream);
+	nSkipRows = *(short*) (pClip + 6);
+	while (nSkipRows > 0) {
+		do {
+			nCode = *pSource++;
+			if (nCode > 0x80) {
+				nCode &= 0x7f;
+				pSource += nCode;
+			}
+		} while (nCode != 0x80);
+		--nSkipRows;
+	}
+
+	iRow = 0;
+	nSourceX = pRect[2];
+	nRowOffset = pRect[3] << 2;
+	while (iRow < pRect[1]) {
+		nRemaining = (unsigned short) pRect[0];
+		nClipLeft = *(short*) (pClip + 4);
+		pMask = (unsigned short*) (*(int*) (*(int*) ((char*) pThis + 0x50) + nRowOffset) + nSourceX * 2);
+		pDestination = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + nRowOffset) + nSourceX);
+
+		do {
+			nCode = *pSource++;
+			if (nCode < 0x80) {
+				nClipLeft -= nCode;
+				if (nClipLeft < 0) {
+					pDestination -= nClipLeft;
+					pMask -= nClipLeft;
+					nRemaining += nClipLeft;
+				}
+			}
+			else if (nCode > 0x80) {
+				nRun = nCode & 0x7f;
+				nClipLeft -= nRun;
+				if (nClipLeft < 0) {
+					nVisible = -nClipLeft;
+					pRun = pSource + nClipLeft + nRun;
+					pWrite = pDestination;
+					pMaskRun = pMask;
+					nCount = (unsigned char) (nVisible < nRemaining ? nVisible : nRemaining);
+					while (nCount != 0) {
+						--nCount;
+						if (*pMaskRun <= nThreshold) {
+							*pWrite = *pRun;
+						}
+						++pWrite;
+						++pMaskRun;
+						++pRun;
+					}
+					pDestination += nVisible;
+					pMask += nVisible;
+					nRemaining += nClipLeft;
+				}
+				pSource += nRun;
+			}
+		} while (nCode != 0x80 && nClipLeft > 0);
+
+		while (nCode != 0x80 && nRemaining > 0) {
+			nCode = *pSource++;
+			if (nCode < 0x80) {
+				nRun = nCode;
+				pDestination += nRun;
+				pMask += nRun;
+				nRemaining -= nRun;
+			}
+			else if (nCode > 0x80) {
+				nRun = nCode & 0x7f;
+				pRun = pSource;
+				pWrite = pDestination;
+				pMaskRun = pMask;
+				nVisible = nRun < nRemaining ? nRun : nRemaining;
+				nCount = (unsigned char) nVisible;
+				while (nCount != 0) {
+					--nCount;
+					if (*pMaskRun <= nThreshold) {
+						*pWrite = *pRun;
+					}
+					++pRun;
+					++pMaskRun;
+					++pWrite;
+				}
+				pDestination += nVisible;
+				pMask += nVisible;
+				nRemaining -= nVisible;
+				pSource += nRun;
+			}
+		}
+		while (nCode != 0x80) {
+			nCode = *pSource++;
+			if (nCode > 0x80) {
+				nCode &= 0x7f;
+				pSource += nCode;
+			}
+		}
+		++iRow;
+		nRowOffset += 4;
+	}
+}
