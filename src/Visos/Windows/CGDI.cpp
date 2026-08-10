@@ -69,6 +69,13 @@ int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(void* pDisplayState, i
 void LEMBALL_FASTCALL SetHelperTargetParamWrapperDisplayDc(void* pParamWrapper, int, void* hDc);
 void* LEMBALL_FASTCALL DeleteHelperTargetParamWrapper(void* pParamWrapper, int, int fDelete);
 void LEMBALL_FASTCALL NoopHelperTargetParamWrapperArgument(void*, int, void*);
+void LEMBALL_FASTCALL decode_zrle_rows_clipped_palette_write_mask(void* pThis,
+																  int nUnused,
+																  short* pRect,
+																  char* pClip,
+																  int* pStream,
+																  int nMask,
+																  unsigned char* pPalette);
 void* LEMBALL_FASTCALL DeleteHelperTargetParamWrapperBase(void* pParamWrapper, int, int fDelete);
 int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperA(void*, int);
 int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperB(void*, int);
@@ -5670,5 +5677,110 @@ void LEMBALL_FASTCALL FillCircleScanlinePairClipped(
 			pDest = (unsigned int*) ((char*) pDest + 1);
 			--nRem;
 		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x004779d0
+void LEMBALL_FASTCALL decode_zrle_rows_clipped_palette_write_mask(void* pThis,
+																  int nUnused,
+																  short* pRect,
+																  char* pClip,
+																  int* pStream,
+																  int nMask,
+																  unsigned char* pPalette)
+{
+	unsigned char* pSource;
+	unsigned char* pRun;
+	unsigned char* pDestination;
+	unsigned char* pWrite;
+	unsigned char nCode;
+	unsigned char nPixel;
+	short nSourceX;
+	int nSkipRows;
+	int iRow;
+	int nRowOffset;
+	int nRemaining;
+	int nClipLeft;
+	int nRun;
+	int nVisible;
+	int i;
+
+	(void) nUnused;
+	(void) nMask;
+	pSource = (*(unsigned char*(LEMBALL_FASTCALL**) (int*) )(*(void***) pStream + 10))(pStream);
+	nSourceX = pRect[2];
+	nSkipRows = *(short*) (pClip + 6);
+	while (nSkipRows > 0) {
+		do {
+			nCode = *pSource++;
+			if (nCode > 0x80) {
+				nCode &= 0x7f;
+				pSource += nCode;
+			}
+		} while (nCode != 0x80);
+		--nSkipRows;
+	}
+
+	iRow = 0;
+	nRowOffset = pRect[3] << 2;
+	while (iRow < pRect[1]) {
+		nRemaining = pRect[0];
+		nClipLeft = *(short*) (pClip + 4);
+		pDestination = (unsigned char*) (*(int*) (*(int*) ((char*) pThis + 4) + nRowOffset) + nSourceX);
+		do {
+			nCode = *pSource++;
+			if (nClipLeft > 0) {
+				if (nCode < 0x80) {
+					nClipLeft -= nCode;
+					if (nClipLeft < 0) {
+						pDestination -= nClipLeft;
+						nRemaining += nClipLeft;
+					}
+				}
+				else if (nCode > 0x80) {
+					nRun = nCode & 0x7f;
+					nClipLeft -= nRun;
+					if (nClipLeft < 0) {
+						nVisible = -nClipLeft;
+						pRun = pSource + nClipLeft + nRun;
+						pWrite = pDestination;
+						if (nVisible > nRemaining) {
+							nVisible = nRemaining;
+						}
+						for (i = 0; i < nVisible; ++i) {
+							nPixel = *pRun++;
+							*pWrite++ = pPalette[nPixel];
+						}
+						pDestination += -nClipLeft;
+						nRemaining += nClipLeft;
+					}
+					pSource += nRun;
+				}
+			}
+			else if (nRemaining > 0) {
+				if (nCode < 0x80) {
+					pDestination += nCode;
+					nRemaining -= nCode;
+				}
+				else if (nCode > 0x80) {
+					nRun = nCode & 0x7f;
+					pRun = pSource;
+					pWrite = pDestination;
+					nVisible = nRun < nRemaining ? nRun : nRemaining;
+					for (i = 0; i < nVisible; ++i) {
+						nPixel = *pRun++;
+						*pWrite++ = pPalette[nPixel];
+					}
+					pSource += nRun;
+					pDestination += nVisible;
+					nRemaining -= nVisible;
+				}
+			}
+			else if (nCode > 0x80) {
+				pSource += nCode & 0x7f;
+			}
+		} while (nCode != 0x80);
+		++iRow;
+		nRowOffset += 4;
 	}
 }
