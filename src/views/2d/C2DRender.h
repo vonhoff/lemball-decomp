@@ -84,7 +84,6 @@ public:
 	void DrawBall(CViewData& ViewData);
 	void DrawMine(CViewData& ViewData);
 	void DrawFlag(CViewData& ViewData, int nObjectType);
-	void DrawGrenade(CViewData& ViewData);
 	void DrawRocket(CViewData& ViewData);
 	void DrawBoobyTrap(CViewData& ViewData);
 	void DrawCrusher(CViewData& ViewData);

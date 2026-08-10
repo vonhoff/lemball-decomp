@@ -363,10 +363,9 @@ void C2D::DrawTrampoline(CViewData& ViewData)
 	((CAnimsManagerView*) m_pAnimsManager0A40)->EmitLevelScreenVariantEntry((short) nX, (short) nY, 0x97, nFrame, 0, 0);
 }
 
-// MACINTOSH: C2D::DrawGrenade(CViewData&)
-
-// FUNCTION: LEMBALL 0x0043cad0
-void C2D::DrawGrenade(CViewData& ViewData)
+// MACINTOSH: C2D::DrawMover(CViewData&)
+// FUNCTION: LEMBALL 0x0043cac0
+void C2D::DrawMover(CViewData& ViewData)
 {
 	unsigned short nFrame;
 	switch (*(int*) ((char*) m_pLevelMode096C + 0x60)) {
