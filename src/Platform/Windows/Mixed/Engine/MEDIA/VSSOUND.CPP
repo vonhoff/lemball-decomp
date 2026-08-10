@@ -9,6 +9,9 @@
 #include <string.h>
 
 extern "C" MMRESULT WINAPI waveOutRestart(HWAVEOUT hWaveOut);
+extern "C" __declspec(dllimport) MMRESULT WINAPI waveOutPrepareHeader(HWAVEOUT hWaveOut,
+																	  LPWAVEHDR pWaveOutHdr,
+																	  UINT cbWaveOutHdr);
 
 struct VsSoundMidiOutCaps {
 	WORD m_wManufacturerId;
@@ -275,6 +278,8 @@ struct VsSoundWaveOutEffectPatchBuffer {
 	LPWAVEHDR m_pWaveHeader;
 	HWAVEOUT m_hWaveOut;
 
+	VsSoundWaveOutEffectPatchBuffer* ConstructWaveOutEffectPatchBuffer(void* pPatchData, HWAVEOUT hWaveOut,
+		unsigned int nSampleRate, int nBits16, int nChannels2);
 	void DestroyWaveOutEffectPatchBuffer(void);
 };
 
@@ -3910,4 +3915,165 @@ int LEMBALL_STDCALL IsWaveOutEffectBackendAvailableStdcall(void* pBackend, void*
 	(void) pUnused1;
 	(void) pUnused2;
 	return 1;
+}
+
+struct VsSoundEffPatchHeaderView {
+	unsigned int m_adw[7];
+};
+
+struct VsSoundEffWaveHeaderView {
+	unsigned int m_adw[14];
+};
+
+// FUNCTION: LEMBALL 0x0047C260
+VsSoundWaveOutEffectPatchBuffer* VsSoundWaveOutEffectPatchBuffer::ConstructWaveOutEffectPatchBuffer(
+	void* pPatchData,
+	HWAVEOUT hWaveOut,
+	unsigned int nSampleRate,
+	int nBits16,
+	int nChannels2)
+{
+	VsSoundEffPatchHeaderView PatchHeader;
+	VsSoundEffWaveHeaderView WaveHeader;
+	VsSoundWaveFormat WaveFormat;
+	unsigned char szErrorText[0x100];
+	unsigned char* pSource;
+	unsigned char* pDestination;
+	unsigned int cbSampleData;
+	unsigned int nSourceRate;
+	unsigned int nFrameSize;
+	unsigned int i;
+	int fDownsample;
+	MMRESULT nResult;
+
+	PatchHeader = *(VsSoundEffPatchHeaderView*) pPatchData;
+	*(unsigned short*) ((char*) &PatchHeader + 8) = ByteSwapAudioWord(*(unsigned short*) ((char*) &PatchHeader + 8));
+	*(unsigned short*) ((char*) &PatchHeader + 0x18) =
+		ByteSwapAudioWord(*(unsigned short*) ((char*) &PatchHeader + 0x18));
+	m_fPrepared = 0;
+	m_hWaveOut = hWaveOut;
+
+	WaveHeader = *(VsSoundEffWaveHeaderView*) ((char*) pPatchData + 0x1c);
+	*(unsigned short*) ((char*) &WaveHeader + 4) = ByteSwapAudioWord(*(unsigned short*) ((char*) &WaveHeader + 4));
+	*(unsigned int*) ((char*) &WaveHeader + 8) = ByteSwapAudioDword(*(unsigned int*) ((char*) &WaveHeader + 8));
+	*(unsigned int*) ((char*) &WaveHeader + 0x14) = ByteSwapAudioDword(*(unsigned int*) ((char*) &WaveHeader + 0x14));
+
+	cbSampleData = *(unsigned int*) ((char*) &WaveHeader + 8);
+	nSourceRate = *(unsigned int*) ((char*) &WaveHeader + 0x14);
+	if (nBits16 == 0) {
+		cbSampleData >>= 1;
+	}
+	fDownsample = nSourceRate != nSampleRate;
+	if (fDownsample) {
+		cbSampleData >>= 1;
+	}
+
+	m_hSampleData = GlobalAlloc(0x2002, cbSampleData);
+	if (m_hSampleData == 0) {
+		return this;
+	}
+	m_hWaveHeader = GlobalAlloc(0x2002, 0x20);
+	if (m_hWaveHeader == 0) {
+		return this;
+	}
+	m_pSampleData = GlobalLock(m_hSampleData);
+	if (m_pSampleData == 0) {
+		GlobalUnlock(m_hSampleData);
+		GlobalFree(m_hSampleData);
+		return this;
+	}
+	m_pWaveHeader = (LPWAVEHDR) GlobalLock(m_hWaveHeader);
+	if (m_pWaveHeader == 0) {
+		GlobalUnlock(m_hWaveHeader);
+		GlobalFree(m_hWaveHeader);
+		return this;
+	}
+
+	*(void**) ((char*) m_pWaveHeader + 0) = m_pSampleData;
+	*(unsigned int*) ((char*) m_pWaveHeader + 4) = cbSampleData;
+	*(unsigned int*) ((char*) m_pWaveHeader + 0x0c) =
+		((signed char*) pPatchData)[9] * 0x1000000 + ((signed char*) pPatchData)[8] * 0x10000 +
+		((signed char*) pPatchData)[7] * 0x100 + ((signed char*) pPatchData)[6];
+	*(unsigned int*) ((char*) m_pWaveHeader + 0x10) = 0;
+	*(unsigned int*) ((char*) m_pWaveHeader + 0x14) = 0;
+
+	pSource = (unsigned char*) pPatchData + 0x54;
+	pDestination = (unsigned char*) m_pSampleData;
+	if (nBits16 == 0) {
+		if (!fDownsample) {
+			for (i = cbSampleData; i != 0; --i) {
+				*pDestination++ = *pSource;
+				pSource += 2;
+			}
+		}
+		else {
+			for (i = cbSampleData; i != 0; --i) {
+				*pDestination++ = *pSource++;
+				*pSource += 3;
+			}
+		}
+	}
+	else if (!fDownsample) {
+		if ((cbSampleData & 0xfffffffe) != 0) {
+			for (i = cbSampleData >> 1; i != 0; --i) {
+				pDestination[0] = pSource[1];
+				pDestination[1] = pSource[0] ^ 0x80;
+				pSource += 2;
+				pDestination += 2;
+			}
+		}
+	}
+	else if ((cbSampleData & 0xfffffffc) != 0) {
+		for (i = cbSampleData >> 2; i != 0; --i) {
+			pDestination[0] = pSource[1];
+			pDestination[1] = pSource[0] ^ 0x80;
+			pSource += 4;
+			pDestination += 2;
+		}
+	}
+
+	WaveFormat.wFormatTag = 1;
+	WaveFormat.nChannels = 2;
+	if (nChannels2 != 1) {
+		WaveFormat.nChannels = 1;
+	}
+	WaveFormat.wBitsPerSample = 16;
+	if (nBits16 != 1) {
+		WaveFormat.wBitsPerSample = 8;
+	}
+	WaveFormat.nSamplesPerSec = nSampleRate;
+	WaveFormat.cbSize = 0;
+	WaveFormat.nAvgBytesPerSec = nSampleRate * WaveFormat.nChannels;
+	nFrameSize = WaveFormat.wBitsPerSample * WaveFormat.nChannels;
+	WaveFormat.nBlockAlign = (WORD) (nFrameSize >> 3);
+	if (WaveFormat.wBitsPerSample == 16) {
+		WaveFormat.nAvgBytesPerSec *= 2;
+	}
+
+	nResult = waveOutOpen(&m_hWaveOut, 0xffffffff, &WaveFormat, 0, 0, 1);
+	if (nResult == 0) {
+		nResult = waveOutOpen(&m_hWaveOut, 0xffffffff, &WaveFormat, 0, 0, 0);
+		if (nResult == 0) {
+			nResult = waveOutPrepareHeader(m_hWaveOut, m_pWaveHeader, 0x20);
+			if (nResult == 0) {
+				nResult = waveOutClose(m_hWaveOut);
+				if (nResult == 0) {
+					m_fPrepared = 1;
+				}
+				else {
+					waveOutGetErrorTextA(nResult, (LPSTR) szErrorText, sizeof(szErrorText));
+				}
+			}
+			else {
+				waveOutGetErrorTextA(nResult, (LPSTR) szErrorText, sizeof(szErrorText));
+			}
+		}
+		else {
+			waveOutGetErrorTextA(nResult, (LPSTR) szErrorText, sizeof(szErrorText));
+		}
+	}
+	else {
+		waveOutGetErrorTextA(nResult, (LPSTR) szErrorText, sizeof(szErrorText));
+	}
+	return this;
 }
