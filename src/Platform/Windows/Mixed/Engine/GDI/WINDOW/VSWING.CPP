@@ -18,6 +18,15 @@ int LEMBALL_FASTCALL CopyRenderDispatchQueueEntryAtIndex(void* pDispatchQueue,
 														 unsigned int* paEntryWords,
 														 int nIndex);
 int LEMBALL_FASTCALL RemoveRenderDispatchQueueEntryAtIndex(void* pDispatchQueue, int nUnused, unsigned int nIndex);
+void LEMBALL_FASTCALL decode_zrle_rows(void*, int, int, int*, int);
+void LEMBALL_FASTCALL decode_zrle_rows_palette(void*, int, int, int*, int, unsigned char*);
+void LEMBALL_FASTCALL decode_zrle_rows_palette_mirrored(void*, int, int, int*, int, unsigned char*);
+void LEMBALL_FASTCALL decode_zrle_rows_write_mask(void*, int, int, int*, unsigned short);
+void LEMBALL_FASTCALL decode_zrle_rows_palette_write_mask(void*, int, int, int*, unsigned short, unsigned char*);
+void LEMBALL_FASTCALL decode_zrle_rows_gated_by_mask(void*, int, int, int*, unsigned short);
+void LEMBALL_FASTCALL decode_zrle_rows_palette_gated_by_mask(void*, int, int, int*, unsigned short, unsigned char*);
+void LEMBALL_FASTCALL decode_zrle_rows_clipped(void*, int, short*, int, int*, int);
+void LEMBALL_FASTCALL decode_zrle_rows_clipped_write_mask(void*, int, short*, int, int*, unsigned short);
 extern void* g_pSingletonAnimWindowOwner;
 extern "C"
 {
@@ -617,4 +626,98 @@ int LEMBALL_STDCALL DrawVisualSciencesWingFrame(VsWingDrawHandlerState* pState, 
 		((GamePrimaryContext*) pState->m_pAnimWindowOwner470)->FlushWindowOwnerDirtyRect(0);
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00478BB0
+void LEMBALL_FASTCALL RenderZrleFrameAtPointViaHelper(void* pTarget,
+													  int,
+													  short x,
+													  short y,
+													  int* pBitmap,
+													  unsigned int dwFlags,
+													  unsigned char** ppPalette,
+													  unsigned int nMask)
+{
+	typedef void(LEMBALL_FASTCALL * DirtyRectVirtual)(void*, int, short*);
+	VsGdiHelperSurface* pSurface;
+	unsigned char* pPalette;
+	short aRect[4];
+	short aClippedRect[4];
+	int fClipped;
+	int fReverseRows;
+
+	pSurface = (VsGdiHelperSurface*) pTarget;
+	aRect[0] = *(short*) ((char*) pBitmap + 0x4c);
+	aRect[1] = *(short*) ((char*) pBitmap + 0x4e);
+	if (aRect[0] * aRect[1] == 0) {
+		return;
+	}
+	aRect[2] = x;
+	aRect[3] = y;
+	if ((dwFlags & 0x400) == 0) {
+		aRect[2] = (short) (aRect[2] + *(short*) ((char*) pBitmap + 0x48));
+		aRect[3] = (short) (aRect[3] + *(short*) ((char*) pBitmap + 0x4a));
+	}
+	memset(aClippedRect, 0, sizeof(aClippedRect));
+	if (aRect[0] > 0xff) {
+		aRect[0] = 0xff;
+	}
+	if (aRect[1] > 0xff) {
+		aRect[1] = 0xff;
+	}
+	fClipped = pSurface->ClipRenderRectToSurfaceBounds((VsGdiRect*) aRect, (VsGdiRect*) aClippedRect);
+	if (fClipped != 0 && (aClippedRect[0] < 1 || aClippedRect[1] < 1)) {
+		return;
+	}
+	((DirtyRectVirtual) (*(void***) pSurface)[1])(pSurface, 0, aRect);
+	pPalette = ppPalette == 0 ? 0 : *ppPalette;
+	if (fClipped == 0) {
+		if ((dwFlags & 0x40000) != 0) {
+			if (pPalette == 0) {
+				decode_zrle_rows_write_mask(pSurface, 0, (int) aRect, pBitmap, (unsigned short) nMask);
+			}
+			else {
+				decode_zrle_rows_palette_write_mask(pSurface,
+													0,
+													(int) aRect,
+													pBitmap,
+													(unsigned short) nMask,
+													pPalette);
+			}
+			return;
+		}
+		if ((dwFlags & 0x80000) != 0) {
+			if (pPalette == 0) {
+				decode_zrle_rows_gated_by_mask(pSurface, 0, (int) aRect, pBitmap, (unsigned short) nMask);
+			}
+			else {
+				decode_zrle_rows_palette_gated_by_mask(pSurface,
+													   0,
+													   (int) aRect,
+													   pBitmap,
+													   (unsigned short) nMask,
+													   pPalette);
+			}
+			return;
+		}
+		fReverseRows = (dwFlags & 2) >> 1;
+		if (pPalette == 0) {
+			decode_zrle_rows(pSurface, 0, (int) aRect, pBitmap, 0);
+		}
+		else if ((dwFlags & 1) != 0) {
+			decode_zrle_rows_palette_mirrored(pSurface, 0, (int) aRect, pBitmap, fReverseRows, pPalette);
+		}
+		else {
+			decode_zrle_rows_palette(pSurface, 0, (int) aRect, pBitmap, fReverseRows, pPalette);
+		}
+		return;
+	}
+
+	if ((dwFlags & 0x40000) != 0 && pPalette == 0) {
+		decode_zrle_rows_clipped_write_mask(pSurface, 0, aRect, (int) aClippedRect, pBitmap, (unsigned short) nMask);
+		return;
+	}
+	if ((dwFlags & 0xc0000) == 0 && pPalette == 0 && (dwFlags & 1) == 0) {
+		decode_zrle_rows_clipped(pSurface, 0, aRect, (int) aClippedRect, pBitmap, 0);
+	}
 }
