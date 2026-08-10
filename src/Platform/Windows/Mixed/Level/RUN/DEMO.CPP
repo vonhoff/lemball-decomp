@@ -40,9 +40,11 @@ extern void NoopOnLoadVfunc11(void);
 extern void NoopVfunc12(void);
 extern int LEMBALL_FASTCALL GetField28GetMemorySize(void* pObject);
 extern void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void* pObject);
+extern void LEMBALL_FASTCALL SetPresResourceTypeTag(void* pObject);
 
 void LEMBALL_FASTCALL SetBinResourceTypeTag(void* pObject);
 void* LEMBALL_FASTCALL DestroyBinResource(void* pObject, int nUnused, int fDelete);
+void* LEMBALL_FASTCALL DestroyPresResourceAuto(void* pObject, void* pUnused, BYTE fDelete);
 
 static void* g_DEMO_BinResourceVtableStorage[15] = {
 	(void*) DestroyBinResource,
@@ -62,6 +64,26 @@ static void* g_DEMO_BinResourceVtableStorage[15] = {
 	(void*) GetField28GetMemorySize,
 };
 static void* g_DEMO_BinResourceVtable = g_DEMO_BinResourceVtableStorage;
+
+// GLOBAL: LEMBALL 0x00498e20
+static void* g_DEMO_PresResourceVtableStorage[15] = {
+	(void*) DestroyPresResourceAuto,
+	(void*) CopyBufferIntoTypedResourceObjectAndParse,
+	(void*) ParseIntResourceDescriptor,
+	(void*) GetField14NeedsAgeIncrement,
+	(void*) GetField1CVfunc04,
+	(void*) GetField14Vfunc05,
+	(void*) ReturnZeroVfunc06,
+	(void*) EnsureTypedResourceObjectLoaded,
+	(void*) UnloadTypedResourceObject,
+	(void*) NoopVfunc09,
+	(void*) GetEffResourceDataPointer,
+	(void*) NoopOnLoadVfunc11,
+	(void*) NoopVfunc12,
+	(void*) SetPresResourceTypeTag,
+	(void*) GetField28GetMemorySize,
+};
+static void* g_DEMO_PresResourceVtable = g_DEMO_PresResourceVtableStorage;
 
 extern void* g_pMainResourceArchive;
 extern void* g_MOGLOAD_CachedResourceObjectBaseVtable[15];
@@ -455,6 +477,31 @@ void* LEMBALL_FASTCALL RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackControl
 		FreeVSMemBlock(pPlaybackController);
 	}
 	return pPlaybackController;
+}
+
+// FUNCTION: LEMBALL 0x0045e4d0
+int* LoadPresResource(int nResourceId)
+{
+	int* pResourceObject;
+	int* pObjectWords;
+
+	pResourceObject = (int*) ((CMogRes*) g_pMainResourceArchive)->Find(nResourceId);
+	if (pResourceObject != 0) {
+		if ((unsigned int) pResourceObject[0x10] != 0x50524553) {
+			ReleaseTypedResourceObjectReference(pResourceObject);
+			pResourceObject = 0;
+		}
+		return pResourceObject;
+	}
+	pObjectWords = (int*) AllocateVSMemBlock(0x48);
+	if (pObjectWords != 0) {
+		*(void**) pObjectWords = g_MOGLOAD_CachedResourceObjectBaseVtable;
+		pObjectWords[6] = 0;
+		*(void**) pObjectWords = g_DEMO_PresResourceVtable;
+		InitializeResourceObjectFromId(pObjectWords, 0, nResourceId);
+		return (int*) FinalizeLoadedResourceObjectResult(pObjectWords, 0);
+	}
+	return (int*) FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0045e540
