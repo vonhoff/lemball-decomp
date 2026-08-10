@@ -90,7 +90,6 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedE
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChild);
 extern void LEMBALL_FASTCALL CTextManagerResetPrimitives(void* pTable);
 struct GameNetworkLobbyScreenView;
-void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration);
 void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryEventDirty(void* pEntry,
 															int nUnused,
 															const VS_XYPair* pPoint,
@@ -308,6 +307,7 @@ struct GameNetworkLobbyScreenView : public GameFramedScreenBase {
 
 	void DrawPlayerEntry(int iPeer, int* piVisible, int nColor);
 	void SetNetworkLobbyStatus(int nStatus);
+	void SetTimedNetworkLobbyStatus(int nStatus, DWORD dwDuration);
 };
 
 struct GameBoundedTextBuffer {
@@ -888,7 +888,7 @@ __inline static void CommitNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pS
 	pScreen->m_fTextPrompt39C = 0;
 	if (pScreen->m_nReserved3A0 == 1) {
 		if (pBuffer->m_pszText0C[0] == '\0') {
-			SetTimedNetworkLobbyStatus(pScreen, 8, 6000);
+			pScreen->SetTimedNetworkLobbyStatus(8, 6000);
 			return;
 		}
 		strncpy(g_szNetworkLobbyLocalPlayerName, pBuffer->m_pszText0C, sizeof(g_szNetworkLobbyLocalPlayerName) - 1);
@@ -946,7 +946,7 @@ __inline static void SubmitNetworkLobbyPendingText(GameNetworkLobbyScreenView* p
 		pScreen->SetNetworkLobbyStatus(4);
 		return;
 	}
-	SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
+	pScreen->SetTimedNetworkLobbyStatus(9, 6000);
 }
 
 __inline static void FlushNetworkLobbyDeferredStatus(GameNetworkLobbyScreenView* pScreen)
@@ -957,7 +957,7 @@ __inline static void FlushNetworkLobbyDeferredStatus(GameNetworkLobbyScreenView*
 			return;
 		}
 	}
-	SetTimedNetworkLobbyStatus(pScreen, pScreen->m_nDeferredStatus430, 6000);
+	pScreen->SetTimedNetworkLobbyStatus(pScreen->m_nDeferredStatus430, 6000);
 	pScreen->m_nDeferredStatus430 = 0;
 }
 
@@ -5526,7 +5526,7 @@ void LEMBALL_FASTCALL SubmitNetworkLobbyPendingTextThunk(void* pScreen)
 		((GameNetworkLobbyScreenView*) pScreen)->SetNetworkLobbyStatus(4);
 		return;
 	}
-	SetTimedNetworkLobbyStatus((GameNetworkLobbyScreenView*) pScreen, 9, 6000);
+	((GameNetworkLobbyScreenView*) pScreen)->SetTimedNetworkLobbyStatus(9, 6000);
 }
 // FUNCTION: LEMBALL 0x00454650
 void GameNetworkLobbyScreenView::SetNetworkLobbyStatus(int nStatus)
@@ -5557,7 +5557,7 @@ void ShowNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pScreen, int nPrompt
 		StartNetworkLobbyTransportSession(g_pActiveNetworkLobbyTransportController);
 		if (*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x2c) == 0 ||
 			*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) != 0) {
-			SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
+			pScreen->SetTimedNetworkLobbyStatus(9, 6000);
 			return;
 		}
 	}
@@ -5566,14 +5566,19 @@ void ShowNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pScreen, int nPrompt
 	pScreen->m_fTextPrompt39C = 1;
 }
 // FUNCTION: LEMBALL 0x00454870
-void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration)
+void GameNetworkLobbyScreenView::SetTimedNetworkLobbyStatus(int nStatus, DWORD dwDuration)
 {
-	pScreen->m_nStatus3A8 = nStatus;
-	pScreen->m_dwStatusStart3B0 = timeGetTime();
-	pScreen->m_dwStatusDuration3B4 = dwDuration;
-	pScreen->m_fSelectorDirty360 = 1;
-	pScreen->m_fBlink3C0 = 1;
-	pScreen->m_dwBlinkStart3C8 = timeGetTime();
+	DWORD dwStatusStart;
+	DWORD dwBlinkStart;
+
+	m_nStatus3A8 = nStatus;
+	dwStatusStart = timeGetTime();
+	m_fSelectorDirty360 = 1;
+	m_dwStatusStart3B0 = dwStatusStart;
+	m_dwStatusDuration3B4 = dwDuration;
+	dwBlinkStart = timeGetTime();
+	m_fBlink3C0 = 1;
+	m_dwBlinkStart3C8 = dwBlinkStart;
 }
 // FUNCTION: LEMBALL 0x004548c0
 void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void* pObject)
