@@ -1275,7 +1275,7 @@ address,size,name,unit
 0x004358A0,10,set_object_field_0x0c_004358a0,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004358B0,10,set_object_field_0x18_004358b0,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004358C0,1,variant_resource_bundle_noop,Platform/Windows/Mixed/Resource/VARMGR.CPP
-0x004358D0,5,construct_level_screen,Platform/Windows/Mixed/Resource/VARMGR.CPP
+0x004358D0,1906,construct_level_screen,Platform/Windows/Mixed/Resource/VARMGR.CPP
 0x00436050,311,restore_large_render_entry_vtable_stack_00436050,Control/CGame.cpp
 0x00436190,544,destroy_level_screen,Control/CGame.cpp
 0x004363C0,182,C2D::RegisterRemaps,Frontend/SCREENVT.CPP
