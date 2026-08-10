@@ -41,6 +41,8 @@ extern void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtable(void* pO
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void* pResourceObject);
 extern void* LoadZrleOnlyListResource(int nResourceId);
 extern void* LoadListResource(int nResourceId);
+extern int g_fCompactPrimaryContextLayout;
+extern int g_fZoomedViewportEnabled;
 extern void* g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern void* g_GAME_RenderQueueNodeVtableSlots[4];
 extern void* g_pQueuedRenderPointSinkFinalizeThunk;
@@ -4110,4 +4112,31 @@ void LEMBALL_FASTCALL ApplyLevelScreenPauseDialogLayout(void* pObject, int, shor
 	((void(LEMBALL_FASTCALL*)(short*, int, short*)) 0x403837)(aOuter, 0, aInset);
 	((void(LEMBALL_FASTCALL*)(void*, int, short*)) 0x4012d0)(pThis + 0x13c, 0, aOuter);
 	*(int*) (pThis + 0x144) = 0x0c;
+}
+
+// FUNCTION: LEMBALL 0x00443c70
+void LEMBALL_FASTCALL LoadLevelScreenPauseDialogResources(void* pObject)
+{
+	char* pBytes;
+	CTextManager* pTextManager;
+
+	pBytes = (char*) pObject;
+	if (g_fCompactPrimaryContextLayout == 0 && g_fZoomedViewportEnabled != 0) {
+		*(int*) (pBytes + 0x10c) = 0;
+		*(int*) (pBytes + 0x1fc) = 0xfa;
+		*(int*) (pBytes + 0x200) = 0xf9;
+		*(int*) (pBytes + 0x204) = 0xfb;
+	}
+	else {
+		*(int*) (pBytes + 0x10c) = 1;
+		*(int*) (pBytes + 0x1fc) = 0xf7;
+		*(int*) (pBytes + 0x200) = 0xf6;
+		*(int*) (pBytes + 0x204) = 0xf8;
+	}
+	*(void**) (pBytes + 0x154) = LoadZrleOnlyListResource(*(int*) (pBytes + 0x1fc));
+	*(void**) (pBytes + 0x158) = LoadZrleOnlyListResource(*(int*) (pBytes + 0x200));
+	pTextManager = (CTextManager*) (pBytes + 0xdc);
+	pTextManager->LoadFont(*(int*) (pBytes + 0x204));
+	*(void**) (pBytes + 0x1f0) = pTextManager->GetFont(*(int*) (pBytes + 0x204));
+	*(int*) (pBytes + 0x208) = 1;
 }
