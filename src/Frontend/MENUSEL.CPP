@@ -58,6 +58,8 @@ extern void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void* pObject)
 extern void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject);
 extern void LEMBALL_FASTCALL configure_level_screen_pause_dialog_options(void* pObject);
 extern void LEMBALL_FASTCALL RebuildLevelScreenPauseDialogLayout(void* pObject);
+extern int LEMBALL_FASTCALL SelectPauseDialogPaletteRemapForIndex(void* pObject, int nUnusedEdx, int nIndex);
+extern void LEMBALL_FASTCALL CTextManagerResetPrimitives(void* pTable);
 extern void* LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void* pOwner);
 extern void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void* pObject);
 extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChildOwner);
@@ -1374,6 +1376,54 @@ ConstructLevelScreenPauseDialog(void* pObject, int nUnusedEdx, void* pOwner, voi
 	configure_level_screen_pause_dialog_options(pObject);
 	RebuildLevelScreenPauseDialogLayout(pObject);
 	return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00444980
+void LEMBALL_FASTCALL RebuildPauseDialogEntries(void* pObject, int nUnusedEdx, int nUnusedArg)
+{
+	char* pBytes;
+	char* pEntry;
+	void* pRenderQueue;
+	void* pRenderObject;
+	short aPoint[2];
+	int nEntryOffset;
+	int nTextOffset;
+	int i;
+
+	(void) nUnusedEdx;
+	(void) nUnusedArg;
+	pBytes = (char*) pObject;
+	pRenderQueue = *(void**) (pBytes + 0x4c);
+	pRenderObject = *(void**) ((char*) pRenderQueue + 0x0c);
+	pRenderObject = (char*) pRenderObject + *(int*) (*(char**) ((char*) pRenderObject + 0x40) + 4) + 0x40;
+	((void(LEMBALL_FASTCALL*)(void*))(*(void***) pRenderObject)[0x38 / sizeof(void*)])(pRenderObject);
+	((void(LEMBALL_FASTCALL*)(void*, int, void*))(*(void***) (pBytes + 0x138))[1])(pBytes + 0x138, 0, pRenderQueue);
+	for (i = 0, nEntryOffset = 0; i < *(int*) (pBytes + 0x134) * 2; ++i, nEntryOffset += 0x20) {
+		pEntry = *(char**) (pBytes + 0x1dc) + nEntryOffset;
+		((void(LEMBALL_FASTCALL*)(void*, int, void*))(*(void***) pEntry)[1])(pEntry, 0, pRenderQueue);
+	}
+	pEntry = pBytes + 0x15c;
+	for (i = 4; i != 0; --i, pEntry += 0x20) {
+		((void(LEMBALL_FASTCALL*)(void*, int, void*))(*(void***) pEntry)[1])(pEntry, 0, pRenderQueue);
+	}
+	aPoint[0] = 0;
+	aPoint[1] = 0;
+	for (i = 0, nTextOffset = 0, nEntryOffset = 0; i < *(int*) (pBytes + 0x120);
+		 ++i, nTextOffset += 4, nEntryOffset += 8) {
+		pEntry = *(char**) (pBytes + 0x1f8) + nEntryOffset;
+		if (pEntry != 0) {
+			pEntry += 4;
+		}
+		((CTextManager*) (pBytes + 0xdc))
+			->DrawString(pRenderQueue,
+						 (short*) pEntry,
+						 aPoint,
+						 *(int*) (pBytes + 0x204),
+						 *(void**) (*(char**) (pBytes + 0x100) + nTextOffset),
+						 0x20,
+						 SelectPauseDialogPaletteRemapForIndex(pObject, 0, i));
+	}
+	CTextManagerResetPrimitives(pBytes + 0xdc);
 }
 
 extern void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAuto(void* pObject, void*, BYTE fDelete);
