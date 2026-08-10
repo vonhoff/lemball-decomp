@@ -671,10 +671,9 @@ void C2D::DrawTeleporter(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2D::DrawBalloon(CViewData&)
-
-// FUNCTION: LEMBALL 0x0043cfc0
-void C2D::DrawBalloon(CViewData& ViewData)
+// MACINTOSH: C2D::DrawDuplicator(CViewData&)
+// FUNCTION: LEMBALL 0x0043cfa0
+void C2D::DrawDuplicator(CViewData& ViewData)
 {
 	int nNow = (int) ViewData.m_pFrameSelector24;
 	int nState = ViewData.m_nState18;
