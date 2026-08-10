@@ -90,7 +90,6 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedE
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChild);
 extern void LEMBALL_FASTCALL CTextManagerResetPrimitives(void* pTable);
 struct GameNetworkLobbyScreenView;
-void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus);
 void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration);
 void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryEventDirty(void* pEntry,
 															int nUnused,
@@ -308,6 +307,7 @@ struct GameNetworkLobbyScreenView : public GameFramedScreenBase {
 	int m_nButtonSelection434;
 
 	void DrawPlayerEntry(int iPeer, int* piVisible, int nColor);
+	void SetNetworkLobbyStatus(int nStatus);
 };
 
 struct GameBoundedTextBuffer {
@@ -902,7 +902,7 @@ __inline static void CommitNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pS
 		}
 		if (*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x2c) == 0 ||
 			*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) != 0) {
-			SetNetworkLobbyStatus(pScreen, 6);
+			pScreen->SetNetworkLobbyStatus(6);
 		}
 	}
 	else if (pScreen->m_nReserved3A0 == 2) {
@@ -943,7 +943,7 @@ __inline static void SubmitNetworkLobbyPendingText(GameNetworkLobbyScreenView* p
 	if (*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x2c) != 0 &&
 		*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) == 0) {
 		ConfigureNetworkLobbyTransportHostName(g_pNetworkLobbyVsnetRuntime, g_szNetworkLobbyJoinAddress);
-		SetNetworkLobbyStatus(pScreen, 4);
+		pScreen->SetNetworkLobbyStatus(4);
 		return;
 	}
 	SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
@@ -1055,7 +1055,7 @@ __inline static void CancelNetworkLobbyPrompt(GameNetworkLobbyScreenView* pScree
 		*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) == 0) {
 		StopNetworkLobbyTransportSession(g_pActiveNetworkLobbyTransportController);
 	}
-	SetNetworkLobbyStatus(pScreen, 0);
+	pScreen->SetNetworkLobbyStatus(0);
 	pScreen->m_fTextPrompt39C = 0;
 }
 
@@ -5448,7 +5448,7 @@ int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(void* pObject, int, void* pEv
 			pScreen->m_nReserved3B8 = 0;
 			pScreen->m_fTextPrompt39C = 0;
 			pScreen->m_nDeferredStatus430 = 0;
-			SetNetworkLobbyStatus(pScreen, 1);
+			pScreen->SetNetworkLobbyStatus(1);
 			fEdited = 1;
 		}
 		else if (nCode == 0x4cU) {
@@ -5523,19 +5523,22 @@ void LEMBALL_FASTCALL SubmitNetworkLobbyPendingTextThunk(void* pScreen)
 	if (*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x2c) != 0 &&
 		*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) == 0) {
 		ConfigureNetworkLobbyTransportHostName(g_pNetworkLobbyVsnetRuntime, g_szNetworkLobbyJoinAddress);
-		SetNetworkLobbyStatus((GameNetworkLobbyScreenView*) pScreen, 4);
+		((GameNetworkLobbyScreenView*) pScreen)->SetNetworkLobbyStatus(4);
 		return;
 	}
 	SetTimedNetworkLobbyStatus((GameNetworkLobbyScreenView*) pScreen, 9, 6000);
 }
 // FUNCTION: LEMBALL 0x00454650
-void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus)
+void GameNetworkLobbyScreenView::SetNetworkLobbyStatus(int nStatus)
 {
-	pScreen->m_nStatus3A8 = nStatus;
-	pScreen->m_dwStatusDuration3B4 = 0;
-	pScreen->m_fSelectorDirty360 = 1;
-	pScreen->m_fBlink3C0 = 1;
-	pScreen->m_dwBlinkStart3C8 = timeGetTime();
+	DWORD dwBlinkStart;
+
+	m_nStatus3A8 = nStatus;
+	m_dwStatusDuration3B4 = 0;
+	m_fSelectorDirty360 = 1;
+	dwBlinkStart = timeGetTime();
+	m_fBlink3C0 = 1;
+	m_dwBlinkStart3C8 = dwBlinkStart;
 }
 // FUNCTION: LEMBALL 0x00454690
 void ShowNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pScreen, int nPrompt, int fClear)
@@ -5559,7 +5562,7 @@ void ShowNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pScreen, int nPrompt
 		}
 	}
 	pBuffer->m_cCapacity00 = pScreen->m_nReserved3A0 == 1 ? 8 : 20;
-	SetNetworkLobbyStatus(pScreen, pScreen->m_nReserved3A0 + 1);
+	pScreen->SetNetworkLobbyStatus(pScreen->m_nReserved3A0 + 1);
 	pScreen->m_fTextPrompt39C = 1;
 }
 // FUNCTION: LEMBALL 0x00454870
