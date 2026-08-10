@@ -1438,6 +1438,71 @@ void LEMBALL_FASTCALL RebuildPauseDialogEntries(void* pObject, int nUnusedEdx, i
 	CTextManagerResetPrimitives(pBytes + 0xdc);
 }
 
+struct PauseDialogOptionCallback {
+	virtual void Invoke(int nOption);
+	virtual int CanDismiss(void);
+};
+
+struct LevelScreenPauseDialogEventView {
+	char m_abReserved00[0x74];
+	int m_nMode74;
+	char m_abReserved78[8];
+	PauseDialogOptionCallback* m_pCallback80;
+	int m_nReserved84;
+	int m_nSelection88;
+	int m_nReserved8C;
+	int m_cOptions90;
+	int m_nMinimumSelection94;
+	int m_nDismissSelection98;
+
+	int HandleOptionEvent(GameMenuSelectorEvent* pEvent);
+};
+
+// FUNCTION: LEMBALL 0x00444c10
+int LevelScreenPauseDialogEventView::HandleOptionEvent(GameMenuSelectorEvent* pEvent)
+{
+	int nMode;
+
+	nMode = m_nMode74;
+	if ((nMode != 0 && nMode != 3) || pEvent->m_nType00 != 4) {
+		return 0;
+	}
+	switch (pEvent->m_nPayload08) {
+	case 1:
+	case 3:
+		if (m_nMinimumSelection94 < m_nSelection88) {
+			--m_nSelection88;
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(0x1b);
+			return 1;
+		}
+		break;
+	case 2:
+	case 4:
+		if (m_nSelection88 < m_cOptions90 - 1) {
+			++m_nSelection88;
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(0x1b);
+			return 1;
+		}
+		break;
+	case 0x22:
+	case 0x2a:
+	case 0x2e:
+	case 0x4c:
+	case 0x57:
+	case 0x58:
+		m_pCallback80->Invoke(m_nSelection88 + 1);
+		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(3);
+		return 1;
+	case 0x23:
+		if (nMode != 0 || m_pCallback80->CanDismiss() != 0) {
+			m_pCallback80->Invoke(m_nDismissSelection98 + 1);
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(3);
+		}
+		return 1;
+	}
+	return 0;
+}
+
 extern void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAuto(void* pObject, void*, BYTE fDelete);
 // ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
 // MSVC 4.20 C++ emitted call/ret. Verified with reccmp.
