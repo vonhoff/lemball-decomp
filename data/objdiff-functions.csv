@@ -2673,8 +2673,7 @@ address,size,name,unit
 0x00467C10,189,CPVButton::CPVButton,Frontend/MENUSEL.CPP
 0x00467CD0,113,CPVButton::CPVButton,Frontend/MENUSEL.CPP
 0x00467D50,117,CPVButton::Initialise,Frontend/MENUSEL.CPP
-0x00467DD0,48,CPVButton::~CPVButton,Frontend/MENUSEL.CPP
-0x00467E00,61,destroy_zrle_variant_render_entry_array,Frontend/MENUSEL.CPP
+0x00467DD0,109,CPVButton::~CPVButton,Frontend/MENUSEL.CPP
 0x00467E40,13,CPVButton::SetAutoDraw,Platform/Windows/Mixed/Engine/GDI/RENDER/GDIVT.CPP
 0x00467E50,160,CPVButton::CheckForceDraw,Frontend/MENUSEL.CPP
 0x00467EF0,51,CPVButton::_DrawButton,Frontend/MENUSEL.CPP
