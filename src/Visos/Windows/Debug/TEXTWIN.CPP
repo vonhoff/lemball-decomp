@@ -149,6 +149,36 @@ public:
 	virtual void EndUpdate(void);
 };
 
+// FUNCTION: LEMBALL 0x00474520
+char* CTextWindow::GetSelectionAsString(void)
+{
+	char* pszSelection;
+	char* pszLine;
+	char* pLines;
+	int cchSelection;
+	int i;
+
+	((CTextWindowSyncInterface*) this)->BeginUpdate();
+	cchSelection = 0;
+	pLines = *(char**) (*(char**) ((char*) this + 0x24) + 4);
+	for (i = *(int*) ((char*) this + 0x50); i <= *(int*) ((char*) this + 0x54); ++i) {
+		pszLine = *(char**) (pLines + i * 12 + 4);
+		cchSelection += strlen(pszLine) + 2;
+	}
+	pszSelection = (char*) malloc(cchSelection + 1);
+	if (pszSelection == 0) {
+		ShowFatalGetLastErrorMessageAndExit("GetSelectionAsString: Unable to allocate string");
+	}
+	*pszSelection = '\0';
+	for (i = *(int*) ((char*) this + 0x50); i <= *(int*) ((char*) this + 0x54); ++i) {
+		pszLine = *(char**) (pLines + i * 12 + 4);
+		strcat(pszSelection, pszLine);
+		strcat(pszSelection, "\x0d\x0a");
+	}
+	((CTextWindowSyncInterface*) this)->EndUpdate();
+	return pszSelection;
+}
+
 // FUNCTION: LEMBALL 0x00472b10
 int __stdcall DebugMessageThreadMain(void)
 {
