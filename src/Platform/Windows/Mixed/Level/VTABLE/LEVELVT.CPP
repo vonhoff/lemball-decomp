@@ -2442,3 +2442,26 @@ void __cdecl ForwardManagedEntityVslot8CVariant(void* pUnused, void* pEntity)
 	pVtable = *(void***) pEntity;
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x8c / sizeof(void*)])(pEntity);
 }
+
+
+
+// FUNCTION: LEMBALL 0x00419e90
+void __cdecl thunk_advance_managed_entity_move_command_path(void* pUnused, void* pObject)
+{
+	(void) pUnused;
+	((void (__fastcall*)(void*)) 0x0040360c)(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00419f00
+void __cdecl thunk_advance_managed_entity_drop_to_saved_point(void* pUnused, void* pObject)
+{
+	(void) pUnused;
+	((void (__fastcall*)(void*)) 0x00401a73)(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00419f10
+void __cdecl thunk_advance_managed_entity_drop_to_tile_center(void* pUnused, void* pObject)
+{
+	(void) pUnused;
+	((void (__fastcall*)(void*)) 0x00401c1c)(pObject);
+}
