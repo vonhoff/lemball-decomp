@@ -51,6 +51,9 @@ extern void* LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(void* pEntry, int 
 extern void LEMBALL_FASTCALL QueueStatusPointPushThunk(void* pEntry, int nUnusedEdx, void* pQueue);
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChildOwner);
 extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void* pObject);
+extern void LEMBALL_FASTCALL ReleasePauseDialogPaletteRemaps(void* pObject);
+extern void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void* pObject);
+extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableABody(void* pObject);
 extern void* LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void* pOwner);
 extern void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void* pObject);
 extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChildOwner);
@@ -1292,6 +1295,39 @@ void LEMBALL_FASTCALL ReleaseLevelScreenPauseDialogResources(void* pObject)
 		ReleaseTypedResourceObjectReference(*(void**) (pBytes + 0x154));
 		*(int*) (pBytes + 0x208) = 0;
 	}
+}
+
+// FUNCTION: LEMBALL 0x00444790
+void LEMBALL_FASTCALL DestroyLevelScreenPauseDialog(void* pAdjusted)
+{
+	typedef void(LEMBALL_FASTCALL * ReleaseProc)(void* pObject);
+	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, int fDelete);
+	char* pBase;
+	char* pEntry;
+	void* pOwned;
+	int i;
+
+	pBase = (char*) pAdjusted - 0x90;
+	RemoveGeometryOwnerChild(*(void**) (*(char**) ((char*) pAdjusted + 0x84) + 0x1c), 0, (char*) pAdjusted + 0x14);
+	if (*(int*) ((char*) pAdjusted - 0x8c) == 1) {
+		((ReleaseProc) (*(void***) pBase)[0x74 / sizeof(void*)])(pBase);
+	}
+	FreeVSMemBlock(*(void**) ((char*) pAdjusted + 0x168));
+	ReleasePauseDialogPaletteRemaps(pBase);
+	pOwned = *(void**) ((char*) pAdjusted + 0x14c);
+	if (pOwned != 0) {
+		((DeleteProc) (*(void***) pOwned)[0])(pOwned, 0, 3);
+	}
+	ReleaseLevelScreenPauseDialogResources(pBase);
+	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pAdjusted, 0);
+	pEntry = (char*) pAdjusted + 0x14c;
+	for (i = 3; i >= 0; --i) {
+		pEntry -= 0x20;
+		ResetBaseModeActionButtonPointSink(pEntry);
+	}
+	RestorePackagedSpriteRenderEntryVtableABody((char*) pAdjusted + 0xa8);
+	((CTextManager*) ((char*) pAdjusted + 0x4c))->Destroy();
+	DestroyWindowOwnerRenderContext(pBase);
 }
 
 extern void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAuto(void* pObject, void*, BYTE fDelete);
