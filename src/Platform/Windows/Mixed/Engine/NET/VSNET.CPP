@@ -130,7 +130,7 @@ static void* g_NETWORK_EffTransportGlobalReadStreamVtable[4] = {
 	(void*) ReadEffStreamTwoU16Fields,
 	(void*) NoopVtableCallbackThunk,
 };
-int CompareEffTransportRequestStreamName(void* pObject);
+int LEMBALL_FASTCALL CompareEffTransportRequestStreamName(void* pObject);
 void LEMBALL_FASTCALL WriteEffTransportRequestStreamName(void* pObject);
 void __fastcall LoadEffTransportRequestConnectStream(void* pObject);
 void __fastcall WriteEffTransportRequestPortFields(void* pObject);
@@ -1146,21 +1146,15 @@ void LEMBALL_FASTCALL WriteEffTransportRequestStreamName(void* pObject)
 }
 
 // FUNCTION: LEMBALL 0x0045f370
-int CompareEffTransportRequestStreamName(void* pObject)
+int LEMBALL_FASTCALL CompareEffTransportRequestStreamName(void* pObject)
 {
-	const unsigned char* pbStream;
-	const unsigned char* pbName;
+	int fDifferent;
 
-	pbStream = (const unsigned char*) (unsigned long) *(int*) ((char*) pObject + 0x20);
-	pbName = (const unsigned char*) *(char**) ((char*) pObject + 0x2c);
-	while (*pbStream == *pbName) {
-		if (*pbStream == 0) {
-			return 1;
-		}
-		++pbStream;
-		++pbName;
-	}
-	return 0;
+	fDifferent = strcmp(*(char**) ((char*) pObject + 0x20),
+		*(char**) ((char*) pObject + 0x2c)) != 0;
+	*(char**) ((char*) pObject + 0x20) +=
+		strlen(*(char**) ((char*) pObject + 0x2c)) + 1;
+	return fDifferent == 0;
 }
 
 // FUNCTION: LEMBALL 0x0045f3d0
