@@ -1,9 +1,11 @@
 #include "AI/CMover.h"
-#include "AI/LevelTileGridCell.h"
-#include "AI/LevelNodePoint.h"
 
 #include "AI/CGameObject.h"
 #include "AI/CPlayerLemming.h"
+#include "AI/LevelNodePoint.h"
+#include "AI/LevelTileGridCell.h"
+
+#include <string.h>
 
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
@@ -348,4 +350,85 @@ int CMover::GetOn(CGameObject* pObject)
 	pObject->m_WorldPosition9C.y = position.y;
 	pObject->m_WorldPosition9C.z = m_nWorldZA4 + 0x8000;
 	return 1;
+}
+
+// FUNCTION: LEMBALL 0x0042FC60
+CMover& CMover::CopyPrefix(const CMover& source)
+{
+	char* pDest;
+	const char* pSource;
+
+	pDest = (char*) this;
+	pSource = (const char*) &source;
+	*(unsigned short*) (pDest + 0x4) = *(const unsigned short*) (pSource + 0x4);
+	*(int*) (pDest + 0x8) = *(const int*) (pSource + 0x8);
+	*(int*) (pDest + 0xc) = *(const int*) (pSource + 0xc);
+	*(int*) (pDest + 0x10) = *(const int*) (pSource + 0x10);
+	memcpy(pDest + 0x14, pSource + 0x14, 0x18);
+	*(int*) (pDest + 0x2c) = *(const int*) (pSource + 0x2c);
+	*(int*) (pDest + 0x30) = *(const int*) (pSource + 0x30);
+	*(int*) (pDest + 0x34) = *(const int*) (pSource + 0x34);
+	*(int*) (pDest + 0x38) = *(const int*) (pSource + 0x38);
+	*(int*) (pDest + 0x3c) = *(const int*) (pSource + 0x3c);
+	*(int*) (pDest + 0x40) = *(const int*) (pSource + 0x40);
+	*(int*) (pDest + 0x44) = *(const int*) (pSource + 0x44);
+	*(int*) (pDest + 0x48) = *(const int*) (pSource + 0x48);
+	*(int*) (pDest + 0x4c) = *(const int*) (pSource + 0x4c);
+	*(int*) (pDest + 0x50) = *(const int*) (pSource + 0x50);
+	*(int*) (pDest + 0x54) = *(const int*) (pSource + 0x54);
+	*(int*) (pDest + 0x58) = *(const int*) (pSource + 0x58);
+	*(int*) (pDest + 0x5c) = *(const int*) (pSource + 0x5c);
+	*(int*) (pDest + 0x60) = *(const int*) (pSource + 0x60);
+	*(int*) (pDest + 0x64) = *(const int*) (pSource + 0x64);
+	*(unsigned short*) (pDest + 0x68) = *(const unsigned short*) (pSource + 0x68);
+	*(unsigned short*) (pDest + 0x6a) = *(const unsigned short*) (pSource + 0x6a);
+	*(unsigned short*) (pDest + 0x6c) = *(const unsigned short*) (pSource + 0x6c);
+	*(unsigned short*) (pDest + 0x6e) = *(const unsigned short*) (pSource + 0x6e);
+	*(int*) (pDest + 0x70) = *(const int*) (pSource + 0x70);
+	*(int*) (pDest + 0x74) = *(const int*) (pSource + 0x74);
+	*(int*) (pDest + 0x78) = *(const int*) (pSource + 0x78);
+	*(int*) (pDest + 0x7c) = *(const int*) (pSource + 0x7c);
+	*(int*) (pDest + 0x80) = *(const int*) (pSource + 0x80);
+	*(int*) (pDest + 0x84) = *(const int*) (pSource + 0x84);
+	*(int*) (pDest + 0x88) = *(const int*) (pSource + 0x88);
+	*(int*) (pDest + 0x8c) = *(const int*) (pSource + 0x8c);
+	*(int*) (pDest + 0x90) = *(const int*) (pSource + 0x90);
+	*(int*) (pDest + 0x94) = *(const int*) (pSource + 0x94);
+	*(int*) (pDest + 0x98) = *(const int*) (pSource + 0x98);
+	*(int*) (pDest + 0x9c) = *(const int*) (pSource + 0x9c);
+	*(int*) (pDest + 0xa0) = *(const int*) (pSource + 0xa0);
+	*(int*) (pDest + 0xa4) = *(const int*) (pSource + 0xa4);
+	*(int*) (pDest + 0xa8) = *(const int*) (pSource + 0xa8);
+	*(int*) (pDest + 0xac) = *(const int*) (pSource + 0xac);
+	*(int*) (pDest + 0xb0) = *(const int*) (pSource + 0xb0);
+	*(unsigned short*) (pDest + 0xb4) = *(const unsigned short*) (pSource + 0xb4);
+	*(unsigned short*) (pDest + 0xb6) = *(const unsigned short*) (pSource + 0xb6);
+	*(int*) (pDest + 0xb8) = *(const int*) (pSource + 0xb8);
+	*(unsigned short*) (pDest + 0xbc) = *(const unsigned short*) (pSource + 0xbc);
+	*(int*) (pDest + 0xc0) = *(const int*) (pSource + 0xc0);
+	*(unsigned short*) (pDest + 0xc4) = *(const unsigned short*) (pSource + 0xc4);
+	*(int*) (pDest + 0xc8) = *(const int*) (pSource + 0xc8);
+	*(int*) (pDest + 0xcc) = *(const int*) (pSource + 0xcc);
+	*(int*) (pDest + 0xd0) = *(const int*) (pSource + 0xd0);
+	*(int*) (pDest + 0xd4) = *(const int*) (pSource + 0xd4);
+	*(int*) (pDest + 0xd8) = *(const int*) (pSource + 0xd8);
+	*(int*) (pDest + 0xdc) = *(const int*) (pSource + 0xdc);
+	*(int*) (pDest + 0xe0) = *(const int*) (pSource + 0xe0);
+	*(int*) (pDest + 0xe4) = *(const int*) (pSource + 0xe4);
+	*(int*) (pDest + 0xe8) = *(const int*) (pSource + 0xe8);
+	*(int*) (pDest + 0xec) = *(const int*) (pSource + 0xec);
+	*(int*) (pDest + 0xf0) = *(const int*) (pSource + 0xf0);
+	*(int*) (pDest + 0xf4) = *(const int*) (pSource + 0xf4);
+	*(int*) (pDest + 0xf8) = *(const int*) (pSource + 0xf8);
+	*(int*) (pDest + 0xfc) = *(const int*) (pSource + 0xfc);
+	*(int*) (pDest + 0x100) = *(const int*) (pSource + 0x100);
+	*(int*) (pDest + 0x104) = *(const int*) (pSource + 0x104);
+	*(int*) (pDest + 0x108) = *(const int*) (pSource + 0x108);
+	*(int*) (pDest + 0x10c) = *(const int*) (pSource + 0x10c);
+	*(int*) (pDest + 0x110) = *(const int*) (pSource + 0x110);
+	*(int*) (pDest + 0x114) = *(const int*) (pSource + 0x114);
+	*(int*) (pDest + 0x118) = *(const int*) (pSource + 0x118);
+	*(int*) (pDest + 0x11c) = *(const int*) (pSource + 0x11c);
+	*(unsigned short*) (pDest + 0x120) = *(const unsigned short*) (pSource + 0x120);
+	return *this;
 }
