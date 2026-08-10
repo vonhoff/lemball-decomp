@@ -152,6 +152,16 @@ struct GameGeometryDispatchEvent {
 	int m_fHandled10;
 };
 
+struct LevelViewRotationTransform {
+	void ScreenToGame(int nScreenX, int nScreenY, int* pTileX, int* pTileY);
+};
+
+struct RotatedTileCoordinateEventSink {
+	virtual void Reserved00(void) = 0;
+	virtual void Reserved04(void) = 0;
+	virtual void Dispatch(GameGeometryDispatchEvent* pEvent) = 0;
+};
+
 DECOMP_SIZE_ASSERT(GameGeometryOwnerRectState, 0x38);
 typedef char
 	VS_RootGeometryDispatchHelperState_size_must_be_0x60[sizeof(VS_RootGeometryDispatchHelperState) == 0x60 ? 1 : -1];
@@ -2399,6 +2409,27 @@ void LEMBALL_FASTCALL RemoveGeometryOwnerChild(void* pOwner, int, void* pChildOw
 		pHelper->m_pActiveOwner5C = 0;
 	}
 	UnlinkAndFreeGeometryOwnerChildNode(pHelper, 0, pNode);
+}
+
+// FUNCTION: LEMBALL 0x00432680
+void LEMBALL_FASTCALL EmitRotatedTileCoordinateEvent(void* pObject)
+{
+	char* pBytes;
+	int nTileX;
+	int nTileY;
+	GameGeometryDispatchEvent Event;
+
+	pBytes = (char*) pObject;
+	Event.m_nType00 = 1;
+	Event.m_dwTime04 = 0;
+	Event.m_nPackedPosition08 = 0;
+	Event.m_nCommand0C = 0;
+	Event.m_fHandled10 = 0;
+	((LevelViewRotationTransform*) *(void**) (pBytes + 4))
+		->ScreenToGame(*(int*) (pBytes + 0x34) >> 12, *(int*) (pBytes + 0x38) >> 12, &nTileX, &nTileY);
+	Event.m_nPackedPosition08 = nTileX;
+	Event.m_nCommand0C = nTileY;
+	((RotatedTileCoordinateEventSink*) *(void**) (pBytes + 0x0c))->Dispatch(&Event);
 }
 
 // FUNCTION: LEMBALL 0x0046aa30
