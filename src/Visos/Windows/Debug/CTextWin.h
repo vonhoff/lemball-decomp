@@ -7,6 +7,7 @@
 // SIZE 0x58
 class CTextWindow {
 public:
+	CTextWindow(int cLines, const char* pszTitle);
 	void PostAllocatedTextControlString(const char* pszText, unsigned int dwColour);
 
 	// STRONG INFERENCE: preserved diagnostics identify these methods at the

@@ -1,3 +1,4 @@
+#include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
@@ -13,12 +14,134 @@ static const char g_PLATFORM_DebugWindowTitle[] = "Debug Window";
 // GLOBAL: LEMBALL 0x004a29f0
 CTextWindow* g_pDebugTextWindow = 0;
 static HACCEL g_hDebugWindowAccelerators = 0;
+static int g_fDebugTextWindowClassRegistered = 0;
 static void* g_CTextWindowVTable[2] = {(void*) NetworkSafeVtableNoop, (void*) NetworkSafeVtableNoop};
 extern HANDLE g_hDebugSyncEvent;
 extern void __cdecl ShowFatalGetLastErrorMessageAndExit(const char* pszMessage);
 
 // GLOBAL: LEMBALL 0x004a2b7c
 int g_fDebugTextWindowActive = 0;
+
+extern "C"
+{
+	HANDLE WINAPI GetDC(HWND hWnd);
+	int WINAPI ReleaseDC(HWND hWnd, HANDLE hDC);
+	HANDLE WINAPI SelectObject(HANDLE hdc, HANDLE h);
+	BOOL WINAPI GetTextMetricsA(HANDLE hdc, void* pMetrics);
+	HANDLE WINAPI CreateFontA(int nHeight,
+							  int nWidth,
+							  int nEscapement,
+							  int nOrientation,
+							  int fnWeight,
+							  DWORD fdwItalic,
+							  DWORD fdwUnderline,
+							  DWORD fdwStrikeOut,
+							  DWORD fdwCharSet,
+							  DWORD fdwOutputPrecision,
+							  DWORD fdwClipPrecision,
+							  DWORD fdwQuality,
+							  DWORD fdwPitchAndFamily,
+							  LPCSTR lpszFace);
+	int WINAPI SetScrollPos(HWND hWnd, int nBar, int nPos, BOOL bRedraw);
+}
+
+// FUNCTION: LEMBALL 0x00473A60
+CTextWindow::CTextWindow(int cLines, const char* pszTitle)
+{
+	void** pBuffer;
+	int* pLines;
+	int i;
+	WNDCLASSA windowClass;
+	HWND hWindow;
+	HANDLE hFont;
+	HANDLE hdc;
+	char textMetrics[60];
+	int nWidth;
+	int nHeight;
+
+	*(void**) this = (void*) 0x4988d0;
+	InitializeCriticalSection((char*) this + 4);
+	*(void**) this = (void*) 0x49a4a0;
+	pBuffer = (void**) AllocateVSMemBlock(12);
+	if (pBuffer == 0) {
+		*(void***) ((char*) this + 0x24) = 0;
+	}
+	else {
+		pLines = (int*) AllocateVSMemBlock(cLines * 12 + 4);
+		if (pLines == 0) {
+			pBuffer[1] = 0;
+		}
+		else {
+			*pLines = cLines;
+			for (i = cLines - 1; i >= 0; --i) {
+				((void(__fastcall*)(void*)) 0x4749b0)(pLines + 1 + i * 3);
+			}
+			pBuffer[1] = pLines + 1;
+		}
+		*(int*) pBuffer = cLines;
+		pBuffer[2] = 0;
+		*(void***) ((char*) this + 0x24) = pBuffer;
+	}
+	if (*(void***) ((char*) this + 0x24) == 0) {
+		ShowFatalGetLastErrorMessageAndExit("Unable to allocate TextLineBuffer");
+	}
+	if (g_fDebugTextWindowClassRegistered == 0) {
+		windowClass.style = 3;
+		windowClass.lpfnWndProc = (WNDPROC) 0x474750;
+		windowClass.cbClsExtra = 0;
+		windowClass.cbWndExtra = 4;
+		windowClass.hInstance = g_hApplicationInstance;
+		windowClass.hIcon = LoadIconA(0, (LPCSTR) 0x7f00);
+		windowClass.hCursor = LoadCursorA(0, (LPCSTR) 0x7f00);
+		windowClass.hbrBackground = (HANDLE) GetStockObject(0);
+		windowClass.lpszMenuName = 0;
+		windowClass.lpszClassName = "CTextWindow";
+		if (RegisterClassA(&windowClass) == 0) {
+			ShowFatalGetLastErrorMessageAndExit("Unable to register text window class");
+		}
+		g_fDebugTextWindowClassRegistered = 1;
+		g_fDebugTextWindowActive = 1;
+	}
+	*(int*) ((char*) this + 0x44) = 0;
+	nWidth = GetSystemMetrics(0) / 2;
+	nHeight = GetSystemMetrics(1) / 2;
+	hWindow = CreateWindowExA(0,
+							  "CTextWindow",
+							  pszTitle,
+							  0xcf0000,
+							  0x80000000,
+							  0x80000000,
+							  nWidth,
+							  nHeight,
+							  0,
+							  0,
+							  g_hApplicationInstance,
+							  this);
+	*(HWND*) ((char*) this + 0x1c) = hWindow;
+	if (hWindow == 0) {
+		ShowFatalGetLastErrorMessageAndExit("Unable to create text window");
+	}
+	hFont = CreateFontA(8, 6, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0x30, "Courier");
+	*(HANDLE*) ((char*) this + 0x20) = hFont;
+	if (hFont == 0) {
+		ShowFatalGetLastErrorMessageAndExit("Unable to create font");
+	}
+	hdc = GetDC(hWindow);
+	SelectObject(hdc, hFont);
+	GetTextMetricsA(hdc, textMetrics);
+	*(int*) ((char*) this + 0x3c) = *(int*) textMetrics + *(int*) (textMetrics + 16);
+	ReleaseDC(hWindow, hdc);
+	((void(__fastcall*)(void*)) 0x474050)(this);
+	((void(__fastcall*)(void*)) 0x474000)(this);
+	*(const char**) ((char*) this + 0x28) = pszTitle;
+	*(int*) ((char*) this + 0x2c) = (*(int**) ((char*) this + 0x24))[2];
+	*(int*) ((char*) this + 0x50) = -1;
+	*(int*) ((char*) this + 0x54) = -1;
+	*(int*) ((char*) this + 0x38) = 0;
+	SetScrollPos(hWindow, 1, 0, 1);
+	ShowWindow(hWindow, 5);
+	UpdateWindow(hWindow);
+}
 
 class CTextWindowSyncInterface {
 public:
