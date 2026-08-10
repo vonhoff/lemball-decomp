@@ -54,6 +54,10 @@ extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void* pObject);
 extern void LEMBALL_FASTCALL ReleasePauseDialogPaletteRemaps(void* pObject);
 extern void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void* pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableABody(void* pObject);
+extern void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void* pObject);
+extern void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject);
+extern void LEMBALL_FASTCALL configure_level_screen_pause_dialog_options(void* pObject);
+extern void LEMBALL_FASTCALL RebuildLevelScreenPauseDialogLayout(void* pObject);
 extern void* LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void* pOwner);
 extern void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void* pObject);
 extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChildOwner);
@@ -1328,6 +1332,48 @@ void LEMBALL_FASTCALL DestroyLevelScreenPauseDialog(void* pAdjusted)
 	RestorePackagedSpriteRenderEntryVtableABody((char*) pAdjusted + 0xa8);
 	((CTextManager*) ((char*) pAdjusted + 0x4c))->Destroy();
 	DestroyWindowOwnerRenderContext(pBase);
+}
+
+// FUNCTION: LEMBALL 0x00444680
+void* LEMBALL_FASTCALL
+ConstructLevelScreenPauseDialog(void* pObject, int nUnusedEdx, void* pOwner, void* pContext, void* pOptions)
+{
+	char* pBytes;
+	char* pEntry;
+	int i;
+
+	(void) nUnusedEdx;
+	pBytes = (char*) pObject;
+	((GameWindowOwnerRenderContext*) pObject)->ConstructWindowOwnerRenderContext();
+	new (pBytes + 0xdc) CTextManager(0x2b6, 1, 0x0f, 0);
+	InitializeRenderQueueNodeBase(pBytes + 0x90);
+	InitializeEmptyGeometryOwnerRect(pBytes + 0xa4);
+	*(short*) (pBytes + 0x132) = 0;
+	*(short*) (pBytes + 0x130) = 0;
+	pEntry = pBytes + 0x138;
+	for (i = 0; i >= 0; --i) {
+		InitializePackagedSpriteRenderEntry(pEntry);
+		pEntry += 0x10;
+	}
+	*(short*) (pBytes + 0x14a) = 0;
+	*(short*) (pBytes + 0x148) = 0;
+	*(short*) (pBytes + 0x14e) = 0;
+	*(short*) (pBytes + 0x14c) = 0;
+	*(short*) (pBytes + 0x152) = 0;
+	*(short*) (pBytes + 0x150) = 0;
+	pEntry = pBytes + 0x15c;
+	for (i = 3; i >= 0; --i) {
+		InitializeMenuActionFramePointSink(pEntry);
+		pEntry += 0x20;
+	}
+	*(void**) (pBytes + 0x110) = pOwner;
+	*(void**) (pBytes + 0x104) = pOptions;
+	*(void**) (pBytes + 0x114) = pContext;
+	*(int*) (pBytes + 0x108) = 0;
+	*(int*) (pBytes + 0x134) = 0;
+	configure_level_screen_pause_dialog_options(pObject);
+	RebuildLevelScreenPauseDialogLayout(pObject);
+	return pObject;
 }
 
 extern void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAuto(void* pObject, void*, BYTE fDelete);
