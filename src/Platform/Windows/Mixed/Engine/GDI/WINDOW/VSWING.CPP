@@ -27,6 +27,12 @@ void LEMBALL_FASTCALL decode_zrle_rows_gated_by_mask(void*, int, int, int*, unsi
 void LEMBALL_FASTCALL decode_zrle_rows_palette_gated_by_mask(void*, int, int, int*, unsigned short, unsigned char*);
 void LEMBALL_FASTCALL decode_zrle_rows_clipped(void*, int, short*, int, int*, int);
 void LEMBALL_FASTCALL decode_zrle_rows_clipped_write_mask(void*, int, short*, int, int*, unsigned short);
+void LEMBALL_FASTCALL decode_zrle_rows_clipped_palette_write_mask(
+	void*, int, short*, char*, int*, int, unsigned char*);
+void LEMBALL_FASTCALL decode_zrle_rows_clipped_gated_by_mask(void*, int, short*, char*, int*, unsigned short);
+
+void LEMBALL_FASTCALL RenderZrleFrameAtPointViaHelper(
+	void*, int, short, short, int*, unsigned int, unsigned char**, unsigned int);
 extern void* g_pSingletonAnimWindowOwner;
 extern "C"
 {
@@ -626,6 +632,117 @@ int LEMBALL_STDCALL DrawVisualSciencesWingFrame(VsWingDrawHandlerState* pState, 
 		((GamePrimaryContext*) pState->m_pAnimWindowOwner470)->FlushWindowOwnerDirtyRect(0);
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x004783c0
+void LEMBALL_FASTCALL RenderPackagedZrleEntryViaHelper(void* pThis, int, char* pEntry, int* pBitmap)
+{
+	typedef void(LEMBALL_FASTCALL * DirtyRectVirtual)(void*, int, short*);
+	VsGdiHelperSurface* pSurface;
+	unsigned char** ppPalette;
+	unsigned char* pPalette;
+	unsigned int dwFlags;
+	unsigned short nMask;
+	short aRect[4];
+	short aClippedRect[4];
+	int fClipped;
+	int fReverseRows;
+
+	dwFlags = *(unsigned int*) (pEntry + 0x0c);
+	ppPalette = *(unsigned char***) (pEntry + 0x10);
+	nMask = *(unsigned short*) (pEntry + 0x14);
+	pSurface = (VsGdiHelperSurface*) ((char*) pThis - 0x55c);
+	if ((dwFlags & 0xc0000) == 0) {
+		RenderZrleFrameAtPointViaHelper(pSurface,
+											  0,
+											  *(short*) (pEntry + 4),
+											  *(short*) (pEntry + 6),
+											  pBitmap,
+											  dwFlags,
+											  ppPalette,
+											  nMask);
+		return;
+	}
+	aRect[0] = *(short*) ((char*) pBitmap + 0x4c);
+	aRect[1] = *(short*) ((char*) pBitmap + 0x4e);
+	if (aRect[0] * aRect[1] == 0) {
+		return;
+	}
+	aRect[2] = *(short*) (pEntry + 4);
+	aRect[3] = *(short*) (pEntry + 6);
+	if ((dwFlags & 0x400) == 0) {
+		aRect[2] = (short) (aRect[2] + *(short*) ((char*) pBitmap + 0x48));
+		aRect[3] = (short) (aRect[3] + *(short*) ((char*) pBitmap + 0x4a));
+	}
+	memset(aClippedRect, 0, sizeof(aClippedRect));
+	if (aRect[0] > 0xff) {
+		aRect[0] = 0xff;
+	}
+	if (aRect[1] > 0xff) {
+		aRect[1] = 0xff;
+	}
+	fClipped = pSurface->ClipRenderRectToSurfaceBounds((VsGdiRect*) aRect, (VsGdiRect*) aClippedRect);
+	if (fClipped != 0 && (aClippedRect[0] < 1 || aClippedRect[1] < 1)) {
+		return;
+	}
+	((DirtyRectVirtual) (*(void***) pSurface)[1])(pSurface, 0, aRect);
+	pPalette = ppPalette == 0 ? 0 : *ppPalette;
+	if (fClipped == 0) {
+		if ((dwFlags & 0x40000) != 0) {
+			if (pPalette == 0) {
+				decode_zrle_rows_write_mask(pSurface, 0, (int) aRect, pBitmap, nMask);
+			}
+			else {
+				decode_zrle_rows_palette_write_mask(pSurface, 0, (int) aRect, pBitmap, nMask, pPalette);
+			}
+			return;
+		}
+		if (pPalette == 0) {
+			decode_zrle_rows_gated_by_mask(pSurface, 0, (int) aRect, pBitmap, nMask);
+		}
+		else {
+			decode_zrle_rows_palette_gated_by_mask(pSurface, 0, (int) aRect, pBitmap, nMask, pPalette);
+		}
+		return;
+	}
+	fReverseRows = (dwFlags & 2) >> 1;
+	if ((dwFlags & 0x40000) != 0) {
+		if (pPalette == 0) {
+			decode_zrle_rows_clipped_write_mask(pSurface, 0, aRect, (int) aClippedRect, pBitmap, nMask);
+		}
+		else {
+			decode_zrle_rows_clipped_palette_write_mask(
+				pSurface, 0, aRect, (char*) aClippedRect, pBitmap, nMask, pPalette);
+		}
+		return;
+	}
+	if ((dwFlags & 0x80000) != 0) {
+		if (pPalette == 0) {
+			decode_zrle_rows_clipped_gated_by_mask(pSurface, 0, aRect, (char*) aClippedRect, pBitmap, nMask);
+		}
+		else {
+			((void(LEMBALL_FASTCALL *)(void*, int, short*, char*, int*, unsigned short, unsigned char*)) 0x00477c60)(
+				pSurface, 0, aRect, (char*) aClippedRect, pBitmap, nMask, pPalette);
+		}
+		return;
+	}
+	if (pPalette == 0) {
+		if ((dwFlags & 1) != 0) {
+			((void(LEMBALL_FASTCALL *)(void*, int, short*, char*, int*, int)) 0x00476ee0)(
+				pSurface, 0, aRect, (char*) aClippedRect, pBitmap, fReverseRows);
+		}
+		else {
+			decode_zrle_rows_clipped(pSurface, 0, aRect, (int) aClippedRect, pBitmap, fReverseRows);
+		}
+	}
+	else if ((dwFlags & 1) != 0) {
+		((void(LEMBALL_FASTCALL *)(void*, int, short*, char*, int*, int, unsigned char*)) 0x00477f50)(
+			pSurface, 0, aRect, (char*) aClippedRect, pBitmap, fReverseRows, pPalette);
+	}
+	else {
+		((void(LEMBALL_FASTCALL *)(void*, int, short*, char*, int*, int, unsigned char*)) 0x00477740)(
+			pSurface, 0, aRect, (char*) aClippedRect, pBitmap, fReverseRows, pPalette);
+	}
 }
 
 // FUNCTION: LEMBALL 0x00478BB0
