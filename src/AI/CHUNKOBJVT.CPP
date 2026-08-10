@@ -739,6 +739,38 @@ int LEMBALL_FASTCALL AdvanceCollChunkObjectStateMachine(void* pObject)
 	return 1;
 }
 
+// FUNCTION: LEMBALL 0x00422b40
+int LEMBALL_FASTCALL ServiceCollType0BIdleOrStateMachine(void* pObject)
+{
+	char* pBytes;
+	char* pGrid;
+	int nLocalX;
+	int nLocalY;
+	int nTileX;
+	int nTileY;
+	short nHeight;
+
+	pBytes = (char*) pObject;
+	if (*(int*) (pBytes + 0x114) == 0 && *(int*) (pBytes + 0x64) == 0x0b) {
+		if (*(int*) (pBytes + 0xb8) == 0x18 && *(int*) (pBytes + 0x11c) == 0) {
+			pGrid = (char*) g_pLevelTileGrid;
+			nLocalX = *(int*) (pBytes + 0x9c) >> 12;
+			nLocalY = *(int*) (pBytes + 0xa0) >> 12;
+			nTileX = nLocalX >> 4;
+			nTileY = nLocalY >> 4;
+			nHeight = 0;
+			if (nLocalX >= 0 && nLocalY >= 0 && nTileX < *(int*) (pGrid + 0x10) && nTileY < *(int*) (pGrid + 0x14)) {
+				CGround* pGround =
+					(CGround*) (*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12);
+				nHeight = pGround->GetZThunk(nLocalX & 0x0f, nLocalY & 0x0f);
+			}
+			*(int*) (pBytes + 0xa4) = (unsigned short) nHeight << 12;
+		}
+		return 1;
+	}
+	return AdvanceCollChunkObjectStateMachine(pObject);
+}
+
 // FUNCTION: LEMBALL 0x00426710
 void* LEMBALL_FASTCALL DeleteLiftChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
