@@ -205,6 +205,7 @@ set(LEMBALL_SOURCES
     src/views/2d/LVRUNEXT.CPP
     src/Platform/Windows/Mixed/Level/STATE/LevelStatusPanelRender.cpp
     src/Visos/Windows/CGDICircleOutline.cpp
+    src/Visos/Windows/CGDILocalRect.cpp
 )
 
 set(LEMBALL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/LEMBALL.RES")
