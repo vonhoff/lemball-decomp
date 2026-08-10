@@ -1862,14 +1862,16 @@ int LEMBALL_FASTCALL ResetAndCloseWaveOutEffectDevice0047CC20(void* pBackend)
 // FUNCTION: LEMBALL 0x0047cdd0
 int LEMBALL_FASTCALL IsWaveOutEffectInstanceAvailable0047CDD0(void* pBackend)
 {
-	int i;
+	unsigned int i;
+	int fAvailable;
 
+	fAvailable = 0;
 	for (i = 0; i < 8; ++i) {
-		if (*(unsigned char*) ((char*) pBackend + 0x48 + i) == 0) {
-			return 1;
+		if (*(unsigned char*) ((char*) pBackend + 0x48 + i) == 1) {
+			fAvailable = 1;
 		}
 	}
-	return 0;
+	return fAvailable;
 }
 
 // FUNCTION: LEMBALL 0x0047cdf0
