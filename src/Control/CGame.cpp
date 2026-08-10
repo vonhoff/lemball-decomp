@@ -5711,6 +5711,7 @@ int GameRenderDispatchQueue::UnregisterOrderedRenderDispatchClient(void* pClient
 	UnlockDispatchQueue();
 	return 0;
 }
+
 // FUNCTION: LEMBALL 0x00463b50
 void* GameWindowOwnerRenderContext::ConstructWindowOwnerRenderContext(void)
 {
@@ -6198,4 +6199,20 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerAuto(void* pObject, 
 // FUNCTION: LEMBALL 0x00455ea0
 void noop_lobby_transport_callback(void)
 {
+}
+
+// FUNCTION: LEMBALL 0x00463b20
+void __cdecl swap(unsigned char* pFirst, unsigned char* pSecond, int nBytes)
+{
+	unsigned char nValue;
+
+	if (pSecond != pFirst) {
+		while (nBytes--) {
+			nValue = *pFirst;
+			*pFirst = *pSecond;
+			++pFirst;
+			*pSecond = nValue;
+			++pSecond;
+		}
+	}
 }
