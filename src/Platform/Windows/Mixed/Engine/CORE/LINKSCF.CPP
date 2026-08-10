@@ -2567,3 +2567,14 @@ void CObjectManager::AddSwitch(unsigned short nSwitchType, int x, int y, int z,
 	((void(__fastcall*)(void*, void*, unsigned short, void*, int)) 0x402cac)(
 		this, 0, nSwitchType, pObject, 1);
 }
+
+
+// FUNCTION: LEMBALL 0x00422380
+void __cdecl scale_two_dword_vector_by_scalar(int* pOutput, int* pInput, int nScalar)
+{
+	volatile int nY;
+
+	nY = pInput[1];
+	pOutput[0] = pInput[0] * nScalar;
+	pOutput[1] = nY * nScalar;
+}
