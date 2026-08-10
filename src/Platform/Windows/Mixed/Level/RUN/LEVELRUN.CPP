@@ -2370,6 +2370,84 @@ int LEMBALL_FASTCALL handle_level_chunk_stream_transport_event(void* pThis, int 
 	return 0;
 }
 
+struct EnemySequenceRecord {
+	int m_nType00;
+	int m_cEntries04;
+	int m_nIndex08;
+	int m_nStride0C;
+	unsigned short* m_pEntries10;
+};
+
+// FUNCTION: LEMBALL 0x00420c10
+void LEMBALL_FASTCALL create_enmy_group_and_chunk_object(void* pManager,
+														 int nUnused,
+														 int nArg1,
+														 int nArg2,
+														 int nArg3,
+														 int nArg4,
+														 int nArg5,
+														 int nArg6,
+														 int nArg7,
+														 int nArg8,
+														 int nArg9,
+														 short nFirstEntry,
+														 int cEntries)
+{
+	void* pGroup;
+	void* pEnemy;
+	void* pMemory;
+	EnemySequenceRecord* pRecord;
+	int i;
+
+	(void) nUnused;
+	pGroup = 0;
+	pMemory = AllocateVSMemBlock(0x168);
+	if (pMemory != 0) {
+		pGroup = ((void*(__fastcall*) (void*, int, void*, void*, void*) ) 0x401226)(pMemory,
+																					0,
+																					*(void**) 0x4a782c,
+																					*(void**) 0x4a7830,
+																					*(void**) 0x4a7834);
+	}
+	((void(__fastcall*)(void*, int, void*)) 0x4027e8)(pManager, 0, pGroup);
+	(*(void(__fastcall**)(void*, int, int))(*(void***) pGroup + 0x110 / 4))(pGroup, 0, 1);
+
+	pEnemy = 0;
+	pMemory = AllocateVSMemBlock(0x170);
+	if (pMemory != 0) {
+		pEnemy = ((void*(__fastcall*) (void*, int, void*, int, int, int, int) ) 0x4022ed)(pMemory,
+																						  0,
+																						  *(void**) 0x4a782c,
+																						  nArg1,
+																						  nArg2,
+																						  nArg3,
+																						  0);
+	}
+	(*(void(__fastcall**)(void*))(*(void***) pEnemy + 0x104 / 4))(pEnemy);
+	((void(__fastcall*)(void*, int, int, int, int, int, int, int)) 0x4026c6)(pEnemy,
+																			 0,
+																			 nArg4,
+																			 nArg5,
+																			 nArg6,
+																			 nArg7,
+																			 nArg8,
+																			 nArg9);
+	((void(__fastcall*)(void*, int, void*, void*)) 0x4017df)(pManager, 0, pEnemy, pGroup);
+
+	if (nArg4 == 1) {
+		pRecord = (EnemySequenceRecord*) AllocateVSMemBlock(sizeof(EnemySequenceRecord));
+		pRecord->m_nType00 = 1;
+		pRecord->m_cEntries04 = cEntries;
+		pRecord->m_nIndex08 = 0;
+		pRecord->m_nStride0C = 1;
+		pRecord->m_pEntries10 = (unsigned short*) AllocateVSMemBlock(cEntries * sizeof(unsigned short));
+		for (i = 0; i < cEntries; ++i) {
+			pRecord->m_pEntries10[i] = nFirstEntry + i;
+		}
+		*(EnemySequenceRecord**) ((char*) pEnemy + 0x134) = pRecord;
+	}
+}
+
 // FUNCTION: LEMBALL 0x004215e0
 void* LEMBALL_FASTCALL delete_node_chunk_record_array_or_scalar(void* pObject, void* pUnused, unsigned int fDelete)
 {
