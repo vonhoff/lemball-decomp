@@ -1,6 +1,52 @@
 #include "AI/CMoverManager.h"
+
+#include "AI/CGameObject.h"
 #include "AI/CMover.h"
 #include "Visos/Generic/Memory.h"
+
+// FUNCTION: LEMBALL 0x0042F350
+void CMoverManager::Remove(CMover* pObject)
+{
+	int i;
+	int j;
+	CMover* pSource;
+	CMover* pTarget;
+	int* pSourceWords;
+	int* pTargetWords;
+
+	i = 0;
+	if (m_cObjects34 > 0) {
+		while (pObject != m_pObjects38 + i) {
+			i++;
+			if (i >= m_cObjects34) {
+				return;
+			}
+		}
+		((CGameObject*) (m_pObjects38 + i))->SetId(0xffff);
+		i++;
+		while (i < m_cObjects34) {
+			pSource = m_pObjects38 + i;
+			pTarget = pSource - 1;
+			pTarget->CopyPrefix(*pSource);
+			pSourceWords = (int*) ((char*) pSource + 0x124);
+			pTargetWords = (int*) ((char*) pTarget + 0x124);
+			j = 0;
+			while (j < 21) {
+				pTargetWords[j] = pSourceWords[j];
+				j++;
+			}
+			pSourceWords = (int*) ((char*) pSource + 0x178);
+			pTargetWords = (int*) ((char*) pTarget + 0x178);
+			j = 0;
+			while (j < 10) {
+				pTargetWords[j] = pSourceWords[j];
+				j++;
+			}
+			i++;
+		}
+		m_cObjects34--;
+	}
+}
 
 // FUNCTION: LEMBALL 0x0042f220
 void CMoverManager::Initialise(int nCapacity)

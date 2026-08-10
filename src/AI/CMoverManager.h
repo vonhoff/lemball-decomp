@@ -18,6 +18,7 @@ struct CMoverManager {
 	void* m_pLevelMode3C;              // 0x3c
 
 	CMover* Find(int x, int y, int* pHeight);
+	void Remove(CMover* pObject);
 	int HasTriggeredObject(void* pEntity, const int* pPosition);
 	void ResetObjectCount(void);
 	void Initialise(int nCapacity);
