@@ -2580,8 +2580,7 @@ address,size,name,unit
 0x00465A70,1,noop_root_geometry_owner_slot_32,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
 0x00465A80,3,noop_root_geometry_owner_slot_33,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
 0x00465A90,3,vs_window_owner_base_get_window_owner_flags,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
-0x00465AA0,192,sample_root_helper_geometry_and_dispatch_render_groups,Visos/Windows/CGDI.cpp
-0x00465B60,257,recompute_root_geometry_subrect_groups,Visos/Windows/CGDI.cpp
+0x00465AA0,449,sample_root_helper_geometry_and_dispatch_render_groups,Visos/Windows/CGDI.cpp
 0x00465C70,13,update_root_geometry_source_rect,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
 0x00465C80,51,copy_zrle_resource_object,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
 0x00465CC0,144,construct_root_geometry_owner,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
