@@ -3129,6 +3129,53 @@ CPVButton::CPVButton(const CVSRect& Rect, CPVGWnd* pParent)
 	InitializeSharedSpriteOwnerState(this);
 }
 
+struct AlignedZrleChildOverlayRectInitializer {
+	virtual void Reserved00(void) = 0;
+	virtual void InitializeFromRect(short* pRect, void* pOwner, const char* pszName) = 0;
+};
+
+// FUNCTION: LEMBALL 0x00468410
+void* LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromRect(void* pObject,
+																int nUnusedEdx,
+																const CVSRect* pRect,
+																CPVGWnd* pParent,
+																int nResourceId,
+																int fAlignment)
+{
+	char* pBytes;
+	char* pEntry;
+	short aRect[4];
+	int i;
+
+	(void) nUnusedEdx;
+	pBytes = (char*) new (pObject) CPVButton(*pRect, pParent);
+	*(short*) (pBytes + 0x116) = 0;
+	*(short*) (pBytes + 0x114) = 0;
+	*(short*) (pBytes + 0x11a) = 0;
+	*(short*) (pBytes + 0x118) = 0;
+	*(int*) (pBytes + 0x108) = 0;
+	*(int*) (pBytes + 0x104) = 0;
+	pEntry = pBytes + 0x128;
+	for (i = 0; i >= 0; --i) {
+		InitializeTinyPointSinkHelper(pEntry);
+		pEntry += 8;
+	}
+	*(void***) pBytes = g_AlignedZrleChildOverlayVtable;
+	*(void***) (pBytes + 0x90) = g_AlignedZrleChildOverlayDeleteVtable;
+	*(int*) (pBytes + 0x110) = fAlignment;
+	*(int*) (pBytes + 0x10c) = nResourceId;
+	ComputeAlignedZrleChildLayout(pBytes);
+	aRect[0] = *(short*) (pBytes + 0xc0);
+	aRect[1] = *(short*) (pBytes + 0xc2);
+	aRect[2] = *(short*) (pBytes + 0xdc);
+	aRect[3] = *(short*) (pBytes + 0xde);
+	((AlignedZrleChildOverlayRectInitializer*) pBytes)->InitializeFromRect(aRect, *(void**) (pBytes + 0xc8), "Button");
+	*(short*) (pBytes + 0xc4) += *(short*) (pBytes + 0x18);
+	*(short*) (pBytes + 0xc6) += *(short*) (pBytes + 0x1a);
+	AppendGeometryOwnerChild(*(void**) (*(char**) (pBytes + 0xc8) + 0x1c), 0, pBytes + 0x90);
+	return pObject;
+}
+
 // FUNCTION: LEMBALL 0x00467cd0
 void* LEMBALL_FASTCALL ConstructResourceGeometryChildBase(void* pObject, int nUnusedEdx, void* pRenderOwner)
 {
