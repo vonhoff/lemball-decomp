@@ -3240,22 +3240,24 @@ CGDIDevice::CGDIDevice(int cSlots)
 // FUNCTION: LEMBALL 0x0046bc90
 CGDIDevice::~CGDIDevice(void)
 {
+	CGDIDevice* pDevice;
 	int i;
 	int nByteOffset;
 
+	pDevice = this;
 	i = 0;
-	if (0 < m_cSlots) {
+	if (0 < pDevice->m_cSlots) {
 		nByteOffset = 0;
 		do {
-			if (*(int*) ((char*) m_pSlots + nByteOffset + 0x14) == 0) {
+			if (*(int*) ((char*) pDevice->m_pSlots + nByteOffset + 0x14) == 0) {
 				g_pErrorOutputStream->AppendCStringToStream(
 					"Trying to delete device when a surface has not been free'd\n");
 			}
 			nByteOffset += sizeof(VsGdiResourceGeometryHelperSlot);
 			++i;
-		} while (i < m_cSlots);
+		} while (i < pDevice->m_cSlots);
 	}
-	FreeVSMemBlock(m_pSlots);
+	FreeVSMemBlock(pDevice->m_pSlots);
 }
 // FUNCTION: LEMBALL 0x0046bce0
 int CGDIDevice::FindFreeSurface(void)
