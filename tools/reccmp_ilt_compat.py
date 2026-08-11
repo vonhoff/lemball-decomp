@@ -90,6 +90,11 @@ FUNCTION_DATA_REFERENCES = {
         "g_pGenericGroupFormationManager",
         "generic-group formation manager 004a7820",
     ),
+    0x00421660: (
+        0x00495460,
+        "g_GAME_ZrleOnlyListResourceVtableStorage",
+        "ball chunk object vtable 00495460",
+    ),
     0x004232E0: (
         (0x00495B80, "g_afMazeNeighborEnabled", "maze neighbor-enabled table 00495b80"),
         (0x00495BA8, "g_abMazeEdgeMaskA", "maze edge-mask table A 00495ba8"),
@@ -278,6 +283,7 @@ THUNK_ILT_REFERENCES = {
     ),
     0x0041CCC0: (0x00402CAC, "CObjectManager::AddObject", "managed-object add target 0x41b2a0"),
     0x00420650: (0x00401532, "ReturnFacingDirection", "direction-octant target 0x413e80"),
+    0x00421660: (0x004035DF, "CGameObject::ConstructCGameObject", "game-object constructor target 0x414f30"),
     0x004270B0: (0x00402707, "CRocket::Set", "ROCK chunk object setter target 0x426840"),
     0x004275B0: (
         0x0040153C,
