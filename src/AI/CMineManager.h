@@ -19,6 +19,7 @@ public:
 	~CMineManager(void);
 	void Restart(void);
 	void Initialise(int nCapacity);
+	void Remove(CMine* pMine);
 	void Triggered(CMine* pMine);
 	void Trigger(int nIndex, int nDelay);
 	void StepOn(const AICOORD& position, CGameObject* pObject);
