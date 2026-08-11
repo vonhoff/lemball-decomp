@@ -75,6 +75,16 @@ FUNCTION_DATA_REFERENCES = {
         "g_nLevelFrameClockTimeMs",
         "level frame clock time 0049ce08",
     ),
+    0x00419A30: (
+        0x0049DCC8,
+        "g_SelectorProgressOverlayOwnerVtable",
+        "PLAS child-state dispatch table variant 0 0049dcc8",
+    ),
+    0x00419A50: (
+        0x0049DD28,
+        "g_nMenuSelectorResourceId2",
+        "PLAS child-state dispatch table variant 1 0049dd28",
+    ),
     0x0041E290: (
         0x004A7820,
         "g_pGenericGroupFormationManager",
