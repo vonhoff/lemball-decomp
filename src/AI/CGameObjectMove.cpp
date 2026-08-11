@@ -327,10 +327,11 @@ void CGameObject::EmptyDestinationList(void)
 // FUNCTION: LEMBALL 0x004160f0
 void CGameObject::GetBoundingBox(CVSRect& rect)
 {
-	rect.x = (m_WorldPosition9C.x >> 12) - 24;
-	rect.y = (m_WorldPosition9C.y >> 12) - 24;
-	rect.width = 48;
-	rect.height = 48;
+	volatile short* pRect = (volatile short*) &rect;
+	pRect[2] = (m_WorldPosition9C.x >> 12) - 24;
+	pRect[3] = (*(volatile int*) &m_WorldPosition9C.y >> 12) - 24;
+	pRect[0] = 48;
+	pRect[1] = 48;
 }
 
 // FUNCTION: LEMBALL 0x00416570
