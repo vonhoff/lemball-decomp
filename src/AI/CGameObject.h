@@ -148,6 +148,7 @@ public:
 
 	CGameObject* ConstructCGameObject(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity);
 #ifdef LEMBALL_DECLARE_CGAMEOBJECT_MOVE
+	int SearchRoute(void);
 	int Move(void);
 	void Fall(void);
 #endif

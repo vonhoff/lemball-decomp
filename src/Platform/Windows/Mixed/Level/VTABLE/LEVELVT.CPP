@@ -117,6 +117,7 @@ extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
+extern void* g_pLevelTileReachabilityHelper;
 extern void* g_pSharedRenderDispatchQueue;
 
 struct LevelVtSmallFunctionView {
@@ -1306,6 +1307,62 @@ void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity)
 struct LevelTileGridOwnerView {
 	unsigned short GetZ(int x, int y, void** ppMoveChunk);
 };
+
+// FUNCTION: LEMBALL 0x004158b0
+int CGameObject::SearchRoute(void)
+{
+	unsigned short aPath[240];
+	unsigned short* pPath;
+	CGameObjectCommandQueue* pQueue;
+	CGameObjectCommand* pCommand;
+	unsigned int fFound;
+	int fDone;
+	int cPath;
+	int i;
+	int nIndex;
+
+	if (m_pReachabilityOwner0C == 0) {
+		m_pReachabilityOwner0C = (void*) (*(int*) ((char*) g_pLevelTileReachabilityHelper + 8) == 0);
+		*(int*) ((char*) g_pLevelTileReachabilityHelper + 8) = 1;
+		if (m_pReachabilityOwner0C != 0) {
+			((void(__fastcall*)(void*, int, int, int, int, int, int)) 0x4035e4)(g_pLevelTileReachabilityHelper,
+				0,
+				0,
+				(m_WorldPosition9C.x / 0x1000) / 0x10,
+				(m_WorldPosition9C.y / 0x1000) / 0x10,
+				(m_nDestWorldXA8 / 0x1000) / 0x10,
+				(m_nDestWorldYAC / 0x1000) / 0x10);
+		}
+	}
+	else {
+		fDone = ((int(__fastcall*)(void*, int, unsigned int*, int*)) 0x402c07)(
+			g_pLevelTileReachabilityHelper, 0, &fFound, &i);
+		m_nPendingInstruction08 = fDone == 1;
+		if (fFound != 0) {
+			((void(__fastcall*)(void*, int, int*, unsigned short*)) 0x402ef5)(
+				g_pLevelTileReachabilityHelper, 0, &cPath, aPath);
+			pQueue = m_pCommandQueue70;
+			pQueue->m_cEntries = 0;
+			if (cPath < 0x50) {
+				for (nIndex = cPath - 1; nIndex >= 0; --nIndex) {
+					pPath = aPath + nIndex * 2;
+					if (pQueue->m_cEntries < pQueue->m_cCapacity) {
+						pCommand = &pQueue->m_pEntries[pQueue->m_cEntries++];
+						pCommand->m_nType = 1;
+						pCommand->m_Position.x = (unsigned int) pPath[0] * 0x10000 + 0x8000;
+						pCommand->m_Position.y = (unsigned int) pPath[1] * 0x10000 + 0x8000;
+						pCommand->m_Position.z = 0;
+					}
+				}
+			}
+		}
+		if (fDone != 0) {
+			*(int*) ((char*) g_pLevelTileReachabilityHelper + 8) = 0;
+			m_pReachabilityOwner0C = 0;
+		}
+	}
+	return 0;
+}
 
 // FUNCTION: LEMBALL 0x00415a30
 int CGameObject::Move(void)
