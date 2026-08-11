@@ -5728,3 +5728,97 @@ void LEMBALL_FASTCALL RasterizeAnimAndLiftChunkOccupancyMasks(void* pObject)
 		pRecord += 6;
 	}
 }
+
+struct CVSRect;
+class CPVGWnd;
+class CPVButton {
+public:
+	unsigned char m_abState[0x104];
+	CPVButton(const CVSRect& Rect, CPVGWnd* pParent);
+};
+
+extern void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject);
+
+class BaseModeActionButtonLayout {
+public:
+	void* Construct(int pOwner, const CVSRect* pRect, CPVGWnd* pParent);
+};
+
+// FUNCTION: LEMBALL 0x00442390
+void* BaseModeActionButtonLayout::Construct(
+	int pOwner, const CVSRect* pRect, CPVGWnd* pParent)
+{
+	char* pThis;
+	char* pEntry;
+	char* pOwnerChild;
+	LevelTwoShortPointView LocalPoint;
+	LevelTwoShortPointView* pSourcePoint;
+	void* pActionOwner;
+	int nValue;
+	int i;
+	unsigned int nMask;
+
+	pThis = (char*) new (this) CPVButton(*pRect, pParent);
+	*(void**) pThis = (void*) 0x00497630;
+	*(int*) (pThis + 0x108) = 0;
+	*(void**) (pThis + 0x90) = (void*) 0x00497608;
+	*(int*) (pThis + 0x104) = 0;
+	pEntry = pThis + 0x114;
+	for (i = 0; i >= 0; --i) {
+		InitializePackagedSpriteRenderEntry(pEntry);
+		pEntry += 0x10;
+	}
+	pEntry = pThis + 0x124;
+	for (i = 2; i >= 0; --i) {
+		InitializePackagedSpriteRenderEntry(pEntry);
+		pEntry += 0x10;
+	}
+	*(short*) (pThis + 0x156) = 0;
+	*(short*) (pThis + 0x154) = 0;
+	*(short*) (pThis + 0x15a) = 0;
+	*(short*) (pThis + 0x158) = 0;
+	*(short*) (pThis + 0x15e) = 0;
+	*(short*) (pThis + 0x15c) = 0;
+	*(short*) (pThis + 0x162) = 0;
+	*(short*) (pThis + 0x160) = 0;
+	InitializeMenuActionFramePointSink(pThis + 0x178);
+	InitializeMenuActionFramePointSink(pThis + 0x198);
+	*(void**) pThis = (void*) 0x00497508;
+	*(int*) (pThis + 0x110) = pOwner;
+	*(void**) (pThis + 0x90) = (void*) 0x004974e0;
+	pOwnerChild = *(char**) (pOwner + 0x0c);
+	LocalPoint.CopyTwoShortPointVariant((LevelTwoShortPointView*) (pOwnerChild + 0x44));
+	*(short*) (pThis + 0x154) = LocalPoint.m_x;
+	*(short*) (pThis + 0x156) = LocalPoint.m_y;
+	*(short*) (pThis + 0x158) = 0;
+	*(short*) (pThis + 0x15a) = 0;
+	pActionOwner = *(void**) (pOwner + 8);
+	*(int*) (pThis + 0x168) = (*(int*) (*(char**) pActionOwner + 0xb8) == 8);
+	*(int*) (pThis + 0x16c) =
+		((int(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pActionOwner)[0x2d])(pActionOwner, 0, 0x0c);
+	*(int*) (pThis + 0x164) = -1;
+	*(int*) (pThis + 0x170) = -1;
+	*(int*) (pThis + 0x174) = 0;
+	pOwnerChild = *(char**) (pOwner + 0x0c);
+	pSourcePoint = (LevelTwoShortPointView*) (pOwnerChild + 0x48);
+	LocalPoint.CopyTwoShortPointVariant(pSourcePoint);
+	*(int*) (pThis + 0x50) += 7;
+	*(short*) (pThis + 0x15c) = LocalPoint.m_x;
+	*(short*) (pThis + 0x15e) = LocalPoint.m_y;
+	*(short*) (pThis + 0x160) = *(short*) (pOwnerChild + 0x44);
+	*(short*) (pThis + 0x162) = 0;
+	((LevelTwoShortPointView*) (pThis + 0xc0))->CopyTwoShortPointVariant(&LocalPoint);
+	LocalPoint.CopyTwoShortPoint((LevelTwoShortPointView*) (pThis + 0xdc));
+	((void(LEMBALL_FASTCALL*)(void*, int, LevelTwoShortPointView*, void*, const char*))(*(void***) pThis)[1])(
+		pThis, 0, &LocalPoint, *(void**) (pThis + 0xc8), (const char*) 0x0049f02c);
+	*(short*) (pThis + 0xc4) += *(short*) (pThis + 0x18);
+	*(short*) (pThis + 0xc6) += *(short*) (pThis + 0x1a);
+	nMask = (unsigned int) pThis >= 1 ? 0xffffffff : 0;
+	AppendGeometryOwnerChild(
+		*(void**) (*(char**) (pThis + 0xc8) + 0x1c), 0, (void*) (nMask & (unsigned int) (pThis + 0x90)));
+	nValue = *(int*) (*(char**) (pThis + 0x4c) + 0x0c);
+	*(int*) (*(int*) (*(int*) (nValue + 0x40) + 4) + 0x70 + nValue) = 0;
+	*(int*) (pThis + 0xb8) = 1;
+	*(int*) (pThis + 0x10c) = 0;
+	return pThis;
+}
