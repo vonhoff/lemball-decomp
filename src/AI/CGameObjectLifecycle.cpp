@@ -151,9 +151,9 @@ void CGameObject::Initialise(void)
 	char* pObjectBytes = (char*) this;
 	m_nActionPhaseBC = 0;
 	*(int*) (pObjectBytes + 0x2c) = 0;
-	m_nStateB8 = 0;
-	m_nPendingState114 = 0;
-	m_nHeadingOctantB4 = 0;
+	*(volatile int*) (pObjectBytes + 0xb8) = 0;
+	*(volatile int*) (pObjectBytes + 0x114) = 0;
+	*(volatile short*) (pObjectBytes + 0xb4) = 0;
 	*(int*) (pObjectBytes + 0x38) = 0;
 	*(unsigned short*) (pObjectBytes + 0xc4) = 0;
 	*(int*) (pObjectBytes + 0x3c) = 0;
