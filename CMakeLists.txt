@@ -143,6 +143,7 @@ set(LEMBALL_SOURCES
     src/Visos/Generic/MogConst.cpp
     src/Visos/Generic/MogBst.cpp
     src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/ManagedEntityGroupQuery.cpp
     src/Platform/Windows/Mixed/Engine/CORE/LINKSCFBYTES.CPP
     src/AI/Projectile.cpp
     src/AI/GroupState.cpp
