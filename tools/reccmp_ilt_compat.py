@@ -264,6 +264,11 @@ THUNK_ILT_REFERENCES = {
     0x0041CCC0: (0x00402CAC, "CObjectManager::AddObject", "managed-object add target 0x41b2a0"),
     0x00420650: (0x00401532, "ReturnFacingDirection", "direction-octant target 0x413e80"),
     0x004270B0: (0x00402707, "CRocket::Set", "ROCK chunk object setter target 0x426840"),
+    0x00442280: (
+        0x00401B72,
+        "SetLevelScreenStatusIndicatorMode",
+        "level-screen status indicator target 0x43a720",
+    ),
     0x00452B90: (
         0x00402A9A,
         "FindNetworkLobbyPeerSlotByPeer",
