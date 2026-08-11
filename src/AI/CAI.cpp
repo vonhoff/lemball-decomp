@@ -1,3 +1,4 @@
+#define LEMBALL_DECLARE_CAI_REMOTE_GAME_STATE
 #include "AI/CAI.h"
 
 #include "AI/CBulletManager.h"
@@ -5,9 +6,12 @@
 #include "AI/CMoverManager.h"
 #include "AI/CPlayerLemmingGroupManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 
 extern void* g_pLevelDemoPlaybackController;
+extern void* g_pLevelProgressState;
+extern int g_fLevelEndStateRequestLatched;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern void __fastcall AppendType18ChunkObject(void* pStream,
@@ -169,6 +173,138 @@ void CAI::SendGameState(int nState, int nStage)
 		*(int*) (*(int*) ((char*) m_pRuntime74 + 0x38)) = m_nTimeScoreF0;
 		((GameEffStream*) m_pRuntime74)->QueueEffStreamWriteEvent(g_nSelectedNetworkLobbyPeerId);
 	}
+}
+
+// FUNCTION: LEMBALL 0x00411c10
+void CAI::RemoteGameState(void* pMessage)
+{
+	char* pBytes;
+	unsigned int nState;
+	unsigned int nStage;
+	int fApplyState;
+
+	pBytes = (char*) pMessage;
+	fApplyState = 0;
+	nState = *(unsigned int*) (pBytes + 0x2c);
+	nStage = *(unsigned int*) (pBytes + 0x30);
+	g_pStartupOutputStream->AppendCStringToStream("Received Game State ")
+		->AppendIntToStream(nState)
+		->AppendCStringToStream(" stage ")
+		->AppendIntToStream(nStage)
+		->AppendCStringToStream("\n");
+
+	if (nStage == 0) {
+		if (m_nFlags6C != 0) {
+			if (m_nField7C != 0) {
+				SendGameState(nState, 2);
+				return;
+			}
+			m_nFlags6C = 0;
+		}
+
+		switch (nState) {
+		case 0:
+			if (m_nField108 == 1) {
+				SendGameState(nState, 2);
+				m_nFlags6C = 0;
+				return;
+			}
+			fApplyState = 1;
+			m_nField10C = 1;
+			break;
+		default:
+			fApplyState = 1;
+			break;
+		case 2:
+			*(int*) ((char*) g_pLevelProgressState + 0x0c) = 2;
+			m_nField108 = 5;
+			break;
+		case 3:
+			if (m_nField108 == 4 || m_nField108 == 3) {
+				SendGameState(nState, 2);
+				m_nFlags6C = 0;
+				return;
+			}
+			m_nField108 = 6;
+			g_fLevelEndStateRequestLatched = 1;
+			break;
+		case 4:
+			*(int*) ((char*) g_pLevelProgressState + 0x0c) = 3;
+			m_nField108 = 3;
+			break;
+		case 6:
+			*(int*) ((char*) g_pLevelProgressState + 0x0c) = 5;
+			m_nField108 = 3;
+			break;
+		}
+
+		SendGameState(nState, 1);
+		m_nFlags6C = 0;
+		if (!fApplyState) {
+			return;
+		}
+	}
+	else if (nStage != 1) {
+		if (nStage == 2) {
+			m_nFlags6C = 0;
+		}
+		return;
+	}
+
+	switch (nState) {
+	case 0:
+		m_nField108 = 1;
+		break;
+	case 1:
+		if (m_nField108 != 8) {
+			m_nFlags68 = 1;
+			m_nField108 = 2;
+		}
+		break;
+	case 2:
+		*(int*) ((char*) g_pLevelProgressState + 0x0c) = 2;
+		m_nField108 = 3;
+		break;
+	case 3:
+		m_nField108 = 4;
+		break;
+	case 4:
+		*(int*) ((char*) g_pLevelProgressState + 0x0c) = 3;
+		m_nField108 = 5;
+		break;
+	case 6:
+		*(int*) ((char*) g_pLevelProgressState + 0x0c) = 5;
+		m_nField108 = 5;
+		break;
+	case 7:
+		if (*(unsigned int*) (pBytes + 0x34) < (unsigned int) m_nTimeScoreE8) {
+			*(int*) ((char*) g_pLevelProgressState + 0x0c) = 4;
+			m_nField108 = 3;
+		}
+		else if ((unsigned int) m_nTimeScoreE8 == *(unsigned int*) (pBytes + 0x34)) {
+			if (*(unsigned int*) (pBytes + 0x38) < (unsigned int) m_nTimeScoreF0) {
+				*(int*) ((char*) g_pLevelProgressState + 0x0c) = 1;
+				m_nField108 = 3;
+			}
+			else if ((unsigned int) m_nTimeScoreF0 < *(unsigned int*) (pBytes + 0x38)) {
+				*(int*) ((char*) g_pLevelProgressState + 0x0c) = 1;
+				m_nField108 = 5;
+			}
+			else {
+				*(int*) ((char*) g_pLevelProgressState + 0x0c) = 4;
+				m_nField108 = 5;
+			}
+		}
+		else {
+			*(int*) ((char*) g_pLevelProgressState + 0x0c) = 4;
+			m_nField108 = 5;
+		}
+		break;
+	case 8:
+		m_nField108 = 8;
+		return;
+	}
+	m_nFlags6C = 0;
 }
 
 // FUNCTION: LEMBALL 0x00412ad0

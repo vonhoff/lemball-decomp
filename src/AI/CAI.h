@@ -104,6 +104,9 @@ public:
 	void SetNetworkTrapDoors(int nProfile, int nMinX, int nMinY, int nMaxX, int nMaxY);
 	int ProcessMsg(tagMESSAGE* pMsg);
 	void SendGameState(int nState, int nStage);
+#ifdef LEMBALL_DECLARE_CAI_REMOTE_GAME_STATE
+	void RemoteGameState(void* pMessage);
+#endif
 	int OpenDoor(const AICOORD& position, CGameObject* pGameObject, unsigned short nFlags);
 };
 
