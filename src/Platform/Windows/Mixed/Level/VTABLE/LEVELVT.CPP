@@ -1972,12 +1972,16 @@ void CCrate::ActivatePosition(int* pPoint)
 	nX = m_nPositionX9C;
 	nY = m_nPositionYA0;
 	nZ = m_nPositionZA4;
-	if ((m_nContentsType14C >= 0x15 && m_nContentsType14C <= 0x17) || m_nContentsType14C == 0xffff) {
+	if (m_nContentsType14C < 0x15) {
+		goto use_default_position;
+	}
+	if (m_nContentsType14C <= 0x17 || m_nContentsType14C == 0xffff) {
 		pPoint[0] = nX - 0x8000;
 		pPoint[1] = nY;
 		pPoint[2] = nZ;
 		return;
 	}
+use_default_position:
 	pPoint[0] = nX - 0x30000;
 	pPoint[1] = nY - 0x8000;
 	pPoint[2] = nZ;
