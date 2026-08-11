@@ -128,28 +128,33 @@ CMineManager::~CMineManager(void)
 	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }
 
-// FUNCTION: LEMBALL 0x004241A0
+// FUNCTION: LEMBALL 0x004241a0
 void CMineManager::Remove(CMine* pMine)
 {
 	char* pDestination;
-	char* pObject;
 	char* pSource;
 	int i;
 	int nOffset;
+	int nPositionOffset;
 	int nSourceIndex;
 
 	i = 0;
-	if (m_cObjects3C <= 0) return;
-	pObject = (char*) m_pObjects34;
-	while (pObject != (char*) pMine) {
-		pObject += 0x150;
+	if (m_cObjects3C <= 0) {
+		return;
+	}
+	nOffset = 0;
+	while ((char*) m_pObjects34 - (char*) pMine != nOffset) {
+		nOffset -= 0x150;
 		++i;
-		if (m_cObjects3C <= i) return;
+		if (m_cObjects3C <= i) {
+			return;
+		}
 	}
 
-	((CGameObject*) pObject)->SetId(0xffff);
+	((CGameObject*) ((char*) m_pObjects34 + i * 0x150))->SetId(0xffff);
 	nSourceIndex = i + 1;
 	if (nSourceIndex < m_cObjects3C) {
+		nPositionOffset = nSourceIndex * 6;
 		nOffset = nSourceIndex * 0x150;
 		do {
 			pSource = (char*) m_pObjects34 + nOffset;
@@ -225,7 +230,11 @@ void CMineManager::Remove(CMine* pMine)
 			*(int*) (pDestination + 0x144) = *(int*) (pSource + 0x144);
 			*(int*) (pDestination + 0x148) = *(int*) (pSource + 0x148);
 			*(int*) (pDestination + 0x14c) = *(int*) (pSource + 0x14c);
-			m_pPositions38[nSourceIndex - 1] = m_pPositions38[nSourceIndex];
+			pSource = (char*) m_pPositions38 + nPositionOffset;
+			pDestination = pSource - 6;
+			*(int*) pDestination = *(int*) pSource;
+			nPositionOffset += 6;
+			*(short*) (pDestination + 4) = *(short*) (pSource + 4);
 			++nSourceIndex;
 			nOffset += 0x150;
 		} while (nSourceIndex < m_cObjects3C);
