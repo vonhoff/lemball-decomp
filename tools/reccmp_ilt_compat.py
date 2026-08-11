@@ -80,6 +80,12 @@ FUNCTION_DATA_REFERENCES = {
         "g_pGenericGroupFormationManager",
         "generic-group formation manager 004a7820",
     ),
+    0x004232E0: (
+        (0x00495B80, "g_afMazeNeighborEnabled", "maze neighbor-enabled table 00495b80"),
+        (0x00495BA8, "g_abMazeEdgeMaskA", "maze edge-mask table A 00495ba8"),
+        (0x00495B30, "g_anMazeNeighborX", "maze neighbor-X table 00495b30"),
+        (0x00495B58, "g_anMazeNeighborY", "maze neighbor-Y table 00495b58"),
+    ),
     0x0043C7F0: (
         0x004A7874,
         "g_nLevelScreenTimedVariantResourceId",
