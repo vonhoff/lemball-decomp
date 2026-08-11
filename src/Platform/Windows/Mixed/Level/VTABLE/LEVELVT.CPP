@@ -1,4 +1,6 @@
+#define LEMBALL_DECLARE_CGAMEOBJECT_MOVE
 #include "AI/CGameObject.h"
+#undef LEMBALL_DECLARE_CGAMEOBJECT_MOVE
 #include "AI/LevelManagedEntityStateIdView.h"
 #include "AI/CGenericGroup.h"
 #include "AI/CIceManager.h"
@@ -19,6 +21,8 @@
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 #include "Visos/Generic/Memory.h"
+
+#include <stdlib.h>
 
 
 void* LEMBALL_FASTCALL DeleteSimpleVtableObject407EF0(void* pObject, void*, BYTE fDelete);
@@ -112,6 +116,7 @@ struct LevelManagedEntityChildIterator {
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern void* g_pActiveManagedEntityOwner;
+extern void* g_pLevelTileGrid;
 extern void* g_pSharedRenderDispatchQueue;
 
 struct LevelVtSmallFunctionView {
@@ -1296,6 +1301,126 @@ void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity)
 	if ((*(unsigned char*) ((char*) pEntity + 0x68) & 1) != 0) {
 		*(int*) ((char*) pEntity + 8) = 1;
 	}
+}
+
+struct LevelTileGridOwnerView {
+	unsigned short GetZ(int x, int y, void** ppMoveChunk);
+};
+
+// FUNCTION: LEMBALL 0x00415a30
+int CGameObject::Move(void)
+{
+	void* pMoveChunk;
+	unsigned int nNewHeight;
+	unsigned int nOldHeight;
+	unsigned int nTileFlags;
+	int nX;
+	int nY;
+	int nTileX;
+	int nTileY;
+	int nDeltaX;
+	int nDeltaY;
+	int nVelocityX;
+	int nVelocityY;
+	int position[3];
+
+	nX = m_nRectMinX78 + m_nRectMaxX80 * (g_nLevelFrameClockTick - m_nMotionStartTickC8) / m_nMotionDuration88;
+	nY = m_nRectMinY7C + m_nRectMaxY84 * (g_nLevelFrameClockTick - m_nMotionStartTickC8) / m_nMotionDuration88;
+	nTileX = nX >> 12;
+	nTileY = nY >> 12;
+	if (nTileX < 0 || *(int*) ((char*) g_pLevelTileGrid + 0x10) <= nX >> 16 || nTileY < 0 ||
+		*(int*) ((char*) g_pLevelTileGrid + 0x14) <= nY >> 16) {
+		m_nNextUpdateTickCC = g_nLevelFrameClockTick;
+		return 0;
+	}
+	pMoveChunk = 0;
+	nNewHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)->GetZ(nTileX, nTileY, &pMoveChunk) & 0xffff;
+	if (m_fOnMover11C == 0 && pMoveChunk != 0) {
+		((CMover*) pMoveChunk)->GetOn(this);
+	}
+	nTileFlags = ((unsigned int(LEMBALL_FASTCALL*)(void*, int, int, int)) 0x0040328d)(this, 0, nTileX, nTileY);
+	if ((nTileFlags & 1) != 0) {
+		position[0] = nTileX << 12;
+		position[1] = nTileY << 12;
+		position[2] = nNewHeight << 12;
+		if (((int(LEMBALL_FASTCALL*)(void*, int, int*, CGameObject*, unsigned short)) 0x00402e82)(
+				g_pActiveManagedEntityOwner,
+				0,
+				position,
+				this,
+				(unsigned char) m_nBehaviourFlags68) != 0) {
+			m_nNextUpdateTickCC = g_nLevelFrameClockTick;
+			return 0;
+		}
+		((void(LEMBALL_FASTCALL*)(void*)) 0x004030ad)(this);
+		m_nNextUpdateTickCC = g_nLevelFrameClockTick;
+		return 0;
+	}
+	nOldHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)
+					 ->GetZ(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, &pMoveChunk) &
+				 0xffff;
+	if (nNewHeight < nOldHeight + 7) {
+		if ((int) (nOldHeight - 7) < (int) nNewHeight) {
+			m_WorldPosition9C.x = nX;
+			m_WorldPosition9C.y = nY;
+			m_WorldPosition9C.z = nNewHeight << 12;
+			((void(LEMBALL_FASTCALL*)(void*, int, AICOORD*, CGameObject*, unsigned short)) 0x0040341d)(
+				g_pActiveManagedEntityOwner,
+				0,
+				&m_WorldPosition9C,
+				this,
+				m_nBehaviourFlags68);
+			return 1;
+		}
+		m_nNextUpdateTickCC = g_nLevelFrameClockTick;
+		if ((m_nBehaviourFlags68 & 4) != 0) {
+			m_nJumpAirborne108 = 1;
+			m_nActionPhaseBC = 0;
+			m_nMotionStartTickC8 = g_nLevelFrameClockTick;
+			m_nJumpElevation100 = nOldHeight;
+			nDeltaX = nTileX - (m_WorldPosition9C.x >> 12);
+			nDeltaY = nTileY - (m_WorldPosition9C.y >> 12);
+			nVelocityX = 0;
+			nVelocityY = 0;
+			if (abs(nDeltaY) < abs(nDeltaX)) {
+				nVelocityX = nDeltaX < 1 ? -1 : 1;
+			}
+			else {
+				nVelocityY = nDeltaY < 1 ? -1 : 1;
+			}
+			m_WorldPosition9C.x = nX;
+			m_WorldPosition9C.y = nY;
+			m_nJumpOriginXF4 = nX;
+			m_nJumpOriginYF8 = nY;
+			m_nJumpOriginZFC = nNewHeight << 12;
+			m_WorldPosition9C.x = nX;
+			m_WorldPosition9C.y = nY;
+			m_nJumpVelX4C = nVelocityX << 12;
+			m_nJumpVelY50 = nVelocityY << 12;
+			m_nJumpVelZ54 = ((((int) (nOldHeight - nNewHeight) + ((int) (nOldHeight - nNewHeight) >> 31 & 7)) >> 3) + 1)
+							<< 12;
+			return 0;
+		}
+		((void(LEMBALL_FASTCALL*)(void*)) 0x004030ad)(this);
+		return 0;
+	}
+	m_nNextUpdateTickCC = g_nLevelFrameClockTick;
+	if (nOldHeight + 15 < nNewHeight) {
+		((void(LEMBALL_FASTCALL*)(void*)) 0x004030ad)(this);
+		return 0;
+	}
+	if ((m_nBehaviourFlags68 & 2) != 0) {
+		m_nJumpField104 = 1;
+		m_nMotionStartTickC8 = g_nLevelFrameClockTick;
+		m_nJumpElevation100 = nOldHeight;
+		m_nJumpOriginXF4 = nX;
+		m_nJumpOriginYF8 = nY;
+		m_nJumpOriginZFC = nNewHeight << 12;
+		m_nActionPhaseBC = 0;
+		return 0;
+	}
+	((void(LEMBALL_FASTCALL*)(void*)) 0x004030ad)(this);
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x00417aa0
