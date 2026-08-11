@@ -111,7 +111,7 @@ FUNCTION_DATA_REFERENCES = {
     ),
     0x0045FCE0: (
         0x00498FB0,
-        "vftable'{for `VsNetTimedEffStreamPrimary",
+        "CWriteSocket::`vftable'{for `CWriteSocketPrimary'}",
         "timed EFF stream primary vtable 00498fb0",
     ),
     0x004664B0: (
