@@ -2372,6 +2372,7 @@ void* GameFramedScreenBase::ConstructFramedScreenBaseFields(void* pPrimaryContex
 	pScreen->m_cxScreen37C = 0;
 	pScreen->m_nFrameSelectorFixedTime35C = 0;
 	pScreen->m_yOverlay382 = 0;
+	pScreen->SetScreenVtable(g_GAME_FramedScreenBaseVtable);
 	pScreen->m_xOverlay380 = 0;
 	pScreen->m_nScreenType370 = nScreenType;
 	pScreen->m_pPrimaryContext84 = pPrimaryContext;
