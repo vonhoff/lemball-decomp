@@ -160,7 +160,7 @@ FUNCTION_DATA_REFERENCES = {
     ),
     0x00470030: (
         0x0049A090,
-        "VsNetTimedSocketEffChannelBundleLayout::`vftable'{for `VsNetTimedEffStreamPrimary'}",
+        "VsNetTimedSocketEffChannelBundleLayout::`vftable'{for `CWriteSocketPrimary'}",
         "timed socket bundle primary vtable 0049a090",
     ),
 }
