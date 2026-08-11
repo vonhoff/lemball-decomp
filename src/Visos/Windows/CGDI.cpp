@@ -5241,6 +5241,42 @@ void LEMBALL_FASTCALL CopyBackBuffRectToTarget(void* pBackBuffSurfaceRowBuffer, 
 		memcpy(ppTargetRows[y + iRow] + x, ppGroupRows[y + iRow] + x, (unsigned int) cbRow);
 	}
 }
+
+// FUNCTION: LEMBALL 0x00474fd0
+void LEMBALL_FASTCALL DrawHelperSurfacePixelCommand(void* pCompactTarget, int, void* pCommand)
+{
+	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
+	char* pCompact;
+	char* pClipView;
+	char* pTarget;
+	short DirtyRect[4];
+	short nClipX;
+	short nClipY;
+	short x;
+	short y;
+	int nAdjustment;
+
+	pCompact = (char*) pCompactTarget;
+	x = *(short*) ((char*) pCommand + 4);
+	nAdjustment = *(int*) (*(int*) (pCompact - 0x51c) + 4);
+	pClipView = pCompact + nAdjustment;
+	nClipX = *(short*) (pClipView - 0x4f4);
+	if (nClipX <= x && x < (short) (nClipX + *(short*) (pClipView - 0x4f8))) {
+		y = *(short*) ((char*) pCommand + 6);
+		nClipY = *(short*) (pClipView - 0x4f2);
+		if (nClipY <= y && y < (short) (nClipY + *(short*) (pClipView - 0x4f6))) {
+			*(unsigned char*) (*(int*) (*(int*) (pCompact - 0x558) + y * 4) + x) =
+				(unsigned char) *(int*) ((char*) pCommand + 8);
+			DirtyRect[0] = 1;
+			DirtyRect[1] = 1;
+			DirtyRect[2] = x;
+			DirtyRect[3] = y;
+			pTarget = pCompact - 0x55c;
+			((DirtyRectProc) (*(void***) pTarget)[1])(pTarget, 0, DirtyRect);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x00475080
 void LEMBALL_FASTCALL FillHelperSurfaceRectCommand(void* pCompactTarget, int, void* pCommand)
 
