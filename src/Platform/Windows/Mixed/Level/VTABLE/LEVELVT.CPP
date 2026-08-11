@@ -1423,6 +1423,48 @@ int CGameObject::Move(void)
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x00416220
+void CGameObject::Fall(void)
+{
+	void* pMoveChunk = 0;
+	if (m_nActionPhaseBC != 0) {
+		return;
+	}
+
+	int nX = m_WorldPosition9C.x >> 12;
+	int nY = m_WorldPosition9C.y >> 12;
+	m_WorldPosition9C.z = ((m_nMotionStartTickC8 - g_nLevelFrameClockTick) * 3 + m_nJumpElevation100) << 12;
+	if ((nX & 0xf) != 8) {
+		m_WorldPosition9C.x = ((nX & 0xf) < 8 ? nX + 1 : nX - 1) << 12;
+	}
+	if ((nY & 0xf) != 8) {
+		m_WorldPosition9C.y = ((nY & 0xf) < 8 ? nY + 1 : nY - 1) << 12;
+	}
+
+	unsigned int nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)->GetZ(nX, nY, &pMoveChunk) & 0xffff;
+	int nGroundZ = nHeight << 12;
+	if (m_WorldPosition9C.z <= nGroundZ) {
+		m_WorldPosition9C.z = nGroundZ;
+		m_nJumpVelX4C = 0;
+		m_nJumpVelY50 = 0;
+		m_nJumpVelZ54 = 0;
+		m_nJumpAirborne108 = 0;
+		if (m_fOnMover11C == 0 && pMoveChunk != 0) {
+			if (((int(__fastcall*)(void*, int, CGameObject*)) 0x4036b1)(pMoveChunk, 0, this) != 0) {
+				ResetInstructions();
+			}
+		}
+	}
+	if (m_nAirMotionField34 == 0) {
+		((void(__fastcall*)(void*, int, AICOORD*, CGameObject*)) 0x4021e4)(
+			g_pActiveManagedEntityOwner, 0, &m_WorldPosition9C, this);
+		if (m_nAirMotionField34 == 0) {
+			((void(__fastcall*)(void*, int, AICOORD*, CGameObject*, unsigned short)) 0x40341d)(
+				g_pActiveManagedEntityOwner, 0, &m_WorldPosition9C, this, m_nBehaviourFlags68);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x00417aa0
 int return_false_virtual_hook(void)
 {
