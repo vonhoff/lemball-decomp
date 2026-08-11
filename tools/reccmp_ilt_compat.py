@@ -96,6 +96,11 @@ FUNCTION_DATA_REFERENCES = {
         (0x00495B30, "g_anMazeNeighborX", "maze neighbor-X table 00495b30"),
         (0x00495B58, "g_anMazeNeighborY", "maze neighbor-Y table 00495b58"),
     ),
+    0x004275B0: (
+        0x00496050,
+        "g_fStartupGraphicsDriverCds",
+        "tile-flag chunk object vtable 00496050",
+    ),
     0x0043C7F0: (
         0x004A7874,
         "g_nLevelScreenTimedVariantResourceId",
@@ -274,6 +279,11 @@ THUNK_ILT_REFERENCES = {
     0x0041CCC0: (0x00402CAC, "CObjectManager::AddObject", "managed-object add target 0x41b2a0"),
     0x00420650: (0x00401532, "ReturnFacingDirection", "direction-octant target 0x413e80"),
     0x004270B0: (0x00402707, "CRocket::Set", "ROCK chunk object setter target 0x426840"),
+    0x004275B0: (
+        0x0040153C,
+        "CGameObject::InitializeLevelChunkObjectBase",
+        "level-chunk object base initializer target 0x416d20",
+    ),
     0x00442280: (
         0x00401B72,
         "SetLevelScreenStatusIndicatorMode",
