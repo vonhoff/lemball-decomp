@@ -244,6 +244,8 @@ THUNK_ILT_REFERENCES = {
     0x00413020: (0x00402C5C, "CLiftManager::Id", "lift-slot-id thunk -> 0x425f90"),
     0x0040A370: (0x00402CB6, "CInvisibleSwitch::StepOn", "invs-step-on thunk -> 0x409fa0"),
     0x0040B9E0: (0x00402892, "CSlinky::Set", "SLNK chunk object setter target 0x40b4d0"),
+    0x00412600: (0x00401BF9, "CBulletManager::RequestBullet", "projectile request target 0x417fa0"),
+    0x00420650: (0x00401532, "ReturnFacingDirection", "direction-octant target 0x413e80"),
     0x004270B0: (0x00402707, "CRocket::Set", "ROCK chunk object setter target 0x426840"),
     0x0042E500: (0x00402C4D, "DestroyCIce", "ice chunk object destructor target 0x42caf0"),
     0x00416620: (0x004012DF, "CGameObject::RegisterId", "claim-managed-entity-slot-id thunk -> 0x416740"),
