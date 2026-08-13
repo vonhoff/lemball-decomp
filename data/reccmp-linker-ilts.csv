@@ -233,6 +233,7 @@ address,name,symbol,type,source
 0x00402DF1,destroy_tile_flag1c_chunk_object_auto_thunk,?DestroyTileFlag1CChunkObjectAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00402E1E,vs_window_owner_base_cache_current_context_window,?CacheCurrentContextWindow@VS_WindowOwnerBase@@UAEXXZ,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
 0x00402E28,StartMenuSelectorActionThunk,?StartMenuSelectorActionThunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/Frontend/MENUSEL.CPP
+0x00402E37,CObjectManager::Add,?Add@CObjectManager@@QAEPAXFUAICOORD@@HGH@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402E41,managed_entity_packet26_write_eff_stream_tagged_header,?WriteEffStreamTaggedHeader@ManagedEntityPacket26@@UAEXXZ,stub,src/AI/LVPKTTH.CPP
 0x00402E4B,CDoorManager::Switch,?Switch@CDoorManager@@QAEXHI@Z,stub,src/AI/CDoorAct.cpp
 0x00402E5F,CallHasPendingManagedEntityCommands,?CallHasPendingManagedEntityCommands@@YAHPAXPAULevelManagedEntityCommandQueueView@@@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

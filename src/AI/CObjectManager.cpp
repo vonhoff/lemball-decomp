@@ -1,38 +1,32 @@
+#include "AI/AICoord.h"
 #include "Visos/Generic/Memory.h"
-
-struct ObjectManagerPoint {
-	int x;
-	int y;
-	int z;
-};
 
 class CObjectManager {
 public:
 	void* Add(short nId,
-				int nX,
-				int nY,
-				int nZ,
+				AICOORD Position,
 				int nType,
 				unsigned short nSlotId,
 				int nSubtype);
+	void* Add(short nId,
+			  int nX,
+			  int nY,
+			  int nZ,
+			  int nType,
+			  unsigned short nSlotId,
+			  int nSubtype);
 	void LoadLevel(unsigned short* pData, unsigned int nSize, int fReuseState);
 };
 
 // FUNCTION: LEMBALL 0x0041b370
 void* CObjectManager::Add(short nId,
-						 int nX,
-						 int nY,
-						 int nZ,
+						 AICOORD Position,
 						 int nType,
 						 unsigned short nSlotId,
 						 int nSubtype)
 {
-	ObjectManagerPoint Position;
 	void* pChild = 0;
 	void* pObject = 0;
-	Position.x = nX;
-	Position.y = nY;
-	Position.z = nZ;
 
 	switch (nType) {
 	case 4:
@@ -44,7 +38,7 @@ void* CObjectManager::Add(short nId,
 			((void(__fastcall*)(void*, int, int, int, int)) 0x40153c)(pObject, 0, nType, 0, 0);
 			((void(__fastcall*)(void*, int)) 0x4032ce)((char*) pObject + 0x138, 0);
 			*(void**) pObject = (void*) 0x493580;
-			((void(__fastcall*)(void*, int, ObjectManagerPoint*)) 0x401046)(
+			((void(__fastcall*)(void*, int, AICOORD*)) 0x401046)(
 				(char*) pObject + 0x138, 0, &Position);
 			if (nType == 4) {
 				*(void**) pObject = (void*) 0x494640;
@@ -67,7 +61,7 @@ void* CObjectManager::Add(short nId,
 						((void(__fastcall*)(void*, int, int, int, int)) 0x40153c)(pChild, 0, 4, 0, 0);
 						((void(__fastcall*)(void*, int)) 0x4032ce)((char*) pChild + 0x138, 0);
 						*(void**) pChild = (void*) 0x493580;
-						((void(__fastcall*)(void*, int, ObjectManagerPoint*)) 0x401046)(
+						((void(__fastcall*)(void*, int, AICOORD*)) 0x401046)(
 							(char*) pChild + 0x138, 0, &Position);
 						*(void**) pChild = (void*) 0x494640;
 					}
@@ -76,7 +70,7 @@ void* CObjectManager::Add(short nId,
 			else {
 				pChild = AllocateVSMemBlock(0x150);
 				if (pChild != 0) {
-					((void(__fastcall*)(void*, int, ObjectManagerPoint*, int)) 0x402e3c)(
+					((void(__fastcall*)(void*, int, AICOORD*, int)) 0x402e3c)(
 						pChild, 0, &Position, nSubtype);
 					*(int*) ((char*) pChild + 0x144) = 0xaa55aa55;
 					*(int*) ((char*) pChild + 0x148) = 0xaa55aa55;
@@ -93,7 +87,7 @@ void* CObjectManager::Add(short nId,
 			case 0x2d:
 				pObject = AllocateVSMemBlock(0x150);
 				if (pObject != 0) {
-					((void(__fastcall*)(void*, int, ObjectManagerPoint*, int)) 0x402e3c)(
+					((void(__fastcall*)(void*, int, AICOORD*, int)) 0x402e3c)(
 						pObject, 0, &Position, nSubtype);
 					((void(__fastcall*)(void*, int)) 0x4032ce)((char*) pObject + 0x144, 0);
 					*(void**) pObject = (void*) 0x4944f8;
@@ -106,14 +100,14 @@ void* CObjectManager::Add(short nId,
 		}
 		pObject = AllocateVSMemBlock(0x150);
 		if (pObject != 0) {
-			pObject = ((void*(__fastcall*)(void*, int, ObjectManagerPoint*, void*, unsigned short)) 0x402950)(
+			pObject = ((void*(__fastcall*)(void*, int, AICOORD*, void*, unsigned short)) 0x402950)(
 				pObject, 0, &Position, pChild, nSlotId);
 		}
 		break;
 	case 0x14:
 		pObject = AllocateVSMemBlock(0x260);
 		if (pObject != 0) {
-			pObject = ((void*(__fastcall*)(void*, int, ObjectManagerPoint*, int, int, int, int)) 0x402702)(
+			pObject = ((void*(__fastcall*)(void*, int, AICOORD*, int, int, int, int)) 0x402702)(
 				pObject, 0, &Position, 0, 0, 0, 0);
 		}
 		break;
@@ -122,7 +116,7 @@ void* CObjectManager::Add(short nId,
 	case 0x17:
 		pObject = AllocateVSMemBlock(0x150);
 		if (pObject != 0) {
-			((void(__fastcall*)(void*, int, ObjectManagerPoint*, int)) 0x402e3c)(
+			((void(__fastcall*)(void*, int, AICOORD*, int)) 0x402e3c)(
 				pObject, 0, &Position, nType);
 			*(int*) ((char*) pObject + 0x144) = 0xaa55aa55;
 			*(int*) ((char*) pObject + 0x148) = 0xaa55aa55;
@@ -133,7 +127,7 @@ void* CObjectManager::Add(short nId,
 	case 0x1c:
 		pObject = AllocateVSMemBlock(0x144);
 		if (pObject != 0) {
-			pObject = ((void*(__fastcall*)(void*, int, ObjectManagerPoint*)) 0x403887)(
+			pObject = ((void*(__fastcall*)(void*, int, AICOORD*)) 0x403887)(
 				pObject, 0, &Position);
 		}
 		break;
@@ -143,7 +137,7 @@ void* CObjectManager::Add(short nId,
 	case 0x2d:
 		pObject = AllocateVSMemBlock(0x150);
 		if (pObject != 0) {
-			((void(__fastcall*)(void*, int, ObjectManagerPoint*, int)) 0x402e3c)(
+			((void(__fastcall*)(void*, int, AICOORD*, int)) 0x402e3c)(
 				pObject, 0, &Position, nType);
 			*(int*) ((char*) pObject + 0x144) = 0xaa55aa55;
 			*(int*) ((char*) pObject + 0x148) = 0xaa55aa55;
@@ -161,7 +155,6 @@ void* CObjectManager::Add(short nId,
 	}
 	return ((void*(__fastcall*)(void*, int, short, void*, int)) 0x402cac)(this, 0, nId, pObject, 1);
 }
-
 // FUNCTION: LEMBALL 0x0041bbc0
 void CObjectManager::LoadLevel(unsigned short* pData, unsigned int, int fReuseState)
 {
@@ -257,3 +250,22 @@ void CObjectManager::LoadLevel(unsigned short* pData, unsigned int, int fReuseSt
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x0041b310
+#pragma auto_inline(off)
+void* CObjectManager::Add(short nId,
+						  int nX,
+						  int nY,
+						  int nZ,
+						  int nType,
+						  unsigned short nSlotId,
+						  int nSubtype)
+{
+	AICOORD Position;
+
+	Position.x = nX << 12;
+	Position.y = nY << 12;
+	Position.z = nZ << 12;
+	return Add(nId, Position, nType, nSlotId, nSubtype);
+}
+#pragma auto_inline(on)
