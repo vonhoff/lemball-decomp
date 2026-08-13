@@ -4,6 +4,8 @@
 
 Make verified decompilation progress while preserving compiler behavior. `/LEMBALL.EXE` is authority.
 
+When applicable, prefer using clion-index MCP tools for code navigation and refactoring.
+
 ## Workflow
 
 1. Inspect `git status`, all diffs, and `// STUB:` markers. Finish, commit, or revert unfinished work.
@@ -82,7 +84,3 @@ Pop-Location
 ## Completion
 
 Run canonical verification and `git diff --check`; review diff; stage explicit paths; commit/push verified progress; leave worktree clean. Report change and commit/push status in one or two sentences.
-
-## Exact-set audit
-
-`data/exact-baseline.json` is immutable. After rebuilding `build-msvc400/reccmp.json`, compare added/lost addresses; keep measured gains without new lost baseline addresses. Historical checkpoints are not current truth.
