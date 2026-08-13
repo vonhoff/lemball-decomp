@@ -5,6 +5,7 @@
 extern int g_nLevelFrameClockTick;
 extern void* g_GAME_RenderQueueNodeVtableSlots[4];
 extern void* g_LINKSCF_ManagedEntityQueueCursorVtable[];
+extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
 // TU-local view (matches CHandManager.cpp) of the EFF stream common base.
 struct VsNetEffStreamCommon {
@@ -80,7 +81,7 @@ void LEMBALL_FASTCALL DestroyThreeOptionalRecordChunkObject(void* pObject)
 		FreeVSMemBlock(*(void**) (*(char**) (pBytes + 0x14c) + 0x10));
 		FreeVSMemBlock(*(void**) (pBytes + 0x14c));
 	}
-	((CGameObject*) pObject)->DestroyLevelChunkObjectBase();
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
 // MACINTOSH: ManagedEntityQueueCursor::~ManagedEntityQueueCursor()
