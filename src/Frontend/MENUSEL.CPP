@@ -60,6 +60,14 @@ extern void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void* pObject)
 extern void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject);
 extern void LEMBALL_FASTCALL configure_level_screen_pause_dialog_options(void* pObject);
 extern void LEMBALL_FASTCALL RebuildLevelScreenPauseDialogLayout(void* pObject);
+
+#pragma auto_inline(off)
+// FUNCTION: LEMBALL 0x00444dd0
+void LEMBALL_FASTCALL RebuildPauseDialogLayoutThunk(void* pObject)
+{
+	RebuildLevelScreenPauseDialogLayout(pObject);
+}
+#pragma auto_inline(on)
 extern int LEMBALL_FASTCALL SelectPauseDialogPaletteRemapForIndex(void* pObject, int nUnusedEdx, int nIndex);
 extern void LEMBALL_FASTCALL CTextManagerResetPrimitives(void* pTable);
 extern void* LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void* pOwner);

@@ -312,4 +312,5 @@ address,name,symbol,type,source
 0x00403797,emit_capture_trigger_chunk_manager_render_entries,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x004037BA,CPlayerLemming::GetGroup,?GetGroup@CPlayerLemming@@QAEPAVCPlayerLemmingGroup@@XZ,stub,src/AI/CPlayerLemming.cpp
 0x004037C4,destroy_composite_level_chunk_children_auto_thunk,?DestroyCompositeLevelChunkChildrenAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004037CE,RebuildLevelScreenPauseDialogLayout,?RebuildLevelScreenPauseDialogLayout@@YIXPAX@Z,stub,src/Control/ClusterScanOps2.cpp
 0x0040385A,ForwardManagedEntityVslot30,?ForwardManagedEntityVslot30@@YAXPAX0@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
