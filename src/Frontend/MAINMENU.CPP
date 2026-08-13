@@ -1683,6 +1683,15 @@ __inline static void InitializePasswordEntryRenderContext(GamePasswordEntryScree
 	pScreen->m_pInputPanelRenderContext474 = *(void**) ((char*) pScreen->m_pInputPanelOwner3A4 + 0x4c);
 }
 
+// FUNCTION: LEMBALL 0x00451fb0
+void* LEMBALL_FASTCALL ConstructPasswordEntryRenderContextObject(void* pObject)
+{
+	((GameWindowOwnerRenderContext*) pObject)->ConstructWindowOwnerRenderContext();
+	*(void**) pObject = (void*) 0x498478;
+	*(int*) ((char*) pObject + 0x50) += 10;
+	return pObject;
+}
+
 __inline static void RotatePasswordEntrySelection(GamePasswordEntryScreenView* pScreen, int nDirection)
 {
 	int nPosition;

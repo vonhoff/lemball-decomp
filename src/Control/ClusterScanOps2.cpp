@@ -3662,11 +3662,4 @@ void __fastcall update_registration_info_screen_upload(void* pObject, int nUnuse
 	}
 	(void) nUnused;
 	(void) param_3;
-}// FUNCTION: LEMBALL 0x00451fb0
-void* __fastcall construct_password_entry_render_context_object(void* pObject)
-{
-	((void(__fastcall*)(void*)) 0x463b50)(pObject);
-	*(void**) pObject = (void*) 0x498478;
-	*(int*) ((char*) pObject + 0x50) = *(int*) ((char*) pObject + 0x50) + 0xa;
-	return pObject;
 }
