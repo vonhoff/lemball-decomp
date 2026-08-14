@@ -1,5 +1,6 @@
 // Cluster reconstruction supplemental TU (avoids append-corruption on the large ClusterScanOps.cpp).
 #include "Visos/Generic/Memory.h"
+#include "views/2d/C2DRender.h"
 
 extern void __fastcall AppendType18ChunkObject(void* pStream, int nUnused, unsigned short param_1, void* param_2, int param_3, int param_4);
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
@@ -18,6 +19,7 @@ extern void* g_pAudioManager;
 extern int g_fEffectsOptionAvailable;
 extern int g_fVariantResourceEffectsEnabled;
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
+extern void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue);
 extern void __fastcall ResetTypedResourceObjectState(void* pObject);
 extern void* g_pCachedChunkManagerLevelMode;
 extern int g_nLevelFrameClockTick;
@@ -2757,42 +2759,45 @@ int __fastcall handle_level_screen_pause_action_button_event(void* pThis, int nU
 		}
 	}
 	return 0;
-}// FUNCTION: LEMBALL 0x004422b0
+}
+
+#pragma auto_inline(off)
+#pragma comment(linker, "/include:?toggle_level_pause_state@@YIXPAXHH@Z")
+// FUNCTION: LEMBALL 0x004422b0
 void __fastcall toggle_level_pause_state(void* pThis, int nUnused, int bEnablePause)
 {
 	if (bEnablePause == 0) {
-		unsigned int uVar3;
-		int uVar1;
-		int doSet;
-		void* pObj;
-		void* vSub;
-		uVar3 = *(unsigned int*)((char*)pThis + 0x130) ^ 1;
-		*(unsigned int*)((char*)pThis + 0x130) = uVar3;
-		*(unsigned int*)((char*)pThis + 0x104) = uVar3;
-		pObj = *(void**)((char*)pThis + 0x134);
-		vSub = *(void**)((char*)pObj + 0x10);
-		doSet = 0;
-		if (uVar3 == 0) {
-			void** pVt = *(void***)((char*)vSub + 0x4c);
-			if (((int(__fastcall*)(void*))pVt[1])((char*)vSub + 0x4c) != 0)
-				doSet = 1;
-		} else if (*(int*)(*(char**)((char*)vSub + 0x96c) + 0x108) != 1) {
-			doSet = 1;
+		unsigned int nPauseState = *(unsigned int*) ((char*) pThis + 0x130) ^ 1;
+
+		*(unsigned int*) ((char*) pThis + 0x130) = nPauseState;
+		*(unsigned int*) ((char*) pThis + 0x104) = nPauseState;
+		if ((nPauseState == 0 &&
+			 ((int(__fastcall*)(void*))(
+				 *(void***) ((char*) *(void**) (*(char**) ((char*) pThis + 0x134) + 0x10) + 0x4c))[1])(
+				 (char*) *(void**) (*(char**) ((char*) pThis + 0x134) + 0x10) + 0x4c) != 0) ||
+			(nPauseState != 0 &&
+			 *(int*) (*(char**) ((char*) *(void**) (*(char**) ((char*) pThis + 0x134) + 0x10) + 0x96c) + 0x108) != 1)) {
+			(*(C2D**) (*(char**) ((char*) pThis + 0x134) + 0x10))->TriggerPause(nPauseState);
 		}
-		if (doSet)
-			((void(__fastcall*)(void*, int, int))0x00402ed7)(vSub, 0, uVar3);
-		uVar1 = *(int*)((char*)vSub + 0xa7c);
-		*(unsigned int*)((char*)pThis + 0x130) = uVar1;
-		*(unsigned int*)((char*)pThis + 0x104) = uVar1;
-		*(unsigned int*)((char*)pThis + 0x138) = 0;
-		((void(__fastcall*)(void*, int, int, int))0x00401b72)(vSub, 0, 1, 0);
+		int nActualPauseState = *(int*) ((char*) *(void**) (*(char**) ((char*) pThis + 0x134) + 0x10) + 0xa7c);
+		*(unsigned int*) ((char*) pThis + 0x130) = nActualPauseState;
+		*(unsigned int*) ((char*) pThis + 0x104) = nActualPauseState;
+		*(unsigned int*) ((char*) pThis + 0x138) = 0;
+		SetLevelScreenStatusIndicatorModeThunk(1, 0);
 	}
 	(void) nUnused;
-}// FUNCTION: LEMBALL 0x00477440
-void __fastcall decode_zrle_rows_gated_by_mask(void* pThis, int nUnused, int param_1, int* param_2, unsigned short param_3)
+}
+#pragma auto_inline(on)
+
+// FUNCTION: LEMBALL 0x00477440
+void __fastcall decode_zrle_rows_gated_by_mask(void* pThis,
+											   int nUnused,
+											   int param_1,
+											   int* param_2,
+											   unsigned short param_3)
 {
-	short sRowBits = *(short*)(param_1 + 4);
-	short sRowOff = *(short*)(param_1 + 6);
+	short sRowBits = *(short*) (param_1 + 4);
+	short sRowOff = *(short*) (param_1 + 6);
 	unsigned char* pSrc = (unsigned char*) (*( unsigned char* (**)(void*)) ((void***) param_2 + 0x28 / 4))(param_2);
 	int rowIndex = 0;
 	if (0 < *(short*)(param_1 + 2)) {
