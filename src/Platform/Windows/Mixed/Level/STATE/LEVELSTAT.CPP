@@ -5738,6 +5738,7 @@ public:
 };
 
 extern void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject);
+extern void LEMBALL_FASTCALL DestroyResourceGeometryChild(void* pChildOwner);
 
 class BaseModeActionButtonLayout {
 public:
@@ -5822,3 +5823,43 @@ void* BaseModeActionButtonLayout::Construct(
 	*(int*) (pThis + 0x10c) = 0;
 	return pThis;
 }
+
+#pragma auto_inline(off)
+#pragma comment(linker, "/include:?destroy_base_mode_action_button_adjusted@@YIXPAX@Z")
+// FUNCTION: LEMBALL 0x004425e0
+void LEMBALL_FASTCALL destroy_base_mode_action_button_adjusted(void* pObject)
+{
+	char* pAdjusted;
+	char* pEntry;
+	int i;
+
+	pAdjusted = (char*) pObject;
+	*(void**) pAdjusted = (void*) 0x004974e0;
+	*(void**) (pAdjusted - 0x90) = (void*) 0x00497508;
+	if (*(int*) (pAdjusted - 0x8c) == 1) {
+		((void(LEMBALL_FASTCALL*)(void*)) * (void**) 0x0049757c)(pAdjusted - 0x90);
+	}
+
+	pEntry = pAdjusted + 0x128;
+	for (i = 0; i >= 0; --i) {
+		pEntry -= 0x20;
+		restore_base_mode_action_button_point_sink_vtable(pEntry);
+	}
+	pEntry = pAdjusted + 0x108;
+	for (i = 0; i >= 0; --i) {
+		pEntry -= 0x20;
+		restore_base_mode_action_button_point_sink_vtable(pEntry);
+	}
+	pEntry = pAdjusted + 0xc4;
+	for (i = 2; i >= 0; --i) {
+		pEntry -= 0x10;
+		RestorePackagedSpriteRenderEntryVtableA(pEntry);
+	}
+	pEntry = pAdjusted + 0x94;
+	for (i = 0; i >= 0; --i) {
+		pEntry -= 0x10;
+		RestorePackagedSpriteRenderEntryVtableA(pEntry);
+	}
+	DestroyResourceGeometryChild(pAdjusted);
+}
+#pragma auto_inline(on)
