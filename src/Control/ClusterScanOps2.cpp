@@ -6,6 +6,7 @@ extern void __fastcall AppendType18ChunkObject(void* pStream, int nUnused, unsig
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ResetRockChunkObjectRuntimeStateThunk(void* pObject);
+extern void __fastcall DestroyResourceSpriteGeometryChild(void* pObject);
 extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* pUnusedEdx, int fReleaseMode);
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pSharedRenderDispatchQueue;
@@ -73,14 +74,15 @@ extern "C" BOOL WINAPI SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int 
 // FUNCTION: LEMBALL 0x00452bc0
 int __fastcall CountActiveNetworkLobbyPeerStreams(void* pObject)
 {
-	int iVar1 = 0;
-	int i;
-	for (i = 0; i < 10; i++) {
-		if (*(int*) ((char*) pObject + 0x20 + i * 4) != 0 && *(int*) (*(int*) ((char*) pObject + 0x14) + 0x4c + i * 0x50) != 0) {
-			iVar1++;
+	int nCount = 0;
+	int nIndex = 0;
+	int* pPeerStream = (int*) ((char*) pObject + 0x20);
+	for (; nIndex < 10; pPeerStream++, nIndex++) {
+		if (*pPeerStream != 0 && *(int*) (*(int*) ((char*) pObject + 0x14) + 0x4c + nIndex * 0x50) != 0) {
+			nCount++;
 		}
 	}
-	return iVar1;
+	return nCount;
 }
 
 // FUNCTION: LEMBALL 0x0044f240
@@ -2654,15 +2656,6 @@ void __fastcall begin_network_lobby_text_prompt(void* this_, void* nUnused, int 
 		*(void**)((char*)this_ + 0x398), g_szNetworkLobbyLocalPlayerName);
 	((void(__fastcall*)(void*, int, int))0x00403085)(this_, 1, 0);
 	(void) nUnused;
-}// FUNCTION: LEMBALL 0x0043a190
-void __fastcall destroy_resource_window_owner_buffer_0043a190(void* pThis)
-{
-	*(void**)((char*)pThis + 0x000) = (void*)0x004970e0;
-	*(void**)((char*)pThis - 0x090) = (void*)0x00497108;
-	if (*(void**)((char*)pThis + 0x0bc) != 0) {
-		((void(__cdecl*)(void*))0x45a790)(*(void**)((char*)pThis + 0x0bc));
-	}
-	((void(__fastcall*)(void*))0x47fccc)(pThis);
 }
 
 // FUNCTION: LEMBALL 0x00469070
@@ -3668,3 +3661,17 @@ void __fastcall update_registration_info_screen_upload(void* pObject, int nUnuse
 	(void) nUnused;
 	(void) param_3;
 }
+
+#pragma auto_inline(off)
+#pragma comment(linker, "/include:?destroy_resource_window_owner_buffer_0043a190@@YIXPAX@Z")
+// FUNCTION: LEMBALL 0x0043a190
+void __fastcall destroy_resource_window_owner_buffer_0043a190(void* pThis)
+{
+	*(void**) ((char*) pThis + 0x000) = (void*) 0x004970e0;
+	*(void**) ((char*) pThis - 0x090) = (void*) 0x00497108;
+	if (*(void**) ((char*) pThis + 0x0bc) != 0) {
+		FreeVSMemBlock(*(void**) ((char*) pThis + 0x0bc));
+	}
+	DestroyResourceSpriteGeometryChild(pThis);
+}
+#pragma auto_inline(on)
