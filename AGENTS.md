@@ -1,26 +1,5 @@
 # Decompilation worker
 
-## Objective
-
-Make verified decompilation progress while preserving compiler behavior. `/LEMBALL.EXE` is authority.
-
-When applicable, prefer using clion-index MCP tools for code navigation and refactoring.
-
-## Workflow
-
-1. Inspect `git status`, all diffs, and `// STUB:` markers. Finish, commit, or revert unfinished work.
-2. Refresh canonical MSVC 4.00 build/reccmp JSON when stale. Keep `exact-baseline.json` immutable.
-3. Choose repeated normalized instruction shapes first. Preserve order, branches, stack cleanup, ABI, offsets, and size; normalize only addresses, relocations, and proven member constants.
-4. Prefer 100% exemplars and compiler-owned families: constructors, destructors, scalar deletes, vtable restores, accessors, forwarding/adjustment thunks.
-5. Inspect every candidate member in original `/LEMBALL.EXE` with Ghidra MCP: bytes, boundaries, ABI, flow, xrefs, owner, and variations. ILT entries are never targets.
-6. Recover one minimal C/C++ template from binary evidence and compiler probes. Parameterize only proven variations; never mass-generate from shape alone.
-7. Implement the complete viable family, build, compare a representative, then every member. Revise from assembly diffs and binary evidence.
-8. Run full reccmp JSON and `--check-baseline` after each batch. Exit `1` is expected for tolerated losses; never accept a new lost address. Keep batches only for verified gains or measured improvement without worsening the lost set.
-9. Repeat safe members of the family; then investigate remaining singletons by fewest mismatched bytes, five-byte functions last.
-10. Fix issues immediately. If blocked, leave a compiling `// STUB:` marker.
-
-Verified progress: new 100% match, similarity gain, corrected inventory/Ghidra data, compiler-accurate infrastructure, or removed incorrect code.
-
 ## Constraints
 
 - **Never edit `README.md` unless requested.**
