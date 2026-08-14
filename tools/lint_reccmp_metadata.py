@@ -14,6 +14,8 @@ import macintosh_naming
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 PROJECT_FILE = ROOT / "reccmp-project.yml"
 SOURCE_ROOT = ROOT / "src"
+OBJDIFF_FILE = ROOT / "data" / "objdiff-functions.csv"
+BUILD_FILE = ROOT / "CMakeLists.txt"
 SOURCE_SUFFIXES = {".c", ".cc", ".cpp", ".h", ".hpp"}
 ANNOTATION = re.compile(
     r"^\s*//\s+(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY|LINKERILT|GLOBAL|VTABLE):"
@@ -134,6 +136,34 @@ def main() -> int:
                 f"0x{address:08X}: CSV/source collision: "
                 f"{', '.join(csv_addresses[address] + locations)}"
             )
+
+    with OBJDIFF_FILE.open(encoding="utf-8-sig", newline="") as stream:
+        for line_number, row in enumerate(csv.DictReader(stream), 2):
+            unit = row["unit"].strip()
+            if not unit or not (SOURCE_ROOT / unit).is_file():
+                errors.append(
+                    f"{OBJDIFF_FILE.relative_to(ROOT)}:{line_number}: "
+                    f"objdiff unit does not exist: {unit or '<empty>'}"
+                )
+
+    compiled_sources = {
+        (ROOT / match.group(1)).resolve()
+        for match in re.finditer(r"^\s+(src/\S+\.(?:c|cc|cpp))\s*$", BUILD_FILE.read_text(encoding="utf-8"), re.MULTILINE | re.IGNORECASE)
+    }
+    source_include = re.compile(r'^\s*#include\s+"([^"]+\.(?:c|cc|cpp))"', re.IGNORECASE)
+    for path in SOURCE_ROOT.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in SOURCE_SUFFIXES:
+            continue
+        for line_number, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
+            match = source_include.match(line)
+            if match is None:
+                continue
+            included = (path.parent / match.group(1)).resolve()
+            if included in compiled_sources:
+                errors.append(
+                    f"{path.relative_to(ROOT)}:{line_number}: included source is also compiled: "
+                    f"{included.relative_to(ROOT)}"
+                )
 
     if errors:
         for error in errors:

@@ -19,7 +19,7 @@ from `docs/BACKLOG.md` + the coverage inventory in `data/` — never improvise.
 2. Categorize: reconstruct from `data/unreconstructed-correlations.csv`; reconcile an invented label via the `docs/BACKLOG.md` audit table; a near-match partial; or a documented bug. Pick highest-value, lowest-risk.
 3. Recover minimal C/C++ (compiler-generated; assembly only for proven ABI/vtordisp thunks, `// ABI-THUNK:`).
 4. Build MSVC 4.00 (env MSVC400_ROOT + INCLUDE/LIB/PATH at C:\dev\MSVC400, else MSVC 4.20 headers break it).
-5. reccmp; compare lost-addrs vs `build-msvc400/exact-baseline.json`. Tolerated losses (exit 1) OK; never accept a NEW lost addr unless a bounded one is clearly outweighed. Recover vtable-display artifacts via metadata naming rather than shipping worse losses.
+5. reccmp; compare lost-addrs vs `docs/exact-baseline.json`. Tolerated losses (exit 1) OK; never accept a NEW lost addr unless a bounded one is clearly outweighed. Recover vtable-display artifacts via metadata naming rather than shipping worse losses.
 6. clang-format touched C/C++, `git diff --check`, clean tree, commit/push — updating coverage/correlations + reccmp metadata in the same change as any rename.
 
 ## Rename/reconciliation pitfalls

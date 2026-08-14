@@ -79,15 +79,21 @@ extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void* g_pSharedRenderDispatchQueue;
 extern void* g_GAME_RenderQueueNodeVtableSlots[4];
 
+struct RegisteredRenderEntryDispatchView {
+	virtual void Reserved00(void);
+	virtual void DispatchMode4(short* pPosition, int nValue);
+	virtual void DispatchMode3(short* pPosition, int nValue);
+};
+
 // Forward declarations for vtable reference.
 void* LEMBALL_FASTCALL DeleteRegisteredRenderSlotArrayAuto(void* pObject, void*, BYTE fDelete);
-void LEMBALL_FASTCALL FUN_0043a2e0(void*, int, unsigned short*);
+int LEMBALL_FASTCALL dispatch_indexed_entry_by_mode(void*, int, unsigned short*);
 
 // GLOBAL: LEMBALL 0x00497208
 static void* g_RegisteredRenderSlotArrayVtable[4] = {
 	(void*) InitializeNonZrleVariantRenderEntry,
 	(void*) DeleteRegisteredRenderSlotArrayAuto,
-	(void*) FUN_0043a2e0,
+	(void*) dispatch_indexed_entry_by_mode,
 	0,
 };
 
@@ -100,8 +106,33 @@ void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAuto(void* pObject)
 	*(void***) pObject = g_GAME_RenderQueueNodeVtableSlots;
 }
 
-void LEMBALL_FASTCALL FUN_0043a2e0(void*, int, unsigned short*)
+// FUNCTION: LEMBALL 0x0043a2e0
+int LEMBALL_FASTCALL dispatch_indexed_entry_by_mode(void* pThis, int, unsigned short* pMode)
 {
+	int nResult = 0;
+	int iSlot = 0;
+	unsigned short nMode = *pMode;
+	if (nMode > 2 && nMode < 5 && *(int*) ((char*) pThis + 0x14) > 0) {
+		int* pSlotId = (int*) (*(int*) ((char*) pThis + 0x10) + 4);
+		while (*pSlotId != *(int*) (pMode + 4)) {
+			pSlotId += 2;
+			iSlot++;
+			if (*(int*) ((char*) pThis + 0x14) <= iSlot) {
+				return nResult;
+			}
+		}
+		int* pEntry = (int*) (*(int*) (*(int*) ((char*) pThis + 0x10) + iSlot * 8));
+		if (nMode == 4) {
+			short position[2] = {0, 0};
+			((RegisteredRenderEntryDispatchView*) ((char*) pEntry + 0x90))->DispatchMode4(position, 0);
+		}
+		else {
+			short position[2] = {0, 0};
+			((RegisteredRenderEntryDispatchView*) ((char*) pEntry + 0x90))->DispatchMode3(position, 0);
+		}
+		nResult = 1;
+	}
+	return nResult;
 }
 
 struct RegisteredRenderSlot {

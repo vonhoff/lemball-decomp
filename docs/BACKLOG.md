@@ -13,10 +13,10 @@ evidence for naming and logical ownership only.
 
 | Mac symbol category | Count | Meaning | Action |
 |---|---|---|---|
-| `accepted_x86_correlation` | 1374 | Mac method proven to correspond to a Windows function. | **Implement / map it.** |
-| `platform_specific` | 884 | Mac-only CODE (Toolbox, CFM, FS, sound, display, input). | **Do NOT implement on Windows.** |
+| `accepted_x86_correlation` | 1398 | Mac method proven to correspond to a Windows function. | **Implement / map it.** |
+| `platform_specific` | 870 | Mac-only CODE (Toolbox, CFM, FS, sound, display, input). | **Do NOT implement on Windows.** |
 | `genuinely_missing_or_unresolved` | 577 | No proven Windows counterpart yet. | Leave until x86 correlation proves one. Research, not construction. |
-| `likely_inlined_or_merged` | 14 | Mac method inlined/merged into a Windows function. | Document; do not spawn a stub. |
+| `likely_inlined_or_merged` | 4 | Mac method inlined/merged into a Windows function. | Document; do not spawn a stub. |
 
 Everything in `accepted_x86_correlation` already carries a proven x86 address.
 The **only actionable backlog** is the subset that is correlated but not yet
@@ -107,7 +107,7 @@ For the top ready item:
 3. Build the canonical MSVC 4.00 target (env: `MSVC400_ROOT=C:/dev/MSVC400`,
    plus `INCLUDE`/`LIB`/`PATH` pointed at `C:\dev\MSVC400` — the plain cmake
    preset otherwise picks up contaminated MSVC 4.20 headers).
-4. Run reccmp + compare the lost-address set against `exact-baseline.json`.
+4. Run reccmp + compare the lost-address set against `docs/exact-baseline.json`.
    Exit `1` for tolerated losses is expected; **never accept a new lost address**
    beyond the known tolerated set unless the gain clearly outweighs a bounded one.
 5. clang-format touched C/C++, commit/push. Update coverage correlations and
@@ -124,14 +124,30 @@ For the top ready item:
 Regenerate the work-list with:
 `.decomp-venv\Scripts\python.exe tools/generate_unreconstructed_backlog.py`
 
+## Completed organization
+
+The 220 implementations formerly stored directly in `ClusterScanOps.cpp`,
+`ClusterScanOps2.cpp`, `LargePoolRehome.cpp`, and `LargePoolZrle.cpp` now live in
+owner-specific `WindowsPhysicalSegments*.h` fragments. The old `.cpp` files are
+include-order shells only: clean-build probes showed that renaming, merging, or
+removing those four object contributions loses exact matches. Keep the shells in
+their current CMake positions until linker-layout work can remove them with a
+zero-loss exact-set result.
+
+Before this organization work, a clean build exposed a stale 1,896-address exact
+baseline: the live tree had gained 75 exact matches and lost 29, for a net 46 gain.
+The bounded pre-existing drift was accepted as a 1,942-address baseline before any
+source movement; every migration above then passed with zero additional losses.
+
 ## Backlog (evidence-based, priority order)
 
-1. **264 accepted-but-unreconstructed correlations.** Highest-value, lowest-risk.
+1. **5 accepted-but-unreconstructed correlations.** Highest-value, lowest-risk.
    Each is a proven name + x86 address, needing only source reconstruction
    (item 3 in the table; work-list in `data/unreconstructed-correlations.csv`).
-   Spread: 87 views_2d, 72 AI, 53 Control, 47 Visos/Generic, 3 Mac-specific,
-   2 Frontend. Includes clean families (e.g. `CString`, `CPVZBuffSurface`,
-   `CGDIDevice`, `CSurface`, `FindFreeSurface`) that reconstruct quickly.
+   The remaining addresses are `CDemo::SendNextPacket` (`0x00409250`),
+   `CDoor::Delete` (`0x0040D760`), `CTrampoline::Hit` (`0x0042AB90`),
+   `C2D::DrawLemmingFlyShadow` (`0x0043BDE0`), and `C2D::CalcGroundCode`
+   (`0x00440840`).
 2. **3 partial CNetworkMessage transport functions** — bounded, in the shared base:
    `OpenDataStream` (0x45F1E0, 64.7%), `CopyDataStream` (0x45F250, 43.9%),
    `Send` (0x45F2B0, 66.7%).
@@ -145,6 +161,6 @@ Regenerate the work-list with:
 
 ## Do-not-implement list
 
-- All 884 `platform_specific` Mac symbols (no Windows equivalence by design).
+- All 870 `platform_specific` Mac symbols (no Windows equivalence by design).
 - All 577 unresolved — do not fabricate a Windows function for them.
 - Mac-only methods on a class that the Windows binary lacks.

@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate data/unreconstructed-correlations.csv: accepted Mac correlations
-that are not yet reconstructed in source (no source_analogue_paths or marked
-'unreconstructed'). This is the actionable working backlog (BACKLOG.md item 1)."""
+"""Regenerate the accepted Macintosh correlations explicitly marked unreconstructed."""
 import csv
 
 COV = "data/macintosh-symbol-coverage.csv"
@@ -13,7 +11,7 @@ with open(COV, encoding="utf-8-sig", newline="") as f:
 
 def unreconstructed(r):
     p = (r["source_analogue_paths"] or "").strip().lower()
-    return r["coverage_category"] == "accepted_x86_correlation" and (not p or "unreconstructed" in p)
+    return r["coverage_category"] == "accepted_x86_correlation" and "unreconstructed" in p
 
 
 items = [r for r in rows if unreconstructed(r)]

@@ -81,8 +81,10 @@ def check(symbols: list[dict[str, str]], correlations: list[dict[str, str]]) -> 
     if mac_class("__ct__11CEnemyGroupFP3CAIP14CObjectManager") != "CEnemyGroup":
         errors.append("MacsBug class parser failed constructor-with-parameters self-check")
 
-    symbol_keys = {row["mangled_name"] for row in symbols}
-    symbol_classes = {mac_class(row["mangled_name"]) for row in symbols if mac_class(row["mangled_name"])}
+    raw_keys = {
+        (row["code_file"], row["name_length_offset"].lower(), row["mangled_name"])
+        for row in symbols
+    }
     seen_addresses: dict[int, int] = {}
     for line, row in enumerate(correlations, 2):
         where = f"{CORRELATIONS.relative_to(ROOT)}:{line}"
@@ -94,9 +96,13 @@ def check(symbols: list[dict[str, str]], correlations: list[dict[str, str]]) -> 
         if address in seen_addresses:
             errors.append(f"{where}: duplicate x86 address (first at line {seen_addresses[address]})")
         seen_addresses[address] = line
-        name = mac_class(row["mac_mangled_name"])
-        if row["mac_mangled_name"] not in symbol_keys and (not name or name not in symbol_classes):
-            errors.append(f"{where}: Macintosh symbol family is absent from raw inventory")
+        raw_key = (
+            row["mac_code_file"],
+            row["mac_name_length_offset"].lower(),
+            row["mac_mangled_name"],
+        )
+        if raw_key not in raw_keys:
+            errors.append(f"{where}: correlation does not identify an exact raw Macintosh symbol")
 
 
     objdiff_names = {row["address"].lower(): row["name"] for row in rows(OBJDIFF)}
@@ -128,6 +134,16 @@ def check(symbols: list[dict[str, str]], correlations: list[dict[str, str]]) -> 
             continue
         key = module_name(row["mac_code_file"]), row["mac_mangled_name"]
         correlation = accepted.get(key)
+        analogue_paths = row["source_analogue_paths"].strip()
+        if category == "accepted_x86_correlation" and not analogue_paths:
+            errors.append(f"{where}: accepted disposition has no source path or unreconstructed marker")
+        for analogue_path in (path.strip() for path in analogue_paths.split(";") if path.strip()):
+            if analogue_path == "unreconstructed":
+                continue
+            if not analogue_path.startswith("src/"):
+                errors.append(f"{where}: invalid source analogue {analogue_path!r}")
+            elif not (ROOT / analogue_path).is_file():
+                errors.append(f"{where}: source analogue does not exist: {analogue_path}")
         if category == "accepted_x86_correlation":
             if correlation is None:
                 errors.append(f"{where}: accepted disposition has no correlation")
@@ -244,7 +260,7 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("check", help="validate correlations and coverage")
     sub.add_parser("summary", help="show tracker totals")
-    sub.add_parser("coverage", help="show Macintosh blueprint portability coverage %")
+    sub.add_parser("coverage", help="show Macintosh blueprint portability coverage percent")
     names_parser = sub.add_parser("names", help="list raw Macintosh names and mapping status")
     names_parser.add_argument("--class", dest="class_name")
     names_parser.add_argument("--status", choices=("all", "mapped", "unmapped"), default="unmapped")

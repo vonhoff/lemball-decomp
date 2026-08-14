@@ -394,7 +394,7 @@ address,size,name,unit
 0x00414070,11,CPlayerLemmingGroup::~CPlayerLemmingGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00414080,68,CPlayerLemmingGroup::GetViewData,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004140D0,82,is_managed_entity_within_followup_activation_range,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00414130,31,CPlayerLemmingGroup::Delete,AI/LVGRPTGT.CPP
+0x00414130,31,CPlayerLemmingGroup::Delete,AI/CPlayerLemmingGroup.cpp
 0x00414150,1180,CPlayerLemmingGroup::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00414600,93,CPlayerLemmingGroup::AddLemmingToGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00414660,195,CPlayerLemmingGroup::AddUseObject,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -1404,6 +1404,7 @@ address,size,name,unit
 0x0043A1D0,115,set_text_owner_string_and_layout,Frontend/SCREENVT.CPP
 0x0043A250,88,construct_registered_render_slot_array,Frontend/SCREENVT.CPP
 0x0043A2B0,43,destroy_registered_render_slot_array,Frontend/SCREENVT.CPP
+0x0043A2E0,154,dispatch_indexed_entry_by_mode,Frontend/SCREENVT.CPP
 0x0043A380,35,append_two_dword_pair_to_array,Frontend/SCREENVT.CPP
 0x0043A490,30,delete_registered_render_slot_array,Frontend/SCREENVT.CPP
 0x0043A4C0,5,return_zero_screen_hook,Frontend/SCREENVT.CPP

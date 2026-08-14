@@ -1,13 +1,13 @@
+#include "Control/CGame.h"
+#include "Control/Options.h"
+#include "Frontend/CURSOR.H"
+#include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
-#include "Frontend/CURSOR.H"
-#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
-#include "Platform/Windows/Entry.h"
-#include "Control/Options.h"
 #include "Visos/Generic/CSurface.h"
 #include "Visos/Generic/Memory.h"
 
@@ -439,9 +439,7 @@ void* g_VSGDI_StatusIndicatorPointSinkVtable[12] = {
 };
 
 void* LEMBALL_FASTCALL VsGdiDeleteDisplayState(void* pDisplayState, int nUnused, int fDelete);
-int LEMBALL_FASTCALL CBaseCursorProcessMsg(void* pRenderClient,
-													 int nUnused,
-													 RenderDispatchQueueEntry* pEntry);
+int LEMBALL_FASTCALL CBaseCursorProcessMsg(void* pRenderClient, int nUnused, RenderDispatchQueueEntry* pEntry);
 void LEMBALL_FASTCALL InitializeArrowCursorPosition(void* pRenderClient);
 void LEMBALL_FASTCALL HideArrowCursor(void* pRenderClient);
 void LEMBALL_FASTCALL ShowArrowCursor(void* pRenderClient);
@@ -552,7 +550,6 @@ struct VsGdiHelperSurfaceBindingSurface {
 	short m_nOriginY;
 	short m_nOriginX;
 };
-
 
 /* The target+0x98 row-buffer view receives a two-point/two-extent copy
  * command.  Ghidra 00474dd0 and table 00499e40 slot 1 show that the source
@@ -2806,7 +2803,6 @@ int LEMBALL_FASTCALL HasZBuff(void* pGroupState, int)
 }
 #include "../Generic/CChangeList.cpp"
 
-
 // FUNCTION: LEMBALL 0x00467060
 VsGdiGeometryHelperPointerArray* VsGdiGeometryHelperPointerArray::InitializeGeometryHelperPointerArray(
 	short* pRect,
@@ -2882,7 +2878,7 @@ void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue)
 void LEMBALL_FASTCALL DispatchPauseDialogCallbackAndClearQueue(int pObject)
 {
 	if (*(void**) ((char*) pObject + 0x154) != 0) {
-		(*( void(__fastcall**)(void)) *(void***) ((char*) pObject + 0x154))();
+		(*(void(__fastcall**)(void)) * (void***) ((char*) pObject + 0x154))();
 	}
 	DispatchAndClearPointerQueue(*(void**) ((char*) pObject - 0x54));
 	*(void**) (*(char**) ((char*) pObject - 0x54) + 4) = 0;
@@ -3469,9 +3465,8 @@ CSurface* CSurface::Construct(const VsGdiRect* pRect, void* pWrappedTarget, int 
 	CellExtent.height = 8;
 	pTracker = (CChangeList*) AllocateVSMemBlock(sizeof(CChangeList));
 	if (pTracker != 0) {
-		new (pTracker) CChangeList(pWrappedTarget == g_pResourceGeometryHelperTarget ? 0x1000 : 0,
-									 TrackerExtent,
-									 CellExtent);
+		new (pTracker)
+			CChangeList(pWrappedTarget == g_pResourceGeometryHelperTarget ? 0x1000 : 0, TrackerExtent, CellExtent);
 	}
 	*(void**) ((char*) this + 0x550) = pTracker;
 
@@ -3972,8 +3967,7 @@ void CSurface::ToScreen(CSurface* pPeerTarget)
 		return;
 	}
 	if (*(int*) (pVariableBlock + 0x70) != 0) {
-		pTracker =
-			(CChangeList*) (unsigned long) ((IntNoArgProc) (*(void***) this)[2])(this, 0);
+		pTracker = (CChangeList*) (unsigned long) ((IntNoArgProc) (*(void***) this)[2])(this, 0);
 		if (pTracker->GetNumItems() - pTracker->GetDrawMark() > 0) {
 			((RectProc) (*(void***) pLinkedTarget)[1])(pLinkedTarget, 0, (short*) (pVariableBlock + 0x54));
 		}
@@ -5553,7 +5547,6 @@ void LEMBALL_FASTCALL set_queued_render_point_sink_field_0x30(void* pPointSink, 
 	*(int*) ((char*) pPointSink + 0x30) = nValue;
 }
 
-
 struct HelperUploadRectEntryView {
 	short m_left;
 	short m_top;
@@ -5591,8 +5584,8 @@ void LEMBALL_FASTCALL DestroyCPVBackBuffSurface(void* pvHelperGroup)
 }
 
 // FUNCTION: LEMBALL 0x00476100
-void LEMBALL_FASTCALL fill_circle_scanline_pair_unclipped(void* pBuffer, int nX, int nY,
-                                                          int nRadius, int nYOffset, BYTE nPixel)
+void LEMBALL_FASTCALL
+fill_circle_scanline_pair_unclipped(void* pBuffer, int nX, int nY, int nRadius, int nYOffset, BYTE nPixel)
 {
 	char** ppRows;
 	unsigned int width;
@@ -5637,8 +5630,13 @@ void LEMBALL_FASTCALL fill_circle_scanline_pair_unclipped(void* pBuffer, int nX,
 }
 
 // FUNCTION: LEMBALL 0x00476470
-void LEMBALL_FASTCALL FillCircleScanlinePairClipped(
-	void* pThis, int nUnusedEdx, int nX, int nY, int nRadius, int nYOffset, unsigned char nPixel)
+void LEMBALL_FASTCALL FillCircleScanlinePairClipped(void* pThis,
+													int nUnusedEdx,
+													int nX,
+													int nY,
+													int nRadius,
+													int nYOffset,
+													unsigned char nPixel)
 {
 	int nRowLo;
 	int nRowHi;

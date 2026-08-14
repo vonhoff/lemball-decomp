@@ -107,6 +107,7 @@ jobs:
           reccmp-datacmp --target LEMBALL --no-color
           reccmp-vtable --target LEMBALL
           Pop-Location
+          python tools/decomp_gate.py --check-baseline
           python tools/generate_objdiff_report.py
 
       - name: Upload progress report

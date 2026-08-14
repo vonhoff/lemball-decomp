@@ -177,7 +177,7 @@ def propose_class(address: int, by_addr, name: str) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--missing", action="store_true", help="list missing blueprint classes")
-    ap.add_argument("--zeros", action="store_true", help="list 0% game functions")
+    ap.add_argument("--zeros", action="store_true", help="list zero-percent game functions")
     ap.add_argument("--legacy", action="store_true", help="list legacy source files")
     ap.add_argument("--mismatch", action="store_true", help="list source-vs-blueprint function-name mismatches")
     ap.add_argument("--misplaced", action="store_true", help="list functions whose source class differs from the blueprint class")
