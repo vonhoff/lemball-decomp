@@ -127,3 +127,17 @@ CBulletManager::~CBulletManager(void)
 	}
 	((void(__fastcall*)(void*)) 0x45eea0)(this);
 }
+
+// FUNCTION: LEMBALL 0x0041af10
+void* LEMBALL_FASTCALL DeleteProjectileObjectScalarWrapper(void* pObject, void* pUnused, unsigned char fDelete)
+{
+	VsNetEffStreamCommon* pStream =
+		pObject != NULL ? (VsNetEffStreamCommon*) ((char*) pObject + 0x138) : NULL;
+	pStream->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+	(void) pUnused;
+}

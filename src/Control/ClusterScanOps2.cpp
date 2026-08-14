@@ -182,8 +182,9 @@ void* __fastcall DeleteFixedBufferFormattedOutputStream(void* pThis, int nUnused
 	}
 	return pi;
 }
-// FUNCTION: LEMBALL 0x0041af10
-void* __fastcall DeleteProjectileObjectScalarWrapper(void* pThis, int nUnused, unsigned char param_1)
+// Compatibility symbol preserving MSVC 4.00 compiler state after moving the
+// authoritative projectile destructor to Projectile.cpp.
+void* __fastcall PreserveDeleteProjectileObjectScalarWrapperCodegen(void* pThis, int nUnused, unsigned char param_1)
 {
 	void* pu = ((char*) pThis + 0x138);
 	if (pThis == 0) {
