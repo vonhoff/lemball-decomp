@@ -1,8 +1,6 @@
-name: cleanup workflow runs
+name: Cleanup workflow runs
 
 on:
-  schedule:
-    - cron: "0 3 * * 0"
   workflow_dispatch:
 
 permissions:
