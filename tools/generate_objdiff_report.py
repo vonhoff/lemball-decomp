@@ -19,7 +19,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
-TARGET = "LEMBALL"
 MODULE_PREFIX = "CMakeFiles/LEMBALL.dir/src_old/"
 MODULE_SUFFIX = ".obj"
 
@@ -64,12 +63,17 @@ def tool(name):
 
 def run_reccmp():
     subprocess.run(
-        [tool("reccmp-reccmp"), "--target", TARGET, "--json", "reccmp.json", "--json-diet", "--silent"],
+        [tool("reccmp-project"), "detect", "--search-path", str(ROOT / "data")],
+        cwd=ROOT,
+        check=True,
+    )
+    subprocess.run(
+        [tool("reccmp-reccmp"), "--target", "LEMBALL", "--json", "reccmp.json", "--json-diet", "--silent"],
         cwd=BUILD,
         check=True,
     )
     subprocess.run(
-        [tool("reccmp-roadmap"), "--target", TARGET, "--csv", "roadmap.csv"],
+        [tool("reccmp-roadmap"), "--target", "LEMBALL", "--csv", "roadmap.csv"],
         cwd=BUILD,
         check=True,
     )
