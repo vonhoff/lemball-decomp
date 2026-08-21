@@ -34,9 +34,4 @@ reccmp-build.yml
 reccmp-user.yml
 objdiff.json
 data/*
-!data/objdiff-functions.csv
-!data/reccmp-source-symbols.csv
-!data/reccmp-compiler-generated.csv
-!data/reccmp-linker-ilts.csv
-!data/reccmp-library-symbols.csv
 .gnupg-local/

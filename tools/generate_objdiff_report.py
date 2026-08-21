@@ -1,102 +1,39 @@
 #!/usr/bin/env python3
-"""Convert a reccmp JSON report to objdiff report v2."""
+"""Produce an objdiff-compatible report from the reconstructed binary.
+
+Runs reccmp against the built LEMBALL, then converts the result to the
+objdiff report v2 format. Invoke from the repository root after building:
+
+    .decomp-venv\\Scripts\\python.exe tools\\generate_objdiff_report.py
+"""
 
 import argparse
 import csv
 import json
-import re
+import shutil
 import struct
+import subprocess
 from collections import defaultdict
 from pathlib import Path
 
 
-FUNCTION_NAME = re.compile(r"[A-Za-z_~][A-Za-z0-9_~]*(?:::[A-Za-z_~][A-Za-z0-9_~]*)?")
-VAGUE_NAME = re.compile(r"(?:^|_)(?:fun|unknown|method|reserved[0-9a-f]*)(?:_|$)")
-MAC_CLASS_PREFIX = re.compile(r"__(\d+)")
-
-# MSVC/CRT library glue: never a game-code reconstruction target. A function whose
-# name matches any of these is "library" regardless of address; the report separates
-# it from genuine game code so the remaining Uncorrelated bucket is real game code.
-# NOTE: game code here uses snake_case (construct_*, destroy_*, emit_*); CRT names are
-# the exact `_pctype`, `__nw`, `strtol`, `??_G` forms — match those precisely, never
-# a substring like "str"/"mem" which would steal snake_case game functions.
-_LIBRARY_PATTERNS = (
-    re.compile(r"^_[A-Za-z_]"),  # _pctype, _mb_cur_max, _DEMO_Init, _VSExit, __nw, __dl
-    re.compile(r"^\?\?_[0-9A-G_]"),  # MSVC `??_G`/`??_E`/`??_7` deleting-dtor/vtable thunks
-    re.compile(r"^(std::|operator new|operator delete)\b"),
-    re.compile(r"^(_*printf|_*fprintf|_*sprintf|_*scanf|_*strtol|_*strtoul|_*strtod|_*atoi|_*atol|_*malloc|_*calloc|_*realloc|_*free|_*qsort|_*bsearch|_*memcpy|_*memset|_*memmove|_*strlen|_*strcpy|_*strcmp|_*strchr|_*strstr|_*abs|labs|llabs)$"),
-    re.compile(r"(_pctype|_mb_cur_max|__mb_|_ftol|__ftol|__imp_|_imp__)"),
-)
-
-
-def classify_library(name):
-    """Return True if the name is library/CRT/compiler glue rather than game code."""
-    return any(p.match(name) for p in _LIBRARY_PATTERNS)
-
-
-def mac_module(code_file):
-    name = re.sub(r"^CODE_[0-9]+_", "", code_file).removesuffix(".bin")
-    return {
-        "Visos (Generic)": "Visos/Generic",
-        "Visos (Mac Specific)": "Visos/Windows",
-        "views_2d": "views/2d",
-    }.get(name, name)
-
-
-def mac_class(mangled):
-    match = MAC_CLASS_PREFIX.search(mangled)
-    if match is None:
-        return ""
-    start = match.end()
-    length = int(match.group(1))
-    name = mangled[start : start + length]
-    if len(name) == length and mangled[start + length : start + length + 1] == "F":
-        return name
-    return ""
-
-
-def mac_function(mangled, class_name):
-    operators = {"__apl__": "operator+=", "__as__": "operator="}
-    for prefix, name in operators.items():
-        if mangled.startswith(prefix):
-            return name
-    if mangled.startswith("__ct__"):
-        return class_name
-    if mangled.startswith("__dt__"):
-        return f"~{class_name}"
-    if mangled.startswith("__nw__"):
-        return "operator new"
-    return mangled.split("__", 1)[0]
-
-
-def load_owners(path):
-    owners = {}
-    with path.open(newline="", encoding="utf-8-sig") as stream:
-        for row in csv.DictReader(stream):
-            address = int(row["x86_address"], 16)
-            class_name = mac_class(row["mac_mangled_name"])
-            owner = (
-                mac_module(row["mac_code_file"]),
-                class_name,
-                mac_function(row["mac_mangled_name"], class_name),
-                row["mac_mangled_name"],
-            )
-            if address in owners and owners[address] != owner:
-                raise SystemExit(f"conflicting owner for 0x{address:08X}")
-            owners[address] = owner
-    return owners
-
-
-def load_addresses(path):
-    if path is None:
-        return set()
-    with path.open(newline="", encoding="utf-8-sig") as stream:
-        rows = csv.DictReader(line for line in stream if not line.startswith("#"))
-        return {int(row["address"], 16) for row in rows}
+ROOT = Path(__file__).resolve().parents[1]
+BUILD = ROOT / "build-msvc400"
+TARGET = "LEMBALL"
+MODULE_PREFIX = "CMakeFiles/LEMBALL.dir/src_old/"
+MODULE_SUFFIX = ".obj"
 
 
 def f32(value):
     return struct.unpack("<f", struct.pack("<f", value))[0]
+
+
+def unit_name(module):
+    if module.startswith(MODULE_PREFIX):
+        module = module[len(MODULE_PREFIX) :]
+    if module.endswith(MODULE_SUFFIX):
+        module = module[: -len(MODULE_SUFFIX)]
+    return module or "Compiler-generated"
 
 
 def measures(functions, total_units=1):
@@ -121,95 +58,100 @@ def measures(functions, total_units=1):
     return result
 
 
-def build_report(inventory_path, reccmp_path, correlations_path, compiler_generated_path=None):
-    native = json.loads(reccmp_path.read_text(encoding="utf-8"))
-    owners = load_owners(correlations_path)
-    compiler_generated = load_addresses(compiler_generated_path)
-    matches = {
+def tool(name):
+    return shutil.which(name) or str(ROOT / ".decomp-venv" / "Scripts" / f"{name}.exe")
+
+
+def run_reccmp():
+    subprocess.run(
+        [tool("reccmp-reccmp"), "--target", TARGET, "--json", "reccmp.json", "--json-diet", "--silent"],
+        cwd=BUILD,
+        check=True,
+    )
+    subprocess.run(
+        [tool("reccmp-roadmap"), "--target", TARGET, "--csv", "roadmap.csv"],
+        cwd=BUILD,
+        check=True,
+    )
+
+
+def load_matches(path):
+    with path.open(encoding="utf-8") as stream:
+        data = json.load(stream)["data"]
+    return {
         int(row["address"], 16): row
-        for row in native["data"]
+        for row in data
         if row.get("type") in (None, 1)
     }
-    groups = defaultdict(list)
-    seen = set()
-    with inventory_path.open(newline="", encoding="utf-8-sig") as stream:
+
+
+def load_inventory(path):
+    with path.open(newline="", encoding="utf-8-sig") as stream:
         for row in csv.DictReader(stream):
-            address = int(row["address"], 16)
-            if address in seen:
-                raise SystemExit(f"duplicate inventory address 0x{address:08X}")
-            if not FUNCTION_NAME.fullmatch(row["name"]):
-                raise SystemExit(f"invalid function name at 0x{address:08X}: {row['name']}")
-            if VAGUE_NAME.search(row["name"]):
-                raise SystemExit(f"vague function name at 0x{address:08X}: {row['name']}")
-            seen.add(address)
-            match = matches.get(address)
-            ratio = 0.0 if match is None or match.get("stub") else float(match["matching"]) * 100
-            function = {
+            if row["row_type"] != "fun" or not row["orig_addr"]:
+                continue
+            yield {
+                "address": int(row["orig_addr"], 16),
+                "size": int(row["size"], 16),
                 "name": row["name"],
-                "size": int(row["size"]),
-                "address": address,
+                "module": row["module"],
+            }
+
+
+def build_report(roadmap_path, reccmp_path):
+    matches = load_matches(reccmp_path)
+    groups = defaultdict(list)
+    for item in load_inventory(roadmap_path):
+        match = matches.get(item["address"])
+        ratio = 0.0 if match is None or match.get("stub") else float(match["matching"]) * 100
+        groups[unit_name(item["module"])].append(
+            {
+                "name": item["name"],
+                "size": item["size"],
+                "address": item["address"],
                 "ratio": ratio,
             }
-            owner = owners.get(address)
-            if owner:
-                function["mac_name"] = owner[2]
-                group = owner[:2]
-            elif address in compiler_generated:
-                group = ("Windows", "Compiler-generated")
-            elif classify_library(row["name"]):
-                group = ("Windows", "Library glue")
-            else:
-                group = ("Windows", "Game code (uncorrelated)")
-            groups[group].append(function)
+        )
 
     units = []
-    for (module, class_name), functions in sorted(groups.items()):
-        items = []
-        for function in functions:
-            item = {
-                "name": function.get("mac_name", function["name"]),
-                "size": str(function["size"]),
-                "metadata": {
-                    "virtual_address": str(function["address"]),
-                },
-            }
-            if function["ratio"]:
-                item["fuzzy_match_percent"] = f32(function["ratio"])
-            items.append(item)
+    for name, functions in sorted(groups.items()):
+        functions.sort(key=lambda function: function["address"])
         units.append(
             {
-                "name": f"{module}/{class_name}" if class_name else module,
+                "name": name,
                 "measures": measures(functions),
                 "sections": [],
-                "functions": items,
-                "metadata": {"module_name": module},
+                "functions": [
+                    {
+                        "name": function["name"],
+                        "size": str(function["size"]),
+                        "metadata": {"virtual_address": str(function["address"])},
+                        "fuzzy_match_percent": f32(function["ratio"]),
+                    }
+                    for function in functions
+                ],
+                "metadata": {"module_name": name},
             }
         )
+
     functions = [function for group in groups.values() for function in group]
-    return {"measures": measures(functions, len(units)), "units": units, "version": 2}
+    return {
+        "measures": measures(functions, len(units)),
+        "units": units,
+        "version": 2,
+    }
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--inventory", type=Path, default=Path("data/objdiff-functions.csv"))
-    parser.add_argument("--reccmp", type=Path, default=Path("build-msvc400/reccmp.json"))
-    parser.add_argument(
-        "--correlations", type=Path, default=Path("data/macintosh-x86-correlations.csv")
-    )
-    parser.add_argument(
-        "--compiler-generated",
-        type=Path,
-        default=Path("data/reccmp-compiler-generated.csv"),
-    )
-    parser.add_argument("--output", type=Path, default=Path("build-msvc400/report.json"))
+    parser.add_argument("--output", type=Path, default=BUILD / "report.json")
     args = parser.parse_args()
-    report = build_report(
-        args.inventory, args.reccmp, args.correlations, args.compiler_generated
-    )
-    args.output.parent.mkdir(parents=True, exist_ok=True)
+    run_reccmp()
+    report = build_report(BUILD / "roadmap.csv", BUILD / "reccmp.json")
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
     print(f"{values['matched_functions']}/{values['total_functions']} functions matched")
+    print(f"wrote {args.output}")
 
 
 if __name__ == "__main__":

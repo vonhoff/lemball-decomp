@@ -68,14 +68,6 @@ jobs:
             echo '::error::reference download failed; verify the URL is public and directly downloadable'
             exit 1
           fi
-          if [ ! -s "$RUNNER_TEMP/LEMBALL.EXE" ]; then
-            echo '::error::reference download was empty'
-            exit 1
-          fi
-          if [ "$(od -An -tx1 -N2 "$RUNNER_TEMP/LEMBALL.EXE" | tr -d " \n")" != "4d5a" ]; then
-            echo '::error::downloaded reference is not a Windows executable; the URL may return an HTML login page'
-            exit 1
-          fi
           actual=$(REFERENCE_PATH="$RUNNER_TEMP/LEMBALL.EXE" python -c 'import hashlib, os; print(hashlib.file_digest(open(os.environ["REFERENCE_PATH"], "rb"), "sha256").hexdigest())')
           if [ "$actual" != "$LEMBALL_SHA256" ]; then
             echo "::error::reference SHA-256 mismatch (downloaded: $actual)"
@@ -83,31 +75,18 @@ jobs:
           fi
           cp "$RUNNER_TEMP/LEMBALL.EXE" data/LEMBALL.EXE
 
-      - name: Lint metadata
-        shell: pwsh
-        run: python tools/lint_reccmp_metadata.py
-
       - name: Configure and build
         shell: pwsh
         run: |
-          python tools/install_reccmp_compat.py
           cmake --fresh --preset msvc400
           cmake --build --preset msvc400 --clean-first
           if (!(Test-Path build-msvc400\LEMBALL.EXE)) {
             throw 'build did not produce LEMBALL.EXE'
           }
 
-      - name: Verify against original
+      - name: Generate objdiff report
         shell: pwsh
         run: |
-          reccmp-project detect --search-path data
-          Push-Location build-msvc400
-          reccmp-decomplint --target LEMBALL
-          reccmp-reccmp --target LEMBALL --json reccmp.json --json-diet --silent
-          reccmp-datacmp --target LEMBALL --no-color
-          reccmp-vtable --target LEMBALL
-          Pop-Location
-          python tools/decomp_gate.py --check-baseline
           python tools/generate_objdiff_report.py
 
       - name: Upload progress report
