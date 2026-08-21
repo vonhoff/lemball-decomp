@@ -73,8 +73,8 @@ jobs:
             echo "::error::reference SHA-256 mismatch (downloaded: $actual)"
             exit 1
           fi
+          mkdir -p data
           cp "$RUNNER_TEMP/LEMBALL.EXE" data/LEMBALL.EXE
-
       - name: Configure and build
         shell: pwsh
         run: |
