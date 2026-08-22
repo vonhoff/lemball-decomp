@@ -7,6 +7,8 @@
 // VTABLE: LEMBALL 0x00496ca8
 class Primitive {
 public:
+	inline Primitive() {}
+
 	virtual ~Primitive(); // vtable+0x00
 };
 

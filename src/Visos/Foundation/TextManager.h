@@ -27,7 +27,6 @@ public:
 	void ResetPrimitives();
 	void UnLoadFont(unsigned long p_fontId);
 	~TextManager();
-	TextManager();
 
 private:
 	ResFont** m_fonts;              // 0x00

@@ -1,8 +1,8 @@
 #include "Zrle.h"
 
 // 68K 0x10115b92 __ct__5CZRLEFv
-// STUB: LEMBALL 0x00467ac0
-Zrle::Zrle()
+// FUNCTION: LEMBALL 0x00467ac0
+Zrle::Zrle() : m_x(0), m_y(0)
 {
 }
 

@@ -1,5 +1,7 @@
 #include "Vector.h"
 
+#include "Fixed.h"
+
 // 68K 0x10119d00 __ct__7CVectorFv
 // FUNCTION: LEMBALL 0x0041a3c0
 Vector::Vector() : m_xFixed(DEBUG_SENTINEL), m_yFixed(DEBUG_SENTINEL)
@@ -10,18 +12,14 @@ Vector::Vector() : m_xFixed(DEBUG_SENTINEL), m_yFixed(DEBUG_SENTINEL)
 // FUNCTION: LEMBALL 0x00422380
 Vector operator*(const Vector& p_vector, int p_scale)
 {
-	int y = p_vector.m_yFixed * p_scale;
-	int x = p_vector.m_xFixed * p_scale;
-	return Vector(x, y);
+	return Vector(p_vector.m_xFixed * p_scale, p_vector.m_yFixed * p_scale);
 }
 
 // 68K 0x1011c116 __pl__FRC7CVectorRC7CVector
 // FUNCTION: LEMBALL 0x0044b660
 Vector operator+(const Vector& p_left, const Vector& p_right)
 {
-	int y = p_right.m_yFixed + p_left.m_yFixed;
-	int x = p_right.m_xFixed + p_left.m_xFixed;
-	return Vector(x, y);
+	return Vector(p_left.m_xFixed + p_right.m_xFixed, p_left.m_yFixed + p_right.m_yFixed);
 }
 
 // Confirmed class-scoped globals.

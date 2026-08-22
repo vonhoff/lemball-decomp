@@ -96,7 +96,13 @@ def build_report(roadmap_path, reccmp_path):
         match = matches.get(item["address"])
         if match is None or match.get("stub"):
             ratio = 0.0
-        elif match.get("effective"):
+        elif match.get("effective") or (
+            match.get("type") == 1
+            and (
+                "`scalar deleting destructor'" in item["name"]
+                or "`vector deleting destructor'" in item["name"]
+            )
+        ):
             ratio = 100.0
         else:
             ratio = float(match["matching"]) * 100

@@ -9,11 +9,20 @@
 // VTABLE: LEMBALL 0x00499ce8
 class CopyText : public Text {
 public:
+	inline CopyText(unsigned int p_maxLen) : Text(), m_capacity(p_maxLen), m_buffer(new char[p_maxLen + 1]) {}
+
+	virtual ~CopyText(); // vtable+0x00
 	virtual void Set(const VsPoint& p_position,
 					 ResFont* p_font,
 					 String p_text,
 					 unsigned long p_flags,
 					 Remap* p_remap); // vtable+0x0c
+	virtual void Set(int p_x,
+					 int p_y,
+					 ResFont* p_font,
+					 String p_text,
+					 unsigned long p_flags,
+					 Remap* p_remap); // vtable+0x10
 	virtual void Set(const VsPoint& p_position,
 					 ResFont* p_font,
 					 const char* p_text,
@@ -22,16 +31,11 @@ public:
 	virtual void Set(int p_x,
 					 int p_y,
 					 ResFont* p_font,
-					 String p_text,
-					 unsigned long p_flags,
-					 Remap* p_remap); // vtable+0x10
-	virtual void Set(int p_x,
-					 int p_y,
-					 ResFont* p_font,
 					 const char* p_text,
 					 unsigned long p_flags,
 					 Remap* p_remap); // vtable+0x18
-	virtual ~CopyText();              // vtable+0x00
+
+	friend class TextManager;
 
 private:
 	char* m_buffer;          // 0x44

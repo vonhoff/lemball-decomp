@@ -41,6 +41,7 @@ VsRect PauseWindow::CalculateWindow()
 // 68K 0x10b0eeba __ct__12CPauseWindowFP19CReceiveWindowStateP7CPVGWnd20ePauseWindowMessages
 // STUB: LEMBALL 0x00444680
 PauseWindow::PauseWindow(ReceiveWindowState* p_arg0, PvGWnd* p_arg1, ePauseWindowMessages p_arg2)
+	: m_textManager(0x2b6, 1, 15, 0)
 {
 }
 

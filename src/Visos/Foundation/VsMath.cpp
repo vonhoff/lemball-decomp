@@ -65,45 +65,43 @@ unsigned int VsMath::SqRoot(unsigned int p_value)
 	return uLow;
 }
 
+inline int VsAbs(int p_val)
+{
+	int nPos;
+	int nNeg;
+	int* p;
+	if (p_val >= 0) {
+		p = &nPos;
+		nPos = p_val;
+	}
+	else {
+		nNeg = -p_val;
+		p = &nNeg;
+	}
+	return *p;
+}
+
 // 68K 0x107007a0 ReturnFacingDirection__Fiiii
 // FUNCTION: LEMBALL 0x00413e80
 unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY)
 {
 	int nDeltaX = (p_toX - p_fromX) << 12;
 	int nDeltaY = (p_toY - p_fromY) << 12;
-	int nPositiveTemp;
-	int nNegativeTemp;
-	int* pMagnitude;
 
-	if (nDeltaX >= 0) {
-		pMagnitude = &nPositiveTemp;
-		nPositiveTemp = nDeltaX;
-	}
-	else {
-		nNegativeTemp = -nDeltaX;
-		pMagnitude = &nNegativeTemp;
-	}
-	int nAbsX = *pMagnitude;
+	int nAbsX = VsAbs(nDeltaX);
+	int nAbsY = VsAbs(nDeltaY);
 
-	if (nDeltaY >= 0) {
-		pMagnitude = &nPositiveTemp;
-		nPositiveTemp = nDeltaY;
-	}
-	else {
-		nNegativeTemp = -nDeltaY;
-		pMagnitude = &nNegativeTemp;
-	}
-	int nAbsY = *pMagnitude;
-
-	int nFraction = ((nAbsY & 0xfff) * 0x6a0) >> 12;
+	int nLow = nAbsY & 0xfff;
+	int nHigh = nAbsY >> 12;
+	int nFraction = (nLow * 0x6a0) >> 12;
 	unsigned int nDirection;
 
-	if ((nAbsY >> 12) * 0x6a0 + nFraction > nAbsX) {
+	if (nHigh * 0x6a0 + nFraction > nAbsX) {
 		nDirection = 0;
 	}
 	else {
 		nDirection = 1;
-		if (((nAbsY >> 12) * 0x350 + nAbsY) * 2 + nFraction <= nAbsX) {
+		if ((nHigh * 0x350 + nAbsY) * 2 + nFraction <= nAbsX) {
 			nDirection = 2;
 		}
 	}

@@ -70,46 +70,40 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 	static unsigned int s_maxPowers[17];
 	static int s_powersInitialized = 0;
 
-	int r;
-	unsigned int power;
-
 	if (s_powersInitialized == 0) {
-		r = 2;
+		int r = 2;
 		do {
-			power = r;
-			unsigned int limit = 0xFFFFFFFF / (unsigned int) r;
-			if (limit >= (unsigned int) r) {
+			unsigned int pow = r;
+			unsigned int lim = 0xFFFFFFFF / (unsigned int) r;
+			if (lim >= (unsigned int) r) {
 				do {
-					power *= r;
-				} while (power <= limit);
+					pow *= r;
+				} while (pow <= lim);
 			}
-			s_maxPowers[r] = power;
+			s_maxPowers[r] = pow;
 			r++;
 		} while (r <= 16);
 		s_powersInitialized = 1;
 	}
 
-	int nonzero = 0;
+	int hasWritten = 0;
 	int written = 0;
-	int count = 0;
+	int i = 0;
 	unsigned int p = s_maxPowers[p_radix];
 
-	while (1) {
+	do {
 		unsigned int digit = p_value / p;
-		if (digit != 0 || nonzero != 0) {
+		if (digit != 0 || hasWritten != 0) {
 			p_buffer[written++] = "0123456789abcdef"[digit];
-			nonzero = 1;
+			hasWritten = 1;
 		}
-		p_value -= p * digit;
+		p_value -= digit * p;
 		p /= (unsigned int) p_radix;
 		if (p == 1) {
 			break;
 		}
-		count++;
-		if (count >= 33) {
-			break;
-		}
-	}
+		i++;
+	} while (i < 33);
 
 	p_buffer[written] = "0123456789abcdef"[p_value];
 	p_buffer[written + 1] = '\0';
