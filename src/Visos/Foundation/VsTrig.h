@@ -14,7 +14,7 @@ public:
 	VsTrig();
 
 private:
-	int m_sine[512]; // 0x00
+	Fixed m_sine[512]; // 0x00
 };
 
 // Confirmed class-scoped globals.

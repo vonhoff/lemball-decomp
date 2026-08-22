@@ -6,6 +6,10 @@ typedef unsigned short undefined2;
 typedef unsigned int undefined4;
 typedef unsigned int size_t;
 
+#define DEBUG_SENTINEL ((int) 0xaa55aa55)
+#define DEBUG_SENTINEL_WORD ((short) 0xaa55)
+#define VS_UNINITIALISED DEBUG_SENTINEL
+
 typedef int eAction;
 typedef int eBroadcastTypes;
 typedef int eCursorDisplayType;

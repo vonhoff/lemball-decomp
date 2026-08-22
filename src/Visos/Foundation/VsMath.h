@@ -3,6 +3,7 @@
 
 #include "../../AI/Base/AiCoord.h" // complete type
 #include "../../Common.h"
+#include "../../Control/Game/Game.h" // complete type
 
 class VsMath {
 public:

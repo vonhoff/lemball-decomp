@@ -2,13 +2,13 @@
 
 // 68K 0x10117fac __ct__6CFixedFv
 // STUB: LEMBALL 0x0045a9a0
-Fixed::Fixed()
+Fixed::Fixed() : m_value(DEBUG_SENTINEL)
 {
 }
 
 // 68K 0x10119ede __pl__FRC6CFixedRC6CFixed
-// STUB: LEMBALL 0x0042b9c0
+// FUNCTION: LEMBALL 0x0042b9c0
 Fixed operator+(const Fixed& p_left, const Fixed& p_right)
 {
-	return *(Fixed*) 0;
+	return Fixed(p_left.m_value + p_right.m_value);
 }

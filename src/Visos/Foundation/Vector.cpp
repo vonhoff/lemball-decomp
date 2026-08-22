@@ -1,23 +1,23 @@
 #include "Vector.h"
 
 // 68K 0x10119d00 __ct__7CVectorFv
-// STUB: LEMBALL 0x0041a3c0
-Vector::Vector()
+// FUNCTION: LEMBALL 0x0041a3c0
+Vector::Vector() : m_xFixed(DEBUG_SENTINEL), m_yFixed(DEBUG_SENTINEL)
 {
 }
 
 // 68K 0x101195da __ml__FRC7CVectori
-// STUB: LEMBALL 0x00422380
+// FUNCTION: LEMBALL 0x00422380
 Vector operator*(const Vector& p_vector, int p_scale)
 {
-	return *(Vector*) 0;
+	return Vector(p_vector.m_xFixed * p_scale, p_vector.m_yFixed * p_scale);
 }
 
 // 68K 0x1011c116 __pl__FRC7CVectorRC7CVector
-// STUB: LEMBALL 0x0044b660
+// FUNCTION: LEMBALL 0x0044b660
 Vector operator+(const Vector& p_left, const Vector& p_right)
 {
-	return *(Vector*) 0;
+	return Vector(p_left.m_xFixed + p_right.m_xFixed, p_left.m_yFixed + p_right.m_yFixed);
 }
 
 // Confirmed class-scoped globals.

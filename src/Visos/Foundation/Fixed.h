@@ -7,8 +7,8 @@
 class Fixed {
 public:
 	Fixed();
+	inline Fixed(int p_value) : m_value(p_value) {}
 
-private:
 	int m_value; // 0x00
 };
 
