@@ -1,0 +1,17 @@
+#ifndef LEMBALL_SCAFFOLD_FRONTEND_CONTROLS_GUNBUTTON_H
+#define LEMBALL_SCAFFOLD_FRONTEND_CONTROLS_GUNBUTTON_H
+
+#include "../../Common.h"
+#include "../../Visos/Graphics/GraphicButton.h" // complete type
+
+// SIZE 0x130
+// VTABLE: LEMBALL 0x00497d30 primary
+// VTABLE: LEMBALL 0x00497d08 adjusted hot-area subobject at +0x90
+class GunButton : public GraphicButton {
+public:
+	virtual void OnPressed(int p_flags);  // vtable+0xc4
+	virtual void OnReleased(int p_flags); // vtable+0xc0
+	virtual ~GunButton();                 // vtable+0x00
+};
+
+#endif

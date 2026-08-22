@@ -1,0 +1,15 @@
+#include "VsTime.h"
+
+// 68K 0x1011014a CurrentMilliTimer__Fv
+// STUB: LEMBALL 0x00462e80
+unsigned long CurrentMilliTimer()
+{
+	return 0;
+}
+
+// 68K 0x101101a6 CurrentQueueTimer__Fv
+// STUB: LEMBALL 0x00462e90
+unsigned long CurrentQueueTimer()
+{
+	return 0;
+}

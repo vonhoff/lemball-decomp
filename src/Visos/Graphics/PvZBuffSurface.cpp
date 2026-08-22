@@ -1,0 +1,44 @@
+#include "PvZBuffSurface.h"
+
+// 68K 0x1021623a __ct__15CPVZBuffSurfaceFv
+// STUB: LEMBALL 0x00466670
+PvZBuffSurface::PvZBuffSurface()
+{
+}
+
+// 68K 0x102162b2 __dt__15CPVZBuffSurfaceFv
+// STUB: LEMBALL 0x004666e0
+PvZBuffSurface::~PvZBuffSurface()
+{
+}
+
+// 68K 0x1021632c FreeZBuff__15CPVZBuffSurfaceFv
+// STUB: LEMBALL 0x00466710
+void PvZBuffSurface::FreeZBuff()
+{
+}
+
+// 68K 0x10216388 AllocateZBuff__15CPVZBuffSurfaceFv
+// STUB: LEMBALL 0x00466740
+void PvZBuffSurface::AllocateZBuff()
+{
+}
+
+// 68K 0x102164b6 EnableZBuff__15CPVZBuffSurfaceFUc
+// STUB: LEMBALL 0x00466840
+void PvZBuffSurface::EnableZBuff(unsigned char p_enabled)
+{
+}
+
+// 68K 0x1021650e ResizeZBuff__15CPVZBuffSurfaceFv
+// STUB: LEMBALL 0x00466870
+void PvZBuffSurface::ResizeZBuff()
+{
+}
+
+// 68K 0x10101386 HasZBuff__15CPVZBuffSurfaceFv
+// STUB: LEMBALL 0x00466990
+bool PvZBuffSurface::HasZBuff()
+{
+	return 0;
+}

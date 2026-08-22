@@ -1,0 +1,69 @@
+#include "IceManager.h"
+
+// 68K 0x10612448 __ct__11CIceManagerFP3CAIi
+// STUB: LEMBALL 0x0042d7a0
+IceManager::IceManager(Ai* p_arg0, int p_arg1)
+{
+}
+
+// 68K 0x106124d2 Restart__11CIceManagerFv
+// STUB: LEMBALL 0x0042d800
+void IceManager::Restart()
+{
+}
+
+// 68K 0x10612534 Initialise__11CIceManagerFi
+// STUB: LEMBALL 0x0042d830
+void IceManager::Initialise(int p_capacity)
+{
+}
+
+// 68K 0x10612672 Process__11CIceManagerFv
+// STUB: LEMBALL 0x0042dd00
+void IceManager::Process()
+{
+}
+
+// 68K 0x106126ce GetViewData__11CIceManagerFP9CViewData
+// STUB: LEMBALL 0x0042dd30
+int IceManager::GetViewData(ViewData* p_viewData)
+{
+	return 0;
+}
+
+// 68K 0x10612708 StepOn__11CIceManagerFRC7AICOORDP11CGameObject
+// STUB: LEMBALL 0x0042dd40
+bool IceManager::StepOn(const AiCoord& p_position, GameObject* p_object)
+{
+	return 0;
+}
+
+// 68K 0x1061278a Switch__11CIceManagerF9swMessagei
+// STUB: LEMBALL 0x0042dd90
+void IceManager::Switch(int p_message, int p_id)
+{
+}
+
+// 68K 0x1061281e Add__11CIceManagerFUsRC8tCoord3dRC8tCoord3diiUc
+// STUB: LEMBALL 0x0042ddf0
+void IceManager::Add(unsigned short p_id,
+					 const Coord3d& p_cornerA,
+					 const Coord3d& p_cornerB,
+					 int p_velocityX,
+					 int p_velocityY,
+					 unsigned char p_initialSwitched)
+{
+}
+
+// 68K 0x106128a4 LoadLevel__11CIceManagerFPUciUc
+// STUB: LEMBALL 0x0042dea0
+void IceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+{
+}
+
+// 68K 0x106125fe __dt__11CIceManagerFv
+// SYNTHETIC: LEMBALL 0x0042e4d0
+// IceManager::`scalar deleting destructor'
+IceManager::~IceManager()
+{
+}

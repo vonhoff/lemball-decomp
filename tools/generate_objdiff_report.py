@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
-MODULE_PREFIX = "CMakeFiles/LEMBALL.dir/src_old/"
+MODULE_PREFIX = "CMakeFiles/LEMBALL.dir/src/"
 MODULE_SUFFIX = ".obj"
 
 
@@ -28,7 +28,11 @@ def f32(value):
 
 
 def unit_name(module):
-    if module.startswith(MODULE_PREFIX):
+    if module.startswith("CMakeFiles/LEMBALL.dir/src/"):
+        module = module[len("CMakeFiles/LEMBALL.dir/src/") :]
+    elif module.startswith("CMakeFiles/LEMBALL.dir/src_old/"):
+        module = module[len("CMakeFiles/LEMBALL.dir/src_old/") :]
+    elif module.startswith(MODULE_PREFIX):
         module = module[len(MODULE_PREFIX) :]
     if module.endswith(MODULE_SUFFIX):
         module = module[: -len(MODULE_SUFFIX)]

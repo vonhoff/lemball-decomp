@@ -1,0 +1,13 @@
+#ifndef LEMBALL_SCAFFOLD_VISOS_GRAPHICS_PRIMITIVE_H
+#define LEMBALL_SCAFFOLD_VISOS_GRAPHICS_PRIMITIVE_H
+
+#include "../../Common.h"
+
+// SIZE 0x04
+// VTABLE: LEMBALL 0x00496ca8
+class Primitive {
+public:
+	virtual ~Primitive(); // vtable+0x00
+};
+
+#endif

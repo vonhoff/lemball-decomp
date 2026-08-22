@@ -1,0 +1,35 @@
+#ifndef LEMBALL_SCAFFOLD_AI_MANAGERS_ICEMANAGER_H
+#define LEMBALL_SCAFFOLD_AI_MANAGERS_ICEMANAGER_H
+
+#include "../../Common.h"
+#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+
+// SIZE 0x40
+// VTABLE: LEMBALL 0x00496a00
+class IceManager : public NetworkMessage {
+public:
+	IceManager(Ai* p_arg0, int p_arg1);
+	bool StepOn(const AiCoord& p_position, GameObject* p_object);
+	virtual int GetViewData(ViewData* p_viewData); // vtable+0x24
+	virtual void Process();                        // vtable+0x1c
+	virtual void Restart();                        // vtable+0x18
+	virtual ~IceManager();                         // vtable+0x14
+	void Add(unsigned short p_id,
+			 const Coord3d& p_cornerA,
+			 const Coord3d& p_cornerB,
+			 int p_velocityX,
+			 int p_velocityY,
+			 unsigned char p_initialSwitched);
+	void Initialise(int p_capacity);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void Switch(int p_message, int p_id);
+
+private:
+	unsigned int m_messageType; // 0x2c
+	int m_capacity;             // 0x30
+	int m_count;                // 0x34
+	Ice* m_ice;                 // 0x38
+	Ai* m_ai;                   // 0x3c
+};
+
+#endif

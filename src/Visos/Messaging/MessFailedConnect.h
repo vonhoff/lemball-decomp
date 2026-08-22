@@ -1,0 +1,22 @@
+#ifndef LEMBALL_SCAFFOLD_VISOS_MESSAGING_MESSFAILEDCONNECT_H
+#define LEMBALL_SCAFFOLD_VISOS_MESSAGING_MESSFAILEDCONNECT_H
+
+#include "../../Common.h"
+#include "BroadcastMessage.h" // complete type
+
+// SIZE 0x34
+// VTABLE: LEMBALL 0x00498f18
+class MessFailedConnect : public BroadcastMessage {
+public:
+	MessFailedConnect(const char* p_arg0);
+	void AddData();
+	void GetData();
+	~MessFailedConnect();
+
+private:
+	char* m_failureReason; // 0x30
+};
+
+// Confirmed class-scoped globals.
+extern MessFailedConnect* g_pMessFAILEDConnect;
+#endif
