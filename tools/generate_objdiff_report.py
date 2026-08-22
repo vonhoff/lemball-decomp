@@ -111,7 +111,12 @@ def build_report(roadmap_path, reccmp_path):
     groups = defaultdict(list)
     for item in load_inventory(roadmap_path):
         match = matches.get(item["address"])
-        ratio = 0.0 if match is None or match.get("stub") else float(match["matching"]) * 100
+        if match is None or match.get("stub"):
+            ratio = 0.0
+        elif match.get("effective"):
+            ratio = 100.0
+        else:
+            ratio = float(match["matching"]) * 100
         groups[unit_name(item["module"])].append(
             {
                 "name": item["name"],
