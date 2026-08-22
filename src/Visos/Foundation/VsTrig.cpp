@@ -1,14 +1,32 @@
 #include "VsTrig.h"
 
-#include <stdlib.h>
-
-#pragma intrinsic(abs)
-
 // 68K 0x10119dcc Rotate__6VSTrigCF7CVectorR6CFixedR6CFixed
-// STUB: LEMBALL 0x0041a3e0
+// FUNCTION: LEMBALL 0x0041a3e0
 Vector VsTrig::Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos)
 {
-	return *(Vector*) 0;
+	int sin = p_sin.m_value;
+	int negSin = -sin;
+	int x = p_vector.m_xFixed;
+	int y = p_vector.m_yFixed;
+	int cos = p_cos.m_value;
+
+	int cosLo = cos & 0xfff;
+	int yLo = y & 0xfff;
+	int yHi = y >> 12;
+	int xLo = x & 0xfff;
+	int xHi = x >> 12;
+	int cosHi = cos >> 12;
+	int sinHi = sin >> 12;
+	int sinLo = sin & 0xfff;
+
+	int resX =
+		((sinLo * yLo) >> 12) + (sinHi * yLo) + ((cosLo * xLo) >> 12) + (xLo * cosHi) + (yHi * sin) + (xHi * cos);
+	int negSinHi = negSin >> 12;
+	int negSinLo = negSin & 0xfff;
+	int resY = ((cosLo * yLo) >> 12) + ((negSinLo * xLo) >> 12) + (negSinHi * xLo) + (yLo * cosHi) + (negSin * xHi) +
+			   (yHi * cos);
+
+	return Vector(resY, resX);
 }
 
 // 68K 0x10119f6e Sin__6VSTrigCFi
@@ -16,17 +34,20 @@ Vector VsTrig::Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos)
 Fixed VsTrig::Sin(int p_angle)
 {
 	if (p_angle < 0) {
-		int angle = -p_angle;
-		return Fixed(-m_sine[abs(angle) & 0x1ff].m_value);
+		return Fixed(-m_sine[(-p_angle) % 512].m_value);
 	}
-	return Fixed(m_sine[abs(p_angle) & 0x1ff].m_value);
+	return Fixed(m_sine[p_angle % 512].m_value);
 }
 
 // 68K 0x10119f28 Cos__6VSTrigCFi
 // FUNCTION: LEMBALL 0x0044b6f0
 Fixed VsTrig::Cos(int p_angle)
 {
-	return Sin(p_angle + 128);
+	p_angle += 128;
+	if (p_angle < 0) {
+		return Fixed(-m_sine[(-p_angle) % 512].m_value);
+	}
+	return Fixed(m_sine[p_angle % 512].m_value);
 }
 
 // 68K 0x10219096 __ct__6VSTrigFv

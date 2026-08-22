@@ -1,7 +1,7 @@
 #include "Fixed.h"
 
 // 68K 0x10117fac __ct__6CFixedFv
-// STUB: LEMBALL 0x0045a9a0
+// FUNCTION: LEMBALL 0x0045a9a0
 Fixed::Fixed() : m_value(DEBUG_SENTINEL)
 {
 }

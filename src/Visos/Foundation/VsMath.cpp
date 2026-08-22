@@ -8,44 +8,45 @@
 // FUNCTION: LEMBALL 0x0045a9b0
 unsigned int VsMath::SqRoot(unsigned int p_value)
 {
+	register unsigned int val = p_value;
+	register unsigned int uHigh;
 	unsigned int uLow;
-	unsigned int uHigh;
 	unsigned int uMid;
 
-	if (p_value > 0x4000000) {
-		if (p_value > 0x40000000) {
-			uHigh = (p_value >> 15) + 1;
+	if (val > 0x4000000) {
+		if (val > 0x40000000) {
+			uHigh = (val >> 15) + 1;
 			uLow = 0x8000;
 		}
-		else if (p_value > 0x10000000) {
-			uHigh = (p_value >> 14) + 1;
+		else if (val > 0x10000000) {
+			uHigh = (val >> 14) + 1;
 			uLow = 0x4000;
 		}
 		else {
-			uHigh = (p_value >> 13) + 1;
+			uHigh = (val >> 13) + 1;
 			uLow = 0x2000;
 		}
 	}
-	else if (p_value > 0x4000) {
-		if (p_value > 0x1000000) {
-			uHigh = (p_value >> 12) + 1;
+	else if (val > 0x4000) {
+		if (val > 0x1000000) {
+			uHigh = (val >> 12) + 1;
 			uLow = 0x1000;
 		}
-		else if (p_value > 0x100000) {
-			uHigh = (p_value >> 10) + 1;
+		else if (val > 0x100000) {
+			uHigh = (val >> 10) + 1;
 			uLow = 0x400;
 		}
 		else {
-			uHigh = (p_value >> 7) + 1;
+			uHigh = (val >> 7) + 1;
 			uLow = 0x80;
 		}
 	}
-	else if (p_value > 0x100) {
-		uHigh = (p_value >> 4) + 1;
+	else if (val > 0x100) {
+		uHigh = (val >> 4) + 1;
 		uLow = 0x10;
 	}
 	else {
-		uHigh = p_value + 1;
+		uHigh = val + 1;
 		uLow = 0;
 	}
 
@@ -55,7 +56,7 @@ unsigned int VsMath::SqRoot(unsigned int p_value)
 
 	while (uLow - uHigh != (unsigned int) -1) {
 		uMid = (uLow + uHigh) >> 1;
-		if (uMid * uMid <= p_value) {
+		if (uMid * uMid <= val) {
 			uLow = uMid;
 		}
 		else {
@@ -158,15 +159,11 @@ int Direction(int p_arg0, int p_arg1, int p_arg2, int p_arg3)
 // FUNCTION: LEMBALL 0x0044c1e0
 int Sgn(int p_value)
 {
-	int sgn;
 	if (p_value == 0) {
-		sgn = 0;
+		return 0;
 	}
-	else if (p_value < 0) {
-		sgn = -1;
+	if (p_value < 0) {
+		return -1;
 	}
-	else {
-		sgn = 1;
-	}
-	return sgn;
+	return 1;
 }

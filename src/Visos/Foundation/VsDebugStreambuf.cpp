@@ -40,25 +40,27 @@ void VsDebugStreambuf::Flush()
 // FUNCTION: LEMBALL 0x0045ae10
 int VsDebugStreambuf::Sputc(char p_c)
 {
-	if (p_c == '\t') {
+	switch (p_c) {
+	case '\t':
 		*m_cursor++ = ' ';
 		*m_cursor = '\0';
 		m_length++;
 		if (m_capacity - m_length == 1) {
 			Flush();
 		}
-		while (m_length % m_tabWidth != 0) {
-			*m_cursor++ = ' ';
-			*m_cursor = '\0';
-			m_length++;
-			if (m_capacity - m_length == 1) {
-				Flush();
-			}
+		if ((int) m_length % (int) m_tabWidth != 0) {
+			do {
+				*m_cursor++ = ' ';
+				*m_cursor = '\0';
+				m_length++;
+				if (m_capacity - m_length == 1) {
+					Flush();
+				}
+			} while ((int) m_length % (int) m_tabWidth != 0);
 		}
-		return m_length / m_tabWidth;
-	}
-	else if (p_c == '\n') {
-		*m_cursor = '\n';
+		break;
+	case '\n':
+		*m_cursor = p_c;
 		if (m_flushCallback != NULL) {
 			*++m_cursor = '\0';
 			m_length++;
@@ -73,26 +75,29 @@ int VsDebugStreambuf::Sputc(char p_c)
 		if (m_capacity - m_length == 1) {
 			Flush();
 		}
-	}
-	else {
+		break;
+	default:
 		*m_cursor++ = p_c;
 		*m_cursor = '\0';
 		m_length++;
 		if (m_capacity - m_length == 1) {
 			Flush();
-			return 0;
 		}
+		break;
 	}
 	return m_length;
 }
+
+#pragma intrinsic(strlen)
 
 // 68K 0x1021466a sputs__17CVSDebugStreambufFPc
 // FUNCTION: LEMBALL 0x0045af20
 void VsDebugStreambuf::Sputs(char* p_text)
 {
 	int len = strlen(p_text);
-	for (int i = 0; i < len; ++i) {
-		Sputc(p_text[i]);
+	while (len > 0) {
+		Sputc(*p_text++);
+		len--;
 	}
 }
 

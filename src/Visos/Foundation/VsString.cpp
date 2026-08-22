@@ -3,39 +3,52 @@
 #include <ctype.h>
 #include <string.h>
 
+#pragma intrinsic(strlen)
+
 // 68K 0x107001ea StrCmpI__FPCcPCci
 // FUNCTION: LEMBALL 0x00406790
 int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 {
 	int len1 = strlen(p_left);
+	int len2 = strlen(p_right);
 	if (len1 > p_maxLength) {
 		len1 = p_maxLength;
 	}
-
-	int len2 = strlen(p_right);
 	if (len2 > p_maxLength) {
 		len2 = p_maxLength;
 	}
 
-	if (len1 != len2) {
+	if (len2 != len1) {
 		return -1;
 	}
 
-	int n = p_maxLength;
-	if (len1 < n) {
-		n = len1;
+	if (len1 < p_maxLength) {
+		p_maxLength = len1;
 	}
-	if (len2 < n) {
-		n = len2;
+	if (len2 < p_maxLength) {
+		p_maxLength = len2;
 	}
 
-	for (; n > 0; --n, ++p_left, ++p_right) {
-		char c1 = toupper((unsigned char) *p_left);
-		char c2 = toupper((unsigned char) *p_right);
-		if (c1 != c2) {
-			return (int) c1 - (int) c2;
-		}
+	if (p_maxLength == 0) {
+		return 0;
 	}
+
+	do {
+		int c1 = *p_left;
+		if (islower(c1)) {
+			c1 = toupper(c1);
+		}
+		int c2 = *p_right;
+		if (islower(c2)) {
+			c2 = toupper(c2);
+		}
+		if (c1 != c2) {
+			return c1 - c2;
+		}
+		p_left++;
+		p_right++;
+	} while (--p_maxLength != 0);
+
 	return 0;
 }
 
@@ -60,15 +73,14 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 	if (s_powersInitialized == 0) {
 		int r = 2;
 		do {
-			unsigned int limit = 0xFFFFFFFF / (unsigned int) r;
 			unsigned int power = r;
-			if (r <= limit) {
+			unsigned int limit = 0xFFFFFFFF / (unsigned int) r;
+			if (limit >= (unsigned int) r) {
 				do {
 					power *= r;
 				} while (power <= limit);
 			}
-			s_maxPowers[r] = power;
-			r++;
+			s_maxPowers[r++] = power;
 		} while (r <= 16);
 		s_powersInitialized = 1;
 	}
@@ -77,18 +89,18 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 	int written = 0;
 	int count = 0;
 	unsigned int p = s_maxPowers[p_radix];
-	unsigned int val = p_value;
+
 	do {
-		unsigned int digit = val / p;
+		unsigned int digit = p_value / p;
 		if (digit != 0 || nonzero != 0) {
 			p_buffer[written++] = "0123456789abcdef"[digit];
 			nonzero = 1;
 		}
-		val -= p * digit;
-		p /= p_radix;
-	} while (p != 1 && (++count < 33));
+		p_value -= p * digit;
+		p /= (unsigned int) p_radix;
+	} while (p != 1 && ++count < 33);
 
-	p_buffer[written] = "0123456789abcdef"[val];
+	p_buffer[written] = "0123456789abcdef"[p_value];
 	p_buffer[written + 1] = '\0';
 	return p_buffer;
 }
