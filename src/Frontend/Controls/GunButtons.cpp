@@ -57,4 +57,4 @@ GunButtons::~GunButtons()
 }
 
 // GLOBAL: LEMBALL 0x0049fa68
-int g_nGunButtonsRedrawPending;
+int g_nGunButtonsRedrawPending = 0;

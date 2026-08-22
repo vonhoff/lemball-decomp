@@ -631,13 +631,13 @@ GameObject* g_pObjects[256];
 word g_wObjectCount;
 
 // GLOBAL: LEMBALL 0x0049d108
-unsigned char g_abBitMasks[8];
+unsigned char g_abBitMasks[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
 // GLOBAL: LEMBALL 0x0049cf4c
-word g_wNetworkLemmingIndex;
+word g_wNetworkLemmingIndex = 0;
 
 // GLOBAL: LEMBALL 0x0049cf50
-word g_wLocalLemmingIndex;
+word g_wLocalLemmingIndex = 0;
 
 // GLOBAL: LEMBALL 0x004a640c
 word g_wLemmingCount;

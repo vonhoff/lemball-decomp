@@ -70,4 +70,4 @@ int Demo::ProcessMsg(Message* p_message)
 }
 
 // GLOBAL: LEMBALL 0x004a62a4
-int g_nDemoMode;
+int g_nDemoMode = 0;

@@ -57,28 +57,28 @@ BaseFrontendProcess::~BaseFrontendProcess()
 }
 
 // GLOBAL: LEMBALL 0x0049ca30
-int g_nTestAllLevels;
+int g_nTestAllLevels = 0;
 
 // GLOBAL: LEMBALL 0x0049f4f0
-int g_nFrontendAutoFlowToggle;
+int g_nFrontendAutoFlowToggle = 1;
 
 // GLOBAL: LEMBALL 0x004a6284
-int g_nAnimationsDisabled;
+int g_nAnimationsDisabled = 0;
 
 // GLOBAL: LEMBALL 0x004a6288
-int g_nZoomEnabled;
+int g_nZoomEnabled = 0;
 
 // GLOBAL: LEMBALL 0x004a628c
-int g_nMusicAvailable;
+int g_nMusicAvailable = 0;
 
 // GLOBAL: LEMBALL 0x004a6290
-int g_nEffectsAvailable;
+int g_nEffectsAvailable = 0;
 
 // GLOBAL: LEMBALL 0x004a6294
-int g_nAnimationsAvailable;
+int g_nAnimationsAvailable = 0;
 
 // GLOBAL: LEMBALL 0x004a6298
-int g_nZoomAvailable;
+int g_nZoomAvailable = 0;
 
 // GLOBAL: LEMBALL 0x004a6300
-int g_nDisplayMode;
+int g_nDisplayMode = 0;

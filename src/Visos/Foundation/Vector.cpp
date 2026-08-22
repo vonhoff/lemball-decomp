@@ -23,4 +23,8 @@ Vector operator+(const Vector& p_left, const Vector& p_right)
 }
 
 // GLOBAL: LEMBALL 0x0049e0d0
-Vector g_aFormationTemplates[24];
+Vector g_aFormationTemplates[24] = {
+	Vector(0, 0),    Vector(-16, 0),   Vector(-32, 0),   Vector(-48, 0),   Vector(-64, 0),  Vector(-80, 0),
+	Vector(-96, 0),  Vector(-112, 0),  Vector(0, 0),     Vector(-24, -16), Vector(-24, 16), Vector(-48, -32),
+	Vector(-48, 32), Vector(-72, -48), Vector(-72, 48),  Vector(-96, -64), Vector(0, 0),    Vector(-24, -24),
+	Vector(-24, 0),  Vector(-24, 24),  Vector(-48, -48), Vector(-48, -24), Vector(-48, 0),  Vector(-48, 24)};

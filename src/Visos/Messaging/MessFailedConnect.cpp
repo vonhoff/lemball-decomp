@@ -26,4 +26,4 @@ MessFailedConnect::~MessFailedConnect()
 }
 
 // GLOBAL: LEMBALL 0x004a1e60
-MessFailedConnect* g_pMessFAILEDConnect;
+MessFailedConnect* g_pMessFAILEDConnect = 0;

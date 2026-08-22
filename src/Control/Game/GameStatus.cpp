@@ -120,7 +120,7 @@ int GameStatus::Level()
 }
 
 // GLOBAL: LEMBALL 0x0049cb68
-GameStatus* g_pGameStatus;
+GameStatus* g_pGameStatus = 0;
 
 // GLOBAL: LEMBALL 0x0049cb70
 int g_anPasswordPermutation[8] = {2, 0, 7, 4, 6, 1, 5, 3};

@@ -89,10 +89,10 @@ FileNetwork::~FileNetwork()
 }
 
 // GLOBAL: LEMBALL 0x004a2260
-unsigned int g_dwFileNetworkThreadId;
+unsigned int g_dwFileNetworkThreadId = 0x12345678;
 
 // GLOBAL: LEMBALL 0x004a2264
-void* g_hFileNetworkThread;
+void* g_hFileNetworkThread = 0;
 
 // GLOBAL: LEMBALL 0x004a2de4
-void* g_pFileBroadcastData;
+void* g_pFileBroadcastData = 0;

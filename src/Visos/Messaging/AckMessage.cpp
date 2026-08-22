@@ -20,4 +20,4 @@ AckMessage::~AckMessage()
 }
 
 // GLOBAL: LEMBALL 0x004a1e14
-AckMessage* g_pAckMessage;
+AckMessage* g_pAckMessage = 0;

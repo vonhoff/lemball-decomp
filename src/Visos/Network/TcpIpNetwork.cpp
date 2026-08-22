@@ -61,31 +61,31 @@ TcpIpNetwork::~TcpIpNetwork()
 }
 
 // GLOBAL: LEMBALL 0x004a23b0
-unsigned int g_dwTCPIPNetworkThreadId;
+unsigned int g_dwTCPIPNetworkThreadId = 0x12345678;
 
 // GLOBAL: LEMBALL 0x004a23b4
-void* g_hTCPIPNetworkThread;
+void* g_hTCPIPNetworkThread = 0;
 
 // GLOBAL: LEMBALL 0x004a1e24
-unsigned int g_networkPacketSize;
+unsigned int g_networkPacketSize = 0;
 
 // GLOBAL: LEMBALL 0x004a1e28
-BasePacketHeader* g_pNetworkPacketScratch;
+BasePacketHeader* g_pNetworkPacketScratch = 0;
 
 // GLOBAL: LEMBALL 0x004a1e2c
-unsigned int g_receivedPacketSize;
+unsigned int g_receivedPacketSize = 0;
 
 // GLOBAL: LEMBALL 0x004a1e34
-unsigned char* g_pBroadcastPacketTemplate;
+unsigned char* g_pBroadcastPacketTemplate = 0;
 
 // GLOBAL: LEMBALL 0x004a1e38
-char* g_szBroadcastPeerName;
+char* g_szBroadcastPeerName = 0;
 
 // GLOBAL: LEMBALL 0x004a1e3c
-unsigned int g_broadcastPayloadLength;
+unsigned int g_broadcastPayloadLength = 0;
 
 // GLOBAL: LEMBALL 0x004a1e48
-unsigned short g_broadcastPort;
+unsigned short g_broadcastPort = 0;
 
 // GLOBAL: LEMBALL 0x004a1e4c
-int g_lastNetworkError;
+int g_lastNetworkError = 0;

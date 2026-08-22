@@ -26,4 +26,4 @@ MessOkConnect::~MessOkConnect()
 }
 
 // GLOBAL: LEMBALL 0x004a1e58
-MessOkConnect* g_pMessOKConnect;
+MessOkConnect* g_pMessOKConnect = 0;

@@ -30,7 +30,7 @@ bool SmallMemory::Free(unsigned char* p_memory)
 SmallMemory* g_pSmallMemory;
 
 // GLOBAL: LEMBALL 0x004a217c
-int g_nSmallMemoryEnabled;
+int g_nSmallMemoryEnabled = 1;
 
 // GLOBAL: LEMBALL 0x004a2180
-void* g_pMasterArenaMemory;
+void* g_pMasterArenaMemory = 0;

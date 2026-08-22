@@ -179,13 +179,13 @@ BaseFrontendDrawer::~BaseFrontendDrawer()
 }
 
 // GLOBAL: LEMBALL 0x0049f628
-int g_nPendingEffectsVolume;
+int g_nPendingEffectsVolume = 100;
 
 // GLOBAL: LEMBALL 0x0049f62c
-int g_nPendingMusicVolume;
+int g_nPendingMusicVolume = 100;
 
 // GLOBAL: LEMBALL 0x004a6278
-int g_nMusicVolume;
+int g_nMusicVolume = 0;
 
 // GLOBAL: LEMBALL 0x004a627c
-int g_nEffectsVolume;
+int g_nEffectsVolume = 0;

@@ -53,4 +53,4 @@ GodManager::~GodManager()
 }
 
 // GLOBAL: LEMBALL 0x0049cf30
-GodManager* g_pGodManager;
+GodManager* g_pGodManager = 0;

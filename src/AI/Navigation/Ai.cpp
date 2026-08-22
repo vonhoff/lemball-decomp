@@ -320,4 +320,4 @@ Ai* g_pGenericGroupAI;
 Ai* g_pAI;
 
 // GLOBAL: LEMBALL 0x0049cf34
-Ai* g_pActiveAI;
+Ai* g_pActiveAI = 0;

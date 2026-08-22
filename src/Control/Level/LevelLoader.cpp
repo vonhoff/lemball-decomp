@@ -47,16 +47,16 @@ unsigned int LevelLoader::CalcLevelId(eSkill p_skill, int p_level)
 }
 
 // GLOBAL: LEMBALL 0x004a6304
-int g_nEditLevelMode;
+int g_nEditLevelMode = 0;
 
 // GLOBAL: LEMBALL 0x004a6308
-int g_nPlayLevelMode;
+int g_nPlayLevelMode = 0;
 
 // GLOBAL: LEMBALL 0x004a6314
-char g_szCommandLineLevelFile[232];
+char g_szCommandLineLevelFile[232] = {0};
 
 // GLOBAL: LEMBALL 0x004a63fc
-char* g_pActiveLevelFile;
+char* g_pActiveLevelFile = 0;
 
 // GLOBAL: LEMBALL 0x004a6400
 void* g_pLevelFileData;

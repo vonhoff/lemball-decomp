@@ -171,4 +171,4 @@ void BaseNetwork::WaitProcess()
 }
 
 // GLOBAL: LEMBALL 0x004a1e18
-BaseNetwork* g_pBaseNetwork;
+BaseNetwork* g_pBaseNetwork = 0;

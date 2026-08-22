@@ -88,4 +88,4 @@ void Connect::ConnectSetup()
 }
 
 // GLOBAL: LEMBALL 0x004a011c
-Connect* g_pActiveConnection;
+Connect* g_pActiveConnection = 0;

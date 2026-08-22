@@ -26,4 +26,4 @@ MessReqNewPort::~MessReqNewPort()
 }
 
 // GLOBAL: LEMBALL 0x004a1e54
-MessReqNewPort* g_pMessReqNewPort;
+MessReqNewPort* g_pMessReqNewPort = 0;

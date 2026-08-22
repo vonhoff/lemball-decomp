@@ -30,4 +30,4 @@ MessReqConnect::~MessReqConnect()
 }
 
 // GLOBAL: LEMBALL 0x004a1e50
-MessReqConnect* g_pMessReqConnect;
+MessReqConnect* g_pMessReqConnect = 0;

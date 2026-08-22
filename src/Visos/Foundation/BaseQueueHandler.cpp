@@ -28,7 +28,7 @@ VsOStream& BaseQueueHandler::StreamOut(VsOStream& p_stream)
 }
 
 // GLOBAL: LEMBALL 0x004a1e1c
-BaseQueueHandler* g_pNetworkStatusQueue;
+BaseQueueHandler* g_pNetworkStatusQueue = 0;
 
 // GLOBAL: LEMBALL 0x004a1e20
-BaseQueueHandler* g_pNetworkPacketQueue;
+BaseQueueHandler* g_pNetworkPacketQueue = 0;

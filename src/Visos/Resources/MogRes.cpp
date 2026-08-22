@@ -102,7 +102,7 @@ void MogRes::DeallocateMem(unsigned char* p_data, unsigned char p_owned)
 }
 
 // GLOBAL: LEMBALL 0x004a1d58
-MogRes* g_pMogRes;
+MogRes* g_pMogRes = 0;
 
 // GLOBAL: LEMBALL 0x004a1d5c
-MogRes* g_pActiveMogRes;
+MogRes* g_pActiveMogRes = 0;

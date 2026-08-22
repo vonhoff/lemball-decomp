@@ -30,4 +30,4 @@ void BasePalManager::UnRegisterRemap(BaseRemap* p_remap)
 }
 
 // GLOBAL: LEMBALL 0x004a2000
-BasePalManager* g_pBasePalManager;
+BasePalManager* g_pBasePalManager = 0;

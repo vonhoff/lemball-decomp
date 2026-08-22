@@ -102,43 +102,43 @@ void Map::CalculateCliff()
 Map* g_pMap;
 
 // GLOBAL: LEMBALL 0x0049e4e8
-unsigned short g_wDefaultBloxLimit0206;
+unsigned short g_wDefaultBloxLimit0206 = 0;
 
 // GLOBAL: LEMBALL 0x0049e4ec
-unsigned short g_wDefaultBloxLimit0207;
+unsigned short g_wDefaultBloxLimit0207 = 0;
 
 // GLOBAL: LEMBALL 0x0049e4f0
-unsigned short g_wDefaultBloxLimit0208;
+unsigned short g_wDefaultBloxLimit0208 = 0;
 
 // GLOBAL: LEMBALL 0x0049e4f4
-unsigned short g_wDefaultBloxLimit0209;
+unsigned short g_wDefaultBloxLimit0209 = 0;
 
 // GLOBAL: LEMBALL 0x0049e4f8
-unsigned short g_wDefaultBloxLimit020A;
+unsigned short g_wDefaultBloxLimit020A = 0;
 
 // GLOBAL: LEMBALL 0x0049e4fc
-unsigned short g_wDefaultBloxLimit020B;
+unsigned short g_wDefaultBloxLimit020B = 0;
 
 // GLOBAL: LEMBALL 0x0049e500
-unsigned short g_wDefaultBloxLimit020C;
+unsigned short g_wDefaultBloxLimit020C = 0;
 
 // GLOBAL: LEMBALL 0x0049e504
-unsigned short g_wDefaultBloxLimit020D;
+unsigned short g_wDefaultBloxLimit020D = 0;
 
 // GLOBAL: LEMBALL 0x0049e51c
-unsigned short g_wDefaultBloxLimit020E;
+unsigned short g_wDefaultBloxLimit020E = 0;
 
 // GLOBAL: LEMBALL 0x0049e520
-unsigned short g_wDefaultBloxLimit020F;
+unsigned short g_wDefaultBloxLimit020F = 0;
 
 // GLOBAL: LEMBALL 0x0049e528
-unsigned short g_wDefaultBloxLimit0214;
+unsigned short g_wDefaultBloxLimit0214 = 0;
 
 // GLOBAL: LEMBALL 0x0049e534
-unsigned short g_wDefaultBloxLimit0210;
+unsigned short g_wDefaultBloxLimit0210 = 0;
 
 // GLOBAL: LEMBALL 0x0049e538
-unsigned short g_wDefaultBloxLimit0202;
+unsigned short g_wDefaultBloxLimit0202 = 0;
 
 // GLOBAL: LEMBALL 0x0049e544
-unsigned short g_wDefaultBloxLimit0217;
+unsigned short g_wDefaultBloxLimit0217 = 1;

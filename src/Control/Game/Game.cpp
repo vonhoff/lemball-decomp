@@ -78,7 +78,7 @@ void Game::Run()
 }
 
 // GLOBAL: LEMBALL 0x004a1bcc
-int* g_pSentinel;
+int* g_pSentinel = 0;
 
 // GLOBAL: LEMBALL 0x0049ce04
-unsigned int g_dwGameTick;
+unsigned int g_dwGameTick = 0;

@@ -83,4 +83,4 @@ void Maze::BSolution(int& p_count, Solution* p_solution)
 }
 
 // GLOBAL: LEMBALL 0x0049cf58
-Maze* g_pMaze;
+Maze* g_pMaze = 0;
