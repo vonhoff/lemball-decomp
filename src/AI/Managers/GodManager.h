@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_MANAGERS_GODMANAGER_H
-#define LEMBALL_SCAFFOLD_AI_MANAGERS_GODMANAGER_H
+#ifndef LEMBALL_AI_MANAGERS_GODMANAGER_H
+#define LEMBALL_AI_MANAGERS_GODMANAGER_H
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type

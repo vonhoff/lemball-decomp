@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_BASE_MOVE3D_H
-#define LEMBALL_SCAFFOLD_AI_BASE_MOVE3D_H
+#ifndef LEMBALL_AI_BASE_MOVE3D_H
+#define LEMBALL_AI_BASE_MOVE3D_H
 
 #include "../../Common.h"
 #include "Pt3.h" // complete type

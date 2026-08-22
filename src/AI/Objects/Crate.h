@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_CRATE_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_CRATE_H
+#ifndef LEMBALL_AI_OBJECTS_CRATE_H
+#define LEMBALL_AI_OBJECTS_CRATE_H
 
 #include "../../Common.h"
 #include "../Base/AiCoord.h"          // complete type

@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_DUPLICATOR_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_DUPLICATOR_H
+#ifndef LEMBALL_AI_OBJECTS_DUPLICATOR_H
+#define LEMBALL_AI_OBJECTS_DUPLICATOR_H
 
 #include "../../Common.h"
 #include "../Base/AiCoord.h"          // complete type

@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_TRAMPOLINE_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_TRAMPOLINE_H
+#ifndef LEMBALL_AI_OBJECTS_TRAMPOLINE_H
+#define LEMBALL_AI_OBJECTS_TRAMPOLINE_H
 
 #include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type

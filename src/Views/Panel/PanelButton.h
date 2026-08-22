@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VIEWS_PANEL_PANELBUTTON_H
-#define LEMBALL_SCAFFOLD_VIEWS_PANEL_PANELBUTTON_H
+#ifndef LEMBALL_VIEWS_PANEL_PANELBUTTON_H
+#define LEMBALL_VIEWS_PANEL_PANELBUTTON_H
 
 #include "../../Common.h"
 #include "../../Visos/Animation/Anim.h"           // complete type

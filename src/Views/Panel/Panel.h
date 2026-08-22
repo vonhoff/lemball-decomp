@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VIEWS_PANEL_PANEL_H
-#define LEMBALL_SCAFFOLD_VIEWS_PANEL_PANEL_H
+#ifndef LEMBALL_VIEWS_PANEL_PANEL_H
+#define LEMBALL_VIEWS_PANEL_PANEL_H
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type

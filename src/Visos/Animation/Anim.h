@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_ANIMATION_ANIM_H
-#define LEMBALL_SCAFFOLD_VISOS_ANIMATION_ANIM_H
+#ifndef LEMBALL_VISOS_ANIMATION_ANIM_H
+#define LEMBALL_VISOS_ANIMATION_ANIM_H
 
 #include "../../Common.h"
 #include "../Graphics/Zrle.h" // complete type

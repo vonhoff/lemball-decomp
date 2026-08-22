@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_HAND_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_HAND_H
+#ifndef LEMBALL_AI_OBJECTS_HAND_H
+#define LEMBALL_AI_OBJECTS_HAND_H
 
 #include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type

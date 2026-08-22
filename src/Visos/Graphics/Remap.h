@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_GRAPHICS_REMAP_H
-#define LEMBALL_SCAFFOLD_VISOS_GRAPHICS_REMAP_H
+#ifndef LEMBALL_VISOS_GRAPHICS_REMAP_H
+#define LEMBALL_VISOS_GRAPHICS_REMAP_H
 
 #include "../../Common.h"
 #include "BaseRemap.h" // complete type

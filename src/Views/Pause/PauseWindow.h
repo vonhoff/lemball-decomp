@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VIEWS_PAUSE_PAUSEWINDOW_H
-#define LEMBALL_SCAFFOLD_VIEWS_PAUSE_PAUSEWINDOW_H
+#ifndef LEMBALL_VIEWS_PAUSE_PAUSEWINDOW_H
+#define LEMBALL_VIEWS_PAUSE_PAUSEWINDOW_H
 
 #include "../../Common.h"
 #include "../../Visos/Animation/Anim.h"              // complete type

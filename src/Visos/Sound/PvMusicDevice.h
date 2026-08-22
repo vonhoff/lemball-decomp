@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_SOUND_PVMUSICDEVICE_H
-#define LEMBALL_SCAFFOLD_VISOS_SOUND_PVMUSICDEVICE_H
+#ifndef LEMBALL_VISOS_SOUND_PVMUSICDEVICE_H
+#define LEMBALL_VISOS_SOUND_PVMUSICDEVICE_H
 
 #include "../../Common.h"
 #include "../Foundation/String.h" // complete type

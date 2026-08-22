@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_RESOURCES_RESBIN_H
-#define LEMBALL_SCAFFOLD_VISOS_RESOURCES_RESBIN_H
+#ifndef LEMBALL_VISOS_RESOURCES_RESBIN_H
+#define LEMBALL_VISOS_RESOURCES_RESBIN_H
 
 #include "../../Common.h"
 #include "ResBase.h" // complete type

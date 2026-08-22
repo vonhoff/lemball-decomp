@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_BONUS_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_BONUS_H
+#ifndef LEMBALL_AI_OBJECTS_BONUS_H
+#define LEMBALL_AI_OBJECTS_BONUS_H
 
 #include "../../Common.h"
 #include "Collectable.h" // complete type

@@ -1,0 +1,20 @@
+#ifndef LEMBALL_MAP_GROUND_GROUNDARRAY_H
+#define LEMBALL_MAP_GROUND_GROUNDARRAY_H
+
+#include "../../Common.h"
+
+// SIZE 0x10
+class GroundArray {
+public:
+	unsigned short GetZ(int p_x, int p_y);
+	void Clear();
+	void SetCollision(int p_x, int p_y, int p_collision);
+
+private:
+	unsigned int m_reserved; // 0x00
+	Ground* m_ground;        // 0x04
+	int m_width;             // 0x08
+	int m_height;            // 0x0c
+};
+
+#endif

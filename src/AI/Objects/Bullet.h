@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_BULLET_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_BULLET_H
+#ifndef LEMBALL_AI_OBJECTS_BULLET_H
+#define LEMBALL_AI_OBJECTS_BULLET_H
 
 #include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type

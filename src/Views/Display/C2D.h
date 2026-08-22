@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VIEWS_DISPLAY_C2D_H
-#define LEMBALL_SCAFFOLD_VIEWS_DISPLAY_C2D_H
+#ifndef LEMBALL_VIEWS_DISPLAY_C2D_H
+#define LEMBALL_VIEWS_DISPLAY_C2D_H
 
 #include "../../AI/Base/AiCoord.h" // complete type
 #include "../../Common.h"

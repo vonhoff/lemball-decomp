@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_ANIMATION_INTROANIM_H
-#define LEMBALL_SCAFFOLD_VISOS_ANIMATION_INTROANIM_H
+#ifndef LEMBALL_VISOS_ANIMATION_INTROANIM_H
+#define LEMBALL_VISOS_ANIMATION_INTROANIM_H
 
 #include "../../Common.h"
 #include "../../Frontend/Base/BaseFrontendProcess.h" // complete type

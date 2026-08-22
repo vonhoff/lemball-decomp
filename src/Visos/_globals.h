@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS__GLOBALS_H
-#define LEMBALL_SCAFFOLD_VISOS__GLOBALS_H
+#ifndef LEMBALL_VISOS__GLOBALS_H
+#define LEMBALL_VISOS__GLOBALS_H
 
 #include "../Common.h"
 #include "Messaging/BasePacketHeader.h"         // complete type

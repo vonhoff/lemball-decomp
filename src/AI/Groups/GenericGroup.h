@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_GROUPS_GENERICGROUP_H
-#define LEMBALL_SCAFFOLD_AI_GROUPS_GENERICGROUP_H
+#ifndef LEMBALL_AI_GROUPS_GENERICGROUP_H
+#define LEMBALL_AI_GROUPS_GENERICGROUP_H
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/VsRect.h" // complete type

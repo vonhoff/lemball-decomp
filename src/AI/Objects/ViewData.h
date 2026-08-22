@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_VIEWDATA_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_VIEWDATA_H
+#ifndef LEMBALL_AI_OBJECTS_VIEWDATA_H
+#define LEMBALL_AI_OBJECTS_VIEWDATA_H
 
 #include "../../Common.h"
 #include "../Base/C3DVector.h" // complete type

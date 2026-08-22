@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_FOUNDATION_PRIMS_H
-#define LEMBALL_SCAFFOLD_VISOS_FOUNDATION_PRIMS_H
+#ifndef LEMBALL_VISOS_FOUNDATION_PRIMS_H
+#define LEMBALL_VISOS_FOUNDATION_PRIMS_H
 
 #include "../../Common.h"
 #include "../../Frontend/Resources/FrontendPrimitiveRecord.h" // complete type

@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_RESOURCES_RESFONT_H
-#define LEMBALL_SCAFFOLD_VISOS_RESOURCES_RESFONT_H
+#ifndef LEMBALL_VISOS_RESOURCES_RESFONT_H
+#define LEMBALL_VISOS_RESOURCES_RESFONT_H
 
 #include "../../Common.h"
 #include "../Foundation/VsPoint.h" // complete type

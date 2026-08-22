@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_MESSAGING_HEADERS_H
-#define LEMBALL_SCAFFOLD_VISOS_MESSAGING_HEADERS_H
+#ifndef LEMBALL_VISOS_MESSAGING_HEADERS_H
+#define LEMBALL_VISOS_MESSAGING_HEADERS_H
 
 #include "../../Common.h"
 #include "NetworkMessage.h" // complete type

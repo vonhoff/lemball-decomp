@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_GRAPHICS_PVSURFACE_H
-#define LEMBALL_SCAFFOLD_VISOS_GRAPHICS_PVSURFACE_H
+#ifndef LEMBALL_VISOS_GRAPHICS_PVSURFACE_H
+#define LEMBALL_VISOS_GRAPHICS_PVSURFACE_H
 
 #include "../../Common.h"
 #include "../Foundation/VsRect.h" // complete type

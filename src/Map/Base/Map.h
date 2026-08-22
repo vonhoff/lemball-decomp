@@ -1,0 +1,42 @@
+#ifndef LEMBALL_MAP_BASE_MAP_H
+#define LEMBALL_MAP_BASE_MAP_H
+
+#include "../../Common.h"
+#include "../Ground/GroundArray.h" // complete type
+
+// SIZE 0x58
+class Map {
+public:
+	Map();
+	unsigned char GetWalk(int p_x, int p_y);
+	unsigned short GetZ(int p_x, int p_y, Mover** p_mover);
+	void CalculateCliff();
+	void CreateWalkBits();
+	void GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY);
+	void GameToScreen(int& p_x, int& p_y);
+	void LoadDefaultBlox(struct LoadDefaultBlox* p_data, unsigned long p_dataSize);
+	void LoadLevel(LoadGroundSurfaceData* p_data, unsigned long p_dataSize, unsigned char p_skip);
+	void LoadLevelName(LoadGroundName* p_data, unsigned long p_dataSize);
+	void ReSize(int p_width, int p_height);
+	void Restart();
+	void ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY);
+	void SetLevelName(char* p_name);
+	void SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data);
+	~Map();
+
+private:
+	unsigned int m_reserved;   // 0x00
+	int m_orientation;         // 0x04
+	GroundArray m_ground;      // 0x08
+	int m_walkWidth;           // 0x1c
+	int m_walkHeight;          // 0x20
+	char m_levelName[33];      // 0x24
+	unsigned char* m_walkBits; // 0x48
+	eObjectType m_defaultBlox; // 0x4c
+	int m_defaultBloxData;     // 0x50
+	Ai* m_ai;                  // 0x54
+};
+
+// Confirmed class-scoped globals.
+extern Map* g_pMap;
+#endif

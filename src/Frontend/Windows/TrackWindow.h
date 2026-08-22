@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_FRONTEND_WINDOWS_TRACKWINDOW_H
-#define LEMBALL_SCAFFOLD_FRONTEND_WINDOWS_TRACKWINDOW_H
+#ifndef LEMBALL_FRONTEND_WINDOWS_TRACKWINDOW_H
+#define LEMBALL_FRONTEND_WINDOWS_TRACKWINDOW_H
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/VsPoint.h"      // complete type

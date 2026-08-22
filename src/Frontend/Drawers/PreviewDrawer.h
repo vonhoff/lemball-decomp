@@ -1,8 +1,8 @@
-#ifndef LEMBALL_SCAFFOLD_FRONTEND_DRAWERS_PREVIEWDRAWER_H
-#define LEMBALL_SCAFFOLD_FRONTEND_DRAWERS_PREVIEWDRAWER_H
+#ifndef LEMBALL_FRONTEND_DRAWERS_PREVIEWDRAWER_H
+#define LEMBALL_FRONTEND_DRAWERS_PREVIEWDRAWER_H
 
 #include "../../Common.h"
-#include "../../Visos/PreviewDrawer_Prims.h" // complete type
+#include "PreviewDrawerPrims.h" // complete type
 
 // SIZE 0x488
 // VTABLE: LEMBALL 0x00497bf0
@@ -30,7 +30,7 @@ public:
 	void UnRegisterRemaps();
 
 private:
-	PreviewDrawer_Prims m_primitive;       // 0x398
+	PreviewDrawerPrims m_primitive;        // 0x398
 	ResBitmap* m_backgroundBitmap;         // 0x3bc
 	RepeatAnim* m_teamAnim;                // 0x3c0
 	RepeatAnim* m_lemmingAnim;             // 0x3c4

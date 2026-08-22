@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_GRAPHICS_HOTAREALIST_H
-#define LEMBALL_SCAFFOLD_VISOS_GRAPHICS_HOTAREALIST_H
+#ifndef LEMBALL_VISOS_GRAPHICS_HOTAREALIST_H
+#define LEMBALL_VISOS_GRAPHICS_HOTAREALIST_H
 
 #include "../../Common.h"
 #include "../Foundation/BaseQueueHandler.h" // complete type

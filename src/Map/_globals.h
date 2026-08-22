@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_MAP__GLOBALS_H
-#define LEMBALL_SCAFFOLD_MAP__GLOBALS_H
+#ifndef LEMBALL_MAP__GLOBALS_H
+#define LEMBALL_MAP__GLOBALS_H
 
 #include "../Common.h"
 

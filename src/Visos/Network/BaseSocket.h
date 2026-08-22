@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_NETWORK_BASESOCKET_H
-#define LEMBALL_SCAFFOLD_VISOS_NETWORK_BASESOCKET_H
+#ifndef LEMBALL_VISOS_NETWORK_BASESOCKET_H
+#define LEMBALL_VISOS_NETWORK_BASESOCKET_H
 
 #include "../../Common.h"
 #include "../Messaging/NetworkMessage.h" // complete type

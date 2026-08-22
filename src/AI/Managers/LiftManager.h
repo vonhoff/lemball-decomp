@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_MANAGERS_LIFTMANAGER_H
-#define LEMBALL_SCAFFOLD_AI_MANAGERS_LIFTMANAGER_H
+#ifndef LEMBALL_AI_MANAGERS_LIFTMANAGER_H
+#define LEMBALL_AI_MANAGERS_LIFTMANAGER_H
 
 #include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type

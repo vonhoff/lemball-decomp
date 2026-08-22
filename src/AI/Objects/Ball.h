@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_BALL_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_BALL_H
+#ifndef LEMBALL_AI_OBJECTS_BALL_H
+#define LEMBALL_AI_OBJECTS_BALL_H
 
 #include "../../Common.h"
 #include "../Base/AiCoord.h"    // complete type

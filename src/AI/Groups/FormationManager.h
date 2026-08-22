@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_GROUPS_FORMATIONMANAGER_H
-#define LEMBALL_SCAFFOLD_AI_GROUPS_FORMATIONMANAGER_H
+#ifndef LEMBALL_AI_GROUPS_FORMATIONMANAGER_H
+#define LEMBALL_AI_GROUPS_FORMATIONMANAGER_H
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/Vector.h" // complete type

@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_TRAPDOOR_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_TRAPDOOR_H
+#ifndef LEMBALL_AI_OBJECTS_TRAPDOOR_H
+#define LEMBALL_AI_OBJECTS_TRAPDOOR_H
 
 #include "../../Common.h"
 #include "../Base/BaseGlobalObject.h" // complete type

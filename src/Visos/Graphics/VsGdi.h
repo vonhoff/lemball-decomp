@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_GRAPHICS_VSGDI_H
-#define LEMBALL_SCAFFOLD_VISOS_GRAPHICS_VSGDI_H
+#ifndef LEMBALL_VISOS_GRAPHICS_VSGDI_H
+#define LEMBALL_VISOS_GRAPHICS_VSGDI_H
 
 #include "../../Common.h"
 #include "../Foundation/VsRect.h" // complete type

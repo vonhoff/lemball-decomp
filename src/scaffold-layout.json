@@ -9093,7 +9093,7 @@
       ],
       "fields": [
         [
-          "SuccFailDrawer_Prims",
+          "SuccFailDrawerPrims",
           "m_primitives",
           "0x398"
         ],
@@ -11043,7 +11043,7 @@
       ],
       "fields": [
         [
-          "PreviewDrawer_Prims",
+          "PreviewDrawerPrims",
           "m_primitive",
           "0x398"
         ],
@@ -20761,8 +20761,8 @@
       ],
       "kind": "struct"
     },
-    "PreviewDrawer_Prims": {
-      "module": "Visos",
+    "PreviewDrawerPrims": {
+      "module": "Frontend",
       "kind": "struct",
       "size": "0x24",
       "notes": [
@@ -20781,8 +20781,8 @@
         "__ct__Q214CPreviewDrawer8tagPRIMSFv": "PreviewDrawer::Prims*"
       }
     },
-    "SuccFailDrawer_Prims": {
-      "module": "Visos",
+    "SuccFailDrawerPrims": {
+      "module": "Frontend",
       "kind": "struct",
       "size": "0x48",
       "notes": [
@@ -20812,7 +20812,7 @@
     "AnimSpCmp__FPCvPCv": {
       "returnType": "int",
       "parameters": "const void* p_left, const void* p_right",
-      "file": "VsSort",
+      "file": "Foundation/VsSort",
       "module": "Visos__Generic_"
     },
     "ENEMY_GetLONG__FPUl": {
@@ -20858,58 +20858,58 @@
     "ClockEditMode__FUc": {
       "returnType": "void",
       "parameters": "unsigned char p_enabled",
-      "file": "GameTime"
+      "file": "Game/GameTime"
     },
     "ResetGameTimes__Fv": {
       "returnType": "void",
       "parameters": "",
-      "file": "GameTime"
+      "file": "Game/GameTime"
     },
     "SetGameTime__Fv": {
       "returnType": "void",
       "parameters": "",
-      "file": "GameTime"
+      "file": "Game/GameTime"
     },
     "SetRemoteGameTimeReal__FUl": {
       "returnType": "void",
       "parameters": "unsigned long p_timestamp",
-      "file": "GameTime"
+      "file": "Game/GameTime"
     },
     "MachineSoundDetect__FPP16CBaseSoundDeviceUcUcUcPUcPP14CPVMusicDevicei": {
       "returnType": "int",
       "parameters": "BaseSoundDevice** p_devices, unsigned char p_musicEnabled, unsigned char p_effectsEnabled, unsigned char p_useMusicCD, unsigned char* p_musicAvailable, PvMusicDevice** p_musicDevice, int p_deviceParameter",
-      "file": "VsSound"
+      "file": "Foundation/VsSound"
     },
     "VSPreInit__FP11tagPRE_INIT": {
       "returnType": "PreInit*",
       "parameters": "PreInit* p_preInit",
-      "file": "GameMain"
+      "file": "Game/GameMain"
     },
     "SetGameDefaults__Fv": {
       "returnType": "void",
       "parameters": "",
-      "file": "GameMain"
+      "file": "Game/GameMain"
     },
     "DisplayHelp__Fv": {
       "returnType": "void",
       "parameters": "",
-      "file": "GameMain"
+      "file": "Game/GameMain"
     },
     "StrCmpI__FPCcPCci": {
       "returnType": "int",
       "parameters": "const char* p_left, const char* p_right, int p_maxLength",
-      "file": "VsString",
+      "file": "Foundation/VsString",
       "module": "Visos__Generic_"
     },
     "DoCommandLine__FiPPc": {
       "returnType": "unsigned char",
       "parameters": "int p_argc, char** p_argv",
-      "file": "GameMain"
+      "file": "Game/GameMain"
     },
     "VSmain__FiPPc": {
       "returnType": "int",
       "parameters": "int p_argc, char** p_argv",
-      "file": "GameMain"
+      "file": "Game/GameMain"
     },
     "PackParam__Fss": {
       "returnType": "int",
@@ -20920,448 +20920,448 @@
     "ViewDataCmp__FPCvPCv": {
       "returnType": "int",
       "parameters": "const void* p_left, const void* p_right",
-      "file": "VsSort",
+      "file": "Foundation/VsSort",
       "module": "Visos__Generic_"
     },
     "GetCDDir__FPCc": {
       "returnType": "char*",
       "parameters": "const char* p_requiredFile",
-      "file": "VsFile",
+      "file": "Foundation/VsFile",
       "module": "Visos__Generic_"
     },
     "DisplayRelAssert__FPvPvUi": {
       "returnType": "void",
       "parameters": "const char* p_reason, const char* p_file, unsigned int p_line",
-      "file": "VsDebug"
+      "file": "Foundation/VsDebug"
     },
     "_VSRELassert": {
       "returnType": "void",
       "parameters": "const char* p_reason, const char* p_file, unsigned int p_line",
-      "file": "VsDebug"
+      "file": "Foundation/VsDebug"
     },
     "_VSExit__Fi": {
       "returnType": "void",
       "parameters": "int p_exitCode",
-      "file": "VsDebug"
+      "file": "Foundation/VsDebug"
     },
     "INIT_PreInit__Fv": {
       "returnType": "void",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_GDI_Init__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_GDI_Quit__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "VSFNET_Init__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "VSFNET_Quit__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "VSNET_Init__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "VSNET_Quit__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_TIME_Init__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_TIME_Quit__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_DBG_Init__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_DBG_Quit__FUc": {
       "returnType": "bool",
       "parameters": "unsigned char p_force",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_MEM_Init__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_MEM_Quit__Fv": {
       "returnType": "bool",
       "parameters": "",
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "WriteDebugString2File__FPc": {
       "returnType": "void",
       "parameters": "char* p_text",
-      "file": "VsDebug"
+      "file": "Foundation/VsDebug"
     },
     "_RAWOUT_DebugString__FPc": {
       "returnType": "bool",
       "parameters": "char* p_text",
-      "file": "VsDebug"
+      "file": "Foundation/VsDebug"
     },
     "_RAWOUT_ErrorString__FPc": {
       "returnType": "bool",
       "parameters": "char* p_text",
-      "file": "VsDebug"
+      "file": "Foundation/VsDebug"
     },
     "_RAWOUT_SysString__FPc": {
       "returnType": "bool",
       "parameters": "char* p_text",
-      "file": "VsDebug"
+      "file": "Foundation/VsDebug"
     },
     "CurrentMilliTimer__Fv": {
       "returnType": "unsigned long",
       "parameters": "",
-      "file": "VsTime"
+      "file": "Foundation/VsTime"
     },
     "CurrentQueueTimer__Fv": {
       "returnType": "unsigned long",
       "parameters": "",
-      "file": "VsTime"
+      "file": "Foundation/VsTime"
     },
     "vsOpen__FPcPc": {
       "returnType": "_Filet*",
       "parameters": "char* p_path, char* p_mode",
-      "file": "VsFile"
+      "file": "Foundation/VsFile"
     },
     "vsClose__FP6_Filet": {
       "returnType": "int",
       "parameters": "_Filet* p_file",
-      "file": "VsFile"
+      "file": "Foundation/VsFile"
     },
     "vsRead__FP6_FiletPvUl": {
       "returnType": "unsigned long",
       "parameters": "_Filet* p_file, void* p_buffer, unsigned long p_size",
-      "file": "VsFile"
+      "file": "Foundation/VsFile"
     },
     "vsWrite__FP6_FiletPvUl": {
       "returnType": "unsigned long",
       "parameters": "_Filet* p_file, void* p_buffer, unsigned long p_size",
-      "file": "VsFile"
+      "file": "Foundation/VsFile"
     },
     "vsSeek__FP6_Filetli": {
       "returnType": "long",
       "parameters": "_Filet* p_file, long p_offset, int p_origin",
-      "file": "VsFile"
+      "file": "Foundation/VsFile"
     },
     "vsTell__FP6_Filet": {
       "returnType": "long",
       "parameters": "_Filet* p_file",
-      "file": "VsFile"
+      "file": "Foundation/VsFile"
     },
     "vsGetFileSize__FP6_Filet": {
       "returnType": "long",
       "parameters": "_Filet* p_file",
-      "file": "VsFile"
+      "file": "Foundation/VsFile"
     },
     "VSQSort": {
       "returnType": "void",
       "parameters": "void* p_base, unsigned int p_count, unsigned int p_width, int (*p_compare)(const void*, const void*)",
-      "file": "VsSort"
+      "file": "Foundation/VsSort"
     },
     "shortsort": {
       "returnType": "void",
       "parameters": "unsigned char* p_low, unsigned char* p_high, unsigned int p_width, int (*p_compare)(const void*, const void*)",
-      "file": "VsSort"
+      "file": "Foundation/VsSort"
     },
     "swap": {
       "returnType": "void",
       "parameters": "unsigned char* p_first, unsigned char* p_second, unsigned int p_width",
-      "file": "VsSort"
+      "file": "Foundation/VsSort"
     },
     "INIT_SubSystems__Fv": {
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "InternalNew__FUl": {
-      "file": "VsMem",
+      "file": "Foundation/VsMem",
       "returnType": "void*"
     },
     "InternalDelete__FPv": {
-      "file": "VsMem"
+      "file": "Foundation/VsMem"
     },
     "_STRM_Init__Fv": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "bool"
     },
     "_STRM_Quit__Fv": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "bool"
     },
     "_INP_Init__Fv": {
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "_INP_Quit__Fv": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "bool"
     },
     "_STAT_Init__Fv": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "bool"
     },
     "_STAT_Quit__Fv": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "bool"
     },
     "_RES_Init__Fv": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "bool"
     },
     "_RES_Quit__Fv": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "bool"
     },
     "INIT_QuitSubSystems__Fv": {
-      "file": "VsInit"
+      "file": "Foundation/VsInit"
     },
     "INIT_CheckOptions__FPc": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "bool"
     },
     "INIT_CmdLine__FPc": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "char*"
     },
     "INIT_Main__FPc": {
-      "file": "VsInit",
+      "file": "Foundation/VsInit",
       "returnType": "int"
     },
     "__nw__FUl": {
-      "file": "VsMem"
+      "file": "Foundation/VsMem"
     },
     "__dl__FPv": {
-      "file": "VsMem"
+      "file": "Foundation/VsMem"
     },
     "StateMachine__FPP11tStateEntryP3CAIP11CGameObject": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "UserLemming__FP3CAIP11CGameObject": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "AIPlayerLemming__FP3CAIP11CGameObject": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "SheepState__FP3CAIP11CGameObject": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "EnemyState__FP3CAIP11CGameObject": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "PlayerNotFacingCursor__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "PlayerNotFacingTarget__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "PlayerRequestingFire__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "PlayerWaitingToFire__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "PlayerBored__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "EnemyNotFacingTarget__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "EnemyRequestingFire__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "EnemyWaitingToFire__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "GameOver__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "IsStuck__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "RequestDeath__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "NotFacingDestination__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "GotDestination__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "AtDestination__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "NotTimeUp__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "Flying__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "IsHit__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "IsJumping__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "IsFalling__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "QOnBalloon__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine",
+      "file": "Base/StateMachine",
       "returnType": "bool"
     },
     "PlayerTurnToFaceCursor__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "PlayerTurnToFaceTarget__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "PlayerFire__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "PlayerEndFiring__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "StartStanding__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "PlayerRandomAction__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "PlayerStopWalking__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "StartLand__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "StartSommersault__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "Land__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "StartRoute__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "SearchRoute__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "Die__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "Fly__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "StartWalking__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "StopWalking__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "Walk__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "TurnToFaceDestination__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "Hit__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "Jump__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "Fall__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "ExternalControlEnd__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "StartBalloon__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "OnBalloon__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "EnemyTurnToFaceTarget__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "EnemyStartFiring__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "EnemyFire__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "EnemyEndFiring__FP3CAIP11CGameObjectP5tInfo": {
-      "file": "StateMachine"
+      "file": "Base/StateMachine"
     },
     "_DEMO_Init__Fi": {
-      "file": "GameTime",
+      "file": "Game/GameTime",
       "returnType": "Demo*"
     },
     "_DEMO_Quit__Fv": {
-      "file": "GameTime"
+      "file": "Game/GameTime"
     },
     "InitSound__FUcUciP4CWndUc": {
-      "file": "VsSound",
+      "file": "Foundation/VsSound",
       "returnType": "bool"
     },
     "EndSound__Fv": {
-      "file": "VsSound"
+      "file": "Foundation/VsSound"
     },
     "vsLtoa__FlPci": {
-      "file": "VsString"
+      "file": "Foundation/VsString"
     },
     "vsULtoa__FUlPci": {
-      "file": "VsString",
+      "file": "Foundation/VsString",
       "returnType": "char*"
     },
     "strtol__FPcPPci": {
-      "file": "VsString",
+      "file": "Foundation/VsString",
       "returnType": "int"
     },
     "OkFailed__FUc": {
-      "file": "VsString",
+      "file": "Foundation/VsString",
       "returnType": "char*"
     },
     "CheckValidPointer__FPv": {
       "returnType": "bool",
-      "file": "VsMem",
+      "file": "Foundation/VsMem",
       "module": "Visos__Generic_"
     },
     "Direction__Fiiii": {
@@ -22069,12 +22069,10 @@
         "MainOptions2",
         "MasterInput",
         "ObjSq",
-        "PreviewDrawer::Prims",
         "Process",
         "RamArena",
         "SmallMemory",
         "String",
-        "SuccFailDrawer::Prims",
         "Text",
         "TextManager",
         "TimedQueue",
@@ -22219,7 +22217,9 @@
         "NetworkOptionsDrawer",
         "PasswordDrawer",
         "PreviewDrawer",
-        "SuccFailDrawer"
+        "SuccFailDrawer",
+        "PreviewDrawerPrims",
+        "SuccFailDrawerPrims"
       ],
       "Processes": [
         "FrontendFlow10Process",
@@ -22301,6 +22301,45 @@
         "TargetObjectClipCell",
         "TargetObjectClipGrid",
         "TargetSpriteGroundLookup"
+      ]
+    },
+    "Control": {
+      "Game": [
+        "Demo",
+        "Game",
+        "GameMain",
+        "GameStatus",
+        "GameTime"
+      ],
+      "Level": [
+        "LevelLoader",
+        "LoadBlockHeader"
+      ],
+      "Support": [
+        "PreInit",
+        "PreviewData"
+      ]
+    },
+    "Map": {
+      "Base": [
+        "Map"
+      ],
+      "Ground": [
+        "Ground",
+        "GroundArray"
+      ]
+    },
+    "Network": {
+      "Messages": [
+        "GameAcceptMessage",
+        "GameFlaggedMessage",
+        "GameRejectMessage",
+        "NetworkGameMessage"
+      ],
+      "Game": [
+        "NetworkGameStage",
+        "NetworkManager",
+        "PbNetworkGame"
       ]
     }
   },

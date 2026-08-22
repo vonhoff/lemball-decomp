@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_FRONTEND_PROCESSES_PREVIEW_H
-#define LEMBALL_SCAFFOLD_FRONTEND_PROCESSES_PREVIEW_H
+#ifndef LEMBALL_FRONTEND_PROCESSES_PREVIEW_H
+#define LEMBALL_FRONTEND_PROCESSES_PREVIEW_H
 
 #include "../../Common.h"
 #include "../Base/BaseFrontendProcess.h" // complete type

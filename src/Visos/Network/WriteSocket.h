@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_NETWORK_WRITESOCKET_H
-#define LEMBALL_SCAFFOLD_VISOS_NETWORK_WRITESOCKET_H
+#ifndef LEMBALL_VISOS_NETWORK_WRITESOCKET_H
+#define LEMBALL_VISOS_NETWORK_WRITESOCKET_H
 
 #include "../../Common.h"
 #include "../Messaging/BasePacketHeader.h" // complete type

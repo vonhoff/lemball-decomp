@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_FRONTEND_CONTROLS_GUNBUTTONS_H
-#define LEMBALL_SCAFFOLD_FRONTEND_CONTROLS_GUNBUTTONS_H
+#ifndef LEMBALL_FRONTEND_CONTROLS_GUNBUTTONS_H
+#define LEMBALL_FRONTEND_CONTROLS_GUNBUTTONS_H
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type

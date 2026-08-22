@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VIEWS_INPUT_PADTOBUTTON_H
-#define LEMBALL_SCAFFOLD_VIEWS_INPUT_PADTOBUTTON_H
+#ifndef LEMBALL_VIEWS_INPUT_PADTOBUTTON_H
+#define LEMBALL_VIEWS_INPUT_PADTOBUTTON_H
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type

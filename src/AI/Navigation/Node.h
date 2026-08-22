@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_NAVIGATION_NODE_H
-#define LEMBALL_SCAFFOLD_AI_NAVIGATION_NODE_H
+#ifndef LEMBALL_AI_NAVIGATION_NODE_H
+#define LEMBALL_AI_NAVIGATION_NODE_H
 
 #include "../../Common.h"
 #include "../Base/Pt3.h" // complete type

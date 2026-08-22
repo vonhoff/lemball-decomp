@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_NETWORK_BROADCAST_H
-#define LEMBALL_SCAFFOLD_VISOS_NETWORK_BROADCAST_H
+#ifndef LEMBALL_VISOS_NETWORK_BROADCAST_H
+#define LEMBALL_VISOS_NETWORK_BROADCAST_H
 
 #include "../../Common.h"
 #include "ReadSocket.h"  // complete type

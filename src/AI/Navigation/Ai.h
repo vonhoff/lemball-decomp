@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_NAVIGATION_AI_H
-#define LEMBALL_SCAFFOLD_AI_NAVIGATION_AI_H
+#ifndef LEMBALL_AI_NAVIGATION_AI_H
+#define LEMBALL_AI_NAVIGATION_AI_H
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type

@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_MANAGERS_DOORMANAGER_H
-#define LEMBALL_SCAFFOLD_AI_MANAGERS_DOORMANAGER_H
+#ifndef LEMBALL_AI_MANAGERS_DOORMANAGER_H
+#define LEMBALL_AI_MANAGERS_DOORMANAGER_H
 
 #include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type

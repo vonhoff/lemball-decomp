@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_SLINKY_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_SLINKY_H
+#ifndef LEMBALL_AI_OBJECTS_SLINKY_H
+#define LEMBALL_AI_OBJECTS_SLINKY_H
 
 #include "../../Common.h"
 #include "../Base/GameObject.h" // complete type

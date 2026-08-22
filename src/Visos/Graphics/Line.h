@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_GRAPHICS_LINE_H
-#define LEMBALL_SCAFFOLD_VISOS_GRAPHICS_LINE_H
+#ifndef LEMBALL_VISOS_GRAPHICS_LINE_H
+#define LEMBALL_VISOS_GRAPHICS_LINE_H
 
 #include "../../Common.h"
 #include "Primitive.h" // complete type

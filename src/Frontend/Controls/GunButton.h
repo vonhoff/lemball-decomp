@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_FRONTEND_CONTROLS_GUNBUTTON_H
-#define LEMBALL_SCAFFOLD_FRONTEND_CONTROLS_GUNBUTTON_H
+#ifndef LEMBALL_FRONTEND_CONTROLS_GUNBUTTON_H
+#define LEMBALL_FRONTEND_CONTROLS_GUNBUTTON_H
 
 #include "../../Common.h"
 #include "../../Visos/Graphics/GraphicButton.h" // complete type

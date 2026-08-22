@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_VISOS_GRAPHICS_CURSOR_H
-#define LEMBALL_SCAFFOLD_VISOS_GRAPHICS_CURSOR_H
+#ifndef LEMBALL_VISOS_GRAPHICS_CURSOR_H
+#define LEMBALL_VISOS_GRAPHICS_CURSOR_H
 
 #include "../../Common.h"
 #include "BaseCursor.h" // complete type

@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI__GLOBALS_H
-#define LEMBALL_SCAFFOLD_AI__GLOBALS_H
+#ifndef LEMBALL_AI__GLOBALS_H
+#define LEMBALL_AI__GLOBALS_H
 
 #include "../Common.h"
 #include "Base/GameObject.h" // complete type

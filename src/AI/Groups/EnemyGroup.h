@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_GROUPS_ENEMYGROUP_H
-#define LEMBALL_SCAFFOLD_AI_GROUPS_ENEMYGROUP_H
+#ifndef LEMBALL_AI_GROUPS_ENEMYGROUP_H
+#define LEMBALL_AI_GROUPS_ENEMYGROUP_H
 
 #include "../../Common.h"
 #include "GenericGroup.h" // complete type

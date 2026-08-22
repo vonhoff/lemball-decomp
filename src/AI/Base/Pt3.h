@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_BASE_PT3_H
-#define LEMBALL_SCAFFOLD_AI_BASE_PT3_H
+#ifndef LEMBALL_AI_BASE_PT3_H
+#define LEMBALL_AI_BASE_PT3_H
 
 #include "../../Common.h"
 

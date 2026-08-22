@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_GROUNDANIM_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_GROUNDANIM_H
+#ifndef LEMBALL_AI_OBJECTS_GROUNDANIM_H
+#define LEMBALL_AI_OBJECTS_GROUNDANIM_H
 
 #include "../../Common.h"
 #include "GroundAnimEntry.h" // complete type

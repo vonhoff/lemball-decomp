@@ -1,5 +1,5 @@
-#ifndef LEMBALL_SCAFFOLD_AI_OBJECTS_ENEMY_H
-#define LEMBALL_SCAFFOLD_AI_OBJECTS_ENEMY_H
+#ifndef LEMBALL_AI_OBJECTS_ENEMY_H
+#define LEMBALL_AI_OBJECTS_ENEMY_H
 
 #include "../../Common.h"
 #include "../Base/AiCoord.h"    // complete type

@@ -1,8 +1,8 @@
-#ifndef LEMBALL_SCAFFOLD_CONTROL__GLOBALS_H
-#define LEMBALL_SCAFFOLD_CONTROL__GLOBALS_H
+#ifndef LEMBALL_CONTROL__GLOBALS_H
+#define LEMBALL_CONTROL__GLOBALS_H
 
 #include "../Common.h"
-#include "PreInit.h" // complete type
+#include "Support/PreInit.h" // complete type
 
 // Confirmed module globals.
 extern unsigned int g_anFacingDirectionYFlip[8];
