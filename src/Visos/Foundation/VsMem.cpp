@@ -20,16 +20,17 @@ void InternalDelete(void* p_arg0)
 }
 
 // 68K 0x10215c5e __nw__FUl
-// STUB: LEMBALL 0x0045a780
+// FUNCTION: LEMBALL 0x0045a780
 void* operator new(size_t p_arg0)
 {
-	return 0;
+	return InternalNew(p_arg0);
 }
 
 // 68K 0x10215c7a __dl__FPv
-// STUB: LEMBALL 0x0045a790
+// FUNCTION: LEMBALL 0x0045a790
 void operator delete(void* p_arg0)
 {
+	InternalDelete(p_arg0);
 }
 
 // 68K 0x10215c96 CheckValidPointer__FPv

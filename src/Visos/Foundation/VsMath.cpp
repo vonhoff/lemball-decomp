@@ -67,14 +67,17 @@ unsigned int VsMath::SqRoot(unsigned int p_value)
 
 inline int VsAbs(int p_val)
 {
+	int t[2];
+	int* p;
 	if (p_val < 0) {
-		int nNeg = -p_val;
-		return *(int*) &nNeg;
+		t[1] = -p_val;
+		p = &t[1];
 	}
 	else {
-		int nPos = p_val;
-		return *(int*) &nPos;
+		t[0] = p_val;
+		p = &t[0];
 	}
+	return *p;
 }
 
 // 68K 0x107007a0 ReturnFacingDirection__Fiiii
@@ -87,9 +90,8 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 	int nAbsX = VsAbs(nDeltaX);
 	int nAbsY = VsAbs(nDeltaY);
 
-	int nLow = nAbsY & 0xfff;
+	int nFraction = ((nAbsY & 0xfff) * 0x6a0) >> 12;
 	int nHigh = nAbsY >> 12;
-	int nFraction = (nLow * 0x6a0) >> 12;
 	unsigned int nDirection;
 
 	if (nHigh * 0x6a0 + nFraction > nAbsX) {
@@ -117,7 +119,7 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
 {
 	int dx = abs(p_x1 - p_x2);
 	int dy = abs(p_y1 - p_y2);
-	return ((VsMath*) g_pSentinel)->SqRoot(dx * dx + dy * dy);
+	return ((VsMath*) g_pSentinel)->SqRoot(dy * dy + dx * dx);
 }
 
 // 68K 0x1060e9e6 CloseTo__F7AICOORD7AICOORD

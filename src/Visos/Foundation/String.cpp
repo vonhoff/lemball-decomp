@@ -1,4 +1,5 @@
 #include "String.h"
+#include "VsOStream.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -98,6 +99,14 @@ String String::operator+=(const char* p_text)
 	m_capacity = newCap;
 	strcpy(m_text, temp.m_text);
 	return *this;
+}
+
+// 68K 0x1020123e __ls__FR10CVSOStreamR7CString
+// FUNCTION: LEMBALL 0x0046e7f0
+VsOStream& operator<<(VsOStream& p_arg0, String& p_arg1)
+{
+	p_arg0 << p_arg1.m_text;
+	return p_arg0;
 }
 
 // 68K 0x1020127a getlength__7CStringFv

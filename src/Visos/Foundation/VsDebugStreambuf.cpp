@@ -75,15 +75,16 @@ void VsDebugStreambuf::Sputc(char p_c)
 		if (m_capacity - m_length == 1) {
 			Flush();
 		}
-		return;
+		break;
 	default:
 		*m_cursor++ = p_c;
 		*m_cursor = '\0';
 		m_length++;
 		if (m_capacity - m_length == 1) {
 			Flush();
+			return;
 		}
-		return;
+		break;
 	}
 }
 

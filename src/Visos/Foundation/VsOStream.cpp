@@ -170,14 +170,6 @@ VsOStream& operator<<(VsOStream& p_arg0, Rname p_arg1)
 	return p_arg0;
 }
 
-// 68K 0x1020123e __ls__FR10CVSOStreamR7CString
-// FUNCTION: LEMBALL 0x0046e7f0
-VsOStream& operator<<(VsOStream& p_arg0, String& p_arg1)
-{
-	p_arg0 << p_arg1.m_text;
-	return p_arg0;
-}
-
 // GLOBAL: LEMBALL 0x004a93a8
 VsOStream* g_pErrorOutput;
 
