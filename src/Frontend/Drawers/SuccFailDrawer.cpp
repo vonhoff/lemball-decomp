@@ -36,7 +36,6 @@ void SuccFailDrawer::DestroyDrawer()
 // STUB: LEMBALL 0x00450860
 void SuccFailDrawer::DrawText()
 {
-	// STRING: LEMBALL 0x0049fc88 "Password:"
 }
 
 // 68K 0x10809ac4 ProcessMessages__15CSuccFailDrawerFP10tagMESSAGE

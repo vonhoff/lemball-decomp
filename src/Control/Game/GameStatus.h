@@ -38,4 +38,5 @@ private:
 
 // Confirmed class-scoped globals.
 extern GameStatus* g_pGameStatus;
+extern int g_anPasswordPermutation[8];
 #endif

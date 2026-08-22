@@ -45,7 +45,7 @@ AiCoord GameObject::Position()
 }
 
 // 68K 0x1011893a ActivatePosition__11CGameObjectFv
-// STUB: LEMBALL 0x0040a830 FOLDED
+// Folded in original MSVC build with GameObject::Position at 0x0040a830
 AiCoord GameObject::ActivatePosition()
 {
 	return *(AiCoord*) 0;

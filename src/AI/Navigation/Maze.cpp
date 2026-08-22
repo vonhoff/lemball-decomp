@@ -69,6 +69,13 @@ bool Maze::BIteration(unsigned char& p_reached, unsigned char& p_noChanges)
 	return 0;
 }
 
+// 68K 0x10616122 Direction__Fiiii
+// FUNCTION: LEMBALL 0x00423890
+int Direction(int p_x0, int p_y0, int p_x1, int p_y1)
+{
+	return ((p_y0 - p_y1) * 3 - p_x1) + 4 + p_x0;
+}
+
 // 68K 0x1061616a BSolution__5CMazeFRiP9tSolution
 // STUB: LEMBALL 0x004238b0
 void Maze::BSolution(int& p_count, Solution* p_solution)

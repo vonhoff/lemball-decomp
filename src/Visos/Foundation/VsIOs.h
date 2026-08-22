@@ -24,5 +24,4 @@ public:
 // Confirmed class-scoped globals.
 extern char g_szCurrentDirectory[256];
 extern char g_szSourceDiskPath[256];
-extern char g_szCDRootPath[52];
 #endif

@@ -40,4 +40,6 @@ private:
 
 // Confirmed class-scoped globals.
 extern Maze* g_pMaze;
+
+int Direction(int p_x0, int p_y0, int p_x1, int p_y1);
 #endif

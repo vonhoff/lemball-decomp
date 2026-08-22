@@ -78,20 +78,8 @@ void Game::Run()
 }
 
 // Confirmed class-scoped globals.
-// GLOBAL: LEMBALL 0x0049d040
-unsigned int g_anFacingDirectionYFlip[8];
-
 // GLOBAL: LEMBALL 0x004a1bcc
 int* g_pSentinel;
 
 // GLOBAL: LEMBALL 0x0049ce04
 unsigned int g_dwGameTick;
-
-// GLOBAL: LEMBALL 0x0049cb70
-int g_anPasswordPermutation[8];
-
-// GLOBAL: LEMBALL 0x0049cb9c
-char g_szUnlockPassword[11];
-
-// GLOBAL: LEMBALL 0x0049cedc
-char g_szReadBinaryMode[3];

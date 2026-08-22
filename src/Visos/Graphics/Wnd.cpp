@@ -20,7 +20,7 @@ void Wnd::OnMaximise()
 }
 
 // 68K 0x1010489a OnMove__4CWndFv
-// STUB: LEMBALL 0x0043a4d0 FOLDED
+// Folded in original MSVC build with GWnd::OnMove at 0x0043a4d0
 void Wnd::OnMove()
 {
 }

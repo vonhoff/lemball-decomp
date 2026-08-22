@@ -82,7 +82,6 @@ char* InitCmdLine(char* p_arg0)
 int InitMain(char* p_arg0)
 {
 	// STRING: LEMBALL 0x004a1134 "Command line options:\n"
-	// STRING: LEMBALL 0x004a0f20 "paranoid"
 	// STRING: LEMBALL 0x004a114c "  Option "
 	// STRING: LEMBALL 0x004a1168 "selected\n"
 	return 0;

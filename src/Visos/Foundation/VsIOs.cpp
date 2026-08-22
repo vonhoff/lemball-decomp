@@ -28,6 +28,3 @@ char g_szCurrentDirectory[256];
 
 // GLOBAL: LEMBALL 0x004a9ff8
 char g_szSourceDiskPath[256];
-
-// GLOBAL: LEMBALL 0x004a1dd0
-char g_szCDRootPath[52];

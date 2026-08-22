@@ -17,6 +17,3 @@ int g_nTargetTextWindowActive;
 
 // GLOBAL: LEMBALL 0x004a2b8c
 int g_nTargetTextWindowCreated;
-
-// GLOBAL: LEMBALL 0x0049a4a0
-void* g_apTargetTextWindowLockVtable[2];

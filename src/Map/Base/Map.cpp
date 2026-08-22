@@ -102,9 +102,6 @@ void Map::CalculateCliff()
 // GLOBAL: LEMBALL 0x004a74b4
 Map* g_pMap;
 
-// GLOBAL: LEMBALL 0x00430fa8
-void* g_apValidateDefaultBloxDataCases[25];
-
 // GLOBAL: LEMBALL 0x0049e4e8
 unsigned short g_wDefaultBloxLimit0206;
 

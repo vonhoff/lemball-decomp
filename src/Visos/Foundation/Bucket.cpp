@@ -31,7 +31,6 @@ bool Bucket::Free(unsigned char* p_memory)
 // STUB: LEMBALL 0x00472fd0
 Boffset Bucket::FindFreeOffset(Boffset p_offset)
 {
-	// STRING: LEMBALL 0x004a2ae8 "Allocating Small Memory Child: "
 	return *(Boffset*) 0;
 }
 

@@ -8,7 +8,6 @@ GraphicButton::GraphicButton()
 // STUB: LEMBALL 0x00468530
 GraphicButton::GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3)
 {
-	// STRING: LEMBALL 0x0049f02c "Button"
 }
 
 // 68K 0x1021068c Initialise__14CGraphicButtonFv

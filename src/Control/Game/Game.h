@@ -29,10 +29,6 @@ private:
 };
 
 // Confirmed class-scoped globals.
-extern unsigned int g_anFacingDirectionYFlip[8];
 extern int* g_pSentinel;
 extern unsigned int g_dwGameTick;
-extern int g_anPasswordPermutation[8];
-extern char g_szUnlockPassword[11];
-extern char g_szReadBinaryMode[3];
 #endif

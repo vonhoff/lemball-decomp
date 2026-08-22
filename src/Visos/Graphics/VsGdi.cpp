@@ -369,9 +369,4 @@ void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 // STUB: LEMBALL 0x00478bb0
 void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, Remap* p_remap, unsigned short p_depth)
 {
-	// STRING: LEMBALL 0x004a2d90 "Warning: ZRLE is "
-	// STRING: LEMBALL 0x004a2d84 " wide and "
-	// STRING: LEMBALL 0x004a2d7c " high.\n"
-	// STRING: LEMBALL 0x004a2d68 "Clipping width to "
-	// STRING: LEMBALL 0x004a2d50 "Clipping height to "
 }

@@ -67,18 +67,14 @@ unsigned int VsMath::SqRoot(unsigned int p_value)
 
 inline int VsAbs(int p_val)
 {
-	int nPos;
-	int nNeg;
-	int* p;
-	if (p_val >= 0) {
-		p = &nPos;
-		nPos = p_val;
+	if (p_val < 0) {
+		int nNeg = -p_val;
+		return *(int*) &nNeg;
 	}
 	else {
-		nNeg = -p_val;
-		p = &nNeg;
+		int nPos = p_val;
+		return *(int*) &nPos;
 	}
-	return *p;
 }
 
 // 68K 0x107007a0 ReturnFacingDirection__Fiiii
@@ -121,7 +117,7 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
 {
 	int dx = abs(p_x1 - p_x2);
 	int dy = abs(p_y1 - p_y2);
-	return ((VsMath*) g_pSentinel)->SqRoot(dy * dy + dx * dx);
+	return ((VsMath*) g_pSentinel)->SqRoot(dx * dx + dy * dy);
 }
 
 // 68K 0x1060e9e6 CloseTo__F7AICOORD7AICOORD
@@ -142,9 +138,5 @@ bool CloseTo(AiCoord p_first, AiCoord p_second)
 	return false;
 }
 
-// 68K 0x10616122 Direction__Fiiii
-// FUNCTION: LEMBALL 0x00423890
-int Direction(int p_arg0, int p_arg1, int p_arg2, int p_arg3)
-{
-	return ((p_arg1 - p_arg3) * 3 - p_arg2) + p_arg0 + 4;
-}
+// GLOBAL: LEMBALL 0x0049d040
+unsigned int g_anFacingDirectionYFlip[8] = {4, 3, 2, 3, 4, 5, 6, 5};
