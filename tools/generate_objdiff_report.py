@@ -45,22 +45,11 @@ def measures(functions, total_units=1):
     return res
 
 
-def ensure_compat():
-    site_packages = ROOT / ".decomp-venv" / "Lib" / "site-packages"
-    if site_packages.is_dir():
-        pth = site_packages / "lemball_reccmp_compat.pth"
-        tools_dir = str(ROOT / "tools")
-        pth_content = f"{tools_dir}\nimport reccmp_ilt_compat\n"
-        if not pth.exists() or pth.read_text(encoding="utf-8") != pth_content:
-            pth.write_text(pth_content, encoding="utf-8")
-
-
 def tool(name):
     return shutil.which(name) or str(ROOT / ".decomp-venv" / "Scripts" / f"{name}.exe")
 
 
 def run_reccmp():
-    ensure_compat()
     subprocess.run(
         [tool("reccmp-project"), "detect", "--search-path", str(ROOT / "data")],
         cwd=ROOT,
