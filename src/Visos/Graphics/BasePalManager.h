@@ -18,6 +18,5 @@ private:
 	int m_remapCount;     // 0x08
 };
 
-// Confirmed class-scoped globals.
 extern BasePalManager* g_pBasePalManager;
 #endif

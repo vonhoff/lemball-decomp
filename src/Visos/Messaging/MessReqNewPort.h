@@ -17,6 +17,5 @@ private:
 	unsigned int m_connectionId; // 0x3c
 };
 
-// Confirmed class-scoped globals.
 extern MessReqNewPort* g_pMessReqNewPort;
 #endif

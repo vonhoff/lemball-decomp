@@ -31,6 +31,5 @@ private:
 	undefined m_storage[0x1b4]; // 0x00
 };
 
-// Confirmed class-scoped globals.
 extern FileBroadcast* g_pFileBroadcast;
 #endif

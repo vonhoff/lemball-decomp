@@ -17,6 +17,5 @@ private:
 	char* m_failureReason; // 0x30
 };
 
-// Confirmed class-scoped globals.
 extern MessFailedConnect* g_pMessFAILEDConnect;
 #endif

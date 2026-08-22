@@ -96,7 +96,6 @@ private:
 	unsigned int m_ambientAnimId;         // 0x394
 };
 
-// Confirmed class-scoped globals.
 extern int g_nPendingEffectsVolume;
 extern int g_nPendingMusicVolume;
 extern int g_nMusicVolume;

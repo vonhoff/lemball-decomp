@@ -19,6 +19,5 @@ PulseMessage::~PulseMessage()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a1e10
 PulseMessage* g_pPulseMessage;

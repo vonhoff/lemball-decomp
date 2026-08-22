@@ -19,6 +19,5 @@ AckMessage::~AckMessage()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a1e14
 AckMessage* g_pAckMessage;

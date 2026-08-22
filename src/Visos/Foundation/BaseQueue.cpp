@@ -100,6 +100,5 @@ BaseQueue::~BaseQueue()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a9360
 BaseQueue* g_pMasterInputQueue;

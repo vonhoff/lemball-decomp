@@ -15,6 +15,5 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2);
 bool CloseTo(AiCoord p_first, AiCoord p_second);
 int Sgn(int p_value);
 
-// Confirmed module-scoped globals.
 extern unsigned int g_anFacingDirectionYFlip[8];
 #endif

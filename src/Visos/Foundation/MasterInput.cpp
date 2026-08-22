@@ -20,6 +20,5 @@ MasterInput::~MasterInput()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a279c
 MasterInput* g_pMasterInput;

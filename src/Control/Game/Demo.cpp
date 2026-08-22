@@ -69,6 +69,5 @@ int Demo::ProcessMsg(Message* p_message)
 	return 0;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a62a4
 int g_nDemoMode;

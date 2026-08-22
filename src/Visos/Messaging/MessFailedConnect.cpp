@@ -25,6 +25,5 @@ MessFailedConnect::~MessFailedConnect()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a1e60
 MessFailedConnect* g_pMessFAILEDConnect;

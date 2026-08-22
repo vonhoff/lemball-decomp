@@ -42,6 +42,5 @@ private:
 	void* m_handlerList;               // 0x54
 };
 
-// Confirmed class-scoped globals.
 extern BaseQueue* g_pMasterInputQueue;
 #endif

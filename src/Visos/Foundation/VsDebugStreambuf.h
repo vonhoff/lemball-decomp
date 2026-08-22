@@ -17,7 +17,6 @@ public:
 	void* m_flushCallback; // 0x18
 };
 
-// Confirmed class-scoped globals.
 extern VsDebugStreambuf* g_pDebugStreambuf;
 extern VsDebugStreambuf* g_pSysStreambuf;
 extern VsDebugStreambuf* g_pErrorStreambuf;

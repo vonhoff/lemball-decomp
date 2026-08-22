@@ -84,7 +84,6 @@ void FrontendResourceLoader::LoadMovie(unsigned long p_resourceId)
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a0120
 FrontendResourceLoader* g_pFrontendResourceLoader;
 

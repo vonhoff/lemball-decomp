@@ -621,7 +621,6 @@ GameObject::~GameObject()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a6410
 unsigned char g_abObjectIdBitmap[32];
 

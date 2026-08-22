@@ -13,6 +13,5 @@ public:
 	~PulseMessage();
 };
 
-// Confirmed class-scoped globals.
 extern PulseMessage* g_pPulseMessage;
 #endif

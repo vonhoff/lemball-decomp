@@ -20,6 +20,5 @@ private:
 	char* m_peerName;                // 0x38
 };
 
-// Confirmed class-scoped globals.
 extern MessReqConnect* g_pMessReqConnect;
 #endif

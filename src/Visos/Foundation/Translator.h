@@ -12,6 +12,5 @@ public:
 	virtual ~Translator();                      // vtable+0x04
 };
 
-// Confirmed class-scoped globals.
 extern Translator* g_pInputTranslator;
 #endif

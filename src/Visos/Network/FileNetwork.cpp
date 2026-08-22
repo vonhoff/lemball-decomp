@@ -88,7 +88,6 @@ FileNetwork::~FileNetwork()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a2260
 unsigned int g_dwFileNetworkThreadId;
 

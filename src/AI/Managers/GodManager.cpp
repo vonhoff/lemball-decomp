@@ -52,6 +52,5 @@ GodManager::~GodManager()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x0049cf30
 GodManager* g_pGodManager;

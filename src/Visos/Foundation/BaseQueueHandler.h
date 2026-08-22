@@ -18,7 +18,6 @@ private:
 	unsigned int m_processedCount; // 0x0c
 };
 
-// Confirmed class-scoped globals.
 extern BaseQueueHandler* g_pNetworkStatusQueue;
 extern BaseQueueHandler* g_pNetworkPacketQueue;
 #endif

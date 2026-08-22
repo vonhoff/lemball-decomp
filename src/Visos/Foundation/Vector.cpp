@@ -22,6 +22,5 @@ Vector operator+(const Vector& p_left, const Vector& p_right)
 	return Vector(p_left.m_xFixed + p_right.m_xFixed, p_left.m_yFixed + p_right.m_yFixed);
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x0049e0d0
 Vector g_aFormationTemplates[24];

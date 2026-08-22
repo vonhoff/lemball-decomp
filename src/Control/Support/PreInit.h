@@ -18,7 +18,6 @@ public:
 	void* m_icon;                 // 0x18
 };
 
-// Confirmed class-scoped globals.
 extern PreInit g_preInitActive;
 extern PreInit g_preInit;
 #endif

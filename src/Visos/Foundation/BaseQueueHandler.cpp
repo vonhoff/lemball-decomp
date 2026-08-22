@@ -27,7 +27,6 @@ VsOStream& BaseQueueHandler::StreamOut(VsOStream& p_stream)
 	return *(VsOStream*) 0;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a1e1c
 BaseQueueHandler* g_pNetworkStatusQueue;
 

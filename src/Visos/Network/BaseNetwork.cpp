@@ -170,6 +170,5 @@ void BaseNetwork::WaitProcess()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a1e18
 BaseNetwork* g_pBaseNetwork;

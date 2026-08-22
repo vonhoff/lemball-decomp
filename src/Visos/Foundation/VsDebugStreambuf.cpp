@@ -100,7 +100,6 @@ void VsDebugStreambuf::Sputs(char* p_text)
 	}
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a97b4
 VsDebugStreambuf* g_pDebugStreambuf;
 

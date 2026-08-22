@@ -46,6 +46,5 @@ private:
 	GlobalGameObject** m_objects; // 0x3c
 };
 
-// Confirmed class-scoped globals.
 extern ObjectManager* g_pGenericGroupObjectManager;
 #endif

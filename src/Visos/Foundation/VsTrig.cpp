@@ -70,7 +70,6 @@ VsTrig::VsTrig()
 	g_dwVSTrigInitialised = 1;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a13c0
 VsTrig* g_pVSTrig;
 

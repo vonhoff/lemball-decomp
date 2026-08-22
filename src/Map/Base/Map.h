@@ -37,7 +37,6 @@ private:
 	Ai* m_ai;                  // 0x54
 };
 
-// Confirmed class-scoped globals.
 extern Map* g_pMap;
 extern void* g_apValidateDefaultBloxDataCases[25];
 extern unsigned short g_wDefaultBloxLimit0206;

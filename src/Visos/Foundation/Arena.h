@@ -51,6 +51,5 @@ private:
 	class Arena* m_nextArena;              // 0x4c
 };
 
-// Confirmed class-scoped globals.
 extern Arena* g_pMasterArena;
 #endif

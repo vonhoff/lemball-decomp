@@ -10,7 +10,6 @@ public:
 	// No functions mapped yet.
 };
 
-// Confirmed class-scoped globals.
 extern TargetPlatformServices* g_pTargetPlatformServices;
 extern unsigned int g_dwInputQuitRequested;
 extern TargetInputTranslationEntry g_dwInputTranslationPairs[61];

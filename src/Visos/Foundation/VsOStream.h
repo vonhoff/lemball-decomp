@@ -28,7 +28,6 @@ public:
 VsOStream& operator<<(VsOStream& p_arg0, Rname p_arg1);
 VsOStream& operator<<(VsOStream& p_arg0, String& p_arg1);
 
-// Confirmed class-scoped globals.
 extern VsOStream* g_pErrorOutput;
 extern VsOStream* g_pSysOutput;
 #endif

@@ -12,6 +12,5 @@ public:
 	virtual void OnCreate(); // vtable+0x3c
 };
 
-// Confirmed class-scoped globals.
 extern unsigned int g_dwHiliteAnimationId;
 #endif

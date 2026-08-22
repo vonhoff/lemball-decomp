@@ -23,7 +23,6 @@ private:
 	PvGdiBitmap* m_currentBitmap; // 0x18
 };
 
-// Confirmed class-scoped globals.
 extern TargetGraphicsDriver* g_pTargetGraphicsDriver;
 extern void* g_apCResRasterConstructionVtable[15];
 extern TargetGraphicsSystemState* g_pTargetGraphicsSystem;

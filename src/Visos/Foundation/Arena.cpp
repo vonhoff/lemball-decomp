@@ -188,6 +188,5 @@ void Arena::MemCopy(unsigned char* p_destination, unsigned char* p_source, unsig
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004aa100
 Arena* g_pMasterArena;

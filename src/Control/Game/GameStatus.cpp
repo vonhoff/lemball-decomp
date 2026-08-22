@@ -119,7 +119,6 @@ int GameStatus::Level()
 	return 0;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x0049cb68
 GameStatus* g_pGameStatus;
 

@@ -22,7 +22,6 @@ VsIOs::VsIOs(VsStreambuf* p_arg0)
 	m_streamBuffer = p_arg0;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a8088
 char g_szCurrentDirectory[256];
 

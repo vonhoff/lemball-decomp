@@ -90,6 +90,5 @@ void FileBroadcast::Closed(unsigned char p_notifyPeer)
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a2de0
 FileBroadcast* g_pFileBroadcast;

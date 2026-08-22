@@ -25,7 +25,6 @@ private:
 	unsigned int m_timerId;         // 0x74
 };
 
-// Confirmed class-scoped globals.
 extern unsigned int g_dwTCPIPNetworkThreadId;
 extern void* g_hTCPIPNetworkThread;
 extern unsigned int g_networkPacketSize;

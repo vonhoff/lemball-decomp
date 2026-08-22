@@ -56,6 +56,5 @@ GunButtons::~GunButtons()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x0049fa68
 int g_nGunButtonsRedrawPending;

@@ -14,7 +14,6 @@ public:
 	int m_count;               // 0x0c
 };
 
-// Confirmed class-scoped globals.
 extern ResourceTypeList* g_pCompressedResourceTypes;
 extern ResourceTypeList* g_pResourceTypes;
 extern ResourceTypeList* g_pPreloadedResourceTypes;

@@ -313,7 +313,6 @@ Ai::~Ai()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a782c
 Ai* g_pGenericGroupAI;
 

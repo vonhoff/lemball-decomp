@@ -18,6 +18,5 @@ public:
 Vector operator*(const Vector& p_vector, int p_scale);
 Vector operator+(const Vector& p_left, const Vector& p_right);
 
-// Confirmed class-scoped globals.
 extern Vector g_aFormationTemplates[24];
 #endif

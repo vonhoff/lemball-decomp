@@ -28,7 +28,6 @@ private:
 	void* m_frontendResources;    // 0x6c
 };
 
-// Confirmed class-scoped globals.
 extern int* g_pSentinel;
 extern unsigned int g_dwGameTick;
 #endif

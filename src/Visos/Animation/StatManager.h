@@ -19,6 +19,5 @@ private:
 	int m_statCount;      // 0x10
 };
 
-// Confirmed class-scoped globals.
 extern StatManager* g_pStatManager;
 #endif

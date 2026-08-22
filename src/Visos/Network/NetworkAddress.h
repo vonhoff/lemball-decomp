@@ -9,7 +9,6 @@ public:
 	// No functions mapped yet.
 };
 
-// Confirmed class-scoped globals.
 extern NetworkAddress* g_pBroadcastReceiveAddress;
 extern NetworkAddress* g_pBroadcastAddress;
 #endif

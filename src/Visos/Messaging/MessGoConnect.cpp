@@ -25,6 +25,5 @@ MessGoConnect::~MessGoConnect()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a1e5c
 MessGoConnect* g_pMessGOConnect;

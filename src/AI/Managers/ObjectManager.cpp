@@ -102,6 +102,5 @@ ObjectManager::~ObjectManager()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a7830
 ObjectManager* g_pGenericGroupObjectManager;

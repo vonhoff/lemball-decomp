@@ -46,7 +46,6 @@ unsigned int LevelLoader::CalcLevelId(eSkill p_skill, int p_level)
 	return 0;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a6304
 int g_nEditLevelMode;
 

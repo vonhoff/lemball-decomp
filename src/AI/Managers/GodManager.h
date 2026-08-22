@@ -25,6 +25,5 @@ private:
 	GameStateMessage* m_gameStateMessage; // 0x20
 };
 
-// Confirmed class-scoped globals.
 extern GodManager* g_pGodManager;
 #endif

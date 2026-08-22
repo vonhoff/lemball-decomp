@@ -42,6 +42,5 @@ private:
 	unsigned int m_state54;      // 0x54
 };
 
-// Confirmed class-scoped globals.
 extern int g_nDemoMode;
 #endif

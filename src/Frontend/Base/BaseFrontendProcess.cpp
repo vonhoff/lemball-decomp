@@ -56,7 +56,6 @@ BaseFrontendProcess::~BaseFrontendProcess()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x0049ca30
 int g_nTestAllLevels;
 

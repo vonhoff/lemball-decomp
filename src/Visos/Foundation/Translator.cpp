@@ -14,6 +14,5 @@ int Translator::ProcessMsg(Message* p_message)
 	return 0;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a9364
 Translator* g_pInputTranslator;

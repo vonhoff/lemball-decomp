@@ -25,6 +25,5 @@ MessReqNewPort::~MessReqNewPort()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a1e54
 MessReqNewPort* g_pMessReqNewPort;

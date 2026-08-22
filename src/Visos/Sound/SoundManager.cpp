@@ -124,6 +124,5 @@ void SoundManager::UseMusicCd(unsigned char p_enabled)
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a97c8
 char g_szSoundDriverInfo[1024];

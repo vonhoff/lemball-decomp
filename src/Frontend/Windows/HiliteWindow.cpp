@@ -12,6 +12,5 @@ void HiliteWindow::OnCreate()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a7b64
 unsigned int g_dwHiliteAnimationId;

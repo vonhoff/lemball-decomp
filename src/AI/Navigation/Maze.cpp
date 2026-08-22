@@ -82,6 +82,5 @@ void Maze::BSolution(int& p_count, Solution* p_solution)
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x0049cf58
 Maze* g_pMaze;

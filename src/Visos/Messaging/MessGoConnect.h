@@ -18,6 +18,5 @@ private:
 	unsigned int m_connectionId;   // 0x34
 };
 
-// Confirmed class-scoped globals.
 extern MessGoConnect* g_pMessGOConnect;
 #endif

@@ -98,7 +98,6 @@ void Map::CalculateCliff()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a74b4
 Map* g_pMap;
 

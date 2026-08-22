@@ -178,7 +178,6 @@ VsOStream& operator<<(VsOStream& p_arg0, String& p_arg1)
 	return p_arg0;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a93a8
 VsOStream* g_pErrorOutput;
 

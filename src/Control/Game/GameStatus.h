@@ -36,7 +36,6 @@ private:
 	int m_lastLevels[5];       // 0x3c
 };
 
-// Confirmed class-scoped globals.
 extern GameStatus* g_pGameStatus;
 extern int g_anPasswordPermutation[8];
 #endif

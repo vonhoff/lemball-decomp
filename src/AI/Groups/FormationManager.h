@@ -19,6 +19,5 @@ private:
 	int m_restartState;             // 0x100
 };
 
-// Confirmed class-scoped globals.
 extern FormationManager* g_pGenericGroupFormationManager;
 #endif

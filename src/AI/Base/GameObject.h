@@ -143,7 +143,6 @@ private:
 	unsigned int m_isFlying;              // 0xf0
 };
 
-// Confirmed class-scoped globals.
 extern unsigned char g_abObjectIdBitmap[32];
 extern GameObject* g_pObjects[256];
 extern word g_wObjectCount;

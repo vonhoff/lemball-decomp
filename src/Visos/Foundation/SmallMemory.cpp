@@ -26,7 +26,6 @@ bool SmallMemory::Free(unsigned char* p_memory)
 	return 0;
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004aa0fc
 SmallMemory* g_pSmallMemory;
 

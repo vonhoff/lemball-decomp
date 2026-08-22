@@ -120,7 +120,6 @@ private:
 	PlayerLemming* m_networkLemmings[8];              // 0x1d0
 };
 
-// Confirmed class-scoped globals.
 extern Ai* g_pGenericGroupAI;
 extern Ai* g_pAI;
 extern Ai* g_pActiveAI;

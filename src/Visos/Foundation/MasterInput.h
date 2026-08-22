@@ -18,6 +18,5 @@ private:
 	unsigned int m_state;     // 0x14
 };
 
-// Confirmed class-scoped globals.
 extern MasterInput* g_pMasterInput;
 #endif

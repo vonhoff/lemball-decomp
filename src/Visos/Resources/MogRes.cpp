@@ -101,7 +101,6 @@ void MogRes::DeallocateMem(unsigned char* p_data, unsigned char p_owned)
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a1d58
 MogRes* g_pMogRes;
 

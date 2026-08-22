@@ -26,7 +26,6 @@ private:
 	Game* m_game;                    // 0x24
 };
 
-// Confirmed class-scoped globals.
 extern int g_nTestAllLevels;
 extern int g_nFrontendAutoFlowToggle;
 extern int g_nAnimationsDisabled;

@@ -38,6 +38,5 @@ private:
 	unsigned int m_connectTime;         // 0x28
 };
 
-// Confirmed class-scoped globals.
 extern Connect* g_pActiveConnection;
 #endif

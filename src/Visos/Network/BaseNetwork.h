@@ -59,6 +59,5 @@ private:
 	undefined4 m_unk0x60;                     // 0x60
 };
 
-// Confirmed class-scoped globals.
 extern BaseNetwork* g_pBaseNetwork;
 #endif

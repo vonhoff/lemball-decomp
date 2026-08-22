@@ -60,7 +60,6 @@ TcpIpNetwork::~TcpIpNetwork()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a23b0
 unsigned int g_dwTCPIPNetworkThreadId;
 

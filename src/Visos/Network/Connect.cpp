@@ -87,6 +87,5 @@ void Connect::ConnectSetup()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a011c
 Connect* g_pActiveConnection;

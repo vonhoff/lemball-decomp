@@ -28,7 +28,6 @@ private:
 	int m_selectionEnd;                  // 0x54
 };
 
-// Confirmed class-scoped globals.
 extern TargetTextWindow* g_pDebugWindow;
 extern int g_nTargetTextWindowClassRegistered;
 extern int g_nTargetTextWindowActive;

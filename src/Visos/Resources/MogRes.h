@@ -36,7 +36,6 @@ private:
 	unsigned int m_externalArena; // 0x24
 };
 
-// Confirmed class-scoped globals.
 extern MogRes* g_pMogRes;
 extern MogRes* g_pActiveMogRes;
 #endif

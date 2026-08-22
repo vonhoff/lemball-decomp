@@ -178,7 +178,6 @@ BaseFrontendDrawer::~BaseFrontendDrawer()
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x0049f628
 int g_nPendingEffectsVolume;
 

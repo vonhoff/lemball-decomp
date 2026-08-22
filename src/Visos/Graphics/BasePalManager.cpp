@@ -29,6 +29,5 @@ void BasePalManager::UnRegisterRemap(BaseRemap* p_remap)
 {
 }
 
-// Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a2000
 BasePalManager* g_pBasePalManager;

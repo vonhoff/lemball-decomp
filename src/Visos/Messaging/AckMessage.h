@@ -17,6 +17,5 @@ private:
 	unsigned short m_subpacketSequence; // 0x2e
 };
 
-// Confirmed class-scoped globals.
 extern AckMessage* g_pAckMessage;
 #endif
