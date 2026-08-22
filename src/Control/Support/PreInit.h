@@ -18,6 +18,7 @@ public:
 	void* m_icon;                 // 0x18
 };
 
+extern unsigned int g_anPreInitCapabilities[7];
 extern PreInit g_preInitActive;
 extern PreInit g_preInit;
 #endif
