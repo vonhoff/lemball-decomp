@@ -20,13 +20,13 @@ public:
 	void FormatNum();
 	~VsOStream();
 
-private:
+public:
 	unsigned char m_numberBuffer[0x124]; // 0x04
 	char* m_formattedText;               // 0x128
 };
 
-VsOStream* operator<<(VsOStream& p_arg0, Rname p_arg1);
-VsOStream* operator<<(VsOStream& p_arg0, String& p_arg1);
+VsOStream& operator<<(VsOStream& p_arg0, Rname p_arg1);
+VsOStream& operator<<(VsOStream& p_arg0, String& p_arg1);
 
 // Confirmed class-scoped globals.
 extern VsOStream* g_pErrorOutput;

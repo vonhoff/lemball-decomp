@@ -1,5 +1,9 @@
 #include "TargetTextWindow.h"
 
+void TargetTextWindow::PostAllocatedTextControlString(const char* p_text, unsigned int p_color)
+{
+}
+
 // Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a29f0
 TargetTextWindow* g_pDebugWindow;

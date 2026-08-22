@@ -12,9 +12,14 @@ VsIOs::~VsIOs()
 }
 
 // 68K 0x10213cca __ct__6CVSIOsFP12CVSStreambuf
-// STUB: LEMBALL 0x00458410
+// FUNCTION: LEMBALL 0x00458410
 VsIOs::VsIOs(VsStreambuf* p_arg0)
 {
+	m_fill = ' ';
+	m_flags = 0x14;
+	m_width = 0;
+	m_radix = 10;
+	m_streamBuffer = p_arg0;
 }
 
 // Confirmed class-scoped globals.

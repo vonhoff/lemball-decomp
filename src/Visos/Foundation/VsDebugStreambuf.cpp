@@ -1,33 +1,19 @@
 #include "VsDebugStreambuf.h"
 
+#include <string.h>
+
 // 68K 0x102143c6 __ct__17CVSDebugStreambufFPciPFPc_Uc
-// STUB: LEMBALL 0x0045ad70
-VsDebugStreambuf::VsDebugStreambuf(char* p_arg0,
-								   int p_arg1,
-								   undefined4* p_arg2,
-								   char* p_arg3,
-								   undefined4 p_arg4,
-								   unsigned char p_arg5)
+// FUNCTION: LEMBALL 0x0045ad70
+VsDebugStreambuf::VsDebugStreambuf(char* p_buffer, int p_size, void (*p_flushCallback)(char*))
+	: VsStreambuf(p_buffer, p_size)
 {
-}
-
-// 68K 0x1021449e flush__17CVSDebugStreambufFv
-// STUB: LEMBALL 0x0045add0
-void VsDebugStreambuf::Flush()
-{
-}
-
-// 68K 0x10214504 sputc__17CVSDebugStreambufFc
-// STUB: LEMBALL 0x0045ae10
-int VsDebugStreambuf::Sputc(char p_arg0)
-{
-	return 0;
-}
-
-// 68K 0x1021466a sputs__17CVSDebugStreambufFPc
-// STUB: LEMBALL 0x0045af20
-void VsDebugStreambuf::Sputs(char* p_arg0)
-{
+	m_flushCallback = (void*) p_flushCallback;
+	m_buffer = p_buffer;
+	m_cursor = p_buffer;
+	m_length = 0;
+	m_capacity = p_size;
+	m_tabWidth = 8;
+	memset(p_buffer, 0, p_size);
 }
 
 // 68K 0x10214448 __dt__17CVSDebugStreambufFv
@@ -35,6 +21,79 @@ void VsDebugStreambuf::Sputs(char* p_arg0)
 // VsDebugStreambuf::`scalar deleting destructor'
 VsDebugStreambuf::~VsDebugStreambuf()
 {
+}
+
+// 68K 0x1021449e flush__17CVSDebugStreambufFv
+// FUNCTION: LEMBALL 0x0045add0
+void VsDebugStreambuf::Flush()
+{
+	if (m_flushCallback != NULL) {
+		((void (*)(char*)) m_flushCallback)(m_buffer);
+	}
+	m_cursor = m_buffer;
+	m_length = 0;
+	m_tabWidth = 8;
+	memset(m_buffer, 0, m_capacity);
+}
+
+// 68K 0x10214504 sputc__17CVSDebugStreambufFc
+// FUNCTION: LEMBALL 0x0045ae10
+int VsDebugStreambuf::Sputc(char p_c)
+{
+	if (p_c == '\t') {
+		*m_cursor++ = ' ';
+		*m_cursor = '\0';
+		m_length++;
+		if (m_capacity - m_length == 1) {
+			Flush();
+		}
+		while (m_length % m_tabWidth != 0) {
+			*m_cursor++ = ' ';
+			*m_cursor = '\0';
+			m_length++;
+			if (m_capacity - m_length == 1) {
+				Flush();
+			}
+		}
+		return m_length / m_tabWidth;
+	}
+	else if (p_c == '\n') {
+		*m_cursor = '\n';
+		if (m_flushCallback != NULL) {
+			*++m_cursor = '\0';
+			m_length++;
+			if (m_capacity - m_length == 1) {
+				Flush();
+			}
+			Flush();
+			return 0;
+		}
+		*++m_cursor = '\0';
+		m_length++;
+		if (m_capacity - m_length == 1) {
+			Flush();
+		}
+	}
+	else {
+		*m_cursor++ = p_c;
+		*m_cursor = '\0';
+		m_length++;
+		if (m_capacity - m_length == 1) {
+			Flush();
+			return 0;
+		}
+	}
+	return m_length;
+}
+
+// 68K 0x1021466a sputs__17CVSDebugStreambufFPc
+// FUNCTION: LEMBALL 0x0045af20
+void VsDebugStreambuf::Sputs(char* p_text)
+{
+	int len = strlen(p_text);
+	for (int i = 0; i < len; ++i) {
+		Sputc(p_text[i]);
+	}
 }
 
 // Confirmed class-scoped globals.

@@ -11,7 +11,7 @@ public:
 	virtual ~VsIOs(); // vtable+0x00
 	VsIOs();
 
-private:
+public:
 	unsigned int m_flags;        // 0x08
 	char m_fill;                 // 0x10
 	unsigned int m_width;        // 0x14

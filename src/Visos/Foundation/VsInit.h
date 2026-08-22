@@ -3,6 +3,10 @@
 
 #include "../../Common.h"
 
+#include <setjmp.h>
+
+extern jmp_buf g_vsExitJumpBuffer;
+
 bool StrmInit();
 bool StrmQuit();
 void InpInit();

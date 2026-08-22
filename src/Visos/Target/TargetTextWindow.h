@@ -6,7 +6,7 @@
 // SIZE 0x58
 class TargetTextWindow {
 public:
-	// No functions mapped yet.
+	void PostAllocatedTextControlString(const char* p_text, unsigned int p_color);
 
 private:
 	void* m_lockVtable;                  // 0x00

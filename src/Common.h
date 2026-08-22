@@ -449,10 +449,22 @@ struct Boffset {
 	unsigned short wBit;
 };
 
-struct Har4 {};
-struct Hex {};
-struct Hex8 {};
-struct Rname {};
+struct Har4 {
+	unsigned int m_value;
+	Har4(unsigned int v = 0) : m_value(v) {}
+};
+struct Hex {
+	unsigned int m_value;
+	Hex(unsigned int v = 0) : m_value(v) {}
+};
+struct Hex8 {
+	unsigned int m_value;
+	Hex8(unsigned int v = 0) : m_value(v) {}
+};
+struct Rname {
+	unsigned int m_value;
+	Rname(unsigned int v = 0) : m_value(v) {}
+};
 typedef unsigned char byte;
 typedef int eEnemyStateRules;
 typedef int eEnemyStateActions;

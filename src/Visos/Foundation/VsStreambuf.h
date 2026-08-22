@@ -11,7 +11,7 @@ public:
 	virtual ~VsStreambuf(); // vtable+0x00
 	VsStreambuf();
 
-private:
+public:
 	char* m_buffer;          // 0x04
 	unsigned int m_capacity; // 0x08
 	char* m_cursor;          // 0x0c

@@ -1,5 +1,7 @@
 #include "VsInit.h"
 
+jmp_buf g_vsExitJumpBuffer;
+
 // 68K 0x10213030 _STRM_Init__Fv
 // STUB: LEMBALL 0x00458f70
 bool StrmInit()

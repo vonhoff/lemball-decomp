@@ -6,8 +6,8 @@
 void VsExit(int p_exitCode);
 void VsRelAssert(const char* p_reason, const char* p_file, unsigned int p_line);
 void WriteDebugString2File(char* p_text);
-bool RawOutDebugString(char* p_text);
-bool RawOutErrorString(char* p_text);
-bool RawOutSysString(char* p_text);
-void DisplayRelAssert(const char* p_reason, const char* p_file, unsigned int p_line);
+int RawOutDebugString(char* p_text);
+int RawOutErrorString(char* p_text);
+int RawOutSysString(char* p_text);
+void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line);
 #endif
