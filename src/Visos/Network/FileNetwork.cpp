@@ -87,3 +87,13 @@ FileBroadcast* FileNetwork::GetNewBroadcast()
 FileNetwork::~FileNetwork()
 {
 }
+
+// Confirmed class-scoped globals.
+// GLOBAL: LEMBALL 0x004a2260
+unsigned int g_dwFileNetworkThreadId;
+
+// GLOBAL: LEMBALL 0x004a2264
+void* g_hFileNetworkThread;
+
+// GLOBAL: LEMBALL 0x004a2de4
+void* g_pFileBroadcastData;

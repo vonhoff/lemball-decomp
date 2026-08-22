@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498940
 class MBlock {
 public:
-	MBlock(Arena* p_arg0, struct MBlock* p_arg1, char* p_arg2, unsigned long p_arg3);
+	MBlock(Arena* p_arg0, class MBlock* p_arg1, char* p_arg2, unsigned long p_arg3);
 	virtual void StreamOut(VsOStream& p_stream); // vtable+0x00
 	virtual ~MBlock();                           // vtable+0x04
 	void SetDesc(char* p_arg0);

@@ -48,4 +48,6 @@ private:
 
 // Confirmed class-scoped globals.
 extern FrontendResourceLoader* g_pFrontendResourceLoader;
+extern unsigned int g_dwGroundStyleResourceId;
+extern unsigned int g_anGroundStyleResourceIds[10];
 #endif

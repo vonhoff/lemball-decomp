@@ -18,7 +18,7 @@ void GameObject::ForgetObjectLink(unsigned short p_arg0)
 
 // 68K 0x101188ac Activate__11CGameObjectFP11CGameObject
 // STUB: LEMBALL 0x0040a800
-bool GameObject::Activate(struct GameObject* p_object)
+bool GameObject::Activate(class GameObject* p_object)
 {
 	return 0;
 }
@@ -217,7 +217,7 @@ bool GameObject::HasObject(eObjectType p_arg0)
 
 // 68K 0x10118e10 AddObject__11CGameObjectF11eObjectTypeP11CGameObject
 // STUB: LEMBALL 0x0040aa70
-bool GameObject::AddObject(eObjectType p_arg0, struct GameObject* p_arg1)
+bool GameObject::AddObject(eObjectType p_arg0, class GameObject* p_arg1)
 {
 	return 0;
 }
@@ -620,3 +620,25 @@ bool GameObject::Process()
 GameObject::~GameObject()
 {
 }
+
+// Confirmed class-scoped globals.
+// GLOBAL: LEMBALL 0x004a6410
+unsigned char g_abObjectIdBitmap[32];
+
+// GLOBAL: LEMBALL 0x004a6510
+GameObject* g_pObjects[256];
+
+// GLOBAL: LEMBALL 0x004a74bc
+word g_wObjectCount;
+
+// GLOBAL: LEMBALL 0x0049d108
+unsigned char g_abBitMasks[8];
+
+// GLOBAL: LEMBALL 0x0049cf4c
+word g_wNetworkLemmingIndex;
+
+// GLOBAL: LEMBALL 0x0049cf50
+word g_wLocalLemmingIndex;
+
+// GLOBAL: LEMBALL 0x004a640c
+word g_wLemmingCount;

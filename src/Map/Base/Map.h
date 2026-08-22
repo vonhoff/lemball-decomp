@@ -14,7 +14,7 @@ public:
 	void CreateWalkBits();
 	void GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY);
 	void GameToScreen(int& p_x, int& p_y);
-	void LoadDefaultBlox(struct LoadDefaultBlox* p_data, unsigned long p_dataSize);
+	void LoadDefaultBlox(class LoadDefaultBlox* p_data, unsigned long p_dataSize);
 	void LoadLevel(LoadGroundSurfaceData* p_data, unsigned long p_dataSize, unsigned char p_skip);
 	void LoadLevelName(LoadGroundName* p_data, unsigned long p_dataSize);
 	void ReSize(int p_width, int p_height);
@@ -39,4 +39,19 @@ private:
 
 // Confirmed class-scoped globals.
 extern Map* g_pMap;
+extern void* g_apValidateDefaultBloxDataCases[25];
+extern unsigned short g_wDefaultBloxLimit0206;
+extern unsigned short g_wDefaultBloxLimit0207;
+extern unsigned short g_wDefaultBloxLimit0208;
+extern unsigned short g_wDefaultBloxLimit0209;
+extern unsigned short g_wDefaultBloxLimit020A;
+extern unsigned short g_wDefaultBloxLimit020B;
+extern unsigned short g_wDefaultBloxLimit020C;
+extern unsigned short g_wDefaultBloxLimit020D;
+extern unsigned short g_wDefaultBloxLimit020E;
+extern unsigned short g_wDefaultBloxLimit020F;
+extern unsigned short g_wDefaultBloxLimit0214;
+extern unsigned short g_wDefaultBloxLimit0210;
+extern unsigned short g_wDefaultBloxLimit0202;
+extern unsigned short g_wDefaultBloxLimit0217;
 #endif

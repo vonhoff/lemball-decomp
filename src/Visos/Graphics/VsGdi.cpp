@@ -2,7 +2,7 @@
 
 // 68K 0x1010830c __ct__8CSurfaceFRC7CVSRectP8CSurface
 // STUB: LEMBALL 0x0046c050
-Surface::Surface(const VsRect& p_arg0, struct Surface* p_arg1)
+Surface::Surface(const VsRect& p_arg0, class Surface* p_arg1)
 {
 }
 
@@ -45,13 +45,13 @@ ChangeList* Surface::GetChangeList()
 
 // 68K 0x1010959a Blit__8CSurfaceFP9CClipRect
 // STUB: LEMBALL 0x0046cbe0
-void Surface::Blit(struct ClipRect* p_arg0)
+void Surface::Blit(class ClipRect* p_arg0)
 {
 }
 
 // 68K 0x10109e1e ToScreen__8CSurfaceFP8CSurface
 // STUB: LEMBALL 0x0046cda0
-void Surface::ToScreen(struct Surface* p_destinationSurface)
+void Surface::ToScreen(class Surface* p_destinationSurface)
 {
 }
 

@@ -30,3 +30,9 @@ VsTrig::VsTrig()
 // Confirmed class-scoped globals.
 // GLOBAL: LEMBALL 0x004a13c0
 VsTrig* g_pVSTrig;
+
+// GLOBAL: LEMBALL 0x004a13c8
+int g_nVSTrigSource[512];
+
+// GLOBAL: LEMBALL 0x004a1bc8
+unsigned int g_dwVSTrigInitialised;

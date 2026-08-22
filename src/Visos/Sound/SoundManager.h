@@ -55,4 +55,6 @@ private:
 	unsigned int m_musicStateCopy;     // 0xc8c
 };
 
+// Confirmed class-scoped globals.
+extern char g_szSoundDriverInfo[1024];
 #endif

@@ -177,3 +177,16 @@ void BaseFrontendDrawer::OnSize(const VsRect& p_rect)
 BaseFrontendDrawer::~BaseFrontendDrawer()
 {
 }
+
+// Confirmed class-scoped globals.
+// GLOBAL: LEMBALL 0x0049f628
+int g_nPendingEffectsVolume;
+
+// GLOBAL: LEMBALL 0x0049f62c
+int g_nPendingMusicVolume;
+
+// GLOBAL: LEMBALL 0x004a6278
+int g_nMusicVolume;
+
+// GLOBAL: LEMBALL 0x004a627c
+int g_nEffectsVolume;

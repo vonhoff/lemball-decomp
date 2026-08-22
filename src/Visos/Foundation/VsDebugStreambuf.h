@@ -29,4 +29,13 @@ private:
 extern VsDebugStreambuf* g_pDebugStreambuf;
 extern VsDebugStreambuf* g_pSysStreambuf;
 extern VsDebugStreambuf* g_pErrorStreambuf;
+extern void* g_pDebugAcceleratorTable;
+extern int g_nDebugInitialized;
+extern int g_nDebugFileOutputEnabled;
+extern int g_nAsyncDebugEnabled;
+extern void* g_pDebugThread;
+extern void* g_pDebugSyncEvent;
+extern int g_nDebugThreadId;
+extern FILE* g_pDebugOutputFile;
+extern char* g_pDebugOutputPath;
 #endif

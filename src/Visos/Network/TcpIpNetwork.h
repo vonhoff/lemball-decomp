@@ -25,4 +25,15 @@ private:
 	unsigned int m_timerId;         // 0x74
 };
 
+// Confirmed class-scoped globals.
+extern unsigned int g_dwTCPIPNetworkThreadId;
+extern void* g_hTCPIPNetworkThread;
+extern unsigned int g_networkPacketSize;
+extern BasePacketHeader* g_pNetworkPacketScratch;
+extern unsigned int g_receivedPacketSize;
+extern unsigned char* g_pBroadcastPacketTemplate;
+extern char* g_szBroadcastPeerName;
+extern unsigned int g_broadcastPayloadLength;
+extern unsigned short g_broadcastPort;
+extern int g_lastNetworkError;
 #endif

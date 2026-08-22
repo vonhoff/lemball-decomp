@@ -13,7 +13,7 @@ class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurf
 public:
 	ChangeList* GetChangeList();
 	Surface(GrafPort* p_arg0);
-	Surface(const VsRect& p_arg0, struct Surface* p_arg1);
+	Surface(const VsRect& p_arg0, class Surface* p_arg1);
 	bool ClipRect(VsRect& p_rect, VsRect* p_clipped);
 	int ClipCircle(int p_centerX, int p_centerY, int p_radius);
 	int LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2);
@@ -35,7 +35,7 @@ public:
 	void Blit(ZBuffClear* p_arg0);
 	void Blit(ZBuffScroll* p_arg0);
 	void Blit(Zrle* p_primitive, ResZrle* p_zrle);
-	void Blit(struct ClipRect* p_arg0);
+	void Blit(class ClipRect* p_arg0);
 	void BlitRect(VsRect p_rect, int p_colour);
 	void BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, Remap* p_remap, unsigned short p_depth);
 	void BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned char p_reverse);
@@ -86,7 +86,7 @@ public:
 	void ResetScroll();
 	void SetDefaultCtable();
 	void SetWindowPtr(void* p_platformPort);
-	void ToScreen(struct Surface* p_destinationSurface);
+	void ToScreen(class Surface* p_destinationSurface);
 	~Surface();
 
 private:

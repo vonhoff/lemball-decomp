@@ -19,4 +19,6 @@ private:
 
 // Confirmed class-scoped globals.
 extern SmallMemory* g_pSmallMemory;
+extern int g_nSmallMemoryEnabled;
+extern void* g_pMasterArenaMemory;
 #endif

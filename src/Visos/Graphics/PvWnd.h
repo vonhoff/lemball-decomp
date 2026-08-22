@@ -15,7 +15,7 @@ public:
 	virtual bool IsFocusWindow();                                         // vtable+0x60
 	virtual unsigned int GetSizeStatus();                                 // vtable+0x68
 	virtual unsigned int InitHotAreaList();                               // vtable+0x14
-	virtual void AddChild(struct PvWnd* p_child);                         // vtable+0x78
+	virtual void AddChild(class PvWnd* p_child);                          // vtable+0x78
 	virtual void OnCreate();                                              // vtable+0x18
 	virtual void OnDestroy();                                             // vtable+0x1c
 	virtual void OnDriverChange();                                        // vtable+0x5c
@@ -25,7 +25,7 @@ public:
 	virtual void OnVisibilityChange();                                    // vtable+0x80
 	virtual void OnZoom(int p_oldZoom);                                   // vtable+0x2c
 	virtual void ReSetMenu();                                             // vtable+0x00
-	virtual void RemoveChild(struct PvWnd* p_child);                      // vtable+0x7c
+	virtual void RemoveChild(class PvWnd* p_child);                       // vtable+0x7c
 	virtual void Resize(VsSize p_size);                                   // vtable+0x88
 	virtual void SetDontUpdateRect(const VsRect& p_rect);                 // vtable+0x84
 	virtual void SetInnerWindow(const VsRect& p_rect);                    // vtable+0x08

@@ -50,4 +50,6 @@ private:
 	unsigned int m_active;          // 0x5c
 };
 
+// Confirmed class-scoped globals.
+extern int g_nGunButtonsRedrawPending;
 #endif

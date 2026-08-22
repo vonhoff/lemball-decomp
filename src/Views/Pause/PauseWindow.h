@@ -15,7 +15,7 @@
 // SIZE 0x20c
 // VTABLE: LEMBALL 0x00497798 primary PvGWnd base at +0x00
 // VTABLE: LEMBALL 0x00497788 adjusted BaseQueueHandler base at +0x90
-// VTABLE: LEMBALL 0x00497780 adjusted free-VRAM interface at +0xa0
+// Subobject VTABLE: 0x00497780 adjusted free-VRAM interface at +0xa0
 // VTABLE: LEMBALL 0x00497758 adjusted HotAreaHandler base at +0xa4
 class PauseWindow : public PvGWnd, public BaseQueueHandler, public PauseWindowFreeVramInterface, public HotAreaHandler {
 public:

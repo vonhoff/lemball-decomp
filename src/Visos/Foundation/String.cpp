@@ -14,7 +14,7 @@ String::String(char* p_arg0)
 
 // 68K 0x10200f1e __ct__7CStringFR7CString
 // STUB: LEMBALL 0x0046e480
-String::String(struct String& p_arg0)
+String::String(class String& p_arg0)
 {
 }
 
@@ -26,7 +26,7 @@ String::~String()
 
 // 68K 0x10200fbc __as__7CStringFR7CString
 // STUB: LEMBALL 0x0046e510
-String& String::operator=(const struct String& p_other)
+String& String::operator=(const class String& p_other)
 {
 	return *(String*) 0;
 }
@@ -40,7 +40,7 @@ String& String::operator=(char* p_text)
 
 // 68K 0x1020108e __apl__7CStringFR7CString
 // STUB: LEMBALL 0x0046e5d0
-String String::operator+=(const struct String& p_other)
+String String::operator+=(const class String& p_other)
 {
 	return *(String*) 0;
 }

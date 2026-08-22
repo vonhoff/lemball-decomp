@@ -7,9 +7,9 @@
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00498700 abstract/base driver
 // VTABLE: LEMBALL 0x00498738 Gdi DIB driver
-// VTABLE: LEMBALL 0x004987b0 DisplayDib driver
-// VTABLE: LEMBALL 0x004987e8 DirectDraw driver
-// VTABLE: LEMBALL 0x00498840 DirectDraw-derived driver
+// Subobject VTABLE: 0x004987b0 DisplayDib driver
+// Subobject VTABLE: 0x004987e8 DirectDraw driver
+// Subobject VTABLE: 0x00498840 DirectDraw-derived driver
 class TargetGraphicsDriver {
 public:
 	// No functions mapped yet.
@@ -25,4 +25,7 @@ private:
 
 // Confirmed class-scoped globals.
 extern TargetGraphicsDriver* g_pTargetGraphicsDriver;
+extern void* g_apCResRasterConstructionVtable[15];
+extern TargetGraphicsSystemState* g_pTargetGraphicsSystem;
+extern unsigned int g_dwWinGDrawColourTable[256];
 #endif

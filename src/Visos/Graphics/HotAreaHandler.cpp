@@ -79,7 +79,7 @@ void HotAreaHandler::Reset()
 // STUB: LEMBALL 0x0046a380
 unsigned int HotAreaHandler::ProcessArea(Message* p_message,
 										 const VsPoint& p_point,
-										 struct HotAreaHandler* p_currentHandler)
+										 class HotAreaHandler* p_currentHandler)
 {
 	return 0;
 }

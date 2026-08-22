@@ -45,3 +45,19 @@ unsigned int LevelLoader::CalcLevelId(eSkill p_skill, int p_level)
 {
 	return 0;
 }
+
+// Confirmed class-scoped globals.
+// GLOBAL: LEMBALL 0x004a6304
+int g_nEditLevelMode;
+
+// GLOBAL: LEMBALL 0x004a6308
+int g_nPlayLevelMode;
+
+// GLOBAL: LEMBALL 0x004a6314
+char g_szCommandLineLevelFile[232];
+
+// GLOBAL: LEMBALL 0x004a63fc
+char* g_pActiveLevelFile;
+
+// GLOBAL: LEMBALL 0x004a6400
+void* g_pLevelFileData;

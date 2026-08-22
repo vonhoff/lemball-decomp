@@ -7,19 +7,19 @@
 // VTABLE: LEMBALL 0x004988e0
 class Arena {
 public:
-	Arena(unsigned long p_arg0, char* p_arg1, struct Arena* p_arg2, struct Arena* p_arg3);
+	Arena(unsigned long p_arg0, char* p_arg1, class Arena* p_arg2, class Arena* p_arg3);
 	MBlock* FindSmallestBlock(unsigned long p_arg0, char* p_arg1);
-	bool AddToArenaList(struct Arena* p_arg0);
+	bool AddToArenaList(class Arena* p_arg0);
 	bool AddToBlockList(MBlock* p_arg0, MBlock* p_arg1);
 	bool AddToFreeList(MBlock* p_arg0);
-	bool AllocateArena(struct Arena** p_arg0, unsigned long p_arg1, char* p_arg2);
+	bool AllocateArena(class Arena** p_arg0, unsigned long p_arg1, char* p_arg2);
 	bool CheckAndAmalgamate(MBlock* p_arg0, MBlock* p_arg1);
 	bool CheckFreeMemoryBlock(MBlock* p_arg0);
 	bool CheckIntegrity();
 	bool CheckMemoryBlock(MBlock* p_arg0);
 	bool CheckValidPointer(void* p_arg0);
-	bool FreeArena(struct Arena* p_arg0);
-	bool RemoveFromArenaList(struct Arena* p_arg0);
+	bool FreeArena(class Arena* p_arg0);
+	bool RemoveFromArenaList(class Arena* p_arg0);
 	bool RemoveFromBlockList(MBlock* p_arg0);
 	bool RemoveFromFreeList(MBlock* p_arg0);
 	unsigned long GetAllocSize();

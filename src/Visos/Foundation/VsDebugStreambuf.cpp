@@ -46,3 +46,30 @@ VsDebugStreambuf* g_pSysStreambuf;
 
 // GLOBAL: LEMBALL 0x004a97c0
 VsDebugStreambuf* g_pErrorStreambuf;
+
+// GLOBAL: LEMBALL 0x004a071c
+void* g_pDebugAcceleratorTable;
+
+// GLOBAL: LEMBALL 0x004a0e68
+int g_nDebugInitialized;
+
+// GLOBAL: LEMBALL 0x004a0e80
+int g_nDebugFileOutputEnabled;
+
+// GLOBAL: LEMBALL 0x004a0e84
+int g_nAsyncDebugEnabled;
+
+// GLOBAL: LEMBALL 0x004a29f4
+void* g_pDebugThread;
+
+// GLOBAL: LEMBALL 0x004a2a04
+void* g_pDebugSyncEvent;
+
+// GLOBAL: LEMBALL 0x004a2a08
+int g_nDebugThreadId;
+
+// GLOBAL: LEMBALL 0x004a2a0c
+FILE* g_pDebugOutputFile;
+
+// GLOBAL: LEMBALL 0x004a2a10
+char* g_pDebugOutputPath;

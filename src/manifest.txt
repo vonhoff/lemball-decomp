@@ -181,8 +181,6 @@ AI/Objects/TrapDoor.cpp
 AI/Objects/TrapDoor.h
 AI/Objects/ViewData.cpp
 AI/Objects/ViewData.h
-AI/_globals.cpp
-AI/_globals.h
 Control/Game/Demo.cpp
 Control/Game/Demo.h
 Control/Game/Game.cpp
@@ -196,10 +194,9 @@ Control/Game/GameTime.h
 Control/Level/LevelLoader.cpp
 Control/Level/LevelLoader.h
 Control/Level/LoadBlockHeader.h
+Control/Support/PreInit.cpp
 Control/Support/PreInit.h
 Control/Support/PreviewData.h
-Control/_globals.cpp
-Control/_globals.h
 Frontend/Base/BaseFrontendDrawer.cpp
 Frontend/Base/BaseFrontendDrawer.h
 Frontend/Base/BaseFrontendProcess.cpp
@@ -271,16 +268,12 @@ Frontend/Windows/SuccFailAnimWindow.h
 Frontend/Windows/TrackWindow.cpp
 Frontend/Windows/TrackWindow.h
 Frontend/Windows/TrackWindowHotAreaSubobject.h
-Frontend/_globals.cpp
-Frontend/_globals.h
 Map/Base/Map.cpp
 Map/Base/Map.h
 Map/Ground/Ground.cpp
 Map/Ground/Ground.h
 Map/Ground/GroundArray.cpp
 Map/Ground/GroundArray.h
-Map/_globals.cpp
-Map/_globals.h
 Network/Game/NetworkGameStage.cpp
 Network/Game/NetworkGameStage.h
 Network/Game/NetworkManager.cpp
@@ -671,6 +664,7 @@ Visos/Resources/ResString.h
 Visos/Resources/ResTune.h
 Visos/Resources/ResZrle.cpp
 Visos/Resources/ResZrle.h
+Visos/Resources/ResourceTypeList.cpp
 Visos/Resources/ResourceTypeList.h
 Visos/Sound/BaseSoundDevice.cpp
 Visos/Sound/BaseSoundDevice.h
@@ -706,5 +700,3 @@ Visos/Target/TargetTextWindow.h
 Visos/Target/TargetWaveEffect.h
 Visos/Target/TargetWaveSoundDevice.h
 Visos/Target/TargetWinGDrawCodecState.h
-Visos/_globals.cpp
-Visos/_globals.h

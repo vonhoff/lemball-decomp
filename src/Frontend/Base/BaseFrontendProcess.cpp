@@ -55,3 +55,31 @@ bool BaseFrontendProcess::ReceiveCritical(unsigned long p_id, ReadPacket* p_pack
 BaseFrontendProcess::~BaseFrontendProcess()
 {
 }
+
+// Confirmed class-scoped globals.
+// GLOBAL: LEMBALL 0x0049ca30
+int g_nTestAllLevels;
+
+// GLOBAL: LEMBALL 0x0049f4f0
+int g_nFrontendAutoFlowToggle;
+
+// GLOBAL: LEMBALL 0x004a6284
+int g_nAnimationsDisabled;
+
+// GLOBAL: LEMBALL 0x004a6288
+int g_nZoomEnabled;
+
+// GLOBAL: LEMBALL 0x004a628c
+int g_nMusicAvailable;
+
+// GLOBAL: LEMBALL 0x004a6290
+int g_nEffectsAvailable;
+
+// GLOBAL: LEMBALL 0x004a6294
+int g_nAnimationsAvailable;
+
+// GLOBAL: LEMBALL 0x004a6298
+int g_nZoomAvailable;
+
+// GLOBAL: LEMBALL 0x004a6300
+int g_nDisplayMode;

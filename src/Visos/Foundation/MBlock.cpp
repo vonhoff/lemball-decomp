@@ -6,7 +6,7 @@ MBlock::MBlock()
 
 // 68K 0x10215938 __ct__7CMBlockFP6CArenaP7CMBlockPcUl
 // STUB: LEMBALL 0x0045a540
-MBlock::MBlock(Arena* p_arg0, struct MBlock* p_arg1, char* p_arg2, unsigned long p_arg3)
+MBlock::MBlock(Arena* p_arg0, class MBlock* p_arg1, char* p_arg2, unsigned long p_arg3)
 {
 }
 

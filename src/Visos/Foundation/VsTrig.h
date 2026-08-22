@@ -19,4 +19,6 @@ private:
 
 // Confirmed class-scoped globals.
 extern VsTrig* g_pVSTrig;
+extern int g_nVSTrigSource[512];
+extern unsigned int g_dwVSTrigInitialised;
 #endif

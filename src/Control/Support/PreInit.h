@@ -2,6 +2,7 @@
 #define LEMBALL_CONTROL_SUPPORT_PREINIT_H
 
 #include "../../Common.h"
+#include "PreInit.h" // complete type
 
 // SIZE 0x1c
 struct PreInit {
@@ -17,4 +18,7 @@ public:
 	void* m_icon;                 // 0x18
 };
 
+// Confirmed class-scoped globals.
+extern PreInit g_preInitActive;
+extern PreInit g_preInit;
 #endif

@@ -8,12 +8,12 @@ class String {
 public:
 	String Lower();
 	String operator+=(char* p_text);
-	String operator+=(const struct String& p_other);
+	String operator+=(const class String& p_other);
 	String& operator=(char* p_text);
-	String& operator=(const struct String& p_other);
+	String& operator=(const class String& p_other);
 	String();
 	String(char* p_arg0);
-	String(struct String& p_arg0);
+	String(class String& p_arg0);
 	int Getlength();
 	~String();
 

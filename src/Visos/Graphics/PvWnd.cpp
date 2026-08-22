@@ -15,13 +15,13 @@ void PvWnd::SetSizeStatus(unsigned int p_status)
 
 // 68K 0x10104a28 AddChild__6CPVWndFP6CPVWnd
 // STUB: LEMBALL 0x004323d0
-void PvWnd::AddChild(struct PvWnd* p_child)
+void PvWnd::AddChild(class PvWnd* p_child)
 {
 }
 
 // 68K 0x10104aaa RemoveChild__6CPVWndFP6CPVWnd
 // STUB: LEMBALL 0x00432430
-void PvWnd::RemoveChild(struct PvWnd* p_child)
+void PvWnd::RemoveChild(class PvWnd* p_child)
 {
 }
 

@@ -5,7 +5,7 @@
 
 // SIZE 0xb8
 // VTABLE: LEMBALL 0x0049a56c native callback
-// VTABLE: LEMBALL 0x0049a570 NetworkFile view
+// Subobject VTABLE: 0x0049a570 NetworkFile view
 // VTABLE: LEMBALL 0x0049a5b0 ReadSocket view
 // VTABLE: LEMBALL 0x0049a5d8 BaseCommonSocket view
 class FileReadSocket {

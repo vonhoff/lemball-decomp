@@ -59,3 +59,34 @@ TcpIpBroadcast* TcpIpNetwork::GetNewBroadcast()
 TcpIpNetwork::~TcpIpNetwork()
 {
 }
+
+// Confirmed class-scoped globals.
+// GLOBAL: LEMBALL 0x004a23b0
+unsigned int g_dwTCPIPNetworkThreadId;
+
+// GLOBAL: LEMBALL 0x004a23b4
+void* g_hTCPIPNetworkThread;
+
+// GLOBAL: LEMBALL 0x004a1e24
+unsigned int g_networkPacketSize;
+
+// GLOBAL: LEMBALL 0x004a1e28
+BasePacketHeader* g_pNetworkPacketScratch;
+
+// GLOBAL: LEMBALL 0x004a1e2c
+unsigned int g_receivedPacketSize;
+
+// GLOBAL: LEMBALL 0x004a1e34
+unsigned char* g_pBroadcastPacketTemplate;
+
+// GLOBAL: LEMBALL 0x004a1e38
+char* g_szBroadcastPeerName;
+
+// GLOBAL: LEMBALL 0x004a1e3c
+unsigned int g_broadcastPayloadLength;
+
+// GLOBAL: LEMBALL 0x004a1e48
+unsigned short g_broadcastPort;
+
+// GLOBAL: LEMBALL 0x004a1e4c
+int g_lastNetworkError;

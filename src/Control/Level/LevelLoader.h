@@ -18,4 +18,10 @@ private:
 	int m_fallbackLevel; // 0x04
 };
 
+// Confirmed class-scoped globals.
+extern int g_nEditLevelMode;
+extern int g_nPlayLevelMode;
+extern char g_szCommandLineLevelFile[232];
+extern char* g_pActiveLevelFile;
+extern void* g_pLevelFileData;
 #endif

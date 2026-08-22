@@ -995,6 +995,16 @@
           "VsTrig*",
           "g_pVSTrig",
           "0x004a13c0"
+        ],
+        [
+          "int",
+          "g_nVSTrigSource[512]",
+          "0x004a13c8"
+        ],
+        [
+          "unsigned int",
+          "g_dwVSTrigInitialised",
+          "0x004a1bc8"
         ]
       ]
     },
@@ -3657,6 +3667,81 @@
           "Map*",
           "g_pMap",
           "0x004a74b4"
+        ],
+        [
+          "void*",
+          "g_apValidateDefaultBloxDataCases[25]",
+          "0x00430fa8"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit0206",
+          "0x0049e4e8"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit0207",
+          "0x0049e4ec"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit0208",
+          "0x0049e4f0"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit0209",
+          "0x0049e4f4"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit020A",
+          "0x0049e4f8"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit020B",
+          "0x0049e4fc"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit020C",
+          "0x0049e500"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit020D",
+          "0x0049e504"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit020E",
+          "0x0049e51c"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit020F",
+          "0x0049e520"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit0214",
+          "0x0049e528"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit0210",
+          "0x0049e534"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit0202",
+          "0x0049e538"
+        ],
+        [
+          "unsigned short",
+          "g_wDefaultBloxLimit0217",
+          "0x0049e544"
         ]
       ]
     },
@@ -3938,6 +4023,13 @@
           "m_state54",
           "0x54"
         ]
+      ],
+      "globals": [
+        [
+          "int",
+          "g_nDemoMode",
+          "0x004a62a4"
+        ]
       ]
     },
     "GameStatus": {
@@ -4054,6 +4146,33 @@
           "m_fallbackLevel",
           "0x04"
         ]
+      ],
+      "globals": [
+        [
+          "int",
+          "g_nEditLevelMode",
+          "0x004a6304"
+        ],
+        [
+          "int",
+          "g_nPlayLevelMode",
+          "0x004a6308"
+        ],
+        [
+          "char",
+          "g_szCommandLineLevelFile[232]",
+          "0x004a6314"
+        ],
+        [
+          "char*",
+          "g_pActiveLevelFile",
+          "0x004a63fc"
+        ],
+        [
+          "void*",
+          "g_pLevelFileData",
+          "0x004a6400"
+        ]
       ]
     },
     "PreInit": {
@@ -4099,7 +4218,19 @@
           "0x18"
         ]
       ],
-      "kind": "struct"
+      "kind": "struct",
+      "globals": [
+        [
+          "PreInit",
+          "g_preInitActive",
+          "0x004a27a8"
+        ],
+        [
+          "PreInit",
+          "g_preInit",
+          "0x004a6258"
+        ]
+      ]
     },
     "PreviewData": {
       "module": "Control",
@@ -4201,6 +4332,38 @@
           "m_frontendResources",
           "0x6c"
         ]
+      ],
+      "globals": [
+        [
+          "unsigned int",
+          "g_anFacingDirectionYFlip[8]",
+          "0x0049d040"
+        ],
+        [
+          "int*",
+          "g_pSentinel",
+          "0x004a1bcc"
+        ],
+        [
+          "unsigned int",
+          "g_dwGameTick",
+          "0x0049ce04"
+        ],
+        [
+          "int",
+          "g_anPasswordPermutation[8]",
+          "0x0049cb70"
+        ],
+        [
+          "char",
+          "g_szUnlockPassword[11]",
+          "0x0049cb9c"
+        ],
+        [
+          "char",
+          "g_szReadBinaryMode[3]",
+          "0x0049cedc"
+        ]
       ]
     },
     "Process": {
@@ -4291,6 +4454,53 @@
           "Game*",
           "m_game",
           "0x24"
+        ]
+      ],
+      "globals": [
+        [
+          "int",
+          "g_nTestAllLevels",
+          "0x0049ca30"
+        ],
+        [
+          "int",
+          "g_nFrontendAutoFlowToggle",
+          "0x0049f4f0"
+        ],
+        [
+          "int",
+          "g_nAnimationsDisabled",
+          "0x004a6284"
+        ],
+        [
+          "int",
+          "g_nZoomEnabled",
+          "0x004a6288"
+        ],
+        [
+          "int",
+          "g_nMusicAvailable",
+          "0x004a628c"
+        ],
+        [
+          "int",
+          "g_nEffectsAvailable",
+          "0x004a6290"
+        ],
+        [
+          "int",
+          "g_nAnimationsAvailable",
+          "0x004a6294"
+        ],
+        [
+          "int",
+          "g_nZoomAvailable",
+          "0x004a6298"
+        ],
+        [
+          "int",
+          "g_nDisplayMode",
+          "0x004a6300"
         ]
       ]
     },
@@ -4847,6 +5057,16 @@
           "SmallMemory*",
           "g_pSmallMemory",
           "0x004aa0fc"
+        ],
+        [
+          "int",
+          "g_nSmallMemoryEnabled",
+          "0x004a217c"
+        ],
+        [
+          "void*",
+          "g_pMasterArenaMemory",
+          "0x004a2180"
         ]
       ]
     },
@@ -5393,6 +5613,13 @@
           "unsigned int",
           "m_musicStateCopy",
           "0xc8c"
+        ]
+      ],
+      "globals": [
+        [
+          "char",
+          "g_szSoundDriverInfo[1024]",
+          "0x004a97c8"
         ]
       ]
     },
@@ -8285,6 +8512,13 @@
           "m_active",
           "0x5c"
         ]
+      ],
+      "globals": [
+        [
+          "int",
+          "g_nGunButtonsRedrawPending",
+          "0x0049fa68"
+        ]
       ]
     },
     "TrackerButton": {
@@ -8536,7 +8770,14 @@
       "fields": [],
       "returns": {
         "__ct__13CHiliteWindowFv": "HiliteWindow*"
-      }
+      },
+      "globals": [
+        [
+          "unsigned int",
+          "g_dwHiliteAnimationId",
+          "0x004a7b64"
+        ]
+      ]
     },
     "HiliteButtons": {
       "module": "Frontend",
@@ -11424,6 +11665,21 @@
           "TargetGraphicsDriver*",
           "g_pTargetGraphicsDriver",
           "0x004a076c"
+        ],
+        [
+          "void*",
+          "g_apCResRasterConstructionVtable[15]",
+          "0x00498ab0"
+        ],
+        [
+          "TargetGraphicsSystemState*",
+          "g_pTargetGraphicsSystem",
+          "0x004a0768"
+        ],
+        [
+          "unsigned int",
+          "g_dwWinGDrawColourTable[256]",
+          "0x004a9bf8"
         ]
       ]
     },
@@ -11605,6 +11861,26 @@
           "TargetTextWindow*",
           "g_pDebugWindow",
           "0x004a29f0"
+        ],
+        [
+          "int",
+          "g_nTargetTextWindowClassRegistered",
+          "0x004a2b68"
+        ],
+        [
+          "int",
+          "g_nTargetTextWindowActive",
+          "0x004a2b7c"
+        ],
+        [
+          "int",
+          "g_nTargetTextWindowCreated",
+          "0x004a2b8c"
+        ],
+        [
+          "void*",
+          "g_apTargetTextWindowLockVtable[2]",
+          "0x0049a4a0"
         ]
       ]
     },
@@ -11622,6 +11898,21 @@
           "TargetPlatformServices*",
           "g_pTargetPlatformServices",
           "0x004a1dcc"
+        ],
+        [
+          "unsigned int",
+          "g_dwInputQuitRequested",
+          "0x004a27a0"
+        ],
+        [
+          "TargetInputTranslationEntry",
+          "g_dwInputTranslationPairs[61]",
+          "0x004a2808"
+        ],
+        [
+          "unsigned int",
+          "g_dwWindowQuitRequested",
+          "0x004a818c"
         ]
       ]
     },
@@ -12256,6 +12547,28 @@
           "m_ambientAnimId",
           "0x394"
         ]
+      ],
+      "globals": [
+        [
+          "int",
+          "g_nPendingEffectsVolume",
+          "0x0049f628"
+        ],
+        [
+          "int",
+          "g_nPendingMusicVolume",
+          "0x0049f62c"
+        ],
+        [
+          "int",
+          "g_nMusicVolume",
+          "0x004a6278"
+        ],
+        [
+          "int",
+          "g_nEffectsVolume",
+          "0x004a627c"
+        ]
       ]
     },
     "FrontendResourceLoader": {
@@ -12404,6 +12717,16 @@
           "FrontendResourceLoader*",
           "g_pFrontendResourceLoader",
           "0x004a0120"
+        ],
+        [
+          "unsigned int",
+          "g_dwGroundStyleResourceId",
+          "0x004a784c"
+        ],
+        [
+          "unsigned int[10]",
+          "g_anGroundStyleResourceIds",
+          "0x004a786c"
         ]
       ]
     },
@@ -14424,6 +14747,43 @@
           "m_isFlying",
           "0xf0"
         ]
+      ],
+      "globals": [
+        [
+          "unsigned char[32]",
+          "g_abObjectIdBitmap",
+          "0x004a6410"
+        ],
+        [
+          "GameObject*[256]",
+          "g_pObjects",
+          "0x004a6510"
+        ],
+        [
+          "word",
+          "g_wObjectCount",
+          "0x004a74bc"
+        ],
+        [
+          "unsigned char[8]",
+          "g_abBitMasks",
+          "0x0049d108"
+        ],
+        [
+          "word",
+          "g_wNetworkLemmingIndex",
+          "0x0049cf4c"
+        ],
+        [
+          "word",
+          "g_wLocalLemmingIndex",
+          "0x0049cf50"
+        ],
+        [
+          "word",
+          "g_wLemmingCount",
+          "0x004a640c"
+        ]
       ]
     },
     "GlobalGameObject": {
@@ -16038,6 +16398,23 @@
           "m_alternateTimer",
           "0x78"
         ]
+      ],
+      "globals": [
+        [
+          "unsigned int",
+          "g_dwFileNetworkThreadId",
+          "0x004a2260"
+        ],
+        [
+          "void*",
+          "g_hFileNetworkThread",
+          "0x004a2264"
+        ],
+        [
+          "void*",
+          "g_pFileBroadcastData",
+          "0x004a2de4"
+        ]
       ]
     },
     "FileNetworkAddress": {
@@ -16133,6 +16510,58 @@
           "unsigned int",
           "m_timerId",
           "0x74"
+        ]
+      ],
+      "globals": [
+        [
+          "unsigned int",
+          "g_dwTCPIPNetworkThreadId",
+          "0x004a23b0"
+        ],
+        [
+          "void*",
+          "g_hTCPIPNetworkThread",
+          "0x004a23b4"
+        ],
+        [
+          "unsigned int",
+          "g_networkPacketSize",
+          "0x004a1e24"
+        ],
+        [
+          "BasePacketHeader*",
+          "g_pNetworkPacketScratch",
+          "0x004a1e28"
+        ],
+        [
+          "unsigned int",
+          "g_receivedPacketSize",
+          "0x004a1e2c"
+        ],
+        [
+          "unsigned char*",
+          "g_pBroadcastPacketTemplate",
+          "0x004a1e34"
+        ],
+        [
+          "char*",
+          "g_szBroadcastPeerName",
+          "0x004a1e38"
+        ],
+        [
+          "unsigned int",
+          "g_broadcastPayloadLength",
+          "0x004a1e3c"
+        ],
+        [
+          "unsigned short",
+          "g_broadcastPort",
+          "0x004a1e48"
+        ],
+        [
+          "int",
+          "g_lastNetworkError",
+          "0x004a1e4c"
         ]
       ]
     },
@@ -18915,6 +19344,51 @@
           "VsDebugStreambuf*",
           "g_pErrorStreambuf",
           "0x004a97c0"
+        ],
+        [
+          "void*",
+          "g_pDebugAcceleratorTable",
+          "0x004a071c"
+        ],
+        [
+          "int",
+          "g_nDebugInitialized",
+          "0x004a0e68"
+        ],
+        [
+          "int",
+          "g_nDebugFileOutputEnabled",
+          "0x004a0e80"
+        ],
+        [
+          "int",
+          "g_nAsyncDebugEnabled",
+          "0x004a0e84"
+        ],
+        [
+          "void*",
+          "g_pDebugThread",
+          "0x004a29f4"
+        ],
+        [
+          "void*",
+          "g_pDebugSyncEvent",
+          "0x004a2a04"
+        ],
+        [
+          "int",
+          "g_nDebugThreadId",
+          "0x004a2a08"
+        ],
+        [
+          "FILE*",
+          "g_pDebugOutputFile",
+          "0x004a2a0c"
+        ],
+        [
+          "char*",
+          "g_pDebugOutputPath",
+          "0x004a2a10"
         ]
       ]
     },
@@ -18963,7 +19437,24 @@
       "returns": {
         "__ct__6CVSIOsFP12CVSStreambuf": "VsIOs*",
         "__dt__6CVSIOsFv": "VsIOs*"
-      }
+      },
+      "globals": [
+        [
+          "char",
+          "g_szCurrentDirectory[256]",
+          "0x004a8088"
+        ],
+        [
+          "char",
+          "g_szSourceDiskPath[256]",
+          "0x004a9ff8"
+        ],
+        [
+          "char",
+          "g_szCDRootPath[52]",
+          "0x004a1dd0"
+        ]
+      ]
     },
     "VsOStream": {
       "module": "Visos",
@@ -19197,6 +19688,23 @@
           "int",
           "m_count",
           "0x0c"
+        ]
+      ],
+      "globals": [
+        [
+          "ResourceTypeList*",
+          "g_pCompressedResourceTypes",
+          "0x004a1d64"
+        ],
+        [
+          "ResourceTypeList*",
+          "g_pResourceTypes",
+          "0x004a1d68"
+        ],
+        [
+          "ResourceTypeList*",
+          "g_pPreloadedResourceTypes",
+          "0x004a1d6c"
         ]
       ]
     },
@@ -21380,503 +21888,7 @@
       "class": "Cursor"
     }
   },
-  "globals": {
-    "AI": [
-      [
-        "unsigned char[32]",
-        "g_abObjectIdBitmap",
-        "0x004a6410"
-      ],
-      [
-        "GameObject*[256]",
-        "g_pObjects",
-        "0x004a6510"
-      ],
-      [
-        "word",
-        "g_wObjectCount",
-        "0x004a74bc"
-      ],
-      [
-        "unsigned char[8]",
-        "g_abBitMasks",
-        "0x0049d108"
-      ],
-      [
-        "word",
-        "g_wNetworkLemmingIndex",
-        "0x0049cf4c"
-      ],
-      [
-        "word",
-        "g_wLocalLemmingIndex",
-        "0x0049cf50"
-      ],
-      [
-        "word",
-        "g_wLemmingCount",
-        "0x004a640c"
-      ]
-    ],
-    "Control": [
-      [
-        "unsigned int",
-        "g_anFacingDirectionYFlip[8]",
-        "0x0049d040"
-      ],
-      [
-        "int",
-        "g_nDemoMode",
-        "0x004a62a4"
-      ],
-      [
-        "int*",
-        "g_pSentinel",
-        "0x004a1bcc"
-      ],
-      [
-        "unsigned int",
-        "g_dwGameTick",
-        "0x0049ce04"
-      ],
-      [
-        "int",
-        "g_anPasswordPermutation[8]",
-        "0x0049cb70"
-      ],
-      [
-        "char",
-        "g_szUnlockPassword[11]",
-        "0x0049cb9c"
-      ],
-      [
-        "char",
-        "g_szReadBinaryMode[3]",
-        "0x0049cedc"
-      ],
-      [
-        "PreInit",
-        "g_preInitActive",
-        "0x004a27a8"
-      ],
-      [
-        "PreInit",
-        "g_preInit",
-        "0x004a6258"
-      ],
-      [
-        "int",
-        "g_nEditLevelMode",
-        "0x004a6304"
-      ],
-      [
-        "int",
-        "g_nPlayLevelMode",
-        "0x004a6308"
-      ],
-      [
-        "char",
-        "g_szCommandLineLevelFile[232]",
-        "0x004a6314"
-      ],
-      [
-        "char*",
-        "g_pActiveLevelFile",
-        "0x004a63fc"
-      ],
-      [
-        "void*",
-        "g_pLevelFileData",
-        "0x004a6400"
-      ]
-    ],
-    "Frontend": [
-      [
-        "int",
-        "g_nTestAllLevels",
-        "0x0049ca30"
-      ],
-      [
-        "int",
-        "g_nGunButtonsRedrawPending",
-        "0x0049fa68"
-      ],
-      [
-        "int",
-        "g_nFrontendAutoFlowToggle",
-        "0x0049f4f0"
-      ],
-      [
-        "int",
-        "g_nPendingEffectsVolume",
-        "0x0049f628"
-      ],
-      [
-        "int",
-        "g_nPendingMusicVolume",
-        "0x0049f62c"
-      ],
-      [
-        "int",
-        "g_nMusicVolume",
-        "0x004a6278"
-      ],
-      [
-        "int",
-        "g_nEffectsVolume",
-        "0x004a627c"
-      ],
-      [
-        "int",
-        "g_nAnimationsDisabled",
-        "0x004a6284"
-      ],
-      [
-        "int",
-        "g_nZoomEnabled",
-        "0x004a6288"
-      ],
-      [
-        "int",
-        "g_nMusicAvailable",
-        "0x004a628c"
-      ],
-      [
-        "int",
-        "g_nEffectsAvailable",
-        "0x004a6290"
-      ],
-      [
-        "int",
-        "g_nAnimationsAvailable",
-        "0x004a6294"
-      ],
-      [
-        "int",
-        "g_nZoomAvailable",
-        "0x004a6298"
-      ],
-      [
-        "int",
-        "g_nDisplayMode",
-        "0x004a6300"
-      ],
-      [
-        "unsigned int",
-        "g_dwHiliteAnimationId",
-        "0x004a7b64"
-      ],
-      [
-        "unsigned int",
-        "g_dwGroundStyleResourceId",
-        "0x004a784c"
-      ],
-      [
-        "unsigned int[10]",
-        "g_anGroundStyleResourceIds",
-        "0x004a786c"
-      ]
-    ],
-    "Map": [
-      [
-        "void*",
-        "g_apValidateDefaultBloxDataCases[25]",
-        "0x00430fa8"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit0206",
-        "0x0049e4e8"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit0207",
-        "0x0049e4ec"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit0208",
-        "0x0049e4f0"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit0209",
-        "0x0049e4f4"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit020A",
-        "0x0049e4f8"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit020B",
-        "0x0049e4fc"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit020C",
-        "0x0049e500"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit020D",
-        "0x0049e504"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit020E",
-        "0x0049e51c"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit020F",
-        "0x0049e520"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit0214",
-        "0x0049e528"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit0210",
-        "0x0049e534"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit0202",
-        "0x0049e538"
-      ],
-      [
-        "unsigned short",
-        "g_wDefaultBloxLimit0217",
-        "0x0049e544"
-      ]
-    ],
-    "Visos": [
-      [
-        "void*",
-        "g_apCResRasterConstructionVtable[15]",
-        "0x00498ab0"
-      ],
-      [
-        "void*",
-        "g_pDebugAcceleratorTable",
-        "0x004a071c"
-      ],
-      [
-        "TargetGraphicsSystemState*",
-        "g_pTargetGraphicsSystem",
-        "0x004a0768"
-      ],
-      [
-        "int",
-        "g_nDebugInitialized",
-        "0x004a0e68"
-      ],
-      [
-        "int",
-        "g_nDebugFileOutputEnabled",
-        "0x004a0e80"
-      ],
-      [
-        "int",
-        "g_nAsyncDebugEnabled",
-        "0x004a0e84"
-      ],
-      [
-        "unsigned int",
-        "g_dwFileNetworkThreadId",
-        "0x004a2260"
-      ],
-      [
-        "void*",
-        "g_hFileNetworkThread",
-        "0x004a2264"
-      ],
-      [
-        "unsigned int",
-        "g_dwTCPIPNetworkThreadId",
-        "0x004a23b0"
-      ],
-      [
-        "void*",
-        "g_hTCPIPNetworkThread",
-        "0x004a23b4"
-      ],
-      [
-        "unsigned int",
-        "g_dwInputQuitRequested",
-        "0x004a27a0"
-      ],
-      [
-        "TargetInputTranslationEntry",
-        "g_dwInputTranslationPairs[61]",
-        "0x004a2808"
-      ],
-      [
-        "char",
-        "g_szSoundDriverInfo[1024]",
-        "0x004a97c8"
-      ],
-      [
-        "void*",
-        "g_pApplicationInstance",
-        "0x004a8188"
-      ],
-      [
-        "unsigned int",
-        "g_dwWindowQuitRequested",
-        "0x004a818c"
-      ],
-      [
-        "void*",
-        "g_pDebugThread",
-        "0x004a29f4"
-      ],
-      [
-        "void*",
-        "g_pDebugSyncEvent",
-        "0x004a2a04"
-      ],
-      [
-        "int",
-        "g_nDebugThreadId",
-        "0x004a2a08"
-      ],
-      [
-        "FILE*",
-        "g_pDebugOutputFile",
-        "0x004a2a0c"
-      ],
-      [
-        "char*",
-        "g_pDebugOutputPath",
-        "0x004a2a10"
-      ],
-      [
-        "int",
-        "g_nTargetTextWindowClassRegistered",
-        "0x004a2b68"
-      ],
-      [
-        "int",
-        "g_nTargetTextWindowActive",
-        "0x004a2b7c"
-      ],
-      [
-        "int",
-        "g_nTargetTextWindowCreated",
-        "0x004a2b8c"
-      ],
-      [
-        "char",
-        "g_szCurrentDirectory[256]",
-        "0x004a8088"
-      ],
-      [
-        "void*",
-        "g_apTargetTextWindowLockVtable[2]",
-        "0x0049a4a0"
-      ],
-      [
-        "unsigned int",
-        "g_dwWinGDrawColourTable[256]",
-        "0x004a9bf8"
-      ],
-      [
-        "char",
-        "g_szSourceDiskPath[256]",
-        "0x004a9ff8"
-      ],
-      [
-        "char",
-        "g_szCDRootPath[52]",
-        "0x004a1dd0"
-      ],
-      [
-        "unsigned int",
-        "g_networkPacketSize",
-        "0x004a1e24"
-      ],
-      [
-        "BasePacketHeader*",
-        "g_pNetworkPacketScratch",
-        "0x004a1e28"
-      ],
-      [
-        "unsigned int",
-        "g_receivedPacketSize",
-        "0x004a1e2c"
-      ],
-      [
-        "void*",
-        "g_pFileBroadcastData",
-        "0x004a2de4"
-      ],
-      [
-        "unsigned char*",
-        "g_pBroadcastPacketTemplate",
-        "0x004a1e34"
-      ],
-      [
-        "char*",
-        "g_szBroadcastPeerName",
-        "0x004a1e38"
-      ],
-      [
-        "unsigned int",
-        "g_broadcastPayloadLength",
-        "0x004a1e3c"
-      ],
-      [
-        "unsigned short",
-        "g_broadcastPort",
-        "0x004a1e48"
-      ],
-      [
-        "int",
-        "g_lastNetworkError",
-        "0x004a1e4c"
-      ],
-      [
-        "ResourceTypeList*",
-        "g_pCompressedResourceTypes",
-        "0x004a1d64"
-      ],
-      [
-        "ResourceTypeList*",
-        "g_pResourceTypes",
-        "0x004a1d68"
-      ],
-      [
-        "ResourceTypeList*",
-        "g_pPreloadedResourceTypes",
-        "0x004a1d6c"
-      ],
-      [
-        "int",
-        "g_nSmallMemoryEnabled",
-        "0x004a217c"
-      ],
-      [
-        "void*",
-        "g_pMasterArenaMemory",
-        "0x004a2180"
-      ],
-      [
-        "int",
-        "g_nVSTrigSource[512]",
-        "0x004a13c8"
-      ],
-      [
-        "unsigned int",
-        "g_dwVSTrigInitialised",
-        "0x004a1bc8"
-      ]
-    ]
-  },
+  "globals": {},
   "categories": {
     "Visos": {
       "Network": [

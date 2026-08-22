@@ -30,4 +30,8 @@ private:
 	unsigned int m_alternateTimer;  // 0x78
 };
 
+// Confirmed class-scoped globals.
+extern unsigned int g_dwFileNetworkThreadId;
+extern void* g_hFileNetworkThread;
+extern void* g_pFileBroadcastData;
 #endif

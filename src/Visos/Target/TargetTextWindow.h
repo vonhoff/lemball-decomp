@@ -30,4 +30,8 @@ private:
 
 // Confirmed class-scoped globals.
 extern TargetTextWindow* g_pDebugWindow;
+extern int g_nTargetTextWindowClassRegistered;
+extern int g_nTargetTextWindowActive;
+extern int g_nTargetTextWindowCreated;
+extern void* g_apTargetTextWindowLockVtable[2];
 #endif

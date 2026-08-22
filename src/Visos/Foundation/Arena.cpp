@@ -6,7 +6,7 @@ Arena::Arena()
 
 // 68K 0x102147c2 __ct__6CArenaFUlPcP6CArenaP6CArena
 // STUB: LEMBALL 0x004599f0
-Arena::Arena(unsigned long p_arg0, char* p_arg1, struct Arena* p_arg2, struct Arena* p_arg3)
+Arena::Arena(unsigned long p_arg0, char* p_arg1, class Arena* p_arg2, class Arena* p_arg3)
 {
 }
 
@@ -45,7 +45,7 @@ bool Arena::AddToBlockList(MBlock* p_arg0, MBlock* p_arg1)
 
 // 68K 0x10214ad4 AddToArenaList__6CArenaFP6CArena
 // STUB: LEMBALL 0x00459c40
-bool Arena::AddToArenaList(struct Arena* p_arg0)
+bool Arena::AddToArenaList(class Arena* p_arg0)
 {
 	return 0;
 }
@@ -66,7 +66,7 @@ bool Arena::RemoveFromBlockList(MBlock* p_arg0)
 
 // 68K 0x10214c18 RemoveFromArenaList__6CArenaFP6CArena
 // STUB: LEMBALL 0x00459ce0
-bool Arena::RemoveFromArenaList(struct Arena* p_arg0)
+bool Arena::RemoveFromArenaList(class Arena* p_arg0)
 {
 	return 0;
 }
@@ -100,7 +100,7 @@ bool Arena::Free(unsigned char* p_memory)
 
 // 68K 0x102151ce AllocateArena__6CArenaFPP6CArenaUlPc
 // STUB: LEMBALL 0x0045a010
-bool Arena::AllocateArena(struct Arena** p_arg0, unsigned long p_arg1, char* p_arg2)
+bool Arena::AllocateArena(class Arena** p_arg0, unsigned long p_arg1, char* p_arg2)
 {
 	// STRING: LEMBALL 0x004a1240 "Arena container"
 	return 0;
@@ -108,7 +108,7 @@ bool Arena::AllocateArena(struct Arena** p_arg0, unsigned long p_arg1, char* p_a
 
 // 68K 0x102152a2 FreeArena__6CArenaFP6CArena
 // STUB: LEMBALL 0x0045a0a0
-bool Arena::FreeArena(struct Arena* p_arg0)
+bool Arena::FreeArena(class Arena* p_arg0)
 {
 	return 0;
 }

@@ -24,8 +24,8 @@ public:
 	unsigned short MapCheck(int p_arg0, int p_arg1);
 	virtual AiCoord ActivatePosition();                                               // vtable+0x2c
 	virtual Ice* Conveyor();                                                          // vtable+0xec
-	virtual bool Activate(struct GameObject* p_object);                               // vtable+0x18
-	virtual bool AddObject(eObjectType p_arg0, struct GameObject* p_arg1);            // vtable+0xb8
+	virtual bool Activate(class GameObject* p_object);                                // vtable+0x18
+	virtual bool AddObject(eObjectType p_arg0, class GameObject* p_arg1);             // vtable+0xb8
 	virtual bool Bored();                                                             // vtable+0x80
 	virtual bool Collision(const Pt3& p_arg0);                                        // vtable+0x50
 	virtual bool Collision(const Rect3& p_arg0);                                      // vtable+0x4c
@@ -143,4 +143,12 @@ private:
 	unsigned int m_isFlying;              // 0xf0
 };
 
+// Confirmed class-scoped globals.
+extern unsigned char g_abObjectIdBitmap[32];
+extern GameObject* g_pObjects[256];
+extern word g_wObjectCount;
+extern unsigned char g_abBitMasks[8];
+extern word g_wNetworkLemmingIndex;
+extern word g_wLocalLemmingIndex;
+extern word g_wLemmingCount;
 #endif
