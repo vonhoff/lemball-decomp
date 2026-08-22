@@ -69,8 +69,8 @@ String String::operator+=(String& p_other)
 	String temp;
 	delete[] temp.m_text;
 	int newCap = strlen(m_text) + strlen(p_other.m_text) + 1;
+	temp.m_text = new char[newCap];
 	temp.m_capacity = newCap;
-	temp.m_text = new char[temp.m_capacity];
 	strcpy(temp.m_text, m_text);
 	strcat(temp.m_text, p_other.m_text);
 
@@ -88,8 +88,8 @@ String String::operator+=(const char* p_text)
 	String temp;
 	delete[] temp.m_text;
 	int newCap = strlen(m_text) + strlen(p_text) + 1;
+	temp.m_text = new char[newCap];
 	temp.m_capacity = newCap;
-	temp.m_text = new char[temp.m_capacity];
 	strcpy(temp.m_text, m_text);
 	strcat(temp.m_text, p_text);
 

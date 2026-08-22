@@ -88,24 +88,23 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 
 	int hasWritten = 0;
 	int written = 0;
-	int i = 0;
 	unsigned int p = s_maxPowers[p_radix];
+	unsigned long val = p_value;
 
-	do {
-		unsigned int digit = p_value / p;
+	for (int i = 0; i < 33; i++) {
+		unsigned int digit = val / p;
 		if (digit != 0 || hasWritten != 0) {
 			p_buffer[written++] = "0123456789abcdef"[digit];
 			hasWritten = 1;
 		}
-		p_value -= digit * p;
+		val -= digit * p;
 		p /= (unsigned int) p_radix;
 		if (p == 1) {
 			break;
 		}
-		i++;
-	} while (i < 33);
+	}
 
-	p_buffer[written] = "0123456789abcdef"[p_value];
+	p_buffer[written] = "0123456789abcdef"[val];
 	p_buffer[written + 1] = '\0';
 	return p_buffer;
 }

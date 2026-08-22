@@ -1,4 +1,3 @@
-#define WIN32_LEAN_AND_MEAN
 #include "VsDebug.h"
 
 #include "../Target/TargetTextWindow.h"
@@ -10,7 +9,13 @@
 
 #include <setjmp.h>
 #include <string.h>
-#include <windows.h>
+
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd,
+														   const char* lpText,
+														   const char* lpCaption,
+														   unsigned int uType);
+
+#pragma intrinsic(strlen)
 
 // 68K 0x10213c3a _VSExit__Fi
 // FUNCTION: LEMBALL 0x00459970
@@ -31,7 +36,7 @@ void VsRelAssert(const char* p_reason, const char* p_file, unsigned int p_line)
 void WriteDebugString2File(char* p_text)
 {
 	if (g_pDebugOutputPath != NULL) {
-		if (p_text[0] != '\0') {
+		if (strlen(p_text) != 0) {
 			g_pDebugOutputFile = (FILE*) VsOpen(g_pDebugOutputPath, "a");
 			VsWrite((_Filet*) g_pDebugOutputFile, (void*) p_text, strlen(p_text));
 			VsClose((_Filet*) g_pDebugOutputFile);
@@ -39,16 +44,16 @@ void WriteDebugString2File(char* p_text)
 	}
 }
 
-__inline static int RawOutputString(char* p_text, const char* p_name, unsigned int p_color)
+// 68K 0x1011006c _RAWOUT_DebugString__FPc
+// FUNCTION: LEMBALL 0x00472910
+int RawOutDebugString(char* p_text)
 {
 	if (g_nDebugInitialized == 0) {
-		MessageBoxA(NULL, p_text, p_name, 0);
+		MessageBoxA(NULL, p_text, "_RAWOUT_DebugString", 0);
 		return 1;
 	}
-
-	TargetTextWindow* window = g_pDebugWindow;
-	if (window != NULL) {
-		window->PostAllocatedTextControlString(p_text, p_color);
+	if (g_pDebugWindow != NULL) {
+		g_pDebugWindow->PostAllocatedTextControlString(p_text, 0x8000);
 	}
 	else if (g_nDebugFileOutputEnabled != 0) {
 		WriteDebugString2File(p_text);
@@ -56,25 +61,38 @@ __inline static int RawOutputString(char* p_text, const char* p_name, unsigned i
 	return g_pDebugWindow != NULL;
 }
 
-// 68K 0x1011006c _RAWOUT_DebugString__FPc
-// FUNCTION: LEMBALL 0x00472910
-int RawOutDebugString(char* p_text)
-{
-	return RawOutputString(p_text, "_RAWOUT_DebugString", 0x8000);
-}
-
 // 68K 0x101100a4 _RAWOUT_ErrorString__FPc
 // FUNCTION: LEMBALL 0x00472980
 int RawOutErrorString(char* p_text)
 {
-	return RawOutputString(p_text, "_RAWOUT_ErrorString", 0xff);
+	if (g_nDebugInitialized == 0) {
+		MessageBoxA(NULL, p_text, "_RAWOUT_ErrorString", 0);
+		return 1;
+	}
+	if (g_pDebugWindow != NULL) {
+		g_pDebugWindow->PostAllocatedTextControlString(p_text, 0xff);
+	}
+	else if (g_nDebugFileOutputEnabled != 0) {
+		WriteDebugString2File(p_text);
+	}
+	return g_pDebugWindow != NULL;
 }
 
 // 68K 0x101100dc _RAWOUT_SysString__FPc
 // FUNCTION: LEMBALL 0x004729f0
 int RawOutSysString(char* p_text)
 {
-	return RawOutputString(p_text, "_RAWOUT_SysString", 0xff0000);
+	if (g_nDebugInitialized == 0) {
+		MessageBoxA(NULL, p_text, "_RAWOUT_SysString", 0);
+		return 1;
+	}
+	if (g_pDebugWindow != NULL) {
+		g_pDebugWindow->PostAllocatedTextControlString(p_text, 0xff0000);
+	}
+	else if (g_nDebugFileOutputEnabled != 0) {
+		WriteDebugString2File(p_text);
+	}
+	return g_pDebugWindow != NULL;
 }
 
 // 68K 0x10100d4a DisplayRelAssert__FPvPvUi

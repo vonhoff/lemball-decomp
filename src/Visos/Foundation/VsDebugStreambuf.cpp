@@ -12,7 +12,6 @@ VsDebugStreambuf::VsDebugStreambuf(char* p_buffer, int p_size, void (*p_flushCal
 	m_cursor = p_buffer;
 	m_length = 0;
 	m_capacity = p_size;
-	m_tabWidth = 8;
 	memset(p_buffer, 0, p_size);
 }
 
