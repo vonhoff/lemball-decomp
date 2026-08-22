@@ -74,34 +74,31 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 	int nPositiveTemp;
 	int nNegativeTemp;
 	int* pMagnitude;
-	int nAbsX;
-	int nAbsY;
-	int nFraction;
-	unsigned int nDirection;
 
-	if (nDeltaX < 0) {
-		nNegativeTemp = -nDeltaX;
-		pMagnitude = &nNegativeTemp;
-	}
-	else {
+	if (nDeltaX >= 0) {
 		pMagnitude = &nPositiveTemp;
 		nPositiveTemp = nDeltaX;
 	}
-	nAbsX = *pMagnitude;
-
-	if (nDeltaY < 0) {
-		nNegativeTemp = -nDeltaY;
+	else {
+		nNegativeTemp = -nDeltaX;
 		pMagnitude = &nNegativeTemp;
 	}
-	else {
+	int nAbsX = *pMagnitude;
+
+	if (nDeltaY >= 0) {
 		pMagnitude = &nPositiveTemp;
 		nPositiveTemp = nDeltaY;
 	}
-	nAbsY = *pMagnitude;
+	else {
+		nNegativeTemp = -nDeltaY;
+		pMagnitude = &nNegativeTemp;
+	}
+	int nAbsY = *pMagnitude;
 
-	nFraction = ((nAbsY & 0xfff) * 0x6a0) >> 12;
+	int nFraction = ((nAbsY & 0xfff) * 0x6a0) >> 12;
+	unsigned int nDirection;
 
-	if (nAbsX < (nAbsY >> 12) * 0x6a0 + nFraction) {
+	if ((nAbsY >> 12) * 0x6a0 + nFraction > nAbsX) {
 		nDirection = 0;
 	}
 	else {
@@ -152,17 +149,4 @@ bool CloseTo(AiCoord p_first, AiCoord p_second)
 int Direction(int p_arg0, int p_arg1, int p_arg2, int p_arg3)
 {
 	return ((p_arg1 - p_arg3) * 3 - p_arg2) + p_arg0 + 4;
-}
-
-// 68K 0x10802938 sgn__Fi
-// FUNCTION: LEMBALL 0x0044c1e0
-int Sgn(int p_value)
-{
-	if (p_value == 0) {
-		return 0;
-	}
-	if (p_value < 0) {
-		return -1;
-	}
-	return 1;
 }

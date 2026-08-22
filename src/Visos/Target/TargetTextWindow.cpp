@@ -1,5 +1,6 @@
 #include "TargetTextWindow.h"
 
+// STUB: LEMBALL 0x00473d90
 void TargetTextWindow::PostAllocatedTextControlString(const char* p_text, unsigned int p_color)
 {
 }

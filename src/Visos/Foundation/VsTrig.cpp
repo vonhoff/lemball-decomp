@@ -5,28 +5,30 @@
 Vector VsTrig::Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos)
 {
 	int sin = p_sin.m_value;
-	int negSin = -sin;
-	int x = p_vector.m_xFixed;
-	int y = p_vector.m_yFixed;
 	int cos = p_cos.m_value;
-
+	int y = p_vector.m_yFixed;
 	int cosLo = cos & 0xfff;
-	int yLo = y & 0xfff;
-	int yHi = y >> 12;
+	int x = p_vector.m_xFixed;
+	int negSin = -sin;
 	int xLo = x & 0xfff;
 	int xHi = x >> 12;
+	int yLo = y & 0xfff;
+	int yHi = y >> 12;
 	int cosHi = cos >> 12;
-	int sinHi = sin >> 12;
-	int sinLo = sin & 0xfff;
 
-	int resX =
-		((sinLo * yLo) >> 12) + (sinHi * yLo) + ((cosLo * xLo) >> 12) + (xLo * cosHi) + (yHi * sin) + (xHi * cos);
+	int sinHi = p_sin.m_value >> 12;
+	int sinLo = p_sin.m_value & 0xfff;
+
+	int resY = ((sinLo * xLo) >> 12) + (sinHi * xLo) + ((cosLo * yLo) >> 12) + (yLo * cosHi) + (xHi * p_sin.m_value) +
+			   (yHi * p_cos.m_value);
+
 	int negSinHi = negSin >> 12;
 	int negSinLo = negSin & 0xfff;
-	int resY = ((cosLo * yLo) >> 12) + ((negSinLo * xLo) >> 12) + (negSinHi * xLo) + (yLo * cosHi) + (negSin * xHi) +
-			   (yHi * cos);
 
-	return Vector(resY, resX);
+	int resX = ((cosLo * xLo) >> 12) + ((negSinLo * yLo) >> 12) + (negSinHi * yLo) + (negSin * yHi) + (xLo * cosHi) +
+			   (xHi * p_cos.m_value);
+
+	return Vector(resX, resY);
 }
 
 // 68K 0x10119f6e Sin__6VSTrigCFi
@@ -43,11 +45,11 @@ Fixed VsTrig::Sin(int p_angle)
 // FUNCTION: LEMBALL 0x0044b6f0
 Fixed VsTrig::Cos(int p_angle)
 {
-	p_angle += 128;
-	if (p_angle < 0) {
-		return Fixed(-m_sine[(-p_angle) % 512].m_value);
+	int angle = p_angle + 128;
+	if (angle < 0) {
+		return Fixed(-m_sine[(-128 - p_angle) % 512].m_value);
 	}
-	return Fixed(m_sine[p_angle % 512].m_value);
+	return Fixed(m_sine[angle % 512].m_value);
 }
 
 // 68K 0x10219096 __ct__6VSTrigFv

@@ -12,7 +12,9 @@ public:
 	VsIOs();
 
 public:
+	int m_state;                 // 0x04
 	unsigned int m_flags;        // 0x08
+	int m_precision;             // 0x0c
 	char m_fill;                 // 0x10
 	unsigned int m_width;        // 0x14
 	unsigned int m_radix;        // 0x18

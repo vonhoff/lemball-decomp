@@ -88,7 +88,7 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 	msg += "\n";
 	msg += "In File: ";
 	msg += (char*) p_file;
-	msg += "\nAt Line No.: ";
+	msg += "At Line No.: ";
 	char lineBuf[16];
 	VsLtoa(p_line, lineBuf, 10);
 	msg += lineBuf;

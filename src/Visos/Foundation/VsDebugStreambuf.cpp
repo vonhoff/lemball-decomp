@@ -38,7 +38,7 @@ void VsDebugStreambuf::Flush()
 
 // 68K 0x10214504 sputc__17CVSDebugStreambufFc
 // FUNCTION: LEMBALL 0x0045ae10
-int VsDebugStreambuf::Sputc(char p_c)
+void VsDebugStreambuf::Sputc(char p_c)
 {
 	switch (p_c) {
 	case '\t':
@@ -57,6 +57,7 @@ int VsDebugStreambuf::Sputc(char p_c)
 					Flush();
 				}
 			} while ((int) m_length % (int) m_tabWidth != 0);
+			return;
 		}
 		break;
 	case '\n':
@@ -68,14 +69,14 @@ int VsDebugStreambuf::Sputc(char p_c)
 				Flush();
 			}
 			Flush();
-			return 0;
+			return;
 		}
 		*++m_cursor = '\0';
 		m_length++;
 		if (m_capacity - m_length == 1) {
 			Flush();
 		}
-		break;
+		return;
 	default:
 		*m_cursor++ = p_c;
 		*m_cursor = '\0';
@@ -83,9 +84,8 @@ int VsDebugStreambuf::Sputc(char p_c)
 		if (m_capacity - m_length == 1) {
 			Flush();
 		}
-		break;
+		return;
 	}
-	return m_length;
 }
 
 #pragma intrinsic(strlen)

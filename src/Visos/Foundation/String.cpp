@@ -69,10 +69,10 @@ String String::operator+=(String& p_other)
 	String temp;
 	delete[] temp.m_text;
 	int newCap = strlen(m_text) + strlen(p_other.m_text) + 1;
-	temp.m_text = new char[newCap];
+	temp.m_capacity = newCap;
+	temp.m_text = new char[temp.m_capacity];
 	strcpy(temp.m_text, m_text);
 	strcat(temp.m_text, p_other.m_text);
-	temp.m_capacity = newCap;
 
 	delete[] m_text;
 	m_text = new char[newCap];
@@ -88,10 +88,10 @@ String String::operator+=(const char* p_text)
 	String temp;
 	delete[] temp.m_text;
 	int newCap = strlen(m_text) + strlen(p_text) + 1;
-	temp.m_text = new char[newCap];
+	temp.m_capacity = newCap;
+	temp.m_text = new char[temp.m_capacity];
 	strcpy(temp.m_text, m_text);
 	strcat(temp.m_text, p_text);
-	temp.m_capacity = newCap;
 
 	delete[] m_text;
 	m_text = new char[newCap];
@@ -111,11 +111,16 @@ int String::Getlength()
 // FUNCTION: LEMBALL 0x0046efa0
 String String::Lower()
 {
-	int len = strlen(m_text);
-	for (int i = 0; i < len; ++i) {
-		if (isupper((unsigned char) m_text[i])) {
-			m_text[i] = (char) tolower((unsigned char) m_text[i]);
-		}
+	char* p = m_text;
+	int len = strlen(p);
+	if (len > 0) {
+		do {
+			if (isupper(*p)) {
+				*p = (char) tolower(*p);
+			}
+			p++;
+			len--;
+		} while (len != 0);
 	}
 	return *this;
 }

@@ -118,15 +118,14 @@ VsOStream& VsOStream::operator<<(unsigned long p_arg0)
 // FUNCTION: LEMBALL 0x00458780
 VsOStream& VsOStream::operator<<(Hex p_arg0)
 {
-	unsigned int oldFlags = m_flags;
-	unsigned int oldRadix = m_radix;
-
-	m_flags = (m_flags & ~0x8030) | 0x40;
-	m_radix = 16;
+	unsigned int oldFlags = VsIOs::m_flags;
+	VsIOs::m_flags = (oldFlags & ~0x8030) | 0x40;
+	unsigned int oldRadix = VsIOs::m_radix;
+	VsIOs::m_radix = 16;
 	*this << (unsigned long) p_arg0.m_value;
 
-	m_radix = oldRadix;
-	m_flags = oldFlags;
+	VsIOs::m_radix = oldRadix;
+	VsIOs::m_flags = oldFlags;
 	return *this;
 }
 
@@ -135,13 +134,12 @@ VsOStream& VsOStream::operator<<(Hex p_arg0)
 VsOStream& VsOStream::operator<<(Hex8 p_arg0)
 {
 	char oldFill = m_fill;
-	unsigned int oldWidth = m_width;
-	unsigned int oldFlags = m_flags;
-	unsigned int oldRadix = m_radix;
-
 	m_fill = '0';
+	unsigned int oldWidth = m_width;
 	m_width = 8;
-	m_flags = (m_flags & ~0x8030) | 0x40;
+	unsigned int oldFlags = m_flags;
+	m_flags = (oldFlags & ~0x8030) | 0x40;
+	unsigned int oldRadix = m_radix;
 	m_radix = 16;
 	*this << (unsigned long) p_arg0.m_value;
 
@@ -156,9 +154,10 @@ VsOStream& VsOStream::operator<<(Hex8 p_arg0)
 // FUNCTION: LEMBALL 0x00458d40
 VsOStream& VsOStream::operator<<(Har4 p_arg0)
 {
-	unsigned int val = p_arg0.m_value;
-	for (int shift = 24; shift >= 0; shift -= 8) {
-		((VsDebugStreambuf*) m_streamBuffer)->Sputc((char) (val >> shift));
+	char shift = 24;
+	for (int i = 3; i >= 0; i--) {
+		((VsDebugStreambuf*) m_streamBuffer)->Sputc((char) (p_arg0.m_value >> shift));
+		shift -= 8;
 	}
 	return *this;
 }

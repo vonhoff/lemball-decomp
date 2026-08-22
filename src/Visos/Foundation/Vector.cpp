@@ -11,7 +11,8 @@ Vector::Vector() : m_xFixed(DEBUG_SENTINEL), m_yFixed(DEBUG_SENTINEL)
 Vector operator*(const Vector& p_vector, int p_scale)
 {
 	int y = p_vector.m_yFixed * p_scale;
-	return Vector(p_vector.m_xFixed * p_scale, y);
+	int x = p_vector.m_xFixed * p_scale;
+	return Vector(x, y);
 }
 
 // 68K 0x1011c116 __pl__FRC7CVectorRC7CVector
@@ -19,7 +20,8 @@ Vector operator*(const Vector& p_vector, int p_scale)
 Vector operator+(const Vector& p_left, const Vector& p_right)
 {
 	int y = p_right.m_yFixed + p_left.m_yFixed;
-	return Vector(p_right.m_xFixed + p_left.m_xFixed, y);
+	int x = p_right.m_xFixed + p_left.m_xFixed;
+	return Vector(x, y);
 }
 
 // Confirmed class-scoped globals.

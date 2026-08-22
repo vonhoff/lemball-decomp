@@ -11,7 +11,7 @@ public:
 	VsDebugStreambuf(char* p_buffer, int p_size, void (*p_flushCallback)(char*));
 	virtual ~VsDebugStreambuf();      // vtable+0x00
 	virtual void Flush();             // vtable+0x04
-	virtual int Sputc(char p_arg0);   // vtable+0x08
+	virtual void Sputc(char p_arg0);  // vtable+0x08
 	virtual void Sputs(char* p_arg0); // vtable+0x0c
 
 	void* m_flushCallback; // 0x18
