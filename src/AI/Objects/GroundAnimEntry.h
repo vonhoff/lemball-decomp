@@ -6,9 +6,6 @@
 
 // SIZE 0x18
 struct GroundAnimEntry {
-public:
-	// No functions mapped yet.
-
 	Coord3d m_coordinate;          // 0x00
 	undefined2 m_alignmentPadding; // 0x06
 	void* m_mapCell;               // 0x08

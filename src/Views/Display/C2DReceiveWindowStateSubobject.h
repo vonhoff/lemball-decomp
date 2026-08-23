@@ -5,9 +5,6 @@
 
 // SIZE 0x23dc
 class C2DReceiveWindowStateSubobject {
-public:
-	// No functions mapped yet.
-
 private:
 	int m_optionSelection; // 0x04
 	unsigned int m_pauser; // 0xa34

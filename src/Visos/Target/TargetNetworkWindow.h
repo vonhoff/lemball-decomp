@@ -6,9 +6,6 @@
 // SIZE 0x10
 // VTABLE: LEMBALL 0x0049ac30
 class TargetNetworkWindow {
-public:
-	// No functions mapped yet.
-
 private:
 	void* m_window;              // 0x04
 	unsigned int m_firstMessage; // 0x08

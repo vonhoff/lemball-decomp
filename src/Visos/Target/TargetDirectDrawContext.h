@@ -6,9 +6,6 @@
 // SIZE 0x08
 // VTABLE: LEMBALL 0x00498820
 class TargetDirectDrawContext {
-public:
-	// No functions mapped yet.
-
 private:
 	int m_surfaceIndex; // 0x04
 };

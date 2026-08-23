@@ -5,9 +5,6 @@
 
 // SIZE 0x0c
 struct TargetTextLineBuffer {
-public:
-	// No functions mapped yet.
-
 	int m_capacity;          // 0x00
 	TargetTextLine* m_lines; // 0x04
 	int m_count;             // 0x08

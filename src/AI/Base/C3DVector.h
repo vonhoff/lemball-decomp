@@ -5,9 +5,6 @@
 
 // SIZE 0x0c
 class C3DVector {
-public:
-	// No functions mapped yet.
-
 private:
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04

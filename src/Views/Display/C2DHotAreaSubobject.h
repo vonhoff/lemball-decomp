@@ -6,9 +6,6 @@
 
 // SIZE 0x2414
 class C2DHotAreaSubobject {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned int m_mouseDown; // 0x178
 	Map* m_map;               // 0x900

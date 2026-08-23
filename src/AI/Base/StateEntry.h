@@ -5,9 +5,6 @@
 
 // SIZE 0x10
 struct StateEntry {
-public:
-	// No functions mapped yet.
-
 	void* m_predicate;      // 0x00
 	void* m_actionFunction; // 0x04
 	eAction m_nextAction;   // 0x08

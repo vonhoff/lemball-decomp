@@ -12,9 +12,6 @@
 // VTABLE: LEMBALL 0x00497cb0 primary process interface
 // VTABLE: LEMBALL 0x00497ca0 secondary BaseQueueHandler at +0x04
 class TargetAboutScreen {
-public:
-	// No functions mapped yet.
-
 private:
 	BaseQueueHandler m_queueHandler; // 0x04
 	unsigned int m_returnState;      // 0x14

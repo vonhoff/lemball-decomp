@@ -5,9 +5,6 @@
 
 // SIZE 0x10
 struct BasePacketHeader {
-public:
-	// No functions mapped yet.
-
 	unsigned int m_magic;               // 0x00
 	unsigned int m_packetSize;          // 0x04
 	unsigned short m_messageId;         // 0x08

@@ -5,9 +5,6 @@
 
 // SIZE 0x18
 struct TargetSpriteGroundLookup {
-public:
-	// No functions mapped yet.
-
 	unsigned char m_header[8]; // 0x00
 	short m_width;             // 0x08
 	short m_height;            // 0x0a

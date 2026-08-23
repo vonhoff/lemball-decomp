@@ -5,9 +5,6 @@
 
 // SIZE 0x0c
 struct TargetGraphicsSystemState {
-public:
-	// No functions mapped yet.
-
 	int m_driverMode;                    // 0x00
 	unsigned int m_reserved04;           // 0x04
 	unsigned int m_fallbackWarningShown; // 0x08

@@ -5,9 +5,6 @@
 
 // SIZE 0x08
 struct PadToButtonEntry {
-public:
-	// No functions mapped yet.
-
 	void* m_button;         // 0x00
 	unsigned int m_padCode; // 0x04
 };

@@ -5,9 +5,6 @@
 
 // SIZE 0x1a4
 struct TargetObjectClipGrid {
-public:
-	// No functions mapped yet.
-
 	unsigned int m_cellCount;                  // 0x00
 	short m_width;                             // 0x04
 	short m_height;                            // 0x06

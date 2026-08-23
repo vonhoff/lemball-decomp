@@ -5,9 +5,6 @@
 
 // SIZE 0x14
 struct WaypointInformation {
-public:
-	// No functions mapped yet.
-
 	unsigned int m_action;        // 0x00
 	unsigned int m_waypointCount; // 0x04
 	unsigned int m_value;         // 0x08

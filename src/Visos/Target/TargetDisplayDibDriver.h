@@ -7,9 +7,6 @@
 // SIZE 0x30
 // VTABLE: LEMBALL 0x004987b0
 class TargetDisplayDibDriver : public TargetGraphicsDriver {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned char* m_frameBuffer; // 0x1c
 	unsigned int m_reserved20;    // 0x20

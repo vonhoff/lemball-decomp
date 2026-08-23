@@ -5,9 +5,6 @@
 
 // SIZE 0x0a
 struct TargetObjectClipCell {
-public:
-	// No functions mapped yet.
-
 	unsigned short m_count; // 0x00
 	short m_viewIndices[4]; // 0x02
 };

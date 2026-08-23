@@ -5,9 +5,6 @@
 
 // SIZE 0x10
 struct ResourceTypeList {
-public:
-	// No functions mapped yet.
-
 	int m_currentIndex;        // 0x00
 	int m_capacity;            // 0x04
 	unsigned int* m_typeCodes; // 0x08

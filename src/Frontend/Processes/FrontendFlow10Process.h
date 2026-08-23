@@ -7,9 +7,6 @@
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493090
 class FrontendFlow10Process : public Process {
-public:
-	// No functions mapped yet.
-
 private:
 	Game* m_game; // 0x0c
 };

@@ -7,9 +7,6 @@
 // SIZE 0x54
 // VTABLE: LEMBALL 0x0049acd8
 class TargetDirectSoundDevice : public BaseSoundDevice {
-public:
-	// No functions mapped yet.
-
 private:
 	undefined m_platformState[0x50]; // 0x04
 };

@@ -7,9 +7,6 @@
 // SIZE 0xd8
 // VTABLE: LEMBALL 0x00498250
 class SuccFailAnimWindow : public AnimWnd {
-public:
-	// No functions mapped yet.
-
 private:
 	SuccFailDrawer* m_owner;          // 0xbc
 	Main2DDisplay* m_display;         // 0xc0

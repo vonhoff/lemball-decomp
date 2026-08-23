@@ -11,9 +11,6 @@
 // Subobject VTABLE: 0x004987e8 DirectDraw driver
 // Subobject VTABLE: 0x00498840 DirectDraw-derived driver
 class TargetGraphicsDriver {
-public:
-	// No functions mapped yet.
-
 private:
 	void* m_driverModule;         // 0x04
 	void* m_palette;              // 0x08

@@ -5,9 +5,6 @@
 
 // SIZE 0x24
 struct FrontendPrimitiveRecord {
-public:
-	// No functions mapped yet.
-
 	unsigned char m_storage[0x24]; // 0x00
 };
 

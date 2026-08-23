@@ -8,9 +8,6 @@
 // VTABLE: LEMBALL 0x00497108 primary
 // VTABLE: LEMBALL 0x004970e0 hot-area view at +0x90
 class TargetInputTextButton : public TargetTextButton {
-public:
-	// No functions mapped yet.
-
 private:
 	char* m_ownedText; // 0x14c
 };

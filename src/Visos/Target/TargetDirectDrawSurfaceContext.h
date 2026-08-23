@@ -6,9 +6,6 @@
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x00498828
 class TargetDirectDrawSurfaceContext {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned char* m_bits;                // 0x04
 	int m_stride;                         // 0x08

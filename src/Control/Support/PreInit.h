@@ -6,9 +6,6 @@
 
 // SIZE 0x1c
 struct PreInit {
-public:
-	// No functions mapped yet.
-
 	unsigned int m_flags;         // 0x00
 	unsigned int m_memoryBudget;  // 0x04
 	int m_startBucket;            // 0x08

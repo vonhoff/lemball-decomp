@@ -5,9 +5,6 @@
 
 // SIZE 0x0c
 struct AnimSpecialEntry {
-public:
-	// No functions mapped yet.
-
 	short m_x;                     // 0x00
 	short m_y;                     // 0x02
 	short m_sortKey;               // 0x04

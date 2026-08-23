@@ -6,9 +6,6 @@
 // SIZE 0x14
 // VTABLE: LEMBALL 0x00498798
 class TargetDibContext {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned char* m_bits;  // 0x04
 	int m_width;            // 0x08

@@ -5,9 +5,6 @@
 
 // SIZE 0x1c
 class TargetDirectSoundEffect {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned int m_prepared; // 0x00
 	undefined4 m_unknown04;  // 0x04

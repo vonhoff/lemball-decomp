@@ -5,9 +5,6 @@
 
 // SIZE 0x08
 struct VsRange {
-public:
-	// No functions mapped yet.
-
 	unsigned int m_offset; // 0x00
 	unsigned int m_size;   // 0x04
 };

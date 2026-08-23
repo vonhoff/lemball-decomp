@@ -5,9 +5,6 @@
 
 // SIZE 0x20
 struct GunControllerJunction {
-public:
-	// No functions mapped yet.
-
 	int m_leftX;                 // 0x00
 	int m_y;                     // 0x04
 	int m_rightX;                // 0x08

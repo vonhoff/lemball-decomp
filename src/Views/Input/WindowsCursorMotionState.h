@@ -7,9 +7,6 @@
 
 // SIZE 0x78
 class WindowsCursorMotionState {
-public:
-	// No functions mapped yet.
-
 private:
 	undefined4 m_unknown00;          // 0x00
 	Map* m_map;                      // 0x04

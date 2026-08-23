@@ -5,9 +5,6 @@
 
 // SIZE 0x474
 struct TargetWinGDrawCodecState {
-public:
-	// No functions mapped yet.
-
 	void* m_reserved0;         // 0x00
 	void* m_targetDC;          // 0x04
 	int m_destinationX;        // 0x08

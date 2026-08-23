@@ -5,9 +5,6 @@
 
 // SIZE 0x18
 class TargetWaveEffect {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned int m_prepared;     // 0x00
 	void* m_sampleHandle;        // 0x04

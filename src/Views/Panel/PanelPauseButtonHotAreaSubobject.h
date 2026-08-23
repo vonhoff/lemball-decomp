@@ -5,9 +5,6 @@
 
 // SIZE 0xac
 class PanelPauseButtonHotAreaSubobject {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned int m_enabled;         // 0x74
 	unsigned int m_state;           // 0x78

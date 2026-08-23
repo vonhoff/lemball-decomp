@@ -6,9 +6,6 @@
 
 // SIZE 0x14
 class AiDestinationEntry {
-public:
-	// No functions mapped yet.
-
 private:
 	eDestinationType m_type;   // 0x00
 	AiCoord m_coordinate;      // 0x04

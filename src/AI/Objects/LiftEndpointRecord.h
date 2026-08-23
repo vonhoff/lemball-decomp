@@ -6,9 +6,6 @@
 
 // SIZE 0x0c
 struct LiftEndpointRecord {
-public:
-	// No functions mapped yet.
-
 	Coord3d m_start; // 0x00
 	Coord3d m_end;   // 0x06
 };

@@ -14,9 +14,9 @@ public:
 	friend bool CheckValidPointer(void* p_arg0);
 
 private:
-	Bucket* m_buckets[7];         // 0x00
-	unsigned int m_sizeLimits[7]; // 0x1c
-	unsigned int m_bucketLimit;   // 0x38
+	Bucket* m_buckets[7]; // 0x00
+	int m_sizeLimits[7];  // 0x1c
+	int m_bucketLimit;    // 0x38
 };
 
 extern SmallMemory* g_pSmallMemory;

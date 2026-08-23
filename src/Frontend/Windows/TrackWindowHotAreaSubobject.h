@@ -9,9 +9,6 @@
 
 // SIZE 0xa4
 class TrackWindowHotAreaSubobject {
-public:
-	// No functions mapped yet.
-
 private:
 	VsRect m_trackRect;      // 0x38
 	Line m_line;             // 0x40

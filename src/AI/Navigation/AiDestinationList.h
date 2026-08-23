@@ -5,9 +5,6 @@
 
 // SIZE 0x08
 class AiDestinationList {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned short m_count;        // 0x00
 	unsigned short m_capacity;     // 0x02

@@ -5,9 +5,6 @@
 
 // SIZE 0x38
 struct ChunkInfo {
-public:
-	// No functions mapped yet.
-
 	unsigned char* m_data;     // 0x00
 	unsigned int m_type;       // 0x04
 	unsigned int m_id;         // 0x08

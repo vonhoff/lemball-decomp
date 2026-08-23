@@ -8,9 +8,6 @@
 
 // SIZE 0x128
 class PanelButtonHotAreaSubobject {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned int m_depressed;          // 0x74
 	unsigned int m_lastDrawnDepressed; // 0x78

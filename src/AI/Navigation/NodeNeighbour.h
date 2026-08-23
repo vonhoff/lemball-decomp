@@ -5,9 +5,6 @@
 
 // SIZE 0x08
 struct NodeNeighbour {
-public:
-	// No functions mapped yet.
-
 	int m_node; // 0x00
 	int m_cost; // 0x04
 };

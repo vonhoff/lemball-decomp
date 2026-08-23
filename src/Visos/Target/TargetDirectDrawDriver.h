@@ -7,9 +7,6 @@
 // SIZE 0x4a8
 // VTABLE: LEMBALL 0x004987e8
 class TargetDirectDrawDriver : public TargetGraphicsDriver {
-public:
-	// No functions mapped yet.
-
 private:
 	void* m_directDraw;            // 0x1c
 	void* m_primarySurface;        // 0x20

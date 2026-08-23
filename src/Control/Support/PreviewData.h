@@ -5,9 +5,6 @@
 
 // SIZE 0x2c
 struct PreviewData {
-public:
-	// No functions mapped yet.
-
 	unsigned short m_playerCount;          // 0x00
 	unsigned short m_lemmingCount;         // 0x02
 	unsigned short m_opponentLemmingCount; // 0x04

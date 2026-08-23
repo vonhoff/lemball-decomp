@@ -7,9 +7,6 @@
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00498ce0
 class ResImage : public ResBase {
-public:
-	// No functions mapped yet.
-
 private:
 	unsigned short m_width;     // 0x48
 	unsigned short m_height;    // 0x4a

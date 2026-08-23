@@ -6,9 +6,6 @@
 
 // SIZE 0x10
 class ZBuffClear : public Primitive {
-public:
-	// No functions mapped yet.
-
 private:
 	short m_depth;           // 0x04
 	undefined2 m_reserved06; // 0x06
