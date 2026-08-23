@@ -6,11 +6,3 @@
 Primitive::~Primitive()
 {
 }
-
-void Primitive::Draw(Gdi* p_gdi)
-{
-}
-
-void Primitive::Render(Gdi* p_gdi)
-{
-}

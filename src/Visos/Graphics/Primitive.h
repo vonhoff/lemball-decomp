@@ -10,8 +10,8 @@ public:
 	inline Primitive() {}
 
 	virtual ~Primitive();            // vtable+0x00
-	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
-	virtual void Render(Gdi* p_gdi); // vtable+0x08
+	virtual void Draw(Gdi* p_gdi) = 0;   // vtable+0x04
+	virtual void Render(Gdi* p_gdi) = 0; // vtable+0x08
 };
 
 #endif

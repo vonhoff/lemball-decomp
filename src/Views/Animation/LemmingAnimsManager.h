@@ -3,7 +3,8 @@
 
 #include "../../Common.h"
 #include "../../Visos/Animation/AnimsManager.h" // complete type
-#include "../../Visos/Graphics/Primitive.h"     // complete type
+#include "../../Visos/Graphics/DrawingMark.h"  // complete type
+#include "../../Visos/Graphics/Primitive.h"    // complete type
 
 // SIZE 0xb4
 // VTABLE: LEMBALL 0x00496ce0 eight-entry primary
@@ -37,7 +38,7 @@ private:
 	Main2DDisplay* m_display;     // 0x7c
 	Gdi* m_gdi;                   // 0x80
 	unsigned int m_loaded;        // 0x84
-	Primitive m_primitive;        // 0x88
+	DrawingMark m_primitive;      // 0x88
 	unsigned int m_nonCacheState; // 0x8c
 	unsigned int m_loadProgress;  // 0x90
 	unsigned int m_countingLoads; // 0x94
