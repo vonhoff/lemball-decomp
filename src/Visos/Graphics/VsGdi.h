@@ -9,7 +9,7 @@
 #include "PvZBuffSurface.h"       // complete type
 
 // SIZE 0x5a0
-class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface, public virtual PvSurface {
+class Surface : public virtual PvSurface, public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface {
 public:
 	ChangeList* GetChangeList();
 	Surface(GrafPort* p_arg0);
@@ -23,10 +23,11 @@ public:
 	void AddToChangeList(const VsRect& p_rect);
 	void AttachPalette(ResPalette* p_palette);
 	void Blit(BigBitmap* p_arg0, ResBitmap* p_arg1);
+	virtual void Blit(Bitmap* p_primitive);
 	void Blit(Bitmap* p_primitive, ResBitmap* p_bitmap);
 	void Blit(Circle* p_circle);
-	void Blit(CopyColourToBackBuff* p_arg0);
-	void Blit(CopyToBackBuff* p_arg0);
+	virtual void Blit(CopyColourToBackBuff* p_arg0);
+	virtual void Blit(CopyToBackBuff* p_arg0);
 	void Blit(FilledCircle* p_circle);
 	void Blit(Line* p_line);
 	void Blit(Point* p_point);

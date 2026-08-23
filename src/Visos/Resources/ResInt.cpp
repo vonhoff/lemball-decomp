@@ -1,9 +1,10 @@
 #include "ResInt.h"
 
 // 68K 0x10116002 __ct__7CResINTFv
-// STUB: LEMBALL 0x0045e8f0
+// FUNCTION: LEMBALL 0x0045e8f0
 ResInt::ResInt()
 {
+	Initialise();
 }
 
 // 68K 0x10100e22 SetType__7CResINTFv

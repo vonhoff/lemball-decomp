@@ -72,3 +72,7 @@ void PvGdiBitmap::GetRects(const VsRect& p_rect, VsRect*& p_rect0, VsRect*& p_re
 void PvGdiBitmap::ResetScroll()
 {
 }
+
+void PvGdiBitmap::Blit(Bitmap* p_bitmap)
+{
+}

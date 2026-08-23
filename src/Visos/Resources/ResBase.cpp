@@ -1,4 +1,5 @@
 #include "ResBase.h"
+#include "MogRes.h"
 
 // 68K 0x102029ce DoLoad__8CResBaseFUl
 // STUB: LEMBALL 0x0045cf20
@@ -27,9 +28,25 @@ ResBase::~ResBase()
 }
 
 // 68K 0x10202bf8 Initialise__8CResBaseFv
-// STUB: LEMBALL 0x0045d050
+// FUNCTION: LEMBALL 0x0045d050
 void ResBase::Initialise()
 {
+	m_directUseCount = 0;
+	m_referenceCount = 0;
+	m_vramLoaded = 0;
+	m_loaded = 0;
+	m_dataSize = 0;
+	m_fileOffset = 0;
+	m_name = 0;
+	m_data = 0;
+	m_externalList = 0;
+	m_headerSkip = 0;
+	m_chunkType = 0;
+	m_resourceId = 0;
+	m_error = 0;
+	SetType();
+	g_pActiveMogRes->AgeResources();
+	m_age = 0;
 }
 
 // 68K 0x10202f26 OnRead__8CResBaseFPUcPPUcUl
@@ -45,28 +62,64 @@ void ResBase::LoadData()
 }
 
 // 68K 0x1020308a UnLoad__8CResBaseFv
-// STUB: LEMBALL 0x0045d180
+// FUNCTION: LEMBALL 0x0045d180
 void ResBase::UnLoad()
 {
+	if (--m_referenceCount == 0) {
+		UnLoadData(1);
+		if (g_pActiveMogRes->m_skipCleanup != 0) {
+			if (m_resourceId != 0) {
+				g_pActiveMogRes->Remove(this);
+			}
+			delete this;
+		}
+	}
 }
 
 // 68K 0x10203108 UnLoadData__8CResBaseFUc
-// STUB: LEMBALL 0x0045d1c0
+// FUNCTION: LEMBALL 0x0045d1c0
 void ResBase::UnLoadData(unsigned char p_force)
 {
+	if (m_loaded != 0 && m_resourceId != 0) {
+		unsigned int dataSize = m_dataSize;
+		if (dataSize != 0) {
+			g_pActiveMogRes->DeallocateMem(m_data, 1);
+			m_data = 0;
+		}
+	}
+	UnLoadVramData(p_force);
+	if (m_loaded != 0) {
+		m_loaded = 0;
+		OnUnLoad();
+	}
 }
 
 // 68K 0x10203194 UnLoadExtData__8CResBaseFUc
-// STUB: LEMBALL 0x0045d220
+// FUNCTION: LEMBALL 0x0045d220
 void ResBase::UnLoadExtData(unsigned char p_force)
 {
+	UnLoadVramData(p_force);
+	if (m_loaded != 0) {
+		m_loaded = 0;
+		m_data = 0;
+		m_directUseCount--;
+	}
 }
 
 // 68K 0x102031e8 CheckError__8CResBaseFv
-// STUB: LEMBALL 0x0045d250
+// FUNCTION: LEMBALL 0x0045d250
 ResBase* ResBase::CheckError()
 {
-	return 0;
+	switch (m_error) {
+	case 1:
+		g_pActiveMogRes->Remove(this);
+		delete this;
+		return 0;
+	case 2:
+		return 0;
+	default:
+		return this;
+	}
 }
 
 // 68K 0x10101148 GetfVramLoaded__8CResBaseFv

@@ -7,6 +7,8 @@
 // VTABLE: LEMBALL 0x004932c8
 class NetworkMessage {
 public:
+	inline NetworkMessage(unsigned long p_messageId = 0) : m_messageId(p_messageId) { Initialise(); }
+	friend class GameObjectMess;
 	bool Set(unsigned char* p_arg0);
 	int GetDword();
 	unsigned char GetByte();
@@ -36,7 +38,7 @@ public:
 	void OpenDataStream();
 	void Send(Connect* p_arg0);
 
-private:
+protected:
 	unsigned int m_messageId;        // 0x04
 	unsigned char* m_buffer;         // 0x08
 	unsigned char* m_bufferEnd;      // 0x0c

@@ -16,12 +16,14 @@ public:
 	int GetFreeHandle();
 	int KillLeastResource(unsigned int p_requiredSize);
 	static bool Load(ResBase* p_resource, Chunk p_chunk);
-	static void DeallocateMem(unsigned char* p_data, unsigned char p_owned);
+	void DeallocateMem(unsigned char* p_data, unsigned char p_owned);
 	unsigned char* AllocateMainMem(unsigned int p_size);
 	void AgeResources();
 	void CleanUpResources();
 	void Remove(ResBase* p_resource);
 	~MogRes();
+
+	friend class ResBase;
 
 private:
 	MogDir* m_rootDirectory;      // 0x00

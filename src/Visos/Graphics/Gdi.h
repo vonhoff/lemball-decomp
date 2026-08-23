@@ -11,11 +11,23 @@ public:
 	void Render();
 	~Gdi();
 
+	friend class Bitmap;
+	friend class ClipRect;
+	friend class CopyColourToBackBuff;
+	friend class CopyToBackBuff;
+	friend class DrawingMark;
+	friend class Line;
+	friend class PopActive;
+	friend class PushActive;
+	friend class SolidRect;
+	friend class Text;
+	friend class Zrle;
+
 private:
 	Primitive** m_primitives; // 0x00
 	int m_primitiveCount;     // 0x04
 	int m_primitiveCapacity;  // 0x08
-	void* m_renderTarget;     // 0x0c
+	Surface* m_renderTarget;  // 0x0c
 };
 
 #endif

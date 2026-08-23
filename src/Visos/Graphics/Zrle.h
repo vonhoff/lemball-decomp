@@ -13,6 +13,8 @@ public:
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~Zrle();                 // vtable+0x00
 
+	friend class Text;
+
 private:
 	short m_x;            // 0x04
 	short m_y;            // 0x06

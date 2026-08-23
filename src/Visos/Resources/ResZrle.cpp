@@ -1,10 +1,25 @@
 #include "ResZrle.h"
 
+#include "MogRes.h"
+
 // 68K 0x10204650 Load__8CResZRLEFUl
-// STUB: LEMBALL 0x0045e2b0
+// FUNCTION: LEMBALL 0x0045e2b0
 ResZrle* ResZrle::Load(unsigned int p_resourceId)
 {
-	return 0;
+	ResZrle* res = (ResZrle*) g_pActiveMogRes->Find(p_resourceId);
+	if (res == 0) {
+		res = new ResZrle();
+		if (res != 0) {
+			res->DoLoad(p_resourceId);
+			return (ResZrle*) res->CheckError();
+		}
+		return (ResZrle*) ((ResBase*) 0)->CheckError();
+	}
+	if (res->m_chunkType != 0x5a524c45) {
+		res->UnLoad();
+		return 0;
+	}
+	return res;
 }
 
 // 68K 0x10204714 SetHeader__8CResZRLEFv
@@ -27,9 +42,11 @@ void ResZrle::SetHeader()
 }
 
 // 68K 0x10115f94 __ct__8CResZRLEFv
-// STUB: LEMBALL 0x0045e7e0
+// FUNCTION: LEMBALL 0x0045e7e0
 ResZrle::ResZrle()
+	: m_height(0), m_width(0), m_originY(0), m_originX(0)
 {
+	Initialise();
 }
 
 // 68K 0x10116352 SetType__8CResZRLEFv

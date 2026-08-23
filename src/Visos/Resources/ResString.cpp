@@ -1,10 +1,25 @@
 #include "ResString.h"
 
+#include "MogRes.h"
+
 // 68K 0x102040ba Load__10CResSTRINGFUl
-// STUB: LEMBALL 0x0045de00
+// FUNCTION: LEMBALL 0x0045de00
 ResString* ResString::Load(unsigned int p_resourceId)
 {
-	return 0;
+	ResString* res = (ResString*) g_pActiveMogRes->Find(p_resourceId);
+	if (res == 0) {
+		res = new ResString();
+		if (res != 0) {
+			res->DoLoad(p_resourceId);
+			return (ResString*) res->CheckError();
+		}
+		return (ResString*) ((ResBase*) 0)->CheckError();
+	}
+	if (res->m_chunkType != 0x53545247) {
+		res->UnLoad();
+		return 0;
+	}
+	return res;
 }
 
 // 68K 0x10100fae SetType__10CResSTRINGFv
@@ -15,9 +30,10 @@ void ResString::SetType()
 }
 
 // 68K 0x10116044 __ct__10CResSTRINGFv
-// STUB: LEMBALL 0x0045eaa0
+// FUNCTION: LEMBALL 0x0045eaa0
 ResString::ResString()
 {
+	Initialise();
 }
 
 // 68K 0x10100fdc __dt__10CResSTRINGFv

@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00498d60
 class ResEffect : public ResBase {
 public:
+	inline ResEffect() {}
 	static ResEffect* Load(unsigned int p_resourceId);
 	virtual void SetType(); // vtable+0x34
 	virtual ~ResEffect();   // vtable+0x00

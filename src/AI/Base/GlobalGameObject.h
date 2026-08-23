@@ -24,6 +24,16 @@ public:
 	~GlobalGameObject();
 	GlobalGameObject();
 
+	friend class GameObjectMess;
+	friend class ObjectChangeStateMess;
+	friend class ObjectDiesMess;
+	friend class ObjectHitMess;
+	friend class ObjectPosMess;
+	friend class RemoveObjectMess;
+	friend class RequestActionMess;
+	friend class RequestCancelMess;
+	friend class RequestReplyMess;
+
 private:
 	unsigned int m_requestEnabled; // 0x124
 	eAction m_pendingAction;       // 0x128
@@ -31,5 +41,15 @@ private:
 	unsigned int m_requestActive;  // 0x130
 	unsigned int m_usableState;    // 0x134
 };
+
+extern TransportObjectMess* g_pTransportObjectMessage;
+extern ObjectChangeStateMess* g_pObjectChangeStateMessage;
+extern RemoveObjectMess* g_pRemoveObjectMessage;
+extern RequestActionMess* g_pRequestActionMessage;
+extern RequestReplyMess* g_pRequestReplyMessage;
+extern RequestCancelMess* g_pRequestCancelMessage;
+extern ObjectPosMess* g_pObjectPosMessage;
+extern ObjectHitMess* g_pObjectHitMessage;
+extern ObjectDiesMess* g_pObjectDiesMessage;
 
 #endif

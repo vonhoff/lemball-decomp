@@ -1,10 +1,25 @@
 #include "ResBitmap.h"
 
+#include "MogRes.h"
+
 // 68K 0x10204542 Load__10CResBITMAPFUl
-// STUB: LEMBALL 0x0045e210
+// FUNCTION: LEMBALL 0x0045e210
 ResBitmap* ResBitmap::Load(unsigned int p_resourceId)
 {
-	return 0;
+	ResBitmap* res = (ResBitmap*) g_pActiveMogRes->Find(p_resourceId);
+	if (res == 0) {
+		res = new ResBitmap();
+		if (res != 0) {
+			res->DoLoad(p_resourceId);
+			return (ResBitmap*) res->CheckError();
+		}
+		return (ResBitmap*) ((ResBase*) 0)->CheckError();
+	}
+	if (res->m_chunkType != 0x42544d50) {
+		res->UnLoad();
+		return 0;
+	}
+	return res;
 }
 
 // 68K 0x102045f4 SetHeader__10CResBITMAPFv
@@ -14,8 +29,8 @@ void ResBitmap::SetHeader()
 	BitmapHeader* header = (BitmapHeader*) m_name;
 	unsigned short height = header->m_height;
 	unsigned int width = header->m_width;
-	m_width = (unsigned short) width;
-	m_height = height;
+	m_x = (unsigned short) width;
+	m_y = height;
 	m_depth = header->m_depth;
 	m_flags = header->m_flags;
 }

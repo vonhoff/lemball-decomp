@@ -9,4 +9,7 @@ void SetGameTime();
 void SetRemoteGameTimeReal(unsigned long p_timestamp);
 Demo* DemoInit(int p_arg0);
 void DemoQuit();
+
+extern unsigned long g_dwSimulationTimestamp;
+
 #endif

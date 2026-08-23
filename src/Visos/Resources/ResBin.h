@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00498e60
 class ResBin : public ResBase {
 public:
+	inline ResBin() {}
 	static ResBin* Load(unsigned int p_resourceId);
 	virtual void SetType(); // vtable+0x34
 	virtual ~ResBin();      // vtable+0x00

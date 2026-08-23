@@ -3,6 +3,7 @@
 
 #include "../../Common.h"
 #include "ResBaseList.h" // complete type
+#include "ResZrle.h"     // complete type
 
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x00498a18
@@ -21,7 +22,7 @@ public:
 	virtual ~ResAnim();                                                        // vtable+0x00
 
 private:
-	ResBase* m_animationEntries; // 0x78
+	ResZrle* m_animationEntries; // 0x78
 };
 
 #endif

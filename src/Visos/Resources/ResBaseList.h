@@ -39,7 +39,7 @@ private:
 	unsigned int m_headerLoaded;    // 0x58
 	unsigned int m_bodyLoaded;      // 0x5c
 	unsigned int m_vramLoadedCount; // 0x60
-	int m_vramEntryCount;           // 0x64
+	unsigned int m_vramEntryCount;  // 0x64
 	unsigned int m_vramSwappable;   // 0x68
 	unsigned int m_totalSize;       // 0x6c
 	unsigned int m_headerSize;      // 0x70

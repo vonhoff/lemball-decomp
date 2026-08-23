@@ -370,3 +370,7 @@ void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, Remap* p_remap, unsigned short p_depth)
 {
 }
+
+void Surface::Blit(Bitmap* p_primitive)
+{
+}

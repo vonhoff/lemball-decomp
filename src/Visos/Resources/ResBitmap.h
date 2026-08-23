@@ -13,18 +13,29 @@ struct BitmapHeader {
 	unsigned char m_flags;
 };
 
+// SIZE 0x4c
+// VTABLE: LEMBALL 0x00498db8
+class ResRaster : public ResBase {
+public:
+	inline ResRaster() : m_y(0), m_x(0) {}
+	inline virtual ~ResRaster() {}
+
+protected:
+	short m_x; // 0x48
+	short m_y; // 0x4a
+};
+
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00498d20
-class ResBitmap : public ResBase {
+class ResBitmap : public ResRaster {
 public:
+	inline ResBitmap() {}
 	static ResBitmap* Load(unsigned int p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
 	virtual ~ResBitmap();     // vtable+0x00
 
 private:
-	unsigned short m_width;      // 0x48
-	unsigned short m_height;     // 0x4a
 	unsigned char m_depth;       // 0x4c
 	unsigned char m_flags;       // 0x4d
 	undefined m_platformData[6]; // 0x4e

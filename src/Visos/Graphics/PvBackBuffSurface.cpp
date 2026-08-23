@@ -42,3 +42,11 @@ void PvBackBuffSurface::EnableBackBuff(unsigned char p_enabled)
 void PvBackBuffSurface::ResizeBackBuff()
 {
 }
+
+void PvBackBuffSurface::Blit(CopyToBackBuff* p_arg0)
+{
+}
+
+void PvBackBuffSurface::Blit(CopyColourToBackBuff* p_arg0)
+{
+}

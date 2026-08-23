@@ -36,3 +36,6 @@ Demo* DemoInit(int p_arg0)
 void DemoQuit()
 {
 }
+
+// GLOBAL: LEMBALL 0x0049ce08
+unsigned long g_dwSimulationTimestamp;

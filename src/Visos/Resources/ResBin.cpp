@@ -1,10 +1,25 @@
 #include "ResBin.h"
 
+#include "MogRes.h"
+
 // 68K 0x10204846 Load__7CResBINFUl
-// STUB: LEMBALL 0x0045e540
+// FUNCTION: LEMBALL 0x0045e540
 ResBin* ResBin::Load(unsigned int p_resourceId)
 {
-	return 0;
+	ResBin* res = (ResBin*) g_pActiveMogRes->Find(p_resourceId);
+	if (res == 0) {
+		res = new ResBin();
+		if (res != 0) {
+			res->DoLoad(p_resourceId);
+			return (ResBin*) res->CheckError();
+		}
+		return (ResBin*) ((ResBase*) 0)->CheckError();
+	}
+	if (res->m_chunkType != 0x42494e20) {
+		res->UnLoad();
+		return 0;
+	}
+	return res;
 }
 
 // 68K 0x101010ae SetType__7CResBINFv

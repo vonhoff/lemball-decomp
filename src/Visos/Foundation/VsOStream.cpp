@@ -183,3 +183,6 @@ VsOStream* g_pErrorOutput;
 
 // GLOBAL: LEMBALL 0x004a97b8
 VsOStream* g_pSysOutput;
+
+// GLOBAL: LEMBALL 0x004a97bc
+VsOStream* g_pDebugOutput;

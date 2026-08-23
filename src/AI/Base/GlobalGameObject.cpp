@@ -1,5 +1,15 @@
 #include "GlobalGameObject.h"
 
+#include "../Messages/ObjectChangeStateMess.h"
+#include "../Messages/ObjectDiesMess.h"
+#include "../Messages/ObjectHitMess.h"
+#include "../Messages/ObjectPosMess.h"
+#include "../Messages/RemoveObjectMess.h"
+#include "../Messages/RequestActionMess.h"
+#include "../Messages/RequestCancelMess.h"
+#include "../Messages/RequestReplyMess.h"
+#include "../../Visos/Messaging/TransportObjectMess.h"
+
 GlobalGameObject::GlobalGameObject()
 {
 }
@@ -73,15 +83,33 @@ void GlobalGameObject::SendCancel()
 }
 
 // 68K 0x1060bfd2 SetMessages__17CGlobalGameObjectFv
-// STUB: LEMBALL 0x00416fe0
+// FUNCTION: LEMBALL 0x00416fe0
 void GlobalGameObject::SetMessages()
 {
+	g_pTransportObjectMessage = new TransportObjectMess();
+	g_pObjectChangeStateMessage = new ObjectChangeStateMess();
+	g_pRemoveObjectMessage = new RemoveObjectMess();
+	g_pRequestActionMessage = new RequestActionMess();
+	g_pRequestReplyMessage = new RequestReplyMess();
+	g_pRequestCancelMessage = new RequestCancelMess();
+	g_pObjectPosMessage = new ObjectPosMess();
+	g_pObjectHitMessage = new ObjectHitMess();
+	g_pObjectDiesMessage = new ObjectDiesMess();
 }
 
 // 68K 0x1060c134 DeleteMessages__17CGlobalGameObjectFv
-// STUB: LEMBALL 0x00417150
+// FUNCTION: LEMBALL 0x00417150
 void GlobalGameObject::DeleteMessages()
 {
+	delete g_pTransportObjectMessage;
+	delete g_pObjectChangeStateMessage;
+	delete g_pRemoveObjectMessage;
+	delete g_pRequestActionMessage;
+	delete g_pRequestReplyMessage;
+	delete g_pRequestCancelMessage;
+	delete g_pObjectPosMessage;
+	delete g_pObjectHitMessage;
+	delete g_pObjectDiesMessage;
 }
 
 // 68K 0x101180c6 __dt__17CGlobalGameObjectFv
@@ -90,3 +118,30 @@ void GlobalGameObject::DeleteMessages()
 GlobalGameObject::~GlobalGameObject()
 {
 }
+
+// GLOBAL: LEMBALL 0x0049d110
+TransportObjectMess* g_pTransportObjectMessage;
+
+// GLOBAL: LEMBALL 0x0049d114
+ObjectChangeStateMess* g_pObjectChangeStateMessage;
+
+// GLOBAL: LEMBALL 0x0049d118
+RemoveObjectMess* g_pRemoveObjectMessage;
+
+// GLOBAL: LEMBALL 0x0049d11c
+RequestActionMess* g_pRequestActionMessage;
+
+// GLOBAL: LEMBALL 0x0049d120
+RequestReplyMess* g_pRequestReplyMessage;
+
+// GLOBAL: LEMBALL 0x0049d124
+RequestCancelMess* g_pRequestCancelMessage;
+
+// GLOBAL: LEMBALL 0x0049d128
+ObjectPosMess* g_pObjectPosMessage;
+
+// GLOBAL: LEMBALL 0x0049d12c
+ObjectHitMess* g_pObjectHitMessage;
+
+// GLOBAL: LEMBALL 0x0049d130
+ObjectDiesMess* g_pObjectDiesMessage;

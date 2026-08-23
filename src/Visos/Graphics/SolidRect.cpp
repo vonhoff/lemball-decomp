@@ -1,5 +1,8 @@
 #include "SolidRect.h"
 
+#include "Gdi.h"
+#include "VsGdi.h"
+
 // 68K 0x10100c60 __dt__10CSolidRectFv
 // SYNTHETIC: LEMBALL 0x00432a90
 // SolidRect::`scalar deleting destructor'
@@ -8,19 +11,22 @@ SolidRect::~SolidRect()
 }
 
 // 68K 0x1010194e Draw__10CSolidRectFP4CGDI
-// STUB: LEMBALL 0x00432b10
+// FUNCTION: LEMBALL 0x00432b10
 void SolidRect::Draw(Gdi* p_gdi)
 {
+	p_gdi->AddToList(this);
 }
 
 // 68K 0x10101980 Render__10CSolidRectFP4CGDI
-// STUB: LEMBALL 0x00432b20
+// FUNCTION: LEMBALL 0x00432b20
 void SolidRect::Render(Gdi* p_gdi)
 {
+	p_gdi->m_renderTarget->Blit(this);
 }
 
 // 68K 0x1010a6c2 __ct__10CSolidRectFv
-// STUB: LEMBALL 0x00439520
+// FUNCTION: LEMBALL 0x00439520
 SolidRect::SolidRect()
+	: m_top(0), m_left(0), m_bottom(0), m_right(0)
 {
 }

@@ -7,24 +7,25 @@
 // VTABLE: LEMBALL 0x00498980
 class ResBase {
 public:
+	ResBase() { m_initialized = 0; }
 	ResBase* CheckError();
 	bool Direct(unsigned char*& p_cursor, ResBaseList* p_list);
 	bool Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, ResBaseList* p_list);
-	virtual bool ForceLoadVram();                                                              // vtable+0x18
-	virtual bool GetfAnyVramLoaded();                                                          // vtable+0x14
+	virtual ~ResBase();                                                                        // vtable+0x00
+	virtual void OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size); // vtable+0x04
+	virtual void SetHeader();                                                                  // vtable+0x08
 	virtual bool GetfVramLoaded();                                                             // vtable+0x0c
 	virtual bool GetfVramSwappable();                                                          // vtable+0x10
-	virtual unsigned char* GetData();                                                          // vtable+0x28
-	virtual unsigned int GetSizeUsed();                                                        // vtable+0x38
+	virtual bool GetfAnyVramLoaded();                                                          // vtable+0x14
+	virtual bool ForceLoadVram();                                                              // vtable+0x18
 	virtual void LoadData();                                                                   // vtable+0x1c
-	virtual void OnLoad();                                                                     // vtable+0x2c
-	virtual void OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size); // vtable+0x04
-	virtual void OnUnLoad();                                                                   // vtable+0x30
-	virtual void SetHeader();                                                                  // vtable+0x08
-	virtual void SetType();                                                                    // vtable+0x34
 	virtual void UnLoadData(unsigned char p_force);                                            // vtable+0x20
 	virtual void UnLoadVramData(unsigned char p_force);                                        // vtable+0x24
-	virtual ~ResBase();                                                                        // vtable+0x00
+	virtual unsigned char* GetData();                                                          // vtable+0x28
+	virtual void OnLoad();                                                                     // vtable+0x2c
+	virtual void OnUnLoad();                                                                   // vtable+0x30
+	virtual void SetType();                                                                    // vtable+0x34
+	virtual unsigned int GetSizeUsed();                                                        // vtable+0x38
 	void DoLoad(unsigned int p_resourceId);
 	void Initialise();
 	void UnLoad();
@@ -32,6 +33,8 @@ public:
 
 	friend class ResAnim;
 	friend class ResFont;
+	friend class Text;
+	friend class Zrle;
 
 protected:
 	ResBaseList* m_externalList;   // 0x04

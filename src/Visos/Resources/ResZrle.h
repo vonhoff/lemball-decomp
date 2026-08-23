@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_RESOURCES_RESZRLE_H
 
 #include "../../Common.h"
-#include "ResBase.h" // complete type
+#include "ResBitmap.h" // for ResRaster
 
 // SIZE 0x0c
 struct ZrleHeader {
@@ -16,7 +16,7 @@ struct ZrleHeader {
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00498a70
-class ResZrle : public ResBase {
+class ResZrle : public ResRaster {
 public:
 	ResZrle();
 	static ResZrle* Load(unsigned int p_resourceId);
@@ -25,10 +25,10 @@ public:
 	virtual ~ResZrle();       // vtable+0x00
 
 	friend class Text;
+	friend class ResAnim;
+	friend class ResFont;
 
 private:
-	short m_x;       // 0x48
-	short m_y;       // 0x4a
 	short m_width;   // 0x4c
 	short m_height;  // 0x4e
 	short m_originX; // 0x50

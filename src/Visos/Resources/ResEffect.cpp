@@ -1,10 +1,25 @@
 #include "ResEffect.h"
 
+#include "MogRes.h"
+
 // 68K 0x102047a8 Load__10CResEFFECTFUl
-// STUB: LEMBALL 0x0045e380
+// FUNCTION: LEMBALL 0x0045e380
 ResEffect* ResEffect::Load(unsigned int p_resourceId)
 {
-	return 0;
+	ResEffect* res = (ResEffect*) g_pActiveMogRes->Find(p_resourceId);
+	if (res == 0) {
+		res = new ResEffect();
+		if (res != 0) {
+			res->DoLoad(p_resourceId);
+			return (ResEffect*) res->CheckError();
+		}
+		return (ResEffect*) ((ResBase*) 0)->CheckError();
+	}
+	if (res->m_chunkType != 0x45464620) {
+		res->UnLoad();
+		return 0;
+	}
+	return res;
 }
 
 // 68K 0x1010102e SetType__10CResEFFECTFv

@@ -1,10 +1,25 @@
 #include "ResPalette.h"
 
+#include "MogRes.h"
+
 // 68K 0x1020401a Load__11CResPALETTEFUl
-// STUB: LEMBALL 0x0045dd90
+// FUNCTION: LEMBALL 0x0045dd90
 ResPalette* ResPalette::Load(unsigned int p_resourceId)
 {
-	return 0;
+	ResPalette* res = (ResPalette*) g_pActiveMogRes->Find(p_resourceId);
+	if (res == 0) {
+		res = new ResPalette();
+		if (res != 0) {
+			res->DoLoad(p_resourceId);
+			return (ResPalette*) res->CheckError();
+		}
+		return (ResPalette*) ((ResBase*) 0)->CheckError();
+	}
+	if (res->m_chunkType != 0x50414c20) {
+		res->UnLoad();
+		return 0;
+	}
+	return res;
 }
 
 // 68K 0x10100ef0 SetType__11CResPALETTEFv

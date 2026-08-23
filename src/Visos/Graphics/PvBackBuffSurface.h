@@ -10,7 +10,9 @@
 class PvBackBuffSurface {
 public:
 	PvBackBuffSurface();
-	virtual bool HasBackBuff(); // vtable+0x3c
+	virtual void Blit(CopyToBackBuff* p_arg0);       // vtable+0x00
+	virtual void Blit(CopyColourToBackBuff* p_arg0); // vtable+0x04
+	virtual bool HasBackBuff();                      // vtable+0x3c
 	void AllocateBackBuff();
 	void EnableBackBuff(unsigned char p_enabled);
 	void FreeBackBuff();

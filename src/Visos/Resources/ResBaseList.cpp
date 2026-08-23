@@ -61,7 +61,7 @@ unsigned int ResBaseList::GetSizeUsed()
 // FUNCTION: LEMBALL 0x0045e6a0
 bool ResBaseList::GetfVramLoaded()
 {
-	return m_vramLoadedCount - m_vramEntryCount < 1;
+	return m_vramLoadedCount - m_vramEntryCount ? 0 : 1;
 }
 
 // 68K 0x10115ece GetfAnyVramLoaded__12CResBaseLISTFv

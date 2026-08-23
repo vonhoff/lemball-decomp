@@ -1,7 +1,11 @@
 #include "Text.h"
 
 #include "../Graphics/Gdi.h"
+#include "../Graphics/VsGdi.h"
+#include "../Resources/ResFont.h"
 #include "../Resources/ResZrle.h"
+#include "VsDebugStreambuf.h"
+#include "VsOStream.h"
 #include "VsPoint.h"
 
 // 68K 0x10117aa4 Set__5CTextFiiP8CResFONTPCcUlP6CRemap
@@ -103,9 +107,48 @@ void Text::NextPos()
 }
 
 // 68K 0x10211ad8 Render__5CTextFP4CGDI
-// STUB: LEMBALL 0x00474a20
+// FUNCTION: LEMBALL 0x00474a20
 void Text::Render(Gdi* p_gdi)
 {
-	// STRING: LEMBALL 0x004a2d34 "' not found in font "
-	// STRING: LEMBALL 0x004a2d28 "Letter '"
+	ResFont* font = m_font;
+	if (font->m_loaded != 0) {
+		font->m_age = 0;
+	}
+	else {
+		font->LoadData();
+	}
+	font->m_directUseCount++;
+	m_x = m_startX;
+	m_primitive.m_flags = m_flags;
+	m_y = m_startY;
+	m_primitive.m_remap = m_remap;
+	if (*m_text != '\0') {
+		const char* text = m_text;
+		do {
+			m_glyph = m_font->AsciItoZrle((unsigned char) *text);
+			if (m_glyph == 0) {
+				m_glyph = m_font->AsciItoZrle('I');
+				if (m_glyph == 0) {
+					m_glyph = m_font->m_animationEntries;
+				}
+				if (*text != ' ' || m_glyph == 0) {
+					*g_pDebugOutput << "Letter '" << *text << "' not found in font " << Rname(m_font->m_resourceId) << "\n";
+				}
+				NextPos();
+			}
+			else {
+				if ((m_flags & 0xc0) != 0) {
+					NextPos();
+				}
+				m_primitive.m_x = m_x;
+				m_primitive.m_y = m_y;
+				p_gdi->m_renderTarget->Blit(&m_primitive, m_glyph);
+				if ((m_flags & 0xc0) == 0) {
+					NextPos();
+				}
+			}
+			text++;
+		} while (*text != '\0');
+	}
+	m_font->m_directUseCount--;
 }

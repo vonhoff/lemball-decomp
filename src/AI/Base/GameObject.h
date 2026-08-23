@@ -106,6 +106,16 @@ public:
 	void UpdateCollision();
 	GameObject();
 
+	friend class GameObjectMess;
+	friend class ObjectChangeStateMess;
+	friend class ObjectDiesMess;
+	friend class ObjectHitMess;
+	friend class ObjectPosMess;
+	friend class RemoveObjectMess;
+	friend class RequestActionMess;
+	friend class RequestCancelMess;
+	friend class RequestReplyMess;
+
 private:
 	unsigned short m_runtimeFlags;        // 0x04
 	unsigned int m_routeSearchFailed;     // 0x08
@@ -116,8 +126,10 @@ private:
 	int m_collisionMaxX;                  // 0x20
 	int m_collisionMaxY;                  // 0x24
 	int m_collisionMaxZ;                  // 0x28
+	int m_heading;                        // 0x38
 	AiCoord m_spawnPosition;              // 0x40
 	C3DVector m_flightVelocity;           // 0x4c
+	BaseObjectManager* m_manager;         // 0x60
 	eObjectType m_objectType;             // 0x64
 	unsigned short m_collisionFlags;      // 0x68
 	unsigned short m_objectId;            // 0x6a
@@ -129,6 +141,7 @@ private:
 	int m_moveDeltaXFixed;                // 0x80
 	int m_moveDeltaYFixed;                // 0x84
 	int m_moveDurationTicks;              // 0x88
+	undefined4 m_unk0x8c;                 // 0x8c
 	unsigned int m_stateTimer;            // 0x94
 	eSoundEffect m_soundEffect;           // 0x98
 	AiCoord m_position;                   // 0x9c
@@ -141,6 +154,7 @@ private:
 	unsigned int m_actionDeadline;        // 0xcc
 	C3DVector m_flightOrigin;             // 0xd8
 	unsigned int m_isFlying;              // 0xf0
+	undefined4 m_unk0x114;                // 0x114
 };
 
 extern unsigned char g_abObjectIdBitmap[32];

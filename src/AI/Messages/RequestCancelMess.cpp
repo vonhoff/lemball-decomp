@@ -1,8 +1,9 @@
 #include "RequestCancelMess.h"
 
 // 68K 0x1060b7da __ct__18CRequestCancelMessFv
-// STUB: LEMBALL 0x00416b70
+// FUNCTION: LEMBALL 0x00416b70
 RequestCancelMess::RequestCancelMess()
+	: GameObjectMess(MESSAGE_REQUEST_CANCEL)
 {
 }
 
