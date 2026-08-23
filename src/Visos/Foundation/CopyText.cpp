@@ -6,7 +6,7 @@
 
 // 68K 0x10101bcc Set__9CCopyTextFiiP8CResFONTPCcUlP6CRemap
 // FUNCTION: LEMBALL 0x0046a080
-void CopyText::Set(int p_x, int p_y, ResFont* p_font, const char* p_text, unsigned long p_flags, Remap* p_remap)
+void CopyText::Set(int p_x, int p_y, ResFont* p_font, char* p_text, unsigned long p_flags, Remap* p_remap)
 {
 	strcpy(m_buffer, p_text);
 	m_text = m_buffer;
@@ -19,9 +19,9 @@ void CopyText::Set(int p_x, int p_y, ResFont* p_font, const char* p_text, unsign
 
 // 68K 0x10101d74 Set__9CCopyTextFRC8CVSPointP8CResFONTPCcUlP6CRemap
 // FUNCTION: LEMBALL 0x0046a0e0
-void CopyText::Set(const VsPoint& p_position,
+void CopyText::Set(VsPoint& p_position,
 				   ResFont* p_font,
-				   const char* p_text,
+				   char* p_text,
 				   unsigned long p_flags,
 				   Remap* p_remap)
 {
@@ -49,7 +49,7 @@ void CopyText::Set(int p_x, int p_y, ResFont* p_font, String p_text, unsigned lo
 
 // 68K 0x10101c52 Set__9CCopyTextFRC8CVSPointP8CResFONT7CStringUlP6CRemap
 // FUNCTION: LEMBALL 0x0046a1b0
-void CopyText::Set(const VsPoint& p_position, ResFont* p_font, String p_text, unsigned long p_flags, Remap* p_remap)
+void CopyText::Set(VsPoint& p_position, ResFont* p_font, String p_text, unsigned long p_flags, Remap* p_remap)
 {
 	strcpy(m_buffer, p_text.m_text);
 	m_startX = p_position.m_x;

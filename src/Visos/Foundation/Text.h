@@ -17,10 +17,10 @@ public:
 	}
 
 	short NextPos();
-	virtual ~Text();                         // vtable+0x00
-	virtual void Draw(Gdi* p_gdi);           // vtable+0x04
-	virtual unsigned int Render(Gdi* p_gdi); // vtable+0x08
-	virtual void Set(const VsPoint& p_position,
+	virtual ~Text();               // vtable+0x00
+	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
+	virtual void Render(Gdi* p_gdi); // vtable+0x08
+	virtual void Set(VsPoint& p_position,
 					 ResFont* p_font,
 					 String p_text,
 					 unsigned long p_flags,
@@ -31,15 +31,15 @@ public:
 					 String p_text,
 					 unsigned long p_flags,
 					 Remap* p_remap); // vtable+0x10
-	virtual void Set(const VsPoint& p_position,
+	virtual void Set(VsPoint& p_position,
 					 ResFont* p_font,
-					 const char* p_text,
+					 char* p_text,
 					 unsigned long p_flags,
 					 Remap* p_remap); // vtable+0x14
 	virtual void Set(int p_x,
 					 int p_y,
 					 ResFont* p_font,
-					 const char* p_text,
+					 char* p_text,
 					 unsigned long p_flags,
 					 Remap* p_remap); // vtable+0x18
 

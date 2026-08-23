@@ -9,6 +9,9 @@ class VsStreambuf {
 public:
 	VsStreambuf(char* p_arg0, int p_arg1);
 	virtual ~VsStreambuf(); // vtable+0x00
+	virtual void Flush() = 0;   // vtable+0x04
+	virtual void Sputc(char p_c) = 0; // vtable+0x08
+	virtual void Sputs(char* p_s) = 0; // vtable+0x0c
 	VsStreambuf();
 
 public:

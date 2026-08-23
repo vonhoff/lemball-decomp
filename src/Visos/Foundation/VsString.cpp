@@ -11,45 +11,40 @@ int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 {
 	int len1 = strlen(p_left);
 	int len2 = strlen(p_right);
-	if (len1 > p_maxLength) {
-		len1 = p_maxLength;
+	int maxLength = p_maxLength;
+
+	if (len1 > maxLength) {
+		len1 = maxLength;
 	}
-	if (len2 > p_maxLength) {
-		len2 = p_maxLength;
+	if (len2 > maxLength) {
+		len2 = maxLength;
 	}
 
 	if (len2 != len1) {
 		return -1;
 	}
 
-	if (len1 < p_maxLength) {
-		p_maxLength = len1;
+	if (len1 < maxLength) {
+		maxLength = len1;
 	}
-	if (len2 < p_maxLength) {
-		p_maxLength = len2;
-	}
-
-	if (p_maxLength == 0) {
-		return 0;
+	if (len2 < maxLength) {
+		maxLength = len2;
 	}
 
-	do {
-		int c1 = *p_left;
-		if (islower(c1)) {
-			c1 = toupper(c1);
-		}
-		int c2 = *p_right;
-		if (islower(c2)) {
-			c2 = toupper(c2);
-		}
-		if (c1 != c2) {
-			return c1 - c2;
+	int diff = 0;
+	while (maxLength != 0) {
+		char c1 = islower(*p_left) ? (char) toupper(*p_left) : *p_left;
+		char c2 = islower(*p_right) ? (char) toupper(*p_right) : *p_right;
+		diff = (int) c1 - (int) c2;
+		if (diff != 0) {
+			break;
 		}
 		p_left++;
 		p_right++;
-	} while (--p_maxLength != 0);
+		maxLength--;
+	}
 
-	return 0;
+	return diff;
 }
 
 // 68K 0x1021429c vsLtoa__FlPci
@@ -88,23 +83,24 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 
 	int hasWritten = 0;
 	int written = 0;
+	int i = 0;
 	unsigned int p = s_maxPowers[p_radix];
-	unsigned long val = p_value;
 
-	for (int i = 0; i < 33; i++) {
-		unsigned int digit = val / p;
+	do {
+		unsigned int digit = p_value / p;
 		if (digit != 0 || hasWritten != 0) {
 			p_buffer[written++] = "0123456789abcdef"[digit];
 			hasWritten = 1;
 		}
-		val -= digit * p;
-		p /= (unsigned int) p_radix;
+		p_value -= digit * p;
+		p /= p_radix;
 		if (p == 1) {
 			break;
 		}
-	}
+		i++;
+	} while (i < 33);
 
-	p_buffer[written] = "0123456789abcdef"[val];
+	p_buffer[written] = "0123456789abcdef"[p_value];
 	p_buffer[written + 1] = '\0';
 	return p_buffer;
 }

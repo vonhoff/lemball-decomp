@@ -6,6 +6,8 @@
 
 #include <string.h>
 
+#pragma intrinsic(memset, memcpy, strlen)
+
 // 68K 0x10213d5e __ct__10CVSOStreamFP12CVSStreambuf
 // FUNCTION: LEMBALL 0x00458450
 VsOStream::VsOStream(VsStreambuf* p_arg0) : VsIOs(p_arg0)
@@ -22,40 +24,46 @@ VsOStream::~VsOStream()
 // FUNCTION: LEMBALL 0x004584c0
 void VsOStream::FormatNum()
 {
-	if (m_width == 0) {
-		m_formattedText = (char*) m_numberBuffer;
-		return;
-	}
+	if (m_width != 0) {
+		bool isNeg = (m_numberBuffer[0] == '-');
+		int signLen = isNeg ? 1 : 0;
+		int len = strlen((char*) m_numberBuffer);
 
-	bool isNeg = (m_numberBuffer[0] == '-');
-	unsigned int signLen = isNeg ? 1 : 0;
-	int len = strlen((char*) m_numberBuffer);
+		int width = m_width;
+		char fill = m_fill;
 
-	memset(m_numberBuffer + 0x21, m_fill, m_width);
-	m_numberBuffer[0x21 + m_width] = '\0';
+		memset(m_numberBuffer + 0x21, fill, width);
+		m_numberBuffer[0x21 + width] = '\0';
 
-	if (isNeg) {
-		m_numberBuffer[0x21] = '-';
-	}
+		if (isNeg) {
+			m_numberBuffer[0x21] = '-';
+		}
 
-	if ((m_flags & 2) == 0) {
-		unsigned int dstOffset;
-		unsigned int srcOffset;
-		if (len < (int) m_width) {
-			dstOffset = (signLen - len) + m_width;
-			srcOffset = signLen;
+		char* dst;
+		char* src;
+		if (m_flags & 2) {
+			dst = (char*) m_numberBuffer + 0x21 + signLen;
+			src = (char*) m_numberBuffer + signLen;
 		}
 		else {
-			dstOffset = signLen;
-			srcOffset = len - m_width;
+			int srcOffset = signLen;
+			if (len >= width) {
+				srcOffset = len - width;
+			}
+			int dstOffset = signLen;
+			if (len < width) {
+				dstOffset = signLen - len + width;
+			}
+			src = (char*) m_numberBuffer + srcOffset;
+			dst = (char*) m_numberBuffer + 0x21 + dstOffset;
 		}
-		memcpy(m_numberBuffer + 0x21 + dstOffset, m_numberBuffer + srcOffset, m_width - signLen);
+
+		memcpy(dst, src, width - signLen);
+		m_formattedText = (char*) (m_numberBuffer + 0x21);
 	}
 	else {
-		memcpy(m_numberBuffer + 0x21 + signLen, m_numberBuffer + signLen, m_width - signLen);
+		m_formattedText = (char*) m_numberBuffer;
 	}
-
-	m_formattedText = (char*) (m_numberBuffer + 0x21);
 }
 
 // 68K 0x10213f2c __ls__10CVSOStreamFPCc
@@ -101,8 +109,7 @@ VsOStream& VsOStream::operator<<(const void* p_arg0)
 	}
 	VsULtoa((unsigned long) p_arg0, (char*) m_numberBuffer, 16);
 	FormatNum();
-	*this << "0x";
-	return *this << m_formattedText;
+	return *this << "0x" << m_formattedText;
 }
 
 // 68K 0x102140ba __ls__10CVSOStreamFUl
@@ -118,14 +125,14 @@ VsOStream& VsOStream::operator<<(unsigned long p_arg0)
 // FUNCTION: LEMBALL 0x00458780
 VsOStream& VsOStream::operator<<(Hex p_arg0)
 {
-	unsigned int oldFlags = VsIOs::m_flags;
-	VsIOs::m_flags = (oldFlags & ~0x8030) | 0x40;
-	unsigned int oldRadix = VsIOs::m_radix;
-	VsIOs::m_radix = 16;
+	unsigned int oldFlags = m_flags;
+	m_flags = (oldFlags & ~0x8030) | 0x40;
+	unsigned int oldRadix = m_radix;
+	m_radix = 16;
 	*this << (unsigned long) p_arg0.m_value;
 
-	VsIOs::m_radix = oldRadix;
-	VsIOs::m_flags = oldFlags;
+	m_radix = oldRadix;
+	m_flags = oldFlags;
 	return *this;
 }
 
@@ -154,9 +161,9 @@ VsOStream& VsOStream::operator<<(Hex8 p_arg0)
 // FUNCTION: LEMBALL 0x00458d40
 VsOStream& VsOStream::operator<<(Har4 p_arg0)
 {
-	char shift = 24;
+	signed char shift = 24;
 	for (int i = 3; i >= 0; i--) {
-		((VsDebugStreambuf*) m_streamBuffer)->Sputc((char) (p_arg0.m_value >> shift));
+		m_streamBuffer->Sputc((char) (p_arg0.m_value >> shift));
 		shift -= 8;
 	}
 	return *this;
@@ -166,7 +173,7 @@ VsOStream& VsOStream::operator<<(Har4 p_arg0)
 // FUNCTION: LEMBALL 0x0045bad0
 VsOStream& operator<<(VsOStream& p_arg0, Rname p_arg1)
 {
-	p_arg0 << Har4(p_arg1.m_value);
+	p_arg0 << (int) p_arg1.m_value;
 	return p_arg0;
 }
 

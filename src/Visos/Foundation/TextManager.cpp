@@ -42,8 +42,7 @@ TextManager::TextManager(unsigned long p_fontIdCount,
 // FUNCTION: LEMBALL 0x00469e20
 TextManager::~TextManager()
 {
-	int count = m_loadedFontCount;
-	if (count > 0) {
+	if ((int) m_loadedFontCount > 0) {
 		int slot = 0;
 		int unloaded = 0;
 		do {
@@ -53,7 +52,7 @@ TextManager::~TextManager()
 			m_fonts[slot]->UnLoad();
 			slot++;
 			unloaded++;
-		} while (count > unloaded);
+		} while ((int) m_loadedFontCount > unloaded);
 	}
 	if (m_fonts != 0) {
 		delete[] m_fonts;
@@ -74,12 +73,13 @@ TextManager::~TextManager()
 void TextManager::LoadFont(unsigned long p_fontId)
 {
 	int slot = 0;
-	if (m_fonts[0] != 0) {
+	ResFont** fonts = m_fonts;
+	if (fonts[0] != 0) {
 		do {
 			slot++;
-		} while (m_fonts[slot] != 0);
+		} while (fonts[slot] != 0);
 	}
-	m_fonts[slot] = ResFont::Load(p_fontId);
+	fonts[slot] = ResFont::Load(p_fontId);
 	m_fontIndices[p_fontId] = (short) slot;
 	m_loadedFontCount++;
 }
