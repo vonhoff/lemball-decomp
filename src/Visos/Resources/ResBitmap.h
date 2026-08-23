@@ -14,7 +14,6 @@ struct BitmapHeader {
 };
 
 // SIZE 0x4c
-// VTABLE: LEMBALL 0x00498db8
 class ResRaster : public ResBase {
 public:
 	inline ResRaster() : m_y(0), m_x(0) {}

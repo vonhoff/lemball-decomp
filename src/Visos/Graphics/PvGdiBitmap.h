@@ -11,8 +11,7 @@ class PvGdiBitmap {
 public:
 	PvGdiBitmap();
 	VsSize SetSize(const VsSize& p_size, int p_pitch);
-	virtual void SetLinePtrs();          // vtable+0x00
-	virtual void Blit(Bitmap* p_bitmap); // vtable+0x04
+	virtual void SetLinePtrs(); // vtable+0x00
 	void CreateLinePtrs();
 	void Free();
 	void GetRects(const VsRect& p_rect, VsRect*& p_rect0, VsRect*& p_rect1);
