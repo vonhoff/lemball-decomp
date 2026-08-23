@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x00499628
 class Zrle : public Primitive {
 public:
-	Zrle();
+	inline Zrle() : m_y(0), m_x(0) {}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~Zrle();                 // vtable+0x00

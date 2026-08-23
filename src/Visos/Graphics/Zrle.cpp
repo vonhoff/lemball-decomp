@@ -1,10 +1,8 @@
 #include "Zrle.h"
 
 // 68K 0x10115b92 __ct__5CZRLEFv
-// FUNCTION: LEMBALL 0x00467ac0
-Zrle::Zrle() : m_x(0), m_y(0)
-{
-}
+// SYNTHETIC: LEMBALL 0x00467ac0
+// Zrle::Zrle
 
 // 68K 0x101014e8 Draw__5CZRLEFP4CGDI
 // STUB: LEMBALL 0x00467ae0

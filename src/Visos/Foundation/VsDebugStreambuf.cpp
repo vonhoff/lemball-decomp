@@ -65,11 +65,12 @@ void VsDebugStreambuf::Sputc(char p_c)
 				Flush();
 			}
 			Flush();
-			return;
 		}
-		*++m_cursor = '\0';
-		if (m_capacity - ++m_length == 1) {
-			Flush();
+		else {
+			*++m_cursor = '\0';
+			if (m_capacity - ++m_length == 1) {
+				Flush();
+			}
 		}
 		return;
 	default:

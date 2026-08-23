@@ -11,6 +11,8 @@ public:
 	unsigned char* Allocate(int p_size, char* p_description);
 	~SmallMemory();
 
+	friend bool CheckValidPointer(void* p_arg0);
+
 private:
 	Bucket* m_buckets[7];         // 0x00
 	unsigned int m_sizeLimits[7]; // 0x1c

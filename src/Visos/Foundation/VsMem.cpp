@@ -1,5 +1,9 @@
 #include "VsMem.h"
 
+#include "Arena.h"
+#include "Bucket.h"
+#include "SmallMemory.h"
+
 // 68K 0x10215b2e InternalNew__FUl
 // ASSERT: _VSRELassert("EnoughMemory", "VSMEM.CPP", 1677)
 // FUNCTION: LEMBALL 0x0045a6b0
@@ -34,8 +38,17 @@ void operator delete(void* p_arg0)
 }
 
 // 68K 0x10215c96 CheckValidPointer__FPv
-// STUB: LEMBALL 0x0045a800
+// FUNCTION: LEMBALL 0x0045a800
 bool CheckValidPointer(void* p_arg0)
 {
-	return 0;
+	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory != 0) {
+		Bucket** bucket = g_pSmallMemory->m_buckets;
+		for (int i = 0; i < 7; i++) {
+			if (*bucket != 0 && (*bucket)->CheckValidPointer((unsigned char*) p_arg0)) {
+				return true;
+			}
+			bucket++;
+		}
+	}
+	return g_pMasterArena->CheckValidPointer(p_arg0);
 }

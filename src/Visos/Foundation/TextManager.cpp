@@ -12,30 +12,30 @@ TextManager::TextManager(unsigned long p_fontIdCount,
 						 int p_primitiveCount,
 						 unsigned int p_maxStringLen)
 {
-	m_nextPrimitive = 0;
 	m_fontIdCount = p_fontIdCount;
 	m_loadedFontCount = 0;
 	m_fontCapacity = p_fontCapacity;
-	m_fonts = new ResFont*[p_fontCapacity];
-	m_fontIndices = new short[p_fontIdCount];
-	for (int i = 0; i < p_fontCapacity; i++) {
+	m_fonts = new ResFont*[m_fontCapacity];
+	m_fontIndices = new short[m_fontIdCount];
+	for (int i = 0; i < (int) m_fontCapacity; i++) {
 		m_fonts[i] = 0;
 	}
-	for (unsigned int j = 0; j < p_fontIdCount; j++) {
-		m_fontIndices[j] = (short) p_fontCapacity;
+	for (int j = 0; j < (int) m_fontIdCount; j++) {
+		m_fontIndices[j] = (short) m_fontCapacity;
 	}
 	m_primitiveCount = p_primitiveCount;
 	m_textPrimitives = new Text*[p_primitiveCount];
 	if (p_maxStringLen != 0) {
-		for (int k = 0; k < p_primitiveCount; k++) {
+		for (int k = 0; k < (int) m_primitiveCount; k++) {
 			m_textPrimitives[k] = new CopyText(p_maxStringLen);
 		}
 	}
 	else {
-		for (int k = 0; k < p_primitiveCount; k++) {
+		for (int k = 0; k < (int) m_primitiveCount; k++) {
 			m_textPrimitives[k] = new Text();
 		}
 	}
+	m_nextPrimitive = 0;
 }
 
 // 68K 0x1020568a __dt__12CTextManagerFv
