@@ -2,7 +2,7 @@
 
 // 68K 0x10215b2e InternalNew__FUl
 // ASSERT: _VSRELassert("EnoughMemory", "VSMEM.CPP", 1677)
-// STUB: LEMBALL 0x0045a6b0
+// FUNCTION: LEMBALL 0x0045a6b0
 void* InternalNew(unsigned long p_arg0)
 {
 	// STRING: LEMBALL 0x004a1388 "VSMEM.CPP"
@@ -12,7 +12,7 @@ void* InternalNew(unsigned long p_arg0)
 
 // 68K 0x10215be0 InternalDelete__FPv
 // ASSERT: _VSRELassert("EnoughMemory", "VSMEM.CPP", 1738)
-// STUB: LEMBALL 0x0045a730
+// FUNCTION: LEMBALL 0x0045a730
 void InternalDelete(void* p_arg0)
 {
 	// STRING: LEMBALL 0x004a13a4 "VSMEM.CPP"

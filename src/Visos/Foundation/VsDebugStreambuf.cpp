@@ -62,7 +62,8 @@ void VsDebugStreambuf::Sputc(char p_c)
 	case '\n':
 		*m_cursor = p_c;
 		if (m_flushCallback != NULL) {
-			*++m_cursor = '\0';
+			m_cursor++;
+			*m_cursor = '\0';
 			m_length++;
 			if (m_capacity - m_length == 1) {
 				Flush();
@@ -70,12 +71,13 @@ void VsDebugStreambuf::Sputc(char p_c)
 			Flush();
 			return;
 		}
-		*++m_cursor = '\0';
+		m_cursor++;
+		*m_cursor = '\0';
 		m_length++;
 		if (m_capacity - m_length == 1) {
 			Flush();
 		}
-		break;
+		return;
 	default:
 		*m_cursor++ = p_c;
 		*m_cursor = '\0';

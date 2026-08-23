@@ -1,4 +1,5 @@
 #include "VsMath.h"
+#include "Fixed.h"
 
 #include <stdlib.h>
 
@@ -65,30 +66,33 @@ unsigned int VsMath::SqRoot(unsigned int p_value)
 	return uLow;
 }
 
-inline int VsAbs(int p_val)
-{
-	int t[2];
-	int* p;
-	if (p_val < 0) {
-		t[1] = -p_val;
-		p = &t[1];
-	}
-	else {
-		t[0] = p_val;
-		p = &t[0];
-	}
-	return *p;
-}
-
 // 68K 0x107007a0 ReturnFacingDirection__Fiiii
 // FUNCTION: LEMBALL 0x00413e80
-unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY)
-{
+unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY) {
 	int nDeltaX = (p_toX - p_fromX) << 12;
 	int nDeltaY = (p_toY - p_fromY) << 12;
 
-	int nAbsX = VsAbs(nDeltaX);
-	int nAbsY = VsAbs(nDeltaY);
+	int t[2];
+	int* p;
+	p = &t[0];
+	if (nDeltaX < 0) {
+		t[1] = -nDeltaX;
+		p = &t[1];
+	}
+	else {
+		t[0] = nDeltaX;
+	}
+	int nAbsX = *p;
+
+	p = &t[0];
+	if (nDeltaY < 0) {
+		t[1] = -nDeltaY;
+		p = &t[1];
+	}
+	else {
+		t[0] = nDeltaY;
+	}
+	int nAbsY = *p;
 
 	int nFraction = ((nAbsY & 0xfff) * 0x6a0) >> 12;
 	int nHigh = nAbsY >> 12;
@@ -97,11 +101,11 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 	if (nHigh * 0x6a0 + nFraction > nAbsX) {
 		nDirection = 0;
 	}
-	else {
+	else if ((nHigh * 0x350 + nAbsY) * 2 + nFraction > nAbsX) {
 		nDirection = 1;
-		if ((nHigh * 0x350 + nAbsY) * 2 + nFraction <= nAbsX) {
-			nDirection = 2;
-		}
+	}
+	else {
+		nDirection = 2;
 	}
 
 	if (nDeltaX < 0) {
@@ -115,8 +119,7 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 
 // 68K 0x107008e6 Distance__Fiiii
 // FUNCTION: LEMBALL 0x00413f80
-unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
-{
+unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2) {
 	int dx = abs(p_x1 - p_x2);
 	int dy = abs(p_y1 - p_y2);
 	return ((VsMath*) g_pSentinel)->SqRoot(dy * dy + dx * dx);
@@ -124,8 +127,7 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
 
 // 68K 0x1060e9e6 CloseTo__F7AICOORD7AICOORD
 // FUNCTION: LEMBALL 0x004140d0
-bool CloseTo(AiCoord p_first, AiCoord p_second)
-{
+bool CloseTo(AiCoord p_first, AiCoord p_second) {
 	int dx = (p_first.m_xFixed >> 12) - (p_second.m_xFixed >> 12);
 	int dy = (p_first.m_yFixed >> 12) - (p_second.m_yFixed >> 12);
 	int dz = (p_first.m_zFixed >> 12) - (p_second.m_zFixed >> 12);
