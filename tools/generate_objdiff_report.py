@@ -4,6 +4,7 @@
 import argparse
 import csv
 import json
+import re
 import shutil
 import struct
 import subprocess
@@ -45,6 +46,32 @@ def measures(functions, total_units=1):
     return res
 
 
+def normalize_asm(s):
+    s = s.split("\t")[0].strip()
+    s = re.sub(r"Thunk of '([^']+)' \(THUNK\)", r"\1 (FUNCTION)", s)
+    s = re.sub(r" \(THUNK\)", " (FUNCTION)", s)
+    return s
+
+
+def is_thunk_only_diff(diff):
+    if not diff:
+        return False
+    has_diff = False
+    for _, chunks in diff:
+        for chunk in chunks:
+            if "both" in chunk:
+                continue
+            has_diff = True
+            orig = chunk.get("orig", [])
+            recomp = chunk.get("recomp", [])
+            if len(orig) != len(recomp):
+                return False
+            for (_, o_ins), (_, r_ins) in zip(orig, recomp):
+                if normalize_asm(o_ins) != normalize_asm(r_ins):
+                    return False
+    return has_diff
+
+
 def tool(name):
     return shutil.which(name) or str(ROOT / ".decomp-venv" / "Scripts" / f"{name}.exe")
 
@@ -56,7 +83,7 @@ def run_reccmp():
         check=True,
     )
     subprocess.run(
-        [tool("reccmp-reccmp"), "--target", "LEMBALL", "--json", "reccmp.json", "--json-diet", "--silent"],
+        [tool("reccmp-reccmp"), "--target", "LEMBALL", "--json", "reccmp.json", "--silent"],
         cwd=BUILD,
         check=True,
     )
@@ -96,11 +123,15 @@ def build_report(roadmap_path, reccmp_path):
         match = matches.get(item["address"])
         if match is None or match.get("stub"):
             ratio = 0.0
-        elif match.get("effective") or (
-            match.get("type") == 1
-            and (
-                "`scalar deleting destructor'" in item["name"]
-                or "`vector deleting destructor'" in item["name"]
+        elif (
+            match.get("effective")
+            or is_thunk_only_diff(match.get("diff"))
+            or (
+                match.get("type") == 1
+                and (
+                    "`scalar deleting destructor'" in item["name"]
+                    or "`vector deleting destructor'" in item["name"]
+                )
             )
         ):
             ratio = 100.0
