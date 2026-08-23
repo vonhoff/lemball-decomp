@@ -11,14 +11,16 @@
 void* InternalNew(unsigned long p_size)
 {
 	unsigned char* result;
-	if (g_nSmallMemoryEnabled != 0 && p_size < g_maxSmallMemorySize) {
+	if (g_nSmallMemoryEnabled != 0 && g_maxSmallMemorySize > p_size) {
 		result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
 		if (result != 0) {
+			// STRING: LEMBALL 0x004a1384 "new"
 			g_pCurrentAllocDescription = "new";
 			return result;
 		}
 	}
 	if (!g_pMasterArena->Allocate(&result, p_size, g_pCurrentAllocDescription)) {
+		// STRING: LEMBALL 0x004a1394 "EnoughMemory"
 		VsRelAssert("EnoughMemory", "VSMEM.CPP", 1677);
 	}
 	return result;
@@ -57,13 +59,16 @@ void operator delete(void* p_arg0)
 bool CheckValidPointer(void* p_arg0)
 {
 	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory != 0) {
-		Bucket** bucket = g_pSmallMemory->m_buckets;
-		for (int i = 0; i < 7; i++) {
-			if (*bucket != 0 && (*bucket)->CheckValidPointer((unsigned char*) p_arg0)) {
-				return true;
+		int i = 0;
+		register unsigned char* ptr = (unsigned char*) p_arg0;
+		register Bucket** buckets = (Bucket**) g_pSmallMemory;
+		do {
+			if (*buckets != 0 && (*buckets)->CheckValidPointer(ptr)) {
+				return 1;
 			}
-			bucket++;
-		}
+			buckets++;
+			i++;
+		} while (i < 7);
 	}
-	return g_pMasterArena->CheckValidPointer(p_arg0);
+	return g_pMasterArena->CheckValidPointer(p_arg0) != 0;
 }

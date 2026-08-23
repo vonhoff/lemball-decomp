@@ -8,6 +8,7 @@
 #pragma intrinsic(memset)
 
 // GLOBAL: LEMBALL 0x004a1174
+// STRING: LEMBALL 0x004a1180 "new"
 char* g_pCurrentAllocDescription = "new";
 
 // GLOBAL: LEMBALL 0x004a1178
@@ -18,9 +19,9 @@ unsigned int g_maxSmallMemorySize = 0;
 SmallMemory::SmallMemory()
 {
 	int baseShift = 1 << (g_preInitActive.m_startBucket + 1);
-	int limit = g_preInitActive.m_capabilityCount;
-	m_bucketLimit = limit + g_preInitActive.m_startBucket;
-	if (m_bucketLimit > 7) {
+	int limit = g_preInitActive.m_capabilityCount + g_preInitActive.m_startBucket;
+	m_bucketLimit = limit;
+	if (7 < limit) {
 		m_bucketLimit = 7;
 	}
 	memset(m_buckets, 0, sizeof(m_buckets));
@@ -30,7 +31,7 @@ SmallMemory::SmallMemory()
 		g_nSmallMemoryEnabled = 0;
 		if (g_preInitActive.m_capabilities[j] != 0) {
 			m_buckets[j] = new Bucket(m_sizeLimits[j], g_preInitActive.m_capabilities[j], 0, 0);
-			if (m_sizeLimits[j] > (int) g_maxSmallMemorySize) {
+			if ((unsigned int) m_sizeLimits[j] > g_maxSmallMemorySize) {
 				g_maxSmallMemorySize = m_sizeLimits[j];
 			}
 		}

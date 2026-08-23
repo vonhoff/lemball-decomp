@@ -31,20 +31,19 @@ int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 		maxLength = len2;
 	}
 
-	int diff = 0;
 	while (maxLength != 0) {
 		char c1 = islower(*p_left) ? (char) toupper(*p_left) : *p_left;
 		char c2 = islower(*p_right) ? (char) toupper(*p_right) : *p_right;
-		diff = (int) c1 - (int) c2;
+		int diff = (int) c1 - (int) c2;
 		if (diff != 0) {
-			break;
+			return diff;
 		}
 		p_left++;
 		p_right++;
 		maxLength--;
 	}
 
-	return diff;
+	return 0;
 }
 
 // 68K 0x1021429c vsLtoa__FlPci

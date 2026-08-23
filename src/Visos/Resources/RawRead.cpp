@@ -39,17 +39,18 @@ unsigned int RawRead::InputDword()
 // FUNCTION: LEMBALL 0x0045bd50
 bool RawRead::NameCmp(char* p_path, char* p_name)
 {
-	register char* name = p_name;
-	register int matched = 0;
+	char* name = p_name;
+	int matched = 0;
+	char* path = p_path;
 	do {
-		char pathChar = (char) toupper(*p_path);
+		char pathChar = (char) toupper(*path);
 		if (pathChar == kPathSeparator) {
 			pathChar = 0;
 		}
 		if ((char) toupper(*name++) != pathChar) {
 			break;
 		}
-		if (*p_path++ == '\0') {
+		if (*path++ == '\0') {
 			matched = 1;
 		}
 	} while (matched == 0);

@@ -3,6 +3,7 @@
 #include "Arena.h"
 #include "SmallMemory.h"
 #include "VsDebug.h"
+#include "VsMem.h"
 #include "VsOStream.h"
 
 #include <string.h>
@@ -41,7 +42,7 @@ Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsig
 	if (p_memory == 0) {
 		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
-		p_memory = (unsigned char*) new unsigned char[m_totalBytes];
+		p_memory = (unsigned char*) operator new(m_totalBytes);
 		g_nSmallMemoryEnabled = smallMemEnabled;
 		m_flags |= 2;
 	}
@@ -49,7 +50,7 @@ Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsig
 	if (p_map == 0) {
 		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
-		p_map = (unsigned long*) new unsigned long[m_mapWordCount];
+		p_map = (unsigned long*) operator new(m_mapWordCount * sizeof(unsigned long));
 		g_nSmallMemoryEnabled = smallMemEnabled;
 		m_flags |= 1;
 	}
@@ -70,13 +71,17 @@ Bucket::~Bucket()
 	if (m_child != 0) {
 		RemoveChild();
 	}
-	if ((m_flags & 2) != 0 && m_memory != 0) {
-		delete[] m_memory;
-		m_memory = 0;
+	if ((m_flags & 2) != 0) {
+		if (m_memory != 0) {
+			operator delete(m_memory);
+			m_memory = 0;
+		}
 	}
-	if ((m_flags & 1) != 0 && m_map != 0) {
-		delete[] m_map;
-		m_map = 0;
+	if ((m_flags & 1) != 0) {
+		if (m_map != 0) {
+			operator delete(m_map);
+			m_map = 0;
+		}
 	}
 	g_nSmallMemoryEnabled = smallMemEnabled;
 }

@@ -4,9 +4,9 @@
 
 // 68K 0x10215938 __ct__7CMBlockFP6CArenaP7CMBlockPcUl
 // FUNCTION: LEMBALL 0x0045a540
-MBlock::MBlock(char* p_description, MBlock* p_previous, Arena* p_arena, unsigned long p_size)
+MBlock::MBlock(Arena* p_arena, MBlock* p_previous, char* p_description, unsigned long p_size)
 {
-	m_description = p_description;
+	m_description = (char*) p_arena;
 	m_nextBlock = p_previous;
 	m_previousBlock = 0;
 	m_previousFree = 0;
@@ -22,14 +22,15 @@ MBlock::~MBlock()
 
 // 68K 0x102159c8 StreamOut__7CMBlockFR10CVSOStream
 // FUNCTION: LEMBALL 0x0045a5b0
-void MBlock::StreamOut(VsOStream& p_stream)
+VsOStream& MBlock::StreamOut(VsOStream& p_stream)
 {
 	p_stream << (const void*) m_data << "\t0x" << Hex8(m_size);
 	if ((m_flags & 1) != 0) {
 		p_stream << "\tFree\n";
-	} else {
-		p_stream << "\tNew\n";
+		return p_stream;
 	}
+	p_stream << "\tNew\n";
+	return p_stream;
 }
 
 // 68K 0x10215a70 SetDesc__7CMBlockFPc

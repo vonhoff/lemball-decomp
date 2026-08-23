@@ -19,9 +19,15 @@ ResFont::ResFont(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x0045d810
 ResFont::~ResFont()
 {
-	delete[] m_animationEntries;
-	delete[] m_fontEntries;
-	delete m_fontTable;
+	if (m_animationEntries != 0) {
+		delete[] m_animationEntries;
+	}
+	if (m_fontEntries != 0) {
+		delete[] m_fontEntries;
+	}
+	if (m_fontTable != 0) {
+		delete m_fontTable;
+	}
 }
 
 // 68K 0x10203a7e Load__8CResFONTFUl

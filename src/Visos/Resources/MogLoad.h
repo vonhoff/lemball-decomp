@@ -9,8 +9,9 @@
 #define kAnyChunkType 0xffffffff
 #define kMogFormatVersion 3
 #define kChunkInfoSize 0x38
+#define kMogDirAllocSize 0x38
 
-class MogDir : public MogloadArena, public RawRead {
+class MogDir {
 public:
 	ChunkInfo* NewChunkInfo();
 	MogDir(unsigned long p_fileOffset);

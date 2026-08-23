@@ -14,30 +14,26 @@ FontTable::FontTable(ResFont* p_font)
 	unsigned int offset;
 	unsigned int index;
 	int glyphIndex;
-	int intOffset;
 	int zrleOffset;
 
-	ResZrle** glyphs;
-
 	m_glyphs = (ResZrle**) ::operator new(kGlyphTableBytes);
-	glyphs = m_glyphs;
 	offset = 0;
 	do {
 		offset += sizeof(ResZrle*);
-		*(ResZrle**) ((unsigned char*) glyphs + offset - sizeof(ResZrle*)) = 0;
+		*(ResZrle**) ((unsigned char*) m_glyphs + offset - sizeof(ResZrle*)) = 0;
 	} while (offset < kGlyphTableBytes);
 
 	zrleOffset = 0;
-	index = 0;
+	index = zrleOffset;
 	if (p_font->m_totalSize / p_font->m_listHeader->m_headerSize != 0) {
-		intOffset = 0;
+		int intOffset = 0;
 		do {
 			if (p_font->m_fontEntries == 0) {
 				glyphIndex = p_font->m_fontTable->GetChar(
 					(ResZrle*) ((unsigned char*) p_font->m_animationEntries + zrleOffset));
 			}
 			else {
-				glyphIndex = *(int*) ((unsigned char*) p_font->m_fontEntries + intOffset + 0x48);
+				glyphIndex = ((ResInt*) ((unsigned char*) p_font->m_fontEntries + intOffset))->m_value;
 			}
 			m_glyphs[glyphIndex] = (ResZrle*) ((unsigned char*) p_font->m_animationEntries + zrleOffset);
 			intOffset += kResIntSize;

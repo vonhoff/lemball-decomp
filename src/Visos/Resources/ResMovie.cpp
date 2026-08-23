@@ -30,8 +30,12 @@ ResMovie::ResMovie(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x0045df70
 ResMovie::~ResMovie()
 {
-	delete[] m_movieEntries;
-	delete[] m_fontEntries;
+	if (m_movieEntries != 0) {
+		delete[] m_movieEntries;
+	}
+	if (m_fontEntries != 0) {
+		delete[] m_fontEntries;
+	}
 }
 
 // 68K 0x102042e6 AllocateResources__9CResMOVIEFUl

@@ -66,5 +66,6 @@ protected:
 	Arena* m_nextArena;                    // 0x4c
 };
 
+extern unsigned char* g_pArenaHighWater;
 extern Arena* g_pMasterArena;
 #endif

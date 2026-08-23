@@ -1,6 +1,7 @@
 #include "Arena.h"
 #include "MBlock.h"
 #include "VsOStream.h"
+#include "../Animation/BaseStat.h"
 #include <string.h>
 
 #pragma intrinsic(memset)
@@ -201,10 +202,74 @@ MBlock* Arena::FindSmallestBlock(unsigned long p_size, char* p_description)
 }
 
 // 68K 0x10214d12 Allocate__6CArenaFPPUcUlPc
-// STUB: LEMBALL 0x00459d70
+// FUNCTION: LEMBALL 0x00459d70
 bool Arena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_description)
 {
-	return 0;
+	unsigned long aligned;
+	unsigned long needed;
+	int headerSize;
+	MBlock* block;
+	unsigned char* data;
+
+	EnterCritical();
+	*p_data = 0;
+	aligned = (p_size + 3) & 0xfffffffc;
+	headerSize = GetSizeOfBlock();
+	needed = aligned + headerSize;
+	if (aligned > m_freeSize) {
+		Hex hexSize;
+		hexSize.m_value = aligned;
+		// STRING: LEMBALL 0x004a1184 "CArena::Allocate : Not enough free memory : "
+		*g_pErrorOutput << "CArena::Allocate : Not enough free memory : " << p_description << " : 0x" << hexSize
+						<< " : Free Size is " << (unsigned long) m_freeSize << "\n";
+		LeaveCritical();
+		return 0;
+	}
+	block = FindSmallestBlock(needed, p_description);
+	if (block == 0) {
+		unsigned long freeSize = m_freeSize;
+		Hex hexSize;
+		hexSize.m_value = aligned;
+		// STRING: LEMBALL 0x004a11d4 "CArena::Allocate : memory blocks are too fragmented to satisfy : "
+		*g_pErrorOutput << "CArena::Allocate : memory blocks are too fragmented to satisfy : " << p_description
+						<< " : 0x" << hexSize << " : Free Size is " << freeSize << "\n";
+		{
+			Arena* master = g_pMasterArena;
+			master->StreamOut(*g_pErrorOutput);
+		}
+		LeaveCritical();
+		return 0;
+	}
+	if (GetSizeOfBlock() + needed + 4 <= block->m_size) {
+		unsigned long oldSize = block->m_size;
+		MBlock* leftover;
+		block->m_size = aligned;
+		block->SetDesc(p_description);
+		block->m_flags &= ~1;
+		RemoveFromFreeList(block);
+		// STRING: LEMBALL 0x004a1238 "Free"
+		leftover = CreateNewBlock(block->m_data + aligned, (Arena*) block->m_description, 0, "Free", oldSize - aligned);
+		leftover->m_flags |= 1;
+		AddToFreeList(leftover);
+		AddToBlockList(leftover, block);
+		m_freeSize -= block->m_size + GetSizeOfBlock();
+	}
+	else {
+		block->m_flags &= ~1;
+		RemoveFromFreeList(block);
+		block->SetDesc(p_description);
+		m_freeSize -= block->m_size;
+	}
+	*p_data = block->m_data;
+	if (m_parentArena != 0) {
+		data = *p_data + aligned;
+		if (g_pArenaHighWater < data) {
+			g_pArenaHighWater = data;
+		}
+		((BaseStat*) m_parentArena)->Update(data - m_arenaBase);
+	}
+	LeaveCritical();
+	return 1;
 }
 
 // 68K 0x102150e4 Free__6CArenaFPUc
@@ -234,10 +299,24 @@ bool Arena::Free(unsigned char* p_memory)
 }
 
 // 68K 0x102151ce AllocateArena__6CArenaFPP6CArenaUlPc
-// STUB: LEMBALL 0x0045a010
+// FUNCTION: LEMBALL 0x0045a010
 bool Arena::AllocateArena(Arena** p_arena, unsigned long p_size, char* p_description)
 {
-	return 0;
+	unsigned char* memory;
+	MBlock* block;
+	Arena* arena;
+
+	// STRING: LEMBALL 0x004a1240 "Arena container"
+	if (!Allocate(&memory, (*p_arena = 0, p_size), "Arena container")) {
+		return 0;
+	}
+	EnterCritical();
+	block = (MBlock*) (memory - GetSizeOfBlock());
+	arena = CreateNew(block->m_data, block->m_size, p_description, this, 0);
+	AddToArenaList(arena);
+	*p_arena = arena;
+	LeaveCritical();
+	return 1;
 }
 
 // 68K 0x102152a2 FreeArena__6CArenaFP6CArena
@@ -329,10 +408,15 @@ unsigned long Arena::GetFreeSize()
 unsigned long Arena::GetAllocSize()
 {
 	int blockCount = 0;
-	for (MBlock* current = m_lastBlock; current != 0; current = current->m_nextBlock) {
-		blockCount++;
+	MBlock* current = m_lastBlock;
+	if (current != 0) {
+		do {
+			blockCount++;
+			current = current->m_nextBlock;
+		} while (current != 0);
 	}
-	return m_arenaSize - (GetSizeOfBlock() * blockCount);
+	unsigned long arenaSize = m_arenaSize;
+	return arenaSize - GetSizeOfBlock() * blockCount;
 }
 
 // 68K 0x1021562c __nw__6CArenaFUlPv
@@ -355,6 +439,9 @@ void Arena::MemCopy(unsigned char* p_destination, unsigned char* p_source, unsig
 {
 	memcpy(p_destination, p_source, p_size);
 }
+
+// GLOBAL: LEMBALL 0x004a117c
+unsigned char* g_pArenaHighWater = 0;
 
 // GLOBAL: LEMBALL 0x004aa100
 Arena* g_pMasterArena;
