@@ -1,9 +1,14 @@
 #include "ResBaseList.h"
 
 // 68K 0x10203254 SetHeader__12CResBaseLISTFv
-// STUB: LEMBALL 0x0045d290
+// FUNCTION: LEMBALL 0x0045d290
 void ResBaseList::SetHeader()
 {
+	ResListHeader* header = (ResListHeader*) m_name;
+	m_totalSize = header->m_totalSize;
+	m_headerSize = header->m_headerSize;
+	m_vramEntryCount = -1;
+	m_bodySize = header->m_bodySize;
 }
 
 // 68K 0x10203298 OnRead__12CResBaseLISTFPUcPPUcUl
@@ -38,37 +43,39 @@ void ResBaseList::UnLoadVramData(unsigned char p_force)
 }
 
 // 68K 0x1011621e SetType__12CResBaseLISTFv
-// STUB: LEMBALL 0x0045e680
+// FUNCTION: LEMBALL 0x0045e680
 void ResBaseList::SetType()
 {
+	m_chunkType = 0x4c495354;
+	m_headerSkip = 0xc;
 }
 
 // 68K 0x10116254 GetSizeUsed__12CResBaseLISTFv
-// STUB: LEMBALL 0x0045e690
+// FUNCTION: LEMBALL 0x0045e690
 unsigned int ResBaseList::GetSizeUsed()
 {
-	return 0;
+	return m_bodySize;
 }
 
 // 68K 0x10115e60 GetfVramLoaded__12CResBaseLISTFv
-// STUB: LEMBALL 0x0045e6a0
+// FUNCTION: LEMBALL 0x0045e6a0
 bool ResBaseList::GetfVramLoaded()
 {
-	return 0;
+	return m_vramLoadedCount - m_vramEntryCount < 1;
 }
 
 // 68K 0x10115ece GetfAnyVramLoaded__12CResBaseLISTFv
-// STUB: LEMBALL 0x0045e6b0
+// FUNCTION: LEMBALL 0x0045e6b0
 bool ResBaseList::GetfAnyVramLoaded()
 {
-	return 0;
+	return m_vramLoadedCount >= 1;
 }
 
 // 68K 0x10116284 GetfVramSwappable__12CResBaseLISTFv
-// STUB: LEMBALL 0x0045e6c0
+// FUNCTION: LEMBALL 0x0045e6c0
 bool ResBaseList::GetfVramSwappable()
 {
-	return 0;
+	return m_vramSwappable >= 1;
 }
 
 // 68K 0x10115e30 GetnVramEntries__12CResBaseLISTFv

@@ -9,10 +9,10 @@
 void CopyText::Set(int p_x, int p_y, ResFont* p_font, char* p_text, unsigned long p_flags, Remap* p_remap)
 {
 	strcpy(m_buffer, p_text);
-	m_text = m_buffer;
 	m_startX = (short) p_x;
 	m_startY = (short) p_y;
 	m_font = p_font;
+	m_text = m_buffer;
 	m_remap = p_remap;
 	m_flags = p_flags;
 }

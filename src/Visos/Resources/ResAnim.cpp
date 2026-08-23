@@ -27,10 +27,14 @@ bool ResAnim::ForceLoadVram(unsigned int p_index)
 }
 
 // 68K 0x101160fa GetnVramEntries__8CResANIMFv
-// STUB: LEMBALL 0x0045e720
+// FUNCTION: LEMBALL 0x0045e720
 unsigned int ResAnim::GetnVramEntries()
 {
-	return 0;
+	unsigned int count = 0;
+	if (m_animationEntries->m_initialized != 0) {
+		count = 1;
+	}
+	return count;
 }
 
 // 68K 0x10116134 DirectResources__8CResANIMFUlRPUc

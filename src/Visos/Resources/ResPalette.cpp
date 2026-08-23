@@ -8,15 +8,19 @@ ResPalette* ResPalette::Load(unsigned int p_resourceId)
 }
 
 // 68K 0x10100ef0 SetType__11CResPALETTEFv
-// STUB: LEMBALL 0x0045ea30
+// FUNCTION: LEMBALL 0x0045ea30
 void ResPalette::SetType()
 {
+	m_chunkType = 0x50414c20;
+	m_headerSkip = 4;
 }
 
 // 68K 0x10100f26 SetHeader__11CResPALETTEFv
-// STUB: LEMBALL 0x0045ea40
+// FUNCTION: LEMBALL 0x0045ea40
 void ResPalette::SetHeader()
 {
+	PaletteHeader* header = (PaletteHeader*) m_name;
+	m_paletteState = header->m_paletteState;
 }
 
 // 68K 0x10100f5c __dt__11CResPALETTEFv

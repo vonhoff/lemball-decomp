@@ -30,7 +30,10 @@ public:
 	void UnLoad();
 	void UnLoadExtData(unsigned char p_force);
 
-private:
+	friend class ResAnim;
+	friend class ResFont;
+
+protected:
 	ResBaseList* m_externalList;   // 0x04
 	unsigned int m_directUseCount; // 0x08
 	unsigned int m_referenceCount; // 0x0c

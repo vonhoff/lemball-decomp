@@ -4,6 +4,11 @@
 #include "../../Common.h"
 #include "ResBase.h" // complete type
 
+// SIZE 0x04
+struct PaletteHeader {
+	undefined4 m_paletteState;
+};
+
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00498c08
 class ResPalette : public ResBase {

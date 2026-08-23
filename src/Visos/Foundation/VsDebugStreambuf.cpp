@@ -39,7 +39,8 @@ void VsDebugStreambuf::Flush()
 // FUNCTION: LEMBALL 0x0045ae10
 void VsDebugStreambuf::Sputc(char p_c)
 {
-	switch (p_c) {
+	int c = p_c;
+	switch (c) {
 	case '\t':
 		*m_cursor = ' ';
 		*++m_cursor = '\0';

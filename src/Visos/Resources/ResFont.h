@@ -26,9 +26,9 @@ public:
 	~ResFont();
 
 private:
-	FontTable* m_fontTable;   // 0x78
-	void* m_animationEntries; // 0x7c
-	void* m_fontEntries;      // 0x80
+	FontTable* m_fontTable;      // 0x78
+	ResBase* m_animationEntries; // 0x7c
+	ResBase* m_fontEntries;      // 0x80
 };
 
 #endif

@@ -8,9 +8,10 @@ ResString* ResString::Load(unsigned int p_resourceId)
 }
 
 // 68K 0x10100fae SetType__10CResSTRINGFv
-// STUB: LEMBALL 0x0045ea70
+// FUNCTION: LEMBALL 0x0045ea70
 void ResString::SetType()
 {
+	m_chunkType = 0x53545247;
 }
 
 // 68K 0x10116044 __ct__10CResSTRINGFv

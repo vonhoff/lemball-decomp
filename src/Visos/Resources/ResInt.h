@@ -4,6 +4,11 @@
 #include "../../Common.h"
 #include "ResBase.h" // complete type
 
+// SIZE 0x04
+struct IntPayload {
+	int m_value;
+};
+
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00498b48
 class ResInt : public ResBase {

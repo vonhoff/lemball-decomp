@@ -1,6 +1,7 @@
 #include "Text.h"
 
 #include "../Graphics/Gdi.h"
+#include "../Resources/ResZrle.h"
 #include "VsPoint.h"
 
 // 68K 0x10117aa4 Set__5CTextFiiP8CResFONTPCcUlP6CRemap
@@ -67,10 +68,38 @@ Text::~Text()
 }
 
 // 68K 0x102119ee NextPos__5CTextFv
-// STUB: LEMBALL 0x004749c0
-short Text::NextPos()
+// FUNCTION: LEMBALL 0x004749c0
+void Text::NextPos()
 {
-	return 0;
+	short stepY;
+	short stepX;
+	if (m_useAdvance != 0) {
+		stepX = m_advanceX;
+		stepY = m_advanceY;
+	}
+	else {
+		stepX = m_glyph->m_width + 1;
+		stepY = m_glyph->m_height + 1;
+	}
+	unsigned int flags = m_flags;
+	if ((flags & 0x200) != 0) {
+		stepX = stepX + m_offsetX;
+		stepY = stepY + m_offsetY;
+	}
+	if ((flags & 0x40) != 0) {
+		m_x = m_x - stepX;
+	}
+	else if ((flags & 0x20) != 0) {
+		m_x = m_x + stepX;
+	}
+	flags = m_flags;
+	if ((flags & 0x80) != 0) {
+		m_y = m_y - stepY;
+		return;
+	}
+	if ((flags & 0x100) != 0) {
+		m_y = m_y + stepY;
+	}
 }
 
 // 68K 0x10211ad8 Render__5CTextFP4CGDI

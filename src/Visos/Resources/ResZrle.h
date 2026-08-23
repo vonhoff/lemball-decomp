@@ -4,6 +4,16 @@
 #include "../../Common.h"
 #include "ResBase.h" // complete type
 
+// SIZE 0x0c
+struct ZrleHeader {
+	short m_x;
+	short m_y;
+	short m_width;
+	short m_height;
+	short m_originX;
+	short m_originY;
+};
+
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00498a70
 class ResZrle : public ResBase {
@@ -13,6 +23,8 @@ public:
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
 	virtual ~ResZrle();       // vtable+0x00
+
+	friend class Text;
 
 private:
 	short m_x;       // 0x48

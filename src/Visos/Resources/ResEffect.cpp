@@ -8,9 +8,10 @@ ResEffect* ResEffect::Load(unsigned int p_resourceId)
 }
 
 // 68K 0x1010102e SetType__10CResEFFECTFv
-// STUB: LEMBALL 0x0045eba0
+// FUNCTION: LEMBALL 0x0045eba0
 void ResEffect::SetType()
 {
+	m_chunkType = 0x45464620;
 }
 
 // 68K 0x1010105c __dt__10CResEFFECTFv

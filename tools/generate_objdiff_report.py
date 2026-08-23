@@ -46,10 +46,18 @@ def measures(functions, total_units=1):
     return res
 
 
+def _insn_text(entry):
+    if isinstance(entry, (list, tuple)) and len(entry) > 1:
+        return entry[1]
+    return entry
+
+
 def normalize_asm(s):
     s = s.split("\t")[0].strip()
     s = re.sub(r"Thunk of '([^']+)' \(THUNK\)", r"\1 (FUNCTION)", s)
     s = re.sub(r" \(THUNK\)", " (FUNCTION)", s)
+    s = re.sub(r"<OFFSET\d+>", "SYM", s)
+    s = re.sub(r"\S+ \((?:DATA|VTABLE|UNK)\)", "SYM", s)
     return s
 
 
@@ -59,15 +67,15 @@ def is_thunk_only_diff(diff):
     has_diff = False
     for _, chunks in diff:
         for chunk in chunks:
-            if "both" in chunk:
+            if not chunk.get("orig") and not chunk.get("recomp"):
                 continue
             has_diff = True
             orig = chunk.get("orig", [])
             recomp = chunk.get("recomp", [])
             if len(orig) != len(recomp):
                 return False
-            for (_, o_ins), (_, r_ins) in zip(orig, recomp):
-                if normalize_asm(o_ins) != normalize_asm(r_ins):
+            for orig_entry, recomp_entry in zip(orig, recomp):
+                if normalize_asm(_insn_text(orig_entry)) != normalize_asm(_insn_text(recomp_entry)):
                     return False
     return has_diff
 

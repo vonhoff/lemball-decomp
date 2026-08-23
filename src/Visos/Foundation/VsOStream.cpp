@@ -162,10 +162,11 @@ VsOStream& VsOStream::operator<<(Hex8 p_arg0)
 VsOStream& VsOStream::operator<<(Har4 p_arg0)
 {
 	signed char shift = 24;
-	for (int i = 3; i >= 0; i--) {
+	int i = 3;
+	do {
 		m_streamBuffer->Sputc((char) (p_arg0.m_value >> shift));
 		shift -= 8;
-	}
+	} while (--i >= 0);
 	return *this;
 }
 

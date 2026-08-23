@@ -21,7 +21,7 @@ public:
 	virtual ~ResAnim();                                                        // vtable+0x00
 
 private:
-	void* m_animationEntries; // 0x78
+	ResBase* m_animationEntries; // 0x78
 };
 
 #endif

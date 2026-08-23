@@ -16,21 +16,16 @@ public:
 	{
 	}
 
-	short NextPos();
+	void NextPos();
 	virtual ~Text();               // vtable+0x00
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual void Set(VsPoint& p_position,
-					 ResFont* p_font,
-					 String p_text,
-					 unsigned long p_flags,
-					 Remap* p_remap); // vtable+0x0c
 	virtual void Set(int p_x,
 					 int p_y,
 					 ResFont* p_font,
-					 String p_text,
+					 char* p_text,
 					 unsigned long p_flags,
-					 Remap* p_remap); // vtable+0x10
+					 Remap* p_remap); // vtable+0x18
 	virtual void Set(VsPoint& p_position,
 					 ResFont* p_font,
 					 char* p_text,
@@ -39,9 +34,14 @@ public:
 	virtual void Set(int p_x,
 					 int p_y,
 					 ResFont* p_font,
-					 char* p_text,
+					 String p_text,
 					 unsigned long p_flags,
-					 Remap* p_remap); // vtable+0x18
+					 Remap* p_remap); // vtable+0x10
+	virtual void Set(VsPoint& p_position,
+					 ResFont* p_font,
+					 String p_text,
+					 unsigned long p_flags,
+					 Remap* p_remap); // vtable+0x0c
 
 	friend class TextManager;
 
@@ -59,7 +59,7 @@ protected:
 	unsigned int m_useAdvance; // 0x20
 	short m_advanceX;          // 0x24
 	short m_advanceY;          // 0x26
-	void* m_glyph;             // 0x28
+	ResZrle* m_glyph;          // 0x28
 	Zrle m_primitive;          // 0x2c
 };
 

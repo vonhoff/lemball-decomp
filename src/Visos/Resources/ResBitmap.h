@@ -4,6 +4,15 @@
 #include "../../Common.h"
 #include "ResBase.h" // complete type
 
+// SIZE 0x0c
+struct BitmapHeader {
+	unsigned int m_width;
+	unsigned short m_height;
+	unsigned short m_pad0x06;
+	unsigned char m_depth;
+	unsigned char m_flags;
+};
+
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00498d20
 class ResBitmap : public ResBase {

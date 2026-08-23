@@ -8,15 +8,24 @@ ResBitmap* ResBitmap::Load(unsigned int p_resourceId)
 }
 
 // 68K 0x102045f4 SetHeader__10CResBITMAPFv
-// STUB: LEMBALL 0x0045e290
+// FUNCTION: LEMBALL 0x0045e290
 void ResBitmap::SetHeader()
 {
+	BitmapHeader* header = (BitmapHeader*) m_name;
+	unsigned short height = header->m_height;
+	unsigned int width = header->m_width;
+	m_width = (unsigned short) width;
+	m_height = height;
+	m_depth = header->m_depth;
+	m_flags = header->m_flags;
 }
 
 // 68K 0x101162c2 SetType__10CResBITMAPFv
-// STUB: LEMBALL 0x0045eb70
+// FUNCTION: LEMBALL 0x0045eb70
 void ResBitmap::SetType()
 {
+	m_chunkType = 0x42544d50;
+	m_headerSkip = 0xc;
 }
 
 // 68K 0x101162f6 __dt__10CResBITMAPFv

@@ -8,9 +8,10 @@ ResBin* ResBin::Load(unsigned int p_resourceId)
 }
 
 // 68K 0x101010ae SetType__7CResBINFv
-// STUB: LEMBALL 0x0045ec60
+// FUNCTION: LEMBALL 0x0045ec60
 void ResBin::SetType()
 {
+	m_chunkType = 0x42494e20;
 }
 
 // 68K 0x101010d8 __dt__7CResBINFv

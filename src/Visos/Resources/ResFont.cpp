@@ -26,10 +26,17 @@ void ResFont::AllocateResources(unsigned int p_count)
 }
 
 // 68K 0x10203bb2 GetnVramEntries__8CResFONTFv
-// STUB: LEMBALL 0x0045d970
+// FUNCTION: LEMBALL 0x0045d970
 unsigned int ResFont::GetnVramEntries()
 {
-	return 0;
+	unsigned int count = 0;
+	if (m_animationEntries->m_initialized != 0) {
+		count = 1;
+	}
+	if (m_fontEntries->m_initialized != 0) {
+		count++;
+	}
+	return count;
 }
 
 // 68K 0x10203bf8 DirectResources__8CResFONTFUlRPUcRPUc

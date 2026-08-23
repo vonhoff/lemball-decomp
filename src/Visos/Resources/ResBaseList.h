@@ -4,6 +4,13 @@
 #include "../../Common.h"
 #include "ResBase.h" // complete type
 
+// SIZE 0x0c
+struct ResListHeader {
+	unsigned int m_totalSize;
+	unsigned int m_headerSize;
+	unsigned int m_bodySize;
+};
+
 // SIZE 0x78
 // VTABLE: LEMBALL 0x004989c0
 class ResBaseList : public ResBase {
@@ -25,7 +32,7 @@ public:
 	virtual ~ResBaseList();                                                                    // vtable+0x00
 
 private:
-	void* m_listHeader;             // 0x48
+	ResListHeader* m_listHeader;    // 0x48
 	unsigned char* m_headerData;    // 0x4c
 	undefined4 m_unk0x50;           // 0x50
 	unsigned int m_vramReady;       // 0x54

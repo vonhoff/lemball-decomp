@@ -70,24 +70,24 @@ ResBase* ResBase::CheckError()
 }
 
 // 68K 0x10101148 GetfVramLoaded__8CResBaseFv
-// STUB: LEMBALL 0x0045e5b0
+// FUNCTION: LEMBALL 0x0045e5b0
 bool ResBase::GetfVramLoaded()
 {
-	return 0;
+	return m_vramLoaded;
 }
 
 // 68K 0x10101176 GetfVramSwappable__8CResBaseFv
-// STUB: LEMBALL 0x0045e5c0
+// FUNCTION: LEMBALL 0x0045e5c0
 bool ResBase::GetfVramSwappable()
 {
-	return 0;
+	return m_vramSwappable;
 }
 
 // 68K 0x101011a8 GetfAnyVramLoaded__8CResBaseFv
-// STUB: LEMBALL 0x0045e5d0
+// FUNCTION: LEMBALL 0x0045e5d0
 bool ResBase::GetfAnyVramLoaded()
 {
-	return 0;
+	return m_vramLoaded;
 }
 
 // 68K 0x101011da ForceLoadVram__8CResBaseFv
@@ -104,10 +104,10 @@ void ResBase::UnLoadVramData(unsigned char p_force)
 }
 
 // 68K 0x1010122a GetData__8CResBaseFv
-// STUB: LEMBALL 0x0045e600
+// FUNCTION: LEMBALL 0x0045e600
 unsigned char* ResBase::GetData()
 {
-	return 0;
+	return m_data;
 }
 
 // 68K 0x10101252 OnLoad__8CResBaseFv
@@ -129,14 +129,15 @@ void ResBase::SetHeader()
 }
 
 // 68K 0x10100ec8 SetType__8CResBaseFv
-// STUB: LEMBALL 0x0045e640
+// FUNCTION: LEMBALL 0x0045e640
 void ResBase::SetType()
 {
+	m_chunkType = 0;
 }
 
 // 68K 0x10101290 GetSizeUsed__8CResBaseFv
-// STUB: LEMBALL 0x0045e650
+// FUNCTION: LEMBALL 0x0045e650
 unsigned int ResBase::GetSizeUsed()
 {
-	return 0;
+	return m_dataSize;
 }

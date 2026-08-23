@@ -8,9 +8,22 @@ ResZrle* ResZrle::Load(unsigned int p_resourceId)
 }
 
 // 68K 0x10204714 SetHeader__8CResZRLEFv
-// STUB: LEMBALL 0x0045e340
+// FUNCTION: LEMBALL 0x0045e340
 void ResZrle::SetHeader()
 {
+	ZrleHeader* header = (ZrleHeader*) m_name;
+	short y = header->m_y;
+	short x = header->m_x;
+	m_x = x;
+	m_y = y;
+	y = header->m_height;
+	x = header->m_width;
+	m_width = x;
+	m_height = y;
+	y = header->m_originY;
+	x = header->m_originX;
+	m_originX = x;
+	m_originY = y;
 }
 
 // 68K 0x10115f94 __ct__8CResZRLEFv
@@ -20,9 +33,11 @@ ResZrle::ResZrle()
 }
 
 // 68K 0x10116352 SetType__8CResZRLEFv
-// STUB: LEMBALL 0x0045e840
+// FUNCTION: LEMBALL 0x0045e840
 void ResZrle::SetType()
 {
+	m_chunkType = 0x5a524c45;
+	m_headerSkip = 0xc;
 }
 
 // 68K 0x10115f3c __dt__8CResZRLEFv
