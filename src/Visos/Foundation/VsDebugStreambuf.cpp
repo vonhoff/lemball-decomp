@@ -41,52 +41,44 @@ void VsDebugStreambuf::Sputc(char p_c)
 {
 	switch (p_c) {
 	case '\t':
-		*m_cursor++ = ' ';
-		*m_cursor = '\0';
-		m_length++;
-		if (m_capacity - m_length == 1) {
+		*m_cursor = ' ';
+		*++m_cursor = '\0';
+		if (m_capacity - ++m_length == 1) {
 			Flush();
 		}
-		if ((int) m_length % (int) m_tabWidth != 0) {
-			do {
-				*m_cursor++ = ' ';
-				*m_cursor = '\0';
-				m_length++;
-				if (m_capacity - m_length == 1) {
-					Flush();
-				}
-			} while ((int) m_length % (int) m_tabWidth != 0);
+		if ((int) m_length % (int) m_tabWidth == 0) {
 			return;
 		}
-		break;
+		do {
+			*m_cursor = ' ';
+			*++m_cursor = '\0';
+			if (m_capacity - ++m_length == 1) {
+				Flush();
+			}
+		} while ((int) m_length % (int) m_tabWidth != 0);
+		return;
 	case '\n':
 		*m_cursor = p_c;
 		if (m_flushCallback != NULL) {
-			m_cursor++;
-			*m_cursor = '\0';
-			m_length++;
-			if (m_capacity - m_length == 1) {
+			*++m_cursor = '\0';
+			if (m_capacity - ++m_length == 1) {
 				Flush();
 			}
 			Flush();
 			return;
 		}
-		m_cursor++;
-		*m_cursor = '\0';
-		m_length++;
-		if (m_capacity - m_length == 1) {
+		*++m_cursor = '\0';
+		if (m_capacity - ++m_length == 1) {
 			Flush();
 		}
 		return;
 	default:
-		*m_cursor++ = p_c;
-		*m_cursor = '\0';
-		m_length++;
-		if (m_capacity - m_length == 1) {
+		*m_cursor = p_c;
+		*++m_cursor = '\0';
+		if (m_capacity - ++m_length == 1) {
 			Flush();
-			return;
 		}
-		break;
+		return;
 	}
 }
 

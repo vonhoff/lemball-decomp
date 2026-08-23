@@ -68,33 +68,16 @@ unsigned int VsMath::SqRoot(unsigned int p_value)
 
 // 68K 0x107007a0 ReturnFacingDirection__Fiiii
 // FUNCTION: LEMBALL 0x00413e80
-unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY) {
+unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY)
+{
 	int nDeltaX = (p_toX - p_fromX) << 12;
 	int nDeltaY = (p_toY - p_fromY) << 12;
 
-	int t[2];
-	int* p;
-	p = &t[0];
-	if (nDeltaX < 0) {
-		t[1] = -nDeltaX;
-		p = &t[1];
-	}
-	else {
-		t[0] = nDeltaX;
-	}
-	int nAbsX = *p;
+	int nAbsX = VsAbs(nDeltaX);
+	int nAbsY = VsAbs(nDeltaY);
 
-	p = &t[0];
-	if (nDeltaY < 0) {
-		t[1] = -nDeltaY;
-		p = &t[1];
-	}
-	else {
-		t[0] = nDeltaY;
-	}
-	int nAbsY = *p;
-
-	int nFraction = ((nAbsY & 0xfff) * 0x6a0) >> 12;
+	int nFraction = nAbsY & 0xfff;
+	nFraction = (nFraction * 0x6a0) >> 12;
 	int nHigh = nAbsY >> 12;
 	unsigned int nDirection;
 
