@@ -5,10 +5,11 @@
 #include "MBlock.h" // complete type
 
 // SIZE 0x28
+// VTABLE: LEMBALL 0x00498948
 class MramBlock : public MBlock {
 public:
-	MramBlock(Arena* p_arg0, MBlock* p_arg1, char* p_arg2, unsigned long p_arg3);
-	~MramBlock();
+	MramBlock(Arena* p_arena, MBlock* p_previous, char* p_description, unsigned long p_totalSize);
+	virtual ~MramBlock();
 };
 
 #endif

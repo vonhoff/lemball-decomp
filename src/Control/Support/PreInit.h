@@ -11,10 +11,10 @@ public:
 
 	unsigned int m_flags;         // 0x00
 	unsigned int m_memoryBudget;  // 0x04
-	undefined4 m_unk0x08;         // 0x08
+	int m_startBucket;            // 0x08
 	int m_capabilityCount;        // 0x0c
 	unsigned int* m_capabilities; // 0x10
-	undefined4 m_unk0x14;         // 0x14
+	int m_shift;                  // 0x14
 	void* m_icon;                 // 0x18
 };
 

@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_FOUNDATION_ARENA_H
 
 #include "../../Common.h"
+#include "Critical.h"
 
 // SIZE 0x50
 // VTABLE: LEMBALL 0x004988e0
@@ -24,20 +25,23 @@ public:
 	bool RemoveFromFreeList(MBlock* p_arg0);
 	unsigned long GetAllocSize();
 	unsigned long GetFreeSize();
-	virtual bool Allocate(unsigned char** p_arg0, unsigned long p_arg1, char* p_arg2);                 // vtable+0x08
-	virtual bool Free(unsigned char* p_memory);                                                        // vtable+0x0c
-	virtual void MemCopy(unsigned char* p_destination, unsigned char* p_source, unsigned long p_size); // vtable+0x14
-	virtual void MemSet(unsigned char* p_destination, unsigned char p_value, unsigned long p_size);    // vtable+0x10
 	virtual void StreamOut(VsOStream& p_stream);                                                       // vtable+0x00
 	virtual ~Arena();                                                                                  // vtable+0x04
+	virtual bool Allocate(unsigned char** p_arg0, unsigned long p_arg1, char* p_arg2);                 // vtable+0x08
+	virtual bool Free(unsigned char* p_memory);                                                        // vtable+0x0c
+	virtual void MemSet(unsigned char* p_destination, unsigned char p_value, unsigned long p_size);    // vtable+0x10
+	virtual void MemCopy(unsigned char* p_destination, unsigned char* p_source, unsigned long p_size); // vtable+0x14
+	virtual int GetSizeOf() = 0;                                                                       // vtable+0x18
+	virtual int GetSizeOfBlock() = 0;                                                                  // vtable+0x1c
+	virtual Arena* CreateNew(unsigned char* p_arg0, unsigned long p_arg1, char* p_arg2, Arena* p_arg3, Arena* p_arg4) = 0; // vtable+0x20
+	virtual MBlock* CreateNewBlock(unsigned char* p_arg0, Arena* p_arg1, MBlock* p_arg2, char* p_arg3, unsigned long p_arg4) = 0; // vtable+0x24
 	void DeleteLists();
 	void* operator new(size_t p_arg0, void* p_arg1);
 	Arena();
 
-private:
+protected:
 	unsigned int m_signature;              // 0x04
-	void* m_synchronizationVtable;         // 0x08
-	undefined m_synchronizationData[0x18]; // 0x0c
+	Critical m_critical;                   // 0x08
 	unsigned char* m_arenaBase;            // 0x24
 	unsigned int m_arenaSize;              // 0x28
 	unsigned int m_freeSize;               // 0x2c

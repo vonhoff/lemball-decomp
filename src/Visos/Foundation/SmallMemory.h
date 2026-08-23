@@ -22,4 +22,6 @@ private:
 extern SmallMemory* g_pSmallMemory;
 extern int g_nSmallMemoryEnabled;
 extern void* g_pMasterArenaMemory;
+extern unsigned int g_maxSmallMemorySize;
+extern char* g_pCurrentAllocDescription;
 #endif

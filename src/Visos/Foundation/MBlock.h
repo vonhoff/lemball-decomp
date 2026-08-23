@@ -7,14 +7,17 @@
 // VTABLE: LEMBALL 0x00498940
 class MBlock {
 public:
-	MBlock(Arena* p_arg0, class MBlock* p_arg1, char* p_arg2, unsigned long p_arg3);
+	MBlock(char* p_description, class MBlock* p_previous, class Arena* p_arena, unsigned long p_size);
 	virtual void StreamOut(VsOStream& p_stream); // vtable+0x00
 	virtual ~MBlock();                           // vtable+0x04
 	void SetDesc(char* p_arg0);
 	void* operator new(size_t p_arg0, void* p_arg1);
 	MBlock();
 
-private:
+	friend class Arena;
+	friend class RamArena;
+
+protected:
 	unsigned int m_signature;      // 0x04
 	unsigned char* m_data;         // 0x08
 	unsigned int m_size;           // 0x0c
