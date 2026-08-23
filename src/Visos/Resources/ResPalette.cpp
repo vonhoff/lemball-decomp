@@ -6,14 +6,10 @@
 // FUNCTION: LEMBALL 0x0045dd90
 ResPalette* ResPalette::Load(unsigned int p_resourceId)
 {
-	ResPalette* res = (ResPalette*) g_pActiveMogRes->Find(p_resourceId);
+	register unsigned int id = p_resourceId;
+	ResPalette* res = (ResPalette*) g_pActiveMogRes->Find(id);
 	if (res == 0) {
-		res = new ResPalette();
-		if (res != 0) {
-			res->DoLoad(p_resourceId);
-			return (ResPalette*) res->CheckError();
-		}
-		return (ResPalette*) ((ResBase*) 0)->CheckError();
+		return (ResPalette*) (new ResPalette(id))->CheckError();
 	}
 	if (res->m_chunkType != 0x50414c20) {
 		res->UnLoad();

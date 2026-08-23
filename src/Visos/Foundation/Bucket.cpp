@@ -34,20 +34,20 @@ Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsig
 	m_activeAllocations = 0;
 	m_totalAllocations = 0;
 	m_totalBytes = p_blockSize * p_blockCount;
-	m_freeBytes = p_blockSize * p_blockCount;
+	m_freeBytes = m_totalBytes;
 	m_peakAllocations = 0;
 	m_mapWordCount = (p_blockCount + 31) / 32;
 
-	int smallMemEnabled = g_nSmallMemoryEnabled;
 	if (p_memory == 0) {
+		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
 		p_memory = (unsigned char*) new unsigned char[m_totalBytes];
 		g_nSmallMemoryEnabled = smallMemEnabled;
 		m_flags |= 2;
 	}
 
-	smallMemEnabled = g_nSmallMemoryEnabled;
 	if (p_map == 0) {
+		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
 		p_map = (unsigned long*) new unsigned long[m_mapWordCount];
 		g_nSmallMemoryEnabled = smallMemEnabled;
@@ -122,23 +122,25 @@ bool Bucket::Free(unsigned char* p_memory)
 	Bucket* current = this;
 	while (true) {
 		current->EnterCritical();
-		if (current->m_memory <= p_memory && p_memory < current->m_memory + current->m_totalBytes) {
+		if (current->m_memory > p_memory) {
+		}
+		else if (current->m_memory + current->m_totalBytes > p_memory) {
 			break;
 		}
 		current->LeaveCritical();
 		current = current->m_child;
 	}
-	unsigned int index = (p_memory - current->m_memory) / current->m_blockSize;
-	unsigned int word = index / 32;
-	unsigned int bit = index % 32;
+	int index = (p_memory - current->m_memory) / (int) current->m_blockSize;
+	Boffset offset;
+	offset.wWord = (short) (index / 32);
+	offset.wBit = (short) (index % 32);
 	unsigned short oldFlags = current->m_flags;
-	current->m_map[word] &= ~s_bitMasks[bit];
+	current->m_map[offset.wWord] &= ~s_bitMasks[offset.wBit];
 	current->m_freeBytes += current->m_blockSize;
 	current->m_flags &= ~4;
 	current->m_activeAllocations--;
-	if ((oldFlags & 4) != 0 || (word < current->m_freeOffset.wWord && bit < current->m_freeOffset.wBit)) {
-		current->m_freeOffset.wWord = (unsigned short) word;
-		current->m_freeOffset.wBit = (unsigned short) bit;
+	if ((oldFlags & 4) != 0 || (current->m_freeOffset.wWord > offset.wWord && current->m_freeOffset.wBit > offset.wBit)) {
+		current->m_freeOffset = offset;
 	}
 	if (current->m_totalBytes == current->m_freeBytes && current->m_parent != 0) {
 		current->RemoveThis();
@@ -217,10 +219,13 @@ bool Bucket::CheckValidPointer(unsigned char* p_memory)
 {
 	Bucket* current = this;
 	do {
-		if (p_memory >= current->m_memory && p_memory < current->m_memory + current->m_totalBytes) {
-			return true;
+		unsigned char* base = current->m_memory;
+		if (p_memory >= base && base + current->m_totalBytes > p_memory) {
+			return 1;
 		}
 		current = current->m_child;
-	} while (current != 0);
-	return false;
+		if (current == 0) {
+			return 0;
+		}
+	} while (true);
 }

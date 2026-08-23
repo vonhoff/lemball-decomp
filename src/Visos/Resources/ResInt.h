@@ -18,6 +18,8 @@ public:
 	virtual void SetType(); // vtable+0x34
 	virtual ~ResInt();      // vtable+0x00
 
+	friend class FontTable;
+
 private:
 	int m_value; // 0x48
 };

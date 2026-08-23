@@ -13,7 +13,7 @@ struct PaletteHeader {
 // VTABLE: LEMBALL 0x00498c08
 class ResPalette : public ResBase {
 public:
-	inline ResPalette() {}
+	inline ResPalette(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	static ResPalette* Load(unsigned int p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34

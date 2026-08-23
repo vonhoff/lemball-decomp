@@ -8,12 +8,7 @@ ResBitmap* ResBitmap::Load(unsigned int p_resourceId)
 {
 	ResBitmap* res = (ResBitmap*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == 0) {
-		res = new ResBitmap();
-		if (res != 0) {
-			res->DoLoad(p_resourceId);
-			return (ResBitmap*) res->CheckError();
-		}
-		return (ResBitmap*) ((ResBase*) 0)->CheckError();
+		return (ResBitmap*) (new ResBitmap(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x42544d50) {
 		res->UnLoad();

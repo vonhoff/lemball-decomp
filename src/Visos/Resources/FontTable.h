@@ -10,7 +10,7 @@ class FontTable : public PvFontTable {
 public:
 	FontTable(ResFont* p_arg0);
 	virtual ResZrle* GetZrle(int p_character); // vtable+0x04
-	virtual int GetChar(ResZrle* p_glyph);     // vtable+0x08
+	virtual char GetChar(ResZrle* p_glyph);    // vtable+0x08
 	virtual ~FontTable();                      // vtable+0x00
 
 private:

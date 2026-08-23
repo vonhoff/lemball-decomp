@@ -10,7 +10,7 @@
 // FUNCTION: LEMBALL 0x0045a6b0
 void* InternalNew(unsigned long p_size)
 {
-	unsigned char* result = 0;
+	unsigned char* result;
 	if (g_nSmallMemoryEnabled != 0 && p_size < g_maxSmallMemorySize) {
 		result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
 		if (result != 0) {

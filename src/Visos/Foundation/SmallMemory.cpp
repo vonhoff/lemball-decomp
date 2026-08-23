@@ -18,9 +18,9 @@ unsigned int g_maxSmallMemorySize = 0;
 SmallMemory::SmallMemory()
 {
 	int baseShift = 1 << (g_preInitActive.m_startBucket + 1);
-	int limit = g_preInitActive.m_capabilityCount + g_preInitActive.m_startBucket;
-	m_bucketLimit = limit;
-	if (limit > 7) {
+	int limit = g_preInitActive.m_capabilityCount;
+	m_bucketLimit = limit + g_preInitActive.m_startBucket;
+	if (m_bucketLimit > 7) {
 		m_bucketLimit = 7;
 	}
 	memset(m_buckets, 0, sizeof(m_buckets));
@@ -30,12 +30,12 @@ SmallMemory::SmallMemory()
 		g_nSmallMemoryEnabled = 0;
 		if (g_preInitActive.m_capabilities[j] != 0) {
 			m_buckets[j] = new Bucket(m_sizeLimits[j], g_preInitActive.m_capabilities[j], 0, 0);
-			if (m_sizeLimits[j] > g_maxSmallMemorySize) {
+			if (m_sizeLimits[j] > (int) g_maxSmallMemorySize) {
 				g_maxSmallMemorySize = m_sizeLimits[j];
 			}
 		}
-		baseShift++;
 		g_nSmallMemoryEnabled = smallMemEnabled;
+		baseShift++;
 	}
 }
 
@@ -45,8 +45,9 @@ SmallMemory::~SmallMemory()
 {
 	g_nSmallMemoryEnabled = 0;
 	for (int i = g_preInitActive.m_startBucket; i < (int) m_bucketLimit; i++) {
-		if (m_buckets[i] != 0) {
-			delete m_buckets[i];
+		register Bucket* bucket = m_buckets[i];
+		if (bucket != 0) {
+			delete bucket;
 		}
 		m_buckets[i] = 0;
 	}
@@ -56,14 +57,14 @@ SmallMemory::~SmallMemory()
 // FUNCTION: LEMBALL 0x004732d0
 unsigned char* SmallMemory::Allocate(int p_size, char* p_description)
 {
-	int prevLimit = 0;
-	int limit = m_bucketLimit;
-	for (int i = g_preInitActive.m_startBucket; i < limit; i++) {
+	register int prevLimit = 0;
+	for (int i = g_preInitActive.m_startBucket; i < (int) m_bucketLimit; i++) {
 		if (prevLimit < p_size && p_size <= m_sizeLimits[i] && m_buckets[i] != 0) {
 			unsigned char* result;
-			if (m_buckets[i]->Allocate(&result)) {
-				return result;
+			if (m_buckets[i] == 0 || !m_buckets[i]->Allocate(&result)) {
+				return 0;
 			}
+			return result;
 		}
 		prevLimit = m_sizeLimits[i];
 	}

@@ -2,20 +2,25 @@
 #define LEMBALL_VISOS_RESOURCES_MOGRES_H
 
 #include "../../Common.h"
-#include "../Foundation/Chunk.h" // complete type
+#include "../Foundation/Chunk.h"     // complete type
+#include "../Foundation/ChunkInfo.h" // complete type
+#include "RawRead.h"
 
-// SIZE 0x28
-class MogRes {
+#define kResourceHandleCount 0x400
+#define kResourceHandleBytes 0x1000
+#define kMogDirAllocSize 0x38
+
+class MogRes : public RawRead {
 public:
-	MogRes(char* p_arg0, char** p_arg1, unsigned long p_arg2);
+	MogRes(char* p_path, unsigned long p_arenaSize);
 	ResBase* Find(unsigned int p_resourceId);
 	bool CheckAllUnloaded();
 	bool Load(const VsRange& p_range, unsigned char*& p_data, ResBase* p_resource);
 	bool Load(unsigned int p_resourceId, ResBase* p_resource, unsigned int p_recurse);
+	bool Load(ResBase* p_resource, Chunk p_chunk);
 	bool SetWd(char* p_path);
 	int GetFreeHandle();
 	int KillLeastResource(unsigned int p_requiredSize);
-	static bool Load(ResBase* p_resource, Chunk p_chunk);
 	void DeallocateMem(unsigned char* p_data, unsigned char p_owned);
 	unsigned char* AllocateMainMem(unsigned int p_size);
 	void AgeResources();
@@ -40,4 +45,7 @@ private:
 
 extern MogRes* g_pMogRes;
 extern MogRes* g_pActiveMogRes;
+extern BaseStat* g_pMogloadStat;
+extern char g_mogRootPath[4];
+
 #endif

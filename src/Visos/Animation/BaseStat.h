@@ -5,7 +5,7 @@
 #include "../Foundation/String.h" // complete type
 
 // SIZE 0x20
-// VTABLE: LEMBALL 0x00498960
+// VTABLE: LEMBALL 0x004988c8
 class BaseStat {
 public:
 	BaseStat(char* p_arg0);

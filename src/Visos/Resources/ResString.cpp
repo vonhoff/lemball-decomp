@@ -8,12 +8,7 @@ ResString* ResString::Load(unsigned int p_resourceId)
 {
 	ResString* res = (ResString*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == 0) {
-		res = new ResString();
-		if (res != 0) {
-			res->DoLoad(p_resourceId);
-			return (ResString*) res->CheckError();
-		}
-		return (ResString*) ((ResBase*) 0)->CheckError();
+		return (ResString*) (new ResString(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x53545247) {
 		res->UnLoad();

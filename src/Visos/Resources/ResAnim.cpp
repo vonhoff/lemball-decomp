@@ -1,10 +1,20 @@
 #include "ResAnim.h"
+#include "MogRes.h"
 
 // 68K 0x1020374e Load__8CResANIMFUl
-// STUB: LEMBALL 0x0045d610
+// FUNCTION: LEMBALL 0x0045d610
 ResAnim* ResAnim::Load(unsigned int p_resourceId)
 {
-	return 0;
+	register unsigned int id = p_resourceId;
+	ResAnim* res = (ResAnim*) g_pActiveMogRes->Find(id);
+	if (res == 0) {
+		return (ResAnim*) (new ResAnim(id))->CheckError();
+	}
+	if (res->m_chunkType != 0x4c495354) {
+		res->UnLoad();
+		return 0;
+	}
+	return res;
 }
 
 // 68K 0x10203818 AllocateResources__8CResANIMFUl
@@ -16,7 +26,7 @@ void ResAnim::AllocateResources(unsigned int p_count)
 
 // 68K 0x1020388c UnLoadVramData__8CResANIMFUlUc
 // FUNCTION: LEMBALL 0x0045d700
-void ResAnim::UnLoadVramData(unsigned int p_index, unsigned char p_force)
+void ResAnim::UnLoadVramData(unsigned int p_index, unsigned int p_force)
 {
 	ResZrle* entries = m_animationEntries;
 	entries[p_index].UnLoadVramData(p_force);
@@ -59,7 +69,7 @@ bool ResAnim::DirectResources(unsigned int p_index, unsigned char** p_headerCurs
 
 // 68K 0x101161d8 UnLoadResources__8CResANIMFUlUc
 // FUNCTION: LEMBALL 0x0045e780
-void ResAnim::UnLoadResources(unsigned int p_index, unsigned char p_force)
+void ResAnim::UnLoadResources(unsigned int p_index, unsigned int p_force)
 {
 	m_animationEntries[p_index].UnLoadExtData(p_force);
 }

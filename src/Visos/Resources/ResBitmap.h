@@ -14,6 +14,7 @@ struct BitmapHeader {
 };
 
 // SIZE 0x4c
+// VTABLE: LEMBALL 0x00498ab0
 class ResRaster : public ResBase {
 public:
 	inline ResRaster() : m_y(0), m_x(0) {}
@@ -28,6 +29,7 @@ protected:
 // VTABLE: LEMBALL 0x00498d20
 class ResBitmap : public ResRaster {
 public:
+	inline ResBitmap(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	inline ResBitmap() {}
 	static ResBitmap* Load(unsigned int p_resourceId);
 	virtual void SetHeader(); // vtable+0x08

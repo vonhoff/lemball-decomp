@@ -5,10 +5,12 @@
 
 class RawRead {
 public:
-	static bool NameCmp(char* p_path, char* p_name);
-	static bool Open(char* p_path, char* p_mode);
-	static unsigned char InputByte();
-	static unsigned int InputDword();
+	bool NameCmp(char* p_path, char* p_name);
+	bool Open(char* p_path, char* p_mode);
+	unsigned char InputByte();
+	unsigned int InputDword();
 };
+
+extern _Filet* g_pMogFile;
 
 #endif

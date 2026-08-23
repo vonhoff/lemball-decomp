@@ -15,21 +15,38 @@ struct ResListHeader {
 // VTABLE: LEMBALL 0x004989c0
 class ResBaseList : public ResBase {
 public:
-	virtual bool ForceLoadVram();                                                              // vtable+0x18
-	virtual bool ForceLoadVram(unsigned int p_index);                                          // vtable+0x3c
-	virtual bool GetfAnyVramLoaded();                                                          // vtable+0x14
-	virtual bool GetfVramLoaded();                                                             // vtable+0x0c
-	virtual bool GetfVramSwappable();                                                          // vtable+0x10
-	virtual unsigned int GetSizeUsed();                                                        // vtable+0x38
-	virtual unsigned int GetnVramEntries();                                                    // vtable+0x48
-	virtual void LoadData();                                                                   // vtable+0x1c
+	inline ResBaseList() {}
+	inline ResBaseList(ResListHeader* p_header)
+	{
+		m_listHeader = p_header;
+		m_bodyLoaded = 0;
+		m_headerLoaded = 0;
+		m_vramReady = 0;
+		m_vramLoadedCount = 0;
+	}
+	virtual ~ResBaseList();                                                                    // vtable+0x00
 	virtual void OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size); // vtable+0x04
 	virtual void SetHeader();                                                                  // vtable+0x08
+	virtual bool GetfVramLoaded();                                                             // vtable+0x0c
+	virtual bool GetfVramSwappable();                                                          // vtable+0x10
+	virtual bool GetfAnyVramLoaded();                                                          // vtable+0x14
+	virtual bool ForceLoadVram();                                                              // vtable+0x18
+	virtual void LoadData();                                                                   // vtable+0x1c
+	virtual void UnLoadData(unsigned int p_force);                                             // vtable+0x20
+	virtual void UnLoadVramData(unsigned int p_force);                                         // vtable+0x24
 	virtual void SetType();                                                                    // vtable+0x34
-	virtual void UnLoadData(unsigned char p_force);                                            // vtable+0x20
-	virtual void UnLoadVramData(unsigned char p_force);                                        // vtable+0x24
-	virtual void UnLoadVramData(unsigned int p_index, unsigned char p_force);                  // vtable+0x40
-	virtual ~ResBaseList();                                                                    // vtable+0x00
+	virtual unsigned int GetSizeUsed();                                                        // vtable+0x38
+	virtual bool ForceLoadVram(unsigned int p_index);                                          // vtable+0x3c
+	virtual void UnLoadVramData(unsigned int p_index, unsigned int p_force);                   // vtable+0x40
+	virtual void AllocateResources(unsigned int p_count) = 0;                                  // vtable+0x44
+	virtual unsigned int GetnVramEntries();                                                    // vtable+0x48
+	virtual bool DirectResources(unsigned int p_index, unsigned char** p_cursor) = 0;          // vtable+0x50
+	virtual bool DirectResources(unsigned int p_index,
+								 unsigned char** p_headerCursor,
+								 unsigned char** p_dataCursor) = 0;                            // vtable+0x4c
+	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force) = 0;              // vtable+0x54
+
+	friend class FontTable;
 
 private:
 	ResListHeader* m_listHeader;    // 0x48

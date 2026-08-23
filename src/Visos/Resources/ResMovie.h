@@ -13,11 +13,11 @@ public:
 	ResMovie(unsigned long p_arg0);
 	static ResMovie* Load(unsigned int p_resourceId);
 	virtual void AllocateResources(unsigned int p_count);                      // vtable+0x44
+	virtual bool DirectResources(unsigned int p_index, unsigned char** p_cursor); // vtable+0x50
 	virtual bool DirectResources(unsigned int p_index,
 								 unsigned char** p_headerCursor,
 								 unsigned char** p_dataCursor);                // vtable+0x4c
-	virtual bool DirectResources(unsigned int p_index, unsigned char** p_cursor); // vtable+0x50
-	virtual void UnLoadResources(unsigned int p_index, unsigned char p_force); // vtable+0x54
+	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force); // vtable+0x54
 	virtual ~ResMovie();                                                       // vtable+0x00
 
 private:

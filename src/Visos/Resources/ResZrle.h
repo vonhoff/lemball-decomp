@@ -18,6 +18,11 @@ struct ZrleHeader {
 // VTABLE: LEMBALL 0x00498a70
 class ResZrle : public ResRaster {
 public:
+	inline ResZrle(unsigned int p_resourceId)
+		: m_width(0), m_height(0), m_originX(0), m_originY(0)
+	{
+		DoLoad(p_resourceId);
+	}
 	ResZrle();
 	static ResZrle* Load(unsigned int p_resourceId);
 	virtual void SetHeader(); // vtable+0x08

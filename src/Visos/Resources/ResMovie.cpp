@@ -8,11 +8,7 @@ ResMovie* ResMovie::Load(unsigned int p_resourceId)
 {
 	ResMovie* res = (ResMovie*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == 0) {
-		res = new ResMovie(p_resourceId);
-		if (res != 0) {
-			return (ResMovie*) res->CheckError();
-		}
-		return (ResMovie*) ((ResBase*) 0)->CheckError();
+		return (ResMovie*) (new ResMovie(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x4c495354) {
 		res->UnLoad();
@@ -72,7 +68,7 @@ bool ResMovie::DirectResources(unsigned int p_index, unsigned char** p_cursor)
 
 // 68K 0x102044d6 UnLoadResources__9CResMOVIEFUlUc
 // FUNCTION: LEMBALL 0x0045e120
-void ResMovie::UnLoadResources(unsigned int p_index, unsigned char p_force)
+void ResMovie::UnLoadResources(unsigned int p_index, unsigned int p_force)
 {
 	m_movieEntries[p_index].UnLoadExtData(p_force);
 	m_fontEntries[p_index].UnLoadExtData(p_force);

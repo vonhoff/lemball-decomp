@@ -2,18 +2,26 @@
 #define LEMBALL_VISOS_RESOURCES_MOGLOAD_H
 
 #include "../../Common.h"
+#include "MogloadArena.h"
+#include "RawRead.h"
 
-// SIZE 0x34
-class MogDir {
+#define kChunkDirc 0x44495243
+#define kAnyChunkType 0xffffffff
+#define kMogFormatVersion 3
+#define kChunkInfoSize 0x38
+
+class MogDir : public MogloadArena, public RawRead {
 public:
 	ChunkInfo* NewChunkInfo();
-	MogDir(unsigned long p_arg0);
+	MogDir(unsigned long p_fileOffset);
 	MogDir* GetNextDir();
 	void Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse);
 	void FindFirst(Chunk& p_chunk, unsigned int p_type);
 	void FindNext(Chunk& p_chunk, unsigned int p_type);
 	void GetChunkInfo(ChunkInfo* p_info);
 	~MogDir();
+
+	friend class MogRes;
 
 private:
 	int m_rootIndex;                   // 0x00
@@ -30,5 +38,8 @@ private:
 	int m_loadedChunkCount;            // 0x2c
 	unsigned char* m_directoryData;    // 0x30
 };
+
+extern int g_chunkIndex;
+extern ChunkInfo* g_pChunkInfo;
 
 #endif

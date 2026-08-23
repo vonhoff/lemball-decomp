@@ -78,7 +78,7 @@ void ResBase::UnLoad()
 
 // 68K 0x10203108 UnLoadData__8CResBaseFUc
 // FUNCTION: LEMBALL 0x0045d1c0
-void ResBase::UnLoadData(unsigned char p_force)
+void ResBase::UnLoadData(unsigned int p_force)
 {
 	if (m_loaded != 0 && m_resourceId != 0) {
 		unsigned int dataSize = m_dataSize;
@@ -152,7 +152,7 @@ bool ResBase::ForceLoadVram()
 
 // 68K 0x10101202 UnLoadVramData__8CResBaseFUc
 // STUB: LEMBALL 0x0045e5f0
-void ResBase::UnLoadVramData(unsigned char p_force)
+void ResBase::UnLoadVramData(unsigned int p_force)
 {
 }
 

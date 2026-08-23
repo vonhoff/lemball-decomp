@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00498c48
 class ResString : public ResBase {
 public:
+	inline ResString(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	ResString();
 	static ResString* Load(unsigned int p_resourceId);
 	virtual void SetType(); // vtable+0x34

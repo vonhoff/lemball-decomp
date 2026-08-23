@@ -9,4 +9,6 @@ public:
 	void* operator new(unsigned int p_size);
 };
 
+extern class Arena* g_pMogloadArena;
+
 #endif

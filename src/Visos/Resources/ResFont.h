@@ -17,16 +17,17 @@ public:
 	static ResFont* Load(unsigned int p_resourceId);
 	virtual void OnLoad();                                                                     // vtable+0x2c
 	virtual bool ForceLoadVram(unsigned int p_index);                                          // vtable+0x3c
-	virtual void UnLoadVramData(unsigned int p_index, unsigned char p_force);                  // vtable+0x40
+	virtual void UnLoadVramData(unsigned int p_index, unsigned int p_force);                  // vtable+0x40
 	virtual void AllocateResources(unsigned int p_count);                                      // vtable+0x44
 	virtual unsigned int GetnVramEntries();                                                    // vtable+0x48
+	virtual bool DirectResources(unsigned int p_index, unsigned char** p_cursor);               // vtable+0x50
 	virtual bool DirectResources(unsigned int p_index,
 								 unsigned char** p_headerCursor,
 								 unsigned char** p_dataCursor);                                // vtable+0x4c
-	virtual bool DirectResources(unsigned int p_index, unsigned char** p_cursor);                // vtable+0x50
-	virtual void UnLoadResources(unsigned int p_index, unsigned char p_force);                 // vtable+0x54
+	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force);                 // vtable+0x54
 	virtual ~ResFont();                                                                        // vtable+0x00
 
+	friend class FontTable;
 	friend class Text;
 
 private:

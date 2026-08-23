@@ -19,8 +19,8 @@ public:
 	virtual bool GetfAnyVramLoaded();                                                          // vtable+0x14
 	virtual bool ForceLoadVram();                                                              // vtable+0x18
 	virtual void LoadData();                                                                   // vtable+0x1c
-	virtual void UnLoadData(unsigned char p_force);                                            // vtable+0x20
-	virtual void UnLoadVramData(unsigned char p_force);                                        // vtable+0x24
+	virtual void UnLoadData(unsigned int p_force);                                             // vtable+0x20
+	virtual void UnLoadVramData(unsigned int p_force);                                         // vtable+0x24
 	virtual unsigned char* GetData();                                                          // vtable+0x28
 	virtual void OnLoad();                                                                     // vtable+0x2c
 	virtual void OnUnLoad();                                                                   // vtable+0x30
@@ -33,6 +33,7 @@ public:
 
 	friend class ResAnim;
 	friend class ResFont;
+	friend class MogRes;
 	friend class Text;
 	friend class Zrle;
 
