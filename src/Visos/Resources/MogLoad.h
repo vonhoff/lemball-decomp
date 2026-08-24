@@ -13,6 +13,10 @@
 
 class MogDir {
 public:
+	void* operator new(size_t p_size) { return MogloadArena::operator new(p_size); }
+	void* operator new(size_t, void* p_ptr) { return p_ptr; }
+	void operator delete(void* p_data) { MogloadArena::operator delete(p_data); }
+
 	ChunkInfo* NewChunkInfo();
 	MogDir(unsigned long p_fileOffset);
 	MogDir* GetNextDir();
@@ -38,6 +42,7 @@ private:
 	int m_chunkCount;                  // 0x28
 	int m_loadedChunkCount;            // 0x2c
 	unsigned char* m_directoryData;    // 0x30
+	undefined4 m_unk0x34;              // 0x34
 };
 
 extern int g_chunkIndex;

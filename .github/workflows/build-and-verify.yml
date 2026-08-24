@@ -87,7 +87,7 @@ jobs:
       - name: Generate objdiff report
         shell: pwsh
         run: |
-          python tools/generate_objdiff_report.py
+          python tools/report.py
 
       - name: Upload progress report
         uses: actions/upload-artifact@v4

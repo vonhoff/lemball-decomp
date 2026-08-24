@@ -16,10 +16,11 @@ Reconstruct *Lemmings Paintball* (1996 Win32, `LEMBALL.EXE`) as C++ that matches
 1. Compatible `LEMBALL.EXE` in `data/` (SHA-256 in `reccmp-project.yml`; not shipped).
 2. MSVC 4.00 at `msvc400/` (or `MSVC400_ROOT`). See CI `vonhoff/MSVC400`.
 3. Venv from repo root:
-   ```powershell
-   python -m venv .decomp-venv
-   .decomp-venv\Scripts\pip install -r requirements.txt
-   ```
+ ```powershell
+ python -m venv .decomp-venv
+ .decomp-venv\Scripts\pip install -r requirements.txt
+ .decomp-venv\Scripts\Activate.ps1   # or prepend .decomp-venv\Scripts to PATH
+ ```
 
 ## Source layout
 
@@ -86,71 +87,60 @@ Full annotation syntax: [reccmp annotations](https://github.com/isledecomp/reccm
 
 Do not rename scaffold ids without strong evidence.
 
-## Commands (token-efficient)
+## Commands
 
 Paths from repo root. Prefer wrappers; avoid dumping full logs into chat.
 
-### Grind one function (default)
+### Grind functions (default)
 
-Incremental build (~2–3s, tiny log) + score line only:
+Incremental build (~2–3s, tiny log) + score line only (using objdiff report 100% match rules):
 
 ```powershell
-.\tools\check_fn.ps1 '0x0045ca30'
-.\tools\check_fn.ps1 '0x0045ca30','0x0045cab0'    # multi
-.\tools\check_fn.ps1 '0x0045ca30' -Diff           # asm diff when stuck
-.\tools\check_fn.ps1 '0x0045ca30' -CleanFirst     # PDB desync only
-.\tools\check_fn.ps1 '0x0045ca30' -NoBuild        # reccmp only
+python tools/check.py 0x0045ca30
+python tools/check.py 0x0045ca30 0x0045cab0     # multi
+python tools/check.py 0x0045ca30 --diff        # asm diff when stuck
+python tools/check.py 0x0045ca30 --clean-first # PDB desync only
+python tools/check.py 0x0045ca30 --no-build    # reccmp only
 ```
 
-Quote hex addrs in PowerShell (`'0x…'`). Bare `0x…` becomes an int.
-
-`PDB_DESYNC` / `Failed to find a match` / `Debug data out of sync` → one `-CleanFirst` (or quiet clean), then retry. **Do not clean every iteration.**
+`PDB_DESYNC` / `Failed to find a match` / `Debug data out of sync` → one `--clean-first` (or quiet clean), then retry. **Do not clean every iteration.**
 
 ### Quiet build
 
 ```powershell
-.\tools\quiet_build.ps1              # incremental; full log -> build-msvc400/last_build.log
-.\tools\quiet_build.ps1 -CleanFirst  # ~80s; stdout = warnings/errors + RESULT only
+python tools/build.py               # incremental (auto-cleans pdb/ilk/exe before link); full log -> build-msvc400/last_build.log
+python tools/build.py --clean-first # ~80s full rebuild; stdout = warnings/errors + RESULT only
 ```
 
-Raw equivalent (noisy; avoid in agent loops):
+Raw equivalent (noisy; avoid if possible):
 
 ```powershell
-.decomp-venv\Scripts\cmake.exe --fresh --preset msvc400
-.decomp-venv\Scripts\cmake.exe --build --preset msvc400
-.decomp-venv\Scripts\cmake.exe --build --preset msvc400 --clean-first
+cmake --fresh --preset msvc400
+cmake --build --preset msvc400
+cmake --build --preset msvc400 --clean-first
 ```
 
 Out: `build-msvc400/LEMBALL.EXE`, `LEMBALL.pdb`. Flags fixed in `cmake/msvc400-toolchain.cmake` — no casual changes.
 
-### Batch scores (one PDB parse)
-
-```powershell
-cd build-msvc400
-..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --silent --json-diet --json scores.json
-cd ..
-.decomp-venv\Scripts\python.exe tools\score_addrs.py 0x0045ca30 0x0045cab0
-```
-
 ### Session-end / PR verification
 
 ```powershell
-.decomp-venv\Scripts\python.exe tools\generate_objdiff_report.py
-.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL --warnfail src
+python tools/report.py
+reccmp-decomplint --target LEMBALL --warnfail src
 ```
 
 ### Extra (from `build-msvc400` after a build)
 
 ```powershell
-..\.decomp-venv\Scripts\reccmp-stackcmp.exe --target LEMBALL 0xADDRESS
-..\.decomp-venv\Scripts\reccmp-roadmap.exe --target LEMBALL --csv roadmap.csv
-..\.decomp-venv\Scripts\reccmp-vtable.exe --target LEMBALL
-..\.decomp-venv\Scripts\reccmp-datacmp.exe --target LEMBALL
+reccmp-stackcmp --target LEMBALL 0xADDRESS
+reccmp-roadmap --target LEMBALL --csv roadmap.csv
+reccmp-vtable --target LEMBALL
+reccmp-datacmp --target LEMBALL
 ```
 
 ## Agent cost rules
 
-- Default grind: `check_fn` score-only. Do not paste full build logs or full verbose diffs.
+- Default grind: `tools\check.py` score-only. Do not paste full build logs or full verbose diffs.
 - Full log: `build-msvc400/last_build.log` — read only on failure.
 - Verbose diff / stackcmp: when score flat or structural mismatch.
 - Full report: end of session or before commit — not every edit.

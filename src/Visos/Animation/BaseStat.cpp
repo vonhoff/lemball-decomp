@@ -5,9 +5,14 @@ BaseStat::BaseStat()
 }
 
 // 68K 0x10218df8 __ct__9CBaseStatFPc
-// STUB: LEMBALL 0x0045ac10
+// FUNCTION: LEMBALL 0x0045ac10
 BaseStat::BaseStat(char* p_arg0)
 {
+	m_description = p_arg0;
+	m_minimum = 0xffffffff;
+	m_maximum = 0;
+	m_total = 0;
+	m_sampleCount = 0;
 }
 
 // 68K 0x10218e5e __dt__9CBaseStatFv

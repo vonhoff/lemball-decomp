@@ -28,9 +28,8 @@ BaseStat* g_pMogloadStat = 0;
 // FUNCTION: LEMBALL 0x0045c630
 MogRes::MogRes(char* p_path, unsigned long p_arenaSize)
 {
-	unsigned int offset;
+	int offset;
 	Arena* arena;
-	MogDir* rootDir;
 
 	g_mogRootPath[0] = kPathSeparator;
 	g_pActiveMogRes = this;
@@ -53,22 +52,14 @@ MogRes::MogRes(char* p_path, unsigned long p_arenaSize)
 		return;
 	}
 	CurrentMilliTimer();
-	rootDir = (MogDir*) MogloadArena::operator new(kMogDirAllocSize);
-	if (rootDir == 0) {
-		m_rootDirectory = 0;
-	}
-	else {
-		m_rootDirectory = new (rootDir) MogDir(0);
-	}
+	m_rootDirectory = new MogDir(0);
 	CurrentMilliTimer();
 	m_workingDirectory = m_rootDirectory;
 	SetWd(g_mogRootPath);
 	m_resources = (ResBase**) MogloadArena::operator new(kResourceHandleBytes);
-	offset = 0;
-	do {
-		offset += sizeof(ResBase*);
-		*(ResBase**) ((unsigned char*) m_resources + offset - sizeof(ResBase*)) = 0;
-	} while ((int) offset < kResourceHandleBytes);
+	for (offset = 0; offset < 1024; offset++) {
+		m_resources[offset] = 0;
+	}
 	// STRING: LEMBALL 0x004a1dbc "Mogload memory"
 	g_pMogloadStat = new BaseStat("Mogload memory");
 	g_pStatManager->Register(g_pMogloadStat);
@@ -91,8 +82,7 @@ MogRes::~MogRes()
 		m_resources = 0;
 	}
 	if (m_rootDirectory != 0) {
-		m_rootDirectory->~MogDir();
-		MogloadArena::operator delete(m_rootDirectory);
+		delete m_rootDirectory;
 		m_rootDirectory = 0;
 	}
 	if (m_workingPath != 0) {
@@ -110,9 +100,8 @@ MogRes::~MogRes()
 bool MogRes::SetWd(char* p_path)
 {
 	char* copy;
-	MogDir* dir;
 	char* cursor;
-	int* current;
+	MogDir* dir;
 
 	if (*p_path == kPathSeparator) {
 		m_workingDirectory = m_rootDirectory;
@@ -124,10 +113,9 @@ bool MogRes::SetWd(char* p_path)
 		copy[0] = kPathSeparator;
 		strcpy(copy + 1, p_path);
 	}
-	current = &m_workingDirectory->m_currentDirIndex;
-	current[0] = m_workingDirectory->m_rootIndex;
-	current[1] = (int) m_workingDirectory->m_rootChunk;
-	*current = -1;
+	m_workingDirectory->m_currentDirIndex = m_workingDirectory->m_rootIndex;
+	m_workingDirectory->m_currentDirChunk = m_workingDirectory->m_rootChunk;
+	m_workingDirectory->m_currentDirIndex = -1;
 	cursor = copy;
 	while (cursor != 0) {
 		cursor = strchr(cursor, kPathSeparator);
@@ -172,24 +160,20 @@ int MogRes::KillLeastResource(unsigned int p_requiredSize)
 	int scanned = 0;
 	int bestIndex = -1;
 	unsigned int bestSize = 0;
-	ResBase** slot;
-	ResBase* resource;
-	unsigned int used;
-	unsigned int refs;
 
 	if ((int) m_resourceCount > 0) {
 		do {
-			slot = m_resources + i;
-			resource = *slot;
-			while (resource == 0) {
-				slot++;
-				i++;
-				resource = *slot;
+			if (m_resources[i] == 0) {
+				ResBase** slot = &m_resources[i];
+				do {
+					slot++;
+					i++;
+				} while (*slot == 0);
 			}
-			resource = m_resources[i];
+			ResBase* resource = m_resources[i];
 			if (resource->m_loaded != 0 && resource->m_directUseCount == 0) {
-				used = resource->GetSizeUsed();
-				refs = m_resources[i]->m_referenceCount;
+				unsigned int used = resource->GetSizeUsed();
+				unsigned int refs = m_resources[i]->m_referenceCount;
 				if (used < p_requiredSize) {
 				check_refs:
 					if (bestRefs <= refs) {
@@ -244,55 +228,40 @@ int MogRes::GetFreeHandle()
 // FUNCTION: LEMBALL 0x0045ca30
 unsigned char* MogRes::AllocateMainMem(unsigned int p_size)
 {
-	MogRes* self;
-	unsigned int size;
+	register MogRes* const self = this;
+	register unsigned int size = p_size;
 	unsigned char* memory;
-	int temp;
-	int i;
-	ResBase** slot;
 
-	self = this;
-	size = p_size;
-
-alloc:
-	memory = (unsigned char*) MogloadArena::operator new(size);
-	if (memory != 0) {
-		goto done;
-	}
-	temp = size;
-	temp -= g_pMogloadArena->GetFreeSize();
-	if (temp < 0) {
-		temp = size;
-	}
-	temp = self->KillLeastResource(temp);
-	if (temp == -1) {
-		goto walk;
-	}
-	self->m_resources[temp]->UnLoadData(1);
-	if (temp != -1) {
-		goto check;
-	}
-walk:
-	i = 0;
-	temp = self->m_resourceCount;
-	if (temp > 0) {
-		do {
-			if (self->m_resources[i] == 0) {
-				slot = self->m_resources + i;
-				do {
-					slot++;
-					i++;
-				} while (*slot == 0);
+	do {
+		memory = (unsigned char*) MogloadArena::operator new(size);
+		if (memory == 0) {
+			int needed = size - g_pMogloadArena->GetFreeSize();
+			if (needed < 0) {
+				needed = size;
 			}
-			i++;
-			temp--;
-		} while (temp != 0);
-	}
-check:
-	if (memory == 0) {
-		goto alloc;
-	}
-done:
+			int handle = self->KillLeastResource(needed);
+			if (handle != -1) {
+				self->m_resources[handle]->UnLoadData(1);
+			}
+			if (handle == -1) {
+				int i = 0;
+				int count = self->m_resourceCount;
+				if (count > 0) {
+					do {
+						if (self->m_resources[i] == 0) {
+							ResBase** slot = self->m_resources + i;
+							do {
+								slot++;
+								i++;
+							} while (*slot == 0);
+						}
+						i++;
+						count--;
+					} while (count != 0);
+				}
+			}
+		}
+	} while (memory == 0);
 	return memory;
 }
 
@@ -301,21 +270,24 @@ done:
 ResBase* MogRes::Find(unsigned int p_resourceId)
 {
 	int i = 0;
-	int remaining = m_resourceCount;
+	int count = m_resourceCount;
+	int remaining = count;
 
-	if ((int) m_resourceCount > 0) {
-		do {
-			while (m_resources[i] == 0) {
+	while (remaining > 0) {
+		if (m_resources[i] == 0) {
+			ResBase** slot = &m_resources[i];
+			do {
+				slot++;
 				i++;
-			}
-			if (m_resources[i]->m_resourceId == p_resourceId) {
-				break;
-			}
-			remaining--;
-			i++;
-		} while (remaining > 0);
+			} while (*slot == 0);
+		}
+		if (m_resources[i]->m_resourceId == p_resourceId) {
+			break;
+		}
+		remaining--;
+		i++;
 	}
-	if (m_resourceCount != 0 && remaining > 0) {
+	if (count != 0 && remaining > 0) {
 		AgeResources();
 		m_resources[i]->LoadData();
 		m_resources[i]->m_referenceCount++;
@@ -347,8 +319,9 @@ bool MogRes::Load(unsigned int p_resourceId, ResBase* p_resource, unsigned int p
 	m_workingDirectory->Find(chunk, p_resourceId, p_recurse);
 	if (chunk.m_info != 0) {
 		handle = GetFreeHandle();
-		if (m_resources[handle] != 0) {
-			delete m_resources[handle];
+		ResBase* res = m_resources[handle];
+		if (res != 0) {
+			delete res;
 			m_resources[handle] = 0;
 			m_resourceCount--;
 		}
@@ -363,9 +336,13 @@ bool MogRes::Load(unsigned int p_resourceId, ResBase* p_resource, unsigned int p
 // FUNCTION: LEMBALL 0x0045cd60
 bool MogRes::CheckAllUnloaded()
 {
-	int i = 0;
-	int loaded = 0;
-	unsigned int remaining = m_resourceCount;
+	int loaded;
+	int remaining;
+	int i;
+
+	i = 0;
+	loaded = 0;
+	remaining = m_resourceCount;
 
 	if (remaining != 0) {
 		do {
@@ -386,24 +363,30 @@ bool MogRes::CheckAllUnloaded()
 // FUNCTION: LEMBALL 0x0045cdb0
 void MogRes::AgeResources()
 {
-	int i = 0;
-	int scanned = 0;
+	int i;
+	int zero;
+	int scanned;
 
-	if ((int) m_resourceCount > 0) {
+	i = 0;
+	zero = 0;
+	scanned = 0;
+
+	if ((int) m_resourceCount > zero) {
 		do {
-			while (m_resources[i] == 0) {
-				i++;
+			ResBase* resource = m_resources[i];
+			if (resource == 0) {
+				ResBase** slot = &m_resources[i];
+				do {
+					slot++;
+					i++;
+				} while (*slot == 0);
 			}
-			if (m_resources[i]->m_loaded == 0) {
-				if (!m_resources[i]->GetfVramLoaded()) {
-					goto next_age;
-				}
+			if (m_resources[i]->m_loaded != 0 || m_resources[i]->GetfVramLoaded()) {
+				m_resources[i]->m_age++;
 			}
-			m_resources[i]->m_age++;
-		next_age:
 			scanned++;
 			i++;
-		} while (scanned < (int) m_resourceCount);
+		} while ((int) m_resourceCount > scanned);
 	}
 }
 
@@ -450,14 +433,18 @@ void MogRes::CleanUpResources()
 // FUNCTION: LEMBALL 0x0045ceb0
 void MogRes::Remove(ResBase* p_resource)
 {
-	int count = (int) m_resourceCount;
+	int count = m_resourceCount;
 	int scanned = 0;
 	int i = 0;
 
 	if (count > scanned) {
 		do {
-			while (m_resources[i] == 0) {
-				i++;
+			if (m_resources[i] == 0) {
+				ResBase** slot = m_resources + i;
+				do {
+					slot++;
+					i++;
+				} while (*slot == 0);
 			}
 			if (m_resources[i] == p_resource) {
 				m_resources[i] = 0;
@@ -467,7 +454,7 @@ void MogRes::Remove(ResBase* p_resource)
 			i++;
 		} while (scanned < count);
 	}
-	if (scanned != (int) m_resourceCount) {
+	if (scanned != m_resourceCount) {
 		m_resourceCount--;
 	}
 }

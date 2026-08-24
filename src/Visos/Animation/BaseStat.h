@@ -2,11 +2,12 @@
 #define LEMBALL_VISOS_ANIMATION_BASESTAT_H
 
 #include "../../Common.h"
+#include "../Foundation/Arena.h"
 #include "../Foundation/String.h" // complete type
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x004988c8
-class BaseStat {
+class BaseStat : public ArenaBase {
 public:
 	BaseStat(char* p_arg0);
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
@@ -15,7 +16,6 @@ public:
 	BaseStat();
 
 private:
-	undefined4 m_unk0x04;       // 0x04
 	unsigned int m_maximum;     // 0x08
 	unsigned int m_minimum;     // 0x0c
 	unsigned int m_total;       // 0x10

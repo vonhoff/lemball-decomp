@@ -8,10 +8,18 @@ import re
 import shutil
 import struct
 import subprocess
+import sys
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+# Add tools dir to path for imports
+TOOLS_DIR = Path(__file__).resolve().parent
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from check import compute_ratio, is_thunk_only_diff, load_matches, normalize_asm
+
+ROOT = TOOLS_DIR.parent
 BUILD = ROOT / "build-msvc400"
 
 
@@ -46,40 +54,6 @@ def measures(functions, total_units=1):
     return res
 
 
-def _insn_text(entry):
-    if isinstance(entry, (list, tuple)) and len(entry) > 1:
-        return entry[1]
-    return entry
-
-
-def normalize_asm(s):
-    s = s.split("\t")[0].strip()
-    s = re.sub(r"Thunk of '([^']+)' \(THUNK\)", r"\1 (FUNCTION)", s)
-    s = re.sub(r" \(THUNK\)", " (FUNCTION)", s)
-    s = re.sub(r"<OFFSET\d+>", "SYM", s)
-    s = re.sub(r"\S+ \((?:DATA|VTABLE|UNK)\)", "SYM", s)
-    return s
-
-
-def is_thunk_only_diff(diff):
-    if not diff:
-        return False
-    has_diff = False
-    for _, chunks in diff:
-        for chunk in chunks:
-            if not chunk.get("orig") and not chunk.get("recomp"):
-                continue
-            has_diff = True
-            orig = chunk.get("orig", [])
-            recomp = chunk.get("recomp", [])
-            if len(orig) != len(recomp):
-                return False
-            for orig_entry, recomp_entry in zip(orig, recomp):
-                if normalize_asm(_insn_text(orig_entry)) != normalize_asm(_insn_text(recomp_entry)):
-                    return False
-    return has_diff
-
-
 def tool(name):
     return shutil.which(name) or str(ROOT / ".decomp-venv" / "Scripts" / f"{name}.exe")
 
@@ -102,16 +76,6 @@ def run_reccmp():
     )
 
 
-def load_matches(path):
-    with path.open(encoding="utf-8") as stream:
-        data = json.load(stream)["data"]
-    return {
-        int(row["address"], 16): row
-        for row in data
-        if row.get("type") in (None, 1)
-    }
-
-
 def load_inventory(path):
     with path.open(newline="", encoding="utf-8-sig") as stream:
         for row in csv.DictReader(stream):
@@ -129,22 +93,7 @@ def build_report(roadmap_path, reccmp_path):
     groups = defaultdict(list)
     for item in load_inventory(roadmap_path):
         match = matches.get(item["address"])
-        if match is None or match.get("stub"):
-            ratio = 0.0
-        elif (
-            match.get("effective")
-            or is_thunk_only_diff(match.get("diff"))
-            or (
-                match.get("type") == 1
-                and (
-                    "`scalar deleting destructor'" in item["name"]
-                    or "`vector deleting destructor'" in item["name"]
-                )
-            )
-        ):
-            ratio = 100.0
-        else:
-            ratio = float(match["matching"]) * 100
+        ratio, _ = compute_ratio(match, item["name"])
         groups[unit_name(item["module"])].append(
             {
                 "name": item["name"],
