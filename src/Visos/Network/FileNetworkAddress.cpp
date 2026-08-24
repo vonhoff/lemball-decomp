@@ -33,9 +33,19 @@ char* FileNetworkAddress::GetStr()
 }
 
 // 68K 0x10206b96 __as__19CFileNetworkAddressF15eBroadcastTypes
-// STUB: LEMBALL 0x004794e0
+// FUNCTION: LEMBALL 0x004794e0
 void FileNetworkAddress::operator=(eBroadcastTypes p_type)
 {
+	if (p_type == 0) {
+		// STRING: LEMBALL 0x004a2dec "LAN"
+		*this = "LAN";
+		return;
+	}
+	if (p_type != 1) {
+		return;
+	}
+	// STRING: LEMBALL 0x004a2df0 "WAN"
+	*this = "WAN";
 }
 
 // 68K 0x10206c0c __gt__19CFileNetworkAddressFR15CNetworkAddress

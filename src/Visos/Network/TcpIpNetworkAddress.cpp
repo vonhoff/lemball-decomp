@@ -1,4 +1,5 @@
 #include "TcpIpNetworkAddress.h"
+#include "NetworkAddress.h"
 
 #include <string.h>
 
@@ -6,9 +7,21 @@ extern "C" __declspec(dllimport) unsigned int __stdcall inet_addr(const char* p_
 extern "C" __declspec(dllimport) char* __stdcall inet_ntoa(unsigned int p_address);
 
 // 68K 0x1010c4f2 __as__20CTCPIPNetworkAddressF15eBroadcastTypes
-// STUB: LEMBALL 0x0046f9b0
+// FUNCTION: LEMBALL 0x0046f9b0
 void TcpIpNetworkAddress::operator=(eBroadcastTypes p_type)
 {
+	unsigned char* ipBytes;
+
+	if (p_type == 0) {
+		*this = *g_pBroadcastAddress;
+		ipBytes = (unsigned char*) &m_ipv4Address;
+		ipBytes[3] = 0xff;
+		return;
+	}
+	if (p_type != 1) {
+		return;
+	}
+	m_ipv4Address = 0xffffffff;
 }
 
 // 68K 0x1010c5ca __gt__20CTCPIPNetworkAddressFR15CNetworkAddress

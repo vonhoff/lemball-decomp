@@ -1,15 +1,28 @@
 #include "BaseCommonSocket.h"
 
+#include <new.h>
+
 // 68K 0x1020b1ec __ct__17CBaseCommonSocketFv
-// STUB: LEMBALL 0x0045f680
+// FUNCTION: LEMBALL 0x0045f680
 BaseCommonSocket::BaseCommonSocket()
 {
+	m_socketHandle = -1;
+	m_port = 0xffff;
+	m_readReady = 0;
+	m_isOpen = 0;
+	m_writeReady = 0;
+	m_closePending = 0;
+	m_eventPending = 0;
+	m_socketFlags = 0;
+	m_lastError = 0;
+	m_platformState = operator new(0x10);
 }
 
 // 68K 0x1020b25a __dt__17CBaseCommonSocketFv
-// STUB: LEMBALL 0x0045f6c0
+// FUNCTION: LEMBALL 0x0045f6c0
 BaseCommonSocket::~BaseCommonSocket()
 {
+	operator delete(m_platformState);
 }
 
 // 68K 0x1020b2b2 SocketError__17CBaseCommonSocketF13NetworkErrors
