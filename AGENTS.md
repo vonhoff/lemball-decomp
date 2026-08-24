@@ -1,23 +1,21 @@
 # Agents
 
-This repository reconstructs *Lemmings Paintball* (1996 Windows, `LEMBALL.EXE`) as readable C++ that matches the original binary. The goal is byte-accurate compiler output where practical, verified by [reccmp](https://github.com/isledecomp/reccmp).
-
-AI output is a hypothesis. Every change must be validated against the original executable, PDB symbols, and reccmp comparison results.
+Reconstruct *Lemmings Paintball* (1996 Win32, `LEMBALL.EXE`) as C++ that matches the original binary. Verify with [reccmp](https://github.com/isledecomp/reccmp). AI output is a hypothesis — validate against `data/LEMBALL.EXE`, PDB, and reccmp.
 
 ## Constraints
 
-- **Never edit `README.md` unless requested.**
-- Reconstruct from the original binary (`data/LEMBALL.EXE`) using reccmp as the source of truth — not the 68K reference comments alone.
-- Do not invent functions, globals, or addresses. Every symbol must have a reccmp annotation.
-- Preserve scaffold layout: one primary class per `.h` / `.cpp` pair under `src/`.
-- Functions in a compilation unit must be ordered by their annotated address (ascending).
-- Match existing naming, types, and style in the surrounding file.
+- Never edit `README.md` unless asked.
+- Source of truth: x86 binary via reccmp/Ghidra — not 68K comments alone.
+- No invented symbols/addresses. Every symbol needs a reccmp annotation.
+- Scaffold: one primary class per `.h` / `.cpp` under `src/`.
+- Functions in a `.cpp` ordered by annotated address (ascending).
+- Match local naming, types, and style. Minimal diffs.
 
 ## Prerequisites
 
-1. **Original binary** — place a compatible `LEMBALL.EXE` in `data/`. The reference SHA-256 is in `reccmp-project.yml`. The game is not distributed with this repo.
-2. **MSVC 4.00** — portable toolchain at `msvc400/` (see CI: `vonhoff/MSVC400`). Set `MSVC400_ROOT` if it lives elsewhere.
-3. **Python venv** — from the repo root:
+1. Compatible `LEMBALL.EXE` in `data/` (SHA-256 in `reccmp-project.yml`; not shipped).
+2. MSVC 4.00 at `msvc400/` (or `MSVC400_ROOT`). See CI `vonhoff/MSVC400`.
+3. Venv from repo root:
    ```powershell
    python -m venv .decomp-venv
    .decomp-venv\Scripts\pip install -r requirements.txt
@@ -25,24 +23,22 @@ AI output is a hypothesis. Every change must be validated against the original e
 
 ## Source layout
 
-`src/` is scaffolded from recovered type and symbol information. Top-level areas:
+| Dir | Role |
+|-----|------|
+| `AI/` | Objects, nav, groups, managers, messages |
+| `Control/` | Game loop, levels, demo, state |
+| `Frontend/` | Menus, drawers, FE processes/windows |
+| `Map/` | Map / ground |
+| `Network/` | Multiplayer |
+| `Platform/` | `WinMain`, OS entry |
+| `Views/` | In-game panels, display, sound view |
+| `Visos/` | Engine (foundation, gfx, sound, net, resources, anim, messaging, Win32/DX) |
 
-| Directory | Role |
-|-----------|------|
-| `AI/` | Game objects, navigation, groups, managers, messages |
-| `Control/` | Game loop, level loading, demo, game state |
-| `Frontend/` | Menus, drawers, frontend processes and windows |
-| `Map/` | Map and ground data |
-| `Network/` | Multiplayer game logic and messages |
-| `Platform/` | OS entry points (`WinMain`, etc.) |
-| `Views/` | In-game UI panels, display, sound view |
-| `Visos/` | Engine: foundation, graphics, sound, network, resources, animation, messaging, target (Win32/DirectX wrappers) |
+Shared types: `src/Common.h`. Unknown scalars: `undefined` / `undefined2` / `undefined4`.
 
-Shared typedefs and forward declarations live in `src/Common.h`. Platform-specific types use `undefined`, `undefined2`, and `undefined4` for fields whose signedness or purpose is not yet confirmed.
+## 68K + reccmp annotations
 
-## 68K source mapping
-
-Each scaffolded function carries a **68K** comment — the address and mangled name from the original cross-platform Motorola 68000 source tree:
+68K comment = naming / structure / intent from the 68K tree. Binary wins on divergence. Keep 68K lines when implementing.
 
 ```cpp
 // 68K 0x1021749c __ct__7CBucketFiiPUcPUl
@@ -50,137 +46,129 @@ Each scaffolded function carries a **68K** comment — the address and mangled n
 Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsigned long* p_map)
 ```
 
-Use 68K comments for **naming, class structure, and behavioral intent**. The Windows x86 binary is what reccmp compares against. When 68K and MSVC output diverge, follow the binary.
+Marker **directly above** the body. 68K above marker when both present. Target name always `LEMBALL`.
 
-Do not remove 68K comments when implementing a function.
+| Marker | Use |
+|--------|-----|
+| `FUNCTION` | Compared implementation |
+| `STUB` | Placeholder (not accuracy-compared) |
+| `GLOBAL` | Global/static data |
+| `VTABLE` | On class in `.h` |
+| `TEMPLATE` / `SYNTHETIC` / `LIBRARY` | As named |
+| `FOLDED` | Shared addr (`/OPT:ICF`); after address |
 
-## reccmp annotations
+Promote `STUB` → `FUNCTION` when implementing. Never leave real bodies as `STUB`.
 
-reccmp matches annotated symbols in source to addresses in the original and recompiled binaries. Full syntax: [reccmp annotations](https://github.com/isledecomp/reccmp/blob/master/docs/annotations.md).
-
-### Required markers
-
-Every function and global must be annotated. Place the reccmp marker **directly above** the implementation (or stub body). Keep 68K comments above the reccmp marker when both are present.
-
-| Marker | When to use |
-|--------|-------------|
-| `FUNCTION` | Implemented function with a body that should be compared |
-| `STUB` | Empty or placeholder body — not compared for accuracy |
-| `GLOBAL` | Global or static data variable |
-| `VTABLE` | Virtual table address on the class declaration (in `.h`) |
-| `TEMPLATE` | Templated function (annotate by name in a following comment) |
-| `SYNTHETIC` | Compiler-generated function (destructors, etc.) |
-| `LIBRARY` | Third-party / CRT function |
-| `FOLDED` | Multiple symbols share one address (`/OPT:ICF`); add after the address |
-
-Format:
-
-```cpp
-// FUNCTION: LEMBALL 0x00472ce0
-// STUB: LEMBALL 0x0040a6f0
-// GLOBAL: LEMBALL 0x004a2a68
-// VTABLE: LEMBALL 0x0049a478
-```
-
-Target name is always `LEMBALL` (see `reccmp-project.yml`).
-
-When promoting a stub to a real implementation, change `STUB` → `FUNCTION`. Do not leave implemented code marked `STUB`.
-
-### Header conventions
-
-Headers follow reccmp best practices ([recommendations](https://github.com/isledecomp/reccmp/blob/master/docs/recommendations.md)):
+Headers ([recommendations](https://github.com/isledecomp/reccmp/blob/master/docs/recommendations.md)):
 
 ```cpp
 // SIZE 0x54
 // VTABLE: LEMBALL 0x0049a478
 class Bucket : public Critical {
 public:
-    virtual void Destroy() override;  // vtable+0x18
+    virtual void Destroy() override; // vtable+0x18
 private:
-    unsigned int m_blockSize;         // 0x24
-    undefined4 m_unk0x30;             // 0x30
+    unsigned int m_blockSize; // 0x24
+    undefined4 m_unk0x30;     // 0x30
 };
 ```
 
-- `SIZE` — total class/struct size in bytes.
-- `VTABLE` — vtable address in the original binary.
-- Member comments — offset from object base (`0x08`, `0x24`, …).
-- `vtable+N` — virtual method slot offset.
-- `undefined` / `undefined2` / `undefined4` — unknown scalar fields; prefer these over guessing `int` vs `unsigned int`.
+Full annotation syntax: [reccmp annotations](https://github.com/isledecomp/reccmp/blob/master/docs/annotations.md).
 
-## Implementing a function
+## Implement loop
 
-1. **Locate the symbol** — roadmap, Ghidra, or `reccmp-reccmp --verbose 0xADDRESS`.
-2. **Read context** — 68K comment, class header offsets, callers/callees.
-3. **Write the body** — match MSVC 4.0 codegen (`/O2 /Ob1 /Oy /G4`). Avoid modern C++ that changes calling conventions or codegen.
-4. **Annotate** — `// FUNCTION: LEMBALL 0x…` above the definition; keep the 68K line.
-5. **Build and compare** — see Commands below.
-6. **Iterate** — use verbose reccmp diff and `reccmp-stackcmp` for near-matches.
+1. Locate — roadmap, Ghidra, or reccmp.
+2. Context — 68K, header offsets, callers/callees.
+3. Body — MSVC 4.0 shape (`/O2 /Ob1 /Oy /G4`). No modern C++ that changes codegen.
+4. Annotate — keep 68K; `FUNCTION: LEMBALL 0x…`.
+5. Grind — Commands below (score-only first).
+6. Near-miss — `-Diff` / `reccmp-stackcmp` only when stuck.
 
-Prefer minimal diffs. Do not refactor unrelated code. Do not rename scaffolded identifiers without strong evidence.
+Do not rename scaffold ids without strong evidence.
 
-## Commands
+## Commands (token-efficient)
 
-All paths assume repository root unless noted.
+Paths from repo root. Prefer wrappers; avoid dumping full logs into chat.
 
-### Build
+### Grind one function (default)
+
+Incremental build (~2–3s, tiny log) + score line only:
+
+```powershell
+.\tools\check_fn.ps1 '0x0045ca30'
+.\tools\check_fn.ps1 '0x0045ca30','0x0045cab0'    # multi
+.\tools\check_fn.ps1 '0x0045ca30' -Diff           # asm diff when stuck
+.\tools\check_fn.ps1 '0x0045ca30' -CleanFirst     # PDB desync only
+.\tools\check_fn.ps1 '0x0045ca30' -NoBuild        # reccmp only
+```
+
+Quote hex addrs in PowerShell (`'0x…'`). Bare `0x…` becomes an int.
+
+`PDB_DESYNC` / `Failed to find a match` / `Debug data out of sync` → one `-CleanFirst` (or quiet clean), then retry. **Do not clean every iteration.**
+
+### Quiet build
+
+```powershell
+.\tools\quiet_build.ps1              # incremental; full log -> build-msvc400/last_build.log
+.\tools\quiet_build.ps1 -CleanFirst  # ~80s; stdout = warnings/errors + RESULT only
+```
+
+Raw equivalent (noisy; avoid in agent loops):
 
 ```powershell
 .decomp-venv\Scripts\cmake.exe --fresh --preset msvc400
+.decomp-venv\Scripts\cmake.exe --build --preset msvc400
 .decomp-venv\Scripts\cmake.exe --build --preset msvc400 --clean-first
 ```
 
-Output: `build-msvc400/LEMBALL.EXE` and `build-msvc400/LEMBALL.pdb`.
+Out: `build-msvc400/LEMBALL.EXE`, `LEMBALL.pdb`. Flags fixed in `cmake/msvc400-toolchain.cmake` — no casual changes.
 
-Compiler flags are fixed in `cmake/msvc400-toolchain.cmake` (`/O2 /Ob1 /Oy /G4 /Z7`, no RTTI, `bool` as `int`). Do not change them without explicit approval.
+### Batch scores (one PDB parse)
 
-### Canonical verification
+```powershell
+cd build-msvc400
+..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --silent --json-diet --json scores.json
+cd ..
+.decomp-venv\Scripts\python.exe tools\score_addrs.py 0x0045ca30 0x0045cab0
+```
+
+### Session-end / PR verification
 
 ```powershell
 .decomp-venv\Scripts\python.exe tools\generate_objdiff_report.py
-```
-
-Runs `reccmp-project detect`, `reccmp-reccmp`, and `reccmp-roadmap`, then writes `build-msvc400/report.json`. Prints matched-function counts.
-
-### Focused diagnosis (from `build-msvc400`)
-
-```powershell
-..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --verbose 0xADDRESS --print-rec-addr
-```
-
-Other useful tools (run from `build-msvc400` after a build):
-
-```powershell
-..\.decomp-venv\Scripts\reccmp-roadmap.exe --target LEMBALL --csv roadmap.csv
-..\.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL src
-..\.decomp-venv\Scripts\reccmp-vtable.exe --target LEMBALL
-..\.decomp-venv\Scripts\reccmp-datacmp.exe --target LEMBALL
-..\.decomp-venv\Scripts\reccmp-stackcmp.exe --target LEMBALL 0xADDRESS
-```
-
-### Annotation lint
-
-Before committing annotation changes:
-
-```powershell
 .decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL --warnfail src
 ```
 
-## Config files
+### Extra (from `build-msvc400` after a build)
+
+```powershell
+..\.decomp-venv\Scripts\reccmp-stackcmp.exe --target LEMBALL 0xADDRESS
+..\.decomp-venv\Scripts\reccmp-roadmap.exe --target LEMBALL --csv roadmap.csv
+..\.decomp-venv\Scripts\reccmp-vtable.exe --target LEMBALL
+..\.decomp-venv\Scripts\reccmp-datacmp.exe --target LEMBALL
+```
+
+## Agent cost rules
+
+- Default grind: `check_fn` score-only. Do not paste full build logs or full verbose diffs.
+- Full log: `build-msvc400/last_build.log` — read only on failure.
+- Verbose diff / stackcmp: when score flat or structural mismatch.
+- Full report: end of session or before commit — not every edit.
+- Incremental NMake already rebuilds one `.obj` + link; clean is the expensive path.
+
+## Config
 
 | File | Purpose |
 |------|---------|
-| `reccmp-project.yml` | Target definition (`LEMBALL`), source root, reference hash |
-| `reccmp-user.yml` | User-local paths (gitignored) |
-| `build-msvc400/reccmp-build.yml` | Generated at configure — paths to recompiled binary and PDB |
+| `reccmp-project.yml` | Target, source root, reference hash |
+| `reccmp-user.yml` | Local paths (gitignored) |
+| `build-msvc400/reccmp-build.yml` | Generated binary/PDB paths |
 
-`CMakeLists.txt` auto-generates `reccmp-build.yml` in the build directory.
+## Do not
 
-## What not to do
-
-- Add functions or globals without `FUNCTION` / `GLOBAL` (or appropriate) annotations.
-- Implement from 68K logic alone without checking the x86 disassembly.
-- Use C++11+ features, exceptions, RTTI, or a different compiler.
-- Reorder annotated functions within a `.cpp` file by anything other than address.
-- Edit `README.md`, `reccmp-project.yml` hash, or compiler flags casually.
-- Commit `data/LEMBALL.EXE` or user-specific reccmp YAML files.
+- Add symbols without annotations.
+- Ship 68K-only logic without x86 check.
+- Use C++11+, exceptions, RTTI, or another compiler.
+- Reorder annotated funcs except by address.
+- Edit `README.md`, hash, or compiler flags casually.
+- Commit `data/LEMBALL.EXE` or user reccmp YAML.
