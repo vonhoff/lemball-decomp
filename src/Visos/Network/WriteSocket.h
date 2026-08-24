@@ -33,6 +33,7 @@ private:
 	undefined m_unknown40[8];             // 0x40
 	WriteNcBuff* m_nonCriticalBuffer;     // 0x48
 	WriteCBuff* m_criticalBuffer;         // 0x4c
+	undefined4 m_unknown50;               // 0x50
 	NetworkMessage* m_segmentedMessage;   // 0x54
 	unsigned int m_segmentSequence;       // 0x58
 	int m_segmentIndex;                   // 0x5c

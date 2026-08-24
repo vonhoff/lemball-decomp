@@ -3,8 +3,10 @@
 #include "../../Control/Support/PreInit.h"
 #include "../Animation/BaseStat.h"
 #include "../Animation/StatManager.h"
+#include "../Graphics/BasePalManager.h"
 #include "../Network/FileNetwork.h"
 #include "../Network/TcpIpNetwork.h"
+#include "../Resources/ResourceTypeList.h"
 #include "../Target/TargetPlatformServices.h"
 #include "Arena.h"
 #include "VsDebug.h"
@@ -274,10 +276,65 @@ bool StatQuit()
 }
 
 // 68K 0x10201420 _RES_Init__Fv
-// STUB: LEMBALL 0x0045b900
+// FUNCTION: LEMBALL 0x0045b900
 bool ResInit()
 {
-	return 0;
+	ResourceTypeList* list;
+	BasePalManager* palManager;
+
+	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
+	if (list == 0) {
+		list = 0;
+	}
+	else {
+		list->m_capacity = 2;
+		list->m_currentIndex = -1;
+		list->m_count = 0;
+		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+	}
+	list->m_typeCodes[list->m_count] = 0x494e5420;
+	list->m_count = list->m_count + 1;
+	list->m_typeCodes[list->m_count] = 0x5a524c45;
+	list->m_count = list->m_count + 1;
+	g_pResourceTypes = list;
+
+	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
+	if (list == 0) {
+		list = 0;
+	}
+	else {
+		list->m_capacity = 1;
+		list->m_currentIndex = -1;
+		list->m_count = 0;
+		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+	}
+	list->m_typeCodes[list->m_count] = 0x5a524c45;
+	list->m_count = list->m_count + 1;
+	g_pCompressedResourceTypes = list;
+
+	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
+	if (list == 0) {
+		list = 0;
+	}
+	else {
+		list->m_capacity = 2;
+		list->m_currentIndex = -1;
+		list->m_count = 0;
+		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+	}
+	list->m_typeCodes[list->m_count] = 0x53545247;
+	list->m_count = list->m_count + 1;
+	list->m_typeCodes[list->m_count] = 0x494e5420;
+	list->m_count = list->m_count + 1;
+	g_pPreloadedResourceTypes = list;
+
+	palManager = (BasePalManager*) operator new(sizeof(BasePalManager));
+	if (palManager != 0) {
+		g_pBasePalManager = new (palManager) BasePalManager(0x20);
+		return 1;
+	}
+	g_pBasePalManager = 0;
+	return 1;
 }
 
 // 68K 0x10201580 _RES_Quit__Fv

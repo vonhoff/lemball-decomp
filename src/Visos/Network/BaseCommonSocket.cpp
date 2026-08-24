@@ -1,5 +1,7 @@
 #include "BaseCommonSocket.h"
 
+#include "TcpIpNetwork.h"
+
 #include <new.h>
 
 // 68K 0x1020b1ec __ct__17CBaseCommonSocketFv
@@ -26,9 +28,17 @@ BaseCommonSocket::~BaseCommonSocket()
 }
 
 // 68K 0x1020b2b2 SocketError__17CBaseCommonSocketF13NetworkErrors
-// STUB: LEMBALL 0x0045f6e0
+// FUNCTION: LEMBALL 0x0045f6e0
 void BaseCommonSocket::SocketError(NetworkErrors p_arg0)
 {
+	m_lastError = p_arg0;
+	g_lastNetworkError = p_arg0;
+	if (p_arg0 != 0 && m_isOpen != 0) {
+		m_readReady = 0;
+		m_isOpen = 0;
+		m_socketHandle = -1;
+		m_writeReady = 0;
+	}
 }
 
 // 68K 0x1020b332 CloseSocket__17CBaseCommonSocketFv

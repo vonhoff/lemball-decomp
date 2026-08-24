@@ -13,6 +13,8 @@ public:
 	void SocketError(NetworkErrors p_arg0);
 	~BaseCommonSocket();
 
+	friend class WriteSocket;
+
 private:
 	NetworkErrors m_lastError;   // 0x04
 	int m_socketHandle;          // 0x08

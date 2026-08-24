@@ -2,6 +2,8 @@
 
 #include "../Foundation/VsMem.h"
 
+#include <new.h>
+
 extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x1020cf50 __ct__8CConnectFv
@@ -17,9 +19,29 @@ Connect::~Connect()
 }
 
 // 68K 0x1020d1c2 InitConnect__8CConnectFPCcP15CNetworkAddresss
-// STUB: LEMBALL 0x00460c60
+// FUNCTION: LEMBALL 0x00460c60
 void Connect::InitConnect(const char* p_arg0, NetworkAddress* p_arg1, short p_arg2)
 {
+	unsigned int length;
+	const char* source;
+	char* dest;
+
+	source = p_arg0;
+	length = 0xffffffff;
+	do {
+		length = length - 1;
+	} while (*source++ != 0);
+	dest = (char*) operator new(~length);
+	m_name = dest;
+	source = p_arg0;
+	while (*source != 0) {
+		*dest = *source;
+		dest = dest + 1;
+		source = source + 1;
+	}
+	*dest = 0;
+	SetPort(p_arg2);
+	SetDestAddr(p_arg1);
 }
 
 // 68K 0x1020d25e CheckConnectTime__8CConnectFv

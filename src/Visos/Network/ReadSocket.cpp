@@ -1,7 +1,13 @@
 #include "ReadSocket.h"
 
+#include "../Messaging/ReadCBuff.h"
+#include "../Messaging/ReadCmsBuff.h"
 #include "../Messaging/ReadNcBuff.h"
 #include "../Messaging/ReadNcmsBuff.h"
+#include "../Messaging/BasePacketHeader.h"
+#include "TcpIpNetwork.h"
+
+#include <new.h>
 
 // 68K 0x1020b4d4 __ct__11CReadSocketFv
 // FUNCTION: LEMBALL 0x0045f820
@@ -39,21 +45,71 @@ void ReadSocket::DeleteNcBuffers()
 }
 
 // 68K 0x1020b682 DeleteCBuffers__11CReadSocketFv
-// STUB: LEMBALL 0x0045f900
+// FUNCTION: LEMBALL 0x0045f900
 void ReadSocket::DeleteCBuffers()
 {
+	ReadCBuff* critical;
+	ReadCmsBuff* criticalMulti;
+
+	critical = m_criticalBuffer;
+	if (critical != 0) {
+		critical->BasePacketBuff::~BasePacketBuff();
+		operator delete(critical);
+	}
+	criticalMulti = m_criticalMultiBuffer;
+	if (criticalMulti != 0) {
+		delete criticalMulti;
+	}
 }
 
 // 68K 0x1020b704 SetNCBuffers__11CReadSocketFUlUli
-// STUB: LEMBALL 0x0045f930
+// FUNCTION: LEMBALL 0x0045f930
 void ReadSocket::SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2)
 {
+	void* storage;
+
+	DeleteNcBuffers();
+	storage = operator new(sizeof(ReadNcBuff));
+	if (storage == 0) {
+		m_nonCriticalBuffer = 0;
+	}
+	else {
+		m_nonCriticalBuffer = new (storage) ReadNcBuff(p_arg0, (unsigned short) g_networkPacketSize);
+	}
+	storage = operator new(sizeof(ReadNcmsBuff));
+	if (storage != 0) {
+		m_nonCriticalMultiBuffer = new (storage)
+			ReadNcmsBuff(p_arg0 + 1, p_arg1, p_arg2, (unsigned short) g_networkPacketSize);
+		return;
+	}
+	m_nonCriticalMultiBuffer = 0;
 }
 
 // 68K 0x1020b7a8 SetCBuffers__11CReadSocketFii
-// STUB: LEMBALL 0x0045f9b0
+// FUNCTION: LEMBALL 0x0045f9b0
 void ReadSocket::SetCBuffers(int p_arg0, int p_arg1)
 {
+	void* storage;
+
+	DeleteCBuffers();
+	storage = operator new(sizeof(ReadCBuff));
+	if (storage == 0) {
+		m_criticalBuffer = 0;
+	}
+	else {
+		m_criticalBuffer = new (storage) ReadCBuff(p_arg0, (unsigned short) g_networkPacketSize);
+	}
+	storage = operator new(sizeof(ReadCmsBuff));
+	if (storage == 0) {
+		m_criticalMultiBuffer = 0;
+	}
+	else {
+		m_criticalMultiBuffer =
+			new (storage) ReadCmsBuff(p_arg0, p_arg1, (unsigned short) g_networkPacketSize);
+	}
+	if (g_pNetworkPacketScratch == 0) {
+		g_pNetworkPacketScratch = (BasePacketHeader*) operator new(g_networkPacketSize);
+	}
 }
 
 // 68K 0x1020b85c ProcessPacket__11CReadSocketFv
@@ -83,15 +139,17 @@ void ReadSocket::GetLatest(NetworkMessage& p_arg0)
 }
 
 // 68K 0x1020bc08 UnUseAllNC__11CReadSocketFv
-// STUB: LEMBALL 0x0045fcc0
+// FUNCTION: LEMBALL 0x0045fcc0
 void ReadSocket::UnUseAllNc()
 {
+	m_nonCriticalBuffer->UnUseAll();
 }
 
 // 68K 0x1020bc3c UnUseAllC__11CReadSocketFv
-// STUB: LEMBALL 0x0045fcd0
+// FUNCTION: LEMBALL 0x0045fcd0
 void ReadSocket::UnUseAllC()
 {
+	m_criticalBuffer->UnUseAll();
 }
 
 // 68K 0x10107764 FirstReceive__11CReadSocketFv

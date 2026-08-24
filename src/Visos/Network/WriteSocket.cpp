@@ -6,16 +6,34 @@
 
 #include <new.h>
 
+extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
+
 // 68K 0x1020bc70 __ct__12CWriteSocketFv
-// STUB: LEMBALL 0x0045fce0
+// FUNCTION: LEMBALL 0x0045fce0
 WriteSocket::WriteSocket()
 {
+	BasePacketHeader* header;
+
+	m_lastSendTime = timeGetTime() - 1000;
+	header = (BasePacketHeader*) operator new(sizeof(BasePacketHeader));
+	m_packetHeader = header;
+	header->m_magic = 0x56533039;
+	m_nonCriticalBuffer = 0;
+	m_criticalBuffer = 0;
+	m_unknown50 = 0;
+	m_segmentedMessage = 0;
+	m_segmentIndex = -1;
 }
 
 // 68K 0x1020bd2c __dt__12CWriteSocketFv
-// STUB: LEMBALL 0x0045fd80
+// FUNCTION: LEMBALL 0x0045fd80
 WriteSocket::~WriteSocket()
 {
+	operator delete(m_destinationAddress);
+	m_destinationAddress = 0;
+	operator delete(m_packetHeader);
+	DeleteNcBuffers();
+	DeleteCBuffers();
 }
 
 // 68K 0x1020bdd8 _SetDestAddr__12CWriteSocketFP15CNetworkAddress
@@ -128,7 +146,8 @@ void WriteSocket::Process()
 }
 
 // 68K 0x101074e2 SetPort__12CWriteSocketFs
-// STUB: LEMBALL 0x00462970
+// FUNCTION: LEMBALL 0x00462970
 void WriteSocket::SetPort(short p_arg0)
 {
+	m_port = (unsigned short) p_arg0;
 }
