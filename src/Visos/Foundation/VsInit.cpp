@@ -338,10 +338,31 @@ bool ResInit()
 }
 
 // 68K 0x10201580 _RES_Quit__Fv
-// STUB: LEMBALL 0x0045ba50
+// FUNCTION: LEMBALL 0x0045ba50
 bool ResQuit()
 {
-	return 0;
+	ResourceTypeList* list;
+
+	if (g_pBasePalManager != 0) {
+		g_pBasePalManager->~BasePalManager();
+		operator delete(g_pBasePalManager);
+	}
+	list = g_pPreloadedResourceTypes;
+	if (list != 0) {
+		operator delete(list->m_typeCodes);
+		operator delete(list);
+	}
+	list = g_pResourceTypes;
+	if (list != 0) {
+		operator delete(list->m_typeCodes);
+		operator delete(list);
+	}
+	list = g_pCompressedResourceTypes;
+	if (list != 0) {
+		operator delete(list->m_typeCodes);
+		operator delete(list);
+	}
+	return 1;
 }
 
 // 68K 0x10110112 _TIME_Init__Fv

@@ -13,9 +13,10 @@ GWnd::~GWnd()
 }
 
 // 68K 0x1010b3e6 Move__5CGWndFRC8CVSPoint
-// STUB: LEMBALL 0x00463c20
+// FUNCTION: LEMBALL 0x00463c20
 void GWnd::Move(const VsPoint& p_point)
 {
+	Wnd::Move(p_point);
 }
 
 // 68K 0x1010a808 _OnCreate__5CGWndFv
@@ -37,7 +38,7 @@ void GWnd::OnSize()
 }
 
 // 68K 0x1010ab98 OnPaint__5CGWndFRC7CVSRect
-// STUB: LEMBALL 0x00463f60
+// FUNCTION: LEMBALL 0x00463f60
 void GWnd::OnPaint(const VsRect& p_rect)
 {
 }

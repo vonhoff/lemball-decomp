@@ -25,10 +25,10 @@ void TcpIpNetworkAddress::operator=(eBroadcastTypes p_type)
 }
 
 // 68K 0x1010c5ca __gt__20CTCPIPNetworkAddressFR15CNetworkAddress
-// STUB: LEMBALL 0x0046f9f0
+// FUNCTION: LEMBALL 0x0046f9f0
 bool TcpIpNetworkAddress::operator>(NetworkAddress& p_address)
 {
-	return 0;
+	return ((TcpIpNetworkAddress*) &p_address)->m_ipv4Address < m_ipv4Address;
 }
 
 // 68K 0x1010c566 __as__20CTCPIPNetworkAddressFR15CNetworkAddress

@@ -1,5 +1,7 @@
 #include "FileNetworkAddress.h"
 
+#include "../Foundation/VsOStream.h"
+
 #include <string.h>
 
 // 68K 0x101166d2 __as__19CFileNetworkAddressFR15CNetworkAddress
@@ -49,10 +51,12 @@ void FileNetworkAddress::operator=(eBroadcastTypes p_type)
 }
 
 // 68K 0x10206c0c __gt__19CFileNetworkAddressFR15CNetworkAddress
-// STUB: LEMBALL 0x00479510
+// FUNCTION: LEMBALL 0x00479510
 bool FileNetworkAddress::operator>(NetworkAddress& p_address)
 {
 	// STRING: LEMBALL 0x004a2df4 "You haven't implemented major/minor destinction in 'CFileNetworkAddress'es\n"
+	*g_pErrorOutput << "You haven't implemented major/minor destinction in 'CFileNetworkAddress'es\n";
 	// STRING: LEMBALL 0x004a2e40 "use count entry in broadcast file\n"
+	*g_pErrorOutput << "use count entry in broadcast file\n";
 	return 0;
 }
