@@ -255,19 +255,19 @@ int BaseNetwork::ProcessMsg(Message* p_arg0)
 }
 
 // 68K 0x1010f03e BeforeDestroyConnections__12CBaseNetworkFv
-// STUB: LEMBALL 0x00462aa0
+// FUNCTION: LEMBALL 0x00462aa0
 void BaseNetwork::BeforeDestroyConnections()
 {
 }
 
 // 68K 0x1010f074 AfterDestroyConnections__12CBaseNetworkFv
-// STUB: LEMBALL 0x00462ab0
+// FUNCTION: LEMBALL 0x00462ab0
 void BaseNetwork::AfterDestroyConnections()
 {
 }
 
 // 68K 0x10107a8e WaitProcess__12CBaseNetworkFv
-// STUB: LEMBALL 0x00462ac0
+// FUNCTION: LEMBALL 0x00462ac0
 void BaseNetwork::WaitProcess()
 {
 }
