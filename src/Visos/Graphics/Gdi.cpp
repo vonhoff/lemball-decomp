@@ -13,9 +13,11 @@ Gdi::~Gdi()
 }
 
 // 68K 0x1021193c AddToList__4CGDIFP10CPrimitive
-// STUB: LEMBALL 0x004670f0
+// FUNCTION: LEMBALL 0x004670f0
 void Gdi::AddToList(Primitive* p_primitive)
 {
+	m_primitives[m_primitiveCount] = p_primitive;
+	m_primitiveCount = m_primitiveCount + 1;
 }
 
 // 68K 0x1021197a Render__4CGDIFv

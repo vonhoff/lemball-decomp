@@ -75,9 +75,10 @@ void GWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title, unsigned
 }
 
 // 68K 0x1010b4c6 Create__5CGWndFRC7CVSRectP6CPVWndPc
-// STUB: LEMBALL 0x00464470
+// FUNCTION: LEMBALL 0x00464470
 void GWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 {
+	Create(p_rect, p_parent, p_title, 0);
 }
 
 // 68K 0x1010b30c AttachPalette__5CGWndFUl
