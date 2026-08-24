@@ -30,6 +30,7 @@ MogRes::MogRes(char* p_path, unsigned long p_arenaSize)
 {
 	unsigned int offset;
 	Arena* arena;
+	MogDir* rootDir;
 
 	g_mogRootPath[0] = kPathSeparator;
 	g_pActiveMogRes = this;
@@ -52,7 +53,13 @@ MogRes::MogRes(char* p_path, unsigned long p_arenaSize)
 		return;
 	}
 	CurrentMilliTimer();
-	m_rootDirectory = new MogDir(0);
+	rootDir = (MogDir*) MogloadArena::operator new(kMogDirAllocSize);
+	if (rootDir == 0) {
+		m_rootDirectory = 0;
+	}
+	else {
+		m_rootDirectory = new (rootDir) MogDir(0);
+	}
 	CurrentMilliTimer();
 	m_workingDirectory = m_rootDirectory;
 	SetWd(g_mogRootPath);
@@ -103,30 +110,26 @@ MogRes::~MogRes()
 bool MogRes::SetWd(char* p_path)
 {
 	char* copy;
-	char* src;
-	unsigned int length;
 	MogDir* dir;
 	char* cursor;
+	int* current;
 
 	if (*p_path == kPathSeparator) {
 		m_workingDirectory = m_rootDirectory;
 		copy = (char*) MogloadArena::operator new(strlen(p_path) + 1);
-		length = strlen(p_path) + 1;
-		src = p_path;
-		memcpy(copy, src, length);
+		strcpy(copy, p_path);
 	}
 	else {
 		copy = (char*) MogloadArena::operator new(strlen(p_path) + 2);
 		copy[0] = kPathSeparator;
-		length = strlen(p_path) + 1;
-		src = p_path;
-		memcpy(copy + 1, src, length);
+		strcpy(copy + 1, p_path);
 	}
-	m_workingDirectory->m_currentDirIndex = m_workingDirectory->m_rootIndex;
-	m_workingDirectory->m_currentDirChunk = m_workingDirectory->m_rootChunk;
-	m_workingDirectory->m_currentDirIndex = -1;
+	current = &m_workingDirectory->m_currentDirIndex;
+	current[0] = m_workingDirectory->m_rootIndex;
+	current[1] = (int) m_workingDirectory->m_rootChunk;
+	*current = -1;
 	cursor = copy;
-	while (1) {
+	while (cursor != 0) {
 		cursor = strchr(cursor, kPathSeparator);
 		if (cursor == 0) {
 			break;
@@ -136,7 +139,7 @@ bool MogRes::SetWd(char* p_path)
 			do {
 				dir = m_workingDirectory->GetNextDir();
 				if (dir == 0) {
-					goto setwd_done;
+					break;
 				}
 			} while (!NameCmp((char*) m_workingDirectory->m_currentDirChunk->m_data, cursor));
 			if (dir == 0) {
@@ -144,11 +147,7 @@ bool MogRes::SetWd(char* p_path)
 			}
 			m_workingDirectory = dir;
 		}
-		if (cursor == 0) {
-			break;
-		}
 	}
-setwd_done:
 	if (cursor == 0) {
 		if (m_workingPath != 0) {
 			MogloadArena::operator delete(m_workingPath);
@@ -183,7 +182,7 @@ int MogRes::KillLeastResource(unsigned int p_requiredSize)
 				unsigned int used = m_resources[i]->GetSizeUsed();
 				unsigned int refs = m_resources[i]->m_referenceCount;
 				if (used >= p_requiredSize) {
-					if (used <= bestSize && bestRefs > refs) {
+					if (used > bestSize || bestRefs > refs) {
 						bestRefs = refs;
 						bestSize = used;
 						bestIndex = i;
@@ -258,23 +257,21 @@ unsigned char* MogRes::AllocateMainMem(unsigned int p_size)
 ResBase* MogRes::Find(unsigned int p_resourceId)
 {
 	int i = 0;
-	int count = m_resourceCount;
-	int remaining = count;
+	int remaining = m_resourceCount;
 
-	if (count > 0) {
-		ResBase** resources = m_resources;
+	if ((int) m_resourceCount > 0) {
 		do {
-			while (resources[i] == 0) {
+			while (m_resources[i] == 0) {
 				i++;
 			}
-			if (resources[i]->m_resourceId == p_resourceId) {
+			if (m_resources[i]->m_resourceId == p_resourceId) {
 				break;
 			}
 			remaining--;
 			i++;
 		} while (remaining > 0);
 	}
-	if (count != 0 && remaining > 0) {
+	if (m_resourceCount != 0 && remaining > 0) {
 		AgeResources();
 		m_resources[i]->LoadData();
 		m_resources[i]->m_referenceCount++;
