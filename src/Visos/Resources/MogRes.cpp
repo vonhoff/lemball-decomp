@@ -172,28 +172,41 @@ int MogRes::KillLeastResource(unsigned int p_requiredSize)
 	int scanned = 0;
 	int bestIndex = -1;
 	unsigned int bestSize = 0;
+	ResBase** slot;
+	ResBase* resource;
+	unsigned int used;
+	unsigned int refs;
 
 	if ((int) m_resourceCount > 0) {
 		do {
-			while (m_resources[i] == 0) {
+			slot = m_resources + i;
+			resource = *slot;
+			while (resource == 0) {
+				slot++;
 				i++;
+				resource = *slot;
 			}
-			if (m_resources[i]->m_loaded != 0 && m_resources[i]->m_directUseCount == 0) {
-				unsigned int used = m_resources[i]->GetSizeUsed();
-				unsigned int refs = m_resources[i]->m_referenceCount;
-				if (used >= p_requiredSize) {
-					if (used > bestSize || bestRefs > refs) {
-						bestRefs = refs;
-						bestSize = used;
-						bestIndex = i;
+			resource = m_resources[i];
+			if (resource->m_loaded != 0 && resource->m_directUseCount == 0) {
+				used = resource->GetSizeUsed();
+				refs = m_resources[i]->m_referenceCount;
+				if (used < p_requiredSize) {
+				check_refs:
+					if (bestRefs <= refs) {
+						goto next;
 					}
 				}
-				else if (bestRefs > refs) {
-					bestRefs = refs;
-					bestSize = used;
-					bestIndex = i;
+				else if (used <= bestSize && bestRefs <= refs) {
+					if (used >= p_requiredSize) {
+						goto next;
+					}
+					goto check_refs;
 				}
+				bestRefs = refs;
+				bestSize = used;
+				bestIndex = i;
 			}
+		next:
 			i++;
 			scanned++;
 		} while (scanned < (int) m_resourceCount);
@@ -231,24 +244,55 @@ int MogRes::GetFreeHandle()
 // FUNCTION: LEMBALL 0x0045ca30
 unsigned char* MogRes::AllocateMainMem(unsigned int p_size)
 {
+	MogRes* self;
+	unsigned int size;
 	unsigned char* memory;
-	unsigned int needed;
-	int index;
+	int temp;
+	int i;
+	ResBase** slot;
 
-	while ((memory = (unsigned char*) MogloadArena::operator new(p_size)) == 0) {
-		needed = p_size - g_pMogloadArena->GetFreeSize();
-		if ((int) needed < 0) {
-			needed = p_size;
-		}
-		index = KillLeastResource(needed);
-		if (index == -1) {
-			break;
-		}
-		m_resources[index]->UnLoadData(1);
-		if (index == -1) {
-			break;
-		}
+	self = this;
+	size = p_size;
+
+alloc:
+	memory = (unsigned char*) MogloadArena::operator new(size);
+	if (memory != 0) {
+		goto done;
 	}
+	temp = size;
+	temp -= g_pMogloadArena->GetFreeSize();
+	if (temp < 0) {
+		temp = size;
+	}
+	temp = self->KillLeastResource(temp);
+	if (temp == -1) {
+		goto walk;
+	}
+	self->m_resources[temp]->UnLoadData(1);
+	if (temp != -1) {
+		goto check;
+	}
+walk:
+	i = 0;
+	temp = self->m_resourceCount;
+	if (temp > 0) {
+		do {
+			if (self->m_resources[i] == 0) {
+				slot = self->m_resources + i;
+				do {
+					slot++;
+					i++;
+				} while (*slot == 0);
+			}
+			i++;
+			temp--;
+		} while (temp != 0);
+	}
+check:
+	if (memory == 0) {
+		goto alloc;
+	}
+done:
 	return memory;
 }
 
@@ -284,13 +328,13 @@ ResBase* MogRes::Find(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045cb50
 bool MogRes::Load(ResBase* p_resource, Chunk p_chunk)
 {
-	if (p_resource->m_chunkType == p_chunk.m_info->m_type) {
-		p_resource->m_dataSize = p_chunk.m_info->m_size;
-		p_resource->m_fileOffset = p_chunk.m_info->m_fileOffset;
-		p_resource->m_name = p_chunk.m_info->m_name;
-		return 1;
+	if (p_chunk.m_info->m_type != p_resource->m_chunkType) {
+		return 0;
 	}
-	return 0;
+	p_resource->m_dataSize = p_chunk.m_info->m_size;
+	p_resource->m_fileOffset = p_chunk.m_info->m_fileOffset;
+	p_resource->m_name = p_chunk.m_info->m_name;
+	return 1;
 }
 
 // 68K 0x1020264a Load__7CMogResFUlP8CResBase7RECURSE
@@ -406,10 +450,11 @@ void MogRes::CleanUpResources()
 // FUNCTION: LEMBALL 0x0045ceb0
 void MogRes::Remove(ResBase* p_resource)
 {
-	unsigned int scanned = 0;
+	int count = (int) m_resourceCount;
+	int scanned = 0;
 	int i = 0;
 
-	if ((int) m_resourceCount > 0) {
+	if (count > scanned) {
 		do {
 			while (m_resources[i] == 0) {
 				i++;
@@ -420,9 +465,9 @@ void MogRes::Remove(ResBase* p_resource)
 			}
 			scanned++;
 			i++;
-		} while ((int) scanned < (int) m_resourceCount);
+		} while (scanned < count);
 	}
-	if (scanned != m_resourceCount) {
+	if (scanned != (int) m_resourceCount) {
 		m_resourceCount--;
 	}
 }

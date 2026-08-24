@@ -225,10 +225,7 @@ void MogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 	int* nextIndex;
 
 	do {
-		if (*iterator == -1) {
-			nextIndex = &m_firstIndex;
-		}
-		else {
+		if (*iterator != -1) {
 			if (m_chunkCount - *iterator == 1) {
 				exhausted = 1;
 				break;
@@ -237,6 +234,9 @@ void MogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 				NewChunkInfo();
 			}
 			nextIndex = &m_iteratorChunk->m_nextIndex;
+		}
+		else {
+			nextIndex = &m_firstIndex;
 		}
 		iterator[0] = nextIndex[0];
 		iterator[1] = nextIndex[1];
@@ -259,12 +259,12 @@ void MogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 // FUNCTION: LEMBALL 0x0045c2a0
 void MogDir::FindFirst(Chunk& p_chunk, unsigned int p_type)
 {
-	int* iteratorIndex = &m_iteratorIndex;
-	int* firstIndex = &m_firstIndex;
+	int* iterator = &m_iteratorIndex;
+	int* first = &m_firstIndex;
 
-	*iteratorIndex = *firstIndex;
-	iteratorIndex[1] = firstIndex[1];
-	*iteratorIndex = -1;
+	iterator[0] = first[0];
+	iterator[1] = first[1];
+	*iterator = -1;
 	FindNext(p_chunk, p_type);
 }
 
