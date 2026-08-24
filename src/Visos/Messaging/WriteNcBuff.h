@@ -2,10 +2,10 @@
 #define LEMBALL_VISOS_MESSAGING_WRITENCBUFF_H
 
 #include "../../Common.h"
+#include "WritePacketBuff.h" // complete type
 
-class WriteNcBuff {
-public:
-	// No functions mapped yet.
+// SIZE 0x0c
+class WriteNcBuff : public WritePacketBuff {
 };
 
 #endif

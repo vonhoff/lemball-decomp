@@ -35,6 +35,8 @@ public:
 	void SetHiliteWindow();
 	void UpdateAnimIDs(unsigned long p_actionMessage);
 
+	friend class NetworkOptionsDrawer;
+
 private:
 	AnimsManager m_anims;                    // 0x10
 	int m_buttonCount;                       // 0x80

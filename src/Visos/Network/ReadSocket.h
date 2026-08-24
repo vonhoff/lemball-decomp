@@ -27,6 +27,7 @@ public:
 
 private:
 	unsigned int m_lastReceiveTime;         // 0x3c
+	undefined m_unknown40[8];               // 0x40
 	ReadNcBuff* m_nonCriticalBuffer;        // 0x48
 	ReadNcmsBuff* m_nonCriticalMultiBuffer; // 0x4c
 	ReadCBuff* m_criticalBuffer;            // 0x50

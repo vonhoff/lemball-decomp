@@ -30,6 +30,7 @@ public:
 
 private:
 	unsigned int m_lastSendTime;          // 0x3c
+	undefined m_unknown40[8];             // 0x40
 	WriteNcBuff* m_nonCriticalBuffer;     // 0x48
 	WriteCBuff* m_criticalBuffer;         // 0x4c
 	NetworkMessage* m_segmentedMessage;   // 0x54

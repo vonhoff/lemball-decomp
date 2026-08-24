@@ -5,6 +5,8 @@
 #include "Critical.h"
 #include "MBlock.h"
 
+void InitSubSystems();
+
 // SIZE 0x08
 // VTABLE: LEMBALL 0x00498908
 class ArenaBase {
@@ -51,6 +53,7 @@ public:
 	Arena();
 
 	friend class MogRes;
+	friend void InitSubSystems();
 
 protected:
 	unsigned char* m_arenaBase;            // 0x24

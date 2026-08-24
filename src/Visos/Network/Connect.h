@@ -27,12 +27,16 @@ public:
 	void Stop();
 	~Connect();
 
+	friend class BaseNetwork;
+
 private:
+	undefined4 m_unk0x04;               // 0x04
 	char* m_name;                       // 0x08
 	NetworkAddress* m_address;          // 0x0c
 	class Connect* m_nextConnect;       // 0x10
 	class Connect* m_previousConnect;   // 0x14
 	unsigned int m_newPortRequestCount; // 0x18
+	undefined4 m_unk0x1c;               // 0x1c
 	unsigned int m_killRequested;       // 0x20
 	unsigned int m_established;         // 0x24
 	unsigned int m_connectTime;         // 0x28

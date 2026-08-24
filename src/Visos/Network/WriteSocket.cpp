@@ -1,5 +1,11 @@
 #include "WriteSocket.h"
 
+#include "../Messaging/WriteCBuff.h"
+#include "../Messaging/WriteNcBuff.h"
+#include "TcpIpNetwork.h"
+
+#include <new.h>
+
 // 68K 0x1020bc70 __ct__12CWriteSocketFv
 // STUB: LEMBALL 0x0045fce0
 WriteSocket::WriteSocket()
@@ -19,27 +25,53 @@ void WriteSocket::SetDestAddr(NetworkAddress* p_arg0)
 }
 
 // 68K 0x1020be2a DeleteNCBuffers__12CWriteSocketFv
-// STUB: LEMBALL 0x0045fdf0
+// FUNCTION: LEMBALL 0x0045fdf0
 void WriteSocket::DeleteNcBuffers()
 {
+	WriteNcBuff* buffer;
+
+	buffer = m_nonCriticalBuffer;
+	if (buffer != 0) {
+		buffer->BasePacketBuff::~BasePacketBuff();
+		operator delete(buffer);
+	}
 }
 
 // 68K 0x1020be88 DeleteCBuffers__12CWriteSocketFv
-// STUB: LEMBALL 0x0045fe10
+// FUNCTION: LEMBALL 0x0045fe10
 void WriteSocket::DeleteCBuffers()
 {
+	if (m_criticalBuffer != 0) {
+		m_criticalBuffer->~WriteCBuff();
+		operator delete(m_criticalBuffer);
+		m_criticalBuffer = 0;
+	}
 }
 
 // 68K 0x1020bf10 SetNCBuffers__12CWriteSocketFUlUli
-// STUB: LEMBALL 0x0045fe50
+// FUNCTION: LEMBALL 0x0045fe50
 void WriteSocket::SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2)
 {
+	(void) p_arg0;
+	(void) p_arg1;
+	(void) p_arg2;
+	DeleteNcBuffers();
 }
 
 // 68K 0x1020bf46 SetCBuffers__12CWriteSocketFii
-// STUB: LEMBALL 0x0045fe60
+// FUNCTION: LEMBALL 0x0045fe60
 void WriteSocket::SetCBuffers(int p_arg0, int p_arg1)
 {
+	void* storage;
+
+	(void) p_arg1;
+	DeleteCBuffers();
+	storage = operator new(sizeof(WriteCBuff));
+	if (storage != 0) {
+		m_criticalBuffer = new (storage) WriteCBuff(p_arg0, (unsigned short) g_networkPacketSize);
+		return;
+	}
+	m_criticalBuffer = 0;
 }
 
 // 68K 0x1020bfac SendCritical__12CWriteSocketFR15CNetworkMessage

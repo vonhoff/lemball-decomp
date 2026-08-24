@@ -20,9 +20,10 @@ public:
 	virtual ~TcpIpNetwork();                             // vtable+0x04
 
 private:
-	undefined m_nativeWindow[0x10]; // 0x00
-	BaseNetwork m_base;             // 0x10
-	unsigned int m_timerId;         // 0x74
+	void* m_windowHandle;   // 0x04
+	undefined m_windowPad[8]; // 0x08
+	BaseNetwork m_base;     // 0x10
+	unsigned int m_timerId; // 0x74
 };
 
 extern unsigned int g_dwTCPIPNetworkThreadId;

@@ -1,21 +1,33 @@
 #include "MessFailedConnect.h"
 
+#include <string.h>
+
+#pragma intrinsic(strlen)
+
 // 68K 0x1020b0fc __ct__18CMessFAILEDConnectFPCc
-// STUB: LEMBALL 0x0045f610
+// FUNCTION: LEMBALL 0x0045f610
 MessFailedConnect::MessFailedConnect(const char* p_arg0)
 {
+	unsigned int nameLength;
+
+	m_header = p_arg0;
+	nameLength = (unsigned int) strlen(p_arg0) + 1;
+	m_payloadCapacity += nameLength;
+	m_payloadCapacity += 0x101;
 }
 
 // 68K 0x1020b178 GetData__18CMessFAILEDConnectFv
-// STUB: LEMBALL 0x0045f660
+// FUNCTION: LEMBALL 0x0045f660
 void MessFailedConnect::GetData()
 {
+	Get(*(const char**) &m_failureReason);
 }
 
 // 68K 0x1020b1b2 AddData__18CMessFAILEDConnectFv
-// STUB: LEMBALL 0x0045f670
+// FUNCTION: LEMBALL 0x0045f670
 void MessFailedConnect::AddData()
 {
+	Add(m_failureReason);
 }
 
 // 68K 0x10117044 __dt__18CMessFAILEDConnectFv

@@ -3,6 +3,8 @@
 #include <new.h>
 #include <string.h>
 
+#pragma intrinsic(strcpy, strlen)
+
 #include "../Animation/BaseStat.h"
 #include "../Animation/StatManager.h"
 #include "../Foundation/Arena.h"
@@ -114,10 +116,13 @@ bool MogRes::SetWd(char* p_path)
 		copy[0] = kPathSeparator;
 		strcpy(copy + 1, path);
 	}
-	m_workingDirectory->m_currentDirIndex = m_workingDirectory->m_rootIndex;
-	m_workingDirectory->m_currentDirChunk = m_workingDirectory->m_rootChunk;
-	m_workingDirectory->m_currentDirIndex = -1;
 	cursor = copy;
+	{
+		int* current = &m_workingDirectory->m_currentDirIndex;
+		current[0] = m_workingDirectory->m_rootIndex;
+		current[1] = (int) m_workingDirectory->m_rootChunk;
+		*current = -1;
+	}
 	for (;;) {
 		cursor = strchr(cursor, kPathSeparator);
 		if (cursor == 0) {
@@ -246,22 +251,24 @@ unsigned char* MogRes::AllocateMainMem(unsigned int p_size)
 				needed = size;
 			}
 			int handle = KillLeastResource(needed);
-			if (handle == -1 || (m_resources[handle]->UnLoadData(1), handle == -1)) {
-				int i = 0;
-				unsigned int remaining = m_resourceCount;
-				if ((int) remaining > 0) {
-					do {
-						if (m_resources[i] == 0) {
-							ResBase** slot = m_resources + i;
-							do {
-								slot++;
-								i++;
-							} while (*slot == 0);
-						}
-						i++;
-						remaining--;
-					} while (remaining != 0);
+			if (handle != -1) {
+				m_resources[handle]->UnLoadData(1);
+				if (handle != -1) {
+					continue;
 				}
+			}
+			int i = 0;
+			unsigned int remaining = m_resourceCount;
+			if ((int) remaining > 0) {
+				do {
+					if (m_resources[i] == 0) {
+						do {
+							i++;
+						} while (m_resources[i] == 0);
+					}
+					i++;
+					remaining--;
+				} while (remaining != 0);
 			}
 		}
 	} while (memory == 0);
@@ -275,19 +282,17 @@ ResBase* MogRes::Find(unsigned int p_resourceId)
 	register int i = 0;
 	register int count = m_resourceCount;
 	register int remaining = count;
-	register unsigned int id = p_resourceId;
 
 	if (count > i) {
-		ResBase** resources = m_resources;
 		do {
-			ResBase** slot = resources + i;
-			if (*slot == 0) {
+			if (m_resources[i] == 0) {
+				ResBase** slot = &m_resources[i];
 				do {
 					slot++;
 					i++;
 				} while (*slot == 0);
 			}
-			if (resources[i]->m_resourceId == id) {
+			if (m_resources[i]->m_resourceId == p_resourceId) {
 				break;
 			}
 			remaining--;
@@ -416,9 +421,10 @@ void MogRes::CleanUpResources()
 			if (i == kResourceHandleCount) {
 				return;
 			}
-			ResBase* resource = m_resources[i];
-			if (resource->m_referenceCount == 0) {
-				delete resource;
+			if (m_resources[i]->m_referenceCount == 0) {
+				if (m_resources[i] != 0) {
+					delete m_resources[i];
+				}
 				m_resources[i] = 0;
 				m_resourceCount--;
 			}

@@ -16,7 +16,7 @@ public:
 private:
 	unsigned short m_sequence;         // 0x2c
 	unsigned short m_mirroredSequence; // 0x2e
-	unsigned int m_headerValue;        // 0x30
+	unsigned long m_headerValue;       // 0x30
 	char m_text0[21];                  // 0x34
 	char m_text1[21];                  // 0x49
 	undefined2 m_padding;              // 0x5e

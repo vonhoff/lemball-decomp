@@ -1,5 +1,9 @@
 #include "Connect.h"
 
+#include "../Foundation/VsMem.h"
+
+extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
+
 // 68K 0x1020cf50 __ct__8CConnectFv
 // STUB: LEMBALL 0x00460a90
 Connect::Connect()
@@ -19,22 +23,41 @@ void Connect::InitConnect(const char* p_arg0, NetworkAddress* p_arg1, short p_ar
 }
 
 // 68K 0x1020d25e CheckConnectTime__8CConnectFv
-// STUB: LEMBALL 0x00460ce0
+// FUNCTION: LEMBALL 0x00460ce0
 bool Connect::CheckConnectTime()
 {
-	return 0;
+	unsigned long now;
+
+	if (m_established == 0) {
+		now = timeGetTime();
+		if (4000 < now - m_connectTime) {
+			Kill();
+			return 0;
+		}
+	}
+	return 1;
 }
 
 // 68K 0x1020d2b6 SetConnectTime__8CConnectFv
-// STUB: LEMBALL 0x00460d10
+// FUNCTION: LEMBALL 0x00460d10
 void Connect::SetConnectTime()
 {
+	m_connectTime = timeGetTime();
 }
 
 // 68K 0x1020d2ea Stop__8CConnectFv
-// STUB: LEMBALL 0x00460d20
+// FUNCTION: LEMBALL 0x00460d20
 void Connect::Stop()
 {
+	if (m_name != 0) {
+		operator delete(m_name);
+		m_name = 0;
+	}
+	if (m_address != 0) {
+		operator delete(m_address);
+		m_address = 0;
+	}
+	BaseCommonSocket::CloseSocket();
 }
 
 // 68K 0x1020d348 FirstReceive__8CConnectFv
@@ -64,9 +87,16 @@ NetworkMessage* Connect::ReceiveAcknowledgement()
 }
 
 // 68K 0x1020d5cc Kill__8CConnectFv
-// STUB: LEMBALL 0x00460fb0
+// FUNCTION: LEMBALL 0x00460fb0
 void Connect::Kill()
 {
+	if (m_nextConnect != 0 && m_previousConnect != 0) {
+		BaseCommonSocket::CloseSocket();
+		if (m_established != 0) {
+			Closed(1);
+		}
+	}
+	m_killRequested = 1;
 }
 
 // 68K 0x1020d63a PostRead__8CConnectF13NetworkEventsP11CBasePacket

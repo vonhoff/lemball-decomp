@@ -8,16 +8,45 @@ void ResBase::DoLoad(unsigned int p_resourceId)
 }
 
 // 68K 0x10202a4a Direct__8CResBaseFRPUcP12CResBaseLIST
-// STUB: LEMBALL 0x0045cf70
+// FUNCTION: LEMBALL 0x0045cf70
 bool ResBase::Direct(unsigned char*& p_cursor, ResBaseList* p_list)
 {
+	m_externalList = p_list;
+	m_data = p_cursor;
+	p_cursor += m_dataSize;
+	++m_referenceCount;
+	++m_directUseCount;
+	m_age = 0;
+	m_loaded = 1;
+	m_age = 0;
+	OnLoad();
 	return 0;
 }
 
 // 68K 0x10202adc Direct__8CResBaseFRPUcRPUcP12CResBaseLIST
-// STUB: LEMBALL 0x0045cfb0
+// FUNCTION: LEMBALL 0x0045cfb0
 bool ResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, ResBaseList* p_list)
 {
+	unsigned int* entry;
+
+	m_externalList = p_list;
+	entry = (unsigned int*) p_headerCursor;
+	if (m_chunkType != entry[0]) {
+		m_error = 1;
+		return 1;
+	}
+	m_dataSize = entry[1];
+	m_name = (char*) (entry + 2);
+	SetHeader();
+	p_headerCursor = (unsigned char*) entry + m_headerSkip + 8;
+	m_data = p_dataCursor;
+	p_dataCursor += m_dataSize;
+	++m_referenceCount;
+	++m_directUseCount;
+	m_age = 0;
+	m_loaded = 1;
+	m_age = 0;
+	OnLoad();
 	return 0;
 }
 

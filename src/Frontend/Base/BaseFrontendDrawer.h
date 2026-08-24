@@ -50,6 +50,8 @@ public:
 	void Setup();
 	void UnLoad();
 
+	friend class NetworkOptionsDrawer;
+
 private:
 	BaseQueueHandler m_queueHandler;      // 0x04
 	AnimsManager m_anims;                 // 0x14
@@ -78,6 +80,7 @@ private:
 	HiliteController* m_hiliteController; // 0x338
 	unsigned int m_ambientDelay;          // 0x33c
 	unsigned int m_ambientUpdatedAt;      // 0x340
+	undefined m_unknown344[8];            // 0x344
 	PlayThruAnim* m_ambientAnim;          // 0x34c
 	StaticAnim m_staticAnim;              // 0x350
 	unsigned int m_backBufferNeeded;      // 0x360
@@ -90,6 +93,7 @@ private:
 	short m_width;                        // 0x37c
 	short m_height;                       // 0x37e
 	VsPoint m_animPosition;               // 0x380
+	undefined4 m_unknown384;              // 0x384
 	unsigned int m_topFrameAnimId;        // 0x388
 	unsigned int m_sideFrameAnimId;       // 0x38c
 	unsigned int m_bottomFrameAnimId;     // 0x390

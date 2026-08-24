@@ -9,7 +9,7 @@ extern jmp_buf g_vsExitJumpBuffer;
 
 bool StrmInit();
 bool StrmQuit();
-void InpInit();
+bool InpInit();
 bool InpQuit();
 void InitSubSystems();
 void InitQuitSubSystems();

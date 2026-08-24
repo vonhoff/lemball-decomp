@@ -1,8 +1,11 @@
 #include "NetworkOptionsDrawer.h"
 
+#include "../Controls/HiliteController.h"
+
 // 68K 0x10806468 __ct__21CNetworkOptionsDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // STUB: LEMBALL 0x00453280
 NetworkOptionsDrawer::NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
+	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 0xc, 0x32, 200, 0, 100, 0x28)
 {
 }
 
@@ -139,23 +142,111 @@ void NetworkOptionsDrawer::GameNotReady(int p_index)
 }
 
 // 68K 0x10808318 UpdateHighlightedEntry__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454bb0
+// FUNCTION: LEMBALL 0x00454bb0
 void NetworkOptionsDrawer::UpdateHighlightedEntry()
 {
+	if (m_highlightedPlayer != -1) {
+		if (m_playerEntries[m_highlightedPlayer].m_active == 0) {
+			if (HighlightPreviousEntry() == 0) {
+				HighlightNextEntry();
+			}
+		}
+		else {
+			m_playerEntries[m_highlightedPlayer].m_entered = 1;
+			m_playerEntries[m_highlightedPlayer].OnEnter();
+		}
+	}
 }
 
 // 68K 0x108083c8 HighlightPreviousEntry__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454c10
+// FUNCTION: LEMBALL 0x00454c10
 bool NetworkOptionsDrawer::HighlightPreviousEntry()
 {
-	return 0;
+	int selected;
+	int i;
+
+	if (m_visibleEntryCount == 0 || m_highlightedPlayer == 0) {
+		return 0;
+	}
+
+	if (m_highlightedPlayer == -1) {
+		m_hiliteController->m_active = 0;
+		m_highlightedPlayer = 10;
+	}
+
+	selected = m_highlightedPlayer - 1;
+	if (selected >= 0) {
+		do {
+			if (m_playerEntries[selected].m_active != 0) {
+				break;
+			}
+			--selected;
+		} while (selected >= 0);
+	}
+
+	if (selected < 0) {
+		return 0;
+	}
+
+	m_highlightedPlayer = selected;
+	i = 0;
+	do {
+		m_playerEntries[i].m_entered = 0;
+		m_playerEntries[i].OnExit();
+		++i;
+	} while (i < 10);
+
+	m_playerEntries[m_highlightedPlayer].m_entered = 1;
+	m_playerEntries[m_highlightedPlayer].OnEnter();
+	return 1;
 }
 
 // 68K 0x108084d6 HighlightNextEntry__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454cf0
+// FUNCTION: LEMBALL 0x00454cf0
 bool NetworkOptionsDrawer::HighlightNextEntry()
 {
-	return 0;
+	int selected;
+	int i;
+
+	if (m_visibleEntryCount == 0) {
+		if (m_highlightedPlayer == -1) {
+			return 0;
+		}
+		m_hiliteController->m_active = 1;
+		m_highlightedPlayer = -1;
+	}
+
+	if (m_highlightedPlayer == -1) {
+		return 0;
+	}
+
+	selected = m_highlightedPlayer + 1;
+	if (selected < 10) {
+		do {
+			if (m_playerEntries[selected].m_active != 0) {
+				break;
+			}
+			++selected;
+		} while (selected < 10);
+	}
+
+	m_highlightedPlayer = selected;
+	i = 0;
+	do {
+		m_playerEntries[i].m_entered = 0;
+		m_playerEntries[i].OnExit();
+		++i;
+	} while (i < 10);
+
+	if (m_highlightedPlayer == 10) {
+		m_hiliteController->m_active = 1;
+		m_highlightedPlayer = -1;
+		return 1;
+	}
+
+	m_playerEntries[m_highlightedPlayer].m_entered = 1;
+	m_playerEntries[m_highlightedPlayer].OnEnter();
+	return 1;
 }
 
 // 68K 0x10808604 InitialiseHandlers__21CNetworkOptionsDrawerFv
@@ -171,15 +262,25 @@ void NetworkOptionsDrawer::ResetHandlers()
 }
 
 // 68K 0x10808834 Lock__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454f80
+// FUNCTION: LEMBALL 0x00454f80
 void NetworkOptionsDrawer::Lock()
 {
+	int i;
+
+	m_locked = 1;
+	i = 0;
+	do {
+		m_playerEntries[i].SetActive(0);
+		++i;
+	} while (i < 10);
 }
 
 // 68K 0x10808894 UnLock__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454fb0
+// FUNCTION: LEMBALL 0x00454fb0
 void NetworkOptionsDrawer::UnLock()
 {
+	m_locked = 0;
+	InitialiseHandlers();
 }
 
 // 68K 0x108088d2 AcceptingLock__21CNetworkOptionsDrawerFv

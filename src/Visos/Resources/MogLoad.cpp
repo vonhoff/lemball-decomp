@@ -221,6 +221,7 @@ MogDir* MogDir::GetNextDir()
 void MogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 {
 	int exhausted = 0;
+	unsigned int type = p_type;
 	int* iterator = &m_iteratorIndex;
 	int* nextIndex;
 
@@ -240,12 +241,12 @@ void MogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 		}
 		iterator[0] = nextIndex[0];
 		iterator[1] = nextIndex[1];
-		if ((int) p_type == -1) {
+		if ((int) type == -1) {
 			break;
 		}
-	} while (m_iteratorChunk->m_type != p_type);
+	} while (m_iteratorChunk->m_type != type);
 
-	if ((int) p_type == -1 || m_iteratorChunk->m_type == p_type) {
+	if ((int) type == -1 || m_iteratorChunk->m_type == type) {
 		if (exhausted == 0) {
 			p_chunk.m_index = iterator[0];
 			p_chunk.m_info = (ChunkInfo*) iterator[1];

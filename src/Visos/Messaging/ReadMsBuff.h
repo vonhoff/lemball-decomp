@@ -8,7 +8,7 @@ class ReadMsBuff {
 public:
 	ReadMsBuff(int p_arg0, int p_arg1, unsigned short p_arg2);
 	void FillPacket();
-	~ReadMsBuff();
+	virtual ~ReadMsBuff();
 	ReadMsBuff();
 
 private:

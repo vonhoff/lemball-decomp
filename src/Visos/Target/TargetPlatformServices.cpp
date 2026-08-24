@@ -1,5 +1,11 @@
 #include "TargetPlatformServices.h"
 
+// STUB: LEMBALL 0x00456680
+bool TargetPlatformServicesInit()
+{
+	return 1;
+}
+
 // GLOBAL: LEMBALL 0x004a1dcc
 TargetPlatformServices* g_pTargetPlatformServices = 0;
 

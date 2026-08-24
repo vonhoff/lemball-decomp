@@ -13,7 +13,7 @@ public:
 	void AddData();
 	void GetData();
 
-private:
+protected:
 	BasePacketHeader* m_packetHeader;      // 0x2c
 	unsigned short m_criticalSequence;     // 0x30
 	unsigned short m_nonCriticalSequence;  // 0x32

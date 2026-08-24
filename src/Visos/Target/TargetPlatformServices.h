@@ -10,6 +10,8 @@ public:
 	// No functions mapped yet.
 };
 
+bool TargetPlatformServicesInit();
+
 extern TargetPlatformServices* g_pTargetPlatformServices;
 extern unsigned int g_dwInputQuitRequested;
 extern TargetInputTranslationEntry g_dwInputTranslationPairs[61];

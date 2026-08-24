@@ -10,18 +10,20 @@ public:
 	HotAreaHandler();
 	HotAreaHandler(const VsRect& p_arg0);
 	unsigned int ProcessArea(Message* p_message, const VsPoint& p_point, class HotAreaHandler* p_currentHandler);
-	virtual bool InArea(const VsPoint& p_point);                            // vtable+0x1c
+	virtual ~HotAreaHandler();                                              // vtable+0x00
 	virtual unsigned int OnButtonDown(const VsPoint& p_point, int p_flags); // vtable+0x04
 	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);           // vtable+0x08
+	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags);   // vtable+0x0c
 	virtual void OnEnter();                                                 // vtable+0x10
 	virtual void OnExit();                                                  // vtable+0x14
-	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags);   // vtable+0x0c
 	virtual void OnInside(const VsPoint& p_point);                          // vtable+0x18
-	virtual ~HotAreaHandler();                                              // vtable+0x00
+	virtual bool InArea(const VsPoint& p_point);                            // vtable+0x1c
 	void Initialise();
 	void Reset();
-	void SetActive(unsigned char p_active);
+	void SetActive(unsigned int p_active);
 	void SetParent(HotAreaList* p_parent);
+
+	friend class NetworkOptionsDrawer;
 
 private:
 	unsigned int m_active;          // 0x04

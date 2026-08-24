@@ -24,10 +24,11 @@ public:
 	void Setup(const char* p_peerName, const char* p_path);
 
 private:
-	undefined m_nativeWindow[0x10]; // 0x00
-	BaseNetwork m_base;             // 0x10
-	unsigned int m_timerId;         // 0x74
-	unsigned int m_alternateTimer;  // 0x78
+	void* m_windowHandle;          // 0x04
+	undefined m_windowPad[8];      // 0x08
+	BaseNetwork m_base;            // 0x10
+	unsigned int m_timerId;        // 0x74
+	unsigned int m_alternateTimer; // 0x78
 };
 
 extern unsigned int g_dwFileNetworkThreadId;

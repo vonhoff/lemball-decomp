@@ -470,7 +470,12 @@ typedef int eEnemyStateRules;
 typedef int eEnemyStateActions;
 typedef unsigned short word;
 struct Message {
-	int data[8];
+	unsigned short type;
+	unsigned short reserved[3];
+	int code;
+	void* payload;
+	void* source;
+	int extra[3];
 };
 
 typedef int eUserActions;

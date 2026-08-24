@@ -1,5 +1,7 @@
 #include "SoundManager.h"
 
+#include "BaseSoundDevice.h"
+
 // 68K 0x10218192 __ct__13CSoundManagerFUcUcUciP4CWnd
 // STUB: LEMBALL 0x0045af80
 SoundManager::SoundManager(unsigned char p_arg0, unsigned char p_arg1, unsigned char p_arg2, int p_arg3, Wnd* p_arg4)
@@ -13,9 +15,10 @@ SoundManager::~SoundManager()
 }
 
 // 68K 0x1021846a SetResId__13CSoundManagerFUl
-// STUB: LEMBALL 0x0045b190
+// FUNCTION: LEMBALL 0x0045b190
 void SoundManager::SetResId(unsigned long p_resourceId)
 {
+	m_resourceId = p_resourceId;
 }
 
 // 68K 0x102184d0 Background__13CSoundManagerFv
@@ -44,10 +47,10 @@ void SoundManager::PlayMusic(unsigned long p_handle)
 }
 
 // 68K 0x10218680 StreamOut__13CSoundManagerFR10CVSOStream
-// STUB: LEMBALL 0x0045b320
+// FUNCTION: LEMBALL 0x0045b320
 VsOStream& SoundManager::StreamOut(VsOStream& p_stream)
 {
-	return *(VsOStream*) 0;
+	return p_stream;
 }
 
 // 68K 0x10218714 ProcessMusic__13CSoundManagerFUl
@@ -94,28 +97,49 @@ void SoundManager::FreeEffect(unsigned long p_effectId)
 }
 
 // 68K 0x102189c2 SetVolumes__13CSoundManagerFii
-// STUB: LEMBALL 0x0045b510
+// FUNCTION: LEMBALL 0x0045b510
 void SoundManager::SetVolumes(int p_effectVolume, int p_musicVolume)
 {
+	if (p_effectVolume != -1) {
+		if (m_effectOutput != 0) {
+			m_effectOutput->SetMusicVolume((unsigned char) p_effectVolume);
+		}
+	}
+	if (p_musicVolume != -1 && m_useMusicCD != 0) {
+		m_musicDevice->SetEffectVolume((unsigned char) p_musicVolume);
+		return;
+	}
+	if (p_musicVolume != -1) {
+		if (m_musicOutput != 0) {
+			m_musicOutput->SetMasterVolume((unsigned char) p_musicVolume);
+		}
+	}
 }
 
 // 68K 0x10218a5e GetEffectVolume__13CSoundManagerFv
-// STUB: LEMBALL 0x0045b560
+// FUNCTION: LEMBALL 0x0045b560
 unsigned char SoundManager::GetEffectVolume()
 {
+	if (m_effectOutput != 0) {
+		return m_effectOutput->GetEffectVolume();
+	}
 	return 0;
 }
 
 // 68K 0x10218aaa SetEffectsWnd__13CSoundManagerFP4CWnd
-// STUB: LEMBALL 0x0045b580
+// FUNCTION: LEMBALL 0x0045b580
 void SoundManager::SetEffectsWnd(Wnd* p_window)
 {
+	m_effectOutput->SetWnd(p_window);
 }
 
 // 68K 0x10218af2 SetMusicWnd__13CSoundManagerFP4CWnd
-// STUB: LEMBALL 0x0045b5a0
+// FUNCTION: LEMBALL 0x0045b5a0
 void SoundManager::SetMusicWnd(Wnd* p_window)
 {
+	if (m_musicOutput != 0) {
+		m_musicOutput->SetWnd(p_window);
+	}
 }
 
 // 68K 0x10218b40 UseMusicCD__13CSoundManagerFUc

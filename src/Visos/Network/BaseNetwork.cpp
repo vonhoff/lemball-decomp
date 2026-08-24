@@ -1,5 +1,14 @@
 #include "BaseNetwork.h"
 
+#include "../Messaging/MessFailedConnect.h"
+#include "../Messaging/MessGoConnect.h"
+#include "../Messaging/MessOkConnect.h"
+#include "../Messaging/MessReqConnect.h"
+#include "../Messaging/MessReqNewPort.h"
+#include "../Messaging/NetworkMessage.h"
+#include "Connect.h"
+#include "NetworkAddress.h"
+
 // 68K 0x1020e61c __ct__12CBaseNetworkFv
 // STUB: LEMBALL 0x004619f0
 BaseNetwork::BaseNetwork()
@@ -51,9 +60,25 @@ Connect* BaseNetwork::NewConnect()
 }
 
 // 68K 0x1020ef72 Exists__12CBaseNetworkFP8CConnect
-// STUB: LEMBALL 0x00462130
+// FUNCTION: LEMBALL 0x00462130
 bool BaseNetwork::Exists(Connect* p_arg0)
 {
+	Connect* peer;
+
+	peer = m_firstConnect;
+	while (peer != 0) {
+		if (p_arg0 == peer) {
+			if (peer->CheckConnectTime() == 0) {
+				return 0;
+			}
+			if (peer->m_killRequested == 0) {
+				peer->SetConnectTime();
+				return 1;
+			}
+			return 0;
+		}
+		peer = peer->m_nextConnect;
+	}
 	return 0;
 }
 
@@ -103,21 +128,46 @@ void BaseNetwork::CtoSgoConnect(NetworkAddress* p_arg0)
 }
 
 // 68K 0x1020f53c Establish__12CBaseNetworkFP15CNetworkAddressPUc
-// STUB: LEMBALL 0x004624a0
+// FUNCTION: LEMBALL 0x004624a0
 void BaseNetwork::Establish(NetworkAddress* p_arg0, unsigned char* p_arg1)
 {
+	(*(void(__fastcall**)(NetworkAddress*)) * (void***) p_arg0)(p_arg0);
+	if (g_pMessReqConnect->Set(p_arg1) != 0) {
+		CtoSRequestConnect(p_arg0);
+		return;
+	}
+	if (g_pMessReqNewPort->Set(p_arg1) != 0) {
+		CtoSRequestNewPort(p_arg0);
+		return;
+	}
+	if (g_pMessOKConnect->Set(p_arg1) != 0) {
+		StoCokConnect(p_arg0);
+		return;
+	}
+	if (g_pMessGOConnect->Set(p_arg1) != 0) {
+		CtoSgoConnect(p_arg0);
+		return;
+	}
+	if (g_pMessFAILEDConnect->Set(p_arg1) != 0) {
+		StoCfailedConnect(p_arg0);
+	}
 }
 
 // 68K 0x1020f632 SetNCBuffers__12CBaseNetworkFUlUli
-// STUB: LEMBALL 0x00462550
+// FUNCTION: LEMBALL 0x00462550
 void BaseNetwork::SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2)
 {
+	m_nonCriticalPacketCount = p_arg0;
+	m_nonCriticalSequenceWindow = p_arg1;
+	m_nonCriticalSubpacketCount = p_arg2;
 }
 
 // 68K 0x1020f676 SetCBuffers__12CBaseNetworkFii
-// STUB: LEMBALL 0x00462570
+// FUNCTION: LEMBALL 0x00462570
 void BaseNetwork::SetCBuffers(int p_arg0, int p_arg1)
 {
+	m_criticalPacketCount = p_arg0;
+	m_criticalSubpacketCount = p_arg1;
 }
 
 // 68K 0x1020f6b0 AttachMessageQueue__12CBaseNetworkFP17CBaseQueueHandler
@@ -139,16 +189,68 @@ void BaseNetwork::Process()
 }
 
 // 68K 0x1020f866 SendAll__12CBaseNetworkFR15CNetworkMessage
-// STUB: LEMBALL 0x00462720
+// FUNCTION: LEMBALL 0x00462720
 bool BaseNetwork::SendAll(NetworkMessage& p_arg0)
 {
-	return 0;
+	Connect* peer;
+	int activeCount;
+	int sendBlocked;
+
+	activeCount = 0;
+	peer = m_firstConnect;
+	sendBlocked = 0;
+
+	while (1) {
+		if (peer == 0) {
+			if (sendBlocked == 0 && 0 < activeCount) {
+				return 1;
+			}
+			return 0;
+		}
+
+		if (peer->m_killRequested == 0) {
+			++activeCount;
+			if (sendBlocked == 0) {
+				if (peer->Send(p_arg0) != 0) {
+					sendBlocked = 0;
+					peer = peer->m_nextConnect;
+					continue;
+				}
+			}
+			sendBlocked = 1;
+		}
+
+		peer = peer->m_nextConnect;
+	}
 }
 
 // 68K 0x1020f8f0 ProcessMsg__12CBaseNetworkFP10tagMESSAGE
-// STUB: LEMBALL 0x004627b0
+// FUNCTION: LEMBALL 0x004627b0
 int BaseNetwork::ProcessMsg(Message* p_arg0)
 {
+	unsigned int type;
+	NetworkMessage* stream;
+	Connect* peer;
+
+	type = 0;
+	type = p_arg0->type;
+	if (type == 0xb) {
+		if (p_arg0->code == 1) {
+			stream = (NetworkMessage*) p_arg0->payload;
+			peer = (Connect*) p_arg0->source;
+			peer->Send(*stream);
+			stream->CloseDataStream();
+			return 1;
+		}
+	}
+	else if (type == 0xc) {
+		if (p_arg0->code == 1) {
+			stream = (NetworkMessage*) p_arg0->payload;
+			SendAll(*stream);
+			stream->CloseDataStream();
+			return 1;
+		}
+	}
 	return 0;
 }
 

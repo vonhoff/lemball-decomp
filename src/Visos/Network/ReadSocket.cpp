@@ -1,9 +1,17 @@
 #include "ReadSocket.h"
 
+#include "../Messaging/ReadNcBuff.h"
+#include "../Messaging/ReadNcmsBuff.h"
+
 // 68K 0x1020b4d4 __ct__11CReadSocketFv
-// STUB: LEMBALL 0x0045f820
+// FUNCTION: LEMBALL 0x0045f820
 ReadSocket::ReadSocket()
 {
+	m_nonCriticalBuffer = 0;
+	m_nonCriticalMultiBuffer = 0;
+	m_criticalBuffer = 0;
+	m_criticalMultiBuffer = 0;
+	m_packetHeader = 0;
 }
 
 // 68K 0x1020b56e __dt__11CReadSocketFv
@@ -13,9 +21,21 @@ ReadSocket::~ReadSocket()
 }
 
 // 68K 0x1020b5fe DeleteNCBuffers__11CReadSocketFv
-// STUB: LEMBALL 0x0045f8d0
+// FUNCTION: LEMBALL 0x0045f8d0
 void ReadSocket::DeleteNcBuffers()
 {
+	ReadNcBuff* nc;
+	ReadNcmsBuff* ncms;
+
+	nc = m_nonCriticalBuffer;
+	if (nc != 0) {
+		nc->BasePacketBuff::~BasePacketBuff();
+		operator delete(nc);
+	}
+	ncms = m_nonCriticalMultiBuffer;
+	if (ncms != 0) {
+		delete ncms;
+	}
 }
 
 // 68K 0x1020b682 DeleteCBuffers__11CReadSocketFv

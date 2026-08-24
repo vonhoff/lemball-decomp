@@ -1,5 +1,18 @@
 #include "FileNetwork.h"
 
+#include "../Foundation/VsOStream.h"
+#include "FileBroadcast.h"
+#include "FileConnect.h"
+#include "FileNetworkAddress.h"
+
+#include <new.h>
+
+extern "C" __declspec(dllimport) int __stdcall KillTimer(void* p_window, unsigned int p_id);
+extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
+																unsigned int p_id,
+																unsigned int p_elapse,
+																void* p_callback);
+
 // 68K 0x10106fca __ct__12CFileNetworkFv
 // STUB: LEMBALL 0x0046f6b0
 FileNetwork::FileNetwork()
@@ -8,25 +21,34 @@ FileNetwork::FileNetwork()
 }
 
 // 68K 0x1010700c Initialise__12CFileNetworkFv
-// STUB: LEMBALL 0x0046f6f0
+// FUNCTION: LEMBALL 0x0046f6f0
 void FileNetwork::Initialise()
 {
 	// STRING: LEMBALL 0x004a2348 "Network Initialised:\n"
 	// STRING: LEMBALL 0x004a2360 "Windows file-based networking\n"
+	*g_pDebugOutput << "Network Initialised:\n";
+	*g_pDebugOutput << "Windows file-based networking\n";
+	m_timerId = SetTimer(m_windowHandle, 0x12345679, 0x14, 0);
 }
 
 // 68K 0x1010707a UnInitialise__12CFileNetworkFv
-// STUB: LEMBALL 0x0046f730
+// FUNCTION: LEMBALL 0x0046f730
 void FileNetwork::UnInitialise()
 {
+	KillTimer(m_windowHandle, m_timerId);
 }
 
 // 68K 0x101070ac ResetTimer__12CFileNetworkFUl
-// STUB: LEMBALL 0x0046f740
+// FUNCTION: LEMBALL 0x0046f740
 void FileNetwork::ResetTimer(unsigned int p_interval)
 {
-	// STRING: LEMBALL 0x004a23a0 "ms from now\n"
 	// STRING: LEMBALL 0x004a2380 "Setting next timer event to "
+	// STRING: LEMBALL 0x004a23a0 "ms from now\n"
+	*g_pDebugOutput << "Setting next timer event to " << (unsigned long) p_interval << "ms from now\n";
+
+	KillTimer(m_windowHandle, m_timerId);
+	m_timerId = SetTimer(m_windowHandle, 0x12345679, p_interval, 0);
+	m_alternateTimer = m_alternateTimer == 0;
 }
 
 // 68K 0x10107122 Setup__12CFileNetworkFPCcPCc
@@ -61,23 +83,44 @@ void FileNetwork::ForceProcess()
 }
 
 // 68K 0x10107920 GetNewNetworkAddress__12CFileNetworkFv
-// STUB: LEMBALL 0x0046f860
+// FUNCTION: LEMBALL 0x0046f860
 FileNetworkAddress* FileNetwork::GetNewNetworkAddress()
 {
+	void* storage;
+	FileNetworkAddress* address;
+
+	storage = operator new(sizeof(FileNetworkAddress));
+	if (storage != 0) {
+		address = new (storage) FileNetworkAddress();
+		address->m_text[0] = '\0';
+		return address;
+	}
 	return 0;
 }
 
 // 68K 0x1010797a GetNewConnect__12CFileNetworkFv
-// STUB: LEMBALL 0x0046f930
+// FUNCTION: LEMBALL 0x0046f930
 FileConnect* FileNetwork::GetNewConnect()
 {
+	void* storage;
+
+	storage = operator new(sizeof(FileConnect));
+	if (storage != 0) {
+		return new (storage) FileConnect();
+	}
 	return 0;
 }
 
 // 68K 0x101079d8 GetNewBroadcast__12CFileNetworkFv
-// STUB: LEMBALL 0x0046f950
+// FUNCTION: LEMBALL 0x0046f950
 FileBroadcast* FileNetwork::GetNewBroadcast()
 {
+	void* storage;
+
+	storage = operator new(sizeof(FileBroadcast));
+	if (storage != 0) {
+		return new (storage) FileBroadcast();
+	}
 	return 0;
 }
 

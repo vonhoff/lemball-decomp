@@ -35,6 +35,9 @@ public:
 	void WaitProcess();
 	~BaseNetwork();
 
+	friend bool VsFNetQuit();
+	friend bool VsNetQuit();
+
 private:
 	char* m_networkName;                      // 0x10
 	unsigned int m_shutdownRequested;         // 0x14

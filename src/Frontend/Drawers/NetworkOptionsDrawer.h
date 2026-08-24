@@ -2,10 +2,12 @@
 #define LEMBALL_FRONTEND_DRAWERS_NETWORKOPTIONSDRAWER_H
 
 #include "../../Common.h"
+#include "../Base/BaseFrontendDrawer.h"
+#include "../Support/EntryHandler.h"
 
 // SIZE 0x438
 // VTABLE: LEMBALL 0x00498640
-class NetworkOptionsDrawer {
+class NetworkOptionsDrawer : public BaseFrontendDrawer {
 public:
 	NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2);
 	bool AcceptingLock();
@@ -53,10 +55,10 @@ private:
 	unsigned int m_redrawPending;    // 0x3c0
 	unsigned int m_networkState;     // 0x3c4
 	unsigned int m_lastDrawTime;     // 0x3c8
-	void* m_handlers;                // 0x3cc
-	int m_acceptedPlayer;            // 0x3d0
-	int m_highlightedPlayer;         // 0x3d4
-	int m_lastError;                 // 0x3d8
+	EntryHandler* m_playerEntries;   // 0x3cc
+	int m_acceptedPlayer;                // 0x3d0
+	int m_highlightedPlayer;             // 0x3d4
+	int m_visibleEntryCount;             // 0x3d8
 	unsigned int m_locked;           // 0x3dc
 	unsigned int m_startPending;     // 0x3e0
 	unsigned int m_stopPending;      // 0x3e4
