@@ -101,15 +101,15 @@ void GlobalGameObject::SetMessages()
 // FUNCTION: LEMBALL 0x00417150
 void GlobalGameObject::DeleteMessages()
 {
+	delete g_pObjectDiesMessage;
+	delete g_pObjectHitMessage;
+	delete g_pObjectPosMessage;
 	delete g_pTransportObjectMessage;
 	delete g_pObjectChangeStateMessage;
 	delete g_pRemoveObjectMessage;
 	delete g_pRequestActionMessage;
 	delete g_pRequestReplyMessage;
 	delete g_pRequestCancelMessage;
-	delete g_pObjectPosMessage;
-	delete g_pObjectHitMessage;
-	delete g_pObjectDiesMessage;
 }
 
 // 68K 0x101180c6 __dt__17CGlobalGameObjectFv

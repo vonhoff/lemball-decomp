@@ -23,16 +23,16 @@ void RequestReplyMess::AddData()
 void RequestReplyMess::GetData()
 {
 	m_object->m_requestActive = GetDword();
-	if (m_object->m_requestActive == 0) {
-		m_object->m_usableState = 1;
-	}
-	else {
+	if (m_object->m_requestActive != 0) {
 		m_object->m_action = m_object->m_requestedAction;
 		m_object->DoActivate();
-		m_object->Action(m_object->m_action);
+		m_object->Action(m_object->m_requestedAction);
 		m_object->m_usableState = 2;
 	}
-	m_object->m_requestedAction = 0x18;
+	else {
+		m_object->m_usableState = 1;
+	}
+	m_object->m_requestedAction = (eAction) 0x18;
 }
 
 // 68K 0x1011a18c __dt__17CRequestReplyMessFv

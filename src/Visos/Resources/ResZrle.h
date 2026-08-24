@@ -19,7 +19,7 @@ struct ZrleHeader {
 class ResZrle : public ResRaster {
 public:
 	inline ResZrle(unsigned int p_resourceId)
-		: m_width(0), m_height(0), m_originX(0), m_originY(0)
+		: m_height(0), m_width(0), m_originY(0), m_originX(0)
 	{
 		DoLoad(p_resourceId);
 	}

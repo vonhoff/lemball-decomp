@@ -136,8 +136,9 @@ ResZrle* ResFont::AsciItoZrle(unsigned int p_ascii)
 // FUNCTION: LEMBALL 0x0045db30
 VsPoint ResFont::GetSize(const char* p_text, unsigned int p_flags)
 {
-	VsPoint result = {0, 0};
 	int i = 0;
+	short height = 0;
+	short width = 0;
 	if (p_text[0] != '\0') {
 		do {
 			ResZrle* glyph = AsciItoZrle(p_text[i]);
@@ -147,26 +148,34 @@ VsPoint ResFont::GetSize(const char* p_text, unsigned int p_flags)
 					glyph = m_animationEntries;
 				}
 			}
-			if ((p_flags & 0x60) != 0) {
-				result.m_x += glyph->m_width + 1;
+			short* psVar = &glyph->m_width;
+			if ((p_flags & 0x60) == 0) {
+				if (width < glyph->m_x + *psVar) {
+					width = glyph->m_x + *psVar;
+				}
 			}
-			else if (result.m_x < glyph->m_x + glyph->m_width) {
-				result.m_x = glyph->m_x + glyph->m_width;
+			else {
+				width += *psVar + 1;
 			}
-			if ((p_flags & 0x180) != 0) {
-				result.m_y += glyph->m_height + 1;
+			if ((p_flags & 0x180) == 0) {
+				if (height < glyph->m_y + psVar[1]) {
+					height = psVar[1] + glyph->m_y;
+				}
 			}
-			else if (result.m_y < glyph->m_y + glyph->m_height) {
-				result.m_y = glyph->m_y + glyph->m_height;
+			else {
+				height += psVar[1] + 1;
 			}
 			i++;
 		} while (p_text[i] != '\0');
 	}
 	if ((p_flags & 0x60) != 0) {
-		result.m_x--;
+		width--;
 	}
 	if ((p_flags & 0x180) != 0) {
-		result.m_y--;
+		height--;
 	}
+	VsPoint result;
+	result.m_x = width;
+	result.m_y = height;
 	return result;
 }

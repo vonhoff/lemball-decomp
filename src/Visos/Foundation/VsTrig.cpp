@@ -6,30 +6,27 @@ Vector VsTrig::Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos)
 {
 	int sin = p_sin.m_value;
 	int cosLo = p_cos.m_value & 0xfff;
-	int y = p_vector.m_yFixed;
 	int negSin = -sin;
 	int x = p_vector.m_xFixed;
-	int yLo = y & 0xfff;
-	int yHi = y >> 12;
 	int xLo = x & 0xfff;
 	int xHi = x >> 12;
+	int y = p_vector.m_yFixed;
+	int yLo = y & 0xfff;
+	int yHi = y >> 12;
 	int cosHi = p_cos.m_value >> 12;
-	int sinHi = p_sin.m_value >> 12;
-	int sinLo = p_sin.m_value & 0xfff;
+	int sinLo = sin & 0xfff;
+	int sinHi = sin >> 12;
 
-	int resY = ((sinLo * yLo) >> 12) + (sinHi * yLo) + ((cosLo * xLo) >> 12) + (xLo * cosHi) + (yHi * p_sin.m_value) +
-			   (xHi * p_cos.m_value);
+	int resY = ((sinLo * xLo) >> 12) + (sinHi * xLo) + ((cosLo * yLo) >> 12) + (yLo * cosHi) + (xHi * p_sin.m_value) +
+			   (yHi * p_cos.m_value);
 
 	int negSinHi = negSin >> 12;
 	int negSinLo = negSin & 0xfff;
 
-	int resX = ((cosLo * yLo) >> 12) + ((negSinLo * xLo) >> 12) + (negSinHi * xLo) + (negSin * xHi) + (yLo * cosHi) +
-			   (yHi * p_cos.m_value);
+	int resX = ((negSinLo * yLo) >> 12) + (negSinHi * yLo) + ((cosLo * xLo) >> 12) + (negSin * yHi) + (xLo * cosHi) +
+			   (xHi * p_cos.m_value);
 
-	Vector res;
-	res.m_xFixed = resX;
-	res.m_yFixed = resY;
-	return res;
+	return Vector(resX, resY);
 }
 
 // 68K 0x10119f6e Sin__6VSTrigCFi

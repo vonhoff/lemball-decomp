@@ -30,7 +30,9 @@ void ObjectChangeStateMess::GetData()
 	SetRemoteGameTimeReal(time);
 	if (m_object->m_requestEnabled == 0) {
 		m_object->m_requestEnabled = 1;
-		m_object->Process();
+		GlobalGameObject* obj = m_object;
+		obj->Process();
+		m_object = obj;
 	}
 	m_object->m_action = (eAction) GetDword();
 	m_object->m_stateTimer = GetDword();
@@ -43,7 +45,7 @@ void ObjectChangeStateMess::GetData()
 	}
 	m_object->m_unk0x114 = 0;
 	m_object->m_pendingAction = 0x18;
-	m_object->m_moveDurationTicks = 0;
+	m_object->m_unk0x8c = 0;
 }
 
 // 68K 0x1011a256 __dt__22CObjectChangeStateMessFv

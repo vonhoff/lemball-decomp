@@ -12,6 +12,7 @@ TextManager::TextManager(unsigned long p_fontIdCount,
 						 int p_primitiveCount,
 						 unsigned int p_maxStringLen)
 {
+	m_nextPrimitive = 0;
 	m_fontIdCount = p_fontIdCount;
 	m_loadedFontCount = 0;
 	m_fontCapacity = p_fontCapacity;

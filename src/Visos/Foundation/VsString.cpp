@@ -65,35 +65,36 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 	static int s_powersInitialized = 0;
 
 	if (s_powersInitialized == 0) {
-		int r = 2;
+		unsigned int r = 2;
 		do {
 			unsigned int pow = r;
-			unsigned int lim = 0xFFFFFFFF / (unsigned int) r;
-			if (lim >= (unsigned int) r) {
+			unsigned int lim = 0xFFFFFFFF / r;
+			if (lim >= r) {
 				do {
 					pow *= r;
 				} while (pow <= lim);
 			}
 			s_maxPowers[r] = pow;
 			r++;
-		} while (r <= 16);
+		} while ((int) r <= 16);
 		s_powersInitialized = 1;
 	}
 
+	unsigned int power = s_maxPowers[p_radix];
 	int hasWritten = 0;
 	int written = 0;
 	int i = 0;
-	unsigned int p = s_maxPowers[p_radix];
 
 	do {
-		unsigned int digit = p_value / p;
+		unsigned int digit = p_value / power;
 		if (digit != 0 || hasWritten != 0) {
-			p_buffer[written++] = "0123456789abcdef"[digit];
+			p_buffer[written] = "0123456789abcdef"[digit];
+			written++;
 			hasWritten = 1;
 		}
-		p_value -= digit * p;
-		p /= p_radix;
-		if (p == 1) {
+		p_value -= power * digit;
+		power /= p_radix;
+		if (power == 1) {
 			break;
 		}
 		i++;

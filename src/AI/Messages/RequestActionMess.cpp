@@ -24,11 +24,11 @@ void RequestActionMess::AddData()
 void RequestActionMess::GetData()
 {
 	GetDword();
-	int active = 0;
-	if (m_object->m_unk0x114 == 0 && m_object->m_unk0x8c == 0) {
-		if (m_object->IsUsable(m_object->m_action)) {
-			active = 1;
-		}
+	int active;
+	if (m_object->m_unk0x114 == 0 && m_object->m_unk0x8c == 0 && m_object->IsUsable(m_object->m_action)) {
+		active = 1;
+	} else {
+		active = 0;
 	}
 	m_object->m_requestActive = active;
 	m_object->m_unk0x114 = active;
