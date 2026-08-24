@@ -39,3 +39,9 @@ void DemoQuit()
 
 // GLOBAL: LEMBALL 0x0049ce08
 unsigned long g_dwSimulationTimestamp;
+
+// GLOBAL: LEMBALL 0x0049ce0c
+unsigned long g_dwRemoteGameTick;
+
+// GLOBAL: LEMBALL 0x0049ce10
+unsigned long g_dwNetworkSimulationTimestamp;

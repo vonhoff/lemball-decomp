@@ -17,7 +17,7 @@ public:
 	bool ProcessRule(eEnemyStateRules p_rule);
 	virtual bool FacingTarget();             // vtable+0x98
 	virtual bool Fire();                     // vtable+0x88
-	virtual bool IsHit();                    // vtable+0x5c
+	virtual int IsHit();                    // vtable+0x5c
 	virtual bool IsRequestingFire();         // vtable+0x7c
 	virtual bool Process();                  // vtable+0x14
 	virtual int HitBullet(Bullet* p_bullet); // vtable+0x54

@@ -23,8 +23,8 @@ public:
 	unsigned short Blocked();
 	unsigned short MapCheck(int p_arg0, int p_arg1);
 	virtual ~GameObject();                                                            // vtable+0x00
-	virtual void Action(eAction p_arg0);                                              // vtable+0x08
 	virtual void Action(eAction p_arg0, int p_arg1);                                  // vtable+0x04
+	virtual void Action(eAction p_arg0);                                              // vtable+0x08
 	virtual void GetViewData(ViewData& p_viewData);                                   // vtable+0x0c
 	virtual void ForgetObjectLink(unsigned short p_arg0);                             // vtable+0x10
 	virtual bool Process();                                                           // vtable+0x14
@@ -34,7 +34,7 @@ public:
 	virtual void Fly();                                                               // vtable+0x24
 	virtual int Usage();                                                              // vtable+0x28
 	virtual AiCoord ActivatePosition();                                               // vtable+0x2c
-	virtual unsigned int StartStanding();                                             // vtable+0x30
+	virtual void StartStanding();                                                     // vtable+0x30
 	virtual void SetSndEffect(eSoundEffect p_arg0);                                   // vtable+0x34
 	virtual unsigned char GetSndEffect();                                             // vtable+0x38
 	virtual bool StartRoute();                                                        // vtable+0x3c
@@ -45,7 +45,7 @@ public:
 	virtual bool Collision(const Pt3& p_arg0);                                        // vtable+0x50
 	virtual int HitBullet(Bullet* p_bullet);                                          // vtable+0x54
 	virtual void HitBall();                                                           // vtable+0x58
-	virtual bool IsHit();                                                             // vtable+0x5c
+	virtual int IsHit();                                                              // vtable+0x5c
 	virtual void GetHit();                                                            // vtable+0x60
 	virtual void HitMine();                                                           // vtable+0x64
 	virtual void Die();                                                               // vtable+0x68
@@ -54,7 +54,7 @@ public:
 	virtual bool FacingCursor();                                                      // vtable+0x74
 	virtual void TurnToFaceCursor();                                                  // vtable+0x78
 	virtual bool IsRequestingFire();                                                  // vtable+0x7c
-	virtual bool Bored();                                                             // vtable+0x80
+	virtual int Bored();                                                              // vtable+0x80
 	virtual void SetBored(unsigned long p_arg0);                                      // vtable+0x84
 	virtual bool Fire();                                                              // vtable+0x88
 	virtual void StartFiring();                                                       // vtable+0x8c
@@ -78,9 +78,9 @@ public:
 	virtual int RequestBalloon();                                                     // vtable+0xd4
 	virtual void StartBalloon();                                                      // vtable+0xd8
 	virtual void OnBalloon();                                                         // vtable+0xdc
-	virtual bool QOnBalloon();                                                        // vtable+0xe0
-	virtual bool OnConveyor();                                                        // vtable+0xe4
-	virtual void OnConveyor(unsigned char p_arg0, Ice* p_arg1, unsigned char p_arg2); // vtable+0xe8
+	virtual int QOnBalloon();                                                         // vtable+0xe0
+	virtual int OnConveyor();                                                         // vtable+0xe4
+	virtual void OnConveyor(unsigned int p_arg0, Ice* p_arg1, unsigned int p_arg2);  // vtable+0xe8
 	virtual Ice* Conveyor();                                                          // vtable+0xec
 	virtual void StartLand();                                                         // vtable+0xf0
 	virtual void SendRemove();                                                        // vtable+0xf4
@@ -107,6 +107,9 @@ public:
 	GameObject();
 
 	friend class GameObjectMess;
+	friend class Bullet;
+	friend class PlayerLemming;
+	friend class GlobalGameObject;
 	friend class ObjectChangeStateMess;
 	friend class ObjectDiesMess;
 	friend class ObjectHitMess;
@@ -121,14 +124,16 @@ private:
 	undefined2 m_unk0x06;                 // 0x06
 	unsigned int m_routeSearchFailed;     // 0x08
 	unsigned int m_routeSearchActive;     // 0x0c
-	undefined4 m_unk0x10;                 // 0x10
+	unsigned int m_transientFlags;        // 0x10
 	int m_collisionMinX;                  // 0x14
 	int m_collisionMinY;                  // 0x18
 	int m_collisionMinZ;                  // 0x1c
 	int m_collisionMaxX;                  // 0x20
 	int m_collisionMaxY;                  // 0x24
 	int m_collisionMaxZ;                  // 0x28
-	undefined4 m_unk0x2c[3];              // 0x2c
+	undefined4 m_unk0x2c;             // 0x2c
+	unsigned int m_balloonPostActive; // 0x30
+	unsigned int m_balloonPostId;     // 0x34
 	int m_heading;                        // 0x38
 	undefined4 m_unk0x3c;                 // 0x3c
 	AiCoord m_spawnPosition;              // 0x40
@@ -139,7 +144,7 @@ private:
 	unsigned short m_collisionFlags;      // 0x68
 	unsigned short m_objectId;            // 0x6a
 	unsigned short m_linkedObjectId;      // 0x6c
-	undefined2 m_unk0x6e;                 // 0x6e
+	short m_desiredFacingDirection;       // 0x6e
 	AiDestinationList* m_destinationList; // 0x70
 	unsigned int m_hasDestination;        // 0x74
 	int m_moveStartXFixed;                // 0x78
@@ -163,18 +168,28 @@ private:
 	unsigned int m_actionDeadline;        // 0xcc
 	undefined4 m_unk0xd0[2];              // 0xd0
 	C3DVector m_flightOrigin;             // 0xd8
-	undefined4 m_unk0xe4[3];              // 0xe4
+	AiCoord m_auxiliaryPosition;          // 0xe4
 	unsigned int m_isFlying;              // 0xf0
-	undefined4 m_unk0xf4[8];              // 0xf4
-	undefined4 m_unk0x114;                // 0x114
-	undefined4 m_unk0x118[3];             // 0x118
+	AiCoord m_groundPosition;             // 0xf4
+	int m_flightZ;                        // 0x100
+	undefined4 m_unk0x104;                // 0x104
+	undefined4 m_unk0x108;                // 0x108
+	undefined4 m_unk0x10c;                // 0x10c
+	undefined4 m_unk0x110;                // 0x110
+	unsigned int m_isRemoteObject;        // 0x114
+	undefined4 m_unk0x118;                // 0x118
+	undefined4 m_unk0x11c;                // 0x11c
+	undefined2 m_unk0x120;                // 0x120
+	undefined2 m_unk0x122;                // 0x122
 };
 
 extern unsigned char g_abObjectIdBitmap[32];
 extern GameObject* g_pObjects[256];
 extern word g_wObjectCount;
+extern int g_anTurnDelayCursor[16];
+extern int g_anTurnDelayTarget[16];
 extern unsigned char g_abBitMasks[8];
 extern word g_wNetworkLemmingIndex;
 extern word g_wLocalLemmingIndex;
-extern word g_wLemmingCount;
+extern int g_wLemmingCount;
 #endif

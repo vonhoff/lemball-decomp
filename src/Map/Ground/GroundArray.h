@@ -10,6 +10,9 @@ public:
 	void Clear();
 	void SetCollision(int p_x, int p_y, int p_collision);
 
+	friend class Bullet;
+	friend class PlayerLemming;
+
 private:
 	unsigned int m_reserved; // 0x00
 	Ground* m_ground;        // 0x04

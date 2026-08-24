@@ -37,6 +37,8 @@ public:
 	void SetZoom(int p_zoom);
 	~PvWnd();
 
+	friend class PauseWindow;
+
 private:
 	unsigned int m_lifecycleRefs; // 0x04
 	VsRect m_rect;                // 0x08

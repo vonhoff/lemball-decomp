@@ -40,10 +40,10 @@ void ObjectChangeStateMess::GetData()
 	m_object->m_requestEnabled = 0;
 	m_object->m_requestActive = 0;
 	if (!m_object->IsUsable(m_object->m_action) && m_object->m_action != 0x27) {
-		m_object->m_unk0x114 = 1;
+		m_object->m_isRemoteObject = 1;
 		return;
 	}
-	m_object->m_unk0x114 = 0;
+	m_object->m_isRemoteObject = 0;
 	m_object->m_pendingAction = 0x18;
 	m_object->m_unk0x8c = 0;
 }

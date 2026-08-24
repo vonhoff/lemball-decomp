@@ -11,5 +11,7 @@ Demo* DemoInit(int p_arg0);
 void DemoQuit();
 
 extern unsigned long g_dwSimulationTimestamp;
+extern unsigned long g_dwRemoteGameTick;
+extern unsigned long g_dwNetworkSimulationTimestamp;
 
 #endif

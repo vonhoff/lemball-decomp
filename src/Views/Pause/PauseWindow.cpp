@@ -1,5 +1,8 @@
 #include "PauseWindow.h"
 
+#include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Graphics/HotAreaList.h"
+
 // 68K 0x10b0e048 Initialise__12CPauseWindowFv
 // STUB: LEMBALL 0x00443af0
 void PauseWindow::Initialise()
@@ -39,16 +42,42 @@ VsRect PauseWindow::CalculateWindow()
 }
 
 // 68K 0x10b0eeba __ct__12CPauseWindowFP19CReceiveWindowStateP7CPVGWnd20ePauseWindowMessages
-// STUB: LEMBALL 0x00444680
+// FUNCTION: LEMBALL 0x00444680
 PauseWindow::PauseWindow(ReceiveWindowState* p_arg0, PvGWnd* p_arg1, ePauseWindowMessages p_arg2)
 	: m_textManager(0x2b6, 1, 15, 0)
 {
+	m_verticalTiles = 0;
+	m_horizontalTiles = 0;
+	m_windowPadding.m_x = 0;
+	m_windowPadding.m_y = 0;
+	m_textSpacing.m_x = 0;
+	m_textSpacing.m_y = 0;
+	m_borderPadding.m_x = 0;
+	m_borderPadding.m_y = 0;
+	m_receiverState = p_arg0;
+	m_pauseMessage = p_arg2;
+	m_parentWindow = p_arg1;
+	m_cursorState = 0;
+	m_borderAnimCount = 0;
+	Initialise();
+	Restart();
 }
 
 // 68K 0x10b0f02a __dt__12CPauseWindowFv
-// STUB: LEMBALL 0x00444790
+// FUNCTION: LEMBALL 0x00444790
 PauseWindow::~PauseWindow()
 {
+	m_parentWindow->m_hotAreaList->RemoveFromList(this);
+	if (m_lifecycleRefs == 1) {
+		Destroy();
+	}
+	delete[] m_textSizes;
+	UnRegisterRemaps();
+	if (m_borderAnims != 0) {
+		delete[] m_borderAnims;
+	}
+	UnLoad();
+	g_pMasterInputQueue->Detach(this, 0);
 }
 
 // 68K 0x10b0f1aa RegisterRemaps__12CPauseWindowFv

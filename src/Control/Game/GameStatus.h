@@ -24,12 +24,16 @@ public:
 	void SetMaxLevel(int p_skill, int p_level);
 	void UnJiggleLevelData(unsigned int p_value);
 
+	friend class PlayerLemming;
+
 private:
 	int m_level;               // 0x00
 	unsigned int m_levelState; // 0x04
 	int m_skill;               // 0x08
 	unsigned int m_skillState; // 0x0c
 	char m_password[10];       // 0x10
+	undefined2 m_pad0x1a;      // 0x1a
+	undefined4 m_pad0x1c;      // 0x1c
 	unsigned int m_status0;    // 0x20
 	unsigned int m_status1;    // 0x24
 	int m_maxLevels[5];        // 0x28

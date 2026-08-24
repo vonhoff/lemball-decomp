@@ -53,9 +53,8 @@ AiCoord GameObject::ActivatePosition()
 
 // 68K 0x10118982 StartStanding__11CGameObjectFv
 // STUB: LEMBALL 0x0040a860
-unsigned int GameObject::StartStanding()
+void GameObject::StartStanding()
 {
-	return 0;
 }
 
 // 68K 0x1011842a SetSndEffect__11CGameObjectF12eSoundEffect
@@ -100,7 +99,7 @@ void GameObject::HitBall()
 
 // 68K 0x10118b46 IsHit__11CGameObjectFv
 // STUB: LEMBALL 0x0040a950
-bool GameObject::IsHit()
+int GameObject::IsHit()
 {
 	return 0;
 }
@@ -151,7 +150,7 @@ bool GameObject::IsRequestingFire()
 
 // 68K 0x10118c78 Bored__11CGameObjectFv
 // STUB: LEMBALL 0x0040a9d0
-bool GameObject::Bored()
+int GameObject::Bored()
 {
 	return 0;
 }
@@ -281,20 +280,20 @@ void GameObject::OnBalloon()
 
 // 68K 0x10118fe8 QOnBalloon__11CGameObjectFv
 // STUB: LEMBALL 0x0040ab10
-bool GameObject::QOnBalloon()
+int GameObject::QOnBalloon()
 {
 	return 0;
 }
 
 // 68K 0x10119024 OnConveyor__11CGameObjectFUcP4CIceUc
 // STUB: LEMBALL 0x0040ab20
-void GameObject::OnConveyor(unsigned char p_arg0, Ice* p_arg1, unsigned char p_arg2)
+void GameObject::OnConveyor(unsigned int p_arg0, Ice* p_arg1, unsigned int p_arg2)
 {
 }
 
 // 68K 0x10119054 OnConveyor__11CGameObjectFv
 // STUB: LEMBALL 0x0040ab30
-bool GameObject::OnConveyor()
+int GameObject::OnConveyor()
 {
 	return 0;
 }
@@ -621,6 +620,24 @@ GameObject::~GameObject()
 {
 }
 
+// GLOBAL: LEMBALL 0x0049cf4c
+word g_wNetworkLemmingIndex = 0;
+
+// GLOBAL: LEMBALL 0x0049cf50
+word g_wLocalLemmingIndex = 0;
+
+// GLOBAL: LEMBALL 0x0049d070
+int g_anTurnDelayCursor[16] = {0, 30, 20, 12, 0, 0, 0, 15, 32, 0, 0, 0, 0, 0, 0, 0};
+
+// GLOBAL: LEMBALL 0x0049d0b0
+int g_anTurnDelayTarget[16] = {0, 87, 75, 0, 0, 0, 0, 75, 75, 0, 0, 0, 0, 0, 0, 0};
+
+// GLOBAL: LEMBALL 0x0049d108
+unsigned char g_abBitMasks[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+
+// GLOBAL: LEMBALL 0x004a640c
+int g_wLemmingCount;
+
 // GLOBAL: LEMBALL 0x004a6410
 unsigned char g_abObjectIdBitmap[32];
 
@@ -629,15 +646,3 @@ GameObject* g_pObjects[256];
 
 // GLOBAL: LEMBALL 0x004a74bc
 word g_wObjectCount;
-
-// GLOBAL: LEMBALL 0x0049d108
-unsigned char g_abBitMasks[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-
-// GLOBAL: LEMBALL 0x0049cf4c
-word g_wNetworkLemmingIndex = 0;
-
-// GLOBAL: LEMBALL 0x0049cf50
-word g_wLocalLemmingIndex = 0;
-
-// GLOBAL: LEMBALL 0x004a640c
-word g_wLemmingCount;

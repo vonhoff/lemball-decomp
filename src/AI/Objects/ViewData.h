@@ -9,6 +9,8 @@ class ViewData {
 public:
 	ViewData();
 
+	friend class PlayerLemming;
+
 private:
 	short m_facingDirection;       // 0x00
 	int m_positionX;               // 0x04

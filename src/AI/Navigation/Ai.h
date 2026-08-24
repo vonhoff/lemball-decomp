@@ -67,28 +67,34 @@ public:
 	void SwitchMessage(swMessage p_message, int p_first, int p_last);
 	~Ai();
 
+	friend class Bullet;
+	friend class PlayerLemming;
+
 private:
 	NetworkMessage m_networkMessage;                  // 0x1c
+	undefined4 m_unk0x48;                             // 0x48
 	int m_initialised;                                // 0x4c
 	unsigned int* m_objectRequired;                   // 0x50
 	unsigned short m_levelVersion;                    // 0x54
-	int m_networkMode;                                // 0x64
-	GameStateMessage* m_gameStateMessage;             // 0x74
-	PbNetworkGame* m_networkGame;                     // 0x78
-	AnimSpecial* m_animSpecial;                       // 0x8c
+	undefined2 m_pad0x56;                             // 0x56
+	undefined4 m_unk0x58[14];                         // 0x58
 	int m_networkStartsX[4];                          // 0x90
 	int m_networkStartsY[4];                          // 0xa0
 	int m_networkStartsZ[4];                          // 0xb0
 	int m_networkTrapDoors[4];                        // 0xc0
 	int m_networkTrapDoorCount;                       // 0xd0
+	undefined4 m_unk0xd4[7];                          // 0xd4
 	int m_score;                                      // 0xf0
+	undefined4 m_unk0xf4;                             // 0xf4
 	int m_lemmingCount;                               // 0xf8
 	int m_flagCounts[2];                              // 0xfc
+	undefined4 m_unk0x104[3];                         // 0x104
 	Map* m_map;                                       // 0x110
 	Maze* m_maze;                                     // 0x114
 	int m_objectCount;                                // 0x118
 	int m_objectCapacity;                             // 0x11c
 	GameObject** m_objects;                           // 0x120
+	undefined4 m_unk0x124[12];                        // 0x124
 	Game* m_game;                                     // 0x154
 	ObjectManager* m_objectManager;                   // 0x158
 	PlayerLemmingGroupManager* m_playerGroupManager;  // 0x15c
@@ -107,12 +113,14 @@ private:
 	DoorManager* m_doorManager;                       // 0x190
 	GroundAnim* m_groundAnim;                         // 0x194
 	RocketManager* m_rocketManager;                   // 0x198
+	undefined4 m_pad0x19c;                            // 0x19c
 	LaserManager* m_laserManager;                     // 0x1a0
 	HandManager* m_handManager;                       // 0x1a4
 	BalloonPost* m_balloonPost;                       // 0x1a8
 	IceManager* m_iceManager;                         // 0x1ac
 	PaintGunManager* m_paintGunManager;               // 0x1b0
 	TrampolineManager* m_trampolineManager;           // 0x1b4
+	undefined4 m_unk0x1b8[2];                         // 0x1b8
 	MoverManager* m_moverManager;                     // 0x1c0
 	TrapDoorManager* m_trapDoorManager;               // 0x1c4
 	SlinkyManager* m_slinkyManager;                   // 0x1c8

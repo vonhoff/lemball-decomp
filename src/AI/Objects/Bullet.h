@@ -30,12 +30,18 @@ public:
 			 AiCoord p_target);
 	void TriggerBullet();
 
+	friend class PlayerLemming;
+
 private:
-	NetworkMessage m_networkMessage; // 0x138
 	unsigned int m_active;           // 0x164
 	eBulletType m_bulletType;        // 0x168
 	eOwner m_owner;                  // 0x16c
 	unsigned short m_sourceObjectId; // 0x170
+	undefined2 m_pad0x172;           // 0x172
+	int m_unk0x174;                  // 0x174
+	int m_unk0x178;                  // 0x178
+	int m_unk0x17c;                  // 0x17c
+	int m_unk0x180;                  // 0x180
 	Move3d m_movement;               // 0x184
 };
 

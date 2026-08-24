@@ -5,7 +5,7 @@
 
 // SIZE 0x0c
 class C3DVector {
-private:
+public:
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04
 	int m_zFixed; // 0x08

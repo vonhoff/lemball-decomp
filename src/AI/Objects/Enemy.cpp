@@ -168,7 +168,7 @@ void Enemy::GetHit()
 
 // 68K 0x10119cdc IsHit__6CEnemyFv
 // STUB: LEMBALL 0x00420aa0
-bool Enemy::IsHit()
+int Enemy::IsHit()
 {
 	return 0;
 }

@@ -6,7 +6,12 @@
 // SIZE 0x0c
 class AiCoord {
 public:
-	AiCoord();
+	inline AiCoord()
+	{
+		m_xFixed = DEBUG_SENTINEL;
+		m_yFixed = DEBUG_SENTINEL;
+		m_zFixed = DEBUG_SENTINEL;
+	}
 
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04

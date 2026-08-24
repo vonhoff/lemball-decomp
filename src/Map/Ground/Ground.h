@@ -11,6 +11,9 @@ public:
 	unsigned short GetZ(int p_x, int p_y);
 	void SetCollision();
 
+	friend class Bullet;
+	friend class PlayerLemming;
+
 private:
 	eObjectType m_objectType;    // 0x00
 	unsigned short m_objectData; // 0x04

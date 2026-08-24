@@ -5,7 +5,7 @@
 
 // SIZE 0x08
 class AiDestinationList {
-private:
+public:
 	unsigned short m_count;        // 0x00
 	unsigned short m_capacity;     // 0x02
 	AiDestinationEntry* m_entries; // 0x04

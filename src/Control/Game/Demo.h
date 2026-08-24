@@ -20,6 +20,8 @@ public:
 	void Reset();
 	void SetDemoMode(unsigned char p_enabled);
 
+	friend class PlayerLemming;
+
 private:
 	unsigned char* m_buffer;     // 0x10
 	int m_sourceId;              // 0x14
@@ -43,4 +45,5 @@ private:
 };
 
 extern int g_nDemoMode;
+extern Demo* g_pDemo;
 #endif

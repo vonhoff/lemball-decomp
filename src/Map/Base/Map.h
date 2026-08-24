@@ -24,6 +24,9 @@ public:
 	void SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data);
 	~Map();
 
+	friend class Bullet;
+	friend class PlayerLemming;
+
 private:
 	unsigned int m_reserved;   // 0x00
 	int m_orientation;         // 0x04
