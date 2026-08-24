@@ -6,7 +6,7 @@
 #include "../Foundation/String.h" // complete type
 
 // SIZE 0x20
-// VTABLE: LEMBALL 0x004988c8
+// VTABLE: LEMBALL 0x00498960
 class BaseStat : public ArenaBase {
 public:
 	BaseStat(char* p_arg0);
@@ -21,6 +21,13 @@ private:
 	unsigned int m_total;       // 0x10
 	unsigned int m_sampleCount; // 0x14
 	String m_description;       // 0x18
+};
+
+// SIZE 0x20
+// VTABLE: LEMBALL 0x004988c8
+class MogloadStat : public BaseStat {
+public:
+	MogloadStat(char* p_description) : BaseStat(p_description) {}
 };
 
 #endif
