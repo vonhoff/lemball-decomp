@@ -1,5 +1,8 @@
 #include "SoundView.h"
 
+// GLOBAL: LEMBALL 0x0049eb80
+SoundView* g_pSoundView = 0;
+
 // 68K 0x10b0fb42 __ct__10CSoundViewFv
 // STUB: LEMBALL 0x00439a70
 SoundView::SoundView()

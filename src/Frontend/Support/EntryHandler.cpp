@@ -10,28 +10,34 @@ void EntryHandler::Reset()
 }
 
 // 68K 0x1080640c OnButtonDown__13CEntryHandlerFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00453260
+// FUNCTION: LEMBALL 0x00453260
 unsigned int EntryHandler::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
-	return 0;
+	if (p_flags == 0 || p_flags == 3) {
+		m_pressed = 1;
+	}
+	return p_flags;
 }
 
 // 68K 0x1011c3ca __ct__13CEntryHandlerFv
-// STUB: LEMBALL 0x00455da0
+// FUNCTION: LEMBALL 0x00455da0
 EntryHandler::EntryHandler()
 {
+	Reset();
 }
 
 // 68K 0x1011c456 OnEnter__13CEntryHandlerFv
-// STUB: LEMBALL 0x00455dc0
+// FUNCTION: LEMBALL 0x00455dc0
 void EntryHandler::OnEnter()
 {
+	m_hoverState = 1;
 }
 
 // 68K 0x1011c486 OnExit__13CEntryHandlerFv
-// STUB: LEMBALL 0x00455dd0
+// FUNCTION: LEMBALL 0x00455dd0
 void EntryHandler::OnExit()
 {
+	m_hoverState = 0;
 }
 
 // 68K 0x1011c36e __dt__13CEntryHandlerFv

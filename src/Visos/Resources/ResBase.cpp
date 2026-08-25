@@ -7,9 +7,18 @@
 #include "ResBaseList.h"
 
 // 68K 0x102029ce DoLoad__8CResBaseFUl
-// STUB: LEMBALL 0x0045cf20
+// FUNCTION: LEMBALL 0x0045cf20
 void ResBase::DoLoad(unsigned int p_resourceId)
 {
+	Initialise();
+	if (g_pActiveMogRes->Load(p_resourceId, this, 1) != 0) {
+		m_resourceId = p_resourceId;
+		SetHeader();
+		LoadData();
+		m_referenceCount = m_referenceCount + 1;
+		return;
+	}
+	m_error = 1;
 }
 
 // 68K 0x10202a4a Direct__8CResBaseFRPUcP12CResBaseLIST

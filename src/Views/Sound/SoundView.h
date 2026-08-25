@@ -32,4 +32,5 @@ private:
 	unsigned int m_randomMusicIndex; // 0x2c8
 };
 
+extern SoundView* g_pSoundView;
 #endif

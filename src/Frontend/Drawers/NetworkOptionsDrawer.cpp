@@ -4,9 +4,11 @@
 #include "../../Network/Game/NetworkManager.h"
 #include "../../Network/Messages/NetworkGameMessage.h"
 #include "../../Views/Display/Main2DDisplay.h"
+#include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Foundation/VsRect.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Network/Connect.h"
+#include "../../Visos/Network/NetworkAddress.h"
 #include "../Controls/HiliteController.h"
 #include "../Processes/NetworkOptionsProc.h"
 #include "../Support/EditString.h"
@@ -17,6 +19,12 @@
 #pragma intrinsic(strcpy)
 
 extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
+
+extern char* g_szBroadcastPeerName;
+
+struct BroadcastAddressDispatch {
+	virtual char* GetStr() = 0;
+};
 
 // GLOBAL: LEMBALL 0x004a0180
 unsigned char g_abNetworkOptionsLayoutIp[0xa0] = {
@@ -361,9 +369,104 @@ void NetworkOptionsDrawer::StartMessageTimeout(int p_message, unsigned long p_du
 }
 
 // 68K 0x10807f58 Processing__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x004548c0
+// FUNCTION: LEMBALL 0x004548c0
 void NetworkOptionsDrawer::Processing()
 {
+	unsigned long now;
+	unsigned long duration;
+	unsigned int ident;
+	char* peer;
+	int index;
+	int offset;
+	unsigned int activation;
+	Connect** connections;
+	Connect** current;
+	Connect* connection;
+
+	if (m_messageDirty != (unsigned int) m_message) {
+		return;
+	}
+	if (m_startPending != 0) {
+		StartBroadcast();
+		m_startPending = 0;
+	}
+	if (m_pendingStage != 0) {
+		StartEditing(m_pendingStage, 1);
+		m_pendingStage = 0;
+	}
+	if (m_pendingEvent != 0) {
+		LastError();
+	}
+	now = timeGetTime();
+	if (now - m_lastDrawTime >= 500) {
+		m_redrawPending = m_redrawPending == 0;
+		now = timeGetTime();
+		m_lastDrawTime = now;
+	}
+	if (g_pNetworkManager != 0) {
+		ident = (unsigned int) ((BroadcastAddressDispatch*) g_pBroadcastAddress)->GetStr();
+		peer = g_szBroadcastPeerName;
+		if (m_stopPending != ident) {
+			m_backBufferNeeded = 1;
+			m_stopPending = ident;
+		}
+		if (m_connectionState != (unsigned int) peer) {
+			m_backBufferNeeded = 1;
+			m_connectionState = (unsigned int) peer;
+		}
+		if (m_networkState == 0) {
+			if (g_pNetworkManager->m_connectionsChanged != 0) {
+				g_pNetworkManager->m_connectionsChanged = 0;
+				m_networkState = 0;
+				m_backBufferNeeded = 1;
+				InitialiseHandlers();
+			}
+		}
+		else {
+			m_networkState = 0;
+			m_backBufferNeeded = 1;
+			InitialiseHandlers();
+		}
+		connections = g_pNetworkManager->m_connections;
+		index = 0;
+		offset = 0;
+		current = connections;
+		do {
+			if (((EntryHandler*) ((char*) m_playerEntries + offset))->m_pressed != 0 &&
+				m_acceptedPlayer != index) {
+				g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+				if (m_acceptedPlayer != -1) {
+					connection = connections[m_acceptedPlayer];
+					if (connection != 0) {
+						g_pNetworkOptionsProc->Reject(connection);
+					}
+				}
+				m_acceptedPlayer = index;
+				if (*current != 0) {
+					activation = ((EntryHandler*) ((char*) m_playerEntries + offset))->m_activationState;
+					if (activation != 0) {
+						Lock();
+					}
+					g_pNetworkOptionsProc->Accept(*current, (unsigned char) activation);
+				}
+			}
+			current = current + 1;
+			offset = offset + 0x44;
+			index = index + 1;
+			((EntryHandler*) ((char*) m_playerEntries + offset - 0x44))->m_pressed = 0;
+		} while (offset < 0x2a8);
+	}
+	if (m_message != 0) {
+		duration = m_messageDuration;
+		if (duration != 0) {
+			now = timeGetTime();
+			if (now - m_messageStartTime > duration) {
+				m_message = 1;
+				m_backBufferNeeded = 1;
+				m_messageDuration = 0;
+			}
+		}
+	}
 }
 
 // 68K 0x10808166 RegisterRemaps__21CNetworkOptionsDrawerFv
