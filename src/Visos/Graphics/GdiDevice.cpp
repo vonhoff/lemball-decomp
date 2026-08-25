@@ -6,6 +6,9 @@
 
 #include <new.h>
 
+// GLOBAL: LEMBALL 0x004a2008
+GdiDevice* g_pGdiDevice = 0;
+
 // GLOBAL: LEMBALL 0x004a200c
 void* g_pGdiHelperTarget = 0;
 

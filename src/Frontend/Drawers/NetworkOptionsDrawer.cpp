@@ -1,6 +1,10 @@
 #include "NetworkOptionsDrawer.h"
 
+#include "../../Control/Game/GameStatus.h"
+#include "../../Network/Game/NetworkManager.h"
+#include "../../Network/Messages/NetworkGameMessage.h"
 #include "../../Visos/Graphics/BasePalManager.h"
+#include "../../Visos/Network/Connect.h"
 #include "../Controls/HiliteController.h"
 
 extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
@@ -288,15 +292,85 @@ bool NetworkOptionsDrawer::HighlightNextEntry()
 }
 
 // 68K 0x10808604 InitialiseHandlers__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454df0
+// FUNCTION: LEMBALL 0x00454df0
 void NetworkOptionsDrawer::InitialiseHandlers()
 {
+	int offset;
+	int width;
+	int stride;
+	short height;
+	short y;
+	short x;
+	Connect** connections;
+	NetworkGameMessage* messages;
+	unsigned int* valid;
+	EntryHandler* entry;
+
+	connections = 0;
+	messages = 0;
+	if (g_pNetworkManager != 0) {
+		connections = g_pNetworkManager->m_connections;
+		messages = g_pNetworkManager->m_gameMessages;
+	}
+	height = m_layoutTable->m_entryHeight;
+	y = m_layoutTable->m_entryY;
+	x = m_layoutTable->m_entryX;
+	width = m_layoutTable->m_entryWidth;
+	valid = &messages->m_valid;
+	m_visibleEntryCount = 0;
+	offset = 0;
+	do {
+		entry = (EntryHandler*) ((char*) m_playerEntries + offset);
+		if (m_visibleEntryCount < 4 && connections != 0 && *connections != 0 && *valid != 0) {
+			entry->m_width = (unsigned short) width;
+			entry->m_height = height;
+			entry->m_x = x;
+			entry->m_y = y;
+			entry->SetActive(1);
+			stride = m_layoutTable->m_rowStride;
+			y = y + (short) stride;
+			m_visibleEntryCount = m_visibleEntryCount + 1;
+		}
+		else {
+			entry->SetActive(0);
+		}
+		offset = offset + 0x44;
+		valid = (unsigned int*) ((char*) valid + 0x50);
+		connections = connections + 1;
+	} while (offset < 0x2a8);
+	UpdateHighlightedEntry();
 }
 
 // 68K 0x10808792 ResetHandlers__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454f00
+// FUNCTION: LEMBALL 0x00454f00
 void NetworkOptionsDrawer::ResetHandlers()
 {
+	int offset;
+	int index;
+	Connect** connections;
+	NetworkGameMessage* messages;
+	unsigned int* valid;
+
+	offset = 0;
+	if (g_pNetworkManager != 0) {
+		connections = g_pNetworkManager->m_connections;
+		index = 0;
+		messages = g_pNetworkManager->m_gameMessages;
+		valid = &messages->m_valid;
+		do {
+			if (*connections == 0 || *valid == 0) {
+				((EntryHandler*) ((char*) m_playerEntries + offset))->Reset();
+				if (m_acceptedPlayer == index) {
+					m_acceptedPlayer = -1;
+				}
+			}
+			offset = offset + 0x44;
+			valid = (unsigned int*) ((char*) valid + 0x50);
+			connections = connections + 1;
+			index = index + 1;
+		} while (offset < 0x2a8);
+	}
+	InitialiseHandlers();
 }
 
 // 68K 0x10808834 Lock__21CNetworkOptionsDrawerFv
@@ -322,9 +396,31 @@ void NetworkOptionsDrawer::UnLock()
 }
 
 // 68K 0x108088d2 AcceptingLock__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454fc0
+// FUNCTION: LEMBALL 0x00454fc0
 bool NetworkOptionsDrawer::AcceptingLock()
 {
+	int unlocked;
+	int skill;
+	Connect** connections;
+	GameStatus* status;
+
+	unlocked = m_locked < 1;
+	if (g_pNetworkManager != 0) {
+		connections = g_pNetworkManager->m_connections;
+		if (m_acceptedPlayer != -1 && connections[m_acceptedPlayer] != 0) {
+			Lock();
+			g_pActiveConnection = connections[m_acceptedPlayer];
+			skill = 4;
+			m_quitYet = 1;
+			m_returnState = skill;
+			status = g_pGameStatus;
+			status->m_level = status->m_lastLevels[4];
+			status->m_skill = skill;
+			return unlocked;
+		}
+	}
+	m_locked = 0;
+	UnLock();
 	return 0;
 }
 

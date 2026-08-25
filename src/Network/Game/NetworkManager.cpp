@@ -79,3 +79,6 @@ int NetworkManager::GetnGame(Connect* p_connection)
 NetworkManager::~NetworkManager()
 {
 }
+
+// GLOBAL: LEMBALL 0x004a0120
+NetworkManager* g_pNetworkManager = 0;

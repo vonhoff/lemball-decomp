@@ -21,6 +21,8 @@ public:
 	void StartBroadcast(const char* p_address);
 	void Stop();
 
+	friend class NetworkOptionsDrawer;
+
 private:
 	NetworkGameMessage* m_gameMessage;    // 0x10
 	NetworkGameMessage* m_gameMessages;   // 0x14
@@ -38,4 +40,5 @@ private:
 	unsigned int m_killRequested;         // 0x68
 };
 
+extern NetworkManager* g_pNetworkManager;
 #endif

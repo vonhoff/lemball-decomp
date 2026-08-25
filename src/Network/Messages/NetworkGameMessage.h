@@ -13,6 +13,8 @@ public:
 	virtual void GetData();        // vtable+0x08
 	virtual ~NetworkGameMessage(); // vtable+0x14
 
+	friend class NetworkOptionsDrawer;
+
 private:
 	char m_gameName[9];   // 0x2c
 	char m_peerName[21];  // 0x35

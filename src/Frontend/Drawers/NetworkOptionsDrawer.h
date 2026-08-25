@@ -5,6 +5,19 @@
 #include "../Base/BaseFrontendDrawer.h"
 #include "../Support/EntryHandler.h"
 
+// SIZE 0xa0
+struct NetworkOptionsLayout {
+	undefined m_unknown00[0x70];   // 0x00
+	short m_entryX;                // 0x70
+	undefined2 m_pad0x72;          // 0x72
+	short m_entryY;                // 0x74
+	undefined m_unknown76[0x16];   // 0x76
+	int m_rowStride;               // 0x8c
+	int m_entryWidth;              // 0x90
+	unsigned short m_entryHeight;  // 0x94
+	undefined m_unknown96[0xa];    // 0x96
+};
+
 // SIZE 0x438
 // VTABLE: LEMBALL 0x00498640
 class NetworkOptionsDrawer : public BaseFrontendDrawer {
@@ -64,8 +77,8 @@ private:
 	unsigned int m_stopPending;      // 0x3e4
 	unsigned int m_connectionState;  // 0x3e8
 	undefined m_unknown3ec[0x28];    // 0x3ec
-	void* m_remaps[6];               // 0x414
-	void* m_layoutTable;             // 0x42c
+	void* m_remaps[6];                     // 0x414
+	NetworkOptionsLayout* m_layoutTable;   // 0x42c
 	int m_pendingEvent;              // 0x430
 	unsigned int m_handlerCount;     // 0x434
 };

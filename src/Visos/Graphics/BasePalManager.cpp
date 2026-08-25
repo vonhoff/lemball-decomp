@@ -1,5 +1,6 @@
 #include "BasePalManager.h"
 #include "BaseRemap.h"
+#include "Remap.h"
 
 #include <new.h>
 
@@ -50,10 +51,31 @@ BasePalManager::~BasePalManager()
 }
 
 // 68K 0x10200d5a RegisterRemap__15CBasePalManagerFUlPUc13ePaletteTypes
-// STUB: LEMBALL 0x0046ad70
+// FUNCTION: LEMBALL 0x0046ad70
 BaseRemap* BasePalManager::RegisterRemap(unsigned int p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)
 {
-	return 0;
+	BaseRemap** slot;
+	void* storage;
+	BaseRemap* remap;
+	int i;
+
+	slot = m_remaps;
+	i = 0;
+	remap = *slot;
+	while (remap != 0) {
+		slot = slot + 1;
+		i = i + 1;
+		remap = *slot;
+	}
+	storage = operator new(sizeof(Remap));
+	if (storage == 0) {
+		m_remaps[i] = 0;
+	}
+	else {
+		m_remaps[i] = new (storage) Remap(p_resourceId, p_mapping, p_type);
+	}
+	m_remapCount = m_remapCount + 1;
+	return m_remaps[i];
 }
 
 // 68K 0x10200df0 UnRegisterRemap__15CBasePalManagerFP6CRemap

@@ -8,6 +8,8 @@ class VsRect {
 public:
 	VsRect();
 
+	friend class Gdi;
+
 private:
 	short m_width;  // 0x00
 	short m_height; // 0x02

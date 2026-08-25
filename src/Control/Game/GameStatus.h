@@ -24,6 +24,7 @@ public:
 	void SetMaxLevel(int p_skill, int p_level);
 	void UnJiggleLevelData(unsigned int p_value);
 
+	friend class NetworkOptionsDrawer;
 	friend class PlayerLemming;
 
 private:

@@ -1,5 +1,9 @@
 #include "HotAreaList.h"
 
+#include "HotAreaElement.h"
+
+#include <new.h>
+
 // 68K 0x10212102 __ct__12CHotAreaListFRC7CVSRectRC8CVSPointRC8CVSPoint
 // STUB: LEMBALL 0x0046a580
 HotAreaList::HotAreaList(const VsRect& p_arg0, const VsPoint& p_arg1, const VsPoint& p_arg2)
@@ -32,9 +36,32 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 }
 
 // 68K 0x1021272e AddToList__12CHotAreaListFP15CHotAreaHandler
-// STUB: LEMBALL 0x0046a9a0
+// FUNCTION: LEMBALL 0x0046a9a0
 void HotAreaList::AddToList(HotAreaHandler* p_handler)
 {
+	HotAreaElement* entry;
+
+	entry = (HotAreaElement*) operator new(sizeof(HotAreaElement));
+	if (entry != 0) {
+		entry->m_handler = p_handler;
+		entry->m_next = 0;
+		entry->m_previous = 0;
+	}
+	else {
+		entry = 0;
+	}
+	if (m_head != 0) {
+		m_tail->m_next = entry;
+		if (m_tail == m_head) {
+			m_head->m_next = entry;
+		}
+		entry->m_previous = m_tail;
+	}
+	else {
+		m_head = entry;
+	}
+	m_tail = entry;
+	p_handler->SetParent(this);
 }
 
 // 68K 0x102127d0 RemoveFromList__12CHotAreaListFP15CHotAreaHandler

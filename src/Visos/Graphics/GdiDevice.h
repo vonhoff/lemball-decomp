@@ -22,9 +22,9 @@ public:
 	int FindFreeSurface();
 	int FindSurface(Surface* p_surface);
 	virtual Surface* AllocateSurface(const VsRect& p_rect, Surface* p_parentSurface); // vtable+0x00
-	virtual void Flush(Surface* p_surface);                                           // vtable+0x0c
 	virtual void FreeSurface(Surface* p_surface);                                     // vtable+0x04
 	virtual void Sync();                                                              // vtable+0x08
+	virtual void Flush(Surface* p_surface);                                           // vtable+0x0c
 	~GdiDevice();
 
 private:
@@ -34,4 +34,6 @@ private:
 	int m_surfaceCapacity;     // 0x10
 };
 
+extern GdiDevice* g_pGdiDevice;
+extern void* g_pGdiHelperTarget;
 #endif

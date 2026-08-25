@@ -1,9 +1,12 @@
 #include "EntryHandler.h"
 
 // 68K 0x108063d8 Reset__13CEntryHandlerFv
-// STUB: LEMBALL 0x00453250
+// FUNCTION: LEMBALL 0x00453250
 void EntryHandler::Reset()
 {
+	m_activationState = 0;
+	m_pressed = 0;
+	m_hoverState = 0;
 }
 
 // 68K 0x1080640c OnButtonDown__13CEntryHandlerFRC8CVSPoint12BUTTON_FLAGS

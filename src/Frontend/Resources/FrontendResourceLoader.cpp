@@ -84,9 +84,6 @@ void FrontendResourceLoader::LoadMovie(unsigned long p_resourceId)
 {
 }
 
-// GLOBAL: LEMBALL 0x004a0120
-FrontendResourceLoader* g_pFrontendResourceLoader = 0;
-
 // GLOBAL: LEMBALL 0x004a784c
 unsigned int g_dwGroundStyleResourceId;
 
