@@ -79,9 +79,43 @@ BaseRemap* BasePalManager::RegisterRemap(unsigned int p_resourceId, unsigned cha
 }
 
 // 68K 0x10200df0 UnRegisterRemap__15CBasePalManagerFP6CRemap
-// STUB: LEMBALL 0x0046add0
+// FUNCTION: LEMBALL 0x0046add0
 void BasePalManager::UnRegisterRemap(BaseRemap* p_remap)
 {
+	int i;
+	int counted;
+	int remapCount;
+	BaseRemap** slots;
+	BaseRemap* current;
+
+	counted = 0;
+	i = 0;
+	remapCount = m_remapCount;
+	if (counted < remapCount) {
+		slots = m_remaps;
+		while (true) {
+			current = slots[i];
+			while (current == 0) {
+				i = i + 1;
+				current = slots[i];
+			}
+			if (slots[i] == p_remap) {
+				break;
+			}
+			counted = counted + 1;
+			i = i + 1;
+			if (remapCount <= counted) {
+				return;
+			}
+		}
+		current = slots[i];
+		if (current != 0) {
+			current->~BaseRemap();
+			operator delete(current);
+		}
+		m_remaps[i] = 0;
+		m_remapCount = m_remapCount - 1;
+	}
 }
 
 // GLOBAL: LEMBALL 0x004a2000
