@@ -1,9 +1,15 @@
 #include "Gdi.h"
 
+#include "../Foundation/VsMem.h"
 #include "../Foundation/VsRect.h"
 #include "GdiDevice.h"
+#include "Primitive.h"
+#include "VsGdi.h"
 
 #include <new.h>
+
+// GLOBAL: LEMBALL 0x004a1ff4
+Primitive* g_pCurrentPrimitive = 0;
 
 // 68K 0x1021184c __ct__4CGDIFRC7CVSRectiP8CSurface
 // FUNCTION: LEMBALL 0x00467060
@@ -45,7 +51,25 @@ void Gdi::AddToList(Primitive* p_primitive)
 }
 
 // 68K 0x1021197a Render__4CGDIFv
-// STUB: LEMBALL 0x00467110
+// FUNCTION: LEMBALL 0x00467110
 void Gdi::Render()
 {
+	int i;
+	int offset;
+
+	if (m_renderTarget->BeginRender()) {
+		offset = 0;
+		i = 0;
+		if (offset < m_primitiveCount) {
+			do {
+				g_pCurrentPrimitive = *(Primitive**) ((char*) m_primitives + offset);
+				if (CheckValidPointer(*(Primitive**) ((char*) m_primitives + offset))) {
+					(*(Primitive**) ((char*) m_primitives + offset))->Render(this);
+				}
+				offset = offset + 4;
+				i = i + 1;
+			} while (i < m_primitiveCount);
+		}
+		m_renderTarget->EndRender();
+	}
 }

@@ -2,8 +2,9 @@
 
 // 68K 0x1010241c Initialise__14CPVMusicDeviceFUlUl
 // STUB: LEMBALL 0x0047f510
-void PvMusicDevice::Initialise(unsigned long p_resourceId, unsigned long p_flags)
+unsigned long PvMusicDevice::Initialise(unsigned long p_resourceId, unsigned long p_flags)
 {
+	return 0;
 }
 
 // 68K 0x1010244a SetVolume__14CPVMusicDeviceFUc

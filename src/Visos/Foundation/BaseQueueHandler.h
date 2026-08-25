@@ -9,8 +9,8 @@ class BaseQueueHandler {
 public:
 	BaseQueueHandler();
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
-	virtual int ProcessMsg(Message* p_message);        // vtable+0x08
 	virtual ~BaseQueueHandler();                       // vtable+0x04
+	virtual int ProcessMsg(Message* p_message);        // vtable+0x08
 
 private:
 	unsigned int m_signature;      // 0x04

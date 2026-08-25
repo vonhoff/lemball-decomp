@@ -4,9 +4,14 @@
 #include "../Animation/BaseStat.h"
 #include "../Animation/StatManager.h"
 #include "../Graphics/BasePalManager.h"
+#include "../Graphics/Cursor.h"
+#include "../Graphics/GdiDevice.h"
+#include "../Graphics/VsGdi.h"
 #include "../Network/FileNetwork.h"
 #include "../Network/TcpIpNetwork.h"
 #include "../Resources/ResourceTypeList.h"
+#include "../Target/TargetGraphicsDriver.h"
+#include "../Target/TargetGraphicsSystemState.h"
 #include "../Target/TargetPlatformServices.h"
 #include "Arena.h"
 #include "VsDebug.h"
@@ -380,17 +385,90 @@ bool TimeQuit()
 }
 
 // 68K 0x10107ab6 _GDI_Init__Fv
-// STUB: LEMBALL 0x0046ba80
+// FUNCTION: LEMBALL 0x0046ba80
 bool GdiInit()
 {
+	void* storage;
+	Cursor* cursor;
+	TargetGraphicsSystemState* system;
+
+	storage = operator new(0xc);
+	system = (TargetGraphicsSystemState*) storage;
+	if (system != 0) {
+		system->m_reserved04 = 0;
+		system->m_fallbackWarningShown = 0;
+		g_pTargetGraphicsSystem = system;
+	}
+	else {
+		g_pTargetGraphicsSystem = 0;
+	}
+	g_pTargetGraphicsSystem->SelectDriver(8);
+
+	storage = operator new(sizeof(GdiDevice));
+	if (storage != 0) {
+		g_pGdiDevice = new (storage) GdiDevice(g_preInitActive.m_flags);
+	}
+	else {
+		g_pGdiDevice = 0;
+	}
+
+	storage = operator new(0x5a0);
+	if (storage != 0) {
+		g_pGdiHelperTarget = new (storage) Surface((GrafPort*) 0);
+	}
+	else {
+		g_pGdiHelperTarget = 0;
+	}
+
+	cursor = (Cursor*) operator new(sizeof(Cursor));
+	if (cursor != 0) {
+		new (cursor) Cursor();
+		g_pCursor = cursor;
+	}
+	else {
+		g_pCursor = 0;
+	}
+
+	if (g_pGdiDevice != 0 && g_pGdiHelperTarget != 0) {
+		return 1;
+	}
 	return 0;
 }
 
 // 68K 0x10107ca0 _GDI_Quit__Fv
-// STUB: LEMBALL 0x0046bb70
+// FUNCTION: LEMBALL 0x0046bb70
 bool GdiQuit()
 {
-	return 0;
+	Surface* surface;
+	TargetGraphicsSystemState* system;
+	GdiDevice* device;
+	Cursor* cursor;
+
+	cursor = g_pCursor;
+	if (cursor != 0) {
+		delete cursor;
+	}
+	surface = (Surface*) g_pGdiHelperTarget;
+	if (surface != 0) {
+		surface->~Surface();
+		((PvSurface*) ((char*) surface + 0x55c))->~PvSurface();
+		operator delete(surface);
+	}
+	device = g_pGdiDevice;
+	if (device != 0) {
+		device->~GdiDevice();
+		operator delete(device);
+	}
+	system = g_pTargetGraphicsSystem;
+	g_pGdiHelperTarget = 0;
+	g_pGdiDevice = 0;
+	if (system != 0) {
+		if (g_pTargetGraphicsDriver != 0) {
+			delete g_pTargetGraphicsDriver;
+		}
+		operator delete(system);
+	}
+	return 1;
 }
 
 // 68K 0x1010fd50 _MEM_Init__Fv

@@ -22,6 +22,8 @@ public:
 	virtual void* GetCurrDb();                 // vtable+0x38
 	void AddToChangeList(const VsRect& p_rect);
 	void AttachPalette(ResPalette* p_palette);
+	bool BeginRender();
+	void EndRender();
 	void Blit(BigBitmap* p_arg0, ResBitmap* p_arg1);
 	virtual void Blit(Bitmap* p_primitive);
 	void Blit(Bitmap* p_primitive, ResBitmap* p_bitmap);

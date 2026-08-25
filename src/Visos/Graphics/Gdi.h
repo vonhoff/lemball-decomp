@@ -30,4 +30,5 @@ private:
 	Surface* m_renderTarget;  // 0x0c
 };
 
+extern Primitive* g_pCurrentPrimitive;
 #endif

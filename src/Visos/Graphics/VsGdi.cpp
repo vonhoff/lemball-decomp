@@ -100,6 +100,17 @@ void Surface::SetDefaultCtable()
 {
 }
 
+// STUB: LEMBALL 0x0046d9f0
+bool Surface::BeginRender()
+{
+	return 0;
+}
+
+// STUB: LEMBALL 0x0046daa0
+void Surface::EndRender()
+{
+}
+
 // 68K 0x1010171a Blit__8CSurfaceFP10CBigBitmapP10CResBITMAP
 // STUB: LEMBALL 0x0046dbc0
 void Surface::Blit(BigBitmap* p_arg0, ResBitmap* p_arg1)

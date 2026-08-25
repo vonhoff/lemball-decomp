@@ -25,7 +25,7 @@ public:
 	void SetResId(unsigned long p_resourceId);
 	void SetVolumes(int p_effectVolume, int p_musicVolume);
 	void StopMusic(unsigned long p_handle);
-	void UseMusicCd(unsigned char p_enabled);
+	void UseMusicCd(unsigned int p_enabled);
 	~SoundManager();
 
 private:
@@ -38,7 +38,7 @@ private:
 	unsigned int m_useMusicCD;         // 0x1c
 	unsigned int m_deviceCount;        // 0x20
 	BaseSoundDevice* m_devices[4];     // 0x24
-	BaseSoundDevice* m_musicDevice;    // 0x34
+	PvMusicDevice* m_musicDevice;      // 0x34
 	undefined m_reserved38[0x34];      // 0x38
 	unsigned int m_nextMusicHandle;    // 0x6c
 	unsigned int m_resourceId;         // 0x70

@@ -13,6 +13,8 @@ public:
 	BaseCursor();
 	virtual bool InWindow(GWnd* p_window);      // vtable+0x0c
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual void KillSystemCursor() = 0;        // vtable+0x10
+	virtual void RestoreSystemCursor() = 0;     // vtable+0x14
 	virtual void RefreshPos();                  // vtable+0x18
 	virtual ~BaseCursor();                      // vtable+0x04
 	void Draw(GWnd* p_window);
@@ -22,6 +24,8 @@ public:
 	void SetMainId(unsigned int p_resourceId);
 	void SetMainId(unsigned int p_resourceId, int p_frame);
 	void SetPos(const VsPoint& p_position);
+
+	friend class Cursor;
 
 private:
 	VsPoint m_position;                 // 0x10

@@ -5,6 +5,8 @@
 
 // SIZE 0x0c
 struct TargetGraphicsSystemState {
+	bool SelectDriver(int p_driverMode);
+
 	int m_driverMode;                    // 0x00
 	unsigned int m_reserved04;           // 0x04
 	unsigned int m_fallbackWarningShown; // 0x08
