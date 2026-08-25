@@ -10,6 +10,8 @@ public:
 	EditString& operator=(const char* p_text);
 	EditString(int p_arg0);
 
+	friend class NetworkOptionsDrawer;
+
 private:
 	int m_maxLength; // 0x00
 	int m_length;    // 0x04

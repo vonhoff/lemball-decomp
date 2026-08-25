@@ -9,6 +9,7 @@
 #include "../../Visos/Network/Connect.h"
 #include "../Controls/HiliteController.h"
 #include "../Processes/NetworkOptionsProc.h"
+#include "../Support/EditString.h"
 
 extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 
@@ -39,6 +40,18 @@ unsigned char* g_apNetworkOptionsRemaps[6] = {
 	g_networkOptionsRemap4,
 	g_networkOptionsRemap5,
 };
+
+// STRING: LEMBALL 0x004a04b4 "No Message"
+char g_szNetworkOptionsNoMessage[] = "No Message";
+
+// GLOBAL: LEMBALL 0x004a0344
+int g_anNetworkOptionsEditMessages[4] = {(int) g_szNetworkOptionsNoMessage, 2, 3, 0};
+
+// GLOBAL: LEMBALL 0x004a0354
+int g_anNetworkOptionsEditMaxLength[4] = {0, 8, 0x14, 0};
+
+// GLOBAL: LEMBALL 0x004a0368
+char g_szNetworkGameName[16];
 
 // GLOBAL: LEMBALL 0x004a0378
 char g_szNetworkBroadcastAddress[16];
@@ -112,9 +125,32 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 }
 
 // 68K 0x10807a3c Start__21CNetworkOptionsDrawerFUc
-// STUB: LEMBALL 0x00454520
-void NetworkOptionsDrawer::Start(unsigned char p_mode)
+// FUNCTION: LEMBALL 0x00454520
+void NetworkOptionsDrawer::Start(unsigned int p_mode)
 {
+	if (m_editingActive != 0) {
+		if (m_networkMode != 0) {
+			if (p_mode != 0) {
+				StopEditing();
+				return;
+			}
+		}
+		else if (p_mode == 0) {
+			StopEditing();
+			return;
+		}
+	}
+	m_networkMode = p_mode;
+	m_broadcasting = 0;
+	m_editingActive = 0;
+	m_pendingEvent = 0;
+	g_pNetworkOptionsProc->StopBroadcast();
+	if (g_szNetworkGameName[0] != 0) {
+		*m_editor = g_szNetworkGameName;
+		StartEditing(1, 0);
+		return;
+	}
+	StartEditing(1, 1);
 }
 
 // 68K 0x10807afa StartBroadcast__21CNetworkOptionsDrawerFv
@@ -157,9 +193,27 @@ void NetworkOptionsDrawer::SetMessage(int p_message)
 }
 
 // 68K 0x10807c7c StartEditing__21CNetworkOptionsDrawerF13eEditingStageUc
-// STUB: LEMBALL 0x00454690
-void NetworkOptionsDrawer::StartEditing(int p_stage, unsigned char p_clear)
+// FUNCTION: LEMBALL 0x00454690
+void NetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
 {
+	m_editingActive = 0;
+	if (p_stage != 3) {
+		m_editingStage = p_stage;
+	}
+	if (p_clear != 0) {
+		m_editor->m_length = 0;
+		m_editor->m_text[0] = 0;
+	}
+	if (m_editingStage == 2) {
+		g_pNetworkOptionsProc->Start();
+		if (g_pNetworkOptionsProc->m_started == 0 || g_pNetworkOptionsProc->m_startFailed != 0) {
+			StartMessageTimeout(9, 6000);
+			return;
+		}
+	}
+	m_editor->m_maxLength = g_anNetworkOptionsEditMaxLength[m_editingStage];
+	SetMessage(g_anNetworkOptionsEditMessages[m_editingStage]);
+	m_editingActive = 1;
 }
 
 // 68K 0x10807d76 StopEditing__21CNetworkOptionsDrawerFv

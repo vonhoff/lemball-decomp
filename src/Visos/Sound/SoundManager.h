@@ -17,7 +17,7 @@ public:
 	void FreeEffect(unsigned long p_effectId);
 	void FreeMusic(unsigned long p_handle);
 	void PlayEffect(unsigned long p_effectId);
-	void PlayEffect(unsigned long p_effectId, unsigned char p_channel);
+	void PlayEffect(unsigned long p_effectId, unsigned int p_channel);
 	unsigned long PlayMusic(unsigned long p_handle, unsigned long p_unused);
 	void ProcessMusic(unsigned long p_handle);
 	void SetEffectsWnd(Wnd* p_window);

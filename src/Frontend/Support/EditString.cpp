@@ -1,5 +1,9 @@
 #include "EditString.h"
 
+#include <string.h>
+
+#pragma intrinsic(strcpy, strlen)
+
 // 68K 0x108062e4 __ct__11CEditStringFi
 // STUB: LEMBALL 0x00453150
 EditString::EditString(int p_arg0)
@@ -14,8 +18,10 @@ EditString& EditString::operator+=(char p_character)
 }
 
 // 68K 0x10806384 __as__11CEditStringFPCc
-// STUB: LEMBALL 0x00453200
+// FUNCTION: LEMBALL 0x00453200
 EditString& EditString::operator=(const char* p_text)
 {
-	return *(EditString*) 0;
+	strcpy(m_text, p_text);
+	m_length = strlen(m_text);
+	return *this;
 }

@@ -49,9 +49,9 @@ public:
 	void RegisterRemaps();
 	void ResetHandlers();
 	void SetMessage(int p_message);
-	void Start(unsigned char p_mode);
+	void Start(unsigned int p_mode);
 	void StartBroadcast();
-	void StartEditing(int p_stage, unsigned char p_clear);
+	void StartEditing(int p_stage, unsigned int p_clear);
 	void StartMessageTimeout(int p_message, unsigned long p_duration);
 	void Stop();
 	void StopEditing();

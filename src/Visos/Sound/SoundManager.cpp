@@ -10,6 +10,75 @@ struct SoundDeviceDispatch {
 	virtual int Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId) = 0;
 	virtual int OpenPrimary(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId) = 0;
 	virtual void Background() = 0;
+	virtual void Slot18() = 0;
+	virtual void Slot1c() = 0;
+	virtual void Slot20() = 0;
+	virtual void Slot24() = 0;
+	virtual void Slot28() = 0;
+	virtual void Slot2c() = 0;
+	virtual void Slot30() = 0;
+	virtual void Slot34() = 0;
+	virtual void Slot38() = 0;
+	virtual void Slot3c() = 0;
+	virtual void Slot40() = 0;
+	virtual void Slot44() = 0;
+	virtual void FreeEffect(unsigned long p_effectId) = 0;
+	virtual void Slot4c() = 0;
+	virtual void Slot50() = 0;
+	virtual void Slot54() = 0;
+	virtual void Slot58() = 0;
+	virtual void Slot5c() = 0;
+	virtual void Slot60() = 0;
+	virtual unsigned long QueryVolume(unsigned int p_unused) = 0;
+	virtual void Slot68() = 0;
+	virtual void Slot6c() = 0;
+	virtual void Slot70() = 0;
+	virtual void Slot74() = 0;
+	virtual void Slot78() = 0;
+	virtual void Slot7c() = 0;
+	virtual void Slot80() = 0;
+	virtual void Slot84() = 0;
+	virtual void Slot88() = 0;
+	virtual void PlayEffect(unsigned long p_effectId, unsigned long p_arg1, unsigned long p_arg2) = 0;
+};
+
+struct EffectPlay2Dispatch {
+	virtual void Delete(int p_delete) = 0;
+	virtual void Slot04() = 0;
+	virtual void Slot08() = 0;
+	virtual int Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId) = 0;
+	virtual int OpenPrimary(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId) = 0;
+	virtual void Background() = 0;
+	virtual void Slot18() = 0;
+	virtual void Slot1c() = 0;
+	virtual void Slot20() = 0;
+	virtual void Slot24() = 0;
+	virtual void Slot28() = 0;
+	virtual void Slot2c() = 0;
+	virtual void Slot30() = 0;
+	virtual void Slot34() = 0;
+	virtual void Slot38() = 0;
+	virtual void Slot3c() = 0;
+	virtual void Slot40() = 0;
+	virtual void Slot44() = 0;
+	virtual void Slot48() = 0;
+	virtual void Slot4c() = 0;
+	virtual void Slot50() = 0;
+	virtual void Slot54() = 0;
+	virtual void Slot58() = 0;
+	virtual void Slot5c() = 0;
+	virtual void Slot60() = 0;
+	virtual unsigned long QueryVolume(unsigned int p_unused) = 0;
+	virtual void Slot68() = 0;
+	virtual void Slot6c() = 0;
+	virtual void Slot70() = 0;
+	virtual void Slot74() = 0;
+	virtual void Slot78() = 0;
+	virtual void Slot7c() = 0;
+	virtual void Slot80() = 0;
+	virtual void Slot84() = 0;
+	virtual void Slot88() = 0;
+	virtual void PlayEffect(unsigned long p_effectId, unsigned long p_volume) = 0;
 };
 
 struct MusicDeviceDispatch {
@@ -177,21 +246,35 @@ unsigned long SoundManager::PrepareEffect(unsigned long p_resourceId)
 }
 
 // 68K 0x102188c0 PlayEffect__13CSoundManagerFUl
-// STUB: LEMBALL 0x0045b460
+// FUNCTION: LEMBALL 0x0045b460
 void SoundManager::PlayEffect(unsigned long p_effectId)
 {
+	unsigned long volume;
+	BaseSoundDevice* device;
+
+	if (m_effectsAvailable == 1) {
+		device = m_effectOutput;
+		volume = ((EffectPlay2Dispatch*) device)->QueryVolume(0);
+		((EffectPlay2Dispatch*) device)->PlayEffect(p_effectId, volume);
+	}
 }
 
 // 68K 0x10218924 PlayEffect__13CSoundManagerFUlUc
-// STUB: LEMBALL 0x0045b490
-void SoundManager::PlayEffect(unsigned long p_effectId, unsigned char p_channel)
+// FUNCTION: LEMBALL 0x0045b490
+void SoundManager::PlayEffect(unsigned long p_effectId, unsigned int p_channel)
 {
+	if (m_effectsAvailable == 1) {
+		((SoundDeviceDispatch*) m_effectOutput)->PlayEffect(p_effectId, p_channel, 0);
+	}
 }
 
 // 68K 0x10218978 FreeEffect__13CSoundManagerFUl
-// STUB: LEMBALL 0x0045b4f0
+// FUNCTION: LEMBALL 0x0045b4f0
 void SoundManager::FreeEffect(unsigned long p_effectId)
 {
+	if (m_effectsAvailable == 1) {
+		((SoundDeviceDispatch*) m_effectOutput)->FreeEffect(p_effectId);
+	}
 }
 
 // 68K 0x102189c2 SetVolumes__13CSoundManagerFii
