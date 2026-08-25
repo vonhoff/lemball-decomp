@@ -82,7 +82,7 @@ void BaseFrontendDrawer::DrawFrame(CoordPair p_start, CoordPair p_end)
 
 // 68K 0x1080115a DrawFrame__19CBaseFrontendDrawerF7CVSRect
 // STUB: LEMBALL 0x00446110
-void BaseFrontendDrawer::DrawFrame(const VsRect& p_rect)
+void BaseFrontendDrawer::DrawFrame(VsRect p_rect)
 {
 }
 

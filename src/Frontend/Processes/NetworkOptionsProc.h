@@ -19,6 +19,8 @@ public:
 	void Stop();
 	void StopBroadcast();
 
+	friend class NetworkOptionsDrawer;
+
 private:
 	unsigned int m_startFailed;         // 0x28
 	unsigned int m_started;             // 0x2c
@@ -26,4 +28,5 @@ private:
 	GameAcceptMessage* m_acceptMessage; // 0x34
 };
 
+extern NetworkOptionsProc* g_pNetworkOptionsProc;
 #endif

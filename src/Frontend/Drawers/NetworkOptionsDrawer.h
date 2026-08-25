@@ -6,8 +6,14 @@
 #include "../Support/EntryHandler.h"
 
 // SIZE 0xa0
+// SIZE 0x08
+struct NetworkOptionsFramePos {
+	int m_x;
+	int m_y;
+};
+
 struct NetworkOptionsLayout {
-	undefined m_unknown00[0x70];   // 0x00
+	NetworkOptionsFramePos m_framePos[14]; // 0x00
 	short m_entryX;                // 0x70
 	undefined2 m_pad0x72;          // 0x72
 	short m_entryY;                // 0x74
@@ -77,7 +83,7 @@ private:
 	unsigned int m_stopPending;      // 0x3e4
 	unsigned int m_connectionState;  // 0x3e8
 	undefined m_unknown3ec[0x28];    // 0x3ec
-	void* m_remaps[6];                     // 0x414
+	BaseRemap* m_remaps[6];                    // 0x414
 	NetworkOptionsLayout* m_layoutTable;   // 0x42c
 	int m_pendingEvent;              // 0x430
 	unsigned int m_handlerCount;     // 0x434

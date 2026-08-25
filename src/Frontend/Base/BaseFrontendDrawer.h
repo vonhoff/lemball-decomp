@@ -40,7 +40,7 @@ public:
 	virtual ~BaseFrontendDrawer();                    // vtable+0x00
 	void Action(int p_action, int p_stage);
 	void DrawFrame(CoordPair p_start, CoordPair p_end);
-	void DrawFrame(const VsRect& p_rect);
+	void DrawFrame(VsRect p_rect);
 	void InitialiseBackBuffer();
 	void Load();
 	void LostConnection();

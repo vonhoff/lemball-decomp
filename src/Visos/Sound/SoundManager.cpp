@@ -12,6 +12,16 @@ struct SoundDeviceDispatch {
 	virtual void Background() = 0;
 };
 
+struct MusicDeviceDispatch {
+	virtual void Delete(int p_delete) = 0;
+	virtual unsigned long Initialise(unsigned long p_resourceId, unsigned long p_flags) = 0;
+	virtual void Play(unsigned long p_allocated, unsigned long p_handle) = 0;
+	virtual void Slot0c() = 0;
+	virtual void ProcessHandle(unsigned long p_handle) = 0;
+	virtual void FreeHandle(unsigned long p_handle) = 0;
+	virtual void StopHandle(unsigned long p_handle) = 0;
+};
+
 // 68K 0x10218192 __ct__13CSoundManagerFUcUcUciP4CWnd
 // STUB: LEMBALL 0x0045af80
 SoundManager::SoundManager(unsigned char p_arg0, unsigned char p_arg1, unsigned char p_arg2, int p_arg3, Wnd* p_arg4)
@@ -100,9 +110,21 @@ unsigned long SoundManager::PrepareMusic(unsigned long p_resourceId, unsigned ch
 }
 
 // 68K 0x102186b8 PlayMusic__13CSoundManagerFUl
-// STUB: LEMBALL 0x0045b2e0
-void SoundManager::PlayMusic(unsigned long p_handle)
+// FUNCTION: LEMBALL 0x0045b2e0
+unsigned long SoundManager::PlayMusic(unsigned long p_handle, unsigned long p_unused)
 {
+	unsigned long allocated;
+
+	if (m_musicAvailable == 1 && m_useMusicCD == 1) {
+		allocated = m_nextMusicHandle;
+		m_nextMusicHandle = allocated + 1;
+		if (m_nextMusicHandle == 0) {
+			m_nextMusicHandle = 1;
+		}
+		((MusicDeviceDispatch*) m_musicDevice)->Play(allocated, p_handle);
+		return allocated;
+	}
+	return 0;
 }
 
 // 68K 0x10218680 StreamOut__13CSoundManagerFR10CVSOStream
@@ -113,21 +135,38 @@ VsOStream& SoundManager::StreamOut(VsOStream& p_stream)
 }
 
 // 68K 0x10218714 ProcessMusic__13CSoundManagerFUl
-// STUB: LEMBALL 0x0045b330
+// FUNCTION: LEMBALL 0x0045b330
 void SoundManager::ProcessMusic(unsigned long p_handle)
 {
+	if (m_musicAvailable == 1) {
+		if (p_handle != 0) {
+			if (m_useMusicCD == 1) {
+				((MusicDeviceDispatch*) m_musicDevice)->ProcessHandle(p_handle);
+			}
+		}
+	}
 }
 
 // 68K 0x1021875e StopMusic__13CSoundManagerFUl
-// STUB: LEMBALL 0x0045b370
+// FUNCTION: LEMBALL 0x0045b370
 void SoundManager::StopMusic(unsigned long p_handle)
 {
+	if (m_musicAvailable == 1) {
+		if (m_useMusicCD == 1) {
+			((MusicDeviceDispatch*) m_musicDevice)->StopHandle(p_handle);
+		}
+	}
 }
 
 // 68K 0x102187b4 FreeMusic__13CSoundManagerFUl
-// STUB: LEMBALL 0x0045b3b0
+// FUNCTION: LEMBALL 0x0045b3b0
 void SoundManager::FreeMusic(unsigned long p_handle)
 {
+	if (m_musicAvailable == 1) {
+		if (m_useMusicCD == 1) {
+			((MusicDeviceDispatch*) m_musicDevice)->FreeHandle(p_handle);
+		}
+	}
 }
 
 // 68K 0x10218810 PrepareEffect__13CSoundManagerFUl

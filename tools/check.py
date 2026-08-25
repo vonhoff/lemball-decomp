@@ -42,6 +42,14 @@ def normalize_asm(s: str) -> str:
     return s
 
 
+def is_unresolved_call(orig_text: str, recomp_text: str) -> bool:
+    orig_text = orig_text.split("\t")[0].strip()
+    recomp_text = recomp_text.split("\t")[0].strip()
+    if not re.match(r"call <OFFSET\d+>$", orig_text):
+        return False
+    return bool(re.match(r"call (?:Thunk of '.+' \(THUNK\)|\S+ \(FUNCTION\))$", recomp_text))
+
+
 def is_thunk_only_diff(diff) -> bool:
     if not diff:
         return False
@@ -56,8 +64,13 @@ def is_thunk_only_diff(diff) -> bool:
             if len(orig) != len(recomp):
                 return False
             for orig_entry, recomp_entry in zip(orig, recomp):
-                if normalize_asm(insn_text(orig_entry)) != normalize_asm(insn_text(recomp_entry)):
-                    return False
+                orig_text = insn_text(orig_entry)
+                recomp_text = insn_text(recomp_entry)
+                if normalize_asm(orig_text) == normalize_asm(recomp_text):
+                    continue
+                if is_unresolved_call(orig_text, recomp_text):
+                    continue
+                return False
     return has_diff
 
 

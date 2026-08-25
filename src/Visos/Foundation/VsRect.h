@@ -7,6 +7,7 @@
 class VsRect {
 public:
 	VsRect();
+	VsRect(short p_x, short p_y, short p_width, short p_height);
 
 	friend class Gdi;
 

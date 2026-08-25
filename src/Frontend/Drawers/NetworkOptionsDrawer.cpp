@@ -3,11 +3,45 @@
 #include "../../Control/Game/GameStatus.h"
 #include "../../Network/Game/NetworkManager.h"
 #include "../../Network/Messages/NetworkGameMessage.h"
+#include "../../Views/Display/Main2DDisplay.h"
+#include "../../Visos/Foundation/VsRect.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Controls/HiliteController.h"
+#include "../Processes/NetworkOptionsProc.h"
 
 extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
+
+// GLOBAL: LEMBALL 0x004a02c0
+unsigned char g_networkOptionsRemap0[8] = {0x02, 0xf1, 0x51, 0x5d, 0x3d, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x004a02c8
+unsigned char g_networkOptionsRemap1[8] = {0x02, 0xf1, 0x51, 0x45, 0x20, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x004a02d0
+unsigned char g_networkOptionsRemap2[8] = {0x02, 0xf1, 0x51, 0x65, 0x31, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x004a02d8
+unsigned char g_networkOptionsRemap3[8] = {0x02, 0xf1, 0x51, 0xad, 0xbd, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x004a02e0
+unsigned char g_networkOptionsRemap4[8] = {0x02, 0xf1, 0x51, 0x8c, 0xad, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x004a02e8
+unsigned char g_networkOptionsRemap5[8] = {0x02, 0xf1, 0x51, 0xa8, 0x6c, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x004a02f0
+unsigned char* g_apNetworkOptionsRemaps[6] = {
+	g_networkOptionsRemap0,
+	g_networkOptionsRemap1,
+	g_networkOptionsRemap2,
+	g_networkOptionsRemap3,
+	g_networkOptionsRemap4,
+	g_networkOptionsRemap5,
+};
+
+// GLOBAL: LEMBALL 0x004a0378
+char g_szNetworkBroadcastAddress[16];
 
 // 68K 0x10806468 __ct__21CNetworkOptionsDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // STUB: LEMBALL 0x00453280
@@ -29,15 +63,22 @@ void NetworkOptionsDrawer::UnLoad()
 }
 
 // 68K 0x10806954 DrawBackGround__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00453690
+// FUNCTION: LEMBALL 0x00453690
 void NetworkOptionsDrawer::DrawBackGround()
 {
+	DrawFrame(3);
+	DrawFrame(5);
+	DrawFrame(7);
 }
 
 // 68K 0x108069ba DrawFrame__21CNetworkOptionsDrawerF17eNetOptsPositions
-// STUB: LEMBALL 0x004536b0
+// FUNCTION: LEMBALL 0x004536b0
 void NetworkOptionsDrawer::DrawFrame(int p_position)
 {
+	NetworkOptionsFramePos* pos;
+
+	pos = &m_layoutTable->m_framePos[p_position];
+	BaseFrontendDrawer::DrawFrame(VsRect(pos->m_x, pos->m_y, pos[1].m_x, pos[1].m_y));
 }
 
 // 68K 0x10806ab0 DrawEntry__21CNetworkOptionsDrawerFUlRi7eRemaps
@@ -77,15 +118,28 @@ void NetworkOptionsDrawer::Start(unsigned char p_mode)
 }
 
 // 68K 0x10807afa StartBroadcast__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x004545c0
+// FUNCTION: LEMBALL 0x004545c0
 void NetworkOptionsDrawer::StartBroadcast()
 {
+	m_broadcasting = 1;
+	g_pNetworkOptionsProc->Start();
+	if (g_pNetworkOptionsProc->m_started != 0 && g_pNetworkOptionsProc->m_startFailed == 0) {
+		g_pNetworkManager->StartBroadcast(g_szNetworkBroadcastAddress);
+		SetMessage(4);
+		return;
+	}
+	StartMessageTimeout(9, 6000);
 }
 
 // 68K 0x10807ba4 Stop__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454620
+// FUNCTION: LEMBALL 0x00454620
 void NetworkOptionsDrawer::Stop()
 {
+	if (g_pNetworkOptionsProc->m_started != 0 && g_pNetworkOptionsProc->m_startFailed == 0) {
+		g_pNetworkOptionsProc->Stop();
+	}
+	SetMessage(0);
+	m_editingActive = 0;
 }
 
 // 68K 0x10807c12 SetMessage__21CNetworkOptionsDrawerF16eNetOptsMessages
@@ -115,9 +169,17 @@ void NetworkOptionsDrawer::StopEditing()
 }
 
 // 68K 0x10807e66 LastError__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454830
+// FUNCTION: LEMBALL 0x00454830
 void NetworkOptionsDrawer::LastError()
 {
+	if (m_pendingEvent == 7) {
+		g_pNetworkOptionsProc->StopBroadcast();
+		if (m_broadcasting == 0) {
+			return;
+		}
+	}
+	StartMessageTimeout(m_pendingEvent, 6000);
+	m_pendingEvent = 0;
 }
 
 // 68K 0x10807ed6 StartMessageTimeout__21CNetworkOptionsDrawerF16eNetOptsMessagesUl
@@ -143,9 +205,18 @@ void NetworkOptionsDrawer::Processing()
 }
 
 // 68K 0x10808166 RegisterRemaps__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454ad0
+// FUNCTION: LEMBALL 0x00454ad0
 void NetworkOptionsDrawer::RegisterRemaps()
 {
+	BaseRemap** remaps;
+	unsigned char** mappings;
+
+	remaps = m_remaps;
+	mappings = g_apNetworkOptionsRemaps;
+	do {
+		*remaps++ = g_pBasePalManager->RegisterRemap(m_display->m_paletteResourceId, *mappings, 2);
+		mappings++;
+	} while (mappings < g_apNetworkOptionsRemaps + 6);
 }
 
 // 68K 0x108081e8 UnRegisterRemaps__21CNetworkOptionsDrawerFv
@@ -153,12 +224,12 @@ void NetworkOptionsDrawer::RegisterRemaps()
 void NetworkOptionsDrawer::UnRegisterRemaps()
 {
 	int i;
-	void** remaps;
+	BaseRemap** remaps;
 
 	remaps = m_remaps;
 	i = 6;
 	do {
-		g_pBasePalManager->UnRegisterRemap((BaseRemap*) *remaps);
+		g_pBasePalManager->UnRegisterRemap(*remaps);
 		remaps = remaps + 1;
 		i = i - 1;
 	} while (i != 0);

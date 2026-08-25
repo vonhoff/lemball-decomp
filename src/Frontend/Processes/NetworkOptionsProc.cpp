@@ -61,3 +61,6 @@ void NetworkOptionsProc::Processing()
 NetworkOptionsProc::~NetworkOptionsProc()
 {
 }
+
+// GLOBAL: LEMBALL 0x0049f140
+NetworkOptionsProc* g_pNetworkOptionsProc = 0;

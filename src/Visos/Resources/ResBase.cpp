@@ -1,4 +1,7 @@
 #include "ResBase.h"
+
+#include <string.h>
+
 #include "MogRes.h"
 
 // 68K 0x102029ce DoLoad__8CResBaseFUl
@@ -79,9 +82,19 @@ void ResBase::Initialise()
 }
 
 // 68K 0x10202f26 OnRead__8CResBaseFPUcPPUcUl
-// STUB: LEMBALL 0x0045d0a0
+// FUNCTION: LEMBALL 0x0045d0a0
 void ResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size)
 {
+	if (p_size != 0) {
+		if (m_data == 0) {
+			m_data = g_pActiveMogRes->AllocateMainMem(p_size);
+			memcpy(m_data, p_source, p_size);
+		}
+	}
+	if (m_name != 0) {
+		m_loaded = 1;
+		OnLoad();
+	}
 }
 
 // 68K 0x10202fae LoadData__8CResBaseFv
@@ -173,14 +186,14 @@ bool ResBase::GetfAnyVramLoaded()
 }
 
 // 68K 0x101011da ForceLoadVram__8CResBaseFv
-// STUB: LEMBALL 0x0045e5e0
+// FUNCTION: LEMBALL 0x0045e5e0
 bool ResBase::ForceLoadVram()
 {
 	return 0;
 }
 
 // 68K 0x10101202 UnLoadVramData__8CResBaseFUc
-// STUB: LEMBALL 0x0045e5f0
+// FUNCTION: LEMBALL 0x0045e5f0
 void ResBase::UnLoadVramData(unsigned int p_force)
 {
 }
@@ -193,19 +206,19 @@ unsigned char* ResBase::GetData()
 }
 
 // 68K 0x10101252 OnLoad__8CResBaseFv
-// STUB: LEMBALL 0x0045e610
+// FUNCTION: LEMBALL 0x0045e610
 void ResBase::OnLoad()
 {
 }
 
 // 68K 0x10101270 OnUnLoad__8CResBaseFv
-// STUB: LEMBALL 0x0045e620
+// FUNCTION: LEMBALL 0x0045e620
 void ResBase::OnUnLoad()
 {
 }
 
 // 68K 0x10101126 SetHeader__8CResBaseFv
-// STUB: LEMBALL 0x0045e630
+// FUNCTION: LEMBALL 0x0045e630
 void ResBase::SetHeader()
 {
 }

@@ -9,3 +9,12 @@ VsRect::VsRect()
 	m_y = 0;
 	m_x = 0;
 }
+
+// FUNCTION: LEMBALL 0x00447270
+VsRect::VsRect(short p_x, short p_y, short p_width, short p_height)
+{
+	m_width = p_width;
+	m_height = p_height;
+	m_x = p_x;
+	m_y = p_y;
+}

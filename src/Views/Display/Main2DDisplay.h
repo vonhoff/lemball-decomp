@@ -32,10 +32,15 @@ public:
 	void ToggleResolution();
 	~Main2DDisplay();
 
+	friend class NetworkOptionsDrawer;
+
 private:
-	void* m_displayDevice;           // 0x4c
-	int m_refreshInterval;           // 0x50
-	BaseQueueHandler m_queueHandler; // 0x90
+	undefined m_unknown04[0x48];      // 0x04
+	void* m_displayDevice;            // 0x4c
+	int m_refreshInterval;            // 0x50
+	unsigned int m_paletteResourceId; // 0x54
+	undefined m_unknown58[0x38];      // 0x58
+	BaseQueueHandler m_queueHandler;  // 0x90
 	unsigned int m_windowReady;      // 0xa0
 	void* m_drawPrimitive;           // 0xa4
 	void* m_background;              // 0xa8
