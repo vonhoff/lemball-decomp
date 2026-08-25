@@ -12,7 +12,7 @@ public:
 	virtual bool ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, Connect* p_connection); // vtable+0x08
 	virtual void Processing();                                                                     // vtable+0x0c
 	virtual ~NetworkOptionsProc();                                                                 // vtable+0x00
-	void Accept(Connect* p_connection, unsigned char p_ready);
+	void Accept(Connect* p_connection, unsigned int p_ready);
 	void NetworkEvent(int p_event);
 	void Reject(Connect* p_connection);
 	void Start();

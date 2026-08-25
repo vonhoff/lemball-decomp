@@ -1,5 +1,8 @@
 #include "NetworkOptionsProc.h"
 
+#include "../../Network/Messages/GameAcceptMessage.h"
+#include "../../Network/Messages/GameRejectMessage.h"
+
 // 68K 0x10808988 __ct__19CNetworkOptionsProcFP5CGame
 // STUB: LEMBALL 0x00455050
 NetworkOptionsProc::NetworkOptionsProc(Game* p_arg0)
@@ -38,15 +41,19 @@ bool NetworkOptionsProc::ReceiveCritical(unsigned long p_id, ReadPacket* p_packe
 }
 
 // 68K 0x10808fa6 Accept__19CNetworkOptionsProcFP8CConnectUc
-// STUB: LEMBALL 0x00455480
-void NetworkOptionsProc::Accept(Connect* p_connection, unsigned char p_ready)
+// FUNCTION: LEMBALL 0x00455480
+void NetworkOptionsProc::Accept(Connect* p_connection, unsigned int p_ready)
 {
+	m_acceptMessage->m_flag = p_ready;
+	m_acceptMessage->Send(p_connection);
 }
 
 // 68K 0x10809004 Reject__19CNetworkOptionsProcFP8CConnect
-// STUB: LEMBALL 0x004554a0
+// FUNCTION: LEMBALL 0x004554a0
 void NetworkOptionsProc::Reject(Connect* p_connection)
 {
+	m_rejectMessage->m_flag = 0;
+	m_rejectMessage->Send(p_connection);
 }
 
 // 68K 0x1011c4b2 Processing__19CNetworkOptionsProcFv

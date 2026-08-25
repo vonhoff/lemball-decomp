@@ -447,7 +447,7 @@ void NetworkOptionsDrawer::Processing()
 					if (activation != 0) {
 						Lock();
 					}
-					g_pNetworkOptionsProc->Accept(*current, (unsigned char) activation);
+					g_pNetworkOptionsProc->Accept(*current, activation);
 				}
 			}
 			current = current + 1;
