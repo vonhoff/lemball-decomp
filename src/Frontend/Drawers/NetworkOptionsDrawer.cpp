@@ -1,6 +1,9 @@
 #include "NetworkOptionsDrawer.h"
 
+#include "../../Visos/Graphics/BasePalManager.h"
 #include "../Controls/HiliteController.h"
+
+extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x10806468 __ct__21CNetworkOptionsDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // STUB: LEMBALL 0x00453280
@@ -51,7 +54,7 @@ void NetworkOptionsDrawer::DrawText()
 }
 
 // 68K 0x108075c6 DrawAnims__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454050
+// FUNCTION: LEMBALL 0x00454050
 void NetworkOptionsDrawer::DrawAnims()
 {
 }
@@ -82,9 +85,17 @@ void NetworkOptionsDrawer::Stop()
 }
 
 // 68K 0x10807c12 SetMessage__21CNetworkOptionsDrawerF16eNetOptsMessages
-// STUB: LEMBALL 0x00454650
+// FUNCTION: LEMBALL 0x00454650
 void NetworkOptionsDrawer::SetMessage(int p_message)
 {
+	unsigned long now;
+
+	m_message = p_message;
+	m_messageDuration = 0;
+	m_backBufferNeeded = 1;
+	now = timeGetTime();
+	m_redrawPending = 1;
+	m_lastDrawTime = now;
 }
 
 // 68K 0x10807c7c StartEditing__21CNetworkOptionsDrawerF13eEditingStageUc
@@ -106,9 +117,19 @@ void NetworkOptionsDrawer::LastError()
 }
 
 // 68K 0x10807ed6 StartMessageTimeout__21CNetworkOptionsDrawerF16eNetOptsMessagesUl
-// STUB: LEMBALL 0x00454870
+// FUNCTION: LEMBALL 0x00454870
 void NetworkOptionsDrawer::StartMessageTimeout(int p_message, unsigned long p_duration)
 {
+	unsigned long now;
+
+	m_message = p_message;
+	now = timeGetTime();
+	m_backBufferNeeded = 1;
+	m_messageStartTime = now;
+	m_messageDuration = p_duration;
+	now = timeGetTime();
+	m_redrawPending = 1;
+	m_lastDrawTime = now;
 }
 
 // 68K 0x10807f58 Processing__21CNetworkOptionsDrawerFv
@@ -124,21 +145,38 @@ void NetworkOptionsDrawer::RegisterRemaps()
 }
 
 // 68K 0x108081e8 UnRegisterRemaps__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00454b10
+// FUNCTION: LEMBALL 0x00454b10
 void NetworkOptionsDrawer::UnRegisterRemaps()
 {
+	int i;
+	void** remaps;
+
+	remaps = m_remaps;
+	i = 6;
+	do {
+		g_pBasePalManager->UnRegisterRemap((BaseRemap*) *remaps);
+		remaps = remaps + 1;
+		i = i - 1;
+	} while (i != 0);
 }
 
 // 68K 0x10808252 GameReady__21CNetworkOptionsDrawerFi
-// STUB: LEMBALL 0x00454b40
+// FUNCTION: LEMBALL 0x00454b40
 void NetworkOptionsDrawer::GameReady(int p_index)
 {
+	if (p_index != -1 && p_index < 10) {
+		m_playerEntries[p_index].m_activationState = 1;
+	}
 }
 
 // 68K 0x108082a8 GameNotReady__21CNetworkOptionsDrawerFi
-// STUB: LEMBALL 0x00454b70
+// FUNCTION: LEMBALL 0x00454b70
 void NetworkOptionsDrawer::GameNotReady(int p_index)
 {
+	if (p_index != -1 && p_index < 10 &&
+		(m_playerEntries[p_index].m_activationState = 0, m_acceptedPlayer == p_index)) {
+		UnLock();
+	}
 }
 
 // 68K 0x10808318 UpdateHighlightedEntry__21CNetworkOptionsDrawerFv

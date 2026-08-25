@@ -15,6 +15,8 @@ public:
 	virtual void OnExit();                                                  // vtable+0x14
 	void Reset();
 
+	friend class NetworkOptionsDrawer;
+
 private:
 	unsigned int m_hoverState;      // 0x38
 	unsigned int m_pressed;         // 0x3c
