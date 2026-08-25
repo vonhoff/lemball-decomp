@@ -60,7 +60,7 @@ void Gdi::Render()
 	if (m_renderTarget->BeginRender()) {
 		offset = 0;
 		i = 0;
-		if (offset < m_primitiveCount) {
+		if (m_primitiveCount > offset) {
 			do {
 				g_pCurrentPrimitive = *(Primitive**) ((char*) m_primitives + offset);
 				if (CheckValidPointer(*(Primitive**) ((char*) m_primitives + offset))) {
@@ -68,7 +68,7 @@ void Gdi::Render()
 				}
 				offset = offset + 4;
 				i = i + 1;
-			} while (i < m_primitiveCount);
+			} while (m_primitiveCount > i);
 		}
 		m_renderTarget->EndRender();
 	}

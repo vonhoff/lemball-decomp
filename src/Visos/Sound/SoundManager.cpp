@@ -1,5 +1,6 @@
 #include "SoundManager.h"
 
+#include "../Resources/ResEffect.h"
 #include "BaseSoundDevice.h"
 #include "PvMusicDevice.h"
 
@@ -19,7 +20,7 @@ struct SoundDeviceDispatch {
 	virtual void Slot30() = 0;
 	virtual void Slot34() = 0;
 	virtual void Slot38() = 0;
-	virtual void Slot3c() = 0;
+	virtual void Prepare(unsigned char* p_data, unsigned long* p_handle) = 0;
 	virtual void Slot40() = 0;
 	virtual void Slot44() = 0;
 	virtual void FreeEffect(unsigned long p_effectId) = 0;
@@ -150,13 +151,15 @@ void SoundManager::Foreground()
 			m_effectOutput = 0;
 			effects = m_requestedEffects;
 		}
-		if (m_useMusicCD == 0 && musicOutput != 0) {
-			if (((SoundDeviceDispatch*) musicOutput)->Open(music, effects, m_resourceId) == 0) {
-				music = 0;
-				effects = 0;
+		if (m_useMusicCD == 0) {
+			if (musicOutput != 0) {
+				if (((SoundDeviceDispatch*) musicOutput)->Open(music, effects, m_resourceId) == 0) {
+					music = 0;
+					effects = 0;
+				}
+				m_musicAvailable = music;
+				m_effectsAvailable = effects;
 			}
-			m_musicAvailable = music;
-			m_effectsAvailable = effects;
 		}
 		if (m_effectOutput != 0) {
 			if (((SoundDeviceDispatch*) m_effectOutput)->Open(0, m_requestedEffects, m_resourceId) == 0) {
@@ -239,9 +242,28 @@ void SoundManager::FreeMusic(unsigned long p_handle)
 }
 
 // 68K 0x10218810 PrepareEffect__13CSoundManagerFUl
-// STUB: LEMBALL 0x0045b3f0
+// FUNCTION: LEMBALL 0x0045b3f0
 unsigned long SoundManager::PrepareEffect(unsigned long p_resourceId)
 {
+	unsigned long handle;
+	ResEffect* effect;
+	unsigned char* data;
+
+	if (m_effectsAvailable == 1) {
+		effect = ResEffect::Load(p_resourceId);
+		if (effect->m_loaded != 0) {
+			effect->m_age = 0;
+		}
+		else {
+			effect->LoadData();
+		}
+		effect->m_directUseCount = effect->m_directUseCount + 1;
+		data = effect->GetData();
+		((SoundDeviceDispatch*) m_effectOutput)->Prepare(data, &handle);
+		effect->m_directUseCount = effect->m_directUseCount - 1;
+		effect->UnLoad();
+		return handle;
+	}
 	return 0;
 }
 
@@ -249,13 +271,11 @@ unsigned long SoundManager::PrepareEffect(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x0045b460
 void SoundManager::PlayEffect(unsigned long p_effectId)
 {
-	unsigned long volume;
 	BaseSoundDevice* device;
 
 	if (m_effectsAvailable == 1) {
 		device = m_effectOutput;
-		volume = ((EffectPlay2Dispatch*) device)->QueryVolume(0);
-		((EffectPlay2Dispatch*) device)->PlayEffect(p_effectId, volume);
+		((EffectPlay2Dispatch*) device)->PlayEffect(p_effectId, ((EffectPlay2Dispatch*) device)->QueryVolume(0));
 	}
 }
 

@@ -34,6 +34,7 @@ public:
 	friend class ResAnim;
 	friend class ResFont;
 	friend class MogRes;
+	friend class SoundManager;
 	friend class Text;
 	friend class Zrle;
 
