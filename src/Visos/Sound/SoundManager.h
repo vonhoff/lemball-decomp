@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498978
 class SoundManager {
 public:
-	SoundManager(unsigned char p_arg0, unsigned char p_arg1, unsigned char p_arg2, int p_arg3, Wnd* p_arg4);
+	SoundManager(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, int p_arg3, Wnd* p_arg4);
 	unsigned char GetEffectVolume();
 	unsigned long PrepareEffect(unsigned long p_resourceId);
 	unsigned long PrepareMusic(unsigned long p_resourceId, unsigned char p_flags);
@@ -56,4 +56,5 @@ private:
 };
 
 extern char g_szSoundDriverInfo[1024];
+extern SoundManager* g_pSoundManager;
 #endif

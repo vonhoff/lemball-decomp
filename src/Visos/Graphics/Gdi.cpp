@@ -54,21 +54,23 @@ void Gdi::AddToList(Primitive* p_primitive)
 // FUNCTION: LEMBALL 0x00467110
 void Gdi::Render()
 {
-	int i;
 	int offset;
+	int i;
+	Primitive* primitive;
 
 	if (m_renderTarget->BeginRender()) {
-		offset = 0;
 		i = 0;
-		if (m_primitiveCount > offset) {
+		offset = 0;
+		if (0 < m_primitiveCount) {
 			do {
-				g_pCurrentPrimitive = *(Primitive**) ((char*) m_primitives + offset);
-				if (CheckValidPointer(*(Primitive**) ((char*) m_primitives + offset))) {
-					(*(Primitive**) ((char*) m_primitives + offset))->Render(this);
+				primitive = *(Primitive**) ((char*) m_primitives + offset);
+				g_pCurrentPrimitive = primitive;
+				if (CheckValidPointer(primitive)) {
+					primitive->Render(this);
 				}
-				offset = offset + 4;
-				i = i + 1;
-			} while (m_primitiveCount > i);
+				offset += 4;
+				i++;
+			} while (i < m_primitiveCount);
 		}
 		m_renderTarget->EndRender();
 	}

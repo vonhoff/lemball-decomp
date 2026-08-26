@@ -1,5 +1,7 @@
 #include "Broadcast.h"
 
+#include "../Foundation/VsTime.h"
+
 // 68K 0x1020c60e __ct__10CBroadcastFv
 // STUB: LEMBALL 0x00460350
 Broadcast::Broadcast()
@@ -51,6 +53,13 @@ void Broadcast::Stop()
 {
 }
 
+void Broadcast::Dummy00() {}
+void Broadcast::Dummy04() {}
+void Broadcast::Dummy08() {}
+void Broadcast::Dummy0c() {}
+void Broadcast::Dummy10() {}
+void Broadcast::Dummy14() {}
+
 // 68K 0x1020cba0 PostRead__10CBroadcastF13NetworkEventsP11CBasePacket
 // STUB: LEMBALL 0x00460830
 void Broadcast::PostRead(NetworkEvents p_arg0, BasePacket* p_arg1)
@@ -76,15 +85,19 @@ void Broadcast::SendFailedInit(NetworkErrors p_arg0)
 }
 
 // 68K 0x1020ce72 Run__10CBroadcastFv
-// STUB: LEMBALL 0x00460a20
+// FUNCTION: LEMBALL 0x00460a20
 void Broadcast::Run()
 {
+	unsigned long time = CurrentMilliTimer();
+	m_runEnabled = 1;
+	m_lastBroadcastTime = time - 1000;
 }
 
 // 68K 0x1020ceaa Suspend__10CBroadcastFv
-// STUB: LEMBALL 0x00460a40
+// FUNCTION: LEMBALL 0x00460a40
 void Broadcast::Suspend()
 {
+	m_runEnabled = 0;
 }
 
 // 68K 0x1020ced4 Send__10CBroadcastFP15CNetworkAddressR17CBroadcastMessage

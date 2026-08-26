@@ -1,3 +1,5 @@
+#include "VsFile.h"
+#include "VsTime.h"
 #include "VsInit.h"
 
 #include "../../Control/Support/PreInit.h"
@@ -39,7 +41,6 @@ extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
 														  const char* p_text,
 														  const char* p_caption,
 														  unsigned int p_type);
-extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 
 jmp_buf g_vsExitJumpBuffer;
 
@@ -271,12 +272,8 @@ bool StatInit()
 // FUNCTION: LEMBALL 0x0045aab0
 bool StatQuit()
 {
-	if (g_pStatManager != 0) {
-		g_pStatManager->StreamOut(*g_pSysOutput);
-		g_pStatManager->~StatManager();
-		operator delete(g_pStatManager);
-		g_pStatManager = 0;
-	}
+	g_pStatManager->StreamOut(*g_pSysOutput);
+	delete g_pStatManager;
 	return 1;
 }
 
@@ -440,13 +437,11 @@ bool GdiInit()
 bool GdiQuit()
 {
 	Surface* surface;
-	TargetGraphicsSystemState* system;
 	GdiDevice* device;
-	Cursor* cursor;
+	TargetGraphicsSystemState* system;
 
-	cursor = g_pCursor;
-	if (cursor != 0) {
-		delete cursor;
+	if (g_pCursor != 0) {
+		delete g_pCursor;
 	}
 	surface = (Surface*) g_pGdiHelperTarget;
 	if (surface != 0) {
@@ -514,8 +509,8 @@ bool VsFNetInit()
 
 	SetThreadPriority(g_hFileNetworkThread, 2);
 
-	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == 0) {
+	startTime = CurrentMilliTimer();
+	while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork == 0) {
 	}
 	if (g_pBaseNetwork == 0) {
 		// STRING: LEMBALL 0x004a22a4 "Network initialisation timed out\n"
@@ -523,8 +518,8 @@ bool VsFNetInit()
 		return 0;
 	}
 
-	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
+	startTime = CurrentMilliTimer();
+	while (CurrentMilliTimer() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
 	}
 	if (g_pNetworkStatusQueue == 0) {
 		// STRING: LEMBALL 0x004a22c8 "Network queue initialisation timed out\n"
@@ -544,8 +539,8 @@ bool VsFNetQuit()
 	if (g_pBaseNetwork != 0) {
 		g_pBaseNetwork->m_shutdownRequested = 1;
 		g_pBaseNetwork->Process();
-		startTime = timeGetTime();
-		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != 0) {
+		startTime = CurrentMilliTimer();
+		while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork != 0) {
 		}
 		if (g_pBaseNetwork != 0) {
 			// STRING: LEMBALL 0x004a22f0 "Network quit timed out\n"
@@ -581,8 +576,8 @@ bool VsNetInit()
 
 	SetThreadPriority(g_hTCPIPNetworkThread, 2);
 
-	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == 0) {
+	startTime = CurrentMilliTimer();
+	while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork == 0) {
 	}
 	if (g_pBaseNetwork == 0) {
 		// STRING: LEMBALL 0x004a2400 "Network initialisation timed out\n"
@@ -590,8 +585,8 @@ bool VsNetInit()
 		return 0;
 	}
 
-	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
+	startTime = CurrentMilliTimer();
+	while (CurrentMilliTimer() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
 	}
 	if (g_pNetworkStatusQueue == 0) {
 		// STRING: LEMBALL 0x004a2424 "Network queue initialisation timed out\n"
@@ -611,8 +606,8 @@ bool VsNetQuit()
 	if (g_pBaseNetwork != 0) {
 		g_pBaseNetwork->m_shutdownRequested = 1;
 		g_pBaseNetwork->Process();
-		startTime = timeGetTime();
-		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != 0) {
+		startTime = CurrentMilliTimer();
+		while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork != 0) {
 		}
 		if (g_pBaseNetwork != 0) {
 			// STRING: LEMBALL 0x004a244c "Network quit timed out\n"
@@ -661,8 +656,22 @@ bool DbgInit()
 }
 
 // 68K 0x1010fd34 _DBG_Quit__FUc
-// STUB: LEMBALL 0x00472c70
-bool DbgQuit(unsigned char p_force)
+// FUNCTION: LEMBALL 0x00472c70
+bool DbgQuit(unsigned int p_force)
 {
-	return 0;
+	if (g_nAsyncDebugEnabled == 1) {
+		if (p_force == 0) {
+			WaitForSingleObject(g_pDebugSyncEvent, 0xffffffff);
+		}
+		else {
+			TerminateThread(g_pDebugThread, 0xaaaa);
+		}
+		g_nAsyncDebugEnabled = 0;
+		return 1;
+	}
+	if (g_pDebugOutputFile != 0) {
+		VsClose((_Filet*) g_pDebugOutputFile);
+		g_pDebugOutputFile = 0;
+	}
+	return 1;
 }

@@ -22,6 +22,7 @@ public:
 	void Stop();
 
 	friend class NetworkOptionsDrawer;
+	friend class NetworkOptionsProc;
 
 private:
 	NetworkGameMessage* m_gameMessage;    // 0x10

@@ -28,6 +28,7 @@ public:
 	~Connect();
 
 	friend class BaseNetwork;
+	friend class NetworkOptionsProc;
 
 private:
 	undefined4 m_unk0x04;               // 0x04

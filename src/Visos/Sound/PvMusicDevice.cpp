@@ -1,33 +1,61 @@
 #include "PvMusicDevice.h"
 
 // 68K 0x1010241c Initialise__14CPVMusicDeviceFUlUl
-// STUB: LEMBALL 0x0047f510
-unsigned long PvMusicDevice::Initialise(unsigned long p_resourceId, unsigned long p_flags)
+// FUNCTION: LEMBALL 0x0047f510
+void PvMusicDevice::Initialise(unsigned long p_resourceId, unsigned long p_flags)
 {
-	return 0;
+}
+
+void PvMusicDevice::Dummy08()
+{
+}
+
+void PvMusicDevice::Dummy0c()
+{
+}
+
+void PvMusicDevice::Dummy10()
+{
+}
+
+void PvMusicDevice::Dummy14()
+{
+}
+
+void PvMusicDevice::Dummy18()
+{
+}
+
+void PvMusicDevice::Dummy1c()
+{
+}
+
+void PvMusicDevice::Dummy2c()
+{
 }
 
 // 68K 0x1010244a SetVolume__14CPVMusicDeviceFUc
-// STUB: LEMBALL 0x0047f520
+// FUNCTION: LEMBALL 0x0047f520
 void PvMusicDevice::SetVolume(unsigned char p_volume)
 {
+	m_volume = p_volume;
 }
 
 // 68K 0x1010247c GetVolume__14CPVMusicDeviceFv
-// STUB: LEMBALL 0x0047f530
+// FUNCTION: LEMBALL 0x0047f530
 unsigned char PvMusicDevice::GetVolume()
 {
-	return 0;
+	return m_volume;
 }
 
 // 68K 0x101024aa Process__14CPVMusicDeviceFv
-// STUB: LEMBALL 0x0047f540
+// FUNCTION: LEMBALL 0x0047f540
 void PvMusicDevice::Process()
 {
 }
 
 // 68K 0x101024d0 GetInfo__14CPVMusicDeviceFv
-// STUB: LEMBALL 0x0047f550
+// FUNCTION: LEMBALL 0x0047f550
 char* PvMusicDevice::GetInfo()
 {
 	return 0;

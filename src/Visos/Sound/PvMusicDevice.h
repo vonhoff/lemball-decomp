@@ -8,12 +8,19 @@
 // VTABLE: LEMBALL 0x0049adb0
 class PvMusicDevice {
 public:
-	virtual ~PvMusicDevice();                                                   // vtable+0x00
-	virtual unsigned long Initialise(unsigned long p_resourceId, unsigned long p_flags); // vtable+0x04
-	virtual char* GetInfo();                                                    // vtable+0x30
-	virtual unsigned char GetVolume();                                          // vtable+0x24
-	virtual void Process();                                                     // vtable+0x28
-	virtual void SetVolume(unsigned char p_volume);                             // vtable+0x20
+	virtual ~PvMusicDevice();                                                            // vtable+0x00
+	virtual void Initialise(unsigned long p_resourceId, unsigned long p_flags); // vtable+0x04
+	virtual void Dummy08();                                                              // vtable+0x08
+	virtual void Dummy0c();                                                              // vtable+0x0c
+	virtual void Dummy10();                                                              // vtable+0x10
+	virtual void Dummy14();                                                              // vtable+0x14
+	virtual void Dummy18();                                                              // vtable+0x18
+	virtual void Dummy1c();                                                              // vtable+0x1c
+	virtual void SetVolume(unsigned char p_volume);                                      // vtable+0x20
+	virtual unsigned char GetVolume();                                                   // vtable+0x24
+	virtual void Process();                                                              // vtable+0x28
+	virtual void Dummy2c();                                                              // vtable+0x2c
+	virtual char* GetInfo();                                                             // vtable+0x30
 
 	friend class SoundManager;
 

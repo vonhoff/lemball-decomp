@@ -3,6 +3,12 @@
 
 #include "../../Common.h"
 
+struct EffectSlot {
+	undefined4 m_unk00;
+	unsigned int m_handle; // 0x04
+	undefined4 m_unk08;
+};
+
 // SIZE 0x2cc
 class SoundView {
 public:
@@ -11,7 +17,7 @@ public:
 	void ChangeState(unsigned short p_state, LoadUpdate* p_loadUpdate);
 	void PlayEffect(eSoundEffect p_soundId);
 	void PrepareEffects(unsigned short p_stateMask);
-	void SetEffectsOn(unsigned char p_enabled);
+	void SetEffectsOn(unsigned int p_enabled);
 	void SetEffectsVolume(unsigned char p_volume);
 	void SetMusicOn(unsigned char p_enabled);
 	void SetMusicVolume(unsigned char p_volume);
@@ -26,7 +32,7 @@ private:
 	unsigned short m_currentState;   // 0x0c
 	eSoundEffect m_pendingEffect;    // 0x10
 	undefined m_headerState[0x54];   // 0x14
-	undefined m_effectSlots[0x258];  // 0x68
+	EffectSlot m_effectSlots[50];    // 0x68
 	unsigned int m_musicResourceId;  // 0x2c0
 	unsigned int m_musicHandle;      // 0x2c4
 	unsigned int m_randomMusicIndex; // 0x2c8

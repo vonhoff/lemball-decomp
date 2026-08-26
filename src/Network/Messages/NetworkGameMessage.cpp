@@ -6,8 +6,9 @@ NetworkGameMessage::NetworkGameMessage()
 	: NetworkMessage(5)
 {
 	m_gameName[0] = '\0';
-	m_valid = 1;
+	m_valid = 0;
 	m_payloadCapacity += 0x1e;
+	m_headerEnabled = 1;
 }
 
 // 68K 0x10a000c2 AddData__19CNetworkGameMessageFv

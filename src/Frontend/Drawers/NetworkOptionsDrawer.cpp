@@ -5,7 +5,9 @@
 #include "../../Network/Messages/NetworkGameMessage.h"
 #include "../../Views/Display/Main2DDisplay.h"
 #include "../../Views/Sound/SoundView.h"
-#include "../../Visos/Foundation/VsRect.h"
+#include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Graphics/GWnd.h"
+#include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Network/Connect.h"
 #include "../../Visos/Network/NetworkAddress.h"
@@ -17,8 +19,6 @@
 #include <string.h>
 
 #pragma intrinsic(strcpy)
-
-extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 
 extern char* g_szBroadcastPeerName;
 
@@ -101,41 +101,65 @@ char g_szNetworkGameName[16];
 char g_szNetworkBroadcastAddress[16];
 
 // 68K 0x10806468 __ct__21CNetworkOptionsDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
-// STUB: LEMBALL 0x00453280
+// FUNCTION: LEMBALL 0x00453280
 NetworkOptionsDrawer::NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 0xc, 0x32, 200, 0, 100, 0x28)
 {
+	int offset;
+
+	m_networkMode = 0;
+	m_startPending = 0;
+	m_broadcasting = 0;
+	m_networkState = 0;
+	m_stopPending = 0;
+	m_connectionState = 0;
+	m_locked = 0;
+	m_lastDrawTime = 0;
+	m_redrawPending = 0;
+	m_acceptedPlayer = -1;
+	m_highlightedPlayer = -1;
+	m_visibleEntryCount = 0;
+	m_editingActive = 0;
+	m_pendingStage = 0;
+	m_message = 0;
+	m_messageDirty = 0;
+	m_messageStartTime = 0;
+	m_messageDuration = 0;
+	m_playerEntries = new EntryHandler[10];
+	offset = 0;
+	do {
+		((GWnd*) m_display)->m_hotAreaList->AddToList((EntryHandler*) ((char*) m_playerEntries + offset));
+		offset += 0x44;
+	} while (offset < 0x2a8);
+	m_editor = new EditString((GWnd*) m_display, m_gdi, 0x14, 0, 0);
+	if (m_editor != 0) {
+		m_editor->m_active = 0;
+	}
+	g_pNetworkOptionsDrawer = this;
 }
 
 // 68K 0x10806646 Load__21CNetworkOptionsDrawerFv
 // FUNCTION: LEMBALL 0x00453450
 void NetworkOptionsDrawer::Load()
 {
-	unsigned long* animIds2;
-	unsigned long* animIds0;
 	unsigned long* animIds1;
-	void* storage;
+	unsigned long* animIds0;
+	unsigned long* animIds2;
 
 	if (m_mode == 1) {
-		animIds2 = &g_anNetworkOptionsAnimIds[5];
-		animIds0 = &g_anNetworkOptionsAnimIds[3];
-		m_layoutTable = (NetworkOptionsLayout*) g_abNetworkOptionsLayoutLocal;
 		animIds1 = &g_anNetworkOptionsAnimIds[4];
+		animIds0 = &g_anNetworkOptionsAnimIds[3];
+		animIds2 = &g_anNetworkOptionsAnimIds[5];
+		m_layoutTable = (NetworkOptionsLayout*) g_abNetworkOptionsLayoutLocal;
 	}
 	else {
-		animIds2 = &g_anNetworkOptionsAnimIds[2];
-		animIds0 = &g_anNetworkOptionsAnimIds[0];
-		m_layoutTable = (NetworkOptionsLayout*) g_abNetworkOptionsLayoutIp;
 		animIds1 = &g_anNetworkOptionsAnimIds[1];
+		animIds0 = &g_anNetworkOptionsAnimIds[0];
+		animIds2 = &g_anNetworkOptionsAnimIds[2];
+		m_layoutTable = (NetworkOptionsLayout*) g_abNetworkOptionsLayoutIp;
 	}
 	m_handlerCount = 0;
-	storage = operator new(sizeof(HiliteController));
-	if (storage != 0) {
-		m_hiliteController = new (storage) HiliteController((GWnd*) m_display, m_gdi, 4, m_mode, 0);
-	}
-	else {
-		m_hiliteController = 0;
-	}
+	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 4, m_mode, 0);
 	m_hiliteController->AddButton(
 		m_layoutTable->m_framePos[0].m_x, m_layoutTable->m_framePos[0].m_y, animIds0, 1, 0, 0, 0, &m_handlerCount, 0xacef000c);
 	m_hiliteController->AddButton(
@@ -156,6 +180,36 @@ void NetworkOptionsDrawer::UnLoad()
 	}
 }
 
+// 68K 0x108067f4 __dt__21CNetworkOptionsDrawerFv
+// FUNCTION: LEMBALL 0x004535c0
+NetworkOptionsDrawer::~NetworkOptionsDrawer()
+{
+	int offset;
+	EditString* editor;
+
+	if (m_returnState == 0) {
+		if (g_pNetworkOptionsProc != 0) {
+			delete g_pNetworkOptionsProc;
+		}
+	}
+	else {
+		if (g_pNetworkOptionsProc != 0) {
+			g_pNetworkOptionsProc->StopBroadcast();
+		}
+	}
+	offset = 0;
+	do {
+		((GWnd*) m_display)->m_hotAreaList->RemoveFromList((EntryHandler*) ((char*) m_playerEntries + offset));
+		offset += 0x44;
+	} while (offset < 0x2a8);
+	delete[] m_playerEntries;
+	editor = m_editor;
+	if (editor != 0) {
+		operator delete(editor->m_text);
+		operator delete(editor);
+	}
+}
+
 // 68K 0x10806954 DrawBackGround__21CNetworkOptionsDrawerFv
 // FUNCTION: LEMBALL 0x00453690
 void NetworkOptionsDrawer::DrawBackGround()
@@ -169,10 +223,8 @@ void NetworkOptionsDrawer::DrawBackGround()
 // FUNCTION: LEMBALL 0x004536b0
 void NetworkOptionsDrawer::DrawFrame(int p_position)
 {
-	NetworkOptionsFramePos* pos;
-
-	pos = &m_layoutTable->m_framePos[p_position];
-	BaseFrontendDrawer::DrawFrame(VsRect(pos->m_x, pos->m_y, pos[1].m_x, pos[1].m_y));
+	NetworkOptionsFramePos* pos = &m_layoutTable->m_framePos[p_position];
+	BaseFrontendDrawer::DrawFrame(VsRect(pos[0].m_x, pos[0].m_y, pos[1].m_x, pos[1].m_y));
 }
 
 // 68K 0x10806ab0 DrawEntry__21CNetworkOptionsDrawerFUlRi7eRemaps
@@ -209,14 +261,17 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 // FUNCTION: LEMBALL 0x00454520
 void NetworkOptionsDrawer::Start(unsigned int p_mode)
 {
+	unsigned int mode;
+
 	if (m_editingActive != 0) {
-		if (m_networkMode != 0) {
+		mode = m_networkMode;
+		if (mode != 0) {
 			if (p_mode != 0) {
-				StopEditing();
-				return;
+				goto stop_editing;
 			}
 		}
-		else if (p_mode == 0) {
+		if (mode == 0 && p_mode == 0) {
+		stop_editing:
 			StopEditing();
 			return;
 		}
@@ -268,7 +323,7 @@ void NetworkOptionsDrawer::SetMessage(int p_message)
 	m_message = p_message;
 	m_messageDuration = 0;
 	m_backBufferNeeded = 1;
-	now = timeGetTime();
+	now = CurrentMilliTimer();
 	m_redrawPending = 1;
 	m_lastDrawTime = now;
 }
@@ -359,11 +414,11 @@ void NetworkOptionsDrawer::StartMessageTimeout(int p_message, unsigned long p_du
 	unsigned long now;
 
 	m_message = p_message;
-	now = timeGetTime();
+	now = CurrentMilliTimer();
 	m_backBufferNeeded = 1;
 	m_messageStartTime = now;
 	m_messageDuration = p_duration;
-	now = timeGetTime();
+	now = CurrentMilliTimer();
 	m_redrawPending = 1;
 	m_lastDrawTime = now;
 }
@@ -376,12 +431,12 @@ void NetworkOptionsDrawer::Processing()
 	unsigned long duration;
 	unsigned int ident;
 	char* peer;
-	int index;
-	int offset;
-	unsigned int activation;
-	Connect** connections;
-	Connect** current;
 	Connect* connection;
+	int offset;
+	Connect** current;
+	Connect** connections;
+	int index;
+	int activation;
 
 	if (m_messageDirty != (unsigned int) m_message) {
 		return;
@@ -397,10 +452,10 @@ void NetworkOptionsDrawer::Processing()
 	if (m_pendingEvent != 0) {
 		LastError();
 	}
-	now = timeGetTime();
+	now = CurrentMilliTimer();
 	if (now - m_lastDrawTime >= 500) {
 		m_redrawPending = m_redrawPending == 0;
-		now = timeGetTime();
+		now = CurrentMilliTimer();
 		m_lastDrawTime = now;
 	}
 	if (g_pNetworkManager != 0) {
@@ -428,9 +483,9 @@ void NetworkOptionsDrawer::Processing()
 			InitialiseHandlers();
 		}
 		connections = g_pNetworkManager->m_connections;
-		index = 0;
 		offset = 0;
 		current = connections;
+		index = 0;
 		do {
 			if (((EntryHandler*) ((char*) m_playerEntries + offset))->m_pressed != 0 &&
 				m_acceptedPlayer != index) {
@@ -459,7 +514,7 @@ void NetworkOptionsDrawer::Processing()
 	if (m_message != 0) {
 		duration = m_messageDuration;
 		if (duration != 0) {
-			now = timeGetTime();
+			now = CurrentMilliTimer();
 			if (now - m_messageStartTime > duration) {
 				m_message = 1;
 				m_backBufferNeeded = 1;
@@ -633,15 +688,15 @@ bool NetworkOptionsDrawer::HighlightNextEntry()
 void NetworkOptionsDrawer::InitialiseHandlers()
 {
 	int offset;
-	int width;
-	int stride;
-	short height;
-	short y;
-	short x;
 	Connect** connections;
 	NetworkGameMessage* messages;
 	unsigned int* valid;
 	EntryHandler* entry;
+	short height;
+	short y;
+	short x;
+	short width;
+	int stride;
 
 	connections = 0;
 	messages = 0;
@@ -649,20 +704,20 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 		connections = g_pNetworkManager->m_connections;
 		messages = g_pNetworkManager->m_gameMessages;
 	}
+	y = (short) m_layoutTable->m_entryY;
 	height = m_layoutTable->m_entryHeight;
-	y = m_layoutTable->m_entryY;
-	x = m_layoutTable->m_entryX;
 	width = m_layoutTable->m_entryWidth;
+	x = (short) m_layoutTable->m_entryX;
 	valid = &messages->m_valid;
 	m_visibleEntryCount = 0;
 	offset = 0;
 	do {
 		entry = (EntryHandler*) ((char*) m_playerEntries + offset);
 		if (m_visibleEntryCount < 4 && connections != 0 && *connections != 0 && *valid != 0) {
-			entry->m_width = (unsigned short) width;
-			entry->m_height = height;
 			entry->m_x = x;
 			entry->m_y = y;
+			entry->m_width = width;
+			entry->m_height = height;
 			entry->SetActive(1);
 			stride = m_layoutTable->m_rowStride;
 			y = y + (short) stride;
@@ -741,7 +796,7 @@ bool NetworkOptionsDrawer::AcceptingLock()
 	Connect** connections;
 	GameStatus* status;
 
-	unlocked = m_locked < 1;
+	unlocked = m_locked == 0;
 	if (g_pNetworkManager != 0) {
 		connections = g_pNetworkManager->m_connections;
 		if (m_acceptedPlayer != -1 && connections[m_acceptedPlayer] != 0) {
@@ -764,6 +819,3 @@ bool NetworkOptionsDrawer::AcceptingLock()
 // 68K 0x10806800 __dt__21CNetworkOptionsDrawerFv
 // SYNTHETIC: LEMBALL 0x00455de0
 // NetworkOptionsDrawer::`scalar deleting destructor'
-NetworkOptionsDrawer::~NetworkOptionsDrawer()
-{
-}

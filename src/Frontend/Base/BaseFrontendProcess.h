@@ -6,8 +6,9 @@
 #include "../../Visos/Foundation/Process.h"          // complete type
 
 // SIZE 0x28
+// VTABLE: LEMBALL 0x00497938 BaseQueueHandler
 // VTABLE: LEMBALL 0x00497948
-class BaseFrontendProcess : public Process {
+class BaseFrontendProcess : public Process, public BaseQueueHandler {
 public:
 	BaseFrontendProcess(Game* p_arg0);
 	bool ProcessMsg(Message* p_message);
@@ -19,8 +20,9 @@ public:
 	void Action(int p_action, int p_stage);
 	BaseFrontendProcess();
 
+	friend class NetworkOptionsProc;
+
 private:
-	BaseQueueHandler m_queueHandler; // 0x0c
 	unsigned int m_networkWasActive; // 0x1c
 	void* m_userActionMessage;       // 0x20
 	Game* m_game;                    // 0x24

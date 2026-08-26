@@ -12,6 +12,86 @@ BaseSoundDevice::BaseSoundDevice()
 {
 }
 
+void BaseSoundDevice::Dummy04()
+{
+}
+
+void BaseSoundDevice::Dummy08()
+{
+}
+
+void BaseSoundDevice::Dummy0c()
+{
+}
+
+void BaseSoundDevice::Dummy10()
+{
+}
+
+void BaseSoundDevice::Dummy14()
+{
+}
+
+void BaseSoundDevice::Dummy18()
+{
+}
+
+void BaseSoundDevice::Dummy1c()
+{
+}
+
+void BaseSoundDevice::Dummy20()
+{
+}
+
+void BaseSoundDevice::Dummy24()
+{
+}
+
+void BaseSoundDevice::Dummy28()
+{
+}
+
+void BaseSoundDevice::Dummy2c()
+{
+}
+
+void BaseSoundDevice::Dummy30()
+{
+}
+
+void BaseSoundDevice::Dummy34()
+{
+}
+
+void BaseSoundDevice::Dummy38()
+{
+}
+
+void BaseSoundDevice::Dummy3c()
+{
+}
+
+void BaseSoundDevice::Dummy40()
+{
+}
+
+void BaseSoundDevice::Dummy44()
+{
+}
+
+void BaseSoundDevice::Dummy48()
+{
+}
+
+void BaseSoundDevice::Dummy4c()
+{
+}
+
+void BaseSoundDevice::Dummy50()
+{
+}
+
 // 68K 0x10217e02 GetMasterVolume__16CBaseSoundDeviceFv
 // FUNCTION: LEMBALL 0x0047f980
 unsigned char BaseSoundDevice::GetMasterVolume()
@@ -78,7 +158,7 @@ void BaseSoundDevice::MusicStopNote(unsigned char p_channel, unsigned char p_not
 
 // 68K 0x1021800c MusicSetChannelVolume__16CBaseSoundDeviceFUcUc
 // FUNCTION: LEMBALL 0x0047fa20
-bool BaseSoundDevice::MusicSetChannelVolume(unsigned char p_channel, unsigned char p_volume)
+unsigned char BaseSoundDevice::MusicSetChannelVolume(unsigned char p_channel, unsigned char p_volume)
 {
 	return 0;
 }
@@ -103,14 +183,14 @@ void BaseSoundDevice::MusicMiscControlMessage(unsigned char p_channel, unsigned 
 
 // 68K 0x102180f8 EffectPlay__16CBaseSoundDeviceFUlUsUc
 // FUNCTION: LEMBALL 0x0047fa60
-bool BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, unsigned char p_volume)
+unsigned char BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, unsigned char p_volume)
 {
 	return 0;
 }
 
 // 68K 0x1021812c EffectPlay__16CBaseSoundDeviceFUlUcUc
 // FUNCTION: LEMBALL 0x0047fa70
-bool BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume)
+unsigned char BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume)
 {
 	return 0;
 }

@@ -3,7 +3,7 @@
 
 #include "../../Common.h"
 
-bool InitSound(unsigned char p_arg0, unsigned char p_arg1, int p_arg2, Wnd* p_arg3, unsigned char p_arg4);
+bool InitSound(unsigned int p_musicEnabled, unsigned int p_effectsEnabled, int p_channelCount, Wnd* p_window, unsigned int p_platformFlag);
 void EndSound();
 int MachineSoundDetect(BaseSoundDevice** p_devices,
 					   unsigned char p_musicEnabled,

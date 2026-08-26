@@ -1,13 +1,13 @@
 #include "PulseMessage.h"
 
 // 68K 0x10107356 AddData__13CPulseMessageFv
-// STUB: LEMBALL 0x00462af0
+// FUNCTION: LEMBALL 0x00462af0
 void PulseMessage::AddData()
 {
 }
 
 // 68K 0x1010737c GetData__13CPulseMessageFv
-// STUB: LEMBALL 0x00462b00
+// FUNCTION: LEMBALL 0x00462b00
 void PulseMessage::GetData()
 {
 }

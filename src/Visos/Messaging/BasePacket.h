@@ -9,7 +9,9 @@ class BasePacket {
 public:
 	virtual ~BasePacket(); // vtable+0x00
 
-private:
+	friend class NetworkOptionsProc;
+
+protected:
 	unsigned char* m_data; // 0x04
 };
 

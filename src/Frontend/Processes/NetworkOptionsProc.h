@@ -5,6 +5,7 @@
 #include "../Base/BaseFrontendProcess.h" // complete type
 
 // SIZE 0x38
+// VTABLE: LEMBALL 0x004986d8 BaseQueueHandler
 // VTABLE: LEMBALL 0x004986e8
 class NetworkOptionsProc : public BaseFrontendProcess {
 public:
@@ -29,4 +30,5 @@ private:
 };
 
 extern NetworkOptionsProc* g_pNetworkOptionsProc;
+extern class NetworkOptionsDrawer* g_pNetworkOptionsDrawer;
 #endif

@@ -24,7 +24,13 @@ public:
 	void Send(NetworkAddress* p_arg0, BroadcastMessage& p_arg1);
 	void SendFailedInit(NetworkErrors p_arg0);
 	void SetSpecificAddr(const char* p_arg0);
-	void Stop();
+	virtual void Dummy00();
+	virtual void Dummy04();
+	virtual void Dummy08();
+	virtual void Dummy0c();
+	virtual void Dummy10();
+	virtual void Dummy14();
+	virtual void Stop();
 	void Suspend();
 	~Broadcast();
 

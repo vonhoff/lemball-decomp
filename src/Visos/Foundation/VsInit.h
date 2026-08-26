@@ -32,5 +32,5 @@ bool VsNetInit();
 bool VsNetQuit();
 void InitPreInit();
 bool DbgInit();
-bool DbgQuit(unsigned char p_force);
+bool DbgQuit(unsigned int p_force);
 #endif

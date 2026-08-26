@@ -32,10 +32,10 @@ private:
 	unsigned int m_buttonState[6];  // 0x10
 	unsigned int m_externalEnabled; // 0x28
 	unsigned int m_reserved;        // 0x2c
-	unsigned short m_width;         // 0x30
-	unsigned short m_height;        // 0x32
-	short m_x;                      // 0x34
-	short m_y;                      // 0x36
+	short m_x;                      // 0x30
+	short m_y;                      // 0x32
+	short m_width;                  // 0x34
+	short m_height;                 // 0x36
 };
 
 #endif

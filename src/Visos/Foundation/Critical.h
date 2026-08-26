@@ -11,6 +11,7 @@ __declspec(dllimport) void __stdcall LeaveCriticalSection(void*);
 }
 
 // SIZE 0x1c
+// VTABLE: LEMBALL 0x004988d0
 class Critical {
 public:
 	inline Critical()

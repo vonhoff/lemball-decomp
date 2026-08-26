@@ -38,6 +38,7 @@ public:
 	~PvWnd();
 
 	friend class PauseWindow;
+	friend class NetworkOptionsDrawer;
 
 private:
 	unsigned int m_lifecycleRefs; // 0x04

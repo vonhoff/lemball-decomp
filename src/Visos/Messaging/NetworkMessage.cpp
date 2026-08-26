@@ -1,6 +1,8 @@
 #include "NetworkMessage.h"
 
+#include "../Foundation/BaseQueueHandler.h"
 #include "../Foundation/VsMem.h"
+#include "../Network/BaseNetwork.h"
 
 #include <string.h>
 
@@ -300,7 +302,18 @@ bool NetworkMessage::Set(unsigned char* p_arg0)
 }
 
 // 68K 0x1020abb4 Send__15CNetworkMessageFP8CConnect
-// STUB: LEMBALL 0x0045f2b0
+// FUNCTION: LEMBALL 0x0045f2b0
 void NetworkMessage::Send(Connect* p_arg0)
 {
+	if (p_arg0 != 0) {
+		Message msg;
+		msg.type = 0xb;
+		msg.code = 1;
+		msg.source = this;
+		msg.payload = p_arg0;
+		OpenDataStream();
+		m_pendingSendCount = 1;
+		g_pNetworkPacketQueue->ProcessMsg(&msg);
+		g_pBaseNetwork->Process();
+	}
 }

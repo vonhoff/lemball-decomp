@@ -29,7 +29,7 @@ public:
 	void DoLoad(unsigned int p_resourceId);
 	void Initialise();
 	void UnLoad();
-	void UnLoadExtData(unsigned char p_force);
+	void UnLoadExtData(unsigned int p_force);
 
 	friend class ResAnim;
 	friend class ResFont;

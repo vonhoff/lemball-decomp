@@ -1,10 +1,9 @@
 #include "Connect.h"
 
 #include "../Foundation/VsMem.h"
+#include "../Foundation/VsTime.h"
 
 #include <new.h>
-
-extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x1020cf50 __ct__8CConnectFv
 // STUB: LEMBALL 0x00460a90
@@ -51,7 +50,7 @@ bool Connect::CheckConnectTime()
 	unsigned long now;
 
 	if (m_established == 0) {
-		now = timeGetTime();
+		now = CurrentMilliTimer();
 		if (4000 < now - m_connectTime) {
 			Kill();
 			return 0;
@@ -64,7 +63,7 @@ bool Connect::CheckConnectTime()
 // FUNCTION: LEMBALL 0x00460d10
 void Connect::SetConnectTime()
 {
-	m_connectTime = timeGetTime();
+	m_connectTime = CurrentMilliTimer();
 }
 
 // 68K 0x1020d2ea Stop__8CConnectFv

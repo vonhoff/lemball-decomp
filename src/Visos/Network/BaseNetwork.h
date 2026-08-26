@@ -37,6 +37,7 @@ public:
 
 	friend bool VsFNetQuit();
 	friend bool VsNetQuit();
+	friend class NetworkOptionsProc;
 
 private:
 	char* m_networkName;                      // 0x10
@@ -44,7 +45,7 @@ private:
 	unsigned int m_serverMode;                // 0x18
 	unsigned int m_initialized;               // 0x1c
 	unsigned int m_initialisePending;         // 0x20
-	void* m_broadcast;                        // 0x24
+	Broadcast* m_broadcast;                  // 0x24
 	Connect* m_firstConnect;                  // 0x28
 	Connect* m_lastConnect;                   // 0x2c
 	undefined4 m_unk0x30;                     // 0x30

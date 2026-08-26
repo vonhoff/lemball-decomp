@@ -5,10 +5,9 @@
 // FUNCTION: LEMBALL 0x0045e4d0
 ResPres* ResPres::Load(unsigned int p_resourceId)
 {
-	register unsigned int id = p_resourceId;
-	ResPres* res = (ResPres*) g_pActiveMogRes->Find(id);
+	ResPres* res = (ResPres*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == 0) {
-		return (ResPres*) (new ResPres(id))->CheckError();
+		return (ResPres*) (new ResPres(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != kChunkPres) {
 		res->UnLoad();

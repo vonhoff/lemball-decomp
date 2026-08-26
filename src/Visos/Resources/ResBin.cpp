@@ -6,10 +6,9 @@
 // FUNCTION: LEMBALL 0x0045e540
 ResBin* ResBin::Load(unsigned int p_resourceId)
 {
-	register unsigned int id = p_resourceId;
-	ResBin* res = (ResBin*) g_pActiveMogRes->Find(id);
+	ResBin* res = (ResBin*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == 0) {
-		return (ResBin*) (new ResBin(id))->CheckError();
+		return (ResBin*) (new ResBin(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x42494e20) {
 		res->UnLoad();

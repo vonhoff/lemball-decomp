@@ -1,4 +1,9 @@
 #include "SoundView.h"
+#include "../../Frontend/Base/BaseFrontendProcess.h"
+#include "../../Visos/Sound/SoundManager.h"
+
+// GLOBAL: LEMBALL 0x0049ed98
+unsigned int g_dwEffectsOn = 0;
 
 // GLOBAL: LEMBALL 0x0049eb80
 SoundView* g_pSoundView = 0;
@@ -16,15 +21,21 @@ SoundView::~SoundView()
 }
 
 // 68K 0x10b0fc30 SetEffectsOn__10CSoundViewFUc
-// STUB: LEMBALL 0x00439b50
-void SoundView::SetEffectsOn(unsigned char p_enabled)
+// FUNCTION: LEMBALL 0x00439b50
+void SoundView::SetEffectsOn(unsigned int p_enabled)
 {
+	if (g_nEffectsAvailable != 0) {
+		g_dwEffectsOn = p_enabled;
+	}
 }
 
 // 68K 0x10b0fc68 PlayEffect__10CSoundViewF12eSoundEffect
-// STUB: LEMBALL 0x00439b70
+// FUNCTION: LEMBALL 0x00439b70
 void SoundView::PlayEffect(eSoundEffect p_soundId)
 {
+	if (g_dwEffectsOn != 0) {
+		g_pSoundManager->PlayEffect(m_effectSlots[p_soundId].m_handle);
+	}
 }
 
 // 68K 0x10b0fcd2 SetMusicOn__10CSoundViewFUc

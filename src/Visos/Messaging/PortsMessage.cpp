@@ -14,15 +14,17 @@ bool PortsMessage::AnyUsed()
 }
 
 // 68K 0x10107624 AddData__13CPortsMessageFv
-// STUB: LEMBALL 0x0047b870
+// FUNCTION: LEMBALL 0x0047b870
 void PortsMessage::AddData()
 {
+	Add(m_useCounts, 0x200);
 }
 
 // 68K 0x10107660 GetData__13CPortsMessageFv
-// STUB: LEMBALL 0x0047b880
+// FUNCTION: LEMBALL 0x0047b880
 void PortsMessage::GetData()
 {
+	GetCopy(m_useCounts, 0x200);
 }
 
 // 68K 0x1010769c __dt__13CPortsMessageFv

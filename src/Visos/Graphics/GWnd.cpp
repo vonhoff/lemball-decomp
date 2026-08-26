@@ -69,9 +69,11 @@ void GWnd::Refresh(VsRect* p_rect)
 }
 
 // 68K 0x1010a7ac Create__5CGWndFRC7CVSRectP6CPVWndPcUl
-// STUB: LEMBALL 0x00464440
+// FUNCTION: LEMBALL 0x00464440
 void GWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title, unsigned long p_paletteId)
 {
+	Wnd::Create(p_rect, p_parent, p_title);
+	AttachPalette(p_paletteId);
 }
 
 // 68K 0x1010b4c6 Create__5CGWndFRC7CVSRectP6CPVWndPc
