@@ -53,8 +53,6 @@ void PasswordDrawer::Processing()
 // STUB: LEMBALL 0x00451aa0
 void PasswordDrawer::DrawText()
 {
-	// STRING: LEMBALL 0x004a008c "Password OK!"
-	// STRING: LEMBALL 0x004a009c "Invalid Password!"
 }
 
 // 68K 0x1080d034 DrawPassword__15CPasswordDrawerFv

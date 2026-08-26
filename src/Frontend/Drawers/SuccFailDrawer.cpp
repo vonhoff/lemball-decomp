@@ -4,14 +4,12 @@
 // STUB: LEMBALL 0x00450020
 SuccFailDrawer::SuccFailDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3)
 {
-	// STRING: LEMBALL 0x0049fe10 "lemball"
 }
 
 // 68K 0x1080919a CalculateText__15CSuccFailDrawerFv
 // STUB: LEMBALL 0x00450160
 void SuccFailDrawer::CalculateText()
 {
-	// STRING: LEMBALL 0x0049fc88 "Password:"
 }
 
 // 68K 0x10809508 Load__15CSuccFailDrawerFv
@@ -68,7 +66,6 @@ bool SuccFailDrawer::ConfirmedAction(int p_action)
 // STUB: LEMBALL 0x00450a90
 void SuccFailDrawer::Processing()
 {
-	// STRING: LEMBALL 0x0049fe18 "Paintball Sequence"
 }
 
 // 68K 0x10809d96 DrawBackGround__15CSuccFailDrawerFv

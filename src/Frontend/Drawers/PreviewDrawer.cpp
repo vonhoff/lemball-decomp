@@ -28,7 +28,6 @@ void PreviewDrawer::DrawBackGround()
 // STUB: LEMBALL 0x004497b0
 void PreviewDrawer::DrawText()
 {
-	// STRING: LEMBALL 0x0049f8d4 "Infinite"
 }
 
 // 68K 0x1080b82e DrawAnims__14CPreviewDrawerFv
@@ -85,7 +84,6 @@ void PreviewDrawer::Processing()
 // STUB: LEMBALL 0x00449f60
 void PreviewDrawer::LoadLevelInformation()
 {
-	// STRING: LEMBALL 0x0049f910 "UN-NAMED LEVEL"
 }
 
 // 68K 0x1080c14e SubWord__14CPreviewDrawerFPcPcRiRi

@@ -4,7 +4,6 @@
 // STUB: LEMBALL 0x0046f4f0
 void FileBroadcast::Setup(const char* p_peerName, const char* p_path)
 {
-	// STRING: LEMBALL 0x004a2308 "Found Local host OK: "
 }
 
 // 68K 0x10208278 __ct__14CFileBroadcastFv

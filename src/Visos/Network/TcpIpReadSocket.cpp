@@ -4,7 +4,6 @@
 // STUB: LEMBALL 0x0046fe10
 bool TcpIpReadSocket::ReadBuffFrom()
 {
-	// STRING: LEMBALL 0x004a2494 "Receive error (after receive from):"
 	return 0;
 }
 
@@ -12,7 +11,6 @@ bool TcpIpReadSocket::ReadBuffFrom()
 // STUB: LEMBALL 0x0046fee0
 bool TcpIpReadSocket::ReadBuff()
 {
-	// STRING: LEMBALL 0x004a24bc "Receive error (after receive):"
 	return 0;
 }
 
@@ -20,7 +18,6 @@ bool TcpIpReadSocket::ReadBuff()
 // STUB: LEMBALL 0x0046ff90
 int TcpIpReadSocket::Process()
 {
-	// STRING: LEMBALL 0x004a24e0 "Receive error:"
 	return 0;
 }
 

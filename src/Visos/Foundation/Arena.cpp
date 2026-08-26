@@ -219,7 +219,6 @@ bool Arena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_descr
 	if (aligned > m_freeSize) {
 		Hex hexSize;
 		hexSize.m_value = aligned;
-		// STRING: LEMBALL 0x004a1184 "CArena::Allocate : Not enough free memory : "
 		*g_pErrorOutput << "CArena::Allocate : Not enough free memory : " << p_description << " : 0x" << hexSize
 						<< " : Free Size is " << (unsigned long) m_freeSize << "\n";
 		LeaveCritical();
@@ -230,7 +229,6 @@ bool Arena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_descr
 		unsigned long freeSize = m_freeSize;
 		Hex hexSize;
 		hexSize.m_value = aligned;
-		// STRING: LEMBALL 0x004a11d4 "CArena::Allocate : memory blocks are too fragmented to satisfy : "
 		*g_pErrorOutput << "CArena::Allocate : memory blocks are too fragmented to satisfy : " << p_description
 						<< " : 0x" << hexSize << " : Free Size is " << freeSize << "\n";
 		{
@@ -247,7 +245,6 @@ bool Arena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_descr
 		block->SetDesc(p_description);
 		block->m_flags &= ~1;
 		RemoveFromFreeList(block);
-		// STRING: LEMBALL 0x004a1238 "Free"
 		leftover = CreateNewBlock(block->m_data + aligned, (Arena*) block->m_description, 0, "Free", oldSize - aligned);
 		leftover->m_flags |= 1;
 		AddToFreeList(leftover);
@@ -306,7 +303,6 @@ bool Arena::AllocateArena(Arena** p_arena, unsigned long p_size, char* p_descrip
 	MBlock* block;
 	Arena* arena;
 
-	// STRING: LEMBALL 0x004a1240 "Arena container"
 	if (!Allocate(&memory, (*p_arena = 0, p_size), "Arena container")) {
 		return 0;
 	}

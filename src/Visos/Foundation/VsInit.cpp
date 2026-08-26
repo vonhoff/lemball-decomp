@@ -127,7 +127,6 @@ bool StrmQuit()
 // STUB: LEMBALL 0x00459130
 bool InpInit()
 {
-	// STRING: LEMBALL 0x004a0fb4 "Master Input Queue."
 	return 0;
 }
 
@@ -156,8 +155,6 @@ void InitSubSystems()
 
 	memOk = MemInit();
 	if (memOk == 0) {
-		// STRING: LEMBALL 0x004a0fd4 "EnoughMemory"
-		// STRING: LEMBALL 0x004a0fc8 "VSINIT.CPP"
 		VsRelAssert("EnoughMemory", "VSINIT.CPP", 0x19e);
 	}
 
@@ -166,44 +163,30 @@ void InitSubSystems()
 	g_nDebugInitialized = dbgOk;
 	TargetPlatformServicesInit();
 
-	// STRING: LEMBALL 0x004a0fe4 "ViSOS v"
 	*g_pSysOutput << "ViSOS v" << g_nVisosVersionMajor << "." << g_nVisosVersionMinor << "(" << 201 << ")"
 				  << "\n";
-	// STRING: LEMBALL 0x004a0ea0 "1994,1995"
-	// STRING: LEMBALL 0x004a1000 " Visual Sciences Ltd\n\n"
 	*g_pSysOutput << "(c)" << "1994,1995" << " Visual Sciences Ltd\n\n";
-	// STRING: LEMBALL 0x004a1018 "_MEM_Init   : "
-	// STRING: LEMBALL 0x004a1028 "...\t("
 	*g_pSysOutput << "_MEM_Init   : " << OkFailed(memOk) << "...\t(" << (int) g_preInitActive.m_memoryBudget << ")\n";
-	// STRING: LEMBALL 0x004a1034 "_STRM_Init  : "
 	*g_pSysOutput << "_STRM_Init  : " << OkFailed(strmOk) << "...\n";
-	// STRING: LEMBALL 0x004a104c "_DBG_Init   : "
 	*g_pSysOutput << "_DBG_Init   : " << OkFailed(dbgOk) << "...\n";
 
 	g_nInitAllocBaseline = g_pMasterArena->GetAllocSize();
 
 	inpOk = InpInit();
-	// STRING: LEMBALL 0x004a1064 "_INP_Init   : "
 	*g_pSysOutput << "_INP_Init   : " << OkFailed(inpOk) << "...\n";
 
 	timeOk = TimeInit();
-	// STRING: LEMBALL 0x004a107c "_TIME_Init  : "
 	*g_pSysOutput << "_TIME_Init  : " << OkFailed(timeOk) << "...\n";
 
 	gdiOk = GdiInit();
-	// STRING: LEMBALL 0x004a1094 "_GDI_Init   : "
-	// STRING: LEMBALL 0x004a10a4 "...\t("
 	*g_pSysOutput << "_GDI_Init   : " << OkFailed(gdiOk) << "...\t(" << (int) g_preInitActive.m_flags << ")\n";
 
 	statOk = StatInit();
-	// STRING: LEMBALL 0x004a10b0 "_STAT_Init  : "
 	*g_pSysOutput << "_STAT_Init  : " << OkFailed(statOk) << "...\n";
 
 	resOk = ResInit();
-	// STRING: LEMBALL 0x004a10c8 "_RES_Init   : "
 	*g_pSysOutput << "_RES_Init   : " << OkFailed(resOk) << "...\n";
 
-	// STRING: LEMBALL 0x004a10e0 "Main memory arena"
 	storage = operator new(0x20);
 	if (storage != 0) {
 		stat = (BaseStat*) storage;
@@ -220,16 +203,12 @@ void InitSubSystems()
 // STUB: LEMBALL 0x00459520
 void InitQuitSubSystems()
 {
-	// STRING: LEMBALL 0x004a1100 "**** MEMORY LEAK, dumping memory contents ****\n"
 }
 
 // 68K 0x102138be INIT_CheckOptions__FPc
 // STUB: LEMBALL 0x004595d0
 bool InitCheckOptions(char* p_arg0)
 {
-	// STRING: LEMBALL 0x004a0f20 "paranoid"
-	// STRING: LEMBALL 0x004a0f2c "nowait"
-	// STRING: LEMBALL 0x004a0f21 "paranoid"
 	return 0;
 }
 
@@ -244,9 +223,6 @@ char* InitCmdLine(char* p_arg0)
 // STUB: LEMBALL 0x00459860
 int InitMain(char* p_arg0)
 {
-	// STRING: LEMBALL 0x004a1134 "Command line options:\n"
-	// STRING: LEMBALL 0x004a114c "  Option "
-	// STRING: LEMBALL 0x004a1168 "selected\n"
 	return 0;
 }
 
@@ -470,7 +446,6 @@ bool GdiQuit()
 // STUB: LEMBALL 0x0046f060
 bool MemInit()
 {
-	// STRING: LEMBALL 0x004a2184 "Master Main Ram Arena"
 	return 0;
 }
 
@@ -478,10 +453,6 @@ bool MemInit()
 // STUB: LEMBALL 0x0046f120
 bool MemQuit()
 {
-	// STRING: LEMBALL 0x004a219c "Master Main RAM Arena memory was locked, when it should not have been\n"
-	// STRING: LEMBALL 0x004a21e4 "attempting to unlock it iteratively\n"
-	// STRING: LEMBALL 0x004a220c "Freeing the Master Main RAM Arena memory failed\n"
-	// STRING: LEMBALL 0x004a2240 "GetLastError()=="
 	return 0;
 }
 
@@ -501,8 +472,6 @@ bool VsFNetInit()
 	g_hFileNetworkThread =
 		CreateThread(0, 0, FileNetworkMessageThread, 0, 0, &g_dwFileNetworkThreadId);
 	if (g_hFileNetworkThread == 0) {
-		// STRING: LEMBALL 0x004a2274 "Unable to start 'VSNET Message loop' thread\n"
-		// STRING: LEMBALL 0x004a226c "ERROR"
 		MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
 		ExitProcess(0xbbbb);
 	}
@@ -513,7 +482,6 @@ bool VsFNetInit()
 	while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork == 0) {
 	}
 	if (g_pBaseNetwork == 0) {
-		// STRING: LEMBALL 0x004a22a4 "Network initialisation timed out\n"
 		*g_pErrorOutput << "Network initialisation timed out\n";
 		return 0;
 	}
@@ -522,7 +490,6 @@ bool VsFNetInit()
 	while (CurrentMilliTimer() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
 	}
 	if (g_pNetworkStatusQueue == 0) {
-		// STRING: LEMBALL 0x004a22c8 "Network queue initialisation timed out\n"
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
 		return 0;
 	}
@@ -543,7 +510,6 @@ bool VsFNetQuit()
 		while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork != 0) {
 		}
 		if (g_pBaseNetwork != 0) {
-			// STRING: LEMBALL 0x004a22f0 "Network quit timed out\n"
 			*g_pErrorOutput << "Network quit timed out\n";
 			return 0;
 		}
@@ -568,8 +534,6 @@ bool VsNetInit()
 	g_hTCPIPNetworkThread =
 		CreateThread(0, 0, TcpIpNetworkMessageThread, 0, 0, &g_dwTCPIPNetworkThreadId);
 	if (g_hTCPIPNetworkThread == 0) {
-		// STRING: LEMBALL 0x004a23d0 "Unable to start 'VSNET Message loop' thread\n"
-		// STRING: LEMBALL 0x004a23c8 "ERROR"
 		MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
 		ExitProcess(0xbbbb);
 	}
@@ -580,7 +544,6 @@ bool VsNetInit()
 	while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork == 0) {
 	}
 	if (g_pBaseNetwork == 0) {
-		// STRING: LEMBALL 0x004a2400 "Network initialisation timed out\n"
 		*g_pErrorOutput << "Network initialisation timed out\n";
 		return 0;
 	}
@@ -589,7 +552,6 @@ bool VsNetInit()
 	while (CurrentMilliTimer() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
 	}
 	if (g_pNetworkStatusQueue == 0) {
-		// STRING: LEMBALL 0x004a2424 "Network queue initialisation timed out\n"
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
 		return 0;
 	}
@@ -610,7 +572,6 @@ bool VsNetQuit()
 		while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork != 0) {
 		}
 		if (g_pBaseNetwork != 0) {
-			// STRING: LEMBALL 0x004a244c "Network quit timed out\n"
 			*g_pErrorOutput << "Network quit timed out\n";
 			return 0;
 		}
@@ -637,13 +598,10 @@ unsigned int __stdcall DebugMessageThreadMain(void* p_unused)
 bool DbgInit()
 {
 	if (g_nAsyncDebugEnabled == 1) {
-		// STRING: LEMBALL 0x004a29f8 "Sync_Debug"
 		g_pDebugSyncEvent = CreateEventA(0, 0, 0, "Sync_Debug");
 		g_pDebugThread =
 			CreateThread(0, 0, DebugMessageThreadMain, 0, 0, (unsigned int*) &g_nDebugThreadId);
 		if (g_pDebugThread == 0) {
-			// STRING: LEMBALL 0x004a2a38 "Unable to start 'Debug Message loop' thread\n"
-			// STRING: LEMBALL 0x004a2a30 "ERROR"
 			MessageBoxA(0, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
 			ExitProcess(0xbbbb);
 		}

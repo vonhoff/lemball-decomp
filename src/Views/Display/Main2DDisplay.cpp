@@ -90,17 +90,6 @@ void Main2DDisplay::ToggleResolution()
 // STUB: LEMBALL 0x00431cd0
 bool Main2DDisplay::ProcessMsg(Message* p_message)
 {
-	// STRING: LEMBALL 0x0049e7a4 "lemball\\lemball.hlp"
-	// STRING: LEMBALL 0x0049e7b8 "lemball\\lemball.hlp"
-	// STRING: LEMBALL 0x0049e7bc "lemball\\lemball.hlp"
-	// STRING: LEMBALL 0x0049e7cc "CONTENTS"
-	// STRING: LEMBALL 0x0049e7d8 "Couldn't help ya!\n"
-	// STRING: LEMBALL 0x0049e7ec "lemball\\lemball.hlp"
-	// STRING: LEMBALL 0x0049e800 "lemball\\lemball.hlp"
-	// STRING: LEMBALL 0x0049e804 "lemball\\lemball.hlp"
-	// STRING: LEMBALL 0x0049e818 "Couldn't help ya!\n"
-	// STRING: LEMBALL 0x0049e798 "AboutBox"
-	// STRING: LEMBALL 0x0049e82c "Couldn't help ya!\n"
 	return 0;
 }
 

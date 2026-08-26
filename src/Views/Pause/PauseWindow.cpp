@@ -31,7 +31,6 @@ void PauseWindow::Restart()
 // STUB: LEMBALL 0x00443db0
 void PauseWindow::CreateTheWindow(const VsRect& p_rect)
 {
-	// STRING: LEMBALL 0x0049f108 "Pause mode"
 }
 
 // 68K 0x10b0e6ce CalculateWindow__12CPauseWindowFv

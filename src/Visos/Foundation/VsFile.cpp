@@ -4,8 +4,6 @@
 // STUB: LEMBALL 0x0045eda0
 char* GetCdDir(const char* p_requiredFile)
 {
-	// STRING: LEMBALL 0x004a1dd0 "X:\\"
-	// STRING: LEMBALL 0x004a1dd1 "X:\\"
 	return 0;
 }
 

@@ -43,12 +43,10 @@ MogRes::MogRes(char* p_path, unsigned long p_arenaSize)
 	m_resourceCount = 0;
 	m_skipCleanup = 0;
 	m_arenaSize = p_arenaSize;
-	// STRING: LEMBALL 0x004a1da4 "Resource Data Arena"
 	if (g_pMasterArena->AllocateArena(&arena, p_arenaSize, "Resource Data Arena") == 1) {
 		m_externalArena = 0;
 	}
 	g_pMogloadArena = arena;
-	// STRING: LEMBALL 0x004a1db8 "rb"
 	if (!Open(p_path, "rb")) {
 		m_error = 1;
 		return;
@@ -62,7 +60,6 @@ MogRes::MogRes(char* p_path, unsigned long p_arenaSize)
 	for (offset = 0; offset < 1024; offset++) {
 		m_resources[offset] = 0;
 	}
-	// STRING: LEMBALL 0x004a1dbc "Mogload memory"
 	g_pMogloadStat = new MogloadStat("Mogload memory");
 	g_pStatManager->Register(g_pMogloadStat);
 	g_pMogloadArena->m_parentArena = (Arena*) g_pMogloadStat;

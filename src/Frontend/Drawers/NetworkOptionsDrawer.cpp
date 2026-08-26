@@ -85,7 +85,6 @@ unsigned char* g_apNetworkOptionsRemaps[6] = {
 // GLOBAL: LEMBALL 0x004a0308
 unsigned long g_anNetworkOptionsAnimIds[6] = {0x1bf, 0x1c0, 0x1b3, 0x1f3, 0x1f4, 0x1e7};
 
-// STRING: LEMBALL 0x004a04b4 "No Message"
 char g_szNetworkOptionsNoMessage[] = "No Message";
 
 // GLOBAL: LEMBALL 0x004a0344
@@ -206,11 +205,6 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 // STUB: LEMBALL 0x00453940
 void NetworkOptionsDrawer::DrawText()
 {
-	// STRING: LEMBALL 0x004a04e4 "________________________________"
-	// STRING: LEMBALL 0x004a0508 "_________________________________"
-	// STRING: LEMBALL 0x004a04c8 "I.P. Address"
-	// STRING: LEMBALL 0x004a04d8 "Computer"
-	// STRING: LEMBALL 0x004a0410 "Looking for players on local network"
 }
 
 // 68K 0x108075c6 DrawAnims__21CNetworkOptionsDrawerFv

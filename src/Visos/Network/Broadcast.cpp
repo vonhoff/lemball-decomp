@@ -37,14 +37,6 @@ void Broadcast::SetSpecificAddr(const char* p_arg0)
 // STUB: LEMBALL 0x00460650
 void Broadcast::Initialise(const char* p_arg0)
 {
-	// STRING: LEMBALL 0x004a1e64 "ViSOS (VSNET v"
-	// STRING: LEMBALL 0x004a1e65 "ViSOS (VSNET v"
-	// STRING: LEMBALL 0x004a1e7c ") is Broadcasting:"
-	// STRING: LEMBALL 0x004a1e80 ") is Broadcasting:"
-	// STRING: LEMBALL 0x004a1e84 ") is Broadcasting:"
-	// STRING: LEMBALL 0x004a1e88 ") is Broadcasting:"
-	// STRING: LEMBALL 0x004a1e8c ") is Broadcasting:"
-	// STRING: LEMBALL 0x004a1e8e ") is Broadcasting:"
 }
 
 // 68K 0x1020cb54 Stop__10CBroadcastFv

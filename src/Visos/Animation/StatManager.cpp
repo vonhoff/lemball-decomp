@@ -49,10 +49,6 @@ VsOStream& StatManager::StreamOut(VsOStream& p_stream)
 {
 	int i;
 
-	// STRING: LEMBALL 0x004a1bd4 "Stats Output\n"
-	// STRING: LEMBALL 0x004a1be4 "---------------------------------------------------\n"
-	// STRING: LEMBALL 0x004a1c1c "Average  Total    Max      Min      nSamples Desc\n"
-	// STRING: LEMBALL 0x004a1c50 "---------------------------------------------------\n"
 	p_stream << "Stats Output\n";
 	p_stream << "---------------------------------------------------\n";
 	p_stream << "Average  Total    Max      Min      nSamples Desc\n";

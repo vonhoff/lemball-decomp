@@ -88,13 +88,6 @@ void C2D::CheckValidFormGroup()
 // STUB: LEMBALL 0x00436a10
 void C2D::Process()
 {
-	// STRING: LEMBALL 0x0049ea34 "Unknown Pause window option selected\n"
-	// STRING: LEMBALL 0x0049ea5c "Confirmed\n"
-	// STRING: LEMBALL 0x0049ea68 "Confirmed Yes\n"
-	// STRING: LEMBALL 0x0049ea78 "Confirmed Yes Pause\n"
-	// STRING: LEMBALL 0x0049eacc "Unknown Confirmation option selected\n"
-	// STRING: LEMBALL 0x0049ea90 "Confirmed Yes Pause Restart\n"
-	// STRING: LEMBALL 0x0049eab0 "Confirmed Yes Pause Quit\n"
 }
 
 // 68K 0x10b07f46 FindGameObject__3C2DFRC8CVSPointRiUc

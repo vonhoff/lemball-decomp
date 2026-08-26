@@ -11,7 +11,6 @@ bool TcpIpConnect::Start(const char* p_localName, const char* p_remoteName)
 // STUB: LEMBALL 0x00470ed0
 void TcpIpConnect::GotHost()
 {
-	// STRING: LEMBALL 0x004a2684 "Computer specified was not found\n"
 }
 
 // 68K 0x1010e02c InitSocket__13CTCPIPConnectFv

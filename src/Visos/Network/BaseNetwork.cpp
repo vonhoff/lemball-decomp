@@ -26,11 +26,6 @@ bool BaseNetwork::Initialise(const char* p_arg0, int p_arg1)
 // STUB: LEMBALL 0x00461bd0
 bool BaseNetwork::DoInitialise()
 {
-	// STRING: LEMBALL 0x004a1ee8 "Request Connect"
-	// STRING: LEMBALL 0x004a1ef8 "Request New Port"
-	// STRING: LEMBALL 0x004a1f0c "Authorise Connect"
-	// STRING: LEMBALL 0x004a1f20 "Go Ahead Connect"
-	// STRING: LEMBALL 0x004a1f34 "Failed Connect"
 	return 0;
 }
 
@@ -106,7 +101,6 @@ void BaseNetwork::CtoSRequestConnect(NetworkAddress* p_arg0)
 // STUB: LEMBALL 0x00462280
 void BaseNetwork::CtoSRequestNewPort(NetworkAddress* p_arg0)
 {
-	// STRING: LEMBALL 0x004a1f44 "To many new-port requests"
 }
 
 // 68K 0x1020f2fc StoCOKConnect__12CBaseNetworkFP15CNetworkAddress

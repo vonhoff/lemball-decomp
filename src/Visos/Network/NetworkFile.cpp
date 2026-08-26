@@ -132,15 +132,12 @@ bool NetworkFile::Write(const unsigned char* p_data, int p_size)
 
 	success = WriteFile(m_handle, p_data, (unsigned int) p_size, &written, 0);
 	if (success == 0) {
-		// STRING: LEMBALL 0x004a41f8 "Write error: "
 		*g_pErrorOutput << "Write error: " << (int) ::GetLastError() << "\n";
 		return 0;
 	}
 
 	m_position += written;
 	if ((unsigned int) p_size != written) {
-		// STRING: LEMBALL 0x004a41f8 "Write error: "
-		// STRING: LEMBALL 0x004a421c " bytes written instead of "
 		*g_pErrorOutput << "Write error: " << (unsigned long) written << " bytes written instead of " << p_size
 						<< "\n";
 		return 0;
@@ -160,7 +157,6 @@ bool NetworkFile::Read(unsigned char* p_data, int p_size)
 	if (success == 0) {
 		error = ::GetLastError();
 		if (error != 0x21) {
-			// STRING: LEMBALL 0x004a423c "Read error: "
 			*g_pErrorOutput << "Read error: " << (int) error << "\n";
 		}
 		return 0;
@@ -168,11 +164,6 @@ bool NetworkFile::Read(unsigned char* p_data, int p_size)
 
 	m_position += got;
 	if (got != (unsigned int) p_size) {
-		// STRING: LEMBALL 0x004a423c "Read error: "
-		// STRING: LEMBALL 0x004a4260 " bytes read instead of "
-		// STRING: LEMBALL 0x004a427c "in file "
-		// STRING: LEMBALL 0x004a4288 " which is "
-		// STRING: LEMBALL 0x004a4294 " bytes long.\n"
 		*g_pErrorOutput << "Read error: " << (unsigned long) got << " bytes read instead of " << p_size << "in file "
 						<< m_filename << " which is " << (unsigned long) GetFileSize() << " bytes long.\n";
 		return 0;

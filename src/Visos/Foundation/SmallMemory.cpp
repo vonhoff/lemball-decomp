@@ -8,7 +8,6 @@
 #pragma intrinsic(memset)
 
 // GLOBAL: LEMBALL 0x004a1174
-// STRING: LEMBALL 0x004a1180 "new"
 char* g_pCurrentAllocDescription = "new";
 
 // GLOBAL: LEMBALL 0x004a1178

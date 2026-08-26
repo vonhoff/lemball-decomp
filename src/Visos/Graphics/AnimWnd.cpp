@@ -22,8 +22,6 @@ void AnimWnd::OnStart()
 // STUB: LEMBALL 0x0046dd60
 void AnimWnd::Initialise()
 {
-	// STRING: LEMBALL 0x004a2100 "!!ERROR!!"
-	// STRING: LEMBALL 0x004a210c "Unable to support more than one Anim Window"
 }
 
 // 68K 0x10103c50 __ct__8CAnimWndFv
@@ -54,8 +52,6 @@ void AnimWnd::OnDestroy()
 // STUB: LEMBALL 0x0046dfe0
 void AnimWnd::SetMovieWindow()
 {
-	// STRING: LEMBALL 0x004a2138 "MCI ERROR"
-	// STRING: LEMBALL 0x004a2144 "Unable to set MCI Draw Procedure"
 }
 
 // 68K 0x1010412e Refresh__8CAnimWndFv

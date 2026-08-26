@@ -5,39 +5,18 @@
 // STUB: LEMBALL 0x00406df0
 Game::Game(char* p_arg0)
 {
-	// STRING: LEMBALL 0x0049cbc8 "Lemmings Paintball"
-	// STRING: LEMBALL 0x0049cc50 "vsmem.dll"
-	// STRING: LEMBALL 0x0049cca4 "Processing"
-	// STRING: LEMBALL 0x0049ccb0 "Refreshing"
-	// STRING: LEMBALL 0x0049ccbc "pbaimog.vsr"
-	// STRING: LEMBALL 0x0049ccc8 "GAME.CPP"
-	// STRING: LEMBALL 0x0049ccd4 "IsValidResourceFile"
-	// STRING: LEMBALL 0x0049cce8 "Lemmings Paintball"
-	// STRING: LEMBALL 0x0049ccfc "lemball"
-	// STRING: LEMBALL 0x0049cd05 "evel\\"
 }
 
 // 68K 0x10701c2e __dt__5CGameFv
 // STUB: LEMBALL 0x004071d0
 Game::~Game()
 {
-	// STRING: LEMBALL 0x0049cd18 "Lemmings Paintball"
 }
 
 // 68K 0x10701daa IsValidResource__5CGameFv
 // STUB: LEMBALL 0x00407300
 bool Game::IsValidResource()
 {
-	// STRING: LEMBALL 0x0049cd54 "John Ketley is a Weatherman, and so is Michael Fish"
-	// STRING: LEMBALL 0x0049cd55 "John Ketley is a Weatherman, and so is Michael Fish"
-	// STRING: LEMBALL 0x0049cd3c "01234567890123456789"
-	// STRING: LEMBALL 0x0049cd3d "01234567890123456789"
-	// STRING: LEMBALL 0x0049cd3e "01234567890123456789"
-	// STRING: LEMBALL 0x0049cd88 "Master v1.3"
-	// STRING: LEMBALL 0x0049cd8a "Master v1.3"
-	// STRING: LEMBALL 0x0049cd3f "01234567890123456789"
-	// STRING: LEMBALL 0x0049cd89 "Master v1.3"
-	// STRING: LEMBALL 0x0049cd8b "Master v1.3"
 	return 0;
 }
 

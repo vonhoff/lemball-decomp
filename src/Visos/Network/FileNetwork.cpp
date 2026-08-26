@@ -17,15 +17,12 @@ extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
 // STUB: LEMBALL 0x0046f6b0
 FileNetwork::FileNetwork()
 {
-	// STRING: LEMBALL 0x004a2334 "File-based Network"
 }
 
 // 68K 0x1010700c Initialise__12CFileNetworkFv
 // FUNCTION: LEMBALL 0x0046f6f0
 void FileNetwork::Initialise()
 {
-	// STRING: LEMBALL 0x004a2348 "Network Initialised:\n"
-	// STRING: LEMBALL 0x004a2360 "Windows file-based networking\n"
 	*g_pDebugOutput << "Network Initialised:\n";
 	*g_pDebugOutput << "Windows file-based networking\n";
 	m_timerId = SetTimer(m_windowHandle, 0x12345679, 0x14, 0);
@@ -42,8 +39,6 @@ void FileNetwork::UnInitialise()
 // FUNCTION: LEMBALL 0x0046f740
 void FileNetwork::ResetTimer(unsigned int p_interval)
 {
-	// STRING: LEMBALL 0x004a2380 "Setting next timer event to "
-	// STRING: LEMBALL 0x004a23a0 "ms from now\n"
 	*g_pDebugOutput << "Setting next timer event to " << (unsigned long) p_interval << "ms from now\n";
 
 	KillTimer(m_windowHandle, m_timerId);

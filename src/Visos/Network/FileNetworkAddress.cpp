@@ -39,14 +39,12 @@ char* FileNetworkAddress::GetStr()
 void FileNetworkAddress::operator=(eBroadcastTypes p_type)
 {
 	if (p_type == 0) {
-		// STRING: LEMBALL 0x004a2dec "LAN"
 		*this = "LAN";
 		return;
 	}
 	if (p_type != 1) {
 		return;
 	}
-	// STRING: LEMBALL 0x004a2df0 "WAN"
 	*this = "WAN";
 }
 
@@ -54,9 +52,7 @@ void FileNetworkAddress::operator=(eBroadcastTypes p_type)
 // FUNCTION: LEMBALL 0x00479510
 bool FileNetworkAddress::operator>(NetworkAddress& p_address)
 {
-	// STRING: LEMBALL 0x004a2df4 "You haven't implemented major/minor destinction in 'CFileNetworkAddress'es\n"
 	*g_pErrorOutput << "You haven't implemented major/minor destinction in 'CFileNetworkAddress'es\n";
-	// STRING: LEMBALL 0x004a2e40 "use count entry in broadcast file\n"
 	*g_pErrorOutput << "use count entry in broadcast file\n";
 	return 0;
 }

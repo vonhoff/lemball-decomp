@@ -4,7 +4,6 @@
 // STUB: LEMBALL 0x00447410
 IntroAnimDrawer::IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3)
 {
-	// STRING: LEMBALL 0x0049f194 "lemball"
 }
 
 // 68K 0x10805d7e Load__16CIntroAnimDrawerFv
@@ -42,7 +41,6 @@ bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 // STUB: LEMBALL 0x004476b0
 void IntroAnimDrawer::Processing()
 {
-	// STRING: LEMBALL 0x0049f19c "PaintBall Intro Sequence"
 }
 
 // 68K 0x10805dda __dt__16CIntroAnimDrawerFv

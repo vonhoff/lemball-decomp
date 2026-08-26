@@ -30,8 +30,6 @@ unsigned int GameStatus::CalcCheckSum(unsigned int p_value)
 // STUB: LEMBALL 0x00406c00
 char* GameStatus::EncodePassword()
 {
-	// STRING: LEMBALL 0x0049cb90 "00000000"
-	// STRING: LEMBALL 0x0049cb91 "00000000"
 	return 0;
 }
 
@@ -39,11 +37,6 @@ char* GameStatus::EncodePassword()
 // STUB: LEMBALL 0x00406ca0
 bool GameStatus::DecodePassword(char* p_password)
 {
-	// STRING: LEMBALL 0x0049cb9c "9913454278"
-	// STRING: LEMBALL 0x0049cb9e "9913454278"
-	// STRING: LEMBALL 0x0049cb9d "9913454278"
-	// STRING: LEMBALL 0x0049cb9f "9913454278"
-	// STRING: LEMBALL 0x0049cba8 "Oh, oh, someones cheating !!!\n"
 	return 0;
 }
 

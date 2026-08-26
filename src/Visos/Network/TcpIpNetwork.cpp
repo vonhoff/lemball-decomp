@@ -17,7 +17,6 @@ extern "C" __declspec(dllimport) int __stdcall KillTimer(void* p_window, unsigne
 // STUB: LEMBALL 0x004713c0
 TcpIpNetwork::TcpIpNetwork()
 {
-	// STRING: LEMBALL 0x004a2754 "TCPIP Network"
 }
 
 #pragma pack(1)

@@ -16,9 +16,6 @@ void LevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned char p_skip)
 // STUB: LEMBALL 0x004087b0
 bool LevelLoader::LocateStartOfLevelFile()
 {
-	// STRING: LEMBALL 0x0049cedc "rb"
-	// STRING: LEMBALL 0x0049ce34 "You Stupid, Stupid Man !"
-	// STRING: LEMBALL 0x0049ce50 "OK Smartarse,\nHow the hell do you expect me to load a level\nwhen you can't even
 	// type the name\n in correctly !\n Quit out and try again...\n"
 	return 0;
 }
@@ -34,9 +31,6 @@ LoadBlockHeader* LevelLoader::GetNextBlockHeader(LoadBlockHeader* p_header)
 // STUB: LEMBALL 0x00408850
 void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* p_preview)
 {
-	// STRING: LEMBALL 0x0049cef4 " Name= <"
-	// STRING: LEMBALL 0x0049cee8 " nLevel="
-	// STRING: LEMBALL 0x0049cee0 "nSkill="
 }
 
 // 68K 0x10703218 CalcLevelID__12CLevelLoaderF6eSkilli

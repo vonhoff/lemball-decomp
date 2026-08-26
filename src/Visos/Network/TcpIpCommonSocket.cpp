@@ -4,7 +4,6 @@
 // STUB: LEMBALL 0x0046fcf0
 TcpIpCommonSocket::TcpIpCommonSocket()
 {
-	// STRING: LEMBALL 0x004a2464 "Socket Window"
 }
 
 // 68K 0x1010c820 SysCloseSocket__18CTCPIPCommonSocketFv

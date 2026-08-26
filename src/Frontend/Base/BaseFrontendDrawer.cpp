@@ -115,8 +115,6 @@ void BaseFrontendDrawer::Action(int p_action, int p_stage)
 // STUB: LEMBALL 0x00446610
 void BaseFrontendDrawer::RemoteAction(int p_action, int p_stage)
 {
-	// STRING: LEMBALL 0x0049f148 "Unknown user action specified\n"
-	// STRING: LEMBALL 0x0049f168 "Unknown user action received\n"
 }
 
 // 68K 0x108018b4 OnDriverChange__19CBaseFrontendDrawerFv

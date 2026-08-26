@@ -22,7 +22,6 @@ void MainOptions2Drawer::UnLoad()
 // STUB: LEMBALL 0x00448ee0
 bool MainOptions2Drawer::ProcessMessages(Message* p_message)
 {
-	// STRING: LEMBALL 0x0049f630 "Setting music volume "
 	return 0;
 }
 

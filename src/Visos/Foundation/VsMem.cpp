@@ -14,13 +14,11 @@ void* InternalNew(unsigned long p_size)
 	if (g_nSmallMemoryEnabled != 0 && g_maxSmallMemorySize > p_size) {
 		result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
 		if (result != 0) {
-			// STRING: LEMBALL 0x004a1384 "new"
 			g_pCurrentAllocDescription = "new";
 			return result;
 		}
 	}
 	if (!g_pMasterArena->Allocate(&result, p_size, g_pCurrentAllocDescription)) {
-		// STRING: LEMBALL 0x004a1394 "EnoughMemory"
 		VsRelAssert("EnoughMemory", "VSMEM.CPP", 1677);
 	}
 	return result;

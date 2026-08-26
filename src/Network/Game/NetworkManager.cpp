@@ -4,8 +4,6 @@
 // STUB: LEMBALL 0x00452550
 NetworkManager::NetworkManager(const char* p_arg0)
 {
-	// STRING: LEMBALL 0x004a012c "t:\\network"
-	// STRING: LEMBALL 0x004a0138 "Paintball v0.1"
 }
 
 // 68K 0x10a005e8 Start__15CNetworkManagerFv
@@ -31,7 +29,6 @@ void NetworkManager::Stop()
 // STUB: LEMBALL 0x00452850
 int NetworkManager::ProcessMsg(Message* p_message)
 {
-	// STRING: LEMBALL 0x004a0148 "Game connection request during game\n"
 	return 0;
 }
 

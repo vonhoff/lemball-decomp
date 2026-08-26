@@ -66,8 +66,6 @@ void Surface::AttachPalette(ResPalette* p_palette)
 // STUB: LEMBALL 0x0046d090
 void Surface::NewBitmap(const VsRect& p_rect)
 {
-	// STRING: LEMBALL 0x004a20a4 "VSGDI.CPP"
-	// STRING: LEMBALL 0x004a20b0 "AllocatedBitmap"
 }
 
 // 68K 0x10109fc0 Resize__8CSurfaceFRC7CVSSize
@@ -363,11 +361,6 @@ void Surface::BlitZrleNoClipRemapR(const VsRect& p_rect,
 // STUB: LEMBALL 0x004783c0
 void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 {
-	// STRING: LEMBALL 0x004a2d90 "Warning: ZRLE is "
-	// STRING: LEMBALL 0x004a2d84 " wide and "
-	// STRING: LEMBALL 0x004a2d7c " high.\n"
-	// STRING: LEMBALL 0x004a2d68 "Clipping width to "
-	// STRING: LEMBALL 0x004a2d50 "Clipping height to "
 }
 
 // 68K 0x10115868 Blit__8CSurfaceFP7CBitmapP10CResBITMAP

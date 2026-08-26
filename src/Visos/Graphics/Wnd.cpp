@@ -80,8 +80,6 @@ void Wnd::OnSize()
 // STUB: LEMBALL 0x00464520
 int Wnd::ProcessMessage(EventRecord& p_event)
 {
-	// STRING: LEMBALL 0x004a1fa0 "fQuit\n"
-	// STRING: LEMBALL 0x004a1f94 "Quitting\n"
 	return 0;
 }
 
@@ -113,8 +111,6 @@ Wnd::Wnd()
 // STUB: LEMBALL 0x00465200
 void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 {
-	// STRING: LEMBALL 0x004a1f7c "VS_Base_Window_Class"
-	// STRING: LEMBALL 0x004a1fd0 "Unable to create window"
 }
 
 // STUB: LEMBALL 0x004654f0

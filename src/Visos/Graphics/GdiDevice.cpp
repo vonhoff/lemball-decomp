@@ -51,7 +51,6 @@ GdiDevice::~GdiDevice()
 	if (0 < m_surfaceCapacity) {
 		do {
 			if (m_surfaceSlots[i].m_available == 0) {
-				// STRING: LEMBALL 0x004a2060 "Trying to delete device when a surface has not been free'd\n"
 				*g_pErrorOutput << "Trying to delete device when a surface has not been free'd\n";
 			}
 			++i;

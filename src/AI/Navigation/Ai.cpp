@@ -10,9 +10,6 @@ Ai::Ai(Game* p_arg0)
 // STUB: LEMBALL 0x00410d00
 void Ai::Restart()
 {
-	// STRING: LEMBALL 0x0049cfa0 "AIQueue"
-	// STRING: LEMBALL 0x0049cfc8 " on skill "
-	// STRING: LEMBALL 0x0049cfa8 "Starting demo mode for level "
 }
 
 // 68K 0x10601170 Start__3CAIFv
@@ -31,8 +28,6 @@ void Ai::SendGameState(eGameStates p_state, eGameStateStages p_stage)
 // STUB: LEMBALL 0x00411c10
 unsigned int Ai::RemoteGameState(GameStateMessage* p_message)
 {
-	// STRING: LEMBALL 0x0049cff0 ", stage "
-	// STRING: LEMBALL 0x0049cfd8 "Received Game State "
 	return 0;
 }
 

@@ -64,18 +64,11 @@ VsOStream& BaseStat::StreamOut(VsOStream& p_stream)
 		maximum = m_maximum;
 		total = m_total;
 		average = total / sampleCount;
-		// STRING: LEMBALL 0x004a1c88 " "
-		// STRING: LEMBALL 0x004a1c8c " "
-		// STRING: LEMBALL 0x004a1c90 " "
-		// STRING: LEMBALL 0x004a1c94 " "
-		// STRING: LEMBALL 0x004a1c98 " "
-		// STRING: LEMBALL 0x004a1c9c "\n"
 		p_stream << Hex8(average) << " " << Hex8(total) << " " << Hex8(maximum) << " " << Hex8(minimum) << " "
 				 << Hex8(sampleCount) << " " << m_description << "\n";
 		return p_stream;
 	}
 
-	// STRING: LEMBALL 0x004a1ca0 "----\n"
 	p_stream << "----\n";
 	return p_stream;
 }

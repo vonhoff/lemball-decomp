@@ -16,7 +16,6 @@ void TcpIpBroadcast::GetSpecificAddr(const char* p_name)
 // STUB: LEMBALL 0x00470650
 void TcpIpBroadcast::GotName()
 {
-	// STRING: LEMBALL 0x004a25b8 "Specified computer name not found\n"
 }
 
 // 68K 0x1010d9fa Start__15CTCPIPBroadcastFPCc
@@ -30,7 +29,6 @@ bool TcpIpBroadcast::Start(const char* p_name)
 // STUB: LEMBALL 0x00470840
 void TcpIpBroadcast::GotHost()
 {
-	// STRING: LEMBALL 0x004a25dc "Local host name not found\n"
 }
 
 // 68K 0x1010dd7e Process__15CTCPIPBroadcastFv
