@@ -11,16 +11,16 @@ void GameObject::GetViewData(ViewData& p_viewData)
 }
 
 // 68K 0x10118858 ForgetObjectLink__11CGameObjectFUs
-// STUB: LEMBALL 0x0040a7f0
+// FUNCTION: LEMBALL 0x0040a7f0
 void GameObject::ForgetObjectLink(unsigned short p_arg0)
 {
 }
 
 // 68K 0x101188ac Activate__11CGameObjectFP11CGameObject
-// STUB: LEMBALL 0x0040a800
+// FUNCTION: LEMBALL 0x0040a800
 bool GameObject::Activate(class GameObject* p_object)
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x101188e0 IsFlying__11CGameObjectFv
@@ -31,7 +31,7 @@ bool GameObject::IsFlying()
 }
 
 // 68K 0x10118916 Usage__11CGameObjectFv
-// STUB: LEMBALL 0x0040a820
+// FUNCTION: LEMBALL 0x0040a820
 int GameObject::Usage()
 {
 	return 0;
@@ -52,7 +52,7 @@ AiCoord GameObject::ActivatePosition()
 }
 
 // 68K 0x10118982 StartStanding__11CGameObjectFv
-// STUB: LEMBALL 0x0040a860
+// FUNCTION: LEMBALL 0x0040a860
 void GameObject::StartStanding()
 {
 }
@@ -92,71 +92,71 @@ int GameObject::HitBullet(Bullet* p_bullet)
 }
 
 // 68K 0x10118b22 HitBall__11CGameObjectFv
-// STUB: LEMBALL 0x0040a940
+// FUNCTION: LEMBALL 0x0040a940
 void GameObject::HitBall()
 {
 }
 
 // 68K 0x10118b46 IsHit__11CGameObjectFv
-// STUB: LEMBALL 0x0040a950
+// FUNCTION: LEMBALL 0x0040a950
 int GameObject::IsHit()
 {
 	return 0;
 }
 
 // 68K 0x10118b6a GetHit__11CGameObjectFv
-// STUB: LEMBALL 0x0040a960
+// FUNCTION: LEMBALL 0x0040a960
 void GameObject::GetHit()
 {
 }
 
 // 68K 0x10118b8c HitMine__11CGameObjectFv
-// STUB: LEMBALL 0x0040a970
+// FUNCTION: LEMBALL 0x0040a970
 void GameObject::HitMine()
 {
 }
 
 // 68K 0x10118bb0 Die__11CGameObjectFv
-// STUB: LEMBALL 0x0040a980
+// FUNCTION: LEMBALL 0x0040a980
 void GameObject::Die()
 {
 }
 
 // 68K 0x10118bd0 Land__11CGameObjectFv
-// STUB: LEMBALL 0x0040a990
+// FUNCTION: LEMBALL 0x0040a990
 void GameObject::Land()
 {
 }
 
 // 68K 0x10118bf0 FacingCursor__11CGameObjectFv
-// STUB: LEMBALL 0x0040a9a0
+// FUNCTION: LEMBALL 0x0040a9a0
 bool GameObject::FacingCursor()
 {
 	return 0;
 }
 
 // 68K 0x10118c1a TurnToFaceCursor__11CGameObjectFv
-// STUB: LEMBALL 0x0040a9b0
+// FUNCTION: LEMBALL 0x0040a9b0
 void GameObject::TurnToFaceCursor()
 {
 }
 
 // 68K 0x10118c48 IsRequestingFire__11CGameObjectFv
-// STUB: LEMBALL 0x0040a9c0
+// FUNCTION: LEMBALL 0x0040a9c0
 bool GameObject::IsRequestingFire()
 {
 	return 0;
 }
 
 // 68K 0x10118c78 Bored__11CGameObjectFv
-// STUB: LEMBALL 0x0040a9d0
+// FUNCTION: LEMBALL 0x0040a9d0
 int GameObject::Bored()
 {
 	return 0;
 }
 
 // 68K 0x10118c9c SetBored__11CGameObjectFUl
-// STUB: LEMBALL 0x0040a9e0
+// FUNCTION: LEMBALL 0x0040a9e0
 void GameObject::SetBored(unsigned long p_arg0)
 {
 }
@@ -169,13 +169,13 @@ bool GameObject::Fire()
 }
 
 // 68K 0x10118ce2 StartFiring__11CGameObjectFv
-// STUB: LEMBALL 0x0040aa00
+// FUNCTION: LEMBALL 0x0040aa00
 void GameObject::StartFiring()
 {
 }
 
 // 68K 0x10118d0a EndFiring__11CGameObjectFv
-// STUB: LEMBALL 0x0040aa10
+// FUNCTION: LEMBALL 0x0040aa10
 void GameObject::EndFiring()
 {
 }
@@ -188,47 +188,47 @@ int GameObject::RandomAction()
 }
 
 // 68K 0x10118d58 FacingTarget__11CGameObjectFv
-// STUB: LEMBALL 0x0040aa30
+// FUNCTION: LEMBALL 0x0040aa30
 bool GameObject::FacingTarget()
 {
 	return 0;
 }
 
 // 68K 0x10118d82 TurnToFaceTarget__11CGameObjectFv
-// STUB: LEMBALL 0x0040aa40
+// FUNCTION: LEMBALL 0x0040aa40
 void GameObject::TurnToFaceTarget()
 {
 }
 
 // 68K 0x10118db0 PossiblyOnLift__11CGameObjectFv
-// STUB: LEMBALL 0x0040aa50
+// FUNCTION: LEMBALL 0x0040aa50
 bool GameObject::PossiblyOnLift()
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x10118ddc HasObject__11CGameObjectF11eObjectType
-// STUB: LEMBALL 0x0040aa60
+// FUNCTION: LEMBALL 0x0040aa60
 bool GameObject::HasObject(eObjectType p_arg0)
 {
 	return 0;
 }
 
 // 68K 0x10118e10 AddObject__11CGameObjectF11eObjectTypeP11CGameObject
-// STUB: LEMBALL 0x0040aa70
+// FUNCTION: LEMBALL 0x0040aa70
 bool GameObject::AddObject(eObjectType p_arg0, class GameObject* p_arg1)
 {
 	return 0;
 }
 
 // 68K 0x10118e52 ReNumberNode__11CGameObjectFii
-// STUB: LEMBALL 0x0040aa80
+// FUNCTION: LEMBALL 0x0040aa80
 void GameObject::ReNumberNode(int p_arg0, int p_arg1)
 {
 }
 
 // 68K 0x10118e7c NeedsNode__11CGameObjectFi
-// STUB: LEMBALL 0x0040aa90
+// FUNCTION: LEMBALL 0x0040aa90
 bool GameObject::NeedsNode(int p_arg0)
 {
 	return 0;
@@ -242,19 +242,19 @@ unsigned int GameObject::ConvertVer0ToVer1()
 }
 
 // 68K 0x10118ed2 Delete__11CGameObjectFv
-// STUB: LEMBALL 0x0040aab0
+// FUNCTION: LEMBALL 0x0040aab0
 void GameObject::Delete()
 {
 }
 
 // 68K 0x10118ef4 PickUpAmmo__11CGameObjectFUs
-// STUB: LEMBALL 0x0040aac0
+// FUNCTION: LEMBALL 0x0040aac0
 void GameObject::PickUpAmmo(unsigned short p_arg0)
 {
 }
 
 // 68K 0x10118f1c ExternalControlEnd__11CGameObjectFv
-// STUB: LEMBALL 0x0040aad0
+// FUNCTION: LEMBALL 0x0040aad0
 void GameObject::ExternalControlEnd()
 {
 }
@@ -286,20 +286,20 @@ int GameObject::QOnBalloon()
 }
 
 // 68K 0x10119024 OnConveyor__11CGameObjectFUcP4CIceUc
-// STUB: LEMBALL 0x0040ab20
+// FUNCTION: LEMBALL 0x0040ab20
 void GameObject::OnConveyor(unsigned int p_arg0, Ice* p_arg1, unsigned int p_arg2)
 {
 }
 
 // 68K 0x10119054 OnConveyor__11CGameObjectFv
-// STUB: LEMBALL 0x0040ab30
+// FUNCTION: LEMBALL 0x0040ab30
 int GameObject::OnConveyor()
 {
 	return 0;
 }
 
 // 68K 0x1011907c Conveyor__11CGameObjectFv
-// STUB: LEMBALL 0x0040ab40
+// FUNCTION: LEMBALL 0x0040ab40
 Ice* GameObject::Conveyor()
 {
 	return 0;
@@ -325,22 +325,22 @@ void GameObject::Action(eAction p_arg0, int p_arg1)
 }
 
 // 68K 0x101190a2 SendRemove__11CGameObjectFv
-// STUB: LEMBALL 0x0040c1a0
+// FUNCTION: LEMBALL 0x0040c1a0
 void GameObject::SendRemove()
 {
 }
 
 // 68K 0x101190c8 SendCancel__11CGameObjectFv
-// STUB: LEMBALL 0x0040c1b0
+// FUNCTION: LEMBALL 0x0040c1b0
 void GameObject::SendCancel()
 {
 }
 
 // 68K 0x101190ee UsableState__11CGameObjectFv
-// STUB: LEMBALL 0x0040c1c0
+// FUNCTION: LEMBALL 0x0040c1c0
 int GameObject::UsableState()
 {
-	return 0;
+	return 2;
 }
 
 // 68K 0x10608fec __ct__11CGameObjectF11eObjectTypeUsUs
@@ -575,7 +575,7 @@ void GameObject::ReSetId()
 }
 
 // 68K 0x1060af92 NextId__11CGameObjectFv
-// STUB: LEMBALL 0x00416670
+// FUNCTION: LEMBALL 0x00416670
 int GameObject::NextId()
 {
 	return 0;
@@ -607,7 +607,7 @@ void GameObject::StartLand()
 }
 
 // 68K 0x10118886 Process__11CGameObjectFv
-// STUB: LEMBALL 0x00417aa0
+// FUNCTION: LEMBALL 0x00417aa0
 bool GameObject::Process()
 {
 	return 0;

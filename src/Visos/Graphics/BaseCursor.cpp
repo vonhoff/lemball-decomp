@@ -63,7 +63,7 @@ void BaseCursor::Process()
 }
 
 // 68K 0x10106076 RefreshPos__11CBaseCursorFv
-// STUB: LEMBALL 0x0046ba20
+// FUNCTION: LEMBALL 0x0046ba20
 void BaseCursor::RefreshPos()
 {
 }

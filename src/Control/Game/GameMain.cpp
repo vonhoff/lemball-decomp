@@ -14,7 +14,7 @@ void SetGameDefaults()
 }
 
 // 68K 0x107001d0 DisplayHelp__Fv
-// STUB: LEMBALL 0x00406300
+// FUNCTION: LEMBALL 0x00406300
 void DisplayHelp()
 {
 }

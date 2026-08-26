@@ -13,7 +13,7 @@ void GroundAnim::Restart()
 }
 
 // 68K 0x1060e36e __dt__11CGroundAnimFv
-// STUB: LEMBALL 0x0040cf30
+// FUNCTION: LEMBALL 0x0040cf30
 GroundAnim::~GroundAnim()
 {
 }

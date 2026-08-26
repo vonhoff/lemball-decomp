@@ -1,16 +1,16 @@
 #include "Tower.h"
 
 // 68K 0x1011ab2c DoActivate__6CTowerFv
-// STUB: LEMBALL 0x0041c5a0
+// FUNCTION: LEMBALL 0x0041c5a0
 void Tower::DoActivate()
 {
 }
 
 // 68K 0x1011ab4c Usage__6CTowerFv
-// STUB: LEMBALL 0x0041c5b0
+// FUNCTION: LEMBALL 0x0041c5b0
 int Tower::Usage()
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x1011ab6a __dt__6CTowerFv
@@ -28,10 +28,10 @@ bool Tower::Process()
 }
 
 // 68K 0x106195ba Activate__6CTowerFP11CGameObject
-// STUB: LEMBALL 0x0041d000
+// FUNCTION: LEMBALL 0x0041d000
 bool Tower::Activate(GameObject* p_object)
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x106195e8 ActivatePosition__6CTowerFv

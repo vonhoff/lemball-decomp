@@ -43,13 +43,13 @@ void C2D::OnLoaded()
 }
 
 // 68K 0x10b0780e DoButtons__3C2DFv
-// STUB: LEMBALL 0x00436690
+// FUNCTION: LEMBALL 0x00436690
 void C2D::DoButtons()
 {
 }
 
 // 68K 0x10b0782a OnZoom__3C2DFRC7CVSRect
-// STUB: LEMBALL 0x004366a0
+// FUNCTION: LEMBALL 0x004366a0
 void C2D::OnZoom(const VsRect& p_rect)
 {
 }
@@ -582,7 +582,7 @@ void C2D::DrawTime()
 }
 
 // 68K 0x10b05914 DrawPaused__3C2DFv
-// STUB: LEMBALL 0x0043fe70
+// FUNCTION: LEMBALL 0x0043fe70
 void C2D::DrawPaused()
 {
 }
@@ -650,7 +650,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 }
 
 // 68K 0x10b06752 InitSpriteGroundLU__3C2DFv
-// STUB: LEMBALL 0x00440c00
+// FUNCTION: LEMBALL 0x00440c00
 void C2D::InitSpriteGroundLu()
 {
 }

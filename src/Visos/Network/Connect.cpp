@@ -133,7 +133,7 @@ void Connect::Process()
 }
 
 // 68K 0x1010e682 ConnectSetup__8CConnectFv
-// STUB: LEMBALL 0x004629d0
+// FUNCTION: LEMBALL 0x004629d0
 void Connect::ConnectSetup()
 {
 }

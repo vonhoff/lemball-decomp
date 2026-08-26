@@ -19,8 +19,8 @@ void IntroAnimAnimWindow::OnStop()
 }
 
 // 68K 0x1011c32c GetStyle__20CIntroAnimAnimWindowFv
-// STUB: LEMBALL 0x00447990
+// FUNCTION: LEMBALL 0x00447990
 unsigned int IntroAnimAnimWindow::GetStyle()
 {
-	return 0;
+	return 1073741825;
 }

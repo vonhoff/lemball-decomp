@@ -1,19 +1,19 @@
 #include "AnimWnd.h"
 
 // 68K 0x10104782 OnSkip__8CAnimWndFi
-// STUB: LEMBALL 0x00447960
+// FUNCTION: LEMBALL 0x00447960
 void AnimWnd::OnSkip(int p_position)
 {
 }
 
 // 68K 0x101047a0 OnFrame__8CAnimWndFi
-// STUB: LEMBALL 0x00447970
+// FUNCTION: LEMBALL 0x00447970
 void AnimWnd::OnFrame(int p_frame)
 {
 }
 
 // 68K 0x101047c0 OnStart__8CAnimWndFv
-// STUB: LEMBALL 0x00447980
+// FUNCTION: LEMBALL 0x00447980
 void AnimWnd::OnStart()
 {
 }
@@ -55,7 +55,7 @@ void AnimWnd::SetMovieWindow()
 }
 
 // 68K 0x1010412e Refresh__8CAnimWndFv
-// STUB: LEMBALL 0x0046e120
+// FUNCTION: LEMBALL 0x0046e120
 void AnimWnd::Refresh(VsRect* p_rect)
 {
 }
@@ -85,7 +85,7 @@ void AnimWnd::Resume()
 }
 
 // 68K 0x1010467e OnStop__8CAnimWndFv
-// STUB: LEMBALL 0x0046e400
+// FUNCTION: LEMBALL 0x0046e400
 void AnimWnd::OnStop()
 {
 }

@@ -1,10 +1,10 @@
 #include "Catapult.h"
 
 // 68K 0x1011a976 Usage__9CCatapultFv
-// STUB: LEMBALL 0x0041c3f0
+// FUNCTION: LEMBALL 0x0041c3f0
 int Catapult::Usage()
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x1011a996 __dt__9CCatapultFv

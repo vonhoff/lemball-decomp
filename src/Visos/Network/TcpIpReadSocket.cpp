@@ -29,7 +29,7 @@ TcpIpReadSocket::~TcpIpReadSocket()
 }
 
 // 68K 0x101075ba Closed__16CTCPIPReadSocketFUc
-// STUB: LEMBALL 0x00471e40
+// FUNCTION: LEMBALL 0x00471e40
 void TcpIpReadSocket::Closed(unsigned char p_notifyPeer)
 {
 }

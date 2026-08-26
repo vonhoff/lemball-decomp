@@ -26,20 +26,20 @@ void PvWnd::RemoveChild(class PvWnd* p_child)
 }
 
 // 68K 0x1010496a GetMenu__6CPVWndFRiPPP11tagMenuList
-// STUB: LEMBALL 0x0043a4c0
+// FUNCTION: LEMBALL 0x0043a4c0
 bool PvWnd::GetMenu(int& p_menuResourceId, MenuList*** p_menuLists)
 {
 	return 0;
 }
 
 // 68K 0x10104ba0 OnVisibilityChange__6CPVWndFv
-// STUB: LEMBALL 0x00465a70
+// FUNCTION: LEMBALL 0x00465a70
 void PvWnd::OnVisibilityChange()
 {
 }
 
 // 68K 0x10104bc8 SetDontUpdateRect__6CPVWndFRC7CVSRect
-// STUB: LEMBALL 0x00465a80
+// FUNCTION: LEMBALL 0x00465a80
 void PvWnd::SetDontUpdateRect(const VsRect& p_rect)
 {
 }
@@ -124,38 +124,38 @@ void PvWnd::SetZoom(int p_zoom)
 }
 
 // 68K 0x10117ea6 ReSetMenu__6CPVWndFv
-// STUB: LEMBALL 0x004662e0
+// FUNCTION: LEMBALL 0x004662e0
 void PvWnd::ReSetMenu()
 {
 }
 
 // 68K 0x10117ec6 SetMenu__6CPVWndFRiPP11tagMenuList
-// STUB: LEMBALL 0x004662f0
+// FUNCTION: LEMBALL 0x004662f0
 void PvWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
 {
 }
 
 // 68K 0x10117ef4 _SetRelTL__6CPVWndFRC8CVSPoint
-// STUB: LEMBALL 0x00466330
+// FUNCTION: LEMBALL 0x00466330
 void PvWnd::SetRelTl(const VsPoint& p_point)
 {
 }
 
 // 68K 0x1010499c OnDriverChange__6CPVWndFv
-// STUB: LEMBALL 0x00466340
+// FUNCTION: LEMBALL 0x00466340
 void PvWnd::OnDriverChange()
 {
 }
 
 // 68K 0x10117f1e IsFocusWindow__6CPVWndFv
-// STUB: LEMBALL 0x00466350
+// FUNCTION: LEMBALL 0x00466350
 bool PvWnd::IsFocusWindow()
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x10104bfa Resize__6CPVWndF7CVSSize
-// STUB: LEMBALL 0x00466360
+// FUNCTION: LEMBALL 0x00466360
 void PvWnd::Resize(VsSize p_size)
 {
 }

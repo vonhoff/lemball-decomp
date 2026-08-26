@@ -153,13 +153,13 @@ void ReadSocket::UnUseAllC()
 }
 
 // 68K 0x10107764 FirstReceive__11CReadSocketFv
-// STUB: LEMBALL 0x00462920
+// FUNCTION: LEMBALL 0x00462920
 void ReadSocket::FirstReceive()
 {
 }
 
 // 68K 0x1010778c PostRead__11CReadSocketF13NetworkEventsP11CBasePacket
-// STUB: LEMBALL 0x00462930
+// FUNCTION: LEMBALL 0x00462930
 void ReadSocket::PostRead(NetworkEvents p_arg0, BasePacket* p_arg1)
 {
 }

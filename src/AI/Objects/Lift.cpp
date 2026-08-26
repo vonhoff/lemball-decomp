@@ -82,7 +82,7 @@ void Lift::ActivateDeactivate()
 }
 
 // 68K 0x1011a746 DoActivate__5CLiftFv
-// STUB: LEMBALL 0x004266d0
+// FUNCTION: LEMBALL 0x004266d0
 void Lift::DoActivate()
 {
 }

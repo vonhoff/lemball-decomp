@@ -59,7 +59,7 @@ void Laser::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1011a726 DoActivate__6CLaserFv
-// STUB: LEMBALL 0x00429e40
+// FUNCTION: LEMBALL 0x00429e40
 void Laser::DoActivate()
 {
 }

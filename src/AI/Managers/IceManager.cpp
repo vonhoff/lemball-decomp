@@ -25,7 +25,7 @@ void IceManager::Process()
 }
 
 // 68K 0x106126ce GetViewData__11CIceManagerFP9CViewData
-// STUB: LEMBALL 0x0042dd30
+// FUNCTION: LEMBALL 0x0042dd30
 int IceManager::GetViewData(ViewData* p_viewData)
 {
 	return 0;

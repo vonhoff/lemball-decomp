@@ -5,7 +5,7 @@ AnimsManager::AnimsManager()
 }
 
 // 68K 0x10115d70 FreeVram__13CAnimsManagerFv
-// STUB: LEMBALL 0x004358c0
+// FUNCTION: LEMBALL 0x004358c0
 void AnimsManager::FreeVram()
 {
 }

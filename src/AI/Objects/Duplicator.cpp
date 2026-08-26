@@ -52,10 +52,10 @@ void Duplicator::DoActivate()
 }
 
 // 68K 0x10119bcc Usage__11CDuplicatorFv
-// STUB: LEMBALL 0x00427a90
+// FUNCTION: LEMBALL 0x00427a90
 int Duplicator::Usage()
 {
-	return 0;
+	return 2;
 }
 
 // 68K 0x10607368 __dt__11CDuplicatorFv

@@ -51,7 +51,7 @@ void NetworkManager::GameProcess()
 }
 
 // 68K 0x10a00b6a Process__15CNetworkManagerFv
-// STUB: LEMBALL 0x00452b80
+// FUNCTION: LEMBALL 0x00452b80
 void NetworkManager::Process()
 {
 }

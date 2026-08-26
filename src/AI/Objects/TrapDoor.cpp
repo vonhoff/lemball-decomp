@@ -26,14 +26,14 @@ bool TrapDoor::Process()
 }
 
 // 68K 0x1011b660 Usage__9CTrapDoorFv
-// STUB: LEMBALL 0x0040ce80
+// FUNCTION: LEMBALL 0x0040ce80
 int TrapDoor::Usage()
 {
-	return 0;
+	return 2;
 }
 
 // 68K 0x1011b680 DoActivate__9CTrapDoorFv
-// STUB: LEMBALL 0x0040ce90
+// FUNCTION: LEMBALL 0x0040ce90
 void TrapDoor::DoActivate()
 {
 }

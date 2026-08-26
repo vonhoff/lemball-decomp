@@ -17,7 +17,7 @@ BaseQueueHandler::BaseQueueHandler()
 }
 
 // 68K 0x1020492a ProcessMsg__17CBaseQueueHandlerFP10tagMESSAGE
-// STUB: LEMBALL 0x00462ec0
+// FUNCTION: LEMBALL 0x00462ec0
 int BaseQueueHandler::ProcessMsg(Message* p_message)
 {
 	return 0;

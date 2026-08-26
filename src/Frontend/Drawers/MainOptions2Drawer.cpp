@@ -26,7 +26,7 @@ bool MainOptions2Drawer::ProcessMessages(Message* p_message)
 }
 
 // 68K 0x1080ada6 DrawBackGround__19CMainOptions2DrawerFv
-// STUB: LEMBALL 0x00449000
+// FUNCTION: LEMBALL 0x00449000
 void MainOptions2Drawer::DrawBackGround()
 {
 }

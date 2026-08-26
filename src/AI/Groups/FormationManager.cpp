@@ -13,7 +13,7 @@ void FormationManager::Restart()
 }
 
 // 68K 0x10608ec4 __dt__17CFormationManagerFv
-// STUB: LEMBALL 0x0041a1c0
+// FUNCTION: LEMBALL 0x0041a1c0
 FormationManager::~FormationManager()
 {
 }

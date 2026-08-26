@@ -11,10 +11,10 @@ void PvButton::Destroy()
 }
 
 // 68K 0x10117742 GetStyle__9CPVButtonFv
-// STUB: LEMBALL 0x0043a570
+// FUNCTION: LEMBALL 0x0043a570
 unsigned int PvButton::GetStyle()
 {
-	return 0;
+	return 2147485697;
 }
 
 // 68K 0x1011776a Move__9CPVButtonFRC8CVSPoint

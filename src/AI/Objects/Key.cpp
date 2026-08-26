@@ -1,10 +1,10 @@
 #include "Key.h"
 
 // 68K 0x1011ad1a Usage__4CKeyFv
-// STUB: LEMBALL 0x0041c5f0
+// FUNCTION: LEMBALL 0x0041c5f0
 int Key::Usage()
 {
-	return 0;
+	return 2;
 }
 
 // 68K 0x1011ad36 __dt__4CKeyFv

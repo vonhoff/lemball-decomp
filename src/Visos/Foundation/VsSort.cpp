@@ -1,7 +1,7 @@
 #include "VsSort.h"
 
 // 68K 0x10602c1c AnimSpCmp__FPCvPCv
-// STUB: LEMBALL 0x00409910
+// FUNCTION: LEMBALL 0x00409910
 int AnimSpCmp(const void* p_left, const void* p_right)
 {
 	return 0;

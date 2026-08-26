@@ -13,7 +13,7 @@ void IntroAnimDrawer::Load()
 }
 
 // 68K 0x10805db2 UnLoad__16CIntroAnimDrawerFv
-// STUB: LEMBALL 0x00447540
+// FUNCTION: LEMBALL 0x00447540
 void IntroAnimDrawer::UnLoad()
 {
 }

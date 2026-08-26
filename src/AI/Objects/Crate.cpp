@@ -1,10 +1,10 @@
 #include "Crate.h"
 
 // 68K 0x1011ab0e Usage__6CCrateFv
-// STUB: LEMBALL 0x0041c530
+// FUNCTION: LEMBALL 0x0041c530
 int Crate::Usage()
 {
-	return 0;
+	return 2;
 }
 
 // 68K 0x1011aa7e __dt__6CCrateFv

@@ -93,7 +93,7 @@ void Ai::FireBullet(unsigned short p_id,
 }
 
 // 68K 0x10601d94 ProcessMsg__3CAIFP10tagMESSAGE
-// STUB: LEMBALL 0x00412660
+// FUNCTION: LEMBALL 0x00412660
 int Ai::ProcessMsg(Message* p_message)
 {
 	return 0;
@@ -238,10 +238,10 @@ PlayerLemming* Ai::GetDead()
 }
 
 // 68K 0x10602914 GetObjectRequired__3CAIF11eObjectType
-// STUB: LEMBALL 0x00413090
+// FUNCTION: LEMBALL 0x00413090
 bool Ai::GetObjectRequired(eObjectType p_objectType)
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x10602948 SetObjectRequired__3CAIF11eObjectTypeUc

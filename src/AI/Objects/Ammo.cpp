@@ -1,10 +1,10 @@
 #include "Ammo.h"
 
 // 68K 0x1011a9fe Usage__5CAmmoFv
-// STUB: LEMBALL 0x0041c430
+// FUNCTION: LEMBALL 0x0041c430
 int Ammo::Usage()
 {
-	return 0;
+	return 2;
 }
 
 // 68K 0x1011aa1a __dt__5CAmmoFv

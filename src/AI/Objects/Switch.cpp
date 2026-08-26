@@ -26,7 +26,7 @@ bool Switch::Process()
 }
 
 // 68K 0x10619950 Activate__7CSwitchFP11CGameObject
-// STUB: LEMBALL 0x0041d280
+// FUNCTION: LEMBALL 0x0041d280
 bool Switch::Activate(GameObject* p_object)
 {
 	return 0;
@@ -65,10 +65,10 @@ void Switch::Load(unsigned char*& p_data)
 }
 
 // 68K 0x1011abce Usage__7CSwitchFv
-// STUB: LEMBALL 0x0041dc40
+// FUNCTION: LEMBALL 0x0041dc40
 int Switch::Usage()
 {
-	return 0;
+	return 2;
 }
 
 // 68K 0x1011abec GetViewData__7CSwitchFR9CViewData

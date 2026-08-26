@@ -124,26 +124,26 @@ void BaseFrontendDrawer::OnDriverChange()
 }
 
 // 68K 0x1011beea Processing__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00446f50
+// FUNCTION: LEMBALL 0x00446f50
 void BaseFrontendDrawer::Processing()
 {
 }
 
 // 68K 0x1011bea8 ProcessMessages__19CBaseFrontendDrawerFP10tagMESSAGE
-// STUB: LEMBALL 0x00446f60
+// FUNCTION: LEMBALL 0x00446f60
 bool BaseFrontendDrawer::ProcessMessages(Message* p_message)
 {
 	return 0;
 }
 
 // 68K 0x1011bd5e DrawText__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00446f80
+// FUNCTION: LEMBALL 0x00446f80
 void BaseFrontendDrawer::DrawText()
 {
 }
 
 // 68K 0x1011bf1a ConfirmedAction__19CBaseFrontendDrawerF12eUserActions
-// STUB: LEMBALL 0x00446fa0
+// FUNCTION: LEMBALL 0x00446fa0
 bool BaseFrontendDrawer::ConfirmedAction(int p_action)
 {
 	return 0;

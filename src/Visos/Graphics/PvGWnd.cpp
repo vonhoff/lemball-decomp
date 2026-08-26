@@ -13,10 +13,10 @@ void PvGWnd::SetDontUpdateRect(const VsRect& p_rect)
 }
 
 // 68K 0x1010b5ba GetStyle__7CPVGWndFv
-// STUB: LEMBALL 0x004453a0
+// FUNCTION: LEMBALL 0x004453a0
 unsigned int PvGWnd::GetStyle()
 {
-	return 0;
+	return 2147483648;
 }
 
 // 68K 0x10216626 Clear__7CPVGWndFi

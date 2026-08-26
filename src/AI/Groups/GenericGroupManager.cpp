@@ -120,7 +120,7 @@ void GenericGroupManager::AddNewGroup(GenericGroup* p_group)
 }
 
 // 68K 0x1060d998 CreateNewGroup__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041eca0
+// FUNCTION: LEMBALL 0x0041eca0
 void GenericGroupManager::CreateNewGroup()
 {
 }

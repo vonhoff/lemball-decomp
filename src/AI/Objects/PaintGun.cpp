@@ -26,7 +26,7 @@ bool PaintGun::Process()
 }
 
 // 68K 0x1011ae1e DoActivate__9CPaintGunFv
-// STUB: LEMBALL 0x0042c9a0
+// FUNCTION: LEMBALL 0x0042c9a0
 void PaintGun::DoActivate()
 {
 }

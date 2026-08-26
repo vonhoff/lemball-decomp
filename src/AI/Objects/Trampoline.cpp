@@ -33,7 +33,7 @@ int Trampoline::Hit(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x1011b5d2 DoActivate__11CTrampolineFv
-// STUB: LEMBALL 0x0042b9b0
+// FUNCTION: LEMBALL 0x0042b9b0
 void Trampoline::DoActivate()
 {
 }

@@ -27,7 +27,7 @@ bool PlayerLemmingGroupManager::GetLeaderPos(AiCoord& p_position)
 }
 
 // 68K 0x1060fa8a ProcessDead__26CPlayerLemmingGroupManagerFv
-// STUB: LEMBALL 0x00418640
+// FUNCTION: LEMBALL 0x00418640
 void PlayerLemmingGroupManager::ProcessDead()
 {
 }

@@ -24,22 +24,22 @@ bool Collectable::Process()
 }
 
 // 68K 0x10119a66 DoActivate__12CCollectableFv
-// STUB: LEMBALL 0x00422fa0
+// FUNCTION: LEMBALL 0x00422fa0
 void Collectable::DoActivate()
 {
 }
 
 // 68K 0x101198c6 SetSFX__12CCollectableFv
-// STUB: LEMBALL 0x00423040
+// FUNCTION: LEMBALL 0x00423040
 void Collectable::SetSfx()
 {
 }
 
 // 68K 0x10119878 Collected__12CCollectableFv
-// STUB: LEMBALL 0x00423050
+// FUNCTION: LEMBALL 0x00423050
 int Collectable::Collected()
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x10605c14 __dt__12CCollectableFv

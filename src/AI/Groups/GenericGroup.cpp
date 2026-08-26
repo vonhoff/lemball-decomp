@@ -135,7 +135,7 @@ void GenericGroup::SendNewWaypoint(AiCoord p_coordinate)
 }
 
 // 68K 0x1060cd04 OverideExistingWaypoints__13CGenericGroupF7AICOORD
-// STUB: LEMBALL 0x0041e3c0
+// FUNCTION: LEMBALL 0x0041e3c0
 void GenericGroup::OverideExistingWaypoints(AiCoord p_coordinate)
 {
 }

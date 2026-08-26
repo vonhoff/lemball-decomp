@@ -70,7 +70,7 @@ void HiliteController::SetHilite(int p_buttonIndex)
 }
 
 // 68K 0x10805a72 Process__17CHiliteControllerFv
-// STUB: LEMBALL 0x0044fbc0
+// FUNCTION: LEMBALL 0x0044fbc0
 void HiliteController::Process()
 {
 }

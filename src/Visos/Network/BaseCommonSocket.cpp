@@ -48,7 +48,7 @@ void BaseCommonSocket::CloseSocket()
 }
 
 // 68K 0x1010e52c Closed__17CBaseCommonSocketFUc
-// STUB: LEMBALL 0x004628d0
+// FUNCTION: LEMBALL 0x004628d0
 void BaseCommonSocket::Closed(unsigned char p_arg0)
 {
 }

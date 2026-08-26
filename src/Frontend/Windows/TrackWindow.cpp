@@ -50,16 +50,16 @@ unsigned int TrackWindow::OnButtonDown(const VsPoint& p_point, int p_flags)
 }
 
 // 68K 0x1080e898 OnDriverChange__12CTrackWindowFv
-// STUB: LEMBALL 0x0044ec20
+// FUNCTION: LEMBALL 0x0044ec20
 void TrackWindow::OnDriverChange()
 {
 }
 
 // 68K 0x1011c650 GetStyle__12CTrackWindowFv
-// STUB: LEMBALL 0x0044efe0
+// FUNCTION: LEMBALL 0x0044efe0
 unsigned int TrackWindow::GetStyle()
 {
-	return 0;
+	return 2147485697;
 }
 
 // 68K 0x1080e2e2 __dt__12CTrackWindowFv

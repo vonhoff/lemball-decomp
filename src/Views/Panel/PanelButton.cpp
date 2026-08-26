@@ -50,13 +50,13 @@ void PanelButton::OnPressed(int p_flags)
 }
 
 // 68K 0x1011cde6 OnEnterButton__12CPanelButtonFv
-// STUB: LEMBALL 0x00443930
+// FUNCTION: LEMBALL 0x00443930
 void PanelButton::OnEnterButton()
 {
 }
 
 // 68K 0x1011ce10 OnExitButton__12CPanelButtonFv
-// STUB: LEMBALL 0x00443940
+// FUNCTION: LEMBALL 0x00443940
 void PanelButton::OnExitButton()
 {
 }

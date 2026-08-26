@@ -19,7 +19,7 @@ void FileBroadcast::InitialiseFile()
 }
 
 // 68K 0x10208e36 GetSpecificAddr__14CFileBroadcastFPCc
-// STUB: LEMBALL 0x0047ab10
+// FUNCTION: LEMBALL 0x0047ab10
 void FileBroadcast::GetSpecificAddr(const char* p_name)
 {
 }

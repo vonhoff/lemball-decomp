@@ -7,7 +7,7 @@ void ReceiveWindowState::SetOptionSelection(int p_selection)
 }
 
 // 68K 0x1011b05c GetPauser__19CReceiveWindowStateFv
-// STUB: LEMBALL 0x00439440
+// FUNCTION: LEMBALL 0x00439440
 bool ReceiveWindowState::GetPauser()
 {
 	return 0;

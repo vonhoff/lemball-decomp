@@ -34,7 +34,7 @@ FileReadSocket::~FileReadSocket()
 }
 
 // 68K 0x101078ba Closed__15CFileReadSocketFUc
-// STUB: LEMBALL 0x0047be10
+// FUNCTION: LEMBALL 0x0047be10
 void FileReadSocket::Closed(unsigned char p_notifyPeer)
 {
 }

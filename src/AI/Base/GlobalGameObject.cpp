@@ -15,7 +15,7 @@ GlobalGameObject::GlobalGameObject()
 }
 
 // 68K 0x1011a15e DoActivate__17CGlobalGameObjectFv
-// STUB: LEMBALL 0x0040ce40
+// FUNCTION: LEMBALL 0x0040ce40
 void GlobalGameObject::DoActivate()
 {
 }

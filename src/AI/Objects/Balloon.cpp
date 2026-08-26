@@ -1,10 +1,10 @@
 #include "Balloon.h"
 
 // 68K 0x1011ad98 Usage__8CBalloonFv
-// STUB: LEMBALL 0x0041c630
+// FUNCTION: LEMBALL 0x0041c630
 int Balloon::Usage()
 {
-	return 0;
+	return 2;
 }
 
 // 68K 0x1011adb8 __dt__8CBalloonFv

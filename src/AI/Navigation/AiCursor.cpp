@@ -25,7 +25,7 @@ void AiCursor::GetCursorSurfaceCoordinates(int& p_x, int& p_y)
 }
 
 // 68K 0x1060623c ProcessMsg__9CAICursorFP10tagMESSAGE
-// STUB: LEMBALL 0x00414e80
+// FUNCTION: LEMBALL 0x00414e80
 int AiCursor::ProcessMsg(Message* p_message)
 {
 	return 0;

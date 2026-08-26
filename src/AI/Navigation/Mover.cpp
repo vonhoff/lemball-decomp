@@ -96,7 +96,7 @@ void Mover::StopObjectsMoving()
 }
 
 // 68K 0x1011a914 DoActivate__6CMoverFv
-// STUB: LEMBALL 0x0042fb90
+// FUNCTION: LEMBALL 0x0042fb90
 void Mover::DoActivate()
 {
 }

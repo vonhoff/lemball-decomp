@@ -1,7 +1,7 @@
 #include "EnemyGroupManager.h"
 
 // 68K 0x10608928 ENEMY_GetLONG__FPUl
-// STUB: LEMBALL 0x00420b50
+// FUNCTION: LEMBALL 0x00420b50
 unsigned long EnemyGetLong(unsigned long* p_data)
 {
 	return 0;

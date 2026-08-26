@@ -5,13 +5,13 @@ BaseFrontendProcess::BaseFrontendProcess()
 }
 
 // 68K 0x1011bac4 Processing__20CBaseFrontendProcessFv
-// STUB: LEMBALL 0x00407f20
+// FUNCTION: LEMBALL 0x00407f20
 void BaseFrontendProcess::Processing()
 {
 }
 
 // 68K 0x1011baf4 ProcessMessages__20CBaseFrontendProcessFP10tagMESSAGE
-// STUB: LEMBALL 0x00407f30
+// FUNCTION: LEMBALL 0x00407f30
 bool BaseFrontendProcess::ProcessMessages(Message* p_message)
 {
 	return 0;
@@ -43,7 +43,7 @@ bool BaseFrontendProcess::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x10801cdc ReceiveCritical__20CBaseFrontendProcessFUlP11CReadPacketP8CConnect
-// STUB: LEMBALL 0x00446990
+// FUNCTION: LEMBALL 0x00446990
 bool BaseFrontendProcess::ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, Connect* p_connection)
 {
 	return 0;

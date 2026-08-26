@@ -141,7 +141,7 @@ void Surface::Blit(ZBuffClear* p_arg0)
 }
 
 // 68K 0x10111d0c Blit__8CSurfaceFP12CZBuffScroll
-// STUB: LEMBALL 0x00474dc0
+// FUNCTION: LEMBALL 0x00474dc0
 void Surface::Blit(ZBuffScroll* p_arg0)
 {
 }

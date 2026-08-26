@@ -19,7 +19,7 @@ void MainOptions1Drawer::UnLoad()
 }
 
 // 68K 0x1080a42e DrawBackGround__19CMainOptions1DrawerFv
-// STUB: LEMBALL 0x00448610
+// FUNCTION: LEMBALL 0x00448610
 void MainOptions1Drawer::DrawBackGround()
 {
 }

@@ -28,7 +28,7 @@ bool SheepGroup::Process()
 }
 
 // 68K 0x1061e8e8 CheckAgainstCatapults__11CSheepGroupFv
-// STUB: LEMBALL 0x0041f870
+// FUNCTION: LEMBALL 0x0041f870
 bool SheepGroup::CheckAgainstCatapults()
 {
 	return 0;

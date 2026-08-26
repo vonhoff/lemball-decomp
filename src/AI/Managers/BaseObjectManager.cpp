@@ -1,20 +1,20 @@
 #include "BaseObjectManager.h"
 
 // 68K 0x1011977c Restart__18CBaseObjectManagerFv
-// STUB: LEMBALL 0x0040ab70
+// FUNCTION: LEMBALL 0x0040ab70
 void BaseObjectManager::Restart()
 {
 }
 
 // 68K 0x10119728 Receive__18CBaseObjectManagerFUsP17CGlobalGameObjectP15CNetworkMessage
-// STUB: LEMBALL 0x0040ab80
+// FUNCTION: LEMBALL 0x0040ab80
 bool BaseObjectManager::Receive(unsigned short p_messageId, GlobalGameObject* p_object, NetworkMessage* p_message)
 {
 	return 0;
 }
 
 // 68K 0x101197a6 GetViewData__18CBaseObjectManagerFP9CViewData
-// STUB: LEMBALL 0x0040ab90
+// FUNCTION: LEMBALL 0x0040ab90
 int BaseObjectManager::GetViewData(ViewData* p_viewData)
 {
 	return 0;
@@ -34,7 +34,7 @@ void BaseObjectManager::Add(NetworkMessage* p_message)
 }
 
 // 68K 0x106042fe AddData__18CBaseObjectManagerFv
-// STUB: LEMBALL 0x0040adc0
+// FUNCTION: LEMBALL 0x0040adc0
 void BaseObjectManager::AddData()
 {
 }
