@@ -3,7 +3,7 @@
 #include <string.h>
 
 // 68K 0x1020d71a __ct__11CReadPacketFUs
-// FUNCTION: LEMBALL 0x00461090
+// STUB: LEMBALL 0x00461090
 ReadPacket::ReadPacket(unsigned short p_arg0)
 {
 	m_data = (unsigned char*) operator new(p_arg0);
@@ -13,7 +13,7 @@ ReadPacket::ReadPacket(unsigned short p_arg0)
 }
 
 // 68K 0x1020d7a0 __dt__11CReadPacketFv
-// FUNCTION: LEMBALL 0x004610f0
+// STUB: LEMBALL 0x004610f0
 ReadPacket::~ReadPacket()
 {
 	operator delete(m_data);

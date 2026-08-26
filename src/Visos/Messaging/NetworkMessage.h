@@ -10,6 +10,7 @@ public:
 	inline NetworkMessage(unsigned long p_messageId = 0) : m_messageId(p_messageId) { Initialise(); }
 	friend class GameObjectMess;
 	friend class Bullet;
+	friend class Headers;
 	bool Set(unsigned char* p_arg0);
 	int GetDword();
 	unsigned char GetByte();

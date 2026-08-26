@@ -5,7 +5,7 @@
 #pragma intrinsic(strlen)
 
 // 68K 0x1020aff4 __ct__14CMessGOConnectFPCc
-// FUNCTION: LEMBALL 0x0045f580
+// STUB: LEMBALL 0x0045f580
 MessGoConnect::MessGoConnect(const char* p_arg0)
 {
 	unsigned int nameLength;

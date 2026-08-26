@@ -9,7 +9,7 @@ MessReqConnect::MessReqConnect()
 }
 
 // 68K 0x1020ace8 __ct__15CMessReqConnectFPCc
-// FUNCTION: LEMBALL 0x0045f3d0
+// STUB: LEMBALL 0x0045f3d0
 MessReqConnect::MessReqConnect(const char* p_arg0)
 {
 	unsigned int nameLength;

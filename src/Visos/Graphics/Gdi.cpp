@@ -12,7 +12,7 @@
 Primitive* g_pCurrentPrimitive = 0;
 
 // 68K 0x1021184c __ct__4CGDIFRC7CVSRectiP8CSurface
-// FUNCTION: LEMBALL 0x00467060
+// STUB: LEMBALL 0x00467060
 Gdi::Gdi(const VsRect& p_arg0, int p_arg1, Surface* p_arg2)
 {
 	int i;
@@ -51,7 +51,7 @@ void Gdi::AddToList(Primitive* p_primitive)
 }
 
 // 68K 0x1021197a Render__4CGDIFv
-// FUNCTION: LEMBALL 0x00467110
+// STUB: LEMBALL 0x00467110
 void Gdi::Render()
 {
 	int offset;

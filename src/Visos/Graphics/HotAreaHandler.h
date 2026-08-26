@@ -24,6 +24,7 @@ public:
 	void SetParent(HotAreaList* p_parent);
 
 	friend class NetworkOptionsDrawer;
+	friend class HotAreaList;
 
 private:
 	unsigned int m_active;          // 0x04

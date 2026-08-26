@@ -5,7 +5,7 @@
 #pragma intrinsic(strlen)
 
 // 68K 0x1020b0fc __ct__18CMessFAILEDConnectFPCc
-// FUNCTION: LEMBALL 0x0045f610
+// STUB: LEMBALL 0x0045f610
 MessFailedConnect::MessFailedConnect(const char* p_arg0)
 {
 	unsigned int nameLength;

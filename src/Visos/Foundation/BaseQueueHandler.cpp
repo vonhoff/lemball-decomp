@@ -8,9 +8,12 @@ BaseQueueHandler::~BaseQueueHandler()
 }
 
 // 68K 0x102048e0 __ct__17CBaseQueueHandlerFv
-// STUB: LEMBALL 0x00462ea0
+// FUNCTION: LEMBALL 0x00462ea0
 BaseQueueHandler::BaseQueueHandler()
 {
+	m_dispatchState = 0;
+	m_processedCount = 0;
+	m_signature = 0x51484452;
 }
 
 // 68K 0x1020492a ProcessMsg__17CBaseQueueHandlerFP10tagMESSAGE
@@ -21,10 +24,10 @@ int BaseQueueHandler::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x1020497e StreamOut__17CBaseQueueHandlerFR10CVSOStream
-// STUB: LEMBALL 0x00462ed0
+// FUNCTION: LEMBALL 0x00462ed0
 VsOStream& BaseQueueHandler::StreamOut(VsOStream& p_stream)
 {
-	return *(VsOStream*) 0;
+	return p_stream;
 }
 
 // GLOBAL: LEMBALL 0x004a1e1c

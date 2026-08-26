@@ -5,7 +5,7 @@
 #pragma intrinsic(strlen)
 
 // 68K 0x1020aeec __ct__14CMessOKConnectFPCc
-// FUNCTION: LEMBALL 0x0045f4f0
+// STUB: LEMBALL 0x0045f4f0
 MessOkConnect::MessOkConnect(const char* p_arg0)
 {
 	unsigned int nameLength;

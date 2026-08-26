@@ -18,7 +18,7 @@ Connect::~Connect()
 }
 
 // 68K 0x1020d1c2 InitConnect__8CConnectFPCcP15CNetworkAddresss
-// FUNCTION: LEMBALL 0x00460c60
+// STUB: LEMBALL 0x00460c60
 void Connect::InitConnect(const char* p_arg0, NetworkAddress* p_arg1, short p_arg2)
 {
 	unsigned int length;
@@ -44,7 +44,7 @@ void Connect::InitConnect(const char* p_arg0, NetworkAddress* p_arg1, short p_ar
 }
 
 // 68K 0x1020d25e CheckConnectTime__8CConnectFv
-// FUNCTION: LEMBALL 0x00460ce0
+// STUB: LEMBALL 0x00460ce0
 bool Connect::CheckConnectTime()
 {
 	unsigned long now;
@@ -60,14 +60,14 @@ bool Connect::CheckConnectTime()
 }
 
 // 68K 0x1020d2b6 SetConnectTime__8CConnectFv
-// FUNCTION: LEMBALL 0x00460d10
+// STUB: LEMBALL 0x00460d10
 void Connect::SetConnectTime()
 {
 	m_connectTime = CurrentMilliTimer();
 }
 
 // 68K 0x1020d2ea Stop__8CConnectFv
-// FUNCTION: LEMBALL 0x00460d20
+// STUB: LEMBALL 0x00460d20
 void Connect::Stop()
 {
 	if (m_name != 0) {
@@ -108,7 +108,7 @@ NetworkMessage* Connect::ReceiveAcknowledgement()
 }
 
 // 68K 0x1020d5cc Kill__8CConnectFv
-// FUNCTION: LEMBALL 0x00460fb0
+// STUB: LEMBALL 0x00460fb0
 void Connect::Kill()
 {
 	if (m_nextConnect != 0 && m_previousConnect != 0) {

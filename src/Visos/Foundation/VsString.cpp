@@ -6,7 +6,7 @@
 #pragma intrinsic(strlen)
 
 // 68K 0x107001ea StrCmpI__FPCcPCci
-// FUNCTION: LEMBALL 0x00406790
+// STUB: LEMBALL 0x00406790
 int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 {
 	int len1 = strlen(p_left);
@@ -58,7 +58,7 @@ void VsLtoa(long p_value, char* p_buffer, int p_radix)
 }
 
 // 68K 0x102142e8 vsULtoa__FUlPci
-// FUNCTION: LEMBALL 0x00458db0
+// STUB: LEMBALL 0x00458db0
 char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 {
 	static unsigned int s_maxPowers[17];

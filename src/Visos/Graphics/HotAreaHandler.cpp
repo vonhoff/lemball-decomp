@@ -4,7 +4,7 @@
 #include "HotAreaList.h"
 
 // 68K 0x1010219a OnButtonDown__15CHotAreaHandlerFRC8CVSPoint12BUTTON_FLAGS
-// FUNCTION: LEMBALL 0x00439960
+// STUB: LEMBALL 0x00439960
 unsigned int HotAreaHandler::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
 	return 0;
@@ -17,7 +17,7 @@ void HotAreaHandler::OnButtonUp(const VsPoint& p_point, int p_flags)
 }
 
 // 68K 0x10102224 OnExternalButtonUp__15CHotAreaHandlerFRC8CVSPoint12BUTTON_FLAGS
-// FUNCTION: LEMBALL 0x00439980
+// STUB: LEMBALL 0x00439980
 void HotAreaHandler::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 {
 }
@@ -29,7 +29,7 @@ void HotAreaHandler::OnEnter()
 }
 
 // 68K 0x101022b2 OnExit__15CHotAreaHandlerFv
-// FUNCTION: LEMBALL 0x004399b0
+// STUB: LEMBALL 0x004399b0
 void HotAreaHandler::OnExit()
 {
 }
@@ -41,7 +41,7 @@ void HotAreaHandler::OnInside(const VsPoint& p_point)
 }
 
 // 68K 0x10102326 InArea__15CHotAreaHandlerFRC8CVSPoint
-// FUNCTION: LEMBALL 0x004399e0
+// STUB: LEMBALL 0x004399e0
 bool HotAreaHandler::InArea(const VsPoint& p_point)
 {
 	short px;
@@ -79,7 +79,7 @@ HotAreaHandler::HotAreaHandler(const VsRect& p_arg0)
 }
 
 // 68K 0x10211d28 __ct__15CHotAreaHandlerFv
-// FUNCTION: LEMBALL 0x0046a300
+// STUB: LEMBALL 0x0046a300
 HotAreaHandler::HotAreaHandler()
 {
 	m_height = 0;

@@ -55,7 +55,7 @@ struct MusicDeviceDispatch {
 };
 
 // 68K 0x10218192 __ct__13CSoundManagerFUcUcUciP4CWnd
-// FUNCTION: LEMBALL 0x0045af80
+// STUB: LEMBALL 0x0045af80
 SoundManager::SoundManager(unsigned int p_musicEnabled, unsigned int p_effectsEnabled, unsigned int p_useMusicCD, int p_deviceParameter, Wnd* p_window)
 {
 	unsigned int music;
@@ -136,7 +136,7 @@ SoundManager::SoundManager(unsigned int p_musicEnabled, unsigned int p_effectsEn
 }
 
 // 68K 0x10218368 __dt__13CSoundManagerFv
-// FUNCTION: LEMBALL 0x0045b110
+// STUB: LEMBALL 0x0045b110
 SoundManager::~SoundManager()
 {
 	unsigned int i;
@@ -204,17 +204,17 @@ void SoundManager::Background()
 }
 
 // 68K 0x10218532 Foreground__13CSoundManagerFv
-// FUNCTION: LEMBALL 0x0045b210
+// STUB: LEMBALL 0x0045b210
 void SoundManager::Foreground()
 {
+	unsigned int music;
 	unsigned int effects;
 	BaseSoundDevice* musicOutput;
-	unsigned int music;
 
 	if (m_background != 0) {
-		m_background = 0;
 		music = m_requestedMusic;
 		effects = 0;
+		m_background = 0;
 		musicOutput = m_musicOutput;
 		if (m_effectOutput == musicOutput) {
 			m_effectOutput = 0;
@@ -241,7 +241,7 @@ void SoundManager::Foreground()
 }
 
 // 68K 0x10218602 PrepareMusic__13CSoundManagerFUlUc
-// FUNCTION: LEMBALL 0x0045b2c0
+// STUB: LEMBALL 0x0045b2c0
 unsigned long SoundManager::PrepareMusic(unsigned long p_resourceId, unsigned int p_flags)
 {
 	return ((MusicDeviceDispatch*) m_musicDevice)->Initialise(p_resourceId, p_flags);
@@ -338,8 +338,7 @@ unsigned long SoundManager::PrepareEffect(unsigned long p_resourceId)
 void SoundManager::PlayEffect(unsigned long p_effectId)
 {
 	if (m_effectsAvailable == 1) {
-		unsigned long vol = ((SoundDeviceDispatch*) m_effectOutput)->QueryVolume();
-		((SoundDeviceDispatch*) m_effectOutput)->PlayEffect(p_effectId, vol, 0);
+		((SoundDeviceDispatch*) m_effectOutput)->PlayEffect(p_effectId, ((SoundDeviceDispatch*) m_effectOutput)->QueryVolume(), 0);
 	}
 }
 

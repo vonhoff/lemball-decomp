@@ -12,7 +12,7 @@
 #include "../Drawers/NetworkOptionsDrawer.h"
 
 // 68K 0x10808988 __ct__19CNetworkOptionsProcFP5CGame
-// FUNCTION: LEMBALL 0x00455050
+// STUB: LEMBALL 0x00455050
 NetworkOptionsProc::NetworkOptionsProc(Game* p_arg0) : BaseFrontendProcess(p_arg0)
 {
 	m_rejectMessage = new GameRejectMessage;
@@ -23,7 +23,7 @@ NetworkOptionsProc::NetworkOptionsProc(Game* p_arg0) : BaseFrontendProcess(p_arg
 }
 
 // 68K 0x10808a36 __dt__19CNetworkOptionsProcFv
-// FUNCTION: LEMBALL 0x004550e0
+// STUB: LEMBALL 0x004550e0
 NetworkOptionsProc::~NetworkOptionsProc()
 {
 	Stop();
@@ -56,7 +56,7 @@ void NetworkOptionsProc::Start()
 }
 
 // 68K 0x10808bee StopBroadcast__19CNetworkOptionsProcFv
-// FUNCTION: LEMBALL 0x004551d0
+// STUB: LEMBALL 0x004551d0
 void NetworkOptionsProc::StopBroadcast()
 {
 	int index;
@@ -92,7 +92,7 @@ void NetworkOptionsProc::StopBroadcast()
 }
 
 // 68K 0x10808d12 Stop__19CNetworkOptionsProcFv
-// FUNCTION: LEMBALL 0x004552a0
+// STUB: LEMBALL 0x004552a0
 void NetworkOptionsProc::Stop()
 {
 	unsigned long startTime;

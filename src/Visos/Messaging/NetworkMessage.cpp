@@ -90,7 +90,7 @@ void NetworkMessage::Add(unsigned char p_arg0)
 }
 
 // 68K 0x1020a618 Add__15CNetworkMessageFPCc
-// FUNCTION: LEMBALL 0x0045ef70
+// STUB: LEMBALL 0x0045ef70
 void NetworkMessage::Add(const char* p_arg0)
 {
 	char* dest;
@@ -244,7 +244,7 @@ void NetworkMessage::GetCopy(unsigned char* p_arg0, int p_arg1)
 }
 
 // 68K 0x1020a9f8 OpenDataStream__15CNetworkMessageFv
-// FUNCTION: LEMBALL 0x0045f1e0
+// STUB: LEMBALL 0x0045f1e0
 void NetworkMessage::OpenDataStream()
 {
 	int depth;
@@ -302,7 +302,7 @@ bool NetworkMessage::Set(unsigned char* p_arg0)
 }
 
 // 68K 0x1020abb4 Send__15CNetworkMessageFP8CConnect
-// FUNCTION: LEMBALL 0x0045f2b0
+// STUB: LEMBALL 0x0045f2b0
 void NetworkMessage::Send(Connect* p_arg0)
 {
 	if (p_arg0 != 0) {

@@ -108,7 +108,7 @@ NetworkOptionsDrawer::NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, c
 }
 
 // 68K 0x10806646 Load__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x00453450
+// STUB: LEMBALL 0x00453450
 void NetworkOptionsDrawer::Load()
 {
 	unsigned long* animIds1;
@@ -150,7 +150,7 @@ void NetworkOptionsDrawer::UnLoad()
 }
 
 // 68K 0x108067f4 __dt__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x004535c0
+// STUB: LEMBALL 0x004535c0
 NetworkOptionsDrawer::~NetworkOptionsDrawer()
 {
 	int offset;
@@ -189,7 +189,7 @@ void NetworkOptionsDrawer::DrawBackGround()
 }
 
 // 68K 0x108069ba DrawFrame__21CNetworkOptionsDrawerF17eNetOptsPositions
-// FUNCTION: LEMBALL 0x004536b0
+// STUB: LEMBALL 0x004536b0
 void NetworkOptionsDrawer::DrawFrame(int p_position)
 {
 	NetworkOptionsFramePos* pos = &m_layoutTable->m_framePos[p_position];
@@ -227,7 +227,7 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 }
 
 // 68K 0x10807a3c Start__21CNetworkOptionsDrawerFUc
-// FUNCTION: LEMBALL 0x00454520
+// STUB: LEMBALL 0x00454520
 void NetworkOptionsDrawer::Start(unsigned int p_mode)
 {
 	unsigned int mode;
@@ -259,7 +259,7 @@ void NetworkOptionsDrawer::Start(unsigned int p_mode)
 }
 
 // 68K 0x10807afa StartBroadcast__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x004545c0
+// STUB: LEMBALL 0x004545c0
 void NetworkOptionsDrawer::StartBroadcast()
 {
 	m_broadcasting = 1;
@@ -273,7 +273,7 @@ void NetworkOptionsDrawer::StartBroadcast()
 }
 
 // 68K 0x10807ba4 Stop__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x00454620
+// STUB: LEMBALL 0x00454620
 void NetworkOptionsDrawer::Stop()
 {
 	if (g_pNetworkOptionsProc->m_started != 0 && g_pNetworkOptionsProc->m_startFailed == 0) {
@@ -284,7 +284,7 @@ void NetworkOptionsDrawer::Stop()
 }
 
 // 68K 0x10807c12 SetMessage__21CNetworkOptionsDrawerF16eNetOptsMessages
-// FUNCTION: LEMBALL 0x00454650
+// STUB: LEMBALL 0x00454650
 void NetworkOptionsDrawer::SetMessage(int p_message)
 {
 	unsigned long now;
@@ -298,7 +298,7 @@ void NetworkOptionsDrawer::SetMessage(int p_message)
 }
 
 // 68K 0x10807c7c StartEditing__21CNetworkOptionsDrawerF13eEditingStageUc
-// FUNCTION: LEMBALL 0x00454690
+// STUB: LEMBALL 0x00454690
 void NetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
 {
 	int stage;
@@ -327,7 +327,7 @@ void NetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
 }
 
 // 68K 0x10807d76 StopEditing__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x00454740
+// STUB: LEMBALL 0x00454740
 void NetworkOptionsDrawer::StopEditing()
 {
 	int stage;
@@ -363,7 +363,7 @@ void NetworkOptionsDrawer::StopEditing()
 }
 
 // 68K 0x10807e66 LastError__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x00454830
+// STUB: LEMBALL 0x00454830
 void NetworkOptionsDrawer::LastError()
 {
 	if (m_pendingEvent == 7) {
@@ -377,7 +377,7 @@ void NetworkOptionsDrawer::LastError()
 }
 
 // 68K 0x10807ed6 StartMessageTimeout__21CNetworkOptionsDrawerF16eNetOptsMessagesUl
-// FUNCTION: LEMBALL 0x00454870
+// STUB: LEMBALL 0x00454870
 void NetworkOptionsDrawer::StartMessageTimeout(int p_message, unsigned long p_duration)
 {
 	unsigned long now;
@@ -393,7 +393,7 @@ void NetworkOptionsDrawer::StartMessageTimeout(int p_message, unsigned long p_du
 }
 
 // 68K 0x10807f58 Processing__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x004548c0
+// STUB: LEMBALL 0x004548c0
 void NetworkOptionsDrawer::Processing()
 {
 	unsigned long now;
@@ -494,7 +494,7 @@ void NetworkOptionsDrawer::Processing()
 }
 
 // 68K 0x10808166 RegisterRemaps__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x00454ad0
+// STUB: LEMBALL 0x00454ad0
 void NetworkOptionsDrawer::RegisterRemaps()
 {
 	BaseRemap** remaps;
@@ -653,7 +653,7 @@ bool NetworkOptionsDrawer::HighlightNextEntry()
 }
 
 // 68K 0x10808604 InitialiseHandlers__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x00454df0
+// STUB: LEMBALL 0x00454df0
 void NetworkOptionsDrawer::InitialiseHandlers()
 {
 	int offset;
@@ -703,7 +703,7 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 }
 
 // 68K 0x10808792 ResetHandlers__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x00454f00
+// STUB: LEMBALL 0x00454f00
 void NetworkOptionsDrawer::ResetHandlers()
 {
 	int offset;
@@ -749,7 +749,7 @@ void NetworkOptionsDrawer::Lock()
 }
 
 // 68K 0x10808894 UnLock__21CNetworkOptionsDrawerFv
-// FUNCTION: LEMBALL 0x00454fb0
+// STUB: LEMBALL 0x00454fb0
 void NetworkOptionsDrawer::UnLock()
 {
 	m_locked = 0;

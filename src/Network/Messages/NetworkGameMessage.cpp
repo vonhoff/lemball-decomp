@@ -12,7 +12,7 @@ NetworkGameMessage::NetworkGameMessage()
 }
 
 // 68K 0x10a000c2 AddData__19CNetworkGameMessageFv
-// FUNCTION: LEMBALL 0x00452420
+// STUB: LEMBALL 0x00452420
 void NetworkGameMessage::AddData()
 {
 	Add(m_gameName);

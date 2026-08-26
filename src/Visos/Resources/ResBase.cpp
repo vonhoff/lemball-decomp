@@ -109,7 +109,7 @@ void ResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned i
 }
 
 // 68K 0x10202fae LoadData__8CResBaseFv
-// FUNCTION: LEMBALL 0x0045d100
+// STUB: LEMBALL 0x0045d100
 void ResBase::LoadData()
 {
 	ResBaseList* list;
@@ -157,17 +157,14 @@ void ResBase::UnLoad()
 }
 
 // 68K 0x10203108 UnLoadData__8CResBaseFUc
-// FUNCTION: LEMBALL 0x0045d1c0
+// STUB: LEMBALL 0x0045d1c0
 void ResBase::UnLoadData(unsigned int p_force)
 {
 	unsigned int size;
 
-	if (m_loaded != 0 && m_resourceId != 0) {
-		size = m_dataSize;
-		if (size != 0) {
-			g_pActiveMogRes->DeallocateMem(m_data, 1);
-			m_data = 0;
-		}
+	if (m_loaded != 0 && m_resourceId != 0 && (size = m_dataSize) != 0) {
+		g_pActiveMogRes->DeallocateMem(m_data, 1);
+		m_data = 0;
 	}
 	UnLoadVramData(p_force);
 	if (m_loaded != 0) {

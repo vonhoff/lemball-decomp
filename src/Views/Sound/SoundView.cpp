@@ -70,7 +70,7 @@ unsigned int g_dwEffectsOn = 0;
 unsigned int g_dwMusicOn = 0;
 
 // 68K 0x10b0fb42 __ct__10CSoundViewFv
-// FUNCTION: LEMBALL 0x00439a70
+// STUB: LEMBALL 0x00439a70
 SoundView::SoundView()
 {
 	int i;
@@ -137,7 +137,7 @@ void SoundView::PlayEffect(eSoundEffect p_soundId)
 }
 
 // 68K 0x10b0fcd2 SetMusicOn__10CSoundViewFUc
-// FUNCTION: LEMBALL 0x00439ba0
+// STUB: LEMBALL 0x00439ba0
 void SoundView::SetMusicOn(unsigned int p_enabled)
 {
 	unsigned long handle;
@@ -161,7 +161,7 @@ void SoundView::SetMusicOn(unsigned int p_enabled)
 }
 
 // 68K 0x10b0fd8a SoundEffect__10CSoundViewFP9CViewDataiR7AICOORD
-// FUNCTION: LEMBALL 0x00439c40
+// STUB: LEMBALL 0x00439c40
 void SoundView::SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listener)
 {
 	int dist;
@@ -225,7 +225,7 @@ void SoundView::UnprepareEffects()
 }
 
 // 68K 0x10b0ff80 PrepareEffects__10CSoundViewFUs
-// FUNCTION: LEMBALL 0x00439d90
+// STUB: LEMBALL 0x00439d90
 void SoundView::PrepareEffects(unsigned short p_stateMask)
 {
 	EffectSlot* slot;
@@ -276,7 +276,7 @@ int SoundView::GetnEffects(unsigned short p_stateMask)
 }
 
 // 68K 0x10b100d0 ChangeState__10CSoundViewFUsP11CLoadUpdate
-// FUNCTION: LEMBALL 0x00439e30
+// STUB: LEMBALL 0x00439e30
 void SoundView::ChangeState(unsigned short p_state, LoadUpdate* p_loadUpdate)
 {
 	int restartMusic;
@@ -329,14 +329,14 @@ void SoundView::ChangeState(unsigned short p_state, LoadUpdate* p_loadUpdate)
 }
 
 // 68K 0x10b10236 SetEffectsVolume__10CSoundViewFUc
-// FUNCTION: LEMBALL 0x00439f50
+// STUB: LEMBALL 0x00439f50
 void SoundView::SetEffectsVolume(unsigned char p_volume)
 {
 	g_pSoundManager->SetVolumes((int) p_volume, -1);
 }
 
 // 68K 0x10b1027c SetMusicVolume__10CSoundViewFUc
-// FUNCTION: LEMBALL 0x00439f70
+// STUB: LEMBALL 0x00439f70
 void SoundView::SetMusicVolume(unsigned char p_volume)
 {
 	g_pSoundManager->SetVolumes(-1, (int) p_volume);

@@ -85,7 +85,7 @@ void Broadcast::SendFailedInit(NetworkErrors p_arg0)
 }
 
 // 68K 0x1020ce72 Run__10CBroadcastFv
-// FUNCTION: LEMBALL 0x00460a20
+// STUB: LEMBALL 0x00460a20
 void Broadcast::Run()
 {
 	unsigned long time = CurrentMilliTimer();

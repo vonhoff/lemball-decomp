@@ -36,7 +36,7 @@ void VsDebugStreambuf::Flush()
 }
 
 // 68K 0x10214504 sputc__17CVSDebugStreambufFc
-// FUNCTION: LEMBALL 0x0045ae10
+// STUB: LEMBALL 0x0045ae10
 void VsDebugStreambuf::Sputc(char p_c)
 {
 	int c = p_c;

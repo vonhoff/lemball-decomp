@@ -140,7 +140,7 @@ bool InpQuit()
 
 // 68K 0x102133dc INIT_SubSystems__Fv
 // ASSERT: _VSRELassert("EnoughMemory", "VSINIT.CPP", 414)
-// FUNCTION: LEMBALL 0x00459250
+// STUB: LEMBALL 0x00459250
 void InitSubSystems()
 {
 	int memOk;
@@ -269,7 +269,7 @@ bool StatInit()
 }
 
 // 68K 0x10218bc6 _STAT_Quit__Fv
-// FUNCTION: LEMBALL 0x0045aab0
+// STUB: LEMBALL 0x0045aab0
 bool StatQuit()
 {
 	g_pStatManager->StreamOut(*g_pSysOutput);
@@ -278,7 +278,7 @@ bool StatQuit()
 }
 
 // 68K 0x10201420 _RES_Init__Fv
-// FUNCTION: LEMBALL 0x0045b900
+// STUB: LEMBALL 0x0045b900
 bool ResInit()
 {
 	ResourceTypeList* list;
@@ -340,7 +340,7 @@ bool ResInit()
 }
 
 // 68K 0x10201580 _RES_Quit__Fv
-// FUNCTION: LEMBALL 0x0045ba50
+// STUB: LEMBALL 0x0045ba50
 bool ResQuit()
 {
 	ResourceTypeList* list;
@@ -493,7 +493,7 @@ unsigned int __stdcall FileNetworkMessageThread(void* p_unused)
 }
 
 // 68K 0x10106d86 VSFNET_Init__Fv
-// FUNCTION: LEMBALL 0x0046f3b0
+// STUB: LEMBALL 0x0046f3b0
 bool VsFNetInit()
 {
 	unsigned long startTime;
@@ -531,7 +531,7 @@ bool VsFNetInit()
 }
 
 // 68K 0x10106dc8 VSFNET_Quit__Fv
-// FUNCTION: LEMBALL 0x0046f480
+// STUB: LEMBALL 0x0046f480
 bool VsFNetQuit()
 {
 	unsigned long startTime;
@@ -560,7 +560,7 @@ unsigned int __stdcall TcpIpNetworkMessageThread(void* p_unused)
 }
 
 // 68K 0x1010c64e VSNET_Init__Fv
-// FUNCTION: LEMBALL 0x0046fbb0
+// STUB: LEMBALL 0x0046fbb0
 bool VsNetInit()
 {
 	unsigned long startTime;
@@ -598,7 +598,7 @@ bool VsNetInit()
 }
 
 // 68K 0x1010c6d8 VSNET_Quit__Fv
-// FUNCTION: LEMBALL 0x0046fc80
+// STUB: LEMBALL 0x0046fc80
 bool VsNetQuit()
 {
 	unsigned long startTime;
