@@ -9,21 +9,21 @@
 #pragma intrinsic(strcpy, strlen, memcpy, strcmp)
 
 // 68K 0x101077ce CheckMessage__15CNetworkMessageFPCUc
-// STUB: LEMBALL 0x0040abd0
+// FUNCTION: LEMBALL 0x0040abd0
 bool NetworkMessage::CheckMessage(const unsigned char* p_arg0)
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x10107800 GetHeader__15CNetworkMessageFv
-// STUB: LEMBALL 0x0040abe0
+// FUNCTION: LEMBALL 0x0040abe0
 bool NetworkMessage::GetHeader()
 {
-	return 0;
+	return 1;
 }
 
 // 68K 0x1010782c AddHeader__15CNetworkMessageFv
-// STUB: LEMBALL 0x0040abf0
+// FUNCTION: LEMBALL 0x0040abf0
 void NetworkMessage::AddHeader()
 {
 }

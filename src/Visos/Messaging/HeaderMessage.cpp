@@ -1,9 +1,15 @@
 #include "HeaderMessage.h"
 
 // 68K 0x10206c6c __ct__14CHeaderMessageFv
-// STUB: LEMBALL 0x00479540
+// FUNCTION: LEMBALL 0x00479540
 HeaderMessage::HeaderMessage()
 {
+	m_mirroredSequence = 1;
+	m_payloadCapacity += 0x30;
+	m_sequence = 0;
+	m_headerValue = 0;
+	m_text1[0] = 0;
+	m_text0[0] = 0;
 }
 
 // 68K 0x10206cd2 AddData__14CHeaderMessageFv

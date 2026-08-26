@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x00499260
 class GWnd : public Wnd {
 public:
-	virtual int ProcessOtherMessages(EventRecords& p_event);                                              // vtable+0xa0
+	virtual int ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam); // vtable+0xa0
 	virtual void AttachPalette(unsigned long p_paletteId);                                                // vtable+0xac
 	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title);                            // vtable+0x04
 	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title, unsigned long p_paletteId); // vtable+0xa4

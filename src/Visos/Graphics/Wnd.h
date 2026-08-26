@@ -9,11 +9,11 @@
 class Wnd : public PvWnd {
 public:
 	Wnd();
-	int SelectMenu(long p_selection);
+	int SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam);
 	static int ProcessMessage(EventRecord& p_event);
 	static void ProcessMouseMoves();
 	virtual bool IsFocusWindow();                                              // vtable+0x60
-	virtual int ProcessOtherMessages(EventRecords& p_event);                   // vtable+0xa0
+	virtual int ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam); // vtable+0xa0
 	virtual unsigned int GetStyle();                                           // vtable+0x64
 	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title); // vtable+0x04
 	virtual void Destroy();                                                    // vtable+0x74
@@ -27,7 +27,7 @@ public:
 	virtual void OnRestore();                                                  // vtable+0x54
 	virtual void OnSize();                                                     // vtable+0x44
 	virtual void OnZoom(int p_oldZoom);                                        // vtable+0x58
-	virtual void OnZoomBox(unsigned char p_zoomBox);                           // vtable+0x5c
+	virtual void OnZoomBox();                                                  // vtable+0x5c
 	virtual void ReSetMenu();                                                  // vtable+0x00
 	virtual void Refresh(VsRect* p_rect);                                      // vtable+0x70
 	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists);       // vtable+0x10

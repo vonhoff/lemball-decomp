@@ -89,7 +89,7 @@ void PvWnd::OnCreate()
 
 // 68K 0x10216e16 _OnDestroy__6CPVWndFv
 // STUB: LEMBALL 0x00465fe0
-void PvWnd::OnDestroy()
+void PvWnd::BaseOnDestroy()
 {
 }
 
@@ -107,7 +107,7 @@ void PvWnd::OnMove()
 
 // 68K 0x1021716c _OnMove__6CPVWndF8CVSPoint
 // STUB: LEMBALL 0x00466260
-void PvWnd::OnMove(VsPoint p_offset)
+void PvWnd::BaseOnMove()
 {
 }
 
@@ -159,3 +159,17 @@ bool PvWnd::IsFocusWindow()
 void PvWnd::Resize(VsSize p_size)
 {
 }
+
+void PvWnd::Dummy04() {}
+void PvWnd::Dummy38() {}
+void PvWnd::Dummy3c() {}
+void PvWnd::OnDestroy() {}
+void PvWnd::BaseOnSize() {}
+void PvWnd::Dummy48() {}
+void PvWnd::Dummy4c() {}
+void PvWnd::Dummy50() {}
+void PvWnd::Dummy54() {}
+void PvWnd::Dummy58() {}
+void PvWnd::Dummy64() {}
+void PvWnd::Dummy70() {}
+void PvWnd::Destroy() {}

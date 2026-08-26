@@ -1,7 +1,7 @@
 #include "GWnd.h"
 
 // 68K 0x1010b3ca OnMove__5CGWndFv
-// STUB: LEMBALL 0x0043a4d0 FOLDED
+// FUNCTION: LEMBALL 0x0043a4d0 FOLDED
 void GWnd::OnMove()
 {
 }
@@ -45,7 +45,7 @@ void GWnd::OnPaint(const VsRect& p_rect)
 
 // 68K 0x1010abbe ProcessOtherMessages__5CGWndFR11EventRecords
 // STUB: LEMBALL 0x00463f70
-int GWnd::ProcessOtherMessages(EventRecords& p_event)
+int GWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
 {
 	return 0;
 }

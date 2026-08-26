@@ -101,41 +101,10 @@ char g_szNetworkGameName[16];
 char g_szNetworkBroadcastAddress[16];
 
 // 68K 0x10806468 __ct__21CNetworkOptionsDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
-// FUNCTION: LEMBALL 0x00453280
+// STUB: LEMBALL 0x00453280
 NetworkOptionsDrawer::NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 0xc, 0x32, 200, 0, 100, 0x28)
 {
-	int offset;
-
-	m_networkMode = 0;
-	m_startPending = 0;
-	m_broadcasting = 0;
-	m_networkState = 0;
-	m_stopPending = 0;
-	m_connectionState = 0;
-	m_locked = 0;
-	m_lastDrawTime = 0;
-	m_redrawPending = 0;
-	m_acceptedPlayer = -1;
-	m_highlightedPlayer = -1;
-	m_visibleEntryCount = 0;
-	m_editingActive = 0;
-	m_pendingStage = 0;
-	m_message = 0;
-	m_messageDirty = 0;
-	m_messageStartTime = 0;
-	m_messageDuration = 0;
-	m_playerEntries = new EntryHandler[10];
-	offset = 0;
-	do {
-		((GWnd*) m_display)->m_hotAreaList->AddToList((EntryHandler*) ((char*) m_playerEntries + offset));
-		offset += 0x44;
-	} while (offset < 0x2a8);
-	m_editor = new EditString((GWnd*) m_display, m_gdi, 0x14, 0, 0);
-	if (m_editor != 0) {
-		m_editor->m_active = 0;
-	}
-	g_pNetworkOptionsDrawer = this;
 }
 
 // 68K 0x10806646 Load__21CNetworkOptionsDrawerFv

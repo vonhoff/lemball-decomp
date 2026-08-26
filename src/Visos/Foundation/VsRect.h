@@ -6,10 +6,26 @@
 // SIZE 0x08
 class VsRect {
 public:
-	VsRect();
-	VsRect(short p_x, short p_y, short p_width, short p_height);
+	VsRect()
+	{
+		m_height = 0;
+		m_width = 0;
+		m_y = 0;
+		m_x = 0;
+	}
+
+	VsRect(short p_x, short p_y, short p_width, short p_height)
+	{
+		m_width = p_width;
+		m_height = p_height;
+		m_x = p_x;
+		m_y = p_y;
+	}
 
 	friend class Gdi;
+	friend class GWnd;
+	friend class PvWnd;
+	friend class Wnd;
 
 private:
 	short m_width;  // 0x00

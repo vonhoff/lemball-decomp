@@ -242,9 +242,9 @@ void SoundManager::Foreground()
 
 // 68K 0x10218602 PrepareMusic__13CSoundManagerFUlUc
 // FUNCTION: LEMBALL 0x0045b2c0
-unsigned long SoundManager::PrepareMusic(unsigned long p_resourceId, unsigned char p_flags)
+unsigned long SoundManager::PrepareMusic(unsigned long p_resourceId, unsigned int p_flags)
 {
-	return ((MusicDeviceDispatch*) m_musicDevice)->Initialise(p_resourceId, *(unsigned long*) &p_flags);
+	return ((MusicDeviceDispatch*) m_musicDevice)->Initialise(p_resourceId, p_flags);
 }
 
 // 68K 0x102186b8 PlayMusic__13CSoundManagerFUl

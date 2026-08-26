@@ -1,16 +1,36 @@
 #include "PortsMessage.h"
 
+#include <new.h>
+
 // 68K 0x10206fb0 __ct__13CPortsMessageFv
-// STUB: LEMBALL 0x00479810
+// FUNCTION: LEMBALL 0x00479810
 PortsMessage::PortsMessage()
 {
+	int i;
+
+	m_useCounts = (unsigned char*) operator new(0x200);
+	m_payloadCapacity += 0x200;
+	i = 0;
+	do {
+		m_useCounts[i] = 0;
+		i++;
+	} while (i < 0x200);
 }
 
 // 68K 0x10207028 AnyUsed__13CPortsMessageFv
-// STUB: LEMBALL 0x00479860
+// FUNCTION: LEMBALL 0x00479860
 bool PortsMessage::AnyUsed()
 {
-	return 0;
+	int i;
+
+	i = 0;
+	do {
+		if (m_useCounts[i] != 0) {
+			return true;
+		}
+		i++;
+	} while (i < 0x200);
+	return false;
 }
 
 // 68K 0x10107624 AddData__13CPortsMessageFv
@@ -32,4 +52,5 @@ void PortsMessage::GetData()
 // PortsMessage::`scalar deleting destructor'
 PortsMessage::~PortsMessage()
 {
+	delete[] m_useCounts;
 }

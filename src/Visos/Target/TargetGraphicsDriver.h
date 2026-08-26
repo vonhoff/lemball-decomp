@@ -14,6 +14,8 @@ class TargetGraphicsDriver {
 public:
 	virtual ~TargetGraphicsDriver(); // vtable+0x00
 
+	friend class Wnd;
+
 private:
 	void* m_driverModule;         // 0x04
 	void* m_palette;              // 0x08

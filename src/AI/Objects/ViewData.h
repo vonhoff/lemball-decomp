@@ -10,13 +10,15 @@ public:
 	ViewData();
 
 	friend class PlayerLemming;
+	friend class SoundView;
 
 private:
 	short m_facingDirection;       // 0x00
 	int m_positionX;               // 0x04
 	int m_positionY;               // 0x08
 	int m_positionZ;               // 0x0c
-	undefined4 m_unk0x10;          // 0x10
+	short m_viewX;                 // 0x10
+	short m_viewY;                 // 0x12
 	unsigned int m_statusFlags;    // 0x14
 	eAction m_action;              // 0x18
 	short m_actionArgument;        // 0x1c

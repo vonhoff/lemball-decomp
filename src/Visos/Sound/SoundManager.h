@@ -10,7 +10,7 @@ public:
 	SoundManager(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, int p_arg3, Wnd* p_arg4);
 	unsigned char GetEffectVolume();
 	unsigned long PrepareEffect(unsigned long p_resourceId);
-	unsigned long PrepareMusic(unsigned long p_resourceId, unsigned char p_flags);
+	unsigned long PrepareMusic(unsigned long p_resourceId, unsigned int p_flags);
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
 	void Background();
 	void Foreground();
