@@ -66,7 +66,7 @@ void Wnd::OnMaximise()
 
 // 68K 0x1010489a OnMove__4CWndFv
 // FUNCTION: LEMBALL 0x0043a4d0 FOLDED
-void Wnd::OnMove()
+void Wnd::Dummy48()
 {
 }
 
@@ -460,4 +460,20 @@ void Wnd::SetRelTl(const VsPoint& p_point)
 unsigned int Wnd::GetStyle()
 {
 	return 0;
+}
+
+void Wnd::SetFocusWindow()
+{
+}
+
+void Wnd::Dummy94()
+{
+}
+
+void Wnd::Dummy98()
+{
+}
+
+void Wnd::Dummy9c()
+{
 }

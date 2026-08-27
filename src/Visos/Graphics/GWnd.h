@@ -10,19 +10,19 @@ struct TargetWinGDrawCodecState;
 // VTABLE: LEMBALL 0x00499260
 class GWnd : public Wnd {
 public:
-	virtual int ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam); // vtable+0xa0
-	virtual void AttachPalette(unsigned long p_paletteId);                                                // vtable+0xac
-	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title);                            // vtable+0x04
 	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title, unsigned long p_paletteId); // vtable+0xa4
+	virtual void OnPaint(const VsRect& p_rect);                                                           // vtable+0xa8
+	virtual void AttachPalette(unsigned long p_paletteId);                                                // vtable+0xac
+	virtual void Render();                                                                                // vtable+0xb0
 	virtual void Flush();                                                                                 // vtable+0xb4
+	virtual int ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam); // vtable+0xa0
+	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title);                            // vtable+0x04
 	virtual void Move(const VsPoint& p_point);                                                            // vtable+0x38
 	virtual void OnCreate();                                                                              // vtable+0x18
 	virtual void OnDestroy();                                                                             // vtable+0x1c
 	virtual void OnMove();                                                                                // vtable+0x28
-	virtual void OnPaint(const VsRect& p_rect);                                                           // vtable+0xa8
 	virtual void OnSize();                                                                                // vtable+0x20
 	virtual void Refresh(VsRect* p_rect);                                                                 // vtable+0x70
-	virtual void Render();                                                                                // vtable+0xb0
 	~GWnd();
 
 	friend class Main2DDisplay;

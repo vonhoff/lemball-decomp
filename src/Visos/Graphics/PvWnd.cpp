@@ -221,16 +221,19 @@ void PvWnd::Resize(VsSize p_size)
 {
 }
 
-void PvWnd::Dummy04() {}
-void PvWnd::Dummy38() {}
+void PvWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title) {}
+void PvWnd::Move(const VsPoint& p_point) {}
 void PvWnd::Dummy3c() {}
 void PvWnd::OnDestroy() {}
 void PvWnd::BaseOnSize() {}
 void PvWnd::Dummy48() {}
-void PvWnd::Dummy4c() {}
-void PvWnd::Dummy50() {}
-void PvWnd::Dummy54() {}
-void PvWnd::Dummy58() {}
-void PvWnd::Dummy64() {}
-void PvWnd::Dummy70() {}
+void PvWnd::OnMinimise() {}
+void PvWnd::OnMaximise() {}
+void PvWnd::OnRestore() {}
+void PvWnd::OnZoomBox() {}
+unsigned int PvWnd::GetStyle()
+{
+	return 0;
+}
+void PvWnd::Refresh(VsRect* p_rect) {}
 void PvWnd::Destroy() {}

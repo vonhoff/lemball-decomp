@@ -127,6 +127,56 @@ Surface::Surface(const VsRect& p_arg0, class Surface* p_arg1)
 	NewBitmap(p_arg0);
 }
 
+// STUB: LEMBALL 0x0046c380
+void TargetBuildSurfaceColourTable(unsigned int* p_entries,
+								   ResPalette* p_palette,
+								   void* p_unused,
+								   unsigned int* p_fallbackEntries)
+{
+	RGBQUAD* table;
+	PALETTEENTRY systemEntries[256];
+	unsigned char* data;
+	HDC hdc;
+	int i;
+	int copied;
+
+	table = (RGBQUAD*) p_entries;
+	hdc = GetDC(0);
+	copied = 0;
+	if (hdc != 0) {
+		copied = GetSystemPaletteEntries(hdc, 0, 256, systemEntries);
+		ReleaseDC(0, hdc);
+	}
+	i = 0;
+	while (i < 256) {
+		if (copied != 0) {
+			table[i].rgbBlue = systemEntries[i].peBlue;
+			table[i].rgbGreen = systemEntries[i].peGreen;
+			table[i].rgbRed = systemEntries[i].peRed;
+		}
+		else {
+			table[i].rgbBlue = (unsigned char) i;
+			table[i].rgbGreen = (unsigned char) i;
+			table[i].rgbRed = (unsigned char) i;
+		}
+		table[i].rgbReserved = 0;
+		i = i + 1;
+	}
+	if (p_palette != 0) {
+		data = p_palette->GetData();
+		if (data != 0) {
+			i = 10;
+			while (i < 246) {
+				table[i].rgbRed = data[0x30 + i * 4];
+				table[i].rgbGreen = data[0x30 + i * 4 + 1];
+				table[i].rgbBlue = data[0x30 + i * 4 + 2];
+				table[i].rgbReserved = 0;
+				i = i + 1;
+			}
+		}
+	}
+}
+
 // 68K 0x10109048 __ct__8CSurfaceFP8GrafPort
 // STUB: LEMBALL 0x0046c5d0
 Surface::Surface(GrafPort* p_arg0)
@@ -422,56 +472,6 @@ void Surface::ToScreen(class Surface* p_destinationSurface)
 	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 	if (p_destinationSurface != 0) {
 		LeaveCriticalSection((CRITICAL_SECTION*) p_destinationSurface->m_lock);
-	}
-}
-
-// STUB: LEMBALL 0x0046c380
-void TargetBuildSurfaceColourTable(unsigned int* p_entries,
-								   ResPalette* p_palette,
-								   void* p_unused,
-								   unsigned int* p_fallbackEntries)
-{
-	RGBQUAD* table;
-	PALETTEENTRY systemEntries[256];
-	unsigned char* data;
-	HDC hdc;
-	int i;
-	int copied;
-
-	table = (RGBQUAD*) p_entries;
-	hdc = GetDC(0);
-	copied = 0;
-	if (hdc != 0) {
-		copied = GetSystemPaletteEntries(hdc, 0, 256, systemEntries);
-		ReleaseDC(0, hdc);
-	}
-	i = 0;
-	while (i < 256) {
-		if (copied != 0) {
-			table[i].rgbBlue = systemEntries[i].peBlue;
-			table[i].rgbGreen = systemEntries[i].peGreen;
-			table[i].rgbRed = systemEntries[i].peRed;
-		}
-		else {
-			table[i].rgbBlue = (unsigned char) i;
-			table[i].rgbGreen = (unsigned char) i;
-			table[i].rgbRed = (unsigned char) i;
-		}
-		table[i].rgbReserved = 0;
-		i = i + 1;
-	}
-	if (p_palette != 0) {
-		data = p_palette->GetData();
-		if (data != 0) {
-			i = 10;
-			while (i < 246) {
-				table[i].rgbRed = data[0x30 + i * 4];
-				table[i].rgbGreen = data[0x30 + i * 4 + 1];
-				table[i].rgbBlue = data[0x30 + i * 4 + 2];
-				table[i].rgbReserved = 0;
-				i = i + 1;
-			}
-		}
 	}
 }
 

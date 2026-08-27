@@ -70,6 +70,67 @@ extern "C" __declspec(dllimport) long __stdcall DefDriverProc(unsigned int p_dri
 															 long p_param1,
 															 long p_param2);
 
+// FUNCTION: LEMBALL 0x004567c0
+bool TargetGraphicsDriver::CreatePalette(void* p_paletteDescription)
+{
+	HPALETTE palette;
+
+	if (m_palette != 0) {
+		DeleteObject((HGDIOBJ) m_palette);
+	}
+	palette = ::CreatePalette((LOGPALETTE*) p_paletteDescription);
+	m_palette = palette;
+	return palette != 0;
+}
+
+// FUNCTION: LEMBALL 0x004567f0
+bool TargetGraphicsDriver::RealizePalette(TargetDrawingContext* p_drawingContext)
+{
+	if (m_palette != 0) {
+		SelectPalette((HDC) p_drawingContext->m_hDC, (HPALETTE) m_palette, 0);
+		::RealizePalette((HDC) p_drawingContext->m_hDC);
+	}
+	return 1;
+}
+
+// STUB: LEMBALL 0x00456970
+bool TargetGraphicsDriver::BlitWrappedBitmap(TargetDrawingContext* p_destination,
+											 VsRect* p_destinationRect,
+											 TargetDrawingContext* p_source,
+											 VsRect* p_sourceRect,
+											 PvGdiBitmap* p_bitmap)
+{
+	short scale;
+	VsRect* rect0;
+	VsRect* rect1;
+	unsigned char copied;
+	VsRect destRect;
+
+	copied = 0;
+	rect0 = 0;
+	rect1 = 0;
+	m_currentBitmap = p_bitmap;
+	scale = p_destinationRect->m_width / p_sourceRect->m_width;
+	p_bitmap->GetRects(*p_sourceRect, rect0, rect1);
+	if (rect0 != 0) {
+		destRect.m_width = (short) (rect0->m_width * scale);
+		destRect.m_height = (short) (rect0->m_height * scale);
+		destRect.m_x = p_destinationRect->m_x;
+		destRect.m_y = p_destinationRect->m_y;
+		StretchBltContexts(p_destination, &destRect, p_source, rect0);
+		copied = 1;
+	}
+	if (rect1 != 0) {
+		destRect.m_width = (short) (rect1->m_width * scale);
+		destRect.m_height = (short) (rect1->m_height * scale);
+		destRect.m_x = p_destinationRect->m_x;
+		destRect.m_y = (short) (rect0->m_height * scale + p_destinationRect->m_y);
+		StretchBltContexts(p_destination, &destRect, p_source, rect1);
+		copied = 1;
+	}
+	return copied != 0;
+}
+
 // STUB: LEMBALL 0x00456a90
 TargetGraphicsDriver::TargetGraphicsDriver()
 {
@@ -80,51 +141,6 @@ TargetGraphicsDriver::TargetGraphicsDriver()
 	m_screenSize.m_width = (short) GetSystemMetrics(0);
 	m_screenSize.m_height = (short) GetSystemMetrics(1);
 	m_currentBitmap = 0;
-}
-
-// STUB: LEMBALL 0x00457e10
-bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
-{
-	int mode;
-	void* storage;
-
-	mode = p_driverMode;
-	if (p_driverMode == 8) {
-		if (g_nGraphicsDriverGdk == 0) {
-			if (g_nFullscreen == 0) {
-				mode = 1;
-			}
-			else {
-				mode = 3;
-			}
-		}
-		else if (g_nFullscreen == 0) {
-			mode = 6;
-		}
-		else {
-			mode = 4;
-		}
-	}
-
-	if (mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 6) {
-		mode = 1;
-	}
-
-	storage = operator new(0x1c);
-	if (storage == 0) {
-		g_pTargetGraphicsDriver = 0;
-	}
-	else {
-		g_pTargetGraphicsDriver = new (storage) TargetGraphicsDriver();
-	}
-
-	if (g_pTargetGraphicsDriver == 0 || g_pTargetGraphicsDriver->m_ready == 0) {
-		*g_pErrorOutput << "No valid driver available\n";
-		return 0;
-	}
-
-	m_driverMode = 1;
-	return 1;
 }
 
 TargetGraphicsDriver::~TargetGraphicsDriver()
@@ -239,6 +255,23 @@ void TargetGraphicsDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawingC
 	SetDIBColorTable((HDC) p_drawingContext->m_hDC, p_startIndex, p_entryCount, (RGBQUAD*) p_colours);
 }
 
+// FUNCTION: LEMBALL 0x00456c70
+void TargetGraphicsDriver::BitBltContexts(TargetDrawingContext* p_destination,
+										  VsRect* p_destinationRect,
+										  TargetDrawingContext* p_source,
+										  VsPoint* p_sourcePosition)
+{
+	BitBlt((HDC) p_destination->m_hDC,
+		   (int) p_destinationRect->m_x,
+		   (int) p_destinationRect->m_y,
+		   (int) p_destinationRect->m_width,
+		   (int) p_destinationRect->m_height,
+		   (HDC) p_source->m_hDC,
+		   (int) p_sourcePosition->m_x,
+		   (int) p_sourcePosition->m_y,
+		   0xcc0020);
+}
+
 // FUNCTION: LEMBALL 0x00456cc0
 void TargetGraphicsDriver::StretchBltContexts(TargetDrawingContext* p_destination,
 											  VsRect* p_destinationRect,
@@ -256,23 +289,6 @@ void TargetGraphicsDriver::StretchBltContexts(TargetDrawingContext* p_destinatio
 			   (int) p_sourceRect->m_width,
 			   (int) p_sourceRect->m_height,
 			   0xcc0020);
-}
-
-// FUNCTION: LEMBALL 0x00456c70
-void TargetGraphicsDriver::BitBltContexts(TargetDrawingContext* p_destination,
-										  VsRect* p_destinationRect,
-										  TargetDrawingContext* p_source,
-										  VsPoint* p_sourcePosition)
-{
-	BitBlt((HDC) p_destination->m_hDC,
-		   (int) p_destinationRect->m_x,
-		   (int) p_destinationRect->m_y,
-		   (int) p_destinationRect->m_width,
-		   (int) p_destinationRect->m_height,
-		   (HDC) p_source->m_hDC,
-		   (int) p_sourcePosition->m_x,
-		   (int) p_sourcePosition->m_y,
-		   0xcc0020);
 }
 
 // FUNCTION: LEMBALL 0x00456d10
@@ -302,76 +318,60 @@ TargetDibContext* TargetGraphicsDriver::RestoreDIBContext(TargetDrawingContext* 
 	return p_dibContext;
 }
 
-// FUNCTION: LEMBALL 0x004567c0
-bool TargetGraphicsDriver::CreatePalette(void* p_paletteDescription)
+// STUB: LEMBALL 0x00457e10
+bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 {
-	HPALETTE palette;
+	int mode;
+	void* storage;
 
-	if (m_palette != 0) {
-		DeleteObject((HGDIOBJ) m_palette);
+	mode = p_driverMode;
+	if (p_driverMode == 8) {
+		if (g_nGraphicsDriverGdk == 0) {
+			if (g_nFullscreen == 0) {
+				mode = 1;
+			}
+			else {
+				mode = 3;
+			}
+		}
+		else if (g_nFullscreen == 0) {
+			mode = 6;
+		}
+		else {
+			mode = 4;
+		}
 	}
-	palette = ::CreatePalette((LOGPALETTE*) p_paletteDescription);
-	m_palette = palette;
-	return palette != 0;
-}
 
-// FUNCTION: LEMBALL 0x004567f0
-bool TargetGraphicsDriver::RealizePalette(TargetDrawingContext* p_drawingContext)
-{
-	if (m_palette != 0) {
-		SelectPalette((HDC) p_drawingContext->m_hDC, (HPALETTE) m_palette, 0);
-		::RealizePalette((HDC) p_drawingContext->m_hDC);
+	if (mode != 1 && mode != 2 && mode != 3 && mode != 4 && mode != 6) {
+		mode = 1;
 	}
+
+	storage = operator new(0x1c);
+	if (storage == 0) {
+		g_pTargetGraphicsDriver = 0;
+	}
+	else {
+		g_pTargetGraphicsDriver = new (storage) TargetGraphicsDriver();
+	}
+
+	if (g_pTargetGraphicsDriver == 0 || g_pTargetGraphicsDriver->m_ready == 0) {
+		*g_pErrorOutput << "No valid driver available\n";
+		return 0;
+	}
+
+	m_driverMode = 1;
 	return 1;
-}
-
-// STUB: LEMBALL 0x00456970
-bool TargetGraphicsDriver::BlitWrappedBitmap(TargetDrawingContext* p_destination,
-											 VsRect* p_destinationRect,
-											 TargetDrawingContext* p_source,
-											 VsRect* p_sourceRect,
-											 PvGdiBitmap* p_bitmap)
-{
-	short scale;
-	VsRect* rect0;
-	VsRect* rect1;
-	unsigned char copied;
-	VsRect destRect;
-
-	copied = 0;
-	rect0 = 0;
-	rect1 = 0;
-	m_currentBitmap = p_bitmap;
-	scale = p_destinationRect->m_width / p_sourceRect->m_width;
-	p_bitmap->GetRects(*p_sourceRect, rect0, rect1);
-	if (rect0 != 0) {
-		destRect.m_width = (short) (rect0->m_width * scale);
-		destRect.m_height = (short) (rect0->m_height * scale);
-		destRect.m_x = p_destinationRect->m_x;
-		destRect.m_y = p_destinationRect->m_y;
-		StretchBltContexts(p_destination, &destRect, p_source, rect0);
-		copied = 1;
-	}
-	if (rect1 != 0) {
-		destRect.m_width = (short) (rect1->m_width * scale);
-		destRect.m_height = (short) (rect1->m_height * scale);
-		destRect.m_x = p_destinationRect->m_x;
-		destRect.m_y = (short) (rect0->m_height * scale + p_destinationRect->m_y);
-		StretchBltContexts(p_destination, &destRect, p_source, rect1);
-		copied = 1;
-	}
-	return copied != 0;
-}
-
-// STUB: LEMBALL 0x00458260
-TargetDrawingContext::~TargetDrawingContext()
-{
 }
 
 // FUNCTION: LEMBALL 0x00458250
 void TargetDrawingContext::SetDC(void* p_hDC)
 {
 	m_hDC = p_hDC;
+}
+
+// STUB: LEMBALL 0x00458260
+TargetDrawingContext::~TargetDrawingContext()
+{
 }
 
 TargetDibContext::~TargetDibContext()

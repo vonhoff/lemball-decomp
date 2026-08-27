@@ -2,15 +2,6 @@
 
 #include <new.h>
 
-// STUB: LEMBALL 0x00467040
-ChangeListItem::ChangeListItem()
-{
-	height = 0;
-	width = 0;
-	y = 0;
-	x = 0;
-}
-
 // 68K 0x10210cf8 __ct__11CChangeListFi7CVSSize7CVSSize
 // STUB: LEMBALL 0x004669a0
 ChangeList::ChangeList(int p_arg0, VsSize p_arg1, VsSize p_arg2)
@@ -407,4 +398,13 @@ int ChangeList::GetDrawMark()
 		GetNumItems();
 	}
 	return m_drawMarkCount;
+}
+
+// STUB: LEMBALL 0x00467040
+ChangeListItem::ChangeListItem()
+{
+	height = 0;
+	width = 0;
+	y = 0;
+	x = 0;
 }
