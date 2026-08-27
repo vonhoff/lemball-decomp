@@ -22,6 +22,13 @@ public:
 	void SetBitsBase(unsigned char* p_bits, int p_stride);
 	~PvGdiBitmap();
 
+	friend class Surface;
+	friend class BaseFrontendDrawer;
+	friend class PvBackBuffSurface;
+	friend class PvZBuffSurface;
+	friend class TargetGraphicsDriver;
+	friend class GWnd;
+
 private:
 	void** m_lines;              // 0x04
 	unsigned char* m_bits;       // 0x08

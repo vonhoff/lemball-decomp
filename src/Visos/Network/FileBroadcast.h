@@ -28,7 +28,9 @@ public:
 	~FileBroadcast();
 
 private:
-	undefined m_storage[0x1b4]; // 0x00
+	undefined m_unk04[0x10];     // 0x04
+	unsigned int m_listen;       // 0x14
+	undefined m_storage[0x19c];  // 0x18
 };
 
 extern FileBroadcast* g_pFileBroadcast;

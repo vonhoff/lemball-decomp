@@ -13,6 +13,9 @@ public:
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~Anim();                 // vtable+0x00
 
+	friend class AnimsManager;
+	friend class GraphicButton;
+
 private:
 	unsigned int m_animIndex; // 0x18
 	ResAnim* m_animResource;  // 0x1c

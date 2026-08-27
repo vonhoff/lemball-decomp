@@ -21,6 +21,7 @@ public:
 	void SetDemoMode(unsigned char p_enabled);
 
 	friend class PlayerLemming;
+	friend class Game;
 
 private:
 	unsigned char* m_buffer;     // 0x10

@@ -1,5 +1,12 @@
 #include "BaseFrontendProcess.h"
 
+#include "../../Control/Game/GameStatus.h"
+#include "../../Frontend/Support/UserActionMessage.h"
+#include "../../Visos/Network/BaseNetwork.h"
+#include "../../Visos/Network/Connect.h"
+
+#include <new.h>
+
 BaseFrontendProcess::BaseFrontendProcess()
 {
 }
@@ -21,6 +28,27 @@ bool BaseFrontendProcess::ProcessMessages(Message* p_message)
 // STUB: LEMBALL 0x00446720
 BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 {
+	void* storage;
+
+	m_processState = 0;
+	m_returnState = 0;
+	m_game = p_arg0;
+	storage = operator new(0x34);
+	if (storage == 0) {
+		m_userActionMessage = 0;
+	}
+	else {
+		m_userActionMessage = new (storage) UserActionMessage();
+	}
+	if (g_pGameStatus != 0 && g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
+		m_networkWasActive = 1;
+	}
+	else {
+		m_networkWasActive = 0;
+	}
+	if (g_pBaseNetwork != 0) {
+		g_pBaseNetwork->AttachMessageQueue(this);
+	}
 }
 
 // 68K 0x10801abe Process__20CBaseFrontendProcessFv

@@ -3,6 +3,8 @@
 
 #include "../../Common.h"
 
+struct TargetWinGDrawCodecState;
+
 // SIZE 0x10
 class Gdi {
 public:
@@ -22,6 +24,22 @@ public:
 	friend class SolidRect;
 	friend class Text;
 	friend class Zrle;
+	friend class Main2DDisplay;
+	friend class GWnd;
+	friend class BaseFrontendDrawer;
+	friend class AnimsManager;
+	friend class GraphicButton;
+	friend class DepressedButton;
+	friend class PvButton;
+	friend class GunController;
+	friend class BitmapRes;
+	friend class Anim;
+	friend class SpriteWindow;
+	friend class TrackWindow;
+	friend class HiliteWindow;
+	friend class PasswordHiliteWindow;
+	friend struct TargetWinGDrawCodecState;
+	friend TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo);
 
 private:
 	Primitive** m_primitives; // 0x00

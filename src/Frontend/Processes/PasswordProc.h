@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x004930e8
 class PasswordProc : public BaseFrontendProcess {
 public:
+	PasswordProc(Game* p_game) : BaseFrontendProcess(p_game) {}
 	virtual ~PasswordProc(); // vtable+0x00
 };
 

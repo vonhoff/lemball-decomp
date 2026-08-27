@@ -13,6 +13,9 @@ public:
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~ClipRect();             // vtable+0x00
 
+	friend class PvButton;
+	friend class Surface;
+
 private:
 	short m_left;            // 0x04
 	short m_top;             // 0x06

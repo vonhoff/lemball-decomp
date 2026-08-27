@@ -72,7 +72,7 @@ void C2D::SetUpRemapPalettes()
 // FUNCTION: LEMBALL 0x00436830
 void C2D::KillRemapPalettes()
 {
-	g_pBasePalManager->UnRegisterRemap(*(BaseRemap**) ((char*) this + 0x968));
+	g_pBasePalManager->UnRegisterRemap(m_paletteRemap);
 }
 
 // 68K 0x10b07a00 Restart__3C2DFv
@@ -296,14 +296,14 @@ void C2D::SetClipSize()
 // FUNCTION: LEMBALL 0x00439450
 bool C2D::QuitYet()
 {
-	return *(unsigned int*) ((char*) this + 0xa78);
+	return m_quitRequested;
 }
 
 // 68K 0x1011cc02 GetReturnState__3C2DFv
 // FUNCTION: LEMBALL 0x00439460
 int C2D::GetReturnState()
 {
-	return *(int*) ((char*) this + 0x8fc);
+	return m_returnState;
 }
 
 // 68K 0x1011cc2c GetPauser__3C2DFv

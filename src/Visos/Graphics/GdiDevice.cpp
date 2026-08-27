@@ -159,13 +159,20 @@ int GdiDevice::FindSurface(Surface* p_surface)
 }
 
 // 68K 0x1010823a Flush__10CGDIDeviceFP8CSurface
-// FUNCTION: LEMBALL 0x0046bfd0
+// STUB: LEMBALL 0x0046bfd0
 void GdiDevice::Flush(Surface* p_surface)
 {
 	int i;
 	GdiSurfaceSlot* slot;
 
+	if (p_surface == 0) {
+		return;
+	}
 	i = FindSurface(p_surface);
+	if (i < 0) {
+		p_surface->ToScreen((Surface*) g_pGdiHelperTarget);
+		return;
+	}
 	slot = &m_surfaceSlots[i];
 	slot->m_flushed = 1;
 	p_surface->ToScreen((Surface*) g_pGdiHelperTarget);

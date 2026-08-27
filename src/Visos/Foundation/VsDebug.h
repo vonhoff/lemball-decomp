@@ -10,4 +10,5 @@ int RawOutDebugString(char* p_text);
 int RawOutErrorString(char* p_text);
 int RawOutSysString(char* p_text);
 void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line);
+void FatalWin32Error(char* p_context);
 #endif

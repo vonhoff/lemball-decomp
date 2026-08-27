@@ -62,14 +62,14 @@ void FileBroadcast::ResetPort(short p_port)
 // FUNCTION: LEMBALL 0x0047aed0
 void FileBroadcast::StartListen()
 {
-	*(unsigned int*) ((char*) this + 0x14) = 1;
+	m_listen = 1;
 }
 
 // 68K 0x10209392 StopListen__14CFileBroadcastFv
 // FUNCTION: LEMBALL 0x0047aee0
 void FileBroadcast::StopListen()
 {
-	*(unsigned int*) ((char*) this + 0x14) = 0;
+	m_listen = 0;
 }
 
 // 68K 0x102093c4 Process__14CFileBroadcastFv

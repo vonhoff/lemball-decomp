@@ -13,7 +13,7 @@
 class PanelButton : public DepressedButton {
 public:
 	PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_arg2);
-	virtual unsigned int OnPaint(const VsRect& p_rect);                   // vtable+0xa8
+	virtual void OnPaint(const VsRect& p_rect);                   // vtable+0xa8
 	virtual void DrawButton();                                            // vtable+0xbc
 	virtual void OnEnterButton();                                         // vtable+0xc8
 	virtual void OnExitButton();                                          // vtable+0xcc

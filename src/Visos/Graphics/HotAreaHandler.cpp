@@ -1,6 +1,7 @@
 #include "HotAreaHandler.h"
 
 #include "../Foundation/VsPoint.h"
+#include "../Foundation/VsRect.h"
 #include "HotAreaList.h"
 
 // 68K 0x1010219a OnButtonDown__15CHotAreaHandlerFRC8CVSPoint12BUTTON_FLAGS
@@ -74,6 +75,11 @@ HotAreaHandler::~HotAreaHandler()
 // STUB: LEMBALL 0x0046a290
 HotAreaHandler::HotAreaHandler(const VsRect& p_arg0)
 {
+	m_height = p_arg0.m_height;
+	m_width = p_arg0.m_width;
+	m_y = p_arg0.m_y;
+	m_x = p_arg0.m_x;
+	Initialise();
 }
 
 // 68K 0x10211d28 __ct__15CHotAreaHandlerFv

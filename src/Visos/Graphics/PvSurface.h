@@ -3,6 +3,7 @@
 
 #include "../../Common.h"
 #include "../Foundation/VsRect.h" // complete type
+#include "../Foundation/VsSize.h" // complete type
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00499508
@@ -31,9 +32,34 @@ public:
 	void SetDontUpdateRect(const VsRect& p_rect);
 	~PvSurface();
 
+	friend class Surface;
+	friend class GWnd;
+	friend class PvBackBuffSurface;
+	friend class PvZBuffSurface;
+	friend class PvButton;
+	friend class GraphicButton;
+	friend class DepressedButton;
+	friend class SpriteWindow;
+	friend class TrackWindow;
+	friend class HiliteWindow;
+	friend class PasswordHiliteWindow;
+	friend class GunController;
+
 private:
 	VsRect m_dontUpdateRect;         // 0x04
-	undefined m_geometryState[0x30]; // 0x0c
+	VsRect m_windowRect;             // 0x0c
+	VsRect m_clipRect;               // 0x14
+	short m_relOriginX;              // 0x1c
+	short m_relOriginY;              // 0x1e
+	Surface* m_parentSurface;        // 0x20
+	VsSize m_bitmapSize;             // 0x24
+	short m_unk28;                   // 0x28
+	short m_unk2a;                   // 0x2a
+	short m_zoom;                    // 0x2c
+	short m_pad2e;                   // 0x2e
+	unsigned int m_flag70;           // 0x30
+	unsigned int m_flag74;           // 0x34
+	unsigned int m_flag78;           // 0x38
 	unsigned int m_updateEnabled;    // 0x3c
 	void* m_reserved40;              // 0x40
 };

@@ -9,6 +9,11 @@
 // VTABLE: LEMBALL 0x004973b8 adjusted hot-area subobject at +0x90
 class ToggleButton : public GraphicButton {
 public:
+	ToggleButton(const VsPoint& p_position, PvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
+		: GraphicButton(p_position, p_parent, p_animId, p_flags)
+	{
+		m_toggled = 0;
+	}
 	virtual void OnEnterButton();         // vtable+0xc8
 	virtual void OnExitButton();          // vtable+0xcc
 	virtual void OnPressed(int p_flags);  // vtable+0xc4

@@ -3,9 +3,10 @@
 
 #include "../../Common.h"
 
-extern void* g_hApplicationInstance;
+extern void* g_pApplicationInstance;
 extern void* g_hApplicationIcon;
 
 extern "C" int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpCmdLine, int nCmdShow);
+bool TargetPumpEvents();
 
 #endif

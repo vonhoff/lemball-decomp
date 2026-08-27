@@ -26,8 +26,11 @@ public:
 	friend class GWnd;
 	friend class PvWnd;
 	friend class Wnd;
+	friend class Main2DDisplay;
+	friend class IntroAnimDrawer;
+	friend class BaseFrontendDrawer;
+	friend class Surface;
 
-private:
 	short m_width;  // 0x00
 	short m_height; // 0x02
 	short m_x;      // 0x04

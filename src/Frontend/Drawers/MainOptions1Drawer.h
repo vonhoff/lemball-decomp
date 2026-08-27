@@ -2,10 +2,13 @@
 #define LEMBALL_FRONTEND_DRAWERS_MAINOPTIONS1DRAWER_H
 
 #include "../../Common.h"
+#include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/Process.h"          // complete type
+#include "../Base/BaseFrontendDrawer.h"              // complete type
 
 // SIZE 0x3bc
 // VTABLE: LEMBALL 0x00497af0
-class MainOptions1Drawer {
+class MainOptions1Drawer : public BaseFrontendDrawer {
 public:
 	MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
@@ -16,9 +19,6 @@ public:
 	virtual ~MainOptions1Drawer();                    // vtable+0x00
 
 private:
-	GunController* m_gunController;        // 0x334
-	int m_nextFlow;                        // 0x374
-	unsigned int m_flowPending;            // 0x378
 	unsigned int m_idleDeadline;           // 0x398
 	void* m_buttonLayout;                  // 0x39c
 	unsigned int m_previousModeButton;     // 0x3a0

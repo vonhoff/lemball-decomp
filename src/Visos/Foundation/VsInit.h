@@ -6,6 +6,7 @@
 #include <setjmp.h>
 
 extern jmp_buf g_vsExitJumpBuffer;
+extern jmp_buf g_vsDebugJumpBuffer;
 
 bool StrmInit();
 bool StrmQuit();
@@ -33,4 +34,16 @@ bool VsNetQuit();
 void InitPreInit();
 bool DbgInit();
 bool DbgQuit(unsigned int p_force);
+
+extern int g_nGraphicsDriverWing;
+extern int g_nGraphicsDriverCds;
+extern int g_nGraphicsDriverGdk;
+extern int g_nParanoidMode;
+extern int g_nFullscreen;
+extern int g_nGarbageCollector;
+extern int g_nStartupNoWait;
+extern int g_nShowUnloading;
+extern int g_nShowLoading;
+extern int g_cParsedArgs;
+extern char* g_apszParsedArgs[16];
 #endif

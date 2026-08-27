@@ -11,6 +11,10 @@ class PvAnimWnd : public PvGWnd {
 public:
 	virtual unsigned int GetStyle(); // vtable+0x64
 
+	friend class AnimWnd;
+	friend class IntroAnimAnimWindow;
+	friend class IntroAnimDrawer;
+
 private:
 	unsigned int m_useMoviePrefix;   // 0x90
 	unsigned int m_resolveMoviePath; // 0x94

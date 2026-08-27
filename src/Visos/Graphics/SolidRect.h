@@ -13,6 +13,8 @@ public:
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~SolidRect();            // vtable+0x00
 
+	friend class GunController;
+
 private:
 	short m_left;         // 0x04
 	short m_top;          // 0x06

@@ -18,6 +18,10 @@ Gdi::Gdi(const VsRect& p_arg0, int p_arg1, Surface* p_arg2)
 	int i;
 	Surface* target;
 
+	m_primitives = 0;
+	m_primitiveCount = 0;
+	m_primitiveCapacity = 0;
+	m_renderTarget = 0;
 	if ((int) p_arg0.m_height * (int) p_arg0.m_width > 1) {
 		m_primitiveCapacity = p_arg1 + 3;
 		m_primitives = (Primitive**) operator new(m_primitiveCapacity * 4);
@@ -54,21 +58,21 @@ void Gdi::AddToList(Primitive* p_primitive)
 // STUB: LEMBALL 0x00467110
 void Gdi::Render()
 {
-	int offset;
 	int i;
 	Primitive* primitive;
 
+	if (m_renderTarget == 0) {
+		return;
+	}
 	if (m_renderTarget->BeginRender()) {
 		i = 0;
-		offset = 0;
 		if (0 < m_primitiveCount) {
 			do {
-				primitive = *(Primitive**) ((char*) m_primitives + offset);
+				primitive = m_primitives[i];
 				g_pCurrentPrimitive = primitive;
 				if (CheckValidPointer(primitive)) {
 					primitive->Render(this);
 				}
-				offset += 4;
 				i++;
 			} while (i < m_primitiveCount);
 		}

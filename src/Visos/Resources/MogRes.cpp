@@ -369,18 +369,24 @@ bool MogRes::CheckAllUnloaded()
 }
 
 // 68K 0x1020278a AgeResources__7CMogResFv
-// FUNCTION: LEMBALL 0x0045cdb0
+// STUB: LEMBALL 0x0045cdb0
 void MogRes::AgeResources()
 {
 	int i = 0;
 	int zero = 0;
 	int scanned = 0;
 
+	if (m_resources == 0) {
+		return;
+	}
 	if ((int) m_resourceCount > zero) {
 		do {
 			if (m_resources[i] == 0) {
 				do {
 					i++;
+					if (i >= 1024) {
+						return;
+					}
 				} while (m_resources[i] == 0);
 			}
 			if (m_resources[i]->m_loaded != 0 || m_resources[i]->GetfVramLoaded()) {

@@ -20,6 +20,8 @@ public:
 	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force); // vtable+0x54
 	virtual ~ResMovie();                                                       // vtable+0x00
 
+	friend class AnimWnd;
+
 private:
 	ResString* m_movieEntries; // 0x78
 	ResInt* m_fontEntries;     // 0x7c

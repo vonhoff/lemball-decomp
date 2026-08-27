@@ -16,14 +16,22 @@ public:
 	virtual void OnSkip(int p_position);  // vtable+0xb8
 	virtual void OnStart();               // vtable+0xc0
 	virtual void OnStop();                // vtable+0xc4
+	virtual int ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam); // vtable+0xa0
 	virtual void Refresh(VsRect* p_rect); // vtable+0x70
 	void Initialise();
+	void OnNotifyError(int p_error);
+	void OnNotifyMode(int p_mode);
+	void OnNotifyPos(int p_position, int p_flags);
+	void OnNotifySize(int p_width, int p_height);
 	void Play();
 	void Resume();
 	void SetAnim(unsigned int p_resourceId);
 	void SetMovieWindow();
 	void Stop();
 	~AnimWnd();
+
+	friend class IntroAnimDrawer;
+	friend class IntroAnimAnimWindow;
 
 private:
 	unsigned int m_animSet;        // 0xa0

@@ -12,6 +12,8 @@ public:
 	void SetAnimTime(unsigned long p_animTime);
 	void SetStartTime(unsigned long p_startTime);
 
+	friend class BaseFrontendDrawer;
+
 private:
 	unsigned int m_animTime;  // 0x10
 	unsigned int m_fixedTime; // 0x14

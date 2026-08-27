@@ -36,6 +36,7 @@ public:
 	void UpdateAnimIDs(unsigned long p_actionMessage);
 
 	friend class NetworkOptionsDrawer;
+	friend class BaseFrontendDrawer;
 
 private:
 	AnimsManager m_anims;                    // 0x10

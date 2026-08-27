@@ -12,16 +12,13 @@ Headers::Headers(int p_arg0)
 void Headers::AddData()
 {
 	int i;
-	int offset;
 	HeaderMessage* header;
 
 	i = 0;
 	if (m_count > 0) {
-		offset = 0;
 		do {
-			header = (HeaderMessage*) ((char*) m_headers + offset);
+			header = &m_headers[i];
 			header->CopyDataStream(m_writeCursor, 0);
-			offset += sizeof(HeaderMessage);
 			i++;
 			m_writeCursor += header->m_writeCursor - header->m_buffer;
 		} while (i < m_count);

@@ -14,6 +14,8 @@ extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd,
 														   const char* lpText,
 														   const char* lpCaption,
 														   unsigned int uType);
+extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
+extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
 
 #pragma intrinsic(strlen)
 
@@ -112,4 +114,14 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 	msg += lineBuf;
 	MessageBoxA(NULL, msg.GetText(), "Error", 0);
 	VsExit(0xaaaa);
+}
+
+// STUB: LEMBALL 0x00473790
+void FatalWin32Error(char* p_context)
+{
+	unsigned int error;
+
+	error = GetLastError();
+	MessageBoxA(0, p_context, "FATAL ERROR", 0);
+	ExitProcess(0xaaaa);
 }

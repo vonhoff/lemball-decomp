@@ -4,6 +4,8 @@
 #include "../../Common.h"
 #include "Wnd.h" // complete type
 
+struct TargetWinGDrawCodecState;
+
 // SIZE 0x90
 // VTABLE: LEMBALL 0x00499260
 class GWnd : public Wnd {
@@ -22,6 +24,21 @@ public:
 	virtual void Refresh(VsRect* p_rect);                                                                 // vtable+0x70
 	virtual void Render();                                                                                // vtable+0xb0
 	~GWnd();
+
+	friend class Main2DDisplay;
+	friend class PvGWnd;
+	friend class NetworkOptionsDrawer;
+	friend class GraphicButton;
+	friend class AnimWnd;
+	friend class PvButton;
+	friend class SpriteWindow;
+	friend class TrackWindow;
+	friend class HiliteWindow;
+	friend class PasswordHiliteWindow;
+	friend class GunController;
+	friend class DepressedButton;
+	friend TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo);
+	friend int TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state, void* p_request);
 
 private:
 	Gdi* m_gdi;                       // 0x4c

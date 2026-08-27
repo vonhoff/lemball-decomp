@@ -3,11 +3,12 @@
 
 #include "../../Common.h"
 #include "../../Visos/Graphics/SolidRect.h" // complete type
+#include "../Base/BaseFrontendDrawer.h"     // complete type
 #include "../Windows/IntroAnimAnimWindow.h" // complete type
 
 // SIZE 0x484
 // VTABLE: LEMBALL 0x00497a68
-class IntroAnimDrawer {
+class IntroAnimDrawer : public BaseFrontendDrawer {
 public:
 	IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
@@ -15,7 +16,7 @@ public:
 	virtual void Processing();                        // vtable+0x38
 	virtual void UnLoad();                            // vtable+0x44
 	virtual ~IntroAnimDrawer();                       // vtable+0x00
-	void DestroyDrawer();
+	virtual void DestroyDrawer();                 // vtable+0x18
 	void EndPhase();
 
 private:

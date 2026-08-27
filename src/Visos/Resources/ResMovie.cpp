@@ -1,6 +1,7 @@
 #include "ResMovie.h"
 
 #include "MogRes.h"
+#include "ResourceTypeList.h"
 
 // 68K 0x10204158 Load__9CResMOVIEFUl
 // FUNCTION: LEMBALL 0x0045de70
@@ -18,9 +19,9 @@ ResMovie* ResMovie::Load(unsigned int p_resourceId)
 }
 
 // 68K 0x102041e0 __ct__9CResMOVIEFUl
-// FUNCTION: LEMBALL 0x0045df20
+// STUB: LEMBALL 0x0045df20
 ResMovie::ResMovie(unsigned long p_resourceId)
-	: m_movieEntries(0), m_fontEntries(0)
+	: ResBaseList((ResListHeader*) g_pPreloadedResourceTypes), m_movieEntries(0), m_fontEntries(0)
 {
 	DoLoad(p_resourceId);
 	m_loaded = 0;

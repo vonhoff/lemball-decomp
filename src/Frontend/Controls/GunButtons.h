@@ -28,6 +28,8 @@ public:
 	void LoadFaces(unsigned long* p_animIds);
 	void UnLoadFaces();
 
+	friend class GunController;
+
 private:
 	int m_mode;                     // 0x10
 	VsRect m_trackRect;             // 0x14

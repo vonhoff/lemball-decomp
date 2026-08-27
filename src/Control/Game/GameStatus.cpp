@@ -75,11 +75,11 @@ unsigned int GameStatus::JiggleLevelData()
 			unsigned int value;
 
 			result = result << 3;
-			perm = *(unsigned int*) ((char*) g_anPasswordPermutation + offset);
+			perm = (unsigned int) g_anPasswordPermutation[offset / 4];
 			offset = offset + 4;
 			value = chunks[perm] ^ perm;
 			result = result | value;
-			*(unsigned int*) ((char*) mixed + offset - 4) = value;
+			mixed[(offset / 4) - 1] = value;
 		} while (offset < 0x20);
 	}
 	return result;

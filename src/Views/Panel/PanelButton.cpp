@@ -3,6 +3,7 @@
 // 68K 0x10b0c854 __ct__12CPanelButtonFP13CPanelLemmingRC7CVSRectP7CPVGWnd
 // STUB: LEMBALL 0x00442390
 PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_arg2)
+	: DepressedButton(p_arg1, p_arg2)
 {
 }
 
@@ -26,9 +27,8 @@ void PanelButton::DrawButton()
 
 // 68K 0x10b0d146 OnPaint__12CPanelButtonFRC7CVSRect
 // STUB: LEMBALL 0x004429b0
-unsigned int PanelButton::OnPaint(const VsRect& p_rect)
+void PanelButton::OnPaint(const VsRect& p_rect)
 {
-	return 0;
 }
 
 // 68K 0x10b0d262 OnReleased__12CPanelButtonF12BUTTON_FLAGS

@@ -12,6 +12,7 @@ public:
 	virtual ~MBlock();                           // vtable+0x04
 	void SetDesc(char* p_arg0);
 	void* operator new(size_t p_arg0, void* p_arg1);
+	void operator delete(void* p_memory);
 	MBlock();
 
 	friend class Arena;

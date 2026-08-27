@@ -30,6 +30,10 @@ public:
 	virtual void UnLoadVramData(unsigned int p_index, unsigned int p_force);  // vtable+0x40
 	virtual ~ResAnim();                                                        // vtable+0x00
 
+	friend class AnimsManager;
+	friend class Anim;
+	friend class GraphicButton;
+
 private:
 	ResZrle* m_animationEntries; // 0x78
 };

@@ -1,5 +1,26 @@
 #include "BaseFrontendDrawer.h"
 
+#include "../../Control/Game/GameMain.h"
+#include "../../Control/Game/GameStatus.h"
+#include "../../Views/Display/Main2DDisplay.h"
+#include "../../Visos/Animation/PlayThruAnim.h"
+#include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/ChangeList.h"
+#include "../../Visos/Foundation/TextManager.h"
+#include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Graphics/Bitmap.h"
+#include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Network/Connect.h"
+#include "../../Visos/Resources/ResBitmap.h"
+#include "../../Visos/Graphics/Gdi.h"
+#include "../../Visos/Graphics/VsGdi.h"
+#include "../Controls/GunButtons.h"
+#include "../Controls/GunController.h"
+#include "../Controls/HiliteController.h"
+
+#include <new.h>
+#include <string.h>
+
 // 68K 0x10800108 __ct__19CBaseFrontendDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect14eFlowProcessesiiiii
 // STUB: LEMBALL 0x00445420
 BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
@@ -11,67 +32,300 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
 									   int p_arg6,
 									   int p_arg7,
 									   int p_arg8)
+	: m_anims(p_arg1, 0x2b6, p_arg4 + 3, p_arg5 + 200, p_arg6, 0)
 {
+	m_height = 0;
+	m_staticAnim.m_frames = 1;
+	m_width = 0;
+	m_staticAnim.m_frameState = 0;
+	m_animPosition.m_y = 0;
+	m_animPosition.m_x = 0;
+	m_flowProcess = p_arg3;
+	m_display = p_arg0;
+	m_gdi = p_arg1;
+	m_width = p_arg2.m_width;
+	m_height = p_arg2.m_height;
+	m_textCapacity = p_arg7;
+	m_textStyle = p_arg8;
+	m_framePrimitiveCount = 0;
+	m_drawBackground = 1;
+	m_drawFrame = 1;
+	m_drawSolid = 0;
+	m_activePalette = 0;
+	m_loaded = 0;
+	m_desiredPalette = 0x10a;
+	if (g_pMasterInputQueue != 0) {
+		g_pMasterInputQueue->Attach(&m_queueHandler, 0);
+	}
+	m_returnState = 0;
+	m_quitYet = 0;
+	m_backBufferReady = 0;
+	m_drawingBackBuffer = 0;
+	m_ready = 1;
+	if (g_pGameStatus != 0 && g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
+		m_networkMode = 1;
+	}
+	else {
+		m_networkMode = 0;
+	}
+	m_startupPending = 1;
+	m_actionPending = 0;
+	m_gunController = 0;
+	m_hiliteController = 0;
+	m_ambientAnimId = 0;
+	m_ambientAnim = 0;
+	m_textManager = 0;
+	m_createdAt = CurrentQueueTimer();
+	m_backgroundBitmap = 0;
+	m_tileBitmap = 0;
+	m_mode = 0;
+	m_backBufferNeeded = 0;
 }
 
 // 68K 0x10800308 Setup__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x004455f0
 void BaseFrontendDrawer::Setup()
 {
+	int cursorType;
+
+	if (m_drawBackground == 0) {
+		cursorType = 0;
+	}
+	else {
+		cursorType = 2;
+	}
+	CursorChangeType(cursorType, 0);
+	Restart();
 }
 
 // 68K 0x1080070e InitialiseBackBuffer__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x004458e0
 void BaseFrontendDrawer::InitialiseBackBuffer()
 {
+	unsigned int hiliteActive;
+	unsigned int gunActive;
+
+	hiliteActive = 0;
+	gunActive = 0;
+	m_backBufferNeeded = 0;
+	m_drawingBackBuffer = 1;
+	if (m_hiliteController != 0 && m_hiliteController->m_buttonsActive != 0) {
+		hiliteActive = m_hiliteController->m_buttonsActive;
+		m_hiliteController->ActivateButtons(0);
+	}
+	if (m_gunController != 0 && m_gunController->m_buttonsActive != 0) {
+		gunActive = m_gunController->m_buttonsActive;
+		m_gunController->ActivateButtons(0);
+	}
+	m_backBufferReady = 1;
+	g_pCursor->SetActive(0);
+	m_display->Render();
+	m_primitiveBundle.m_bitmap.m_x = 0;
+	m_primitiveBundle.m_bitmap.m_y = 0;
+	m_primitiveBundle.m_bitmap.m_width = m_width;
+	m_primitiveBundle.m_bitmap.m_height = m_height;
+	m_primitiveBundle.m_bitmap.m_sourceX = 0;
+	m_primitiveBundle.m_bitmap.m_sourceY = 0;
+	m_primitiveBundle.m_bitmap.Draw(m_gdi);
+	m_drawingBackBuffer = 0;
+	if (m_hiliteController != 0 && hiliteActive != 0) {
+		m_hiliteController->ActivateButtons(1);
+	}
+	if (m_gunController != 0 && gunActive != 0) {
+		m_gunController->ActivateButtons(1);
+	}
+	g_pCursor->SetActive(1);
 }
 
 // 68K 0x108008ba Draw__19CBaseFrontendDrawerFRC7CVSRect
 // STUB: LEMBALL 0x00445a40
 void BaseFrontendDrawer::Draw(const VsRect& p_rect)
 {
+	if (m_gdi != 0) {
+		m_gdi->m_renderTarget->GetCurrDb();
+		m_primitiveBank = 0;
+		if (m_gunController != 0) {
+			if (m_gunController->m_buttons[0] != 0 && m_gunController->m_buttons[0]->DrawBackBuffer() != 0) {
+				m_backBufferNeeded = 1;
+			}
+			else if (m_backBufferNeeded == 0) {
+				m_backBufferNeeded = 0;
+			}
+			else {
+				m_backBufferNeeded = 1;
+			}
+		}
+		if (m_backBufferNeeded != 0) {
+			InitialiseBackBuffer();
+		}
+		ReplaceBackground();
+		m_ready = 0;
+	}
 }
 
 // 68K 0x10800958 ReplaceBackground__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x00445ac0
 void BaseFrontendDrawer::ReplaceBackground()
 {
+	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
+		m_gdi->m_renderTarget->GetChangeList()->Reset();
+		m_primitiveBundle.m_drawingMark.Draw(m_gdi);
+		if (m_drawingBackBuffer != 0) {
+			if (m_drawFrame == 0) {
+				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_x1 = m_width;
+				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_y1 = m_height;
+				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_x2 = 0;
+				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_y2 = 0;
+				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_color = 0;
+				m_primitiveBundle.m_lines[m_framePrimitiveCount].Draw(m_gdi);
+				m_framePrimitiveCount = m_framePrimitiveCount + 1;
+			}
+			_DrawBackGround();
+			DrawBackGround();
+		}
+		if (m_drawingBackBuffer == 0) {
+			_DrawAnims();
+			DrawAnims();
+		}
+		DrawText();
+		if (m_drawingBackBuffer == 0 && m_gunController != 0) {
+			m_gunController->DrawSpriteWindow();
+		}
+		if (m_drawingBackBuffer == 0 && m_hiliteController != 0) {
+			m_hiliteController->DrawHiliteWindow();
+		}
+	}
 }
 
 // 68K 0x10800ae8 _DrawBackGround__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x00445c10
-void BaseFrontendDrawer::DrawBackGround()
+void BaseFrontendDrawer::_DrawBackGround()
 {
+	int tileWidth;
+	int tileHeight;
+	int firstColumn;
+	int columnCount;
+	int rowCount;
+	int row;
+	int column;
+	int primitiveIndex;
+	unsigned int stagger;
+	BitmapRes* primitive;
+
+	if (m_drawFrame != 0) {
+		tileWidth = m_tileBitmap->m_x;
+		tileHeight = m_tileBitmap->m_y;
+		firstColumn = 0 / tileWidth;
+		columnCount = (m_width + tileWidth - 1) / tileWidth - firstColumn;
+		rowCount = (m_height + tileHeight - 1) / tileHeight;
+		row = 0;
+		primitiveIndex = 0;
+		stagger = 0;
+		while (row < rowCount) {
+			column = firstColumn;
+			stagger = stagger ^ 1;
+			while (column < firstColumn + columnCount + stagger) {
+				primitive = &m_primitiveBundle.m_records[primitiveIndex];
+				primitive->m_x = (short) (column * tileWidth - (tileWidth / 2) * stagger);
+				primitive->m_y = (short) (row * tileHeight);
+				primitive->m_resource = m_tileBitmap;
+				primitive->m_flags = 0;
+				primitive->m_remap = 0;
+				primitive->Draw(m_gdi);
+				primitiveIndex = primitiveIndex + 1;
+				column = column + 1;
+			}
+			row = row + 1;
+		}
+	}
+	if (m_drawSolid != 0) {
+		m_primitiveBundle.m_primitive.Draw(m_gdi);
+	}
+	if (m_gunController != 0) {
+		m_gunController->DrawButtons(1, 0);
+	}
+	if (m_hiliteController != 0) {
+		m_hiliteController->DrawButtons(1);
+	}
+	if (m_activePalette != m_desiredPalette) {
+		m_display->AttachPalette(m_desiredPalette);
+		m_activePalette = m_desiredPalette;
+	}
 }
 
 // 68K 0x10800db0 Restart__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x00445e70
 void BaseFrontendDrawer::Restart()
 {
+	bool windowValid;
+
+	windowValid = m_display->IsWindowValid();
+	if (m_loaded != 0) {
+		UnLoad();
+		_UnLoad();
+	}
+	m_mode = g_nCompactPrimaryContextLayout;
+	if (windowValid != 0) {
+		_Load();
+		Load();
+		m_backBufferNeeded = 1;
+	}
 }
 
 // 68K 0x10800e3a _Load__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x00445ed0
-void BaseFrontendDrawer::Load()
+void BaseFrontendDrawer::_Load()
 {
+	m_loaded = 1;
+	if (m_mode == 0) {
+		m_tileBitmap = ResBitmap::Load(0x131);
+		m_backgroundBitmap = ResBitmap::Load(0x132);
+		m_sideFrameAnimId = 0x151;
+		m_unknown384 = 0x113;
+		m_topFrameAnimId = 0x150;
+		m_bottomFrameAnimId = 0x152;
+	}
+	else {
+		m_tileBitmap = ResBitmap::Load(0x13c);
+		m_backgroundBitmap = ResBitmap::Load(0x13d);
+		m_sideFrameAnimId = 0x17e;
+		m_unknown384 = 0x114;
+		m_topFrameAnimId = 0x17d;
+		m_bottomFrameAnimId = 0x17f;
+	}
+	m_anims.LoadAnims(m_topFrameAnimId);
+	m_anims.LoadAnims(m_sideFrameAnimId);
+	m_anims.LoadAnims(m_bottomFrameAnimId);
+	if (m_textManager != 0) {
+		m_textManager->LoadFont(m_unknown384);
+	}
 }
 
 // 68K 0x10800f3a _UnLoad__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x00445fe0
-void BaseFrontendDrawer::UnLoad()
+void BaseFrontendDrawer::_UnLoad()
 {
 }
 
 // 68K 0x10800fca _DrawAnims__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x00446050
-void BaseFrontendDrawer::DrawAnims()
+void BaseFrontendDrawer::_DrawAnims()
 {
+	if (m_ambientAnim != 0) {
+		m_ambientAnim->m_fixedTime = CurrentMilliTimer();
+		m_anims.DrawAnim(m_animPosition, m_ambientAnimId, 0, (AnimFrameBASE*) m_ambientAnim, 0);
+	}
 }
 
 // 68K 0x1080103c ResetPrimitives__19CBaseFrontendDrawerFv
 // STUB: LEMBALL 0x004460a0
 void BaseFrontendDrawer::ResetPrimitives()
 {
+	m_anims.ResetPrimitives();
+	if (m_textManager != 0) {
+		m_textManager->ResetPrimitives();
+	}
+	m_framePrimitiveCount = 0;
 }
 
 // 68K 0x1080109a DrawFrame__19CBaseFrontendDrawerF12tagCoordPair12tagCoordPair
@@ -84,6 +338,69 @@ void BaseFrontendDrawer::DrawFrame(CoordPair p_start, CoordPair p_end)
 // STUB: LEMBALL 0x00446110
 void BaseFrontendDrawer::DrawFrame(VsRect p_rect)
 {
+	VsSize tileSize;
+	VsPoint position;
+	int tileWidth;
+	int tileHeight;
+	int x;
+	int y;
+	int right;
+	int bottom;
+
+	if (m_gdi == 0) {
+		return;
+	}
+	tileSize = m_anims.GetAnimSize(m_topFrameAnimId, 0);
+	tileWidth = tileSize.m_width;
+	tileHeight = tileSize.m_height;
+	if (tileWidth < 1 || tileHeight < 1) {
+		return;
+	}
+	right = p_rect.m_x + p_rect.m_width;
+	bottom = p_rect.m_y + p_rect.m_height;
+	m_staticAnim.m_frameState = 0;
+	position.m_x = p_rect.m_x;
+	position.m_y = p_rect.m_y;
+	m_anims.DrawAnim(position, m_topFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+	x = p_rect.m_x + tileWidth;
+	while (x + tileWidth < right) {
+		m_staticAnim.m_frameState = 1;
+		position.m_x = (short) x;
+		position.m_y = p_rect.m_y;
+		m_anims.DrawAnim(position, m_topFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		x = x + tileWidth;
+	}
+	m_staticAnim.m_frameState = 2;
+	position.m_x = (short) (right - tileWidth);
+	position.m_y = p_rect.m_y;
+	m_anims.DrawAnim(position, m_topFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+	y = p_rect.m_y + tileHeight;
+	while (y + tileHeight < bottom) {
+		m_staticAnim.m_frameState = 0;
+		position.m_x = p_rect.m_x;
+		position.m_y = (short) y;
+		m_anims.DrawAnim(position, m_sideFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		m_staticAnim.m_frameState = 2;
+		position.m_x = (short) (right - tileWidth);
+		m_anims.DrawAnim(position, m_sideFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		y = y + tileHeight;
+	}
+	m_staticAnim.m_frameState = 0;
+	position.m_x = p_rect.m_x;
+	position.m_y = (short) (bottom - tileHeight);
+	m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+	x = p_rect.m_x + tileWidth;
+	while (x + tileWidth < right) {
+		m_staticAnim.m_frameState = 1;
+		position.m_x = (short) x;
+		position.m_y = (short) (bottom - tileHeight);
+		m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		x = x + tileWidth;
+	}
+	m_staticAnim.m_frameState = 2;
+	position.m_x = (short) (right - tileWidth);
+	position.m_y = (short) (bottom - tileHeight);
+	m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
 }
 
 // 68K 0x108014f4 ProcessMsg__19CBaseFrontendDrawerFP10tagMESSAGE
@@ -97,6 +414,10 @@ bool BaseFrontendDrawer::ProcessMsg(Message* p_message)
 // STUB: LEMBALL 0x004464d0
 void BaseFrontendDrawer::Process()
 {
+	if (m_backBufferNeeded != 0) {
+		InitialiseBackBuffer();
+	}
+	Processing();
 }
 
 // 68K 0x108016f2 LostConnection__19CBaseFrontendDrawerFv
@@ -136,9 +457,19 @@ bool BaseFrontendDrawer::ProcessMessages(Message* p_message)
 	return 0;
 }
 
+// STUB: LEMBALL 0x00446f70
+void BaseFrontendDrawer::DrawAnims()
+{
+}
+
 // 68K 0x1011bd5e DrawText__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x00446f80
 void BaseFrontendDrawer::DrawText()
+{
+}
+
+// STUB: LEMBALL 0x00446f90
+void BaseFrontendDrawer::DrawBackGround()
 {
 }
 

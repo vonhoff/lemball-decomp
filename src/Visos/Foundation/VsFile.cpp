@@ -10,13 +10,6 @@ int fseek(_Filet* p_file, long p_offset, int p_origin);
 long ftell(_Filet* p_file);
 }
 
-// 68K 0x1010c30e GetCDDir__FPCc
-// STUB: LEMBALL 0x0045eda0
-char* GetCdDir(const char* p_requiredFile)
-{
-	return 0;
-}
-
 // 68K 0x102116c8 vsOpen__FPcPc
 // FUNCTION: LEMBALL 0x00462ee0
 _Filet* VsOpen(char* p_path, char* p_mode)

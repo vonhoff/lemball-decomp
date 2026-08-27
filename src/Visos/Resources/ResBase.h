@@ -37,6 +37,14 @@ public:
 	friend class SoundManager;
 	friend class Text;
 	friend class Zrle;
+	friend class Game;
+	friend class BaseFrontendDrawer;
+	friend class GWnd;
+	friend class AnimsManager;
+	friend class Anim;
+	friend class AnimWnd;
+	friend class GraphicButton;
+	friend class BitmapRes;
 
 protected:
 	ResBaseList* m_externalList;   // 0x04

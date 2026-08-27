@@ -1,5 +1,7 @@
 #include "VsSort.h"
 
+#include "../../AI/Objects/ViewData.h"
+
 // 68K 0x10602c1c AnimSpCmp__FPCvPCv
 // FUNCTION: LEMBALL 0x00409910
 int AnimSpCmp(const void* p_left, const void* p_right)
@@ -11,7 +13,12 @@ int AnimSpCmp(const void* p_left, const void* p_right)
 // FUNCTION: LEMBALL 0x0043ff60
 int ViewDataCmp(const void* p_left, const void* p_right)
 {
-	return *(int*) ((char*) p_left + 0x48) - *(int*) ((char*) p_right + 0x48);
+	const ViewData* left;
+	const ViewData* right;
+
+	left = (const ViewData*) p_left;
+	right = (const ViewData*) p_right;
+	return (int) left->m_sortZKey - (int) right->m_sortZKey;
 }
 
 // 68K 0x102172a4 VSQSort

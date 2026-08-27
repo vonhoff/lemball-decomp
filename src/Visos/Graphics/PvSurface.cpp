@@ -4,6 +4,32 @@
 // STUB: LEMBALL 0x004663d0
 PvSurface::PvSurface()
 {
+	m_dontUpdateRect.m_width = 0;
+	m_dontUpdateRect.m_height = 0;
+	m_dontUpdateRect.m_x = 0;
+	m_dontUpdateRect.m_y = 0;
+	m_windowRect.m_width = 0;
+	m_windowRect.m_height = 0;
+	m_windowRect.m_x = 0;
+	m_windowRect.m_y = 0;
+	m_clipRect.m_width = 0;
+	m_clipRect.m_height = 0;
+	m_clipRect.m_x = 0;
+	m_clipRect.m_y = 0;
+	m_relOriginX = 0;
+	m_relOriginY = 0;
+	m_parentSurface = 0;
+	m_bitmapSize.m_width = 0;
+	m_bitmapSize.m_height = 0;
+	m_unk28 = 0;
+	m_unk2a = 0;
+	m_zoom = 0;
+	m_pad2e = 0;
+	m_flag70 = 0;
+	m_flag74 = 0;
+	m_flag78 = 0;
+	m_updateEnabled = 1;
+	m_reserved40 = 0;
 }
 
 // 68K 0x10215e76 __dt__10CPVSurfaceFv

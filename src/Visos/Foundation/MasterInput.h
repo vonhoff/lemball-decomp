@@ -11,7 +11,11 @@ public:
 	virtual VsOStream& StreamOut(VsOStream& p_arg0); // vtable+0x00
 	virtual ~MasterInput();                          // vtable+0x04
 
+	friend bool TargetInputInit();
+	friend bool TargetInputQuit();
+
 private:
+	undefined4 m_unk0x04;     // 0x04
 	unsigned int m_itemCount; // 0x08
 	BaseQueue* m_queue;       // 0x0c
 	void* m_firstItem;        // 0x10

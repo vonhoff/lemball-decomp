@@ -127,6 +127,8 @@ Out: `build-msvc400/LEMBALL.EXE`, `LEMBALL.pdb`. Flags fixed in `cmake/msvc400-t
 ```powershell
 python tools/report.py
 reccmp-decomplint --target LEMBALL --warnfail src
+python tools/smell.py
+python tools/smell.py --annot # 68K-only functions missing FUNCTION/STUB
 ```
 
 ### Extra (from `build-msvc400` after a build)
@@ -171,6 +173,8 @@ python tools/targets.py --kind tiny --addrs
 ## Do not
 
 - Add symbols without annotations.
+- Offset-poke complete objects or walk vbptr (`*(int*)(*(int*)(p + 0x40) + 4)`). Use named members.
+- Invent file-static helpers or unannotated functions.
 - Ship 68K-only logic without x86 check.
 - Use C++11+, exceptions, RTTI, or another compiler.
 - Reorder annotated funcs except by address.

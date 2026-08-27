@@ -100,7 +100,7 @@ SoundManager::SoundManager(unsigned int p_musicEnabled, unsigned int p_effectsEn
 			m_musicAvailable = 1;
 		}
 	}
-	if (m_requestedEffects != 0) {
+	if (m_requestedEffects != 0 && m_effectOutput != 0) {
 		SetEffectsWnd(p_window);
 	}
 	if (m_requestedMusic != 0) {
@@ -244,6 +244,9 @@ void SoundManager::Foreground()
 // STUB: LEMBALL 0x0045b2c0
 unsigned long SoundManager::PrepareMusic(unsigned long p_resourceId, unsigned int p_flags)
 {
+	if (m_musicDevice == 0) {
+		return 0;
+	}
 	return ((MusicDeviceDispatch*) m_musicDevice)->Initialise(p_resourceId, p_flags);
 }
 
@@ -406,11 +409,18 @@ void SoundManager::SetMusicWnd(Wnd* p_window)
 	}
 }
 
+// STUB: LEMBALL 0x0045b5c0
+void SoundManager::SetMusicCdPath(char* p_path)
+{
+}
+
 // 68K 0x10218b40 UseMusicCD__13CSoundManagerFUc
-// FUNCTION: LEMBALL 0x0045b5f0
+// STUB: LEMBALL 0x0045b5f0
 void SoundManager::UseMusicCd(unsigned int p_enabled)
 {
-	m_musicDevice->m_reserved0c = p_enabled;
+	if (m_musicDevice != 0) {
+		m_musicDevice->m_reserved0c = p_enabled;
+	}
 }
 
 // GLOBAL: LEMBALL 0x004a97c8

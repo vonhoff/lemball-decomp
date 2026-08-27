@@ -11,6 +11,7 @@ public:
 
 	friend class PlayerLemming;
 	friend class SoundView;
+	friend int ViewDataCmp(const void* p_left, const void* p_right);
 
 private:
 	short m_facingDirection;       // 0x00

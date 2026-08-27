@@ -47,6 +47,7 @@ public:
 	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force) = 0;              // vtable+0x54
 
 	friend class FontTable;
+	friend class AnimsManager;
 
 private:
 	ResListHeader* m_listHeader;    // 0x48

@@ -2,6 +2,8 @@
 
 #include "Demo.h"
 
+#include <new.h>
+
 // 68K 0x10701228 ClockEditMode__FUc
 // FUNCTION: LEMBALL 0x00408080
 void ClockEditMode(unsigned int p_enabled)
@@ -36,6 +38,14 @@ void SetRemoteGameTimeReal(unsigned long p_timestamp)
 // STUB: LEMBALL 0x00409150
 Demo* DemoInit(int p_arg0)
 {
+	void* storage;
+
+	storage = operator new(0x58);
+	if (storage != 0) {
+		g_pDemo = new (storage) Demo(p_arg0);
+		return g_pDemo;
+	}
+	g_pDemo = 0;
 	return 0;
 }
 

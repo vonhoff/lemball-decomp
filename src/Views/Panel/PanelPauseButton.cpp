@@ -7,7 +7,11 @@ PanelPauseButton::PanelPauseButton(Panel* p_arg0,
 								   PvGWnd* p_arg2,
 								   unsigned long p_arg3,
 								   unsigned long p_arg4)
+	: ToggleButton(p_arg1, p_arg2, p_arg3, p_arg4)
 {
+	m_panel = p_arg0;
+	m_pressedInside = 0;
+	m_externalEnabled = 1;
 }
 
 // 68K 0x10b0c5b8 OnInside__17CPanelPauseButtonFRC8CVSPoint
@@ -24,9 +28,8 @@ void PanelPauseButton::DrawButton()
 
 // 68K 0x10b0c63c OnPaint__17CPanelPauseButtonFRC7CVSRect
 // STUB: LEMBALL 0x00442270
-unsigned int PanelPauseButton::OnPaint(const VsRect& p_rect)
+void PanelPauseButton::OnPaint(const VsRect& p_rect)
 {
-	return 0;
 }
 
 // 68K 0x10b0c67e OnPressed__17CPanelPauseButtonF12BUTTON_FLAGS

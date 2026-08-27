@@ -43,7 +43,7 @@ public:
 	void GameReady(int p_index);
 	void InitialiseHandlers();
 	void LastError();
-	void Load();
+	virtual void Load();  // vtable+0x40
 	void Lock();
 	void Processing();
 	void RegisterRemaps();
@@ -55,7 +55,7 @@ public:
 	void StartMessageTimeout(int p_message, unsigned long p_duration);
 	void Stop();
 	void StopEditing();
-	void UnLoad();
+	virtual void UnLoad(); // vtable+0x44
 	void UnLock();
 	void UnRegisterRemaps();
 	void UpdateHighlightedEntry();

@@ -4,6 +4,10 @@
 // STUB: LEMBALL 0x00472070
 MasterInput::MasterInput(BaseQueue* p_arg0)
 {
+	m_itemCount = 0;
+	m_firstItem = 0;
+	m_queue = p_arg0;
+	m_state = 0;
 }
 
 // 68K 0x102013e8 StreamOut__12CMasterInputFR10CVSOStream

@@ -14,6 +14,11 @@ BaseQueue::BaseQueue(unsigned int p_arg0)
 // STUB: LEMBALL 0x004630a0
 BaseQueue::BaseQueue(unsigned int p_arg0, char* p_arg1)
 {
+	m_capacity = p_arg0;
+	m_messageCount = 0;
+	m_handlerCount = 0;
+	m_messageBuffer = 0;
+	m_handlerList = 0;
 }
 
 // 68K 0x10204bfa Post__10CBaseQueueFR10tagMESSAGE

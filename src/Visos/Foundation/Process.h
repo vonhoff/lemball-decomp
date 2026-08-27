@@ -9,6 +9,9 @@ class Process {
 public:
 	virtual ~Process(); // vtable+0x00
 
+	friend class Game;
+	friend class BaseFrontendProcess;
+
 private:
 	int m_returnState;  // 0x04
 	int m_processState; // 0x08

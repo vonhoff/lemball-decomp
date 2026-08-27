@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00493050
 class IntroAnim : public BaseFrontendProcess {
 public:
+	IntroAnim(Game* p_game) : BaseFrontendProcess(p_game) {}
 	virtual ~IntroAnim(); // vtable+0x00
 };
 

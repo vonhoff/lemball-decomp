@@ -24,33 +24,40 @@ public:
 					   int p_arg7,
 					   int p_arg8);
 	bool ProcessMsg(Message* p_message);
-	virtual bool ConfirmedAction(int p_action);       // vtable+0x54
-	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
-	virtual bool QuitYet();                           // vtable+0x2c
-	virtual int GetReturnState();                     // vtable+0x28
+	virtual ~BaseFrontendDrawer();                    // vtable+0x00
 	virtual void Draw(const VsRect& p_rect);          // vtable+0x08
-	virtual void DrawAnims();                         // vtable+0x48
-	virtual void DrawBackGround();                    // vtable+0x50
-	virtual void DrawText();                          // vtable+0x4c
-	virtual void OnDriverChange();                    // vtable+0x30
 	virtual void OnSize(const VsRect& p_rect);        // vtable+0x10
 	virtual void Process();                           // vtable+0x1c
-	virtual void Processing();                        // vtable+0x38
 	virtual void ResetPrimitives();                   // vtable+0x20
-	virtual ~BaseFrontendDrawer();                    // vtable+0x00
+	virtual int GetReturnState();                     // vtable+0x28
+	virtual bool QuitYet();                           // vtable+0x2c
+	virtual void OnDriverChange();                    // vtable+0x30
+	virtual void Processing();                        // vtable+0x38
+	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
+	virtual void Load() = 0;                         // vtable+0x40
+	virtual void UnLoad() = 0;                       // vtable+0x44
+	virtual void DrawAnims();                         // vtable+0x48
+	virtual void DrawText();                          // vtable+0x4c
+	virtual void DrawBackGround();                    // vtable+0x50
+	virtual bool ConfirmedAction(int p_action);       // vtable+0x54
 	void Action(int p_action, int p_stage);
+	void _DrawAnims();
+	void _DrawBackGround();
+	void _Load();
+	void _UnLoad();
 	void DrawFrame(CoordPair p_start, CoordPair p_end);
 	void DrawFrame(VsRect p_rect);
 	void InitialiseBackBuffer();
-	void Load();
 	void LostConnection();
 	void RemoteAction(int p_action, int p_stage);
 	void ReplaceBackground();
 	void Restart();
 	void Setup();
-	void UnLoad();
 
 	friend class NetworkOptionsDrawer;
+	friend class IntroAnimDrawer;
+	friend class MainOptions1Drawer;
+	friend class Main2DDisplay;
 
 private:
 	BaseQueueHandler m_queueHandler;      // 0x04

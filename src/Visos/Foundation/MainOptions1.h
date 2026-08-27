@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00493078
 class MainOptions1 : public BaseFrontendProcess {
 public:
+	MainOptions1(Game* p_game) : BaseFrontendProcess(p_game) {}
 	virtual ~MainOptions1(); // vtable+0x00
 };
 

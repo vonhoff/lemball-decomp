@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00499318
 class PvGWnd : public GWnd {
 public:
+	PvGWnd();
 	virtual unsigned int GetStyle();                      // vtable+0x64
 	virtual void OnVisibilityChange();                    // vtable+0x80
 	virtual void OnZoom(int p_oldZoom);                   // vtable+0x2c

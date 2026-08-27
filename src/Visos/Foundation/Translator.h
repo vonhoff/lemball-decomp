@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x004988a0
 class Translator : public BaseQueueHandler {
 public:
+	Translator() {}
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~Translator();                      // vtable+0x04
 };

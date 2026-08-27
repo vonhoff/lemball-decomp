@@ -53,6 +53,14 @@ public:
 	friend class PauseWindow;
 	friend class NetworkOptionsDrawer;
 	friend class Wnd;
+	friend class Main2DDisplay;
+	friend class IntroAnimDrawer;
+	friend class MainOptions1Drawer;
+	friend class GWnd;
+	friend class PvButton;
+	friend class GraphicButton;
+	friend class GunController;
+	friend int TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state, void* p_request);
 
 private:
 	unsigned int m_lifecycleRefs; // 0x04

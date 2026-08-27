@@ -8,8 +8,14 @@
 #include "PvSurface.h"            // complete type
 #include "PvZBuffSurface.h"       // complete type
 
+#pragma warning(disable : 4250)
+
+// SIZE 0x44
+// PvGdiBitmap at 0, Surface vbptr at 0x40. MSVC 4.0 drops that vbptr if Surface lists virtual PvSurface next to the mixins.
+class SurfaceGdi : public PvGdiBitmap, public virtual PvSurface {};
+
 // SIZE 0x5a0
-class Surface : public virtual PvSurface, public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface {
+class Surface : public SurfaceGdi, public PvZBuffSurface, public PvBackBuffSurface {
 public:
 	ChangeList* GetChangeList();
 	Surface(GrafPort* p_arg0);
@@ -35,8 +41,8 @@ public:
 	void Blit(Point* p_point);
 	void Blit(ScreenScroll* p_scroll);
 	void Blit(SolidRect* p_rect);
-	void Blit(ZBuffClear* p_arg0);
-	void Blit(ZBuffScroll* p_arg0);
+	virtual void Blit(ZBuffClear* p_arg0);
+	virtual void Blit(ZBuffScroll* p_arg0);
 	void Blit(Zrle* p_primitive, ResZrle* p_zrle);
 	void Blit(class ClipRect* p_arg0);
 	void BlitRect(VsRect p_rect, int p_colour);
@@ -79,7 +85,7 @@ public:
 								  ResZrle* p_zrle,
 								  unsigned short p_depth,
 								  unsigned char* p_remap);
-	void CopyBackBuffToScreen(const VsRect& p_arg0);
+	virtual void CopyBackBuffToScreen(const VsRect& p_arg0);
 	void DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius, int p_colour);
 	void FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour);
 	void Flush();
@@ -90,10 +96,29 @@ public:
 	void SetDefaultCtable();
 	void SetWindowPtr(void* p_platformPort);
 	void ToScreen(class Surface* p_destinationSurface);
+	void CopyDIBBits(void* p_header, unsigned char* p_bits);
 	~Surface();
 
+	friend class BaseFrontendDrawer;
+	friend class GWnd;
+	friend class PvBackBuffSurface;
+
 private:
-	undefined m_surfaceState[0x46c]; // 0xf0
+	short m_presentX;                // 0xec
+	short m_presentY;                // 0xee
+	void* m_platformBitmap;          // 0xf0
+	undefined4 m_unk0xf4;            // 0xf4
+	void* m_drawingPort;             // 0xf8
+	undefined m_bitmapInfo[0x28];    // 0xfc
+	undefined m_colourTable[0x400];  // 0x124
+	undefined4 m_unk0x524;           // 0x524
+	undefined4 m_unk0x528;           // 0x528
+	undefined4 m_unk0x52c;           // 0x52c
+	undefined4 m_unk0x530;           // 0x530
+	undefined m_lock[0x18];          // 0x534
+	undefined4 m_unk0x54c;           // 0x54c
+	ChangeList* m_changeList;        // 0x550
+	undefined4 m_unk0x554;           // 0x554
 };
 
 #endif

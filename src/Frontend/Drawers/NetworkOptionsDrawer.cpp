@@ -152,7 +152,7 @@ void NetworkOptionsDrawer::UnLoad()
 // STUB: LEMBALL 0x004535c0
 NetworkOptionsDrawer::~NetworkOptionsDrawer()
 {
-	int offset;
+	int index;
 	EditString* editor;
 
 	if (m_returnState == 0) {
@@ -165,11 +165,11 @@ NetworkOptionsDrawer::~NetworkOptionsDrawer()
 			g_pNetworkOptionsProc->StopBroadcast();
 		}
 	}
-	offset = 0;
+	index = 0;
 	do {
-		((GWnd*) m_display)->m_hotAreaList->RemoveFromList((EntryHandler*) ((char*) m_playerEntries + offset));
-		offset += 0x44;
-	} while (offset < 0x2a8);
+		((GWnd*) m_display)->m_hotAreaList->RemoveFromList(&m_playerEntries[index]);
+		index = index + 1;
+	} while (index < 10);
 	delete[] m_playerEntries;
 	editor = m_editor;
 	if (editor != 0) {
@@ -395,7 +395,6 @@ void NetworkOptionsDrawer::Processing()
 	unsigned int ident;
 	char* peer;
 	Connect* connection;
-	int offset;
 	Connect** current;
 	Connect** connections;
 	int index;
@@ -446,11 +445,10 @@ void NetworkOptionsDrawer::Processing()
 			InitialiseHandlers();
 		}
 		connections = g_pNetworkManager->m_connections;
-		offset = 0;
 		current = connections;
 		index = 0;
 		do {
-			if (((EntryHandler*) ((char*) m_playerEntries + offset))->m_pressed != 0 &&
+			if (m_playerEntries[index].m_pressed != 0 &&
 				m_acceptedPlayer != index) {
 				g_pSoundView->PlayEffect((eSoundEffect) 0x25);
 				if (m_acceptedPlayer != -1) {
@@ -461,7 +459,7 @@ void NetworkOptionsDrawer::Processing()
 				}
 				m_acceptedPlayer = index;
 				if (*current != 0) {
-					activation = ((EntryHandler*) ((char*) m_playerEntries + offset))->m_activationState;
+					activation = m_playerEntries[index].m_activationState;
 					if (activation != 0) {
 						Lock();
 					}
@@ -469,10 +467,9 @@ void NetworkOptionsDrawer::Processing()
 				}
 			}
 			current = current + 1;
-			offset = offset + 0x44;
 			index = index + 1;
-			((EntryHandler*) ((char*) m_playerEntries + offset - 0x44))->m_pressed = 0;
-		} while (offset < 0x2a8);
+			m_playerEntries[index - 1].m_pressed = 0;
+		} while (index < 10);
 	}
 	if (m_message != 0) {
 		duration = m_messageDuration;
@@ -675,7 +672,7 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 	m_visibleEntryCount = 0;
 	offset = 0;
 	do {
-		entry = (EntryHandler*) ((char*) m_playerEntries + offset);
+		entry = &m_playerEntries[offset];
 		if (m_visibleEntryCount < 4 && connections != 0 && *connections != 0 && *valid != 0) {
 			entry->m_x = x;
 			entry->m_y = y;
@@ -689,10 +686,10 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 		else {
 			entry->SetActive(0);
 		}
-		offset = offset + 0x44;
-		valid = (unsigned int*) ((char*) valid + 0x50);
+		offset = offset + 1;
+		valid = &messages[offset].m_valid;
 		connections = connections + 1;
-	} while (offset < 0x2a8);
+	} while (offset < 10);
 	UpdateHighlightedEntry();
 }
 
@@ -700,13 +697,11 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 // STUB: LEMBALL 0x00454f00
 void NetworkOptionsDrawer::ResetHandlers()
 {
-	int offset;
 	int index;
 	Connect** connections;
 	NetworkGameMessage* messages;
 	unsigned int* valid;
 
-	offset = 0;
 	if (g_pNetworkManager != 0) {
 		connections = g_pNetworkManager->m_connections;
 		index = 0;
@@ -714,16 +709,15 @@ void NetworkOptionsDrawer::ResetHandlers()
 		valid = &messages->m_valid;
 		do {
 			if (*connections == 0 || *valid == 0) {
-				((EntryHandler*) ((char*) m_playerEntries + offset))->Reset();
+				m_playerEntries[index].Reset();
 				if (m_acceptedPlayer == index) {
 					m_acceptedPlayer = -1;
 				}
 			}
-			offset = offset + 0x44;
-			valid = (unsigned int*) ((char*) valid + 0x50);
-			connections = connections + 1;
 			index = index + 1;
-		} while (offset < 0x2a8);
+			valid = &messages[index].m_valid;
+			connections = connections + 1;
+		} while (index < 10);
 	}
 	InitialiseHandlers();
 }

@@ -24,6 +24,11 @@ public:
 	}
 	inline virtual ~ResRaster() {}
 
+	friend class BaseFrontendDrawer;
+	friend class MainOptions1Drawer;
+	friend class Surface;
+	friend class AnimsManager;
+
 protected:
 	short m_x; // 0x48
 	short m_y; // 0x4a
@@ -39,6 +44,9 @@ public:
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
 	virtual ~ResBitmap();     // vtable+0x00
+
+	friend class BaseFrontendDrawer;
+	friend class BitmapRes;
 
 private:
 	unsigned char m_depth;       // 0x4c

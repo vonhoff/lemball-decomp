@@ -13,6 +13,8 @@ public:
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~CopyToBackBuff();       // vtable+0x00
 
+	friend class Surface;
+
 private:
 	short m_field04; // 0x04
 	short m_field06; // 0x06

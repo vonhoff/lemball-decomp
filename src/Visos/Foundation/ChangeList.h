@@ -15,6 +15,7 @@ public:
 	int GetNumItems();
 	unsigned int GetArea();
 	void Add(const VsRect& p_area);
+	void AddWithActiveMark(const VsRect& p_area, unsigned char p_mark);
 	void AllocMap();
 	void FreeMap();
 	void PopActive();

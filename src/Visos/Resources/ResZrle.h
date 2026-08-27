@@ -32,6 +32,9 @@ public:
 	friend class Text;
 	friend class ResAnim;
 	friend class ResFont;
+	friend class AnimsManager;
+	friend class Surface;
+	friend class GraphicButton;
 
 private:
 	short m_width;   // 0x4c

@@ -13,6 +13,8 @@ public:
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~Line();                 // vtable+0x00
 
+	friend class BaseFrontendDrawer;
+
 private:
 	short m_x1;           // 0x04
 	short m_y1;           // 0x06

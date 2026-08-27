@@ -14,6 +14,10 @@ public:
 	virtual ~Zrle();                 // vtable+0x00
 
 	friend class Text;
+	friend class AnimsManager;
+	friend class Anim;
+	friend class Surface;
+	friend class GraphicButton;
 
 private:
 	short m_x;            // 0x04

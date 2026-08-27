@@ -37,6 +37,8 @@ public:
 	void SetGun(int p_junction);
 	void SetSpriteWindow();
 
+	friend class BaseFrontendDrawer;
+
 private:
 	AnimsManager m_anims;                 // 0x10
 	int m_buttonCount;                    // 0x80
@@ -80,7 +82,7 @@ private:
 	PlayThruAnim* m_hitAnim;              // 0x254
 	StaticAnim m_staticAnim;              // 0x258
 	SpriteWindow* m_spriteWindow;         // 0x268
-	void* m_spriteSurface;                // 0x26c
+	Gdi* m_spriteSurface;                 // 0x26c
 	unsigned int m_mode;                  // 0x270
 	unsigned int m_alternateAssets;       // 0x274
 	unsigned int m_buttonsActive;         // 0x278

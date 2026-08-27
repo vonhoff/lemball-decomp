@@ -25,6 +25,9 @@ public:
 
 	friend class NetworkOptionsDrawer;
 	friend class HotAreaList;
+	friend class GraphicButton;
+	friend class PvButton;
+	friend class PanelPauseButton;
 
 private:
 	unsigned int m_active;          // 0x04

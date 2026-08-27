@@ -4,6 +4,10 @@
 // STUB: LEMBALL 0x00466670
 PvZBuffSurface::PvZBuffSurface()
 {
+	m_allocatedWidth = 0;
+	m_enabled = 0;
+	m_allocatedHeight = 0;
+	m_buffer = 0;
 }
 
 // 68K 0x102162b2 __dt__15CPVZBuffSurfaceFv
@@ -40,5 +44,5 @@ void PvZBuffSurface::ResizeZBuff()
 // FUNCTION: LEMBALL 0x00466990
 bool PvZBuffSurface::HasZBuff()
 {
-	return *(unsigned int*) ((char*) this - 0x10);
+	return m_enabled;
 }

@@ -24,6 +24,10 @@ public:
 	~AnimsManager();
 	AnimsManager();
 
+	friend class BaseFrontendDrawer;
+	friend class GraphicButton;
+	friend class GunController;
+
 private:
 	Line* m_linePrimitives;             // 0x04
 	undefined m_reserved08[4];          // 0x08

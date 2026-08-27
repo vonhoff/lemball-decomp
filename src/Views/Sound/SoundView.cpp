@@ -210,16 +210,16 @@ void SoundView::SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listen
 void SoundView::UnprepareEffects()
 {
 	int i;
-	unsigned int* handle;
+	EffectSlot* slot;
 
-	handle = &m_effectSlots[0].m_handle;
+	slot = m_effectSlots;
 	i = 50;
 	do {
-		if (*handle != 0xffffffff) {
-			g_pSoundManager->FreeEffect(*handle);
-			*handle = 0xffffffff;
+		if (slot->m_handle != 0xffffffff) {
+			g_pSoundManager->FreeEffect(slot->m_handle);
+			slot->m_handle = 0xffffffff;
 		}
-		handle = (unsigned int*) ((char*) handle + sizeof(EffectSlot));
+		slot = slot + 1;
 		i--;
 	} while (i != 0);
 }

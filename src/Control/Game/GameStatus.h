@@ -26,6 +26,10 @@ public:
 
 	friend class NetworkOptionsDrawer;
 	friend class PlayerLemming;
+	friend class MainOptions1Drawer;
+	friend class IntroAnimAnimWindow;
+	friend class BaseFrontendProcess;
+	friend class BaseFrontendDrawer;
 
 private:
 	int m_level;               // 0x00

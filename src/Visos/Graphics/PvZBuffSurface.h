@@ -3,14 +3,17 @@
 
 #include "../../Common.h"
 #include "PvGdiBitmap.h" // complete type
+#include "PvSurface.h"   // complete type
 
-// SIZE 0x9c
+// SIZE 0x54
 // VTABLE: LEMBALL 0x00499618 primary abstract surface
 // VTABLE: LEMBALL 0x004995c8 PvSurface virtual base at +0x58
-class PvZBuffSurface {
+class PvZBuffSurface : public virtual PvSurface {
 public:
 	PvZBuffSurface();
-	virtual bool HasZBuff(); // vtable+0x40
+	virtual void Blit(ZBuffClear* p_arg0) = 0;  // vtable+0x00
+	virtual void Blit(ZBuffScroll* p_arg0) = 0; // vtable+0x04
+	virtual bool HasZBuff();                    // vtable+0x40
 	void AllocateZBuff();
 	void EnableZBuff(unsigned char p_enabled);
 	void FreeZBuff();
@@ -18,13 +21,11 @@ public:
 	~PvZBuffSurface();
 
 private:
-	void* m_virtualBaseTable;         // 0x04
 	PvGdiBitmap m_bitmap;             // 0x08
 	unsigned int m_enabled;           // 0x48
 	unsigned short* m_buffer;         // 0x4c
 	unsigned short m_allocatedWidth;  // 0x50
 	unsigned short m_allocatedHeight; // 0x52
-	int m_virtualBaseDisplacement;    // 0x54
 };
 
 #endif

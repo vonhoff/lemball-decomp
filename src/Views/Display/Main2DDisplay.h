@@ -4,10 +4,11 @@
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/VsRect.h"           // complete type
+#include "../../Visos/Graphics/PvGWnd.h"             // complete type
 
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8
-class Main2DDisplay {
+class Main2DDisplay : public PvGWnd {
 public:
 	Main2DDisplay(Game* p_arg0);
 	VsRect GetUseRect(int p_x, int p_y);
@@ -33,14 +34,10 @@ public:
 	~Main2DDisplay();
 
 	friend class NetworkOptionsDrawer;
+	friend class Game;
 
 private:
-	undefined m_unknown04[0x48];      // 0x04
-	void* m_displayDevice;            // 0x4c
-	int m_refreshInterval;            // 0x50
-	unsigned int m_paletteResourceId; // 0x54
-	undefined m_unknown58[0x38];      // 0x58
-	BaseQueueHandler m_queueHandler;  // 0x90
+	BaseQueueHandler m_queueHandler; // 0x90
 	unsigned int m_windowReady;      // 0xa0
 	void* m_drawPrimitive;           // 0xa4
 	void* m_background;              // 0xa8
@@ -67,4 +64,3 @@ private:
 
 
 #endif
-

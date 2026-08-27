@@ -1,5 +1,11 @@
 #include "PvWnd.h"
 
+#include <new.h>
+
+extern int g_cursorState;
+extern void* g_pWindowOwnerList;
+extern int g_nNativeWindowCount;
+
 // 68K 0x101049c0 GetSizeStatus__6CPVWndFv
 // FUNCTION: LEMBALL 0x004323b0
 unsigned int PvWnd::GetSizeStatus()
@@ -18,6 +24,23 @@ void PvWnd::SetSizeStatus(unsigned int p_status)
 // STUB: LEMBALL 0x004323d0
 void PvWnd::AddChild(class PvWnd* p_child)
 {
+	void** node;
+
+	node = (void**) operator new(0xc);
+	if (node == 0) {
+		return;
+	}
+	node[0] = p_child;
+	node[1] = 0;
+	node[2] = m_childListTail;
+	if (m_childListTail != 0) {
+		((void**) m_childListTail)[1] = node;
+	}
+	m_childListTail = node;
+	if (m_childList == 0) {
+		m_childList = node;
+	}
+	m_childCount = m_childCount + 1;
 }
 
 // 68K 0x10104aaa RemoveChild__6CPVWndFP6CPVWnd
@@ -49,6 +72,40 @@ void PvWnd::SetDontUpdateRect(const VsRect& p_rect)
 // STUB: LEMBALL 0x00465cc0
 PvWnd::PvWnd()
 {
+	int previous;
+
+	m_rect.m_height = 0;
+	m_rect.m_width = 0;
+	m_rect.m_y = 0;
+	m_rect.m_x = 0;
+	m_innerRect.m_height = 0;
+	m_innerRect.m_width = 0;
+	m_innerRect.m_y = 0;
+	m_innerRect.m_x = 0;
+	m_childList = 0;
+	m_childListTail = 0;
+	m_childCount = 0;
+	m_relativeTopLeft.m_y = 0;
+	m_relativeTopLeft.m_x = 0;
+	m_hotAreaList = 0;
+	m_active = 1;
+	previous = g_cursorState;
+	g_cursorState = g_cursorState + 1;
+	if (previous == 0) {
+		g_pWindowOwnerList = operator new(0xc);
+		if (g_pWindowOwnerList == 0) {
+			g_pWindowOwnerList = 0;
+		}
+		else {
+			((void**) g_pWindowOwnerList)[0] = 0;
+			((void**) g_pWindowOwnerList)[1] = 0;
+			((int*) g_pWindowOwnerList)[2] = 0;
+		}
+	}
+	m_zoom = 1;
+	m_lifecycleRefs = 0;
+	m_parent = 0;
+	m_sizeStatus = 0;
 }
 
 // 68K 0x10216a50 __dt__6CPVWndFv
@@ -86,6 +143,8 @@ unsigned int PvWnd::InitHotAreaList()
 // STUB: LEMBALL 0x00465f80
 void PvWnd::OnCreate()
 {
+	g_nNativeWindowCount = g_nNativeWindowCount + 1;
+	m_lifecycleRefs = m_lifecycleRefs + 1;
 }
 
 // 68K 0x10216e16 _OnDestroy__6CPVWndFv
@@ -122,6 +181,7 @@ void PvWnd::OnZoom(int p_oldZoom)
 // STUB: LEMBALL 0x004662b0
 void PvWnd::SetZoom(int p_zoom)
 {
+	m_zoom = p_zoom;
 }
 
 // 68K 0x10117ea6 ReSetMenu__6CPVWndFv
