@@ -24,7 +24,7 @@ public:
 		m_vramReady = 0;
 		m_vramLoadedCount = 0;
 	}
-	virtual ~ResBaseList();                                                                    // vtable+0x00
+
 	virtual void OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size); // vtable+0x04
 	virtual void SetHeader();                                                                  // vtable+0x08
 	virtual bool GetfVramLoaded();                                                             // vtable+0x0c

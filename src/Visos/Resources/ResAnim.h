@@ -28,7 +28,12 @@ public:
 	virtual void AllocateResources(unsigned int p_count);                      // vtable+0x44
 	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force);  // vtable+0x54
 	virtual void UnLoadVramData(unsigned int p_index, unsigned int p_force);  // vtable+0x40
-	virtual ~ResAnim();                                                        // vtable+0x00
+	inline virtual ~ResAnim()
+	{
+		if (m_animationEntries != 0) {
+			delete[] m_animationEntries;
+		}
+	}
 
 	friend class AnimsManager;
 	friend class Anim;

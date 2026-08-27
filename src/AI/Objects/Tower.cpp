@@ -1,4 +1,5 @@
 #include "Tower.h"
+#include "../../Map/Base/Map.h"
 
 // 68K 0x1011ab2c DoActivate__6CTowerFv
 // FUNCTION: LEMBALL 0x0041c5a0
@@ -19,10 +20,11 @@ Tower::~Tower()
 }
 
 // 68K 0x10619554 Process__6CTowerFv
-// STUB: LEMBALL 0x0041cf70
+// FUNCTION: LEMBALL 0x0041cf70
 bool Tower::Process()
 {
-	return 0;
+	m_position.m_zFixed = (int) g_pMap->m_ground.GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12) << 12;
+	return 1;
 }
 
 // 68K 0x106195ba Activate__6CTowerFP11CGameObject
@@ -33,9 +35,12 @@ bool Tower::Activate(GameObject* p_object)
 }
 
 // 68K 0x106195e8 ActivatePosition__6CTowerFv
-// STUB: LEMBALL 0x0041d010
+// FUNCTION: LEMBALL 0x0041d010
 AiCoord Tower::ActivatePosition()
 {
-	return *(AiCoord*) 0;
+	int y = m_position.m_yFixed - 0x8000;
+	int z = m_position.m_zFixed;
+	int x = m_position.m_xFixed - 0x30000;
+	return AiCoord(x, y, z);
 }
 

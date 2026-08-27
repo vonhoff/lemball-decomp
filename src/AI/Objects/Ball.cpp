@@ -32,10 +32,10 @@ bool Ball::Move()
 }
 
 // 68K 0x10603a98 HitBullet__5CBallFP7CBullet
-// STUB: LEMBALL 0x00421aa0
-int Ball::HitBullet(Bullet* p_bullet)
+// FUNCTION: LEMBALL 0x00421aa0
+void Ball::HitBullet(Bullet* p_bullet)
 {
-	return 0;
+	Delete();
 }
 
 // 68K 0x10603ace Delete__5CBallFv

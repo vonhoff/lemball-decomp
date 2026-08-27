@@ -69,6 +69,7 @@ public:
 
 	friend class Bullet;
 	friend class PlayerLemming;
+	friend class C2D;
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:

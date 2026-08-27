@@ -115,7 +115,7 @@ void Enemy::TurnToFaceTarget()
 // FUNCTION: LEMBALL 0x004203d0
 bool Enemy::IsRequestingFire()
 {
-	return m_fireState == 2;
+	return m_fireState == 1;
 }
 
 // 68K 0x106084a0 RequestFire__6CEnemyFi
@@ -146,9 +146,8 @@ void Enemy::EndFiring()
 
 // 68K 0x106086d0 HitBullet__6CEnemyFP7CBullet
 // STUB: LEMBALL 0x00420600
-int Enemy::HitBullet(Bullet* p_bullet)
+void Enemy::HitBullet(Bullet* p_bullet)
 {
-	return 0;
 }
 
 // 68K 0x10608732 FacingTarget__6CEnemyFv

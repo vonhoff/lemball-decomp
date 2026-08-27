@@ -146,14 +146,10 @@ void GdiDevice::Sync()
 // FUNCTION: LEMBALL 0x0046bf70
 int GdiDevice::FindSurface(Surface* p_surface)
 {
-	int i;
-
-	i = 0;
-	while (i < m_surfaceCapacity) {
+	for (int i = 0; i < m_surfaceCapacity; i++) {
 		if (m_surfaceSlots[i].m_surface == p_surface) {
 			return i;
 		}
-		++i;
 	}
 	return -1;
 }

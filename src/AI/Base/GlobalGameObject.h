@@ -9,8 +9,8 @@
 class GlobalGameObject : public GameObject {
 public:
 	GlobalGameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short p_arg2);
-	virtual void Action(eAction p_arg0, int p_arg1);                     // vtable+0x04
 	virtual void Action(eAction p_arg0);                                 // vtable+0x08
+	virtual void Action(eAction p_arg0, int p_arg1);                     // vtable+0x04
 	virtual void SendRemove();                                           // vtable+0xf4
 	virtual void SendCancel();                                           // vtable+0xf8
 	virtual int UsableState();                                           // vtable+0xfc
@@ -21,7 +21,7 @@ public:
 	void DeleteMessages();
 	void RequestAction(eAction p_arg0);
 	void SetMessages();
-	~GlobalGameObject();
+	virtual ~GlobalGameObject();
 	GlobalGameObject();
 
 	friend class GameObjectMess;

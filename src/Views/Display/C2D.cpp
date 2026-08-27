@@ -1,5 +1,7 @@
 #include "C2D.h"
 
+#include "../../AI/Navigation/Ai.h"
+#include "../../AI/Objects/PlayerLemming.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
@@ -32,10 +34,13 @@ void C2D::UnRegisterRemaps()
 {
 }
 
+#include "../../Visos/Graphics/Cursor.h"
+
 // 68K 0x10b07492 CursorChangeType__3C2DF18eCursorDisplayTypei
-// STUB: LEMBALL 0x004364b0
+// FUNCTION: LEMBALL 0x004364b0
 void C2D::CursorChangeType(int p_cursorType, int p_value)
 {
+	::CursorChangeType((eCursorDisplayType) p_cursorType, p_value);
 }
 
 // 68K 0x10b074d8 OnLoaded__3C2DFv
@@ -269,9 +274,8 @@ unsigned int C2D::OnButtonDown(const VsPoint& p_point, unsigned int p_flags)
 
 // 68K 0x10b09786 UseBalloon__3C2DFi
 // STUB: LEMBALL 0x00438330
-unsigned short C2D::UseBalloon(int p_playerIndex)
+void C2D::UseBalloon(int p_playerIndex)
 {
-	return 0;
 }
 
 // 68K 0x10b09802 UseBalloon__3C2DFP14CPlayerLemming

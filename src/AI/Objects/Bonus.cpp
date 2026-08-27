@@ -1,10 +1,12 @@
 #include "Bonus.h"
+#include "../Navigation/Ai.h"
 
 // 68K 0x10605f8a Collected__6CBonusFv
-// STUB: LEMBALL 0x00422c40
+// FUNCTION: LEMBALL 0x00422c40
 int Bonus::Collected()
 {
-	return 0;
+	g_pAI->Score(1000);
+	return 1;
 }
 
 // 68K 0x10605fbc SetSFX__6CBonusFv

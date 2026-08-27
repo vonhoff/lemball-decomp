@@ -20,7 +20,7 @@ public:
 	virtual int IsHit();                    // vtable+0x5c
 	virtual bool IsRequestingFire();         // vtable+0x7c
 	virtual bool Process();                  // vtable+0x14
-	virtual int HitBullet(Bullet* p_bullet); // vtable+0x54
+	virtual void HitBullet(Bullet* p_bullet); // vtable+0x54
 	virtual void EndFiring();                // vtable+0x90
 	virtual void GetHit();                   // vtable+0x60
 	virtual void HitBall();                  // vtable+0x58

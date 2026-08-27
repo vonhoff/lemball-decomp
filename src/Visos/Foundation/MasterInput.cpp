@@ -1,7 +1,7 @@
 #include "MasterInput.h"
 
 // 68K 0x10201326 __ct__12CMasterInputFP10CBaseQueue
-// STUB: LEMBALL 0x00472070
+// FUNCTION: LEMBALL 0x00472070
 MasterInput::MasterInput(BaseQueue* p_arg0)
 {
 	m_itemCount = 0;

@@ -6,18 +6,16 @@
 
 // 68K 0x101166d2 __as__19CFileNetworkAddressFR15CNetworkAddress
 // FUNCTION: LEMBALL 0x0046f880
-char* FileNetworkAddress::operator=(NetworkAddress& p_address)
+void FileNetworkAddress::operator=(NetworkAddress& p_address)
 {
 	strcpy(m_text, ((FileNetworkAddress*) &p_address)->m_text);
-	return m_text;
 }
 
 // 68K 0x10116636 __as__19CFileNetworkAddressFPCc
 // FUNCTION: LEMBALL 0x0046f8b0
-char* FileNetworkAddress::operator=(const char* p_text)
+void FileNetworkAddress::operator=(const char* p_text)
 {
 	strcpy(m_text, p_text);
-	return m_text;
 }
 
 // 68K 0x1011672a __eq__19CFileNetworkAddressFR15CNetworkAddress
@@ -38,14 +36,14 @@ char* FileNetworkAddress::GetStr()
 // FUNCTION: LEMBALL 0x004794e0
 void FileNetworkAddress::operator=(eBroadcastTypes p_type)
 {
-	if (p_type == 0) {
+	switch (p_type) {
+	case 0:
 		*this = "LAN";
-		return;
+		break;
+	case 1:
+		*this = "WAN";
+		break;
 	}
-	if (p_type != 1) {
-		return;
-	}
-	*this = "WAN";
 }
 
 // 68K 0x10206c0c __gt__19CFileNetworkAddressFR15CNetworkAddress

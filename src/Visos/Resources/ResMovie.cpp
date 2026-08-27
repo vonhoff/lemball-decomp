@@ -63,10 +63,8 @@ bool ResMovie::DirectResources(unsigned int p_index, unsigned char** p_headerCur
 // FUNCTION: LEMBALL 0x0045e0c0
 bool ResMovie::DirectResources(unsigned int p_index, unsigned char** p_cursor)
 {
-	if (!m_movieEntries[p_index].Direct(*p_cursor, this)) {
-		if (!m_fontEntries[p_index].Direct(*p_cursor, this)) {
-			return 0;
-		}
+	if (m_movieEntries[p_index].Direct(*p_cursor, this) == 0 && m_fontEntries[p_index].Direct(*p_cursor, this) == 0) {
+		return 0;
 	}
 	return 1;
 }

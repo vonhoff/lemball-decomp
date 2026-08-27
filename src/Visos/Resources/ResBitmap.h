@@ -47,6 +47,7 @@ public:
 
 	friend class BaseFrontendDrawer;
 	friend class BitmapRes;
+	friend class Surface;
 
 private:
 	unsigned char m_depth;       // 0x4c

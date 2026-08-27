@@ -12,7 +12,7 @@ public:
 	Ball();
 	virtual bool Move();                     // vtable+0x44
 	virtual bool Process();                  // vtable+0x14
-	virtual int HitBullet(Bullet* p_bullet); // vtable+0x54
+	virtual void HitBullet(Bullet* p_bullet); // vtable+0x54
 	virtual void Delete();                   // vtable+0xc8
 	virtual void Restart();                  // vtable+0x104
 	virtual ~Ball();                         // vtable+0x00

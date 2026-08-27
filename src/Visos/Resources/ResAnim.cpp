@@ -28,8 +28,7 @@ void ResAnim::AllocateResources(unsigned int p_count)
 // FUNCTION: LEMBALL 0x0045d700
 void ResAnim::UnLoadVramData(unsigned int p_index, unsigned int p_force)
 {
-	ResZrle* entries = m_animationEntries;
-	entries[p_index].UnLoadVramData(p_force);
+	m_animationEntries[p_index].UnLoadVramData(p_force);
 }
 
 // 68K 0x102038da ForceLoadVram__8CResANIMFUl
@@ -74,8 +73,4 @@ void ResAnim::UnLoadResources(unsigned int p_index, unsigned int p_force)
 	m_animationEntries[p_index].UnLoadExtData(p_force);
 }
 
-// 68K 0x1011608a __dt__8CResANIMFv
-ResAnim::~ResAnim()
-{
-}
 

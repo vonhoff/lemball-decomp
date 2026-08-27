@@ -4,7 +4,7 @@
 #include "../../Common.h"
 #include "Primitive.h" // complete type
 
-// SIZE 0x18
+// SIZE 0x10
 // VTABLE: LEMBALL 0x00496e90
 class Bitmap : public Primitive {
 public:
@@ -23,7 +23,6 @@ private:
 	short m_height;  // 0x0a
 	short m_sourceX; // 0x0c
 	short m_sourceY; // 0x0e
-	unsigned int m_flags; // 0x14
 };
 
 // SYNTHETIC: LEMBALL 0x004396e0

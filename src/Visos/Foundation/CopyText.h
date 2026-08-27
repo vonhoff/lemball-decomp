@@ -15,7 +15,10 @@ public:
 		m_buffer = new char[p_maxLen + 1];
 	}
 
-	virtual ~CopyText(); // vtable+0x00
+	inline virtual ~CopyText()
+	{
+		delete[] m_buffer;
+	}
 	virtual void Set(int p_x,
 					 int p_y,
 					 ResFont* p_font,

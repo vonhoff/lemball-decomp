@@ -60,9 +60,4 @@ void CopyText::Set(VsPoint& p_position, ResFont* p_font, String p_text, unsigned
 	m_text = m_buffer;
 }
 
-// 68K 0x10101b46 __dt__9CCopyTextFv
-CopyText::~CopyText()
-{
-	delete[] m_buffer;
-}
 

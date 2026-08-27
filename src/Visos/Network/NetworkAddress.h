@@ -3,10 +3,15 @@
 
 #include "../../Common.h"
 
-// MINIMUM SIZE 0x04
+// SIZE 0x04
 class NetworkAddress {
 public:
-	// No functions mapped yet.
+	virtual char* GetStr() = 0;                             // vtable+0x00
+	virtual void operator=(NetworkAddress& p_address) = 0; // vtable+0x0c
+	virtual void operator=(const char* p_text) = 0;        // vtable+0x08
+	virtual void operator=(eBroadcastTypes p_type) = 0;     // vtable+0x04
+	virtual bool operator==(NetworkAddress& p_address) = 0; // vtable+0x10
+	virtual bool operator>(NetworkAddress& p_address) = 0;  // vtable+0x14
 };
 
 extern NetworkAddress* g_pBroadcastReceiveAddress;

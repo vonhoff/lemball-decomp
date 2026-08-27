@@ -1,4 +1,5 @@
 #include "TimedAnim.h"
+#include "../Foundation/VsTime.h"
 
 // 68K 0x10115d96 SetAnimTime__10CTimedAnimFUl
 // FUNCTION: LEMBALL 0x00435890
@@ -22,8 +23,16 @@ void TimedAnim::SetAnimDirection(int p_direction)
 }
 
 // 68K 0x1020000c GetFrameNo__10CTimedAnimFv
-// STUB: LEMBALL 0x00467170
+// FUNCTION: LEMBALL 0x00467170
 unsigned int TimedAnim::GetFrameNo()
 {
-	return 0;
+	unsigned long time = m_fixedTime;
+	if (time == 0xffffffff) {
+		time = CurrentMilliTimer();
+	}
+	unsigned int frame = (((time - m_frameState) % m_animTime) * m_frames) / m_animTime;
+	if (m_direction != 1) {
+		frame = m_frames - frame - 1;
+	}
+	return frame;
 }

@@ -1161,7 +1161,7 @@ void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 		dest.m_width = p_bitmap->m_x;
 		dest.m_height = p_bitmap->m_y;
 	}
-	flags = p_primitive->m_flags;
+	flags = p_bitmap->m_flags;
 	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x == 0) {
 		return;
 	}

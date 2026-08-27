@@ -13,6 +13,13 @@ public:
 		m_zFixed = DEBUG_SENTINEL;
 	}
 
+	inline AiCoord(int p_x, int p_y, int p_z)
+	{
+		m_xFixed = p_x;
+		m_yFixed = p_y;
+		m_zFixed = p_z;
+	}
+
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04
 	int m_zFixed; // 0x08

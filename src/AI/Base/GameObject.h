@@ -24,8 +24,8 @@ public:
 	void Blocked();
 	unsigned short MapCheck(int p_arg0, int p_arg1);
 	virtual ~GameObject();                                                            // vtable+0x00
-	virtual void Action(eAction p_arg0, int p_arg1);                                  // vtable+0x04
 	virtual void Action(eAction p_arg0);                                              // vtable+0x08
+	virtual void Action(eAction p_arg0, int p_arg1);                                  // vtable+0x04
 	virtual void GetViewData(ViewData& p_viewData);                                   // vtable+0x0c
 	virtual void ForgetObjectLink(unsigned short p_arg0);                             // vtable+0x10
 	virtual bool Process();                                                           // vtable+0x14
@@ -44,7 +44,7 @@ public:
 	virtual void GetBoundingBox(VsRect& p_rect);                                      // vtable+0x48
 	virtual bool Collision(const Rect3& p_arg0);                                      // vtable+0x4c
 	virtual bool Collision(const Pt3& p_arg0);                                        // vtable+0x50
-	virtual int HitBullet(Bullet* p_bullet);                                          // vtable+0x54
+	virtual void HitBullet(Bullet* p_bullet);                                         // vtable+0x54
 	virtual void HitBall();                                                           // vtable+0x58
 	virtual int IsHit();                                                              // vtable+0x5c
 	virtual void GetHit();                                                            // vtable+0x60
@@ -60,7 +60,7 @@ public:
 	virtual bool Fire();                                                              // vtable+0x88
 	virtual void StartFiring();                                                       // vtable+0x8c
 	virtual void EndFiring();                                                         // vtable+0x90
-	virtual int RandomAction();                                                       // vtable+0x94
+	virtual void RandomAction();                                                      // vtable+0x94
 	virtual bool FacingTarget();                                                      // vtable+0x98
 	virtual void TurnToFaceTarget();                                                  // vtable+0x9c
 	virtual bool OnLift(Coord3d& p_arg0, Coord3d& p_arg1);                            // vtable+0xa0
@@ -76,7 +76,7 @@ public:
 	virtual void Delete();                                                            // vtable+0xc8
 	virtual void PickUpAmmo(unsigned short p_arg0);                                   // vtable+0xcc
 	virtual void ExternalControlEnd();                                                // vtable+0xd0
-	virtual int RequestBalloon();                                                     // vtable+0xd4
+	virtual void RequestBalloon();                                                    // vtable+0xd4
 	virtual void StartBalloon();                                                      // vtable+0xd8
 	virtual void OnBalloon();                                                         // vtable+0xdc
 	virtual int QOnBalloon();                                                         // vtable+0xe0
@@ -130,6 +130,8 @@ public:
 	friend bool NotTimeUp(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 	friend bool PlayerWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 	friend bool EnemyWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
+	friend class C2D;
+	friend class Tower;
 
 private:
 	unsigned short m_runtimeFlags;        // 0x04

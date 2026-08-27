@@ -39,12 +39,13 @@ extern "C" __declspec(dllimport) int __stdcall UnlockFile(void* p_handle,
 														 unsigned int p_lengthLow,
 														 unsigned int p_lengthHigh);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
+extern "C" __declspec(dllimport) int __stdcall WSAGetLastError();
 
 // 68K 0x10107856 GetLastError__12CNetworkFileFv
 // FUNCTION: LEMBALL 0x0047b8d0
 int NetworkFile::GetLastError()
 {
-	return (int) ::GetLastError();
+	return WSAGetLastError();
 }
 
 // 68K 0x1010788a GetFilename__12CNetworkFileFv
@@ -97,14 +98,14 @@ bool NetworkFile::Create(const char* p_filename, unsigned char p_mode)
 // FUNCTION: LEMBALL 0x0047f660
 bool NetworkFile::Delete()
 {
-	return DeleteFileA(m_filename) != 0;
+	return DeleteFileA(m_filename);
 }
 
 // 68K 0x1010f70a Delete__12CNetworkFileFPCc
 // FUNCTION: LEMBALL 0x0047f670
 bool NetworkFile::Delete(const char* p_filename)
 {
-	return DeleteFileA(p_filename) != 0;
+	return DeleteFileA(p_filename);
 }
 
 // 68K 0x1010f77e CheckExists__12CNetworkFileFPCc
@@ -199,7 +200,7 @@ bool NetworkFile::Close()
 			m_closed = 1;
 		}
 	}
-	return closed != 0;
+	return closed;
 }
 
 // 68K 0x1010fb8a GetFileSize__12CNetworkFileFv
@@ -213,12 +214,12 @@ unsigned int NetworkFile::GetFileSize()
 // FUNCTION: LEMBALL 0x0047f900
 bool NetworkFile::Lock(unsigned int p_offset, unsigned int p_length)
 {
-	return LockFile(m_handle, p_offset, 0, p_length, 0) != 0;
+	return LockFile(m_handle, p_offset, 0, p_length, 0);
 }
 
 // 68K 0x1010fc3c UnLock__12CNetworkFileFUlUl
 // FUNCTION: LEMBALL 0x0047f920
 bool NetworkFile::UnLock(unsigned int p_offset, unsigned int p_length)
 {
-	return UnlockFile(m_handle, p_offset, 0, p_length, 0) != 0;
+	return UnlockFile(m_handle, p_offset, 0, p_length, 0);
 }

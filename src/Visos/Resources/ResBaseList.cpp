@@ -166,14 +166,14 @@ unload_entries:
 // FUNCTION: LEMBALL 0x0045d5c0
 void ResBaseList::UnLoadVramData(unsigned int p_force)
 {
-	ResBaseList* self = this;
-	if (self->GetfAnyVramLoaded()) {
-		unsigned int i = 0;
-		if (self->m_totalSize / self->m_listHeader->m_headerSize != 0) {
+	if (GetfAnyVramLoaded()) {
+		unsigned int count = m_totalSize / m_listHeader->m_headerSize;
+		if (count != 0) {
+			unsigned int i = 0;
 			do {
-				self->UnLoadVramData(i, p_force);
+				UnLoadVramData(i, p_force);
 				i++;
-			} while (i < self->m_totalSize / self->m_listHeader->m_headerSize);
+			} while (i < m_totalSize / m_listHeader->m_headerSize);
 		}
 	}
 }
@@ -234,8 +234,4 @@ bool ResBaseList::ForceLoadVram(unsigned int p_index)
 	return 0;
 }
 
-// 68K 0x10100944 __dt__12CResBaseLISTFv
-ResBaseList::~ResBaseList()
-{
-}
 

@@ -86,16 +86,35 @@ unsigned int GameStatus::JiggleLevelData()
 }
 
 // 68K 0x107014de UnJiggleLevelData__11CGameStatusFUl
-// STUB: LEMBALL 0x00406b30
+// FUNCTION: LEMBALL 0x00406b30
 void GameStatus::UnJiggleLevelData(unsigned int p_value)
 {
+	unsigned int chunks[8];
+	unsigned int mixed[8];
+	int i;
+
+	for (i = 7; i >= 0; i--) {
+		mixed[i] = p_value & 7;
+		p_value >>= 3;
+	}
+
+	for (i = 0; i < 8; i++) {
+		unsigned int perm = g_anPasswordPermutation[i];
+		chunks[perm] = mixed[i] ^ perm;
+	}
+
+	for (i = 0; i < 4; i++) {
+		SetMaxLevel(i, (chunks[i * 2] << 3) | chunks[i * 2 + 1]);
+	}
 }
 
 // 68K 0x1070159e CalcCheckSum__11CGameStatusFUl
-// STUB: LEMBALL 0x00406ba0
+// FUNCTION: LEMBALL 0x00406ba0
 unsigned int GameStatus::CalcCheckSum(unsigned int p_value)
 {
-	return 0;
+	p_value += (p_value >> 16);
+	p_value += (p_value >> 8);
+	return p_value & 0x1f;
 }
 
 // 68K 0x10701600 EncodePassword__11CGameStatusFv
@@ -140,10 +159,14 @@ bool GameStatus::DecodePassword(char* p_password)
 }
 
 // 68K 0x107017b8 StringToDWord__11CGameStatusFv
-// STUB: LEMBALL 0x00406d80
+// FUNCTION: LEMBALL 0x00406d80
 int GameStatus::StringToDWord()
 {
-	return 0;
+	int result = 0;
+	for (unsigned int i = 0; i < strlen(m_password); i++) {
+		result = result * 10 + (m_password[i] - '0');
+	}
+	return result;
 }
 
 // 68K 0x1070181a GotoLastLevels__11CGameStatusFv
@@ -298,14 +321,17 @@ void GameStatus::SetMaxLevel(int p_skill, int p_level)
 		maxLevel = 0xb;
 		break;
 	}
-	if (m_skill == p_skill && p_level < m_level) {
-		p_level = m_level;
+	if (m_skill == p_skill) {
+		if (m_level > p_level) {
+			p_level = m_level;
+		}
 	}
-	if (maxLevel < p_level) {
+	if (maxLevel >= p_level) {
+		m_maxLevels[p_skill] = p_level;
+	}
+	else {
 		m_maxLevels[p_skill] = maxLevel;
-		return;
 	}
-	m_maxLevels[p_skill] = p_level;
 }
 
 // 68K 0x1070356e Level__11CGameStatusFi

@@ -18,6 +18,7 @@ BaseQueueHandler::BaseQueueHandler()
 // FUNCTION: LEMBALL 0x00462ec0
 int BaseQueueHandler::ProcessMsg(Message* p_message)
 {
+	m_processedCount++;
 	return 0;
 }
 

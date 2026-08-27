@@ -26,6 +26,7 @@ public:
 
 	friend class Bullet;
 	friend class PlayerLemming;
+	friend class Tower;
 
 private:
 	unsigned int m_reserved;   // 0x00

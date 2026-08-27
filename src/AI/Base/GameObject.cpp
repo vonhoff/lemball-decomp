@@ -4,6 +4,12 @@ GameObject::GameObject()
 {
 }
 
+// 68K 0x10118af4 HitBullet__11CGameObjectFP7CBullet
+// STUB: LEMBALL 0x00408980
+void GameObject::HitBullet(Bullet* p_bullet)
+{
+}
+
 // 68K 0x10118300 GetViewData__11CGameObjectFR9CViewData
 // STUB: LEMBALL 0x0040a6f0
 void GameObject::GetViewData(ViewData& p_viewData)
@@ -81,13 +87,6 @@ bool GameObject::Collision(const Pt3& p_arg0)
 // 68K 0x10118a60 Collision__11CGameObjectFRC6CRect3
 // STUB: LEMBALL 0x0040a8e0
 bool GameObject::Collision(const Rect3& p_arg0)
-{
-	return 0;
-}
-
-// 68K 0x10118af4 HitBullet__11CGameObjectFP7CBullet
-// STUB: LEMBALL 0x0040a930
-int GameObject::HitBullet(Bullet* p_bullet)
 {
 	return 0;
 }
@@ -183,9 +182,8 @@ void GameObject::EndFiring()
 
 // 68K 0x10118d30 RandomAction__11CGameObjectFv
 // STUB: LEMBALL 0x0040aa20
-int GameObject::RandomAction()
+void GameObject::RandomAction()
 {
-	return 0;
 }
 
 // 68K 0x10118d58 FacingTarget__11CGameObjectFv
@@ -262,10 +260,9 @@ void GameObject::ExternalControlEnd()
 
 // 68K 0x10118f4c RequestBalloon__11CGameObjectFv
 // FUNCTION: LEMBALL 0x0040aae0
-int GameObject::RequestBalloon()
+void GameObject::RequestBalloon()
 {
 	m_balloonPostActive = 1;
-	return 1;
 }
 
 // 68K 0x10118f82 StartBalloon__11CGameObjectFv

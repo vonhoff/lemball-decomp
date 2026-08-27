@@ -113,7 +113,7 @@ void PlayerLemming::Restart()
 
 // 68K 0x1061c1d8 HitBullet__14CPlayerLemmingFP7CBullet
 // FUNCTION: LEMBALL 0x0040f000
-int PlayerLemming::HitBullet(Bullet* p_bullet)
+void PlayerLemming::HitBullet(Bullet* p_bullet)
 {
 	if (g_pGameStatus->m_status0 == 0) {
 		if ((int) m_action < 4 || ((int) m_action > 5 && m_action != 16)) {
@@ -121,12 +121,12 @@ int PlayerLemming::HitBullet(Bullet* p_bullet)
 				unsigned int sentinel = *g_pSentinel * 0x29 + 0x1f;
 				*g_pSentinel = sentinel & 0x7fffff;
 				if ((sentinel & 1) != 0) {
-					return 0;
+					return;
 				}
 			}
 			else {
 				if (p_bullet->m_owner != 2) {
-					return 0;
+					return;
 				}
 				if (g_pActiveConnection != 0) {
 					g_pObjectHitMessage->Send(this);
@@ -138,7 +138,6 @@ int PlayerLemming::HitBullet(Bullet* p_bullet)
 			m_facingDirection = (p_bullet->m_facingDirection + 4) & 7;
 		}
 	}
-	return 0;
 }
 
 // 68K 0x1061c2c6 SetGroup__14CPlayerLemmingFP19CPlayerLemmingGroup
@@ -220,7 +219,8 @@ void PlayerLemming::TurnToFaceTarget()
 		m_fireTarget.m_xFixed >> 12,
 		m_fireTarget.m_yFixed >> 12
 	);
-	if (facing != (unsigned int) m_facingDirection) {
+	unsigned int facingDirection = m_facingDirection;
+	if (facing != facingDirection) {
 		if (g_anRotationDirections[(facing - m_facingDirection) & 7] < 0) {
 			RotateAnticlockwise();
 		}
@@ -467,22 +467,23 @@ bool PlayerLemming::AddObject(eObjectType p_arg0, GameObject* p_arg1)
 
 // 68K 0x1061cdd0 RandomAction__14CPlayerLemmingFv
 // FUNCTION: LEMBALL 0x0040fa10
-int PlayerLemming::RandomAction()
+void PlayerLemming::RandomAction()
 {
 	int randVal = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
 	*g_pSentinel = randVal;
 	int action = randVal % 3;
 	m_actionArgument = (short) action;
-	if (action == 0) {
-		return m_actionDeadline = g_dwGameTick + 0x38;
+	switch (action) {
+	case 0:
+		m_actionDeadline = g_dwGameTick + 0x38;
+		break;
+	case 1:
+		m_actionDeadline = g_dwGameTick + 0x21;
+		break;
+	case 2:
+		m_actionDeadline = g_dwGameTick + 0x26;
+		break;
 	}
-	if (action == 1) {
-		return m_actionDeadline = g_dwGameTick + 0x21;
-	}
-	if (action == 2) {
-		return m_actionDeadline = g_dwGameTick + 0x26;
-	}
-	return 0;
 }
 
 // 68K 0x1061ce66 Resurrect__14CPlayerLemmingFRC7AICOORD
@@ -676,7 +677,7 @@ void PlayerLemming::StartBalloon()
 
 // 68K 0x1061d434 RequestBalloon__14CPlayerLemmingFv
 // FUNCTION: LEMBALL 0x0040ff70
-int PlayerLemming::RequestBalloon()
+void PlayerLemming::RequestBalloon()
 {
 	AiCoord postPos;
 	postPos.m_xFixed = DEBUG_SENTINEL;
@@ -686,7 +687,7 @@ int PlayerLemming::RequestBalloon()
 	if (lastBalloon <= 0xffff) {
 		if (lastBalloon == 0xffff) {
 			m_balloonPostActive = 0;
-			return 0;
+			return;
 		}
 		switch (lastBalloon) {
 		case 0x27:
@@ -714,7 +715,6 @@ int PlayerLemming::RequestBalloon()
 	m_balloonPostActive = g_pAI->m_balloonPost->FindPost(m_balloonObjectType, postPos);
 	m_lastMovementTick = g_dwGameTick;
 	g_pAI->Score(10);
-	return 0;
 }
 
 // 68K 0x1061d572 SetBored__14CPlayerLemmingFUl
@@ -804,8 +804,11 @@ bool PlayerLemming::IsSelectable()
 	if (!GameObject::IsSelectable()) {
 		return 0;
 	}
-	if (m_action == 0xf && (int) m_actionArgument >= 1 && (int) m_actionArgument <= 2) {
-		return 0;
+	if (m_action == 0xf) {
+		int arg = (unsigned short) m_actionArgument;
+		if (arg >= 1 && arg <= 2) {
+			return 0;
+		}
 	}
 	return 1;
 }
@@ -860,15 +863,23 @@ int PlayerLemming::IsHit()
 // FUNCTION: LEMBALL 0x00410a20
 void PlayerLemming::GetHit()
 {
-	for (int i = 0; i < g_pAI->m_objectCount; i++) {
-		if (g_pAI->m_objects[i] == this) {
-			g_pAI->m_objectCount--;
-			for (; i < g_pAI->m_objectCount; i++) {
-				g_pAI->m_objects[i] = g_pAI->m_objects[i + 1];
+	int count = g_pAI->m_objectCount;
+	int i = 0;
+	if (count > 0) {
+		GameObject** objects = g_pAI->m_objects;
+		while (*objects != this) {
+			objects++;
+			i++;
+			if (i >= count) {
+				return;
 			}
-			g_pAI->m_objects[g_pAI->m_objectCount] = 0;
-			return;
 		}
+		g_pAI->m_objectCount = --count;
+		while (i < count) {
+			g_pAI->m_objects[i] = g_pAI->m_objects[i + 1];
+			i++;
+		}
+		g_pAI->m_objects[count] = 0;
 	}
 }
 

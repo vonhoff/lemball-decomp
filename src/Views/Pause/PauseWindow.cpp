@@ -1,6 +1,7 @@
 #include "PauseWindow.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 
 // 68K 0x10b0e048 Initialise__12CPauseWindowFv
@@ -86,16 +87,34 @@ void PauseWindow::RegisterRemaps()
 }
 
 // 68K 0x10b0f222 UnRegisterRemaps__12CPauseWindowFv
-// STUB: LEMBALL 0x00444900
+// FUNCTION: LEMBALL 0x00444900
 void PauseWindow::UnRegisterRemaps()
 {
+	int i;
+	BaseRemap** remaps = m_remaps;
+
+	i = 4;
+	do {
+		g_pBasePalManager->UnRegisterRemap(*remaps);
+		remaps++;
+		i--;
+	} while (i != 0);
 }
 
 // 68K 0x10b0f282 Remap__12CPauseWindowFi
-// STUB: LEMBALL 0x00444930
+// FUNCTION: LEMBALL 0x00444930
 BaseRemap* PauseWindow::Remap(int p_item)
 {
-	return 0;
+	if (m_selection == p_item) {
+		return m_remaps[2];
+	}
+	if (m_minimumSelection <= p_item) {
+		return m_remaps[0];
+	}
+	if (p_item <= m_unavailableItems && p_item > 0) {
+		return m_remaps[3];
+	}
+	return m_remaps[1];
 }
 
 // 68K 0x10b0f2d8 OnPaint__12CPauseWindowFRC7CVSRect
@@ -143,7 +162,8 @@ void PauseWindow::FreeVram()
 }
 
 // 68K 0x10b0f8fc OnDriverChange__12CPauseWindowFv
-// STUB: LEMBALL 0x00444dd0
+// FUNCTION: LEMBALL 0x00444dd0
 void PauseWindow::OnDriverChange()
 {
+	Restart();
 }

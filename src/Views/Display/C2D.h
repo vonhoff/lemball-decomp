@@ -25,7 +25,7 @@ public:
 	int CalcZValueSprite(int p_index);
 	unsigned long LemmingFly(ViewData& p_viewData, int& p_frame);
 	unsigned short CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, unsigned short p_z);
-	unsigned short UseBalloon(int p_playerIndex);
+	void UseBalloon(int p_playerIndex);
 	virtual bool GetPauser();                                                        // vtable+0x04
 	virtual bool QuitYet();                                                          // vtable+0x2c
 	virtual int GetReturnState();                                                    // vtable+0x28
