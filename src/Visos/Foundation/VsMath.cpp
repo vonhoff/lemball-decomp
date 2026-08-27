@@ -44,7 +44,9 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2) {
 	int dx = abs(p_x1 - p_x2);
 	int dy = abs(p_y1 - p_y2);
-	return ((VsMath*) g_pSentinel)->SqRoot(dy * dy + dx * dx);
+	dx = dx * dx;
+	dy = dy * dy;
+	return ((VsMath*) g_pSentinel)->SqRoot(dy + dx);
 }
 
 // 68K 0x1060e9e6 CloseTo__F7AICOORD7AICOORD
