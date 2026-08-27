@@ -14,6 +14,10 @@ extern unsigned long g_dwSimulationTimestamp;
 extern unsigned long g_dwRemoteGameTick;
 extern unsigned long g_dwNetworkSimulationTimestamp;
 extern unsigned long g_dwLastRemoteTimestamp;
+extern unsigned long g_dwLastElapsedMilli;
+extern unsigned long g_dwGameTimeTick;
+extern unsigned long g_dwCurrentMilli;
+extern unsigned long g_dwPausedMilli;
 extern unsigned int g_dwClockEditMode;
 
 #endif

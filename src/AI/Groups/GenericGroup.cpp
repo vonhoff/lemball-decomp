@@ -1,5 +1,7 @@
 #include "GenericGroup.h"
 
+#include "../Navigation/AiDestinationList.h"
+
 GenericGroup::GenericGroup()
 {
 }
@@ -101,9 +103,33 @@ void GenericGroup::AddElementToGroup(GameObject* p_object)
 }
 
 // 68K 0x1060c776 RemoveElementFromGroup__13CGenericGroupFP11CGameObject
-// STUB: LEMBALL 0x0041e050
+// FUNCTION: LEMBALL 0x0041e050
 void GenericGroup::RemoveElementFromGroup(GameObject* p_object)
 {
+	int index = 0;
+	GameObject** element = m_elements;
+
+	do {
+		if (*element == p_object) {
+			if (index < 9) {
+				element = &m_elements[index];
+				int remaining = 9 - index;
+				index += remaining;
+				do {
+					GameObject* copy = element[1];
+					element++;
+					remaining--;
+					element[-1] = copy;
+				} while (remaining != 0);
+			}
+			m_elements[index] = 0;
+			m_elementCount--;
+			m_altered = 1;
+			return;
+		}
+		element++;
+		index++;
+	} while (index < 10);
 }
 
 // 68K 0x1060c814 ConfirmElementIsInGroup__13CGenericGroupFP11CGameObject
@@ -158,9 +184,19 @@ void GenericGroup::OverideExistingWaypoints(AiCoord p_coordinate)
 }
 
 // 68K 0x1060cd42 ClearExistingWaypoints__13CGenericGroupFv
-// STUB: LEMBALL 0x0041e3d0
+// FUNCTION: LEMBALL 0x0041e3d0
 void GenericGroup::ClearExistingWaypoints()
 {
+	GameObject* object;
+
+	m_destinationList->m_count = 0;
+	object = GetFirstElementInGroup();
+	if (object != 0) {
+		do {
+			object->ResetInstructions();
+			object = GetNextElementInGroup();
+		} while (object != 0);
+	}
 }
 
 // 68K 0x1060cdbc SetFormationIndex__13CGenericGroupFi

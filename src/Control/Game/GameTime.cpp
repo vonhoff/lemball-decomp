@@ -61,5 +61,17 @@ unsigned long g_dwNetworkSimulationTimestamp;
 // GLOBAL: LEMBALL 0x0049ce14
 unsigned long g_dwLastRemoteTimestamp;
 
+// GLOBAL: LEMBALL 0x0049ce18
+unsigned long g_dwLastElapsedMilli;
+
+// GLOBAL: LEMBALL 0x0049ce1c
+unsigned long g_dwGameTimeTick;
+
+// GLOBAL: LEMBALL 0x0049ce20
+unsigned long g_dwCurrentMilli;
+
+// GLOBAL: LEMBALL 0x0049ce24
+unsigned long g_dwPausedMilli;
+
 // GLOBAL: LEMBALL 0x0049ce28
 unsigned int g_dwClockEditMode;

@@ -59,9 +59,12 @@ bool PlayerNotFacingCursor(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x1061f6ce PlayerNotFacingTarget__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419ad0
+// FUNCTION: LEMBALL 0x00419ad0
 bool PlayerNotFacingTarget(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
+	if (p_arg1->IsRequestingFire() && p_arg1->FacingTarget() == 0) {
+		return 1;
+	}
 	return 0;
 }
 
@@ -73,9 +76,12 @@ bool PlayerRequestingFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x1061f78c PlayerWaitingToFire__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419b10
+// FUNCTION: LEMBALL 0x00419b10
 bool PlayerWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
+	if (p_arg1->IsRequestingFire() && p_arg1->m_actionDeadline > g_dwGameTick) {
+		return 1;
+	}
 	return 0;
 }
 
@@ -87,9 +93,12 @@ bool PlayerBored(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x1061f838 EnemyNotFacingTarget__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419b50
+// FUNCTION: LEMBALL 0x00419b50
 bool EnemyNotFacingTarget(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
+	if (p_arg1->IsRequestingFire() && p_arg1->FacingTarget() == 0) {
+		return 1;
+	}
 	return 0;
 }
 
@@ -101,9 +110,12 @@ bool EnemyRequestingFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x1061f8f4 EnemyWaitingToFire__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419b90
+// FUNCTION: LEMBALL 0x00419b90
 bool EnemyWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
+	if (p_arg1->IsRequestingFire() && p_arg1->m_actionDeadline > g_dwGameTick) {
+		return 1;
+	}
 	return 0;
 }
 

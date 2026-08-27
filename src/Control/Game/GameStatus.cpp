@@ -1,5 +1,16 @@
 #include "GameStatus.h"
 
+#include "../../Visos/Foundation/VsOStream.h"
+#include "../../Visos/Foundation/VsString.h"
+
+#include <string.h>
+
+#pragma intrinsic(strlen, strcpy, strcmp, memcpy)
+
+extern char g_szPasswordZeroes[9];
+extern char g_szUnlockPassword[11];
+extern char g_szPasswordCheatMessage[31];
+
 // 68K 0x107013de __ct__11CGameStatusFv
 // FUNCTION: LEMBALL 0x00406a90
 GameStatus::GameStatus()
@@ -29,10 +40,49 @@ GameStatus::GameStatus()
 }
 
 // 68K 0x10701440 JiggleLevelData__11CGameStatusFv
-// STUB: LEMBALL 0x00406ad0
+// FUNCTION: LEMBALL 0x00406ad0
 unsigned int GameStatus::JiggleLevelData()
 {
-	return 0;
+	unsigned int chunks[8];
+	unsigned int mixed[8];
+	unsigned int result = 0;
+	int* levels = m_maxLevels;
+	unsigned int* dest = chunks;
+
+	while (1) {
+		unsigned int* end = mixed;
+		unsigned int value;
+		unsigned int high;
+
+		if (dest >= end) {
+			break;
+		}
+		value = *levels;
+		dest = dest + 2;
+		high = value;
+		levels = levels + 1;
+		high = high & 0x38;
+		value = value & 7;
+		high = high >> 3;
+		dest[-2] = high;
+		dest[-1] = value;
+	}
+
+	{
+		int offset = 0;
+		do {
+			unsigned int perm;
+			unsigned int value;
+
+			result = result << 3;
+			perm = *(unsigned int*) ((char*) g_anPasswordPermutation + offset);
+			offset = offset + 4;
+			value = chunks[perm] ^ perm;
+			result = result | value;
+			*(unsigned int*) ((char*) mixed + offset - 4) = value;
+		} while (offset < 0x20);
+	}
+	return result;
 }
 
 // 68K 0x107014de UnJiggleLevelData__11CGameStatusFUl
@@ -49,17 +99,44 @@ unsigned int GameStatus::CalcCheckSum(unsigned int p_value)
 }
 
 // 68K 0x10701600 EncodePassword__11CGameStatusFv
-// STUB: LEMBALL 0x00406c00
+// FUNCTION: LEMBALL 0x00406c00
 char* GameStatus::EncodePassword()
 {
-	return 0;
+	char buffer[12];
+	unsigned int levelData = JiggleLevelData();
+	unsigned int checksum = CalcCheckSum(levelData);
+	VsLtoa((checksum << 24) | levelData, buffer, 10);
+	strcpy(m_password, g_szPasswordZeroes);
+	strcpy(m_password + 10 - strlen(buffer), buffer);
+	return m_password;
 }
 
 // 68K 0x107016a0 DecodePassword__11CGameStatusFPc
-// STUB: LEMBALL 0x00406ca0
+// FUNCTION: LEMBALL 0x00406ca0
 bool GameStatus::DecodePassword(char* p_password)
 {
-	return 0;
+	strcpy(m_password, p_password);
+	if (strcmp(m_password, g_szUnlockPassword) == 0) {
+		*g_pDebugOutput << g_szPasswordCheatMessage;
+		int i = 0;
+		do {
+			g_pGameStatus->SetMaxLevel(i, 0x40);
+			i++;
+		} while (i < 4);
+		return 1;
+	}
+
+	unsigned int value = StringToDWord();
+	if (value == 0) {
+		return 0;
+	}
+	unsigned int checksum = CalcCheckSum(value);
+	if (((value & 0x1f000000) >> 24) != checksum) {
+		return 0;
+	}
+	value &= 0xffffff;
+	UnJiggleLevelData(value);
+	return 1;
 }
 
 // 68K 0x107017b8 StringToDWord__11CGameStatusFv
@@ -251,3 +328,12 @@ GameStatus* g_pGameStatus = 0;
 
 // GLOBAL: LEMBALL 0x0049cb70
 int g_anPasswordPermutation[8] = {2, 0, 7, 4, 6, 1, 5, 3};
+
+// GLOBAL: LEMBALL 0x0049cb90
+char g_szPasswordZeroes[9] = "00000000";
+
+// GLOBAL: LEMBALL 0x0049cb9c
+char g_szUnlockPassword[11] = "9913454278";
+
+// GLOBAL: LEMBALL 0x0049cba8
+char g_szPasswordCheatMessage[31] = "Oh, oh, someones cheating !!!\n";

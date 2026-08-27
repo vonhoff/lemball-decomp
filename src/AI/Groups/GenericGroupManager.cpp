@@ -147,9 +147,15 @@ void GenericGroupManager::CreateNewGroup(unsigned short p_count, unsigned short*
 }
 
 // 68K 0x1060d93e AddNewGroup__20CGenericGroupManagerFP13CGenericGroup
-// STUB: LEMBALL 0x0041ec80
+// FUNCTION: LEMBALL 0x0041ec80
 void GenericGroupManager::AddNewGroup(GenericGroup* p_group)
 {
+	int count = m_groupCount;
+
+	if (count < 0x28) {
+		m_groups[count] = p_group;
+		m_groupCount = m_groupCount + 1;
+	}
 }
 
 // 68K 0x1060d998 CreateNewGroup__20CGenericGroupManagerFv
