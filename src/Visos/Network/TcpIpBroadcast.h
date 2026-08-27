@@ -29,4 +29,9 @@ private:
 	undefined m_platformComposite[0x44]; // 0x128
 };
 
+// SYNTHETIC: LEMBALL 0x00471f60
+// TcpIpBroadcast::`scalar deleting destructor'
+
+
 #endif
+

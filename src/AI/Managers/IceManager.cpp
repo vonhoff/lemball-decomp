@@ -62,8 +62,7 @@ void IceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char 
 }
 
 // 68K 0x106125fe __dt__11CIceManagerFv
-// SYNTHETIC: LEMBALL 0x0042e4d0
-// IceManager::`scalar deleting destructor'
 IceManager::~IceManager()
 {
 }
+

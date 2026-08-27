@@ -21,4 +21,9 @@ private:
 	undefined4 m_reserved0c; // 0x0c
 };
 
+// SYNTHETIC: LEMBALL 0x00467bb0
+// ClipRect::`scalar deleting destructor'
+
+
 #endif
+

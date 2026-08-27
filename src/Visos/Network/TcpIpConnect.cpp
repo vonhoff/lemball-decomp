@@ -40,8 +40,6 @@ int TcpIpConnect::Process()
 }
 
 // 68K 0x1010e6a6 __dt__13CTCPIPConnectFv
-// SYNTHETIC: LEMBALL 0x00471b10
-// TcpIpConnect::`scalar deleting destructor'
 TcpIpConnect::~TcpIpConnect()
 {
 }
@@ -57,3 +55,4 @@ void TcpIpConnect::Closed(unsigned char p_notifyPeer)
 void TcpIpConnect::ReceiveAcknowledgement()
 {
 }
+

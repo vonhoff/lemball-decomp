@@ -18,4 +18,9 @@ private:
 	PlayerLemming** m_networkLemmings; // 0x30
 };
 
+// SYNTHETIC: LEMBALL 0x00453120
+// PbNetworkGame::`scalar deleting destructor'
+
+
 #endif
+

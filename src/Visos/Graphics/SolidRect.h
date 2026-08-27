@@ -21,4 +21,9 @@ private:
 	unsigned int m_color; // 0x0c
 };
 
+// SYNTHETIC: LEMBALL 0x00432a90
+// SolidRect::`scalar deleting destructor'
+
+
 #endif
+

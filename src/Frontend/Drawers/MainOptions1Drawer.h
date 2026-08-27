@@ -30,4 +30,9 @@ private:
 	unsigned int m_navigationButton;       // 0x3b8
 };
 
+// SYNTHETIC: LEMBALL 0x00448a70
+// MainOptions1Drawer::`scalar deleting destructor'
+
+
 #endif
+

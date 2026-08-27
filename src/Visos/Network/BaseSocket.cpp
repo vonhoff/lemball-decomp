@@ -38,8 +38,7 @@ void BaseSocket::GetData()
 }
 
 // 68K 0x1010619c __dt__11CBaseSocketFv
-// SYNTHETIC: LEMBALL 0x00462900
-// BaseSocket::`scalar deleting destructor'
 BaseSocket::~BaseSocket()
 {
 }
+

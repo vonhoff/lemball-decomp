@@ -14,4 +14,9 @@ public:
 	virtual ~ResBin();      // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0045ec70
+// ResBin::`scalar deleting destructor'
+
+
 #endif
+

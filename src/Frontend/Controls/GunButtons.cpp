@@ -50,11 +50,10 @@ void GunButtons::UnLoadFaces()
 }
 
 // 68K 0x10802b54 __dt__11CGunButtonsFv
-// SYNTHETIC: LEMBALL 0x0044e620
-// GunButtons::`scalar deleting destructor'
 GunButtons::~GunButtons()
 {
 }
 
 // GLOBAL: LEMBALL 0x0049fa68
 int g_nGunButtonsRedrawPending = 0;
+

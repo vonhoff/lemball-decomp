@@ -18,4 +18,9 @@ private:
 	eUserActionStages m_stage; // 0x30
 };
 
+// SYNTHETIC: LEMBALL 0x00446f20
+// UserActionMessage::`scalar deleting destructor'
+
+
 #endif
+

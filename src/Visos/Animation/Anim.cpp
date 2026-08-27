@@ -19,8 +19,7 @@ void Anim::Render(Gdi* p_gdi)
 }
 
 // 68K 0x10101896 __dt__5CAnimFv
-// SYNTHETIC: LEMBALL 0x004452e0
-// Anim::`scalar deleting destructor'
 Anim::~Anim()
 {
 }
+

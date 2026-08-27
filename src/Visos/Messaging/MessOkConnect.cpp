@@ -34,11 +34,10 @@ void MessOkConnect::AddData()
 }
 
 // 68K 0x10117108 __dt__14CMessOKConnectFv
-// SYNTHETIC: LEMBALL 0x00462870
-// MessOkConnect::`scalar deleting destructor'
 MessOkConnect::~MessOkConnect()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a1e58
 MessOkConnect* g_pMessOKConnect = 0;
+

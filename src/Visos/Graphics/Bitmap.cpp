@@ -11,8 +11,6 @@ Bitmap::Bitmap()
 }
 
 // 68K 0x10100a30 __dt__7CBitmapFv
-// SYNTHETIC: LEMBALL 0x004396e0
-// Bitmap::`scalar deleting destructor'
 Bitmap::~Bitmap()
 {
 }
@@ -30,3 +28,4 @@ void Bitmap::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit(this);
 }
+

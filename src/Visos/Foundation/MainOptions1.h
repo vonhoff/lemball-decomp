@@ -11,4 +11,9 @@ public:
 	virtual ~MainOptions1(); // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00407f70
+// MainOptions1::`scalar deleting destructor'
+
+
 #endif
+

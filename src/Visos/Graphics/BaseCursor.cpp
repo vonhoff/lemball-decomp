@@ -69,8 +69,7 @@ void BaseCursor::RefreshPos()
 }
 
 // 68K 0x10205b80 __dt__11CBaseCursorFv
-// SYNTHETIC: LEMBALL 0x0046ba30
-// BaseCursor::`scalar deleting destructor'
 BaseCursor::~BaseCursor()
 {
 }
+

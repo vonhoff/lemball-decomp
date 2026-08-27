@@ -28,4 +28,9 @@ private:
 	undefined m_storage[0x1b8]; // 0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0047bf40
+// FileConnect::`scalar deleting destructor'
+
+
 #endif
+

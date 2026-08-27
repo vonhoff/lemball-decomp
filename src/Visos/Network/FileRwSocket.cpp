@@ -32,8 +32,7 @@ void FileRwSocket::ReceiveAcknowledgement()
 }
 
 // 68K 0x1010681e __dt__13CFileRWSocketFv
-// SYNTHETIC: LEMBALL 0x0047be50
-// FileRwSocket::`scalar deleting destructor'
 FileRwSocket::~FileRwSocket()
 {
 }
+

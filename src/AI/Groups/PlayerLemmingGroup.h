@@ -30,4 +30,9 @@ private:
 	GameObject* m_useObject; // 0x170
 };
 
+// SYNTHETIC: LEMBALL 0x00414c80
+// PlayerLemmingGroup::`scalar deleting destructor'
+
+
 #endif
+

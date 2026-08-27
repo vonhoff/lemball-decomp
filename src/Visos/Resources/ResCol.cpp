@@ -29,8 +29,7 @@ void ResCol::OnLoad()
 	m_colour = *(unsigned int*) m_data;
 }
 
-// SYNTHETIC: LEMBALL 0x0045ea10
-// ResCol::`scalar deleting destructor'
 ResCol::~ResCol()
 {
 }
+

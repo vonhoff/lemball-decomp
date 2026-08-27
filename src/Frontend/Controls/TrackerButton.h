@@ -19,4 +19,9 @@ private:
 	TrackWindow* m_trackWindow; // 0x134
 };
 
+// SYNTHETIC: LEMBALL 0x0044f030
+// TrackerButton::`scalar deleting destructor'
+
+
 #endif
+

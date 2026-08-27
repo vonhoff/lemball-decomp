@@ -19,8 +19,7 @@ void PbNetworkGame::GetData()
 }
 
 // 68K 0x10118234 __dt__14CPBNetworkGameFv
-// SYNTHETIC: LEMBALL 0x00453120
-// PbNetworkGame::`scalar deleting destructor'
 PbNetworkGame::~PbNetworkGame()
 {
 }
+

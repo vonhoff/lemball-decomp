@@ -39,8 +39,7 @@ void Trampoline::DoActivate()
 }
 
 // 68K 0x106205d0 __dt__11CTrampolineFv
-// SYNTHETIC: LEMBALL 0x0042ba40
-// Trampoline::`scalar deleting destructor'
 Trampoline::~Trampoline()
 {
 }
+

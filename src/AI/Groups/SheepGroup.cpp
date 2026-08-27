@@ -35,8 +35,7 @@ bool SheepGroup::CheckAgainstCatapults()
 }
 
 // 68K 0x1011b3b6 __dt__11CSheepGroupFv
-// SYNTHETIC: LEMBALL 0x0041f960
-// SheepGroup::`scalar deleting destructor'
 SheepGroup::~SheepGroup()
 {
 }
+

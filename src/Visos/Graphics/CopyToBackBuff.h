@@ -22,4 +22,9 @@ private:
 	short m_field0e; // 0x0e
 };
 
+// SYNTHETIC: LEMBALL 0x004396b0
+// CopyToBackBuff::`scalar deleting destructor'
+
+
 #endif
+

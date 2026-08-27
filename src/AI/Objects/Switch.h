@@ -35,4 +35,9 @@ private:
 	SwitchEntry m_entries[32];   // 0x160
 };
 
+// SYNTHETIC: LEMBALL 0x0041dd70
+// Switch::`scalar deleting destructor'
+
+
 #endif
+

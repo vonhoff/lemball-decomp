@@ -44,8 +44,7 @@ int CollectableManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x106056a4 __dt__19CCollectableManagerFv
-// SYNTHETIC: LEMBALL 0x00422f70
-// CollectableManager::`scalar deleting destructor'
 CollectableManager::~CollectableManager()
 {
 }
+

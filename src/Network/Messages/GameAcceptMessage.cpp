@@ -7,8 +7,7 @@ GameAcceptMessage::GameAcceptMessage() : GameFlaggedMessage(7)
 }
 
 // 68K 0x1011928a __dt__18CGameAcceptMessageFv
-// SYNTHETIC: LEMBALL 0x00452ef0
-// GameAcceptMessage::`scalar deleting destructor'
 GameAcceptMessage::~GameAcceptMessage()
 {
 }
+

@@ -163,8 +163,7 @@ int PlayerLemmingGroupManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1060f890 __dt__26CPlayerLemmingGroupManagerFv
-// SYNTHETIC: LEMBALL 0x00419930
-// PlayerLemmingGroupManager::`scalar deleting destructor'
 PlayerLemmingGroupManager::~PlayerLemmingGroupManager()
 {
 }
+

@@ -63,4 +63,9 @@ private:
 	unsigned int m_bodySize;        // 0x74
 };
 
+// SYNTHETIC: LEMBALL 0x0045e700
+// ResBaseList::`scalar deleting destructor'
+
+
 #endif
+

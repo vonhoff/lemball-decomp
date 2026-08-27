@@ -15,4 +15,9 @@ private:
 	unsigned int m_active; // 0x124
 };
 
+// SYNTHETIC: LEMBALL 0x0042a7a0
+// TheBalloonPost::`scalar deleting destructor'
+
+
 #endif
+

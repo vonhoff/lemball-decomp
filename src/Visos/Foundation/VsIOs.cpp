@@ -5,8 +5,6 @@ VsIOs::VsIOs()
 }
 
 // 68K 0x10213d20 __dt__6CVSIOsFv
-// SYNTHETIC: LEMBALL 0x00407e10
-// VsIOs::`scalar deleting destructor'
 VsIOs::~VsIOs()
 {
 }
@@ -23,3 +21,4 @@ char g_szCurrentDirectory[256];
 
 // GLOBAL: LEMBALL 0x004a9ff8
 char g_szSourceDiskPath[256];
+

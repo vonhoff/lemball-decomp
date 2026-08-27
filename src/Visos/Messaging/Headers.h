@@ -20,4 +20,9 @@ private:
 	int m_currentIndex;          // 0x38
 };
 
+// SYNTHETIC: LEMBALL 0x0047b7d0
+// Headers::`scalar deleting destructor'
+
+
 #endif
+

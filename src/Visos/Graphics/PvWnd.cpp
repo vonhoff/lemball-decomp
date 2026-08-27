@@ -1,16 +1,17 @@
 #include "PvWnd.h"
 
 // 68K 0x101049c0 GetSizeStatus__6CPVWndFv
-// STUB: LEMBALL 0x004323b0
+// FUNCTION: LEMBALL 0x004323b0
 unsigned int PvWnd::GetSizeStatus()
 {
-	return 0;
+	return m_sizeStatus;
 }
 
 // 68K 0x101049ec SetSizeStatus__6CPVWndF13wndSizeStatus
-// STUB: LEMBALL 0x004323c0
+// FUNCTION: LEMBALL 0x004323c0
 void PvWnd::SetSizeStatus(unsigned int p_status)
 {
+	m_sizeStatus = p_status;
 }
 
 // 68K 0x10104a28 AddChild__6CPVWndFP6CPVWnd

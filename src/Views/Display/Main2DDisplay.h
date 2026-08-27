@@ -62,4 +62,9 @@ private:
 	short m_highHeight;              // 0xe2
 };
 
+// SYNTHETIC: LEMBALL 0x004322e0
+// Main2DDisplay::`scalar deleting destructor'
+
+
 #endif
+

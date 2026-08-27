@@ -34,4 +34,9 @@ private:
 	ResZrle* m_animationEntries; // 0x78
 };
 
+// SYNTHETIC: LEMBALL 0x0045e7a0
+// ResAnim::`scalar deleting destructor'
+
+
 #endif
+

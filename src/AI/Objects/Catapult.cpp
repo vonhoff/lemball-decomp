@@ -8,8 +8,6 @@ int Catapult::Usage()
 }
 
 // 68K 0x1011a996 __dt__9CCatapultFv
-// SYNTHETIC: LEMBALL 0x0041c400
-// Catapult::`scalar deleting destructor'
 Catapult::~Catapult()
 {
 }
@@ -46,3 +44,4 @@ AiCoord Catapult::ActivatePosition()
 {
 	return *(AiCoord*) 0;
 }
+

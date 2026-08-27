@@ -138,6 +138,20 @@ reccmp-vtable --target LEMBALL
 reccmp-datacmp --target LEMBALL
 ```
 
+### Next targets (function-count batches)
+
+Needs `build-msvc400/report.json` (from `python tools/report.py`). Ranks work that raises 100% function count: tiny STUBs, clone groups, near-miss FUNCTION grind, units with few leftovers.
+
+```powershell
+python tools/targets.py
+python tools/targets.py --refresh
+python tools/targets.py --kind tiny --max-size 5
+python tools/targets.py --kind near
+python tools/targets.py --kind unit
+python tools/targets.py --kind clone
+python tools/targets.py --kind tiny --addrs
+```
+
 ## Agent cost rules
 
 - Default grind: `tools\check.py` score-only. Do not paste full build logs or full verbose diffs.

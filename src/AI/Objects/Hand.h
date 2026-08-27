@@ -23,4 +23,9 @@ private:
 	GameObject* m_activator;  // 0x140
 };
 
+// SYNTHETIC: LEMBALL 0x00428800
+// Hand::`vector deleting destructor'
+
+
 #endif
+

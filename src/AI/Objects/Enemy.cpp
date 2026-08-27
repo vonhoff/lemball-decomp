@@ -1,5 +1,7 @@
 #include "Enemy.h"
 
+#include "../../Control/Game/Game.h"
+
 // 68K 0x10607884 __ct__6CEnemyFP3CAIiiii
 // STUB: LEMBALL 0x0041fba0
 Enemy::Enemy(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
@@ -65,21 +67,28 @@ void Enemy::EnemyActionPatrol(EnemyLemmingUnion* p_data)
 }
 
 // 68K 0x1060807e EnemyAction_TURNANDFIRERAPID__6CEnemyFP18tEnemyLemmingUnion
-// STUB: LEMBALL 0x004201a0
+// FUNCTION: LEMBALL 0x004201a0
 void Enemy::EnemyActionTurnAndFireRapid(EnemyLemmingUnion* p_data)
 {
+	RequestFire(0x64);
 }
 
 // 68K 0x106080d4 EnemyAction_TURNANDFIRESLOW__6CEnemyFP18tEnemyLemmingUnion
-// STUB: LEMBALL 0x004201b0
+// FUNCTION: LEMBALL 0x004201b0
 void Enemy::EnemyActionTurnAndFireSlow(EnemyLemmingUnion* p_data)
 {
+	RequestFire(0x320);
 }
 
 // 68K 0x10608128 EnemyAction_TURNANDFIRERANDOM__6CEnemyFP18tEnemyLemmingUnion
-// STUB: LEMBALL 0x004201c0
+// FUNCTION: LEMBALL 0x004201c0
 void Enemy::EnemyActionTurnAndFireRandom(EnemyLemmingUnion* p_data)
 {
+	int seed = *g_pSentinel;
+	seed = seed * 41 + 0x1f;
+	seed = seed & 0x7fffff;
+	*g_pSentinel = seed;
+	RequestFire(seed % 1000 + 0x96);
 }
 
 // 68K 0x106081b0 CheckRadius__6CEnemyFi
@@ -103,10 +112,10 @@ void Enemy::TurnToFaceTarget()
 }
 
 // 68K 0x1060846a IsRequestingFire__6CEnemyFv
-// STUB: LEMBALL 0x004203d0
+// FUNCTION: LEMBALL 0x004203d0
 bool Enemy::IsRequestingFire()
 {
-	return 0;
+	return m_fireState == 2;
 }
 
 // 68K 0x106084a0 RequestFire__6CEnemyFi
@@ -123,9 +132,10 @@ bool Enemy::Fire()
 }
 
 // 68K 0x106085c0 StartFiring__6CEnemyFv
-// STUB: LEMBALL 0x004204d0
+// FUNCTION: LEMBALL 0x004204d0
 void Enemy::StartFiring()
 {
+	m_actionDeadline = g_dwGameTick + 10;
 }
 
 // 68K 0x106085f2 EndFiring__6CEnemyFv
@@ -167,15 +177,14 @@ void Enemy::GetHit()
 }
 
 // 68K 0x10119cdc IsHit__6CEnemyFv
-// STUB: LEMBALL 0x00420aa0
+// FUNCTION: LEMBALL 0x00420aa0
 int Enemy::IsHit()
 {
-	return 0;
+	return m_hit;
 }
 
 // 68K 0x10607a9e __dt__6CEnemyFv
-// SYNTHETIC: LEMBALL 0x00420ab0
-// Enemy::`scalar deleting destructor'
 Enemy::~Enemy()
 {
 }
+

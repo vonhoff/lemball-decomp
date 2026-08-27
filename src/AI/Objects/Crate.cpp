@@ -8,8 +8,6 @@ int Crate::Usage()
 }
 
 // 68K 0x1011aa7e __dt__6CCrateFv
-// SYNTHETIC: LEMBALL 0x0041c540
-// Crate::`scalar deleting destructor'
 Crate::~Crate()
 {
 }
@@ -52,3 +50,4 @@ AiCoord Crate::ActivatePosition()
 {
 	return *(AiCoord*) 0;
 }
+

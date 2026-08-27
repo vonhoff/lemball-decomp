@@ -3,7 +3,7 @@
 
 #include "../../Common.h"
 
-void ClockEditMode(unsigned char p_enabled);
+void ClockEditMode(unsigned int p_enabled);
 void ResetGameTimes();
 void SetGameTime();
 void SetRemoteGameTimeReal(unsigned long p_timestamp);
@@ -13,5 +13,7 @@ void DemoQuit();
 extern unsigned long g_dwSimulationTimestamp;
 extern unsigned long g_dwRemoteGameTick;
 extern unsigned long g_dwNetworkSimulationTimestamp;
+extern unsigned long g_dwLastRemoteTimestamp;
+extern unsigned int g_dwClockEditMode;
 
 #endif

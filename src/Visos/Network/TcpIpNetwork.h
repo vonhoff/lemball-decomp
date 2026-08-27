@@ -36,4 +36,9 @@ extern char* g_szBroadcastPeerName;
 extern unsigned int g_broadcastPayloadLength;
 extern unsigned short g_broadcastPort;
 extern int g_lastNetworkError;
+
+// SYNTHETIC: LEMBALL 0x00471a10
+// TcpIpNetwork::`scalar deleting destructor'
+
 #endif
+

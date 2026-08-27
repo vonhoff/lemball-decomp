@@ -12,4 +12,9 @@ public:
 	~ObjectPosMess();
 };
 
+// SYNTHETIC: LEMBALL 0x00417c70
+// ObjectPosMess::`scalar deleting destructor'
+
+
 #endif
+

@@ -44,8 +44,7 @@ void PaintGunManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned 
 }
 
 // 68K 0x1061ba6c __dt__16CPaintGunManagerFv
-// SYNTHETIC: LEMBALL 0x0042c9b0
-// PaintGunManager::`scalar deleting destructor'
 PaintGunManager::~PaintGunManager()
 {
 }
+

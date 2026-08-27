@@ -50,8 +50,6 @@ void FileConnect::Process()
 }
 
 // 68K 0x10209a58 __dt__12CFileConnectFv
-// SYNTHETIC: LEMBALL 0x0047bf40
-// FileConnect::`scalar deleting destructor'
 FileConnect::~FileConnect()
 {
 }
@@ -67,3 +65,4 @@ void FileConnect::Closed(unsigned char p_notifyPeer)
 void FileConnect::ReceiveAcknowledgement()
 {
 }
+

@@ -22,8 +22,7 @@ void ResTune::SetType()
 	m_chunkType = kChunkTune;
 }
 
-// SYNTHETIC: LEMBALL 0x0045ec10
-// ResTune::`scalar deleting destructor'
 ResTune::~ResTune()
 {
 }
+

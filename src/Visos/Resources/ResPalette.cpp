@@ -35,8 +35,7 @@ void ResPalette::SetHeader()
 }
 
 // 68K 0x10100f5c __dt__11CResPALETTEFv
-// SYNTHETIC: LEMBALL 0x0045ea50
-// ResPalette::`scalar deleting destructor'
 ResPalette::~ResPalette()
 {
 }
+

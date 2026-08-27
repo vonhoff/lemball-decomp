@@ -22,4 +22,9 @@ private:
 	short m_sourceY; // 0x0e
 };
 
+// SYNTHETIC: LEMBALL 0x004396e0
+// Bitmap::`scalar deleting destructor'
+
+
 #endif
+

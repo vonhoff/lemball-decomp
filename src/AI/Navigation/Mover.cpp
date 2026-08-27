@@ -64,9 +64,10 @@ bool Mover::Process()
 }
 
 // 68K 0x10617b8e Switch__6CMoverFv
-// STUB: LEMBALL 0x0042eeb0
+// FUNCTION: LEMBALL 0x0042eeb0
 void Mover::Switch()
 {
+	m_switchRequested = 1;
 }
 
 // 68K 0x10617bb4 IsOn__6CMoverFR7AICOORD
@@ -102,8 +103,7 @@ void Mover::DoActivate()
 }
 
 // 68K 0x106172b6 __dt__6CMoverFv
-// SYNTHETIC: LEMBALL 0x0042fbd0
-// Mover::`vector deleting destructor'
 Mover::~Mover()
 {
 }
+

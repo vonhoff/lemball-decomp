@@ -39,8 +39,7 @@ void ResBitmap::SetType()
 }
 
 // 68K 0x101162f6 __dt__10CResBITMAPFv
-// SYNTHETIC: LEMBALL 0x0045eb80
-// ResBitmap::`scalar deleting destructor'
 ResBitmap::~ResBitmap()
 {
 }
+

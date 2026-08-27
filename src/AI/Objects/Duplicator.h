@@ -26,4 +26,9 @@ private:
 	GameObject* m_duplicatedObject; // 0x140
 };
 
+// SYNTHETIC: LEMBALL 0x00427aa0
+// Duplicator::`scalar deleting destructor'
+
+
 #endif
+

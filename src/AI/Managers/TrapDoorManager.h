@@ -22,4 +22,9 @@ private:
 	int m_count;                // 0x50
 };
 
+// SYNTHETIC: LEMBALL 0x0040ced0
+// TrapDoorManager::`scalar deleting destructor'
+
+
 #endif
+

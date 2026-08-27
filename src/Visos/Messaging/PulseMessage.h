@@ -14,4 +14,9 @@ public:
 };
 
 extern PulseMessage* g_pPulseMessage;
+
+// SYNTHETIC: LEMBALL 0x00462b10
+// PulseMessage::`scalar deleting destructor'
+
 #endif
+

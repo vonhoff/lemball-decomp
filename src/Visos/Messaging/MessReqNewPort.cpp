@@ -24,11 +24,10 @@ void MessReqNewPort::AddData()
 }
 
 // 68K 0x10117168 __dt__15CMessReqNewPortFv
-// SYNTHETIC: LEMBALL 0x00462850
-// MessReqNewPort::`scalar deleting destructor'
 MessReqNewPort::~MessReqNewPort()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a1e54
 MessReqNewPort* g_pMessReqNewPort = 0;
+

@@ -26,8 +26,7 @@ void UserActionMessage::GetData()
 }
 
 // 68K 0x1011bf5e __dt__18CUserActionMessageFv
-// SYNTHETIC: LEMBALL 0x00446f20
-// UserActionMessage::`scalar deleting destructor'
 UserActionMessage::~UserActionMessage()
 {
 }
+

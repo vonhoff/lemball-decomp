@@ -23,4 +23,9 @@ private:
 	unsigned int m_pressedInside; // 0x138
 };
 
+// SYNTHETIC: LEMBALL 0x004438f0
+// PanelPauseButton::`scalar deleting destructor'
+
+
 #endif
+

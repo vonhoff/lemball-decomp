@@ -31,4 +31,9 @@ private:
 	int m_managerIndex;            // 0x14c
 };
 
+// SYNTHETIC: LEMBALL 0x00424c60
+// Mine::`scalar deleting destructor'
+
+
 #endif
+

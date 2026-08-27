@@ -75,8 +75,7 @@ void ResAnim::UnLoadResources(unsigned int p_index, unsigned int p_force)
 }
 
 // 68K 0x1011608a __dt__8CResANIMFv
-// SYNTHETIC: LEMBALL 0x0045e7a0
-// ResAnim::`scalar deleting destructor'
 ResAnim::~ResAnim()
 {
 }
+

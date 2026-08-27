@@ -44,8 +44,7 @@ void IntroAnimDrawer::Processing()
 }
 
 // 68K 0x10805dda __dt__16CIntroAnimDrawerFv
-// SYNTHETIC: LEMBALL 0x004479a0
-// IntroAnimDrawer::`scalar deleting destructor'
 IntroAnimDrawer::~IntroAnimDrawer()
 {
 }
+

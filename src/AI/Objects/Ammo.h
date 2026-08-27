@@ -21,4 +21,9 @@ private:
 	unsigned short m_ammo; // 0x144
 };
 
+// SYNTHETIC: LEMBALL 0x0041c440
+// Ammo::`scalar deleting destructor'
+
+
 #endif
+

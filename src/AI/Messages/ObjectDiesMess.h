@@ -12,4 +12,9 @@ public:
 	~ObjectDiesMess();
 };
 
+// SYNTHETIC: LEMBALL 0x00417cd0
+// ObjectDiesMess::`scalar deleting destructor'
+
+
 #endif
+

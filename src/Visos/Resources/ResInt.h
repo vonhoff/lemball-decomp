@@ -24,4 +24,9 @@ private:
 	int m_value; // 0x48
 };
 
+// SYNTHETIC: LEMBALL 0x0045e930
+// ResInt::`scalar deleting destructor'
+
+
 #endif
+

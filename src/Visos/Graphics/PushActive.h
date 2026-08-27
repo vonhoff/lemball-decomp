@@ -17,4 +17,9 @@ private:
 	unsigned int m_activeMarker; // 0x04
 };
 
+// SYNTHETIC: LEMBALL 0x004397a0
+// PushActive::`scalar deleting destructor'
+
+
 #endif
+

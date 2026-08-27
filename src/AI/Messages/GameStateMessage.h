@@ -20,4 +20,9 @@ private:
 	unsigned long m_score;     // 0x38
 };
 
+// SYNTHETIC: LEMBALL 0x00413df0
+// GameStateMessage::`scalar deleting destructor'
+
+
 #endif
+

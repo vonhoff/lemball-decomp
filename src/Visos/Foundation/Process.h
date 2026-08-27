@@ -14,4 +14,9 @@ private:
 	int m_processState; // 0x08
 };
 
+// SYNTHETIC: LEMBALL 0x00407ef0
+// Process::`scalar deleting destructor'
+
+
 #endif
+

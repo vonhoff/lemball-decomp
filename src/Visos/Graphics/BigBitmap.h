@@ -21,4 +21,9 @@ private:
 	short m_height;          // 0x0e
 };
 
+// SYNTHETIC: LEMBALL 0x00439620
+// BigBitmap::`scalar deleting destructor'
+
+
 #endif
+

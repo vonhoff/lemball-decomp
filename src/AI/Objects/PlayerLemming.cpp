@@ -911,6 +911,3 @@ int PlayerLemming::QOnBalloon()
 	return m_balloonPostActive;
 }
 
-// 68K 0x1061c15c __dt__14CPlayerLemmingFv
-// SYNTHETIC: LEMBALL 0x00410b20
-// PlayerLemming::`scalar deleting destructor'

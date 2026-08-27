@@ -7,8 +7,7 @@ GameRejectMessage::GameRejectMessage() : GameFlaggedMessage(6)
 }
 
 // 68K 0x10119224 __dt__18CGameRejectMessageFv
-// SYNTHETIC: LEMBALL 0x00452ec0
-// GameRejectMessage::`scalar deleting destructor'
 GameRejectMessage::~GameRejectMessage()
 {
 }
+

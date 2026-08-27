@@ -18,4 +18,9 @@ private:
 };
 
 extern MessReqNewPort* g_pMessReqNewPort;
+
+// SYNTHETIC: LEMBALL 0x00462850
+// MessReqNewPort::`scalar deleting destructor'
+
 #endif
+

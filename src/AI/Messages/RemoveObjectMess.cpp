@@ -8,8 +8,7 @@ RemoveObjectMess::RemoveObjectMess()
 }
 
 // 68K 0x10118668 __dt__17CRemoveObjectMessFv
-// SYNTHETIC: LEMBALL 0x00417c40
-// RemoveObjectMess::`scalar deleting destructor'
 RemoveObjectMess::~RemoveObjectMess()
 {
 }
+

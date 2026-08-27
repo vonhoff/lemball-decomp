@@ -24,4 +24,9 @@ private:
 	BaseQueue* m_queue; // 0x24
 };
 
+// SYNTHETIC: LEMBALL 0x00414f00
+// AiCursor::`scalar deleting destructor'
+
+
 #endif
+

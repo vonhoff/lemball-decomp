@@ -51,8 +51,7 @@ void Rocket::GetViewData(ViewData& p_viewData)
 }
 
 // 68K 0x1061d972 __dt__7CRocketFv
-// SYNTHETIC: LEMBALL 0x00427520
-// Rocket::`scalar deleting destructor'
 Rocket::~Rocket()
 {
 }
+

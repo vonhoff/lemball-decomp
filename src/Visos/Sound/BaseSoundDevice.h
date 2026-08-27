@@ -50,4 +50,9 @@ public:
 	BaseSoundDevice();
 };
 
+// SYNTHETIC: LEMBALL 0x0047fa90
+// BaseSoundDevice::`scalar deleting destructor'
+
+
 #endif
+

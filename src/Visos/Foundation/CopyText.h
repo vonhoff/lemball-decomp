@@ -46,4 +46,9 @@ private:
 	unsigned int m_capacity; // 0x48
 };
 
+// SYNTHETIC: LEMBALL 0x0046a220
+// CopyText::`scalar deleting destructor'
+
+
 #endif
+

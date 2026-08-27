@@ -15,4 +15,9 @@ protected:
 	unsigned char* m_data; // 0x04
 };
 
+// SYNTHETIC: LEMBALL 0x004629e0
+// BasePacket::`scalar deleting destructor'
+
+
 #endif
+

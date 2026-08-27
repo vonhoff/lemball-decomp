@@ -19,4 +19,9 @@ private:
 	unsigned int m_toggled; // 0x130
 };
 
+// SYNTHETIC: LEMBALL 0x004438b0
+// ToggleButton::`scalar deleting destructor'
+
+
 #endif
+

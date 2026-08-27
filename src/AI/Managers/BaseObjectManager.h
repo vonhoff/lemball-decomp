@@ -23,4 +23,9 @@ private:
 	int m_transportId; // 0x2c
 };
 
+// SYNTHETIC: LEMBALL 0x0040aba0
+// BaseObjectManager::`scalar deleting destructor'
+
+
 #endif
+

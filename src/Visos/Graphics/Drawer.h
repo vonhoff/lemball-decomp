@@ -19,4 +19,9 @@ public:
 	virtual ~Drawer();                         // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00439400
+// Drawer::`scalar deleting destructor'
+
+
 #endif
+

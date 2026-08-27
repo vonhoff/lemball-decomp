@@ -22,4 +22,9 @@ private:
 	int m_relocationZ;      // 0x140
 };
 
+// SYNTHETIC: LEMBALL 0x0042ba40
+// Trampoline::`scalar deleting destructor'
+
+
 #endif
+

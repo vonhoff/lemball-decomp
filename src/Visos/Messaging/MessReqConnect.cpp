@@ -41,11 +41,10 @@ void MessReqConnect::AddData()
 }
 
 // 68K 0x101060f4 __dt__15CMessReqConnectFv
-// SYNTHETIC: LEMBALL 0x00462830
-// MessReqConnect::`scalar deleting destructor'
 MessReqConnect::~MessReqConnect()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a1e50
 MessReqConnect* g_pMessReqConnect = 0;
+

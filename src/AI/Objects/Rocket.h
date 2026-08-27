@@ -24,4 +24,9 @@ private:
 	int m_launchBaseZ;      // 0x140
 };
 
+// SYNTHETIC: LEMBALL 0x00427520
+// Rocket::`scalar deleting destructor'
+
+
 #endif
+

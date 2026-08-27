@@ -43,4 +43,9 @@ private:
 };
 
 extern BaseQueue* g_pMasterInputQueue;
+
+// SYNTHETIC: LEMBALL 0x00463940
+// BaseQueue::`scalar deleting destructor'
+
 #endif
+

@@ -37,4 +37,9 @@ private:
 	int m_contextId;            // 0x130
 };
 
+// SYNTHETIC: LEMBALL 0x0044eff0
+// TrackWindow::`scalar deleting destructor'
+
+
 #endif
+

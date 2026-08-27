@@ -779,6 +779,3 @@ bool NetworkOptionsDrawer::AcceptingLock()
 	return 0;
 }
 
-// 68K 0x10806800 __dt__21CNetworkOptionsDrawerFv
-// SYNTHETIC: LEMBALL 0x00455de0
-// NetworkOptionsDrawer::`scalar deleting destructor'

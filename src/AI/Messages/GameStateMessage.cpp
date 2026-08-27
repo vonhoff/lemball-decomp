@@ -32,8 +32,7 @@ void GameStateMessage::GetData()
 }
 
 // 68K 0x101181dc __dt__17CGameStateMessageFv
-// SYNTHETIC: LEMBALL 0x00413df0
-// GameStateMessage::`scalar deleting destructor'
 GameStateMessage::~GameStateMessage()
 {
 }
+

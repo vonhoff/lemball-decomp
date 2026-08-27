@@ -62,8 +62,7 @@ char* PvMusicDevice::GetInfo()
 }
 
 // 68K 0x101023b4 __dt__14CPVMusicDeviceFv
-// SYNTHETIC: LEMBALL 0x0047f560
-// PvMusicDevice::`scalar deleting destructor'
 PvMusicDevice::~PvMusicDevice()
 {
 }
+

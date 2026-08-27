@@ -25,8 +25,7 @@ void ToggleButton::OnExitButton()
 }
 
 // 68K 0x1011c7f6 __dt__13CToggleButtonFv
-// SYNTHETIC: LEMBALL 0x004438b0
-// ToggleButton::`scalar deleting destructor'
 ToggleButton::~ToggleButton()
 {
 }
+

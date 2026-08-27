@@ -12,4 +12,9 @@ public:
 	virtual ~EnemyGroup(); // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00420b20
+// EnemyGroup::`scalar deleting destructor'
+
+
 #endif
+

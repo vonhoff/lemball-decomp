@@ -18,4 +18,9 @@ public:
 	virtual ~Balloon();                          // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0041c640
+// Balloon::`scalar deleting destructor'
+
+
 #endif
+

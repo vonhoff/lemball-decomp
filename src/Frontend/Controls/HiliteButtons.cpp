@@ -49,8 +49,7 @@ void HiliteButtons::UpdateAnimId()
 }
 
 // 68K 0x10804be0 __dt__14CHiliteButtonsFv
-// SYNTHETIC: LEMBALL 0x0044ffc0
-// HiliteButtons::`scalar deleting destructor'
 HiliteButtons::~HiliteButtons()
 {
 }
+

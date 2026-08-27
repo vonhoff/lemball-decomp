@@ -26,4 +26,9 @@ private:
 };
 
 extern GodManager* g_pGodManager;
+
+// SYNTHETIC: LEMBALL 0x0040b450
+// GodManager::`scalar deleting destructor'
+
 #endif
+

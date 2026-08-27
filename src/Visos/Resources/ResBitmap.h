@@ -46,4 +46,9 @@ private:
 	undefined m_platformData[6]; // 0x4e
 };
 
+// SYNTHETIC: LEMBALL 0x0045eb80
+// ResBitmap::`scalar deleting destructor'
+
+
 #endif
+

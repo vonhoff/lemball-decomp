@@ -22,8 +22,7 @@ void ObjectDiesMess::GetData()
 }
 
 // 68K 0x1011a384 __dt__15CObjectDiesMessFv
-// SYNTHETIC: LEMBALL 0x00417cd0
-// ObjectDiesMess::`scalar deleting destructor'
 ObjectDiesMess::~ObjectDiesMess()
 {
 }
+

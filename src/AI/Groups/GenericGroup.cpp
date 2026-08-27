@@ -5,16 +5,17 @@ GenericGroup::GenericGroup()
 }
 
 // 68K 0x10118774 GetGroupState__13CGenericGroupFv
-// STUB: LEMBALL 0x00414c60
+// FUNCTION: LEMBALL 0x00414c60
 eGroupState GenericGroup::GetGroupState()
 {
-	return *(eGroupState*) 0;
+	return m_groupState;
 }
 
 // 68K 0x101187a8 SetGroupState__13CGenericGroupF11eGroupState
-// STUB: LEMBALL 0x00414c70
+// FUNCTION: LEMBALL 0x00414c70
 void GenericGroup::SetGroupState(eGroupState p_state)
 {
+	m_groupState = p_state;
 }
 
 // 68K 0x1060c298 __ct__13CGenericGroupFP3CAIP14CObjectManagerP17CFormationManagerii
@@ -37,38 +38,51 @@ bool GenericGroup::Process()
 }
 
 // 68K 0x1060c50a GetElementsInGroup__13CGenericGroupFv
-// STUB: LEMBALL 0x0041def0
+// FUNCTION: LEMBALL 0x0041def0
 int GenericGroup::GetElementsInGroup()
 {
-	return 0;
+	return m_elementCount;
 }
 
 // 68K 0x1060c544 GetFirstElementInGroup__13CGenericGroupFv
-// STUB: LEMBALL 0x0041df00
+// FUNCTION: LEMBALL 0x0041df00
 GameObject* GenericGroup::GetFirstElementInGroup()
 {
-	return 0;
+	m_currentElement = 0;
+	return m_elements[0];
 }
 
 // 68K 0x1060c588 GetNextElementInGroup__13CGenericGroupFv
-// STUB: LEMBALL 0x0041df20
+// FUNCTION: LEMBALL 0x0041df20
 GameObject* GenericGroup::GetNextElementInGroup()
 {
-	return 0;
+	int index = m_currentElement + 1;
+	m_currentElement = index;
+	if (m_elementCount <= index) {
+		return 0;
+	}
+	return m_elements[index];
 }
 
 // 68K 0x1060c5de GetCurrentElementInGroup__13CGenericGroupFv
-// STUB: LEMBALL 0x0041df40
+// FUNCTION: LEMBALL 0x0041df40
 GameObject* GenericGroup::GetCurrentElementInGroup()
 {
-	return 0;
+	if (m_elementCount <= m_currentElement) {
+		return 0;
+	}
+	return m_elements[m_currentElement];
 }
 
 // 68K 0x1060c634 GetNthElementInGroup__13CGenericGroupFi
-// STUB: LEMBALL 0x0041df60
+// FUNCTION: LEMBALL 0x0041df60
 GameObject* GenericGroup::GetNthElementInGroup(int p_index)
 {
-	return 0;
+	m_currentElement = p_index;
+	if (m_elementCount <= p_index) {
+		return 0;
+	}
+	return m_elements[p_index];
 }
 
 // 68K 0x1060c68c SwapElements__13CGenericGroupFP11CGameObjectP11CGameObject
@@ -78,9 +92,12 @@ void GenericGroup::SwapElements(GameObject* p_first, GameObject* p_second)
 }
 
 // 68K 0x1060c71c AddElementToGroup__13CGenericGroupFP11CGameObject
-// STUB: LEMBALL 0x0041e020
+// FUNCTION: LEMBALL 0x0041e020
 void GenericGroup::AddElementToGroup(GameObject* p_object)
 {
+	m_elements[m_elementCount] = p_object;
+	m_altered = 1;
+	m_elementCount = m_elementCount + 1;
 }
 
 // 68K 0x1060c776 RemoveElementFromGroup__13CGenericGroupFP11CGameObject
@@ -147,16 +164,17 @@ void GenericGroup::ClearExistingWaypoints()
 }
 
 // 68K 0x1060cdbc SetFormationIndex__13CGenericGroupFi
-// STUB: LEMBALL 0x0041e400
+// FUNCTION: LEMBALL 0x0041e400
 void GenericGroup::SetFormationIndex(int p_formationIndex)
 {
+	m_formationIndex = p_formationIndex;
 }
 
 // 68K 0x1060cdf6 GetFormationIndex__13CGenericGroupFv
-// STUB: LEMBALL 0x0041e410
+// FUNCTION: LEMBALL 0x0041e410
 int GenericGroup::GetFormationIndex()
 {
-	return 0;
+	return m_formationIndex;
 }
 
 // 68K 0x1060ce2e ReformAlteredGroup__13CGenericGroupFP17CFormationManager
@@ -179,8 +197,7 @@ void GenericGroup::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1060c3aa __dt__13CGenericGroupFv
-// SYNTHETIC: LEMBALL 0x0041e8c0
-// GenericGroup::`scalar deleting destructor'
 GenericGroup::~GenericGroup()
 {
 }
+

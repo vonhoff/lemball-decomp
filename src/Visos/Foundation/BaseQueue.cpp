@@ -31,10 +31,10 @@ bool BaseQueue::Send(Message& p_arg0)
 }
 
 // 68K 0x10204d68 StreamOut__10CBaseQueueFR10CVSOStream
-// STUB: LEMBALL 0x00463280
+// FUNCTION: LEMBALL 0x00463280
 VsOStream& BaseQueue::StreamOut(VsOStream& p_stream)
 {
-	return *(VsOStream*) 0;
+	return p_stream;
 }
 
 // 68K 0x10204d9e Attach__10CBaseQueueFP17CBaseQueueHandleri
@@ -94,11 +94,10 @@ bool BaseQueue::Process(Message* p_arg0)
 }
 
 // 68K 0x10204b66 __dt__10CBaseQueueFv
-// SYNTHETIC: LEMBALL 0x00463940
-// BaseQueue::`scalar deleting destructor'
 BaseQueue::~BaseQueue()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a9360
 BaseQueue* g_pMasterInputQueue;
+

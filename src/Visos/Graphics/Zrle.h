@@ -24,4 +24,13 @@ private:
 	unsigned int m_state; // 0x14
 };
 
+// 68K 0x10115b92 __ct__5CZRLEFv
+// SYNTHETIC: LEMBALL 0x00467ac0
+// Zrle::Zrle
+
+// SYNTHETIC: LEMBALL 0x00467b40
+// Zrle::`scalar deleting destructor'
+
+
 #endif
+

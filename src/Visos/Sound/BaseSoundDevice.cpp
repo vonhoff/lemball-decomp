@@ -203,8 +203,7 @@ bool BaseSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect
 }
 
 // 68K 0x10217db8 __dt__16CBaseSoundDeviceFv
-// SYNTHETIC: LEMBALL 0x0047fa90
-// BaseSoundDevice::`scalar deleting destructor'
 BaseSoundDevice::~BaseSoundDevice()
 {
 }
+

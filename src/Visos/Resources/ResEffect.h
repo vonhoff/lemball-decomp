@@ -14,4 +14,9 @@ public:
 	virtual ~ResEffect();   // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0045ebb0
+// ResEffect::`scalar deleting destructor'
+
+
 #endif
+

@@ -21,4 +21,9 @@ private:
 	undefined m_storage[0xd8]; // 0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0047bcc0
+// FileWriteSocket::`scalar deleting destructor'
+
+
 #endif
+

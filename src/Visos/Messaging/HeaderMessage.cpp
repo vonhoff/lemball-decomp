@@ -44,8 +44,7 @@ void HeaderMessage::GetData()
 }
 
 // 68K 0x1011667c __dt__14CHeaderMessageFv
-// SYNTHETIC: LEMBALL 0x0047b7f0
-// HeaderMessage::`scalar deleting destructor'
 HeaderMessage::~HeaderMessage()
 {
 }
+

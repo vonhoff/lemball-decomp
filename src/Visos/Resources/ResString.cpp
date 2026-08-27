@@ -32,8 +32,7 @@ ResString::ResString()
 }
 
 // 68K 0x10100fdc __dt__10CResSTRINGFv
-// SYNTHETIC: LEMBALL 0x0045eac0
-// ResString::`scalar deleting destructor'
 ResString::~ResString()
 {
 }
+

@@ -20,4 +20,9 @@ private:
 	int m_runAwayActive; // 0x168
 };
 
+// SYNTHETIC: LEMBALL 0x0041f960
+// SheepGroup::`scalar deleting destructor'
+
+
 #endif
+

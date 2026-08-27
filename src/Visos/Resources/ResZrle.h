@@ -40,4 +40,9 @@ private:
 	short m_originY; // 0x52
 };
 
+// SYNTHETIC: LEMBALL 0x0045e850
+// ResZrle::`scalar deleting destructor'
+
+
 #endif
+

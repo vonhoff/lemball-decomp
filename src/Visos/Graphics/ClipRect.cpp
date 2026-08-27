@@ -25,8 +25,7 @@ void ClipRect::Render(Gdi* p_gdi)
 }
 
 // 68K 0x10101afa __dt__9CClipRectFv
-// SYNTHETIC: LEMBALL 0x00467bb0
-// ClipRect::`scalar deleting destructor'
 ClipRect::~ClipRect()
 {
 }
+

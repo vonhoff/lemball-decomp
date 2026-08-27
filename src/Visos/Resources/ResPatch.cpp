@@ -22,8 +22,7 @@ void ResPatch::SetType()
 	m_chunkType = kChunkPtch;
 }
 
-// SYNTHETIC: LEMBALL 0x0045ebe0
-// ResPatch::`scalar deleting destructor'
 ResPatch::~ResPatch()
 {
 }
+

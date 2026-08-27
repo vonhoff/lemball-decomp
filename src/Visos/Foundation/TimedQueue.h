@@ -13,4 +13,9 @@ public:
 	virtual ~TimedQueue();              // vtable+0x04
 };
 
+// SYNTHETIC: LEMBALL 0x004599b0
+// TimedQueue::`scalar deleting destructor'
+
+
 #endif
+

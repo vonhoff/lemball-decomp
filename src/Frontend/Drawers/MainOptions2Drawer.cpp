@@ -32,8 +32,7 @@ void MainOptions2Drawer::DrawBackGround()
 }
 
 // 68K 0x1080ab4a __dt__19CMainOptions2DrawerFv
-// SYNTHETIC: LEMBALL 0x00449170
-// MainOptions2Drawer::`scalar deleting destructor'
 MainOptions2Drawer::~MainOptions2Drawer()
 {
 }
+

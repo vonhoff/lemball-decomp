@@ -39,8 +39,7 @@ void TrapDoor::DoActivate()
 }
 
 // 68K 0x1011b5f8 __dt__9CTrapDoorFv
-// SYNTHETIC: LEMBALL 0x0040cea0
-// TrapDoor::`scalar deleting destructor'
 TrapDoor::~TrapDoor()
 {
 }
+

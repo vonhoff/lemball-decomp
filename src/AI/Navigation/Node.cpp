@@ -7,9 +7,10 @@ Node::Node()
 }
 
 // 68K 0x106186dc Restart__5CNodeFv
-// STUB: LEMBALL 0x00421300
+// FUNCTION: LEMBALL 0x00421300
 void Node::Restart()
 {
+	m_neighbourCount = 0;
 }
 
 // 68K 0x10618700 __dt__5CNodeFv

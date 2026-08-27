@@ -25,8 +25,7 @@ void ResBin::SetType()
 }
 
 // 68K 0x101010d8 __dt__7CResBINFv
-// SYNTHETIC: LEMBALL 0x0045ec70
-// ResBin::`scalar deleting destructor'
 ResBin::~ResBin()
 {
 }
+

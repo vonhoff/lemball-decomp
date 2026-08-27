@@ -70,8 +70,7 @@ void Door::DoActivate()
 }
 
 // 68K 0x10119b74 __dt__5CDoorFv
-// SYNTHETIC: LEMBALL 0x0040ec10
-// Door::`scalar deleting destructor'
 Door::~Door()
 {
 }
+

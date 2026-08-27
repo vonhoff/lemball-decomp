@@ -22,4 +22,9 @@ private:
 	unsigned int m_valid; // 0x4c
 };
 
+// SYNTHETIC: LEMBALL 0x00452f50
+// NetworkGameMessage::`scalar deleting destructor'
+
+
 #endif
+

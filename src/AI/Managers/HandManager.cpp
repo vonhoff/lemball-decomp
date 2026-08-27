@@ -51,8 +51,7 @@ void HandManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 }
 
 // 68K 0x106113ac __dt__12CHandManagerFv
-// SYNTHETIC: LEMBALL 0x004287d0
-// HandManager::`scalar deleting destructor'
 HandManager::~HandManager()
 {
 }
+

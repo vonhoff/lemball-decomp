@@ -15,8 +15,7 @@ void OpenCount::GetData()
 }
 
 // 68K 0x101067cc __dt__10COpenCountFv
-// SYNTHETIC: LEMBALL 0x0047b970
-// OpenCount::`scalar deleting destructor'
 OpenCount::~OpenCount()
 {
 }
+

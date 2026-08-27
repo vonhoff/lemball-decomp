@@ -48,9 +48,8 @@ void PortsMessage::GetData()
 }
 
 // 68K 0x1010769c __dt__13CPortsMessageFv
-// SYNTHETIC: LEMBALL 0x0047b890
-// PortsMessage::`scalar deleting destructor'
 PortsMessage::~PortsMessage()
 {
 	delete[] m_useCounts;
 }
+

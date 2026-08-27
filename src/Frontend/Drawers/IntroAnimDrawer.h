@@ -27,4 +27,9 @@ private:
 	IntroAnimAnimWindow m_animWindow; // 0x3bc
 };
 
+// SYNTHETIC: LEMBALL 0x004479a0
+// IntroAnimDrawer::`scalar deleting destructor'
+
+
 #endif
+

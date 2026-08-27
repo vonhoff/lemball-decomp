@@ -25,4 +25,9 @@ private:
 	int m_count;                  // 0x3c
 };
 
+// SYNTHETIC: LEMBALL 0x00422f70
+// CollectableManager::`scalar deleting destructor'
+
+
 #endif
+

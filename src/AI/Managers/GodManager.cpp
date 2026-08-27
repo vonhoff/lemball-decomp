@@ -46,11 +46,10 @@ void GodManager::Process()
 }
 
 // 68K 0x1060df5c __dt__11CGodManagerFv
-// SYNTHETIC: LEMBALL 0x0040b450
-// GodManager::`scalar deleting destructor'
 GodManager::~GodManager()
 {
 }
 
 // GLOBAL: LEMBALL 0x0049cf30
 GodManager* g_pGodManager = 0;
+

@@ -7,8 +7,7 @@ EnemyGroup::EnemyGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_ar
 }
 
 // 68K 0x10118722 __dt__11CEnemyGroupFv
-// SYNTHETIC: LEMBALL 0x00420b20
-// EnemyGroup::`scalar deleting destructor'
 EnemyGroup::~EnemyGroup()
 {
 }
+

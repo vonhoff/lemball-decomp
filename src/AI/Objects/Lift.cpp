@@ -88,8 +88,7 @@ void Lift::DoActivate()
 }
 
 // 68K 0x1061462a __dt__5CLiftFv
-// SYNTHETIC: LEMBALL 0x00426710
-// Lift::`scalar deleting destructor'
 Lift::~Lift()
 {
 }
+

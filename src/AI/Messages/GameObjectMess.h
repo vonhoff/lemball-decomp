@@ -37,4 +37,9 @@ protected:
 	GlobalGameObject* m_object; // 0x2c
 };
 
+// SYNTHETIC: LEMBALL 0x00417b50
+// GameObjectMess::`scalar deleting destructor'
+
+
 #endif
+

@@ -14,4 +14,9 @@ public:
 	virtual void Render(Gdi* p_gdi) = 0; // vtable+0x08
 };
 
+// SYNTHETIC: LEMBALL 0x00432350
+// Primitive::`scalar deleting destructor'
+
+
 #endif
+

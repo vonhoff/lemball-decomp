@@ -39,8 +39,7 @@ void RequestActionMess::GetData()
 }
 
 // 68K 0x1011a1f0 __dt__18CRequestActionMessFv
-// SYNTHETIC: LEMBALL 0x00417bb0
-// RequestActionMess::`scalar deleting destructor'
 RequestActionMess::~RequestActionMess()
 {
 }
+

@@ -118,8 +118,7 @@ void PreviewDrawer::DisableNextLastButtons()
 }
 
 // 68K 0x1080b3d6 __dt__14CPreviewDrawerFv
-// SYNTHETIC: LEMBALL 0x0044a940
-// PreviewDrawer::`scalar deleting destructor'
 PreviewDrawer::~PreviewDrawer()
 {
 }
+

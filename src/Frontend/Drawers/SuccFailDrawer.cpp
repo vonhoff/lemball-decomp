@@ -75,8 +75,7 @@ void SuccFailDrawer::DrawBackGround()
 }
 
 // 68K 0x108098f2 __dt__15CSuccFailDrawerFv
-// SYNTHETIC: LEMBALL 0x004510e0
-// SuccFailDrawer::`scalar deleting destructor'
 SuccFailDrawer::~SuccFailDrawer()
 {
 }
+

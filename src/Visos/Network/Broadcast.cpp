@@ -99,7 +99,8 @@ void Broadcast::Send(NetworkAddress* p_arg0, BroadcastMessage& p_arg1)
 }
 
 // 68K 0x1010e5ce ResetPort__10CBroadcastFs
-// STUB: LEMBALL 0x004629c0
+// FUNCTION: LEMBALL 0x004629c0
 void Broadcast::ResetPort(short p_arg0)
 {
+	m_connectionData[p_arg0] = 0;
 }

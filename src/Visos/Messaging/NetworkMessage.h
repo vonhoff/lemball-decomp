@@ -55,4 +55,9 @@ protected:
 	unsigned int m_pendingSendCount; // 0x28
 };
 
+// SYNTHETIC: LEMBALL 0x0040ac00
+// NetworkMessage::`scalar deleting destructor'
+
+
 #endif
+

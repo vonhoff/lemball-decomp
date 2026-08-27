@@ -5,8 +5,6 @@
 #include "VsGdi.h"
 
 // 68K 0x10100cfc __dt__10CPopActiveFv
-// SYNTHETIC: LEMBALL 0x004395c0
-// PopActive::`scalar deleting destructor'
 PopActive::~PopActive()
 {
 }
@@ -24,3 +22,4 @@ void PopActive::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->GetChangeList()->PopActive();
 }
+

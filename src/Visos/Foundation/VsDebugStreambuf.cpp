@@ -16,8 +16,6 @@ VsDebugStreambuf::VsDebugStreambuf(char* p_buffer, int p_size, void (*p_flushCal
 }
 
 // 68K 0x10214448 __dt__17CVSDebugStreambufFv
-// SYNTHETIC: LEMBALL 0x0045af60
-// VsDebugStreambuf::`scalar deleting destructor'
 VsDebugStreambuf::~VsDebugStreambuf()
 {
 }
@@ -132,3 +130,4 @@ FILE* g_pDebugOutputFile = 0;
 
 // GLOBAL: LEMBALL 0x004a2a10
 char* g_pDebugOutputPath = "debug.out";
+

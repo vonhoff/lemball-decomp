@@ -12,4 +12,9 @@ public:
 	virtual ~GameAcceptMessage(); // vtable+0x14
 };
 
+// SYNTHETIC: LEMBALL 0x00452ef0
+// GameAcceptMessage::`scalar deleting destructor'
+
+
 #endif
+

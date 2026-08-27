@@ -21,8 +21,6 @@ int BaseObjectManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1011806c __dt__18CBaseObjectManagerFv
-// SYNTHETIC: LEMBALL 0x0040aba0
-// BaseObjectManager::`scalar deleting destructor'
 BaseObjectManager::~BaseObjectManager()
 {
 }
@@ -50,3 +48,4 @@ void BaseObjectManager::ProcessNetwork()
 void BaseObjectManager::GetData()
 {
 }
+

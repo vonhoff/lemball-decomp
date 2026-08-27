@@ -20,4 +20,9 @@ private:
 	unsigned int m_colour; // 0x48
 };
 
+// SYNTHETIC: LEMBALL 0x0045ea10
+// ResCol::`scalar deleting destructor'
+
+
 #endif
+

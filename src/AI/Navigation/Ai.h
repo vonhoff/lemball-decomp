@@ -69,6 +69,7 @@ public:
 
 	friend class Bullet;
 	friend class PlayerLemming;
+	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:
 	NetworkMessage m_networkMessage;                  // 0x1c
@@ -131,4 +132,10 @@ private:
 extern Ai* g_pGenericGroupAI;
 extern Ai* g_pAI;
 extern Ai* g_pActiveAI;
+extern int g_nGameOver;
+
+// SYNTHETIC: LEMBALL 0x00413e30
+// Ai::`scalar deleting destructor'
+
 #endif
+

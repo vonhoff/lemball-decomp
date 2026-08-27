@@ -26,4 +26,9 @@ private:
 	Ai* m_ai;                   // 0x3c
 };
 
+// SYNTHETIC: LEMBALL 0x0042ba10
+// TrampolineManager::`scalar deleting destructor'
+
+
 #endif
+

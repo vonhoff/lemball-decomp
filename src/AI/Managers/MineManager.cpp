@@ -62,8 +62,7 @@ void MineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 }
 
 // 68K 0x1061693e __dt__12CMineManagerFv
-// SYNTHETIC: LEMBALL 0x00424c30
-// MineManager::`scalar deleting destructor'
 MineManager::~MineManager()
 {
 }
+

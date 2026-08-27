@@ -1,5 +1,7 @@
 #include "Main2DDisplay.h"
 
+#include "../../Visos/Graphics/Drawer.h"
+
 // 68K 0x10b001a0 __ct__14CMain2DDisplayFP5CGame
 // STUB: LEMBALL 0x00431590
 Main2DDisplay::Main2DDisplay(Game* p_arg0)
@@ -32,9 +34,12 @@ void Main2DDisplay::OnPaint(const VsRect& p_rect)
 }
 
 // 68K 0x10b006b6 OnSize__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431860
+// FUNCTION: LEMBALL 0x00431860
 void Main2DDisplay::OnSize()
 {
+	if (m_drawer != 0) {
+		((Drawer*) m_drawer)->OnSize(*(VsRect*) ((char*) this + 8));
+	}
 }
 
 // 68K 0x10b00746 OnMove__14CMain2DDisplayFv
@@ -134,8 +139,7 @@ void Main2DDisplay::OnRestore()
 }
 
 // 68K 0x10b002fc __dt__14CMain2DDisplayFv
-// SYNTHETIC: LEMBALL 0x004322e0
-// Main2DDisplay::`scalar deleting destructor'
 Main2DDisplay::~Main2DDisplay()
 {
 }
+

@@ -32,8 +32,7 @@ int AiCursor::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x106060dc __dt__9CAICursorFv
-// SYNTHETIC: LEMBALL 0x00414f00
-// AiCursor::`scalar deleting destructor'
 AiCursor::~AiCursor()
 {
 }
+

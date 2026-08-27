@@ -18,4 +18,9 @@ private:
 	unsigned char* m_useCounts; // 0x2c
 };
 
+// SYNTHETIC: LEMBALL 0x0047b890
+// PortsMessage::`scalar deleting destructor'
+
+
 #endif
+

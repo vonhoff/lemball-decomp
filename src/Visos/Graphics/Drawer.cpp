@@ -55,8 +55,7 @@ void Drawer::RefreshView()
 }
 
 // 68K 0x1011ae42 __dt__7CDrawerFv
-// SYNTHETIC: LEMBALL 0x00439400
-// Drawer::`scalar deleting destructor'
 Drawer::~Drawer()
 {
 }
+

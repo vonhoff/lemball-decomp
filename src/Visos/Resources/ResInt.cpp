@@ -22,8 +22,7 @@ void ResInt::OnLoad()
 }
 
 // 68K 0x10100e7a __dt__7CResINTFv
-// SYNTHETIC: LEMBALL 0x0045e930
-// ResInt::`scalar deleting destructor'
 ResInt::~ResInt()
 {
 }
+

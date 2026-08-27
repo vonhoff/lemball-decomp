@@ -31,11 +31,10 @@ void MessFailedConnect::AddData()
 }
 
 // 68K 0x10117044 __dt__18CMessFAILEDConnectFv
-// SYNTHETIC: LEMBALL 0x004628b0
-// MessFailedConnect::`scalar deleting destructor'
 MessFailedConnect::~MessFailedConnect()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a1e60
 MessFailedConnect* g_pMessFAILEDConnect = 0;
+

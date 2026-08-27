@@ -37,15 +37,19 @@ ChangeList::~ChangeList()
 }
 
 // 68K 0x10211070 PushActive__11CChangeListFUc
-// STUB: LEMBALL 0x00466bc0
+// FUNCTION: LEMBALL 0x00466bc0
 void ChangeList::PushActive(unsigned char p_mark)
 {
+	m_activeStack[m_activeDepth] = m_activeMark;
+	m_activeDepth = m_activeDepth + 1;
 }
 
 // 68K 0x102110ce PopActive__11CChangeListFv
-// STUB: LEMBALL 0x00466bd0
+// FUNCTION: LEMBALL 0x00466bd0
 void ChangeList::PopActive()
 {
+	m_activeDepth = m_activeDepth - 1;
+	m_activeMark = m_activeStack[m_activeDepth];
 }
 
 // 68K 0x10211106 Add__11CChangeListFRC7CVSRect
@@ -61,10 +65,10 @@ void ChangeList::SetDrawMark()
 }
 
 // 68K 0x1021128c GetArea__11CChangeListFv
-// STUB: LEMBALL 0x00466d30
+// FUNCTION: LEMBALL 0x00466d30
 unsigned int ChangeList::GetArea()
 {
-	return 0;
+	return m_area;
 }
 
 // 68K 0x102112b8 GetNextArea__11CChangeListFUcUcUc
@@ -82,15 +86,24 @@ int ChangeList::GetNumItems()
 }
 
 // 68K 0x10211630 GetNItem__11CChangeListFi
-// STUB: LEMBALL 0x00467000
+// FUNCTION: LEMBALL 0x00467000
 ChangeListItem* ChangeList::GetNItem(int p_index)
 {
-	return 0;
+	if (m_itemCount == -1) {
+		GetNumItems();
+	}
+	return m_items + p_index;
 }
 
 // 68K 0x1021167a GetDrawMark__11CChangeListFv
-// STUB: LEMBALL 0x00467020
+// FUNCTION: LEMBALL 0x00467020
 int ChangeList::GetDrawMark()
 {
-	return 0;
+	if (m_map == 0) {
+		return 0;
+	}
+	if (m_itemCount == -1) {
+		GetNumItems();
+	}
+	return m_drawMarkCount;
 }

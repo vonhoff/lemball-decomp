@@ -25,4 +25,9 @@ private:
 	void* m_buttonLayout;             // 0x3a8
 };
 
+// SYNTHETIC: LEMBALL 0x00449170
+// MainOptions2Drawer::`scalar deleting destructor'
+
+
 #endif
+

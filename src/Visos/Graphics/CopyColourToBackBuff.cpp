@@ -4,8 +4,6 @@
 #include "VsGdi.h"
 
 // 68K 0x10102006 __dt__21CCopyColourToBackBuffFv
-// SYNTHETIC: LEMBALL 0x00439680
-// CopyColourToBackBuff::`scalar deleting destructor'
 CopyColourToBackBuff::~CopyColourToBackBuff()
 {
 }
@@ -23,3 +21,4 @@ void CopyColourToBackBuff::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit(this);
 }
+

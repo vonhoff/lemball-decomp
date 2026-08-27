@@ -55,4 +55,9 @@ private:
 	unsigned int m_previousDisabled;       // 0x484
 };
 
+// SYNTHETIC: LEMBALL 0x0044a940
+// PreviewDrawer::`scalar deleting destructor'
+
+
 #endif
+

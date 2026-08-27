@@ -17,4 +17,9 @@ public:
 	virtual ~Key();                              // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0041c600
+// Key::`scalar deleting destructor'
+
+
 #endif
+

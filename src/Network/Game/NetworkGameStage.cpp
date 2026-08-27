@@ -23,8 +23,7 @@ void NetworkGameStage::GetData()
 }
 
 // 68K 0x101191cc __dt__17CNetworkGameStageFv
-// SYNTHETIC: LEMBALL 0x00452e60
-// NetworkGameStage::`scalar deleting destructor'
 NetworkGameStage::~NetworkGameStage()
 {
 }
+

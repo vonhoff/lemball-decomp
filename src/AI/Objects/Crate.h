@@ -24,4 +24,9 @@ private:
 	eObjectType m_contentsType;   // 0x14c
 };
 
+// SYNTHETIC: LEMBALL 0x0041c540
+// Crate::`scalar deleting destructor'
+
+
 #endif
+

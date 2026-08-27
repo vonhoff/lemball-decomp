@@ -25,8 +25,7 @@ void Line::Render(Gdi* p_gdi)
 }
 
 // 68K 0x10100ac2 __dt__5CLineFv
-// SYNTHETIC: LEMBALL 0x00469930
-// Line::`scalar deleting destructor'
 Line::~Line()
 {
 }
+

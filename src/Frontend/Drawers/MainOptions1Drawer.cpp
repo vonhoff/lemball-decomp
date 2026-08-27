@@ -38,8 +38,7 @@ void MainOptions1Drawer::Processing()
 }
 
 // 68K 0x1080a33c __dt__19CMainOptions1DrawerFv
-// SYNTHETIC: LEMBALL 0x00448a70
-// MainOptions1Drawer::`scalar deleting destructor'
 MainOptions1Drawer::~MainOptions1Drawer()
 {
 }
+

@@ -26,4 +26,9 @@ private:
 	Ai* m_ai;                   // 0x3c
 };
 
+// SYNTHETIC: LEMBALL 0x004274f0
+// RocketManager::`scalar deleting destructor'
+
+
 #endif
+

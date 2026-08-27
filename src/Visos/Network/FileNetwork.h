@@ -34,4 +34,9 @@ private:
 extern unsigned int g_dwFileNetworkThreadId;
 extern void* g_hFileNetworkThread;
 extern void* g_pFileBroadcastData;
+
+// SYNTHETIC: LEMBALL 0x0046f970
+// FileNetwork::`scalar deleting destructor'
+
 #endif
+

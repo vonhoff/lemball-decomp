@@ -12,4 +12,9 @@ public:
 	~RequestActionMess();
 };
 
+// SYNTHETIC: LEMBALL 0x00417bb0
+// RequestActionMess::`scalar deleting destructor'
+
+
 #endif
+

@@ -90,8 +90,7 @@ void HotAreaList::OnExit()
 }
 
 // 68K 0x1021221e __dt__12CHotAreaListFv
-// SYNTHETIC: LEMBALL 0x0046aa50
-// HotAreaList::`scalar deleting destructor'
 HotAreaList::~HotAreaList()
 {
 }
+

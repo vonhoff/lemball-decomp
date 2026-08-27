@@ -43,9 +43,11 @@ void Mine::SetTerrain()
 }
 
 // 68K 0x10616578 StepOn__5CMineFP11CGameObject
-// STUB: LEMBALL 0x00423e70
+// FUNCTION: LEMBALL 0x00423e70
 void Mine::StepOn(GameObject* p_object)
 {
+	RequestAction(0x1b);
+	p_object->HitMine();
 }
 
 // 68K 0x106165be IsUsable__5CMineF7eAction
@@ -69,8 +71,7 @@ void Mine::OnGround()
 }
 
 // 68K 0x1011a84c __dt__5CMineFv
-// SYNTHETIC: LEMBALL 0x00424c60
-// Mine::`scalar deleting destructor'
 Mine::~Mine()
 {
 }
+

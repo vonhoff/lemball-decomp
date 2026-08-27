@@ -101,8 +101,6 @@ TcpIpBroadcast* TcpIpNetwork::GetNewBroadcast()
 }
 
 // 68K 0x1010efea __dt__13CTCPIPNetworkFv
-// SYNTHETIC: LEMBALL 0x00471a10
-// TcpIpNetwork::`scalar deleting destructor'
 TcpIpNetwork::~TcpIpNetwork()
 {
 }
@@ -136,3 +134,4 @@ unsigned short g_broadcastPort = 0;
 
 // GLOBAL: LEMBALL 0x004a1e4c
 int g_lastNetworkError = 0;
+

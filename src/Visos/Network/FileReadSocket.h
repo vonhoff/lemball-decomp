@@ -21,4 +21,9 @@ private:
 	undefined m_storage[0xb8]; // 0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0047bda0
+// FileReadSocket::`scalar deleting destructor'
+
+
 #endif
+

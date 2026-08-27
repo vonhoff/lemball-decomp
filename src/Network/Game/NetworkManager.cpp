@@ -39,9 +39,10 @@ void NetworkManager::Broadcast(const char* p_address)
 }
 
 // 68K 0x10a00a42 Kill__15CNetworkManagerFv
-// STUB: LEMBALL 0x00452ab0
+// FUNCTION: LEMBALL 0x00452ab0
 void NetworkManager::Kill()
 {
+	m_killRequested = 1;
 }
 
 // 68K 0x10a00a70 GameProcess__15CNetworkManagerFv
@@ -71,11 +72,10 @@ int NetworkManager::GetnGame(Connect* p_connection)
 }
 
 // 68K 0x10a00500 __dt__15CNetworkManagerFv
-// SYNTHETIC: LEMBALL 0x00452f20
-// NetworkManager::`scalar deleting destructor'
 NetworkManager::~NetworkManager()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a0120
 NetworkManager* g_pNetworkManager = 0;
+

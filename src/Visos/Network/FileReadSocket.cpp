@@ -27,8 +27,6 @@ void FileReadSocket::Process()
 }
 
 // 68K 0x1010669c __dt__15CFileReadSocketFv
-// SYNTHETIC: LEMBALL 0x0047bda0
-// FileReadSocket::`scalar deleting destructor'
 FileReadSocket::~FileReadSocket()
 {
 }
@@ -38,3 +36,4 @@ FileReadSocket::~FileReadSocket()
 void FileReadSocket::Closed(unsigned char p_notifyPeer)
 {
 }
+

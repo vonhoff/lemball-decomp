@@ -67,8 +67,7 @@ char FontTable::GetChar(ResZrle* p_glyph)
 }
 
 // 68K 0x10210c9e __dt__10CFontTableFv
-// SYNTHETIC: LEMBALL 0x00473750
-// FontTable::`scalar deleting destructor'
 FontTable::~FontTable()
 {
 }
+

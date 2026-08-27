@@ -40,4 +40,9 @@ private:
 	short m_maxZ;                   // 0x186
 };
 
+// SYNTHETIC: LEMBALL 0x0042e500
+// Ice::`vector deleting destructor'
+
+
 #endif
+

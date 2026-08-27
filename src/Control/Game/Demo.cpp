@@ -33,9 +33,13 @@ void Demo::GetUserPacket(unsigned char* p_data, unsigned long& p_size)
 }
 
 // 68K 0x10701032 Reset__5CDemoFv
-// STUB: LEMBALL 0x004095e0
+// FUNCTION: LEMBALL 0x004095e0
 void Demo::Reset()
 {
+	m_bytesRemaining = -1;
+	m_packetIndex = 0;
+	m_gameOver = 0;
+	m_duration = 0;
 }
 
 // 68K 0x10701062 SetDemoMode__5CDemoFUc
@@ -57,9 +61,11 @@ void Demo::CleanUp()
 }
 
 // 68K 0x10701178 GameIsOver__5CDemoFv
-// STUB: LEMBALL 0x004096a0
+// FUNCTION: LEMBALL 0x004096a0
 void Demo::GameIsOver()
 {
+	m_gameOver = 1;
+	CleanUp();
 }
 
 // 68K 0x107011aa ProcessMsg__5CDemoFP10tagMESSAGE

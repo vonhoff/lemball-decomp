@@ -19,8 +19,6 @@ void SlinkyManager::Initialise(int p_capacity)
 }
 
 // 68K 0x1061f1d6 __dt__14CSlinkyManagerFv
-// SYNTHETIC: LEMBALL 0x0040b9d0
-// SlinkyManager::`vector deleting destructor'
 SlinkyManager::~SlinkyManager()
 {
 }
@@ -49,3 +47,4 @@ void SlinkyManager::Process()
 void SlinkyManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
 }
+

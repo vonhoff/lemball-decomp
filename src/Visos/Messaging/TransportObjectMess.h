@@ -16,4 +16,9 @@ private:
 	unsigned short m_transportObjectId; // 0x30
 };
 
+// SYNTHETIC: LEMBALL 0x00417d50
+// TransportObjectMess::`scalar deleting destructor'
+
+
 #endif
+

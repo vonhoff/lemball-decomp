@@ -38,6 +38,7 @@ public:
 	void UseObject(int p_objectId);
 
 private:
+	friend class Ai;
 	int m_messageType;                   // 0x0dc
 	int m_startX[4];                     // 0x0e0
 	int m_startY[4];                     // 0x0f0
@@ -51,4 +52,9 @@ private:
 	int m_networkInitialized;            // 0x14c
 };
 
+// SYNTHETIC: LEMBALL 0x00419930
+// PlayerLemmingGroupManager::`scalar deleting destructor'
+
+
 #endif
+

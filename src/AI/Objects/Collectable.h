@@ -21,4 +21,9 @@ private:
 	unsigned int m_enabled; // 0x138
 };
 
+// SYNTHETIC: LEMBALL 0x00423060
+// Collectable::`scalar deleting destructor'
+
+
 #endif
+

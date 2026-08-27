@@ -31,4 +31,9 @@ private:
 	String m_path;             // 0x10
 };
 
+// SYNTHETIC: LEMBALL 0x0047f560
+// PvMusicDevice::`scalar deleting destructor'
+
+
 #endif
+

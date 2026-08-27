@@ -45,4 +45,9 @@ private:
 	Move3d m_movement;               // 0x184
 };
 
+// SYNTHETIC: LEMBALL 0x00418330
+// Bullet::`scalar deleting destructor'
+
+
 #endif
+

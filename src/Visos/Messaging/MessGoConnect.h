@@ -19,4 +19,9 @@ private:
 };
 
 extern MessGoConnect* g_pMessGOConnect;
+
+// SYNTHETIC: LEMBALL 0x00462890
+// MessGoConnect::`scalar deleting destructor'
+
 #endif
+

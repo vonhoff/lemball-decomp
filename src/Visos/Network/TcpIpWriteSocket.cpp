@@ -26,8 +26,6 @@ void TcpIpWriteSocket::SetPort(short p_port)
 }
 
 // 68K 0x10106290 __dt__17CTCPIPWriteSocketFv
-// SYNTHETIC: LEMBALL 0x00471e80
-// TcpIpWriteSocket::`scalar deleting destructor'
 TcpIpWriteSocket::~TcpIpWriteSocket()
 {
 }
@@ -37,3 +35,4 @@ TcpIpWriteSocket::~TcpIpWriteSocket()
 void TcpIpWriteSocket::Closed(unsigned char p_notifyPeer)
 {
 }
+

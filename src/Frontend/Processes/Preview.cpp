@@ -7,8 +7,7 @@ Preview::Preview(Game* p_arg0)
 }
 
 // 68K 0x1011ba0e __dt__8CPreviewFv
-// SYNTHETIC: LEMBALL 0x0044a9d0
-// Preview::`scalar deleting destructor'
 Preview::~Preview()
 {
 }
+

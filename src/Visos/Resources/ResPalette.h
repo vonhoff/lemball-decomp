@@ -23,4 +23,9 @@ private:
 	undefined4 m_paletteState; // 0x48
 };
 
+// SYNTHETIC: LEMBALL 0x0045ea50
+// ResPalette::`scalar deleting destructor'
+
+
 #endif
+

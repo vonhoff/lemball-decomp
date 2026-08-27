@@ -51,8 +51,7 @@ void TrampolineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigne
 }
 
 // 68K 0x10620dc2 __dt__18CTrampolineManagerFv
-// SYNTHETIC: LEMBALL 0x0042ba10
-// TrampolineManager::`scalar deleting destructor'
 TrampolineManager::~TrampolineManager()
 {
 }
+

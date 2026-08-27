@@ -7,8 +7,7 @@ SuccFail::SuccFail(Game* p_arg0, unsigned char p_arg1)
 }
 
 // 68K 0x1011ba68 __dt__9CSuccFailFv
-// SYNTHETIC: LEMBALL 0x004511c0
-// SuccFail::`scalar deleting destructor'
 SuccFail::~SuccFail()
 {
 }
+

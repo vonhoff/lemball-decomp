@@ -15,4 +15,9 @@ private:
 	undefined m_storage[0x4c]; // 0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0047b910
+// FileCommonSocket::`scalar deleting destructor'
+
+
 #endif
+

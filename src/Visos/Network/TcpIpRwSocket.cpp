@@ -14,8 +14,6 @@ void TcpIpRwSocket::SendAcknowledgement()
 }
 
 // 68K 0x101063e4 __dt__14CTCPIPRWSocketFv
-// SYNTHETIC: LEMBALL 0x00471cd0
-// TcpIpRwSocket::`scalar deleting destructor'
 TcpIpRwSocket::~TcpIpRwSocket()
 {
 }
@@ -31,3 +29,4 @@ void TcpIpRwSocket::Closed(unsigned char p_notifyPeer)
 void TcpIpRwSocket::ReceiveAcknowledgement()
 {
 }
+

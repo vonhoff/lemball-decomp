@@ -28,4 +28,9 @@ private:
 	Door* m_doors;              // 0x3c
 };
 
+// SYNTHETIC: LEMBALL 0x0040ebe0
+// DoorManager::`scalar deleting destructor'
+
+
 #endif
+

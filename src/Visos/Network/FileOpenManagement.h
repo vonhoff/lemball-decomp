@@ -18,4 +18,9 @@ private:
 	undefined2 m_reserved32;    // 0x32
 };
 
+// SYNTHETIC: LEMBALL 0x0047b9d0
+// FileOpenManagement::`scalar deleting destructor'
+
+
 #endif
+

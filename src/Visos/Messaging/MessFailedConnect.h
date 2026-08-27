@@ -18,4 +18,9 @@ private:
 };
 
 extern MessFailedConnect* g_pMessFAILEDConnect;
+
+// SYNTHETIC: LEMBALL 0x004628b0
+// MessFailedConnect::`scalar deleting destructor'
+
 #endif
+

@@ -29,4 +29,9 @@ private:
 	undefined m_nativeShell[0x20];     // 0xc0
 };
 
+// SYNTHETIC: LEMBALL 0x00471e80
+// TcpIpWriteSocket::`scalar deleting destructor'
+
+
 #endif
+

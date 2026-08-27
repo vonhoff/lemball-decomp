@@ -51,8 +51,6 @@ void TcpIpBroadcast::StopListen()
 }
 
 // 68K 0x1010d556 __dt__15CTCPIPBroadcastFv
-// SYNTHETIC: LEMBALL 0x00471f60
-// TcpIpBroadcast::`scalar deleting destructor'
 TcpIpBroadcast::~TcpIpBroadcast()
 {
 }
@@ -62,3 +60,4 @@ TcpIpBroadcast::~TcpIpBroadcast()
 void TcpIpBroadcast::Closed(unsigned char p_notifyPeer)
 {
 }
+

@@ -4,8 +4,6 @@
 #include "VsGdi.h"
 
 // 68K 0x10100c60 __dt__10CSolidRectFv
-// SYNTHETIC: LEMBALL 0x00432a90
-// SolidRect::`scalar deleting destructor'
 SolidRect::~SolidRect()
 {
 }
@@ -30,3 +28,4 @@ SolidRect::SolidRect()
 	: m_top(0), m_left(0), m_bottom(0), m_right(0)
 {
 }
+

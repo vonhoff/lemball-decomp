@@ -21,8 +21,7 @@ void FileCommonSocket::SocketError()
 }
 
 // 68K 0x101065e2 __dt__17CFileCommonSocketFv
-// SYNTHETIC: LEMBALL 0x0047b910
-// FileCommonSocket::`scalar deleting destructor'
 FileCommonSocket::~FileCommonSocket()
 {
 }
+

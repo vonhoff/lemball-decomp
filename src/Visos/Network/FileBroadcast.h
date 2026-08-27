@@ -32,4 +32,9 @@ private:
 };
 
 extern FileBroadcast* g_pFileBroadcast;
+
+// SYNTHETIC: LEMBALL 0x0047bb60
+// FileBroadcast::`scalar deleting destructor'
+
 #endif
+

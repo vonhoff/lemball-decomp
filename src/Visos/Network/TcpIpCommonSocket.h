@@ -20,4 +20,9 @@ private:
 	BaseCommonSocket m_base;         // 0x20
 };
 
+// SYNTHETIC: LEMBALL 0x00471a90
+// TcpIpCommonSocket::`scalar deleting destructor'
+
+
 #endif
+

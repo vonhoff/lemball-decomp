@@ -25,8 +25,7 @@ void ResEffect::SetType()
 }
 
 // 68K 0x1010105c __dt__10CResEFFECTFv
-// SYNTHETIC: LEMBALL 0x0045ebb0
-// ResEffect::`scalar deleting destructor'
 ResEffect::~ResEffect()
 {
 }
+

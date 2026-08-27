@@ -36,8 +36,7 @@ void RequestReplyMess::GetData()
 }
 
 // 68K 0x1011a18c __dt__17CRequestReplyMessFv
-// SYNTHETIC: LEMBALL 0x00417be0
-// RequestReplyMess::`scalar deleting destructor'
 RequestReplyMess::~RequestReplyMess()
 {
 }
+

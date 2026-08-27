@@ -11,8 +11,6 @@ CopyToBackBuff::CopyToBackBuff()
 }
 
 // 68K 0x10100c0e __dt__15CCopyToBackBuffFv
-// SYNTHETIC: LEMBALL 0x004396b0
-// CopyToBackBuff::`scalar deleting destructor'
 CopyToBackBuff::~CopyToBackBuff()
 {
 }
@@ -30,3 +28,4 @@ void CopyToBackBuff::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit(this);
 }
+

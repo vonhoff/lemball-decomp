@@ -64,4 +64,9 @@ private:
 	unsigned int m_buttonsActive;            // 0x148
 };
 
+// SYNTHETIC: LEMBALL 0x0044fff0
+// HiliteController::`scalar deleting destructor'
+
+
 #endif
+

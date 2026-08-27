@@ -37,8 +37,6 @@ void NetworkMessage::AddData()
 }
 
 // 68K 0x1020a4ce __dt__15CNetworkMessageFv
-// SYNTHETIC: LEMBALL 0x0040ac00
-// NetworkMessage::`scalar deleting destructor'
 NetworkMessage::~NetworkMessage()
 {
 }
@@ -317,3 +315,4 @@ void NetworkMessage::Send(Connect* p_arg0)
 		g_pBaseNetwork->Process();
 	}
 }
+

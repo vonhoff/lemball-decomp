@@ -37,4 +37,9 @@ extern int g_nEffectsAvailable;
 extern int g_nAnimationsAvailable;
 extern int g_nZoomAvailable;
 extern int g_nDisplayMode;
+
+// SYNTHETIC: LEMBALL 0x004472b0
+// BaseFrontendProcess::`scalar deleting destructor'
+
 #endif
+

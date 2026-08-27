@@ -26,4 +26,9 @@ private:
 	Ai* m_ai;                   // 0x3c
 };
 
+// SYNTHETIC: LEMBALL 0x00429ea0
+// LaserManager::`scalar deleting destructor'
+
+
 #endif
+

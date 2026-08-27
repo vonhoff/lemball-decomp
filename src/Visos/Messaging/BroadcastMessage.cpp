@@ -23,8 +23,7 @@ bool BroadcastMessage::GetHeader()
 }
 
 // 68K 0x1010609c __dt__17CBroadcastMessageFv
-// SYNTHETIC: LEMBALL 0x00462810
-// BroadcastMessage::`scalar deleting destructor'
 BroadcastMessage::~BroadcastMessage()
 {
 }
+

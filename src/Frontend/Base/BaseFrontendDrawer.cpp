@@ -150,17 +150,17 @@ bool BaseFrontendDrawer::ConfirmedAction(int p_action)
 }
 
 // 68K 0x1011bfb8 GetReturnState__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00446fb0
+// FUNCTION: LEMBALL 0x00446fb0
 int BaseFrontendDrawer::GetReturnState()
 {
-	return 0;
+	return m_returnState;
 }
 
 // 68K 0x1011bff4 QuitYet__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00446fc0
+// FUNCTION: LEMBALL 0x00446fc0
 bool BaseFrontendDrawer::QuitYet()
 {
-	return 0;
+	return m_quitYet;
 }
 
 // 68K 0x1011c028 OnSize__19CBaseFrontendDrawerFRC7CVSRect
@@ -170,8 +170,6 @@ void BaseFrontendDrawer::OnSize(const VsRect& p_rect)
 }
 
 // 68K 0x1080048c __dt__19CBaseFrontendDrawerFv
-// SYNTHETIC: LEMBALL 0x00447000
-// BaseFrontendDrawer::`scalar deleting destructor'
 BaseFrontendDrawer::~BaseFrontendDrawer()
 {
 }
@@ -187,3 +185,4 @@ int g_nMusicVolume = 0;
 
 // GLOBAL: LEMBALL 0x004a627c
 int g_nEffectsVolume = 0;
+

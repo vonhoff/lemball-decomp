@@ -26,4 +26,12 @@ public:
 	int m_capacity; // 0x04
 };
 
+// FUNCTION: LEMBALL 0x0047fc00
+// __isctype
+
+// FUNCTION: LEMBALL 0x00480060
+// _tolower
+
+
 #endif
+

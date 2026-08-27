@@ -29,8 +29,7 @@ void NetworkGameMessage::GetData()
 }
 
 // 68K 0x1011c6f0 __dt__19CNetworkGameMessageFv
-// SYNTHETIC: LEMBALL 0x00452f50
-// NetworkGameMessage::`scalar deleting destructor'
 NetworkGameMessage::~NetworkGameMessage()
 {
 }
+

@@ -51,4 +51,9 @@ private:
 };
 
 extern int g_nGunButtonsRedrawPending;
+
+// SYNTHETIC: LEMBALL 0x0044e620
+// GunButtons::`scalar deleting destructor'
+
 #endif
+

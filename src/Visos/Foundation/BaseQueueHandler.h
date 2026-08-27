@@ -20,4 +20,9 @@ private:
 
 extern BaseQueueHandler* g_pNetworkStatusQueue;
 extern BaseQueueHandler* g_pNetworkPacketQueue;
+
+// SYNTHETIC: LEMBALL 0x004098e0
+// BaseQueueHandler::`scalar deleting destructor'
+
 #endif
+

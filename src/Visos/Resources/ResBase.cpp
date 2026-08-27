@@ -65,7 +65,7 @@ bool ResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCurso
 }
 
 // 68K 0x10202bb6 __dt__8CResBaseFv
-// STUB: LEMBALL 0x0045d040
+// FUNCTION: LEMBALL 0x0045d040
 ResBase::~ResBase()
 {
 }

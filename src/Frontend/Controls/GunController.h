@@ -86,4 +86,9 @@ private:
 	unsigned int m_buttonsActive;         // 0x278
 };
 
+// SYNTHETIC: LEMBALL 0x0044e690
+// GunController::`scalar deleting destructor'
+
+
 #endif
+

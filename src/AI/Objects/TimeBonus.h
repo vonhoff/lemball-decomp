@@ -13,4 +13,9 @@ public:
 	virtual ~TimeBonus();    // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00423010
+// TimeBonus::`scalar deleting destructor'
+
+
 #endif
+

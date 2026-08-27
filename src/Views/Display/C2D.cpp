@@ -1,5 +1,7 @@
 #include "C2D.h"
 
+#include "../../Visos/Graphics/BasePalManager.h"
+
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
 // STUB: LEMBALL 0x004358d0
 C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4)
@@ -67,9 +69,10 @@ void C2D::SetUpRemapPalettes()
 }
 
 // 68K 0x10b079c8 KillRemapPalettes__3C2DFv
-// STUB: LEMBALL 0x00436830
+// FUNCTION: LEMBALL 0x00436830
 void C2D::KillRemapPalettes()
 {
+	g_pBasePalManager->UnRegisterRemap(*(BaseRemap**) ((char*) this + 0x968));
 }
 
 // 68K 0x10b07a00 Restart__3C2DFv
@@ -290,24 +293,24 @@ void C2D::SetClipSize()
 }
 
 // 68K 0x1011cbe0 QuitYet__3C2DFv
-// STUB: LEMBALL 0x00439450
+// FUNCTION: LEMBALL 0x00439450
 bool C2D::QuitYet()
 {
-	return 0;
+	return *(unsigned int*) ((char*) this + 0xa78);
 }
 
 // 68K 0x1011cc02 GetReturnState__3C2DFv
-// STUB: LEMBALL 0x00439460
+// FUNCTION: LEMBALL 0x00439460
 int C2D::GetReturnState()
 {
-	return 0;
+	return *(int*) ((char*) this + 0x8fc);
 }
 
 // 68K 0x1011cc2c GetPauser__3C2DFv
-// STUB: LEMBALL 0x00439470
+// FUNCTION: LEMBALL 0x00439470
 bool C2D::GetPauser()
 {
-	return 0;
+	return m_pauser;
 }
 
 // 68K 0x10b01120 DrawGround__3C2DFii11eObjectTypeUs

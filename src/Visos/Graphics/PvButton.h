@@ -30,8 +30,10 @@ public:
 	void CheckForceDraw();
 	void Draw(unsigned char p_force);
 	void Initialise();
-	void SetAutoDraw(unsigned char p_enabled);
+	void SetAutoDraw(unsigned int p_enabled);
 	PvButton();
+
+	friend class ToggleButton;
 
 private:
 	unsigned int m_pressed;          // 0xd0
@@ -48,4 +50,9 @@ private:
 	short m_clickY;                  // 0x102
 };
 
+// SYNTHETIC: LEMBALL 0x00469880
+// PvButton::`scalar deleting destructor'
+
+
 #endif
+

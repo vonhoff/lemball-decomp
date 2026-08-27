@@ -22,8 +22,6 @@ int TcpIpReadSocket::Process()
 }
 
 // 68K 0x1010633a __dt__16CTCPIPReadSocketFv
-// SYNTHETIC: LEMBALL 0x00471de0
-// TcpIpReadSocket::`scalar deleting destructor'
 TcpIpReadSocket::~TcpIpReadSocket()
 {
 }
@@ -33,3 +31,4 @@ TcpIpReadSocket::~TcpIpReadSocket()
 void TcpIpReadSocket::Closed(unsigned char p_notifyPeer)
 {
 }
+

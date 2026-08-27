@@ -41,8 +41,7 @@ void EntryHandler::OnExit()
 }
 
 // 68K 0x1011c36e __dt__13CEntryHandlerFv
-// SYNTHETIC: LEMBALL 0x00455e10
-// EntryHandler::`scalar deleting destructor'
 EntryHandler::~EntryHandler()
 {
 }
+

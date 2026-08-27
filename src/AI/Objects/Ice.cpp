@@ -50,9 +50,10 @@ void Ice::Leave(PlayerLemming* p_lemming)
 }
 
 // 68K 0x1061220e Switch__4CIceFv
-// STUB: LEMBALL 0x0042d550
+// FUNCTION: LEMBALL 0x0042d550
 void Ice::Switch()
 {
+	RequestAction(0x1a);
 }
 
 // 68K 0x10612236 Switched__4CIceFv
@@ -62,8 +63,7 @@ void Ice::Switched()
 }
 
 // 68K 0x1061181a __dt__4CIceFv
-// SYNTHETIC: LEMBALL 0x0042e500
-// Ice::`vector deleting destructor'
 Ice::~Ice()
 {
 }
+

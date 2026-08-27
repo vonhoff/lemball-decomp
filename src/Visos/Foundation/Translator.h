@@ -13,4 +13,9 @@ public:
 };
 
 extern Translator* g_pInputTranslator;
+
+// SYNTHETIC: LEMBALL 0x004599d0
+// Translator::`scalar deleting destructor'
+
 #endif
+

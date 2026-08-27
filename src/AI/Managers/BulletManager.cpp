@@ -20,17 +20,23 @@ Bullet* BulletManager::NextFreeBullet()
 }
 
 // 68K 0x10605114 GetFirstBullet__14CBulletManagerFv
-// STUB: LEMBALL 0x00417f40
+// FUNCTION: LEMBALL 0x00417f40
 Bullet* BulletManager::GetFirstBullet()
 {
-	return 0;
+	m_iterator = 0;
+	return m_activeBullets[0];
 }
 
 // 68K 0x1060514e GetNextBullet__14CBulletManagerFv
-// STUB: LEMBALL 0x00417f50
+// FUNCTION: LEMBALL 0x00417f50
 Bullet* BulletManager::GetNextBullet()
 {
-	return 0;
+	int iterator = m_iterator + 1;
+	m_iterator = iterator;
+	if (m_activeCount <= iterator) {
+		return 0;
+	}
+	return m_activeBullets[iterator];
 }
 
 // 68K 0x1060519a RequestRemoteBullet__14CBulletManagerFP7CBullet
@@ -78,8 +84,7 @@ bool BulletManager::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate
 }
 
 // 68K 0x1060502c __dt__14CBulletManagerFv
-// SYNTHETIC: LEMBALL 0x00418300
-// BulletManager::`scalar deleting destructor'
 BulletManager::~BulletManager()
 {
 }
+

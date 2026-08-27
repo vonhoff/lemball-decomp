@@ -16,4 +16,9 @@ protected:
 	const char* m_header; // 0x2c
 };
 
+// SYNTHETIC: LEMBALL 0x00462810
+// BroadcastMessage::`scalar deleting destructor'
+
+
 #endif
+

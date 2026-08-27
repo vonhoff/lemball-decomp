@@ -96,11 +96,10 @@ bool ObjectManager::Receive(unsigned short p_message, GlobalGameObject* p_object
 }
 
 // 68K 0x1061a2c2 __dt__14CObjectManagerFv
-// SYNTHETIC: LEMBALL 0x0041c330
-// ObjectManager::`scalar deleting destructor'
 ObjectManager::~ObjectManager()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a7830
 ObjectManager* g_pGenericGroupObjectManager;
+

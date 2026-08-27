@@ -65,8 +65,7 @@ void Laser::DoActivate()
 }
 
 // 68K 0x106135c0 __dt__6CLaserFv
-// SYNTHETIC: LEMBALL 0x00429ed0
-// Laser::`vector deleting destructor'
 Laser::~Laser()
 {
 }
+

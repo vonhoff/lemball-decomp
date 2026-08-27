@@ -120,8 +120,6 @@ FileBroadcast* FileNetwork::GetNewBroadcast()
 }
 
 // 68K 0x10107a3a __dt__12CFileNetworkFv
-// SYNTHETIC: LEMBALL 0x0046f970
-// FileNetwork::`scalar deleting destructor'
 FileNetwork::~FileNetwork()
 {
 }
@@ -134,3 +132,4 @@ void* g_hFileNetworkThread = 0;
 
 // GLOBAL: LEMBALL 0x004a2de4
 void* g_pFileBroadcastData = 0;
+

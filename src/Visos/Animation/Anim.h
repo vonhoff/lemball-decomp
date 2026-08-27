@@ -18,4 +18,9 @@ private:
 	ResAnim* m_animResource;  // 0x1c
 };
 
+// SYNTHETIC: LEMBALL 0x004452e0
+// Anim::`scalar deleting destructor'
+
+
 #endif
+

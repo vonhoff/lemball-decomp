@@ -8,8 +8,6 @@ int Key::Usage()
 }
 
 // 68K 0x1011ad36 __dt__4CKeyFv
-// SYNTHETIC: LEMBALL 0x0041c600
-// Key::`scalar deleting destructor'
 Key::~Key()
 {
 }
@@ -40,3 +38,4 @@ AiCoord Key::ActivatePosition()
 {
 	return *(AiCoord*) 0;
 }
+

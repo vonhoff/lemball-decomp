@@ -18,4 +18,9 @@ private:
 };
 
 extern AckMessage* g_pAckMessage;
+
+// SYNTHETIC: LEMBALL 0x00462b80
+// AckMessage::`scalar deleting destructor'
+
 #endif
+

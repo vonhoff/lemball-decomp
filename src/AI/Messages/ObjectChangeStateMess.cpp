@@ -49,8 +49,7 @@ void ObjectChangeStateMess::GetData()
 }
 
 // 68K 0x1011a256 __dt__22CObjectChangeStateMessFv
-// SYNTHETIC: LEMBALL 0x00417b80
-// ObjectChangeStateMess::`scalar deleting destructor'
 ObjectChangeStateMess::~ObjectChangeStateMess()
 {
 }
+

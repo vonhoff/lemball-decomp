@@ -13,4 +13,9 @@ public:
 	virtual ~Bonus();        // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00422fe0
+// Bonus::`scalar deleting destructor'
+
+
 #endif
+

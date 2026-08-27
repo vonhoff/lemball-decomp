@@ -28,4 +28,9 @@ private:
 	unsigned int m_activationPending; // 0x144
 };
 
+// SYNTHETIC: LEMBALL 0x0040ec10
+// Door::`scalar deleting destructor'
+
+
 #endif
+

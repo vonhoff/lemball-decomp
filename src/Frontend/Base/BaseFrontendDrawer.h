@@ -104,4 +104,9 @@ extern int g_nPendingEffectsVolume;
 extern int g_nPendingMusicVolume;
 extern int g_nMusicVolume;
 extern int g_nEffectsVolume;
+
+// SYNTHETIC: LEMBALL 0x00447000
+// BaseFrontendDrawer::`scalar deleting destructor'
+
 #endif
+

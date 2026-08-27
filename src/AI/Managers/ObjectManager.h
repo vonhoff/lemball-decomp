@@ -47,4 +47,9 @@ private:
 };
 
 extern ObjectManager* g_pGenericGroupObjectManager;
+
+// SYNTHETIC: LEMBALL 0x0041c330
+// ObjectManager::`scalar deleting destructor'
+
 #endif
+

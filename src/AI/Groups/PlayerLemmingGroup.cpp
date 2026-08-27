@@ -64,10 +64,10 @@ void PlayerLemmingGroup::SetPlayerControlled(unsigned char p_playerControlled, P
 }
 
 // 68K 0x1060f4e4 CheckPlayerControlled__19CPlayerLemmingGroupFv
-// STUB: LEMBALL 0x00414880
+// FUNCTION: LEMBALL 0x00414880
 bool PlayerLemmingGroup::CheckPlayerControlled()
 {
-	return 0;
+	return m_playerControlled;
 }
 
 // 68K 0x1060f526 GetFirstDeadLemming__19CPlayerLemmingGroupFv
@@ -91,8 +91,7 @@ bool PlayerLemmingGroup::HasSfxChanged()
 }
 
 // 68K 0x1060e8ec __dt__19CPlayerLemmingGroupFv
-// SYNTHETIC: LEMBALL 0x00414c80
-// PlayerLemmingGroup::`scalar deleting destructor'
 PlayerLemmingGroup::~PlayerLemmingGroup()
 {
 }
+

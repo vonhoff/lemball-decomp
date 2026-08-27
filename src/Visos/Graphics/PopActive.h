@@ -13,4 +13,9 @@ public:
 	virtual ~PopActive();            // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x004395c0
+// PopActive::`scalar deleting destructor'
+
+
 #endif
+

@@ -35,8 +35,7 @@ void GraphicButton::DrawButton()
 }
 
 // 68K 0x10210966 __dt__14CGraphicButtonFv
-// SYNTHETIC: LEMBALL 0x004698c0
-// GraphicButton::`scalar deleting destructor'
 GraphicButton::~GraphicButton()
 {
 }
+

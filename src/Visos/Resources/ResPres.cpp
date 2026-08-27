@@ -22,8 +22,7 @@ void ResPres::SetType()
 	m_chunkType = kChunkPres;
 }
 
-// SYNTHETIC: LEMBALL 0x0045ec40
-// ResPres::`scalar deleting destructor'
 ResPres::~ResPres()
 {
 }
+

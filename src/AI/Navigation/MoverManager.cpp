@@ -61,8 +61,7 @@ void MoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 }
 
 // 68K 0x106180ca __dt__13CMoverManagerFv
-// SYNTHETIC: LEMBALL 0x0042fba0
-// MoverManager::`scalar deleting destructor'
 MoverManager::~MoverManager()
 {
 }
+

@@ -59,15 +59,17 @@ void FileBroadcast::ResetPort(short p_port)
 }
 
 // 68K 0x1020935e StartListen__14CFileBroadcastFv
-// STUB: LEMBALL 0x0047aed0
+// FUNCTION: LEMBALL 0x0047aed0
 void FileBroadcast::StartListen()
 {
+	*(unsigned int*) ((char*) this + 0x14) = 1;
 }
 
 // 68K 0x10209392 StopListen__14CFileBroadcastFv
-// STUB: LEMBALL 0x0047aee0
+// FUNCTION: LEMBALL 0x0047aee0
 void FileBroadcast::StopListen()
 {
+	*(unsigned int*) ((char*) this + 0x14) = 0;
 }
 
 // 68K 0x102093c4 Process__14CFileBroadcastFv
@@ -77,8 +79,6 @@ void FileBroadcast::Process()
 }
 
 // 68K 0x102088cc __dt__14CFileBroadcastFv
-// SYNTHETIC: LEMBALL 0x0047bb60
-// FileBroadcast::`scalar deleting destructor'
 FileBroadcast::~FileBroadcast()
 {
 }
@@ -91,3 +91,4 @@ void FileBroadcast::Closed(unsigned char p_notifyPeer)
 
 // GLOBAL: LEMBALL 0x004a2de0
 FileBroadcast* g_pFileBroadcast = 0;
+

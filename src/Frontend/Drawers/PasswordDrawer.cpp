@@ -87,8 +87,7 @@ void PasswordDrawer::SetHiliteWindow()
 }
 
 // 68K 0x1080c8ce __dt__15CPasswordDrawerFv
-// SYNTHETIC: LEMBALL 0x00452370
-// PasswordDrawer::`scalar deleting destructor'
 PasswordDrawer::~PasswordDrawer()
 {
 }
+

@@ -22,4 +22,9 @@ private:
 	int m_maxY; // 0x130
 };
 
+// SYNTHETIC: LEMBALL 0x0040c1d0
+// Slinky::`scalar deleting destructor'
+
+
 #endif
+

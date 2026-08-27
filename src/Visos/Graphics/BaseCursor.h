@@ -56,4 +56,9 @@ private:
 	undefined4 m_reserved98;            // 0x98
 };
 
+// SYNTHETIC: LEMBALL 0x0046ba30
+// BaseCursor::`scalar deleting destructor'
+
+
 #endif
+

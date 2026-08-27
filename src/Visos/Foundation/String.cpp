@@ -10,11 +10,6 @@
 // GLOBAL: LEMBALL 0x004a42a8
 // _pctype
 
-// FUNCTION: LEMBALL 0x0047fc00
-// __isctype
-
-// FUNCTION: LEMBALL 0x00480060
-// _tolower
 
 // 68K 0x10200e84 __ct__7CStringFv
 // FUNCTION: LEMBALL 0x0046e410
@@ -145,3 +140,4 @@ String String::Lower()
 	}
 	return *this;
 }
+

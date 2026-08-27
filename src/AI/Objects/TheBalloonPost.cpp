@@ -7,8 +7,7 @@ TheBalloonPost::TheBalloonPost(eObjectType p_arg0, unsigned char p_arg1)
 }
 
 // 68K 0x101186cc __dt__15CTheBalloonPostFv
-// SYNTHETIC: LEMBALL 0x0042a7a0
-// TheBalloonPost::`scalar deleting destructor'
 TheBalloonPost::~TheBalloonPost()
 {
 }
+

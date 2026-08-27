@@ -12,4 +12,9 @@ public:
 	~ObjectHitMess();
 };
 
+// SYNTHETIC: LEMBALL 0x00417ca0
+// ObjectHitMess::`scalar deleting destructor'
+
+
 #endif
+

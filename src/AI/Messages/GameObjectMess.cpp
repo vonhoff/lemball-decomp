@@ -39,8 +39,7 @@ void GameObjectMess::GetData()
 }
 
 // 68K 0x10117fd4 __dt__15CGameObjectMessFv
-// SYNTHETIC: LEMBALL 0x00417b50
-// GameObjectMess::`scalar deleting destructor'
 GameObjectMess::~GameObjectMess()
 {
 }
+

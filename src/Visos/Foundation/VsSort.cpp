@@ -8,10 +8,10 @@ int AnimSpCmp(const void* p_left, const void* p_right)
 }
 
 // 68K 0x10b05a34 ViewDataCmp__FPCvPCv
-// STUB: LEMBALL 0x0043ff60
+// FUNCTION: LEMBALL 0x0043ff60
 int ViewDataCmp(const void* p_left, const void* p_right)
 {
-	return 0;
+	return *(int*) ((char*) p_left + 0x48) - *(int*) ((char*) p_right + 0x48);
 }
 
 // 68K 0x102172a4 VSQSort

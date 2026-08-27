@@ -235,8 +235,7 @@ bool ResBaseList::ForceLoadVram(unsigned int p_index)
 }
 
 // 68K 0x10100944 __dt__12CResBaseLISTFv
-// SYNTHETIC: LEMBALL 0x0045e700
-// ResBaseList::`scalar deleting destructor'
 ResBaseList::~ResBaseList()
 {
 }
+

@@ -57,8 +57,7 @@ void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 }
 
 // 68K 0x1061524c __dt__12CLiftManagerFv
-// SYNTHETIC: LEMBALL 0x004266e0
-// LiftManager::`scalar deleting destructor'
 LiftManager::~LiftManager()
 {
 }
+

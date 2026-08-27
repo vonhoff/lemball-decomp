@@ -27,8 +27,7 @@ void GunButton::OnPressed(int p_flags)
 }
 
 // 68K 0x1011c1a2 __dt__10CGunButtonFv
-// SYNTHETIC: LEMBALL 0x0044e650
-// GunButton::`scalar deleting destructor'
 GunButton::~GunButton()
 {
 }
+

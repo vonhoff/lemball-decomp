@@ -22,4 +22,9 @@ public:
 	unsigned int m_tabWidth; // 0x14
 };
 
+// SYNTHETIC: LEMBALL 0x00458e60
+// VsStreambuf::`scalar deleting destructor'
+
+
 #endif
+

@@ -39,4 +39,9 @@ private:
 	short m_height;                 // 0x36
 };
 
+// SYNTHETIC: LEMBALL 0x00439a40
+// HotAreaHandler::`scalar deleting destructor'
+
+
 #endif
+

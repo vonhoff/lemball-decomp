@@ -14,8 +14,6 @@ int Tower::Usage()
 }
 
 // 68K 0x1011ab6a __dt__6CTowerFv
-// SYNTHETIC: LEMBALL 0x0041c5c0
-// Tower::`scalar deleting destructor'
 Tower::~Tower()
 {
 }
@@ -40,3 +38,4 @@ AiCoord Tower::ActivatePosition()
 {
 	return *(AiCoord*) 0;
 }
+

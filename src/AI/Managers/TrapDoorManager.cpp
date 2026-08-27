@@ -41,8 +41,7 @@ void TrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned 
 }
 
 // 68K 0x1062177e __dt__16CTrapDoorManagerFv
-// SYNTHETIC: LEMBALL 0x0040ced0
-// TrapDoorManager::`scalar deleting destructor'
 TrapDoorManager::~TrapDoorManager()
 {
 }
+

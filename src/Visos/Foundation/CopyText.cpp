@@ -61,9 +61,8 @@ void CopyText::Set(VsPoint& p_position, ResFont* p_font, String p_text, unsigned
 }
 
 // 68K 0x10101b46 __dt__9CCopyTextFv
-// SYNTHETIC: LEMBALL 0x0046a220
-// CopyText::`scalar deleting destructor'
 CopyText::~CopyText()
 {
 	delete[] m_buffer;
 }
+

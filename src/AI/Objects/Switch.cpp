@@ -78,8 +78,7 @@ void Switch::GetViewData(ViewData& p_viewData)
 }
 
 // 68K 0x1061976c __dt__7CSwitchFv
-// SYNTHETIC: LEMBALL 0x0041dd70
-// Switch::`scalar deleting destructor'
 Switch::~Switch()
 {
 }
+

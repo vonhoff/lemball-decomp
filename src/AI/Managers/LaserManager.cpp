@@ -51,8 +51,7 @@ void LaserManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 }
 
 // 68K 0x106141f0 __dt__13CLaserManagerFv
-// SYNTHETIC: LEMBALL 0x00429ea0
-// LaserManager::`scalar deleting destructor'
 LaserManager::~LaserManager()
 {
 }
+

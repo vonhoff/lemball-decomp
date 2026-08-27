@@ -13,8 +13,7 @@ void TrackerButton::Move(const VsPoint& p_point)
 }
 
 // 68K 0x1080ea02 __dt__14CTrackerButtonFv
-// SYNTHETIC: LEMBALL 0x0044f030
-// TrackerButton::`scalar deleting destructor'
 TrackerButton::~TrackerButton()
 {
 }
+

@@ -51,8 +51,7 @@ void RocketManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned ch
 }
 
 // 68K 0x1061debc __dt__14CRocketManagerFv
-// SYNTHETIC: LEMBALL 0x004274f0
-// RocketManager::`scalar deleting destructor'
 RocketManager::~RocketManager()
 {
 }
+

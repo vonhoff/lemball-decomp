@@ -7,7 +7,7 @@ PvSurface::PvSurface()
 }
 
 // 68K 0x10215e76 __dt__10CPVSurfaceFv
-// STUB: LEMBALL 0x00466430
+// FUNCTION: LEMBALL 0x00466430
 PvSurface::~PvSurface()
 {
 }

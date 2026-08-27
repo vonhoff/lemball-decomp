@@ -8,7 +8,7 @@ class Frames {
 public:
 	virtual unsigned int GetFrameNo(); // vtable+0x00
 
-private:
+protected:
 	unsigned int m_frames;     // 0x04
 	undefined4 m_reserved08;   // 0x08
 	unsigned int m_frameState; // 0x0c

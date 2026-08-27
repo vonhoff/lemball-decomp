@@ -8,8 +8,7 @@ void TransportObjectMess::GetData()
 }
 
 // 68K 0x1011859a __dt__20CTransportObjectMessFv
-// SYNTHETIC: LEMBALL 0x00417d50
-// TransportObjectMess::`scalar deleting destructor'
 TransportObjectMess::~TransportObjectMess()
 {
 }
+

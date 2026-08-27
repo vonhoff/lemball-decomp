@@ -8,8 +8,6 @@ int Ammo::Usage()
 }
 
 // 68K 0x1011aa1a __dt__5CAmmoFv
-// SYNTHETIC: LEMBALL 0x0041c440
-// Ammo::`scalar deleting destructor'
 Ammo::~Ammo()
 {
 }
@@ -46,3 +44,4 @@ AiCoord Ammo::ActivatePosition()
 {
 	return *(AiCoord*) 0;
 }
+

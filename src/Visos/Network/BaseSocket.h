@@ -21,4 +21,9 @@ protected:
 	unsigned short m_multiMessageSequence; // 0x36
 };
 
+// SYNTHETIC: LEMBALL 0x00462900
+// BaseSocket::`scalar deleting destructor'
+
+
 #endif
+

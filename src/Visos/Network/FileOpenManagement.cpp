@@ -22,8 +22,7 @@ bool FileOpenManagement::SysCloseSocket()
 }
 
 // 68K 0x10106a58 __dt__19CFileOpenManagementFv
-// SYNTHETIC: LEMBALL 0x0047b9d0
-// FileOpenManagement::`scalar deleting destructor'
 FileOpenManagement::~FileOpenManagement()
 {
 }
+

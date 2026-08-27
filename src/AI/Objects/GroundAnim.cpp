@@ -1,7 +1,7 @@
 #include "GroundAnim.h"
 
 // 68K 0x1060e30e __ct__11CGroundAnimFv
-// STUB: LEMBALL 0x0040cf00
+// FUNCTION: LEMBALL 0x0040cf00
 GroundAnim::GroundAnim()
 {
 }

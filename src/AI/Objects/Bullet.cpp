@@ -11,8 +11,6 @@
 #include "../Navigation/Ai.h"
 
 // 68K 0x10119804 __dt__7CBulletFv
-// SYNTHETIC: LEMBALL 0x00418330
-// Bullet::`scalar deleting destructor'
 Bullet::~Bullet()
 {
 }
@@ -260,3 +258,4 @@ bool Bullet::Receive(unsigned short p_messageId, NetworkMessage* p_message)
 void Bullet::DoActivate()
 {
 }
+

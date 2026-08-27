@@ -60,4 +60,9 @@ private:
 	int m_fireInterval;                // 0x16c
 };
 
+// SYNTHETIC: LEMBALL 0x00420ab0
+// Enemy::`scalar deleting destructor'
+
+
 #endif
+

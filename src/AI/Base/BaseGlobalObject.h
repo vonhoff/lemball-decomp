@@ -17,4 +17,9 @@ private:
 	AiCoord m_initialPosition; // 0x138
 };
 
+// SYNTHETIC: LEMBALL 0x0040ce50
+// BaseGlobalObject::`scalar deleting destructor'
+
+
 #endif
+

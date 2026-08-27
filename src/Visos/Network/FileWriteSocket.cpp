@@ -27,8 +27,6 @@ bool FileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 }
 
 // 68K 0x1020795a __dt__16CFileWriteSocketFv
-// SYNTHETIC: LEMBALL 0x0047bcc0
-// FileWriteSocket::`scalar deleting destructor'
 FileWriteSocket::~FileWriteSocket()
 {
 }
@@ -38,3 +36,4 @@ FileWriteSocket::~FileWriteSocket()
 void FileWriteSocket::Closed(unsigned char p_notifyPeer)
 {
 }
+

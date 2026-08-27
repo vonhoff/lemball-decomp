@@ -7,8 +7,6 @@ BigBitmap::BigBitmap()
 }
 
 // 68K 0x10101768 __dt__10CBigBitmapFv
-// SYNTHETIC: LEMBALL 0x00439620
-// BigBitmap::`scalar deleting destructor'
 BigBitmap::~BigBitmap()
 {
 }
@@ -24,3 +22,4 @@ void BigBitmap::Draw(Gdi* p_gdi)
 void BigBitmap::Render(Gdi* p_gdi)
 {
 }
+

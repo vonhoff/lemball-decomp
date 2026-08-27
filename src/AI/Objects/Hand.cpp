@@ -45,8 +45,7 @@ void Hand::DoActivate()
 }
 
 // 68K 0x10610e1c __dt__5CHandFv
-// SYNTHETIC: LEMBALL 0x00428800
-// Hand::`vector deleting destructor'
 Hand::~Hand()
 {
 }
+

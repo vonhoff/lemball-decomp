@@ -34,4 +34,9 @@ private:
 	GameObject* m_objects[24];           // 0x258
 };
 
+// SYNTHETIC: LEMBALL 0x0040ac60
+// InvisibleSwitch::`vector deleting destructor'
+
+
 #endif
+

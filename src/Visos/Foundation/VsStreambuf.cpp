@@ -11,8 +11,7 @@ VsStreambuf::VsStreambuf(char* p_arg0, int p_arg1)
 }
 
 // 68K 0x10213c84 __dt__12CVSStreambufFv
-// SYNTHETIC: LEMBALL 0x00458e60
-// VsStreambuf::`scalar deleting destructor'
 VsStreambuf::~VsStreambuf()
 {
 }
+

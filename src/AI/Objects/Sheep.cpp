@@ -32,8 +32,7 @@ void Sheep::HitMine()
 }
 
 // 68K 0x1011b36a __dt__6CSheepFv
-// SYNTHETIC: LEMBALL 0x0041fb70
-// Sheep::`scalar deleting destructor'
 Sheep::~Sheep()
 {
 }
+

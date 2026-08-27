@@ -41,4 +41,9 @@ private:
 	GameObject* m_objects[10];      // 0x178
 };
 
+// SYNTHETIC: LEMBALL 0x0042fbd0
+// Mover::`vector deleting destructor'
+
+
 #endif
+

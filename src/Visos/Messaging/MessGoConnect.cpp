@@ -34,11 +34,10 @@ void MessGoConnect::AddData()
 }
 
 // 68K 0x101170a8 __dt__14CMessGOConnectFv
-// SYNTHETIC: LEMBALL 0x00462890
-// MessGoConnect::`scalar deleting destructor'
 MessGoConnect::~MessGoConnect()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a1e5c
 MessGoConnect* g_pMessGOConnect = 0;
+

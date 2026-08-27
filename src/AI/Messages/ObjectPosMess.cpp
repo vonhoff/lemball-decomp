@@ -39,8 +39,7 @@ void ObjectPosMess::GetData()
 }
 
 // 68K 0x1011a2c0 __dt__14CObjectPosMessFv
-// SYNTHETIC: LEMBALL 0x00417c70
-// ObjectPosMess::`scalar deleting destructor'
 ObjectPosMess::~ObjectPosMess()
 {
 }
+

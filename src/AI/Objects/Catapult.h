@@ -18,4 +18,9 @@ public:
 	virtual ~Catapult();                         // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0041c400
+// Catapult::`scalar deleting destructor'
+
+
 #endif
+

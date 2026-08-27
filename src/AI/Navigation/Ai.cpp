@@ -1,5 +1,12 @@
 #include "Ai.h"
 
+#include "../Groups/EnemyGroupManager.h"
+#include "../Groups/PlayerLemmingGroupManager.h"
+#include "../Groups/SheepGroupManager.h"
+#include "../Managers/BulletManager.h"
+#include "../Managers/DoorManager.h"
+#include "../Managers/LiftManager.h"
+
 // 68K 0x1060013a __ct__3CAIFP5CGame
 // STUB: LEMBALL 0x00410c10
 Ai::Ai(Game* p_arg0)
@@ -50,9 +57,10 @@ void Ai::DecideAnimsRequired()
 }
 
 // 68K 0x106018b4 AddTime__3CAIFi
-// STUB: LEMBALL 0x004121e0
+// FUNCTION: LEMBALL 0x004121e0
 void Ai::AddTime(int p_time)
 {
+	m_unk0xd4[5] += p_time;
 }
 
 // 68K 0x106018da Process__3CAIFUc
@@ -100,31 +108,31 @@ int Ai::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x10601eac PlayerCheckGroupIntersection__3CAIFP7CVSRectP7AICOORD
-// STUB: LEMBALL 0x00412780
+// FUNCTION: LEMBALL 0x00412780
 bool Ai::PlayerCheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 {
-	return 0;
+	return m_playerGroupManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
 // 68K 0x10601f0a EnemyCheckGroupIntersection__3CAIFP7CVSRectP7AICOORD
-// STUB: LEMBALL 0x004127a0
+// FUNCTION: LEMBALL 0x004127a0
 bool Ai::EnemyCheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 {
-	return 0;
+	return m_enemyGroupManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
 // 68K 0x10601f66 SheepCheckGroupIntersection__3CAIFP7CVSRectP7AICOORD
-// STUB: LEMBALL 0x004127c0
+// FUNCTION: LEMBALL 0x004127c0
 bool Ai::SheepCheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 {
-	return 0;
+	return m_sheepGroupManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
 // 68K 0x10601fc2 BulletCheckGroupIntersection__3CAIFP7CVSRectP7AICOORD
-// STUB: LEMBALL 0x004127e0
+// FUNCTION: LEMBALL 0x004127e0
 bool Ai::BulletCheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 {
-	return 0;
+	return m_bulletManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
 // 68K 0x1060201a StepOn__3CAIFRC7AICOORDP11CGameObjectUs
@@ -198,10 +206,10 @@ void Ai::AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time)
 }
 
 // 68K 0x1060272a LevelName__3CAIFv
-// STUB: LEMBALL 0x00412f00
+// FUNCTION: LEMBALL 0x00412f00
 Game* Ai::LevelName()
 {
-	return 0;
+	return m_game;
 }
 
 // 68K 0x10602750 LoadLevel__3CAIFPUciUc
@@ -217,17 +225,17 @@ void Ai::FixUpLevel()
 }
 
 // 68K 0x10602894 DoorId__3CAIFi
-// STUB: LEMBALL 0x00413000
+// FUNCTION: LEMBALL 0x00413000
 unsigned short Ai::DoorId(int p_index)
 {
-	return 0;
+	return m_doorManager->Id(p_index);
 }
 
 // 68K 0x106028c0 LiftId__3CAIFi
-// STUB: LEMBALL 0x00413020
+// FUNCTION: LEMBALL 0x00413020
 unsigned short Ai::LiftId(int p_index)
 {
-	return 0;
+	return m_liftManager->Id(p_index);
 }
 
 // 68K 0x106028ec GetDead__3CAIFv
@@ -259,9 +267,10 @@ Mover* Ai::FindMoverHeight(int p_x, int p_y, int& p_height)
 }
 
 // 68K 0x106029e6 NLemmings__3CAIFi
-// STUB: LEMBALL 0x004130f0
+// FUNCTION: LEMBALL 0x004130f0
 void Ai::NLemmings(int p_count)
 {
+	m_lemmingCount = p_count;
 }
 
 // 68K 0x10602a0c AddANetworkStart__3CAIFiiii
@@ -283,10 +292,10 @@ void Ai::LoadFlagInfo(unsigned char* p_data, int p_size)
 }
 
 // 68K 0x10602bc2 nDead__3CAIFv
-// STUB: LEMBALL 0x00413370
+// FUNCTION: LEMBALL 0x00413370
 int Ai::NDead()
 {
-	return 0;
+	return m_playerGroupManager->m_deadCount;
 }
 
 // 68K 0x10602be6 Score__3CAIFi
@@ -302,8 +311,6 @@ void Ai::Process()
 }
 
 // 68K 0x10600d02 __dt__3CAIFv
-// SYNTHETIC: LEMBALL 0x00413e30
-// Ai::`scalar deleting destructor'
 Ai::~Ai()
 {
 }
@@ -314,5 +321,9 @@ Ai* g_pGenericGroupAI;
 // GLOBAL: LEMBALL 0x004a74b0
 Ai* g_pAI;
 
+// GLOBAL: LEMBALL 0x004a74b8
+int g_nGameOver = 0;
+
 // GLOBAL: LEMBALL 0x0049cf34
 Ai* g_pActiveAI = 0;
+

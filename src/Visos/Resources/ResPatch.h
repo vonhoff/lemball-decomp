@@ -16,4 +16,9 @@ public:
 	virtual ~ResPatch();    // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0045ebe0
+// ResPatch::`scalar deleting destructor'
+
+
 #endif
+

@@ -23,4 +23,9 @@ public:
 
 extern char g_szCurrentDirectory[256];
 extern char g_szSourceDiskPath[256];
+
+// SYNTHETIC: LEMBALL 0x00407e10
+// VsIOs::`scalar deleting destructor'
+
 #endif
+

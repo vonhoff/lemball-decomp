@@ -22,4 +22,9 @@ private:
 	undefined2 m_padding;              // 0x5e
 };
 
+// SYNTHETIC: LEMBALL 0x0047b7f0
+// HeaderMessage::`scalar deleting destructor'
+
+
 #endif
+

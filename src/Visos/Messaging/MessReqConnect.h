@@ -21,4 +21,9 @@ private:
 };
 
 extern MessReqConnect* g_pMessReqConnect;
+
+// SYNTHETIC: LEMBALL 0x00462830
+// MessReqConnect::`scalar deleting destructor'
+
 #endif
+

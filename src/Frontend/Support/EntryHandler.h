@@ -23,4 +23,9 @@ private:
 	unsigned int m_activationState; // 0x40
 };
 
+// SYNTHETIC: LEMBALL 0x00455e10
+// EntryHandler::`scalar deleting destructor'
+
+
 #endif
+

@@ -51,4 +51,9 @@ private:
 	unsigned int m_soundStopped;      // 0x608
 };
 
+// SYNTHETIC: LEMBALL 0x004510e0
+// SuccFailDrawer::`scalar deleting destructor'
+
+
 #endif
+

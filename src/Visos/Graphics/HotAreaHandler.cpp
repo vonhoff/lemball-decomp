@@ -66,8 +66,6 @@ bool HotAreaHandler::InArea(const VsPoint& p_point)
 }
 
 // 68K 0x10100b76 __dt__15CHotAreaHandlerFv
-// SYNTHETIC: LEMBALL 0x00439a40
-// HotAreaHandler::`scalar deleting destructor'
 HotAreaHandler::~HotAreaHandler()
 {
 }
@@ -150,3 +148,4 @@ void HotAreaHandler::SetParent(HotAreaList* p_parent)
 	m_parent = p_parent;
 	p_parent->UpdateHandlers();
 }
+

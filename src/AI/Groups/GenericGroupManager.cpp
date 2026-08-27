@@ -1,5 +1,7 @@
 #include "GenericGroupManager.h"
 
+#include "GenericGroup.h"
+
 GenericGroupManager::GenericGroupManager()
 {
 }
@@ -11,8 +13,6 @@ GenericGroupManager::GenericGroupManager(Ai* p_arg0, ObjectManager* p_arg1, Form
 }
 
 // 68K 0x1060d272 __dt__20CGenericGroupManagerFv
-// SYNTHETIC: LEMBALL 0x0041e940
-// GenericGroupManager::`scalar deleting destructor'
 GenericGroupManager::~GenericGroupManager()
 {
 }
@@ -31,51 +31,79 @@ int GenericGroupManager::Process()
 }
 
 // 68K 0x1060d3dc GetNumberOfGroups__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041ea20
+// FUNCTION: LEMBALL 0x0041ea20
 int GenericGroupManager::GetNumberOfGroups()
 {
-	return 0;
+	return m_groupCount;
 }
 
 // 68K 0x1060d41c GetFirstGroup__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041ea30
+// FUNCTION: LEMBALL 0x0041ea30
 GenericGroup* GenericGroupManager::GetFirstGroup()
 {
-	return 0;
+	m_currentGroup = 0;
+	if (m_groupCount == 0) {
+		return 0;
+	}
+	return m_groups[0];
 }
 
 // 68K 0x1060d464 GetNextGroup__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041ea50
+// FUNCTION: LEMBALL 0x0041ea50
 GenericGroup* GenericGroupManager::GetNextGroup()
 {
-	return 0;
+	int index = m_currentGroup + 1;
+	m_currentGroup = index;
+	if (m_groupCount <= index) {
+		return 0;
+	}
+	return m_groups[index];
 }
 
 // 68K 0x1060d4b4 GetNthGroup__20CGenericGroupManagerFi
-// STUB: LEMBALL 0x0041ea70
+// FUNCTION: LEMBALL 0x0041ea70
 GenericGroup* GenericGroupManager::GetNthGroup(int p_index)
 {
-	return 0;
+	m_currentGroup = p_index;
+	if (m_groupCount <= p_index) {
+		return 0;
+	}
+	return m_groups[p_index];
 }
 
 // 68K 0x1060d506 GetCurrentGroup__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041ea90
+// FUNCTION: LEMBALL 0x0041ea90
 GenericGroup* GenericGroupManager::GetCurrentGroup()
 {
-	return 0;
+	if (m_groupCount <= m_currentGroup) {
+		return 0;
+	}
+	return m_groups[m_currentGroup];
 }
 
 // 68K 0x1060d556 GetNumberOfElements__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041eab0
+// FUNCTION: LEMBALL 0x0041eab0
 int GenericGroupManager::GetNumberOfElements()
 {
-	return 0;
+	int total = 0;
+	GenericGroup* group = GetFirstGroup();
+	if (group != 0) {
+		do {
+			total += group->GetElementsInGroup();
+			group = GetNextGroup();
+		} while (group != 0);
+	}
+	return total;
 }
 
 // 68K 0x1060d5da GetFirstElement__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041eae0
+// FUNCTION: LEMBALL 0x0041eae0
 GameObject* GenericGroupManager::GetFirstElement()
 {
+	GenericGroup* group = GetFirstGroup();
+	if (group != 0) {
+		return group->GetFirstElementInGroup();
+	}
 	return 0;
 }
 
@@ -87,10 +115,15 @@ GameObject* GenericGroupManager::GetNextElement()
 }
 
 // 68K 0x1060d6e2 GetCurrentElement__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041eb40
+// FUNCTION: LEMBALL 0x0041eb40
 GameObject* GenericGroupManager::GetCurrentElement()
 {
-	return 0;
+	GameObject* object = 0;
+	GenericGroup* group = GetCurrentGroup();
+	if (group != 0) {
+		object = group->GetCurrentElementInGroup();
+	}
+	return object;
 }
 
 // 68K 0x1060d750 GetNthElement__20CGenericGroupManagerFi
@@ -132,9 +165,11 @@ void GenericGroupManager::DeleteGroup(GenericGroup* p_group)
 }
 
 // 68K 0x1060da66 AddElementToGroup__20CGenericGroupManagerFP11CGameObjectP13CGenericGroup
-// STUB: LEMBALL 0x0041ed20
+// FUNCTION: LEMBALL 0x0041ed20
 void GenericGroupManager::AddElementToGroup(GameObject* p_object, GenericGroup* p_group)
 {
+	FindElementInGroupAndRemoveIt(p_object);
+	p_group->AddElementToGroup(p_object);
 }
 
 // 68K 0x1060dae2 RemoveElementFromGroup__20CGenericGroupManagerFP11CGameObjectP13CGenericGroup
@@ -145,9 +180,10 @@ bool GenericGroupManager::RemoveElementFromGroup(GameObject* p_object, GenericGr
 }
 
 // 68K 0x1060dbd2 FindElementInGroupAndRemoveIt__20CGenericGroupManagerFP11CGameObject
-// STUB: LEMBALL 0x0041ede0
+// FUNCTION: LEMBALL 0x0041ede0
 void GenericGroupManager::FindElementInGroupAndRemoveIt(GameObject* p_object)
 {
+	RemoveElementFromGroup(p_object, GetGroupElementIsMemberOf(p_object));
 }
 
 // 68K 0x1060dc5a GetAllBoundingBoxes__20CGenericGroupManagerFP5tRect
@@ -170,3 +206,4 @@ bool GenericGroupManager::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coor
 {
 	return 0;
 }
+

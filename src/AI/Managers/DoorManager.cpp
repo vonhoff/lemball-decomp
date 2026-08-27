@@ -70,8 +70,7 @@ void DoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 }
 
 // 68K 0x10606e32 __dt__12CDoorManagerFv
-// SYNTHETIC: LEMBALL 0x0040ebe0
-// DoorManager::`scalar deleting destructor'
 DoorManager::~DoorManager()
 {
 }
+

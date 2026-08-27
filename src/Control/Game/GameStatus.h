@@ -19,7 +19,7 @@ public:
 	unsigned int JiggleLevelData();
 	void GotoLastLevels();
 	void IncLevel();
-	void IncSkill(unsigned char p_wrap);
+	void IncSkill(unsigned int p_wrap);
 	void Level(int p_level);
 	void SetMaxLevel(int p_skill, int p_level);
 	void UnJiggleLevelData(unsigned int p_value);

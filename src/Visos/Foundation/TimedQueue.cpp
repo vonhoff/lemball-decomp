@@ -15,8 +15,7 @@ bool TimedQueue::Send(Message& p_arg0)
 }
 
 // 68K 0x10117d58 __dt__11CTimedQueueFv
-// SYNTHETIC: LEMBALL 0x004599b0
-// TimedQueue::`scalar deleting destructor'
 TimedQueue::~TimedQueue()
 {
 }
+

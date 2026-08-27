@@ -5,9 +5,6 @@
 #include "Gdi.h"
 #include "VsGdi.h"
 
-// 68K 0x10115b92 __ct__5CZRLEFv
-// SYNTHETIC: LEMBALL 0x00467ac0
-// Zrle::Zrle
 
 // 68K 0x101014e8 Draw__5CZRLEFP4CGDI
 // FUNCTION: LEMBALL 0x00467ae0
@@ -33,8 +30,7 @@ void Zrle::Render(Gdi* p_gdi)
 }
 
 // 68K 0x10100a7a __dt__5CZRLEFv
-// SYNTHETIC: LEMBALL 0x00467b40
-// Zrle::`scalar deleting destructor'
 Zrle::~Zrle()
 {
 }
+

@@ -22,4 +22,9 @@ private:
 	unsigned int m_deadline; // 0x14c
 };
 
+// SYNTHETIC: LEMBALL 0x0040cea0
+// TrapDoor::`scalar deleting destructor'
+
+
 #endif
+

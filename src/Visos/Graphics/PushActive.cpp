@@ -19,8 +19,6 @@ void PushActive::Render(Gdi* p_gdi)
 }
 
 // 68K 0x10100cae __dt__11CPushActiveFv
-// SYNTHETIC: LEMBALL 0x004397a0
-// PushActive::`scalar deleting destructor'
 PushActive::~PushActive()
 {
 }
@@ -31,3 +29,4 @@ PushActive::PushActive()
 	: m_activeMarker(0)
 {
 }
+

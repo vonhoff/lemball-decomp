@@ -2,8 +2,9 @@
 #define LEMBALL_AI_BASE_GAMEOBJECT_H
 
 #include "../../Common.h"
-#include "AiCoord.h"   // complete type
-#include "C3DVector.h" // complete type
+#include "../../Visos/Foundation/VsRect.h" // complete type
+#include "AiCoord.h"                       // complete type
+#include "C3DVector.h"                     // complete type
 
 // SIZE 0x124
 // VTABLE: LEMBALL 0x00493c40
@@ -20,7 +21,7 @@ public:
 	int NextId();
 	int NextLoadingId();
 	short GetId();
-	unsigned short Blocked();
+	void Blocked();
 	unsigned short MapCheck(int p_arg0, int p_arg1);
 	virtual ~GameObject();                                                            // vtable+0x00
 	virtual void Action(eAction p_arg0, int p_arg1);                                  // vtable+0x04
@@ -36,7 +37,7 @@ public:
 	virtual AiCoord ActivatePosition();                                               // vtable+0x2c
 	virtual void StartStanding();                                                     // vtable+0x30
 	virtual void SetSndEffect(eSoundEffect p_arg0);                                   // vtable+0x34
-	virtual unsigned char GetSndEffect();                                             // vtable+0x38
+	virtual eSoundEffect GetSndEffect();                                              // vtable+0x38
 	virtual bool StartRoute();                                                        // vtable+0x3c
 	virtual bool SearchRoute();                                                       // vtable+0x40
 	virtual bool Move();                                                              // vtable+0x44
@@ -108,6 +109,7 @@ public:
 
 	friend class GameObjectMess;
 	friend class Bullet;
+	friend class Enemy;
 	friend class PlayerLemming;
 	friend class GlobalGameObject;
 	friend class ObjectChangeStateMess;
@@ -118,6 +120,16 @@ public:
 	friend class RequestActionMess;
 	friend class RequestCancelMess;
 	friend class RequestReplyMess;
+	friend class GenericGroup;
+
+	friend bool AtDestination(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
+	friend bool IsStuck(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
+	friend bool RequestDeath(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
+	friend bool IsJumping(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
+	friend bool IsFalling(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
+	friend bool NotTimeUp(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
+	friend bool PlayerWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
+	friend bool EnemyWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:
 	unsigned short m_runtimeFlags;        // 0x04
@@ -192,4 +204,9 @@ extern unsigned char g_abBitMasks[8];
 extern word g_wNetworkLemmingIndex;
 extern word g_wLocalLemmingIndex;
 extern int g_wLemmingCount;
+
+// SYNTHETIC: LEMBALL 0x00417ad0
+// GameObject::`scalar deleting destructor'
+
 #endif
+

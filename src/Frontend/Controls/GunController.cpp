@@ -100,8 +100,7 @@ void GunController::Process()
 }
 
 // 68K 0x108036f4 __dt__14CGunControllerFv
-// SYNTHETIC: LEMBALL 0x0044e690
-// GunController::`scalar deleting destructor'
 GunController::~GunController()
 {
 }
+

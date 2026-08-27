@@ -50,8 +50,6 @@ bool BaseFrontendProcess::ReceiveCritical(unsigned long p_id, ReadPacket* p_pack
 }
 
 // 68K 0x10801a0a __dt__20CBaseFrontendProcessFv
-// SYNTHETIC: LEMBALL 0x004472b0
-// BaseFrontendProcess::`scalar deleting destructor'
 BaseFrontendProcess::~BaseFrontendProcess()
 {
 }
@@ -82,3 +80,4 @@ int g_nZoomAvailable = 0;
 
 // GLOBAL: LEMBALL 0x004a6300
 int g_nDisplayMode = 0;
+

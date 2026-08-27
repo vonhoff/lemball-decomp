@@ -37,10 +37,10 @@ void Surface::AddToChangeList(const VsRect& p_rect)
 }
 
 // 68K 0x1010956c GetChangeList__8CSurfaceFv
-// STUB: LEMBALL 0x0046cbd0
+// FUNCTION: LEMBALL 0x0046cbd0
 ChangeList* Surface::GetChangeList()
 {
-	return 0;
+	return *(ChangeList**) ((char*) this + 0x550);
 }
 
 // 68K 0x1010959a Blit__8CSurfaceFP9CClipRect
@@ -122,10 +122,10 @@ void Surface::Flush()
 }
 
 // 68K 0x10105dce GetCurrDB__8CSurfaceFv
-// STUB: LEMBALL 0x0046dc80
+// FUNCTION: LEMBALL 0x0046dc80
 void* Surface::GetCurrDb()
 {
-	return 0;
+	return (char*) this + 0x55c;
 }
 
 // 68K 0x10111b02 Blit__8CSurfaceFP13CScreenScroll

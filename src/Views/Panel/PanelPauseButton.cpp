@@ -48,8 +48,7 @@ void PanelPauseButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 }
 
 // 68K 0x1011cd5e __dt__17CPanelPauseButtonFv
-// SYNTHETIC: LEMBALL 0x004438f0
-// PanelPauseButton::`scalar deleting destructor'
 PanelPauseButton::~PanelPauseButton()
 {
 }
+

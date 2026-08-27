@@ -28,8 +28,7 @@ void ObjectHitMess::GetData()
 }
 
 // 68K 0x1011a322 __dt__14CObjectHitMessFv
-// SYNTHETIC: LEMBALL 0x00417ca0
-// ObjectHitMess::`scalar deleting destructor'
 ObjectHitMess::~ObjectHitMess()
 {
 }
+

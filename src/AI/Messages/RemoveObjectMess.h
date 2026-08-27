@@ -10,4 +10,9 @@ public:
 	~RemoveObjectMess();
 };
 
+// SYNTHETIC: LEMBALL 0x00417c40
+// RemoveObjectMess::`scalar deleting destructor'
+
+
 #endif
+

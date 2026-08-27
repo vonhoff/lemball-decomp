@@ -7,9 +7,11 @@ TrackWindow::TrackWindow(const VsRect& p_arg0, int p_arg1, PvGWnd* p_arg2)
 }
 
 // 68K 0x1080e3d6 OnCreate__12CTrackWindowFv
-// STUB: LEMBALL 0x0044e940
+// FUNCTION: LEMBALL 0x0044e940
 void TrackWindow::OnCreate()
 {
+	char* target = *(char**) (*(int*) ((char*) this + 0x4c) + 0x0c);
+	*(unsigned int*) (*(int*) (*(int*) (target + 0x40) + 4) + 0x74 + (int) target) = 1;
 }
 
 // 68K 0x1080e418 Create__12CTrackWindowFRC7CVSRectP6CPVWndPc
@@ -63,8 +65,7 @@ unsigned int TrackWindow::GetStyle()
 }
 
 // 68K 0x1080e2e2 __dt__12CTrackWindowFv
-// SYNTHETIC: LEMBALL 0x0044eff0
-// TrackWindow::`scalar deleting destructor'
 TrackWindow::~TrackWindow()
 {
 }
+

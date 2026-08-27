@@ -13,8 +13,6 @@ void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 }
 
 // 68K 0x10106028 __dt__7CCursorFv
-// SYNTHETIC: LEMBALL 0x0046dad0
-// Cursor::`scalar deleting destructor'
 Cursor::~Cursor()
 {
 }
@@ -53,3 +51,4 @@ void Cursor::KillSystemCursor()
 void Cursor::RestoreSystemCursor()
 {
 }
+

@@ -19,4 +19,9 @@ private:
 };
 
 extern MasterInput* g_pMasterInput;
+
+// SYNTHETIC: LEMBALL 0x00472270
+// MasterInput::`scalar deleting destructor'
+
 #endif
+

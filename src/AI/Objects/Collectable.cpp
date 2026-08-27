@@ -43,8 +43,7 @@ int Collectable::Collected()
 }
 
 // 68K 0x10605c14 __dt__12CCollectableFv
-// SYNTHETIC: LEMBALL 0x00423060
-// Collectable::`scalar deleting destructor'
 Collectable::~Collectable()
 {
 }
+

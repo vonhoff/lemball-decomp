@@ -64,8 +64,7 @@ void Ball::LoadLevel(unsigned char** p_data)
 }
 
 // 68K 0x101196dc __dt__5CBallFv
-// SYNTHETIC: LEMBALL 0x00422350
-// Ball::`scalar deleting destructor'
 Ball::~Ball()
 {
 }
+

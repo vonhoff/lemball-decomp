@@ -47,4 +47,9 @@ private:
 	unsigned int m_returnDeadline;        // 0x490
 };
 
+// SYNTHETIC: LEMBALL 0x00452370
+// PasswordDrawer::`scalar deleting destructor'
+
+
 #endif
+

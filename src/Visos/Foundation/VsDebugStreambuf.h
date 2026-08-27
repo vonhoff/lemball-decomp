@@ -29,4 +29,9 @@ extern void* g_pDebugSyncEvent;
 extern int g_nDebugThreadId;
 extern FILE* g_pDebugOutputFile;
 extern char* g_pDebugOutputPath;
+
+// SYNTHETIC: LEMBALL 0x0045af60
+// VsDebugStreambuf::`scalar deleting destructor'
+
 #endif
+

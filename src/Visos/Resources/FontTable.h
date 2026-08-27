@@ -17,4 +17,9 @@ private:
 	ResZrle** m_glyphs; // 0x04
 };
 
+// SYNTHETIC: LEMBALL 0x00473750
+// FontTable::`scalar deleting destructor'
+
+
 #endif
+

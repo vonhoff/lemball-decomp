@@ -10,4 +10,9 @@ public:
 	~RequestCancelMess();
 };
 
+// SYNTHETIC: LEMBALL 0x00417c10
+// RequestCancelMess::`scalar deleting destructor'
+
+
 #endif
+

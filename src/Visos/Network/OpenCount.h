@@ -17,4 +17,9 @@ private:
 	undefined2 m_reserved2e;    // 0x2e
 };
 
+// SYNTHETIC: LEMBALL 0x0047b970
+// OpenCount::`scalar deleting destructor'
+
+
 #endif
+

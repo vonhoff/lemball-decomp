@@ -42,4 +42,9 @@ private:
 };
 
 extern NetworkManager* g_pNetworkManager;
+
+// SYNTHETIC: LEMBALL 0x00452f20
+// NetworkManager::`scalar deleting destructor'
+
 #endif
+

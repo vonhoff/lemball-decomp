@@ -62,8 +62,7 @@ void InvisibleSwitch::Load(unsigned char*& p_data)
 }
 
 // 68K 0x10612ac0 __dt__16CInvisibleSwitchFv
-// SYNTHETIC: LEMBALL 0x0040ac60
-// InvisibleSwitch::`vector deleting destructor'
 InvisibleSwitch::~InvisibleSwitch()
 {
 }
+

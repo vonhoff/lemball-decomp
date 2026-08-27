@@ -21,4 +21,9 @@ private:
 	unsigned int m_color; // 0x0c
 };
 
+// SYNTHETIC: LEMBALL 0x00469930
+// Line::`scalar deleting destructor'
+
+
 #endif
+

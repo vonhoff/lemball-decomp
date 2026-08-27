@@ -30,4 +30,9 @@ private:
 	HotAreaHandler* m_currentHandler; // 0x5c
 };
 
+// SYNTHETIC: LEMBALL 0x0046aa50
+// HotAreaList::`scalar deleting destructor'
+
+
 #endif
+

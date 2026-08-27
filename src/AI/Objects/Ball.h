@@ -28,4 +28,9 @@ private:
 	unsigned int m_direction; // 0x138
 };
 
+// SYNTHETIC: LEMBALL 0x00422350
+// Ball::`scalar deleting destructor'
+
+
 #endif
+

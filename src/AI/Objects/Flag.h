@@ -14,4 +14,9 @@ public:
 	virtual ~Flag();         // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00422fb0
+// Flag::`scalar deleting destructor'
+
+
 #endif
+

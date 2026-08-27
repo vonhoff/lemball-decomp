@@ -13,4 +13,9 @@ public:
 	virtual ~DrawingMark();          // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00439650
+// DrawingMark::`scalar deleting destructor'
+
+
 #endif
+

@@ -21,4 +21,9 @@ private:
 	int m_direction;        // 0x140
 };
 
+// SYNTHETIC: LEMBALL 0x0042c9e0
+// PaintGun::`scalar deleting destructor'
+
+
 #endif
+

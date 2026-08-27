@@ -27,4 +27,9 @@ private:
 	Ai* m_ai;                   // 0x3c
 };
 
+// SYNTHETIC: LEMBALL 0x0042fba0
+// MoverManager::`scalar deleting destructor'
+
+
 #endif
+

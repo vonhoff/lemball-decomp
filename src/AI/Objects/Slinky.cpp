@@ -34,8 +34,7 @@ bool Slinky::Process()
 }
 
 // 68K 0x1011b484 __dt__7CSlinkyFv
-// SYNTHETIC: LEMBALL 0x0040c1d0
-// Slinky::`scalar deleting destructor'
 Slinky::~Slinky()
 {
 }
+

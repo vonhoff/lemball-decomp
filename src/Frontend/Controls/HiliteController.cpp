@@ -88,8 +88,7 @@ void HiliteController::UpdateAnimIDs(unsigned long p_actionMessage)
 }
 
 // 68K 0x10805292 __dt__17CHiliteControllerFv
-// SYNTHETIC: LEMBALL 0x0044fff0
-// HiliteController::`scalar deleting destructor'
 HiliteController::~HiliteController()
 {
 }
+

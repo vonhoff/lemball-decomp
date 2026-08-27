@@ -27,4 +27,9 @@ private:
 	Lift* m_lifts;              // 0x3c
 };
 
+// SYNTHETIC: LEMBALL 0x004266e0
+// LiftManager::`scalar deleting destructor'
+
+
 #endif
+

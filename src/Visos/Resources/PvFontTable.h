@@ -11,4 +11,9 @@ public:
 	virtual ~PvFontTable(); // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00473770
+// PvFontTable::`scalar deleting destructor'
+
+
 #endif
+

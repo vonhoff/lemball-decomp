@@ -65,8 +65,6 @@ void Text::Draw(Gdi* p_gdi)
 }
 
 // 68K 0x10101dac __dt__5CTextFv
-// SYNTHETIC: LEMBALL 0x00469b80
-// Text::`scalar deleting destructor'
 Text::~Text()
 {
 }
@@ -152,3 +150,4 @@ void Text::Render(Gdi* p_gdi)
 	}
 	m_font->m_directUseCount--;
 }
+

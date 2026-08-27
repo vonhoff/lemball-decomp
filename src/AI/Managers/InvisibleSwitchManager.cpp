@@ -37,8 +37,7 @@ void InvisibleSwitchManager::LoadLevel(unsigned char* p_data, int p_dataSize, un
 }
 
 // 68K 0x1061331c __dt__23CInvisibleSwitchManagerFv
-// SYNTHETIC: LEMBALL 0x0040ac30
-// InvisibleSwitchManager::`scalar deleting destructor'
 InvisibleSwitchManager::~InvisibleSwitchManager()
 {
 }
+

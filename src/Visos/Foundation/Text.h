@@ -63,4 +63,9 @@ protected:
 	Zrle m_primitive;          // 0x2c
 };
 
+// SYNTHETIC: LEMBALL 0x00469b80
+// Text::`scalar deleting destructor'
+
+
 #endif
+

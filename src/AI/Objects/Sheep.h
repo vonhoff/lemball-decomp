@@ -16,4 +16,9 @@ public:
 	virtual ~Sheep();       // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0041fb70
+// Sheep::`scalar deleting destructor'
+
+
 #endif
+

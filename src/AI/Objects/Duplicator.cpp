@@ -59,8 +59,7 @@ int Duplicator::Usage()
 }
 
 // 68K 0x10607368 __dt__11CDuplicatorFv
-// SYNTHETIC: LEMBALL 0x00427aa0
-// Duplicator::`scalar deleting destructor'
 Duplicator::~Duplicator()
 {
 }
+

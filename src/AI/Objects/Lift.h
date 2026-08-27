@@ -59,4 +59,9 @@ private:
 	GameObject* m_objects[8];         // 0x170
 };
 
+// SYNTHETIC: LEMBALL 0x00426710
+// Lift::`scalar deleting destructor'
+
+
 #endif
+

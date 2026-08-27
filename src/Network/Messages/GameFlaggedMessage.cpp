@@ -29,8 +29,7 @@ void GameFlaggedMessage::GetData()
 }
 
 // 68K 0x10118182 __dt__19CGameFlaggedMessageFv
-// SYNTHETIC: LEMBALL 0x00452e90
-// GameFlaggedMessage::`scalar deleting destructor'
 GameFlaggedMessage::~GameFlaggedMessage()
 {
 }
+

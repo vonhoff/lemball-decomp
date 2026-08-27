@@ -19,4 +19,9 @@ private:
 };
 
 extern MessOkConnect* g_pMessOKConnect;
+
+// SYNTHETIC: LEMBALL 0x00462870
+// MessOkConnect::`scalar deleting destructor'
+
 #endif
+

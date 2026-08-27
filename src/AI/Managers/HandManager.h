@@ -26,4 +26,9 @@ private:
 	Ai* m_ai;                   // 0x3c
 };
 
+// SYNTHETIC: LEMBALL 0x004287d0
+// HandManager::`scalar deleting destructor'
+
+
 #endif
+

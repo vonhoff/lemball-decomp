@@ -48,9 +48,10 @@ void PvButton::Initialise()
 }
 
 // 68K 0x1020fc6e SetAutoDraw__9CPVButtonFUc
-// STUB: LEMBALL 0x00467e40
-void PvButton::SetAutoDraw(unsigned char p_enabled)
+// FUNCTION: LEMBALL 0x00467e40
+void PvButton::SetAutoDraw(unsigned int p_enabled)
 {
+	*(unsigned int*) ((char*) this + 0xf8) = p_enabled;
 }
 
 // 68K 0x1020fc9e CheckForceDraw__9CPVButtonFv
@@ -140,8 +141,7 @@ unsigned int PvButton::OnPaint(const VsRect& p_rect)
 }
 
 // 68K 0x1020fb9a __dt__9CPVButtonFv
-// SYNTHETIC: LEMBALL 0x00469880
-// PvButton::`scalar deleting destructor'
 PvButton::~PvButton()
 {
 }
+

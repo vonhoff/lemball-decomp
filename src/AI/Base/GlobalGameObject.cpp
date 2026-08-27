@@ -33,10 +33,14 @@ void GlobalGameObject::Restart()
 }
 
 // 68K 0x1060bc46 UsableState__17CGlobalGameObjectFv
-// STUB: LEMBALL 0x00416d90
+// FUNCTION: LEMBALL 0x00416d90
 int GlobalGameObject::UsableState()
 {
-	return 0;
+	int state = m_usableState;
+	if (state != 0) {
+		m_usableState = 0;
+	}
+	return state;
 }
 
 // 68K 0x1060bc8c Action__17CGlobalGameObjectF7eAction
@@ -71,15 +75,17 @@ bool GlobalGameObject::Receive(unsigned short p_arg0, NetworkMessage* p_arg1)
 }
 
 // 68K 0x1060bf4a SendRemove__17CGlobalGameObjectFv
-// STUB: LEMBALL 0x00416fc0
+// FUNCTION: LEMBALL 0x00416fc0
 void GlobalGameObject::SendRemove()
 {
+	g_pRemoveObjectMessage->Send(this);
 }
 
 // 68K 0x1060bf8e SendCancel__17CGlobalGameObjectFv
-// STUB: LEMBALL 0x00416fd0
+// FUNCTION: LEMBALL 0x00416fd0
 void GlobalGameObject::SendCancel()
 {
+	g_pRequestCancelMessage->Send(this);
 }
 
 // 68K 0x1060bfd2 SetMessages__17CGlobalGameObjectFv
@@ -113,8 +119,6 @@ void GlobalGameObject::DeleteMessages()
 }
 
 // 68K 0x101180c6 __dt__17CGlobalGameObjectFv
-// SYNTHETIC: LEMBALL 0x00417d00
-// GlobalGameObject::`scalar deleting destructor'
 GlobalGameObject::~GlobalGameObject()
 {
 }
@@ -145,3 +149,4 @@ ObjectHitMess* g_pObjectHitMessage;
 
 // GLOBAL: LEMBALL 0x0049d130
 ObjectDiesMess* g_pObjectDiesMessage;
+

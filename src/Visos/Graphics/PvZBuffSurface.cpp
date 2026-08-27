@@ -37,8 +37,8 @@ void PvZBuffSurface::ResizeZBuff()
 }
 
 // 68K 0x10101386 HasZBuff__15CPVZBuffSurfaceFv
-// STUB: LEMBALL 0x00466990
+// FUNCTION: LEMBALL 0x00466990
 bool PvZBuffSurface::HasZBuff()
 {
-	return 0;
+	return *(unsigned int*) ((char*) this - 0x10);
 }

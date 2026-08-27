@@ -14,8 +14,6 @@ int TcpIpCommonSocket::SysCloseSocket()
 }
 
 // 68K 0x1010c7b0 __dt__18CTCPIPCommonSocketFv
-// SYNTHETIC: LEMBALL 0x00471a90
-// TcpIpCommonSocket::`scalar deleting destructor'
 TcpIpCommonSocket::~TcpIpCommonSocket()
 {
 }
@@ -25,3 +23,4 @@ TcpIpCommonSocket::~TcpIpCommonSocket()
 void TcpIpCommonSocket::SocketError()
 {
 }
+

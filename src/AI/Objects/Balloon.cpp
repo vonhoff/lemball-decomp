@@ -8,8 +8,6 @@ int Balloon::Usage()
 }
 
 // 68K 0x1011adb8 __dt__8CBalloonFv
-// SYNTHETIC: LEMBALL 0x0041c640
-// Balloon::`scalar deleting destructor'
 Balloon::~Balloon()
 {
 }
@@ -46,3 +44,4 @@ AiCoord Balloon::ActivatePosition()
 {
 	return *(AiCoord*) 0;
 }
+

@@ -28,4 +28,9 @@ inline Cursor::Cursor()
 extern Cursor* g_pCursor;
 
 void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
+
+// SYNTHETIC: LEMBALL 0x0046dad0
+// Cursor::`scalar deleting destructor'
+
 #endif
+

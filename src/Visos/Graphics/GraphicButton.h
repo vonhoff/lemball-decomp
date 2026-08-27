@@ -17,6 +17,8 @@ public:
 	void SetAnimId(unsigned long p_animId);
 	GraphicButton();
 
+	friend class ToggleButton;
+
 private:
 	unsigned int m_enabled;         // 0x104
 	unsigned int m_state;           // 0x108
@@ -32,4 +34,9 @@ private:
 	undefined m_statRegion[8];      // 0x128
 };
 
+// SYNTHETIC: LEMBALL 0x004698c0
+// GraphicButton::`scalar deleting destructor'
+
+
 #endif
+

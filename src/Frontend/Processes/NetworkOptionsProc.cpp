@@ -196,12 +196,10 @@ void NetworkOptionsProc::Processing()
 {
 }
 
-// 68K 0x10808a36 __dt__19CNetworkOptionsProcFv
-// SYNTHETIC: LEMBALL 0x00455eb0
-// NetworkOptionsProc::`scalar deleting destructor'
 
 // GLOBAL: LEMBALL 0x004a0128
 NetworkOptionsProc* g_pNetworkOptionsProc = 0;
 
 // GLOBAL: LEMBALL 0x0049f144
 NetworkOptionsDrawer* g_pNetworkOptionsDrawer = 0;
+

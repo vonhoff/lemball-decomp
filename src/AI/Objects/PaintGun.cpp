@@ -32,8 +32,7 @@ void PaintGun::DoActivate()
 }
 
 // 68K 0x1061b2f6 __dt__9CPaintGunFv
-// SYNTHETIC: LEMBALL 0x0042c9e0
-// PaintGun::`scalar deleting destructor'
 PaintGun::~PaintGun()
 {
 }
+

@@ -15,4 +15,9 @@ public:
 	virtual ~ResString();   // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x0045eac0
+// ResString::`scalar deleting destructor'
+
+
 #endif
+

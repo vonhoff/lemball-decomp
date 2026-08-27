@@ -54,8 +54,7 @@ void ResZrle::SetType()
 }
 
 // 68K 0x10115f3c __dt__8CResZRLEFv
-// SYNTHETIC: LEMBALL 0x0045e850
-// ResZrle::`scalar deleting destructor'
 ResZrle::~ResZrle()
 {
 }
+

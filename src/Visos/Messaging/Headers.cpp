@@ -49,8 +49,7 @@ void Headers::GetData()
 }
 
 // 68K 0x10206e82 __dt__8CHeadersFv
-// SYNTHETIC: LEMBALL 0x0047b7d0
-// Headers::`scalar deleting destructor'
 Headers::~Headers()
 {
 }
+

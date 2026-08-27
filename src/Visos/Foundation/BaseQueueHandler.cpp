@@ -1,8 +1,6 @@
 #include "BaseQueueHandler.h"
 
 // 68K 0x10100004 __dt__17CBaseQueueHandlerFv
-// SYNTHETIC: LEMBALL 0x004098e0
-// BaseQueueHandler::`scalar deleting destructor'
 BaseQueueHandler::~BaseQueueHandler()
 {
 }
@@ -35,3 +33,4 @@ BaseQueueHandler* g_pNetworkStatusQueue = 0;
 
 // GLOBAL: LEMBALL 0x004a1e20
 BaseQueueHandler* g_pNetworkPacketQueue = 0;
+

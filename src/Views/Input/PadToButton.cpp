@@ -14,8 +14,7 @@ int PadToButton::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x10b0f9e2 __dt__12CPadToButtonFv
-// SYNTHETIC: LEMBALL 0x0043a490
-// PadToButton::`scalar deleting destructor'
 PadToButton::~PadToButton()
 {
 }
+

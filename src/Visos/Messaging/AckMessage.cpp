@@ -17,11 +17,10 @@ void AckMessage::GetData()
 }
 
 // 68K 0x10107490 __dt__11CAckMessageFv
-// SYNTHETIC: LEMBALL 0x00462b80
-// AckMessage::`scalar deleting destructor'
 AckMessage::~AckMessage()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a1e14
 AckMessage* g_pAckMessage = 0;
+

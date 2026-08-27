@@ -11,4 +11,9 @@ public:
 	virtual ~PasswordProc(); // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00407fd0
+// PasswordProc::`scalar deleting destructor'
+
+
 #endif
+
