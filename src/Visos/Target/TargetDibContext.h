@@ -7,9 +7,11 @@
 // VTABLE: LEMBALL 0x00498798
 class TargetDibContext {
 public:
-	virtual ~TargetDibContext(); // vtable+0x00
-	unsigned char* GetBits();    // vtable+0x0c
-	int GetStride();             // vtable+0x10
+	virtual ~TargetDibContext();      // vtable+0x00
+	virtual bool Lock();              // vtable+0x04
+	virtual bool Unlock();            // vtable+0x08
+	virtual unsigned char* GetBits(); // vtable+0x0c
+	virtual int GetStride();          // vtable+0x10
 
 	friend class TargetGraphicsDriver;
 	friend class Surface;

@@ -123,7 +123,7 @@ bool EnemyWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 // FUNCTION: LEMBALL 0x00419bc0
 bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
-	if (g_nGameOver != 0 && p_arg0->m_unk0x104[1] == 4) {
+	if (g_nGameOver != 0 && p_arg0->m_gameStatus == 4) {
 		return 1;
 	}
 	return 0;

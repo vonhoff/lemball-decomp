@@ -381,6 +381,18 @@ TargetDibContext::~TargetDibContext()
 {
 }
 
+// FUNCTION: LEMBALL 0x004582b0
+bool TargetDibContext::Lock()
+{
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x004582c0
+bool TargetDibContext::Unlock()
+{
+	return 1;
+}
+
 // FUNCTION: LEMBALL 0x004582d0
 unsigned char* TargetDibContext::GetBits()
 {

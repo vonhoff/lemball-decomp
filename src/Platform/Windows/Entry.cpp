@@ -32,10 +32,9 @@ bool TargetPumpEvents()
 		if (g_pNetworkPacketQueue != 0) {
 			do {
 				count = ((BaseQueue*) g_pNetworkPacketQueue)->GetMessageCount();
-				if (count == 0) {
-					break;
+				if (count != 0) {
+					((BaseQueue*) g_pNetworkPacketQueue)->ProcessNMsgs(count);
 				}
-				((BaseQueue*) g_pNetworkPacketQueue)->ProcessNMsgs(count);
 			} while (count != 0);
 		}
 	}

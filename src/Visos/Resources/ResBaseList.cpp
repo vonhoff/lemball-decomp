@@ -76,8 +76,7 @@ void ResBaseList::OnRead(unsigned char* p_source, unsigned char** p_data, unsign
 					else {
 						directed = 0;
 					}
-					i++;
-				} while (count > i);
+				} while (count > ++i);
 			}
 		}
 		m_loaded = 1;

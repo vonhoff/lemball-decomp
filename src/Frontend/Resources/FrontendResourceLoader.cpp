@@ -19,12 +19,8 @@
 // FUNCTION: LEMBALL 0x004479e0
 FrontendResourceLoader::FrontendResourceLoader(Main2DDisplay* p_arg0, int p_arg1)
 {
-	void* storage;
-	int total;
 	unsigned int i;
-	int offset;
 	unsigned int* id;
-	int effects;
 
 	m_loadedMovies = 0;
 	m_loadedStrings = 0;
@@ -32,16 +28,7 @@ FrontendResourceLoader::FrontendResourceLoader(Main2DDisplay* p_arg0, int p_arg1
 	m_loadedBitmaps = 0;
 	m_loadedFonts = 0;
 	m_loadedAnims = 0;
-	if (g_nCompactPrimaryContextLayout == 0) {
-		m_animResourceIds = g_dwFrontendAnimIds;
-		m_fontResourceIds = g_dwFrontendFontIds;
-		m_bitmapResourceIds = g_dwFrontendBitmapIds;
-		m_animCapacity = 0x43;
-		m_fontCapacity = 1;
-		m_bitmapCapacity = 3;
-		m_totalResources = 0x47;
-	}
-	else {
+	if (g_nCompactPrimaryContextLayout != 0) {
 		m_animResourceIds = g_dwFrontendCompactAnimIds;
 		m_fontResourceIds = g_dwFrontendCompactFontIds;
 		m_bitmapResourceIds = g_dwFrontendCompactBitmapIds;
@@ -50,87 +37,61 @@ FrontendResourceLoader::FrontendResourceLoader(Main2DDisplay* p_arg0, int p_arg1
 		m_bitmapCapacity = 3;
 		m_totalResources = 0x48;
 	}
-	total = m_totalResources;
-	m_totalResources = total + 3;
-	m_totalResources = total + 6;
-	m_totalResources = total + 9;
+	else {
+		m_animResourceIds = g_dwFrontendAnimIds;
+		m_fontResourceIds = g_dwFrontendFontIds;
+		m_bitmapResourceIds = g_dwFrontendBitmapIds;
+		m_animCapacity = 0x43;
+		m_fontCapacity = 1;
+		m_bitmapCapacity = 3;
+		m_totalResources = 0x47;
+	}
+	m_totalResources += 3;
+	m_totalResources += 3;
+	m_totalResources += 3;
 	m_anims = (ResAnim**) operator new(m_animCapacity << 2);
 	m_fonts = (ResFont**) operator new(m_fontCapacity << 2);
 	m_bitmaps = (ResBitmap**) operator new(m_bitmapCapacity << 2);
 	m_palettes = (ResPalette**) operator new(8);
 	m_strings = (ResString**) operator new(4);
 	m_movies = (ResMovie**) operator new(0x18);
-	storage = operator new(0x134);
-	if (storage == 0) {
-		m_loadAnim = 0;
-	}
-	else {
-		m_loadAnim = new (storage) CdLoadAnim(p_arg0->m_gdi, p_arg0);
-	}
-	if (m_loadAnim == 0) {
-		p_arg0->m_drawPrimitive = 0;
-	}
-	else {
+	m_loadAnim = new CdLoadAnim(p_arg0->m_gdi, p_arg0);
+	if (m_loadAnim != 0) {
 		p_arg0->m_drawPrimitive = &m_loadAnim->m_progress.m_draw;
 	}
-	effects = g_pSoundView->GetnEffects((unsigned short) p_arg1);
-	m_totalResources = m_totalResources + effects;
-	i = 0;
+	else {
+		p_arg0->m_drawPrimitive = 0;
+	}
+	m_totalResources += g_pSoundView->GetnEffects((unsigned short) p_arg1);
 	m_loadAnim->InitialiseScreen();
 	m_loadedResources = 0;
 	g_pSoundView->ChangeState((unsigned short) p_arg1, (LoadUpdate*) this);
-	if (m_animCapacity != 0) {
-		offset = 0;
-		do {
-			i = i + 1;
-			LoadAnim(*(unsigned int*) ((int) m_animResourceIds + offset));
-			offset = offset + 4;
-		} while (i < (unsigned int) m_animCapacity);
+	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
+		LoadAnim(m_animResourceIds[i]);
 	}
-	i = 0;
-	offset = 0;
-	if (m_fontCapacity != 0) {
-		do {
-			i = i + 1;
-			LoadFont(*(unsigned int*) ((int) m_fontResourceIds + offset));
-			offset = offset + 4;
-		} while (i < (unsigned int) m_fontCapacity);
+	for (i = 0; i < (unsigned int) m_fontCapacity; i++) {
+		LoadFont(m_fontResourceIds[i]);
 	}
-	i = 0;
-	offset = 0;
-	if (m_bitmapCapacity != 0) {
-		do {
-			i = i + 1;
-			LoadBitmap(*(unsigned int*) ((int) m_bitmapResourceIds + offset));
-			offset = offset + 4;
-		} while (i < (unsigned int) m_bitmapCapacity);
+	for (i = 0; i < (unsigned int) m_bitmapCapacity; i++) {
+		LoadBitmap(m_bitmapResourceIds[i]);
 	}
 	id = g_dwFrontendPaletteIds;
 	do {
-		i = *id;
-		id = id + 1;
-		LoadPalette(i);
+		LoadPalette(*id++);
 	} while (id < g_dwFrontendPaletteIds + 2);
 	id = g_dwFrontendStringIds;
 	do {
-		i = *id;
-		id = id + 1;
-		LoadString(i);
+		LoadString(*id++);
 	} while (id < g_dwFrontendStringIds + 1);
-	i = 0;
-	do {
+	for (i = 0; i < 3; i++) {
 		LoadMovie(i + 0x11e);
-		i = i + 1;
-	} while (i < 3);
-	i = 0;
-	do {
+	}
+	for (i = 0; i < 3; i++) {
 		LoadMovie(i + 0x121);
-		i = i + 1;
-	} while (i < 3);
+	}
 	p_arg0->m_drawPrimitive = 0;
 	if (m_loadAnim != 0) {
-		m_loadAnim->~CdLoadAnim();
-		operator delete(m_loadAnim);
+		delete m_loadAnim;
 	}
 }
 
@@ -139,57 +100,30 @@ FrontendResourceLoader::FrontendResourceLoader(Main2DDisplay* p_arg0, int p_arg1
 FrontendResourceLoader::~FrontendResourceLoader()
 {
 	unsigned int i;
-	int offset;
 	unsigned int* id;
-	unsigned int next;
 
 	g_pSoundView->ChangeState(0, 0);
-	i = 0;
-	if (m_animCapacity != 0) {
-		offset = 0;
-		do {
-			i = i + 1;
-			UnLoadAnim(*(unsigned int*) ((int) m_animResourceIds + offset));
-			offset = offset + 4;
-		} while (i < (unsigned int) m_animCapacity);
+	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
+		UnLoadAnim(m_animResourceIds[i]);
 	}
-	i = 0;
-	if (m_fontCapacity != 0) {
-		offset = 0;
-		do {
-			i = i + 1;
-			UnLoadFont(*(unsigned int*) ((int) m_fontResourceIds + offset));
-			offset = offset + 4;
-		} while (i < (unsigned int) m_fontCapacity);
+	for (i = 0; i < (unsigned int) m_fontCapacity; i++) {
+		UnLoadFont(m_fontResourceIds[i]);
 	}
-	i = 0;
-	offset = 0;
-	if (m_bitmapCapacity != 0) {
-		do {
-			i = i + 1;
-			UnLoadBitmap(*(unsigned int*) ((int) m_bitmapResourceIds + offset));
-			offset = offset + 4;
-		} while (i < (unsigned int) m_bitmapCapacity);
+	for (i = 0; i < (unsigned int) m_bitmapCapacity; i++) {
+		UnLoadBitmap(m_bitmapResourceIds[i]);
 	}
 	id = g_dwFrontendPaletteIds;
 	do {
-		i = *id;
-		id = id + 1;
-		UnLoadPalette(i);
+		UnLoadPalette(*id++);
 	} while (id < g_dwFrontendPaletteIds + 2);
 	id = g_dwFrontendStringIds;
 	do {
-		i = *id;
-		id = id + 1;
-		UnLoadString(i);
+		UnLoadString(*id++);
 	} while (id < g_dwFrontendStringIds + 1);
-	i = 0;
-	do {
-		next = i + 4;
-		(*(ResBase**) ((int) m_movies + i))->UnLoad();
-		*(ResMovie**) ((int) m_movies + i) = 0;
-		i = next;
-	} while (next < 0x18);
+	for (i = 0; i < 6; i++) {
+		m_movies[i]->UnLoad();
+		m_movies[i] = 0;
+	}
 	operator delete(m_movies);
 	operator delete(m_strings);
 	operator delete(m_palettes);
@@ -223,21 +157,25 @@ void FrontendResourceLoader::LoadAnim(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447de0
 void FrontendResourceLoader::UnLoadAnim(unsigned long p_resourceId)
 {
-	ResAnim** slot;
 	unsigned int i;
+	unsigned int count;
+	ResAnim** anims;
+	ResAnim** slot;
 
 	i = 0;
-	if (m_loadedAnims != 0) {
-		slot = m_anims;
-		while (*slot == 0 || (*slot)->m_resourceId != p_resourceId) {
-			slot = slot + 1;
-			i = i + 1;
-			if ((unsigned int) m_loadedAnims <= i) {
-				return;
+	count = m_loadedAnims;
+	if (count != 0) {
+		anims = m_anims;
+		slot = anims;
+		do {
+			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+				anims[i]->UnLoad();
+				anims[i] = 0;
+				break;
 			}
-		}
-		m_anims[i]->UnLoad();
-		m_anims[i] = 0;
+			slot++;
+			i++;
+		} while (i < count);
 	}
 }
 
@@ -250,25 +188,25 @@ void FrontendResourceLoader::LoadFont(unsigned long p_resourceId)
 	m_loadedFonts = m_loadedFonts + 1;
 }
 
-// 68K 0x1080ddf8 UnLoadFONT__23CFrontendResourceLoaderFUl
+// 68K 0x1080ddfa UnLoadFONT__23CFrontendResourceLoaderFUl
 // FUNCTION: LEMBALL 0x00447e60
 void FrontendResourceLoader::UnLoadFont(unsigned long p_resourceId)
 {
-	ResFont** slot;
 	unsigned int i;
+	ResFont** slot;
 
 	i = 0;
 	if (m_loadedFonts != 0) {
 		slot = m_fonts;
-		while (*slot == 0 || (*slot)->m_resourceId != p_resourceId) {
-			slot = slot + 1;
-			i = i + 1;
-			if ((unsigned int) m_loadedFonts <= i) {
-				return;
+		do {
+			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+				m_fonts[i]->UnLoad();
+				m_fonts[i] = 0;
+				break;
 			}
-		}
-		m_fonts[i]->UnLoad();
-		m_fonts[i] = 0;
+			slot++;
+			i++;
+		} while (i < (unsigned int) m_loadedFonts);
 	}
 }
 
@@ -285,21 +223,21 @@ void FrontendResourceLoader::LoadBitmap(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447ee0
 void FrontendResourceLoader::UnLoadBitmap(unsigned long p_resourceId)
 {
-	ResBitmap** slot;
 	unsigned int i;
+	ResBitmap** slot;
 
 	i = 0;
 	if (m_loadedBitmaps != 0) {
 		slot = m_bitmaps;
-		while (*slot == 0 || (*slot)->m_resourceId != p_resourceId) {
-			slot = slot + 1;
-			i = i + 1;
-			if ((unsigned int) m_loadedBitmaps <= i) {
-				return;
+		do {
+			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+				m_bitmaps[i]->UnLoad();
+				m_bitmaps[i] = 0;
+				break;
 			}
-		}
-		m_bitmaps[i]->UnLoad();
-		m_bitmaps[i] = 0;
+			slot++;
+			i++;
+		} while (i < (unsigned int) m_loadedBitmaps);
 	}
 }
 
@@ -316,21 +254,21 @@ void FrontendResourceLoader::LoadPalette(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447f60
 void FrontendResourceLoader::UnLoadPalette(unsigned long p_resourceId)
 {
-	ResPalette** slot;
-	unsigned int i;
-
-	i = 0;
+	unsigned int i = 0;
 	if (m_loadedPalettes != 0) {
-		slot = m_palettes;
-		while (*slot == 0 || (*slot)->m_resourceId != p_resourceId) {
-			slot = slot + 1;
-			i = i + 1;
-			if ((unsigned int) m_loadedPalettes <= i) {
+		ResPalette** slot = m_palettes;
+		while (1) {
+			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+				m_palettes[i]->UnLoad();
+				m_palettes[i] = 0;
+				return;
+			}
+			slot++;
+			i++;
+			if (i >= (unsigned int) m_loadedPalettes) {
 				return;
 			}
 		}
-		m_palettes[i]->UnLoad();
-		m_palettes[i] = 0;
 	}
 }
 
@@ -347,21 +285,21 @@ void FrontendResourceLoader::LoadString(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447fe0
 void FrontendResourceLoader::UnLoadString(unsigned long p_resourceId)
 {
-	ResString** slot;
 	unsigned int i;
+	ResString** slot;
 
 	i = 0;
 	if (m_loadedStrings != 0) {
 		slot = m_strings;
-		while (*slot == 0 || (*slot)->m_resourceId != p_resourceId) {
-			slot = slot + 1;
-			i = i + 1;
-			if ((unsigned int) m_loadedStrings <= i) {
-				return;
+		do {
+			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+				m_strings[i]->UnLoad();
+				m_strings[i] = 0;
+				break;
 			}
-		}
-		m_strings[i]->UnLoad();
-		m_strings[i] = 0;
+			slot++;
+			i++;
+		} while (i < (unsigned int) m_loadedStrings);
 	}
 }
 

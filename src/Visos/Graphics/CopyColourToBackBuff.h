@@ -12,13 +12,14 @@ public:
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~CopyColourToBackBuff(); // vtable+0x00
 
+	friend class Surface;
+
 private:
-	short m_field04; // 0x04
-	short m_field06; // 0x06
-	short m_field08; // 0x08
-	short m_field0a; // 0x0a
-	short m_field0c; // 0x0c
-	short m_field0e; // 0x0e
+	int m_colour;   // 0x04
+	short m_width;  // 0x08
+	short m_height; // 0x0a
+	short m_x;      // 0x0c
+	short m_y;      // 0x0e
 };
 
 // SYNTHETIC: LEMBALL 0x00439680

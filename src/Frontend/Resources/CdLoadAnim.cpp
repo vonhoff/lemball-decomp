@@ -24,38 +24,28 @@
 CdLoadAnim::CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1)
 	: AnimsManager(p_arg0, 0x2b6, 1, 1, 0, 0)
 {
-	void* storage;
 	unsigned int* points;
 	unsigned int packed;
 	int offset;
 	VsPoint* dest;
 	ResPalette* palette;
 	unsigned long animCount;
-	RepeatAnim* repeatAnim;
 
-	m_progress.m_draw.m_centerY = 0;
-	m_progress.m_draw.m_centerX = 0;
 	m_progress.m_draw.m_display = p_arg1;
 	m_progress.m_draw.m_gdi = p_arg0;
-	storage = operator new(0x14);
-	if (storage == 0) {
-		m_progress.m_draw.m_points = 0;
-	}
-	else {
-		m_progress.m_draw.m_points = (VsPoint*) storage;
-	}
+	m_progress.m_draw.m_points = new VsPoint[5];
 	g_pCursor->SetActive(0);
-	if (g_nCompactPrimaryContextLayout == 0) {
-		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(0xf1);
-		points = g_dwCdLoadAnimFullPoints;
-		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(0xf2);
-		m_progress.m_draw.m_animResourceId = 0xf3;
-	}
-	else {
+	if (g_nCompactPrimaryContextLayout != 0) {
 		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(0xee);
 		points = g_dwCdLoadAnimCompactPoints;
 		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(0xef);
 		m_progress.m_draw.m_animResourceId = 0xf0;
+	}
+	else {
+		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(0xf1);
+		points = g_dwCdLoadAnimFullPoints;
+		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(0xf2);
+		m_progress.m_draw.m_animResourceId = 0xf3;
 	}
 	LoadAnims(m_progress.m_draw.m_animResourceId);
 	palette = ResPalette::Load(0xed);
@@ -80,16 +70,7 @@ CdLoadAnim::CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1)
 	m_progress.m_draw.m_progress = 0;
 	m_progress.m_draw.m_initialDraw = 1;
 	animCount = GetnAnims(m_progress.m_draw.m_animResourceId);
-	storage = operator new(0x1c);
-	if (storage == 0) {
-		m_progress.m_draw.m_repeatAnim = 0;
-	}
-	else {
-		repeatAnim = new (storage) RepeatAnim();
-		repeatAnim->m_frames = animCount;
-		repeatAnim->m_direction = 1;
-		m_progress.m_draw.m_repeatAnim = repeatAnim;
-	}
+	m_progress.m_draw.m_repeatAnim = new RepeatAnim(animCount, 1);
 	m_progress.m_draw.m_repeatAnim->m_fixedTime = 0xffffffff;
 	m_progress.m_draw.m_repeatAnim->StartAnim(animCount * 0x42);
 }
@@ -98,8 +79,8 @@ CdLoadAnim::CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1)
 // FUNCTION: LEMBALL 0x0044ad60
 CdLoadAnim::~CdLoadAnim()
 {
-	operator delete(m_progress.m_draw.m_points);
-	operator delete(m_progress.m_draw.m_repeatAnim);
+	delete[] m_progress.m_draw.m_points;
+	delete m_progress.m_draw.m_repeatAnim;
 	UnLoadAnims(m_progress.m_draw.m_animResourceId);
 	if (m_progress.m_draw.m_backgroundBitmap != 0) {
 		m_progress.m_draw.m_backgroundBitmap->UnLoad();
@@ -131,7 +112,7 @@ void CdLoadAnim::InitialiseScreen()
 // FUNCTION: LEMBALL 0x0044aec0
 void CdLoadAnimDraw::Draw()
 {
-	AnimsManager* anims;
+	CdLoadAnim* anims;
 	VsRect rect;
 	VsPoint point;
 	VsPoint origin;
@@ -182,7 +163,7 @@ void CdLoadAnimDraw::Draw()
 	m_fgBlit[0].Draw(m_gdi);
 	point.m_x = (short) (m_points[1].m_x + m_centerX);
 	point.m_y = (short) (m_points[1].m_y + m_centerY);
-	anims = (AnimsManager*) ((char*) this - 0x74);
+	anims = (CdLoadAnim*) ((unsigned int) this - 0x74);
 	anims->DrawAnim(point, m_animResourceId, 0, (AnimFrameBASE*) m_repeatAnim, 0);
 	origin.m_x = (short) (m_points[2].m_x + m_centerX);
 	origin.m_y = (short) (m_points[2].m_y + m_centerY);

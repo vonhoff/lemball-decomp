@@ -14,37 +14,42 @@
 // PvGdiBitmap at 0, Surface vbptr at 0x40. MSVC 4.0 drops that vbptr if Surface lists virtual PvSurface next to the mixins.
 class SurfaceGdi : public PvGdiBitmap, public virtual PvSurface {};
 
+struct SurfaceListNode {
+	class Surface* m_surface;
+	SurfaceListNode* m_next;
+	SurfaceListNode* m_prev;
+};
+
 // SIZE 0x5a0
 class Surface : public SurfaceGdi, public PvZBuffSurface, public PvBackBuffSurface {
 public:
-	ChangeList* GetChangeList();
 	Surface(GrafPort* p_arg0);
 	Surface(const VsRect& p_arg0, class Surface* p_arg1);
 	bool ClipRect(VsRect& p_rect, VsRect* p_clipped);
 	int ClipCircle(int p_centerX, int p_centerY, int p_radius);
 	int LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2);
-	virtual void Resize(const VsSize& p_size); // vtable+0x28
-	virtual void SetLinePtrs();                // vtable+0x00
-	virtual void* GetCurrDb();                 // vtable+0x38
-	void AddToChangeList(const VsRect& p_rect);
+	virtual void Resize(const VsSize& p_size);          // vtable+0x28
+	virtual void SetLinePtrs();                         // vtable+0x00
+	virtual void AddToChangeList(const VsRect& p_rect); // vtable+0x04
+	virtual ChangeList* GetChangeList();                // vtable+0x08
+	virtual void* GetCurrDb();                          // vtable+0x38
 	void AttachPalette(ResPalette* p_palette);
 	bool BeginRender();
 	void EndRender();
-	void Blit(BigBitmap* p_arg0, ResBitmap* p_arg1);
-	virtual void Blit(Bitmap* p_primitive);
-	void Blit(Bitmap* p_primitive, ResBitmap* p_bitmap);
-	void Blit(Circle* p_circle);
-	virtual void Blit(CopyColourToBackBuff* p_arg0);
+	virtual void Blit(Zrle* p_primitive, ResZrle* p_zrle);
+	virtual void Blit(Bitmap* p_primitive, ResBitmap* p_bitmap);
+	virtual void Blit(BigBitmap* p_arg0, ResBitmap* p_arg1);
+	virtual void Blit(Line* p_line);
+	virtual void Blit(FilledCircle* p_circle);
+	virtual void Blit(class ClipRect* p_arg0);
+	virtual void Blit(Circle* p_circle);
+	virtual void Blit(ScreenScroll* p_scroll);
+	virtual void Blit(SolidRect* p_rect);
+	virtual void Blit(Point* p_point);
 	virtual void Blit(CopyToBackBuff* p_arg0);
-	void Blit(FilledCircle* p_circle);
-	void Blit(Line* p_line);
-	void Blit(Point* p_point);
-	void Blit(ScreenScroll* p_scroll);
-	void Blit(SolidRect* p_rect);
+	virtual void Blit(CopyColourToBackBuff* p_arg0);
 	virtual void Blit(ZBuffClear* p_arg0);
 	virtual void Blit(ZBuffScroll* p_arg0);
-	void Blit(Zrle* p_primitive, ResZrle* p_zrle);
-	void Blit(class ClipRect* p_arg0);
 	void BlitRect(VsRect p_rect, int p_colour);
 	void BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, Remap* p_remap, unsigned short p_depth);
 	void BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned char p_reverse);
@@ -112,13 +117,13 @@ private:
 	undefined m_bitmapInfo[0x28];    // 0xfc
 	undefined m_colourTable[0x400];  // 0x124
 	undefined4 m_unk0x524;           // 0x524
-	undefined4 m_unk0x528;           // 0x528
-	undefined4 m_unk0x52c;           // 0x52c
-	undefined4 m_unk0x530;           // 0x530
+	SurfaceListNode* m_unk0x528;     // 0x528
+	SurfaceListNode* m_unk0x52c;     // 0x52c
+	unsigned int m_unk0x530;         // 0x530
 	undefined m_lock[0x18];          // 0x534
 	undefined4 m_unk0x54c;           // 0x54c
 	ChangeList* m_changeList;        // 0x550
-	undefined4 m_unk0x554;           // 0x554
+	void* m_currDb;                  // 0x554
 };
 
 #endif

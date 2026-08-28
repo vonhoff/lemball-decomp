@@ -11,8 +11,8 @@
 class PvBackBuffSurface : public virtual PvSurface {
 public:
 	PvBackBuffSurface();
-	virtual void Blit(CopyColourToBackBuff* p_arg0) = 0;      // vtable+0x00
 	virtual void Blit(CopyToBackBuff* p_arg0) = 0;            // vtable+0x04
+	virtual void Blit(CopyColourToBackBuff* p_arg0) = 0;      // vtable+0x00
 	virtual void CopyBackBuffToScreen(const VsRect& p_arg0) = 0; // vtable+0x08
 	virtual bool HasBackBuff();                               // vtable+0x3c
 	void AllocateBackBuff();

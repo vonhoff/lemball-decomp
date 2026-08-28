@@ -82,38 +82,25 @@ Main2DDisplay::~Main2DDisplay()
 }
 
 // 68K 0x10b003f8 GetStyle__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431730
+// FUNCTION: LEMBALL 0x00431730
 unsigned int Main2DDisplay::GetStyle()
 {
-	unsigned int style;
-
-	style = 0x80001801;
-	if (g_nCompactPrimaryContextLayout == 0) {
-		if (GetSystemMetrics(0x3d) < 0x281) {
-			goto compactStyle;
-		}
-		if (GetSystemMetrics(0x3e) < 0x1f5) {
-			goto compactStyle;
-		}
+	unsigned int style = 0x80001801;
+	if (g_nCompactPrimaryContextLayout != 0 || (GetSystemMetrics(0x3d) > 0x280 && GetSystemMetrics(0x3e) > 0x1f4)) {
+		style = 0x80001b83;
 	}
-	style = 0x80001b83;
-compactStyle:
 	if (g_nEditLevelMode != 0) {
-		style = style | 0x404;
+		style |= 0x404;
 	}
 	return style;
 }
 
-// 68K 0x10b0049a OnCreate__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431780
-void Main2DDisplay::OnCreate()
+// FUNCTION: LEMBALL 0x00431780
+void Main2DDisplay::Dummy3c()
 {
-	GWnd::OnCreate();
 	SetZoom(1);
 	AttachPalette(0x2e);
-	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
-		m_gdi->m_renderTarget->EnableBackBuff(1);
-	}
+	m_gdi->m_renderTarget->EnableBackBuff(1);
 	m_drawer = 0;
 }
 
@@ -121,16 +108,11 @@ void Main2DDisplay::OnCreate()
 // FUNCTION: LEMBALL 0x004317c0
 void Main2DDisplay::OnDestroy()
 {
-	Drawer* drawer;
-
 	CursorChangeType(0, 0);
 	if (m_drawer != 0) {
-		drawer = (Drawer*) m_drawer;
-		drawer->ShutDown();
-		drawer->DestroyDrawer();
-		if (m_drawer != 0) {
-			delete drawer;
-		}
+		m_drawer->ShutDown();
+		m_drawer->DestroyDrawer();
+		delete m_drawer;
 		m_drawer = 0;
 	}
 }
@@ -165,35 +147,44 @@ void Main2DDisplay::OnSize()
 }
 
 // 68K 0x10b00746 OnMove__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431880
-void Main2DDisplay::OnMove()
-{
-}
-
 // 68K 0x10b006fe OnZoom__14CMain2DDisplayFi
-// STUB: LEMBALL 0x004318a0
+// FUNCTION: LEMBALL 0x00431880
 void Main2DDisplay::OnZoom(int p_zoom)
 {
+	if (m_drawer != 0) {
+		m_drawer->OnZoom(m_rect);
+	}
+}
+
+// 68K 0x10b00746 OnMove__14CMain2DDisplayFv
+// FUNCTION: LEMBALL 0x004318a0
+void Main2DDisplay::OnMove()
+{
+	if (m_drawer != 0) {
+		m_drawer->OnMove(m_rect);
+	}
 }
 
 // 68K 0x10b00798 IsWindowValid__14CMain2DDisplayFv
-// STUB: LEMBALL 0x004318c0
+// FUNCTION: LEMBALL 0x004318c0
 bool Main2DDisplay::IsWindowValid()
 {
-	if (GetSizeStatus() == 0) {
+	if (!GetSizeStatus()) {
 		return 0;
 	}
-	if (m_lowWidth == m_rect.m_width && m_lowHeight == m_rect.m_height) {
+	short height = m_rect.m_height;
+	short width = m_rect.m_width;
+	if (m_lowWidth == width && m_lowHeight == height) {
 		return 1;
 	}
-	if (m_highWidth == m_rect.m_width && m_highHeight == m_rect.m_height) {
+	if (m_highWidth == width && m_highHeight == height) {
 		return 1;
 	}
 	return 0;
 }
 
 // 68K 0x10b0085c RefreshView__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431910
+// FUNCTION: LEMBALL 0x00431910
 void Main2DDisplay::RefreshView()
 {
 	if (IsWindowValid() != 0) {

@@ -60,7 +60,7 @@ void Ai::DecideAnimsRequired()
 // FUNCTION: LEMBALL 0x004121e0
 void Ai::AddTime(int p_time)
 {
-	m_unk0xd4[5] += p_time;
+	m_gameTime += p_time;
 }
 
 // 68K 0x106018da Process__3CAIFUc

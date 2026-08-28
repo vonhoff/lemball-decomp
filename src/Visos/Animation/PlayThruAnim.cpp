@@ -21,20 +21,17 @@ unsigned int PlayThruAnim::GetFrameNo()
 	unsigned int elapsed;
 	unsigned int frame;
 
-	if (m_frames == 0) {
-		return 0;
-	}
 	if (m_fixedTime == 0xffffffff) {
 		elapsed = CurrentMilliTimer() - m_frameState;
 	}
 	else {
 		elapsed = m_fixedTime - m_frameState;
 	}
-	if (elapsed < m_animTime && m_animTime != 0) {
-		frame = (m_frames * elapsed) / m_animTime;
+	if (m_animTime <= elapsed) {
+		frame = m_frames - 1;
 	}
 	else {
-		frame = m_frames - 1;
+		frame = (m_frames * elapsed) / m_animTime;
 	}
 	if (m_direction != 1) {
 		frame = (m_frames - frame) - 1;

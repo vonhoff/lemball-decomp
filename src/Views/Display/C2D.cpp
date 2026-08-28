@@ -2,6 +2,7 @@
 
 #include "../../AI/Navigation/Ai.h"
 #include "../../AI/Objects/PlayerLemming.h"
+#include "../../Control/Game/GameTime.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
@@ -29,9 +30,13 @@ void C2D::RegisterRemaps()
 }
 
 // 68K 0x10b07444 UnRegisterRemaps__3C2DFv
-// STUB: LEMBALL 0x00436480
+// FUNCTION: LEMBALL 0x00436480
 void C2D::UnRegisterRemaps()
 {
+	int i;
+	for (i = 0; i < 5; i++) {
+		g_pBasePalManager->UnRegisterRemap(m_remaps[i]);
+	}
 }
 
 #include "../../Visos/Graphics/Cursor.h"
@@ -154,23 +159,52 @@ void C2D::SelectObject(int p_viewIndex)
 }
 
 // 68K 0x10b0860e InGroupByObjectNo__3C2DFi
-// STUB: LEMBALL 0x00437420
+// FUNCTION: LEMBALL 0x00437420
 bool C2D::InGroupByObjectNo(int p_objectNo)
 {
-	return 0;
+	int i;
+	unsigned short* ids = m_groupObjectIds;
+	for (i = 0; i < m_groupCount; i++, ids++) {
+		if (*ids == p_objectNo) {
+			return true;
+		}
+	}
+	return false;
 }
 
 // 68K 0x10b08662 RemoveFromGroupByObjectNo__3C2DFi
-// STUB: LEMBALL 0x00437460
+// FUNCTION: LEMBALL 0x00437460
 void C2D::RemoveFromGroupByObjectNo(int p_objectNo)
 {
+	int writeIndex;
+	int i;
+
+	writeIndex = 0;
+	for (i = 0; i < m_groupCount; i++) {
+		if (m_groupObjectIds[i] != p_objectNo) {
+			m_groupObjectIds[writeIndex++] = m_groupObjectIds[i];
+		}
+	}
+	m_groupCount--;
+	if (m_groupCount < m_groupSelectionCount) {
+		m_groupSelectionCount--;
+	}
+	if (m_groupCount == 0) {
+		m_groupingActive = 0;
+	}
 }
 
 // 68K 0x10b086f8 IsInGrouping__3C2DFP11CGameObject
-// STUB: LEMBALL 0x004374e0
+// FUNCTION: LEMBALL 0x004374e0
 bool C2D::IsInGrouping(GameObject* p_object)
 {
-	return 0;
+	int i;
+	for (i = 0; i < m_groupCount; i++) {
+		if (p_object->m_objectId == m_groupObjectIds[i]) {
+			return true;
+		}
+	}
+	return false;
 }
 
 // 68K 0x10b0875a NoStateLeftClick__3C2DFRC8CVSPointRC8CVSPointUcUc
@@ -230,15 +264,45 @@ void C2D::NewPauseWindow(int p_message)
 }
 
 // 68K 0x10b090e0 TriggerPause__3C2DFUc
-// STUB: LEMBALL 0x00437da0
+// FUNCTION: LEMBALL 0x00437da0
 void C2D::TriggerPause(unsigned char p_paused)
 {
+	if (p_paused != 0) {
+		if (m_ai->m_gameStatus >= 1 && m_ai->m_gameStatus <= 2) {
+			m_ai->GameState(1);
+		}
+	}
+	else {
+		SetPause(p_paused);
+	}
 }
 
 // 68K 0x10b0914c SetPause__3C2DFUc
-// STUB: LEMBALL 0x00437de0
+// FUNCTION: LEMBALL 0x00437de0
 void C2D::SetPause(unsigned char p_paused)
 {
+	m_pauser = m_ai->m_isSinglePlayer >= 1;
+	if (p_paused != 0) {
+		if (m_ai->m_gameStatus < 1 || m_ai->m_gameStatus > 2) {
+			return;
+		}
+	}
+	m_paused = p_paused;
+	ClockEditMode(p_paused);
+	m_ai->m_paused = m_paused;
+	if (p_paused != 0) {
+		m_ai->GameState(1);
+	}
+	else {
+		m_ai->GameState(2);
+		m_pauser = 0;
+	}
+	if (m_paused != 0) {
+		NewPauseWindow(0);
+	}
+	else {
+		NewPauseWindow(5);
+	}
 }
 
 // 68K 0x10b09208 SetMouseShape__3C2DFv

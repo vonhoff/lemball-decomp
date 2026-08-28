@@ -268,32 +268,25 @@ void GunController::AddButton(int p_x,
 }
 
 // 68K 0x10803ab0 AddJunction__14CGunControllerFiiUcUl
-// STUB: LEMBALL 0x0044d150
+// FUNCTION: LEMBALL 0x0044d150
 void GunController::AddJunction(int p_x, int p_y, unsigned char p_side, unsigned long p_message)
 {
-	int mid;
+	int mid = (short) ((int) m_window->m_rect.m_width / 2);
 	int side;
-	int unused;
-	int existing;
-	int i;
-
-	existing = -1;
-	mid = (short) ((int) m_window->m_rect.m_width / 2);
 	if (p_x < mid) {
 		side = 0;
 	}
-	else {
+	else if (p_x > mid) {
 		side = 1;
-		if (p_x <= mid) {
-			side = unused;
-		}
 	}
-	i = 0;
-	while (i < 8) {
+	else {
+		side = p_side;
+	}
+	int existing = -1;
+	for (int i = 0; i < 8; i++) {
 		if (m_junctions[i].m_direction != 3 && m_junctions[i].m_y == p_y) {
 			existing = i;
 		}
-		i = i + 1;
 	}
 	if (existing != -1) {
 		m_junctions[existing].m_direction = 2;
@@ -308,23 +301,21 @@ void GunController::AddJunction(int p_x, int p_y, unsigned char p_side, unsigned
 		m_junctions[existing].m_rightX = p_x;
 		return;
 	}
-	i = 0;
-	while (i < 8) {
-		if (m_junctions[i].m_direction == 3) {
-			m_junctions[i].m_y = p_y;
-			m_junctions[i].m_direction = side;
+	for (int j = 0; j < 8; j++) {
+		if (m_junctions[j].m_direction == 3) {
+			m_junctions[j].m_y = p_y;
+			m_junctions[j].m_direction = side;
 			if (side == 0) {
-				m_junctions[i].m_leftMessage = p_side;
-				m_junctions[i].m_leftX = p_x;
-				m_junctions[i].m_leftBinding = (void*) p_message;
+				m_junctions[j].m_leftMessage = p_side;
+				m_junctions[j].m_leftX = p_x;
+				m_junctions[j].m_leftBinding = (void*) p_message;
 				return;
 			}
-			m_junctions[i].m_rightMessage = p_side;
-			m_junctions[i].m_rightBinding = (void*) p_message;
-			m_junctions[i].m_rightX = p_x;
+			m_junctions[j].m_rightMessage = p_side;
+			m_junctions[j].m_rightBinding = (void*) p_message;
+			m_junctions[j].m_rightX = p_x;
 			return;
 		}
-		i = i + 1;
 	}
 }
 

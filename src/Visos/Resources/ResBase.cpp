@@ -109,7 +109,7 @@ void ResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned i
 }
 
 // 68K 0x10202fae LoadData__8CResBaseFv
-// STUB: LEMBALL 0x0045d100
+// FUNCTION: LEMBALL 0x0045d100
 void ResBase::LoadData()
 {
 	ResBaseList* list;

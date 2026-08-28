@@ -23,11 +23,11 @@ public:
 	virtual void OnMove();         // vtable+0x58
 	virtual 	void OnRestore();      // vtable+0x54
 	void KillDrawer(eFlowProcesses p_flow);
-	void OnCreate();
-	void OnDestroy();
-	void OnPaint(const VsRect& p_rect);
-	void OnSize();
-	void OnZoom(int p_zoom);
+	virtual void Dummy3c(); // vtable+0x3c
+	virtual void OnDestroy();
+	virtual void OnPaint(const VsRect& p_rect);
+	virtual void OnSize();
+	virtual void OnZoom(int p_zoom);
 	void Process();
 	void RefreshView();
 	void StatusUpdate(eFlowProcesses p_flow);
@@ -55,7 +55,7 @@ private:
 	void* m_pauseWindow;             // 0xc8
 	eFlowProcesses m_currentFlow;    // 0xcc
 	void* m_processVtable;           // 0xd0
-	void* m_drawer;                  // 0xd4
+	class Drawer* m_drawer;          // 0xd4
 	unsigned int m_resolutionMode;   // 0xd8
 	short m_lowWidth;                // 0xdc
 	short m_lowHeight;               // 0xde

@@ -131,22 +131,19 @@ public:
 	void UseBalloon(PlayerLemming* p_lemming);
 
 private:
-	void* m_auxVtable;                              // 0x4c
-	unsigned int m_pauseResult;                     // 0x50
 	unsigned char* m_remapTables[4];                // 0x54
 	BaseRemap* m_remaps[5];                         // 0x64
 	TextManager* m_textManager;                     // 0x78
-	unsigned short m_zoom;                          // 0x160
-	unsigned int m_mouseButtonDown;                 // 0x18c
-	unsigned int m_cursorState;                     // 0x1a4
-	unsigned int m_cursorTimestamp;                 // 0x1a8
-	unsigned short m_cursorBlinkPhase;              // 0x1ac
+	undefined m_pad0x7c[0x856];                     // 0x7c
 	VsRect m_spriteGroundLookupRectA;               // 0x8d2
 	VsRect m_spriteGroundLookupRectB;               // 0x8da
+	undefined m_pad0x8e2[0x1a];                     // 0x8e2
 	int m_returnState;                              // 0x8fc
-	Map* m_map;                                     // 0x914
+	undefined m_pad0x900[0x10];                     // 0x900
+	Map* m_map;                                     // 0x910
 	int m_viewOriginX;                              // 0x918
 	int m_viewOriginY;                              // 0x91c
+	undefined m_pad0x920[0xc];                      // 0x920
 	PadToButton* m_padToButton;                     // 0x92c
 	TargetSpriteGroundLookup* m_spriteGroundLookup; // 0x930
 	TargetObjectClipGrid* m_objectClipGrid;         // 0x934
@@ -170,9 +167,13 @@ private:
 	unsigned int m_pauseSelection;                  // 0x984
 	int m_pauseMessage;                             // 0x988
 	int m_previousPauseMessage;                     // 0x98c
+	undefined m_pad0x990[4];                        // 0x990
 	unsigned int m_clipConfigured;                  // 0x994
+	undefined m_pad0x998[0x20];                     // 0x998
 	VsRect m_spriteGroundTranslatedPointRect;       // 0x9b8
+	undefined m_pad0x9c0[0x80];                     // 0x9c0
 	LemmingAnimsManager* m_lemmingAnims;            // 0xa40
+	undefined m_pad0xa44[8];                        // 0xa44
 	unsigned int m_groupingActive;                  // 0xa48
 	unsigned short m_groupCount;                    // 0xa4c
 	unsigned short m_groupSelectionCount;           // 0xa4e

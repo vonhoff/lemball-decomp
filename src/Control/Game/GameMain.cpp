@@ -84,21 +84,15 @@ void DisplayHelp()
 // FUNCTION: LEMBALL 0x00406310
 int Vsmain(int p_argc, char** p_argv)
 {
-	void* storage;
+	int* sentinel;
 	Game* game;
 
-	storage = operator new(0x800);
-	if (storage != 0) {
-		g_pVSTrig = new (storage) VsTrig();
-	}
-	else {
-		g_pVSTrig = 0;
-	}
+	g_pVSTrig = new VsTrig();
 
-	storage = operator new(4);
-	if (storage != 0) {
-		*(int*) storage = 0xad28;
-		g_pSentinel = (int*) storage;
+	sentinel = (int*) operator new(4);
+	if (sentinel != 0) {
+		*sentinel = 0xad28;
+		g_pSentinel = sentinel;
 	}
 	else {
 		g_pSentinel = 0;
@@ -107,13 +101,8 @@ int Vsmain(int p_argc, char** p_argv)
 	DemoInit(0x19000);
 	SetGameDefaults();
 	if (DoCommandLine(p_argc, p_argv) == 1) {
-		storage = operator new(0x70);
-		if (storage != 0) {
-			game = new (storage) Game(0);
-		}
-		else {
-			game = 0;
-		}
+		game = 0;
+		game = new Game(0);
 		if (g_nEditLevelMode != 0) {
 			strcpy(game->m_runtimeName, g_szCommandLineLevelFile);
 		}
@@ -180,12 +169,12 @@ int DoCommandLine(int p_argc, char** p_argv)
 			}
 			prefixLength = strlen(g_szSwitchEditPrefix0);
 			if (StrCmpI(*argv, g_szSwitchEditPrefix1, prefixLength) == 0) {
-				g_nEditLevelMode = strlen(*argv + strlen(g_szSwitchEditPrefix2)) != 0;
+				g_nEditLevelMode = strlen(*argv + strlen(g_szSwitchEditPrefix2)) > 0;
 				strcpy(g_szCommandLineLevelFile, *argv + strlen(g_szSwitchEditPrefix3));
 			}
 			prefixLength = strlen(g_szSwitchPlayPrefix0);
 			if (StrCmpI(*argv, g_szSwitchPlayPrefix1, prefixLength) == 0) {
-				g_nPlayLevelMode = strlen(*argv + strlen(g_szSwitchPlayPrefix2)) != 0;
+				g_nPlayLevelMode = strlen(*argv + strlen(g_szSwitchPlayPrefix2)) > 0;
 				strcpy(g_szCommandLineLevelFile, *argv + strlen(g_szSwitchPlayPrefix3));
 			}
 			if (StrCmpI(*argv, g_szSwitchGraphics, 99) == 0) {

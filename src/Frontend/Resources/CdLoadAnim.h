@@ -14,6 +14,7 @@
 // VTABLE: LEMBALL 0x00497c88
 class CdLoadAnimDraw {
 public:
+	CdLoadAnimDraw() : m_centerY(0), m_centerX(0) {}
 	virtual void Draw(); // vtable+0x00
 
 	VsPoint* m_points;             // 0x04 / object+0x78
@@ -56,7 +57,6 @@ public:
 
 	friend class FrontendResourceLoader;
 
-private:
 	CdLoadAnimProgress m_progress; // 0x70
 };
 

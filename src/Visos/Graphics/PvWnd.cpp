@@ -23,17 +23,20 @@ void PvWnd::SetSizeStatus(unsigned int p_status)
 }
 
 // 68K 0x10104a28 AddChild__6CPVWndFP6CPVWnd
-// STUB: LEMBALL 0x004323d0
+// FUNCTION: LEMBALL 0x004323d0
 void PvWnd::AddChild(class PvWnd* p_child)
 {
 	void** node;
 
 	node = (void**) operator new(0xc);
-	if (node == 0) {
-		return;
+	if (node != 0) {
+		node[0] = p_child;
+		node[1] = 0;
+		node[2] = 0;
 	}
-	node[0] = p_child;
-	node[1] = 0;
+	else {
+		node = 0;
+	}
 	node[2] = m_childListTail;
 	if (m_childListTail != 0) {
 		((void**) m_childListTail)[1] = node;
@@ -42,7 +45,7 @@ void PvWnd::AddChild(class PvWnd* p_child)
 	if (m_childList == 0) {
 		m_childList = node;
 	}
-	m_childCount = m_childCount + 1;
+	m_childCount++;
 }
 
 // 68K 0x10104aaa RemoveChild__6CPVWndFP6CPVWnd
@@ -65,11 +68,11 @@ void PvWnd::RemoveChild(class PvWnd* p_child)
 			nextNode = (void**) node[1];
 			prevNode = (void**) node[2];
 			operator delete(node);
-			if (nextNode == 0) {
-				m_childListTail = prevNode;
+			if (nextNode != 0) {
+				nextNode[2] = prevNode;
 			}
 			else {
-				nextNode[2] = prevNode;
+				m_childListTail = prevNode;
 			}
 			if (prevNode != 0) {
 				prevNode[1] = nextNode;
@@ -148,9 +151,11 @@ PvWnd::~PvWnd()
 }
 
 // 68K 0x10216aee SetInnerWindow__6CPVWndFRC7CVSRect
-// STUB: LEMBALL 0x00465db0
+// FUNCTION: LEMBALL 0x00465db0
 void PvWnd::SetInnerWindow(const VsRect& p_rect)
 {
+	m_innerRect = p_rect;
+	OnSize();
 }
 
 // 68K 0x10216b5e SetRect__6CPVWndFRC7CVSRect
@@ -160,9 +165,17 @@ void PvWnd::SetRect(const VsRect& p_rect)
 }
 
 // 68K 0x10216b98 SetRectInnerZoom__6CPVWndFRC7CVSRectRC7CVSRecti
-// STUB: LEMBALL 0x00465e00
+// FUNCTION: LEMBALL 0x00465e00
 void PvWnd::SetRectInnerZoom(const VsRect& p_rect, const VsRect& p_innerRect, int p_zoom)
 {
+	int oldZoom = m_zoom;
+	if (p_zoom != oldZoom) {
+		m_zoom = p_zoom;
+		OnZoom(oldZoom);
+		OnZoomBox();
+	}
+	m_innerRect = p_innerRect;
+	SetRect(p_rect);
 }
 
 // 68K 0x10216c50 InitHotAreaList__6CPVWndFv
@@ -271,11 +284,11 @@ void PvWnd::BaseOnDestroy()
 			nextNode = (void**) node[1];
 			prevNode = (void**) node[2];
 			operator delete(node);
-			if (nextNode == 0) {
-				ownerList[1] = prevNode;
+			if (nextNode != 0) {
+				nextNode[2] = prevNode;
 			}
 			else {
-				nextNode[2] = prevNode;
+				ownerList[1] = prevNode;
 			}
 			if (prevNode != 0) {
 				prevNode[1] = nextNode;
@@ -313,10 +326,17 @@ void PvWnd::OnZoom(int p_oldZoom)
 }
 
 // 68K 0x10217228 SetZoom__6CPVWndFi
-// STUB: LEMBALL 0x004662b0
+// FUNCTION: LEMBALL 0x004662b0
 void PvWnd::SetZoom(int p_zoom)
 {
-	m_zoom = p_zoom;
+	int oldZoom = m_zoom;
+	if (p_zoom != oldZoom) {
+		m_zoom = p_zoom;
+		OnZoom(oldZoom);
+		OnZoomBox();
+		OnSize();
+		BaseOnSize();
+	}
 }
 
 // 68K 0x10117ea6 ReSetMenu__6CPVWndFv

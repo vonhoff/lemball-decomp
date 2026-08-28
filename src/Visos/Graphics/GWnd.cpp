@@ -132,9 +132,34 @@ void GWnd::OnDestroy()
 }
 
 // 68K 0x1010aa64 _OnSize__5CGWndFv
-// STUB: LEMBALL 0x00463e70
+// FUNCTION: LEMBALL 0x00463e70
 void GWnd::OnSize()
 {
+	PvWnd::OnSize();
+	if (m_gdi == 0) {
+		return;
+	}
+	VsSize size;
+	size.m_width = m_rect.m_width;
+	size.m_height = m_rect.m_height;
+	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
+		size.m_width = m_innerRect.m_width;
+		size.m_height = m_innerRect.m_height;
+	}
+	if (m_parent == 0) {
+		size.m_width = (short) ((int) size.m_width / (int) m_zoom);
+		size.m_height = (short) ((int) size.m_height / (int) m_zoom);
+	}
+	Surface* target = m_gdi->m_renderTarget;
+	target->Resize(size);
+	short relX = m_innerRect.m_x;
+	short relY = m_innerRect.m_y;
+	if (m_parent != 0) {
+		relX = (short) (relX - m_parent->m_relativeTopLeft.m_x);
+		relY = (short) (relY - m_parent->m_relativeTopLeft.m_y);
+	}
+	target->m_relOriginX = relX;
+	target->m_relOriginY = relY;
 }
 
 // 68K 0x1010ab98 OnPaint__5CGWndFRC7CVSRect
@@ -144,7 +169,7 @@ void GWnd::OnPaint(const VsRect& p_rect)
 }
 
 // 68K 0x1010abbe ProcessOtherMessages__5CGWndFR11EventRecords
-// STUB: LEMBALL 0x00463f70
+// FUNCTION: LEMBALL 0x00463f70
 int GWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
 {
 	PAINTSTRUCT paint;
@@ -211,39 +236,32 @@ int GWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, un
 }
 
 // 68K 0x1010ac9c Render__5CGWndFv
-// STUB: LEMBALL 0x00464190
+// FUNCTION: LEMBALL 0x00464190
 void GWnd::Render()
 {
 	VsRect paintRect;
-	void** childNode;
-
-	paintRect.m_width = 0;
-	paintRect.m_height = 0;
 	paintRect.m_x = 0;
 	paintRect.m_y = 0;
-	if (m_lifecycleRefs != 0 && m_active != 0) {
-		OnPaint(paintRect);
-		if (m_gdi != 0) {
-			m_gdi->Render();
-			m_gdi->m_primitiveCount = 0;
-		}
-		childNode = (void**) m_childList;
-		while (childNode != 0) {
-			((GWnd*) childNode[0])->Render();
-			childNode = (void**) childNode[1];
-		}
-		if (m_parent == 0 && g_pCursor != 0) {
-			g_pCursor->Draw(this);
-			if (m_gdi != 0) {
-				m_gdi->Render();
-				m_gdi->m_primitiveCount = 0;
-			}
-		}
+	paintRect.m_height = 0;
+	paintRect.m_width = 0;
+	if (m_lifecycleRefs == 0 || m_active == 0) {
+		return;
+	}
+	OnPaint(paintRect);
+	m_gdi->Render();
+	m_gdi->m_primitiveCount = 0;
+	for (void** childNode = (void**) m_childList; childNode != 0; childNode = (void**) childNode[1]) {
+		((GWnd*) childNode[0])->Render();
+	}
+	if (m_parent == 0 && g_pCursor != 0) {
+		g_pCursor->Draw(this);
+		m_gdi->Render();
+		m_gdi->m_primitiveCount = 0;
 	}
 }
 
 // 68K 0x1010ad7a Flush__5CGWndFv
-// STUB: LEMBALL 0x00464220
+// FUNCTION: LEMBALL 0x00464220
 void GWnd::Flush()
 {
 	HDC dc;

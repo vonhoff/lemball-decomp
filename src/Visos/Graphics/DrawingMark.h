@@ -5,8 +5,8 @@
 #include "Primitive.h" // complete type
 
 // SIZE 0x04
-// VTABLE: LEMBALL 0x00496c98
-// VTABLE: LEMBALL 0x00496e40
+// VTABLE: LEMBALL 0x00496c98 primary
+// VTABLE: LEMBALL 0x00496e40 secondary
 class DrawingMark : public Primitive {
 public:
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04

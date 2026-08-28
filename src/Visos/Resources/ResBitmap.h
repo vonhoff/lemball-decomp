@@ -54,7 +54,8 @@ public:
 private:
 	unsigned char m_depth;       // 0x4c
 	unsigned char m_flags;       // 0x4d
-	undefined m_platformData[6]; // 0x4e
+	short m_pad0x4e;             // 0x4e
+	int m_rendered;              // 0x50
 };
 
 // SYNTHETIC: LEMBALL 0x0045eb80

@@ -20,6 +20,8 @@ public:
 	void ResizeZBuff();
 	~PvZBuffSurface();
 
+	friend class Surface;
+
 private:
 	PvGdiBitmap m_bitmap;             // 0x08
 	unsigned int m_enabled;           // 0x48

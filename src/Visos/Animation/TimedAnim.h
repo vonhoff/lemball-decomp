@@ -7,6 +7,7 @@
 // SIZE 0x1c
 class TimedAnim : public Frames {
 public:
+	TimedAnim(unsigned int p_frames = 0, int p_direction = 0) : Frames(p_frames), m_direction(p_direction) {}
 	virtual unsigned int GetFrameNo(); // vtable+0x00
 	void SetAnimDirection(int p_direction);
 	void SetAnimTime(unsigned long p_animTime);
@@ -16,6 +17,7 @@ public:
 	friend class CdLoadAnim;
 	friend class GunController;
 	friend class PlayThruAnim;
+	friend class RepeatAnim;
 
 private:
 	unsigned int m_animTime;  // 0x10

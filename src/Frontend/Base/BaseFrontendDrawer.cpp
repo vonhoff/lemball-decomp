@@ -201,7 +201,7 @@ void BaseFrontendDrawer::ReplaceBackground()
 }
 
 // 68K 0x10800ae8 _DrawBackGround__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00445c10
+// FUNCTION: LEMBALL 0x00445c10
 void BaseFrontendDrawer::_DrawBackGround()
 {
 	int tileWidth;
@@ -227,7 +227,7 @@ void BaseFrontendDrawer::_DrawBackGround()
 		while (row < rowCount) {
 			column = firstColumn;
 			stagger = stagger ^ 1;
-			while (column < firstColumn + columnCount + stagger) {
+			while (column < (int) (firstColumn + columnCount + stagger)) {
 				primitive = &m_primitiveBundle.m_records[primitiveIndex];
 				primitive->m_x = (short) (column * tileWidth - (tileWidth / 2) * stagger);
 				primitive->m_y = (short) (row * tileHeight);

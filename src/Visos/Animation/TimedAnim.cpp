@@ -26,11 +26,14 @@ void TimedAnim::SetAnimDirection(int p_direction)
 // FUNCTION: LEMBALL 0x00467170
 unsigned int TimedAnim::GetFrameNo()
 {
-	unsigned long time = m_fixedTime;
+	unsigned long time;
+	unsigned int frame;
+
+	time = m_fixedTime;
 	if (time == 0xffffffff) {
 		time = CurrentMilliTimer();
 	}
-	unsigned int frame = (((time - m_frameState) % m_animTime) * m_frames) / m_animTime;
+	frame = (((time - m_frameState) % m_animTime) * m_frames) / m_animTime;
 	if (m_direction != 1) {
 		frame = m_frames - frame - 1;
 	}

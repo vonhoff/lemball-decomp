@@ -127,9 +127,7 @@ bool Bucket::Free(unsigned char* p_memory)
 	Bucket* current = this;
 	while (true) {
 		current->EnterCritical();
-		if (current->m_memory > p_memory) {
-		}
-		else if (current->m_memory + current->m_totalBytes > p_memory) {
+		if (p_memory > current->m_memory && current->m_memory + current->m_totalBytes > p_memory) {
 			break;
 		}
 		current->LeaveCritical();
@@ -224,13 +222,10 @@ bool Bucket::CheckValidPointer(unsigned char* p_memory)
 {
 	Bucket* current = this;
 	do {
-		unsigned char* base = current->m_memory;
-		if (p_memory >= base && base + current->m_totalBytes > p_memory) {
+		if (p_memory >= current->m_memory && current->m_totalBytes + current->m_memory > p_memory) {
 			return 1;
 		}
 		current = current->m_child;
-		if (current == 0) {
-			return 0;
-		}
-	} while (true);
+	} while (current != 0);
+	return 0;
 }

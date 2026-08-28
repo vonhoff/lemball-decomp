@@ -71,24 +71,26 @@ unsigned int ResFont::GetnVramEntries()
 // FUNCTION: LEMBALL 0x0045d990
 bool ResFont::DirectResources(unsigned int p_index, unsigned char** p_headerCursor, unsigned char** p_dataCursor)
 {
-	if (!m_fontEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this)) {
-		if (!m_animationEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this)) {
-			return false;
-		}
+	if (m_fontEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this)) {
+		return true;
 	}
-	return true;
+	if (m_animationEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this)) {
+		return true;
+	}
+	return false;
 }
 
 // 68K 0x10203c9e DirectResources__8CResFONTFUlRPUc
 // FUNCTION: LEMBALL 0x0045d9f0
 bool ResFont::DirectResources(unsigned int p_index, unsigned char** p_cursor)
 {
-	if (!m_fontEntries[p_index].Direct(*p_cursor, this)) {
-		if (!m_animationEntries[p_index].Direct(*p_cursor, this)) {
-			return false;
-		}
+	if (m_fontEntries[p_index].Direct(*p_cursor, this)) {
+		return true;
 	}
-	return true;
+	if (m_animationEntries[p_index].Direct(*p_cursor, this)) {
+		return true;
+	}
+	return false;
 }
 
 // 68K 0x10203d38 UnLoadResources__8CResFONTFUlUc

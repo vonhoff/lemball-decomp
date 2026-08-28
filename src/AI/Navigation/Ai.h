@@ -85,12 +85,20 @@ private:
 	int m_networkStartsZ[4];                          // 0xb0
 	int m_networkTrapDoors[4];                        // 0xc0
 	int m_networkTrapDoorCount;                       // 0xd0
-	undefined4 m_unk0xd4[7];                          // 0xd4
+	int m_unk0xd4;                                    // 0xd4
+	int m_paused;                                     // 0xd8
+	int m_unk0xdc;                                    // 0xdc
+	int m_unk0xe0;                                    // 0xe0
+	int m_unk0xe4;                                    // 0xe4
+	int m_gameTime;                                   // 0xe8
+	int m_unk0xec;                                    // 0xec
 	int m_score;                                      // 0xf0
 	undefined4 m_unk0xf4;                             // 0xf4
 	int m_lemmingCount;                               // 0xf8
 	int m_flagCounts[2];                              // 0xfc
-	undefined4 m_unk0x104[3];                         // 0x104
+	undefined4 m_unk0x104;                            // 0x104
+	int m_gameStatus;                                 // 0x108
+	int m_isSinglePlayer;                             // 0x10c
 	Map* m_map;                                       // 0x110
 	Maze* m_maze;                                     // 0x114
 	int m_objectCount;                                // 0x118

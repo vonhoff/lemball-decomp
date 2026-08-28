@@ -255,36 +255,35 @@ Game::~Game()
 // FUNCTION: LEMBALL 0x00407300
 bool Game::IsValidResource()
 {
+	const char* key;
 	ResString* resource;
 	unsigned char* data;
-	char* key;
 	int i;
-	unsigned char next;
+	char c;
 
 	key = g_szWeatherManKey;
 	resource = ResString::Load(0x100);
 	if (resource == 0) {
 		return 0;
 	}
-	if (resource->m_loaded == 0) {
-		resource->LoadData();
-	}
-	else {
+	if (resource->m_loaded != 0) {
 		resource->m_age = 0;
 	}
-	resource->m_directUseCount = resource->m_directUseCount + 1;
-	data = resource->m_data;
-	next = *data;
+	else {
+		resource->LoadData();
+	}
 	i = 0;
-	while (next != 0) {
-		next = *key;
-		key = key + 1;
-		g_szResourceDecodeBuffer[i] = (char) ((data[i] - 1) ^ next);
-		next = data[i + 1];
-		i = i + 1;
+	resource->m_directUseCount++;
+	data = resource->m_data;
+	if (*data != 0) {
+		do {
+			c = (char) (data[i++] - 1);
+			c = c ^ *key++;
+			g_szResourceDecodeBuffer[i - 1] = c;
+		} while (data[i] != 0);
 	}
 	g_szResourceDecodeBuffer[i] = 0;
-	resource->m_directUseCount = resource->m_directUseCount - 1;
+	resource->m_directUseCount--;
 	resource->UnLoad();
 	return strcmp(g_szResourceDecodeBuffer, g_szMasterVersion) == 0;
 }

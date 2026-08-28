@@ -64,7 +64,8 @@ private:
 	ResAnim* m_verticalBorderAnim;         // 0x158
 	Anim m_cornerAnims[4];                 // 0x15c
 	Anim* m_borderAnims;                   // 0x1dc
-	BaseRemap* m_remaps[4];                // 0x1e0
+	undefined4 m_pad0x1e0;                 // 0x1e0
+	BaseRemap* m_remaps[4];                // 0x1e4
 	ResFont* m_font;                       // 0x1f0
 	void* m_vramSurface;                   // 0x1f4
 	VsPoint* m_textSizes;                  // 0x1f8
