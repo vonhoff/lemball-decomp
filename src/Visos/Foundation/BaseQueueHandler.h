@@ -12,6 +12,15 @@ public:
 	virtual ~BaseQueueHandler();                       // vtable+0x04
 	virtual int ProcessMsg(Message* p_message);        // vtable+0x08
 
+	friend class Game;
+	friend class MainOptions1Drawer;
+	friend class MainOptions2Drawer;
+	friend class Translator;
+	friend class GunController;
+	friend class GunButtons;
+	friend class HotAreaList;
+	friend class BaseFrontendDrawer;
+
 private:
 	unsigned int m_signature;      // 0x04
 	unsigned int m_dispatchState;  // 0x08

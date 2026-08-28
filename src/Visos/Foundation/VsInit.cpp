@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma intrinsic(memcpy)
+#pragma intrinsic(memcpy, memset)
 
 extern "C" __declspec(dllimport) void* __stdcall CreateThread(void* p_security,
 															 unsigned int p_stack,
@@ -356,7 +356,7 @@ bool InpQuit()
 
 // 68K 0x102133dc INIT_SubSystems__Fv
 // ASSERT: _VSRELassert("EnoughMemory", "VSINIT.CPP", 414)
-// STUB: LEMBALL 0x00459250
+// FUNCTION: LEMBALL 0x00459250
 void InitSubSystems()
 {
 	int memOk;
@@ -477,58 +477,48 @@ bool InitCheckOptions(char* p_arg0)
 }
 
 // 68K 0x102139c8 INIT_CmdLine__FPc
-// STUB: LEMBALL 0x004596b0
-char* InitCmdLine(char* p_arg0)
+// FUNCTION: LEMBALL 0x004596b0
+void InitCmdLine(char* p_arg0)
 {
-	char* cursor;
-	char* next;
 	int i;
 	int remaining;
 	int count;
-	int* seen;
 	char** args;
 	int shift;
 
 	g_cParsedArgs = 0;
 	g_apszParsedArgs[0] = p_arg0;
-	seen = g_afInitOptionSelected;
-	for (i = 0xe; i != 0; i = i - 1) {
-		*seen = 0;
-		seen = seen + 1;
-	}
+	memset(g_afInitOptionSelected, 0, sizeof(g_afInitOptionSelected));
 	if (p_arg0 != 0) {
 		while (*p_arg0 != '\0' && isspace(*p_arg0)) {
 			p_arg0 = p_arg0 + 1;
 		}
 		if (*p_arg0 != '\0') {
 			g_cParsedArgs = 0;
-			cursor = p_arg0;
-			while (*cursor != '\0') {
-				if (isupper(*cursor)) {
-					*cursor = (char) tolower(*cursor);
+			while (*p_arg0 != '\0') {
+				if (isupper(*p_arg0)) {
+					*p_arg0 = (char) tolower(*p_arg0);
 				}
-				if (isspace(*cursor)) {
-					next = cursor;
+				if (isspace(*p_arg0)) {
 					do {
-						cursor = next;
-						*cursor = '\0';
-						next = cursor + 1;
-					} while (isspace(*next));
-					if (*next != '\0') {
+						*p_arg0 = '\0';
+						p_arg0 = p_arg0 + 1;
+					} while (isspace(*p_arg0));
+					if (*p_arg0 != '\0') {
 						g_cParsedArgs = g_cParsedArgs + 1;
-						g_apszParsedArgs[g_cParsedArgs] = next;
+						g_apszParsedArgs[g_cParsedArgs] = p_arg0;
 					}
+					p_arg0 = p_arg0 - 1;
 				}
-				cursor = cursor + 1;
+				p_arg0 = p_arg0 + 1;
 			}
 			i = 0;
 			g_cParsedArgs = g_cParsedArgs + 1;
-			remaining = g_cParsedArgs;
 			if (0 < g_cParsedArgs) {
+				remaining = g_cParsedArgs;
 				do {
 					if (InitCheckOptions(g_apszParsedArgs[i]) == 0) {
 						i = i + 1;
-						count = g_cParsedArgs;
 					}
 					else {
 						count = g_cParsedArgs - 1;
@@ -541,22 +531,22 @@ char* InitCmdLine(char* p_arg0)
 								args = args + 1;
 							} while (shift != 0);
 						}
+						g_cParsedArgs = count;
 					}
-					g_cParsedArgs = count;
 					remaining = remaining - 1;
 				} while (remaining != 0);
 			}
 		}
 	}
-	return p_arg0;
 }
 
 // 68K 0x10213b1e INIT_Main__FPc
-// STUB: LEMBALL 0x00459860
+// FUNCTION: LEMBALL 0x00459860
 int InitMain(char* p_arg0)
 {
 	unsigned int i;
 	int result;
+	int mainResult;
 
 	InitCmdLine(p_arg0);
 	InitPreInit();
@@ -581,9 +571,9 @@ int InitMain(char* p_arg0)
 		DbgQuit(g_nStartupNoWait);
 		return result;
 	}
-	result = Vsmain(g_cParsedArgs, g_apszParsedArgs);
+	mainResult = Vsmain(g_cParsedArgs, g_apszParsedArgs);
 	InitQuitSubSystems();
-	return result;
+	return mainResult;
 }
 
 // 68K 0x10218b78 _STAT_Init__Fv
@@ -1006,13 +996,14 @@ bool VsNetQuit()
 }
 
 // 68K 0x10215cfc INIT_PreInit__Fv
-// STUB: LEMBALL 0x004727b0
+// FUNCTION: LEMBALL 0x004727b0
 void InitPreInit()
 {
 	unsigned int* capability;
 	int i;
 	PreInit* result;
 	unsigned int value;
+	int displayMode;
 
 	capability = g_anPreInitCapabilities;
 	for (i = 7; i != 0; i = i - 1) {
@@ -1022,12 +1013,12 @@ void InitPreInit()
 	g_preInitActive.m_memoryBudget = g_preInitActive.m_memoryBudget << 0x13;
 	result = VsPreInit(&g_preInitActive);
 	if (result != 0) {
-		memcpy(&g_preInitActive, result, sizeof(g_preInitActive));
+		g_preInitActive = *result;
 	}
 	if (7 < g_preInitActive.m_capabilityCount) {
 		g_preInitActive.m_capabilityCount = 7;
 	}
-	if (g_preInitActive.m_capabilityCount < 1) {
+	if (g_preInitActive.m_capabilityCount <= 0) {
 		g_nSmallMemoryEnabled = 0;
 	}
 	capability = g_anPreInitCapabilities;
@@ -1038,19 +1029,20 @@ void InitPreInit()
 		}
 		capability = capability + 1;
 	} while (capability < g_anPreInitCapabilities + 7);
-	if (g_preInitActive.m_shift == 0) {
+	displayMode = g_preInitActive.m_shift;
+	if (displayMode == 0) {
 		g_nGraphicsDriverCds = 0;
 		g_nGraphicsDriverWing = 1;
 		g_nGraphicsDriverGdk = 0;
 		return;
 	}
-	if (g_preInitActive.m_shift == 1) {
+	if (displayMode == 1) {
 		g_nGraphicsDriverWing = 0;
 		g_nGraphicsDriverCds = 1;
 		g_nGraphicsDriverGdk = 0;
 		return;
 	}
-	if (g_preInitActive.m_shift != 2) {
+	if (displayMode != 2) {
 		return;
 	}
 	g_nGraphicsDriverWing = 0;

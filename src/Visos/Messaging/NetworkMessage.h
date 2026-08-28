@@ -11,6 +11,7 @@ public:
 	friend class GameObjectMess;
 	friend class Bullet;
 	friend class Headers;
+	friend class BaseFrontendProcess;
 	bool Set(unsigned char* p_arg0);
 	int GetDword();
 	unsigned char GetByte();

@@ -10,6 +10,7 @@ public:
 	virtual ~BasePacket(); // vtable+0x00
 
 	friend class NetworkOptionsProc;
+	friend class BaseFrontendProcess;
 
 protected:
 	unsigned char* m_data; // 0x04

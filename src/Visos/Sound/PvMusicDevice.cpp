@@ -6,32 +6,33 @@ void PvMusicDevice::Initialise(unsigned long p_resourceId, unsigned long p_flags
 {
 }
 
-void PvMusicDevice::Dummy08()
+void PvMusicDevice::Dummy08(unsigned long p_allocated, unsigned long p_resourceId)
 {
 }
 
-void PvMusicDevice::Dummy0c()
+void PvMusicDevice::Dummy0c(unsigned long p_handle)
 {
 }
 
-void PvMusicDevice::Dummy10()
+void PvMusicDevice::Dummy10(unsigned long p_handle)
 {
 }
 
-void PvMusicDevice::Dummy14()
+void PvMusicDevice::Dummy14(unsigned long p_handle)
 {
 }
 
-void PvMusicDevice::Dummy18()
+void PvMusicDevice::Dummy18(unsigned long p_handle)
 {
 }
 
-void PvMusicDevice::Dummy1c()
+void PvMusicDevice::Dummy1c(unsigned long p_handle)
 {
 }
 
-void PvMusicDevice::Dummy2c()
+int PvMusicDevice::Dummy2c()
 {
+	return 0;
 }
 
 // 68K 0x1010244a SetVolume__14CPVMusicDeviceFUc

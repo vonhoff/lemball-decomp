@@ -56,10 +56,13 @@ public:
 	friend class Main2DDisplay;
 	friend class IntroAnimDrawer;
 	friend class MainOptions1Drawer;
+	friend class MainOptions2Drawer;
 	friend class GWnd;
 	friend class PvButton;
 	friend class GraphicButton;
 	friend class GunController;
+	friend class CdLoadAnim;
+	friend class CdLoadAnimDraw;
 	friend int TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state, void* p_request);
 
 private:

@@ -11,6 +11,7 @@ public:
 	friend class BaseFrontendDrawer;
 	friend class GunController;
 	friend class AnimsManager;
+	friend class CdLoadAnim;
 
 protected:
 	unsigned int m_frames;     // 0x04

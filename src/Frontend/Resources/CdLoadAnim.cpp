@@ -1,31 +1,252 @@
 #include "CdLoadAnim.h"
 
+#include "../../Control/Game/GameMain.h"
+#include "../../Platform/Windows/Entry.h"
+#include "../../Views/Display/Main2DDisplay.h"
+#include "../../Visos/Foundation/ChangeList.h"
+#include "../../Visos/Foundation/Fixed.h"
+#include "../../Visos/Foundation/Vector.h"
+#include "../../Visos/Foundation/VsPoint.h"
+#include "../../Visos/Foundation/VsRect.h"
+#include "../../Visos/Foundation/VsTrig.h"
+#include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Graphics/Gdi.h"
+#include "../../Visos/Graphics/GWnd.h"
+#include "../../Visos/Graphics/PvGWnd.h"
+#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Resources/ResBitmap.h"
+#include "../../Visos/Resources/ResPalette.h"
+
+#include <new.h>
+
 // 68K 0x10801d2c __ct__11CCDLoadAnimFP4CGDIP14CMain2DDisplay
-// STUB: LEMBALL 0x0044aa80
+// FUNCTION: LEMBALL 0x0044aa80
 CdLoadAnim::CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1)
+	: AnimsManager(p_arg0, 0x2b6, 1, 1, 0, 0)
 {
+	void* storage;
+	unsigned int* points;
+	unsigned int packed;
+	int offset;
+	VsPoint* dest;
+	ResPalette* palette;
+	unsigned long animCount;
+	RepeatAnim* repeatAnim;
+
+	m_progress.m_draw.m_centerY = 0;
+	m_progress.m_draw.m_centerX = 0;
+	m_progress.m_draw.m_display = p_arg1;
+	m_progress.m_draw.m_gdi = p_arg0;
+	storage = operator new(0x14);
+	if (storage == 0) {
+		m_progress.m_draw.m_points = 0;
+	}
+	else {
+		m_progress.m_draw.m_points = (VsPoint*) storage;
+	}
+	g_pCursor->SetActive(0);
+	if (g_nCompactPrimaryContextLayout == 0) {
+		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(0xf1);
+		points = g_dwCdLoadAnimFullPoints;
+		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(0xf2);
+		m_progress.m_draw.m_animResourceId = 0xf3;
+	}
+	else {
+		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(0xee);
+		points = g_dwCdLoadAnimCompactPoints;
+		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(0xef);
+		m_progress.m_draw.m_animResourceId = 0xf0;
+	}
+	LoadAnims(m_progress.m_draw.m_animResourceId);
+	palette = ResPalette::Load(0xed);
+	if (m_progress.m_draw.m_display->m_lifecycleRefs == 1) {
+		m_progress.m_draw.m_display->Clear(-1);
+	}
+	p_arg1->AttachPalette(0xed);
+	palette->UnLoad();
+	m_progress.m_draw.m_centerY =
+		(short) ((m_progress.m_draw.m_display->m_rect.m_height - m_progress.m_draw.m_backgroundBitmap->m_y) / 2);
+	m_progress.m_draw.m_centerX =
+		(short) ((m_progress.m_draw.m_display->m_rect.m_width - m_progress.m_draw.m_backgroundBitmap->m_x) / 2);
+	offset = 0;
+	do {
+		packed = *points;
+		points = points + 1;
+		dest = (VsPoint*) ((int) &m_progress.m_draw.m_points->m_x + offset);
+		dest->m_x = (short) packed;
+		dest->m_y = (short) (packed >> 0x10);
+		offset = offset + 4;
+	} while (offset < 0x14);
+	m_progress.m_draw.m_progress = 0;
+	m_progress.m_draw.m_initialDraw = 1;
+	animCount = GetnAnims(m_progress.m_draw.m_animResourceId);
+	storage = operator new(0x1c);
+	if (storage == 0) {
+		m_progress.m_draw.m_repeatAnim = 0;
+	}
+	else {
+		repeatAnim = new (storage) RepeatAnim();
+		repeatAnim->m_frames = animCount;
+		repeatAnim->m_direction = 1;
+		m_progress.m_draw.m_repeatAnim = repeatAnim;
+	}
+	m_progress.m_draw.m_repeatAnim->m_fixedTime = 0xffffffff;
+	m_progress.m_draw.m_repeatAnim->StartAnim(animCount * 0x42);
 }
 
 // 68K 0x108020ac __dt__11CCDLoadAnimFv
-// STUB: LEMBALL 0x0044ad60
+// FUNCTION: LEMBALL 0x0044ad60
 CdLoadAnim::~CdLoadAnim()
 {
+	operator delete(m_progress.m_draw.m_points);
+	operator delete(m_progress.m_draw.m_repeatAnim);
+	UnLoadAnims(m_progress.m_draw.m_animResourceId);
+	if (m_progress.m_draw.m_backgroundBitmap != 0) {
+		m_progress.m_draw.m_backgroundBitmap->UnLoad();
+	}
+	m_progress.m_draw.m_foregroundBitmap->UnLoad();
+	if (m_progress.m_draw.m_display->m_lifecycleRefs == 1) {
+		m_progress.m_draw.m_display->Clear(-1);
+	}
 }
 
 // 68K 0x10802252 InitialiseScreen__11CCDLoadAnimFv
-// STUB: LEMBALL 0x0044ae80
+// FUNCTION: LEMBALL 0x0044ae80
 void CdLoadAnim::InitialiseScreen()
 {
+	int remaining;
+
+	remaining = 1;
+	do {
+		if (m_progress.m_draw.m_display->m_lifecycleRefs == 1) {
+			m_progress.m_draw.m_display->Refresh(0);
+		}
+		remaining = remaining - 1;
+	} while (remaining != 0);
+	m_progress.m_draw.m_backgroundBitmap->UnLoad();
+	m_progress.m_draw.m_backgroundBitmap = 0;
 }
 
 // 68K 0x108022ce Draw__11CCDLoadAnimFv
-// STUB: LEMBALL 0x0044aec0
-void CdLoadAnim::Draw()
+// FUNCTION: LEMBALL 0x0044aec0
+void CdLoadAnimDraw::Draw()
 {
+	AnimsManager* anims;
+	VsRect rect;
+	VsPoint point;
+	VsPoint origin;
+	VsPoint tip;
+	Vector radius;
+	Vector left;
+	Vector right;
+	Vector thick;
+	Fixed sine;
+	Fixed cosine;
+	int angle;
+	short rotX;
+	short rotY;
+	ChangeList* changeList;
+
+	m_gdi->m_renderTarget->GetCurrDb();
+	m_display->SetZoom(1);
+	if (m_initialDraw != 0) {
+		m_initialDraw = m_initialDraw - 1;
+		rect.m_width = m_display->m_rect.m_width;
+		rect.m_height = m_display->m_rect.m_height;
+		rect.m_x = 0;
+		rect.m_y = 0;
+		*(VsRect*) &m_line[0].m_x1 = rect;
+		m_line[0].m_color = 0;
+		m_line[0].Draw(m_gdi);
+		*(VsPoint*) &m_bitmapRes[0].m_x = *(VsPoint*) &m_centerX;
+		m_bitmapRes[0].m_resource = m_backgroundBitmap;
+		m_bitmapRes[0].m_flags = 0;
+		m_bitmapRes[0].m_remap = 0;
+		m_bitmapRes[0].Draw(m_gdi);
+		point.m_x = 0;
+		point.m_y = 0;
+		*(VsPoint*) &m_clearBitmap[0].m_x = point;
+		rect.m_width = m_display->m_rect.m_width;
+		rect.m_height = m_display->m_rect.m_height;
+		rect.m_x = 0;
+		rect.m_y = 0;
+		*(VsRect*) &m_clearBitmap[0].m_width = rect;
+		m_clearBitmap[0].Draw(m_gdi);
+	}
+	point.m_x = (short) (m_points->m_x + m_centerX);
+	point.m_y = (short) (m_points->m_y + m_centerY);
+	*(VsPoint*) &m_fgBlit[0].m_x = point;
+	m_fgBlit[0].m_resource = m_foregroundBitmap;
+	m_fgBlit[0].m_flags = 0;
+	m_fgBlit[0].m_remap = 0;
+	m_fgBlit[0].Draw(m_gdi);
+	point.m_x = (short) (m_points[1].m_x + m_centerX);
+	point.m_y = (short) (m_points[1].m_y + m_centerY);
+	anims = (AnimsManager*) ((char*) this - 0x74);
+	anims->DrawAnim(point, m_animResourceId, 0, (AnimFrameBASE*) m_repeatAnim, 0);
+	origin.m_x = (short) (m_points[2].m_x + m_centerX);
+	origin.m_y = (short) (m_points[2].m_y + m_centerY);
+	radius.SetIntegers(-m_points[3].m_x, 0);
+	thick.m_xFixed = ((int) m_points[4].m_x) << 12;
+	thick.m_yFixed = ((int) m_points[4].m_y) << 12;
+	left = radius + thick;
+	thick.m_xFixed = ((int) m_points[4].m_x) << 12;
+	thick.m_yFixed = ((int) -m_points[4].m_y) << 12;
+	right = radius + thick;
+	angle = m_progress;
+	if (100 < angle) {
+		angle = 100;
+	}
+	angle = (angle << 8) / 100;
+	sine = g_pVSTrig->Sin(angle);
+	cosine = g_pVSTrig->Cos(angle);
+	radius = g_pVSTrig->Rotate(radius, sine, cosine);
+	rotX = (short) (radius.m_xFixed >> 12);
+	rotY = (short) (radius.m_yFixed >> 12);
+	sine = g_pVSTrig->Sin(angle);
+	cosine = g_pVSTrig->Sin(angle + 0x80);
+	left = g_pVSTrig->Rotate(left, sine, cosine);
+	sine = g_pVSTrig->Sin(angle);
+	cosine = g_pVSTrig->Sin(angle + 0x80);
+	right = g_pVSTrig->Rotate(right, sine, cosine);
+	tip.m_x = (short) (origin.m_x + rotX);
+	tip.m_y = (short) (origin.m_y + rotY);
+	m_clip0[0].m_left = origin.m_x;
+	m_clip0[0].m_top = origin.m_y;
+	*(VsPoint*) &m_clip0[0].m_right = tip;
+	m_clip0[0].m_reserved0c = 0x66;
+	m_clip0[0].Draw(m_gdi);
+	point.m_x = (short) ((left.m_xFixed >> 12) + tip.m_x);
+	point.m_y = (short) ((left.m_yFixed >> 12) + tip.m_y);
+	m_clip1[0].m_left = tip.m_x;
+	m_clip1[0].m_top = tip.m_y;
+	*(VsPoint*) &m_clip1[0].m_right = point;
+	m_clip1[0].m_reserved0c = 0xba;
+	m_clip1[0].Draw(m_gdi);
+	point.m_x = (short) ((right.m_xFixed >> 12) + tip.m_x);
+	point.m_y = (short) ((right.m_yFixed >> 12) + tip.m_y);
+	m_clip2[0].m_left = tip.m_x;
+	m_clip2[0].m_top = tip.m_y;
+	*(VsPoint*) &m_clip2[0].m_right = point;
+	m_clip2[0].m_reserved0c = 0xbf;
+	m_clip2[0].Draw(m_gdi);
+	anims->ResetPrimitives();
+	changeList = m_gdi->m_renderTarget->GetChangeList();
+	m_mark.Draw(m_gdi);
+	changeList->Reset();
 }
 
 // 68K 0x108028fe Draw__11CCDLoadAnimFs
-// STUB: LEMBALL 0x0044b340
-void CdLoadAnim::Draw(short p_progress)
+// FUNCTION: LEMBALL 0x0044b340
+void CdLoadAnimProgress::Draw(short p_progress)
 {
+	TargetSynchronizeLoadProgress();
+	m_draw.m_progress = p_progress;
+	m_draw.m_display->RefreshView();
 }
+
+// GLOBAL: LEMBALL 0x0049f9b0
+unsigned int g_dwCdLoadAnimCompactPoints[5] = {0x004d0087, 0x0063008f, 0x005b0094, 0x0000000a, 0x00040004};
+
+// GLOBAL: LEMBALL 0x0049f9c8
+unsigned int g_dwCdLoadAnimFullPoints[5] = {0x009a010e, 0x00c6011a, 0x00b60128, 0x00000014, 0x00080008};

@@ -5,6 +5,10 @@
 #include "BaseSoundDevice.h"
 #include "PvMusicDevice.h"
 
+#include <string.h>
+
+#pragma intrinsic(strcat)
+
 struct SoundDeviceDispatch {
 	virtual void Delete(int p_delete) = 0;
 	virtual void Slot04() = 0;
@@ -100,7 +104,7 @@ SoundManager::SoundManager(unsigned int p_musicEnabled, unsigned int p_effectsEn
 			m_musicAvailable = 1;
 		}
 	}
-	if (m_requestedEffects != 0 && m_effectOutput != 0) {
+	if (m_requestedEffects != 0) {
 		SetEffectsWnd(p_window);
 	}
 	if (m_requestedMusic != 0) {
@@ -409,18 +413,57 @@ void SoundManager::SetMusicWnd(Wnd* p_window)
 	}
 }
 
-// STUB: LEMBALL 0x0045b5c0
+// FUNCTION: LEMBALL 0x0045b5c0
 void SoundManager::SetMusicCdPath(char* p_path)
 {
+	m_musicDevice->m_path = p_path;
+	m_musicDevice->m_reserved08 = 1;
 }
 
 // 68K 0x10218b40 UseMusicCD__13CSoundManagerFUc
-// STUB: LEMBALL 0x0045b5f0
+// FUNCTION: LEMBALL 0x0045b5f0
 void SoundManager::UseMusicCd(unsigned int p_enabled)
 {
-	if (m_musicDevice != 0) {
-		m_musicDevice->m_reserved0c = p_enabled;
+	m_musicDevice->m_reserved0c = p_enabled;
+}
+
+// GLOBAL: LEMBALL 0x004a1ca8
+char g_szEffectsDriverPrefix[12] = "Effects : ";
+
+// GLOBAL: LEMBALL 0x004a1cb4
+char g_szSoundDriverNewline[4] = "\n";
+
+// GLOBAL: LEMBALL 0x004a1cb8
+char g_szMusicDriverPrefix[12] = "Music : ";
+
+// FUNCTION: LEMBALL 0x0045b600
+char* SoundManager::BuildDriverInfo()
+{
+	char* text;
+
+	g_szSoundDriverInfo[0] = 0;
+	if (m_effectOutput != 0 && m_requestedEffects != 0) {
+		text = m_effectOutput->Dummy04();
+		if (text != 0) {
+			strcat(g_szSoundDriverInfo, g_szEffectsDriverPrefix);
+			strcat(g_szSoundDriverInfo, text);
+		}
 	}
+	if (m_useMusicCD != 0 && m_requestedMusic != 0 && m_musicDevice != 0) {
+		text = m_musicDevice->GetInfo();
+		if (text != 0) {
+			strcat(g_szSoundDriverInfo, text);
+			strcat(g_szSoundDriverInfo, g_szSoundDriverNewline);
+		}
+	}
+	if (m_musicOutput != 0 && m_requestedMusic != 0) {
+		text = m_musicOutput->Dummy04();
+		if (text != 0) {
+			strcat(g_szSoundDriverInfo, g_szMusicDriverPrefix);
+			strcat(g_szSoundDriverInfo, text);
+		}
+	}
+	return g_szSoundDriverInfo;
 }
 
 // GLOBAL: LEMBALL 0x004a97c8

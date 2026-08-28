@@ -3,6 +3,7 @@
 #include "../Foundation/BaseQueueHandler.h"
 #include "../Foundation/VsMem.h"
 #include "../Network/BaseNetwork.h"
+#include "BasePacketHeader.h"
 
 #include <string.h>
 
@@ -252,14 +253,14 @@ void NetworkMessage::OpenDataStream()
 	m_openDepth = depth + 1;
 	if (depth == 0) {
 		if (m_ownsBuffer == 0) {
-			storage = (unsigned char*) operator new(m_payloadCapacity + 0x10);
+			storage = (unsigned char*) operator new(m_payloadCapacity + sizeof(BasePacketHeader));
 			m_ownsBuffer = 1;
 			m_buffer = storage;
-			m_writeCursor = storage + 0x10;
-			m_bufferEnd = storage + m_payloadCapacity + 0x10;
+			m_writeCursor = storage + sizeof(BasePacketHeader);
+			m_bufferEnd = storage + m_payloadCapacity + sizeof(BasePacketHeader);
 		}
 		else {
-			m_writeCursor = m_buffer + 0x10;
+			m_writeCursor = m_buffer + sizeof(BasePacketHeader);
 		}
 		AddHeader();
 		AddData();

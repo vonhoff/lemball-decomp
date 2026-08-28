@@ -22,8 +22,12 @@
 #include "../../Visos/Foundation/Process.h"
 #include "../../Visos/Foundation/VsDebug.h"
 #include "../../Visos/Foundation/VsSound.h"
+#include "../../Visos/Foundation/VsTime.h"
+#include "../../Network/Game/NetworkManager.h"
+#include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Graphics/Drawer.h"
 #include "../../Visos/Resources/MogRes.h"
+#include "../../Visos/Resources/MogloadArena.h"
 #include "../../Visos/Resources/ResString.h"
 #include "../../Visos/Sound/SoundManager.h"
 #include "../../Visos/Target/TargetPlatformServices.h"
@@ -35,6 +39,8 @@
 #include <string.h>
 
 #pragma intrinsic(strcpy, strcat, strcmp)
+
+extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 
 // GLOBAL: LEMBALL 0x0049cbc8
 char g_szLemmingsPaintball[20] = "Lemmings Paintball";
@@ -60,6 +66,9 @@ char g_szIsValidResourceFile[20] = "IsValidResourceFile";
 // GLOBAL: LEMBALL 0x0049cce8
 char g_szLemmingsPaintballTitle[20] = "Lemmings Paintball";
 
+// GLOBAL: LEMBALL 0x0049cd18
+char g_szLemmingsPaintballRegistry[20] = "Lemmings Paintball";
+
 // GLOBAL: LEMBALL 0x0049ccfc
 char g_szMusicCdPath[8] = "lemball";
 
@@ -82,7 +91,7 @@ extern StatManager* g_pStatManager;
 
 // 68K 0x1070185c __ct__5CGameFPc
 // ASSERT: _VSRELassert("IsValidResourceFile", "GAME.CPP", 366)
-// STUB: LEMBALL 0x00406df0
+// FUNCTION: LEMBALL 0x00406df0
 Game::Game(char* p_arg0)
 {
 	void* storage;
@@ -113,6 +122,8 @@ Game::Game(char* p_arg0)
 	}
 	else {
 		m_processingStat = new (storage) BaseStat(g_szProcessing);
+		m_processingStat->m_timingActive = 0;
+		m_processingStat->m_timingStart = 0;
 	}
 
 	storage = operator new(0x28);
@@ -121,13 +132,15 @@ Game::Game(char* p_arg0)
 	}
 	else {
 		m_refreshingStat = new (storage) BaseStat(g_szRefreshing);
+		m_refreshingStat->m_timingActive = 0;
+		m_refreshingStat->m_timingStart = 0;
 	}
 
 	m_flowTicks = 0;
 	g_pStatManager->Register(m_processingStat);
 	g_pStatManager->Register(m_refreshingStat);
 
-	storage = operator new(0x28);
+	storage = MogloadArena::operator new(0x28);
 	if (storage == 0) {
 		g_pMogRes = 0;
 	}
@@ -180,13 +193,66 @@ Game::Game(char* p_arg0)
 }
 
 // 68K 0x10701c2e __dt__5CGameFv
-// STUB: LEMBALL 0x004071d0
+// FUNCTION: LEMBALL 0x004071d0
 Game::~Game()
 {
+	FrontendResourceLoader* resources;
+	SoundView* soundView;
+	MogRes* mogRes;
+	unsigned long started;
+	unsigned long now;
+
+	resources = (FrontendResourceLoader*) m_frontendResources;
+	if (resources != 0) {
+		resources->~FrontendResourceLoader();
+		operator delete(resources);
+	}
+	if (g_pNetworkManager != 0) {
+		g_pNetworkManager->Stop();
+	}
+	if (g_pBaseNetwork != 0) {
+		started = timeGetTime();
+		do {
+			now = timeGetTime();
+			if (now - started >= 2000) {
+				break;
+			}
+		} while (g_pBaseNetwork->m_queueTransitionPending != 0);
+	}
+	if (g_pNetworkManager != 0) {
+		delete g_pNetworkManager;
+		g_pNetworkManager = 0;
+	}
+	if (m_mainDisplay != 0) {
+		m_mainDisplay->Destroy();
+		if (m_mainDisplay != 0) {
+			delete static_cast<BaseQueueHandler*>(m_mainDisplay);
+		}
+	}
+	if (m_process != 0) {
+		delete m_process;
+	}
+	if (g_pSoundView != 0) {
+		soundView = g_pSoundView;
+		soundView->~SoundView();
+		operator delete(soundView);
+		EndSound();
+	}
+	if (g_pMogRes != 0) {
+		mogRes = g_pMogRes;
+		mogRes->~MogRes();
+		MogloadArena::operator delete(mogRes);
+		g_pMogRes = 0;
+	}
+	if (g_pGameStatus != 0) {
+		operator delete(g_pGameStatus);
+		g_pGameStatus = 0;
+	}
+	g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintballRegistry, 0);
 }
 
 // 68K 0x10701daa IsValidResource__5CGameFv
-// STUB: LEMBALL 0x00407300
+// FUNCTION: LEMBALL 0x00407300
 bool Game::IsValidResource()
 {
 	ResString* resource;
@@ -224,7 +290,7 @@ bool Game::IsValidResource()
 }
 
 // 68K 0x10701e66 LoadFrontendResources__5CGameFi
-// STUB: LEMBALL 0x004073b0
+// FUNCTION: LEMBALL 0x004073b0
 void Game::LoadFrontendResources(int p_mode)
 {
 	void* storage;
@@ -241,13 +307,17 @@ void Game::LoadFrontendResources(int p_mode)
 }
 
 // 68K 0x10701ecc UnLoadFrontendResources__5CGameFv
-// STUB: LEMBALL 0x004073f0
+// FUNCTION: LEMBALL 0x004073f0
 void Game::UnLoadFrontendResources()
 {
+	if (m_frontendResources != 0) {
+		delete (FrontendResourceLoader*) m_frontendResources;
+		m_frontendResources = 0;
+	}
 }
 
 // 68K 0x10701f1c NextProcess__5CGameF14eFlowProcesses
-// STUB: LEMBALL 0x00407420
+// FUNCTION: LEMBALL 0x00407420
 void Game::NextProcess(eFlowProcesses p_flow)
 {
 	void* storage;
@@ -388,7 +458,7 @@ void Game::NextProcess(eFlowProcesses p_flow)
 }
 
 // 68K 0x10702374 Process__5CGameFv
-// STUB: LEMBALL 0x004077e0
+// FUNCTION: LEMBALL 0x004077e0
 void Game::Process()
 {
 	unsigned char quitState;
@@ -425,14 +495,34 @@ void Game::Process()
 }
 
 // 68K 0x10702508 RefreshViews__5CGameFv
-// STUB: LEMBALL 0x004078f0
+// FUNCTION: LEMBALL 0x004078f0
 void Game::RefreshViews()
 {
+	int timing;
+	BaseStat* stat;
+	unsigned long now;
+
+	timing = 0;
+	if ((m_currentFlow == 5 || m_currentFlow == 0x13) && 0x32 < (int) m_flowTicks) {
+		timing = 1;
+		stat = m_refreshingStat;
+		now = timeGetTime();
+		stat->m_timingStart = (void*) now;
+		stat->m_timingActive = timing;
+	}
 	m_mainDisplay->RefreshView();
+	if (timing != 0) {
+		stat = m_refreshingStat;
+		if (stat->m_timingActive != 0) {
+			now = timeGetTime();
+			stat->Update(now - (unsigned long) stat->m_timingStart);
+			stat->m_timingActive = 0;
+		}
+	}
 }
 
 // 68K 0x107025a0 Run__5CGameFv
-// STUB: LEMBALL 0x00407950
+// FUNCTION: LEMBALL 0x00407950
 void Game::Run()
 {
 	Demo* demo;

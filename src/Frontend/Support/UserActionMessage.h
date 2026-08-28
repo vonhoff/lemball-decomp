@@ -13,6 +13,8 @@ public:
 	virtual void GetData();       // vtable+0x08
 	virtual ~UserActionMessage(); // vtable+0x14
 
+	friend class BaseFrontendProcess;
+
 private:
 	eUserActions m_action;     // 0x2c
 	eUserActionStages m_stage; // 0x30

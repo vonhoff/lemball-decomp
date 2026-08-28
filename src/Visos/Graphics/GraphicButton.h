@@ -19,6 +19,8 @@ public:
 	void SetAnimId(unsigned long p_animId);
 
 	friend class ToggleButton;
+	friend class GunButton;
+	friend class GunButtons;
 
 private:
 	unsigned int m_enabled;         // 0x104

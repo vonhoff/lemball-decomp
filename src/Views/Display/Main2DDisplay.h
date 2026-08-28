@@ -7,20 +7,21 @@
 #include "../../Visos/Graphics/PvGWnd.h"             // complete type
 
 // SIZE 0xe4
-// VTABLE: LEMBALL 0x00496bb8
-class Main2DDisplay : public PvGWnd {
+// VTABLE: LEMBALL 0x00496bb8 primary PvGWnd base at +0x00
+// VTABLE: LEMBALL 0x00496ba8 adjusted BaseQueueHandler base at +0x90
+class Main2DDisplay : public PvGWnd, public BaseQueueHandler {
 public:
 	Main2DDisplay(Game* p_arg0);
 	VsRect GetUseRect(int p_x, int p_y);
-	bool GetMenu(int& p_count, MenuList*** p_menu);
+	virtual bool GetMenu(int& p_count, MenuList*** p_menu); // vtable+0x0c
 	bool IsWindowValid();
-	bool ProcessMsg(Message* p_message);
+	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	unsigned char GetReturnState();
 	unsigned char QuitYet();
 	unsigned int GetStyle();
 	virtual void OnDriverChange(); // vtable+0x5c
 	virtual void OnMove();         // vtable+0x58
-	virtual void OnRestore();      // vtable+0x54
+	virtual 	void OnRestore();      // vtable+0x54
 	void KillDrawer(eFlowProcesses p_flow);
 	void OnCreate();
 	void OnDestroy();
@@ -35,9 +36,12 @@ public:
 
 	friend class NetworkOptionsDrawer;
 	friend class Game;
+	friend class BaseFrontendProcess;
+	friend class MainOptions1Drawer;
+	friend class FrontendResourceLoader;
+	friend class CdLoadAnim;
 
 private:
-	BaseQueueHandler m_queueHandler; // 0x90
 	unsigned int m_windowReady;      // 0xa0
 	void* m_drawPrimitive;           // 0xa4
 	void* m_background;              // 0xa8

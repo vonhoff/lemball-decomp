@@ -15,6 +15,7 @@ public:
 
 	friend class PvButton;
 	friend class Surface;
+	friend class CdLoadAnimDraw;
 
 private:
 	short m_left;            // 0x04

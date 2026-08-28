@@ -26,8 +26,10 @@ public:
 
 	friend class BaseFrontendDrawer;
 	friend class MainOptions1Drawer;
+	friend class MainOptions2Drawer;
 	friend class Surface;
 	friend class AnimsManager;
+	friend class CdLoadAnim;
 
 protected:
 	short m_x; // 0x48

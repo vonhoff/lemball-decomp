@@ -1,4 +1,5 @@
 #include "ReadMsBuff.h"
+#include "BasePacketHeader.h"
 
 #include "../Foundation/VsMem.h"
 
@@ -15,11 +16,11 @@ ReadMsBuff::ReadMsBuff(int p_arg0, int p_arg1, unsigned short p_arg2)
 	m_expectedSubpacketCount = p_arg0;
 	m_assembledSize = 0;
 	m_receivedSubpacketCount = 0;
-	payloadSize = (p_arg2 & 0xffff) - 0x10;
+	payloadSize = (p_arg2 & 0xffff) - sizeof(BasePacketHeader);
 	m_subpacketPayloadSize = payloadSize;
 	if (p_arg0 != 0 && payloadSize != 0) {
-		m_buffer = (unsigned char*) operator new(p_arg1 + 0x10);
-		*(unsigned short*) (m_buffer + 0x0a) = 0;
+		m_buffer = (unsigned char*) operator new(p_arg1 + sizeof(BasePacketHeader));
+		((BasePacketHeader*) m_buffer)->m_packetSequence = 0;
 	}
 	else {
 		m_buffer = 0;

@@ -7,7 +7,7 @@
 BaseSocket::BaseSocket()
 {
 	m_receiveSequence = 0;
-	m_payloadCapacity += 0x10;
+	m_payloadCapacity += sizeof(BasePacketHeader);
 	m_multiMessageSequence = 0;
 	m_criticalSequence = 0;
 	m_nonCriticalSequence = 0;

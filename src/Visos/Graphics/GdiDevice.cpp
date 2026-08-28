@@ -119,7 +119,13 @@ void GdiDevice::FreeSurface(Surface* p_surface)
 	int i;
 	GdiSurfaceSlot* slot;
 
+	if (p_surface == 0) {
+		return;
+	}
 	i = FindSurface(p_surface);
+	if (i < 0) {
+		return;
+	}
 	slot = &m_surfaceSlots[i];
 	if (slot->m_surface != 0) {
 		slot->m_surface->~Surface();

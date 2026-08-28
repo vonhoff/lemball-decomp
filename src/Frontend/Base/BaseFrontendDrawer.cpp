@@ -14,15 +14,18 @@
 #include "../../Visos/Resources/ResBitmap.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Resources/MogRes.h"
 #include "../Controls/GunButtons.h"
 #include "../Controls/GunController.h"
 #include "../Controls/HiliteController.h"
+
+extern int* g_pSentinel;
 
 #include <new.h>
 #include <string.h>
 
 // 68K 0x10800108 __ct__19CBaseFrontendDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect14eFlowProcessesiiiii
-// STUB: LEMBALL 0x00445420
+// FUNCTION: LEMBALL 0x00445420
 BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
 									   Gdi* p_arg1,
 									   const VsRect& p_arg2,
@@ -55,7 +58,7 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
 	m_loaded = 0;
 	m_desiredPalette = 0x10a;
 	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->Attach(&m_queueHandler, 0);
+		g_pMasterInputQueue->Attach(this, 0);
 	}
 	m_returnState = 0;
 	m_quitYet = 0;
@@ -83,7 +86,7 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
 }
 
 // 68K 0x10800308 Setup__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x004455f0
+// FUNCTION: LEMBALL 0x004455f0
 void BaseFrontendDrawer::Setup()
 {
 	int cursorType;
@@ -254,7 +257,7 @@ void BaseFrontendDrawer::_DrawBackGround()
 }
 
 // 68K 0x10800db0 Restart__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00445e70
+// FUNCTION: LEMBALL 0x00445e70
 void BaseFrontendDrawer::Restart()
 {
 	bool windowValid;
@@ -273,7 +276,7 @@ void BaseFrontendDrawer::Restart()
 }
 
 // 68K 0x10800e3a _Load__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00445ed0
+// FUNCTION: LEMBALL 0x00445ed0
 void BaseFrontendDrawer::_Load()
 {
 	m_loaded = 1;
@@ -302,9 +305,18 @@ void BaseFrontendDrawer::_Load()
 }
 
 // 68K 0x10800f3a _UnLoad__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00445fe0
+// FUNCTION: LEMBALL 0x00445fe0
 void BaseFrontendDrawer::_UnLoad()
 {
+	if (m_textManager != 0) {
+		m_textManager->UnLoadFont(m_unknown384);
+	}
+	m_backgroundBitmap->UnLoad();
+	m_tileBitmap->UnLoad();
+	m_anims.UnLoadAnims(m_topFrameAnimId);
+	m_anims.UnLoadAnims(m_sideFrameAnimId);
+	m_anims.UnLoadAnims(m_bottomFrameAnimId);
+	m_loaded = 0;
 }
 
 // 68K 0x10800fca _DrawAnims__19CBaseFrontendDrawerFv
@@ -404,18 +416,60 @@ void BaseFrontendDrawer::DrawFrame(VsRect p_rect)
 }
 
 // 68K 0x108014f4 ProcessMsg__19CBaseFrontendDrawerFP10tagMESSAGE
-// STUB: LEMBALL 0x00446480
-bool BaseFrontendDrawer::ProcessMsg(Message* p_message)
+// FUNCTION: LEMBALL 0x00446480
+int BaseFrontendDrawer::ProcessMsg(Message* p_message)
 {
-	return 0;
+	unsigned int sequence;
+
+	if (m_actionPending != 0) {
+		return 0;
+	}
+	sequence = *(unsigned int*) &p_message->reserved[1];
+	if ((int) (sequence - m_createdAt) < 0) {
+		return 0;
+	}
+	if (ProcessMessages(p_message) == 0) {
+		return 0;
+	}
+	return 1;
 }
 
 // 68K 0x108015ca Process__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x004464d0
+// FUNCTION: LEMBALL 0x004464d0
 void BaseFrontendDrawer::Process()
 {
+	unsigned long now;
+	unsigned int seed;
+
 	if (m_backBufferNeeded != 0) {
 		InitialiseBackBuffer();
+	}
+	if (m_networkMode != 0 && m_startupPending == 0) {
+		m_actionPending = 0;
+		m_startupPending = 1;
+		if (m_hiliteController != 0) {
+			m_hiliteController->ActivateButtons(1);
+			m_hiliteController->m_active = 1;
+		}
+	}
+	if (m_ambientAnim != 0) {
+		now = CurrentMilliTimer();
+		if (m_ambientDelay + 1000U < now - m_ambientUpdatedAt) {
+			now = CurrentMilliTimer();
+			m_ambientUpdatedAt = now;
+			m_ambientAnim->SetStartTime(now);
+			if (g_pSentinel != 0) {
+				seed = *g_pSentinel * 0x29 + 0x1fU & 0x7fffff;
+				*g_pSentinel = (int) seed;
+				m_ambientDelay = seed % 6000;
+			}
+		}
+	}
+	if (m_gunController != 0) {
+		m_gunController->Process();
+	}
+	if (m_hiliteController != 0) {
+		m_hiliteController->Process();
 	}
 	Processing();
 }
@@ -503,6 +557,23 @@ void BaseFrontendDrawer::OnSize(const VsRect& p_rect)
 // 68K 0x1080048c __dt__19CBaseFrontendDrawerFv
 BaseFrontendDrawer::~BaseFrontendDrawer()
 {
+	if (g_pMasterInputQueue != 0) {
+		g_pMasterInputQueue->Detach(this, 0);
+	}
+	if (m_loaded != 0) {
+		_UnLoad();
+	}
+	if (m_ambientAnim != 0) {
+		delete m_ambientAnim;
+		m_ambientAnim = 0;
+	}
+	if (m_textManager != 0) {
+		delete m_textManager;
+		m_textManager = 0;
+	}
+	if (g_pMogRes != 0) {
+		g_pMogRes->CleanUpResources();
+	}
 }
 
 // GLOBAL: LEMBALL 0x0049f628

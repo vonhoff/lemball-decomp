@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import ctypes
+import os
 import re
 import shutil
 import subprocess
@@ -14,7 +16,43 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
 LOG_PATH = BUILD / "last_build.log"
-CMAKE = shutil.which("cmake") or str(ROOT / ".decomp-venv" / "Scripts" / "cmake.exe")
+
+
+def win_short_path(path: str) -> str:
+    """MSVC 1.60 nmake splits unquoted CMAKE_COMMAND at spaces."""
+    resolved = str(Path(path).resolve())
+    if os.name != "nt" or " " not in resolved:
+        return resolved
+    get_short = ctypes.windll.kernel32.GetShortPathNameW
+    get_short.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint]
+    get_short.restype = ctypes.c_uint
+    buf = ctypes.create_unicode_buffer(32768)
+    if get_short(resolved, buf, 32768) and buf.value and " " not in buf.value:
+        return buf.value
+    return resolved
+
+
+def resolve_cmake() -> str:
+    found = shutil.which("cmake")
+    if found:
+        return win_short_path(found)
+    venv = ROOT / ".decomp-venv" / "Scripts" / "cmake.exe"
+    if venv.exists():
+        return win_short_path(str(venv))
+    sys.exit("cmake not found")
+
+
+CMAKE = resolve_cmake()
+
+
+def cache_cmake_command() -> str | None:
+    cache = BUILD / "CMakeCache.txt"
+    if not cache.exists():
+        return None
+    for line in cache.read_text(encoding="utf-8", errors="replace").splitlines():
+        if line.startswith("CMAKE_COMMAND:"):
+            return line.split("=", 1)[-1].strip().strip('"')
+    return None
 
 
 def handle_link(args: list[str]) -> int:
@@ -44,8 +82,19 @@ def handle_link(args: list[str]) -> int:
 def run_build(clean_first: bool = False, fresh: bool = False, extra_args: list[str] | None = None) -> int:
     BUILD.mkdir(parents=True, exist_ok=True)
 
-    if fresh:
-        res = subprocess.run([CMAKE, "--fresh", "--preset", "msvc400"], cwd=ROOT)
+    cached = cache_cmake_command()
+    makefile = BUILD / "Makefile"
+    need_configure = (
+        fresh
+        or cached is None
+        or (cached is not None and " " in cached)
+        or not makefile.exists()
+    )
+    if need_configure:
+        configure = [CMAKE, "--preset", "msvc400"]
+        if fresh:
+            configure = [CMAKE, "--fresh", "--preset", "msvc400"]
+        res = subprocess.run(configure, cwd=ROOT)
         if res.returncode != 0:
             return res.returncode
 

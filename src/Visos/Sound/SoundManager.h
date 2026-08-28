@@ -27,6 +27,7 @@ public:
 	void StopMusic(unsigned long p_handle);
 	void UseMusicCd(unsigned int p_enabled);
 	void SetMusicCdPath(char* p_path);
+	char* BuildDriverInfo();
 	~SoundManager();
 
 private:

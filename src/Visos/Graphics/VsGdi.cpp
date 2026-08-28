@@ -9,9 +9,11 @@
 #include "../Target/TargetDrawingContext.h"
 #include "../Target/TargetGraphicsDriver.h"
 #include "Bitmap.h"
+#include "BitmapRes.h"
 #include "ClipRect.h"
 #include "CopyToBackBuff.h"
 #include "GdiDevice.h"
+#include "Point.h"
 #include "Zrle.h"
 
 #include <new.h>
@@ -91,6 +93,23 @@ Surface::Surface(const VsRect& p_arg0, class Surface* p_arg1)
 			g_pSurfaceList->m_count = 0;
 		}
 	}
+	if (p_arg1 != 0) {
+		storage = operator new(0xc);
+		if (storage != 0) {
+			node = (SurfaceListNode*) storage;
+			node->m_surface = this;
+			node->m_next = 0;
+			node->m_prev = (SurfaceListNode*) p_arg1->m_unk0x52c;
+			if (p_arg1->m_unk0x52c != 0) {
+				((SurfaceListNode*) p_arg1->m_unk0x52c)->m_next = node;
+			}
+			p_arg1->m_unk0x52c = (undefined4) node;
+			if (p_arg1->m_unk0x528 == 0) {
+				p_arg1->m_unk0x528 = (undefined4) node;
+			}
+			p_arg1->m_unk0x530 = p_arg1->m_unk0x530 + 1;
+		}
+	}
 	if (g_pSurfaceList != 0) {
 		storage = operator new(0xc);
 		if (storage != 0) {
@@ -112,66 +131,94 @@ Surface::Surface(const VsRect& p_arg0, class Surface* p_arg1)
 		context = g_pTargetGraphicsDriver->CreateDrawingContext();
 		m_drawingPort = context;
 	}
-	else {
-		storage = operator new(0xc);
-		if (storage == 0) {
-			m_drawingPort = 0;
-		}
-		else {
-			context = new (storage) TargetDrawingContext();
-			context->m_hDC = 0;
-			context->m_hBitmap = 0;
-			m_drawingPort = context;
-		}
-	}
 	NewBitmap(p_arg0);
 }
 
-// STUB: LEMBALL 0x0046c380
+static const unsigned char g_anFallbackSystemColors[20][3] = {
+	{0x00, 0x00, 0x00}, {0x80, 0x00, 0x00}, {0x00, 0x80, 0x00}, {0x80, 0x80, 0x00}, {0x00, 0x00, 0x80},
+	{0x80, 0x00, 0x80}, {0x00, 0x80, 0x80}, {0xc0, 0xc0, 0xc0}, {0xc0, 0xdc, 0xc0}, {0xa6, 0xca, 0xf0},
+	{0xff, 0xfb, 0xf0}, {0xa0, 0xa0, 0xa4}, {0x80, 0x80, 0x80}, {0xff, 0x00, 0x00}, {0x00, 0xff, 0x00},
+	{0xff, 0xff, 0x00}, {0x00, 0x00, 0xff}, {0xff, 0x00, 0xff}, {0x00, 0xff, 0xff}, {0xff, 0xff, 0xff}};
+static const unsigned char g_anReservedOutputColors[2][3] = {{0xff, 0xff, 0xff}, {0x00, 0x00, 0x00}};
+
+// FUNCTION: LEMBALL 0x0046c380
 void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 								   ResPalette* p_palette,
 								   void* p_unused,
 								   unsigned int* p_fallbackEntries)
 {
-	RGBQUAD* table;
 	PALETTEENTRY systemEntries[256];
 	unsigned char* data;
 	HDC hdc;
 	int i;
-	int copied;
+	int colorCount;
+	unsigned int color;
 
-	table = (RGBQUAD*) p_entries;
 	hdc = GetDC(0);
-	copied = 0;
+	if ((GetSystemPaletteEntries(hdc, 0, 10, systemEntries) |
+		 GetSystemPaletteEntries(hdc, 0xf6, 10, systemEntries + 0xf6)) == 0) {
+		i = 0;
+		while (i < 10) {
+			systemEntries[i].peRed = g_anFallbackSystemColors[i][0];
+			systemEntries[i].peGreen = g_anFallbackSystemColors[i][1];
+			systemEntries[i].peBlue = g_anFallbackSystemColors[i][2];
+			systemEntries[0xf6 + i].peRed = g_anFallbackSystemColors[10 + i][0];
+			systemEntries[0xf6 + i].peGreen = g_anFallbackSystemColors[10 + i][1];
+			systemEntries[0xf6 + i].peBlue = g_anFallbackSystemColors[10 + i][2];
+			i = i + 1;
+		}
+	}
 	if (hdc != 0) {
-		copied = GetSystemPaletteEntries(hdc, 0, 256, systemEntries);
 		ReleaseDC(0, hdc);
 	}
+
 	i = 0;
-	while (i < 256) {
-		if (copied != 0) {
-			table[i].rgbBlue = systemEntries[i].peBlue;
-			table[i].rgbGreen = systemEntries[i].peGreen;
-			table[i].rgbRed = systemEntries[i].peRed;
-		}
-		else {
-			table[i].rgbBlue = (unsigned char) i;
-			table[i].rgbGreen = (unsigned char) i;
-			table[i].rgbRed = (unsigned char) i;
-		}
-		table[i].rgbReserved = 0;
+	while (i < 10) {
+		p_entries[i] = ((unsigned int) systemEntries[i].peRed << 16) |
+					   ((unsigned int) systemEntries[i].peGreen << 8) | systemEntries[i].peBlue;
+		p_entries[0xf6 + i] = ((unsigned int) systemEntries[0xf6 + i].peRed << 16) |
+							  ((unsigned int) systemEntries[0xf6 + i].peGreen << 8) | systemEntries[0xf6 + i].peBlue;
 		i = i + 1;
 	}
-	if (p_palette != 0) {
-		data = p_palette->GetData();
-		if (data != 0) {
-			i = 10;
-			while (i < 246) {
-				table[i].rgbRed = data[0x30 + i * 4];
-				table[i].rgbGreen = data[0x30 + i * 4 + 1];
-				table[i].rgbBlue = data[0x30 + i * 4 + 2];
-				table[i].rgbReserved = 0;
+	p_entries[10] = ((unsigned int) g_anReservedOutputColors[0][0] << 16) |
+					((unsigned int) g_anReservedOutputColors[0][1] << 8) | g_anReservedOutputColors[0][2];
+	p_entries[11] = ((unsigned int) g_anReservedOutputColors[1][0] << 16) |
+					((unsigned int) g_anReservedOutputColors[1][1] << 8) | g_anReservedOutputColors[1][2];
+
+	if (p_palette == 0) {
+		if (p_fallbackEntries == 0) {
+			i = 12;
+			while (i < 0xf6) {
+				color = (unsigned char) (0u - (unsigned int) i);
+				p_entries[i] = (color << 16) | (color << 8) | color;
 				i = i + 1;
+			}
+		}
+		else {
+			i = 12;
+			while (i < 0xf6) {
+				p_entries[i] = p_fallbackEntries[i] & 0xffffff;
+				i = i + 1;
+			}
+		}
+	}
+	else {
+		colorCount = (int) p_palette->m_paletteState - 10;
+		if (colorCount > 0xf6) {
+			colorCount = 0xec;
+		}
+		if (colorCount > 12) {
+			colorCount = colorCount - 12;
+			data = p_palette->GetData();
+			if (data != 0) {
+				data = data + 12 * 4;
+				i = 12;
+				while (colorCount != 0) {
+					p_entries[i] = ((unsigned int) data[0] << 16) | ((unsigned int) data[1] << 8) | data[2];
+					data = data + 4;
+					i = i + 1;
+					colorCount = colorCount - 1;
+				}
 			}
 		}
 	}
@@ -210,15 +257,116 @@ Surface::Surface(GrafPort* p_arg0)
 }
 
 // 68K 0x10109200 __dt__8CSurfaceFv
-// STUB: LEMBALL 0x0046c710
+// FUNCTION: LEMBALL 0x0046c710
 Surface::~Surface()
 {
-	if (m_platformBitmap == 0 && m_bits != 0) {
-		operator delete(m_bits);
-		m_bits = 0;
-		m_bitsBase = 0;
+	SurfaceListNode* node;
+	SurfaceListNode* next;
+	SurfaceListNode* prev;
+	Surface* parent;
+	int locked;
+
+	locked = m_unk0x54c;
+	if (locked != 0) {
+		EnterCriticalSection((CRITICAL_SECTION*) m_lock);
 	}
-	m_platformBitmap = 0;
+	if (m_platformBitmap != 0 && g_pTargetGraphicsDriver != 0) {
+		g_pTargetGraphicsDriver->RestoreDIBContext((TargetDrawingContext*) m_drawingPort,
+												   (TargetDibContext*) m_platformBitmap);
+		g_pTargetGraphicsDriver->DestroyDIBContext((TargetDibContext*) m_platformBitmap);
+		m_platformBitmap = 0;
+	}
+	if (m_parentSurface == (Surface*) g_pGdiHelperTarget) {
+		FreeBackBuff();
+		FreeZBuff();
+	}
+	if (m_drawingPort != 0 && g_pTargetGraphicsDriver != 0) {
+		g_pTargetGraphicsDriver->DestroyDrawingContext((TargetDrawingContext*) m_drawingPort);
+		m_drawingPort = 0;
+	}
+	if (m_changeList != 0) {
+		delete m_changeList;
+		m_changeList = 0;
+	}
+	parent = m_parentSurface;
+	if (parent != 0) {
+		node = (SurfaceListNode*) parent->m_unk0x528;
+		while (node != 0) {
+			if (node->m_surface == this) {
+				break;
+			}
+			node = node->m_next;
+		}
+		if (node != 0) {
+			next = node->m_next;
+			prev = node->m_prev;
+			operator delete(node);
+			if (next == 0) {
+				parent->m_unk0x52c = (undefined4) prev;
+			}
+			else {
+				next->m_prev = prev;
+			}
+			if (prev == 0) {
+				parent->m_unk0x528 = (undefined4) next;
+			}
+			else {
+				prev->m_next = next;
+			}
+			parent->m_unk0x530 = parent->m_unk0x530 - 1;
+		}
+		m_parentSurface = 0;
+	}
+	if (locked != 0) {
+		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
+		DeleteCriticalSection((CRITICAL_SECTION*) m_lock);
+		m_unk0x54c = 0;
+		if (g_pSurfaceList != 0) {
+			node = (SurfaceListNode*) g_pSurfaceList->m_first;
+			while (node != 0) {
+				if (node->m_surface == this) {
+					break;
+				}
+				node = node->m_next;
+			}
+			if (node != 0) {
+				next = node->m_next;
+				prev = node->m_prev;
+				operator delete(node);
+				if (next == 0) {
+					g_pSurfaceList->m_last = prev;
+				}
+				else {
+					next->m_prev = prev;
+				}
+				if (prev == 0) {
+					g_pSurfaceList->m_first = next;
+				}
+				else {
+					prev->m_next = next;
+				}
+				g_pSurfaceList->m_count = g_pSurfaceList->m_count - 1;
+			}
+			if (g_pSurfaceList != 0 && g_pSurfaceList->m_count == 0) {
+				node = (SurfaceListNode*) g_pSurfaceList->m_first;
+				while (node != 0) {
+					next = node->m_next;
+					operator delete(node);
+					node = next;
+				}
+				operator delete(g_pSurfaceList);
+				g_pSurfaceList = 0;
+			}
+		}
+	}
+	node = (SurfaceListNode*) m_unk0x528;
+	while (node != 0) {
+		next = node->m_next;
+		operator delete(node);
+		node = next;
+	}
+	m_unk0x528 = 0;
+	PvGdiBitmap::Free();
 }
 
 // 68K 0x10108bf2 ResetScroll__8CSurfaceFv
@@ -476,7 +624,7 @@ void Surface::ToScreen(class Surface* p_destinationSurface)
 }
 
 // 68K 0x10108fa4 AttachPalette__8CSurfaceFP11CResPALETTE
-// STUB: LEMBALL 0x0046d040
+// FUNCTION: LEMBALL 0x0046d040
 void Surface::AttachPalette(ResPalette* p_palette)
 {
 	TargetBuildSurfaceColourTable(g_dwWinGDrawColourTable, p_palette, 0, 0);
@@ -642,7 +790,7 @@ void Surface::CopyDIBBits(void* p_header, unsigned char* p_bits)
 }
 
 // 68K 0x10108e58 SetDefaultCtable__8CSurfaceFv
-// STUB: LEMBALL 0x0046d930
+// FUNCTION: LEMBALL 0x0046d930
 void Surface::SetDefaultCtable()
 {
 	unsigned char logPalette[8 + 256 * 4];
@@ -664,7 +812,12 @@ void Surface::SetDefaultCtable()
 		entries[i].peRed = (unsigned char) (source[i] >> 16);
 		entries[i].peGreen = (unsigned char) (source[i] >> 8);
 		entries[i].peBlue = (unsigned char) source[i];
-		entries[i].peFlags = 4;
+		if (i < 12 || i >= 0xf6) {
+			entries[i].peFlags = 0;
+		}
+		else {
+			entries[i].peFlags = 1;
+		}
 		i = i + 1;
 	}
 	if (g_pTargetGraphicsDriver != 0) {
@@ -846,6 +999,30 @@ void Surface::CopyBackBuffToScreen(const VsRect& p_arg0)
 // STUB: LEMBALL 0x00474fd0
 void Surface::Blit(Point* p_point)
 {
+	short x;
+	short y;
+	unsigned char color;
+	VsRect area;
+	short clipX;
+	short clipY;
+
+	if (p_point == 0 || m_lines == 0) {
+		return;
+	}
+	x = p_point->m_x;
+	y = p_point->m_y;
+	clipX = m_clipRect.m_x;
+	clipY = m_clipRect.m_y;
+	if (clipX <= x && x < (short) (clipX + m_clipRect.m_width) && clipY <= y &&
+		y < (short) (clipY + m_clipRect.m_height)) {
+		color = (unsigned char) p_point->m_color;
+		*((unsigned char*) m_lines[y] + x) = color;
+		area.m_width = 1;
+		area.m_height = 1;
+		area.m_x = x;
+		area.m_y = y;
+		AddToChangeList(area);
+	}
 }
 
 // 68K 0x10111e5a Blit__8CSurfaceFP10CSolidRect
@@ -1138,7 +1315,7 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 }
 
 // 68K 0x10115868 Blit__8CSurfaceFP7CBitmapP10CResBITMAP
-// STUB: LEMBALL 0x004787f0
+// FUNCTION: LEMBALL 0x004787f0
 void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 {
 	VsRect dest;
@@ -1161,7 +1338,7 @@ void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 		dest.m_width = p_bitmap->m_x;
 		dest.m_height = p_bitmap->m_y;
 	}
-	flags = p_bitmap->m_flags;
+	flags = ((BitmapRes*) p_primitive)->m_flags;
 	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x == 0) {
 		return;
 	}
@@ -1227,25 +1404,66 @@ void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 }
 
 // 68K 0x101153f4 BlitZRLE__8CSurfaceFiiP8CResZRLEUlP6CRemapUs
-// STUB: LEMBALL 0x00478bb0
+// FUNCTION: LEMBALL 0x00478bb0
 void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, Remap* p_remap, unsigned short p_depth)
 {
 	VsRect dest;
+	VsRect clipped;
+	unsigned char reverse;
 
 	if (p_zrle == 0) {
 		return;
 	}
-	dest.m_x = (short) p_x;
-	dest.m_y = (short) p_y;
 	dest.m_width = p_zrle->m_width;
 	dest.m_height = p_zrle->m_height;
+	if ((int) dest.m_height * (int) dest.m_width == 0) {
+		return;
+	}
+	dest.m_x = (short) p_x;
+	dest.m_y = (short) p_y;
 	if ((p_flags & 0x400) == 0) {
 		dest.m_x = (short) (dest.m_x + p_zrle->m_x);
 		dest.m_y = (short) (dest.m_y + p_zrle->m_y);
 	}
-	BlitZrleNoClip(dest, p_zrle, (unsigned char) ((p_flags & 2) >> 1));
+	clipped.m_width = 0;
+	clipped.m_height = 0;
+	clipped.m_x = 0;
+	clipped.m_y = 0;
+	reverse = (unsigned char) ((p_flags & 2) >> 1);
+	if (ClipRect(dest, &clipped) == 0) {
+		AddToChangeList(dest);
+		if ((p_flags & 0x40000) == 0 && (p_flags & 0x80000) == 0) {
+			if (p_remap == 0) {
+				BlitZrleNoClip(dest, p_zrle, reverse);
+				return;
+			}
+			if ((p_flags & 1) == 0) {
+				BlitZrleNoClipRemap(dest, p_zrle, reverse, (unsigned char*) p_remap);
+				return;
+			}
+			BlitZrleNoClipRemapR(dest, p_zrle, reverse, (unsigned char*) p_remap);
+			return;
+		}
+		return;
+	}
+	if (clipped.m_width < 1 || clipped.m_height < 1) {
+		return;
+	}
+	AddToChangeList(dest);
+	if ((p_flags & 0x40000) == 0 && (p_flags & 0x80000) == 0) {
+		if (p_remap == 0) {
+			BlitZrleClip(dest, clipped, p_zrle, reverse);
+			return;
+		}
+		if ((p_flags & 1) != 0) {
+			BlitZrleClipRemapR(dest, clipped, p_zrle, reverse, (unsigned char*) p_remap);
+			return;
+		}
+		BlitZrleClipRemap(dest, clipped, p_zrle, reverse, (unsigned char*) p_remap);
+	}
 }
 
 void Surface::Blit(Bitmap* p_primitive)
 {
+	Blit((CopyToBackBuff*) p_primitive);
 }

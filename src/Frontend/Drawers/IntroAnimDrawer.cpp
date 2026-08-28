@@ -11,7 +11,7 @@ char g_szPaintBallIntroSequence[] = "PaintBall Intro Sequence";
 extern char g_szMoviePrefix[];
 
 // 68K 0x10805c12 __ct__16CIntroAnimDrawerFP14CMain2DDisplayP4CGDIRC7CVSRectUc
-// STUB: LEMBALL 0x00447410
+// FUNCTION: LEMBALL 0x00447410
 IntroAnimDrawer::IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, 1, 0, 0, 0, 0, 0)
 {
@@ -36,7 +36,7 @@ IntroAnimDrawer::IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRec
 }
 
 // 68K 0x10805d7e Load__16CIntroAnimDrawerFv
-// STUB: LEMBALL 0x00447530
+// FUNCTION: LEMBALL 0x00447530
 void IntroAnimDrawer::Load()
 {
 	m_animWindow.SetAnim();
@@ -49,7 +49,7 @@ void IntroAnimDrawer::UnLoad()
 }
 
 // 68K 0x10805eb8 DestroyDrawer__16CIntroAnimDrawerFv
-// STUB: LEMBALL 0x004475a0
+// FUNCTION: LEMBALL 0x004475a0
 void IntroAnimDrawer::DestroyDrawer()
 {
 	if (m_started != 0 && m_animWindow.m_lifecycleRefs == 1) {
@@ -60,7 +60,7 @@ void IntroAnimDrawer::DestroyDrawer()
 }
 
 // 68K 0x10805f22 EndPhase__16CIntroAnimDrawerFv
-// STUB: LEMBALL 0x004475e0
+// FUNCTION: LEMBALL 0x004475e0
 void IntroAnimDrawer::EndPhase()
 {
 	m_quitYet = 1;
@@ -68,7 +68,7 @@ void IntroAnimDrawer::EndPhase()
 }
 
 // 68K 0x10805f82 ProcessMessages__16CIntroAnimDrawerFP10tagMESSAGE
-// STUB: LEMBALL 0x00447610
+// FUNCTION: LEMBALL 0x00447610
 bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 {
 	if (p_message == 0) {
@@ -94,7 +94,7 @@ bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 }
 
 // 68K 0x1080601e Processing__16CIntroAnimDrawerFv
-// STUB: LEMBALL 0x004476b0
+// FUNCTION: LEMBALL 0x004476b0
 void IntroAnimDrawer::Processing()
 {
 	VsRect introRect;

@@ -14,6 +14,7 @@ public:
 	void Fill(const unsigned char* p_arg0, unsigned short p_arg1);
 
 	friend class NetworkOptionsProc;
+	friend class BaseFrontendProcess;
 
 private:
 	Critical m_critical;  // 0x08

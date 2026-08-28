@@ -11,12 +11,12 @@
 class BaseFrontendProcess : public Process, public BaseQueueHandler {
 public:
 	BaseFrontendProcess(Game* p_arg0);
-	bool ProcessMsg(Message* p_message);
-	virtual bool ProcessMessages(Message* p_message);                                              // vtable+0x10
-	virtual bool ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, Connect* p_connection); // vtable+0x08
-	virtual void Process();                                                                        // vtable+0x04
-	virtual void Processing();                                                                     // vtable+0x0c
 	virtual ~BaseFrontendProcess();                                                                // vtable+0x00
+	virtual void Process();                                                                        // vtable+0x04
+	virtual bool ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, Connect* p_connection); // vtable+0x08
+	virtual void Processing();                                                                     // vtable+0x0c
+	virtual bool ProcessMessages(Message* p_message);                                              // vtable+0x10
+	int ProcessMsg(Message* p_message);
 	void Action(int p_action, int p_stage);
 	BaseFrontendProcess();
 

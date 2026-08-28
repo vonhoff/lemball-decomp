@@ -70,7 +70,7 @@ unsigned int g_dwEffectsOn = 0;
 unsigned int g_dwMusicOn = 0;
 
 // 68K 0x10b0fb42 __ct__10CSoundViewFv
-// STUB: LEMBALL 0x00439a70
+// FUNCTION: LEMBALL 0x00439a70
 SoundView::SoundView()
 {
 	int i;
@@ -85,7 +85,7 @@ SoundView::SoundView()
 	m_randomMusicIndex = 0;
 	m_loadUpdate = 0;
 	if (g_nMusicVolume != 0) {
-		g_pSoundManager->PrepareMusic(0x2220, 0xb482);
+		g_pSoundManager->PrepareMusic(0x2220, 0x82);
 		g_dwMusicOn = 0;
 	}
 	SetEffectsOn(1);

@@ -5,7 +5,17 @@
 
 // SIZE 0x18
 class TargetWaveEffect {
+public:
+	TargetWaveEffect(unsigned char* p_patch,
+					 unsigned int p_waveOut,
+					 unsigned int p_sampleRate,
+					 int p_use16Bit,
+					 int p_stereo);
+	~TargetWaveEffect();
+
 private:
+	friend class TargetWaveSoundDevice;
+
 	unsigned int m_prepared;     // 0x00
 	void* m_sampleHandle;        // 0x04
 	void* m_headerHandle;        // 0x08

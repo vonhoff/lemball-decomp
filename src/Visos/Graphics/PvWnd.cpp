@@ -1,5 +1,7 @@
 #include "PvWnd.h"
 
+#include "HotAreaList.h"
+
 #include <new.h>
 
 extern int g_cursorState;
@@ -44,9 +46,40 @@ void PvWnd::AddChild(class PvWnd* p_child)
 }
 
 // 68K 0x10104aaa RemoveChild__6CPVWndFP6CPVWnd
-// STUB: LEMBALL 0x00432430
+// FUNCTION: LEMBALL 0x00432430
 void PvWnd::RemoveChild(class PvWnd* p_child)
 {
+	void** node;
+	void** nextNode;
+	void** prevNode;
+
+	node = (void**) m_childList;
+	if (node != 0) {
+		do {
+			if ((PvWnd*) node[0] == p_child) {
+				break;
+			}
+			node = (void**) node[1];
+		} while (node != 0);
+		if (node != 0) {
+			nextNode = (void**) node[1];
+			prevNode = (void**) node[2];
+			operator delete(node);
+			if (nextNode == 0) {
+				m_childListTail = prevNode;
+			}
+			else {
+				nextNode[2] = prevNode;
+			}
+			if (prevNode != 0) {
+				prevNode[1] = nextNode;
+				m_childCount = m_childCount - 1;
+				return;
+			}
+			m_childList = nextNode;
+			m_childCount = m_childCount - 1;
+		}
+	}
 }
 
 // 68K 0x1010496a GetMenu__6CPVWndFRiPPP11tagMenuList
@@ -133,24 +166,126 @@ void PvWnd::SetRectInnerZoom(const VsRect& p_rect, const VsRect& p_innerRect, in
 }
 
 // 68K 0x10216c50 InitHotAreaList__6CPVWndFv
-// STUB: LEMBALL 0x00465e60
+// FUNCTION: LEMBALL 0x00465e60
 unsigned int PvWnd::InitHotAreaList()
 {
+	VsRect listRect;
+	VsPoint offset;
+	VsPoint innerPoint;
+	void* storage;
+	unsigned int style;
+
+	style = GetStyle();
+	if ((style & 0x800) != 0 && m_hotAreaList == 0) {
+		listRect.m_width = m_innerRect.m_width;
+		listRect.m_height = m_innerRect.m_height;
+		if ((int) listRect.m_width * (int) listRect.m_height == 0) {
+			listRect.m_width = m_rect.m_width;
+			listRect.m_height = m_rect.m_height;
+			listRect.m_x = m_rect.m_x;
+			listRect.m_y = m_rect.m_y;
+		}
+		else {
+			listRect.m_x = (short) (m_innerRect.m_x + m_rect.m_x);
+			listRect.m_y = (short) (m_innerRect.m_y + m_rect.m_y);
+		}
+		offset.m_x = m_relativeTopLeft.m_x;
+		offset.m_y = m_relativeTopLeft.m_y;
+		if (m_parent == 0) {
+			offset.m_x = 0;
+			offset.m_y = 0;
+		}
+		innerPoint.m_x = m_innerRect.m_x;
+		innerPoint.m_y = m_innerRect.m_y;
+		storage = operator new(0x60);
+		if (storage == 0) {
+			m_hotAreaList = 0;
+		}
+		else {
+			m_hotAreaList = new (storage) HotAreaList(listRect, offset, innerPoint);
+		}
+	}
 	return 0;
 }
 
 // 68K 0x10216d90 _OnCreate__6CPVWndFv
-// STUB: LEMBALL 0x00465f80
+// FUNCTION: LEMBALL 0x00465f80
 void PvWnd::OnCreate()
 {
+	void** list;
+	void** node;
+
 	g_nNativeWindowCount = g_nNativeWindowCount + 1;
+	if (m_parent == 0) {
+		list = (void**) g_pWindowOwnerList;
+		node = (void**) operator new(0xc);
+		if (node != 0) {
+			node[0] = this;
+			node[1] = 0;
+			node[2] = 0;
+			if (list != 0) {
+				node[2] = list[1];
+				if (list[1] != 0) {
+					((void**) list[1])[1] = node;
+				}
+				list[1] = node;
+				if (list[0] == 0) {
+					list[0] = node;
+				}
+				*(int*) &list[2] = *(int*) &list[2] + 1;
+			}
+		}
+	}
 	m_lifecycleRefs = m_lifecycleRefs + 1;
 }
 
 // 68K 0x10216e16 _OnDestroy__6CPVWndFv
-// STUB: LEMBALL 0x00465fe0
+// FUNCTION: LEMBALL 0x00465fe0
 void PvWnd::BaseOnDestroy()
 {
+	void** ownerList;
+	void** node;
+	void** nextNode;
+	void** prevNode;
+
+	g_nNativeWindowCount = g_nNativeWindowCount - 1;
+	m_lifecycleRefs = m_lifecycleRefs - 1;
+	if (m_hotAreaList != 0) {
+		delete m_hotAreaList;
+		m_hotAreaList = 0;
+	}
+	if (m_parent != 0) {
+		m_parent->RemoveChild(this);
+		return;
+	}
+	ownerList = (void**) g_pWindowOwnerList;
+	node = (void**) ownerList[0];
+	if (node != 0) {
+		do {
+			if ((PvWnd*) node[0] == this) {
+				break;
+			}
+			node = (void**) node[1];
+		} while (node != 0);
+		if (node != 0) {
+			nextNode = (void**) node[1];
+			prevNode = (void**) node[2];
+			operator delete(node);
+			if (nextNode == 0) {
+				ownerList[1] = prevNode;
+			}
+			else {
+				nextNode[2] = prevNode;
+			}
+			if (prevNode != 0) {
+				prevNode[1] = nextNode;
+				*(int*) &ownerList[2] = *(int*) &ownerList[2] - 1;
+				return;
+			}
+			ownerList[0] = nextNode;
+			*(int*) &ownerList[2] = *(int*) &ownerList[2] - 1;
+		}
+	}
 }
 
 // 68K 0x10216edc _OnSize__6CPVWndFv

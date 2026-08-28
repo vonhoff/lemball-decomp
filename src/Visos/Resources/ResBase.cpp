@@ -50,9 +50,9 @@ bool ResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCurso
 		return 1;
 	}
 	m_dataSize = entry[1];
-	m_name = (char*) (entry + 2);
+	m_name = (char*) &entry[2];
 	SetHeader();
-	p_headerCursor = (unsigned char*) entry + m_headerSkip + 8;
+	p_headerCursor = (unsigned char*) &entry[2] + m_headerSkip;
 	m_data = p_dataCursor;
 	p_dataCursor += m_dataSize;
 	++m_referenceCount;

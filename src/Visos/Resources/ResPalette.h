@@ -19,6 +19,11 @@ public:
 	virtual void SetType();   // vtable+0x34
 	virtual ~ResPalette();    // vtable+0x00
 
+	friend void TargetBuildSurfaceColourTable(unsigned int* p_entries,
+											  ResPalette* p_palette,
+											  void* p_unused,
+											  unsigned int* p_fallbackEntries);
+
 private:
 	undefined4 m_paletteState; // 0x48
 };

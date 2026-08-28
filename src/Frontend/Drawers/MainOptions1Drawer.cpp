@@ -1,5 +1,6 @@
 #include "MainOptions1Drawer.h"
 
+#include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Control/Game/GameStatus.h"
 #include "../../Frontend/Controls/GunController.h"
 #include "../../Views/Display/Main2DDisplay.h"
@@ -21,7 +22,7 @@ unsigned long g_dwMainOptions1AnimIds[12] = {0x1a7, 0x1a6, 0x1b0, 0x1a9, 0x1c3, 
 unsigned long g_dwMainOptions1CompactAnimIds[12] = {0x1db, 0x1da, 0x1e4, 0x1f7, 0x1dd, 0, 0x1e0, 0x1e1, 0x1e2, 0x1e3, 0x1ea, 0x1f8};
 
 // 68K 0x10809e8e __ct__19CMainOptions1DrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
-// STUB: LEMBALL 0x00448200
+// FUNCTION: LEMBALL 0x00448200
 MainOptions1Drawer::MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, 2, 0, 0, 0, 0, 0)
 {
@@ -57,7 +58,7 @@ MainOptions1Drawer::MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const
 }
 
 // 68K 0x10809fd6 Load__19CMainOptions1DrawerFv
-// STUB: LEMBALL 0x00448300
+// FUNCTION: LEMBALL 0x00448300
 void MainOptions1Drawer::Load()
 {
 	unsigned long* previousModeAnim;
@@ -115,9 +116,13 @@ void MainOptions1Drawer::Load()
 }
 
 // 68K 0x1080a2ea UnLoad__19CMainOptions1DrawerFv
-// STUB: LEMBALL 0x00448540
+// FUNCTION: LEMBALL 0x00448540
 void MainOptions1Drawer::UnLoad()
 {
+	if (m_gunController != 0) {
+		delete m_gunController;
+		m_gunController = 0;
+	}
 }
 
 // 68K 0x1080a42e DrawBackGround__19CMainOptions1DrawerFv
@@ -127,19 +132,87 @@ void MainOptions1Drawer::DrawBackGround()
 }
 
 // 68K 0x1080a462 ProcessMessages__19CMainOptions1DrawerFP10tagMESSAGE
-// STUB: LEMBALL 0x00448620
+// FUNCTION: LEMBALL 0x00448620
 bool MainOptions1Drawer::ProcessMessages(Message* p_message)
 {
+	unsigned int type;
+
+	type = p_message->type;
+	if (type < 3) {
+		m_processedCount = m_processedCount + 1;
+		return 0;
+	}
+	if (type < 5) {
+		m_idleDeadline = CurrentMilliTimer() + 20000;
+		return 0;
+	}
+	if (type != 0xc) {
+		m_processedCount = m_processedCount + 1;
+		return 0;
+	}
+	m_idleDeadline = CurrentMilliTimer() + 20000;
+	switch (p_message->code) {
+	case 0xacef0001:
+		m_returnState = 3;
+		m_quitYet = 1;
+		g_nFrontendAutoFlowToggle = 1;
+		return 1;
+	case 0xacef00a4:
+		m_returnState = 0x10;
+		m_quitYet = 1;
+		g_nFrontendAutoFlowToggle = 1;
+		return 1;
+	case 0xacef00a5:
+		m_display->ToggleResolution();
+		return 1;
+	case 0xacef00a6:
+	case 0xacef00a7:
+		g_pGameStatus->m_level = g_pGameStatus->m_lastLevels[m_selectedDisplayMode];
+		g_pGameStatus->m_skill = m_selectedDisplayMode;
+		m_quitYet = 1;
+		g_nFrontendAutoFlowToggle = 1;
+		if (p_message->code == 0xacef00a6) {
+			m_returnState = 4;
+			return 1;
+		}
+		m_returnState = 0xc;
+		return 1;
+	}
 	return 0;
 }
 
 // 68K 0x1080a59c Processing__19CMainOptions1DrawerFv
-// STUB: LEMBALL 0x00448800
+// FUNCTION: LEMBALL 0x00448800
 void MainOptions1Drawer::Processing()
 {
+	unsigned long now;
+
+	if (g_nTestAllLevels != 0) {
+		g_pGameStatus->m_level = g_pGameStatus->m_lastLevels[0];
+		g_pGameStatus->m_skill = 0;
+		m_quitYet = 1;
+		m_returnState = 4;
+	}
+	now = CurrentMilliTimer();
+	if (m_display->IsWindowValid() == 0 || m_display->IsFocusWindow() == 0) {
+		m_idleDeadline = CurrentMilliTimer() + 20000;
+		return;
+	}
+	if (now <= m_idleDeadline) {
+		return;
+	}
+	m_quitYet = 1;
+	if (g_nFrontendAutoFlowToggle == 0 && g_nAnimationsDisabled == 0) {
+		m_returnState = 1;
+		g_nFrontendAutoFlowToggle = 1;
+		return;
+	}
+	m_returnState = 0x13;
+	g_nFrontendAutoFlowToggle = 0;
 }
 
 // 68K 0x1080a33c __dt__19CMainOptions1DrawerFv
 MainOptions1Drawer::~MainOptions1Drawer()
 {
+	UnLoad();
 }

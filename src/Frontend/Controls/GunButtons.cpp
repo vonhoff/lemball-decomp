@@ -1,8 +1,13 @@
 #include "GunButtons.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/GraphicButton.h"
+#include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/ResAnim.h"
+#include "GunButton.h"
+#include "TrackerButton.h"
 
 #include <new.h>
 
@@ -73,9 +78,58 @@ bool GunButtons::DrawBackBuffer()
 }
 
 // 68K 0x10802c6a ProcessMsg__11CGunButtonsFP10tagMESSAGE
-// STUB: LEMBALL 0x0044c460
+// FUNCTION: LEMBALL 0x0044c460
 int GunButtons::ProcessMsg(Message* p_message)
 {
+	Message posted;
+	int nextValue;
+	unsigned long animId;
+
+	posted.type = 0xc;
+	posted.reserved[1] = (unsigned short) CurrentQueueTimer();
+	posted.reserved[2] = (unsigned short) (CurrentQueueTimer() >> 16);
+	posted.code = 0;
+	posted.payload = 0;
+	posted.source = 0;
+	if (p_message->code == (int) m_controlMessage && p_message->type == 0xc) {
+		if (m_mode == 0) {
+			if (m_postAction != 1) {
+				nextValue = m_value + 1;
+				m_value = nextValue;
+				if (m_maximum < nextValue) {
+					m_value = m_minimum;
+				}
+				if (m_binding != 0) {
+					if (m_valueCount == 1) {
+						if (*m_binding == 0) {
+							*m_binding = 1;
+						}
+						else {
+							*m_binding = 0;
+						}
+					}
+					else {
+						*m_binding = m_value;
+					}
+				}
+				if (m_graphicButton == 0) {
+					animId = *m_animIds;
+				}
+				else {
+					animId = m_animIds[m_value - m_minimum];
+					m_graphicButton->SetAnimId(animId);
+				}
+				g_nGunButtonsRedrawPending = 1;
+				return 0;
+			}
+			posted.code = (int) m_actionMessage;
+			if (g_pMasterInputQueue != 0) {
+				g_pMasterInputQueue->Post(posted);
+			}
+			return 0;
+		}
+		return 0;
+	}
 	return 0;
 }
 
@@ -89,12 +143,14 @@ void GunButtons::Draw(unsigned char p_firstState, unsigned char p_secondState)
 }
 
 // 68K 0x10802e54 LoadFaces__11CGunButtonsFPUl
-// STUB: LEMBALL 0x0044c630
+// FUNCTION: LEMBALL 0x0044c630
 void GunButtons::LoadFaces(unsigned long* p_animIds)
 {
 	VsPoint position;
 	void* storage;
 	int i;
+	Gdi* gdi;
+	Surface* target;
 
 	m_animIds = p_animIds;
 	m_resources = 0;
@@ -113,10 +169,18 @@ void GunButtons::LoadFaces(unsigned long* p_animIds)
 	else {
 		position.m_x = (short) m_x;
 		position.m_y = (short) m_y;
-		m_graphicButton = new (storage) GraphicButton(position, (PvGWnd*) m_window, p_animIds[m_value - m_minimum], 3);
+		m_graphicButton = new (storage) GunButton(position, (PvGWnd*) m_window, p_animIds[m_value - m_minimum], 3);
 	}
 	if (m_graphicButton != 0) {
+		gdi = m_graphicButton->m_gdi;
+		target = 0;
+		if (gdi != 0) {
+			target = gdi->m_renderTarget;
+		}
 		m_graphicButton->SetAutoDraw(0);
+		if (target != 0) {
+			target->m_flag70 = 0;
+		}
 		m_graphicButton->m_messageHandler = g_pMasterInputQueue;
 		m_graphicButton->m_controlMessage = m_controlMessage;
 	}
@@ -124,14 +188,39 @@ void GunButtons::LoadFaces(unsigned long* p_animIds)
 }
 
 // 68K 0x1080301a UnLoadFaces__11CGunButtonsFv
-// STUB: LEMBALL 0x0044c7c0
+// FUNCTION: LEMBALL 0x0044c7c0
 void GunButtons::UnLoadFaces()
 {
+	int i;
+
+	if (m_graphicButton != 0) {
+		delete m_graphicButton;
+		m_graphicButton = 0;
+	}
+	if (m_trackerButton != 0) {
+		delete m_trackerButton;
+		m_trackerButton = 0;
+	}
+	i = 0;
+	if (0 < m_valueCount) {
+		do {
+			if (m_resources != 0 && m_resources[i] != 0) {
+				m_resources[i]->UnLoad();
+			}
+			i = i + 1;
+		} while (i < m_valueCount);
+	}
+	operator delete(m_resources);
+	m_resources = 0;
 }
 
 // 68K 0x10802b54 __dt__11CGunButtonsFv
 GunButtons::~GunButtons()
 {
+	if (g_pMasterInputQueue != 0) {
+		g_pMasterInputQueue->Detach(this, 0);
+	}
+	UnLoadFaces();
 }
 
 // GLOBAL: LEMBALL 0x0049fa68

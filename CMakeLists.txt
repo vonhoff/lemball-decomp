@@ -4,10 +4,12 @@ project(lemball_decomp CXX)
 file(GLOB_RECURSE LEMBALL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 set(LEMBALL_RC "${CMAKE_CURRENT_SOURCE_DIR}/src/LEMBALL.RC")
-set(LEMBALL_RESOURCE "${CMAKE_CURRENT_BINARY_DIR}/LEMBALL.RES")
+set(LEMBALL_RESOURCE "${CMAKE_BINARY_DIR}/LEMBALL.RES")
+get_filename_component(_lemball_cl_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
+get_filename_component(_lemball_msvc_root "${_lemball_cl_dir}" DIRECTORY)
 add_custom_command(
     OUTPUT "${LEMBALL_RESOURCE}"
-    COMMAND "${LEMBALL_RC_COMPILER}" /fo "${LEMBALL_RESOURCE}" "${LEMBALL_RC}"
+    COMMAND "${LEMBALL_RC_COMPILER}" /i "${_lemball_msvc_root}/include" /fo "${LEMBALL_RESOURCE}" "${LEMBALL_RC}"
     DEPENDS "${LEMBALL_RC}"
     VERBATIM
 )

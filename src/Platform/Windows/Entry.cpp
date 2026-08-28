@@ -20,14 +20,24 @@ extern "C" int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpC
 	return InitMain(lpCmdLine);
 }
 
-// STUB: LEMBALL 0x00456500
+// FUNCTION: LEMBALL 0x00456500
 bool TargetPumpEvents()
 {
 	MSG message;
+	unsigned int count;
 
 	Wnd::ProcessMouseMoves();
 	g_dwWindowQuitRequested = 0;
 	if (g_pBaseNetwork != 0) {
+		if (g_pNetworkPacketQueue != 0) {
+			do {
+				count = ((BaseQueue*) g_pNetworkPacketQueue)->GetMessageCount();
+				if (count == 0) {
+					break;
+				}
+				((BaseQueue*) g_pNetworkPacketQueue)->ProcessNMsgs(count);
+			} while (count != 0);
+		}
 	}
 
 	if (PeekMessageA(&message, 0, 0, 0, 0) != 0) {
@@ -38,9 +48,7 @@ bool TargetPumpEvents()
 		}
 	}
 
-	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->ProcessNMsgs(g_pMasterInputQueue->GetMessageCount());
-	}
+	g_pMasterInputQueue->ProcessNMsgs(g_pMasterInputQueue->GetMessageCount());
 	if (g_pMogRes != 0) {
 		g_pMogRes->AgeResources();
 	}
@@ -48,4 +56,9 @@ bool TargetPumpEvents()
 		g_pCursor->Process();
 	}
 	return g_dwWindowQuitRequested == 1;
+}
+
+// FUNCTION: LEMBALL 0x00456600
+void TargetSynchronizeLoadProgress()
+{
 }

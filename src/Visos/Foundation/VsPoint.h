@@ -5,6 +5,8 @@
 
 // SIZE 0x04
 struct VsPoint {
+	VsPoint& operator=(const VsPoint& p_source);
+
 	short m_x; // 0x00
 	short m_y; // 0x02
 };

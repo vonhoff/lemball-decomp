@@ -105,9 +105,30 @@ void GWnd::OnCreate()
 }
 
 // 68K 0x1010aa18 _OnDestroy__5CGWndFv
-// STUB: LEMBALL 0x00463df0
+// FUNCTION: LEMBALL 0x00463df0
 void GWnd::OnDestroy()
 {
+	Gdi* gdi;
+	unsigned int style;
+	VsRect emptyRect;
+
+	gdi = m_gdi;
+	if (gdi != 0) {
+		gdi->~Gdi();
+		operator delete(gdi);
+		m_gdi = 0;
+	}
+	style = GetStyle();
+	if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
+		if ((GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE) & 0x40000000) != 0) {
+			emptyRect.m_x = 0;
+			emptyRect.m_y = 0;
+			emptyRect.m_width = 0;
+			emptyRect.m_height = 0;
+			m_createRect->SetDontUpdateRect(emptyRect);
+		}
+	}
+	PvWnd::BaseOnDestroy();
 }
 
 // 68K 0x1010aa64 _OnSize__5CGWndFv
@@ -270,7 +291,7 @@ void GWnd::Refresh(VsRect* p_rect)
 }
 
 // 68K 0x1010a7ac Create__5CGWndFRC7CVSRectP6CPVWndPcUl
-// STUB: LEMBALL 0x00464440
+// FUNCTION: LEMBALL 0x00464440
 void GWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title, unsigned long p_paletteId)
 {
 	Wnd::Create(p_rect, p_parent, p_title);
@@ -278,7 +299,7 @@ void GWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title, unsigned
 }
 
 // 68K 0x1010b4c6 Create__5CGWndFRC7CVSRectP6CPVWndPc
-// STUB: LEMBALL 0x00464470
+// FUNCTION: LEMBALL 0x00464470
 void GWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 {
 	Create(p_rect, p_parent, p_title, 0);

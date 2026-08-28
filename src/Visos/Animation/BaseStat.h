@@ -5,7 +5,7 @@
 #include "../Foundation/Arena.h"
 #include "../Foundation/String.h" // complete type
 
-// SIZE 0x20
+// SIZE 0x28
 // VTABLE: LEMBALL 0x00498960
 class BaseStat : public ArenaBase {
 public:
@@ -15,15 +15,19 @@ public:
 	~BaseStat();
 	BaseStat();
 
+	friend class Game;
+
 private:
-	unsigned int m_maximum;     // 0x08
-	unsigned int m_minimum;     // 0x0c
-	unsigned int m_total;       // 0x10
-	unsigned int m_sampleCount; // 0x14
-	String m_description;       // 0x18
+	unsigned int m_maximum;       // 0x08
+	unsigned int m_minimum;       // 0x0c
+	unsigned int m_total;         // 0x10
+	unsigned int m_sampleCount;   // 0x14
+	String m_description;         // 0x18
+	void* m_timingStart;          // 0x20
+	unsigned int m_timingActive;  // 0x24
 };
 
-// SIZE 0x20
+// SIZE 0x28
 // VTABLE: LEMBALL 0x004988c8
 class MogloadStat : public BaseStat {
 public:

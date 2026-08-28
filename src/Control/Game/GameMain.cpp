@@ -40,9 +40,11 @@ PreInit* VsPreInit(PreInit* p_preInit)
 }
 
 // 68K 0x107000f6 SetGameDefaults__Fv
-// STUB: LEMBALL 0x00406230
+// FUNCTION: LEMBALL 0x00406230
 void SetGameDefaults()
 {
+	TargetGraphicsSystemState* graphicsSystem;
+
 	g_nAnimationsAvailable = 1;
 	g_nAnimationsDisabled = 0;
 	g_nMusicAvailable = 1;
@@ -55,10 +57,11 @@ void SetGameDefaults()
 	g_nSoundDebugRequested = 0;
 	g_nZoomAvailable = 1;
 	g_nZoomEnabled = 0;
+	graphicsSystem = g_pTargetGraphicsSystem;
 	g_nDisplayMode = 0;
 	g_nEditLevelMode = 0;
 	g_nPlayLevelMode = 0;
-	if (g_pTargetGraphicsSystem->m_driverMode < 2 || 3 < g_pTargetGraphicsSystem->m_driverMode) {
+	if (graphicsSystem->m_driverMode < 2 || 3 < graphicsSystem->m_driverMode) {
 		g_nCompactPrimaryContextLayout = 0;
 	}
 	else {
@@ -78,35 +81,38 @@ void DisplayHelp()
 }
 
 // 68K 0x1070067e VSmain__FiPPc
-// STUB: LEMBALL 0x00406310
+// FUNCTION: LEMBALL 0x00406310
 int Vsmain(int p_argc, char** p_argv)
 {
 	void* storage;
 	Game* game;
 
 	storage = operator new(0x800);
-	if (storage == 0) {
-		g_pVSTrig = 0;
-	}
-	else {
+	if (storage != 0) {
 		g_pVSTrig = new (storage) VsTrig();
 	}
+	else {
+		g_pVSTrig = 0;
+	}
 
-	g_pSentinel = (int*) operator new(4);
-	if (g_pSentinel == 0) {
-		g_pSentinel = 0;
+	storage = operator new(4);
+	if (storage != 0) {
+		*(int*) storage = 0xad28;
+		g_pSentinel = (int*) storage;
 	}
 	else {
-		*g_pSentinel = 0xad28;
+		g_pSentinel = 0;
 	}
 
 	DemoInit(0x19000);
 	SetGameDefaults();
 	if (DoCommandLine(p_argc, p_argv) == 1) {
-		game = 0;
 		storage = operator new(0x70);
 		if (storage != 0) {
 			game = new (storage) Game(0);
+		}
+		else {
+			game = 0;
 		}
 		if (g_nEditLevelMode != 0) {
 			strcpy(game->m_runtimeName, g_szCommandLineLevelFile);
@@ -128,62 +134,66 @@ int Vsmain(int p_argc, char** p_argv)
 }
 
 // 68K 0x107002da DoCommandLine__FiPPc
-// STUB: LEMBALL 0x00406460
-unsigned char DoCommandLine(int p_argc, char** p_argv)
+// FUNCTION: LEMBALL 0x00406460
+int DoCommandLine(int p_argc, char** p_argv)
 {
-	unsigned char keepGoing;
+	int keepGoing;
 	int prefixLength;
+	int argc;
+	char** argv;
 
 	keepGoing = 1;
-	if (0 < p_argc) {
+	argc = p_argc;
+	if (0 < argc) {
+		argv = p_argv;
 		do {
-			if (StrCmpI(*p_argv, g_szSwitchNoMusic, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchNoMusic, 99) == 0) {
 				g_nMusicAvailable = 0;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchNoEffects, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchNoEffects, 99) == 0) {
 				g_nEffectsAvailable = 0;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchSoundDebug, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchSoundDebug, 99) == 0) {
 				g_nSoundDebugRequested = 1;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchStatusDebug, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchStatusDebug, 99) == 0) {
 				g_nStatusDebugRequested = 1;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchMemoryDebug, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchMemoryDebug, 99) == 0) {
 				g_nMemoryDebugRequested = 1;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchNoAnim, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchNoAnim, 99) == 0) {
 				g_nAnimationsAvailable = 0;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchNoZoom, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchNoZoom, 99) == 0) {
 				g_nZoomAvailable = 0;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchCompact, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchCompact, 99) == 0) {
 				g_nCompactPrimaryContextLayout = 1;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchTestAllLevels, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchTestAllLevels, 99) == 0) {
 				g_nTestAllLevels = 1;
 			}
-			if (StrCmpI(*p_argv, g_szSwitchHelp0, 99) == 0 || StrCmpI(*p_argv, g_szSwitchHelp1, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchHelp0, 99) == 0 || StrCmpI(*argv, g_szSwitchHelp1, 99) == 0) {
 				DisplayHelp();
 				keepGoing = 0;
 			}
 			prefixLength = strlen(g_szSwitchEditPrefix0);
-			if (StrCmpI(*p_argv, g_szSwitchEditPrefix1, prefixLength) == 0) {
-				g_nEditLevelMode = (*p_argv)[strlen(g_szSwitchEditPrefix2)] != 0;
-				strcpy(g_szCommandLineLevelFile, *p_argv + strlen(g_szSwitchEditPrefix3));
+			if (StrCmpI(*argv, g_szSwitchEditPrefix1, prefixLength) == 0) {
+				g_nEditLevelMode = strlen(*argv + strlen(g_szSwitchEditPrefix2)) != 0;
+				strcpy(g_szCommandLineLevelFile, *argv + strlen(g_szSwitchEditPrefix3));
 			}
 			prefixLength = strlen(g_szSwitchPlayPrefix0);
-			if (StrCmpI(*p_argv, g_szSwitchPlayPrefix1, prefixLength) == 0) {
-				g_nPlayLevelMode = (*p_argv)[strlen(g_szSwitchPlayPrefix2)] != 0;
-				strcpy(g_szCommandLineLevelFile, *p_argv + strlen(g_szSwitchPlayPrefix3));
+			if (StrCmpI(*argv, g_szSwitchPlayPrefix1, prefixLength) == 0) {
+				g_nPlayLevelMode = strlen(*argv + strlen(g_szSwitchPlayPrefix2)) != 0;
+				strcpy(g_szCommandLineLevelFile, *argv + strlen(g_szSwitchPlayPrefix3));
 			}
-			if (StrCmpI(*p_argv, g_szSwitchGraphics, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchGraphics, 99) == 0) {
 				g_nStartupGraphicsDialogRequested = 1;
 			}
-			p_argv = p_argv + 1;
-			p_argc = p_argc - 1;
-		} while (p_argc != 0);
+			argv = argv + 1;
+			argc = argc - 1;
+		} while (argc != 0);
 	}
 	if (g_nMusicAvailable == 0) {
 		g_nMusicVolume = 0;

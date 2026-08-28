@@ -15,5 +15,7 @@ SpriteWindow::SpriteWindow()
 void SpriteWindow::OnCreate()
 {
 	GWnd::OnCreate();
-	m_gdi->m_renderTarget->m_flag74 = 1;
+	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
+		m_gdi->m_renderTarget->m_flag74 = 1;
+	}
 }

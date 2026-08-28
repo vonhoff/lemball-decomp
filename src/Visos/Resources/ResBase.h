@@ -45,6 +45,8 @@ public:
 	friend class AnimWnd;
 	friend class GraphicButton;
 	friend class BitmapRes;
+	friend class BitmapResBase;
+	friend class FrontendResourceLoader;
 
 protected:
 	ResBaseList* m_externalList;   // 0x04

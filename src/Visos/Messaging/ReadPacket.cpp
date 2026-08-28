@@ -1,4 +1,5 @@
 #include "ReadPacket.h"
+#include "BasePacketHeader.h"
 #include <new.h>
 #include <string.h>
 
@@ -9,7 +10,7 @@ ReadPacket::ReadPacket(unsigned short p_arg0)
 	m_data = (unsigned char*) operator new(p_arg0);
 	m_ready = 1;
 	m_used = 0;
-	*(unsigned short*) (m_data + 10) = 0;
+	((BasePacketHeader*) m_data)->m_packetSequence = 0;
 }
 
 // 68K 0x1020d7a0 __dt__11CReadPacketFv

@@ -14,6 +14,7 @@ public:
 	virtual ~Line();                 // vtable+0x00
 
 	friend class BaseFrontendDrawer;
+	friend class CdLoadAnimDraw;
 
 private:
 	short m_x1;           // 0x04

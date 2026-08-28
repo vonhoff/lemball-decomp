@@ -1,5 +1,9 @@
 #include "LevelLoader.h"
 
+#include "../../Visos/Foundation/VsFile.h"
+
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window, char* p_text, char* p_caption, unsigned int p_type);
+
 // 68K 0x1070267c __ct__12CLevelLoaderFP3CAI
 // STUB: LEMBALL 0x00408210
 LevelLoader::LevelLoader(Ai* p_arg0)
@@ -13,10 +17,22 @@ void LevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned char p_skip)
 }
 
 // 68K 0x10702cdc LocateStartOfLevelFile__12CLevelLoaderFv
-// STUB: LEMBALL 0x004087b0
+// FUNCTION: LEMBALL 0x004087b0
 bool LevelLoader::LocateStartOfLevelFile()
 {
-	// type the name\n in correctly !\n Quit out and try again...\n"
+	_Filet* file;
+	unsigned int size;
+
+	file = VsOpen(g_pActiveLevelFile, g_szReadBinaryMode);
+	if (file != 0) {
+		size = VsSeek(file, 0, 2);
+		VsSeek(file, 0, 0);
+		g_pLevelFileData = operator new(size);
+		VsRead(file, g_pLevelFileData, size);
+		VsClose(file);
+		return 1;
+	}
+	MessageBoxA(0, g_szOkSmartarse, g_szYouStupidStupidMan, 0);
 	return 0;
 }
 
@@ -39,6 +55,16 @@ unsigned int LevelLoader::CalcLevelId(eSkill p_skill, int p_level)
 {
 	return 0;
 }
+
+// GLOBAL: LEMBALL 0x0049ce34
+char g_szYouStupidStupidMan[28] = "You Stupid, Stupid Man !";
+
+// GLOBAL: LEMBALL 0x0049ce50
+char g_szOkSmartarse[140] =
+	"OK Smartarse,\nHow the hell do you expect me to load a level\nwhen you can't even type the name\n in correctly !\n Quit out and try again...\n";
+
+// GLOBAL: LEMBALL 0x0049cedc
+char g_szReadBinaryMode[4] = "rb";
 
 // GLOBAL: LEMBALL 0x004a6304
 int g_nEditLevelMode = 0;

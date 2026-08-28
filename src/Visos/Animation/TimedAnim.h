@@ -13,6 +13,9 @@ public:
 	void SetStartTime(unsigned long p_startTime);
 
 	friend class BaseFrontendDrawer;
+	friend class CdLoadAnim;
+	friend class GunController;
+	friend class PlayThruAnim;
 
 private:
 	unsigned int m_animTime;  // 0x10

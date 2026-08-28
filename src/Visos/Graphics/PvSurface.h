@@ -38,6 +38,7 @@ public:
 	friend class PvZBuffSurface;
 	friend class PvButton;
 	friend class GraphicButton;
+	friend class GunButtons;
 	friend class DepressedButton;
 	friend class SpriteWindow;
 	friend class TrackWindow;

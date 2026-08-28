@@ -17,6 +17,14 @@ Vector operator*(const Vector& p_vector, int p_scale)
 	return Vector(x, y);
 }
 
+// FUNCTION: LEMBALL 0x0044b640
+Vector* Vector::SetIntegers(int p_x, int p_y)
+{
+	m_xFixed = p_x << 12;
+	m_yFixed = p_y << 12;
+	return this;
+}
+
 // 68K 0x1011c116 __pl__FRC7CVectorRC7CVector
 // FUNCTION: LEMBALL 0x0044b660
 Vector operator+(const Vector& p_left, const Vector& p_right)

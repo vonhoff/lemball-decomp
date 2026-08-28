@@ -23,4 +23,7 @@ extern int g_nPlayLevelMode;
 extern char g_szCommandLineLevelFile[232];
 extern char* g_pActiveLevelFile;
 extern void* g_pLevelFileData;
+extern char g_szYouStupidStupidMan[28];
+extern char g_szOkSmartarse[140];
+extern char g_szReadBinaryMode[4];
 #endif

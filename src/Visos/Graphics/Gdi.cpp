@@ -42,8 +42,14 @@ Gdi::Gdi(const VsRect& p_arg0, int p_arg1, Surface* p_arg2)
 // FUNCTION: LEMBALL 0x004670d0
 Gdi::~Gdi()
 {
-	operator delete(m_primitives);
-	g_pGdiDevice->FreeSurface(m_renderTarget);
+	if (m_primitives != 0) {
+		operator delete(m_primitives);
+		m_primitives = 0;
+	}
+	if (m_renderTarget != 0) {
+		g_pGdiDevice->FreeSurface(m_renderTarget);
+		m_renderTarget = 0;
+	}
 }
 
 // 68K 0x1021193c AddToList__4CGDIFP10CPrimitive

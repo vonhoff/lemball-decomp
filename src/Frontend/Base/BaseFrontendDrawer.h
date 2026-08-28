@@ -11,8 +11,9 @@
 #include "../Support/CoordPair.h"                    // complete type
 
 // SIZE 0x398
-// VTABLE: LEMBALL 0x004978a8
-class BaseFrontendDrawer : public Drawer {
+// VTABLE: LEMBALL 0x004978a8 primary Drawer base at +0x00
+// VTABLE: LEMBALL 0x00497898 adjusted BaseQueueHandler base at +0x04
+class BaseFrontendDrawer : public Drawer, public BaseQueueHandler {
 public:
 	BaseFrontendDrawer(Main2DDisplay* p_arg0,
 					   Gdi* p_arg1,
@@ -23,7 +24,7 @@ public:
 					   int p_arg6,
 					   int p_arg7,
 					   int p_arg8);
-	bool ProcessMsg(Message* p_message);
+	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~BaseFrontendDrawer();                    // vtable+0x00
 	virtual void Draw(const VsRect& p_rect);          // vtable+0x08
 	virtual void OnSize(const VsRect& p_rect);        // vtable+0x10
@@ -57,10 +58,10 @@ public:
 	friend class NetworkOptionsDrawer;
 	friend class IntroAnimDrawer;
 	friend class MainOptions1Drawer;
+	friend class MainOptions2Drawer;
 	friend class Main2DDisplay;
 
 private:
-	BaseQueueHandler m_queueHandler;      // 0x04
 	AnimsManager m_anims;                 // 0x14
 	Main2DDisplay* m_display;             // 0x84
 	Gdi* m_gdi;                           // 0x88

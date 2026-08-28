@@ -176,8 +176,11 @@ bool TargetGraphicsDriver::DestroyDrawingContext(TargetDrawingContext* p_drawing
 	if (p_drawingContext == 0) {
 		return 0;
 	}
-	deleted = DeleteDC((HDC) p_drawingContext->m_hDC);
-	operator delete(p_drawingContext);
+	deleted = 0;
+	if (p_drawingContext->m_hDC != 0) {
+		deleted = DeleteDC((HDC) p_drawingContext->m_hDC);
+	}
+	delete p_drawingContext;
 	return deleted != 0;
 }
 

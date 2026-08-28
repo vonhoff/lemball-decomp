@@ -7,7 +7,7 @@
 char g_szMoviePrefix[] = "lemball";
 
 // 68K 0x108061a2 Initialise__20CIntroAnimAnimWindowFP16CIntroAnimDrawerP14CMain2DDisplayUc
-// STUB: LEMBALL 0x004477b0
+// FUNCTION: LEMBALL 0x004477b0
 void IntroAnimAnimWindow::Initialise(IntroAnimDrawer* p_owner, Main2DDisplay* p_display, unsigned char p_variant)
 {
 	m_owner = p_owner;
@@ -16,7 +16,7 @@ void IntroAnimAnimWindow::Initialise(IntroAnimDrawer* p_owner, Main2DDisplay* p_
 }
 
 // 68K 0x1080620e SetAnim__20CIntroAnimAnimWindowFv
-// STUB: LEMBALL 0x004477e0
+// FUNCTION: LEMBALL 0x004477e0
 void IntroAnimAnimWindow::SetAnim()
 {
 	if (m_variant != 0) {
@@ -40,7 +40,7 @@ void IntroAnimAnimWindow::SetAnim()
 }
 
 // 68K 0x1080629c OnStop__20CIntroAnimAnimWindowFv
-// STUB: LEMBALL 0x00447830
+// FUNCTION: LEMBALL 0x00447830
 void IntroAnimAnimWindow::OnStop()
 {
 	AnimWnd::OnStop();

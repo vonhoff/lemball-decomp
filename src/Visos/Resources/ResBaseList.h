@@ -48,6 +48,7 @@ public:
 
 	friend class FontTable;
 	friend class AnimsManager;
+	friend class GraphicButton;
 
 private:
 	ResListHeader* m_listHeader;    // 0x48

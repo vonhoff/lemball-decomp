@@ -15,7 +15,7 @@ bool InpQuit();
 void InitSubSystems();
 void InitQuitSubSystems();
 bool InitCheckOptions(char* p_arg0);
-char* InitCmdLine(char* p_arg0);
+void InitCmdLine(char* p_arg0);
 int InitMain(char* p_arg0);
 bool StatInit();
 bool StatQuit();

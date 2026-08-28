@@ -222,7 +222,15 @@ struct Coord3d;
 class Info;
 struct Message;
 struct CoordPair;
-struct MenuList;
+// SIZE 0x18
+struct MenuList {
+	char* m_name;    // 0x00
+	int m_commandId; // 0x04
+	int m_action;    // 0x08
+	int m_enabled;   // 0x0c
+	int m_unk10;     // 0x10
+	int m_unk14;     // 0x14
+};
 
 struct Rect;
 struct LoadEnemyData;
@@ -247,6 +255,7 @@ class BaseObjectManager;
 class BigBitmap;
 class Bitmap;
 class BitmapRes;
+class BitmapResBase;
 class Bonus;
 class BulletManager;
 class C2DHotAreaSubobject;
@@ -476,7 +485,6 @@ struct Message {
 	int code;
 	void* payload;
 	void* source;
-	int extra[3];
 };
 
 typedef int eUserActions;

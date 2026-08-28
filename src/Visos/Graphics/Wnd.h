@@ -41,6 +41,7 @@ public:
 
 	friend class GWnd;
 	friend class AnimWnd;
+	friend class Main2DDisplay;
 
 private:
 	void* m_menuLists;             // 0x3c
@@ -48,5 +49,8 @@ private:
 	void* m_nativeWindow;          // 0x44
 	PvWnd* m_createRect;           // 0x48
 };
+
+extern Wnd* g_pFocusWindow;
+extern int g_nMouseCaptureCount;
 
 #endif

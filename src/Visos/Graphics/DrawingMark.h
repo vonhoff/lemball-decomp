@@ -5,6 +5,7 @@
 #include "Primitive.h" // complete type
 
 // SIZE 0x04
+// VTABLE: LEMBALL 0x00496c98
 // VTABLE: LEMBALL 0x00496e40
 class DrawingMark : public Primitive {
 public:
@@ -13,9 +14,10 @@ public:
 	virtual ~DrawingMark();          // vtable+0x00
 };
 
+// SYNTHETIC: LEMBALL 0x00432320
+// DrawingMark::`scalar deleting destructor'
+
 // SYNTHETIC: LEMBALL 0x00439650
 // DrawingMark::`scalar deleting destructor'
 
-
 #endif
-

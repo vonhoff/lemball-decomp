@@ -3,13 +3,17 @@
 
   python tools/smell.py
   python tools/smell.py --annot
+  python tools/smell.py --selftest
   python tools/smell.py src/Visos/Graphics
 
 Default errors:
   vbptr-walk     *(int*)(*(int*)(obj + 0x40) + 4) virtual-base poke
-  offset-poke    (char*)obj +/- field offset
+  offset-poke    pointer-cast +/- field offset, including Ghidra
+                 ((int*)((short*)p + 0x16))[0] and *(T*)(obj + N)
   this-adjust    (char*)this - N mixin poke
   no-annotation  non-empty .cpp function with neither reccmp nor 68K marker
+
+Does not flag every `+ 0x` (resource ids, timers, LCG). Those are not field pokes.
 
 --annot also fails 68K-only functions (missing FUNCTION/STUB/GLOBAL/...).
 """
@@ -30,17 +34,48 @@ VBPTR_WALK = re.compile(
 	r"\*\(\s*int\s*\*\s*\)\s*\(\s*\*\(\s*int\s*\*\s*\)\s*\(\s*[^;]{1,60}?\+\s*0x40\s*\)\s*\+\s*4\s*\)"
 )
 THIS_ADJUST = re.compile(r"\(\s*char\s*\*\s*\)\s*this\s*-\s*(?:0x[0-9A-Fa-f]+|\d+)\b")
-OFFSET_POKE = re.compile(
-	r"\(\s*char\s*\*\s*\)\s*(?P<expr>this|[A-Za-z_][\w]*|\(\s*[A-Za-z_][\w]*\s*\))"
-	r"\s*[+-]\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
+PTR_CAST = re.compile(
+	r"\(\s*(?:unsigned\s+|signed\s+)?(?:char|short|int|long|void|__int16|__int32)\s*\*\s*\)"
 )
-VAR_OFFSET = re.compile(
+CAST_THEN_ARITH = re.compile(
+	PTR_CAST.pattern
+	+ r"\s*(?:\([^;]{1,80}?\)|[A-Za-z_][\w.]*(?:\[[^\]]{0,40}\])?)"
+	+ r"(?:\s*[+-]\s*[A-Za-z_][\w]*)*"
+	+ r"\s*[+-]\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
+)
+CAST_PAREN_ARITH = re.compile(
+	PTR_CAST.pattern + r"\s*\(\s*[^;]{1,80}?\s*[+-]\s*(?:0x[0-9A-Fa-f]+|(?!1\b)\d+)\s*\)"
+)
+NAKED_DATA_OFFSET = re.compile(
+	r"(?:->|\.)(?:m_data|m_buffer)\s*\+\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
+	r"|(?<![\w.])(?:m_data|m_buffer)\s*\+\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
+)
+CHAR_VAR_OFFSET = re.compile(
 	r"\(\s*char\s*\*\s*\)\s*(?P<expr>this|[A-Za-z_][\w]*)\s*[+-]\s*(?!0x)(?P<off>[A-Za-z_][\w]*)"
 )
 METHOD_DEF = re.compile(r"^[A-Za-z_][\w:]*::~?[A-Za-z_][\w]*\s*\(")
 FREE_DEF = re.compile(r"^(?:static\s+)?(?:[A-Za-z_][\w:*&]*\s+)+\w+\s*\(")
-BUFFER_OK = re.compile(r"Buffer|Bits\b|sz[A-Z]", re.I)
+BUFFER_OK = re.compile(r"m_numberBuffer|Bits\b|sz[A-Z]|\bp_bits\b")
 SKIP_LEAD = {"if", "while", "for", "switch", "return", "else", "case", "catch", "extern"}
+OFFSET_POKE_SAMPLES = (
+	("m_projectileEndY = ((int*) ((short*) offsets + 0x16))[0] + m_junctions[i].m_y;", True),
+	("rawLength = *(unsigned int*) (p_patch + 0x38);", True),
+	("colorCount = *(int*) ((unsigned char*) p_palette + 0x48) - 10;", True),
+	("x = *(short*) ((unsigned char*) p_point + 4);", True),
+	("position.m_y = (short) (*(int*) (offsets + 2) + m_gunY);", True),
+	("m_projectileX = offsets[6] + m_selectionStartX;", False),
+	("m_writeCursor = write + sizeof(Message);", False),
+	("musicId = m_randomMusicIndex + 0x239;", False),
+	("*(int*) &ownerList[2] = *(int*) &ownerList[2] - 1;", False),
+	("if (handle == (void*) -1) {", False),
+	("m_name = (char*) &entry[2];", False),
+	("p_headerCursor = (unsigned char*) &entry[2] + m_headerSkip;", False),
+	("message->Set((unsigned char*) (header + 1));", False),
+	("id = header->m_messageId;", False),
+	("((UserActionMessage*) m_userActionMessage)->Set(packet->m_data + 0x10);", True),
+	("*(unsigned short*) (m_buffer + 0x0a) = 0;", True),
+	("storage = (unsigned char*) operator new(m_payloadCapacity + sizeof(BasePacketHeader));", False),
+)
 
 
 def strip_line_comment(line: str) -> str:
@@ -120,6 +155,14 @@ def allowed_expr(expr: str) -> bool:
 	return bool(BUFFER_OK.search(expr))
 
 
+def is_offset_poke(code: str) -> bool:
+	if allowed_expr(code):
+		return False
+	if CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code) or NAKED_DATA_OFFSET.search(code):
+		return True
+	return False
+
+
 def scan_file(path: Path, strict_annot: bool) -> list[str]:
 	lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
 	hits: list[str] = []
@@ -131,11 +174,9 @@ def scan_file(path: Path, strict_annot: bool) -> list[str]:
 				hits.append("%s:%d: vbptr-walk" % (rel, lineno))
 			if THIS_ADJUST.search(code):
 				hits.append("%s:%d: this-adjust-poke" % (rel, lineno))
-			for match in OFFSET_POKE.finditer(code):
-				if allowed_expr(match.group("expr")):
-					continue
-				hits.append("%s:%d: offset-poke %s" % (rel, lineno, match.group(0).strip()))
-			for match in VAR_OFFSET.finditer(code):
+			if is_offset_poke(code):
+				hits.append("%s:%d: offset-poke %s" % (rel, lineno, code.strip()[:100]))
+			for match in CHAR_VAR_OFFSET.finditer(code):
 				if allowed_expr(match.group("expr")):
 					continue
 				if match.group("off") == "sizeof":
@@ -170,8 +211,20 @@ def iter_sources(root: Path):
 def main(argv: list[str]) -> int:
 	parser = argparse.ArgumentParser(description="Decomp smell gate")
 	parser.add_argument("--annot", action="store_true", help="fail 68K-only and empty unmarked functions")
+	parser.add_argument("--selftest", action="store_true", help="check offset-poke samples and exit")
 	parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
 	args = parser.parse_args(argv[1:])
+	if args.selftest:
+		failed = 0
+		for sample, expect in OFFSET_POKE_SAMPLES:
+			got = is_offset_poke(sample)
+			if got != expect:
+				sys.stderr.write("selftest fail: expect %s got %s: %s\n" % (expect, got, sample))
+				failed += 1
+		if failed:
+			return 1
+		sys.stdout.write("smell selftest: ok\n")
+		return 0
 	targets = [Path(a) for a in args.paths] if args.paths else [SRC]
 	files: list[Path] = []
 	for target in targets:

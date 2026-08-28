@@ -29,10 +29,13 @@ public:
 	friend class BaseFrontendDrawer;
 	friend class AnimsManager;
 	friend class GraphicButton;
+	friend class GunButtons;
 	friend class DepressedButton;
 	friend class PvButton;
 	friend class GunController;
 	friend class BitmapRes;
+	friend class BitmapResBase;
+	friend class CdLoadAnimDraw;
 	friend class Anim;
 	friend class SpriteWindow;
 	friend class TrackWindow;

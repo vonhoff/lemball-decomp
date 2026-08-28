@@ -1,7 +1,12 @@
 #include "BaseFrontendProcess.h"
 
 #include "../../Control/Game/GameStatus.h"
+#include "../../Frontend/Drawers/NetworkOptionsDrawer.h"
+#include "../../Frontend/Processes/NetworkOptionsProc.h"
 #include "../../Frontend/Support/UserActionMessage.h"
+#include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Messaging/BasePacketHeader.h"
+#include "../../Visos/Messaging/ReadPacket.h"
 #include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Network/Connect.h"
 
@@ -25,7 +30,7 @@ bool BaseFrontendProcess::ProcessMessages(Message* p_message)
 }
 
 // 68K 0x10801930 __ct__20CBaseFrontendProcessFP5CGame
-// STUB: LEMBALL 0x00446720
+// FUNCTION: LEMBALL 0x00446720
 BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 {
 	void* storage;
@@ -52,22 +57,71 @@ BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 }
 
 // 68K 0x10801abe Process__20CBaseFrontendProcessFv
-// STUB: LEMBALL 0x00446830
+// FUNCTION: LEMBALL 0x00446830
 void BaseFrontendProcess::Process()
 {
+	if (m_networkWasActive != 0 && g_pActiveConnection == 0) {
+		g_pNetworkOptionsDrawer->LostConnection();
+	}
+	Processing();
 }
 
 // 68K 0x10801b1a Action__20CBaseFrontendProcessF12eUserActions17eUserActionStages
-// STUB: LEMBALL 0x00446860
+// FUNCTION: LEMBALL 0x00446860
 void BaseFrontendProcess::Action(int p_action, int p_stage)
 {
+	UserActionMessage* message;
+	unsigned long started;
+	unsigned long now;
+
+	message = (UserActionMessage*) m_userActionMessage;
+	if (message->m_pendingSendCount != 0) {
+		started = CurrentMilliTimer();
+		while (message->m_pendingSendCount != 0) {
+			now = CurrentMilliTimer();
+			if (1999 < now - started) {
+				break;
+			}
+			g_pBaseNetwork->WaitProcess();
+		}
+	}
+	message->m_action = (eUserActions) p_action;
+	message->m_stage = (eUserActionStages) p_stage;
+	message->Send(g_pActiveConnection);
 }
 
 // 68K 0x10801bde ProcessMsg__20CBaseFrontendProcessFP10tagMESSAGE
-// STUB: LEMBALL 0x004468d0
-bool BaseFrontendProcess::ProcessMsg(Message* p_message)
+// FUNCTION: LEMBALL 0x004468d0
+int BaseFrontendProcess::ProcessMsg(Message* p_message)
 {
-	return 0;
+	ReadPacket* packet;
+	unsigned int id;
+	unsigned int type;
+
+	if (g_pNetworkOptionsDrawer == 0) {
+		return 0;
+	}
+	if (ProcessMessages(p_message) != 0) {
+		return 1;
+	}
+	type = p_message->type;
+	if (type != 5) {
+		return 0;
+	}
+	packet = (ReadPacket*) p_message->source;
+	if (p_message->code != 0) {
+		return 1;
+	}
+	id = ((BasePacketHeader*) packet->m_data)->m_messageId;
+	if (id != 8) {
+		return ReceiveCritical(id, packet, (Connect*) p_message->payload);
+	}
+	((UserActionMessage*) m_userActionMessage)->Set(packet->m_data + sizeof(BasePacketHeader));
+	packet->m_used = 0;
+	g_pNetworkOptionsDrawer->RemoteAction(
+		((UserActionMessage*) m_userActionMessage)->m_action,
+		((UserActionMessage*) m_userActionMessage)->m_stage);
+	return 1;
 }
 
 // 68K 0x10801cdc ReceiveCritical__20CBaseFrontendProcessFUlP11CReadPacketP8CConnect

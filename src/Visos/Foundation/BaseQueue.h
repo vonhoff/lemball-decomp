@@ -3,6 +3,8 @@
 
 #include "../../Common.h"
 
+class TimedQueue;
+
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00499250
 class BaseQueue {
@@ -23,6 +25,8 @@ public:
 	virtual bool Send(Message& p_arg0);                // vtable+0x0c
 	virtual ~BaseQueue();                              // vtable+0x04
 	BaseQueue();
+
+	friend class TimedQueue;
 
 private:
 	undefined4 m_unk0x04;              // 0x04

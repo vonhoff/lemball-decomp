@@ -1,17 +1,31 @@
 #include "PvButton.h"
 
+#include "../Foundation/BaseQueue.h"
+#include "../Foundation/VsTime.h"
 #include "ClipRect.h"
 #include "DrawingMark.h"
 #include "Gdi.h"
+#include "HotAreaList.h"
 #include "SolidRect.h"
 #include "VsGdi.h"
+#include "Wnd.h"
 
 #include <new.h>
 
 // 68K 0x101173ca Destroy__9CPVButtonFv
-// STUB: LEMBALL 0x0043a540
+// FUNCTION: LEMBALL 0x0043a540
 void PvButton::Destroy()
 {
+	HotAreaHandler* handler;
+
+	handler = this;
+	if (this == 0) {
+		handler = 0;
+	}
+	if (m_ownerWindow != 0 && m_ownerWindow->m_hotAreaList != 0) {
+		m_ownerWindow->m_hotAreaList->RemoveFromList(handler);
+	}
+	Wnd::Destroy();
 }
 
 // 68K 0x10117742 GetStyle__9CPVButtonFv
@@ -168,16 +182,34 @@ int PvButton::ConvertDoubleClick(int p_flags)
 }
 
 // 68K 0x1020ff92 OnButtonDown__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00468050
+// FUNCTION: LEMBALL 0x00468050
 unsigned int PvButton::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
+	int converted;
+
+	if (p_flags == 0 || p_flags == 3) {
+		m_pressed = 1;
+	}
+	converted = ConvertDoubleClick(p_flags);
+	m_clickX = (short) (p_point.m_x - m_buttonX);
+	m_clickY = (short) (p_point.m_y - m_buttonY);
+	OnPressed(converted);
 	return 0;
 }
 
 // 68K 0x1021004e OnButtonUp__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x004680c0
+// FUNCTION: LEMBALL 0x004680c0
 void PvButton::OnButtonUp(const VsPoint& p_point, int p_flags)
 {
+	int converted;
+
+	if (m_pressed != 0) {
+		converted = ConvertDoubleClick(p_flags);
+		m_clickX = (short) (p_point.m_x - m_buttonX);
+		m_clickY = (short) (p_point.m_y - m_buttonY);
+		m_pressed = 0;
+		OnReleased(converted);
+	}
 }
 
 // 68K 0x10210100 OnExternalButtonUp__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
@@ -193,9 +225,25 @@ void PvButton::OnReleased(int p_flags)
 }
 
 // 68K 0x10210234 _OnPressed__9CPVButtonF12BUTTON_FLAGS
-// STUB: LEMBALL 0x004681f0
+// FUNCTION: LEMBALL 0x004681f0
 void PvButton::OnPressed(int p_flags)
 {
+	Message posted;
+	int converted;
+
+	if (m_autoDraw == 0) {
+		m_forceDrawCount = 1;
+	}
+	if (m_messageHandler != 0) {
+		converted = ConvertDoubleClick(p_flags);
+		posted.type = 0xb;
+		posted.reserved[1] = (unsigned short) CurrentQueueTimer();
+		posted.reserved[2] = (unsigned short) (CurrentQueueTimer() >> 16);
+		posted.code = (int) m_controlMessage;
+		posted.payload = this;
+		posted.source = (void*) converted;
+		((BaseQueue*) m_messageHandler)->Post(posted);
+	}
 }
 
 // 68K 0x102102ca _OnEnterButton__9CPVButtonFv
@@ -219,5 +267,12 @@ void PvButton::OnPaint(const VsRect& p_rect)
 // 68K 0x1020fb9a __dt__9CPVButtonFv
 PvButton::~PvButton()
 {
+	if (m_lifecycleRefs == 1) {
+		Destroy();
+	}
+	if (m_primitive != 0) {
+		delete m_primitive;
+		m_primitive = 0;
+	}
 }
 

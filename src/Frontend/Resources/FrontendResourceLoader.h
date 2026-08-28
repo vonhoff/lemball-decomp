@@ -46,6 +46,14 @@ private:
 	unsigned int* m_bitmapResourceIds; // 0x54
 };
 
+extern unsigned int g_dwFrontendCompactAnimIds[68];
+extern unsigned int g_dwFrontendAnimIds[67];
+extern unsigned int g_dwFrontendCompactFontIds[1];
+extern unsigned int g_dwFrontendFontIds[1];
+extern unsigned int g_dwFrontendCompactBitmapIds[3];
+extern unsigned int g_dwFrontendBitmapIds[3];
+extern unsigned int g_dwFrontendPaletteIds[2];
+extern unsigned int g_dwFrontendStringIds[1];
 extern unsigned int g_dwGroundStyleResourceId;
 extern unsigned int g_anGroundStyleResourceIds[10];
 #endif

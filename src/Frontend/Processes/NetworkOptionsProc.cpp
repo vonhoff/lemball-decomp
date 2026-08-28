@@ -5,6 +5,7 @@
 #include "../../Network/Messages/GameAcceptMessage.h"
 #include "../../Network/Messages/GameRejectMessage.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Messaging/BasePacketHeader.h"
 #include "../../Visos/Messaging/ReadPacket.h"
 #include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Network/Broadcast.h"
@@ -142,14 +143,14 @@ bool NetworkOptionsProc::ReceiveCritical(unsigned long p_id, ReadPacket* p_packe
 	case 5: {
 		NetworkMessage* message = (NetworkMessage*) g_pNetworkManager->GetGameMessage(connection);
 		if (message != 0) {
-			message->Set(packet->m_data + 0x10);
+			message->Set(packet->m_data + sizeof(BasePacketHeader));
 		}
 		packet->m_used = 0;
 		drawer->m_networkState = 1;
 		return true;
 	}
 	case 6: {
-		m_rejectMessage->Set(packet->m_data + 0x10);
+		m_rejectMessage->Set(packet->m_data + sizeof(BasePacketHeader));
 		packet->m_used = 0;
 		drawer->GameNotReady(g_pNetworkManager->GetnGame(connection));
 		if (m_rejectMessage->m_flag != 0) {
@@ -159,7 +160,7 @@ bool NetworkOptionsProc::ReceiveCritical(unsigned long p_id, ReadPacket* p_packe
 		return true;
 	}
 	case 7: {
-		m_acceptMessage->Set(packet->m_data + 0x10);
+		m_acceptMessage->Set(packet->m_data + sizeof(BasePacketHeader));
 		packet->m_used = 0;
 		drawer->GameReady(g_pNetworkManager->GetnGame(connection));
 		if (m_acceptMessage->m_flag != 0) {

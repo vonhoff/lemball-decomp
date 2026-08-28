@@ -8,24 +8,24 @@
 class BaseSoundDevice {
 public:
 	virtual ~BaseSoundDevice();                                                                             // vtable+0x00
-	virtual void Dummy04();                                                                                 // vtable+0x04
-	virtual void Dummy08();                                                                                 // vtable+0x08
-	virtual void Dummy0c();                                                                                 // vtable+0x0c
-	virtual void Dummy10();                                                                                 // vtable+0x10
-	virtual void Dummy14();                                                                                 // vtable+0x14
-	virtual void Dummy18();                                                                                 // vtable+0x18
-	virtual void Dummy1c();                                                                                 // vtable+0x1c
-	virtual void Dummy20();                                                                                 // vtable+0x20
-	virtual void Dummy24();                                                                                 // vtable+0x24
-	virtual void Dummy28();                                                                                 // vtable+0x28
-	virtual void Dummy2c();                                                                                 // vtable+0x2c
-	virtual void Dummy30();                                                                                 // vtable+0x30
+	virtual char* Dummy04();                                                                                // vtable+0x04
+	virtual int Dummy08();                                                                                  // vtable+0x08
+	virtual int Dummy0c(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId);          // vtable+0x0c
+	virtual int Dummy10(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId);          // vtable+0x10
+	virtual int Dummy14();                                                                                  // vtable+0x14
+	virtual int Dummy18();                                                                                  // vtable+0x18
+	virtual int Dummy1c();                                                                                  // vtable+0x1c
+	virtual int Dummy20();                                                                                  // vtable+0x20
+	virtual int Dummy24();                                                                                  // vtable+0x24
+	virtual int Dummy28();                                                                                  // vtable+0x28
+	virtual int Dummy2c();                                                                                  // vtable+0x2c
+	virtual int Dummy30();                                                                                  // vtable+0x30
 	virtual void Dummy34();                                                                                 // vtable+0x34
 	virtual void Dummy38();                                                                                 // vtable+0x38
-	virtual void Dummy3c();                                                                                 // vtable+0x3c
+	virtual int Dummy3c(unsigned char* p_data, unsigned long* p_handle);                                    // vtable+0x3c
 	virtual void Dummy40();                                                                                 // vtable+0x40
 	virtual void Dummy44();                                                                                 // vtable+0x44
-	virtual void Dummy48();                                                                                 // vtable+0x48
+	virtual int Dummy48(unsigned long p_effectId);                                                          // vtable+0x48
 	virtual void Dummy4c();                                                                                 // vtable+0x4c
 	virtual void Dummy50();                                                                                 // vtable+0x50
 	virtual unsigned char GetMasterVolume();                                                                // vtable+0x54

@@ -8,6 +8,9 @@
 #include "../Foundation/BaseQueue.h"
 #include "../Foundation/BaseQueueHandler.h"
 #include "../Foundation/VsDebug.h"
+#include "../Foundation/VsOStream.h"
+#include "../Foundation/VsTime.h"
+#include "../Messaging/PackParam.h"
 #include "../Network/BaseNetwork.h"
 #include "../Resources/MogRes.h"
 #include "../Target/TargetGraphicsDriver.h"
@@ -17,6 +20,12 @@
 
 // GLOBAL: LEMBALL 0x004a1f64
 void* g_hFocusWindow = 0;
+
+// GLOBAL: LEMBALL 0x004a1f68
+Wnd* g_pFocusWindow = 0;
+
+// GLOBAL: LEMBALL 0x004a1f6c
+int g_nMouseCaptureCount = 0;
 
 // GLOBAL: LEMBALL 0x004a1fec
 int g_cursorState = 0;
@@ -41,6 +50,12 @@ char g_szUnableToRegisterBaseWindowClass[40] = "Unable to register base window c
 
 // GLOBAL: LEMBALL 0x004a1fd0
 char g_szUnableToCreateWindow[24] = "Unable to create window";
+
+// GLOBAL: LEMBALL 0x004a1f94
+char g_szQuitting[12] = "Quitting\n";
+
+// GLOBAL: LEMBALL 0x004a1fa0
+char g_szFQuit[8] = "fQuit";
 
 static bool RegisterBaseWindowClass();
 unsigned int ConvertWindowStyleFlags(unsigned int p_style);
@@ -107,16 +122,23 @@ void Wnd::BaseOnSize()
 }
 
 // 68K 0x10110340 ProcessMessage__4CWndFR11EventRecord
-// STUB: LEMBALL 0x00464520
+// FUNCTION: LEMBALL 0x00464520
 long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
 {
 	Wnd* window;
 	CREATESTRUCTA* create;
+	Message posted;
+	short mouseX;
+	short mouseY;
+	unsigned int style;
+	int menuAction;
+	unsigned long sequence;
 
 	if (g_pTargetGraphicsDriver == 0) {
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 
+	sequence = GetMessageTime();
 	window = (Wnd*) GetWindowLongA((HWND) p_hwnd, GWL_USERDATA);
 	if (g_pTargetGraphicsDriver->m_window == p_hwnd) {
 		window = (Wnd*) g_pTargetGraphicsSystem->m_reserved04;
@@ -128,6 +150,9 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 
+	mouseX = (short) p_lParam;
+	mouseY = (short) (p_lParam >> 16);
+
 	if (p_message == WM_CREATE) {
 		create = (CREATESTRUCTA*) p_lParam;
 		window = (Wnd*) create->lpCreateParams;
@@ -138,8 +163,28 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		return 0;
 	}
 	if (p_message == WM_DESTROY) {
+		unsigned int topLevel;
+
+		if (p_hwnd == g_hFocusWindow) {
+			g_hFocusWindow = 0;
+			g_pFocusWindow = 0;
+		}
+		topLevel = (unsigned int) (window->m_parent == 0);
 		window->m_nativeWindow = 0;
-		g_dwWindowQuitRequested = 1;
+		window->Destroy();
+		if (g_nNativeWindowCount == 0 || topLevel != 0) {
+			g_dwWindowQuitRequested = 1;
+			if (g_pSysOutput != 0) {
+				*g_pSysOutput << g_szFQuit;
+			}
+		}
+		return 0;
+	}
+	if (p_message == WM_QUIT) {
+		if (g_pDebugOutput != 0) {
+			*g_pDebugOutput << g_szQuitting;
+		}
+		ReleaseCapture();
 		return 0;
 	}
 	if (p_message == WM_SIZE) {
@@ -149,8 +194,109 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		window->BaseOnSize();
 		return 0;
 	}
-	if (p_message == WM_QUIT) {
+	if (p_message == WM_KEYDOWN || p_message == WM_KEYUP) {
+		posted.type = (unsigned short) ((p_message == WM_KEYDOWN) + 1);
+		posted.reserved[0] = 0;
+		posted.reserved[1] = (unsigned short) sequence;
+		posted.reserved[2] = (unsigned short) (sequence >> 16);
+		posted.code = (int) p_wParam;
+		posted.payload = 0;
+		posted.source = 0;
+		if (g_pMasterInputQueue != 0) {
+			g_pMasterInputQueue->Post(posted);
+		}
 		return 0;
+	}
+	if (p_message == WM_LBUTTONDOWN || p_message == WM_LBUTTONDBLCLK || p_message == WM_RBUTTONDOWN ||
+		p_message == WM_RBUTTONDBLCLK || p_message == WM_MBUTTONDOWN || p_message == WM_MBUTTONDBLCLK) {
+		posted.type = 6;
+		posted.reserved[0] = 0;
+		posted.reserved[1] = (unsigned short) sequence;
+		posted.reserved[2] = (unsigned short) (sequence >> 16);
+		style = window->GetStyle();
+		if ((style & 0x1000) == 0) {
+			if (p_message == WM_LBUTTONDOWN || p_message == WM_LBUTTONDBLCLK) {
+				posted.payload = (void*) 0x43;
+			}
+			else if (p_message == WM_RBUTTONDOWN || p_message == WM_RBUTTONDBLCLK) {
+				posted.payload = (void*) 0x44;
+			}
+			else {
+				posted.payload = (void*) 0x45;
+			}
+		}
+		else {
+			if (p_message == WM_LBUTTONDOWN) {
+				posted.payload = (void*) 0x43;
+			}
+			else if (p_message == WM_LBUTTONDBLCLK) {
+				posted.payload = (void*) 0x46;
+			}
+			else if (p_message == WM_RBUTTONDOWN) {
+				posted.payload = (void*) 0x44;
+			}
+			else if (p_message == WM_RBUTTONDBLCLK) {
+				posted.payload = (void*) 0x47;
+			}
+			else if (p_message == WM_MBUTTONDOWN) {
+				posted.payload = (void*) 0x45;
+			}
+			else {
+				posted.payload = (void*) 0x48;
+			}
+		}
+		posted.code = PackParam((short) (window->m_rect.m_x + mouseX), (short) (window->m_rect.m_y + mouseY));
+		posted.source = 0;
+		if (g_pMasterInputQueue != 0) {
+			g_pMasterInputQueue->Post(posted);
+		}
+		g_nMouseCaptureCount = g_nMouseCaptureCount + 1;
+		if (g_nMouseCaptureCount == 1) {
+			SetCapture((HWND) p_hwnd);
+		}
+		return 0;
+	}
+	if (p_message == WM_LBUTTONUP || p_message == WM_RBUTTONUP || p_message == WM_MBUTTONUP) {
+		posted.type = 5;
+		posted.reserved[0] = 0;
+		posted.reserved[1] = (unsigned short) sequence;
+		posted.reserved[2] = (unsigned short) (sequence >> 16);
+		if (p_message == WM_LBUTTONUP) {
+			posted.payload = (void*) 0x43;
+		}
+		else if (p_message == WM_RBUTTONUP) {
+			posted.payload = (void*) 0x44;
+		}
+		else {
+			posted.payload = (void*) 0x45;
+		}
+		posted.code = PackParam((short) (window->m_rect.m_x + mouseX), (short) (window->m_rect.m_y + mouseY));
+		posted.source = 0;
+		if (g_pMasterInputQueue != 0) {
+			g_pMasterInputQueue->Post(posted);
+		}
+		g_nMouseCaptureCount = g_nMouseCaptureCount - 1;
+		if (g_nMouseCaptureCount == 0) {
+			ReleaseCapture();
+		}
+		return 0;
+	}
+	if (p_message == WM_COMMAND) {
+		menuAction = window->SelectMenu(p_message, p_wParam, p_lParam);
+		if (menuAction != 0) {
+			posted.type = 0xf;
+			posted.reserved[0] = 0;
+			posted.reserved[1] = (unsigned short) CurrentQueueTimer();
+			posted.reserved[2] = (unsigned short) (CurrentQueueTimer() >> 16);
+			posted.code = menuAction;
+			posted.payload = 0;
+			posted.source = 0;
+			if (g_pMasterInputQueue != 0) {
+				g_pMasterInputQueue->Post(posted);
+			}
+			return 0;
+		}
+		return window->ProcessOtherMessages(p_message, p_wParam, p_lParam);
 	}
 
 	return window->ProcessOtherMessages(p_message, p_wParam, p_lParam);
@@ -216,7 +362,7 @@ Wnd::Wnd()
 }
 
 // 68K 0x10110e74 Create__4CWndFRC7CVSRectP6CPVWndPc
-// STUB: LEMBALL 0x00465200
+// FUNCTION: LEMBALL 0x00465200
 void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 {
 	unsigned int style;

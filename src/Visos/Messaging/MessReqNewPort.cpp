@@ -1,10 +1,11 @@
 #include "MessReqNewPort.h"
+#include "BasePacketHeader.h"
 
 // 68K 0x1020ae1c __ct__15CMessReqNewPortFPCc
 // FUNCTION: LEMBALL 0x0045f490
 MessReqNewPort::MessReqNewPort(const char* p_arg0) : MessReqConnect(p_arg0)
 {
-	m_payloadCapacity += 0x10;
+	m_payloadCapacity += sizeof(BasePacketHeader);
 }
 
 // 68K 0x1020ae66 GetData__15CMessReqNewPortFv

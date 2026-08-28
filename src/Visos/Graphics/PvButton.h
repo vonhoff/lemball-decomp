@@ -38,6 +38,7 @@ public:
 
 	friend class ToggleButton;
 	friend class GraphicButton;
+	friend class GunButton;
 	friend class DepressedButton;
 	friend class GunButtons;
 	friend class GunController;

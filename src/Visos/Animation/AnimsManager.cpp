@@ -2,8 +2,10 @@
 
 #include "../Foundation/VsPoint.h"
 #include "../Graphics/Gdi.h"
+#include "../Graphics/Line.h"
 #include "../Graphics/Zrle.h"
 #include "../Resources/ResAnim.h"
+#include "../Resources/ResBase.h"
 #include "../Resources/ResBaseList.h"
 #include "../Resources/ResZrle.h"
 #include "Anim.h"
@@ -79,9 +81,44 @@ AnimsManager::AnimsManager(Gdi* p_arg0, unsigned long p_arg1, int p_arg2, int p_
 }
 
 // 68K 0x10200334 __dt__13CAnimsManagerFv
-// STUB: LEMBALL 0x004673d0
+// FUNCTION: LEMBALL 0x004673d0
 AnimsManager::~AnimsManager()
 {
+	int i;
+	int scanned;
+
+	i = 0;
+	if (m_loadedResourceCount != 0 && 0 < m_loadedResourceCount) {
+		scanned = 0;
+		do {
+			while (m_resources[i] == 0) {
+				i = i + 1;
+			}
+			m_resources[i]->UnLoad();
+			scanned = scanned + 1;
+			i = i + 1;
+		} while (scanned < m_loadedResourceCount);
+	}
+	if (m_resources != 0) {
+		operator delete(m_resources);
+		m_resources = 0;
+	}
+	if (m_resourceSlots != 0) {
+		operator delete(m_resourceSlots);
+		m_resourceSlots = 0;
+	}
+	if (m_zrlePrimitives != 0) {
+		delete[] m_zrlePrimitives;
+		m_zrlePrimitives = 0;
+	}
+	if (m_animPrimitives != 0) {
+		delete[] m_animPrimitives;
+		m_animPrimitives = 0;
+	}
+	if (m_ownsLinePrimitives != 0 && m_linePrimitives != 0) {
+		delete[] m_linePrimitives;
+		m_linePrimitives = 0;
+	}
 }
 
 // 68K 0x1020043c LoadAnims__13CAnimsManagerFUl
@@ -117,9 +154,13 @@ void AnimsManager::LoadAnims(unsigned long p_resourceId)
 }
 
 // 68K 0x102004ea UnLoadAnims__13CAnimsManagerFUl
-// STUB: LEMBALL 0x00467500
+// FUNCTION: LEMBALL 0x00467500
 void AnimsManager::UnLoadAnims(unsigned long p_resourceId)
 {
+	m_resources[m_resourceSlots[p_resourceId]]->UnLoad();
+	m_resources[m_resourceSlots[p_resourceId]] = 0;
+	m_resourceSlots[p_resourceId] = (short) m_resourceCapacity;
+	m_loadedResourceCount = m_loadedResourceCount - 1;
 }
 
 // 68K 0x1020055a GetnAnims__13CAnimsManagerFUl

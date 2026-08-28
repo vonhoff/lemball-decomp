@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00496ce8
 class RepeatAnim : public TimedAnim {
 public:
+	RepeatAnim() {}
 	virtual void StartAnim(unsigned long p_animTime); // vtable+0x04
 };
 

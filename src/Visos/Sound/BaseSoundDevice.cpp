@@ -12,52 +12,64 @@ BaseSoundDevice::BaseSoundDevice()
 {
 }
 
-void BaseSoundDevice::Dummy04()
+char* BaseSoundDevice::Dummy04()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy08()
+int BaseSoundDevice::Dummy08()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy0c()
+int BaseSoundDevice::Dummy0c(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy10()
+int BaseSoundDevice::Dummy10(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy14()
+int BaseSoundDevice::Dummy14()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy18()
+int BaseSoundDevice::Dummy18()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy1c()
+int BaseSoundDevice::Dummy1c()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy20()
+int BaseSoundDevice::Dummy20()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy24()
+int BaseSoundDevice::Dummy24()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy28()
+int BaseSoundDevice::Dummy28()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy2c()
+int BaseSoundDevice::Dummy2c()
 {
+	return 0;
 }
 
-void BaseSoundDevice::Dummy30()
+int BaseSoundDevice::Dummy30()
 {
+	return 0;
 }
 
 void BaseSoundDevice::Dummy34()
@@ -68,8 +80,9 @@ void BaseSoundDevice::Dummy38()
 {
 }
 
-void BaseSoundDevice::Dummy3c()
+int BaseSoundDevice::Dummy3c(unsigned char* p_data, unsigned long* p_handle)
 {
+	return 0;
 }
 
 void BaseSoundDevice::Dummy40()
@@ -80,8 +93,9 @@ void BaseSoundDevice::Dummy44()
 {
 }
 
-void BaseSoundDevice::Dummy48()
+int BaseSoundDevice::Dummy48(unsigned long p_effectId)
 {
+	return 0;
 }
 
 void BaseSoundDevice::Dummy4c()

@@ -15,6 +15,7 @@ public:
 
 	friend class BaseFrontendDrawer;
 	friend class Surface;
+	friend class CdLoadAnimDraw;
 
 private:
 	short m_x;       // 0x04

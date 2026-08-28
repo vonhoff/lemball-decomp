@@ -31,6 +31,8 @@ public:
 	friend class BaseFrontendDrawer;
 	friend class Surface;
 
+	VsRect& operator=(const VsRect& p_source);
+
 	short m_width;  // 0x00
 	short m_height; // 0x02
 	short m_x;      // 0x04
