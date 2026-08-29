@@ -12,7 +12,6 @@ public:
 	void AddData();
 	void GetData();
 	~MessReqConnect();
-	MessReqConnect();
 
 private:
 	unsigned short m_requestedPort;  // 0x30

@@ -10,8 +10,8 @@ public:
 	HotAreaHandler();
 	HotAreaHandler(const VsRect& p_arg0);
 	unsigned int ProcessArea(Message* p_message, const VsPoint& p_point, class HotAreaHandler* p_currentHandler);
-	virtual ~HotAreaHandler();                                              // vtable+0x00
-	virtual unsigned int OnButtonDown(const VsPoint& p_point, int p_flags); // vtable+0x04
+	virtual ~HotAreaHandler();                                        // vtable+0x00
+	virtual void OnButtonDown(const VsPoint& p_point, int p_flags);   // vtable+0x04
 	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);           // vtable+0x08
 	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags);   // vtable+0x0c
 	virtual void OnEnter();                                                 // vtable+0x10

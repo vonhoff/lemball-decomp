@@ -68,17 +68,8 @@ void BitmapRes::Render(Gdi* p_gdi)
 	m_resource->m_directUseCount--;
 }
 
-BitmapRes::~BitmapRes()
-{
-}
-
 // FUNCTION: LEMBALL 0x0044b5f0
 BitmapResBase::BitmapResBase()
 	: m_y(0), m_x(0), m_height(0), m_width(0), m_sourceY(0), m_sourceX(0)
-{
-}
-
-// 68K 0x101017bc __dt__14CBitmapResBaseFv
-BitmapResBase::~BitmapResBase()
 {
 }

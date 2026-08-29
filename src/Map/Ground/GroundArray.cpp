@@ -33,7 +33,7 @@ unsigned short GroundArray::GetZ(int p_x, int p_y)
 {
 	int blockX = p_x >> 4;
 	int blockY = p_y >> 4;
-	if (p_x >= 0 && p_y >= 0 && blockX < m_width && blockY < m_height) {
+	if (p_x >= 0 && p_y >= 0 && blockX < m_width && m_height > blockY) {
 		return m_ground[blockY * m_width + blockX].GetZ(p_x & 0xf, p_y & 0xf);
 	}
 	return 0;

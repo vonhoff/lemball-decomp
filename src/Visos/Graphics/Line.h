@@ -11,7 +11,7 @@ public:
 	Line();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~Line();                 // vtable+0x00
+	virtual ~Line() {}               // vtable+0x00
 
 	friend class BaseFrontendDrawer;
 	friend class CdLoadAnimDraw;

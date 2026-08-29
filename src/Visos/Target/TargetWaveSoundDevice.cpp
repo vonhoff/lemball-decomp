@@ -306,7 +306,7 @@ int TargetWaveSoundDevice::Dummy3c(unsigned char* p_data, unsigned long* p_handl
 	void* storage;
 
 	i = 0;
-	while (i < m_channelCount) {
+	while (m_channelCount > i) {
 		if (m_effectUsed[i] == 0) {
 			Dummy14();
 			storage = operator new(0x18);

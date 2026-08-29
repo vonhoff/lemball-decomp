@@ -7,10 +7,9 @@
 #include "HotAreaList.h"
 
 // 68K 0x1010219a OnButtonDown__15CHotAreaHandlerFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00439960
-unsigned int HotAreaHandler::OnButtonDown(const VsPoint& p_point, int p_flags)
+// FUNCTION: LEMBALL 0x00439960
+void HotAreaHandler::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
-	return 0;
 }
 
 // 68K 0x101021e0 OnButtonUp__15CHotAreaHandlerFRC8CVSPoint12BUTTON_FLAGS

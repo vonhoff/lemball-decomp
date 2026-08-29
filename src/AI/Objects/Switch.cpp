@@ -37,7 +37,20 @@ bool Switch::Process()
 // FUNCTION: LEMBALL 0x0041d280
 bool Switch::Activate(GameObject* p_object)
 {
-	return 0;
+	switch ((unsigned short) m_actionArgument) {
+	case 0:
+		m_unk0xd4 = 20;
+		m_actionArgument = 1;
+		RequestAction((eAction) 26);
+		return 1;
+	case 1:
+		m_unk0xd4 = 20;
+		m_actionArgument = 0;
+		RequestAction((eAction) 26);
+		return 1;
+	default:
+		return 1;
+	}
 }
 
 // 68K 0x106199ca DoActivate__7CSwitchFv
@@ -47,16 +60,19 @@ void Switch::DoActivate()
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_unk0xd4 += g_dwGameTick;
 	if (m_scoreAwarded == 0) {
-		g_pAI->Score(25);
+		g_pAI->AddTime(25);
 		m_scoreAwarded = 1;
 	}
 }
 
 // 68K 0x10619a24 ActivatePosition__7CSwitchFv
-// STUB: LEMBALL 0x0041d320
+// FUNCTION: LEMBALL 0x0041d320
 AiCoord Switch::ActivatePosition()
 {
-	return *(AiCoord*) 0;
+	int y = m_position.m_yFixed;
+	int z = m_position.m_zFixed;
+	int x = m_position.m_xFixed - 0x8000;
+	return AiCoord(x, y, z);
 }
 
 // 68K 0x10619a9c AddEntry__7CSwitchF9swMessageUs

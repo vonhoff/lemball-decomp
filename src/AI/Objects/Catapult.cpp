@@ -32,9 +32,18 @@ bool Catapult::Process()
 }
 
 // 68K 0x10618d6a Activate__9CCatapultFP11CGameObject
-// STUB: LEMBALL 0x0041c9b0
+// FUNCTION: LEMBALL 0x0041c9b0
 bool Catapult::Activate(GameObject* p_object)
 {
+	if (m_action == 24) {
+		m_activator = p_object;
+		m_stateTimer = g_dwSimulationTimestamp;
+		m_unk0xd0 = 32;
+		m_unk0xd4 = 46;
+		m_actionDeadline = 94;
+		RequestAction((eAction) 25);
+		return 1;
+	}
 	return 0;
 }
 
@@ -49,13 +58,16 @@ void Catapult::DoActivate()
 	m_unk0x90 = m_activator->m_objectType;
 	m_activator->m_unk0xc0 = 1;
 	m_activator->m_action = (eAction) 5;
-	g_pAI->Score(20);
+	g_pAI->AddTime(20);
 }
 
 // 68K 0x10618e62 ActivatePosition__9CCatapultFv
-// STUB: LEMBALL 0x0041ca60
+// FUNCTION: LEMBALL 0x0041ca60
 AiCoord Catapult::ActivatePosition()
 {
-	return *(AiCoord*) 0;
+	int y = m_position.m_yFixed - 0xc000;
+	int z = m_position.m_zFixed;
+	int x = m_position.m_xFixed - 0x3c000;
+	return AiCoord(x, y, z);
 }
 

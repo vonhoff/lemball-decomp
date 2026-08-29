@@ -1,4 +1,6 @@
 #include "Key.h"
+#include "../../Map/Base/Map.h"
+#include "../Navigation/Ai.h"
 
 // 68K 0x1011ad1a Usage__4CKeyFv
 // FUNCTION: LEMBALL 0x0041c5f0
@@ -13,29 +15,56 @@ Key::~Key()
 }
 
 // 68K 0x10619c40 Process__4CKeyFv
-// STUB: LEMBALL 0x0041d480
+// FUNCTION: LEMBALL 0x0041d480
 bool Key::Process()
 {
-	return 0;
+	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> 12;
+	m_position.m_zFixed = g_pMap->m_ground.GetZ(x, y) << 12;
+	if (m_isRemoteObject != 0) {
+		if (m_pendingAction != m_action) {
+			if (m_action == 26) {
+				SetSndEffect((eSoundEffect) 41);
+			}
+			m_pendingAction = m_action;
+		}
+		return 1;
+	}
+	if (m_action == 26) {
+		Action((eAction) 24);
+		m_heading = 0;
+	}
+	return 1;
 }
 
 // 68K 0x10619d06 Activate__4CKeyFP11CGameObject
-// STUB: LEMBALL 0x0041d560
+// FUNCTION: LEMBALL 0x0041d560
 bool Key::Activate(GameObject* p_object)
 {
+	m_activator = p_object;
+	if (m_activator->HasObject(m_objectType) == 0) {
+		RequestAction((eAction) 26);
+		return 1;
+	}
 	return 0;
 }
 
 // 68K 0x10619d6e DoActivate__4CKeyFv
-// STUB: LEMBALL 0x0041d5a0
+// FUNCTION: LEMBALL 0x0041d5a0
 void Key::DoActivate()
 {
+	m_activator->AddObject(m_objectType, this);
+	SetSndEffect((eSoundEffect) 41);
+	g_pAI->AddTime(10);
 }
 
 // 68K 0x10619dd0 ActivatePosition__4CKeyFv
-// STUB: LEMBALL 0x0041d5d0
+// FUNCTION: LEMBALL 0x0041d5d0
 AiCoord Key::ActivatePosition()
 {
-	return *(AiCoord*) 0;
+	int y = m_position.m_yFixed;
+	int z = m_position.m_zFixed;
+	int x = m_position.m_xFixed - 0x8000;
+	return AiCoord(x, y, z);
 }
 

@@ -7,8 +7,9 @@
 ResEffect* ResEffect::Load(unsigned int p_resourceId)
 {
 	ResEffect* res = (ResEffect*) g_pActiveMogRes->Find(p_resourceId);
-	if (res == 0) {
-		return (ResEffect*) (new ResEffect(p_resourceId))->CheckError();
+	if (!res) {
+		res = new ResEffect(p_resourceId);
+		return (ResEffect*) res->CheckError();
 	}
 	if (res->m_chunkType != 0x45464620) {
 		res->UnLoad();

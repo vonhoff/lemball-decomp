@@ -17,9 +17,11 @@ struct SurfaceListNode {
 };
 
 // SIZE 0x5a0
-// PvGdiBitmap at 0. Shared PvSurface from PvZBuffSurface/PvBackBuffSurface virtual bases.
-class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface {
+// PvGdiBitmap at 0. Shared PvSurface virtual base.
+class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface, public virtual PvSurface {
 public:
+	friend class PvButton;
+	friend class GraphicButton;
 	Surface(GrafPort* p_arg0);
 	Surface(const VsRect& p_arg0, class Surface* p_arg1);
 	bool ClipRect(VsRect& p_rect, VsRect* p_clipped);

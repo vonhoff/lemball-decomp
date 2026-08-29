@@ -49,14 +49,12 @@ public:
 
 private:
 	VsRect m_dontUpdateRect;         // 0x04
-	VsRect m_windowRect;             // 0x0c
-	VsRect m_clipRect;               // 0x14
+	VsRect m_rect0c;                 // 0x0c
+	VsRect m_windowRect;             // 0x14
 	short m_relOriginX;              // 0x1c
 	short m_relOriginY;              // 0x1e
 	Surface* m_parentSurface;        // 0x20
-	VsSize m_bitmapSize;             // 0x24
-	short m_unk28;                   // 0x28
-	short m_unk2a;                   // 0x2a
+	VsRect m_clipRect;               // 0x24
 	short m_zoom;                    // 0x2c
 	short m_pad2e;                   // 0x2e
 	unsigned int m_flag70;           // 0x30

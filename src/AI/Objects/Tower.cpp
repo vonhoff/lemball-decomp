@@ -23,7 +23,9 @@ Tower::~Tower()
 // FUNCTION: LEMBALL 0x0041cf70
 bool Tower::Process()
 {
-	m_position.m_zFixed = (int) g_pMap->m_ground.GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12) << 12;
+	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> 12;
+	m_position.m_zFixed = (int) g_pMap->m_ground.GetZ(x, y) << 12;
 	return 1;
 }
 

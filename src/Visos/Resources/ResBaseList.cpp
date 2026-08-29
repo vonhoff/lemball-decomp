@@ -68,9 +68,9 @@ void ResBaseList::OnRead(unsigned char* p_source, unsigned char** p_data, unsign
 			m_headerData = 0;
 			m_vramReady = 1;
 		}
-		else {
+		else if (count != 0) {
 			unsigned int i = 0;
-			while (count > i) {
+			do {
 				if (DirectResources(i, &dataCursor) != 0 || directed != 0) {
 					directed = 1;
 				}
@@ -78,7 +78,7 @@ void ResBaseList::OnRead(unsigned char* p_source, unsigned char** p_data, unsign
 					directed = 0;
 				}
 				i++;
-			}
+			} while (count > i);
 		}
 		m_loaded = 1;
 		OnLoad();

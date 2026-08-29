@@ -20,7 +20,7 @@ public:
 private:
 	unsigned int m_activated; // 0x138
 	unsigned int m_enabled;   // 0x13c
-	GameObject* m_activator;  // 0x140
+	GameObject* m_target;     // 0x140
 };
 
 // SYNTHETIC: LEMBALL 0x00428800

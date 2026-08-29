@@ -9,6 +9,17 @@
 class BaseNetwork : public BaseQueueHandler {
 public:
 	BaseNetwork();
+	virtual int ProcessMsg(Message* p_arg0);            // vtable+0x08
+	virtual void Initialise();                          // vtable+0x0c
+	virtual void UnInitialise();                        // vtable+0x10
+	virtual void SendAllMsg();                          // vtable+0x14
+	virtual void BeforeDestroyConnections();            // vtable+0x18
+	virtual void AfterDestroyConnections();             // vtable+0x1c
+	virtual void Process();                             // vtable+0x20
+	virtual void* GetNewConnect();                      // vtable+0x24
+	virtual void* GetNewBroadcast();                    // vtable+0x28
+	virtual void* GetNewNetworkAddress();               // vtable+0x2c
+	virtual ~BaseNetwork();                             // vtable+0x04
 	Connect* NewConnect();
 	bool DoInitialise();
 	bool Exists(Connect* p_arg0);
@@ -16,24 +27,19 @@ public:
 	bool Initialise(const char* p_arg0, int p_arg1);
 	bool KillUnBornConnection(NetworkAddress* p_arg0);
 	bool SendAll(NetworkMessage& p_arg0);
-	virtual int ProcessMsg(Message* p_arg0); // vtable+0x08
-	void AfterDestroyConnections();
 	void AttachMessageQueue(BaseQueueHandler* p_arg0);
-	void BeforeDestroyConnections();
 	void CtoSRequestConnect(NetworkAddress* p_arg0);
 	void CtoSRequestNewPort(NetworkAddress* p_arg0);
 	void CtoSgoConnect(NetworkAddress* p_arg0);
 	void Delete(Connect* p_arg0);
 	void DetachMessageQueue();
 	void Establish(NetworkAddress* p_arg0, unsigned char* p_arg1);
-	void Process();
 	void SetCBuffers(int p_arg0, int p_arg1);
 	void SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2);
 	void ShutDown();
 	void StoCfailedConnect(NetworkAddress* p_arg0);
 	void StoCokConnect(NetworkAddress* p_arg0);
 	void WaitProcess();
-	~BaseNetwork();
 
 	friend bool VsFNetQuit();
 	friend bool VsNetQuit();

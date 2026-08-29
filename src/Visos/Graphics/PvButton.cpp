@@ -112,25 +112,20 @@ void PvButton::SetAutoDraw(unsigned int p_enabled)
 // FUNCTION: LEMBALL 0x00467e50
 void PvButton::CheckForceDraw()
 {
-	Gdi* gdi;
-	Surface* target;
-
-	gdi = m_gdi;
-	target = gdi->m_renderTarget;
-	target->GetCurrDb();
-	if (m_forceDrawCount == 0) {
-		m_clipRect.m_reserved0c = 0;
-	}
-	else {
-		m_forceDrawCount = m_forceDrawCount - 1;
-		m_clipRect.m_left = target->m_clipRect.m_width;
-		m_clipRect.m_top = target->m_clipRect.m_height;
+	m_gdi->m_renderTarget->GetCurrDb();
+	if (m_forceDrawCount != 0) {
+		m_forceDrawCount--;
+		m_clipRect.m_left = m_gdi->m_renderTarget->m_windowRect.m_width;
+		m_clipRect.m_top = m_gdi->m_renderTarget->m_windowRect.m_height;
 		m_clipRect.m_right = 0;
 		m_clipRect.m_bottom = 0;
 		m_clipRect.m_reserved0c = 0x10000;
-		target->m_flag78 = 1;
+		m_gdi->m_renderTarget->m_flag78 = 1;
 	}
-	m_clipRect.Draw(gdi);
+	else {
+		m_clipRect.m_reserved0c = 0;
+	}
+	m_clipRect.Draw(m_gdi);
 }
 
 // 68K 0x1020fdc2 _DrawButton__9CPVButtonFv
@@ -196,19 +191,21 @@ int PvButton::ConvertDoubleClick(int p_flags)
 
 // 68K 0x1020ff92 OnButtonDown__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
 // FUNCTION: LEMBALL 0x00468050
-unsigned int PvButton::OnButtonDown(const VsPoint& p_point, int p_flags)
+void PvButton::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
 	int converted;
+	VsPoint clickPos;
 
 	if (p_flags == 0 || p_flags == 3) {
 		m_pressed = 1;
 	}
 	converted = ConvertDoubleClick(p_flags);
-	m_clickX = (short) (p_point.m_x - m_relativeTopLeft.m_x);
-	m_clickY = (short) (p_point.m_y - m_relativeTopLeft.m_y);
+	clickPos.m_y = (short) (p_point.m_y - m_relativeTopLeft.m_y);
+	clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
+	m_clickX = clickPos.m_x;
+	m_clickY = clickPos.m_y;
 	PvButton::OnPressed(converted);
 	OnPressed(converted);
-	return 0;
 }
 
 // 68K 0x1021004e OnButtonUp__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS

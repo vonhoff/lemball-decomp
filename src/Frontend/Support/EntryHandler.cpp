@@ -11,12 +11,11 @@ void EntryHandler::Reset()
 
 // 68K 0x1080640c OnButtonDown__13CEntryHandlerFRC8CVSPoint12BUTTON_FLAGS
 // FUNCTION: LEMBALL 0x00453260
-unsigned int EntryHandler::OnButtonDown(const VsPoint& p_point, int p_flags)
+void EntryHandler::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
 	if (p_flags == 0 || p_flags == 3) {
 		m_pressed = 1;
 	}
-	return p_flags;
 }
 
 // 68K 0x1011c3ca __ct__13CEntryHandlerFv

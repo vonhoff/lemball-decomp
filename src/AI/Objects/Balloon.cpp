@@ -1,4 +1,8 @@
 #include "Balloon.h"
+#include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
+#include "../Navigation/Ai.h"
 
 // 68K 0x1011ad98 Usage__8CBalloonFv
 // FUNCTION: LEMBALL 0x0041c630
@@ -13,35 +17,66 @@ Balloon::~Balloon()
 }
 
 // 68K 0x10619e44 Restart__8CBalloonFv
-// STUB: LEMBALL 0x0041d600
+// FUNCTION: LEMBALL 0x0041d600
 void Balloon::Restart()
 {
+	BaseGlobalObject::Restart();
+	int randVal = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
+	*g_pSentinel = randVal;
+	m_stateTimer = g_dwSimulationTimestamp - (randVal % 4096);
 }
 
 // 68K 0x10619ea4 Process__8CBalloonFv
-// STUB: LEMBALL 0x0041d650
+// FUNCTION: LEMBALL 0x0041d650
 bool Balloon::Process()
 {
-	return 0;
+	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> 12;
+	m_position.m_zFixed = g_pMap->m_ground.GetZ(x, y) << 12;
+	if (m_isRemoteObject != 0) {
+		if (m_pendingAction != m_action) {
+			if (m_action == 26) {
+				SetSndEffect((eSoundEffect) 42);
+			}
+			m_pendingAction = m_action;
+		}
+		return 1;
+	}
+	if (m_action == 26) {
+		Action((eAction) 24);
+		m_heading = 0;
+	}
+	return 1;
 }
 
 // 68K 0x10619f72 Activate__8CBalloonFP11CGameObject
-// STUB: LEMBALL 0x0041d740
+// FUNCTION: LEMBALL 0x0041d740
 bool Balloon::Activate(GameObject* p_object)
 {
+	m_activator = p_object;
+	if (m_activator->HasObject(m_objectType) == 0) {
+		RequestAction((eAction) 26);
+		return 1;
+	}
 	return 0;
 }
 
 // 68K 0x10619fde DoActivate__8CBalloonFv
-// STUB: LEMBALL 0x0041d780
+// FUNCTION: LEMBALL 0x0041d780
 void Balloon::DoActivate()
 {
+	m_activator->AddObject(m_objectType, this);
+	SetSndEffect((eSoundEffect) 42);
+	g_pAI->AddTime(50);
 }
 
 // 68K 0x1061a044 ActivatePosition__8CBalloonFv
-// STUB: LEMBALL 0x0041d7b0
+// FUNCTION: LEMBALL 0x0041d7b0
 AiCoord Balloon::ActivatePosition()
 {
-	return *(AiCoord*) 0;
+	int y = m_position.m_yFixed;
+	int z = m_position.m_zFixed;
+	int x = m_position.m_xFixed;
+	return AiCoord(x, y, z);
 }
 

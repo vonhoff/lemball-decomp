@@ -1,10 +1,5 @@
 #include "BaseQueueHandler.h"
 
-// 68K 0x10100004 __dt__17CBaseQueueHandlerFv
-BaseQueueHandler::~BaseQueueHandler()
-{
-}
-
 // 68K 0x102048e0 __ct__17CBaseQueueHandlerFv
 // FUNCTION: LEMBALL 0x00462ea0
 BaseQueueHandler::BaseQueueHandler()

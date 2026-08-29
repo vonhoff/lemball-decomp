@@ -173,33 +173,25 @@ void GraphicButton::_DrawButton()
 // FUNCTION: LEMBALL 0x004689a0
 void GraphicButton::DrawButton()
 {
-	unsigned int pressed;
-	Anim* primitive;
-	ResAnim* animation;
-	unsigned int frame;
-	short x;
-	short y;
+	short x = m_graphicOffsetX;
+	short y = m_graphicOffsetY;
+	unsigned int pressed = 0;
 
-	x = m_graphicOffsetX;
-	y = m_graphicOffsetY;
-	pressed = 0;
 	if (m_enabled != 0 && HotAreaHandler::m_active != 0) {
 		pressed = 1;
 	}
 	if ((m_alignmentFlags & 0x40) != 0 && pressed != 0) {
-		x = (short) (x + 1);
-		y = (short) (y + 1);
+		x++;
+		y++;
 	}
 	m_gdi->m_renderTarget->GetCurrDb();
-	animation = m_animation;
-	frame = m_frame;
-	primitive = (Anim*) m_primitive;
+	Anim* primitive = (Anim*) m_primitive;
 	primitive->m_x = x;
 	primitive->m_y = y;
-	primitive->m_animResource = animation;
+	primitive->m_animResource = m_animation;
 	primitive->m_animIndex = (unsigned int) (pressed >= 1);
 	primitive->m_flags = 0;
-	primitive->m_remap = (Remap*) frame;
+	primitive->m_remap = (Remap*) m_frame;
 	primitive->Draw(m_gdi);
 }
 

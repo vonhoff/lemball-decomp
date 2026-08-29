@@ -24,8 +24,3 @@ void Line::Render(Gdi* p_gdi)
 	p_gdi->m_renderTarget->Blit(this);
 }
 
-// 68K 0x10100ac2 __dt__5CLineFv
-Line::~Line()
-{
-}
-

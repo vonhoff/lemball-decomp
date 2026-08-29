@@ -14,6 +14,7 @@ public:
 	friend class Bullet;
 	friend class PlayerLemming;
 	friend class GroundArray;
+	friend class Duplicator;
 
 private:
 	eObjectType m_objectType;    // 0x00

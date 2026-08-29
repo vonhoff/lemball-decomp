@@ -348,16 +348,7 @@ void PlayerLemming::Die()
 			break;
 		}
 	}
-	for (int j = 0; j < g_pAI->m_objectCount; j++) {
-		if (g_pAI->m_objects[j] == this) {
-			g_pAI->m_objectCount--;
-			for (; j < g_pAI->m_objectCount; j++) {
-				g_pAI->m_objects[j] = g_pAI->m_objects[j + 1];
-			}
-			g_pAI->m_objects[g_pAI->m_objectCount] = 0;
-			break;
-		}
-	}
+	GetHit();
 	g_wLemmingCount--;
 	if (g_wLemmingCount == 0) {
 		g_pAI->GameState((eGameStatus) 5);
@@ -819,30 +810,37 @@ bool PlayerLemming::IsSelectable()
 void PlayerLemming::GetViewData(ViewData& p_viewData)
 {
 	p_viewData.m_objectId = m_objectId;
-	p_viewData.m_objectType = m_objectType;
 	p_viewData.m_playerIndex = 0;
+	p_viewData.m_objectType = m_objectType;
 	p_viewData.m_positionX = m_position.m_xFixed >> 12;
 	p_viewData.m_positionY = m_position.m_yFixed >> 12;
 	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
 	p_viewData.m_facingDirection = m_facingDirection;
-	p_viewData.m_actionArgument = m_actionArgument;
-	p_viewData.m_action = m_action;
+	unsigned int actionArg = (unsigned short) m_actionArgument;
+	unsigned int timer = m_stateTimer;
+	eAction action = m_action;
+	p_viewData.m_actionArgument = actionArg;
+	p_viewData.m_action = action;
 	p_viewData.m_statusFlags = 0;
-	p_viewData.m_stateTimer = m_stateTimer;
+	p_viewData.m_stateTimer = timer;
 	p_viewData.m_unk0x30 = m_unk0xc0;
 	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
 	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
 	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;
 	p_viewData.m_soundEffect = m_soundEffect;
-	unsigned int simTime = g_dwSimulationTimestamp;
 	if (m_isRemoteObject != 0) {
-		simTime = g_dwNetworkSimulationTimestamp;
+		p_viewData.m_animationTime = g_dwNetworkSimulationTimestamp;
+	} else {
+		p_viewData.m_animationTime = g_dwSimulationTimestamp;
 	}
-	p_viewData.m_animationTime = simTime;
 	SetSndEffect((eSoundEffect) 0);
 	p_viewData.m_transientFlags = m_transientFlags;
 	m_transientFlags = 0;
-	p_viewData.m_statusFlags = (m_isGroupLeader != 0 ? 1 : 0) | (m_groupIndex == 0 ? 0 : 2);
+	int flags = (m_isGroupLeader == 0 ? 1 : 0);
+	if (m_groupIndex != 0) {
+		flags |= 2;
+	}
+	p_viewData.m_statusFlags = flags;
 	p_viewData.m_playerIndex = m_playerIndex;
 }
 
@@ -868,19 +866,16 @@ void PlayerLemming::GetHit()
 	int i = 0;
 	if (count > 0) {
 		GameObject** objects = g_pAI->m_objects;
-		while (*objects != this) {
-			objects++;
-			i++;
-			if (i >= count) {
+		for (i = 0; i < count; i++) {
+			if (objects[i] == this) {
+				g_pAI->m_objectCount = --count;
+				for (; i < count; i++) {
+					g_pAI->m_objects[i] = g_pAI->m_objects[i + 1];
+				}
+				g_pAI->m_objects[count] = 0;
 				return;
 			}
 		}
-		g_pAI->m_objectCount = --count;
-		while (i < count) {
-			g_pAI->m_objects[i] = g_pAI->m_objects[i + 1];
-			i++;
-		}
-		g_pAI->m_objects[count] = 0;
 	}
 }
 

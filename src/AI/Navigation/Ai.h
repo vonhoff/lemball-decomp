@@ -90,6 +90,7 @@ public:
 	friend class SheepGroupManager;
 	friend class EnemyGroupManager;
 	friend class NodeManager;
+	friend class Enemy;
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:
@@ -99,7 +100,8 @@ private:
 	unsigned int* m_objectRequired;                   // 0x50
 	unsigned short m_levelVersion;                    // 0x54
 	undefined2 m_pad0x56;                             // 0x56
-	undefined4 m_unk0x58[14];                         // 0x58
+	PlayerLemmingGroupManager* m_playerGroups;        // 0x58
+	undefined4 m_unk0x5c[13];                         // 0x5c
 	int m_networkStartsX[4];                          // 0x90
 	int m_networkStartsY[4];                          // 0xa0
 	int m_networkStartsZ[4];                          // 0xb0

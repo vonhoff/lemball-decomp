@@ -478,15 +478,26 @@ unsigned int C2D::OnButtonDown(const VsPoint& p_point, unsigned int p_flags)
 }
 
 // 68K 0x10b09786 UseBalloon__3C2DFi
-// STUB: LEMBALL 0x00438330
+// FUNCTION: LEMBALL 0x00438330
 void C2D::UseBalloon(int p_playerIndex)
 {
+	PlayerLemming** pLemming = &m_ai->m_networkLemmings[p_playerIndex];
+	if ((*pLemming)->GetId() != -1 && (*pLemming)->m_action != 8) {
+		(*pLemming)->SetSndEffect((eSoundEffect) 31);
+		UseBalloon(*pLemming);
+	}
 }
 
 // 68K 0x10b09802 UseBalloon__3C2DFP14CPlayerLemming
-// STUB: LEMBALL 0x00438380
+// FUNCTION: LEMBALL 0x00438380
 void C2D::UseBalloon(PlayerLemming* p_lemming)
 {
+	if (p_lemming->m_action != 8) {
+		m_groupCount = 0;
+		CursorChangeType((eCursorDisplayType) p_lemming->m_objectId, 0);
+		SendCursorMsg();
+		p_lemming->RequestBalloon();
+	}
 }
 
 // 68K 0x10b09876 OnDriverChange__3C2DFv

@@ -1,6 +1,26 @@
 #include "Enemy.h"
 
 #include "../../Control/Game/Game.h"
+#include "../../Map/Base/Map.h"
+#include "../../Visos/Foundation/VsMath.h"
+#include "../Navigation/Ai.h"
+
+struct EnemyFacingOffset {
+	int m_dx;
+	int m_dy;
+};
+
+// GLOBAL: LEMBALL 0x004950c0
+EnemyFacingOffset g_enemyFacingOffsets[8] = {
+	{0, 3},
+	{-4, 1},
+	{-5, 0},
+	{-4, -3},
+	{0, -4},
+	{6, -3},
+	{5, 0},
+	{4, 1}
+};
 
 // 68K 0x10607884 __ct__6CEnemyFP3CAIiiii
 // STUB: LEMBALL 0x0041fba0
@@ -47,17 +67,27 @@ bool Enemy::ProcessRule(eEnemyStateRules p_rule)
 }
 
 // 68K 0x10607e80 EnemyRule_RADIUS50__6CEnemyFv
-// STUB: LEMBALL 0x00420070
+// FUNCTION: LEMBALL 0x00420070
 bool Enemy::EnemyRuleRadius50()
 {
-	return 0;
+	if (g_pAI->m_playerGroups == 0) {
+		return 0;
+	}
+	return CheckRadius(50);
 }
 
 // 68K 0x10607ed4 EnemyRule_RADIUS50ANDLINEOFSIGHT__6CEnemyFv
-// STUB: LEMBALL 0x00420090
+// FUNCTION: LEMBALL 0x00420090
 bool Enemy::EnemyRuleRadius50AndLineOfSight()
 {
-	return 0;
+	if (g_pAI->m_playerGroups == 0) {
+		return 0;
+	}
+	int inRadius = CheckRadius(50);
+	if (inRadius == 0) {
+		return 0;
+	}
+	return inRadius & LineOfSight(m_targetPosition);
 }
 
 // 68K 0x10607f6a EnemyAction_PATROL__6CEnemyFP18tEnemyLemmingUnion
@@ -119,9 +149,16 @@ bool Enemy::IsRequestingFire()
 }
 
 // 68K 0x106084a0 RequestFire__6CEnemyFi
-// STUB: LEMBALL 0x004203e0
+// FUNCTION: LEMBALL 0x004203e0
 void Enemy::RequestFire(int p_interval)
 {
+	if (g_pAI->m_playerGroups != 0 && m_fireState == 0) {
+		m_fireTarget.m_xFixed = m_targetPosition.m_xFixed;
+		m_fireTarget.m_yFixed = m_targetPosition.m_yFixed;
+		m_fireTarget.m_zFixed = m_targetPosition.m_zFixed;
+		m_fireInterval = p_interval;
+		m_fireState = 1;
+	}
 }
 
 // 68K 0x10608502 Fire__6CEnemyFv
@@ -139,9 +176,22 @@ void Enemy::StartFiring()
 }
 
 // 68K 0x106085f2 EndFiring__6CEnemyFv
-// STUB: LEMBALL 0x004204e0
+// FUNCTION: LEMBALL 0x004204e0
 void Enemy::EndFiring()
 {
+	m_fireState = 0;
+	int width = g_pMap->m_ground.m_width;
+	int height = g_pMap->m_ground.m_height;
+	int x = (m_position.m_xFixed >> 12) + g_enemyFacingOffsets[m_facingDirection].m_dx;
+	int y = (m_position.m_yFixed >> 12) + g_enemyFacingOffsets[m_facingDirection].m_dy;
+	if (x >= 0 && y >= 0 && x < (width << 4) && y < (height << 4)) {
+		if (g_pMap->m_ground.GetZ(x, y) == (m_position.m_zFixed >> 12)) {
+			if ((MapCheck(x, y) & 1) == 0) {
+				m_position.m_xFixed = x << 12;
+				m_position.m_yFixed = y << 12;
+			}
+		}
+	}
 }
 
 // 68K 0x106086d0 HitBullet__6CEnemyFP7CBullet
@@ -151,10 +201,16 @@ void Enemy::HitBullet(Bullet* p_bullet)
 }
 
 // 68K 0x10608732 FacingTarget__6CEnemyFv
-// STUB: LEMBALL 0x00420650
+// FUNCTION: LEMBALL 0x00420650
 bool Enemy::FacingTarget()
 {
-	return 0;
+	unsigned int facing = ReturnFacingDirection(
+		m_position.m_xFixed >> 12,
+		m_position.m_yFixed >> 12,
+		m_fireTarget.m_xFixed >> 12,
+		m_fireTarget.m_yFixed >> 12
+	);
+	return (unsigned int) m_facingDirection == facing;
 }
 
 // 68K 0x106087b4 HitMine__6CEnemyFv

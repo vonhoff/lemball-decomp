@@ -5,14 +5,10 @@
 #pragma intrinsic(strlen)
 
 // 68K 0x1020b0fc __ct__18CMessFAILEDConnectFPCc
-// STUB: LEMBALL 0x0045f610
+// FUNCTION: LEMBALL 0x0045f610
 MessFailedConnect::MessFailedConnect(const char* p_arg0)
+	: BroadcastMessage(p_arg0)
 {
-	unsigned int nameLength;
-
-	m_header = p_arg0;
-	nameLength = (unsigned int) strlen(p_arg0) + 1;
-	m_payloadCapacity += nameLength;
 	m_payloadCapacity += 0x101;
 }
 

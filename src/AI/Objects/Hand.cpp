@@ -1,5 +1,8 @@
 #include "Hand.h"
 
+#include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
+
 // 68K 0x10610d62 __ct__5CHandFv
 // STUB: LEMBALL 0x00427ad0
 Hand::Hand()
@@ -47,9 +50,15 @@ bool Hand::StepOn(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x106111a0 DoActivate__5CHandFv
-// STUB: LEMBALL 0x00427e10
+// FUNCTION: LEMBALL 0x00427e10
 void Hand::DoActivate()
 {
+	m_activated = 1;
+	m_target = m_activator;
+	m_lastMovementTick = g_dwGameTick;
+	m_unk0xd0 += g_dwGameTick;
+	m_actionDeadline += g_dwGameTick;
+	m_stateTimer = g_dwSimulationTimestamp;
 }
 
 // 68K 0x10610e1c __dt__5CHandFv

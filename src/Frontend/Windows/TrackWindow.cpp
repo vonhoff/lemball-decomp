@@ -62,10 +62,10 @@ void TrackWindow::OnInside(const VsPoint& p_point)
 }
 
 // 68K 0x1080e842 OnButtonDown__12CTrackWindowFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x0044ec10
-unsigned int TrackWindow::OnButtonDown(const VsPoint& p_point, int p_flags)
+// FUNCTION: LEMBALL 0x0044ec10
+void TrackWindow::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
-	return 0;
+	OnInside(p_point);
 }
 
 // 68K 0x1080e898 OnDriverChange__12CTrackWindowFv

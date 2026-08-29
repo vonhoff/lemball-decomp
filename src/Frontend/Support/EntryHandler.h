@@ -9,8 +9,8 @@
 class EntryHandler : public HotAreaHandler {
 public:
 	EntryHandler();
-	virtual ~EntryHandler();                                                // vtable+0x00
-	virtual unsigned int OnButtonDown(const VsPoint& p_point, int p_flags); // vtable+0x04
+	virtual ~EntryHandler();                                        // vtable+0x00
+	virtual void OnButtonDown(const VsPoint& p_point, int p_flags);   // vtable+0x04
 	virtual void OnEnter();                                                 // vtable+0x10
 	virtual void OnExit();                                                  // vtable+0x14
 	void Reset();

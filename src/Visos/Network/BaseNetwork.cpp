@@ -266,5 +266,32 @@ void BaseNetwork::WaitProcess()
 {
 }
 
+void BaseNetwork::Initialise()
+{
+}
+
+void BaseNetwork::UnInitialise()
+{
+}
+
+void BaseNetwork::SendAllMsg()
+{
+}
+
+void* BaseNetwork::GetNewConnect()
+{
+	return 0;
+}
+
+void* BaseNetwork::GetNewBroadcast()
+{
+	return 0;
+}
+
+void* BaseNetwork::GetNewNetworkAddress()
+{
+	return 0;
+}
+
 // GLOBAL: LEMBALL 0x004a1e18
 BaseNetwork* g_pBaseNetwork = 0;

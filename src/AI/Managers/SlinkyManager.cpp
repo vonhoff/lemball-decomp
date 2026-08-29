@@ -53,13 +53,17 @@ void SlinkyManager::Add(int p_id, int p_minX, int p_minY, int p_maxX, int p_maxY
 // FUNCTION: LEMBALL 0x0040bdd0
 int SlinkyManager::GetViewData(ViewData* p_viewData)
 {
-	int count = 0;
 	int i = 0;
-	while (i < m_count) {
-		m_slinkies[i].GetViewData(*p_viewData);
-		p_viewData++;
-		count++;
-		i++;
+	int count = 0;
+	if (m_count > 0) {
+		Slinky* slinky = m_slinkies;
+		do {
+			slinky->GetViewData(*p_viewData);
+			p_viewData++;
+			slinky++;
+			count++;
+			i++;
+		} while (m_count > i);
 	}
 	return count;
 }

@@ -4,19 +4,11 @@
 
 #pragma intrinsic(strlen)
 
-MessReqConnect::MessReqConnect()
-{
-}
-
 // 68K 0x1020ace8 __ct__15CMessReqConnectFPCc
-// STUB: LEMBALL 0x0045f3d0
+// FUNCTION: LEMBALL 0x0045f3d0
 MessReqConnect::MessReqConnect(const char* p_arg0)
+	: BroadcastMessage(p_arg0)
 {
-	unsigned int nameLength;
-
-	m_header = p_arg0;
-	nameLength = (unsigned int) strlen(p_arg0) + 1;
-	m_payloadCapacity += nameLength;
 	m_payloadCapacity += 0x3c;
 	m_payloadCapacity += 0x101;
 	m_payloadCapacity += 0x200;

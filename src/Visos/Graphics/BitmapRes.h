@@ -11,7 +11,7 @@ public:
 	BitmapResBase();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~BitmapResBase();        // vtable+0x00
+	virtual ~BitmapResBase() {}      // vtable+0x00
 
 	friend class CdLoadAnimDraw;
 	friend class Surface;
@@ -38,7 +38,7 @@ public:
 	BitmapRes();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~BitmapRes();            // vtable+0x00
+	virtual ~BitmapRes() {}          // vtable+0x00
 
 	friend class BaseFrontendDrawer;
 	friend class MainOptions1Drawer;

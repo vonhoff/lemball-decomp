@@ -112,29 +112,25 @@ void ResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned i
 // FUNCTION: LEMBALL 0x0045d100
 void ResBase::LoadData()
 {
-	ResBaseList* list;
-	unsigned int size;
 	VsRange range;
 
 	if (m_loaded == 0) {
 		if (GetfVramLoaded() == 0) {
-			list = m_externalList;
-			if (list == 0) {
-				size = m_dataSize;
-				if (size != 0) {
+			if (m_externalList == 0) {
+				if (m_dataSize != 0) {
 					range.m_offset = m_fileOffset;
-					range.m_size = size;
+					range.m_size = m_dataSize;
 					if (g_pActiveMogRes->Load(range, m_data, this) != 0) {
-						OnRead(m_data, &m_data, size);
+						OnRead(m_data, &m_data, m_dataSize);
 					}
 				}
 				else {
 					m_data = 0;
-					OnRead(0, &m_data, size);
+					OnRead(0, &m_data, m_dataSize);
 				}
 			}
 			else {
-				list->LoadData();
+				m_externalList->LoadData();
 			}
 		}
 	}

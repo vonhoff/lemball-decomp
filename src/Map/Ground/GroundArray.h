@@ -3,6 +3,8 @@
 
 #include "../../Common.h"
 
+#include "Ground.h"
+
 // SIZE 0x10
 class GroundArray {
 public:
@@ -13,6 +15,12 @@ public:
 	friend class Bullet;
 	friend class PlayerLemming;
 	friend class Tower;
+	friend class Enemy;
+	friend class Ammo;
+	friend class Key;
+	friend class Balloon;
+	friend class Crate;
+	friend class Duplicator;
 
 private:
 	unsigned int m_reserved; // 0x00

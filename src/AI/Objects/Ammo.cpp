@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
 
 // 68K 0x1011a9fe Usage__5CAmmoFv
@@ -25,16 +26,51 @@ void Ammo::Restart()
 }
 
 // 68K 0x10618f0a Process__5CAmmoFv
-// STUB: LEMBALL 0x0041cab0
+// FUNCTION: LEMBALL 0x0041cab0
 bool Ammo::Process()
 {
-	return 0;
+	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> 12;
+	m_position.m_zFixed = g_pMap->m_ground.GetZ(x, y) << 12;
+	if (m_isRemoteObject != 0) {
+		if (m_pendingAction != m_action) {
+			if (m_action == 26) {
+				SetSndEffect((eSoundEffect) 17);
+			}
+			m_pendingAction = m_action;
+		}
+		return 1;
+	}
+	switch (m_action) {
+	case 26:
+		if (m_unk0xd4 < g_dwGameTick) {
+			if (m_ammo == 0) {
+				m_heading = 0;
+			} else {
+				m_actionDeadline = g_dwGameTick + (m_ammo * 1000) / 50;
+				RequestAction((eAction) 27);
+			}
+		}
+		break;
+	case 27:
+		if (m_actionDeadline < g_dwGameTick) {
+			RequestAction((eAction) 24);
+		}
+		break;
+	}
+	return 1;
 }
 
 // 68K 0x10619030 Activate__5CAmmoFP11CGameObject
-// STUB: LEMBALL 0x0041cbe0
+// FUNCTION: LEMBALL 0x0041cbe0
 bool Ammo::Activate(GameObject* p_object)
 {
+	if (m_action == 24 && p_object->HasObject(m_objectType) == 0) {
+		m_unk0xd4 = 8;
+		m_activator = p_object;
+		RequestAction((eAction) 26);
+		return 1;
+	}
 	return 0;
 }
 
@@ -46,13 +82,16 @@ void Ammo::DoActivate()
 	m_unk0xd4 += g_dwGameTick;
 	SetSndEffect((eSoundEffect) 0x11);
 	m_activator->PickUpAmmo(25);
-	g_pAI->Score(50);
+	g_pAI->AddTime(50);
 }
 
 // 68K 0x10619118 ActivatePosition__5CAmmoFv
-// STUB: LEMBALL 0x0041cc70
+// FUNCTION: LEMBALL 0x0041cc70
 AiCoord Ammo::ActivatePosition()
 {
-	return *(AiCoord*) 0;
+	int y = m_position.m_yFixed;
+	int z = m_position.m_zFixed;
+	int x = m_position.m_xFixed;
+	return AiCoord(x, y, z);
 }
 

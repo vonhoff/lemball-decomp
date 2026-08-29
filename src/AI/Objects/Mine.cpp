@@ -1,6 +1,8 @@
 #include "Mine.h"
 
 #include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
+#include "../Managers/MineManager.h"
 
 // GLOBAL: LEMBALL 0x004a7840
 short g_mineTerrainOffsets[4];
@@ -48,9 +50,19 @@ void Mine::Trigger(int p_delay)
 }
 
 // 68K 0x1061643c DoActivate__5CMineFv
-// STUB: LEMBALL 0x00423d70
+// FUNCTION: LEMBALL 0x00423d70
 void Mine::DoActivate()
 {
+	m_activated = 1;
+	if (m_triggerPending != 0) {
+		m_terrainSet = 0;
+		m_lastMovementTick = g_dwGameTick + m_triggerDelay;
+		((MineManager*) m_manager)->Triggered(this);
+		return;
+	}
+	SetTerrain();
+	m_stateTimer = g_dwSimulationTimestamp;
+	m_actionDeadline = g_dwGameTick + 20;
 }
 
 // 68K 0x106164b0 SetTerrain__5CMineFv

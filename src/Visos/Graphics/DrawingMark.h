@@ -11,7 +11,7 @@ class DrawingMark : public Primitive {
 public:
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~DrawingMark();          // vtable+0x00
+	virtual ~DrawingMark() {}        // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x00432320

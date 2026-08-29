@@ -5,14 +5,10 @@
 #pragma intrinsic(strlen)
 
 // 68K 0x1020aff4 __ct__14CMessGOConnectFPCc
-// STUB: LEMBALL 0x0045f580
+// FUNCTION: LEMBALL 0x0045f580
 MessGoConnect::MessGoConnect(const char* p_arg0)
+	: BroadcastMessage(p_arg0)
 {
-	unsigned int nameLength;
-
-	m_header = p_arg0;
-	nameLength = (unsigned int) strlen(p_arg0) + 1;
-	m_payloadCapacity += nameLength;
 	m_payloadCapacity += 0x38;
 	m_payloadCapacity += 0x101;
 }

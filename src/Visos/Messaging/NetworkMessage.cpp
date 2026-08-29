@@ -89,16 +89,12 @@ void NetworkMessage::Add(unsigned char p_arg0)
 }
 
 // 68K 0x1020a618 Add__15CNetworkMessageFPCc
-// STUB: LEMBALL 0x0045ef70
+// FUNCTION: LEMBALL 0x0045ef70
 void NetworkMessage::Add(const char* p_arg0)
 {
-	char* dest;
-	unsigned int length;
-
-	dest = (char*) m_writeCursor;
-	strcpy(dest, p_arg0);
-	length = (unsigned int) strlen(p_arg0) + 1;
-	m_writeCursor += length;
+	int length = strlen(p_arg0);
+	strcpy((char*) m_writeCursor, p_arg0);
+	m_writeCursor += length + 1;
 }
 
 // 68K 0x1020a670 Add__15CNetworkMessageFPCUci
@@ -243,21 +239,16 @@ void NetworkMessage::GetCopy(unsigned char* p_arg0, int p_arg1)
 }
 
 // 68K 0x1020a9f8 OpenDataStream__15CNetworkMessageFv
-// STUB: LEMBALL 0x0045f1e0
+// FUNCTION: LEMBALL 0x0045f1e0
 void NetworkMessage::OpenDataStream()
 {
-	int depth;
-	unsigned char* storage;
-
-	depth = (int) m_openDepth;
-	m_openDepth = depth + 1;
-	if (depth == 0) {
+	if (m_openDepth++ == 0) {
+		unsigned int allocSize = m_payloadCapacity + sizeof(BasePacketHeader);
 		if (m_ownsBuffer == 0) {
-			storage = (unsigned char*) operator new(m_payloadCapacity + sizeof(BasePacketHeader));
+			m_buffer = (unsigned char*) operator new(allocSize);
 			m_ownsBuffer = 1;
-			m_buffer = storage;
-			m_writeCursor = storage + sizeof(BasePacketHeader);
-			m_bufferEnd = storage + m_payloadCapacity + sizeof(BasePacketHeader);
+			m_writeCursor = m_buffer + sizeof(BasePacketHeader);
+			m_bufferEnd = m_writeCursor + m_payloadCapacity;
 		}
 		else {
 			m_writeCursor = m_buffer + sizeof(BasePacketHeader);
@@ -300,20 +291,19 @@ bool NetworkMessage::Set(unsigned char* p_arg0)
 	return 0;
 }
 
-// 68K 0x1020abb4 Send__15CNetworkMessageFP8CConnect
-// STUB: LEMBALL 0x0045f2b0
+// 68K 0x1020ab3a Send__15CNetworkMessageFP8CConnect
+// FUNCTION: LEMBALL 0x0045f2b0
 void NetworkMessage::Send(Connect* p_arg0)
 {
 	if (p_arg0 != 0) {
 		Message msg;
-		msg.type = 0xb;
-		msg.code = 1;
 		msg.source = this;
 		msg.payload = p_arg0;
+		msg.code = 1;
+		msg.type = 0xb;
 		OpenDataStream();
 		m_pendingSendCount = 1;
-		g_pNetworkPacketQueue->ProcessMsg(&msg);
+		g_pNetworkStatusQueue->ProcessMsg(&msg);
 		g_pBaseNetwork->Process();
 	}
 }
-

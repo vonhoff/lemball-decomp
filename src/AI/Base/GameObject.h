@@ -134,6 +134,10 @@ public:
 	friend class Tower;
 	friend class Catapult;
 	friend class Ammo;
+	friend class Duplicator;
+	friend class Key;
+	friend class Balloon;
+	friend class Crate;
 
 protected:
 	unsigned short m_runtimeFlags;        // 0x04

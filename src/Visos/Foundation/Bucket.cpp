@@ -27,8 +27,8 @@ static unsigned int s_bitMasks[32] = {
 Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsigned long* p_map)
 	: Critical()
 {
-	m_flags = 0;
 	m_child = 0;
+	m_flags = 0;
 	m_parent = 0;
 	m_blockSize = p_blockSize;
 	m_blockCount = p_blockCount;
@@ -127,11 +127,14 @@ bool Bucket::Free(unsigned char* p_memory)
 	Bucket* current = this;
 	while (true) {
 		current->EnterCritical();
-		if (p_memory >= current->m_memory && p_memory < current->m_memory + current->m_totalBytes) {
+		if ((unsigned long) current->m_memory > (unsigned long) p_memory ||
+			(unsigned long) (current->m_totalBytes + current->m_memory) <= (unsigned long) p_memory) {
+			current->LeaveCritical();
+			current = current->m_child;
+		}
+		else {
 			break;
 		}
-		current->LeaveCritical();
-		current = current->m_child;
 	}
 	int index = (p_memory - current->m_memory) / (int) current->m_blockSize;
 	Boffset offset;
