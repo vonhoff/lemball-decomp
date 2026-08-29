@@ -93,28 +93,24 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 	SetWindowPos((HWND) p_window, 0, x, y, 0, 0, 5);
 }
 
+#include <string.h>
+#pragma intrinsic(strcat)
+
 // FUNCTION: LEMBALL 0x00455ff0
 char* BuildAboutSystemInfo()
 {
-	unsigned long version;
-	unsigned char major;
-	unsigned char minor;
+	unsigned long version = GetVersion();
+	unsigned short versionWord = (unsigned short) version;
 	char osText[256];
-	char* driverInfo;
-	char* dest;
-	char* source;
 
-	version = GetVersion();
-	major = (unsigned char) version;
-	minor = (unsigned char) (version >> 8);
 	if (version < 0x80000000) {
-		wsprintfA(osText, g_szWindowsNtBuild, (unsigned int) major, (unsigned int) minor, version >> 16);
+		wsprintfA(osText, g_szWindowsNtBuild, (unsigned int) (unsigned char) versionWord, (unsigned int) (unsigned char) (versionWord >> 8), (unsigned int) HIWORD(version));
 	}
-	else if (major < 4) {
-		wsprintfA(osText, g_szWin32sBuild, (unsigned int) major, (unsigned int) minor, (version >> 16) & 0x7fff);
+	else if ((unsigned char) versionWord < 4) {
+		wsprintfA(osText, g_szWin32sBuild, (unsigned int) (unsigned char) versionWord, (unsigned int) (unsigned char) (versionWord >> 8), (unsigned int) HIWORD(version) & ~0x8000);
 	}
 	else {
-		wsprintfA(osText, g_szWindows95Build, (unsigned int) major, (unsigned int) minor);
+		wsprintfA(osText, g_szWindows95Build, (unsigned int) (unsigned char) versionWord, (unsigned int) (unsigned char) (versionWord >> 8));
 	}
 	wsprintfA(g_szAboutSystemInfo,
 			  g_szAboutSystemFormat,
@@ -124,23 +120,7 @@ char* BuildAboutSystemInfo()
 			  g_memoryStatus.dwTotalPhys,
 			  g_memoryStatus.dwMemoryLoad,
 			  g_memoryStatus.dwAvailPhys);
-	driverInfo = 0;
-	if (g_pSoundManager != 0) {
-		driverInfo = g_pSoundManager->BuildDriverInfo();
-	}
-	dest = g_szAboutSystemInfo;
-	while (*dest != 0) {
-		dest = dest + 1;
-	}
-	if (driverInfo != 0) {
-		source = driverInfo;
-		while (*source != 0) {
-			*dest = *source;
-			dest = dest + 1;
-			source = source + 1;
-		}
-		*dest = 0;
-	}
+	strcat(g_szAboutSystemInfo, g_pSoundManager->BuildDriverInfo());
 	return g_szAboutSystemInfo;
 }
 
@@ -162,7 +142,8 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 	unsigned int prefixLen;
 
 	(void) p_lParam;
-	if (p_msg == WM_INITDIALOG) {
+	switch (p_msg) {
+	case WM_INITDIALOG:
 		controlId = 0x400;
 		g_memoryStatus.dwLength = 0x20;
 		g_memoryStatus.dwTotalPhys = 0x400;
@@ -194,15 +175,17 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 					SendMessageA(control, 0x30, (unsigned int) g_hAboutFont, 1);
 				}
 				controlId = controlId + 1;
-			} while (controlId < 0x405);
+			} while (controlId <= 0x404);
 			operator delete(versionData);
 		}
 		return 1;
-	}
-	if (p_msg == WM_COMMAND && ((short) p_wParam == 1 || (short) p_wParam == 2)) {
-		EndDialog((HWND) p_dlg, 1);
-		DeleteObject(g_hAboutFont);
-		return 1;
+	case WM_COMMAND:
+		if ((short) p_wParam == 1 || (short) p_wParam == 2) {
+			EndDialog((HWND) p_dlg, 1);
+			DeleteObject(g_hAboutFont);
+			return 1;
+		}
+		break;
 	}
 	return 0;
 }

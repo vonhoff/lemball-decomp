@@ -1,6 +1,8 @@
 #include "HiliteController.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Graphics/GraphicButton.h"
 #include "../Windows/HiliteWindow.h"
 #include "HiliteButtons.h"
 
@@ -43,6 +45,25 @@ HiliteController::HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsign
 // STUB: LEMBALL 0x0044f590
 void HiliteController::SetHiliteWindow()
 {
+}
+
+// 68K 0x10805292 __dt__17CHiliteControllerFv
+// FUNCTION: LEMBALL 0x0044f610
+HiliteController::~HiliteController()
+{
+	g_pMasterInputQueue->Detach(this, 0);
+	for (int i = 0; i < 4; i++) {
+		if (m_buttons[i] != 0) {
+			delete m_buttons[i];
+		}
+	}
+	m_anims.UnLoadAnims(g_dwHiliteAnimationId);
+	if (m_hiliteWindow != 0) {
+		if (m_hiliteWindow->m_lifecycleRefs == 1) {
+			m_hiliteWindow->Destroy();
+		}
+		delete m_hiliteWindow;
+	}
 }
 
 // 68K 0x108053e4 ProcessMsg__17CHiliteControllerFP10tagMESSAGE
@@ -93,10 +114,10 @@ void HiliteController::AddHJunction(int p_x, int p_y, unsigned long p_controlMes
 
 // 68K 0x1080571e DrawButtons__17CHiliteControllerFUc
 // FUNCTION: LEMBALL 0x0044f9d0
-void HiliteController::DrawButtons(unsigned char p_force)
+void HiliteController::DrawButtons(int p_force)
 {
-	HiliteButtons** buttonPtr;
 	int count;
+	HiliteButtons** buttonPtr;
 
 	buttonPtr = m_buttons;
 	count = 4;
@@ -104,8 +125,8 @@ void HiliteController::DrawButtons(unsigned char p_force)
 		if (*buttonPtr != 0) {
 			(*buttonPtr)->Draw(p_force);
 		}
-		buttonPtr = buttonPtr + 1;
-		count = count - 1;
+		buttonPtr++;
+		count--;
 	} while (count != 0);
 }
 
@@ -116,21 +137,37 @@ void HiliteController::DrawHiliteWindow()
 }
 
 // 68K 0x108058bc MoveLeft__17CHiliteControllerFv
-// STUB: LEMBALL 0x0044fae0
+// FUNCTION: LEMBALL 0x0044fae0
 void HiliteController::MoveLeft()
 {
+	int nextButton = m_currentButton - 1;
+	if (nextButton >= 0) {
+		m_currentButton = nextButton;
+		SetHilite(nextButton);
+	}
 }
 
 // 68K 0x10805958 MoveRight__17CHiliteControllerFv
-// STUB: LEMBALL 0x0044fb00
+// FUNCTION: LEMBALL 0x0044fb00
 void HiliteController::MoveRight()
 {
+	int nextButton = m_currentButton + 1;
+	if (nextButton < m_buttonCount) {
+		m_currentButton = nextButton;
+		SetHilite(nextButton);
+	}
 }
 
 // 68K 0x108059f8 SetHilite__17CHiliteControllerFi
-// STUB: LEMBALL 0x0044fb20
+// FUNCTION: LEMBALL 0x0044fb20
 void HiliteController::SetHilite(int p_buttonIndex)
 {
+	m_targetX = m_currentX = m_junctions[p_buttonIndex].m_x;
+	m_targetY = m_currentY = m_junctions[p_buttonIndex].m_y;
+	unsigned long now = CurrentMilliTimer();
+	m_transitionEnd = now;
+	m_transitionStart = now;
+	m_currentButton = p_buttonIndex;
 }
 
 // 68K 0x10805a72 Process__17CHiliteControllerFv
@@ -140,18 +177,39 @@ void HiliteController::Process()
 }
 
 // 68K 0x10805aa4 ActivateButtons__17CHiliteControllerFUc
-// STUB: LEMBALL 0x0044fbd0
-void HiliteController::ActivateButtons(unsigned char p_active)
+// FUNCTION: LEMBALL 0x0044fbd0
+void HiliteController::ActivateButtons(int p_active)
 {
+	m_buttonsActive = p_active;
+	int i = 0;
+	if (m_buttonCount > i) {
+		HiliteButtons** pBtn = m_buttons;
+		do {
+			HiliteButtons* btn = *pBtn;
+			if (btn != 0) {
+				btn->m_active = p_active;
+				btn->m_button->SetActive(p_active);
+			}
+			pBtn++;
+			i++;
+		} while (m_buttonCount > i);
+	}
 }
 
 // 68K 0x10805b28 UpdateAnimIDs__17CHiliteControllerFUl
-// STUB: LEMBALL 0x0044fc50
+// FUNCTION: LEMBALL 0x0044fc50
 void HiliteController::UpdateAnimIDs(unsigned long p_actionMessage)
 {
-}
-
-// 68K 0x10805292 __dt__17CHiliteControllerFv
-HiliteController::~HiliteController()
-{
+	int i = 0;
+	if (m_buttonCount > i) {
+		HiliteButtons** pBtn = m_buttons;
+		do {
+			if (*pBtn != 0 && (*pBtn)->m_actionMessage == p_actionMessage) {
+				m_buttons[i]->UpdateAnimId();
+				break;
+			}
+			pBtn++;
+			i++;
+		} while (i < m_buttonCount);
+	}
 }

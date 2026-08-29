@@ -43,6 +43,7 @@ public:
 	friend class GunButtons;
 	friend class HiliteButtons;
 	friend class GunController;
+	friend class HiliteController;
 
 private:
 	PvGWnd* m_ownerWindow;           // 0xc8

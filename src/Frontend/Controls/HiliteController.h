@@ -15,7 +15,7 @@ public:
 	HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned char p_arg3, unsigned char p_arg4);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~HiliteController();                // vtable+0x04
-	void ActivateButtons(unsigned char p_active);
+	void ActivateButtons(int p_active);
 	void AddButton(int p_x,
 				   int p_y,
 				   unsigned long* p_animIds,
@@ -26,7 +26,7 @@ public:
 				   void* p_binding,
 				   unsigned long p_actionMessage);
 	void AddHJunction(int p_x, int p_y, unsigned long p_controlMessage);
-	void DrawButtons(unsigned char p_force);
+	void DrawButtons(int p_force);
 	void DrawHiliteWindow();
 	void MoveLeft();
 	void MoveRight();

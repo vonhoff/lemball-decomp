@@ -187,8 +187,9 @@ void MainOptions1Drawer::Processing()
 	unsigned long now;
 
 	if (g_nTestAllLevels != 0) {
-		g_pGameStatus->m_level = g_pGameStatus->m_lastLevels[0];
-		g_pGameStatus->m_skill = 0;
+		GameStatus* status = g_pGameStatus;
+		status->m_level = status->m_lastLevels[0];
+		status->m_skill = 0;
 		m_quitYet = 1;
 		m_returnState = 4;
 	}

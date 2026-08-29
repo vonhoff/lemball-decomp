@@ -1,8 +1,12 @@
 #include "SuccFailDrawer.h"
 
+#include "../../Control/Game/GameMain.h"
 #include "../../Control/Game/GameStatus.h"
-#include "../Base/BaseFrontendProcess.h"
+#include "../../Visos/Animation/StatManager.h"
+#include "../../Visos/Foundation/Arena.h"
+#include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../Base/BaseFrontendProcess.h"
 
 extern char g_szMoviePrefix[];
 
@@ -82,9 +86,17 @@ void SuccFailDrawer::Return()
 }
 
 // 68K 0x10809bc2 Go__15CSuccFailDrawerFv
-// STUB: LEMBALL 0x00450a10
+// FUNCTION: LEMBALL 0x00450a10
 void SuccFailDrawer::Go()
 {
+	if (g_nStatusDebugRequested != 0) {
+		g_pStatManager->StreamOut(*g_pSysOutput);
+	}
+	if (g_nMemoryDebugRequested != 0) {
+		g_pMasterArena->StreamOut(*g_pSysOutput);
+	}
+	m_quitYet = 1;
+	m_returnState = 4;
 }
 
 // 68K 0x10809c48 ConfirmedAction__15CSuccFailDrawerF12eUserActions

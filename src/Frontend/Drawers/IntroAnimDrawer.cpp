@@ -98,24 +98,24 @@ bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 // FUNCTION: LEMBALL 0x004476b0
 void IntroAnimDrawer::Processing()
 {
-	VsRect introRect;
-
-	if (0 < m_startCountdown) {
-		m_startCountdown = m_startCountdown - 1;
+	if (m_startCountdown > 0) {
+		m_startCountdown--;
 	}
-	if (m_display == 0 || m_display->IsWindowValid() == 0) {
+	if (m_display->IsWindowValid() == 0) {
 		EndPhase();
 		return;
 	}
 	if (m_startCountdown == 0) {
-		introRect.m_width = 0x140;
-		introRect.m_height = 0xf0;
-		introRect.m_x = (short) ((m_display->m_rect.m_width - 0x140) / 2);
-		introRect.m_y = (short) ((m_display->m_rect.m_height - 0xf0) / 2);
+		VsRect introRect;
+		introRect.m_width = m_display->m_rect.m_width;
+		introRect.m_height = m_display->m_rect.m_height;
+		introRect.m_x = (short) ((short) (introRect.m_width - 320) / 2);
+		short h = introRect.m_height;
+		introRect.m_width = 320;
+		introRect.m_height = 240;
+		introRect.m_y = (short) ((short) (h - 240) / 2);
 		if (m_started == 0) {
-			if (g_pSoundView != 0) {
-				g_pSoundView->ChangeState(1, 0);
-			}
+			g_pSoundView->ChangeState(1, 0);
 			m_animWindow.Create(introRect, m_display, g_szPaintBallIntroSequence);
 			m_animWindow.Play();
 			m_started = 1;

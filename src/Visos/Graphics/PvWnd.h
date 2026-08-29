@@ -78,6 +78,7 @@ public:
 	friend class GraphicButton;
 	friend class AnimWnd;
 	friend class GunController;
+	friend class HiliteController;
 	friend class CdLoadAnim;
 	friend class CdLoadAnimDraw;
 	friend class C2D;
