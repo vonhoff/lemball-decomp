@@ -20,6 +20,7 @@ private:
 	int m_minY; // 0x128
 	int m_maxX; // 0x12c
 	int m_maxY; // 0x130
+	undefined m_pad0x134[0x1c]; // 0x134
 };
 
 // SYNTHETIC: LEMBALL 0x0040c1d0

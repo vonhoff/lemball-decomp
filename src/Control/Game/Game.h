@@ -17,6 +17,7 @@ public:
 	~Game();
 
 	friend int Vsmain(int p_argc, char** p_argv);
+	friend class Main2DDisplay;
 
 private:
 	char m_runtimeName[80];       // 0x00

@@ -22,8 +22,8 @@ public:
 	virtual GameObject* GetNthElement(int p_index);                                   // vtable+0x28
 	virtual GenericGroup* GetGroupElementIsMemberOf(GameObject* p_object);            // vtable+0x2c
 	virtual void AddNewGroup(GenericGroup* p_group);                                  // vtable+0x30
-	virtual void CreateNewGroup(unsigned short p_count, unsigned short* p_objectIds); // vtable+0x34
 	virtual void CreateNewGroup();                                                    // vtable+0x38
+	virtual void CreateNewGroup(unsigned short p_count, unsigned short* p_objectIds); // vtable+0x34
 	virtual void AddElementToGroup(GameObject* p_object, GenericGroup* p_group);      // vtable+0x3c
 	virtual bool RemoveElementFromGroup(GameObject* p_object, GenericGroup* p_group); // vtable+0x40
 	virtual void FindElementInGroupAndRemoveIt(GameObject* p_object);                 // vtable+0x44

@@ -13,7 +13,7 @@ class PvButton : public PvGWnd, public HotAreaHandler {
 public:
 	PvButton(PvGWnd* p_arg0);
 	PvButton(const VsRect& p_arg0, PvGWnd* p_arg1);
-	static int ConvertDoubleClick(int p_flags);
+	int ConvertDoubleClick(int p_flags);
 	virtual unsigned int GetStyle();                                      // vtable+0x64
 	virtual void OnPaint(const VsRect& p_rect);                           // vtable+0xa8
 	virtual void Destroy();                                               // vtable+0x74
@@ -41,6 +41,7 @@ public:
 	friend class GunButton;
 	friend class DepressedButton;
 	friend class GunButtons;
+	friend class HiliteButtons;
 	friend class GunController;
 
 private:

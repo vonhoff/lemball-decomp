@@ -1,4 +1,7 @@
 #include "SlinkyManager.h"
+#include "../Navigation/Ai.h"
+#include "../Objects/Slinky.h"
+#include "../Objects/ViewData.h"
 
 // 68K 0x1061f090 __ct__14CSlinkyManagerFP3CAIi
 // STUB: LEMBALL 0x0040b8e0
@@ -7,15 +10,32 @@ SlinkyManager::SlinkyManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x1061f0ca Restart__14CSlinkyManagerFv
-// STUB: LEMBALL 0x0040b900
+// FUNCTION: LEMBALL 0x0040b900
 void SlinkyManager::Restart()
 {
+	if (m_slinkies != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_slinkies[i].Restart();
+		}
+	}
 }
 
 // 68K 0x1061f128 Initialise__14CSlinkyManagerFi
-// STUB: LEMBALL 0x0040b930
+// FUNCTION: LEMBALL 0x0040b930
 void SlinkyManager::Initialise(int p_capacity)
 {
+	m_capacity = p_capacity;
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_slinkies = 0;
+		return;
+	}
+	if (m_slinkies == 0) {
+		m_slinkies = new Slinky[p_capacity];
+	}
+	for (int i = 0; i < m_capacity; i++) {
+		m_slinkies[i].Restart();
+	}
 }
 
 // 68K 0x1061f1d6 __dt__14CSlinkyManagerFv
@@ -30,21 +50,50 @@ void SlinkyManager::Add(int p_id, int p_minX, int p_minY, int p_maxX, int p_maxY
 }
 
 // 68K 0x1061f2aa GetViewData__14CSlinkyManagerFP9CViewData
-// STUB: LEMBALL 0x0040bdd0
+// FUNCTION: LEMBALL 0x0040bdd0
 int SlinkyManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	int i = 0;
+	while (i < m_count) {
+		m_slinkies[i].GetViewData(*p_viewData);
+		p_viewData++;
+		count++;
+		i++;
+	}
+	return count;
 }
 
 // 68K 0x1061f322 Process__14CSlinkyManagerFv
-// STUB: LEMBALL 0x0040be20
+// FUNCTION: LEMBALL 0x0040be20
 void SlinkyManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_slinkies[i].Process();
+	}
 }
 
 // 68K 0x1061f37a LoadLevel__14CSlinkyManagerFPUciUc
-// STUB: LEMBALL 0x0040be50
+// FUNCTION: LEMBALL 0x0040be50
 void SlinkyManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short* stream = (unsigned short*) p_data;
+	int count = *stream++;
+	Initialise(count);
+	while (count != 0) {
+		int id;
+		if (m_ai->m_levelVersion > 1) {
+			id = *stream++;
+		}
+		else {
+			id = GameObject::NextId();
+		}
+		int minX = *stream++;
+		int minY = *stream++;
+		int maxX = *stream++;
+		int maxY = *stream++;
+		Add(id, minX, minY, maxX, maxY);
+		count--;
+	}
 }
 

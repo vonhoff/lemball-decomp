@@ -27,7 +27,10 @@ public:
 	friend class HotAreaList;
 	friend class GraphicButton;
 	friend class PvButton;
+	friend class DepressedButton;
 	friend class PanelPauseButton;
+	friend class C2D;
+	friend class TrackWindow;
 
 private:
 	unsigned int m_active;          // 0x04
@@ -36,10 +39,10 @@ private:
 	unsigned int m_buttonState[6];  // 0x10
 	unsigned int m_externalEnabled; // 0x28
 	unsigned int m_reserved;        // 0x2c
-	short m_x;                      // 0x30
-	short m_y;                      // 0x32
-	short m_width;                  // 0x34
-	short m_height;                 // 0x36
+	short m_width;                  // 0x30
+	short m_height;                 // 0x32
+	short m_x;                      // 0x34
+	short m_y;                      // 0x36
 };
 
 // SYNTHETIC: LEMBALL 0x00439a40

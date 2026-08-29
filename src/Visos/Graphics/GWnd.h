@@ -37,9 +37,11 @@ public:
 	friend class PasswordHiliteWindow;
 	friend class GunController;
 	friend class GunButtons;
+	friend class HiliteButtons;
 	friend class DepressedButton;
 	friend class FrontendResourceLoader;
 	friend class CdLoadAnim;
+	friend class BaseCursor;
 	friend TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo);
 	friend int TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state, void* p_request);
 

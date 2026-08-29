@@ -1,12 +1,12 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_PREVIEWDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_PREVIEWDRAWER_H
 
-#include "../../Common.h"
+#include "../Base/BaseFrontendDrawer.h"
 #include "PreviewDrawerPrims.h" // complete type
 
 // SIZE 0x488
 // VTABLE: LEMBALL 0x00497bf0
-class PreviewDrawer {
+class PreviewDrawer : public BaseFrontendDrawer {
 public:
 	PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2);
 	bool AddWord(char* p_source, char* p_line, int& p_sourcePos, int& p_linePos);

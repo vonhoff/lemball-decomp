@@ -13,9 +13,11 @@ Crate::~Crate()
 }
 
 // 68K 0x1061918c Restart__6CCrateFv
-// STUB: LEMBALL 0x0041cca0
+// FUNCTION: LEMBALL 0x0041cca0
 void Crate::Restart()
 {
+	BaseGlobalObject::Restart();
+	m_pendingAction = (eAction) 0x18;
 }
 
 // 68K 0x106191bc TriggerContents__6CCrateFv

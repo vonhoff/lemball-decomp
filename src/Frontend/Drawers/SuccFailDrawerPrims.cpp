@@ -1,7 +1,7 @@
 #include "SuccFailDrawerPrims.h"
 
 // 68K 0x1011c4e2 __ct__Q215CSuccFailDrawer8tagPRIMSFv
-// STUB: LEMBALL 0x00451110
+// FUNCTION: LEMBALL 0x00451110
 SuccFailDrawerPrims::SuccFailDrawerPrims()
 {
 }

@@ -190,20 +190,20 @@ bool BaseNetwork::SendAll(NetworkMessage& p_arg0)
 	int activeCount;
 	int sendBlocked;
 
+	sendBlocked = 0;
 	activeCount = 0;
 	peer = m_firstConnect;
-	sendBlocked = 0;
 
 	while (1) {
 		if (peer == 0) {
-			if (sendBlocked == 0 && 0 < activeCount) {
+			if (sendBlocked == 0 && activeCount > 0) {
 				return 1;
 			}
 			return 0;
 		}
 
 		if (peer->m_killRequested == 0) {
-			++activeCount;
+			activeCount = activeCount + 1;
 			if (sendBlocked == 0) {
 				if (peer->Send(p_arg0) != 0) {
 					sendBlocked = 0;

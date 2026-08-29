@@ -18,8 +18,8 @@ public:
 	bool Fall();
 	bool Jump();
 	bool ResetInstructions();
-	int NextId();
-	int NextLoadingId();
+	static int NextId();
+	static int NextLoadingId();
 	short GetId();
 	void Blocked();
 	unsigned short MapCheck(int p_arg0, int p_arg1);
@@ -132,8 +132,10 @@ public:
 	friend bool EnemyWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 	friend class C2D;
 	friend class Tower;
+	friend class Catapult;
+	friend class Ammo;
 
-private:
+protected:
 	unsigned short m_runtimeFlags;        // 0x04
 	undefined2 m_unk0x06;                 // 0x06
 	unsigned int m_routeSearchFailed;     // 0x08
@@ -152,7 +154,8 @@ private:
 	undefined4 m_unk0x3c;                 // 0x3c
 	AiCoord m_spawnPosition;              // 0x40
 	C3DVector m_flightVelocity;           // 0x4c
-	undefined4 m_unk0x58[2];              // 0x58
+	undefined4 m_unk0x58;                 // 0x58
+	GameObject* m_activator;              // 0x5c
 	BaseObjectManager* m_manager;         // 0x60
 	eObjectType m_objectType;             // 0x64
 	unsigned short m_collisionFlags;      // 0x68
@@ -177,10 +180,13 @@ private:
 	eAction m_action;                     // 0xb8
 	short m_actionArgument;               // 0xbc
 	undefined2 m_unk0xbe;                 // 0xbe
-	undefined4 m_unk0xc0[2];              // 0xc0
+	undefined4 m_unk0xc0;                 // 0xc0
+	short m_unk0xc4;                      // 0xc4
+	undefined2 m_unk0xc6;                 // 0xc6
 	unsigned int m_lastMovementTick;      // 0xc8
 	unsigned int m_actionDeadline;        // 0xcc
-	undefined4 m_unk0xd0[2];              // 0xd0
+	unsigned int m_unk0xd0;               // 0xd0
+	unsigned int m_unk0xd4;               // 0xd4
 	C3DVector m_flightOrigin;             // 0xd8
 	AiCoord m_auxiliaryPosition;          // 0xe4
 	unsigned int m_isFlying;              // 0xf0

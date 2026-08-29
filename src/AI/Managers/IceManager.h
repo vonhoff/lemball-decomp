@@ -12,8 +12,8 @@ public:
 	bool StepOn(const AiCoord& p_position, GameObject* p_object);
 	virtual int GetViewData(ViewData* p_viewData); // vtable+0x24
 	virtual void Process();                        // vtable+0x1c
-	virtual void Restart();                        // vtable+0x18
 	virtual ~IceManager();                         // vtable+0x14
+	void Restart();
 	void Add(unsigned short p_id,
 			 const Coord3d& p_cornerA,
 			 const Coord3d& p_cornerB,

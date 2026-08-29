@@ -2,6 +2,10 @@
 
 #include "../Navigation/AiDestinationList.h"
 
+#include <string.h>
+
+#pragma intrinsic(memset)
+
 GenericGroup::GenericGroup()
 {
 }
@@ -27,15 +31,22 @@ GenericGroup::GenericGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* 
 }
 
 // 68K 0x1060c44c Restart__13CGenericGroupFv
-// STUB: LEMBALL 0x0041de80
+// FUNCTION: LEMBALL 0x0041de80
 void GenericGroup::Restart()
 {
+	GameObject::Restart();
+	memset(m_elements, 0, sizeof(m_elements));
+	m_elementCount = 0;
 }
 
 // 68K 0x1060c4a0 Process__13CGenericGroupFv
-// STUB: LEMBALL 0x0041deb0
+// FUNCTION: LEMBALL 0x0041deb0
 bool GenericGroup::Process()
 {
+	CalculateBoundingBox(24);
+	for (int i = 0; i < m_elementCount; i++) {
+		m_elements[i]->Process();
+	}
 	return 0;
 }
 

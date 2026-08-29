@@ -123,19 +123,13 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 	HotAreaElement* entry;
 	HotAreaElement* previous;
 	VsPoint localPoint;
-	Message fallback;
+	Message fallback = { 7 };
 	unsigned short type;
 	short scaledX;
 	short scaledY;
 	short scaledWidth;
 	short scaledHeight;
 
-	fallback.type = 7;
-	fallback.reserved[1] = 0;
-	fallback.reserved[2] = 0;
-	fallback.code = 0;
-	fallback.payload = 0;
-	fallback.source = 0;
 	if (p_message == 0) {
 		p_message = &fallback;
 	}

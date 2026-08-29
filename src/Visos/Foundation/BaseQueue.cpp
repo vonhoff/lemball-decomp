@@ -97,7 +97,7 @@ bool BaseQueue::Post(Message& p_arg0)
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	m_postCount = m_postCount + 1;
-	*(unsigned int*) &p_arg0.reserved[1] = m_nextSequence;
+	p_arg0.time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
 	if (m_capacity == m_messageCount) {
 		m_overflowCount = m_overflowCount + 1;
@@ -132,7 +132,7 @@ bool BaseQueue::Send(Message& p_arg0)
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	m_sendCount = m_sendCount + 1;
-	*(unsigned int*) &p_arg0.reserved[1] = m_nextSequence;
+	p_arg0.time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
 	result = Process(&p_arg0);
 	if (result != 0) {

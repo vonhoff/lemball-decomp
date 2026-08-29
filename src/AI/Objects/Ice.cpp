@@ -1,5 +1,7 @@
 #include "Ice.h"
 
+#include "../../Control/Game/Game.h"
+
 // 68K 0x1061176c __ct__4CIceFv
 // STUB: LEMBALL 0x0042ca70
 Ice::Ice()
@@ -7,15 +9,23 @@ Ice::Ice()
 }
 
 // 68K 0x106117aa Restart__4CIceFv
-// STUB: LEMBALL 0x0042ca90
+// FUNCTION: LEMBALL 0x0042ca90
 void Ice::Restart()
 {
+	GlobalGameObject::Restart();
+	Initialise();
 }
 
 // 68K 0x106117da Initialise__4CIceFv
-// STUB: LEMBALL 0x0042cab0
+// FUNCTION: LEMBALL 0x0042cab0
 void Ice::Initialise()
 {
+	m_stateTimer = 0;
+	m_switched = 0;
+	m_enabled = 0;
+	m_objectCount = 0;
+	m_action = (eAction) 0x18;
+	m_lastMovementTick = g_dwGameTick;
 }
 
 // 68K 0x10611870 Set__4CIceFUsRC8tCoord3dRC8tCoord3diiUc

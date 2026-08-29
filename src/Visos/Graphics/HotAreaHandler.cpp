@@ -44,7 +44,7 @@ void HotAreaHandler::OnInside(const VsPoint& p_point)
 }
 
 // 68K 0x10102326 InArea__15CHotAreaHandlerFRC8CVSPoint
-// STUB: LEMBALL 0x004399e0
+// FUNCTION: LEMBALL 0x004399e0
 bool HotAreaHandler::InArea(const VsPoint& p_point)
 {
 	short px;
@@ -52,8 +52,8 @@ bool HotAreaHandler::InArea(const VsPoint& p_point)
 	short left;
 	short top;
 
-	px = p_point.m_x;
 	left = m_x;
+	px = p_point.m_x;
 	if (left <= px) {
 		if (px < (short) (m_width + left)) {
 			py = p_point.m_y;

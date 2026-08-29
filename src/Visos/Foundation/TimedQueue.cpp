@@ -19,11 +19,11 @@ bool TimedQueue::Post(Message& p_arg0)
 	}
 	index = 0;
 	count = m_messageCount;
-	stamp = *(int*) &p_arg0.reserved[1];
+	stamp = p_arg0.time;
 	if (count != 0) {
 		do {
 			message = (Message*) slot;
-			if ((int) (stamp - *(int*) &message->reserved[1]) < 0) {
+			if ((int) (stamp - (int) message->time) < 0) {
 				break;
 			}
 			slot = slot + sizeof(Message);

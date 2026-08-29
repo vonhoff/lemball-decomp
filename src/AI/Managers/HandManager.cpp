@@ -1,4 +1,5 @@
 #include "HandManager.h"
+#include "../Objects/Hand.h"
 
 // 68K 0x106111f4 __ct__12CHandManagerFP3CAIi
 // STUB: LEMBALL 0x00427e60
@@ -7,9 +8,14 @@ HandManager::HandManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x1061127e Restart__12CHandManagerFv
-// STUB: LEMBALL 0x00427ec0
+// FUNCTION: LEMBALL 0x00427ec0
 void HandManager::Restart()
 {
+	if (m_hands != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_hands[i].Restart();
+		}
+	}
 }
 
 // 68K 0x106112e0 Initialise__12CHandManagerFi

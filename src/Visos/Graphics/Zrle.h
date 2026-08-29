@@ -18,6 +18,7 @@ public:
 	friend class Anim;
 	friend class Surface;
 	friend class GraphicButton;
+	friend class BaseCursor;
 
 private:
 	short m_x;            // 0x04

@@ -18,8 +18,13 @@
 #include "../Controls/GunButtons.h"
 #include "../Controls/GunController.h"
 #include "../Controls/HiliteController.h"
+#include "../Base/BaseFrontendProcess.h"
+#include "../../Views/Sound/SoundView.h"
+#include "../../Visos/Foundation/VsOStream.h"
 
 extern int* g_pSentinel;
+extern char g_szUnknownUserActionSpecified[];
+extern char g_szUnknownUserActionReceived[];
 
 #include <new.h>
 #include <string.h>
@@ -102,7 +107,7 @@ void BaseFrontendDrawer::Setup()
 }
 
 // 68K 0x1080070e InitialiseBackBuffer__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x004458e0
+// FUNCTION: LEMBALL 0x004458e0
 void BaseFrontendDrawer::InitialiseBackBuffer()
 {
 	unsigned int hiliteActive;
@@ -141,7 +146,7 @@ void BaseFrontendDrawer::InitialiseBackBuffer()
 }
 
 // 68K 0x108008ba Draw__19CBaseFrontendDrawerFRC7CVSRect
-// STUB: LEMBALL 0x00445a40
+// FUNCTION: LEMBALL 0x00445a40
 void BaseFrontendDrawer::Draw(const VsRect& p_rect)
 {
 	if (m_gdi != 0) {
@@ -167,7 +172,7 @@ void BaseFrontendDrawer::Draw(const VsRect& p_rect)
 }
 
 // 68K 0x10800958 ReplaceBackground__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00445ac0
+// FUNCTION: LEMBALL 0x00445ac0
 void BaseFrontendDrawer::ReplaceBackground()
 {
 	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
@@ -320,7 +325,7 @@ void BaseFrontendDrawer::_UnLoad()
 }
 
 // 68K 0x10800fca _DrawAnims__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x00446050
+// FUNCTION: LEMBALL 0x00446050
 void BaseFrontendDrawer::_DrawAnims()
 {
 	if (m_ambientAnim != 0) {
@@ -330,7 +335,7 @@ void BaseFrontendDrawer::_DrawAnims()
 }
 
 // 68K 0x1080103c ResetPrimitives__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x004460a0
+// FUNCTION: LEMBALL 0x004460a0
 void BaseFrontendDrawer::ResetPrimitives()
 {
 	m_anims.ResetPrimitives();
@@ -341,13 +346,15 @@ void BaseFrontendDrawer::ResetPrimitives()
 }
 
 // 68K 0x1080109a DrawFrame__19CBaseFrontendDrawerF12tagCoordPair12tagCoordPair
-// STUB: LEMBALL 0x004460d0
+// FUNCTION: LEMBALL 0x004460d0
 void BaseFrontendDrawer::DrawFrame(CoordPair p_start, CoordPair p_end)
 {
+	VsRect rect(p_start.m_x, p_start.m_y, p_end.m_x - p_start.m_x, p_end.m_y - p_start.m_y);
+	DrawFrame(rect);
 }
 
 // 68K 0x1080115a DrawFrame__19CBaseFrontendDrawerF7CVSRect
-// STUB: LEMBALL 0x00446110
+// FUNCTION: LEMBALL 0x00446110
 void BaseFrontendDrawer::DrawFrame(VsRect p_rect)
 {
 	VsSize tileSize;
@@ -424,7 +431,7 @@ int BaseFrontendDrawer::ProcessMsg(Message* p_message)
 	if (m_actionPending != 0) {
 		return 0;
 	}
-	sequence = *(unsigned int*) &p_message->reserved[1];
+	sequence = p_message->time;
 	if ((int) (sequence - m_createdAt) < 0) {
 		return 0;
 	}
@@ -475,27 +482,66 @@ void BaseFrontendDrawer::Process()
 }
 
 // 68K 0x108016f2 LostConnection__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x004465c0
+// FUNCTION: LEMBALL 0x004465c0
 void BaseFrontendDrawer::LostConnection()
 {
+	m_quitYet = 1;
+	m_returnState = 2;
 }
 
 // 68K 0x10801736 Action__19CBaseFrontendDrawerF12eUserActions17eUserActionStages
-// STUB: LEMBALL 0x004465e0
+// FUNCTION: LEMBALL 0x004465e0
 void BaseFrontendDrawer::Action(int p_action, int p_stage)
 {
+	m_actionPending = 1;
+	g_pCurrentFrontendProcess->Action(p_action, p_stage);
 }
 
 // 68K 0x108017a0 RemoteAction__19CBaseFrontendDrawerF12eUserActions17eUserActionStages
-// STUB: LEMBALL 0x00446610
+// FUNCTION: LEMBALL 0x00446610
 void BaseFrontendDrawer::RemoteAction(int p_action, int p_stage)
 {
+	int confirmed;
+
+	if (p_stage == 0) {
+		if (m_actionPending != 0) {
+			Action(p_action, 2);
+			return;
+		}
+		m_actionPending = 1;
+		Action(p_action, 1);
+		g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+		confirmed = ConfirmedAction(p_action);
+		if (confirmed == 0) {
+			*g_pErrorOutput << g_szUnknownUserActionSpecified;
+		}
+		m_actionPending = 0;
+		return;
+	}
+	if (p_stage != 1) {
+		if (p_stage != 2) {
+			return;
+		}
+		m_actionPending = 0;
+		return;
+	}
+	confirmed = ConfirmedAction(p_action);
+	if (confirmed == 0) {
+		*g_pErrorOutput << g_szUnknownUserActionReceived;
+	}
+	m_actionPending = 0;
 }
 
 // 68K 0x108018b4 OnDriverChange__19CBaseFrontendDrawerFv
-// STUB: LEMBALL 0x004466e0
+// FUNCTION: LEMBALL 0x004466e0
 void BaseFrontendDrawer::OnDriverChange()
 {
+	VsRect useRect;
+
+	if (m_display->GetSizeStatus() != 0) {
+		useRect = m_display->GetUseRect(-1, -1);
+		m_display->SetRect(useRect);
+	}
 }
 
 // 68K 0x1011beea Processing__19CBaseFrontendDrawerFv
@@ -511,7 +557,7 @@ bool BaseFrontendDrawer::ProcessMessages(Message* p_message)
 	return 0;
 }
 
-// STUB: LEMBALL 0x00446f70
+// FUNCTION: LEMBALL 0x00446f70
 void BaseFrontendDrawer::DrawAnims()
 {
 }
@@ -522,7 +568,7 @@ void BaseFrontendDrawer::DrawText()
 {
 }
 
-// STUB: LEMBALL 0x00446f90
+// FUNCTION: LEMBALL 0x00446f90
 void BaseFrontendDrawer::DrawBackGround()
 {
 }
@@ -549,9 +595,12 @@ bool BaseFrontendDrawer::QuitYet()
 }
 
 // 68K 0x1011c028 OnSize__19CBaseFrontendDrawerFRC7CVSRect
-// STUB: LEMBALL 0x00446fd0
+// FUNCTION: LEMBALL 0x00446fd0
 void BaseFrontendDrawer::OnSize(const VsRect& p_rect)
 {
+	m_width = p_rect.m_width;
+	m_height = p_rect.m_height;
+	Restart();
 }
 
 // 68K 0x1080048c __dt__19CBaseFrontendDrawerFv
@@ -575,6 +624,12 @@ BaseFrontendDrawer::~BaseFrontendDrawer()
 		g_pMogRes->CleanUpResources();
 	}
 }
+
+// GLOBAL: LEMBALL 0x0049f148
+char g_szUnknownUserActionSpecified[] = "Unknown user action specified\n";
+
+// GLOBAL: LEMBALL 0x0049f168
+char g_szUnknownUserActionReceived[] = "Unknown user action received\n";
 
 // GLOBAL: LEMBALL 0x0049f628
 int g_nPendingEffectsVolume = 100;

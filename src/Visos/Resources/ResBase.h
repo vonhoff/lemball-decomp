@@ -47,6 +47,8 @@ public:
 	friend class BitmapRes;
 	friend class BitmapResBase;
 	friend class FrontendResourceLoader;
+	friend class BaseCursor;
+	friend class TargetAboutScreen;
 
 protected:
 	ResBaseList* m_externalList;   // 0x04

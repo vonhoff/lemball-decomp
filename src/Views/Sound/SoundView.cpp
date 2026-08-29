@@ -85,16 +85,18 @@ SoundView::SoundView()
 	m_randomMusicIndex = 0;
 	m_loadUpdate = 0;
 	if (g_nMusicVolume != 0) {
-		g_pSoundManager->PrepareMusic(0x2220, 0x82);
+		g_pSoundManager->PrepareMusic(0x2220, 0xb482);
 		g_dwMusicOn = 0;
 	}
 	SetEffectsOn(1);
-	i = 50;
-	do {
-		m_effectSlots[50 - i].m_handle = 0xffffffff;
-		m_effectSlots[50 - i].m_spec = 0;
-		i--;
-	} while (i != 0);
+	{
+		i = 0;
+		while (i < 50) {
+			m_effectSlots[i].m_handle = 0xffffffff;
+			m_effectSlots[i].m_spec = 0;
+			i = i + 1;
+		}
+	}
 	if (g_nEffectsAvailable != 0) {
 		spec = g_pEffectSpecs;
 		do {

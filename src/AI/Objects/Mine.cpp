@@ -1,5 +1,10 @@
 #include "Mine.h"
 
+#include "../../Control/Game/Game.h"
+
+// GLOBAL: LEMBALL 0x004a7840
+short g_mineTerrainOffsets[4];
+
 // 68K 0x10616282 __ct__5CMineFv
 // STUB: LEMBALL 0x00423c10
 Mine::Mine()
@@ -7,15 +12,27 @@ Mine::Mine()
 }
 
 // 68K 0x106162c2 Restart__5CMineFv
-// STUB: LEMBALL 0x00423c30
+// FUNCTION: LEMBALL 0x00423c30
 void Mine::Restart()
 {
+	GlobalGameObject::Restart();
+	Initialise();
 }
 
 // 68K 0x106162f2 Initialise__5CMineFv
-// STUB: LEMBALL 0x00423c50
+// FUNCTION: LEMBALL 0x00423c50
 void Mine::Initialise()
 {
+	m_action = (eAction) 0x18;
+	m_enabled = 0;
+	m_activated = 0;
+	m_terrainSet = 0;
+	m_triggerPending = 0;
+	m_actionDeadline = g_dwGameTick;
+	g_mineTerrainOffsets[0] = 10;
+	g_mineTerrainOffsets[1] = 17;
+	g_mineTerrainOffsets[2] = 48;
+	g_mineTerrainOffsets[3] = 8;
 }
 
 // 68K 0x10616354 Set__5CMineF7AICOORD

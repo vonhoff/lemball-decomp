@@ -22,6 +22,7 @@ public:
 
 	friend class PlayerLemming;
 	friend class Game;
+	friend void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
 
 private:
 	unsigned char* m_buffer;     // 0x10
@@ -47,4 +48,5 @@ private:
 
 extern int g_nDemoMode;
 extern Demo* g_pDemo;
+extern char g_szDemoFilePath[80];
 #endif

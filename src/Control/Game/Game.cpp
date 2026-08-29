@@ -7,10 +7,12 @@
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Frontend/Drawers/IntroAnimDrawer.h"
 #include "../../Frontend/Drawers/MainOptions1Drawer.h"
+#include "../../Frontend/Processes/TargetAbout.h"
 #include "../../Frontend/Processes/NetworkOptionsProc.h"
 #include "../../Frontend/Processes/PasswordProc.h"
 #include "../../Frontend/Processes/Preview.h"
 #include "../../Frontend/Processes/SuccFail.h"
+#include "../../AI/Navigation/Ai.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../../Views/Display/Main2DDisplay.h"
 #include "../../Views/Sound/SoundView.h"
@@ -320,9 +322,10 @@ void Game::UnLoadFrontendResources()
 void Game::NextProcess(eFlowProcesses p_flow)
 {
 	void* storage;
+	Ai* ai;
 
 	if (m_mainDisplay->m_drawer != 0) {
-		((Drawer*) m_mainDisplay->m_drawer)->DestroyDrawer();
+		m_mainDisplay->m_drawer->ShutDown();
 	}
 	if (m_process != 0) {
 		delete m_process;
@@ -349,7 +352,7 @@ void Game::NextProcess(eFlowProcesses p_flow)
 			m_process = new (storage) IntroAnim(this);
 		}
 		m_flowTicks = 0;
-		break;
+		goto done;
 	case 2:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
@@ -358,44 +361,67 @@ void Game::NextProcess(eFlowProcesses p_flow)
 			g_nDemoMode = g_nStoredLevelDemoModeEnabled;
 		}
 		storage = operator new(0x28);
-		if (storage == 0) {
-			m_process = 0;
-		}
-		else {
+		if (storage != 0) {
 			m_process = new (storage) MainOptions1(this);
+			goto done;
 		}
 		break;
 	case 3:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		storage = operator new(0x28);
-		if (storage == 0) {
-			m_process = 0;
-		}
-		else {
+		if (storage != 0) {
 			m_process = new (storage) MainOptions2(this);
+			goto done;
 		}
 		break;
 	case 4:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		storage = operator new(0x28);
-		if (storage == 0) {
-			m_process = 0;
+		if (storage != 0) {
+			m_process = new (storage) Preview(this);
+			goto done;
+		}
+		break;
+	case 0x13:
+		if (g_nDemoMode == 0) {
+			g_pDemo->m_filePath = 0;
 		}
 		else {
-			m_process = new (storage) Preview(this);
+			g_pDemo->m_filePath = g_szDemoFilePath;
+		}
+		g_nDemoMode = 1;
+	case 5:
+		UnLoadFrontendResources();
+		m_currentFlow = p_flow;
+		m_mainDisplay->KillDrawer(p_flow);
+		storage = operator new(0x1f0);
+		ai = (Ai*) 0;
+		if (storage != 0) {
+			ai = new (storage) Ai(this);
+		}
+		if (ai != 0) {
+			m_process = ai;
+			goto done;
+		}
+		break;
+	case 10:
+		m_currentFlow = p_flow;
+		m_mainDisplay->KillDrawer(p_flow);
+		storage = operator new(0x10);
+		if (storage != 0) {
+			m_process = new (storage) TargetAbout(this);
+			goto done;
 		}
 		break;
 	case 0xc:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		storage = operator new(0x38);
-		if (storage == 0) {
-			m_process = 0;
-		}
-		else {
+		if (storage != 0) {
 			m_process = new (storage) NetworkOptionsProc(this);
+			goto done;
 		}
 		break;
 	case 0xe:
@@ -410,7 +436,7 @@ void Game::NextProcess(eFlowProcesses p_flow)
 			m_process = new (storage) SuccFail(this, 1);
 		}
 		m_flowTicks = 0;
-		break;
+		goto done;
 	case 0xf:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
@@ -423,16 +449,14 @@ void Game::NextProcess(eFlowProcesses p_flow)
 			m_process = new (storage) SuccFail(this, 0);
 		}
 		m_flowTicks = 0;
-		break;
+		goto done;
 	case 0x10:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		storage = operator new(0x28);
-		if (storage == 0) {
-			m_process = 0;
-		}
-		else {
+		if (storage != 0) {
 			m_process = new (storage) PasswordProc(this);
+			goto done;
 		}
 		break;
 	case 0x12:
@@ -447,12 +471,13 @@ void Game::NextProcess(eFlowProcesses p_flow)
 			m_process = new (storage) IntroAnim(this);
 		}
 		m_flowTicks = 0;
-		break;
+		goto done;
 	default:
-		m_process = 0;
-		break;
+		goto done;
 	}
 
+	m_process = 0;
+done:
 	m_mainDisplay->StatusUpdate(m_currentFlow);
 }
 

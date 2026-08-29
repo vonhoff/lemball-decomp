@@ -14,6 +14,7 @@ public:
 	virtual ~SolidRect();            // vtable+0x00
 
 	friend class GunController;
+	friend class TargetAboutScreen;
 
 private:
 	short m_left;         // 0x04

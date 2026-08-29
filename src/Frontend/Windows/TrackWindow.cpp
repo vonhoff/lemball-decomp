@@ -4,16 +4,30 @@
 #include "../../Visos/Graphics/VsGdi.h"
 
 // 68K 0x1080e1a2 __ct__12CTrackWindowFRC7CVSRectiP7CPVGWnd
-// STUB: LEMBALL 0x0044e790
+// FUNCTION: LEMBALL 0x0044e790
 TrackWindow::TrackWindow(const VsRect& p_arg0, int p_arg1, PvGWnd* p_arg2)
+	: HotAreaHandler(p_arg0)
 {
+	m_reserved128 = 0;
+	m_trackSize.m_x = p_arg0.m_width;
+	m_trackSize.m_y = 0;
+	m_value = p_arg1;
+	m_trackRect.m_width = p_arg0.m_width;
+	m_trackRect.m_height = p_arg0.m_height;
+	m_trackRect.m_x = p_arg0.m_x;
+	m_gdiFlags = m_gdiFlags + 6;
+	m_trackRect.m_y = p_arg0.m_y;
+	m_parent = p_arg2;
+	m_contextId = -1;
+	SetActive(1);
+	m_externalEnabled = 1;
+	m_reserved = 1;
 }
 
 // 68K 0x1080e3d6 OnCreate__12CTrackWindowFv
-// STUB: LEMBALL 0x0044e940
-void TrackWindow::OnCreate()
+// FUNCTION: LEMBALL 0x0044e940
+void TrackWindow::Dummy3c()
 {
-	GWnd::OnCreate();
 	m_gdi->m_renderTarget->m_flag74 = 1;
 }
 

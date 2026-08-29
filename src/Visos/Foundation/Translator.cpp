@@ -20,8 +20,7 @@ int Translator::ProcessMsg(Message* p_message)
 	TargetInputTranslationEntry* entry;
 	short keyState;
 
-	translated.reserved[1] = p_message->reserved[1];
-	translated.reserved[2] = p_message->reserved[2];
+	translated.time = p_message->time;
 	if (p_message->type != 0 && p_message->type < 3) {
 		index = 0;
 		entry = g_dwInputTranslationPairs;

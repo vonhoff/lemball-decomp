@@ -7,9 +7,13 @@ Trampoline::Trampoline()
 }
 
 // 68K 0x1062058e Restart__11CTrampolineFv
-// STUB: LEMBALL 0x0042a9b0
+// FUNCTION: LEMBALL 0x0042a9b0
 void Trampoline::Restart()
 {
+	GlobalGameObject::Restart();
+	m_stateTimer = 0;
+	m_enabled = 0;
+	m_active = 0;
 }
 
 // 68K 0x1062062e Set__11CTrampolineFUsRC7AICOORD

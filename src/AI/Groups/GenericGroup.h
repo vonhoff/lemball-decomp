@@ -40,7 +40,7 @@ public:
 	void SwapElements(GameObject* p_first, GameObject* p_second);
 	GenericGroup();
 
-private:
+protected:
 	int m_elementCount;         // 0x124
 	GameObject* m_elements[10]; // 0x128
 	int m_currentElement;       // 0x150

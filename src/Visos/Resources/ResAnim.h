@@ -38,6 +38,7 @@ public:
 	friend class AnimsManager;
 	friend class Anim;
 	friend class GraphicButton;
+	friend class BaseCursor;
 
 private:
 	ResZrle* m_animationEntries; // 0x78

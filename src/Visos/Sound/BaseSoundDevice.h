@@ -42,8 +42,8 @@ public:
 	virtual void MusicSetChannelPatch(unsigned char p_channel, unsigned long p_patch);                      // vtable+0x80
 	virtual void MusicSetPitchWheel(unsigned char p_channel, unsigned short p_pitch);                       // vtable+0x84
 	virtual void MusicMiscControlMessage(unsigned char p_channel, unsigned char p_control, unsigned char p_value); // vtable+0x88
-	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume);    // vtable+0x8c
 	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, unsigned char p_volume);     // vtable+0x90
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume);    // vtable+0x8c
 	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect);                               // vtable+0x94
 	virtual void SetWnd(Wnd* p_arg0);                                                                       // vtable+0x98
 

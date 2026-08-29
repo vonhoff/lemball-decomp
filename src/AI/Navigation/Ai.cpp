@@ -183,7 +183,7 @@ void Ai::QuitGame()
 
 // 68K 0x106024e8 SwitchMessage__3CAIF9swMessageiii
 // STUB: LEMBALL 0x00412c80
-void Ai::SwitchMessage(swMessage p_message, int p_first, int p_last)
+void Ai::SwitchMessage(swMessage p_message, int p_first, int p_last, int p_arg3)
 {
 }
 

@@ -18,15 +18,25 @@ GenericGroupManager::~GenericGroupManager()
 }
 
 // 68K 0x1060d2f6 Restart__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041e970
+// FUNCTION: LEMBALL 0x0041e970
 void GenericGroupManager::Restart()
 {
+	GenericGroup* group = GetFirstGroup();
+	while (group != 0) {
+		group->Restart();
+		group = GetNextGroup();
+	}
 }
 
 // 68K 0x1060d368 Process__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041e9f0
+// FUNCTION: LEMBALL 0x0041e9f0
 int GenericGroupManager::Process()
 {
+	GenericGroup* group = GetFirstGroup();
+	while (group != 0) {
+		group->Process();
+		group = GetNextGroup();
+	}
 	return 0;
 }
 

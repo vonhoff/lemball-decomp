@@ -20,6 +20,7 @@ public:
 	friend class GunButtons;
 	friend class HotAreaList;
 	friend class BaseFrontendDrawer;
+	friend class TargetAboutScreenQueue;
 
 private:
 	unsigned int m_signature;      // 0x04

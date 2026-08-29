@@ -1,4 +1,5 @@
 #include "CollectableManager.h"
+#include "../Objects/Collectable.h"
 
 // 68K 0x10605528 __ct__19CCollectableManagerFP3CAIi
 // STUB: LEMBALL 0x004223c0
@@ -7,9 +8,16 @@ CollectableManager::CollectableManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x106055be Restart__19CCollectableManagerFv
-// STUB: LEMBALL 0x00422420
+// FUNCTION: LEMBALL 0x00422420
 void CollectableManager::Restart()
 {
+	if (m_collectables != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			if (m_collectables[i] != 0) {
+				m_collectables[i]->Restart();
+			}
+		}
+	}
 }
 
 // 68K 0x10605628 Initialise__19CCollectableManagerFi

@@ -1,4 +1,5 @@
 #include "InvisibleSwitchManager.h"
+#include "../Objects/InvisibleSwitch.h"
 
 // 68K 0x10613140 __ct__23CInvisibleSwitchManagerFP3CAIi
 // STUB: LEMBALL 0x0040a210
@@ -7,9 +8,14 @@ InvisibleSwitchManager::InvisibleSwitchManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x106131d6 Restart__23CInvisibleSwitchManagerFv
-// STUB: LEMBALL 0x0040a270
+// FUNCTION: LEMBALL 0x0040a270
 void InvisibleSwitchManager::Restart()
 {
+	if (m_switches != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_switches[i].Restart();
+		}
+	}
 }
 
 // 68K 0x10613244 Initialise__23CInvisibleSwitchManagerFi

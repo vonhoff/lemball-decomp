@@ -26,6 +26,7 @@ private:
 	unsigned int m_setTick;           // 0x13c
 	short m_doorType;                 // 0x140
 	unsigned int m_activationPending; // 0x144
+	undefined4 m_unk0x148;            // 0x148
 };
 
 // SYNTHETIC: LEMBALL 0x0040ec10

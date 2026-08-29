@@ -7,9 +7,11 @@ PlayerLemmingGroupManager::PlayerLemmingGroupManager(Ai* p_arg0, ObjectManager* 
 }
 
 // 68K 0x1060f84a Restart__26CPlayerLemmingGroupManagerFv
-// STUB: LEMBALL 0x00418520
+// FUNCTION: LEMBALL 0x00418520
 void PlayerLemmingGroupManager::Restart()
 {
+	GenericGroupManager::Restart();
+	m_controlledGroupIndex = 0;
 }
 
 // 68K 0x1060f9ac GetDead__26CPlayerLemmingGroupManagerFv

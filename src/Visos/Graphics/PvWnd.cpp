@@ -5,7 +5,6 @@
 #include <new.h>
 
 extern int g_cursorState;
-extern void* g_pWindowOwnerList;
 extern int g_nNativeWindowCount;
 
 // 68K 0x101049c0 GetSizeStatus__6CPVWndFv
@@ -128,14 +127,14 @@ PvWnd::PvWnd()
 	previous = g_cursorState;
 	g_cursorState = g_cursorState + 1;
 	if (previous == 0) {
-		g_pWindowOwnerList = operator new(0xc);
+		g_pWindowOwnerList = (WindowOwnerList*) operator new(sizeof(WindowOwnerList));
 		if (g_pWindowOwnerList == 0) {
 			g_pWindowOwnerList = 0;
 		}
 		else {
-			((void**) g_pWindowOwnerList)[0] = 0;
-			((void**) g_pWindowOwnerList)[1] = 0;
-			((int*) g_pWindowOwnerList)[2] = 0;
+			g_pWindowOwnerList->m_head = 0;
+			g_pWindowOwnerList->m_tail = 0;
+			g_pWindowOwnerList->m_count = 0;
 		}
 	}
 	m_zoom = 1;
@@ -225,29 +224,30 @@ unsigned int PvWnd::InitHotAreaList()
 // FUNCTION: LEMBALL 0x00465f80
 void PvWnd::OnCreate()
 {
-	void** list;
-	void** node;
+	WindowOwnerList* list;
+	WindowOwnerNode* node;
 
 	g_nNativeWindowCount = g_nNativeWindowCount + 1;
 	if (m_parent == 0) {
-		list = (void**) g_pWindowOwnerList;
-		node = (void**) operator new(0xc);
+		list = g_pWindowOwnerList;
+		node = (WindowOwnerNode*) operator new(sizeof(WindowOwnerNode));
 		if (node != 0) {
-			node[0] = this;
-			node[1] = 0;
-			node[2] = 0;
-			if (list != 0) {
-				node[2] = list[1];
-				if (list[1] != 0) {
-					((void**) list[1])[1] = node;
-				}
-				list[1] = node;
-				if (list[0] == 0) {
-					list[0] = node;
-				}
-				*(int*) &list[2] = *(int*) &list[2] + 1;
-			}
+			node->m_window = this;
+			node->m_next = 0;
+			node->m_prev = 0;
 		}
+		else {
+			node = 0;
+		}
+		node->m_prev = list->m_tail;
+		if (list->m_tail != 0) {
+			list->m_tail->m_next = node;
+		}
+		list->m_tail = node;
+		if (list->m_head == 0) {
+			list->m_head = node;
+		}
+		list->m_count = list->m_count + 1;
 	}
 	m_lifecycleRefs = m_lifecycleRefs + 1;
 }
@@ -256,10 +256,10 @@ void PvWnd::OnCreate()
 // FUNCTION: LEMBALL 0x00465fe0
 void PvWnd::BaseOnDestroy()
 {
-	void** ownerList;
-	void** node;
-	void** nextNode;
-	void** prevNode;
+	WindowOwnerList* ownerList;
+	WindowOwnerNode* node;
+	WindowOwnerNode* nextNode;
+	WindowOwnerNode* prevNode;
 
 	g_nNativeWindowCount = g_nNativeWindowCount - 1;
 	m_lifecycleRefs = m_lifecycleRefs - 1;
@@ -271,40 +271,97 @@ void PvWnd::BaseOnDestroy()
 		m_parent->RemoveChild(this);
 		return;
 	}
-	ownerList = (void**) g_pWindowOwnerList;
-	node = (void**) ownerList[0];
+	ownerList = g_pWindowOwnerList;
+	node = ownerList->m_head;
 	if (node != 0) {
 		do {
-			if ((PvWnd*) node[0] == this) {
+			if (node->m_window == this) {
 				break;
 			}
-			node = (void**) node[1];
+			node = node->m_next;
 		} while (node != 0);
 		if (node != 0) {
-			nextNode = (void**) node[1];
-			prevNode = (void**) node[2];
+			nextNode = node->m_next;
+			prevNode = node->m_prev;
 			operator delete(node);
 			if (nextNode != 0) {
-				nextNode[2] = prevNode;
+				nextNode->m_prev = prevNode;
 			}
 			else {
-				ownerList[1] = prevNode;
+				ownerList->m_tail = prevNode;
 			}
 			if (prevNode != 0) {
-				prevNode[1] = nextNode;
-				*(int*) &ownerList[2] = *(int*) &ownerList[2] - 1;
+				prevNode->m_next = nextNode;
+				ownerList->m_count = ownerList->m_count - 1;
 				return;
 			}
-			ownerList[0] = nextNode;
-			*(int*) &ownerList[2] = *(int*) &ownerList[2] - 1;
+			ownerList->m_head = nextNode;
+			ownerList->m_count = ownerList->m_count - 1;
 		}
 	}
 }
 
 // 68K 0x10216edc _OnSize__6CPVWndFv
-// STUB: LEMBALL 0x00466060
+// FUNCTION: LEMBALL 0x00466060
 void PvWnd::OnSize()
 {
+	HotAreaList* list;
+	VsRect area;
+	VsPoint origin;
+	VsPoint* innerXY;
+	VsPoint* rectXY;
+
+	list = m_hotAreaList;
+	if (list == 0) {
+		return;
+	}
+	area.m_x = 0;
+	area.m_y = 0;
+	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
+		area.m_width = m_innerRect.m_width;
+		area.m_height = m_innerRect.m_height;
+		if (this != (PvWnd*) -16) {
+			innerXY = (VsPoint*) &m_innerRect.m_x;
+		}
+		else {
+			innerXY = 0;
+		}
+		area.m_x = innerXY->m_x;
+		area.m_y = innerXY->m_y;
+		if (this != (PvWnd*) -8) {
+			rectXY = (VsPoint*) &m_rect.m_x;
+		}
+		else {
+			rectXY = 0;
+		}
+		area.m_x = (short) (area.m_x + rectXY->m_x);
+		area.m_y = (short) (area.m_y + rectXY->m_y);
+	}
+	else {
+		area.m_width = m_rect.m_width;
+		area.m_height = m_rect.m_height;
+		if (this != (PvWnd*) -8) {
+			rectXY = (VsPoint*) &m_rect.m_x;
+		}
+		else {
+			rectXY = 0;
+		}
+		area.m_x = rectXY->m_x;
+		area.m_y = rectXY->m_y;
+	}
+	origin.m_x = m_relativeTopLeft.m_x;
+	origin.m_y = m_relativeTopLeft.m_y;
+	if (m_parent == 0) {
+		origin.m_x = 0;
+		origin.m_y = 0;
+	}
+	if (this != (PvWnd*) -16) {
+		innerXY = (VsPoint*) &m_innerRect.m_x;
+	}
+	else {
+		innerXY = 0;
+	}
+	list->Set(area, origin, *innerXY);
 }
 
 // 68K 0x10217024 _OnMove__6CPVWndFv
@@ -374,6 +431,27 @@ bool PvWnd::IsFocusWindow()
 // FUNCTION: LEMBALL 0x00466360
 void PvWnd::Resize(VsSize p_size)
 {
+}
+
+// FUNCTION: LEMBALL 0x00466370
+void HotAreaList::Set(const VsRect& p_rect, VsPoint p_point0, const VsPoint& p_point1)
+{
+	const short* coords;
+
+	m_width = p_rect.m_width;
+	m_height = p_rect.m_height;
+	if (&p_rect != 0) {
+		coords = &p_rect.m_x;
+	}
+	else {
+		coords = 0;
+	}
+	m_x = coords[0];
+	m_y = coords[1];
+	m_point0.m_x = p_point0.m_x;
+	m_point0.m_y = p_point0.m_y;
+	m_point1.m_x = p_point1.m_x;
+	m_point1.m_y = p_point1.m_y;
 }
 
 void PvWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title) {}

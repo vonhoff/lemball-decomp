@@ -26,8 +26,8 @@ public:
 	virtual int Dummy30();
 	virtual int Dummy3c(unsigned char* p_data, unsigned long* p_handle);
 	virtual int Dummy48(unsigned long p_effectId);
-	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume);
-	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, unsigned char p_volume);
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, unsigned char p_volume); // vtable+0x90
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume); // vtable+0x8c
 
 private:
 	unsigned int m_channelCount;     // 0x04

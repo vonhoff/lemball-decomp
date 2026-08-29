@@ -2,8 +2,13 @@
 
 #include "../../AI/Navigation/Ai.h"
 #include "../../AI/Objects/PlayerLemming.h"
+#include "../../AI/Objects/ViewData.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Visos/Graphics/BasePalManager.h"
+#include "../../Visos/Graphics/Cursor.h"
+#include "../Panel/Panel.h"
+#include "../Sound/SoundView.h"
+#include "Main2DDisplay.h"
 
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
 // STUB: LEMBALL 0x004358d0
@@ -101,6 +106,7 @@ void C2D::CheckValidFormGroup()
 // STUB: LEMBALL 0x00436a10
 void C2D::Process()
 {
+	SetMouseShape();
 }
 
 // 68K 0x10b07f46 FindGameObject__3C2DFRC8CVSPointRiUc
@@ -129,33 +135,83 @@ void C2D::MoveGroup(const VsPoint& p_point)
 }
 
 // 68K 0x10b083d6 CancelMoves__3C2DFv
-// STUB: LEMBALL 0x00437250
+// FUNCTION: LEMBALL 0x00437250
 void C2D::CancelMoves()
 {
+	Message msg;
+	msg.type = 3;
+	msg.time = 0;
+	msg.code = 0;
+	msg.payload = 0;
+	msg.source = 0;
+	m_lemmingManager->ProcessMsg(&msg);
+	m_groupCount = 0;
+	m_groupingActive = 0;
+	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x25;
 }
 
 // 68K 0x10b0843a NextGroup__3C2DFv
-// STUB: LEMBALL 0x004372a0
+// FUNCTION: LEMBALL 0x004372a0
 void C2D::NextGroup()
 {
+	Message msg;
+	msg.type = 7;
+	msg.time = 0;
+	msg.code = 0;
+	msg.payload = 0;
+	msg.source = 0;
+	m_lemmingManager->ProcessMsg(&msg);
+	m_groupCount = 0;
+	m_groupingActive = 0;
+	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x1b;
 }
 
 // 68K 0x10b0849c PrevGroup__3C2DFv
-// STUB: LEMBALL 0x004372f0
+// FUNCTION: LEMBALL 0x004372f0
 void C2D::PrevGroup()
 {
+	Message msg;
+	msg.type = 6;
+	msg.time = 0;
+	msg.code = 0;
+	msg.payload = 0;
+	msg.source = 0;
+	m_lemmingManager->ProcessMsg(&msg);
+	m_groupCount = 0;
+	m_groupingActive = 0;
+	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x1b;
 }
 
-// 68K 0x10b084fe SelectLemming__3C2DFi
-// STUB: LEMBALL 0x00437340
+// 68K 0x108084fe SelectLemming__3C2DFi
+// FUNCTION: LEMBALL 0x00437340
 void C2D::SelectLemming(int p_playerIndex)
 {
+	Message msg;
+	msg.type = 8;
+	msg.time = 0;
+	msg.code = m_ai->m_networkLemmings[p_playerIndex]->m_objectId;
+	msg.payload = 0;
+	msg.source = 0;
+	m_lemmingManager->ProcessMsg(&msg);
+	m_groupCount = 0;
+	m_groupingActive = 0;
+	g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
 }
 
 // 68K 0x10b08588 SelectObject__3C2DFi
-// STUB: LEMBALL 0x004373b0
+// FUNCTION: LEMBALL 0x004373b0
 void C2D::SelectObject(int p_viewIndex)
 {
+	Message msg;
+	msg.type = 8;
+	msg.time = 0;
+	msg.code = m_viewData[p_viewIndex].m_objectId;
+	msg.payload = 0;
+	msg.source = 0;
+	m_lemmingManager->ProcessMsg(&msg);
+	m_groupCount = 0;
+	m_groupingActive = 0;
+	g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
 }
 
 // 68K 0x10b0860e InGroupByObjectNo__3C2DFi
@@ -176,18 +232,30 @@ bool C2D::InGroupByObjectNo(int p_objectNo)
 // FUNCTION: LEMBALL 0x00437460
 void C2D::RemoveFromGroupByObjectNo(int p_objectNo)
 {
-	int writeIndex;
-	int i;
+	unsigned int i;
+	unsigned short* write;
+	unsigned short* read;
+	unsigned short id;
 
-	writeIndex = 0;
-	for (i = 0; i < m_groupCount; i++) {
-		if (m_groupObjectIds[i] != p_objectNo) {
-			m_groupObjectIds[writeIndex++] = m_groupObjectIds[i];
-		}
+	i = 0;
+	if (m_groupCount <= i) {
 	}
-	m_groupCount--;
+	else {
+		write = m_groupObjectIds;
+		read = write;
+		do {
+			id = *read;
+			if ((unsigned int) id != (unsigned int) p_objectNo) {
+				*write = id;
+				write = write + 1;
+			}
+			read = read + 1;
+			i = i + 1;
+		} while ((int) m_groupCount > (int) i);
+	}
+	m_groupCount = m_groupCount - 1;
 	if (m_groupCount < m_groupSelectionCount) {
-		m_groupSelectionCount--;
+		m_groupSelectionCount = m_groupSelectionCount - 1;
 	}
 	if (m_groupCount == 0) {
 		m_groupingActive = 0;
@@ -305,10 +373,83 @@ void C2D::SetPause(unsigned char p_paused)
 	}
 }
 
+// GLOBAL: LEMBALL 0x0049ea14
+int g_nMouseShapeGameX = 0;
+
+// GLOBAL: LEMBALL 0x0049ea18
+int g_nMouseShapeGameY = 0;
+
+// GLOBAL: LEMBALL 0x0049ea1c
+unsigned int g_nMouseShapeOnGround = 0;
+
 // 68K 0x10b09208 SetMouseShape__3C2DFv
-// STUB: LEMBALL 0x00437e90
+// FUNCTION: LEMBALL 0x00437e90
 void C2D::SetMouseShape()
 {
+	VsPoint screen;
+	VsPoint game;
+	int objectIndex;
+	int zoom;
+	short originX;
+	short originY;
+	unsigned int groundFlag;
+
+	groundFlag = g_nMouseShapeOnGround;
+	if (m_paused != 0) {
+		g_nMouseShapeOnGround = groundFlag;
+		return;
+	}
+	zoom = (int) m_display->m_zoom;
+	originX = m_display->m_rect.m_x;
+	originY = m_display->m_rect.m_y;
+	screen.m_x = (short) ((int) (short) (g_pCursor->m_position.m_x - originX) / zoom);
+	screen.m_y = (short) ((int) (short) (g_pCursor->m_position.m_y - originY) / zoom);
+	if (m_panel->MouseInPanel(screen) != 0) {
+		m_cursorState = 3;
+		return;
+	}
+	game.m_x = (short) (m_viewOriginX + m_cursorGamePoint.m_x);
+	game.m_y = (short) (m_cursorGamePoint.m_y + (short) m_viewOriginY);
+	if (screen.m_x < m_x || (short) (m_width + m_x) <= screen.m_x || screen.m_y < m_y ||
+		(short) (m_height + m_y) <= screen.m_y) {
+		CursorChangeType(1, 0);
+		groundFlag = g_nMouseShapeOnGround;
+	}
+	else if (FindGameObject(game, objectIndex, 0) != 0) {
+		if (m_cursorState != 2) {
+			m_cursorState = 2;
+			m_cursorTimestamp = g_dwSimulationTimestamp;
+			CursorChangeType(1, 4);
+			return;
+		}
+	}
+	else {
+		g_nMouseShapeOnGround = ScreenToGame((int) game.m_x, (int) game.m_y, g_nMouseShapeGameX, g_nMouseShapeGameY);
+		if (g_nMouseShapeOnGround != 0) {
+			m_cursorState = 0;
+			m_cursorTimestamp = g_dwSimulationTimestamp;
+			if (m_mouseButtonDown != 0) {
+				CursorChangeType(1, 1);
+				return;
+			}
+			CursorChangeType(1, 0);
+			return;
+		}
+		if (m_cursorState != 1) {
+			m_cursorState = 1;
+			m_cursorTimestamp = g_dwSimulationTimestamp;
+			CursorChangeType(1, 2);
+			return;
+		}
+		groundFlag = 0;
+		if (m_cursorTimestamp + 100 < g_dwSimulationTimestamp) {
+			m_cursorBlinkPhase = (unsigned short) (m_cursorBlinkPhase ^ 1);
+			m_cursorTimestamp = g_dwSimulationTimestamp;
+			CursorChangeType(1, m_cursorBlinkPhase + 2);
+			return;
+		}
+	}
+	g_nMouseShapeOnGround = groundFlag;
 }
 
 // 68K 0x10b09436 SendCursorMsg__3C2DFv

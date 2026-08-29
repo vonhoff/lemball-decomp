@@ -11,8 +11,8 @@ public:
 	TrapDoorManager();
 	virtual int GetViewData(ViewData* p_viewData); // vtable+0x24
 	virtual void Process();                        // vtable+0x1c
-	virtual void Restart();                        // vtable+0x18
 	virtual ~TrapDoorManager();                    // vtable+0x14
+	void Restart();
 	void AddNewDoor(unsigned short p_id, const AiCoord& p_position, unsigned char p_mode, unsigned long p_deadline);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 

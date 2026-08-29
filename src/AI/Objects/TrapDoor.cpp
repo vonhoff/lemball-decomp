@@ -1,5 +1,8 @@
 #include "TrapDoor.h"
 
+#include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
+
 // 68K 0x1062116c __ct__9CTrapDoorFR7AICOORDUc
 // STUB: LEMBALL 0x0040c2d0
 TrapDoor::TrapDoor(AiCoord& p_arg0, unsigned char p_arg1)
@@ -7,9 +10,18 @@ TrapDoor::TrapDoor(AiCoord& p_arg0, unsigned char p_arg1)
 }
 
 // 68K 0x10621212 Restart__9CTrapDoorFv
-// STUB: LEMBALL 0x0040c350
+// FUNCTION: LEMBALL 0x0040c350
 void TrapDoor::Restart()
 {
+	GlobalGameObject::Restart();
+	m_position.m_xFixed = m_spawnPosition.m_xFixed;
+	m_position.m_yFixed = m_spawnPosition.m_yFixed;
+	m_position.m_zFixed = m_spawnPosition.m_zFixed;
+	m_action = (eAction) 0x18;
+	m_stateTimer = g_dwSimulationTimestamp;
+	m_active = 1;
+	m_deadline = 80;
+	m_actionDeadline = g_dwGameTick;
 }
 
 // 68K 0x1062127c GetViewData__9CTrapDoorFR9CViewData

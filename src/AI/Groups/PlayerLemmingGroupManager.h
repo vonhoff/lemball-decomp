@@ -23,8 +23,8 @@ public:
 	virtual int GetViewData(ViewData* p_viewData);                                    // vtable+0x4c
 	virtual void CreateNewGroup(unsigned short p_count, unsigned short* p_objectIds); // vtable+0x34
 	virtual void DeleteGroup(PlayerLemmingGroup* p_group);                            // vtable+0x14
-	virtual void Process();                                                           // vtable+0x1c
-	virtual void Restart();                                                           // vtable+0x18
+	void Process();
+	void Restart();
 	virtual ~PlayerLemmingGroupManager();                                             // vtable+0x14
 	void AddNewWaypointToCurrentGroup(int p_x, int p_y);
 	void AddPlayerLemmingToGroup(PlayerLemming* p_lemming, PlayerLemmingGroup* p_group);

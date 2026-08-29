@@ -1,6 +1,7 @@
 #include "Gdi.h"
 #include "GraphicButton.h"
 #include "HotAreaList.h"
+#include "PushActive.h"
 
 #include "../Foundation/ChangeList.h"
 #include "../Animation/Anim.h"
@@ -19,6 +20,8 @@ GraphicButton::GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned lon
 {
 	VsRect createRect;
 	HotAreaHandler* area;
+	PushActive* push;
+	int remaining;
 
 	m_graphicHeight = 0;
 	m_graphicWidth = 0;
@@ -26,19 +29,26 @@ GraphicButton::GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned lon
 	m_graphicOffsetX = 0;
 	m_state = 0;
 	m_enabled = 0;
+	remaining = 0;
+	push = (PushActive*) m_statRegion;
+	do {
+		new (push) PushActive();
+		remaining = remaining - 1;
+		push = push + 1;
+	} while (-1 < remaining);
 	m_alignmentFlags = p_arg3;
 	m_animationId = p_arg2;
 	Initialise();
 	m_buttonX = p_arg0.m_x;
 	m_buttonY = p_arg0.m_y;
 	area = this;
-	createRect.m_width = area->m_x;
-	createRect.m_height = area->m_y;
+	createRect.m_width = area->m_width;
+	createRect.m_height = area->m_height;
 	createRect.m_x = p_arg0.m_x;
 	createRect.m_y = p_arg0.m_y;
 	Create(createRect, p_arg1, g_szButton);
-	area->m_width = (short) (area->m_width + m_relativeTopLeft.m_x);
-	area->m_height = (short) (area->m_height + m_relativeTopLeft.m_y);
+	area->m_x = (short) (area->m_x + m_relativeTopLeft.m_x);
+	area->m_y = (short) (area->m_y + m_relativeTopLeft.m_y);
 	if (m_ownerWindow != 0 && m_ownerWindow->m_hotAreaList != 0) {
 		m_ownerWindow->m_hotAreaList->AddToList(area);
 	}
@@ -89,37 +99,37 @@ void GraphicButton::Initialise()
 	}
 	m_animation->m_directUseCount = m_animation->m_directUseCount - 1;
 	area = this;
-	m_graphicOffsetX = area->m_width;
-	m_graphicOffsetY = area->m_height;
-	boxWidth = area->m_x;
+	m_graphicOffsetX = area->m_x;
+	m_graphicOffsetY = area->m_y;
+	boxWidth = area->m_width;
 	if (boxWidth < 0) {
-		area->m_x = (short) (-(short) m_graphicWidth * boxWidth);
+		area->m_width = (short) (-(short) m_graphicWidth * boxWidth);
 	}
 	else if (boxWidth == 0) {
-		area->m_x = (short) m_graphicWidth;
+		area->m_width = (short) m_graphicWidth;
 	}
-	boxHeight = area->m_y;
+	boxHeight = area->m_height;
 	if (boxHeight < 0) {
-		area->m_y = (short) (-(short) m_graphicHeight * boxHeight);
+		area->m_height = (short) (-(short) m_graphicHeight * boxHeight);
 	}
 	else if (boxHeight == 0) {
-		area->m_y = (short) m_graphicHeight;
+		area->m_height = (short) m_graphicHeight;
 	}
-	if ((int) area->m_x * (int) area->m_y != 0) {
+	if ((int) area->m_width * (int) area->m_height != 0) {
 		area->SetActive(1);
 	}
 	if ((m_alignmentFlags & 4) != 0) {
-		m_graphicOffsetX = (short) (((int) area->m_x - (int) (short) m_graphicWidth) / 2);
+		m_graphicOffsetX = (short) (((int) area->m_width - (int) (short) m_graphicWidth) / 2);
 	}
 	else if ((m_alignmentFlags & 0x10) != 0) {
-		m_graphicOffsetX = (short) (area->m_x - (short) m_graphicWidth);
+		m_graphicOffsetX = (short) (area->m_width - (short) m_graphicWidth);
 	}
 	if ((m_alignmentFlags & 8) != 0) {
-		m_graphicOffsetY = (short) (((int) area->m_y - (int) (short) m_graphicHeight) / 2);
+		m_graphicOffsetY = (short) (((int) area->m_height - (int) (short) m_graphicHeight) / 2);
 		return;
 	}
 	if ((m_alignmentFlags & 0x20) != 0) {
-		m_graphicOffsetY = (short) (area->m_y - (short) m_graphicHeight);
+		m_graphicOffsetY = (short) (area->m_height - (short) m_graphicHeight);
 	}
 }
 
@@ -145,14 +155,11 @@ void GraphicButton::OnDestroy()
 	}
 }
 
-// STUB: LEMBALL 0x00468300 FOLDED
+// FUNCTION: LEMBALL 0x00468300 FOLDED
 void GraphicButton::_DrawButton()
 {
-	if (m_gdi == 0 || m_gdi->m_renderTarget == 0) {
-		return;
-	}
 	if (m_enabled == m_state) {
-		if (m_gdi->m_renderTarget->PvSurface::HasBackBuff() == 0) {
+		if (m_gdi->m_renderTarget->HasBackBuff() == 0) {
 			CheckForceDraw();
 			return;
 		}
@@ -163,11 +170,13 @@ void GraphicButton::_DrawButton()
 }
 
 // 68K 0x10210a70 DrawButton__14CGraphicButtonFv
-// STUB: LEMBALL 0x004689a0
+// FUNCTION: LEMBALL 0x004689a0
 void GraphicButton::DrawButton()
 {
 	unsigned int pressed;
 	Anim* primitive;
+	ResAnim* animation;
+	unsigned int frame;
 	short x;
 	short y;
 
@@ -182,23 +191,65 @@ void GraphicButton::DrawButton()
 		y = (short) (y + 1);
 	}
 	m_gdi->m_renderTarget->GetCurrDb();
+	animation = m_animation;
+	frame = m_frame;
 	primitive = (Anim*) m_primitive;
 	primitive->m_x = x;
 	primitive->m_y = y;
-	primitive->m_animResource = m_animation;
-	primitive->m_animIndex = pressed;
+	primitive->m_animResource = animation;
+	primitive->m_animIndex = (unsigned int) (pressed >= 1);
 	primitive->m_flags = 0;
-	primitive->m_remap = (Remap*) m_frame;
+	primitive->m_remap = (Remap*) frame;
 	primitive->Draw(m_gdi);
 }
 
-// STUB: LEMBALL 0x00468360 FOLDED
+// FUNCTION: LEMBALL 0x0043a620 FOLDED
+void GraphicButton::OnReleased(int p_flags)
+{
+	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
+		m_enabled = 1;
+		return;
+	}
+	m_enabled = 0;
+}
+
+// FUNCTION: LEMBALL 0x0043a660 FOLDED
+void GraphicButton::OnPressed(int p_flags)
+{
+	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
+		m_enabled = 1;
+		return;
+	}
+	m_enabled = 0;
+}
+
+// FUNCTION: LEMBALL 0x0043a6a0 FOLDED
+void GraphicButton::OnEnterButton()
+{
+	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
+		m_enabled = 1;
+		return;
+	}
+	m_enabled = 0;
+}
+
+// FUNCTION: LEMBALL 0x0043a6e0 FOLDED
+void GraphicButton::OnExitButton()
+{
+	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
+		m_enabled = 1;
+		return;
+	}
+	m_enabled = 0;
+}
+
+// FUNCTION: LEMBALL 0x00468360 FOLDED
 void GraphicButton::OnPaint(const VsRect& p_rect)
 {
 	int clipOk;
 	ChangeList* changeList;
 
-	clipOk = m_gdi->m_renderTarget->PvSurface::HasBackBuff();
+	clipOk = m_gdi->m_renderTarget->HasBackBuff();
 	if ((clipOk != 0 && (m_pressed != 0 || m_enabled != m_state)) ||
 		(m_gdi->m_primitiveCount == 0 &&
 		 (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed))) {

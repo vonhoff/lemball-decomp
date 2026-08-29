@@ -14,6 +14,10 @@ public:
 	virtual void DrawButton();                         // vtable+0xbc
 	virtual void OnDestroy();                          // vtable+0x40
 	virtual void OnPaint(const VsRect& p_rect);        // vtable+0xa8
+	virtual void OnReleased(int p_flags);              // vtable+0xc0
+	virtual void OnPressed(int p_flags);               // vtable+0xc4
+	virtual void OnEnterButton();                      // vtable+0xc8
+	virtual void OnExitButton();                       // vtable+0xcc
 	virtual ~GraphicButton();                          // vtable+0x00
 	void Initialise();
 	void SetAnimId(unsigned long p_animId);
@@ -21,6 +25,7 @@ public:
 	friend class ToggleButton;
 	friend class GunButton;
 	friend class GunButtons;
+	friend class HiliteButtons;
 
 private:
 	unsigned int m_enabled;         // 0x104

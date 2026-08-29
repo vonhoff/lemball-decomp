@@ -132,7 +132,7 @@ void PlayerLemming::HitBullet(Bullet* p_bullet)
 					g_pObjectHitMessage->Send(this);
 				}
 			}
-			m_unk0xc0[0] = 0;
+			m_unk0xc0 = 0;
 			m_wasHitByBullet = 1;
 			m_actionDeadline = g_dwGameTick + 40;
 			m_facingDirection = (p_bullet->m_facingDirection + 4) & 7;
@@ -503,10 +503,10 @@ void PlayerLemming::Resurrect(const AiCoord& p_arg0)
 	m_ice = 0;
 	m_onConveyor = 0;
 	m_hasDestination = 0;
-	m_unk0xc0[1] = 0;
+	m_unk0xc4 = 0;
 	m_fireRequestState = (eFireRequestState) 0;
 	m_isFlying = 0;
-	m_unk0xc0[0] = 0;
+	m_unk0xc0 = 0;
 	m_unk0x8c = 0;
 	m_routeSearchFailed = 0;
 	m_routeSearchActive = 0;
@@ -521,7 +521,8 @@ void PlayerLemming::Resurrect(const AiCoord& p_arg0)
 	m_unk0x120 = 0xffff;
 	m_flightVelocity.m_zFixed = 0;
 	m_desiredFacingDirection = 0;
-	m_unk0x58[0] = 0;
+	m_unk0x58 = 0;
+	m_activator = 0;
 	m_unk0x11c = 0;
 	m_ammoCount = 25;
 	SetBored(4000);
@@ -828,7 +829,7 @@ void PlayerLemming::GetViewData(ViewData& p_viewData)
 	p_viewData.m_action = m_action;
 	p_viewData.m_statusFlags = 0;
 	p_viewData.m_stateTimer = m_stateTimer;
-	p_viewData.m_unk0x30 = m_unk0xc0[0];
+	p_viewData.m_unk0x30 = m_unk0xc0;
 	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
 	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
 	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;

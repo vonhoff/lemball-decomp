@@ -134,13 +134,20 @@ private:
 	unsigned char* m_remapTables[4];                // 0x54
 	BaseRemap* m_remaps[5];                         // 0x64
 	TextManager* m_textManager;                     // 0x78
-	undefined m_pad0x7c[0x856];                     // 0x7c
+	undefined m_pad0x7c[0x110];                     // 0x7c
+	unsigned int m_mouseButtonDown;                 // 0x18c
+	undefined m_pad0x190[0x14];                     // 0x190
+	unsigned int m_cursorState;                     // 0x1a4
+	unsigned int m_cursorTimestamp;                 // 0x1a8
+	unsigned short m_cursorBlinkPhase;              // 0x1ac
+	undefined m_pad0x1ae[0x724];                    // 0x1ae
 	VsRect m_spriteGroundLookupRectA;               // 0x8d2
 	VsRect m_spriteGroundLookupRectB;               // 0x8da
 	undefined m_pad0x8e2[0x1a];                     // 0x8e2
 	int m_returnState;                              // 0x8fc
 	undefined m_pad0x900[0x10];                     // 0x900
 	Map* m_map;                                     // 0x910
+	undefined4 m_pad0x914;                          // 0x914
 	int m_viewOriginX;                              // 0x918
 	int m_viewOriginY;                              // 0x91c
 	undefined m_pad0x920[0xc];                      // 0x920
@@ -160,7 +167,7 @@ private:
 	BaseRemap* m_paletteRemap;                      // 0x968
 	Ai* m_ai;                                       // 0x96c
 	Gdi* m_gdi;                                     // 0x970
-	void* m_lemmingManager;                         // 0x974
+	BaseQueueHandler* m_lemmingManager;             // 0x974
 	Main2DDisplay* m_display;                       // 0x978
 	Panel* m_panel;                                 // 0x97c
 	PauseWindow* m_pauseWindow;                     // 0x980
@@ -173,7 +180,7 @@ private:
 	VsRect m_spriteGroundTranslatedPointRect;       // 0x9b8
 	undefined m_pad0x9c0[0x80];                     // 0x9c0
 	LemmingAnimsManager* m_lemmingAnims;            // 0xa40
-	undefined m_pad0xa44[8];                        // 0xa44
+	undefined m_pad0xa44[4];                        // 0xa44
 	unsigned int m_groupingActive;                  // 0xa48
 	unsigned short m_groupCount;                    // 0xa4c
 	unsigned short m_groupSelectionCount;           // 0xa4e

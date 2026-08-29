@@ -1,4 +1,8 @@
 #include "LiftManager.h"
+#include "../Objects/Lift.h"
+
+// GLOBAL: LEMBALL 0x0049e1c0
+unsigned short g_wMovingLiftCount = 0;
 
 // 68K 0x1061508e __ct__12CLiftManagerFP3CAIi
 // STUB: LEMBALL 0x00425680
@@ -7,9 +11,15 @@ LiftManager::LiftManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x10615118 Restart__12CLiftManagerFv
-// STUB: LEMBALL 0x004256e0
+// FUNCTION: LEMBALL 0x004256e0
 void LiftManager::Restart()
 {
+	g_wMovingLiftCount = 0;
+	if (m_lifts != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_lifts[i].Restart();
+		}
+	}
 }
 
 // 68K 0x10615180 Initialise__12CLiftManagerFi

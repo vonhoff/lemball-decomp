@@ -28,6 +28,8 @@ public:
 	void UnLoadFaces();
 	void UpdateAnimId();
 
+	friend class HiliteController;
+
 private:
 	VsRect m_bounds;               // 0x10
 	int m_x;                       // 0x18

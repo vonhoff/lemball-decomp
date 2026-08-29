@@ -11,9 +11,15 @@ Collectable::Collectable(int p_arg0, int p_arg1, int p_arg2, eObjectType p_arg3)
 }
 
 // 68K 0x10605bbc Restart__12CCollectableFv
-// STUB: LEMBALL 0x004228b0
+// FUNCTION: LEMBALL 0x004228b0
 void Collectable::Restart()
 {
+	GlobalGameObject::Restart();
+	m_position.m_xFixed = m_spawnPosition.m_xFixed;
+	m_position.m_yFixed = m_spawnPosition.m_yFixed;
+	m_position.m_zFixed = m_spawnPosition.m_zFixed;
+	m_enabled = 1;
+	m_action = (eAction) 0x18;
 }
 
 // 68K 0x10605c74 Process__12CCollectableFv

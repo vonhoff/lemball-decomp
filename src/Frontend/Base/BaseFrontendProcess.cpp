@@ -45,7 +45,7 @@ BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 	else {
 		m_userActionMessage = new (storage) UserActionMessage();
 	}
-	if (g_pGameStatus != 0 && g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
+	if (g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
 		m_networkWasActive = 1;
 	}
 	else {
@@ -54,6 +54,7 @@ BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 	if (g_pBaseNetwork != 0) {
 		g_pBaseNetwork->AttachMessageQueue(this);
 	}
+	g_pCurrentFrontendProcess = this;
 }
 
 // 68K 0x10801abe Process__20CBaseFrontendProcessFv
@@ -134,7 +135,17 @@ bool BaseFrontendProcess::ReceiveCritical(unsigned long p_id, ReadPacket* p_pack
 // 68K 0x10801a0a __dt__20CBaseFrontendProcessFv
 BaseFrontendProcess::~BaseFrontendProcess()
 {
+	g_pCurrentFrontendProcess = 0;
+	if (g_pBaseNetwork != 0) {
+		g_pBaseNetwork->DetachMessageQueue();
+	}
+	if (m_userActionMessage != 0) {
+		delete (UserActionMessage*) m_userActionMessage;
+	}
 }
+
+// GLOBAL: LEMBALL 0x0049f140
+BaseFrontendProcess* g_pCurrentFrontendProcess = 0;
 
 // GLOBAL: LEMBALL 0x0049ca30
 int g_nTestAllLevels = 0;

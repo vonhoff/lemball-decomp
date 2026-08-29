@@ -1,4 +1,5 @@
 #include "TrapDoorManager.h"
+#include "../Objects/TrapDoor.h"
 
 // 68K 0x1062169e __ct__16CTrapDoorManagerFv
 // STUB: LEMBALL 0x0040c750
@@ -7,9 +8,12 @@ TrapDoorManager::TrapDoorManager()
 }
 
 // 68K 0x1062172c Restart__16CTrapDoorManagerFv
-// STUB: LEMBALL 0x0040c7b0
+// FUNCTION: LEMBALL 0x0040c7b0
 void TrapDoorManager::Restart()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_doors[i]->Restart();
+	}
 }
 
 // 68K 0x10621816 AddNewDoor__16CTrapDoorManagerFUsR7AICOORDUcUl

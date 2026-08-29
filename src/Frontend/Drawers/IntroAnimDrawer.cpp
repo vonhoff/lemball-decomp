@@ -22,10 +22,8 @@ IntroAnimDrawer::IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRec
 	}
 	m_started = 0;
 	m_startCountdown = 10;
-	if (p_arg0 != 0) {
-		p_arg0->Clear(-1);
-	}
-	m_animWindow.Initialise(this, p_arg0, p_arg3);
+	m_display->Clear(-1);
+	m_animWindow.Initialise(this, m_display, p_arg3);
 	m_animWindow.m_resolveMoviePath = 1;
 	m_animWindow.m_moviePrefix = g_szMoviePrefix;
 	m_animWindow.m_useMoviePrefix = 1;
@@ -65,6 +63,9 @@ void IntroAnimDrawer::EndPhase()
 {
 	m_quitYet = 1;
 	m_returnState = m_nextFlow;
+	if (m_animWindow.m_lifecycleRefs == 1) {
+		m_animWindow.Destroy();
+	}
 }
 
 // 68K 0x10805f82 ProcessMessages__16CIntroAnimDrawerFP10tagMESSAGE

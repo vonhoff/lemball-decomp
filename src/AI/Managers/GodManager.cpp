@@ -1,4 +1,5 @@
 #include "GodManager.h"
+#include "BaseObjectManager.h"
 
 // 68K 0x1060de8a __ct__11CGodManagerFi
 // STUB: LEMBALL 0x0040b020
@@ -7,9 +8,14 @@ GodManager::GodManager(int p_arg0)
 }
 
 // 68K 0x1060e004 Restart__11CGodManagerFv
-// STUB: LEMBALL 0x0040b120
+// FUNCTION: LEMBALL 0x0040b120
 void GodManager::Restart()
 {
+	for (int i = 0; i < m_count; i++) {
+		if (m_managers[i] != 0) {
+			m_managers[i]->Restart();
+		}
+	}
 }
 
 // 68K 0x1060e060 Register__11CGodManagerFP18CBaseObjectManager

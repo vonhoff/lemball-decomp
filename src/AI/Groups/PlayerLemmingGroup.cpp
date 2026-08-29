@@ -7,9 +7,14 @@ PlayerLemmingGroup::PlayerLemmingGroup(Ai* p_arg0, ObjectManager* p_arg1, Format
 }
 
 // 68K 0x1060e89e Restart__19CPlayerLemmingGroupFv
-// STUB: LEMBALL 0x00414040
+// FUNCTION: LEMBALL 0x00414040
 void PlayerLemmingGroup::Restart()
 {
+	GenericGroup::Restart();
+	m_formationIndex = 0;
+	m_altered = 0;
+	m_playerControlled = 0;
+	m_useObject = 0;
 }
 
 // 68K 0x1060e946 GetViewData__19CPlayerLemmingGroupFP9CViewData

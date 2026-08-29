@@ -109,26 +109,28 @@ void PvButton::SetAutoDraw(unsigned int p_enabled)
 }
 
 // 68K 0x1020fc9e CheckForceDraw__9CPVButtonFv
-// STUB: LEMBALL 0x00467e50
+// FUNCTION: LEMBALL 0x00467e50
 void PvButton::CheckForceDraw()
 {
-	Surface* surface;
+	Gdi* gdi;
+	Surface* target;
 
-	m_gdi->m_renderTarget->GetCurrDb();
+	gdi = m_gdi;
+	target = gdi->m_renderTarget;
+	target->GetCurrDb();
 	if (m_forceDrawCount == 0) {
 		m_clipRect.m_reserved0c = 0;
 	}
 	else {
 		m_forceDrawCount = m_forceDrawCount - 1;
-		surface = m_gdi->m_renderTarget;
-		m_clipRect.m_left = surface->m_clipRect.m_x;
-		m_clipRect.m_top = surface->m_clipRect.m_y;
+		m_clipRect.m_left = target->m_clipRect.m_width;
+		m_clipRect.m_top = target->m_clipRect.m_height;
 		m_clipRect.m_right = 0;
 		m_clipRect.m_bottom = 0;
 		m_clipRect.m_reserved0c = 0x10000;
-		surface->m_flag78 = 1;
+		target->m_flag78 = 1;
 	}
-	m_clipRect.Draw(m_gdi);
+	m_clipRect.Draw(gdi);
 }
 
 // 68K 0x1020fdc2 _DrawButton__9CPVButtonFv
@@ -143,7 +145,7 @@ void PvButton::_DrawButton()
 }
 
 // 68K 0x1020fe1c Draw__9CPVButtonFUc
-// STUB: LEMBALL 0x00467f30
+// FUNCTION: LEMBALL 0x00467f30
 void PvButton::Draw(unsigned char p_force)
 {
 	unsigned int autoDraw;
@@ -163,22 +165,33 @@ void PvButton::Draw(unsigned char p_force)
 }
 
 // 68K 0x1020fe92 OnEnter__9CPVButtonFv
-// STUB: LEMBALL 0x00467fa0
+// FUNCTION: LEMBALL 0x00467fa0
 void PvButton::OnEnter()
 {
+	if (m_buttonState[0] != 0 || m_buttonState[3] != 0) {
+		m_pressed = 1;
+	}
+	PvButton::OnEnterButton();
+	OnEnterButton();
 }
 
 // 68K 0x1020fee4 OnExit__9CPVButtonFv
-// STUB: LEMBALL 0x00467fd0
+// FUNCTION: LEMBALL 0x00467fd0
 void PvButton::OnExit()
 {
+	m_pressed = 0;
+	PvButton::OnExitButton();
+	OnExitButton();
 }
 
 // 68K 0x1020ff28 ConvertDoubleClick__9CPVButtonF12BUTTON_FLAGS
-// STUB: LEMBALL 0x00468000
+// FUNCTION: LEMBALL 0x00468000
 int PvButton::ConvertDoubleClick(int p_flags)
 {
-	return 0;
+	if ((unsigned int) p_flags > 5) {
+		return 6;
+	}
+	return p_flags % 3;
 }
 
 // 68K 0x1020ff92 OnButtonDown__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
@@ -191,8 +204,9 @@ unsigned int PvButton::OnButtonDown(const VsPoint& p_point, int p_flags)
 		m_pressed = 1;
 	}
 	converted = ConvertDoubleClick(p_flags);
-	m_clickX = (short) (p_point.m_x - m_buttonX);
-	m_clickY = (short) (p_point.m_y - m_buttonY);
+	m_clickX = (short) (p_point.m_x - m_relativeTopLeft.m_x);
+	m_clickY = (short) (p_point.m_y - m_relativeTopLeft.m_y);
+	PvButton::OnPressed(converted);
 	OnPressed(converted);
 	return 0;
 }
@@ -205,23 +219,51 @@ void PvButton::OnButtonUp(const VsPoint& p_point, int p_flags)
 
 	if (m_pressed != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		m_clickX = (short) (p_point.m_x - m_buttonX);
-		m_clickY = (short) (p_point.m_y - m_buttonY);
+		m_clickX = (short) (p_point.m_x - m_relativeTopLeft.m_x);
+		m_clickY = (short) (p_point.m_y - m_relativeTopLeft.m_y);
 		m_pressed = 0;
+		PvButton::OnReleased(converted);
 		OnReleased(converted);
 	}
 }
 
 // 68K 0x10210100 OnExternalButtonUp__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00468130
+// FUNCTION: LEMBALL 0x00468130
 void PvButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 {
+	int i;
+	unsigned int* state;
+
+	m_clickX = (short) (p_point.m_x - m_relativeTopLeft.m_x);
+	m_clickY = (short) (p_point.m_y - m_relativeTopLeft.m_y);
+	state = m_buttonState;
+	i = 6;
+	while (i != 0) {
+		*state = 0;
+		++state;
+		--i;
+	}
 }
 
 // 68K 0x1021019e _OnReleased__9CPVButtonF12BUTTON_FLAGS
-// STUB: LEMBALL 0x00468180
+// FUNCTION: LEMBALL 0x00468180
 void PvButton::OnReleased(int p_flags)
 {
+	Message posted;
+	int converted;
+
+	if (m_autoDraw == 0) {
+		m_forceDrawCount = 1;
+	}
+	if (m_messageHandler != 0) {
+		converted = ConvertDoubleClick(p_flags);
+		posted.time = CurrentQueueTimer();
+		posted.code = (int) m_controlMessage;
+		posted.payload = this;
+		posted.type = 0xc;
+		posted.source = (void*) converted;
+		((BaseQueue*) m_messageHandler)->Post(posted);
+	}
 }
 
 // 68K 0x10210234 _OnPressed__9CPVButtonF12BUTTON_FLAGS
@@ -237,8 +279,7 @@ void PvButton::OnPressed(int p_flags)
 	if (m_messageHandler != 0) {
 		converted = ConvertDoubleClick(p_flags);
 		posted.type = 0xb;
-		posted.reserved[1] = (unsigned short) CurrentQueueTimer();
-		posted.reserved[2] = (unsigned short) (CurrentQueueTimer() >> 16);
+		posted.time = CurrentQueueTimer();
 		posted.code = (int) m_controlMessage;
 		posted.payload = this;
 		posted.source = (void*) converted;
@@ -247,15 +288,33 @@ void PvButton::OnPressed(int p_flags)
 }
 
 // 68K 0x102102ca _OnEnterButton__9CPVButtonFv
-// STUB: LEMBALL 0x00468260
+// FUNCTION: LEMBALL 0x00468260
 void PvButton::OnEnterButton()
 {
+	Message posted;
+
+	if (m_messageHandler != 0) {
+		posted.time = CurrentQueueTimer();
+		posted.code = (int) m_controlMessage;
+		posted.type = 0xd;
+		posted.payload = this;
+		((BaseQueue*) m_messageHandler)->Post(posted);
+	}
 }
 
 // 68K 0x10210330 _OnExitButton__9CPVButtonFv
-// STUB: LEMBALL 0x004682b0
+// FUNCTION: LEMBALL 0x004682b0
 void PvButton::OnExitButton()
 {
+	Message posted;
+
+	if (m_messageHandler != 0) {
+		posted.time = CurrentQueueTimer();
+		posted.code = (int) m_controlMessage;
+		posted.type = 0xe;
+		posted.payload = this;
+		((BaseQueue*) m_messageHandler)->Post(posted);
+	}
 }
 
 // 68K 0x10117424 OnPaint__9CPVButtonFRC7CVSRect

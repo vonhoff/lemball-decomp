@@ -4,9 +4,18 @@
 #include "../../Common.h"
 #include "../../Visos/Graphics/AnimWnd.h" // complete type
 
+class SuccFailDrawer;
+class Main2DDisplay;
+
 // SIZE 0xd8
 // VTABLE: LEMBALL 0x00498250
 class SuccFailAnimWindow : public AnimWnd {
+public:
+	virtual unsigned int GetStyle(); // vtable+0x64
+	virtual void OnStop();           // vtable+0xc4
+	unsigned int Initialise(SuccFailDrawer* p_owner, Main2DDisplay* p_display, int p_variant);
+	void SetVariant(int p_variant);
+
 private:
 	SuccFailDrawer* m_owner;          // 0xbc
 	Main2DDisplay* m_display;         // 0xc0

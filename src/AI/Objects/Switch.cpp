@@ -1,5 +1,9 @@
 #include "Switch.h"
 
+#include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
+#include "../Navigation/Ai.h"
+
 // 68K 0x10619660 __ct__7CSwitchFR7AICOORD9swMessageiii
 // STUB: LEMBALL 0x0041d040
 Switch::Switch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_arg4)
@@ -7,9 +11,13 @@ Switch::Switch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_
 }
 
 // 68K 0x10619732 Restart__7CSwitchFv
-// STUB: LEMBALL 0x0041d100
+// FUNCTION: LEMBALL 0x0041d100
 void Switch::Restart()
 {
+	BaseGlobalObject::Restart();
+	m_entryCount = 0;
+	m_scoreAwarded = 0;
+	m_actionArgument = 0;
 }
 
 // 68K 0x106197d2 Throw__7CSwitchFv
@@ -33,9 +41,15 @@ bool Switch::Activate(GameObject* p_object)
 }
 
 // 68K 0x106199ca DoActivate__7CSwitchFv
-// STUB: LEMBALL 0x0041d2e0
+// FUNCTION: LEMBALL 0x0041d2e0
 void Switch::DoActivate()
 {
+	m_stateTimer = g_dwSimulationTimestamp;
+	m_unk0xd4 += g_dwGameTick;
+	if (m_scoreAwarded == 0) {
+		g_pAI->Score(25);
+		m_scoreAwarded = 1;
+	}
 }
 
 // 68K 0x10619a24 ActivatePosition__7CSwitchFv

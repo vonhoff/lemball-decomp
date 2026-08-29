@@ -1,4 +1,5 @@
 #include "DoorManager.h"
+#include "../Objects/Door.h"
 
 // 68K 0x10606c72 __ct__12CDoorManagerFP3CAIi
 // STUB: LEMBALL 0x0040df30
@@ -7,9 +8,14 @@ DoorManager::DoorManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x10606cfc Restart__12CDoorManagerFv
-// STUB: LEMBALL 0x0040df90
+// FUNCTION: LEMBALL 0x0040df90
 void DoorManager::Restart()
 {
+	if (m_doors != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_doors[i].Restart();
+		}
+	}
 }
 
 // 68K 0x10606d5e Initialise__12CDoorManagerFi

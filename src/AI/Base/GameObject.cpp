@@ -1,5 +1,8 @@
 #include "GameObject.h"
 
+#include "../Navigation/AiDestinationList.h"
+#include "../../Control/Game/Game.h"
+
 GameObject::GameObject()
 {
 }
@@ -352,15 +355,65 @@ GameObject::GameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short
 }
 
 // 68K 0x10609206 Restart__11CGameObjectFv
-// STUB: LEMBALL 0x004150d0
+// FUNCTION: LEMBALL 0x004150d0
 void GameObject::Restart()
 {
+	m_position = m_spawnPosition;
+	m_auxiliaryPosition.m_xFixed = 0;
+	m_auxiliaryPosition.m_yFixed = 0;
+	m_auxiliaryPosition.m_zFixed = 0;
+	Initialise();
+	m_position.m_zFixed = 0;
+	m_unk0x120 = (undefined2) 0xffff;
+	m_unk0x110 = (undefined4) 0xffff;
+	m_position.m_yFixed = 0;
+	m_position.m_xFixed = 0;
+	if (m_destinationList != 0) {
+		m_destinationList->m_count = 0;
+	}
+	switch (m_objectType) {
+	case (eObjectType) 1:
+		m_runtimeFlags = 0x200;
+		break;
+	case (eObjectType) 2:
+		m_runtimeFlags = 0x100;
+		break;
+	}
 }
 
 // 68K 0x1060936a Initialise__11CGameObjectFv
-// STUB: LEMBALL 0x004151b0
+// FUNCTION: LEMBALL 0x004151b0
 void GameObject::Initialise()
 {
+	m_actionArgument = 0;
+	m_unk0x2c = 0;
+	m_action = (eAction) 0;
+	m_isRemoteObject = 0;
+	m_facingDirection = 0;
+	m_heading = 0;
+	m_unk0xc4 = 0;
+	m_unk0x3c = 0;
+	m_isFlying = 0;
+	m_unk0xc0 = 0;
+	m_unk0x8c = 0;
+	m_routeSearchFailed = 0;
+	m_routeSearchActive = 0;
+	m_unk0x104 = 0;
+	m_unk0x108 = 0;
+	m_unk0x10c = 0;
+	m_balloonPostActive = 0;
+	m_balloonPostId = 0;
+	m_flightVelocity.m_xFixed = 0;
+	m_flightVelocity.m_yFixed = 0;
+	m_desiredFacingDirection = 0;
+	m_flightVelocity.m_zFixed = 0;
+	m_unk0x58 = 0;
+	m_activator = 0;
+	m_unk0x11c = 0;
+	m_hasDestination = 0;
+	m_actionDeadline = g_dwGameTick;
+	m_soundEffect = (eSoundEffect) 0;
+	m_transientFlags = 0;
 }
 
 // 68K 0x106093e4 StartFly__11CGameObjectFR9C3DVectorP9C3DVector

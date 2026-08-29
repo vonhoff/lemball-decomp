@@ -2,6 +2,7 @@
 #define LEMBALL_FRONTEND_DRAWERS_SUCCFAILDRAWERPRIMS_H
 
 #include "../../Common.h"
+#include "../../Visos/Graphics/BitmapRes.h" // complete type
 
 // SIZE 0x48
 struct SuccFailDrawerPrims {
@@ -9,8 +10,8 @@ public:
 	SuccFailDrawerPrims();
 	~SuccFailDrawerPrims();
 
-	undefined m_primary[0x24];   // 0x00
-	undefined m_secondary[0x24]; // 0x24
+	BitmapRes m_primary;   // 0x00
+	BitmapRes m_secondary; // 0x24
 };
 
 #endif

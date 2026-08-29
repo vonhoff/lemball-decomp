@@ -51,6 +51,7 @@ private:
 	int m_highHeight;                 // 0x14c
 	int m_movementStartHeight;        // 0x150
 	short m_direction;                // 0x154
+	undefined4 m_unk0x158;            // 0x158
 	eLiftActivateType m_activateType; // 0x15c
 	void* m_mapCell;                  // 0x160
 	unsigned int m_active;            // 0x164

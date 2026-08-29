@@ -60,8 +60,11 @@ public:
 	friend class MainOptions1Drawer;
 	friend class MainOptions2Drawer;
 	friend class Main2DDisplay;
+	friend class PasswordDrawer;
+	friend class SuccFailDrawer;
+	friend class PreviewDrawer;
 
-private:
+protected:
 	AnimsManager m_anims;                 // 0x14
 	Main2DDisplay* m_display;             // 0x84
 	Gdi* m_gdi;                           // 0x88

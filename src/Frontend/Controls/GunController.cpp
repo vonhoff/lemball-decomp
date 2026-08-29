@@ -160,7 +160,7 @@ GunController::GunController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned cha
 }
 
 // 68K 0x108035a6 ActivateButtons__14CGunControllerFUc
-// STUB: LEMBALL 0x0044cc90
+// FUNCTION: LEMBALL 0x0044cc90
 void GunController::ActivateButtons(unsigned char p_active)
 {
 	int i;
@@ -179,7 +179,7 @@ void GunController::ActivateButtons(unsigned char p_active)
 }
 
 // 68K 0x10803618 SetSpriteWindow__14CGunControllerFv
-// STUB: LEMBALL 0x0044cce0
+// FUNCTION: LEMBALL 0x0044cce0
 void GunController::SetSpriteWindow()
 {
 	void* storage;
@@ -206,7 +206,7 @@ int GunController::ProcessMsg(Message* p_message)
 {
 	unsigned int type;
 
-	if ((int) (*(unsigned int*) &p_message->reserved[1] - m_inputReadyTime) < 0) {
+	if ((int) (p_message->time - m_inputReadyTime) < 0) {
 		return 0;
 	}
 	type = p_message->type;
@@ -237,7 +237,7 @@ int GunController::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x108039d4 AddButton__14CGunControllerFiiPUlUciiiPvUl
-// STUB: LEMBALL 0x0044cfb0
+// FUNCTION: LEMBALL 0x0044cfb0
 void GunController::AddButton(int p_x,
 							  int p_y,
 							  unsigned long* p_animIds,
@@ -320,7 +320,7 @@ void GunController::AddJunction(int p_x, int p_y, unsigned char p_side, unsigned
 }
 
 // 68K 0x10803cc4 DrawButtons__14CGunControllerFUcUc
-// STUB: LEMBALL 0x0044d290
+// FUNCTION: LEMBALL 0x0044d290
 void GunController::DrawButtons(unsigned char p_firstState, unsigned char p_secondState)
 {
 	int i;
@@ -565,7 +565,7 @@ void GunController::MoveRight()
 }
 
 // 68K 0x10804570 SetGun__14CGunControllerFi
-// STUB: LEMBALL 0x0044da70
+// FUNCTION: LEMBALL 0x0044da70
 void GunController::SetGun(int p_junction)
 {
 	VsSize animSize;
@@ -707,8 +707,7 @@ void GunController::Process()
 				fireTime = fireTime - 0x177;
 			}
 			if (fireTime <= now && m_messageSent != 1) {
-				m_selectionMessage.reserved[1] = (unsigned short) CurrentQueueTimer();
-				m_selectionMessage.reserved[2] = (unsigned short) (CurrentQueueTimer() >> 16);
+				m_selectionMessage.time = CurrentQueueTimer();
 				if (g_pMasterInputQueue != 0) {
 					g_pMasterInputQueue->Post(m_selectionMessage);
 				}

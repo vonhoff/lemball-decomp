@@ -27,12 +27,7 @@ unsigned int PlayThruAnim::GetFrameNo()
 	else {
 		elapsed = m_fixedTime - m_frameState;
 	}
-	if (m_animTime <= elapsed) {
-		frame = m_frames - 1;
-	}
-	else {
-		frame = (m_frames * elapsed) / m_animTime;
-	}
+	frame = (m_animTime <= elapsed) ? m_frames - 1 : (m_frames * elapsed) / m_animTime;
 	if (m_direction != 1) {
 		frame = (m_frames - frame) - 1;
 	}

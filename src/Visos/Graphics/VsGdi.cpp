@@ -15,6 +15,7 @@
 #include "CopyColourToBackBuff.h"
 #include "CopyToBackBuff.h"
 #include "GdiDevice.h"
+#include "Line.h"
 #include "Point.h"
 #include "ZBuffClear.h"
 #include "Zrle.h"
@@ -438,64 +439,62 @@ ChangeList* Surface::GetChangeList()
 }
 
 // 68K 0x1010959a Blit__8CSurfaceFP9CClipRect
-// STUB: LEMBALL 0x0046cbe0
+// FUNCTION: LEMBALL 0x0046cbe0
 void Surface::Blit(class ClipRect* p_arg0)
 {
-	VsRect* clip;
 	Surface* parent;
-	VsRect* parentClip;
 	short clipRight;
 	short clipBottom;
 
-	clip = &m_clipRect;
 	if ((p_arg0->m_reserved0c & 0x1000) == 0) {
-		clip->m_width = p_arg0->m_left;
-		clip->m_height = p_arg0->m_top;
-		clip->m_x = p_arg0->m_right;
-		clip->m_y = p_arg0->m_bottom;
+		m_clipRect.m_width = p_arg0->m_left;
+		m_clipRect.m_height = p_arg0->m_top;
+		m_clipRect.m_x = p_arg0->m_right;
+		m_clipRect.m_y = p_arg0->m_bottom;
 	}
 	else if ((int) p_arg0->m_left * (int) p_arg0->m_top != 0) {
-		if (p_arg0->m_right < clip->m_x) {
-			clip->m_width = (short) (clip->m_width + (clip->m_x - p_arg0->m_right));
-			clip->m_x = p_arg0->m_right;
+		if (p_arg0->m_right < m_clipRect.m_x) {
+			m_clipRect.m_width = (short) (m_clipRect.m_width + (m_clipRect.m_x - p_arg0->m_right));
+			m_clipRect.m_x = p_arg0->m_right;
 		}
-		if ((short) (clip->m_width + clip->m_x) < (short) (p_arg0->m_right + p_arg0->m_left)) {
-			clip->m_width = (short) ((p_arg0->m_left - clip->m_x) + p_arg0->m_right);
+		if ((short) (m_clipRect.m_width + m_clipRect.m_x) < (short) (p_arg0->m_right + p_arg0->m_left)) {
+			m_clipRect.m_width = (short) ((p_arg0->m_left - m_clipRect.m_x) + p_arg0->m_right);
 		}
-		if (p_arg0->m_bottom < clip->m_y) {
-			clip->m_height = (short) (clip->m_height + (clip->m_y - p_arg0->m_bottom));
-			clip->m_y = p_arg0->m_bottom;
+		if (p_arg0->m_bottom < m_clipRect.m_y) {
+			m_clipRect.m_height = (short) (m_clipRect.m_height + (m_clipRect.m_y - p_arg0->m_bottom));
+			m_clipRect.m_y = p_arg0->m_bottom;
 		}
-		if ((short) (clip->m_height + clip->m_y) < (short) (p_arg0->m_bottom + p_arg0->m_top)) {
-			clip->m_height = (short) ((p_arg0->m_top - clip->m_y) + p_arg0->m_bottom);
+		if ((short) (m_clipRect.m_height + m_clipRect.m_y) < (short) (p_arg0->m_bottom + p_arg0->m_top)) {
+			m_clipRect.m_height = (short) ((p_arg0->m_top - m_clipRect.m_y) + p_arg0->m_bottom);
 		}
 	}
 	parent = m_parentSurface;
 	if (parent != (Surface*) g_pGdiHelperTarget && (p_arg0->m_reserved0c & 0x10000) == 0 && parent != 0) {
-		parentClip = &parent->m_clipRect;
-		clipRight = clip->m_x;
-		if (clipRight < parentClip->m_x) {
-			clip->m_width = (short) (clip->m_width + (clipRight - parentClip->m_x));
-			clip->m_x = parentClip->m_x;
+		clipRight = m_clipRect.m_x;
+		if (clipRight < parent->m_clipRect.m_x) {
+			m_clipRect.m_width = (short) (m_clipRect.m_width + (clipRight - parent->m_clipRect.m_x));
+			m_clipRect.m_x = parent->m_clipRect.m_x;
 		}
-		clipRight = clip->m_x;
-		if ((short) (parentClip->m_width + parentClip->m_x) < (short) (clip->m_width + clipRight)) {
-			clip->m_width = (short) ((parentClip->m_x - clipRight) + parentClip->m_width);
+		clipRight = m_clipRect.m_x;
+		if ((short) (parent->m_clipRect.m_width + parent->m_clipRect.m_x) <
+			(short) (m_clipRect.m_width + clipRight)) {
+			m_clipRect.m_width = (short) ((parent->m_clipRect.m_x - clipRight) + parent->m_clipRect.m_width);
 		}
-		clipBottom = clip->m_y;
-		if (clipBottom < parentClip->m_y) {
-			clip->m_height = (short) (clip->m_height + (clipBottom - parentClip->m_y));
-			clip->m_y = parentClip->m_y;
+		clipBottom = m_clipRect.m_y;
+		if (clipBottom < parent->m_clipRect.m_y) {
+			m_clipRect.m_height = (short) (m_clipRect.m_height + (clipBottom - parent->m_clipRect.m_y));
+			m_clipRect.m_y = parent->m_clipRect.m_y;
 		}
-		clipBottom = clip->m_y;
-		if ((short) (parentClip->m_y + parentClip->m_height) < (short) (clip->m_height + clipBottom)) {
-			clip->m_height = (short) ((parentClip->m_height - clipBottom) + parentClip->m_y);
+		clipBottom = m_clipRect.m_y;
+		if ((short) (parent->m_clipRect.m_y + parent->m_clipRect.m_height) <
+			(short) (m_clipRect.m_height + clipBottom)) {
+			m_clipRect.m_height = (short) ((parent->m_clipRect.m_height - clipBottom) + parent->m_clipRect.m_y);
 		}
-		if (clip->m_width < 1 || clip->m_height < 1) {
-			clip->m_height = 0;
-			clip->m_width = 0;
-			clip->m_y = 0;
-			clip->m_x = 0;
+		if (m_clipRect.m_width < 1 || m_clipRect.m_height < 1) {
+			m_clipRect.m_height = 0;
+			m_clipRect.m_width = 0;
+			m_clipRect.m_y = 0;
+			m_clipRect.m_x = 0;
 		}
 	}
 }
@@ -1085,9 +1084,105 @@ void Surface::Blit(SolidRect* p_rect)
 }
 
 // 68K 0x10111fca Blit__8CSurfaceFP5CLine
-// STUB: LEMBALL 0x004750c0
+// FUNCTION: LEMBALL 0x004750c0
 void Surface::Blit(Line* p_line)
 {
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+	int dx;
+	int dy;
+	int absDy;
+	int stepY;
+	int err;
+	int x;
+	int y;
+	int remaining;
+	unsigned char color;
+	VsRect bounds;
+
+	if (p_line == 0 || m_lines == 0) {
+		return;
+	}
+	x1 = p_line->m_x1;
+	y1 = p_line->m_y1;
+	x2 = p_line->m_x2;
+	y2 = p_line->m_y2;
+	color = (unsigned char) p_line->m_color;
+	if (x2 < x1) {
+		x = x1;
+		x1 = x2;
+		x2 = x;
+		y = y1;
+		y1 = y2;
+		y2 = y;
+	}
+	if (LineClip(x1, y1, x2, y2) != 0) {
+		return;
+	}
+	dx = x2 - x1;
+	dy = y2 - y1;
+	stepY = 1;
+	absDy = dy;
+	if (dy < 0) {
+		stepY = -1;
+		absDy = -dy;
+	}
+	if (absDy < dx) {
+		err = 0;
+		if (0 < dx) {
+			x = x1;
+			y = y1;
+			remaining = dx;
+			do {
+				remaining = remaining - 1;
+				x = x + 1;
+				err = err + absDy * 2;
+				*((unsigned char*) m_lines[y] + (x - 1)) = color;
+				if (dx < err) {
+					y = y + stepY;
+					err = err + dx * -2;
+				}
+			} while (remaining != 0);
+		}
+	}
+	else {
+		remaining = dy;
+		if (stepY != 1) {
+			remaining = y1 - y2;
+		}
+		if (0 < remaining) {
+			x = x1;
+			y = y1;
+			err = 0;
+			do {
+				remaining = remaining - 1;
+				err = err + dx * 2;
+				*((unsigned char*) m_lines[y] + x) = color;
+				y = y + stepY;
+				if (absDy < err) {
+					x = x + 1;
+					err = err + absDy * -2;
+				}
+			} while (remaining != 0);
+		}
+	}
+	bounds.m_width = (short) (dx + 1);
+	if (dy < 0) {
+		bounds.m_height = (short) (-dy + 1);
+	}
+	else {
+		bounds.m_height = (short) (dy + 1);
+	}
+	bounds.m_x = (short) x1;
+	if (y2 <= y1) {
+		bounds.m_y = (short) y2;
+	}
+	else {
+		bounds.m_y = (short) y1;
+	}
+	AddToChangeList(bounds);
 }
 
 // 68K 0x10112604 Blit__8CSurfaceFP7CCircle
@@ -1109,9 +1204,130 @@ void Surface::BlitRect(VsRect p_rect, int p_colour)
 }
 
 // 68K 0x101121bc LineClip__8CSurfaceFRiRiRiRi
-// STUB: LEMBALL 0x004757a0
+// FUNCTION: LEMBALL 0x004757a0
 int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 {
+	int left;
+	int top;
+	int right;
+	int bottom;
+	unsigned int code1;
+	unsigned int code2;
+	int dx;
+	int dy;
+
+	if (m_clipRect.m_height < 1 || m_clipRect.m_width < 1) {
+		return 1;
+	}
+	left = m_clipRect.m_x;
+	top = m_clipRect.m_y;
+	right = m_clipRect.m_x + m_clipRect.m_width - 1;
+	bottom = m_clipRect.m_y + m_clipRect.m_height - 1;
+	code1 = 0;
+	if (p_x1 < left) {
+		code1 = 1;
+	}
+	else if (right < p_x1) {
+		code1 = 2;
+	}
+	if (p_y1 < top) {
+		code1 = code1 | 4;
+	}
+	else if (bottom < p_y1) {
+		code1 = code1 | 8;
+	}
+	code2 = 0;
+	if (p_x2 < left) {
+		code2 = 1;
+	}
+	else if (right < p_x2) {
+		code2 = 2;
+	}
+	if (p_y2 < top) {
+		code2 = code2 | 4;
+	}
+	else if (bottom < p_y2) {
+		code2 = code2 | 8;
+	}
+	if (code2 != 0 || code1 != 0) {
+		do {
+			if ((code1 & code2) != 0) {
+				return 1;
+			}
+			dx = p_x2 - p_x1;
+			dy = p_y2 - p_y1;
+			if (code1 == 0) {
+				if ((code2 & 1) == 0) {
+					if ((code2 & 2) == 0) {
+						if ((code2 & 4) != 0) {
+							p_x2 = p_x2 + ((top - p_y2) * dx) / dy;
+							p_y2 = top;
+						}
+						else if ((code2 & 8) != 0) {
+							p_x2 = p_x2 + ((bottom - p_y2) * dx) / dy;
+							p_y2 = bottom;
+						}
+					}
+					else {
+						p_y2 = p_y2 + ((right - p_x2) * dy) / dx;
+						p_x2 = right;
+					}
+				}
+				else {
+					p_y2 = p_y2 + ((left - p_x2) * dy) / dx;
+					p_x2 = left;
+				}
+				code2 = 0;
+				if (p_x2 < left) {
+					code2 = 1;
+				}
+				else if (right < p_x2) {
+					code2 = 2;
+				}
+				if (p_y2 < top) {
+					code2 = code2 | 4;
+				}
+				else if (bottom < p_y2) {
+					code2 = code2 | 8;
+				}
+			}
+			else {
+				if ((code1 & 1) == 0) {
+					if ((code1 & 2) == 0) {
+						if ((code1 & 4) != 0) {
+							p_x1 = p_x1 + ((top - p_y1) * dx) / dy;
+							p_y1 = top;
+						}
+						else if ((code1 & 8) != 0) {
+							p_x1 = p_x1 + ((bottom - p_y1) * dx) / dy;
+							p_y1 = bottom;
+						}
+					}
+					else {
+						p_y1 = ((right - p_x1) * dy) / dx + p_y1;
+						p_x1 = right;
+					}
+				}
+				else {
+					p_y1 = p_y1 + ((left - p_x1) * dy) / dx;
+					p_x1 = left;
+				}
+				code1 = 0;
+				if (p_x1 < left) {
+					code1 = 1;
+				}
+				else if (right < p_x1) {
+					code1 = 2;
+				}
+				if (p_y1 < top) {
+					code1 = code1 | 4;
+				}
+				else if (bottom < p_y1) {
+					code1 = code1 | 8;
+				}
+			}
+		} while (code2 != 0 || code1 != 0);
+	}
 	return 0;
 }
 

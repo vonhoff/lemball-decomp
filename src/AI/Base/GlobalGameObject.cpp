@@ -27,9 +27,16 @@ GlobalGameObject::GlobalGameObject(eObjectType p_arg0, unsigned short p_arg1, un
 }
 
 // 68K 0x1060bbf2 Restart__17CGlobalGameObjectFv
-// STUB: LEMBALL 0x00416d50
+// 68K 0x10609340 Restart__17CGlobalGameObjectFv
+// FUNCTION: LEMBALL 0x00416d50
 void GlobalGameObject::Restart()
 {
+	GameObject::Restart();
+	m_requestActive = 0;
+	m_requestedAction = (eAction) 0x18;
+	m_pendingAction = (eAction) 0x18;
+	m_usableState = 0;
+	m_requestEnabled = 1;
 }
 
 // 68K 0x1060bc46 UsableState__17CGlobalGameObjectFv

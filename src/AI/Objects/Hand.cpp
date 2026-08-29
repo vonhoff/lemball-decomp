@@ -7,15 +7,23 @@ Hand::Hand()
 }
 
 // 68K 0x10610da2 Initialise__5CHandFv
-// STUB: LEMBALL 0x00427af0
+// FUNCTION: LEMBALL 0x00427af0
 void Hand::Initialise()
 {
+	m_stateTimer = 0;
+	m_activated = 0;
+	m_enabled = 0;
 }
 
 // 68K 0x10610dd2 Restart__5CHandFv
-// STUB: LEMBALL 0x00427b10
+// FUNCTION: LEMBALL 0x00427b10
 void Hand::Restart()
 {
+	GlobalGameObject::Restart();
+	Initialise();
+	m_position.m_xFixed = m_spawnPosition.m_xFixed;
+	m_position.m_yFixed = m_spawnPosition.m_yFixed;
+	m_position.m_zFixed = m_spawnPosition.m_zFixed;
 }
 
 // 68K 0x10610e74 Set__5CHandFUsRC7AICOORD

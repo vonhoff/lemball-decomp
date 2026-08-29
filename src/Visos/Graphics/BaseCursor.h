@@ -5,6 +5,8 @@
 #include "../Foundation/BaseQueueHandler.h" // complete type
 #include "../Foundation/VsPoint.h"          // complete type
 #include "../Foundation/VsRect.h"           // complete type
+#include "PopActive.h"                      // complete type
+#include "PushActive.h"                     // complete type
 
 // SIZE 0x9c
 // VTABLE: LEMBALL 0x00499d38
@@ -26,12 +28,14 @@ public:
 	void SetPos(const VsPoint& p_position);
 
 	friend class Cursor;
+	friend class C2D;
+	friend void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
 
 private:
 	VsPoint m_position;                 // 0x10
 	VsPoint m_hotspot;                  // 0x14
 	unsigned int m_active;              // 0x18
-	void* m_renderState;                // 0x1c
+	Zrle* m_renderState;                // 0x1c
 	ResBase* m_resource;                // 0x20
 	int m_frame;                        // 0x24
 	unsigned int m_resourceId;          // 0x28
@@ -40,7 +44,8 @@ private:
 	unsigned int m_changingCursor;      // 0x34
 	unsigned int m_drawn;               // 0x38
 	unsigned int m_systemCursorVisible; // 0x3c
-	undefined m_primitiveState[0x0c];   // 0x40
+	PopActive m_popActive;              // 0x40
+	PushActive m_pushActive;            // 0x44
 	int m_maxSpeed;                     // 0x4c
 	int m_acceleration;                 // 0x50
 	int m_fixedX;                       // 0x54

@@ -64,12 +64,32 @@ public:
 	void SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_third, int p_fourth);
 	void SetPlayerIDs();
 	void Start();
-	void SwitchMessage(swMessage p_message, int p_first, int p_last);
+	void SwitchMessage(swMessage p_message, int p_first, int p_last = 0, int p_arg3 = 0);
 	~Ai();
 
 	friend class Bullet;
 	friend class PlayerLemming;
 	friend class C2D;
+	friend class Main2DDisplay;
+	friend class SlinkyManager;
+	friend class TrampolineManager;
+	friend class TrapDoorManager;
+	friend class RocketManager;
+	friend class PaintGunManager;
+	friend class MineManager;
+	friend class LaserManager;
+	friend class LiftManager;
+	friend class HandManager;
+	friend class IceManager;
+	friend class BallManager;
+	friend class DoorManager;
+	friend class LevelLoader;
+	friend class MoverManager;
+	friend class InvisibleSwitchManager;
+	friend class FormationManager;
+	friend class SheepGroupManager;
+	friend class EnemyGroupManager;
+	friend class NodeManager;
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:

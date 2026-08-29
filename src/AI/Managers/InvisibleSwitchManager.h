@@ -10,8 +10,8 @@ class InvisibleSwitchManager : public NetworkMessage {
 public:
 	InvisibleSwitchManager(Ai* p_arg0, int p_arg1);
 	virtual void Process();            // vtable+0x1c
-	virtual void Restart();            // vtable+0x18
 	virtual ~InvisibleSwitchManager(); // vtable+0x14
+	void Restart();
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void StepOn(const AiCoord& p_position, GameObject* p_object);

@@ -36,10 +36,13 @@ public:
 	friend class BitmapRes;
 	friend class BitmapResBase;
 	friend class CdLoadAnimDraw;
+	friend class BaseCursor;
 	friend class Anim;
 	friend class SpriteWindow;
 	friend class TrackWindow;
 	friend class HiliteWindow;
+	friend class TargetAboutScreen;
+	friend class HiliteButtons;
 	friend class PasswordHiliteWindow;
 	friend struct TargetWinGDrawCodecState;
 	friend TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo);

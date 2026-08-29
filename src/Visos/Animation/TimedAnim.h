@@ -18,6 +18,7 @@ public:
 	friend class GunController;
 	friend class PlayThruAnim;
 	friend class RepeatAnim;
+	friend class PreviewDrawer;
 
 private:
 	unsigned int m_animTime;  // 0x10

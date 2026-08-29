@@ -32,6 +32,7 @@ public:
 
 	friend class IntroAnimDrawer;
 	friend class IntroAnimAnimWindow;
+	friend class SuccFailDrawer;
 
 private:
 	unsigned int m_animSet;        // 0xa0

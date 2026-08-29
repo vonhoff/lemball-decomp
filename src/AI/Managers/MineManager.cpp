@@ -1,4 +1,5 @@
 #include "MineManager.h"
+#include "../Objects/Mine.h"
 
 // 68K 0x10616764 __ct__12CMineManagerFP3CAIi
 // STUB: LEMBALL 0x00424020
@@ -7,9 +8,14 @@ MineManager::MineManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x106167f2 Restart__12CMineManagerFv
-// STUB: LEMBALL 0x00424080
+// FUNCTION: LEMBALL 0x00424080
 void MineManager::Restart()
 {
+	if (m_mines != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_mines[i].Restart();
+		}
+	}
 }
 
 // 68K 0x10616854 Initialise__12CMineManagerFi

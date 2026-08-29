@@ -7,15 +7,20 @@ Rocket::Rocket()
 }
 
 // 68K 0x1061d910 Initialise__7CRocketFv
-// STUB: LEMBALL 0x004267f0
+// FUNCTION: LEMBALL 0x004267f0
 void Rocket::Initialise()
 {
+	m_stateTimer = 0;
+	m_enabled = 0;
+	m_active = 0;
 }
 
 // 68K 0x1061d942 Restart__7CRocketFv
-// STUB: LEMBALL 0x00426810
+// FUNCTION: LEMBALL 0x00426810
 void Rocket::Restart()
 {
+	GlobalGameObject::Restart();
+	Initialise();
 }
 
 // 68K 0x1061d9cc Set__7CRocketFUsRC7AICOORD

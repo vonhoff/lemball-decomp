@@ -1,4 +1,5 @@
 #include "RocketManager.h"
+#include "../Objects/Rocket.h"
 
 // 68K 0x1061dcfe __ct__14CRocketManagerFP3CAIi
 // STUB: LEMBALL 0x00426ac0
@@ -7,9 +8,14 @@ RocketManager::RocketManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x1061dd8a Restart__14CRocketManagerFv
-// STUB: LEMBALL 0x00426b20
+// FUNCTION: LEMBALL 0x00426b20
 void RocketManager::Restart()
 {
+	if (m_rockets != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_rockets[i].Restart();
+		}
+	}
 }
 
 // 68K 0x1061ddee Initialise__14CRocketManagerFi

@@ -7,15 +7,21 @@ Laser::Laser()
 }
 
 // 68K 0x10613558 Restart__6CLaserFv
-// STUB: LEMBALL 0x004288b0
+// FUNCTION: LEMBALL 0x004288b0
 void Laser::Restart()
 {
+	GlobalGameObject::Restart();
+	Initialise();
 }
 
 // 68K 0x1061358a Initialise__6CLaserFv
-// STUB: LEMBALL 0x004288d0
+// FUNCTION: LEMBALL 0x004288d0
 void Laser::Initialise()
 {
+	m_action = (eAction) 0x18;
+	m_stateTimer = 0;
+	m_active = 0;
+	m_enabled = 0;
 }
 
 // 68K 0x10613618 Set__6CLaserFUsRC7AICOORD11eObjectType

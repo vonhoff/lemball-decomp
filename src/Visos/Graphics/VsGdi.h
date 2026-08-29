@@ -10,10 +10,6 @@
 
 #pragma warning(disable : 4250)
 
-// SIZE 0x44
-// PvGdiBitmap at 0, Surface vbptr at 0x40. MSVC 4.0 drops that vbptr if Surface lists virtual PvSurface next to the mixins.
-class SurfaceGdi : public PvGdiBitmap, public virtual PvSurface {};
-
 struct SurfaceListNode {
 	class Surface* m_surface;
 	SurfaceListNode* m_next;
@@ -21,7 +17,8 @@ struct SurfaceListNode {
 };
 
 // SIZE 0x5a0
-class Surface : public SurfaceGdi, public PvZBuffSurface, public PvBackBuffSurface {
+// PvGdiBitmap at 0. Shared PvSurface from PvZBuffSurface/PvBackBuffSurface virtual bases.
+class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface {
 public:
 	Surface(GrafPort* p_arg0);
 	Surface(const VsRect& p_arg0, class Surface* p_arg1);

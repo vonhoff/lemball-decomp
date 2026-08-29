@@ -38,6 +38,7 @@ public:
 	friend class Game;
 	friend class BaseFrontendProcess;
 	friend class MainOptions1Drawer;
+	friend class BaseFrontendDrawer;
 	friend class FrontendResourceLoader;
 	friend class CdLoadAnim;
 

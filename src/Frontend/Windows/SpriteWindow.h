@@ -9,7 +9,7 @@
 class SpriteWindow : public PvGWnd {
 public:
 	SpriteWindow();
-	virtual void OnCreate(); // vtable+0x3c
+	virtual void Dummy3c(); // vtable+0x3c
 };
 
 #endif

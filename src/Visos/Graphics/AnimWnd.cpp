@@ -83,9 +83,12 @@ AnimWnd::AnimWnd()
 }
 
 // 68K 0x10103cd2 __dt__8CAnimWndFv
-// STUB: LEMBALL 0x0046de70
+// FUNCTION: LEMBALL 0x0046de70
 AnimWnd::~AnimWnd()
 {
+	if (m_lifecycleRefs == 1) {
+		Destroy();
+	}
 	g_pAnimWnd = 0;
 	if (m_movieWindow != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
@@ -109,9 +112,17 @@ void AnimWnd::OnCreate()
 }
 
 // 68K 0x101040d4 _OnDestroy__8CAnimWndFv
-// STUB: LEMBALL 0x0046df40
+// FUNCTION: LEMBALL 0x0046df40
 void AnimWnd::OnDestroy()
 {
+	Stop();
+	if (m_movieWindow != 0) {
+		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
+		m_movieWindow = 0;
+	}
+	GWnd::OnDestroy();
+	m_paused = 0;
+	m_playing = 0;
 }
 
 // STUB: LEMBALL 0x0046df80

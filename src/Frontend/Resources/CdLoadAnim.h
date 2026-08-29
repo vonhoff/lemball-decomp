@@ -6,7 +6,6 @@
 #include "../../Visos/Animation/RepeatAnim.h"   // complete type
 #include "../../Visos/Graphics/Bitmap.h"        // complete type
 #include "../../Visos/Graphics/BitmapRes.h"     // complete type
-#include "../../Visos/Graphics/ClipRect.h"      // complete type
 #include "../../Visos/Graphics/DrawingMark.h"   // complete type
 #include "../../Visos/Graphics/Line.h"          // complete type
 
@@ -31,9 +30,9 @@ public:
 	BitmapResBase m_fgBlit[1];     // 0x4c / object+0xc0
 	RepeatAnim* m_repeatAnim;      // 0x68 / object+0xdc
 	Line m_line[1];                // 0x6c / object+0xe0
-	ClipRect m_clip0[1];           // 0x7c / object+0xf0
-	ClipRect m_clip1[1];           // 0x8c / object+0x100
-	ClipRect m_clip2[1];           // 0x9c / object+0x110
+	Line m_needle0[1];             // 0x7c / object+0xf0
+	Line m_needle1[1];             // 0x8c / object+0x100
+	Line m_needle2[1];             // 0x9c / object+0x110
 	DrawingMark m_mark;            // 0xac / object+0x120
 	Bitmap m_clearBitmap[1];       // 0xb0 / object+0x124
 };

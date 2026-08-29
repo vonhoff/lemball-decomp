@@ -13,6 +13,8 @@ public:
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~PushActive();           // vtable+0x00
 
+	friend class BaseCursor;
+
 private:
 	unsigned int m_activeMarker; // 0x04
 };

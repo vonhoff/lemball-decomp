@@ -14,6 +14,7 @@ public:
 	friend bool TargetInputInit();
 	friend bool TargetInputQuit();
 	friend class HotAreaHandler;
+	friend class BaseCursor;
 
 private:
 	undefined4 m_unk0x04;     // 0x04

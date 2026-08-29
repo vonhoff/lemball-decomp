@@ -6,6 +6,22 @@
 #include "../Foundation/VsRect.h"  // complete type
 #include "../Foundation/VsSize.h"  // complete type
 
+// SIZE 0x0c
+struct WindowOwnerNode {
+	class PvWnd* m_window;     // 0x00
+	WindowOwnerNode* m_next;   // 0x04
+	WindowOwnerNode* m_prev;   // 0x08
+};
+
+// SIZE 0x0c
+struct WindowOwnerList {
+	WindowOwnerNode* m_head; // 0x00
+	WindowOwnerNode* m_tail; // 0x04
+	int m_count;             // 0x08
+};
+
+extern WindowOwnerList* g_pWindowOwnerList;
+
 // SIZE 0x3c
 // VTABLE: LEMBALL 0x00499478
 class PvWnd {
@@ -60,9 +76,12 @@ public:
 	friend class GWnd;
 	friend class PvButton;
 	friend class GraphicButton;
+	friend class AnimWnd;
 	friend class GunController;
 	friend class CdLoadAnim;
 	friend class CdLoadAnimDraw;
+	friend class C2D;
+	friend class BaseCursor;
 	friend int TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state, void* p_request);
 
 private:

@@ -1,7 +1,7 @@
 #include "PreviewDrawerPrims.h"
 
 // 68K 0x1011c5ba __ct__Q214CPreviewDrawer8tagPRIMSFv
-// STUB: LEMBALL 0x0044a970
+// FUNCTION: LEMBALL 0x0044a970
 PreviewDrawerPrims::PreviewDrawerPrims()
 {
 }

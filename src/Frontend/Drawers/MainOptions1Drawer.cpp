@@ -34,23 +34,22 @@ MainOptions1Drawer::MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const
 	m_previousModeButton = 0;
 	m_nextModeButton = 0;
 	m_selectedDisplayMode = 0;
-	if (g_pGameStatus != 0) {
-		switch (g_pGameStatus->m_skill) {
-		case 1:
-			m_selectedDisplayMode = 1;
-			break;
-		case 2:
-			m_selectedDisplayMode = 2;
-			break;
-		case 3:
-			m_selectedDisplayMode = 3;
-			break;
-		default:
-			m_selectedDisplayMode = 0;
-			break;
-		}
-		g_pGameStatus->m_lastLevels[4] = 0;
+	switch (g_pGameStatus->m_skill) {
+	case 0:
+	case 4:
+		m_selectedDisplayMode = 0;
+		break;
+	case 1:
+		m_selectedDisplayMode = 1;
+		break;
+	case 2:
+		m_selectedDisplayMode = 2;
+		break;
+	case 3:
+		m_selectedDisplayMode = 3;
+		break;
 	}
+	g_pGameStatus->m_lastLevels[4] = 0;
 	m_drawBackground = 1;
 	m_drawFrame = 1;
 	m_drawSolid = 1;

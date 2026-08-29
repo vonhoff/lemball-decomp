@@ -37,6 +37,8 @@ public:
 	void UnprepareEffects();
 	~SoundView();
 
+	friend class C2D;
+
 private:
 	void* m_effectSpecTable;         // 0x00
 	LoadUpdate* m_loadUpdate;        // 0x04

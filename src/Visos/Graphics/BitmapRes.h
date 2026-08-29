@@ -45,6 +45,7 @@ public:
 	friend class MainOptions2Drawer;
 	friend class Surface;
 	friend class CdLoadAnimDraw;
+	friend class TargetAboutScreen;
 
 private:
 	short m_x;                // 0x04

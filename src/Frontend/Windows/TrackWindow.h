@@ -19,7 +19,7 @@ public:
 	virtual unsigned int OnButtonDown(const VsPoint& p_point, int p_flags);   // vtable+0x04
 	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_name); // vtable+0x04
 	virtual void Move(const VsPoint& p_position);                             // vtable+0x38
-	virtual void OnCreate();                                                  // vtable+0x3c
+	virtual void Dummy3c();                                                   // vtable+0x3c
 	virtual void OnDriverChange();                                            // vtable+0x5c
 	virtual void OnInside(const VsPoint& p_point);                            // vtable+0x18
 	virtual void OnPaint(const VsRect& p_rect);                               // vtable+0xa8

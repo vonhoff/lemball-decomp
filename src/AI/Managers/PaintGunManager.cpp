@@ -1,4 +1,5 @@
 #include "PaintGunManager.h"
+#include "../Objects/PaintGun.h"
 
 // 68K 0x1061b8a8 __ct__16CPaintGunManagerFP3CAIi
 // STUB: LEMBALL 0x0042bfe0
@@ -7,9 +8,14 @@ PaintGunManager::PaintGunManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x1061b936 Restart__16CPaintGunManagerFv
-// STUB: LEMBALL 0x0042c040
+// FUNCTION: LEMBALL 0x0042c040
 void PaintGunManager::Restart()
 {
+	if (m_paintGuns != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_paintGuns[i].Restart();
+		}
+	}
 }
 
 // 68K 0x1061b99c Initialise__16CPaintGunManagerFi

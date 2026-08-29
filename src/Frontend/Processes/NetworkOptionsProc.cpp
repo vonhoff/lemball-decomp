@@ -12,19 +12,35 @@
 #include "../../Visos/Network/Connect.h"
 #include "../Drawers/NetworkOptionsDrawer.h"
 
+#include <new.h>
+
 // 68K 0x10808988 __ct__19CNetworkOptionsProcFP5CGame
-// STUB: LEMBALL 0x00455050
+// FUNCTION: LEMBALL 0x00455050
 NetworkOptionsProc::NetworkOptionsProc(Game* p_arg0) : BaseFrontendProcess(p_arg0)
 {
-	m_rejectMessage = new GameRejectMessage;
-	m_acceptMessage = new GameAcceptMessage;
+	void* storage;
+
+	storage = operator new(0x30);
+	if (storage == 0) {
+		m_rejectMessage = 0;
+	}
+	else {
+		m_rejectMessage = new (storage) GameRejectMessage();
+	}
+	storage = operator new(0x30);
+	if (storage == 0) {
+		m_acceptMessage = 0;
+	}
+	else {
+		m_acceptMessage = new (storage) GameAcceptMessage();
+	}
 	m_started = 0;
 	m_startFailed = 0;
 	g_pNetworkOptionsProc = this;
 }
 
 // 68K 0x10808a36 __dt__19CNetworkOptionsProcFv
-// STUB: LEMBALL 0x004550e0
+// FUNCTION: LEMBALL 0x004550e0
 NetworkOptionsProc::~NetworkOptionsProc()
 {
 	Stop();
@@ -57,7 +73,7 @@ void NetworkOptionsProc::Start()
 }
 
 // 68K 0x10808bee StopBroadcast__19CNetworkOptionsProcFv
-// STUB: LEMBALL 0x004551d0
+// FUNCTION: LEMBALL 0x004551d0
 void NetworkOptionsProc::StopBroadcast()
 {
 	int index;
@@ -93,7 +109,7 @@ void NetworkOptionsProc::StopBroadcast()
 }
 
 // 68K 0x10808d12 Stop__19CNetworkOptionsProcFv
-// STUB: LEMBALL 0x004552a0
+// FUNCTION: LEMBALL 0x004552a0
 void NetworkOptionsProc::Stop()
 {
 	unsigned long startTime;

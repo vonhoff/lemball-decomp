@@ -34,6 +34,7 @@ private:
 // SYNTHETIC: LEMBALL 0x00424c60
 // Mine::`scalar deleting destructor'
 
+extern short g_mineTerrainOffsets[4];
 
 #endif
 

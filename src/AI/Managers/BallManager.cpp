@@ -1,4 +1,5 @@
 #include "BallManager.h"
+#include "../Objects/Ball.h"
 
 // 68K 0x10603ef6 __ct__12CBallManagerFP3CAIi
 // STUB: LEMBALL 0x00421ea0
@@ -7,9 +8,15 @@ BallManager::BallManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x10603f34 Restart__12CBallManagerFv
-// STUB: LEMBALL 0x00421ec0
+// FUNCTION: LEMBALL 0x00421ec0
 void BallManager::Restart()
 {
+	Ball** balls = m_balls;
+	if (balls != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			balls[i]->Restart();
+		}
+	}
 }
 
 // 68K 0x10603f8c Initialise__12CBallManagerFi

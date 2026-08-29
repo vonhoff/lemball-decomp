@@ -14,6 +14,7 @@ public:
 	friend class AnimWnd;
 	friend class IntroAnimAnimWindow;
 	friend class IntroAnimDrawer;
+	friend class SuccFailDrawer;
 
 private:
 	unsigned int m_useMoviePrefix;   // 0x90

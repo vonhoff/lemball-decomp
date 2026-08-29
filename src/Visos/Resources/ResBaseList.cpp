@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+#pragma intrinsic(memcpy)
+
 #include "../Foundation/VsRange.h"
 #include "MogRes.h"
 
@@ -68,15 +70,14 @@ void ResBaseList::OnRead(unsigned char* p_source, unsigned char** p_data, unsign
 		}
 		else {
 			unsigned int i = 0;
-			if (count != 0) {
-				do {
-					if (DirectResources(i, &dataCursor) != 0 || directed != 0) {
-						directed = 1;
-					}
-					else {
-						directed = 0;
-					}
-				} while (count > ++i);
+			while (count > i) {
+				if (DirectResources(i, &dataCursor) != 0 || directed != 0) {
+					directed = 1;
+				}
+				else {
+					directed = 0;
+				}
+				i++;
 			}
 		}
 		m_loaded = 1;

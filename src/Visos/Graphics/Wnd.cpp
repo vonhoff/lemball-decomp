@@ -27,6 +27,12 @@ Wnd* g_pFocusWindow = 0;
 // GLOBAL: LEMBALL 0x004a1f6c
 int g_nMouseCaptureCount = 0;
 
+// GLOBAL: LEMBALL 0x004a1f74
+int g_nLastCursorX = 0;
+
+// GLOBAL: LEMBALL 0x004a1f78
+int g_nLastCursorY = 0;
+
 // GLOBAL: LEMBALL 0x004a1fec
 int g_cursorState = 0;
 
@@ -34,7 +40,7 @@ int g_cursorState = 0;
 int g_nNativeWindowCount = 0;
 
 // GLOBAL: LEMBALL 0x004a1ff0
-void* g_pWindowOwnerList = 0;
+WindowOwnerList* g_pWindowOwnerList = 0;
 
 // GLOBAL: LEMBALL 0x004a8188
 void* g_pApplicationInstance = 0;
@@ -59,6 +65,13 @@ char g_szFQuit[8] = "fQuit";
 
 static bool RegisterBaseWindowClass();
 unsigned int ConvertWindowStyleFlags(unsigned int p_style);
+
+// FUNCTION: LEMBALL 0x004324a0
+void Wnd::SetFocusWindow()
+{
+	g_hFocusWindow = m_nativeWindow;
+	g_pFocusWindow = this;
+}
 
 // 68K 0x1010480a IsFocusWindow__4CWndFv
 // FUNCTION: LEMBALL 0x004324d0
@@ -163,20 +176,15 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		return 0;
 	}
 	if (p_message == WM_DESTROY) {
-		unsigned int topLevel;
-
 		if (p_hwnd == g_hFocusWindow) {
 			g_hFocusWindow = 0;
 			g_pFocusWindow = 0;
 		}
-		topLevel = (unsigned int) (window->m_parent == 0);
 		window->m_nativeWindow = 0;
 		window->Destroy();
-		if (g_nNativeWindowCount == 0 || topLevel != 0) {
+		if (g_nNativeWindowCount == 0) {
 			g_dwWindowQuitRequested = 1;
-			if (g_pSysOutput != 0) {
-				*g_pSysOutput << g_szFQuit;
-			}
+			*g_pSysOutput << g_szFQuit;
 		}
 		return 0;
 	}
@@ -194,11 +202,28 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		window->BaseOnSize();
 		return 0;
 	}
+	if (p_message == WM_SETFOCUS) {
+		if (g_hFocusWindow != 0 && g_pFocusWindow != 0) {
+			g_pFocusWindow->Dummy94();
+			g_pFocusWindow->Dummy9c();
+		}
+		window->SetFocusWindow();
+		window->Dummy98();
+		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+	}
+	if (p_message == WM_KILLFOCUS) {
+		if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
+			if (g_hFocusWindow != 0 && g_pFocusWindow != 0) {
+				g_pFocusWindow->Dummy94();
+				g_pFocusWindow->Dummy9c();
+			}
+			g_hFocusWindow = 0;
+		}
+		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+	}
 	if (p_message == WM_KEYDOWN || p_message == WM_KEYUP) {
 		posted.type = (unsigned short) ((p_message == WM_KEYDOWN) + 1);
-		posted.reserved[0] = 0;
-		posted.reserved[1] = (unsigned short) sequence;
-		posted.reserved[2] = (unsigned short) (sequence >> 16);
+		posted.time = sequence;
 		posted.code = (int) p_wParam;
 		posted.payload = 0;
 		posted.source = 0;
@@ -210,9 +235,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	if (p_message == WM_LBUTTONDOWN || p_message == WM_LBUTTONDBLCLK || p_message == WM_RBUTTONDOWN ||
 		p_message == WM_RBUTTONDBLCLK || p_message == WM_MBUTTONDOWN || p_message == WM_MBUTTONDBLCLK) {
 		posted.type = 6;
-		posted.reserved[0] = 0;
-		posted.reserved[1] = (unsigned short) sequence;
-		posted.reserved[2] = (unsigned short) (sequence >> 16);
+		posted.time = sequence;
 		style = window->GetStyle();
 		if ((style & 0x1000) == 0) {
 			if (p_message == WM_LBUTTONDOWN || p_message == WM_LBUTTONDBLCLK) {
@@ -258,9 +281,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	}
 	if (p_message == WM_LBUTTONUP || p_message == WM_RBUTTONUP || p_message == WM_MBUTTONUP) {
 		posted.type = 5;
-		posted.reserved[0] = 0;
-		posted.reserved[1] = (unsigned short) sequence;
-		posted.reserved[2] = (unsigned short) (sequence >> 16);
+		posted.time = sequence;
 		if (p_message == WM_LBUTTONUP) {
 			posted.payload = (void*) 0x43;
 		}
@@ -285,9 +306,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		menuAction = window->SelectMenu(p_message, p_wParam, p_lParam);
 		if (menuAction != 0) {
 			posted.type = 0xf;
-			posted.reserved[0] = 0;
-			posted.reserved[1] = (unsigned short) CurrentQueueTimer();
-			posted.reserved[2] = (unsigned short) (CurrentQueueTimer() >> 16);
+			posted.time = CurrentQueueTimer();
 			posted.code = menuAction;
 			posted.payload = 0;
 			posted.source = 0;
@@ -315,9 +334,50 @@ void Wnd::Move(const VsPoint& p_point)
 }
 
 // 68K 0x1011023e ProcessMouseMoves__4CWndFv
-// STUB: LEMBALL 0x00465050
+// FUNCTION: LEMBALL 0x00465050
 void Wnd::ProcessMouseMoves()
 {
+	POINT position;
+	Message posted;
+	void* nativeWindow;
+	WindowOwnerNode* node;
+
+	GetCursorPos(&position);
+	nativeWindow = 0;
+	if (g_pFocusWindow != 0) {
+		nativeWindow = g_pFocusWindow->m_nativeWindow;
+	}
+	if (nativeWindow == 0 && g_pTargetGraphicsDriver != 0) {
+		nativeWindow = g_pTargetGraphicsDriver->m_window;
+	}
+	if (nativeWindow == 0 && g_pWindowOwnerList != 0) {
+		node = g_pWindowOwnerList->m_head;
+		while (node != 0 && nativeWindow == 0) {
+			if (node->m_window != 0) {
+				nativeWindow = ((Wnd*) node->m_window)->m_nativeWindow;
+			}
+			node = node->m_next;
+		}
+	}
+	if (nativeWindow != 0) {
+		ScreenToClient((HWND) nativeWindow, &position);
+	}
+	else if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0 && g_pFocusWindow != 0) {
+		position.x = position.x + g_pFocusWindow->m_rect.m_x;
+		position.y = position.y + g_pFocusWindow->m_rect.m_y;
+	}
+	if (position.x != g_nLastCursorX || position.y != g_nLastCursorY) {
+		g_nLastCursorX = position.x;
+		g_nLastCursorY = position.y;
+		posted.type = 7;
+		posted.time = CurrentQueueTimer();
+		posted.code = PackParam((short) g_nLastCursorX, (short) g_nLastCursorY);
+		posted.payload = 0;
+		posted.source = 0;
+		if (g_pMasterInputQueue != 0) {
+			g_pMasterInputQueue->Post(posted);
+		}
+	}
 }
 
 // STUB: LEMBALL 0x00465110
@@ -487,7 +547,7 @@ Wnd::~Wnd()
 }
 
 // 68K 0x10111462 Destroy__4CWndFv
-// STUB: LEMBALL 0x004655a0
+// FUNCTION: LEMBALL 0x004655a0
 void Wnd::Destroy()
 {
 	PvWnd* child;
@@ -606,10 +666,6 @@ void Wnd::SetRelTl(const VsPoint& p_point)
 unsigned int Wnd::GetStyle()
 {
 	return 0;
-}
-
-void Wnd::SetFocusWindow()
-{
 }
 
 void Wnd::Dummy94()

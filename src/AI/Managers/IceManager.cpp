@@ -1,4 +1,5 @@
 #include "IceManager.h"
+#include "../Objects/Ice.h"
 
 // 68K 0x10612448 __ct__11CIceManagerFP3CAIi
 // STUB: LEMBALL 0x0042d7a0
@@ -7,9 +8,14 @@ IceManager::IceManager(Ai* p_arg0, int p_arg1)
 }
 
 // 68K 0x106124d2 Restart__11CIceManagerFv
-// STUB: LEMBALL 0x0042d800
+// FUNCTION: LEMBALL 0x0042d800
 void IceManager::Restart()
 {
+	if (m_ice != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_ice[i].Restart();
+		}
+	}
 }
 
 // 68K 0x10612534 Initialise__11CIceManagerFi

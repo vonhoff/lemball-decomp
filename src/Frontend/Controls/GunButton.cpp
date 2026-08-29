@@ -1,4 +1,5 @@
 #include "GunButton.h"
+#include "GunButtons.h"
 
 #include "../../Views/Sound/SoundView.h"
 

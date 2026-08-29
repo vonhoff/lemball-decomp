@@ -1,5 +1,9 @@
 #include "Ammo.h"
 
+#include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
+#include "../Navigation/Ai.h"
+
 // 68K 0x1011a9fe Usage__5CAmmoFv
 // FUNCTION: LEMBALL 0x0041c430
 int Ammo::Usage()
@@ -13,9 +17,11 @@ Ammo::~Ammo()
 }
 
 // 68K 0x10618ede Restart__5CAmmoFv
-// STUB: LEMBALL 0x0041ca90
+// FUNCTION: LEMBALL 0x0041ca90
 void Ammo::Restart()
 {
+	BaseGlobalObject::Restart();
+	m_ammo = 0;
 }
 
 // 68K 0x10618f0a Process__5CAmmoFv
@@ -33,9 +39,14 @@ bool Ammo::Activate(GameObject* p_object)
 }
 
 // 68K 0x106190a4 DoActivate__5CAmmoFv
-// STUB: LEMBALL 0x0041cc30
+// FUNCTION: LEMBALL 0x0041cc30
 void Ammo::DoActivate()
 {
+	m_stateTimer = g_dwSimulationTimestamp;
+	m_unk0xd4 += g_dwGameTick;
+	SetSndEffect((eSoundEffect) 0x11);
+	m_activator->PickUpAmmo(25);
+	g_pAI->Score(50);
 }
 
 // 68K 0x10619118 ActivatePosition__5CAmmoFv

@@ -122,32 +122,23 @@ AnimsManager::~AnimsManager()
 }
 
 // 68K 0x1020043c LoadAnims__13CAnimsManagerFUl
-// STUB: LEMBALL 0x00467490
+// FUNCTION: LEMBALL 0x00467490
 void AnimsManager::LoadAnims(unsigned long p_resourceId)
 {
 	int slot;
 
-	if (m_resourceSlots == 0 || m_resources == 0) {
-		return;
-	}
-	if ((int) p_resourceId >= m_resourceIdCount) {
-		return;
-	}
 	slot = m_resourceSlots[p_resourceId];
-	if (slot == m_resourceCapacity) {
+	if (m_resourceCapacity == slot) {
 		slot = 0;
-		while (slot < m_resourceCapacity && m_resources[slot] != 0) {
+		while (m_resources[slot] != 0) {
 			slot = slot + 1;
-		}
-		if (slot >= m_resourceCapacity) {
-			return;
 		}
 	}
 	m_resources[slot] = ResAnim::Load(p_resourceId);
 	if (m_resources[slot] == 0) {
 		m_resources[slot] = ResZrle::Load(p_resourceId);
 	}
-	if (m_resourceSlots[p_resourceId] == (short) m_resourceCapacity) {
+	if ((int) m_resourceSlots[p_resourceId] == m_resourceCapacity) {
 		m_resourceSlots[p_resourceId] = (short) slot;
 		m_loadedResourceCount = m_loadedResourceCount + 1;
 	}
@@ -164,23 +155,12 @@ void AnimsManager::UnLoadAnims(unsigned long p_resourceId)
 }
 
 // 68K 0x1020055a GetnAnims__13CAnimsManagerFUl
-// STUB: LEMBALL 0x00467540
+// FUNCTION: LEMBALL 0x00467540
 unsigned long AnimsManager::GetnAnims(unsigned long p_resourceId)
 {
 	ResBase* resource;
-	int slot;
 
-	if (m_resourceSlots == 0 || m_resources == 0 || (int) p_resourceId >= m_resourceIdCount) {
-		return 0;
-	}
-	slot = m_resourceSlots[p_resourceId];
-	if (slot == m_resourceCapacity) {
-		return 0;
-	}
-	resource = m_resources[slot];
-	if (resource == 0) {
-		return 0;
-	}
+	resource = m_resources[m_resourceSlots[p_resourceId]];
 	if (resource->m_chunkType == 0x5a524c45) {
 		return 1;
 	}
@@ -225,7 +205,7 @@ VsSize AnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_ani
 }
 
 // 68K 0x1020064e DrawAnim__13CAnimsManagerFRC8CVSPointUlUlP14CAnimFrameBASEP6CRemap
-// STUB: LEMBALL 0x00467730
+// FUNCTION: LEMBALL 0x00467730
 VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 							  unsigned long p_resourceId,
 							  unsigned long p_animIndex,
@@ -238,32 +218,19 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 	Zrle* zrle;
 	Anim* anim;
 	unsigned int frameIndex;
-	int slot;
 	int index;
+	Gdi* current;
 
-	result.m_width = 0;
-	result.m_height = 0;
-	result.m_x = 0;
-	result.m_y = 0;
-	if (m_gdi == 0 || m_resourceSlots == 0 || m_resources == 0 || (int) p_resourceId >= m_resourceIdCount) {
-		return result;
-	}
-	if (m_doubleBuffered != 0 && m_previousGdi != 0 && m_gdi != m_previousGdi) {
-		Gdi* current;
+	if (m_doubleBuffered != 0) {
 		current = m_gdi;
-		m_gdi = m_previousGdi;
-		ResetPrimitives();
-		m_gdi = current;
+		if (current != m_previousGdi && m_previousGdi != 0) {
+			m_gdi = m_previousGdi;
+			ResetPrimitives();
+			m_gdi = current;
+		}
 	}
 	m_previousGdi = m_gdi;
-	slot = m_resourceSlots[p_resourceId];
-	if (slot == m_resourceCapacity) {
-		return result;
-	}
-	resource = m_resources[slot];
-	if (resource == 0) {
-		return result;
-	}
+	resource = m_resources[m_resourceSlots[p_resourceId]];
 	if (resource->m_chunkType == 0x5a524c45) {
 		if (m_doubleBuffered == 0) {
 			index = m_zrleCount;
@@ -277,9 +244,6 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 			index = m_bufferedZrleCount;
 			m_bufferedZrleCount = index + 2;
 			zrle = m_zrlePrimitives + m_bufferHalf + index;
-		}
-		if (zrle == 0) {
-			return result;
 		}
 		zrle->m_state = m_primitiveSequence;
 		zrle->m_x = p_position.m_x;
@@ -310,9 +274,6 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 			m_bufferedAnimCount = index + 2;
 			anim = m_animPrimitives + m_bufferHalf + index;
 		}
-		if (anim == 0) {
-			return result;
-		}
 		anim->m_state = m_primitiveSequence;
 		anim->m_x = p_position.m_x;
 		anim->m_y = p_position.m_y;
@@ -322,12 +283,10 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 		anim->m_remap = p_remap;
 		anim->Draw(m_gdi);
 	}
-	if (sizeSource != 0) {
-		result.m_width = sizeSource->m_width;
-		result.m_height = sizeSource->m_height;
-		result.m_x = sizeSource->m_x;
-		result.m_y = sizeSource->m_y;
-	}
+	result.m_width = sizeSource->m_width;
+	result.m_height = sizeSource->m_height;
+	result.m_x = sizeSource->m_x;
+	result.m_y = sizeSource->m_y;
 	return result;
 }
 

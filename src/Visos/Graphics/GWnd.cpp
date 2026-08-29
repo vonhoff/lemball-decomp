@@ -135,31 +135,46 @@ void GWnd::OnDestroy()
 // FUNCTION: LEMBALL 0x00463e70
 void GWnd::OnSize()
 {
+	Surface* target;
+	VsPoint* innerOrigin;
+	VsPoint* parentOrigin;
+	VsPoint* relOrigin;
+	VsSize size;
+	short relX;
+	short relY;
+
 	PvWnd::OnSize();
 	if (m_gdi == 0) {
 		return;
 	}
-	VsSize size;
 	size.m_width = m_rect.m_width;
 	size.m_height = m_rect.m_height;
 	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
 		size.m_width = m_innerRect.m_width;
 		size.m_height = m_innerRect.m_height;
 	}
+	target = m_gdi->m_renderTarget;
 	if (m_parent == 0) {
 		size.m_width = (short) ((int) size.m_width / (int) m_zoom);
 		size.m_height = (short) ((int) size.m_height / (int) m_zoom);
 	}
-	Surface* target = m_gdi->m_renderTarget;
 	target->Resize(size);
-	short relX = m_innerRect.m_x;
-	short relY = m_innerRect.m_y;
-	if (m_parent != 0) {
-		relX = (short) (relX - m_parent->m_relativeTopLeft.m_x);
-		relY = (short) (relY - m_parent->m_relativeTopLeft.m_y);
+	if (this != (GWnd*) -16) {
+		innerOrigin = (VsPoint*) &m_innerRect.m_x;
 	}
-	target->m_relOriginX = relX;
-	target->m_relOriginY = relY;
+	else {
+		innerOrigin = 0;
+	}
+	relX = innerOrigin->m_x;
+	relY = innerOrigin->m_y;
+	if (m_parent != 0) {
+		parentOrigin = &m_parent->m_relativeTopLeft;
+		relX = (short) (relX - parentOrigin->m_x);
+		relY = (short) (relY - parentOrigin->m_y);
+	}
+	relOrigin = (VsPoint*) &target->m_relOriginX;
+	relOrigin->m_x = relX;
+	relOrigin->m_y = relY;
 }
 
 // 68K 0x1010ab98 OnPaint__5CGWndFRC7CVSRect

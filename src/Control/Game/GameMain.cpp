@@ -169,12 +169,16 @@ int DoCommandLine(int p_argc, char** p_argv)
 			}
 			prefixLength = strlen(g_szSwitchEditPrefix0);
 			if (StrCmpI(*argv, g_szSwitchEditPrefix1, prefixLength) == 0) {
-				g_nEditLevelMode = strlen(*argv + strlen(g_szSwitchEditPrefix2)) > 0;
+				unsigned int editLength;
+				editLength = strlen(*argv + strlen(g_szSwitchEditPrefix2));
+				g_nEditLevelMode = editLength >= 1;
 				strcpy(g_szCommandLineLevelFile, *argv + strlen(g_szSwitchEditPrefix3));
 			}
 			prefixLength = strlen(g_szSwitchPlayPrefix0);
 			if (StrCmpI(*argv, g_szSwitchPlayPrefix1, prefixLength) == 0) {
-				g_nPlayLevelMode = strlen(*argv + strlen(g_szSwitchPlayPrefix2)) > 0;
+				unsigned int playLength;
+				playLength = strlen(*argv + strlen(g_szSwitchPlayPrefix2));
+				g_nPlayLevelMode = playLength >= 1;
 				strcpy(g_szCommandLineLevelFile, *argv + strlen(g_szSwitchPlayPrefix3));
 			}
 			if (StrCmpI(*argv, g_szSwitchGraphics, 99) == 0) {

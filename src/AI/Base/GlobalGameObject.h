@@ -33,8 +33,15 @@ public:
 	friend class RequestActionMess;
 	friend class RequestCancelMess;
 	friend class RequestReplyMess;
+	friend class TrampolineManager;
+	friend class DoorManager;
+	friend class LaserManager;
+	friend class LiftManager;
+	friend class MineManager;
+	friend class RocketManager;
+	friend class TrapDoorManager;
 
-private:
+protected:
 	unsigned int m_requestEnabled; // 0x124
 	eAction m_pendingAction;       // 0x128
 	eAction m_requestedAction;     // 0x12c

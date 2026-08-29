@@ -12,7 +12,7 @@
 #include <new.h>
 
 // 68K 0x10802a2e __ct__11CGunButtonsFP5CGWndP4CGDIiiPUlUciiiUlPvUl
-// STUB: LEMBALL 0x0044c270
+// FUNCTION: LEMBALL 0x0044c270
 GunButtons::GunButtons(GWnd* p_arg0,
 					   Gdi* p_arg1,
 					   int p_arg2,
@@ -57,17 +57,12 @@ GunButtons::GunButtons(GWnd* p_arg0,
 	}
 	m_binding = (int*) p_arg10;
 	m_postAction = p_arg5;
-	m_graphicButton = 0;
-	m_trackerButton = 0;
-	m_resources = 0;
-	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->Attach(this, 0);
-	}
+	g_pMasterInputQueue->Attach(this, 0);
 	LoadFaces(p_arg4);
 }
 
 // 68K 0x10802c2c DrawBackBuffer__11CGunButtonsFv
-// STUB: LEMBALL 0x0044c440
+// FUNCTION: LEMBALL 0x0044c440
 bool GunButtons::DrawBackBuffer()
 {
 	if (g_nGunButtonsRedrawPending != 0) {
@@ -81,16 +76,11 @@ bool GunButtons::DrawBackBuffer()
 // FUNCTION: LEMBALL 0x0044c460
 int GunButtons::ProcessMsg(Message* p_message)
 {
-	Message posted;
+	Message posted = { 0xc };
 	int nextValue;
 	unsigned long animId;
 
-	posted.type = 0xc;
-	posted.reserved[1] = (unsigned short) CurrentQueueTimer();
-	posted.reserved[2] = (unsigned short) (CurrentQueueTimer() >> 16);
-	posted.code = 0;
-	posted.payload = 0;
-	posted.source = 0;
+	posted.time = CurrentQueueTimer();
 	if (p_message->code == (int) m_controlMessage && p_message->type == 0xc) {
 		if (m_mode == 0) {
 			if (m_postAction != 1) {
@@ -134,7 +124,7 @@ int GunButtons::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x10802dfc Draw__11CGunButtonsFUcUc
-// STUB: LEMBALL 0x0044c600
+// FUNCTION: LEMBALL 0x0044c600
 void GunButtons::Draw(unsigned char p_firstState, unsigned char p_secondState)
 {
 	if (m_graphicButton != 0) {

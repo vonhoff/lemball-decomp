@@ -10,7 +10,7 @@ class IntroAnimAnimWindow : public AnimWnd {
 public:
 	virtual unsigned int GetStyle(); // vtable+0x64
 	virtual void OnStop();           // vtable+0xc4
-	void Initialise(IntroAnimDrawer* p_owner, Main2DDisplay* p_display, unsigned char p_variant);
+	void Initialise(IntroAnimDrawer* p_owner, Main2DDisplay* p_display, unsigned int p_variant);
 	void SetAnim();
 
 private:

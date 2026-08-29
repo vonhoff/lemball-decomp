@@ -11,6 +11,7 @@ public:
 
 	friend class Game;
 	friend class BaseFrontendProcess;
+	friend class TargetAbout;
 
 private:
 	int m_returnState;  // 0x04

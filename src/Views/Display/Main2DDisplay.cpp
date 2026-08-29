@@ -8,7 +8,14 @@
 #include "../../Frontend/Drawers/IntroAnimDrawer.h"
 #include "../../Frontend/Drawers/MainOptions1Drawer.h"
 #include "../../Frontend/Drawers/MainOptions2Drawer.h"
+#include "../../Frontend/Drawers/NetworkOptionsDrawer.h"
+#include "../../Frontend/Drawers/PasswordDrawer.h"
+#include "../../Frontend/Drawers/PreviewDrawer.h"
+#include "../../Frontend/Drawers/SuccFailDrawer.h"
 #include "../../Frontend/Support/AboutDialog.h"
+#include "../../Frontend/Support/TargetAboutScreen.h"
+#include "../../AI/Navigation/Ai.h"
+#include "C2D.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/ChangeList.h"
@@ -238,16 +245,11 @@ void Main2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 	localRect.m_height = m_rect.m_height;
 	localRect.m_y = 0;
 	localRect.m_x = 0;
-	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
-		changeList = m_gdi->m_renderTarget->GetChangeList();
-		if (changeList != 0) {
-			changeList->Reset();
-			changeList->SetDrawMark();
-		}
-	}
+	changeList = m_gdi->m_renderTarget->GetChangeList();
+	changeList->Reset();
+	changeList->SetDrawMark();
 
 	m_currentFlow = p_flow;
-	storage = 0;
 	switch (p_flow) {
 	case 1:
 		storage = operator new(0x484);
@@ -274,6 +276,79 @@ void Main2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		}
 		m_drawer = new (storage) MainOptions2Drawer(this, m_gdi, localRect);
 		break;
+	case 4:
+		storage = operator new(0x488);
+		if (storage == 0) {
+			m_drawer = 0;
+			break;
+		}
+		m_drawer = new (storage) PreviewDrawer(this, m_gdi, localRect);
+		break;
+	case 5:
+	case 0x13: {
+		Ai* ai;
+
+		if (m_game->m_process == 0) {
+			m_activeProcess = 0;
+		}
+		else {
+			m_activeProcess = (char*) m_game->m_process - 0x10;
+		}
+		if (m_game->m_process == 0) {
+			ai = 0;
+		}
+		else {
+			ai = (Ai*) ((char*) m_game->m_process - 0x10);
+		}
+		m_activePalette = ai->m_map;
+		storage = operator new(0x2428);
+		if (storage == 0) {
+			m_drawer = 0;
+			break;
+		}
+		m_drawer = new (storage) C2D(this, (Ai*) m_activeProcess, m_gdi, (Map*) m_activePalette, localRect);
+		break;
+	}
+	case 10:
+		storage = operator new(0x9c);
+		if (storage == 0) {
+			m_drawer = 0;
+			break;
+		}
+		m_drawer = new (storage) TargetAboutScreen(this, m_gdi, localRect);
+		break;
+	case 0xc:
+		storage = operator new(0x438);
+		if (storage == 0) {
+			m_drawer = 0;
+			break;
+		}
+		m_drawer = new (storage) NetworkOptionsDrawer(this, m_gdi, localRect);
+		break;
+	case 0xe:
+		storage = operator new(0x60c);
+		if (storage == 0) {
+			m_drawer = 0;
+			break;
+		}
+		m_drawer = new (storage) SuccFailDrawer(this, m_gdi, localRect, 1);
+		break;
+	case 0xf:
+		storage = operator new(0x60c);
+		if (storage == 0) {
+			m_drawer = 0;
+			break;
+		}
+		m_drawer = new (storage) SuccFailDrawer(this, m_gdi, localRect, 0);
+		break;
+	case 0x10:
+		storage = operator new(0x494);
+		if (storage == 0) {
+			m_drawer = 0;
+			break;
+		}
+		m_drawer = new (storage) PasswordDrawer(this, m_gdi, localRect);
+		break;
 	case 0x12:
 		storage = operator new(0x484);
 		if (storage == 0) {
@@ -283,14 +358,11 @@ void Main2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		variant = 1;
 		m_drawer = new (storage) IntroAnimDrawer(this, m_gdi, localRect, variant);
 		break;
-	default:
-		m_drawer = 0;
-		break;
 	}
 
 	if (m_drawer != 0) {
-		((Drawer*) m_drawer)->Initialise();
-		((BaseFrontendDrawer*) m_drawer)->ResetPrimitives();
+		m_drawer->Initialise();
+		m_drawer->ResetPrimitives();
 	}
 }
 

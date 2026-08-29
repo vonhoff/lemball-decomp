@@ -30,6 +30,7 @@ private:
 // SYNTHETIC: LEMBALL 0x004266e0
 // LiftManager::`scalar deleting destructor'
 
+extern unsigned short g_wMovingLiftCount;
 
 #endif
 

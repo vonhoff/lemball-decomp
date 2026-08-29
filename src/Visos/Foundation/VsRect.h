@@ -30,8 +30,10 @@ public:
 	friend class IntroAnimDrawer;
 	friend class BaseFrontendDrawer;
 	friend class Surface;
+	friend class BaseCursor;
 
 	VsRect& operator=(const VsRect& p_source);
+	void ExpandToInclude(const VsRect& p_rect);
 
 	short m_width;  // 0x00
 	short m_height; // 0x02

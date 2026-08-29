@@ -9,7 +9,7 @@
 class HiliteWindow : public PvGWnd {
 public:
 	HiliteWindow();
-	virtual void OnCreate(); // vtable+0x3c
+	virtual void Dummy3c(); // vtable+0x3c
 };
 
 extern unsigned int g_dwHiliteAnimationId;
