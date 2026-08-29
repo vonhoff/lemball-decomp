@@ -24,8 +24,8 @@ public:
 	virtual void OnEnterButton();                                         // vtable+0xc8
 	virtual void OnExitButton();                                          // vtable+0xcc
 	virtual void Move(const VsPoint& p_point);                        // vtable+0x38
-	virtual void OnButtonDown(const VsPoint& p_point, int p_flags);   // hot-area vtable+0x04
-	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);     // vtable+0x08
+	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);     // vtable+0x04
+	virtual void OnButtonDown(const VsPoint& p_point, int p_flags);   // hot-area vtable+0x08
 	virtual void OnEnter();                                               // vtable+0x10
 	virtual void OnExit();                                                // vtable+0x14
 	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags); // vtable+0x0c
@@ -44,6 +44,7 @@ public:
 	friend class HiliteButtons;
 	friend class GunController;
 	friend class HiliteController;
+	friend class PasswordDrawer;
 
 private:
 	PvGWnd* m_ownerWindow;           // 0xc8

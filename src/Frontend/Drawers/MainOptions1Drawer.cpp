@@ -120,7 +120,6 @@ void MainOptions1Drawer::UnLoad()
 {
 	if (m_gunController != 0) {
 		delete m_gunController;
-		m_gunController = 0;
 	}
 }
 

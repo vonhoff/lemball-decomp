@@ -11,6 +11,9 @@
 #include "../../Visos/Network/Broadcast.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Drawers/NetworkOptionsDrawer.h"
+#include "../Base/BaseFrontendDrawer.h"
+
+#define g_pNetworkOptionsDrawer ((NetworkOptionsDrawer*) g_pBaseFrontendDrawer)
 
 #include <new.h>
 
@@ -43,14 +46,21 @@ NetworkOptionsProc::NetworkOptionsProc(Game* p_arg0) : BaseFrontendProcess(p_arg
 // FUNCTION: LEMBALL 0x004550e0
 NetworkOptionsProc::~NetworkOptionsProc()
 {
-	Stop();
+	g_pNetworkOptionsProc = 0;
+	if (g_pNetworkOptionsDrawer != 0) {
+		if (g_pNetworkOptionsDrawer->GetReturnState() == 0) {
+			Stop();
+		}
+		else {
+			StopBroadcast();
+		}
+	}
 	if (m_rejectMessage != 0) {
 		delete m_rejectMessage;
 	}
 	if (m_acceptMessage != 0) {
 		delete m_acceptMessage;
 	}
-	g_pNetworkOptionsProc = 0;
 }
 
 // 68K 0x10808b14 Start__19CNetworkOptionsProcFv
@@ -216,7 +226,4 @@ void NetworkOptionsProc::Processing()
 
 // GLOBAL: LEMBALL 0x004a0128
 NetworkOptionsProc* g_pNetworkOptionsProc = 0;
-
-// GLOBAL: LEMBALL 0x0049f144
-NetworkOptionsDrawer* g_pNetworkOptionsDrawer = 0;
 

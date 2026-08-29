@@ -14,6 +14,7 @@ public:
 	virtual ~NetworkGameMessage(); // vtable+0x14
 
 	friend class NetworkOptionsDrawer;
+	friend class SuccFailDrawer;
 
 private:
 	char m_gameName[9];   // 0x2c

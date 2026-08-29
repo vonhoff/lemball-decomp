@@ -43,6 +43,9 @@ public:
 	friend class BaseFrontendDrawer;
 	friend class MainOptions1Drawer;
 	friend class MainOptions2Drawer;
+	friend class PasswordDrawer;
+	friend class PreviewDrawer;
+	friend class SuccFailDrawer;
 	friend class Surface;
 	friend class CdLoadAnimDraw;
 	friend class TargetAboutScreen;

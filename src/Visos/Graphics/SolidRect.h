@@ -15,6 +15,7 @@ public:
 
 	friend class GunController;
 	friend class TargetAboutScreen;
+	friend class PasswordDrawer;
 
 private:
 	short m_left;         // 0x04

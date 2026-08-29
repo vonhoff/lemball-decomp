@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x004983d8
 class SuccFail : public BaseFrontendProcess {
 public:
-	SuccFail(Game* p_arg0, unsigned char p_arg1);
+	SuccFail(Game* p_arg0, unsigned int p_arg1);
 	virtual ~SuccFail(); // vtable+0x00
 
 private:

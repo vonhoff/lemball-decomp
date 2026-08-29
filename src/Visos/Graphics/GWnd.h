@@ -35,6 +35,7 @@ public:
 	friend class TrackWindow;
 	friend class HiliteWindow;
 	friend class PasswordHiliteWindow;
+	friend class PasswordDrawer;
 	friend class GunController;
 	friend class GunButtons;
 	friend class HiliteButtons;

@@ -13,7 +13,7 @@ public:
 	VsRect DrawAnim(const VsPoint& p_position,
 					unsigned long p_resourceId,
 					unsigned long p_animIndex,
-					AnimFrameBASE* p_frame,
+					Frames* p_frame,
 					Remap* p_remap);
 	VsSize GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex);
 	unsigned long GetnAnims(unsigned long p_resourceId);
@@ -27,6 +27,7 @@ public:
 	friend class BaseFrontendDrawer;
 	friend class GraphicButton;
 	friend class GunController;
+	friend class PasswordDrawer;
 
 private:
 	Line* m_linePrimitives;             // 0x04

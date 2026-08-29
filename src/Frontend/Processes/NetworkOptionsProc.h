@@ -30,7 +30,6 @@ private:
 };
 
 extern NetworkOptionsProc* g_pNetworkOptionsProc;
-extern class NetworkOptionsDrawer* g_pNetworkOptionsDrawer;
 
 // 68K 0x10808a36 __dt__19CNetworkOptionsProcFv
 // SYNTHETIC: LEMBALL 0x00455eb0

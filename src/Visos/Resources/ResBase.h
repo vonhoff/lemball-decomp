@@ -49,6 +49,7 @@ public:
 	friend class FrontendResourceLoader;
 	friend class BaseCursor;
 	friend class TargetAboutScreen;
+	friend class LevelLoader;
 
 protected:
 	ResBaseList* m_externalList;   // 0x04

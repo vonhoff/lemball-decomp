@@ -13,6 +13,7 @@ public:
 	friend class GunController;
 	friend class AnimsManager;
 	friend class CdLoadAnim;
+	friend class PasswordDrawer;
 
 protected:
 	unsigned int m_frames;     // 0x04

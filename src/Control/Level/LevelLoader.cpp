@@ -1,8 +1,21 @@
 #include "LevelLoader.h"
 
 #include "../../Visos/Foundation/VsFile.h"
+#include "../../Visos/Foundation/VsOStream.h"
+#include "../../Visos/Network/Connect.h"
+#include "../../Visos/Resources/ResBin.h"
+#include "../Support/PreviewData.h"
+#include "LoadBlockHeader.h"
+
+#include <new.h>
+#include <string.h>
 
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window, char* p_text, char* p_caption, unsigned int p_type);
+
+extern char g_szNSkillFormat[];
+extern char g_szNLevelFormat[];
+extern char g_szNameBracketFormat[];
+extern char g_szCloseBracketNewline[];
 
 // 68K 0x1070267c __ct__12CLevelLoaderFP3CAI
 // STUB: LEMBALL 0x00408210
@@ -37,23 +50,159 @@ bool LevelLoader::LocateStartOfLevelFile()
 }
 
 // 68K 0x10702d8c GetNextBlockHeader__12CLevelLoaderFP18tagLoadBlockHeader
-// STUB: LEMBALL 0x00408830
+// FUNCTION: LEMBALL 0x00408830
 LoadBlockHeader* LevelLoader::GetNextBlockHeader(LoadBlockHeader* p_header)
 {
-	return 0;
+	unsigned int size;
+	unsigned char* raw;
+
+	if (p_header == 0) {
+		return (LoadBlockHeader*) g_pLevelFileData;
+	}
+	size = p_header->m_size;
+	if ((size & 3) != 0) {
+		size = (size - (size & 3)) + 4;
+	}
+	raw = (unsigned char*) p_header;
+	return (LoadBlockHeader*) (raw + size);
 }
 
 // 68K 0x10702e0a RetrievePreviewData__12CLevelLoaderF6eSkilliP12tPreviewData
-// STUB: LEMBALL 0x00408850
+// FUNCTION: LEMBALL 0x00408850
 void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* p_preview)
 {
+	bool endFound = false;
+	ResBin* binResource = 0;
+	LoadBlockHeader* header;
+	unsigned short version;
+	unsigned int count;
+	unsigned short total;
+
+	if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
+		unsigned int resourceId = CalcLevelId(p_skill, p_level);
+		binResource = ResBin::Load(resourceId);
+		if (binResource->m_loaded == 0) {
+			binResource->LoadData();
+		}
+		else {
+			binResource->m_age = 0;
+		}
+		binResource->m_directUseCount++;
+		g_pLevelFileData = binResource->GetData();
+	}
+	else {
+		g_pActiveLevelFile = g_szCommandLineLevelFile;
+		LocateStartOfLevelFile();
+	}
+
+	header = GetNextBlockHeader(0);
+	do {
+		unsigned short* data16 = (unsigned short*) (header + 1);
+		unsigned int blockType = header->m_type;
+
+		switch (blockType) {
+		case 0x41492020:
+			version = 0;
+			if (header->m_size - 8 > 4) {
+				version = data16[0];
+				data16++;
+			}
+			p_preview->m_timeLimit = data16[1];
+			if (version < 4) {
+				p_preview->m_lemmingCount = 4;
+				p_preview->m_playerCount = 1;
+			}
+			else {
+				p_preview->m_lemmingCount = data16[2];
+				p_preview->m_playerCount = data16[3];
+			}
+			break;
+		case 0x42414c4c:
+			break;
+		case 0x454e443f:
+			endFound = true;
+			break;
+		case 0x464c4147:
+			break;
+		case 0x4e414d45: {
+			char* src = (char*) data16;
+			char* dst = p_preview->m_name;
+			int len = 0;
+			while (src[len] != 0 && len < 32) {
+				dst[len] = src[len];
+				len++;
+			}
+			dst[len] = 0;
+			p_preview->m_name[0x20] = 0;
+			break;
+		}
+		case 0x4e455457:
+			total = 0;
+			for (count = (unsigned int) data16[0]; count != 0; count--) {
+				data16 += 2;
+				total = (unsigned short) (total + (short) data16[0]);
+			}
+			if (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost == 1) {
+				p_preview->m_opponentLemmingCount = total;
+			}
+			else {
+				p_preview->m_lemmingCount = total;
+			}
+			break;
+		case 0x504c5331:
+			total = 0;
+			for (count = (unsigned int) data16[0]; count != 0; count--) {
+				data16 += 2;
+				total = (unsigned short) (total + (short) data16[0]);
+			}
+			if (g_pActiveConnection == 0) {
+				p_preview->m_lemmingCount = total;
+			}
+			else {
+				if (g_pActiveConnection->m_isHost != 1) {
+					p_preview->m_opponentLemmingCount = total;
+				}
+				else {
+					p_preview->m_lemmingCount = total;
+				}
+			}
+			break;
+		}
+
+		header = GetNextBlockHeader(header);
+		if (endFound) {
+			if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
+				binResource->m_directUseCount--;
+				binResource->UnLoad();
+			}
+			else {
+				operator delete(g_pLevelFileData);
+			}
+			*g_pDebugOutput << g_szNSkillFormat << (int) p_skill
+							<< g_szNLevelFormat << p_level
+							<< g_szNameBracketFormat << p_preview->m_name
+							<< g_szCloseBracketNewline;
+			return;
+		}
+	} while (1);
 }
 
 // 68K 0x10703218 CalcLevelID__12CLevelLoaderF6eSkilli
-// STUB: LEMBALL 0x00408b00
+// FUNCTION: LEMBALL 0x00408b00
 unsigned int LevelLoader::CalcLevelId(eSkill p_skill, int p_level)
 {
-	return 0;
+	switch (p_skill) {
+	case 0:
+		return p_level + 0x244;
+	case 1:
+		return p_level + 0x25d;
+	case 2:
+		return p_level + 0x277;
+	case 3:
+		return p_level + 0x294;
+	default:
+		return p_level + 0x2aa;
+	}
 }
 
 // GLOBAL: LEMBALL 0x0049ce34
@@ -65,6 +214,18 @@ char g_szOkSmartarse[140] =
 
 // GLOBAL: LEMBALL 0x0049cedc
 char g_szReadBinaryMode[4] = "rb";
+
+// GLOBAL: LEMBALL 0x0049cee0
+char g_szNSkillFormat[] = "nSkill=";
+
+// GLOBAL: LEMBALL 0x0049cee8
+char g_szNLevelFormat[] = " nLevel=";
+
+// GLOBAL: LEMBALL 0x0049cef4
+char g_szNameBracketFormat[] = " Name= <";
+
+// GLOBAL: LEMBALL 0x0049cf00
+char g_szCloseBracketNewline[] = ">\n";
 
 // GLOBAL: LEMBALL 0x004a6304
 int g_nEditLevelMode = 0;

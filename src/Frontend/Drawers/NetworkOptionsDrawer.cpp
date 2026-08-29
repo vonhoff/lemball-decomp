@@ -5,12 +5,15 @@
 #include "../../Network/Messages/NetworkGameMessage.h"
 #include "../../Views/Display/Main2DDisplay.h"
 #include "../../Views/Sound/SoundView.h"
+#include "../../Visos/Foundation/String.h"
+#include "../../Visos/Foundation/TextManager.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/GWnd.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Network/Connect.h"
 #include "../../Visos/Network/NetworkAddress.h"
+#include "../../Visos/Resources/ResFont.h"
 #include "../Controls/HiliteController.h"
 #include "../Processes/NetworkOptionsProc.h"
 #include "../Support/EditString.h"
@@ -85,10 +88,71 @@ unsigned char* g_apNetworkOptionsRemaps[6] = {
 // GLOBAL: LEMBALL 0x004a0308
 unsigned long g_anNetworkOptionsAnimIds[6] = {0x1bf, 0x1c0, 0x1b3, 0x1f3, 0x1f4, 0x1e7};
 
-char g_szNetworkOptionsNoMessage[] = "No Message";
+// GLOBAL: LEMBALL 0x004a0398
+char g_szNetworkOptionsMsg1[] = "Play with a LAN or specific computer";
+
+// GLOBAL: LEMBALL 0x004a03c0
+char g_szNetworkOptionsMsg2[] = "Enter your name:";
+
+// GLOBAL: LEMBALL 0x004a03d4
+char g_szNetworkOptionsMsg3[] = "Enter your opponents I.P. Address:";
+
+// GLOBAL: LEMBALL 0x004a03f8
+char g_szNetworkOptionsMsg4[] = "Looking for player at ";
+
+// GLOBAL: LEMBALL 0x004a0410
+char g_szNetworkOptionsMsg5[] = "Looking for players on local network";
+
+// GLOBAL: LEMBALL 0x004a0438
+char g_szNetworkOptionsMsg6[] = "Initialising Network...";
+
+// GLOBAL: LEMBALL 0x004a0450
+char g_szNetworkOptionsMsg7[] = "Invalid name or address specified";
+
+// GLOBAL: LEMBALL 0x004a0474
+char g_szNetworkOptionsMsg8[] = "You must enter your name";
+
+// GLOBAL: LEMBALL 0x004a0490
+char g_szNetworkOptionsMsg9[] = "Network Facilities not available";
+
+// GLOBAL: LEMBALL 0x004a04b4
+char g_szNetworkOptionsMsg10[] = "No Message";
+
+// GLOBAL: LEMBALL 0x004a04c0
+char g_szNetworkOptionsHeaderName[] = "Name";
+
+// GLOBAL: LEMBALL 0x004a04c8
+char g_szNetworkOptionsHeaderIp[] = "I.P. Address";
+
+// GLOBAL: LEMBALL 0x004a04d8
+char g_szNetworkOptionsHeaderComputer[] = "Computer";
+
+// GLOBAL: LEMBALL 0x004a04e4
+char g_szNetworkOptionsDividerIp[] = "__________________________________";
+
+// GLOBAL: LEMBALL 0x004a0508
+char g_szNetworkOptionsDividerLocal[] = "__________________________________";
+
+// GLOBAL: LEMBALL 0x004a052c
+char g_szNetworkOptionsCursor[] = "_";
+
+// GLOBAL: LEMBALL 0x004a031c
+char* g_apNetworkOptionsMessages[11] = {
+	0,
+	g_szNetworkOptionsMsg1,
+	g_szNetworkOptionsMsg2,
+	g_szNetworkOptionsMsg3,
+	g_szNetworkOptionsMsg4,
+	g_szNetworkOptionsMsg5,
+	g_szNetworkOptionsMsg6,
+	g_szNetworkOptionsMsg7,
+	g_szNetworkOptionsMsg8,
+	g_szNetworkOptionsMsg9,
+	g_szNetworkOptionsMsg10,
+};
 
 // GLOBAL: LEMBALL 0x004a0344
-int g_anNetworkOptionsEditMessages[4] = {(int) g_szNetworkOptionsNoMessage, 2, 3, 0};
+int g_anNetworkOptionsEditMessages[4] = {(int) g_szNetworkOptionsMsg10, 2, 3, 0};
 
 // GLOBAL: LEMBALL 0x004a0354
 int g_anNetworkOptionsEditMaxLength[4] = {0, 8, 0x14, 0};
@@ -99,11 +163,48 @@ char g_szNetworkGameName[16];
 // GLOBAL: LEMBALL 0x004a0378
 char g_szNetworkBroadcastAddress[16];
 
+// GLOBAL: LEMBALL 0x004a0390
+int g_nNetworkOptionsShiftHeld = 0;
+
+// GLOBAL: LEMBALL 0x004a0394
+int g_nNetworkOptionsCapsOrShift = 0;
+
 // 68K 0x10806468 __ct__21CNetworkOptionsDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
-// STUB: LEMBALL 0x00453280
+// FUNCTION: LEMBALL 0x00453280
 NetworkOptionsDrawer::NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 0xc, 0x32, 200, 0, 100, 0x28)
 {
+	int i;
+
+	m_editingActive = 0;
+	m_message = 1;
+	m_messageDirty = 1;
+	m_messageDuration = 0;
+	m_pendingEvent = 0;
+	m_broadcasting = 0;
+	m_networkState = 0;
+	m_redrawPending = 0;
+	m_lastDrawTime = CurrentMilliTimer();
+	m_stopPending = 0;
+	m_connectionState = 0;
+	m_locked = 0;
+	m_startPending = 0;
+	m_pendingStage = 0;
+	m_pendingEvent = 0;
+	m_editor = new EditString(0x28);
+	m_playerEntries = new EntryHandler[10];
+	m_acceptedPlayer = -1;
+	m_highlightedPlayer = -1;
+	RegisterRemaps();
+	i = 0;
+	do {
+		((GWnd*) m_display)->m_hotAreaList->AddToList(&m_playerEntries[i]);
+		i = i + 1;
+	} while (i < 10);
+	m_drawBackground = 1;
+	m_drawFrame = 1;
+	m_drawSolid = 0;
+	Setup();
 }
 
 // 68K 0x10806646 Load__21CNetworkOptionsDrawerFv
@@ -196,15 +297,271 @@ void NetworkOptionsDrawer::DrawFrame(int p_position)
 }
 
 // 68K 0x10806ab0 DrawEntry__21CNetworkOptionsDrawerFUlRi7eRemaps
-// STUB: LEMBALL 0x004536f0
+// FUNCTION: LEMBALL 0x004536f0
 void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_remap)
 {
+	VsPoint size;
+	VsSize advance;
+	VsPoint posName;
+	VsPoint posAddress;
+	VsPoint posPeer;
+	char* gameName;
+	char* peerName;
+	char* addressStr;
+	char trimmedPeerName[24];
+	ResFont* font;
+	Remap* remap;
+	int len;
+
+	if (g_pNetworkManager != 0) {
+		if (g_pNetworkManager->m_gameMessages[p_index].m_valid != 0) {
+			int* layout = (int*) m_layoutTable;
+			font = m_textManager->GetFont(m_unknown384);
+			posName.m_x = (short) layout[0x68 / 4];
+			posAddress.m_x = (short) layout[0x78 / 4];
+			posPeer.m_x = (short) layout[0x80 / 4];
+			remap = 0;
+			int yOffset = (short) layout[0x8c / 4] * (short) p_value;
+			posName.m_y = (short) layout[0x6c / 4] + yOffset;
+			posAddress.m_y = (short) layout[0x6c / 4] + yOffset;
+			posPeer.m_y = (short) layout[0x6c / 4] + yOffset;
+			if (p_remap != 6) {
+				remap = (Remap*) m_remaps[p_remap];
+			}
+			gameName = g_pNetworkManager->m_gameMessages[p_index].m_gameName;
+			peerName = g_pNetworkManager->m_gameMessages[p_index].m_peerName;
+			addressStr = g_pNetworkManager->m_connections[p_index]->m_address->GetStr();
+			memcpy(trimmedPeerName, peerName, 0x14);
+			len = 0x14;
+			do {
+				trimmedPeerName[len] = 0;
+				size = font->GetSize(trimmedPeerName, 0x20);
+				len--;
+			} while (layout[0x98 / 4] < (int) size.m_x);
+
+			size = font->GetSize(gameName, 0x20);
+			posName.m_x -= size.m_x / 2;
+			size = font->GetSize(addressStr, 0x20);
+			posAddress.m_x -= size.m_x / 2;
+			size = font->GetSize(peerName, 0x20);
+			posPeer.m_x -= size.m_x / 2;
+
+			advance.m_width = 0;
+			advance.m_height = 0;
+			m_textManager->DrawString(m_gdi, posName, advance, m_unknown384, gameName, 0x20, remap);
+			advance.m_width = 0;
+			advance.m_height = 0;
+			m_textManager->DrawString(m_gdi, posAddress, advance, m_unknown384, addressStr, 0x20, remap);
+			advance.m_width = 0;
+			advance.m_height = 0;
+			m_textManager->DrawString(m_gdi, posPeer, advance, m_unknown384, peerName, 0x20, remap);
+			p_value++;
+		}
+	}
 }
 
 // 68K 0x10806d8c DrawText__21CNetworkOptionsDrawerFv
-// STUB: LEMBALL 0x00453940
+// FUNCTION: LEMBALL 0x00453940
 void NetworkOptionsDrawer::DrawText()
 {
+	VsPoint pos;
+	VsPoint posLabel;
+	VsPoint posIp;
+	VsPoint posComputer;
+	VsPoint posDivider;
+	VsPoint posMyName;
+	VsPoint posMyIp;
+	VsPoint posMyComputer;
+	VsPoint size;
+	VsSize advance;
+	ResFont* font;
+	int row;
+	int* layout = (int*) m_layoutTable;
+
+	pos.m_y = (short) layout[0x5c / 4];
+	pos.m_x = (short) layout[0x58 / 4];
+
+	if (m_drawingBackBuffer == 0) {
+		if (m_message != 0) {
+			VsPoint msgPos;
+			msgPos.m_y = (short) layout[0x4c / 4];
+			msgPos.m_x = (short) layout[0x48 / 4];
+			String msgText = g_apNetworkOptionsMessages[m_message];
+			bool special = false;
+			if (m_message == 4) {
+				if (g_szNetworkBroadcastAddress[0] == 0) {
+					msgText = g_szNetworkOptionsMsg5;
+				}
+				else {
+					msgText += g_szNetworkBroadcastAddress;
+				}
+				special = true;
+			}
+			Remap* remap = 0;
+			if (m_message < 7) {
+				if (special) {
+					remap = (Remap*) m_remaps[5];
+				}
+			}
+			else {
+				remap = (Remap*) m_remaps[3];
+				special = true;
+			}
+			if (m_redrawPending != 0 || !special) {
+				font = m_textManager->GetFont(m_unknown384);
+				size = font->GetSize(msgText.m_text, 0x20);
+				msgPos.m_x -= size.m_x / 2;
+				advance.m_width = 0;
+				advance.m_height = 0;
+				m_textManager->DrawString(m_gdi, msgPos, advance, m_unknown384, msgText, 0x20, remap);
+			}
+		}
+
+		m_messageDirty = m_message;
+		if (g_pNetworkManager != 0) {
+			row = 0;
+			int fallbackHighlighted = -1;
+			if (m_highlightedPlayer != -1 && m_playerEntries[m_highlightedPlayer].m_active == 0) {
+				for (int i = 0; i < 10; i++) {
+					if (m_playerEntries[i].m_active != 0) {
+						m_highlightedPlayer = i;
+						break;
+					}
+				}
+				if (i == 10) {
+					fallbackHighlighted = m_highlightedPlayer;
+				}
+			}
+			for (int idx = 0; idx < 10; idx++) {
+				if (g_pNetworkManager->m_gameMessages[idx].m_valid != 0) {
+					int isAccepted = 0;
+					int state = 1;
+					if (m_playerEntries[idx].m_active != 0 || fallbackHighlighted == idx) {
+						isAccepted = 1;
+					}
+					if (m_acceptedPlayer == idx) {
+						if (m_playerEntries[idx].m_entered == 0 || m_redrawPending != 0) {
+							state = 3;
+						}
+					}
+					else if (m_playerEntries[idx].m_entered != 0 && m_redrawPending == 0) {
+						state = 3;
+					}
+					if (state + isAccepted == 1) {
+						row++;
+					}
+					else {
+						DrawEntry(idx, row, state + isAccepted);
+					}
+					if (row == 4) {
+						break;
+					}
+				}
+			}
+		}
+
+		if (m_editingActive != 0) {
+			String editText = m_editor->m_text;
+			if (m_redrawPending == 0) {
+				editText += g_szNetworkOptionsCursor;
+			}
+			if (editText.Getlength() > 0) {
+				Remap* remap = (Remap*) m_remaps[1];
+				advance.m_width = 0;
+				advance.m_height = 0;
+				m_textManager->DrawString(m_gdi, pos, advance, m_unknown384, editText, 0x20, remap);
+			}
+		}
+	}
+	else {
+		char* divider = (m_mode == 0) ? g_szNetworkOptionsDividerLocal : g_szNetworkOptionsDividerIp;
+		font = m_textManager->GetFont(m_unknown384);
+		posDivider.m_y = (short) layout[0x50 / 4];
+		posDivider.m_x = 0;
+		posLabel.m_y = (short) layout[0x54 / 4];
+		posLabel.m_x = (short) layout[0x68 / 4];
+		posIp.m_y = (short) layout[0x54 / 4];
+		posIp.m_x = (short) layout[0x78 / 4];
+		posComputer.m_y = (short) layout[0x54 / 4];
+		posComputer.m_x = (short) layout[0x80 / 4];
+
+		size = font->GetSize(g_szNetworkOptionsHeaderName, 0x20);
+		posLabel.m_x -= size.m_x / 2;
+		advance.m_width = 0;
+		advance.m_height = 0;
+		m_textManager->DrawString(m_gdi, posLabel, advance, m_unknown384, g_szNetworkOptionsHeaderName, 0x20, 0);
+
+		size = font->GetSize(g_szNetworkOptionsHeaderIp, 0x20);
+		posIp.m_x -= size.m_x / 2;
+		advance.m_width = 0;
+		advance.m_height = 0;
+		m_textManager->DrawString(m_gdi, posIp, advance, m_unknown384, g_szNetworkOptionsHeaderIp, 0x20, 0);
+
+		size = font->GetSize(g_szNetworkOptionsHeaderComputer, 0x20);
+		posComputer.m_x -= size.m_x / 2;
+		advance.m_width = 0;
+		advance.m_height = 0;
+		m_textManager->DrawString(m_gdi, posComputer, advance, m_unknown384, g_szNetworkOptionsHeaderComputer, 0x20, 0);
+
+		size = font->GetSize(divider, 0x20);
+		posDivider.m_x = (short) (((int) m_width - (int) size.m_x) / 2);
+		advance.m_width = 0;
+		advance.m_height = 0;
+		m_textManager->DrawString(m_gdi, posDivider, advance, m_unknown384, divider, 0x20, 0);
+
+		if (g_szNetworkGameName[0] != 0) {
+			posMyName.m_y = (short) layout[0x64 / 4];
+			posMyName.m_x = (short) layout[0x68 / 4];
+			posMyIp.m_y = (short) layout[0x64 / 4];
+			posMyIp.m_x = (short) layout[0x78 / 4];
+			posMyComputer.m_y = (short) layout[0x64 / 4];
+			posMyComputer.m_x = (short) layout[0x80 / 4];
+
+			size = font->GetSize(g_szNetworkGameName, 0x20);
+			posMyName.m_x -= size.m_x / 2;
+			advance.m_width = 0;
+			advance.m_height = 0;
+			m_textManager->DrawString(m_gdi, posMyName, advance, m_unknown384, g_szNetworkGameName, 0x20, (Remap*) m_remaps[0]);
+
+			char* myIp = (char*) m_stopPending;
+			if (myIp != 0 && *myIp != 0) {
+				size = font->GetSize(myIp, 0x20);
+				posMyIp.m_x -= size.m_x / 2;
+				advance.m_width = 0;
+				advance.m_height = 0;
+				m_textManager->DrawString(m_gdi, posMyIp, advance, m_unknown384, myIp, 0x20, (Remap*) m_remaps[0]);
+			}
+
+			char* myPeer = (char*) m_connectionState;
+			if (myPeer != 0 && *myPeer != 0) {
+				char trimmed[24];
+				int len = 0x14;
+				memcpy(trimmed, myPeer, 0x14);
+				do {
+					trimmed[len] = 0;
+					size = font->GetSize(trimmed, 0x20);
+					len--;
+				} while (layout[0x98 / 4] < (int) size.m_x);
+
+				String lowerPeer = String(trimmed).Lower();
+				size = font->GetSize(trimmed, 0x20);
+				posMyComputer.m_x -= size.m_x / 2;
+				advance.m_width = 0;
+				advance.m_height = 0;
+				m_textManager->DrawString(m_gdi, posMyComputer, advance, m_unknown384, lowerPeer, 0x20, (Remap*) m_remaps[0]);
+			}
+		}
+
+		if (g_pNetworkManager != 0) {
+			row = 0;
+			for (unsigned long i = 0; i < 10; i++) {
+				DrawEntry(i, row, 1);
+				if (row == 4) {
+					break;
+				}
+			}
+		}
+	}
 }
 
 // 68K 0x108075c6 DrawAnims__21CNetworkOptionsDrawerFv
@@ -214,9 +571,172 @@ void NetworkOptionsDrawer::DrawAnims()
 }
 
 // 68K 0x108075f6 ProcessMessages__21CNetworkOptionsDrawerFP10tagMESSAGE
-// STUB: LEMBALL 0x00454060
+// FUNCTION: LEMBALL 0x00454060
 bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 {
+	int code;
+
+	if (m_startPending != 0 || (unsigned int) m_message != m_messageDirty) {
+		return 0;
+	}
+
+	if (p_message->type == 3) {
+		code = p_message->code;
+		if (code == 0x49) {
+			g_nNetworkOptionsCapsOrShift &= ~1;
+			g_nNetworkOptionsShiftHeld = 0;
+			return 1;
+		}
+		if (m_editingActive != 0) {
+			if (code > 4 && code < 0x1f) {
+				return 1;
+			}
+			switch (code) {
+			case 1:
+			case 0x1f:
+			case 0x4c:
+			case 0x4d:
+			case 0x4e:
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	if (p_message->type != 4) {
+		if (p_message->type != 0xc) {
+			m_processedCount++;
+			return 0;
+		}
+		code = p_message->code;
+		if (code == 0xacef000c) {
+			if (m_locked == 0) {
+				Start(0);
+				return 0;
+			}
+		}
+		else if (code == 0xacef000d) {
+			if (m_locked == 0) {
+				Start(1);
+				return 0;
+			}
+		}
+		else if (code == 0xacef000e) {
+			Stop();
+			m_quitYet = 1;
+			m_returnState = 2;
+			return 1;
+		}
+		return 0;
+	}
+
+	code = p_message->code;
+	if (code == 0x49) {
+		g_nNetworkOptionsShiftHeld = 1;
+		g_nNetworkOptionsCapsOrShift |= 1;
+		return 1;
+	}
+
+	if (m_editingActive != 0) {
+		bool handled = false;
+		if (code > 4 && code < 0x1f) {
+			if (m_editor->m_length != m_editor->m_maxLength) {
+				char ch = (char) code - (((g_nNetworkOptionsShiftHeld == 0) ? 0xe0 : 0) - 0x3c);
+				*m_editor += ch;
+				handled = true;
+			}
+			else {
+				g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+			}
+		}
+		else if (code > 0x38 && code < 0x43) {
+			if (m_editor->m_length != m_editor->m_maxLength) {
+				*m_editor += (char) (code - 9);
+				handled = true;
+			}
+			else {
+				g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+			}
+		}
+		else {
+			switch (code) {
+			case 0x1f:
+				if (m_editor->m_length != m_editor->m_maxLength) {
+					*m_editor += ' ';
+					handled = true;
+				}
+				else {
+					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+				}
+				break;
+			case 0x20:
+				if (m_editor->m_length != m_editor->m_maxLength) {
+					*m_editor += '.';
+					handled = true;
+				}
+				else {
+					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+				}
+				break;
+			case 0x23:
+				m_broadcasting = 0;
+				m_editingActive = 0;
+				m_pendingEvent = 0;
+				SetMessage(1);
+				handled = true;
+				break;
+			case 0x4c:
+				StopEditing();
+				handled = true;
+				break;
+			case 0x4d:
+			case 0x4e:
+				if (m_editor->m_length > 0) {
+					m_editor->m_length--;
+					m_editor->m_text[m_editor->m_length] = 0;
+					handled = true;
+				}
+				else {
+					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+				}
+				break;
+			}
+		}
+
+		if (handled) {
+			m_lastDrawTime = CurrentMilliTimer();
+			m_redrawPending = 0;
+			g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+			return 1;
+		}
+	}
+
+	switch (code) {
+	case 1:
+		if (HighlightPreviousEntry()) {
+			g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+			return 1;
+		}
+		break;
+	case 2:
+		if (HighlightNextEntry()) {
+			g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+			return 1;
+		}
+		break;
+	case 0x1f:
+	case 0x22:
+	case 0x4c:
+		if (m_highlightedPlayer != -1) {
+			VsPoint pt;
+			pt.m_x = 0;
+			pt.m_y = 0;
+			m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, 0);
+			return 1;
+		}
+		break;
+	}
+
 	return 0;
 }
 

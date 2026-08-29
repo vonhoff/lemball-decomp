@@ -312,10 +312,58 @@ void GWnd::Flush()
 }
 
 // 68K 0x1010adb8 Refresh__5CGWndFP7CVSRect
-// STUB: LEMBALL 0x004642c0
+// FUNCTION: LEMBALL 0x004642c0
 void GWnd::Refresh(VsRect* p_rect)
 {
+	unsigned short height;
+	unsigned short width;
+	unsigned short innerX;
+	short innerWidth;
+	short innerHeight;
+	VsRect damage;
+
 	Render();
+	height = m_refreshHeight;
+	width = m_refreshWidth;
+	if ((int) (short) height * (int) (short) width > 0) {
+		damage.m_x = (short) m_refreshX;
+		innerWidth = m_innerRect.m_width;
+		damage.m_y = (short) m_refreshY;
+		innerHeight = m_innerRect.m_height;
+		damage.m_width = (short) width;
+		damage.m_height = (short) height;
+		if ((int) innerWidth * (int) innerHeight != 0) {
+			innerX = (unsigned short) m_innerRect.m_x;
+			if ((short) damage.m_x < (short) innerX) {
+				damage.m_width = (short) (width + (damage.m_x - innerX));
+				damage.m_x = (short) innerX;
+			}
+			innerWidth = (short) (innerX + innerWidth);
+			if (innerWidth < (short) (damage.m_x + damage.m_width)) {
+				damage.m_width = (short) (innerWidth - damage.m_x);
+			}
+			width = (unsigned short) m_innerRect.m_y;
+			if ((short) damage.m_y < (short) width) {
+				damage.m_height = (short) (height + (damage.m_y - width));
+				damage.m_y = (short) width;
+			}
+			innerHeight = (short) (width + innerHeight);
+			if (innerHeight < (short) (damage.m_y + damage.m_height)) {
+				damage.m_height = (short) (innerHeight - damage.m_y);
+			}
+			if ((short) damage.m_width < 1 || (short) damage.m_height < 1) {
+				damage.m_height = 0;
+				damage.m_width = 0;
+				damage.m_y = 0;
+				damage.m_x = 0;
+			}
+		}
+		if ((int) (short) damage.m_height * (int) (short) damage.m_width > 0) {
+			damage.m_x = (short) (damage.m_x - m_innerRect.m_x);
+			damage.m_y = (short) (damage.m_y - m_innerRect.m_y);
+			m_gdi->m_renderTarget->AddToChangeList(damage);
+		}
+	}
 	Flush();
 	m_refreshWidth = 0;
 	m_refreshHeight = 0;

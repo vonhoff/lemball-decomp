@@ -35,7 +35,7 @@ class Vector;
 class Fixed;
 class AckMessage;
 class Ai;
-class AnimFrameBASE;
+typedef class Frames AnimFrameBASE;
 class AnimsManager;
 class Anim;
 class Arena;

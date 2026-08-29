@@ -1,4 +1,5 @@
 #include "BaseFrontendProcess.h"
+#include "BaseFrontendDrawer.h"
 
 #include "../../Control/Game/GameStatus.h"
 #include "../../Frontend/Drawers/NetworkOptionsDrawer.h"
@@ -62,7 +63,7 @@ BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 void BaseFrontendProcess::Process()
 {
 	if (m_networkWasActive != 0 && g_pActiveConnection == 0) {
-		g_pNetworkOptionsDrawer->LostConnection();
+		g_pBaseFrontendDrawer->LostConnection();
 	}
 	Processing();
 }
@@ -99,7 +100,7 @@ int BaseFrontendProcess::ProcessMsg(Message* p_message)
 	unsigned int id;
 	unsigned int type;
 
-	if (g_pNetworkOptionsDrawer == 0) {
+	if (g_pBaseFrontendDrawer == 0) {
 		return 0;
 	}
 	if (ProcessMessages(p_message) != 0) {
@@ -119,7 +120,7 @@ int BaseFrontendProcess::ProcessMsg(Message* p_message)
 	}
 	((UserActionMessage*) m_userActionMessage)->Set(packet->m_data + sizeof(BasePacketHeader));
 	packet->m_used = 0;
-	g_pNetworkOptionsDrawer->RemoteAction(
+	g_pBaseFrontendDrawer->RemoteAction(
 		((UserActionMessage*) m_userActionMessage)->m_action,
 		((UserActionMessage*) m_userActionMessage)->m_stage);
 	return 1;

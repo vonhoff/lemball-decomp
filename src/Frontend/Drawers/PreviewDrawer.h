@@ -38,11 +38,11 @@ private:
 	unsigned char* m_remapTable;           // 0x3cc
 	BaseRemap* m_remap;                    // 0x3d0
 	void* m_layout;                        // 0x3d4
-	unsigned int m_lemmingAnimId;          // 0x3d8
-	unsigned int m_teamAnimId;             // 0x3dc
-	unsigned int m_opponentAnimId;         // 0x3e0
-	unsigned int* m_nextButtonAnimIds;     // 0x3e4
-	unsigned int* m_previousButtonAnimIds; // 0x3e8
+	unsigned long m_lemmingAnimId;          // 0x3d8
+	unsigned long m_teamAnimId;             // 0x3dc
+	unsigned long m_opponentAnimId;         // 0x3e0
+	unsigned long* m_nextButtonAnimIds;     // 0x3e4
+	unsigned long* m_previousButtonAnimIds; // 0x3e8
 	int m_opponentCount;                   // 0x3ec
 	int m_lemmingCount;                    // 0x3f0
 	int m_teamCount;                       // 0x3f4

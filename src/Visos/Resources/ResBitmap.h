@@ -27,6 +27,7 @@ public:
 	friend class BaseFrontendDrawer;
 	friend class MainOptions1Drawer;
 	friend class MainOptions2Drawer;
+	friend class SuccFailDrawer;
 	friend class Surface;
 	friend class AnimsManager;
 	friend class CdLoadAnim;

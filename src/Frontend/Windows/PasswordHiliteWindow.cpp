@@ -14,5 +14,5 @@ PasswordHiliteWindow::PasswordHiliteWindow()
 // FUNCTION: LEMBALL 0x00451fd0
 void PasswordHiliteWindow::Dummy3c()
 {
-	m_gdi->m_renderTarget->m_flag74 = 1;
+	m_gdi->m_renderTarget->m_flag70 = 1;
 }

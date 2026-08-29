@@ -19,6 +19,7 @@
 #include "../Controls/GunController.h"
 #include "../Controls/HiliteController.h"
 #include "../Base/BaseFrontendProcess.h"
+#include "../../Network/Game/NetworkManager.h"
 #include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Foundation/VsOStream.h"
 
@@ -95,6 +96,7 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
 void BaseFrontendDrawer::Setup()
 {
 	int cursorType;
+	void* storage;
 
 	if (m_drawBackground == 0) {
 		cursorType = 0;
@@ -103,7 +105,60 @@ void BaseFrontendDrawer::Setup()
 		cursorType = 2;
 	}
 	CursorChangeType(cursorType, 0);
+
+	if (m_textCapacity > 0) {
+		storage = operator new(sizeof(TextManager));
+		if (storage == 0) {
+			m_textManager = 0;
+		}
+		else {
+			m_textManager = new (storage) TextManager(0x2b6, 1, m_textCapacity, m_textStyle);
+		}
+	}
+
 	Restart();
+
+	if (m_ambientAnimId != 0) {
+		storage = operator new(0x1c);
+		if (storage == 0) {
+			m_ambientAnim = 0;
+		}
+		else {
+			m_ambientAnim = new (storage) PlayThruAnim(m_anims.GetnAnims(m_ambientAnimId), 1);
+		}
+		m_ambientAnim->m_fixedTime = 0xffffffff;
+		m_ambientAnim->StartAnim(500);
+		m_ambientDelay = 0;
+		m_ambientUpdatedAt = CurrentMilliTimer();
+	}
+
+	g_pBaseFrontendDrawer = this;
+
+	if (m_networkMode != 0) {
+		int desiredState;
+		m_startupPending = 0;
+		m_actionPending = 1;
+		if (m_hiliteController != 0) {
+			m_hiliteController->ActivateButtons(0);
+			m_hiliteController->m_active = 0;
+		}
+		switch (m_flowProcess) {
+		case 4:
+			desiredState = 1;
+			break;
+		case 5:
+			desiredState = 3;
+			break;
+		case 0xe:
+		case 0xf:
+			desiredState = 2;
+			break;
+		}
+		if (desiredState != 0) {
+			g_pNetworkManager->m_desiredGameState = desiredState;
+			g_pNetworkManager->m_observedGameState = 0;
+		}
+	}
 }
 
 // 68K 0x1080070e InitialiseBackBuffer__19CBaseFrontendDrawerFv
@@ -624,6 +679,9 @@ BaseFrontendDrawer::~BaseFrontendDrawer()
 		g_pMogRes->CleanUpResources();
 	}
 }
+
+// GLOBAL: LEMBALL 0x0049f144
+BaseFrontendDrawer* g_pBaseFrontendDrawer = 0;
 
 // GLOBAL: LEMBALL 0x0049f148
 char g_szUnknownUserActionSpecified[] = "Unknown user action specified\n";

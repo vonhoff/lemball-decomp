@@ -27,6 +27,9 @@ public:
 	friend class NetworkOptionsDrawer;
 	friend class PlayerLemming;
 	friend class MainOptions1Drawer;
+	friend class PasswordDrawer;
+	friend class PreviewDrawer;
+	friend class SuccFailDrawer;
 	friend class IntroAnimAnimWindow;
 	friend class BaseFrontendProcess;
 	friend class BaseFrontendDrawer;

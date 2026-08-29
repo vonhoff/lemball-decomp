@@ -209,7 +209,7 @@ VsSize AnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_ani
 VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 							  unsigned long p_resourceId,
 							  unsigned long p_animIndex,
-							  AnimFrameBASE* p_frame,
+							  Frames* p_frame,
 							  Remap* p_remap)
 {
 	VsRect result;

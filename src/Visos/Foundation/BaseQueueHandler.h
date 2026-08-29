@@ -13,8 +13,13 @@ public:
 	virtual int ProcessMsg(Message* p_message);        // vtable+0x08
 
 	friend class Game;
+	friend class IntroAnimDrawer;
 	friend class MainOptions1Drawer;
 	friend class MainOptions2Drawer;
+	friend class NetworkOptionsDrawer;
+	friend class PasswordDrawer;
+	friend class PreviewDrawer;
+	friend class SuccFailDrawer;
 	friend class Translator;
 	friend class GunController;
 	friend class GunButtons;

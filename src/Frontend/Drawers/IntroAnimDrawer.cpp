@@ -72,10 +72,8 @@ void IntroAnimDrawer::EndPhase()
 // FUNCTION: LEMBALL 0x00447610
 bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 {
-	if (p_message == 0) {
-		return 0;
-	}
-	if (p_message->type == 4) {
+	switch (p_message->type) {
+	case 4:
 		switch (p_message->code) {
 		case 0x1f:
 		case 0x22:
@@ -86,12 +84,13 @@ bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 		default:
 			return 0;
 		}
-	}
-	if (p_message->type == 6) {
+	case 6:
 		EndPhase();
 		return 1;
+	default:
+		m_processedCount++;
+		return 0;
 	}
-	return 0;
 }
 
 // 68K 0x1080601e Processing__16CIntroAnimDrawerFv
@@ -107,13 +106,14 @@ void IntroAnimDrawer::Processing()
 	}
 	if (m_startCountdown == 0) {
 		VsRect introRect;
-		introRect.m_width = m_display->m_rect.m_width;
-		introRect.m_height = m_display->m_rect.m_height;
-		introRect.m_x = (short) ((short) (introRect.m_width - 320) / 2);
-		short h = introRect.m_height;
+		short w = m_display->m_rect.m_width;
+		short h = m_display->m_rect.m_height;
+		introRect.m_width = w;
+		introRect.m_height = h;
+		introRect.m_x = (short) (w - 320) / 2;
+		introRect.m_y = (short) (h - 240) / 2;
 		introRect.m_width = 320;
 		introRect.m_height = 240;
-		introRect.m_y = (short) ((short) (h - 240) / 2);
 		if (m_started == 0) {
 			g_pSoundView->ChangeState(1, 0);
 			m_animWindow.Create(introRect, m_display, g_szPaintBallIntroSequence);

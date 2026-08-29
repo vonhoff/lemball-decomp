@@ -7,11 +7,11 @@
 class LevelLoader {
 public:
 	LevelLoader(Ai* p_arg0);
-	LoadBlockHeader* GetNextBlockHeader(LoadBlockHeader* p_header);
-	bool LocateStartOfLevelFile();
-	unsigned int CalcLevelId(eSkill p_skill, int p_level);
+	static LoadBlockHeader* GetNextBlockHeader(LoadBlockHeader* p_header);
+	static bool LocateStartOfLevelFile();
+	static unsigned int CalcLevelId(eSkill p_skill, int p_level);
 	void LoadLevel(eSkill p_skill, int p_level, unsigned char p_skip);
-	void RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* p_preview);
+	static void RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* p_preview);
 
 private:
 	Ai* m_ai;            // 0x00

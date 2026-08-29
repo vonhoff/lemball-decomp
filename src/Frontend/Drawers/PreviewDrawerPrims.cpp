@@ -7,7 +7,7 @@ PreviewDrawerPrims::PreviewDrawerPrims()
 }
 
 // 68K 0x1011b79e __dt__Q214CPreviewDrawer8tagPRIMSFv
-// STUB: LEMBALL 0x0044a9c0
+// FUNCTION: LEMBALL 0x0044a9c0
 PreviewDrawerPrims::~PreviewDrawerPrims()
 {
 }

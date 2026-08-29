@@ -44,6 +44,7 @@ public:
 	friend class TargetAboutScreen;
 	friend class HiliteButtons;
 	friend class PasswordHiliteWindow;
+	friend class PasswordDrawer;
 	friend struct TargetWinGDrawCodecState;
 	friend TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo);
 

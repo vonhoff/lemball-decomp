@@ -22,6 +22,8 @@ class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurf
 public:
 	friend class PvButton;
 	friend class GraphicButton;
+	friend class GunButtons;
+	friend class PasswordDrawer;
 	Surface(GrafPort* p_arg0);
 	Surface(const VsRect& p_arg0, class Surface* p_arg1);
 	bool ClipRect(VsRect& p_rect, VsRect* p_clipped);

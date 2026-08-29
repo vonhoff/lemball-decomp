@@ -23,6 +23,7 @@ public:
 
 	friend class NetworkOptionsDrawer;
 	friend class NetworkOptionsProc;
+	friend class BaseFrontendDrawer;
 
 private:
 	NetworkGameMessage* m_gameMessage;    // 0x10

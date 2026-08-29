@@ -24,7 +24,7 @@ PvBackBuffSurface::~PvBackBuffSurface()
 }
 
 // 68K 0x10215fb6 HasBackBuff__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x004664e0
+// FUNCTION: LEMBALL 0x004664e0
 bool PvBackBuffSurface::HasBackBuff()
 {
 	if (m_parentSurface != (Surface*) g_pGdiHelperTarget) {
