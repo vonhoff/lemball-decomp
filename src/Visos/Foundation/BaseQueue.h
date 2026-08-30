@@ -21,9 +21,9 @@ public:
 	bool PutNth(Message* p_arg0, unsigned int p_arg1);
 	unsigned int GetMessageCount() { return m_messageCount; }
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
+	virtual ~BaseQueue();                              // vtable+0x04
 	virtual bool Post(Message& p_arg0);                // vtable+0x08
 	virtual bool Send(Message& p_arg0);                // vtable+0x0c
-	virtual ~BaseQueue();                              // vtable+0x04
 	BaseQueue();
 
 	friend class TimedQueue;

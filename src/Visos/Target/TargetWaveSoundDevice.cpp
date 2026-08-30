@@ -302,11 +302,9 @@ int TargetWaveSoundDevice::Dummy28()
 // FUNCTION: LEMBALL 0x0047cf10
 int TargetWaveSoundDevice::Dummy3c(unsigned char* p_data, unsigned long* p_handle)
 {
-	unsigned int i;
 	void* storage;
 
-	i = 0;
-	while (m_channelCount > i) {
+	for (unsigned int i = 0; i < m_channelCount; i++) {
 		if (m_effectUsed[i] == 0) {
 			Dummy14();
 			storage = operator new(0x18);
@@ -327,7 +325,6 @@ int TargetWaveSoundDevice::Dummy3c(unsigned char* p_data, unsigned long* p_handl
 			}
 			return 1;
 		}
-		i = i + 1;
 	}
 	return 0;
 }

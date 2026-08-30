@@ -331,15 +331,15 @@ void SoundView::ChangeState(unsigned short p_state, LoadUpdate* p_loadUpdate)
 }
 
 // 68K 0x10b10236 SetEffectsVolume__10CSoundViewFUc
-// STUB: LEMBALL 0x00439f50
+// FUNCTION: LEMBALL 0x00439f50
 void SoundView::SetEffectsVolume(unsigned char p_volume)
 {
-	g_pSoundManager->SetVolumes((int) p_volume, -1);
+	g_pSoundManager->SetVolumes(p_volume, -1);
 }
 
 // 68K 0x10b1027c SetMusicVolume__10CSoundViewFUc
-// STUB: LEMBALL 0x00439f70
+// FUNCTION: LEMBALL 0x00439f70
 void SoundView::SetMusicVolume(unsigned char p_volume)
 {
-	g_pSoundManager->SetVolumes(-1, (int) p_volume);
+	g_pSoundManager->SetVolumes(-1, p_volume);
 }

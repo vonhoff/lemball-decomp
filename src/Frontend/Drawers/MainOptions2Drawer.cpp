@@ -116,61 +116,77 @@ void MainOptions2Drawer::UnLoad()
 	}
 }
 
+// 68K 0x1080ab4a __dt__19CMainOptions2DrawerFv
+// FUNCTION: LEMBALL 0x00448de0
+MainOptions2Drawer::~MainOptions2Drawer()
+{
+	if (m_mode == 0) {
+		g_nZoomEnabled = (int) (m_disableZoom == 0);
+	}
+	g_nAnimationsDisabled = m_disableAnimations;
+	g_pSoundView->SetEffectsOn(g_nPendingEffectsVolume);
+	g_pSoundView->SetMusicOn(g_nPendingMusicVolume);
+	g_nMusicVolume = g_nPendingMusicVolume;
+	g_nEffectsVolume = g_nPendingEffectsVolume;
+	if (g_nMusicAvailable == 0) {
+		g_nMusicVolume = 0;
+	}
+	if (g_nEffectsAvailable == 0) {
+		g_nEffectsVolume = 0;
+	}
+	if (g_nZoomAvailable == 0) {
+		g_nZoomEnabled = 0;
+	}
+	if (g_nAnimationsAvailable == 0) {
+		g_nAnimationsDisabled = 1;
+	}
+	g_pSoundView->SetEffectsOn(g_nPendingEffectsVolume);
+	g_pSoundView->SetMusicOn(g_nPendingMusicVolume);
+	if (m_loaded != 0) {
+		UnLoad();
+	}
+}
+
 // 68K 0x1080ac8c ProcessMessages__19CMainOptions2DrawerFP10tagMESSAGE
 // FUNCTION: LEMBALL 0x00448ee0
 bool MainOptions2Drawer::ProcessMessages(Message* p_message)
 {
-	unsigned int code;
-	unsigned char volume;
-
-	if (p_message->type != 0xc) {
-		m_processedCount = m_processedCount + 1;
+	unsigned int messageType = (unsigned int) p_message->type;
+	if (messageType != 0xc) {
+		m_processedCount++;
 		return 0;
 	}
-	code = (unsigned int) p_message->code;
-	if (code < 0xacef0009) {
-		if (code == 0xacef0008) {
-			m_quitYet = 1;
-			m_returnState = 2;
-			return 1;
-		}
-		if (code > 0xacef0004) {
-			if (code > 0xacef0006) {
-				return 0;
-			}
-			return 1;
-		}
+
+	switch ((unsigned int) p_message->code) {
+	case 0xacef0005:
+	case 0xacef0006:
+		return 1;
+	case 0xacef0008:
+		m_quitYet = 1;
+		m_returnState = 2;
+		return 1;
+	case 0xacef0009:
+		m_quitYet = 1;
+		m_returnState = 0x11;
+		return 1;
+	case 0xacff0000:
+		g_nPendingEffectsVolume = (int) p_message->payload;
+		g_pSoundView->SetEffectsVolume((unsigned char) (((unsigned int) p_message->payload * 0xff) / (unsigned int) p_message->source));
+		return 1;
+	case 0xacff0001: {
+		g_nPendingMusicVolume = (int) p_message->payload;
+		unsigned char volume = (unsigned char) (((unsigned int) p_message->payload * 0xff) / (unsigned int) p_message->source);
+		*g_pSysOutput << "Setting music volume " << (char) volume << "\n";
+		g_pSoundView->SetMusicVolume(volume);
+		return 1;
 	}
-	else {
-		if (code == 0xacef0009) {
-			m_quitYet = 1;
-			m_returnState = 0x11;
-			return 1;
-		}
-		if (code == 0xacff0000) {
-			g_nPendingEffectsVolume = (int) p_message->payload;
-			SoundView::SetEffectsVolume((unsigned char) (((unsigned int) p_message->payload * 0xff) / (unsigned int) p_message->source));
-			return 1;
-		}
-		if (code == 0xacff0001) {
-			g_nPendingMusicVolume = (int) p_message->payload;
-			volume = (unsigned char) (((unsigned int) p_message->payload * 0xff) / (unsigned int) p_message->source);
-			*g_pSysOutput << "Setting music volume " << volume << "\n";
-			SoundView::SetMusicVolume(volume);
-			return 1;
-		}
+	default:
+		return 0;
 	}
-	return 0;
 }
 
 // 68K 0x1080ada6 DrawBackGround__19CMainOptions2DrawerFv
 // FUNCTION: LEMBALL 0x00449000
 void MainOptions2Drawer::DrawBackGround()
 {
-}
-
-// 68K 0x1080ab4a __dt__19CMainOptions2DrawerFv
-MainOptions2Drawer::~MainOptions2Drawer()
-{
-	UnLoad();
 }

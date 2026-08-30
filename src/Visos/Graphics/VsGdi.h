@@ -18,7 +18,7 @@ struct SurfaceListNode {
 
 // SIZE 0x5a0
 // PvGdiBitmap at 0. Shared PvSurface virtual base.
-class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface, public virtual PvSurface {
+class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface {
 public:
 	friend class PvButton;
 	friend class GraphicButton;

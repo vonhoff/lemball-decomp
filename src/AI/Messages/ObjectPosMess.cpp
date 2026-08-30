@@ -26,10 +26,12 @@ void ObjectPosMess::AddData()
 void ObjectPosMess::GetData()
 {
 	AiCoord pos;
-	(void) pos;
-	m_object->m_position.m_xFixed = GetDword() << 12;
-	m_object->m_position.m_yFixed = GetDword() << 12;
-	m_object->m_position.m_zFixed = GetDword() << 12;
+	pos.m_xFixed = GetDword() << 12;
+	m_object->m_position.m_xFixed = pos.m_xFixed;
+	pos.m_yFixed = GetDword() << 12;
+	m_object->m_position.m_yFixed = pos.m_yFixed;
+	pos.m_zFixed = GetDword() << 12;
+	m_object->m_position.m_zFixed = pos.m_zFixed;
 	m_object->m_heading = GetDword();
 }
 

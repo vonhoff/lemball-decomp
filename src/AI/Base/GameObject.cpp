@@ -429,15 +429,23 @@ void GameObject::Fly()
 }
 
 // 68K 0x106097cc RotateClockwise__11CGameObjectFv
-// STUB: LEMBALL 0x00415520
+// FUNCTION: LEMBALL 0x00415520
 void GameObject::RotateClockwise()
 {
+	m_facingDirection++;
+	if (m_facingDirection >= 8) {
+		m_facingDirection %= 8;
+	}
 }
 
 // 68K 0x1060980e RotateAnticlockwise__11CGameObjectFv
-// STUB: LEMBALL 0x00415550
+// FUNCTION: LEMBALL 0x00415550
 void GameObject::RotateAnticlockwise()
 {
+	m_facingDirection--;
+	if (m_facingDirection < 0) {
+		m_facingDirection = (m_facingDirection + 8) % 8;
+	}
 }
 
 // 68K 0x10609852 StartMoving__11CGameObjectFv
@@ -447,9 +455,13 @@ void GameObject::StartMoving()
 }
 
 // 68K 0x10609ab0 StopMoving__11CGameObjectFv
-// STUB: LEMBALL 0x00415780
+// FUNCTION: LEMBALL 0x00415780
 void GameObject::StopMoving()
 {
+	DeleteFirstEntryFromDestinationList();
+	m_moveDurationTicks = 0;
+	m_actionDeadline = g_dwGameTick;
+	m_lastMovementTick = g_dwGameTick;
 }
 
 // 68K 0x10609afc MapCheck__11CGameObjectFii

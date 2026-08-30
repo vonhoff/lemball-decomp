@@ -177,7 +177,7 @@ void GraphicButton::DrawButton()
 	short y = m_graphicOffsetY;
 	unsigned int pressed = 0;
 
-	if (m_enabled != 0 && ((HotAreaHandler*) ((char*) this + 0x90))->m_active != 0) {
+	if (m_enabled != 0 && HotAreaHandler::m_active != 0) {
 		pressed = 1;
 	}
 	if ((m_alignmentFlags & 0x40) != 0 && pressed != 0) {

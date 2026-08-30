@@ -86,7 +86,7 @@ bool Duplicator::Process()
 		m_duplicatedObject->ResetInstructions();
 		PlayerLemming* dead = g_pAI->GetDead();
 		if (dead != 0) {
-			AiCoord pos(m_position.m_xFixed, m_position.m_yFixed - 0x3c000, m_position.m_zFixed);
+			AiCoord pos(m_position.m_xFixed, m_position.m_yFixed - 0x34000, m_position.m_zFixed);
 			dead->Resurrect(pos);
 			PlayerLemmingGroup* group = ((PlayerLemming*) m_duplicatedObject)->GetGroup();
 			group->AddLemmingToGroup(dead);

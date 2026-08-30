@@ -41,9 +41,6 @@ void IntroAnimAnimWindow::SetAnim()
 // FUNCTION: LEMBALL 0x00447830
 void IntroAnimAnimWindow::OnStop()
 {
-	if (m_owner->QuitYet() != 0) {
-		return;
-	}
 	Destroy();
 	m_owner->EndPhase();
 }

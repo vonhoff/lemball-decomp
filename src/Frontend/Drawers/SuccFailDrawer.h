@@ -25,7 +25,7 @@ public:
 	void Return();
 
 private:
-	SuccFailDrawerPrims m_primitives; // 0x398
+	SuccFailDrawerPrims m_primitives[1]; // 0x398
 	char m_message[256];              // 0x3e0
 	char* m_firstLine;                // 0x4e0
 	char* m_secondLine;               // 0x4e4

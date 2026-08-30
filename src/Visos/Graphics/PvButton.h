@@ -32,7 +32,7 @@ public:
 	virtual void OnVisibilityChange();                                    // vtable+0x80
 	virtual ~PvButton();                                                  // vtable+0x00
 	void CheckForceDraw();
-	void Draw(unsigned char p_force);
+	void Draw(unsigned int p_force);
 	void Initialise();
 	void SetAutoDraw(unsigned int p_enabled);
 

@@ -102,21 +102,20 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 
 		switch (blockType) {
 		case 0x41492020: {
-			unsigned char* edi = (unsigned char*) (header + 1);
+			unsigned short* cursor = (unsigned short*) (header + 1);
 			version = 0;
 			if (header->m_size - 8 > 4) {
-				version = *(unsigned short*) edi;
-				edi += 2;
+				version = *cursor++;
 			}
-			p_preview->m_timeLimit = *(unsigned short*) (edi + 2);
-			edi += 4;
+			p_preview->m_timeLimit = cursor[1];
+			cursor += 2;
 			if (version < 4) {
 				p_preview->m_lemmingCount = 4;
 				p_preview->m_playerCount = 1;
 			}
 			else {
-				p_preview->m_lemmingCount = *(unsigned short*) edi;
-				p_preview->m_playerCount = *(unsigned short*) (edi + 2);
+				p_preview->m_lemmingCount = cursor[0];
+				p_preview->m_playerCount = cursor[1];
 			}
 			break;
 		}

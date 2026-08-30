@@ -116,12 +116,23 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 	VsExit(0xaaaa);
 }
 
-// STUB: LEMBALL 0x00473790
+#include "VsOStream.h"
+
+class LocalDebugOStream : public VsDebugStreambuf, public VsOStream {
+public:
+	LocalDebugOStream(char* p_buffer, int p_size)
+		: VsDebugStreambuf(p_buffer, p_size, 0), VsOStream(this)
+	{
+	}
+};
+
+// FUNCTION: LEMBALL 0x00473790
 void FatalWin32Error(char* p_context)
 {
-	unsigned int error;
-
-	error = GetLastError();
-	MessageBoxA(0, p_context, "FATAL ERROR", 0);
+	unsigned long error = GetLastError();
+	char buffer[0x80];
+	LocalDebugOStream stream(buffer, sizeof(buffer));
+	stream << p_context << '\n' << " GetLastError()=" << (long) error << ", " << Hex8(error);
+	MessageBoxA(0, buffer, "FATAL ERROR", 0);
 	ExitProcess(0xaaaa);
 }

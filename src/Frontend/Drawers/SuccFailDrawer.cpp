@@ -326,15 +326,15 @@ void SuccFailDrawer::Load()
 	m_primitiveBundle.m_primitive.m_y = (short) layout[0x14 / 4];
 	m_primitiveBundle.m_primitive.m_resource = m_backgroundBitmap;
 	m_primitiveBundle.m_primitive.m_flags = 0x800;
-	m_primitives.m_primary.m_x = (short) bitmapX;
-	m_primitives.m_primary.m_y = (short) layout[0x1c / 4];
-	m_primitives.m_primary.m_resource = m_primaryBitmap;
-	m_primitives.m_primary.m_flags = 8;
+	m_primitives[0].m_primary.m_x = (short) bitmapX;
+	m_primitives[0].m_primary.m_y = (short) layout[0x1c / 4];
+	m_primitives[0].m_primary.m_resource = m_primaryBitmap;
+	m_primitives[0].m_primary.m_flags = 8;
 	if (m_secondaryBitmap != 0) {
-		m_primitives.m_secondary.m_x = (short) layout[0x50 / 4];
-		m_primitives.m_secondary.m_y = (short) layout[0x54 / 4];
-		m_primitives.m_secondary.m_resource = m_secondaryBitmap;
-		m_primitives.m_secondary.m_flags = 8;
+		m_primitives[0].m_secondary.m_x = (short) layout[0x50 / 4];
+		m_primitives[0].m_secondary.m_y = (short) layout[0x54 / 4];
+		m_primitives[0].m_secondary.m_resource = m_secondaryBitmap;
+		m_primitives[0].m_secondary.m_flags = 8;
 	}
 	layout[0x18 / 4] = bitmapX;
 	layout[0x28 / 4] = bitmapX;
@@ -413,27 +413,31 @@ void SuccFailDrawer::DrawText()
 // FUNCTION: LEMBALL 0x00450970
 bool SuccFailDrawer::ProcessMessages(Message* p_message)
 {
-	if (p_message->type != 0xc) {
-		m_processedCount = m_processedCount + 1;
+	if ((unsigned int) p_message->type != 0xc) {
+		m_processedCount++;
 		return 0;
 	}
-	if (p_message->code == 0xacef0010) {
+
+	switch ((unsigned int) p_message->code) {
+	case 0xacef0010:
 		if (m_networkMode != 0) {
 			Action(3, 0);
 			return 1;
 		}
 		Go();
 		return 1;
-	}
-	if (p_message->code != 0xacef0011) {
+
+	case 0xacef0011:
+		if (m_networkMode != 0) {
+			Action(2, 0);
+			return 1;
+		}
+		Return();
+		return 1;
+
+	default:
 		return 0;
 	}
-	if (m_networkMode != 0) {
-		Action(2, 0);
-		return 1;
-	}
-	Return();
-	return 1;
 }
 
 // 68K 0x10809b8c Return__15CSuccFailDrawerFv
@@ -480,11 +484,10 @@ void SuccFailDrawer::Processing()
 {
 	unsigned long now;
 	int* layout;
-	eSoundEffect soundId;
 
 	if (m_animStarted == 0) {
 		now = CurrentMilliTimer();
-		if (m_animStartDeadline < now && m_animationsEnabled != 0) {
+		if (now > m_animStartDeadline && m_animationsEnabled != 0) {
 			if (m_display->IsWindowValid() != 0) {
 				layout = (int*) m_layout;
 				VsRect rect((short) layout[0x50 / 4], (short) layout[0x54 / 4], (short) layout[0x58 / 4], (short) layout[0x5c / 4]);
@@ -498,14 +501,19 @@ void SuccFailDrawer::Processing()
 		}
 	}
 	if (g_nTestAllLevels != 0) {
-		if (g_pGameStatus->m_skill != 3 || g_pGameStatus->m_lastLevels[3] != 0x15) {
+		int skill = g_pGameStatus->m_skill;
+		if (skill != 3 || g_pGameStatus->m_lastLevels[skill] != 0x15) {
 			Go();
 		}
 	}
 sound:
 	if (m_soundStarted == 0) {
-		soundId = (eSoundEffect) (m_variant == 0 ? 0x28 : 0x27);
-		g_pSoundView->PlayEffect(soundId);
+		if (m_variant == 0) {
+			g_pSoundView->PlayEffect((eSoundEffect) 0x28);
+		}
+		else {
+			g_pSoundView->PlayEffect((eSoundEffect) 0x27);
+		}
 		m_soundStarted = 1;
 		m_soundStartTime = CurrentMilliTimer();
 	}
@@ -516,10 +524,12 @@ sound:
 void SuccFailDrawer::DrawBackGround()
 {
 	int* layout = (int*) m_layout;
-	DrawFrame(*(CoordPair*) &layout[0x38 / 4], *(CoordPair*) &layout[0x40 / 4]);
-	(&m_primitives)[m_primitiveBank].m_primary.Draw(m_gdi);
+	CoordPair* start = (CoordPair*) &layout[0x38 / 4];
+	CoordPair* end = (CoordPair*) &layout[0x40 / 4];
+	DrawFrame(*start, *end);
+	m_primitives[m_primitiveBank].m_primary.Draw(m_gdi);
 	if (m_secondaryBitmap != 0) {
-		(&m_primitives)[m_primitiveBank].m_secondary.Draw(m_gdi);
+		m_primitives[m_primitiveBank].m_secondary.Draw(m_gdi);
 	}
 }
 

@@ -844,7 +844,6 @@ bool MemInit()
 bool MemQuit()
 {
 	SmallMemory* smallMemory;
-	Arena* masterArena;
 	unsigned int lastError;
 
 	g_nSmallMemoryEnabled = 0;
@@ -853,10 +852,7 @@ bool MemQuit()
 		smallMemory->~SmallMemory();
 		operator delete(smallMemory);
 	}
-	masterArena = g_pMasterArena;
-	if (masterArena != 0) {
-		delete masterArena;
-	}
+	delete g_pMasterArena;
 	if (GlobalUnlock(g_pMasterArenaMemory) != 0) {
 		*g_pErrorOutput << g_szMasterArenaStillLocked;
 		*g_pErrorOutput << g_szMasterArenaUnlockIteratively;

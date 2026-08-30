@@ -206,14 +206,13 @@ void PlayerLemming::TurnToFaceCursor()
 // FUNCTION: LEMBALL 0x0040f220
 void PlayerLemming::TurnToFaceTarget()
 {
-	unsigned int facing = ReturnFacingDirection(
+	int facing = ReturnFacingDirection(
 		m_position.m_xFixed >> 12,
 		m_position.m_yFixed >> 12,
 		m_fireTarget.m_xFixed >> 12,
 		m_fireTarget.m_yFixed >> 12
 	);
-	unsigned int facingDirection = m_facingDirection;
-	if (facing != facingDirection) {
+	if (facing != (int) m_facingDirection) {
 		if (g_anRotationDirections[(facing - m_facingDirection) & 7] < 0) {
 			RotateAnticlockwise();
 		}

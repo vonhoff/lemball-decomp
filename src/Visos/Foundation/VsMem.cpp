@@ -11,11 +11,13 @@
 void* InternalNew(unsigned long p_size)
 {
 	unsigned char* result;
-	if (g_nSmallMemoryEnabled != 0 && g_maxSmallMemorySize > p_size) {
-		result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
-		if (result != 0) {
-			g_pCurrentAllocDescription = "new";
-			return result;
+	if (g_nSmallMemoryEnabled != 0) {
+		if (g_maxSmallMemorySize >= p_size) {
+			result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
+			if (result != 0) {
+				g_pCurrentAllocDescription = "new";
+				return result;
+			}
 		}
 	}
 	if (!g_pMasterArena->Allocate(&result, p_size, g_pCurrentAllocDescription)) {

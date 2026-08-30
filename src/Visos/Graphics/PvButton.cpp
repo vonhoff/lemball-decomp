@@ -143,7 +143,7 @@ void PvButton::_DrawButton()
 
 // 68K 0x1020fe1c Draw__9CPVButtonFUc
 // FUNCTION: LEMBALL 0x00467f30
-void PvButton::Draw(unsigned char p_force)
+void PvButton::Draw(unsigned int p_force)
 {
 	unsigned int autoDraw;
 	VsRect paintRect;
@@ -286,10 +286,10 @@ void PvButton::OnPressed(int p_flags)
 	}
 	if (m_messageHandler != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		posted.type = 0xb;
 		posted.time = CurrentQueueTimer();
 		posted.code = (int) m_controlMessage;
 		posted.payload = this;
+		posted.type = 0xb;
 		posted.source = (void*) converted;
 		((BaseQueue*) m_messageHandler)->Post(posted);
 	}

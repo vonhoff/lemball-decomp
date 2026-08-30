@@ -295,10 +295,11 @@ bool NetworkMessage::Set(unsigned char* p_arg0)
 // FUNCTION: LEMBALL 0x0045f2b0
 void NetworkMessage::Send(Connect* p_arg0)
 {
+	Message msg;
+
 	if (p_arg0 != 0) {
-		Message msg;
-		msg.payload = p_arg0;
-		msg.source = this;
+		msg.payload = this;
+		msg.source = p_arg0;
 		msg.code = 1;
 		msg.type = 0xb;
 		OpenDataStream();

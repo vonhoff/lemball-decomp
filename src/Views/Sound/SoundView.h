@@ -31,9 +31,9 @@ public:
 	void PlayEffect(eSoundEffect p_soundId);
 	void PrepareEffects(unsigned short p_stateMask);
 	void SetEffectsOn(unsigned int p_enabled);
-	static void SetEffectsVolume(unsigned char p_volume);
+	void SetEffectsVolume(unsigned char p_volume);
 	void SetMusicOn(unsigned int p_enabled);
-	static void SetMusicVolume(unsigned char p_volume);
+	void SetMusicVolume(unsigned char p_volume);
 	void SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listener);
 	void UnprepareEffects();
 	~SoundView();

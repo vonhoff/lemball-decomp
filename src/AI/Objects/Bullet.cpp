@@ -206,8 +206,7 @@ void Bullet::AddData()
 // FUNCTION: LEMBALL 0x0041ab80
 void Bullet::GetData()
 {
-	unsigned long time = GetDword();
-	SetRemoteGameTimeReal(time);
+	SetRemoteGameTimeReal(GetDword());
 	m_position.m_xFixed = (int) (short) GetWord() << 12;
 	m_position.m_yFixed = (int) (short) GetWord() << 12;
 	m_position.m_zFixed = (int) (short) GetWord() << 12;

@@ -8,7 +8,7 @@
 #include <new.h>
 
 // 68K 0x10215ebc __ct__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x00466440
+// FUNCTION: LEMBALL 0x00466440
 PvBackBuffSurface::PvBackBuffSurface()
 {
 	m_allocatedWidth = 0;
@@ -18,7 +18,7 @@ PvBackBuffSurface::PvBackBuffSurface()
 }
 
 // 68K 0x10215f38 __dt__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x004664b0
+// FUNCTION: LEMBALL 0x004664b0
 PvBackBuffSurface::~PvBackBuffSurface()
 {
 }
@@ -34,7 +34,7 @@ bool PvBackBuffSurface::HasBackBuff()
 }
 
 // 68K 0x1021601a FreeBackBuff__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x00466510
+// FUNCTION: LEMBALL 0x00466510
 void PvBackBuffSurface::FreeBackBuff()
 {
 	if (m_buffer != 0) {
@@ -47,24 +47,22 @@ void PvBackBuffSurface::FreeBackBuff()
 }
 
 // 68K 0x1021607c AllocateBackBuff__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x00466540
+// FUNCTION: LEMBALL 0x00466540
 void PvBackBuffSurface::AllocateBackBuff()
 {
 	VsSize size;
 	int allocatedArea;
 	int neededArea;
-	Surface* surface;
 
-	surface = static_cast<Surface*>(this);
-	size.m_width = surface->m_width;
-	size.m_height = surface->m_height;
-	m_bitmap.SetSize(size, (int) size.m_width);
+	size.m_width = m_windowRect.m_width;
+	size.m_height = m_windowRect.m_height;
+	m_bitmap.SetSize(size, (int) m_reserved40);
 	allocatedArea = (int) m_allocatedWidth * (int) m_allocatedHeight;
 	neededArea = (int) size.m_height * (int) size.m_width;
 	if (allocatedArea < neededArea) {
 		FreeBackBuff();
 	}
-	if ((int) size.m_width * (int) size.m_height != 0) {
+	if ((int) m_windowRect.m_width * (int) m_windowRect.m_height != 0) {
 		if (m_buffer == 0) {
 			m_allocatedWidth = (unsigned short) size.m_width;
 			m_allocatedHeight = (unsigned short) size.m_height;
@@ -92,7 +90,8 @@ void PvBackBuffSurface::EnableBackBuff(unsigned int p_enabled)
 }
 
 // 68K 0x10216200 ResizeBackBuff__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x00466660
+// FUNCTION: LEMBALL 0x00466660
 void PvBackBuffSurface::ResizeBackBuff()
 {
+	AllocateBackBuff();
 }

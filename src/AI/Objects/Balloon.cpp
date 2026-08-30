@@ -81,9 +81,8 @@ void Balloon::DoActivate()
 // FUNCTION: LEMBALL 0x0041d7b0
 AiCoord Balloon::ActivatePosition()
 {
-	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	int x = m_position.m_xFixed;
-	return AiCoord(x, y, z);
+	int y = m_position.m_yFixed;
+	return AiCoord(m_position.m_xFixed, y, z);
 }
 

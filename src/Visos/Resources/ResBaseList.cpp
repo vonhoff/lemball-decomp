@@ -46,39 +46,33 @@ void ResBaseList::OnRead(unsigned char* p_source, unsigned char** p_data, unsign
 		count = m_totalSize / m_listHeader->m_headerSize;
 		directed = 0;
 		dataCursor = m_data;
-		if (m_vramReady == directed) {
+		if (m_vramReady == 0) {
 			unsigned char* headerCursor = m_headerData;
 			m_vramEntryCount = GetnVramEntries() * count;
 			if (m_vramEntryCount == 0) {
 				m_vramEntryCount = -1;
 			}
-			unsigned int i = 0;
-			if (count != 0) {
-				do {
-					if (DirectResources(i, &headerCursor, &dataCursor) != 0 || directed != 0) {
-						directed = 1;
-					}
-					else {
-						directed = 0;
-					}
-					i++;
-				} while (i < count);
+			for (unsigned int i = 0; i < count; i++) {
+				if (DirectResources(i, &headerCursor, &dataCursor) != 0 || directed != 0) {
+					directed = 1;
+				}
+				else {
+					directed = 0;
+				}
 			}
 			g_pActiveMogRes->DeallocateMem(m_headerData, 1);
 			m_headerData = 0;
 			m_vramReady = 1;
 		}
-		else if (count != 0) {
-			unsigned int i = 0;
-			do {
+		else {
+			for (unsigned int i = 0; i < count; i++) {
 				if (DirectResources(i, &dataCursor) != 0 || directed != 0) {
 					directed = 1;
 				}
 				else {
 					directed = 0;
 				}
-				i++;
-			} while (count > i);
+			}
 		}
 		m_loaded = 1;
 		OnLoad();

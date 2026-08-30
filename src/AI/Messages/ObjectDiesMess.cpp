@@ -9,7 +9,7 @@ ObjectDiesMess::ObjectDiesMess()
 }
 
 // 68K 0x1060bb36 AddData__15CObjectDiesMessFv
-// FUNCTION: LEMBALL 0x00416d00
+// FUNCTION: LEMBALL 0x00416d00 FOLDED
 void ObjectDiesMess::AddData()
 {
 	GameObjectMess::AddData();

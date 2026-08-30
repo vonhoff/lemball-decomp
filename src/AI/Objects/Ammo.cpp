@@ -48,8 +48,9 @@ bool Ammo::Process()
 		}
 		return 1;
 	}
-	if (m_action == 26) {
-		if (g_dwGameTick <= m_unk0xd4) {
+	switch (m_action) {
+	case 26:
+		if (m_unk0xd4 >= g_dwGameTick) {
 			return 1;
 		}
 		if (m_ammo == 0) {
@@ -58,13 +59,13 @@ bool Ammo::Process()
 		}
 		m_actionDeadline = g_dwGameTick + (m_ammo * 1000) / 50;
 		RequestAction((eAction) 27);
-		return 1;
-	}
-	if (m_action == 27) {
-		if (g_dwGameTick <= m_actionDeadline) {
+		break;
+	case 27:
+		if (m_actionDeadline >= g_dwGameTick) {
 			return 1;
 		}
 		RequestAction((eAction) 24);
+		break;
 	}
 	return 1;
 }

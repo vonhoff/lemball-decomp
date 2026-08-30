@@ -11,12 +11,23 @@ NetworkGameMessage::NetworkGameMessage()
 	m_headerEnabled = 1;
 }
 
+#include "../../Visos/Foundation/String.h"
+#include <string.h>
+
+extern char* g_szBroadcastPeerName;
+extern char* g_szGameName;
+
 // 68K 0x10a000c2 AddData__19CNetworkGameMessageFv
-// STUB: LEMBALL 0x00452420
+// FUNCTION: LEMBALL 0x00452420
 void NetworkGameMessage::AddData()
 {
-	Add(m_gameName);
-	Add(m_peerName);
+	char peerName[20];
+	Add(g_szGameName);
+	strncpy(peerName, g_szBroadcastPeerName, 20);
+	peerName[19] = '\0';
+	String peerString(peerName);
+	String lowerPeer = peerString.Lower();
+	Add(lowerPeer.GetText());
 }
 
 // 68K 0x10a00184 GetData__19CNetworkGameMessageFv

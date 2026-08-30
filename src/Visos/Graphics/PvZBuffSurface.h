@@ -15,7 +15,7 @@ public:
 	virtual void Blit(ZBuffScroll* p_arg0) = 0; // vtable+0x04
 	virtual bool HasZBuff();                    // vtable+0x40
 	void AllocateZBuff();
-	void EnableZBuff(unsigned char p_enabled);
+	void EnableZBuff(unsigned int p_enabled);
 	void FreeZBuff();
 	void ResizeZBuff();
 	~PvZBuffSurface();

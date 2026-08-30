@@ -6,16 +6,27 @@ BalloonPost::BalloonPost(Ai* p_arg0)
 {
 }
 
+#include "TheBalloonPost.h"
+
 // 68K 0x10603000 Restart__12CBalloonPostFv
-// STUB: LEMBALL 0x0042a030
+// FUNCTION: LEMBALL 0x0042a030
 void BalloonPost::Restart()
 {
+	m_activeMask = 0;
+	m_posts[0]->Restart();
+	m_posts[1]->Restart();
+	m_posts[2]->Restart();
+	m_posts[3]->Restart();
 }
 
 // 68K 0x10603072 __dt__12CBalloonPostFv
-// STUB: LEMBALL 0x0042a070
+// FUNCTION: LEMBALL 0x0042a070
 BalloonPost::~BalloonPost()
 {
+	delete m_posts[0];
+	delete m_posts[1];
+	delete m_posts[2];
+	delete m_posts[3];
 }
 
 // 68K 0x1060312c FindPost__12CBalloonPostF11eObjectTypeR7AICOORD

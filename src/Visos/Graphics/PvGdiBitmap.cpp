@@ -3,27 +3,22 @@
 #include <new.h>
 
 // 68K 0x1021284a __ct__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x00472290
+// FUNCTION: LEMBALL 0x00472290
 PvGdiBitmap::PvGdiBitmap()
+	: m_height(0), m_width(0), m_rect0()
 {
-	m_lines = 0;
-	m_bits = 0;
-	m_bitsBase = 0;
-	m_directScroll = 0;
-	m_firstLine = 0;
-	m_xOffset = 0;
-	m_stride = 0;
-	m_rowPadding = 0;
-	m_extraRows = 0;
-	m_lineCapacity = 0;
-	m_width = 0;
-	m_height = 0;
+	m_rect1.m_height = 0;
+	m_rect1.m_width = 0;
+	m_rect1.m_y = 0;
+	m_rect1.m_x = 0;
+	Initialise();
 }
 
 // 68K 0x102128ca __dt__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x004722d0
+// FUNCTION: LEMBALL 0x004722d0
 PvGdiBitmap::~PvGdiBitmap()
 {
+	Free();
 }
 
 // 68K 0x1021291c Free__12CPVGDIBitmapFv
@@ -40,9 +35,19 @@ void PvGdiBitmap::Free()
 }
 
 // 68K 0x10212962 Initialise__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x00472310
+// FUNCTION: LEMBALL 0x00472310
 void PvGdiBitmap::Initialise()
 {
+	m_directScroll = 0;
+	m_bits = 0;
+	m_bitsBase = 0;
+	m_xOffset = 0;
+	m_firstLine = 0;
+	m_lines = 0;
+	m_stride = 0;
+	m_extraRows = 0;
+	m_rowPadding = 0;
+	m_lineCapacity = 0;
 }
 
 // 68K 0x102129b4 CreateLinePtrs__12CPVGDIBitmapFv

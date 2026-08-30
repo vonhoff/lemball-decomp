@@ -79,3 +79,6 @@ NetworkManager::~NetworkManager()
 // GLOBAL: LEMBALL 0x004a0120
 NetworkManager* g_pNetworkManager = 0;
 
+// GLOBAL: LEMBALL 0x004a0124
+char* g_szGameName = 0;
+
