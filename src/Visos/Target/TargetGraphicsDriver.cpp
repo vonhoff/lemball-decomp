@@ -1,14 +1,14 @@
 #include "TargetGraphicsDriver.h"
-#include "TargetGraphicsSystemState.h"
-#include "TargetWinGDrawCodecState.h"
 
 #include "../Foundation/VsInit.h"
 #include "../Foundation/VsOStream.h"
-#include "../Graphics/Gdi.h"
 #include "../Graphics/GWnd.h"
+#include "../Graphics/Gdi.h"
 #include "../Graphics/PvGdiBitmap.h"
 #include "../Graphics/PvWnd.h"
 #include "../Graphics/VsGdi.h"
+#include "TargetGraphicsSystemState.h"
+#include "TargetWinGDrawCodecState.h"
 
 #include <new.h>
 #include <string.h>
@@ -66,10 +66,10 @@ struct IcDrawSuggest {
 
 extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int p_index);
 extern "C" __declspec(dllimport) long __stdcall DefDriverProc(unsigned int p_driverId,
-															 void* p_driverHandle,
-															 unsigned int p_message,
-															 long p_param1,
-															 long p_param2);
+															  void* p_driverHandle,
+															  unsigned int p_message,
+															  long p_param1,
+															  long p_param2);
 
 // FUNCTION: LEMBALL 0x004567c0
 bool TargetGraphicsDriver::CreatePalette(void* p_paletteDescription)
@@ -252,9 +252,9 @@ bool TargetGraphicsDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 
 // FUNCTION: LEMBALL 0x00456c50
 void TargetGraphicsDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
-											   unsigned int p_startIndex,
-											   unsigned int p_entryCount,
-											   void* p_colours)
+												unsigned int p_startIndex,
+												unsigned int p_entryCount,
+												void* p_colours)
 {
 	SetDIBColorTable((HDC) p_drawingContext->m_hDC, p_startIndex, p_entryCount, (RGBQUAD*) p_colours);
 }
@@ -297,7 +297,7 @@ void TargetGraphicsDriver::StretchBltContexts(TargetDrawingContext* p_destinatio
 
 // FUNCTION: LEMBALL 0x00456d10
 TargetDibContext* TargetGraphicsDriver::SelectDIBContext(TargetDrawingContext* p_drawingContext,
-														TargetDibContext* p_dibContext)
+														 TargetDibContext* p_dibContext)
 {
 	HGDIOBJ prior;
 
@@ -311,7 +311,7 @@ TargetDibContext* TargetGraphicsDriver::SelectDIBContext(TargetDrawingContext* p
 
 // STUB: LEMBALL 0x00456d40
 TargetDibContext* TargetGraphicsDriver::RestoreDIBContext(TargetDrawingContext* p_drawingContext,
-														 TargetDibContext* p_dibContext)
+														  TargetDibContext* p_dibContext)
 {
 	HGDIOBJ prior;
 
@@ -654,14 +654,14 @@ int TargetWinGDrawCodec_Draw(TargetWinGDrawCodecState* p_state, void* p_request)
 	return 0;
 }
 
-// STUB: LEMBALL 0x004794c0
-int TargetWinGDrawCodec_ChangePalette(TargetWinGDrawCodecState* p_state, void* p_request)
+// FUNCTION: LEMBALL 0x004794c0
+int __stdcall TargetWinGDrawCodec_ChangePalette(TargetWinGDrawCodecState* p_state, void* p_request)
 {
 	return 0;
 }
 
-// STUB: LEMBALL 0x004794d0
-int TargetWinGDrawCodec_End(TargetWinGDrawCodecState* p_state)
+// FUNCTION: LEMBALL 0x004794d0
+int __stdcall TargetWinGDrawCodec_End(TargetWinGDrawCodecState* p_state)
 {
 	return 0;
 }

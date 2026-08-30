@@ -19,4 +19,3 @@ extern PulseMessage* g_pPulseMessage;
 // PulseMessage::`scalar deleting destructor'
 
 #endif
-

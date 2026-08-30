@@ -28,6 +28,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00471de0
 // TcpIpReadSocket::`scalar deleting destructor'
 
-
 #endif
-

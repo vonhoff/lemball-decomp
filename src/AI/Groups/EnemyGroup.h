@@ -15,6 +15,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00420b20
 // EnemyGroup::`scalar deleting destructor'
 
-
 #endif
-

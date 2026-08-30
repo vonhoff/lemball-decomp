@@ -15,6 +15,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00452ef0
 // GameAcceptMessage::`scalar deleting destructor'
 
-
 #endif
-

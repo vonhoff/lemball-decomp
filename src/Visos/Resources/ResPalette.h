@@ -31,6 +31,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0045ea50
 // ResPalette::`scalar deleting destructor'
 
-
 #endif
-

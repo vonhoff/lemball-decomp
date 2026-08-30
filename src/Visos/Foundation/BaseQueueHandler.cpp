@@ -29,4 +29,3 @@ BaseQueueHandler* g_pNetworkStatusQueue = 0;
 
 // GLOBAL: LEMBALL 0x004a1e20
 BaseQueueHandler* g_pNetworkPacketQueue = 0;
-

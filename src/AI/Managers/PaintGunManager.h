@@ -28,6 +28,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0042c9b0
 // PaintGunManager::`scalar deleting destructor'
 
-
 #endif
-

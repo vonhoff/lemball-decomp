@@ -1,8 +1,8 @@
 #include "RawRead.h"
 
-#include <ctype.h>
-
 #include "../Foundation/VsFile.h"
+
+#include <ctype.h>
 
 // GLOBAL: LEMBALL 0x004a1d50
 _Filet* g_pMogFile = 0;
@@ -47,11 +47,15 @@ bool RawRead::NameCmp(char* p_path, char* p_name)
 		if (pathChar == kPathSeparator) {
 			pathChar = 0;
 		}
-		if ((char) toupper(*name++) != pathChar) {
-			break;
+		char nameChar = (char) toupper(*name);
+		name++;
+		if (nameChar == pathChar) {
+			if (*path++ == '\0') {
+				matched = 1;
+			}
 		}
-		if (*path++ == '\0') {
-			matched = 1;
+		else {
+			break;
 		}
 	} while (matched == 0);
 	return matched;

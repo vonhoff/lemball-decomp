@@ -2,8 +2,8 @@
 #define LEMBALL_FRONTEND_DRAWERS_MAINOPTIONS1DRAWER_H
 
 #include "../../Common.h"
+#include "../../Visos/Foundation/BaseProcess.h"      // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/BaseProcess.h"          // complete type
 #include "../Base/BaseFrontendDrawer.h"              // complete type
 
 // SIZE 0x3bc
@@ -33,6 +33,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00448a70
 // MainOptions1Drawer::`scalar deleting destructor'
 
-
 #endif
-

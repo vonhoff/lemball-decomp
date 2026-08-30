@@ -25,4 +25,3 @@ int Flag::Collected()
 Flag::~Flag()
 {
 }
-

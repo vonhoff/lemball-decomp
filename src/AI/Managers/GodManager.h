@@ -31,4 +31,3 @@ extern GodManager* g_pGodManager;
 // GodManager::`scalar deleting destructor'
 
 #endif
-

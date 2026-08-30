@@ -52,4 +52,3 @@ PortsMessage::~PortsMessage()
 {
 	delete[] m_useCounts;
 }
-

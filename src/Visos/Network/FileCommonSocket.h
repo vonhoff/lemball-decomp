@@ -18,6 +18,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0047b910
 // FileCommonSocket::`scalar deleting destructor'
 
-
 #endif
-

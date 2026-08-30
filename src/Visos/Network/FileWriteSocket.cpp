@@ -36,4 +36,3 @@ FileWriteSocket::~FileWriteSocket()
 void FileWriteSocket::Closed(unsigned char p_notifyPeer)
 {
 }
-

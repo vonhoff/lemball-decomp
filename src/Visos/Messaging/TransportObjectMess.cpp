@@ -11,4 +11,3 @@ void TransportObjectMess::GetData()
 TransportObjectMess::~TransportObjectMess()
 {
 }
-

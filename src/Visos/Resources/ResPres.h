@@ -19,6 +19,4 @@ public:
 // SYNTHETIC: LEMBALL 0x0045ec40
 // ResPres::`scalar deleting destructor'
 
-
 #endif
-

@@ -4,4 +4,3 @@
 PasswordProc::~PasswordProc()
 {
 }
-

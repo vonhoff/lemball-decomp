@@ -42,4 +42,3 @@ void ResBitmap::SetType()
 ResBitmap::~ResBitmap()
 {
 }
-

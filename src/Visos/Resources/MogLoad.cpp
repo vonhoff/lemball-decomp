@@ -1,14 +1,14 @@
 #include "MogLoad.h"
 
-#include <new.h>
-#include <string.h>
-
 #include "../Foundation/Chunk.h"
 #include "../Foundation/ChunkInfo.h"
 #include "../Foundation/VsDebug.h"
 #include "../Foundation/VsFile.h"
 #include "MogloadArena.h"
 #include "RawRead.h"
+
+#include <new.h>
+#include <string.h>
 
 // GLOBAL: LEMBALL 0x004a1d78
 int g_chunkIndex = -1;

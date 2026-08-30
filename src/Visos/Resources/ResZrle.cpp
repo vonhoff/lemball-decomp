@@ -39,8 +39,7 @@ void ResZrle::SetHeader()
 
 // 68K 0x10115f94 __ct__8CResZRLEFv
 // FUNCTION: LEMBALL 0x0045e7e0
-ResZrle::ResZrle()
-	: m_height(0), m_width(0), m_originY(0), m_originX(0)
+ResZrle::ResZrle() : m_height(0), m_width(0), m_originY(0), m_originX(0)
 {
 	Initialise();
 }
@@ -57,4 +56,3 @@ void ResZrle::SetType()
 ResZrle::~ResZrle()
 {
 }
-

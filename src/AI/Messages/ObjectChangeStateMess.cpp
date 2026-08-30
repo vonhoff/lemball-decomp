@@ -5,8 +5,7 @@
 
 // 68K 0x1060b366 __ct__22CObjectChangeStateMessFv
 // FUNCTION: LEMBALL 0x004168d0
-ObjectChangeStateMess::ObjectChangeStateMess()
-	: GameObjectMess(MESSAGE_OBJECT_CHANGE_STATE)
+ObjectChangeStateMess::ObjectChangeStateMess() : GameObjectMess(MESSAGE_OBJECT_CHANGE_STATE)
 {
 	m_payloadCapacity += 14;
 }
@@ -52,4 +51,3 @@ void ObjectChangeStateMess::GetData()
 ObjectChangeStateMess::~ObjectChangeStateMess()
 {
 }
-

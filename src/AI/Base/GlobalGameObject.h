@@ -62,6 +62,4 @@ extern ObjectDiesMess* g_pObjectDiesMessage;
 // SYNTHETIC: LEMBALL 0x00417d00
 // GlobalGameObject::`scalar deleting destructor'
 
-
 #endif
-

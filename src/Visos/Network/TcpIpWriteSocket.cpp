@@ -35,4 +35,3 @@ TcpIpWriteSocket::~TcpIpWriteSocket()
 void TcpIpWriteSocket::Closed(unsigned char p_notifyPeer)
 {
 }
-

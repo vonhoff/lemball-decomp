@@ -29,6 +29,4 @@ public:
 // SYNTHETIC: LEMBALL 0x0041c360
 // AiCoord::AiCoord
 
-
 #endif
-

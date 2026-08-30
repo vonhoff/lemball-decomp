@@ -1,7 +1,7 @@
 #include "BaseGlobalObject.h"
 
-#include "../Messages/ObjectPosMess.h"
 #include "../../Visos/Network/Connect.h"
+#include "../Messages/ObjectPosMess.h"
 
 // 68K 0x1011811e __dt__17CBaseGlobalObjectFv
 BaseGlobalObject::~BaseGlobalObject()
@@ -31,4 +31,3 @@ void BaseGlobalObject::Restart()
 	m_position.m_zFixed = m_initialPosition.m_zFixed;
 	m_action = (eAction) 0x18;
 }
-

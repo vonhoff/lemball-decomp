@@ -40,14 +40,22 @@ public:
 	unsigned long GetFreeSize();
 	virtual VsOStream& StreamOut(VsOStream& p_stream);                                                 // vtable+0x00
 	virtual ~Arena();                                                                                  // vtable+0x04
-	virtual bool Allocate(unsigned char** p_data, unsigned long p_size, char* p_description);         // vtable+0x08
+	virtual bool Allocate(unsigned char** p_data, unsigned long p_size, char* p_description);          // vtable+0x08
 	virtual bool Free(unsigned char* p_memory);                                                        // vtable+0x0c
 	virtual void MemSet(unsigned char* p_destination, unsigned char p_value, unsigned long p_size);    // vtable+0x10
 	virtual void MemCopy(unsigned char* p_destination, unsigned char* p_source, unsigned long p_size); // vtable+0x14
 	virtual int GetSizeOf() = 0;                                                                       // vtable+0x18
 	virtual int GetSizeOfBlock() = 0;                                                                  // vtable+0x1c
-	virtual Arena* CreateNew(unsigned char* p_arg0, unsigned long p_arg1, char* p_arg2, Arena* p_arg3, Arena* p_arg4) = 0; // vtable+0x20
-	virtual MBlock* CreateNewBlock(unsigned char* p_arg0, Arena* p_arg1, MBlock* p_arg2, char* p_arg3, unsigned long p_arg4) = 0; // vtable+0x24
+	virtual Arena* CreateNew(unsigned char* p_arg0,
+							 unsigned long p_arg1,
+							 char* p_arg2,
+							 Arena* p_arg3,
+							 Arena* p_arg4) = 0; // vtable+0x20
+	virtual MBlock* CreateNewBlock(unsigned char* p_arg0,
+								   Arena* p_arg1,
+								   MBlock* p_arg2,
+								   char* p_arg3,
+								   unsigned long p_arg4) = 0; // vtable+0x24
 	void DeleteLists();
 	void* operator new(size_t p_arg0, void* p_arg1);
 	Arena();
@@ -56,17 +64,17 @@ public:
 	friend void InitSubSystems();
 
 protected:
-	unsigned char* m_arenaBase;            // 0x24
-	unsigned int m_arenaSize;              // 0x28
-	unsigned int m_freeSize;               // 0x2c
-	Arena* m_parentArena;                  // 0x30
-	MBlock* m_lastBlock;                   // 0x34
-	MBlock* m_firstBlock;                  // 0x38
-	MBlock* m_lastFreeBlock;               // 0x3c
-	MBlock* m_firstFreeBlock;              // 0x40
-	Arena* m_arenaLinkB;                   // 0x44
-	Arena* m_arenaLinkA;                   // 0x48
-	Arena* m_nextArena;                    // 0x4c
+	unsigned char* m_arenaBase; // 0x24
+	unsigned int m_arenaSize;   // 0x28
+	unsigned int m_freeSize;    // 0x2c
+	Arena* m_parentArena;       // 0x30
+	MBlock* m_lastBlock;        // 0x34
+	MBlock* m_firstBlock;       // 0x38
+	MBlock* m_lastFreeBlock;    // 0x3c
+	MBlock* m_firstFreeBlock;   // 0x40
+	Arena* m_arenaLinkB;        // 0x44
+	Arena* m_arenaLinkA;        // 0x48
+	Arena* m_nextArena;         // 0x4c
 };
 
 extern unsigned char* g_pArenaHighWater;

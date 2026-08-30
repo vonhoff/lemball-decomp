@@ -13,6 +13,7 @@
 #include <new.h>
 
 extern int g_nGunButtonsRedrawPending;
+extern "C" unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x101173ca Destroy__9CPVButtonFv
 // FUNCTION: LEMBALL 0x0043a540
@@ -265,7 +266,7 @@ void PvButton::OnReleased(int p_flags)
 	}
 	if (m_messageHandler != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		posted.time = CurrentQueueTimer();
+		posted.time = timeGetTime();
 		posted.code = (int) m_controlMessage;
 		posted.payload = this;
 		posted.type = 0xc;
@@ -286,7 +287,7 @@ void PvButton::OnPressed(int p_flags)
 	}
 	if (m_messageHandler != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		posted.time = CurrentQueueTimer();
+		posted.time = timeGetTime();
 		posted.code = (int) m_controlMessage;
 		posted.payload = this;
 		posted.type = 0xb;
@@ -302,7 +303,7 @@ void PvButton::OnEnterButton()
 	Message posted;
 
 	if (m_messageHandler != 0) {
-		posted.time = CurrentQueueTimer();
+		posted.time = timeGetTime();
 		posted.code = (int) m_controlMessage;
 		posted.type = 0xd;
 		posted.payload = this;
@@ -317,7 +318,7 @@ void PvButton::OnExitButton()
 	Message posted;
 
 	if (m_messageHandler != 0) {
-		posted.time = CurrentQueueTimer();
+		posted.time = timeGetTime();
 		posted.code = (int) m_controlMessage;
 		posted.type = 0xe;
 		posted.payload = this;
@@ -326,7 +327,7 @@ void PvButton::OnExitButton()
 }
 
 // 68K 0x10117424 OnPaint__9CPVButtonFRC7CVSRect
-// STUB: LEMBALL 0x00469870
+// FUNCTION: LEMBALL 0x00469870
 void PvButton::OnPaint(const VsRect& p_rect)
 {
 }
@@ -342,4 +343,3 @@ PvButton::~PvButton()
 		m_primitive = 0;
 	}
 }
-

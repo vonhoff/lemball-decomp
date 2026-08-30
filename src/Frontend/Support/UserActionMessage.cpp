@@ -2,8 +2,7 @@
 
 // 68K 0x1080000c __ct__18CUserActionMessageFv
 // FUNCTION: LEMBALL 0x004453b0
-UserActionMessage::UserActionMessage()
-	: NetworkMessage(8)
+UserActionMessage::UserActionMessage() : NetworkMessage(8)
 {
 	m_payloadCapacity += 8;
 	m_headerEnabled = 1;
@@ -29,4 +28,3 @@ void UserActionMessage::GetData()
 UserActionMessage::~UserActionMessage()
 {
 }
-

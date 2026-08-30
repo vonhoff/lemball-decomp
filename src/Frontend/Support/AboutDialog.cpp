@@ -17,8 +17,8 @@ char g_szWin32sBuild[28] = "Win32s %u.%u (Build: %u)";
 char g_szWindows95Build[16] = "Windows95 %u.%u";
 
 // GLOBAL: LEMBALL 0x004a0638
-char g_szAboutSystemFormat[152] =
-	"Operating System : %s\nBuild Number : %d\nViSOS Build Number : %d\nPhysical Memory Size : %ld bytes\nPercent Used : %d%%\nAvail Memory Free : %ld bytes\n";
+char g_szAboutSystemFormat[152] = "Operating System : %s\nBuild Number : %d\nViSOS Build Number : %d\nPhysical Memory "
+								  "Size : %ld bytes\nPercent Used : %d%%\nAvail Memory Free : %ld bytes\n";
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -104,13 +104,24 @@ char* BuildAboutSystemInfo()
 	char osText[256];
 
 	if (version < 0x80000000) {
-		wsprintfA(osText, g_szWindowsNtBuild, (unsigned int) (unsigned char) versionWord, (unsigned int) (unsigned char) (versionWord >> 8), (unsigned int) HIWORD(version));
+		wsprintfA(osText,
+				  g_szWindowsNtBuild,
+				  (unsigned int) (unsigned char) versionWord,
+				  (unsigned int) (unsigned char) (versionWord >> 8),
+				  (unsigned int) HIWORD(version));
 	}
 	else if ((unsigned char) versionWord < 4) {
-		wsprintfA(osText, g_szWin32sBuild, (unsigned int) (unsigned char) versionWord, (unsigned int) (unsigned char) (versionWord >> 8), (unsigned int) HIWORD(version) & ~0x8000);
+		wsprintfA(osText,
+				  g_szWin32sBuild,
+				  (unsigned int) (unsigned char) versionWord,
+				  (unsigned int) (unsigned char) (versionWord >> 8),
+				  (unsigned int) HIWORD(version) & ~0x8000);
 	}
 	else {
-		wsprintfA(osText, g_szWindows95Build, (unsigned int) (unsigned char) versionWord, (unsigned int) (unsigned char) (versionWord >> 8));
+		wsprintfA(osText,
+				  g_szWindows95Build,
+				  (unsigned int) (unsigned char) versionWord,
+				  (unsigned int) (unsigned char) (versionWord >> 8));
 	}
 	wsprintfA(g_szAboutSystemInfo,
 			  g_szAboutSystemFormat,

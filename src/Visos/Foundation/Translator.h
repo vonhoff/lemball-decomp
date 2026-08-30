@@ -19,4 +19,3 @@ extern Translator* g_pInputTranslator;
 // Translator::`scalar deleting destructor'
 
 #endif
-

@@ -25,6 +25,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0040b9d0
 // SlinkyManager::`vector deleting destructor'
 
-
 #endif
-

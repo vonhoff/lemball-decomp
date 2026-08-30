@@ -16,6 +16,4 @@ public:
 // SYNTHETIC: LEMBALL 0x004395c0
 // PopActive::`scalar deleting destructor'
 
-
 #endif
-

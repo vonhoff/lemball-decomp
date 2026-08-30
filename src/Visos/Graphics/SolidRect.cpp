@@ -24,8 +24,6 @@ void SolidRect::Render(Gdi* p_gdi)
 
 // 68K 0x1010a6c2 __ct__10CSolidRectFv
 // FUNCTION: LEMBALL 0x00439520
-SolidRect::SolidRect()
-	: m_top(0), m_left(0), m_bottom(0), m_right(0)
+SolidRect::SolidRect() : m_top(0), m_left(0), m_bottom(0), m_right(0)
 {
 }
-

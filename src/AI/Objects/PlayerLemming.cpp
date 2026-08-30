@@ -1,5 +1,4 @@
 #include "PlayerLemming.h"
-#include <string.h>
 
 #include "../../Control/Game/Demo.h"
 #include "../../Control/Game/Game.h"
@@ -25,9 +24,16 @@
 #include "../Objects/Ice.h"
 #include "ViewData.h"
 
+#include <string.h>
+
 // 68K 0x1061bdc0 __ct__14CPlayerLemmingFiiiiUcUl
 // FUNCTION: LEMBALL 0x0040ecb0
-PlayerLemming::PlayerLemming(int p_x, int p_y, int p_z, int p_facing, unsigned int p_alternatePlayer, unsigned long p_spawnDelay)
+PlayerLemming::PlayerLemming(int p_x,
+							 int p_y,
+							 int p_z,
+							 int p_facing,
+							 unsigned int p_alternatePlayer,
+							 unsigned long p_spawnDelay)
 	: GlobalGameObject((eObjectType) (p_alternatePlayer ? 1 : 2), 0x17f, 0x14)
 {
 	m_alternatePlayer = p_alternatePlayer;
@@ -183,12 +189,8 @@ void PlayerLemming::TurnToFaceCursor()
 		int cursorX;
 		int cursorY;
 		g_pAI->m_cursor->GetCursorSurfaceCoordinates(cursorX, cursorY);
-		unsigned int facing = ReturnFacingDirection(
-			m_position.m_xFixed >> 12,
-			m_position.m_yFixed >> 12,
-			cursorX,
-			cursorY
-		);
+		unsigned int facing =
+			ReturnFacingDirection(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, cursorX, cursorY);
 		if (facing != (unsigned int) m_facingDirection) {
 			if (g_anRotationDirections[(facing - m_facingDirection) & 7] < 0) {
 				RotateAnticlockwise();
@@ -206,12 +208,10 @@ void PlayerLemming::TurnToFaceCursor()
 // FUNCTION: LEMBALL 0x0040f220
 void PlayerLemming::TurnToFaceTarget()
 {
-	int facing = ReturnFacingDirection(
-		m_position.m_xFixed >> 12,
-		m_position.m_yFixed >> 12,
-		m_fireTarget.m_xFixed >> 12,
-		m_fireTarget.m_yFixed >> 12
-	);
+	int facing = ReturnFacingDirection(m_position.m_xFixed >> 12,
+									   m_position.m_yFixed >> 12,
+									   m_fireTarget.m_xFixed >> 12,
+									   m_fireTarget.m_yFixed >> 12);
 	if (facing != (int) m_facingDirection) {
 		if (g_anRotationDirections[(facing - m_facingDirection) & 7] < 0) {
 			RotateAnticlockwise();
@@ -301,12 +301,7 @@ bool PlayerLemming::FacingCursor()
 	int cursorX;
 	int cursorY;
 	g_pAI->m_cursor->GetCursorSurfaceCoordinates(cursorX, cursorY);
-	unsigned int facing = ReturnFacingDirection(
-		m_position.m_xFixed >> 12,
-		m_position.m_yFixed >> 12,
-		cursorX,
-		cursorY
-	);
+	unsigned int facing = ReturnFacingDirection(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, cursorX, cursorY);
 	return (int) m_facingDirection == (int) facing;
 }
 
@@ -314,12 +309,10 @@ bool PlayerLemming::FacingCursor()
 // FUNCTION: LEMBALL 0x0040f4b0
 bool PlayerLemming::FacingTarget()
 {
-	unsigned int facing = ReturnFacingDirection(
-		m_position.m_xFixed >> 12,
-		m_position.m_yFixed >> 12,
-		m_fireTarget.m_xFixed >> 12,
-		m_fireTarget.m_yFixed >> 12
-	);
+	unsigned int facing = ReturnFacingDirection(m_position.m_xFixed >> 12,
+												m_position.m_yFixed >> 12,
+												m_fireTarget.m_xFixed >> 12,
+												m_fireTarget.m_yFixed >> 12);
 	return (int) m_facingDirection == (int) facing;
 }
 
@@ -592,7 +585,8 @@ void PlayerLemming::OnBalloon()
 	postPos.m_yFixed = DEBUG_SENTINEL;
 	postPos.m_zFixed = DEBUG_SENTINEL;
 	g_pAI->m_balloonPost->FindPost(m_balloonObjectType, postPos);
-	int dist = Distance(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, postPos.m_xFixed >> 12, postPos.m_yFixed >> 12);
+	int dist =
+		Distance(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, postPos.m_xFixed >> 12, postPos.m_yFixed >> 12);
 	if (dist < 16) {
 		m_balloonPostActive = 0;
 		SetSndEffect((eSoundEffect) 0x2b);
@@ -615,7 +609,8 @@ void PlayerLemming::OnBalloon()
 			groundZ = 0;
 		}
 		else {
-			groundZ = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(tileX & 0xf, tileY & 0xf);
+			groundZ =
+				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(tileX & 0xf, tileY & 0xf);
 		}
 		m_groundPosition.m_zFixed = (int) (unsigned int) groundZ << 12;
 		return;
@@ -822,7 +817,8 @@ void PlayerLemming::GetViewData(ViewData& p_viewData)
 	p_viewData.m_soundEffect = m_soundEffect;
 	if (m_isRemoteObject != 0) {
 		p_viewData.m_animationTime = g_dwNetworkSimulationTimestamp;
-	} else {
+	}
+	else {
 		p_viewData.m_animationTime = g_dwSimulationTimestamp;
 	}
 	SetSndEffect((eSoundEffect) 0);
@@ -909,4 +905,3 @@ int PlayerLemming::QOnBalloon()
 {
 	return m_balloonPostActive;
 }
-

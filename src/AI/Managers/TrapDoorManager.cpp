@@ -1,4 +1,5 @@
 #include "TrapDoorManager.h"
+
 #include "../Objects/TrapDoor.h"
 
 // 68K 0x1062169e __ct__16CTrapDoorManagerFv
@@ -48,4 +49,3 @@ void TrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned 
 TrapDoorManager::~TrapDoorManager()
 {
 }
-

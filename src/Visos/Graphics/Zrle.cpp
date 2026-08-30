@@ -5,7 +5,6 @@
 #include "Gdi.h"
 #include "VsGdi.h"
 
-
 // 68K 0x101014e8 Draw__5CZRLEFP4CGDI
 // FUNCTION: LEMBALL 0x00467ae0
 void Zrle::Draw(Gdi* p_gdi)
@@ -33,4 +32,3 @@ void Zrle::Render(Gdi* p_gdi)
 Zrle::~Zrle()
 {
 }
-

@@ -23,6 +23,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0047b7d0
 // Headers::`scalar deleting destructor'
 
-
 #endif
-

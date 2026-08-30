@@ -47,4 +47,3 @@ void HeaderMessage::GetData()
 HeaderMessage::~HeaderMessage()
 {
 }
-

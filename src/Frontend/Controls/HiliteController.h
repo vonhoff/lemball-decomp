@@ -68,6 +68,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0044fff0
 // HiliteController::`scalar deleting destructor'
 
-
 #endif
-

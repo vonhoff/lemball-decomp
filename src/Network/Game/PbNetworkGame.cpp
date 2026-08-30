@@ -22,4 +22,3 @@ void PbNetworkGame::GetData()
 PbNetworkGame::~PbNetworkGame()
 {
 }
-

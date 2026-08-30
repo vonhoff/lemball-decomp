@@ -35,4 +35,3 @@ int AiCursor::ProcessMsg(Message* p_message)
 AiCursor::~AiCursor()
 {
 }
-

@@ -44,6 +44,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0042e500
 // Ice::`vector deleting destructor'
 
-
 #endif
-

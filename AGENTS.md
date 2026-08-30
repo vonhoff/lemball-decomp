@@ -37,6 +37,16 @@ Reconstruct *Lemmings Paintball* (1996 Win32, `LEMBALL.EXE`) as C++ that matches
 
 Shared types: `src/Common.h`. Unknown scalars: `undefined` / `undefined2` / `undefined4`.
 
+## Resource IDs (`Manifest.h`)
+
+MOG resource ids from `data/pbaimog.vsr` live in `src/Visos/Resources/Manifest.h` as `#define RES_*` constants. Regenerate when the VSR changes:
+
+```powershell
+python tools/make_manifest.py
+```
+
+When implementing or editing code that passes a numeric resource id to `Res*::Load`, `AttachPalette`, sound prep, etc., prefer the matching `RES_*` name from `Manifest.h` instead of a bare hex literal — but only where it helps the current task (do not bulk-replace unrelated ids). Lookup: grep `Manifest.h` or `build-msvc400/resource_manifest.json`. Values must stay identical to the binary; do not hand-edit `Manifest.h`.
+
 ## 68K + reccmp annotations
 
 68K comment = naming / structure / intent from the 68K tree. Binary wins on divergence. Keep 68K lines when implementing.

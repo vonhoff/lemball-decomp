@@ -21,9 +21,10 @@ void PanelPauseButton::OnInside(const VsPoint& p_point)
 }
 
 // 68K 0x10b0c604 DrawButton__17CPanelPauseButtonFv
-// STUB: LEMBALL 0x00442260
+// FUNCTION: LEMBALL 0x00442260
 void PanelPauseButton::DrawButton()
 {
+	GraphicButton::DrawButton();
 }
 
 // 68K 0x10b0c63c OnPaint__17CPanelPauseButtonFRC7CVSRect
@@ -54,4 +55,3 @@ void PanelPauseButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 PanelPauseButton::~PanelPauseButton()
 {
 }
-

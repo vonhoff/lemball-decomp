@@ -23,4 +23,3 @@ TcpIpCommonSocket::~TcpIpCommonSocket()
 void TcpIpCommonSocket::SocketError()
 {
 }
-

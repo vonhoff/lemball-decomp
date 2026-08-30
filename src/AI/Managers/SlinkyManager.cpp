@@ -1,4 +1,5 @@
 #include "SlinkyManager.h"
+
 #include "../Navigation/Ai.h"
 #include "../Objects/Slinky.h"
 #include "../Objects/ViewData.h"
@@ -100,4 +101,3 @@ void SlinkyManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned ch
 		count--;
 	}
 }
-

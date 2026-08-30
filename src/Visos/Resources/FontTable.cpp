@@ -29,8 +29,8 @@ FontTable::FontTable(ResFont* p_font)
 		int intOffset = 0;
 		do {
 			if (p_font->m_fontEntries == 0) {
-				glyphIndex = p_font->m_fontTable->GetChar(
-					(ResZrle*) ((unsigned char*) p_font->m_animationEntries + zrleOffset));
+				glyphIndex =
+					p_font->m_fontTable->GetChar((ResZrle*) ((unsigned char*) p_font->m_animationEntries + zrleOffset));
 			}
 			else {
 				glyphIndex = ((ResInt*) ((unsigned char*) p_font->m_fontEntries + intOffset))->m_value;
@@ -70,4 +70,3 @@ char FontTable::GetChar(ResZrle* p_glyph)
 FontTable::~FontTable()
 {
 }
-

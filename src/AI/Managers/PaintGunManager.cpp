@@ -1,4 +1,5 @@
 #include "PaintGunManager.h"
+
 #include "../Objects/PaintGun.h"
 
 // 68K 0x1061b8a8 __ct__16CPaintGunManagerFP3CAIi
@@ -53,4 +54,3 @@ void PaintGunManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned 
 PaintGunManager::~PaintGunManager()
 {
 }
-

@@ -4,8 +4,7 @@
 
 // 68K 0x1060b864 __ct__14CObjectPosMessFv
 // FUNCTION: LEMBALL 0x00416bb0
-ObjectPosMess::ObjectPosMess()
-	: GameObjectMess(MESSAGE_OBJECT_POS)
+ObjectPosMess::ObjectPosMess() : GameObjectMess(MESSAGE_OBJECT_POS)
 {
 	m_payloadCapacity += 16;
 }
@@ -39,4 +38,3 @@ void ObjectPosMess::GetData()
 ObjectPosMess::~ObjectPosMess()
 {
 }
-

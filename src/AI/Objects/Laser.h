@@ -30,6 +30,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00429ed0
 // Laser::`vector deleting destructor'
 
-
 #endif
-

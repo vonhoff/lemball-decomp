@@ -5,13 +5,13 @@
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
 #define MESSAGE_OBJECT_CHANGE_STATE 0x23
-#define MESSAGE_OBJECT_POS          0x24
-#define MESSAGE_OBJECT_HIT          0x25
-#define MESSAGE_OBJECT_DIES         0x26
-#define MESSAGE_REQUEST_ACTION      0x27
-#define MESSAGE_REQUEST_REPLY       0x28
-#define MESSAGE_REQUEST_CANCEL      0x29
-#define MESSAGE_REMOVE_OBJECT       0x2a
+#define MESSAGE_OBJECT_POS 0x24
+#define MESSAGE_OBJECT_HIT 0x25
+#define MESSAGE_OBJECT_DIES 0x26
+#define MESSAGE_REQUEST_ACTION 0x27
+#define MESSAGE_REQUEST_REPLY 0x28
+#define MESSAGE_REQUEST_CANCEL 0x29
+#define MESSAGE_REMOVE_OBJECT 0x2a
 
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00493d80
@@ -40,6 +40,4 @@ protected:
 // SYNTHETIC: LEMBALL 0x00417b50
 // GameObjectMess::`scalar deleting destructor'
 
-
 #endif
-

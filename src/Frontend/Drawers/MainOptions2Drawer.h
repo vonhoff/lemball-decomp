@@ -26,6 +26,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00449170
 // MainOptions2Drawer::`scalar deleting destructor'
 
-
 #endif
-

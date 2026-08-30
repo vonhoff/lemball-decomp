@@ -4,4 +4,3 @@
 IntroAnim::~IntroAnim()
 {
 }
-

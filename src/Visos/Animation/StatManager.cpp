@@ -1,8 +1,8 @@
 #include "StatManager.h"
 
-#include "BaseStat.h"
 #include "../Foundation/VsMem.h"
 #include "../Foundation/VsOStream.h"
+#include "BaseStat.h"
 
 // 68K 0x10218c1a __ct__12CStatManagerFi
 // FUNCTION: LEMBALL 0x0045aaf0

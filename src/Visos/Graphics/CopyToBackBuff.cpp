@@ -5,8 +5,7 @@
 
 // 68K 0x1010a668 __ct__15CCopyToBackBuffFv
 // FUNCTION: LEMBALL 0x00439550
-CopyToBackBuff::CopyToBackBuff()
-	: m_field0a(0), m_field08(0), m_field0e(0), m_field0c(0)
+CopyToBackBuff::CopyToBackBuff() : m_field0a(0), m_field08(0), m_field0e(0), m_field0c(0)
 {
 }
 
@@ -28,4 +27,3 @@ void CopyToBackBuff::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit(this);
 }
-

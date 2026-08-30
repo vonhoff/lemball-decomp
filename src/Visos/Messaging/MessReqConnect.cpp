@@ -6,8 +6,7 @@
 
 // 68K 0x1020ace8 __ct__15CMessReqConnectFPCc
 // FUNCTION: LEMBALL 0x0045f3d0
-MessReqConnect::MessReqConnect(const char* p_arg0)
-	: BroadcastMessage(p_arg0)
+MessReqConnect::MessReqConnect(const char* p_arg0) : BroadcastMessage(p_arg0)
 {
 	m_payloadCapacity += 0x3c;
 	m_payloadCapacity += 0x101;
@@ -39,4 +38,3 @@ MessReqConnect::~MessReqConnect()
 
 // GLOBAL: LEMBALL 0x004a1e50
 MessReqConnect* g_pMessReqConnect = 0;
-

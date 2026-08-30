@@ -35,4 +35,3 @@ void FileRwSocket::ReceiveAcknowledgement()
 FileRwSocket::~FileRwSocket()
 {
 }
-

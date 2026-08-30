@@ -1,4 +1,5 @@
 #include "Collectable.h"
+
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Navigation/Ai.h"
@@ -9,8 +10,7 @@ Collectable::Collectable()
 
 // 68K 0x10605b0e __ct__12CCollectableFiii11eObjectType
 // FUNCTION: LEMBALL 0x00422870
-Collectable::Collectable(int p_arg0, int p_arg1, int p_arg2, eObjectType p_arg3)
-	: GlobalGameObject(p_arg3, 0, 0)
+Collectable::Collectable(int p_arg0, int p_arg1, int p_arg2, eObjectType p_arg3) : GlobalGameObject(p_arg3, 0, 0)
 {
 	m_spawnPosition.m_xFixed = p_arg0 << 12;
 	m_spawnPosition.m_yFixed = p_arg1 << 12;
@@ -58,7 +58,8 @@ bool Collectable::Process()
 					int blockY = y >> 4;
 					unsigned short z;
 					if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-						z = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+						z = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf,
+																									   y & 0xf);
 					}
 					else {
 						z = 0;
@@ -76,7 +77,8 @@ bool Collectable::Process()
 				if (g_pAI->m_objectCount > 0) {
 					do {
 						GameObject* obj = g_pAI->m_objects[g_pAI->m_unk0x124[3]];
-						if ((GameObject*) g_pAI->m_unk0x124[11] != obj && obj->Collision(*(Pt3*) &g_pAI->m_unk0x124[0])) {
+						if ((GameObject*) g_pAI->m_unk0x124[11] != obj &&
+							obj->Collision(*(Pt3*) &g_pAI->m_unk0x124[0])) {
 							hit = g_pAI->m_objects[g_pAI->m_unk0x124[3]];
 							g_pAI->m_unk0x124[3]++;
 							break;
@@ -122,4 +124,3 @@ int Collectable::Collected()
 Collectable::~Collectable()
 {
 }
-

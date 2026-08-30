@@ -2,7 +2,6 @@
 #define LEMBALL_MAP_GROUND_GROUNDARRAY_H
 
 #include "../../Common.h"
-
 #include "Ground.h"
 
 // SIZE 0x10

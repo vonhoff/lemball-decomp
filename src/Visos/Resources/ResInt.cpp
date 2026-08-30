@@ -25,4 +25,3 @@ void ResInt::OnLoad()
 ResInt::~ResInt()
 {
 }
-

@@ -37,4 +37,3 @@ private:
 extern short g_mineTerrainOffsets[4];
 
 #endif
-

@@ -29,6 +29,4 @@ private:
 // SYNTHETIC: LEMBALL 0x004287d0
 // HandManager::`scalar deleting destructor'
 
-
 #endif
-

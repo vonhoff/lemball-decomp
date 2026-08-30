@@ -248,4 +248,3 @@ void HotAreaHandler::SetParent(HotAreaList* p_parent)
 	m_parent = p_parent;
 	p_parent->UpdateHandlers();
 }
-

@@ -1,4 +1,5 @@
 #include "ResAnim.h"
+
 #include "MogRes.h"
 
 // 68K 0x1020374e Load__8CResANIMFUl
@@ -72,5 +73,3 @@ void ResAnim::UnLoadResources(unsigned int p_index, unsigned int p_force)
 {
 	m_animationEntries[p_index].UnLoadExtData(p_force);
 }
-
-

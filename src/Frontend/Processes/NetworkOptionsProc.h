@@ -36,4 +36,3 @@ extern NetworkOptionsProc* g_pNetworkOptionsProc;
 // NetworkOptionsProc::`scalar deleting destructor'
 
 #endif
-

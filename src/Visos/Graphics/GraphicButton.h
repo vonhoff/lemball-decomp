@@ -10,15 +10,15 @@
 class GraphicButton : public PvButton {
 public:
 	GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3);
-	virtual void _DrawButton();                        // vtable+0xb8
-	virtual void DrawButton();                         // vtable+0xbc
-	virtual void OnDestroy();                          // vtable+0x40
-	virtual void OnPaint(const VsRect& p_rect);        // vtable+0xa8
-	virtual void OnReleased(int p_flags);              // vtable+0xc0
-	virtual void OnPressed(int p_flags);               // vtable+0xc4
-	virtual void OnEnterButton();                      // vtable+0xc8
-	virtual void OnExitButton();                       // vtable+0xcc
-	virtual ~GraphicButton();                          // vtable+0x00
+	virtual void _DrawButton();                 // vtable+0xb8
+	virtual void DrawButton();                  // vtable+0xbc
+	virtual void OnDestroy();                   // vtable+0x40
+	virtual void OnPaint(const VsRect& p_rect); // vtable+0xa8
+	virtual void OnReleased(int p_flags);       // vtable+0xc0
+	virtual void OnPressed(int p_flags);        // vtable+0xc4
+	virtual void OnEnterButton();               // vtable+0xc8
+	virtual void OnExitButton();                // vtable+0xcc
+	virtual ~GraphicButton();                   // vtable+0x00
 	void Initialise();
 	void SetAnimId(unsigned long p_animId);
 
@@ -45,6 +45,4 @@ private:
 // SYNTHETIC: LEMBALL 0x004698c0
 // GraphicButton::`scalar deleting destructor'
 
-
 #endif
-

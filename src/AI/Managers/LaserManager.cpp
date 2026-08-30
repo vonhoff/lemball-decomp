@@ -1,4 +1,5 @@
 #include "LaserManager.h"
+
 #include "../Objects/Laser.h"
 
 // 68K 0x1061403a __ct__13CLaserManagerFP3CAIi
@@ -60,4 +61,3 @@ void LaserManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 LaserManager::~LaserManager()
 {
 }
-

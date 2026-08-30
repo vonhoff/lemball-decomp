@@ -40,4 +40,3 @@ extern BaseQueueHandler* g_pNetworkPacketQueue;
 // BaseQueueHandler::`scalar deleting destructor'
 
 #endif
-

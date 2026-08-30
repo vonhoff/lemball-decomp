@@ -8,8 +8,8 @@
 #include "../Resources/ResAnim.h"
 #include "../Resources/ResBase.h"
 #include "../Resources/ResZrle.h"
-#include "Gdi.h"
 #include "GWnd.h"
+#include "Gdi.h"
 #include "VsGdi.h"
 #include "Zrle.h"
 

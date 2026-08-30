@@ -5,7 +5,6 @@
 #include "WritePacketBuff.h" // complete type
 
 // SIZE 0x0c
-class WriteNcBuff : public WritePacketBuff {
-};
+class WriteNcBuff : public WritePacketBuff {};
 
 #endif

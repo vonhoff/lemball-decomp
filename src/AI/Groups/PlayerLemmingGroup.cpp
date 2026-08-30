@@ -99,4 +99,3 @@ bool PlayerLemmingGroup::HasSfxChanged()
 PlayerLemmingGroup::~PlayerLemmingGroup()
 {
 }
-

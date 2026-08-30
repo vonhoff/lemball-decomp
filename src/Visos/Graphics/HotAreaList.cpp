@@ -13,8 +13,7 @@ int g_nHotAreaListCount = 0;
 
 // 68K 0x10212102 __ct__12CHotAreaListFRC7CVSRectRC8CVSPointRC8CVSPoint
 // FUNCTION: LEMBALL 0x0046a580
-HotAreaList::HotAreaList(const VsRect& p_arg0, const VsPoint& p_arg1, const VsPoint& p_arg2)
-	: HotAreaHandler(p_arg0)
+HotAreaList::HotAreaList(const VsRect& p_arg0, const VsPoint& p_arg1, const VsPoint& p_arg2) : HotAreaHandler(p_arg0)
 {
 	int previous;
 
@@ -123,7 +122,7 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 	HotAreaElement* entry;
 	HotAreaElement* previous;
 	VsPoint localPoint;
-	Message fallback = { 7 };
+	Message fallback = {7};
 	unsigned short type;
 	short scaledX;
 	short scaledY;

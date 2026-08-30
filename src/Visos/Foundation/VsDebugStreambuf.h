@@ -34,4 +34,3 @@ extern char* g_pDebugOutputPath;
 // VsDebugStreambuf::`scalar deleting destructor'
 
 #endif
-

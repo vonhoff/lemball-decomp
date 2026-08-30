@@ -13,7 +13,11 @@ public:
 	virtual int GetSizeOf();
 	virtual int GetSizeOfBlock();
 	virtual Arena* CreateNew(unsigned char* p_arg0, unsigned long p_arg1, char* p_arg2, Arena* p_arg3, Arena* p_arg4);
-	virtual MBlock* CreateNewBlock(unsigned char* p_arg0, Arena* p_arg1, MBlock* p_arg2, char* p_arg3, unsigned long p_arg4);
+	virtual MBlock* CreateNewBlock(unsigned char* p_arg0,
+								   Arena* p_arg1,
+								   MBlock* p_arg2,
+								   char* p_arg3,
+								   unsigned long p_arg4);
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "GodManager.h"
+
 #include "BaseObjectManager.h"
 
 // 68K 0x1060de8a __ct__11CGodManagerFi
@@ -58,4 +59,3 @@ GodManager::~GodManager()
 
 // GLOBAL: LEMBALL 0x0049cf30
 GodManager* g_pGodManager = 0;
-

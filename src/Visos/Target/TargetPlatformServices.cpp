@@ -13,16 +13,16 @@ extern "C" __declspec(dllimport) unsigned int __stdcall GetCurrentDirectoryA(uns
 extern "C" __declspec(dllimport) unsigned int __stdcall GetLogicalDrives();
 extern "C" __declspec(dllimport) unsigned int __stdcall GetDriveTypeA(const char* p_root);
 extern "C" __declspec(dllimport) long __stdcall RegOpenKeyExA(void* p_key,
-															 const char* p_subkey,
-															 unsigned int p_options,
-															 unsigned int p_access,
-															 void** p_result);
+															  const char* p_subkey,
+															  unsigned int p_options,
+															  unsigned int p_access,
+															  void** p_result);
 extern "C" __declspec(dllimport) long __stdcall RegSetValueExA(void* p_key,
-															  const char* p_name,
-															  unsigned int p_reserved,
-															  unsigned int p_type,
-															  const unsigned char* p_data,
-															  unsigned int p_size);
+															   const char* p_name,
+															   unsigned int p_reserved,
+															   unsigned int p_type,
+															   const unsigned char* p_data,
+															   unsigned int p_size);
 extern "C" __declspec(dllimport) long __stdcall RegCloseKey(void* p_key);
 
 // STUB: LEMBALL 0x00456660
@@ -73,12 +73,12 @@ bool TargetPlatformServicesQuit()
 	return 1;
 }
 
-// STUB: LEMBALL 0x0045ec90
+// FUNCTION: LEMBALL 0x0045ec90
 TargetPlatformServices::TargetPlatformServices()
 {
 }
 
-// STUB: LEMBALL 0x0045eca0
+// FUNCTION: LEMBALL 0x0045eca0
 TargetPlatformServices::~TargetPlatformServices()
 {
 }

@@ -32,4 +32,3 @@ void ResCol::OnLoad()
 ResCol::~ResCol()
 {
 }
-

@@ -48,4 +48,3 @@ extern NetworkManager* g_pNetworkManager;
 // NetworkManager::`scalar deleting destructor'
 
 #endif
-

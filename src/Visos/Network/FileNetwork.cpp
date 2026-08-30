@@ -9,9 +9,9 @@
 
 extern "C" __declspec(dllimport) int __stdcall KillTimer(void* p_window, unsigned int p_id);
 extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
-																unsigned int p_id,
-																unsigned int p_elapse,
-																void* p_callback);
+																 unsigned int p_id,
+																 unsigned int p_elapse,
+																 void* p_callback);
 
 // 68K 0x10106fca __ct__12CFileNetworkFv
 // STUB: LEMBALL 0x0046f6b0
@@ -132,4 +132,3 @@ void* g_hFileNetworkThread = 0;
 
 // GLOBAL: LEMBALL 0x004a2de4
 void* g_pFileBroadcastData = 0;
-

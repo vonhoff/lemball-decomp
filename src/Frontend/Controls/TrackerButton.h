@@ -22,6 +22,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0044f030
 // TrackerButton::`scalar deleting destructor'
 
-
 #endif
-

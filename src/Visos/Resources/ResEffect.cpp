@@ -29,4 +29,3 @@ void ResEffect::SetType()
 ResEffect::~ResEffect()
 {
 }
-

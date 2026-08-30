@@ -1,10 +1,10 @@
 #include "Main2DDisplay.h"
 
+#include "../../AI/Navigation/Ai.h"
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameMain.h"
 #include "../../Control/Level/LevelLoader.h"
 #include "../../Frontend/Base/BaseFrontendDrawer.h"
-#include "../../Frontend/Resources/CdLoadAnim.h"
 #include "../../Frontend/Drawers/IntroAnimDrawer.h"
 #include "../../Frontend/Drawers/MainOptions1Drawer.h"
 #include "../../Frontend/Drawers/MainOptions2Drawer.h"
@@ -12,23 +12,24 @@
 #include "../../Frontend/Drawers/PasswordDrawer.h"
 #include "../../Frontend/Drawers/PreviewDrawer.h"
 #include "../../Frontend/Drawers/SuccFailDrawer.h"
+#include "../../Frontend/Resources/CdLoadAnim.h"
 #include "../../Frontend/Support/AboutDialog.h"
 #include "../../Frontend/Support/TargetAboutScreen.h"
-#include "../../AI/Navigation/Ai.h"
-#include "C2D.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/ChangeList.h"
+#include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBase.h"
 #include "../../Visos/Resources/ResPalette.h"
 #include "../../Visos/Resources/ResZrle.h"
 #include "../../Visos/Target/TargetGraphicsDriver.h"
 #include "../../Visos/Target/TargetGraphicsSystemState.h"
 #include "../../Visos/Target/TargetPlatformServices.h"
-#include "../../Visos/Foundation/VsOStream.h"
+#include "C2D.h"
 
 #include <new.h>
 #include <string.h>
@@ -61,9 +62,9 @@ Main2DDisplay::Main2DDisplay(Game* p_arg0)
 	m_drawerClosing = 1;
 	m_gdiFlags = 0x258;
 	m_currentFlow = 3;
-	m_background = ResZrle::Load(0xfc);
-	m_primaryPalette = ResPalette::Load(0x2e);
-	m_secondaryPalette = ResPalette::Load(0x2f);
+	m_background = ResZrle::Load(RES_CURSORS_PAW_CURSOR);
+	m_primaryPalette = ResPalette::Load(RES_GAME_GAMEPALETTE);
+	m_secondaryPalette = ResPalette::Load(RES_GAME_TITLEPALETTE);
 	CursorChangeType(2, 0);
 	g_pMasterInputQueue->Attach(this != 0 ? static_cast<BaseQueueHandler*>(this) : 0, -0x19);
 	m_lowWidth = 0x140;
@@ -106,7 +107,7 @@ unsigned int Main2DDisplay::GetStyle()
 void Main2DDisplay::Dummy3c()
 {
 	SetZoom(1);
-	AttachPalette(0x2e);
+	AttachPalette(RES_GAME_GAMEPALETTE);
 	m_gdi->m_renderTarget->EnableBackBuff(1);
 	m_drawer = 0;
 }
@@ -527,9 +528,10 @@ VsRect Main2DDisplay::GetUseRect(int p_x, int p_y)
 }
 
 // 68K 0x1011c78c OnRestore__14CMain2DDisplayFv
-// STUB: LEMBALL 0x004322d0
+// FUNCTION: LEMBALL 0x004322d0
 void Main2DDisplay::OnRestore()
 {
+	OnDriverChange();
 }
 
 // GLOBAL: LEMBALL 0x0049e728

@@ -1,4 +1,5 @@
 #include "MineManager.h"
+
 #include "../Objects/Mine.h"
 
 // 68K 0x10616764 __ct__12CMineManagerFP3CAIi
@@ -71,4 +72,3 @@ void MineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 MineManager::~MineManager()
 {
 }
-

@@ -5,8 +5,7 @@
 
 // 68K 0x10117384 __ct__9CClipRectFv
 // FUNCTION: LEMBALL 0x00432a30
-ClipRect::ClipRect()
-	: m_top(0), m_left(0), m_bottom(0), m_right(0)
+ClipRect::ClipRect() : m_top(0), m_left(0), m_bottom(0), m_right(0)
 {
 }
 
@@ -28,4 +27,3 @@ void ClipRect::Render(Gdi* p_gdi)
 ClipRect::~ClipRect()
 {
 }
-

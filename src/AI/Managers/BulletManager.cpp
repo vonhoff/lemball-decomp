@@ -87,4 +87,3 @@ bool BulletManager::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate
 BulletManager::~BulletManager()
 {
 }
-

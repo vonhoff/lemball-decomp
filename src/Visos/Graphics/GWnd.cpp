@@ -1,8 +1,6 @@
 #include "GWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 #include "../Resources/ResPalette.h"
 #include "../Target/TargetGraphicsDriver.h"
 #include "../Target/TargetGraphicsSystemState.h"
@@ -12,6 +10,7 @@
 #include "VsGdi.h"
 
 #include <new.h>
+#include <windows.h>
 
 // 68K 0x1010b3ca OnMove__5CGWndFv
 // FUNCTION: LEMBALL 0x0043a4d0 FOLDED

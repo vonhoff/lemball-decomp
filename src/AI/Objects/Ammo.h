@@ -24,6 +24,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0041c440
 // Ammo::`scalar deleting destructor'
 
-
 #endif
-

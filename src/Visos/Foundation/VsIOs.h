@@ -28,4 +28,3 @@ extern char g_szSourceDiskPath[256];
 // VsIOs::`scalar deleting destructor'
 
 #endif
-

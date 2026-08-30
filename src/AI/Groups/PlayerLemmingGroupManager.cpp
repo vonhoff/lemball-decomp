@@ -168,4 +168,3 @@ int PlayerLemmingGroupManager::GetViewData(ViewData* p_viewData)
 PlayerLemmingGroupManager::~PlayerLemmingGroupManager()
 {
 }
-

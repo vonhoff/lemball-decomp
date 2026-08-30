@@ -3,15 +3,13 @@
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
-#include "../Navigation/Ai.h"
-
 #include "../Groups/PlayerLemmingGroup.h"
+#include "../Navigation/Ai.h"
 #include "../Objects/PlayerLemming.h"
 
 // 68K 0x106072fe __ct__11CDuplicatorFRC7AICOORD
 // FUNCTION: LEMBALL 0x004275b0
-Duplicator::Duplicator(const AiCoord& p_arg0)
-	: GlobalGameObject((eObjectType) 0x1c, 0, 0)
+Duplicator::Duplicator(const AiCoord& p_arg0) : GlobalGameObject((eObjectType) 0x1c, 0, 0)
 {
 	m_spawnPosition.m_xFixed = p_arg0.m_xFixed;
 	m_spawnPosition.m_yFixed = p_arg0.m_yFixed;
@@ -152,4 +150,3 @@ int Duplicator::Usage()
 Duplicator::~Duplicator()
 {
 }
-

@@ -25,4 +25,3 @@ extern MessReqConnect* g_pMessReqConnect;
 // MessReqConnect::`scalar deleting destructor'
 
 #endif
-

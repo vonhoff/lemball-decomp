@@ -4,8 +4,7 @@
 
 // 68K 0x1021284a __ct__12CPVGDIBitmapFv
 // FUNCTION: LEMBALL 0x00472290
-PvGdiBitmap::PvGdiBitmap()
-	: m_height(0), m_width(0), m_rect0()
+PvGdiBitmap::PvGdiBitmap() : m_height(0), m_width(0), m_rect0()
 {
 	m_rect1.m_height = 0;
 	m_rect1.m_width = 0;
@@ -161,7 +160,8 @@ void PvGdiBitmap::GetRects(const VsRect& p_rect, VsRect*& p_rect0, VsRect*& p_re
 }
 
 // 68K 0x10212e96 ResetScroll__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x00472760
+// FUNCTION: LEMBALL 0x00472760
 void PvGdiBitmap::ResetScroll()
 {
+	ResetLinePtrs();
 }

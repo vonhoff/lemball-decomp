@@ -25,6 +25,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0040ced0
 // TrapDoorManager::`scalar deleting destructor'
 
-
 #endif
-

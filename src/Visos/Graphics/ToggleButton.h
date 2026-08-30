@@ -27,6 +27,4 @@ private:
 // SYNTHETIC: LEMBALL 0x004438b0
 // ToggleButton::`scalar deleting destructor'
 
-
 #endif
-

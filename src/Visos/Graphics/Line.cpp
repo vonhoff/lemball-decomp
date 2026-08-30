@@ -5,8 +5,7 @@
 
 // 68K 0x10115cd8 __ct__5CLineFv
 // FUNCTION: LEMBALL 0x004394c0
-Line::Line()
-	: m_y1(0), m_x1(0), m_y2(0), m_x2(0)
+Line::Line() : m_y1(0), m_x1(0), m_y2(0), m_x2(0)
 {
 }
 
@@ -23,4 +22,3 @@ void Line::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit(this);
 }
-

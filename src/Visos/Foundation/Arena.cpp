@@ -1,7 +1,9 @@
 #include "Arena.h"
+
+#include "../Animation/BaseStat.h"
 #include "MBlock.h"
 #include "VsOStream.h"
-#include "../Animation/BaseStat.h"
+
 #include <string.h>
 
 #pragma intrinsic(memset)
@@ -13,8 +15,7 @@ Arena::Arena()
 
 // 68K 0x102147c2 __ct__6CArenaFUlPcP6CArenaP6CArena
 // FUNCTION: LEMBALL 0x004599f0
-Arena::Arena(unsigned long p_arg0, char* p_arg1, class Arena* p_arg2, class Arena* p_arg3)
-	: Critical()
+Arena::Arena(unsigned long p_arg0, char* p_arg1, class Arena* p_arg2, class Arena* p_arg3) : Critical()
 {
 	m_arenaLinkA = p_arg2;
 	m_arenaLinkB = p_arg3;
@@ -77,7 +78,8 @@ bool Arena::AddToFreeList(MBlock* p_block)
 {
 	if (m_firstFreeBlock == 0) {
 		m_lastFreeBlock = p_block;
-	} else {
+	}
+	else {
 		m_firstFreeBlock->m_previousFree = p_block;
 	}
 	p_block->m_previousFree = 0;
@@ -94,7 +96,8 @@ bool Arena::AddToBlockList(MBlock* p_block, MBlock* p_previous)
 	if (p_previous == 0) {
 		m_lastBlock = p_block;
 		next = 0;
-	} else {
+	}
+	else {
 		next = p_previous->m_nextBlock;
 		p_previous->m_nextBlock = p_block;
 	}
@@ -102,7 +105,8 @@ bool Arena::AddToBlockList(MBlock* p_block, MBlock* p_previous)
 	p_block->m_nextBlock = next;
 	if (next == 0) {
 		m_firstBlock = p_block;
-	} else {
+	}
+	else {
 		next->m_previousBlock = p_block;
 	}
 	return 1;
@@ -120,7 +124,8 @@ bool Arena::AddToArenaList(class Arena* p_arena)
 	}
 	if (previous == 0) {
 		m_nextArena = p_arena;
-	} else {
+	}
+	else {
 		previous->m_nextArena = p_arena;
 	}
 	p_arena->m_nextArena = current;
@@ -135,12 +140,14 @@ bool Arena::RemoveFromFreeList(MBlock* p_block)
 	MBlock* prev = p_block->m_previousFree;
 	if (prev != 0) {
 		prev->m_nextFree = next;
-	} else {
+	}
+	else {
 		m_firstFreeBlock = next;
 	}
 	if (next != 0) {
 		next->m_previousFree = prev;
-	} else {
+	}
+	else {
 		m_lastFreeBlock = prev;
 	}
 	return 1;
@@ -154,12 +161,14 @@ bool Arena::RemoveFromBlockList(MBlock* p_block)
 	MBlock* next = p_block->m_nextBlock;
 	if (next != 0) {
 		next->m_previousBlock = prev;
-	} else {
+	}
+	else {
 		m_firstBlock = prev;
 	}
 	if (prev != 0) {
 		prev->m_nextBlock = next;
-	} else {
+	}
+	else {
 		m_lastBlock = next;
 	}
 	return 1;
@@ -175,7 +184,8 @@ bool Arena::RemoveFromArenaList(class Arena* p_arena)
 		if (current == p_arena) {
 			if (previous != 0) {
 				previous->m_nextArena = current->m_nextArena;
-			} else {
+			}
+			else {
 				m_nextArena = current->m_nextArena;
 			}
 			return 1;

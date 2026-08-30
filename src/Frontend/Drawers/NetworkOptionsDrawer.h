@@ -43,7 +43,7 @@ public:
 	void GameReady(int p_index);
 	void InitialiseHandlers();
 	void LastError();
-	virtual void Load();  // vtable+0x40
+	virtual void Load(); // vtable+0x40
 	void Lock();
 	void Processing();
 	void RegisterRemaps();
@@ -63,38 +63,36 @@ public:
 	friend class NetworkOptionsProc;
 
 private:
-	EditString* m_editor;            // 0x398
-	unsigned int m_editingActive;    // 0x39c
-	int m_editingStage;              // 0x3a0
-	unsigned int m_pendingStage;     // 0x3a4
-	int m_message;                   // 0x3a8
-	unsigned int m_messageDirty;     // 0x3ac
-	unsigned int m_messageStartTime; // 0x3b0
-	unsigned int m_messageDuration;  // 0x3b4
-	unsigned int m_broadcasting;     // 0x3b8
-	unsigned int m_networkMode;      // 0x3bc
-	unsigned int m_redrawPending;    // 0x3c0
-	unsigned int m_networkState;     // 0x3c4
-	unsigned int m_lastDrawTime;     // 0x3c8
-	EntryHandler* m_playerEntries;   // 0x3cc
+	EditString* m_editor;                // 0x398
+	unsigned int m_editingActive;        // 0x39c
+	int m_editingStage;                  // 0x3a0
+	unsigned int m_pendingStage;         // 0x3a4
+	int m_message;                       // 0x3a8
+	unsigned int m_messageDirty;         // 0x3ac
+	unsigned int m_messageStartTime;     // 0x3b0
+	unsigned int m_messageDuration;      // 0x3b4
+	unsigned int m_broadcasting;         // 0x3b8
+	unsigned int m_networkMode;          // 0x3bc
+	unsigned int m_redrawPending;        // 0x3c0
+	unsigned int m_networkState;         // 0x3c4
+	unsigned int m_lastDrawTime;         // 0x3c8
+	EntryHandler* m_playerEntries;       // 0x3cc
 	int m_acceptedPlayer;                // 0x3d0
 	int m_highlightedPlayer;             // 0x3d4
 	int m_visibleEntryCount;             // 0x3d8
-	unsigned int m_locked;           // 0x3dc
-	unsigned int m_startPending;     // 0x3e0
-	unsigned int m_stopPending;      // 0x3e4
-	unsigned int m_connectionState;  // 0x3e8
-	undefined m_unknown3ec[0x28];    // 0x3ec
-	BaseRemap* m_remaps[6];                    // 0x414
-	NetworkOptionsLayout* m_layoutTable;   // 0x42c
-	int m_pendingEvent;              // 0x430
-	unsigned int m_handlerCount;     // 0x434
+	unsigned int m_locked;               // 0x3dc
+	unsigned int m_startPending;         // 0x3e0
+	unsigned int m_stopPending;          // 0x3e4
+	unsigned int m_connectionState;      // 0x3e8
+	undefined m_unknown3ec[0x28];        // 0x3ec
+	BaseRemap* m_remaps[6];              // 0x414
+	NetworkOptionsLayout* m_layoutTable; // 0x42c
+	int m_pendingEvent;                  // 0x430
+	unsigned int m_handlerCount;         // 0x434
 };
 
 // 68K 0x10806800 __dt__21CNetworkOptionsDrawerFv
 // SYNTHETIC: LEMBALL 0x00455de0
 // NetworkOptionsDrawer::`scalar deleting destructor'
 
-
 #endif
-

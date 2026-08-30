@@ -1,4 +1,5 @@
 #include "Balloon.h"
+
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
@@ -35,7 +36,8 @@ bool Balloon::Process()
 	int blockX = x >> 4;
 	int blockY = y >> 4;
 	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
+		m_position.m_zFixed =
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
 	}
 	else {
 		m_position.m_zFixed = 0;
@@ -85,4 +87,3 @@ AiCoord Balloon::ActivatePosition()
 	int y = m_position.m_yFixed;
 	return AiCoord(m_position.m_xFixed, y, z);
 }
-

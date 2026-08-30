@@ -4,4 +4,3 @@
 PvFontTable::~PvFontTable()
 {
 }
-

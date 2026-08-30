@@ -106,4 +106,3 @@ void Mover::DoActivate()
 Mover::~Mover()
 {
 }
-

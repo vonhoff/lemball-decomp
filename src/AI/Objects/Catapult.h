@@ -21,6 +21,4 @@ public:
 // SYNTHETIC: LEMBALL 0x0041c400
 // Catapult::`scalar deleting destructor'
 
-
 #endif
-

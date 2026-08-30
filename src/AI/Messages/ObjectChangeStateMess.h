@@ -15,6 +15,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00417b80
 // ObjectChangeStateMess::`scalar deleting destructor'
 
-
 #endif
-

@@ -56,6 +56,4 @@ protected:
 // SYNTHETIC: LEMBALL 0x0041e8c0
 // GenericGroup::`scalar deleting destructor'
 
-
 #endif
-

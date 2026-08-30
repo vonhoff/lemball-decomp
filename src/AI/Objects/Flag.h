@@ -17,6 +17,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00422fb0
 // Flag::`scalar deleting destructor'
 
-
 #endif
-

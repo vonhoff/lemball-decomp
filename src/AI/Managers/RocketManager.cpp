@@ -1,4 +1,5 @@
 #include "RocketManager.h"
+
 #include "../Objects/Rocket.h"
 
 // 68K 0x1061dcfe __ct__14CRocketManagerFP3CAIi
@@ -60,4 +61,3 @@ void RocketManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned ch
 RocketManager::~RocketManager()
 {
 }
-

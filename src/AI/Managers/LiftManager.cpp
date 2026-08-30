@@ -1,4 +1,5 @@
 #include "LiftManager.h"
+
 #include "../Objects/Lift.h"
 
 // GLOBAL: LEMBALL 0x0049e1c0
@@ -70,4 +71,3 @@ void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 LiftManager::~LiftManager()
 {
 }
-

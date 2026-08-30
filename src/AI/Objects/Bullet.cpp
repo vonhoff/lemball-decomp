@@ -17,8 +17,7 @@ Bullet::~Bullet()
 
 // 68K 0x10604572 __ct__7CBulletFv
 // FUNCTION: LEMBALL 0x0041a510
-Bullet::Bullet()
-	: GlobalGameObject((eObjectType) 3, 0x100, 0)
+Bullet::Bullet() : GlobalGameObject((eObjectType) 3, 0x100, 0)
 {
 	m_unk0x174 = DEBUG_SENTINEL;
 	m_unk0x178 = DEBUG_SENTINEL;
@@ -66,12 +65,10 @@ void Bullet::Set(unsigned short p_id,
 	}
 	m_sourceObjectId = p_id;
 	m_destination.m_zFixed = (z + 12) << 12;
-	m_facingDirection = (short) ReturnFacingDirection(
-		m_position.m_xFixed >> 12,
-		m_position.m_yFixed >> 12,
-		m_destination.m_xFixed >> 12,
-		m_destination.m_yFixed >> 12
-	);
+	m_facingDirection = (short) ReturnFacingDirection(m_position.m_xFixed >> 12,
+													  m_position.m_yFixed >> 12,
+													  m_destination.m_xFixed >> 12,
+													  m_destination.m_yFixed >> 12);
 }
 
 // 68K 0x1060479e TriggerBullet__7CBulletFv
@@ -257,4 +254,3 @@ bool Bullet::Receive(unsigned short p_messageId, NetworkMessage* p_message)
 void Bullet::DoActivate()
 {
 }
-

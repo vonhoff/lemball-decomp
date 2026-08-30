@@ -54,4 +54,3 @@ void TrapDoor::DoActivate()
 TrapDoor::~TrapDoor()
 {
 }
-

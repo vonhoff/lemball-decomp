@@ -134,4 +134,3 @@ void Door::DoActivate()
 Door::~Door()
 {
 }
-

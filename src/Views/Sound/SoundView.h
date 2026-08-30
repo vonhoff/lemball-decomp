@@ -19,7 +19,7 @@ struct EffectSlot {
 class LoadUpdate {
 public:
 	virtual void UpdateNonCacheLoad() = 0; // vtable+0x00
-	virtual ~LoadUpdate() {}              // vtable+0x04
+	virtual ~LoadUpdate() {}               // vtable+0x04
 };
 
 // SIZE 0x2cc

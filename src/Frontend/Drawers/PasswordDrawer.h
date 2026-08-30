@@ -2,9 +2,9 @@
 #define LEMBALL_FRONTEND_DRAWERS_PASSWORDDRAWER_H
 
 #include "../../Common.h"
-#include "../Base/BaseFrontendDrawer.h"
 #include "../../Visos/Animation/StaticAnim.h" // complete type
 #include "../../Visos/Graphics/SolidRect.h"   // complete type
+#include "../Base/BaseFrontendDrawer.h"
 
 // SIZE 0x494
 // VTABLE: LEMBALL 0x00498408
@@ -54,4 +54,3 @@ private:
 extern int g_passwordKeyMap[12];
 
 #endif
-

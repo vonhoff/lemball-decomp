@@ -55,4 +55,3 @@ void TcpIpConnect::Closed(unsigned char p_notifyPeer)
 void TcpIpConnect::ReceiveAcknowledgement()
 {
 }
-

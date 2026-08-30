@@ -193,4 +193,3 @@ void HiliteButtons::UpdateAnimId()
 HiliteButtons::~HiliteButtons()
 {
 }
-

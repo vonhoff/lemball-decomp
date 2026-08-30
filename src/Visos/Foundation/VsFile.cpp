@@ -1,13 +1,14 @@
 #include "VsFile.h"
 
-extern "C" {
-_Filet* fopen(const char* p_path, const char* p_mode);
-int fclose(_Filet* p_file);
-size_t fread(void* p_buffer, size_t p_size, size_t p_count, _Filet* p_file);
-size_t fwrite(const void* p_buffer, size_t p_size, size_t p_count, _Filet* p_file);
-int fflush(_Filet* p_file);
-int fseek(_Filet* p_file, long p_offset, int p_origin);
-long ftell(_Filet* p_file);
+extern "C"
+{
+	_Filet* fopen(const char* p_path, const char* p_mode);
+	int fclose(_Filet* p_file);
+	size_t fread(void* p_buffer, size_t p_size, size_t p_count, _Filet* p_file);
+	size_t fwrite(const void* p_buffer, size_t p_size, size_t p_count, _Filet* p_file);
+	int fflush(_Filet* p_file);
+	int fseek(_Filet* p_file, long p_offset, int p_origin);
+	long ftell(_Filet* p_file);
 }
 
 // 68K 0x102116c8 vsOpen__FPcPc

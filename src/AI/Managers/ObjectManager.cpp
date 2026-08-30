@@ -102,4 +102,3 @@ ObjectManager::~ObjectManager()
 
 // GLOBAL: LEMBALL 0x004a7830
 ObjectManager* g_pGenericGroupObjectManager;
-

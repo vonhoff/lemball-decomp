@@ -1,7 +1,7 @@
 #include "GameObject.h"
 
-#include "../Navigation/AiDestinationList.h"
 #include "../../Control/Game/Game.h"
+#include "../Navigation/AiDestinationList.h"
 
 GameObject::GameObject()
 {
@@ -184,7 +184,7 @@ void GameObject::EndFiring()
 }
 
 // 68K 0x10118d30 RandomAction__11CGameObjectFv
-// STUB: LEMBALL 0x0040aa20
+// FUNCTION: LEMBALL 0x0040aa20
 void GameObject::RandomAction()
 {
 }
@@ -714,4 +714,3 @@ GameObject* g_pObjects[256];
 
 // GLOBAL: LEMBALL 0x004a74bc
 word g_wObjectCount;
-

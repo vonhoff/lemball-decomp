@@ -27,6 +27,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00414f00
 // AiCursor::`scalar deleting destructor'
 
-
 #endif
-

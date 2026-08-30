@@ -93,6 +93,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0044e690
 // GunController::`scalar deleting destructor'
 
-
 #endif
-

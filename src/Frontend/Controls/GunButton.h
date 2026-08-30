@@ -18,6 +18,4 @@ public:
 // SYNTHETIC: LEMBALL 0x0044e650
 // GunButton::`scalar deleting destructor'
 
-
 #endif
-

@@ -1,7 +1,7 @@
 #include "ReadMsBuff.h"
-#include "BasePacketHeader.h"
 
 #include "../Foundation/VsMem.h"
+#include "BasePacketHeader.h"
 
 ReadMsBuff::ReadMsBuff()
 {

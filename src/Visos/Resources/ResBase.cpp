@@ -1,10 +1,10 @@
 #include "ResBase.h"
 
-#include <string.h>
-
 #include "../Foundation/VsRange.h"
 #include "MogRes.h"
 #include "ResBaseList.h"
+
+#include <string.h>
 
 // 68K 0x102029ce DoLoad__8CResBaseFUl
 // FUNCTION: LEMBALL 0x0045cf20

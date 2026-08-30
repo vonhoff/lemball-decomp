@@ -33,4 +33,3 @@ void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
 // Cursor::`scalar deleting destructor'
 
 #endif
-

@@ -29,6 +29,4 @@ private:
 // SYNTHETIC: LEMBALL 0x004396e0
 // Bitmap::`scalar deleting destructor'
 
-
 #endif
-

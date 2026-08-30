@@ -37,6 +37,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0040ac60
 // InvisibleSwitch::`vector deleting destructor'
 
-
 #endif
-

@@ -64,4 +64,3 @@ void MoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 MoverManager::~MoverManager()
 {
 }
-

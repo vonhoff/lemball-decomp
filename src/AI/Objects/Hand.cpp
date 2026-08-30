@@ -65,4 +65,3 @@ void Hand::DoActivate()
 Hand::~Hand()
 {
 }
-

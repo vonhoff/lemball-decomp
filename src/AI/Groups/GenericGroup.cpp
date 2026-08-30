@@ -247,4 +247,3 @@ void GenericGroup::GetViewData(ViewData* p_viewData)
 GenericGroup::~GenericGroup()
 {
 }
-

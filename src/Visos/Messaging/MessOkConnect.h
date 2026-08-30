@@ -24,4 +24,3 @@ extern MessOkConnect* g_pMessOKConnect;
 // MessOkConnect::`scalar deleting destructor'
 
 #endif
-

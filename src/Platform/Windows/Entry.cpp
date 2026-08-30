@@ -1,4 +1,5 @@
 #include "Entry.h"
+
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h"
 #include "../../Visos/Foundation/VsInit.h"

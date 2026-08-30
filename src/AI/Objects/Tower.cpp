@@ -1,4 +1,5 @@
 #include "Tower.h"
+
 #include "../../Map/Base/Map.h"
 
 // 68K 0x1011ab2c DoActivate__6CTowerFv
@@ -28,7 +29,8 @@ bool Tower::Process()
 	int blockX = x >> 4;
 	int blockY = y >> 4;
 	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
+		m_position.m_zFixed =
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
 	}
 	else {
 		m_position.m_zFixed = 0;
@@ -52,4 +54,3 @@ AiCoord Tower::ActivatePosition()
 	int x = m_position.m_xFixed - 0x30000;
 	return AiCoord(x, y, z);
 }
-

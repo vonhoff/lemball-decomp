@@ -48,4 +48,3 @@ void BaseObjectManager::ProcessNetwork()
 void BaseObjectManager::GetData()
 {
 }
-

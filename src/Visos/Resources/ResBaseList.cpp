@@ -227,5 +227,3 @@ bool ResBaseList::ForceLoadVram(unsigned int p_index)
 {
 	return 0;
 }
-
-

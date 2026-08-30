@@ -2,8 +2,8 @@
 #define LEMBALL_AI_NAVIGATION_AI_H
 
 #include "../../Common.h"
+#include "../../Visos/Foundation/BaseProcess.h"      // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/BaseProcess.h"          // complete type
 #include "../../Visos/Messaging/NetworkMessage.h"    // complete type
 #include "../Base/AiCoord.h"                         // complete type
 #include "../Base/Pt3.h"                             // complete type
@@ -170,4 +170,3 @@ extern int g_nGameOver;
 // Ai::`scalar deleting destructor'
 
 #endif
-

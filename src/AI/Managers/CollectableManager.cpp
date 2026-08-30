@@ -1,4 +1,5 @@
 #include "CollectableManager.h"
+
 #include "../Objects/Collectable.h"
 
 // 68K 0x10605528 __ct__19CCollectableManagerFP3CAIi
@@ -55,4 +56,3 @@ int CollectableManager::GetViewData(ViewData* p_viewData)
 CollectableManager::~CollectableManager()
 {
 }
-

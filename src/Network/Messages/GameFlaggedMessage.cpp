@@ -6,8 +6,7 @@ GameFlaggedMessage::GameFlaggedMessage()
 
 // 68K 0x10a001da __ct__19CGameFlaggedMessageFUl
 // FUNCTION: LEMBALL 0x004524b0
-GameFlaggedMessage::GameFlaggedMessage(unsigned long p_arg0)
-	: NetworkMessage(p_arg0)
+GameFlaggedMessage::GameFlaggedMessage(unsigned long p_arg0) : NetworkMessage(p_arg0)
 {
 	m_payloadCapacity += 4;
 	m_headerEnabled = 1;
@@ -32,4 +31,3 @@ void GameFlaggedMessage::GetData()
 GameFlaggedMessage::~GameFlaggedMessage()
 {
 }
-

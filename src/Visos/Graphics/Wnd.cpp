@@ -1,8 +1,6 @@
 #include "Wnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 #include "../../Control/Support/PreInit.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../Foundation/BaseQueue.h"
@@ -17,6 +15,8 @@
 #include "../Target/TargetGraphicsSystemState.h"
 #include "../Target/TargetPlatformServices.h"
 #include "Cursor.h"
+
+#include <windows.h>
 
 // GLOBAL: LEMBALL 0x004a1f64
 void* g_hFocusWindow = 0;
@@ -556,10 +556,9 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 // FUNCTION: LEMBALL 0x004654f0
 unsigned int ConvertWindowStyleFlags(unsigned int p_style)
 {
-	return ((p_style & 8) == 0) - 1 & 0xcb0000
-		| (-(unsigned int) ((p_style & 2) == 0) & 0x7f400000) + 0xc00000 | (p_style & 0x400) << 8
-		| (p_style & 0x40) << 10 | (p_style & 0x20) << 15 | (p_style & 0x10) << 17 | (p_style & 0x80) << 10
-		| (p_style & 0x100) << 11;
+	return ((p_style & 8) == 0) - 1 & 0xcb0000 | (-(unsigned int) ((p_style & 2) == 0) & 0x7f400000) + 0xc00000 |
+		   (p_style & 0x400) << 8 | (p_style & 0x40) << 10 | (p_style & 0x20) << 15 | (p_style & 0x10) << 17 |
+		   (p_style & 0x80) << 10 | (p_style & 0x100) << 11;
 }
 
 // 68K 0x1011126e __dt__4CWndFv
@@ -587,8 +586,8 @@ void Wnd::Destroy()
 		}
 		OnDestroy();
 		BaseOnDestroy();
-		if ((g_pTargetGraphicsSystem->m_driverMode < 4 || g_pTargetGraphicsSystem->m_driverMode > 5)
-			&& m_nativeWindow != 0) {
+		if ((g_pTargetGraphicsSystem->m_driverMode < 4 || g_pTargetGraphicsSystem->m_driverMode > 5) &&
+			m_nativeWindow != 0) {
 			DestroyWindow((HWND) m_nativeWindow);
 		}
 	}

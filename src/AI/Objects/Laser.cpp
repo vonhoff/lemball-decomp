@@ -74,4 +74,3 @@ void Laser::DoActivate()
 Laser::~Laser()
 {
 }
-

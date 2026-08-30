@@ -30,4 +30,3 @@ extern MasterInput* g_pMasterInput;
 // MasterInput::`scalar deleting destructor'
 
 #endif
-

@@ -1,7 +1,5 @@
 #include "BaseFrontendDrawer.h"
 
-#include "../Controls/GunButtons.h"
-
 #include "../../Control/Game/GameMain.h"
 #include "../../Control/Game/GameStatus.h"
 #include "../../Views/Display/Main2DDisplay.h"
@@ -12,16 +10,19 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/Bitmap.h"
 #include "../../Visos/Graphics/Cursor.h"
-#include "../../Visos/Network/BaseNetwork.h"
-#include "../../Visos/Network/Connect.h"
-#include "../../Visos/Resources/ResBitmap.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Network/BaseNetwork.h"
+#include "../../Visos/Network/Connect.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/MogRes.h"
+#include "../../Visos/Resources/ResBitmap.h"
+#include "../Base/BaseFrontendProcess.h"
 #include "../Controls/GunButtons.h"
 #include "../Controls/GunController.h"
 #include "../Controls/HiliteController.h"
-#include "../Base/BaseFrontendProcess.h"
+
+extern "C" unsigned long __stdcall timeGetTime(void);
 #include "../../Network/Game/NetworkManager.h"
 #include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Foundation/VsOStream.h"
@@ -65,7 +66,7 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
 	m_drawSolid = 0;
 	m_activePalette = 0;
 	m_loaded = 0;
-	m_desiredPalette = 0x10a;
+	m_desiredPalette = RES_PALETTES_TITLEPALETTE;
 	if (g_pMasterInputQueue != 0) {
 		g_pMasterInputQueue->Attach(this, 0);
 	}
@@ -364,20 +365,20 @@ void BaseFrontendDrawer::_Load()
 {
 	m_loaded = 1;
 	if (m_mode == 0) {
-		m_tileBitmap = ResBitmap::Load(0x131);
-		m_backgroundBitmap = ResBitmap::Load(0x132);
-		m_sideFrameAnimId = 0x151;
-		m_unknown384 = 0x113;
-		m_topFrameAnimId = 0x150;
-		m_bottomFrameAnimId = 0x152;
+		m_tileBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_HIRES_PAINTBALL_TILE);
+		m_backgroundBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_HIRES_TITLE_BMP);
+		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_2;
+		m_unknown384 = RES_NEWFRONT_FONTS_HIRES_CHALK_FONT;
+		m_topFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_1;
+		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_3;
 	}
 	else {
-		m_tileBitmap = ResBitmap::Load(0x13c);
-		m_backgroundBitmap = ResBitmap::Load(0x13d);
-		m_sideFrameAnimId = 0x17e;
-		m_unknown384 = 0x114;
-		m_topFrameAnimId = 0x17d;
-		m_bottomFrameAnimId = 0x17f;
+		m_tileBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_PAINTBALL_TILE);
+		m_backgroundBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_TITLE_BMP);
+		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_2;
+		m_unknown384 = RES_NEWFRONT_FONTS_LORES_CHALK_FONT;
+		m_topFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_1;
+		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_3;
 	}
 	m_anims.LoadAnims(m_topFrameAnimId);
 	m_anims.LoadAnims(m_sideFrameAnimId);
@@ -407,7 +408,7 @@ void BaseFrontendDrawer::_UnLoad()
 void BaseFrontendDrawer::_DrawAnims()
 {
 	if (m_ambientAnim != 0) {
-		m_ambientAnim->m_fixedTime = CurrentMilliTimer();
+		m_ambientAnim->m_fixedTime = timeGetTime();
 		m_anims.DrawAnim(m_animPosition, m_ambientAnimId, 0, (Frames*) m_ambientAnim, 0);
 	}
 }
@@ -701,4 +702,3 @@ int g_nMusicVolume = 0;
 
 // GLOBAL: LEMBALL 0x004a627c
 int g_nEffectsVolume = 0;
-

@@ -1,4 +1,5 @@
 #include "HandManager.h"
+
 #include "../Objects/Hand.h"
 
 // 68K 0x106111f4 __ct__12CHandManagerFP3CAIi
@@ -60,4 +61,3 @@ void HandManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 HandManager::~HandManager()
 {
 }
-

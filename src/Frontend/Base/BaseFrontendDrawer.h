@@ -24,7 +24,7 @@ public:
 					   int p_arg6,
 					   int p_arg7,
 					   int p_arg8);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(Message* p_message);       // vtable+0x08
 	virtual ~BaseFrontendDrawer();                    // vtable+0x00
 	virtual void Draw(const VsRect& p_rect);          // vtable+0x08
 	virtual void OnSize(const VsRect& p_rect);        // vtable+0x10
@@ -35,8 +35,8 @@ public:
 	virtual void OnDriverChange();                    // vtable+0x30
 	virtual void Processing();                        // vtable+0x38
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
-	virtual void Load() = 0;                         // vtable+0x40
-	virtual void UnLoad() = 0;                       // vtable+0x44
+	virtual void Load() = 0;                          // vtable+0x40
+	virtual void UnLoad() = 0;                        // vtable+0x44
 	virtual void DrawAnims();                         // vtable+0x48
 	virtual void DrawText();                          // vtable+0x4c
 	virtual void DrawBackGround();                    // vtable+0x50
@@ -121,4 +121,3 @@ extern BaseFrontendDrawer* g_pBaseFrontendDrawer;
 // BaseFrontendDrawer::`scalar deleting destructor'
 
 #endif
-

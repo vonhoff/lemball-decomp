@@ -67,4 +67,3 @@ void Ball::LoadLevel(unsigned char** p_data)
 Ball::~Ball()
 {
 }
-

@@ -6,8 +6,7 @@
 
 // 68K 0x1020aeec __ct__14CMessOKConnectFPCc
 // FUNCTION: LEMBALL 0x0045f4f0
-MessOkConnect::MessOkConnect(const char* p_arg0)
-	: BroadcastMessage(p_arg0)
+MessOkConnect::MessOkConnect(const char* p_arg0) : BroadcastMessage(p_arg0)
 {
 	m_payloadCapacity += 0x38;
 	m_payloadCapacity += 0x101;
@@ -36,4 +35,3 @@ MessOkConnect::~MessOkConnect()
 
 // GLOBAL: LEMBALL 0x004a1e58
 MessOkConnect* g_pMessOKConnect = 0;
-

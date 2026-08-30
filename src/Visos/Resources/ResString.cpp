@@ -35,4 +35,3 @@ ResString::ResString()
 ResString::~ResString()
 {
 }
-

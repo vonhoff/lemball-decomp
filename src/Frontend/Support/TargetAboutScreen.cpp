@@ -11,6 +11,7 @@
 #include "../../Visos/Graphics/HotAreaHandler.h"
 #include "../../Visos/Graphics/PvGWnd.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/MogRes.h"
 #include "../../Visos/Resources/ResBitmap.h"
 #include "../../Visos/Resources/ResFont.h"
@@ -49,8 +50,8 @@ TargetAboutScreen::TargetAboutScreen(Main2DDisplay* p_display, Gdi* p_gdi, const
 	m_gdi = p_gdi;
 	m_width = p_rect.m_width;
 	m_height = p_rect.m_height;
-	p_display->AttachPalette(0x102);
-	m_backgroundBitmap = ResBitmap::Load(0x101);
+	p_display->AttachPalette(RES_REGISTRATION_VISOS_PALETTE);
+	m_backgroundBitmap = ResBitmap::Load(RES_REGISTRATION_VISOS_LOGO);
 	m_textWindow = 0;
 	storage = operator new(0x24);
 	if (storage == 0) {
@@ -59,8 +60,8 @@ TargetAboutScreen::TargetAboutScreen(Main2DDisplay* p_display, Gdi* p_gdi, const
 	else {
 		m_textManager = new (storage) TextManager(0x2b6, 1, 10, 0);
 	}
-	m_textManager->LoadFont(0x32);
-	m_aboutString = ResString::Load(0x100);
+	m_textManager->LoadFont(RES_GAME_FONT3);
+	m_aboutString = ResString::Load(RES_REGISTRATION_FINGERPRINT);
 	if (m_aboutString->m_loaded == 0) {
 		m_aboutString->LoadData();
 	}
@@ -78,7 +79,7 @@ TargetAboutScreen::~TargetAboutScreen()
 {
 	g_pMasterInputQueue->Detach(&m_queueHandler, 0);
 	m_backgroundBitmap->UnLoad();
-	m_textManager->UnLoadFont(0x32);
+	m_textManager->UnLoadFont(RES_GAME_FONT3);
 	if (m_textWindow != 0) {
 		delete (AboutTextWindowBase*) m_textWindow;
 	}
@@ -114,14 +115,14 @@ void TargetAboutScreen::DrawRegistrationText()
 	char ch;
 
 	key = (unsigned char*) g_szAboutWeatherManKey;
-	font = m_textManager->GetFont(0x32);
+	font = m_textManager->GetFont(RES_GAME_FONT3);
 	labelSize = font->GetSize(g_szRegisteredTo, 0x20);
 	advance.m_height = 0;
 	labelY = (int) (m_height / 2) - (int) (labelSize.m_y / 2);
 	advance.m_width = 0;
 	position.m_x = m_width / 2 - labelSize.m_x / 2;
 	position.m_y = (short) labelY;
-	m_textManager->DrawString(m_gdi, position, advance, 0x32, g_szRegisteredTo, 0x20, 0);
+	m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, 0);
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	VsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
 	buildSize = font->GetSize(g_szVisosBuildBuffer, 0x20);
@@ -129,7 +130,7 @@ void TargetAboutScreen::DrawRegistrationText()
 	advance.m_width = 0;
 	position.m_x = (short) (m_width - buildSize.m_x) / 2;
 	position.m_y = (short) (m_height - buildSize.m_y) / 2 + buildSize.m_y * 4;
-	m_textManager->DrawString(m_gdi, position, advance, 0x32, g_szVisosBuildBuffer, 0x20, 0);
+	m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, 0x20, 0);
 	ch = *m_aboutText;
 	index = 0;
 	while (ch != '\0') {
@@ -144,7 +145,7 @@ void TargetAboutScreen::DrawRegistrationText()
 	advance.m_width = 0;
 	position.m_x = m_width / 2 - nameSize.m_x / 2;
 	position.m_y = (short) labelY + 0x23;
-	m_textManager->DrawString(m_gdi, position, advance, 0x32, g_szAboutDecodeBuffer, 0x20, 0);
+	m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szAboutDecodeBuffer, 0x20, 0);
 	m_textManager->ResetPrimitives();
 }
 

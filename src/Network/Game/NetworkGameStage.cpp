@@ -2,8 +2,7 @@
 
 // 68K 0x10a0000c __ct__17CNetworkGameStageFv
 // FUNCTION: LEMBALL 0x004523b0
-NetworkGameStage::NetworkGameStage()
-	: NetworkMessage(4)
+NetworkGameStage::NetworkGameStage() : NetworkMessage(4)
 {
 	m_payloadCapacity += 4;
 }
@@ -26,4 +25,3 @@ void NetworkGameStage::GetData()
 NetworkGameStage::~NetworkGameStage()
 {
 }
-

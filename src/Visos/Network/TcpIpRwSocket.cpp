@@ -29,4 +29,3 @@ void TcpIpRwSocket::Closed(unsigned char p_notifyPeer)
 void TcpIpRwSocket::ReceiveAcknowledgement()
 {
 }
-

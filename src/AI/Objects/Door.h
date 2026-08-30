@@ -32,6 +32,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0040ec10
 // Door::`scalar deleting destructor'
 
-
 #endif
-

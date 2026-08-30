@@ -26,4 +26,3 @@ bool BroadcastMessage::GetHeader()
 BroadcastMessage::~BroadcastMessage()
 {
 }
-

@@ -17,4 +17,3 @@ int PadToButton::ProcessMsg(Message* p_message)
 PadToButton::~PadToButton()
 {
 }
-

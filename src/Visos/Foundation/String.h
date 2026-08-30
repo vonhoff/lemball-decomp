@@ -32,6 +32,4 @@ public:
 // FUNCTION: LEMBALL 0x00480060
 // _tolower
 
-
 #endif
-

@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x004930a0
 class BaseProcess {
 public:
-	virtual ~BaseProcess();        // vtable+0x00
+	virtual ~BaseProcess();     // vtable+0x00
 	virtual void Process() = 0; // vtable+0x04
 
 	friend class Game;
@@ -21,6 +21,5 @@ private:
 
 // SYNTHETIC: LEMBALL 0x00407ef0
 // CProcess::`scalar deleting destructor'
-
 
 #endif

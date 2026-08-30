@@ -130,4 +130,3 @@ FILE* g_pDebugOutputFile = 0;
 
 // GLOBAL: LEMBALL 0x004a2a10
 char* g_pDebugOutputPath = "debug.out";
-

@@ -28,9 +28,9 @@ public:
 	~FileBroadcast();
 
 private:
-	undefined m_unk04[0x10];     // 0x04
-	unsigned int m_listen;       // 0x14
-	undefined m_storage[0x19c];  // 0x18
+	undefined m_unk04[0x10];    // 0x04
+	unsigned int m_listen;      // 0x14
+	undefined m_storage[0x19c]; // 0x18
 };
 
 extern FileBroadcast* g_pFileBroadcast;
@@ -39,4 +39,3 @@ extern FileBroadcast* g_pFileBroadcast;
 // FileBroadcast::`scalar deleting destructor'
 
 #endif
-

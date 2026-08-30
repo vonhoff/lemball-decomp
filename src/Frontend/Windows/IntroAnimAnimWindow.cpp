@@ -1,6 +1,7 @@
 #include "IntroAnimAnimWindow.h"
 
 #include "../../Control/Game/GameStatus.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../Drawers/IntroAnimDrawer.h"
 
 // GLOBAL: LEMBALL 0x0049f194
@@ -20,17 +21,17 @@ void IntroAnimAnimWindow::Initialise(IntroAnimDrawer* p_owner, Main2DDisplay* p_
 void IntroAnimAnimWindow::SetAnim()
 {
 	if (m_variant == 0) {
-		AnimWnd::SetAnim(0x116);
+		AnimWnd::SetAnim(RES_NEWFRONT_STRINGS_INTRONAME);
 		return;
 	}
 	switch (g_pGameStatus->m_skill) {
 	case 0:
 	case 3:
-		AnimWnd::SetAnim(0x117);
+		AnimWnd::SetAnim(RES_NEWFRONT_STRINGS_EXTRONAME);
 		return;
 	case 1:
 	case 2:
-		AnimWnd::SetAnim(0x118);
+		AnimWnd::SetAnim(RES_NEWFRONT_STRINGS_SUCCFAIL);
 		return;
 	default:
 		return;

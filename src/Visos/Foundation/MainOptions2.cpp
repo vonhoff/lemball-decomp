@@ -4,4 +4,3 @@
 MainOptions2::~MainOptions2()
 {
 }
-

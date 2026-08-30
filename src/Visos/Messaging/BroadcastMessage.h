@@ -3,6 +3,7 @@
 
 #include "../../Common.h"
 #include "NetworkMessage.h" // complete type
+
 #include <string.h>
 
 #pragma intrinsic(strlen)
@@ -28,6 +29,4 @@ protected:
 // SYNTHETIC: LEMBALL 0x00462810
 // BroadcastMessage::`scalar deleting destructor'
 
-
 #endif
-

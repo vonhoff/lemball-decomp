@@ -21,7 +21,7 @@ public:
 	unsigned int GetStyle();
 	virtual void OnDriverChange(); // vtable+0x5c
 	virtual void OnMove();         // vtable+0x58
-	virtual 	void OnRestore();      // vtable+0x54
+	virtual void OnRestore();      // vtable+0x54
 	void KillDrawer(eFlowProcesses p_flow);
 	virtual void Dummy3c(); // vtable+0x3c
 	virtual void OnDestroy();
@@ -43,29 +43,28 @@ public:
 	friend class CdLoadAnim;
 
 private:
-	unsigned int m_windowReady;      // 0xa0
-	void* m_drawPrimitive;           // 0xa4
-	void* m_background;              // 0xa8
-	void* m_primaryPalette;          // 0xac
-	void* m_secondaryPalette;        // 0xb0
-	void* m_activePalette;           // 0xb4
-	unsigned int m_frameCount;       // 0xb8
-	unsigned int m_drawerClosing;    // 0xbc
-	Game* m_game;                    // 0xc0
-	void* m_activeProcess;           // 0xc4
-	void* m_pauseWindow;             // 0xc8
-	eFlowProcesses m_currentFlow;    // 0xcc
-	void* m_processVtable;           // 0xd0
-	class Drawer* m_drawer;          // 0xd4
-	unsigned int m_resolutionMode;   // 0xd8
-	short m_lowWidth;                // 0xdc
-	short m_lowHeight;               // 0xde
-	short m_highWidth;               // 0xe0
-	short m_highHeight;              // 0xe2
+	unsigned int m_windowReady;    // 0xa0
+	void* m_drawPrimitive;         // 0xa4
+	void* m_background;            // 0xa8
+	void* m_primaryPalette;        // 0xac
+	void* m_secondaryPalette;      // 0xb0
+	void* m_activePalette;         // 0xb4
+	unsigned int m_frameCount;     // 0xb8
+	unsigned int m_drawerClosing;  // 0xbc
+	Game* m_game;                  // 0xc0
+	void* m_activeProcess;         // 0xc4
+	void* m_pauseWindow;           // 0xc8
+	eFlowProcesses m_currentFlow;  // 0xcc
+	void* m_processVtable;         // 0xd0
+	class Drawer* m_drawer;        // 0xd4
+	unsigned int m_resolutionMode; // 0xd8
+	short m_lowWidth;              // 0xdc
+	short m_lowHeight;             // 0xde
+	short m_highWidth;             // 0xe0
+	short m_highHeight;            // 0xe2
 };
 
 // SYNTHETIC: LEMBALL 0x004322e0
 // Main2DDisplay::`scalar deleting destructor'
-
 
 #endif

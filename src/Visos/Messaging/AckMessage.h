@@ -23,4 +23,3 @@ extern AckMessage* g_pAckMessage;
 // AckMessage::`scalar deleting destructor'
 
 #endif
-

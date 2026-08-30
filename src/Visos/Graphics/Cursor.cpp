@@ -1,6 +1,7 @@
 #include "Cursor.h"
 
 #include "../../Control/Game/Demo.h"
+#include "../Resources/Manifest.h"
 
 extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void* p_instance, const char* p_name);
 extern "C" __declspec(dllimport) int __stdcall GetCursorPos(void* p_point);
@@ -11,7 +12,7 @@ extern "C" __declspec(dllimport) int __stdcall ShowCursor(int p_show);
 Cursor* g_pCursor = 0;
 
 // GLOBAL: LEMBALL 0x0049ee10
-unsigned int g_cursorResourceIds[4] = { 0, 0xfd, 0xfc, 0 };
+unsigned int g_cursorResourceIds[4] = {0, RES_CURSORS_HAND, RES_CURSORS_PAW_CURSOR, 0};
 
 // GLOBAL: LEMBALL 0x0049ee20
 unsigned int g_cursorDisplayInited = 0;

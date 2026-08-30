@@ -37,4 +37,3 @@ bool Slinky::Process()
 Slinky::~Slinky()
 {
 }
-

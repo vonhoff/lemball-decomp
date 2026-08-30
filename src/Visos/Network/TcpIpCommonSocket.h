@@ -23,6 +23,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00471a90
 // TcpIpCommonSocket::`scalar deleting destructor'
 
-
 #endif
-

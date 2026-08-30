@@ -43,8 +43,8 @@ public:
 	virtual bool DirectResources(unsigned int p_index, unsigned char** p_cursor) = 0;          // vtable+0x50
 	virtual bool DirectResources(unsigned int p_index,
 								 unsigned char** p_headerCursor,
-								 unsigned char** p_dataCursor) = 0;                            // vtable+0x4c
-	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force) = 0;              // vtable+0x54
+								 unsigned char** p_dataCursor) = 0;               // vtable+0x4c
+	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force) = 0; // vtable+0x54
 
 	friend class FontTable;
 	friend class AnimsManager;
@@ -68,6 +68,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0045e700
 // ResBaseList::`scalar deleting destructor'
 
-
 #endif
-

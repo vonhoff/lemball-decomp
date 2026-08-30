@@ -76,4 +76,3 @@ void Ice::Switched()
 Ice::~Ice()
 {
 }
-

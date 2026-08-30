@@ -58,4 +58,3 @@ extern int g_nGunButtonsRedrawPending;
 // GunButtons::`scalar deleting destructor'
 
 #endif
-

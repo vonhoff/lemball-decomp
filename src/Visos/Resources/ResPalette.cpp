@@ -38,4 +38,3 @@ void ResPalette::SetHeader()
 ResPalette::~ResPalette()
 {
 }
-

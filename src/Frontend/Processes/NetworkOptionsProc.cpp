@@ -10,12 +10,14 @@
 #include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Network/Broadcast.h"
 #include "../../Visos/Network/Connect.h"
-#include "../Drawers/NetworkOptionsDrawer.h"
 #include "../Base/BaseFrontendDrawer.h"
+#include "../Drawers/NetworkOptionsDrawer.h"
 
 #define g_pNetworkOptionsDrawer ((NetworkOptionsDrawer*) g_pBaseFrontendDrawer)
 
 #include <new.h>
+
+extern "C" unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x10808988 __ct__19CNetworkOptionsProcFP5CGame
 // FUNCTION: LEMBALL 0x00455050
@@ -103,12 +105,12 @@ void NetworkOptionsProc::StopBroadcast()
 				g_pNetworkOptionsDrawer->GameNotReady(index);
 			}
 			if (*connections != 0 && *connections != g_pActiveConnection) {
-				startTime = CurrentMilliTimer();
-				while (m_rejectMessage->m_pendingSendCount != 0 && CurrentMilliTimer() - startTime < 1000) {
+				startTime = timeGetTime();
+				while (m_rejectMessage->m_pendingSendCount != 0 && timeGetTime() - startTime < 1000) {
 				}
 				m_rejectMessage->Send(*connections);
-				startTime = CurrentMilliTimer();
-				while (m_rejectMessage->m_pendingSendCount != 0 && CurrentMilliTimer() - startTime < 1000) {
+				startTime = timeGetTime();
+				while (m_rejectMessage->m_pendingSendCount != 0 && timeGetTime() - startTime < 1000) {
 				}
 				(*connections)->Kill();
 			}
@@ -129,8 +131,8 @@ void NetworkOptionsProc::Stop()
 		g_pNetworkManager->Stop();
 	}
 	if (g_pBaseNetwork != 0) {
-		startTime = CurrentMilliTimer();
-		while (CurrentMilliTimer() - startTime < 2000 && g_pBaseNetwork->m_queueTransitionPending != 0) {
+		startTime = timeGetTime();
+		while (timeGetTime() - startTime < 2000 && g_pBaseNetwork->m_queueTransitionPending != 0) {
 		}
 	}
 	if (g_pNetworkManager != 0) {
@@ -223,7 +225,5 @@ void NetworkOptionsProc::Processing()
 {
 }
 
-
 // GLOBAL: LEMBALL 0x004a0128
 NetworkOptionsProc* g_pNetworkOptionsProc = 0;
-

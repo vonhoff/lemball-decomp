@@ -4,8 +4,7 @@
 
 // 68K 0x1060b69a __ct__17CRequestReplyMessFv
 // FUNCTION: LEMBALL 0x00416ac0
-RequestReplyMess::RequestReplyMess()
-	: GameObjectMess(MESSAGE_REQUEST_REPLY)
+RequestReplyMess::RequestReplyMess() : GameObjectMess(MESSAGE_REQUEST_REPLY)
 {
 	m_payloadCapacity += 4;
 }
@@ -39,4 +38,3 @@ void RequestReplyMess::GetData()
 RequestReplyMess::~RequestReplyMess()
 {
 }
-

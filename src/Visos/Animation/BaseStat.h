@@ -18,13 +18,13 @@ public:
 	friend class Game;
 
 private:
-	unsigned int m_maximum;       // 0x08
-	unsigned int m_minimum;       // 0x0c
-	unsigned int m_total;         // 0x10
-	unsigned int m_sampleCount;   // 0x14
-	String m_description;         // 0x18
-	void* m_timingStart;          // 0x20
-	unsigned int m_timingActive;  // 0x24
+	unsigned int m_maximum;      // 0x08
+	unsigned int m_minimum;      // 0x0c
+	unsigned int m_total;        // 0x10
+	unsigned int m_sampleCount;  // 0x14
+	String m_description;        // 0x18
+	void* m_timingStart;         // 0x20
+	unsigned int m_timingActive; // 0x24
 };
 
 // SIZE 0x28

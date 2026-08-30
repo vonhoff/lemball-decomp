@@ -24,4 +24,3 @@ MasterInput::~MasterInput()
 
 // GLOBAL: LEMBALL 0x004a279c
 MasterInput* g_pMasterInput = 0;
-

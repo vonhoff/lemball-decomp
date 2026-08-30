@@ -38,4 +38,3 @@ bool SheepGroup::CheckAgainstCatapults()
 SheepGroup::~SheepGroup()
 {
 }
-

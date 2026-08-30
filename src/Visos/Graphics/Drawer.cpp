@@ -58,4 +58,3 @@ void Drawer::RefreshView()
 Drawer::~Drawer()
 {
 }
-

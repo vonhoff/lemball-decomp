@@ -29,6 +29,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00432a90
 // SolidRect::`scalar deleting destructor'
 
-
 #endif
-

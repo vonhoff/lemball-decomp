@@ -53,6 +53,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0044ffc0
 // HiliteButtons::`scalar deleting destructor'
 
-
 #endif
-

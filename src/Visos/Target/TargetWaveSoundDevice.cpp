@@ -147,12 +147,7 @@ int TargetWaveSoundDevice::Dummy0c(unsigned int p_music, unsigned int p_effects,
 		return (int) m_musicDevice;
 	}
 	if (p_effects == 1) {
-		result = waveOutOpen((HWAVEOUT*) &m_waveOut,
-							 m_deviceId,
-							 (WAVEFORMATEX*) m_waveFormat,
-							 0,
-							 0,
-							 0);
+		result = waveOutOpen((HWAVEOUT*) &m_waveOut, m_deviceId, (WAVEFORMATEX*) m_waveFormat, 0, 0, 0);
 		if (result != 0) {
 			*g_pErrorOutput << "Error! Windows Effect device cannot be opened!\n";
 			waveOutGetErrorTextA(result, errorText, 0x100);
@@ -352,7 +347,9 @@ int TargetWaveSoundDevice::Dummy48(unsigned long p_effectId)
 }
 
 // FUNCTION: LEMBALL 0x0047d160
-unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, unsigned char p_volume)
+unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId,
+												unsigned short p_pitch,
+												unsigned char p_volume)
 {
 	unsigned int i;
 	TargetWaveEffect* effect;
@@ -377,7 +374,9 @@ unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsign
 }
 
 // FUNCTION: LEMBALL 0x0047d220
-unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume)
+unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId,
+												unsigned char p_channel,
+												unsigned char p_volume)
 {
 	BaseSoundDevice* device;
 

@@ -8,9 +8,9 @@ extern "C" __declspec(dllimport) int __stdcall WSAStartup(unsigned short p_versi
 extern "C" __declspec(dllimport) int __stdcall WSAGetLastError();
 extern "C" __declspec(dllimport) int __stdcall WSACleanup();
 extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
-																unsigned int p_id,
-																unsigned int p_elapse,
-																void* p_callback);
+																 unsigned int p_id,
+																 unsigned int p_elapse,
+																 void* p_callback);
 extern "C" __declspec(dllimport) int __stdcall KillTimer(void* p_window, unsigned int p_id);
 
 // 68K 0x1010e1d0 __ct__13CTCPIPNetworkFv
@@ -134,4 +134,3 @@ unsigned short g_broadcastPort = 0;
 
 // GLOBAL: LEMBALL 0x004a1e4c
 int g_lastNetworkError = 0;
-

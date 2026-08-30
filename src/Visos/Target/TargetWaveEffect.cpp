@@ -1,10 +1,10 @@
 #include "TargetWaveEffect.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include "../Foundation/VsOStream.h"
+
 #include <windows.h>
 #include <mmsystem.h>
-
-#include "../Foundation/VsOStream.h"
 
 struct EffPatchHeader {
 	unsigned int m_unk0;
@@ -135,9 +135,9 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 					header->lpData = (char*) m_sampleData;
 					header->dwBufferLength = length;
 					header->dwUser = (DWORD) ((((int) (char) p_patch[9] * 0x100 + (int) (char) p_patch[8]) * 0x100 +
-											  (int) (char) p_patch[7]) *
-												 0x100 +
-											 (int) (char) p_patch[6]);
+											   (int) (char) p_patch[7]) *
+												  0x100 +
+											  (int) (char) p_patch[6]);
 					header->dwFlags = 0;
 					header->dwLoops = 0;
 					if (p_use16Bit == 0) {

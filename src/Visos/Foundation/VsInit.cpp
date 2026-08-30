@@ -1,5 +1,3 @@
-#include "VsFile.h"
-#include "VsTime.h"
 #include "VsInit.h"
 
 #include "../../Control/Game/GameMain.h"
@@ -24,8 +22,10 @@
 #include "Translator.h"
 #include "VsDebug.h"
 #include "VsDebugStreambuf.h"
+#include "VsFile.h"
 #include "VsOStream.h"
 #include "VsString.h"
+#include "VsTime.h"
 
 #include <ctype.h>
 #include <memory.h>
@@ -36,23 +36,23 @@
 #pragma intrinsic(memcpy, memset)
 
 extern "C" __declspec(dllimport) void* __stdcall CreateThread(void* p_security,
-															 unsigned int p_stack,
-															 unsigned int(__stdcall* p_start)(void*),
-															 void* p_param,
-															 unsigned int p_flags,
-															 unsigned int* p_id);
+															  unsigned int p_stack,
+															  unsigned int(__stdcall* p_start)(void*),
+															  void* p_param,
+															  unsigned int p_flags,
+															  unsigned int* p_id);
 extern "C" __declspec(dllimport) int __stdcall SetThreadPriority(void* p_thread, int p_priority);
 extern "C" __declspec(dllimport) void* __stdcall CreateEventA(void* p_security,
-															 int p_manual,
-															 int p_initial,
-															 const char* p_name);
+															  int p_manual,
+															  int p_initial,
+															  const char* p_name);
 extern "C" __declspec(dllimport) unsigned int __stdcall WaitForSingleObject(void* p_handle, unsigned int p_ms);
 extern "C" __declspec(dllimport) int __stdcall TerminateThread(void* p_thread, unsigned int p_exit);
 extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
-														  const char* p_text,
-														  const char* p_caption,
-														  unsigned int p_type);
+														   const char* p_text,
+														   const char* p_caption,
+														   unsigned int p_type);
 extern "C" __declspec(dllimport) void* __stdcall GlobalAlloc(unsigned int p_flags, unsigned int p_bytes);
 extern "C" __declspec(dllimport) void* __stdcall GlobalLock(void* p_mem);
 extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(void* p_mem);
@@ -188,8 +188,7 @@ char g_szOptionSelected[12] = "selected\n";
 char g_szMasterMainRamArena[24] = "Master Main Ram Arena";
 
 // GLOBAL: LEMBALL 0x004a219c
-char g_szMasterArenaStillLocked[72] =
-	"Master Main RAM Arena memory was locked, when it should not have been\n";
+char g_szMasterArenaStillLocked[72] = "Master Main RAM Arena memory was locked, when it should not have been\n";
 
 // GLOBAL: LEMBALL 0x004a21e4
 char g_szMasterArenaUnlockIteratively[40] = "attempting to unlock it iteratively\n";
@@ -816,8 +815,7 @@ bool MemInit()
 		g_pMasterArena = 0;
 	}
 	else {
-		g_pMasterArena = new (storage)
-			RamArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
+		g_pMasterArena = new (storage) RamArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
 	}
 
 	smallEnabled = g_nSmallMemoryEnabled;
@@ -862,8 +860,8 @@ bool MemQuit()
 	if (GlobalFree(g_pMasterArenaMemory) != 0) {
 		lastError = GetLastError();
 		*g_pErrorOutput << g_szMasterArenaFreeFailed;
-		*g_pErrorOutput << g_szGetLastErrorEq << (unsigned long) lastError << g_szColonHexPrefix
-						<< Hex(lastError) << g_szGetLastErrorNewline;
+		*g_pErrorOutput << g_szGetLastErrorEq << (unsigned long) lastError << g_szColonHexPrefix << Hex(lastError)
+						<< g_szGetLastErrorNewline;
 		return 0;
 	}
 	return 1;
@@ -882,8 +880,7 @@ bool VsFNetInit()
 {
 	unsigned long startTime;
 
-	g_hFileNetworkThread =
-		CreateThread(0, 0, FileNetworkMessageThread, 0, 0, &g_dwFileNetworkThreadId);
+	g_hFileNetworkThread = CreateThread(0, 0, FileNetworkMessageThread, 0, 0, &g_dwFileNetworkThreadId);
 	if (g_hFileNetworkThread == 0) {
 		MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
 		ExitProcess(0xbbbb);
@@ -944,8 +941,7 @@ bool VsNetInit()
 {
 	unsigned long startTime;
 
-	g_hTCPIPNetworkThread =
-		CreateThread(0, 0, TcpIpNetworkMessageThread, 0, 0, &g_dwTCPIPNetworkThreadId);
+	g_hTCPIPNetworkThread = CreateThread(0, 0, TcpIpNetworkMessageThread, 0, 0, &g_dwTCPIPNetworkThreadId);
 	if (g_hTCPIPNetworkThread == 0) {
 		MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
 		ExitProcess(0xbbbb);
@@ -1061,8 +1057,7 @@ bool DbgInit()
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		g_pDebugSyncEvent = CreateEventA(0, 0, 0, "Sync_Debug");
-		g_pDebugThread =
-			CreateThread(0, 0, DebugMessageThreadMain, 0, 0, (unsigned int*) &g_nDebugThreadId);
+		g_pDebugThread = CreateThread(0, 0, DebugMessageThreadMain, 0, 0, (unsigned int*) &g_nDebugThreadId);
 		if (g_pDebugThread == 0) {
 			MessageBoxA(0, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
 			ExitProcess(0xbbbb);

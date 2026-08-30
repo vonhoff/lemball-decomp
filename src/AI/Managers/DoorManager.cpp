@@ -1,4 +1,5 @@
 #include "DoorManager.h"
+
 #include "../Objects/Door.h"
 
 // 68K 0x10606c72 __ct__12CDoorManagerFP3CAIi
@@ -79,4 +80,3 @@ void DoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 DoorManager::~DoorManager()
 {
 }
-

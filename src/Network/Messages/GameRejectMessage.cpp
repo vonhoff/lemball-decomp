@@ -10,4 +10,3 @@ GameRejectMessage::GameRejectMessage() : GameFlaggedMessage(6)
 GameRejectMessage::~GameRejectMessage()
 {
 }
-

@@ -36,4 +36,3 @@ FileReadSocket::~FileReadSocket()
 void FileReadSocket::Closed(unsigned char p_notifyPeer)
 {
 }
-

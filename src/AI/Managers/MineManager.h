@@ -33,6 +33,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00424c30
 // MineManager::`scalar deleting destructor'
 
-
 #endif
-

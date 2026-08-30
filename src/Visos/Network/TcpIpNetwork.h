@@ -20,10 +20,10 @@ public:
 	virtual ~TcpIpNetwork();                             // vtable+0x04
 
 private:
-	void* m_windowHandle;   // 0x04
+	void* m_windowHandle;     // 0x04
 	undefined m_windowPad[8]; // 0x08
-	BaseNetwork m_base;     // 0x10
-	unsigned int m_timerId; // 0x74
+	BaseNetwork m_base;       // 0x10
+	unsigned int m_timerId;   // 0x74
 };
 
 extern unsigned int g_dwTCPIPNetworkThreadId;
@@ -41,4 +41,3 @@ extern int g_lastNetworkError;
 // TcpIpNetwork::`scalar deleting destructor'
 
 #endif
-

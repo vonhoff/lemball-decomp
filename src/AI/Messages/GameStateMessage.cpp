@@ -4,8 +4,7 @@
 
 // 68K 0x1060000c __ct__17CGameStateMessageFv
 // FUNCTION: LEMBALL 0x00410b80
-GameStateMessage::GameStateMessage()
-	: NetworkMessage(MESSAGE_GAME_STATE)
+GameStateMessage::GameStateMessage() : NetworkMessage(MESSAGE_GAME_STATE)
 {
 	m_payloadCapacity += 16;
 	m_headerEnabled = 1;
@@ -35,4 +34,3 @@ void GameStateMessage::GetData()
 GameStateMessage::~GameStateMessage()
 {
 }
-

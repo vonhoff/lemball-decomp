@@ -1,4 +1,5 @@
 #include "VsMath.h"
+
 #include "Fixed.h"
 
 #include <stdlib.h>
@@ -41,7 +42,8 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 
 // 68K 0x107008e6 Distance__Fiiii
 // FUNCTION: LEMBALL 0x00413f80
-unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2) {
+unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
+{
 	int dx = abs(p_x1 - p_x2);
 	int dy = abs(p_y1 - p_y2);
 	dx = dx * dx;
@@ -51,7 +53,8 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2) {
 
 // 68K 0x1060e9e6 CloseTo__F7AICOORD7AICOORD
 // FUNCTION: LEMBALL 0x004140d0
-bool CloseTo(AiCoord p_first, AiCoord p_second) {
+bool CloseTo(AiCoord p_first, AiCoord p_second)
+{
 	int dx = (p_first.m_xFixed >> 12) - (p_second.m_xFixed >> 12);
 	int dy = (p_first.m_yFixed >> 12) - (p_second.m_yFixed >> 12);
 	int dz = (p_first.m_zFixed >> 12) - (p_second.m_zFixed >> 12);

@@ -9,7 +9,7 @@ class MBlock {
 public:
 	MBlock(class Arena* p_arena, class MBlock* p_previous, char* p_description, unsigned long p_size);
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
-	virtual ~MBlock();                           // vtable+0x04
+	virtual ~MBlock();                                 // vtable+0x04
 	void SetDesc(char* p_arg0);
 	void* operator new(size_t p_arg0, void* p_arg1);
 	void operator delete(void* p_memory);

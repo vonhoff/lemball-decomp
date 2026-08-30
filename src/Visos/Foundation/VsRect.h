@@ -48,6 +48,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00447270
 // VsRect::VsRect
 
-
 #endif
-

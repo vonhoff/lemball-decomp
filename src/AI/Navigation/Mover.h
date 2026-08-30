@@ -44,6 +44,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0042fbd0
 // Mover::`vector deleting destructor'
 
-
 #endif
-

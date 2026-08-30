@@ -25,4 +25,3 @@ void ResTune::SetType()
 ResTune::~ResTune()
 {
 }
-

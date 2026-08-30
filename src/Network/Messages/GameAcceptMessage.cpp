@@ -10,4 +10,3 @@ GameAcceptMessage::GameAcceptMessage() : GameFlaggedMessage(7)
 GameAcceptMessage::~GameAcceptMessage()
 {
 }
-

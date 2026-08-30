@@ -18,8 +18,7 @@ struct ZrleHeader {
 // VTABLE: LEMBALL 0x00498a70
 class ResZrle : public ResRaster {
 public:
-	inline ResZrle(unsigned int p_resourceId)
-		: m_height(0), m_width(0), m_originY(0), m_originX(0)
+	inline ResZrle(unsigned int p_resourceId) : m_height(0), m_width(0), m_originY(0), m_originX(0)
 	{
 		DoLoad(p_resourceId);
 	}
@@ -46,6 +45,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0045e850
 // ResZrle::`scalar deleting destructor'
 
-
 #endif
-

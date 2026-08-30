@@ -29,6 +29,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0042ba10
 // TrampolineManager::`scalar deleting destructor'
 
-
 #endif
-

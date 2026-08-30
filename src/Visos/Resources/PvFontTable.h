@@ -14,6 +14,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00473770
 // PvFontTable::`scalar deleting destructor'
 
-
 #endif
-

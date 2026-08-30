@@ -16,7 +16,7 @@ public:
 	virtual void Processing();                        // vtable+0x38
 	virtual void UnLoad();                            // vtable+0x44
 	virtual ~IntroAnimDrawer();                       // vtable+0x00
-	virtual void DestroyDrawer();                 // vtable+0x18
+	virtual void DestroyDrawer();                     // vtable+0x18
 	void EndPhase();
 
 private:
@@ -32,6 +32,4 @@ private:
 // SYNTHETIC: LEMBALL 0x004479a0
 // IntroAnimDrawer::`scalar deleting destructor'
 
-
 #endif
-

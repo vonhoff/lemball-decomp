@@ -10,4 +10,3 @@ EnemyGroup::EnemyGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_ar
 EnemyGroup::~EnemyGroup()
 {
 }
-

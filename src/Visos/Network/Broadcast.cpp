@@ -45,12 +45,24 @@ void Broadcast::Stop()
 {
 }
 
-void Broadcast::Dummy00() {}
-void Broadcast::Dummy04() {}
-void Broadcast::Dummy08() {}
-void Broadcast::Dummy0c() {}
-void Broadcast::Dummy10() {}
-void Broadcast::Dummy14() {}
+void Broadcast::Dummy00()
+{
+}
+void Broadcast::Dummy04()
+{
+}
+void Broadcast::Dummy08()
+{
+}
+void Broadcast::Dummy0c()
+{
+}
+void Broadcast::Dummy10()
+{
+}
+void Broadcast::Dummy14()
+{
+}
 
 // 68K 0x1020cba0 PostRead__10CBroadcastF13NetworkEventsP11CBasePacket
 // STUB: LEMBALL 0x00460830

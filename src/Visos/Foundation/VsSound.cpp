@@ -10,7 +10,11 @@
 
 // 68K 0x101038e8 InitSound__FUcUciP4CWndUc
 // FUNCTION: LEMBALL 0x0045b770
-bool InitSound(unsigned int p_musicEnabled, unsigned int p_effectsEnabled, int p_channelCount, Wnd* p_window, unsigned int p_platformFlag)
+bool InitSound(unsigned int p_musicEnabled,
+			   unsigned int p_effectsEnabled,
+			   int p_channelCount,
+			   Wnd* p_window,
+			   unsigned int p_platformFlag)
 {
 	g_pSoundManager = new SoundManager(p_musicEnabled, p_effectsEnabled, 1, p_channelCount, p_window);
 	return 1;

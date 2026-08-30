@@ -17,6 +17,4 @@ public:
 // SYNTHETIC: LEMBALL 0x0045ec70
 // ResBin::`scalar deleting destructor'
 
-
 #endif
-

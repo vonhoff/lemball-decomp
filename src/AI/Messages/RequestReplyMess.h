@@ -15,6 +15,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00417be0
 // RequestReplyMess::`scalar deleting destructor'
 
-
 #endif
-

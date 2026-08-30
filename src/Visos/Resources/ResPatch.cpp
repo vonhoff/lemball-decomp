@@ -25,4 +25,3 @@ void ResPatch::SetType()
 ResPatch::~ResPatch()
 {
 }
-

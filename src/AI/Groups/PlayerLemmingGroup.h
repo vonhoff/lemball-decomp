@@ -33,6 +33,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00414c80
 // PlayerLemmingGroup::`scalar deleting destructor'
 
-
 #endif
-

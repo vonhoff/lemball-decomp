@@ -59,4 +59,3 @@ void Rocket::GetViewData(ViewData& p_viewData)
 Rocket::~Rocket()
 {
 }
-

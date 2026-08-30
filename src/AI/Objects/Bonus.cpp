@@ -1,4 +1,5 @@
 #include "Bonus.h"
+
 #include "../Navigation/Ai.h"
 
 // 68K 0x10605f8a Collected__6CBonusFv
@@ -20,4 +21,3 @@ void Bonus::SetSfx()
 Bonus::~Bonus()
 {
 }
-

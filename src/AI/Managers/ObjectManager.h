@@ -52,4 +52,3 @@ extern ObjectManager* g_pGenericGroupObjectManager;
 // ObjectManager::`scalar deleting destructor'
 
 #endif
-

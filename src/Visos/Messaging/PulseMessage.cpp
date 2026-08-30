@@ -19,4 +19,3 @@ PulseMessage::~PulseMessage()
 
 // GLOBAL: LEMBALL 0x004a1e10
 PulseMessage* g_pPulseMessage = 0;
-

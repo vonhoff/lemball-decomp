@@ -28,6 +28,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00467bb0
 // ClipRect::`scalar deleting destructor'
 
-
 #endif
-

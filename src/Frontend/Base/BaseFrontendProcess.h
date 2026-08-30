@@ -2,8 +2,8 @@
 #define LEMBALL_FRONTEND_BASE_BASEFRONTENDPROCESS_H
 
 #include "../../Common.h"
+#include "../../Visos/Foundation/BaseProcess.h"      // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/BaseProcess.h"          // complete type
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497938 BaseQueueHandler
@@ -44,4 +44,3 @@ extern BaseFrontendProcess* g_pCurrentFrontendProcess;
 // BaseFrontendProcess::`scalar deleting destructor'
 
 #endif
-

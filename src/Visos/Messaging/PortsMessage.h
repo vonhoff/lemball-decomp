@@ -21,6 +21,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0047b890
 // PortsMessage::`scalar deleting destructor'
 
-
 #endif
-

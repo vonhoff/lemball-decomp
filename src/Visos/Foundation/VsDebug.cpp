@@ -120,10 +120,7 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 
 class LocalDebugOStream : public VsDebugStreambuf, public VsOStream {
 public:
-	LocalDebugOStream(char* p_buffer, int p_size)
-		: VsDebugStreambuf(p_buffer, p_size, 0), VsOStream(this)
-	{
-	}
+	LocalDebugOStream(char* p_buffer, int p_size) : VsDebugStreambuf(p_buffer, p_size, 0), VsOStream(this) {}
 };
 
 // FUNCTION: LEMBALL 0x00473790

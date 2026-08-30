@@ -21,6 +21,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0047b9d0
 // FileOpenManagement::`scalar deleting destructor'
 
-
 #endif
-

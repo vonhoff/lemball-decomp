@@ -1,4 +1,5 @@
 #include "String.h"
+
 #include "VsOStream.h"
 
 #include <ctype.h>
@@ -9,7 +10,6 @@
 
 // GLOBAL: LEMBALL 0x004a42a8
 // _pctype
-
 
 // 68K 0x10200e84 __ct__7CStringFv
 // FUNCTION: LEMBALL 0x0046e410
@@ -140,4 +140,3 @@ String String::Lower()
 	}
 	return *this;
 }
-

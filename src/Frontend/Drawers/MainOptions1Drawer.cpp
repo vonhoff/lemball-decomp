@@ -1,13 +1,16 @@
 #include "MainOptions1Drawer.h"
 
-#include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Control/Game/GameStatus.h"
+#include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Frontend/Controls/GunController.h"
 #include "../../Views/Display/Main2DDisplay.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBitmap.h"
 
 #include <new.h>
+
+extern "C" unsigned long __stdcall timeGetTime(void);
 
 // GLOBAL: LEMBALL 0x0049f490
 int g_anMainOptions1ButtonLayout[12] = {32, 116, 480, 116, 48, 232, 464, 232, 80, 348, 416, 348};
@@ -16,10 +19,32 @@ int g_anMainOptions1ButtonLayout[12] = {32, 116, 480, 116, 48, 232, 464, 232, 80
 int g_anMainOptions1CompactButtonLayout[12] = {16, 58, 240, 58, 24, 116, 232, 116, 40, 174, 208, 174};
 
 // GLOBAL: LEMBALL 0x0049f4f4
-unsigned long g_dwMainOptions1AnimIds[12] = {0x1a7, 0x1a6, 0x1b0, 0x1a9, 0x1c3, 0x1ac, 0x1ad, 0x1ae, 0x1af, 0x1b6, 0x1c4, 0x1db};
+unsigned long g_dwMainOptions1AnimIds[12] = {RES_NEWFRONT_ICONS_HIRES_ONE_PLAYER,
+											 RES_NEWFRONT_ICONS_HIRES_TWO_PLAYER,
+											 RES_NEWFRONT_ICONS_HIRES_OPTIONS,
+											 RES_NEWFRONT_ICONS_HIRES_FLOPPY_DISK,
+											 RES_NEWFRONT_ICONS_HIRES_PASSWORD,
+											 RES_NEWFRONT_ICONS_HIRES_SKILL_FUN,
+											 RES_NEWFRONT_ICONS_HIRES_SKILL_TRICKY,
+											 RES_NEWFRONT_ICONS_HIRES_SKILL_TAXING,
+											 RES_NEWFRONT_ICONS_HIRES_SKILL_MAYHEM,
+											 RES_NEWFRONT_ICONS_HIRES_OKAY,
+											 RES_NEWFRONT_ICONS_HIRES_FULLSCREEN,
+											 RES_NEWFRONT_ICONS_LORES_ONE_PLAYER};
 
 // GLOBAL: LEMBALL 0x0049f520
-unsigned long g_dwMainOptions1CompactAnimIds[12] = {0x1db, 0x1da, 0x1e4, 0x1f7, 0x1dd, 0, 0x1e0, 0x1e1, 0x1e2, 0x1e3, 0x1ea, 0x1f8};
+unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE_PLAYER,
+													RES_NEWFRONT_ICONS_LORES_TWO_PLAYER,
+													RES_NEWFRONT_ICONS_LORES_OPTIONS,
+													RES_NEWFRONT_ICONS_LORES_PASSWORD,
+													RES_NEWFRONT_ICONS_LORES_FLOPPY_DISK,
+													0,
+													RES_NEWFRONT_ICONS_LORES_SKILL_FUN,
+													RES_NEWFRONT_ICONS_LORES_SKILL_TRICKY,
+													RES_NEWFRONT_ICONS_LORES_SKILL_TAXING,
+													RES_NEWFRONT_ICONS_LORES_SKILL_MAYHEM,
+													RES_NEWFRONT_ICONS_LORES_OKAY,
+													RES_NEWFRONT_ICONS_LORES_FULLSCREEN};
 
 // 68K 0x10809e8e __ct__19CMainOptions1DrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // FUNCTION: LEMBALL 0x00448200
@@ -88,8 +113,7 @@ void MainOptions1Drawer::Load()
 		quitAnim = &g_dwMainOptions1CompactAnimIds[3];
 	}
 	m_buttonLayout = layout;
-	m_primitiveBundle.m_primitive.m_x =
-		(short) (((int) m_display->m_rect.m_width - (int) m_backgroundBitmap->m_x) / 2);
+	m_primitiveBundle.m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) m_backgroundBitmap->m_x) / 2);
 	m_primitiveBundle.m_primitive.m_y = 0;
 	m_primitiveBundle.m_primitive.m_resource = m_backgroundBitmap;
 	m_primitiveBundle.m_primitive.m_flags = 0x800;
@@ -194,9 +218,9 @@ void MainOptions1Drawer::Processing()
 		m_quitYet = 1;
 		m_returnState = 4;
 	}
-	now = CurrentMilliTimer();
+	now = timeGetTime();
 	if (m_display->IsWindowValid() == 0 || m_display->IsFocusWindow() == 0) {
-		m_idleDeadline = CurrentMilliTimer() + 20000;
+		m_idleDeadline = timeGetTime() + 20000;
 		return;
 	}
 	if (now <= m_idleDeadline) {

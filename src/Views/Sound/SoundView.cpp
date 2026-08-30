@@ -8,6 +8,7 @@
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Visos/Foundation/VsMath.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Sound/SoundManager.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
@@ -17,50 +18,50 @@ SoundView* g_pSoundView = 0;
 
 // GLOBAL: LEMBALL 0x0049eb88
 EffectSpec g_pEffectSpecs[44] = {
-	{1, 0x214, 9, 4},
-	{2, 0x220, 9, 4},
-	{3, 0x21f, 0x63, 4},
-	{4, 0x219, 9, 4},
-	{5, 0x209, 9, 0},
-	{6, 0x20a, 9, 0},
-	{7, 0x20b, 9, 7},
-	{8, 0x20c, 9, 0},
-	{9, 0x20d, 9, 4},
-	{10, 0x20e, 9, 4},
-	{11, 0x20f, 9, 4},
-	{12, 0x210, 9, 4},
-	{13, 0x211, 9, 4},
-	{14, 0x212, 0xf, 7},
-	{15, 0x213, 7, 4},
-	{16, 0x215, 9, 4},
-	{17, 0x216, 9, 7},
-	{18, 0x217, 9, 4},
-	{19, 0x218, 9, 7},
-	{20, 0x21a, 9, 4},
-	{21, 0x21b, 9, 4},
-	{22, 0x21c, 9, 4},
-	{23, 0x21e, 9, 4},
-	{24, 0x21d, 9, 4},
-	{26, 0x221, 9, 4},
-	{27, 0x222, 9, 7},
-	{25, 0x223, 9, 7},
-	{28, 0x224, 0xf, 4},
-	{29, 0x225, 0xf, 4},
-	{30, 0x22b, 0xf, 4},
-	{31, 0x226, 9, 4},
-	{32, 0x227, 9, 4},
-	{33, 0x228, 9, 4},
-	{34, 0x22c, 9, 7},
-	{35, 0x22d, 9, 4},
-	{37, 0x229, 9, 7},
-	{38, 0x22a, 9, 4},
-	{39, 0x22f, 9, 3},
-	{40, 0x230, 9, 3},
-	{41, 0x234, 9, 4},
-	{42, 0x232, 9, 4},
-	{43, 0x233, 9, 4},
-	{44, 0x231, 9, 4},
-	{45, 0x235, 9, 4},
+	{1, RES_SFX_LETSGO, 9, 4},
+	{2, RES_SFX_YIPPEE, 9, 4},
+	{3, RES_SFX_MOUSE_CLICK, 0x63, 4},
+	{4, RES_SFX_SHEEP, 9, 4},
+	{5, RES_SFX_AIRLOCK, 9, 0},
+	{6, RES_SFX_AIRPIPE, 9, 0},
+	{7, RES_SFX_BIGGUN, 9, 7},
+	{8, RES_SFX_BIRDS, 9, 0},
+	{9, RES_SFX_CATAPULT, 9, 4},
+	{10, RES_SFX_CRATEEXP, 9, 4},
+	{11, RES_SFX_DOOROPEN, 9, 4},
+	{12, RES_SFX_DUPLICTR, 9, 4},
+	{13, RES_SFX_GUN, 9, 4},
+	{14, RES_SFX_GUNHIT, 0xf, 7},
+	{15, RES_SFX_LASER, 7, 4},
+	{16, RES_SFX_MINEEXP, 9, 4},
+	{17, RES_SFX_RELOAD, 9, 7},
+	{18, RES_SFX_ROCKET, 9, 4},
+	{19, RES_SFX_ROPESLID, 9, 7},
+	{20, RES_SFX_SNATCH, 9, 4},
+	{21, RES_SFX_SWITCH, 9, 4},
+	{22, RES_SFX_TIMBONUS, 9, 4},
+	{23, RES_SFX_TRMPLINE, 9, 4},
+	{24, RES_SFX_TRAPDOOR, 9, 4},
+	{26, RES_SFX_FIRE, 9, 4},
+	{27, RES_SFX_CHANGEOP, 9, 7},
+	{25, RES_SFX_CHINK, 9, 7},
+	{28, RES_SFX_AAAAH1, 0xf, 4},
+	{29, RES_SFX_AAAAH2, 0xf, 4},
+	{30, RES_SFX_EEEEH, 0xf, 4},
+	{31, RES_SFX_BALLOON, 9, 4},
+	{32, RES_SFX_DOORAPPR, 9, 4},
+	{33, RES_SFX_DOORGO, 9, 4},
+	{34, RES_SFX_ELECCY, 9, 7},
+	{35, RES_SFX_LEMSPLAT, 9, 4},
+	{37, RES_SFX_DRUM1, 9, 7},
+	{38, RES_SFX_DRUM2, 9, 4},
+	{39, RES_SFX_SUCCESS, 9, 3},
+	{40, RES_SFX_FAILURE, 9, 3},
+	{41, RES_SFX_KEYS, 9, 4},
+	{42, RES_SFX_COLLECT_BALLOON, 9, 4},
+	{43, RES_SFX_BALLOON_EXPLODE, 9, 4},
+	{44, RES_SFX_LIFT, 9, 4},
+	{45, RES_SFX_WHEEE, 9, 4},
 };
 
 // GLOBAL: LEMBALL 0x0049ed98
@@ -306,12 +307,12 @@ void SoundView::ChangeState(unsigned short p_state, LoadUpdate* p_loadUpdate)
 			p_state = 3;
 			restartMusic = 0;
 		case 3:
-			musicId = 0x242;
-			g_pSoundManager->SetResId(0x243);
+			musicId = RES_MUSIC_FRONTEND_MUSIC3;
+			g_pSoundManager->SetResId(RES_MUSIC_EFFECTS_BASEEFFECTS);
 			break;
 		case 4:
-			g_pSoundManager->SetResId(0x243);
-			musicId = m_randomMusicIndex + 0x239;
+			g_pSoundManager->SetResId(RES_MUSIC_EFFECTS_BASEEFFECTS);
+			musicId = m_randomMusicIndex + RES_MUSIC_GAME_MUSIC;
 			sentinel = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
 			*g_pSentinel = sentinel;
 			m_randomMusicIndex = sentinel % 9;

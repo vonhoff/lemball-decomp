@@ -1,9 +1,10 @@
 #include "BaseQueue.h"
+
 #include "BaseQueueHandler.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <new.h>
+#include <windows.h>
 
 struct QueueHandlerNode {
 	BaseQueueHandler* handler;

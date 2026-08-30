@@ -15,20 +15,20 @@ public:
 	bool EnemyRuleRadius50AndLineOfSight();
 	bool LineOfSight(AiCoord p_target);
 	bool ProcessRule(eEnemyStateRules p_rule);
-	virtual bool FacingTarget();             // vtable+0x98
-	virtual bool Fire();                     // vtable+0x88
-	virtual int IsHit();                    // vtable+0x5c
-	virtual bool IsRequestingFire();         // vtable+0x7c
-	virtual bool Process();                  // vtable+0x14
+	virtual bool FacingTarget();              // vtable+0x98
+	virtual bool Fire();                      // vtable+0x88
+	virtual int IsHit();                      // vtable+0x5c
+	virtual bool IsRequestingFire();          // vtable+0x7c
+	virtual bool Process();                   // vtable+0x14
 	virtual void HitBullet(Bullet* p_bullet); // vtable+0x54
-	virtual void EndFiring();                // vtable+0x90
-	virtual void GetHit();                   // vtable+0x60
-	virtual void HitBall();                  // vtable+0x58
-	virtual void HitMine();                  // vtable+0x64
-	virtual void Restart();                  // vtable+0x104
-	virtual void StartFiring();              // vtable+0x8c
-	virtual void TurnToFaceTarget();         // vtable+0x9c
-	virtual ~Enemy();                        // vtable+0x00
+	virtual void EndFiring();                 // vtable+0x90
+	virtual void GetHit();                    // vtable+0x60
+	virtual void HitBall();                   // vtable+0x58
+	virtual void HitMine();                   // vtable+0x64
+	virtual void Restart();                   // vtable+0x104
+	virtual void StartFiring();               // vtable+0x8c
+	virtual void TurnToFaceTarget();          // vtable+0x9c
+	virtual ~Enemy();                         // vtable+0x00
 	void EnemyActionPatrol(EnemyLemmingUnion* p_data);
 	void EnemyActionTurnAndFireRandom(EnemyLemmingUnion* p_data);
 	void EnemyActionTurnAndFireRapid(EnemyLemmingUnion* p_data);
@@ -63,6 +63,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00420ab0
 // Enemy::`scalar deleting destructor'
 
-
 #endif
-

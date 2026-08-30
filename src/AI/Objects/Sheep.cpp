@@ -35,4 +35,3 @@ void Sheep::HitMine()
 Sheep::~Sheep()
 {
 }
-

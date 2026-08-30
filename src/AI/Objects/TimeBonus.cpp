@@ -1,4 +1,5 @@
 #include "TimeBonus.h"
+
 #include "../Navigation/Ai.h"
 
 // 68K 0x10605fec SetSFX__10CTimeBonusFv
@@ -21,4 +22,3 @@ int TimeBonus::Collected()
 TimeBonus::~TimeBonus()
 {
 }
-

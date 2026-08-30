@@ -21,6 +21,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00453120
 // PbNetworkGame::`scalar deleting destructor'
 
-
 #endif
-

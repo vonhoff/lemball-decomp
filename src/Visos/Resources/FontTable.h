@@ -20,6 +20,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00473750
 // FontTable::`scalar deleting destructor'
 
-
 #endif
-

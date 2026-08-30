@@ -25,4 +25,3 @@ void ResPres::SetType()
 ResPres::~ResPres()
 {
 }
-

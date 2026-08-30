@@ -1,7 +1,7 @@
 #include "GunButton.h"
-#include "GunButtons.h"
 
 #include "../../Views/Sound/SoundView.h"
+#include "GunButtons.h"
 
 GunButton::GunButton(const VsPoint& p_position, PvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
 	: GraphicButton(p_position, p_parent, p_animId, p_flags)
@@ -52,4 +52,3 @@ void GunButton::OnPressed(int p_flags)
 GunButton::~GunButton()
 {
 }
-

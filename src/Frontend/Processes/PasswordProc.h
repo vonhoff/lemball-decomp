@@ -15,6 +15,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00407fd0
 // PasswordProc::`scalar deleting destructor'
 
-
 #endif
-

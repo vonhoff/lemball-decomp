@@ -91,4 +91,3 @@ void FileBroadcast::Closed(unsigned char p_notifyPeer)
 
 // GLOBAL: LEMBALL 0x004a2de0
 FileBroadcast* g_pFileBroadcast = 0;
-

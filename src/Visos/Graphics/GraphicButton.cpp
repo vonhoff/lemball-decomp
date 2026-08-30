@@ -1,11 +1,11 @@
-#include "Gdi.h"
 #include "GraphicButton.h"
+
+#include "../Animation/Anim.h"
+#include "../Foundation/ChangeList.h"
+#include "../Resources/ResAnim.h"
+#include "Gdi.h"
 #include "HotAreaList.h"
 #include "PushActive.h"
-
-#include "../Foundation/ChangeList.h"
-#include "../Animation/Anim.h"
-#include "../Resources/ResAnim.h"
 #include "VsGdi.h"
 
 #include <new.h>

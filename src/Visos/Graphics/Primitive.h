@@ -17,6 +17,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00432350
 // Primitive::`scalar deleting destructor'
 
-
 #endif
-

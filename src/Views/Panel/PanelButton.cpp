@@ -2,8 +2,7 @@
 
 // 68K 0x10b0c854 __ct__12CPanelButtonFP13CPanelLemmingRC7CVSRectP7CPVGWnd
 // STUB: LEMBALL 0x00442390
-PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_arg2)
-	: DepressedButton(p_arg1, p_arg2)
+PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_arg2) : DepressedButton(p_arg1, p_arg2)
 {
 }
 

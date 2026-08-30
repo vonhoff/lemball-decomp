@@ -40,6 +40,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0044eff0
 // TrackWindow::`scalar deleting destructor'
 
-
 #endif
-

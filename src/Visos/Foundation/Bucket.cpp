@@ -12,20 +12,14 @@
 
 // GLOBAL: LEMBALL 0x004a2a68
 static unsigned int s_bitMasks[32] = {
-	0x00000001, 0x00000002, 0x00000004, 0x00000008,
-	0x00000010, 0x00000020, 0x00000040, 0x00000080,
-	0x00000100, 0x00000200, 0x00000400, 0x00000800,
-	0x00001000, 0x00002000, 0x00004000, 0x00008000,
-	0x00010000, 0x00020000, 0x00040000, 0x00080000,
-	0x00100000, 0x00200000, 0x00400000, 0x00800000,
-	0x01000000, 0x02000000, 0x04000000, 0x08000000,
-	0x10000000, 0x20000000, 0x40000000, 0x80000000
-};
+	0x00000001, 0x00000002, 0x00000004, 0x00000008, 0x00000010, 0x00000020, 0x00000040, 0x00000080,
+	0x00000100, 0x00000200, 0x00000400, 0x00000800, 0x00001000, 0x00002000, 0x00004000, 0x00008000,
+	0x00010000, 0x00020000, 0x00040000, 0x00080000, 0x00100000, 0x00200000, 0x00400000, 0x00800000,
+	0x01000000, 0x02000000, 0x04000000, 0x08000000, 0x10000000, 0x20000000, 0x40000000, 0x80000000};
 
 // 68K 0x1021749c __ct__7CBucketFiiPUcPUl
 // FUNCTION: LEMBALL 0x00472ce0
-Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsigned long* p_map)
-	: Critical()
+Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsigned long* p_map) : Critical()
 {
 	m_child = 0;
 	m_flags = 0;
@@ -145,7 +139,8 @@ bool Bucket::Free(unsigned char* p_memory)
 	current->m_freeBytes += current->m_blockSize;
 	current->m_flags &= ~4;
 	current->m_activeAllocations--;
-	if ((oldFlags & 4) != 0 || (current->m_freeOffset.wWord > offset.wWord && current->m_freeOffset.wBit > offset.wBit)) {
+	if ((oldFlags & 4) != 0 ||
+		(current->m_freeOffset.wWord > offset.wWord && current->m_freeOffset.wBit > offset.wBit)) {
 		current->m_freeOffset = offset;
 	}
 	if (current->m_totalBytes == current->m_freeBytes && current->m_parent != 0) {

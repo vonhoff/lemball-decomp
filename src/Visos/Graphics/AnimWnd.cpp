@@ -12,7 +12,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-extern "C" __declspec(dllimport) void* __cdecl MCIWndCreateA(void* p_hwndParent, void* p_instance, unsigned int p_style, const char* p_file);
+extern "C" __declspec(dllimport) void* __cdecl MCIWndCreateA(void* p_hwndParent,
+															 void* p_instance,
+															 unsigned int p_style,
+															 const char* p_file);
 extern "C" __declspec(dllimport) unsigned int __stdcall mciSendCommandA(unsigned int p_deviceId,
 																		unsigned int p_message,
 																		unsigned int p_flags,

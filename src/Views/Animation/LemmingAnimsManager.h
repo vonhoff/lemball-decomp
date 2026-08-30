@@ -3,8 +3,8 @@
 
 #include "../../Common.h"
 #include "../../Visos/Animation/AnimsManager.h" // complete type
-#include "../../Visos/Graphics/DrawingMark.h"  // complete type
-#include "../../Visos/Graphics/Primitive.h"    // complete type
+#include "../../Visos/Graphics/DrawingMark.h"   // complete type
+#include "../../Visos/Graphics/Primitive.h"     // complete type
 
 // SIZE 0xb4
 // VTABLE: LEMBALL 0x00496ce0 eight-entry primary

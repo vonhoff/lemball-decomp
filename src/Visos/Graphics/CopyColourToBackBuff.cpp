@@ -21,4 +21,3 @@ void CopyColourToBackBuff::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit(this);
 }
-

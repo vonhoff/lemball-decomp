@@ -5,15 +5,34 @@
 #include "../../Views/Display/Main2DDisplay.h"
 #include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Foundation/VsOStream.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBitmap.h"
 
 #include <new.h>
 
 // GLOBAL: LEMBALL 0x0049f578
-unsigned long g_dwMainOptions2AnimIds[10] = {0x1b5, 0x1b4, 0x1d5, 0x1d2, 0x1d3, 0x1d4, 0x1b3, 0x1ab, 0x1bb, 0x1bc};
+unsigned long g_dwMainOptions2AnimIds[10] = {RES_NEWFRONT_ICONS_HIRES_ZOOM_OFF,
+											 RES_NEWFRONT_ICONS_HIRES_ZOOM_ON,
+											 RES_NEWFRONT_ICONS_HIRES_EFFECTS_OFF,
+											 RES_NEWFRONT_ICONS_HIRES_EFFECTS_ON,
+											 RES_NEWFRONT_ICONS_HIRES_MUSIC_OFF,
+											 RES_NEWFRONT_ICONS_HIRES_MUSIC_ON,
+											 RES_NEWFRONT_ICONS_HIRES_RETURN,
+											 RES_NEWFRONT_ICONS_HIRES_KEYBOARD,
+											 RES_NEWFRONT_ICONS_HIRES_VIDEO_ON,
+											 RES_NEWFRONT_ICONS_HIRES_VIDEO_OFF};
 
 // GLOBAL: LEMBALL 0x0049f5a0
-unsigned long g_dwMainOptions2CompactAnimIds[10] = {0x1e9, 0x1e8, 0x208, 0x205, 0x206, 0x207, 0x1e7, 0x1df, 0x1ef, 0x1f0};
+unsigned long g_dwMainOptions2CompactAnimIds[10] = {RES_NEWFRONT_ICONS_LORES_ZOOM_OFF,
+													RES_NEWFRONT_ICONS_LORES_ZOOM_ON,
+													RES_NEWFRONT_ICONS_LORES_EFFECTS_OFF,
+													RES_NEWFRONT_ICONS_LORES_EFFECTS_ON,
+													RES_NEWFRONT_ICONS_LORES_MUSIC_OFF,
+													RES_NEWFRONT_ICONS_LORES_MUSIC_ON,
+													RES_NEWFRONT_ICONS_LORES_RETURN,
+													RES_NEWFRONT_ICONS_LORES_KEYBOARD,
+													RES_NEWFRONT_ICONS_LORES_VIDEO_ON,
+													RES_NEWFRONT_ICONS_LORES_VIDEO_OFF};
 
 // GLOBAL: LEMBALL 0x0049f5c8
 int g_anMainOptions2ButtonLayout[12] = {32, 116, 480, 116, 48, 232, 464, 232, 64, 348, 416, 348};
@@ -78,8 +97,7 @@ void MainOptions2Drawer::Load()
 		navigationAnim = &g_dwMainOptions2CompactAnimIds[6];
 		animationsAnim = &g_dwMainOptions2CompactAnimIds[8];
 	}
-	m_primitiveBundle.m_primitive.m_x =
-		(short) (((int) m_display->m_rect.m_width - (int) m_backgroundBitmap->m_x) / 2);
+	m_primitiveBundle.m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) m_backgroundBitmap->m_x) / 2);
 	m_primitiveBundle.m_primitive.m_y = 0;
 	m_primitiveBundle.m_primitive.m_resource = m_backgroundBitmap;
 	m_primitiveBundle.m_primitive.m_flags = 0x800;
@@ -98,11 +116,37 @@ void MainOptions2Drawer::Load()
 	if (m_gunController == 0) {
 		return;
 	}
-	m_gunController->AddButton(m_buttonLayout[0], m_buttonLayout[1], zoomAnim, 0, (int) compactMode, 1, 0, &m_disableZoom, 0xacef0004);
-	m_gunController->AddButton(m_buttonLayout[2], m_buttonLayout[3], animationsAnim, 0, 0, 1, 0, &m_disableAnimations, 0xacef0007);
-	m_gunController->AddButton(m_buttonLayout[4], m_buttonLayout[5], effectsAnim, 0, 0, 1, 0, &g_nPendingEffectsVolume, 0xacef0005);
-	m_gunController->AddButton(m_buttonLayout[6], m_buttonLayout[7], musicAnim, 0, 0, 1, 0, &g_nPendingMusicVolume, 0xacef0006);
-	m_gunController->AddButton(m_buttonLayout[10], m_buttonLayout[11], navigationAnim, 1, 0, 0, 0, &m_transitionPending, 0xacef0008);
+	m_gunController->AddButton(m_buttonLayout[0],
+							   m_buttonLayout[1],
+							   zoomAnim,
+							   0,
+							   (int) compactMode,
+							   1,
+							   0,
+							   &m_disableZoom,
+							   0xacef0004);
+	m_gunController
+		->AddButton(m_buttonLayout[2], m_buttonLayout[3], animationsAnim, 0, 0, 1, 0, &m_disableAnimations, 0xacef0007);
+	m_gunController->AddButton(m_buttonLayout[4],
+							   m_buttonLayout[5],
+							   effectsAnim,
+							   0,
+							   0,
+							   1,
+							   0,
+							   &g_nPendingEffectsVolume,
+							   0xacef0005);
+	m_gunController
+		->AddButton(m_buttonLayout[6], m_buttonLayout[7], musicAnim, 0, 0, 1, 0, &g_nPendingMusicVolume, 0xacef0006);
+	m_gunController->AddButton(m_buttonLayout[10],
+							   m_buttonLayout[11],
+							   navigationAnim,
+							   1,
+							   0,
+							   0,
+							   0,
+							   &m_transitionPending,
+							   0xacef0008);
 	m_gunController->SetGun(0);
 	m_gunController->SetSpriteWindow();
 }
@@ -171,11 +215,13 @@ bool MainOptions2Drawer::ProcessMessages(Message* p_message)
 		return 1;
 	case 0xacff0000:
 		g_nPendingEffectsVolume = (int) p_message->payload;
-		g_pSoundView->SetEffectsVolume((unsigned char) (((unsigned int) p_message->payload * 0xff) / (unsigned int) p_message->source));
+		g_pSoundView->SetEffectsVolume((unsigned char) (((unsigned int) p_message->payload * RES_MAPEDIT_FONT4X8) /
+														(unsigned int) p_message->source));
 		return 1;
 	case 0xacff0001: {
 		g_nPendingMusicVolume = (int) p_message->payload;
-		unsigned char volume = (unsigned char) (((unsigned int) p_message->payload * 0xff) / (unsigned int) p_message->source);
+		unsigned char volume = (unsigned char) (((unsigned int) p_message->payload * RES_MAPEDIT_FONT4X8) /
+												(unsigned int) p_message->source);
 		*g_pSysOutput << "Setting music volume " << (char) volume << "\n";
 		g_pSoundView->SetMusicVolume(volume);
 		return 1;

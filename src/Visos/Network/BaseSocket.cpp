@@ -41,4 +41,3 @@ void BaseSocket::GetData()
 BaseSocket::~BaseSocket()
 {
 }
-

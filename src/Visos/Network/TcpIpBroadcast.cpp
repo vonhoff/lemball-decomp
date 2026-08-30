@@ -60,4 +60,3 @@ TcpIpBroadcast::~TcpIpBroadcast()
 void TcpIpBroadcast::Closed(unsigned char p_notifyPeer)
 {
 }
-

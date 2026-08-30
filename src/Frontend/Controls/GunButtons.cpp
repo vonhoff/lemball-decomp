@@ -76,7 +76,7 @@ bool GunButtons::DrawBackBuffer()
 // FUNCTION: LEMBALL 0x0044c460
 int GunButtons::ProcessMsg(Message* p_message)
 {
-	Message posted = { 0xc };
+	Message posted = {0xc};
 	int nextValue;
 	unsigned long animId;
 

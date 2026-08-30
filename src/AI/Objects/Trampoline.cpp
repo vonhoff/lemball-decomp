@@ -46,4 +46,3 @@ void Trampoline::DoActivate()
 Trampoline::~Trampoline()
 {
 }
-

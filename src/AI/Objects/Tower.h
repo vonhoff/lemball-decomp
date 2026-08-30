@@ -20,6 +20,4 @@ public:
 // SYNTHETIC: LEMBALL 0x0041c5c0
 // Tower::`scalar deleting destructor'
 
-
 #endif
-

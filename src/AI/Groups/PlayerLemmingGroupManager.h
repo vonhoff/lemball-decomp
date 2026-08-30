@@ -25,7 +25,7 @@ public:
 	virtual void DeleteGroup(PlayerLemmingGroup* p_group);                            // vtable+0x14
 	void Process();
 	void Restart();
-	virtual ~PlayerLemmingGroupManager();                                             // vtable+0x14
+	virtual ~PlayerLemmingGroupManager(); // vtable+0x14
 	void AddNewWaypointToCurrentGroup(int p_x, int p_y);
 	void AddPlayerLemmingToGroup(PlayerLemming* p_lemming, PlayerLemmingGroup* p_group);
 	void InitialiseNetwork();
@@ -55,6 +55,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00419930
 // PlayerLemmingGroupManager::`scalar deleting destructor'
 
-
 #endif
-

@@ -326,4 +326,3 @@ int g_nGameOver = 0;
 
 // GLOBAL: LEMBALL 0x0049cf34
 Ai* g_pActiveAI = 0;
-

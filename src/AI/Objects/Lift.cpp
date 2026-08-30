@@ -91,4 +91,3 @@ void Lift::DoActivate()
 Lift::~Lift()
 {
 }
-

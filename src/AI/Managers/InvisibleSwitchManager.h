@@ -27,6 +27,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0040ac30
 // InvisibleSwitchManager::`scalar deleting destructor'
 
-
 #endif
-

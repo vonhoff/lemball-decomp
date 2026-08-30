@@ -65,4 +65,3 @@ void FileConnect::Closed(unsigned char p_notifyPeer)
 void FileConnect::ReceiveAcknowledgement()
 {
 }
-

@@ -1,4 +1,5 @@
 #include "IceManager.h"
+
 #include "../Objects/Ice.h"
 
 // 68K 0x10612448 __ct__11CIceManagerFP3CAIi
@@ -71,4 +72,3 @@ void IceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char 
 IceManager::~IceManager()
 {
 }
-

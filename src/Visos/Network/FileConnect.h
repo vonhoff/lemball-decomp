@@ -31,6 +31,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0047bf40
 // FileConnect::`scalar deleting destructor'
 
-
 #endif
-

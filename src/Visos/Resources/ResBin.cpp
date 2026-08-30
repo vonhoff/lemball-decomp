@@ -28,4 +28,3 @@ void ResBin::SetType()
 ResBin::~ResBin()
 {
 }
-

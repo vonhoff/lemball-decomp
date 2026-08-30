@@ -5,8 +5,7 @@
 
 // 68K 0x1060ba1e __ct__14CObjectHitMessFv
 // FUNCTION: LEMBALL 0x00416c80
-ObjectHitMess::ObjectHitMess()
-	: GameObjectMess(MESSAGE_OBJECT_HIT)
+ObjectHitMess::ObjectHitMess() : GameObjectMess(MESSAGE_OBJECT_HIT)
 {
 	m_payloadCapacity += 4;
 }
@@ -31,4 +30,3 @@ void ObjectHitMess::GetData()
 ObjectHitMess::~ObjectHitMess()
 {
 }
-

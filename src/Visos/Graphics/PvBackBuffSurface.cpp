@@ -66,8 +66,8 @@ void PvBackBuffSurface::AllocateBackBuff()
 		if (m_buffer == 0) {
 			m_allocatedWidth = (unsigned short) size.m_width;
 			m_allocatedHeight = (unsigned short) size.m_height;
-			m_buffer = (unsigned char*) operator new((unsigned int) (unsigned short) size.m_width *
-													 (unsigned int) (unsigned short) size.m_height);
+			m_buffer = (unsigned char*) operator new(
+				(unsigned int) (unsigned short) size.m_width*(unsigned int) (unsigned short) size.m_height);
 		}
 		if (m_buffer == 0) {
 			m_enabled = 0;

@@ -454,19 +454,43 @@ void HotAreaList::Set(const VsRect& p_rect, VsPoint p_point0, const VsPoint& p_p
 	m_point1.m_y = p_point1.m_y;
 }
 
-void PvWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title) {}
-void PvWnd::Move(const VsPoint& p_point) {}
-void PvWnd::Dummy3c() {}
-void PvWnd::OnDestroy() {}
-void PvWnd::BaseOnSize() {}
-void PvWnd::Dummy48() {}
-void PvWnd::OnMinimise() {}
-void PvWnd::OnMaximise() {}
-void PvWnd::OnRestore() {}
-void PvWnd::OnZoomBox() {}
+void PvWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
+{
+}
+void PvWnd::Move(const VsPoint& p_point)
+{
+}
+void PvWnd::Dummy3c()
+{
+}
+void PvWnd::OnDestroy()
+{
+}
+void PvWnd::BaseOnSize()
+{
+}
+void PvWnd::Dummy48()
+{
+}
+void PvWnd::OnMinimise()
+{
+}
+void PvWnd::OnMaximise()
+{
+}
+void PvWnd::OnRestore()
+{
+}
+void PvWnd::OnZoomBox()
+{
+}
 unsigned int PvWnd::GetStyle()
 {
 	return 0;
 }
-void PvWnd::Refresh(VsRect* p_rect) {}
-void PvWnd::Destroy() {}
+void PvWnd::Refresh(VsRect* p_rect)
+{
+}
+void PvWnd::Destroy()
+{
+}

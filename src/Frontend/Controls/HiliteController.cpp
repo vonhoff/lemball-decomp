@@ -8,6 +8,7 @@
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/GraphicButton.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../Windows/HiliteWindow.h"
 #include "HiliteButtons.h"
 
@@ -37,11 +38,11 @@ HiliteController::HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsign
 	g_pMasterInputQueue->Attach(this, 0);
 	if (m_layoutMode == 1) {
 		m_animationSet = 1;
-		g_dwHiliteAnimationId = 0x183;
+		g_dwHiliteAnimationId = RES_NEWFRONT_ANIMS_LORES_HILITE;
 	}
 	else {
 		m_animationSet = 0;
-		g_dwHiliteAnimationId = 0x156;
+		g_dwHiliteAnimationId = RES_NEWFRONT_ANIMS_HIRES_HILITE;
 	}
 	m_anims.LoadAnims(g_dwHiliteAnimationId);
 }
@@ -182,8 +183,18 @@ void HiliteController::AddButton(int p_x,
 		m_buttons[m_buttonCount] = 0;
 	}
 	else {
-		m_buttons[m_buttonCount] = new (storage) HiliteButtons(
-			m_window, m_gdi, p_x, p_y, p_animIds, p_mode, p_minimum, p_maximum, p_value, controlMessage, p_binding, p_actionMessage);
+		m_buttons[m_buttonCount] = new (storage) HiliteButtons(m_window,
+															   m_gdi,
+															   p_x,
+															   p_y,
+															   p_animIds,
+															   p_mode,
+															   p_minimum,
+															   p_maximum,
+															   p_value,
+															   controlMessage,
+															   p_binding,
+															   p_actionMessage);
 	}
 	AddHJunction(p_x, p_y, m_buttons[m_buttonCount]->m_controlMessage);
 	m_buttonCount = m_buttonCount + 1;

@@ -9,8 +9,7 @@ GameObjectMess::GameObjectMess()
 
 // 68K 0x1060b23a __ct__15CGameObjectMessFUl
 // FUNCTION: LEMBALL 0x00416850
-GameObjectMess::GameObjectMess(unsigned long p_arg0)
-	: NetworkMessage(p_arg0)
+GameObjectMess::GameObjectMess(unsigned long p_arg0) : NetworkMessage(p_arg0)
 {
 	m_headerEnabled = 1;
 	m_payloadCapacity += 4;
@@ -42,4 +41,3 @@ void GameObjectMess::GetData()
 GameObjectMess::~GameObjectMess()
 {
 }
-

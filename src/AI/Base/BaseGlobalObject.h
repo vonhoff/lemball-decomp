@@ -20,6 +20,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0040ce50
 // BaseGlobalObject::`scalar deleting destructor'
 
-
 #endif
-

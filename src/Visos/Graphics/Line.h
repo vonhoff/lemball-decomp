@@ -29,6 +29,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00469930
 // Line::`scalar deleting destructor'
 
-
 #endif
-

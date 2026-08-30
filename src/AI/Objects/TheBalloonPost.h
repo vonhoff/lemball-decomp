@@ -18,6 +18,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0042a7a0
 // TheBalloonPost::`scalar deleting destructor'
 
-
 #endif
-

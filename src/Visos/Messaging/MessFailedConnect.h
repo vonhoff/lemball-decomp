@@ -23,4 +23,3 @@ extern MessFailedConnect* g_pMessFAILEDConnect;
 // MessFailedConnect::`scalar deleting destructor'
 
 #endif
-

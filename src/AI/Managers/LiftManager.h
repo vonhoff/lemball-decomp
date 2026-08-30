@@ -33,4 +33,3 @@ private:
 extern unsigned short g_wMovingLiftCount;
 
 #endif
-

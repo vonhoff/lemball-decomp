@@ -24,6 +24,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0047bda0
 // FileReadSocket::`scalar deleting destructor'
 
-
 #endif
-

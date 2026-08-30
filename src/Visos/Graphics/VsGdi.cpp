@@ -1,4 +1,3 @@
-#include "GdiDevice.h"
 #include "VsGdi.h"
 
 #include "../Foundation/ChangeList.h"
@@ -173,8 +172,8 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 
 	i = 0;
 	while (i < 10) {
-		p_entries[i] = ((unsigned int) systemEntries[i].peRed << 16) |
-					   ((unsigned int) systemEntries[i].peGreen << 8) | systemEntries[i].peBlue;
+		p_entries[i] = ((unsigned int) systemEntries[i].peRed << 16) | ((unsigned int) systemEntries[i].peGreen << 8) |
+					   systemEntries[i].peBlue;
 		p_entries[0xf6 + i] = ((unsigned int) systemEntries[0xf6 + i].peRed << 16) |
 							  ((unsigned int) systemEntries[0xf6 + i].peGreen << 8) | systemEntries[0xf6 + i].peBlue;
 		i = i + 1;
@@ -433,7 +432,7 @@ void Surface::AddToChangeList(const VsRect& p_rect)
 }
 
 // 68K 0x1010956c GetChangeList__8CSurfaceFv
-// STUB: LEMBALL 0x0046cbd0
+// FUNCTION: LEMBALL 0x0046cbd0
 ChangeList* Surface::GetChangeList()
 {
 	return m_changeList;
@@ -477,8 +476,7 @@ void Surface::Blit(class ClipRect* p_arg0)
 			m_clipRect.m_x = parent->m_clipRect.m_x;
 		}
 		clipRight = m_clipRect.m_x;
-		if ((short) (parent->m_clipRect.m_width + parent->m_clipRect.m_x) <
-			(short) (m_clipRect.m_width + clipRight)) {
+		if ((short) (parent->m_clipRect.m_width + parent->m_clipRect.m_x) < (short) (m_clipRect.m_width + clipRight)) {
 			m_clipRect.m_width = (short) ((parent->m_clipRect.m_x - clipRight) + parent->m_clipRect.m_width);
 		}
 		clipBottom = m_clipRect.m_y;
@@ -951,7 +949,8 @@ void Surface::Blit(ZBuffClear* p_arg0)
 		return;
 	}
 	do {
-		unsigned short* dest = (unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[startY] + startX * 2);
+		unsigned short* dest =
+			(unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[startY] + startX * 2);
 		for (int i = 0; i < width; i++) {
 			dest[i] = depth;
 		}
@@ -1367,8 +1366,7 @@ bool Surface::ClipRect(VsRect& p_rect, VsRect* p_clipped)
 	viewH = m_height;
 	clipped = 0;
 	if ((short) (viewW + viewX) < p_rect.m_x || (short) (viewH + viewY) < p_rect.m_y ||
-		(short) (p_rect.m_width + p_rect.m_x) < viewX ||
-		(short) (p_rect.m_height + p_rect.m_y) < viewY) {
+		(short) (p_rect.m_width + p_rect.m_x) < viewX || (short) (p_rect.m_height + p_rect.m_y) < viewY) {
 		return 1;
 	}
 	if (p_rect.m_x < viewX) {
@@ -1635,8 +1633,8 @@ void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 	}
 	bitmapWidth = (int) p_bitmap->m_x;
 	source = p_bitmap->GetData();
-	source = source + ((int) p_primitive->m_sourceY + (int) clip.m_y) * bitmapWidth +
-			 (int) p_primitive->m_sourceX + (int) clip.m_x;
+	source = source + ((int) p_primitive->m_sourceY + (int) clip.m_y) * bitmapWidth + (int) p_primitive->m_sourceX +
+			 (int) clip.m_x;
 	if ((flags & 0x800) != 0) {
 		row = 0;
 		if (0 < dest.m_height) {
@@ -1732,4 +1730,3 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 		BlitZrleClipRemap(dest, clipped, p_zrle, reverse, (unsigned char*) p_remap);
 	}
 }
-

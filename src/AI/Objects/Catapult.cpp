@@ -138,4 +138,3 @@ AiCoord Catapult::ActivatePosition()
 	int x = m_position.m_xFixed - 0x3c000;
 	return AiCoord(x, y, z);
 }
-

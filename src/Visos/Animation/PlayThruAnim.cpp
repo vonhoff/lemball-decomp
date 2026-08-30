@@ -2,13 +2,15 @@
 
 #include "../Foundation/VsTime.h"
 
+extern "C" unsigned long __stdcall timeGetTime(void);
+
 // 68K 0x102000d0 StartAnim__13CPlayThruAnimFUl
 // FUNCTION: LEMBALL 0x004671e0
 void PlayThruAnim::StartAnim(unsigned long p_animTime)
 {
 	m_animTime = p_animTime;
 	if (m_fixedTime == 0xffffffff) {
-		m_frameState = CurrentMilliTimer();
+		m_frameState = timeGetTime();
 		return;
 	}
 	m_frameState = m_fixedTime;
@@ -22,7 +24,7 @@ unsigned int PlayThruAnim::GetFrameNo()
 	unsigned int frame;
 
 	if (m_fixedTime == 0xffffffff) {
-		elapsed = CurrentMilliTimer() - m_frameState;
+		elapsed = timeGetTime() - m_frameState;
 	}
 	else {
 		elapsed = m_fixedTime - m_frameState;

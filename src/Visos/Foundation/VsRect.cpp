@@ -27,4 +27,3 @@ VsRect& VsRect::operator=(const VsRect& p_source)
 	m_y = coords[1];
 	return *this;
 }
-

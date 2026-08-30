@@ -3,6 +3,7 @@
 #include "../../Visos/Foundation/VsFile.h"
 #include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Network/Connect.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBin.h"
 #include "../Support/PreviewData.h"
 #include "LoadBlockHeader.h"
@@ -10,7 +11,10 @@
 #include <new.h>
 #include <string.h>
 
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window, char* p_text, char* p_caption, unsigned int p_type);
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
+														   char* p_text,
+														   char* p_caption,
+														   unsigned int p_type);
 
 extern char g_szNSkillFormat[];
 extern char g_szNLevelFormat[];
@@ -184,10 +188,8 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 			else {
 				operator delete(g_pLevelFileData);
 			}
-			*g_pDebugOutput << g_szNSkillFormat << (int) p_skill
-							<< g_szNLevelFormat << p_level
-							<< g_szNameBracketFormat << p_preview->m_name
-							<< g_szCloseBracketNewline;
+			*g_pDebugOutput << g_szNSkillFormat << (int) p_skill << g_szNLevelFormat << p_level << g_szNameBracketFormat
+							<< p_preview->m_name << g_szCloseBracketNewline;
 			return;
 		}
 	} while (1);
@@ -199,15 +201,15 @@ unsigned int LevelLoader::CalcLevelId(eSkill p_skill, int p_level)
 {
 	switch (p_skill) {
 	case 0:
-		return p_level + 0x244;
+		return p_level + RES_FUN_LEVEL_00;
 	case 1:
-		return p_level + 0x25d;
+		return p_level + RES_TRICKY_LEVEL_00;
 	case 2:
-		return p_level + 0x277;
+		return p_level + RES_TAXING_LEVEL_00;
 	case 3:
-		return p_level + 0x294;
+		return p_level + RES_MAYHEM_LEVEL_00;
 	default:
-		return p_level + 0x2aa;
+		return p_level + RES_NETWORK_LEVEL_00;
 	}
 }
 
@@ -215,8 +217,8 @@ unsigned int LevelLoader::CalcLevelId(eSkill p_skill, int p_level)
 char g_szYouStupidStupidMan[28] = "You Stupid, Stupid Man !";
 
 // GLOBAL: LEMBALL 0x0049ce50
-char g_szOkSmartarse[140] =
-	"OK Smartarse,\nHow the hell do you expect me to load a level\nwhen you can't even type the name\n in correctly !\n Quit out and try again...\n";
+char g_szOkSmartarse[140] = "OK Smartarse,\nHow the hell do you expect me to load a level\nwhen you can't even type "
+							"the name\n in correctly !\n Quit out and try again...\n";
 
 // GLOBAL: LEMBALL 0x0049cedc
 char g_szReadBinaryMode[4] = "rb";

@@ -1,10 +1,10 @@
 #include "ReadSocket.h"
 
+#include "../Messaging/BasePacketHeader.h"
 #include "../Messaging/ReadCBuff.h"
 #include "../Messaging/ReadCmsBuff.h"
 #include "../Messaging/ReadNcBuff.h"
 #include "../Messaging/ReadNcmsBuff.h"
-#include "../Messaging/BasePacketHeader.h"
 #include "TcpIpNetwork.h"
 
 #include <new.h>
@@ -78,8 +78,8 @@ void ReadSocket::SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_
 	}
 	storage = operator new(sizeof(ReadNcmsBuff));
 	if (storage != 0) {
-		m_nonCriticalMultiBuffer = new (storage)
-			ReadNcmsBuff(p_arg0 + 1, p_arg1, p_arg2, (unsigned short) g_networkPacketSize);
+		m_nonCriticalMultiBuffer =
+			new (storage) ReadNcmsBuff(p_arg0 + 1, p_arg1, p_arg2, (unsigned short) g_networkPacketSize);
 		return;
 	}
 	m_nonCriticalMultiBuffer = 0;
@@ -104,8 +104,7 @@ void ReadSocket::SetCBuffers(int p_arg0, int p_arg1)
 		m_criticalMultiBuffer = 0;
 	}
 	else {
-		m_criticalMultiBuffer =
-			new (storage) ReadCmsBuff(p_arg0, p_arg1, (unsigned short) g_networkPacketSize);
+		m_criticalMultiBuffer = new (storage) ReadCmsBuff(p_arg0, p_arg1, (unsigned short) g_networkPacketSize);
 	}
 	if (g_pNetworkPacketScratch == 0) {
 		g_pNetworkPacketScratch = (BasePacketHeader*) operator new(g_networkPacketSize);

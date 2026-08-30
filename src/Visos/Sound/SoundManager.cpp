@@ -60,7 +60,11 @@ struct MusicDeviceDispatch {
 
 // 68K 0x10218192 __ct__13CSoundManagerFUcUcUciP4CWnd
 // STUB: LEMBALL 0x0045af80
-SoundManager::SoundManager(unsigned int p_musicEnabled, unsigned int p_effectsEnabled, unsigned int p_useMusicCD, int p_deviceParameter, Wnd* p_window)
+SoundManager::SoundManager(unsigned int p_musicEnabled,
+						   unsigned int p_effectsEnabled,
+						   unsigned int p_useMusicCD,
+						   int p_deviceParameter,
+						   Wnd* p_window)
 {
 	unsigned int music;
 	unsigned int count;
@@ -79,7 +83,13 @@ SoundManager::SoundManager(unsigned int p_musicEnabled, unsigned int p_effectsEn
 	m_useMusicCD = p_useMusicCD;
 	m_musicDevice = 0;
 	detectedCd = 0;
-	count = MachineSoundDetect(m_devices, music, p_effectsEnabled, p_useMusicCD, &detectedCd, &m_musicDevice, p_deviceParameter);
+	count = MachineSoundDetect(m_devices,
+							   music,
+							   p_effectsEnabled,
+							   p_useMusicCD,
+							   &detectedCd,
+							   &m_musicDevice,
+							   p_deviceParameter);
 	m_deviceCount = count;
 	m_musicOutput = 0;
 	m_effectOutput = 0;
@@ -345,7 +355,8 @@ unsigned long SoundManager::PrepareEffect(unsigned long p_resourceId)
 void SoundManager::PlayEffect(unsigned long p_effectId)
 {
 	if (m_effectsAvailable == 1) {
-		((SoundDeviceDispatch*) m_effectOutput)->PlayEffect(p_effectId, ((SoundDeviceDispatch*) m_effectOutput)->QueryVolume(), 0);
+		((SoundDeviceDispatch*) m_effectOutput)
+			->PlayEffect(p_effectId, ((SoundDeviceDispatch*) m_effectOutput)->QueryVolume(), 0);
 	}
 }
 

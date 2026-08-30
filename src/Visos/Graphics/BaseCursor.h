@@ -64,6 +64,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0046ba30
 // BaseCursor::`scalar deleting destructor'
 
-
 #endif
-

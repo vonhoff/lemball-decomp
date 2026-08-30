@@ -2,7 +2,6 @@
 #define LEMBALL_FRONTEND_RESOURCES_FRONTENDRESOURCELOADER_H
 
 #include "../../Common.h"
-
 #include "../../Views/Sound/SoundView.h" // complete type for LoadUpdate
 
 // SIZE 0x58

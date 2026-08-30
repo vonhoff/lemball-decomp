@@ -22,4 +22,3 @@ void PopActive::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->GetChangeList()->PopActive();
 }
-

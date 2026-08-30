@@ -27,6 +27,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0041c540
 // Crate::`scalar deleting destructor'
 
-
 #endif
-

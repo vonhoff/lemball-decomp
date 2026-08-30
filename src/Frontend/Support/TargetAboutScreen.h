@@ -7,9 +7,9 @@
 #include "../../Visos/Graphics/BitmapRes.h"          // complete type
 #include "../../Visos/Graphics/Drawer.h"             // complete type
 #include "../../Visos/Graphics/DrawingMark.h"        // complete type
-#include "../../Visos/Graphics/PvGWnd.h"
 #include "../../Visos/Graphics/Line.h"               // complete type
-#include "../../Visos/Graphics/SolidRect.h"          // complete type
+#include "../../Visos/Graphics/PvGWnd.h"
+#include "../../Visos/Graphics/SolidRect.h" // complete type
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00497ca0

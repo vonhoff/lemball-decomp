@@ -8,8 +8,8 @@
 class TcpIpNetworkAddress : public NetworkAddress {
 public:
 	virtual char* GetStr();                             // vtable+0x00
-	virtual void operator=(NetworkAddress& p_address); // vtable+0x0c
-	virtual void operator=(const char* p_text);        // vtable+0x08
+	virtual void operator=(NetworkAddress& p_address);  // vtable+0x0c
+	virtual void operator=(const char* p_text);         // vtable+0x08
 	virtual void operator=(eBroadcastTypes p_type);     // vtable+0x04
 	virtual bool operator==(NetworkAddress& p_address); // vtable+0x10
 	virtual bool operator>(NetworkAddress& p_address);  // vtable+0x14

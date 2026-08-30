@@ -19,6 +19,4 @@ protected:
 // SYNTHETIC: LEMBALL 0x004629e0
 // BasePacket::`scalar deleting destructor'
 
-
 #endif
-

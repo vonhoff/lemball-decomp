@@ -39,4 +39,3 @@ extern void* g_pFileBroadcastData;
 // FileNetwork::`scalar deleting destructor'
 
 #endif
-

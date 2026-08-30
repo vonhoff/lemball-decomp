@@ -2,8 +2,7 @@
 
 // 68K 0x10a0005e __ct__19CNetworkGameMessageFv
 // FUNCTION: LEMBALL 0x004523e0
-NetworkGameMessage::NetworkGameMessage()
-	: NetworkMessage(5)
+NetworkGameMessage::NetworkGameMessage() : NetworkMessage(5)
 {
 	m_gameName[0] = '\0';
 	m_valid = 0;
@@ -12,6 +11,7 @@ NetworkGameMessage::NetworkGameMessage()
 }
 
 #include "../../Visos/Foundation/String.h"
+
 #include <string.h>
 
 extern char* g_szBroadcastPeerName;
@@ -43,4 +43,3 @@ void NetworkGameMessage::GetData()
 NetworkGameMessage::~NetworkGameMessage()
 {
 }
-

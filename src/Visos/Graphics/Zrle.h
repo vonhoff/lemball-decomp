@@ -36,6 +36,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00467b40
 // Zrle::`scalar deleting destructor'
 
-
 #endif
-

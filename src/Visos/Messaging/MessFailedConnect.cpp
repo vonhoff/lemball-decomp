@@ -6,8 +6,7 @@
 
 // 68K 0x1020b0fc __ct__18CMessFAILEDConnectFPCc
 // FUNCTION: LEMBALL 0x0045f610
-MessFailedConnect::MessFailedConnect(const char* p_arg0)
-	: BroadcastMessage(p_arg0)
+MessFailedConnect::MessFailedConnect(const char* p_arg0) : BroadcastMessage(p_arg0)
 {
 	m_payloadCapacity += 0x101;
 }
@@ -33,4 +32,3 @@ MessFailedConnect::~MessFailedConnect()
 
 // GLOBAL: LEMBALL 0x004a1e60
 MessFailedConnect* g_pMessFAILEDConnect = 0;
-

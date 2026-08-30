@@ -1,4 +1,5 @@
 #include "MessReqNewPort.h"
+
 #include "BasePacketHeader.h"
 
 // 68K 0x1020ae1c __ct__15CMessReqNewPortFPCc
@@ -31,4 +32,3 @@ MessReqNewPort::~MessReqNewPort()
 
 // GLOBAL: LEMBALL 0x004a1e54
 MessReqNewPort* g_pMessReqNewPort = 0;
-

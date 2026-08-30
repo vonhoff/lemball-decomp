@@ -9,6 +9,7 @@
 #include "../../Visos/Graphics/GraphicButton.h"
 #include "../../Visos/Graphics/HotAreaHandler.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../Windows/SpriteWindow.h"
 #include "GunButtons.h"
 
@@ -75,27 +76,27 @@ GunController::GunController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned cha
 	}
 	if (m_mode == 1) {
 		m_alternateAssets = 1;
-		g_dwGunAnimCursor = 0x173;
-		g_dwGunAnim147 = 0x174;
-		g_dwGunAnim148 = 0x175;
-		g_dwGunAnim149 = 0x176;
-		g_dwGunAnimLeftShot = 0x177;
-		g_dwGunAnim14b = 0x178;
-		g_dwGunAnim14c = 0x179;
-		g_dwGunAnim14d = 0x17a;
-		g_dwGunAnim14e = 0x17b;
+		g_dwGunAnimCursor = RES_NEWFRONT_ANIMS_LORES_BULLET_LEFT;
+		g_dwGunAnim147 = RES_NEWFRONT_ANIMS_LORES_BULLET_RIGHT;
+		g_dwGunAnim148 = RES_NEWFRONT_ANIMS_LORES_FIRE_LEFT;
+		g_dwGunAnim149 = RES_NEWFRONT_ANIMS_LORES_FIRE_RIGHT;
+		g_dwGunAnimLeftShot = RES_NEWFRONT_ANIMS_LORES_FX_LEFT;
+		g_dwGunAnim14b = RES_NEWFRONT_ANIMS_LORES_FX_RIGHT;
+		g_dwGunAnim14c = RES_NEWFRONT_ANIMS_LORES_GUNTURN;
+		g_dwGunAnim14d = RES_NEWFRONT_ANIMS_LORES_SPLAT_LEFT;
+		g_dwGunAnim14e = RES_NEWFRONT_ANIMS_LORES_SPLAT_RIGHT;
 	}
 	else {
 		m_alternateAssets = 0;
-		g_dwGunAnimCursor = 0x146;
-		g_dwGunAnim147 = 0x147;
-		g_dwGunAnim148 = 0x148;
-		g_dwGunAnim149 = 0x149;
-		g_dwGunAnimLeftShot = 0x14a;
-		g_dwGunAnim14b = 0x14b;
-		g_dwGunAnim14c = 0x14c;
-		g_dwGunAnim14d = 0x14d;
-		g_dwGunAnim14e = 0x14e;
+		g_dwGunAnimCursor = RES_NEWFRONT_ANIMS_HIRES_BULLET_LEFT;
+		g_dwGunAnim147 = RES_NEWFRONT_ANIMS_HIRES_BULLET_RIGHT;
+		g_dwGunAnim148 = RES_NEWFRONT_ANIMS_HIRES_FIRE_LEFT;
+		g_dwGunAnim149 = RES_NEWFRONT_ANIMS_HIRES_FIRE_RIGHT;
+		g_dwGunAnimLeftShot = RES_NEWFRONT_ANIMS_HIRES_FX_LEFT;
+		g_dwGunAnim14b = RES_NEWFRONT_ANIMS_HIRES_FX_RIGHT;
+		g_dwGunAnim14c = RES_NEWFRONT_ANIMS_HIRES_GUNTURN;
+		g_dwGunAnim14d = RES_NEWFRONT_ANIMS_HIRES_SPLAT_LEFT;
+		g_dwGunAnim14e = RES_NEWFRONT_ANIMS_HIRES_SPLAT_RIGHT;
 	}
 	m_anims.LoadAnims(g_dwGunAnimCursor);
 	m_anims.LoadAnims(g_dwGunAnim147);
@@ -258,8 +259,18 @@ void GunController::AddButton(int p_x,
 		m_buttons[m_buttonCount] = 0;
 	}
 	else {
-		m_buttons[m_buttonCount] = new (storage)
-			GunButtons(m_window, m_gdi, p_x, p_y, p_animIds, p_postAction, p_minimum, p_maximum, p_value, controlMessage, p_binding, p_actionMessage);
+		m_buttons[m_buttonCount] = new (storage) GunButtons(m_window,
+															m_gdi,
+															p_x,
+															p_y,
+															p_animIds,
+															p_postAction,
+															p_minimum,
+															p_maximum,
+															p_value,
+															controlMessage,
+															p_binding,
+															p_actionMessage);
 	}
 	if (m_buttons[m_buttonCount] != 0) {
 		AddJunction(p_x, p_y, 0 < p_maximum, m_buttons[m_buttonCount]->m_controlMessage);
@@ -539,7 +550,8 @@ void GunController::MoveLeft()
 	if (m_currentSide == m_targetSide) {
 		i = 0;
 		while (i < 8) {
-			if (m_junctions[i].m_y == m_targetY && (m_junctions[i].m_direction == 0 || m_junctions[i].m_direction == 2)) {
+			if (m_junctions[i].m_y == m_targetY &&
+				(m_junctions[i].m_direction == 0 || m_junctions[i].m_direction == 2)) {
 				m_targetSide = 0;
 			}
 			i = i + 1;
@@ -556,7 +568,8 @@ void GunController::MoveRight()
 	if (m_currentSide == m_targetSide) {
 		i = 0;
 		while (i < 8) {
-			if (m_junctions[i].m_y == m_targetY && (m_junctions[i].m_direction == 1 || m_junctions[i].m_direction == 2)) {
+			if (m_junctions[i].m_y == m_targetY &&
+				(m_junctions[i].m_direction == 1 || m_junctions[i].m_direction == 2)) {
 				m_targetSide = 1;
 			}
 			i = i + 1;
@@ -735,7 +748,8 @@ void GunController::Process()
 	}
 	if (m_verticalMoving != 0) {
 		if (now < m_moveEndTime) {
-			m_gunY = (int) ((m_targetY - m_moveStartY) * (int) (now - m_moveStartTime)) / (int) (m_moveEndTime - m_moveStartTime) +
+			m_gunY = (int) ((m_targetY - m_moveStartY) * (int) (now - m_moveStartTime)) /
+						 (int) (m_moveEndTime - m_moveStartTime) +
 					 m_moveStartY;
 			return;
 		}

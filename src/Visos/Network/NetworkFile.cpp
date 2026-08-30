@@ -5,39 +5,39 @@
 #include <string.h>
 
 extern "C" __declspec(dllimport) void* __stdcall CreateFileA(const char* p_name,
-															unsigned int p_access,
-															unsigned int p_share,
-															void* p_security,
-															unsigned int p_creation,
-															unsigned int p_flags,
-															void* p_template);
+															 unsigned int p_access,
+															 unsigned int p_share,
+															 void* p_security,
+															 unsigned int p_creation,
+															 unsigned int p_flags,
+															 void* p_template);
 extern "C" __declspec(dllimport) int __stdcall CloseHandle(void* p_handle);
 extern "C" __declspec(dllimport) int __stdcall DeleteFileA(const char* p_name);
 extern "C" __declspec(dllimport) int __stdcall WriteFile(void* p_handle,
-														const void* p_buffer,
-														unsigned int p_bytes,
-														unsigned int* p_written,
-														void* p_overlapped);
+														 const void* p_buffer,
+														 unsigned int p_bytes,
+														 unsigned int* p_written,
+														 void* p_overlapped);
 extern "C" __declspec(dllimport) int __stdcall ReadFile(void* p_handle,
-													   void* p_buffer,
-													   unsigned int p_bytes,
-													   unsigned int* p_read,
-													   void* p_overlapped);
+														void* p_buffer,
+														unsigned int p_bytes,
+														unsigned int* p_read,
+														void* p_overlapped);
 extern "C" __declspec(dllimport) unsigned int __stdcall SetFilePointer(void* p_handle,
-																	  int p_distance,
-																	  int* p_distanceHigh,
-																	  unsigned int p_method);
+																	   int p_distance,
+																	   int* p_distanceHigh,
+																	   unsigned int p_method);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetFileSize(void* p_handle, unsigned int* p_sizeHigh);
 extern "C" __declspec(dllimport) int __stdcall LockFile(void* p_handle,
-													   unsigned int p_offsetLow,
-													   unsigned int p_offsetHigh,
-													   unsigned int p_lengthLow,
-													   unsigned int p_lengthHigh);
+														unsigned int p_offsetLow,
+														unsigned int p_offsetHigh,
+														unsigned int p_lengthLow,
+														unsigned int p_lengthHigh);
 extern "C" __declspec(dllimport) int __stdcall UnlockFile(void* p_handle,
-														 unsigned int p_offsetLow,
-														 unsigned int p_offsetHigh,
-														 unsigned int p_lengthLow,
-														 unsigned int p_lengthHigh);
+														  unsigned int p_offsetLow,
+														  unsigned int p_offsetHigh,
+														  unsigned int p_lengthLow,
+														  unsigned int p_lengthHigh);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
 extern "C" __declspec(dllimport) int __stdcall WSAGetLastError();
 
@@ -139,8 +139,7 @@ bool NetworkFile::Write(const unsigned char* p_data, int p_size)
 
 	m_position += written;
 	if ((unsigned int) p_size != written) {
-		*g_pErrorOutput << "Write error: " << (unsigned long) written << " bytes written instead of " << p_size
-						<< "\n";
+		*g_pErrorOutput << "Write error: " << (unsigned long) written << " bytes written instead of " << p_size << "\n";
 		return 0;
 	}
 	return 1;

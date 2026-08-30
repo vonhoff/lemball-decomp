@@ -38,6 +38,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0041dd70
 // Switch::`scalar deleting destructor'
 
-
 #endif
-

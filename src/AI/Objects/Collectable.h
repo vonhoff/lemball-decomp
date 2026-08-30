@@ -24,6 +24,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00423060
 // Collectable::`scalar deleting destructor'
 
-
 #endif
-

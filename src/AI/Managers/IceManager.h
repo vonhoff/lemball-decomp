@@ -35,6 +35,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0042e4d0
 // IceManager::`scalar deleting destructor'
 
-
 #endif
-

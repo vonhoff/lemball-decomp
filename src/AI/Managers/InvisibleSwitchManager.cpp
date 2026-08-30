@@ -1,4 +1,5 @@
 #include "InvisibleSwitchManager.h"
+
 #include "../Objects/InvisibleSwitch.h"
 
 // 68K 0x10613140 __ct__23CInvisibleSwitchManagerFP3CAIi
@@ -46,4 +47,3 @@ void InvisibleSwitchManager::LoadLevel(unsigned char* p_data, int p_dataSize, un
 InvisibleSwitchManager::~InvisibleSwitchManager()
 {
 }
-

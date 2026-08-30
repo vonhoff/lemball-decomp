@@ -10,12 +10,12 @@
 class Ball : public GameObject {
 public:
 	Ball();
-	virtual bool Move();                     // vtable+0x44
-	virtual bool Process();                  // vtable+0x14
+	virtual bool Move();                      // vtable+0x44
+	virtual bool Process();                   // vtable+0x14
 	virtual void HitBullet(Bullet* p_bullet); // vtable+0x54
-	virtual void Delete();                   // vtable+0xc8
-	virtual void Restart();                  // vtable+0x104
-	virtual ~Ball();                         // vtable+0x00
+	virtual void Delete();                    // vtable+0xc8
+	virtual void Restart();                   // vtable+0x104
+	virtual ~Ball();                          // vtable+0x00
 	void LoadLevel(unsigned char** p_data);
 	void Set(AiCoord p_start, AiCoord p_destination, int p_speed);
 	void SetHeightCorrect();
@@ -31,6 +31,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00422350
 // Ball::`scalar deleting destructor'
 
-
 #endif
-

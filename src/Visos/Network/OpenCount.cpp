@@ -18,4 +18,3 @@ void OpenCount::GetData()
 OpenCount::~OpenCount()
 {
 }
-

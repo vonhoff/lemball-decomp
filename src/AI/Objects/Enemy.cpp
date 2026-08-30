@@ -11,16 +11,7 @@ struct EnemyFacingOffset {
 };
 
 // GLOBAL: LEMBALL 0x004950c0
-EnemyFacingOffset g_enemyFacingOffsets[8] = {
-	{0, 3},
-	{-4, 1},
-	{-5, 0},
-	{-4, -3},
-	{0, -4},
-	{6, -3},
-	{5, 0},
-	{4, 1}
-};
+EnemyFacingOffset g_enemyFacingOffsets[8] = {{0, 3}, {-4, 1}, {-5, 0}, {-4, -3}, {0, -4}, {6, -3}, {5, 0}, {4, 1}};
 
 // 68K 0x10607884 __ct__6CEnemyFP3CAIiiii
 // STUB: LEMBALL 0x0041fba0
@@ -204,12 +195,10 @@ void Enemy::HitBullet(Bullet* p_bullet)
 // FUNCTION: LEMBALL 0x00420650
 bool Enemy::FacingTarget()
 {
-	unsigned int facing = ReturnFacingDirection(
-		m_position.m_xFixed >> 12,
-		m_position.m_yFixed >> 12,
-		m_fireTarget.m_xFixed >> 12,
-		m_fireTarget.m_yFixed >> 12
-	);
+	unsigned int facing = ReturnFacingDirection(m_position.m_xFixed >> 12,
+												m_position.m_yFixed >> 12,
+												m_fireTarget.m_xFixed >> 12,
+												m_fireTarget.m_yFixed >> 12);
 	return (unsigned int) m_facingDirection == facing;
 }
 
@@ -242,4 +231,3 @@ int Enemy::IsHit()
 Enemy::~Enemy()
 {
 }
-

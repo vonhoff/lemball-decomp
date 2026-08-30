@@ -17,6 +17,4 @@ public:
 // SYNTHETIC: LEMBALL 0x0045ebb0
 // ResEffect::`scalar deleting destructor'
 
-
 #endif
-

@@ -1,4 +1,5 @@
 #include "BallManager.h"
+
 #include "../Objects/Ball.h"
 
 // 68K 0x10603ef6 __ct__12CBallManagerFP3CAIi

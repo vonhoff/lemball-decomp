@@ -24,4 +24,3 @@ void FileCommonSocket::SocketError()
 FileCommonSocket::~FileCommonSocket()
 {
 }
-

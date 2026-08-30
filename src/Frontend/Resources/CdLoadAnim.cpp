@@ -10,10 +10,11 @@
 #include "../../Visos/Foundation/VsRect.h"
 #include "../../Visos/Foundation/VsTrig.h"
 #include "../../Visos/Graphics/Cursor.h"
-#include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/GWnd.h"
+#include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/PvGWnd.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBitmap.h"
 #include "../../Visos/Resources/ResPalette.h"
 
@@ -21,8 +22,7 @@
 
 // 68K 0x10801d2c __ct__11CCDLoadAnimFP4CGDIP14CMain2DDisplay
 // FUNCTION: LEMBALL 0x0044aa80
-CdLoadAnim::CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1)
-	: AnimsManager(p_arg0, 0x2b6, 1, 1, 0, 0)
+CdLoadAnim::CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1) : AnimsManager(p_arg0, 0x2b6, 1, 1, 0, 0)
 {
 	unsigned int* points;
 	unsigned int packed;
@@ -36,23 +36,23 @@ CdLoadAnim::CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1)
 	m_progress.m_draw.m_points = new VsPoint[5];
 	g_pCursor->SetActive(0);
 	if (g_nCompactPrimaryContextLayout != 0) {
-		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(0xee);
+		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(RES_FRONTEND_LOADING_LORES_PICTURE);
 		points = g_dwCdLoadAnimCompactPoints;
-		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(0xef);
+		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(RES_FRONTEND_LOADING_LORES_REPLACE);
 		m_progress.m_draw.m_animResourceId = 0xf0;
 	}
 	else {
-		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(0xf1);
+		m_progress.m_draw.m_backgroundBitmap = ResBitmap::Load(RES_FRONTEND_LOADING_HIRES_PICTURE);
 		points = g_dwCdLoadAnimFullPoints;
-		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(0xf2);
+		m_progress.m_draw.m_foregroundBitmap = ResBitmap::Load(RES_FRONTEND_LOADING_HIRES_REPLACE);
 		m_progress.m_draw.m_animResourceId = 0xf3;
 	}
 	LoadAnims(m_progress.m_draw.m_animResourceId);
-	palette = ResPalette::Load(0xed);
+	palette = ResPalette::Load(RES_FRONTEND_LOADING_LORES_PALETTE);
 	if (m_progress.m_draw.m_display->m_lifecycleRefs == 1) {
 		m_progress.m_draw.m_display->Clear(-1);
 	}
-	p_arg1->AttachPalette(0xed);
+	p_arg1->AttachPalette(RES_FRONTEND_LOADING_LORES_PALETTE);
 	palette->UnLoad();
 	m_progress.m_draw.m_centerY =
 		(short) ((m_progress.m_draw.m_display->m_rect.m_height - m_progress.m_draw.m_backgroundBitmap->m_y) / 2);

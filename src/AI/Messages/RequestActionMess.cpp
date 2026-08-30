@@ -5,8 +5,7 @@
 
 // 68K 0x1060b54c __ct__18CRequestActionMessFv
 // FUNCTION: LEMBALL 0x00416a10
-RequestActionMess::RequestActionMess()
-	: GameObjectMess(MESSAGE_REQUEST_ACTION)
+RequestActionMess::RequestActionMess() : GameObjectMess(MESSAGE_REQUEST_ACTION)
 {
 	m_payloadCapacity += 4;
 }
@@ -27,7 +26,8 @@ void RequestActionMess::GetData()
 	int active;
 	if (m_object->m_isRemoteObject == 0 && m_object->m_unk0x8c == 0 && m_object->IsUsable(m_object->m_action)) {
 		active = 1;
-	} else {
+	}
+	else {
 		active = 0;
 	}
 	m_object->m_requestActive = active;
@@ -42,4 +42,3 @@ void RequestActionMess::GetData()
 RequestActionMess::~RequestActionMess()
 {
 }
-

@@ -32,6 +32,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00471e80
 // TcpIpWriteSocket::`scalar deleting destructor'
 
-
 #endif
-

@@ -103,4 +103,3 @@ void Mine::OnGround()
 Mine::~Mine()
 {
 }
-

@@ -16,16 +16,14 @@ public:
 	void Set(int p_minX, int p_maxX, int p_minY, int p_maxY);
 
 private:
-	int m_minX; // 0x124
-	int m_minY; // 0x128
-	int m_maxX; // 0x12c
-	int m_maxY; // 0x130
+	int m_minX;                 // 0x124
+	int m_minY;                 // 0x128
+	int m_maxX;                 // 0x12c
+	int m_maxY;                 // 0x130
 	undefined m_pad0x134[0x1c]; // 0x134
 };
 
 // SYNTHETIC: LEMBALL 0x0040c1d0
 // Slinky::`scalar deleting destructor'
 
-
 #endif
-

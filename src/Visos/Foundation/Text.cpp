@@ -130,7 +130,8 @@ void Text::Render(Gdi* p_gdi)
 					m_glyph = m_font->m_animationEntries;
 				}
 				if (*text != ' ' || m_glyph == 0) {
-					*g_pDebugOutput << "Letter '" << *text << "' not found in font " << Rname(m_font->m_resourceId) << "\n";
+					*g_pDebugOutput << "Letter '" << *text << "' not found in font " << Rname(m_font->m_resourceId)
+									<< "\n";
 				}
 				NextPos();
 			}
@@ -150,4 +151,3 @@ void Text::Render(Gdi* p_gdi)
 	}
 	m_font->m_directUseCount--;
 }
-

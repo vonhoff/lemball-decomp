@@ -21,6 +21,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0043a490
 // PadToButton::`scalar deleting destructor'
 
-
 #endif
-

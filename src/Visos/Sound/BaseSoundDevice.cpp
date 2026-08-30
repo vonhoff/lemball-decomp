@@ -220,4 +220,3 @@ bool BaseSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect
 BaseSoundDevice::~BaseSoundDevice()
 {
 }
-

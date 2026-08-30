@@ -26,6 +26,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00428800
 // Hand::`vector deleting destructor'
 
-
 #endif
-

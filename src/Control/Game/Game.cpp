@@ -1,40 +1,41 @@
 #include "Game.h"
 
-#include "../Level/LevelLoader.h"
-#include "../Support/PreInit.h"
-#include "../../Frontend/Resources/FrontendResourceLoader.h"
+#include "../../AI/Navigation/Ai.h"
 #include "../../Frontend/Base/BaseFrontendDrawer.h"
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Frontend/Drawers/IntroAnimDrawer.h"
 #include "../../Frontend/Drawers/MainOptions1Drawer.h"
-#include "../../Frontend/Processes/TargetAbout.h"
 #include "../../Frontend/Processes/NetworkOptionsProc.h"
 #include "../../Frontend/Processes/PasswordProc.h"
 #include "../../Frontend/Processes/Preview.h"
 #include "../../Frontend/Processes/SuccFail.h"
-#include "../../AI/Navigation/Ai.h"
+#include "../../Frontend/Processes/TargetAbout.h"
+#include "../../Frontend/Resources/FrontendResourceLoader.h"
+#include "../../Network/Game/NetworkManager.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../../Views/Display/Main2DDisplay.h"
 #include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Animation/BaseStat.h"
 #include "../../Visos/Animation/IntroAnim.h"
 #include "../../Visos/Animation/StatManager.h"
+#include "../../Visos/Foundation/BaseProcess.h"
 #include "../../Visos/Foundation/MainOptions1.h"
 #include "../../Visos/Foundation/MainOptions2.h"
-#include "../../Visos/Foundation/BaseProcess.h"
 #include "../../Visos/Foundation/VsDebug.h"
 #include "../../Visos/Foundation/VsDebugStreambuf.h"
 #include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Foundation/VsSound.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Network/Game/NetworkManager.h"
-#include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Graphics/Drawer.h"
+#include "../../Visos/Network/BaseNetwork.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/MogRes.h"
 #include "../../Visos/Resources/MogloadArena.h"
 #include "../../Visos/Resources/ResString.h"
 #include "../../Visos/Sound/SoundManager.h"
 #include "../../Visos/Target/TargetPlatformServices.h"
+#include "../Level/LevelLoader.h"
+#include "../Support/PreInit.h"
 #include "Demo.h"
 #include "GameMain.h"
 #include "GameStatus.h"
@@ -44,8 +45,11 @@
 
 #pragma intrinsic(strcpy, strcat, strcmp)
 
-extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd, const char* lpText, const char* lpCaption, unsigned int uType);
+extern "C" unsigned long __stdcall timeGetTime(void);
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd,
+														   const char* lpText,
+														   const char* lpCaption,
+														   unsigned int uType);
 
 // GLOBAL: LEMBALL 0x0049cbc8
 char g_szLemmingsPaintball[20] = "Lemmings Paintball";
@@ -54,7 +58,8 @@ char g_szLemmingsPaintball[20] = "Lemmings Paintball";
 char g_szPaintballNotInstalled[24] = "Paintball Not Installed";
 
 // GLOBAL: LEMBALL 0x0049cbf4
-char g_szInstallPrompt[92] = "To play Lemmings Paintball, you must first install it.  Run the SETUP.EXE program on the CD";
+char g_szInstallPrompt[92] =
+	"To play Lemmings Paintball, you must first install it.  Run the SETUP.EXE program on the CD";
 
 // GLOBAL: LEMBALL 0x0049cc50
 char g_szVsMemDll[12] = "vsmem.dll";
@@ -304,7 +309,7 @@ bool Game::IsValidResource()
 	char c;
 
 	key = g_szWeatherManKey;
-	resource = ResString::Load(0x100);
+	resource = ResString::Load(RES_REGISTRATION_FINGERPRINT);
 	if (resource == 0) {
 		return 0;
 	}
@@ -536,14 +541,14 @@ void Game::Process()
 		if ((m_currentFlow == 5 || m_currentFlow == 0x13) && 0x32 < (int) m_flowTicks) {
 			timing = 1;
 			stat = m_processingStat;
-			stat->m_timingStart = (void*) CurrentMilliTimer();
+			stat->m_timingStart = (void*) timeGetTime();
 			stat->m_timingActive = 1;
 		}
 		m_process->Process();
 		if (timing != 0) {
 			stat = m_processingStat;
 			if (stat->m_timingActive != 0) {
-				now = CurrentMilliTimer();
+				now = timeGetTime();
 				stat->Update(now - (unsigned long) stat->m_timingStart);
 				stat->m_timingActive = 0;
 			}
@@ -595,7 +600,7 @@ void Game::RefreshViews()
 	if ((m_currentFlow == 5 || m_currentFlow == 0x13) && 0x32 < (int) m_flowTicks) {
 		timing = 1;
 		stat = m_refreshingStat;
-		now = CurrentMilliTimer();
+		now = timeGetTime();
 		stat->m_timingStart = (void*) now;
 		stat->m_timingActive = timing;
 	}
@@ -603,7 +608,7 @@ void Game::RefreshViews()
 	if (timing != 0) {
 		stat = m_refreshingStat;
 		if (stat->m_timingActive != 0) {
-			now = CurrentMilliTimer();
+			now = timeGetTime();
 			stat->Update(now - (unsigned long) stat->m_timingStart);
 			stat->m_timingActive = 0;
 		}
@@ -616,8 +621,8 @@ void Game::Run()
 {
 	if (g_pDemo != 0 && g_nDemoMode == 0) {
 		Demo* demo = g_pDemo;
-		demo->m_currentResourceId = 0x14;
-		demo->m_firstResourceId = 0x14;
+		demo->m_currentResourceId = RES_DEMOS_DEMO_00;
+		demo->m_firstResourceId = RES_DEMOS_DEMO_00;
 		demo->m_resourceCount = 8;
 	}
 

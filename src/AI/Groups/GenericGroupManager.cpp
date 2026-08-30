@@ -222,4 +222,3 @@ bool GenericGroupManager::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coor
 {
 	return 0;
 }
-

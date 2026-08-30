@@ -66,4 +66,3 @@ char* PvMusicDevice::GetInfo()
 PvMusicDevice::~PvMusicDevice()
 {
 }
-

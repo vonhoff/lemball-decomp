@@ -23,4 +23,3 @@ extern MessReqNewPort* g_pMessReqNewPort;
 // MessReqNewPort::`scalar deleting destructor'
 
 #endif
-

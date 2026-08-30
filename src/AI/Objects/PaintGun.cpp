@@ -35,4 +35,3 @@ void PaintGun::DoActivate()
 PaintGun::~PaintGun()
 {
 }
-

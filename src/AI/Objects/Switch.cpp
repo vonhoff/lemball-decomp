@@ -111,4 +111,3 @@ void Switch::GetViewData(ViewData& p_viewData)
 Switch::~Switch()
 {
 }
-

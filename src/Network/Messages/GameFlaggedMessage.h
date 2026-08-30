@@ -23,6 +23,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00452e90
 // GameFlaggedMessage::`scalar deleting destructor'
 
-
 #endif
-

@@ -39,6 +39,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00418300
 // BulletManager::`scalar deleting destructor'
 
-
 #endif
-

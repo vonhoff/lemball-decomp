@@ -10,7 +10,7 @@
 class PanelPauseButton : public ToggleButton {
 public:
 	PanelPauseButton(Panel* p_arg0, const VsPoint& p_arg1, PvGWnd* p_arg2, unsigned long p_arg3, unsigned long p_arg4);
-	virtual void OnPaint(const VsRect& p_rect);                   // vtable+0xa8
+	virtual void OnPaint(const VsRect& p_rect);                           // vtable+0xa8
 	virtual void DrawButton();                                            // vtable+0xbc
 	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags); // vtable+0x0c
 	virtual void OnInside(const VsPoint& p_point);                        // vtable+0x18
@@ -26,6 +26,4 @@ private:
 // SYNTHETIC: LEMBALL 0x004438f0
 // PanelPauseButton::`scalar deleting destructor'
 
-
 #endif
-

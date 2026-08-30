@@ -31,6 +31,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0040ebe0
 // DoorManager::`scalar deleting destructor'
 
-
 #endif
-

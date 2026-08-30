@@ -1,5 +1,4 @@
 #include "BaseFrontendProcess.h"
-#include "BaseFrontendDrawer.h"
 
 #include "../../Control/Game/GameStatus.h"
 #include "../../Frontend/Drawers/NetworkOptionsDrawer.h"
@@ -10,6 +9,7 @@
 #include "../../Visos/Messaging/ReadPacket.h"
 #include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Network/Connect.h"
+#include "BaseFrontendDrawer.h"
 
 #include <new.h>
 
@@ -120,9 +120,8 @@ int BaseFrontendProcess::ProcessMsg(Message* p_message)
 	}
 	((UserActionMessage*) m_userActionMessage)->Set(packet->m_data + sizeof(BasePacketHeader));
 	packet->m_used = 0;
-	g_pBaseFrontendDrawer->RemoteAction(
-		((UserActionMessage*) m_userActionMessage)->m_action,
-		((UserActionMessage*) m_userActionMessage)->m_stage);
+	g_pBaseFrontendDrawer->RemoteAction(((UserActionMessage*) m_userActionMessage)->m_action,
+										((UserActionMessage*) m_userActionMessage)->m_stage);
 	return 1;
 }
 
@@ -174,4 +173,3 @@ int g_nZoomAvailable = 0;
 
 // GLOBAL: LEMBALL 0x004a6300
 int g_nDisplayMode = 0;
-

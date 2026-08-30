@@ -22,4 +22,3 @@ void BigBitmap::Draw(Gdi* p_gdi)
 void BigBitmap::Render(Gdi* p_gdi)
 {
 }
-

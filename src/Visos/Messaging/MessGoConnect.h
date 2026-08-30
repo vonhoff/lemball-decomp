@@ -24,4 +24,3 @@ extern MessGoConnect* g_pMessGOConnect;
 // MessGoConnect::`scalar deleting destructor'
 
 #endif
-

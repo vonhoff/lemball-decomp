@@ -1,8 +1,8 @@
 #include "StateMachine.h"
-#include "GameObject.h"
 
 #include "../../Control/Game/Game.h"
 #include "../Navigation/Ai.h"
+#include "GameObject.h"
 #include "StateEntry.h"
 
 // GLOBAL: LEMBALL 0x0049dcc8

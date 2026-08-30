@@ -14,4 +14,3 @@ VsStreambuf::VsStreambuf(char* p_arg0, int p_arg1)
 VsStreambuf::~VsStreambuf()
 {
 }
-

@@ -1,5 +1,6 @@
 #include "GlobalGameObject.h"
 
+#include "../../Visos/Messaging/TransportObjectMess.h"
 #include "../Messages/ObjectChangeStateMess.h"
 #include "../Messages/ObjectDiesMess.h"
 #include "../Messages/ObjectHitMess.h"
@@ -8,7 +9,6 @@
 #include "../Messages/RequestActionMess.h"
 #include "../Messages/RequestCancelMess.h"
 #include "../Messages/RequestReplyMess.h"
-#include "../../Visos/Messaging/TransportObjectMess.h"
 
 GlobalGameObject::GlobalGameObject()
 {
@@ -156,4 +156,3 @@ ObjectHitMess* g_pObjectHitMessage;
 
 // GLOBAL: LEMBALL 0x0049d130
 ObjectDiesMess* g_pObjectDiesMessage;
-

@@ -1,12 +1,12 @@
 #include "ResFont.h"
+
 #include "FontTable.h"
 #include "MogRes.h"
 #include "ResourceTypeList.h"
 
 // 68K 0x10203950 __ct__8CResFONTFUl
 // FUNCTION: LEMBALL 0x0045d7b0
-ResFont::ResFont(unsigned long p_resourceId)
-	: ResBaseList((ResListHeader*) g_pResourceTypes)
+ResFont::ResFont(unsigned long p_resourceId) : ResBaseList((ResListHeader*) g_pResourceTypes)
 {
 	m_animationEntries = 0;
 	m_fontEntries = 0;

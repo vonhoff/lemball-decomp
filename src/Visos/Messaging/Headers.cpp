@@ -1,4 +1,5 @@
 #include "Headers.h"
+
 #include "HeaderMessage.h"
 
 // 68K 0x10206dc4 __ct__8CHeadersFi
@@ -49,4 +50,3 @@ void Headers::GetData()
 Headers::~Headers()
 {
 }
-

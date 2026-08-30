@@ -101,4 +101,3 @@ void InvisibleSwitch::Load(unsigned char*& p_data)
 InvisibleSwitch::~InvisibleSwitch()
 {
 }
-

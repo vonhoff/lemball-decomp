@@ -9,15 +9,19 @@
 #include "../../Visos/Foundation/TextManager.h"
 #include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBitmap.h"
 #include "../Base/BaseFrontendProcess.h"
 #include "../Controls/HiliteController.h"
 
+extern "C" unsigned long __stdcall timeGetTime(void);
+
 #include "../../Network/Game/NetworkManager.h"
 #include "../../Network/Messages/NetworkGameMessage.h"
+#include "../../Visos/Graphics/BitmapRes.h"
 #include "../../Visos/Network/Connect.h"
 #include "../../Visos/Resources/ResFont.h"
-#include "../../Visos/Graphics/BitmapRes.h"
+
 #include <string.h>
 
 #pragma intrinsic(strcpy, strlen)
@@ -65,87 +69,78 @@ char g_szSuccFailRanOutOfTimeLose[] = "You ran out of time!";
 char g_szSuccFailGaveUpLose[] = "You gave up!";
 
 // GLOBAL: LEMBALL 0x0049fb38
-char* g_apSuccFailSingleWin[8] = {
-	0, 0, g_szSuccFailCollectedAllFlags, 0, 0, 0, 0, 0
-};
+char* g_apSuccFailSingleWin[8] = {0, 0, g_szSuccFailCollectedAllFlags, 0, 0, 0, 0, 0};
 
 // GLOBAL: LEMBALL 0x0049fb58
-char* g_apSuccFailNetWin[8] = {
-	0,
-	g_szSuccFailBeatScore,
-	g_szSuccFailCollectedAllYourFlags,
-	g_szSuccFailSplattedAllLemmings,
-	g_szSuccFailRanOutOfTimeNet,
-	g_szSuccFailGaveUpNet,
-	0,
-	0
-};
+char* g_apSuccFailNetWin[8] = {0,
+							   g_szSuccFailBeatScore,
+							   g_szSuccFailCollectedAllYourFlags,
+							   g_szSuccFailSplattedAllLemmings,
+							   g_szSuccFailRanOutOfTimeNet,
+							   g_szSuccFailGaveUpNet,
+							   0,
+							   0};
 
 // GLOBAL: LEMBALL 0x0049fb78
-char* g_apSuccFailSingleLose[8] = {
-	0, 0, 0, g_szSuccFailAllLemmingsEliminated, g_szSuccFailRanOutOfTimeSingle, g_szSuccFailGaveUpSingle, 0, 0
-};
+char* g_apSuccFailSingleLose[8] =
+	{0, 0, 0, g_szSuccFailAllLemmingsEliminated, g_szSuccFailRanOutOfTimeSingle, g_szSuccFailGaveUpSingle, 0, 0};
 
 // GLOBAL: LEMBALL 0x0049fb98
-char* g_apSuccFailNetLose[8] = {
-	0,
-	g_szSuccFailOpponentBeatScore,
-	g_szSuccFailOpponentCollectedFlags,
-	g_szSuccFailOpponentSplattedLemmings,
-	g_szSuccFailRanOutOfTimeLose,
-	g_szSuccFailGaveUpLose,
-	0,
-	0
-};
+char* g_apSuccFailNetLose[8] = {0,
+								g_szSuccFailOpponentBeatScore,
+								g_szSuccFailOpponentCollectedFlags,
+								g_szSuccFailOpponentSplattedLemmings,
+								g_szSuccFailRanOutOfTimeLose,
+								g_szSuccFailGaveUpLose,
+								0,
+								0};
 
 // GLOBAL: LEMBALL 0x0049fbb8
 unsigned char g_abSuccFailLayoutFull[0x68] = {
-	0x5c, 0x00, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0xa0, 0x01, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x92, 0x00, 0x00, 0x00,
-	0x91, 0x00, 0x00, 0x00, 0x4d, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x92, 0x00, 0x00, 0x00,
-	0x93, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x50, 0x00, 0x00, 0x00,
-	0x10, 0x01, 0x00, 0x00, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00,
-	0x20, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0xf0, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x32, 0x01, 0x00, 0x00,
+	0x5c, 0x00, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0xa0, 0x01, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x92, 0x00, 0x00, 0x00, 0x91, 0x00, 0x00, 0x00,
+	0x4d, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x92, 0x00, 0x00, 0x00, 0x93, 0x00, 0x00, 0x00, 0x60, 0x00,
+	0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0xe0, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0xf0, 0x00,
+	0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x32, 0x01, 0x00, 0x00,
 };
 
 // GLOBAL: LEMBALL 0x0049fc20
 unsigned char g_abSuccFailLayoutCompact[0x68] = {
-	0x2e, 0x00, 0x00, 0x00, 0xbe, 0x00, 0x00, 0x00, 0xd0, 0x00, 0x00, 0x00, 0xbe, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x4b, 0x00, 0x00, 0x00,
-	0x49, 0x00, 0x00, 0x00, 0x29, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x46, 0x00, 0x00, 0x00,
-	0x49, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00,
-	0x90, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
-	0x10, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x99, 0x00, 0x00, 0x00,
+	0x2e, 0x00, 0x00, 0x00, 0xbe, 0x00, 0x00, 0x00, 0xd0, 0x00, 0x00, 0x00, 0xbe, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x4b, 0x00, 0x00, 0x00, 0x49, 0x00, 0x00, 0x00,
+	0x29, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x46, 0x00, 0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 0x2c, 0x00,
+	0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x90, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x80, 0x00,
+	0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x99, 0x00, 0x00, 0x00,
 };
 
 // GLOBAL: LEMBALL 0x0049fc88
 char g_szPasswordLabel[] = "Password: ";
 
 // GLOBAL: LEMBALL 0x0049fc94
-unsigned long g_dwSuccFailReturnAnimIdsFull = 0x1b3;
+unsigned long g_dwSuccFailReturnAnimIdsFull = RES_NEWFRONT_ICONS_HIRES_RETURN;
 
 // GLOBAL: LEMBALL 0x0049fc98
-unsigned long g_dwSuccFailGoAnimIdsFull = 0x1b6;
+unsigned long g_dwSuccFailGoAnimIdsFull = RES_NEWFRONT_ICONS_HIRES_OKAY;
 
 // GLOBAL: LEMBALL 0x0049fc9c
-unsigned long g_dwSuccFailReturnAnimIdsCompact = 0x1e7;
+unsigned long g_dwSuccFailReturnAnimIdsCompact = RES_NEWFRONT_ICONS_LORES_RETURN;
 
 // GLOBAL: LEMBALL 0x0049fca0
-unsigned long g_dwSuccFailGoAnimIdsCompact = 0x1ea;
+unsigned long g_dwSuccFailGoAnimIdsCompact = RES_NEWFRONT_ICONS_LORES_OKAY;
 
 // GLOBAL: LEMBALL 0x0049fca4
-unsigned long g_dwSuccFailSingleWinBitmapIdFull = 0x135;
+unsigned long g_dwSuccFailSingleWinBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_LEMMING;
 
 // GLOBAL: LEMBALL 0x0049fca8
-unsigned long g_dwSuccFailSingleWinBitmapIdCompact = 0x140;
+unsigned long g_dwSuccFailSingleWinBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_FAILURE_LEMMING;
 
 // GLOBAL: LEMBALL 0x0049fcac
-unsigned long g_dwSuccFailSingleLoseBitmapIdFull = 0x134;
+unsigned long g_dwSuccFailSingleLoseBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_LEMMING;
 
 // GLOBAL: LEMBALL 0x0049fcb0
-unsigned long g_dwSuccFailSingleLoseBitmapIdCompact = 0x13f;
+unsigned long g_dwSuccFailSingleLoseBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_LEMMING;
 
 extern char g_szMoviePrefix[];
 
@@ -288,14 +283,14 @@ void SuccFailDrawer::Load()
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
 		if (m_variant == 0) {
-			m_backgroundId = 0x157;
+			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdFull;
-			m_secondaryBitmapId = 0x137;
+			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_BOARD;
 		}
 		else {
-			m_backgroundId = 0x158;
+			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_SUCCESS_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdFull;
-			m_secondaryBitmapId = 0x138;
+			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_BOARD;
 		}
 	}
 	else {
@@ -304,13 +299,13 @@ void SuccFailDrawer::Load()
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsCompact;
 		if (m_variant == 0) {
 			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdCompact;
-			m_backgroundId = 0x184;
-			m_secondaryBitmapId = 0x142;
+			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_FAIL_EYES;
+			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_FAILURE_BOARD;
 		}
 		else {
-			m_backgroundId = 0x185;
+			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_SUCCESS_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdCompact;
-			m_secondaryBitmapId = 0x143;
+			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_BOARD;
 		}
 	}
 	m_primaryBitmap = ResBitmap::Load(m_primaryBitmapId);
@@ -381,7 +376,7 @@ void SuccFailDrawer::DestroyDrawer()
 	if (m_animStarted != 0 && m_animWindow.m_lifecycleRefs == 1) {
 		m_animWindow.Destroy();
 		m_animStarted = 0;
-		m_animStartDeadline = CurrentMilliTimer() + 0x28;
+		m_animStartDeadline = timeGetTime() + 0x28;
 	}
 }
 
@@ -486,11 +481,14 @@ void SuccFailDrawer::Processing()
 	int* layout;
 
 	if (m_animStarted == 0) {
-		now = CurrentMilliTimer();
+		now = timeGetTime();
 		if (now > m_animStartDeadline && m_animationsEnabled != 0) {
 			if (m_display->IsWindowValid() != 0) {
 				layout = (int*) m_layout;
-				VsRect rect((short) layout[0x50 / 4], (short) layout[0x54 / 4], (short) layout[0x58 / 4], (short) layout[0x5c / 4]);
+				VsRect rect((short) layout[0x50 / 4],
+							(short) layout[0x54 / 4],
+							(short) layout[0x58 / 4],
+							(short) layout[0x5c / 4]);
 				m_animWindow.Create(rect, (PvGWnd*) m_display, g_szPaintballSequence);
 				m_animWindow.Play();
 				m_animStarted = 1;
@@ -508,14 +506,14 @@ void SuccFailDrawer::Processing()
 	}
 sound:
 	if (m_soundStarted == 0) {
-		if (m_variant == 0) {
-			g_pSoundView->PlayEffect((eSoundEffect) 0x28);
-		}
-		else {
+		if (m_variant != 0) {
 			g_pSoundView->PlayEffect((eSoundEffect) 0x27);
 		}
+		else {
+			g_pSoundView->PlayEffect((eSoundEffect) 0x28);
+		}
 		m_soundStarted = 1;
-		m_soundStartTime = CurrentMilliTimer();
+		m_soundStartTime = timeGetTime();
 	}
 }
 
@@ -537,4 +535,3 @@ void SuccFailDrawer::DrawBackGround()
 SuccFailDrawer::~SuccFailDrawer()
 {
 }
-

@@ -23,6 +23,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00446f20
 // UserActionMessage::`scalar deleting destructor'
 
-
 #endif
-

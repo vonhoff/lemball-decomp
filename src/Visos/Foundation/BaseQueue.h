@@ -53,4 +53,3 @@ extern BaseQueue* g_pMasterInputQueue;
 // BaseQueue::`scalar deleting destructor'
 
 #endif
-

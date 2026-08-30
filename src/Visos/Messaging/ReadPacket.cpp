@@ -1,5 +1,7 @@
 #include "ReadPacket.h"
+
 #include "BasePacketHeader.h"
+
 #include <new.h>
 #include <string.h>
 

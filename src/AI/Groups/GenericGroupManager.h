@@ -44,6 +44,4 @@ private:
 // SYNTHETIC: LEMBALL 0x0041e940
 // GenericGroupManager::`scalar deleting destructor'
 
-
 #endif
-

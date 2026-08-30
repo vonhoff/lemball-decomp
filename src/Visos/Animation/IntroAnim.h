@@ -15,6 +15,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00407f40
 // IntroAnim::`scalar deleting destructor'
 
-
 #endif
-

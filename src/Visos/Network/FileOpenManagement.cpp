@@ -25,4 +25,3 @@ bool FileOpenManagement::SysCloseSocket()
 FileOpenManagement::~FileOpenManagement()
 {
 }
-

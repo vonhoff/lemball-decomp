@@ -1,4 +1,5 @@
 #include "TrampolineManager.h"
+
 #include "../Navigation/Ai.h"
 #include "../Objects/Trampoline.h"
 #include "../Objects/ViewData.h"
@@ -105,4 +106,3 @@ void TrampolineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigne
 TrampolineManager::~TrampolineManager()
 {
 }
-

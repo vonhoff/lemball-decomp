@@ -1,4 +1,5 @@
 #include "Crate.h"
+
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../Navigation/Ai.h"
@@ -49,7 +50,8 @@ bool Crate::Process()
 	int blockX = x >> 4;
 	int blockY = y >> 4;
 	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
+		m_position.m_zFixed =
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
 	}
 	else {
 		m_position.m_zFixed = 0;
@@ -107,10 +109,12 @@ void Crate::DoActivate()
 	if (m_contentsType <= 23) {
 		if (m_contentsType >= 21) {
 			time = 50;
-		} else if (m_contentsType == 4) {
+		}
+		else if (m_contentsType == 4) {
 			time = 100;
 		}
-	} else if (m_contentsType == 0xffff) {
+	}
+	else if (m_contentsType == 0xffff) {
 		time = 25;
 	}
 	g_pAI->AddTime(time);
@@ -128,4 +132,3 @@ AiCoord Crate::ActivatePosition()
 	}
 	return AiCoord(x - 0x30000, y - 0x8000, z);
 }
-

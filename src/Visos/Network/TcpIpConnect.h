@@ -31,6 +31,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00471b10
 // TcpIpConnect::`scalar deleting destructor'
 
-
 #endif
-

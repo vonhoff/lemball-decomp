@@ -16,6 +16,4 @@ public:
 // SYNTHETIC: LEMBALL 0x00423010
 // TimeBonus::`scalar deleting destructor'
 
-
 #endif
-

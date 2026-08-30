@@ -20,6 +20,4 @@ private:
 // SYNTHETIC: LEMBALL 0x00452e60
 // NetworkGameStage::`scalar deleting destructor'
 
-
 #endif
-

@@ -5,8 +5,7 @@
 
 // 68K 0x1080e1a2 __ct__12CTrackWindowFRC7CVSRectiP7CPVGWnd
 // FUNCTION: LEMBALL 0x0044e790
-TrackWindow::TrackWindow(const VsRect& p_arg0, int p_arg1, PvGWnd* p_arg2)
-	: HotAreaHandler(p_arg0)
+TrackWindow::TrackWindow(const VsRect& p_arg0, int p_arg1, PvGWnd* p_arg2) : HotAreaHandler(p_arg0)
 {
 	m_reserved128 = 0;
 	m_trackSize.m_x = p_arg0.m_width;
@@ -85,4 +84,3 @@ unsigned int TrackWindow::GetStyle()
 TrackWindow::~TrackWindow()
 {
 }
-
