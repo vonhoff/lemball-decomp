@@ -18,7 +18,7 @@ struct SurfaceListNode {
 
 // SIZE 0x5a0
 // PvGdiBitmap at 0. Shared PvSurface virtual base.
-class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface {
+class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface, public virtual PvSurface {
 public:
 	friend class PvButton;
 	friend class GraphicButton;
@@ -111,23 +111,21 @@ public:
 	friend class PvBackBuffSurface;
 
 private:
-	undefined4 m_unk0xe8;           // 0xe8
-	short m_presentX;               // 0xec
-	short m_presentY;               // 0xee
-	void* m_platformBitmap;         // 0xf0
-	undefined4 m_unk0xf4;           // 0xf4
-	void* m_drawingPort;            // 0xf8
-	undefined m_bitmapInfo[0x28];   // 0xfc
-	undefined m_colourTable[0x400]; // 0x124
-	undefined4 m_unk0x524;          // 0x524
-	SurfaceListNode* m_unk0x528;    // 0x528
-	SurfaceListNode* m_unk0x52c;    // 0x52c
-	unsigned int m_unk0x530;        // 0x530
-	undefined m_lock[0x18];         // 0x534
-	undefined4 m_unk0x54c;          // 0x54c
-	ChangeList* m_changeList;       // 0x550
-	void* m_currDb;                 // 0x554
-	undefined4 m_unk0x558;          // 0x558
+	short m_presentX;                // 0xec
+	short m_presentY;                // 0xee
+	void* m_platformBitmap;          // 0xf0
+	undefined4 m_unk0xf4;            // 0xf4
+	void* m_drawingPort;             // 0xf8
+	undefined m_bitmapInfo[0x28];    // 0xfc
+	undefined m_colourTable[0x400];  // 0x124
+	undefined4 m_unk0x524;           // 0x524
+	SurfaceListNode* m_unk0x528;     // 0x528
+	SurfaceListNode* m_unk0x52c;     // 0x52c
+	unsigned int m_unk0x530;         // 0x530
+	undefined m_lock[0x18];          // 0x534
+	undefined4 m_unk0x54c;           // 0x54c
+	ChangeList* m_changeList;        // 0x550
+	void* m_currDb;                  // 0x554
 };
 
 #endif

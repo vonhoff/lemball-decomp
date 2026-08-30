@@ -293,13 +293,13 @@ void Main2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 			m_activeProcess = 0;
 		}
 		else {
-			m_activeProcess = (char*) m_game->m_process - 0x10;
+			m_activeProcess = (Ai*) m_game->m_process;
 		}
 		if (m_game->m_process == 0) {
 			ai = 0;
 		}
 		else {
-			ai = (Ai*) ((char*) m_game->m_process - 0x10);
+			ai = (Ai*) m_game->m_process;
 		}
 		m_activePalette = ai->m_map;
 		storage = operator new(0x2428);

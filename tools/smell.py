@@ -10,8 +10,10 @@ Default errors:
   vbptr-walk     *(int*)(*(int*)(obj + 0x40) + 4) virtual-base poke
   offset-poke    pointer-cast +/- field offset, including Ghidra
                  ((int*)((short*)p + 0x16))[0] and *(T*)(obj + N)
+  expr-char-offset  (char*)expr +/- 0xN including -> chains and
+                 (Ai*) ((char*) p->m_process - 0x10)
+  mi-dtor-poke   ((T*) ((char*) this + 0x40))->~T() manual MI teardown
   this-adjust    (char*)this - N mixin poke
-  no-annotation  non-empty .cpp function with neither reccmp nor 68K marker
 
 Does not flag every `+ 0x` (resource ids, timers, LCG). Those are not field pokes.
 
@@ -34,6 +36,17 @@ VBPTR_WALK = re.compile(
 	r"\*\(\s*int\s*\*\s*\)\s*\(\s*\*\(\s*int\s*\*\s*\)\s*\(\s*[^;]{1,60}?\+\s*0x40\s*\)\s*\+\s*4\s*\)"
 )
 THIS_ADJUST = re.compile(r"\(\s*char\s*\*\s*\)\s*this\s*-\s*(?:0x[0-9A-Fa-f]+|\d+)\b")
+EXPR_CHAR_OFFSET = re.compile(
+	r"\(\s*char\s*\*\s*\)"
+	r"(?:\(\s*)?"
+	r"\s*"
+	r"(?P<expr>this|[A-Za-z_][\w]*(?:\s*(?:->|\.)\s*[A-Za-z_][\w]*|\[[^\]]+\])*)"
+	r"\s+[+-]\s+(?:0x[0-9A-Fa-f]+|\d+)\b"
+)
+MI_DTOR_POKE = re.compile(
+	r"\(\s*[A-Za-z_][\w]*\s*\*\s*\)\s*"
+	r"\(\s*\(\s*char\s*\*\s*\)[^;]{1,120}?~\s*[A-Za-z_][\w]*\s*\("
+)
 PTR_CAST = re.compile(
 	r"\(\s*(?:unsigned\s+|signed\s+)?(?:char|short|int|long|void|__int16|__int32)\s*\*\s*\)"
 )
@@ -75,6 +88,13 @@ OFFSET_POKE_SAMPLES = (
 	("((UserActionMessage*) m_userActionMessage)->Set(packet->m_data + 0x10);", True),
 	("*(unsigned short*) (m_buffer + 0x0a) = 0;", True),
 	("storage = (unsigned char*) operator new(m_payloadCapacity + sizeof(BasePacketHeader));", False),
+	("((PvBackBuffSurface*) ((char*) this + 0x94))->~PvBackBuffSurface();", True),
+	("((PvSurface*) ((char*) slot->m_surface + 0x55c))->~PvSurface();", True),
+	("ai = (Ai*) ((char*) m_game->m_process - 0x10);", True),
+	("m_activeProcess = (char*) m_game->m_process - 0x10;", True),
+	("ai = (Ai*) m_game->m_process;", False),
+	("dst = (char*) m_numberBuffer + 0x21 + signLen;", False),
+	("((GunButtons*) this)->DrawBackBuffer();", False),
 )
 
 
@@ -155,11 +175,22 @@ def allowed_expr(expr: str) -> bool:
 	return bool(BUFFER_OK.search(expr))
 
 
+def expr_char_offset_poke(code: str, match: re.Match[str]) -> bool:
+	if allowed_expr(match.group("expr")):
+		return False
+	return True
+
+
 def is_offset_poke(code: str) -> bool:
 	if allowed_expr(code):
 		return False
+	if MI_DTOR_POKE.search(code):
+		return True
 	if CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code) or NAKED_DATA_OFFSET.search(code):
 		return True
+	for match in EXPR_CHAR_OFFSET.finditer(code):
+		if expr_char_offset_poke(code, match):
+			return True
 	return False
 
 
@@ -174,7 +205,16 @@ def scan_file(path: Path, strict_annot: bool) -> list[str]:
 				hits.append("%s:%d: vbptr-walk" % (rel, lineno))
 			if THIS_ADJUST.search(code):
 				hits.append("%s:%d: this-adjust-poke" % (rel, lineno))
-			if is_offset_poke(code):
+			poked = False
+			for match in EXPR_CHAR_OFFSET.finditer(code):
+				if expr_char_offset_poke(code, match):
+					hits.append("%s:%d: expr-char-offset %s" % (rel, lineno, match.group(0).strip()[:100]))
+					poked = True
+					break
+			if MI_DTOR_POKE.search(code):
+				hits.append("%s:%d: mi-dtor-poke %s" % (rel, lineno, code.strip()[:100]))
+				poked = True
+			if not poked and is_offset_poke(code):
 				hits.append("%s:%d: offset-poke %s" % (rel, lineno, code.strip()[:100]))
 			for match in CHAR_VAR_OFFSET.finditer(code):
 				if allowed_expr(match.group("expr")):
