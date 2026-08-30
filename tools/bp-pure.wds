@@ -1,0 +1,4 @@
+.sympath+ C:\Dev\lemball-decomp\build-msvc400
+.reload /f
+bp 00445f20 ".echo === PURECALL ===; kb 25; q"
+g

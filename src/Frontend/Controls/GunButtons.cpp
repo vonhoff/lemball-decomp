@@ -130,6 +130,9 @@ void GunButtons::Draw(unsigned char p_firstState, unsigned char p_secondState)
 	if (m_graphicButton != 0) {
 		m_graphicButton->Draw(p_firstState);
 	}
+	if (m_trackerButton != 0) {
+		m_trackerButton->Draw(p_firstState);
+	}
 }
 
 // 68K 0x10802e54 LoadFaces__11CGunButtonsFPUl

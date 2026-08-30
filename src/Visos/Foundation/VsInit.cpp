@@ -417,7 +417,7 @@ void InitSubSystems()
 }
 
 // 68K 0x102137a8 INIT_QuitSubSystems__Fv
-// STUB: LEMBALL 0x00459520
+// FUNCTION: LEMBALL 0x00459520
 void InitQuitSubSystems()
 {
 	*g_pSysOutput << g_szQuitNewlineSys;
@@ -571,7 +571,7 @@ int InitMain(char* p_arg0)
 		DbgQuit(g_nStartupNoWait);
 		return result;
 	}
-	mainResult = Vsmain(g_cParsedArgs, g_apszParsedArgs);
+	mainResult = VsMain(g_cParsedArgs, g_apszParsedArgs);
 	InitQuitSubSystems();
 	return mainResult;
 }
@@ -840,20 +840,22 @@ bool MemInit()
 }
 
 // 68K 0x1010ff2e _MEM_Quit__Fv
-// STUB: LEMBALL 0x0046f120
+// FUNCTION: LEMBALL 0x0046f120
 bool MemQuit()
 {
 	SmallMemory* smallMemory;
+	Arena* masterArena;
 	unsigned int lastError;
 
-	smallMemory = g_pSmallMemory;
 	g_nSmallMemoryEnabled = 0;
-	if (g_pSmallMemory != 0) {
-		g_pSmallMemory->~SmallMemory();
+	smallMemory = g_pSmallMemory;
+	if (smallMemory != 0) {
+		smallMemory->~SmallMemory();
 		operator delete(smallMemory);
 	}
-	if (g_pMasterArena != 0) {
-		delete g_pMasterArena;
+	masterArena = g_pMasterArena;
+	if (masterArena != 0) {
+		delete masterArena;
 	}
 	if (GlobalUnlock(g_pMasterArenaMemory) != 0) {
 		*g_pErrorOutput << g_szMasterArenaStillLocked;

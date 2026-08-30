@@ -367,7 +367,7 @@ void GunController::DrawSpriteWindow()
 		position.m_y = (short) (offsets[1] + m_gunY);
 		previousGdi = m_anims.m_gdi;
 		m_anims.m_gdi = m_spriteSurface;
-		m_anims.DrawAnim(position, g_dwGunAnim14c, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		m_anims.DrawAnim(position, g_dwGunAnim14c, 0, (Frames*) &m_staticAnim, 0);
 		m_anims.m_gdi = previousGdi;
 		break;
 	case 1:
@@ -375,7 +375,7 @@ void GunController::DrawSpriteWindow()
 		position.m_y = (short) (offsets[1] + m_gunY);
 		previousGdi = m_anims.m_gdi;
 		m_anims.m_gdi = m_spriteSurface;
-		m_anims.DrawAnim(position, g_dwGunAnim14c, 0, (AnimFrameBASE*) m_sideAnim, 0);
+		m_anims.DrawAnim(position, g_dwGunAnim14c, 0, (Frames*) m_sideAnim, 0);
 		m_anims.m_gdi = previousGdi;
 		break;
 	case 2:
@@ -384,37 +384,37 @@ void GunController::DrawSpriteWindow()
 		if (m_targetSide == 0) {
 			position.m_x = (short) m_projectileX;
 			position.m_y = (short) m_projectileY;
-			m_anims.DrawAnim(position, g_dwGunAnimCursor, 0, (AnimFrameBASE*) m_cursorAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnimCursor, 0, (Frames*) m_cursorAnim, 0);
 			m_anims.m_gdi = previousGdi;
 			previousGdi = m_anims.m_gdi;
 			m_anims.m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[0]);
 			position.m_y = (short) (m_gunY + offsets[1]);
-			m_anims.DrawAnim(position, g_dwGunAnim148, 0, (AnimFrameBASE*) m_hitAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnim148, 0, (Frames*) m_hitAnim, 0);
 			m_anims.m_gdi = previousGdi;
 			previousGdi = m_anims.m_gdi;
 			m_anims.m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[2]);
 			position.m_y = (short) (m_gunY + offsets[3]);
-			m_anims.DrawAnim(position, g_dwGunAnimLeftShot, 0, (AnimFrameBASE*) m_leftShotAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnimLeftShot, 0, (Frames*) m_leftShotAnim, 0);
 			m_anims.m_gdi = previousGdi;
 		}
 		else {
 			position.m_x = (short) m_projectileX;
 			position.m_y = (short) m_projectileY;
-			m_anims.DrawAnim(position, g_dwGunAnim147, 0, (AnimFrameBASE*) m_cursorAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnim147, 0, (Frames*) m_cursorAnim, 0);
 			m_anims.m_gdi = previousGdi;
 			previousGdi = m_anims.m_gdi;
 			m_anims.m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[0]);
 			position.m_y = (short) (m_gunY + offsets[1]);
-			m_anims.DrawAnim(position, g_dwGunAnim149, 0, (AnimFrameBASE*) m_hitAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnim149, 0, (Frames*) m_hitAnim, 0);
 			m_anims.m_gdi = previousGdi;
 			previousGdi = m_anims.m_gdi;
 			m_anims.m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[4]);
 			position.m_y = (short) (m_gunY + offsets[5]);
-			m_anims.DrawAnim(position, g_dwGunAnim14b, 0, (AnimFrameBASE*) m_leftShotAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnim14b, 0, (Frames*) m_leftShotAnim, 0);
 			m_anims.m_gdi = previousGdi;
 		}
 		break;
@@ -424,25 +424,25 @@ void GunController::DrawSpriteWindow()
 		if (m_targetSide == 0) {
 			position.m_x = (short) m_projectileEndX;
 			position.m_y = (short) m_projectileEndY;
-			m_anims.DrawAnim(position, g_dwGunAnim14d, 0, (AnimFrameBASE*) m_rightShotAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnim14d, 0, (Frames*) m_rightShotAnim, 0);
 			m_anims.m_gdi = previousGdi;
 			previousGdi = m_anims.m_gdi;
 			m_anims.m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[0]);
 			position.m_y = (short) (m_gunY + offsets[1]);
-			m_anims.DrawAnim(position, g_dwGunAnim148, 0, (AnimFrameBASE*) m_hitAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnim148, 0, (Frames*) m_hitAnim, 0);
 			m_anims.m_gdi = previousGdi;
 		}
 		else {
 			position.m_x = (short) m_projectileEndX;
 			position.m_y = (short) m_projectileEndY;
-			m_anims.DrawAnim(position, g_dwGunAnim14e, 0, (AnimFrameBASE*) m_rightShotAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnim14e, 0, (Frames*) m_rightShotAnim, 0);
 			m_anims.m_gdi = previousGdi;
 			previousGdi = m_anims.m_gdi;
 			m_anims.m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[0]);
 			position.m_y = (short) (m_gunY + offsets[1]);
-			m_anims.DrawAnim(position, g_dwGunAnim149, 0, (AnimFrameBASE*) m_hitAnim, 0);
+			m_anims.DrawAnim(position, g_dwGunAnim149, 0, (Frames*) m_hitAnim, 0);
 			m_anims.m_gdi = previousGdi;
 		}
 		break;

@@ -128,30 +128,37 @@ bool MainOptions2Drawer::ProcessMessages(Message* p_message)
 		return 0;
 	}
 	code = (unsigned int) p_message->code;
-	if (code == 0xacef0008) {
-		m_quitYet = 1;
-		m_returnState = 2;
-		return 1;
+	if (code < 0xacef0009) {
+		if (code == 0xacef0008) {
+			m_quitYet = 1;
+			m_returnState = 2;
+			return 1;
+		}
+		if (code > 0xacef0004) {
+			if (code > 0xacef0006) {
+				return 0;
+			}
+			return 1;
+		}
 	}
-	if (code == 0xacef0005 || code == 0xacef0006) {
-		return 1;
-	}
-	if (code == 0xacef0009) {
-		m_quitYet = 1;
-		m_returnState = 0x11;
-		return 1;
-	}
-	if (code == 0xacff0000) {
-		g_nPendingEffectsVolume = (int) p_message->payload;
-		SoundView::SetEffectsVolume((unsigned char) (((int) p_message->payload * 0xff) / (int) p_message->source));
-		return 1;
-	}
-	if (code == 0xacff0001) {
-		g_nPendingMusicVolume = (int) p_message->payload;
-		volume = (unsigned char) (((int) p_message->payload * 0xff) / (int) p_message->source);
-		*g_pSysOutput << "Setting music volume " << (unsigned long) volume << "\n";
-		SoundView::SetMusicVolume(volume);
-		return 1;
+	else {
+		if (code == 0xacef0009) {
+			m_quitYet = 1;
+			m_returnState = 0x11;
+			return 1;
+		}
+		if (code == 0xacff0000) {
+			g_nPendingEffectsVolume = (int) p_message->payload;
+			SoundView::SetEffectsVolume((unsigned char) (((unsigned int) p_message->payload * 0xff) / (unsigned int) p_message->source));
+			return 1;
+		}
+		if (code == 0xacff0001) {
+			g_nPendingMusicVolume = (int) p_message->payload;
+			volume = (unsigned char) (((unsigned int) p_message->payload * 0xff) / (unsigned int) p_message->source);
+			*g_pSysOutput << "Setting music volume " << volume << "\n";
+			SoundView::SetMusicVolume(volume);
+			return 1;
+		}
 	}
 	return 0;
 }

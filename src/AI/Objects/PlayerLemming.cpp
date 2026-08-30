@@ -1,4 +1,5 @@
 #include "PlayerLemming.h"
+#include <string.h>
 
 #include "../../Control/Game/Demo.h"
 #include "../../Control/Game/Game.h"
@@ -31,8 +32,8 @@ PlayerLemming::PlayerLemming(int p_x, int p_y, int p_z, int p_facing, unsigned i
 {
 	m_alternatePlayer = p_alternatePlayer;
 	m_spawnPosition.m_xFixed = p_x << 12;
-	m_spawnPosition.m_yFixed = p_y << 12;
 	m_initialFacingDirection = (short) p_facing;
+	m_spawnPosition.m_yFixed = p_y << 12;
 	m_spawnDelay = p_spawnDelay;
 	m_spawnPosition.m_zFixed = p_z << 12;
 	if (p_alternatePlayer != 0) {
@@ -66,11 +67,7 @@ void PlayerLemming::Restart()
 		collision[3] = tileX + 7;
 		collision[4] = tileY + 7;
 		collision[5] = tileZ + 15;
-		int* src = collision;
-		int* dst = &m_collisionMinX;
-		for (int i = 6; i != 0; i--) {
-			*dst++ = *src++;
-		}
+		memcpy(&m_collisionMinX, collision, sizeof(collision));
 		g_pAI->m_objects[g_pAI->m_objectCount] = this;
 		g_pAI->m_objectCount++;
 		m_flightVelocity.m_xFixed = 0x3000;
@@ -87,12 +84,8 @@ void PlayerLemming::Restart()
 		dest.m_yFixed = tileY << 12;
 		dest.m_zFixed = tileZ << 12;
 		AddDestination(dest);
-		m_position.m_xFixed = m_spawnPosition.m_xFixed;
-		m_position.m_yFixed = m_spawnPosition.m_yFixed;
-		m_position.m_zFixed = m_spawnPosition.m_zFixed;
+		m_position = m_spawnPosition;
 		m_unk0x2c = 0;
-		m_balloonPostActive = 0;
-		m_balloonPostId = 0;
 		m_sfxChanged = 1;
 		m_group = 0;
 		m_ice = 0;
@@ -118,9 +111,9 @@ void PlayerLemming::HitBullet(Bullet* p_bullet)
 	if (g_pGameStatus->m_status0 == 0) {
 		if ((int) m_action < 4 || ((int) m_action > 5 && m_action != 16)) {
 			if (p_bullet->m_owner == 1) {
-				unsigned int sentinel = *g_pSentinel * 0x29 + 0x1f;
-				*g_pSentinel = sentinel & 0x7fffff;
-				if ((sentinel & 1) != 0) {
+				int randVal = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
+				*g_pSentinel = randVal;
+				if (randVal % 2) {
 					return;
 				}
 			}
@@ -129,7 +122,7 @@ void PlayerLemming::HitBullet(Bullet* p_bullet)
 					return;
 				}
 				if (g_pActiveConnection != 0) {
-					g_pObjectHitMessage->Send(this);
+					g_pObjectHitMessage->Send(p_bullet);
 				}
 			}
 			m_unk0xc0 = 0;

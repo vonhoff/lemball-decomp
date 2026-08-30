@@ -12,6 +12,8 @@
 
 #include <new.h>
 
+extern int g_nGunButtonsRedrawPending;
+
 // 68K 0x101173ca Destroy__9CPVButtonFv
 // FUNCTION: LEMBALL 0x0043a540
 void PvButton::Destroy()
@@ -177,6 +179,9 @@ void PvButton::OnExit()
 	m_pressed = 0;
 	PvButton::OnExitButton();
 	OnExitButton();
+	if (m_autoDraw == 0) {
+		g_nGunButtonsRedrawPending = 1;
+	}
 }
 
 // 68K 0x1020ff28 ConvertDoubleClick__9CPVButtonF12BUTTON_FLAGS
@@ -206,6 +211,9 @@ void PvButton::OnButtonDown(const VsPoint& p_point, int p_flags)
 	m_clickY = clickPos.m_y;
 	PvButton::OnPressed(converted);
 	OnPressed(converted);
+	if (m_autoDraw == 0) {
+		g_nGunButtonsRedrawPending = 1;
+	}
 }
 
 // 68K 0x1021004e OnButtonUp__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
@@ -221,6 +229,9 @@ void PvButton::OnButtonUp(const VsPoint& p_point, int p_flags)
 		m_pressed = 0;
 		PvButton::OnReleased(converted);
 		OnReleased(converted);
+		if (m_autoDraw == 0) {
+			g_nGunButtonsRedrawPending = 1;
+		}
 	}
 }
 

@@ -154,8 +154,11 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	sequence = GetMessageTime();
 	window = (Wnd*) GetWindowLongA((HWND) p_hwnd, GWL_USERDATA);
 	if (g_pTargetGraphicsDriver->m_window == p_hwnd) {
-		window = (Wnd*) g_pTargetGraphicsSystem->m_reserved04;
-		if (window == 0) {
+		Wnd* reservedWindow = (Wnd*) g_pTargetGraphicsSystem->m_reserved04;
+		if (reservedWindow != 0) {
+			window = reservedWindow;
+		}
+		else if (window == 0) {
 			return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 		}
 	}
@@ -187,6 +190,13 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 			*g_pSysOutput << g_szFQuit;
 		}
 		return 0;
+	}
+	if (p_message == WM_CLOSE) {
+		if ((unsigned short) p_lParam == 1) {
+			ReleaseCapture();
+			return 1;
+		}
+		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 	if (p_message == WM_QUIT) {
 		if (g_pDebugOutput != 0) {
@@ -425,8 +435,9 @@ Wnd::Wnd()
 // FUNCTION: LEMBALL 0x00465200
 void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 {
+	unsigned int styleFlags;
 	unsigned int style;
-	unsigned int flags;
+	POINT screenPoint;
 	RECT windowRect;
 	HMENU menu;
 	HWND parentWindow;
@@ -444,28 +455,33 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 	m_parent = p_parent;
 	m_createRect = p_parent;
 
-	flags = GetStyle();
-	if (p_parent != 0 && (flags & 0x40000000) == 0) {
-		p_parent->AddChild(this);
-		m_rect.m_x = (short) (p_parent->m_rect.m_x + p_rect.m_x);
-		m_rect.m_y = (short) (p_parent->m_rect.m_y + p_rect.m_y);
-		m_relativeTopLeft.m_x = p_rect.m_x;
-		m_relativeTopLeft.m_y = p_rect.m_y;
-		m_zoom = p_parent->m_zoom;
-		OnCreate();
-		Dummy3c();
-		OnSize();
-		BaseOnSize();
-		return;
+	if (p_parent != 0) {
+		styleFlags = GetStyle();
+		if ((styleFlags & 0x40000000) == 0) {
+			p_parent->AddChild(this);
+			screenPoint.x = (LONG) ((int) p_parent->m_rect.m_x + (int) p_rect.m_x);
+			screenPoint.y = (LONG) ((int) p_parent->m_rect.m_y + (int) p_rect.m_y);
+			ClientToScreen((HWND) ((Wnd*) p_parent)->m_nativeWindow, &screenPoint);
+			m_rect.m_x = (short) screenPoint.x;
+			m_rect.m_y = (short) screenPoint.y;
+			m_relativeTopLeft.m_x = p_rect.m_x;
+			m_relativeTopLeft.m_y = p_rect.m_y;
+			m_zoom = p_parent->m_zoom;
+			OnCreate();
+			Dummy3c();
+			OnSize();
+			BaseOnSize();
+			return;
+		}
 	}
 
 	if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
 		style = ConvertWindowStyleFlags(GetStyle());
 		parentWindow = 0;
-		if ((GetStyle() & 0x40000000) != 0 && p_parent != 0) {
+		styleFlags = GetStyle();
+		if ((styleFlags & 0x40000000) != 0 && p_parent != 0) {
 			m_parent = 0;
 			style = (style & 0x7fffffff) | 0x40000000;
-			parentWindow = (HWND) ((Wnd*) p_parent)->m_nativeWindow;
 		}
 
 		windowRect.left = p_rect.m_x;
@@ -486,6 +502,12 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 		}
 
 		AdjustWindowRect(&windowRect, style, hasMenu != 0);
+		if ((style & 0x40000000) == 0 || p_parent == 0) {
+			parentWindow = 0;
+		}
+		else {
+			parentWindow = (HWND) ((Wnd*) p_parent)->m_nativeWindow;
+		}
 		hwnd = CreateWindowExA(0,
 							   g_pszVsBaseWindowClass,
 							   p_title,
@@ -505,30 +527,33 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 		if (m_nativeWindow == 0) {
 			FatalWin32Error(g_szUnableToCreateWindow);
 		}
-		if ((GetStyle() & 1) != 0) {
+		styleFlags = GetStyle();
+		if ((styleFlags & 1) != 0) {
 			UpdateWindow((HWND) m_nativeWindow);
 			ShowWindow((HWND) m_nativeWindow, 5);
 			SetForegroundWindow((HWND) m_nativeWindow);
 		}
+		return;
 	}
-	else {
-		m_parent = 0;
-		m_rect.m_width = p_rect.m_width;
-		m_rect.m_height = p_rect.m_height;
-		m_rect.m_x = p_rect.m_x;
-		m_rect.m_y = p_rect.m_y;
-		m_relativeTopLeft.m_x = p_rect.m_x;
-		m_relativeTopLeft.m_y = p_rect.m_y;
-		g_pTargetGraphicsSystem->m_reserved04 = (unsigned int) this;
-		m_nativeWindow = g_pTargetGraphicsDriver->m_window;
-		OnCreate();
-		Dummy3c();
-		OnSize();
-		BaseOnSize();
-	}
+
+	m_parent = 0;
+	m_rect.m_width = p_rect.m_width;
+	m_rect.m_height = p_rect.m_height;
+	m_rect.m_x = p_rect.m_x;
+	m_rect.m_y = p_rect.m_y;
+	m_relativeTopLeft.m_x = p_rect.m_x;
+	m_relativeTopLeft.m_y = p_rect.m_y;
+	g_pTargetGraphicsSystem->m_reserved04 = (unsigned int) this;
+	m_nativeWindow = g_pTargetGraphicsDriver->m_window;
+	SetFocusWindow();
+	Dummy98();
+	OnCreate();
+	Dummy3c();
+	OnSize();
+	BaseOnSize();
 }
 
-// STUB: LEMBALL 0x004654f0
+// FUNCTION: LEMBALL 0x004654f0
 unsigned int ConvertWindowStyleFlags(unsigned int p_style)
 {
 	return ((p_style & 8) == 0) - 1 & 0xcb0000

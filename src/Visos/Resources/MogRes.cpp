@@ -441,9 +441,9 @@ void MogRes::CleanUpResources()
 // FUNCTION: LEMBALL 0x0045ceb0
 void MogRes::Remove(ResBase* p_resource)
 {
-	int count = m_resourceCount;
-	int scanned = 0;
-	int i = 0;
+	unsigned int count = m_resourceCount;
+	unsigned int scanned = 0;
+	unsigned int i = 0;
 
 	if (count > scanned) {
 		do {

@@ -205,11 +205,11 @@ void Main2DDisplay::RefreshView()
 }
 
 // 68K 0x10b008d0 Process__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431940
+// FUNCTION: LEMBALL 0x00431940
 void Main2DDisplay::Process()
 {
 	if (m_drawer != 0) {
-		((Drawer*) m_drawer)->Process();
+		m_drawer->Process();
 	}
 }
 
@@ -459,30 +459,33 @@ bool Main2DDisplay::GetMenu(int& p_count, MenuList*** p_menu)
 }
 
 // 68K 0x10b00e78 OnDriverChange__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431ed0
+// FUNCTION: LEMBALL 0x00431ed0
 void Main2DDisplay::OnDriverChange()
 {
+	if (m_drawer != 0) {
+		m_drawer->OnDriverChange();
+	}
 }
 
 // 68K 0x10b00ec0 QuitYet__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431ee0
-unsigned char Main2DDisplay::QuitYet()
+// FUNCTION: LEMBALL 0x00431ee0
+int Main2DDisplay::QuitYet()
 {
 	if (m_pauseWindow != 0) {
 		return 2;
 	}
 	if (m_drawer != 0) {
-		return (unsigned char) ((BaseFrontendDrawer*) m_drawer)->QuitYet();
+		return m_drawer->QuitYet();
 	}
 	return 0;
 }
 
 // 68K 0x10b00f80 GetReturnState__14CMain2DDisplayFv
-// STUB: LEMBALL 0x00431f10
-unsigned char Main2DDisplay::GetReturnState()
+// FUNCTION: LEMBALL 0x00431f10
+int Main2DDisplay::GetReturnState()
 {
 	if (m_pauseWindow == 0 && m_drawer != 0) {
-		return (unsigned char) ((BaseFrontendDrawer*) m_drawer)->GetReturnState();
+		return m_drawer->GetReturnState();
 	}
 	return 0;
 }

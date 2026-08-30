@@ -19,6 +19,8 @@ public:
 	friend class Ammo;
 	friend class Key;
 	friend class Balloon;
+	friend class Catapult;
+	friend class Collectable;
 	friend class Crate;
 	friend class Duplicator;
 

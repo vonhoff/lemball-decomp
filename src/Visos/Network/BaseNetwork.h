@@ -45,6 +45,7 @@ public:
 	friend bool VsNetQuit();
 	friend class NetworkOptionsProc;
 	friend class Game;
+	friend class BaseFrontendDrawer;
 
 private:
 	char* m_networkName;                      // 0x10

@@ -330,6 +330,10 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 			}
 			gameName = g_pNetworkManager->m_gameMessages[p_index].m_gameName;
 			peerName = g_pNetworkManager->m_gameMessages[p_index].m_peerName;
+			if (g_pNetworkManager->m_connections[p_index] == 0 ||
+				g_pNetworkManager->m_connections[p_index]->m_address == 0) {
+				return;
+			}
 			addressStr = g_pNetworkManager->m_connections[p_index]->m_address->GetStr();
 			memcpy(trimmedPeerName, peerName, 0x14);
 			len = 0x14;
@@ -419,16 +423,19 @@ void NetworkOptionsDrawer::DrawText()
 
 		m_messageDirty = m_message;
 		if (g_pNetworkManager != 0) {
+			int searchIndex;
 			row = 0;
 			int fallbackHighlighted = -1;
 			if (m_highlightedPlayer != -1 && m_playerEntries[m_highlightedPlayer].m_active == 0) {
-				for (int i = 0; i < 10; i++) {
-					if (m_playerEntries[i].m_active != 0) {
-						m_highlightedPlayer = i;
+				searchIndex = 0;
+				do {
+					if (m_playerEntries[searchIndex].m_active != 0) {
+						m_highlightedPlayer = searchIndex;
 						break;
 					}
-				}
-				if (i == 10) {
+					searchIndex = searchIndex + 1;
+				} while (searchIndex < 10);
+				if (searchIndex == 10) {
 					fallbackHighlighted = m_highlightedPlayer;
 				}
 			}
@@ -941,15 +948,17 @@ void NetworkOptionsDrawer::Processing()
 		m_lastDrawTime = now;
 	}
 	if (g_pNetworkManager != 0) {
-		ident = (unsigned int) ((BroadcastAddressDispatch*) g_pBroadcastAddress)->GetStr();
-		peer = g_szBroadcastPeerName;
-		if (m_stopPending != ident) {
-			m_backBufferNeeded = 1;
-			m_stopPending = ident;
-		}
-		if (m_connectionState != (unsigned int) peer) {
-			m_backBufferNeeded = 1;
-			m_connectionState = (unsigned int) peer;
+		if (g_pBroadcastAddress != 0) {
+			ident = (unsigned int) ((BroadcastAddressDispatch*) g_pBroadcastAddress)->GetStr();
+			peer = g_szBroadcastPeerName;
+			if (m_stopPending != ident) {
+				m_backBufferNeeded = 1;
+				m_stopPending = ident;
+			}
+			if (m_connectionState != (unsigned int) peer) {
+				m_backBufferNeeded = 1;
+				m_connectionState = (unsigned int) peer;
+			}
 		}
 		if (m_networkState == 0) {
 			if (g_pNetworkManager->m_connectionsChanged != 0) {
@@ -964,32 +973,34 @@ void NetworkOptionsDrawer::Processing()
 			m_backBufferNeeded = 1;
 			InitialiseHandlers();
 		}
-		connections = g_pNetworkManager->m_connections;
-		current = connections;
-		index = 0;
-		do {
-			if (m_playerEntries[index].m_pressed != 0 &&
-				m_acceptedPlayer != index) {
-				g_pSoundView->PlayEffect((eSoundEffect) 0x25);
-				if (m_acceptedPlayer != -1) {
-					connection = connections[m_acceptedPlayer];
-					if (connection != 0) {
-						g_pNetworkOptionsProc->Reject(connection);
+		if (g_pNetworkOptionsProc != 0) {
+			connections = g_pNetworkManager->m_connections;
+			current = connections;
+			index = 0;
+			do {
+				if (m_playerEntries[index].m_pressed != 0 &&
+					m_acceptedPlayer != index) {
+					g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+					if (m_acceptedPlayer != -1) {
+						connection = connections[m_acceptedPlayer];
+						if (connection != 0) {
+							g_pNetworkOptionsProc->Reject(connection);
+						}
+					}
+					m_acceptedPlayer = index;
+					if (*current != 0) {
+						activation = m_playerEntries[index].m_activationState;
+						if (activation != 0) {
+							Lock();
+						}
+						g_pNetworkOptionsProc->Accept(*current, activation);
 					}
 				}
-				m_acceptedPlayer = index;
-				if (*current != 0) {
-					activation = m_playerEntries[index].m_activationState;
-					if (activation != 0) {
-						Lock();
-					}
-					g_pNetworkOptionsProc->Accept(*current, activation);
-				}
-			}
-			current = current + 1;
-			index = index + 1;
-			m_playerEntries[index - 1].m_pressed = 0;
-		} while (index < 10);
+				current = current + 1;
+				index = index + 1;
+				m_playerEntries[index - 1].m_pressed = 0;
+			} while (index < 10);
+		}
 	}
 	if (m_message != 0) {
 		duration = m_messageDuration;
@@ -1188,28 +1199,36 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 	height = m_layoutTable->m_entryHeight;
 	width = m_layoutTable->m_entryWidth;
 	x = (short) m_layoutTable->m_entryX;
-	valid = &messages->m_valid;
 	m_visibleEntryCount = 0;
 	offset = 0;
-	do {
-		entry = &m_playerEntries[offset];
-		if (m_visibleEntryCount < 4 && connections != 0 && *connections != 0 && *valid != 0) {
-			entry->m_x = x;
-			entry->m_y = y;
-			entry->m_width = width;
-			entry->m_height = height;
-			entry->SetActive(1);
-			stride = m_layoutTable->m_rowStride;
-			y = y + (short) stride;
-			m_visibleEntryCount = m_visibleEntryCount + 1;
-		}
-		else {
-			entry->SetActive(0);
-		}
-		offset = offset + 1;
-		valid = &messages[offset].m_valid;
-		connections = connections + 1;
-	} while (offset < 10);
+	if (messages != 0 && connections != 0) {
+		valid = &messages->m_valid;
+		do {
+			entry = &m_playerEntries[offset];
+			if (m_visibleEntryCount < 4 && *connections != 0 && *valid != 0) {
+				entry->m_x = x;
+				entry->m_y = y;
+				entry->m_width = width;
+				entry->m_height = height;
+				entry->SetActive(1);
+				stride = m_layoutTable->m_rowStride;
+				y = y + (short) stride;
+				m_visibleEntryCount = m_visibleEntryCount + 1;
+			}
+			else {
+				entry->SetActive(0);
+			}
+			offset = offset + 1;
+			valid = &messages[offset].m_valid;
+			connections = connections + 1;
+		} while (offset < 10);
+	}
+	else {
+		do {
+			m_playerEntries[offset].SetActive(0);
+			offset = offset + 1;
+		} while (offset < 10);
+	}
 	UpdateHighlightedEntry();
 }
 
@@ -1224,20 +1243,22 @@ void NetworkOptionsDrawer::ResetHandlers()
 
 	if (g_pNetworkManager != 0) {
 		connections = g_pNetworkManager->m_connections;
-		index = 0;
 		messages = g_pNetworkManager->m_gameMessages;
-		valid = &messages->m_valid;
-		do {
-			if (*connections == 0 || *valid == 0) {
-				m_playerEntries[index].Reset();
-				if (m_acceptedPlayer == index) {
-					m_acceptedPlayer = -1;
+		if (messages != 0 && connections != 0) {
+			index = 0;
+			valid = &messages->m_valid;
+			do {
+				if (*connections == 0 || *valid == 0) {
+					m_playerEntries[index].Reset();
+					if (m_acceptedPlayer == index) {
+						m_acceptedPlayer = -1;
+					}
 				}
-			}
-			index = index + 1;
-			valid = &messages[index].m_valid;
-			connections = connections + 1;
-		} while (index < 10);
+				index = index + 1;
+				valid = &messages[index].m_valid;
+				connections = connections + 1;
+			} while (index < 10);
+		}
 	}
 	InitialiseHandlers();
 }

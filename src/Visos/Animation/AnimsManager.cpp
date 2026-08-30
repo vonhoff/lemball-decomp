@@ -24,7 +24,7 @@ void AnimsManager::FreeVram()
 }
 
 // 68K 0x1020019c __ct__13CAnimsManagerFP4CGDIUliiiUc
-// STUB: LEMBALL 0x00467260
+// FUNCTION: LEMBALL 0x00467260
 AnimsManager::AnimsManager(Gdi* p_arg0, unsigned long p_arg1, int p_arg2, int p_arg3, int p_arg4, unsigned char p_arg5)
 {
 	int i;

@@ -19,9 +19,11 @@ void HotAreaHandler::OnButtonUp(const VsPoint& p_point, int p_flags)
 }
 
 // 68K 0x10102224 OnExternalButtonUp__15CHotAreaHandlerFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00439980
+// FUNCTION: LEMBALL 0x00439980
 void HotAreaHandler::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 {
+	m_buttonState[p_flags + 3] = 0;
+	m_buttonState[p_flags] = 0;
 }
 
 // 68K 0x1010228a OnEnter__15CHotAreaHandlerFv
@@ -31,9 +33,21 @@ void HotAreaHandler::OnEnter()
 }
 
 // 68K 0x101022b2 OnExit__15CHotAreaHandlerFv
-// STUB: LEMBALL 0x004399b0
+// FUNCTION: LEMBALL 0x004399b0
 void HotAreaHandler::OnExit()
 {
+	int i;
+	unsigned int* state;
+
+	if (m_reserved == 0) {
+		state = m_buttonState;
+		i = 6;
+		while (i != 0) {
+			*state = 0;
+			++state;
+			--i;
+		}
+	}
 }
 
 // 68K 0x101022f2 OnInside__15CHotAreaHandlerFRC8CVSPoint

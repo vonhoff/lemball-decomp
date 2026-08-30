@@ -52,6 +52,7 @@ public:
 	friend struct TargetGraphicsSystemState;
 	friend class GWnd;
 	friend class Surface;
+	friend bool TargetPumpEvents();
 
 private:
 	void* m_driverModule;         // 0x04

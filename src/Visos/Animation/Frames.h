@@ -4,6 +4,7 @@
 #include "../../Common.h"
 
 // SIZE 0x10
+// VTABLE: LEMBALL 0x00496d04
 class Frames {
 public:
 	Frames(unsigned int p_frames = 0) : m_frames(p_frames) {}
@@ -13,6 +14,7 @@ public:
 	friend class GunController;
 	friend class AnimsManager;
 	friend class CdLoadAnim;
+	friend class HiliteController;
 	friend class PasswordDrawer;
 
 protected:

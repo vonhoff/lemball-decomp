@@ -17,7 +17,7 @@
 #include <new.h>
 #include <string.h>
 
-#pragma intrinsic(memcpy, strcpy, strlen)
+#pragma intrinsic(memcpy)
 
 extern "C" __declspec(dllimport) void* __stdcall LoadIconA(void* p_instance, const char* p_name);
 
@@ -61,7 +61,7 @@ void SetGameDefaults()
 	g_nDisplayMode = 0;
 	g_nEditLevelMode = 0;
 	g_nPlayLevelMode = 0;
-	if (graphicsSystem->m_driverMode < 2 || 3 < graphicsSystem->m_driverMode) {
+	if (graphicsSystem->m_driverMode < 2 || graphicsSystem->m_driverMode > 3) {
 		g_nCompactPrimaryContextLayout = 0;
 	}
 	else {
@@ -82,7 +82,7 @@ void DisplayHelp()
 
 // 68K 0x1070067e VSmain__FiPPc
 // FUNCTION: LEMBALL 0x00406310
-int Vsmain(int p_argc, char** p_argv)
+int VsMain(int p_argc, char** p_argv)
 {
 	int* sentinel;
 	Game* game;

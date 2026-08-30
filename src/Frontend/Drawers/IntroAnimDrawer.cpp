@@ -46,6 +46,16 @@ void IntroAnimDrawer::UnLoad()
 {
 }
 
+// 68K 0x10805dda __dt__16CIntroAnimDrawerFv
+// FUNCTION: LEMBALL 0x00447550
+IntroAnimDrawer::~IntroAnimDrawer()
+{
+	if (m_loaded != 0) {
+		UnLoad();
+	}
+	m_display->Clear(-1);
+}
+
 // 68K 0x10805eb8 DestroyDrawer__16CIntroAnimDrawerFv
 // FUNCTION: LEMBALL 0x004475a0
 void IntroAnimDrawer::DestroyDrawer()
@@ -72,8 +82,8 @@ void IntroAnimDrawer::EndPhase()
 // FUNCTION: LEMBALL 0x00447610
 bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 {
-	switch (p_message->type) {
-	case 4:
+	unsigned short type = p_message->type;
+	if (type == 4) {
 		switch (p_message->code) {
 		case 0x1f:
 		case 0x22:
@@ -84,13 +94,13 @@ bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 		default:
 			return 0;
 		}
-	case 6:
+	}
+	if (type == 6) {
 		EndPhase();
 		return 1;
-	default:
-		m_processedCount++;
-		return 0;
 	}
+	m_processedCount++;
+	return 0;
 }
 
 // 68K 0x1080601e Processing__16CIntroAnimDrawerFv
@@ -106,14 +116,10 @@ void IntroAnimDrawer::Processing()
 	}
 	if (m_startCountdown == 0) {
 		VsRect introRect;
-		short w = m_display->m_rect.m_width;
-		short h = m_display->m_rect.m_height;
-		introRect.m_width = w;
-		introRect.m_height = h;
-		introRect.m_x = (short) (w - 320) / 2;
-		introRect.m_y = (short) (h - 240) / 2;
+		introRect.m_x = (short) (m_display->m_rect.m_width - 320) / 2;
 		introRect.m_width = 320;
 		introRect.m_height = 240;
+		introRect.m_y = (short) (m_display->m_rect.m_height - 240) / 2;
 		if (m_started == 0) {
 			g_pSoundView->ChangeState(1, 0);
 			m_animWindow.Create(introRect, m_display, g_szPaintBallIntroSequence);
@@ -123,9 +129,4 @@ void IntroAnimDrawer::Processing()
 		m_animWindow.Resume();
 		m_startCountdown = -1;
 	}
-}
-
-// 68K 0x10805dda __dt__16CIntroAnimDrawerFv
-IntroAnimDrawer::~IntroAnimDrawer()
-{
 }

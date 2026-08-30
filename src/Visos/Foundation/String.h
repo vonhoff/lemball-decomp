@@ -7,11 +7,11 @@
 class String {
 public:
 	String();
-	String(char* p_text);
-	String(String& p_other);
+	String(const char* p_text);
+	String(const String& p_other);
 	~String();
 
-	String& operator=(String& p_other);
+	String& operator=(const String& p_other);
 	String& operator=(const char* p_text);
 	String operator+=(String& p_other);
 	String operator+=(const char* p_text);

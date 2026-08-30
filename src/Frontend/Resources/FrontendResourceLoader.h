@@ -3,9 +3,11 @@
 
 #include "../../Common.h"
 
+#include "../../Views/Sound/SoundView.h" // complete type for LoadUpdate
+
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00497ad4
-class FrontendResourceLoader {
+class FrontendResourceLoader : public LoadUpdate {
 public:
 	FrontendResourceLoader(Main2DDisplay* p_arg0, int p_arg1);
 	virtual void UpdateNonCacheLoad(); // vtable+0x00
@@ -20,7 +22,7 @@ public:
 	void UnLoadFont(unsigned long p_resourceId);
 	void UnLoadPalette(unsigned long p_resourceId);
 	void UnLoadString(unsigned long p_resourceId);
-	~FrontendResourceLoader();
+	virtual ~FrontendResourceLoader(); // vtable+0x04
 
 private:
 	CdLoadAnim* m_loadAnim;            // 0x04

@@ -30,9 +30,16 @@ void Balloon::Restart()
 // FUNCTION: LEMBALL 0x0041d650
 bool Balloon::Process()
 {
-	int x = m_position.m_xFixed >> 12;
 	int y = m_position.m_yFixed >> 12;
-	m_position.m_zFixed = g_pMap->m_ground.GetZ(x, y) << 12;
+	int x = m_position.m_xFixed >> 12;
+	int blockX = x >> 4;
+	int blockY = y >> 4;
+	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
+	}
+	else {
+		m_position.m_zFixed = 0;
+	}
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == 26) {

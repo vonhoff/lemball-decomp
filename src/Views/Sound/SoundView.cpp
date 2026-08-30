@@ -246,7 +246,7 @@ void SoundView::PrepareEffects(unsigned short p_stateMask)
 			}
 			slot->m_lastPlayed = timestamp;
 			if (m_loadUpdate != 0) {
-				m_loadUpdate->Update();
+				m_loadUpdate->UpdateNonCacheLoad();
 			}
 			slot++;
 			i--;

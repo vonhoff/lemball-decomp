@@ -21,8 +21,10 @@
 #include "../../Visos/Animation/StatManager.h"
 #include "../../Visos/Foundation/MainOptions1.h"
 #include "../../Visos/Foundation/MainOptions2.h"
-#include "../../Visos/Foundation/Process.h"
+#include "../../Visos/Foundation/BaseProcess.h"
 #include "../../Visos/Foundation/VsDebug.h"
+#include "../../Visos/Foundation/VsDebugStreambuf.h"
+#include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Foundation/VsSound.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Network/Game/NetworkManager.h"
@@ -43,12 +45,25 @@
 #pragma intrinsic(strcpy, strcat, strcmp)
 
 extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd, const char* lpText, const char* lpCaption, unsigned int uType);
 
 // GLOBAL: LEMBALL 0x0049cbc8
 char g_szLemmingsPaintball[20] = "Lemmings Paintball";
 
+// GLOBAL: LEMBALL 0x0049cbdc
+char g_szPaintballNotInstalled[24] = "Paintball Not Installed";
+
+// GLOBAL: LEMBALL 0x0049cbf4
+char g_szInstallPrompt[92] = "To play Lemmings Paintball, you must first install it.  Run the SETUP.EXE program on the CD";
+
 // GLOBAL: LEMBALL 0x0049cc50
 char g_szVsMemDll[12] = "vsmem.dll";
+
+// GLOBAL: LEMBALL 0x0049cc5c
+char g_szUnableToFindCd[20] = "Unable to find CD";
+
+// GLOBAL: LEMBALL 0x0049cc70
+char g_szInsertCdPrompt[52] = "Please insert the Paintball CD in a local CD Drive";
 
 // GLOBAL: LEMBALL 0x0049cca4
 char g_szProcessing[12] = "Processing";
@@ -97,7 +112,7 @@ extern StatManager* g_pStatManager;
 Game::Game(char* p_arg0)
 {
 	void* storage;
-	VsRect useRect;
+	char titleBuf[80];
 
 	m_frontendResources = 0;
 	g_pGameStatus = 0;
@@ -107,8 +122,28 @@ Game::Game(char* p_arg0)
 	m_quit = 1;
 	m_process = 0;
 
-	g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintball, 1);
-	g_pTargetPlatformServices->GetCDDir(g_szVsMemDll);
+	if (g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintball, 1) == 0) {
+		if (0) {
+			MessageBoxA(0, g_szInstallPrompt, g_szPaintballNotInstalled, 0);
+			return;
+		}
+	}
+
+	int cdResult = 0;
+	do {
+		if (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) != 0) {
+			break;
+		}
+		if (0) {
+			cdResult = MessageBoxA(0, g_szInsertCdPrompt, g_szUnableToFindCd, 1);
+			if (cdResult == 1) {
+				continue;
+			}
+		}
+	} while (cdResult != 2);
+	if (cdResult == 2) {
+		return;
+	}
 
 	storage = operator new(0x50);
 	if (storage == 0) {
@@ -162,8 +197,13 @@ Game::Game(char* p_arg0)
 		m_mainDisplay = new (storage) Main2DDisplay(this);
 	}
 
-	useRect = m_mainDisplay->GetUseRect(-1, -1);
-	m_mainDisplay->Create(useRect, 0, g_szLemmingsPaintballTitle);
+	{
+		VsDebugStreambuf streambuf(titleBuf, 80, 0);
+		VsOStream stream(&streambuf);
+		stream << g_szLemmingsPaintballTitle;
+
+		m_mainDisplay->Create(m_mainDisplay->GetUseRect(-1, -1), 0, titleBuf);
+	}
 
 	InitSound(g_nMusicVolume, g_nEffectsVolume, 0x32, m_mainDisplay, 0);
 	if (g_nMusicVolume != 0) {
@@ -213,9 +253,9 @@ Game::~Game()
 		g_pNetworkManager->Stop();
 	}
 	if (g_pBaseNetwork != 0) {
-		started = timeGetTime();
+		started = CurrentMilliTimer();
 		do {
-			now = timeGetTime();
+			now = CurrentMilliTimer();
 			if (now - started >= 2000) {
 				break;
 			}
@@ -228,7 +268,7 @@ Game::~Game()
 	if (m_mainDisplay != 0) {
 		m_mainDisplay->Destroy();
 		if (m_mainDisplay != 0) {
-			delete static_cast<BaseQueueHandler*>(m_mainDisplay);
+			delete (BaseQueueHandler*) m_mainDisplay;
 		}
 	}
 	if (m_process != 0) {
@@ -485,30 +525,55 @@ done:
 // FUNCTION: LEMBALL 0x004077e0
 void Game::Process()
 {
-	unsigned char quitState;
+	int timing;
+	BaseStat* stat;
+	unsigned long now;
+	int quitState;
 
 	m_mainDisplay->Process();
 	if (m_process != 0) {
-		((BaseFrontendProcess*) m_process)->Process();
-		if (m_process->m_processState == 1) {
-			NextProcess(m_process->m_returnState);
+		timing = 0;
+		if ((m_currentFlow == 5 || m_currentFlow == 0x13) && 0x32 < (int) m_flowTicks) {
+			timing = 1;
+			stat = m_processingStat;
+			stat->m_timingStart = (void*) CurrentMilliTimer();
+			stat->m_timingActive = 1;
 		}
-		else if (m_process->m_processState == 2) {
+		m_process->Process();
+		if (timing != 0) {
+			stat = m_processingStat;
+			if (stat->m_timingActive != 0) {
+				now = CurrentMilliTimer();
+				stat->Update(now - (unsigned long) stat->m_timingStart);
+				stat->m_timingActive = 0;
+			}
+		}
+		if (g_pNetworkManager != 0) {
+			g_pNetworkManager->GameProcess();
+		}
+		switch (m_process->m_processState) {
+		case 1:
+			NextProcess(m_process->m_returnState);
+			break;
+		case 2:
 			m_quit = 1;
+			break;
 		}
 	}
 
 	quitState = m_mainDisplay->QuitYet();
-	if (quitState == 1) {
+	switch (quitState) {
+	case 1:
 		NextProcess(m_mainDisplay->GetReturnState());
-	}
-	else if (quitState == 2) {
+		break;
+	case 2:
 		m_quit = 1;
+		break;
 	}
 
 	if (m_quit != 0) {
 		if (m_mainDisplay->m_drawer != 0) {
-			((Drawer*) m_mainDisplay->m_drawer)->DestroyDrawer();
+			m_mainDisplay->m_drawer->ShutDown();
 		}
 		if (m_process != 0) {
 			delete m_process;
@@ -530,7 +595,7 @@ void Game::RefreshViews()
 	if ((m_currentFlow == 5 || m_currentFlow == 0x13) && 0x32 < (int) m_flowTicks) {
 		timing = 1;
 		stat = m_refreshingStat;
-		now = timeGetTime();
+		now = CurrentMilliTimer();
 		stat->m_timingStart = (void*) now;
 		stat->m_timingActive = timing;
 	}
@@ -538,7 +603,7 @@ void Game::RefreshViews()
 	if (timing != 0) {
 		stat = m_refreshingStat;
 		if (stat->m_timingActive != 0) {
-			now = timeGetTime();
+			now = CurrentMilliTimer();
 			stat->Update(now - (unsigned long) stat->m_timingStart);
 			stat->m_timingActive = 0;
 		}
@@ -549,12 +614,9 @@ void Game::RefreshViews()
 // FUNCTION: LEMBALL 0x00407950
 void Game::Run()
 {
-	Demo* demo;
-	int pumpResult;
-
-	demo = g_pDemo;
 	if (g_pDemo != 0 && g_nDemoMode == 0) {
-		g_pDemo->m_currentResourceId = 0x14;
+		Demo* demo = g_pDemo;
+		demo->m_currentResourceId = 0x14;
 		demo->m_firstResourceId = 0x14;
 		demo->m_resourceCount = 8;
 	}
@@ -566,16 +628,17 @@ void Game::Run()
 		if (g_pDemo != 0) {
 			g_pDemo->Process();
 		}
-		pumpResult = TargetPumpEvents();
-		if (pumpResult == 0) {
+		switch (TargetPumpEvents()) {
+		case 0:
 			Process();
 			if (m_quit != 0) {
 				return;
 			}
 			RefreshViews();
-		}
-		else if (pumpResult == 1) {
+			break;
+		case 1:
 			m_quit = 1;
+			break;
 		}
 	}
 }

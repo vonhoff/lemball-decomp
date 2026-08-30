@@ -3,7 +3,7 @@
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/Process.h"          // complete type
+#include "../../Visos/Foundation/BaseProcess.h"          // complete type
 #include "../../Visos/Messaging/NetworkMessage.h"    // complete type
 #include "../Base/AiCoord.h"                         // complete type
 #include "../Base/Pt3.h"                             // complete type
@@ -12,7 +12,7 @@
 // VTABLE: LEMBALL 0x00493a50 primary BaseQueueHandler view
 // VTABLE: LEMBALL 0x00493a40 secondary Process view at +0x10
 // VTABLE: LEMBALL 0x00493a20 secondary NetworkMessage view at +0x1c
-class Ai : public BaseQueueHandler, public Process {
+class Ai : public BaseQueueHandler, public BaseProcess {
 public:
 	Ai(Game* p_arg0);
 	Game* LevelName();
@@ -55,7 +55,7 @@ public:
 	void LoadFlagInfo(unsigned char* p_data, int p_size);
 	void LoadLevel(unsigned char* p_data, int p_version, unsigned char p_skip);
 	void NLemmings(int p_count);
-	void Process();
+	virtual void Process(); // vtable+0x04
 	void Process(unsigned char p_paused);
 	void QuitGame();
 	void Restart();
@@ -90,6 +90,7 @@ public:
 	friend class SheepGroupManager;
 	friend class EnemyGroupManager;
 	friend class NodeManager;
+	friend class Collectable;
 	friend class Enemy;
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 

@@ -137,6 +137,7 @@ public:
 	friend class Duplicator;
 	friend class Key;
 	friend class Balloon;
+	friend class Collectable;
 	friend class Crate;
 
 protected:

@@ -297,8 +297,8 @@ void NetworkMessage::Send(Connect* p_arg0)
 {
 	if (p_arg0 != 0) {
 		Message msg;
-		msg.source = this;
 		msg.payload = p_arg0;
+		msg.source = this;
 		msg.code = 1;
 		msg.type = 0xb;
 		OpenDataStream();

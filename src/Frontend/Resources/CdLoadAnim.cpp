@@ -164,7 +164,7 @@ void CdLoadAnimDraw::Draw()
 	point.m_x = (short) (m_points[1].m_x + m_centerX);
 	point.m_y = (short) (m_points[1].m_y + m_centerY);
 	anims = (CdLoadAnim*) ((unsigned int) this - 0x74);
-	anims->DrawAnim(point, m_animResourceId, 0, (AnimFrameBASE*) m_repeatAnim, 0);
+	anims->DrawAnim(point, m_animResourceId, 0, (Frames*) m_repeatAnim, 0);
 	origin.m_x = (short) (m_points[2].m_x + m_centerX);
 	origin.m_y = (short) (m_points[2].m_y + m_centerY);
 	radius.SetIntegers(-m_points[3].m_x, 0);

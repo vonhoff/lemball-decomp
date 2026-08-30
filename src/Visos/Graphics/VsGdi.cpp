@@ -1,3 +1,4 @@
+#include "GdiDevice.h"
 #include "VsGdi.h"
 
 #include "../Foundation/ChangeList.h"
@@ -35,11 +36,11 @@ struct SurfaceListHead {
 };
 
 // GLOBAL: LEMBALL 0x004a2010
-static SurfaceListHead* g_pSurfaceList = 0;
+SurfaceListHead* g_pSurfaceList = 0;
 
 // 68K 0x1010830c __ct__8CSurfaceFRC7CVSRectP8CSurface
-// STUB: LEMBALL 0x0046c050
-Surface::Surface(const VsRect& p_arg0, class Surface* p_arg1)
+// FUNCTION: LEMBALL 0x0046c050
+Surface::Surface(const VsRect& p_rect, class Surface* p_parentSurface)
 {
 	void* storage;
 	TargetDrawingContext* context;
@@ -58,16 +59,16 @@ Surface::Surface(const VsRect& p_arg0, class Surface* p_arg1)
 	m_unk0x530 = 0;
 	m_unk0x54c = 1;
 	m_changeList = 0;
-	m_parentSurface = p_arg1;
+	m_parentSurface = p_parentSurface;
 	m_flag70 = 1;
 	m_flag74 = 0;
 	m_flag78 = 0;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
 	cellSize.m_width = 8;
 	cellSize.m_height = 8;
-	viewSize.m_width = p_arg0.m_width;
-	viewSize.m_height = p_arg0.m_height;
-	if (p_arg1 == (Surface*) g_pGdiHelperTarget) {
+	viewSize.m_width = p_rect.m_width;
+	viewSize.m_height = p_rect.m_height;
+	if (p_parentSurface == (Surface*) g_pGdiHelperTarget) {
 		capacity = 0x1000;
 	}
 	else {
@@ -91,21 +92,21 @@ Surface::Surface(const VsRect& p_arg0, class Surface* p_arg1)
 			g_pSurfaceList->m_count = 0;
 		}
 	}
-	if (p_arg1 != 0) {
+	if (p_parentSurface != 0) {
 		storage = operator new(0xc);
 		if (storage != 0) {
 			node = (SurfaceListNode*) storage;
 			node->m_surface = this;
 			node->m_next = 0;
-			node->m_prev = p_arg1->m_unk0x52c;
-			if (p_arg1->m_unk0x52c != 0) {
-				p_arg1->m_unk0x52c->m_next = node;
+			node->m_prev = p_parentSurface->m_unk0x52c;
+			if (p_parentSurface->m_unk0x52c != 0) {
+				p_parentSurface->m_unk0x52c->m_next = node;
 			}
-			p_arg1->m_unk0x52c = node;
-			if (p_arg1->m_unk0x528 == 0) {
-				p_arg1->m_unk0x528 = node;
+			p_parentSurface->m_unk0x52c = node;
+			if (p_parentSurface->m_unk0x528 == 0) {
+				p_parentSurface->m_unk0x528 = node;
 			}
-			p_arg1->m_unk0x530 = p_arg1->m_unk0x530 + 1;
+			p_parentSurface->m_unk0x530 = p_parentSurface->m_unk0x530 + 1;
 		}
 	}
 	if (g_pSurfaceList != 0) {
@@ -125,11 +126,11 @@ Surface::Surface(const VsRect& p_arg0, class Surface* p_arg1)
 			g_pSurfaceList->m_count = g_pSurfaceList->m_count + 1;
 		}
 	}
-	if (p_arg1 == (Surface*) g_pGdiHelperTarget && g_pTargetGraphicsDriver != 0) {
+	if (p_parentSurface == (Surface*) g_pGdiHelperTarget && g_pTargetGraphicsDriver != 0) {
 		context = g_pTargetGraphicsDriver->CreateDrawingContext();
 		m_drawingPort = context;
 	}
-	NewBitmap(p_arg0);
+	NewBitmap(p_rect);
 }
 
 static const unsigned char g_anFallbackSystemColors[20][3] = {

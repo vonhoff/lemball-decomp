@@ -5,10 +5,17 @@
 #include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
 
+#include "../Groups/PlayerLemmingGroup.h"
+#include "../Objects/PlayerLemming.h"
+
 // 68K 0x106072fe __ct__11CDuplicatorFRC7AICOORD
-// STUB: LEMBALL 0x004275b0
+// FUNCTION: LEMBALL 0x004275b0
 Duplicator::Duplicator(const AiCoord& p_arg0)
+	: GlobalGameObject((eObjectType) 0x1c, 0, 0)
 {
+	m_spawnPosition.m_xFixed = p_arg0.m_xFixed;
+	m_spawnPosition.m_yFixed = p_arg0.m_yFixed;
+	m_spawnPosition.m_zFixed = p_arg0.m_zFixed;
 }
 
 // 68K 0x106073c6 Restart__11CDuplicatorFv
@@ -58,10 +65,35 @@ void Duplicator::Delete()
 }
 
 // 68K 0x10607574 Process__11CDuplicatorFv
-// STUB: LEMBALL 0x00427780
+// FUNCTION: LEMBALL 0x00427780
 bool Duplicator::Process()
 {
-	return 0;
+	if (m_isRemoteObject != 0) {
+		m_actionArgument = 1;
+		if (m_pendingAction != m_action) {
+			if (m_action == 26) {
+				SetSndEffect((eSoundEffect) 12);
+			}
+			m_pendingAction = m_action;
+		}
+		return 1;
+	}
+	m_actionArgument = 0;
+	if (m_action == 26 && m_actionDeadline < g_dwGameTick) {
+		m_duplicatedObject->m_unk0xc0 = 0;
+		m_duplicatedObject->m_action = (eAction) 0;
+		m_duplicatedObject->Action((eAction) 0);
+		m_duplicatedObject->ResetInstructions();
+		PlayerLemming* dead = g_pAI->GetDead();
+		if (dead != 0) {
+			AiCoord pos(m_position.m_xFixed, m_position.m_yFixed - 0x3c000, m_position.m_zFixed);
+			dead->Resurrect(pos);
+			PlayerLemmingGroup* group = ((PlayerLemming*) m_duplicatedObject)->GetGroup();
+			group->AddLemmingToGroup(dead);
+		}
+		Action((eAction) 24);
+	}
+	return 1;
 }
 
 // 68K 0x106076b8 ActivatePosition__11CDuplicatorFv

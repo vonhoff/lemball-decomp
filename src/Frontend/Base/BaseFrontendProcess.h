@@ -3,12 +3,12 @@
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/Process.h"          // complete type
+#include "../../Visos/Foundation/BaseProcess.h"          // complete type
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497938 BaseQueueHandler
 // VTABLE: LEMBALL 0x00497948
-class BaseFrontendProcess : public Process, public BaseQueueHandler {
+class BaseFrontendProcess : public BaseProcess, public BaseQueueHandler {
 public:
 	BaseFrontendProcess(Game* p_arg0);
 	virtual ~BaseFrontendProcess();                                                                // vtable+0x00

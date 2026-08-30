@@ -1,7 +1,10 @@
 #include "HiliteButtons.h"
 
+#include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/MasterInput.h"
 #include "../../Visos/Foundation/VsPoint.h"
+#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/GraphicButton.h"
 #include "../../Visos/Graphics/PvButton.h"
@@ -61,9 +64,54 @@ HiliteButtons::HiliteButtons(GWnd* p_arg0,
 }
 
 // 68K 0x10804c52 ProcessMsg__14CHiliteButtonsFP10tagMESSAGE
-// STUB: LEMBALL 0x0044f160
+// FUNCTION: LEMBALL 0x0044f160
 int HiliteButtons::ProcessMsg(Message* p_message)
 {
+	Message posted;
+	int nextValue;
+
+	if (p_message->code != (int) m_controlMessage) {
+		return 0;
+	}
+	if (p_message->type == 0xb) {
+		g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+		return 0;
+	}
+	if (p_message->type == 0xc) {
+		if (m_mode != 1) {
+			nextValue = m_value + 1;
+			m_value = nextValue;
+			if (m_maximum < nextValue) {
+				m_value = m_minimum;
+			}
+			if (m_binding != 0) {
+				if (m_valueCount == 1) {
+					if (*m_binding == 0) {
+						*m_binding = 1;
+					}
+					else {
+						*m_binding = 0;
+					}
+				}
+				else {
+					*m_binding = m_value;
+				}
+			}
+			if (m_button != 0) {
+				m_button->SetAnimId(m_animIds[m_value - m_minimum]);
+			}
+			return 0;
+		}
+		posted.type = 0xc;
+		posted.time = CurrentQueueTimer();
+		posted.code = (int) m_actionMessage;
+		posted.payload = 0;
+		posted.source = 0;
+		if (g_pMasterInputQueue != 0) {
+			g_pMasterInputQueue->Post(posted);
+		}
+		return 0;
+	}
 	return 0;
 }
 
@@ -107,15 +155,38 @@ void HiliteButtons::LoadFaces(unsigned long* p_animIds)
 }
 
 // 68K 0x10804ebc UnLoadFaces__14CHiliteButtonsFv
-// STUB: LEMBALL 0x0044f370
+// FUNCTION: LEMBALL 0x0044f370
 void HiliteButtons::UnLoadFaces()
 {
+	int index;
+
+	if (m_button != 0) {
+		delete m_button;
+		m_button = 0;
+	}
+	index = 0;
+	if (0 < m_valueCount) {
+		do {
+			if (m_resources[index] != 0) {
+				m_resources[index]->UnLoad();
+			}
+			index = index + 1;
+		} while (index < m_valueCount);
+	}
+	operator delete(m_resources);
+	m_resources = 0;
 }
 
 // 68K 0x10804f42 UpdateAnimID__14CHiliteButtonsFv
-// STUB: LEMBALL 0x0044f3d0
+// FUNCTION: LEMBALL 0x0044f3d0
 void HiliteButtons::UpdateAnimId()
 {
+	if (m_binding != 0) {
+		m_value = *m_binding;
+	}
+	if (m_button != 0) {
+		m_button->SetAnimId(m_animIds[m_value - m_minimum]);
+	}
 }
 
 // 68K 0x10804be0 __dt__14CHiliteButtonsFv

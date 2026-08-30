@@ -3,7 +3,7 @@
 
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/Process.h"          // complete type
+#include "../../Visos/Foundation/BaseProcess.h"          // complete type
 #include "../Base/BaseFrontendDrawer.h"              // complete type
 
 // SIZE 0x3bc

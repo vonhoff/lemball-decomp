@@ -5,20 +5,10 @@
 #include "Gdi.h"
 #include "VsGdi.h"
 
-// STUB: LEMBALL 0x00447120
+// FUNCTION: LEMBALL 0x00447120
 BitmapRes::BitmapRes()
+	: m_unknown1c(0), m_unknown20(0)
 {
-	m_x = 0;
-	m_y = 0;
-	m_width = 0;
-	m_height = 0;
-	m_sourceX = 0;
-	m_sourceY = 0;
-	m_resource = 0;
-	m_flags = 0;
-	m_remap = 0;
-	m_unknown1c = 0;
-	m_unknown20 = 0;
 }
 
 // FUNCTION: LEMBALL 0x00447300

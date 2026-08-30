@@ -6,7 +6,7 @@
 PreInit* VsPreInit(PreInit* p_preInit);
 void SetGameDefaults();
 void DisplayHelp();
-int Vsmain(int p_argc, char** p_argv);
+int VsMain(int p_argc, char** p_argv);
 int DoCommandLine(int p_argc, char** p_argv);
 
 extern int g_nSoundDebugRequested;

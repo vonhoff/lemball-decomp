@@ -240,13 +240,13 @@ bool HotAreaList::RemoveFromList(HotAreaHandler* p_handler)
 }
 
 // 68K 0x10117b00 OnExit__12CHotAreaListFv
-// STUB: LEMBALL 0x0046aa30
+// FUNCTION: LEMBALL 0x0046aa30
 void HotAreaList::OnExit()
 {
 	int i;
 	unsigned int* state;
 
-	if (m_externalEnabled == 0) {
+	if (m_reserved == 0) {
 		state = m_buttonState;
 		i = 6;
 		while (i != 0) {

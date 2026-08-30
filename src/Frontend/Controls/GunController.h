@@ -73,6 +73,8 @@ private:
 	unsigned int m_sideEndTime;           // 0x228
 	unsigned int m_selectStartTime;       // 0x22c
 	unsigned int m_selectEndTime;         // 0x230
+	undefined4 m_reserved234;             // 0x234
+	undefined4 m_reserved238;             // 0x238
 	unsigned int m_fireStartTime;         // 0x23c
 	unsigned int m_fireEndTime;           // 0x240
 	PlayThruAnim* m_sideAnim;             // 0x244

@@ -27,6 +27,7 @@ public:
 	friend class BaseFrontendDrawer;
 	friend class GraphicButton;
 	friend class GunController;
+	friend class HiliteController;
 	friend class PasswordDrawer;
 
 private:

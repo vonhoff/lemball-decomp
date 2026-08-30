@@ -495,7 +495,7 @@ void PasswordDrawer::DrawHilite()
 	m_anims.m_gdi = (Gdi*) m_hiliteSurface;
 	position.m_x = (short) m_hiliteX;
 	position.m_y = (short) m_hiliteY;
-	m_anims.DrawAnim(position, m_animationId, 0, (AnimFrameBASE*) &m_hiliteAnim, 0);
+	m_anims.DrawAnim(position, m_animationId, 0, (Frames*) &m_hiliteAnim, 0);
 	m_anims.m_gdi = savedGdi;
 }
 

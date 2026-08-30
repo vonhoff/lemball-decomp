@@ -22,7 +22,7 @@ String::String()
 
 // 68K 0x10200ec4 __ct__7CStringFPc
 // FUNCTION: LEMBALL 0x0046e430
-String::String(char* p_text)
+String::String(const char* p_text)
 {
 	m_capacity = strlen(p_text) + 1;
 	m_text = new char[m_capacity];
@@ -31,7 +31,7 @@ String::String(char* p_text)
 
 // 68K 0x10200f1e __ct__7CStringFR7CString
 // FUNCTION: LEMBALL 0x0046e480
-String::String(String& p_other)
+String::String(const String& p_other)
 {
 	m_capacity = p_other.m_capacity;
 	m_text = new char[m_capacity];
@@ -47,7 +47,7 @@ String::~String()
 
 // 68K 0x10200fbc __as__7CStringFR7CString
 // FUNCTION: LEMBALL 0x0046e510
-String& String::operator=(String& p_other)
+String& String::operator=(const String& p_other)
 {
 	delete[] m_text;
 	m_text = new char[p_other.m_capacity];

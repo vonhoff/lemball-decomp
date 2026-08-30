@@ -16,8 +16,8 @@ public:
 	virtual bool GetMenu(int& p_count, MenuList*** p_menu); // vtable+0x0c
 	bool IsWindowValid();
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
-	unsigned char GetReturnState();
-	unsigned char QuitYet();
+	int GetReturnState();
+	int QuitYet();
 	unsigned int GetStyle();
 	virtual void OnDriverChange(); // vtable+0x5c
 	virtual void OnMove();         // vtable+0x58

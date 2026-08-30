@@ -1,5 +1,7 @@
 #include "BaseFrontendDrawer.h"
 
+#include "../Controls/GunButtons.h"
+
 #include "../../Control/Game/GameMain.h"
 #include "../../Control/Game/GameStatus.h"
 #include "../../Views/Display/Main2DDisplay.h"
@@ -10,6 +12,7 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/Bitmap.h"
 #include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Network/Connect.h"
 #include "../../Visos/Resources/ResBitmap.h"
 #include "../../Visos/Graphics/Gdi.h"
@@ -85,10 +88,6 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
 	m_ambientAnim = 0;
 	m_textManager = 0;
 	m_createdAt = CurrentQueueTimer();
-	m_backgroundBitmap = 0;
-	m_tileBitmap = 0;
-	m_mode = 0;
-	m_backBufferNeeded = 0;
 }
 
 // 68K 0x10800308 Setup__19CBaseFrontendDrawerFv
@@ -161,6 +160,47 @@ void BaseFrontendDrawer::Setup()
 	}
 }
 
+// 68K 0x1080048c __dt__19CBaseFrontendDrawerFv
+// FUNCTION: LEMBALL 0x004457e0
+BaseFrontendDrawer::~BaseFrontendDrawer()
+{
+	g_pBaseFrontendDrawer = 0;
+	if (m_networkMode != 0 && m_returnState == 2) {
+		if (g_pNetworkManager != 0) {
+			g_pNetworkManager->Stop();
+		}
+		if (g_pBaseNetwork != 0) {
+			unsigned long start = CurrentMilliTimer();
+			while (g_pBaseNetwork->m_queueTransitionPending != 0) {
+				if (1999 < CurrentMilliTimer() - start) {
+					break;
+				}
+			}
+		}
+		if (g_pNetworkManager != 0) {
+			delete g_pNetworkManager;
+			g_pNetworkManager = 0;
+		}
+	}
+	if (m_ambientAnim != 0) {
+		delete m_ambientAnim;
+		m_ambientAnim = 0;
+	}
+	if (g_pMasterInputQueue != 0) {
+		g_pMasterInputQueue->Detach(this != 0 ? static_cast<BaseQueueHandler*>(this) : 0, 0);
+	}
+	if (m_loaded != 0) {
+		_UnLoad();
+	}
+	if (m_textManager != 0) {
+		delete m_textManager;
+		m_textManager = 0;
+	}
+	if (g_pMogRes != 0) {
+		g_pMogRes->CleanUpResources();
+	}
+}
+
 // 68K 0x1080070e InitialiseBackBuffer__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x004458e0
 void BaseFrontendDrawer::InitialiseBackBuffer()
@@ -208,10 +248,7 @@ void BaseFrontendDrawer::Draw(const VsRect& p_rect)
 		m_gdi->m_renderTarget->GetCurrDb();
 		m_primitiveBank = 0;
 		if (m_gunController != 0) {
-			if (m_gunController->m_buttons[0] != 0 && m_gunController->m_buttons[0]->DrawBackBuffer() != 0) {
-				m_backBufferNeeded = 1;
-			}
-			else if (m_backBufferNeeded == 0) {
+			if (((GunButtons*) this)->DrawBackBuffer() == 0 && m_backBufferNeeded == 0) {
 				m_backBufferNeeded = 0;
 			}
 			else {
@@ -264,41 +301,27 @@ void BaseFrontendDrawer::ReplaceBackground()
 // FUNCTION: LEMBALL 0x00445c10
 void BaseFrontendDrawer::_DrawBackGround()
 {
-	int tileWidth;
-	int tileHeight;
-	int firstColumn;
-	int columnCount;
-	int rowCount;
-	int row;
-	int column;
-	int primitiveIndex;
-	unsigned int stagger;
-	BitmapRes* primitive;
-
 	if (m_drawFrame != 0) {
-		tileWidth = m_tileBitmap->m_x;
-		tileHeight = m_tileBitmap->m_y;
-		firstColumn = 0 / tileWidth;
-		columnCount = (m_width + tileWidth - 1) / tileWidth - firstColumn;
-		rowCount = (m_height + tileHeight - 1) / tileHeight;
-		row = 0;
-		primitiveIndex = 0;
-		stagger = 0;
-		while (row < rowCount) {
-			column = firstColumn;
-			stagger = stagger ^ 1;
-			while (column < (int) (firstColumn + columnCount + stagger)) {
-				primitive = &m_primitiveBundle.m_records[primitiveIndex];
-				primitive->m_x = (short) (column * tileWidth - (tileWidth / 2) * stagger);
-				primitive->m_y = (short) (row * tileHeight);
-				primitive->m_resource = m_tileBitmap;
-				primitive->m_flags = 0;
-				primitive->m_remap = 0;
-				primitive->Draw(m_gdi);
-				primitiveIndex = primitiveIndex + 1;
-				column = column + 1;
+		short tileWidth = m_tileBitmap->m_x;
+		short tileHeight = m_tileBitmap->m_y;
+		short startRow = 0 / tileHeight;
+		short rowCount = (short) (m_height + tileHeight - 1) / tileHeight - startRow;
+		short startCol = 0 / tileWidth;
+		short colCount = (short) (m_width + tileWidth - 1) / tileWidth - startCol;
+		unsigned int oddRow = 0;
+		int recordIndex = 0;
+		for (short row = startRow; row < (short) (rowCount + startRow); row++) {
+			oddRow ^= 1;
+			for (short col = startCol; col < (short) (colCount + startCol + oddRow); col++) {
+				BitmapRes& rec = m_primitiveBundle.m_records[recordIndex];
+				rec.m_x = col * tileWidth - (tileWidth / 2) * oddRow;
+				rec.m_y = tileHeight * row;
+				rec.m_resource = m_tileBitmap;
+				rec.m_flags = 0;
+				rec.m_remap = 0;
+				rec.Draw(m_gdi);
+				recordIndex++;
 			}
-			row = row + 1;
 		}
 	}
 	if (m_drawSolid != 0) {
@@ -385,7 +408,7 @@ void BaseFrontendDrawer::_DrawAnims()
 {
 	if (m_ambientAnim != 0) {
 		m_ambientAnim->m_fixedTime = CurrentMilliTimer();
-		m_anims.DrawAnim(m_animPosition, m_ambientAnimId, 0, (AnimFrameBASE*) m_ambientAnim, 0);
+		m_anims.DrawAnim(m_animPosition, m_ambientAnimId, 0, (Frames*) m_ambientAnim, 0);
 	}
 }
 
@@ -435,46 +458,46 @@ void BaseFrontendDrawer::DrawFrame(VsRect p_rect)
 	m_staticAnim.m_frameState = 0;
 	position.m_x = p_rect.m_x;
 	position.m_y = p_rect.m_y;
-	m_anims.DrawAnim(position, m_topFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+	m_anims.DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 	x = p_rect.m_x + tileWidth;
 	while (x + tileWidth < right) {
 		m_staticAnim.m_frameState = 1;
 		position.m_x = (short) x;
 		position.m_y = p_rect.m_y;
-		m_anims.DrawAnim(position, m_topFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		m_anims.DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		x = x + tileWidth;
 	}
 	m_staticAnim.m_frameState = 2;
 	position.m_x = (short) (right - tileWidth);
 	position.m_y = p_rect.m_y;
-	m_anims.DrawAnim(position, m_topFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+	m_anims.DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 	y = p_rect.m_y + tileHeight;
 	while (y + tileHeight < bottom) {
 		m_staticAnim.m_frameState = 0;
 		position.m_x = p_rect.m_x;
 		position.m_y = (short) y;
-		m_anims.DrawAnim(position, m_sideFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		m_anims.DrawAnim(position, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		m_staticAnim.m_frameState = 2;
 		position.m_x = (short) (right - tileWidth);
-		m_anims.DrawAnim(position, m_sideFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		m_anims.DrawAnim(position, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		y = y + tileHeight;
 	}
 	m_staticAnim.m_frameState = 0;
 	position.m_x = p_rect.m_x;
 	position.m_y = (short) (bottom - tileHeight);
-	m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+	m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 	x = p_rect.m_x + tileWidth;
 	while (x + tileWidth < right) {
 		m_staticAnim.m_frameState = 1;
 		position.m_x = (short) x;
 		position.m_y = (short) (bottom - tileHeight);
-		m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+		m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		x = x + tileWidth;
 	}
 	m_staticAnim.m_frameState = 2;
 	position.m_x = (short) (right - tileWidth);
 	position.m_y = (short) (bottom - tileHeight);
-	m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (AnimFrameBASE*) &m_staticAnim, 0);
+	m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 }
 
 // 68K 0x108014f4 ProcessMsg__19CBaseFrontendDrawerFP10tagMESSAGE
@@ -656,28 +679,6 @@ void BaseFrontendDrawer::OnSize(const VsRect& p_rect)
 	m_width = p_rect.m_width;
 	m_height = p_rect.m_height;
 	Restart();
-}
-
-// 68K 0x1080048c __dt__19CBaseFrontendDrawerFv
-BaseFrontendDrawer::~BaseFrontendDrawer()
-{
-	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->Detach(this, 0);
-	}
-	if (m_loaded != 0) {
-		_UnLoad();
-	}
-	if (m_ambientAnim != 0) {
-		delete m_ambientAnim;
-		m_ambientAnim = 0;
-	}
-	if (m_textManager != 0) {
-		delete m_textManager;
-		m_textManager = 0;
-	}
-	if (g_pMogRes != 0) {
-		g_pMogRes->CleanUpResources();
-	}
 }
 
 // GLOBAL: LEMBALL 0x0049f144

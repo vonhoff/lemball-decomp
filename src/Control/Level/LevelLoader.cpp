@@ -101,22 +101,25 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 		unsigned int blockType = header->m_type;
 
 		switch (blockType) {
-		case 0x41492020:
+		case 0x41492020: {
+			unsigned char* edi = (unsigned char*) (header + 1);
 			version = 0;
 			if (header->m_size - 8 > 4) {
-				version = data16[0];
-				data16++;
+				version = *(unsigned short*) edi;
+				edi += 2;
 			}
-			p_preview->m_timeLimit = data16[1];
+			p_preview->m_timeLimit = *(unsigned short*) (edi + 2);
+			edi += 4;
 			if (version < 4) {
 				p_preview->m_lemmingCount = 4;
 				p_preview->m_playerCount = 1;
 			}
 			else {
-				p_preview->m_lemmingCount = data16[2];
-				p_preview->m_playerCount = data16[3];
+				p_preview->m_lemmingCount = *(unsigned short*) edi;
+				p_preview->m_playerCount = *(unsigned short*) (edi + 2);
 			}
 			break;
+		}
 		case 0x42414c4c:
 			break;
 		case 0x454e443f:
@@ -136,11 +139,12 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 			p_preview->m_name[0x20] = 0;
 			break;
 		}
-		case 0x4e455457:
+		case 0x4e455457: {
+			unsigned char* edi = (unsigned char*) (header + 1);
 			total = 0;
-			for (count = (unsigned int) data16[0]; count != 0; count--) {
-				data16 += 2;
-				total = (unsigned short) (total + (short) data16[0]);
+			for (count = (unsigned int) *(unsigned short*) edi; count != 0; count--) {
+				edi += 8;
+				total = (unsigned short) (total + *(short*) edi);
 			}
 			if (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost == 1) {
 				p_preview->m_opponentLemmingCount = total;
@@ -149,11 +153,13 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 				p_preview->m_lemmingCount = total;
 			}
 			break;
-		case 0x504c5331:
+		}
+		case 0x504c5331: {
+			unsigned char* edi = (unsigned char*) (header + 1);
 			total = 0;
-			for (count = (unsigned int) data16[0]; count != 0; count--) {
-				data16 += 2;
-				total = (unsigned short) (total + (short) data16[0]);
+			for (count = (unsigned int) *(unsigned short*) edi; count != 0; count--) {
+				edi += 8;
+				total = (unsigned short) (total + *(short*) edi);
 			}
 			if (g_pActiveConnection == 0) {
 				p_preview->m_lemmingCount = total;
@@ -167,6 +173,7 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 				}
 			}
 			break;
+		}
 		}
 
 		header = GetNextBlockHeader(header);

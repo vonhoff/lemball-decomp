@@ -1,8 +1,13 @@
 #include "HiliteController.h"
 
+#include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/VsPoint.h"
+#include "../../Visos/Foundation/VsRect.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/GraphicButton.h"
+#include "../../Visos/Graphics/VsGdi.h"
 #include "../Windows/HiliteWindow.h"
 #include "HiliteButtons.h"
 
@@ -42,9 +47,27 @@ HiliteController::HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsign
 }
 
 // 68K 0x108051b4 SetHiliteWindow__17CHiliteControllerFv
-// STUB: LEMBALL 0x0044f590
+// FUNCTION: LEMBALL 0x0044f590
 void HiliteController::SetHiliteWindow()
 {
+	void* storage;
+	VsRect rect;
+
+	storage = operator new(0x90);
+	if (storage == 0) {
+		m_hiliteWindow = 0;
+	}
+	else {
+		m_hiliteWindow = new (storage) HiliteWindow();
+	}
+	if (m_hiliteWindow != 0 && m_window != 0) {
+		rect.m_width = m_window->m_rect.m_width;
+		rect.m_height = m_window->m_rect.m_height;
+		rect.m_x = 0;
+		rect.m_y = 0;
+		m_hiliteWindow->Create(rect, (PvGWnd*) m_window, 0);
+		m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
+	}
 }
 
 // 68K 0x10805292 __dt__17CHiliteControllerFv
@@ -67,9 +90,73 @@ HiliteController::~HiliteController()
 }
 
 // 68K 0x108053e4 ProcessMsg__17CHiliteControllerFP10tagMESSAGE
-// STUB: LEMBALL 0x0044f6c0
+// FUNCTION: LEMBALL 0x0044f6c0
 int HiliteController::ProcessMsg(Message* p_message)
 {
+	HiliteButtons* currentBtn;
+	VsPoint point;
+
+	if (m_active == 0) {
+		return 0;
+	}
+	if (p_message->type == 3) {
+		if (p_message->code == 0x1f || p_message->code == 0x22 || p_message->code == 0x4c) {
+			if (m_currentButton < m_buttonCount) {
+				currentBtn = m_buttons[m_currentButton];
+				if (currentBtn != 0 && currentBtn->m_button != 0) {
+					point.m_x = 0;
+					point.m_y = 0;
+					currentBtn->m_button->OnButtonDown(point, 0);
+				}
+			}
+		}
+		return 0;
+	}
+	if (p_message->type != 4) {
+		return 0;
+	}
+	switch (p_message->code) {
+	case 1:
+		if (m_horizontalMode == 0) {
+			return 0;
+		}
+		MoveLeft();
+		g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+		return 1;
+	case 2:
+		if (m_horizontalMode == 0) {
+			return 0;
+		}
+		MoveRight();
+		g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+		return 1;
+	case 3:
+		if (m_horizontalMode != 0) {
+			return 0;
+		}
+		MoveLeft();
+		g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+		return 1;
+	case 4:
+		if (m_horizontalMode != 0) {
+			return 0;
+		}
+		MoveRight();
+		g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+		return 1;
+	case 0x1f:
+	case 0x22:
+	case 0x4c:
+		if (m_currentButton < m_buttonCount) {
+			currentBtn = m_buttons[m_currentButton];
+			if (currentBtn != 0 && currentBtn->m_button != 0) {
+				point.m_x = 0;
+				point.m_y = 0;
+				currentBtn->m_button->OnButtonUp(point, 0);
+			}
+		}
+		break;
+	}
 	return 0;
 }
 
@@ -130,10 +217,28 @@ void HiliteController::DrawButtons(int p_force)
 	} while (count != 0);
 }
 
-// 68K 0x1080578c DrawHiliteWindow__17CHiliteControllerFv
-// STUB: LEMBALL 0x0044fa00
+// FUNCTION: LEMBALL 0x0044fa00
 void HiliteController::DrawHiliteWindow()
 {
+	if (m_active != 0 && m_hiliteSurface != 0) {
+		Gdi* hiliteGdi = (Gdi*) m_hiliteSurface;
+		Surface* surface = hiliteGdi->m_renderTarget;
+		m_hiliteRect.m_color = 0x10000;
+		m_hiliteRect.m_left = surface->m_windowRect.m_width;
+		m_hiliteRect.m_top = surface->m_windowRect.m_height;
+		m_hiliteRect.m_right = 0;
+		m_hiliteRect.m_bottom = 0;
+		m_hiliteRect.Draw(hiliteGdi);
+		m_hiliteAnim.m_frameState = 0;
+		Gdi* savedGdi = m_anims.m_gdi;
+		m_anims.m_gdi = hiliteGdi;
+		VsPoint position;
+		position.m_x = 0;
+		position.m_y = 0;
+		m_anims.DrawAnim(position, g_dwHiliteAnimationId, 0, (Frames*) &m_hiliteAnim, 0);
+		m_anims.m_gdi = savedGdi;
+		m_anims.ResetPrimitives();
+	}
 }
 
 // 68K 0x108058bc MoveLeft__17CHiliteControllerFv

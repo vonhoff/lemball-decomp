@@ -6,6 +6,7 @@
 #include "../../Visos/Graphics/Wnd.h"
 #include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Resources/MogRes.h"
+#include "../../Visos/Target/TargetGraphicsDriver.h"
 #include "../../Visos/Target/TargetPlatformServices.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -28,15 +29,13 @@ bool TargetPumpEvents()
 
 	Wnd::ProcessMouseMoves();
 	g_dwWindowQuitRequested = 0;
-	if (g_pBaseNetwork != 0) {
-		if (g_pNetworkPacketQueue != 0) {
-			do {
-				count = ((BaseQueue*) g_pNetworkPacketQueue)->GetMessageCount();
-				if (count != 0) {
-					((BaseQueue*) g_pNetworkPacketQueue)->ProcessNMsgs(count);
-				}
-			} while (count != 0);
-		}
+	if (g_pBaseNetwork != 0 && g_pNetworkPacketQueue != 0) {
+		do {
+			count = ((BaseQueue*) g_pNetworkPacketQueue)->GetMessageCount();
+			if (count != 0) {
+				((BaseQueue*) g_pNetworkPacketQueue)->ProcessNMsgs(count);
+			}
+		} while (count != 0);
 	}
 
 	if (PeekMessageA(&message, 0, 0, 0, 0) != 0) {

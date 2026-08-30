@@ -16,7 +16,7 @@ public:
 	void UnLoadFrontendResources();
 	~Game();
 
-	friend int Vsmain(int p_argc, char** p_argv);
+	friend int VsMain(int p_argc, char** p_argv);
 	friend class Main2DDisplay;
 
 private:
@@ -24,7 +24,7 @@ private:
 	BaseStat* m_processingStat;   // 0x50
 	BaseStat* m_refreshingStat;   // 0x54
 	unsigned int m_flowTicks;     // 0x58
-	class Process* m_process;     // 0x5c
+	BaseProcess* m_process;          // 0x5c
 	unsigned int m_quit;          // 0x60
 	Main2DDisplay* m_mainDisplay; // 0x64
 	eFlowProcesses m_currentFlow; // 0x68

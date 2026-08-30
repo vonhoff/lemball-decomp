@@ -7,6 +7,7 @@
 #include "../Graphics/Gdi.h"
 #include "../Graphics/GWnd.h"
 #include "../Graphics/PvGdiBitmap.h"
+#include "../Graphics/PvWnd.h"
 #include "../Graphics/VsGdi.h"
 
 #include <new.h>
@@ -603,7 +604,7 @@ int TargetWinGDrawCodec_SuggestFormat(TargetWinGDrawCodecState* p_state, void* p
 	return (int) (source->biClrUsed * 4 + 0x28);
 }
 
-// STUB: LEMBALL 0x004793e0
+// FUNCTION: LEMBALL 0x004793e0
 int TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void* p_request)
 {
 	int result;
@@ -638,13 +639,15 @@ int TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void* p_request
 	return result;
 }
 
-// STUB: LEMBALL 0x00479480
+// FUNCTION: LEMBALL 0x00479480
 int TargetWinGDrawCodec_Draw(TargetWinGDrawCodecState* p_state, void* p_request)
 {
 	IcDraw* request;
+	PvWnd* window;
 
 	request = (IcDraw*) p_request;
-	if (p_state->m_window->m_lifecycleRefs == 1) {
+	window = (PvWnd*) p_state->m_window;
+	if (window->m_lifecycleRefs == 1) {
 		p_state->m_surface->CopyDIBBits(request->lpFormat, (unsigned char*) request->lpData);
 		p_state->m_window->GWnd::Refresh(0);
 	}

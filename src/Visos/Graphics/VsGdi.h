@@ -23,6 +23,7 @@ public:
 	friend class PvButton;
 	friend class GraphicButton;
 	friend class GunButtons;
+	friend class HiliteController;
 	friend class PasswordDrawer;
 	Surface(GrafPort* p_arg0);
 	Surface(const VsRect& p_arg0, class Surface* p_arg1);

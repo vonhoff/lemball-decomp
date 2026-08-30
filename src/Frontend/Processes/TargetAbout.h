@@ -2,11 +2,11 @@
 #define LEMBALL_FRONTEND_PROCESSES_TARGETABOUT_H
 
 #include "../../Common.h"
-#include "../../Visos/Foundation/Process.h" // complete type
+#include "../../Visos/Foundation/BaseProcess.h" // complete type
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493090
-class TargetAbout : public Process {
+class TargetAbout : public BaseProcess {
 public:
 	TargetAbout(Game* p_game)
 	{

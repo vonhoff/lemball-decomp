@@ -177,7 +177,7 @@ void GraphicButton::DrawButton()
 	short y = m_graphicOffsetY;
 	unsigned int pressed = 0;
 
-	if (m_enabled != 0 && HotAreaHandler::m_active != 0) {
+	if (m_enabled != 0 && ((HotAreaHandler*) ((char*) this + 0x90))->m_active != 0) {
 		pressed = 1;
 	}
 	if ((m_alignmentFlags & 0x40) != 0 && pressed != 0) {
@@ -220,9 +220,10 @@ void GraphicButton::OnEnterButton()
 {
 	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
 		m_enabled = 1;
-		return;
 	}
-	m_enabled = 0;
+	else {
+		m_enabled = 0;
+	}
 }
 
 // FUNCTION: LEMBALL 0x0043a6e0 FOLDED
@@ -230,9 +231,10 @@ void GraphicButton::OnExitButton()
 {
 	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
 		m_enabled = 1;
-		return;
 	}
-	m_enabled = 0;
+	else {
+		m_enabled = 0;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00468360 FOLDED

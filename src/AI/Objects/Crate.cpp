@@ -23,17 +23,63 @@ void Crate::Restart()
 	m_pendingAction = (eAction) 24;
 }
 
+#include "../../Map/Base/Map.h"
+#include "../Managers/ObjectManager.h"
+
 // 68K 0x106191bc TriggerContents__6CCrateFv
-// STUB: LEMBALL 0x0041ccc0
+// FUNCTION: LEMBALL 0x0041ccc0
 void Crate::TriggerContents()
 {
+	if (m_contentsType != 0xffff) {
+		GlobalGameObject* contents = (GlobalGameObject*) m_contents;
+		contents->m_position.m_xFixed = m_position.m_xFixed;
+		contents->m_position.m_yFixed = m_position.m_yFixed;
+		contents->m_position.m_zFixed = m_position.m_zFixed;
+		g_pGenericGroupObjectManager->AddObject(0xffff, contents, 0);
+		m_contentsType = 0xffff;
+	}
 }
 
 // 68K 0x10619230 Process__6CCrateFv
-// STUB: LEMBALL 0x0041cd20
+// FUNCTION: LEMBALL 0x0041cd20
 bool Crate::Process()
 {
-	return 0;
+	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> 12;
+	int blockX = x >> 4;
+	int blockY = y >> 4;
+	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
+	}
+	else {
+		m_position.m_zFixed = 0;
+	}
+	if (m_isRemoteObject == 0) {
+		if (m_action == 25) {
+			if (m_unk0xd0 < g_dwGameTick) {
+				TriggerContents();
+				SetSndEffect((eSoundEffect) 10);
+				Action((eAction) 26);
+			}
+		}
+		else if (m_action == 26 && m_unk0xd4 < g_dwGameTick) {
+			Action((eAction) 24);
+			m_heading = 0;
+		}
+		return 1;
+	}
+	if (m_pendingAction == m_action) {
+		return 1;
+	}
+	if (m_action == 25) {
+		SetSndEffect((eSoundEffect) 20);
+	}
+	else if (m_action == 26) {
+		TriggerContents();
+		SetSndEffect((eSoundEffect) 10);
+	}
+	m_pendingAction = m_action;
+	return 1;
 }
 
 // 68K 0x10619384 Activate__6CCrateFP11CGameObject
@@ -77,12 +123,9 @@ AiCoord Crate::ActivatePosition()
 	int x = m_position.m_xFixed;
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	if ((m_contentsType >= 21 && m_contentsType <= 23) || m_contentsType == 0xffff) {
-		x -= 0x8000;
-		return AiCoord(x, y, z);
+	if ((m_contentsType >= 0x15 && m_contentsType <= 0x17) || m_contentsType == 0xffff) {
+		return AiCoord(x - 0x8000, y, z);
 	}
-	x -= 0x30000;
-	y -= 0x8000;
-	return AiCoord(x, y, z);
+	return AiCoord(x - 0x30000, y - 0x8000, z);
 }
 

@@ -1,0 +1,5 @@
+.sympath+ C:\Dev\lemball-decomp\build-msvc400
+.reload /f
+.echo attached at runtime dialog
+~* kb 20
+q

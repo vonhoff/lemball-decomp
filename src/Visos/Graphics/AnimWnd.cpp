@@ -125,7 +125,7 @@ void AnimWnd::OnDestroy()
 	m_playing = 0;
 }
 
-// STUB: LEMBALL 0x0046df80
+// FUNCTION: LEMBALL 0x0046df80
 void AnimWnd::OnNotifyMode(int p_mode)
 {
 	switch (p_mode) {
@@ -133,12 +133,15 @@ void AnimWnd::OnNotifyMode(int p_mode)
 		m_playing = 0;
 		m_paused = 0;
 		OnStop();
-		return;
+		break;
 	case 0x20e:
 		OnStart();
-		return;
-	default:
-		return;
+		break;
+	case 0x20f:
+	case 0x210:
+	case 0x211:
+	case 0x212:
+		break;
 	}
 }
 
@@ -181,27 +184,26 @@ void AnimWnd::OnNotifySize(int p_width, int p_height)
 {
 }
 
-// STUB: LEMBALL 0x0046e080
+// FUNCTION: LEMBALL 0x0046e080
 int AnimWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
 {
-	if (p_message == 0x4c8) {
-		OnNotifyMode(p_lParam);
+	switch (p_message) {
+	case 0x4c8:
+		OnNotifyMode((int) p_lParam);
 		return 0;
-	}
-	if (p_message == 0x4c9) {
+	case 0x4c9:
 		OnNotifyPos(0, 0);
 		return 0;
-	}
-	if (p_message == 0x4ca) {
+	case 0x4ca:
 		OnNotifySize(0, 0);
 		return 0;
-	}
-	if (p_message == 0x4cb) {
+	case 0x4cb:
 		SetMovieWindow();
 		return 0;
-	}
-	if (p_message == 0x4cd) {
-		OnNotifyError(p_lParam);
+	case 0x4cc:
+		break;
+	case 0x4cd:
+		OnNotifyError((int) p_lParam);
 		return 0;
 	}
 	if (m_nativeWindow != 0) {

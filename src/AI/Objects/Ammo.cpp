@@ -29,9 +29,16 @@ void Ammo::Restart()
 // FUNCTION: LEMBALL 0x0041cab0
 bool Ammo::Process()
 {
-	int x = m_position.m_xFixed >> 12;
 	int y = m_position.m_yFixed >> 12;
-	m_position.m_zFixed = g_pMap->m_ground.GetZ(x, y) << 12;
+	int x = m_position.m_xFixed >> 12;
+	int blockX = x >> 4;
+	int blockY = y >> 4;
+	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
+	}
+	else {
+		m_position.m_zFixed = 0;
+	}
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == 26) {
@@ -41,22 +48,23 @@ bool Ammo::Process()
 		}
 		return 1;
 	}
-	switch (m_action) {
-	case 26:
-		if (m_unk0xd4 < g_dwGameTick) {
-			if (m_ammo == 0) {
-				m_heading = 0;
-			} else {
-				m_actionDeadline = g_dwGameTick + (m_ammo * 1000) / 50;
-				RequestAction((eAction) 27);
-			}
+	if (m_action == 26) {
+		if (g_dwGameTick <= m_unk0xd4) {
+			return 1;
 		}
-		break;
-	case 27:
-		if (m_actionDeadline < g_dwGameTick) {
-			RequestAction((eAction) 24);
+		if (m_ammo == 0) {
+			m_heading = 0;
+			return 1;
 		}
-		break;
+		m_actionDeadline = g_dwGameTick + (m_ammo * 1000) / 50;
+		RequestAction((eAction) 27);
+		return 1;
+	}
+	if (m_action == 27) {
+		if (g_dwGameTick <= m_actionDeadline) {
+			return 1;
+		}
+		RequestAction((eAction) 24);
 	}
 	return 1;
 }

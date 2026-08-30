@@ -15,6 +15,7 @@ public:
 
 	friend class GunController;
 	friend class TargetAboutScreen;
+	friend class HiliteController;
 	friend class PasswordDrawer;
 
 private:
