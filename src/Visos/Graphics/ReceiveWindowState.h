@@ -7,8 +7,8 @@
 // VTABLE: LEMBALL 0x00496e60
 class ReceiveWindowState {
 public:
-	virtual bool GetPauser();                         // vtable+0x04
 	virtual void SetOptionSelection(int p_selection); // vtable+0x00
+	virtual bool GetPauser();                         // vtable+0x04
 
 private:
 	int m_optionSelection; // 0x04

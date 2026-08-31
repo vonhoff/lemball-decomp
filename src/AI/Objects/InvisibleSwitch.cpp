@@ -82,8 +82,10 @@ bool InvisibleSwitch::Process()
 			AddObject(m_activator);
 			m_activator = 0;
 		}
-		for (int i = 0; i < m_targetCount; i++) {
+		int i = 0;
+		while (i < m_targetCount) {
 			g_pAI->SwitchMessage((swMessage) m_targets[i].m_message, m_targets[i].m_objectId, 0, 0);
+			i++;
 		}
 		SetSndEffect((eSoundEffect) 0x15);
 		Action((eAction) 0x18);

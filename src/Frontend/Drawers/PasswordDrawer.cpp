@@ -17,6 +17,8 @@
 #include <new.h>
 #include <string.h>
 
+extern "C" unsigned long __stdcall timeGetTime(void);
+
 // GLOBAL: LEMBALL 0x0049ff48
 unsigned char g_abPasswordLayoutFull[0x80] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x01, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
@@ -359,7 +361,7 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 void PasswordDrawer::Processing()
 {
 	if (m_passwordSubmitted != 0) {
-		if (CurrentMilliTimer() > m_returnDeadline) {
+		if (timeGetTime() > m_returnDeadline) {
 			m_quitYet = 1;
 			m_returnState = 2;
 		}
@@ -478,7 +480,7 @@ void PasswordDrawer::ButtonNumeric(int p_button)
 		DrawText();
 		g_pGameStatus->GotoLastLevels();
 		g_pSoundView->PlayEffect((eSoundEffect) (0x13 + (m_passwordValid ? 0 : 0x0f)));
-		m_submitTime = CurrentMilliTimer();
+		m_submitTime = timeGetTime();
 		m_passwordSubmitted = 1;
 		m_returnDeadline = m_submitTime + 1000;
 		break;

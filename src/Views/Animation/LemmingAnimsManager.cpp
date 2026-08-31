@@ -78,13 +78,25 @@ void LemmingAnimsManager::LoadAnimation(unsigned long p_firstResourceId, unsigne
 }
 
 // 68K 0x10b0c3e4 UnLoadAnimation__20CLemmingAnimsManagerFUl
-// STUB: LEMBALL 0x00434ec0
+// FUNCTION: LEMBALL 0x00434ec0
 void LemmingAnimsManager::UnLoadAnimation(unsigned long p_resourceId)
 {
+	if (m_animFrames[m_resourceSlots[p_resourceId]] != 0) {
+		delete m_animFrames[m_resourceSlots[p_resourceId]];
+		m_animFrames[m_resourceSlots[p_resourceId]] = 0;
+	}
+	UnLoadAnims(p_resourceId);
 }
 
 // 68K 0x10b0c46c UnLoadAnimation__20CLemmingAnimsManagerFUlUl
-// STUB: LEMBALL 0x00434f00
+// FUNCTION: LEMBALL 0x00434f00
 void LemmingAnimsManager::UnLoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId)
 {
+	for (; (int) p_lastResourceId >= (int) p_firstResourceId; p_firstResourceId++) {
+		if (m_animFrames[m_resourceSlots[p_firstResourceId]] != 0) {
+			delete m_animFrames[m_resourceSlots[p_firstResourceId]];
+			m_animFrames[m_resourceSlots[p_firstResourceId]] = 0;
+		}
+		UnLoadAnims(p_firstResourceId);
+	}
 }

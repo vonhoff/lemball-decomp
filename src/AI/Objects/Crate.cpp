@@ -50,8 +50,10 @@ bool Crate::Process()
 	int blockX = x >> 4;
 	int blockY = y >> 4;
 	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		m_position.m_zFixed =
-			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
+		int cellX = x & 0xf;
+		int cellY = y & 0xf;
+		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY)
+			<< 12;
 	}
 	else {
 		m_position.m_zFixed = 0;
@@ -127,8 +129,16 @@ AiCoord Crate::ActivatePosition()
 	int x = m_position.m_xFixed;
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	if ((m_contentsType >= 0x15 && m_contentsType <= 0x17) || m_contentsType == 0xffff) {
-		return AiCoord(x - 0x8000, y, z);
+	if (m_contentsType < 0x15) {
+		goto default_position;
 	}
+	if (m_contentsType <= 0x17 || m_contentsType == 0xffff) {
+		goto contents_position;
+	}
+
+default_position:
 	return AiCoord(x - 0x30000, y - 0x8000, z);
+
+contents_position:
+	return AiCoord(x - 0x8000, y, z);
 }

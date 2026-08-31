@@ -29,6 +29,7 @@ public:
 	friend class GunController;
 	friend class HiliteController;
 	friend class PasswordDrawer;
+	friend class LemmingAnimsManager;
 
 private:
 	Line* m_linePrimitives;             // 0x04

@@ -22,6 +22,8 @@ public:
 	friend class Collectable;
 	friend class Crate;
 	friend class Duplicator;
+	friend class Map;
+	friend class Ball;
 
 private:
 	unsigned int m_reserved; // 0x00

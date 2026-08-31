@@ -1,7 +1,12 @@
 #include "GameObject.h"
 
 #include "../../Control/Game/Game.h"
+#include "../Navigation/Ai.h"
 #include "../Navigation/AiDestinationList.h"
+
+#include <string.h>
+
+#pragma intrinsic(memcpy, memset)
 
 GameObject::GameObject()
 {
@@ -408,7 +413,6 @@ void GameObject::Initialise()
 	m_desiredFacingDirection = 0;
 	m_flightVelocity.m_zFixed = 0;
 	m_unk0x58 = 0;
-	m_activator = 0;
 	m_unk0x11c = 0;
 	m_hasDestination = 0;
 	m_actionDeadline = g_dwGameTick;
@@ -540,10 +544,10 @@ AiCoord* GameObject::GetDestination()
 }
 
 // 68K 0x1060a6b0 DestinationExists__11CGameObjectFv
-// STUB: LEMBALL 0x004160c0
+// FUNCTION: LEMBALL 0x004160c0
 bool GameObject::DestinationExists()
 {
-	return 0;
+	return 0 < m_destinationList->m_count;
 }
 
 // 68K 0x1060a6f2 EmptyDestinationList__11CGameObjectFv
@@ -554,9 +558,13 @@ void GameObject::EmptyDestinationList()
 }
 
 // 68K 0x1060a72e GetBoundingBox__11CGameObjectFR7CVSRect
-// STUB: LEMBALL 0x004160f0
+// FUNCTION: LEMBALL 0x004160f0
 void GameObject::GetBoundingBox(VsRect& p_rect)
 {
+	p_rect.m_x = (short) (m_position.m_xFixed >> 12) - 24;
+	p_rect.m_y = (short) (m_position.m_yFixed >> 12) - 24;
+	p_rect.m_width = 48;
+	p_rect.m_height = 48;
 }
 
 // 68K 0x1060a796 Jump__11CGameObjectFv
@@ -581,9 +589,10 @@ bool GameObject::OnLift(Coord3d& p_arg0)
 }
 
 // 68K 0x1060ab76 OffLift__11CGameObjectFR8tCoord3d
-// STUB: LEMBALL 0x00416410
+// FUNCTION: LEMBALL 0x00416410
 void GameObject::OffLift(Coord3d& p_arg0)
 {
+	OnLift(p_arg0);
 }
 
 // 68K 0x1060abb8 OnLift__11CGameObjectFR8tCoord3dR8tCoord3d
@@ -594,9 +603,10 @@ bool GameObject::OnLift(Coord3d& p_arg0, Coord3d& p_arg1)
 }
 
 // 68K 0x1060ac8e OffLift__11CGameObjectFR8tCoord3dR8tCoord3d
-// STUB: LEMBALL 0x004164f0
+// FUNCTION: LEMBALL 0x004164f0
 void GameObject::OffLift(Coord3d& p_arg0, Coord3d& p_arg1)
 {
+	OnLift(p_arg0, p_arg1);
 }
 
 // 68K 0x1060acde StartSommersault__11CGameObjectFv
@@ -606,10 +616,17 @@ void GameObject::StartSommersault()
 }
 
 // 68K 0x1060ad78 IsSelectable__11CGameObjectFv
-// STUB: LEMBALL 0x00416570
+// FUNCTION: LEMBALL 0x00416570
 bool GameObject::IsSelectable()
 {
-	return 0;
+	if (m_action < (eAction) 7) {
+		goto selectable;
+	}
+	if (m_action <= (eAction) 8 || m_action == (eAction) 21) {
+		return 0;
+	}
+selectable:
+	return 1;
 }
 
 // 68K 0x1060adc0 ResetInstructions__11CGameObjectFv
@@ -620,9 +637,14 @@ bool GameObject::ResetInstructions()
 }
 
 // 68K 0x1060ae5c Init__11CGameObjectFP3CAI
-// STUB: LEMBALL 0x004165e0
+// FUNCTION: LEMBALL 0x004165e0
 void GameObject::Init(Ai* p_arg0)
 {
+	g_pAI = p_arg0;
+	g_nGameOver = 0;
+	memset(g_abObjectIdBitmap, 0, sizeof(g_abObjectIdBitmap));
+	unsigned char mask = g_abBitMasks[0];
+	g_abObjectIdBitmap[0] |= mask;
 }
 
 // 68K 0x1060aeb2 GetId__11CGameObjectFv
@@ -633,47 +655,110 @@ short GameObject::GetId()
 }
 
 // 68K 0x1060aedc SetId__11CGameObjectFUs
-// STUB: LEMBALL 0x00416620
+// FUNCTION: LEMBALL 0x00416620
 void GameObject::SetId(unsigned short p_arg0)
 {
+	m_linkedObjectId = p_arg0;
+	RegisterId();
 }
 
 // 68K 0x1060af12 ReSetId__11CGameObjectFv
-// STUB: LEMBALL 0x00416640
+// FUNCTION: LEMBALL 0x00416640
 void GameObject::ReSetId()
 {
+	if (m_linkedObjectId != (unsigned short) 0xffff) {
+		g_abObjectIdBitmap[m_linkedObjectId >> 3] &= ~g_abBitMasks[m_linkedObjectId & 7];
+	}
 }
 
 // 68K 0x1060af92 NextId__11CGameObjectFv
 // FUNCTION: LEMBALL 0x00416670
-int GameObject::NextId()
+short GameObject::NextId()
 {
+	int i = 0;
+	do {
+		if (g_abObjectIdBitmap[i] != 0xff) {
+			int j = 0;
+			do {
+				if ((g_abObjectIdBitmap[i] & g_abBitMasks[j]) == 0) {
+					return j + i * 8;
+				}
+				j++;
+			} while (j < 8);
+		}
+		i++;
+	} while (i < 0x100);
 	return 0;
 }
 
 // 68K 0x1060b006 NextLoadingId__11CGameObjectFv
-// STUB: LEMBALL 0x004166a0
-int GameObject::NextLoadingId()
+// FUNCTION: LEMBALL 0x004166a0
+short GameObject::NextLoadingId()
 {
+	int i = 0xff;
+	do {
+		if (g_abObjectIdBitmap[i] != 0xff) {
+			int j = 7;
+			do {
+				if ((g_abObjectIdBitmap[i] & g_abBitMasks[j]) == 0) {
+					return j + i * 8;
+				}
+				j--;
+			} while (j > 0);
+		}
+		i--;
+	} while (i > 0);
 	return 0;
 }
 
 // 68K 0x1060b080 RegisterId__11CGameObjectFv
-// STUB: LEMBALL 0x00416740
+// FUNCTION: LEMBALL 0x00416740
 void GameObject::RegisterId()
 {
+	unsigned short id = m_linkedObjectId;
+	if (id != (unsigned short) 0xffff) {
+		unsigned short index = id >> 3;
+		unsigned short bit = id & 7;
+		unsigned char mask = g_abBitMasks[bit];
+		unsigned char* pBitmap = &g_abObjectIdBitmap[index];
+		unsigned char b = *pBitmap;
+		if ((mask & b) != 0) {
+			unsigned int count = g_wObjectCount;
+			for (unsigned int i = 0; (int) i < (int) count; i++) {
+				if (g_pObjects[(unsigned short) i] != 0) {
+					g_pObjects[(unsigned short) i]->GetId();
+				}
+			}
+			m_linkedObjectId = 0xffff;
+			return;
+		}
+		*pBitmap = mask | b;
+	}
 }
 
 // 68K 0x1060b144 UpdateCollision__11CGameObjectFv
-// STUB: LEMBALL 0x004167c0
+// FUNCTION: LEMBALL 0x004167c0
 void GameObject::UpdateCollision()
 {
+	int x = (m_position.m_xFixed >> 12) - 8;
+	int y = (m_position.m_yFixed >> 12) - 8;
+	int z = m_position.m_zFixed >> 12;
+	int collision[6];
+	collision[0] = x;
+	collision[1] = y;
+	collision[2] = z;
+	collision[3] = x + 15;
+	collision[4] = y + 15;
+	collision[5] = z + 15;
+	memcpy(&m_collisionMinX, collision, sizeof(collision));
 }
 
 // 68K 0x1060b1e6 StartLand__11CGameObjectFv
-// STUB: LEMBALL 0x00416820
+// FUNCTION: LEMBALL 0x00416820
 void GameObject::StartLand()
 {
+	m_actionDeadline = g_dwGameTick + 8;
+	g_pAI->StepOn(m_position, this, m_collisionFlags);
 }
 
 // 68K 0x10118886 Process__11CGameObjectFv
@@ -707,7 +792,7 @@ unsigned char g_abBitMasks[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80}
 int g_wLemmingCount;
 
 // GLOBAL: LEMBALL 0x004a6410
-unsigned char g_abObjectIdBitmap[32];
+unsigned char g_abObjectIdBitmap[256];
 
 // GLOBAL: LEMBALL 0x004a6510
 GameObject* g_pObjects[256];

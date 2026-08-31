@@ -33,6 +33,7 @@ public:
 	friend class IntroAnimAnimWindow;
 	friend class BaseFrontendProcess;
 	friend class BaseFrontendDrawer;
+	friend class Ai;
 
 private:
 	int m_level;               // 0x00

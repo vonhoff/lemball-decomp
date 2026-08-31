@@ -28,6 +28,8 @@ public:
 	void SetPort(short p_arg0);
 	~WriteSocket();
 
+	friend class BaseObjectManager;
+
 private:
 	unsigned int m_lastSendTime;          // 0x3c
 	undefined m_unknown40[8];             // 0x40

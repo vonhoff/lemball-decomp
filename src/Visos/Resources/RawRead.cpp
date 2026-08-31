@@ -47,9 +47,8 @@ bool RawRead::NameCmp(char* p_path, char* p_name)
 		if (pathChar == kPathSeparator) {
 			pathChar = 0;
 		}
-		char nameChar = (char) toupper(*name);
-		name++;
-		if (nameChar == pathChar) {
+		int nameChar = *name++;
+		if ((char) toupper(nameChar) == pathChar) {
 			if (*path++ == '\0') {
 				matched = 1;
 			}

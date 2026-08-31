@@ -6,7 +6,7 @@
 // FUNCTION: LEMBALL 0x0045e380
 ResEffect* ResEffect::Load(unsigned int p_resourceId)
 {
-	register ResEffect* res = (ResEffect*) g_pActiveMogRes->Find(p_resourceId);
+	ResEffect* res = (ResEffect*) g_pActiveMogRes->Find(p_resourceId);
 	if (!res) {
 		res = new ResEffect(p_resourceId);
 		return (ResEffect*) res->CheckError();

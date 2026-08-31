@@ -24,6 +24,8 @@
 
 #pragma intrinsic(strcpy)
 
+extern "C" unsigned long __stdcall timeGetTime(void);
+
 extern char* g_szBroadcastPeerName;
 
 struct BroadcastAddressDispatch {
@@ -840,7 +842,7 @@ void NetworkOptionsDrawer::SetMessage(int p_message)
 	m_message = p_message;
 	m_messageDuration = 0;
 	m_backBufferNeeded = 1;
-	now = CurrentMilliTimer();
+	now = timeGetTime();
 	m_redrawPending = 1;
 	m_lastDrawTime = now;
 }
@@ -931,11 +933,11 @@ void NetworkOptionsDrawer::StartMessageTimeout(int p_message, unsigned long p_du
 	unsigned long now;
 
 	m_message = p_message;
-	now = CurrentMilliTimer();
+	now = timeGetTime();
 	m_backBufferNeeded = 1;
 	m_messageStartTime = now;
 	m_messageDuration = p_duration;
-	now = CurrentMilliTimer();
+	now = timeGetTime();
 	m_redrawPending = 1;
 	m_lastDrawTime = now;
 }

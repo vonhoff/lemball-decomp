@@ -7,15 +7,13 @@ Vector VsTrig::Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos)
 	int sin = p_sin.m_value;
 	int cosLo = p_cos.m_value & 0xfff;
 	int negSin = -sin;
-	int x = p_vector.m_xFixed;
-	int xLo = x & 0xfff;
-	int xHi = x >> 12;
-	int y = p_vector.m_yFixed;
-	int yLo = y & 0xfff;
-	int yHi = y >> 12;
+	int xLo = p_vector.m_xFixed & 0xfff;
+	int xHi = p_vector.m_xFixed >> 12;
+	int yLo = p_vector.m_yFixed & 0xfff;
+	int yHi = p_vector.m_yFixed >> 12;
 	int cosHi = p_cos.m_value >> 12;
-	int sinLo = sin & 0xfff;
-	int sinHi = sin >> 12;
+	int sinHi = p_sin.m_value >> 12;
+	int sinLo = p_sin.m_value & 0xfff;
 
 	int resY = ((sinLo * xLo) >> 12) + (sinHi * xLo) + ((cosLo * yLo) >> 12) + (yLo * cosHi) + (xHi * p_sin.m_value) +
 			   (yHi * p_cos.m_value);

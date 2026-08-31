@@ -14,10 +14,12 @@ void* MogloadArena::operator new(unsigned int p_size)
 		return ::operator new(p_size);
 	}
 	unsigned char* result;
-	if (g_nSmallMemoryEnabled != 0 && g_maxSmallMemorySize > p_size) {
-		result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
-		if (result != 0) {
-			return result;
+	if (g_nSmallMemoryEnabled != 0) {
+		if (g_maxSmallMemorySize > p_size) {
+			result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
+			if (result != 0) {
+				return result;
+			}
 		}
 	}
 	if (!g_pMogloadArena->Allocate(&result, p_size, g_pCurrentAllocDescription)) {

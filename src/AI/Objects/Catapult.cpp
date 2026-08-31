@@ -36,7 +36,9 @@ bool Catapult::Process()
 	int blockY = y >> 4;
 	unsigned short z;
 	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		z = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+		int cellX = x & 0xf;
+		int cellY = y & 0xf;
+		z = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	else {
 		z = 0;
@@ -123,9 +125,10 @@ void Catapult::DoActivate()
 	m_unk0xd0 += g_dwGameTick;
 	m_unk0xd4 += g_dwGameTick;
 	m_actionDeadline += g_dwGameTick;
-	m_unk0x90 = m_activator->m_objectType;
-	m_activator->m_unk0xc0 = 1;
-	m_activator->m_action = (eAction) 5;
+	GameObject* activator = m_activator;
+	m_unk0x90 = activator->m_objectType;
+	activator->m_unk0xc0 = 1;
+	activator->m_action = (eAction) 5;
 	g_pAI->AddTime(20);
 }
 

@@ -203,21 +203,45 @@ bool Enemy::FacingTarget()
 }
 
 // 68K 0x106087b4 HitMine__6CEnemyFv
-// STUB: LEMBALL 0x004206a0
+// FUNCTION: LEMBALL 0x004206a0
 void Enemy::HitMine()
 {
+	m_unk0x10c = 1;
+	g_pAI->Score(300);
+	C3DVector velocity;
+	velocity.m_xFixed = 0;
+	velocity.m_yFixed = 0;
+	velocity.m_zFixed = 0xa000;
+	StartFly(velocity, 0);
+	m_unk0x2c = 1;
 }
 
 // 68K 0x10608820 HitBall__6CEnemyFv
-// STUB: LEMBALL 0x004206f0
+// FUNCTION: LEMBALL 0x004206f0
 void Enemy::HitBall()
 {
+	m_hit = 1;
+	m_actionDeadline = g_dwGameTick + 60;
+	g_pAI->Score(300);
 }
 
 // 68K 0x10608864 GetHit__6CEnemyFv
-// STUB: LEMBALL 0x00420720
+// FUNCTION: LEMBALL 0x00420720
 void Enemy::GetHit()
 {
+	int& count = g_pAI->m_objectCount;
+	GameObject** objects = g_pAI->m_objects;
+	for (int i = 0; i < count; i++) {
+		if (objects[i] == (GameObject*) this) {
+			count--;
+			for (; i < count; i++) {
+				objects[i] = objects[i + 1];
+			}
+			objects[count] = 0;
+			break;
+		}
+	}
+	g_pAI->Score(500);
 }
 
 // 68K 0x10119cdc IsHit__6CEnemyFv

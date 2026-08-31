@@ -1,5 +1,7 @@
 #include "BaseNetwork.h"
 
+#include "../Foundation/BaseQueue.h"
+#include "../Foundation/BaseQueueHandler.h"
 #include "../Messaging/MessFailedConnect.h"
 #include "../Messaging/MessGoConnect.h"
 #include "../Messaging/MessOkConnect.h"
@@ -165,15 +167,21 @@ void BaseNetwork::SetCBuffers(int p_arg0, int p_arg1)
 }
 
 // 68K 0x1020f6b0 AttachMessageQueue__12CBaseNetworkFP17CBaseQueueHandler
-// STUB: LEMBALL 0x00462590
+// FUNCTION: LEMBALL 0x00462590
 void BaseNetwork::AttachMessageQueue(BaseQueueHandler* p_arg0)
 {
+	m_messageQueue = p_arg0;
+	((BaseQueue*) g_pNetworkPacketQueue)->Attach(p_arg0, 0);
 }
 
 // 68K 0x1020f710 DetachMessageQueue__12CBaseNetworkFv
-// STUB: LEMBALL 0x004625b0
+// FUNCTION: LEMBALL 0x004625b0
 void BaseNetwork::DetachMessageQueue()
 {
+	if (m_messageQueue != 0) {
+		((BaseQueue*) g_pNetworkPacketQueue)->Detach(m_messageQueue, 0);
+		m_messageQueue = 0;
+	}
 }
 
 // 68K 0x1020f768 Process__12CBaseNetworkFv

@@ -128,8 +128,10 @@ void FatalWin32Error(char* p_context)
 {
 	unsigned long error = GetLastError();
 	char buffer[0x80];
-	LocalDebugOStream stream(buffer, sizeof(buffer));
-	stream << p_context << '\n' << " GetLastError()=" << (long) error << ", " << Hex8(error);
+	{
+		LocalDebugOStream stream(buffer, sizeof(buffer));
+		stream << p_context << '\n' << " GetLastError()=" << (long) error << ", " << Hex8(error);
+	}
 	MessageBoxA(0, buffer, "FATAL ERROR", 0);
 	ExitProcess(0xaaaa);
 }

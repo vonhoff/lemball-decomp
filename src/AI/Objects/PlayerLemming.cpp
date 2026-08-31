@@ -609,8 +609,9 @@ void PlayerLemming::OnBalloon()
 			groundZ = 0;
 		}
 		else {
-			groundZ =
-				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(tileX & 0xf, tileY & 0xf);
+			int cellX = tileX & 0xf;
+			int cellY = tileY & 0xf;
+			groundZ = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY);
 		}
 		m_groundPosition.m_zFixed = (int) (unsigned int) groundZ << 12;
 		return;
@@ -626,7 +627,9 @@ void PlayerLemming::OnBalloon()
 		groundZ = 0;
 	}
 	else {
-		groundZ = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(tileX & 0xf, tileY & 0xf);
+		int cellX = tileX & 0xf;
+		int cellY = tileY & 0xf;
+		groundZ = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	int baseZ = (int) groundZ + 32;
 	int curZ = m_position.m_zFixed;

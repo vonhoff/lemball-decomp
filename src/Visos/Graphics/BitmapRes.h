@@ -8,7 +8,16 @@
 // VTABLE: LEMBALL 0x00497928
 class BitmapResBase : public Primitive {
 public:
-	BitmapResBase();
+	// FUNCTION: LEMBALL 0x0044b5f0
+	BitmapResBase()
+	{
+		m_y = 0;
+		m_x = 0;
+		m_height = 0;
+		m_width = 0;
+		m_sourceY = 0;
+		m_sourceX = 0;
+	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~BitmapResBase() {}      // vtable+0x00
@@ -42,7 +51,12 @@ protected:
 // VTABLE: LEMBALL 0x00497918
 class BitmapRes : public BitmapResBase {
 public:
-	BitmapRes();
+	// FUNCTION: LEMBALL 0x00447120
+	BitmapRes()
+	{
+		m_unknown22 = 0;
+		m_unknown20 = 0;
+	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~BitmapRes() {}          // vtable+0x00
@@ -59,7 +73,8 @@ public:
 
 private:
 	unsigned int m_unknown1c; // 0x1c
-	unsigned int m_unknown20; // 0x20
+	undefined2 m_unknown20;   // 0x20
+	undefined2 m_unknown22;   // 0x22
 };
 
 // SYNTHETIC: LEMBALL 0x00447170

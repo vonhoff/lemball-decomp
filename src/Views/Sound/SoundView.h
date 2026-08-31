@@ -59,4 +59,5 @@ extern SoundView* g_pSoundView;
 extern unsigned int g_dwEffectsOn;
 extern unsigned int g_dwMusicOn;
 extern EffectSpec g_pEffectSpecs[44];
+
 #endif

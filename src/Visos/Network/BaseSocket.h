@@ -13,6 +13,8 @@ public:
 	void AddData();
 	void GetData();
 
+	friend class BaseObjectManager;
+
 protected:
 	BasePacketHeader* m_packetHeader;      // 0x2c
 	unsigned short m_criticalSequence;     // 0x30

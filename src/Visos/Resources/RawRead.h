@@ -13,4 +13,7 @@ public:
 
 extern _Filet* g_pMogFile;
 
+// LIBRARY: LEMBALL 0x0047fac0
+// _toupper
+
 #endif

@@ -49,7 +49,7 @@ public:
 	void FixUpLevel();
 	void GameState(eGameStatus p_status);
 	void GetData();
-	void GetOrigin(AiCoord& p_origin, unsigned char& p_player);
+	void GetOrigin(AiCoord& p_origin, unsigned int& p_player);
 	void GetPlayerPos(int p_id, AiCoord& p_position);
 	void HitTrampoline(const AiCoord& p_position, GameObject* p_object);
 	void LoadFlagInfo(unsigned char* p_data, int p_size);

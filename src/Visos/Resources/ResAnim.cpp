@@ -4,12 +4,11 @@
 
 // 68K 0x1020374e Load__8CResANIMFUl
 // FUNCTION: LEMBALL 0x0045d610
-ResAnim* ResAnim::Load(unsigned int p_resourceId)
+ResAnim* ResAnim::Load(unsigned long p_resourceId)
 {
-	register unsigned int id = p_resourceId;
-	ResAnim* res = (ResAnim*) g_pActiveMogRes->Find(id);
+	ResAnim* res = (ResAnim*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == 0) {
-		return (ResAnim*) (new ResAnim(id))->CheckError();
+		return (ResAnim*) (new ResAnim(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x4c495354) {
 		res->UnLoad();

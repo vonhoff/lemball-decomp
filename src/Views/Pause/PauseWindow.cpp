@@ -1,8 +1,11 @@
 #include "PauseWindow.h"
 
+#include "../Sound/SoundView.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Graphics/BasePalManager.h"
+#include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Graphics/HotAreaList.h"
+#include "../../Visos/Graphics/ReceiveWindowState.h"
 
 // 68K 0x10b0e048 Initialise__12CPauseWindowFv
 // STUB: LEMBALL 0x00443af0
@@ -23,9 +26,14 @@ void PauseWindow::UnLoad()
 }
 
 // 68K 0x10b0e2fc Restart__12CPauseWindowFv
-// STUB: LEMBALL 0x00443d80
+// FUNCTION: LEMBALL 0x00443d80
 void PauseWindow::Restart()
 {
+	VsRect rect;
+	UnLoad();
+	Load();
+	rect = CalculateWindow();
+	CreateTheWindow(rect);
 }
 
 // 68K 0x10b0e390 CreateTheWindow__12CPauseWindowFRC7CVSRect
@@ -124,9 +132,36 @@ void PauseWindow::OnPaint(const VsRect& p_rect)
 }
 
 // 68K 0x10b0f404 OnInside__12CPauseWindowFRC8CVSPoint
-// STUB: LEMBALL 0x00444a90
+// FUNCTION: LEMBALL 0x00444a90
 void PauseWindow::OnInside(const VsPoint& p_point)
 {
+	int selection = m_minimumSelection;
+	m_cursorState = 0;
+	if (selection < m_menuItemCount) {
+		short relX = p_point.m_x - m_rect.m_x;
+		short relY = p_point.m_y - m_rect.m_y;
+		VsPoint* textSizes = m_textSizes + selection * 2 + 1;
+		do {
+			short textX = textSizes->m_x;
+			if (textX <= relX) {
+				short boundX = textSizes[-1].m_x + textX;
+				if (boundX > relX) {
+					short textY = textSizes->m_y;
+					if (textY <= relY) {
+						short boundY = textSizes[-1].m_y + textY;
+						if (boundY > relY) {
+							m_cursorState = 4;
+							m_selection = selection;
+							break;
+						}
+					}
+				}
+			}
+			textSizes += 2;
+			selection++;
+		} while (selection < m_menuItemCount);
+	}
+	CursorChangeType((eCursorDisplayType) 1, m_cursorState);
 }
 
 // 68K 0x10b0f506 OnButtonDown__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS
@@ -137,21 +172,60 @@ unsigned int PauseWindow::OnButtonDown(const VsPoint& p_point, unsigned int p_fl
 }
 
 // 68K 0x10b0f61a OnButtonUp__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00444bd0
-void PauseWindow::OnButtonUp(const VsPoint& p_point, unsigned int p_flags)
+// FUNCTION: LEMBALL 0x00444bd0
+void PauseWindow::OnButtonUp(const VsPoint& p_point, int p_flags)
 {
+	m_cursorState = 0;
+	CursorChangeType((eCursorDisplayType) 1, 0);
 }
 
 // 68K 0x10b0f67c OnExternalButtonUp__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00444bf0
+// FUNCTION: LEMBALL 0x00444bf0
 void PauseWindow::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 {
+	m_cursorState = 0;
+	CursorChangeType((eCursorDisplayType) 1, 0);
 }
 
 // 68K 0x10b0f6e6 ProcessMsg__12CPauseWindowFP10tagMESSAGE
-// STUB: LEMBALL 0x00444c10
+// FUNCTION: LEMBALL 0x00444c10
 int PauseWindow::ProcessMsg(Message* p_message)
 {
+	if ((m_pauseMessage == 0 || m_pauseMessage == 3) && p_message->type == 4) {
+		switch (p_message->code) {
+		case 1:
+		case 3:
+			if (m_selection > m_minimumSelection) {
+				m_selection--;
+				g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+				return 1;
+			}
+			break;
+		case 2:
+		case 4:
+			if (m_selection < m_menuItemCount - 1) {
+				m_selection++;
+				g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+				return 1;
+			}
+			break;
+		case 0x22:
+		case 0x2a:
+		case 0x2e:
+		case 0x4c:
+		case 0x57:
+		case 0x58:
+			m_receiverState->SetOptionSelection(m_selection + 1);
+			g_pSoundView->PlayEffect((eSoundEffect) 3);
+			return 1;
+		case 0x23:
+			if (m_pauseMessage != 0 || m_receiverState->GetPauser()) {
+				m_receiverState->SetOptionSelection(m_initialSelection + 1);
+				g_pSoundView->PlayEffect((eSoundEffect) 3);
+			}
+			return 1;
+		}
+	}
 	return 0;
 }
 

@@ -33,15 +33,19 @@ bool Balloon::Process()
 {
 	int y = m_position.m_yFixed >> 12;
 	int x = m_position.m_xFixed >> 12;
+	Map* map = g_pMap;
 	int blockX = x >> 4;
 	int blockY = y >> 4;
-	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		m_position.m_zFixed =
-			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf) << 12;
+	unsigned short z;
+	if (x >= 0 && y >= 0 && map->m_ground.m_width > blockX && g_pMap->m_ground.m_height > blockY) {
+		int cellX = x & 0xf;
+		int cellY = y & 0xf;
+		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	else {
-		m_position.m_zFixed = 0;
+		z = 0;
 	}
+	m_position.m_zFixed = z << 12;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == 26) {
@@ -54,6 +58,7 @@ bool Balloon::Process()
 	if (m_action == 26) {
 		Action((eAction) 24);
 		m_heading = 0;
+		return 1;
 	}
 	return 1;
 }
@@ -83,7 +88,7 @@ void Balloon::DoActivate()
 // FUNCTION: LEMBALL 0x0041d7b0
 AiCoord Balloon::ActivatePosition()
 {
-	int z = m_position.m_zFixed;
 	int y = m_position.m_yFixed;
+	int z = m_position.m_zFixed;
 	return AiCoord(m_position.m_xFixed, y, z);
 }

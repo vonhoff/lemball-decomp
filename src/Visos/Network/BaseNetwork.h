@@ -19,6 +19,7 @@ public:
 	virtual void* GetNewConnect();           // vtable+0x24
 	virtual void* GetNewBroadcast();         // vtable+0x28
 	virtual void* GetNewNetworkAddress();    // vtable+0x2c
+	virtual void WaitProcess();              // vtable+0x30
 	virtual ~BaseNetwork();                  // vtable+0x04
 	Connect* NewConnect();
 	bool DoInitialise();
@@ -39,7 +40,6 @@ public:
 	void ShutDown();
 	void StoCfailedConnect(NetworkAddress* p_arg0);
 	void StoCokConnect(NetworkAddress* p_arg0);
-	void WaitProcess();
 
 	friend bool VsFNetQuit();
 	friend bool VsNetQuit();

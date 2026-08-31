@@ -25,7 +25,7 @@ public:
 	virtual int ProcessMsg(Message* p_message);                                      // vtable+0x08
 	virtual unsigned int OnButtonDown(const VsPoint& p_point, unsigned int p_flags); // vtable+0x04
 	virtual void FreeVram();                                                         // vtable+0x00
-	virtual void OnButtonUp(const VsPoint& p_point, unsigned int p_flags);           // vtable+0x08
+	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);           // vtable+0x08
 	virtual void OnDriverChange();                                                   // vtable+0x5c
 	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags);            // vtable+0x0c
 	virtual void OnInside(const VsPoint& p_point);                                   // vtable+0x18

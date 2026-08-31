@@ -17,7 +17,7 @@
 #include <new.h>
 #include <string.h>
 
-#pragma intrinsic(memcpy)
+#pragma intrinsic(memcpy, strcpy)
 
 extern "C" __declspec(dllimport) void* __stdcall LoadIconA(void* p_instance, const char* p_name);
 

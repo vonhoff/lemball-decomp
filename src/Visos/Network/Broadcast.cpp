@@ -2,6 +2,8 @@
 
 #include "../Foundation/VsTime.h"
 
+extern "C" unsigned long __stdcall timeGetTime(void);
+
 // 68K 0x1020c60e __ct__10CBroadcastFv
 // STUB: LEMBALL 0x00460350
 Broadcast::Broadcast()
@@ -89,10 +91,10 @@ void Broadcast::SendFailedInit(NetworkErrors p_arg0)
 }
 
 // 68K 0x1020ce72 Run__10CBroadcastFv
-// STUB: LEMBALL 0x00460a20
+// FUNCTION: LEMBALL 0x00460a20
 void Broadcast::Run()
 {
-	unsigned long time = CurrentMilliTimer();
+	unsigned long time = timeGetTime();
 	m_runEnabled = 1;
 	m_lastBroadcastTime = time - 1000;
 }

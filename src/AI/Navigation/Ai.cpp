@@ -1,11 +1,13 @@
 #include "Ai.h"
 
+#include "../../Control/Game/GameStatus.h"
 #include "../Groups/EnemyGroupManager.h"
 #include "../Groups/PlayerLemmingGroupManager.h"
 #include "../Groups/SheepGroupManager.h"
 #include "../Managers/BulletManager.h"
 #include "../Managers/DoorManager.h"
 #include "../Managers/LiftManager.h"
+#include "MoverManager.h"
 
 // 68K 0x1060013a __ct__3CAIFP5CGame
 // STUB: LEMBALL 0x00410c10
@@ -169,16 +171,19 @@ void Ai::GetData()
 }
 
 // 68K 0x10602470 LemmingsSFXChanged__3CAIFv
-// STUB: LEMBALL 0x00412c50
+// FUNCTION: LEMBALL 0x00412c50
 bool Ai::LemmingsSfxChanged()
 {
-	return 0;
+	return m_playerGroupManager->HasSfxChanged();
 }
 
 // 68K 0x106024a4 QuitGame__3CAIFv
-// STUB: LEMBALL 0x00412c60
+// FUNCTION: LEMBALL 0x00412c60
 void Ai::QuitGame()
 {
+	m_paused = 0;
+	g_pGameStatus->m_skillState = 5;
+	GameState((eGameStatus) 5);
 }
 
 // 68K 0x106024e8 SwitchMessage__3CAIF9swMessageiii
@@ -194,9 +199,11 @@ void Ai::GetPlayerPos(int p_id, AiCoord& p_position)
 }
 
 // 68K 0x1060264e GetOrigin__3CAIFR7AICOORDRUc
-// STUB: LEMBALL 0x00412e20
-void Ai::GetOrigin(AiCoord& p_origin, unsigned char& p_player)
+// FUNCTION: LEMBALL 0x00412e20
+void Ai::GetOrigin(AiCoord& p_origin, unsigned int& p_player)
 {
+	p_player = 0;
+	m_playerGroupManager->GetLeaderPos(p_origin);
 }
 
 // 68K 0x1060268e AddNewTrapDoor__3CAIFiiiUl
@@ -239,10 +246,10 @@ unsigned short Ai::LiftId(int p_index)
 }
 
 // 68K 0x106028ec GetDead__3CAIFv
-// STUB: LEMBALL 0x00413040
+// FUNCTION: LEMBALL 0x00413040
 PlayerLemming* Ai::GetDead()
 {
-	return 0;
+	return m_playerGroupManager->GetDead();
 }
 
 // 68K 0x10602914 GetObjectRequired__3CAIF11eObjectType
@@ -260,10 +267,10 @@ unsigned int Ai::SetObjectRequired(eObjectType p_objectType, unsigned char p_req
 }
 
 // 68K 0x106029a6 FindMoverHeight__3CAIFiiRi
-// STUB: LEMBALL 0x004130d0
+// FUNCTION: LEMBALL 0x004130d0
 Mover* Ai::FindMoverHeight(int p_x, int p_y, int& p_height)
 {
-	return 0;
+	return m_moverManager->Find(p_x, p_y, p_height);
 }
 
 // 68K 0x106029e6 NLemmings__3CAIFi
@@ -274,9 +281,12 @@ void Ai::NLemmings(int p_count)
 }
 
 // 68K 0x10602a0c AddANetworkStart__3CAIFiiii
-// STUB: LEMBALL 0x00413180
+// FUNCTION: LEMBALL 0x00413180
 void Ai::AddANetworkStart(int p_x, int p_y, int p_z, int p_index)
 {
+	m_networkStartsX[p_index] = p_x;
+	m_networkStartsY[p_index] = p_y;
+	m_networkStartsZ[p_index] = p_z;
 }
 
 // 68K 0x10602a54 SetNetworkTrapDoors__3CAIFiiiii
@@ -299,9 +309,13 @@ int Ai::NDead()
 }
 
 // 68K 0x10602be6 Score__3CAIFi
-// STUB: LEMBALL 0x00413390
+// FUNCTION: LEMBALL 0x00413390
 void Ai::Score(int p_score)
 {
+	m_score += p_score;
+	if (m_score > 9999999) {
+		m_score = 9999999;
+	}
 }
 
 // 68K 0x101192f0 Process__3CAIFv

@@ -1,21 +1,46 @@
 #include "Map.h"
 
+// GLOBAL: LEMBALL 0x0049e4e0
+Map* g_pActiveMap = 0;
+
+// GLOBAL: LEMBALL 0x0049e4e4
+Map* g_pCurrentMap = 0;
+
 // 68K 0x10900470 __ct__4CMapFv
-// STUB: LEMBALL 0x004303c0
+// FUNCTION: LEMBALL 0x004303c0
 Map::Map()
 {
+	m_ground.m_ground = 0;
+	m_ground.m_width = 0;
+	m_ground.m_height = 0;
+	g_pActiveMap = this;
+	g_pCurrentMap = this;
+	m_walkHeight = 0;
+	m_walkWidth = 0;
+	m_walkBits = 0;
 }
 
 // 68K 0x109004b2 Restart__4CMapFv
-// STUB: LEMBALL 0x004303f0
+// FUNCTION: LEMBALL 0x004303f0
 void Map::Restart()
 {
+	m_orientation = 0;
+	m_levelName[0] = '\0';
+	m_defaultBlox = (eObjectType) 0x209;
+	m_defaultBloxData = 0;
+	m_ground.Clear();
 }
 
 // 68K 0x109004f2 __dt__4CMapFv
-// STUB: LEMBALL 0x00430410
+// FUNCTION: LEMBALL 0x00430410
 Map::~Map()
 {
+	if (m_walkBits != 0) {
+		delete[] m_walkBits;
+	}
+	if (m_ground.m_ground != 0) {
+		delete[] m_ground.m_ground;
+	}
 }
 
 // 68K 0x1090055c ReSize__4CMapFii
@@ -32,10 +57,13 @@ unsigned short Map::GetZ(int p_x, int p_y, Mover** p_mover)
 }
 
 // 68K 0x109006da GetWalk__4CMapFii
-// STUB: LEMBALL 0x004305f0
+// FUNCTION: LEMBALL 0x004305f0
 unsigned char Map::GetWalk(int p_x, int p_y)
 {
-	return 0;
+	if (p_x >= 0 && p_y >= 0 && p_x < m_walkWidth && m_walkHeight > p_y) {
+		return m_walkBits[p_y * m_walkWidth + p_x];
+	}
+	return '\0';
 }
 
 // 68K 0x1090072c CreateWalkBits__4CMapFv
@@ -75,9 +103,10 @@ void Map::LoadLevel(LoadGroundSurfaceData* p_data, unsigned long p_dataSize, uns
 }
 
 // 68K 0x10900e76 LoadLevelName__4CMapFP17tagLoadGroundNameUl
-// STUB: LEMBALL 0x00430e80
+// FUNCTION: LEMBALL 0x00430e80
 void Map::LoadLevelName(LoadGroundName* p_data, unsigned long p_dataSize)
 {
+	SetLevelName((char*) p_data);
 }
 
 // 68K 0x10900ec2 LoadDefaultBlox__4CMapFP18tagLoadDefaultBloxUl
@@ -87,9 +116,19 @@ void Map::LoadDefaultBlox(class LoadDefaultBlox* p_data, unsigned long p_dataSiz
 }
 
 // 68K 0x10900f30 SetLevelName__4CMapFPc
-// STUB: LEMBALL 0x00431010
+// FUNCTION: LEMBALL 0x00431010
 void Map::SetLevelName(char* p_name)
 {
+	int i = 0;
+	do {
+		char c = *p_name++;
+		m_levelName[i] = c;
+		if (c == '\0') {
+			break;
+		}
+		i++;
+	} while (i < 32);
+	m_levelName[32] = '\0';
 }
 
 // 68K 0x10900f74 CalculateCliff__4CMapFv

@@ -18,8 +18,8 @@ public:
 	bool Fall();
 	bool Jump();
 	bool ResetInstructions();
-	static int NextId();
-	static int NextLoadingId();
+	static short NextId();
+	static short NextLoadingId();
 	short GetId();
 	void Blocked();
 	unsigned short MapCheck(int p_arg0, int p_arg1);
@@ -42,8 +42,8 @@ public:
 	virtual bool SearchRoute();                                                     // vtable+0x40
 	virtual bool Move();                                                            // vtable+0x44
 	virtual void GetBoundingBox(VsRect& p_rect);                                    // vtable+0x48
-	virtual bool Collision(const Rect3& p_arg0);                                    // vtable+0x4c
-	virtual bool Collision(const Pt3& p_arg0);                                      // vtable+0x50
+	virtual bool Collision(const Pt3& p_arg0);                                      // vtable+0x4c
+	virtual bool Collision(const Rect3& p_arg0);                                    // vtable+0x50
 	virtual void HitBullet(Bullet* p_bullet);                                       // vtable+0x54
 	virtual void HitBall();                                                         // vtable+0x58
 	virtual int IsHit();                                                            // vtable+0x5c
@@ -63,10 +63,10 @@ public:
 	virtual void RandomAction();                                                    // vtable+0x94
 	virtual bool FacingTarget();                                                    // vtable+0x98
 	virtual void TurnToFaceTarget();                                                // vtable+0x9c
-	virtual bool OnLift(Coord3d& p_arg0, Coord3d& p_arg1);                          // vtable+0xa0
-	virtual bool OnLift(Coord3d& p_arg0);                                           // vtable+0xa4
-	virtual void OffLift(Coord3d& p_arg0, Coord3d& p_arg1);                         // vtable+0xa8
-	virtual void OffLift(Coord3d& p_arg0);                                          // vtable+0xac
+	virtual bool OnLift(Coord3d& p_arg0);                                           // vtable+0xa0
+	virtual bool OnLift(Coord3d& p_arg0, Coord3d& p_arg1);                          // vtable+0xa4
+	virtual void OffLift(Coord3d& p_arg0);                                          // vtable+0xa8
+	virtual void OffLift(Coord3d& p_arg0, Coord3d& p_arg1);                         // vtable+0xac
 	virtual bool PossiblyOnLift();                                                  // vtable+0xb0
 	virtual bool HasObject(eObjectType p_arg0);                                     // vtable+0xb4
 	virtual bool AddObject(eObjectType p_arg0, class GameObject* p_arg1);           // vtable+0xb8
@@ -93,7 +93,7 @@ public:
 	void AlterDestination(const AiCoord& p_arg0);
 	void DeleteFirstEntryFromDestinationList();
 	void EmptyDestinationList();
-	void Init(Ai* p_arg0);
+	static void Init(Ai* p_arg0);
 	void Initialise();
 	void ReSetId();
 	void RegisterId();
@@ -139,6 +139,7 @@ public:
 	friend class Balloon;
 	friend class Collectable;
 	friend class Crate;
+	friend class PlayerLemmingGroupManager;
 
 protected:
 	unsigned short m_runtimeFlags;        // 0x04
@@ -208,7 +209,7 @@ protected:
 	undefined2 m_unk0x122;                // 0x122
 };
 
-extern unsigned char g_abObjectIdBitmap[32];
+extern unsigned char g_abObjectIdBitmap[256];
 extern GameObject* g_pObjects[256];
 extern word g_wObjectCount;
 extern int g_anTurnDelayCursor[16];

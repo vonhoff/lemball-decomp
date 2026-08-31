@@ -55,9 +55,8 @@ void TcpIpNetworkAddress::operator=(const char* p_text)
 // FUNCTION: LEMBALL 0x00471590
 bool TcpIpNetworkAddress::operator==(NetworkAddress& p_address)
 {
-	in_addr in;
-	in.s_addr = ((TcpIpNetworkAddress*) &p_address)->m_ipv4Address;
-	return m_ipv4Address == in.s_addr;
+	in_addr in = *(in_addr*) &((TcpIpNetworkAddress*) &p_address)->m_ipv4Address;
+	return !(m_ipv4Address - in.s_addr);
 }
 
 // 68K 0x1010d9c8 GetStr__20CTCPIPNetworkAddressFv

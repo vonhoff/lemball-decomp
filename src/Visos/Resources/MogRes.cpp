@@ -3,6 +3,8 @@
 #include <new.h>
 #include <string.h>
 
+extern "C" unsigned long __stdcall timeGetTime(void);
+
 #pragma intrinsic(strcpy, strlen)
 
 #include "../Animation/BaseStat.h"
@@ -51,9 +53,9 @@ MogRes::MogRes(char* p_path, unsigned long p_arenaSize)
 		m_error = 1;
 		return;
 	}
-	CurrentMilliTimer();
+	timeGetTime();
 	m_rootDirectory = new MogDir(0);
-	CurrentMilliTimer();
+	timeGetTime();
 	m_workingDirectory = m_rootDirectory;
 	SetWd(g_mogRootPath);
 	m_resources = (ResBase**) MogloadArena::operator new(kResourceHandleBytes);

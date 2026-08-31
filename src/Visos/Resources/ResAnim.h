@@ -10,14 +10,14 @@
 // VTABLE: LEMBALL 0x00498a18
 class ResAnim : public ResBaseList {
 public:
-	inline ResAnim(unsigned int p_resourceId) : ResBaseList((ResListHeader*) g_pCompressedResourceTypes)
+	inline ResAnim(unsigned long p_resourceId) : ResBaseList((ResListHeader*) g_pCompressedResourceTypes)
 	{
 		m_animationEntries = 0;
 		DoLoad(p_resourceId);
 		m_initialized = 1;
 	}
 	inline ResAnim() {}
-	static ResAnim* Load(unsigned int p_resourceId);
+	static ResAnim* Load(unsigned long p_resourceId);
 	virtual bool DirectResources(unsigned int p_index, unsigned char** p_cursor); // vtable+0x50
 	virtual bool DirectResources(unsigned int p_index,
 								 unsigned char** p_headerCursor,

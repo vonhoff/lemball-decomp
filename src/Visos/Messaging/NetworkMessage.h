@@ -16,6 +16,7 @@ public:
 	friend class Bullet;
 	friend class Headers;
 	friend class BaseFrontendProcess;
+	friend class BaseObjectManager;
 	bool Set(unsigned char* p_arg0);
 	int GetDword();
 	unsigned char GetByte();

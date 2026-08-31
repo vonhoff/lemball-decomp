@@ -34,7 +34,7 @@ public:
 	~GenericGroupManager();
 	GenericGroupManager();
 
-private:
+protected:
 	GenericGroup* m_groups[40]; // 0x04
 	int m_groupCount;           // 0xa4
 	int m_currentGroup;         // 0xa8

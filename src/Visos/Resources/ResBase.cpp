@@ -112,12 +112,10 @@ void ResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned i
 // FUNCTION: LEMBALL 0x0045d100
 void ResBase::LoadData()
 {
-	VsRange range;
-
-	if (m_loaded == 0) {
-		if (GetfVramLoaded() == 0) {
-			if (m_externalList == 0) {
+	if (m_loaded == 0 && GetfVramLoaded() == 0) {
+		if (m_externalList == 0) {
 				if (m_dataSize != 0) {
+					VsRange range;
 					range.m_offset = m_fileOffset;
 					range.m_size = m_dataSize;
 					if (g_pActiveMogRes->Load(range, m_data, this) != 0) {
@@ -128,10 +126,9 @@ void ResBase::LoadData()
 					m_data = 0;
 					OnRead(0, &m_data, m_dataSize);
 				}
-			}
-			else {
-				m_externalList->LoadData();
-			}
+		}
+		else {
+			m_externalList->LoadData();
 		}
 	}
 	m_age = 0;
@@ -153,14 +150,17 @@ void ResBase::UnLoad()
 }
 
 // 68K 0x10203108 UnLoadData__8CResBaseFUc
-// STUB: LEMBALL 0x0045d1c0
+// FUNCTION: LEMBALL 0x0045d1c0
 void ResBase::UnLoadData(unsigned int p_force)
 {
 	unsigned int size;
 
-	if (m_loaded != 0 && m_resourceId != 0 && (size = m_dataSize) != 0) {
-		g_pActiveMogRes->DeallocateMem(m_data, 1);
-		m_data = 0;
+	if (m_loaded != 0) {
+		size = m_dataSize;
+		if (m_resourceId != 0 && size != 0) {
+			g_pActiveMogRes->DeallocateMem(m_data, 1);
+			m_data = 0;
+		}
 	}
 	UnLoadVramData(p_force);
 	if (m_loaded != 0) {

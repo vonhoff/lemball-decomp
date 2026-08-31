@@ -35,11 +35,13 @@ public:
 	friend class Collectable;
 	friend class Crate;
 	friend class Duplicator;
+	friend class Ball;
 
 private:
 	unsigned int m_reserved;   // 0x00
 	int m_orientation;         // 0x04
 	GroundArray m_ground;      // 0x08
+	undefined4 m_unk0x18;      // 0x18
 	int m_walkWidth;           // 0x1c
 	int m_walkHeight;          // 0x20
 	char m_levelName[33];      // 0x24
@@ -50,6 +52,8 @@ private:
 };
 
 extern Map* g_pMap;
+extern Map* g_pActiveMap;
+extern Map* g_pCurrentMap;
 extern void* g_apValidateDefaultBloxDataCases[25];
 extern unsigned short g_wDefaultBloxLimit0206;
 extern unsigned short g_wDefaultBloxLimit0207;
