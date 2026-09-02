@@ -9,6 +9,7 @@ class ViewData {
 public:
 	ViewData();
 
+	friend class GameObject;
 	friend class PlayerLemming;
 	friend class SoundView;
 	friend class C2D;

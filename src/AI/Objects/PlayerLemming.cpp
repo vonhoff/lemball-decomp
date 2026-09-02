@@ -244,7 +244,7 @@ void PlayerLemming::RequestFire(int p_x, int p_y)
 
 // 68K 0x1061c6b0 Fire__14CPlayerLemmingFv
 // FUNCTION: LEMBALL 0x0040f310
-bool PlayerLemming::Fire()
+void PlayerLemming::Fire()
 {
 	AiCoord start;
 	start.m_xFixed = m_position.m_xFixed;
@@ -274,7 +274,6 @@ bool PlayerLemming::Fire()
 		}
 	}
 	m_fireRequestState = (eFireRequestState) 0;
-	return 0;
 }
 
 // 68K 0x1061c7c6 StartFiring__14CPlayerLemmingFv

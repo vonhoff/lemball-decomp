@@ -154,9 +154,8 @@ void Enemy::RequestFire(int p_interval)
 
 // 68K 0x10608502 Fire__6CEnemyFv
 // STUB: LEMBALL 0x00420430
-bool Enemy::Fire()
+void Enemy::Fire()
 {
-	return 0;
 }
 
 // 68K 0x106085c0 StartFiring__6CEnemyFv

@@ -83,9 +83,8 @@ void Switch::AddEntry(int p_message, unsigned short p_objectId)
 
 // 68K 0x10619afa ConvertVer0ToVer1__7CSwitchFv
 // STUB: LEMBALL 0x0041d390
-unsigned int Switch::ConvertVer0ToVer1()
+void Switch::ConvertVer0ToVer1()
 {
-	return 0;
 }
 
 // 68K 0x10619bce Load__7CSwitchFRPUc

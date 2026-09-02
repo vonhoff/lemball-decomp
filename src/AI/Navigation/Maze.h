@@ -19,6 +19,8 @@ public:
 	void UpdateChangeNext(int p_x, int p_y);
 	~Maze();
 
+	friend class GameObject;
+
 private:
 	Map* m_map;                     // 0x0000
 	unsigned short** m_distances;   // 0x0004

@@ -15,7 +15,7 @@ public:
 	virtual bool Activate(GameObject* p_object);    // vtable+0x18
 	virtual bool Process();                         // vtable+0x14
 	virtual int Usage();                            // vtable+0x28
-	virtual unsigned int ConvertVer0ToVer1();       // vtable+0xc4
+	virtual void ConvertVer0ToVer1();               // vtable+0xc4
 	virtual void DoActivate();                      // vtable+0x10c
 	virtual void GetViewData(ViewData& p_viewData); // vtable+0x0c
 	virtual void Restart();                         // vtable+0x104

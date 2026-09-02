@@ -34,7 +34,7 @@ public:
 	virtual bool IsRequestingFire();                                                // vtable+0x7c
 	virtual int Bored();                                                            // vtable+0x80
 	virtual void SetBored(unsigned long p_arg0);                                    // vtable+0x84
-	virtual bool Fire();                                                            // vtable+0x88
+	virtual void Fire();                                                            // vtable+0x88
 	virtual void StartFiring();                                                     // vtable+0x8c
 	virtual void EndFiring();                                                       // vtable+0x90
 	virtual void RandomAction();                                                    // vtable+0x94

@@ -16,7 +16,7 @@ public:
 	bool LineOfSight(AiCoord p_target);
 	bool ProcessRule(eEnemyStateRules p_rule);
 	virtual bool FacingTarget();              // vtable+0x98
-	virtual bool Fire();                      // vtable+0x88
+	virtual void Fire();                      // vtable+0x88
 	virtual int IsHit();                      // vtable+0x5c
 	virtual bool IsRequestingFire();          // vtable+0x7c
 	virtual bool Process();                   // vtable+0x14

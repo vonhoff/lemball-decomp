@@ -156,3 +156,6 @@ ObjectHitMess* g_pObjectHitMessage;
 
 // GLOBAL: LEMBALL 0x0049d130
 ObjectDiesMess* g_pObjectDiesMessage;
+
+// GLOBAL: LEMBALL 0x0049d134
+int g_dwSommersaultDirection = 0;

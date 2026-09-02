@@ -11,13 +11,13 @@
 class GameObject {
 public:
 	AiCoord Position();
-	AiCoord* GetDestination();
+	AiCoord GetDestination();
 	GameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short p_arg2);
 	bool DestinationExists();
 	bool FacingDestination();
 	bool Fall();
 	bool Jump();
-	bool ResetInstructions();
+	void ResetInstructions();
 	static short NextId();
 	static short NextLoadingId();
 	short GetId();
@@ -57,7 +57,7 @@ public:
 	virtual bool IsRequestingFire();                                                // vtable+0x7c
 	virtual int Bored();                                                            // vtable+0x80
 	virtual void SetBored(unsigned long p_arg0);                                    // vtable+0x84
-	virtual bool Fire();                                                            // vtable+0x88
+	virtual void Fire();                                                            // vtable+0x88
 	virtual void StartFiring();                                                     // vtable+0x8c
 	virtual void EndFiring();                                                       // vtable+0x90
 	virtual void RandomAction();                                                    // vtable+0x94
@@ -72,7 +72,7 @@ public:
 	virtual bool AddObject(eObjectType p_arg0, class GameObject* p_arg1);           // vtable+0xb8
 	virtual void ReNumberNode(int p_arg0, int p_arg1);                              // vtable+0xbc
 	virtual bool NeedsNode(int p_arg0);                                             // vtable+0xc0
-	virtual unsigned int ConvertVer0ToVer1();                                       // vtable+0xc4
+	virtual void ConvertVer0ToVer1();                                               // vtable+0xc4
 	virtual void Delete();                                                          // vtable+0xc8
 	virtual void PickUpAmmo(unsigned short p_arg0);                                 // vtable+0xcc
 	virtual void ExternalControlEnd();                                              // vtable+0xd0
@@ -218,6 +218,7 @@ extern unsigned char g_abBitMasks[8];
 extern word g_wNetworkLemmingIndex;
 extern word g_wLocalLemmingIndex;
 extern int g_wLemmingCount;
+extern int g_dwSommersaultDirection;
 
 // SYNTHETIC: LEMBALL 0x00417ad0
 // GameObject::`scalar deleting destructor'

@@ -1,8 +1,14 @@
 #include "GameObject.h"
 
 #include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
 #include "../Navigation/Ai.h"
+#include "../Navigation/AiDestinationEntry.h"
 #include "../Navigation/AiDestinationList.h"
+#include "../Navigation/Maze.h"
+#include "../Objects/ViewData.h"
+#include "../../Visos/Foundation/VsMath.h"
+#include "Pt3.h"
 
 #include <string.h>
 
@@ -19,9 +25,33 @@ void GameObject::HitBullet(Bullet* p_bullet)
 }
 
 // 68K 0x10118300 GetViewData__11CGameObjectFR9CViewData
-// STUB: LEMBALL 0x0040a6f0
+// FUNCTION: LEMBALL 0x0040a6f0
 void GameObject::GetViewData(ViewData& p_viewData)
 {
+	p_viewData.m_objectId = m_objectId;
+	p_viewData.m_objectType = m_objectType;
+	p_viewData.m_playerIndex = 0;
+	p_viewData.m_positionX = m_position.m_xFixed >> 12;
+	p_viewData.m_positionY = m_position.m_yFixed >> 12;
+	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
+	p_viewData.m_facingDirection = m_facingDirection;
+	p_viewData.m_action = m_action;
+	p_viewData.m_actionArgument = m_actionArgument;
+	p_viewData.m_statusFlags = 0;
+	p_viewData.m_stateTimer = m_stateTimer;
+	p_viewData.m_unk0x30 = m_unk0xc0;
+	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
+	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
+	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;
+	p_viewData.m_soundEffect = m_soundEffect;
+	unsigned long timestamp = g_dwSimulationTimestamp;
+	if (m_isRemoteObject != 0) {
+		timestamp = g_dwNetworkSimulationTimestamp;
+	}
+	p_viewData.m_animationTime = timestamp;
+	SetSndEffect((eSoundEffect) 0);
+	p_viewData.m_transientFlags = m_transientFlags;
+	m_transientFlags = 0;
 }
 
 // 68K 0x10118858 ForgetObjectLink__11CGameObjectFUs
@@ -52,17 +82,17 @@ int GameObject::Usage()
 }
 
 // 68K 0x1011a3e6 Position__11CGameObjectFv
-// STUB: LEMBALL 0x0040a830 FOLDED
+// FUNCTION: LEMBALL 0x0040a830 FOLDED
 AiCoord GameObject::Position()
 {
-	return *(AiCoord*) 0;
+	return m_position;
 }
 
 // 68K 0x1011893a ActivatePosition__11CGameObjectFv
-// STUB: LEMBALL 0x0040a830 FOLDED
+// FUNCTION: LEMBALL 0x0040a830 FOLDED
 AiCoord GameObject::ActivatePosition()
 {
-	return *(AiCoord*) 0;
+	return m_position;
 }
 
 // 68K 0x10118982 StartStanding__11CGameObjectFv
@@ -86,16 +116,26 @@ eSoundEffect GameObject::GetSndEffect()
 }
 
 // 68K 0x101189dc Collision__11CGameObjectFRC4CPt3
-// STUB: LEMBALL 0x0040a890
+// FUNCTION: LEMBALL 0x0040a890
 bool GameObject::Collision(const Pt3& p_arg0)
 {
+	if (m_collisionMinX <= p_arg0.m_x && p_arg0.m_x <= m_collisionMaxX &&
+		m_collisionMinY <= p_arg0.m_y && p_arg0.m_y <= m_collisionMaxY &&
+		m_collisionMinZ <= p_arg0.m_z && p_arg0.m_z <= m_collisionMaxZ) {
+		return 1;
+	}
 	return 0;
 }
 
 // 68K 0x10118a60 Collision__11CGameObjectFRC6CRect3
-// STUB: LEMBALL 0x0040a8e0
+// FUNCTION: LEMBALL 0x0040a8e0
 bool GameObject::Collision(const Rect3& p_arg0)
 {
+	if (m_collisionMinX <= p_arg0.m_x2 && p_arg0.m_x1 <= m_collisionMaxX &&
+		m_collisionMinY <= p_arg0.m_y2 && p_arg0.m_y1 <= m_collisionMaxY &&
+		m_collisionMinZ <= p_arg0.m_z2 && p_arg0.m_z1 <= m_collisionMaxZ) {
+		return 1;
+	}
 	return 0;
 }
 
@@ -170,10 +210,9 @@ void GameObject::SetBored(unsigned long p_arg0)
 }
 
 // 68K 0x10118cc2 Fire__11CGameObjectFv
-// STUB: LEMBALL 0x0040a9f0
-bool GameObject::Fire()
+// FUNCTION: LEMBALL 0x0040a9f0
+void GameObject::Fire()
 {
-	return 0;
 }
 
 // 68K 0x10118ce2 StartFiring__11CGameObjectFv
@@ -242,10 +281,9 @@ bool GameObject::NeedsNode(int p_arg0)
 }
 
 // 68K 0x10118ea4 ConvertVer0ToVer1__11CGameObjectFv
-// STUB: LEMBALL 0x0040aaa0
-unsigned int GameObject::ConvertVer0ToVer1()
+// FUNCTION: LEMBALL 0x0040aaa0
+void GameObject::ConvertVer0ToVer1()
 {
-	return 0;
 }
 
 // 68K 0x10118ed2 Delete__11CGameObjectFv
@@ -315,10 +353,10 @@ Ice* GameObject::Conveyor()
 }
 
 // 68K 0x10119118 IsUsable__11CGameObjectF7eAction
-// STUB: LEMBALL 0x0040ab50
+// FUNCTION: LEMBALL 0x0040ab50
 bool GameObject::IsUsable(eAction p_action)
 {
-	return 0;
+	return p_action == (eAction) 0x18;
 }
 
 // 68K 0x101187ea Action__11CGameObjectF7eAction
@@ -329,9 +367,11 @@ void GameObject::Action(eAction p_arg0)
 }
 
 // 68K 0x1011881e Action__11CGameObjectF7eActioni
-// STUB: LEMBALL 0x0040c180
+// FUNCTION: LEMBALL 0x0040c180
 void GameObject::Action(eAction p_arg0, int p_arg1)
 {
+	m_action = p_arg0;
+	m_actionArgument = (short) p_arg1;
 }
 
 // 68K 0x101190a2 SendRemove__11CGameObjectFv
@@ -354,9 +394,51 @@ int GameObject::UsableState()
 }
 
 // 68K 0x10608fec __ct__11CGameObjectF11eObjectTypeUsUs
-// STUB: LEMBALL 0x00414f30
+// FUNCTION: LEMBALL 0x00414f30
 GameObject::GameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short p_arg2)
 {
+	m_collisionMaxX = -1;
+	m_collisionMaxY = -1;
+	m_collisionMinX = 0;
+	m_collisionMinY = 0;
+	m_collisionMinZ = 0;
+	m_collisionMaxZ = -1;
+	m_collisionFlags = p_arg1;
+	m_objectType = p_arg0;
+	if (p_arg2 == 0) {
+		m_destinationList = 0;
+	}
+	else {
+		AiDestinationList* list = new AiDestinationList;
+		if (list == 0) {
+			m_destinationList = 0;
+		}
+		else {
+			list->m_count = 0;
+			list->m_capacity = p_arg2;
+			AiDestinationEntry* entries = new AiDestinationEntry[p_arg2];
+			list->m_entries = entries;
+			m_destinationList = list;
+		}
+	}
+	m_linkedObjectId = 0xffff;
+	bool found = false;
+	int i = 0;
+	if (g_wObjectCount != 0) {
+		do {
+			if (g_pObjects[i] == 0) {
+				m_objectId = (unsigned short) i;
+				found = true;
+				break;
+			}
+			i++;
+		} while (i < (int) (unsigned int) g_wObjectCount);
+	}
+	if (!found) {
+		m_objectId = g_wObjectCount;
+		g_wObjectCount++;
+	}
+	g_pObjects[m_objectId] = this;
 }
 
 // 68K 0x10609206 Restart__11CGameObjectFv
@@ -512,22 +594,45 @@ void GameObject::TurnToFaceDestination()
 }
 
 // 68K 0x1060a34a FacingDestination__11CGameObjectFv
-// STUB: LEMBALL 0x00415e20
+// FUNCTION: LEMBALL 0x00415e20
 bool GameObject::FacingDestination()
 {
-	return 0;
+	AiCoord dest = GetDestination();
+	int dir = ReturnFacingDirection(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, dest.m_xFixed >> 12, dest.m_yFixed >> 12);
+	return (int) m_facingDirection == dir;
 }
 
 // 68K 0x1060a3e0 DeleteFirstEntryFromDestinationList__11CGameObjectFv
-// STUB: LEMBALL 0x00415e80
+// FUNCTION: LEMBALL 0x00415e80
 void GameObject::DeleteFirstEntryFromDestinationList()
 {
+	AiDestinationList* list = m_destinationList;
+	if (list->m_count != 0) {
+		int count = list->m_count - 1;
+		if (count > 0) {
+			for (int i = 0; i < count; i++) {
+				list->m_entries[i] = list->m_entries[i + 1];
+			}
+		}
+		list->m_count--;
+	}
+	m_hasDestination = (m_destinationList->m_count != 0);
 }
 
 // 68K 0x1060a4a4 AddDestination__11CGameObjectFRC7AICOORD
-// STUB: LEMBALL 0x00415ef0
+// FUNCTION: LEMBALL 0x00415ef0
 void GameObject::AddDestination(const AiCoord& p_arg0)
 {
+	AiDestinationList* list = m_destinationList;
+	if (list != 0 && list->m_count < list->m_capacity) {
+		unsigned short count = list->m_count;
+		list->m_count = count + 1;
+		AiDestinationEntry* entry = &list->m_entries[count];
+		entry->m_type = (eDestinationType) 1;
+		entry->m_coordinate.m_xFixed = p_arg0.m_xFixed;
+		entry->m_coordinate.m_yFixed = p_arg0.m_yFixed;
+		entry->m_coordinate.m_zFixed = p_arg0.m_zFixed;
+	}
 }
 
 // 68K 0x1060a51c AlterDestination__11CGameObjectFRC7AICOORD
@@ -537,10 +642,13 @@ void GameObject::AlterDestination(const AiCoord& p_arg0)
 }
 
 // 68K 0x1060a626 GetDestination__11CGameObjectFv
-// STUB: LEMBALL 0x00416000
-AiCoord* GameObject::GetDestination()
+// FUNCTION: LEMBALL 0x00416000
+AiCoord GameObject::GetDestination()
 {
-	return 0;
+	if (m_destinationList->m_count != 0) {
+		return m_destinationList->m_entries[0].m_coordinate;
+	}
+	return m_position;
 }
 
 // 68K 0x1060a6b0 DestinationExists__11CGameObjectFv
@@ -610,9 +718,14 @@ void GameObject::OffLift(Coord3d& p_arg0, Coord3d& p_arg1)
 }
 
 // 68K 0x1060acde StartSommersault__11CGameObjectFv
-// STUB: LEMBALL 0x00416510
+// FUNCTION: LEMBALL 0x00416510
 void GameObject::StartSommersault()
 {
+	int random = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
+	*g_pSentinel = random;
+	m_actionDeadline = g_dwGameTick + (random % 500 + 50) / 50;
+	m_actionArgument = (short) g_dwSommersaultDirection;
+	g_dwSommersaultDirection ^= 1;
 }
 
 // 68K 0x1060ad78 IsSelectable__11CGameObjectFv
@@ -630,10 +743,19 @@ selectable:
 }
 
 // 68K 0x1060adc0 ResetInstructions__11CGameObjectFv
-// STUB: LEMBALL 0x00416590
-bool GameObject::ResetInstructions()
+// FUNCTION: LEMBALL 0x00416590
+void GameObject::ResetInstructions()
 {
-	return 0;
+	if (m_action != 4 && m_action != 12 && m_destinationList != 0) {
+		if (IsSelectable()) {
+			m_actionDeadline = g_dwGameTick;
+		}
+		m_destinationList->m_count = 0;
+		if (m_routeSearchActive != 0) {
+			g_pMaze->m_reserved = 0;
+		}
+		m_routeSearchFailed = 0;
+	}
 }
 
 // 68K 0x1060ae5c Init__11CGameObjectFP3CAI
