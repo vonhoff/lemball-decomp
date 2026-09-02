@@ -1,7 +1,0 @@
-.sympath+ C:\Dev\lemball-decomp\build-msvc400
-.reload /f
-bp 0044cce0 ".echo === SetSpriteWindow ===; kb 12; g"
-bp 00448300 ".echo === MainOptions1Load ===; kb 8; g"
-bp 004475e0 ".echo === EndPhase ===; kb 8; g"
-bp 00445f20 ".echo === PURECALL ===; kb 25; q"
-g
