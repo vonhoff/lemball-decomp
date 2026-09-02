@@ -65,6 +65,7 @@ private:
 };
 
 extern TargetGraphicsDriver* g_pTargetGraphicsDriver;
+extern unsigned int g_dwFullScreenGdi;
 extern void* g_apCResRasterConstructionVtable[15];
 extern TargetGraphicsSystemState* g_pTargetGraphicsSystem;
 extern unsigned int g_dwWinGDrawColourTable[256];
