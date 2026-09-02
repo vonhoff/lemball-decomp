@@ -50,28 +50,48 @@ def is_unresolved_call(orig_text: str, recomp_text: str) -> bool:
     return bool(re.match(r"call (?:Thunk of '.+' \(THUNK\)|\S+ \(FUNCTION\))$", recomp_text))
 
 
+def is_recomp_offset_call(orig_text: str, recomp_text: str) -> bool:
+    orig_text = orig_text.split("\t")[0].strip()
+    recomp_text = recomp_text.split("\t")[0].strip()
+    if not re.match(r"call <OFFSET\d+>", recomp_text):
+        return False
+    return bool(re.match(r"call .+ \(FUNCTION\)$", orig_text))
+
+
+def is_equivalent_insn(orig_text: str, recomp_text: str) -> bool:
+    if normalize_asm(orig_text) == normalize_asm(recomp_text):
+        return True
+    if is_unresolved_call(orig_text, recomp_text):
+        return True
+    if is_recomp_offset_call(orig_text, recomp_text):
+        return True
+    return False
+
+
+def collect_diff_insns(diff, key: str) -> list[str]:
+    insns = []
+    if not diff:
+        return insns
+    for _, chunks in diff:
+        for chunk in chunks:
+            for entry in chunk.get(key, []) or []:
+                insns.append(insn_text(entry))
+    return insns
+
+
 def is_thunk_only_diff(diff) -> bool:
     if not diff:
         return False
-    has_diff = False
-    for _, chunks in diff:
-        for chunk in chunks:
-            if not chunk.get("orig") and not chunk.get("recomp"):
-                continue
-            has_diff = True
-            orig = chunk.get("orig", [])
-            recomp = chunk.get("recomp", [])
-            if len(orig) != len(recomp):
-                return False
-            for orig_entry, recomp_entry in zip(orig, recomp):
-                orig_text = insn_text(orig_entry)
-                recomp_text = insn_text(recomp_entry)
-                if normalize_asm(orig_text) == normalize_asm(recomp_text):
-                    continue
-                if is_unresolved_call(orig_text, recomp_text):
-                    continue
-                return False
-    return has_diff
+    orig_insns = collect_diff_insns(diff, "orig")
+    recomp_insns = collect_diff_insns(diff, "recomp")
+    if not orig_insns and not recomp_insns:
+        return False
+    if len(orig_insns) != len(recomp_insns):
+        return False
+    for orig_text, recomp_text in zip(orig_insns, recomp_insns):
+        if not is_equivalent_insn(orig_text, recomp_text):
+            return False
+    return True
 
 
 def compute_ratio(match: dict | None, name: str = "") -> tuple[float, str]:
@@ -105,7 +125,7 @@ def format_diff_text(diff) -> str:
                 continue
 
             if len(orig) == len(recomp):
-                if all(normalize_asm(insn_text(o)) == normalize_asm(insn_text(r)) for o, r in zip(orig, recomp)):
+                if all(is_equivalent_insn(insn_text(o), insn_text(r)) for o, r in zip(orig, recomp)):
                     continue
 
             for item in orig:

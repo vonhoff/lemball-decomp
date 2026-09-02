@@ -27,3 +27,9 @@ void SolidRect::Render(Gdi* p_gdi)
 SolidRect::SolidRect() : m_top(0), m_left(0), m_bottom(0), m_right(0)
 {
 }
+
+// FUNCTION: LEMBALL 0x004756d0
+VsRect* SolidRect::GetBounds()
+{
+	return (VsRect*) &m_left;
+}

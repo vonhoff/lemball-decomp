@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_PVGDIBITMAP_H
 
 #include "../../Common.h"
+#include "../Foundation/VsPoint.h" // complete type
 #include "../Foundation/VsRect.h" // complete type
 #include "../Foundation/VsSize.h" // complete type
 
@@ -18,7 +19,8 @@ public:
 	void Initialise();
 	void ResetLinePtrs();
 	void ResetScroll();
-	void Scroll(const VsRect& p_rect, const VsPoint& p_destination);
+	void Scroll(const VsRect* p_rect, const VsPoint* p_destination);
+	void DrawCircleSymmetricPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_color);
 	void SetBitsBase(unsigned char* p_bits, int p_stride);
 	~PvGdiBitmap();
 

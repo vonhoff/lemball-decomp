@@ -1,6 +1,7 @@
 #include "PvGdiBitmap.h"
 
 #include <new.h>
+#include <string.h>
 
 // 68K 0x1021284a __ct__12CPVGDIBitmapFv
 // STUB: LEMBALL 0x00472290
@@ -46,62 +47,210 @@ void PvGdiBitmap::Initialise()
 }
 
 // 68K 0x102129b4 CreateLinePtrs__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x00472340
+// FUNCTION: LEMBALL 0x00472340
 void PvGdiBitmap::CreateLinePtrs()
 {
-	if ((int) m_lineCapacity < (int) m_height) {
+	if ((int) m_lineCapacity < (int) (short) m_height) {
 		if (m_lines != 0) {
 			operator delete(m_lines);
 			m_lines = 0;
 		}
-		if (0 < m_height) {
-			m_lines = (void**) operator new((unsigned int) m_height * 4);
+		if ((short) m_height > 0) {
+			short heightWord;
+			unsigned int size;
+
+			heightWord = m_height;
+			size = (unsigned int) (int) heightWord;
+			size = size << 2;
+			m_lines = (void**) operator new(size);
 			ResetLinePtrs();
 		}
-		m_lineCapacity = (unsigned int) m_height;
+		m_lineCapacity = (unsigned int) (int) (short) m_height;
 		return;
 	}
 	ResetLinePtrs();
 }
 
 // 68K 0x10212a46 ResetLinePtrs__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x004723a0
+// FUNCTION: LEMBALL 0x004723a0
 void PvGdiBitmap::ResetLinePtrs()
 {
+	unsigned int pad;
+	unsigned char* dest;
+	unsigned int count;
+	unsigned int rowPad;
+	int stride;
+	int strideAbs;
+	short heightWord;
+	int sign;
+
 	m_xOffset = 0;
 	m_firstLine = 0;
 	SetLinePtrs();
+	pad = m_rowPadding;
+	if ((int) pad <= 0) {
+		return;
+	}
+	dest = m_bitsBase;
+	count = pad >> 2;
+	while (count != 0) {
+		*(unsigned int*) dest = 0;
+		dest = dest + 4;
+		count = count - 1;
+	}
+	count = pad & 3;
+	while (count != 0) {
+		*dest = 0;
+		dest = dest + 1;
+		count = count - 1;
+	}
+	rowPad = m_rowPadding;
+	stride = m_stride;
+	sign = stride >> 31;
+	strideAbs = (stride ^ sign) - sign;
+	heightWord = m_height;
+	dest = m_bitsBase + rowPad + strideAbs * (int) heightWord;
+	count = rowPad >> 2;
+	while (count != 0) {
+		*(unsigned int*) dest = 0;
+		dest = dest + 4;
+		count = count - 1;
+	}
+	count = rowPad & 3;
+	while (count != 0) {
+		*dest = 0;
+		dest = dest + 1;
+		count = count - 1;
+	}
 }
 
 // 68K 0x10212ae8 SetLinePtrs__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x00472400
+// FUNCTION: LEMBALL 0x00472400
 void PvGdiBitmap::SetLinePtrs()
 {
 	unsigned char* bits;
 	unsigned int line;
 	int row;
 
-	if (m_lines == 0) {
-		return;
-	}
 	bits = m_bits;
 	line = m_firstLine;
 	row = 0;
-	while (row < m_height) {
+	if ((short) m_height <= 0) {
+		return;
+	}
+	do {
 		m_lines[line] = bits + m_xOffset;
 		line = line + 1;
 		bits = bits + m_stride;
-		if ((int) m_height <= (int) line) {
-			line = line - (unsigned int) m_height;
+		if ((int) line >= (int) (short) m_height) {
+			line = line - (unsigned int) (short) m_height;
 		}
 		row = row + 1;
-	}
+	} while (row < (int) (short) m_height);
 }
 
 // 68K 0x10212b5e Scroll__12CPVGDIBitmapFRC7CVSRectRC8CVSPoint
-// STUB: LEMBALL 0x00472440
-void PvGdiBitmap::Scroll(const VsRect& p_rect, const VsPoint& p_destination)
+// FUNCTION: LEMBALL 0x00472440
+void PvGdiBitmap::Scroll(const VsRect* p_rect, const VsPoint* p_destination)
 {
+	unsigned char frameSpace[0xc];
+	int width;
+	int height;
+	const short* xy;
+	short deltaY;
+	int srcLine;
+	int dstLine;
+	unsigned int count;
+	unsigned int* srcPtr;
+	unsigned int* destPtr;
+
+	*(PvGdiBitmap**) frameSpace = this;
+	width = (int) p_rect->m_width;
+	height = (int) p_rect->m_height;
+	if (height * width == 0) {
+		return;
+	}
+	if (m_directScroll == 0) {
+		xy = &p_rect->m_x;
+		if (p_rect == 0) {
+			xy = 0;
+		}
+		deltaY = (short) (xy[1] - p_destination->m_y);
+		m_xOffset = m_xOffset - (unsigned int) (short) (xy[0] - p_destination->m_x);
+		height = (int) (short) deltaY + (int) m_firstLine;
+		m_firstLine = (unsigned int) height;
+		width = (unsigned int) (int) (short) m_height;
+		if ((int) m_firstLine < (int) width) {
+			if ((int) m_firstLine < 0) {
+				m_firstLine = (unsigned int) ((int) width + (int) m_firstLine);
+			}
+		}
+		else {
+			m_firstLine = (unsigned int) ((int) m_firstLine - (int) width);
+		}
+		SetLinePtrs();
+		return;
+	}
+	if (p_destination->m_y == p_rect->m_y) {
+		if (p_destination->m_x != p_rect->m_x && 0 < height) {
+			srcLine = (int) p_rect->m_y * 4;
+			dstLine = (int) p_destination->m_y * 4;
+			do {
+				memcpy((void*) ((int) p_rect->m_x + *(int*) ((int) m_lines + srcLine)),
+					   (void*) (*(int*) ((int) m_lines + dstLine) + (int) p_destination->m_x),
+					   width);
+				height = height - 1;
+				srcLine = srcLine + 4;
+				dstLine = dstLine + 4;
+			} while (height != 0);
+		}
+		return;
+	}
+	if (p_rect->m_y < p_destination->m_y) {
+		if (0 < height) {
+			srcLine = (int) p_rect->m_y * 4;
+			dstLine = (int) p_destination->m_y * 4;
+			do {
+				destPtr = (unsigned int*) ((int) p_rect->m_x + *(int*) ((int) m_lines + srcLine));
+				srcPtr = (unsigned int*) (*(int*) ((int) m_lines + dstLine) + (int) p_destination->m_x);
+				for (count = width >> 2; count != 0; count = count - 1) {
+					*destPtr = *srcPtr;
+					destPtr = destPtr + 1;
+					srcPtr = srcPtr + 1;
+				}
+				for (count = width & 3; count != 0; count = count - 1) {
+					*(unsigned char*) destPtr = *(unsigned char*) srcPtr;
+					destPtr = (unsigned int*) ((int) destPtr + 1);
+					srcPtr = (unsigned int*) ((int) srcPtr + 1);
+				}
+				srcLine = srcLine + 4;
+				dstLine = dstLine + 4;
+				height = height - 1;
+			} while (height != 0);
+		}
+		return;
+	}
+	if (0 < height) {
+		srcLine = (height - 1 + (int) p_rect->m_y) * 4;
+		dstLine = (height - 1 + (int) p_destination->m_y) * 4;
+		do {
+			destPtr = (unsigned int*) ((int) p_rect->m_x + *(int*) ((int) m_lines + srcLine));
+			srcPtr = (unsigned int*) (*(int*) ((int) m_lines + dstLine) + (int) p_destination->m_x);
+			for (count = width >> 2; count != 0; count = count - 1) {
+				*destPtr = *srcPtr;
+				destPtr = destPtr + 1;
+				srcPtr = srcPtr + 1;
+			}
+			for (count = width & 3; count != 0; count = count - 1) {
+				*(unsigned char*) destPtr = *(unsigned char*) srcPtr;
+				destPtr = (unsigned int*) ((int) destPtr + 1);
+				srcPtr = (unsigned int*) ((int) srcPtr + 1);
+			}
+			srcLine = srcLine - 4;
+			dstLine = dstLine - 4;
+			height = height - 1;
+		} while (height != 0);
+	}
 }
 
 // 68K 0x10212c50 SetSize__12CPVGDIBitmapFRC7CVSSizei
@@ -121,20 +270,32 @@ VsSize PvGdiBitmap::SetSize(const VsSize& p_size, int p_pitch)
 }
 
 // 68K 0x10212d18 SetBitsBase__12CPVGDIBitmapFPUci
-// STUB: LEMBALL 0x00472670
+// FUNCTION: LEMBALL 0x00472670
 void PvGdiBitmap::SetBitsBase(unsigned char* p_bits, int p_stride)
 {
-	m_bitsBase = p_bits;
-	m_bits = p_bits + m_rowPadding;
-	m_stride = p_stride;
-	if (p_stride < 0) {
-		m_bits = p_bits + m_rowPadding + (1 - m_height) * p_stride;
+	unsigned char* bits;
+	unsigned char* padded;
+	int stride;
+
+	bits = p_bits;
+	padded = bits + m_rowPadding;
+	m_bitsBase = bits;
+	stride = p_stride;
+	m_bits = padded;
+	m_stride = stride;
+	if (stride < 0) {
+		int adjust;
+
+		adjust = 1;
+		adjust = adjust - (int) (short) m_height;
+		adjust = adjust * stride;
+		m_bits = padded + adjust;
 	}
 	CreateLinePtrs();
 }
 
 // 68K 0x10212d8a GetRects__12CPVGDIBitmapFRC7CVSRectRP7CVSRectRP7CVSRect
-// STUB: LEMBALL 0x004726b0
+// FUNCTION: LEMBALL 0x004726b0
 void PvGdiBitmap::GetRects(const VsRect& p_rect, VsRect*& p_rect0, VsRect*& p_rect1)
 {
 	m_rect0.m_width = p_rect.m_width;
@@ -144,7 +305,7 @@ void PvGdiBitmap::GetRects(const VsRect& p_rect, VsRect*& p_rect0, VsRect*& p_re
 	p_rect0 = &m_rect0;
 	p_rect1 = 0;
 	if ((int) m_firstLine < (int) (short) (p_rect.m_height + p_rect.m_y) && (int) p_rect.m_y < (int) m_firstLine) {
-		m_rect0.m_height = (short) ((int) m_firstLine - (int) m_rect0.m_y);
+		m_rect0.m_height = (short) m_firstLine - m_rect0.m_y;
 		m_rect1.m_width = p_rect.m_width;
 		m_rect1.m_height = p_rect.m_height;
 		m_rect1.m_x = p_rect.m_x;
@@ -156,7 +317,29 @@ void PvGdiBitmap::GetRects(const VsRect& p_rect, VsRect*& p_rect0, VsRect*& p_re
 }
 
 // 68K 0x10212e96 ResetScroll__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x00472760
+// FUNCTION: LEMBALL 0x00472760
 void PvGdiBitmap::ResetScroll()
 {
+	ResetLinePtrs();
+}
+
+// FUNCTION: LEMBALL 0x00475c80
+void PvGdiBitmap::DrawCircleSymmetricPoints(int p_centerX,
+											int p_centerY,
+											int p_xOffset,
+											int p_yOffset,
+											unsigned char p_color)
+{
+	int rowPos;
+	int rowNeg;
+	unsigned char color;
+
+	color = p_color;
+	rowPos = p_yOffset;
+	rowPos = rowPos + p_centerY;
+	rowNeg = p_centerY - p_yOffset;
+	*((unsigned char*) m_lines[rowPos] + p_centerX + p_xOffset) = color;
+	*((unsigned char*) m_lines[rowPos] + p_centerX - p_xOffset) = color;
+	*((unsigned char*) m_lines[rowNeg] + p_centerX - p_xOffset) = color;
+	*((unsigned char*) m_lines[rowNeg] + p_centerX + p_xOffset) = color;
 }

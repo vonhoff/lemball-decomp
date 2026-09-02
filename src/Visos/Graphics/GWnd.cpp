@@ -360,7 +360,7 @@ void GWnd::Refresh(VsRect* p_rect)
 		if ((int) (short) damage.m_height * (int) (short) damage.m_width > 0) {
 			damage.m_x = (short) (damage.m_x - m_innerRect.m_x);
 			damage.m_y = (short) (damage.m_y - m_innerRect.m_y);
-			m_gdi->m_renderTarget->AddToChangeList(damage);
+			m_gdi->m_renderTarget->AddToChangeList(&damage);
 		}
 	}
 	Flush();

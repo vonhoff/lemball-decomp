@@ -4,7 +4,7 @@
 #include "../../Common.h"
 #include "../Foundation/VsRect.h" // complete type
 #include "PvBackBuffSurface.h"    // complete type
-#include "PvGdiBitmap.h"          // complete type
+#include "PvScrollableSurface.h"  // complete type
 #include "PvSurface.h"            // complete type
 #include "PvZBuffSurface.h"       // complete type
 
@@ -17,8 +17,8 @@ struct SurfaceListNode {
 };
 
 // SIZE 0x5a0
-// PvGdiBitmap at 0. Shared PvSurface virtual base.
-class Surface : public PvGdiBitmap, public PvZBuffSurface, public PvBackBuffSurface, public virtual PvSurface {
+// PvScrollableSurface at 0. Shared PvSurface virtual base.
+class Surface : public PvScrollableSurface, public PvZBuffSurface, public PvBackBuffSurface {
 public:
 	friend class PvButton;
 	friend class GraphicButton;
@@ -32,10 +32,10 @@ public:
 	int LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2);
 	virtual void Resize(const VsSize& p_size);          // vtable+0x28
 	virtual void SetLinePtrs();                         // vtable+0x00
-	virtual void AddToChangeList(const VsRect& p_rect); // vtable+0x04
+	virtual void AddToChangeList(const VsRect* p_rect); // vtable+0x04
 	virtual ChangeList* GetChangeList();                // vtable+0x08
 	virtual void* GetCurrDb();                          // vtable+0x38
-	void AttachPalette(ResPalette* p_palette);
+	virtual void AttachPalette(ResPalette* p_palette); // vtable+0x30
 	bool BeginRender();
 	void EndRender();
 	virtual void Blit(Zrle* p_primitive, ResZrle* p_zrle);
@@ -78,7 +78,7 @@ public:
 								ResZrle* p_zrle,
 								unsigned short p_depth,
 								unsigned char* p_remap);
-	void BlitZrleNoClip(const VsRect& p_rect, ResZrle* p_zrle, unsigned char p_reverse);
+	void BlitZrleNoClip(const VsRect& p_rect, ResZrle* p_zrle, unsigned int p_reverse);
 	void BlitZrleNoClipQzBuff(const VsRect& p_rect, ResZrle* p_zrle, unsigned short p_depth);
 	void BlitZrleNoClipQzBuffRemap(const VsRect& p_rect,
 								   ResZrle* p_zrle,
@@ -95,8 +95,12 @@ public:
 	virtual void CopyBackBuffToScreen(const VsRect& p_arg0);
 	void DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius, int p_colour);
 	void FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour);
+	void DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radius, unsigned char p_colour);
+	void DrawFilledCircleSymmetricSpans(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
+	int ClipCirclePoint(int p_x, int p_y);
+	void DrawClippedCirclePoint(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
 	void Flush();
-	void Move(const VsPoint& p_position);
+	virtual void Move(const VsPoint& p_position); // vtable+0x2c
 	void MoveRel(const VsPoint& p_delta);
 	void NewBitmap(const VsRect& p_rect);
 	void ResetScroll();
