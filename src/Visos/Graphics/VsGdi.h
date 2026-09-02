@@ -54,23 +54,23 @@ public:
 	virtual void Blit(ZBuffScroll* p_arg0);
 	void BlitRect(VsRect p_rect, int p_colour);
 	void BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, Remap* p_remap, unsigned short p_depth);
-	void BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned char p_reverse);
+	void BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned int p_reverse);
 	void BlitZrleClipQzBuff(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned short p_depth);
 	void BlitZrleClipQzBuffRemap(const VsRect& p_rect,
 								 const VsRect& p_clip,
 								 ResZrle* p_zrle,
 								 unsigned short p_depth,
 								 unsigned char* p_remap);
-	void BlitZrleClipR(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned char p_reverse);
+	void BlitZrleClipR(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned int p_reverse);
 	void BlitZrleClipRemap(const VsRect& p_rect,
 						   const VsRect& p_clip,
 						   ResZrle* p_zrle,
-						   unsigned char p_reverse,
+						   unsigned int p_reverse,
 						   unsigned char* p_remap);
 	void BlitZrleClipRemapR(const VsRect& p_rect,
 							const VsRect& p_clip,
 							ResZrle* p_zrle,
-							unsigned char p_reverse,
+							unsigned int p_reverse,
 							unsigned char* p_remap);
 	void BlitZrleClipZBuff(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned short p_depth);
 	void BlitZrleClipZBuffRemap(const VsRect& p_rect,
@@ -84,9 +84,9 @@ public:
 								   ResZrle* p_zrle,
 								   unsigned short p_depth,
 								   unsigned char* p_remap);
-	void BlitZrleNoClipR(const VsRect& p_rect, ResZrle* p_zrle, unsigned char p_reverse);
-	void BlitZrleNoClipRemap(const VsRect& p_rect, ResZrle* p_zrle, unsigned char p_reverse, unsigned char* p_remap);
-	void BlitZrleNoClipRemapR(const VsRect& p_rect, ResZrle* p_zrle, unsigned char p_reverse, unsigned char* p_remap);
+	void BlitZrleNoClipR(const VsRect& p_rect, ResZrle* p_zrle, unsigned int p_reverse);
+	void BlitZrleNoClipRemap(const VsRect& p_rect, ResZrle* p_zrle, unsigned int p_reverse, unsigned char* p_remap);
+	void BlitZrleNoClipRemapR(const VsRect& p_rect, ResZrle* p_zrle, unsigned int p_reverse, unsigned char* p_remap);
 	void BlitZrleNoClipZBuff(const VsRect& p_rect, ResZrle* p_zrle, unsigned short p_depth);
 	void BlitZrleNoClipZBuffRemap(const VsRect& p_rect,
 								  ResZrle* p_zrle,

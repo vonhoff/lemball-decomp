@@ -786,9 +786,9 @@ void Surface::Resize(const VsSize& p_size)
 // FUNCTION: LEMBALL 0x0046d560
 void Surface::MoveRel(const VsPoint& p_delta)
 {
-	m_rect0c.m_x += p_delta.m_x;
-	m_rect0c.m_y += p_delta.m_y;
-	Move(*(VsPoint*) &m_rect0c.m_x);
+	m_windowRect.m_x += p_delta.m_x;
+	m_windowRect.m_y += p_delta.m_y;
+	Move(*(VsPoint*) &m_windowRect.m_x);
 }
 
 // 68K 0x1010a166 Move__8CSurfaceFRC8CVSPoint
@@ -1441,10 +1441,6 @@ void Surface::BlitRect(VsRect p_rect, int p_colour)
 // FUNCTION: LEMBALL 0x004757a0
 int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 {
-	int left;
-	int top;
-	int right;
-	int bottom;
 	unsigned int code1;
 	unsigned int code2;
 	int dx;
@@ -1453,35 +1449,31 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 	if (m_clipRect.m_height < 1 || m_clipRect.m_width < 1) {
 		return 1;
 	}
-	left = m_clipRect.m_x;
-	top = m_clipRect.m_y;
-	right = m_clipRect.m_x + m_clipRect.m_width - 1;
-	bottom = m_clipRect.m_y + m_clipRect.m_height - 1;
 	code1 = 0;
-	if (p_x1 < left) {
+	if (p_x1 < (int) m_clipRect.m_x) {
 		code1 = 1;
 	}
-	else if (right < p_x1) {
+	else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x1) {
 		code1 = 2;
 	}
-	if (p_y1 < top) {
-		code1 = code1 | 4;
+	if (p_y1 < (int) m_clipRect.m_y) {
+		code1 |= 4;
 	}
-	else if (bottom < p_y1) {
-		code1 = code1 | 8;
+	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y1) {
+		code1 |= 8;
 	}
 	code2 = 0;
-	if (p_x2 < left) {
+	if (p_x2 < (int) m_clipRect.m_x) {
 		code2 = 1;
 	}
-	else if (right < p_x2) {
+	else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x2) {
 		code2 = 2;
 	}
-	if (p_y2 < top) {
-		code2 = code2 | 4;
+	if (p_y2 < (int) m_clipRect.m_y) {
+		code2 |= 4;
 	}
-	else if (bottom < p_y2) {
-		code2 = code2 | 8;
+	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y2) {
+		code2 |= 8;
 	}
 	if (code2 != 0 || code1 != 0) {
 		do {
@@ -1494,70 +1486,70 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 				if ((code2 & 1) == 0) {
 					if ((code2 & 2) == 0) {
 						if ((code2 & 4) != 0) {
-							p_x2 = p_x2 + ((top - p_y2) * dx) / dy;
-							p_y2 = top;
+							p_x2 = p_x2 + ((m_clipRect.m_y - p_y2) * dx) / dy;
+							p_y2 = m_clipRect.m_y;
 						}
 						else if ((code2 & 8) != 0) {
-							p_x2 = p_x2 + ((bottom - p_y2) * dx) / dy;
-							p_y2 = bottom;
+							p_x2 = p_x2 + ((m_clipRect.m_y + m_clipRect.m_height - 1 - p_y2) * dx) / dy;
+							p_y2 = m_clipRect.m_y + m_clipRect.m_height - 1;
 						}
 					}
 					else {
-						p_y2 = p_y2 + ((right - p_x2) * dy) / dx;
-						p_x2 = right;
+						p_y2 = p_y2 + ((m_clipRect.m_x + m_clipRect.m_width - 1 - p_x2) * dy) / dx;
+						p_x2 = m_clipRect.m_x + m_clipRect.m_width - 1;
 					}
 				}
 				else {
-					p_y2 = p_y2 + ((left - p_x2) * dy) / dx;
-					p_x2 = left;
+					p_y2 = p_y2 + ((m_clipRect.m_x - p_x2) * dy) / dx;
+					p_x2 = m_clipRect.m_x;
 				}
 				code2 = 0;
-				if (p_x2 < left) {
+				if (p_x2 < (int) m_clipRect.m_x) {
 					code2 = 1;
 				}
-				else if (right < p_x2) {
+				else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x2) {
 					code2 = 2;
 				}
-				if (p_y2 < top) {
-					code2 = code2 | 4;
+				if (p_y2 < (int) m_clipRect.m_y) {
+					code2 |= 4;
 				}
-				else if (bottom < p_y2) {
-					code2 = code2 | 8;
+				else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y2) {
+					code2 |= 8;
 				}
 			}
 			else {
 				if ((code1 & 1) == 0) {
 					if ((code1 & 2) == 0) {
 						if ((code1 & 4) != 0) {
-							p_x1 = p_x1 + ((top - p_y1) * dx) / dy;
-							p_y1 = top;
+							p_x1 = p_x1 + ((m_clipRect.m_y - p_y1) * dx) / dy;
+							p_y1 = m_clipRect.m_y;
 						}
 						else if ((code1 & 8) != 0) {
-							p_x1 = p_x1 + ((bottom - p_y1) * dx) / dy;
-							p_y1 = bottom;
+							p_x1 = p_x1 + ((m_clipRect.m_y + m_clipRect.m_height - 1 - p_y1) * dx) / dy;
+							p_y1 = m_clipRect.m_y + m_clipRect.m_height - 1;
 						}
 					}
 					else {
-						p_y1 = ((right - p_x1) * dy) / dx + p_y1;
-						p_x1 = right;
+						p_y1 = p_y1 + ((m_clipRect.m_x + m_clipRect.m_width - 1 - p_x1) * dy) / dx;
+						p_x1 = m_clipRect.m_x + m_clipRect.m_width - 1;
 					}
 				}
 				else {
-					p_y1 = p_y1 + ((left - p_x1) * dy) / dx;
-					p_x1 = left;
+					p_y1 = p_y1 + ((m_clipRect.m_x - p_x1) * dy) / dx;
+					p_x1 = m_clipRect.m_x;
 				}
 				code1 = 0;
-				if (p_x1 < left) {
+				if (p_x1 < (int) m_clipRect.m_x) {
 					code1 = 1;
 				}
-				else if (right < p_x1) {
+				else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x1) {
 					code1 = 2;
 				}
-				if (p_y1 < top) {
-					code1 = code1 | 4;
+				if (p_y1 < (int) m_clipRect.m_y) {
+					code1 |= 4;
 				}
-				else if (bottom < p_y1) {
-					code1 = code1 | 8;
+				else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y1) {
+					code1 |= 8;
 				}
 			}
 		} while (code2 != 0 || code1 != 0);
@@ -1591,85 +1583,65 @@ int Surface::ClipCircle(int p_centerX, int p_centerY, int p_radius)
 // FUNCTION: LEMBALL 0x00475ce0
 void Surface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radius, unsigned char p_colour)
 {
-	int radius;
-	int x;
-	int err;
-	int errLimit;
-	int step;
-	int rowY;
-	short clipX;
-	short clipRight;
-	short clipY;
-	short clipBottom;
+	int x = 0;
+	int err = 0;
+	int step = 1;
+	int errLimit = p_radius * 2 - 1;
 
-	clipX = m_clipRect.m_x;
-	clipRight = (short) (m_clipRect.m_width + clipX - 1);
-	clipY = m_clipRect.m_y;
-	clipBottom = (short) (m_clipRect.m_height + clipY - 1);
-	if (clipX <= p_centerX && p_centerX <= clipRight) {
-		rowY = p_centerY + p_radius;
-		if (clipY <= rowY && rowY <= clipBottom) {
-			*((unsigned char*) m_lines[rowY] + p_centerX) = p_colour;
-		}
-		rowY = p_centerY - p_radius;
-		if (clipY <= rowY && rowY <= clipBottom) {
+	if (m_clipRect.m_x <= p_centerX && p_centerX <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		int rowY = p_centerY + p_radius;
+		if (m_clipRect.m_y <= rowY && rowY <= m_clipRect.m_y + m_clipRect.m_height - 1) {
 			*((unsigned char*) m_lines[rowY] + p_centerX) = p_colour;
 		}
 	}
-	if (clipX <= p_centerX + p_radius && p_centerX + p_radius <= clipRight && clipY <= p_centerY &&
-		p_centerY <= clipBottom) {
+	if (m_clipRect.m_x <= p_centerX && p_centerX <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		int rowY = p_centerY - p_radius;
+		if (m_clipRect.m_y <= rowY && rowY <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[rowY] + p_centerX) = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= p_centerX + p_radius && p_centerX + p_radius <= m_clipRect.m_x + m_clipRect.m_width - 1 &&
+		m_clipRect.m_y <= p_centerY && p_centerY <= m_clipRect.m_y + m_clipRect.m_height - 1) {
 		*((unsigned char*) m_lines[p_centerY] + p_centerX + p_radius) = p_colour;
 	}
-	if (clipX <= p_centerX - p_radius && p_centerX - p_radius <= clipRight && clipY <= p_centerY &&
-		p_centerY <= clipBottom) {
+	if (m_clipRect.m_x <= p_centerX - p_radius && p_centerX - p_radius <= m_clipRect.m_x + m_clipRect.m_width - 1 &&
+		m_clipRect.m_y <= p_centerY && p_centerY <= m_clipRect.m_y + m_clipRect.m_height - 1) {
 		*((unsigned char*) m_lines[p_centerY] + p_centerX - p_radius) = p_colour;
 	}
-	radius = p_radius;
-	x = 0;
-	err = 0;
-	step = 1;
-	errLimit = radius * 2 - 1;
-	if (radius <= 0) {
+	if (p_radius <= 0) {
 		return;
 	}
+	int lowerRow = p_centerY - p_radius;
+	int upperRow = p_centerY + p_radius;
 	do {
 		x = x + 1;
 		err = err + step;
-		step = step + 2;
 		if (errLimit < err * 2) {
-			radius = radius - 1;
+			p_radius = p_radius - 1;
+			lowerRow = lowerRow + 1;
+			upperRow = upperRow - 1;
 			err = err - errLimit;
 			errLimit = errLimit - 2;
 		}
-		if (x <= radius) {
-			if (ClipCirclePoint(p_centerX + x, p_centerY + radius) != 0) {
-				*((unsigned char*) m_lines[p_centerY + radius] + p_centerX + x) = p_colour;
+		if (x <= p_radius) {
+			if (ClipCirclePoint(p_centerX + x, p_centerY + p_radius) != 0) {
+				*((unsigned char*) m_lines[upperRow] + p_centerX + x) = p_colour;
 			}
-			if (ClipCirclePoint(p_centerX - x, p_centerY + radius) != 0) {
-				*((unsigned char*) m_lines[p_centerY + radius] + p_centerX - x) = p_colour;
+			if (ClipCirclePoint(p_centerX - x, p_centerY + p_radius) != 0) {
+				*((unsigned char*) m_lines[upperRow] + p_centerX - x) = p_colour;
 			}
-			if (ClipCirclePoint(p_centerX + x, p_centerY - radius) != 0) {
-				*((unsigned char*) m_lines[p_centerY - radius] + p_centerX + x) = p_colour;
+			if (ClipCirclePoint(p_centerX + x, p_centerY - p_radius) != 0) {
+				*((unsigned char*) m_lines[lowerRow] + p_centerX + x) = p_colour;
 			}
-			if (ClipCirclePoint(p_centerX - x, p_centerY - radius) != 0) {
-				*((unsigned char*) m_lines[p_centerY - radius] + p_centerX - x) = p_colour;
+			if (ClipCirclePoint(p_centerX - x, p_centerY - p_radius) != 0) {
+				*((unsigned char*) m_lines[lowerRow] + p_centerX - x) = p_colour;
 			}
-			if (x < radius) {
-				if (ClipCirclePoint(p_centerX + radius, p_centerY + x) != 0) {
-					*((unsigned char*) m_lines[p_centerY + x] + p_centerX + radius) = p_colour;
-				}
-				if (ClipCirclePoint(p_centerX - radius, p_centerY + x) != 0) {
-					*((unsigned char*) m_lines[p_centerY + x] + p_centerX - radius) = p_colour;
-				}
-				if (ClipCirclePoint(p_centerX + radius, p_centerY - x) != 0) {
-					*((unsigned char*) m_lines[p_centerY - x] + p_centerX + radius) = p_colour;
-				}
-				if (ClipCirclePoint(p_centerX - radius, p_centerY - x) != 0) {
-					*((unsigned char*) m_lines[p_centerY - x] + p_centerX - radius) = p_colour;
-				}
+			if (x < p_radius) {
+				DrawClippedCirclePoint(p_centerX, p_centerY, p_radius, x, p_colour);
 			}
 		}
-	} while (x < radius);
+		step = step + 2;
+	} while (x < p_radius);
 }
 
 // FUNCTION: LEMBALL 0x00475f60
@@ -1697,6 +1669,37 @@ int Surface::ClipCirclePoint(int p_x, int p_y)
 		return 0;
 	}
 	return 1;
+}
+
+// FUNCTION: LEMBALL 0x00475fb0
+void Surface::DrawClippedCirclePoint(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour)
+{
+	int px1 = p_centerX + p_xOffset;
+	if (m_clipRect.m_x <= px1 && px1 <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		int py1 = p_centerY + p_yOffset;
+		if (m_clipRect.m_y <= py1 && py1 <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[py1] + px1) = p_colour;
+		}
+	}
+	int px2 = p_centerX - p_xOffset;
+	if (m_clipRect.m_x <= px2 && px2 <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		int py1 = p_centerY + p_yOffset;
+		if (m_clipRect.m_y <= py1 && py1 <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[py1] + px2) = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= px1 && px1 <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		int py2 = p_centerY - p_yOffset;
+		if (m_clipRect.m_y <= py2 && py2 <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[py2] + px1) = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= px2 && px2 <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		int py2 = p_centerY - p_yOffset;
+		if (m_clipRect.m_y <= py2 && py2 <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[py2] + px2) = p_colour;
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x00476100
@@ -1861,14 +1864,17 @@ bool Surface::ClipRect(VsRect& p_rect, VsRect* p_clipped)
 
 // 68K 0x1010519e BlitZRLEClip__8CSurfaceFRC7CVSRectRC7CVSRectP8CResZRLEUc
 // FUNCTION: LEMBALL 0x004766f0
-void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned char p_reverse)
+void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned int p_reverse)
 {
+	int x = p_rect.m_x;
 	int step = 1;
 	int y = p_rect.m_y;
 	unsigned char* src = p_zrle->GetData();
-	if (p_reverse == 0) {
-		if (p_clip.m_y > 0) {
-			int skipRows = p_clip.m_y;
+	if (p_reverse != 0) {
+		step = -1;
+		y += p_rect.m_height - 1;
+		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
+		if (skipRows > 0) {
 			do {
 				unsigned char run;
 				do {
@@ -1882,10 +1888,8 @@ void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* 
 		}
 	}
 	else {
-		step = -1;
-		y += p_rect.m_height - 1;
-		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
-		if (skipRows > 0) {
+		if (p_clip.m_y > 0) {
+			int skipRows = p_clip.m_y;
 			do {
 				unsigned char run;
 				do {
@@ -1903,7 +1907,7 @@ void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* 
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -1915,11 +1919,11 @@ void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* 
 					}
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					clipX -= count;
+					run &= 0x7f;
+					clipX -= run;
 					if (clipX < 0) {
 						int copyLen = -clipX;
-						unsigned char* copySrc = src + count + clipX;
+						unsigned char* copySrc = src + run + clipX;
 						if (copyLen < width) {
 							memcpy(dst, copySrc, copyLen);
 						}
@@ -1929,7 +1933,7 @@ void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* 
 						width += clipX;
 						dst += copyLen;
 					}
-					src += count;
+					src += run;
 				}
 				if (run == 0x80) goto row_done_clip;
 			} while (clipX > 0);
@@ -1943,17 +1947,17 @@ void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* 
 							width -= run;
 						}
 						else if (run > 0x80) {
-							int count = run & 0x7f;
-							if (count < width) {
-								memcpy(dst, src, count);
-								width -= count;
+							run &= 0x7f;
+							if (run < width) {
+								memcpy(dst, src, run);
+								width -= run;
 							}
 							else {
 								memcpy(dst, src, width);
 								width = 0;
 							}
-							dst += count;
-							src += count;
+							dst += run;
+							src += run;
 						}
 					}
 				} while (run != 0x80);
@@ -1990,13 +1994,14 @@ void Surface::BlitZrleClipZBuff(const VsRect& p_rect, const VsRect& p_clip, ResZ
 		} while (skipRows != 0);
 	}
 	int row = 0;
+	int x = p_rect.m_x;
 	if (p_rect.m_height > 0) {
-		int rowIndex = (int) p_rect.m_y << 2;
+		int y = p_rect.m_y;
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned short* zlines = (unsigned short*) (*(int*) ((int) PvZBuffSurface::m_bitmap.m_lines + rowIndex) + (int) p_rect.m_x * 2);
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2009,20 +2014,28 @@ void Surface::BlitZrleClipZBuff(const VsRect& p_rect, const VsRect& p_clip, ResZ
 					}
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					clipX -= count;
+					run &= 0x7f;
+					clipX -= run;
 					if (clipX < 0) {
 						int copyLen = -clipX;
-						int actualLen = (copyLen < width) ? copyLen : width;
-						memcpy(dst, src + count + clipX, actualLen);
-						for (int i = 0; i < actualLen; i++) {
-							zlines[i] = p_depth;
+						unsigned char* copySrc = src + run + clipX;
+						if (copyLen < width) {
+							memcpy(dst, copySrc, copyLen);
+							for (unsigned int i = 0; i < (unsigned int) copyLen; i++) {
+								zlines[i] = p_depth;
+							}
+						}
+						else {
+							memcpy(dst, copySrc, width);
+							for (unsigned int i = 0; i < (unsigned int) width; i++) {
+								zlines[i] = p_depth;
+							}
 						}
 						width += clipX;
 						dst += copyLen;
 						zlines -= clipX;
 					}
-					src += count;
+					src += run;
 				}
 				if (run == 0x80) goto row_done_zbuff;
 			} while (clipX > 0);
@@ -2037,16 +2050,26 @@ void Surface::BlitZrleClipZBuff(const VsRect& p_rect, const VsRect& p_clip, ResZ
 							width -= run;
 						}
 						else if (run > 0x80) {
-							int count = run & 0x7f;
-							int actualLen = (count < width) ? count : width;
-							memcpy(dst, src, actualLen);
-							for (int i = 0; i < actualLen; i++) {
-								zlines[i] = p_depth;
+							run &= 0x7f;
+							if (run < width) {
+								memcpy(dst, src, run);
+								for (unsigned int i = 0; i < (unsigned int) run; i++) {
+									zlines[i] = p_depth;
+								}
+								width -= run;
+								dst += run;
+								zlines += run;
 							}
-							width = (count < width) ? width - count : 0;
-							dst += actualLen;
-							zlines += actualLen;
-							src += count;
+							else {
+								memcpy(dst, src, width);
+								for (unsigned int i = 0; i < (unsigned int) width; i++) {
+									zlines[i] = p_depth;
+								}
+								dst += width;
+								zlines += width;
+								width = 0;
+							}
+							src += run;
 						}
 					}
 				} while (run != 0x80);
@@ -2058,7 +2081,7 @@ row_done_zbuff:
 					}
 				}
 			}
-			rowIndex += 4;
+			y++;
 			row++;
 		} while (row < p_rect.m_height);
 	}
@@ -2083,41 +2106,64 @@ void Surface::BlitZrleClipQzBuff(const VsRect& p_rect, const VsRect& p_clip, Res
 		} while (skipRows != 0);
 	}
 	int row = 0;
+	int x = p_rect.m_x;
 	if (p_rect.m_height > 0) {
-		int rowIndex = (int) p_rect.m_y << 2;
+		int y = p_rect.m_y;
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned short* zlines = (unsigned short*) (*(int*) ((int) PvZBuffSurface::m_bitmap.m_lines + rowIndex) + (int) p_rect.m_x * 2);
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
 				if (run < 0x80) {
 					clipX -= run;
 					if (clipX < 0) {
-						width += clipX;
 						dst -= clipX;
+						width += clipX;
 						zlines -= clipX;
 					}
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					clipX -= count;
+					run &= 0x7f;
+					clipX -= run;
 					if (clipX < 0) {
 						int copyLen = -clipX;
-						int actualLen = (copyLen < width) ? copyLen : width;
-						unsigned char* copySrc = src + count + clipX;
-						for (int i = 0; i < actualLen; i++) {
-							if (zlines[i] <= p_depth) {
-								dst[i] = copySrc[i];
+						unsigned char* copySrc = src + run + clipX;
+						if (copyLen < width) {
+							unsigned char count = (unsigned char) copyLen;
+							unsigned short* copyZ = zlines;
+							unsigned char* copyDst = dst;
+							while (count != 0) {
+								count--;
+								if (*copyZ <= p_depth) {
+									*copyDst = *copySrc;
+								}
+								copyDst++;
+								copyZ++;
+								copySrc++;
 							}
 						}
-						width += clipX;
+						else {
+							char count = (char) width;
+							unsigned short* copyZ = zlines;
+							unsigned char* copyDst = dst;
+							while (count != 0) {
+								count--;
+								if (*copyZ <= p_depth) {
+									*copyDst = *copySrc;
+								}
+								copyDst++;
+								copyZ++;
+								copySrc++;
+							}
+						}
 						dst += copyLen;
+						width += clipX;
 						zlines -= clipX;
 					}
-					src += count;
+					src += run;
 				}
 				if (run == 0x80) goto row_done_qzbuff;
 			} while (clipX > 0);
@@ -2128,21 +2174,42 @@ void Surface::BlitZrleClipQzBuff(const VsRect& p_rect, const VsRect& p_clip, Res
 					if (width > 0) {
 						if (run < 0x80) {
 							dst += run;
-							zlines += run;
 							width -= run;
+							zlines += run;
 						}
 						else if (run > 0x80) {
-							int count = run & 0x7f;
-							int actualLen = (count < width) ? count : width;
-							for (int i = 0; i < actualLen; i++) {
-								if (zlines[i] <= p_depth) {
-									dst[i] = src[i];
+							run &= 0x7f;
+							unsigned char* copySrc = src;
+							unsigned short* copyZ = zlines;
+							unsigned char* copyDst = dst;
+							unsigned char r = run;
+							if (run < width) {
+								while (r != 0) {
+									r--;
+									if (*copyZ <= p_depth) {
+										*copyDst = *copySrc;
+									}
+									copySrc++;
+									copyZ++;
+									copyDst++;
 								}
+								width -= run;
 							}
-							width = (count < width) ? width - count : 0;
-							dst += actualLen;
-							zlines += actualLen;
-							src += count;
+							else {
+								while ((char) width != 0) {
+									width--;
+									if (*copyZ <= p_depth) {
+										*copyDst = *copySrc;
+									}
+									copyDst++;
+									copyZ++;
+									copySrc++;
+								}
+								width = 0;
+							}
+							dst += run;
+							zlines += run;
+							src += run;
 						}
 					}
 				} while (run != 0x80);
@@ -2154,7 +2221,7 @@ row_done_qzbuff:
 					}
 				}
 			}
-			rowIndex += 4;
+			y++;
 			row++;
 		} while (row < p_rect.m_height);
 	}
@@ -2162,7 +2229,7 @@ row_done_qzbuff:
 
 // 68K 0x10113e7a BlitZRLEClipR__8CSurfaceFRC7CVSRectRC7CVSRectP8CResZRLEUc
 // FUNCTION: LEMBALL 0x00476ee0
-void Surface::BlitZrleClipR(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned char p_reverse)
+void Surface::BlitZrleClipR(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned int p_reverse)
 {
 	int step = 1;
 	int y = p_rect.m_y;
@@ -2269,6 +2336,7 @@ void Surface::BlitZrleClipR(const VsRect& p_rect, const VsRect& p_clip, ResZrle*
 // FUNCTION: LEMBALL 0x00477130
 void Surface::BlitZrleNoClip(const VsRect& p_rect, ResZrle* p_zrle, unsigned int p_reverse)
 {
+	int x = p_rect.m_x;
 	int step = 1;
 	int y = p_rect.m_y;
 	if (p_reverse != 0) {
@@ -2279,7 +2347,7 @@ void Surface::BlitZrleNoClip(const VsRect& p_rect, ResZrle* p_zrle, unsigned int
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2287,10 +2355,10 @@ void Surface::BlitZrleNoClip(const VsRect& p_rect, ResZrle* p_zrle, unsigned int
 					dst += run;
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					memcpy(dst, src, count);
-					dst += count;
-					src += count;
+					run &= 0x7f;
+					memcpy(dst, src, run);
+					dst += run;
+					src += run;
 				}
 			} while (run != 0x80);
 			y += step;
@@ -2303,13 +2371,14 @@ void Surface::BlitZrleNoClip(const VsRect& p_rect, ResZrle* p_zrle, unsigned int
 // FUNCTION: LEMBALL 0x00477200
 void Surface::BlitZrleNoClipZBuff(const VsRect& p_rect, ResZrle* p_zrle, unsigned short p_depth)
 {
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
 	unsigned char* src = p_zrle->GetData();
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			int y = p_rect.m_y + row;
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
-			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2318,19 +2387,20 @@ void Surface::BlitZrleNoClipZBuff(const VsRect& p_rect, ResZrle* p_zrle, unsigne
 					zlines += run;
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					int length = count;
-					memcpy(dst, src, count);
-					while (count != 0) {
-						count--;
-						*zlines = p_depth;
-						zlines++;
+					run &= 0x7f;
+					memcpy(dst, src, run);
+					if (run) {
+						for (unsigned int i = 0; i < run; i++) {
+							zlines[i] = p_depth;
+						}
 					}
-					dst += length;
-					src += length;
+					zlines += run;
+					dst += run;
+					src += run;
 				}
 			} while (run != 0x80);
 			row++;
+			y++;
 		} while (row < p_rect.m_height);
 	}
 }
@@ -2342,13 +2412,14 @@ void Surface::BlitZrleNoClipZBuffRemap(const VsRect& p_rect,
 									   unsigned short p_depth,
 									   unsigned char* p_remap)
 {
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
 	unsigned char* src = p_zrle->GetData();
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			int y = p_rect.m_y + row;
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
-			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2357,15 +2428,18 @@ void Surface::BlitZrleNoClipZBuffRemap(const VsRect& p_rect,
 					zlines += run;
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					while (count != 0) {
-						*dst = p_remap[*src];
-						*zlines = p_depth;
-						dst++;
-						src++;
-						zlines++;
-						count--;
+					run &= 0x7f;
+					for (int i = 0; i < (int) run; i++) {
+						dst[i] = p_remap[src[i]];
 					}
+					if (run) {
+						for (unsigned int i = 0; i < run; i++) {
+							zlines[i] = p_depth;
+						}
+					}
+					dst += run;
+					src += run;
+					zlines += run;
 				}
 			} while (run != 0x80);
 			row++;
@@ -2377,13 +2451,14 @@ void Surface::BlitZrleNoClipZBuffRemap(const VsRect& p_rect,
 // FUNCTION: LEMBALL 0x00477440
 void Surface::BlitZrleNoClipQzBuff(const VsRect& p_rect, ResZrle* p_zrle, unsigned short p_depth)
 {
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
 	unsigned char* src = p_zrle->GetData();
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			int y = p_rect.m_y + row;
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
-			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2392,19 +2467,23 @@ void Surface::BlitZrleNoClipQzBuff(const VsRect& p_rect, ResZrle* p_zrle, unsign
 					zlines += run;
 				}
 				else if (run > 0x80) {
-					unsigned char count = run & 0x7f;
+					run &= 0x7f;
+					unsigned char count = run;
+					unsigned char* copySrc = src;
 					while (count != 0) {
 						count--;
 						if (*zlines <= p_depth) {
-							*dst = *src;
+							*dst = *copySrc;
 						}
 						dst++;
 						zlines++;
-						src++;
+						copySrc++;
 					}
+					src += run;
 				}
 			} while (run != 0x80);
 			row++;
+			y++;
 		} while (row < p_rect.m_height);
 	}
 }
@@ -2416,13 +2495,14 @@ void Surface::BlitZrleNoClipQzBuffRemap(const VsRect& p_rect,
 										unsigned short p_depth,
 										unsigned char* p_remap)
 {
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
 	unsigned char* src = p_zrle->GetData();
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			int y = p_rect.m_y + row;
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
-			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2431,26 +2511,30 @@ void Surface::BlitZrleNoClipQzBuffRemap(const VsRect& p_rect,
 					zlines += run;
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					for (int i = 0; i < count; i++) {
+					run &= 0x7f;
+					unsigned char* copySrc = src;
+					for (unsigned char i = run; i != 0; i--) {
 						if (*zlines <= p_depth) {
-							*dst = p_remap[*src];
+							*dst = p_remap[*copySrc];
 						}
 						zlines++;
 						dst++;
-						src++;
+						copySrc++;
 					}
+					src += run;
 				}
 			} while (run != 0x80);
 			row++;
+			y++;
 		} while (row < p_rect.m_height);
 	}
 }
 
 // 68K 0x101143ee BlitZRLENoClipR__8CSurfaceFRC7CVSRectP8CResZRLEUc
 // FUNCTION: LEMBALL 0x00477660
-void Surface::BlitZrleNoClipR(const VsRect& p_rect, ResZrle* p_zrle, unsigned char p_reverse)
+void Surface::BlitZrleNoClipR(const VsRect& p_rect, ResZrle* p_zrle, unsigned int p_reverse)
 {
+	int startX = p_rect.m_x + p_rect.m_width - 1;
 	int step = 1;
 	int y = p_rect.m_y;
 	if (p_reverse != 0) {
@@ -2461,7 +2545,7 @@ void Surface::BlitZrleNoClipR(const VsRect& p_rect, ResZrle* p_zrle, unsigned ch
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x + p_rect.m_width - 1;
+			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2469,10 +2553,14 @@ void Surface::BlitZrleNoClipR(const VsRect& p_rect, ResZrle* p_zrle, unsigned ch
 					dst -= run;
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					for (int i = 0; i < count; i++) {
-						*dst-- = *src++;
+					run &= 0x7f;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (int i = run; i != 0; i--) {
+						*copyDst-- = *copySrc++;
 					}
+					src += run;
+					dst -= run;
 				}
 			} while (run != 0x80);
 			y += step;
@@ -2486,7 +2574,7 @@ void Surface::BlitZrleNoClipR(const VsRect& p_rect, ResZrle* p_zrle, unsigned ch
 void Surface::BlitZrleClipRemap(const VsRect& p_rect,
 								const VsRect& p_clip,
 								ResZrle* p_zrle,
-								unsigned char p_reverse,
+								unsigned int p_reverse,
 								unsigned char* p_remap)
 {
 	int step = 1;
@@ -2792,28 +2880,15 @@ row_done_qzbuff_remap:
 void Surface::BlitZrleClipRemapR(const VsRect& p_rect,
 								 const VsRect& p_clip,
 								 ResZrle* p_zrle,
-								 unsigned char p_reverse,
+								 unsigned int p_reverse,
 								 unsigned char* p_remap)
 {
-	int step = 1;
+	int startX = p_rect.m_x + p_rect.m_width - 1;
 	int y = p_rect.m_y;
+	int step = 1;
 	unsigned char* src = p_zrle->GetData();
-	if (p_reverse == 0) {
-		if (p_clip.m_y > 0) {
-			int skipRows = p_clip.m_y;
-			do {
-				unsigned char run;
-				do {
-					run = *src++;
-					if (run > 0x80) {
-						src += run & 0x7f;
-					}
-				} while (run != 0x80);
-				skipRows--;
-			} while (skipRows != 0);
-		}
-	}
-	else {
+	int zrleWidth = p_zrle->m_width;
+	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
 		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
@@ -2830,12 +2905,27 @@ void Surface::BlitZrleClipRemapR(const VsRect& p_rect,
 			} while (skipRows != 0);
 		}
 	}
+	else {
+		if (p_clip.m_y > 0) {
+			int skipRows = p_clip.m_y;
+			do {
+				unsigned char run;
+				do {
+					run = *src++;
+					if (run > 0x80) {
+						src += run & 0x7f;
+					}
+				} while (run != 0x80);
+				skipRows--;
+			} while (skipRows != 0);
+		}
+	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
 			int width = p_rect.m_width;
-			int skipX = (p_zrle->m_width - p_clip.m_x) - width;
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
+			int skipX = (zrleWidth - p_clip.m_x) - width;
+			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2850,43 +2940,49 @@ void Surface::BlitZrleClipRemapR(const VsRect& p_rect,
 						dst -= run;
 					}
 					else if (run > 0x80) {
-						int count = run & 0x7f;
-						if (count < width) {
-							for (int i = 0; i < count; i++) {
+						run &= 0x7f;
+						if (run < width) {
+							for (int i = run; i != 0; i--) {
 								*dst-- = p_remap[*src++];
 							}
-							width -= count;
+							width -= run;
 						}
 						else {
-							for (int i = 0; i < width; i++) {
-								*dst-- = p_remap[*src++];
+							int i = width;
+							if (width > 0) {
+								do {
+									*dst-- = p_remap[*src++];
+								} while (--i != 0);
 							}
-							src += count - width;
+							src += run;
+							dst -= width;
 							width = 0;
 						}
 					}
 				}
-				else if (run < 0x80) {
-					skipX -= run;
-					if (skipX < 0) {
-						width += skipX;
-						dst += skipX;
-					}
-				}
-				else if (run > 0x80) {
-					int count = run & 0x7f;
-					skipX -= count;
-					if (skipX < 0) {
-						int copyLen = -skipX;
-						int actualLen = (copyLen < width) ? copyLen : width;
-						unsigned char* copySrc = src + count + skipX;
-						for (int i = 0; i < actualLen; i++) {
-							*dst-- = p_remap[*copySrc++];
+				else {
+					if (run < 0x80) {
+						skipX -= run;
+						if (skipX < 0) {
+							width += skipX;
+							dst += skipX;
 						}
-						width += skipX;
-						dst += skipX;
 					}
-					src += count;
+					else if (run > 0x80) {
+						run &= 0x7f;
+						skipX -= run;
+						if (skipX < 0) {
+							int copyLen = -skipX;
+							int actualLen = (copyLen < width) ? copyLen : width;
+							unsigned char* copySrc = src + run + skipX;
+							for (int i = actualLen; i != 0; i--) {
+								*dst-- = p_remap[*copySrc++];
+							}
+							width += skipX;
+							dst += skipX;
+						}
+						src += run;
+					}
 				}
 			} while (run != 0x80);
 			y += step;
@@ -2899,11 +2995,12 @@ void Surface::BlitZrleClipRemapR(const VsRect& p_rect,
 // FUNCTION: LEMBALL 0x004781e0
 void Surface::BlitZrleNoClipRemap(const VsRect& p_rect,
 								  ResZrle* p_zrle,
-								  unsigned char p_reverse,
+								  unsigned int p_reverse,
 								  unsigned char* p_remap)
 {
-	int step = 1;
+	int x = p_rect.m_x;
 	int y = p_rect.m_y;
+	int step = 1;
 	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
@@ -2912,7 +3009,7 @@ void Surface::BlitZrleNoClipRemap(const VsRect& p_rect,
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2920,10 +3017,14 @@ void Surface::BlitZrleNoClipRemap(const VsRect& p_rect,
 					dst += run;
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					for (int i = 0; i < count; i++) {
-						*dst++ = p_remap[*src++];
+					run &= 0x7f;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (int i = (int) run; i > 0; i--) {
+						*copyDst++ = p_remap[*copySrc++];
 					}
+					src += run;
+					dst += run;
 				}
 			} while (run != 0x80);
 			y += step;
@@ -2936,11 +3037,12 @@ void Surface::BlitZrleNoClipRemap(const VsRect& p_rect,
 // FUNCTION: LEMBALL 0x004782d0
 void Surface::BlitZrleNoClipRemapR(const VsRect& p_rect,
 								   ResZrle* p_zrle,
-								   unsigned char p_reverse,
+								   unsigned int p_reverse,
 								   unsigned char* p_remap)
 {
-	int step = 1;
+	int startX = p_rect.m_x + p_rect.m_width - 1;
 	int y = p_rect.m_y;
+	int step = 1;
 	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
@@ -2949,7 +3051,7 @@ void Surface::BlitZrleNoClipRemapR(const VsRect& p_rect,
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x + p_rect.m_width - 1;
+			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2957,10 +3059,14 @@ void Surface::BlitZrleNoClipRemapR(const VsRect& p_rect,
 					dst -= run;
 				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					for (int i = 0; i < count; i++) {
-						*dst-- = p_remap[*src++];
+					run &= 0x7f;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (int i = run; i != 0; i--) {
+						*copyDst-- = p_remap[*copySrc++];
 					}
+					src += run;
+					dst -= run;
 				}
 			} while (run != 0x80);
 			y += step;
@@ -3022,7 +3128,7 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 		}
 		{
 			VsRect dest;
-			unsigned char reverse;
+			unsigned int reverse;
 			unsigned char* remapData;
 
 			dest.InitFromSizeAndPosition((short) posX, (short) posY, (VsSize*) &resource->m_width);
@@ -3122,87 +3228,70 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 {
 	VsRect dest;
+	short width;
+	short height;
+	short sourceX;
+	short sourceY;
 	VsRect clip;
-	unsigned int flags;
-	unsigned char* source;
-	unsigned char* destBits;
-	int row;
-	int destY;
-	int yStep;
-	int bitmapWidth;
-	int pixel;
-	int copyWidth;
 
 	dest.m_x = p_primitive->m_x;
 	dest.m_y = p_primitive->m_y;
-	dest.m_width = p_primitive->m_width;
-	dest.m_height = p_primitive->m_height;
-	if (dest.m_height == 0 && dest.m_width == 0) {
-		dest.m_width = p_bitmap->m_x;
-		dest.m_height = p_bitmap->m_y;
+	width = p_primitive->m_width;
+	height = p_primitive->m_height;
+	sourceX = p_primitive->m_sourceX;
+	sourceY = p_primitive->m_sourceY;
+	if (height == 0 && width == 0) {
+		width = p_bitmap->m_x;
+		height = p_bitmap->m_y;
 	}
-	flags = ((BitmapRes*) p_primitive)->m_flags;
-	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x == 0) {
-		return;
-	}
-	clip.m_width = 0;
-	clip.m_height = 0;
-	clip.m_x = 0;
-	clip.m_y = 0;
-	if (ClipRect(dest, &clip) != 0) {
-		if (clip.m_width < 1) {
-			return;
+	unsigned int flags = ((BitmapRes*) p_primitive)->m_flags;
+	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x != 0) {
+		dest.m_width = width;
+		dest.m_height = height;
+		clip.m_height = 0;
+		clip.m_width = 0;
+		clip.m_x = 0;
+		clip.m_y = 0;
+		if (ClipRect(dest, &clip) != 0) {
+			if (clip.m_width < 1 || clip.m_height < 1) {
+				return;
+			}
+			dest = clip;
 		}
-		if (clip.m_height < 1) {
-			return;
+		AddToChangeList(&dest);
+		int destX = dest.m_x;
+		int destY = dest.m_y;
+		int yStep = 1;
+		if ((flags & 2) != 0) {
+			yStep = -1;
+			destY += dest.m_height - 1;
 		}
-		dest.m_width = clip.m_width;
-		dest.m_height = clip.m_height;
-	}
-	AddToChangeList(&dest);
-	yStep = 1;
-	destY = dest.m_y;
-	if ((flags & 2) != 0) {
-		yStep = -1;
-		destY = destY + dest.m_height - 1;
-	}
-	bitmapWidth = (int) p_bitmap->m_x;
-	source = p_bitmap->GetData();
-	source = source + ((int) p_primitive->m_sourceY + (int) clip.m_y) * bitmapWidth +
-			 (int) p_primitive->m_sourceX + (int) clip.m_x;
-	if ((flags & 0x800) != 0) {
-		row = 0;
-		if (0 < dest.m_height) {
-			do {
-				destBits = (unsigned char*) m_lines[destY] + dest.m_x;
-				pixel = 0;
-				if (0 < dest.m_width) {
-					do {
-						if (*source != 0) {
-							*destBits = *source;
-						}
-						pixel = pixel + 1;
-						destBits = destBits + 1;
-						source = source + 1;
-					} while (pixel < dest.m_width);
+		int bitmapWidth = (int) p_bitmap->m_x;
+		unsigned char* source = p_bitmap->GetData() + ((int) sourceY + (int) clip.m_y) * bitmapWidth +
+								(int) sourceX + (int) clip.m_x;
+		if ((flags & 0x800) == 0) {
+			if (dest.m_height > 0) {
+				for (int i = 0; i < dest.m_height; i++) {
+					memcpy((unsigned char*) m_lines[destY] + destX, source, dest.m_width);
+					destY += yStep;
+					source += bitmapWidth;
 				}
-				destY = destY + yStep;
-				source = source + (bitmapWidth - dest.m_width);
-				row = row + 1;
-			} while (row < dest.m_height);
+			}
 		}
-		return;
-	}
-	row = 0;
-	if (0 < dest.m_height) {
-		do {
-			copyWidth = dest.m_width;
-			destBits = (unsigned char*) m_lines[destY] + dest.m_x;
-			memcpy(destBits, source, (unsigned int) copyWidth);
-			destY = destY + yStep;
-			source = source + bitmapWidth;
-			row = row + 1;
-		} while (row < dest.m_height);
+		else {
+			if (dest.m_height > 0) {
+				for (int i = 0; i < dest.m_height; i++) {
+					unsigned char* dst = (unsigned char*) m_lines[destY] + destX;
+					for (int j = 0; j < dest.m_width; j++) {
+						if (source[j] != 0) {
+							dst[j] = source[j];
+						}
+					}
+					destY += yStep;
+					source += bitmapWidth;
+				}
+			}
+		}
 	}
 }
 
@@ -3235,8 +3324,6 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 	ebpFlags = p_flags;
 	dest->m_height = zHeight;
 	dest->m_x = (short) p_x;
-	if ((ebpFlags & 0x400) != 0) {
-	}
 	dest->m_y = (short) p_y;
 	if ((ebpFlags & 0x400) == 0) {
 		dest->m_x = (short) (dest->m_x + resource->m_x);
@@ -3286,19 +3373,17 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 			}
 			if (remap == 0) {
 				if ((ebpFlags & 1) != 0) {
-					BlitZrleNoClipR(*dest, resource, (unsigned char) ((ebpFlags & 2) >> 1));
+					BlitZrleNoClipR(*dest, resource, (ebpFlags & 2) >> 1);
 					return;
 				}
-				ebpFlags = ebpFlags & 2;
-				ebpFlags = ebpFlags >> 1;
-				BlitZrleNoClip(*dest, resource, ebpFlags);
+				BlitZrleNoClip(*dest, resource, (ebpFlags & 2) >> 1);
 				return;
 			}
 			if ((ebpFlags & 1) != 0) {
-				BlitZrleNoClipRemapR(*dest, resource, (unsigned char) ((ebpFlags & 2) >> 1), remapData);
+				BlitZrleNoClipRemapR(*dest, resource, (ebpFlags & 2) >> 1, remapData);
 				return;
 			}
-			BlitZrleNoClipRemap(*dest, resource, (unsigned char) ((ebpFlags & 2) >> 1), remapData);
+			BlitZrleNoClipRemap(*dest, resource, (ebpFlags & 2) >> 1, remapData);
 			return;
 		}
 		if (clipped->m_width <= 0 || clipped->m_height <= 0) {
@@ -3323,16 +3408,16 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 		}
 		if (remap == 0) {
 			if ((ebpFlags & 1) != 0) {
-				BlitZrleClipR(*dest, *clipped, resource, (unsigned char) ((ebpFlags & 2) >> 1));
+				BlitZrleClipR(*dest, *clipped, resource, (ebpFlags & 2) >> 1);
 				return;
 			}
-			BlitZrleClip(*dest, *clipped, resource, (unsigned char) ((ebpFlags & 2) >> 1));
+			BlitZrleClip(*dest, *clipped, resource, (ebpFlags & 2) >> 1);
 			return;
 		}
 		if ((ebpFlags & 1) != 0) {
-			BlitZrleClipRemapR(*dest, *clipped, resource, (unsigned char) ((ebpFlags & 2) >> 1), remapData);
+			BlitZrleClipRemapR(*dest, *clipped, resource, (ebpFlags & 2) >> 1, remapData);
 			return;
 		}
-		BlitZrleClipRemap(*dest, *clipped, resource, (unsigned char) ((ebpFlags & 2) >> 1), remapData);
+		BlitZrleClipRemap(*dest, *clipped, resource, (ebpFlags & 2) >> 1, remapData);
 	}
 }
