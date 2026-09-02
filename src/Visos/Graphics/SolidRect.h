@@ -12,7 +12,7 @@ public:
 	VsRect* GetBounds();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~SolidRect();            // vtable+0x00
+	virtual ~SolidRect() {}          // vtable+0x00
 
 	friend class GunController;
 	friend class TargetAboutScreen;

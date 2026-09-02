@@ -1596,8 +1596,6 @@ void Surface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radiu
 	int err;
 	int errLimit;
 	int step;
-	int rowUpper;
-	int rowLower;
 	int rowY;
 	short clipX;
 	short clipRight;
@@ -1634,31 +1632,27 @@ void Surface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radiu
 	if (radius <= 0) {
 		return;
 	}
-	rowLower = (p_centerY - radius) * 4;
-	rowUpper = (p_centerY + radius) * 4;
 	do {
 		x = x + 1;
 		err = err + step;
 		step = step + 2;
 		if (errLimit < err * 2) {
 			radius = radius - 1;
-			rowLower = rowLower + 4;
-			rowUpper = rowUpper - 4;
 			err = err - errLimit;
 			errLimit = errLimit - 2;
 		}
 		if (x <= radius) {
 			if (ClipCirclePoint(p_centerX + x, p_centerY + radius) != 0) {
-				*((unsigned char*) (*(int*) ((int) m_lines + rowUpper)) + p_centerX + x) = p_colour;
+				*((unsigned char*) m_lines[p_centerY + radius] + p_centerX + x) = p_colour;
 			}
 			if (ClipCirclePoint(p_centerX - x, p_centerY + radius) != 0) {
-				*((unsigned char*) (*(int*) ((int) m_lines + rowUpper)) + p_centerX - x) = p_colour;
+				*((unsigned char*) m_lines[p_centerY + radius] + p_centerX - x) = p_colour;
 			}
 			if (ClipCirclePoint(p_centerX + x, p_centerY - radius) != 0) {
-				*((unsigned char*) (*(int*) ((int) m_lines + rowLower)) + p_centerX + x) = p_colour;
+				*((unsigned char*) m_lines[p_centerY - radius] + p_centerX + x) = p_colour;
 			}
 			if (ClipCirclePoint(p_centerX - x, p_centerY - radius) != 0) {
-				*((unsigned char*) (*(int*) ((int) m_lines + rowLower)) + p_centerX - x) = p_colour;
+				*((unsigned char*) m_lines[p_centerY - radius] + p_centerX - x) = p_colour;
 			}
 			if (x < radius) {
 				if (ClipCirclePoint(p_centerX + radius, p_centerY + x) != 0) {
@@ -1906,11 +1900,10 @@ void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* 
 	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = y << 2;
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -1972,7 +1965,7 @@ row_done_clip:
 					}
 				}
 			}
-			rowIndex += step * 4;
+			y += step;
 			row++;
 		} while (row < p_rect.m_height);
 	}
@@ -2295,9 +2288,9 @@ void Surface::BlitZrleNoClip(const VsRect& p_rect, ResZrle* p_zrle, unsigned int
 				}
 				else if (run > 0x80) {
 					int count = run & 0x7f;
-					memcpy(dst, src, count);
-					src += count;
-					dst += count;
+					for (int i = 0; i < count; i++) {
+						*dst++ = *src++;
+					}
 				}
 			} while (run != 0x80);
 			y += step;
@@ -2313,10 +2306,10 @@ void Surface::BlitZrleNoClipZBuff(const VsRect& p_rect, ResZrle* p_zrle, unsigne
 	unsigned char* src = p_zrle->GetData();
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = (int) p_rect.m_y << 2;
 		do {
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
-			unsigned short* zlines = (unsigned short*) (*(int*) ((int) PvZBuffSurface::m_bitmap.m_lines + rowIndex) + (int) p_rect.m_x * 2);
+			int y = p_rect.m_y + row;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
+			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2336,7 +2329,6 @@ void Surface::BlitZrleNoClipZBuff(const VsRect& p_rect, ResZrle* p_zrle, unsigne
 				}
 			} while (run != 0x80);
 			row++;
-			rowIndex += 4;
 		} while (row < p_rect.m_height);
 	}
 }
@@ -2351,10 +2343,10 @@ void Surface::BlitZrleNoClipZBuffRemap(const VsRect& p_rect,
 	unsigned char* src = p_zrle->GetData();
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = (int) p_rect.m_y << 2;
 		do {
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
-			unsigned short* zlines = (unsigned short*) (*(int*) ((int) PvZBuffSurface::m_bitmap.m_lines + rowIndex) + (int) p_rect.m_x * 2);
+			int y = p_rect.m_y + row;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
+			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2374,7 +2366,6 @@ void Surface::BlitZrleNoClipZBuffRemap(const VsRect& p_rect,
 				}
 			} while (run != 0x80);
 			row++;
-			rowIndex += 4;
 		} while (row < p_rect.m_height);
 	}
 }
@@ -2386,10 +2377,10 @@ void Surface::BlitZrleNoClipQzBuff(const VsRect& p_rect, ResZrle* p_zrle, unsign
 	unsigned char* src = p_zrle->GetData();
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = (int) p_rect.m_y << 2;
 		do {
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
-			unsigned short* zlines = (unsigned short*) (*(int*) ((int) PvZBuffSurface::m_bitmap.m_lines + rowIndex) + (int) p_rect.m_x * 2);
+			int y = p_rect.m_y + row;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
+			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2411,7 +2402,6 @@ void Surface::BlitZrleNoClipQzBuff(const VsRect& p_rect, ResZrle* p_zrle, unsign
 				}
 			} while (run != 0x80);
 			row++;
-			rowIndex += 4;
 		} while (row < p_rect.m_height);
 	}
 }
@@ -2426,10 +2416,10 @@ void Surface::BlitZrleNoClipQzBuffRemap(const VsRect& p_rect,
 	unsigned char* src = p_zrle->GetData();
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = (int) p_rect.m_y << 2;
 		do {
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
-			unsigned short* zlines = (unsigned short*) (*(int*) ((int) PvZBuffSurface::m_bitmap.m_lines + rowIndex) + (int) p_rect.m_x * 2);
+			int y = p_rect.m_y + row;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
+			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2450,7 +2440,6 @@ void Surface::BlitZrleNoClipQzBuffRemap(const VsRect& p_rect,
 				}
 			} while (run != 0x80);
 			row++;
-			rowIndex += 4;
 		} while (row < p_rect.m_height);
 	}
 }
@@ -2534,11 +2523,10 @@ void Surface::BlitZrleClipRemap(const VsRect& p_rect,
 	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = y << 2;
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2594,7 +2582,7 @@ row_done_remap:
 					}
 				}
 			}
-			rowIndex += step * 4;
+			y += step;
 			row++;
 		} while (row < p_rect.m_height);
 	}
@@ -2624,12 +2612,12 @@ void Surface::BlitZrleClipZBuffRemap(const VsRect& p_rect,
 	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = (int) p_rect.m_y << 2;
 		do {
+			int y = p_rect.m_y + row;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned short* zlines = (unsigned short*) (*(int*) ((int) PvZBuffSurface::m_bitmap.m_lines + rowIndex) + (int) p_rect.m_x * 2);
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
+			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2692,7 +2680,6 @@ row_done_zbuff_remap:
 					}
 				}
 			}
-			rowIndex += 4;
 			row++;
 		} while (row < p_rect.m_height);
 	}
@@ -2722,12 +2709,12 @@ void Surface::BlitZrleClipQzBuffRemap(const VsRect& p_rect,
 	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = (int) p_rect.m_y << 2;
 		do {
+			int y = p_rect.m_y + row;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned short* zlines = (unsigned short*) (*(int*) ((int) PvZBuffSurface::m_bitmap.m_lines + rowIndex) + (int) p_rect.m_x * 2);
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
+			unsigned short* zlines = (unsigned short*) PvZBuffSurface::m_bitmap.m_lines[y] + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2792,7 +2779,6 @@ row_done_qzbuff_remap:
 					}
 				}
 			}
-			rowIndex += 4;
 			row++;
 		} while (row < p_rect.m_height);
 	}
@@ -2843,11 +2829,10 @@ void Surface::BlitZrleClipRemapR(const VsRect& p_rect,
 	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int rowIndex = y << 2;
 		do {
 			int width = p_rect.m_width;
 			int skipX = (p_zrle->m_width - p_clip.m_x) - width;
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2901,7 +2886,7 @@ void Surface::BlitZrleClipRemapR(const VsRect& p_rect,
 					src += count;
 				}
 			} while (run != 0x80);
-			rowIndex += step * 4;
+			y += step;
 			row++;
 		} while (row < p_rect.m_height);
 	}

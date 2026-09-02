@@ -37,7 +37,8 @@ VsRect& VsRect::operator=(const VsRect& p_source)
 	return *this;
 }
 
-// SYNTHETIC: LEMBALL 0x0044e6c0
+// 68K 0x10108342 __as__7CVSRectFRC7CVSRect
+// FUNCTION: LEMBALL 0x0044e6c0
 VsRect::VsRect(const VsRect& p_source)
 {
 	const short* coords;

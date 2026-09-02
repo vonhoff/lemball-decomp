@@ -158,8 +158,6 @@ void PvGdiBitmap::Scroll(const VsRect* p_rect, const VsPoint* p_destination)
 	int height;
 	const short* xy;
 	short deltaY;
-	int srcLine;
-	int dstLine;
 	unsigned int count;
 	unsigned int* srcPtr;
 	unsigned int* destPtr;
@@ -193,26 +191,26 @@ void PvGdiBitmap::Scroll(const VsRect* p_rect, const VsPoint* p_destination)
 	}
 	if (p_destination->m_y == p_rect->m_y) {
 		if (p_destination->m_x != p_rect->m_x && 0 < height) {
-			srcLine = (int) p_rect->m_y * 4;
-			dstLine = (int) p_destination->m_y * 4;
+			int srcY = p_rect->m_y;
+			int dstY = p_destination->m_y;
 			do {
-				memcpy((void*) ((int) p_rect->m_x + *(int*) ((int) m_lines + srcLine)),
-					   (void*) (*(int*) ((int) m_lines + dstLine) + (int) p_destination->m_x),
+				memcpy((unsigned char*) m_lines[srcY] + p_rect->m_x,
+					   (unsigned char*) m_lines[dstY] + p_destination->m_x,
 					   width);
 				height = height - 1;
-				srcLine = srcLine + 4;
-				dstLine = dstLine + 4;
+				srcY = srcY + 1;
+				dstY = dstY + 1;
 			} while (height != 0);
 		}
 		return;
 	}
 	if (p_rect->m_y < p_destination->m_y) {
 		if (0 < height) {
-			srcLine = (int) p_rect->m_y * 4;
-			dstLine = (int) p_destination->m_y * 4;
+			int srcY = p_rect->m_y;
+			int dstY = p_destination->m_y;
 			do {
-				destPtr = (unsigned int*) ((int) p_rect->m_x + *(int*) ((int) m_lines + srcLine));
-				srcPtr = (unsigned int*) (*(int*) ((int) m_lines + dstLine) + (int) p_destination->m_x);
+				destPtr = (unsigned int*) ((unsigned char*) m_lines[srcY] + p_rect->m_x);
+				srcPtr = (unsigned int*) ((unsigned char*) m_lines[dstY] + p_destination->m_x);
 				for (count = width >> 2; count != 0; count = count - 1) {
 					*destPtr = *srcPtr;
 					destPtr = destPtr + 1;
@@ -223,19 +221,19 @@ void PvGdiBitmap::Scroll(const VsRect* p_rect, const VsPoint* p_destination)
 					destPtr = (unsigned int*) ((int) destPtr + 1);
 					srcPtr = (unsigned int*) ((int) srcPtr + 1);
 				}
-				srcLine = srcLine + 4;
-				dstLine = dstLine + 4;
+				srcY = srcY + 1;
+				dstY = dstY + 1;
 				height = height - 1;
 			} while (height != 0);
 		}
 		return;
 	}
 	if (0 < height) {
-		srcLine = (height - 1 + (int) p_rect->m_y) * 4;
-		dstLine = (height - 1 + (int) p_destination->m_y) * 4;
+		int srcY = height - 1 + p_rect->m_y;
+		int dstY = height - 1 + p_destination->m_y;
 		do {
-			destPtr = (unsigned int*) ((int) p_rect->m_x + *(int*) ((int) m_lines + srcLine));
-			srcPtr = (unsigned int*) (*(int*) ((int) m_lines + dstLine) + (int) p_destination->m_x);
+			destPtr = (unsigned int*) ((unsigned char*) m_lines[srcY] + p_rect->m_x);
+			srcPtr = (unsigned int*) ((unsigned char*) m_lines[dstY] + p_destination->m_x);
 			for (count = width >> 2; count != 0; count = count - 1) {
 				*destPtr = *srcPtr;
 				destPtr = destPtr + 1;
@@ -246,8 +244,8 @@ void PvGdiBitmap::Scroll(const VsRect* p_rect, const VsPoint* p_destination)
 				destPtr = (unsigned int*) ((int) destPtr + 1);
 				srcPtr = (unsigned int*) ((int) srcPtr + 1);
 			}
-			srcLine = srcLine - 4;
-			dstLine = dstLine - 4;
+			srcY = srcY - 1;
+			dstY = dstY - 1;
 			height = height - 1;
 		} while (height != 0);
 	}

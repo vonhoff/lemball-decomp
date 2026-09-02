@@ -3,11 +3,6 @@
 #include "Gdi.h"
 #include "VsGdi.h"
 
-// 68K 0x10100c60 __dt__10CSolidRectFv
-SolidRect::~SolidRect()
-{
-}
-
 // 68K 0x1010194e Draw__10CSolidRectFP4CGDI
 // FUNCTION: LEMBALL 0x00432b10
 void SolidRect::Draw(Gdi* p_gdi)
