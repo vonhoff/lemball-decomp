@@ -34,7 +34,7 @@ bool PvBackBuffSurface::HasBackBuff()
 }
 
 // 68K 0x1021601a FreeBackBuff__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x00466510
+// FUNCTION: LEMBALL 0x00466510
 void PvBackBuffSurface::FreeBackBuff()
 {
 	if (m_buffer != 0) {
