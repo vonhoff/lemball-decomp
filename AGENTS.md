@@ -89,6 +89,21 @@ reccmp-datacmp --target LEMBALL                 # Global data matching
 
 ```
 
+## reccmp Tool Invocation
+
+Target-based tools use the generated `build-msvc400/reccmp-build.yml` and the
+virtual-environment executables. Run them from `build-msvc400`, or use
+explicit `--paths` arguments from the repository root:
+
+```powershell
+Push-Location build-msvc400
+try { ..\.decomp-venv\Scripts\reccmp-vtable.exe --target LEMBALL }
+finally { Pop-Location }
+```
+
+Use the same form for `reccmp-datacmp.exe` and `reccmp-stackcmp.exe`.
+`reccmp-decomplint.exe` does not require the generated build configuration.
+
 **Cost Guidelines:** Run the cheapest tool first (`check.py` -> `check.py --diff` -> `stackcmp`). Avoid clean builds or full reports inside the tight matching loop.
 
 ## Code Intelligence (`codebase-memory-mcp`)
