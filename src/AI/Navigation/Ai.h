@@ -68,6 +68,7 @@ public:
 	~Ai();
 
 	friend class Bullet;
+	friend class ObjectManager;
 	friend class PlayerLemming;
 	friend class C2D;
 	friend class Main2DDisplay;

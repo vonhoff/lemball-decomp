@@ -4,10 +4,22 @@
 #include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
+class BaseNetwork;
+extern BaseNetwork* g_pBaseNetwork;
+extern unsigned int g_networkPacketSize;
+
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00493268
 class BaseObjectManager : public NetworkMessage {
 public:
+	inline BaseObjectManager(unsigned long p_messageId, int p_messageType) : NetworkMessage(p_messageId)
+	{
+		m_messageType = p_messageType;
+		if (g_pBaseNetwork != 0) {
+			m_headerEnabled = 1;
+			m_payloadCapacity += g_networkPacketSize;
+		}
+	}
 	virtual void GetData();       // vtable+0x08
 	virtual void AddData();       // vtable+0x10
 	virtual ~BaseObjectManager(); // vtable+0x14
@@ -20,8 +32,8 @@ public:
 	void Add(NetworkMessage* p_message);
 	void ProcessNetwork();
 
-private:
-	int m_transportId; // 0x2c
+protected:
+	int m_messageType; // 0x2c
 };
 
 // SYNTHETIC: LEMBALL 0x0040aba0

@@ -2,12 +2,16 @@
 #define LEMBALL_AI_MANAGERS_OBJECTMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
-#include "../Base/AiCoord.h"                      // complete type
+#include "BaseObjectManager.h"        // complete type
+#include "../Base/GlobalGameObject.h" // complete type
+
+class Ai;
+class Switch;
+class ViewData;
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00494238
-class ObjectManager : public NetworkMessage {
+class ObjectManager : public BaseObjectManager {
 public:
 	GlobalGameObject* Add(unsigned short p_id,
 						  AiCoord p_position,
@@ -38,14 +42,14 @@ public:
 	void Remove(GlobalGameObject* p_object);
 
 private:
-	unsigned int m_messageType;   // 0x2c
 	Ai* m_ai;                     // 0x30
 	unsigned short m_capacity;    // 0x34
 	unsigned short m_count;       // 0x36
-	undefined4 m_unk0x38;         // 0x38
+	undefined2 m_unk0x38;         // 0x38
 	GlobalGameObject** m_objects; // 0x3c
 };
 
+extern ObjectManager* g_pObjectManager;
 extern ObjectManager* g_pGenericGroupObjectManager;
 
 // SYNTHETIC: LEMBALL 0x0041c330

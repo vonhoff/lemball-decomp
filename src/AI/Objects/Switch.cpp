@@ -4,10 +4,22 @@
 #include "../../Control/Game/GameTime.h"
 #include "../Navigation/Ai.h"
 
+// GLOBAL: LEMBALL 0x0049e1b8
+word g_wNextSwitchIndex;
+
 // 68K 0x10619660 __ct__7CSwitchFR7AICOORD9swMessageiii
-// STUB: LEMBALL 0x0041d040
+// FUNCTION: LEMBALL 0x0041d040
 Switch::Switch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_arg4)
+	: BaseGlobalObject(p_arg0, 0x14)
 {
+	m_position.m_xFixed = p_arg0.m_xFixed;
+	m_position.m_yFixed = p_arg0.m_yFixed;
+	m_position.m_zFixed = p_arg0.m_zFixed;
+	m_legacyType = p_arg1;
+	m_legacyFirst = p_arg2;
+	m_legacyLast = p_arg3;
+	m_legacyAux = p_arg4;
+	m_switchId = g_wNextSwitchIndex++;
 }
 
 // 68K 0x10619732 Restart__7CSwitchFv

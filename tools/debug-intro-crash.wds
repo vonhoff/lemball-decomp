@@ -1,6 +1,0 @@
-.logopen C:\Dev\lemball-decomp\windbg-out.txt
-.sympath+ C:\Dev\lemball-decomp\build-msvc400
-.reload /f
-.echo debug overflow trap
-sxe -c ".echo *** STACK OVERFLOW ***; kb 30; .logclose; q" sov
-g

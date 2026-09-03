@@ -54,14 +54,15 @@ void Bullet::Set(unsigned short p_id,
 	m_active = 1;
 	int targetX = p_target.m_xFixed >> 12;
 	int targetY = p_target.m_yFixed >> 12;
+	int blockX = targetX >> 4;
+	int blockY = targetY >> 4;
 	int width = g_pMap->m_ground.m_width;
-	int height = g_pMap->m_ground.m_height;
 	unsigned short z;
-	if (targetX < 0 || targetY < 0 || width <= (p_target.m_xFixed >> 16) || height <= (p_target.m_yFixed >> 16)) {
+	if (targetX < 0 || targetY < 0 || width <= blockX || g_pMap->m_ground.m_height <= blockY) {
 		z = 0;
 	}
 	else {
-		z = g_pMap->m_ground.GetZ(p_target.m_xFixed >> 12, p_target.m_yFixed >> 12);
+		z = g_pMap->m_ground.m_ground[blockY * width + blockX].GetZ(targetX & 0xf, targetY & 0xf);
 	}
 	m_sourceObjectId = p_id;
 	m_destination.m_zFixed = (z + 12) << 12;
@@ -238,8 +239,9 @@ void Bullet::Free()
 // FUNCTION: LEMBALL 0x0041aca0
 bool Bullet::Receive(unsigned short p_messageId, NetworkMessage* p_message)
 {
-	if (p_messageId != 0x2b) {
-		return GlobalGameObject::Receive(p_messageId, p_message);
+	int messageId = p_messageId;
+	if (messageId != 0x2b) {
+		return GlobalGameObject::Receive(messageId, p_message);
 	}
 	if (NetworkMessage::Set(p_message->m_readCursor)) {
 		p_message->m_readCursor = m_readCursor;

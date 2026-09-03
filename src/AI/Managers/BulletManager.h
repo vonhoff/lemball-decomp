@@ -2,22 +2,22 @@
 #define LEMBALL_AI_MANAGERS_BULLETMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h"                    // complete type
 #include "../Base/AiCoord.h"                      // complete type
 
 // SIZE 0xe0
 // VTABLE: LEMBALL 0x00494008
-class BulletManager : public NetworkMessage {
+class BulletManager : public BaseObjectManager {
 public:
 	Bullet* GetFirstBullet();
 	Bullet* GetNextBullet();
 	Bullet* NextFreeBullet();
-	Bullet* RequestBullet(unsigned short p_id,
-						  eBulletType p_bulletType,
-						  eOwner p_owner,
-						  int p_sourceObjectId,
-						  AiCoord p_start,
-						  AiCoord p_target);
+	bool RequestBullet(unsigned short p_id,
+					   eBulletType p_bulletType,
+					   eOwner p_owner,
+					   int p_sourceObjectId,
+					   AiCoord p_start,
+					   AiCoord p_target);
 	BulletManager();
 	bool CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate);
 	int GetViewData(ViewData* p_viewData);
@@ -28,7 +28,6 @@ public:
 	void Restart();
 
 private:
-	unsigned int m_messageType;  // 0x2c
 	Bullet* m_bullets;           // 0x30
 	Bullet* m_activeBullets[40]; // 0x34
 	int m_activeCount;           // 0xd4

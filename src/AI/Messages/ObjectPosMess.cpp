@@ -25,12 +25,9 @@ void ObjectPosMess::AddData()
 // FUNCTION: LEMBALL 0x00416c30
 void ObjectPosMess::GetData()
 {
-	int x = GetDword() << 12;
-	m_object->m_position.m_xFixed = x;
-	int y = GetDword() << 12;
-	m_object->m_position.m_yFixed = y;
-	int z = GetDword() << 12;
-	m_object->m_position.m_zFixed = z;
+	m_object->m_position.m_xFixed = GetDword() << 12;
+	m_object->m_position.m_yFixed = GetDword() << 12;
+	m_object->m_position.m_zFixed = GetDword() << 12;
 	m_object->m_heading = GetDword();
 }
 

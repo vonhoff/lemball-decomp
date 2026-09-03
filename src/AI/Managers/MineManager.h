@@ -2,12 +2,12 @@
 #define LEMBALL_AI_MANAGERS_MINEMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
-#include "../Base/AiCoord.h"                      // complete type
+#include "BaseObjectManager.h" // complete type
+#include "../Base/AiCoord.h"   // complete type
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00495d30
-class MineManager : public NetworkMessage {
+class MineManager : public BaseObjectManager {
 public:
 	MineManager(Ai* p_arg0, int p_arg1);
 	int GetViewData(ViewData* p_viewData);
@@ -22,12 +22,11 @@ public:
 	void Triggered(Mine* p_mine);
 
 private:
-	unsigned int m_messageType; // 0x2c
-	Ai* m_ai;                   // 0x30
-	Mine* m_mines;              // 0x34
-	Coord3d* m_positions;       // 0x38
-	int m_count;                // 0x3c
-	int m_capacity;             // 0x40
+	Ai* m_ai;          // 0x30
+	Mine* m_mines;     // 0x34
+	Coord3d* m_positions; // 0x38
+	int m_count;       // 0x3c
+	int m_capacity;    // 0x40
 };
 
 // SYNTHETIC: LEMBALL 0x00424c30

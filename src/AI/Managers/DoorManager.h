@@ -2,11 +2,12 @@
 #define LEMBALL_AI_MANAGERS_DOORMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h" // complete type
+#include "../Base/AiCoord.h"   // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00493840
-class DoorManager : public NetworkMessage {
+class DoorManager : public BaseObjectManager {
 public:
 	DoorManager(Ai* p_arg0, int p_arg1);
 	int Add(unsigned short p_id, eObjectType p_objectType, unsigned short p_doorType, int p_x, int p_y, int p_z);
@@ -21,11 +22,10 @@ public:
 	void Switch(swMessage p_message, int p_id);
 
 private:
-	unsigned int m_messageType; // 0x2c
-	Ai* m_ai;                   // 0x30
-	int m_count;                // 0x34
-	int m_capacity;             // 0x38
-	Door* m_doors;              // 0x3c
+	Ai* m_ai;       // 0x30
+	int m_count;    // 0x34
+	int m_capacity; // 0x38
+	Door* m_doors;  // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x0040ebe0

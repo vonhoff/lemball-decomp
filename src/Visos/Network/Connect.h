@@ -25,15 +25,15 @@ public:
 	void Process();
 	void SetConnectTime();
 	void Stop();
-	~Connect();
+	virtual ~Connect();
 
 	friend class BaseNetwork;
+	friend class BulletManager;
 	friend class NetworkOptionsDrawer;
 	friend class NetworkOptionsProc;
 	friend class LevelLoader;
 
 private:
-	undefined4 m_unk0x04;               // 0x04
 	char* m_name;                       // 0x08
 	NetworkAddress* m_address;          // 0x0c
 	class Connect* m_nextConnect;       // 0x10

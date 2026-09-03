@@ -81,7 +81,7 @@ bool Ball::Process()
 
 // 68K 0x10603d56 LoadLevel__5CBallFRPUc
 // STUB: LEMBALL 0x00421da0
-void Ball::LoadLevel(unsigned char** p_data)
+void Ball::LoadLevel(unsigned char*& p_data)
 {
 }
 

@@ -50,6 +50,20 @@ def is_unresolved_call(orig_text: str, recomp_text: str) -> bool:
     return bool(re.match(r"call (?:Thunk of '.+' \(THUNK\)|\S+ \(FUNCTION\))$", recomp_text))
 
 
+def is_unresolved_jmp(orig_text: str, recomp_text: str) -> bool:
+    """Unresolved original tail-jmp through the incremental-link jump table.
+
+    The original binary jmps into its jump table (Ghidra renders the target as a
+    raw relative offset); the recomp resolves the callee through its own table,
+    which reccmp prints as a thunk.
+    """
+    orig_text = orig_text.split("\t")[0].strip()
+    recomp_text = recomp_text.split("\t")[0].strip()
+    if not re.match(r"jmp -?0x[0-9a-f]+\s*$", orig_text):
+        return False
+    return bool(re.match(r"jmp Thunk of '.+' \(THUNK\)$", recomp_text))
+
+
 def is_recomp_offset_call(orig_text: str, recomp_text: str) -> bool:
     orig_text = orig_text.split("\t")[0].strip()
     recomp_text = recomp_text.split("\t")[0].strip()
@@ -62,6 +76,8 @@ def is_equivalent_insn(orig_text: str, recomp_text: str) -> bool:
     if normalize_asm(orig_text) == normalize_asm(recomp_text):
         return True
     if is_unresolved_call(orig_text, recomp_text):
+        return True
+    if is_unresolved_jmp(orig_text, recomp_text):
         return True
     if is_recomp_offset_call(orig_text, recomp_text):
         return True

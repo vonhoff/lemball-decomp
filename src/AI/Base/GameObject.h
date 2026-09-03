@@ -109,7 +109,9 @@ public:
 
 	friend class GameObjectMess;
 	friend class Bullet;
+	friend class BulletManager;
 	friend class Enemy;
+	friend class ObjectManager;
 	friend class PlayerLemming;
 	friend class GlobalGameObject;
 	friend class ObjectChangeStateMess;

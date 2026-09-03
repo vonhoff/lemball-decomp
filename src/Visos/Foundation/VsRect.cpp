@@ -11,14 +11,6 @@ VsPoint& VsPoint::operator=(const VsPoint& p_source)
 	return *this;
 }
 
-// FUNCTION: LEMBALL 0x004452a0
-VsPoint* VsPoint::AddInPlace(VsPoint* p_delta)
-{
-	m_x = (short) (m_x + p_delta->m_x);
-	m_y = (short) (m_y + p_delta->m_y);
-	return this;
-}
-
 // FUNCTION: LEMBALL 0x00442190
 VsRect& VsRect::operator=(const VsRect& p_source)
 {
@@ -35,6 +27,14 @@ VsRect& VsRect::operator=(const VsRect& p_source)
 	m_x = *coords;
 	m_y = coords[1];
 	return *this;
+}
+
+// FUNCTION: LEMBALL 0x004452a0
+VsPoint* VsPoint::AddInPlace(VsPoint* p_delta)
+{
+	m_x = (short) (m_x + p_delta->m_x);
+	m_y = (short) (m_y + p_delta->m_y);
+	return this;
 }
 
 // 68K 0x10108342 __as__7CVSRectFRC7CVSRect

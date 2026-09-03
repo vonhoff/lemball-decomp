@@ -4,6 +4,20 @@
 #include "../../Control/Game/GameTime.h"
 #include "../Navigation/Ai.h"
 
+// FUNCTION: LEMBALL 0x0041c470
+Crate::Crate(const AiCoord& p_position, GlobalGameObject* p_contents, unsigned short p_contentsId)
+	: BaseGlobalObject(p_position, 0x11)
+{
+	m_contentsId = p_contentsId;
+	m_contents = p_contents;
+	if (p_contents == 0) {
+		m_contentsType = (eObjectType) 0xffff;
+	}
+	else {
+		m_contentsType = p_contents->m_objectType;
+	}
+}
+
 // 68K 0x1011ab0e Usage__6CCrateFv
 // FUNCTION: LEMBALL 0x0041c530
 int Crate::Usage()

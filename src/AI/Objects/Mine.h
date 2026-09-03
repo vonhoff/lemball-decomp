@@ -22,6 +22,8 @@ public:
 	void StepOn(GameObject* p_object);
 	void Trigger(int p_delay);
 
+	friend class MineManager;
+
 private:
 	unsigned int m_enabled;        // 0x138
 	unsigned int m_activated;      // 0x13c

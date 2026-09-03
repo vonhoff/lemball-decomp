@@ -9,6 +9,9 @@
 // VTABLE: LEMBALL 0x00494268
 class Ammo : public BaseGlobalObject {
 public:
+	inline Ammo(const AiCoord& p_position) : BaseGlobalObject(p_position, 5)
+	{
+	}
 	virtual AiCoord ActivatePosition();          // vtable+0x2c
 	virtual bool Activate(GameObject* p_object); // vtable+0x18
 	virtual bool Process();                      // vtable+0x14
@@ -16,6 +19,8 @@ public:
 	virtual void DoActivate();                   // vtable+0x10c
 	virtual void Restart();                      // vtable+0x104
 	virtual ~Ammo();                             // vtable+0x00
+
+	friend class ObjectManager;
 
 private:
 	unsigned short m_ammo; // 0x144

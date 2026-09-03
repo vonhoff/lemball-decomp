@@ -1,192 +1,115 @@
-# Agents
+# AGENTS.md
 
-Reconstruct *Lemmings Paintball* (1996 Win32, `LEMBALL.EXE`) as C++ that matches the original binary. Verify with [reccmp](https://github.com/isledecomp/reccmp). AI output is a hypothesis — validate against `data/LEMBALL.EXE`, PDB, and reccmp.
+Byte-matching reconstruction of *Lemmings Paintball* (`LEMBALL.EXE`, 1996 Win32).
 
-## Constraints
+## Core Directives & Evidence Priority
 
-- Never edit `README.md` unless asked.
-- Source of truth: x86 binary via reccmp/Ghidra — not 68K comments alone.
-- No invented symbols/addresses. Every symbol needs a reccmp annotation.
-- Scaffold: one primary class per `.h` / `.cpp` under `src/`.
-- Functions in a `.cpp` ordered by annotated address (ascending).
-- Match local naming, types, and style. Minimal diffs.
+When evidence conflicts, resolve strictly in this order:
+1. `data/LEMBALL.EXE`
+2. x86 disassembly / Ghidra / PDB
+3. `reccmp` output
+4. Observed MSVC 4.00 codegen
+5. 68K symbols/comments/code (provides names/intent; never overrides x86)
 
-## Prerequisites
+**Hard Rules:**
+- Never invent symbols, addresses, members, behavior, or helpers.
+- Never edit `README.md`, `Manifest.h`, reference hashes, or compiler flags unless explicitly instructed.
+- Do not stop on minor ambiguity: choose the most reasonable path, proceed, and document assumptions at the end.
 
-1. Compatible `LEMBALL.EXE` in `data/` (SHA-256 in `reccmp-project.yml`; not shipped).
-2. MSVC 4.00 at `msvc400/` (or `MSVC400_ROOT`). See CI `vonhoff/MSVC400`.
-3. Venv from repo root:
- ```powershell
- python -m venv .decomp-venv
- .decomp-venv\Scripts\pip install -r requirements.txt
- .decomp-venv\Scripts\Activate.ps1   # or prepend .decomp-venv\Scripts to PATH
- ```
+## Constraints & Environment
 
-## Source layout
+- **Compiler:** MSVC 4.00 (`/O2 /Ob1 /Oy /G4`). No C++11+, RTTI, exceptions, or inline asm.
+- **Layout:** One primary class per `.h`/`.cpp`. Functions in `.cpp` must appear in ascending original x86 address order.
+- **Resources:** Use `RES_*` constants from `src/Visos/Resources/Manifest.h` instead of raw numeric IDs. Values must remain binary-identical.
+- **Style:** Match original types, local names, and layout. Avoid off-target refactoring; keep diffs minimal and task-scoped.
 
-| Dir | Role |
-|-----|------|
-| `AI/` | Objects, nav, groups, managers, messages |
-| `Control/` | Game loop, levels, demo, state |
-| `Frontend/` | Menus, drawers, FE processes/windows |
-| `Map/` | Map / ground |
-| `Network/` | Multiplayer |
-| `Platform/` | `WinMain`, OS entry |
-| `Views/` | In-game panels, display, sound view |
-| `Visos/` | Engine (foundation, gfx, sound, net, resources, anim, messaging, Win32/DX) |
+## `reccmp` Annotations
 
-Shared types: `src/Common.h`. Unknown scalars: `undefined` / `undefined2` / `undefined4`.
+Format: `// <TYPE>: LEMBALL <ORIGINAL_X86_ADDR> [FLAGS]` (Always use original addresses, never rebuild addresses).
 
-## Resource IDs (`Manifest.h`)
+| Annotation | Usage / Precedence | Example / Syntax |
+| :--- | :--- | :--- |
+| `FUNCTION` | Complete/near-complete implementation. Must assemble-match. | `// FUNCTION: LEMBALL 0x00472ce0` |
+| `STUB` | Missing or placeholder bodies only. Promoted to `FUNCTION` once real logic exists. | `// STUB: LEMBALL 0x00472ce0` |
+| `TEMPLATE` | Template functions. Follow with exact name comment if unattached. | `// TEMPLATE: LEMBALL 0x00401230`<br>`// SomeTemplate<T>::Func` |
+| `SYNTHETIC` | Compiler-generated methods (dtors, scalar deleting dtors, op=). Takes precedence over `TEMPLATE`. | `// SYNTHETIC: LEMBALL 0x00401230`<br>`// Bucket::'scalar deleting destructor'` |
+| `LIBRARY` | CRT / 3rd-party library calls only. Never use for unknown project code. | `// LIBRARY: LEMBALL 0x00401230`<br>`// _MemPoolInit@4` |
+| `VTABLE` | Place directly above class declaration. Annotate slot offsets in class body. | `// VTABLE: LEMBALL 0x0049a478`<br>`virtual void Destroy(); // vtable+0x18` |
+| `GLOBAL` | Known global or static data. Never attach to locals. | `// GLOBAL: LEMBALL 0x0049f000`<br>`int g_count = 0;` |
+| `STRING` | String literal bytes address (distinct from pointer `GLOBAL`). | `// STRING: LEMBALL 0x0049f000` |
+| `LINE` | Critical diff/codegen realignments only. Must precede code directly. | `// LINE: LEMBALL 0x00401234` |
+| `FOLDED` | Suffix flag for identical code folded to one address. Not a standalone tag. | `// FUNCTION: LEMBALL 0x00401230 FOLDED` |
 
-MOG resource ids from `data/pbaimog.vsr` live in `src/Visos/Resources/Manifest.h` as `#define RES_*` constants. Regenerate when the VSR changes:
+**Rules:**
+- **Decorated Symbols:** Prefix `?` indicates MSVC mangling (`// ?Func@@...`). For other symbol schemes, use `SYMBOL` flag (`// LIBRARY: LEMBALL 0x00401230 SYMBOL`).
+- **68K Comments:** Place above `reccmp` annotation (e.g., `// 68K 0x1021749c ...`). Never map 68K addresses to `reccmp`.
 
-```powershell
-python tools/make_manifest.py
-```
+## Types & Memory Representation
 
-When implementing or editing code that passes a numeric resource id to `Res*::Load`, `AttachPalette`, sound prep, etc., prefer the matching `RES_*` name from `Manifest.h` instead of a bare hex literal — but only where it helps the current task (do not bulk-replace unrelated ids). Lookup: grep `Manifest.h` or `build-msvc400/resource_manifest.json`. Values must stay identical to the binary; do not hand-edit `Manifest.h`.
+- Declare class size: `// SIZE 0x54` above class.
+- Annotate member offsets: `unsigned int m_size; // 0x24`.
+- Use `undefined`, `undefined2`, `undefined4` for unknown scalar widths. Do not arbitrarily choose signed/unsigned without assembly backing.
+- Access via structured struct/class members. Do not offset-poke or manually traverse `vbptr` when structured representations are possible.
 
-## 68K + reccmp annotations
+## MSVC 4.00 Codegen Quirks (`/O2 /Ob1 /Oy /G4`)
 
-68K comment = naming / structure / intent from the 68K tree. Binary wins on divergence. Keep 68K lines when implementing.
+- **Stores/Reloads:** Stores force memory reloads. Avoid long-lived local variables across stores when original code re-fetches.
+- **Call Liveness:** Re-fetch pointers after virtual calls if codegen indicates register reloads (e.g., `obj = arr[i]; obj->Run(); obj = arr[i];`).
+- **Inlining (`/Ob1`):** Same-TU inline definitions inline; cross-TU definitions do not. Placement across `.cpp` files dictates inlining codegen.
+- **Narrow Stack Parameters:** If the original reads stack bytes/words as 32-bit values without zero-extension, use `*(unsigned int*)&param`.
+- **Guard Widening:** Message dispatch uses `switch (p_message) { case 0x2a: … }`, not `if` — produces the original's `mov+and+cmp` widening on word params.
+- **Loop Shapes:** Use standard `int i = 0; while (i < max) { ... i++; }`. Do not add zero-count preconditions unless proven by branches.
+- **32-bit Size Arithmetic:** Compute capacities/lengths in an `int` local (`int capacity = p + 4;`) so codegen is `add eax`, not `add ax`.
+- **Loop Registers:**
+    - 3 saved live values: `EBX` (offset), `ESI` (counter), `EDI` (`this`).
+    - 4 saved live values + `EBP` constant: `ESI` (offset), `EBX` (counter), `EDI` (`this`).
+- **Match Ceiling:** Cease iteration when differences are compiler noise: matched register swaps, equal-length jump offsets, or trailing `nop` alignments.
 
-```cpp
-// 68K 0x1021749c __ct__7CBucketFiiPUcPUl
-// FUNCTION: LEMBALL 0x00472ce0
-Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsigned long* p_map)
-```
-
-Marker **directly above** the body. 68K above marker when both present. Target name always `LEMBALL`.
-
-| Marker | Use |
-|--------|-----|
-| `FUNCTION` | Compared implementation |
-| `STUB` | Placeholder (not accuracy-compared) |
-| `GLOBAL` | Global/static data |
-| `VTABLE` | On class in `.h` |
-| `TEMPLATE` / `SYNTHETIC` / `LIBRARY` | As named |
-| `FOLDED` | Shared addr (`/OPT:ICF`); after address |
-
-Promote `STUB` → `FUNCTION` when implementing. Never leave real bodies as `STUB`.
-
-Headers ([recommendations](https://github.com/isledecomp/reccmp/blob/master/docs/recommendations.md)):
-
-```cpp
-// SIZE 0x54
-// VTABLE: LEMBALL 0x0049a478
-class Bucket : public Critical {
-public:
-    virtual void Destroy() override; // vtable+0x18
-private:
-    unsigned int m_blockSize; // 0x24
-    undefined4 m_unk0x30;     // 0x30
-};
-```
-
-Full annotation syntax: [reccmp annotations](https://github.com/isledecomp/reccmp/blob/master/docs/annotations.md).
-
-## Implement loop
-
-1. Locate — roadmap, Ghidra, or reccmp.
-2. Context — 68K, header offsets, callers/callees.
-3. Body — MSVC 4.0 shape (`/O2 /Ob1 /Oy /G4`). No modern C++ that changes codegen.
-4. Annotate — keep 68K; `FUNCTION: LEMBALL 0x…`.
-5. Grind — Commands below (score-only first).
-6. Near-miss — `-Diff` / `reccmp-stackcmp` only when stuck.
-
-Do not rename scaffold ids without strong evidence.
-
-## Commands
-
-Paths from repo root. Prefer wrappers; avoid dumping full logs into chat.
-
-### Grind functions (default)
-
-Incremental build (~2–3s, tiny log) + score line only (using objdiff report 100% match rules):
+## Workflow & Tooling
 
 ```powershell
-python tools/check.py 0x0045ca30
-python tools/check.py 0x0045ca30 0x0045cab0     # multi
-python tools/check.py 0x0045ca30 --diff        # asm diff when stuck
-python tools/check.py 0x0045ca30 --clean-first # PDB desync only
-python tools/check.py 0x0045ca30 --no-build    # reccmp only
-```
+# 1. Target Iteration Loop
+python tools/check.py 0xADDRESS                 # Compile target & compare score
+python tools/check.py 0xADDRESS --diff          # Inspect assembly divergence
+python tools/check.py 0xADDRESS --no-build      # reccmp only (fast)
+python tools/check.py 0xADDRESS --clean-first   # Fix PDB_DESYNC or debug desyncs (run once)
 
-`PDB_DESYNC` / `Failed to find a match` / `Debug data out of sync` → one `--clean-first` (or quiet clean), then retry. **Do not clean every iteration.**
-
-### Quiet build
-
-```powershell
-python tools/build.py               # incremental (auto-cleans pdb/ilk/exe before link); full log -> build-msvc400/last_build.log
-python tools/build.py --clean-first # ~80s full rebuild; stdout = warnings/errors + RESULT only
-```
-
-Raw equivalent (noisy; avoid if possible):
-
-```powershell
-cmake --fresh --preset msvc400
-cmake --build --preset msvc400
-cmake --build --preset msvc400 --clean-first
-```
-
-Out: `build-msvc400/LEMBALL.EXE`, `LEMBALL.pdb`. Flags fixed in `cmake/msvc400-toolchain.cmake` — no casual changes.
-
-### Session-end / PR verification
-
-```powershell
-python tools/report.py
-reccmp-decomplint --target LEMBALL --warnfail src
-python tools/smell.py
-python tools/smell.py --annot # 68K-only functions missing FUNCTION/STUB
-```
-
-### Extra (from `build-msvc400` after a build)
-
-```powershell
-reccmp-stackcmp --target LEMBALL 0xADDRESS
-reccmp-roadmap --target LEMBALL --csv roadmap.csv
-reccmp-vtable --target LEMBALL
-reccmp-datacmp --target LEMBALL
-```
-
-### Next targets (function-count batches)
-
-Needs `build-msvc400/report.json` (from `python tools/report.py`). Ranks work that raises 100% function count: tiny STUBs, clone groups, near-miss FUNCTION grind, units with few leftovers.
-
-```powershell
-python tools/targets.py
-python tools/targets.py --refresh
+# 2. Target Discovery
 python tools/targets.py --kind tiny --max-size 5
-python tools/targets.py --kind near
-python tools/targets.py --kind unit
-python tools/targets.py --kind clone
-python tools/targets.py --kind tiny --addrs
+python tools/targets.py --kind near|unit|clone
+
+# 3. Session Diagnostics & Final Checks
+python tools/build.py                           # Incremental build (log: build-msvc400/last_build.log)
+python tools/report.py                          # Update report.json
+reccmp-decomplint --target LEMBALL --warnfail src
+python tools/smell.py && python tools/smell.py --annot
+reccmp-stackcmp --target LEMBALL 0xADDRESS      # Stack alignment issues
+reccmp-vtable --target LEMBALL                  # Vtable layout
+reccmp-datacmp --target LEMBALL                 # Global data matching
+
 ```
 
-## Agent cost rules
+**Cost Guidelines:** Run the cheapest tool first (`check.py` -> `check.py --diff` -> `stackcmp`). Avoid clean builds or full reports inside the tight matching loop.
 
-- Default grind: `tools\check.py` score-only. Do not paste full build logs or full verbose diffs.
-- Full log: `build-msvc400/last_build.log` — read only on failure.
-- Verbose diff / stackcmp: when score flat or structural mismatch.
-- Full report: end of session or before commit — not every edit.
-- Incremental NMake already rebuilds one `.obj` + link; clean is the expensive path.
+## Code Intelligence (`codebase-memory-mcp`)
 
-## Config
+The repo is indexed into a persistent knowledge graph (auto-index on first connect; background watcher re-indexes on change). Prefer these over grep/read for structural questions — one query replaces file-by-file searching:
 
-| File | Purpose |
-|------|---------|
-| `reccmp-project.yml` | Target, source root, reference hash |
-| `reccmp-user.yml` | Local paths (gitignored) |
-| `build-msvc400/reccmp-build.yml` | Generated binary/PDB paths |
+- **Callers before edits:** before touching a function or header, trace who breaks — `trace_path` (inbound, function name) or the call graph. Mandatory for shared headers (`GameObject.h`, `BaseObjectManager.h`, ...): one member rename shifts codegen in every derived unit.
+- **`detect_changes`:** maps uncommitted changes to affected symbols. Run before session-end checks to catch unintended codegen-adjacent fallout.
+- **`search_graph`:** structural search (regex names, file scope). First stop for "where is X declared/used" — cheaper than `grep`.
+- **`semantic_query`:** when you know intent but not the name ("where is level data parsed"). Fallback after `search_graph` misses.
+- **`search_code`:** graph-augmented grep over indexed sources — use when plain text matching is genuinely needed.
+- **`get_architecture`:** fresh-session orientation for unfamiliar units (packages, hotspots, boundaries).
+- **Dead code / zero callers:** identify stubs and orphaned helpers before annotating.
 
-## Do not
+Evidence order unchanged: CBM reasons about the *source tree only* — never a substitute for the binary, Ghidra, or reccmp output.
 
-- Add symbols without annotations.
-- Offset-poke complete objects or walk vbptr (`*(int*)(*(int*)(p + 0x40) + 4)`). Use named members.
-- Invent file-static helpers or unannotated functions.
-- Ship 68K-only logic without x86 check.
-- Use C++11+, exceptions, RTTI, or another compiler.
-- Reorder annotated funcs except by address.
-- Edit `README.md`, hash, or compiler flags casually.
-- Commit `data/LEMBALL.EXE` or user reccmp YAML.
+## Completion Checklist
+
+* [ ] Valid annotation types; addresses match original x86 binary.
+* [ ] Source files remain strictly sorted in ascending x86 address order.
+* [ ] No completed implementations left marked as `STUB`.
+* [ ] `check.py` verifies match; `build.py` passes without errors.
+* [ ] `reccmp-decomplint` passes with zero warnings or errors.
+* [ ] No out-of-scope refactoring, formatting churn, or invented symbols.

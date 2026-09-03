@@ -28,6 +28,7 @@ public:
 	friend class ObjectChangeStateMess;
 	friend class ObjectDiesMess;
 	friend class ObjectHitMess;
+	friend class ObjectManager;
 	friend class ObjectPosMess;
 	friend class RemoveObjectMess;
 	friend class RequestActionMess;

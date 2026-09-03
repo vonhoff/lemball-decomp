@@ -9,6 +9,7 @@
 // VTABLE: LEMBALL 0x004948d0
 class Crate : public BaseGlobalObject {
 public:
+	Crate(const AiCoord& p_position, GlobalGameObject* p_contents, unsigned short p_contentsId);
 	virtual AiCoord ActivatePosition();          // vtable+0x2c
 	virtual bool Activate(GameObject* p_object); // vtable+0x18
 	virtual bool Process();                      // vtable+0x14
@@ -17,6 +18,8 @@ public:
 	virtual void Restart();                      // vtable+0x104
 	virtual ~Crate();                            // vtable+0x00
 	void TriggerContents();
+
+	friend class ObjectManager;
 
 private:
 	unsigned short m_contentsId;  // 0x144

@@ -31,6 +31,7 @@ public:
 	void TriggerBullet();
 
 	friend class PlayerLemming;
+	friend class BulletManager;
 
 private:
 	unsigned int m_active;           // 0x164
@@ -43,6 +44,7 @@ private:
 	int m_unk0x17c;                  // 0x17c
 	int m_unk0x180;                  // 0x180
 	Move3d m_movement;               // 0x184
+	undefined4 m_unk0x1a0;           // 0x1a0
 };
 
 // SYNTHETIC: LEMBALL 0x00418330
