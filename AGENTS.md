@@ -108,15 +108,15 @@ Use the same form for `reccmp-datacmp.exe` and `reccmp-stackcmp.exe`.
 
 ## Code Intelligence (`codebase-memory-mcp`)
 
-The repo is indexed into a persistent knowledge graph (auto-index on first connect; background watcher re-indexes on change). Prefer these over grep/read for structural questions — one query replaces file-by-file searching:
+The repo is stored as a persistent local knowledge graph. When auto-indexing is enabled, the project is indexed on first connection; the background watcher then keeps indexed projects synchronized as files change. Prefer graph queries over file-by-file grep/read for structural questions.
 
-- **Callers before edits:** before touching a function or header, trace who breaks — `trace_path` (inbound, function name) or the call graph. Mandatory for shared headers (`GameObject.h`, `BaseObjectManager.h`, ...): one member rename shifts codegen in every derived unit.
-- **`detect_changes`:** maps uncommitted changes to affected symbols. Run before session-end checks to catch unintended codegen-adjacent fallout.
-- **`search_graph`:** structural search (regex names, file scope). First stop for "where is X declared/used" — cheaper than `grep`.
-- **`semantic_query`:** when you know intent but not the name ("where is level data parsed"). Fallback after `search_graph` misses.
-- **`search_code`:** graph-augmented grep over indexed sources — use when plain text matching is genuinely needed.
-- **`get_architecture`:** fresh-session orientation for unfamiliar units (packages, hotspots, boundaries).
-- **Dead code / zero callers:** identify stubs and orphaned helpers before annotating.
+* **Callers before edits:** before changing a function or shared header, inspect its blast radius with `trace_path` (`direction: inbound`) or graph queries. Mandatory for shared base classes and headers such as `GameObject.h` and `BaseObjectManager.h`; small declaration changes can affect codegen across multiple translation units.
+* **`detect_changes`:** map the current Git diff to affected symbols and blast radius. Run before final verification to catch unintended codegen-adjacent changes.
+* **`search_graph`:** first choice for declarations, symbols, callers, file scope, and other structural searches.
+* **Semantic search:** use `search_graph` with `semantic_query` when you know the intent but not the symbol name, e.g. "where is level data parsed".
+* **`search_code`:** grep-like text search over indexed source. Use when literal text matching is required.
+* **`get_architecture`:** use for orientation in unfamiliar areas: packages, boundaries, hotspots, entry points, and clusters.
+* **Dead code / zero callers:** use graph analysis to identify orphaned helpers or apparent stubs before adding annotations.
 
 Evidence order unchanged: CBM reasons about the *source tree only* — never a substitute for the binary, Ghidra, or reccmp output.
 
