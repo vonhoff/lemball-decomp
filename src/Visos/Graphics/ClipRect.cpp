@@ -20,7 +20,7 @@ void ClipRect::Draw(Gdi* p_gdi)
 // FUNCTION: LEMBALL 0x00432ae0
 void ClipRect::Render(Gdi* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit(this);
+	p_gdi->m_renderTarget->Blit((Line*) this);
 }
 
 // 68K 0x10101afa __dt__9CClipRectFv

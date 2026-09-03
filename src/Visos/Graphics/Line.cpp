@@ -20,5 +20,5 @@ void Line::Draw(Gdi* p_gdi)
 // FUNCTION: LEMBALL 0x00439810
 void Line::Render(Gdi* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit(this);
+	p_gdi->m_renderTarget->Blit((SolidRect*) this);
 }

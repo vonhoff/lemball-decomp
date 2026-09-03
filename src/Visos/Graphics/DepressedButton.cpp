@@ -52,14 +52,10 @@ void DepressedButton::OnExitButton()
 // FUNCTION: LEMBALL 0x00468300
 void DepressedButton::_DrawButton()
 {
-	if (m_depressed == m_lastDrawnDepressed) {
-		if (m_gdi->m_renderTarget->HasBackBuff() == 0) {
-			CheckForceDraw();
-			return;
-		}
+	if (m_depressed != m_lastDrawnDepressed || m_gdi->m_renderTarget->HasBackBuff() != 0) {
+		m_gdi->m_renderTarget->m_flag78 = 1;
+		m_lastDrawnDepressed = m_depressed;
 	}
-	m_gdi->m_renderTarget->m_flag78 = 1;
-	m_lastDrawnDepressed = m_depressed;
 	CheckForceDraw();
 }
 

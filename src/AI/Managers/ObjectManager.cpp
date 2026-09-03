@@ -31,8 +31,8 @@ ObjectManager::ObjectManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0xc, 1)
 void ObjectManager::Restart()
 {
 	int removedCount = 0;
-	int i = 0;
 	if (m_objects != 0 && m_capacity > 0) {
+		int i = 0;
 		do {
 			GlobalGameObject* object = m_objects[i];
 			if (object != 0) {

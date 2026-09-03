@@ -14,7 +14,7 @@ void SolidRect::Draw(Gdi* p_gdi)
 // FUNCTION: LEMBALL 0x00432b20
 void SolidRect::Render(Gdi* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit(this);
+	p_gdi->m_renderTarget->Blit((ClipRect*) this);
 }
 
 // 68K 0x1010a6c2 __ct__10CSolidRectFv

@@ -195,8 +195,10 @@ MainOptions2Drawer::~MainOptions2Drawer()
 // FUNCTION: LEMBALL 0x00448ee0
 bool MainOptions2Drawer::ProcessMessages(Message* p_message)
 {
-	unsigned int messageType = (unsigned int) p_message->type;
-	if (messageType != 0xc) {
+	switch (p_message->type) {
+	case 0xc:
+		break;
+	default:
 		m_processedCount++;
 		return 0;
 	}

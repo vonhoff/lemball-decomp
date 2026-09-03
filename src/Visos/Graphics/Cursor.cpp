@@ -21,6 +21,7 @@ unsigned int g_cursorDisplayInited = 0;
 // FUNCTION: LEMBALL 0x0043a720
 void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 {
+	Cursor* cursor;
 	int frame;
 
 	if ((unsigned int) p_arg0 > 3) {
@@ -44,16 +45,18 @@ void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 			g_cursorDisplayInited = 1;
 		}
 		g_pCursor->SetActive(1);
+		cursor = g_pCursor;
 		g_pCursor->m_hotspot.m_x = 3;
-		g_pCursor->m_hotspot.m_y = 3;
+		cursor->m_hotspot.m_y = 3;
 		break;
 	case 2:
 	case 3:
 		g_pCursor->SetMainId(g_cursorResourceIds[p_arg0]);
 		if (g_cursorDisplayInited == 0) {
 			g_pCursor->m_mouseInput = 1;
+			cursor = g_pCursor;
 			g_pCursor->m_hotspot.m_x = 3;
-			g_pCursor->m_hotspot.m_y = 3;
+			cursor->m_hotspot.m_y = 3;
 			g_cursorDisplayInited = 1;
 		}
 		g_pCursor->SetActive(1);
