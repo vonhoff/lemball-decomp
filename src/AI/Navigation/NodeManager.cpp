@@ -11,9 +11,16 @@ NodeManager::NodeManager(int p_arg0)
 }
 
 // 68K 0x106184f8 Restart__12CNodeManagerFv
-// STUB: LEMBALL 0x004211a0
+// FUNCTION: LEMBALL 0x004211a0
 void NodeManager::Restart()
 {
+	int i = 0;
+	if (m_nodes != 0 && i < m_capacity) {
+		do {
+			m_nodes[i].Restart();
+			i++;
+		} while (i < m_capacity);
+	}
 }
 
 // 68K 0x1061854c Initialise__12CNodeManagerFi
