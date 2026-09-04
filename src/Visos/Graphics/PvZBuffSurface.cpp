@@ -17,9 +17,16 @@ PvZBuffSurface::~PvZBuffSurface()
 }
 
 // 68K 0x1021632c FreeZBuff__15CPVZBuffSurfaceFv
-// STUB: LEMBALL 0x00466710
+// FUNCTION: LEMBALL 0x00466710
 void PvZBuffSurface::FreeZBuff()
 {
+	if (m_buffer != 0) {
+		operator delete(m_buffer);
+		m_buffer = 0;
+		m_allocatedHeight = 0;
+		m_allocatedWidth = 0;
+	}
+	m_bitmap.Free();
 }
 
 // 68K 0x10216388 AllocateZBuff__15CPVZBuffSurfaceFv
