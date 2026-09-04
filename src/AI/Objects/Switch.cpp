@@ -32,9 +32,20 @@ void Switch::Restart()
 }
 
 // 68K 0x106197d2 Throw__7CSwitchFv
-// STUB: LEMBALL 0x0041d130
+// FUNCTION: LEMBALL 0x0041d130
 void Switch::Throw()
 {
+	SwitchEntry* entry;
+	int i = 0;
+	if (i < m_entryCount) {
+		entry = m_entries;
+		do {
+			g_pAI->SwitchMessage((swMessage) entry->m_message, entry->m_objectId, 0, 0);
+			entry++;
+			i++;
+		} while (i < m_entryCount);
+	}
+	SetSndEffect((eSoundEffect) 0x15);
 }
 
 // 68K 0x10619852 Process__7CSwitchFv
