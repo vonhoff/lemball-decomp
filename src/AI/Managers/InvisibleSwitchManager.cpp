@@ -54,9 +54,21 @@ void InvisibleSwitchManager::Process()
 }
 
 // 68K 0x10613484 LoadLevel__23CInvisibleSwitchManagerFPUciUc
-// STUB: LEMBALL 0x0040a490
+// FUNCTION: LEMBALL 0x0040a490
 void InvisibleSwitchManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short count;
+	int i;
+
+	count = *(unsigned short*) p_data;
+	p_data = p_data + 2;
+	Initialise(count);
+	m_count = count;
+	i = 0;
+	while (i < m_count) {
+		m_switches[i].Load(p_data);
+		i = i + 1;
+	}
 }
 
 // 68K 0x1061331c __dt__23CInvisibleSwitchManagerFv
