@@ -56,4 +56,7 @@ private:
 // SYNTHETIC: LEMBALL 0x004510e0
 // SuccFailDrawer::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x00451200
+// SuccFailDrawer::`vector deleting destructor'
+
 #endif

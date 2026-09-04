@@ -10,8 +10,8 @@
 #include "../../Visos/Graphics/PvGWnd.h"         // complete type
 
 // SIZE 0x134
-// VTABLE: LEMBALL 0x00497f48 primary PvGWnd base at +0x00
-// VTABLE: LEMBALL 0x00497f20 adjusted HotAreaHandler base at +0x90
+// VTABLE: LEMBALL 0x00497f48 PvGWnd
+// VTABLE: LEMBALL 0x00497f20 HotAreaHandler
 class TrackWindow : public PvGWnd, public HotAreaHandler {
 public:
 	TrackWindow(const VsRect& p_arg0, int p_arg1, PvGWnd* p_arg2);

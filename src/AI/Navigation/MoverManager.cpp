@@ -1,9 +1,12 @@
 #include "MoverManager.h"
 
 // 68K 0x10617f0e __ct__13CMoverManagerFP3CAIi
-// STUB: LEMBALL 0x0042f190
-MoverManager::MoverManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x0042f190
+MoverManager::MoverManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x1a, 0xf)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_movers = 0;
 }
 
 // 68K 0x10617f9a Restart__13CMoverManagerFv

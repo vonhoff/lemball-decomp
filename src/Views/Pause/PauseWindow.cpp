@@ -166,9 +166,8 @@ void PauseWindow::OnInside(const VsPoint& p_point)
 
 // 68K 0x10b0f506 OnButtonDown__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS
 // STUB: LEMBALL 0x00444b20
-unsigned int PauseWindow::OnButtonDown(const VsPoint& p_point, unsigned int p_flags)
+void PauseWindow::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
-	return 0;
 }
 
 // 68K 0x10b0f61a OnButtonUp__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS

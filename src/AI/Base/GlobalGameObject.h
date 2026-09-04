@@ -15,6 +15,7 @@ public:
 	virtual void SendCancel();                                           // vtable+0xf8
 	virtual int UsableState();                                           // vtable+0xfc
 	virtual void Restart();                                              // vtable+0x104
+	virtual bool Process() = 0;                                          // vtable+0x14
 	virtual bool Receive(unsigned short p_arg0, NetworkMessage* p_arg1); // vtable+0x108
 	virtual void DoActivate();                                           // vtable+0x10c
 	void CancelRequest();

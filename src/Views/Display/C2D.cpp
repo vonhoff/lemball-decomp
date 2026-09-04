@@ -462,15 +462,14 @@ void C2D::OnInside(const VsPoint& p_point)
 
 // 68K 0x10b0958c OnButtonUp__3C2DFRC8CVSPoint12BUTTON_FLAGS
 // STUB: LEMBALL 0x004381c0
-void C2D::OnButtonUp(const VsPoint& p_point, unsigned int p_flags)
+void C2D::OnButtonUp(const VsPoint& p_point, int p_flags)
 {
 }
 
 // 68K 0x10b0960a OnButtonDown__3C2DFRC8CVSPoint12BUTTON_FLAGS
 // STUB: LEMBALL 0x00438210
-unsigned int C2D::OnButtonDown(const VsPoint& p_point, unsigned int p_flags)
+void C2D::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
-	return 0;
 }
 
 // 68K 0x10b09786 UseBalloon__3C2DFi

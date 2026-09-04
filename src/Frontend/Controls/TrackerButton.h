@@ -5,8 +5,8 @@
 #include "../../Visos/Graphics/GraphicButton.h" // complete type
 
 // SIZE 0x138
-// VTABLE: LEMBALL 0x00498050 primary
-// VTABLE: LEMBALL 0x00498028 adjusted hot-area subobject at +0x90
+// VTABLE: LEMBALL 0x00498050 PvGWnd
+// VTABLE: LEMBALL 0x00498028 HotAreaHandler
 class TrackerButton : public GraphicButton {
 public:
 	TrackerButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned long p_arg2, VsRect& p_arg3, int p_arg4);

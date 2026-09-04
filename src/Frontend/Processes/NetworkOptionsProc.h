@@ -35,4 +35,7 @@ extern NetworkOptionsProc* g_pNetworkOptionsProc;
 // SYNTHETIC: LEMBALL 0x00455eb0
 // NetworkOptionsProc::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x00455ef0
+// NetworkOptionsProc::`vector deleting destructor'
+
 #endif

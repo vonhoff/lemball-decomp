@@ -39,4 +39,7 @@ private:
 	void* m_platformState;       // 0x28
 };
 
+// SYNTHETIC: LEMBALL 0x004628e0
+// BaseCommonSocket::`scalar deleting destructor'
+
 #endif

@@ -9,18 +9,18 @@
 class BaseNetwork : public BaseQueueHandler {
 public:
 	BaseNetwork();
-	virtual int ProcessMsg(Message* p_arg0); // vtable+0x08
-	virtual void Initialise();               // vtable+0x0c
-	virtual void UnInitialise();             // vtable+0x10
-	virtual void Process();                  // vtable+0x14
-	virtual void BeforeDestroyConnections(); // vtable+0x18
-	virtual void AfterDestroyConnections();  // vtable+0x1c
-	virtual void ForceProcess() = 0;         // vtable+0x20
-	virtual void* GetNewConnect();           // vtable+0x24
-	virtual void* GetNewBroadcast();         // vtable+0x28
-	virtual void* GetNewNetworkAddress();    // vtable+0x2c
-	virtual void WaitProcess();              // vtable+0x30
-	virtual ~BaseNetwork();                  // vtable+0x04
+	virtual int ProcessMsg(Message* p_arg0);  // vtable+0x08
+	virtual void Initialise() = 0;            // vtable+0x0c
+	virtual void UnInitialise() = 0;          // vtable+0x10
+	virtual void Process();                   // vtable+0x14
+	virtual void BeforeDestroyConnections();  // vtable+0x18
+	virtual void AfterDestroyConnections();   // vtable+0x1c
+	virtual void ForceProcess() = 0;          // vtable+0x20
+	virtual void* GetNewConnect() = 0;        // vtable+0x24
+	virtual void* GetNewBroadcast() = 0;      // vtable+0x28
+	virtual void* GetNewNetworkAddress() = 0; // vtable+0x2c
+	virtual void WaitProcess();               // vtable+0x30
+	virtual ~BaseNetwork();                   // vtable+0x04
 	Connect* NewConnect();
 	bool DoInitialise();
 	bool Exists(Connect* p_arg0);
@@ -75,4 +75,7 @@ private:
 };
 
 extern BaseNetwork* g_pBaseNetwork;
+// SYNTHETIC: LEMBALL 0x00462ad0
+// BaseNetwork::`scalar deleting destructor'
+
 #endif

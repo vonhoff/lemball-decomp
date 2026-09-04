@@ -6,35 +6,6 @@ void PvMusicDevice::Initialise(unsigned long p_resourceId, unsigned long p_flags
 {
 }
 
-void PvMusicDevice::Dummy08(unsigned long p_allocated, unsigned long p_resourceId)
-{
-}
-
-void PvMusicDevice::Dummy0c(unsigned long p_handle)
-{
-}
-
-void PvMusicDevice::Dummy10(unsigned long p_handle)
-{
-}
-
-void PvMusicDevice::Dummy14(unsigned long p_handle)
-{
-}
-
-void PvMusicDevice::Dummy18(unsigned long p_handle)
-{
-}
-
-void PvMusicDevice::Dummy1c(unsigned long p_handle)
-{
-}
-
-int PvMusicDevice::Dummy2c()
-{
-	return 0;
-}
-
 // 68K 0x1010244a SetVolume__14CPVMusicDeviceFUc
 // FUNCTION: LEMBALL 0x0047f520
 void PvMusicDevice::SetVolume(unsigned char p_volume)

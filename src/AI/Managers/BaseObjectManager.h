@@ -24,7 +24,7 @@ public:
 	virtual void AddData();       // vtable+0x10
 	virtual ~BaseObjectManager(); // vtable+0x14
 	virtual void Restart();       // vtable+0x18
-	virtual void Process();       // vtable+0x1c
+	virtual void Process() = 0;   // vtable+0x1c
 	virtual bool Receive(unsigned short p_messageId,
 						 GlobalGameObject* p_object,
 						 NetworkMessage* p_message); // vtable+0x20

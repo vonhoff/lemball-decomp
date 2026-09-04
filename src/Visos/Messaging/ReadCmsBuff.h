@@ -17,4 +17,7 @@ private:
 	ReadMsBuff** m_messages; // 0x1c
 };
 
+// SYNTHETIC: LEMBALL 0x00462a80
+// ReadCmsBuff::`scalar deleting destructor'
+
 #endif

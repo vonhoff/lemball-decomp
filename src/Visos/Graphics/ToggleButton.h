@@ -5,8 +5,8 @@
 #include "GraphicButton.h" // complete type
 
 // SIZE 0x134
-// VTABLE: LEMBALL 0x004973e0 primary
-// VTABLE: LEMBALL 0x004973b8 adjusted hot-area subobject at +0x90
+// VTABLE: LEMBALL 0x004973e0 PvGWnd
+// VTABLE: LEMBALL 0x004973b8 HotAreaHandler
 class ToggleButton : public GraphicButton {
 public:
 	ToggleButton(const VsPoint& p_position, PvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)

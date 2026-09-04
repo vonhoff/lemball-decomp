@@ -60,8 +60,9 @@ bool Laser::StepOn(const AiCoord& p_position, GameObject* p_object)
 
 // 68K 0x10613bec GetViewData__6CLaserFP9CViewData
 // STUB: LEMBALL 0x00428f90
-void Laser::GetViewData(ViewData& p_viewData)
+int Laser::GetViewData(ViewData* p_viewData)
 {
+	return 0;
 }
 
 // 68K 0x1011a726 DoActivate__6CLaserFv

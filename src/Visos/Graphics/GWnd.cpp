@@ -12,12 +12,6 @@
 #include <new.h>
 #include <windows.h>
 
-// 68K 0x1010b3ca OnMove__5CGWndFv
-// FUNCTION: LEMBALL 0x0043a4d0 FOLDED
-void GWnd::OnMove()
-{
-}
-
 // 68K 0x1010a70a __dt__5CGWndFv
 // STUB: LEMBALL 0x00463bd0
 GWnd::~GWnd()
@@ -100,7 +94,7 @@ void GWnd::OnCreate()
 
 // 68K 0x1010aa18 _OnDestroy__5CGWndFv
 // FUNCTION: LEMBALL 0x00463df0
-void GWnd::OnDestroy()
+void GWnd::BaseOnDestroy()
 {
 	Gdi* gdi;
 	unsigned int style;
@@ -169,6 +163,14 @@ void GWnd::OnSize()
 	relOrigin = (VsPoint*) &target->m_relOriginX;
 	relOrigin->m_x = relX;
 	relOrigin->m_y = relY;
+}
+
+// 68K 0x1010b3ca OnMove__5CGWndFv
+// FUNCTION: LEMBALL 0x00463f30
+void GWnd::OnMove()
+{
+	PvWnd::OnMove();
+	m_gdi->m_renderTarget->Move(m_relativeTopLeft);
 }
 
 // 68K 0x1010ab98 OnPaint__5CGWndFRC7CVSRect

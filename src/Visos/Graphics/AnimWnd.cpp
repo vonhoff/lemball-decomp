@@ -111,14 +111,14 @@ void AnimWnd::OnCreate()
 
 // 68K 0x101040d4 _OnDestroy__8CAnimWndFv
 // FUNCTION: LEMBALL 0x0046df40
-void AnimWnd::OnDestroy()
+void AnimWnd::BaseOnDestroy()
 {
 	Stop();
 	if (m_movieWindow != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
 		m_movieWindow = 0;
 	}
-	GWnd::OnDestroy();
+	GWnd::BaseOnDestroy();
 	m_paused = 0;
 	m_playing = 0;
 }

@@ -2,11 +2,11 @@
 #define LEMBALL_AI_NAVIGATION_MOVERMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "../Managers/BaseObjectManager.h" // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496b78
-class MoverManager : public NetworkMessage {
+class MoverManager : public BaseObjectManager {
 public:
 	Mover* Find(int p_x, int p_y, int& p_height);
 	MoverManager(Ai* p_arg0, int p_arg1);
@@ -20,11 +20,10 @@ public:
 	void Switch(int p_message, int p_id);
 
 private:
-	unsigned int m_messageType; // 0x2c
-	int m_capacity;             // 0x30
-	int m_count;                // 0x34
-	Mover* m_movers;            // 0x38
-	Ai* m_ai;                   // 0x3c
+	int m_capacity;  // 0x30
+	int m_count;     // 0x34
+	Mover* m_movers; // 0x38
+	Ai* m_ai;        // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x0042fba0

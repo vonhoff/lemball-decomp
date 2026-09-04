@@ -8,8 +8,8 @@
 #include "../../Visos/Graphics/Line.h"            // complete type
 
 // SIZE 0x1b8
-// VTABLE: LEMBALL 0x00497508 primary
-// VTABLE: LEMBALL 0x004974e0 adjusted hot-area subobject at +0x90
+// VTABLE: LEMBALL 0x00497508 PvGWnd
+// VTABLE: LEMBALL 0x004974e0 HotAreaHandler
 class PanelButton : public DepressedButton {
 public:
 	PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_arg2);
@@ -38,5 +38,8 @@ private:
 	Anim m_statusAnim;              // 0x178
 	Anim m_inventoryAnim;           // 0x198
 };
+
+// SYNTHETIC: LEMBALL 0x00443950
+// PanelButton::`scalar deleting destructor'
 
 #endif

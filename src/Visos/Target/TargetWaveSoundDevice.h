@@ -24,14 +24,21 @@ public:
 	virtual int Dummy28();
 	virtual int Dummy2c();
 	virtual int Dummy30();
+	virtual int Dummy34(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3);
+	virtual int Dummy38(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3);
 	virtual int Dummy3c(unsigned char* p_data, unsigned long* p_handle);
+	virtual int Dummy40(undefined4 p_arg0);
+	virtual int Dummy44(undefined4 p_arg0);
 	virtual int Dummy48(unsigned long p_effectId);
+	virtual int Dummy4c();
+	virtual int Dummy50();
 	virtual unsigned char EffectPlay(unsigned long p_effectId,
 									 unsigned short p_pitch,
 									 unsigned char p_volume); // vtable+0x90
 	virtual unsigned char EffectPlay(unsigned long p_effectId,
 									 unsigned char p_channel,
-									 unsigned char p_volume); // vtable+0x8c
+									 unsigned char p_volume);                 // vtable+0x8c
+	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect); // vtable+0x94
 
 private:
 	unsigned int m_channelCount;    // 0x04

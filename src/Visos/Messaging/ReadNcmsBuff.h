@@ -19,4 +19,7 @@ private:
 	unsigned int m_nextExpectedSequence; // 0x24
 };
 
+// SYNTHETIC: LEMBALL 0x00462a60
+// ReadNcmsBuff::`scalar deleting destructor'
+
 #endif

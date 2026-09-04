@@ -11,9 +11,12 @@ public:
 	PvGWnd();
 	virtual unsigned int GetStyle();                      // vtable+0x64
 	virtual void OnVisibilityChange();                    // vtable+0x80
-	virtual void OnZoom(int p_oldZoom);                   // vtable+0x2c
+	virtual void BaseOnZoom(int p_oldZoom);               // vtable+0x2c
 	virtual void SetDontUpdateRect(const VsRect& p_rect); // vtable+0x84
 	virtual void SetInnerWindow(const VsRect& p_rect);    // vtable+0x08
+	virtual void Dummy3c();                               // vtable+0x3c
+	virtual void OnDestroy();                             // vtable+0x40
+	virtual void BaseOnSize();                            // vtable+0x44
 	void Clear(int p_color);
 };
 

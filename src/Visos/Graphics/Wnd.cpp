@@ -73,6 +73,11 @@ void Wnd::SetFocusWindow()
 	g_pFocusWindow = this;
 }
 
+// FUNCTION: LEMBALL 0x004324c0
+void Wnd::Dummy94()
+{
+}
+
 // 68K 0x1010480a IsFocusWindow__4CWndFv
 // FUNCTION: LEMBALL 0x004324d0
 bool Wnd::IsFocusWindow()
@@ -89,6 +94,16 @@ void Wnd::OnMinimise()
 // 68K 0x101048d2 OnMaximise__4CWndFv
 // FUNCTION: LEMBALL 0x00432500
 void Wnd::OnMaximise()
+{
+}
+
+// FUNCTION: LEMBALL 0x00432510
+void Wnd::Dummy98()
+{
+}
+
+// FUNCTION: LEMBALL 0x00432520
+void Wnd::Dummy9c()
 {
 }
 
@@ -112,7 +127,7 @@ void Wnd::OnZoom(int p_oldZoom)
 
 // 68K 0x10104928 OnZoomBox__4CWndFUc
 // FUNCTION: LEMBALL 0x0043a500
-void Wnd::OnZoomBox()
+void Wnd::OnDriverChange()
 {
 }
 
@@ -674,9 +689,30 @@ int Wnd::SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int 
 	return 0;
 }
 
+// 68K 0x10110e82 _OnZoom__4CWndFi
+// FUNCTION: LEMBALL 0x00465790
+void Wnd::BaseOnZoom(int p_oldZoom)
+{
+	RECT windowRect;
+	RECT clientRect;
+
+	PvWnd::BaseOnZoom(p_oldZoom);
+	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
+		GetWindowRect((HWND) m_nativeWindow, &windowRect);
+		GetClientRect((HWND) m_nativeWindow, &clientRect);
+		windowRect.right -= windowRect.left;
+		windowRect.bottom -= windowRect.top;
+		windowRect.right -= clientRect.right;
+		windowRect.bottom -= clientRect.bottom;
+		windowRect.right += clientRect.right;
+		windowRect.bottom += clientRect.bottom;
+		SetWindowPos((HWND) m_nativeWindow, 0, 0, 0, windowRect.right, windowRect.bottom, 6);
+	}
+}
+
 // 68K 0x1011177e _SetRect__4CWndFRC7CVSRect
 // STUB: LEMBALL 0x00465820
-void Wnd::SetRect(const VsRect& p_rect)
+void Wnd::_SetRect(const VsRect& p_rect)
 {
 }
 
@@ -693,16 +729,4 @@ void Wnd::SetRelTl(const VsPoint& p_point)
 unsigned int Wnd::GetStyle()
 {
 	return 0;
-}
-
-void Wnd::Dummy94()
-{
-}
-
-void Wnd::Dummy98()
-{
-}
-
-void Wnd::Dummy9c()
-{
 }

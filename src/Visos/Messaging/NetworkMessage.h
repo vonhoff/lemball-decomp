@@ -26,9 +26,9 @@ public:
 	unsigned short GetWord();
 	virtual bool CheckMessage(const unsigned char* p_arg0); // vtable+0x00
 	virtual bool GetHeader();                               // vtable+0x04
-	virtual void GetData();                                 // vtable+0x08
+	virtual void GetData() = 0;                             // vtable+0x08
 	virtual void AddHeader();                               // vtable+0x0c
-	virtual void AddData();                                 // vtable+0x10
+	virtual void AddData() = 0;                             // vtable+0x10
 	virtual ~NetworkMessage();                              // vtable+0x14
 	void Add(const char* p_arg0);
 	void Add(const unsigned char* p_arg0, int p_arg1);

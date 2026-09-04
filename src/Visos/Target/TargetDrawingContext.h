@@ -23,4 +23,7 @@ private:
 	void* m_hBitmap; // 0x08
 };
 
+// SYNTHETIC: LEMBALL 0x00458260
+// TargetDrawingContext::`scalar deleting destructor'
+
 #endif

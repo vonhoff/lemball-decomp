@@ -30,4 +30,7 @@ protected:
 	unsigned int m_flags;          // 0x24
 };
 
+// SYNTHETIC: LEMBALL 0x0045a8f0
+// MBlock::`scalar deleting destructor'
+
 #endif

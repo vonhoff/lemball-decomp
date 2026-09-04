@@ -34,4 +34,10 @@ private:
 	ReadCmsBuff* m_criticalMultiBuffer;     // 0x54
 };
 
+// SYNTHETIC: LEMBALL 0x00462940
+// ReadSocket::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00462ba0
+// ReadSocket::`vector deleting destructor'
+
 #endif

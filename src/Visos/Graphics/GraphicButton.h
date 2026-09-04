@@ -5,8 +5,8 @@
 #include "PvButton.h" // complete type
 
 // SIZE 0x130
-// VTABLE: LEMBALL 0x00499748 primary
-// VTABLE: LEMBALL 0x00499728 adjusted hot-area subobject at +0x90
+// VTABLE: LEMBALL 0x00499748 PvGWnd
+// VTABLE: LEMBALL 0x00499728 HotAreaHandler
 class GraphicButton : public PvButton {
 public:
 	GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3);

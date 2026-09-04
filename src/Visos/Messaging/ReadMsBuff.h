@@ -23,4 +23,7 @@ protected:
 	unsigned int m_assembledSize;          // 0x14
 };
 
+// SYNTHETIC: LEMBALL 0x00462a40
+// ReadMsBuff::`scalar deleting destructor'
+
 #endif

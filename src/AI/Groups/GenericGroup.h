@@ -23,8 +23,8 @@ public:
 	virtual GameObject* GetNthElementInGroup(int p_index);                                   // vtable+0x120
 	virtual void AddElementToGroup(GameObject* p_object);                                    // vtable+0x124
 	virtual void RemoveElementFromGroup(GameObject* p_object);                               // vtable+0x128
-	virtual bool ConfirmElementIsInGroup(unsigned short p_objectId);                         // vtable+0x12c
 	virtual bool ConfirmElementIsInGroup(GameObject* p_object);                              // vtable+0x130
+	virtual bool ConfirmElementIsInGroup(unsigned short p_objectId);                         // vtable+0x12c
 	virtual VsRect GetBoundingBox();                                                         // vtable+0x134
 	virtual void CalculateBoundingBox(int p_radius);                                         // vtable+0x138
 	virtual eGroupState GetGroupState();                                                     // vtable+0x13c

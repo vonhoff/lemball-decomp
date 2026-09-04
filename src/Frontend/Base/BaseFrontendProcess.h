@@ -43,4 +43,7 @@ extern BaseFrontendProcess* g_pCurrentFrontendProcess;
 // SYNTHETIC: LEMBALL 0x004472b0
 // BaseFrontendProcess::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x004472e0
+// BaseFrontendProcess::`vector deleting destructor'
+
 #endif

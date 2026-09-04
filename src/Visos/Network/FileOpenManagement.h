@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_FILEOPENMANAGEMENT_H
 
 #include "../../Common.h"
-#include "../Messaging/NetworkMessage.h" // complete type
+#include "OpenCount.h" // complete type
 
 // SIZE 0x34
 class FileOpenManagement {
@@ -13,9 +13,7 @@ public:
 	~FileOpenManagement();
 
 private:
-	NetworkMessage m_message;   // 0x04
-	unsigned short m_openCount; // 0x30
-	undefined2 m_reserved32;    // 0x32
+	OpenCount m_message; // 0x04
 };
 
 // SYNTHETIC: LEMBALL 0x0047b9d0

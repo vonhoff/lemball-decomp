@@ -5,11 +5,15 @@
 #include "WriteSocket.h"
 
 // SIZE 0x108
-// VTABLE: LEMBALL 0x00498fe0 ReadSocket virtual base
-// VTABLE: LEMBALL 0x00499008 WriteSocket virtual base
-// VTABLE: LEMBALL 0x00499038 BaseCommonSocket virtual base
-// The x86 construction vtables and shared deleting destructor at 0x00462cb0
-// establish this intermediate virtual-base aggregate.
+// VTABLE: LEMBALL 0x00499038
+// Original construction tables 0x00498fe0 and 0x00499008 are the two
+// identically named BaseSocket views reached through ReadSocket and WriteSocket.
+// reccmp cannot disambiguate their duplicate MSVC vtable names. Eight original
+// socket constructors install all three tables, and the shared deleting
+// destructor at 0x00462cb0 destroys ReadSocket at +0xa8, WriteSocket at +0x30,
+// then BaseCommonSocket. The forwarding bodies below are intentionally inline:
+// the original executable has their effects in annotated derived callers, not
+// separate RwSocket functions to which FUNCTION annotations could be attached.
 class RwSocket : public virtual BaseCommonSocket, public virtual WriteSocket, public virtual ReadSocket {
 public:
 	virtual ~RwSocket() {}

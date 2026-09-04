@@ -36,4 +36,7 @@ private:
 	ResInt* m_fontEntries;       // 0x80
 };
 
+// SYNTHETIC: LEMBALL 0x0045e8d0
+// ResFont::`scalar deleting destructor'
+
 #endif

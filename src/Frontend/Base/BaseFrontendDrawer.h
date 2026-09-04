@@ -120,4 +120,7 @@ extern BaseFrontendDrawer* g_pBaseFrontendDrawer;
 // SYNTHETIC: LEMBALL 0x00447000
 // BaseFrontendDrawer::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x004472f0
+// BaseFrontendDrawer::`vector deleting destructor'
+
 #endif

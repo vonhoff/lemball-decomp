@@ -19,4 +19,7 @@ private:
 // SYNTHETIC: LEMBALL 0x004511c0
 // SuccFail::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x004511f0
+// SuccFail::`vector deleting destructor'
+
 #endif

@@ -42,7 +42,7 @@ protected:
 	Remap* m_remap;        // 0x18
 };
 
-// SYNTHETIC: LEMBALL 0x00403166
+// SYNTHETIC: LEMBALL 0x004471a0
 // BitmapResBase::`scalar deleting destructor'
 
 // SIZE 0x24

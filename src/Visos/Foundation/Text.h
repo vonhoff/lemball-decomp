@@ -6,7 +6,7 @@
 #include "String.h"           // complete type
 
 // SIZE 0x44
-// VTABLE: LEMBALL 0x00499ae8 primary
+// VTABLE: LEMBALL 0x00499ae8
 // Subobject VTABLE: 0x00499628 Zrle subobject at +0x2c
 class Text : public Primitive {
 public:

@@ -17,7 +17,6 @@ public:
 	bool CheckSfx();
 	int GetLastBalloon();
 	int GetObject(int p_arg0);
-	virtual void Action(eAction p_arg0, int p_arg1);                                // vtable+0x04
 	virtual void Action(eAction p_arg0);                                            // vtable+0x08
 	virtual void GetViewData(ViewData& p_viewData);                                 // vtable+0x0c
 	virtual bool Process();                                                         // vtable+0x14
@@ -91,5 +90,8 @@ private:
 // 68K 0x1061c15c __dt__14CPlayerLemmingFv
 // SYNTHETIC: LEMBALL 0x00410b20
 // PlayerLemming::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00410b70
+// PlayerLemming::`vector deleting destructor'
 
 #endif

@@ -20,6 +20,9 @@ static MciMusicDevice* g_pActiveMciMusicDevice;
 // GLOBAL: LEMBALL 0x004aa22c
 static unsigned int g_nPreparedMciMusicTrackHandle;
 
+// GLOBAL: LEMBALL 0x004aa230
+static char g_szMciDeviceInfo[256];
+
 // GLOBAL: LEMBALL 0x004a3af8
 static const char g_szMciSequencerDevice[] = "sequencer";
 
@@ -431,5 +434,38 @@ int MciMusicDevice::Dummy2c()
 // FUNCTION: LEMBALL 0x0047f3a0
 char* MciMusicDevice::GetInfo()
 {
-	return PvMusicDevice::GetInfo();
+	MIDIOUTCAPSA capabilities;
+	char deviceType[256];
+
+	if (m_available != 0) {
+		midiOutGetDevCapsA(m_deviceId, &capabilities, sizeof(capabilities));
+		deviceType[0] = '\0';
+		if (capabilities.wTechnology & MOD_MIDIPORT) {
+			memcpy(deviceType + strlen(deviceType), "MIDI Hardware Port", sizeof("MIDI Hardware Port"));
+		}
+		else if (capabilities.wTechnology & MOD_SYNTH) {
+			memcpy(deviceType + strlen(deviceType),
+				   "Generic Internal Synthesiser",
+				   sizeof("Generic Internal Synthesiser"));
+		}
+		else if ((capabilities.wTechnology & MOD_SQSYNTH) == MOD_SQSYNTH) {
+			memcpy(deviceType + strlen(deviceType), "Square Wave Synthesiser", sizeof("Square Wave Synthesiser"));
+		}
+		else if (capabilities.wTechnology & MOD_FMSYNTH) {
+			memcpy(deviceType + strlen(deviceType), "FM Synthesiser", sizeof("FM Synthesiser"));
+		}
+		else if ((capabilities.wTechnology & MOD_MAPPER) == MOD_MAPPER) {
+			memcpy(deviceType + strlen(deviceType), "Microsoft Midi Mapper", sizeof("Microsoft Midi Mapper"));
+		}
+		wsprintfA(g_szMciDeviceInfo,
+				  "MIDI driver version : %d.%d\nMIDI product name : %s\nMIDI Device Type : %s\n",
+				  HIBYTE(capabilities.vDriverVersion),
+				  LOBYTE(capabilities.vDriverVersion),
+				  capabilities.szPname,
+				  deviceType);
+	}
+	else {
+		wsprintfA(g_szMciDeviceInfo, "No MIDI device activated\n");
+	}
+	return g_szMciDeviceInfo;
 }

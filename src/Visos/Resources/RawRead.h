@@ -16,4 +16,7 @@ extern _Filet* g_pMogFile;
 // LIBRARY: LEMBALL 0x0047fac0
 // _toupper
 
+// LIBRARY: LEMBALL 0x0047fca0 SYMBOL
+// __purecall
+
 #endif

@@ -296,6 +296,18 @@ int TargetWaveSoundDevice::Dummy28()
 	return (int) m_available;
 }
 
+// FUNCTION: LEMBALL 0x0047cef0
+int TargetWaveSoundDevice::Dummy34(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3)
+{
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047cf00
+int TargetWaveSoundDevice::Dummy38(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3)
+{
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047cf10
 int TargetWaveSoundDevice::Dummy3c(unsigned char* p_data, unsigned long* p_handle)
 {
@@ -326,6 +338,24 @@ int TargetWaveSoundDevice::Dummy3c(unsigned char* p_data, unsigned long* p_handl
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x0047cfe0
+int TargetWaveSoundDevice::Dummy40(undefined4 p_arg0)
+{
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047cff0
+int TargetWaveSoundDevice::Dummy44(undefined4 p_arg0)
+{
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047d000
+int TargetWaveSoundDevice::Dummy4c()
+{
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047d010
 int TargetWaveSoundDevice::Dummy48(unsigned long p_effectId)
 {
@@ -335,6 +365,28 @@ int TargetWaveSoundDevice::Dummy48(unsigned long p_effectId)
 	i = 0;
 	while (i < m_channelCount) {
 		if (m_effectHandles[i] == p_effectId) {
+			effect = m_effects[i];
+			if (effect != 0) {
+				effect->~TargetWaveEffect();
+				operator delete(effect);
+			}
+			m_effectUsed[i] = 0;
+			m_effectHandles[i] = 0;
+		}
+		i = i + 1;
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047d080
+int TargetWaveSoundDevice::Dummy50()
+{
+	unsigned int i;
+	TargetWaveEffect* effect;
+
+	i = 0;
+	while (i < m_channelCount) {
+		if (m_effectUsed[i] == 1) {
 			effect = m_effects[i];
 			if (effect != 0) {
 				effect->~TargetWaveEffect();
@@ -384,4 +436,11 @@ unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId,
 
 	device = this;
 	return device->EffectPlay(p_effectId, (unsigned short) 0xff00, p_volume);
+}
+
+// FUNCTION: LEMBALL 0x0047d240
+bool TargetWaveSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect)
+{
+	waveOutReset((HWAVEOUT) m_waveOut);
+	return 0;
 }

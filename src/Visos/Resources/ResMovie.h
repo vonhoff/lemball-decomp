@@ -27,4 +27,7 @@ private:
 	ResInt* m_fontEntries;     // 0x7c
 };
 
+// SYNTHETIC: LEMBALL 0x0045ea80
+// ResMovie::`scalar deleting destructor'
+
 #endif

@@ -7,8 +7,8 @@
 #include "PvGWnd.h"         // complete type
 
 // SIZE 0x104
-// VTABLE: LEMBALL 0x00499658 primary
-// VTABLE: LEMBALL 0x00499638 adjusted hot-area subobject at +0x90
+// VTABLE: LEMBALL 0x00499658 PvGWnd
+// VTABLE: LEMBALL 0x00499638 HotAreaHandler
 class PvButton : public PvGWnd, public HotAreaHandler {
 public:
 	PvButton(PvGWnd* p_arg0);

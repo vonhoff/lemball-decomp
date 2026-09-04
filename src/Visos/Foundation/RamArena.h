@@ -21,4 +21,7 @@ public:
 								   unsigned long p_arg4);
 };
 
+// SYNTHETIC: LEMBALL 0x0045a8e0
+// RamArena::`scalar deleting destructor'
+
 #endif

@@ -756,11 +756,6 @@ void PlayerLemming::Action(eAction p_action)
 	m_action = p_action;
 }
 
-void PlayerLemming::Action(eAction p_action, int p_arg1)
-{
-	GlobalGameObject::Action(p_action, p_arg1);
-}
-
 // 68K 0x1061d7a4 OnConveyor__14CPlayerLemmingFUcP4CIceUc
 // FUNCTION: LEMBALL 0x00410250
 void PlayerLemming::OnConveyor(unsigned int p_onConveyor, Ice* p_ice, unsigned int p_leave)

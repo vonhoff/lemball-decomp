@@ -53,6 +53,9 @@ private:
 // SYNTHETIC: LEMBALL 0x00452370
 // PasswordDrawer::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x004523a0
+// PasswordDrawer::`vector deleting destructor'
+
 extern int g_passwordKeyMap[12];
 
 #endif

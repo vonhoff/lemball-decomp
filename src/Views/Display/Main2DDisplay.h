@@ -7,8 +7,8 @@
 #include "../../Visos/Graphics/PvGWnd.h"             // complete type
 
 // SIZE 0xe4
-// VTABLE: LEMBALL 0x00496bb8 primary PvGWnd base at +0x00
-// VTABLE: LEMBALL 0x00496ba8 adjusted BaseQueueHandler base at +0x90
+// VTABLE: LEMBALL 0x00496bb8 PvGWnd
+// VTABLE: LEMBALL 0x00496ba8 BaseQueueHandler
 class Main2DDisplay : public PvGWnd, public BaseQueueHandler {
 public:
 	Main2DDisplay(Game* p_arg0);

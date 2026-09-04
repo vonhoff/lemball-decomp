@@ -35,12 +35,13 @@ public:
 	virtual void Dummy48();                                              // vtable+0x48
 	virtual void OnRestore();                                            // vtable+0x54
 	virtual void BaseOnSize();                                           // vtable+0x44
+	virtual void BaseOnZoom(int p_oldZoom);                              // vtable+0x2c
 	virtual void OnZoom(int p_oldZoom);                                  // vtable+0x58
-	virtual void OnZoomBox();                                            // vtable+0x5c
+	virtual void OnDriverChange();                                       // vtable+0x5c
 	virtual void ReSetMenu();                                            // vtable+0x00
 	virtual void Refresh(VsRect* p_rect);                                // vtable+0x70
 	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists); // vtable+0x10
-	virtual void SetRect(const VsRect& p_rect);                          // vtable+0x30
+	virtual void _SetRect(const VsRect& p_rect);                         // vtable+0x30
 	virtual void SetRelTl(const VsPoint& p_point);                       // vtable+0x34
 	~Wnd();
 

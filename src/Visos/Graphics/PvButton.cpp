@@ -104,6 +104,19 @@ void PvButton::Initialise()
 	m_controlMessage = 0;
 }
 
+// 68K 0x1020fb9a __dt__9CPVButtonFv
+// FUNCTION: LEMBALL 0x00467dd0
+PvButton::~PvButton()
+{
+	if (m_lifecycleRefs == 1) {
+		Destroy();
+	}
+	if (m_primitive != 0) {
+		delete m_primitive;
+		m_primitive = 0;
+	}
+}
+
 // 68K 0x1020fc6e SetAutoDraw__9CPVButtonFUc
 // FUNCTION: LEMBALL 0x00467e40
 void PvButton::SetAutoDraw(unsigned int p_enabled)
@@ -330,16 +343,4 @@ void PvButton::OnExitButton()
 // FUNCTION: LEMBALL 0x00469870
 void PvButton::OnPaint(const VsRect& p_rect)
 {
-}
-
-// 68K 0x1020fb9a __dt__9CPVButtonFv
-PvButton::~PvButton()
-{
-	if (m_lifecycleRefs == 1) {
-		Destroy();
-	}
-	if (m_primitive != 0) {
-		delete m_primitive;
-		m_primitive = 0;
-	}
 }

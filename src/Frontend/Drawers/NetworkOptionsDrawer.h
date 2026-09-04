@@ -97,4 +97,7 @@ private:
 // SYNTHETIC: LEMBALL 0x00455de0
 // NetworkOptionsDrawer::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x00455ee0
+// NetworkOptionsDrawer::`vector deleting destructor'
+
 #endif

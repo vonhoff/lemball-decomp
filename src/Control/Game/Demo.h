@@ -49,4 +49,7 @@ private:
 extern int g_nDemoMode;
 extern Demo* g_pDemo;
 extern char g_szDemoFilePath[80];
+// SYNTHETIC: LEMBALL 0x004098b0
+// Demo::`scalar deleting destructor'
+
 #endif

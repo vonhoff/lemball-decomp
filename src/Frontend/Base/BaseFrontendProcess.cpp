@@ -56,6 +56,19 @@ BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 	g_pCurrentFrontendProcess = this;
 }
 
+// 68K 0x10801a0a __dt__20CBaseFrontendProcessFv
+// FUNCTION: LEMBALL 0x004467d0
+BaseFrontendProcess::~BaseFrontendProcess()
+{
+	g_pCurrentFrontendProcess = 0;
+	if (g_pBaseNetwork != 0) {
+		g_pBaseNetwork->DetachMessageQueue();
+	}
+	if (m_userActionMessage != 0) {
+		delete (UserActionMessage*) m_userActionMessage;
+	}
+}
+
 // 68K 0x10801abe Process__20CBaseFrontendProcessFv
 // FUNCTION: LEMBALL 0x00446830
 void BaseFrontendProcess::Process()
@@ -128,18 +141,6 @@ int BaseFrontendProcess::ProcessMsg(Message* p_message)
 bool BaseFrontendProcess::ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, Connect* p_connection)
 {
 	return 0;
-}
-
-// 68K 0x10801a0a __dt__20CBaseFrontendProcessFv
-BaseFrontendProcess::~BaseFrontendProcess()
-{
-	g_pCurrentFrontendProcess = 0;
-	if (g_pBaseNetwork != 0) {
-		g_pBaseNetwork->DetachMessageQueue();
-	}
-	if (m_userActionMessage != 0) {
-		delete (UserActionMessage*) m_userActionMessage;
-	}
 }
 
 // GLOBAL: LEMBALL 0x0049f140

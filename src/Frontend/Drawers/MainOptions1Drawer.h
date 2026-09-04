@@ -35,4 +35,7 @@ private:
 // SYNTHETIC: LEMBALL 0x00448a70
 // MainOptions1Drawer::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x00448aa0
+// MainOptions1Drawer::`vector deleting destructor'
+
 #endif

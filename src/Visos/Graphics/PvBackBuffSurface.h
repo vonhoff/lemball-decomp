@@ -6,8 +6,8 @@
 #include "PvSurface.h"   // complete type
 
 // SIZE 0x54
-// VTABLE: LEMBALL 0x004995b0 primary abstract surface
-// VTABLE: LEMBALL 0x00499560 PvSurface virtual base at +0x58
+// VTABLE: LEMBALL 0x004995b0 PvBackBuffSurface
+// VTABLE: LEMBALL 0x00499560 PvSurface
 class PvBackBuffSurface : public virtual PvSurface {
 public:
 	PvBackBuffSurface();

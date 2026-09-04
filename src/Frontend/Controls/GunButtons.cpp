@@ -61,6 +61,16 @@ GunButtons::GunButtons(GWnd* p_arg0,
 	LoadFaces(p_arg4);
 }
 
+// 68K 0x10802b54 __dt__11CGunButtonsFv
+// FUNCTION: LEMBALL 0x0044c410
+GunButtons::~GunButtons()
+{
+	if (g_pMasterInputQueue != 0) {
+		g_pMasterInputQueue->Detach(this, 0);
+	}
+	UnLoadFaces();
+}
+
 // 68K 0x10802c2c DrawBackBuffer__11CGunButtonsFv
 // FUNCTION: LEMBALL 0x0044c440
 bool GunButtons::DrawBackBuffer()
@@ -205,15 +215,6 @@ void GunButtons::UnLoadFaces()
 	}
 	operator delete(m_resources);
 	m_resources = 0;
-}
-
-// 68K 0x10802b54 __dt__11CGunButtonsFv
-GunButtons::~GunButtons()
-{
-	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->Detach(this, 0);
-	}
-	UnLoadFaces();
 }
 
 // GLOBAL: LEMBALL 0x0049fa68

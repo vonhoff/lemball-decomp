@@ -9,8 +9,8 @@
 #include "TargetDrawingContext.h"  // complete type
 
 // SIZE 0x1c
-// VTABLE: LEMBALL 0x00498700 abstract/base driver
-// VTABLE: LEMBALL 0x00498738 Gdi DIB driver
+// VTABLE: LEMBALL 0x00498700
+// The Gdi DIB driver construction table is at 0x00498738.
 // Subobject VTABLE: 0x004987b0 DisplayDib driver
 // Subobject VTABLE: 0x004987e8 DirectDraw driver
 // Subobject VTABLE: 0x00498840 DirectDraw-derived driver
@@ -79,4 +79,7 @@ long __stdcall TargetWinGDrawCodec_DriverProc(unsigned int p_driverId,
 											  unsigned int p_message,
 											  long p_param1,
 											  long p_param2);
+// SYNTHETIC: LEMBALL 0x00458210
+// TargetGraphicsDriver::`scalar deleting destructor'
+
 #endif

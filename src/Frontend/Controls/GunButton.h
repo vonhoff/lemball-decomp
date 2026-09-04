@@ -5,8 +5,8 @@
 #include "../../Visos/Graphics/GraphicButton.h" // complete type
 
 // SIZE 0x130
-// VTABLE: LEMBALL 0x00497d30 primary
-// VTABLE: LEMBALL 0x00497d08 adjusted hot-area subobject at +0x90
+// VTABLE: LEMBALL 0x00497d30 PvGWnd
+// VTABLE: LEMBALL 0x00497d08 HotAreaHandler
 class GunButton : public GraphicButton {
 public:
 	GunButton(const VsPoint& p_position, PvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags);

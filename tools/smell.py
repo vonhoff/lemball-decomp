@@ -3,6 +3,7 @@
 
   python tools/smell.py
   python tools/smell.py --annot
+  python tools/smell.py --annot-strict
   python tools/smell.py --selftest
   python tools/smell.py src/Visos/Graphics
 
@@ -17,7 +18,9 @@ Default errors:
 
 Does not flag every `+ 0x` (resource ids, timers, LCG). Those are not field pokes.
 
---annot also fails 68K-only functions (missing FUNCTION/STUB/GLOBAL/...).
+--annot fails non-empty definitions that lack x86 reccmp evidence and summarizes
+source-empty or synthetic-destructor-covered definitions for review.
+--annot-strict fails all of them.
 """
 
 from __future__ import annotations
@@ -32,6 +35,10 @@ SRC = ROOT / "src"
 
 RECCMP_MARK = re.compile(r"^\s*//\s*(FUNCTION|STUB|GLOBAL|LIBRARY|TEMPLATE|SYNTHETIC)\s*:")
 K68_MARK = re.compile(r"^\s*//\s*68K\s+")
+SYNTHETIC_MARK = re.compile(r"^\s*//\s*SYNTHETIC\s*:")
+SYNTHETIC_DTOR_NAME = re.compile(
+	r"^\s*//\s*(?P<class>[A-Za-z_][\w:]*)::`(?:scalar|vector) deleting destructor'\s*$"
+)
 VBPTR_WALK = re.compile(
 	r"\*\(\s*int\s*\*\s*\)\s*\(\s*\*\(\s*int\s*\*\s*\)\s*\(\s*[^;]{1,60}?\+\s*0x40\s*\)\s*\+\s*4\s*\)"
 )
@@ -67,6 +74,7 @@ CHAR_VAR_OFFSET = re.compile(
 	r"\(\s*char\s*\*\s*\)\s*(?P<expr>this|[A-Za-z_][\w]*)\s*[+-]\s*(?!0x)(?P<off>[A-Za-z_][\w]*)"
 )
 METHOD_DEF = re.compile(r"^[A-Za-z_][\w:]*::~?[A-Za-z_][\w]*\s*\(")
+DTOR_DEF = re.compile(r"^(?P<class>[A-Za-z_][\w:]*)::~[A-Za-z_][\w]*\s*\(")
 FREE_DEF = re.compile(r"^(?:static\s+)?(?:[A-Za-z_][\w:*&]*\s+)+\w+\s*\(")
 BUFFER_OK = re.compile(r"m_numberBuffer|Bits\b|sz[A-Z]|\bp_bits\b")
 SKIP_LEAD = {"if", "while", "for", "switch", "return", "else", "case", "catch", "extern"}
@@ -97,6 +105,10 @@ OFFSET_POKE_SAMPLES = (
 	("dst = (char*) m_numberBuffer + 0x21 + signLen;", False),
 	("((GunButtons*) this)->DrawBackBuffer();", False),
 )
+
+ANNOT_DEFAULT = "default"
+ANNOT_ACTIONABLE = "actionable"
+ANNOT_STRICT = "strict"
 
 
 def strip_line_comment(line: str) -> str:
@@ -153,6 +165,28 @@ def body_is_empty(lines: list[str], index: int) -> bool:
 	return False
 
 
+def annotation_disposition(
+	has_reccmp: bool,
+	has_68k: bool,
+	empty: bool,
+	has_synthetic_dtor: bool,
+	mode: str,
+) -> str | None:
+	if has_reccmp:
+		return None
+	if mode == ANNOT_STRICT:
+		return "hit"
+	if mode == ANNOT_ACTIONABLE:
+		if empty:
+			return "review-empty"
+		if has_synthetic_dtor:
+			return "review-synthetic"
+		return "hit"
+	if has_68k or empty:
+		return None
+	return "hit"
+
+
 def preceding_block(lines: list[str], index: int) -> list[str]:
 	block = []
 	i = index - 1
@@ -195,9 +229,14 @@ def is_offset_poke(code: str) -> bool:
 	return False
 
 
-def scan_file(path: Path, strict_annot: bool) -> list[str]:
+def scan_file(
+	path: Path,
+	annotation_mode: str,
+	synthetic_destructors: set[str],
+) -> tuple[list[str], list[tuple[str, str]]]:
 	lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
 	hits: list[str] = []
+	reviews: list[tuple[str, str]] = []
 	rel = path.as_posix()
 	if path.suffix.lower() in {".cpp", ".h", ".c"}:
 		for lineno, raw in enumerate(lines, 1):
@@ -224,7 +263,7 @@ def scan_file(path: Path, strict_annot: bool) -> list[str]:
 					continue
 				hits.append("%s:%d: offset-poke %s" % (rel, lineno, match.group(0).strip()))
 	if path.suffix.lower() != ".cpp":
-		return hits
+		return hits, reviews
 	for i, raw in enumerate(lines):
 		stripped = raw.strip()
 		if not is_func_def(stripped):
@@ -232,15 +271,24 @@ def scan_file(path: Path, strict_annot: bool) -> list[str]:
 		prev = preceding_block(lines, i)
 		has_reccmp = any(RECCMP_MARK.match(line) for line in prev)
 		has_68k = any(K68_MARK.match(line) for line in prev)
-		if has_reccmp:
-			continue
-		if has_68k and not strict_annot:
-			continue
-		if not has_68k and body_is_empty(lines, i) and not strict_annot:
+		dtor = DTOR_DEF.match(stripped)
+		has_synthetic_dtor = dtor is not None and dtor.group("class") in synthetic_destructors
+		disposition = annotation_disposition(
+			has_reccmp,
+			has_68k,
+			body_is_empty(lines, i),
+			has_synthetic_dtor,
+			annotation_mode,
+		)
+		if disposition is None:
 			continue
 		kind = "incomplete-annotation" if has_68k else "no-annotation"
-		hits.append("%s:%d: %s %s" % (rel, i + 1, kind, stripped[:90]))
-	return hits
+		record = "%s:%d: %s %s" % (rel, i + 1, kind, stripped[:90])
+		if disposition.startswith("review-"):
+			reviews.append((disposition, record))
+		else:
+			hits.append(record)
+	return hits, reviews
 
 
 def iter_sources(root: Path):
@@ -249,9 +297,32 @@ def iter_sources(root: Path):
 			yield path
 
 
+def collect_synthetic_destructors(files: list[Path]) -> set[str]:
+	classes: set[str] = set()
+	for path in files:
+		lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+		for index, line in enumerate(lines[:-1]):
+			if not SYNTHETIC_MARK.match(line):
+				continue
+			name = SYNTHETIC_DTOR_NAME.match(lines[index + 1])
+			if name is not None:
+				classes.add(name.group("class"))
+	return classes
+
+
 def main(argv: list[str]) -> int:
 	parser = argparse.ArgumentParser(description="Decomp smell gate")
-	parser.add_argument("--annot", action="store_true", help="fail 68K-only and empty unmarked functions")
+	annot_group = parser.add_mutually_exclusive_group()
+	annot_group.add_argument(
+		"--annot",
+		action="store_true",
+		help="fail actionable unannotated definitions and summarize ambiguous review candidates",
+	)
+	annot_group.add_argument(
+		"--annot-strict",
+		action="store_true",
+		help="fail every definition lacking a reccmp annotation, including source-empty definitions",
+	)
 	parser.add_argument("--selftest", action="store_true", help="check offset-poke samples and exit")
 	parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
 	args = parser.parse_args(argv[1:])
@@ -261,6 +332,21 @@ def main(argv: list[str]) -> int:
 			got = is_offset_poke(sample)
 			if got != expect:
 				sys.stderr.write("selftest fail: expect %s got %s: %s\n" % (expect, got, sample))
+				failed += 1
+		annotation_samples = (
+			((True, False, False, False, ANNOT_ACTIONABLE), None),
+			((False, True, False, False, ANNOT_DEFAULT), None),
+			((False, True, False, False, ANNOT_ACTIONABLE), "hit"),
+			((False, True, True, False, ANNOT_ACTIONABLE), "review-empty"),
+			((False, False, True, False, ANNOT_ACTIONABLE), "review-empty"),
+			((False, True, False, True, ANNOT_ACTIONABLE), "review-synthetic"),
+			((False, True, True, False, ANNOT_STRICT), "hit"),
+			((False, False, False, False, ANNOT_DEFAULT), "hit"),
+		)
+		for params, expect in annotation_samples:
+			got = annotation_disposition(*params)
+			if got != expect:
+				sys.stderr.write("selftest fail: annotation expect %s got %s: %s\n" % (expect, got, params))
 				failed += 1
 		if failed:
 			return 1
@@ -275,8 +361,25 @@ def main(argv: list[str]) -> int:
 		else:
 			files.append(path)
 	hits: list[str] = []
+	reviews: list[tuple[str, str]] = []
+	annotation_mode = ANNOT_DEFAULT
+	if args.annot:
+		annotation_mode = ANNOT_ACTIONABLE
+	elif args.annot_strict:
+		annotation_mode = ANNOT_STRICT
+	synthetic_destructors = collect_synthetic_destructors(list(iter_sources(SRC)))
 	for path in files:
-		hits.extend(scan_file(path, args.annot))
+		file_hits, file_reviews = scan_file(path, annotation_mode, synthetic_destructors)
+		hits.extend(file_hits)
+		reviews.extend(file_reviews)
+	if reviews:
+		empty_reviews = sum(reason == "review-empty" for reason, _ in reviews)
+		synthetic_reviews = sum(reason == "review-synthetic" for reason, _ in reviews)
+		sys.stderr.write(
+			"smell: %d source-empty and %d synthetic-covered unannotated definition(s) "
+			"require x86 evidence review; use --annot-strict to list/fail them\n"
+			% (empty_reviews, synthetic_reviews)
+		)
 	if hits:
 		sys.stderr.write("smell: %d hit(s)\n" % len(hits))
 		for hit in hits:

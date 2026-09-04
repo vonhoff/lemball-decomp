@@ -13,23 +13,23 @@
 #include "PauseWindowFreeVramInterface.h"            // complete type
 
 // SIZE 0x20c
-// VTABLE: LEMBALL 0x00497798 primary PvGWnd base at +0x00
-// VTABLE: LEMBALL 0x00497788 adjusted BaseQueueHandler base at +0x90
-// Subobject VTABLE: 0x00497780 adjusted free-VRAM interface at +0xa0
-// VTABLE: LEMBALL 0x00497758 adjusted HotAreaHandler base at +0xa4
+// VTABLE: LEMBALL 0x00497798 PvGWnd
+// VTABLE: LEMBALL 0x00497788 BaseQueueHandler
+// VTABLE: LEMBALL 0x00497780 PauseWindowFreeVramInterface
+// VTABLE: LEMBALL 0x00497758 HotAreaHandler
 class PauseWindow : public PvGWnd, public BaseQueueHandler, public PauseWindowFreeVramInterface, public HotAreaHandler {
 public:
 	BaseRemap* Remap(int p_item);
 	PauseWindow(ReceiveWindowState* p_arg0, PvGWnd* p_arg1, ePauseWindowMessages p_arg2);
 	VsRect CalculateWindow();
-	virtual int ProcessMsg(Message* p_message);                                      // vtable+0x08
-	virtual unsigned int OnButtonDown(const VsPoint& p_point, unsigned int p_flags); // vtable+0x04
-	virtual void FreeVram();                                                         // vtable+0x00
-	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);                    // vtable+0x08
-	virtual void OnDriverChange();                                                   // vtable+0x5c
-	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags);            // vtable+0x0c
-	virtual void OnInside(const VsPoint& p_point);                                   // vtable+0x18
-	virtual void OnPaint(const VsRect& p_rect);                                      // vtable+0xa8
+	virtual int ProcessMsg(Message* p_message);                           // vtable+0x08
+	virtual void OnButtonDown(const VsPoint& p_point, int p_flags);       // vtable+0x04
+	virtual void FreeVram();                                              // vtable+0x00
+	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);         // vtable+0x08
+	virtual void OnDriverChange();                                        // vtable+0x5c
+	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnInside(const VsPoint& p_point);                        // vtable+0x18
+	virtual void OnPaint(const VsRect& p_rect);                           // vtable+0xa8
 	void CreateTheWindow(const VsRect& p_rect);
 	void Initialise();
 	void Load();
@@ -73,5 +73,11 @@ private:
 	unsigned int m_fontId;                 // 0x204
 	unsigned int m_loaded;                 // 0x208
 };
+
+// SYNTHETIC: LEMBALL 0x00445350
+// PauseWindow::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00445390
+// PauseWindow::`vector deleting destructor'
 
 #endif

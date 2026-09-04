@@ -6,6 +6,7 @@
 // 68K 0x1060f6e4 __ct__26CPlayerLemmingGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
 // STUB: LEMBALL 0x00418400
 PlayerLemmingGroupManager::PlayerLemmingGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
+	: GenericGroupManager(p_arg0, p_arg1, p_arg2), BaseObjectManager(0x22, 0x17)
 {
 }
 

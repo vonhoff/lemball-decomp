@@ -7,8 +7,8 @@
 #include "../../Visos/Graphics/Primitive.h"     // complete type
 
 // SIZE 0xb4
-// VTABLE: LEMBALL 0x00496ce0 eight-entry primary
-// VTABLE: LEMBALL 0x00496cdc load-progress interface at +0x70
+// VTABLE: LEMBALL 0x00496ce0
+// Construction table 0x00496cdc is the embedded load-progress interface at +0x70.
 class LemmingAnimsManager : public AnimsManager {
 public:
 	LemmingAnimsManager(Gdi* p_arg0, Main2DDisplay* p_arg1, Ai* p_arg2);

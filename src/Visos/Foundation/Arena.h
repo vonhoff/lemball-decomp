@@ -80,4 +80,7 @@ protected:
 
 extern unsigned char* g_pArenaHighWater;
 extern Arena* g_pMasterArena;
+// SYNTHETIC: LEMBALL 0x0045a8d0
+// Arena::`scalar deleting destructor'
+
 #endif

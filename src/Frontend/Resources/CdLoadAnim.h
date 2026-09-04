@@ -47,7 +47,7 @@ public:
 };
 
 // SIZE 0x134
-// VTABLE: LEMBALL 0x00497c90 AnimsManager base
+// VTABLE: LEMBALL 0x00497c90
 class CdLoadAnim : public AnimsManager {
 public:
 	CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1);

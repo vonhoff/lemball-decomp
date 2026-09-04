@@ -21,7 +21,7 @@ public:
 	void UnLoadFont(unsigned long p_resourceId);
 	void UnLoadPalette(unsigned long p_resourceId);
 	void UnLoadString(unsigned long p_resourceId);
-	virtual ~FrontendResourceLoader(); // vtable+0x04
+	~FrontendResourceLoader();
 
 private:
 	CdLoadAnim* m_loadAnim;            // 0x04

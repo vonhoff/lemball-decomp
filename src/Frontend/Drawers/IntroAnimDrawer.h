@@ -34,4 +34,7 @@ private:
 // SYNTHETIC: LEMBALL 0x004479a0
 // IntroAnimDrawer::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x004479d0
+// IntroAnimDrawer::`vector deleting destructor'
+
 #endif

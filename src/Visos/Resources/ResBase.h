@@ -71,4 +71,7 @@ protected:
 	unsigned int m_error;          // 0x44
 };
 
+// SYNTHETIC: LEMBALL 0x0045e660
+// ResBase::`scalar deleting destructor'
+
 #endif

@@ -7,8 +7,8 @@
 #include "HotAreaHandler.h"                 // complete type
 
 // SIZE 0x60
-// VTABLE: LEMBALL 0x00499d18 primary HotAreaHandler base at +0x00
-// VTABLE: LEMBALL 0x00499d08 adjusted BaseQueueHandler base at +0x38
+// VTABLE: LEMBALL 0x00499d18 HotAreaHandler
+// VTABLE: LEMBALL 0x00499d08 BaseQueueHandler
 class HotAreaList : public HotAreaHandler, public BaseQueueHandler {
 public:
 	HotAreaList(const VsRect& p_arg0, const VsPoint& p_arg1, const VsPoint& p_arg2);
@@ -33,5 +33,8 @@ private:
 
 // SYNTHETIC: LEMBALL 0x0046aa50
 // HotAreaList::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x0046aa70
+// HotAreaList::`vector deleting destructor'
 
 #endif

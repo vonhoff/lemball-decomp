@@ -27,4 +27,7 @@ private:
 	unsigned int m_ready; // 0x28
 };
 
+// SYNTHETIC: LEMBALL 0x00462a00
+// ReadPacket::`scalar deleting destructor'
+
 #endif

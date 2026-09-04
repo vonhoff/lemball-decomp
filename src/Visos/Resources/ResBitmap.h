@@ -63,4 +63,7 @@ private:
 // SYNTHETIC: LEMBALL 0x0045eb80
 // ResBitmap::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0045e820
+// ResRaster::`scalar deleting destructor'
+
 #endif

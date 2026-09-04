@@ -34,4 +34,7 @@ private:
 	VsPoint m_panelPosition;         // 0x54
 };
 
+// SYNTHETIC: LEMBALL 0x004439f0
+// Panel::`scalar deleting destructor'
+
 #endif

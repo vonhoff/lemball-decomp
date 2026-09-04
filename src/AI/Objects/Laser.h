@@ -12,11 +12,11 @@ public:
 	bool Activate();
 	bool CheckHits();
 	bool StepOn(const AiCoord& p_position, GameObject* p_object);
-	virtual bool Process();                         // vtable+0x14
-	virtual void DoActivate();                      // vtable+0x10c
-	virtual void GetViewData(ViewData& p_viewData); // vtable+0x0c
-	virtual void Restart();                         // vtable+0x104
-	virtual ~Laser();                               // vtable+0x00
+	virtual bool Process();    // vtable+0x14
+	virtual void DoActivate(); // vtable+0x10c
+	int GetViewData(ViewData* p_viewData);
+	virtual void Restart(); // vtable+0x104
+	virtual ~Laser();       // vtable+0x00
 	void Initialise();
 	void Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_orientation);
 

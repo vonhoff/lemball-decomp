@@ -45,7 +45,7 @@ TargetAboutScreen::TargetAboutScreen(Main2DDisplay* p_display, Gdi* p_gdi, const
 	m_returnState = 0;
 	g_pCursor->SetActive(0);
 	m_complete = 0;
-	g_pMasterInputQueue->Attach(&m_queueHandler, 0);
+	g_pMasterInputQueue->Attach(this, 0);
 	m_display = p_display;
 	m_gdi = p_gdi;
 	m_width = p_rect.m_width;
@@ -77,7 +77,7 @@ TargetAboutScreen::TargetAboutScreen(Main2DDisplay* p_display, Gdi* p_gdi, const
 // FUNCTION: LEMBALL 0x0044b8f0
 TargetAboutScreen::~TargetAboutScreen()
 {
-	g_pMasterInputQueue->Detach(&m_queueHandler, 0);
+	g_pMasterInputQueue->Detach(this, 0);
 	m_backgroundBitmap->UnLoad();
 	m_textManager->UnLoadFont(RES_GAME_FONT3);
 	if (m_textWindow != 0) {
@@ -149,6 +149,22 @@ void TargetAboutScreen::DrawRegistrationText()
 	m_textManager->ResetPrimitives();
 }
 
+// FUNCTION: LEMBALL 0x0044bc50
+void TargetAboutScreen::OnSize(const VsRect& p_rect)
+{
+	VsPoint position;
+	int textY;
+
+	m_width = p_rect.m_width;
+	m_height = p_rect.m_height;
+	textY = (int) p_rect.m_height - 0x20;
+	if (m_textWindow != 0) {
+		position.m_x = (short) (((int) p_rect.m_width - 0x60) / 2);
+		position.m_y = (short) textY;
+		m_textWindow->Move(position);
+	}
+}
+
 // FUNCTION: LEMBALL 0x0044bca0
 void TargetAboutScreen::DrawChangedRegion()
 {
@@ -216,13 +232,36 @@ void TargetAboutScreen::DrawChangedRegion()
 }
 
 // FUNCTION: LEMBALL 0x0044be80
-int TargetAboutScreenQueue::ProcessMsg(Message* p_message)
+int TargetAboutScreen::ProcessMsg(Message* p_message)
 {
-	if (p_message->type != 4) {
+	switch (p_message->type) {
+	case 4:
+		return 1;
+	default:
 		m_processedCount = m_processedCount + 1;
 		return 0;
 	}
-	return 1;
+}
+
+// FUNCTION: LEMBALL 0x0044bea0
+bool TargetAboutScreen::QuitYet()
+{
+	if (m_endTime < CurrentMilliTimer()) {
+		m_complete = 1;
+		m_returnState = 1;
+	}
+	return m_complete;
+}
+
+// FUNCTION: LEMBALL 0x0044c0b0
+int TargetAboutScreen::GetReturnState()
+{
+	return m_returnState;
+}
+
+// FUNCTION: LEMBALL 0x0044c0c0
+void TargetAboutScreen::ResetPrimitives()
+{
 }
 
 // FUNCTION: LEMBALL 0x0044c100
@@ -244,18 +283,4 @@ void VsRect::ExpandToInclude(const VsRect& p_rect)
 			m_height = (p_rect.m_height - m_y) + p_rect.m_y;
 		}
 	}
-}
-
-void TargetAboutScreen::ResetPrimitives()
-{
-}
-
-int TargetAboutScreen::GetReturnState()
-{
-	return m_returnState;
-}
-
-bool TargetAboutScreen::QuitYet()
-{
-	return m_complete;
 }

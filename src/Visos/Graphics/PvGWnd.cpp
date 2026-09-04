@@ -18,6 +18,21 @@ void PvGWnd::SetDontUpdateRect(const VsRect& p_rect)
 {
 }
 
+// FUNCTION: LEMBALL 0x0043a510
+void PvGWnd::Dummy3c()
+{
+}
+
+// FUNCTION: LEMBALL 0x0043a520
+void PvGWnd::OnDestroy()
+{
+}
+
+// FUNCTION: LEMBALL 0x0043a530
+void PvGWnd::BaseOnSize()
+{
+}
+
 // 68K 0x1010b5ba GetStyle__7CPVGWndFv
 // FUNCTION: LEMBALL 0x004453a0
 unsigned int PvGWnd::GetStyle()
@@ -54,6 +69,6 @@ void PvGWnd::SetInnerWindow(const VsRect& p_rect)
 
 // 68K 0x1021692e _OnZoom__7CPVGWndFi
 // STUB: LEMBALL 0x00465c80
-void PvGWnd::OnZoom(int p_oldZoom)
+void PvGWnd::BaseOnZoom(int p_oldZoom)
 {
 }

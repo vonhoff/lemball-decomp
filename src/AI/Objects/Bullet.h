@@ -8,8 +8,8 @@
 #include "../Base/Move3d.h"                       // complete type
 
 // SIZE 0x1a4
-// VTABLE: LEMBALL 0x004940f0
-// VTABLE: LEMBALL 0x004940d0 secondary NetworkMessage subobject
+// VTABLE: LEMBALL 0x004940f0 GlobalGameObject
+// VTABLE: LEMBALL 0x004940d0 NetworkMessage
 class Bullet : public GlobalGameObject, public NetworkMessage {
 public:
 	Bullet();
@@ -49,5 +49,8 @@ private:
 
 // SYNTHETIC: LEMBALL 0x00418330
 // Bullet::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x0041af50
+// ??_EBullet@@WBDI@AEPAXI@Z
 
 #endif

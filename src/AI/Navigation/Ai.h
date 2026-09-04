@@ -9,10 +9,10 @@
 #include "../Base/Pt3.h"                             // complete type
 
 // SIZE 0x1f0
-// VTABLE: LEMBALL 0x00493a50 primary BaseQueueHandler view
-// VTABLE: LEMBALL 0x00493a40 secondary Process view at +0x10
-// VTABLE: LEMBALL 0x00493a20 secondary NetworkMessage view at +0x1c
-class Ai : public BaseQueueHandler, public BaseProcess {
+// VTABLE: LEMBALL 0x00493a50 BaseQueueHandler
+// VTABLE: LEMBALL 0x00493a40 BaseProcess
+// VTABLE: LEMBALL 0x00493a20 NetworkMessage
+class Ai : public BaseQueueHandler, public BaseProcess, public NetworkMessage {
 public:
 	Ai(Game* p_arg0);
 	Game* LevelName();
@@ -96,7 +96,6 @@ public:
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:
-	NetworkMessage m_networkMessage;                  // 0x1c
 	undefined4 m_unk0x48;                             // 0x48
 	int m_initialised;                                // 0x4c
 	unsigned int* m_objectRequired;                   // 0x50
@@ -169,5 +168,11 @@ extern int g_nGameOver;
 
 // SYNTHETIC: LEMBALL 0x00413e30
 // Ai::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00413e60
+// ??_EAi@@WBA@AEPAXI@Z
+
+// SYNTHETIC: LEMBALL 0x00413e70
+// ??_EAi@@WBM@AEPAXI@Z
 
 #endif

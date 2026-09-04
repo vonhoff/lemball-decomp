@@ -11,10 +11,10 @@
 #include "../../Visos/Graphics/ReceiveWindowState.h" // complete type
 
 // SIZE 0x2428
-// VTABLE: LEMBALL 0x00496df8 26-entry primary
-// VTABLE: LEMBALL 0x00496de8 adjusted BaseQueueHandler at +0x04
-// VTABLE: LEMBALL 0x00496dc0 adjusted HotAreaHandler at +0x14
-// VTABLE: LEMBALL 0x00496db0 adjusted ReceiveWindowState at +0x4c
+// VTABLE: LEMBALL 0x00496df8 Drawer
+// VTABLE: LEMBALL 0x00496de8 BaseQueueHandler
+// VTABLE: LEMBALL 0x00496dc0 HotAreaHandler
+// VTABLE: LEMBALL 0x00496db0 ReceiveWindowState
 class C2D : public Drawer, public BaseQueueHandler, public HotAreaHandler, public ReceiveWindowState {
 public:
 	C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4);
@@ -26,19 +26,19 @@ public:
 	unsigned long LemmingFly(ViewData& p_viewData, int& p_frame);
 	unsigned short CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, unsigned short p_z);
 	void UseBalloon(int p_playerIndex);
-	virtual bool GetPauser();                                                        // vtable+0x04
-	virtual bool QuitYet();                                                          // vtable+0x2c
-	virtual int GetReturnState();                                                    // vtable+0x28
-	virtual int ProcessMsg(Message* p_message);                                      // vtable+0x08
-	virtual unsigned int OnButtonDown(const VsPoint& p_point, unsigned int p_flags); // vtable+0x04
-	virtual void OnButtonUp(const VsPoint& p_point, unsigned int p_flags);           // vtable+0x08
-	virtual void OnDriverChange();                                                   // vtable+0x30
-	virtual void OnInside(const VsPoint& p_point);                                   // vtable+0x18
-	virtual void OnSize(const VsRect& p_rect);                                       // vtable+0x10
-	virtual void OnZoom(const VsRect& p_rect);                                       // vtable+0x0c
-	virtual void Process();                                                          // vtable+0x1c
-	virtual void ShutDown();                                                         // vtable+0x04
-	virtual ~C2D();                                                                  // vtable+0x00
+	virtual bool GetPauser();                                       // vtable+0x04
+	virtual bool QuitYet();                                         // vtable+0x2c
+	virtual int GetReturnState();                                   // vtable+0x28
+	virtual int ProcessMsg(Message* p_message);                     // vtable+0x08
+	virtual void OnButtonDown(const VsPoint& p_point, int p_flags); // vtable+0x04
+	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);   // vtable+0x08
+	virtual void OnDriverChange();                                  // vtable+0x30
+	virtual void OnInside(const VsPoint& p_point);                  // vtable+0x18
+	virtual void OnSize(const VsRect& p_rect);                      // vtable+0x10
+	virtual void OnZoom(const VsRect& p_rect);                      // vtable+0x0c
+	virtual void Process();                                         // vtable+0x1c
+	virtual void ShutDown();                                        // vtable+0x04
+	virtual ~C2D();                                                 // vtable+0x00
 	void AddObjectToGroup(int p_objectNo, unsigned char p_markSelection);
 	void CancelMoves();
 	void CheckValidFormGroup();
@@ -197,5 +197,14 @@ private:
 	void* m_zBufferAnimations;                      // 0x2220
 	unsigned int m_zBufferAnimationCount;           // 0x2224
 };
+
+// SYNTHETIC: LEMBALL 0x00439490
+// ??_EC2D@@UAEPAXI@Z
+
+// SYNTHETIC: LEMBALL 0x00439840
+// ??_EC2D@@W3AEPAXI@Z
+
+// SYNTHETIC: LEMBALL 0x00439850
+// ??_EC2D@@WBE@AEPAXI@Z
 
 #endif

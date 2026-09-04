@@ -60,4 +60,7 @@ private:
 // SYNTHETIC: LEMBALL 0x0044a940
 // PreviewDrawer::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0044aa10
+// PreviewDrawer::`vector deleting destructor'
+
 #endif

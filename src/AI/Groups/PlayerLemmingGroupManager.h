@@ -2,13 +2,13 @@
 #define LEMBALL_AI_GROUPS_PLAYERLEMMINGGROUPMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
-#include "GenericGroupManager.h"                  // complete type
+#include "../Managers/BaseObjectManager.h" // complete type
+#include "GenericGroupManager.h"           // complete type
 
 // SIZE 0x150
-// VTABLE: LEMBALL 0x00494068 primary GenericGroupManager base
-// VTABLE: LEMBALL 0x00494038 secondary NetworkMessage base at +0xb0
-class PlayerLemmingGroupManager : public GenericGroupManager, public NetworkMessage {
+// VTABLE: LEMBALL 0x00494068 GenericGroupManager
+// VTABLE: LEMBALL 0x00494038 BaseObjectManager
+class PlayerLemmingGroupManager : public GenericGroupManager, public BaseObjectManager {
 public:
 	PlayerLemming* GetDead();
 	PlayerLemmingGroup* GetPlayerControlledGroup();
@@ -22,7 +22,7 @@ public:
 	bool MakePreviousGroupPlayerControlled();
 	virtual int GetViewData(ViewData* p_viewData);                                    // vtable+0x4c
 	virtual void CreateNewGroup(unsigned short p_count, unsigned short* p_objectIds); // vtable+0x34
-	virtual void DeleteGroup(PlayerLemmingGroup* p_group);                            // vtable+0x14
+	void DeleteGroup(PlayerLemmingGroup* p_group);
 	void Process();
 	void Restart();
 	virtual ~PlayerLemmingGroupManager(); // vtable+0x14
@@ -39,7 +39,6 @@ public:
 
 private:
 	friend class Ai;
-	int m_messageType;                   // 0x0dc
 	int m_startX[4];                     // 0x0e0
 	int m_startY[4];                     // 0x0f0
 	int m_startZ[4];                     // 0x100
@@ -54,5 +53,8 @@ private:
 
 // SYNTHETIC: LEMBALL 0x00419930
 // PlayerLemmingGroupManager::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00419970
+// ?GetViewData@PlayerLemmingGroupManager@@WLA@AEHPAVViewData@@@Z
 
 #endif

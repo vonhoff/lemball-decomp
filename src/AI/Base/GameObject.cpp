@@ -18,12 +18,6 @@ GameObject::GameObject()
 {
 }
 
-// 68K 0x10118af4 HitBullet__11CGameObjectFP7CBullet
-// STUB: LEMBALL 0x00408980
-void GameObject::HitBullet(Bullet* p_bullet)
-{
-}
-
 // 68K 0x10118300 GetViewData__11CGameObjectFR9CViewData
 // FUNCTION: LEMBALL 0x0040a6f0
 void GameObject::GetViewData(ViewData& p_viewData)
@@ -135,6 +129,12 @@ bool GameObject::Collision(const Rect3& p_arg0)
 		return 1;
 	}
 	return 0;
+}
+
+// 68K 0x10118af4 HitBullet__11CGameObjectFP7CBullet
+// FUNCTION: LEMBALL 0x0040a930
+void GameObject::HitBullet(Bullet* p_bullet)
+{
 }
 
 // 68K 0x10118b22 HitBall__11CGameObjectFv

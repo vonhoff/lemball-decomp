@@ -5,8 +5,8 @@
 #include "../../Visos/Graphics/ToggleButton.h" // complete type
 
 // SIZE 0x13c
-// VTABLE: LEMBALL 0x004972b8 primary
-// VTABLE: LEMBALL 0x00497290 adjusted hot-area subobject at +0x90
+// VTABLE: LEMBALL 0x004972b8 PvGWnd
+// VTABLE: LEMBALL 0x00497290 HotAreaHandler
 class PanelPauseButton : public ToggleButton {
 public:
 	PanelPauseButton(Panel* p_arg0, const VsPoint& p_arg1, PvGWnd* p_arg2, unsigned long p_arg3, unsigned long p_arg4);

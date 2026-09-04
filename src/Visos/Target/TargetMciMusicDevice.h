@@ -29,4 +29,7 @@ private:
 	void* m_notifyWindow;          // 0x30
 };
 
+// SYNTHETIC: LEMBALL 0x0047f590
+// MciMusicDevice::`scalar deleting destructor'
+
 #endif
