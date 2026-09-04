@@ -15,7 +15,8 @@ void PushActive::Draw(Gdi* p_gdi)
 // FUNCTION: LEMBALL 0x00439770
 void PushActive::Render(Gdi* p_gdi)
 {
-	p_gdi->m_renderTarget->GetChangeList()->PushActive((unsigned char) m_activeMarker);
+	ChangeList* changeList = p_gdi->m_renderTarget->GetChangeList();
+	changeList->PushActive((unsigned char) m_activeMarker);
 }
 
 // 68K 0x10100cae __dt__11CPushActiveFv
