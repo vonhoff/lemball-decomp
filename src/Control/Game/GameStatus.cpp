@@ -89,14 +89,17 @@ unsigned int GameStatus::JiggleLevelData()
 // FUNCTION: LEMBALL 0x00406b30
 void GameStatus::UnJiggleLevelData(unsigned int p_value)
 {
-	unsigned int chunks[8];
 	unsigned int mixed[8];
+	unsigned int chunks[8];
 	int i;
 
-	for (i = 7; i >= 0; i--) {
-		mixed[i] = p_value & 7;
+	int remaining = 8;
+	unsigned int* dest = &mixed[7];
+	do {
+		*dest-- = p_value & 7;
 		p_value >>= 3;
-	}
+		remaining--;
+	} while (remaining != 0);
 
 	for (i = 0; i < 8; i++) {
 		unsigned int perm = g_anPasswordPermutation[i];
