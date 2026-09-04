@@ -26,13 +26,13 @@ int TargetDirectSoundDevice::Dummy0c(unsigned int p_music, unsigned int p_effect
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e350
+// FUNCTION: LEMBALL 0x0047e350
 int TargetDirectSoundDevice::Dummy10(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
-	return 0;
+	return 1;
 }
 
-// STUB: LEMBALL 0x0047e360
+// FUNCTION: LEMBALL 0x0047e360
 int TargetDirectSoundDevice::Dummy2c()
 {
 	return 0;
@@ -62,10 +62,10 @@ int TargetDirectSoundDevice::Dummy18()
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e490
+// FUNCTION: LEMBALL 0x0047e490
 int TargetDirectSoundDevice::Dummy1c()
 {
-	return 0;
+	return 1;
 }
 
 // STUB: LEMBALL 0x0047e4a0
@@ -86,31 +86,31 @@ int TargetDirectSoundDevice::Dummy28()
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e500
+// FUNCTION: LEMBALL 0x0047e500
 int TargetDirectSoundDevice::Dummy34(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3)
 {
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e510
+// FUNCTION: LEMBALL 0x0047e510
 int TargetDirectSoundDevice::Dummy38(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3)
 {
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e5b0
+// FUNCTION: LEMBALL 0x0047e5b0
 int TargetDirectSoundDevice::Dummy40(undefined4 p_arg0)
 {
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e5c0
+// FUNCTION: LEMBALL 0x0047e5c0
 int TargetDirectSoundDevice::Dummy44(undefined4 p_arg0)
 {
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e5d0
+// FUNCTION: LEMBALL 0x0047e5d0
 int TargetDirectSoundDevice::Dummy4c()
 {
 	return 0;
@@ -134,29 +134,29 @@ unsigned char TargetDirectSoundDevice::GetMasterVolume()
 	return 0xff;
 }
 
-// STUB: LEMBALL 0x0047e680
+// FUNCTION: LEMBALL 0x0047e680
 void TargetDirectSoundDevice::SetMasterVolume(unsigned char p_volume)
 {
 }
 
-// STUB: LEMBALL 0x0047e690
+// FUNCTION: LEMBALL 0x0047e690
 unsigned char TargetDirectSoundDevice::GetMusicVolume()
 {
-	return 0;
+	return 0xff;
 }
 
-// STUB: LEMBALL 0x0047e6a0
+// FUNCTION: LEMBALL 0x0047e6a0
 void TargetDirectSoundDevice::SetMusicVolume(unsigned char p_volume)
 {
 }
 
-// STUB: LEMBALL 0x0047e6b0
+// FUNCTION: LEMBALL 0x0047e6b0
 unsigned char TargetDirectSoundDevice::GetEffectVolume()
 {
-	return 0;
+	return 0xff;
 }
 
-// STUB: LEMBALL 0x0047e6c0
+// FUNCTION: LEMBALL 0x0047e6c0
 void TargetDirectSoundDevice::SetEffectVolume(unsigned char p_volume)
 {
 }
@@ -183,7 +183,7 @@ unsigned char TargetDirectSoundDevice::EffectPlay(unsigned long p_effectId,
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e860
+// FUNCTION: LEMBALL 0x0047e860
 bool TargetDirectSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect)
 {
 	return 0;
