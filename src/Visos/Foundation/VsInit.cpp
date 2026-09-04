@@ -483,9 +483,9 @@ void InitCmdLine(char* p_arg0)
 {
 	int i;
 	int remaining;
-	int count;
 	char** args;
 	int shift;
+	int count;
 
 	g_cParsedArgs = 0;
 	g_apszParsedArgs[0] = p_arg0;
@@ -518,13 +518,13 @@ void InitCmdLine(char* p_arg0)
 			if (0 < g_cParsedArgs) {
 				remaining = g_cParsedArgs;
 				do {
-					if (InitCheckOptions(g_apszParsedArgs[i]) == 0) {
-						i = i + 1;
-					}
-					else {
-						count = g_cParsedArgs - 1;
+					if (InitCheckOptions(g_apszParsedArgs[i]) != 0) {
+						count = g_cParsedArgs;
+						count = count - 1;
 						if (i < count) {
-							shift = (g_cParsedArgs - i) - 1;
+							shift = g_cParsedArgs;
+							shift = shift - i;
+							shift = shift - 1;
 							args = &g_apszParsedArgs[i];
 							do {
 								shift = shift - 1;
@@ -533,6 +533,9 @@ void InitCmdLine(char* p_arg0)
 							} while (shift != 0);
 						}
 						g_cParsedArgs = count;
+					}
+					else {
+						i = i + 1;
 					}
 					remaining = remaining - 1;
 				} while (remaining != 0);

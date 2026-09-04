@@ -384,12 +384,14 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 // FUNCTION: LEMBALL 0x0041bec0
 void ObjectManager::ConvertVer0ToVer1()
 {
+	unsigned int offset = 0;
 	int i = 0;
 	while (i < m_count) {
-		GlobalGameObject* object = m_objects[i];
+		GlobalGameObject* object = *(GlobalGameObject**) ((unsigned char*) m_objects + offset);
 		if (object->m_objectType == 0x14) {
 			object->ConvertVer0ToVer1();
 		}
+		offset += sizeof(GlobalGameObject*);
 		i++;
 	}
 }

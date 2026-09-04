@@ -2,10 +2,6 @@
 
 #include "ResFont.h"
 
-#include <string.h>
-
-#pragma intrinsic(memset)
-
 #define kGlyphTableBytes 0x400
 #define kGlyphTableCount 0x100
 #define kResIntSize 0x4c
@@ -15,15 +11,23 @@
 // FUNCTION: LEMBALL 0x00473650
 FontTable::FontTable(ResFont* p_font)
 {
-	m_glyphs = (ResZrle**) ::operator new(kGlyphTableBytes);
-	memset(m_glyphs, 0, kGlyphTableBytes);
+	unsigned int offset;
+	unsigned int index;
+	int glyphIndex;
+	int zrleOffset;
 
-	int zrleOffset = 0;
-	int index = 0;
+	m_glyphs = (ResZrle**) ::operator new(kGlyphTableBytes);
+	offset = 0;
+	do {
+		m_glyphs[offset] = 0;
+		offset++;
+	} while (offset < kGlyphTableCount);
+
+	zrleOffset = 0;
+	index = zrleOffset;
 	if (p_font->m_totalSize / p_font->m_listHeader->m_headerSize != 0) {
 		int intOffset = 0;
 		do {
-			int glyphIndex;
 			if (p_font->m_fontEntries == 0) {
 				glyphIndex =
 					p_font->m_fontTable->GetChar((ResZrle*) ((unsigned char*) p_font->m_animationEntries + zrleOffset));

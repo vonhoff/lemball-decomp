@@ -192,49 +192,52 @@ void MainOptions1Drawer::DrawBackGround()
 // FUNCTION: LEMBALL 0x00448620
 bool MainOptions1Drawer::ProcessMessages(Message* p_message)
 {
-	int type = p_message->type;
-	if (type < 3) {
-		m_processedCount = m_processedCount + 1;
-		return false;
-	}
-	if (type <= 4) {
+	int type;
+	int mode;
+	GameStatus* status;
+
+	type = p_message->type;
+	switch (type) {
+	case 3:
+	case 4:
 		m_idleDeadline = CurrentMilliTimer() + 20000;
-		return false;
-	}
-	if (type != 0xc) {
-		m_processedCount = m_processedCount + 1;
-		return false;
-	}
-	m_idleDeadline = CurrentMilliTimer() + 20000;
-	GameStatus* status = g_pGameStatus;
-	switch (p_message->code) {
-	case 0xacef0001:
-		m_returnState = 3;
-		m_quitYet = 1;
-		g_nFrontendAutoFlowToggle = 1;
-		return true;
-	case 0xacef00a4:
-		m_returnState = 0x10;
-		m_quitYet = 1;
-		g_nFrontendAutoFlowToggle = 1;
-		return true;
-	case 0xacef00a5:
-		m_display->ToggleResolution();
-		return true;
-	case 0xacef00a6:
-	case 0xacef00a7: {
-		int mode = m_selectedDisplayMode;
-		g_pGameStatus->m_level = g_pGameStatus->m_lastLevels[mode];
-		status->m_skill = mode;
-		m_quitYet = 1;
-		g_nFrontendAutoFlowToggle = 1;
-		if (p_message->code == 0xacef00a6) {
-			m_returnState = 4;
+		break;
+	case 0xc:
+		m_idleDeadline = CurrentMilliTimer() + 20000;
+		switch (p_message->code) {
+		case 0xacef0001:
+			m_returnState = 3;
+			m_quitYet = 1;
+			g_nFrontendAutoFlowToggle = 1;
+			return true;
+		case 0xacef00a4:
+			m_returnState = 0x10;
+			m_quitYet = 1;
+			g_nFrontendAutoFlowToggle = 1;
+			return true;
+		case 0xacef00a5:
+			m_display->ToggleResolution();
+			return true;
+		case 0xacef00a6:
+		case 0xacef00a7: {
+			mode = m_selectedDisplayMode;
+			status = g_pGameStatus;
+			status->m_level = status->m_lastLevels[mode];
+			status->m_skill = mode;
+			m_quitYet = 1;
+			g_nFrontendAutoFlowToggle = 1;
+			if (p_message->code == 0xacef00a6) {
+				m_returnState = 4;
+				return true;
+			}
+			m_returnState = 0xc;
 			return true;
 		}
-		m_returnState = 0xc;
-		return true;
-	}
+		}
+		break;
+	default:
+		m_processedCount = m_processedCount + 1;
+		return false;
 	}
 	return false;
 }

@@ -13,7 +13,7 @@ public:
 	bool Allocate(unsigned char** p_result);
 	bool CheckValidPointer(unsigned char* p_memory);
 	bool Free(unsigned char* p_memory);
-	void NewChild();
+	Bucket* NewChild();
 	void RemoveChild();
 	void RemoveThis();
 	~Bucket();

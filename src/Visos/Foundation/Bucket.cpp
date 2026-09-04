@@ -28,7 +28,7 @@ Bucket::Bucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsig
 	m_blockCount = p_blockCount;
 	m_activeAllocations = 0;
 	m_totalAllocations = 0;
-	m_totalBytes = p_blockSize * p_blockCount;
+	m_totalBytes = m_blockSize * m_blockCount;
 	m_freeBytes = m_totalBytes;
 	m_peakAllocations = 0;
 	m_mapWordCount = (p_blockCount + 31) / 32;
@@ -179,7 +179,7 @@ Boffset Bucket::FindFreeOffset(Boffset p_offset)
 
 // 68K 0x10217948 NewChild__7CBucketFv
 // FUNCTION: LEMBALL 0x00473050
-void Bucket::NewChild()
+Bucket* Bucket::NewChild()
 {
 	*g_pSysOutput << "Allocating Small Memory Child: " << (int) m_blockSize << "\n";
 	int smallMemEnabled = g_nSmallMemoryEnabled;
@@ -190,6 +190,7 @@ void Bucket::NewChild()
 	g_nSmallMemoryEnabled = smallMemEnabled;
 	m_child = child;
 	child->m_parent = this;
+	return child;
 }
 
 // 68K 0x10217a0e RemoveChild__7CBucketFv
