@@ -35,17 +35,17 @@ public:
 	virtual unsigned int InitHotAreaList();                                              // vtable+0x14
 	virtual void OnCreate();                                                             // vtable+0x18
 	virtual void BaseOnDestroy();                                                        // vtable+0x1c
-	virtual void OnSize();                                                               // vtable+0x20
-	virtual void BaseOnMove();                                                           // vtable+0x24
-	virtual void OnMove();                                                               // vtable+0x28
-	virtual void BaseOnZoom(int p_oldZoom);                                              // vtable+0x2c
+	virtual void _OnSize();                                                              // vtable+0x20
+	virtual void _OnMove();                                                              // vtable+0x28
+	virtual void _OnMove(const VsPoint& p_point);                                        // vtable+0x24
+	virtual void _OnZoom(int p_oldZoom);                                                 // vtable+0x2c
 	virtual void _SetRect(const VsRect& p_rect);                                         // vtable+0x30
 	virtual void SetRelTl(const VsPoint& p_point);                                       // vtable+0x34
 	virtual void Move(const VsPoint& p_point) = 0;                                       // vtable+0x38
 	virtual void Dummy3c() = 0;                                                          // vtable+0x3c
 	virtual void OnDestroy() = 0;                                                        // vtable+0x40
-	virtual void BaseOnSize() = 0;                                                       // vtable+0x44
-	virtual void Dummy48() = 0;                                                          // vtable+0x48
+	virtual void OnSize() = 0;                                                           // vtable+0x44
+	virtual void OnMove() = 0;                                                           // vtable+0x48
 	virtual void OnMinimise() = 0;                                                       // vtable+0x4c
 	virtual void OnMaximise() = 0;                                                       // vtable+0x50
 	virtual void OnRestore() = 0;                                                        // vtable+0x54

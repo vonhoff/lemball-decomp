@@ -32,10 +32,10 @@ public:
 	virtual void OnDestroy();                                            // vtable+0x40
 	virtual void OnMaximise();                                           // vtable+0x50
 	virtual void OnMinimise();                                           // vtable+0x4c
-	virtual void Dummy48();                                              // vtable+0x48
+	virtual void OnMove();                                               // vtable+0x48
 	virtual void OnRestore();                                            // vtable+0x54
-	virtual void BaseOnSize();                                           // vtable+0x44
-	virtual void BaseOnZoom(int p_oldZoom);                              // vtable+0x2c
+	virtual void OnSize();                                               // vtable+0x44
+	virtual void _OnZoom(int p_oldZoom);                                 // vtable+0x2c
 	virtual void OnZoom(int p_oldZoom);                                  // vtable+0x58
 	virtual void OnDriverChange();                                       // vtable+0x5c
 	virtual void ReSetMenu();                                            // vtable+0x00

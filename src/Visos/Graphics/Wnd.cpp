@@ -109,7 +109,7 @@ void Wnd::Dummy9c()
 
 // 68K 0x1010489a OnMove__4CWndFv
 // FUNCTION: LEMBALL 0x0043a4d0 FOLDED
-void Wnd::Dummy48()
+void Wnd::OnMove()
 {
 }
 
@@ -145,7 +145,7 @@ void Wnd::OnDestroy()
 
 // 68K 0x10104880 OnSize__4CWndFv
 // FUNCTION: LEMBALL 0x00464510 FOLDED
-void Wnd::BaseOnSize()
+void Wnd::OnSize()
 {
 }
 
@@ -223,8 +223,8 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	if (p_message == WM_SIZE) {
 		window->m_rect.m_width = (short) p_lParam;
 		window->m_rect.m_height = (short) (p_lParam >> 16);
+		window->_OnSize();
 		window->OnSize();
-		window->BaseOnSize();
 		return 0;
 	}
 	if (p_message == WM_SETFOCUS) {
@@ -484,8 +484,8 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 			m_zoom = p_parent->m_zoom;
 			OnCreate();
 			Dummy3c();
+			_OnSize();
 			OnSize();
-			BaseOnSize();
 			return;
 		}
 	}
@@ -564,8 +564,8 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 	Dummy98();
 	OnCreate();
 	Dummy3c();
+	_OnSize();
 	OnSize();
-	BaseOnSize();
 }
 
 // FUNCTION: LEMBALL 0x004654f0
@@ -691,12 +691,12 @@ int Wnd::SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int 
 
 // 68K 0x10110e82 _OnZoom__4CWndFi
 // FUNCTION: LEMBALL 0x00465790
-void Wnd::BaseOnZoom(int p_oldZoom)
+void Wnd::_OnZoom(int p_oldZoom)
 {
 	RECT windowRect;
 	RECT clientRect;
 
-	PvWnd::BaseOnZoom(p_oldZoom);
+	PvWnd::_OnZoom(p_oldZoom);
 	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
 		GetWindowRect((HWND) m_nativeWindow, &windowRect);
 		GetClientRect((HWND) m_nativeWindow, &clientRect);

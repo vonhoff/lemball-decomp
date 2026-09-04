@@ -121,7 +121,7 @@ void GWnd::BaseOnDestroy()
 
 // 68K 0x1010aa64 _OnSize__5CGWndFv
 // FUNCTION: LEMBALL 0x00463e70
-void GWnd::OnSize()
+void GWnd::_OnSize()
 {
 	Surface* target;
 	VsPoint* innerOrigin;
@@ -131,7 +131,7 @@ void GWnd::OnSize()
 	short relX;
 	short relY;
 
-	PvWnd::OnSize();
+	PvWnd::_OnSize();
 	if (m_gdi == 0) {
 		return;
 	}
@@ -165,11 +165,11 @@ void GWnd::OnSize()
 	relOrigin->m_y = relY;
 }
 
-// 68K 0x1010b3ca OnMove__5CGWndFv
+// 68K 0x1010b3ca _OnMove__5CGWndFv
 // FUNCTION: LEMBALL 0x00463f30
-void GWnd::OnMove()
+void GWnd::_OnMove()
 {
-	PvWnd::OnMove();
+	PvWnd::_OnMove();
 	m_gdi->m_renderTarget->Move(m_relativeTopLeft);
 }
 

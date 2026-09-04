@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
-"""Compare vtables after removing transparent near-jump thunks.
+"""Compare vtables after normalizing transparent MSVC linker artifacts.
 
 The MSVC 4.00 incremental linker routes most vtable entries through five-byte
 ``jmp rel32`` stubs.  reccmp 0.1.6 compares the raw stub entities, so every
 table fails even when both stubs reach matched function bodies.  This wrapper
 keeps vtordisp/this-adjusting thunks intact and follows only transparent E9
 jumps before applying reccmp's normal entity mapping.
+
+MSVC 4.00 also emits scalar/vector deleting-destructor names through weak
+aliases.  Those names may differ even when the actual slot bodies agree, so
+same-class aliases are accepted only after a direct codegen-equivalence check.
 
   python tools/vtable.py
   python tools/vtable.py --no-build
@@ -17,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import re
 import struct
 import sys
 from collections import Counter
@@ -25,15 +30,26 @@ from itertools import zip_longest
 from pathlib import Path
 
 from reccmp.compare import Compare
+from reccmp.compare.asm.fixes import find_effective_match
+from reccmp.compare.db import ReccmpMatch
+from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
 from reccmp.parser.codebase import DecompCodebase
 from reccmp.project.detect import RecCmpProject, RecCmpProjectException
-from reccmp.types import ImageId
+from reccmp.types import EntityType, ImageId
 
 from build import run_build
+from check import (
+    is_equivalent_insn,
+    normalize_asm,
+    normalize_copy_tests,
+    normalize_multiply_copy_zero,
+    normalize_zero_comparisons,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
 MAX_THUNK_DEPTH = 16
+DELETING_DESTRUCTOR_RE = re.compile(r"^(?P<class>.+)::`(?P<kind>scalar|vector) deleting destructor'")
 
 
 @dataclass(frozen=True)
@@ -48,12 +64,13 @@ class SlotResult:
     folded_match: bool = False
     clone_match: bool = False
     adjuster_match: bool = False
+    deleting_dtor_match: bool = False
 
     @property
     def matches(self) -> bool:
         if self.raw_orig == 0 and self.raw_recomp == 0:
             return True
-        if self.folded_match or self.clone_match or self.adjuster_match:
+        if self.folded_match or self.clone_match or self.adjuster_match or self.deleting_dtor_match:
             return True
         if self.orig_entity is None or self.recomp_entity is None:
             return False
@@ -172,6 +189,9 @@ def compare_table(engine: Compare, match, folded_aliases: dict[int, set[int]]) -
         folded_match = not direct_match and recomp is not None and recomp in folded_aliases.get(orig, set())
         clone_match = orig_entity is None and is_original_clone(engine.orig_bin, orig, recomp_entity)
         adjuster_match = not direct_match and is_same_generated_adjuster(orig_entity, recomp_entity)
+        deleting_dtor_match = not direct_match and is_same_deleting_destructor_alias(
+            engine, orig, recomp, orig_entity, recomp_entity
+        )
         slots.append(
             SlotResult(
                 offset=index * 4,
@@ -184,6 +204,7 @@ def compare_table(engine: Compare, match, folded_aliases: dict[int, set[int]]) -
                 folded_match=folded_match,
                 clone_match=clone_match,
                 adjuster_match=adjuster_match,
+                deleting_dtor_match=deleting_dtor_match,
             )
         )
     return slots
@@ -201,6 +222,81 @@ def is_same_generated_adjuster(orig_entity: object | None, recomp_entity: object
     orig_name = entity_name(orig_entity)
     recomp_name = entity_name(recomp_entity)
     return "`vtordisp" in orig_name and orig_name == recomp_name
+
+
+def deleting_destructor_identity(entity: object | None) -> tuple[str, str] | None:
+    """Return the owning class and generated deleting-destructor kind."""
+    match = DELETING_DESTRUCTOR_RE.match(entity_name(entity))
+    if match is None:
+        return None
+    return match.group("class"), match.group("kind")
+
+
+def codegen_equivalent(comparison) -> bool:
+    """Apply check.py's conservative compiler-entropy rules to a direct pair."""
+    orig_raw = [instruction for _, instruction in comparison.diff.orig_inst]
+    recomp_raw = [instruction for _, instruction in comparison.diff.recomp_inst]
+    if not orig_raw or len(orig_raw) != len(recomp_raw):
+        return False
+
+    orig_asm = [normalize_asm(instruction) for instruction in orig_raw]
+    recomp_asm = [normalize_asm(instruction) for instruction in recomp_raw]
+    for index, (orig_text, recomp_text) in enumerate(zip(orig_raw, recomp_raw)):
+        if is_equivalent_insn(orig_text, recomp_text):
+            recomp_asm[index] = orig_asm[index]
+
+    normalize_copy_tests(orig_asm)
+    normalize_copy_tests(recomp_asm)
+    normalize_multiply_copy_zero(orig_asm)
+    normalize_multiply_copy_zero(recomp_asm)
+    normalize_zero_comparisons(orig_asm, recomp_asm)
+    matcher = SequenceMatcherWithPins(orig_asm, recomp_asm, [])
+    return matcher.ratio() == 1.0 or find_effective_match(matcher.get_opcodes(), orig_asm, recomp_asm)
+
+
+def is_same_deleting_destructor_alias(
+    engine: Compare,
+    orig: int | None,
+    recomp: int | None,
+    orig_entity: object | None,
+    recomp_entity: object | None,
+) -> bool:
+    """Accept MSVC scalar/vector weak aliases only when their bodies agree."""
+    orig_identity = deleting_destructor_identity(orig_entity)
+    recomp_identity = deleting_destructor_identity(recomp_entity)
+    if (
+        orig is None
+        or recomp is None
+        or orig_identity is None
+        or recomp_identity is None
+        or orig_identity[0] != recomp_identity[0]
+        or orig_identity[1] == recomp_identity[1]
+    ):
+        return False
+
+    recomp_size = recomp_entity.size(ImageId.RECOMP)
+    orig_size = orig_entity.size(ImageId.ORIG)
+    orig_max_size = orig_entity.max_size(ImageId.ORIG)
+    if recomp_size is None or recomp_size <= 0 or recomp_size > 4096:
+        return False
+    if orig_size is None and orig_max_size is None:
+        return False
+
+    attributes = {
+        "type": EntityType.FUNCTION,
+        "name": f"{orig_identity[0]} deleting-destructor alias",
+        "recomp_size": recomp_size,
+    }
+    if orig_size is not None:
+        attributes["orig_size"] = orig_size
+    if orig_max_size is not None:
+        attributes["orig_max_size"] = orig_max_size
+
+    try:
+        comparison = engine.function_comparator.compare_function(ReccmpMatch(orig, recomp, attributes))
+    except (AssertionError, IndexError, ValueError):
+        return False
+    return comparison.match_ratio == 1.0 or comparison.is_effective_match or codegen_equivalent(comparison)
 
 
 def format_addr(address: int | None) -> str:
@@ -235,6 +331,7 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
     folded_match_slots = 0
     clone_match_slots = 0
     adjuster_match_slots = 0
+    deleting_dtor_match_slots = 0
     unknown_orig_targets: set[int] = set()
     unknown_orig_counts: Counter[int] = Counter()
     known_mismatch_counts: Counter[tuple[int | None, str, int | None, str]] = Counter()
@@ -254,6 +351,7 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
         folded_match_slots += sum(slot.folded_match for slot in slots)
         clone_match_slots += sum(slot.clone_match for slot in slots)
         adjuster_match_slots += sum(slot.adjuster_match for slot in slots)
+        deleting_dtor_match_slots += sum(slot.deleting_dtor_match for slot in slots)
         if matches == len(slots):
             exact_tables += 1
             continue
@@ -317,7 +415,8 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
         "Equivalent slots: "
         f"{folded_match_slots} folded aliases, "
         f"{clone_match_slots} exact original clones, "
-        f"{adjuster_match_slots} duplicate named adjusters."
+        f"{adjuster_match_slots} duplicate named adjusters, "
+        f"{deleting_dtor_match_slots} deleting-destructor aliases."
     )
     print(
         "Remaining slots: "
@@ -425,6 +524,18 @@ def run_selftest() -> int:
         return 1
     if is_same_generated_adjuster(FakeNamedEntity(adjuster_name), FakeNamedEntity("Thing::Method")):
         print("selftest fail: unequal adjusters were accepted")
+        return 1
+
+    scalar_dtor = FakeNamedEntity("Thing::`scalar deleting destructor'")
+    vector_dtor = FakeNamedEntity("Thing::`vector deleting destructor'(unsigned int)")
+    if deleting_destructor_identity(scalar_dtor) != ("Thing", "scalar"):
+        print("selftest fail: scalar deleting-destructor identity was not parsed")
+        return 1
+    if deleting_destructor_identity(vector_dtor) != ("Thing", "vector"):
+        print("selftest fail: vector deleting-destructor identity was not parsed")
+        return 1
+    if deleting_destructor_identity(FakeNamedEntity("Other::~Other")) is not None:
+        print("selftest fail: ordinary destructor was accepted as a deleting destructor")
         return 1
 
     null_slot = SlotResult(0, 0, 0, 0, 0, None, None)

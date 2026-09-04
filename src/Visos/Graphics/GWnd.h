@@ -22,8 +22,8 @@ public:
 	virtual void Move(const VsPoint& p_point);                                 // vtable+0x38
 	virtual void OnCreate();                                                   // vtable+0x18
 	virtual void BaseOnDestroy();                                              // vtable+0x1c
-	virtual void OnMove();                                                     // vtable+0x28
-	virtual void OnSize();                                                     // vtable+0x20
+	virtual void _OnMove();                                                    // vtable+0x28
+	virtual void _OnSize();                                                    // vtable+0x20
 	virtual void Refresh(VsRect* p_rect);                                      // vtable+0x70
 	~GWnd();
 

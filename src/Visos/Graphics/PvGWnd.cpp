@@ -29,7 +29,7 @@ void PvGWnd::OnDestroy()
 }
 
 // FUNCTION: LEMBALL 0x0043a530
-void PvGWnd::BaseOnSize()
+void PvGWnd::OnSize()
 {
 }
 
@@ -69,6 +69,6 @@ void PvGWnd::SetInnerWindow(const VsRect& p_rect)
 
 // 68K 0x1021692e _OnZoom__7CPVGWndFi
 // STUB: LEMBALL 0x00465c80
-void PvGWnd::BaseOnZoom(int p_oldZoom)
+void PvGWnd::_OnZoom(int p_oldZoom)
 {
 }
