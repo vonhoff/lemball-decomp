@@ -223,12 +223,13 @@ void ChangeList::SetDrawMark()
 	unsigned int mark;
 
 	mark = m_activeMark;
-	if (mark == 0x50) {
+	switch (mark) {
+	case 0x50:
 		m_activeMark = 0x41;
-		return;
-	}
-	if (mark == 0x70) {
+		break;
+	case 0x70:
 		m_activeMark = 0x61;
+		break;
 	}
 }
 
