@@ -43,7 +43,41 @@ Pt3 NodeManager::GetNodePosition(int p_node)
 }
 
 // 68K 0x10618854 LoadLevel__12CNodeManagerFP22tagLoadNodeInformationUlUc
-// STUB: LEMBALL 0x00421470
+// FUNCTION: LEMBALL 0x00421470
 void NodeManager::LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsigned char p_skip)
 {
+	unsigned char* end = p_data + p_dataSize;
+	int count = *(unsigned short*) p_data;
+	p_data += 2;
+
+	Initialise(count);
+	m_count = count;
+
+	if (*(unsigned int*) &p_skip != 0) {
+		return;
+	}
+	if (p_data >= end) {
+		return;
+	}
+
+	int i = 0;
+	int x;
+	int y;
+	int neighbourCount;
+	do {
+		x = ((unsigned short*) p_data)[0];
+		y = ((unsigned short*) p_data)[1];
+		neighbourCount = ((unsigned short*) p_data)[2];
+
+		m_nodes[i].Initialise(x, y, neighbourCount);
+		p_data += 6;
+		if (neighbourCount > 0) {
+			do {
+				m_nodes[i].AddANeighbour(((unsigned short*) p_data)[0], ((unsigned short*) p_data)[1]);
+				p_data += 4;
+				neighbourCount--;
+			} while (neighbourCount != 0);
+		}
+		i++;
+	} while (p_data < end);
 }
