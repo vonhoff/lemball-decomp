@@ -687,6 +687,67 @@ def role_push_reaches_equivalent_call(
     return False
 
 
+def normalize_saved_register_load_scheduling(
+    orig_asm: list[str], recomp_asm: list[str]
+) -> None:
+    """Align a unique register load moved only across unrelated register saves."""
+    for index, orig_text in enumerate(orig_asm):
+        if index >= len(recomp_asm) or recomp_asm[index] == orig_text:
+            continue
+        if orig_asm.count(orig_text) != 1 or recomp_asm.count(orig_text) != 1:
+            continue
+
+        mnemonic, operands = split_instruction(orig_text)
+        used_registers = set(REGISTER_RE.findall(orig_text))
+        if (
+            mnemonic not in ("lea", "mov")
+            or len(operands) != 2
+            or operands[0] not in DWORD_REGISTERS
+            or "esp" in used_registers
+        ):
+            continue
+
+        recomp_index = recomp_asm.index(orig_text)
+        if recomp_index <= index:
+            continue
+        crossed = recomp_asm[index:recomp_index]
+        if not crossed:
+            continue
+        for instruction in crossed:
+            crossed_mnemonic, crossed_operands = split_instruction(instruction)
+            if (
+                crossed_mnemonic != "push"
+                or len(crossed_operands) != 1
+                or crossed_operands[0] not in DWORD_REGISTERS
+                or crossed_operands[0] in used_registers
+            ):
+                break
+        else:
+            recomp_asm.insert(index, recomp_asm.pop(recomp_index))
+
+
+def normalize_role_comparisons_for_exact_match(
+    orig_asm: list[str], recomp_asm: list[str], role_map: dict[str, str]
+) -> None:
+    """Apply role renames to comparisons only when that completes an exact match."""
+    if not role_map or len(orig_asm) != len(recomp_asm):
+        return
+
+    candidate = list(recomp_asm)
+    for index, (orig_text, recomp_text) in enumerate(zip(orig_asm, candidate)):
+        mnemonic, _ = split_instruction(recomp_text)
+        if mnemonic not in ("cmp", "test"):
+            continue
+        remapped = REGISTER_RE.sub(
+            lambda match: role_map.get(match.group(0), match.group(0)), recomp_text
+        )
+        if remapped == orig_text:
+            candidate[index] = orig_text
+
+    if candidate == orig_asm:
+        recomp_asm[:] = candidate
+
+
 def normalize_register_role_relocations(orig_asm: list[str], recomp_asm: list[str]) -> None:
     """Expose relocations whose instruction also uses a renamed register role."""
     role_map = infer_register_role_map(orig_asm, recomp_asm)
@@ -777,7 +838,10 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
     normalize_multiply_copy_zero(recomp_asm)
     normalize_zero_comparisons(orig_asm, recomp_asm)
     normalize_dead_stack_reservation(orig_asm, recomp_asm)
+    role_map = infer_register_role_map(orig_asm, recomp_asm)
     normalize_register_role_relocations(orig_asm, recomp_asm)
+    normalize_saved_register_load_scheduling(orig_asm, recomp_asm)
+    normalize_role_comparisons_for_exact_match(orig_asm, recomp_asm, role_map)
     strip_trailing_alignment_nops(orig_asm, recomp_asm)
     return orig_asm, recomp_asm
 
@@ -864,6 +928,39 @@ def run_selftest() -> int:
         (
             ["push esi", "mov esi, ecx", "mov eax, dword ptr [esi + 4]", "pop esi", "ret"],
             ["push edi", "mov edi, ecx", "mov eax, dword ptr [edi + 4]", "pop edi", "ret"],
+            True,
+        ),
+        (
+            [
+                "push ebx",
+                "push esi",
+                "mov esi, dword ptr [ecx]",
+                "push edi",
+                "push ebp",
+                "mov ebx, ecx",
+                "xor edi, edi",
+                "cmp eax, edi",
+                "pop ebp",
+                "pop edi",
+                "pop esi",
+                "pop ebx",
+                "ret",
+            ],
+            [
+                "push ebx",
+                "push esi",
+                "push edi",
+                "push ebp",
+                "mov esi, dword ptr [ecx]",
+                "mov edi, ecx",
+                "xor ebx, ebx",
+                "cmp eax, ebx",
+                "pop ebp",
+                "pop edi",
+                "pop esi",
+                "pop ebx",
+                "ret",
+            ],
             True,
         ),
         (
@@ -1203,6 +1300,37 @@ def run_selftest() -> int:
         if role_push_reaches_equivalent_call(orig, recomp, 0, {"ebx", "esi"}):
             print(f"selftest fail: unsafe delayed push was normalized: {orig!r} / {recomp!r}")
             failed += 1
+
+    unsafe_load_schedules = (
+        (
+            ["mov esi, dword ptr [ecx]", "push esi"],
+            ["push esi", "mov esi, dword ptr [ecx]"],
+        ),
+        (
+            ["mov esi, dword ptr [esp + 4]", "push edi"],
+            ["push edi", "mov esi, dword ptr [esp + 4]"],
+        ),
+        (
+            ["mov esi, dword ptr [ecx]", "call Thing (FUNCTION)"],
+            ["call Thing (FUNCTION)", "mov esi, dword ptr [ecx]"],
+        ),
+    )
+    for orig, recomp in unsafe_load_schedules:
+        normalized = list(recomp)
+        normalize_saved_register_load_scheduling(orig, normalized)
+        if normalized == orig:
+            print(f"selftest fail: unsafe saved-register load was normalized: {orig!r} / {recomp!r}")
+            failed += 1
+
+    partial_comparison_orig = ["cmp eax, edi", "push esi"]
+    partial_comparison_recomp = ["cmp eax, ebx", "push ebx"]
+    normalized = list(partial_comparison_recomp)
+    normalize_role_comparisons_for_exact_match(
+        partial_comparison_orig, normalized, {"ebx": "edi"}
+    )
+    if normalized != partial_comparison_recomp:
+        print("selftest fail: partial register-role comparison was normalized")
+        failed += 1
 
     aliased_multiplier = ["mov eax, edx", "sub edx, edx", "imul eax, eax"]
     normalized = list(aliased_multiplier)
