@@ -45,9 +45,14 @@ void PvButton::Move(const VsPoint& p_point)
 }
 
 // 68K 0x101177f6 OnVisibilityChange__9CPVButtonFv
-// STUB: LEMBALL 0x0043a5e0
+// FUNCTION: LEMBALL 0x0043a5e0
 void PvButton::OnVisibilityChange()
 {
+	if (PvWnd::m_parent != 0) {
+		m_gdi->m_renderTarget->m_flag78 = 1;
+	}
+	m_forceDrawCount = 1;
+	HotAreaHandler::SetActive(PvWnd::m_active);
 }
 
 // 68K 0x1020f994 __ct__9CPVButtonFRC7CVSRectP7CPVGWnd
