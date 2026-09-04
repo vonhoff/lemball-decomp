@@ -228,13 +228,11 @@ void SoundManager::Foreground()
 	if (m_background != 0) {
 		music = m_requestedMusic;
 		m_background = 0;
+		effects = 0;
 		musicOutput = m_musicOutput;
 		if (m_effectOutput == musicOutput) {
-			m_effectOutput = 0;
 			effects = m_requestedEffects;
-		}
-		else {
-			effects = 0;
+			m_effectOutput = 0;
 		}
 		if (m_useMusicCD == 0 && musicOutput != 0) {
 			if (((SoundDeviceDispatch*) musicOutput)->Open(music, effects, m_resourceId) == 0) {

@@ -28,7 +28,7 @@ public:
 	void Play();
 	void Resume();
 	void SetAnim(unsigned int p_resourceId);
-	void SetMovieWindow();
+	void SetMovieWindow(unsigned int p_lParam);
 	void Stop();
 	~AnimWnd();
 

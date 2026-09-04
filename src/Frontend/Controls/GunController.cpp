@@ -193,13 +193,13 @@ GunController::~GunController()
 // FUNCTION: LEMBALL 0x0044cec0
 int GunController::ProcessMsg(Message* p_message)
 {
-	unsigned int type;
-
 	if ((int) (p_message->time - m_inputReadyTime) < 0) {
 		return 0;
 	}
-	type = p_message->type;
-	if (type != 4) {
+	switch ((unsigned int) p_message->type) {
+	case 4:
+		break;
+	default:
 		m_processedCount = m_processedCount + 1;
 		return 0;
 	}

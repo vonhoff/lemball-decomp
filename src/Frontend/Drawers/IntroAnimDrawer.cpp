@@ -82,8 +82,8 @@ void IntroAnimDrawer::EndPhase()
 // FUNCTION: LEMBALL 0x00447610
 bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 {
-	unsigned short type = p_message->type;
-	if (type == 4) {
+	switch ((unsigned int) p_message->type) {
+	case 4:
 		switch (p_message->code) {
 		case 0x1f:
 		case 0x22:
@@ -94,13 +94,13 @@ bool IntroAnimDrawer::ProcessMessages(Message* p_message)
 		default:
 			return 0;
 		}
-	}
-	if (type == 6) {
+	case 6:
 		EndPhase();
 		return 1;
+	default:
+		m_processedCount++;
+		return 0;
 	}
-	m_processedCount++;
-	return 0;
 }
 
 // 68K 0x1080601e Processing__16CIntroAnimDrawerFv

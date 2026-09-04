@@ -159,11 +159,12 @@ int TargetWaveSoundDevice::Dummy0c(unsigned int p_music, unsigned int p_effects,
 			waveOutGetVolume((HWAVEOUT) m_waveOut, (DWORD*) &m_savedVolume);
 			waveOutSetVolume((HWAVEOUT) m_waveOut, 0xffffffff);
 		}
-		if (result != 0) {
-			m_available = 0;
-			return 0;
+		if (result == 0) {
+			m_available = 1;
+			return 1;
 		}
-		m_available = 1;
+		m_available = 0;
+		return 0;
 	}
 	return 1;
 }
@@ -200,14 +201,18 @@ int TargetWaveSoundDevice::Dummy14()
 	char errorText[0x100];
 
 	if (m_waveOut != 0) {
-		tries = 0;
 		result = 0xffff;
-		while (result != 0 && tries < 500) {
+		tries = 0;
+		do {
+			if (tries >= 500) {
+				break;
+			}
 			tries = tries + 1;
 			result = waveOutReset((HWAVEOUT) m_waveOut);
-		}
+		} while (result != 0);
 		if (tries == 500) {
-			*g_pErrorOutput << "Error Shutting Down Wave Device : " << Dummy04() << ".\n";
+			*g_pErrorOutput << "Error Shutting Down Wave Device : ";
+			*g_pErrorOutput << Dummy04() << ".\n";
 			*g_pErrorOutput << "System may be unstable!\n";
 			waveOutGetErrorTextA(result, errorText, 0x100);
 			*g_pErrorOutput << errorText << "\n";
@@ -217,14 +222,18 @@ int TargetWaveSoundDevice::Dummy14()
 			waveOutSetVolume((HWAVEOUT) m_waveOut, m_savedVolume);
 		}
 		if (m_waveOut != 0) {
-			tries = 0;
 			result = 0xffff;
-			while (result != 0 && tries < 500) {
+			tries = 0;
+			do {
+				if (tries >= 500) {
+					break;
+				}
 				tries = tries + 1;
 				result = waveOutClose((HWAVEOUT) m_waveOut);
-			}
+			} while (result != 0);
 			if (tries == 500) {
-				*g_pErrorOutput << "Error Closing Down Wave Device : " << Dummy04() << ".\n";
+				*g_pErrorOutput << "Error Closing Down Wave Device : ";
+				*g_pErrorOutput << Dummy04() << ".\n";
 				*g_pErrorOutput << "System may be unstable!\n";
 				waveOutGetErrorTextA(result, errorText, 0x100);
 				*g_pErrorOutput << errorText << "\n";
@@ -267,14 +276,18 @@ int TargetWaveSoundDevice::Dummy20()
 	char errorText[0x100];
 
 	if (m_waveOut != 0) {
-		tries = 0;
 		result = 0xffff;
-		while (result != 0 && tries < 500) {
+		tries = 0;
+		do {
+			if (tries >= 500) {
+				break;
+			}
 			tries = tries + 1;
 			result = waveOutReset((HWAVEOUT) m_waveOut);
-		}
+		} while (result != 0);
 		if (tries == 500) {
-			*g_pErrorOutput << "Error stopping playback in device : " << Dummy04() << ".\n";
+			*g_pErrorOutput << "Error stopping playback in device : ";
+			*g_pErrorOutput << Dummy04() << ".\n";
 			*g_pErrorOutput << "System may be unstable!\n";
 			waveOutGetErrorTextA(result, errorText, 0x100);
 			*g_pErrorOutput << errorText << "\n";
@@ -359,19 +372,21 @@ int TargetWaveSoundDevice::Dummy4c()
 // FUNCTION: LEMBALL 0x0047d010
 int TargetWaveSoundDevice::Dummy48(unsigned long p_effectId)
 {
-	unsigned int i;
 	TargetWaveEffect* effect;
+	unsigned int i;
+	TargetWaveSoundDevice* device;
 
 	i = 0;
 	while (i < m_channelCount) {
-		if (m_effectHandles[i] == p_effectId) {
-			effect = m_effects[i];
+		device = this;
+		if (device->m_effectHandles[i] == p_effectId) {
+			effect = device->m_effects[i];
 			if (effect != 0) {
 				effect->~TargetWaveEffect();
 				operator delete(effect);
 			}
-			m_effectUsed[i] = 0;
-			m_effectHandles[i] = 0;
+			device->m_effectUsed[i] = 0;
+			device->m_effectHandles[i] = 0;
 		}
 		i = i + 1;
 	}

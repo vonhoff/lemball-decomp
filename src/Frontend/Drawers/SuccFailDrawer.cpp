@@ -422,7 +422,10 @@ void SuccFailDrawer::DrawText()
 // FUNCTION: LEMBALL 0x00450970
 bool SuccFailDrawer::ProcessMessages(Message* p_message)
 {
-	if ((unsigned int) p_message->type != 0xc) {
+	switch ((unsigned int) p_message->type) {
+	case 0xc:
+		break;
+	default:
 		m_processedCount++;
 		return 0;
 	}

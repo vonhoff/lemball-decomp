@@ -145,19 +145,15 @@ void AnimWnd::OnNotifyMode(int p_mode)
 
 // 68K 0x10104516 SetMovieWindow__8CAnimWndFv
 // FUNCTION: LEMBALL 0x0046dfe0
-void AnimWnd::SetMovieWindow()
+void AnimWnd::SetMovieWindow(unsigned int p_lParam)
 {
 	unsigned int mciId;
 	unsigned int error;
 	unsigned int params[7];
 
-	params[0] = 0;
+	(void) p_lParam;
 	params[1] = 0x8000;
 	params[2] = (unsigned int) TargetWinGDrawCodec_DriverProc;
-	params[3] = 0;
-	params[4] = 0;
-	params[5] = 0;
-	params[6] = 0;
 	mciId = (unsigned int) SendMessageA((HWND) m_movieWindow, 0x464, 0, 0);
 	if (mciId != 0) {
 		error = mciSendCommandA(mciId, 0x876, 0x1100000, params);
@@ -196,7 +192,7 @@ int AnimWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam,
 		OnNotifySize(0, 0);
 		return 0;
 	case 0x4cb:
-		SetMovieWindow();
+		SetMovieWindow(p_lParam);
 		return 0;
 	case 0x4cc:
 		break;

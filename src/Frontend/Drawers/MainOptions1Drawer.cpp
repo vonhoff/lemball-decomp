@@ -69,6 +69,8 @@ MainOptions1Drawer::MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const
 		m_selectedDisplayMode = 3;
 		break;
 	case 0:
+		m_selectedDisplayMode = 0;
+		break;
 	case 4:
 		m_selectedDisplayMode = 0;
 		break;

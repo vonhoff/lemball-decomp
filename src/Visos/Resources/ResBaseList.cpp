@@ -40,8 +40,8 @@ void ResBaseList::OnRead(unsigned char* p_source, unsigned char** p_data, unsign
 		m_bodyLoaded = 1;
 	}
 	if (m_loaded == 0 && m_bodyLoaded != 0 && m_headerLoaded != 0) {
-		unsigned int count;
 		unsigned int directed;
+		unsigned int count;
 		unsigned char* dataCursor;
 		count = m_totalSize / m_listHeader->m_headerSize;
 		directed = 0;

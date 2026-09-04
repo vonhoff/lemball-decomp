@@ -140,7 +140,6 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 {
 	int controlId;
 	char* systemInfo;
-	HWND control;
 	unsigned long handle;
 	unsigned int versionSize;
 	void* versionData;
@@ -150,7 +149,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 	unsigned int queryLen;
 	char* queryValue;
 	int queryOk;
-	unsigned int prefixLen;
+	char* queryEnd;
 
 	(void) p_lParam;
 	switch (p_msg) {
@@ -163,18 +162,17 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 		CenterWindowOnParent(p_dlg, GetWindow((HWND) p_dlg, 4));
 		systemInfo = BuildAboutSystemInfo();
 		SetDlgItemTextA((HWND) p_dlg, 0x11b, systemInfo);
-		control = GetDlgItem((HWND) p_dlg, 0x11b);
-		SendMessageA(control, 0x30, (unsigned int) g_hAboutFont, 1);
+		SendMessageA(GetDlgItem((HWND) p_dlg, 0x11b), 0x30, (unsigned int) g_hAboutFont, 1);
 		GetModuleFileNameA((HINSTANCE) g_pApplicationInstance, modulePath, 0x100);
 		versionSize = GetFileVersionInfoSizeA(modulePath, &handle);
 		if (versionSize != 0) {
 			versionData = operator new(versionSize);
 			GetFileVersionInfoA(modulePath, handle, versionSize, versionData);
 			lstrcpyA(queryPath, g_szStringFileInfoPrefix);
-			prefixLen = (unsigned int) (unsigned short) lstrlenA(queryPath);
+			queryEnd = queryPath + (unsigned short) lstrlenA(queryPath);
 			do {
 				GetDlgItemTextA((HWND) p_dlg, controlId, itemText, 0x100);
-				queryPath[prefixLen] = 0;
+				*queryEnd = 0;
 				lstrcatA(queryPath, itemText);
 				queryLen = 0;
 				queryValue = 0;
@@ -182,8 +180,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 				if (queryOk != 0 && queryLen != 0 && queryValue != 0) {
 					lstrcpyA(itemText, queryValue);
 					SetDlgItemTextA((HWND) p_dlg, controlId, itemText);
-					control = GetDlgItem((HWND) p_dlg, controlId);
-					SendMessageA(control, 0x30, (unsigned int) g_hAboutFont, 1);
+					SendMessageA(GetDlgItem((HWND) p_dlg, controlId), 0x30, (unsigned int) g_hAboutFont, 1);
 				}
 				controlId = controlId + 1;
 			} while (controlId <= 0x404);
