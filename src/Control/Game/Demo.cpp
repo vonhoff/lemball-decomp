@@ -43,9 +43,17 @@ void Demo::Reset()
 }
 
 // 68K 0x10701062 SetDemoMode__5CDemoFUc
-// STUB: LEMBALL 0x00409600
+// FUNCTION: LEMBALL 0x00409600
 void Demo::SetDemoMode(unsigned char p_enabled)
 {
+	unsigned int enabled = *(unsigned int*) &p_enabled;
+	m_demoMode = enabled;
+	if (enabled != 0) {
+		Reset();
+	}
+	else {
+		CleanUp();
+	}
 }
 
 // 68K 0x107010ac Process__5CDemoFv
