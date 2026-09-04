@@ -154,12 +154,14 @@ void TargetAboutScreen::OnSize(const VsRect& p_rect)
 {
 	VsPoint position;
 	int textY;
+	int textX;
 
 	m_width = p_rect.m_width;
 	m_height = p_rect.m_height;
 	textY = (int) p_rect.m_height - 0x20;
+	textX = ((int) p_rect.m_width - 0x60) / 2;
 	if (m_textWindow != 0) {
-		position.m_x = (short) (((int) p_rect.m_width - 0x60) / 2);
+		position.m_x = (short) textX;
 		position.m_y = (short) textY;
 		m_textWindow->Move(position);
 	}
