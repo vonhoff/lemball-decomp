@@ -11,9 +11,9 @@ public:
 	inline ResBin(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	static ResBin* Load(unsigned int p_resourceId);
 	virtual void SetType(); // vtable+0x34
-	virtual ~ResBin();      // vtable+0x00
 };
 
+// 68K 0x101010d8 __dt__7CResBINFv
 // SYNTHETIC: LEMBALL 0x0045ec70
 // ResBin::`scalar deleting destructor'
 

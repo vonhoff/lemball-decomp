@@ -255,6 +255,68 @@ def normalize_copy_tests(asm: list[str]) -> None:
             asm[index] = f"test {source_register}, {source_register}"
 
 
+def normalize_transient_call_argument_registers(orig_asm: list[str], recomp_asm: list[str]) -> None:
+    """Canonicalize a caller-saved temporary whose lifetime ends at a call.
+
+    MSVC 4 may choose a different register for the compact sequence
+    ``mov reg, source; push reg; mov destination, reg``.  When both streams
+    agree on the source and destination and immediately call the same target,
+    the call bounds the lifetime of EAX/ECX/EDX and the register choice cannot
+    affect subsequent code.
+    """
+    if len(orig_asm) != len(recomp_asm):
+        return
+
+    caller_saved = {"eax", "ecx", "edx"}
+    for index in range(len(orig_asm) - 3):
+        orig_load, orig_push, orig_store, orig_call = orig_asm[index : index + 4]
+        recomp_load, recomp_push, recomp_store, recomp_call = recomp_asm[index : index + 4]
+
+        orig_mnemonic, orig_load_operands = split_instruction(orig_load)
+        recomp_mnemonic, recomp_load_operands = split_instruction(recomp_load)
+        if (
+            orig_mnemonic != "mov"
+            or recomp_mnemonic != "mov"
+            or len(orig_load_operands) != 2
+            or len(recomp_load_operands) != 2
+        ):
+            continue
+
+        orig_register, orig_source = orig_load_operands
+        recomp_register, recomp_source = recomp_load_operands
+        role_register_re = re.compile(
+            rf"\b(?:{re.escape(orig_register)}|{re.escape(recomp_register)})\b"
+        )
+        if (
+            orig_register == recomp_register
+            or orig_register not in caller_saved
+            or recomp_register not in caller_saved
+            or orig_source != recomp_source
+            or role_register_re.search(orig_source)
+        ):
+            continue
+        if orig_push != f"push {orig_register}" or recomp_push != f"push {recomp_register}":
+            continue
+
+        orig_store_mnemonic, orig_store_operands = split_instruction(orig_store)
+        recomp_store_mnemonic, recomp_store_operands = split_instruction(recomp_store)
+        if (
+            orig_store_mnemonic != "mov"
+            or recomp_store_mnemonic != "mov"
+            or len(orig_store_operands) != 2
+            or len(recomp_store_operands) != 2
+            or orig_store_operands[0] != recomp_store_operands[0]
+            or role_register_re.search(orig_store_operands[0])
+            or orig_store_operands[1] != orig_register
+            or recomp_store_operands[1] != recomp_register
+            or orig_call != recomp_call
+            or not orig_call.startswith("call ")
+        ):
+            continue
+
+        recomp_asm[index : index + 3] = orig_asm[index : index + 3]
+
+
 def normalize_multiply_copy_zero(asm: list[str]) -> None:
     """Canonicalize two equivalent ways to prepare a dividend register pair.
 
@@ -530,7 +592,9 @@ def normalize_safe_zero_relocations(orig_asm: list[str], recomp_asm: list[str]) 
                 recomp_asm[index] = orig_asm[index]
 
 
-def role_relocations_are_safe(orig_asm: list[str], recomp_asm: list[str]) -> bool:
+def role_relocations_are_safe(
+    orig_asm: list[str], recomp_asm: list[str], role_map: dict[str, str]
+) -> bool:
     """Reject newly exposed relocations with register or flag dependencies."""
     matcher = SequenceMatcherWithPins(orig_asm, recomp_asm, [])
     deletes = {
@@ -555,10 +619,19 @@ def role_relocations_are_safe(orig_asm: list[str], recomp_asm: list[str]) -> boo
         if mnemonic not in ("lea", "mov", "pop", "push"):
             return False
         used_registers = set(REGISTER_RE.findall(instruction))
+        if mnemonic in ("pop", "push"):
+            used_registers = {role_map.get(register, register) for register in used_registers}
+            used_registers.add("esp")
         safe_candidate = None
         for candidate in candidates:
             start = min(candidate, orig_dest)
             end = max(candidate, orig_dest)
+            if mnemonic in ("pop", "push") and any(
+                index != candidate
+                and split_instruction(orig_asm[index])[0] not in ("lea", "mov", "nop")
+                for index in range(start, end)
+            ):
+                continue
             if all(
                 index == candidate
                 or not used_registers.intersection(REGISTER_RE.findall(orig_asm[index]))
@@ -585,6 +658,20 @@ def normalize_register_role_relocations(orig_asm: list[str], recomp_asm: list[st
         if orig_text == recomp_text:
             continue
         mnemonic, operands = split_instruction(recomp_text)
+        if mnemonic == "push":
+            remapped = REGISTER_RE.sub(
+                lambda match: role_map.get(match.group(0), match.group(0)), recomp_text
+            )
+            if (
+                len(operands) == 1
+                and operands[0] in DWORD_REGISTERS
+                and remapped == orig_text
+                and index + 1 < len(orig_asm)
+                and orig_asm[index + 1].startswith("call ")
+                and is_equivalent_insn(orig_asm[index + 1], recomp_asm[index + 1])
+            ):
+                recomp_asm[index] = orig_text
+            continue
         if mnemonic in excluded or mnemonic.startswith("j"):
             continue
         if (
@@ -599,7 +686,7 @@ def normalize_register_role_relocations(orig_asm: list[str], recomp_asm: list[st
         )
 
     normalize_safe_zero_relocations(orig_asm, recomp_asm)
-    if not role_relocations_are_safe(orig_asm, recomp_asm):
+    if not role_relocations_are_safe(orig_asm, recomp_asm, role_map):
         recomp_asm[:] = original_recomp
 
 
@@ -637,6 +724,7 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
 
     normalize_copy_tests(orig_asm)
     normalize_copy_tests(recomp_asm)
+    normalize_transient_call_argument_registers(orig_asm, recomp_asm)
     normalize_multiply_copy_zero(orig_asm)
     normalize_multiply_copy_zero(recomp_asm)
     normalize_zero_comparisons(orig_asm, recomp_asm)
@@ -870,6 +958,130 @@ def run_selftest() -> int:
         (
             ["mov eax, ebx", "add ebx, 1", "or edx, ebx", "ret"],
             ["add esi, 1", "mov eax, esi", "or edx, esi", "ret"],
+            False,
+        ),
+        (
+            [
+                "mov eax, dword ptr [esp + 0x14]",
+                "push eax",
+                "mov dword ptr [ebp + 0x14], eax",
+                "call WSOCK32.dll::Ordinal_11 (IMPORT_THUNK)",
+            ],
+            [
+                "mov ecx, dword ptr [esp + 0x14]",
+                "push ecx",
+                "mov dword ptr [ebp + 0x14], ecx",
+                "call WSOCK32.dll::Ordinal_11 (IMPORT_THUNK)",
+            ],
+            True,
+        ),
+        (
+            [
+                "lea esi, [edi - 4]",
+                "mov ebx, dword ptr [esi]",
+                "dec ebx",
+                "push esi",
+                "call operator delete (FUNCTION)",
+            ],
+            [
+                "lea ebx, [edi - 4]",
+                "mov esi, dword ptr [ebx]",
+                "dec esi",
+                "push ebx",
+                "call Thunk of 'operator delete' (THUNK)",
+            ],
+            True,
+        ),
+        (
+            [
+                "lea ebp, [eax + 4]",
+                "mov esi, ebp",
+                "add esi, 0x54",
+                "call ResZrle::ResZrle (FUNCTION)",
+                "mov dword ptr [ebx + 0x78], ebp",
+                "pop ebp",
+                "pop edi",
+                "pop esi",
+                "ret",
+            ],
+            [
+                "lea esi, [eax + 4]",
+                "mov ebp, esi",
+                "add ebp, 0x54",
+                "call Thunk of 'ResZrle::ResZrle' (THUNK)",
+                "pop ebp",
+                "mov dword ptr [ebx + 0x78], esi",
+                "pop edi",
+                "pop esi",
+                "ret",
+            ],
+            True,
+        ),
+        (
+            [
+                "lea ebp, [eax + 4]",
+                "mov esi, ebp",
+                "add esi, 0x54",
+                "mov dword ptr [esp + 4], eax",
+                "pop ebp",
+                "pop esi",
+                "ret",
+            ],
+            [
+                "lea esi, [eax + 4]",
+                "mov ebp, esi",
+                "add ebp, 0x54",
+                "pop ebp",
+                "mov dword ptr [esp + 4], eax",
+                "pop esi",
+                "ret",
+            ],
+            False,
+        ),
+        (
+            [
+                "lea ebp, [eax + 4]",
+                "mov esi, ebp",
+                "add esi, 0x54",
+                "call Thing (FUNCTION)",
+                "pop ebp",
+                "pop esi",
+                "ret",
+            ],
+            [
+                "lea esi, [eax + 4]",
+                "mov ebp, esi",
+                "add ebp, 0x54",
+                "pop ebp",
+                "call Thing (FUNCTION)",
+                "pop esi",
+                "ret",
+            ],
+            False,
+        ),
+        (
+            ["mov esi, eax", "push esi", "add ebx, esi", "ret"],
+            ["mov ebx, eax", "push ebx", "add esi, ebx", "ret"],
+            False,
+        ),
+        (
+            ["mov eax, dword ptr [esp + 4]", "push eax", "mov dword ptr [ebp], eax", "ret"],
+            ["mov ecx, dword ptr [esp + 4]", "push ecx", "mov dword ptr [ebp], ecx", "ret"],
+            False,
+        ),
+        (
+            [
+                "mov eax, dword ptr [esp + 4]",
+                "push eax",
+                "mov dword ptr [ebp], eax",
+                "call First (FUNCTION)",
+            ],
+            [
+                "mov ecx, dword ptr [esp + 4]",
+                "push ecx",
+                "mov dword ptr [ebp], ecx",
+                "call Second (FUNCTION)",
+            ],
             False,
         ),
         (

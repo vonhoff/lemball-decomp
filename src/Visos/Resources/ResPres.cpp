@@ -21,7 +21,3 @@ void ResPres::SetType()
 {
 	m_chunkType = kChunkPres;
 }
-
-ResPres::~ResPres()
-{
-}

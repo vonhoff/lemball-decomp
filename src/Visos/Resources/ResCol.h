@@ -14,7 +14,6 @@ public:
 	static ResCol* Load(unsigned int p_resourceId);
 	virtual void OnLoad();  // vtable+0x2c
 	virtual void SetType(); // vtable+0x34
-	virtual ~ResCol();      // vtable+0x00
 
 private:
 	unsigned int m_colour; // 0x48

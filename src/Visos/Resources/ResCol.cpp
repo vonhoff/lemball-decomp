@@ -28,7 +28,3 @@ void ResCol::OnLoad()
 {
 	m_colour = *(unsigned int*) m_data;
 }
-
-ResCol::~ResCol()
-{
-}

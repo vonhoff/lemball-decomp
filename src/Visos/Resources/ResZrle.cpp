@@ -55,8 +55,3 @@ void ResZrle::SetType()
 	m_chunkType = 0x5a524c45;
 	m_headerSkip = 0xc;
 }
-
-// 68K 0x10115f3c __dt__8CResZRLEFv
-ResZrle::~ResZrle()
-{
-}

@@ -23,8 +23,3 @@ void ResBin::SetType()
 {
 	m_chunkType = 0x42494e20;
 }
-
-// 68K 0x101010d8 __dt__7CResBINFv
-ResBin::~ResBin()
-{
-}

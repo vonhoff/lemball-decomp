@@ -37,8 +37,3 @@ void ResBitmap::SetType()
 	m_chunkType = 0x42544d50;
 	m_headerSkip = 0xc;
 }
-
-// 68K 0x101162f6 __dt__10CResBITMAPFv
-ResBitmap::~ResBitmap()
-{
-}

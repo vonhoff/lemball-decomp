@@ -22,7 +22,6 @@ public:
 		m_y = 0;
 		m_x = 0;
 	}
-	inline virtual ~ResRaster() {}
 
 	friend class BaseFrontendDrawer;
 	friend class MainOptions1Drawer;
@@ -47,7 +46,6 @@ public:
 	static ResBitmap* Load(unsigned int p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
-	virtual ~ResBitmap();     // vtable+0x00
 
 	friend class BaseFrontendDrawer;
 	friend class BitmapRes;
@@ -60,6 +58,7 @@ private:
 	int m_rendered;        // 0x50
 };
 
+// 68K 0x101162f6 __dt__10CResBITMAPFv
 // SYNTHETIC: LEMBALL 0x0045eb80
 // ResBitmap::`scalar deleting destructor'
 

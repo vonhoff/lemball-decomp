@@ -17,7 +17,6 @@ public:
 	static ResPalette* Load(unsigned int p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
-	virtual ~ResPalette();    // vtable+0x00
 
 	friend void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 											  ResPalette* p_palette,
@@ -28,6 +27,7 @@ private:
 	undefined4 m_paletteState; // 0x48
 };
 
+// 68K 0x10100f5c __dt__11CResPALETTEFv
 // SYNTHETIC: LEMBALL 0x0045ea50
 // ResPalette::`scalar deleting destructor'
 

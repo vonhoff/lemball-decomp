@@ -33,8 +33,3 @@ void ResPalette::SetHeader()
 	PaletteHeader* header = (PaletteHeader*) m_name;
 	m_paletteState = header->m_paletteState;
 }
-
-// 68K 0x10100f5c __dt__11CResPALETTEFv
-ResPalette::~ResPalette()
-{
-}

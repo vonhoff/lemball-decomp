@@ -26,7 +26,6 @@ public:
 	static ResZrle* Load(unsigned int p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
-	virtual ~ResZrle();       // vtable+0x00
 
 	friend class Text;
 	friend class ResAnim;
@@ -42,6 +41,7 @@ private:
 	short m_originY; // 0x52
 };
 
+// 68K 0x10115f3c __dt__8CResZRLEFv
 // SYNTHETIC: LEMBALL 0x0045e850
 // ResZrle::`vector deleting destructor'
 
