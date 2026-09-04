@@ -80,10 +80,10 @@ void Mine::StepOn(GameObject* p_object)
 }
 
 // 68K 0x106165be IsUsable__5CMineF7eAction
-// STUB: LEMBALL 0x00423e90
+// FUNCTION: LEMBALL 0x00423e90
 bool Mine::IsUsable(eAction p_action)
 {
-	return 0;
+	return p_action == (eAction) 8 || p_action == (eAction) 0x18;
 }
 
 // 68K 0x106165fa Process__5CMineFv
