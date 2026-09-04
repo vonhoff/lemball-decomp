@@ -9,7 +9,11 @@
 class MramBlock : public MBlock {
 public:
 	MramBlock(Arena* p_arena, MBlock* p_previous, char* p_description, unsigned long p_totalSize);
-	virtual ~MramBlock();
+	// 68K 0x10100de0 __dt__10CMRAMBlockFv
+	virtual ~MramBlock() {}
 };
+
+// SYNTHETIC: LEMBALL 0x0045a900
+// MramBlock::`scalar deleting destructor'
 
 #endif

@@ -7,9 +7,9 @@
 #include "WriteSocket.h"       // complete type
 
 // SIZE 0xe0
-// VTABLE: LEMBALL 0x0049a088 native window shell at +0xc0
-// VTABLE: LEMBALL 0x0049a090 WriteSocket virtual base at +0x48
-// VTABLE: LEMBALL 0x0049a0c0 BaseCommonSocket virtual base at +0x18
+// VTABLE: LEMBALL 0x0049a088 TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a090 BaseSocket
+// VTABLE: LEMBALL 0x0049a0c0 TcpIpWriteSocket
 class TcpIpWriteSocket : public virtual BaseCommonSocket, public virtual WriteSocket, public virtual TcpIpCommonSocket {
 public:
 	TcpIpWriteSocket();
@@ -27,7 +27,22 @@ private:
 	undefined m_sockaddrPadding[8]; // 0x0c
 };
 
+// SYNTHETIC: LEMBALL 0x00471bf0 SYMBOL
+// ?SetDestAddr@TcpIpWriteSocket@@WPPPPPOMA@AEXPAVNetworkAddress@@@Z
+
+// SYNTHETIC: LEMBALL 0x00471c00 SYMBOL
+// ?SendPacket@TcpIpWriteSocket@@WPPPPPOMA@AEHPBEH@Z
+
+// SYNTHETIC: LEMBALL 0x00471c10 SYMBOL
+// ?SetPort@TcpIpWriteSocket@@WPPPPPOMA@AEXF@Z
+
+// SYNTHETIC: LEMBALL 0x00471e60 SYMBOL
+// ?SysCloseSocket@TcpIpCommonSocket@@WPPPPPPDI@AEHXZ
+
 // SYNTHETIC: LEMBALL 0x00471e80
 // TcpIpWriteSocket::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00471ec0 SYMBOL
+// ?SocketError@TcpIpCommonSocket@@WPPPPPPDI@AEXXZ
 
 #endif

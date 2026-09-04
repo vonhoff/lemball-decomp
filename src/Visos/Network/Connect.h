@@ -5,10 +5,10 @@
 #include "RwSocket.h" // complete type
 
 // SIZE 0x15c
-// VTABLE: LEMBALL 0x00499140 ReadSocket virtual base
-// VTABLE: LEMBALL 0x00499168 WriteSocket virtual base
-// VTABLE: LEMBALL 0x00499198 BaseCommonSocket virtual base
-// VTABLE: LEMBALL 0x004991a8 primary
+// VTABLE: LEMBALL 0x00499140 BaseSocket's `ReadSocket
+// VTABLE: LEMBALL 0x00499168 BaseSocket's `WriteSocket
+// VTABLE: LEMBALL 0x00499198 RwSocket
+// VTABLE: LEMBALL 0x004991a8 CConnect
 class CConnect : public virtual RwSocket {
 public:
 	CConnect();
@@ -52,4 +52,14 @@ private:
 typedef CConnect Connect;
 
 extern Connect* g_pActiveConnection;
+
+// SYNTHETIC: LEMBALL 0x00462da0 SYMBOL
+// ??_ECConnect@@$4PPPPPPPM@A@AEPAXI@Z
+
+// SYNTHETIC: LEMBALL 0x00462e00 SYMBOL
+// ??_ECConnect@@$4PPPPPPPM@DA@AEPAXI@Z
+
+// SYNTHETIC: LEMBALL 0x00462e20 SYMBOL
+// ??_ECConnect@@$4PPPPPPPM@KI@AEPAXI@Z
+
 #endif

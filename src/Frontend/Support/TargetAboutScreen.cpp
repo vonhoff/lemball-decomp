@@ -7,9 +7,9 @@
 #include "../../Visos/Foundation/VsString.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Graphics/GWnd.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/HotAreaHandler.h"
-#include "../../Visos/Graphics/PvGWnd.h"
 #include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/MogRes.h"
@@ -32,7 +32,7 @@ char g_szAboutWeatherManKey[] = "John Ketley is a Weatherman, and so is Michael 
 // GLOBAL: LEMBALL 0x0049fa40
 char g_szVisosBuild[] = "ViSOS Build ";
 
-struct AboutTextWindowBase : public PvGWnd, public HotAreaHandler {};
+struct AboutTextWindowBase : public GWnd, public HotAreaHandler {};
 
 // GLOBAL: LEMBALL 0x004a78d0
 char g_szVisosBuildBuffer[80];

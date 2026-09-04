@@ -5,7 +5,7 @@
 #include "../../Visos/Graphics/GraphicButton.h" // complete type
 
 // SIZE 0x138
-// VTABLE: LEMBALL 0x00498050 PvGWnd
+// VTABLE: LEMBALL 0x00498050 GWnd
 // VTABLE: LEMBALL 0x00498028 HotAreaHandler
 class TrackerButton : public GraphicButton {
 public:

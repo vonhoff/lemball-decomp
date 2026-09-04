@@ -5,7 +5,7 @@
 #include "../../Visos/Graphics/ToggleButton.h" // complete type
 
 // SIZE 0x13c
-// VTABLE: LEMBALL 0x004972b8 PvGWnd
+// VTABLE: LEMBALL 0x004972b8 GWnd
 // VTABLE: LEMBALL 0x00497290 HotAreaHandler
 class PanelPauseButton : public ToggleButton {
 public:

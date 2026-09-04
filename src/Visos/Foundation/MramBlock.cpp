@@ -9,9 +9,3 @@ MramBlock::MramBlock(Arena* p_arena, MBlock* p_previous, char* p_description, un
 	m_data = (unsigned char*) (this + 1);
 	m_signature = 0x524d424c;
 }
-
-// 68K 0x10100de0 __dt__10CMRAMBlockFv
-// FUNCTION: LEMBALL 0x0045a900
-MramBlock::~MramBlock()
-{
-}

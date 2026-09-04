@@ -2,21 +2,17 @@
 #define LEMBALL_VISOS_NETWORK_FILERWSOCKET_H
 
 #include "../../Common.h"
-#include "BaseCommonSocket.h" // complete type
-#include "FileCommonSocket.h" // complete type
-#include "ReadSocket.h"       // complete type
-#include "WriteSocket.h"      // complete type
+#include "FileReadSocket.h"  // complete type
+#include "FileWriteSocket.h" // complete type
+#include "RwSocket.h"        // complete type
 
-// SIZE 0x150
-// VTABLE: LEMBALL 0x0049a79c native callback
-// VTABLE: LEMBALL 0x0049a7a0 NetworkFile view
-// VTABLE: LEMBALL 0x0049a7e0 ReadSocket view
-// VTABLE: LEMBALL 0x0049a808 WriteSocket view
-// VTABLE: LEMBALL 0x0049a838 BaseCommonSocket view
-class FileRwSocket : public virtual BaseCommonSocket,
-					 public virtual WriteSocket,
-					 public virtual ReadSocket,
-					 public FileCommonSocket {
+// SIZE 0x154
+// VTABLE: LEMBALL 0x0049a79c FileCommonSocket
+// VTABLE: LEMBALL 0x0049a7a0 NetworkFile
+// VTABLE: LEMBALL 0x0049a7e0 BaseSocket's `ReadSocket
+// VTABLE: LEMBALL 0x0049a808 BaseSocket's `WriteSocket
+// VTABLE: LEMBALL 0x0049a838 FileRwSocket
+class FileRwSocket : public virtual RwSocket, public virtual FileReadSocket, public virtual FileWriteSocket {
 public:
 	FileRwSocket();
 	virtual bool SendPacket(const unsigned char* p_data, int p_size); // vtable+0x24
@@ -24,12 +20,21 @@ public:
 	virtual NetworkMessage* ReceiveAcknowledgement();                 // vtable+0x1c
 	virtual void SendAcknowledgement();                               // vtable+0x18
 	virtual ~FileRwSocket();                                          // vtable+0x14
-
-private:
-	undefined m_storage[0x150]; // 0x00
 };
+
+// SYNTHETIC: LEMBALL 0x0047ba40 SYMBOL
+// ?SocketError@FileCommonSocket@@WPPPPPOMI@AEXXZ
+
+// SYNTHETIC: LEMBALL 0x0047baf0 SYMBOL
+// ?SetDestAddr@FileWriteSocket@@WPPPPPOLA@AEXPAVNetworkAddress@@@Z
+
+// SYNTHETIC: LEMBALL 0x0047be30 SYMBOL
+// ?SysCloseSocket@FileCommonSocket@@WPPPPPOMI@AEHXZ
 
 // SYNTHETIC: LEMBALL 0x0047be50
 // FileRwSocket::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x0047bf00 SYMBOL
+// ??_EFileRwSocket@@$4PPPPPPPM@KI@AEPAXI@Z
 
 #endif

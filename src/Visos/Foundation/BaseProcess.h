@@ -25,6 +25,6 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x00407ef0
-// CProcess::`scalar deleting destructor'
+// BaseProcess::`scalar deleting destructor'
 
 #endif

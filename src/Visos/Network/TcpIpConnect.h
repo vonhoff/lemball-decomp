@@ -6,11 +6,11 @@
 #include "TcpIpRwSocket.h" // complete type
 
 // SIZE 0x170
-// VTABLE: LEMBALL 0x0049a368 native async callback
-// VTABLE: LEMBALL 0x0049a370 ReadSocket view
-// VTABLE: LEMBALL 0x0049a398 WriteSocket view
-// VTABLE: LEMBALL 0x0049a3c8 BaseCommonSocket view
-// VTABLE: LEMBALL 0x0049a3d8 primary Connect view
+// VTABLE: LEMBALL 0x0049a368 TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a370 BaseSocket's `ReadSocket
+// VTABLE: LEMBALL 0x0049a398 BaseSocket's `WriteSocket
+// VTABLE: LEMBALL 0x0049a3c8 RwSocket
+// VTABLE: LEMBALL 0x0049a3d8 CConnect
 class TcpIpConnect : public Connect, public TcpIpRwSocket {
 public:
 	bool Start(const char* p_localName, const char* p_remoteName);
@@ -27,5 +27,8 @@ public:
 
 // SYNTHETIC: LEMBALL 0x00471b10
 // TcpIpConnect::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00471c60 SYMBOL
+// ??_ETcpIpConnect@@$4PPPPPPPM@KI@AEPAXI@Z
 
 #endif

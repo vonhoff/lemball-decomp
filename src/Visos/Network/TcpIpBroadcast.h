@@ -6,11 +6,11 @@
 #include "TcpIpRwSocket.h" // complete type
 
 // SIZE 0x16c
-// VTABLE: LEMBALL 0x0049a158 native async callback
-// VTABLE: LEMBALL 0x0049a160 ReadSocket view
-// VTABLE: LEMBALL 0x0049a188 WriteSocket view
-// VTABLE: LEMBALL 0x0049a1b8 BaseCommonSocket view
-// VTABLE: LEMBALL 0x0049a1c8 primary Broadcast view
+// VTABLE: LEMBALL 0x0049a158 TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a160 BaseSocket's `ReadSocket
+// VTABLE: LEMBALL 0x0049a188 BaseSocket's `WriteSocket
+// VTABLE: LEMBALL 0x0049a1b8 RwSocket
+// VTABLE: LEMBALL 0x0049a1c8 Broadcast
 class TcpIpBroadcast : public Broadcast, public TcpIpRwSocket {
 public:
 	TcpIpBroadcast();
@@ -32,5 +32,14 @@ private:
 
 // SYNTHETIC: LEMBALL 0x00471f60
 // TcpIpBroadcast::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00472000 SYMBOL
+// ??_ETcpIpBroadcast@@$4PPPPPPPM@KI@AEPAXI@Z
+
+// SYNTHETIC: LEMBALL 0x00472010 SYMBOL
+// ?SendAcknowledgement@TcpIpRwSocket@@$4PPPPPPPM@IA@AEXXZ
+
+// SYNTHETIC: LEMBALL 0x00472020 SYMBOL
+// ?ReceiveAcknowledgement@TcpIpRwSocket@@$4PPPPPPPM@IA@AEPAVNetworkMessage@@XZ
 
 #endif

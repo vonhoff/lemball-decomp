@@ -45,7 +45,3 @@ void* MBlock::operator new(size_t p_size, void* p_memory)
 {
 	return p_memory;
 }
-
-void MBlock::operator delete(void* p_memory)
-{
-}

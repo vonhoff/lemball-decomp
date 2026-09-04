@@ -7,17 +7,17 @@
 #include "../../Visos/Foundation/TextManager.h"      // complete type
 #include "../../Visos/Foundation/VsPoint.h"          // complete type
 #include "../../Visos/Foundation/VsRect.h"           // complete type
+#include "../../Visos/Graphics/GWnd.h"               // complete type
 #include "../../Visos/Graphics/HotAreaHandler.h"     // complete type
 #include "../../Visos/Graphics/Line.h"               // complete type
-#include "../../Visos/Graphics/PvGWnd.h"             // complete type
 #include "PauseWindowFreeVramInterface.h"            // complete type
 
 // SIZE 0x20c
-// VTABLE: LEMBALL 0x00497798 PvGWnd
+// VTABLE: LEMBALL 0x00497798 GWnd
 // VTABLE: LEMBALL 0x00497788 BaseQueueHandler
 // VTABLE: LEMBALL 0x00497780 PauseWindowFreeVramInterface
 // VTABLE: LEMBALL 0x00497758 HotAreaHandler
-class PauseWindow : public PvGWnd, public BaseQueueHandler, public PauseWindowFreeVramInterface, public HotAreaHandler {
+class PauseWindow : public GWnd, public BaseQueueHandler, public PauseWindowFreeVramInterface, public HotAreaHandler {
 public:
 	BaseRemap* Remap(int p_item);
 	PauseWindow(ReceiveWindowState* p_arg0, PvGWnd* p_arg1, ePauseWindowMessages p_arg2);

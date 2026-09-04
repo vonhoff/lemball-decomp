@@ -12,6 +12,33 @@
 #include <new.h>
 #include <windows.h>
 
+// FUNCTION: LEMBALL 0x0043a510
+void GWnd::Dummy3c()
+{
+}
+
+// FUNCTION: LEMBALL 0x0043a520
+void GWnd::OnDestroy()
+{
+}
+
+// FUNCTION: LEMBALL 0x0043a530
+void GWnd::OnSize()
+{
+}
+
+// STUB: LEMBALL 0x00463b50
+GWnd::GWnd()
+{
+	m_refreshHeight = 0;
+	m_refreshWidth = 0;
+	m_gdi = 0;
+	m_refreshY = 0;
+	m_gdiFlags = 0;
+	m_refreshX = 0;
+	m_paletteResourceId = 0;
+}
+
 // 68K 0x1010a70a __dt__5CGWndFv
 // STUB: LEMBALL 0x00463bd0
 GWnd::~GWnd()

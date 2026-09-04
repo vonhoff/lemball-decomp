@@ -24,6 +24,6 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x00455e10
-// EntryHandler::`scalar deleting destructor'
+// EntryHandler::`vector deleting destructor'
 
 #endif

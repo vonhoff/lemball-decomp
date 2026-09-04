@@ -11,8 +11,8 @@ public:
 	virtual bool Create(const char* p_filename, unsigned char p_mode);                       // vtable+0x04
 	virtual bool CheckExists(const char* p_filename);                                        // vtable+0x08
 	virtual bool Close();                                                                    // vtable+0x0c
-	virtual bool Delete(const char* p_filename);                                             // vtable+0x10
 	virtual bool Delete();                                                                   // vtable+0x14
+	virtual bool Delete(const char* p_filename);                                             // vtable+0x10
 	virtual bool Write(const unsigned char* p_data, int p_size);                             // vtable+0x18
 	virtual bool Read(unsigned char* p_data, int p_size);                                    // vtable+0x1c
 	virtual bool Seek(int p_position);                                                       // vtable+0x20

@@ -2,14 +2,13 @@
 #define LEMBALL_VISOS_GRAPHICS_GWND_H
 
 #include "../../Common.h"
-#include "Wnd.h" // complete type
-
-struct TargetWinGDrawCodecState;
+#include "PvGWnd.h" // complete type
 
 // SIZE 0x90
-// VTABLE: LEMBALL 0x00499260
-class GWnd : public Wnd {
+// VTABLE: LEMBALL 0x00499318
+class GWnd : public PvGWnd {
 public:
+	GWnd();
 	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title, unsigned long p_paletteId); // vtable+0xa4
 	virtual void OnPaint(const VsRect& p_rect);                                                           // vtable+0xa8
 	virtual void AttachPalette(unsigned long p_paletteId);                                                // vtable+0xac
@@ -25,43 +24,10 @@ public:
 	virtual void _OnMove();                                                    // vtable+0x28
 	virtual void _OnSize();                                                    // vtable+0x20
 	virtual void Refresh(VsRect* p_rect);                                      // vtable+0x70
+	virtual void Dummy3c();                                                    // vtable+0x3c
+	virtual void OnDestroy();                                                  // vtable+0x40
+	virtual void OnSize();                                                     // vtable+0x44
 	~GWnd();
-
-	friend class Main2DDisplay;
-	friend class PvGWnd;
-	friend class NetworkOptionsDrawer;
-	friend class GraphicButton;
-	friend class AnimWnd;
-	friend class PvButton;
-	friend class SpriteWindow;
-	friend class TrackWindow;
-	friend class HiliteWindow;
-	friend class PasswordHiliteWindow;
-	friend class HiliteController;
-	friend class PasswordDrawer;
-	friend class GunController;
-	friend class GunButtons;
-	friend class HiliteButtons;
-	friend class DepressedButton;
-	friend class FrontendResourceLoader;
-	friend class CdLoadAnim;
-	friend class BaseCursor;
-	friend TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
-	friend int __stdcall TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state,
-												  void* p_request,
-												  long p_param2);
-
-private:
-	Gdi* m_gdi;                       // 0x4c
-	unsigned int m_gdiFlags;          // 0x50
-	unsigned int m_paletteResourceId; // 0x54
-	undefined m_renderState0[0x10];   // 0x58
-	undefined m_renderState1[0x10];   // 0x68
-	undefined m_renderState2[0x10];   // 0x78
-	unsigned short m_refreshWidth;    // 0x88
-	unsigned short m_refreshHeight;   // 0x8a
-	unsigned short m_refreshX;        // 0x8c
-	unsigned short m_refreshY;        // 0x8e
 };
 
 #endif

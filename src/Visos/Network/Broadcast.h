@@ -5,10 +5,10 @@
 #include "RwSocket.h" // complete type
 
 // SIZE 0x128
-// VTABLE: LEMBALL 0x00499080 ReadSocket virtual base
-// VTABLE: LEMBALL 0x004990a8 WriteSocket virtual base
-// VTABLE: LEMBALL 0x004990d8 BaseCommonSocket virtual base
-// VTABLE: LEMBALL 0x004990e8 primary
+// VTABLE: LEMBALL 0x00499080 BaseSocket's `ReadSocket
+// VTABLE: LEMBALL 0x004990a8 BaseSocket's `WriteSocket
+// VTABLE: LEMBALL 0x004990d8 RwSocket
+// VTABLE: LEMBALL 0x004990e8 Broadcast
 class Broadcast : public virtual RwSocket {
 public:
 	Broadcast();
@@ -42,5 +42,20 @@ private:
 	unsigned int m_lastBroadcastTime;  // 0x18
 	NetworkAddress* m_specificAddress; // 0x1c
 };
+
+// SYNTHETIC: LEMBALL 0x00462bb0 SYMBOL
+// ??_EBroadcast@@$4PPPPPPPM@A@AEPAXI@Z
+
+// SYNTHETIC: LEMBALL 0x00462c10 SYMBOL
+// ??_EBroadcast@@$4PPPPPPPM@DA@AEPAXI@Z
+
+// SYNTHETIC: LEMBALL 0x00462c20 SYMBOL
+// ?SendAcknowledgement@RwSocket@@$4PPPPPPPM@PPPPPOPI@AEXXZ
+
+// SYNTHETIC: LEMBALL 0x00462c40 SYMBOL
+// ?ReceiveAcknowledgement@RwSocket@@$4PPPPPPPM@PPPPPOPI@AEPAVNetworkMessage@@XZ
+
+// SYNTHETIC: LEMBALL 0x00462c60 SYMBOL
+// ??_EBroadcast@@$4PPPPPPPM@KI@AEPAXI@Z
 
 #endif

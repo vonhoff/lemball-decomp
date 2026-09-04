@@ -2,11 +2,11 @@
 #define LEMBALL_FRONTEND_WINDOWS_PASSWORDHILITEWINDOW_H
 
 #include "../../Common.h"
-#include "../../Visos/Graphics/PvGWnd.h" // complete type
+#include "../../Visos/Graphics/GWnd.h" // complete type
 
 // SIZE 0x90
 // VTABLE: LEMBALL 0x00498478
-class PasswordHiliteWindow : public PvGWnd {
+class PasswordHiliteWindow : public GWnd {
 public:
 	PasswordHiliteWindow();
 	virtual void Dummy3c(); // vtable+0x3c

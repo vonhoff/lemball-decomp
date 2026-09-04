@@ -48,7 +48,7 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x00418330
-// Bullet::`scalar deleting destructor'
+// Bullet::`vector deleting destructor'
 
 // SYNTHETIC: LEMBALL 0x0041af50
 // ??_EBullet@@WBDI@AEPAXI@Z

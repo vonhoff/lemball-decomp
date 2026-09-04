@@ -1,5 +1,7 @@
 #include "MoverManager.h"
 
+#include "Mover.h"
+
 // 68K 0x10617f0e __ct__13CMoverManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0042f190
 MoverManager::MoverManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x1a, 0xf)
@@ -16,9 +18,29 @@ void MoverManager::Restart()
 }
 
 // 68K 0x10617ffe Initialise__13CMoverManagerFi
-// STUB: LEMBALL 0x0042f220
+// FUNCTION: LEMBALL 0x0042f220
 void MoverManager::Initialise(int p_capacity)
 {
+	m_capacity = p_capacity;
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_movers = 0;
+		return;
+	}
+	if (m_movers == 0) {
+		m_movers = new Mover[p_capacity];
+		for (int i = 0; i < m_capacity; i++) {
+			m_movers[i].Restart();
+			m_movers[i].m_manager = this;
+		}
+	}
+}
+
+// 68K 0x106180ca __dt__13CMoverManagerFv
+// FUNCTION: LEMBALL 0x0042f2c0
+MoverManager::~MoverManager()
+{
+	delete[] m_movers;
 }
 
 // 68K 0x10618140 Find__13CMoverManagerFiiRi
@@ -60,10 +82,5 @@ void MoverManager::Switch(int p_message, int p_id)
 // 68K 0x106183b8 LoadLevel__13CMoverManagerFPUciUc
 // STUB: LEMBALL 0x0042f680
 void MoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
-{
-}
-
-// 68K 0x106180ca __dt__13CMoverManagerFv
-MoverManager::~MoverManager()
 {
 }

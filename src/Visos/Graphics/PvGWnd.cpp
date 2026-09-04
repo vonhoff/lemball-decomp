@@ -1,11 +1,5 @@
 #include "PvGWnd.h"
 
-#include "Bitmap.h"
-#include "CopyToBackBuff.h"
-#include "Line.h"
-
-#include <new.h>
-
 // 68K 0x1010b56c OnVisibilityChange__7CPVGWndFv
 // STUB: LEMBALL 0x00432530
 void PvGWnd::OnVisibilityChange()
@@ -18,41 +12,11 @@ void PvGWnd::SetDontUpdateRect(const VsRect& p_rect)
 {
 }
 
-// FUNCTION: LEMBALL 0x0043a510
-void PvGWnd::Dummy3c()
-{
-}
-
-// FUNCTION: LEMBALL 0x0043a520
-void PvGWnd::OnDestroy()
-{
-}
-
-// FUNCTION: LEMBALL 0x0043a530
-void PvGWnd::OnSize()
-{
-}
-
 // 68K 0x1010b5ba GetStyle__7CPVGWndFv
 // FUNCTION: LEMBALL 0x004453a0
 unsigned int PvGWnd::GetStyle()
 {
 	return 2147483648;
-}
-
-// STUB: LEMBALL 0x00463b50
-PvGWnd::PvGWnd()
-{
-	new (m_renderState0) Line();
-	new (m_renderState1) Bitmap();
-	new (m_renderState2) CopyToBackBuff();
-	m_refreshHeight = 0;
-	m_refreshWidth = 0;
-	m_gdi = 0;
-	m_refreshY = 0;
-	m_gdiFlags = 0;
-	m_refreshX = 0;
-	m_paletteResourceId = 0;
 }
 
 // 68K 0x10216626 Clear__7CPVGWndFi

@@ -8,7 +8,7 @@
 #include "../../Visos/Graphics/Line.h"            // complete type
 
 // SIZE 0x1b8
-// VTABLE: LEMBALL 0x00497508 PvGWnd
+// VTABLE: LEMBALL 0x00497508 GWnd
 // VTABLE: LEMBALL 0x004974e0 HotAreaHandler
 class PanelButton : public DepressedButton {
 public:

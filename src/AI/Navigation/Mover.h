@@ -27,6 +27,8 @@ public:
 	void Switch();
 	void VerifyObjects();
 
+	friend class MoverManager;
+
 private:
 	unsigned int m_active;          // 0x138
 	unsigned int m_moving;          // 0x13c

@@ -75,7 +75,10 @@ def insn_text(entry) -> str:
 
 def normalize_asm(s: str) -> str:
     s = s.split("\t")[0].strip()
-    s = re.sub(r"Thunk of '([^']+)' \(THUNK\)", r"\1 (FUNCTION)", s)
+    # Generated MSVC names contain apostrophes themselves (for example,
+    # ``Thing::`scalar deleting destructor'``), so the wrapper quotes must be
+    # matched greedily rather than stopping at the first apostrophe.
+    s = re.sub(r"Thunk of '(.+)' \(THUNK\)$", r"\1 (FUNCTION)", s)
     s = re.sub(r" \(THUNK\)", " (FUNCTION)", s)
     return s
 
@@ -700,6 +703,11 @@ def run_selftest() -> int:
 
     thunk_samples = (
         ("call Thing::Run (FUNCTION)", "call Thunk of 'Thing::Run' (THUNK)", True),
+        (
+            "jmp Thing::`scalar deleting destructor' (FUNCTION)",
+            "jmp Thunk of 'Thing::`scalar deleting destructor'' (THUNK)",
+            True,
+        ),
         ("call <OFFSET1>", "call Thunk of 'Thing::Run' (THUNK)", True),
         ("call <OFFSET1>", "call _fopen (UNK)", True),
         ("mov dword ptr [esi], <OFFSET2>", "mov dword ptr [esi], Thing::`vftable' (VTABLE)", True),

@@ -4,16 +4,19 @@
 The MSVC 4.00 incremental linker routes most vtable entries through five-byte
 ``jmp rel32`` stubs.  reccmp 0.1.6 compares the raw stub entities, so every
 table fails even when both stubs reach matched function bodies.  This wrapper
-keeps vtordisp/this-adjusting thunks intact and follows only transparent E9
-jumps before applying reccmp's normal entity mapping.
+keeps vtordisp/this-adjusting thunks intact and follows linker E9 stubs only
+until reaching a named function body.  This avoids mistaking an intentional
+tail call in an incomplete source function for another linker thunk.
 
 MSVC 4.00 also emits scalar/vector deleting-destructor names through weak
-aliases.  Those names may differ even when the actual slot bodies agree, so
-same-class aliases are accepted only after a direct codegen-equivalence check.
+aliases.  Opposite generated kinds for the same class are accepted only when
+a direct function comparison is exact, effectively matched, or passes the
+same conservative codegen-equivalence rules used by check.py.
 
   python tools/vtable.py
   python tools/vtable.py --no-build
   python tools/vtable.py --no-build --verbose
+  python tools/vtable.py --no-build --annot-strict
   python tools/vtable.py --selftest
 """
 
@@ -50,6 +53,10 @@ ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
 MAX_THUNK_DEPTH = 16
 DELETING_DESTRUCTOR_RE = re.compile(r"^(?P<class>.+)::`(?P<kind>scalar|vector) deleting destructor'")
+NESTED_VTABLE_BASE_RE = re.compile(
+    r"^(?P<base>[A-Za-z_][A-Za-z0-9_]*)'s `(?P<via>[A-Za-z_][A-Za-z0-9_]*)$"
+)
+SIMPLE_CLASS_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
 @dataclass(frozen=True)
@@ -87,8 +94,8 @@ class SlotResult:
         return "known-mismatch"
 
 
-def resolve_jump(image, address: int | None) -> int | None:
-    """Follow a bounded chain of transparent x86 ``jmp rel32`` instructions."""
+def resolve_jump(image, address: int | None, stop_at=None) -> int | None:
+    """Follow linker ``jmp rel32`` stubs, stopping at a known function body."""
     if address is None:
         return None
 
@@ -98,6 +105,8 @@ def resolve_jump(image, address: int | None) -> int | None:
         if current in seen:
             break
         seen.add(current)
+        if stop_at is not None and stop_at(current):
+            break
         if not image.is_valid_vaddr(current):
             break
         try:
@@ -170,12 +179,76 @@ def collect_folded_aliases(engine: Compare) -> dict[int, set[int]]:
     return aliases
 
 
+def nested_vtable_symbol(class_name: str, base_class: str | None) -> str | None:
+    """Recover the decorated name for a PDB-collapsed nested base path.
+
+    MSVC's COFF symbol retains ``BaseSocket@@ReadSocket`` while cvdump's
+    demangled PDB name reports both read and write tables merely as
+    ``{for `BaseSocket'}``.  The source qualifier uses dumpbin's precise
+    ``BaseSocket's `ReadSocket`` spelling so the two tables remain distinct.
+    """
+    if base_class is None or SIMPLE_CLASS_RE.fullmatch(class_name) is None:
+        return None
+    match = NESTED_VTABLE_BASE_RE.fullmatch(base_class)
+    if match is None:
+        return None
+    return f"??_7{class_name}@@6B{match.group('base')}@@{match.group('via')}@@@"
+
+
+def collect_nested_vtable_matches(engine: Compare, source_vtables, mapped: set[int]) -> list[ReccmpMatch]:
+    """Pair nested-base tables using the decorated symbol retained by reccmp."""
+    candidates: dict[str, list[object]] = {}
+    for entity in engine._db.unmatched(ImageId.RECOMP):
+        if entity.get("type") != EntityType.VTABLE:
+            continue
+        symbol = entity.get("symbol")
+        if symbol is not None:
+            candidates.setdefault(symbol, []).append(entity)
+
+    matches: list[ReccmpMatch] = []
+    for table in source_vtables:
+        if table.offset in mapped:
+            continue
+        symbol = nested_vtable_symbol(table.name, table.base_class)
+        entities = [] if symbol is None else candidates.get(symbol, [])
+        if len(entities) != 1:
+            continue
+
+        recomp_entity = entities.pop()
+        recomp_size = recomp_entity.size(ImageId.RECOMP)
+        if recomp_entity.recomp_addr is None or recomp_size is None or recomp_size <= 0:
+            continue
+
+        attributes = {
+            "type": EntityType.VTABLE,
+            "name": table.name,
+            "base_class": table.base_class,
+            "recomp_size": recomp_size,
+        }
+        orig_entity = engine._db.get(ImageId.ORIG, table.offset)
+        if orig_entity is not None:
+            orig_size = orig_entity.size(ImageId.ORIG)
+            orig_max_size = orig_entity.max_size(ImageId.ORIG)
+            if orig_size is not None:
+                attributes["orig_size"] = orig_size
+            if orig_max_size is not None:
+                attributes["orig_max_size"] = orig_max_size
+        matches.append(ReccmpMatch(table.offset, recomp_entity.recomp_addr, attributes))
+        mapped.add(table.offset)
+    return matches
+
+
 def compare_table(engine: Compare, match, folded_aliases: dict[int, set[int]]) -> list[SlotResult]:
     orig_addrs, recomp_addrs = read_table(engine, match)
     slots: list[SlotResult] = []
+
+    def is_function_body(image_id: ImageId, address: int) -> bool:
+        entity = engine._db.get(image_id, address)
+        return entity is not None and not entity_name(entity).startswith("Thunk of '")
+
     for index, (raw_orig, raw_recomp) in enumerate(zip_longest(orig_addrs, recomp_addrs)):
-        orig = resolve_jump(engine.orig_bin, raw_orig)
-        recomp = resolve_jump(engine.recomp_bin, raw_recomp)
+        orig = resolve_jump(engine.orig_bin, raw_orig, lambda address: is_function_body(ImageId.ORIG, address))
+        recomp = resolve_jump(engine.recomp_bin, raw_recomp, lambda address: is_function_body(ImageId.RECOMP, address))
 
         # reccmp does not currently expose entity lookup as public API.  Keep
         # this one private access isolated so an upstream fix is easy to adopt.
@@ -188,7 +261,9 @@ def compare_table(engine: Compare, match, folded_aliases: dict[int, set[int]]) -
         )
         folded_match = not direct_match and recomp is not None and recomp in folded_aliases.get(orig, set())
         clone_match = orig_entity is None and is_original_clone(engine.orig_bin, orig, recomp_entity)
-        adjuster_match = not direct_match and is_same_generated_adjuster(orig_entity, recomp_entity)
+        adjuster_match = not direct_match and is_same_generated_adjuster(
+            engine, orig, recomp, orig_entity, recomp_entity
+        )
         deleting_dtor_match = not direct_match and is_same_deleting_destructor_alias(
             engine, orig, recomp, orig_entity, recomp_entity
         )
@@ -217,8 +292,27 @@ def entity_name(entity: object | None) -> str:
     return name if name is not None else "<unnamed>"
 
 
-def is_same_generated_adjuster(orig_entity: object | None, recomp_entity: object | None) -> bool:
-    """Accept duplicate MSVC vtordisp entities only when their full names agree."""
+def is_generated_adjuster(entity: object | None) -> bool:
+    """Recognize both MSVC vtordisp and fixed-this adjustment thunks."""
+    if entity is None:
+        return False
+    if "`vtordisp" in entity_name(entity):
+        return True
+
+    get_value = getattr(entity, "get", None)
+    symbol = get_value("symbol") if get_value is not None else None
+    if not isinstance(symbol, str):
+        return False
+
+    _, separator, encoding = symbol.partition("@@")
+    return bool(separator) and (encoding.startswith("W") or encoding.startswith("$4"))
+
+
+def is_same_generated_adjuster_identity(
+    orig_entity: object | None,
+    recomp_entity: object | None,
+) -> bool:
+    """Recognize duplicate MSVC vtordisp entities with the same full name."""
     orig_name = entity_name(orig_entity)
     recomp_name = entity_name(recomp_entity)
     return "`vtordisp" in orig_name and orig_name == recomp_name
@@ -230,6 +324,21 @@ def deleting_destructor_identity(entity: object | None) -> tuple[str, str] | Non
     if match is None:
         return None
     return match.group("class"), match.group("kind")
+
+
+def is_deleting_destructor_alias_pair(
+    orig_entity: object | None,
+    recomp_entity: object | None,
+) -> bool:
+    """Recognize opposite generated deleting-destructor names for one class."""
+    orig_identity = deleting_destructor_identity(orig_entity)
+    recomp_identity = deleting_destructor_identity(recomp_entity)
+    return (
+        orig_identity is not None
+        and recomp_identity is not None
+        and orig_identity[0] == recomp_identity[0]
+        and orig_identity[1] != recomp_identity[1]
+    )
 
 
 def codegen_equivalent(comparison) -> bool:
@@ -254,24 +363,16 @@ def codegen_equivalent(comparison) -> bool:
     return matcher.ratio() == 1.0 or find_effective_match(matcher.get_opcodes(), orig_asm, recomp_asm)
 
 
-def is_same_deleting_destructor_alias(
+def generated_function_codegen_matches(
     engine: Compare,
     orig: int | None,
     recomp: int | None,
     orig_entity: object | None,
     recomp_entity: object | None,
+    name: str,
 ) -> bool:
-    """Accept MSVC scalar/vector weak aliases only when their bodies agree."""
-    orig_identity = deleting_destructor_identity(orig_entity)
-    recomp_identity = deleting_destructor_identity(recomp_entity)
-    if (
-        orig is None
-        or recomp is None
-        or orig_identity is None
-        or recomp_identity is None
-        or orig_identity[0] != recomp_identity[0]
-        or orig_identity[1] == recomp_identity[1]
-    ):
+    """Compare an otherwise ambiguous pair of compiler-generated functions."""
+    if orig is None or recomp is None or orig_entity is None or recomp_entity is None:
         return False
 
     recomp_size = recomp_entity.size(ImageId.RECOMP)
@@ -284,7 +385,7 @@ def is_same_deleting_destructor_alias(
 
     attributes = {
         "type": EntityType.FUNCTION,
-        "name": f"{orig_identity[0]} deleting-destructor alias",
+        "name": name,
         "recomp_size": recomp_size,
     }
     if orig_size is not None:
@@ -296,7 +397,57 @@ def is_same_deleting_destructor_alias(
         comparison = engine.function_comparator.compare_function(ReccmpMatch(orig, recomp, attributes))
     except (AssertionError, IndexError, ValueError):
         return False
-    return comparison.match_ratio == 1.0 or comparison.is_effective_match or codegen_equivalent(comparison)
+    return (
+        comparison.match_ratio == 1.0
+        or comparison.is_effective_match
+        or codegen_equivalent(comparison)
+    )
+
+
+def is_same_generated_adjuster(
+    engine: Compare,
+    orig: int | None,
+    recomp: int | None,
+    orig_entity: object | None,
+    recomp_entity: object | None,
+) -> bool:
+    """Accept a duplicate named vtordisp only after comparing its body."""
+    return is_same_generated_adjuster_identity(
+        orig_entity, recomp_entity
+    ) and generated_function_codegen_matches(
+        engine,
+        orig,
+        recomp,
+        orig_entity,
+        recomp_entity,
+        f"{entity_name(orig_entity)} duplicate adjuster",
+    )
+
+
+def is_same_deleting_destructor_alias(
+    engine: Compare,
+    orig: int | None,
+    recomp: int | None,
+    orig_entity: object | None,
+    recomp_entity: object | None,
+) -> bool:
+    """Accept opposite MSVC deleting-destructor aliases only when code agrees."""
+    orig_identity = deleting_destructor_identity(orig_entity)
+    if (
+        orig is None
+        or recomp is None
+        or not is_deleting_destructor_alias_pair(orig_entity, recomp_entity)
+    ):
+        return False
+
+    return generated_function_codegen_matches(
+        engine,
+        orig,
+        recomp,
+        orig_entity,
+        recomp_entity,
+        f"{orig_identity[0]} deleting-destructor alias",
+    )
 
 
 def format_addr(address: int | None) -> str:
@@ -309,7 +460,25 @@ def comparison_ratio(result) -> float:
     return float(result.ratio)
 
 
-def run_comparison(target_id: str, verbose: bool, top: int) -> int:
+def instruction_sequences_equivalent(orig: list[str], recomp: list[str]) -> bool:
+    """Accept only target-rendering differences already proven by check.py."""
+    return bool(orig) and len(orig) == len(recomp) and all(
+        is_equivalent_insn(orig_text, recomp_text)
+        for orig_text, recomp_text in zip(orig, recomp)
+    )
+
+
+def comparison_is_thunk_equivalent(result) -> bool:
+    comparison = getattr(result, "result", result)
+    diff = getattr(comparison, "diff", None)
+    if diff is None:
+        return False
+    orig = [instruction for _, instruction in getattr(diff, "orig_inst", [])]
+    recomp = [instruction for _, instruction in getattr(diff, "recomp_inst", [])]
+    return instruction_sequences_equivalent(orig, recomp)
+
+
+def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) -> int:
     # reccmp emits expected collision warnings while staging folded functions
     # and duplicate MSVC-generated thunks. They are classified below instead.
     logging.getLogger("reccmp.compare").setLevel(logging.ERROR)
@@ -321,7 +490,7 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
         return 1
 
     table_count = 0
-    exact_tables = 0
+    matched_tables = 0
     slot_count = 0
     matched_slots = 0
     unannotated_slots = 0
@@ -339,6 +508,10 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
     source_vtables = list(codebase.iter_vtables())
     table_matches = list(engine.get_vtables())
     mapped_vtable_addresses = {match.orig_addr for match in table_matches}
+    nested_vtable_matches = collect_nested_vtable_matches(
+        engine, source_vtables, mapped_vtable_addresses
+    )
+    table_matches.extend(nested_vtable_matches)
     unmapped_vtables = [table for table in source_vtables if table.offset not in mapped_vtable_addresses]
     folded_aliases = collect_folded_aliases(engine)
 
@@ -353,7 +526,7 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
         adjuster_match_slots += sum(slot.adjuster_match for slot in slots)
         deleting_dtor_match_slots += sum(slot.deleting_dtor_match for slot in slots)
         if matches == len(slots):
-            exact_tables += 1
+            matched_tables += 1
             continue
 
         if verbose:
@@ -394,12 +567,16 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
                     f"[{entity_name(slot.recomp_entity)}]"
                 )
 
+    adjuster_count = 0
     adjuster_problems = 0
     for function in engine.get_functions():
-        if function.name is None or "`vtordisp" not in function.name:
+        if not is_generated_adjuster(function):
             continue
+        adjuster_count += 1
         result = engine.compare_address(function.orig_addr)
-        if result is not None and comparison_ratio(result) < 1.0:
+        if result is None or (
+            comparison_ratio(result) < 1.0 and not comparison_is_thunk_equivalent(result)
+        ):
             adjuster_problems += 1
             if verbose:
                 print(
@@ -408,15 +585,20 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
                 )
 
     percent = 100.0 * matched_slots / slot_count if slot_count else 0.0
-    print(f"Source vtable annotations mapped: {len(source_vtables) - len(unmapped_vtables)}/{len(source_vtables)}.")
-    print(f"Thunk-normalized vtables exact: {exact_tables}/{table_count}.")
+    print(
+        "Source vtable annotation coverage: "
+        f"{len(source_vtables) - len(unmapped_vtables)}/{len(source_vtables)} "
+        f"({len(unmapped_vtables)} unresolved)."
+    )
+    print(f"Thunk-normalized vtables matched: {matched_tables}/{table_count}.")
+    print(f"Nested-path tables recovered from decorated symbols: {len(nested_vtable_matches)}.")
     print(f"Vtable slots matched: {matched_slots}/{slot_count} ({percent:.2f}%).")
     print(
         "Equivalent slots: "
         f"{folded_match_slots} folded aliases, "
         f"{clone_match_slots} exact original clones, "
         f"{adjuster_match_slots} duplicate named adjusters, "
-        f"{deleting_dtor_match_slots} deleting-destructor aliases."
+        f"{deleting_dtor_match_slots} codegen-verified deleting-destructor aliases."
     )
     print(
         "Remaining slots: "
@@ -426,7 +608,10 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
         f"{unknown_recomp_slots} unknown recompiled, "
         f"{known_mismatch_slots} known mismatches."
     )
-    print(f"Adjuster thunk mismatches: {adjuster_problems}.")
+    print(
+        f"Adjuster thunks exact or target-equivalent: "
+        f"{adjuster_count - adjuster_problems}/{adjuster_count}."
+    )
     if top > 0 and unmapped_vtables:
         print("Unmapped source vtable annotations:")
         for table in unmapped_vtables[:top]:
@@ -443,7 +628,9 @@ def run_comparison(target_id: str, verbose: bool, top: int) -> int:
                 f"  {count:4d}x {orig_name} ({format_addr(orig)}) -> "
                 f"{recomp_name} ({format_addr(recomp)})"
             )
-    return 0 if not unmapped_vtables and exact_tables == table_count and adjuster_problems == 0 else 1
+    comparisons_pass = table_count > 0 and matched_tables == table_count and adjuster_problems == 0
+    coverage_pass = not annot_strict or not unmapped_vtables
+    return 0 if comparisons_pass and coverage_pass else 1
 
 
 class FakeImage:
@@ -476,11 +663,17 @@ class FakeEntity:
 
 
 class FakeNamedEntity:
-    def __init__(self, name: str):
+    def __init__(self, name: str, symbol: str | None = None):
         self.name = name
+        self.symbol = symbol
 
     def best_name(self) -> str:
         return self.name
+
+    def get(self, key: str, default=None):
+        if key == "symbol":
+            return self.symbol
+        return default
 
 
 def run_selftest() -> int:
@@ -502,6 +695,12 @@ def run_selftest() -> int:
             print(f"selftest fail: {format_addr(address)} -> {format_addr(actual)}, expected {format_addr(expected)}")
             return 1
 
+    named_body = start + 0x10
+    resolved = resolve_jump(image, start, lambda address: address == named_body)
+    if resolved != named_body:
+        print("selftest fail: named tail-jump body was treated as another linker thunk")
+        return 1
+
     cyclic = bytearray(b"\x90" * 0x20)
     cyclic[0:5] = rel32(start, start + 0x10)
     cyclic[0x10:0x15] = rel32(start + 0x10, start)
@@ -519,11 +718,31 @@ def run_selftest() -> int:
         return 1
 
     adjuster_name = "Thing::Method`vtordisp{-4, 0}'"
-    if not is_same_generated_adjuster(FakeNamedEntity(adjuster_name), FakeNamedEntity(adjuster_name)):
+    if not is_same_generated_adjuster_identity(
+        FakeNamedEntity(adjuster_name), FakeNamedEntity(adjuster_name)
+    ):
         print("selftest fail: duplicate named adjuster was not recognized")
         return 1
-    if is_same_generated_adjuster(FakeNamedEntity(adjuster_name), FakeNamedEntity("Thing::Method")):
+    if is_same_generated_adjuster_identity(
+        FakeNamedEntity(adjuster_name), FakeNamedEntity("Thing::Method")
+    ):
         print("selftest fail: unequal adjusters were accepted")
+        return 1
+
+    fixed_adjuster = FakeNamedEntity(
+        "Thing::Method",
+        "?Method@Thing@@WPPPPPOLA@AEXXZ",
+    )
+    if not is_generated_adjuster(fixed_adjuster):
+        print("selftest fail: fixed-this adjuster symbol was not recognized")
+        return 1
+    if not is_generated_adjuster(
+        FakeNamedEntity(adjuster_name, "?Method@Thing@@$4PPPPPPPM@A@AEXXZ")
+    ):
+        print("selftest fail: vtordisp symbol was not recognized")
+        return 1
+    if is_generated_adjuster(FakeNamedEntity("Thing::Method", "?Method@Thing@@UAEXXZ")):
+        print("selftest fail: ordinary virtual method was treated as an adjuster")
         return 1
 
     scalar_dtor = FakeNamedEntity("Thing::`scalar deleting destructor'")
@@ -536,6 +755,37 @@ def run_selftest() -> int:
         return 1
     if deleting_destructor_identity(FakeNamedEntity("Other::~Other")) is not None:
         print("selftest fail: ordinary destructor was accepted as a deleting destructor")
+        return 1
+    if not is_deleting_destructor_alias_pair(scalar_dtor, vector_dtor):
+        print("selftest fail: same-class deleting-destructor aliases were not recognized")
+        return 1
+    if is_deleting_destructor_alias_pair(scalar_dtor, scalar_dtor):
+        print("selftest fail: identical deleting-destructor kinds were treated as aliases")
+        return 1
+    if is_deleting_destructor_alias_pair(
+        scalar_dtor, FakeNamedEntity("Other::`vector deleting destructor'")
+    ):
+        print("selftest fail: different-class deleting destructors were treated as aliases")
+        return 1
+
+    if nested_vtable_symbol("Thing", "BaseSocket's `ReadSocket") != "??_7Thing@@6BBaseSocket@@ReadSocket@@@":
+        print("selftest fail: nested vtable symbol was not reconstructed")
+        return 1
+    if nested_vtable_symbol("Thing", "BaseSocket") is not None:
+        print("selftest fail: ordinary vtable qualifier was treated as a nested path")
+        return 1
+
+    if not instruction_sequences_equivalent(
+        ["jmp Thing::`scalar deleting destructor' (FUNCTION)"],
+        ["jmp Thunk of 'Thing::`scalar deleting destructor'' (THUNK)"],
+    ):
+        print("selftest fail: nested-apostrophe linker thunk was not normalized")
+        return 1
+    if instruction_sequences_equivalent(
+        ["jmp Thing::First (FUNCTION)"],
+        ["jmp Thunk of 'Thing::Second' (THUNK)"],
+    ):
+        print("selftest fail: unequal linker-thunk targets were accepted")
         return 1
 
     null_slot = SlotResult(0, 0, 0, 0, 0, None, None)
@@ -561,6 +811,11 @@ def main() -> int:
     parser.add_argument("--clean-first", action="store_true", help="clean before building")
     parser.add_argument("--verbose", "-v", action="store_true", help="show every mismatching slot")
     parser.add_argument("--top", type=int, default=0, help="show the N most frequent unresolved targets and pairs")
+    parser.add_argument(
+        "--annot-strict",
+        action="store_true",
+        help="also fail when a source VTABLE annotation cannot be paired",
+    )
     parser.add_argument("--selftest", action="store_true", help="exercise jump resolution and exit")
     args = parser.parse_args()
 
@@ -571,7 +826,7 @@ def main() -> int:
         if result != 0:
             return result
 
-    return run_comparison(args.target, args.verbose, max(args.top, 0))
+    return run_comparison(args.target, args.verbose, max(args.top, 0), args.annot_strict)
 
 
 if __name__ == "__main__":

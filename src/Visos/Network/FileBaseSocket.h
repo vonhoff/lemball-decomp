@@ -3,13 +3,15 @@
 
 #include "../../Common.h"
 
-// SIZE 0x04
+// SIZE 0x0c
 class FileBaseSocket {
 public:
 	FileBaseSocket();
 
 private:
-	NetworkFile* m_file; // 0x00
+	NetworkFile* m_file;  // 0x00
+	undefined4 m_unk0x04; // 0x04
+	undefined4 m_unk0x08; // 0x08
 };
 
 #endif

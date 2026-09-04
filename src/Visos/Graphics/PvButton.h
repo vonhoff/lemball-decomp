@@ -3,13 +3,13 @@
 
 #include "../../Common.h"
 #include "ClipRect.h"       // complete type
+#include "GWnd.h"           // complete type
 #include "HotAreaHandler.h" // complete type
-#include "PvGWnd.h"         // complete type
 
 // SIZE 0x104
-// VTABLE: LEMBALL 0x00499658 PvGWnd
+// VTABLE: LEMBALL 0x00499658 GWnd
 // VTABLE: LEMBALL 0x00499638 HotAreaHandler
-class PvButton : public PvGWnd, public HotAreaHandler {
+class PvButton : public GWnd, public HotAreaHandler {
 public:
 	PvButton(PvGWnd* p_arg0);
 	PvButton(const VsRect& p_arg0, PvGWnd* p_arg1);
@@ -19,10 +19,10 @@ public:
 	virtual void Destroy();                                               // vtable+0x74
 	virtual void _DrawButton();                                           // vtable+0xb8
 	virtual void DrawButton() = 0;                                        // vtable+0xbc
-	virtual void OnReleased(int p_flags);                                 // vtable+0xc0
-	virtual void OnPressed(int p_flags);                                  // vtable+0xc4
-	virtual void OnEnterButton();                                         // vtable+0xc8
-	virtual void OnExitButton();                                          // vtable+0xcc
+	virtual void OnReleased(int p_flags) = 0;                             // vtable+0xc0
+	virtual void OnPressed(int p_flags) = 0;                              // vtable+0xc4
+	virtual void OnEnterButton() = 0;                                     // vtable+0xc8
+	virtual void OnExitButton() = 0;                                      // vtable+0xcc
 	virtual void Move(const VsPoint& p_point);                            // vtable+0x38
 	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);         // vtable+0x04
 	virtual void OnButtonDown(const VsPoint& p_point, int p_flags);       // hot-area vtable+0x08
@@ -35,6 +35,10 @@ public:
 	void Draw(unsigned int p_force);
 	void Initialise();
 	void SetAutoDraw(unsigned int p_enabled);
+	void _OnReleased(int p_flags);
+	void _OnPressed(int p_flags);
+	void _OnEnterButton();
+	void _OnExitButton();
 
 	friend class ToggleButton;
 	friend class GraphicButton;

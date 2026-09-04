@@ -182,7 +182,7 @@ void PvButton::OnEnter()
 	if (m_buttonState[0] != 0 || m_buttonState[3] != 0) {
 		m_pressed = 1;
 	}
-	PvButton::OnEnterButton();
+	_OnEnterButton();
 	OnEnterButton();
 }
 
@@ -191,7 +191,7 @@ void PvButton::OnEnter()
 void PvButton::OnExit()
 {
 	m_pressed = 0;
-	PvButton::OnExitButton();
+	_OnExitButton();
 	OnExitButton();
 	if (m_autoDraw == 0) {
 		g_nGunButtonsRedrawPending = 1;
@@ -223,7 +223,7 @@ void PvButton::OnButtonDown(const VsPoint& p_point, int p_flags)
 	clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
 	m_clickX = clickPos.m_x;
 	m_clickY = clickPos.m_y;
-	PvButton::OnPressed(converted);
+	_OnPressed(converted);
 	OnPressed(converted);
 	if (m_autoDraw == 0) {
 		g_nGunButtonsRedrawPending = 1;
@@ -241,7 +241,7 @@ void PvButton::OnButtonUp(const VsPoint& p_point, int p_flags)
 		m_clickX = (short) (p_point.m_x - m_relativeTopLeft.m_x);
 		m_clickY = (short) (p_point.m_y - m_relativeTopLeft.m_y);
 		m_pressed = 0;
-		PvButton::OnReleased(converted);
+		_OnReleased(converted);
 		OnReleased(converted);
 		if (m_autoDraw == 0) {
 			g_nGunButtonsRedrawPending = 1;
@@ -269,7 +269,7 @@ void PvButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 
 // 68K 0x1021019e _OnReleased__9CPVButtonF12BUTTON_FLAGS
 // FUNCTION: LEMBALL 0x00468180
-void PvButton::OnReleased(int p_flags)
+void PvButton::_OnReleased(int p_flags)
 {
 	Message posted;
 	int converted;
@@ -290,7 +290,7 @@ void PvButton::OnReleased(int p_flags)
 
 // 68K 0x10210234 _OnPressed__9CPVButtonF12BUTTON_FLAGS
 // FUNCTION: LEMBALL 0x004681f0
-void PvButton::OnPressed(int p_flags)
+void PvButton::_OnPressed(int p_flags)
 {
 	Message posted;
 	int converted;
@@ -311,7 +311,7 @@ void PvButton::OnPressed(int p_flags)
 
 // 68K 0x102102ca _OnEnterButton__9CPVButtonFv
 // FUNCTION: LEMBALL 0x00468260
-void PvButton::OnEnterButton()
+void PvButton::_OnEnterButton()
 {
 	Message posted;
 
@@ -326,7 +326,7 @@ void PvButton::OnEnterButton()
 
 // 68K 0x10210330 _OnExitButton__9CPVButtonFv
 // FUNCTION: LEMBALL 0x004682b0
-void PvButton::OnExitButton()
+void PvButton::_OnExitButton()
 {
 	Message posted;
 

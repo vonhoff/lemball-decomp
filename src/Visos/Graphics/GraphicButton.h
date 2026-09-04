@@ -5,7 +5,7 @@
 #include "PvButton.h" // complete type
 
 // SIZE 0x130
-// VTABLE: LEMBALL 0x00499748 PvGWnd
+// VTABLE: LEMBALL 0x00499748 GWnd
 // VTABLE: LEMBALL 0x00499728 HotAreaHandler
 class GraphicButton : public PvButton {
 public:

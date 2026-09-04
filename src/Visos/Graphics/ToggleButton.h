@@ -5,7 +5,7 @@
 #include "GraphicButton.h" // complete type
 
 // SIZE 0x134
-// VTABLE: LEMBALL 0x004973e0 PvGWnd
+// VTABLE: LEMBALL 0x004973e0 GWnd
 // VTABLE: LEMBALL 0x004973b8 HotAreaHandler
 class ToggleButton : public GraphicButton {
 public:

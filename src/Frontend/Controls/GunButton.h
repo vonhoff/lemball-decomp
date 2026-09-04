@@ -5,7 +5,7 @@
 #include "../../Visos/Graphics/GraphicButton.h" // complete type
 
 // SIZE 0x130
-// VTABLE: LEMBALL 0x00497d30 PvGWnd
+// VTABLE: LEMBALL 0x00497d30 GWnd
 // VTABLE: LEMBALL 0x00497d08 HotAreaHandler
 class GunButton : public GraphicButton {
 public:

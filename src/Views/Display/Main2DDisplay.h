@@ -4,12 +4,12 @@
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/VsRect.h"           // complete type
-#include "../../Visos/Graphics/PvGWnd.h"             // complete type
+#include "../../Visos/Graphics/GWnd.h"               // complete type
 
 // SIZE 0xe4
-// VTABLE: LEMBALL 0x00496bb8 PvGWnd
+// VTABLE: LEMBALL 0x00496bb8 GWnd
 // VTABLE: LEMBALL 0x00496ba8 BaseQueueHandler
-class Main2DDisplay : public PvGWnd, public BaseQueueHandler {
+class Main2DDisplay : public GWnd, public BaseQueueHandler {
 public:
 	Main2DDisplay(Game* p_arg0);
 	VsRect GetUseRect(int p_x, int p_y);

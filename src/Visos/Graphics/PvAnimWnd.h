@@ -3,11 +3,11 @@
 
 #include "../../Common.h"
 #include "../Foundation/String.h" // complete type
-#include "PvGWnd.h"               // complete type
+#include "GWnd.h"                 // complete type
 
 // SIZE 0xa0
 // VTABLE: LEMBALL 0x00499e68
-class PvAnimWnd : public PvGWnd {
+class PvAnimWnd : public GWnd {
 public:
 	virtual unsigned int GetStyle(); // vtable+0x64
 

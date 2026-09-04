@@ -6,8 +6,8 @@
 #include "BaseCommonSocket.h"              // complete type
 
 // SIZE 0x4c
-// VTABLE: LEMBALL 0x0049a060 native window shell
-// VTABLE: LEMBALL 0x0049a050 BaseCommonSocket virtual base at +0x20
+// VTABLE: LEMBALL 0x0049a060 TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a050 BaseCommonSocket
 class TcpIpCommonSocket : public TargetNetworkWindow, public virtual BaseCommonSocket {
 public:
 	TcpIpCommonSocket();

@@ -51,4 +51,10 @@ private:
 	NetworkAddress* m_destinationAddress; // 0x70
 };
 
+// SYNTHETIC: LEMBALL 0x00462990
+// WriteSocket::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00462d80
+// WriteSocket::`scalar deleting destructor'`vtordisp{-4, 120}'
+
 #endif

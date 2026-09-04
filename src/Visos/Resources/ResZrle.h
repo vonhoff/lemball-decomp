@@ -43,6 +43,6 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x0045e850
-// ResZrle::`scalar deleting destructor'
+// ResZrle::`vector deleting destructor'
 
 #endif

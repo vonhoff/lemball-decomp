@@ -6,8 +6,8 @@
 #include "BaseNetwork.h"                   // complete type
 
 // SIZE 0x78
-// VTABLE: LEMBALL 0x0049a2dc native window shell
-// VTABLE: LEMBALL 0x0049a2a8 BaseNetwork subobject at +0x10
+// VTABLE: LEMBALL 0x0049a2dc TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a2a8 BaseNetwork
 class TcpIpNetwork : public TargetNetworkWindow, public BaseNetwork {
 public:
 	TcpIpNetwork();

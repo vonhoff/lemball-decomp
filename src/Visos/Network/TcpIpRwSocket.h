@@ -17,6 +17,12 @@ public:
 	virtual ~TcpIpRwSocket();                                                          // vtable+0x14
 };
 
+// SYNTHETIC: LEMBALL 0x00471af0 SYMBOL
+// ?SysCloseSocket@TcpIpCommonSocket@@WPPPPPONI@AEHXZ
+
+// SYNTHETIC: LEMBALL 0x00471b60 SYMBOL
+// ?SocketError@TcpIpCommonSocket@@WPPPPPONI@AEXXZ
+
 // SYNTHETIC: LEMBALL 0x00471cd0
 // TcpIpRwSocket::`scalar deleting destructor'
 
