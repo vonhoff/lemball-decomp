@@ -202,10 +202,19 @@ void PvButton::OnExit()
 // FUNCTION: LEMBALL 0x00468000
 int PvButton::ConvertDoubleClick(int p_flags)
 {
-	if ((unsigned int) p_flags > 5) {
+	switch (p_flags) {
+	case 0:
+	case 3:
+		return 0;
+	case 1:
+	case 4:
+		return 1;
+	case 2:
+	case 5:
+		return 2;
+	default:
 		return 6;
 	}
-	return p_flags % 3;
 }
 
 // 68K 0x1020ff92 OnButtonDown__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
