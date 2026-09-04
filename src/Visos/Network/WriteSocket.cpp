@@ -207,11 +207,7 @@ bool WriteSocket::SendNcms(NetworkMessage& p_arg0)
 				*(unsigned int*) &((BasePacketHeader*) data)->m_subpacketSequence;
 			CopyDataStream(data, 0);
 			sent = SendPacket(data, sendSize);
-			((BasePacketHeader*) data)->m_magic = m_savedHeader.m_magic;
-			((BasePacketHeader*) data)->m_packetSize = m_savedHeader.m_packetSize;
-			*(unsigned int*) &((BasePacketHeader*) data)->m_messageId = *(unsigned int*) &m_savedHeader.m_messageId;
-			*(unsigned int*) &((BasePacketHeader*) data)->m_subpacketSequence =
-				*(unsigned int*) &m_savedHeader.m_subpacketSequence;
+			*(BasePacketHeader*) data = m_savedHeader;
 			if (sent == 0) {
 				break;
 			}

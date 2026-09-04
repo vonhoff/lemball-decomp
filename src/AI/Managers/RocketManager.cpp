@@ -1,5 +1,6 @@
 #include "RocketManager.h"
 
+#include "../Navigation/Ai.h"
 #include "../Objects/Rocket.h"
 
 // 68K 0x1061dcfe __ct__14CRocketManagerFP3CAIi
@@ -68,9 +69,33 @@ void RocketManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 }
 
 // 68K 0x1061e1ac LoadLevel__14CRocketManagerFPUciUc
-// STUB: LEMBALL 0x00427110
+// FUNCTION: LEMBALL 0x00427110
 void RocketManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short count = *(unsigned short*) p_data;
+	p_data += 2;
+	unsigned int remaining = count;
+	Initialise(remaining);
+	if (count != 0) {
+		do {
+			unsigned short id;
+			if (m_ai->m_levelVersion > 1) {
+				id = *(unsigned short*) p_data;
+				p_data += 2;
+			}
+			else {
+				id = (unsigned short) GameObject::NextId();
+			}
+			unsigned short x = *(unsigned short*) p_data;
+			p_data += 2;
+			unsigned short y = *(unsigned short*) p_data;
+			p_data += 2;
+			unsigned short z = *(unsigned short*) p_data;
+			p_data += 2;
+			Add(id, x, y, z);
+			remaining--;
+		} while (remaining != 0);
+	}
 }
 
 // 68K 0x1061debc __dt__14CRocketManagerFv

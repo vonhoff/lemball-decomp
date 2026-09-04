@@ -26,6 +26,7 @@ public:
 	friend class GunButton;
 	friend class GunButtons;
 	friend class HiliteButtons;
+	friend class PanelPauseButton;
 
 private:
 	unsigned int m_enabled;         // 0x104

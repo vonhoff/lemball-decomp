@@ -9,6 +9,12 @@
 // VTABLE: LEMBALL 0x00499e68
 class PvAnimWnd : public GWnd {
 public:
+	PvAnimWnd()
+	{
+		m_resolveMoviePath = 0;
+		m_useMoviePrefix = 0;
+	}
+
 	virtual unsigned int GetStyle(); // vtable+0x64
 
 	friend class AnimWnd;

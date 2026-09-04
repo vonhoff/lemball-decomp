@@ -77,8 +77,6 @@ void AnimWnd::Initialise()
 // FUNCTION: LEMBALL 0x0046ddc0
 AnimWnd::AnimWnd()
 {
-	m_resolveMoviePath = 0;
-	m_useMoviePrefix = 0;
 	Initialise();
 }
 
@@ -219,25 +217,25 @@ void AnimWnd::SetAnim(unsigned int p_resourceId)
 	ResMovie* movie;
 	char* fileName;
 	char* cdDir;
-	String relative;
 
 	movie = 0;
-	fileName = "";
+	fileName = "test";
 	if (p_resourceId != 0) {
 		m_animResourceId = p_resourceId;
 		movie = ResMovie::Load(p_resourceId);
-		if (movie->m_loaded == 0) {
-			movie->LoadData();
+		if (movie->m_loaded != 0) {
+			movie->m_age = 0;
 		}
 		else {
-			movie->m_age = 0;
+			movie->LoadData();
 		}
 		movie->m_directUseCount = movie->m_directUseCount + 1;
 		fileName = (char*) movie->m_movieEntries->m_data;
 	}
+	String relative;
 	if (m_useMoviePrefix != 0) {
 		relative = m_moviePrefix;
-		if (relative.Getlength() > 0 && relative.m_text[relative.Getlength() - 1] != '\\') {
+		if (relative.m_text[relative.Getlength() - 1] != '\\') {
 			relative += g_szPathSeparator;
 		}
 	}
@@ -245,25 +243,24 @@ void AnimWnd::SetAnim(unsigned int p_resourceId)
 	relative += g_szAviSuffix;
 	if (m_resolveMoviePath == 0) {
 		m_moviePath = g_szCurrentDirectory;
-		if (m_moviePath.Getlength() > 0 && m_moviePath.m_text[m_moviePath.Getlength() - 1] != '\\') {
-			m_moviePath += g_szPathSeparator;
+		if (m_moviePath.m_text[m_moviePath.Getlength() - 1] != '\\') {
+			m_moviePath += "\\";
 		}
 	}
 	else {
-		cdDir = 0;
-		if (g_pTargetPlatformServices != 0) {
-			cdDir = g_pTargetPlatformServices->GetCDDir(relative.m_text);
+		cdDir = g_pTargetPlatformServices->GetCDDir(relative.m_text);
+		if (cdDir != 0) {
+			m_moviePath = cdDir;
 		}
-		if (cdDir == 0) {
-			cdDir = g_szCurrentDirectory;
+		else {
+			m_moviePath = g_szCurrentDirectory;
 		}
-		m_moviePath = cdDir;
-		if (m_moviePath.Getlength() > 0 && m_moviePath.m_text[m_moviePath.Getlength() - 1] != '\\') {
-			m_moviePath += g_szPathSeparator;
+		if (m_moviePath.m_text[m_moviePath.Getlength() - 1] != '\\') {
+			m_moviePath += "\\";
 		}
 	}
 	m_moviePath += relative;
-	if (movie != 0) {
+	if (p_resourceId != 0) {
 		movie->m_directUseCount = movie->m_directUseCount - 1;
 		movie->UnLoad();
 	}

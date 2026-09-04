@@ -87,22 +87,29 @@ void TrampolineManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 // FUNCTION: LEMBALL 0x0042b600
 void TrampolineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	unsigned short* stream = (unsigned short*) p_data;
-	int count = *stream++;
-	Initialise(count);
-	while (count != 0) {
-		int id;
-		if (m_ai->m_levelVersion > 1) {
-			id = *stream++;
-		}
-		else {
-			id = GameObject::NextId();
-		}
-		int x = *stream++;
-		int y = *stream++;
-		int z = *stream++;
-		Add((unsigned short) id, x, y, z);
-		count--;
+	unsigned short count = *(unsigned short*) p_data;
+	p_data += 2;
+	unsigned int remaining = count;
+	Initialise(remaining);
+	if (count != 0) {
+		do {
+			unsigned short id;
+			if (m_ai->m_levelVersion > 1) {
+				id = *(unsigned short*) p_data;
+				p_data += 2;
+			}
+			else {
+				id = (unsigned short) GameObject::NextId();
+			}
+			unsigned short x = *(unsigned short*) p_data;
+			p_data += 2;
+			unsigned short y = *(unsigned short*) p_data;
+			p_data += 2;
+			unsigned short z = *(unsigned short*) p_data;
+			p_data += 2;
+			Add(id, x, y, z);
+			remaining--;
+		} while (remaining != 0);
 	}
 }
 

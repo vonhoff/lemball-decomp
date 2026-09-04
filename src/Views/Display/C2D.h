@@ -129,6 +129,7 @@ public:
 	void TriggerPause(unsigned char p_paused);
 	void UnRegisterRemaps();
 	void UseBalloon(PlayerLemming* p_lemming);
+	friend class PanelPauseButton;
 
 private:
 	unsigned char* m_remapTables[4];                // 0x54

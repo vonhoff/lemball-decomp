@@ -39,6 +39,7 @@ public:
 	~SoundView();
 
 	friend class C2D;
+	friend class PanelPauseButton;
 
 private:
 	void* m_effectSpecTable;         // 0x00

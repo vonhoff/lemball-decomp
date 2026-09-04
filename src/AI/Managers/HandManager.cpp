@@ -1,5 +1,6 @@
 #include "HandManager.h"
 
+#include "../Navigation/Ai.h"
 #include "../Objects/Hand.h"
 
 // 68K 0x106111f4 __ct__12CHandManagerFP3CAIi
@@ -68,9 +69,33 @@ void HandManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 }
 
 // 68K 0x10611698 LoadLevel__12CHandManagerFPUciUc
-// STUB: LEMBALL 0x004284c0
+// FUNCTION: LEMBALL 0x004284c0
 void HandManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short count = *(unsigned short*) p_data;
+	p_data += 2;
+	unsigned int remaining = count;
+	Initialise(remaining);
+	if (count != 0) {
+		do {
+			unsigned short id;
+			if (m_ai->m_levelVersion > 1) {
+				id = *(unsigned short*) p_data;
+				p_data += 2;
+			}
+			else {
+				id = (unsigned short) GameObject::NextId();
+			}
+			unsigned short x = *(unsigned short*) p_data;
+			p_data += 2;
+			unsigned short y = *(unsigned short*) p_data;
+			p_data += 2;
+			unsigned short z = *(unsigned short*) p_data;
+			p_data += 2;
+			Add(id, x, y, z);
+			remaining--;
+		} while (remaining != 0);
+	}
 }
 
 // 68K 0x106113ac __dt__12CHandManagerFv

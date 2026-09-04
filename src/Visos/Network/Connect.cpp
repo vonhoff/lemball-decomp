@@ -23,7 +23,7 @@ CConnect::CConnect()
 	m_killRequested = 0;
 	m_established = 0;
 	m_newPortRequestCount = 0;
-	m_connectTime = timeGetTime();
+	m_connectTime = CurrentMilliTimer();
 }
 
 // 68K 0x1020d0c6 __dt__8CConnectFv
