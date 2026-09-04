@@ -124,11 +124,6 @@ void* TcpIpNetwork::GetNewBroadcast()
 	return new TcpIpBroadcast;
 }
 
-// 68K 0x1010efea __dt__13CTCPIPNetworkFv
-TcpIpNetwork::~TcpIpNetwork()
-{
-}
-
 // GLOBAL: LEMBALL 0x004a23b0
 unsigned int g_dwTCPIPNetworkThreadId = 0x12345678;
 

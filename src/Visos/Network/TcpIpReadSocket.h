@@ -13,6 +13,7 @@
 // The original TargetNetworkWindow subobject starts at +0x8c and its table
 // points straight to Process. MSVC 4's default vtordisp mode inserts a four-
 // byte field and a dynamic thunk instead.
+// 68K 0x1010633a __dt__16CTCPIPReadSocketFv; x86 emits only the synthetic deleting destructor.
 #pragma vtordisp(off)
 class TcpIpReadSocket : public virtual BaseCommonSocket, public virtual ReadSocket, public virtual TcpIpCommonSocket {
 public:
@@ -20,7 +21,6 @@ public:
 	bool ReadBuffFrom();
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
 	virtual void Closed(unsigned char p_notifyPeer);                                   // vtable+0x0c
-	virtual ~TcpIpReadSocket();                                                        // vtable+0x14
 };
 #pragma vtordisp(on)
 

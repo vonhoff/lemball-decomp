@@ -11,6 +11,7 @@
 // VTABLE: LEMBALL 0x0049a398 BaseSocket's `WriteSocket
 // VTABLE: LEMBALL 0x0049a3c8 RwSocket
 // VTABLE: LEMBALL 0x0049a3d8 CConnect
+// 68K 0x1010e6a6 __dt__13CTCPIPConnectFv; x86 emits only the synthetic deleting destructor.
 class TcpIpConnect : public Connect, public TcpIpRwSocket {
 public:
 	bool Start(const char* p_localName, const char* p_remoteName);
@@ -19,7 +20,6 @@ public:
 	virtual void Closed(unsigned char p_notifyPeer);  // vtable+0x0c
 	virtual void Connect();                           // vtable+0x10
 	virtual NetworkMessage* ReceiveAcknowledgement(); // vtable+0x1c
-	virtual ~TcpIpConnect();                          // vtable+0x14
 	void GotHost(int p_failed);
 	void HandleServiceLookupResult(bool p_failed);
 	void Listen(NetworkAddress* p_address);

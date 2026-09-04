@@ -8,6 +8,7 @@
 // SIZE 0x78
 // VTABLE: LEMBALL 0x0049a2dc TargetNetworkWindow
 // VTABLE: LEMBALL 0x0049a2a8 BaseNetwork
+// 68K 0x1010efea __dt__13CTCPIPNetworkFv; x86 emits only the synthetic deleting destructor.
 class TcpIpNetwork : public TargetNetworkWindow, public BaseNetwork {
 public:
 	TcpIpNetwork();
@@ -18,7 +19,6 @@ public:
 	virtual void ForceProcess();                                                       // vtable+0x1c
 	virtual void Initialise();                                                         // vtable+0x0c
 	virtual void UnInitialise();                                                       // vtable+0x10
-	virtual ~TcpIpNetwork();                                                           // vtable+0x04
 
 private:
 	unsigned int m_timerId; // 0x74

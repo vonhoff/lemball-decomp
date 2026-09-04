@@ -111,11 +111,6 @@ int TcpIpReadSocket::Process(unsigned int p_message, unsigned int p_wParam, long
 	return -1;
 }
 
-// 68K 0x1010633a __dt__16CTCPIPReadSocketFv
-TcpIpReadSocket::~TcpIpReadSocket()
-{
-}
-
 // 68K 0x101075ba Closed__16CTCPIPReadSocketFUc
 // FUNCTION: LEMBALL 0x00471e40
 void TcpIpReadSocket::Closed(unsigned char p_notifyPeer)

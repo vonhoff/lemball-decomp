@@ -7,6 +7,7 @@
 #include "TcpIpWriteSocket.h" // complete type
 
 // SIZE 0x144
+// 68K 0x101063e4 __dt__14CTCPIPRWSocketFv; x86 emits only the synthetic deleting destructor.
 class TcpIpRwSocket : public virtual RwSocket, public virtual TcpIpReadSocket, public virtual TcpIpWriteSocket {
 public:
 	TcpIpRwSocket();
@@ -14,7 +15,6 @@ public:
 	virtual void Closed(unsigned char p_notifyPeer);                                   // vtable+0x0c
 	virtual NetworkMessage* ReceiveAcknowledgement();                                  // vtable+0x1c
 	virtual void SendAcknowledgement();                                                // vtable+0x18
-	virtual ~TcpIpRwSocket();                                                          // vtable+0x14
 };
 
 // SYNTHETIC: LEMBALL 0x00471af0 SYMBOL

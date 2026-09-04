@@ -94,11 +94,6 @@ void TcpIpWriteSocket::SetPort(short p_port)
 	m_networkPort = htons((unsigned short) (m_port + g_broadcastPort));
 }
 
-// 68K 0x10106290 __dt__17CTCPIPWriteSocketFv
-TcpIpWriteSocket::~TcpIpWriteSocket()
-{
-}
-
 // 68K 0x1010e556 Closed__17CTCPIPWriteSocketFUc
 // FUNCTION: LEMBALL 0x00471ee0
 void TcpIpWriteSocket::Closed(unsigned char p_notifyPeer)

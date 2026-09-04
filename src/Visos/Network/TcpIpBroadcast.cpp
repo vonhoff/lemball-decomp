@@ -90,6 +90,15 @@ TcpIpBroadcast::TcpIpBroadcast()
 	m_specificNameRequest = 0;
 }
 
+// 68K 0x1010d556 __dt__15CTCPIPBroadcastFv
+// FUNCTION: LEMBALL 0x004704e0
+TcpIpBroadcast::~TcpIpBroadcast()
+{
+	if (m_specificNameBuffer != 0) {
+		operator delete(m_specificNameBuffer);
+	}
+}
+
 // 68K 0x1010d828 GetSpecificAddr__15CTCPIPBroadcastFPCc
 // FUNCTION: LEMBALL 0x00470580
 void TcpIpBroadcast::GetSpecificAddr(const char* p_name)
@@ -350,11 +359,6 @@ void TcpIpBroadcast::StopListen()
 		}
 		Broadcast::m_unk0x14 = 0;
 	}
-}
-
-// 68K 0x1010d556 __dt__15CTCPIPBroadcastFv
-TcpIpBroadcast::~TcpIpBroadcast()
-{
 }
 
 // 68K 0x1010e602 Closed__15CTCPIPBroadcastFUc

@@ -10,6 +10,7 @@
 // VTABLE: LEMBALL 0x0049a088 TargetNetworkWindow
 // VTABLE: LEMBALL 0x0049a090 BaseSocket
 // VTABLE: LEMBALL 0x0049a0c0 TcpIpWriteSocket
+// 68K 0x10106290 __dt__17CTCPIPWriteSocketFv; x86 emits only the synthetic deleting destructor.
 class TcpIpWriteSocket : public virtual BaseCommonSocket, public virtual WriteSocket, public virtual TcpIpCommonSocket {
 public:
 	TcpIpWriteSocket();
@@ -18,7 +19,6 @@ public:
 	virtual void Closed(unsigned char p_notifyPeer);                                   // vtable+0x0c
 	virtual void SetDestAddr(NetworkAddress* p_address);                               // vtable+0x20
 	virtual void SetPort(short p_port);                                                // vtable+0x28
-	virtual ~TcpIpWriteSocket();                                                       // vtable+0x14
 
 private:
 	unsigned short m_addressFamily; // 0x04

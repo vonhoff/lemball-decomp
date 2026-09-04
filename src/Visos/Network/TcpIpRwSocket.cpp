@@ -24,11 +24,6 @@ void TcpIpRwSocket::SendAcknowledgement()
 	RwSocket::SendAcknowledgement();
 }
 
-// 68K 0x101063e4 __dt__14CTCPIPRWSocketFv
-TcpIpRwSocket::~TcpIpRwSocket()
-{
-}
-
 // 68K 0x1010e590 Closed__14CTCPIPRWSocketFUc
 // FUNCTION: LEMBALL 0x00471d30
 void TcpIpRwSocket::Closed(unsigned char p_notifyPeer)

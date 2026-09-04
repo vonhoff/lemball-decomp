@@ -19,6 +19,7 @@ public:
 								   MBlock* p_arg2,
 								   char* p_arg3,
 								   unsigned long p_arg4);
+	void operator delete(void*) {}
 };
 
 // SYNTHETIC: LEMBALL 0x0045a8e0

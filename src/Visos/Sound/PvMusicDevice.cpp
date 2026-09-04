@@ -32,8 +32,3 @@ char* PvMusicDevice::GetInfo()
 {
 	return 0;
 }
-
-// 68K 0x101023b4 __dt__14CPVMusicDeviceFv
-PvMusicDevice::~PvMusicDevice()
-{
-}
