@@ -1,5 +1,7 @@
 #include "Lift.h"
 
+#include "../Base/Coord3d.h"
+
 // 68K 0x106145ea __ct__5CLiftFv
 // STUB: LEMBALL 0x00424d00
 Lift::Lift()
@@ -24,7 +26,7 @@ void Lift::Edit(int p_height,
 }
 
 // 68K 0x10614982 Set__5CLiftFiiisii17eLiftActivateTypeUc
-// STUB: LEMBALL 0x00425010
+// FUNCTION: LEMBALL 0x00425010
 void Lift::Set(int p_x,
 			   int p_y,
 			   int p_z,
@@ -34,6 +36,11 @@ void Lift::Set(int p_x,
 			   eLiftActivateType p_activateType,
 			   unsigned char p_initialActive)
 {
+	Coord3d position;
+	position.m_x = p_x;
+	position.m_y = p_y;
+	position.m_z = p_z;
+	Set(position, position, p_direction, p_lowHeight, p_highHeight, p_activateType, *(unsigned int*) &p_initialActive);
 }
 
 // 68K 0x10614a04 Set__5CLiftFR8tCoord3dR8tCoord3dsii17eLiftActivateTypeUc
