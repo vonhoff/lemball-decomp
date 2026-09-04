@@ -61,9 +61,9 @@ void HotAreaHandler::OnInside(const VsPoint& p_point)
 bool HotAreaHandler::InArea(const VsPoint& p_point)
 {
 	short px;
-	short py;
-	short left;
 	short top;
+	short left;
+	short py;
 
 	left = m_x;
 	px = p_point.m_x;

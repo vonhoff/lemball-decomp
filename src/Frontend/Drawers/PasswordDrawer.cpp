@@ -259,7 +259,7 @@ void PasswordDrawer::ShiftHilite(int p_delta)
 	VsPoint pt;
 	pt.m_x = 0;
 	pt.m_y = 0;
-	m_buttons[g_passwordKeyMap[m_selectedButton]]->OnButtonDown(pt, 0);
+	m_buttons[g_passwordKeyMap[m_selectedButton]]->OnButtonUp(pt, 0);
 	m_selectedButton += p_delta;
 	if (m_selectedButton < 0) {
 		m_selectedButton += 12;

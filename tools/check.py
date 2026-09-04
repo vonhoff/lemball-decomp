@@ -23,6 +23,16 @@ RELOCATION = re.compile(r"<OFFSET\d+>")
 ANNOTATED_SYMBOL = r".+? \((?:DATA|VTABLE|UNK|FUNCTION|IMPORT|IMPORT_THUNK|STRING)\)"
 REGISTER = r"(?:eax|ebx|ecx|edx|esi|edi|ebp|esp|ax|bx|cx|dx|si|di|bp|sp)"
 DWORD_REGISTERS = {"eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp"}
+BYTE_REGISTER_RE = re.compile(r"\b(?:ah|al|bh|bl|ch|cl|dh|dl)\b")
+REGISTER_RE = re.compile(
+    r"\b(?:eax|ebx|ecx|edx|esi|edi|ebp|esp|ax|bx|cx|dx|si|di|bp|sp|ah|al|bh|bl|ch|cl|dh|dl)\b"
+)
+REGISTER_WIDTH = {
+    **{register: 4 for register in ("eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp")},
+    **{register: 2 for register in ("ax", "bx", "cx", "dx", "si", "di", "bp", "sp")},
+    **{register: 1 for register in ("ah", "al", "bh", "bl", "ch", "cl", "dh", "dl")},
+}
+STACK_REFERENCE_RE = re.compile(r"\[esp(?: \+ (0x[0-9a-f]+|[0-9]+))?\]")
 WRITES_FIRST_OPERAND = {
     "adc",
     "add",
@@ -291,6 +301,305 @@ def normalize_multiply_copy_zero(asm: list[str]) -> None:
         ]
 
 
+def strip_trailing_alignment_nops(orig_asm: list[str], recomp_asm: list[str]) -> None:
+    """Discard padding NOPs only when both instruction streams already returned."""
+    orig_end = len(orig_asm)
+    recomp_end = len(recomp_asm)
+    while orig_end > 0 and orig_asm[orig_end - 1] == "nop":
+        orig_end -= 1
+    while recomp_end > 0 and recomp_asm[recomp_end - 1] == "nop":
+        recomp_end -= 1
+
+    if orig_end == len(orig_asm) and recomp_end == len(recomp_asm):
+        return
+    if orig_end == 0 or recomp_end == 0:
+        return
+    if not orig_asm[orig_end - 1].startswith("ret") or not recomp_asm[recomp_end - 1].startswith("ret"):
+        return
+
+    del orig_asm[orig_end:]
+    del recomp_asm[recomp_end:]
+
+
+def normalize_dead_stack_reservation(orig_asm: list[str], recomp_asm: list[str]) -> None:
+    """Remove a clipped, unused original stack reservation.
+
+    reccmp can clip the original balancing epilogue when the rebuilt function
+    is shorter.  Accept this only when the two excerpts have equal instruction
+    counts, the rebuilt excerpt ends in a return, and every original ESP-based
+    access is outside the reserved area and shifts to the rebuilt offset by the
+    exact reservation size.
+    """
+    if len(orig_asm) != len(recomp_asm) or not orig_asm or not recomp_asm:
+        return
+    match = re.fullmatch(r"sub esp, (0x[0-9a-f]+|[0-9]+)", orig_asm[0])
+    if match is None or not recomp_asm[-1].startswith("ret"):
+        return
+    if orig_asm[-1].startswith("ret") or recomp_asm[0].startswith("sub esp,"):
+        return
+    reservation = int(match.group(1), 0)
+    if reservation <= 0 or reservation % 4 != 0:
+        return
+
+    adjusted_orig = orig_asm[1:]
+    adjusted_recomp = recomp_asm[:-1]
+    for index, instruction in enumerate(adjusted_orig):
+        invalid_reference = False
+
+        def adjust_reference(reference: re.Match[str]) -> str:
+            nonlocal invalid_reference
+            offset_text = reference.group(1)
+            offset = int(offset_text, 0) if offset_text is not None else 0
+            if offset <= reservation:
+                invalid_reference = True
+                return reference.group(0)
+            adjusted = offset - reservation
+            return f"[esp + {hex(adjusted) if adjusted >= 10 else adjusted}]"
+
+        adjusted_orig[index] = STACK_REFERENCE_RE.sub(adjust_reference, instruction)
+        if invalid_reference:
+            return
+
+    orig_asm[:] = adjusted_orig
+    recomp_asm[:] = adjusted_recomp
+
+
+def byte_register_swaps_consistent(orig_asm: list[str], recomp_asm: list[str]) -> bool:
+    """Reject contradictory byte-register substitutions in aligned instructions.
+
+    reccmp's generic effective matcher deliberately erases register identity.
+    That is useful for allocation differences, but could otherwise accept a
+    definition moved from AL to CL while a later use incorrectly remains AL.
+    Keeping a bijection for byte-register-only variants closes that hole while
+    leaving unrelated instruction relocation to reccmp.
+    """
+    forward: dict[str, str] = {}
+    reverse: dict[str, str] = {}
+    for orig_text, recomp_text in zip(orig_asm, recomp_asm):
+        orig_regs = BYTE_REGISTER_RE.findall(orig_text)
+        recomp_regs = BYTE_REGISTER_RE.findall(recomp_text)
+        if not orig_regs and not recomp_regs:
+            continue
+        if len(orig_regs) != len(recomp_regs):
+            continue
+        if BYTE_REGISTER_RE.sub("REG8", orig_text) != BYTE_REGISTER_RE.sub("REG8", recomp_text):
+            continue
+
+        for orig_reg, recomp_reg in zip(orig_regs, recomp_regs):
+            if forward.get(orig_reg, recomp_reg) != recomp_reg:
+                return False
+            if reverse.get(recomp_reg, orig_reg) != orig_reg:
+                return False
+            forward[orig_reg] = recomp_reg
+            reverse[recomp_reg] = orig_reg
+    return True
+
+
+def register_shape(instruction: str) -> str:
+    """Erase register identity while retaining operand widths."""
+    return REGISTER_RE.sub(
+        lambda match: f"REG{REGISTER_WIDTH[match.group(0)]}", instruction
+    )
+
+
+def infer_register_role_map(orig_asm: list[str], recomp_asm: list[str]) -> dict[str, str]:
+    """Infer a bijective recomp-to-original register map from aligned evidence.
+
+    Comparison and control-flow instructions are deliberately excluded: their
+    operands may be reversed for an equivalent condition, and reccmp already
+    validates those swaps.  The resulting map is used only to expose an
+    instruction relocation that reccmp can then check with its normal liveness
+    safeguards.
+    """
+    recomp_to_orig: dict[str, str] = {}
+    orig_to_recomp: dict[str, str] = {}
+    excluded = {"call", "cmp", "pop", "push", "ret", "retn", "test"}
+
+    for orig_text, recomp_text in zip(orig_asm, recomp_asm):
+        if orig_text == recomp_text:
+            continue
+        orig_mnemonic, _ = split_instruction(orig_text)
+        recomp_mnemonic, _ = split_instruction(recomp_text)
+        if (
+            orig_mnemonic != recomp_mnemonic
+            or orig_mnemonic in excluded
+            or orig_mnemonic.startswith("j")
+            or register_shape(orig_text) != register_shape(recomp_text)
+        ):
+            continue
+
+        orig_regs = REGISTER_RE.findall(orig_text)
+        recomp_regs = REGISTER_RE.findall(recomp_text)
+        if len(orig_regs) != len(recomp_regs):
+            continue
+
+        for orig_reg, recomp_reg in zip(orig_regs, recomp_regs):
+            if orig_reg == recomp_reg:
+                continue
+            if orig_reg not in DWORD_REGISTERS or recomp_reg not in DWORD_REGISTERS:
+                continue
+            if "esp" in (orig_reg, recomp_reg):
+                return {}
+            if REGISTER_WIDTH[orig_reg] != REGISTER_WIDTH[recomp_reg]:
+                return {}
+            if recomp_to_orig.get(recomp_reg, orig_reg) != orig_reg:
+                return {}
+            if orig_to_recomp.get(orig_reg, recomp_reg) != recomp_reg:
+                return {}
+            recomp_to_orig[recomp_reg] = orig_reg
+            orig_to_recomp[orig_reg] = recomp_reg
+
+    return recomp_to_orig
+
+
+def is_zero_idiom(instruction: str) -> bool:
+    mnemonic, operands = split_instruction(instruction)
+    return (
+        mnemonic in ("sub", "xor")
+        and len(operands) == 2
+        and operands[0] == operands[1]
+    )
+
+
+def can_move_zero_across(instructions: list[str], register: str) -> bool:
+    """Prove a zero idiom can cross a small independent instruction region."""
+    index = 0
+    register_re = re.compile(r"\b" + re.escape(register) + r"\b")
+    while index < len(instructions):
+        instruction = instructions[index]
+        if register_re.search(instruction):
+            return False
+        mnemonic, _ = split_instruction(instruction)
+        if mnemonic in ("lea", "mov", "nop", "pop", "push"):
+            index += 1
+            continue
+        if (
+            mnemonic in ("cmp", "test")
+            and index + 1 < len(instructions)
+            and split_instruction(instructions[index + 1])[0].startswith("j")
+            and not register_re.search(instructions[index + 1])
+        ):
+            index += 2
+            continue
+        return False
+    return True
+
+
+def normalize_safe_zero_relocations(orig_asm: list[str], recomp_asm: list[str]) -> None:
+    """Align uniquely paired zero idioms moved across independent instructions."""
+    for orig_index, instruction in enumerate(orig_asm):
+        if not is_zero_idiom(instruction) or orig_asm.count(instruction) != 1:
+            continue
+        if recomp_asm.count(instruction) != 1:
+            continue
+        recomp_index = recomp_asm.index(instruction)
+        if recomp_index == orig_index:
+            continue
+        start = min(orig_index, recomp_index)
+        end = max(orig_index, recomp_index)
+        crossed = recomp_asm[start:end]
+        if recomp_index < orig_index:
+            crossed = recomp_asm[start + 1 : end + 1]
+        _, operands = split_instruction(instruction)
+        if not can_move_zero_across(crossed, operands[0]):
+            continue
+        recomp_asm.pop(recomp_index)
+        recomp_asm.insert(orig_index, instruction)
+        if operands[0] not in DWORD_REGISTERS:
+            continue
+        for index in range(start, end + 1):
+            orig_mnemonic, orig_operands = split_instruction(orig_asm[index])
+            recomp_mnemonic, recomp_operands = split_instruction(recomp_asm[index])
+            if (
+                orig_mnemonic != recomp_mnemonic
+                or not orig_mnemonic.startswith("j")
+                or len(orig_operands) != 1
+                or len(recomp_operands) != 1
+            ):
+                continue
+            try:
+                displacement_delta = abs(
+                    int(orig_operands[0], 0) - int(recomp_operands[0], 0)
+                )
+            except ValueError:
+                continue
+            if displacement_delta == 2:
+                recomp_asm[index] = orig_asm[index]
+
+
+def role_relocations_are_safe(orig_asm: list[str], recomp_asm: list[str]) -> bool:
+    """Reject newly exposed relocations with register or flag dependencies."""
+    matcher = SequenceMatcherWithPins(orig_asm, recomp_asm, [])
+    deletes = {
+        index
+        for code, start, end, _, __ in matcher.get_opcodes()
+        for index in range(start, end)
+        if code == "delete"
+    }
+    inserts = [
+        (orig_dest, index)
+        for code, orig_dest, _, start, end in matcher.get_opcodes()
+        for index in range(start, end)
+        if code == "insert"
+    ]
+
+    for orig_dest, recomp_index in inserts:
+        instruction = recomp_asm[recomp_index]
+        candidates = [index for index in deletes if orig_asm[index] == instruction]
+        if not candidates:
+            continue
+        mnemonic, _ = split_instruction(instruction)
+        if mnemonic not in ("lea", "mov", "pop", "push"):
+            return False
+        used_registers = set(REGISTER_RE.findall(instruction))
+        safe_candidate = None
+        for candidate in candidates:
+            start = min(candidate, orig_dest)
+            end = max(candidate, orig_dest)
+            if all(
+                index == candidate
+                or not used_registers.intersection(REGISTER_RE.findall(orig_asm[index]))
+                for index in range(start, end)
+            ):
+                safe_candidate = candidate
+                break
+        if safe_candidate is None:
+            return False
+        deletes.remove(safe_candidate)
+    return True
+
+
+def normalize_register_role_relocations(orig_asm: list[str], recomp_asm: list[str]) -> None:
+    """Expose relocations whose instruction also uses a renamed register role."""
+    role_map = infer_register_role_map(orig_asm, recomp_asm)
+    if not role_map:
+        return
+
+    original_recomp = list(recomp_asm)
+    orig_zero_idioms = {instruction for instruction in orig_asm if is_zero_idiom(instruction)}
+    excluded = {"call", "cmp", "pop", "push", "ret", "retn", "test"}
+    for index, (orig_text, recomp_text) in enumerate(zip(orig_asm, recomp_asm)):
+        if orig_text == recomp_text:
+            continue
+        mnemonic, operands = split_instruction(recomp_text)
+        if mnemonic in excluded or mnemonic.startswith("j"):
+            continue
+        if (
+            mnemonic in ("sub", "xor")
+            and len(operands) == 2
+            and operands[0] == operands[1]
+            and recomp_text in orig_zero_idioms
+        ):
+            continue
+        recomp_asm[index] = REGISTER_RE.sub(
+            lambda match: role_map.get(match.group(0), match.group(0)), recomp_text
+        )
+
+    normalize_safe_zero_relocations(orig_asm, recomp_asm)
+    if not role_relocations_are_safe(orig_asm, recomp_asm):
+        recomp_asm[:] = original_recomp
+
+
 def group_asm(chunks) -> tuple[list[str], list[str]]:
     """Rebuild the two assembly excerpts represented by one JSON diff group.
 
@@ -328,6 +637,9 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
     normalize_multiply_copy_zero(orig_asm)
     normalize_multiply_copy_zero(recomp_asm)
     normalize_zero_comparisons(orig_asm, recomp_asm)
+    normalize_dead_stack_reservation(orig_asm, recomp_asm)
+    normalize_register_role_relocations(orig_asm, recomp_asm)
+    strip_trailing_alignment_nops(orig_asm, recomp_asm)
     return orig_asm, recomp_asm
 
 
@@ -349,6 +661,8 @@ def is_codegen_equivalent_diff(diff) -> bool:
             continue
 
         saw_difference = True
+        if not byte_register_swaps_consistent(orig_asm, recomp_asm):
+            return False
         matcher = SequenceMatcherWithPins(orig_asm, recomp_asm, [])
         if matcher.ratio() == 1.0:
             continue
@@ -448,6 +762,111 @@ def run_selftest() -> int:
         (
             ["mov eax, dword ptr [g_left (DATA)]", "ret"],
             ["mov eax, dword ptr [g_right (DATA)]", "ret"],
+            False,
+        ),
+        (
+            ["mov al, byte ptr [g_mask (DATA)]", "or byte ptr [g_bits (DATA)], al", "ret", "nop"],
+            ["mov cl, byte ptr [g_mask (DATA)]", "or byte ptr [g_bits (DATA)], cl", "ret"],
+            True,
+        ),
+        (
+            ["mov al, byte ptr [g_mask (DATA)]", "or byte ptr [g_bits (DATA)], al", "ret"],
+            ["mov cl, byte ptr [g_mask (DATA)]", "or byte ptr [g_bits (DATA)], al", "ret"],
+            False,
+        ),
+        (
+            ["mov eax, 1", "nop"],
+            ["mov eax, 1"],
+            False,
+        ),
+        (
+            [
+                "sub esp, 4",
+                "push esi",
+                "mov esi, dword ptr [esp + 0xc]",
+                "pop esi",
+            ],
+            ["push esi", "mov esi, dword ptr [esp + 8]", "pop esi", "ret 4"],
+            True,
+        ),
+        (
+            ["sub esp, 4", "mov dword ptr [esp], eax"],
+            ["mov dword ptr [esp], eax", "ret"],
+            False,
+        ),
+        (
+            [
+                "mov esi, dword ptr [ecx + 0x1c]",
+                "cmp eax, esi",
+                "jge 0x12",
+                "imul edx, esi",
+                "add edx, dword ptr [ecx + 0x48]",
+                "pop esi",
+                "mov al, byte ptr [edx + eax]",
+                "ret 8",
+            ],
+            [
+                "mov esi, dword ptr [ecx + 0x1c]",
+                "cmp esi, eax",
+                "jle 0x12",
+                "imul esi, edx",
+                "add esi, dword ptr [ecx + 0x48]",
+                "mov al, byte ptr [esi + eax]",
+                "pop esi",
+                "ret 8",
+            ],
+            True,
+        ),
+        (
+            [
+                "xor esi, esi",
+                "push ebp",
+                "mov edi, ecx",
+                "mov eax, dword ptr [edi + 0x3c]",
+                "mov ecx, dword ptr [eax + esi]",
+                "add esi, 4",
+            ],
+            [
+                "mov esi, ecx",
+                "push ebp",
+                "xor edi, edi",
+                "mov eax, dword ptr [esi + 0x3c]",
+                "mov ecx, dword ptr [eax + edi]",
+                "add edi, 4",
+            ],
+            True,
+        ),
+        (
+            [
+                "xor esi, esi",
+                "xor ebx, ebx",
+                "cmp dword ptr [edi + 0x18], esi",
+                "jle 0x19",
+                "mov ecx, dword ptr [eax + esi]",
+                "add esi, 4",
+                "inc ebx",
+                "cmp dword ptr [edi + 0x18], ebx",
+            ],
+            [
+                "xor esi, esi",
+                "cmp dword ptr [edi + 0x18], esi",
+                "jle 0x1b",
+                "xor ebx, ebx",
+                "mov ecx, dword ptr [eax + ebx]",
+                "add ebx, 4",
+                "inc esi",
+                "cmp dword ptr [edi + 0x18], esi",
+            ],
+            True,
+        ),
+        (
+            ["mov eax, ebx", "add ebx, 1", "or edx, ebx", "ret"],
+            ["add esi, 1", "mov eax, esi", "or edx, esi", "ret"],
+            False,
+        ),
+        (
+            ["xor ebx, ebx", "cmp eax, ecx", "jle 0x19", "ret"],
+            ["cmp eax, ecx", "jle 0x1d", "xor ebx, ebx", "ret"],
             False,
         ),
     )

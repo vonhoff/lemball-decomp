@@ -721,7 +721,7 @@ void Wnd::_SetRect(const VsRect& p_rect)
 void Wnd::SetRelTl(const VsPoint& p_point)
 {
 	VsRect rect(p_point.m_x, p_point.m_y, m_rect.m_width, m_rect.m_height);
-	SetRect(rect);
+	_SetRect(rect);
 }
 
 // 68K 0x10110cb8 GetStyle__4CWndFv

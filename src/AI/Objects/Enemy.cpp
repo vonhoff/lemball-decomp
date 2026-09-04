@@ -78,7 +78,8 @@ bool Enemy::EnemyRuleRadius50AndLineOfSight()
 	if (inRadius == 0) {
 		return 0;
 	}
-	return inRadius & LineOfSight(m_targetPosition);
+	inRadius &= LineOfSight(m_targetPosition);
+	return inRadius;
 }
 
 // 68K 0x10607f6a EnemyAction_PATROL__6CEnemyFP18tEnemyLemmingUnion

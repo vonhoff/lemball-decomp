@@ -218,7 +218,7 @@ void HotAreaList::AddToList(HotAreaHandler* p_handler)
 
 // 68K 0x102127d0 RemoveFromList__12CHotAreaListFP15CHotAreaHandler
 // FUNCTION: LEMBALL 0x0046aa00
-bool HotAreaList::RemoveFromList(HotAreaHandler* p_handler)
+void HotAreaList::RemoveFromList(HotAreaHandler* p_handler)
 {
 	HotAreaElement* entry;
 
@@ -227,7 +227,7 @@ bool HotAreaList::RemoveFromList(HotAreaHandler* p_handler)
 		while (entry->m_handler != p_handler) {
 			entry = entry->m_next;
 			if (entry == 0) {
-				return 0;
+				return;
 			}
 		}
 		if (m_currentHandler == p_handler) {
@@ -235,7 +235,6 @@ bool HotAreaList::RemoveFromList(HotAreaHandler* p_handler)
 		}
 		DeleteEntry(entry);
 	}
-	return 0;
 }
 
 // 68K 0x10117b00 OnExit__12CHotAreaListFv

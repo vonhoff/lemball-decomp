@@ -13,7 +13,7 @@ class HotAreaList : public HotAreaHandler, public BaseQueueHandler {
 public:
 	HotAreaList(const VsRect& p_arg0, const VsPoint& p_arg1, const VsPoint& p_arg2);
 	void Set(const VsRect& p_rect, VsPoint p_point0, const VsPoint& p_point1);
-	bool RemoveFromList(HotAreaHandler* p_handler);
+	void RemoveFromList(HotAreaHandler* p_handler);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual void OnExit();                      // vtable+0x14
 	virtual ~HotAreaList();                     // vtable+0x00
