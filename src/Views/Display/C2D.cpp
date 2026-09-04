@@ -696,9 +696,24 @@ void C2D::DrawPaintGun(ViewData& p_viewData)
 }
 
 // 68K 0x10b036dc DrawLaserFire__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043ce30
+// FUNCTION: LEMBALL 0x0043ce30
 void C2D::DrawLaserFire(ViewData& p_viewData)
 {
+	int x;
+	int y;
+
+	switch (p_viewData.m_objectType) {
+	case (eObjectType) 0x26:
+		x = p_viewData.m_positionX - 0xd;
+		y = p_viewData.m_positionY - 9;
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_LASER_FIRE_NORTH, 0, 0, 0);
+		break;
+	case (eObjectType) 0x32:
+		x = p_viewData.m_positionX - 0x16;
+		y = p_viewData.m_positionY - 0xf;
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_LASER_FIRE_EAST, 0, 0, 0);
+		break;
+	}
 }
 
 // 68K 0x10b03788 DrawLaser__3C2DFR9CViewData
