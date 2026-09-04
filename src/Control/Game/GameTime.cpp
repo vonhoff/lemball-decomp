@@ -1,6 +1,8 @@
 #include "GameTime.h"
 
+#include "../../Visos/Foundation/VsTime.h"
 #include "Demo.h"
+#include "Game.h"
 
 #include <new.h>
 
@@ -12,9 +14,16 @@ void ClockEditMode(unsigned int p_enabled)
 }
 
 // 68K 0x1070124e ResetGameTimes__Fv
-// STUB: LEMBALL 0x00408090
+// FUNCTION: LEMBALL 0x00408090
 void ResetGameTimes()
 {
+	g_dwLastRemoteTimestamp = 0;
+	g_dwLastElapsedMilli = 0;
+	g_dwSimulationTimestamp = 0;
+	g_dwGameTick = 0;
+	g_dwPausedMilli = 0;
+	g_dwCurrentMilli = CurrentMilliTimer();
+	g_dwGameTimeTick = g_dwCurrentMilli / 50;
 }
 
 // 68K 0x107012a4 SetGameTime__Fv
