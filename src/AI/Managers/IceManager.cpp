@@ -42,9 +42,12 @@ void IceManager::Initialise(int p_capacity)
 }
 
 // 68K 0x10612672 Process__11CIceManagerFv
-// STUB: LEMBALL 0x0042dd00
+// FUNCTION: LEMBALL 0x0042dd00
 void IceManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_ice[i].Process();
+	}
 }
 
 // 68K 0x106126ce GetViewData__11CIceManagerFP9CViewData
