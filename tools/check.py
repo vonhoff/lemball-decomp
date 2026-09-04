@@ -360,16 +360,15 @@ def is_codegen_equivalent_diff(diff) -> bool:
 
 
 def compute_ratio(match: dict | None, name: str = "") -> tuple[float, str]:
-    """Calculate effective match percentage and match reason tag."""
+    """Calculate effective match percentage and match reason tag.
+
+    ``name`` remains part of the public helper signature for report.py, but no
+    generated-function name is evidence of a match by itself.
+    """
     if match is None or match.get("stub"):
         return 0.0, "STUB"
 
-    mname = name or match.get("name") or ""
-    is_dtor = match.get("type") == 1 and (
-        "`scalar deleting destructor'" in mname or "`vector deleting destructor'" in mname
-    )
-
-    if match.get("effective") or float(match.get("matching", 0.0)) == 1.0 or is_dtor:
+    if match.get("effective") or float(match.get("matching", 0.0)) == 1.0:
         return 100.0, "MATCH"
 
     if is_thunk_only_diff(match.get("diff")):
@@ -478,6 +477,16 @@ def run_selftest() -> int:
     normalize_multiply_copy_zero(normalized)
     if normalized != flags_live:
         print("selftest fail: multiply/copy sequence with live flags was normalized")
+        failed += 1
+
+    deleting_dtor = {
+        "type": 1,
+        "matching": 0.25,
+        "name": "Thing::`scalar deleting destructor'",
+    }
+    ratio, reason = compute_ratio(deleting_dtor, deleting_dtor["name"])
+    if ratio != 25.0 or reason:
+        print("selftest fail: non-matching deleting destructor was accepted unconditionally")
         failed += 1
 
     if failed:
