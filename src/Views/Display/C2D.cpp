@@ -717,9 +717,44 @@ void C2D::DrawLaserFire(ViewData& p_viewData)
 }
 
 // 68K 0x10b03788 DrawLaser__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043cea0
+// FUNCTION: LEMBALL 0x0043cea0
 void C2D::DrawLaser(ViewData& p_viewData)
 {
+	int x;
+	int y;
+	unsigned long resourceId;
+	int frame;
+	eAction action = p_viewData.m_action;
+
+	switch (p_viewData.m_objectType) {
+	case (eObjectType) 0x1e:
+	case (eObjectType) 0x30:
+		resourceId = RES_GAME_LASER_EAST;
+		x = p_viewData.m_positionX - 0x14;
+		y = p_viewData.m_positionY - 0xa;
+		break;
+	case (eObjectType) 0x2f:
+	case (eObjectType) 0x31:
+		resourceId = RES_GAME_LASER_NORTH;
+		x = p_viewData.m_positionX - 0x2e;
+		y = p_viewData.m_positionY - 0xa;
+		break;
+	}
+
+	switch (action) {
+	case (eAction) 0x17:
+	case (eAction) 0x18:
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
+		break;
+	case (eAction) 0x19:
+	case (eAction) 0x1a:
+		frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15 / 1000;
+		if (frame > 17) {
+			frame = 17;
+		}
+		m_lemmingAnims->DrawAnim(x, y, resourceId, frame, 0, 0);
+		break;
+	}
 }
 
 // 68K 0x10b03882 DrawDuplicator__3C2DFR9CViewData
