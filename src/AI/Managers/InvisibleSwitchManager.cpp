@@ -48,9 +48,12 @@ void InvisibleSwitchManager::StepOn(const AiCoord& p_position, GameObject* p_obj
 }
 
 // 68K 0x1061341c Process__23CInvisibleSwitchManagerFv
-// STUB: LEMBALL 0x0040a3b0
+// FUNCTION: LEMBALL 0x0040a3b0
 void InvisibleSwitchManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_switches[i].Process();
+	}
 }
 
 // 68K 0x10613484 LoadLevel__23CInvisibleSwitchManagerFPUciUc
