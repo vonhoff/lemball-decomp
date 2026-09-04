@@ -105,9 +105,14 @@ bool Door::Process()
 }
 
 // 68K 0x106069f4 Unlock__5CDoorFv
-// STUB: LEMBALL 0x0040dd00
+// FUNCTION: LEMBALL 0x0040dd00
 void Door::Unlock()
 {
+	if (m_action >= (eAction) 0x1c && m_action <= (eAction) 0x1d) {
+		m_actionDeadline = 0x14;
+		SetSndEffect((eSoundEffect) 0xb);
+		RequestAction((eAction) 0x20);
+	}
 }
 
 // 68K 0x10606a54 IsUsable__5CDoorF7eAction
