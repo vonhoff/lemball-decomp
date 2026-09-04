@@ -19,7 +19,6 @@
 class RwSocket : public virtual BaseCommonSocket, public virtual WriteSocket, public virtual ReadSocket {
 public:
 	RwSocket() {}
-	virtual ~RwSocket() {}
 
 	void SendAcknowledgement() { WriteSocket::SendAcknowledgement(); }
 

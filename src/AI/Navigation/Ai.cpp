@@ -329,9 +329,10 @@ void Ai::Score(int p_score)
 }
 
 // 68K 0x101192f0 Process__3CAIFv
-// STUB: LEMBALL 0x00413e20
+// FUNCTION: LEMBALL 0x00413e20
 void Ai::Process()
 {
+	Process(0);
 }
 
 // 68K 0x10600d02 __dt__3CAIFv
