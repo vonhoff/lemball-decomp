@@ -42,9 +42,19 @@ void PvGdiBitmap::Free()
 }
 
 // 68K 0x10212962 Initialise__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x00472310
+// FUNCTION: LEMBALL 0x00472310
 void PvGdiBitmap::Initialise()
 {
+	m_directScroll = 0;
+	m_bits = 0;
+	m_bitsBase = 0;
+	m_xOffset = 0;
+	m_firstLine = 0;
+	m_lines = 0;
+	m_stride = 0;
+	m_extraRows = 0;
+	m_rowPadding = 0;
+	m_lineCapacity = 0;
 }
 
 // 68K 0x102129b4 CreateLinePtrs__12CPVGDIBitmapFv
