@@ -7,9 +7,14 @@ PaintGun::PaintGun()
 }
 
 // 68K 0x1061b2b4 Restart__9CPaintGunFv
-// STUB: LEMBALL 0x0042baf0
+// FUNCTION: LEMBALL 0x0042baf0
 void PaintGun::Restart()
 {
+	GlobalGameObject::Restart();
+	m_stateTimer = 0;
+	m_enabled = 0;
+	m_active = 0;
+	m_direction = 0;
 }
 
 // 68K 0x1061b352 Set__9CPaintGunFUsRC7AICOORDi
