@@ -114,9 +114,14 @@ void Map::LoadLevelName(LoadGroundName* p_data, unsigned long p_dataSize)
 }
 
 // 68K 0x10900ec2 LoadDefaultBlox__4CMapFP18tagLoadDefaultBloxUl
-// STUB: LEMBALL 0x00430e90
+// FUNCTION: LEMBALL 0x00430e90
 void Map::LoadDefaultBlox(class LoadDefaultBlox* p_data, unsigned long p_dataSize)
 {
+	unsigned short* data = (unsigned short*) p_data;
+	unsigned int defaultBloxData = data[1];
+	unsigned int defaultBlox = data[0];
+	m_defaultBlox = (eObjectType) defaultBlox;
+	m_defaultBloxData = defaultBloxData;
 }
 
 // 68K 0x10900f30 SetLevelName__4CMapFPc
