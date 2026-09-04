@@ -34,9 +34,12 @@ void Node::Initialise(int p_x, int p_y, int p_neighbourCapacity)
 }
 
 // 68K 0x106187b4 AddANeighbour__5CNodeFii
-// STUB: LEMBALL 0x004213a0
+// FUNCTION: LEMBALL 0x004213a0
 void Node::AddANeighbour(int p_node, int p_cost)
 {
+	m_neighbours[m_neighbourCount].m_node = p_node;
+	m_neighbours[m_neighbourCount].m_cost = p_cost;
+	m_neighbourCount++;
 }
 
 // 68K 0x106187fc Position__5CNodeFv
