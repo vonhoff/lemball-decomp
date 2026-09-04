@@ -377,6 +377,7 @@ class TargetDirectSoundEffect;
 class TargetDisplayDibDriver;
 class TargetDrawingContext;
 class TargetFramedButton;
+class TargetGDIDriver;
 class TargetGraphicsDriver;
 struct TargetGraphicsSystemState;
 class TargetInputTextButton;

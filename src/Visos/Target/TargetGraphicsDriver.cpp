@@ -7,6 +7,7 @@
 #include "../Graphics/PvGdiBitmap.h"
 #include "../Graphics/PvWnd.h"
 #include "../Graphics/VsGdi.h"
+#include "TargetGDIDriver.h"
 #include "TargetGraphicsSystemState.h"
 #include "TargetWinGDrawCodecState.h"
 
@@ -73,6 +74,18 @@ extern "C" __declspec(dllimport) long __stdcall DefDriverProc(unsigned int p_dri
 															  long p_param1,
 															  long p_param2);
 
+// FUNCTION: LEMBALL 0x00456790
+TargetGraphicsDriver::~TargetGraphicsDriver()
+{
+	if (m_driverModule != 0) {
+		FreeLibrary((HMODULE) m_driverModule);
+		m_driverModule = 0;
+	}
+	if (m_palette != 0) {
+		DeleteObject((HGDIOBJ) m_palette);
+	}
+}
+
 // FUNCTION: LEMBALL 0x004567c0
 bool TargetGraphicsDriver::CreatePalette(void* p_paletteDescription)
 {
@@ -135,25 +148,15 @@ bool TargetGraphicsDriver::BlitWrappedBitmap(TargetDrawingContext* p_destination
 }
 
 // FUNCTION: LEMBALL 0x00456a90
-TargetGraphicsDriver::TargetGraphicsDriver()
+TargetGDIDriver::TargetGDIDriver()
 {
-	m_screenSize.m_height = 0;
-	m_driverModule = 0;
-	m_screenSize.m_width = 0;
-	m_palette = 0;
-	m_ready = 0;
-	m_window = 0;
 	m_ready = 1;
 	m_screenSize.m_width = (short) GetSystemMetrics(0);
 	m_screenSize.m_height = (short) GetSystemMetrics(1);
 }
 
-TargetGraphicsDriver::~TargetGraphicsDriver()
-{
-}
-
 // FUNCTION: LEMBALL 0x00456ae0
-TargetDrawingContext* TargetGraphicsDriver::CreateDrawingContext()
+TargetDrawingContext* TargetGDIDriver::CreateDrawingContext()
 {
 	HDC hdc;
 	void* storage;
@@ -172,7 +175,7 @@ TargetDrawingContext* TargetGraphicsDriver::CreateDrawingContext()
 }
 
 // FUNCTION: LEMBALL 0x00456b20
-int TargetGraphicsDriver::DestroyDrawingContext(TargetDrawingContext* p_drawingContext)
+int TargetGDIDriver::DestroyDrawingContext(TargetDrawingContext* p_drawingContext)
 {
 	int deleted;
 
@@ -185,7 +188,7 @@ int TargetGraphicsDriver::DestroyDrawingContext(TargetDrawingContext* p_drawingC
 }
 
 // FUNCTION: LEMBALL 0x00456b50
-bool TargetGraphicsDriver::InitializeBitmapInfo(void* p_bitmapInfo)
+bool TargetGDIDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 {
 	BITMAPINFO* info;
 
@@ -204,7 +207,7 @@ bool TargetGraphicsDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 }
 
 // FUNCTION: LEMBALL 0x00456b90
-TargetDibContext* TargetGraphicsDriver::CreateDIBContext(TargetDrawingContext* p_drawingContext, void* p_bitmapInfo)
+TargetDibContext* TargetGDIDriver::CreateDIBContext(TargetDrawingContext* p_drawingContext, void* p_bitmapInfo)
 {
 	HBITMAP bitmap;
 	void* bits;
@@ -225,7 +228,7 @@ TargetDibContext* TargetGraphicsDriver::CreateDIBContext(TargetDrawingContext* p
 }
 
 // FUNCTION: LEMBALL 0x00456c10
-int TargetGraphicsDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
+int TargetGDIDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 {
 	int deleted;
 
@@ -238,19 +241,19 @@ int TargetGraphicsDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 }
 
 // FUNCTION: LEMBALL 0x00456c50
-void TargetGraphicsDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
-												unsigned int p_startIndex,
-												unsigned int p_entryCount,
-												void* p_colours)
+void TargetGDIDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
+										   unsigned int p_startIndex,
+										   unsigned int p_entryCount,
+										   void* p_colours)
 {
 	SetDIBColorTable((HDC) p_drawingContext->m_hDC, p_startIndex, p_entryCount, (RGBQUAD*) p_colours);
 }
 
 // FUNCTION: LEMBALL 0x00456c70
-void TargetGraphicsDriver::BitBltContexts(TargetDrawingContext* p_destination,
-										  VsRect* p_destinationRect,
-										  TargetDrawingContext* p_source,
-										  VsPoint* p_sourcePosition)
+void TargetGDIDriver::BitBltContexts(TargetDrawingContext* p_destination,
+									 VsRect* p_destinationRect,
+									 TargetDrawingContext* p_source,
+									 VsPoint* p_sourcePosition)
 {
 	BitBlt((HDC) p_destination->m_hDC,
 		   (int) p_destinationRect->m_x,
@@ -264,10 +267,10 @@ void TargetGraphicsDriver::BitBltContexts(TargetDrawingContext* p_destination,
 }
 
 // FUNCTION: LEMBALL 0x00456cc0
-void TargetGraphicsDriver::StretchBltContexts(TargetDrawingContext* p_destination,
-											  VsRect* p_destinationRect,
-											  TargetDrawingContext* p_source,
-											  VsRect* p_sourceRect)
+void TargetGDIDriver::StretchBltContexts(TargetDrawingContext* p_destination,
+										 VsRect* p_destinationRect,
+										 TargetDrawingContext* p_source,
+										 VsRect* p_sourceRect)
 {
 	StretchBlt((HDC) p_destination->m_hDC,
 			   (int) p_destinationRect->m_x,
@@ -283,8 +286,8 @@ void TargetGraphicsDriver::StretchBltContexts(TargetDrawingContext* p_destinatio
 }
 
 // FUNCTION: LEMBALL 0x00456d10
-TargetDibContext* TargetGraphicsDriver::SelectDIBContext(TargetDrawingContext* p_drawingContext,
-														 TargetDibContext* p_dibContext)
+TargetDibContext* TargetGDIDriver::SelectDIBContext(TargetDrawingContext* p_drawingContext,
+													TargetDibContext* p_dibContext)
 {
 	HGDIOBJ prior;
 
@@ -297,8 +300,8 @@ TargetDibContext* TargetGraphicsDriver::SelectDIBContext(TargetDrawingContext* p
 }
 
 // FUNCTION: LEMBALL 0x00456d40
-TargetDibContext* TargetGraphicsDriver::RestoreDIBContext(TargetDrawingContext* p_drawingContext,
-														  TargetDibContext* p_dibContext)
+TargetDibContext* TargetGDIDriver::RestoreDIBContext(TargetDrawingContext* p_drawingContext,
+													 TargetDibContext* p_dibContext)
 {
 	HGDIOBJ prior;
 
@@ -342,7 +345,7 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 		g_pTargetGraphicsDriver = 0;
 	}
 	else {
-		g_pTargetGraphicsDriver = new (storage) TargetGraphicsDriver();
+		g_pTargetGraphicsDriver = new (storage) TargetGDIDriver();
 	}
 
 	if (g_pTargetGraphicsDriver == 0 || g_pTargetGraphicsDriver->m_ready == 0) {
@@ -358,6 +361,10 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 bool TargetGraphicsDriver::HasPalette()
 {
 	return m_palette != 0;
+}
+
+TargetGDIDriver::~TargetGDIDriver()
+{
 }
 
 // FUNCTION: LEMBALL 0x00458250

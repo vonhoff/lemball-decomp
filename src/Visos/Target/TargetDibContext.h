@@ -19,6 +19,7 @@ public:
 	virtual int GetStride();          // vtable+0x10
 
 	friend class TargetGraphicsDriver;
+	friend class TargetGDIDriver;
 	friend class Surface;
 
 private:

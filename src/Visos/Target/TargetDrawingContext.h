@@ -16,6 +16,7 @@ public:
 	virtual void SetDC(void* p_hDC); // vtable+0x04
 
 	friend class TargetGraphicsDriver;
+	friend class TargetGDIDriver;
 	friend class Surface;
 
 private:
