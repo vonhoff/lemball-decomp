@@ -6,6 +6,8 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Resources/Manifest.h"
+#include "../Animation/LemmingAnimsManager.h"
 #include "../Panel/Panel.h"
 #include "../Sound/SoundView.h"
 #include "Main2DDisplay.h"
@@ -651,9 +653,22 @@ void C2D::DrawBalloon(ViewData& p_viewData, int p_playerIndex)
 }
 
 // 68K 0x10b031aa DrawBalloonPost__3C2DFR9CViewDatai
-// STUB: LEMBALL 0x0043c9f0
+// FUNCTION: LEMBALL 0x0043c9f0
 void C2D::DrawBalloonPost(ViewData& p_viewData, int p_playerIndex)
 {
+	int x;
+	int y;
+	BaseRemap* remap;
+
+	x = p_viewData.m_positionX - 0x10;
+	y = p_viewData.m_positionY - 0x40;
+	if (p_playerIndex < 4) {
+		remap = m_remaps[p_playerIndex];
+	}
+	else {
+		remap = 0;
+	}
+	m_lemmingAnims->DrawAnim(x, y, RES_GAME_BALLOON_POST, 0, 0, (Remap*) remap);
 }
 
 // 68K 0x10b03222 DrawTrampoline__3C2DFR9CViewData
