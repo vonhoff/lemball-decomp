@@ -36,11 +36,11 @@ void SuccFailAnimWindow::SetVariant(int p_variant)
 {
 	unsigned int animBase;
 
-	if (p_variant == 0) {
-		animBase = m_secondaryAnimBase;
+	if (p_variant != 0) {
+		animBase = m_primaryAnimBase;
 	}
 	else {
-		animBase = m_primaryAnimBase;
+		animBase = m_secondaryAnimBase;
 	}
 	AnimWnd::SetAnim(m_variantIndex + animBase);
 }
