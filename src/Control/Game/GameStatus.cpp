@@ -112,9 +112,7 @@ void GameStatus::UnJiggleLevelData(unsigned int p_value)
 // FUNCTION: LEMBALL 0x00406ba0
 unsigned int GameStatus::CalcCheckSum(unsigned int p_value)
 {
-	p_value += (p_value >> 16);
-	p_value += (p_value >> 8);
-	return p_value & 0x1f;
+	return ((p_value >> 16) + (p_value >> 8) + p_value) & 0x1f;
 }
 
 // 68K 0x10701600 EncodePassword__11CGameStatusFv
