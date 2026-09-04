@@ -3,9 +3,12 @@
 #include "Ground.h"
 
 // 68K 0x10119a8e SetCollision__12CGroundArrayFiii
-// STUB: LEMBALL 0x0040eb90
+// FUNCTION: LEMBALL 0x0040eb90
 void GroundArray::SetCollision(int p_x, int p_y, int p_collision)
 {
+	if (p_x >= 0 && p_y >= 0 && p_x < m_width && p_y < m_height) {
+		m_ground[p_y * m_width + p_x].m_collision |= (unsigned short) p_collision;
+	}
 }
 
 // 68K 0x10900402 Clear__12CGroundArrayFv
