@@ -129,8 +129,47 @@ def is_recomp_offset_call(orig_text: str, recomp_text: str) -> bool:
     return bool(re.match(r"call .+ \(FUNCTION\)$", orig_text))
 
 
+def split_vtable_reference(instruction: str) -> tuple[str, str, bool] | None:
+    """Return instruction shape, concrete class, and decorated-name status."""
+    instruction = normalize_asm(instruction)
+    suffix = " (VTABLE)"
+    if not instruction.endswith(suffix):
+        return None
+
+    body = instruction[: -len(suffix)]
+    head, separator, symbol = body.rpartition(", ")
+    if not separator:
+        head, separator, symbol = body.partition(" ")
+    if not separator or not head or not symbol:
+        return None
+
+    decorated = re.fullmatch(r"(.+?)::`vftable'(?:\{for `.+?'\})?", symbol)
+    if decorated:
+        return head, decorated.group(1), True
+    if "`vftable'" in symbol:
+        return None
+    return head, symbol, False
+
+
+def is_vtable_display_alias(orig_text: str, recomp_text: str) -> bool:
+    """Accept a collapsed PDB vtable name against its decorated path name."""
+    orig = split_vtable_reference(orig_text)
+    recomp = split_vtable_reference(recomp_text)
+    if orig is None or recomp is None:
+        return False
+    orig_head, orig_class, orig_decorated = orig
+    recomp_head, recomp_class, recomp_decorated = recomp
+    return (
+        orig_head == recomp_head
+        and orig_class == recomp_class
+        and orig_decorated != recomp_decorated
+    )
+
+
 def is_equivalent_insn(orig_text: str, recomp_text: str) -> bool:
     if normalize_asm(orig_text) == normalize_asm(recomp_text):
+        return True
+    if is_vtable_display_alias(orig_text, recomp_text):
         return True
     if is_unresolved_symbol(orig_text, recomp_text):
         return True
@@ -911,6 +950,26 @@ def run_selftest() -> int:
         ("call <OFFSET1>", "call Thunk of 'Thing::Run' (THUNK)", True),
         ("call <OFFSET1>", "call _fopen (UNK)", True),
         ("mov dword ptr [esi], <OFFSET2>", "mov dword ptr [esi], Thing::`vftable' (VTABLE)", True),
+        (
+            "mov dword ptr [esi], Thing (VTABLE)",
+            "mov dword ptr [esi], Thing::`vftable'{for `Base'} (VTABLE)",
+            True,
+        ),
+        (
+            "mov dword ptr [esi], Thing (VTABLE)",
+            "mov dword ptr [edi], Thing::`vftable'{for `Base'} (VTABLE)",
+            False,
+        ),
+        (
+            "mov dword ptr [esi], First (VTABLE)",
+            "mov dword ptr [esi], Second::`vftable'{for `Base'} (VTABLE)",
+            False,
+        ),
+        (
+            "mov dword ptr [esi], Thing::`vftable'{for `Left'} (VTABLE)",
+            "mov dword ptr [esi], Thing::`vftable'{for `Right'} (VTABLE)",
+            False,
+        ),
         ("mov eax, dword ptr [g_left (DATA)]", "mov eax, dword ptr [g_right (DATA)]", False),
         ("call First (FUNCTION)", "call Second (FUNCTION)", False),
     )
