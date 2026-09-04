@@ -65,10 +65,25 @@ NetworkGameMessage* NetworkManager::GetGameMessage(Connect* p_connection)
 }
 
 // 68K 0x10a00bfa GetnGame__15CNetworkManagerFP8CConnect
-// STUB: LEMBALL 0x00452bf0
+// FUNCTION: LEMBALL 0x00452bf0
 int NetworkManager::GetnGame(Connect* p_connection)
 {
-	return 0;
+	int index;
+	Connect** connection;
+
+	index = 0;
+	connection = m_connections;
+	do {
+		if (*connection == p_connection) {
+			break;
+		}
+		connection++;
+		index++;
+	} while (index < 10);
+	if (index == 10) {
+		return -1;
+	}
+	return index;
 }
 
 // 68K 0x10a00500 __dt__15CNetworkManagerFv
