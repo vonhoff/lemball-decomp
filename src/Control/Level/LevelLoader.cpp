@@ -1,5 +1,6 @@
 #include "LevelLoader.h"
 
+#include "../../AI/Navigation/Ai.h"
 #include "../../Visos/Foundation/VsFile.h"
 #include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Network/Connect.h"
@@ -22,9 +23,13 @@ extern char g_szNameBracketFormat[];
 extern char g_szCloseBracketNewline[];
 
 // 68K 0x1070267c __ct__12CLevelLoaderFP3CAI
-// STUB: LEMBALL 0x00408210
+// FUNCTION: LEMBALL 0x00408210
 LevelLoader::LevelLoader(Ai* p_arg0)
 {
+	m_ai = p_arg0;
+	m_fallbackLevel = 0;
+	g_pLevelFileData = 0;
+	g_pActiveLevelFile = (char*) m_ai->LevelName();
 }
 
 // 68K 0x107026ca LoadLevel__12CLevelLoaderF6eSkilliUc
