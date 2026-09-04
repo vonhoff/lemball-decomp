@@ -339,11 +339,11 @@ void Game::LoadFrontendResources(int p_mode)
 
 	if (m_frontendResources == 0) {
 		storage = operator new(0x58);
-		if (storage == 0) {
-			m_frontendResources = 0;
+		if (storage != 0) {
+			m_frontendResources = new (storage) FrontendResourceLoader(m_mainDisplay, p_mode);
 		}
 		else {
-			m_frontendResources = new (storage) FrontendResourceLoader(m_mainDisplay, p_mode);
+			m_frontendResources = 0;
 		}
 	}
 }
