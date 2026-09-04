@@ -51,7 +51,28 @@ void GroundAnim::Add(const Coord3d& p_coordinate, unsigned short p_startFrame, u
 }
 
 // 68K 0x1060e768 LoadLevel__11CGroundAnimFPUciUc
-// STUB: LEMBALL 0x0040d2e0
+// FUNCTION: LEMBALL 0x0040d2e0
 void GroundAnim::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short count = *(unsigned short*) p_data;
+	p_data += 2;
+
+	if (count != 0) {
+		unsigned int remaining = count;
+		do {
+			Coord3d coordinate;
+			coordinate.m_x = *(unsigned short*) p_data;
+			p_data += 2;
+			coordinate.m_y = *(unsigned short*) p_data;
+			p_data += 2;
+			coordinate.m_z = *(unsigned short*) p_data;
+			p_data += 2;
+			unsigned int startFrame = *(unsigned short*) p_data;
+			p_data += 2;
+			unsigned int endFrame = *(unsigned short*) p_data;
+			p_data += 2;
+			Add(coordinate, startFrame, endFrame);
+			remaining--;
+		} while (remaining != 0);
+	}
 }
