@@ -1,5 +1,7 @@
 #include "GroundAnim.h"
 
+#include "../../Control/Game/Game.h"
+
 // 68K 0x1060e30e __ct__11CGroundAnimFv
 // FUNCTION: LEMBALL 0x0040cf00
 GroundAnim::GroundAnim()
@@ -7,9 +9,13 @@ GroundAnim::GroundAnim()
 }
 
 // 68K 0x1060e332 Restart__11CGroundAnimFv
-// STUB: LEMBALL 0x0040cf10
+// FUNCTION: LEMBALL 0x0040cf10
 void GroundAnim::Restart()
 {
+	unsigned int currentTick = g_dwGameTick;
+	m_count = 0;
+	m_needsValidation = 1;
+	m_nextProcessTick = currentTick + 2;
 }
 
 // 68K 0x1060e36e __dt__11CGroundAnimFv

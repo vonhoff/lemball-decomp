@@ -82,17 +82,17 @@ void HotAreaList::DeleteEntry(HotAreaElement* p_entry)
 
 	next = p_entry->m_next;
 	previous = p_entry->m_previous;
-	if (previous == 0) {
-		m_head = next;
-	}
-	else {
+	if (previous != 0) {
 		previous->m_next = next;
 	}
-	if (next == 0) {
-		m_tail = previous;
+	else {
+		m_head = next;
+	}
+	if (next != 0) {
+		next->m_previous = previous;
 	}
 	else {
-		next->m_previous = previous;
+		m_tail = previous;
 	}
 	operator delete(p_entry);
 }

@@ -15,9 +15,10 @@ int FileCommonSocket::SysCloseSocket()
 }
 
 // 68K 0x101078e2 SocketError__17CFileCommonSocketFv
-// STUB: LEMBALL 0x0047b8f0
+// FUNCTION: LEMBALL 0x0047b8f0
 void FileCommonSocket::SocketError()
 {
+	BaseCommonSocket::SocketError((NetworkErrors) 0);
 }
 
 // 68K 0x101065e2 __dt__17CFileCommonSocketFv
