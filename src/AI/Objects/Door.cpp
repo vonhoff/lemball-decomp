@@ -111,10 +111,10 @@ void Door::Unlock()
 }
 
 // 68K 0x10606a54 IsUsable__5CDoorF7eAction
-// STUB: LEMBALL 0x0040dd30
+// FUNCTION: LEMBALL 0x0040dd30
 bool Door::IsUsable(eAction p_action)
 {
-	return 0;
+	return p_action == (eAction) 0x18 || (p_action >= (eAction) 0x1d && p_action <= (eAction) 0x1e);
 }
 
 // 68K 0x10606a96 Hits__5CDoorFRC7AICOORDP11CGameObject
