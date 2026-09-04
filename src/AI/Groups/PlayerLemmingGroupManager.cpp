@@ -59,9 +59,10 @@ void PlayerLemmingGroupManager::Process()
 }
 
 // 68K 0x1060fbd4 DeleteGroup__26CPlayerLemmingGroupManagerFP19CPlayerLemmingGroup
-// STUB: LEMBALL 0x00418720
+// FUNCTION: LEMBALL 0x00418720
 void PlayerLemmingGroupManager::DeleteGroup(PlayerLemmingGroup* p_group)
 {
+	p_group->Restart();
 }
 
 // 68K 0x1060fc30 CreateNewGroup__26CPlayerLemmingGroupManagerFUsPUs
@@ -71,16 +72,19 @@ void PlayerLemmingGroupManager::CreateNewGroup(unsigned short p_count, unsigned 
 }
 
 // 68K 0x1060fd36 AddPlayerLemmingToGroup__26CPlayerLemmingGroupManagerFP14CPlayerLemmingP19CPlayerLemmingGroup
-// STUB: LEMBALL 0x00418820
+// FUNCTION: LEMBALL 0x00418820
 void PlayerLemmingGroupManager::AddPlayerLemmingToGroup(PlayerLemming* p_lemming, PlayerLemmingGroup* p_group)
 {
+	GenericGroupManager::FindElementInGroupAndRemoveIt(p_lemming);
+	p_group->AddLemmingToGroup(p_lemming);
 }
 
 // 68K 0x1060fdc4 IsLemmingPlayerControlled__26CPlayerLemmingGroupManagerFP14CPlayerLemming
 // FUNCTION: LEMBALL 0x00418840
 bool PlayerLemmingGroupManager::IsLemmingPlayerControlled(PlayerLemming* p_lemming)
 {
-	PlayerLemmingGroup* group = (PlayerLemmingGroup*) GenericGroupManager::GetGroupElementIsMemberOf((GameObject*) p_lemming);
+	PlayerLemmingGroup* group =
+		(PlayerLemmingGroup*) GenericGroupManager::GetGroupElementIsMemberOf((GameObject*) p_lemming);
 	if (group != 0) {
 		return group->CheckPlayerControlled();
 	}

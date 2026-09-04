@@ -5,9 +5,12 @@
 #include "../Objects/ViewData.h"
 
 // 68K 0x1061f090 __ct__14CSlinkyManagerFP3CAIi
-// STUB: LEMBALL 0x0040b8e0
+// FUNCTION: LEMBALL 0x0040b8e0
 SlinkyManager::SlinkyManager(Ai* p_arg0, int p_arg1)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_slinkies = 0;
 }
 
 // 68K 0x1061f0ca Restart__14CSlinkyManagerFv
@@ -33,9 +36,9 @@ void SlinkyManager::Initialise(int p_capacity)
 	}
 	if (m_slinkies == 0) {
 		m_slinkies = new Slinky[p_capacity];
-	}
-	for (int i = 0; i < m_capacity; i++) {
-		m_slinkies[i].Restart();
+		for (int i = 0; i < m_capacity; i++) {
+			m_slinkies[i].Restart();
+		}
 	}
 }
 

@@ -1,12 +1,12 @@
 #include "BaseObjectManager.h"
 
-#include "../Base/GameObject.h"
-#include "../Base/GlobalGameObject.h"
 #include "../../Network/Game/NetworkManager.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Messaging/WriteCBuff.h"
 #include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Network/Connect.h"
+#include "../Base/GameObject.h"
+#include "../Base/GlobalGameObject.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

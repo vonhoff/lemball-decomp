@@ -4,7 +4,11 @@
 // FUNCTION: LEMBALL 0x00420b50
 unsigned long EnemyGetLong(unsigned long* p_data)
 {
-	return 0;
+	unsigned char* data;
+
+	data = (unsigned char*) p_data;
+	return (((unsigned long) data[3] << 16 | (unsigned long) data[1]) << 8) | (unsigned long) data[2] << 16 |
+		   (unsigned long) data[0];
 }
 
 // 68K 0x10608950 __ct__18CEnemyGroupManagerFP3CAIP14CObjectManagerP17CFormationManager

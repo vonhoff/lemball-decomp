@@ -58,7 +58,7 @@ void VsLtoa(long p_value, char* p_buffer, int p_radix)
 }
 
 // 68K 0x102142e8 vsULtoa__FUlPci
-// STUB: LEMBALL 0x00458db0
+// FUNCTION: LEMBALL 0x00458db0
 char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 {
 	static unsigned int s_maxPowers[17];

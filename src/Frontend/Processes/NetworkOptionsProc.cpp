@@ -45,7 +45,7 @@ NetworkOptionsProc::NetworkOptionsProc(Game* p_arg0) : BaseFrontendProcess(p_arg
 }
 
 // 68K 0x10808a36 __dt__19CNetworkOptionsProcFv
-// FUNCTION: LEMBALL 0x004550e0
+// FUNCTION: LEMBALL 0x004550c0
 NetworkOptionsProc::~NetworkOptionsProc()
 {
 	g_pNetworkOptionsProc = 0;
@@ -94,7 +94,7 @@ void NetworkOptionsProc::StopBroadcast()
 
 	if (g_pBaseNetwork != 0) {
 		g_pBaseNetwork->m_broadcast->Suspend();
-		g_pBaseNetwork->m_broadcast->Stop();
+		g_pBaseNetwork->m_broadcast->StopListen();
 	}
 	if (g_pNetworkManager != 0) {
 		connections = g_pNetworkManager->m_connections;

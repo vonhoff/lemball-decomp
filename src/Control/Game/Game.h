@@ -21,8 +21,8 @@ public:
 
 private:
 	char m_runtimeName[80];       // 0x00
-	BaseStat* m_processingStat;   // 0x50
-	BaseStat* m_refreshingStat;   // 0x54
+	TimeStat* m_processingStat;   // 0x50
+	TimeStat* m_refreshingStat;   // 0x54
 	unsigned int m_flowTicks;     // 0x58
 	BaseProcess* m_process;       // 0x5c
 	unsigned int m_quit;          // 0x60

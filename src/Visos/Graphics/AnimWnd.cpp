@@ -12,10 +12,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-extern "C" __declspec(dllimport) void* __cdecl MCIWndCreateA(void* p_hwndParent,
-															 void* p_instance,
-															 unsigned int p_style,
-															 const char* p_file);
+extern "C" void* __cdecl MCIWndCreateA(void* p_hwndParent, void* p_instance, unsigned int p_style, const char* p_file);
 extern "C" __declspec(dllimport) unsigned int __stdcall mciSendCommandA(unsigned int p_deviceId,
 																		unsigned int p_message,
 																		unsigned int p_flags,
@@ -61,7 +58,7 @@ void AnimWnd::OnStart()
 }
 
 // 68K 0x10103c04 Initialise__8CAnimWndFv
-// STUB: LEMBALL 0x0046dd60
+// FUNCTION: LEMBALL 0x0046dd60
 void AnimWnd::Initialise()
 {
 	m_animSet = 0;
@@ -77,7 +74,7 @@ void AnimWnd::Initialise()
 }
 
 // 68K 0x10103c50 __ct__8CAnimWndFv
-// STUB: LEMBALL 0x0046ddc0
+// FUNCTION: LEMBALL 0x0046ddc0
 AnimWnd::AnimWnd()
 {
 	m_resolveMoviePath = 0;
@@ -100,7 +97,7 @@ AnimWnd::~AnimWnd()
 }
 
 // 68K 0x10103df8 _OnCreate__8CAnimWndFv
-// STUB: LEMBALL 0x0046ded0
+// FUNCTION: LEMBALL 0x0046ded0
 void AnimWnd::OnCreate()
 {
 	GWnd::OnCreate();
@@ -109,9 +106,7 @@ void AnimWnd::OnCreate()
 		m_movieWindow = 0;
 	}
 	m_movieWindow = MCIWndCreateA((HWND) m_nativeWindow, (HINSTANCE) g_pApplicationInstance, 0x50001f0a, 0);
-	if (m_movieWindow != 0) {
-		SendMessageA((HWND) m_movieWindow, 0x499, 0, (LPARAM) m_moviePath.m_text);
-	}
+	SendMessageA((HWND) m_movieWindow, 0x499, 0, (LPARAM) m_moviePath.m_text);
 }
 
 // 68K 0x101040d4 _OnDestroy__8CAnimWndFv
@@ -149,7 +144,7 @@ void AnimWnd::OnNotifyMode(int p_mode)
 }
 
 // 68K 0x10104516 SetMovieWindow__8CAnimWndFv
-// STUB: LEMBALL 0x0046dfe0
+// FUNCTION: LEMBALL 0x0046dfe0
 void AnimWnd::SetMovieWindow()
 {
 	unsigned int mciId;
@@ -222,7 +217,7 @@ void AnimWnd::Refresh(VsRect* p_rect)
 }
 
 // 68K 0x1010414e SetAnim__8CAnimWndFUl
-// STUB: LEMBALL 0x0046e130
+// FUNCTION: LEMBALL 0x0046e130
 void AnimWnd::SetAnim(unsigned int p_resourceId)
 {
 	ResMovie* movie;
@@ -235,23 +230,15 @@ void AnimWnd::SetAnim(unsigned int p_resourceId)
 	if (p_resourceId != 0) {
 		m_animResourceId = p_resourceId;
 		movie = ResMovie::Load(p_resourceId);
-		if (movie != 0) {
-			if (movie->m_loaded == 0) {
-				movie->LoadData();
-			}
-			else {
-				movie->m_age = 0;
-			}
-			movie->m_directUseCount = movie->m_directUseCount + 1;
-			if (movie->m_movieEntries != 0) {
-				fileName = (char*) movie->m_movieEntries->m_data;
-				if (fileName == 0) {
-					fileName = "";
-				}
-			}
+		if (movie->m_loaded == 0) {
+			movie->LoadData();
 		}
+		else {
+			movie->m_age = 0;
+		}
+		movie->m_directUseCount = movie->m_directUseCount + 1;
+		fileName = (char*) movie->m_movieEntries->m_data;
 	}
-	relative = "";
 	if (m_useMoviePrefix != 0) {
 		relative = m_moviePrefix;
 		if (relative.Getlength() > 0 && relative.m_text[relative.Getlength() - 1] != '\\') {
@@ -291,10 +278,10 @@ void AnimWnd::SetAnim(unsigned int p_resourceId)
 }
 
 // 68K 0x1010469c Play__8CAnimWndFv
-// STUB: LEMBALL 0x0046e300
+// FUNCTION: LEMBALL 0x0046e300
 void AnimWnd::Play()
 {
-	if (m_playing == 0 && m_movieWindow != 0) {
+	if (m_playing == 0) {
 		SendMessageA((HWND) m_movieWindow, 0x807, 0, (LPARAM) -1);
 		SendMessageA((HWND) m_movieWindow, 0x806, 0, 0);
 		m_playing = 1;
@@ -302,7 +289,7 @@ void AnimWnd::Play()
 }
 
 // 68K 0x101046d8 Stop__8CAnimWndFv
-// STUB: LEMBALL 0x0046e390
+// FUNCTION: LEMBALL 0x0046e390
 void AnimWnd::Stop()
 {
 	if (m_paused == 0) {
@@ -312,10 +299,10 @@ void AnimWnd::Stop()
 }
 
 // 68K 0x10104716 Resume__8CAnimWndFv
-// STUB: LEMBALL 0x0046e3c0
+// FUNCTION: LEMBALL 0x0046e3c0
 void AnimWnd::Resume()
 {
-	if (m_paused != 0 && m_movieWindow != 0) {
+	if (m_paused != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x855, 0, 0);
 		m_paused = 0;
 	}

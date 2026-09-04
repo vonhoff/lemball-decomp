@@ -17,12 +17,6 @@ void SolidRect::Render(Gdi* p_gdi)
 	p_gdi->m_renderTarget->Blit((ClipRect*) this);
 }
 
-// 68K 0x1010a6c2 __ct__10CSolidRectFv
-// FUNCTION: LEMBALL 0x00439520
-SolidRect::SolidRect() : m_top(0), m_left(0), m_bottom(0), m_right(0)
-{
-}
-
 // FUNCTION: LEMBALL 0x004756d0
 VsRect* SolidRect::GetBounds()
 {

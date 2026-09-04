@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00497780
 class PauseWindowFreeVramInterface {
 public:
-	// No functions mapped yet.
+	virtual void FreeVram() = 0; // vtable+0x00
 };
 
 #endif

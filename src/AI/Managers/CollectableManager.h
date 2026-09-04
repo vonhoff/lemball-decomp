@@ -2,11 +2,11 @@
 #define LEMBALL_AI_MANAGERS_COLLECTABLEMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x004955a0
-class CollectableManager : public NetworkMessage {
+class CollectableManager : public BaseObjectManager {
 public:
 	CollectableManager(Ai* p_arg0, int p_arg1);
 	virtual int GetViewData(ViewData* p_viewData); // vtable+0x24
@@ -18,7 +18,6 @@ public:
 	void Restart();
 
 private:
-	unsigned int m_messageType;   // 0x2c
 	Ai* m_ai;                     // 0x30
 	Collectable** m_collectables; // 0x34
 	int m_capacity;               // 0x38

@@ -9,8 +9,10 @@
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
+// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
 #include <windows.h>
 #include <mmsystem.h>
+// clang-format on
 
 // GLOBAL: LEMBALL 0x004aa228
 static MciMusicDevice* g_pActiveMciMusicDevice;

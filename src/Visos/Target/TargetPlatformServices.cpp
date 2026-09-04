@@ -25,21 +25,21 @@ extern "C" __declspec(dllimport) long __stdcall RegSetValueExA(void* p_key,
 															   unsigned int p_size);
 extern "C" __declspec(dllimport) long __stdcall RegCloseKey(void* p_key);
 
-// STUB: LEMBALL 0x00456660
+// FUNCTION: LEMBALL 0x00456660
 bool TargetInputInit()
 {
 	g_pMasterInput->m_state = g_pMasterInput->m_state | 3;
 	return 1;
 }
 
-// STUB: LEMBALL 0x00456670
+// FUNCTION: LEMBALL 0x00456670
 bool TargetInputQuit()
 {
 	g_pMasterInput->m_state = g_pMasterInput->m_state & 0xfffffffc;
 	return 1;
 }
 
-// STUB: LEMBALL 0x00456680
+// FUNCTION: LEMBALL 0x00456680
 bool TargetPlatformServicesInit()
 {
 	void* storage;
@@ -60,7 +60,7 @@ bool TargetPlatformServicesInit()
 	return 1;
 }
 
-// STUB: LEMBALL 0x004566f0
+// FUNCTION: LEMBALL 0x004566f0
 bool TargetPlatformServicesQuit()
 {
 	TargetPlatformServices* services;
@@ -68,7 +68,6 @@ bool TargetPlatformServicesQuit()
 	services = g_pTargetPlatformServices;
 	if (g_pTargetPlatformServices != 0) {
 		delete services;
-		g_pTargetPlatformServices = 0;
 	}
 	return 1;
 }
@@ -83,7 +82,7 @@ TargetPlatformServices::~TargetPlatformServices()
 {
 }
 
-// STUB: LEMBALL 0x0045ecb0
+// FUNCTION: LEMBALL 0x0045ecb0
 bool TargetPlatformServices::WriteRegistryFlag(const char* p_subkey, int p_enabled)
 {
 	char keyPath[256];
@@ -109,7 +108,7 @@ bool TargetPlatformServices::WriteRegistryFlag(const char* p_subkey, int p_enabl
 }
 
 // 68K 0x1010c30e GetCDDir__FPCc
-// STUB: LEMBALL 0x0045eda0
+// FUNCTION: LEMBALL 0x0045eda0
 char* TargetPlatformServices::GetCDDir(const char* p_requiredFile)
 {
 	char candidate[256];
@@ -125,8 +124,8 @@ char* TargetPlatformServices::GetCDDir(const char* p_requiredFile)
 	i = 0;
 	while (i < 0x20) {
 		if ((drives & 1) != 0) {
-			g_szCDRootPath[0] = letter;
 			candidate[0] = letter;
+			g_szCDRootPath[0] = letter;
 			if (GetDriveTypeA(g_szCDRootPath) == 5) {
 				file = VsOpen(candidate, g_szFileModeRead);
 				if (file != 0) {

@@ -2,11 +2,11 @@
 #define LEMBALL_AI_MANAGERS_TRAPDOORMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x004936c8
-class TrapDoorManager : public NetworkMessage {
+class TrapDoorManager : public BaseObjectManager {
 public:
 	TrapDoorManager();
 	virtual int GetViewData(ViewData* p_viewData); // vtable+0x24
@@ -17,9 +17,8 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 
 private:
-	unsigned int m_messageType; // 0x2c
-	TrapDoor* m_doors[8];       // 0x30
-	int m_count;                // 0x50
+	TrapDoor* m_doors[8]; // 0x30
+	int m_count;          // 0x50
 };
 
 // SYNTHETIC: LEMBALL 0x0040ced0

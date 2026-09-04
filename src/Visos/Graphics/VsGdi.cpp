@@ -1,7 +1,4 @@
-#include "GdiDevice.h"
 #include "VsGdi.h"
-
-#include <string.h>
 
 #include "../Foundation/ChangeList.h"
 #include "../Foundation/VsDebug.h"
@@ -153,13 +150,17 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 								   void* p_unused,
 								   unsigned int* p_fallbackEntries)
 {
-	PALETTEENTRY systemEntries[256];
+	unsigned char paletteStorage[0x404];
+	PALETTEENTRY* systemEntries;
 	unsigned char* data;
 	HDC hdc;
 	int i;
 	int colorCount;
 	unsigned int color;
 
+	systemEntries = (PALETTEENTRY*) (paletteStorage + 4);
+	((LOGPALETTE*) paletteStorage)->palVersion = 0x300;
+	((LOGPALETTE*) paletteStorage)->palNumEntries = 0x100;
 	hdc = GetDC(0);
 	if ((GetSystemPaletteEntries(hdc, 0, 10, systemEntries) |
 		 GetSystemPaletteEntries(hdc, 0xf6, 10, systemEntries + 0xf6)) == 0) {
@@ -180,10 +181,12 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 
 	i = 0;
 	while (i < 10) {
-		p_entries[i] = ((unsigned int) systemEntries[i].peRed << 16) |
-					   ((unsigned int) systemEntries[i].peGreen << 8) | systemEntries[i].peBlue;
+		p_entries[i] = ((unsigned int) systemEntries[i].peRed << 16) | ((unsigned int) systemEntries[i].peGreen << 8) |
+					   systemEntries[i].peBlue;
 		p_entries[0xf6 + i] = ((unsigned int) systemEntries[0xf6 + i].peRed << 16) |
 							  ((unsigned int) systemEntries[0xf6 + i].peGreen << 8) | systemEntries[0xf6 + i].peBlue;
+		systemEntries[i].peFlags = 0;
+		systemEntries[0xf6 + i].peFlags = 0;
 		i = i + 1;
 	}
 	p_entries[10] = ((unsigned int) g_anReservedOutputColors[0][0] << 16) |
@@ -197,6 +200,10 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 			while (i < 0xf6) {
 				color = (unsigned char) (0u - (unsigned int) i);
 				p_entries[i] = (color << 16) | (color << 8) | color;
+				systemEntries[i].peRed = (unsigned char) color;
+				systemEntries[i].peGreen = (unsigned char) color;
+				systemEntries[i].peBlue = (unsigned char) color;
+				systemEntries[i].peFlags = 1;
 				i = i + 1;
 			}
 		}
@@ -204,6 +211,10 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 			i = 12;
 			while (i < 0xf6) {
 				p_entries[i] = p_fallbackEntries[i] & 0xffffff;
+				systemEntries[i].peRed = (unsigned char) (p_entries[i] >> 16);
+				systemEntries[i].peGreen = (unsigned char) (p_entries[i] >> 8);
+				systemEntries[i].peBlue = (unsigned char) p_entries[i];
+				systemEntries[i].peFlags = 1;
 				i = i + 1;
 			}
 		}
@@ -221,6 +232,10 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 				i = 12;
 				while (colorCount != 0) {
 					p_entries[i] = ((unsigned int) data[0] << 16) | ((unsigned int) data[1] << 8) | data[2];
+					systemEntries[i].peRed = data[0];
+					systemEntries[i].peGreen = data[1];
+					systemEntries[i].peBlue = data[2];
+					systemEntries[i].peFlags = 1;
 					data = data + 4;
 					i = i + 1;
 					colorCount = colorCount - 1;
@@ -228,6 +243,7 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 			}
 		}
 	}
+	g_pTargetGraphicsDriver->CreatePalette((LOGPALETTE*) paletteStorage);
 }
 
 // 68K 0x10109048 __ct__8CSurfaceFP8GrafPort
@@ -406,14 +422,16 @@ void Surface::SetLinePtrs()
 	m_firstLine = 0;
 	if (parent->PvZBuffSurface::m_bitmap.m_lines != 0) {
 		PvZBuffSurface::m_bitmap.m_lines = parent->PvZBuffSurface::m_bitmap.m_lines;
-		PvZBuffSurface::m_bitmap.m_bits = (unsigned char*) (originY * parentStride + (int) parent->PvZBuffSurface::m_bitmap.m_bits + originX);
+		PvZBuffSurface::m_bitmap.m_bits =
+			(unsigned char*) (originY * parentStride + (int) parent->PvZBuffSurface::m_bitmap.m_bits + originX);
 	}
 	else {
 		PvZBuffSurface::m_bitmap.m_lines = 0;
 	}
 	if (parent->PvBackBuffSurface::m_bitmap.m_lines != 0) {
 		PvBackBuffSurface::m_bitmap.m_lines = parent->PvBackBuffSurface::m_bitmap.m_lines;
-		PvBackBuffSurface::m_bitmap.m_bits = (unsigned char*) ((originY * parentStride + originX) * 2 + (int) parent->PvBackBuffSurface::m_bitmap.m_bits);
+		PvBackBuffSurface::m_bitmap.m_bits = (unsigned char*) ((originY * parentStride + originX) * 2 +
+															   (int) parent->PvBackBuffSurface::m_bitmap.m_bits);
 	}
 	else {
 		PvBackBuffSurface::m_bitmap.m_lines = 0;
@@ -438,7 +456,8 @@ void Surface::AddToChangeList(const VsRect* p_rect)
 	VsRect translated;
 
 	parent = (Surface*) PvScrollableSurface::m_parentSurface;
-	if (parent != (Surface*) g_pGdiHelperTarget && PvScrollableSurface::m_flag74 != 0 && PvScrollableSurface::m_flag70 != 0) {
+	if (parent != (Surface*) g_pGdiHelperTarget && PvScrollableSurface::m_flag74 != 0 &&
+		PvScrollableSurface::m_flag70 != 0) {
 		translated.m_width = p_rect->m_width;
 		translated.m_height = p_rect->m_height;
 		origin = &PvScrollableSurface::m_rect0c.m_x;
@@ -503,8 +522,7 @@ void Surface::Blit(class ClipRect* p_arg0)
 			m_clipRect.m_x = parent->m_clipRect.m_x;
 		}
 		clipRight = m_clipRect.m_x;
-		if ((short) (parent->m_clipRect.m_width + parent->m_clipRect.m_x) <
-			(short) (m_clipRect.m_width + clipRight)) {
+		if ((short) (parent->m_clipRect.m_width + parent->m_clipRect.m_x) < (short) (m_clipRect.m_width + clipRight)) {
 			m_clipRect.m_width = (short) ((parent->m_clipRect.m_x - clipRight) + parent->m_clipRect.m_width);
 		}
 		clipBottom = m_clipRect.m_y;
@@ -619,7 +637,10 @@ void Surface::ToScreen(class Surface* p_destinationSurface)
 // FUNCTION: LEMBALL 0x0046d040
 void Surface::AttachPalette(ResPalette* p_palette)
 {
-	TargetBuildSurfaceColourTable(g_dwWinGDrawColourTable, p_palette, 0, 0);
+	unsigned int* fallbackEntries;
+
+	fallbackEntries = g_pTargetGraphicsDriver->HasPalette() ? g_dwWinGDrawColourTable : 0;
+	TargetBuildSurfaceColourTable(g_dwWinGDrawColourTable, p_palette, 0, fallbackEntries);
 	SetDefaultCtable();
 }
 
@@ -1014,7 +1035,8 @@ void Surface::Blit(ZBuffClear* p_arg0)
 		return;
 	}
 	do {
-		unsigned short* dest = (unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[startY] + startX * 2);
+		unsigned short* dest =
+			(unsigned short*) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines[startY] + startX * 2);
 		for (int i = 0; i < width; i++) {
 			dest[i] = depth;
 		}
@@ -1046,7 +1068,8 @@ void Surface::Blit(CopyToBackBuff* p_arg0)
 			int count = height;
 			int dstRow = dstY * 4;
 			do {
-				unsigned char* dst = (unsigned char*) *(int*) ((int) PvBackBuffSurface::m_bitmap.m_lines + dstRow) + dstX;
+				unsigned char* dst =
+					(unsigned char*) *(int*) ((int) PvBackBuffSurface::m_bitmap.m_lines + dstRow) + dstX;
 				unsigned char* src = (unsigned char*) *(int*) ((int) m_lines + srcRow) + srcX;
 				memcpy(dst, src, width);
 				srcRow += 4;
@@ -1099,7 +1122,9 @@ void Surface::CopyBackBuffToScreen(const VsRect& p_arg0)
 			height = (short) (PvBackBuffSurface::m_allocatedHeight - y);
 		}
 		for (int i = 0; i < height; i++) {
-			memcpy((unsigned char*) m_lines[y + i] + x, (unsigned char*) PvBackBuffSurface::m_bitmap.m_lines[y + i] + x, width);
+			memcpy((unsigned char*) m_lines[y + i] + x,
+				   (unsigned char*) PvBackBuffSurface::m_bitmap.m_lines[y + i] + x,
+				   width);
 		}
 	}
 }
@@ -1666,7 +1691,11 @@ void Surface::DrawClippedCirclePoint(int p_centerX, int p_centerY, int p_xOffset
 }
 
 // FUNCTION: LEMBALL 0x00476100
-void Surface::DrawFilledCircleSymmetricSpans(int p_centerX, int p_centerY, int p_halfWidth, int p_yOffset, unsigned char p_colour)
+void Surface::DrawFilledCircleSymmetricSpans(int p_centerX,
+											 int p_centerY,
+											 int p_halfWidth,
+											 int p_yOffset,
+											 unsigned char p_colour)
 {
 	int spanWidth = p_halfWidth * 2 + 1;
 	memset((unsigned char*) m_lines[p_centerY + p_yOffset] + p_centerX - p_halfWidth, p_colour, spanWidth);
@@ -1898,11 +1927,15 @@ void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* 
 					}
 					src += run;
 				}
-				if (run == 0x80) goto row_done_clip;
+				if (run == 0x80) {
+					goto row_done_clip;
+				}
 			} while (clipX > 0);
 			if (run != 0x80) {
 				do {
-					if (width < 1) break;
+					if (width < 1) {
+						break;
+					}
 					run = *src++;
 					if (width > 0) {
 						if (run < 0x80) {
@@ -1924,7 +1957,7 @@ void Surface::BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* 
 						}
 					}
 				} while (run != 0x80);
-row_done_clip:
+			row_done_clip:
 				while (run != 0x80) {
 					run = *src++;
 					if (run > 0x80) {
@@ -2000,11 +2033,15 @@ void Surface::BlitZrleClipZBuff(const VsRect& p_rect, const VsRect& p_clip, ResZ
 					}
 					src += run;
 				}
-				if (run == 0x80) goto row_done_zbuff;
+				if (run == 0x80) {
+					goto row_done_zbuff;
+				}
 			} while (clipX > 0);
 			if (run != 0x80) {
 				do {
-					if (width < 1) break;
+					if (width < 1) {
+						break;
+					}
 					run = *src++;
 					if (width > 0) {
 						if (run < 0x80) {
@@ -2036,7 +2073,7 @@ void Surface::BlitZrleClipZBuff(const VsRect& p_rect, const VsRect& p_clip, ResZ
 						}
 					}
 				} while (run != 0x80);
-row_done_zbuff:
+			row_done_zbuff:
 				while (run != 0x80) {
 					run = *src++;
 					if (run > 0x80) {
@@ -2128,11 +2165,15 @@ void Surface::BlitZrleClipQzBuff(const VsRect& p_rect, const VsRect& p_clip, Res
 					}
 					src += run;
 				}
-				if (run == 0x80) goto row_done_qzbuff;
+				if (run == 0x80) {
+					goto row_done_qzbuff;
+				}
 			} while (clipX > 0);
 			if (run != 0x80) {
 				do {
-					if (width < 1) break;
+					if (width < 1) {
+						break;
+					}
 					run = *src++;
 					if (width > 0) {
 						if (run < 0x80) {
@@ -2176,7 +2217,7 @@ void Surface::BlitZrleClipQzBuff(const VsRect& p_rect, const VsRect& p_clip, Res
 						}
 					}
 				} while (run != 0x80);
-row_done_qzbuff:
+			row_done_qzbuff:
 				while (run != 0x80) {
 					run = *src++;
 					if (run > 0x80) {
@@ -2689,7 +2730,8 @@ void Surface::BlitZrleClipZBuffRemap(const VsRect& p_rect,
 	if (p_rect.m_height > 0) {
 		int lineOffset = y * 4;
 		do {
-			unsigned short* zlines = *(unsigned short**) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
+			unsigned short* zlines =
+				*(unsigned short**) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
 			unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + x;
@@ -2803,7 +2845,8 @@ void Surface::BlitZrleClipQzBuffRemap(const VsRect& p_rect,
 	if (p_rect.m_height > 0) {
 		int lineOffset = y * 4;
 		do {
-			unsigned short* zlines = *(unsigned short**) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
+			unsigned short* zlines =
+				*(unsigned short**) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
 			unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + x;
@@ -3045,10 +3088,7 @@ void Surface::BlitZrleClipRemapR(const VsRect& p_rect,
 
 // 68K 0x10115124 BlitZRLENoClipRemap__8CSurfaceFRC7CVSRectP8CResZRLEUcPUc
 // FUNCTION: LEMBALL 0x004781e0
-void Surface::BlitZrleNoClipRemap(const VsRect& p_rect,
-								  ResZrle* p_zrle,
-								  unsigned int p_reverse,
-								  unsigned char* p_remap)
+void Surface::BlitZrleNoClipRemap(const VsRect& p_rect, ResZrle* p_zrle, unsigned int p_reverse, unsigned char* p_remap)
 {
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
@@ -3155,12 +3195,7 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 	primitive = p_primitive;
 	flags = primitive->m_flags;
 	if ((flags & 0xc0000) == 0) {
-		BlitZrle((int) primitive->m_x,
-				 (int) primitive->m_y,
-				 p_zrle,
-				 flags,
-				 primitive->m_remap,
-				 0);
+		BlitZrle((int) primitive->m_x, (int) primitive->m_y, p_zrle, flags, primitive->m_remap, 0);
 		return;
 	}
 	{
@@ -3319,8 +3354,8 @@ void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 			destY += dest.m_height - 1;
 		}
 		int bitmapWidth = (int) p_bitmap->m_x;
-		unsigned char* source = p_bitmap->GetData() + ((int) sourceY + (int) clip.m_y) * bitmapWidth +
-								(int) sourceX + (int) clip.m_x;
+		unsigned char* source =
+			p_bitmap->GetData() + ((int) sourceY + (int) clip.m_y) * bitmapWidth + (int) sourceX + (int) clip.m_x;
 		if ((flags & 0x800) == 0) {
 			if (dest.m_height > 0) {
 				for (int i = 0; i < dest.m_height; i++) {

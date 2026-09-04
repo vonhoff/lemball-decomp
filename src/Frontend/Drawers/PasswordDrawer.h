@@ -7,7 +7,9 @@
 #include "../Base/BaseFrontendDrawer.h"
 
 // SIZE 0x494
-// VTABLE: LEMBALL 0x00498408
+// VTABLE: LEMBALL 0x00498408 Drawer
+// VTABLE: LEMBALL 0x004983f8 BaseQueueHandler
+// VTABLE: LEMBALL 0x004983f0 AnimsManager
 class PasswordDrawer : public BaseFrontendDrawer {
 public:
 	PasswordDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2);

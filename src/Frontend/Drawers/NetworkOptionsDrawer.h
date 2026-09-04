@@ -25,7 +25,9 @@ struct NetworkOptionsLayout {
 };
 
 // SIZE 0x438
-// VTABLE: LEMBALL 0x00498640
+// VTABLE: LEMBALL 0x00498640 Drawer
+// VTABLE: LEMBALL 0x00498630 BaseQueueHandler
+// VTABLE: LEMBALL 0x0049862c AnimsManager
 class NetworkOptionsDrawer : public BaseFrontendDrawer {
 public:
 	NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2);

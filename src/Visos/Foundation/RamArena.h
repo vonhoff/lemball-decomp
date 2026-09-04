@@ -5,7 +5,8 @@
 #include "Arena.h" // complete type
 
 // SIZE 0x50
-// VTABLE: LEMBALL 0x00498918
+// VTABLE: LEMBALL 0x00498918 ArenaBase
+// VTABLE: LEMBALL 0x00498910 Critical
 class RamArena : public Arena {
 public:
 	RamArena(unsigned long p_arg0, char* p_arg1, Arena* p_arg2, Arena* p_arg3);

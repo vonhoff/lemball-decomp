@@ -39,6 +39,8 @@ public:
 			 eLiftActivateType p_activateType,
 			 unsigned char p_initialActive);
 
+	friend class LiftManager;
+
 private:
 	unsigned short m_liftId;          // 0x138
 	short m_startX;                   // 0x13a

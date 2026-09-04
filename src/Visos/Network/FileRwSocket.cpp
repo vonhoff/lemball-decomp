@@ -27,8 +27,9 @@ void FileRwSocket::SendAcknowledgement()
 
 // 68K 0x1011682a ReceiveAcknowledgement__13CFileRWSocketFv
 // STUB: LEMBALL 0x0047bad0
-void FileRwSocket::ReceiveAcknowledgement()
+NetworkMessage* FileRwSocket::ReceiveAcknowledgement()
 {
+	return 0;
 }
 
 // 68K 0x1010681e __dt__13CFileRWSocketFv

@@ -8,12 +8,23 @@
 class BaseCommonSocket {
 public:
 	BaseCommonSocket();
+	virtual int SysCloseSocket() = 0;          // vtable+0x00
+	virtual ~BaseCommonSocket();               // vtable+0x04
+	virtual void SocketError() = 0;            // vtable+0x08
+	virtual void Closed(unsigned char p_arg0); // vtable+0x0c
 	void CloseSocket();
-	void Closed(unsigned char p_arg0);
 	void SocketError(NetworkErrors p_arg0);
-	~BaseCommonSocket();
 
 	friend class WriteSocket;
+	friend class CConnect;
+	friend class Broadcast;
+	friend class ReadSocket;
+	friend class TcpIpReadSocket;
+	friend class TcpIpWriteSocket;
+	friend class TcpIpBroadcast;
+	friend class TcpIpConnect;
+	friend class TcpIpCommonSocket;
+	friend class BaseNetwork;
 
 private:
 	NetworkErrors m_lastError;   // 0x04

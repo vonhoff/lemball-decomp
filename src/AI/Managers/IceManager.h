@@ -2,11 +2,11 @@
 #define LEMBALL_AI_MANAGERS_ICEMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496a00
-class IceManager : public NetworkMessage {
+class IceManager : public BaseObjectManager {
 public:
 	IceManager(Ai* p_arg0, int p_arg1);
 	bool StepOn(const AiCoord& p_position, GameObject* p_object);
@@ -25,11 +25,10 @@ public:
 	void Switch(int p_message, int p_id);
 
 private:
-	unsigned int m_messageType; // 0x2c
-	int m_capacity;             // 0x30
-	int m_count;                // 0x34
-	Ice* m_ice;                 // 0x38
-	Ai* m_ai;                   // 0x3c
+	int m_capacity; // 0x30
+	int m_count;    // 0x34
+	Ice* m_ice;     // 0x38
+	Ai* m_ai;       // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x0042e4d0

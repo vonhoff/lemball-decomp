@@ -59,7 +59,7 @@ struct MusicDeviceDispatch {
 };
 
 // 68K 0x10218192 __ct__13CSoundManagerFUcUcUciP4CWnd
-// STUB: LEMBALL 0x0045af80
+// FUNCTION: LEMBALL 0x0045af80
 SoundManager::SoundManager(unsigned int p_musicEnabled,
 						   unsigned int p_effectsEnabled,
 						   unsigned int p_useMusicCD,
@@ -150,7 +150,7 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 }
 
 // 68K 0x10218368 __dt__13CSoundManagerFv
-// STUB: LEMBALL 0x0045b110
+// FUNCTION: LEMBALL 0x0045b110
 SoundManager::~SoundManager()
 {
 	unsigned int i;
@@ -218,7 +218,7 @@ void SoundManager::Background()
 }
 
 // 68K 0x10218532 Foreground__13CSoundManagerFv
-// STUB: LEMBALL 0x0045b210
+// FUNCTION: LEMBALL 0x0045b210
 void SoundManager::Foreground()
 {
 	unsigned int music;
@@ -227,12 +227,14 @@ void SoundManager::Foreground()
 
 	if (m_background != 0) {
 		music = m_requestedMusic;
-		effects = 0;
 		m_background = 0;
 		musicOutput = m_musicOutput;
 		if (m_effectOutput == musicOutput) {
 			m_effectOutput = 0;
 			effects = m_requestedEffects;
+		}
+		else {
+			effects = 0;
 		}
 		if (m_useMusicCD == 0 && musicOutput != 0) {
 			if (((SoundDeviceDispatch*) musicOutput)->Open(music, effects, m_resourceId) == 0) {
@@ -247,6 +249,7 @@ void SoundManager::Foreground()
 				m_requestedEffects = 0;
 			}
 			m_effectsAvailable = m_requestedEffects;
+			return;
 		}
 		else if (m_effectsAvailable != 0) {
 			m_effectOutput = m_musicOutput;
@@ -255,12 +258,9 @@ void SoundManager::Foreground()
 }
 
 // 68K 0x10218602 PrepareMusic__13CSoundManagerFUlUc
-// STUB: LEMBALL 0x0045b2c0
+// FUNCTION: LEMBALL 0x0045b2c0
 unsigned long SoundManager::PrepareMusic(unsigned long p_resourceId, unsigned int p_flags)
 {
-	if (m_musicDevice == 0) {
-		return 0;
-	}
 	return ((MusicDeviceDispatch*) m_musicDevice)->Initialise(p_resourceId, p_flags);
 }
 

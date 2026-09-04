@@ -5,9 +5,12 @@
 #include "../Objects/ViewData.h"
 
 // 68K 0x10620bf6 __ct__18CTrampolineManagerFP3CAIi
-// STUB: LEMBALL 0x0042af60
-TrampolineManager::TrampolineManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x0042af60
+TrampolineManager::TrampolineManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x18, 0xd)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_trampolines = 0;
 }
 
 // 68K 0x10620c88 Restart__18CTrampolineManagerFv
@@ -33,9 +36,10 @@ void TrampolineManager::Initialise(int p_capacity)
 	}
 	if (m_trampolines == 0) {
 		m_trampolines = new Trampoline[p_capacity];
-	}
-	for (int i = 0; i < m_capacity; i++) {
-		m_trampolines[i].Restart();
+		for (int i = 0; i < m_capacity; i++) {
+			m_trampolines[i].m_manager = this;
+			m_trampolines[i].Restart();
+		}
 	}
 }
 

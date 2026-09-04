@@ -7,10 +7,14 @@
 // VTABLE: LEMBALL 0x004991cc
 class BasePacket {
 public:
-	virtual ~BasePacket(); // vtable+0x00
+	virtual ~BasePacket() {} // vtable+0x00
 
 	friend class NetworkOptionsProc;
 	friend class BaseFrontendProcess;
+	friend class Broadcast;
+	friend class WriteSocket;
+	friend class ReadNcmsBuff;
+	friend class ReadCmsBuff;
 
 protected:
 	unsigned char* m_data; // 0x04

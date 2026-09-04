@@ -799,7 +799,7 @@ void NetworkOptionsDrawer::Start(unsigned int p_mode)
 	m_broadcasting = 0;
 	m_editingActive = 0;
 	m_pendingEvent = 0;
-	g_pNetworkOptionsProc->StopBroadcast();
+	((NetworkOptionsProc*) g_pCurrentFrontendProcess)->StopBroadcast();
 	if (g_szNetworkGameName[0] != 0) {
 		*m_editor = g_szNetworkGameName;
 		StartEditing(1, 0);
@@ -813,8 +813,9 @@ void NetworkOptionsDrawer::Start(unsigned int p_mode)
 void NetworkOptionsDrawer::StartBroadcast()
 {
 	m_broadcasting = 1;
-	g_pNetworkOptionsProc->Start();
-	if (g_pNetworkOptionsProc->m_started != 0 && g_pNetworkOptionsProc->m_startFailed == 0) {
+	((NetworkOptionsProc*) g_pCurrentFrontendProcess)->Start();
+	if (((NetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started != 0 &&
+		((NetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed == 0) {
 		g_pNetworkManager->StartBroadcast(g_szNetworkBroadcastAddress);
 		SetMessage(4);
 		return;
@@ -826,8 +827,9 @@ void NetworkOptionsDrawer::StartBroadcast()
 // FUNCTION: LEMBALL 0x00454620
 void NetworkOptionsDrawer::Stop()
 {
-	if (g_pNetworkOptionsProc->m_started != 0 && g_pNetworkOptionsProc->m_startFailed == 0) {
-		g_pNetworkOptionsProc->Stop();
+	if (((NetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started != 0 &&
+		((NetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed == 0) {
+		((NetworkOptionsProc*) g_pCurrentFrontendProcess)->Stop();
 	}
 	SetMessage(0);
 	m_editingActive = 0;
@@ -865,8 +867,9 @@ void NetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
 		editor->m_text[0] = 0;
 	}
 	if (m_editingStage == 2) {
-		g_pNetworkOptionsProc->Start();
-		if (g_pNetworkOptionsProc->m_started == 0 || g_pNetworkOptionsProc->m_startFailed != 0) {
+		((NetworkOptionsProc*) g_pCurrentFrontendProcess)->Start();
+		if (((NetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started == 0 ||
+			((NetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed != 0) {
 			StartMessageTimeout(9, 6000);
 			return;
 		}
@@ -900,7 +903,8 @@ void NetworkOptionsDrawer::StopEditing()
 			g_szNetworkBroadcastAddress[0] = 0;
 			m_startPending = 1;
 		}
-		if (g_pNetworkOptionsProc->m_started == 0 || g_pNetworkOptionsProc->m_startFailed != 0) {
+		if (((NetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started == 0 ||
+			((NetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed != 0) {
 			SetMessage(6);
 			return;
 		}
@@ -917,7 +921,7 @@ void NetworkOptionsDrawer::StopEditing()
 void NetworkOptionsDrawer::LastError()
 {
 	if (m_pendingEvent == 7) {
-		g_pNetworkOptionsProc->StopBroadcast();
+		((NetworkOptionsProc*) g_pCurrentFrontendProcess)->StopBroadcast();
 		if (m_broadcasting == 0) {
 			return;
 		}

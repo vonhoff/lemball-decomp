@@ -51,19 +51,14 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 MainOptions1Drawer::MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, 2, 0, 0, 0, 0, 0)
 {
+	m_idleDeadline = timeGetTime() + 20000;
 	m_toggleResolutionButton = 0;
-	m_idleDeadline = CurrentMilliTimer() + 20000;
 	m_navigationButton = 0;
 	m_auxButtonState1 = 0;
 	m_auxButtonState0 = 0;
 	m_previousModeButton = 0;
 	m_nextModeButton = 0;
-	m_selectedDisplayMode = 0;
 	switch (g_pGameStatus->m_skill) {
-	case 0:
-	case 4:
-		m_selectedDisplayMode = 0;
-		break;
 	case 1:
 		m_selectedDisplayMode = 1;
 		break;
@@ -72,6 +67,10 @@ MainOptions1Drawer::MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const
 		break;
 	case 3:
 		m_selectedDisplayMode = 3;
+		break;
+	case 0:
+	case 4:
+		m_selectedDisplayMode = 0;
 		break;
 	}
 	g_pGameStatus->m_lastLevels[4] = 0;
@@ -147,6 +146,40 @@ void MainOptions1Drawer::UnLoad()
 	}
 }
 
+// 68K 0x1080a33c __dt__19CMainOptions1DrawerFv
+// FUNCTION: LEMBALL 0x00448560
+MainOptions1Drawer::~MainOptions1Drawer()
+{
+	GameStatus* status;
+
+	switch (m_selectedDisplayMode) {
+	case 0:
+		status = g_pGameStatus;
+		status->m_level = status->m_lastLevels[0];
+		status->m_skill = 0;
+		break;
+	case 1:
+		status = g_pGameStatus;
+		status->m_level = status->m_lastLevels[1];
+		status->m_skill = 1;
+		break;
+	case 2:
+		status = g_pGameStatus;
+		status->m_level = status->m_lastLevels[2];
+		status->m_skill = 2;
+		break;
+	case 3:
+		status = g_pGameStatus;
+		status->m_level = status->m_lastLevels[3];
+		status->m_skill = 3;
+		break;
+	}
+	g_nDisplayMode = m_selectedDisplayMode;
+	if (m_loaded != 0) {
+		UnLoad();
+	}
+}
+
 // 68K 0x1080a42e DrawBackGround__19CMainOptions1DrawerFv
 // FUNCTION: LEMBALL 0x00448610
 void MainOptions1Drawer::DrawBackGround()
@@ -157,51 +190,50 @@ void MainOptions1Drawer::DrawBackGround()
 // FUNCTION: LEMBALL 0x00448620
 bool MainOptions1Drawer::ProcessMessages(Message* p_message)
 {
-	unsigned short type = p_message->type;
-	if (type > 2) {
-		if (type < 5) {
-			m_idleDeadline = CurrentMilliTimer() + 20000;
-		}
-		else {
-			if (type != 0xc) {
-				m_processedCount = m_processedCount + 1;
-				return false;
-			}
-			m_idleDeadline = CurrentMilliTimer() + 20000;
-			GameStatus* status = g_pGameStatus;
-			switch (p_message->code) {
-			case 0xacef0001:
-				m_returnState = 3;
-				m_quitYet = 1;
-				g_nFrontendAutoFlowToggle = 1;
-				return true;
-			case 0xacef00a4:
-				m_returnState = 0x10;
-				m_quitYet = 1;
-				g_nFrontendAutoFlowToggle = 1;
-				return true;
-			case 0xacef00a5:
-				m_display->ToggleResolution();
-				return true;
-			case 0xacef00a6:
-			case 0xacef00a7: {
-				int mode = m_selectedDisplayMode;
-				g_pGameStatus->m_level = g_pGameStatus->m_lastLevels[mode];
-				status->m_skill = mode;
-				m_quitYet = 1;
-				g_nFrontendAutoFlowToggle = 1;
-				if (p_message->code == 0xacef00a6) {
-					m_returnState = 4;
-					return true;
-				}
-				m_returnState = 0xc;
-				return true;
-			}
-			}
-		}
+	int type = p_message->type;
+	if (type < 3) {
+		m_processedCount = m_processedCount + 1;
 		return false;
 	}
-	m_processedCount = m_processedCount + 1;
+	if (type <= 4) {
+		m_idleDeadline = CurrentMilliTimer() + 20000;
+		return false;
+	}
+	if (type != 0xc) {
+		m_processedCount = m_processedCount + 1;
+		return false;
+	}
+	m_idleDeadline = CurrentMilliTimer() + 20000;
+	GameStatus* status = g_pGameStatus;
+	switch (p_message->code) {
+	case 0xacef0001:
+		m_returnState = 3;
+		m_quitYet = 1;
+		g_nFrontendAutoFlowToggle = 1;
+		return true;
+	case 0xacef00a4:
+		m_returnState = 0x10;
+		m_quitYet = 1;
+		g_nFrontendAutoFlowToggle = 1;
+		return true;
+	case 0xacef00a5:
+		m_display->ToggleResolution();
+		return true;
+	case 0xacef00a6:
+	case 0xacef00a7: {
+		int mode = m_selectedDisplayMode;
+		g_pGameStatus->m_level = g_pGameStatus->m_lastLevels[mode];
+		status->m_skill = mode;
+		m_quitYet = 1;
+		g_nFrontendAutoFlowToggle = 1;
+		if (p_message->code == 0xacef00a6) {
+			m_returnState = 4;
+			return true;
+		}
+		m_returnState = 0xc;
+		return true;
+	}
+	}
 	return false;
 }
 
@@ -234,10 +266,4 @@ void MainOptions1Drawer::Processing()
 	}
 	m_returnState = 0x13;
 	g_nFrontendAutoFlowToggle = 0;
-}
-
-// 68K 0x1080a33c __dt__19CMainOptions1DrawerFv
-MainOptions1Drawer::~MainOptions1Drawer()
-{
-	UnLoad();
 }

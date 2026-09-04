@@ -7,6 +7,11 @@
 // VTABLE: LEMBALL 0x00498798
 class TargetDibContext {
 public:
+	TargetDibContext()
+	{
+		m_bits = 0;
+		m_width = 0;
+	}
 	virtual ~TargetDibContext();      // vtable+0x00
 	virtual bool Lock();              // vtable+0x04
 	virtual bool Unlock();            // vtable+0x08

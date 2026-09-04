@@ -13,6 +13,8 @@ public:
 	void GetData();
 	~MessReqNewPort();
 
+	friend class BaseNetwork;
+
 private:
 	unsigned int m_connectionId; // 0x3c
 };

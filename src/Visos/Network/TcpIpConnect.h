@@ -14,18 +14,15 @@
 class TcpIpConnect : public Connect, public TcpIpRwSocket {
 public:
 	bool Start(const char* p_localName, const char* p_remoteName);
-	int Process();
-	virtual bool InitSocket();                       // vtable+0x08
-	virtual void Closed(unsigned char p_notifyPeer); // vtable+0x0c
-	virtual void Connect();                          // vtable+0x10
-	virtual void ReceiveAcknowledgement();           // vtable+0x1c
-	virtual ~TcpIpConnect();                         // vtable+0x14
-	void GotHost();
+	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam);
+	virtual void InitSocket();                        // vtable+0x08
+	virtual void Closed(unsigned char p_notifyPeer);  // vtable+0x0c
+	virtual void Connect();                           // vtable+0x10
+	virtual NetworkMessage* ReceiveAcknowledgement(); // vtable+0x1c
+	virtual ~TcpIpConnect();                          // vtable+0x14
+	void GotHost(int p_failed);
+	void HandleServiceLookupResult(bool p_failed);
 	void Listen(NetworkAddress* p_address);
-
-private:
-	class Connect m_base;                // 0x00
-	undefined m_platformComposite[0x14]; // 0x15c
 };
 
 // SYNTHETIC: LEMBALL 0x00471b10

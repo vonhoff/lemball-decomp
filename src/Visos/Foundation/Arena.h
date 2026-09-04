@@ -18,7 +18,8 @@ protected:
 };
 
 // SIZE 0x50
-// VTABLE: LEMBALL 0x004988e0
+// VTABLE: LEMBALL 0x004988e0 ArenaBase
+// VTABLE: LEMBALL 0x004988d8 Critical
 class Arena : public ArenaBase, public Critical {
 public:
 	Arena(unsigned long p_arg0, char* p_arg1, Arena* p_arg2, Arena* p_arg3);

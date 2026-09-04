@@ -45,10 +45,9 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
 									   int p_arg6,
 									   int p_arg7,
 									   int p_arg8)
-	: m_anims(p_arg1, 0x2b6, p_arg4 + 3, p_arg5 + 200, p_arg6, 0)
+	: AnimsManager(p_arg1, 0x2b6, p_arg4 + 3, p_arg5 + 200, p_arg6, 0)
 {
 	m_height = 0;
-	m_staticAnim.m_frames = 1;
 	m_width = 0;
 	m_staticAnim.m_frameState = 0;
 	m_animPosition.m_y = 0;
@@ -124,7 +123,7 @@ void BaseFrontendDrawer::Setup()
 			m_ambientAnim = 0;
 		}
 		else {
-			m_ambientAnim = new (storage) PlayThruAnim(m_anims.GetnAnims(m_ambientAnimId), 1);
+			m_ambientAnim = new (storage) PlayThruAnim(AnimsManager::GetnAnims(m_ambientAnimId), 1);
 		}
 		m_ambientAnim->m_fixedTime = 0xffffffff;
 		m_ambientAnim->StartAnim(500);
@@ -162,7 +161,7 @@ void BaseFrontendDrawer::Setup()
 }
 
 // 68K 0x1080048c __dt__19CBaseFrontendDrawerFv
-// FUNCTION: LEMBALL 0x004457e0
+// FUNCTION: LEMBALL 0x00445790
 BaseFrontendDrawer::~BaseFrontendDrawer()
 {
 	g_pBaseFrontendDrawer = 0;
@@ -380,9 +379,9 @@ void BaseFrontendDrawer::_Load()
 		m_topFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_1;
 		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_3;
 	}
-	m_anims.LoadAnims(m_topFrameAnimId);
-	m_anims.LoadAnims(m_sideFrameAnimId);
-	m_anims.LoadAnims(m_bottomFrameAnimId);
+	AnimsManager::LoadAnims(m_topFrameAnimId);
+	AnimsManager::LoadAnims(m_sideFrameAnimId);
+	AnimsManager::LoadAnims(m_bottomFrameAnimId);
 	if (m_textManager != 0) {
 		m_textManager->LoadFont(m_unknown384);
 	}
@@ -397,9 +396,9 @@ void BaseFrontendDrawer::_UnLoad()
 	}
 	m_backgroundBitmap->UnLoad();
 	m_tileBitmap->UnLoad();
-	m_anims.UnLoadAnims(m_topFrameAnimId);
-	m_anims.UnLoadAnims(m_sideFrameAnimId);
-	m_anims.UnLoadAnims(m_bottomFrameAnimId);
+	AnimsManager::UnLoadAnims(m_topFrameAnimId);
+	AnimsManager::UnLoadAnims(m_sideFrameAnimId);
+	AnimsManager::UnLoadAnims(m_bottomFrameAnimId);
 	m_loaded = 0;
 }
 
@@ -409,7 +408,7 @@ void BaseFrontendDrawer::_DrawAnims()
 {
 	if (m_ambientAnim != 0) {
 		m_ambientAnim->m_fixedTime = timeGetTime();
-		m_anims.DrawAnim(m_animPosition, m_ambientAnimId, 0, (Frames*) m_ambientAnim, 0);
+		AnimsManager::DrawAnim(m_animPosition, m_ambientAnimId, 0, (Frames*) m_ambientAnim, 0);
 	}
 }
 
@@ -417,7 +416,7 @@ void BaseFrontendDrawer::_DrawAnims()
 // FUNCTION: LEMBALL 0x004460a0
 void BaseFrontendDrawer::ResetPrimitives()
 {
-	m_anims.ResetPrimitives();
+	AnimsManager::ResetPrimitives();
 	if (m_textManager != 0) {
 		m_textManager->ResetPrimitives();
 	}
@@ -448,7 +447,7 @@ void BaseFrontendDrawer::DrawFrame(VsRect p_rect)
 	if (m_gdi == 0) {
 		return;
 	}
-	tileSize = m_anims.GetAnimSize(m_topFrameAnimId, 0);
+	tileSize = AnimsManager::GetAnimSize(m_topFrameAnimId, 0);
 	tileWidth = tileSize.m_width;
 	tileHeight = tileSize.m_height;
 	if (tileWidth < 1 || tileHeight < 1) {
@@ -459,46 +458,46 @@ void BaseFrontendDrawer::DrawFrame(VsRect p_rect)
 	m_staticAnim.m_frameState = 0;
 	position.m_x = p_rect.m_x;
 	position.m_y = p_rect.m_y;
-	m_anims.DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+	AnimsManager::DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 	x = p_rect.m_x + tileWidth;
 	while (x + tileWidth < right) {
 		m_staticAnim.m_frameState = 1;
 		position.m_x = (short) x;
 		position.m_y = p_rect.m_y;
-		m_anims.DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+		AnimsManager::DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		x = x + tileWidth;
 	}
 	m_staticAnim.m_frameState = 2;
 	position.m_x = (short) (right - tileWidth);
 	position.m_y = p_rect.m_y;
-	m_anims.DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+	AnimsManager::DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 	y = p_rect.m_y + tileHeight;
 	while (y + tileHeight < bottom) {
 		m_staticAnim.m_frameState = 0;
 		position.m_x = p_rect.m_x;
 		position.m_y = (short) y;
-		m_anims.DrawAnim(position, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+		AnimsManager::DrawAnim(position, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		m_staticAnim.m_frameState = 2;
 		position.m_x = (short) (right - tileWidth);
-		m_anims.DrawAnim(position, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+		AnimsManager::DrawAnim(position, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		y = y + tileHeight;
 	}
 	m_staticAnim.m_frameState = 0;
 	position.m_x = p_rect.m_x;
 	position.m_y = (short) (bottom - tileHeight);
-	m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+	AnimsManager::DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 	x = p_rect.m_x + tileWidth;
 	while (x + tileWidth < right) {
 		m_staticAnim.m_frameState = 1;
 		position.m_x = (short) x;
 		position.m_y = (short) (bottom - tileHeight);
-		m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+		AnimsManager::DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		x = x + tileWidth;
 	}
 	m_staticAnim.m_frameState = 2;
 	position.m_x = (short) (right - tileWidth);
 	position.m_y = (short) (bottom - tileHeight);
-	m_anims.DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+	AnimsManager::DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 }
 
 // 68K 0x108014f4 ProcessMsg__19CBaseFrontendDrawerFP10tagMESSAGE

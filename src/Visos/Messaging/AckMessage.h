@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00499230
 class AckMessage : public NetworkMessage {
 public:
+	inline AckMessage() : NetworkMessage(2) { m_payloadCapacity += 4; }
 	void AddData();
 	void GetData();
 	~AckMessage();
@@ -15,6 +16,9 @@ public:
 private:
 	unsigned short m_packetSequence;    // 0x2c
 	unsigned short m_subpacketSequence; // 0x2e
+
+	friend class WriteSocket;
+	friend class ReadSocket;
 };
 
 extern AckMessage* g_pAckMessage;

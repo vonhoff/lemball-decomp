@@ -17,7 +17,7 @@
 // 68K 0x1080503a __ct__17CHiliteControllerFP5CGWndP4CGDIiUcUc
 // FUNCTION: LEMBALL 0x0044f440
 HiliteController::HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned char p_arg3, unsigned char p_arg4)
-	: m_anims(p_arg1, 0x2b6, 1, 1, 0, 0)
+	: AnimsManager(p_arg1, 0x2b6, 1, 1, 0, 0)
 {
 	int index;
 
@@ -44,7 +44,7 @@ HiliteController::HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsign
 		m_animationSet = 0;
 		g_dwHiliteAnimationId = RES_NEWFRONT_ANIMS_HIRES_HILITE;
 	}
-	m_anims.LoadAnims(g_dwHiliteAnimationId);
+	AnimsManager::LoadAnims(g_dwHiliteAnimationId);
 }
 
 // 68K 0x108051b4 SetHiliteWindow__17CHiliteControllerFv
@@ -81,11 +81,11 @@ HiliteController::~HiliteController()
 			delete m_buttons[i];
 		}
 	}
-	m_anims.UnLoadAnims(g_dwHiliteAnimationId);
+	AnimsManager::UnLoadAnims(g_dwHiliteAnimationId);
+	if (m_hiliteWindow->m_lifecycleRefs == 1) {
+		m_hiliteWindow->Destroy();
+	}
 	if (m_hiliteWindow != 0) {
-		if (m_hiliteWindow->m_lifecycleRefs == 1) {
-			m_hiliteWindow->Destroy();
-		}
 		delete m_hiliteWindow;
 	}
 }
@@ -241,14 +241,14 @@ void HiliteController::DrawHiliteWindow()
 		m_hiliteRect.m_bottom = 0;
 		m_hiliteRect.Draw(hiliteGdi);
 		m_hiliteAnim.m_frameState = 0;
-		Gdi* savedGdi = m_anims.m_gdi;
-		m_anims.m_gdi = hiliteGdi;
+		Gdi* savedGdi = AnimsManager::m_gdi;
+		AnimsManager::m_gdi = hiliteGdi;
 		VsPoint position;
 		position.m_x = 0;
 		position.m_y = 0;
-		m_anims.DrawAnim(position, g_dwHiliteAnimationId, 0, (Frames*) &m_hiliteAnim, 0);
-		m_anims.m_gdi = savedGdi;
-		m_anims.ResetPrimitives();
+		AnimsManager::DrawAnim(position, g_dwHiliteAnimationId, 0, (Frames*) &m_hiliteAnim, 0);
+		AnimsManager::m_gdi = savedGdi;
+		AnimsManager::ResetPrimitives();
 	}
 }
 

@@ -1,9 +1,9 @@
 #include "DoorManager.h"
 
 #include "../Base/GameObject.h"
+#include "../Navigation/Ai.h"
 #include "../Objects/Door.h"
 #include "../Objects/ViewData.h"
-#include "../Navigation/Ai.h"
 
 // GLOBAL: LEMBALL 0x0049cf48
 word g_wNextDoorIndex = 0;
@@ -158,7 +158,8 @@ void DoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 {
 	unsigned short* data = (unsigned short*) p_data;
 	unsigned short count = *data++;
-	unsigned int remaining = count;	Initialise(count);
+	unsigned int remaining = count;
+	Initialise(count);
 	if (count != 0) {
 		do {
 			unsigned short id;

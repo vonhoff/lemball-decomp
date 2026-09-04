@@ -1,9 +1,9 @@
 #include "BulletManager.h"
 
+#include "../../Visos/Network/Connect.h"
 #include "../Base/GameObject.h"
 #include "../Objects/Bullet.h"
 #include "../Objects/ViewData.h"
-#include "../../Visos/Network/Connect.h"
 
 // 68K 0x10604eb2 __ct__14CBulletManagerFv
 // FUNCTION: LEMBALL 0x00417d80
@@ -155,8 +155,8 @@ bool BulletManager::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate
 	while (bullet != 0) {
 		int x = bullet->m_position.m_xFixed >> 0xc;
 		int y = bullet->m_position.m_yFixed >> 0xc;
-		if (x - 8 < p_rect->m_width + p_rect->m_x && p_rect->m_x < x + 8 &&
-			y - 8 < p_rect->m_height + p_rect->m_y && p_rect->m_y < y + 8) {
+		if (x - 8 < p_rect->m_width + p_rect->m_x && p_rect->m_x < x + 8 && y - 8 < p_rect->m_height + p_rect->m_y &&
+			p_rect->m_y < y + 8) {
 			p_coordinate->m_xFixed = bullet->m_position.m_xFixed;
 			p_coordinate->m_yFixed = bullet->m_position.m_yFixed;
 			p_coordinate->m_zFixed = bullet->m_position.m_zFixed;

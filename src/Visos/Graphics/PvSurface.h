@@ -19,7 +19,7 @@ public:
 	virtual void Blit(Circle* p_circle) = 0;                         // vtable+0x0c
 	virtual void Blit(FilledCircle* p_circle) = 0;                   // vtable+0x08
 	virtual void Blit(ClipRect* p_arg0) = 0;                         // vtable+0x04
-	virtual void Blit(ScreenScroll* p_scroll) = 0;                  // vtable+0x00
+	virtual void Blit(ScreenScroll* p_scroll) = 0;                   // vtable+0x00
 	virtual void Resize(const VsSize& p_size);                       // vtable+0x28
 	virtual void Move(const VsPoint& p_position) = 0;                // vtable+0x2c
 	virtual void AttachPalette(ResPalette* p_palette) = 0;           // vtable+0x30

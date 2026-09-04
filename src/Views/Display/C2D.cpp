@@ -10,6 +10,8 @@
 #include "../Sound/SoundView.h"
 #include "Main2DDisplay.h"
 
+#include <string.h>
+
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
 // STUB: LEMBALL 0x004358d0
 C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4)
@@ -117,9 +119,14 @@ bool C2D::FindGameObject(const VsPoint& p_point, int& p_index, unsigned char p_p
 }
 
 // 68K 0x10b0827e AddObjectToGroup__3C2DFiUc
-// STUB: LEMBALL 0x00437130
+// FUNCTION: LEMBALL 0x00437130
 void C2D::AddObjectToGroup(int p_objectNo, unsigned char p_markSelection)
 {
+	m_groupObjectIds[m_groupCount] = (unsigned short) p_objectNo;
+	m_groupCount++;
+	if (*(unsigned int*) &p_markSelection != 0) {
+		m_groupSelectionCount = m_groupCount;
+	}
 }
 
 // 68K 0x10b082cc FormGroup__3C2DFv
@@ -140,10 +147,7 @@ void C2D::CancelMoves()
 {
 	Message msg;
 	msg.type = 3;
-	msg.time = 0;
-	msg.code = 0;
-	msg.payload = 0;
-	msg.source = 0;
+	memset(&msg.time, 0, sizeof(msg.time) + sizeof(msg.code) + sizeof(msg.payload) + sizeof(msg.source));
 	m_lemmingManager->ProcessMsg(&msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
@@ -156,10 +160,7 @@ void C2D::NextGroup()
 {
 	Message msg;
 	msg.type = 7;
-	msg.time = 0;
-	msg.code = 0;
-	msg.payload = 0;
-	msg.source = 0;
+	memset(&msg.time, 0, sizeof(msg.time) + sizeof(msg.code) + sizeof(msg.payload) + sizeof(msg.source));
 	m_lemmingManager->ProcessMsg(&msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
@@ -172,10 +173,7 @@ void C2D::PrevGroup()
 {
 	Message msg;
 	msg.type = 6;
-	msg.time = 0;
-	msg.code = 0;
-	msg.payload = 0;
-	msg.source = 0;
+	memset(&msg.time, 0, sizeof(msg.time) + sizeof(msg.code) + sizeof(msg.payload) + sizeof(msg.source));
 	m_lemmingManager->ProcessMsg(&msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
@@ -190,8 +188,7 @@ void C2D::SelectLemming(int p_playerIndex)
 	msg.type = 8;
 	msg.time = 0;
 	msg.code = m_ai->m_networkLemmings[p_playerIndex]->m_objectId;
-	msg.payload = 0;
-	msg.source = 0;
+	memset(&msg.payload, 0, sizeof(msg.payload) + sizeof(msg.source));
 	m_lemmingManager->ProcessMsg(&msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
@@ -206,8 +203,7 @@ void C2D::SelectObject(int p_viewIndex)
 	msg.type = 8;
 	msg.time = 0;
 	msg.code = m_viewData[p_viewIndex].m_objectId;
-	msg.payload = 0;
-	msg.source = 0;
+	memset(&msg.payload, 0, sizeof(msg.payload) + sizeof(msg.source));
 	m_lemmingManager->ProcessMsg(&msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
@@ -482,7 +478,7 @@ unsigned int C2D::OnButtonDown(const VsPoint& p_point, unsigned int p_flags)
 void C2D::UseBalloon(int p_playerIndex)
 {
 	PlayerLemming** pLemming = &m_ai->m_networkLemmings[p_playerIndex];
-	if ((*pLemming)->GetId() != -1 && (*pLemming)->m_action != 8) {
+	if ((*pLemming)->GetLastBalloon() != 0xffff && (*pLemming)->m_action != 8) {
 		(*pLemming)->SetSndEffect((eSoundEffect) 31);
 		UseBalloon(*pLemming);
 	}
@@ -595,9 +591,10 @@ void C2D::DrawLemmingLanding(ViewData& p_viewData, unsigned char p_remapped)
 }
 
 // 68K 0x10b025d2 DrawLemmingFall__3C2DFR9CViewDataUc
-// STUB: LEMBALL 0x0043c070
+// FUNCTION: LEMBALL 0x0043c070
 void C2D::DrawLemmingFall(ViewData& p_viewData, unsigned char p_remapped)
 {
+	DrawLemmingJump(p_viewData, p_remapped);
 }
 
 // 68K 0x10b02612 DrawLemmingExternal__3C2DFR9CViewDataUc

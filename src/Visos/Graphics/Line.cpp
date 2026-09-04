@@ -5,8 +5,11 @@
 
 // 68K 0x10115cd8 __ct__5CLineFv
 // FUNCTION: LEMBALL 0x004394c0
-Line::Line() : m_y1(0), m_x1(0), m_y2(0), m_x2(0)
+Line::Line() : m_y1(0)
 {
+	m_x1 = 0;
+	m_y2 = 0;
+	m_x2 = 0;
 }
 
 // 68K 0x101018e8 Draw__5CLineFP4CGDI

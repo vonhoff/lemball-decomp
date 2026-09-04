@@ -7,7 +7,9 @@
 #include "../Base/BaseFrontendDrawer.h"              // complete type
 
 // SIZE 0x3bc
-// VTABLE: LEMBALL 0x00497af0
+// VTABLE: LEMBALL 0x00497af0 Drawer
+// VTABLE: LEMBALL 0x00497ae0 BaseQueueHandler
+// VTABLE: LEMBALL 0x00497ad8 AnimsManager
 class MainOptions1Drawer : public BaseFrontendDrawer {
 public:
 	MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2);

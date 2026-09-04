@@ -9,8 +9,9 @@
 #include "HiliteControllerJunction.h"                // complete type
 
 // SIZE 0x14c
-// VTABLE: LEMBALL 0x00498240
-class HiliteController : public BaseQueueHandler {
+// VTABLE: LEMBALL 0x00498240 BaseQueueHandler
+// VTABLE: LEMBALL 0x0049823c AnimsManager
+class HiliteController : public BaseQueueHandler, public AnimsManager {
 public:
 	HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned char p_arg3, unsigned char p_arg4);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
@@ -39,7 +40,6 @@ public:
 	friend class BaseFrontendDrawer;
 
 private:
-	AnimsManager m_anims;                    // 0x10
 	int m_buttonCount;                       // 0x80
 	undefined m_navigationState[0x14];       // 0x84
 	int m_currentX;                          // 0x98

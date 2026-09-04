@@ -3,9 +3,13 @@
 #include "../Objects/TrapDoor.h"
 
 // 68K 0x1062169e __ct__16CTrapDoorManagerFv
-// STUB: LEMBALL 0x0040c750
-TrapDoorManager::TrapDoorManager()
+// FUNCTION: LEMBALL 0x0040c750
+TrapDoorManager::TrapDoorManager() : BaseObjectManager(0x1e, 0x13)
 {
+	m_count = 0;
+	for (int i = 0; i < 8; i++) {
+		m_doors[i] = 0;
+	}
 }
 
 // 68K 0x1062172c Restart__16CTrapDoorManagerFv

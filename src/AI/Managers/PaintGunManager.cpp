@@ -3,9 +3,12 @@
 #include "../Objects/PaintGun.h"
 
 // 68K 0x1061b8a8 __ct__16CPaintGunManagerFP3CAIi
-// STUB: LEMBALL 0x0042bfe0
-PaintGunManager::PaintGunManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x0042bfe0
+PaintGunManager::PaintGunManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x1f, 0x14)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_paintGuns = 0;
 }
 
 // 68K 0x1061b936 Restart__16CPaintGunManagerFv
@@ -20,9 +23,22 @@ void PaintGunManager::Restart()
 }
 
 // 68K 0x1061b99c Initialise__16CPaintGunManagerFi
-// STUB: LEMBALL 0x0042c070
+// FUNCTION: LEMBALL 0x0042c070
 void PaintGunManager::Initialise(int p_capacity)
 {
+	m_capacity = p_capacity;
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_paintGuns = 0;
+		return;
+	}
+	if (m_paintGuns == 0) {
+		m_paintGuns = new PaintGun[p_capacity];
+		for (int i = 0; i < m_capacity; i++) {
+			m_paintGuns[i].Restart();
+			m_paintGuns[i].m_manager = this;
+		}
+	}
 }
 
 // 68K 0x1061bae6 Process__16CPaintGunManagerFv

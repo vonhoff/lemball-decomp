@@ -9,9 +9,7 @@
 // VTABLE: LEMBALL 0x004944f8
 class Balloon : public BaseGlobalObject {
 public:
-	inline Balloon(const AiCoord& p_position, eObjectType p_type) : BaseGlobalObject(p_position, p_type)
-	{
-	}
+	inline Balloon(const AiCoord& p_position, eObjectType p_type) : BaseGlobalObject(p_position, p_type) {}
 	virtual AiCoord ActivatePosition();          // vtable+0x2c
 	virtual bool Activate(GameObject* p_object); // vtable+0x18
 	virtual bool Process();                      // vtable+0x14

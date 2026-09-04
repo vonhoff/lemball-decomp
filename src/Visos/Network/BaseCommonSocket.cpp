@@ -34,6 +34,7 @@ void BaseCommonSocket::SocketError(NetworkErrors p_arg0)
 	m_lastError = p_arg0;
 	g_lastNetworkError = p_arg0;
 	if (p_arg0 != 0 && m_isOpen != 0) {
+		SysCloseSocket();
 		m_readReady = 0;
 		m_isOpen = 0;
 		m_socketHandle = -1;
@@ -42,9 +43,16 @@ void BaseCommonSocket::SocketError(NetworkErrors p_arg0)
 }
 
 // 68K 0x1020b332 CloseSocket__17CBaseCommonSocketFv
-// STUB: LEMBALL 0x0045f720
+// FUNCTION: LEMBALL 0x0045f720
 void BaseCommonSocket::CloseSocket()
 {
+	if (m_isOpen != 0) {
+		m_readReady = 0;
+		m_isOpen = 0;
+		if (SysCloseSocket() == -1) {
+			SocketError();
+		}
+	}
 }
 
 // 68K 0x1010e52c Closed__17CBaseCommonSocketFUc

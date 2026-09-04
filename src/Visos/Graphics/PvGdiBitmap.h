@@ -3,8 +3,8 @@
 
 #include "../../Common.h"
 #include "../Foundation/VsPoint.h" // complete type
-#include "../Foundation/VsRect.h" // complete type
-#include "../Foundation/VsSize.h" // complete type
+#include "../Foundation/VsRect.h"  // complete type
+#include "../Foundation/VsSize.h"  // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x0049a470

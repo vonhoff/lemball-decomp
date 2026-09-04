@@ -579,7 +579,10 @@ void Wnd::Destroy()
 
 	if (m_lifecycleRefs != 0) {
 		childNode = (void**) m_childList;
-		while (childNode != 0) {
+		for (;;) {
+			if (childNode == 0) {
+				break;
+			}
 			child = (PvWnd*) childNode[0];
 			childNode = (void**) childNode[1];
 			child->Destroy();

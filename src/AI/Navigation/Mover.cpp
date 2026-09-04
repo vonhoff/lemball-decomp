@@ -7,15 +7,25 @@ Mover::Mover()
 }
 
 // 68K 0x1061723c Restart__6CMoverFv
-// STUB: LEMBALL 0x0042e5e0
+// FUNCTION: LEMBALL 0x0042e5e0
 void Mover::Restart()
 {
+	GlobalGameObject::Restart();
+	Initialise();
 }
 
 // 68K 0x1061726e Initialise__6CMoverFv
-// STUB: LEMBALL 0x0042e600
+// FUNCTION: LEMBALL 0x0042e600
 void Mover::Initialise()
 {
+	m_stateTimer = 0;
+	m_active = 0;
+	m_moving = 0;
+	m_movementMode = 0;
+	m_switchRequested = 0;
+	m_objectCount = 0;
+	m_findOccupants = 1;
+	m_action = (eAction) 0x18;
 }
 
 // 68K 0x1061730e SetPos__6CMoverFv

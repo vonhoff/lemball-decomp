@@ -53,12 +53,13 @@ void Duplicator::Delete()
 {
 	int blockX = (m_position.m_xFixed >> 12) / 16;
 	int blockY = (m_position.m_yFixed >> 12) / 16;
-	if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
-	}
-	blockY--;
-	if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+	if (blockX >= 0) {
+		if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+		}
+		if (blockX >= 0 && --blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+		}
 	}
 }
 
@@ -78,8 +79,9 @@ bool Duplicator::Process()
 	}
 	m_actionArgument = 0;
 	if (m_action == 26 && m_actionDeadline < g_dwGameTick) {
-		m_duplicatedObject->m_unk0xc0 = 0;
-		m_duplicatedObject->m_action = (eAction) 0;
+		GameObject* duplicatedObject = m_duplicatedObject;
+		duplicatedObject->m_unk0xc0 = 0;
+		duplicatedObject->m_action = (eAction) 0;
 		m_duplicatedObject->Action((eAction) 0);
 		m_duplicatedObject->ResetInstructions();
 		PlayerLemming* dead = g_pAI->GetDead();

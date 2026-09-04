@@ -6,7 +6,7 @@
 
 // SIZE 0x38
 // VTABLE: LEMBALL 0x004986d8 BaseQueueHandler
-// VTABLE: LEMBALL 0x004986e8
+// VTABLE: LEMBALL 0x004986e8 BaseProcess
 class NetworkOptionsProc : public BaseFrontendProcess {
 public:
 	NetworkOptionsProc(Game* p_arg0);

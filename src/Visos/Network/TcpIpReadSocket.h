@@ -10,19 +10,13 @@
 // VTABLE: LEMBALL 0x0049a1e4 native receive callback
 // VTABLE: LEMBALL 0x0049a1e8 ReadSocket virtual base
 // VTABLE: LEMBALL 0x0049a210 BaseCommonSocket virtual base
-class TcpIpReadSocket : public virtual BaseCommonSocket, public virtual ReadSocket, public TcpIpCommonSocket {
+class TcpIpReadSocket : public virtual BaseCommonSocket, public virtual ReadSocket, public virtual TcpIpCommonSocket {
 public:
 	bool ReadBuff();
 	bool ReadBuffFrom();
-	virtual int Process();                           // vtable+0x00
-	virtual void Closed(unsigned char p_notifyPeer); // vtable+0x0c
-	virtual ~TcpIpReadSocket();                      // vtable+0x14
-
-private:
-	undefined4 m_reserved04;          // 0x04
-	BaseCommonSocket m_commonBase;    // 0x08
-	undefined m_readSocketCore[0x58]; // 0x34
-	undefined m_nativeShell[0x20];    // 0x8c
+	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
+	virtual void Closed(unsigned char p_notifyPeer);                                   // vtable+0x0c
+	virtual ~TcpIpReadSocket();                                                        // vtable+0x14
 };
 
 // SYNTHETIC: LEMBALL 0x00471de0

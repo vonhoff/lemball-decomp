@@ -31,8 +31,8 @@ void Balloon::Restart()
 // FUNCTION: LEMBALL 0x0041d650
 bool Balloon::Process()
 {
-	int x = m_position.m_xFixed >> 12;
 	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> 12;
 	Map* map = g_pMap;
 	int blockX = x >> 4;
 	int blockY = y >> 4;

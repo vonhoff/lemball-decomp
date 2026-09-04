@@ -7,7 +7,7 @@
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497938 BaseQueueHandler
-// VTABLE: LEMBALL 0x00497948
+// VTABLE: LEMBALL 0x00497948 BaseProcess
 class BaseFrontendProcess : public BaseProcess, public BaseQueueHandler {
 public:
 	BaseFrontendProcess(Game* p_arg0);

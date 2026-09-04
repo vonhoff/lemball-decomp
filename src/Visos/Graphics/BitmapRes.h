@@ -9,10 +9,8 @@
 class BitmapResBase : public Primitive {
 public:
 	// FUNCTION: LEMBALL 0x0044b5f0
-	BitmapResBase()
+	BitmapResBase() : m_x(m_y = 0)
 	{
-		m_y = 0;
-		m_x = 0;
 		m_height = 0;
 		m_width = 0;
 		m_sourceY = 0;

@@ -369,6 +369,20 @@ void SuccFailDrawer::UnLoad()
 	}
 }
 
+// 68K 0x108098f2 __dt__15CSuccFailDrawerFv
+// FUNCTION: LEMBALL 0x004507a0
+SuccFailDrawer::~SuccFailDrawer()
+{
+	DestroyDrawer();
+	if (m_loaded != 0) {
+		UnLoad();
+	}
+	if (m_soundStopped == 0) {
+		g_pSoundView->SetMusicOn(1);
+		m_soundStopped = 1;
+	}
+}
+
 // 68K 0x1080999a DestroyDrawer__15CSuccFailDrawerFv
 // FUNCTION: LEMBALL 0x00450820
 void SuccFailDrawer::DestroyDrawer()
@@ -529,9 +543,4 @@ void SuccFailDrawer::DrawBackGround()
 	if (m_secondaryBitmap != 0) {
 		m_primitives[m_primitiveBank].m_secondary.Draw(m_gdi);
 	}
-}
-
-// 68K 0x108098f2 __dt__15CSuccFailDrawerFv
-SuccFailDrawer::~SuccFailDrawer()
-{
 }

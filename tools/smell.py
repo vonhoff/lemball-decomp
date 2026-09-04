@@ -71,6 +71,7 @@ FREE_DEF = re.compile(r"^(?:static\s+)?(?:[A-Za-z_][\w:*&]*\s+)+\w+\s*\(")
 BUFFER_OK = re.compile(r"m_numberBuffer|Bits\b|sz[A-Z]|\bp_bits\b")
 SKIP_LEAD = {"if", "while", "for", "switch", "return", "else", "case", "catch", "extern"}
 OFFSET_POKE_SAMPLES = (
+	("if (*(unsigned int*) ((char*) g_pActiveConnection + 0x1c) != 0) {", True),
 	("m_projectileEndY = ((int*) ((short*) offsets + 0x16))[0] + m_junctions[i].m_y;", True),
 	("rawLength = *(unsigned int*) (p_patch + 0x38);", True),
 	("colorCount = *(int*) ((unsigned char*) p_palette + 0x48) - 10;", True),

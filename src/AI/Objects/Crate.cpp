@@ -67,7 +67,7 @@ bool Crate::Process()
 		int cellX = x & 0xf;
 		int cellY = y & 0xf;
 		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY)
-			<< 12;
+							  << 12;
 	}
 	else {
 		m_position.m_zFixed = 0;

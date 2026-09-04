@@ -2,11 +2,11 @@
 #define LEMBALL_AI_MANAGERS_HANDMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x004962e0
-class HandManager : public NetworkMessage {
+class HandManager : public BaseObjectManager {
 public:
 	HandManager(Ai* p_arg0, int p_arg1);
 	bool StepOn(const AiCoord& p_position, GameObject* p_object);
@@ -19,11 +19,10 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 
 private:
-	unsigned int m_messageType; // 0x2c
-	int m_capacity;             // 0x30
-	int m_count;                // 0x34
-	Hand* m_hands;              // 0x38
-	Ai* m_ai;                   // 0x3c
+	int m_capacity; // 0x30
+	int m_count;    // 0x34
+	Hand* m_hands;  // 0x38
+	Ai* m_ai;       // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x004287d0

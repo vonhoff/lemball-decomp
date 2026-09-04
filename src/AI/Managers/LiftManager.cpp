@@ -6,9 +6,12 @@
 unsigned short g_wMovingLiftCount = 0;
 
 // 68K 0x1061508e __ct__12CLiftManagerFP3CAIi
-// STUB: LEMBALL 0x00425680
-LiftManager::LiftManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x00425680
+LiftManager::LiftManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x12, 7)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_lifts = 0;
 }
 
 // 68K 0x10615118 Restart__12CLiftManagerFv
@@ -24,9 +27,22 @@ void LiftManager::Restart()
 }
 
 // 68K 0x10615180 Initialise__12CLiftManagerFi
-// STUB: LEMBALL 0x00425720
+// FUNCTION: LEMBALL 0x00425720
 void LiftManager::Initialise(int p_capacity)
 {
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_lifts = 0;
+		return;
+	}
+	m_capacity = p_capacity;
+	if (m_lifts == 0) {
+		m_lifts = new Lift[p_capacity];
+		for (int i = 0; i < m_capacity; i++) {
+			m_lifts[i].m_manager = this;
+			m_lifts[i].Restart();
+		}
+	}
 }
 
 // 68K 0x106152bc Process__12CLiftManagerFv

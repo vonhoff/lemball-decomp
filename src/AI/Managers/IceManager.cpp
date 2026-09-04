@@ -3,9 +3,12 @@
 #include "../Objects/Ice.h"
 
 // 68K 0x10612448 __ct__11CIceManagerFP3CAIi
-// STUB: LEMBALL 0x0042d7a0
-IceManager::IceManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x0042d7a0
+IceManager::IceManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x19, 0xe)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_ice = 0;
 }
 
 // 68K 0x106124d2 Restart__11CIceManagerFv
@@ -20,9 +23,22 @@ void IceManager::Restart()
 }
 
 // 68K 0x10612534 Initialise__11CIceManagerFi
-// STUB: LEMBALL 0x0042d830
+// FUNCTION: LEMBALL 0x0042d830
 void IceManager::Initialise(int p_capacity)
 {
+	m_capacity = p_capacity;
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_ice = 0;
+		return;
+	}
+	if (m_ice == 0) {
+		m_ice = new Ice[p_capacity];
+		for (int i = 0; i < m_capacity; i++) {
+			m_ice[i].Restart();
+			m_ice[i].m_manager = this;
+		}
+	}
 }
 
 // 68K 0x10612672 Process__11CIceManagerFv

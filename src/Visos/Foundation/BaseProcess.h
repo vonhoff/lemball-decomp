@@ -7,6 +7,11 @@
 // VTABLE: LEMBALL 0x004930a0
 class BaseProcess {
 public:
+	BaseProcess()
+	{
+		m_processState = 0;
+		m_returnState = 0;
+	}
 	virtual ~BaseProcess();     // vtable+0x00
 	virtual void Process() = 0; // vtable+0x04
 

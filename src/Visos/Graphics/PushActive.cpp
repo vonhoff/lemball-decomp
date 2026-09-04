@@ -25,6 +25,7 @@ PushActive::~PushActive()
 
 // 68K 0x101174dc __ct__11CPushActiveFv
 // FUNCTION: LEMBALL 0x004698b0
-PushActive::PushActive() : m_activeMarker(0)
+PushActive::PushActive()
 {
+	m_activeMarker = 0;
 }

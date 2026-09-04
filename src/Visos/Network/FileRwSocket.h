@@ -21,7 +21,7 @@ public:
 	FileRwSocket();
 	virtual bool SendPacket(const unsigned char* p_data, int p_size); // vtable+0x24
 	virtual void Closed(unsigned char p_notifyPeer);                  // vtable+0x0c
-	virtual void ReceiveAcknowledgement();                            // vtable+0x1c
+	virtual NetworkMessage* ReceiveAcknowledgement();                 // vtable+0x1c
 	virtual void SendAcknowledgement();                               // vtable+0x18
 	virtual ~FileRwSocket();                                          // vtable+0x14
 

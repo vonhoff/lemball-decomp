@@ -3,9 +3,12 @@
 #include "../Objects/Hand.h"
 
 // 68K 0x106111f4 __ct__12CHandManagerFP3CAIi
-// STUB: LEMBALL 0x00427e60
-HandManager::HandManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x00427e60
+HandManager::HandManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x16, 0xb)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_hands = 0;
 }
 
 // 68K 0x1061127e Restart__12CHandManagerFv
@@ -20,9 +23,22 @@ void HandManager::Restart()
 }
 
 // 68K 0x106112e0 Initialise__12CHandManagerFi
-// STUB: LEMBALL 0x00427ef0
+// FUNCTION: LEMBALL 0x00427ef0
 void HandManager::Initialise(int p_capacity)
 {
+	m_capacity = p_capacity;
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_hands = 0;
+		return;
+	}
+	if (m_hands == 0) {
+		m_hands = new Hand[p_capacity];
+		for (int i = 0; i < m_capacity; i++) {
+			m_hands[i].Restart();
+			m_hands[i].m_manager = this;
+		}
+	}
 }
 
 // 68K 0x10611422 StepOn__12CHandManagerFRC7AICOORDP11CGameObject

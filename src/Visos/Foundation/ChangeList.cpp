@@ -3,7 +3,7 @@
 #include <new.h>
 
 // 68K 0x10210cf8 __ct__11CChangeListFi7CVSSize7CVSSize
-// STUB: LEMBALL 0x004669a0
+// FUNCTION: LEMBALL 0x004669a0
 ChangeList::ChangeList(int p_arg0, VsSize p_arg1, VsSize p_arg2)
 {
 	ChangeListItem* items;
@@ -75,7 +75,7 @@ void ChangeList::AllocMap()
 }
 
 // 68K 0x10210eea Resize__11CChangeListF7CVSSize
-// STUB: LEMBALL 0x00466af0
+// FUNCTION: LEMBALL 0x00466af0
 void ChangeList::Resize(VsSize p_size)
 {
 	short mapWidth;
@@ -117,7 +117,7 @@ void ChangeList::Reset()
 }
 
 // 68K 0x10211012 __dt__11CChangeListFv
-// STUB: LEMBALL 0x00466b90
+// FUNCTION: LEMBALL 0x00466b90
 ChangeList::~ChangeList()
 {
 	if (m_items != 0) {
@@ -144,7 +144,7 @@ void ChangeList::PopActive()
 }
 
 // 68K 0x10211106 Add__11CChangeListFRC7CVSRect
-// STUB: LEMBALL 0x00466be0
+// FUNCTION: LEMBALL 0x00466be0
 void ChangeList::Add(const VsRect& p_area)
 {
 	unsigned char mark;
@@ -217,7 +217,7 @@ void ChangeList::AddWithActiveMark(const VsRect& p_area, unsigned char p_mark)
 }
 
 // 68K 0x1021122a SetDrawMark__11CChangeListFv
-// STUB: LEMBALL 0x00466d10
+// FUNCTION: LEMBALL 0x00466d10
 void ChangeList::SetDrawMark()
 {
 	unsigned int mark;
@@ -240,7 +240,7 @@ unsigned int ChangeList::GetArea()
 }
 
 // 68K 0x102112b8 GetNextArea__11CChangeListFUcUcUc
-// STUB: LEMBALL 0x00466d40
+// FUNCTION: LEMBALL 0x00466d40
 bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark, unsigned char p_replacementMark)
 {
 	int mapWidth;
@@ -339,7 +339,7 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 }
 
 // 68K 0x10211504 GetNumItems__11CChangeListFv
-// STUB: LEMBALL 0x00466ef0
+// FUNCTION: LEMBALL 0x00466ef0
 int ChangeList::GetNumItems()
 {
 	if (m_map == 0) {
@@ -400,7 +400,7 @@ int ChangeList::GetDrawMark()
 	return m_drawMarkCount;
 }
 
-// STUB: LEMBALL 0x00467040
+// FUNCTION: LEMBALL 0x00467040
 ChangeListItem::ChangeListItem()
 {
 	height = 0;

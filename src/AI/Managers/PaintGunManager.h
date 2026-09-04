@@ -2,11 +2,11 @@
 #define LEMBALL_AI_MANAGERS_PAINTGUNMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496888
-class PaintGunManager : public NetworkMessage {
+class PaintGunManager : public BaseObjectManager {
 public:
 	PaintGunManager(Ai* p_arg0, int p_arg1);
 	int GetViewData(ViewData* p_viewData);
@@ -18,11 +18,10 @@ public:
 	void Restart();
 
 private:
-	unsigned int m_messageType; // 0x2c
-	int m_capacity;             // 0x30
-	int m_count;                // 0x34
-	PaintGun* m_paintGuns;      // 0x38
-	Ai* m_ai;                   // 0x3c
+	int m_capacity;        // 0x30
+	int m_count;           // 0x34
+	PaintGun* m_paintGuns; // 0x38
+	Ai* m_ai;              // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x0042c9b0

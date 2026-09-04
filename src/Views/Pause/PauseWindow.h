@@ -25,7 +25,7 @@ public:
 	virtual int ProcessMsg(Message* p_message);                                      // vtable+0x08
 	virtual unsigned int OnButtonDown(const VsPoint& p_point, unsigned int p_flags); // vtable+0x04
 	virtual void FreeVram();                                                         // vtable+0x00
-	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);           // vtable+0x08
+	virtual void OnButtonUp(const VsPoint& p_point, int p_flags);                    // vtable+0x08
 	virtual void OnDriverChange();                                                   // vtable+0x5c
 	virtual void OnExternalButtonUp(const VsPoint& p_point, int p_flags);            // vtable+0x0c
 	virtual void OnInside(const VsPoint& p_point);                                   // vtable+0x18
@@ -64,8 +64,7 @@ private:
 	ResAnim* m_verticalBorderAnim;         // 0x158
 	Anim m_cornerAnims[4];                 // 0x15c
 	Anim* m_borderAnims;                   // 0x1dc
-	undefined4 m_pad0x1e0;                 // 0x1e0
-	BaseRemap* m_remaps[4];                // 0x1e4
+	BaseRemap* m_remaps[4];                // 0x1e0
 	ResFont* m_font;                       // 0x1f0
 	void* m_vramSurface;                   // 0x1f4
 	VsPoint* m_textSizes;                  // 0x1f8

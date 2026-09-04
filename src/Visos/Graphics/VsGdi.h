@@ -35,7 +35,7 @@ public:
 	virtual void AddToChangeList(const VsRect* p_rect); // vtable+0x04
 	virtual ChangeList* GetChangeList();                // vtable+0x08
 	virtual void* GetCurrDb();                          // vtable+0x38
-	virtual void AttachPalette(ResPalette* p_palette); // vtable+0x30
+	virtual void AttachPalette(ResPalette* p_palette);  // vtable+0x30
 	bool BeginRender();
 	void EndRender();
 	virtual void Blit(Zrle* p_primitive, ResZrle* p_zrle);
@@ -96,7 +96,11 @@ public:
 	void DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius, int p_colour);
 	void FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour);
 	void DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radius, unsigned char p_colour);
-	void DrawFilledCircleSymmetricSpans(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
+	void DrawFilledCircleSymmetricSpans(int p_centerX,
+										int p_centerY,
+										int p_xOffset,
+										int p_yOffset,
+										unsigned char p_colour);
 	int ClipCirclePoint(int p_x, int p_y);
 	void DrawClippedCirclePoint(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
 	void Flush();
@@ -115,21 +119,21 @@ public:
 	friend class PvBackBuffSurface;
 
 private:
-	short m_presentX;                // 0xec
-	short m_presentY;                // 0xee
-	void* m_platformBitmap;          // 0xf0
-	undefined4 m_unk0xf4;            // 0xf4
-	void* m_drawingPort;             // 0xf8
-	undefined m_bitmapInfo[0x28];    // 0xfc
-	undefined m_colourTable[0x400];  // 0x124
-	undefined4 m_unk0x524;           // 0x524
-	SurfaceListNode* m_unk0x528;     // 0x528
-	SurfaceListNode* m_unk0x52c;     // 0x52c
-	unsigned int m_unk0x530;         // 0x530
-	undefined m_lock[0x18];          // 0x534
-	undefined4 m_unk0x54c;           // 0x54c
-	ChangeList* m_changeList;        // 0x550
-	void* m_currDb;                  // 0x554
+	short m_presentX;               // 0xec
+	short m_presentY;               // 0xee
+	void* m_platformBitmap;         // 0xf0
+	undefined4 m_unk0xf4;           // 0xf4
+	void* m_drawingPort;            // 0xf8
+	undefined m_bitmapInfo[0x28];   // 0xfc
+	undefined m_colourTable[0x400]; // 0x124
+	undefined4 m_unk0x524;          // 0x524
+	SurfaceListNode* m_unk0x528;    // 0x528
+	SurfaceListNode* m_unk0x52c;    // 0x52c
+	unsigned int m_unk0x530;        // 0x530
+	undefined m_lock[0x18];         // 0x534
+	undefined4 m_unk0x54c;          // 0x54c
+	ChangeList* m_changeList;       // 0x550
+	void* m_currDb;                 // 0x554
 };
 
 #endif

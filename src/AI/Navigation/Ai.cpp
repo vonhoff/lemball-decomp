@@ -1,13 +1,17 @@
 #include "Ai.h"
 
 #include "../../Control/Game/GameStatus.h"
+#include "../Base/GameObject.h"
 #include "../Groups/EnemyGroupManager.h"
 #include "../Groups/PlayerLemmingGroupManager.h"
 #include "../Groups/SheepGroupManager.h"
 #include "../Managers/BulletManager.h"
 #include "../Managers/DoorManager.h"
 #include "../Managers/LiftManager.h"
+#include "../Managers/TrampolineManager.h"
+#include "../Managers/TrapDoorManager.h"
 #include "MoverManager.h"
+#include "NodeManager.h"
 
 // 68K 0x1060013a __ct__3CAIFP5CGame
 // STUB: LEMBALL 0x00410c10
@@ -79,16 +83,17 @@ int Ai::GetData(ViewData* p_viewData)
 }
 
 // 68K 0x10601c58 HitTrampoline__3CAIFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x004125c0
+// FUNCTION: LEMBALL 0x004125c0
 void Ai::HitTrampoline(const AiCoord& p_position, GameObject* p_object)
 {
+	m_trampolineManager->Hit(p_position, p_object);
 }
 
 // 68K 0x10601ca6 IsLemmingPlayerControlled__3CAIFP14CPlayerLemming
-// STUB: LEMBALL 0x004125e0
+// FUNCTION: LEMBALL 0x004125e0
 bool Ai::IsLemmingPlayerControlled(PlayerLemming* p_lemming)
 {
-	return 0;
+	return m_playerGroupManager->IsLemmingPlayerControlled(p_lemming);
 }
 
 // 68K 0x10601cf6 FireBullet__3CAIFUs11eBulletType6eOwneri7AICOORD7AICOORD
@@ -152,10 +157,10 @@ bool Ai::OpenDoor(const AiCoord& p_position, GameObject* p_object, unsigned shor
 }
 
 // 68K 0x10602334 GetNodePosition__3CAIFi
-// STUB: LEMBALL 0x00412b60
+// FUNCTION: LEMBALL 0x00412b60
 Pt3 Ai::GetNodePosition(int p_node)
 {
-	return *(Pt3*) 0;
+	return m_nodeManager->GetNodePosition(p_node);
 }
 
 // 68K 0x1060238e AddData__3CAIFv
@@ -207,9 +212,12 @@ void Ai::GetOrigin(AiCoord& p_origin, unsigned int& p_player)
 }
 
 // 68K 0x1060268e AddNewTrapDoor__3CAIFiiiUl
-// STUB: LEMBALL 0x00412eb0
+// FUNCTION: LEMBALL 0x00412eb0
 void Ai::AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time)
 {
+	short id = GameObject::NextLoadingId();
+	AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+	m_trapDoorManager->AddNewDoor(id, position, 0, p_time);
 }
 
 // 68K 0x1060272a LevelName__3CAIFv
@@ -260,10 +268,12 @@ bool Ai::GetObjectRequired(eObjectType p_objectType)
 }
 
 // 68K 0x10602948 SetObjectRequired__3CAIF11eObjectTypeUc
-// STUB: LEMBALL 0x004130a0
-unsigned int Ai::SetObjectRequired(eObjectType p_objectType, unsigned char p_required)
+// FUNCTION: LEMBALL 0x004130a0
+void Ai::SetObjectRequired(eObjectType p_objectType, unsigned int p_required)
 {
-	return 0;
+	if (p_objectType < (eObjectType) 0x211 || p_objectType > (eObjectType) 0x212) {
+		m_objectRequired[p_objectType] = p_required;
+	}
 }
 
 // 68K 0x106029a6 FindMoverHeight__3CAIFiiRi

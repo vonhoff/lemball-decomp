@@ -51,4 +51,3 @@ void BitmapRes::Render(Gdi* p_gdi)
 	m_resource->m_rendered = 0;
 	m_resource->m_directUseCount--;
 }
-

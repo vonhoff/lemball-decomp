@@ -1,11 +1,11 @@
 #include "PauseWindow.h"
 
-#include "../Sound/SoundView.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/ReceiveWindowState.h"
+#include "../Sound/SoundView.h"
 
 // 68K 0x10b0e048 Initialise__12CPauseWindowFv
 // STUB: LEMBALL 0x00443af0

@@ -5,7 +5,8 @@
 #include "../Base/BaseFrontendProcess.h" // complete type
 
 // SIZE 0x2c
-// VTABLE: LEMBALL 0x004983d8
+// VTABLE: LEMBALL 0x004983c8 BaseQueueHandler
+// VTABLE: LEMBALL 0x004983d8 BaseProcess
 class SuccFail : public BaseFrontendProcess {
 public:
 	SuccFail(Game* p_arg0, unsigned int p_arg1);

@@ -27,14 +27,14 @@ struct TargetWinGDrawCodecState {
 };
 
 extern AnimWnd* g_pAnimWnd;
-TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo);
-int TargetWinGDrawCodec_Close(TargetWinGDrawCodecState* p_state);
-int TargetWinGDrawCodec_Draw(TargetWinGDrawCodecState* p_state, void* p_request);
-int TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void* p_request);
+TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
+int __stdcall TargetWinGDrawCodec_Close(TargetWinGDrawCodecState* p_state);
+int __stdcall TargetWinGDrawCodec_Draw(TargetWinGDrawCodecState* p_state, void* p_request, long p_param2);
+int __stdcall TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void* p_request, long p_param2);
 int __stdcall TargetWinGDrawCodec_End(TargetWinGDrawCodecState* p_state);
-int TargetWinGDrawCodec_QueryFormat(TargetWinGDrawCodecState* p_state, void* p_format);
-int TargetWinGDrawCodec_SuggestFormat(TargetWinGDrawCodecState* p_state, void* p_request);
+int __stdcall TargetWinGDrawCodec_QueryFormat(TargetWinGDrawCodecState* p_state, void* p_format);
+int __stdcall TargetWinGDrawCodec_SuggestFormat(TargetWinGDrawCodecState* p_state, void* p_request, long p_param2);
 int __stdcall TargetWinGDrawCodec_ChangePalette(TargetWinGDrawCodecState* p_state, void* p_request);
-unsigned int TargetWinGDrawCodec_GetInfo(void* p_info, unsigned int p_size);
+unsigned int __stdcall TargetWinGDrawCodec_GetInfo(void* p_info, unsigned int p_size);
 
 #endif

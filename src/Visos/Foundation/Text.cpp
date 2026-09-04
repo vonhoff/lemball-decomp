@@ -9,7 +9,7 @@
 #include "VsPoint.h"
 
 // 68K 0x10117aa4 Set__5CTextFiiP8CResFONTPCcUlP6CRemap
-// STUB: LEMBALL 0x00469a50
+// FUNCTION: LEMBALL 0x00469a50
 void Text::Set(int p_x, int p_y, ResFont* p_font, char* p_text, unsigned long p_flags, Remap* p_remap)
 {
 	m_startX = (short) p_x;
@@ -33,7 +33,7 @@ void Text::Set(VsPoint& p_position, ResFont* p_font, char* p_text, unsigned long
 }
 
 // 68K 0x10117a40 Set__5CTextFiiP8CResFONT7CStringUlP6CRemap
-// STUB: LEMBALL 0x00469ac0
+// FUNCTION: LEMBALL 0x00469ac0
 void Text::Set(int p_x, int p_y, ResFont* p_font, String p_text, unsigned long p_flags, Remap* p_remap)
 {
 	m_startX = (short) p_x;
@@ -70,7 +70,7 @@ Text::~Text()
 }
 
 // 68K 0x102119ee NextPos__5CTextFv
-// STUB: LEMBALL 0x004749c0
+// FUNCTION: LEMBALL 0x004749c0
 void Text::NextPos()
 {
 	short stepY;
@@ -105,7 +105,7 @@ void Text::NextPos()
 }
 
 // 68K 0x10211ad8 Render__5CTextFP4CGDI
-// STUB: LEMBALL 0x00474a20
+// FUNCTION: LEMBALL 0x00474a20
 void Text::Render(Gdi* p_gdi)
 {
 	ResFont* font = m_font;
@@ -120,8 +120,8 @@ void Text::Render(Gdi* p_gdi)
 	m_primitive.m_flags = m_flags;
 	m_y = m_startY;
 	m_primitive.m_remap = m_remap;
-	if (*m_text != '\0') {
-		const char* text = m_text;
+	const char* text = m_text;
+	if (*text != '\0') {
 		do {
 			m_glyph = m_font->AsciItoZrle((unsigned char) *text);
 			if (m_glyph == 0) {

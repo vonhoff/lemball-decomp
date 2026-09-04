@@ -2,14 +2,33 @@
 
 #include "HeaderMessage.h"
 
+#include <new.h>
+
 // 68K 0x10206dc4 __ct__8CHeadersFi
-// STUB: LEMBALL 0x00479620
+// FUNCTION: LEMBALL 0x00479620
 Headers::Headers(int p_arg0)
 {
+	int index;
+
+	m_count = p_arg0;
+	m_headers = new HeaderMessage[p_arg0];
+	m_sequences = new unsigned short[m_count];
+	for (index = 0; index < m_count; index++) {
+		m_sequences[index] = 0;
+	}
+	m_payloadCapacity += m_headers->m_payloadCapacity * p_arg0;
+}
+
+// 68K 0x10206e82 __dt__8CHeadersFv
+// FUNCTION: LEMBALL 0x004796e0
+Headers::~Headers()
+{
+	operator delete(m_sequences);
+	delete[] m_headers;
 }
 
 // 68K 0x10206eec AddData__8CHeadersFv
-// STUB: LEMBALL 0x00479790
+// FUNCTION: LEMBALL 0x00479790
 void Headers::AddData()
 {
 	int i;
@@ -44,9 +63,4 @@ void Headers::GetData()
 		} while (i < m_count);
 	}
 	m_currentIndex = 0;
-}
-
-// 68K 0x10206e82 __dt__8CHeadersFv
-Headers::~Headers()
-{
 }

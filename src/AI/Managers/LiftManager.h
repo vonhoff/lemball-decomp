@@ -2,11 +2,11 @@
 #define LEMBALL_AI_MANAGERS_LIFTMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00495ea8
-class LiftManager : public NetworkMessage {
+class LiftManager : public BaseObjectManager {
 public:
 	LiftManager(Ai* p_arg0, int p_arg1);
 	int GetViewData(ViewData* p_viewData);
@@ -20,11 +20,10 @@ public:
 	void Switch(swMessage p_message, int p_id, int p_legacyA, int p_legacyB);
 
 private:
-	unsigned int m_messageType; // 0x2c
-	Ai* m_ai;                   // 0x30
-	int m_count;                // 0x34
-	int m_capacity;             // 0x38
-	Lift* m_lifts;              // 0x3c
+	Ai* m_ai;       // 0x30
+	int m_count;    // 0x34
+	int m_capacity; // 0x38
+	Lift* m_lifts;  // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x004266e0

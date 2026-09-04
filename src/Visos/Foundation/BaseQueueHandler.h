@@ -33,8 +33,8 @@ private:
 	unsigned int m_processedCount; // 0x0c
 };
 
-extern BaseQueueHandler* g_pNetworkStatusQueue;
-extern BaseQueueHandler* g_pNetworkPacketQueue;
+extern BaseQueue* g_pNetworkStatusQueue;
+extern BaseQueue* g_pNetworkPacketQueue;
 
 // SYNTHETIC: LEMBALL 0x004098e0
 // BaseQueueHandler::`scalar deleting destructor'

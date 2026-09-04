@@ -3,9 +3,12 @@
 #include "../Objects/Laser.h"
 
 // 68K 0x1061403a __ct__13CLaserManagerFP3CAIi
-// STUB: LEMBALL 0x00429320
-LaserManager::LaserManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x00429320
+LaserManager::LaserManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x15, 0xa)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_lasers = 0;
 }
 
 // 68K 0x106140c6 Restart__13CLaserManagerFv
@@ -20,9 +23,21 @@ void LaserManager::Restart()
 }
 
 // 68K 0x1061412a Initialise__13CLaserManagerFi
-// STUB: LEMBALL 0x004293b0
+// FUNCTION: LEMBALL 0x004293b0
 void LaserManager::Initialise(int p_capacity)
 {
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_lasers = 0;
+		return;
+	}
+	if (m_lasers == 0) {
+		m_lasers = new Laser[m_capacity];
+		for (int i = 0; i < m_capacity; i++) {
+			m_lasers[i].m_manager = this;
+			m_lasers[i].Restart();
+		}
+	}
 }
 
 // 68K 0x10614266 StepOn__13CLaserManagerFRC7AICOORDP11CGameObject

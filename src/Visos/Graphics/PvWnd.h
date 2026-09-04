@@ -85,7 +85,9 @@ public:
 	friend class CdLoadAnimDraw;
 	friend class C2D;
 	friend class BaseCursor;
-	friend int TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state, void* p_request);
+	friend int __stdcall TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state,
+												  void* p_request,
+												  long p_param2);
 
 private:
 	unsigned int m_lifecycleRefs; // 0x04

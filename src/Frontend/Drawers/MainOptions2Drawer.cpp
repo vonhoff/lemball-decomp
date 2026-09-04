@@ -61,8 +61,8 @@ MainOptions2Drawer::MainOptions2Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const
 	m_disableAnimations = (unsigned int) g_nAnimationsDisabled;
 	m_transitionState = 0;
 	m_transitionPending = 0;
-	g_nPendingEffectsVolume = g_nEffectsVolume;
 	g_nPendingMusicVolume = g_nMusicVolume;
+	g_nPendingEffectsVolume = g_nEffectsVolume;
 	m_drawBackground = 1;
 	m_drawFrame = 1;
 	m_drawSolid = 1;

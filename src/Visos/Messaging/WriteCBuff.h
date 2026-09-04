@@ -9,7 +9,7 @@ class WriteCBuff : public WritePacketBuff {
 public:
 	WriteCBuff(int p_arg0, unsigned short p_arg1);
 	bool IsPacketAvailable(unsigned short p_arg0);
-	int StorePacket(unsigned short p_arg0, const unsigned char* p_arg1, int p_arg2, NetworkMessage* p_arg3);
+	WritePacket* StorePacket(unsigned short p_arg0, const unsigned char* p_arg1, int p_arg2, NetworkMessage* p_arg3);
 };
 
 #endif

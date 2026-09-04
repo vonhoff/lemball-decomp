@@ -7,7 +7,9 @@
 #include "SuccFailDrawerPrims.h"           // complete type
 
 // SIZE 0x60c
-// VTABLE: LEMBALL 0x00498358
+// VTABLE: LEMBALL 0x00498358 Drawer
+// VTABLE: LEMBALL 0x00498348 BaseQueueHandler
+// VTABLE: LEMBALL 0x00498340 AnimsManager
 class SuccFailDrawer : public BaseFrontendDrawer {
 public:
 	SuccFailDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3);

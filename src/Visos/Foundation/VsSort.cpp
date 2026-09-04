@@ -1,12 +1,18 @@
 #include "VsSort.h"
 
+#include "../../AI/Objects/AnimSpecialEntry.h"
 #include "../../AI/Objects/ViewData.h"
 
 // 68K 0x10602c1c AnimSpCmp__FPCvPCv
 // FUNCTION: LEMBALL 0x00409910
 int AnimSpCmp(const void* p_left, const void* p_right)
 {
-	return 0;
+	const AnimSpecialEntry* left;
+	const AnimSpecialEntry* right;
+
+	left = (const AnimSpecialEntry*) p_left;
+	right = (const AnimSpecialEntry*) p_right;
+	return left->m_sortKey - right->m_sortKey;
 }
 
 // 68K 0x10b05a34 ViewDataCmp__FPCvPCv

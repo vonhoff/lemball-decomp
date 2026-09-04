@@ -18,9 +18,39 @@ StateEntry* g_pSheepStateTables[24];
 StateEntry* g_pEnemyStateTables[24];
 
 // 68K 0x1061f46e StateMachine__FPP11tStateEntryP3CAIP11CGameObject
-// STUB: LEMBALL 0x00419980
+// FUNCTION: LEMBALL 0x00419980
 void StateMachine(StateEntry** p_arg0, Ai* p_arg1, GameObject* p_arg2)
 {
+	typedef bool (*StatePredicate)(Ai*, GameObject*, Info*);
+	typedef void (*StateAction)(Ai*, GameObject*, Info*);
+
+	undefined4 info;
+	eAction action;
+	eAction nextAction;
+	int actionArgument;
+	StateEntry* entry;
+
+	action = p_arg2->m_action;
+	entry = p_arg0[action];
+	while (entry->m_predicate != 0) {
+		if (((StatePredicate) entry->m_predicate)(p_arg1, p_arg2, (Info*) &info) != 0) {
+			break;
+		}
+		entry++;
+	}
+	if (entry->m_actionFunction != 0) {
+		((StateAction) entry->m_actionFunction)(p_arg1, p_arg2, (Info*) &info);
+	}
+	nextAction = entry->m_nextAction;
+	actionArgument = entry->m_actionArgument;
+	if (p_arg2->GetSndEffect() == 0) {
+		p_arg2->SetSndEffect((eSoundEffect) actionArgument);
+	}
+	p_arg2->UpdateCollision();
+	if (nextAction != 0x28 && action != nextAction && p_arg2->m_action == action) {
+		p_arg2->m_stateTimer = g_dwGameTick * 0x32;
+		p_arg2->Action(nextAction);
+	}
 }
 
 // 68K 0x1061f578 UserLemming__FP3CAIP11CGameObject
@@ -52,10 +82,10 @@ void EnemyState(Ai* p_arg0, GameObject* p_arg1)
 }
 
 // 68K 0x1061f678 PlayerNotFacingCursor__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419ab0
+// FUNCTION: LEMBALL 0x00419ab0
 bool PlayerNotFacingCursor(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
-	return 0;
+	return p_arg1->FacingCursor() == 0;
 }
 
 // 68K 0x1061f6ce PlayerNotFacingTarget__FP3CAIP11CGameObjectP5tInfo
@@ -144,10 +174,13 @@ bool RequestDeath(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x1061fa44 NotFacingDestination__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419c00
+// FUNCTION: LEMBALL 0x00419c00
 bool NotFacingDestination(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
-	return 0;
+	if (GotDestination(p_arg0, p_arg1, p_arg2) == 0) {
+		return 0;
+	}
+	return p_arg1->FacingDestination() == 0;
 }
 
 // 68K 0x1061fab2 GotDestination__FP3CAIP11CGameObjectP5tInfo
@@ -158,10 +191,10 @@ bool GotDestination(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x1061faf4 AtDestination__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419c40
+// FUNCTION: LEMBALL 0x00419c40
 bool AtDestination(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
-	return 0;
+	return g_dwGameTick >= p_arg1->m_actionDeadline;
 }
 
 // 68K 0x1061fb3e NotTimeUp__FP3CAIP11CGameObjectP5tInfo
@@ -223,9 +256,10 @@ void PlayerTurnToFaceTarget(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x1061fd9a PlayerFire__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419d30
+// FUNCTION: LEMBALL 0x00419d30
 void PlayerFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
+	p_arg1->Fire();
 }
 
 // 68K 0x1061fdde PlayerEndFiring__FP3CAIP11CGameObjectP5tInfo
@@ -340,9 +374,13 @@ void TurnToFaceDestination(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x1062023a Hit__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419ed0
+// FUNCTION: LEMBALL 0x00419ed0
 void Hit(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
+	if (p_arg1->OnConveyor() != 0) {
+		p_arg1->OnConveyor(0, 0, 1);
+	}
+	p_arg1->GetHit();
 }
 
 // 68K 0x106202ac Jump__FP3CAIP11CGameObjectP5tInfo
@@ -367,9 +405,13 @@ void ExternalControlEnd(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x10620368 StartBalloon__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419f30
+// FUNCTION: LEMBALL 0x00419f30
 void StartBalloon(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
+	if (p_arg1->OnConveyor() != 0) {
+		p_arg1->OnConveyor(0, 0, 1);
+	}
+	p_arg1->StartBalloon();
 }
 
 // 68K 0x106203e4 OnBalloon__FP3CAIP11CGameObjectP5tInfo
@@ -401,7 +443,8 @@ void EnemyFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 }
 
 // 68K 0x10620500 EnemyEndFiring__FP3CAIP11CGameObjectP5tInfo
-// STUB: LEMBALL 0x00419fa0
+// FUNCTION: LEMBALL 0x00419fa0
 void EnemyEndFiring(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2)
 {
+	p_arg1->EndFiring();
 }

@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x00499218
 class PulseMessage : public NetworkMessage {
 public:
+	inline PulseMessage() : NetworkMessage(1) { OpenDataStream(); }
 	void AddData();
 	void GetData();
 	~PulseMessage();

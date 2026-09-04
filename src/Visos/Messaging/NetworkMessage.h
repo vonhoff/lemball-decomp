@@ -17,6 +17,9 @@ public:
 	friend class Headers;
 	friend class BaseFrontendProcess;
 	friend class BaseObjectManager;
+	friend class CConnect;
+	friend class WriteSocket;
+	friend class ReadSocket;
 	bool Set(unsigned char* p_arg0);
 	int GetDword();
 	unsigned char GetByte();

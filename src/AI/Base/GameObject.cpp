@@ -2,12 +2,12 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Visos/Foundation/VsMath.h"
 #include "../Navigation/Ai.h"
 #include "../Navigation/AiDestinationEntry.h"
 #include "../Navigation/AiDestinationList.h"
 #include "../Navigation/Maze.h"
 #include "../Objects/ViewData.h"
-#include "../../Visos/Foundation/VsMath.h"
 #include "Pt3.h"
 
 #include <string.h>
@@ -119,9 +119,8 @@ eSoundEffect GameObject::GetSndEffect()
 // FUNCTION: LEMBALL 0x0040a890
 bool GameObject::Collision(const Pt3& p_arg0)
 {
-	if (m_collisionMinX <= p_arg0.m_x && p_arg0.m_x <= m_collisionMaxX &&
-		m_collisionMinY <= p_arg0.m_y && p_arg0.m_y <= m_collisionMaxY &&
-		m_collisionMinZ <= p_arg0.m_z && p_arg0.m_z <= m_collisionMaxZ) {
+	if (m_collisionMinX <= p_arg0.m_x && p_arg0.m_x <= m_collisionMaxX && m_collisionMinY <= p_arg0.m_y &&
+		p_arg0.m_y <= m_collisionMaxY && m_collisionMinZ <= p_arg0.m_z && p_arg0.m_z <= m_collisionMaxZ) {
 		return 1;
 	}
 	return 0;
@@ -131,9 +130,8 @@ bool GameObject::Collision(const Pt3& p_arg0)
 // FUNCTION: LEMBALL 0x0040a8e0
 bool GameObject::Collision(const Rect3& p_arg0)
 {
-	if (m_collisionMinX <= p_arg0.m_x2 && p_arg0.m_x1 <= m_collisionMaxX &&
-		m_collisionMinY <= p_arg0.m_y2 && p_arg0.m_y1 <= m_collisionMaxY &&
-		m_collisionMinZ <= p_arg0.m_z2 && p_arg0.m_z1 <= m_collisionMaxZ) {
+	if (m_collisionMinX <= p_arg0.m_x2 && p_arg0.m_x1 <= m_collisionMaxX && m_collisionMinY <= p_arg0.m_y2 &&
+		p_arg0.m_y1 <= m_collisionMaxY && m_collisionMinZ <= p_arg0.m_z2 && p_arg0.m_z1 <= m_collisionMaxZ) {
 		return 1;
 	}
 	return 0;
@@ -544,10 +542,13 @@ void GameObject::StartMoving()
 // FUNCTION: LEMBALL 0x00415780
 void GameObject::StopMoving()
 {
+	unsigned int tick;
+
 	DeleteFirstEntryFromDestinationList();
 	m_moveDurationTicks = 0;
-	m_actionDeadline = g_dwGameTick;
-	m_lastMovementTick = g_dwGameTick;
+	tick = g_dwGameTick;
+	m_actionDeadline = tick;
+	m_lastMovementTick = tick;
 }
 
 // 68K 0x10609afc MapCheck__11CGameObjectFii
@@ -598,7 +599,10 @@ void GameObject::TurnToFaceDestination()
 bool GameObject::FacingDestination()
 {
 	AiCoord dest = GetDestination();
-	int dir = ReturnFacingDirection(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, dest.m_xFixed >> 12, dest.m_yFixed >> 12);
+	int dir = ReturnFacingDirection(m_position.m_xFixed >> 12,
+									m_position.m_yFixed >> 12,
+									dest.m_xFixed >> 12,
+									dest.m_yFixed >> 12);
 	return (int) m_facingDirection == dir;
 }
 

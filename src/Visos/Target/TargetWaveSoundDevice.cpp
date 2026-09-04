@@ -6,8 +6,10 @@
 #include <new.h>
 
 #define WIN32_LEAN_AND_MEAN
+// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
 #include <windows.h>
 #include <mmsystem.h>
+// clang-format on
 
 // FUNCTION: LEMBALL 0x0047c880
 TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)

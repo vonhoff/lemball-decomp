@@ -15,6 +15,8 @@ public:
 	virtual ~PaintGun();       // vtable+0x00
 	void Set(unsigned short p_id, const AiCoord& p_position, int p_direction);
 
+	friend class PaintGunManager;
+
 private:
 	unsigned int m_enabled; // 0x138
 	unsigned int m_active;  // 0x13c

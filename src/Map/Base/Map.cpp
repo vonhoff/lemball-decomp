@@ -73,9 +73,13 @@ void Map::CreateWalkBits()
 }
 
 // 68K 0x10900994 SetTerrain__4CMapFii11eObjectTypei
-// STUB: LEMBALL 0x00430a20
+// FUNCTION: LEMBALL 0x00430a20
 void Map::SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data)
 {
+	Ground* ground = m_ground.m_ground + m_ground.m_width * p_y + p_x;
+	ground->m_objectType = p_objectType;
+	ground->m_objectData = p_data;
+	ground->SetCollision();
 }
 
 // 68K 0x10900a04 ScreenToGame__4CMapFiiRiRi

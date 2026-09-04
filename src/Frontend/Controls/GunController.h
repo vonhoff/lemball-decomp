@@ -9,8 +9,9 @@
 #include "GunControllerJunction.h"                   // complete type
 
 // SIZE 0x27c
-// VTABLE: LEMBALL 0x00497f10
-class GunController : public BaseQueueHandler {
+// VTABLE: LEMBALL 0x00497f10 BaseQueueHandler
+// VTABLE: LEMBALL 0x00497f0c AnimsManager
+class GunController : public BaseQueueHandler, public AnimsManager {
 public:
 	GunController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned char p_arg3);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
@@ -40,7 +41,6 @@ public:
 	friend class BaseFrontendDrawer;
 
 private:
-	AnimsManager m_anims;                 // 0x10
 	int m_buttonCount;                    // 0x80
 	unsigned int m_controllerActive;      // 0x84
 	int m_gunX;                           // 0x88
@@ -63,7 +63,7 @@ private:
 	unsigned int m_verticalMoving;        // 0xdc
 	GunControllerJunction m_junctions[8]; // 0xe0
 	GunButtons* m_buttons[8];             // 0x1e0
-	SolidRect m_cursorRect;               // 0x200
+	SolidRect m_cursorRect[1];            // 0x200
 	Gdi* m_gdi;                           // 0x210
 	GWnd* m_window;                       // 0x214
 	unsigned int m_nextMessageId;         // 0x218

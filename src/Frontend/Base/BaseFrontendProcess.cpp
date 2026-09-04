@@ -36,8 +36,6 @@ BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 {
 	void* storage;
 
-	m_processState = 0;
-	m_returnState = 0;
 	m_game = p_arg0;
 	storage = operator new(0x34);
 	if (storage == 0) {

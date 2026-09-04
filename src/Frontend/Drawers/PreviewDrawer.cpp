@@ -118,7 +118,7 @@ PreviewDrawer::PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p
 		m_lemmingAnim = 0;
 	}
 	else {
-		m_lemmingAnim = new (storage) RepeatAnim(m_anims.GetnAnims(m_lemmingAnimId), 1);
+		m_lemmingAnim = new (storage) RepeatAnim(AnimsManager::GetnAnims(m_lemmingAnimId), 1);
 	}
 	m_lemmingAnim->StartAnim(500);
 	m_lemmingAnim->m_fixedTime = 0xffffffff;
@@ -127,7 +127,7 @@ PreviewDrawer::PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p
 		m_teamAnim = 0;
 	}
 	else {
-		m_teamAnim = new (storage) RepeatAnim(m_anims.GetnAnims(m_teamAnimId), 1);
+		m_teamAnim = new (storage) RepeatAnim(AnimsManager::GetnAnims(m_teamAnimId), 1);
 	}
 	m_teamAnim->StartAnim(500);
 	m_teamAnim->m_fixedTime = 0xffffffff;
@@ -136,7 +136,7 @@ PreviewDrawer::PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p
 		m_opponentAnim = 0;
 	}
 	else {
-		m_opponentAnim = new (storage) RepeatAnim(m_anims.GetnAnims(m_opponentAnimId), 1);
+		m_opponentAnim = new (storage) RepeatAnim(AnimsManager::GetnAnims(m_opponentAnimId), 1);
 	}
 	m_opponentAnim->StartAnim(500);
 	m_opponentAnim->m_fixedTime = 0xffffffff;
@@ -187,10 +187,10 @@ void PreviewDrawer::Load()
 	m_primitive.m_bitmap.m_y = (short) layout[0x3c / 4];
 	m_primitive.m_bitmap.m_resource = m_backgroundBitmap;
 	m_primitive.m_bitmap.m_flags = 0x800;
-	m_anims.LoadAnims(m_lemmingAnimId);
-	m_anims.LoadAnims(m_teamAnimId);
-	m_anims.LoadAnims(m_ambientAnimId);
-	m_anims.LoadAnims(m_opponentAnimId);
+	AnimsManager::LoadAnims(m_lemmingAnimId);
+	AnimsManager::LoadAnims(m_teamAnimId);
+	AnimsManager::LoadAnims(m_ambientAnimId);
+	AnimsManager::LoadAnims(m_opponentAnimId);
 	m_buttonBinding = 0;
 	m_nextDisabled = 0;
 	m_previousDisabled = 0;
@@ -213,10 +213,10 @@ void PreviewDrawer::UnLoad()
 		delete m_hiliteController;
 	}
 	m_backgroundBitmap->UnLoad();
-	m_anims.UnLoadAnims(m_lemmingAnimId);
-	m_anims.UnLoadAnims(m_teamAnimId);
-	m_anims.UnLoadAnims(m_ambientAnimId);
-	m_anims.UnLoadAnims(m_opponentAnimId);
+	AnimsManager::UnLoadAnims(m_lemmingAnimId);
+	AnimsManager::UnLoadAnims(m_teamAnimId);
+	AnimsManager::UnLoadAnims(m_ambientAnimId);
+	AnimsManager::UnLoadAnims(m_opponentAnimId);
 }
 
 // 68K 0x1080b3d6 __dt__14CPreviewDrawerFv
@@ -344,21 +344,21 @@ void PreviewDrawer::DrawAnims()
 	layout = (int*) m_layout;
 	pos.m_x = (short) layout[0x78 / 4];
 	pos.m_y = (short) layout[0x7c / 4];
-	m_anims.DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, 0);
+	AnimsManager::DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, 0);
 
 	pos.m_x = (short) layout[0x48 / 4];
 	pos.m_y = (short) layout[0x4c / 4];
-	m_anims.DrawAnim(pos, m_opponentAnimId, 0, m_opponentAnim, 0);
+	AnimsManager::DrawAnim(pos, m_opponentAnimId, 0, m_opponentAnim, 0);
 
 	pos.m_x = (short) layout[0x60 / 4];
 	pos.m_y = (short) layout[0x64 / 4];
-	m_anims.DrawAnim(pos, m_teamAnimId, 0, m_teamAnim, 0);
+	AnimsManager::DrawAnim(pos, m_teamAnimId, 0, m_teamAnim, 0);
 
 	if (m_networkMode != 0) {
 		pos.m_x = (short) layout[0xa8 / 4];
 		pos.m_y = (short) layout[0xac / 4];
-		m_anims.DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
-		width = m_anims.GetAnimSize(m_lemmingAnimId, 0).m_width;
+		AnimsManager::DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
+		width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
 		y = layout[0xbc / 4];
 		x = layout[0x28 / 4] - (short) ((width + ((width >> 15) & 3)) >> 2) + layout[0x30 / 4];
 		i = 0;
@@ -369,12 +369,12 @@ void PreviewDrawer::DrawAnims()
 				i = i + 1;
 				point.m_x = (short) x;
 				point.m_y = (short) y;
-				m_anims.DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
+				AnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
 			} while (i < m_lemmingCount);
 		}
 	}
 
-	width = m_anims.GetAnimSize(m_lemmingAnimId, 0).m_width;
+	width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
 	y = layout[0x8c / 4];
 	x = layout[0x28 / 4] - (short) ((width + ((width >> 15) & 3)) >> 2) + layout[0x30 / 4];
 	i = 0;
@@ -385,11 +385,11 @@ void PreviewDrawer::DrawAnims()
 			point.m_x = (short) x;
 			point.m_y = (short) y;
 			i = i + 1;
-			m_anims.DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, 0);
+			AnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, 0);
 		} while (i < m_opponentCount);
 	}
 
-	width = (short) m_anims.GetAnimSize(m_teamAnimId, 0).m_width;
+	width = (short) AnimsManager::GetAnimSize(m_teamAnimId, 0).m_width;
 	y = layout[0x74 / 4];
 	x = layout[0x28 / 4] - layout[0xc8 / 4] + layout[0x30 / 4];
 	if (m_teamCount <= 4 && m_teamCount > 0) {
@@ -399,7 +399,7 @@ void PreviewDrawer::DrawAnims()
 			point.m_x = (short) x;
 			point.m_y = (short) y;
 			i = i + 1;
-			m_anims.DrawAnim(point, m_teamAnimId, 0, m_teamAnim, 0);
+			AnimsManager::DrawAnim(point, m_teamAnimId, 0, m_teamAnim, 0);
 		} while (i < m_teamCount);
 	}
 }
@@ -680,8 +680,10 @@ void PreviewDrawer::RegisterRemaps()
 	} while (i < 0x100);
 	i = 0;
 	do {
-		if (g_previewRemapTargetIndices[i] != 0) {
-			m_remapTable[g_previewRemapSourceIndices[i]] = (unsigned char) g_previewRemapTargetIndices[i];
+		int target = g_previewRemapTargetIndices[i];
+		int source = g_previewRemapSourceIndices[i];
+		if (target != 0) {
+			m_remapTable[source] = (unsigned char) target;
 		}
 		i = i + 1;
 	} while (i < 10);

@@ -57,8 +57,8 @@ void VsDebugStreambuf::Sputc(char p_c)
 		} while ((int) m_length % (int) m_tabWidth != 0);
 		return;
 	case '\n':
-		*m_cursor = p_c;
 		if (m_flushCallback != NULL) {
+			*m_cursor = p_c;
 			*++m_cursor = '\0';
 			if (m_capacity - ++m_length == 1) {
 				Flush();
@@ -66,6 +66,7 @@ void VsDebugStreambuf::Sputc(char p_c)
 			Flush();
 		}
 		else {
+			*m_cursor = p_c;
 			*++m_cursor = '\0';
 			if (m_capacity - ++m_length == 1) {
 				Flush();

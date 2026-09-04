@@ -17,13 +17,13 @@
 class TargetGraphicsDriver {
 public:
 	TargetGraphicsDriver();
-	virtual ~TargetGraphicsDriver();                                            // vtable+0x00
-	virtual TargetDrawingContext* CreateDrawingContext();                       // vtable+0x04
-	virtual bool DestroyDrawingContext(TargetDrawingContext* p_drawingContext); // vtable+0x08
-	virtual bool InitializeBitmapInfo(void* p_bitmapInfo);                      // vtable+0x0c
+	virtual ~TargetGraphicsDriver();                                           // vtable+0x00
+	virtual TargetDrawingContext* CreateDrawingContext();                      // vtable+0x04
+	virtual int DestroyDrawingContext(TargetDrawingContext* p_drawingContext); // vtable+0x08
+	virtual bool InitializeBitmapInfo(void* p_bitmapInfo);                     // vtable+0x0c
 	virtual TargetDibContext* CreateDIBContext(TargetDrawingContext* p_drawingContext,
 											   void* p_bitmapInfo); // vtable+0x10
-	virtual bool DestroyDIBContext(TargetDibContext* p_dibContext); // vtable+0x14
+	virtual int DestroyDIBContext(TargetDibContext* p_dibContext);  // vtable+0x14
 	virtual void UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
 									  unsigned int p_startIndex,
 									  unsigned int p_entryCount,
@@ -42,6 +42,7 @@ public:
 												TargetDibContext* p_dibContext); // vtable+0x28
 	virtual bool CreatePalette(void* p_paletteDescription);                      // vtable+0x2c
 	virtual bool RealizePalette(TargetDrawingContext* p_drawingContext);         // vtable+0x30
+	virtual bool HasPalette();                                                   // vtable+0x34
 	bool BlitWrappedBitmap(TargetDrawingContext* p_destination,
 						   VsRect* p_destinationRect,
 						   TargetDrawingContext* p_source,

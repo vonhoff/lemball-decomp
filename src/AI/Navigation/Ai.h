@@ -30,7 +30,7 @@ public:
 	int GetData(ViewData* p_viewData);
 	int NDead();
 	unsigned int RemoteGameState(GameStateMessage* p_message);
-	unsigned int SetObjectRequired(eObjectType p_objectType, unsigned char p_required);
+	void SetObjectRequired(eObjectType p_objectType, unsigned int p_required);
 	unsigned int StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short p_mask);
 	unsigned short DoorId(int p_index);
 	unsigned short LiftId(int p_index);

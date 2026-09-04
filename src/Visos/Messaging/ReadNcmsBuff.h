@@ -5,6 +5,7 @@
 #include "ReadMsBuff.h" // complete type
 
 // SIZE 0x28
+// VTABLE: LEMBALL 0x004991d8
 class ReadNcmsBuff : public ReadMsBuff {
 public:
 	ReadMsBuff* UpdateSubPacket();

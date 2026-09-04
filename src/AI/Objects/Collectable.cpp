@@ -80,8 +80,7 @@ bool Collectable::Process()
 				if (ai->m_objectCount > 0) {
 					do {
 						GameObject* obj = ai->m_objects[ai->m_unk0x124[3]];
-						if ((GameObject*) ai->m_unk0x124[11] != obj &&
-							obj->Collision(*(Pt3*) &ai->m_unk0x124[0])) {
+						if ((GameObject*) ai->m_unk0x124[11] != obj && obj->Collision(*(Pt3*) &ai->m_unk0x124[0])) {
 							hit = ai->m_objects[ai->m_unk0x124[3]];
 							ai->m_unk0x124[3]++;
 							goto found;

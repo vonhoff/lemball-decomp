@@ -62,7 +62,7 @@ unsigned char* SmallMemory::Allocate(int p_size, char* p_description)
 		if (prevLimit < p_size && p_size <= m_sizeLimits[i] && m_buckets[i] != 0) {
 			unsigned char* result;
 			if (m_buckets[i] == 0 || !m_buckets[i]->Allocate(&result)) {
-				return 0;
+				break;
 			}
 			return result;
 		}

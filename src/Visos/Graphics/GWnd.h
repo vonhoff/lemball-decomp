@@ -46,8 +46,10 @@ public:
 	friend class FrontendResourceLoader;
 	friend class CdLoadAnim;
 	friend class BaseCursor;
-	friend TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo);
-	friend int TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state, void* p_request);
+	friend TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
+	friend int __stdcall TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state,
+												  void* p_request,
+												  long p_param2);
 
 private:
 	Gdi* m_gdi;                       // 0x4c

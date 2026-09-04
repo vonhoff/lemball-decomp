@@ -5,10 +5,11 @@
 #include "ReadMsBuff.h" // complete type
 
 // SIZE 0x20
+// VTABLE: LEMBALL 0x004991dc
 class ReadCmsBuff : public ReadMsBuff {
 public:
 	ReadCmsBuff(int p_arg0, int p_arg1, unsigned short p_arg2);
-	int StoreSubPacket();
+	ReadMsBuff* StoreSubPacket();
 	~ReadCmsBuff();
 
 private:

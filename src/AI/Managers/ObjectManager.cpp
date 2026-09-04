@@ -1,5 +1,6 @@
 #include "ObjectManager.h"
 
+#include "../../Visos/Network/Connect.h"
 #include "../Base/GameObject.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/Ammo.h"
@@ -11,7 +12,6 @@
 #include "../Objects/Switch.h"
 #include "../Objects/Tower.h"
 #include "../Objects/ViewData.h"
-#include "../../Visos/Network/Connect.h"
 
 // 68K 0x1061a098 __ct__14CObjectManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0041af60
@@ -31,8 +31,8 @@ ObjectManager::ObjectManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0xc, 1)
 void ObjectManager::Restart()
 {
 	int removedCount = 0;
-	if (m_objects != 0 && m_capacity > 0) {
-		int i = 0;
+	int i;
+	if (m_objects != 0 && (i = 0, m_capacity > 0)) {
 		do {
 			GlobalGameObject* object = m_objects[i];
 			if (object != 0) {
@@ -261,17 +261,11 @@ GlobalGameObject* ObjectManager::FindObject(int p_id)
 // FUNCTION: LEMBALL 0x0041b9b0
 void ObjectManager::Remove(GlobalGameObject* p_object)
 {
-	int i = 0;
-	if (m_count != 0) {
-		GlobalGameObject** objects = m_objects;
-		while (*objects != p_object) {
-			objects++;
-			i++;
-			if (m_count <= i) {
-				return;
-			}
+	for (int i = 0; i < m_count; i++) {
+		if (m_objects[i] == p_object) {
+			m_objects[i]->m_heading = 0;
+			break;
 		}
-		m_objects[i]->m_heading = 0;
 	}
 }
 
@@ -302,7 +296,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 			p_data += 2;
 			int z = *(unsigned short*) p_data;
 			p_data += 2;
-			eObjectType objectType = (eObjectType) *(unsigned short*) p_data;
+			eObjectType objectType = (eObjectType) * (unsigned short*) p_data;
 			p_data += 4;
 			AiCoord position(x << 0xc, y << 0xc, z << 0xc);
 			switch (objectType) {
@@ -334,7 +328,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 				break;
 			}
 			case 0x11: {
-				eObjectType contentsType = (eObjectType) *(unsigned short*) p_data;
+				eObjectType contentsType = (eObjectType) * (unsigned short*) p_data;
 				p_data += 2;
 				unsigned short contentsId;
 				if (m_ai->m_levelVersion > 1) {

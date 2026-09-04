@@ -2,8 +2,8 @@
 #define LEMBALL_AI_MANAGERS_OBJECTMANAGER_H
 
 #include "../../Common.h"
-#include "BaseObjectManager.h"        // complete type
 #include "../Base/GlobalGameObject.h" // complete type
+#include "BaseObjectManager.h"        // complete type
 
 class Ai;
 class Switch;

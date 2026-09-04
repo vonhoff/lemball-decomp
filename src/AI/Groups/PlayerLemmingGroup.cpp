@@ -24,9 +24,13 @@ void PlayerLemmingGroup::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1060ea70 Delete__19CPlayerLemmingGroupFv
-// STUB: LEMBALL 0x00414130
+// FUNCTION: LEMBALL 0x00414130
 void PlayerLemmingGroup::Delete()
 {
+	if (m_useObject != 0) {
+		m_useObject->m_unk0x8c = 0;
+	}
+	m_useObject = 0;
 }
 
 // 68K 0x1060eab2 Process__19CPlayerLemmingGroupFv

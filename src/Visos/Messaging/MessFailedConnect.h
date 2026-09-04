@@ -13,6 +13,8 @@ public:
 	void GetData();
 	~MessFailedConnect();
 
+	friend class BaseNetwork;
+
 private:
 	char* m_failureReason; // 0x30
 };

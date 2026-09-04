@@ -7,8 +7,8 @@
 #include "../Base/GlobalGameObject.h"             // complete type
 
 // SIZE 0x22c
-// VTABLE: LEMBALL 0x00493890
-// VTABLE: LEMBALL 0x00493870 secondary NetworkMessage subobject
+// VTABLE: LEMBALL 0x00493890 GlobalGameObject
+// VTABLE: LEMBALL 0x00493870 NetworkMessage
 class PlayerLemming : public GlobalGameObject, public NetworkMessage {
 public:
 	PlayerLemming(int p_arg0, int p_arg1, int p_arg2, int p_arg3, unsigned int p_arg4, unsigned long p_arg5);
@@ -48,8 +48,8 @@ public:
 	virtual void StartBalloon();                                                    // vtable+0xd8
 	virtual void OnBalloon();                                                       // vtable+0xdc
 	virtual int QOnBalloon();                                                       // vtable+0xe0
-	virtual int OnConveyor();                                                       // vtable+0xe4
 	virtual void OnConveyor(unsigned int p_arg0, Ice* p_arg1, unsigned int p_arg2); // vtable+0xe8
+	virtual int OnConveyor();                                                       // vtable+0xe4
 	virtual Ice* Conveyor();                                                        // vtable+0xec
 	virtual void Restart();                                                         // vtable+0x104
 	void AddData();

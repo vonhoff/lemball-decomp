@@ -2,11 +2,11 @@
 #define LEMBALL_AI_MANAGERS_TRAMPOLINEMANAGER_H
 
 #include "../../Common.h"
-#include "../../Visos/Messaging/NetworkMessage.h" // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496710
-class TrampolineManager : public NetworkMessage {
+class TrampolineManager : public BaseObjectManager {
 public:
 	TrampolineManager(Ai* p_arg0, int p_arg1);
 	int GetViewData(ViewData* p_viewData);
@@ -19,11 +19,10 @@ public:
 	void Restart();
 
 private:
-	unsigned int m_messageType; // 0x2c
-	int m_capacity;             // 0x30
-	int m_count;                // 0x34
-	Trampoline* m_trampolines;  // 0x38
-	Ai* m_ai;                   // 0x3c
+	int m_capacity;            // 0x30
+	int m_count;               // 0x34
+	Trampoline* m_trampolines; // 0x38
+	Ai* m_ai;                  // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x0042ba10

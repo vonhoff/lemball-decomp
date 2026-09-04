@@ -61,7 +61,7 @@ void Gdi::AddToList(Primitive* p_primitive)
 }
 
 // 68K 0x1021197a Render__4CGDIFv
-// STUB: LEMBALL 0x00467110
+// FUNCTION: LEMBALL 0x00467110
 void Gdi::Render()
 {
 	int i;

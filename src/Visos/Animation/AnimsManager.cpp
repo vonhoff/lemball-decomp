@@ -86,15 +86,16 @@ AnimsManager::~AnimsManager()
 {
 	int i;
 	int scanned;
+	ResBase** resources;
 
 	i = 0;
-	if (m_loadedResourceCount != 0 && 0 < m_loadedResourceCount) {
-		scanned = 0;
+	if (m_loadedResourceCount != 0 && (scanned = 0, 0 < m_loadedResourceCount)) {
 		do {
-			while (m_resources[i] == 0) {
+			resources = m_resources;
+			while (resources[i] == 0) {
 				i = i + 1;
 			}
-			m_resources[i]->UnLoad();
+			resources[i]->UnLoad();
 			scanned = scanned + 1;
 			i = i + 1;
 		} while (scanned < m_loadedResourceCount);

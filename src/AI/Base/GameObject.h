@@ -80,8 +80,8 @@ public:
 	virtual void StartBalloon();                                                    // vtable+0xd8
 	virtual void OnBalloon();                                                       // vtable+0xdc
 	virtual int QOnBalloon();                                                       // vtable+0xe0
-	virtual int OnConveyor();                                                       // vtable+0xe4
 	virtual void OnConveyor(unsigned int p_arg0, Ice* p_arg1, unsigned int p_arg2); // vtable+0xe8
+	virtual int OnConveyor();                                                       // vtable+0xe4
 	virtual Ice* Conveyor();                                                        // vtable+0xec
 	virtual void StartLand();                                                       // vtable+0xf0
 	virtual void SendRemove();                                                      // vtable+0xf4
@@ -123,6 +123,8 @@ public:
 	friend class RequestCancelMess;
 	friend class RequestReplyMess;
 	friend class GenericGroup;
+	friend class PlayerLemmingGroup;
+	friend void StateMachine(StateEntry** p_arg0, Ai* p_arg1, GameObject* p_arg2);
 
 	friend bool AtDestination(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 	friend bool IsStuck(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);

@@ -36,8 +36,3 @@ void BaseSocket::GetData()
 	ConvertWord();
 	ConvertByte();
 }
-
-// 68K 0x1010619c __dt__11CBaseSocketFv
-BaseSocket::~BaseSocket()
-{
-}

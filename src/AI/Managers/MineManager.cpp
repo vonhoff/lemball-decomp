@@ -1,10 +1,10 @@
 #include "MineManager.h"
 
-#include "../Base/GameObject.h"
 #include "../Base/Coord3d.h"
+#include "../Base/GameObject.h"
+#include "../Navigation/Ai.h"
 #include "../Objects/Mine.h"
 #include "../Objects/ViewData.h"
-#include "../Navigation/Ai.h"
 
 // 68K 0x10616764 __ct__12CMineManagerFP3CAIi
 // FUNCTION: LEMBALL 0x00424020
@@ -101,8 +101,8 @@ void MineManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 			int py = m_positions[i].m_y;
 			int px = m_positions[i].m_x;
 			int pz = m_positions[i].m_z;
-			if (x - 8 < px && px < x + 7 && y - 8 < py && py < yMax &&
-				(p_position.m_zFixed >> 0xc) - 8 < pz && pz < yMax) {
+			if (x - 8 < px && px < x + 7 && y - 8 < py && py < yMax && (p_position.m_zFixed >> 0xc) - 8 < pz &&
+				pz < yMax) {
 				m_mines[i].StepOn(p_object);
 				Trigger(i, 0);
 				return;

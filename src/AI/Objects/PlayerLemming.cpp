@@ -38,9 +38,9 @@ PlayerLemming::PlayerLemming(int p_x,
 {
 	m_alternatePlayer = p_alternatePlayer;
 	m_spawnPosition.m_xFixed = p_x << 12;
-	m_initialFacingDirection = (short) p_facing;
 	m_spawnPosition.m_yFixed = p_y << 12;
 	m_spawnDelay = p_spawnDelay;
+	m_initialFacingDirection = (short) p_facing;
 	m_spawnPosition.m_zFixed = p_z << 12;
 	if (p_alternatePlayer != 0) {
 		SetId(NextLoadingId());

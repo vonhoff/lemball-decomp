@@ -23,7 +23,7 @@ public:
 	virtual void StopListen();                           // vtable+0x18
 	void Closed(unsigned char p_notifyPeer);
 	void InitialiseFile();
-	void Setup(const char* p_peerName, const char* p_path);
+	static void Setup(const char* p_peerName, const char* p_path);
 	void StartListen();
 	~FileBroadcast();
 

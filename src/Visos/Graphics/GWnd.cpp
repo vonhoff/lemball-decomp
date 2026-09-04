@@ -32,7 +32,7 @@ void GWnd::Move(const VsPoint& p_point)
 }
 
 // 68K 0x1010a808 _OnCreate__5CGWndFv
-// STUB: LEMBALL 0x00463c30
+// FUNCTION: LEMBALL 0x00463c30
 void GWnd::OnCreate()
 {
 	VsRect localRect;
@@ -59,7 +59,7 @@ void GWnd::OnCreate()
 		localRect.m_width = m_innerRect.m_width;
 		localRect.m_height = m_innerRect.m_height;
 	}
-	if (m_parent == 0 && m_zoom != 0) {
+	if (m_parent == 0) {
 		localRect.m_width = (short) ((int) localRect.m_width / (int) m_zoom);
 		localRect.m_height = (short) ((int) localRect.m_height / (int) m_zoom);
 	}
@@ -72,11 +72,8 @@ void GWnd::OnCreate()
 		m_gdi = new (storage) Gdi(localRect, m_gdiFlags, parentSurface);
 	}
 
-	target = 0;
-	if (m_gdi != 0) {
-		target = m_gdi->m_renderTarget;
-	}
-	if (target != 0 && m_parent == 0) {
+	target = m_gdi->m_renderTarget;
+	if (m_parent == 0) {
 		target->m_zoom = (short) m_zoom;
 	}
 	originX = m_innerRect.m_x;
@@ -85,22 +82,20 @@ void GWnd::OnCreate()
 		originX = (short) (originX - m_parent->m_relativeTopLeft.m_x);
 		originY = (short) (originY - m_parent->m_relativeTopLeft.m_y);
 	}
-	if (target != 0) {
-		target->m_relOriginX = originX;
-		target->m_relOriginY = originY;
-		style = GetStyle();
-		if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
-			style = GetWindowLongA((HWND) m_nativeWindow, -16);
-			if ((style & 0x40000000) != 0 && m_createRect != 0) {
-				localRect.m_x = (short) (localRect.m_x - m_createRect->m_relativeTopLeft.m_x);
-				localRect.m_y = (short) (localRect.m_y - m_createRect->m_relativeTopLeft.m_y);
-				target->m_presentX = localRect.m_x;
-				target->m_presentY = localRect.m_y;
-				m_createRect->SetDontUpdateRect(localRect);
-			}
+	target->m_relOriginX = originX;
+	target->m_relOriginY = originY;
+	style = GetStyle();
+	if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
+		style = GetWindowLongA((HWND) m_nativeWindow, -16);
+		if ((style & 0x40000000) != 0) {
+			localRect.m_x = (short) (localRect.m_x - m_createRect->m_relativeTopLeft.m_x);
+			localRect.m_y = (short) (localRect.m_y - m_createRect->m_relativeTopLeft.m_y);
+			target->m_presentX = localRect.m_x;
+			target->m_presentY = localRect.m_y;
+			m_createRect->SetDontUpdateRect(localRect);
 		}
-		target->m_directScroll = (unsigned int) (g_pTargetGraphicsSystem->m_driverMode != 3);
 	}
+	target->m_directScroll = (unsigned int) (g_pTargetGraphicsSystem->m_driverMode != 3);
 }
 
 // 68K 0x1010aa18 _OnDestroy__5CGWndFv

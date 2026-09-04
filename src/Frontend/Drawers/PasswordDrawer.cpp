@@ -157,7 +157,7 @@ void PasswordDrawer::Load()
 	m_primitiveBundle.m_primitive.m_resource = m_backgroundBitmap;
 	m_primitiveBundle.m_primitive.m_flags = 0x800;
 	m_primitiveBundle.m_primitive.m_remap = 0;
-	m_anims.LoadAnims(m_animationId);
+	AnimsManager::LoadAnims(m_animationId);
 	keyIndex = 0;
 	offsetPtr = m_buttonOffsets;
 	gridX = layout[2];
@@ -218,11 +218,20 @@ void PasswordDrawer::UnLoad()
 		}
 		i++;
 	} while (i < 12);
-	m_anims.UnLoadAnims(m_animationId);
+	AnimsManager::UnLoadAnims(m_animationId);
 	if (m_hiliteWindow->m_lifecycleRefs == 1) {
 		m_hiliteWindow->Destroy();
 	}
 	delete m_hiliteWindow;
+}
+
+// 68K 0x1080c8ce __dt__15CPasswordDrawerFv
+// FUNCTION: LEMBALL 0x004515c0
+PasswordDrawer::~PasswordDrawer()
+{
+	if (m_loaded != 0) {
+		UnLoad();
+	}
 }
 
 // 68K 0x1080c972 DrawBackGround__15CPasswordDrawerFv
@@ -292,7 +301,7 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 			m_buttons[10]->OnButtonDown(pt, 0);
 			return 1;
 		}
-		if (code > 0x38 && code < 0x43) {
+		if (code >= 0x39 && code <= 0x42) {
 			pt.m_x = 0;
 			pt.m_y = 0;
 			m_buttons[code - 0x39]->OnButtonDown(pt, 0);
@@ -332,7 +341,7 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 			m_buttons[10]->OnButtonUp(pt, 0);
 			return 1;
 		}
-		if (code > 0x38 && code < 0x43) {
+		if (code >= 0x39 && code <= 0x42) {
 			pt.m_x = 0;
 			pt.m_y = 0;
 			m_buttons[code - 0x39]->OnButtonUp(pt, 0);
@@ -344,7 +353,7 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 		break;
 	case 0xc:
 		code = p_message->code;
-		if (code > 0xabcd00af && code < 0xabcd00bc) {
+		if (code >= 0xabcd00b0 && code <= 0xabcd00bb) {
 			ButtonNumeric(code + 0x5432ff50);
 			return 1;
 		}
@@ -513,13 +522,13 @@ void PasswordDrawer::DrawHilite()
 	m_hiliteRect.m_right = 0;
 	m_hiliteRect.m_bottom = 0;
 	m_hiliteRect.Draw((Gdi*) m_hiliteSurface);
-	savedGdi = m_anims.m_gdi;
+	savedGdi = AnimsManager::m_gdi;
 	m_hiliteAnim.m_frameState = 0;
-	m_anims.m_gdi = (Gdi*) m_hiliteSurface;
+	AnimsManager::m_gdi = (Gdi*) m_hiliteSurface;
 	position.m_x = (short) m_hiliteX;
 	position.m_y = (short) m_hiliteY;
-	m_anims.DrawAnim(position, m_animationId, 0, (Frames*) &m_hiliteAnim, 0);
-	m_anims.m_gdi = savedGdi;
+	AnimsManager::DrawAnim(position, m_animationId, 0, (Frames*) &m_hiliteAnim, 0);
+	AnimsManager::m_gdi = savedGdi;
 }
 
 // 68K 0x1080d3c8 SetHiliteWindow__15CPasswordDrawerFv
@@ -542,9 +551,4 @@ void PasswordDrawer::SetHiliteWindow()
 	VsRect rect((short) (layout[2] - 1), (short) (layout[3] - 1), (short) (pitch * 3), (short) (pitch * 4));
 	m_hiliteWindow->Create(rect, (PvGWnd*) m_display, 0);
 	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
-}
-
-// 68K 0x1080c8ce __dt__15CPasswordDrawerFv
-PasswordDrawer::~PasswordDrawer()
-{
 }

@@ -7,7 +7,9 @@
 #include "../Windows/IntroAnimAnimWindow.h" // complete type
 
 // SIZE 0x484
-// VTABLE: LEMBALL 0x00497a68
+// VTABLE: LEMBALL 0x00497a68 Drawer
+// VTABLE: LEMBALL 0x00497a58 BaseQueueHandler
+// VTABLE: LEMBALL 0x00497a50 AnimsManager
 class IntroAnimDrawer : public BaseFrontendDrawer {
 public:
 	IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3);

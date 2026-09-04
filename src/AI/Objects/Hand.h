@@ -17,6 +17,8 @@ public:
 	void Initialise();
 	void Set(unsigned short p_id, const AiCoord& p_position);
 
+	friend class HandManager;
+
 private:
 	unsigned int m_activated; // 0x138
 	unsigned int m_enabled;   // 0x13c

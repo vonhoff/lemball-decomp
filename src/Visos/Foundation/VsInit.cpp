@@ -28,6 +28,8 @@
 #include "VsTime.h"
 
 #include <ctype.h>
+
+extern "C" unsigned long __stdcall timeGetTime(void);
 #include <memory.h>
 #include <new.h>
 #include <stdlib.h>
@@ -334,7 +336,7 @@ bool InpInit()
 }
 
 // 68K 0x1021332e _INP_Quit__Fv
-// STUB: LEMBALL 0x004591f0
+// FUNCTION: LEMBALL 0x004591f0
 bool InpQuit()
 {
 	int result;
@@ -594,7 +596,7 @@ bool StatInit()
 }
 
 // 68K 0x10218bc6 _STAT_Quit__Fv
-// STUB: LEMBALL 0x0045aab0
+// FUNCTION: LEMBALL 0x0045aab0
 bool StatQuit()
 {
 	g_pStatManager->StreamOut(*g_pSysOutput);
@@ -603,7 +605,7 @@ bool StatQuit()
 }
 
 // 68K 0x10201420 _RES_Init__Fv
-// STUB: LEMBALL 0x0045b900
+// FUNCTION: LEMBALL 0x0045b900
 bool ResInit()
 {
 	ResourceTypeList* list;
@@ -665,7 +667,7 @@ bool ResInit()
 }
 
 // 68K 0x10201580 _RES_Quit__Fv
-// STUB: LEMBALL 0x0045ba50
+// FUNCTION: LEMBALL 0x0045ba50
 bool ResQuit()
 {
 	ResourceTypeList* list;
@@ -875,7 +877,7 @@ unsigned int __stdcall FileNetworkMessageThread(void* p_unused)
 }
 
 // 68K 0x10106d86 VSFNET_Init__Fv
-// STUB: LEMBALL 0x0046f3b0
+// FUNCTION: LEMBALL 0x0046f3b0
 bool VsFNetInit()
 {
 	unsigned long startTime;
@@ -888,16 +890,16 @@ bool VsFNetInit()
 
 	SetThreadPriority(g_hFileNetworkThread, 2);
 
-	startTime = CurrentMilliTimer();
-	while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork == 0) {
+	startTime = timeGetTime();
+	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == 0) {
 	}
 	if (g_pBaseNetwork == 0) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
 		return 0;
 	}
 
-	startTime = CurrentMilliTimer();
-	while (CurrentMilliTimer() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
+	startTime = timeGetTime();
+	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
 	}
 	if (g_pNetworkStatusQueue == 0) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
@@ -908,16 +910,16 @@ bool VsFNetInit()
 }
 
 // 68K 0x10106dc8 VSFNET_Quit__Fv
-// STUB: LEMBALL 0x0046f480
+// FUNCTION: LEMBALL 0x0046f480
 bool VsFNetQuit()
 {
 	unsigned long startTime;
 
 	if (g_pBaseNetwork != 0) {
 		g_pBaseNetwork->m_shutdownRequested = 1;
-		g_pBaseNetwork->Process();
-		startTime = CurrentMilliTimer();
-		while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork != 0) {
+		g_pBaseNetwork->ForceProcess();
+		startTime = timeGetTime();
+		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != 0) {
 		}
 		if (g_pBaseNetwork != 0) {
 			*g_pErrorOutput << "Network quit timed out\n";
@@ -936,7 +938,7 @@ unsigned int __stdcall TcpIpNetworkMessageThread(void* p_unused)
 }
 
 // 68K 0x1010c64e VSNET_Init__Fv
-// STUB: LEMBALL 0x0046fbb0
+// FUNCTION: LEMBALL 0x0046fbb0
 bool VsNetInit()
 {
 	unsigned long startTime;
@@ -949,16 +951,16 @@ bool VsNetInit()
 
 	SetThreadPriority(g_hTCPIPNetworkThread, 2);
 
-	startTime = CurrentMilliTimer();
-	while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork == 0) {
+	startTime = timeGetTime();
+	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == 0) {
 	}
 	if (g_pBaseNetwork == 0) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
 		return 0;
 	}
 
-	startTime = CurrentMilliTimer();
-	while (CurrentMilliTimer() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
+	startTime = timeGetTime();
+	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
 	}
 	if (g_pNetworkStatusQueue == 0) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
@@ -969,16 +971,16 @@ bool VsNetInit()
 }
 
 // 68K 0x1010c6d8 VSNET_Quit__Fv
-// STUB: LEMBALL 0x0046fc80
+// FUNCTION: LEMBALL 0x0046fc80
 bool VsNetQuit()
 {
 	unsigned long startTime;
 
 	if (g_pBaseNetwork != 0) {
 		g_pBaseNetwork->m_shutdownRequested = 1;
-		g_pBaseNetwork->Process();
-		startTime = CurrentMilliTimer();
-		while (CurrentMilliTimer() - startTime < 10000 && g_pBaseNetwork != 0) {
+		g_pBaseNetwork->ForceProcess();
+		startTime = timeGetTime();
+		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != 0) {
 		}
 		if (g_pBaseNetwork != 0) {
 			*g_pErrorOutput << "Network quit timed out\n";

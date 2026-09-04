@@ -47,7 +47,7 @@ public:
 	friend class HiliteController;
 	friend class PasswordDrawer;
 	friend struct TargetWinGDrawCodecState;
-	friend TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo);
+	friend TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
 
 private:
 	Primitive** m_primitives; // 0x00

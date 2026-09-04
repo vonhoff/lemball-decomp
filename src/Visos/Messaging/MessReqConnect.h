@@ -13,6 +13,9 @@ public:
 	void GetData();
 	~MessReqConnect();
 
+	friend class BaseNetwork;
+	friend class Broadcast;
+
 private:
 	unsigned short m_requestedPort;  // 0x30
 	unsigned char* m_connectionData; // 0x34

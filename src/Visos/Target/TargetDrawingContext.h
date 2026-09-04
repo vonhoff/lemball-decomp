@@ -7,7 +7,11 @@
 // VTABLE: LEMBALL 0x00498770
 class TargetDrawingContext {
 public:
-	TargetDrawingContext(void* p_hDC = 0) : m_hDC(p_hDC), m_hBitmap(0) {}
+	TargetDrawingContext(void* p_hDC = 0)
+	{
+		m_hDC = p_hDC;
+		m_hBitmap = 0;
+	}
 	virtual ~TargetDrawingContext(); // vtable+0x00
 	virtual void SetDC(void* p_hDC); // vtable+0x04
 

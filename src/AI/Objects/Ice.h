@@ -24,6 +24,8 @@ public:
 	void Switch();
 	void Switched();
 
+	friend class IceManager;
+
 private:
 	unsigned int m_switched;        // 0x138
 	unsigned int m_enabled;         // 0x13c

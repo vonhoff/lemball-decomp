@@ -13,6 +13,8 @@ public:
 	void GetData();
 	~MessOkConnect();
 
+	friend class BaseNetwork;
+
 private:
 	unsigned short m_assignedPort; // 0x30
 	unsigned int m_connectionId;   // 0x34

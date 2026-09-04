@@ -8,12 +8,7 @@
 // VTABLE: LEMBALL 0x00493090
 class TargetAbout : public BaseProcess {
 public:
-	TargetAbout(Game* p_game)
-	{
-		m_returnState = 0;
-		m_processState = 0;
-		m_game = p_game;
-	}
+	TargetAbout(Game* p_game) { m_game = p_game; }
 	virtual ~TargetAbout(); // vtable+0x00
 	virtual void Process(); // vtable+0x04
 

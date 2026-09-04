@@ -9,9 +9,7 @@
 // VTABLE: LEMBALL 0x00494788
 class Tower : public BaseGlobalObject {
 public:
-	inline Tower(const AiCoord& p_position) : BaseGlobalObject(p_position, 0xd)
-	{
-	}
+	inline Tower(const AiCoord& p_position) : BaseGlobalObject(p_position, 0xd) {}
 	virtual AiCoord ActivatePosition();          // vtable+0x2c
 	virtual bool Activate(GameObject* p_object); // vtable+0x18
 	virtual bool Process();                      // vtable+0x14

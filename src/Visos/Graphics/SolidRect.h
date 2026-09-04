@@ -8,7 +8,14 @@
 // VTABLE: LEMBALL 0x00496cb8
 class SolidRect : public Primitive {
 public:
-	SolidRect();
+	// 68K 0x1010a6c2 __ct__10CSolidRectFv
+	// FUNCTION: LEMBALL 0x00439520
+	SolidRect() : m_top(0)
+	{
+		m_left = 0;
+		m_bottom = 0;
+		m_right = 0;
+	}
 	VsRect* GetBounds();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08

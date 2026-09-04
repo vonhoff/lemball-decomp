@@ -3,8 +3,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include "../Foundation/VsOStream.h"
 
+// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
 #include <windows.h>
 #include <mmsystem.h>
+// clang-format on
 
 struct EffPatchHeader {
 	unsigned int m_unk0;

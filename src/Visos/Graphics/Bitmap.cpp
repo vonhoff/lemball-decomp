@@ -10,11 +10,6 @@ Bitmap::Bitmap() : m_y(0), m_x(0), m_height(0), m_width(0), m_sourceY(0), m_sour
 {
 }
 
-// 68K 0x10100a30 __dt__7CBitmapFv
-Bitmap::~Bitmap()
-{
-}
-
 // 68K 0x10101598 Draw__7CBitmapFP4CGDI
 // FUNCTION: LEMBALL 0x004398a0
 void Bitmap::Draw(Gdi* p_gdi)

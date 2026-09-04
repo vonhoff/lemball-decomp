@@ -2,8 +2,8 @@
 #define LEMBALL_AI_MANAGERS_BULLETMANAGER_H
 
 #include "../../Common.h"
-#include "BaseObjectManager.h"                    // complete type
-#include "../Base/AiCoord.h"                      // complete type
+#include "../Base/AiCoord.h"   // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0xe0
 // VTABLE: LEMBALL 0x00494008

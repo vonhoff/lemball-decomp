@@ -10,10 +10,13 @@ public:
 	~BasePacketBuff();
 	BasePacketBuff();
 
-private:
-	int m_packetCount;           // 0x00
-	unsigned short m_packetSize; // 0x04
-	BasePacket** m_packets;      // 0x08
+protected:
+	int m_packetCount;         // 0x00
+	unsigned int m_packetSize; // 0x04
+	BasePacket** m_packets;    // 0x08
+
+	friend class ReadSocket;
+	friend class WriteSocket;
 };
 
 #endif

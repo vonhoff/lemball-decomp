@@ -122,7 +122,7 @@ VsOStream& VsOStream::operator<<(unsigned long p_arg0)
 }
 
 // 68K 0x1021410a __ls__10CVSOStreamF3HEX
-// STUB: LEMBALL 0x00458780
+// FUNCTION: LEMBALL 0x00458780
 VsOStream& VsOStream::operator<<(Hex p_arg0)
 {
 	unsigned int oldFlags = m_flags;
@@ -137,7 +137,7 @@ VsOStream& VsOStream::operator<<(Hex p_arg0)
 }
 
 // 68K 0x10214186 __ls__10CVSOStreamF4HEX8
-// STUB: LEMBALL 0x004589c0
+// FUNCTION: LEMBALL 0x004589c0
 VsOStream& VsOStream::operator<<(Hex8 p_arg0)
 {
 	char oldFill = m_fill;
@@ -158,7 +158,7 @@ VsOStream& VsOStream::operator<<(Hex8 p_arg0)
 }
 
 // 68K 0x10214240 __ls__10CVSOStreamF5CHAR4
-// STUB: LEMBALL 0x00458d40
+// FUNCTION: LEMBALL 0x00458d40
 VsOStream& VsOStream::operator<<(Har4 p_arg0)
 {
 	unsigned char shift = 0x18;

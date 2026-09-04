@@ -22,6 +22,8 @@ public:
 	void StepOn(const AiCoord& p_position, GameObject* p_object);
 	void VerifyObjects();
 
+	friend class InvisibleSwitchManager;
+
 private:
 	Coord3d m_minCorner;                 // 0x138
 	Coord3d m_maxCorner;                 // 0x13e

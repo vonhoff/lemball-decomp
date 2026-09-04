@@ -62,6 +62,7 @@ void FileConnect::Closed(unsigned char p_notifyPeer)
 
 // 68K 0x10116968 ReceiveAcknowledgement__12CFileConnectFv
 // STUB: LEMBALL 0x0047bff0
-void FileConnect::ReceiveAcknowledgement()
+NetworkMessage* FileConnect::ReceiveAcknowledgement()
 {
+	return 0;
 }

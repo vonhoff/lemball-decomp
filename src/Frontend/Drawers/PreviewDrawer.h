@@ -5,7 +5,9 @@
 #include "PreviewDrawerPrims.h" // complete type
 
 // SIZE 0x488
-// VTABLE: LEMBALL 0x00497bf0
+// VTABLE: LEMBALL 0x00497bf0 Drawer
+// VTABLE: LEMBALL 0x00497be0 BaseQueueHandler
+// VTABLE: LEMBALL 0x00497bdc AnimsManager
 class PreviewDrawer : public BaseFrontendDrawer {
 public:
 	PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2);

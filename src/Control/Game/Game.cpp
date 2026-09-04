@@ -15,9 +15,9 @@
 #include "../../Platform/Windows/Entry.h"
 #include "../../Views/Display/Main2DDisplay.h"
 #include "../../Views/Sound/SoundView.h"
-#include "../../Visos/Animation/BaseStat.h"
 #include "../../Visos/Animation/IntroAnim.h"
 #include "../../Visos/Animation/StatManager.h"
+#include "../../Visos/Animation/TimeStat.h"
 #include "../../Visos/Foundation/BaseProcess.h"
 #include "../../Visos/Foundation/MainOptions1.h"
 #include "../../Visos/Foundation/MainOptions2.h"
@@ -163,9 +163,7 @@ Game::Game(char* p_arg0)
 		m_processingStat = 0;
 	}
 	else {
-		m_processingStat = new (storage) BaseStat(g_szProcessing);
-		m_processingStat->m_timingActive = 0;
-		m_processingStat->m_timingStart = 0;
+		m_processingStat = new (storage) TimeStat(g_szProcessing);
 	}
 
 	storage = operator new(0x28);
@@ -173,9 +171,7 @@ Game::Game(char* p_arg0)
 		m_refreshingStat = 0;
 	}
 	else {
-		m_refreshingStat = new (storage) BaseStat(g_szRefreshing);
-		m_refreshingStat->m_timingActive = 0;
-		m_refreshingStat->m_timingStart = 0;
+		m_refreshingStat = new (storage) TimeStat(g_szRefreshing);
 	}
 
 	m_flowTicks = 0;
@@ -531,7 +527,7 @@ done:
 void Game::Process()
 {
 	int timing;
-	BaseStat* stat;
+	TimeStat* stat;
 	unsigned long now;
 	int quitState;
 
@@ -541,7 +537,7 @@ void Game::Process()
 		if ((m_currentFlow == 5 || m_currentFlow == 0x13) && 0x32 < (int) m_flowTicks) {
 			timing = 1;
 			stat = m_processingStat;
-			stat->m_timingStart = (void*) timeGetTime();
+			stat->m_timingStart = timeGetTime();
 			stat->m_timingActive = 1;
 		}
 		m_process->Process();
@@ -549,7 +545,7 @@ void Game::Process()
 			stat = m_processingStat;
 			if (stat->m_timingActive != 0) {
 				now = timeGetTime();
-				stat->Update(now - (unsigned long) stat->m_timingStart);
+				stat->Update(now - stat->m_timingStart);
 				stat->m_timingActive = 0;
 			}
 		}
@@ -593,7 +589,7 @@ void Game::Process()
 void Game::RefreshViews()
 {
 	int timing;
-	BaseStat* stat;
+	TimeStat* stat;
 	unsigned long now;
 
 	timing = 0;
@@ -601,7 +597,7 @@ void Game::RefreshViews()
 		timing = 1;
 		stat = m_refreshingStat;
 		now = timeGetTime();
-		stat->m_timingStart = (void*) now;
+		stat->m_timingStart = now;
 		stat->m_timingActive = timing;
 	}
 	m_mainDisplay->RefreshView();
@@ -609,7 +605,7 @@ void Game::RefreshViews()
 		stat = m_refreshingStat;
 		if (stat->m_timingActive != 0) {
 			now = timeGetTime();
-			stat->Update(now - (unsigned long) stat->m_timingStart);
+			stat->Update(now - stat->m_timingStart);
 			stat->m_timingActive = 0;
 		}
 	}

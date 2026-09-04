@@ -3,9 +3,12 @@
 #include "../Objects/Rocket.h"
 
 // 68K 0x1061dcfe __ct__14CRocketManagerFP3CAIi
-// STUB: LEMBALL 0x00426ac0
-RocketManager::RocketManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x00426ac0
+RocketManager::RocketManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x14, 9)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_rockets = 0;
 }
 
 // 68K 0x1061dd8a Restart__14CRocketManagerFv
@@ -20,9 +23,22 @@ void RocketManager::Restart()
 }
 
 // 68K 0x1061ddee Initialise__14CRocketManagerFi
-// STUB: LEMBALL 0x00426b50
+// FUNCTION: LEMBALL 0x00426b50
 void RocketManager::Initialise(int p_capacity)
 {
+	m_capacity = p_capacity;
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_rockets = 0;
+		return;
+	}
+	if (m_rockets == 0) {
+		m_rockets = new Rocket[p_capacity];
+		for (int i = 0; i < m_capacity; i++) {
+			m_rockets[i].Restart();
+			m_rockets[i].m_manager = this;
+		}
+	}
 }
 
 // 68K 0x1061df34 StepOn__14CRocketManagerFRC7AICOORDP11CGameObject

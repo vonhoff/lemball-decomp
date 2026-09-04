@@ -12,8 +12,10 @@ public:
 	ReadPacket* StorePacket();
 
 private:
-	unsigned int m_nextSequence; // 0x0c
-	unsigned int m_outOfOrder;   // 0x10
+	int m_nextSequence;        // 0x0c
+	unsigned int m_outOfOrder; // 0x10
+
+	friend class ReadSocket;
 };
 
 #endif

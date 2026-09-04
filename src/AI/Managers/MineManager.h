@@ -2,8 +2,8 @@
 #define LEMBALL_AI_MANAGERS_MINEMANAGER_H
 
 #include "../../Common.h"
-#include "BaseObjectManager.h" // complete type
 #include "../Base/AiCoord.h"   // complete type
+#include "BaseObjectManager.h" // complete type
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00495d30
@@ -22,11 +22,11 @@ public:
 	void Triggered(Mine* p_mine);
 
 private:
-	Ai* m_ai;          // 0x30
-	Mine* m_mines;     // 0x34
+	Ai* m_ai;             // 0x30
+	Mine* m_mines;        // 0x34
 	Coord3d* m_positions; // 0x38
-	int m_count;       // 0x3c
-	int m_capacity;    // 0x40
+	int m_count;          // 0x3c
+	int m_capacity;       // 0x40
 };
 
 // SYNTHETIC: LEMBALL 0x00424c30

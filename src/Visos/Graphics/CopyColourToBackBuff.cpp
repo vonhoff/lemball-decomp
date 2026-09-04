@@ -19,5 +19,5 @@ void CopyColourToBackBuff::Draw(Gdi* p_gdi)
 // FUNCTION: LEMBALL 0x00439940
 void CopyColourToBackBuff::Render(Gdi* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit(this);
+	p_gdi->m_renderTarget->Blit((ZBuffClear*) this);
 }

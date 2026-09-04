@@ -1,5 +1,6 @@
 #include "NetworkMessage.h"
 
+#include "../Foundation/BaseQueue.h"
 #include "../Foundation/BaseQueueHandler.h"
 #include "../Foundation/VsMem.h"
 #include "../Network/BaseNetwork.h"
@@ -304,7 +305,7 @@ void NetworkMessage::Send(Connect* p_arg0)
 		msg.source = p_arg0;
 		OpenDataStream();
 		m_pendingSendCount = 1;
-		g_pNetworkStatusQueue->ProcessMsg(&msg);
-		g_pBaseNetwork->Process();
+		g_pNetworkStatusQueue->Post(msg);
+		g_pBaseNetwork->ForceProcess();
 	}
 }

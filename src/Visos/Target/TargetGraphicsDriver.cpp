@@ -64,6 +64,8 @@ struct IcDrawSuggest {
 	BITMAPINFOHEADER* lpbiSuggest;
 };
 
+unsigned int __stdcall TargetWinGDrawCodec_GetInfo(void* p_info, unsigned int p_size);
+
 extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int p_index);
 extern "C" __declspec(dllimport) long __stdcall DefDriverProc(unsigned int p_driverId,
 															  void* p_driverHandle,
@@ -94,7 +96,7 @@ bool TargetGraphicsDriver::RealizePalette(TargetDrawingContext* p_drawingContext
 	return 1;
 }
 
-// STUB: LEMBALL 0x00456970
+// FUNCTION: LEMBALL 0x00456970
 bool TargetGraphicsDriver::BlitWrappedBitmap(TargetDrawingContext* p_destination,
 											 VsRect* p_destinationRect,
 											 TargetDrawingContext* p_source,
@@ -132,23 +134,25 @@ bool TargetGraphicsDriver::BlitWrappedBitmap(TargetDrawingContext* p_destination
 	return copied != 0;
 }
 
-// STUB: LEMBALL 0x00456a90
+// FUNCTION: LEMBALL 0x00456a90
 TargetGraphicsDriver::TargetGraphicsDriver()
 {
+	m_screenSize.m_height = 0;
 	m_driverModule = 0;
+	m_screenSize.m_width = 0;
 	m_palette = 0;
-	m_ready = 1;
+	m_ready = 0;
 	m_window = 0;
+	m_ready = 1;
 	m_screenSize.m_width = (short) GetSystemMetrics(0);
 	m_screenSize.m_height = (short) GetSystemMetrics(1);
-	m_currentBitmap = 0;
 }
 
 TargetGraphicsDriver::~TargetGraphicsDriver()
 {
 }
 
-// STUB: LEMBALL 0x00456ae0
+// FUNCTION: LEMBALL 0x00456ae0
 TargetDrawingContext* TargetGraphicsDriver::CreateDrawingContext()
 {
 	HDC hdc;
@@ -156,36 +160,31 @@ TargetDrawingContext* TargetGraphicsDriver::CreateDrawingContext()
 	TargetDrawingContext* context;
 
 	hdc = CreateCompatibleDC(0);
-	if (hdc == 0) {
+	if (hdc != 0) {
+		storage = operator new(0xc);
+		if (storage != 0) {
+			context = new (storage) TargetDrawingContext(hdc);
+			return context;
+		}
 		return 0;
 	}
-	storage = operator new(0xc);
-	if (storage == 0) {
-		return 0;
-	}
-	context = new (storage) TargetDrawingContext();
-	context->m_hDC = hdc;
-	context->m_hBitmap = 0;
-	return context;
+	return 0;
 }
 
-// STUB: LEMBALL 0x00456b20
-bool TargetGraphicsDriver::DestroyDrawingContext(TargetDrawingContext* p_drawingContext)
+// FUNCTION: LEMBALL 0x00456b20
+int TargetGraphicsDriver::DestroyDrawingContext(TargetDrawingContext* p_drawingContext)
 {
 	int deleted;
 
 	if (p_drawingContext == 0) {
 		return 0;
 	}
-	deleted = 0;
-	if (p_drawingContext->m_hDC != 0) {
-		deleted = DeleteDC((HDC) p_drawingContext->m_hDC);
-	}
+	deleted = DeleteDC((HDC) p_drawingContext->m_hDC);
 	delete p_drawingContext;
-	return deleted != 0;
+	return deleted;
 }
 
-// STUB: LEMBALL 0x00456b50
+// FUNCTION: LEMBALL 0x00456b50
 bool TargetGraphicsDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 {
 	BITMAPINFO* info;
@@ -204,29 +203,20 @@ bool TargetGraphicsDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 	return 1;
 }
 
-// STUB: LEMBALL 0x00456b90
+// FUNCTION: LEMBALL 0x00456b90
 TargetDibContext* TargetGraphicsDriver::CreateDIBContext(TargetDrawingContext* p_drawingContext, void* p_bitmapInfo)
 {
 	HBITMAP bitmap;
 	void* bits;
-	void* storage;
 	TargetDibContext* context;
 	BITMAPINFO* info;
 
 	info = (BITMAPINFO*) p_bitmapInfo;
-	bits = 0;
 	bitmap = CreateDIBSection((HDC) p_drawingContext->m_hDC, info, 0, &bits, 0, 0);
 	if (bitmap == 0) {
 		return 0;
 	}
-	storage = operator new(0x14);
-	if (storage == 0) {
-		DeleteObject(bitmap);
-		return 0;
-	}
-	context = new (storage) TargetDibContext();
-	context->m_bits = 0;
-	context->m_width = 0;
+	context = new TargetDibContext();
 	context->m_hBitmap = bitmap;
 	context->m_width = info->bmiHeader.biWidth;
 	context->m_bits = (unsigned char*) bits;
@@ -234,8 +224,8 @@ TargetDibContext* TargetGraphicsDriver::CreateDIBContext(TargetDrawingContext* p
 	return context;
 }
 
-// STUB: LEMBALL 0x00456c10
-bool TargetGraphicsDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
+// FUNCTION: LEMBALL 0x00456c10
+int TargetGraphicsDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 {
 	int deleted;
 
@@ -243,11 +233,8 @@ bool TargetGraphicsDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 		return 1;
 	}
 	deleted = DeleteObject((HGDIOBJ) p_dibContext->m_hBitmap);
-	if (p_dibContext != 0) {
-		p_dibContext->~TargetDibContext();
-		operator delete(p_dibContext);
-	}
-	return deleted != 0;
+	delete p_dibContext;
+	return deleted;
 }
 
 // FUNCTION: LEMBALL 0x00456c50
@@ -309,7 +296,7 @@ TargetDibContext* TargetGraphicsDriver::SelectDIBContext(TargetDrawingContext* p
 	return p_dibContext;
 }
 
-// STUB: LEMBALL 0x00456d40
+// FUNCTION: LEMBALL 0x00456d40
 TargetDibContext* TargetGraphicsDriver::RestoreDIBContext(TargetDrawingContext* p_drawingContext,
 														  TargetDibContext* p_dibContext)
 {
@@ -367,13 +354,18 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 	return 1;
 }
 
+// FUNCTION: LEMBALL 0x00458200
+bool TargetGraphicsDriver::HasPalette()
+{
+	return m_palette != 0;
+}
+
 // FUNCTION: LEMBALL 0x00458250
 void TargetDrawingContext::SetDC(void* p_hDC)
 {
 	m_hDC = p_hDC;
 }
 
-// STUB: LEMBALL 0x00458260
 TargetDrawingContext::~TargetDrawingContext()
 {
 }
@@ -406,16 +398,19 @@ int TargetDibContext::GetStride()
 	return m_width;
 }
 
-// STUB: LEMBALL 0x00478fb0
+// FUNCTION: LEMBALL 0x00478fb0
 long __stdcall TargetWinGDrawCodec_DriverProc(unsigned int p_driverId,
 											  void* p_driverHandle,
 											  unsigned int p_message,
 											  long p_param1,
 											  long p_param2)
 {
-	if (p_message < 0x4010) {
+	TargetWinGDrawCodecState* state;
+
+	state = (TargetWinGDrawCodecState*) p_driverId;
+	if (p_message <= 0x400f) {
 		if (p_message == 0x400f) {
-			return TargetWinGDrawCodec_Begin((TargetWinGDrawCodecState*) p_driverId, (void*) p_param1);
+			return TargetWinGDrawCodec_Begin(state, (void*) p_param1, p_param2);
 		}
 		switch (p_message) {
 		case 1:
@@ -432,36 +427,36 @@ long __stdcall TargetWinGDrawCodec_DriverProc(unsigned int p_driverId,
 			}
 			return 1;
 		case 4:
-			return TargetWinGDrawCodec_Close((TargetWinGDrawCodecState*) p_driverId);
+			return TargetWinGDrawCodec_Close(state);
 		case 8:
 			return 0;
 		}
 	}
-	else if (p_message < 0x4020) {
+	else if (p_message <= 0x401f) {
 		if (p_message == 0x401f) {
-			return TargetWinGDrawCodec_QueryFormat((TargetWinGDrawCodecState*) p_driverId, (void*) p_param1);
+			return TargetWinGDrawCodec_QueryFormat(state, (void*) p_param1);
 		}
 		if (p_message == 0x4015) {
-			return TargetWinGDrawCodec_End((TargetWinGDrawCodecState*) p_driverId);
+			return TargetWinGDrawCodec_End(state);
 		}
 	}
-	else if (p_message < 0x4025) {
+	else if (p_message <= 0x4024) {
 		if (p_message == 0x4024) {
-			((TargetWinGDrawCodecState*) p_driverId)->m_targetDC = (void*) p_param1;
+			state->m_targetDC = (void*) p_param1;
 		}
 		else if (p_message == 0x4021) {
-			return TargetWinGDrawCodec_Draw((TargetWinGDrawCodecState*) p_driverId, (void*) p_param1);
+			return TargetWinGDrawCodec_Draw(state, (void*) p_param1, p_param2);
 		}
 	}
-	else if (p_message < 0x5002) {
+	else if (p_message <= 0x5001) {
 		if (p_message > 0x4fff) {
 			return 0;
 		}
 		if (p_message == 0x4032) {
-			return TargetWinGDrawCodec_SuggestFormat((TargetWinGDrawCodecState*) p_driverId, (void*) p_param1);
+			return TargetWinGDrawCodec_SuggestFormat(state, (void*) p_param1, p_param2);
 		}
 		if (p_message == 0x4033) {
-			return TargetWinGDrawCodec_ChangePalette((TargetWinGDrawCodecState*) p_driverId, (void*) p_param1);
+			return TargetWinGDrawCodec_ChangePalette(state, (void*) p_param1);
 		}
 	}
 	else {
@@ -478,8 +473,8 @@ long __stdcall TargetWinGDrawCodec_DriverProc(unsigned int p_driverId,
 	return DefDriverProc(p_driverId, p_driverHandle, p_message, p_param1, p_param2);
 }
 
-// STUB: LEMBALL 0x00479190
-TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo)
+// FUNCTION: LEMBALL 0x00479190
+TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo)
 {
 	void* mem;
 	TargetWinGDrawCodecState* state;
@@ -502,13 +497,13 @@ TargetWinGDrawCodecState* TargetWinGDrawCodec_Open(void* p_openInfo)
 		return 0;
 	}
 	state->m_window = (GWnd*) g_pAnimWnd;
-	state->m_surface = state->m_window->m_gdi->m_renderTarget;
+	state->m_surface = ((GWnd*) g_pAnimWnd)->m_gdi->m_renderTarget;
 	openInfo->dwError = 0;
 	return state;
 }
 
-// STUB: LEMBALL 0x00479210
-int TargetWinGDrawCodec_Close(TargetWinGDrawCodecState* p_state)
+// FUNCTION: LEMBALL 0x00479210
+int __stdcall TargetWinGDrawCodec_Close(TargetWinGDrawCodecState* p_state)
 {
 	void* handle;
 
@@ -540,10 +535,11 @@ char g_szVisualSciencesWinGDrawHandler[] = "Visual Sciences WinG Draw Handler";
 // GLOBAL: LEMBALL 0x004a2dd0
 char g_szVsWinGAnim[] = "VS - WinG Anim";
 
-// STUB: LEMBALL 0x004792a0
-unsigned int TargetWinGDrawCodec_GetInfo(void* p_info, unsigned int p_size)
+// FUNCTION: LEMBALL 0x004792a0
+unsigned int __stdcall TargetWinGDrawCodec_GetInfo(void* p_info, unsigned int p_size)
 {
 	IcInfo* info;
+	WCHAR* description;
 
 	info = (IcInfo*) p_info;
 	if (info == 0) {
@@ -558,13 +554,14 @@ unsigned int TargetWinGDrawCodec_GetInfo(void* p_info, unsigned int p_size)
 	info->dwFlags = 0x10;
 	info->dwVersion = 0x10000;
 	info->dwVersionICM = 0x104;
-	MultiByteToWideChar(0, 0, g_szVisualSciencesWinGDrawHandler, -1, info->szDescription, 0x100);
-	MultiByteToWideChar(0, 0, g_szVsWinGAnim, -1, info->szDescription, 0x100);
+	description = info->szDescription;
+	MultiByteToWideChar(0, 0, g_szVisualSciencesWinGDrawHandler, -1, description, 0x100);
+	MultiByteToWideChar(0, 0, g_szVsWinGAnim, -1, description, 0x100);
 	return 0x238;
 }
 
-// STUB: LEMBALL 0x00479330
-int TargetWinGDrawCodec_QueryFormat(TargetWinGDrawCodecState* p_state, void* p_format)
+// FUNCTION: LEMBALL 0x00479330
+int __stdcall TargetWinGDrawCodec_QueryFormat(TargetWinGDrawCodecState* p_state, void* p_format)
 {
 	BITMAPINFOHEADER* format;
 
@@ -575,11 +572,11 @@ int TargetWinGDrawCodec_QueryFormat(TargetWinGDrawCodecState* p_state, void* p_f
 	if (format->biCompression != 0) {
 		return -2;
 	}
-	return (format->biBitCount == 8) - 1 & 0xfffffffe;
+	return (unsigned short) (format->biBitCount - 8) < 1 ? 0 : -2;
 }
 
-// STUB: LEMBALL 0x00479370
-int TargetWinGDrawCodec_SuggestFormat(TargetWinGDrawCodecState* p_state, void* p_request)
+// FUNCTION: LEMBALL 0x00479370
+int __stdcall TargetWinGDrawCodec_SuggestFormat(TargetWinGDrawCodecState* p_state, void* p_request, long p_param2)
 {
 	IcDrawSuggest* request;
 	BITMAPINFOHEADER* source;
@@ -605,12 +602,13 @@ int TargetWinGDrawCodec_SuggestFormat(TargetWinGDrawCodecState* p_state, void* p
 }
 
 // FUNCTION: LEMBALL 0x004793e0
-int TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void* p_request)
+int __stdcall TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void* p_request, long p_param2)
 {
 	int result;
 	int copyBytes;
 	IcDrawBegin* request;
 	BITMAPINFO* format;
+	(void) p_param2;
 
 	request = (IcDrawBegin*) p_request;
 	result = TargetWinGDrawCodec_QueryFormat(p_state, request->lpbi);
@@ -626,9 +624,6 @@ int TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void* p_request
 		SetStretchBltMode((HDC) p_state->m_targetDC, 3);
 		format = (BITMAPINFO*) request->lpbi;
 		copyBytes = format->bmiHeader.biClrUsed;
-		if (copyBytes == 0) {
-			copyBytes = 0x100;
-		}
 		copyBytes = copyBytes * 4 - 4;
 		if (0 < copyBytes) {
 			memcpy(&g_dwWinGDrawColourTable[1], &format->bmiColors[1], (unsigned int) copyBytes);
@@ -640,10 +635,11 @@ int TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void* p_request
 }
 
 // FUNCTION: LEMBALL 0x00479480
-int TargetWinGDrawCodec_Draw(TargetWinGDrawCodecState* p_state, void* p_request)
+int __stdcall TargetWinGDrawCodec_Draw(TargetWinGDrawCodecState* p_state, void* p_request, long p_param2)
 {
 	IcDraw* request;
 	PvWnd* window;
+	(void) p_param2;
 
 	request = (IcDraw*) p_request;
 	window = (PvWnd*) p_state->m_window;

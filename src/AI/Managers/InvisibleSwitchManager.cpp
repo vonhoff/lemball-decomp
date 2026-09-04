@@ -3,9 +3,12 @@
 #include "../Objects/InvisibleSwitch.h"
 
 // 68K 0x10613140 __ct__23CInvisibleSwitchManagerFP3CAIi
-// STUB: LEMBALL 0x0040a210
-InvisibleSwitchManager::InvisibleSwitchManager(Ai* p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x0040a210
+InvisibleSwitchManager::InvisibleSwitchManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x20, 0x15)
 {
+	m_ai = p_arg0;
+	m_capacity = p_arg1;
+	m_switches = 0;
 }
 
 // 68K 0x106131d6 Restart__23CInvisibleSwitchManagerFv
@@ -20,9 +23,22 @@ void InvisibleSwitchManager::Restart()
 }
 
 // 68K 0x10613244 Initialise__23CInvisibleSwitchManagerFi
-// STUB: LEMBALL 0x0040a2a0
+// FUNCTION: LEMBALL 0x0040a2a0
 void InvisibleSwitchManager::Initialise(int p_capacity)
 {
+	m_capacity = p_capacity;
+	m_count = 0;
+	if (p_capacity == 0) {
+		m_switches = 0;
+		return;
+	}
+	if (m_switches == 0) {
+		m_switches = new InvisibleSwitch[p_capacity];
+		for (int i = 0; i < m_capacity; i++) {
+			m_switches[i].Restart();
+			m_switches[i].m_manager = this;
+		}
+	}
 }
 
 // 68K 0x10613398 StepOn__23CInvisibleSwitchManagerFRC7AICOORDP11CGameObject

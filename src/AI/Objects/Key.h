@@ -23,9 +23,9 @@ public:
 	virtual ~Key();                              // vtable+0x00
 
 private:
-	int m_unk0x144;   // 0x144
-	int m_unk0x148;   // 0x148
-	int m_unk0x14c;   // 0x14c
+	int m_unk0x144; // 0x144
+	int m_unk0x148; // 0x148
+	int m_unk0x14c; // 0x14c
 };
 
 // SYNTHETIC: LEMBALL 0x0041c600
