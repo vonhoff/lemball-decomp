@@ -31,9 +31,15 @@ void Sheep::HitBall()
 }
 
 // 68K 0x1061e482 HitMine__6CSheepFv
-// STUB: LEMBALL 0x0041fad0
+// FUNCTION: LEMBALL 0x0041fad0
 void Sheep::HitMine()
 {
+	g_pAI->Score(0x96);
+	C3DVector velocity;
+	velocity.m_xFixed = 0;
+	velocity.m_yFixed = 0;
+	velocity.m_zFixed = 0xa000;
+	StartFly(velocity, 0);
 }
 
 // 68K 0x1011b36a __dt__6CSheepFv
