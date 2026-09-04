@@ -8,10 +8,10 @@ bool FileCommonSocket::CreateSocket(const char* p_path)
 }
 
 // 68K 0x10207138 SysCloseSocket__17CFileCommonSocketFv
-// STUB: LEMBALL 0x00479900
+// FUNCTION: LEMBALL 0x00479900
 int FileCommonSocket::SysCloseSocket()
 {
-	return 0;
+	return Close() ? 0 : 6;
 }
 
 // 68K 0x101078e2 SocketError__17CFileCommonSocketFv
