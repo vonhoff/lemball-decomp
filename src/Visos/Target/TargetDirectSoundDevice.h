@@ -43,7 +43,18 @@ public:
 	virtual void SetWnd(Wnd* p_wnd);
 
 private:
-	undefined m_platformState[0x50]; // 0x04
+	union {
+		undefined m_platformState[0x50]; // 0x04
+		struct {
+			undefined m_unk0x04[0x0c]; // 0x04
+			void* m_nativeWindow;      // 0x10
+			undefined4 m_unk0x14;      // 0x14
+			undefined4 m_unk0x18;      // 0x18
+			undefined4 m_unk0x1c;      // 0x1c
+			undefined4 m_unk0x20;      // 0x20
+			undefined m_unk0x24[0x30]; // 0x24
+		} m_platform;
+	};
 };
 
 // SYNTHETIC: LEMBALL 0x0047e8e0

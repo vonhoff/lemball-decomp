@@ -1,9 +1,14 @@
 #include "Node.h"
 
+#include "NodeNeighbour.h"
+
 // 68K 0x106186ac __ct__5CNodeFv
-// STUB: LEMBALL 0x004212e0
+// FUNCTION: LEMBALL 0x004212e0
 Node::Node()
 {
+	m_xFixed = 0xaa55aa55;
+	m_yFixed = 0xaa55aa55;
+	m_neighbours = 0;
 }
 
 // 68K 0x106186dc Restart__5CNodeFv
@@ -14,9 +19,12 @@ void Node::Restart()
 }
 
 // 68K 0x10618700 __dt__5CNodeFv
-// STUB: LEMBALL 0x00421310
+// FUNCTION: LEMBALL 0x00421310
 Node::~Node()
 {
+	if (m_neighbours != 0) {
+		delete[] m_neighbours;
+	}
 }
 
 // 68K 0x1061874a Initialise__5CNodeFiii

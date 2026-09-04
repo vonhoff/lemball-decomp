@@ -22,9 +22,10 @@ PvGdiBitmap::PvGdiBitmap()
 }
 
 // 68K 0x102128ca __dt__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x004722d0
+// FUNCTION: LEMBALL 0x004722d0
 PvGdiBitmap::~PvGdiBitmap()
 {
+	Free();
 }
 
 // 68K 0x1021291c Free__12CPVGDIBitmapFv

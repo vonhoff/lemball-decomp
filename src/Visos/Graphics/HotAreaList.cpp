@@ -67,9 +67,10 @@ HotAreaList::~HotAreaList()
 }
 
 // 68K 0x102122f4 UpdateHandlers__12CHotAreaListFv
-// STUB: LEMBALL 0x0046a6d0
+// FUNCTION: LEMBALL 0x0046a6d0
 void HotAreaList::UpdateHandlers()
 {
+	ProcessHandlers(*g_pHotAreaCursor, 0);
 }
 
 // 68K 0x10212332 DeleteEntry__12CHotAreaListFP15CHotAreaElement

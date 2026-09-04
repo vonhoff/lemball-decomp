@@ -21,9 +21,15 @@ bool SheepGroup::CheckAgainstLemmings()
 }
 
 // 68K 0x1061e870 Process__11CSheepGroupFv
-// STUB: LEMBALL 0x0041f820
+// FUNCTION: LEMBALL 0x0041f820
 bool SheepGroup::Process()
 {
+	CalculateBoundingBox(24);
+	for (int i = 0; i < m_elementCount; i++) {
+		m_elements[i]->Process();
+	}
+	CheckAgainstLemmings();
+	CheckAgainstCatapults();
 	return 0;
 }
 

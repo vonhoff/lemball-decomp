@@ -55,8 +55,8 @@ bool BaseNetwork::Initialise(const char* p_arg0, int p_arg1)
 	unsigned long start;
 	unsigned long waitStart;
 
-	m_networkName = (char*) p_arg0;
 	m_initialisePending = 1;
+	m_networkName = (char*) p_arg0;
 	g_networkPacketSize = p_arg1;
 	ForceProcess();
 	start = timeGetTime();

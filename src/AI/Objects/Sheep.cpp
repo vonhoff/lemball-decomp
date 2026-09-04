@@ -1,5 +1,8 @@
 #include "Sheep.h"
 
+#include "../Base/StateMachine.h"
+#include "../Navigation/Ai.h"
+
 // 68K 0x1061e282 __ct__6CSheepFP3CAIiiii
 // STUB: LEMBALL 0x0041f990
 Sheep::Sheep(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
@@ -13,9 +16,10 @@ void Sheep::Restart()
 }
 
 // 68K 0x1061e424 Process__6CSheepFv
-// STUB: LEMBALL 0x0041fa90
+// FUNCTION: LEMBALL 0x0041fa90
 bool Sheep::Process()
 {
+	SheepState(g_pAI, this);
 	return 0;
 }
 

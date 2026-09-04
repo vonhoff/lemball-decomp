@@ -48,6 +48,7 @@ public:
 	friend class GWnd;
 	friend class AnimWnd;
 	friend class Main2DDisplay;
+	friend class TargetDirectSoundDevice;
 
 private:
 	void* m_menuLists;             // 0x3c

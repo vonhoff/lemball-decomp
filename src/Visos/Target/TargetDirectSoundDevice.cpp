@@ -1,5 +1,7 @@
 #include "TargetDirectSoundDevice.h"
 
+#include "../Graphics/Wnd.h"
+
 // STUB: LEMBALL 0x0047dd80
 TargetDirectSoundDevice::TargetDirectSoundDevice(int p_channelCount, int p_flags)
 {
@@ -14,10 +16,10 @@ TargetDirectSoundDevice::TargetDirectSoundDevice(int p_channelCount, int p_flags
 	m_platformState[1] = (unsigned char) p_flags;
 }
 
-// STUB: LEMBALL 0x0047e000
+// FUNCTION: LEMBALL 0x0047e000
 char* TargetDirectSoundDevice::Dummy04()
 {
-	return 0;
+	return m_platform.m_unk0x20 == 1 ? "Direct Sound Device\n" : "ERROR! No Effects Device for WinEff!\n";
 }
 
 // STUB: LEMBALL 0x0047e020
@@ -38,16 +40,16 @@ int TargetDirectSoundDevice::Dummy2c()
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e370
+// FUNCTION: LEMBALL 0x0047e370
 int TargetDirectSoundDevice::Dummy30()
 {
-	return 0;
+	return m_platform.m_unk0x18;
 }
 
-// STUB: LEMBALL 0x0047e380
+// FUNCTION: LEMBALL 0x0047e380
 int TargetDirectSoundDevice::Dummy08()
 {
-	return 0;
+	return m_platform.m_unk0x20;
 }
 
 // STUB: LEMBALL 0x0047e390
@@ -74,16 +76,16 @@ int TargetDirectSoundDevice::Dummy20()
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e4e0
+// FUNCTION: LEMBALL 0x0047e4e0
 int TargetDirectSoundDevice::Dummy24()
 {
-	return 0;
+	return m_platform.m_unk0x1c;
 }
 
-// STUB: LEMBALL 0x0047e4f0
+// FUNCTION: LEMBALL 0x0047e4f0
 int TargetDirectSoundDevice::Dummy28()
 {
-	return 0;
+	return m_platform.m_unk0x20;
 }
 
 // FUNCTION: LEMBALL 0x0047e500
@@ -189,9 +191,10 @@ bool TargetDirectSoundDevice::EffectStop(unsigned char p_channel, unsigned char 
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e8b0
+// FUNCTION: LEMBALL 0x0047e8b0
 void TargetDirectSoundDevice::SetWnd(Wnd* p_wnd)
 {
+	m_platform.m_nativeWindow = p_wnd->m_nativeWindow;
 }
 
 // STUB: LEMBALL 0x0047e8c0

@@ -26,10 +26,13 @@ void FormationManager::TransformFormation(int p_formationIndex, int p_angle)
 }
 
 // 68K 0x10608fa4 GetAVector__17CFormationManagerFi
-// STUB: LEMBALL 0x0041a320
+// FUNCTION: LEMBALL 0x0041a320
 Vector* FormationManager::GetAVector(int p_index)
 {
-	return 0;
+	if (p_index >= 8) {
+		p_index -= 8;
+	}
+	return &m_transformedVectors[p_index];
 }
 
 // GLOBAL: LEMBALL 0x004a7834

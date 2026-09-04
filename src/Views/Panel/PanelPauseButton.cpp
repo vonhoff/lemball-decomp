@@ -28,9 +28,10 @@ void PanelPauseButton::DrawButton()
 }
 
 // 68K 0x10b0c63c OnPaint__17CPanelPauseButtonFRC7CVSRect
-// STUB: LEMBALL 0x00442270
+// FUNCTION: LEMBALL 0x00442270
 void PanelPauseButton::OnPaint(const VsRect& p_rect)
 {
+	GraphicButton::OnPaint(p_rect);
 }
 
 // 68K 0x10b0c67e OnPressed__17CPanelPauseButtonF12BUTTON_FLAGS

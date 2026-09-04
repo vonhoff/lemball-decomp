@@ -18,7 +18,7 @@ BaseStat::BaseStat(char* p_arg0)
 }
 
 // 68K 0x10218e5e __dt__9CBaseStatFv
-// STUB: LEMBALL 0x0045ac50
+// FUNCTION: LEMBALL 0x0045ac50
 BaseStat::~BaseStat()
 {
 }

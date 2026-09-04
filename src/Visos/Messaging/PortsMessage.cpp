@@ -46,9 +46,3 @@ void PortsMessage::GetData()
 {
 	GetCopy(m_useCounts, 0x200);
 }
-
-// 68K 0x1010769c __dt__13CPortsMessageFv
-PortsMessage::~PortsMessage()
-{
-	delete[] m_useCounts;
-}

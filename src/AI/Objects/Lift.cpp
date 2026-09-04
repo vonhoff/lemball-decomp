@@ -69,16 +69,23 @@ int Lift::StepOn(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x10614ffc Activate__5CLiftFv
-// STUB: LEMBALL 0x00425640
+// FUNCTION: LEMBALL 0x00425640
 int Lift::Activate()
 {
-	return 0;
+	m_active = 1;
+	Action((eAction) 0x19);
+	return 1;
 }
 
 // 68K 0x1061503a ActivateDeactivate__5CLiftFv
-// STUB: LEMBALL 0x00425660
+// FUNCTION: LEMBALL 0x00425660
 void Lift::ActivateDeactivate()
 {
+	if (m_active == 0) {
+		Activate();
+		return;
+	}
+	Action((eAction) 8);
 }
 
 // 68K 0x1011a746 DoActivate__5CLiftFv

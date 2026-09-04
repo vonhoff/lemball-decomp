@@ -1,9 +1,13 @@
 #include "NodeManager.h"
 
+#include "Node.h"
+
 // 68K 0x106184ca __ct__12CNodeManagerFi
-// STUB: LEMBALL 0x00421180
+// FUNCTION: LEMBALL 0x00421180
 NodeManager::NodeManager(int p_arg0)
 {
+	m_nodes = 0;
+	m_capacity = p_arg0;
 }
 
 // 68K 0x106184f8 Restart__12CNodeManagerFv
@@ -25,10 +29,10 @@ NodeManager::~NodeManager()
 }
 
 // 68K 0x10618642 GetNodePosition__12CNodeManagerFi
-// STUB: LEMBALL 0x004212a0
+// FUNCTION: LEMBALL 0x004212a0
 Pt3 NodeManager::GetNodePosition(int p_node)
 {
-	return *(Pt3*) 0;
+	return m_nodes[p_node].Position();
 }
 
 // 68K 0x10618854 LoadLevel__12CNodeManagerFP22tagLoadNodeInformationUlUc

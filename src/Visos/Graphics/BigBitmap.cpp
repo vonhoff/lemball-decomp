@@ -1,5 +1,7 @@
 #include "BigBitmap.h"
 
+#include "Gdi.h"
+
 // 68K 0x1011bcf2 __ct__10CBigBitmapFv
 // STUB: LEMBALL 0x004394f0
 BigBitmap::BigBitmap()
@@ -12,9 +14,10 @@ BigBitmap::~BigBitmap()
 }
 
 // 68K 0x1010164c Draw__10CBigBitmapFP4CGDI
-// STUB: LEMBALL 0x004398d0
+// FUNCTION: LEMBALL 0x004398d0
 void BigBitmap::Draw(Gdi* p_gdi)
 {
+	p_gdi->AddToList(this);
 }
 
 // 68K 0x101016b8 Render__10CBigBitmapFP4CGDI

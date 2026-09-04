@@ -1,5 +1,7 @@
 #include "SheepGroupManager.h"
 
+#include "GenericGroup.h"
+
 // 68K 0x1061e91c __ct__18CSheepGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
 // STUB: LEMBALL 0x0041f0b0
 SheepGroupManager::SheepGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
@@ -13,9 +15,14 @@ void SheepGroupManager::Restart()
 }
 
 // 68K 0x1061ea1c Process__18CSheepGroupManagerFv
-// STUB: LEMBALL 0x0041f140
+// FUNCTION: LEMBALL 0x0041f140
 int SheepGroupManager::Process()
 {
+	GenericGroup* group = GetFirstGroup();
+	while (group != 0) {
+		group->Process();
+		group = GetNextGroup();
+	}
 	return 0;
 }
 

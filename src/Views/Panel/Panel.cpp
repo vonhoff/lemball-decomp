@@ -1,5 +1,7 @@
 #include "Panel.h"
 
+#include "PanelLemming.h"
+
 // 68K 0x10b0d942 GetPausePos__6CPanelFv
 // STUB: LEMBALL 0x00442f00
 VsPoint Panel::GetPausePos()
@@ -26,9 +28,17 @@ void Panel::OnSize()
 }
 
 // 68K 0x10b0dd98 Process__6CPanelFv
-// STUB: LEMBALL 0x00443250
+// FUNCTION: LEMBALL 0x00443250
 void Panel::Process()
 {
+	PanelLemming** lemming = m_lemmings;
+	int count = 4;
+
+	do {
+		(*lemming)->UpdateStatus();
+		lemming++;
+		count--;
+	} while (count != 0);
 }
 
 // 68K 0x10b0ddd8 SetPause__6CPanelFUc

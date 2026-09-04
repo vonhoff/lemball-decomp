@@ -10,9 +10,10 @@ class PortsMessage : public NetworkMessage {
 public:
 	PortsMessage();
 	bool AnyUsed();
-	virtual void AddData();  // vtable+0x10
-	virtual void GetData();  // vtable+0x08
-	virtual ~PortsMessage(); // vtable+0x14
+	virtual void AddData(); // vtable+0x10
+	virtual void GetData(); // vtable+0x08
+	// 68K 0x1010769c __dt__13CPortsMessageFv
+	virtual ~PortsMessage() { delete[] m_useCounts; } // vtable+0x14
 
 private:
 	unsigned char* m_useCounts; // 0x2c

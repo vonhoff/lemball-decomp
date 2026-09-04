@@ -1,5 +1,7 @@
 #include "LemmingAnimsManager.h"
 
+#include "../../Frontend/Resources/CdLoadAnim.h"
+
 // 68K 0x10b09d40 __ct__20CLemmingAnimsManagerFP4CGDIP14CMain2DDisplayP3CAI
 // STUB: LEMBALL 0x00432b50
 LemmingAnimsManager::LemmingAnimsManager(Gdi* p_arg0, Main2DDisplay* p_arg1, Ai* p_arg2)
@@ -43,9 +45,10 @@ void LemmingAnimsManager::Unload()
 }
 
 // 68K 0x10b0b6b6 Draw__20CLemmingAnimsManagerFv
-// STUB: LEMBALL 0x00433fb0
+// FUNCTION: LEMBALL 0x00433fb0
 void LemmingAnimsManager::Draw()
 {
+	m_loadAnim->m_progress.m_draw.Draw();
 }
 
 // 68K 0x10b0b6f2 DrawAnim__20CLemmingAnimsManagerFssUlUlUlP6CRemap

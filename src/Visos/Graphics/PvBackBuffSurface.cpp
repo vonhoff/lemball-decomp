@@ -92,7 +92,8 @@ void PvBackBuffSurface::EnableBackBuff(unsigned int p_enabled)
 }
 
 // 68K 0x10216200 ResizeBackBuff__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x00466660
+// FUNCTION: LEMBALL 0x00466660
 void PvBackBuffSurface::ResizeBackBuff()
 {
+	AllocateBackBuff();
 }

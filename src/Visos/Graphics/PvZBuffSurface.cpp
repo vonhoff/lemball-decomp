@@ -35,9 +35,10 @@ void PvZBuffSurface::EnableZBuff(unsigned char p_enabled)
 }
 
 // 68K 0x1021650e ResizeZBuff__15CPVZBuffSurfaceFv
-// STUB: LEMBALL 0x00466870
+// FUNCTION: LEMBALL 0x00466870
 void PvZBuffSurface::ResizeZBuff()
 {
+	AllocateZBuff();
 }
 
 // 68K 0x10101386 HasZBuff__15CPVZBuffSurfaceFv

@@ -26,9 +26,10 @@ void PvGWnd::Clear(int p_color)
 }
 
 // 68K 0x102168f0 SetInnerWindow__7CPVGWndFRC7CVSRect
-// STUB: LEMBALL 0x00465c70
+// FUNCTION: LEMBALL 0x00465c70
 void PvGWnd::SetInnerWindow(const VsRect& p_rect)
 {
+	PvWnd::SetInnerWindow(p_rect);
 }
 
 // 68K 0x1021692e _OnZoom__7CPVGWndFi
