@@ -645,6 +645,48 @@ def role_relocations_are_safe(
     return True
 
 
+def role_push_reaches_equivalent_call(
+    orig_asm: list[str],
+    recomp_asm: list[str],
+    index: int,
+    role_registers: set[str],
+) -> bool:
+    """Prove a role-renamed push feeds the same nearby call.
+
+    Permit at most two identical, flag-neutral register setup instructions
+    between the push and call.  The setup may not read or write either renamed
+    role or ESP, so it cannot alter the pushed value or depend on a different
+    stack position.
+    """
+    for call_index in range(index + 1, index + 4):
+        if call_index >= len(orig_asm) or call_index >= len(recomp_asm):
+            return False
+
+        orig_text = orig_asm[call_index]
+        recomp_text = recomp_asm[call_index]
+        orig_mnemonic, orig_operands = split_instruction(orig_text)
+        recomp_mnemonic, _ = split_instruction(recomp_text)
+        if orig_mnemonic == "call" or recomp_mnemonic == "call":
+            return orig_mnemonic == "call" and is_equivalent_insn(
+                orig_text, recomp_text
+            )
+        if orig_text != recomp_text:
+            return False
+        if orig_mnemonic == "nop":
+            continue
+        if (
+            orig_mnemonic not in ("lea", "mov")
+            or len(orig_operands) != 2
+            or orig_operands[0] not in DWORD_REGISTERS
+            or set(REGISTER_RE.findall(orig_text)).intersection(
+                role_registers | {"esp"}
+            )
+        ):
+            return False
+
+    return False
+
+
 def normalize_register_role_relocations(orig_asm: list[str], recomp_asm: list[str]) -> None:
     """Expose relocations whose instruction also uses a renamed register role."""
     role_map = infer_register_role_map(orig_asm, recomp_asm)
@@ -659,16 +701,22 @@ def normalize_register_role_relocations(orig_asm: list[str], recomp_asm: list[st
             continue
         mnemonic, operands = split_instruction(recomp_text)
         if mnemonic == "push":
+            _, orig_operands = split_instruction(orig_text)
             remapped = REGISTER_RE.sub(
                 lambda match: role_map.get(match.group(0), match.group(0)), recomp_text
             )
             if (
                 len(operands) == 1
                 and operands[0] in DWORD_REGISTERS
+                and len(orig_operands) == 1
+                and orig_operands[0] in DWORD_REGISTERS
                 and remapped == orig_text
-                and index + 1 < len(orig_asm)
-                and orig_asm[index + 1].startswith("call ")
-                and is_equivalent_insn(orig_asm[index + 1], recomp_asm[index + 1])
+                and role_push_reaches_equivalent_call(
+                    orig_asm,
+                    recomp_asm,
+                    index,
+                    {operands[0], orig_operands[0]},
+                )
             ):
                 recomp_asm[index] = orig_text
             continue
@@ -994,6 +1042,35 @@ def run_selftest() -> int:
         ),
         (
             [
+                "mov esi, dword ptr [g_buckets (DATA)]",
+                "mov ebx, dword ptr [esp + 0x10]",
+                "mov ecx, dword ptr [esi]",
+                "push ebx",
+                "call Bucket::CheckValidPointer (FUNCTION)",
+                "add esi, 4",
+                "mov ebx, dword ptr [esp + 0x10]",
+                "push ebx",
+                "mov ecx, dword ptr [g_arena (DATA)]",
+                "call Arena::CheckValidPointer (FUNCTION)",
+                "ret",
+            ],
+            [
+                "mov ebx, dword ptr [g_buckets (DATA)]",
+                "mov esi, dword ptr [esp + 0x10]",
+                "mov ecx, dword ptr [ebx]",
+                "push esi",
+                "call Bucket::CheckValidPointer (FUNCTION)",
+                "add ebx, 4",
+                "mov esi, dword ptr [esp + 0x10]",
+                "push esi",
+                "mov ecx, dword ptr [g_arena (DATA)]",
+                "call Arena::CheckValidPointer (FUNCTION)",
+                "ret",
+            ],
+            True,
+        ),
+        (
+            [
                 "lea ebp, [eax + 4]",
                 "mov esi, ebp",
                 "add esi, 0x54",
@@ -1102,6 +1179,29 @@ def run_selftest() -> int:
         actual = is_codegen_equivalent_diff(make_diff(orig, recomp))
         if actual != expected:
             print(f"selftest fail: codegen expected {expected} got {actual}: {orig!r} / {recomp!r}")
+            failed += 1
+
+    unsafe_delayed_pushes = (
+        (
+            ["push ebx", "mov ecx, ebx", "call Thing::Run (FUNCTION)"],
+            ["push esi", "mov ecx, ebx", "call Thing::Run (FUNCTION)"],
+        ),
+        (
+            ["push ebx", "mov dword ptr [g_value (DATA)], ecx", "call Thing::Run (FUNCTION)"],
+            ["push esi", "mov dword ptr [g_value (DATA)], ecx", "call Thing::Run (FUNCTION)"],
+        ),
+        (
+            ["push ebx", "mov ecx, dword ptr [esp + 8]", "call Thing::Run (FUNCTION)"],
+            ["push esi", "mov ecx, dword ptr [esp + 8]", "call Thing::Run (FUNCTION)"],
+        ),
+        (
+            ["push ebx", "mov ecx, dword ptr [g_value (DATA)]", "call First (FUNCTION)"],
+            ["push esi", "mov ecx, dword ptr [g_value (DATA)]", "call Second (FUNCTION)"],
+        ),
+    )
+    for orig, recomp in unsafe_delayed_pushes:
+        if role_push_reaches_equivalent_call(orig, recomp, 0, {"ebx", "esi"}):
+            print(f"selftest fail: unsafe delayed push was normalized: {orig!r} / {recomp!r}")
             failed += 1
 
     aliased_multiplier = ["mov eax, edx", "sub edx, edx", "imul eax, eax"]

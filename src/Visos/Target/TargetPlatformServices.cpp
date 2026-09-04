@@ -53,9 +53,9 @@ bool TargetPlatformServicesInit()
 		g_pTargetPlatformServices = new (storage) TargetPlatformServices();
 	}
 	GetCurrentDirectoryA(0x100, g_szCurrentDirectory);
-	length = strlen(g_szCurrentDirectory);
-	if (g_szCurrentDirectory[length - 1] == '\\') {
-		g_szCurrentDirectory[length - 1] = 0;
+	length = strlen(g_szCurrentDirectory) - 1;
+	if (g_szCurrentDirectory[length] == '\\') {
+		g_szCurrentDirectory[length] = 0;
 	}
 	return 1;
 }

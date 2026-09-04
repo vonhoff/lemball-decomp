@@ -44,12 +44,18 @@ SmallMemory::SmallMemory()
 SmallMemory::~SmallMemory()
 {
 	g_nSmallMemoryEnabled = 0;
-	for (int i = g_preInitActive.m_startBucket; i < (int) m_bucketLimit; i++) {
-		register Bucket* bucket = m_buckets[i];
-		if (bucket != 0) {
-			delete bucket;
-		}
-		m_buckets[i] = 0;
+	int i = g_preInitActive.m_startBucket;
+	if (i < (int) m_bucketLimit) {
+		Bucket* bucket;
+		Bucket** slot = &m_buckets[i];
+		do {
+			bucket = *slot;
+			if (bucket != 0) {
+				delete bucket;
+			}
+			*slot++ = 0;
+			i++;
+		} while (i < (int) m_bucketLimit);
 	}
 }
 
