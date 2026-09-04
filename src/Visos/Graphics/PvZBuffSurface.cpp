@@ -29,9 +29,17 @@ void PvZBuffSurface::AllocateZBuff()
 }
 
 // 68K 0x102164b6 EnableZBuff__15CPVZBuffSurfaceFUc
-// STUB: LEMBALL 0x00466840
+// FUNCTION: LEMBALL 0x00466840
 void PvZBuffSurface::EnableZBuff(unsigned char p_enabled)
 {
+	if (*(unsigned int*) &p_enabled == 0) {
+		FreeZBuff();
+		m_enabled = 0;
+		return;
+	}
+
+	AllocateZBuff();
+	m_enabled = 1;
 }
 
 // 68K 0x1021650e ResizeZBuff__15CPVZBuffSurfaceFv
