@@ -112,6 +112,7 @@ PasswordDrawer::PasswordDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect&
 {
 	char* encoded;
 
+	m_hiliteAnim.m_frameState = 0;
 	encoded = g_pGameStatus->EncodePassword();
 	strcpy(m_password, encoded);
 	m_passwordValid = 0;

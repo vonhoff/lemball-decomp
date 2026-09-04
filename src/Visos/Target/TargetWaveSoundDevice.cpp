@@ -207,8 +207,8 @@ int TargetWaveSoundDevice::Dummy14()
 			if (tries >= 500) {
 				break;
 			}
-			tries = tries + 1;
 			result = waveOutReset((HWAVEOUT) m_waveOut);
+			tries = tries + 1;
 		} while (result != 0);
 		if (tries == 500) {
 			*g_pErrorOutput << "Error Shutting Down Wave Device : ";
@@ -228,8 +228,8 @@ int TargetWaveSoundDevice::Dummy14()
 				if (tries >= 500) {
 					break;
 				}
-				tries = tries + 1;
 				result = waveOutClose((HWAVEOUT) m_waveOut);
+				tries = tries + 1;
 			} while (result != 0);
 			if (tries == 500) {
 				*g_pErrorOutput << "Error Closing Down Wave Device : ";

@@ -190,39 +190,44 @@ void PauseWindow::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 // FUNCTION: LEMBALL 0x00444c10
 int PauseWindow::ProcessMsg(Message* p_message)
 {
-	if ((m_pauseMessage == 0 || m_pauseMessage == 3) && p_message->type == 4) {
-		switch (p_message->code) {
-		case 1:
-		case 3:
-			if (m_selection > m_minimumSelection) {
-				m_selection--;
-				g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
-				return 1;
-			}
-			break;
-		case 2:
+	int pauseMessage = m_pauseMessage;
+
+	if (pauseMessage == 0 || pauseMessage == 3) {
+		switch (p_message->type) {
 		case 4:
-			if (m_selection < m_menuItemCount - 1) {
-				m_selection++;
-				g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+			switch (p_message->code) {
+			case 1:
+			case 3:
+				if (m_selection > m_minimumSelection) {
+					m_selection--;
+					g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+					return 1;
+				}
+				break;
+			case 2:
+			case 4:
+				if (m_selection < m_menuItemCount - 1) {
+					m_selection++;
+					g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+					return 1;
+				}
+				break;
+			case 0x22:
+			case 0x2a:
+			case 0x2e:
+			case 0x4c:
+			case 0x57:
+			case 0x58:
+				m_receiverState->SetOptionSelection(m_selection + 1);
+				g_pSoundView->PlayEffect((eSoundEffect) 3);
+				return 1;
+			case 0x23:
+				if (pauseMessage != 0 || m_receiverState->GetPauser()) {
+					m_receiverState->SetOptionSelection(m_initialSelection + 1);
+					g_pSoundView->PlayEffect((eSoundEffect) 3);
+				}
 				return 1;
 			}
-			break;
-		case 0x22:
-		case 0x2a:
-		case 0x2e:
-		case 0x4c:
-		case 0x57:
-		case 0x58:
-			m_receiverState->SetOptionSelection(m_selection + 1);
-			g_pSoundView->PlayEffect((eSoundEffect) 3);
-			return 1;
-		case 0x23:
-			if (m_pauseMessage != 0 || m_receiverState->GetPauser()) {
-				m_receiverState->SetOptionSelection(m_initialSelection + 1);
-				g_pSoundView->PlayEffect((eSoundEffect) 3);
-			}
-			return 1;
 		}
 	}
 	return 0;
