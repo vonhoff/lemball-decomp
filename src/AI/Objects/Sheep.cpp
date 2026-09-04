@@ -24,9 +24,10 @@ bool Sheep::Process()
 }
 
 // 68K 0x1061e454 HitBall__6CSheepFv
-// STUB: LEMBALL 0x0041fab0
+// FUNCTION: LEMBALL 0x0041fab0
 void Sheep::HitBall()
 {
+	g_pAI->Score(0x96);
 }
 
 // 68K 0x1061e482 HitMine__6CSheepFv
