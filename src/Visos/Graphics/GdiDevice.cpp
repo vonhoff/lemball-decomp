@@ -64,16 +64,13 @@ GdiDevice::~GdiDevice()
 int GdiDevice::FindFreeSurface()
 {
 	int i;
-	GdiSurfaceSlot* slot;
 
 	i = 0;
 	if (0 < m_surfaceCapacity) {
-		slot = m_surfaceSlots;
 		do {
-			if (slot->m_available != 0) {
+			if (m_surfaceSlots[i].m_available != 0) {
 				return i;
 			}
-			++slot;
 			++i;
 		} while (i < m_surfaceCapacity);
 	}
