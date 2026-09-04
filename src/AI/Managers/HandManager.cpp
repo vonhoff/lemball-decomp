@@ -63,9 +63,14 @@ int HandManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x106115f8 Add__12CHandManagerFUsiii
-// STUB: LEMBALL 0x00428460
+// FUNCTION: LEMBALL 0x00428460
 void HandManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
+	if (m_count < m_capacity) {
+		AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+		m_hands[m_count].Set(p_id, position);
+		m_count++;
+	}
 }
 
 // 68K 0x10611698 LoadLevel__12CHandManagerFPUciUc
