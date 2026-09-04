@@ -57,9 +57,11 @@ void GlobalGameObject::Action(eAction p_arg0)
 }
 
 // 68K 0x1060bce8 Action__17CGlobalGameObjectF7eActioni
-// STUB: LEMBALL 0x00416de0
+// FUNCTION: LEMBALL 0x00416de0
 void GlobalGameObject::Action(eAction p_arg0, int p_arg1)
 {
+	m_actionArgument = p_arg1;
+	Action(p_arg0);
 }
 
 // 68K 0x1060bd38 RequestAction__17CGlobalGameObjectF7eAction
