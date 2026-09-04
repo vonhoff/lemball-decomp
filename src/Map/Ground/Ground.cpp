@@ -95,7 +95,12 @@ void Ground::SetCollision()
 }
 
 // 68K 0x1011c68c __ct__7CGroundFv
-// STUB: LEMBALL 0x004314f0
+// FUNCTION: LEMBALL 0x004314f0
 Ground::Ground()
 {
+	m_objectType = (eObjectType) 0x209;
+	m_objectData = 0;
+	m_collision = 0;
+	m_height = 0;
+	m_cliff = 0;
 }
