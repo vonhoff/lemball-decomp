@@ -37,9 +37,12 @@ void TrackWindow::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_name)
 }
 
 // 68K 0x1080e4cc Move__12CTrackWindowFRC8CVSPoint
-// STUB: LEMBALL 0x0044e9d0
+// FUNCTION: LEMBALL 0x0044e9d0
 void TrackWindow::Move(const VsPoint& p_position)
 {
+	GWnd::Move(p_position);
+	m_trackRect.m_x = p_position.m_x;
+	m_trackRect.m_y = p_position.m_y;
 }
 
 // 68K 0x1080e52c OnPaint__12CTrackWindowFRC7CVSRect
