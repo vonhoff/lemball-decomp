@@ -66,10 +66,37 @@ void LaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectTy
 {
 }
 
+#include "../Navigation/Ai.h"
+
 // 68K 0x10614500 LoadLevel__13CLaserManagerFPUciUc
-// STUB: LEMBALL 0x00429950
+// FUNCTION: LEMBALL 0x00429950
 void LaserManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short* data = (unsigned short*) p_data;
+	unsigned short count = *data++;
+	unsigned int remaining = count;
+	Initialise(remaining);
+	if (count != 0) {
+		unsigned short id;
+		eObjectType orientation;
+		unsigned short x;
+		unsigned short y;
+		unsigned short z;
+		do {
+			if (m_ai->m_levelVersion > 1) {
+				id = *data++;
+			}
+			else {
+				id = (unsigned short) GameObject::NextId();
+			}
+			orientation = (eObjectType) *data++;
+			x = *data++;
+			y = *data++;
+			z = *data++;
+			Add(id, x, y, z, orientation);
+			remaining--;
+		} while (remaining != 0);
+	}
 }
 
 // 68K 0x106141f0 __dt__13CLaserManagerFv
