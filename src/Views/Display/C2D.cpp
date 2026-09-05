@@ -605,9 +605,25 @@ void C2D::DrawLemmingExternal(ViewData& p_viewData, unsigned char p_remapped)
 }
 
 // 68K 0x10b0274e DrawLemmingOnConveyor__3C2DFR9CViewDataUc
-// STUB: LEMBALL 0x0043c1a0
+// FUNCTION: LEMBALL 0x0043c1a0
 void C2D::DrawLemmingOnConveyor(ViewData& p_viewData, unsigned char p_remapped)
 {
+	int x;
+	int y;
+	int frame;
+	BaseRemap* remap;
+
+	frame = p_viewData.m_animationTime - p_viewData.m_stateTimer;
+	x = p_viewData.m_positionX;
+	y = p_viewData.m_positionY;
+	frame = (frame * 15 / 1000) % 8;
+	if (*(unsigned int*) &p_remapped != 0) {
+		remap = m_paletteRemap;
+	}
+	else {
+		remap = 0;
+	}
+	m_lemmingAnims->DrawAnim(x - 15, y - 22, RES_GAME_LEMMING_SPIN, frame, 0, (Remap*) remap);
 }
 
 // 68K 0x10b027f2 DrawLemming__3C2DFR9CViewDataiUc
@@ -629,9 +645,45 @@ void C2D::DrawAmmo(ViewData& p_viewData, int p_objectNo)
 }
 
 // 68K 0x10b02d9e DrawRocket__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043c6e0
+// FUNCTION: LEMBALL 0x0043c6e0
 void C2D::DrawRocket(ViewData& p_viewData)
 {
+	int elapsed;
+	int frame;
+	int extraFrame = -1;
+
+	elapsed = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15 / 1000;
+	if (elapsed <= 7) {
+		frame = elapsed < 4 ? elapsed : 4;
+	}
+	else if (elapsed >= 8 && elapsed <= 13) {
+		frame = elapsed < 11 ? elapsed - 3 : 8;
+	}
+	else if (elapsed >= 14 && elapsed <= 19) {
+		frame = elapsed - 4;
+		extraFrame = 9;
+	}
+	else if (elapsed >= 20 && elapsed <= 31) {
+		frame = (elapsed - 20) % 2 + 17;
+		extraFrame = 16;
+	}
+	else if (elapsed >= 32 && elapsed <= 42) {
+		frame = elapsed - 11;
+		if (frame > 25) {
+			extraFrame = 26;
+			frame++;
+		}
+	}
+	else {
+		frame = (elapsed & 1) + 33;
+		extraFrame = 32;
+	}
+
+	if (extraFrame != -1) {
+		m_lemmingAnims
+			->DrawAnim(p_viewData.m_positionX - 13, p_viewData.m_positionY - 73, RES_GAME_ROCKET, extraFrame, 0, 0);
+	}
+	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 13, p_viewData.m_positionY - 73, RES_GAME_ROCKET, frame, 0, 0);
 }
 
 #include "../../Frontend/Resources/FrontendResourceLoader.h"

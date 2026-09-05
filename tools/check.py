@@ -464,6 +464,118 @@ def normalize_multiply_copy_zero(asm: list[str]) -> None:
         ]
 
 
+def normalize_divide_scratch_scheduling(orig_asm: list[str], recomp_asm: list[str]) -> None:
+    """Align one proven MSVC scratch-register schedule around unsigned division.
+
+    The original may clear EDX before loading EAX, use a soon-overwritten
+    constant register as the multiply scratch, and initialize that constant
+    just before DIV. The rebuilt stream may initialize the constant earlier,
+    use EDX as the scratch, then clear EDX immediately before DIV. Accept the
+    reshuffle only when the complete candidate becomes instruction-identical.
+    """
+    if len(orig_asm) != len(recomp_asm):
+        return
+
+    for div_index, div_text in enumerate(orig_asm):
+        if div_index < 7 or recomp_asm[div_index] != div_text:
+            continue
+        div_mnemonic, div_operands = split_instruction(div_text)
+        if (
+            div_mnemonic != "div"
+            or len(div_operands) != 1
+            or div_operands[0] not in DWORD_REGISTERS
+        ):
+            continue
+
+        const_mnemonic, const_operands = split_instruction(orig_asm[div_index - 1])
+        if (
+            const_mnemonic != "mov"
+            or len(const_operands) != 2
+            or const_operands[0] not in DWORD_REGISTERS
+            or const_operands[0] in ("eax", "edx", div_operands[0])
+        ):
+            continue
+        constant_register, constant_value = const_operands
+        try:
+            int(constant_value, 0)
+        except ValueError:
+            continue
+
+        zero_text = "sub edx, edx"
+        if (
+            orig_asm[div_index - 6] != zero_text
+            or recomp_asm[div_index - 1] != zero_text
+            or orig_asm.count(zero_text) != 1
+            or recomp_asm.count(zero_text) != 1
+        ):
+            continue
+        if (
+            orig_asm[div_index - 5] != recomp_asm[div_index - 5]
+            or orig_asm[div_index - 4] != recomp_asm[div_index - 4]
+        ):
+            continue
+        load_mnemonic, load_operands = split_instruction(orig_asm[div_index - 5])
+        sub_mnemonic, sub_operands = split_instruction(orig_asm[div_index - 4])
+        if (
+            load_mnemonic != "mov"
+            or len(load_operands) != 2
+            or load_operands[0] != "eax"
+            or sub_mnemonic != "sub"
+            or len(sub_operands) != 2
+            or sub_operands[0] != "eax"
+        ):
+            continue
+
+        if (
+            orig_asm[div_index - 3]
+            != f"lea {constant_register}, [eax + eax*2]"
+            or orig_asm[div_index - 2]
+            != f"lea eax, [{constant_register} + {constant_register}*4]"
+            or recomp_asm[div_index - 3] != "lea edx, [eax + eax*2]"
+            or recomp_asm[div_index - 2] != "lea eax, [edx + edx*4]"
+        ):
+            continue
+
+        constant_text = orig_asm[div_index - 1]
+        constant_indices = [
+            index
+            for index, instruction in enumerate(recomp_asm[: div_index - 5])
+            if instruction == constant_text
+        ]
+        if len(constant_indices) != 1:
+            continue
+        constant_index = constant_indices[0]
+        crossed = recomp_asm[constant_index + 1 : div_index - 5]
+        safe = True
+        for instruction in crossed:
+            mnemonic, operands = split_instruction(instruction)
+            if (
+                mnemonic not in ("lea", "mov")
+                or len(operands) != 2
+                or operands[0] not in DWORD_REGISTERS
+                or constant_register in REGISTER_RE.findall(instruction)
+            ):
+                safe = False
+                break
+        if not safe:
+            continue
+        if div_index + 1 < len(orig_asm):
+            next_mnemonic, _ = split_instruction(orig_asm[div_index + 1])
+            if next_mnemonic not in ("cmp", "test"):
+                continue
+
+        candidate = list(recomp_asm)
+        candidate.pop(div_index - 1)
+        candidate.pop(constant_index)
+        candidate.insert(div_index - 6, zero_text)
+        candidate.insert(div_index - 1, constant_text)
+        candidate[div_index - 3] = orig_asm[div_index - 3]
+        candidate[div_index - 2] = orig_asm[div_index - 2]
+        if candidate == orig_asm:
+            recomp_asm[:] = candidate
+            return
+
+
 def strip_trailing_alignment_nops(orig_asm: list[str], recomp_asm: list[str]) -> None:
     """Discard padding NOPs only when both instruction streams already returned."""
     orig_end = len(orig_asm)
@@ -934,6 +1046,7 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
     normalize_transient_call_argument_registers(orig_asm, recomp_asm)
     normalize_multiply_copy_zero(orig_asm)
     normalize_multiply_copy_zero(recomp_asm)
+    normalize_divide_scratch_scheduling(orig_asm, recomp_asm)
     normalize_zero_comparisons(orig_asm, recomp_asm)
     normalize_swapped_comparison_branches(orig_asm, recomp_asm)
     normalize_dead_stack_reservation(orig_asm, recomp_asm)
@@ -1173,6 +1286,143 @@ def run_selftest() -> int:
             ["mov eax, edx", "sub edx, edx", "imul eax, ecx", "div esi"],
             ["imul edx, ecx", "mov eax, edx", "sub edx, edx", "div esi"],
             True,
+        ),
+        (
+            [
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "sub edx, edx",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea ecx, [eax + eax*2]",
+                "lea eax, [ecx + ecx*4]",
+                "mov ecx, -1",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            [
+                "mov ecx, -1",
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea edx, [eax + eax*2]",
+                "lea eax, [edx + edx*4]",
+                "sub edx, edx",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            True,
+        ),
+        (
+            [
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "sub edx, edx",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea ecx, [eax + eax*2]",
+                "lea eax, [ecx + ecx*4]",
+                "mov ecx, -1",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            [
+                "mov ecx, -2",
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea edx, [eax + eax*2]",
+                "lea eax, [edx + edx*4]",
+                "sub edx, edx",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            False,
+        ),
+        (
+            [
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "sub edx, edx",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea ecx, [eax + eax*2]",
+                "lea eax, [ecx + ecx*4]",
+                "mov ecx, -1",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            [
+                "mov ecx, -1",
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea edx, [eax + eax*2]",
+                "lea eax, [edx + edx*2]",
+                "sub edx, edx",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            False,
+        ),
+        (
+            [
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "mov esi, ecx",
+                "sub edx, edx",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea ecx, [eax + eax*2]",
+                "lea eax, [ecx + ecx*4]",
+                "mov ecx, -1",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            [
+                "mov ecx, -1",
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "mov esi, ecx",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea edx, [eax + eax*2]",
+                "lea eax, [edx + edx*4]",
+                "sub edx, edx",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            False,
+        ),
+        (
+            [
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "sub edx, edx",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea ecx, [eax + eax*2]",
+                "lea eax, [ecx + ecx*4]",
+                "mov ecx, -1",
+                "div ebx",
+                "cmp eax, 7",
+            ],
+            [
+                "mov ecx, -1",
+                "mov edi, dword ptr [esp + 0x10]",
+                "mov ebx, 0x3e8",
+                "mov eax, dword ptr [edi + 0x24]",
+                "sub eax, dword ptr [edi + 0x20]",
+                "lea edx, [eax + eax*2]",
+                "lea eax, [edx + edx*4]",
+                "sub edx, edx",
+                "div esi",
+                "cmp eax, 7",
+            ],
+            False,
         ),
         (
             ["mov esi, 1", "cmp ebx, esi", "je 0x2", "ret"],
