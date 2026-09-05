@@ -73,26 +73,21 @@ bool BaseNetwork::Initialise(const char* p_arg0, int p_arg1)
 	}
 
 	start = timeGetTime();
-	if (m_serverMode != 0) {
-		do {
-			if (m_serverMode != 0 && m_broadcast != 0 && m_broadcast->m_readReady != 0) {
-				break;
-			}
-			if (g_lastNetworkError != 0 || timeGetTime() - start >= 10000) {
-				break;
-			}
-			waitStart = timeGetTime();
-			while (timeGetTime() - waitStart < 100) {
-			}
-			ForceProcess();
-		} while (m_serverMode != 0);
+	while (m_serverMode != 0 && !(m_serverMode != 0 && m_broadcast != 0 && m_broadcast->m_readReady != 0) &&
+		   g_lastNetworkError == 0 && timeGetTime() - start < 10000) {
+		waitStart = timeGetTime();
+		while (timeGetTime() - waitStart < 100) {
+		}
+		ForceProcess();
 	}
 
 	if (m_serverMode != 0) {
-		if (m_broadcast != 0) {
-			if (m_broadcast->m_readReady != 0) {
-				if (g_lastNetworkError == 0) {
-					return 1;
+		if (m_serverMode != 0) {
+			if (m_broadcast != 0) {
+				if (m_broadcast->m_readReady != 0) {
+					if (g_lastNetworkError == 0) {
+						return 1;
+					}
 				}
 			}
 		}
