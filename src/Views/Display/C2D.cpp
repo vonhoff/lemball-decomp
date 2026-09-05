@@ -973,9 +973,31 @@ void C2D::DrawKey(ViewData& p_viewData, int p_playerIndex)
 }
 
 // 68K 0x10b03fc8 DrawMine__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043d500
+// FUNCTION: LEMBALL 0x0043d500
 void C2D::DrawMine(ViewData& p_viewData)
 {
+	int x;
+	int y;
+	unsigned int stateTimer;
+	eAction action;
+
+	x = p_viewData.m_positionX;
+	y = p_viewData.m_positionY;
+	stateTimer = p_viewData.m_stateTimer;
+	action = p_viewData.m_action;
+
+	switch (action) {
+	case (eAction) 8:
+		break;
+	case (eAction) 0x18:
+	case (eAction) 0x19:
+	case (eAction) 0x1a:
+		m_lemmingAnims->DrawAnim(x - 2, y - 2, RES_GAME_MINE_STILL, 0, 0, 0);
+		break;
+	case (eAction) 0x1b:
+		m_lemmingAnims->DrawAnim(x - 30, y - 35, RES_GAME_MINE, stateTimer, p_viewData.m_animationTime, 0);
+		break;
+	}
 }
 
 // 68K 0x10b0409a DrawDoor__3C2DFR9CViewData
@@ -997,9 +1019,15 @@ void C2D::DrawFlag(ViewData& p_viewData, eObjectType p_objectType)
 }
 
 // 68K 0x10b044dc DrawBonus__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043d950
+// FUNCTION: LEMBALL 0x0043d950
 void C2D::DrawBonus(ViewData& p_viewData)
 {
+	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 16,
+							 p_viewData.m_positionY - 16,
+							 RES_GAME_BONUS,
+							 0,
+							 p_viewData.m_animationTime,
+							 0);
 }
 
 // 68K 0x10b0454a DrawTrapDoor__3C2DFR9CViewData
