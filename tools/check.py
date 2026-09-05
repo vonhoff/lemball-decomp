@@ -1115,6 +1115,137 @@ def normalize_role_comparisons_for_exact_match(
         recomp_asm[:] = candidate
 
 
+def normalize_exact_full_register_role_rotation(
+    orig_asm: list[str], recomp_asm: list[str], role_map: dict[str, str]
+) -> None:
+    """Canonicalize a complete full-register role permutation only when exact.
+
+    The sole scheduling difference accepted here is an adjacent, disjoint
+    register ``xor`` / register ``mov`` commute. Work on a copy so every other
+    role, instruction, side effect, and control-flow edge must become identical
+    before the caller-visible assembly is changed.
+    """
+    if (
+        not role_map
+        or len(orig_asm) != len(recomp_asm)
+        or set(role_map) != set(role_map.values())
+    ):
+        return
+
+    mapped_registers = set(role_map) | set(role_map.values())
+    mapped_subregisters = {
+        register
+        for full_register in mapped_registers
+        for register in DWORD_REGISTER_FAMILIES[full_register]
+        if register != full_register
+    }
+    if any(
+        register in mapped_subregisters
+        for instruction in orig_asm + recomp_asm
+        for register in REGISTER_RE.findall(instruction)
+    ):
+        return
+
+    saved_registers: list[str] = []
+    for instruction in orig_asm:
+        mnemonic, operands = split_instruction(instruction)
+        if (
+            mnemonic != "push"
+            or len(operands) != 1
+            or operands[0] not in DWORD_REGISTERS - {"esp"}
+        ):
+            break
+        saved_registers.append(operands[0])
+
+    restore_start = len(orig_asm)
+    if orig_asm and split_instruction(orig_asm[-1])[0] in ("ret", "retn"):
+        restore_start -= 1
+        while restore_start > 0:
+            mnemonic, operands = split_instruction(orig_asm[restore_start - 1])
+            if (
+                mnemonic != "pop"
+                or len(operands) != 1
+                or operands[0] not in DWORD_REGISTERS - {"esp"}
+            ):
+                break
+            restore_start -= 1
+
+    restored_registers = [
+        split_instruction(instruction)[1][0]
+        for instruction in orig_asm[restore_start:-1]
+    ]
+    if (
+        not mapped_registers.issubset(saved_registers)
+        or restored_registers != list(reversed(saved_registers))
+        or recomp_asm[: len(saved_registers)] != orig_asm[: len(saved_registers)]
+        or recomp_asm[restore_start:] != orig_asm[restore_start:]
+    ):
+        return
+
+    candidate = list(recomp_asm)
+    excluded = {"call", "pop", "push", "ret", "retn"}
+    for index, (orig_text, recomp_text) in enumerate(zip(orig_asm, candidate)):
+        if orig_text == recomp_text:
+            used_registers = set(REGISTER_RE.findall(recomp_text))
+            if used_registers.intersection(mapped_registers) and not (
+                index < len(saved_registers) or index >= restore_start
+            ):
+                return
+            continue
+        mnemonic, _ = split_instruction(recomp_text)
+        if mnemonic in excluded or mnemonic.startswith("j"):
+            continue
+        candidate[index] = REGISTER_RE.sub(
+            lambda match: role_map.get(match.group(0), match.group(0)), recomp_text
+        )
+
+    if candidate != orig_asm:
+        differences = [
+            index
+            for index, (orig_text, recomp_text) in enumerate(zip(orig_asm, candidate))
+            if orig_text != recomp_text
+        ]
+        if len(differences) != 2 or differences[1] != differences[0] + 1:
+            return
+
+        first = differences[0]
+        if (
+            candidate[first] != orig_asm[first + 1]
+            or candidate[first + 1] != orig_asm[first]
+        ):
+            return
+
+        pair = (candidate[first], candidate[first + 1])
+        zero_text = next(
+            (instruction for instruction in pair if split_instruction(instruction)[0] == "xor"),
+            None,
+        )
+        mov_text = next(
+            (instruction for instruction in pair if split_instruction(instruction)[0] == "mov"),
+            None,
+        )
+        if zero_text is None or mov_text is None:
+            return
+
+        _, zero_operands = split_instruction(zero_text)
+        _, mov_operands = split_instruction(mov_text)
+        if (
+            len(zero_operands) != 2
+            or zero_operands[0] != zero_operands[1]
+            or zero_operands[0] not in DWORD_REGISTERS
+            or len(mov_operands) != 2
+            or any(operand not in DWORD_REGISTERS for operand in mov_operands)
+            or len(set(mov_operands)) != 2
+            or zero_operands[0] in mov_operands
+        ):
+            return
+
+        candidate[first], candidate[first + 1] = candidate[first + 1], candidate[first]
+
+    if candidate == orig_asm:
+        recomp_asm[:] = candidate
+
+
 def normalize_register_role_relocations(orig_asm: list[str], recomp_asm: list[str]) -> None:
     """Expose relocations whose instruction also uses a renamed register role."""
     role_map = infer_register_role_map(orig_asm, recomp_asm)
@@ -1209,6 +1340,7 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
     normalize_swapped_comparison_branches(orig_asm, recomp_asm)
     normalize_dead_stack_reservation(orig_asm, recomp_asm)
     role_map = infer_register_role_map(orig_asm, recomp_asm)
+    normalize_exact_full_register_role_rotation(orig_asm, recomp_asm, role_map)
     normalize_register_role_relocations(orig_asm, recomp_asm)
     normalize_saved_register_load_scheduling(orig_asm, recomp_asm)
     normalize_role_comparisons_for_exact_match(orig_asm, recomp_asm, role_map)
@@ -1919,6 +2051,151 @@ def run_selftest() -> int:
         replaced[index] = text
         return replaced
 
+    def move_instruction(instructions: list[str], source: int, destination: int) -> list[str]:
+        moved = list(instructions)
+        instruction = moved.pop(source)
+        moved.insert(destination, instruction)
+        return moved
+
+    failed = 0
+
+    process_role_orig = [
+        "push ebx",
+        "push esi",
+        "push edi",
+        "mov ebx, ecx",
+        "xor edi, edi",
+        "xor esi, esi",
+        "cmp dword ptr [ebx + 0x34], edi",
+        "jle 0x16",
+        "mov ecx, dword ptr [ebx + 0x38]",
+        "inc esi",
+        "add ecx, edi",
+        "add edi, 0x188",
+        "mov eax, dword ptr [ecx]",
+        "call dword ptr [eax + 0x14]",
+        "cmp dword ptr [ebx + 0x34], esi",
+        "jg -0x16",
+        "pop edi",
+        "pop esi",
+        "pop ebx",
+        "ret",
+    ]
+    process_role_recomp = [
+        "push ebx",
+        "push esi",
+        "push edi",
+        "xor esi, esi",
+        "mov edi, ecx",
+        "xor ebx, ebx",
+        "cmp dword ptr [edi + 0x34], esi",
+        "jle 0x16",
+        "mov ecx, dword ptr [edi + 0x38]",
+        "inc ebx",
+        "add ecx, esi",
+        "add esi, 0x188",
+        "mov eax, dword ptr [ecx]",
+        "call dword ptr [eax + 0x14]",
+        "cmp dword ptr [edi + 0x34], ebx",
+        "jg -0x16",
+        "pop edi",
+        "pop esi",
+        "pop ebx",
+        "ret",
+    ]
+
+    unsafe_process_role_rotations = (
+        (
+            "inconsistent register role",
+            replace_instruction(process_role_recomp, 9, "inc esi"),
+        ),
+        (
+            "mapped word subregister",
+            replace_instruction(process_role_recomp, 5, "xor bx, bx"),
+        ),
+        (
+            "zero moved across a role use",
+            move_instruction(process_role_recomp, 3, 10),
+        ),
+        (
+            "zero moved across a memory comparison",
+            move_instruction(process_role_recomp, 3, 6),
+        ),
+        (
+            "zero moved across a call",
+            move_instruction(process_role_recomp, 3, 14),
+        ),
+        (
+            "zero moved across a stack operation",
+            move_instruction(process_role_recomp, 3, 0),
+        ),
+        (
+            "zero moved across arithmetic",
+            move_instruction(process_role_recomp, 3, 11),
+        ),
+        (
+            "zero moved across a flag consumer",
+            move_instruction(process_role_recomp, 3, 8),
+        ),
+        (
+            "different count member offset",
+            replace_instruction(
+                process_role_recomp, 6, "cmp dword ptr [edi + 0x30], esi"
+            ),
+        ),
+        (
+            "different object stride",
+            replace_instruction(process_role_recomp, 11, "add esi, 0x184"),
+        ),
+        (
+            "different virtual slot",
+            replace_instruction(
+                process_role_recomp, 13, "call dword ptr [eax + 0x10]"
+            ),
+        ),
+        (
+            "different branch opcode",
+            replace_instruction(process_role_recomp, 7, "jl 0x16"),
+        ),
+        (
+            "different branch target",
+            replace_instruction(process_role_recomp, 7, "jle 0x18"),
+        ),
+        ("different instruction count", process_role_recomp[:-1]),
+        (
+            "different saved register",
+            replace_instruction(process_role_recomp, 0, "push ebp"),
+        ),
+        (
+            "different restored register",
+            replace_instruction(process_role_recomp, 16, "pop ebp"),
+        ),
+        (
+            "different return",
+            replace_instruction(process_role_recomp, 19, "ret 4"),
+        ),
+        (
+            "wrong role in final comparison",
+            replace_instruction(
+                process_role_recomp, 14, "cmp dword ptr [edi + 0x34], esi"
+            ),
+        ),
+        ("missing zero definition", process_role_recomp[:5] + process_role_recomp[6:]),
+        (
+            "different zero definition",
+            replace_instruction(process_role_recomp, 5, "sub ebx, ebx"),
+        ),
+    )
+
+    for description, recomp in unsafe_process_role_rotations:
+        if is_codegen_equivalent_diff(make_diff(process_role_orig, recomp)):
+            print(f"selftest fail: unsafe full-role rotation accepted: {description}")
+            failed += 1
+
+    if not is_codegen_equivalent_diff(make_diff(process_role_orig, process_role_recomp)):
+        print("selftest fail: safe exact full-role rotation rejected")
+        failed += 1
+
     sequential_stack_chain, interleaved_stack_chain = make_stack_offset_chains()
     safe_stack_chain_tail = ["inc ebx", "mov eax, dword ptr [esp + 0x24]", "ret"]
 
@@ -2027,7 +2304,6 @@ def run_selftest() -> int:
         ),
     )
 
-    failed = 0
     for orig, recomp, expected in thunk_samples:
         actual = is_equivalent_insn(orig, recomp)
         if actual != expected:
