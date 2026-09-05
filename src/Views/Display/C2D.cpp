@@ -634,10 +634,39 @@ void C2D::DrawRocket(ViewData& p_viewData)
 {
 }
 
+#include "../../Frontend/Resources/FrontendResourceLoader.h"
+
 // 68K 0x10b02ede DrawHand__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043c7f0
+// FUNCTION: LEMBALL 0x0043c7f0
 void C2D::DrawHand(ViewData& p_viewData)
 {
+	int x;
+	int y;
+	int frame;
+	BaseRemap* remap;
+	eAction action = p_viewData.m_action;
+
+	x = p_viewData.m_positionX - 0x31;
+	y = p_viewData.m_positionY - 0x14;
+	remap = 0;
+	if (p_viewData.m_actionArgument != 0) {
+		remap = m_paletteRemap;
+	}
+
+	switch (action) {
+	case (eAction) 0x17:
+	case (eAction) 0x18:
+		m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[2], 0, 0, 0);
+		break;
+	case (eAction) 0x19:
+	case (eAction) 0x1a:
+		frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15 / 1000;
+		if (frame > 11) {
+			frame = 11;
+		}
+		m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[2], frame, 0, (Remap*) remap);
+		break;
+	}
 }
 
 // 68K 0x10b02fb0 DrawLemmingOnBalloon__3C2DFR9CViewDataiUc
@@ -758,9 +787,39 @@ void C2D::DrawLaser(ViewData& p_viewData)
 }
 
 // 68K 0x10b03882 DrawDuplicator__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043cfa0
+// FUNCTION: LEMBALL 0x0043cfa0
 void C2D::DrawDuplicator(ViewData& p_viewData)
 {
+	int x;
+	int y;
+	BaseRemap* remap;
+	eAction action;
+	unsigned int elapsed;
+	int frame;
+
+	elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
+	action = p_viewData.m_action;
+	x = p_viewData.m_positionX - 0x1c;
+	y = p_viewData.m_positionY - 0x3f;
+	remap = 0;
+
+	if (p_viewData.m_actionArgument != 0) {
+		remap = m_paletteRemap;
+	}
+	m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, 0, 0, (Remap*) remap);
+
+	switch (action) {
+	case (eAction) 0x18:
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, 0x3f, 0, (Remap*) remap);
+		break;
+	case (eAction) 0x1a:
+		frame = elapsed * 15 / 1000;
+		if (frame > 0x3e) {
+			frame = 0x3e;
+		}
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, frame + 1, 0, (Remap*) remap);
+		break;
+	}
 }
 
 // 68K 0x10b0397e DrawCrate__3C2DFR9CViewDatai
