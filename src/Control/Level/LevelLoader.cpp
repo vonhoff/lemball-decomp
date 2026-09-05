@@ -83,18 +83,20 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 	bool endFound = false;
 	ResBin* binResource = 0;
 	LoadBlockHeader* header;
-	unsigned short version;
-	unsigned int count;
-	unsigned short total;
+	unsigned short* data16;
+	unsigned int dataSize;
+	unsigned int blockType;
+	int count;
+	unsigned int total;
 
 	if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
 		unsigned int resourceId = CalcLevelId(p_skill, p_level);
 		binResource = ResBin::Load(resourceId);
-		if (binResource->m_loaded == 0) {
-			binResource->LoadData();
+		if (binResource->m_loaded != 0) {
+			binResource->m_age = 0;
 		}
 		else {
-			binResource->m_age = 0;
+			binResource->LoadData();
 		}
 		binResource->m_directUseCount++;
 		g_pLevelFileData = binResource->GetData();
@@ -106,53 +108,64 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 
 	header = GetNextBlockHeader(0);
 	do {
-		unsigned short* data16 = (unsigned short*) (header + 1);
-		unsigned int blockType = header->m_type;
+		dataSize = header->m_size;
+		data16 = (unsigned short*) (header + 1);
+		dataSize -= 8;
+		blockType = header->m_type;
 
 		switch (blockType) {
 		case 0x41492020: {
-			unsigned short* cursor = (unsigned short*) (header + 1);
-			version = 0;
-			if (header->m_size - 8 > 4) {
-				version = *cursor++;
+			unsigned short version = 0;
+			if (dataSize > 4) {
+				version = *data16++;
 			}
-			p_preview->m_timeLimit = cursor[1];
-			cursor += 2;
-			if (version < 4) {
+			data16++;
+			p_preview->m_timeLimit = *data16;
+			data16++;
+			if (version >= 4) {
+				p_preview->m_lemmingCount = data16[0];
+				p_preview->m_playerCount = data16[1];
+			}
+			else {
 				p_preview->m_lemmingCount = 4;
 				p_preview->m_playerCount = 1;
 			}
-			else {
-				p_preview->m_lemmingCount = cursor[0];
-				p_preview->m_playerCount = cursor[1];
-			}
 			break;
 		}
+		case 0x414e494d:
 		case 0x42414c4c:
+		case 0x424f4f4e:
+		case 0x434f4c4c:
+		case 0x44454654:
+		case 0x444f4f52:
 			break;
 		case 0x454e443f:
 			endFound = true;
 			break;
+		case 0x454e4d59:
 		case 0x464c4147:
+		case 0x47445346:
+		case 0x474d4f42:
+		case 0x48414e44:
+		case 0x49434520:
+		case 0x494e5653:
+		case 0x4c415352:
+		case 0x4c494654:
+		case 0x4d494e45:
+		case 0x4d4f5645:
 			break;
 		case 0x4e414d45: {
-			char* src = (char*) data16;
-			char* dst = p_preview->m_name;
-			int len = 0;
-			while (src[len] != 0 && len < 32) {
-				dst[len] = src[len];
-				len++;
-			}
-			dst[len] = 0;
+			strcpy(p_preview->m_name, (char*) data16);
 			p_preview->m_name[0x20] = 0;
 			break;
 		}
 		case 0x4e455457: {
-			unsigned char* edi = (unsigned char*) (header + 1);
 			total = 0;
-			for (count = (unsigned int) *(unsigned short*) edi; count != 0; count--) {
-				edi += 8;
-				total = (unsigned short) (total + *(short*) edi);
+			count = (unsigned int) *data16++;
+			while (count > 0) {
+				data16 += 3;
+				total += (unsigned int) *data16++;
+				count--;
 			}
 			if (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost == 1) {
 				p_preview->m_opponentLemmingCount = total;
@@ -162,12 +175,17 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 			}
 			break;
 		}
+		case 0x4e4f4445:
+		case 0x5047554e:
+		case 0x504c4153:
+			break;
 		case 0x504c5331: {
-			unsigned char* edi = (unsigned char*) (header + 1);
 			total = 0;
-			for (count = (unsigned int) *(unsigned short*) edi; count != 0; count--) {
-				edi += 8;
-				total = (unsigned short) (total + *(short*) edi);
+			count = (unsigned int) *data16++;
+			while (count > 0) {
+				data16 += 3;
+				total += (unsigned int) *data16++;
+				count--;
 			}
 			if (g_pActiveConnection == 0) {
 				p_preview->m_lemmingCount = total;
@@ -182,22 +200,25 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 			}
 			break;
 		}
+		case 0x524f434b:
+		case 0x53485047:
+		case 0x534c4e4b:
+		case 0x5452414d:
+			break;
 		}
 
 		header = GetNextBlockHeader(header);
-		if (endFound) {
-			if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
-				binResource->m_directUseCount--;
-				binResource->UnLoad();
-			}
-			else {
-				operator delete(g_pLevelFileData);
-			}
-			*g_pDebugOutput << g_szNSkillFormat << (int) p_skill << g_szNLevelFormat << p_level << g_szNameBracketFormat
-							<< p_preview->m_name << g_szCloseBracketNewline;
-			return;
-		}
-	} while (1);
+	} while (!endFound);
+
+	if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
+		binResource->m_directUseCount--;
+		binResource->UnLoad();
+	}
+	else {
+		operator delete(g_pLevelFileData);
+	}
+	*g_pDebugOutput << g_szNSkillFormat << (int) p_skill << g_szNLevelFormat << p_level << g_szNameBracketFormat
+					<< p_preview->m_name << g_szCloseBracketNewline;
 }
 
 // 68K 0x10703218 CalcLevelID__12CLevelLoaderF6eSkilli

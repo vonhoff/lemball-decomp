@@ -50,7 +50,7 @@ unsigned int GameStatus::JiggleLevelData()
 	unsigned int* dest = chunks;
 
 	while (1) {
-		unsigned int* end = mixed;
+		unsigned int* end = chunks + 8;
 		unsigned int value;
 		unsigned int high;
 
@@ -60,27 +60,23 @@ unsigned int GameStatus::JiggleLevelData()
 		value = *levels;
 		dest = dest + 2;
 		high = value;
-		levels = levels + 1;
 		high = high & 0x38;
+		levels = levels + 1;
 		value = value & 7;
 		high = high >> 3;
 		dest[-2] = high;
 		dest[-1] = value;
 	}
 
-	{
-		int offset = 0;
-		do {
-			unsigned int perm;
-			unsigned int value;
+	for (int i = 0; i < 8; i++) {
+		unsigned int value;
+		unsigned int perm;
 
-			result = result << 3;
-			perm = (unsigned int) g_anPasswordPermutation[offset / 4];
-			offset = offset + 4;
-			value = chunks[perm] ^ perm;
-			result = result | value;
-			mixed[(offset / 4) - 1] = value;
-		} while (offset < 0x20);
+		result = result << 3;
+		perm = (unsigned int) g_anPasswordPermutation[i];
+		value = chunks[perm] ^ perm;
+		result = result | value;
+		mixed[i] = value;
 	}
 	return result;
 }
