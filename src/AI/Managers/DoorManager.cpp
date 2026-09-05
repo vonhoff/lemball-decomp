@@ -156,28 +156,38 @@ unsigned short DoorManager::Id(int p_index)
 // FUNCTION: LEMBALL 0x0040e630
 void DoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	unsigned short* data = (unsigned short*) p_data;
-	unsigned short count = *data++;
-	unsigned int remaining = count;
+	unsigned short* data;
+	unsigned short count;
+
+	data = (unsigned short*) p_data;
+	count = *data++;
 	Initialise(count);
 	if (count != 0) {
+		unsigned int remaining = count;
+		unsigned short id;
+		eObjectType objectType;
+		unsigned short doorType;
+		int x;
+		int y;
+		int z;
 		do {
-			unsigned short id;
 			if (m_ai->m_levelVersion > 1) {
 				id = *data++;
 			}
 			else {
 				id = (unsigned short) GameObject::NextId();
 			}
-			unsigned short doorType = 0;
-			unsigned short objectType = *data++;
+			objectType = (eObjectType) *data++;
 			if (m_ai->m_levelVersion > 2) {
 				doorType = *data++;
 			}
-			int x = *data++;
-			int y = *data++;
-			int z = *data++;
-			Add(id, (eObjectType) objectType, doorType, x, y, z);
+			else {
+				doorType = 0;
+			}
+			x = *data++;
+			y = *data++;
+			z = *data++;
+			Add(id, objectType, doorType, x, y, z);
 			remaining--;
 		} while (remaining != 0);
 	}

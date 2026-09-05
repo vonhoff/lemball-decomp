@@ -85,22 +85,29 @@ void SlinkyManager::Process()
 // FUNCTION: LEMBALL 0x0040be50
 void SlinkyManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	unsigned short* stream = (unsigned short*) p_data;
-	int count = *stream++;
+	unsigned short* data = (unsigned short*) p_data;
+	unsigned short count = *data++;
 	Initialise(count);
-	while (count != 0) {
-		int id;
-		if (m_ai->m_levelVersion > 1) {
-			id = *stream++;
-		}
-		else {
-			id = GameObject::NextId();
-		}
-		int minX = *stream++;
-		int minY = *stream++;
-		int maxX = *stream++;
-		int maxY = *stream++;
-		Add(id, minX, minY, maxX, maxY);
-		count--;
+	if (count != 0) {
+		unsigned int remaining = count;
+		unsigned short id;
+		int minX;
+		int minY;
+		int maxX;
+		int maxY;
+		do {
+			if (m_ai->m_levelVersion > 1) {
+				id = *data++;
+			}
+			else {
+				id = (unsigned short) GameObject::NextId();
+			}
+			minX = *data++;
+			minY = *data++;
+			maxX = *data++;
+			maxY = *data++;
+			Add(id, minX, minY, maxX, maxY);
+			remaining--;
+		} while (remaining != 0);
 	}
 }
