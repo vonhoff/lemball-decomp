@@ -28,7 +28,12 @@ ORIGINAL_EXE = ROOT / "data" / "LEMBALL.EXE"
 RECOMPILED_EXE = BUILD / "LEMBALL.EXE"
 RECOMPILED_PDB = BUILD / "LEMBALL.PDB"
 STRICT_EQUIVALENCE_TARGETS = {
+    0x0040F960: "PlayerLemming::HasObject",
+    0x0043C610: "C2D::DrawBullet",
+    0x0043C660: "C2D::DrawAmmo",
+    0x0043CA30: "C2D::DrawTrampoline",
     0x0043CFA0: "C2D::DrawDuplicator",
+    0x0043D070: "C2D::DrawCrate",
     0x0043D0F0: "C2D::DrawTimeBonus",
     0x0043D370: "C2D::DrawSheep",
     0x0043D420: "C2D::DrawBall",
@@ -1421,7 +1426,8 @@ def compute_ratio(match: dict | None, name: str = "") -> tuple[float, str]:
     )
     if strict_claim:
         if (
-            is_exact_complete_call_role_rotation_match(match)
+            is_exact_player_has_object_match(match)
+            or is_exact_complete_call_role_rotation_match(match)
             or is_exact_ctos_request_role_swap_match(match)
             or is_exact_complete_adjacent_short_field_alias_match(match)
         ):
@@ -1433,6 +1439,7 @@ def compute_ratio(match: dict | None, name: str = "") -> tuple[float, str]:
 
     if (
         is_codegen_equivalent_diff(match.get("diff"))
+        or is_exact_player_has_object_match(match)
         or is_exact_complete_call_role_rotation_match(match)
         or is_exact_ctos_request_role_swap_match(match)
         or is_exact_complete_adjacent_short_field_alias_match(match)
@@ -1704,6 +1711,101 @@ def is_exact_complete_call_role_rotation(
         return False
 
     return candidate == orig_asm
+
+
+def is_exact_draw_duplicator_three_role_schedule(
+    orig_asm: list[str],
+    recomp_asm: list[str],
+    hidden_indices: set[int],
+) -> bool:
+    """Prove the observed complete DrawDuplicator EBX/ESI/EDI rotation."""
+    orig_asm = [normalize_asm(instruction) for instruction in orig_asm]
+    recomp_asm = [normalize_asm(instruction) for instruction in recomp_asm]
+    if (
+        len(orig_asm) != 79
+        or len(recomp_asm) != 79
+        or hidden_indices != {58}
+    ):
+        return False
+
+    expected_differences = {
+        10: (
+            "mov ebx, dword ptr [ecx + 4]",
+            "mov esi, dword ptr [ecx + 4]",
+        ),
+        11: ("sub ebx, 0x1c", "sub esi, 0x1c"),
+        12: (
+            "mov esi, dword ptr [ecx + 8]",
+            "mov edi, dword ptr [ecx + 8]",
+        ),
+        13: ("sub esi, 0x3f", "sub edi, 0x3f"),
+        14: ("xor edi, edi", "xor ebx, ebx"),
+        15: (
+            "cmp word ptr [ecx + 0x1c], di",
+            "cmp word ptr [ecx + 0x1c], bx",
+        ),
+        19: (
+            "mov edi, dword ptr [eax + 0x968]",
+            "mov ebx, dword ptr [eax + 0x968]",
+        ),
+        21: ("push edi", "push ebx"),
+        26: ("push esi", "push edi"),
+        27: ("push ebx", "push esi"),
+        40: ("push edi", "push ebx"),
+        45: ("push esi", "push edi"),
+        46: ("push ebx", "push esi"),
+        63: ("push edi", "push ebx"),
+        69: ("push esi", "push edi"),
+        71: ("push ebx", "push esi"),
+    }
+    if {
+        index
+        for index, (orig_text, recomp_text) in enumerate(
+            zip(orig_asm, recomp_asm)
+        )
+        if orig_text != recomp_text
+    } != set(expected_differences):
+        return False
+    if any(
+        (orig_asm[index], recomp_asm[index]) != expected_pair
+        for index, expected_pair in expected_differences.items()
+    ):
+        return False
+
+    expected_saves = ["push ebx", "push esi", "push edi", "push ebp"]
+    if [orig_asm[index] for index in (2, 4, 5, 6)] != expected_saves or [
+        recomp_asm[index] for index in (2, 4, 5, 6)
+    ] != expected_saves:
+        return False
+    expected_exit = [
+        "pop ebp",
+        "pop edi",
+        "pop esi",
+        "pop ebx",
+        "add esp, 8",
+        "ret 4",
+    ]
+    if any(
+        orig_asm[start : start + 6] != expected_exit
+        or recomp_asm[start : start + 6] != expected_exit
+        for start in (33, 48, 73)
+    ):
+        return False
+    if orig_asm[58] != recomp_asm[58] or orig_asm[58] != (
+        "lea eax, [ecx + ecx*4]"
+    ):
+        return False
+
+    call_indices = [
+        index
+        for index, instruction in enumerate(orig_asm)
+        if split_instruction(instruction)[0] == "call"
+    ]
+    return (
+        call_indices == [28, 47, 72]
+        and all(orig_asm[index] == "call EXACT_DRAW_ANIM" for index in call_indices)
+        and all(recomp_asm[index] == "call EXACT_DRAW_ANIM" for index in call_indices)
+    )
 
 
 def is_exact_ctos_request_role_swap(
@@ -2039,6 +2141,171 @@ def decoded_text_matches_json(decoded_text: str, json_text: str) -> bool:
     return decoded_text == json_text
 
 
+def is_exact_player_has_object_role_schedule(
+    orig_asm: list[str], recomp_asm: list[str]
+) -> bool:
+    """Prove only the observed complete HasObject EAX/ESI schedule."""
+    orig_asm = [normalize_asm(instruction) for instruction in orig_asm]
+    recomp_asm = [normalize_asm(instruction) for instruction in recomp_asm]
+    if len(orig_asm) != 28 or len(recomp_asm) != 28:
+        return False
+    if any(
+        split_instruction(instruction)[0] == "call"
+        for instruction in orig_asm + recomp_asm
+    ):
+        return False
+
+    expected_differences = {
+        0: ("push esi", "mov eax, dword ptr [esp + 4]"),
+        1: ("mov esi, dword ptr [esp + 8]", "push esi"),
+        2: ("cmp esi, 5", "cmp eax, 5"),
+        7: ("xor eax, eax", "xor esi, esi"),
+        11: ("cmp dword ptr [ecx], esi", "cmp dword ptr [ecx], eax"),
+        14: ("inc eax", "inc esi"),
+        15: ("cmp eax, edx", "cmp esi, edx"),
+    }
+    if {
+        index
+        for index, (orig_text, recomp_text) in enumerate(
+            zip(orig_asm, recomp_asm)
+        )
+        if orig_text != recomp_text
+    } != set(expected_differences):
+        return False
+    if any(
+        (orig_asm[index], recomp_asm[index]) != expected_pair
+        for index, expected_pair in expected_differences.items()
+    ):
+        return False
+
+    return (
+        orig_asm[18:20] == recomp_asm[18:20] == ["pop esi", "ret 4"]
+        and orig_asm[21:23] == recomp_asm[21:23] == ["pop esi", "ret 4"]
+        and orig_asm[26:28] == recomp_asm[26:28] == ["pop esi", "ret 4"]
+    )
+
+
+def is_exact_player_has_object_match(match: dict) -> bool:
+    """Prove HasObject from its complete JSON, PDB, PE bodies, and CFG."""
+    try:
+        if (
+            norm_addr(match["address"]) != 0x0040F960
+            or match.get("name") != "PlayerLemming::HasObject"
+            or norm_addr(match["_next_orig_addr"]) != 0x0040F9B0
+        ):
+            return False
+        orig_start = norm_addr(match["address"])
+        recomp_start = norm_addr(match["recomp"])
+    except (AttributeError, KeyError, TypeError, ValueError):
+        return False
+
+    if recomp_start != unique_recompiled_symbol_address(
+        "?HasObject@PlayerLemming@@UAEHH@Z"
+    ):
+        return False
+    groups = collect_visible_instruction_groups(match.get("diff"))
+    if groups is None or len(groups) != 1:
+        return False
+
+    try:
+        original_image = load_original_image()
+        recompiled_image = load_recompiled_image()
+    except (IndexError, LookupError, OSError, RuntimeError, ValueError):
+        return False
+    decoded_orig = decode_exact_image_span(original_image, orig_start, 0x4F)
+    decoded_recomp = decode_exact_image_span(recompiled_image, recomp_start, 0x4F)
+    if (
+        decoded_orig is None
+        or decoded_recomp is None
+        or len(decoded_orig) != 28
+        or len(decoded_recomp) != 28
+    ):
+        return False
+    if not (
+        complete_control_flow_is_reachable(decoded_orig, orig_start, {})
+        and complete_control_flow_is_reachable(
+            decoded_recomp, recomp_start, {}
+        )
+    ):
+        return False
+
+    orig_index = {
+        address: index
+        for index, (address, _, _, _) in enumerate(decoded_orig)
+    }
+    recomp_index = {
+        address: index
+        for index, (address, _, _, _) in enumerate(decoded_recomp)
+    }
+    paired_by_index: dict[int, tuple[str, str]] = {}
+    for orig_entries, recomp_entries in groups:
+        for (orig_address, orig_text), (recomp_address, recomp_text) in zip(
+            orig_entries, recomp_entries
+        ):
+            left_index = orig_index.get(orig_address)
+            right_index = recomp_index.get(recomp_address)
+            if (
+                left_index is None
+                or left_index != right_index
+                or left_index in paired_by_index
+            ):
+                return False
+            paired_by_index[left_index] = (orig_text, recomp_text)
+
+    visible_indices = tuple(sorted(paired_by_index))
+    if visible_indices not in (tuple(range(26)), tuple(range(28))):
+        return False
+
+    orig_asm: list[str] = []
+    recomp_asm: list[str] = []
+    for index, (orig_instruction, recomp_instruction) in enumerate(
+        zip(decoded_orig, decoded_recomp)
+    ):
+        orig_address, orig_size, orig_mnemonic, orig_operands = orig_instruction
+        recomp_address, recomp_size, recomp_mnemonic, recomp_operands = (
+            recomp_instruction
+        )
+        orig_text = f"{orig_mnemonic} {orig_operands}".strip()
+        recomp_text = f"{recomp_mnemonic} {recomp_operands}".strip()
+        rendered_pair = paired_by_index.get(index)
+        if rendered_pair is None:
+            if index not in (26, 27) or orig_text != recomp_text:
+                return False
+        elif not (
+            decoded_text_matches_json(orig_text, rendered_pair[0])
+            and decoded_text_matches_json(recomp_text, rendered_pair[1])
+        ):
+            return False
+
+        if index >= 2 and (
+            orig_address - orig_start != recomp_address - recomp_start
+            or orig_size != recomp_size
+            or orig_mnemonic != recomp_mnemonic
+        ):
+            return False
+        if orig_mnemonic == "call" or recomp_mnemonic == "call":
+            return False
+        if orig_mnemonic.startswith("j") or recomp_mnemonic.startswith("j"):
+            if (
+                orig_mnemonic != recomp_mnemonic
+                or re.fullmatch(r"0x[0-9a-f]+", orig_operands) is None
+                or re.fullmatch(r"0x[0-9a-f]+", recomp_operands) is None
+            ):
+                return False
+            orig_target = int(orig_operands, 16) - orig_start
+            recomp_target = int(recomp_operands, 16) - recomp_start
+            if orig_target != recomp_target:
+                return False
+            normalized = f"{orig_mnemonic} target_{orig_target:x}"
+            orig_asm.append(normalized)
+            recomp_asm.append(normalized)
+            continue
+        orig_asm.append(orig_text)
+        recomp_asm.append(recomp_text)
+
+    return is_exact_player_has_object_role_schedule(orig_asm, recomp_asm)
+
+
 def is_exact_complete_call_role_rotation_match(match: dict) -> bool:
     """Prove DrawDuplicator from synchronized JSON, PDB, and both PEs."""
     try:
@@ -2052,9 +2319,13 @@ def is_exact_complete_call_role_rotation_match(match: dict) -> bool:
         recomp_start = norm_addr(match["recomp"])
     except (AttributeError, KeyError, TypeError, ValueError):
         return False
+    if recomp_start != unique_recompiled_symbol_address(
+        "?DrawDuplicator@C2D@@QAEXAAVViewData@@@Z"
+    ):
+        return False
 
     groups = collect_visible_instruction_groups(match.get("diff"))
-    if groups is None or tuple(len(group) for group, _ in groups) != (58, 20):
+    if groups is None:
         return False
     try:
         original_image = load_original_image()
@@ -2097,9 +2368,12 @@ def is_exact_complete_call_role_rotation_match(match: dict) -> bool:
                 return False
             paired_by_index[left_index] = (orig_text, recomp_text)
 
-    expected_visible = tuple(index for index in range(79) if index != 58)
-    if tuple(sorted(paired_by_index)) != expected_visible:
+    visible_indices = tuple(sorted(paired_by_index))
+    complete_visibility = tuple(range(79))
+    legacy_visibility = tuple(index for index in range(79) if index != 58)
+    if visible_indices not in (complete_visibility, legacy_visibility):
         return False
+    hidden_indices = set(range(79)).difference(visible_indices)
 
     expected_draw_anim = unique_recompiled_symbol_address(
         "?DrawAnim@LemmingAnimsManager@@QAEXFFKKKPAVRemap@@@Z"
@@ -2129,7 +2403,7 @@ def is_exact_complete_call_role_rotation_match(match: dict) -> bool:
         recomp_text = f"{recomp_mnemonic} {recomp_operands}".strip()
         rendered_pair = paired_by_index.get(index)
         if rendered_pair is None:
-            if index != 58 or orig_text != recomp_text:
+            if index not in hidden_indices or orig_text != recomp_text:
                 return False
         elif orig_mnemonic != "call" and not (
             decoded_text_matches_json(orig_text, rendered_pair[0])
@@ -2187,6 +2461,8 @@ def is_exact_complete_call_role_rotation_match(match: dict) -> bool:
         return False
 
     return is_exact_complete_call_role_rotation(
+        orig_asm, recomp_asm, {58}
+    ) or is_exact_draw_duplicator_three_role_schedule(
         orig_asm, recomp_asm, {58}
     )
 
@@ -2631,6 +2907,137 @@ def read_pointer_table_offsets(
 def is_exact_complete_adjacent_short_field_alias_match(match: dict) -> bool:
     """Prove selected base+2 aliases from both complete executable bodies."""
     candidates = {
+        0x0043C610: {
+            "name": "C2D::DrawBullet",
+            "size": 0x4B,
+            "instruction_count": 23,
+            "call_indices": (20,),
+            "first_visible_index": 2,
+            "json_table_rows": 0,
+            "jump_table": (),
+            "next_orig": 0x0043C660,
+            "pdb_function": "?DrawBullet@C2D@@QAEXAAVViewData@@H@Z",
+            "fields": (
+                {
+                    "orig_pattern": r"sub ax, word ptr \[<OFFSET\d+>\]",
+                    "recomp_text": "sub ax, word ptr [bulletOffset[1] (OFFSET)]",
+                    "base_text": "sub ax, word ptr [bulletOffset (DATA)]",
+                    "pdb_name": "bulletOffset",
+                    "orig_base": 0x00497070,
+                    "data": b"\x04\x00\x04\x00",
+                    "count": 1,
+                },
+            ),
+            "data_refs": (
+                {
+                    "index": 13,
+                    "orig_text": "mov edx, dword ptr "
+                    "[edx*4 + bulletResources (DATA)]",
+                    "recomp_text": "mov edx, dword ptr "
+                    "[edx*4 + bulletResources (DATA)]",
+                    "orig_target": 0x0049EF38,
+                    "pdb_name": "bulletResources",
+                    "data": bytes.fromhex(
+                        "60000000610000006200000063000000"
+                        "6400000065000000660000005f000000"
+                    ),
+                    "decoded_pattern": (
+                        r"mov edx, dword ptr \[edx\*4 \+ (0x[0-9a-f]+)\]"
+                    ),
+                },
+            ),
+        },
+        0x0043C660: {
+            "name": "C2D::DrawAmmo",
+            "size": 0x7A,
+            "instruction_count": 38,
+            "call_indices": (21, 36),
+            "first_visible_index": 5,
+            "json_table_rows": 0,
+            "jump_table": (),
+            "next_orig": 0x0043C6E0,
+            "pdb_function": "?DrawAmmo@C2D@@QAEXAAVViewData@@H@Z",
+            "fields": (
+                {
+                    "orig_pattern": r"sub ax, word ptr \[<OFFSET\d+>\]",
+                    "recomp_text": "sub ax, word ptr [ammoOffset[1] (OFFSET)]",
+                    "base_text": "sub ax, word ptr [ammoOffset (DATA)]",
+                    "pdb_name": "ammoOffset",
+                    "orig_base": 0x00497064,
+                    "data": b"\x08\x00\x10\x00",
+                    "count": 1,
+                },
+                {
+                    "orig_pattern": r"sub ax, word ptr \[<OFFSET\d+>\]",
+                    "recomp_text": "sub ax, word ptr [pelletOffset[1] (OFFSET)]",
+                    "base_text": "sub ax, word ptr [pelletOffset (DATA)]",
+                    "pdb_name": "pelletOffset",
+                    "orig_base": 0x00497068,
+                    "data": b"\x10\x00\x10\x00",
+                    "count": 1,
+                },
+            ),
+        },
+        0x0043CA30: {
+            "name": "C2D::DrawTrampoline",
+            "size": 0x8C,
+            "instruction_count": 53,
+            "call_indices": (26, 48),
+            "first_visible_index": 0,
+            "visible_indices": tuple(range(0, 37)) + tuple(range(38, 53)),
+            "json_table_rows": 0,
+            "jump_table": (),
+            "next_orig": 0x0043CAC0,
+            "pdb_function": "?DrawTrampoline@C2D@@QAEXAAVViewData@@@Z",
+            "fields": (
+                {
+                    "orig_pattern": r"movsx eax, word ptr \[<OFFSET\d+>\]",
+                    "recomp_text": (
+                        "movsx eax, word ptr [trampolineOffset[1] (OFFSET)]"
+                    ),
+                    "base_text": "movsx eax, word ptr [trampolineOffset (DATA)]",
+                    "pdb_name": "trampolineOffset",
+                    "orig_base": 0x00497098,
+                    "data": b"\x16\x00\x16\x00",
+                    "count": 1,
+                },
+            ),
+        },
+        0x0043D070: {
+            "name": "C2D::DrawCrate",
+            "size": 0x80,
+            "instruction_count": 42,
+            "call_indices": (24, 39),
+            "first_visible_index": 8,
+            "json_table_rows": 0,
+            "jump_table": (),
+            "next_orig": 0x0043D0F0,
+            "pdb_function": "?DrawCrate@C2D@@QAEXAAVViewData@@H@Z",
+            "fields": (
+                {
+                    "orig_pattern": r"sub ax, word ptr \[<OFFSET\d+>\]",
+                    "recomp_text": "sub ax, word ptr [crateOffset[1] (OFFSET)]",
+                    "base_text": "sub ax, word ptr [crateOffset (DATA)]",
+                    "pdb_name": "crateOffset",
+                    "orig_base": 0x0049703C,
+                    "data": b"\x08\x00\x18\x00",
+                    "count": 1,
+                },
+                {
+                    "orig_pattern": r'sub ax, word ptr \["2" \(STRING\)\]',
+                    "recomp_text": (
+                        "sub ax, word ptr [crateExplosionOffset[1] (OFFSET)]"
+                    ),
+                    "base_text": (
+                        "sub ax, word ptr [crateExplosionOffset (DATA)]"
+                    ),
+                    "pdb_name": "crateExplosionOffset",
+                    "orig_base": 0x00497040,
+                    "data": b"\x22\x00\x32\x00",
+                    "count": 1,
+                },
+            ),
+        },
         0x0043D0F0: {
             "name": "C2D::DrawTimeBonus",
             "size": 0x37,
@@ -2821,6 +3228,16 @@ def is_exact_complete_adjacent_short_field_alias_match(match: dict) -> bool:
     candidate = candidates.get(orig_start)
     if candidate is None or match.get("name") != candidate["name"]:
         return False
+    if "next_orig" in candidate:
+        try:
+            if norm_addr(match["_next_orig_addr"]) != candidate["next_orig"]:
+                return False
+        except (AttributeError, KeyError, TypeError, ValueError):
+            return False
+    if "pdb_function" in candidate and recomp_start != unique_recompiled_symbol_address(
+        candidate["pdb_function"]
+    ):
+        return False
 
     collected = collect_addressed_function_pairs(match.get("diff"))
     if collected is None:
@@ -2981,12 +3398,16 @@ def is_exact_complete_adjacent_short_field_alias_match(match: dict) -> bool:
 
         data_ref = data_refs.get(index)
         if data_ref is not None:
-            orig_match = re.fullmatch(
+            decoded_pattern = data_ref.get(
+                "decoded_pattern",
                 r"mov ebx, dword ptr \[edi\*4 \+ (0x[0-9a-f]+)\]",
+            )
+            orig_match = re.fullmatch(
+                decoded_pattern,
                 orig_text,
             )
             recomp_match = re.fullmatch(
-                r"mov ebx, dword ptr \[edi\*4 \+ (0x[0-9a-f]+)\]",
+                decoded_pattern,
                 recomp_text,
             )
             expected_recomp_target = unique_recompiled_symbol_address(
@@ -3194,7 +3615,12 @@ def run_selftest() -> int:
 
     failed = 0
     strict_target_identities = (
+        (0x0040F960, "PlayerLemming::HasObject"),
+        (0x0043C610, "C2D::DrawBullet"),
+        (0x0043C660, "C2D::DrawAmmo"),
+        (0x0043CA30, "C2D::DrawTrampoline"),
         (0x0043CFA0, "C2D::DrawDuplicator"),
+        (0x0043D070, "C2D::DrawCrate"),
         (0x0043D0F0, "C2D::DrawTimeBonus"),
         (0x0043D370, "C2D::DrawSheep"),
         (0x0043D420, "C2D::DrawBall"),
@@ -5023,6 +5449,72 @@ def run_selftest() -> int:
         print("selftest fail: multiply/copy sequence with live flags was normalized")
         failed += 1
 
+    has_object_orig = [
+        "push esi",
+        "mov esi, dword ptr [esp + 8]",
+        "cmp esi, 5",
+        "je target_3c",
+        "mov edx, dword ptr [ecx + 0x220]",
+        "cmp edx, 0xc",
+        "je target_2d",
+        "xor eax, eax",
+        "test edx, edx",
+        "jle target_2d",
+        "add ecx, 0x1c0",
+        "cmp dword ptr [ecx], esi",
+        "je target_33",
+        "add ecx, 4",
+        "inc eax",
+        "cmp eax, edx",
+        "jl target_21",
+        "xor eax, eax",
+        "pop esi",
+        "ret 4",
+        "mov eax, 1",
+        "pop esi",
+        "ret 4",
+        "cmp word ptr [ecx + 0x228], 0x32",
+        "jne target_2d",
+        "mov eax, 1",
+        "pop esi",
+        "ret 4",
+    ]
+    has_object_recomp = list(has_object_orig)
+    has_object_recomp[:2] = [
+        "mov eax, dword ptr [esp + 4]",
+        "push esi",
+    ]
+    has_object_recomp[2] = "cmp eax, 5"
+    has_object_recomp[7] = "xor esi, esi"
+    has_object_recomp[11] = "cmp dword ptr [ecx], eax"
+    has_object_recomp[14] = "inc esi"
+    has_object_recomp[15] = "cmp esi, edx"
+    if not is_exact_player_has_object_role_schedule(
+        has_object_orig, has_object_recomp
+    ):
+        print("selftest fail: safe complete HasObject role schedule rejected")
+        failed += 1
+
+    unsafe_has_object_schedules = (
+        ("wrong pre-save stack slot", 0, "mov eax, dword ptr [esp + 8]"),
+        ("different saved register", 1, "push edi"),
+        ("partial argument role", 11, "cmp dword ptr [ecx], esi"),
+        ("word subregister role", 15, "cmp si, dx"),
+        ("different inventory offset", 4, "mov edx, dword ptr [ecx + 0x224]"),
+        ("different branch edge", 16, "jl target_23"),
+        ("missing restored register", 26, "pop edi"),
+        ("different return cleanup", 27, "ret 8"),
+    )
+    for description, index, replacement in unsafe_has_object_schedules:
+        unsafe = list(has_object_recomp)
+        unsafe[index] = replacement
+        if is_exact_player_has_object_role_schedule(has_object_orig, unsafe):
+            print(
+                "selftest fail: unsafe HasObject role schedule accepted: "
+                f"{description}"
+            )
+            failed += 1
+
     if DEFAULT_JSON.is_file() and RECOMPILED_EXE.is_file():
         full_matches = load_matches(DEFAULT_JSON)
 
@@ -5117,6 +5609,320 @@ def run_selftest() -> int:
                         ]
                     )
                 return bytes(data)
+
+        rebuilt_image = load_recompiled_image()
+
+        def accepted_with_recompiled_patches(match: dict, patches: dict[int, bytes]) -> bool:
+            patched_image = PatchedImage(rebuilt_image, patches)
+            saved_loader = globals()["load_recompiled_image"]
+            globals()["load_recompiled_image"] = lambda: patched_image
+            try:
+                ratio, _ = compute_ratio(match, match["name"])
+            finally:
+                globals()["load_recompiled_image"] = saved_loader
+            return ratio == 100.0
+
+        def corrupt_last_instruction_byte(instruction) -> dict[int, bytes]:
+            address, size, _, _ = instruction
+            raw = bytes(rebuilt_image.read(address, size))
+            return {address + size - 1: bytes((raw[-1] ^ 1,))}
+
+        def remove_shared_instruction(match: dict, orig_address: int) -> int:
+            removed = 0
+            for _, chunks in match.get("diff", []):
+                for chunk in chunks:
+                    entries = chunk.get("both", []) or []
+                    kept = []
+                    for entry in entries:
+                        if len(entry) >= 3 and norm_addr(entry[0]) == orig_address:
+                            removed += 1
+                            continue
+                        kept.append(entry)
+                    if "both" in chunk:
+                        chunk["both"] = kept
+            return removed
+
+        duplicator_live = full_matches[0x0043CFA0]
+        duplicator_start = norm_addr(duplicator_live["recomp"])
+        duplicator_body = decode_exact_image_span(
+            rebuilt_image, duplicator_start, 0xD0
+        )
+        if duplicator_body is None or len(duplicator_body) != 79:
+            print("selftest fail: DrawDuplicator complete PE fixture is unavailable")
+            failed += 1
+        else:
+            duplicator_orig_body = decode_exact_image_span(
+                load_original_image(), 0x0043CFA0, 0xD0
+            )
+
+            def normalized_duplicator_body(decoded, start: int) -> list[str]:
+                instructions = []
+                for _, _, mnemonic, operands in decoded:
+                    if mnemonic.startswith("j"):
+                        target = int(operands, 16) - start
+                        instructions.append(f"{mnemonic} target_{target:x}")
+                    elif mnemonic == "call":
+                        instructions.append("call EXACT_DRAW_ANIM")
+                    else:
+                        instructions.append(f"{mnemonic} {operands}".strip())
+                return instructions
+
+            duplicator_orig_asm = normalized_duplicator_body(
+                duplicator_orig_body, 0x0043CFA0
+            )
+            duplicator_recomp_asm = normalized_duplicator_body(
+                duplicator_body, duplicator_start
+            )
+            if not is_exact_draw_duplicator_three_role_schedule(
+                duplicator_orig_asm, duplicator_recomp_asm, {58}
+            ):
+                print(
+                    "selftest fail: DrawDuplicator exact three-role schedule "
+                    "was rejected"
+                )
+                failed += 1
+            unsafe_role_schedule = list(duplicator_recomp_asm)
+            unsafe_role_schedule[21] = "push edx"
+            if is_exact_draw_duplicator_three_role_schedule(
+                duplicator_orig_asm, unsafe_role_schedule, {58}
+            ):
+                print(
+                    "selftest fail: DrawDuplicator accepted a corrupted "
+                    "three-role call argument"
+                )
+                failed += 1
+
+            legacy_duplicator = copy.deepcopy(duplicator_live)
+            if remove_shared_instruction(legacy_duplicator, 0x0043D03C) != 1:
+                print("selftest fail: DrawDuplicator legacy visibility fixture is incomplete")
+                failed += 1
+            else:
+                ratio, _ = compute_ratio(
+                    legacy_duplicator, legacy_duplicator["name"]
+                )
+                if ratio != 100.0:
+                    print(
+                        "selftest fail: DrawDuplicator legacy one-hidden-row "
+                        "fixture was rejected"
+                    )
+                    failed += 1
+
+            lea_instruction = duplicator_body[58]
+            if accepted_with_recompiled_patches(
+                duplicator_live,
+                corrupt_last_instruction_byte(lea_instruction),
+            ):
+                print(
+                    "selftest fail: DrawDuplicator accepted a corrupted formerly "
+                    "hidden LEA"
+                )
+                failed += 1
+
+        c2d_complete_fixtures = (
+            (
+                0x0043C610,
+                "C2D::DrawBullet",
+                0x4B,
+                23,
+                0,
+                (20,),
+                (),
+                ("bulletOffset", "bulletResources"),
+            ),
+            (
+                0x0043C660,
+                "C2D::DrawAmmo",
+                0x7A,
+                38,
+                0,
+                (21, 36),
+                (3,),
+                ("ammoOffset", "pelletOffset"),
+            ),
+            (
+                0x0043CA30,
+                "C2D::DrawTrampoline",
+                0x8C,
+                53,
+                37,
+                (26, 48),
+                (12,),
+                ("trampolineOffset",),
+            ),
+            (
+                0x0043D070,
+                "C2D::DrawCrate",
+                0x80,
+                42,
+                0,
+                (24, 39),
+                (5,),
+                ("crateOffset", "crateExplosionOffset"),
+            ),
+        )
+        for (
+            address,
+            name,
+            size,
+            instruction_count,
+            hidden_index,
+            call_indices,
+            branch_indices,
+            data_symbols,
+        ) in c2d_complete_fixtures:
+            live_match = full_matches[address]
+            body = decode_exact_image_span(
+                rebuilt_image, norm_addr(live_match["recomp"]), size
+            )
+            if body is None or len(body) != instruction_count:
+                print(f"selftest fail: {name} complete PE fixture is unavailable")
+                failed += 1
+                continue
+
+            renamed = copy.deepcopy(live_match)
+            renamed["name"] = "Unrelated::Function"
+            ratio, _ = compute_ratio(renamed, renamed["name"])
+            if ratio == 100.0:
+                print(f"selftest fail: {name} accepted after a name mutation")
+                failed += 1
+
+            for description, key, value in (
+                (
+                    "original boundary",
+                    "_next_orig_addr",
+                    norm_addr(live_match["_next_orig_addr"]) + 1,
+                ),
+                (
+                    "PDB function binding",
+                    "recomp",
+                    hex(norm_addr(live_match["recomp"]) + 1),
+                ),
+            ):
+                wrong_identity = copy.deepcopy(live_match)
+                wrong_identity[key] = value
+                ratio, _ = compute_ratio(wrong_identity, wrong_identity["name"])
+                if ratio == 100.0:
+                    print(
+                        f"selftest fail: {name} accepted wrong {description}"
+                    )
+                    failed += 1
+
+            wrong_calls = copy.deepcopy(live_match)
+            if replace_recompiled_annotation(
+                wrong_calls,
+                "DrawAnim",
+                "call CompletelyWrong::Target (FUNCTION)",
+            ) != len(call_indices):
+                print(f"selftest fail: {name} call-label fixture is incomplete")
+                failed += 1
+            else:
+                ratio, _ = compute_ratio(wrong_calls, wrong_calls["name"])
+                if ratio == 100.0:
+                    print(f"selftest fail: {name} accepted wrong call labels")
+                    failed += 1
+
+            for call_index in call_indices:
+                call = body[call_index]
+                call_address = call[0]
+                wrong_target = int(call[3], 16) + 0x100
+                displacement = wrong_target - (call_address + call[1])
+                if accepted_with_recompiled_patches(
+                    live_match,
+                    {
+                        call_address
+                        + 1: displacement.to_bytes(4, "little", signed=True)
+                    },
+                ):
+                    print(
+                        f"selftest fail: {name} accepted patched call index "
+                        f"{call_index}"
+                    )
+                    failed += 1
+
+            if accepted_with_recompiled_patches(
+                live_match,
+                corrupt_last_instruction_byte(body[hidden_index]),
+            ):
+                print(
+                    f"selftest fail: {name} accepted patched hidden instruction "
+                    f"{hidden_index}"
+                )
+                failed += 1
+
+            for branch_index in branch_indices:
+                if accepted_with_recompiled_patches(
+                    live_match,
+                    corrupt_last_instruction_byte(body[branch_index]),
+                ):
+                    print(
+                        f"selftest fail: {name} accepted patched CFG edge "
+                        f"{branch_index}"
+                    )
+                    failed += 1
+
+            for symbol in data_symbols:
+                symbol_address = unique_recompiled_symbol_address(symbol)
+                if symbol_address is None:
+                    print(f"selftest fail: {name} data fixture {symbol} is unavailable")
+                    failed += 1
+                    continue
+                first_byte = bytes(rebuilt_image.read(symbol_address, 1))[0]
+                if accepted_with_recompiled_patches(
+                    live_match,
+                    {symbol_address: bytes((first_byte ^ 1,))},
+                ):
+                    print(
+                        f"selftest fail: {name} accepted corrupted data {symbol}"
+                    )
+                    failed += 1
+
+        has_object_live = full_matches[0x0040F960]
+        has_object_body = decode_exact_image_span(
+            rebuilt_image, norm_addr(has_object_live["recomp"]), 0x4F
+        )
+        if has_object_body is None or len(has_object_body) != 28:
+            print("selftest fail: HasObject complete PE fixture is unavailable")
+            failed += 1
+        else:
+            renamed = copy.deepcopy(has_object_live)
+            renamed["name"] = "Unrelated::Function"
+            ratio, _ = compute_ratio(renamed, renamed["name"])
+            if ratio == 100.0:
+                print("selftest fail: HasObject accepted after a name mutation")
+                failed += 1
+
+            for description, key, value in (
+                (
+                    "original boundary",
+                    "_next_orig_addr",
+                    norm_addr(has_object_live["_next_orig_addr"]) + 1,
+                ),
+                (
+                    "PDB function binding",
+                    "recomp",
+                    hex(norm_addr(has_object_live["recomp"]) + 1),
+                ),
+            ):
+                wrong_identity = copy.deepcopy(has_object_live)
+                wrong_identity[key] = value
+                ratio, _ = compute_ratio(wrong_identity, wrong_identity["name"])
+                if ratio == 100.0:
+                    print(
+                        "selftest fail: HasObject accepted wrong "
+                        f"{description}"
+                    )
+                    failed += 1
+
+            for description, index in (
+                ("hidden restore", 26),
+                ("CFG edge", 3),
+            ):
+                if accepted_with_recompiled_patches(
+                    has_object_live,
+                    corrupt_last_instruction_byte(has_object_body[index]),
+                ):
+                    print(f"selftest fail: HasObject accepted patched {description}")
+                    failed += 1
 
         duplicator_match = copy.deepcopy(full_matches[0x0043CFA0])
         duplicator_match["name"] = "Unrelated::Function"
