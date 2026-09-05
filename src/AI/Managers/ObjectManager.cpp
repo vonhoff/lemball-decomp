@@ -364,11 +364,13 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 				}
 				else {
 					int message = *(unsigned short*) p_data;
-					unsigned short* fields = (unsigned short*) p_data;
-					int legacyFirst = fields[2];
-					int legacyLast = fields[3];
-					int legacyAux = fields[4];
-					p_data += 10;
+					p_data += 2;
+					unsigned short legacyFirst = *(unsigned short*) p_data;
+					p_data += 2;
+					unsigned short legacyLast = *(unsigned short*) p_data;
+					p_data += 2;
+					unsigned short legacyAux = *(unsigned short*) p_data;
+					p_data += 2;
 					if (*(unsigned int*) &p_append == 0) {
 						AddSwitch(id, x, y, z, message, legacyFirst, legacyLast, legacyAux);
 					}
