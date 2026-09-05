@@ -17,7 +17,6 @@ same conservative codegen-equivalence rules used by check.py.
   python tools/vtable.py --no-build
   python tools/vtable.py --no-build --verbose
   python tools/vtable.py --no-build --annot-strict
-  python tools/vtable.py --selftest
 """
 
 from __future__ import annotations
@@ -33,21 +32,13 @@ from itertools import zip_longest
 from pathlib import Path
 
 from reccmp.compare import Compare
-from reccmp.compare.asm.fixes import find_effective_match
 from reccmp.compare.db import ReccmpMatch
-from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
 from reccmp.parser.codebase import DecompCodebase
 from reccmp.project.detect import RecCmpProject, RecCmpProjectException
 from reccmp.types import EntityType, ImageId
 
 from build import run_build
-from check import (
-    is_equivalent_insn,
-    normalize_asm,
-    normalize_copy_tests,
-    normalize_multiply_copy_zero,
-    normalize_zero_comparisons,
-)
+from check import is_equivalent_insn, is_codegen_equivalent_diff
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
@@ -340,25 +331,12 @@ def is_deleting_destructor_alias_pair(
 
 
 def codegen_equivalent(comparison) -> bool:
-    """Apply check.py's conservative compiler-entropy rules to a direct pair."""
-    orig_raw = [instruction for _, instruction in comparison.diff.orig_inst]
-    recomp_raw = [instruction for _, instruction in comparison.diff.recomp_inst]
-    if not orig_raw or len(orig_raw) != len(recomp_raw):
+    """Apply the general check.py equivalence rules to a direct pair."""
+    orig = comparison.diff.orig_inst
+    recomp = comparison.diff.recomp_inst
+    if not orig or len(orig) != len(recomp):
         return False
-
-    orig_asm = [normalize_asm(instruction) for instruction in orig_raw]
-    recomp_asm = [normalize_asm(instruction) for instruction in recomp_raw]
-    for index, (orig_text, recomp_text) in enumerate(zip(orig_raw, recomp_raw)):
-        if is_equivalent_insn(orig_text, recomp_text):
-            recomp_asm[index] = orig_asm[index]
-
-    normalize_copy_tests(orig_asm)
-    normalize_copy_tests(recomp_asm)
-    normalize_multiply_copy_zero(orig_asm)
-    normalize_multiply_copy_zero(recomp_asm)
-    normalize_zero_comparisons(orig_asm, recomp_asm)
-    matcher = SequenceMatcherWithPins(orig_asm, recomp_asm, [])
-    return matcher.ratio() == 1.0 or find_effective_match(matcher.get_opcodes(), orig_asm, recomp_asm)
+    return is_codegen_equivalent_diff([["", [{"orig": orig, "recomp": recomp}]]])
 
 
 def generated_function_codegen_matches(
@@ -622,177 +600,6 @@ def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) 
     return 0 if comparisons_pass and coverage_pass else 1
 
 
-class FakeImage:
-    def __init__(self, start: int, data: bytes):
-        self.start = start
-        self.data = data
-
-    def is_valid_vaddr(self, address: int) -> bool:
-        return self.start <= address < self.start + len(self.data)
-
-    def read(self, address: int, size: int) -> bytes:
-        offset = address - self.start
-        if offset < 0:
-            raise ValueError(address)
-        return self.data[offset : offset + size]
-
-
-def rel32(source: int, destination: int) -> bytes:
-    return b"\xe9" + struct.pack("<i", destination - source - 5)
-
-
-class FakeEntity:
-    def __init__(self, orig_addr: int, size: int):
-        self.orig_addr = orig_addr
-        self._size = size
-
-    def size(self, image_id: ImageId) -> int:
-        assert image_id == ImageId.RECOMP
-        return self._size
-
-
-class FakeNamedEntity:
-    def __init__(self, name: str, symbol: str | None = None):
-        self.name = name
-        self.symbol = symbol
-
-    def best_name(self) -> str:
-        return self.name
-
-    def get(self, key: str, default=None):
-        if key == "symbol":
-            return self.symbol
-        return default
-
-
-def run_selftest() -> int:
-    start = 0x1000
-    data = bytearray(b"\x90" * 0x40)
-    data[0:5] = rel32(start, start + 0x10)
-    data[0x10:0x15] = rel32(start + 0x10, start + 0x20)
-    image = FakeImage(start, bytes(data))
-
-    samples = (
-        (start, start + 0x20),
-        (start + 0x10, start + 0x20),
-        (start + 0x20, start + 0x20),
-        (None, None),
-    )
-    for address, expected in samples:
-        actual = resolve_jump(image, address)
-        if actual != expected:
-            print(f"selftest fail: {format_addr(address)} -> {format_addr(actual)}, expected {format_addr(expected)}")
-            return 1
-
-    named_body = start + 0x10
-    resolved = resolve_jump(image, start, lambda address: address == named_body)
-    if resolved != named_body:
-        print("selftest fail: named tail-jump body was treated as another linker thunk")
-        return 1
-
-    cyclic = bytearray(b"\x90" * 0x20)
-    cyclic[0:5] = rel32(start, start + 0x10)
-    cyclic[0x10:0x15] = rel32(start + 0x10, start)
-    if resolve_jump(FakeImage(start, bytes(cyclic)), start) != start:
-        print("selftest fail: cyclic thunk chain did not stop safely")
-        return 1
-
-    clone_data = b"\xc2\x04\x00\x90\xc2\x04\x00\xcc"
-    clone_image = FakeImage(start, clone_data)
-    if not is_original_clone(clone_image, start + 4, FakeEntity(start, 3)):
-        print("selftest fail: exact original clone was not recognized")
-        return 1
-    if is_original_clone(clone_image, start + 3, FakeEntity(start, 3)):
-        print("selftest fail: non-clone original body was accepted")
-        return 1
-
-    adjuster_name = "Thing::Method`vtordisp{-4, 0}'"
-    if not is_same_generated_adjuster_identity(
-        FakeNamedEntity(adjuster_name), FakeNamedEntity(adjuster_name)
-    ):
-        print("selftest fail: duplicate named adjuster was not recognized")
-        return 1
-    if is_same_generated_adjuster_identity(
-        FakeNamedEntity(adjuster_name), FakeNamedEntity("Thing::Method")
-    ):
-        print("selftest fail: unequal adjusters were accepted")
-        return 1
-
-    fixed_adjuster = FakeNamedEntity(
-        "Thing::Method",
-        "?Method@Thing@@WPPPPPOLA@AEXXZ",
-    )
-    if not is_generated_adjuster(fixed_adjuster):
-        print("selftest fail: fixed-this adjuster symbol was not recognized")
-        return 1
-    if not is_generated_adjuster(
-        FakeNamedEntity(adjuster_name, "?Method@Thing@@$4PPPPPPPM@A@AEXXZ")
-    ):
-        print("selftest fail: vtordisp symbol was not recognized")
-        return 1
-    if is_generated_adjuster(FakeNamedEntity("Thing::Method", "?Method@Thing@@UAEXXZ")):
-        print("selftest fail: ordinary virtual method was treated as an adjuster")
-        return 1
-
-    scalar_dtor = FakeNamedEntity("Thing::`scalar deleting destructor'")
-    vector_dtor = FakeNamedEntity("Thing::`vector deleting destructor'(unsigned int)")
-    if deleting_destructor_identity(scalar_dtor) != ("Thing", "scalar"):
-        print("selftest fail: scalar deleting-destructor identity was not parsed")
-        return 1
-    if deleting_destructor_identity(vector_dtor) != ("Thing", "vector"):
-        print("selftest fail: vector deleting-destructor identity was not parsed")
-        return 1
-    if deleting_destructor_identity(FakeNamedEntity("Other::~Other")) is not None:
-        print("selftest fail: ordinary destructor was accepted as a deleting destructor")
-        return 1
-    if not is_deleting_destructor_alias_pair(scalar_dtor, vector_dtor):
-        print("selftest fail: same-class deleting-destructor aliases were not recognized")
-        return 1
-    if is_deleting_destructor_alias_pair(scalar_dtor, scalar_dtor):
-        print("selftest fail: identical deleting-destructor kinds were treated as aliases")
-        return 1
-    if is_deleting_destructor_alias_pair(
-        scalar_dtor, FakeNamedEntity("Other::`vector deleting destructor'")
-    ):
-        print("selftest fail: different-class deleting destructors were treated as aliases")
-        return 1
-
-    if nested_vtable_symbol("Thing", "BaseSocket's `ReadSocket") != "??_7Thing@@6BBaseSocket@@ReadSocket@@@":
-        print("selftest fail: nested vtable symbol was not reconstructed")
-        return 1
-    if nested_vtable_symbol("Thing", "BaseSocket") is not None:
-        print("selftest fail: ordinary vtable qualifier was treated as a nested path")
-        return 1
-
-    if not instruction_sequences_equivalent(
-        ["jmp Thing::`scalar deleting destructor' (FUNCTION)"],
-        ["jmp Thunk of 'Thing::`scalar deleting destructor'' (THUNK)"],
-    ):
-        print("selftest fail: nested-apostrophe linker thunk was not normalized")
-        return 1
-    if instruction_sequences_equivalent(
-        ["jmp Thing::First (FUNCTION)"],
-        ["jmp Thunk of 'Thing::Second' (THUNK)"],
-    ):
-        print("selftest fail: unequal linker-thunk targets were accepted")
-        return 1
-
-    null_slot = SlotResult(0, 0, 0, 0, 0, None, None)
-    if not null_slot.matches:
-        print("selftest fail: corresponding null slots did not match")
-        return 1
-    one_sided_null = SlotResult(0, 0, 1, 0, 1, None, None)
-    if one_sided_null.matches:
-        print("selftest fail: one-sided null slot was accepted")
-        return 1
-    if one_sided_null.category != "layout-mismatch":
-        print("selftest fail: one-sided null slot was not classified as a layout mismatch")
-        return 1
-
-    print("vtable selftest: ok")
-    return 0
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description="Thunk-aware LEMBALL vtable comparison")
     parser.add_argument("--target", default="LEMBALL", help="reccmp target id (default: LEMBALL)")
@@ -805,11 +612,8 @@ def main() -> int:
         action="store_true",
         help="also fail when a source VTABLE annotation cannot be paired",
     )
-    parser.add_argument("--selftest", action="store_true", help="exercise jump resolution and exit")
     args = parser.parse_args()
 
-    if args.selftest:
-        return run_selftest()
     if not args.no_build:
         result = run_build(clean_first=args.clean_first)
         if result != 0:

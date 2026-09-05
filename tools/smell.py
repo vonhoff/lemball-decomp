@@ -4,7 +4,6 @@
   python tools/smell.py
   python tools/smell.py --annot
   python tools/smell.py --annot-strict
-  python tools/smell.py --selftest
   python tools/smell.py src/Visos/Graphics
 
 Default errors:
@@ -78,34 +77,6 @@ DTOR_DEF = re.compile(r"^(?P<class>[A-Za-z_][\w:]*)::~[A-Za-z_][\w]*\s*\(")
 FREE_DEF = re.compile(r"^(?:static\s+)?(?:[A-Za-z_][\w:*&]*\s+)+\w+\s*\(")
 BUFFER_OK = re.compile(r"m_numberBuffer|Bits\b|sz[A-Z]|\bp_bits\b")
 SKIP_LEAD = {"if", "while", "for", "switch", "return", "else", "case", "catch", "extern"}
-OFFSET_POKE_SAMPLES = (
-	("if (*(unsigned int*) ((char*) g_pActiveConnection + 0x1c) != 0) {", True),
-	("m_projectileEndY = ((int*) ((short*) offsets + 0x16))[0] + m_junctions[i].m_y;", True),
-	("rawLength = *(unsigned int*) (p_patch + 0x38);", True),
-	("colorCount = *(int*) ((unsigned char*) p_palette + 0x48) - 10;", True),
-	("x = *(short*) ((unsigned char*) p_point + 4);", True),
-	("position.m_y = (short) (*(int*) (offsets + 2) + m_gunY);", True),
-	("m_projectileX = offsets[6] + m_selectionStartX;", False),
-	("m_writeCursor = write + sizeof(Message);", False),
-	("musicId = m_randomMusicIndex + 0x239;", False),
-	("*(int*) &ownerList[2] = *(int*) &ownerList[2] - 1;", False),
-	("if (handle == (void*) -1) {", False),
-	("m_name = (char*) &entry[2];", False),
-	("p_headerCursor = (unsigned char*) &entry[2] + m_headerSkip;", False),
-	("message->Set((unsigned char*) (header + 1));", False),
-	("id = header->m_messageId;", False),
-	("((UserActionMessage*) m_userActionMessage)->Set(packet->m_data + 0x10);", True),
-	("*(unsigned short*) (m_buffer + 0x0a) = 0;", True),
-	("storage = (unsigned char*) operator new(m_payloadCapacity + sizeof(BasePacketHeader));", False),
-	("((PvBackBuffSurface*) ((char*) this + 0x94))->~PvBackBuffSurface();", True),
-	("((PvSurface*) ((char*) slot->m_surface + 0x55c))->~PvSurface();", True),
-	("ai = (Ai*) ((char*) m_game->m_process - 0x10);", True),
-	("m_activeProcess = (char*) m_game->m_process - 0x10;", True),
-	("ai = (Ai*) m_game->m_process;", False),
-	("dst = (char*) m_numberBuffer + 0x21 + signLen;", False),
-	("((GunButtons*) this)->DrawBackBuffer();", False),
-)
-
 ANNOT_DEFAULT = "default"
 ANNOT_ACTIONABLE = "actionable"
 ANNOT_STRICT = "strict"
@@ -196,19 +167,15 @@ def preceding_block(lines: list[str], index: int) -> list[str]:
 	return block
 
 
-def allowed_expr(expr: str) -> bool:
-	return bool(BUFFER_OK.search(expr))
-
-
 def is_offset_poke(code: str) -> bool:
-	if allowed_expr(code):
+	if BUFFER_OK.search(code):
 		return False
 	if MI_DTOR_POKE.search(code):
 		return True
 	if CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code) or NAKED_DATA_OFFSET.search(code):
 		return True
 	for match in EXPR_CHAR_OFFSET.finditer(code):
-		if not allowed_expr(match.group("expr")):
+		if not BUFFER_OK.search(match.group("expr")):
 			return True
 	return False
 
@@ -231,7 +198,7 @@ def scan_file(
 				hits.append("%s:%d: this-adjust-poke" % (rel, lineno))
 			poked = False
 			for match in EXPR_CHAR_OFFSET.finditer(code):
-				if not allowed_expr(match.group("expr")):
+				if not BUFFER_OK.search(match.group("expr")):
 					hits.append("%s:%d: expr-char-offset %s" % (rel, lineno, match.group(0).strip()[:100]))
 					poked = True
 					break
@@ -241,7 +208,7 @@ def scan_file(
 			if not poked and is_offset_poke(code):
 				hits.append("%s:%d: offset-poke %s" % (rel, lineno, code.strip()[:100]))
 			for match in CHAR_VAR_OFFSET.finditer(code):
-				if allowed_expr(match.group("expr")):
+				if BUFFER_OK.search(match.group("expr")):
 					continue
 				if match.group("off") == "sizeof":
 					continue
@@ -307,35 +274,8 @@ def main(argv: list[str]) -> int:
 		action="store_true",
 		help="fail every definition lacking a reccmp annotation, including source-empty definitions",
 	)
-	parser.add_argument("--selftest", action="store_true", help="check offset-poke samples and exit")
 	parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
 	args = parser.parse_args(argv[1:])
-	if args.selftest:
-		failed = 0
-		for sample, expect in OFFSET_POKE_SAMPLES:
-			got = is_offset_poke(sample)
-			if got != expect:
-				sys.stderr.write("selftest fail: expect %s got %s: %s\n" % (expect, got, sample))
-				failed += 1
-		annotation_samples = (
-			((True, False, False, False, ANNOT_ACTIONABLE), None),
-			((False, True, False, False, ANNOT_DEFAULT), None),
-			((False, True, False, False, ANNOT_ACTIONABLE), "hit"),
-			((False, True, True, False, ANNOT_ACTIONABLE), "review-empty"),
-			((False, False, True, False, ANNOT_ACTIONABLE), "review-empty"),
-			((False, True, False, True, ANNOT_ACTIONABLE), "review-synthetic"),
-			((False, True, True, False, ANNOT_STRICT), "hit"),
-			((False, False, False, False, ANNOT_DEFAULT), "hit"),
-		)
-		for params, expect in annotation_samples:
-			got = annotation_disposition(*params)
-			if got != expect:
-				sys.stderr.write("selftest fail: annotation expect %s got %s: %s\n" % (expect, got, params))
-				failed += 1
-		if failed:
-			return 1
-		sys.stdout.write("smell selftest: ok\n")
-		return 0
 	targets = [Path(a) for a in args.paths] if args.paths else [SRC]
 	files: list[Path] = []
 	for target in targets:

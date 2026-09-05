@@ -154,9 +154,9 @@ def resolve_original_target(image, address: int) -> int | None:
 
 
 def add_original_evidence(funcs: list[Func]) -> list[Func]:
-    from check import load_original_image
+    from reccmp.formats import detect_image
 
-    image = load_original_image()
+    image = detect_image(ROOT / "data" / "LEMBALL.EXE")
     if image is None:
         raise ValueError('original executable is unavailable')
     entries = {f.addr for f in funcs}
@@ -389,15 +389,6 @@ def print_clones(funcs: list[Func], min_clone: int, limit: int) -> None:
         print(f"  ... {len(groups) - limit} more (raise --limit)")
 
 
-def print_addrs(funcs: list[Func]) -> None:
-    print(" ".join(f"0x{f.addr:08x}" for f in funcs))
-
-
-def refresh_report() -> None:
-    cmd = [sys.executable, str(TOOLS_DIR / "report.py")]
-    subprocess.run(cmd, cwd=ROOT, check=True)
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -418,7 +409,7 @@ def main() -> int:
         parser.error("--addrs requires --kind tiny, --kind near or --kind gain")
 
     if args.refresh:
-        refresh_report()
+        subprocess.run([sys.executable, str(TOOLS_DIR / "report.py")], cwd=ROOT, check=True)
 
     if not args.report.exists():
         sys.stderr.write(
@@ -437,9 +428,7 @@ def main() -> int:
     if args.addrs:
         selected = (tiny_stubs(funcs, args.max_size) if args.kind == "tiny"
                     else ranked_gain(funcs) if args.kind == "gain" else near_funcs(funcs))
-        if args.limit > 0:
-            selected = selected[: args.limit]
-        print_addrs(selected)
+        print(" ".join(f"0x{f.addr:08x}" for f in limited(selected, args.limit)))
         return 0
 
     if args.kind == "all":
