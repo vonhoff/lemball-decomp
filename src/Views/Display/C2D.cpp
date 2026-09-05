@@ -905,9 +905,34 @@ void C2D::DrawDuplicator(ViewData& p_viewData)
 }
 
 // 68K 0x10b0397e DrawCrate__3C2DFR9CViewDatai
-// STUB: LEMBALL 0x0043d070
+// FUNCTION: LEMBALL 0x0043d070
 void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 {
+	eAction action;
+	unsigned int stateTimer;
+
+	action = p_viewData.m_action;
+	stateTimer = p_viewData.m_stateTimer;
+
+	switch (action) {
+	case (eAction) 0x18:
+		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 8,
+								 p_viewData.m_positionY - 24,
+								 RES_GAME_CRATE,
+								 stateTimer,
+								 p_viewData.m_animationTime,
+								 0);
+		break;
+	case (eAction) 0x19:
+	case (eAction) 0x1a:
+		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 34,
+								 p_viewData.m_positionY - 50,
+								 RES_GAME_CRATE_EXPLODE,
+								 stateTimer,
+								 p_viewData.m_animationTime,
+								 0);
+		break;
+	}
 }
 
 // 68K 0x10b03a4e DrawTimeBonus__3C2DFR9CViewData
