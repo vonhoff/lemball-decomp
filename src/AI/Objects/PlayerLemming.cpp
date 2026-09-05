@@ -358,16 +358,16 @@ void PlayerLemming::HitMine()
 // FUNCTION: LEMBALL 0x0040f640
 void PlayerLemming::GetData()
 {
-	unsigned short packedState;
+	unsigned short packedState[8];
 	m_position.m_xFixed = (int) (unsigned int) GetWord() << 12;
 	m_position.m_yFixed = (int) (unsigned int) GetWord() << 12;
 	m_position.m_zFixed = (int) (unsigned int) GetWord() << 12;
-	Get(packedState);
-	m_facingDirection = packedState & 7;
-	m_actionArgument = (packedState & 0x38) >> 3;
-	Get(packedState);
-	m_action = (eAction) (packedState & 0xff);
-	m_soundEffect = (eSoundEffect) (packedState >> 8);
+	Get(packedState[1]);
+	m_facingDirection = packedState[1] & 7;
+	m_actionArgument = (packedState[1] & 0x38) >> 3;
+	Get(packedState[1]);
+	m_action = (eAction) (packedState[1] & 0xff);
+	m_soundEffect = (eSoundEffect) (packedState[1] >> 8);
 	m_stateTimer = GetDword();
 }
 

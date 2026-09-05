@@ -120,10 +120,10 @@ void BulletManager::RemoveBullet(Bullet* p_bullet)
 				int count = 0x13 - i;
 				i += count;
 				do {
-					*slot = slot[1];
+					Bullet* next = *(slot + 1);
 					slot++;
-					count--;
-				} while (count != 0);
+					slot[-1] = next;
+				} while (--count);
 			}
 			m_activeBullets[i] = 0;
 			m_activeCount--;

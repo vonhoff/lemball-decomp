@@ -187,9 +187,9 @@ void GWnd::_OnSize()
 		relX = (short) (relX - parentOrigin->m_x);
 		relY = (short) (relY - parentOrigin->m_y);
 	}
-	relOrigin = (VsPoint*) &target->m_relOriginX;
-	relOrigin->m_x = relX;
-	relOrigin->m_y = relY;
+	PvSurface& surface = *target;
+	surface.m_relOriginX = relX;
+	surface.m_relOriginY = relY;
 }
 
 // 68K 0x1010b3ca _OnMove__5CGWndFv

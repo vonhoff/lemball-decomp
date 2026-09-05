@@ -91,15 +91,18 @@ int g_previewRemapTargetIndices[10] = {0xb4, 0xb7, 0xb9, 0xbc, 0xbe, 0xbc, 0xbf,
 int g_anPreviewTextIndices[4] = {0x0a, 0x0d, 0x10, 0x16};
 
 // GLOBAL: LEMBALL 0x0049f8b8
-char g_szPreviewInfinite[] = "Infinite";
+char* g_szPreviewInfinite = "Infinite";
 
 // GLOBAL: LEMBALL 0x0049f8bc
-char g_szPreviewX[] = "x";
+char* g_szPreviewX = "x";
 
 // GLOBAL: LEMBALL 0x0049f8c0
-char* g_szPreviewSkillNames[6] = {"Fun", " Tricky", "Taxing", "Mayhem", "Network", "None"};
+char* g_szPreviewSkillNames[5] = {"Fun", " Tricky", "Taxing", "Mayhem", "Network"};
 
 // GLOBAL: LEMBALL 0x0049f908
+char g_szPreviewNone[] = "None";
+
+// GLOBAL: LEMBALL 0x0049f910
 char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 
 // 68K 0x1080adda __ct__14CPreviewDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
@@ -147,9 +150,9 @@ PreviewDrawer::PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p
 // FUNCTION: LEMBALL 0x00449370
 void PreviewDrawer::Load()
 {
-	unsigned long* goAnim;
+	int i;
 	unsigned long* returnAnim;
-	int* layout;
+	unsigned long* goAnim;
 
 	if (m_mode == 1) {
 		m_backgroundBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_GUNLEMM);
@@ -175,31 +178,35 @@ void PreviewDrawer::Load()
 		m_nextButtonAnimIds = g_dwPreviewNextAnimIdsFull;
 		m_previousButtonAnimIds = g_dwPreviewPreviousAnimIdsFull;
 	}
-	layout = (int*) m_layout;
-	m_animPosition.m_x = (short) layout[0x38 / 4] + (short) layout[0x40 / 4];
+	int* layout = (int*) m_layout;
+	m_animPosition.m_x = (short) layout[0x40 / 4] + (short) layout[0x38 / 4];
 	m_animPosition.m_y = (short) layout[0x3c / 4] + (short) layout[0x44 / 4];
-	m_primitiveBundle.m_primitive.m_x = (short) layout[0x20 / 4];
-	m_primitiveBundle.m_primitive.m_y = (short) layout[0x24 / 4];
-	m_primitiveBundle.m_primitive.m_resource = BaseFrontendDrawer::m_backgroundBitmap;
-	m_primitiveBundle.m_primitive.m_flags = 0x800;
-	m_primitiveBundle.m_primitive.m_remap = 0;
-	m_primitive.m_bitmap.m_x = (short) layout[0x38 / 4];
-	m_primitive.m_bitmap.m_y = (short) layout[0x3c / 4];
-	m_primitive.m_bitmap.m_resource = m_backgroundBitmap;
-	m_primitive.m_bitmap.m_flags = 0x800;
-	AnimsManager::LoadAnims(m_lemmingAnimId);
-	AnimsManager::LoadAnims(m_teamAnimId);
-	AnimsManager::LoadAnims(m_ambientAnimId);
-	AnimsManager::LoadAnims(m_opponentAnimId);
+	ResBitmap* bg = BaseFrontendDrawer::m_backgroundBitmap;
+	for (i = 0; i < 1; i++) {
+		(&m_primitiveBundle)[i].m_primitive.m_x = (short) layout[0x20 / 4];
+		(&m_primitiveBundle)[i].m_primitive.m_y = (short) layout[0x24 / 4];
+		(&m_primitiveBundle)[i].m_primitive.m_resource = bg;
+		(&m_primitiveBundle)[i].m_primitive.m_flags = 0x800;
+		(&m_primitiveBundle)[i].m_primitive.m_remap = 0;
+		(&m_primitive.m_bitmap)[i].m_x = (short) layout[0x38 / 4];
+		(&m_primitive.m_bitmap)[i].m_y = (short) layout[0x3c / 4];
+		(&m_primitive.m_bitmap)[i].m_resource = m_backgroundBitmap;
+		(&m_primitive.m_bitmap)[i].m_flags = 0x800;
+		(&m_primitive.m_bitmap)[i].m_remap = 0;
+	}
+	LoadAnims(m_lemmingAnimId);
+	LoadAnims(m_teamAnimId);
+	LoadAnims(m_ambientAnimId);
+	LoadAnims(m_opponentAnimId);
 	m_buttonBinding = 0;
 	m_nextDisabled = 0;
 	m_previousDisabled = 0;
 	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 4, (unsigned char) m_mode, 0);
-	m_hiliteController->AddButton(layout[0], layout[1], returnAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef000d);
-	m_hiliteController->AddButton(layout[2], layout[3], goAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef000c);
+	m_hiliteController->AddButton(((int*) m_layout)[0], ((int*) m_layout)[1], returnAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef000d);
+	m_hiliteController->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef000c);
 	m_hiliteController
-		->AddButton(layout[4], layout[5], m_previousButtonAnimIds, 1, 0, 1, 0, &m_previousDisabled, 0xacef000f);
-	m_hiliteController->AddButton(layout[6], layout[7], m_nextButtonAnimIds, 1, 0, 1, 0, &m_nextDisabled, 0xacef000e);
+		->AddButton(((int*) m_layout)[4], ((int*) m_layout)[5], m_previousButtonAnimIds, 1, 0, 1, 0, &m_previousDisabled, 0xacef000f);
+	m_hiliteController->AddButton(((int*) m_layout)[6], ((int*) m_layout)[7], m_nextButtonAnimIds, 1, 0, 1, 0, &m_nextDisabled, 0xacef000e);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
 	LoadLevelInformation();
@@ -253,7 +260,6 @@ void PreviewDrawer::DrawText()
 {
 	VsSize advance;
 	VsPoint pos;
-	VsPoint size;
 	char* line;
 	int* positions;
 	int count;
@@ -278,7 +284,10 @@ void PreviewDrawer::DrawText()
 			count = count - 1;
 		} while (count != 0);
 
-		count = (m_networkMode != 0) ? 4 : 3;
+		count = 3;
+		if (m_networkMode != 0) {
+			count = 4;
+		}
 		if (count != 0) {
 			positions = g_anPreviewTextIndices;
 			do {
@@ -294,27 +303,26 @@ void PreviewDrawer::DrawText()
 		}
 
 		layout = (int*) m_layout;
-		if (m_timeText[0] < ':') {
-			pos.m_x = (short) layout[0x58 / 4];
-			pos.m_y = (short) layout[0x5c / 4];
+		if (m_timeText[0] > '9') {
 			advance.m_height = 0;
 			advance.m_width = 0;
-			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, m_timeText, 0x20, 0);
+			pos.m_x = (short) layout[0x58 / 4];
+			pos.m_y = (short) layout[0x5c / 4];
+			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, 0);
 		}
 		else {
-			pos.m_x = (short) layout[0x58 / 4];
-			pos.m_y = (short) layout[0x5c / 4];
 			advance.m_height = 0;
 			advance.m_width = 0;
-			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, 0);
+			pos.m_x = (short) layout[0x58 / 4];
+			pos.m_y = (short) layout[0x5c / 4];
+			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, m_timeText, 0x20, 0);
 		}
 
 		skill = g_pGameStatus->m_skill;
 		font = m_textManager->GetFont(m_chalkFontId);
-		size = font->GetSize(g_szPreviewSkillNames[skill], 0x20);
+		pos.m_x = (short) layout[0xa0 / 4] - font->GetSize(g_szPreviewSkillNames[skill], 0x20).m_x / 2;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		pos.m_x = (short) layout[0xa0 / 4] - size.m_x / 2;
 		pos.m_y = (short) layout[0xa4 / 4];
 		m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewSkillNames[skill], 0x20, 0);
 
@@ -323,7 +331,7 @@ void PreviewDrawer::DrawText()
 			advance.m_width = 0;
 			pos.m_x = (short) layout[0x58 / 4];
 			pos.m_y = (short) layout[0xd4 / 4];
-			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewSkillNames[5], 0x20, 0);
+			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewNone, 0x20, 0);
 		}
 	}
 }
