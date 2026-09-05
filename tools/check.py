@@ -267,6 +267,65 @@ def normalize_zero_comparisons(orig_asm: list[str], recomp_asm: list[str]) -> No
             recomp_asm[index] = orig_text
 
 
+def normalize_swapped_comparison_branches(
+    orig_asm: list[str], recomp_asm: list[str]
+) -> None:
+    """Normalize a nearby compare whose operands and condition are inverted.
+
+    Swapping the two operands of ``cmp`` reverses the ordered condition.  Only
+    accept the exact inverse signed/unsigned branch with the same destination;
+    at most two identical, explicitly flag-neutral instructions may separate
+    the comparison from its flag consumer.
+    """
+    if len(orig_asm) != len(recomp_asm):
+        return
+
+    inverted_condition = {
+        "ja": "jb",
+        "jae": "jbe",
+        "jb": "ja",
+        "jbe": "jae",
+        "jg": "jl",
+        "jge": "jle",
+        "jl": "jg",
+        "jle": "jge",
+    }
+    flag_neutral = {"lea", "mov", "movsx", "movzx", "nop"}
+    for index in range(len(orig_asm) - 1):
+        orig_cmp, orig_operands = split_instruction(orig_asm[index])
+        recomp_cmp, recomp_operands = split_instruction(recomp_asm[index])
+        if (
+            orig_cmp != "cmp"
+            or recomp_cmp != "cmp"
+            or len(orig_operands) != 2
+            or recomp_operands != list(reversed(orig_operands))
+            or orig_operands[0] == orig_operands[1]
+        ):
+            continue
+
+        for branch_index in range(index + 1, min(index + 4, len(orig_asm))):
+            intervening = range(index + 1, branch_index)
+            if any(
+                orig_asm[middle] != recomp_asm[middle]
+                or split_instruction(orig_asm[middle])[0] not in flag_neutral
+                for middle in intervening
+            ):
+                break
+
+            orig_branch, orig_target = split_instruction(orig_asm[branch_index])
+            recomp_branch, recomp_target = split_instruction(recomp_asm[branch_index])
+            if (
+                inverted_condition.get(orig_branch) != recomp_branch
+                or len(orig_target) != 1
+                or recomp_target != orig_target
+            ):
+                continue
+
+            recomp_asm[index] = orig_asm[index]
+            recomp_asm[branch_index] = orig_asm[branch_index]
+            break
+
+
 def normalize_copy_tests(asm: list[str]) -> None:
     """Test the source register when a preceding copy proves it equivalent.
 
@@ -876,6 +935,7 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
     normalize_multiply_copy_zero(orig_asm)
     normalize_multiply_copy_zero(recomp_asm)
     normalize_zero_comparisons(orig_asm, recomp_asm)
+    normalize_swapped_comparison_branches(orig_asm, recomp_asm)
     normalize_dead_stack_reservation(orig_asm, recomp_asm)
     role_map = infer_register_role_map(orig_asm, recomp_asm)
     normalize_register_role_relocations(orig_asm, recomp_asm)
@@ -978,6 +1038,66 @@ def run_selftest() -> int:
             ["cmp ebx, eax", "jge 0x2c", "call <OFFSET1>"],
             ["cmp eax, ebx", "jle 0x2c", "call Thunk of 'Thing::Run' (THUNK)"],
             True,
+        ),
+        (
+            ["cmp dword ptr [esp + 0x14], ebx", "jg -0x50", "ret"],
+            ["cmp ebx, dword ptr [esp + 0x14]", "jl -0x50", "ret"],
+            True,
+        ),
+        (
+            ["cmp dword ptr [esi], eax", "jae 0x20", "ret"],
+            ["cmp eax, dword ptr [esi]", "jbe 0x20", "ret"],
+            True,
+        ),
+        (
+            [
+                "cmp dword ptr [esp + 0x14], ebx",
+                "lea edx, [eax + eax*2]",
+                "mov word ptr [ecx + edx*4 + 8], bp",
+                "jg -0x50",
+            ],
+            [
+                "cmp ebx, dword ptr [esp + 0x14]",
+                "lea edx, [eax + eax*2]",
+                "mov word ptr [ecx + edx*4 + 8], bp",
+                "jl -0x50",
+            ],
+            True,
+        ),
+        (
+            ["cmp dword ptr [esp + 0x14], ebx", "jg -0x50", "ret"],
+            ["cmp ebx, dword ptr [esp + 0x14]", "jl -0x40", "ret"],
+            False,
+        ),
+        (
+            ["cmp dword ptr [esp + 0x14], ebx", "jg -0x50", "ret"],
+            ["cmp ebx, dword ptr [esp + 0x14]", "jle -0x50", "ret"],
+            False,
+        ),
+        (
+            ["cmp dword ptr [esp + 0x14], ebx", "jg -0x50", "ret"],
+            ["cmp ebx, dword ptr [esp + 0x14]", "jb -0x50", "ret"],
+            False,
+        ),
+        (
+            ["cmp dword ptr [esp + 0x14], ebx", "jg -0x50", "ret"],
+            ["cmp ebx, dword ptr [esp + 0x18]", "jl -0x50", "ret"],
+            False,
+        ),
+        (
+            ["cmp dword ptr [esp + 0x14], ebx", "add ecx, 1", "jg -0x50", "ret"],
+            ["cmp ebx, dword ptr [esp + 0x14]", "add ecx, 1", "jl -0x50", "ret"],
+            False,
+        ),
+        (
+            ["cmp dword ptr [esp + 0x14], ebx", "call Thing (FUNCTION)", "jg -0x50", "ret"],
+            ["cmp ebx, dword ptr [esp + 0x14]", "call Thing (FUNCTION)", "jl -0x50", "ret"],
+            False,
+        ),
+        (
+            ["cmp dword ptr [esp + 0x14], ebx", "lea edx, [eax + eax*2]", "jg -0x50", "ret"],
+            ["cmp ebx, dword ptr [esp + 0x14]", "lea ecx, [eax + eax*2]", "jl -0x50", "ret"],
+            False,
         ),
         (
             ["mov byte ptr [eax + esi + 0x3b0], cl", "call <OFFSET1>"],
