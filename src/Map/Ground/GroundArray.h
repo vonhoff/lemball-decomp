@@ -26,6 +26,7 @@ public:
 	friend class Duplicator;
 	friend class Map;
 	friend class Ball;
+	friend class Door;
 
 private:
 	unsigned int m_reserved; // 0x00

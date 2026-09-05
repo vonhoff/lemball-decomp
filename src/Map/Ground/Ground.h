@@ -16,6 +16,7 @@ public:
 	friend class GroundArray;
 	friend class Map;
 	friend class Duplicator;
+	friend class Door;
 
 private:
 	eObjectType m_objectType;    // 0x00

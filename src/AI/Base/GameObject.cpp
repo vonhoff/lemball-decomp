@@ -769,8 +769,7 @@ void GameObject::Init(Ai* p_arg0)
 	g_pAI = p_arg0;
 	g_nGameOver = 0;
 	memset(g_abObjectIdBitmap, 0, sizeof(g_abObjectIdBitmap));
-	unsigned char mask = g_abBitMasks[0];
-	g_abObjectIdBitmap[0] |= mask;
+	g_abObjectIdBitmap[0] |= g_abBitMasks[0];
 }
 
 // 68K 0x1060aeb2 GetId__11CGameObjectFv

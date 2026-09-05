@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
 
 // 68K 0x106062b0 __ct__5CDoorFv
 // STUB: LEMBALL 0x0040d470
@@ -23,21 +24,105 @@ void Door::Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, int
 }
 
 // 68K 0x106065bc Delete__5CDoorFv
-// STUB: LEMBALL 0x0040d760
+// FUNCTION: LEMBALL 0x0040d760
 void Door::Delete()
 {
+	int blockX = (m_position.m_xFixed >> 12) / 16;
+	int blockY = (m_position.m_yFixed >> 12) / 16;
+
+	switch (m_objectType) {
+	case (eObjectType) 0x19:
+		if (blockX >= 0) {
+			if (blockY + 1 >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY + 1) {
+				g_pMap->m_ground.m_ground[(blockY + 1) * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+			}
+			if (blockX >= 0) {
+				if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+					g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+				}
+				if (blockX >= 0 && --blockY >= 0 && blockX < g_pMap->m_ground.m_width &&
+					g_pMap->m_ground.m_height > blockY) {
+					g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+				}
+			}
+		}
+		break;
+	case (eObjectType) 0x1a:
+		if (blockX + 1 >= 0 && blockY >= 0 && g_pMap->m_ground.m_width > blockX + 1 &&
+			g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX + 1].m_collision &= ~1;
+		}
+		if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+		}
+		if (blockX - 1 >= 0 && blockY >= 0 && g_pMap->m_ground.m_width > blockX - 1 &&
+			g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX - 1].m_collision &= ~1;
+		}
+		break;
+	}
 }
 
 // 68K 0x106066c2 SetCollision__5CDoorFv
-// STUB: LEMBALL 0x0040d910
+// FUNCTION: LEMBALL 0x0040d910
 void Door::SetCollision()
 {
+	int blockX = (m_position.m_xFixed >> 12) / 16;
+	int blockY = (m_position.m_yFixed >> 12) / 16;
+
+	switch (m_objectType) {
+	case (eObjectType) 0x19:
+		if (blockX >= 0) {
+			if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
+			}
+			if (blockX >= 0 && --blockY >= 0 && blockX < g_pMap->m_ground.m_width &&
+				g_pMap->m_ground.m_height > blockY) {
+				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
+			}
+		}
+		break;
+	case (eObjectType) 0x1a:
+		if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
+		}
+		if (blockX - 1 >= 0 && blockY >= 0 && g_pMap->m_ground.m_width > blockX - 1 &&
+			g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX - 1].m_collision |= 1;
+		}
+		break;
+	}
 }
 
 // 68K 0x10606794 ResetCollision__5CDoorFv
-// STUB: LEMBALL 0x0040da40
+// FUNCTION: LEMBALL 0x0040da40
 void Door::ResetCollision()
 {
+	int blockX = (m_position.m_xFixed >> 12) / 16;
+	int blockY = (m_position.m_yFixed >> 12) / 16;
+
+	switch (m_objectType) {
+	case (eObjectType) 0x19:
+		if (blockX >= 0) {
+			if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+			}
+			if (blockX >= 0 && --blockY >= 0 && blockX < g_pMap->m_ground.m_width &&
+				g_pMap->m_ground.m_height > blockY) {
+				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+			}
+		}
+		break;
+	case (eObjectType) 0x1a:
+		if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+		}
+		if (blockX - 1 >= 0 && blockY >= 0 && g_pMap->m_ground.m_width > blockX - 1 &&
+			g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX - 1].m_collision &= ~1;
+		}
+		break;
+	}
 }
 
 // 68K 0x10606868 Process__5CDoorFv

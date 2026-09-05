@@ -1569,25 +1569,27 @@ void Surface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radiu
 	int step = 1;
 	int errLimit = p_radius * 2 - 1;
 
-	if (m_clipRect.m_x <= p_centerX && p_centerX <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		int rowY = p_centerY + p_radius;
-		if (m_clipRect.m_y <= rowY && rowY <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[rowY] + p_centerX) = p_colour;
+	if (m_clipRect.m_x <= p_centerX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX) {
+		if (m_clipRect.m_y <= p_centerY + p_radius &&
+			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centerY + p_radius) {
+			*((unsigned char*) m_lines[p_centerY + p_radius] + p_centerX) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= p_centerX && p_centerX <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		int rowY = p_centerY - p_radius;
-		if (m_clipRect.m_y <= rowY && rowY <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[rowY] + p_centerX) = p_colour;
+	if (m_clipRect.m_x <= p_centerX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX) {
+		if (m_clipRect.m_y <= p_centerY - p_radius &&
+			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centerY - p_radius) {
+			*((unsigned char*) m_lines[p_centerY - p_radius] + p_centerX) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= p_centerX + p_radius && p_centerX + p_radius <= m_clipRect.m_x + m_clipRect.m_width - 1 &&
-		m_clipRect.m_y <= p_centerY && p_centerY <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-		*((unsigned char*) m_lines[p_centerY] + p_centerX + p_radius) = p_colour;
+	if (m_clipRect.m_x <= p_centerX + p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX + p_radius) {
+		if (p_centerY >= m_clipRect.m_y && m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centerY) {
+			*((unsigned char*) m_lines[p_centerY] + p_centerX + p_radius) = p_colour;
+		}
 	}
-	if (m_clipRect.m_x <= p_centerX - p_radius && p_centerX - p_radius <= m_clipRect.m_x + m_clipRect.m_width - 1 &&
-		m_clipRect.m_y <= p_centerY && p_centerY <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-		*((unsigned char*) m_lines[p_centerY] + p_centerX - p_radius) = p_colour;
+	if (m_clipRect.m_x <= p_centerX - p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX - p_radius) {
+		if (p_centerY >= m_clipRect.m_y && m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centerY) {
+			*((unsigned char*) m_lines[p_centerY] + p_centerX - p_radius) = p_colour;
+		}
 	}
 	if (p_radius <= 0) {
 		return;
@@ -1605,24 +1607,25 @@ void Surface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radiu
 			err = err - errLimit;
 			errLimit = errLimit - 2;
 		}
-		if (x <= p_radius) {
-			if (ClipCirclePoint(p_centerX + x, p_centerY + p_radius) != 0) {
-				*((unsigned char*) m_lines[upperRow] + p_centerX + x) = p_colour;
-			}
-			if (ClipCirclePoint(p_centerX - x, p_centerY + p_radius) != 0) {
-				*((unsigned char*) m_lines[upperRow] + p_centerX - x) = p_colour;
-			}
-			if (ClipCirclePoint(p_centerX + x, p_centerY - p_radius) != 0) {
-				*((unsigned char*) m_lines[lowerRow] + p_centerX + x) = p_colour;
-			}
-			if (ClipCirclePoint(p_centerX - x, p_centerY - p_radius) != 0) {
-				*((unsigned char*) m_lines[lowerRow] + p_centerX - x) = p_colour;
-			}
-			if (x < p_radius) {
-				DrawClippedCirclePoint(p_centerX, p_centerY, p_radius, x, p_colour);
-			}
+		if (p_radius < x) {
+			continue;
 		}
-	} while (x < p_radius);
+		if (ClipCirclePoint(p_centerX + x, p_centerY + p_radius) != 0) {
+			*((unsigned char*) m_lines[upperRow] + p_centerX + x) = p_colour;
+		}
+		if (ClipCirclePoint(p_centerX - x, p_centerY + p_radius) != 0) {
+			*((unsigned char*) m_lines[upperRow] + p_centerX - x) = p_colour;
+		}
+		if (ClipCirclePoint(p_centerX + x, p_centerY - p_radius) != 0) {
+			*((unsigned char*) m_lines[lowerRow] + p_centerX + x) = p_colour;
+		}
+		if (ClipCirclePoint(p_centerX - x, p_centerY - p_radius) != 0) {
+			*((unsigned char*) m_lines[lowerRow] + p_centerX - x) = p_colour;
+		}
+		if (p_radius > x) {
+			DrawClippedCirclePoint(p_centerX, p_centerY, p_radius, x, p_colour);
+		}
+	} while (p_radius > x);
 }
 
 // FUNCTION: LEMBALL 0x00475f60

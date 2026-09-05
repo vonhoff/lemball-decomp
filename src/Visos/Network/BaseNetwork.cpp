@@ -239,13 +239,9 @@ void BaseNetwork::ShutDown()
 // FUNCTION: LEMBALL 0x00461fc0
 void BaseNetwork::Delete(Connect* p_arg0)
 {
-	Connect* first;
-	Connect* peer;
+	Connect* peer = m_firstConnect;
 	Connect* next;
 	Connect* previous;
-
-	first = m_firstConnect;
-	peer = first;
 	if (peer != 0) {
 		while (peer != p_arg0) {
 			peer = peer->m_nextConnect;
@@ -258,7 +254,7 @@ void BaseNetwork::Delete(Connect* p_arg0)
 		if (m_lastConnect == peer) {
 			m_lastConnect = previous;
 		}
-		if (peer == first) {
+		if (peer == m_firstConnect) {
 			m_firstConnect = next;
 		}
 		m_broadcast->ResetPort(peer->m_port);
