@@ -969,7 +969,7 @@ void Surface::EndRender()
 // FUNCTION: LEMBALL 0x0046dbc0
 void Surface::Blit(BigBitmap* p_arg0, ResBitmap* p_arg1)
 {
-	((PvSurface*) this)->Blit((Bitmap*) p_arg0, p_arg1);
+	Blit((Bitmap*) p_arg0, p_arg1);
 }
 
 // 68K 0x10105df8 Flush__8CSurfaceFv
