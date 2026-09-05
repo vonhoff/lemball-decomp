@@ -161,24 +161,23 @@ int MineManager::GetViewData(ViewData* p_viewData)
 // FUNCTION: LEMBALL 0x00424850
 void MineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	unsigned short count = *(unsigned short*) p_data;
 	unsigned short* data = (unsigned short*) p_data;
-	data++;
-	unsigned int remaining = count;
+	unsigned short count = *data++;
 	Initialise(count);
 	if (count != 0) {
+		unsigned int remaining = count;
 		do {
 			unsigned short id;
-			if (m_ai->m_levelVersion < 2) {
-				id = (unsigned short) GameObject::NextId();
-			}
-			else {
+			if (m_ai->m_levelVersion > 1) {
 				id = *data++;
 			}
-			AiCoord position;
-			position.m_xFixed = *data++ << 0xc;
-			position.m_yFixed = *data++ << 0xc;
-			position.m_zFixed = *data++ << 0xc;
+			else {
+				id = (unsigned short) GameObject::NextId();
+			}
+			unsigned int x = *data++;
+			unsigned int y = *data++;
+			unsigned int z = *data++;
+			AiCoord position(x << 0xc, y << 0xc, z << 0xc);
 			Add(id, position);
 			remaining--;
 		} while (remaining != 0);
