@@ -237,13 +237,7 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
 
 
 def is_codegen_equivalent_diff(diff) -> bool:
-    """Whether all remaining differences are accepted compiler entropy.
-
-    This deliberately delegates register selection, operand-order, and safe
-    instruction-relocation decisions to the pinned reccmp implementation. The
-    local work is limited to removing target/thunk rendering differences that
-    otherwise prevent reccmp from seeing the compiler-only match.
-    """
+    """Whether all remaining differences are accepted compiler entropy."""
     if not diff:
         return False
 
@@ -291,11 +285,6 @@ def format_diff_text(diff) -> str:
             if not orig and not recomp:
                 continue
 
-            if len(orig) == len(recomp) and all(
-                is_equivalent_insn(insn_text(o), insn_text(r)) for o, r in zip(orig, recomp)
-            ):
-                continue
-
             for item in orig:
                 lines.append(f"- {insn_text(item)}")
             for item in recomp:
@@ -304,11 +293,15 @@ def format_diff_text(diff) -> str:
 
 
 def run_reccmp(json_path: Path) -> None:
-    cmd = [str(RECCMP), "--target", "LEMBALL", "--json", str(json_path.name), "--silent"]
+    json_path = json_path.resolve()
+    json_path.unlink(missing_ok=True)
+    cmd = [str(RECCMP), "--target", "LEMBALL", "--json", str(json_path), "--silent"]
     proc = subprocess.run(cmd, cwd=BUILD, capture_output=True, text=True)
-    if proc.returncode != 0 and not json_path.exists():
+    if proc.returncode != 0:
         sys.stderr.write(proc.stderr or proc.stdout)
         raise RuntimeError(f"reccmp exited with code {proc.returncode}")
+    if not json_path.exists():
+        raise RuntimeError(f"reccmp produced no JSON: {json_path}")
 
 
 def load_matches(json_path: Path) -> dict[int, dict]:
@@ -323,7 +316,7 @@ def load_matches(json_path: Path) -> dict[int, dict]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("addrs", nargs="*", help="Addresses (e.g. 0x0045ca30)")
-    parser.add_argument("--diff", action="store_true", help="Print diff for non-matching functions")
+    parser.add_argument("--diff", action="store_true", help="Print differences, including effective matches")
     parser.add_argument("--json", type=Path, default=DEFAULT_JSON)
     parser.add_argument("--no-build", action="store_true", help="Skip incremental build before check")
     parser.add_argument("--clean-first", action="store_true", help="Clean build before check")
@@ -356,7 +349,7 @@ def main() -> int:
 
         suffix = f" {tag}" if tag else ""
         print(f"0x{addr:08x} {name}: {ratio:.2f}%{suffix}")
-        if args.diff and not tag:
+        if args.diff:
             diff_text = format_diff_text(m.get("diff"))
             if diff_text:
                 print("--- diff ---")
