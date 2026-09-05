@@ -7,37 +7,37 @@
 unsigned short Ground::GetZ(int p_x, int p_y)
 {
 	switch (m_objectType) {
-	case TERRAIN_FLAT_LOW:
+	case TERRAIN_TREE:
 		return m_height;
-	case TERRAIN_FLAT_HIGH:
+	case TERRAIN_BLOX_1:
 		return m_height + 0x10;
-	case TERRAIN_FLAT_MIDDLE:
+	case TERRAIN_BLOX_2:
 		return m_height + 8;
-	case TERRAIN_SLOPE_SW_STEEP:
+	case TERRAIN_BLOX_3_SLOPE_SW_STEEP:
 		return (m_height - (short) p_y) + 0x10;
-	case TERRAIN_FLAT_DEFAULT:
+	case TERRAIN_BLOX_4:
 		return m_height;
-	case TERRAIN_FLAT_SPECIAL:
+	case TERRAIN_BLOX_5:
 		return m_height;
-	case 0x20b:
+	case TERRAIN_BLOX_6:
 		return m_height + (short) p_x;
-	case 0x20c:
+	case TERRAIN_BLOX_7:
 		return m_height + (short) p_y;
-	case TERRAIN_SLOPE_SE_STEEP:
+	case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
 		return (m_height - (short) p_x) + 0x10;
-	case TERRAIN_SLOPE_SW_SHALLOW:
+	case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
 		return (m_height - (short) (p_y / 2)) + 7;
-	case TERRAIN_SLOPE_SE_SHALLOW:
+	case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
 		return (m_height - (short) (p_x / 2)) + 7;
-	case TERRAIN_SPECIAL_ONLY:
+	case TERRAIN_ANIM:
 		return m_height;
-	case TERRAIN_FLAT_VARIANT_214:
+	case 0x214:
 		return m_height;
-	case TERRAIN_FLAT_VARIANT_215:
-	case TERRAIN_FLAT_VARIANT_216:
-	case TERRAIN_FLAT_VARIANT_217:
-	case TERRAIN_FLAT_VARIANT_219:
-	case TERRAIN_FLAT_VARIANT_21A:
+	case TERRAIN_FLAME:
+	case TERRAIN_ELECTRIC:
+	case TERRAIN_EMBERS:
+	case TERRAIN_CONVEYOR_VARIANT_A:
+	case TERRAIN_CONVEYOR_VARIANT_B:
 		return m_height;
 	default:
 		return 0;
@@ -81,35 +81,35 @@ bool Ground::IsHit(int p_x, int p_y, unsigned char p_includeSpecial)
 		0x01ffffff, 0x03ffffff, 0x07fffffe, 0x0ffffffc, 0x1ffffff8, 0x3ffffff0, 0x7fffffe0, 0xffffffc0,
 		0xffffff80, 0x3fffff00, 0x0ffffe00, 0x03fff880, 0x00fff000, 0x003fe000, 0x000fc000, 0x0003c000};
 	switch (m_objectType) {
-	case TERRAIN_FLAT_LOW:
+	case TERRAIN_TREE:
 		return xMasks[p_x] & commonMasks[p_y];
-	case TERRAIN_FLAT_HIGH:
+	case TERRAIN_BLOX_1:
 		return xMasks[p_x] & masks0206[p_y];
-	case TERRAIN_FLAT_MIDDLE:
+	case TERRAIN_BLOX_2:
 		return xMasks[p_x] & masks0207[p_y];
-	case TERRAIN_SLOPE_SW_STEEP:
+	case TERRAIN_BLOX_3_SLOPE_SW_STEEP:
 		return xMasks[p_x] & masks0208[p_y];
-	case TERRAIN_FLAT_DEFAULT:
+	case TERRAIN_BLOX_4:
 		return xMasks[p_x] & commonMasks[p_y];
-	case TERRAIN_FLAT_SPECIAL:
+	case TERRAIN_BLOX_5:
 		break;
-	case 0x20b:
-	case 0x20c:
+	case TERRAIN_BLOX_6:
+	case TERRAIN_BLOX_7:
 		return false;
-	case TERRAIN_SLOPE_SE_STEEP:
+	case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
 		return xMasks[31 - p_x] & masks0208[p_y];
-	case TERRAIN_SLOPE_SW_SHALLOW:
+	case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
 		return xMasks[p_x] & masks020e[p_y];
-	case TERRAIN_SLOPE_SE_SHALLOW:
+	case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
 		return xMasks[31 - p_x] & masks020e[p_y];
-	case TERRAIN_SPECIAL_ONLY:
+	case TERRAIN_ANIM:
 		return p_includeSpecial != 0;
-	case TERRAIN_FLAT_VARIANT_214:
-	case TERRAIN_FLAT_VARIANT_215:
-	case TERRAIN_FLAT_VARIANT_216:
-	case TERRAIN_FLAT_VARIANT_217:
-	case TERRAIN_FLAT_VARIANT_219:
-	case TERRAIN_FLAT_VARIANT_21A:
+	case 0x214:
+	case TERRAIN_FLAME:
+	case TERRAIN_ELECTRIC:
+	case TERRAIN_EMBERS:
+	case TERRAIN_CONVEYOR_VARIANT_A:
+	case TERRAIN_CONVEYOR_VARIANT_B:
 		return xMasks[p_x] & commonMasks[p_y];
 	default:
 		return false;
@@ -130,36 +130,36 @@ void Ground::SetCollision()
 	case 0x203:
 		m_collision = 0;
 		return;
-	case TERRAIN_FLAT_LOW:
+	case TERRAIN_TREE:
 	case 0x204:
-	case TERRAIN_SPECIAL_ONLY:
+	case TERRAIN_ANIM:
 		m_collision = 3;
 		return;
 	case 0x205:
 		m_collision = 2;
 		return;
-	case TERRAIN_FLAT_HIGH:
-	case TERRAIN_FLAT_MIDDLE:
-	case TERRAIN_SLOPE_SW_STEEP:
-	case TERRAIN_FLAT_DEFAULT:
-	case 0x20b:
-	case 0x20c:
-	case TERRAIN_SLOPE_SE_STEEP:
-	case TERRAIN_SLOPE_SW_SHALLOW:
-	case TERRAIN_SLOPE_SE_SHALLOW:
-	case TERRAIN_FLAT_VARIANT_214:
+	case TERRAIN_BLOX_1:
+	case TERRAIN_BLOX_2:
+	case TERRAIN_BLOX_3_SLOPE_SW_STEEP:
+	case TERRAIN_BLOX_4:
+	case TERRAIN_BLOX_6:
+	case TERRAIN_BLOX_7:
+	case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
+	case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
+	case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
+	case 0x214:
 		m_collision = 0;
 		return;
-	case TERRAIN_FLAT_SPECIAL:
+	case TERRAIN_BLOX_5:
 		m_collision = 1;
 		return;
-	case TERRAIN_FLAT_VARIANT_215:
-	case TERRAIN_FLAT_VARIANT_216:
-	case TERRAIN_FLAT_VARIANT_217:
+	case TERRAIN_FLAME:
+	case TERRAIN_ELECTRIC:
+	case TERRAIN_EMBERS:
 		m_collision = 4;
 		return;
-	case TERRAIN_FLAT_VARIANT_219:
-	case TERRAIN_FLAT_VARIANT_21A:
+	case TERRAIN_CONVEYOR_VARIANT_A:
+	case TERRAIN_CONVEYOR_VARIANT_B:
 		m_collision = 0;
 		return;
 	}
