@@ -1,5 +1,6 @@
 #include "MoverManager.h"
 
+#include "Ai.h"
 #include "Mover.h"
 
 // 68K 0x10617f0e __ct__13CMoverManagerFP3CAIi
@@ -80,7 +81,38 @@ void MoverManager::Switch(int p_message, int p_id)
 }
 
 // 68K 0x106183b8 LoadLevel__13CMoverManagerFPUciUc
-// STUB: LEMBALL 0x0042f680
+// FUNCTION: LEMBALL 0x0042f680
 void MoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short count = *(unsigned short*) p_data;
+	p_data += 2;
+	Initialise(count);
+	m_count = 0;
+	for (int i = 0; i < count; i++) {
+		unsigned short id;
+		if (m_ai->m_levelVersion > 1) {
+			id = *(unsigned short*) p_data;
+			p_data += 2;
+		}
+		else {
+			id = (unsigned short) GameObject::NextId();
+		}
+
+		int pathId = 0;
+		int movementMode = 0;
+		if (m_ai->m_levelVersion > 5) {
+			pathId = *(unsigned short*) p_data;
+			p_data += 2;
+			if ((pathId & 0x8000) != 0) {
+				movementMode = 1;
+				pathId &= 0x7fff;
+			}
+		}
+
+		int startNode = *(unsigned short*) p_data;
+		p_data += 2;
+		int nodeCount = *(unsigned short*) p_data;
+		p_data += 2;
+		Add(id, pathId, movementMode, startNode, nodeCount);
+	}
 }
