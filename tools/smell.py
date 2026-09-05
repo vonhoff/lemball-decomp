@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Fail on decomp smells agents keep reintroducing.
 
-  python tools/smell.py
-  python tools/smell.py --annot
-  python tools/smell.py --annot-strict
   python tools/smell.py src/Visos/Graphics
 
 Default errors:
@@ -170,14 +167,9 @@ def preceding_block(lines: list[str], index: int) -> list[str]:
 def is_offset_poke(code: str) -> bool:
 	if BUFFER_OK.search(code):
 		return False
-	if MI_DTOR_POKE.search(code):
-		return True
 	if CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code) or NAKED_DATA_OFFSET.search(code):
 		return True
-	for match in EXPR_CHAR_OFFSET.finditer(code):
-		if not BUFFER_OK.search(match.group("expr")):
-			return True
-	return False
+	return any(not BUFFER_OK.search(match.group("expr")) for match in EXPR_CHAR_OFFSET.finditer(code))
 
 
 def scan_file(

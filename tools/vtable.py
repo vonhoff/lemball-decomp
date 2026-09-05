@@ -13,7 +13,6 @@ aliases.  Opposite generated kinds for the same class are accepted only when
 a direct function comparison is exact, effectively matched, or passes the
 same conservative codegen-equivalence rules used by check.py.
 
-  python tools/vtable.py
   python tools/vtable.py --no-build
   python tools/vtable.py --no-build --verbose
   python tools/vtable.py --no-build --annot-strict
@@ -240,8 +239,6 @@ def compare_table(engine: Compare, match, folded_aliases: dict[int, set[int]]) -
         orig = resolve_jump(engine.orig_bin, raw_orig, lambda address: is_function_body(ImageId.ORIG, address))
         recomp = resolve_jump(engine.recomp_bin, raw_recomp, lambda address: is_function_body(ImageId.RECOMP, address))
 
-        # reccmp does not currently expose entity lookup as public API.  Keep
-        # this one private access isolated so an upstream fix is easy to adopt.
         orig_entity = None if orig is None else engine._db.get(ImageId.ORIG, orig)
         recomp_entity = None if recomp is None else engine._db.get(ImageId.RECOMP, recomp)
         direct_match = (
@@ -430,21 +427,16 @@ def format_addr(address: int | None) -> str:
     return "none" if address is None else f"0x{address:08x}"
 
 
-def instruction_sequences_equivalent(orig: list[str], recomp: list[str]) -> bool:
-    """Accept only target-rendering differences already proven by check.py."""
-    return bool(orig) and len(orig) == len(recomp) and all(
-        is_equivalent_insn(orig_text, recomp_text)
-        for orig_text, recomp_text in zip(orig, recomp)
-    )
-
-
 def comparison_is_thunk_equivalent(result) -> bool:
     diff = result.result.diff
     if diff is None:
         return False
     orig = [instruction for _, instruction in diff.orig_inst]
     recomp = [instruction for _, instruction in diff.recomp_inst]
-    return instruction_sequences_equivalent(orig, recomp)
+    return bool(orig) and len(orig) == len(recomp) and all(
+        is_equivalent_insn(orig_text, recomp_text)
+        for orig_text, recomp_text in zip(orig, recomp)
+    )
 
 
 def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) -> int:

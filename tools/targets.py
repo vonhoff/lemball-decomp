@@ -7,8 +7,6 @@ ambiguous control flow is reported as unknown, never replaced by stub sizes.
 Readiness and expected gain are conservative ranking heuristics, not proof
 of semantic completeness. Does not build or run reccmp unless --refresh.
 
-  python tools/targets.py
-  python tools/targets.py --refresh
   python tools/targets.py --kind tiny --max-size 5
   python tools/targets.py --kind near
   python tools/targets.py --kind gain
