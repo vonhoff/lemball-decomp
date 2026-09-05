@@ -43,10 +43,12 @@ private:
 	unsigned int m_loadProgress;  // 0x90
 	unsigned int m_countingLoads; // 0x94
 	Ai* m_ai;                     // 0x98
-	unsigned int m_groundStyle;   // 0xa8
-	unsigned int m_reservedac;    // 0xac
-	short m_drawOffsetX;          // 0xb0
-	short m_drawOffsetY;          // 0xb2
+	// LoadVrammed stores three ResFont::Load results (0x00433425/4a/5d).
+	ResFont* m_unk0x9c[3];      // 0x9c: low/high-resolution border fonts and score/time font
+	unsigned int m_groundStyle; // 0xa8
+	unsigned int m_reservedac;  // 0xac
+	short m_drawOffsetX;        // 0xb0
+	short m_drawOffsetY;        // 0xb2
 };
 
 #endif
