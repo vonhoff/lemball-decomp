@@ -7,7 +7,7 @@
 // SIZE 0x4c
 class BalloonPost {
 public:
-	BalloonPost(Ai* p_arg0);
+	BalloonPost(Ai* p_arg0, Map* p_arg1);
 	bool FindPost(eObjectType p_objectType, AiCoord& p_position);
 	int GetViewData(ViewData* p_viewData);
 	unsigned int Process();

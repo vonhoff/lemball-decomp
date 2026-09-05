@@ -2,7 +2,7 @@
 
 // 68K 0x10602f0e __ct__12CBalloonPostFP3CAI
 // STUB: LEMBALL 0x00429f50
-BalloonPost::BalloonPost(Ai* p_arg0)
+BalloonPost::BalloonPost(Ai* p_arg0, Map* p_arg1)
 {
 }
 

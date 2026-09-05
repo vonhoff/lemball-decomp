@@ -44,7 +44,7 @@ private:
 	unsigned int m_reserved;   // 0x00
 	int m_orientation;         // 0x04
 	GroundArray m_ground;      // 0x08
-	undefined4 m_unk0x18;      // 0x18
+	Ai* m_unk0x18;             // 0x18: Ai::Restart stores this at 0x00410ee9
 	int m_walkWidth;           // 0x1c
 	int m_walkHeight;          // 0x20
 	char m_levelName[33];      // 0x24

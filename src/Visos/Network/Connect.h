@@ -35,6 +35,7 @@ public:
 	friend class NetworkOptionsDrawer;
 	friend class NetworkOptionsProc;
 	friend class LevelLoader;
+	friend class Ai;
 	friend class TcpIpConnect;
 
 private:

@@ -19,12 +19,6 @@ Ai::Ai(Game* p_arg0)
 {
 }
 
-// 68K 0x10600286 Restart__3CAIFv
-// STUB: LEMBALL 0x00410d00
-void Ai::Restart()
-{
-}
-
 // 68K 0x10601170 Start__3CAIFv
 // STUB: LEMBALL 0x00411b10
 void Ai::Start()

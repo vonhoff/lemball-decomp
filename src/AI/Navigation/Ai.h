@@ -108,11 +108,17 @@ private:
 	undefined4 m_unk0x5c;                      // 0x5c
 	undefined4 m_unk0x60;                      // 0x60: level map type (LoadLevel 0x00412f4c)
 	// Restart (0x00410d98): 32-bit result of skill == 4 (0 or 1).
-	undefined4 m_unk0x64;    // 0x64
-	undefined4 m_unk0x68[5]; // 0x68
+	undefined4 m_unk0x64;        // 0x64
+	undefined4 m_unk0x68;        // 0x68
+	undefined4 m_unk0x6c;        // 0x6c
+	undefined4 m_unk0x70;        // 0x70
+	GameStateMessage* m_unk0x74; // 0x74: constructor result at 0x00410dec
+	PbNetworkGame* m_unk0x78;    // 0x78: constructor result at 0x00410dba
 	// Restart (0x00410d82, 0x00410dd2): zero, then the connection's host flag.
 	undefined4 m_unk0x7c;                             // 0x7c
-	undefined4 m_unk0x80[4];                          // 0x80
+	undefined4 m_unk0x80[2];                          // 0x80
+	undefined4 m_unk0x88;                             // 0x88
+	AnimSpecial* m_unk0x8c;                           // 0x8c: allocation/Initialise at 0x0041171a
 	int m_networkStartsX[4];                          // 0x90
 	int m_networkStartsY[4];                          // 0xa0
 	int m_networkStartsZ[4];                          // 0xb0

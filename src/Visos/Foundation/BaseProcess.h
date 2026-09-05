@@ -16,6 +16,7 @@ public:
 	virtual void Process() = 0; // vtable+0x04
 
 	friend class Game;
+	friend class Ai;
 	friend class BaseFrontendProcess;
 	friend class TargetAbout;
 
