@@ -23,6 +23,16 @@ RELOCATION = re.compile(r"<OFFSET\d+>")
 ANNOTATED_SYMBOL = r".+? \((?:DATA|VTABLE|UNK|FUNCTION|IMPORT|IMPORT_THUNK|STRING)\)"
 REGISTER = r"(?:eax|ebx|ecx|edx|esi|edi|ebp|esp|ax|bx|cx|dx|si|di|bp|sp)"
 DWORD_REGISTERS = {"eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp"}
+DWORD_REGISTER_FAMILIES = {
+    "eax": {"eax", "ax", "ah", "al"},
+    "ebx": {"ebx", "bx", "bh", "bl"},
+    "ecx": {"ecx", "cx", "ch", "cl"},
+    "edx": {"edx", "dx", "dh", "dl"},
+    "esi": {"esi", "si"},
+    "edi": {"edi", "di"},
+    "ebp": {"ebp", "bp"},
+    "esp": {"esp", "sp"},
+}
 BYTE_REGISTER_RE = re.compile(r"\b(?:ah|al|bh|bl|ch|cl|dh|dl)\b")
 REGISTER_RE = re.compile(
     r"\b(?:eax|ebx|ecx|edx|esi|edi|ebp|esp|ax|bx|cx|dx|si|di|bp|sp|ah|al|bh|bl|ch|cl|dh|dl)\b"
@@ -576,6 +586,158 @@ def normalize_divide_scratch_scheduling(orig_asm: list[str], recomp_asm: list[st
             return
 
 
+def normalize_interleaved_stack_offset_chains(
+    orig_asm: list[str], recomp_asm: list[str]
+) -> None:
+    """Align one sequential/interleaved pair of stack-offset calculations.
+
+    The rebuilt schedule may calculate ``(source - offset) << n`` and
+    ``(source + offset) << n`` in parallel registers before storing them,
+    while the original calculates and stores each result sequentially.  The
+    rewrite is limited to distinct dword stack slots, an otherwise-dead
+    caller-saved scratch, and a primary result overwritten before any branch
+    or use.  Both schedules therefore retain identical memory, flags, and
+    observable register state.
+
+    EDX is the only evidenced interleaved scratch.  DIV, IDIV, and CMPXCHG8B
+    read it implicitly and therefore invalidate the textual liveness proof.
+    Ordinary MSVC 4 cdecl/stdcall/thiscall calls do not take EDX arguments;
+    the sole current match was additionally audited to use four
+    ``ClipCirclePoint`` calls and one ``DrawClippedCirclePoint`` call with
+    stack arguments and ECX as ``this``.
+    """
+    if len(orig_asm) != len(recomp_asm) or len(orig_asm) < 11:
+        return
+    if (
+        orig_asm[-1] != recomp_asm[-1]
+        or split_instruction(orig_asm[-1])[0] not in ("ret", "retn")
+    ):
+        return
+
+    def stack_offset(operand: str) -> int | None:
+        match = re.fullmatch(
+            r"dword ptr \[esp(?: \+ (0x[0-9a-f]+|[0-9]+))?\]", operand
+        )
+        return int(match.group(1), 0) if match and match.group(1) else (0 if match else None)
+
+    def overwritten_before_control_flow(asm: list[str], start: int, register: str) -> bool:
+        family = DWORD_REGISTER_FAMILIES[register]
+        for instruction in asm[start:]:
+            mnemonic, operands = split_instruction(instruction)
+            if mnemonic.startswith("j") or mnemonic in ("call", "loop", "loope", "loopne", "ret", "retn"):
+                return False
+            if not family.intersection(REGISTER_RE.findall(instruction)):
+                continue
+            return (
+                mnemonic == "mov"
+                and len(operands) == 2
+                and operands[0] == register
+                and not family.intersection(REGISTER_RE.findall(operands[1]))
+            )
+        return False
+
+    candidates = []
+    for index in range(1, len(orig_asm) - 9):
+        orig_parts = [split_instruction(text) for text in orig_asm[index : index + 8]]
+        if [part[0] for part in orig_parts] != [
+            "mov",
+            "sub",
+            "shl",
+            "mov",
+            "mov",
+            "add",
+            "shl",
+            "mov",
+        ] or any(len(part[1]) != 2 for part in orig_parts):
+            continue
+
+        primary, source = orig_parts[0][1]
+        offset_register = orig_parts[1][1][1]
+        shift_count = orig_parts[2][1][1]
+        first_destination = orig_parts[3][1][0]
+        second_destination = orig_parts[7][1][0]
+        recomp_load, recomp_load_operands = split_instruction(recomp_asm[index + 1])
+        if recomp_load != "mov" or len(recomp_load_operands) != 2:
+            continue
+        transient = recomp_load_operands[0]
+
+        if (
+            transient != "edx"
+            or primary not in DWORD_REGISTERS
+            or offset_register not in DWORD_REGISTERS
+            or "esp" in (primary, transient, offset_register)
+            or len({primary, transient, offset_register}) != 3
+        ):
+            continue
+        try:
+            shift_value = int(shift_count, 0)
+        except ValueError:
+            continue
+        if not 1 <= shift_value <= 31:
+            continue
+
+        expected_orig = [
+            f"mov {primary}, {source}",
+            f"sub {primary}, {offset_register}",
+            f"shl {primary}, {shift_count}",
+            f"mov {first_destination}, {primary}",
+            f"mov {primary}, {source}",
+            f"add {primary}, {offset_register}",
+            f"shl {primary}, {shift_count}",
+            f"mov {second_destination}, {primary}",
+        ]
+        expected_recomp = [
+            f"mov {primary}, {source}",
+            f"mov {transient}, {source}",
+            f"sub {primary}, {offset_register}",
+            f"add {transient}, {offset_register}",
+            f"shl {primary}, {shift_count}",
+            f"shl {transient}, {shift_count}",
+            f"mov {first_destination}, {primary}",
+            f"mov {second_destination}, {transient}",
+        ]
+        if (
+            orig_asm[index : index + 8] != expected_orig
+            or recomp_asm[index : index + 8] != expected_recomp
+            or orig_asm[index - 1] != recomp_asm[index - 1]
+            or orig_asm[index + 8] != recomp_asm[index + 8]
+        ):
+            continue
+
+        slots = [
+            stack_offset(source),
+            stack_offset(first_destination),
+            stack_offset(second_destination),
+        ]
+        if any(slot is None for slot in slots) or any(
+            abs(slots[left] - slots[right]) < 4
+            for left in range(3)
+            for right in range(left + 1, 3)
+        ):
+            continue
+
+        transient_family = DWORD_REGISTER_FAMILIES[transient]
+        outside = (
+            orig_asm[:index]
+            + orig_asm[index + 8 :]
+            + recomp_asm[:index]
+            + recomp_asm[index + 8 :]
+        )
+        if any(transient_family.intersection(REGISTER_RE.findall(text)) for text in outside):
+            continue
+        if any(split_instruction(text)[0] in ("div", "idiv", "cmpxchg8b") for text in outside):
+            continue
+        if not overwritten_before_control_flow(orig_asm, index + 8, primary):
+            continue
+        if not overwritten_before_control_flow(recomp_asm, index + 8, primary):
+            continue
+        candidates.append(index)
+
+    if len(candidates) == 1:
+        index = candidates[0]
+        recomp_asm[index : index + 8] = orig_asm[index : index + 8]
+
+
 def strip_trailing_alignment_nops(orig_asm: list[str], recomp_asm: list[str]) -> None:
     """Discard padding NOPs only when both instruction streams already returned."""
     orig_end = len(orig_asm)
@@ -1047,6 +1209,7 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
     normalize_multiply_copy_zero(orig_asm)
     normalize_multiply_copy_zero(recomp_asm)
     normalize_divide_scratch_scheduling(orig_asm, recomp_asm)
+    normalize_interleaved_stack_offset_chains(orig_asm, recomp_asm)
     normalize_zero_comparisons(orig_asm, recomp_asm)
     normalize_swapped_comparison_branches(orig_asm, recomp_asm)
     normalize_dead_stack_reservation(orig_asm, recomp_asm)
@@ -1147,6 +1310,39 @@ def run_selftest() -> int:
         ("call First (FUNCTION)", "call Second (FUNCTION)", False),
     )
     codegen_samples = (
+        (
+            [
+                "test ebp, ebp",
+                "jle 0x40",
+                "mov eax, dword ptr [esp + 0x34]",
+                "sub eax, ebp",
+                "shl eax, 2",
+                "mov dword ptr [esp + 0x20], eax",
+                "mov eax, dword ptr [esp + 0x34]",
+                "add eax, ebp",
+                "shl eax, 2",
+                "mov dword ptr [esp + 0x1c], eax",
+                "inc ebx",
+                "mov eax, dword ptr [esp + 0x24]",
+                "ret",
+            ],
+            [
+                "test ebp, ebp",
+                "jle 0x40",
+                "mov eax, dword ptr [esp + 0x34]",
+                "mov edx, dword ptr [esp + 0x34]",
+                "sub eax, ebp",
+                "add edx, ebp",
+                "shl eax, 2",
+                "shl edx, 2",
+                "mov dword ptr [esp + 0x20], eax",
+                "mov dword ptr [esp + 0x1c], edx",
+                "inc ebx",
+                "mov eax, dword ptr [esp + 0x24]",
+                "ret",
+            ],
+            True,
+        ),
         (
             ["cmp ebx, eax", "jge 0x2c", "call <OFFSET1>"],
             ["cmp eax, ebx", "jle 0x2c", "call Thunk of 'Thing::Run' (THUNK)"],
@@ -1694,6 +1890,127 @@ def run_selftest() -> int:
         ),
     )
 
+    def make_stack_offset_chains(
+        primary: str = "eax",
+        transient: str = "edx",
+        source: str = "dword ptr [esp + 0x34]",
+        first_destination: str = "dword ptr [esp + 0x20]",
+        second_destination: str = "dword ptr [esp + 0x1c]",
+    ) -> tuple[list[str], list[str]]:
+        sequential = [
+            f"mov {primary}, {source}",
+            f"sub {primary}, ebp",
+            f"shl {primary}, 2",
+            f"mov {first_destination}, {primary}",
+            f"mov {primary}, {source}",
+            f"add {primary}, ebp",
+            f"shl {primary}, 2",
+            f"mov {second_destination}, {primary}",
+        ]
+        interleaved = [
+            f"mov {primary}, {source}",
+            f"mov {transient}, {source}",
+            f"sub {primary}, ebp",
+            f"add {transient}, ebp",
+            f"shl {primary}, 2",
+            f"shl {transient}, 2",
+            f"mov {first_destination}, {primary}",
+            f"mov {second_destination}, {transient}",
+        ]
+        return sequential, interleaved
+
+    def replace_instruction(instructions: list[str], index: int, text: str) -> list[str]:
+        replaced = list(instructions)
+        replaced[index] = text
+        return replaced
+
+    sequential_stack_chain, interleaved_stack_chain = make_stack_offset_chains()
+    safe_stack_chain_tail = ["inc ebx", "mov eax, dword ptr [esp + 0x24]", "ret"]
+
+    interleaved_stack_chain_rejections = (
+        (
+            "source aliases the first destination",
+            make_stack_offset_chains(source="dword ptr [esp + 0x20]")[0]
+            + safe_stack_chain_tail,
+            make_stack_offset_chains(source="dword ptr [esp + 0x20]")[1]
+            + safe_stack_chain_tail,
+        ),
+        (
+            "transient register remains live",
+            sequential_stack_chain + ["add ecx, edx", "ret"],
+            interleaved_stack_chain + ["add ecx, edx", "ret"],
+        ),
+        (
+            "transient byte register remains live",
+            sequential_stack_chain + ["mov byte ptr [ecx], dl", "ret"],
+            interleaved_stack_chain + ["mov byte ptr [ecx], dl", "ret"],
+        ),
+        (
+            "transient edx is an implicit idiv input",
+            sequential_stack_chain
+            + ["mov eax, dword ptr [esp + 0x24]", "idiv ebx", "ret"],
+            interleaved_stack_chain
+            + ["mov eax, dword ptr [esp + 0x24]", "idiv ebx", "ret"],
+        ),
+        (
+            "transient edx is an implicit div input",
+            sequential_stack_chain
+            + ["mov eax, dword ptr [esp + 0x24]", "div ebx", "ret"],
+            interleaved_stack_chain
+            + ["mov eax, dword ptr [esp + 0x24]", "div ebx", "ret"],
+        ),
+        (
+            "transient edx is an implicit cmpxchg8b input",
+            sequential_stack_chain
+            + ["mov eax, dword ptr [esp + 0x24]", "cmpxchg8b qword ptr [esi]", "ret"],
+            interleaved_stack_chain
+            + ["mov eax, dword ptr [esp + 0x24]", "cmpxchg8b qword ptr [esi]", "ret"],
+        ),
+        (
+            "primary register remains live",
+            sequential_stack_chain + ["add ecx, eax", "ret"],
+            interleaved_stack_chain + ["add ecx, eax", "ret"],
+        ),
+        (
+            "stack destinations are swapped",
+            sequential_stack_chain + safe_stack_chain_tail,
+            replace_instruction(
+                interleaved_stack_chain, 6, "mov dword ptr [esp + 0x1c], eax"
+            )[:7]
+            + ["mov dword ptr [esp + 0x20], edx"]
+            + safe_stack_chain_tail,
+        ),
+        (
+            "second arithmetic operand differs",
+            sequential_stack_chain + safe_stack_chain_tail,
+            replace_instruction(interleaved_stack_chain, 3, "add edx, esi")
+            + safe_stack_chain_tail,
+        ),
+        (
+            "second shift count differs",
+            sequential_stack_chain + safe_stack_chain_tail,
+            replace_instruction(interleaved_stack_chain, 5, "shl edx, 3")
+            + safe_stack_chain_tail,
+        ),
+        (
+            "eax transient reaches the return",
+            make_stack_offset_chains(primary="ecx", transient="eax")[0]
+            + ["inc ebx", "mov ecx, dword ptr [esp + 0x24]", "ret"],
+            make_stack_offset_chains(primary="ecx", transient="eax")[1]
+            + ["inc ebx", "mov ecx, dword ptr [esp + 0x24]", "ret"],
+        ),
+        (
+            "ecx transient is outside the evidenced schedule",
+            make_stack_offset_chains(transient="ecx")[0] + safe_stack_chain_tail,
+            make_stack_offset_chains(transient="ecx")[1] + safe_stack_chain_tail,
+        ),
+        (
+            "transient register is callee-saved",
+            make_stack_offset_chains(transient="esi")[0] + safe_stack_chain_tail,
+            make_stack_offset_chains(transient="esi")[1] + safe_stack_chain_tail,
+        ),
+    )
+
     failed = 0
     for orig, recomp, expected in thunk_samples:
         actual = is_equivalent_insn(orig, recomp)
@@ -1705,6 +2022,14 @@ def run_selftest() -> int:
         actual = is_codegen_equivalent_diff(make_diff(orig, recomp))
         if actual != expected:
             print(f"selftest fail: codegen expected {expected} got {actual}: {orig!r} / {recomp!r}")
+            failed += 1
+
+    stack_chain_prefix = ["test ebp, ebp", "jle 0x40"]
+    for description, orig, recomp in interleaved_stack_chain_rejections:
+        if is_codegen_equivalent_diff(
+            make_diff(stack_chain_prefix + orig, stack_chain_prefix + recomp)
+        ):
+            print(f"selftest fail: unsafe interleaved stack chain accepted: {description}")
             failed += 1
 
     unsafe_delayed_pushes = (

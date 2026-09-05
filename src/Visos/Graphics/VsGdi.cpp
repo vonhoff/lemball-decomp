@@ -1593,6 +1593,7 @@ void Surface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radiu
 	do {
 		x = x + 1;
 		err = err + step;
+		step = step + 2;
 		if (errLimit < err * 2) {
 			p_radius = p_radius - 1;
 			lowerRow = lowerRow + 1;
@@ -1617,7 +1618,6 @@ void Surface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radiu
 				DrawClippedCirclePoint(p_centerX, p_centerY, p_radius, x, p_colour);
 			}
 		}
-		step = step + 2;
 	} while (x < p_radius);
 }
 
