@@ -98,13 +98,19 @@ public:
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:
-	undefined4 m_unk0x48;                             // 0x48
-	int m_initialised;                                // 0x4c
-	unsigned int* m_objectRequired;                   // 0x50
-	unsigned short m_levelVersion;                    // 0x54
-	undefined2 m_pad0x56;                             // 0x56
-	PlayerLemmingGroupManager* m_playerGroups;        // 0x58
-	undefined4 m_unk0x5c[13];                         // 0x5c
+	undefined4 m_unk0x48;                      // 0x48
+	int m_initialised;                         // 0x4c
+	unsigned int* m_objectRequired;            // 0x50
+	unsigned short m_levelVersion;             // 0x54
+	undefined2 m_pad0x56;                      // 0x56
+	PlayerLemmingGroupManager* m_playerGroups; // 0x58
+	undefined4 m_unk0x5c[2];                   // 0x5c
+	// Restart (0x00410d98): 32-bit result of skill == 4 (0 or 1).
+	undefined4 m_unk0x64;    // 0x64
+	undefined4 m_unk0x68[5]; // 0x68
+	// Restart (0x00410d82, 0x00410dd2): zero, then the connection's host flag.
+	undefined4 m_unk0x7c;                             // 0x7c
+	undefined4 m_unk0x80[4];                          // 0x80
 	int m_networkStartsX[4];                          // 0x90
 	int m_networkStartsY[4];                          // 0xa0
 	int m_networkStartsZ[4];                          // 0xb0

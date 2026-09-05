@@ -32,12 +32,6 @@ LevelLoader::LevelLoader(Ai* p_arg0)
 	g_pActiveLevelFile = (char*) m_ai->LevelName();
 }
 
-// 68K 0x107026ca LoadLevel__12CLevelLoaderF6eSkilliUc
-// STUB: LEMBALL 0x00408240
-void LevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned char p_skip)
-{
-}
-
 // 68K 0x10702cdc LocateStartOfLevelFile__12CLevelLoaderFv
 // FUNCTION: LEMBALL 0x004087b0
 bool LevelLoader::LocateStartOfLevelFile()
