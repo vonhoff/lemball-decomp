@@ -101,9 +101,36 @@ void Map::GameToScreen(int& p_x, int& p_y)
 }
 
 // 68K 0x10900d48 LoadLevel__4CMapFP24tagLoadGroundSurfaceDataUlUc
-// STUB: LEMBALL 0x00430db0
+// FUNCTION: LEMBALL 0x00430db0
 void Map::LoadLevel(LoadGroundSurfaceData* p_data, unsigned long p_dataSize, unsigned char p_skip)
 {
+	int width = ((unsigned short*) p_data)[0];
+	int height = ((unsigned short*) p_data)[1];
+	p_data = (LoadGroundSurfaceData*) &((unsigned short*) p_data)[2];
+
+	m_ground.Clear();
+	ReSize(width, height);
+
+	for (int y = 0; height > y; y++) {
+		for (int x = 0; width > x; x++) {
+			eObjectType objectType = (eObjectType) * (unsigned short*) p_data;
+			p_data = (LoadGroundSurfaceData*) &((unsigned short*) p_data)[1];
+			unsigned short objectData = *(unsigned short*) p_data;
+			p_data = (LoadGroundSurfaceData*) &((unsigned short*) p_data)[1];
+			unsigned short groundHeight = *(unsigned short*) p_data;
+			p_data = (LoadGroundSurfaceData*) &((unsigned short*) p_data)[1];
+
+			Ground* ground = m_ground.m_ground + m_ground.m_width * y + x;
+			ground->m_objectType = objectType;
+			ground->m_objectData = objectData;
+			ground->SetCollision();
+
+			m_ground.m_ground[m_ground.m_width * y + x].m_height = groundHeight;
+		}
+	}
+
+	CreateWalkBits();
+	CalculateCliff();
 }
 
 // 68K 0x10900e76 LoadLevelName__4CMapFP17tagLoadGroundNameUl
