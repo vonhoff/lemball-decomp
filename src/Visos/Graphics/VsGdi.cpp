@@ -770,9 +770,9 @@ void Surface::Resize(const VsSize& p_size)
 // FUNCTION: LEMBALL 0x0046d560
 void Surface::MoveRel(const VsPoint& p_delta)
 {
-	m_windowRect.m_x += p_delta.m_x;
-	m_windowRect.m_y += p_delta.m_y;
-	Move(*(VsPoint*) &m_windowRect.m_x);
+	m_rect0c.m_x += p_delta.m_x;
+	m_rect0c.m_y += p_delta.m_y;
+	Move(*(VsPoint*) &m_rect0c.m_x);
 }
 
 // 68K 0x1010a166 Move__8CSurfaceFRC8CVSPoint
