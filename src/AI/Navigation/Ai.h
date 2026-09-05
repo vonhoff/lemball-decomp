@@ -71,6 +71,7 @@ public:
 	friend class Bullet;
 	friend class ObjectManager;
 	friend class PlayerLemming;
+	friend class PlayerLemmingGroupManager;
 	friend class C2D;
 	friend class Main2DDisplay;
 	friend class SlinkyManager;

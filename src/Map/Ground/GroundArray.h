@@ -12,6 +12,8 @@ public:
 	void SetCollision(int p_x, int p_y, int p_collision);
 
 	friend class Bullet;
+	friend class TrapDoorManager;
+	friend class PlayerLemmingGroupManager;
 	friend class PlayerLemming;
 	friend class Tower;
 	friend class Enemy;

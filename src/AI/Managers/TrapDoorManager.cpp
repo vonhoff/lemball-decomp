@@ -43,12 +43,6 @@ void TrapDoorManager::Process()
 {
 }
 
-// 68K 0x106219d8 LoadLevel__16CTrapDoorManagerFPUciUc
-// STUB: LEMBALL 0x0040ca40
-void TrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
-{
-}
-
 // 68K 0x1062177e __dt__16CTrapDoorManagerFv
 TrapDoorManager::~TrapDoorManager()
 {

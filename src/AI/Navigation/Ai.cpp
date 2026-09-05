@@ -293,12 +293,6 @@ void Ai::AddANetworkStart(int p_x, int p_y, int p_z, int p_index)
 	m_networkStartsZ[p_index] = p_z;
 }
 
-// 68K 0x10602a54 SetNetworkTrapDoors__3CAIFiiiii
-// STUB: LEMBALL 0x004131e0
-void Ai::SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_third, int p_fourth)
-{
-}
-
 // 68K 0x10602bc2 nDead__3CAIFv
 // FUNCTION: LEMBALL 0x00413370
 int Ai::NDead()

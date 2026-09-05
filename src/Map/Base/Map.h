@@ -25,6 +25,8 @@ public:
 	~Map();
 
 	friend class Ai;
+	friend class TrapDoorManager;
+	friend class PlayerLemmingGroupManager;
 	friend class Bullet;
 	friend class PlayerLemming;
 	friend class Tower;
