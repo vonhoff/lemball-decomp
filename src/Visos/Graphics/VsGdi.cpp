@@ -850,28 +850,22 @@ void Surface::CopyDIBBits(void* p_header, unsigned char* p_bits)
 	}
 	EnterCriticalSection((CRITICAL_SECTION*) m_lock);
 	BITMAPINFOHEADER* header = (BITMAPINFOHEADER*) p_header;
-	int copyWidth = header->biWidth;
-	if (m_width < copyWidth) {
-		copyWidth = m_width;
-	}
-	int copyHeight = header->biHeight;
-	if (m_height < copyHeight) {
-		copyHeight = m_height;
-	}
+	int copyWidth = m_windowRect.m_width <= header->biWidth ? m_windowRect.m_width : header->biWidth;
+	int copyHeight = m_windowRect.m_height <= header->biHeight ? m_windowRect.m_height : header->biHeight;
 	int stride = (int) ((header->biBitCount * header->biWidth + 31) & ~31) / 8;
 	unsigned char* source = p_bits + (header->biHeight - 1) * stride;
-	for (int y = 0; y < copyHeight; y++) {
+	int y = 0;
+	while (y < copyHeight) {
 		memcpy(m_lines[y], source, copyWidth);
-		if (m_height < header->biHeight) {
-			copyHeight = m_height;
-		}
+		copyHeight = m_windowRect.m_height <= header->biHeight ? m_windowRect.m_height : header->biHeight;
 		source -= stride;
+		y++;
 	}
+	short rectHeight = m_windowRect.m_height;
+	short rectWidth = m_windowRect.m_width;
 	VsRect rect;
-	rect.m_width = m_width;
-	rect.m_height = m_height;
-	rect.m_x = 0;
-	rect.m_y = 0;
+	rect.m_width = rectWidth;
+	rect.m_height = rectHeight;
 	m_changeList->Reset();
 	AddToChangeList(&rect);
 	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
