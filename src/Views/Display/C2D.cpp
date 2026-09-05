@@ -929,9 +929,30 @@ void C2D::DrawSheep(ViewData& p_viewData, int p_objectNo)
 }
 
 // 68K 0x10b03e6e DrawBall__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043d420
+// FUNCTION: LEMBALL 0x0043d420
 void C2D::DrawBall(ViewData& p_viewData)
 {
+	int x;
+	int y;
+	int elapsed;
+	int frame;
+
+	x = p_viewData.m_positionX;
+	y = p_viewData.m_positionY;
+
+	switch (p_viewData.m_action) {
+	case (eAction) 0x25:
+		m_lemmingAnims->DrawAnim(x - 10, y - 15, RES_GAME_BALL, 0, p_viewData.m_animationTime, 0);
+		break;
+	case (eAction) 0x26:
+		elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
+		frame = elapsed / 64;
+		if (frame > 8) {
+			frame = 8;
+		}
+		m_lemmingAnims->DrawAnim(x - 15, y - 17, RES_GAME_BALL_EXPLODE, frame, 0, 0);
+		break;
+	}
 }
 
 // 68K 0x10b03f56 DrawKey__3C2DFR9CViewDatai
