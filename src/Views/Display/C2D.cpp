@@ -728,9 +728,37 @@ void C2D::DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, unsigned
 }
 
 // 68K 0x10b030b6 DrawBalloon__3C2DFR9CViewDatai
-// STUB: LEMBALL 0x0043c940
+// FUNCTION: LEMBALL 0x0043c940
 void C2D::DrawBalloon(ViewData& p_viewData, int p_playerIndex)
 {
+	BaseRemap* remap;
+	int x = p_viewData.m_positionX;
+	int y = p_viewData.m_positionY;
+	int xOffset;
+	int yOffset;
+	unsigned int phase = ((p_viewData.m_animationTime - p_viewData.m_stateTimer) & 0x7ff) >> 7;
+
+	if (phase <= 7) {
+		xOffset = phase - 4;
+	}
+	else {
+		xOffset = 12 - phase;
+	}
+
+	yOffset = phase - 4;
+	if (phase > 7) {
+		yOffset = 12 - phase;
+	}
+
+	if (p_playerIndex < 4) {
+		remap = m_remaps[p_playerIndex];
+	}
+	else {
+		remap = 0;
+	}
+
+	m_lemmingAnims->DrawAnim(x + xOffset - 16, y + yOffset / 4 - 64, RES_GAME_BALLOON, 0, 0, (Remap*) remap);
+	m_lemmingAnims->DrawAnim(x + xOffset - 9, y + yOffset / 4 - 9, RES_GAME_BALLOON_SHADOW, 0, 0, 0);
 }
 
 // 68K 0x10b031aa DrawBalloonPost__3C2DFR9CViewDatai
@@ -801,11 +829,13 @@ void C2D::DrawLaserFire(ViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043cea0
 void C2D::DrawLaser(ViewData& p_viewData)
 {
+	eAction action;
 	int x;
 	int y;
 	unsigned long resourceId;
 	int frame;
-	eAction action = p_viewData.m_action;
+
+	action = p_viewData.m_action;
 
 	switch (p_viewData.m_objectType) {
 	case (eObjectType) 0x1e:
