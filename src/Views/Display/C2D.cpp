@@ -639,9 +639,28 @@ void C2D::DrawBullet(ViewData& p_viewData, int p_objectNo)
 }
 
 // 68K 0x10b02cce DrawAmmo__3C2DFR9CViewDatai
-// STUB: LEMBALL 0x0043c660
+// FUNCTION: LEMBALL 0x0043c660
 void C2D::DrawAmmo(ViewData& p_viewData, int p_objectNo)
 {
+	switch (p_viewData.m_action) {
+	case (eAction) 0x18:
+	case (eAction) 0x19:
+		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 8,
+								 p_viewData.m_positionY - 16,
+								 RES_GAME_YELLOW_AMMO,
+								 0,
+								 p_viewData.m_animationTime,
+								 0);
+		break;
+	case (eAction) 0x1a:
+		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 16,
+								 p_viewData.m_positionY - 16,
+								 RES_GAME_EX_PELLET,
+								 p_viewData.m_stateTimer,
+								 p_viewData.m_animationTime,
+								 0);
+		break;
+	}
 }
 
 // 68K 0x10b02d9e DrawRocket__3C2DFR9CViewData
