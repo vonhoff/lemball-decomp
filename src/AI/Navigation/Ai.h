@@ -67,6 +67,7 @@ public:
 	void SwitchMessage(swMessage p_message, int p_first, int p_last = 0, int p_arg3 = 0);
 	~Ai();
 
+	friend class Ball;
 	friend class Bullet;
 	friend class ObjectManager;
 	friend class PlayerLemming;

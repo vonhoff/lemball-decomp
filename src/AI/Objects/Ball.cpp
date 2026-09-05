@@ -80,9 +80,36 @@ bool Ball::Process()
 }
 
 // 68K 0x10603d56 LoadLevel__5CBallFRPUc
-// STUB: LEMBALL 0x00421da0
+// FUNCTION: LEMBALL 0x00421da0
 void Ball::LoadLevel(unsigned char*& p_data)
 {
+	AiCoord start;
+	AiCoord destination;
+
+	if (g_pAI->m_levelVersion > 1) {
+		unsigned short id = *(unsigned short*) p_data;
+		p_data += 2;
+		SetId(id);
+	}
+
+	start.m_xFixed = *(unsigned short*) p_data << 12;
+	p_data += 2;
+	start.m_yFixed = *(unsigned short*) p_data << 12;
+	p_data += 2;
+	start.m_zFixed = *(unsigned short*) p_data << 12;
+	p_data += 2;
+
+	destination.m_xFixed = *(unsigned short*) p_data << 12;
+	p_data += 2;
+	destination.m_yFixed = *(unsigned short*) p_data << 12;
+	p_data += 2;
+	destination.m_zFixed = *(unsigned short*) p_data << 12;
+	p_data += 2;
+
+	unsigned short speed = *(unsigned short*) p_data;
+	p_data += 2;
+
+	Set(start, destination, speed);
 }
 
 // 68K 0x101196dc __dt__5CBallFv
