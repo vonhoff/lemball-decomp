@@ -116,20 +116,22 @@ void PlayerLemming::HitBullet(Bullet* p_bullet)
 {
 	if (g_pGameStatus->m_status0 == 0) {
 		if ((int) m_action < 4 || ((int) m_action > 5 && m_action != 16)) {
-			if (p_bullet->m_owner == 1) {
+			switch (p_bullet->m_owner) {
+			case 1: {
 				int randVal = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
 				*g_pSentinel = randVal;
 				if (randVal % 2) {
 					return;
 				}
+				break;
 			}
-			else {
-				if (p_bullet->m_owner != 2) {
-					return;
-				}
+			case 2:
 				if (g_pActiveConnection != 0) {
 					g_pObjectHitMessage->Send(p_bullet);
 				}
+				break;
+			default:
+				return;
 			}
 			m_unk0xc0 = 0;
 			m_wasHitByBullet = 1;

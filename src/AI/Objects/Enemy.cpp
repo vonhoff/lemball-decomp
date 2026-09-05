@@ -4,6 +4,7 @@
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
 #include "../Navigation/Ai.h"
+#include "Bullet.h"
 
 struct EnemyFacingOffset {
 	int m_dx;
@@ -247,9 +248,15 @@ void Enemy::EndFiring()
 }
 
 // 68K 0x106086d0 HitBullet__6CEnemyFP7CBullet
-// STUB: LEMBALL 0x00420600
+// FUNCTION: LEMBALL 0x00420600
 void Enemy::HitBullet(Bullet* p_bullet)
 {
+	if (p_bullet->m_owner != 1) {
+		m_hit = 1;
+		m_actionDeadline = g_dwGameTick + 60;
+		m_facingDirection = (p_bullet->m_facingDirection + 4) & 7;
+		m_unk0x2c = 1;
+	}
 }
 
 // 68K 0x10608732 FacingTarget__6CEnemyFv

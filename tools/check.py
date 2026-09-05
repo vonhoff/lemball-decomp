@@ -28,6 +28,7 @@ ORIGINAL_EXE = ROOT / "data" / "LEMBALL.EXE"
 RECOMPILED_EXE = BUILD / "LEMBALL.EXE"
 RECOMPILED_PDB = BUILD / "LEMBALL.PDB"
 STRICT_EQUIVALENCE_TARGETS = {
+    0x0040F6F0: "PlayerLemming::AddData",
     0x0040F960: "PlayerLemming::HasObject",
     0x0043C610: "C2D::DrawBullet",
     0x0043C660: "C2D::DrawAmmo",
@@ -1426,7 +1427,8 @@ def compute_ratio(match: dict | None, name: str = "") -> tuple[float, str]:
     )
     if strict_claim:
         if (
-            is_exact_player_has_object_match(match)
+            is_exact_player_add_data_match(match)
+            or is_exact_player_has_object_match(match)
             or is_exact_complete_call_role_rotation_match(match)
             or is_exact_ctos_request_role_swap_match(match)
             or is_exact_complete_adjacent_short_field_alias_match(match)
@@ -1983,6 +1985,7 @@ def unique_recompiled_symbol_address(name: str) -> int | None:
     try:
         addresses = load_recompiled_symbol_addresses().get(name, ())
     except (
+        AttributeError,
         AssertionError,
         IndexError,
         KeyError,
@@ -1993,6 +1996,53 @@ def unique_recompiled_symbol_address(name: str) -> int | None:
     ):
         return None
     return addresses[0] if len(addresses) == 1 else None
+
+
+@cache
+def load_recompiled_procedures() -> dict[int, tuple[tuple[str, str, int], ...]]:
+    """Resolve exact PDB procedure records by rebuilt virtual address."""
+    image = detect_image(RECOMPILED_EXE)
+    cvdump = Cvdump(str(RECOMPILED_PDB)).symbols().run()
+    procedures: dict[int, set[tuple[str, str, int]]] = {}
+
+    for function in cvdump.symbols:
+        if function.type not in ("S_GPROC32", "S_LPROC32"):
+            continue
+        if not isinstance(function.size, int) or function.size <= 0:
+            continue
+        try:
+            address = image.get_abs_addr(function.section, function.offset)
+        except (AssertionError, IndexError, KeyError, LookupError, ValueError):
+            continue
+        procedures.setdefault(address, set()).add(
+            (function.type, function.name, function.size)
+        )
+
+    return {
+        address: tuple(sorted(records))
+        for address, records in procedures.items()
+    }
+
+
+def is_unique_recompiled_procedure(
+    address: int, procedure_type: str, name: str, size: int
+) -> bool:
+    """Require one exact PDB procedure record, failing closed on all errors."""
+    try:
+        records = load_recompiled_procedures().get(address, ())
+    except (
+        AttributeError,
+        AssertionError,
+        IndexError,
+        KeyError,
+        LookupError,
+        OSError,
+        RuntimeError,
+        TypeError,
+        ValueError,
+    ):
+        return False
+    return records == ((procedure_type, name, size),)
 
 
 def direct_call_reaches_symbol(
@@ -2139,6 +2189,313 @@ def decoded_text_matches_json(decoded_text: str, json_text: str) -> bool:
     if decoded_mnemonic == "call" or decoded_mnemonic.startswith("j"):
         return True
     return decoded_text == json_text
+
+
+def exact_add_data_callee_addresses(original_image, recompiled_image):
+    """Prove the three Add overload bodies used by PlayerLemming::AddData."""
+    overloads = {
+        "unsigned short": {
+            "original": 0x0045EF40,
+            "pdb": "?Add@NetworkMessage@@QAEXG@Z",
+            "size": 0x1A,
+            "body": (
+                "mov dl, byte ptr [esp + 4]",
+                "mov eax, dword ptr [ecx + 0x1c]",
+                "mov byte ptr [eax + 1], dl",
+                "mov dl, byte ptr [esp + 5]",
+                "mov eax, dword ptr [ecx + 0x1c]",
+                "mov byte ptr [eax], dl",
+                "add dword ptr [ecx + 0x1c], 2",
+                "ret 4",
+            ),
+        },
+        "unsigned char": {
+            "original": 0x0045EF60,
+            "pdb": "?Add@NetworkMessage@@QAEXE@Z",
+            "size": 0x0F,
+            "body": (
+                "mov eax, dword ptr [ecx + 0x1c]",
+                "mov dl, byte ptr [esp + 4]",
+                "mov byte ptr [eax], dl",
+                "inc dword ptr [ecx + 0x1c]",
+                "ret 4",
+            ),
+        },
+        "unsigned long": {
+            "original": 0x0045EF10,
+            "pdb": "?Add@NetworkMessage@@QAEXK@Z",
+            "size": 0x2E,
+            "body": (
+                "mov dl, byte ptr [esp + 4]",
+                "mov eax, dword ptr [ecx + 0x1c]",
+                "mov byte ptr [eax + 3], dl",
+                "mov dl, byte ptr [esp + 5]",
+                "mov eax, dword ptr [ecx + 0x1c]",
+                "mov byte ptr [eax + 2], dl",
+                "mov dl, byte ptr [esp + 6]",
+                "mov eax, dword ptr [ecx + 0x1c]",
+                "mov byte ptr [eax + 1], dl",
+                "mov dl, byte ptr [esp + 7]",
+                "mov eax, dword ptr [ecx + 0x1c]",
+                "mov byte ptr [eax], dl",
+                "add dword ptr [ecx + 0x1c], 4",
+                "ret 4",
+            ),
+        },
+    }
+    addresses = {}
+    for overload, spec in overloads.items():
+        recomp_start = unique_recompiled_symbol_address(spec["pdb"])
+        if recomp_start is None or not is_unique_recompiled_procedure(
+            recomp_start,
+            "S_GPROC32",
+            "NetworkMessage::Add",
+            spec["size"],
+        ):
+            return None
+
+        decoded_orig = decode_exact_image_span(
+            original_image, spec["original"], spec["size"]
+        )
+        decoded_recomp = decode_exact_image_span(
+            recompiled_image, recomp_start, spec["size"]
+        )
+        if decoded_orig is None or decoded_recomp is None:
+            return None
+        orig_text = tuple(
+            f"{mnemonic} {operands}".strip()
+            for _, _, mnemonic, operands in decoded_orig
+        )
+        recomp_text = tuple(
+            f"{mnemonic} {operands}".strip()
+            for _, _, mnemonic, operands in decoded_recomp
+        )
+        if orig_text != spec["body"] or recomp_text != spec["body"]:
+            return None
+        if not (
+            complete_control_flow_is_reachable(
+                decoded_orig, spec["original"], {}
+            )
+            and complete_control_flow_is_reachable(
+                decoded_recomp, recomp_start, {}
+            )
+        ):
+            return None
+        addresses[overload] = (spec["original"], recomp_start)
+
+    return addresses
+
+
+def is_exact_player_add_data_match(match: dict) -> bool:
+    """Prove AddData's complete low-word packing schedule and all effects.
+
+    The original forms the transmitted word by loading ``m_action`` and
+    replacing AH with the low byte of ``m_soundEffect``. The rebuilt body loads
+    ``m_soundEffect``, copies its low byte to AH, and then replaces AL with the
+    low byte of ``m_action``. The exact unsigned-short callee proven above reads
+    only those two bytes; neither schedule changes flags before the call.
+    """
+    try:
+        if (
+            norm_addr(match["address"]) != 0x0040F6F0
+            or match.get("name") != "PlayerLemming::AddData"
+            or norm_addr(match["_next_orig_addr"]) != 0x0040F7A0
+        ):
+            return False
+        orig_start = norm_addr(match["address"])
+        recomp_start = norm_addr(match["recomp"])
+    except (AttributeError, KeyError, TypeError, ValueError):
+        return False
+
+    if (
+        recomp_start
+        != unique_recompiled_symbol_address(
+            "?AddData@PlayerLemming@@UAEXXZ"
+        )
+        or not is_unique_recompiled_procedure(
+            recomp_start,
+            "S_GPROC32",
+            "PlayerLemming::AddData",
+            0xA9,
+        )
+    ):
+        return False
+
+    groups = collect_visible_instruction_groups(match.get("diff"))
+    if groups is None or len(groups) != 1:
+        return False
+    orig_entries, recomp_entries = groups[0]
+
+    try:
+        original_image = load_original_image()
+        recompiled_image = load_recompiled_image()
+    except (IndexError, LookupError, OSError, RuntimeError, ValueError):
+        return False
+    decoded_orig_interval = decode_exact_image_span(
+        original_image, orig_start, 0xB0
+    )
+    decoded_recomp = decode_exact_image_span(
+        recompiled_image, recomp_start, 0xA9
+    )
+    if (
+        decoded_orig_interval is None
+        or decoded_recomp is None
+        or len(decoded_orig_interval) != 50
+        or len(decoded_recomp) != 49
+    ):
+        return False
+    decoded_orig = decoded_orig_interval[:48]
+    if decoded_orig_interval[48:] != [
+        (orig_start + 0xA7, 2, "mov", "edi, edi"),
+        (orig_start + 0xA9, 7, "lea", "esp, [esp]"),
+    ]:
+        return False
+    if not (
+        complete_control_flow_is_reachable(decoded_orig, orig_start, {})
+        and complete_control_flow_is_reachable(
+            decoded_recomp, recomp_start, {}
+        )
+    ):
+        return False
+
+    visible_orig = decoded_orig_interval[:49]
+    if (
+        len(orig_entries) != 49
+        or len(recomp_entries) != 49
+        or tuple(address for address, _ in orig_entries)
+        != tuple(instruction[0] for instruction in visible_orig)
+        or tuple(address for address, _ in recomp_entries)
+        != tuple(instruction[0] for instruction in decoded_recomp)
+    ):
+        return False
+
+    call_pairs = (
+        (3, 3, "unsigned short"),
+        (7, 7, "unsigned char"),
+        (12, 12, "unsigned short"),
+        (17, 17, "unsigned short"),
+        (22, 22, "unsigned short"),
+        (31, 31, "unsigned short"),
+        (36, 37, "unsigned short"),
+        (44, 45, "unsigned long"),
+    )
+    orig_calls = {orig_index: overload for orig_index, _, overload in call_pairs}
+    recomp_calls = {
+        recomp_index: overload for _, recomp_index, overload in call_pairs
+    }
+    timestamp_text = (
+        "mov ecx, dword ptr [g_dwSimulationTimestamp (DATA)]"
+    )
+
+    def json_covers_exact_body(
+        entries, decoded, calls, timestamp_index: int, branch_index: int
+    ) -> bool:
+        for index, ((_, rendered_text), instruction) in enumerate(
+            zip(entries, decoded)
+        ):
+            _, _, mnemonic, operands = instruction
+            decoded_text = f"{mnemonic} {operands}".strip()
+            if index in calls:
+                expected = (
+                    f"call NetworkMessage::Add({calls[index]}) (FUNCTION)"
+                )
+                if rendered_text != expected or mnemonic != "call":
+                    return False
+            elif index == timestamp_index:
+                if rendered_text != timestamp_text or mnemonic != "mov":
+                    return False
+            elif index == branch_index:
+                if rendered_text != "jbe 0x6" or mnemonic != "jbe":
+                    return False
+            elif rendered_text != decoded_text:
+                return False
+        return True
+
+    if not (
+        json_covers_exact_body(
+            orig_entries, visible_orig, orig_calls, 37, 39
+        )
+        and json_covers_exact_body(
+            recomp_entries, decoded_recomp, recomp_calls, 38, 40
+        )
+    ):
+        return False
+
+    callees = exact_add_data_callee_addresses(
+        original_image, recompiled_image
+    )
+    if callees is None:
+        return False
+    for orig_index, recomp_index, overload in call_pairs:
+        orig_call = decoded_orig[orig_index]
+        recomp_call = decoded_recomp[recomp_index]
+        expected_orig, expected_recomp = callees[overload]
+        if (
+            orig_call[1:] != (5, "call", hex(expected_orig))
+            or not direct_call_reaches_symbol(
+                recompiled_image, recomp_call, expected_recomp
+            )
+        ):
+            return False
+
+    expected_orig_pack = (
+        "mov eax, dword ptr [esi - 0x80]",
+        "mov ecx, esi",
+        "mov ah, byte ptr [esi - 0xa0]",
+        "push eax",
+    )
+    expected_recomp_pack = (
+        "mov eax, dword ptr [esi - 0xa0]",
+        "mov ecx, esi",
+        "mov ah, al",
+        "mov al, byte ptr [esi - 0x80]",
+        "push eax",
+    )
+
+    def instruction_text(instruction) -> str:
+        return f"{instruction[2]} {instruction[3]}".strip()
+
+    if (
+        tuple(instruction_text(item) for item in decoded_orig[32:36])
+        != expected_orig_pack
+        or tuple(
+            instruction_text(item) for item in decoded_recomp[32:37]
+        )
+        != expected_recomp_pack
+    ):
+        return False
+
+    timestamp_address = unique_recompiled_symbol_address(
+        "?g_dwSimulationTimestamp@@3KA"
+    )
+    if (
+        timestamp_address is None
+        or instruction_text(decoded_orig[37])
+        != "mov ecx, dword ptr [0x49ce08]"
+        or instruction_text(decoded_recomp[38])
+        != f"mov ecx, dword ptr [{hex(timestamp_address)}]"
+        or decoded_orig[39][1:] != (2, "jbe", hex(decoded_orig[41][0]))
+        or decoded_recomp[40][1:]
+        != (2, "jbe", hex(decoded_recomp[42][0]))
+    ):
+        return False
+
+    for orig_index, recomp_index in (
+        tuple((index, index) for index in range(32))
+        + tuple((index, index + 1) for index in range(38, 48))
+    ):
+        if orig_index in orig_calls or orig_index == 39:
+            continue
+        orig_instruction = decoded_orig[orig_index]
+        recomp_instruction = decoded_recomp[recomp_index]
+        if (
+            orig_instruction[1] != recomp_instruction[1]
+            or instruction_text(orig_instruction)
+            != instruction_text(recomp_instruction)
+        ):
+            return False
+
+    return True
 
 
 def is_exact_player_has_object_role_schedule(
@@ -3615,6 +3972,7 @@ def run_selftest() -> int:
 
     failed = 0
     strict_target_identities = (
+        (0x0040F6F0, "PlayerLemming::AddData"),
         (0x0040F960, "PlayerLemming::HasObject"),
         (0x0043C610, "C2D::DrawBullet"),
         (0x0043C660, "C2D::DrawAmmo"),
@@ -5641,6 +5999,179 @@ def run_selftest() -> int:
                     if "both" in chunk:
                         chunk["both"] = kept
             return removed
+
+        add_data_live = full_matches.get(0x0040F6F0)
+        if add_data_live is None:
+            print("selftest fail: live PlayerLemming::AddData fixture is unavailable")
+            failed += 1
+        else:
+            add_data_start = norm_addr(add_data_live["recomp"])
+            add_data_body = decode_exact_image_span(
+                rebuilt_image, add_data_start, 0xA9
+            )
+            if add_data_body is None or len(add_data_body) != 49:
+                print(
+                    "selftest fail: PlayerLemming::AddData complete PE fixture "
+                    "is unavailable"
+                )
+                failed += 1
+            else:
+                renamed = copy.deepcopy(add_data_live)
+                renamed["name"] = "Unrelated::Function"
+                ratio, _ = compute_ratio(renamed, renamed["name"])
+                if ratio == 100.0:
+                    print(
+                        "selftest fail: PlayerLemming::AddData accepted after "
+                        "a name mutation"
+                    )
+                    failed += 1
+
+                for description, key, value in (
+                    (
+                        "original address",
+                        "address",
+                        norm_addr(add_data_live["address"]) + 1,
+                    ),
+                    (
+                        "original boundary",
+                        "_next_orig_addr",
+                        norm_addr(add_data_live["_next_orig_addr"]) + 1,
+                    ),
+                    (
+                        "PDB function binding",
+                        "recomp",
+                        hex(add_data_start + 1),
+                    ),
+                ):
+                    wrong_identity = copy.deepcopy(add_data_live)
+                    wrong_identity[key] = value
+                    ratio, _ = compute_ratio(
+                        wrong_identity, wrong_identity["name"]
+                    )
+                    if ratio == 100.0:
+                        print(
+                            "selftest fail: PlayerLemming::AddData accepted "
+                            f"wrong {description}"
+                        )
+                        failed += 1
+
+                wrong_calls = copy.deepcopy(add_data_live)
+                if replace_recompiled_annotation(
+                    wrong_calls,
+                    "NetworkMessage::Add",
+                    "call CompletelyWrong::Target (FUNCTION)",
+                ) != 8:
+                    print(
+                        "selftest fail: PlayerLemming::AddData call-label "
+                        "fixture is incomplete"
+                    )
+                    failed += 1
+                else:
+                    ratio, _ = compute_ratio(wrong_calls, wrong_calls["name"])
+                    if ratio == 100.0:
+                        print(
+                            "selftest fail: PlayerLemming::AddData accepted "
+                            "wrong call labels"
+                        )
+                        failed += 1
+
+                wrong_json = copy.deepcopy(add_data_live)
+                if replace_shared_recompiled_annotation(
+                    wrong_json,
+                    "mov dword ptr [esi + 0x2c], 0",
+                    "mov dword ptr [esi + 0x2c], 1",
+                ) != 1:
+                    print(
+                        "selftest fail: PlayerLemming::AddData JSON-sync "
+                        "fixture is incomplete"
+                    )
+                    failed += 1
+                else:
+                    ratio, _ = compute_ratio(wrong_json, wrong_json["name"])
+                    if ratio == 100.0:
+                        print(
+                            "selftest fail: PlayerLemming::AddData accepted "
+                            "corrupted JSON context"
+                        )
+                        failed += 1
+
+                for call_index in (3, 7, 12, 17, 22, 31, 37, 45):
+                    call = add_data_body[call_index]
+                    call_address = call[0]
+                    wrong_target = int(call[3], 16) + 0x100
+                    displacement = wrong_target - (call_address + call[1])
+                    if accepted_with_recompiled_patches(
+                        add_data_live,
+                        {
+                            call_address
+                            + 1: displacement.to_bytes(
+                                4, "little", signed=True
+                            )
+                        },
+                    ):
+                        print(
+                            "selftest fail: PlayerLemming::AddData accepted "
+                            f"patched call index {call_index}"
+                        )
+                        failed += 1
+
+                if is_unique_recompiled_procedure(
+                    add_data_start,
+                    "S_GPROC32",
+                    "PlayerLemming::AddData",
+                    0xA8,
+                ):
+                    print(
+                        "selftest fail: PlayerLemming::AddData accepted a "
+                        "wrong PDB procedure size"
+                    )
+                    failed += 1
+
+                for description, index in (
+                    ("first packed field", 32),
+                    ("packed this reload", 33),
+                    ("packed high byte", 34),
+                    ("packed low byte", 35),
+                    ("packed call argument", 36),
+                    ("prefix member read", 8),
+                    ("timestamp relocation", 38),
+                    ("CFG edge", 40),
+                    ("final state store", 46),
+                    ("return", 48),
+                ):
+                    if accepted_with_recompiled_patches(
+                        add_data_live,
+                        corrupt_last_instruction_byte(add_data_body[index]),
+                    ):
+                        print(
+                            "selftest fail: PlayerLemming::AddData accepted "
+                            f"patched {description}"
+                        )
+                        failed += 1
+
+                short_add = unique_recompiled_symbol_address(
+                    "?Add@NetworkMessage@@QAEXG@Z"
+                )
+                short_add_body = (
+                    decode_exact_image_span(rebuilt_image, short_add, 0x1A)
+                    if short_add is not None
+                    else None
+                )
+                if short_add_body is None or len(short_add_body) != 8:
+                    print(
+                        "selftest fail: NetworkMessage::Add(unsigned short) "
+                        "callee fixture is unavailable"
+                    )
+                    failed += 1
+                elif accepted_with_recompiled_patches(
+                    add_data_live,
+                    corrupt_last_instruction_byte(short_add_body[3]),
+                ):
+                    print(
+                        "selftest fail: PlayerLemming::AddData accepted a "
+                        "callee that does not read the packed high byte"
+                    )
+                    failed += 1
 
         duplicator_live = full_matches[0x0043CFA0]
         duplicator_start = norm_addr(duplicator_live["recomp"])

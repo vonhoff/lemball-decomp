@@ -32,6 +32,7 @@ public:
 
 	friend class PlayerLemming;
 	friend class BulletManager;
+	friend class Enemy;
 
 private:
 	unsigned int m_active;           // 0x164
