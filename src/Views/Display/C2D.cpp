@@ -958,8 +958,11 @@ void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 // FUNCTION: LEMBALL 0x0043d0f0
 void C2D::DrawTimeBonus(ViewData& p_viewData)
 {
-	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 16,
-							 p_viewData.m_positionY - 18,
+	// GLOBAL: LEMBALL 0x00497088
+	static const short timeBonusOffset[] = {16, 18};
+
+	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - timeBonusOffset[0],
+							 p_viewData.m_positionY - timeBonusOffset[1],
 							 RES_GAME_TIME_BONUS,
 							 p_viewData.m_stateTimer,
 							 p_viewData.m_animationTime,
@@ -967,21 +970,146 @@ void C2D::DrawTimeBonus(ViewData& p_viewData)
 }
 
 // 68K 0x10b03acc DrawCatapult__3C2DFR9CViewDatai
-// STUB: LEMBALL 0x0043d130
+// FUNCTION: LEMBALL 0x0043d130
 void C2D::DrawCatapult(ViewData& p_viewData, int p_objectNo)
 {
+	// GLOBAL: LEMBALL 0x00497044
+	static const short baseOffset[] = {40, 60};
+	// GLOBAL: LEMBALL 0x00497048
+	static const short animOffset[] = {40, 60};
+
+	int x;
+	int y;
+	BaseRemap* remap;
+	eAction action;
+	unsigned int stateTimer;
+
+	action = p_viewData.m_action;
+	stateTimer = p_viewData.m_stateTimer;
+	x = p_viewData.m_positionX;
+	y = p_viewData.m_positionY;
+	remap = 0;
+
+	if (p_viewData.m_actionArgument != 0) {
+		remap = m_paletteRemap;
+	}
+
+	switch (action) {
+	case (eAction) 0x18:
+		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
+		break;
+
+	case (eAction) 0x19:
+		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x - animOffset[0] - 8,
+								 y - animOffset[1],
+								 RES_GAME_CATMOUNT_SE,
+								 stateTimer,
+								 p_viewData.m_animationTime,
+								 (Remap*) remap);
+		break;
+
+	case (eAction) 0x1a:
+		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		m_lemmingAnims->DrawAnim(x - animOffset[0],
+								 y - animOffset[1],
+								 g_anGroundStyleResourceIds[9],
+								 stateTimer + 0x640,
+								 p_viewData.m_animationTime,
+								 0);
+		m_lemmingAnims->DrawAnim(x - animOffset[0] - 8,
+								 y - animOffset[1],
+								 RES_GAME_CATMOUNT_SE,
+								 stateTimer,
+								 p_viewData.m_animationTime,
+								 (Remap*) remap);
+		break;
+
+	case (eAction) 0x1b:
+		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		m_lemmingAnims->DrawAnim(x - animOffset[0],
+								 y - animOffset[1],
+								 g_anGroundStyleResourceIds[9],
+								 stateTimer + 0x640,
+								 p_viewData.m_animationTime,
+								 0);
+		break;
+	}
 }
 
 // 68K 0x10b03d7e DrawSheep__3C2DFR9CViewDatai
-// STUB: LEMBALL 0x0043d370
+// FUNCTION: LEMBALL 0x0043d370
 void C2D::DrawSheep(ViewData& p_viewData, int p_objectNo)
 {
+	// GLOBAL: LEMBALL 0x0049ef58
+	static unsigned long sheepWalkResources[] = {
+		RES_GAME_SHEEP_WALK_NE,
+		RES_GAME_SHEEP_WALK_E,
+		RES_GAME_SHEEP_WALK_SE,
+		RES_GAME_SHEEP_WALK_S,
+		RES_GAME_SHEEP_WALK_SW,
+		RES_GAME_SHEEP_WALK_W,
+		RES_GAME_SHEEP_WALK_NW,
+		RES_GAME_SHEEP_WALK_N,
+	};
+	// GLOBAL: LEMBALL 0x0049ef78
+	static unsigned long sheepMunchResources[] = {
+		RES_GAME_SHEEP_MUNCH_NE,
+		RES_GAME_SHEEP_WALK_E,
+		RES_GAME_SHEEP_MUNCH_SE,
+		RES_GAME_SHEEP_WALK_S,
+		RES_GAME_SHEEP_MUNCH_SW,
+		RES_GAME_SHEEP_WALK_W,
+		RES_GAME_SHEEP_MUNCH_NW,
+		RES_GAME_SHEEP_WALK_N,
+	};
+	// GLOBAL: LEMBALL 0x0049706c
+	static const short sheepOffset[] = {9, 8};
+
+	unsigned int direction;
+	unsigned int stateTimer;
+	int x;
+	int y;
+
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	stateTimer = p_viewData.m_stateTimer;
+	x = p_viewData.m_positionX;
+	y = p_viewData.m_positionY;
+
+	switch (p_viewData.m_action) {
+	case (eAction) 0:
+	case (eAction) 1:
+	case (eAction) 4:
+		m_lemmingAnims->DrawAnim(x - sheepOffset[0],
+								 y - sheepOffset[1],
+								 sheepMunchResources[direction],
+								 stateTimer,
+								 p_viewData.m_animationTime,
+								 0);
+		break;
+
+	case (eAction) 2:
+		m_lemmingAnims->DrawAnim(x - sheepOffset[0],
+								 y - sheepOffset[1],
+								 sheepWalkResources[direction],
+								 stateTimer,
+								 p_viewData.m_animationTime,
+								 0);
+		break;
+	}
 }
 
 // 68K 0x10b03e6e DrawBall__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043d420
 void C2D::DrawBall(ViewData& p_viewData)
 {
+	// GLOBAL: LEMBALL 0x00497074
+	static const short ballOffset[] = {10, 15};
+	// GLOBAL: LEMBALL 0x00497078
+	static const short explosionOffset[] = {15, 17};
+
 	int x;
 	int y;
 	int elapsed;
@@ -992,7 +1120,7 @@ void C2D::DrawBall(ViewData& p_viewData)
 
 	switch (p_viewData.m_action) {
 	case (eAction) 0x25:
-		m_lemmingAnims->DrawAnim(x - 10, y - 15, RES_GAME_BALL, 0, p_viewData.m_animationTime, 0);
+		m_lemmingAnims->DrawAnim(x - ballOffset[0], y - ballOffset[1], RES_GAME_BALL, 0, p_viewData.m_animationTime, 0);
 		break;
 	case (eAction) 0x26:
 		elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
@@ -1000,7 +1128,7 @@ void C2D::DrawBall(ViewData& p_viewData)
 		if (frame > 8) {
 			frame = 8;
 		}
-		m_lemmingAnims->DrawAnim(x - 15, y - 17, RES_GAME_BALL_EXPLODE, frame, 0, 0);
+		m_lemmingAnims->DrawAnim(x - explosionOffset[0], y - explosionOffset[1], RES_GAME_BALL_EXPLODE, frame, 0, 0);
 		break;
 	}
 }
@@ -1009,6 +1137,9 @@ void C2D::DrawBall(ViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043d4b0
 void C2D::DrawKey(ViewData& p_viewData, int p_playerIndex)
 {
+	// GLOBAL: LEMBALL 0x00497054
+	static const short keyOffset[] = {8, 32};
+
 	BaseRemap* remap;
 
 	if (p_playerIndex < 4) {
@@ -1018,8 +1149,12 @@ void C2D::DrawKey(ViewData& p_viewData, int p_playerIndex)
 		remap = 0;
 	}
 
-	m_lemmingAnims
-		->DrawAnim(p_viewData.m_positionX - 8, p_viewData.m_positionY - 32, RES_GAME_KEYS, 0, 0, (Remap*) remap);
+	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - keyOffset[0],
+							 p_viewData.m_positionY - keyOffset[1],
+							 RES_GAME_KEYS,
+							 0,
+							 0,
+							 (Remap*) remap);
 }
 
 // 68K 0x10b03fc8 DrawMine__3C2DFR9CViewData
@@ -1057,23 +1192,83 @@ void C2D::DrawDoor(ViewData& p_viewData)
 }
 
 // 68K 0x10b042fa DrawSwitch__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043d7e0
+// FUNCTION: LEMBALL 0x0043d7e0
 void C2D::DrawSwitch(ViewData& p_viewData)
 {
+	// GLOBAL: LEMBALL 0x0049707c
+	static const short switchOffset[] = {5, 25};
+
+	int x;
+	int y;
+	unsigned int stateTimer;
+	eAction action;
+	unsigned short actionArgument;
+
+	x = p_viewData.m_positionX - switchOffset[0];
+	y = p_viewData.m_positionY - switchOffset[1];
+	stateTimer = p_viewData.m_stateTimer;
+	action = p_viewData.m_action;
+	actionArgument = (unsigned short) p_viewData.m_actionArgument;
+
+	switch (action) {
+	case (eAction) 7:
+	case (eAction) 0x18:
+		switch (actionArgument) {
+		case 0:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SWITCH, 0, 0, 0);
+			break;
+		case 1:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SWITCH, 0, 0, 0);
+			break;
+		}
+		break;
+
+	case (eAction) 0x1a:
+		switch (actionArgument) {
+		case 0:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SWITCH_ANIM, stateTimer, p_viewData.m_animationTime, 0);
+			break;
+		case 1:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SWITCH_ANIM, stateTimer, p_viewData.m_animationTime, 0);
+			break;
+		}
+		break;
+	}
 }
 
 // 68K 0x10b0440c DrawFlag__3C2DFR9CViewData11eObjectType
-// STUB: LEMBALL 0x0043d8d0
+// FUNCTION: LEMBALL 0x0043d8d0
 void C2D::DrawFlag(ViewData& p_viewData, eObjectType p_objectType)
 {
+	// GLOBAL: LEMBALL 0x00497080
+	static const short flagOffset[] = {15, 28};
+
+	int x;
+	int y;
+
+	x = p_viewData.m_positionX - flagOffset[0];
+	y = p_viewData.m_positionY - flagOffset[1];
+
+	switch (p_objectType) {
+	case (eObjectType) 0xb:
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_FLAG_GREEN, 0, p_viewData.m_animationTime, (Remap*) m_remaps[3]);
+		break;
+
+	case (eObjectType) 0xc:
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_FLAG_GREEN, 0, p_viewData.m_animationTime, (Remap*) m_remaps[1]);
+		break;
+	}
 }
 
 // 68K 0x10b044dc DrawBonus__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043d950
 void C2D::DrawBonus(ViewData& p_viewData)
 {
-	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 16,
-							 p_viewData.m_positionY - 16,
+	// GLOBAL: LEMBALL 0x00497084
+	static const short bonusOffset[] = {16, 16};
+
+	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - bonusOffset[0],
+							 p_viewData.m_positionY - bonusOffset[1],
 							 RES_GAME_BONUS,
 							 0,
 							 p_viewData.m_animationTime,

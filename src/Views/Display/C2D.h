@@ -146,7 +146,8 @@ private:
 	VsRect m_spriteGroundLookupRectB;               // 0x8da
 	undefined m_pad0x8e2[0x1a];                     // 0x8e2
 	int m_returnState;                              // 0x8fc
-	undefined m_pad0x900[0x10];                     // 0x900
+	undefined m_pad0x900[0xc];                      // 0x900
+	undefined4 m_unk0x90c;                          // 0x90c
 	Map* m_map;                                     // 0x910
 	undefined4 m_pad0x914;                          // 0x914
 	int m_viewOriginX;                              // 0x918
