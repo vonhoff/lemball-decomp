@@ -50,12 +50,7 @@ def normalize_asm(s: str) -> str:
 
 
 def is_unresolved_symbol(orig_text: str, recomp_text: str) -> bool:
-    """Match one unresolved relocation against a specifically named symbol.
-
-    This is intentionally pairwise. Replacing every symbol with one generic
-    token would also hide real differences such as reads from two distinct
-    globals.
-    """
+    """Match one relocation to one named symbol."""
     orig_text = normalize_asm(orig_text)
     recomp_text = normalize_asm(recomp_text)
     parts = RELOCATION.split(orig_text)
@@ -74,12 +69,7 @@ def is_unresolved_call(orig_text: str, recomp_text: str) -> bool:
 
 
 def is_unresolved_jmp(orig_text: str, recomp_text: str) -> bool:
-    """Unresolved original tail-jmp through the incremental-link jump table.
-
-    The original binary jmps into its jump table (Ghidra renders the target as a
-    raw relative offset); the recomp resolves the callee through its own table,
-    which reccmp prints as a thunk.
-    """
+    """Match an unresolved tail jump to a thunk."""
     orig_text = orig_text.split("\t")[0].strip()
     recomp_text = recomp_text.split("\t")[0].strip()
     if not re.match(r"jmp -?0x[0-9a-f]+\s*$", orig_text):
@@ -171,14 +161,7 @@ def is_thunk_only_diff(diff) -> bool:
 
 
 def byte_register_swaps_consistent(orig_asm: list[str], recomp_asm: list[str]) -> bool:
-    """Reject contradictory byte-register substitutions in aligned instructions.
-
-    reccmp's generic effective matcher deliberately erases register identity.
-    That is useful for allocation differences, but could otherwise accept a
-    definition moved from AL to CL while a later use incorrectly remains AL.
-    Keeping a bijection for byte-register-only variants closes that hole while
-    leaving unrelated instruction relocation to reccmp.
-    """
+    """Check byte-register substitutions for consistency."""
     forward: dict[str, str] = {}
     reverse: dict[str, str] = {}
     for orig_text, recomp_text in zip(orig_asm, recomp_asm):
@@ -202,12 +185,7 @@ def byte_register_swaps_consistent(orig_asm: list[str], recomp_asm: list[str]) -
 
 
 def group_asm(chunks) -> tuple[list[str], list[str]]:
-    """Rebuild the two assembly excerpts represented by one JSON diff group.
-
-    reccmp writes matching lines once under ``both`` and mismatching lines as
-    separate ``orig``/``recomp`` arrays. Known target-resolution differences
-    are made identical before its compiler-entropy classifier runs.
-    """
+    """Build aligned original and rebuilt instruction lists."""
     orig_asm: list[str] = []
     recomp_asm: list[str] = []
 

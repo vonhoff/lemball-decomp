@@ -50,7 +50,7 @@ class Func:
 
     @property
     def expected_gain(self) -> float:
-        """Ranking heuristic, not a calibrated prediction or equivalence score."""
+        """Estimate recoverable bytes."""
         return (self.original_size or 0) * (1.0 - self.ratio / 100.0) * self.readiness
 
     @property
@@ -67,11 +67,7 @@ class OriginalEvidence:
 
 
 def inspect_original(image, address: int, entries: set[int]) -> OriginalEvidence:
-    """Follow reachable x86 instructions; fail closed on ambiguous boundaries/tables.
-
-    Size is the entry-to-last-reachable-instruction span, excluding trailing
-    alignment. It is never the rebuilt procedure size or a next-symbol estimate.
-    """
+    """Measure reachable original x86 code."""
     from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 
     decoder = Cs(CS_ARCH_X86, CS_MODE_32)

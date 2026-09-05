@@ -19,7 +19,7 @@ LOG_PATH = BUILD / "last_build.log"
 
 
 def win_short_path(path: str) -> str:
-    """MSVC 1.60 nmake splits unquoted CMAKE_COMMAND at spaces."""
+    """Return a space-free Windows path when possible."""
     resolved = str(Path(path).resolve())
     if os.name != "nt" or " " not in resolved:
         return resolved
@@ -53,7 +53,7 @@ def cache_cmake_command() -> str | None:
 
 
 def handle_link(args: list[str]) -> int:
-    """Helper for MSVC 4.0 LINK.EXE response file formatting and output verification."""
+    """Run the linker and verify its output."""
     if not args:
         sys.exit("build.py --link requires linker executable and arguments")
 

@@ -85,7 +85,7 @@ class SlotResult:
 
 
 def resolve_jump(image, address: int | None, stop_at=None) -> int | None:
-    """Follow linker ``jmp rel32`` stubs, stopping at a known function body."""
+    """Follow linker jump stubs."""
     if address is None:
         return None
 
@@ -114,7 +114,7 @@ def resolve_jump(image, address: int | None, stop_at=None) -> int | None:
 
 
 def is_original_clone(image, address: int | None, entity: object | None) -> bool:
-    """Recognize an unlabelled original body that exactly copies a mapped body."""
+    """Check whether two bodies are identical."""
     if address is None or entity is None or entity.orig_addr is None:
         return False
     size = entity.size(ImageId.RECOMP)
@@ -152,7 +152,7 @@ def read_table(engine: Compare, match) -> tuple[list[int], list[int]]:
 
 
 def collect_folded_aliases(engine: Compare, codebase: DecompCodebase) -> dict[int, set[int]]:
-    """Return every rebuilt body claimed by a source ``FOLDED`` annotation."""
+    """Read folded source addresses."""
     aliases: dict[int, set[int]] = {}
     for function in codebase.iter_line_functions():
         if not function.is_folded:
@@ -169,13 +169,7 @@ def collect_folded_aliases(engine: Compare, codebase: DecompCodebase) -> dict[in
 
 
 def nested_vtable_symbol(class_name: str, base_class: str | None) -> str | None:
-    """Recover the decorated name for a PDB-collapsed nested base path.
-
-    MSVC's COFF symbol retains ``BaseSocket@@ReadSocket`` while cvdump's
-    demangled PDB name reports both read and write tables merely as
-    ``{for `BaseSocket'}``.  The source qualifier uses dumpbin's precise
-    ``BaseSocket's `ReadSocket`` spelling so the two tables remain distinct.
-    """
+    """Read a decorated nested-base name."""
     if base_class is None or SIMPLE_CLASS_RE.fullmatch(class_name) is None:
         return None
     match = NESTED_VTABLE_BASE_RE.fullmatch(base_class)
@@ -185,7 +179,7 @@ def nested_vtable_symbol(class_name: str, base_class: str | None) -> str | None:
 
 
 def collect_nested_vtable_matches(engine: Compare, source_vtables, mapped: set[int]) -> list[ReccmpMatch]:
-    """Pair nested-base tables using the decorated symbol retained by reccmp."""
+    """Pair nested-base tables."""
     candidates: dict[str, list[object]] = {}
     for entity in engine._db.unmatched(ImageId.RECOMP):
         if entity.get("type") != EntityType.VTABLE:
@@ -280,7 +274,7 @@ def entity_name(entity: object | None) -> str:
 
 
 def is_generated_adjuster(entity: object | None) -> bool:
-    """Recognize both MSVC vtordisp and fixed-this adjustment thunks."""
+    """Check for an MSVC adjustment thunk."""
     if entity is None:
         return False
     if "`vtordisp" in entity_name(entity):
@@ -298,14 +292,14 @@ def is_same_generated_adjuster_identity(
     orig_entity: object | None,
     recomp_entity: object | None,
 ) -> bool:
-    """Recognize duplicate MSVC vtordisp entities with the same full name."""
+    """Check for a duplicate vtordisp entity."""
     orig_name = entity_name(orig_entity)
     recomp_name = entity_name(recomp_entity)
     return "`vtordisp" in orig_name and orig_name == recomp_name
 
 
 def deleting_destructor_identity(entity: object | None) -> tuple[str, str] | None:
-    """Return the owning class and generated deleting-destructor kind."""
+    """Read a generated destructor kind."""
     match = DELETING_DESTRUCTOR_RE.match(entity_name(entity))
     if match is None:
         return None
@@ -316,7 +310,7 @@ def is_deleting_destructor_alias_pair(
     orig_entity: object | None,
     recomp_entity: object | None,
 ) -> bool:
-    """Recognize opposite generated deleting-destructor names for one class."""
+    """Check opposite generated destructor names."""
     orig_identity = deleting_destructor_identity(orig_entity)
     recomp_identity = deleting_destructor_identity(recomp_entity)
     return (
@@ -328,7 +322,7 @@ def is_deleting_destructor_alias_pair(
 
 
 def codegen_equivalent(comparison) -> bool:
-    """Apply the general check.py equivalence rules to a direct pair."""
+    """Apply check.py equivalence rules."""
     orig = comparison.diff.orig_inst
     recomp = comparison.diff.recomp_inst
     if not orig or len(orig) != len(recomp):
@@ -344,7 +338,7 @@ def generated_function_codegen_matches(
     recomp_entity: object | None,
     name: str,
 ) -> bool:
-    """Compare an otherwise ambiguous pair of compiler-generated functions."""
+    """Compare compiler-generated functions."""
     if orig is None or recomp is None or orig_entity is None or recomp_entity is None:
         return False
 
@@ -384,7 +378,7 @@ def is_same_generated_adjuster(
     orig_entity: object | None,
     recomp_entity: object | None,
 ) -> bool:
-    """Accept a duplicate named vtordisp only after comparing its body."""
+    """Compare duplicate vtordisp bodies."""
     return is_same_generated_adjuster_identity(
         orig_entity, recomp_entity
     ) and generated_function_codegen_matches(
@@ -404,7 +398,7 @@ def is_same_deleting_destructor_alias(
     orig_entity: object | None,
     recomp_entity: object | None,
 ) -> bool:
-    """Accept opposite MSVC deleting-destructor aliases only when code agrees."""
+    """Compare opposite destructor aliases."""
     orig_identity = deleting_destructor_identity(orig_entity)
     if (
         orig is None
