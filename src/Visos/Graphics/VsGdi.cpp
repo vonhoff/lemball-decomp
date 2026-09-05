@@ -1778,8 +1778,7 @@ void Surface::FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset
 {
 	int y1 = p_centerY - p_yOffset;
 	int y2 = p_centerY + p_yOffset;
-	int clipY = m_clipRect.m_y;
-	if (y1 <= (int) (m_clipRect.m_height + clipY - 1) && clipY <= y2) {
+	if (y1 <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1) && m_clipRect.m_y <= y2) {
 		int x1 = p_centerX - p_xOffset;
 		int x2 = p_centerX + p_xOffset;
 		int clipX = m_clipRect.m_x;
@@ -1790,7 +1789,7 @@ void Surface::FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset
 			if (x1 < clipX) {
 				x1 = clipX;
 			}
-			if (clipY <= y1) {
+			if (m_clipRect.m_y <= y1) {
 				memset((unsigned char*) m_lines[y1] + x1, p_colour, x2 - x1 + 1);
 			}
 			if (y2 <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
