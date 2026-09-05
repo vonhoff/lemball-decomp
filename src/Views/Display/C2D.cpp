@@ -626,6 +626,10 @@ void C2D::DrawLemmingOnConveyor(ViewData& p_viewData, unsigned char p_remapped)
 	m_lemmingAnims->DrawAnim(x - 15, y - 22, RES_GAME_LEMMING_SPIN, frame, 0, (Remap*) remap);
 }
 
+// Shared with DrawLemming; the original source name is unavailable.
+// GLOBAL: LEMBALL 0x00496fd8
+static const short g_unk0x496fd8[] = {8, 18};
+
 // 68K 0x10b027f2 DrawLemming__3C2DFR9CViewDataiUc
 // STUB: LEMBALL 0x0043c200
 void C2D::DrawLemming(ViewData& p_viewData, int p_objectNo, unsigned char p_remapped)
@@ -769,9 +773,52 @@ void C2D::DrawHand(ViewData& p_viewData)
 }
 
 // 68K 0x10b02fb0 DrawLemmingOnBalloon__3C2DFR9CViewDataiUc
-// STUB: LEMBALL 0x0043c8a0
+// FUNCTION: LEMBALL 0x0043c8a0
 void C2D::DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, unsigned char p_remapped)
 {
+	int x;
+	int y;
+	int xOffset;
+	int yOffset;
+	unsigned int phase;
+	BaseRemap* remap;
+	BaseRemap* balloonRemap;
+
+	x = p_viewData.m_positionX;
+	y = p_viewData.m_positionY;
+	phase = ((p_viewData.m_animationTime - p_viewData.m_stateTimer) & 0x7ff) >> 7;
+
+	if (*(unsigned int*) &p_remapped != 0) {
+		remap = m_paletteRemap;
+	}
+	else {
+		remap = 0;
+	}
+
+	if (phase <= 7) {
+		xOffset = phase - 4;
+	}
+	else {
+		xOffset = 12 - phase;
+	}
+
+	yOffset = phase - 4;
+	if (phase > 7) {
+		yOffset = 12 - phase;
+	}
+
+	DrawLemmingFlyShadow(p_viewData);
+
+	if (p_balloonType < 4) {
+		balloonRemap = m_remaps[p_balloonType];
+	}
+	else {
+		balloonRemap = 0;
+	}
+
+	m_lemmingAnims->DrawAnim(x - 16, y - 64, RES_GAME_BALLOON, 0, 0, (Remap*) balloonRemap);
+	m_lemmingAnims
+		->DrawAnim(x - g_unk0x496fd8[0] - 14, y - g_unk0x496fd8[1] - 12, RES_GAME_ONBALLOON, 0, 0, (Remap*) remap);
 }
 
 // 68K 0x10b030b6 DrawBalloon__3C2DFR9CViewDatai
@@ -1126,8 +1173,8 @@ void C2D::DrawSheep(ViewData& p_viewData, int p_objectNo)
 
 	unsigned int direction;
 	unsigned int stateTimer;
-	int x;
 	int y;
+	int x;
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
 	stateTimer = p_viewData.m_stateTimer;
