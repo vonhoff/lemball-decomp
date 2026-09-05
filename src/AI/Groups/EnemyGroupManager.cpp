@@ -1,5 +1,7 @@
 #include "EnemyGroupManager.h"
 
+#include "../Base/WaypointInformation.h"
+
 // 68K 0x10608928 ENEMY_GetLONG__FPUl
 // FUNCTION: LEMBALL 0x00420b50
 unsigned long EnemyGetLong(unsigned long* p_data)
@@ -31,9 +33,42 @@ void EnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSiz
 
 // 68K 0x10608cba
 // LoadLevelAdditional_Waypoint__18CEnemyGroupManagerFP32tagLoadEnemyDataAdditionalActionRP22tagWaypointInformation
-// STUB: LEMBALL 0x00420f90
+// FUNCTION: LEMBALL 0x00420f90
 LoadEnemyDataAdditionalAction* EnemyGroupManager::LoadLevelAdditionalWaypoint(LoadEnemyDataAdditionalAction* p_data,
 																			  WaypointInformation*& p_waypointInfo)
 {
-	return 0;
+	unsigned char* data = (unsigned char*) p_data;
+	EnemyGetLong((unsigned long*) data);
+	data += 4;
+
+	p_waypointInfo = new WaypointInformation;
+	unsigned int waypointCount = data[1];
+	p_waypointInfo->m_action = data[0];
+	p_waypointInfo->m_waypointCount = waypointCount;
+	p_waypointInfo->m_value = data[2];
+
+	unsigned char rawSignedValue = data[3];
+	int signedValue;
+	if ((rawSignedValue & 0x80) != 0) {
+		signedValue = rawSignedValue | 0xffffff00;
+	}
+	else {
+		signedValue = rawSignedValue;
+	}
+	p_waypointInfo->m_signedValue = signedValue;
+
+	p_waypointInfo->m_waypoints = new unsigned short[waypointCount];
+	if ((int) waypointCount > 0) {
+		unsigned short* waypointData = (unsigned short*) data;
+		waypointData += 2;
+		int i = 0;
+		unsigned int remaining = waypointCount;
+		do {
+			p_waypointInfo->m_waypoints[i] = *waypointData++;
+			i++;
+			remaining--;
+		} while (remaining != 0);
+	}
+
+	return (LoadEnemyDataAdditionalAction*) (data + waypointCount * 2 + 4);
 }
