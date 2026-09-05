@@ -881,7 +881,7 @@ void Surface::CopyDIBBits(void* p_header, unsigned char* p_bits)
 // FUNCTION: LEMBALL 0x0046d930
 void Surface::SetDefaultCtable()
 {
-	unsigned char logPalette[8 + 256 * 4];
+	unsigned char logPalette[4 + 256 * 4];
 	LOGPALETTE* palette;
 	PALETTEENTRY* entries;
 	unsigned int* source;
@@ -892,29 +892,24 @@ void Surface::SetDefaultCtable()
 	palette = (LOGPALETTE*) logPalette;
 	palette->palVersion = 0x300;
 	palette->palNumEntries = 0x100;
-	entries = palette->palPalEntry;
 	source = g_dwWinGDrawColourTable;
 	i = 0;
-	while (i < 0x100) {
-		entries[i].peRed = (unsigned char) (source[i] >> 16);
-		entries[i].peGreen = (unsigned char) (source[i] >> 8);
-		entries[i].peBlue = (unsigned char) source[i];
-		entries[i].peFlags = 4;
+	entries = palette->palPalEntry;
+	while (i < palette->palNumEntries) {
+		entries->peRed = ((unsigned char*) source)[2];
+		entries->peGreen = ((unsigned char*) source)[1];
+		entries->peBlue = ((unsigned char*) source)[0];
+		entries->peFlags = 4;
+		entries++;
 		i++;
+		source++;
 	}
-	if (g_pTargetGraphicsDriver != 0) {
-		g_pTargetGraphicsDriver->CreatePalette(palette);
-	}
-	if (g_pSurfaceList == 0) {
-		return;
-	}
+	g_pTargetGraphicsDriver->CreatePalette(palette);
 	node = (SurfaceListNode*) g_pSurfaceList->m_first;
 	while (node != 0) {
 		surface = node->m_surface;
-		if (surface != 0 && (unsigned char*) surface->m_colourTable != 0) {
-			memcpy(surface->m_colourTable, g_dwWinGDrawColourTable, 0x400);
-		}
-		if (surface != 0 && surface->m_drawingPort != 0 && g_pTargetGraphicsDriver != 0) {
+		memcpy(m_colourTable, g_dwWinGDrawColourTable, 0x400);
+		if (surface->m_drawingPort != 0) {
 			g_pTargetGraphicsDriver->UpdateDIBColourTable((TargetDrawingContext*) surface->m_drawingPort,
 														  0,
 														  0x100,
