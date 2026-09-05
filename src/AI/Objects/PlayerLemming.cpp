@@ -407,19 +407,18 @@ bool PlayerLemming::CheckSfx()
 // FUNCTION: LEMBALL 0x0040f960
 bool PlayerLemming::HasObject(eObjectType p_arg0)
 {
-	if (p_arg0 == (eObjectType) 5) {
-		if (m_ammoCount == 50) {
-			return 1;
-		}
-		return 0;
-	}
-	int count = m_inventoryCount;
-	if (count != 12) {
-		for (int i = 0; i < count; i++) {
-			if (m_inventoryTypes[i] == p_arg0) {
-				return 1;
+	if (p_arg0 != (eObjectType) 5) {
+		int count = m_inventoryCount;
+		if (count != 12) {
+			for (int i = 0; i < count; i++) {
+				if (m_inventoryTypes[i] == p_arg0) {
+					return 1;
+				}
 			}
 		}
+	}
+	else if (m_ammoCount == 50) {
+		return 1;
 	}
 	return 0;
 }
@@ -566,12 +565,16 @@ int PlayerLemming::GetObject(int p_arg0)
 // FUNCTION: LEMBALL 0x0040fcd0
 void PlayerLemming::ExternalControlEnd()
 {
-	if (m_actionArgument >= 1 && m_actionArgument <= 2) {
+	int actionArgument = (unsigned short) m_actionArgument;
+	switch (actionArgument) {
+	case 1:
+	case 2:
 		Die();
 		Action((eAction) 8);
-	}
-	else {
+		break;
+	default:
 		Action((eAction) 0);
+		break;
 	}
 }
 
@@ -821,10 +824,7 @@ void PlayerLemming::GetViewData(ViewData& p_viewData)
 	SetSndEffect((eSoundEffect) 0);
 	p_viewData.m_transientFlags = m_transientFlags;
 	m_transientFlags = 0;
-	int flags = (m_isGroupLeader == 0 ? 1 : 0);
-	if (m_groupIndex != 0) {
-		flags |= 2;
-	}
+	int flags = (m_isGroupLeader != 0 ? 1 : 0) | (m_groupIndex != 0 ? 2 : 0);
 	p_viewData.m_statusFlags = flags;
 	p_viewData.m_playerIndex = m_playerIndex;
 }

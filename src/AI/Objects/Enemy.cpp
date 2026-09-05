@@ -27,7 +27,7 @@ void Enemy::Restart()
 
 // 68K 0x10607b5e
 // SetEnemyType__6CEnemyF18eEnemyStateActions16eEnemyStateRules18eEnemyStateActions16eEnemyStateRules18eEnemyStateActions16eEnemyStateRules
-// STUB: LEMBALL 0x0041fe30
+// FUNCTION: LEMBALL 0x0041fe30
 void Enemy::SetEnemyType(eEnemyStateActions p_action0,
 						 eEnemyStateRules p_rule0,
 						 eEnemyStateActions p_action1,
@@ -35,6 +35,12 @@ void Enemy::SetEnemyType(eEnemyStateActions p_action0,
 						 eEnemyStateActions p_action2,
 						 eEnemyStateRules p_rule2)
 {
+	m_state0Action = p_action0;
+	m_state0Rule = p_rule0;
+	m_state1Action = p_action1;
+	m_state1Rule = p_rule1;
+	m_state2Action = p_action2;
+	m_state2Rule = p_rule2;
 }
 
 // 68K 0x10607c1a Process__6CEnemyFv
@@ -51,10 +57,23 @@ void Enemy::ProcessAction(eEnemyStateRules p_rule, eEnemyStateActions p_action, 
 }
 
 // 68K 0x10607dce ProcessRule__6CEnemyF16eEnemyStateRules
-// STUB: LEMBALL 0x00420000
+// FUNCTION: LEMBALL 0x00420000
 bool Enemy::ProcessRule(eEnemyStateRules p_rule)
 {
-	return 0;
+	switch (p_rule) {
+	case 0:
+		return 1;
+	case 2:
+		return EnemyRuleRadius50();
+	case 3:
+		return EnemyRuleRadius50() == 0;
+	case 4:
+		return EnemyRuleRadius50AndLineOfSight();
+	case 5:
+		return EnemyRuleRadius50AndLineOfSight() == 0;
+	default:
+		return 0;
+	}
 }
 
 // 68K 0x10607e80 EnemyRule_RADIUS50__6CEnemyFv
@@ -114,23 +133,56 @@ void Enemy::EnemyActionTurnAndFireRandom(EnemyLemmingUnion* p_data)
 }
 
 // 68K 0x106081b0 CheckRadius__6CEnemyFi
-// STUB: LEMBALL 0x00420200
+// FUNCTION: LEMBALL 0x00420200
 bool Enemy::CheckRadius(int p_radius)
 {
-	return 0;
+	VsRect rect;
+	rect.m_x = (m_position.m_xFixed >> 12) - p_radius;
+	rect.m_y = (m_position.m_yFixed >> 12) - p_radius;
+	rect.m_width = rect.m_height = p_radius * 2;
+
+	if (g_pAI->PlayerCheckGroupIntersection(&rect, &m_targetPosition) == 1) {
+		return 1;
+	}
+	return g_pAI->SheepCheckGroupIntersection(&rect, &m_targetPosition) == 1;
 }
 
 // 68K 0x1060827a LineOfSight__6CEnemyF7AICOORD
-// STUB: LEMBALL 0x004202a0
+// FUNCTION: LEMBALL 0x004202a0
 bool Enemy::LineOfSight(AiCoord p_target)
 {
+	int deltaX = p_target.m_xFixed - m_position.m_xFixed;
+	int deltaY = p_target.m_yFixed - m_position.m_yFixed;
+	int absX = VsAbs(deltaX);
+	int absY = VsAbs(deltaY);
+	int low = absY & 0xfff;
+	int fraction = (low * 0x6a0) >> 12;
+	int high = absY >> 12;
+	if (high * 0x6a0 + fraction < absX) {
+		if ((high * 0x1350 + low) * 2 + fraction > absX) {
+			return 1;
+		}
+	}
 	return 0;
 }
 
 // 68K 0x10608396 TurnToFaceTarget__6CEnemyFv
-// STUB: LEMBALL 0x00420350
+// FUNCTION: LEMBALL 0x00420350
 void Enemy::TurnToFaceTarget()
 {
+	int facing = ReturnFacingDirection(m_position.m_xFixed >> 12,
+									   m_position.m_yFixed >> 12,
+									   m_fireTarget.m_xFixed >> 12,
+									   m_fireTarget.m_yFixed >> 12);
+	if (facing != m_facingDirection) {
+		if (g_anRotationDirections[(facing - m_facingDirection) & 7] < 0) {
+			RotateAnticlockwise();
+		}
+		else {
+			RotateClockwise();
+		}
+	}
+	m_actionDeadline = g_dwGameTick + g_anTurnDelayTarget[m_objectType] / 50;
 }
 
 // 68K 0x1060846a IsRequestingFire__6CEnemyFv
@@ -154,9 +206,18 @@ void Enemy::RequestFire(int p_interval)
 }
 
 // 68K 0x10608502 Fire__6CEnemyFv
-// STUB: LEMBALL 0x00420430
+// FUNCTION: LEMBALL 0x00420430
 void Enemy::Fire()
 {
+	AiCoord start;
+	start.m_xFixed = m_position.m_xFixed;
+	int facing = m_facingDirection;
+	start.m_yFixed = m_position.m_yFixed;
+	start.m_zFixed = m_position.m_zFixed + 0xc000;
+
+	g_pAI->FireBullet(m_linkedObjectId, (eBulletType) 0, (eOwner) 1, facing, start, m_fireTarget);
+	m_fireState = 2;
+	m_actionDeadline = g_dwGameTick + m_fireInterval / 50;
 }
 
 // 68K 0x106085c0 StartFiring__6CEnemyFv
@@ -230,16 +291,20 @@ void Enemy::HitBall()
 void Enemy::GetHit()
 {
 	int& count = g_pAI->m_objectCount;
-	GameObject** objects = g_pAI->m_objects;
-	for (int i = 0; i < count; i++) {
-		if (objects[i] == (GameObject*) this) {
-			count--;
-			for (; i < count; i++) {
-				objects[i] = objects[i + 1];
+	int i = 0;
+	if (count > 0) {
+		GameObject**& objects = g_pAI->m_objects;
+		do {
+			if (objects[i] == (GameObject*) this) {
+				count--;
+				for (; i < count; i++) {
+					objects[i] = objects[i + 1];
+				}
+				objects[count] = 0;
+				break;
 			}
-			objects[count] = 0;
-			break;
-		}
+			i++;
+		} while (i < count);
 	}
 	g_pAI->Score(500);
 }
