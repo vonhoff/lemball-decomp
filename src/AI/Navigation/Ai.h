@@ -53,7 +53,7 @@ public:
 	void GetPlayerPos(int p_id, AiCoord& p_position);
 	void HitTrampoline(const AiCoord& p_position, GameObject* p_object);
 	void LoadFlagInfo(unsigned char* p_data, int p_size);
-	void LoadLevel(unsigned char* p_data, int p_version, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void NLemmings(int p_count);
 	virtual void Process(); // vtable+0x04
 	void Process(unsigned char p_paused);
@@ -104,7 +104,8 @@ private:
 	unsigned short m_levelVersion;             // 0x54
 	undefined2 m_pad0x56;                      // 0x56
 	PlayerLemmingGroupManager* m_playerGroups; // 0x58
-	undefined4 m_unk0x5c[2];                   // 0x5c
+	undefined4 m_unk0x5c;                      // 0x5c
+	undefined4 m_unk0x60;                      // 0x60: level map type (LoadLevel 0x00412f4c)
 	// Restart (0x00410d98): 32-bit result of skill == 4 (0 or 1).
 	undefined4 m_unk0x64;    // 0x64
 	undefined4 m_unk0x68[5]; // 0x68

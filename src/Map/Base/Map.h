@@ -24,6 +24,7 @@ public:
 	void SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data);
 	~Map();
 
+	friend class Ai;
 	friend class Bullet;
 	friend class PlayerLemming;
 	friend class Tower;

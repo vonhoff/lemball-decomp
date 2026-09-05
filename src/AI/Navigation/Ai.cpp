@@ -227,12 +227,6 @@ Game* Ai::LevelName()
 	return m_game;
 }
 
-// 68K 0x10602750 LoadLevel__3CAIFPUciUc
-// STUB: LEMBALL 0x00412f10
-void Ai::LoadLevel(unsigned char* p_data, int p_version, unsigned char p_skip)
-{
-}
-
 // 68K 0x1060281a FixUpLevel__3CAIFv
 // STUB: LEMBALL 0x00412fb0
 void Ai::FixUpLevel()
@@ -302,12 +296,6 @@ void Ai::AddANetworkStart(int p_x, int p_y, int p_z, int p_index)
 // 68K 0x10602a54 SetNetworkTrapDoors__3CAIFiiiii
 // STUB: LEMBALL 0x004131e0
 void Ai::SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_third, int p_fourth)
-{
-}
-
-// 68K 0x10602b0a LoadFlagInfo__3CAIFPUci
-// STUB: LEMBALL 0x00413300
-void Ai::LoadFlagInfo(unsigned char* p_data, int p_size)
 {
 }
 
