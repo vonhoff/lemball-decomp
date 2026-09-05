@@ -52,9 +52,34 @@ bool Enemy::Process()
 }
 
 // 68K 0x10607cd2 ProcessAction__6CEnemyF16eEnemyStateRules18eEnemyStateActionsP18tEnemyLemmingUnion
-// STUB: LEMBALL 0x0041ff60
+// FUNCTION: LEMBALL 0x0041ff60
 void Enemy::ProcessAction(eEnemyStateRules p_rule, eEnemyStateActions p_action, EnemyLemmingUnion* p_data)
 {
+	if (ProcessRule(p_rule) == 1) {
+		m_stateIndex++;
+		if (m_stateIndex > 2) {
+			m_stateIndex = 0;
+		}
+	}
+	else {
+		switch (p_action) {
+		case 1:
+			EnemyActionPatrol(p_data);
+			break;
+		case 2:
+			EnemyActionTurnAndFireRapid(p_data);
+			break;
+		case 3:
+			EnemyActionTurnAndFireSlow(p_data);
+			break;
+		case 4:
+			EnemyActionTurnAndFireRandom(p_data);
+			break;
+		default:
+			StopMoving();
+			break;
+		}
+	}
 }
 
 // 68K 0x10607dce ProcessRule__6CEnemyF16eEnemyStateRules
