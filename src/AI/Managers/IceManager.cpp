@@ -1,5 +1,7 @@
 #include "IceManager.h"
 
+#include "../Base/Coord3d.h"
+#include "../Navigation/Ai.h"
 #include "../Objects/Ice.h"
 
 // 68K 0x10612448 __ct__11CIceManagerFP3CAIi
@@ -82,9 +84,41 @@ void IceManager::Add(unsigned short p_id,
 }
 
 // 68K 0x106128a4 LoadLevel__11CIceManagerFPUciUc
-// STUB: LEMBALL 0x0042dea0
+// FUNCTION: LEMBALL 0x0042dea0
 void IceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short* data = (unsigned short*) p_data;
+	unsigned short count = *data++;
+	unsigned int remaining = count;
+	Initialise(remaining);
+	if (count != 0) {
+		do {
+			unsigned short id;
+			if (m_ai->m_levelVersion > 1) {
+				id = *data++;
+			}
+			else {
+				id = (unsigned short) GameObject::NextId();
+			}
+
+			Coord3d cornerA;
+			Coord3d cornerB;
+			cornerA.m_x = (short) *data++;
+			cornerA.m_y = (short) *data++;
+			cornerA.m_z = (short) *data++;
+			cornerB.m_x = (short) *data++;
+			cornerB.m_y = (short) *data++;
+			cornerB.m_z = (short) *data++;
+			int velocityX = (short) *data++;
+			int velocityY = (short) *data++;
+			unsigned int initialSwitched = 1;
+			if (m_ai->m_levelVersion >= 10) {
+				initialSwitched = *data++;
+			}
+			Add(id, cornerA, cornerB, velocityX, velocityY, (unsigned char) initialSwitched);
+			remaining--;
+		} while (remaining != 0);
+	}
 }
 
 // 68K 0x106125fe __dt__11CIceManagerFv
