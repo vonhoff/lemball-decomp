@@ -956,9 +956,20 @@ void C2D::DrawBall(ViewData& p_viewData)
 }
 
 // 68K 0x10b03f56 DrawKey__3C2DFR9CViewDatai
-// STUB: LEMBALL 0x0043d4b0
+// FUNCTION: LEMBALL 0x0043d4b0
 void C2D::DrawKey(ViewData& p_viewData, int p_playerIndex)
 {
+	BaseRemap* remap;
+
+	if (p_playerIndex < 4) {
+		remap = m_remaps[p_playerIndex];
+	}
+	else {
+		remap = 0;
+	}
+
+	m_lemmingAnims
+		->DrawAnim(p_viewData.m_positionX - 8, p_viewData.m_positionY - 32, RES_GAME_KEYS, 0, 0, (Remap*) remap);
 }
 
 // 68K 0x10b03fc8 DrawMine__3C2DFR9CViewData
