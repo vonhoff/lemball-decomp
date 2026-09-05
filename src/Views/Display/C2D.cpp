@@ -936,9 +936,15 @@ void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 }
 
 // 68K 0x10b03a4e DrawTimeBonus__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043d0f0
+// FUNCTION: LEMBALL 0x0043d0f0
 void C2D::DrawTimeBonus(ViewData& p_viewData)
 {
+	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 16,
+							 p_viewData.m_positionY - 18,
+							 RES_GAME_TIME_BONUS,
+							 p_viewData.m_stateTimer,
+							 p_viewData.m_animationTime,
+							 0);
 }
 
 // 68K 0x10b03acc DrawCatapult__3C2DFR9CViewDatai
