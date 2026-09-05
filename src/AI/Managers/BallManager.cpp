@@ -109,14 +109,10 @@ void BallManager::Delete(Ball* p_ball)
 void BallManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
 	unsigned short count = *(unsigned short*) p_data;
-	int i = 0;
-	p_data = p_data + 2;
+	p_data += 2;
 	Initialise(count);
 	m_activeCount = count;
-	if (count > 0) {
-		while (i < m_activeCount) {
-			m_balls[i]->LoadLevel(p_data);
-			i++;
-		}
+	for (int i = 0; i < m_activeCount; i++) {
+		m_balls[i]->LoadLevel(p_data);
 	}
 }
