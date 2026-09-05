@@ -633,28 +633,56 @@ void C2D::DrawLemming(ViewData& p_viewData, int p_objectNo, unsigned char p_rema
 }
 
 // 68K 0x10b02c40 DrawBullet__3C2DFR9CViewDatai
-// STUB: LEMBALL 0x0043c610
+// FUNCTION: LEMBALL 0x0043c610
 void C2D::DrawBullet(ViewData& p_viewData, int p_objectNo)
 {
+	// GLOBAL: LEMBALL 0x0049ef38
+	static unsigned long bulletResources[] = {
+		RES_GAME_LEMMINGPELLETNE,
+		RES_GAME_LEMMINGPELLETE,
+		RES_GAME_LEMMINGPELLETSE,
+		RES_GAME_LEMMINGPELLETS,
+		RES_GAME_LEMMINGPELLETSW,
+		RES_GAME_LEMMINGPELLETW,
+		RES_GAME_LEMMINGPELLETNW,
+		RES_GAME_LEMMINGPELLETN,
+	};
+	// GLOBAL: LEMBALL 0x00497070
+	static const short bulletOffset[] = {4, 4};
+
+	unsigned int direction;
+
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - bulletOffset[0],
+							 p_viewData.m_positionY - bulletOffset[1],
+							 bulletResources[direction],
+							 0,
+							 p_viewData.m_animationTime,
+							 0);
 }
 
 // 68K 0x10b02cce DrawAmmo__3C2DFR9CViewDatai
 // FUNCTION: LEMBALL 0x0043c660
 void C2D::DrawAmmo(ViewData& p_viewData, int p_objectNo)
 {
+	// GLOBAL: LEMBALL 0x00497064
+	static const short ammoOffset[] = {8, 16};
+	// GLOBAL: LEMBALL 0x00497068
+	static const short pelletOffset[] = {16, 16};
+
 	switch (p_viewData.m_action) {
 	case (eAction) 0x18:
 	case (eAction) 0x19:
-		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 8,
-								 p_viewData.m_positionY - 16,
+		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - ammoOffset[0],
+								 p_viewData.m_positionY - ammoOffset[1],
 								 RES_GAME_YELLOW_AMMO,
 								 0,
 								 p_viewData.m_animationTime,
 								 0);
 		break;
 	case (eAction) 0x1a:
-		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 16,
-								 p_viewData.m_positionY - 16,
+		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - pelletOffset[0],
+								 p_viewData.m_positionY - pelletOffset[1],
 								 RES_GAME_EX_PELLET,
 								 p_viewData.m_stateTimer,
 								 p_viewData.m_animationTime,
@@ -800,9 +828,32 @@ void C2D::DrawBalloonPost(ViewData& p_viewData, int p_playerIndex)
 }
 
 // 68K 0x10b03222 DrawTrampoline__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043ca30
+// FUNCTION: LEMBALL 0x0043ca30
 void C2D::DrawTrampoline(ViewData& p_viewData)
 {
+	// GLOBAL: LEMBALL 0x00497098
+	static const short trampolineOffset[] = {22, 22};
+
+	int x;
+	int y;
+	int frame;
+
+	x = p_viewData.m_positionX - trampolineOffset[0];
+	y = p_viewData.m_positionY - trampolineOffset[1];
+
+	switch (p_viewData.m_action) {
+	case (eAction) 0x18:
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_TRAMPOLINE, 0, 0, 0);
+		break;
+
+	case (eAction) 0x1b:
+		frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15 / 1000;
+		if (frame > 11) {
+			frame = 11;
+		}
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_TRAMPOLINE, frame, 0, 0);
+		break;
+	}
 }
 
 // 68K 0x10b032ec DrawMover__3C2DFR9CViewData
@@ -927,6 +978,11 @@ void C2D::DrawDuplicator(ViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043d070
 void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 {
+	// GLOBAL: LEMBALL 0x0049703c
+	static const short crateOffset[] = {8, 24};
+	// GLOBAL: LEMBALL 0x00497040
+	static const short crateExplosionOffset[] = {34, 50};
+
 	eAction action;
 	unsigned int stateTimer;
 
@@ -935,8 +991,8 @@ void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 
 	switch (action) {
 	case (eAction) 0x18:
-		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 8,
-								 p_viewData.m_positionY - 24,
+		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - crateOffset[0],
+								 p_viewData.m_positionY - crateOffset[1],
 								 RES_GAME_CRATE,
 								 stateTimer,
 								 p_viewData.m_animationTime,
@@ -944,8 +1000,8 @@ void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 		break;
 	case (eAction) 0x19:
 	case (eAction) 0x1a:
-		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 34,
-								 p_viewData.m_positionY - 50,
+		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - crateExplosionOffset[0],
+								 p_viewData.m_positionY - crateExplosionOffset[1],
 								 RES_GAME_CRATE_EXPLODE,
 								 stateTimer,
 								 p_viewData.m_animationTime,
@@ -1161,9 +1217,14 @@ void C2D::DrawKey(ViewData& p_viewData, int p_playerIndex)
 // FUNCTION: LEMBALL 0x0043d500
 void C2D::DrawMine(ViewData& p_viewData)
 {
+	// GLOBAL: LEMBALL 0x0049704c
+	static const short mineOffset[] = {30, 35};
+	// GLOBAL: LEMBALL 0x00497050
+	static const short mineStillOffset[] = {2, 2};
+
+	unsigned int stateTimer;
 	int x;
 	int y;
-	unsigned int stateTimer;
 	eAction action;
 
 	x = p_viewData.m_positionX;
@@ -1177,18 +1238,107 @@ void C2D::DrawMine(ViewData& p_viewData)
 	case (eAction) 0x18:
 	case (eAction) 0x19:
 	case (eAction) 0x1a:
-		m_lemmingAnims->DrawAnim(x - 2, y - 2, RES_GAME_MINE_STILL, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x - mineStillOffset[0], y - mineStillOffset[1], RES_GAME_MINE_STILL, 0, 0, 0);
 		break;
 	case (eAction) 0x1b:
-		m_lemmingAnims->DrawAnim(x - 30, y - 35, RES_GAME_MINE, stateTimer, p_viewData.m_animationTime, 0);
+		m_lemmingAnims
+			->DrawAnim(x - mineOffset[0], y - mineOffset[1], RES_GAME_MINE, stateTimer, p_viewData.m_animationTime, 0);
 		break;
 	}
 }
 
 // 68K 0x10b0409a DrawDoor__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043d590
+// FUNCTION: LEMBALL 0x0043d590
 void C2D::DrawDoor(ViewData& p_viewData)
 {
+	// GLOBAL: LEMBALL 0x00497094
+	static const short doorOffset[] = {26, 24};
+
+	int x;
+	int y;
+	int elapsed;
+	eObjectType objectType;
+	eAction action;
+	unsigned long resourceId;
+	int playerIndex;
+	BaseRemap* remap;
+	int frame;
+
+	x = p_viewData.m_positionX - doorOffset[0];
+	y = p_viewData.m_positionY - doorOffset[1];
+	action = p_viewData.m_action;
+	objectType = p_viewData.m_objectType;
+	elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
+
+	switch (objectType) {
+	case (eObjectType) 0x19:
+		resourceId = RES_GAME_DOOR_2;
+		break;
+	case (eObjectType) 0x1a:
+		resourceId = RES_GAME_DOOR;
+		break;
+	}
+
+	switch (action) {
+	case (eAction) 0x1c:
+		switch ((unsigned short) p_viewData.m_actionArgument) {
+		case 0x14:
+			playerIndex = -1;
+			break;
+		case 0x15:
+			playerIndex = 3;
+			break;
+		case 0x16:
+			playerIndex = 1;
+			break;
+		case 0x17:
+			playerIndex = 4;
+			break;
+		}
+
+		if (playerIndex >= 0) {
+			if (playerIndex < 4) {
+				remap = m_remaps[playerIndex];
+			}
+			else {
+				remap = 0;
+			}
+			m_lemmingAnims->DrawAnim(x + 16, y - 20, RES_GAME_KEYS, 0, 0, (Remap*) remap);
+		}
+
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 1, 0, 0);
+		break;
+
+	case (eAction) 0x1d:
+	case (eAction) 0x1e:
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 1, 0, 0);
+		break;
+
+	case (eAction) 0x20:
+		frame = elapsed * 15 / 1024;
+		if (frame > 7) {
+			frame = 7;
+		}
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x, y, resourceId, frame + 1, 0, 0);
+		break;
+
+	case (eAction) 0x21:
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 8, 0, 0);
+		break;
+
+	case (eAction) 0x22:
+		frame = elapsed * 15 / 1024;
+		if (frame > 7) {
+			frame = 7;
+		}
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x, y, resourceId, 8 - frame, 0, 0);
+		break;
+	}
 }
 
 // 68K 0x10b042fa DrawSwitch__3C2DFR9CViewData

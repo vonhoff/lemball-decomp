@@ -3106,8 +3106,8 @@ void Surface::BlitZrleNoClipRemap(const VsRect& p_rect, ResZrle* p_zrle, unsigne
 					for (; i > 0; i--) {
 						*copyDst++ = p_remap[*copySrc++];
 					}
-					src += run;
 					dst += run;
+					src += run;
 				}
 			} while (run != 0x80);
 			y += step;
@@ -3149,8 +3149,8 @@ void Surface::BlitZrleNoClipRemapR(const VsRect& p_rect,
 					for (; i > 0; i--) {
 						*copyDst-- = p_remap[*copySrc++];
 					}
-					src += run;
 					dst -= run;
+					src += run;
 				}
 			} while (run != 0x80);
 			y += step;
