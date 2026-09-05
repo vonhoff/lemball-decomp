@@ -14,13 +14,13 @@ struct NetworkOptionsFramePos {
 
 struct NetworkOptionsLayout {
 	NetworkOptionsFramePos m_framePos[14]; // 0x00
-	short m_entryWidth;                    // 0x70
+	short m_entryX;                        // 0x70
 	short m_unknown72;                     // 0x72
-	short m_entryHeight;                   // 0x74
+	short m_entryY;                        // 0x74
 	undefined m_unknown76[0x16];           // 0x76
 	int m_rowStride;                       // 0x8c
-	int m_entryX;                          // 0x90
-	unsigned short m_entryY;               // 0x94
+	int m_entryWidth;                      // 0x90
+	unsigned short m_entryHeight;          // 0x94
 	undefined m_unknown96[0xa];            // 0x96
 };
 

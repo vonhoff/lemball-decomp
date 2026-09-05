@@ -179,17 +179,18 @@ void PreviewDrawer::Load()
 		m_previousButtonAnimIds = g_dwPreviewPreviousAnimIdsFull;
 	}
 	int* layout = (int*) m_layout;
-	m_animPosition.m_x = (short) layout[0x40 / 4] + (short) layout[0x38 / 4];
-	m_animPosition.m_y = (short) layout[0x3c / 4] + (short) layout[0x44 / 4];
-	ResBitmap* bg = BaseFrontendDrawer::m_backgroundBitmap;
+	short y = (short) layout[0x3c / 4] + (short) layout[0x44 / 4];
+	short x = (short) layout[0x40 / 4] + (short) layout[0x38 / 4];
+	m_animPosition.m_x = x;
+	m_animPosition.m_y = y;
 	for (i = 0; i < 1; i++) {
-		(&m_primitiveBundle)[i].m_primitive.m_x = (short) layout[0x20 / 4];
-		(&m_primitiveBundle)[i].m_primitive.m_y = (short) layout[0x24 / 4];
-		(&m_primitiveBundle)[i].m_primitive.m_resource = bg;
+		(&m_primitiveBundle)[i].m_primitive.m_x = (short) ((int*) m_layout)[0x20 / 4];
+		(&m_primitiveBundle)[i].m_primitive.m_y = (short) ((int*) m_layout)[0x24 / 4];
+		(&m_primitiveBundle)[i].m_primitive.m_resource = BaseFrontendDrawer::m_backgroundBitmap;
 		(&m_primitiveBundle)[i].m_primitive.m_flags = 0x800;
 		(&m_primitiveBundle)[i].m_primitive.m_remap = 0;
-		(&m_primitive.m_bitmap)[i].m_x = (short) layout[0x38 / 4];
-		(&m_primitive.m_bitmap)[i].m_y = (short) layout[0x3c / 4];
+		(&m_primitive.m_bitmap)[i].m_x = (short) ((int*) m_layout)[0x38 / 4];
+		(&m_primitive.m_bitmap)[i].m_y = (short) ((int*) m_layout)[0x3c / 4];
 		(&m_primitive.m_bitmap)[i].m_resource = m_backgroundBitmap;
 		(&m_primitive.m_bitmap)[i].m_flags = 0x800;
 		(&m_primitive.m_bitmap)[i].m_remap = 0;
@@ -197,16 +198,18 @@ void PreviewDrawer::Load()
 	LoadAnims(m_lemmingAnimId);
 	LoadAnims(m_teamAnimId);
 	LoadAnims(m_ambientAnimId);
+	unsigned int* buttonBinding = &m_buttonBinding;
 	LoadAnims(m_opponentAnimId);
-	m_buttonBinding = 0;
-	m_nextDisabled = 0;
+	unsigned int* nextDisabled = &m_nextDisabled;
+	*buttonBinding = 0;
+	*nextDisabled = 0;
 	m_previousDisabled = 0;
 	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 4, (unsigned char) m_mode, 0);
-	m_hiliteController->AddButton(((int*) m_layout)[0], ((int*) m_layout)[1], returnAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef000d);
-	m_hiliteController->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef000c);
-	m_hiliteController
-		->AddButton(((int*) m_layout)[4], ((int*) m_layout)[5], m_previousButtonAnimIds, 1, 0, 1, 0, &m_previousDisabled, 0xacef000f);
-	m_hiliteController->AddButton(((int*) m_layout)[6], ((int*) m_layout)[7], m_nextButtonAnimIds, 1, 0, 1, 0, &m_nextDisabled, 0xacef000e);
+	m_hiliteController->AddButton(((int*) m_layout)[0], ((int*) m_layout)[1], returnAnim, 1, 0, 0, 0, buttonBinding, 0xacef000d);
+	m_hiliteController->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, buttonBinding, 0xacef000c);
+	m_hiliteController->AddButton(
+		((int*) m_layout)[4], ((int*) m_layout)[5], m_previousButtonAnimIds, 1, 0, 1, 0, &m_previousDisabled, 0xacef000f);
+	m_hiliteController->AddButton(((int*) m_layout)[6], ((int*) m_layout)[7], m_nextButtonAnimIds, 1, 0, 1, 0, nextDisabled, 0xacef000e);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
 	LoadLevelInformation();
