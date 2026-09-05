@@ -1,5 +1,7 @@
 #include "LiftManager.h"
 
+#include "../Base/Coord3d.h"
+#include "../Navigation/Ai.h"
 #include "../Objects/Lift.h"
 
 // GLOBAL: LEMBALL 0x0049e1c0
@@ -78,9 +80,73 @@ unsigned short LiftManager::Id(int p_index)
 }
 
 // 68K 0x10615668 LoadLevel__12CLiftManagerFPUciUc
-// STUB: LEMBALL 0x00425fc0
+// FUNCTION: LEMBALL 0x00425fc0
 void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short* data;
+	unsigned short count;
+
+	data = (unsigned short*) p_data;
+	count = *data++;
+	Initialise(count);
+	if (m_ai->m_levelVersion >= 3 && count != 0) {
+		unsigned int remaining = count;
+		do {
+			unsigned short id;
+			unsigned int initialActive;
+			eLiftActivateType activateType;
+			int lowHeight;
+			int highHeight;
+			short direction;
+
+			if (m_ai->m_levelVersion > 1) {
+				id = *data++;
+			}
+			else {
+				id = (unsigned short) GameObject::NextId();
+			}
+
+			if (m_ai->m_levelVersion >= 5) {
+				Coord3d start;
+				Coord3d end;
+
+				initialActive = *data++;
+				activateType = (eLiftActivateType) *data++;
+				start.m_x = (short) *data++;
+				start.m_y = (short) *data++;
+				start.m_z = (short) *data++;
+				end.m_x = (short) *data++;
+				end.m_y = (short) *data++;
+				end.m_z = (short) *data++;
+				lowHeight = (short) *data++;
+				highHeight = (short) *data++;
+				direction = (short) *data++;
+				m_lifts[m_count].SetId(id);
+				m_lifts[m_count]
+					.Set(start, end, direction, lowHeight, highHeight, activateType, (unsigned char) initialActive);
+			}
+			else {
+				short x;
+				short y;
+				short z;
+
+				initialActive = *data++;
+				activateType = (eLiftActivateType) *data++;
+				x = (short) *data++;
+				y = (short) *data++;
+				z = (short) *data++;
+				lowHeight = (short) *data++;
+				highHeight = (short) *data++;
+				direction = (short) *data++;
+				m_lifts[m_count].SetId(id);
+				m_lifts[m_count]
+					.Set(x, y, z, direction, lowHeight, highHeight, activateType, (unsigned char) initialActive);
+			}
+
+			m_count++;
+			remaining--;
+		} while (remaining != 0);
+	}
 }
 
 // 68K 0x1061524c __dt__12CLiftManagerFv
