@@ -8,7 +8,10 @@
 // VTABLE: LEMBALL 0x00496ce4
 class StaticAnim : public Frames {
 public:
-	StaticAnim() : Frames(1) {}
+	StaticAnim() : Frames(1)
+	{
+		m_frameState = 0;
+	}
 	virtual unsigned int GetFrameNo(); // vtable+0x00
 };
 

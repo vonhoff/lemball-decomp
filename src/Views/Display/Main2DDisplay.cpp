@@ -374,14 +374,14 @@ void Main2DDisplay::ToggleResolution()
 	if (m_drawer != 0) {
 		((Drawer*) m_drawer)->DestroyDrawer();
 	}
-	if (g_pTargetGraphicsSystem->m_driverMode != 1) {
-		if (g_pTargetGraphicsSystem->m_driverMode != 3) {
-			return;
-		}
+	switch (g_pTargetGraphicsSystem->m_driverMode) {
+	case 1:
+		g_pTargetGraphicsSystem->SelectDriver(3);
+		break;
+	case 3:
 		g_pTargetGraphicsSystem->SelectDriver(1);
-		return;
+		break;
 	}
-	g_pTargetGraphicsSystem->SelectDriver(3);
 }
 
 // 68K 0x10b00d5e ProcessMsg__14CMain2DDisplayFP10tagMESSAGE

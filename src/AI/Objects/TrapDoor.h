@@ -16,6 +16,8 @@ public:
 	virtual void Restart();                         // vtable+0x104
 	virtual ~TrapDoor();                            // vtable+0x00
 
+	friend class TrapDoorManager;
+
 private:
 	unsigned int m_mode;     // 0x144
 	unsigned int m_active;   // 0x148

@@ -1,6 +1,7 @@
 #include "TrapDoorManager.h"
 
 #include "../Objects/TrapDoor.h"
+#include "../Objects/ViewData.h"
 
 // 68K 0x1062169e __ct__16CTrapDoorManagerFv
 // FUNCTION: LEMBALL 0x0040c750
@@ -22,25 +23,51 @@ void TrapDoorManager::Restart()
 }
 
 // 68K 0x10621816 AddNewDoor__16CTrapDoorManagerFUsR7AICOORDUcUl
-// STUB: LEMBALL 0x0040c810
+// FUNCTION: LEMBALL 0x0040c810
 void TrapDoorManager::AddNewDoor(unsigned short p_id,
 								 const AiCoord& p_position,
 								 unsigned char p_mode,
 								 unsigned long p_deadline)
 {
+	m_doors[m_count] = new TrapDoor((AiCoord&) p_position, p_mode);
+	m_doors[m_count]->Restart();
+	m_doors[m_count]->SetId(p_id);
+	m_doors[m_count]->m_manager = this;
+	TrapDoor* door = m_doors[m_count];
+	if (p_deadline != 0) {
+		door->m_deadline = p_deadline;
+	}
+	m_count++;
 }
 
 // 68K 0x106218d6 GetViewData__16CTrapDoorManagerFP9CViewData
-// STUB: LEMBALL 0x0040c890
+// FUNCTION: LEMBALL 0x0040c890
 int TrapDoorManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	for (int i = 0; i < m_count; i++) {
+		if (m_doors[i]->m_action != 0x18 && m_doors[i]->m_action != 0x1e) {
+			m_doors[i]->GetViewData(*p_viewData++);
+			count++;
+		}
+	}
+	return count;
 }
 
 // 68K 0x10621960 Process__16CTrapDoorManagerFv
-// STUB: LEMBALL 0x0040c8f0
+// FUNCTION: LEMBALL 0x0040c8f0
 void TrapDoorManager::Process()
 {
+	if (m_count != 0) {
+		for (int i = 0; i < m_count; i++) {
+			m_doors[i]->m_requestEnabled = 1;
+			if (m_doors[i]->m_active != 0) {
+				if (!m_doors[i]->Process()) {
+					m_doors[i]->m_active = 0;
+				}
+			}
+		}
+	}
 }
 
 // 68K 0x1062177e __dt__16CTrapDoorManagerFv

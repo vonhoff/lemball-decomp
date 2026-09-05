@@ -173,31 +173,21 @@ void HiliteController::AddButton(int p_x,
 								 void* p_binding,
 								 unsigned long p_actionMessage)
 {
-	unsigned long controlMessage;
-	void* storage;
-
-	controlMessage = m_nextControlMessage + 1;
-	m_nextControlMessage = controlMessage;
-	storage = operator new(0x58);
-	if (storage == 0) {
-		m_buttons[m_buttonCount] = 0;
-	}
-	else {
-		m_buttons[m_buttonCount] = new (storage) HiliteButtons(m_window,
-															   m_gdi,
-															   p_x,
-															   p_y,
-															   p_animIds,
-															   *(unsigned int*) &p_mode,
-															   p_minimum,
-															   p_maximum,
-															   p_value,
-															   controlMessage,
-															   p_binding,
-															   p_actionMessage);
-	}
+	unsigned long controlMessage = ++m_nextControlMessage;
+	m_buttons[m_buttonCount] = new HiliteButtons(m_window,
+												 m_gdi,
+												 p_x,
+												 p_y,
+												 p_animIds,
+												 *(unsigned int*) &p_mode,
+												 p_minimum,
+												 p_maximum,
+												 p_value,
+												 controlMessage,
+												 p_binding,
+												 p_actionMessage);
 	AddHJunction(p_x, p_y, m_buttons[m_buttonCount]->m_controlMessage);
-	m_buttonCount = m_buttonCount + 1;
+	m_buttonCount++;
 }
 
 // 68K 0x108056a0 AddHJunction__17CHiliteControllerFiiUl
@@ -278,11 +268,11 @@ void HiliteController::MoveRight()
 // FUNCTION: LEMBALL 0x0044fb20
 void HiliteController::SetHilite(int p_buttonIndex)
 {
-	m_targetX = m_currentX = m_junctions[p_buttonIndex].m_x;
-	m_targetY = m_currentY = m_junctions[p_buttonIndex].m_y;
-	unsigned long now = CurrentMilliTimer();
-	m_transitionEnd = now;
-	m_transitionStart = now;
+	m_currentX = m_junctions[p_buttonIndex].m_x;
+	m_currentY = m_junctions[p_buttonIndex].m_y;
+	m_targetX = m_currentX;
+	m_targetY = m_currentY;
+	m_transitionStart = m_transitionEnd = CurrentMilliTimer();
 	m_currentButton = p_buttonIndex;
 }
 

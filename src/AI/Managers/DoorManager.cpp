@@ -97,11 +97,9 @@ int DoorManager::Add(unsigned short p_id,
 // FUNCTION: LEMBALL 0x0040e500
 int DoorManager::Open(const AiCoord& p_position, GameObject* p_object)
 {
-	if (0 < m_count) {
-		for (int i = 0; i < m_count; i++) {
-			if (m_doors[i].Hits(p_position, p_object) != 0) {
-				return 1;
-			}
+	for (int i = 0; i < m_count; i++) {
+		if (m_doors[i].Hits(p_position, p_object) != 0) {
+			return 1;
 		}
 	}
 	return 0;
@@ -111,12 +109,10 @@ int DoorManager::Open(const AiCoord& p_position, GameObject* p_object)
 // FUNCTION: LEMBALL 0x0040e550
 void DoorManager::Process()
 {
-	if (0 < m_count) {
-		for (int i = 0; i < m_count; i++) {
-			m_doors[i].m_requestEnabled = 1;
-			if (m_doors[i].m_activationPending != 0 || m_doors[i].m_isRemoteObject != 0) {
-				m_doors[i].Process();
-			}
+	for (int i = 0; i < m_count; i++) {
+		m_doors[i].m_requestEnabled = 1;
+		if (m_doors[i].m_activationPending != 0 || m_doors[i].m_isRemoteObject != 0) {
+			m_doors[i].Process();
 		}
 	}
 }
