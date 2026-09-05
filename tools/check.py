@@ -717,15 +717,10 @@ def normalize_interleaved_stack_offset_chains(
             continue
 
         transient_family = DWORD_REGISTER_FAMILIES[transient]
-        outside = (
-            orig_asm[:index]
-            + orig_asm[index + 8 :]
-            + recomp_asm[:index]
-            + recomp_asm[index + 8 :]
-        )
-        if any(transient_family.intersection(REGISTER_RE.findall(text)) for text in outside):
+        suffix = orig_asm[index + 8 :] + recomp_asm[index + 8 :]
+        if any(transient_family.intersection(REGISTER_RE.findall(text)) for text in suffix):
             continue
-        if any(split_instruction(text)[0] in ("div", "idiv", "cmpxchg8b") for text in outside):
+        if any(split_instruction(text)[0] in ("div", "idiv", "cmpxchg8b") for text in suffix):
             continue
         if not overwritten_before_control_flow(orig_asm, index + 8, primary):
             continue
@@ -2011,6 +2006,27 @@ def run_selftest() -> int:
         ),
     )
 
+    merged_stack_chain_prefix = [
+        "mov edx, dword ptr [g_prior (DATA)]",
+        "mov ecx, dword ptr [g_value (DATA)]",
+    ]
+    merged_stack_chain_rejections = (
+        ("full transient register remains live", ["push edx", "ret"]),
+        ("transient byte register remains live", ["mov byte ptr [ecx], dh", "ret"]),
+        (
+            "transient edx is an implicit div input",
+            ["mov eax, dword ptr [esp + 0x24]", "div ebx", "ret"],
+        ),
+        (
+            "transient edx is an implicit idiv input",
+            ["mov eax, dword ptr [esp + 0x24]", "idiv ebx", "ret"],
+        ),
+        (
+            "transient edx is an implicit cmpxchg8b input",
+            ["mov eax, dword ptr [esp + 0x24]", "cmpxchg8b qword ptr [esi]", "ret"],
+        ),
+    )
+
     failed = 0
     for orig, recomp, expected in thunk_samples:
         actual = is_equivalent_insn(orig, recomp)
@@ -2031,6 +2047,25 @@ def run_selftest() -> int:
         ):
             print(f"selftest fail: unsafe interleaved stack chain accepted: {description}")
             failed += 1
+
+    for description, suffix in merged_stack_chain_rejections:
+        if is_codegen_equivalent_diff(
+            make_diff(
+                merged_stack_chain_prefix + sequential_stack_chain + suffix,
+                merged_stack_chain_prefix + interleaved_stack_chain + suffix,
+            )
+        ):
+            print(f"selftest fail: unsafe merged interleaved stack chain accepted: {description}")
+            failed += 1
+
+    if not is_codegen_equivalent_diff(
+        make_diff(
+            merged_stack_chain_prefix + sequential_stack_chain + safe_stack_chain_tail,
+            merged_stack_chain_prefix + interleaved_stack_chain + safe_stack_chain_tail,
+        )
+    ):
+        print("selftest fail: safe interleaved stack chain rejected because of dead prefix use")
+        failed += 1
 
     unsafe_delayed_pushes = (
         (
