@@ -61,13 +61,9 @@ DoorManager::~DoorManager()
 // FUNCTION: LEMBALL 0x0040e080
 int DoorManager::GetViewData(ViewData* p_viewData)
 {
-	int count = 0;
-	if (0 < m_count) {
-		do {
-			m_doors[count].GetViewData(*p_viewData);
-			p_viewData++;
-			count++;
-		} while (count < m_count);
+	for (int i = 0; i < m_count; i++) {
+		m_doors[i].GetViewData(*p_viewData);
+		p_viewData++;
 	}
 	return m_count;
 }

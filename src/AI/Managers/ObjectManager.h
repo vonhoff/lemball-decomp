@@ -18,7 +18,7 @@ public:
 						  eObjectType p_objectType,
 						  unsigned short p_linkedObjectId,
 						  eObjectType p_linkedObjectType);
-	GlobalGameObject* AddObject(unsigned short p_id, GlobalGameObject* p_object, unsigned char p_active);
+	GlobalGameObject* AddObject(unsigned short p_id, GlobalGameObject* p_object, unsigned int p_active);
 	GlobalGameObject* FindObject(int p_id);
 	ObjectManager(Ai* p_arg0, int p_arg1);
 	Switch* AddSwitch(unsigned short p_id,

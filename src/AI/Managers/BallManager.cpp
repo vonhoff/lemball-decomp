@@ -81,26 +81,15 @@ int BallManager::Process()
 // FUNCTION: LEMBALL 0x00421ff0
 void BallManager::Delete(Ball* p_ball)
 {
-	int i = 0;
-	int activeCount = m_activeCount;
-	if (0 < activeCount) {
-		Ball** ball = m_balls;
-		while (*ball != p_ball) {
-			ball++;
-			i++;
-			if (activeCount <= i) {
-				return;
+	for (int i = 0; i < m_activeCount; i++) {
+		if (m_balls[i] == p_ball) {
+			m_activeCount--;
+			for (; i < m_activeCount; i++) {
+				m_balls[i] = m_balls[i + 1];
 			}
+			m_balls[m_activeCount] = p_ball;
+			return;
 		}
-		m_activeCount = activeCount - 1;
-		if (i < activeCount - 1) {
-			int j = i;
-			do {
-				m_balls[j] = m_balls[j + 1];
-				j++;
-			} while (j < m_activeCount);
-		}
-		m_balls[m_activeCount] = p_ball;
 	}
 }
 

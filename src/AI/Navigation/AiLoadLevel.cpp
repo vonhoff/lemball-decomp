@@ -49,8 +49,8 @@ void Ai::SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_third
 	}
 	else {
 		m_networkTrapDoors[0] = p_first;
-		m_networkTrapDoors[2] = p_third;
 		m_networkTrapDoors[1] = p_second;
+		m_networkTrapDoors[2] = p_third;
 		m_networkTrapDoors[3] = p_fourth;
 	}
 	for (int i = 0; i < p_count; i++) {

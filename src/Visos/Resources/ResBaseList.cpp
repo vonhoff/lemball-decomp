@@ -162,8 +162,7 @@ void ResBaseList::UnLoadVramData(unsigned int p_force)
 {
 	if (GetfAnyVramLoaded()) {
 		unsigned int i = 0;
-		unsigned int count = m_totalSize / m_listHeader->m_headerSize;
-		if (count != 0) {
+		if (m_totalSize / m_listHeader->m_headerSize != 0) {
 			do {
 				UnLoadVramData(i, p_force);
 				i++;

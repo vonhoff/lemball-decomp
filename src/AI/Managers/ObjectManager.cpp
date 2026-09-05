@@ -92,7 +92,7 @@ ObjectManager::~ObjectManager()
 
 // 68K 0x1061a36c AddObject__14CObjectManagerFUsP17CGlobalGameObjectUc
 // FUNCTION: LEMBALL 0x0041b2a0
-GlobalGameObject* ObjectManager::AddObject(unsigned short p_id, GlobalGameObject* p_object, unsigned char p_active)
+GlobalGameObject* ObjectManager::AddObject(unsigned short p_id, GlobalGameObject* p_object, unsigned int p_active)
 {
 	if (m_count < m_capacity) {
 		m_objects[m_count] = p_object;
@@ -100,8 +100,7 @@ GlobalGameObject* ObjectManager::AddObject(unsigned short p_id, GlobalGameObject
 			p_object->SetId(p_id);
 		}
 		m_objects[m_count]->m_heading = 1;
-		GlobalGameObject* object = *(GlobalGameObject* volatile*) &m_objects[m_count];
-		object->m_unk0x3c = *(unsigned int*) &p_active;
+		m_objects[m_count]->m_unk0x3c = p_active;
 		return m_objects[m_count++];
 	}
 	return 0;

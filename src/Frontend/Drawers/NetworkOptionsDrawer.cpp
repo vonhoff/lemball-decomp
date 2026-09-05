@@ -533,7 +533,8 @@ void NetworkOptionsDrawer::DrawText()
 		posComputer.m_x -= size.m_x / 2;
 		advance.m_width = 0;
 		advance.m_height = 0;
-		m_textManager->DrawString(m_gdi, posComputer, advance, m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
+		m_textManager
+			->DrawString(m_gdi, posComputer, advance, m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
 
 		size = font->GetSize(divider, 0x20);
 		posDivider.m_x = (short) (((int) m_width - (int) size.m_x) / 2);
@@ -1245,21 +1246,21 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 void NetworkOptionsDrawer::ResetHandlers()
 {
 	Connect** connections;
-	NetworkGameMessage* messages;
+	unsigned int* valid;
 	int index;
 
 	if (g_pNetworkManager != 0) {
 		connections = g_pNetworkManager->m_connections;
 		index = 0;
-		messages = g_pNetworkManager->m_gameMessages;
+		valid = &g_pNetworkManager->m_gameMessages->m_valid;
 		do {
-			if (*connections == 0 || messages->m_valid == 0) {
+			if (*connections == 0 || *valid == 0) {
 				m_playerEntries[index].Reset();
 				if (m_acceptedPlayer == index) {
 					m_acceptedPlayer = -1;
 				}
 			}
-			messages++;
+			valid = (unsigned int*) ((char*) valid + sizeof(NetworkGameMessage));
 			connections++;
 			index++;
 		} while (index < 10);

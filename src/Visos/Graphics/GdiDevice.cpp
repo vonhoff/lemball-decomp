@@ -63,16 +63,10 @@ GdiDevice::~GdiDevice()
 // FUNCTION: LEMBALL 0x0046bce0
 int GdiDevice::FindFreeSurface()
 {
-	int i;
-
-	i = 0;
-	if (0 < m_surfaceCapacity) {
-		do {
-			if (m_surfaceSlots[i].m_available != 0) {
-				return i;
-			}
-			++i;
-		} while (i < m_surfaceCapacity);
+	for (int i = 0; i < m_surfaceCapacity; ++i) {
+		if (m_surfaceSlots[i].m_available != 0) {
+			return i;
+		}
 	}
 	return -1;
 }
