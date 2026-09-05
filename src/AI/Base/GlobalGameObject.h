@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x00493ea0
 class GlobalGameObject : public GameObject {
 public:
-	GlobalGameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short p_arg2);
+	GlobalGameObject(eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity);
 	virtual void Action(eAction p_arg0);                                 // vtable+0x08
 	virtual void Action(eAction p_arg0, int p_arg1);                     // vtable+0x04
 	virtual void SendRemove();                                           // vtable+0xf4

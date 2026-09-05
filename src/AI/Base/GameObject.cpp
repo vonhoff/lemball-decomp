@@ -253,14 +253,14 @@ bool GameObject::PossiblyOnLift()
 
 // 68K 0x10118ddc HasObject__11CGameObjectF11eObjectType
 // FUNCTION: LEMBALL 0x0040aa60
-bool GameObject::HasObject(eObjectType p_arg0)
+bool GameObject::HasObject(eObjectType p_objectType)
 {
 	return 0;
 }
 
 // 68K 0x10118e10 AddObject__11CGameObjectF11eObjectTypeP11CGameObject
 // FUNCTION: LEMBALL 0x0040aa70
-bool GameObject::AddObject(eObjectType p_arg0, class GameObject* p_arg1)
+bool GameObject::AddObject(eObjectType p_objectType, class GameObject* p_object)
 {
 	return 0;
 }
@@ -393,7 +393,7 @@ int GameObject::UsableState()
 
 // 68K 0x10608fec __ct__11CGameObjectF11eObjectTypeUsUs
 // FUNCTION: LEMBALL 0x00414f30
-GameObject::GameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short p_arg2)
+GameObject::GameObject(eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity)
 {
 	m_collisionMaxX = -1;
 	m_collisionMaxY = -1;
@@ -401,9 +401,9 @@ GameObject::GameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short
 	m_collisionMinY = 0;
 	m_collisionMinZ = 0;
 	m_collisionMaxZ = -1;
-	m_collisionFlags = p_arg1;
-	m_objectType = p_arg0;
-	if (p_arg2 == 0) {
+	m_collisionFlags = p_collisionFlags;
+	m_objectType = p_objectType;
+	if (p_destinationCapacity == 0) {
 		m_destinationList = 0;
 	}
 	else {
@@ -413,8 +413,8 @@ GameObject::GameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short
 		}
 		else {
 			list->m_count = 0;
-			list->m_capacity = p_arg2;
-			AiDestinationEntry* entries = new AiDestinationEntry[p_arg2];
+			list->m_capacity = p_destinationCapacity;
+			AiDestinationEntry* entries = new AiDestinationEntry[p_destinationCapacity];
 			list->m_entries = entries;
 			m_destinationList = list;
 		}
@@ -727,7 +727,7 @@ void GameObject::StartSommersault()
 {
 	int random = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
 	*g_pSentinel = random;
-	m_actionDeadline = g_dwGameTick + (random % 500 + 50) / 50;
+	m_actionDeadline = g_dwGameTick + (random % 500 + 50) / GAME_TICK_MILLISECONDS;
 	m_actionArgument = (short) g_dwSommersaultDirection;
 	g_dwSommersaultDirection ^= 1;
 }

@@ -9,7 +9,7 @@
 // VTABLE: LEMBALL 0x00494268
 class Ammo : public BaseGlobalObject {
 public:
-	inline Ammo(const AiCoord& p_position) : BaseGlobalObject(p_position, 5) {}
+	inline Ammo(const AiCoord& p_position) : BaseGlobalObject(p_position, OBJECT_AMMO) {}
 	virtual AiCoord ActivatePosition();          // vtable+0x2c
 	virtual bool Activate(GameObject* p_object); // vtable+0x18
 	virtual bool Process();                      // vtable+0x14

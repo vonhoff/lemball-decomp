@@ -10,11 +10,11 @@ Collectable::Collectable()
 
 // 68K 0x10605b0e __ct__12CCollectableFiii11eObjectType
 // FUNCTION: LEMBALL 0x00422870
-Collectable::Collectable(int p_arg0, int p_arg1, int p_arg2, eObjectType p_arg3) : GlobalGameObject(p_arg3, 0, 0)
+Collectable::Collectable(int p_x, int p_y, int p_z, eObjectType p_objectType) : GlobalGameObject(p_objectType, 0, 0)
 {
-	m_spawnPosition.m_xFixed = p_arg0 << 12;
-	m_spawnPosition.m_yFixed = p_arg1 << 12;
-	m_spawnPosition.m_zFixed = p_arg2 << 12;
+	m_spawnPosition.m_xFixed = p_x << 12;
+	m_spawnPosition.m_yFixed = p_y << 12;
+	m_spawnPosition.m_zFixed = p_z << 12;
 }
 
 // 68K 0x10605bbc Restart__12CCollectableFv

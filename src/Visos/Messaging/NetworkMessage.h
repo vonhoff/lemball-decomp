@@ -20,7 +20,7 @@ public:
 	friend class CConnect;
 	friend class WriteSocket;
 	friend class ReadSocket;
-	bool Set(unsigned char* p_arg0);
+	bool Set(unsigned char* p_data);
 	int GetDword();
 	unsigned char GetByte();
 	unsigned short GetWord();
@@ -30,26 +30,26 @@ public:
 	virtual void AddHeader();                               // vtable+0x0c
 	virtual void AddData() = 0;                             // vtable+0x10
 	virtual ~NetworkMessage();                              // vtable+0x14
-	void Add(const char* p_arg0);
-	void Add(const unsigned char* p_arg0, int p_arg1);
-	void Add(unsigned char p_arg0);
-	void Add(unsigned long p_arg0);
-	void Add(unsigned short p_arg0);
+	void Add(const char* p_text);
+	void Add(const unsigned char* p_data, int p_length);
+	void Add(unsigned char p_value);
+	void Add(unsigned long p_value);
+	void Add(unsigned short p_value);
 	void CloseDataStream();
 	void ConvertByte();
 	void ConvertDword();
 	void ConvertWord();
-	void CopyDataStream(unsigned char* p_arg0, int p_arg1);
-	void Get(const char*& p_arg0);
-	void Get(const unsigned char*& p_arg0, int p_arg1);
-	void Get(unsigned char& p_arg0);
-	void Get(unsigned long& p_arg0);
-	void Get(unsigned short& p_arg0);
-	void GetCopy(char* p_arg0);
-	void GetCopy(unsigned char* p_arg0, int p_arg1);
+	void CopyDataStream(unsigned char* p_buffer, int p_offset);
+	void Get(const char*& p_text);
+	void Get(const unsigned char*& p_data, int p_length);
+	void Get(unsigned char& p_value);
+	void Get(unsigned long& p_value);
+	void Get(unsigned short& p_value);
+	void GetCopy(char* p_buffer);
+	void GetCopy(unsigned char* p_buffer, int p_length);
 	void Initialise();
 	void OpenDataStream();
-	void Send(Connect* p_arg0);
+	void Send(Connect* p_connection);
 
 protected:
 	unsigned int m_messageId;        // 0x04

@@ -66,72 +66,72 @@ void LevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 		blockType = header->m_type;
 		dataSize -= 8;
 		switch (blockType) {
-		case 0x41492020: // AI
+		case LEVEL_BLOCK_AI: // AI
 			m_ai->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x414e494d: // ANIM
+		case LEVEL_BLOCK_GROUND_ANIMS: // ANIM
 			m_ai->m_groundAnim->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x42414c4c: // BALL
+		case LEVEL_BLOCK_BALLS: // BALL
 			m_ai->m_ballManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x424f4f4e: // BOON
+		case LEVEL_BLOCK_BALLOON_POSTS: // BOON
 			m_ai->m_balloonPost->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x434f4c4c: // COLL
+		case LEVEL_BLOCK_COLLECTABLES: // COLL
 			m_ai->m_collectableManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x44454654: // DEFT
+		case LEVEL_BLOCK_DEFAULT_BLOX: // DEFT
 			m_ai->m_map->LoadDefaultBlox((class LoadDefaultBlox*) (header + 1), dataSize);
 			break;
-		case 0x444f4f52: // DOOR
+		case LEVEL_BLOCK_DOORS: // DOOR
 			m_ai->m_doorManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x454e443f: // END?
+		case LEVEL_BLOCK_END: // END?
 			endFound = true;
 			break;
-		case 0x454e4d59: // ENMY
+		case LEVEL_BLOCK_ENEMY_GROUPS: // ENMY
 			m_ai->m_enemyGroupManager->LoadLevel((LoadEnemyData*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x464c4147: // FLAG
+		case LEVEL_BLOCK_FLAGS: // FLAG
 			m_ai->LoadFlagInfo((unsigned char*) (header + 1), dataSize);
 			break;
-		case 0x47445346: // GDSF
+		case LEVEL_BLOCK_GROUND_SURFACE: // GDSF
 			m_ai->m_map->LoadLevel((LoadGroundSurfaceData*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x474d4f42: // GMOB
+		case LEVEL_BLOCK_OBJECTS: // GMOB
 			m_ai->m_objectManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x48414e44: // HAND
+		case LEVEL_BLOCK_HANDS: // HAND
 			m_ai->m_handManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x49434520: // ICE
+		case LEVEL_BLOCK_ICE: // ICE
 			m_ai->m_iceManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x494e5653: // INVS
+		case LEVEL_BLOCK_INVISIBLE_SWITCHES: // INVS
 			m_ai->m_invisibleSwitchManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x4c415352: // LASR
+		case LEVEL_BLOCK_LASERS: // LASR
 			m_ai->m_laserManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x4c494654: // LIFT
+		case LEVEL_BLOCK_LIFTS: // LIFT
 			m_ai->m_liftManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x4d494e45: // MINE
+		case LEVEL_BLOCK_MINES: // MINE
 			m_ai->m_mineManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x4d4f5645: // MOVE
+		case LEVEL_BLOCK_MOVERS: // MOVE
 			m_ai->m_moverManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x4e414d45: // NAME
+		case LEVEL_BLOCK_NAME: // NAME
 			m_ai->m_map->LoadLevelName((LoadGroundName*) (header + 1), dataSize);
 			break;
-		case 0x4e455457: // NETW
-			if (m_ai->m_unk0x64 != 1) {
+		case LEVEL_BLOCK_NETWORK_STARTS: // NETW
+			if (m_ai->m_networkMode != 1) {
 				m_ai->m_trapDoorManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			}
 			else {
-				if (m_ai->m_unk0x7c == 0) {
+				if (m_ai->m_isHost == 0) {
 					m_ai->m_playerGroupManager->LoadAdditionalPlayerStartPositions((unsigned char*) (header + 1),
 																				   dataSize,
 																				   p_skip);
@@ -141,23 +141,23 @@ void LevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 				}
 			}
 			break;
-		case 0x4e4f4445: // NODE
+		case LEVEL_BLOCK_NODES: // NODE
 			m_ai->m_nodeManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x5047554e: // PGUN
+		case LEVEL_BLOCK_PAINT_GUNS: // PGUN
 			m_ai->m_paintGunManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x504c4153: // PLAS
+		case LEVEL_BLOCK_PLAYER_GROUPS: // PLAS
 			m_ai->m_playerGroupManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x504c5331: // PLS1
-			if (m_ai->m_unk0x64 != 1) {
+		case LEVEL_BLOCK_PLAYER_STARTS: // PLS1
+			if (m_ai->m_networkMode != 1) {
 				m_ai->m_playerGroupManager->LoadAdditionalPlayerStartPositions((unsigned char*) (header + 1),
 																			   dataSize,
 																			   p_skip);
 			}
 			else {
-				if (m_ai->m_unk0x7c == 1) {
+				if (m_ai->m_isHost == 1) {
 					m_ai->m_playerGroupManager->LoadAdditionalPlayerStartPositions((unsigned char*) (header + 1),
 																				   dataSize,
 																				   p_skip);
@@ -167,16 +167,16 @@ void LevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 				}
 			}
 			break;
-		case 0x524f434b: // ROCK
+		case LEVEL_BLOCK_ROCKETS: // ROCK
 			m_ai->m_rocketManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x53485047: // SHPG
+		case LEVEL_BLOCK_SHEEP_GROUPS: // SHPG
 			m_ai->m_sheepGroupManager->LoadLevel((LoadSheepData*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x534c4e4b: // SLNK
+		case LEVEL_BLOCK_SLINKIES: // SLNK
 			m_ai->m_slinkyManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case 0x5452414d: // TRAM
+		case LEVEL_BLOCK_TRAMPOLINES: // TRAM
 			m_ai->m_trampolineManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
 		}

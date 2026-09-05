@@ -5,6 +5,7 @@
 #include "../../Visos/Foundation/VsRect.h" // complete type
 #include "AiCoord.h"                       // complete type
 #include "C3DVector.h"                     // complete type
+#include "ObjectTypes.h"
 
 // SIZE 0x124
 // VTABLE: LEMBALL 0x00493c40
@@ -12,7 +13,7 @@ class GameObject {
 public:
 	AiCoord Position();
 	AiCoord GetDestination();
-	GameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short p_arg2);
+	GameObject(eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity);
 	bool DestinationExists();
 	bool FacingDestination();
 	bool Fall();
@@ -68,8 +69,8 @@ public:
 	virtual void OffLift(Coord3d& p_arg0);                                          // vtable+0xa8
 	virtual void OffLift(Coord3d& p_arg0, Coord3d& p_arg1);                         // vtable+0xac
 	virtual bool PossiblyOnLift();                                                  // vtable+0xb0
-	virtual bool HasObject(eObjectType p_arg0);                                     // vtable+0xb4
-	virtual bool AddObject(eObjectType p_arg0, class GameObject* p_arg1);           // vtable+0xb8
+	virtual bool HasObject(eObjectType p_objectType);                                     // vtable+0xb4
+	virtual bool AddObject(eObjectType p_objectType, class GameObject* p_object);           // vtable+0xb8
 	virtual void ReNumberNode(int p_arg0, int p_arg1);                              // vtable+0xbc
 	virtual bool NeedsNode(int p_arg0);                                             // vtable+0xc0
 	virtual void ConvertVer0ToVer1();                                               // vtable+0xc4

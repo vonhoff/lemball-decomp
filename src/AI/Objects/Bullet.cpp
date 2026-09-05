@@ -1,5 +1,7 @@
 #include "Bullet.h"
 
+#include "../Messages/GameMessageIds.h"
+
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
@@ -17,7 +19,7 @@ Bullet::~Bullet()
 
 // 68K 0x10604572 __ct__7CBulletFv
 // FUNCTION: LEMBALL 0x0041a510
-Bullet::Bullet() : GlobalGameObject((eObjectType) 3, 0x100, 0)
+Bullet::Bullet() : GlobalGameObject((eObjectType) OBJECT_BULLET, 0x100, 0)
 {
 	m_unk0x174 = DEBUG_SENTINEL;
 	m_unk0x178 = DEBUG_SENTINEL;
@@ -183,7 +185,7 @@ bool Bullet::Process()
 // FUNCTION: LEMBALL 0x0041aaa0
 void Bullet::AddData()
 {
-	Add((unsigned short) 0x2b);
+	Add((unsigned short) MESSAGE_BULLET_STATE);
 	Add(m_linkedObjectId);
 	Add(g_dwSimulationTimestamp);
 	Add((unsigned short) (m_position.m_xFixed >> 12));
@@ -240,7 +242,7 @@ void Bullet::Free()
 bool Bullet::Receive(unsigned short p_messageId, NetworkMessage* p_message)
 {
 	int messageId = p_messageId;
-	if (messageId != 0x2b) {
+	if (messageId != MESSAGE_BULLET_STATE) {
 		return GlobalGameObject::Receive(messageId, p_message);
 	}
 	if (NetworkMessage::Set(p_message->m_readCursor)) {

@@ -6,7 +6,7 @@
 // SIZE 0x08
 class LevelLoader {
 public:
-	LevelLoader(Ai* p_arg0);
+	LevelLoader(Ai* p_ai);
 	static LoadBlockHeader* GetNextBlockHeader(LoadBlockHeader* p_header);
 	static bool LocateStartOfLevelFile();
 	static unsigned int CalcLevelId(eSkill p_skill, int p_level);

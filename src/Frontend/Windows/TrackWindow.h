@@ -14,7 +14,7 @@
 // VTABLE: LEMBALL 0x00497f20 HotAreaHandler
 class TrackWindow : public GWnd, public HotAreaHandler {
 public:
-	TrackWindow(const VsRect& p_arg0, int p_arg1, PvGWnd* p_arg2);
+	TrackWindow(const VsRect& p_rect, int p_value, PvGWnd* p_parent);
 	virtual unsigned int GetStyle();                                          // vtable+0x64
 	virtual void OnButtonDown(const VsPoint& p_point, int p_flags);           // vtable+0x04
 	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_name); // vtable+0x04

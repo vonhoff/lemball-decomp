@@ -23,7 +23,7 @@ void ResetGameTimes()
 	g_dwGameTick = 0;
 	g_dwPausedMilli = 0;
 	g_dwCurrentMilli = CurrentMilliTimer();
-	g_dwGameTimeTick = g_dwCurrentMilli / 50;
+	g_dwGameTimeTick = g_dwCurrentMilli / GAME_TICK_MILLISECONDS;
 }
 
 // 68K 0x107012a4 SetGameTime__Fv
@@ -38,7 +38,7 @@ void SetRemoteGameTimeReal(unsigned long p_timestamp)
 {
 	if (g_dwLastRemoteTimestamp < p_timestamp) {
 		g_dwNetworkSimulationTimestamp = p_timestamp;
-		g_dwRemoteGameTick = p_timestamp / 50;
+		g_dwRemoteGameTick = p_timestamp / GAME_TICK_MILLISECONDS;
 		g_dwLastRemoteTimestamp = p_timestamp;
 	}
 }

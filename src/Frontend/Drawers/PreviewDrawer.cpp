@@ -271,7 +271,7 @@ void PreviewDrawer::DrawText()
 				pos.m_y = (short) positions[1];
 				advance.m_height = 0;
 				advance.m_width = 0;
-				m_textManager->DrawString(m_gdi, pos, advance, m_unknown384, line, 0x20, 0);
+				m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, line, 0x20, 0);
 			}
 			line = line + 0x20;
 			positions = positions + 2;
@@ -288,7 +288,7 @@ void PreviewDrawer::DrawText()
 				positions = positions + 1;
 				pos.m_x = (short) *layout;
 				pos.m_y = (short) layout[1];
-				m_textManager->DrawString(m_gdi, pos, advance, m_unknown384, (char*) g_szPreviewX, 0x20, 0);
+				m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, (char*) g_szPreviewX, 0x20, 0);
 				count = count - 1;
 			} while (count != 0);
 		}
@@ -299,31 +299,31 @@ void PreviewDrawer::DrawText()
 			pos.m_y = (short) layout[0x5c / 4];
 			advance.m_height = 0;
 			advance.m_width = 0;
-			m_textManager->DrawString(m_gdi, pos, advance, m_unknown384, m_timeText, 0x20, 0);
+			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, m_timeText, 0x20, 0);
 		}
 		else {
 			pos.m_x = (short) layout[0x58 / 4];
 			pos.m_y = (short) layout[0x5c / 4];
 			advance.m_height = 0;
 			advance.m_width = 0;
-			m_textManager->DrawString(m_gdi, pos, advance, m_unknown384, g_szPreviewInfinite, 0x20, 0);
+			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, 0);
 		}
 
 		skill = g_pGameStatus->m_skill;
-		font = m_textManager->GetFont(m_unknown384);
+		font = m_textManager->GetFont(m_chalkFontId);
 		size = font->GetSize(g_szPreviewSkillNames[skill], 0x20);
 		advance.m_height = 0;
 		advance.m_width = 0;
 		pos.m_x = (short) layout[0xa0 / 4] - size.m_x / 2;
 		pos.m_y = (short) layout[0xa4 / 4];
-		m_textManager->DrawString(m_gdi, pos, advance, m_unknown384, g_szPreviewSkillNames[skill], 0x20, 0);
+		m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewSkillNames[skill], 0x20, 0);
 
 		if (m_teamCount > 4) {
 			advance.m_height = 0;
 			advance.m_width = 0;
 			pos.m_x = (short) layout[0x58 / 4];
 			pos.m_y = (short) layout[0xd4 / 4];
-			m_textManager->DrawString(m_gdi, pos, advance, m_unknown384, g_szPreviewSkillNames[5], 0x20, 0);
+			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewSkillNames[5], 0x20, 0);
 		}
 	}
 }
@@ -562,7 +562,7 @@ void PreviewDrawer::LoadLevelInformation()
 		source = g_szPreviewUnnamedLevel;
 	}
 
-	font = m_textManager->GetFont(m_unknown384);
+	font = m_textManager->GetFont(m_chalkFontId);
 
 	memset(candidateLine, 0, sizeof(candidateLine));
 	memset(m_levelNameLines, 0, sizeof(m_levelNameLines));

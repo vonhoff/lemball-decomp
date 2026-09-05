@@ -47,11 +47,11 @@ bool Door::Process()
 	if (m_isRemoteObject) {
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case (eAction) 0x20:
+			case (eAction) DOOR_ACTION_OPENING:
 				SetSndEffect((eSoundEffect) 0xb);
 				ResetCollision();
 				break;
-			case (eAction) 0x22:
+			case (eAction) DOOR_ACTION_CLOSING:
 				SetCollision();
 				break;
 			default:
@@ -76,24 +76,24 @@ bool Door::Process()
 		Action((eAction) 0x1d);
 		m_activationPending = 0;
 		break;
-	case (eAction) 0x20:
+	case (eAction) DOOR_ACTION_OPENING:
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionDeadline = g_dwGameTick + 80;
 		ResetCollision();
-		Action((eAction) 0x21);
+		Action((eAction) DOOR_ACTION_OPEN);
 		break;
-	case (eAction) 0x21:
+	case (eAction) DOOR_ACTION_OPEN:
 		if (m_doorType == 0) {
 			m_stateTimer = g_dwSimulationTimestamp;
 			m_actionDeadline = g_dwGameTick + 20;
 			SetCollision();
 			SetSndEffect((eSoundEffect) 0xb);
-			Action((eAction) 0x22);
+			Action((eAction) DOOR_ACTION_CLOSING);
 			return 1;
 		}
 		m_activationPending = 0;
 		break;
-	case (eAction) 0x22:
+	case (eAction) DOOR_ACTION_CLOSING:
 		m_activationPending = 0;
 		Action((eAction) 0x1e);
 		break;
@@ -111,7 +111,7 @@ void Door::Unlock()
 	if (m_action >= (eAction) 0x1c && m_action <= (eAction) 0x1d) {
 		m_actionDeadline = 0x14;
 		SetSndEffect((eSoundEffect) 0xb);
-		RequestAction((eAction) 0x20);
+		RequestAction((eAction) DOOR_ACTION_OPENING);
 	}
 }
 

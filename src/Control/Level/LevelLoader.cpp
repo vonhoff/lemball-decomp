@@ -24,9 +24,9 @@ extern char g_szCloseBracketNewline[];
 
 // 68K 0x1070267c __ct__12CLevelLoaderFP3CAI
 // FUNCTION: LEMBALL 0x00408210
-LevelLoader::LevelLoader(Ai* p_arg0)
+LevelLoader::LevelLoader(Ai* p_ai)
 {
-	m_ai = p_arg0;
+	m_ai = p_ai;
 	m_fallbackLevel = 0;
 	g_pLevelFileData = 0;
 	g_pActiveLevelFile = (char*) m_ai->LevelName();
@@ -108,7 +108,7 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 		blockType = header->m_type;
 
 		switch (blockType) {
-		case 0x41492020: {
+		case LEVEL_BLOCK_AI: {
 			unsigned short version = 0;
 			if (dataSize > 4) {
 				version = *data16++;
@@ -126,34 +126,34 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 			}
 			break;
 		}
-		case 0x414e494d:
-		case 0x42414c4c:
-		case 0x424f4f4e:
-		case 0x434f4c4c:
-		case 0x44454654:
-		case 0x444f4f52:
+		case LEVEL_BLOCK_GROUND_ANIMS:
+		case LEVEL_BLOCK_BALLS:
+		case LEVEL_BLOCK_BALLOON_POSTS:
+		case LEVEL_BLOCK_COLLECTABLES:
+		case LEVEL_BLOCK_DEFAULT_BLOX:
+		case LEVEL_BLOCK_DOORS:
 			break;
-		case 0x454e443f:
+		case LEVEL_BLOCK_END:
 			endFound = true;
 			break;
-		case 0x454e4d59:
-		case 0x464c4147:
-		case 0x47445346:
-		case 0x474d4f42:
-		case 0x48414e44:
-		case 0x49434520:
-		case 0x494e5653:
-		case 0x4c415352:
-		case 0x4c494654:
-		case 0x4d494e45:
-		case 0x4d4f5645:
+		case LEVEL_BLOCK_ENEMY_GROUPS:
+		case LEVEL_BLOCK_FLAGS:
+		case LEVEL_BLOCK_GROUND_SURFACE:
+		case LEVEL_BLOCK_OBJECTS:
+		case LEVEL_BLOCK_HANDS:
+		case LEVEL_BLOCK_ICE:
+		case LEVEL_BLOCK_INVISIBLE_SWITCHES:
+		case LEVEL_BLOCK_LASERS:
+		case LEVEL_BLOCK_LIFTS:
+		case LEVEL_BLOCK_MINES:
+		case LEVEL_BLOCK_MOVERS:
 			break;
-		case 0x4e414d45: {
+		case LEVEL_BLOCK_NAME: {
 			strcpy(p_preview->m_name, (char*) data16);
 			p_preview->m_name[0x20] = 0;
 			break;
 		}
-		case 0x4e455457: {
+		case LEVEL_BLOCK_NETWORK_STARTS: {
 			total = 0;
 			count = (unsigned int) *data16++;
 			while (count > 0) {
@@ -169,11 +169,11 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 			}
 			break;
 		}
-		case 0x4e4f4445:
-		case 0x5047554e:
-		case 0x504c4153:
+		case LEVEL_BLOCK_NODES:
+		case LEVEL_BLOCK_PAINT_GUNS:
+		case LEVEL_BLOCK_PLAYER_GROUPS:
 			break;
-		case 0x504c5331: {
+		case LEVEL_BLOCK_PLAYER_STARTS: {
 			total = 0;
 			count = (unsigned int) *data16++;
 			while (count > 0) {
@@ -194,10 +194,10 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 			}
 			break;
 		}
-		case 0x524f434b:
-		case 0x53485047:
-		case 0x534c4e4b:
-		case 0x5452414d:
+		case LEVEL_BLOCK_ROCKETS:
+		case LEVEL_BLOCK_SHEEP_GROUPS:
+		case LEVEL_BLOCK_SLINKIES:
+		case LEVEL_BLOCK_TRAMPOLINES:
 			break;
 		}
 

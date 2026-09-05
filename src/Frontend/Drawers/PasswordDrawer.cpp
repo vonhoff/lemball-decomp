@@ -401,14 +401,14 @@ void PasswordDrawer::DrawText()
 		advance.m_height = 0;
 		position.m_y = labelPos[0];
 		position.m_x = (short) *(int*) (labelPos - 1);
-		m_textManager->DrawString(m_gdi, position, advance, m_unknown384, g_apPasswordSkillLabels[skillIndex], 0x20, 0);
+		m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillIndex], 0x20, 0);
 		strcpy(textPtr, g_szPasswordLevelFormat);
 		VsLtoa(g_pGameStatus->m_maxLevels[skillIndex] + 1, textPtr + 2, 10);
 		advance.m_width = 0;
 		advance.m_height = 0;
 		position.m_y = countPos[0];
 		position.m_x = (short) *(int*) (countPos - 1);
-		m_textManager->DrawString(m_gdi, position, advance, m_unknown384, text, 0x20, 0);
+		m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, text, 0x20, 0);
 		labelPos = labelPos + 4;
 		countPos = countPos + 4;
 		skillIndex = skillIndex + 1;
@@ -420,10 +420,10 @@ void PasswordDrawer::DrawText()
 		position.m_y = (short) layout[0x7c / 4];
 		position.m_x = (short) layout[0x78 / 4];
 		if (m_passwordValid == 1) {
-			m_textManager->DrawString(m_gdi, position, advance, m_unknown384, g_szPasswordOk, 0x20, 0);
+			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordOk, 0x20, 0);
 		}
 		else {
-			m_textManager->DrawString(m_gdi, position, advance, m_unknown384, g_szPasswordInvalid, 0x20, 0);
+			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordInvalid, 0x20, 0);
 		}
 	}
 }
@@ -438,13 +438,13 @@ void PasswordDrawer::DrawPassword()
 	ResFont* font;
 
 	layout = (int*) m_layout;
-	font = m_textManager->GetFont(m_unknown384);
+	font = m_textManager->GetFont(m_chalkFontId);
 	textSize = font->GetSize(m_password, 0x20);
 	position.m_y = (short) layout[0x5c / 4];
 	position.m_x = (short) (m_width - layout[0x58 / 4] - textSize.m_x);
 	textSize.m_x = 0;
 	textSize.m_y = 0;
-	m_textManager->DrawString(m_gdi, position, (const VsSize&) textSize, m_unknown384, m_password, 0x20, 0);
+	m_textManager->DrawString(m_gdi, position, (const VsSize&) textSize, m_chalkFontId, m_password, 0x20, 0);
 }
 
 // 68K 0x1080d0ec ButtonNumeric__15CPasswordDrawerFi

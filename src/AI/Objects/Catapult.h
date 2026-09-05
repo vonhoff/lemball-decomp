@@ -9,7 +9,7 @@
 // VTABLE: LEMBALL 0x00494640
 class Catapult : public BaseGlobalObject {
 public:
-	inline Catapult(const AiCoord& p_position) : BaseGlobalObject(p_position, 4) {}
+	inline Catapult(const AiCoord& p_position) : BaseGlobalObject(p_position, OBJECT_CATAPULT) {}
 	virtual AiCoord ActivatePosition();          // vtable+0x2c
 	virtual bool Activate(GameObject* p_object); // vtable+0x18
 	virtual bool Process();                      // vtable+0x14

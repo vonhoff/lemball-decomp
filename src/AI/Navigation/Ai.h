@@ -106,19 +106,19 @@ private:
 	undefined2 m_pad0x56;                      // 0x56
 	PlayerLemmingGroupManager* m_playerGroups; // 0x58
 	undefined4 m_unk0x5c;                      // 0x5c
-	undefined4 m_unk0x60;                      // 0x60: level map type (LoadLevel 0x00412f4c)
+	undefined4 m_mapType;                      // 0x60: level map type (LoadLevel 0x00412f4c)
 	// Restart (0x00410d98): 32-bit result of skill == 4 (0 or 1).
-	undefined4 m_unk0x64;        // 0x64
+	undefined4 m_networkMode;        // 0x64
 	undefined4 m_unk0x68;        // 0x68
 	undefined4 m_unk0x6c;        // 0x6c
 	undefined4 m_unk0x70;        // 0x70
-	GameStateMessage* m_unk0x74; // 0x74: constructor result at 0x00410dec
-	PbNetworkGame* m_unk0x78;    // 0x78: constructor result at 0x00410dba
+	GameStateMessage* m_gameStateMessage; // 0x74: constructor result at 0x00410dec
+	PbNetworkGame* m_networkGame;    // 0x78: constructor result at 0x00410dba
 	// Restart (0x00410d82, 0x00410dd2): zero, then the connection's host flag.
-	undefined4 m_unk0x7c;                             // 0x7c
+	undefined4 m_isHost;                             // 0x7c
 	undefined4 m_unk0x80[2];                          // 0x80
 	undefined4 m_unk0x88;                             // 0x88
-	AnimSpecial* m_unk0x8c;                           // 0x8c: allocation/Initialise at 0x0041171a
+	AnimSpecial* m_animSpecial;                           // 0x8c: allocation/Initialise at 0x0041171a
 	int m_networkStartsX[4];                          // 0x90
 	int m_networkStartsY[4];                          // 0xa0
 	int m_networkStartsZ[4];                          // 0xb0
@@ -130,7 +130,7 @@ private:
 	int m_unk0xe0;                                    // 0xe0
 	int m_unk0xe4;                                    // 0xe4
 	int m_gameTime;                                   // 0xe8
-	int m_unk0xec;                                    // 0xec
+	int m_timeLimit;                                    // 0xec
 	int m_score;                                      // 0xf0
 	undefined4 m_unk0xf4;                             // 0xf4
 	int m_lemmingCount;                               // 0xf8

@@ -2,6 +2,7 @@
 
 #include "../../Visos/Network/Connect.h"
 #include "../Base/GameObject.h"
+#include "../Messages/GameMessageIds.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/Ammo.h"
 #include "../Objects/Balloon.h"
@@ -36,7 +37,7 @@ void ObjectManager::Restart()
 		do {
 			GlobalGameObject* object = m_objects[i];
 			if (object != 0) {
-				if (object->m_objectType == 0x11) {
+				if (object->m_objectType == OBJECT_CRATE) {
 					Crate* crate = (Crate*) object;
 					GlobalGameObject* contents = crate->m_contents;
 					if (contents != 0 && crate->m_contentsType == 0xffff) {
@@ -117,18 +118,18 @@ GlobalGameObject* ObjectManager::Add(unsigned short p_id,
 	GlobalGameObject* object = 0;
 	BaseGlobalObject* linkedObject = 0;
 	switch (p_objectType) {
-	case 4:
+	case OBJECT_CATAPULT:
 		object = new Catapult(p_position);
 		break;
-	case 5:
+	case OBJECT_AMMO:
 		object = new Ammo(p_position);
 		break;
-	case 0xd:
+	case OBJECT_TOWER:
 		object = new Tower(p_position);
 		break;
-	case 0x11:
+	case OBJECT_CRATE:
 		switch (p_linkedObjectType) {
-		case 4:
+		case OBJECT_CATAPULT:
 			linkedObject = new Catapult(p_position);
 			break;
 		case 0x15:
@@ -151,7 +152,7 @@ GlobalGameObject* ObjectManager::Add(unsigned short p_id,
 		}
 		object = new Crate(p_position, linkedObject, p_linkedObjectId);
 		break;
-	case 0x14:
+	case OBJECT_SWITCH:
 		object = new Switch(p_position, (swMessage) 0, 0, 0, 0);
 		break;
 	case 0x15:
@@ -159,7 +160,7 @@ GlobalGameObject* ObjectManager::Add(unsigned short p_id,
 	case 0x17:
 		object = new Key(p_position, p_objectType);
 		break;
-	case 0x1c:
+	case OBJECT_DUPLICATOR:
 		object = new Duplicator(p_position);
 		break;
 	case 0x27:
@@ -300,13 +301,13 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 			p_data += 4;
 			AiCoord position(x << 0xc, y << 0xc, z << 0xc);
 			switch (objectType) {
-			case 4:
-			case 0xd:
+			case OBJECT_CATAPULT:
+			case OBJECT_TOWER:
 			case 0x15:
 			case 0x16:
 			case 0x17:
-			case 0x18:
-			case 0x1c:
+			case OBJECT_TRAP_DOOR:
+			case OBJECT_DUPLICATOR:
 			case 0x27:
 			case 0x29:
 			case 0x2b:
@@ -315,7 +316,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 					Add(id, position, objectType, 0xffff, 0xffff);
 				}
 				break;
-			case 5: {
+			case OBJECT_AMMO: {
 				unsigned short ammoCount = 0;
 				if (m_ai->m_levelVersion >= 8) {
 					ammoCount = *(unsigned short*) p_data;
@@ -327,7 +328,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 				}
 				break;
 			}
-			case 0x11: {
+			case OBJECT_CRATE: {
 				eObjectType contentsType = (eObjectType) * (unsigned short*) p_data;
 				p_data += 2;
 				unsigned short contentsId;
@@ -343,7 +344,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 				}
 				break;
 			}
-			case 0x14:
+			case OBJECT_SWITCH:
 				if (m_ai->m_levelVersion > 1) {
 					Switch* object;
 					if (*(unsigned int*) &p_append == 0) {
@@ -355,7 +356,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 							object = (Switch*) *objects;
 							objects++;
 							switchIndex++;
-							if (object->m_objectType == 0x14) {
+							if (object->m_objectType == OBJECT_SWITCH) {
 								break;
 							}
 						} while (switchIndex < m_count);
@@ -390,7 +391,7 @@ void ObjectManager::ConvertVer0ToVer1()
 	int i = 0;
 	while (i < m_count) {
 		GlobalGameObject* object = *(GlobalGameObject**) ((unsigned char*) m_objects + offset);
-		if (object->m_objectType == 0x14) {
+		if (object->m_objectType == OBJECT_SWITCH) {
 			object->ConvertVer0ToVer1();
 		}
 		offset += sizeof(GlobalGameObject*);
@@ -403,7 +404,7 @@ void ObjectManager::ConvertVer0ToVer1()
 bool ObjectManager::Receive(unsigned short p_message, GlobalGameObject* p_object, NetworkMessage* p_networkMessage)
 {
 	switch (p_message) {
-	case 0x2a:
+	case MESSAGE_REMOVE_OBJECT:
 		Remove(p_object);
 		return 1;
 	}

@@ -9,21 +9,21 @@ class TimedQueue;
 // VTABLE: LEMBALL 0x00499250
 class BaseQueue {
 public:
-	BaseQueue(unsigned int p_arg0);
-	BaseQueue(unsigned int p_arg0, char* p_arg1);
-	bool Attach(BaseQueueHandler* p_arg0, int p_arg1);
-	bool DeleteNth(unsigned int p_arg0);
-	bool Detach(BaseQueueHandler* p_arg0, int p_arg1);
-	bool GetNth(Message* p_arg0, unsigned int p_arg1);
-	bool PeekNth(Message* p_arg0, unsigned int p_arg1);
-	bool Process(Message* p_arg0);
-	bool ProcessNMsgs(unsigned int p_arg0);
-	bool PutNth(Message* p_arg0, unsigned int p_arg1);
+	BaseQueue(unsigned int p_capacity);
+	BaseQueue(unsigned int p_capacity, char* p_name);
+	bool Attach(BaseQueueHandler* p_handler, int p_priority);
+	bool DeleteNth(unsigned int p_index);
+	bool Detach(BaseQueueHandler* p_handler, int p_priority);
+	bool GetNth(Message* p_message, unsigned int p_index);
+	bool PeekNth(Message* p_message, unsigned int p_index);
+	bool Process(Message* p_message);
+	bool ProcessNMsgs(unsigned int p_count);
+	bool PutNth(Message* p_message, unsigned int p_index);
 	unsigned int GetMessageCount() { return m_messageCount; }
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
 	virtual ~BaseQueue();                              // vtable+0x04
-	virtual bool Post(Message& p_arg0);                // vtable+0x08
-	virtual bool Send(Message& p_arg0);                // vtable+0x0c
+	virtual bool Post(Message& p_message);                // vtable+0x08
+	virtual bool Send(Message& p_message);                // vtable+0x0c
 	BaseQueue();
 
 	friend class TimedQueue;

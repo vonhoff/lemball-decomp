@@ -104,7 +104,7 @@ protected:
 	short m_width;                        // 0x37c
 	short m_height;                       // 0x37e
 	VsPoint m_animPosition;               // 0x380
-	undefined4 m_unknown384;              // 0x384
+	undefined4 m_chalkFontId;              // 0x384
 	unsigned int m_topFrameAnimId;        // 0x388
 	unsigned int m_sideFrameAnimId;       // 0x38c
 	unsigned int m_bottomFrameAnimId;     // 0x390

@@ -182,7 +182,7 @@ void SuccFailDrawer::CalculateText()
 	char* format;
 	char* hash;
 
-	font = m_textManager->GetFont(m_unknown384);
+	font = m_textManager->GetFont(m_chalkFontId);
 	if (m_networkMode == 0) {
 		if (m_variant == 0) {
 			format = g_apSuccFailSingleLose[g_pGameStatus->m_skillState];
@@ -403,18 +403,18 @@ void SuccFailDrawer::DrawText()
 	if (m_drawingBackBuffer != 0) {
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_firstLinePos, advance, m_unknown384, m_firstLine, 0x20, 0);
+		m_textManager->DrawString(m_gdi, m_firstLinePos, advance, m_chalkFontId, m_firstLine, 0x20, 0);
 		if (m_secondLine != 0) {
 			advance.m_height = 0;
 			advance.m_width = 0;
-			m_textManager->DrawString(m_gdi, m_secondLinePos, advance, m_unknown384, m_secondLine, 0x20, 0);
+			m_textManager->DrawString(m_gdi, m_secondLinePos, advance, m_chalkFontId, m_secondLine, 0x20, 0);
 		}
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_passwordLabelPos, advance, m_unknown384, g_szPasswordLabel, 0x20, 0);
+		m_textManager->DrawString(m_gdi, m_passwordLabelPos, advance, m_chalkFontId, g_szPasswordLabel, 0x20, 0);
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_passwordPos, advance, m_unknown384, m_password, 0x20, 0);
+		m_textManager->DrawString(m_gdi, m_passwordPos, advance, m_chalkFontId, m_password, 0x20, 0);
 	}
 }
 

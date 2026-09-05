@@ -59,19 +59,19 @@ void Ai::Restart()
 	unsigned int network = g_pGameStatus->m_skill == 4;
 	m_unk0x68 = 0;
 	m_unk0x6c = 0;
-	m_unk0x7c = 0;
+	m_isHost = 0;
 	m_unk0x5c = 0;
 	m_playerGroups = 0;
 	m_unk0x70 = 1;
 	m_payloadCapacity += 0x60;
-	m_unk0x64 = network;
-	if (m_unk0x64 != 0) {
+	m_networkMode = network;
+	if (m_networkMode != 0) {
 		if (m_initialised == 0) {
-			m_unk0x78 = new PbNetworkGame(this);
+			m_networkGame = new PbNetworkGame(this);
 		}
-		m_unk0x7c = g_pActiveConnection->m_isHost;
+		m_isHost = g_pActiveConnection->m_isHost;
 		if (m_initialised == 0) {
-			m_unk0x74 = new GameStateMessage;
+			m_gameStateMessage = new GameStateMessage;
 		}
 		g_pGameStatus->m_levelState = 0;
 	}
@@ -94,11 +94,11 @@ void Ai::Restart()
 	m_paused = 0;
 	g_wLemmingCount = 0;
 	m_unk0xdc = 1;
-	m_unk0x60 = 0;
+	m_mapType = 0;
 	m_unk0xe4 = 0;
 	m_gameStatus = 0;
 	m_processState = 0;
-	m_unk0xec = 180;
+	m_timeLimit = 180;
 	if (m_initialised == 0) {
 		m_map = new Map;
 	}
@@ -115,7 +115,7 @@ void Ai::Restart()
 		m_aiQueue = new BaseQueue(10, "AIQueue");
 		m_aiQueue->Attach(this, 0);
 	}
-	if (m_unk0x64 != 0 && g_pActiveConnection != 0) {
+	if (m_networkMode != 0 && g_pActiveConnection != 0) {
 		g_pActiveConnection->ReadSocket::UnUseAllNc();
 		g_pActiveConnection->ReadSocket::UnUseAllC();
 	}
@@ -254,9 +254,9 @@ void Ai::Restart()
 		m_maze->ReInitialise();
 	}
 	if (m_initialised == 0) {
-		m_unk0x8c = new AnimSpecial;
+		m_animSpecial = new AnimSpecial;
 	}
-	m_unk0x8c->Initialise(m_map);
+	m_animSpecial->Initialise(m_map);
 	if (m_levelVersion == 0) {
 		FixUpLevel();
 	}

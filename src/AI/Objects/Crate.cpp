@@ -6,7 +6,7 @@
 
 // FUNCTION: LEMBALL 0x0041c470
 Crate::Crate(const AiCoord& p_position, GlobalGameObject* p_contents, unsigned short p_contentsId)
-	: BaseGlobalObject(p_position, 0x11)
+	: BaseGlobalObject(p_position, OBJECT_CRATE)
 {
 	m_contentsId = p_contentsId;
 	m_contents = p_contents;

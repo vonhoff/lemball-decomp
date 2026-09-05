@@ -9,7 +9,7 @@
 // VTABLE: LEMBALL 0x00496050
 class Duplicator : public GlobalGameObject {
 public:
-	Duplicator(const AiCoord& p_arg0);
+	Duplicator(const AiCoord& p_position);
 	virtual AiCoord ActivatePosition();          // vtable+0x2c
 	virtual bool Activate(GameObject* p_object); // vtable+0x18
 	virtual bool Process();                      // vtable+0x14

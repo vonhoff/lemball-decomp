@@ -57,11 +57,11 @@ void NetworkMessage::Initialise()
 
 // 68K 0x1020a574 Add__15CNetworkMessageFUl
 // FUNCTION: LEMBALL 0x0045ef10
-void NetworkMessage::Add(unsigned long p_arg0)
+void NetworkMessage::Add(unsigned long p_value)
 {
 	const unsigned char* value;
 
-	value = (const unsigned char*) &p_arg0;
+	value = (const unsigned char*) &p_value;
 	*(m_writeCursor + 3) = value[0];
 	*(m_writeCursor + 2) = value[1];
 	*(m_writeCursor + 1) = value[2];
@@ -71,11 +71,11 @@ void NetworkMessage::Add(unsigned long p_arg0)
 
 // 68K 0x1020a5ac Add__15CNetworkMessageFUs
 // FUNCTION: LEMBALL 0x0045ef40
-void NetworkMessage::Add(unsigned short p_arg0)
+void NetworkMessage::Add(unsigned short p_value)
 {
 	const unsigned char* value;
 
-	value = (const unsigned char*) &p_arg0;
+	value = (const unsigned char*) &p_value;
 	*(m_writeCursor + 1) = value[0];
 	*m_writeCursor = value[1];
 	m_writeCursor += 2;
@@ -83,27 +83,27 @@ void NetworkMessage::Add(unsigned short p_arg0)
 
 // 68K 0x1020a5e4 Add__15CNetworkMessageFUc
 // FUNCTION: LEMBALL 0x0045ef60
-void NetworkMessage::Add(unsigned char p_arg0)
+void NetworkMessage::Add(unsigned char p_value)
 {
-	*m_writeCursor = p_arg0;
+	*m_writeCursor = p_value;
 	++m_writeCursor;
 }
 
 // 68K 0x1020a618 Add__15CNetworkMessageFPCc
 // FUNCTION: LEMBALL 0x0045ef70
-void NetworkMessage::Add(const char* p_arg0)
+void NetworkMessage::Add(const char* p_text)
 {
-	int length = strlen(p_arg0);
-	strcpy((char*) m_writeCursor, p_arg0);
+	int length = strlen(p_text);
+	strcpy((char*) m_writeCursor, p_text);
 	m_writeCursor += length + 1;
 }
 
 // 68K 0x1020a670 Add__15CNetworkMessageFPCUci
 // FUNCTION: LEMBALL 0x0045efc0
-void NetworkMessage::Add(const unsigned char* p_arg0, int p_arg1)
+void NetworkMessage::Add(const unsigned char* p_data, int p_length)
 {
-	memcpy(m_writeCursor, p_arg0, p_arg1);
-	m_writeCursor += p_arg1;
+	memcpy(m_writeCursor, p_data, p_length);
+	m_writeCursor += p_length;
 }
 
 // 68K 0x1020a6c6 GetDWORD__15CNetworkMessageFv
@@ -118,11 +118,11 @@ int NetworkMessage::GetDword()
 
 // 68K 0x1020a700 Get__15CNetworkMessageFRUl
 // FUNCTION: LEMBALL 0x0045f010
-void NetworkMessage::Get(unsigned long& p_arg0)
+void NetworkMessage::Get(unsigned long& p_value)
 {
 	unsigned char* target;
 
-	target = (unsigned char*) &p_arg0;
+	target = (unsigned char*) &p_value;
 	target[0] = *(m_readCursor + 3);
 	target[1] = *(m_readCursor + 2);
 	target[2] = *(m_readCursor + 1);
@@ -158,11 +158,11 @@ unsigned short NetworkMessage::GetWord()
 
 // 68K 0x1020a7ac Get__15CNetworkMessageFRUs
 // FUNCTION: LEMBALL 0x0045f090
-void NetworkMessage::Get(unsigned short& p_arg0)
+void NetworkMessage::Get(unsigned short& p_value)
 {
 	unsigned char* target;
 
-	target = (unsigned char*) &p_arg0;
+	target = (unsigned char*) &p_value;
 	target[0] = *(m_readCursor + 1);
 	target[1] = *m_readCursor;
 	m_readCursor += 2;
@@ -194,9 +194,9 @@ unsigned char NetworkMessage::GetByte()
 
 // 68K 0x1020a856 Get__15CNetworkMessageFRUc
 // FUNCTION: LEMBALL 0x0045f0f0
-void NetworkMessage::Get(unsigned char& p_arg0)
+void NetworkMessage::Get(unsigned char& p_value)
 {
-	p_arg0 = *m_readCursor;
+	p_value = *m_readCursor;
 	++m_readCursor;
 }
 
@@ -209,34 +209,34 @@ void NetworkMessage::ConvertByte()
 
 // 68K 0x1020a8c2 Get__15CNetworkMessageFRPCc
 // FUNCTION: LEMBALL 0x0045f120
-void NetworkMessage::Get(const char*& p_arg0)
+void NetworkMessage::Get(const char*& p_text)
 {
-	p_arg0 = (const char*) m_readCursor;
-	m_readCursor += (int) strlen(p_arg0) + 1;
+	p_text = (const char*) m_readCursor;
+	m_readCursor += (int) strlen(p_text) + 1;
 }
 
 // 68K 0x1020a90e Get__15CNetworkMessageFRPCUci
 // FUNCTION: LEMBALL 0x0045f140
-void NetworkMessage::Get(const unsigned char*& p_arg0, int p_arg1)
+void NetworkMessage::Get(const unsigned char*& p_data, int p_length)
 {
-	p_arg0 = m_readCursor;
-	m_readCursor += p_arg1;
+	p_data = m_readCursor;
+	m_readCursor += p_length;
 }
 
 // 68K 0x1020a94a GetCopy__15CNetworkMessageFPc
 // FUNCTION: LEMBALL 0x0045f160
-void NetworkMessage::GetCopy(char* p_arg0)
+void NetworkMessage::GetCopy(char* p_buffer)
 {
-	strcpy(p_arg0, (char*) m_readCursor);
-	m_readCursor += strlen(p_arg0) + 1;
+	strcpy(p_buffer, (char*) m_readCursor);
+	m_readCursor += strlen(p_buffer) + 1;
 }
 
 // 68K 0x1020a9a0 GetCopy__15CNetworkMessageFPUci
 // FUNCTION: LEMBALL 0x0045f1b0
-void NetworkMessage::GetCopy(unsigned char* p_arg0, int p_arg1)
+void NetworkMessage::GetCopy(unsigned char* p_buffer, int p_length)
 {
-	memcpy(p_arg0, m_readCursor, p_arg1);
-	m_readCursor += p_arg1;
+	memcpy(p_buffer, m_readCursor, p_length);
+	m_readCursor += p_length;
 }
 
 // 68K 0x1020a9f8 OpenDataStream__15CNetworkMessageFv
@@ -268,12 +268,12 @@ void NetworkMessage::CloseDataStream()
 
 // 68K 0x1020aadc CopyDataStream__15CNetworkMessageFPUci
 // FUNCTION: LEMBALL 0x0045f250
-void NetworkMessage::CopyDataStream(unsigned char* p_arg0, int p_arg1)
+void NetworkMessage::CopyDataStream(unsigned char* p_buffer, int p_offset)
 {
 	unsigned char* end;
 
-	m_buffer = p_arg0;
-	end = p_arg0 + p_arg1;
+	m_buffer = p_buffer;
+	end = p_buffer + p_offset;
 	m_writeCursor = end;
 	m_bufferEnd = end + m_payloadCapacity;
 	AddHeader();
@@ -282,9 +282,9 @@ void NetworkMessage::CopyDataStream(unsigned char* p_arg0, int p_arg1)
 
 // 68K 0x1020ab56 Set__15CNetworkMessageFPUc
 // FUNCTION: LEMBALL 0x0045f280
-bool NetworkMessage::Set(unsigned char* p_arg0)
+bool NetworkMessage::Set(unsigned char* p_data)
 {
-	m_readCursor = p_arg0;
+	m_readCursor = p_data;
 	if (GetHeader() != 0) {
 		GetData();
 		return 1;
@@ -294,18 +294,18 @@ bool NetworkMessage::Set(unsigned char* p_arg0)
 
 // 68K 0x1020ab3a Send__15CNetworkMessageFP8CConnect
 // FUNCTION: LEMBALL 0x0045f2b0
-void NetworkMessage::Send(Connect* p_arg0)
+void NetworkMessage::Send(Connect* p_connection)
 {
-	Message msg;
+	Message message;
 
-	if (p_arg0 != 0) {
-		msg.type = 0xb;
-		msg.code = 1;
-		msg.payload = this;
-		msg.source = p_arg0;
+	if (p_connection != 0) {
+		message.type = 0xb;
+		message.code = 1;
+		message.payload = this;
+		message.source = p_connection;
 		OpenDataStream();
 		m_pendingSendCount = 1;
-		g_pNetworkStatusQueue->Post(msg);
+		g_pNetworkStatusQueue->Post(message);
 		g_pBaseNetwork->ForceProcess();
 	}
 }

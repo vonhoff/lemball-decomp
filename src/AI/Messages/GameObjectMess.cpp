@@ -9,7 +9,7 @@ GameObjectMess::GameObjectMess()
 
 // 68K 0x1060b23a __ct__15CGameObjectMessFUl
 // FUNCTION: LEMBALL 0x00416850
-GameObjectMess::GameObjectMess(unsigned long p_arg0) : NetworkMessage(p_arg0)
+GameObjectMess::GameObjectMess(unsigned long p_messageId) : NetworkMessage(p_messageId)
 {
 	m_headerEnabled = 1;
 	m_payloadCapacity += 4;
@@ -17,10 +17,10 @@ GameObjectMess::GameObjectMess(unsigned long p_arg0) : NetworkMessage(p_arg0)
 
 // 68K 0x1060b292 Send__15CGameObjectMessFP17CGlobalGameObject
 // FUNCTION: LEMBALL 0x00416880
-void GameObjectMess::Send(GlobalGameObject* p_arg0)
+void GameObjectMess::Send(GlobalGameObject* p_object)
 {
-	m_object = p_arg0;
-	p_arg0->m_manager->Add(this);
+	m_object = p_object;
+	p_object->m_manager->Add(this);
 }
 
 // 68K 0x1060b2ea AddData__15CGameObjectMessFv

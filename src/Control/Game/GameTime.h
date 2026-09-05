@@ -3,6 +3,9 @@
 
 #include "../../Common.h"
 
+// Game and remote clocks use 50-millisecond ticks.
+#define GAME_TICK_MILLISECONDS 50
+
 void ClockEditMode(unsigned int p_enabled);
 void ResetGameTimes();
 void SetGameTime();

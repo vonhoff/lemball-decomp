@@ -60,7 +60,7 @@ bool Ammo::Process()
 				m_heading = 0;
 			}
 			else {
-				m_actionDeadline = g_dwGameTick + (m_ammo * 1000) / 50;
+				m_actionDeadline = g_dwGameTick + (m_ammo * 1000) / GAME_TICK_MILLISECONDS;
 				RequestAction((eAction) 27);
 			}
 		}

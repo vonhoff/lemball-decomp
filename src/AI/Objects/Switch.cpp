@@ -9,7 +9,7 @@ word g_wNextSwitchIndex;
 
 // 68K 0x10619660 __ct__7CSwitchFR7AICOORD9swMessageiii
 // FUNCTION: LEMBALL 0x0041d040
-Switch::Switch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_arg4) : BaseGlobalObject(p_arg0, 0x14)
+Switch::Switch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_arg4) : BaseGlobalObject(p_arg0, OBJECT_SWITCH)
 {
 	m_position.m_xFixed = p_arg0.m_xFixed;
 	m_position.m_yFixed = p_arg0.m_yFixed;

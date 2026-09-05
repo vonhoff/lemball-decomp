@@ -3,6 +3,7 @@
 
 #include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type
+#include "../Base/ObjectActions.h"
 
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x004936f8

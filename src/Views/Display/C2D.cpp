@@ -1,5 +1,6 @@
 #include "C2D.h"
 
+#include "../../AI/Base/ObjectActions.h"
 #include "../../AI/Navigation/Ai.h"
 #include "../../AI/Objects/PlayerLemming.h"
 #include "../../AI/Objects/ViewData.h"
@@ -1363,7 +1364,7 @@ void C2D::DrawDoor(ViewData& p_viewData)
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 1, 0, 0);
 		break;
 
-	case (eAction) 0x20:
+	case (eAction) DOOR_ACTION_OPENING:
 		frame = elapsed * 15 / 1024;
 		if (frame > 7) {
 			frame = 7;
@@ -1372,12 +1373,12 @@ void C2D::DrawDoor(ViewData& p_viewData)
 		m_lemmingAnims->DrawAnim(x, y, resourceId, frame + 1, 0, 0);
 		break;
 
-	case (eAction) 0x21:
+	case (eAction) DOOR_ACTION_OPEN:
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 8, 0, 0);
 		break;
 
-	case (eAction) 0x22:
+	case (eAction) DOOR_ACTION_CLOSING:
 		frame = elapsed * 15 / 1024;
 		if (frame > 7) {
 			frame = 7;

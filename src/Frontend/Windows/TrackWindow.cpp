@@ -5,18 +5,18 @@
 
 // 68K 0x1080e1a2 __ct__12CTrackWindowFRC7CVSRectiP7CPVGWnd
 // FUNCTION: LEMBALL 0x0044e790
-TrackWindow::TrackWindow(const VsRect& p_arg0, int p_arg1, PvGWnd* p_arg2) : HotAreaHandler(p_arg0)
+TrackWindow::TrackWindow(const VsRect& p_rect, int p_value, PvGWnd* p_parent) : HotAreaHandler(p_rect)
 {
 	m_reserved128 = 0;
-	m_trackSize.m_x = p_arg0.m_width;
+	m_trackSize.m_x = p_rect.m_width;
 	m_trackSize.m_y = 0;
-	m_value = p_arg1;
-	m_trackRect.m_width = p_arg0.m_width;
-	m_trackRect.m_height = p_arg0.m_height;
-	m_trackRect.m_x = p_arg0.m_x;
+	m_value = p_value;
+	m_trackRect.m_width = p_rect.m_width;
+	m_trackRect.m_height = p_rect.m_height;
+	m_trackRect.m_x = p_rect.m_x;
 	m_gdiFlags = m_gdiFlags + 6;
-	m_trackRect.m_y = p_arg0.m_y;
-	m_parent = p_arg2;
+	m_trackRect.m_y = p_rect.m_y;
+	m_parent = p_parent;
 	m_contextId = -1;
 	SetActive(1);
 	m_externalEnabled = 1;

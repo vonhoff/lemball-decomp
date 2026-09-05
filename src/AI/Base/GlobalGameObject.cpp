@@ -22,7 +22,7 @@ void GlobalGameObject::DoActivate()
 
 // 68K 0x1060bb8e __ct__17CGlobalGameObjectF11eObjectTypeUsUs
 // STUB: LEMBALL 0x00416d20
-GlobalGameObject::GlobalGameObject(eObjectType p_arg0, unsigned short p_arg1, unsigned short p_arg2)
+GlobalGameObject::GlobalGameObject(eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity)
 {
 }
 

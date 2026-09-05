@@ -9,8 +9,8 @@
 class TimedQueue : public BaseQueue {
 public:
 	TimedQueue(unsigned int p_capacity, char* p_name) : BaseQueue(p_capacity, p_name) {}
-	virtual bool Post(Message& p_arg0); // vtable+0x08
-	virtual bool Send(Message& p_arg0); // vtable+0x0c
+	virtual bool Post(Message& p_message); // vtable+0x08
+	virtual bool Send(Message& p_message); // vtable+0x0c
 	virtual ~TimedQueue();              // vtable+0x04
 };
 

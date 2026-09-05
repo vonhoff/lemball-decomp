@@ -96,7 +96,7 @@ void PlayerLemming::Restart()
 		m_group = 0;
 		m_ice = 0;
 		m_onConveyor = 0;
-		m_ammoCount = 25;
+		m_ammoCount = PLAYER_START_AMMO;
 	}
 	else {
 		m_playerIndex = g_wLocalLemmingIndex;
@@ -202,7 +202,7 @@ void PlayerLemming::TurnToFaceCursor()
 			}
 			SetBored(4000);
 		}
-		m_actionDeadline = g_dwGameTick + g_anTurnDelayCursor[m_objectType] / 50;
+		m_actionDeadline = g_dwGameTick + g_anTurnDelayCursor[m_objectType] / GAME_TICK_MILLISECONDS;
 	}
 }
 
@@ -223,7 +223,7 @@ void PlayerLemming::TurnToFaceTarget()
 		}
 		SetBored(4000);
 	}
-	m_actionDeadline = g_dwGameTick + g_anTurnDelayTarget[m_objectType] / 50;
+	m_actionDeadline = g_dwGameTick + g_anTurnDelayTarget[m_objectType] / GAME_TICK_MILLISECONDS;
 }
 
 // 68K 0x1061c600 IsRequestingFire__14CPlayerLemmingFv
@@ -358,16 +358,16 @@ void PlayerLemming::HitMine()
 // FUNCTION: LEMBALL 0x0040f640
 void PlayerLemming::GetData()
 {
-	unsigned short val;
+	unsigned short packedState;
 	m_position.m_xFixed = (int) (unsigned int) GetWord() << 12;
 	m_position.m_yFixed = (int) (unsigned int) GetWord() << 12;
 	m_position.m_zFixed = (int) (unsigned int) GetWord() << 12;
-	Get(val);
-	m_facingDirection = val & 7;
-	m_actionArgument = (val & 0x38) >> 3;
-	Get(val);
-	m_action = (eAction) (val & 0xff);
-	m_soundEffect = (eSoundEffect) (val >> 8);
+	Get(packedState);
+	m_facingDirection = packedState & 7;
+	m_actionArgument = (packedState & 0x38) >> 3;
+	Get(packedState);
+	m_action = (eAction) (packedState & 0xff);
+	m_soundEffect = (eSoundEffect) (packedState >> 8);
 	m_stateTimer = GetDword();
 }
 
@@ -375,7 +375,7 @@ void PlayerLemming::GetData()
 // FUNCTION: LEMBALL 0x0040f6f0
 void PlayerLemming::AddData()
 {
-	Add((unsigned short) 0x2c);
+	Add((unsigned short) MESSAGE_PLAYER_LEMMING_STATE);
 	Add((unsigned char) m_playerIndex);
 	Add((unsigned short) (m_position.m_xFixed >> 12));
 	Add((unsigned short) (m_position.m_yFixed >> 12));
@@ -407,19 +407,19 @@ bool PlayerLemming::CheckSfx()
 
 // 68K 0x1061ccb2 HasObject__14CPlayerLemmingF11eObjectType
 // FUNCTION: LEMBALL 0x0040f960
-bool PlayerLemming::HasObject(eObjectType p_arg0)
+bool PlayerLemming::HasObject(eObjectType p_objectType)
 {
-	if (p_arg0 != (eObjectType) 5) {
+	if (p_objectType != (eObjectType) OBJECT_AMMO) {
 		int count = m_inventoryCount;
-		if (count != 12) {
+		if (count != PLAYER_INVENTORY_CAPACITY) {
 			for (int i = 0; i < count; i++) {
-				if (m_inventoryTypes[i] == p_arg0) {
+				if (m_inventoryTypes[i] == p_objectType) {
 					return 1;
 				}
 			}
 		}
 	}
-	else if (m_ammoCount == 50) {
+	else if (m_ammoCount == PLAYER_MAX_AMMO) {
 		return 1;
 	}
 	return 0;
@@ -427,16 +427,16 @@ bool PlayerLemming::HasObject(eObjectType p_arg0)
 
 // 68K 0x1061cd36 AddObject__14CPlayerLemmingF11eObjectTypeP11CGameObject
 // FUNCTION: LEMBALL 0x0040f9b0
-bool PlayerLemming::AddObject(eObjectType p_arg0, GameObject* p_arg1)
+bool PlayerLemming::AddObject(eObjectType p_objectType, GameObject* p_object)
 {
-	if (m_inventoryCount == 12) {
+	if (m_inventoryCount == PLAYER_INVENTORY_CAPACITY) {
 		return 0;
 	}
-	if (HasObject(p_arg0)) {
+	if (HasObject(p_objectType)) {
 		return 0;
 	}
-	m_inventoryTypes[m_inventoryCount] = p_arg0;
-	m_inventoryObjects[m_inventoryCount] = p_arg1;
+	m_inventoryTypes[m_inventoryCount] = p_objectType;
+	m_inventoryObjects[m_inventoryCount] = p_object;
 	m_inventoryCount++;
 	return 1;
 }
@@ -464,11 +464,11 @@ void PlayerLemming::RandomAction()
 
 // 68K 0x1061ce66 Resurrect__14CPlayerLemmingFRC7AICOORD
 // FUNCTION: LEMBALL 0x0040fa80
-void PlayerLemming::Resurrect(const AiCoord& p_arg0)
+void PlayerLemming::Resurrect(const AiCoord& p_position)
 {
-	m_position.m_xFixed = p_arg0.m_xFixed;
-	m_position.m_yFixed = p_arg0.m_yFixed;
-	m_position.m_zFixed = p_arg0.m_zFixed;
+	m_position.m_xFixed = p_position.m_xFixed;
+	m_position.m_yFixed = p_position.m_yFixed;
+	m_position.m_zFixed = p_position.m_zFixed;
 	m_unk0x2c = 0;
 	g_wLemmingCount++;
 	m_facingDirection = 0;
@@ -500,7 +500,7 @@ void PlayerLemming::Resurrect(const AiCoord& p_arg0)
 	m_unk0x58 = 0;
 	m_activator = 0;
 	m_unk0x11c = 0;
-	m_ammoCount = 25;
+	m_ammoCount = PLAYER_START_AMMO;
 	SetBored(4000);
 	int tileX = m_position.m_xFixed >> 12;
 	int tileY = m_position.m_yFixed >> 12;
@@ -540,10 +540,10 @@ int PlayerLemming::GetLastBalloon()
 
 // 68K 0x1061d064 RemoveObject__14CPlayerLemmingF11eObjectType
 // FUNCTION: LEMBALL 0x0040fc50
-void PlayerLemming::RemoveObject(eObjectType p_arg0)
+void PlayerLemming::RemoveObject(eObjectType p_objectType)
 {
 	for (int i = 0; i < (int) m_inventoryCount; i++) {
-		if (m_inventoryTypes[i] == p_arg0) {
+		if (m_inventoryTypes[i] == p_objectType) {
 			for (int j = i + 1; j < (int) m_inventoryCount; j++) {
 				m_inventoryTypes[j - 1] = m_inventoryTypes[j];
 			}
@@ -555,12 +555,12 @@ void PlayerLemming::RemoveObject(eObjectType p_arg0)
 
 // 68K 0x1061d0ee GetObject__14CPlayerLemmingFi
 // FUNCTION: LEMBALL 0x0040fcb0
-int PlayerLemming::GetObject(int p_arg0)
+int PlayerLemming::GetObject(int p_index)
 {
-	if ((int) m_inventoryCount <= p_arg0) {
+	if ((int) m_inventoryCount <= p_index) {
 		return 0xffff;
 	}
-	return m_inventoryTypes[p_arg0];
+	return m_inventoryTypes[p_index];
 }
 
 // 68K 0x1061d136 ExternalControlEnd__14CPlayerLemmingFv
@@ -710,7 +710,7 @@ void PlayerLemming::SetBored(unsigned long p_minimumDelay)
 	*g_pSentinel = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
 	m_boredDeadline = p_minimumDelay + *g_pSentinel % 5000;
 	m_boredDeadline = m_boredDeadline - m_boredDeadline % 0x42;
-	m_boredDeadline = m_boredDeadline / 50;
+	m_boredDeadline = m_boredDeadline / GAME_TICK_MILLISECONDS;
 	m_boredDeadline = m_actionDeadline + m_boredDeadline;
 }
 
@@ -786,8 +786,8 @@ bool PlayerLemming::IsSelectable()
 		return 0;
 	}
 	if (m_action == 0xf) {
-		int arg = (unsigned short) m_actionArgument;
-		if (arg >= 1 && arg <= 2) {
+		int actionArgument = (unsigned short) m_actionArgument;
+		if (actionArgument >= 1 && actionArgument <= 2) {
 			return 0;
 		}
 	}
@@ -879,8 +879,8 @@ void PlayerLemming::HitBall()
 void PlayerLemming::PickUpAmmo(unsigned short p_arg0)
 {
 	m_ammoCount += p_arg0;
-	if (m_ammoCount > 0x32) {
-		m_ammoCount = 0x32;
+	if (m_ammoCount > PLAYER_MAX_AMMO) {
+		m_ammoCount = PLAYER_MAX_AMMO;
 	}
 }
 

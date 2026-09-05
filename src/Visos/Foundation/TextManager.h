@@ -8,7 +8,7 @@
 class TextManager {
 public:
 	ResFont* GetFont(unsigned long p_fontId);
-	TextManager(unsigned long p_arg0, int p_arg1, int p_arg2, unsigned int p_arg3);
+	TextManager(unsigned long p_fontIdCount, int p_fontCapacity, int p_primitiveCount, unsigned int p_maxStringLen);
 	void DrawString(Gdi* p_gdi,
 					VsPoint& p_position,
 					const VsSize& p_advance,

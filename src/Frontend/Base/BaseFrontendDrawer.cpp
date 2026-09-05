@@ -367,7 +367,7 @@ void BaseFrontendDrawer::_Load()
 		m_tileBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_HIRES_PAINTBALL_TILE);
 		m_backgroundBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_HIRES_TITLE_BMP);
 		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_2;
-		m_unknown384 = RES_NEWFRONT_FONTS_HIRES_CHALK_FONT;
+		m_chalkFontId = RES_NEWFRONT_FONTS_HIRES_CHALK_FONT;
 		m_topFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_1;
 		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_3;
 	}
@@ -375,7 +375,7 @@ void BaseFrontendDrawer::_Load()
 		m_tileBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_PAINTBALL_TILE);
 		m_backgroundBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_TITLE_BMP);
 		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_2;
-		m_unknown384 = RES_NEWFRONT_FONTS_LORES_CHALK_FONT;
+		m_chalkFontId = RES_NEWFRONT_FONTS_LORES_CHALK_FONT;
 		m_topFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_1;
 		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_3;
 	}
@@ -383,7 +383,7 @@ void BaseFrontendDrawer::_Load()
 	AnimsManager::LoadAnims(m_sideFrameAnimId);
 	AnimsManager::LoadAnims(m_bottomFrameAnimId);
 	if (m_textManager != 0) {
-		m_textManager->LoadFont(m_unknown384);
+		m_textManager->LoadFont(m_chalkFontId);
 	}
 }
 
@@ -392,7 +392,7 @@ void BaseFrontendDrawer::_Load()
 void BaseFrontendDrawer::_UnLoad()
 {
 	if (m_textManager != 0) {
-		m_textManager->UnLoadFont(m_unknown384);
+		m_textManager->UnLoadFont(m_chalkFontId);
 	}
 	m_backgroundBitmap->UnLoad();
 	m_tileBitmap->UnLoad();

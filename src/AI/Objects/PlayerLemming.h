@@ -6,17 +6,22 @@
 #include "../Base/AiCoord.h"                      // complete type
 #include "../Base/GlobalGameObject.h"             // complete type
 
+// Inventory bounds and ammunition limits used by HasObject, AddObject and PickUpAmmo.
+#define PLAYER_INVENTORY_CAPACITY 12
+#define PLAYER_MAX_AMMO 50
+#define PLAYER_START_AMMO 25
+
 // SIZE 0x22c
 // VTABLE: LEMBALL 0x00493890 GlobalGameObject
 // VTABLE: LEMBALL 0x00493870 NetworkMessage
 class PlayerLemming : public GlobalGameObject, public NetworkMessage {
 public:
-	PlayerLemming(int p_arg0, int p_arg1, int p_arg2, int p_arg3, unsigned int p_arg4, unsigned long p_arg5);
+	PlayerLemming(int p_x, int p_y, int p_z, int p_facing, unsigned int p_alternatePlayer, unsigned long p_spawnDelay);
 	virtual ~PlayerLemming() {}
 	PlayerLemmingGroup* GetGroup();
 	bool CheckSfx();
 	int GetLastBalloon();
-	int GetObject(int p_arg0);
+	int GetObject(int p_index);
 	virtual void Action(eAction p_arg0);                                            // vtable+0x08
 	virtual void GetViewData(ViewData& p_viewData);                                 // vtable+0x0c
 	virtual bool Process();                                                         // vtable+0x14
@@ -39,8 +44,8 @@ public:
 	virtual void RandomAction();                                                    // vtable+0x94
 	virtual bool FacingTarget();                                                    // vtable+0x98
 	virtual void TurnToFaceTarget();                                                // vtable+0x9c
-	virtual bool HasObject(eObjectType p_arg0);                                     // vtable+0xb4
-	virtual bool AddObject(eObjectType p_arg0, GameObject* p_arg1);                 // vtable+0xb8
+	virtual bool HasObject(eObjectType p_objectType);                                     // vtable+0xb4
+	virtual bool AddObject(eObjectType p_objectType, GameObject* p_object);                 // vtable+0xb8
 	virtual void PickUpAmmo(unsigned short p_arg0);                                 // vtable+0xcc
 	virtual void ExternalControlEnd();                                              // vtable+0xd0
 	virtual void RequestBalloon();                                                  // vtable+0xd4
@@ -53,9 +58,9 @@ public:
 	virtual void Restart();                                                         // vtable+0x104
 	void AddData();
 	void GetData();
-	void RemoveObject(eObjectType p_arg0);
+	void RemoveObject(eObjectType p_objectType);
 	void RequestFire(int p_arg0, int p_arg1);
-	void Resurrect(const AiCoord& p_arg0);
+	void Resurrect(const AiCoord& p_position);
 	void SetGroup(PlayerLemmingGroup* p_arg0);
 	void SetGroup(unsigned int p_arg0);
 	void SetGroupLeader(unsigned int p_arg0);
@@ -80,8 +85,8 @@ private:
 	unsigned int m_cachedStateTimer;      // 0x1ac
 	eSoundEffect m_cachedSoundEffect;     // 0x1b0
 	AiCoord m_fireTarget;                 // 0x1b4
-	eObjectType m_inventoryTypes[12];     // 0x1c0
-	GameObject* m_inventoryObjects[12];   // 0x1f0
+	eObjectType m_inventoryTypes[PLAYER_INVENTORY_CAPACITY];     // 0x1c0
+	GameObject* m_inventoryObjects[PLAYER_INVENTORY_CAPACITY];   // 0x1f0
 	unsigned int m_inventoryCount;        // 0x220
 	PlayerLemmingGroup* m_group;          // 0x224
 	unsigned short m_ammoCount;           // 0x228

@@ -18,15 +18,15 @@ BaseQueue::BaseQueue()
 
 // 68K 0x102049f4 __ct__10CBaseQueueFUi
 // FUNCTION: LEMBALL 0x00463020
-BaseQueue::BaseQueue(unsigned int p_arg0)
+BaseQueue::BaseQueue(unsigned int p_capacity)
 {
 	unsigned char* buffer;
 
 	InitializeCriticalSection((CRITICAL_SECTION*) m_criticalSection);
-	buffer = (unsigned char*) operator new(p_arg0 * sizeof(Message));
+	buffer = (unsigned char*) operator new(p_capacity * sizeof(Message));
 	m_messageBuffer = buffer;
-	m_capacity = p_arg0;
-	m_messageBufferEnd = buffer + p_arg0 * sizeof(Message);
+	m_capacity = p_capacity;
+	m_messageBufferEnd = buffer + p_capacity * sizeof(Message);
 	m_writeCursor = buffer;
 	m_readCursor = buffer;
 	m_messageCount = 0;
@@ -41,16 +41,16 @@ BaseQueue::BaseQueue(unsigned int p_arg0)
 
 // 68K 0x10204aac __ct__10CBaseQueueFUiPc
 // FUNCTION: LEMBALL 0x004630a0
-BaseQueue::BaseQueue(unsigned int p_arg0, char* p_arg1)
+BaseQueue::BaseQueue(unsigned int p_capacity, char* p_name)
 {
 	unsigned char* buffer;
 
-	(void) p_arg1;
+	(void) p_name;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_criticalSection);
-	buffer = (unsigned char*) operator new(p_arg0 * sizeof(Message));
+	buffer = (unsigned char*) operator new(p_capacity * sizeof(Message));
 	m_messageBuffer = buffer;
-	m_capacity = p_arg0;
-	m_messageBufferEnd = buffer + p_arg0 * sizeof(Message);
+	m_capacity = p_capacity;
+	m_messageBufferEnd = buffer + p_capacity * sizeof(Message);
 	m_writeCursor = buffer;
 	m_readCursor = buffer;
 	m_messageCount = 0;
@@ -88,7 +88,7 @@ BaseQueue::~BaseQueue()
 
 // 68K 0x10204bfa Post__10CBaseQueueFR10tagMESSAGE
 // FUNCTION: LEMBALL 0x004631a0
-bool BaseQueue::Post(Message& p_arg0)
+bool BaseQueue::Post(Message& p_message)
 {
 	unsigned char* write;
 	unsigned int* dest;
@@ -98,19 +98,19 @@ bool BaseQueue::Post(Message& p_arg0)
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	m_postCount = m_postCount + 1;
-	p_arg0.time = m_nextSequence;
+	p_message.time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
 	if (m_capacity == m_messageCount) {
 		m_overflowCount = m_overflowCount + 1;
 		ProcessNMsgs(1);
-		result = Post(p_arg0);
+		result = Post(p_message);
 		LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 		return result;
 	}
 	m_messageCount = m_messageCount + 1;
 	write = m_writeCursor;
 	dest = (unsigned int*) write;
-	src = (unsigned int*) &p_arg0;
+	src = (unsigned int*) &p_message;
 	for (i = 5; i != 0; i = i - 1) {
 		*dest = *src;
 		src = src + 1;
@@ -127,15 +127,15 @@ bool BaseQueue::Post(Message& p_arg0)
 
 // 68K 0x10204cd8 Send__10CBaseQueueFR10tagMESSAGE
 // FUNCTION: LEMBALL 0x00463230
-bool BaseQueue::Send(Message& p_arg0)
+bool BaseQueue::Send(Message& p_message)
 {
 	bool result;
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	m_sendCount = m_sendCount + 1;
-	p_arg0.time = m_nextSequence;
+	p_message.time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
-	result = Process(&p_arg0);
+	result = Process(&p_message);
 	if (result != 0) {
 		LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 		return 1;
@@ -153,7 +153,7 @@ VsOStream& BaseQueue::StreamOut(VsOStream& p_stream)
 
 // 68K 0x10204d9e Attach__10CBaseQueueFP17CBaseQueueHandleri
 // FUNCTION: LEMBALL 0x004632a0
-bool BaseQueue::Attach(BaseQueueHandler* p_arg0, int p_arg1)
+bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 {
 	QueueHandlerNode* node;
 	QueueHandlerNode* current;
@@ -163,8 +163,8 @@ bool BaseQueue::Attach(BaseQueueHandler* p_arg0, int p_arg1)
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	node = (QueueHandlerNode*) operator new(0xc);
-	node->handler = p_arg0;
-	node->priority = p_arg1;
+	node->handler = p_handler;
+	node->priority = p_priority;
 	if (m_handlerList == 0) {
 		m_handlerList = node;
 		node->next = 0;
@@ -184,7 +184,7 @@ bool BaseQueue::Attach(BaseQueueHandler* p_arg0, int p_arg1)
 	current = previous;
 	if (count != 0) {
 		do {
-			if (p_arg1 < current->priority) {
+			if (p_priority < current->priority) {
 				if (index == 0) {
 					node->next = (QueueHandlerNode*) m_handlerList;
 					m_handlerList = node;
@@ -215,7 +215,7 @@ bool BaseQueue::Attach(BaseQueueHandler* p_arg0, int p_arg1)
 
 // 68K 0x10204ee0 Detach__10CBaseQueueFP17CBaseQueueHandleri
 // FUNCTION: LEMBALL 0x004633b0
-bool BaseQueue::Detach(BaseQueueHandler* p_arg0, int p_arg1)
+bool BaseQueue::Detach(BaseQueueHandler* p_handler, int p_priority)
 {
 	QueueHandlerNode* current;
 	QueueHandlerNode* previous;
@@ -227,7 +227,7 @@ bool BaseQueue::Detach(BaseQueueHandler* p_arg0, int p_arg1)
 	index = 0;
 	if (m_handlerCount != 0) {
 		do {
-			if (current->priority == p_arg1 && current->handler == p_arg0) {
+			if (current->priority == p_priority && current->handler == p_handler) {
 				if (index != 0) {
 					previous->next = current->next;
 					operator delete(current);
@@ -252,18 +252,18 @@ bool BaseQueue::Detach(BaseQueueHandler* p_arg0, int p_arg1)
 
 // 68K 0x10204fbe GetNth__10CBaseQueueFP10tagMESSAGEUi
 // FUNCTION: LEMBALL 0x00463570
-bool BaseQueue::GetNth(Message* p_arg0, unsigned int p_arg1)
+bool BaseQueue::GetNth(Message* p_message, unsigned int p_index)
 {
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
-	PeekNth(p_arg0, p_arg1);
-	DeleteNth(p_arg1);
+	PeekNth(p_message, p_index);
+	DeleteNth(p_index);
 	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	return 1;
 }
 
 // 68K 0x1020503c PeekNth__10CBaseQueueFP10tagMESSAGEUi
 // FUNCTION: LEMBALL 0x004635b0
-bool BaseQueue::PeekNth(Message* p_arg0, unsigned int p_arg1)
+bool BaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 {
 	unsigned char* slot;
 	unsigned int* dest;
@@ -271,11 +271,11 @@ bool BaseQueue::PeekNth(Message* p_arg0, unsigned int p_arg1)
 	int i;
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
-	slot = m_readCursor + p_arg1 * sizeof(Message);
+	slot = m_readCursor + p_index * sizeof(Message);
 	if (m_messageBufferEnd <= slot) {
 		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / sizeof(Message)) * sizeof(Message);
 	}
-	dest = (unsigned int*) p_arg0;
+	dest = (unsigned int*) p_message;
 	src = (unsigned int*) slot;
 	for (i = 5; i != 0; i = i - 1) {
 		*dest = *src;
@@ -288,7 +288,7 @@ bool BaseQueue::PeekNth(Message* p_arg0, unsigned int p_arg1)
 
 // 68K 0x102050dc PutNth__10CBaseQueueFP10tagMESSAGEUi
 // FUNCTION: LEMBALL 0x00463610
-bool BaseQueue::PutNth(Message* p_arg0, unsigned int p_arg1)
+bool BaseQueue::PutNth(Message* p_message, unsigned int p_index)
 {
 	unsigned char* slot;
 	unsigned char* dest;
@@ -300,15 +300,15 @@ bool BaseQueue::PutNth(Message* p_arg0, unsigned int p_arg1)
 	int i;
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
-	slot = m_readCursor + p_arg1 * sizeof(Message);
+	slot = m_readCursor + p_index * sizeof(Message);
 	if (m_messageBufferEnd <= slot) {
 		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / sizeof(Message)) * sizeof(Message);
 	}
-	if (p_arg1 < m_messageCount) {
+	if (p_index < m_messageCount) {
 		dest = m_writeCursor;
 		src = dest - sizeof(Message);
 		shifted = 0;
-		remain = m_messageCount - p_arg1;
+		remain = m_messageCount - p_index;
 		if (remain != 0) {
 			do {
 				if (src < m_messageBuffer) {
@@ -327,11 +327,11 @@ bool BaseQueue::PutNth(Message* p_arg0, unsigned int p_arg1)
 				src = src - sizeof(Message);
 				dest = dest - sizeof(Message);
 				shifted = shifted + 1;
-			} while (shifted < m_messageCount - p_arg1);
+			} while (shifted < m_messageCount - p_index);
 		}
 	}
 	copyDest = (unsigned int*) slot;
-	copySrc = (unsigned int*) p_arg0;
+	copySrc = (unsigned int*) p_message;
 	for (i = 5; i != 0; i = i - 1) {
 		*copyDest = *copySrc;
 		copySrc = copySrc + 1;
@@ -349,7 +349,7 @@ bool BaseQueue::PutNth(Message* p_arg0, unsigned int p_arg1)
 
 // 68K 0x102051fe DeleteNth__10CBaseQueueFUi
 // FUNCTION: LEMBALL 0x004636e0
-bool BaseQueue::DeleteNth(unsigned int p_arg0)
+bool BaseQueue::DeleteNth(unsigned int p_index)
 {
 	unsigned char* slot;
 	unsigned char* dest;
@@ -364,7 +364,7 @@ bool BaseQueue::DeleteNth(unsigned int p_arg0)
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	read = m_readCursor;
 	end = m_messageBufferEnd;
-	slot = read + p_arg0 * sizeof(Message);
+	slot = read + p_index * sizeof(Message);
 	if (end <= slot) {
 		slot = m_messageBuffer + (((int) slot - (int) end) / sizeof(Message)) * sizeof(Message);
 	}
@@ -389,7 +389,7 @@ bool BaseQueue::DeleteNth(unsigned int p_arg0)
 	if (end <= dest) {
 		dest = m_messageBuffer;
 	}
-	if (p_arg0 < count) {
+	if (p_index < count) {
 		do {
 			if (m_messageBufferEnd <= dest) {
 				dest = m_messageBuffer;
@@ -406,8 +406,8 @@ bool BaseQueue::DeleteNth(unsigned int p_arg0)
 			}
 			src = src + sizeof(Message);
 			dest = dest + sizeof(Message);
-			p_arg0 = p_arg0 + 1;
-		} while (p_arg0 < m_messageCount);
+			p_index = p_index + 1;
+		} while (p_index < m_messageCount);
 	}
 	slot = m_writeCursor;
 	m_writeCursor = slot - sizeof(Message);
@@ -421,7 +421,7 @@ bool BaseQueue::DeleteNth(unsigned int p_arg0)
 
 // 68K 0x10205344 ProcessNMsgs__10CBaseQueueFUi
 // FUNCTION: LEMBALL 0x00463810
-bool BaseQueue::ProcessNMsgs(unsigned int p_arg0)
+bool BaseQueue::ProcessNMsgs(unsigned int p_count)
 {
 	Message message;
 	unsigned int available;
@@ -430,7 +430,7 @@ bool BaseQueue::ProcessNMsgs(unsigned int p_arg0)
 	index = 0;
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	available = m_messageCount;
-	if (p_arg0 != 0) {
+	if (p_count != 0) {
 		do {
 			if (available <= index) {
 				break;
@@ -444,7 +444,7 @@ bool BaseQueue::ProcessNMsgs(unsigned int p_arg0)
 				return 0;
 			}
 			index = index + 1;
-		} while (index < p_arg0);
+		} while (index < p_count);
 	}
 	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	return 1;
@@ -452,7 +452,7 @@ bool BaseQueue::ProcessNMsgs(unsigned int p_arg0)
 
 // 68K 0x10205402 Process__10CBaseQueueFP10tagMESSAGE
 // FUNCTION: LEMBALL 0x004638a0
-bool BaseQueue::Process(Message* p_arg0)
+bool BaseQueue::Process(Message* p_message)
 {
 	QueueHandlerNode* node;
 	unsigned int index;
@@ -463,7 +463,7 @@ bool BaseQueue::Process(Message* p_arg0)
 	index = 0;
 	if (m_handlerCount != 0) {
 		do {
-			result = node->handler->ProcessMsg(p_arg0);
+			result = node->handler->ProcessMsg(p_message);
 			if (result == 1) {
 				LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 				return 1;

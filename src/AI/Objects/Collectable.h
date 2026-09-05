@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x004959c0
 class Collectable : public GlobalGameObject {
 public:
-	Collectable(int p_arg0, int p_arg1, int p_arg2, eObjectType p_arg3);
+	Collectable(int p_x, int p_y, int p_z, eObjectType p_objectType);
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c
 	virtual void Restart();    // vtable+0x104
