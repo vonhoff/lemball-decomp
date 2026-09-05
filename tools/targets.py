@@ -80,8 +80,8 @@ def inspect_original(image, address: int, entries: set[int]) -> OriginalEvidence
     limit = min((a for a in entries if a > address), default=address + 65536)
     limit = min(limit, address + 65536)
     pending = [address]
-    instructions = {}
-    occupied = {}
+    instructions = set()
+    occupied = set()
     callees = set()
     indirect = 0
 
@@ -106,8 +106,8 @@ def inspect_original(image, address: int, entries: set[int]) -> OriginalEvidence
         _, size, mnemonic, operand = ins
         if any(a in occupied for a in range(current, current + size)):
             return unknown("overlapping instructions")
-        instructions[current] = ins
-        occupied.update((a, current) for a in range(current, current + size))
+        instructions.add(current)
+        occupied.update(range(current, current + size))
         following = current + size
         if mnemonic.startswith('ret'):
             continue

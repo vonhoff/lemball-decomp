@@ -42,9 +42,6 @@ def resolve_cmake() -> str:
     sys.exit("cmake not found")
 
 
-CMAKE = resolve_cmake()
-
-
 def cache_cmake_command() -> str | None:
     cache = BUILD / "CMakeCache.txt"
     if not cache.exists():
@@ -80,6 +77,7 @@ def handle_link(args: list[str]) -> int:
 
 
 def run_build(clean_first: bool = False, fresh: bool = False, extra_args: list[str] | None = None) -> int:
+    cmake = resolve_cmake()
     BUILD.mkdir(parents=True, exist_ok=True)
 
     cached = cache_cmake_command()
@@ -87,13 +85,13 @@ def run_build(clean_first: bool = False, fresh: bool = False, extra_args: list[s
     need_configure = (
         fresh
         or cached is None
-        or (cached is not None and " " in cached)
+        or " " in cached
         or not makefile.exists()
     )
     if need_configure:
-        configure = [CMAKE, "--preset", "msvc400"]
+        configure = [cmake, "--preset", "msvc400"]
         if fresh:
-            configure = [CMAKE, "--fresh", "--preset", "msvc400"]
+            configure.insert(1, "--fresh")
         res = subprocess.run(configure, cwd=ROOT)
         if res.returncode != 0:
             return res.returncode
@@ -107,7 +105,7 @@ def run_build(clean_first: bool = False, fresh: bool = False, extra_args: list[s
                 except OSError:
                     pass
 
-    cmake_args = [CMAKE, "--build", "--preset", "msvc400"]
+    cmake_args = [cmake, "--build", "--preset", "msvc400"]
     if clean_first:
         cmake_args.append("--clean-first")
     if extra_args:

@@ -4,22 +4,15 @@
 import argparse
 import csv
 import json
-import re
 import shutil
 import struct
 import subprocess
-import sys
 from collections import defaultdict
 from pathlib import Path
 
-# Add tools dir to path for imports
-TOOLS_DIR = Path(__file__).resolve().parent
-if str(TOOLS_DIR) not in sys.path:
-    sys.path.insert(0, str(TOOLS_DIR))
+from check import compute_ratio, load_matches
 
-from check import compute_ratio, is_thunk_only_diff, load_matches, normalize_asm
-
-ROOT = TOOLS_DIR.parent
+ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
 
 

@@ -161,9 +161,8 @@ def read_table(engine: Compare, match) -> tuple[list[int], list[int]]:
     return orig_addrs, recomp_addrs
 
 
-def collect_folded_aliases(engine: Compare) -> dict[int, set[int]]:
+def collect_folded_aliases(engine: Compare, codebase: DecompCodebase) -> dict[int, set[int]]:
     """Return every rebuilt body claimed by a source ``FOLDED`` annotation."""
-    codebase = DecompCodebase(engine.code_files, engine.target_id, aliases=engine.project_aliases)
     aliases: dict[int, set[int]] = {}
     for function in codebase.iter_line_functions():
         if not function.is_folded:
@@ -299,8 +298,7 @@ def is_generated_adjuster(entity: object | None) -> bool:
     if "`vtordisp" in entity_name(entity):
         return True
 
-    get_value = getattr(entity, "get", None)
-    symbol = get_value("symbol") if get_value is not None else None
+    symbol = entity.get("symbol")
     if not isinstance(symbol, str):
         return False
 
@@ -454,12 +452,6 @@ def format_addr(address: int | None) -> str:
     return "none" if address is None else f"0x{address:08x}"
 
 
-def comparison_ratio(result) -> float:
-    if hasattr(result, "accuracy"):
-        return float(result.accuracy)
-    return float(result.ratio)
-
-
 def instruction_sequences_equivalent(orig: list[str], recomp: list[str]) -> bool:
     """Accept only target-rendering differences already proven by check.py."""
     return bool(orig) and len(orig) == len(recomp) and all(
@@ -469,12 +461,11 @@ def instruction_sequences_equivalent(orig: list[str], recomp: list[str]) -> bool
 
 
 def comparison_is_thunk_equivalent(result) -> bool:
-    comparison = getattr(result, "result", result)
-    diff = getattr(comparison, "diff", None)
+    diff = result.result.diff
     if diff is None:
         return False
-    orig = [instruction for _, instruction in getattr(diff, "orig_inst", [])]
-    recomp = [instruction for _, instruction in getattr(diff, "recomp_inst", [])]
+    orig = [instruction for _, instruction in diff.orig_inst]
+    recomp = [instruction for _, instruction in diff.recomp_inst]
     return instruction_sequences_equivalent(orig, recomp)
 
 
@@ -501,7 +492,6 @@ def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) 
     clone_match_slots = 0
     adjuster_match_slots = 0
     deleting_dtor_match_slots = 0
-    unknown_orig_targets: set[int] = set()
     unknown_orig_counts: Counter[int] = Counter()
     known_mismatch_counts: Counter[tuple[int | None, str, int | None, str]] = Counter()
     codebase = DecompCodebase(engine.code_files, engine.target_id, aliases=engine.project_aliases)
@@ -513,7 +503,7 @@ def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) 
     )
     table_matches.extend(nested_vtable_matches)
     unmapped_vtables = [table for table in source_vtables if table.offset not in mapped_vtable_addresses]
-    folded_aliases = collect_folded_aliases(engine)
+    folded_aliases = collect_folded_aliases(engine, codebase)
 
     for match in table_matches:
         table_count += 1
@@ -543,7 +533,6 @@ def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) 
             elif slot.category == "unannotated-original":
                 unannotated_slots += 1
                 if slot.orig is not None:
-                    unknown_orig_targets.add(slot.orig)
                     unknown_orig_counts[slot.orig] += 1
             elif slot.category == "unknown-recompiled":
                 unknown_recomp_slots += 1
@@ -575,7 +564,7 @@ def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) 
         adjuster_count += 1
         result = engine.compare_address(function.orig_addr)
         if result is None or (
-            comparison_ratio(result) < 1.0 and not comparison_is_thunk_equivalent(result)
+            result.ratio < 1.0 and not comparison_is_thunk_equivalent(result)
         ):
             adjuster_problems += 1
             if verbose:
@@ -604,7 +593,7 @@ def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) 
         "Remaining slots: "
         f"{layout_mismatch_slots} layout/null mismatches, "
         f"{unannotated_slots} unannotated original "
-        f"({len(unknown_orig_targets)} unique targets), "
+        f"({len(unknown_orig_counts)} unique targets), "
         f"{unknown_recomp_slots} unknown recompiled, "
         f"{known_mismatch_slots} known mismatches."
     )

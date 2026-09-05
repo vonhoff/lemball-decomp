@@ -113,20 +113,12 @@ ANNOT_STRICT = "strict"
 
 def strip_line_comment(line: str) -> str:
 	in_str = False
-	out = []
-	i = 0
-	while i < len(line):
-		ch = line[i]
+	for i, ch in enumerate(line):
 		if ch == '"' and (i == 0 or line[i - 1] != "\\"):
 			in_str = not in_str
-			out.append(ch)
-			i += 1
-			continue
-		if not in_str and ch == "/" and i + 1 < len(line) and line[i + 1] == "/":
-			break
-		out.append(ch)
-		i += 1
-	return "".join(out)
+		if not in_str and line.startswith("//", i):
+			return line[:i]
+	return line
 
 
 def is_func_def(stripped: str) -> bool:
@@ -145,10 +137,9 @@ def is_func_def(stripped: str) -> bool:
 
 
 def body_is_empty(lines: list[str], index: int) -> bool:
-	i = index
 	saw_open = False
-	while i < len(lines) and i < index + 6:
-		text = lines[i].strip()
+	for line in lines[index:index + 6]:
+		text = line.strip()
 		if "{" in text:
 			saw_open = True
 			after = text.split("{", 1)[1].strip()
@@ -161,7 +152,6 @@ def body_is_empty(lines: list[str], index: int) -> bool:
 				return True
 			if text:
 				return False
-		i += 1
 	return False
 
 
@@ -210,12 +200,6 @@ def allowed_expr(expr: str) -> bool:
 	return bool(BUFFER_OK.search(expr))
 
 
-def expr_char_offset_poke(code: str, match: re.Match[str]) -> bool:
-	if allowed_expr(match.group("expr")):
-		return False
-	return True
-
-
 def is_offset_poke(code: str) -> bool:
 	if allowed_expr(code):
 		return False
@@ -224,7 +208,7 @@ def is_offset_poke(code: str) -> bool:
 	if CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code) or NAKED_DATA_OFFSET.search(code):
 		return True
 	for match in EXPR_CHAR_OFFSET.finditer(code):
-		if expr_char_offset_poke(code, match):
+		if not allowed_expr(match.group("expr")):
 			return True
 	return False
 
@@ -247,7 +231,7 @@ def scan_file(
 				hits.append("%s:%d: this-adjust-poke" % (rel, lineno))
 			poked = False
 			for match in EXPR_CHAR_OFFSET.finditer(code):
-				if expr_char_offset_poke(code, match):
+				if not allowed_expr(match.group("expr")):
 					hits.append("%s:%d: expr-char-offset %s" % (rel, lineno, match.group(0).strip()[:100]))
 					poked = True
 					break
