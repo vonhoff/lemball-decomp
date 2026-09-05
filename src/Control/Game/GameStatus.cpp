@@ -93,10 +93,12 @@ void GameStatus::UnJiggleLevelData(unsigned int p_value)
 	unsigned int chunks[8];
 	int i;
 
+	unsigned int value;
 	int remaining = 8;
 	unsigned int* dest = &mixed[7];
 	do {
-		*dest-- = p_value & 7;
+		value = p_value;
+		*dest-- = value & 7;
 		p_value >>= 3;
 		remaining--;
 	} while (remaining != 0);

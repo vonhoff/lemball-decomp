@@ -40,8 +40,8 @@ unsigned int RawRead::InputDword()
 bool RawRead::NameCmp(char* p_path, char* p_name)
 {
 	int matched = 0;
-	char* name = p_name;
 	char* path = p_path;
+	char* name = p_name;
 	do {
 		char pathChar = (char) toupper(*path);
 		if (pathChar == kPathSeparator) {
