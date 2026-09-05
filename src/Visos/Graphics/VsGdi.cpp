@@ -1624,28 +1624,25 @@ void Surface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radiu
 // FUNCTION: LEMBALL 0x00475f60
 int Surface::ClipCirclePoint(int p_x, int p_y)
 {
-	short clipX;
-	short clipRight;
-	short clipY;
-	short clipBottom;
+	int clipX;
+	int clipRight;
+	int clipY;
+	int clipBottom;
 
 	clipX = PvScrollableSurface::m_clipRect.m_x;
-	if (p_x < clipX) {
-		return 0;
+	if (clipX <= p_x) {
+		clipRight = PvScrollableSurface::m_clipRect.m_width + clipX - 1;
+		if (p_x <= clipRight) {
+			clipY = PvScrollableSurface::m_clipRect.m_y;
+			if (clipY <= p_y) {
+				clipBottom = PvScrollableSurface::m_clipRect.m_height + clipY - 1;
+				if (p_y <= clipBottom) {
+					return 1;
+				}
+			}
+		}
 	}
-	clipRight = (short) (PvScrollableSurface::m_clipRect.m_width + clipX - 1);
-	if (clipRight < p_x) {
-		return 0;
-	}
-	clipY = PvScrollableSurface::m_clipRect.m_y;
-	if (p_y < clipY) {
-		return 0;
-	}
-	clipBottom = (short) (PvScrollableSurface::m_clipRect.m_height + clipY - 1);
-	if (clipBottom < p_y) {
-		return 0;
-	}
-	return 1;
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x00475fb0
