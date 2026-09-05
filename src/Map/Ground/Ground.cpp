@@ -1,41 +1,43 @@
 #include "Ground.h"
 
+#include "../../AI/Base/ObjectTypes.h"
+
 // 68K 0x1090000c GetZ__7CGroundFii
 // FUNCTION: LEMBALL 0x0042ffe0
 unsigned short Ground::GetZ(int p_x, int p_y)
 {
 	switch (m_objectType) {
-	case 0x202:
+	case TERRAIN_FLAT_LOW:
 		return m_height;
-	case 0x206:
+	case TERRAIN_FLAT_HIGH:
 		return m_height + 0x10;
-	case 0x207:
+	case TERRAIN_FLAT_MIDDLE:
 		return m_height + 8;
-	case 0x208:
+	case TERRAIN_SLOPE_SW_STEEP:
 		return (m_height - (short) p_y) + 0x10;
-	case 0x209:
+	case TERRAIN_FLAT_DEFAULT:
 		return m_height;
-	case 0x20a:
+	case TERRAIN_FLAT_SPECIAL:
 		return m_height;
 	case 0x20b:
 		return m_height + (short) p_x;
 	case 0x20c:
 		return m_height + (short) p_y;
-	case 0x20d:
+	case TERRAIN_SLOPE_SE_STEEP:
 		return (m_height - (short) p_x) + 0x10;
-	case 0x20e:
+	case TERRAIN_SLOPE_SW_SHALLOW:
 		return (m_height - (short) (p_y / 2)) + 7;
-	case 0x20f:
+	case TERRAIN_SLOPE_SE_SHALLOW:
 		return (m_height - (short) (p_x / 2)) + 7;
-	case 0x210:
+	case TERRAIN_SPECIAL_ONLY:
 		return m_height;
-	case 0x214:
+	case TERRAIN_FLAT_VARIANT_214:
 		return m_height;
-	case 0x215:
-	case 0x216:
-	case 0x217:
-	case 0x219:
-	case 0x21a:
+	case TERRAIN_FLAT_VARIANT_215:
+	case TERRAIN_FLAT_VARIANT_216:
+	case TERRAIN_FLAT_VARIANT_217:
+	case TERRAIN_FLAT_VARIANT_219:
+	case TERRAIN_FLAT_VARIANT_21A:
 		return m_height;
 	default:
 		return 0;
@@ -79,35 +81,35 @@ bool Ground::IsHit(int p_x, int p_y, unsigned char p_includeSpecial)
 		0x01ffffff, 0x03ffffff, 0x07fffffe, 0x0ffffffc, 0x1ffffff8, 0x3ffffff0, 0x7fffffe0, 0xffffffc0,
 		0xffffff80, 0x3fffff00, 0x0ffffe00, 0x03fff880, 0x00fff000, 0x003fe000, 0x000fc000, 0x0003c000};
 	switch (m_objectType) {
-	case 0x202:
+	case TERRAIN_FLAT_LOW:
 		return xMasks[p_x] & commonMasks[p_y];
-	case 0x206:
+	case TERRAIN_FLAT_HIGH:
 		return xMasks[p_x] & masks0206[p_y];
-	case 0x207:
+	case TERRAIN_FLAT_MIDDLE:
 		return xMasks[p_x] & masks0207[p_y];
-	case 0x208:
+	case TERRAIN_SLOPE_SW_STEEP:
 		return xMasks[p_x] & masks0208[p_y];
-	case 0x209:
+	case TERRAIN_FLAT_DEFAULT:
 		return xMasks[p_x] & commonMasks[p_y];
-	case 0x20a:
+	case TERRAIN_FLAT_SPECIAL:
 		break;
 	case 0x20b:
 	case 0x20c:
 		return false;
-	case 0x20d:
+	case TERRAIN_SLOPE_SE_STEEP:
 		return xMasks[31 - p_x] & masks0208[p_y];
-	case 0x20e:
+	case TERRAIN_SLOPE_SW_SHALLOW:
 		return xMasks[p_x] & masks020e[p_y];
-	case 0x20f:
+	case TERRAIN_SLOPE_SE_SHALLOW:
 		return xMasks[31 - p_x] & masks020e[p_y];
-	case 0x210:
+	case TERRAIN_SPECIAL_ONLY:
 		return p_includeSpecial != 0;
-	case 0x214:
-	case 0x215:
-	case 0x216:
-	case 0x217:
-	case 0x219:
-	case 0x21a:
+	case TERRAIN_FLAT_VARIANT_214:
+	case TERRAIN_FLAT_VARIANT_215:
+	case TERRAIN_FLAT_VARIANT_216:
+	case TERRAIN_FLAT_VARIANT_217:
+	case TERRAIN_FLAT_VARIANT_219:
+	case TERRAIN_FLAT_VARIANT_21A:
 		return xMasks[p_x] & commonMasks[p_y];
 	default:
 		return false;
@@ -128,36 +130,36 @@ void Ground::SetCollision()
 	case 0x203:
 		m_collision = 0;
 		return;
-	case 0x202:
+	case TERRAIN_FLAT_LOW:
 	case 0x204:
-	case 0x210:
+	case TERRAIN_SPECIAL_ONLY:
 		m_collision = 3;
 		return;
 	case 0x205:
 		m_collision = 2;
 		return;
-	case 0x206:
-	case 0x207:
-	case 0x208:
-	case 0x209:
+	case TERRAIN_FLAT_HIGH:
+	case TERRAIN_FLAT_MIDDLE:
+	case TERRAIN_SLOPE_SW_STEEP:
+	case TERRAIN_FLAT_DEFAULT:
 	case 0x20b:
 	case 0x20c:
-	case 0x20d:
-	case 0x20e:
-	case 0x20f:
-	case 0x214:
+	case TERRAIN_SLOPE_SE_STEEP:
+	case TERRAIN_SLOPE_SW_SHALLOW:
+	case TERRAIN_SLOPE_SE_SHALLOW:
+	case TERRAIN_FLAT_VARIANT_214:
 		m_collision = 0;
 		return;
-	case 0x20a:
+	case TERRAIN_FLAT_SPECIAL:
 		m_collision = 1;
 		return;
-	case 0x215:
-	case 0x216:
-	case 0x217:
+	case TERRAIN_FLAT_VARIANT_215:
+	case TERRAIN_FLAT_VARIANT_216:
+	case TERRAIN_FLAT_VARIANT_217:
 		m_collision = 4;
 		return;
-	case 0x219:
-	case 0x21a:
+	case TERRAIN_FLAT_VARIANT_219:
+	case TERRAIN_FLAT_VARIANT_21A:
 		m_collision = 0;
 		return;
 	}
