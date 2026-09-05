@@ -1011,13 +1011,15 @@ void Surface::Blit(ScreenScroll* p_scroll)
 // FUNCTION: LEMBALL 0x00474d40
 void Surface::Blit(ZBuffClear* p_arg0)
 {
+	int startX;
+	int height;
 	int width = p_arg0->m_width;
-	int height = p_arg0->m_height;
+	height = p_arg0->m_height;
 
 	if (width == 0 || height == 0) {
 		return;
 	}
-	int startX = p_arg0->m_x;
+	startX = p_arg0->m_x;
 	int startY = p_arg0->m_y;
 	unsigned short depth = (unsigned short) p_arg0->m_depth;
 	if (height <= 0) {
@@ -1073,14 +1075,16 @@ void Surface::Blit(CopyToBackBuff* p_arg0)
 // FUNCTION: LEMBALL 0x00474e60
 void Surface::Blit(CopyColourToBackBuff* p_arg0)
 {
+	int startX;
+	int startY;
 	int width = p_arg0->m_width;
 	int height = p_arg0->m_height;
 
 	if (width == 0 || height == 0) {
 		return;
 	}
-	int startX = p_arg0->m_x;
-	int startY = p_arg0->m_y;
+	startX = p_arg0->m_x;
+	startY = p_arg0->m_y;
 	int color = p_arg0->m_colour;
 	if (height <= 0) {
 		return;
@@ -2381,10 +2385,8 @@ void Surface::BlitZrleNoClipZBuff(const VsRect& p_rect, ResZrle* p_zrle, unsigne
 				else if (run > 0x80) {
 					run &= 0x7f;
 					memcpy(dst, src, run);
-					if (run) {
-						for (unsigned int i = 0; i < run; i++) {
-							zlines[i] = p_depth;
-						}
+					for (unsigned int i = 0; i < run; i++) {
+						zlines[i] = p_depth;
 					}
 					zlines += run;
 					dst += run;
