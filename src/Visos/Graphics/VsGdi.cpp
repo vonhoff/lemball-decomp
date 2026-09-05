@@ -1687,8 +1687,11 @@ void Surface::DrawFilledCircleSymmetricSpans(int p_centerX,
 											 unsigned char p_colour)
 {
 	int spanWidth = p_halfWidth * 2 + 1;
-	memset((unsigned char*) m_lines[p_centerY + p_yOffset] + p_centerX - p_halfWidth, p_colour, spanWidth);
-	memset((unsigned char*) m_lines[p_centerY - p_yOffset] + p_centerX - p_halfWidth, p_colour, spanWidth);
+	unsigned char* negativeSpan = (unsigned char*) m_lines[p_centerY - p_yOffset] + p_centerX - p_halfWidth;
+	memset((unsigned char*) m_lines[p_centerY + p_yOffset] + p_centerX - p_halfWidth,
+		   *(unsigned int*) &p_colour,
+		   spanWidth);
+	memset(negativeSpan, *(unsigned int*) &p_colour, spanWidth);
 }
 
 // 68K 0x1011355a DrawClippedFilledCircle__8CSurfaceFiiii
