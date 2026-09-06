@@ -43,8 +43,12 @@ void Node::AddANeighbour(int p_node, int p_cost)
 }
 
 // 68K 0x106187fc Position__5CNodeFv
-// STUB: LEMBALL 0x004213d0
+// FUNCTION: LEMBALL 0x004213d0
 Pt3 Node::Position()
 {
-	return *(Pt3*) 0;
+	Pt3 result;
+	result.m_x = m_xFixed;
+	result.m_y = m_yFixed;
+	result.m_z = 0xaa55aa55;
+	return result;
 }

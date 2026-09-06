@@ -1,12 +1,22 @@
 #include "Panel.h"
 
+#include "../../Visos/Graphics/PvGWnd.h"
 #include "PanelLemming.h"
 
 // 68K 0x10b0d942 GetPausePos__6CPanelFv
-// STUB: LEMBALL 0x00442f00
+// FUNCTION: LEMBALL 0x00442f00
 VsPoint Panel::GetPausePos()
 {
-	return *(VsPoint*) 0;
+	short width = m_window->m_innerRect.m_width;
+	short height = m_window->m_innerRect.m_height;
+	if (width * height == 0) {
+		width = m_window->m_rect.m_width;
+		height = m_window->m_rect.m_height;
+	}
+	VsPoint result;
+	result.m_x = (short) (((int) width / (int) m_window->m_zoom - (int) m_panelSize.m_x) / 2);
+	result.m_y = (short) ((int) height / (int) m_window->m_zoom - (int) m_pauseSize.m_y);
+	return result;
 }
 
 // 68K 0x10b0da4a __ct__6CPanelFP3C2D

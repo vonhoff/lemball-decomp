@@ -68,6 +68,7 @@ public:
 	~PvWnd();
 
 	friend class PauseWindow;
+	friend class Panel;
 	friend class NetworkOptionsDrawer;
 	friend class Wnd;
 	friend class Main2DDisplay;

@@ -158,10 +158,15 @@ bool GenericGroup::ConfirmElementIsInGroup(unsigned short p_objectId)
 }
 
 // 68K 0x1060c8f0 GetBoundingBox__13CGenericGroupFv
-// STUB: LEMBALL 0x0041e140
+// FUNCTION: LEMBALL 0x0041e140
 VsRect GenericGroup::GetBoundingBox()
 {
-	return *(VsRect*) 0;
+	VsRect result;
+	result.m_width = m_minX;
+	result.m_height = m_minY;
+	result.m_x = m_maxX;
+	result.m_y = m_maxY;
+	return result;
 }
 
 // 68K 0x1060c974 GetBoundingBox__13CGenericGroupFR7CVSRect

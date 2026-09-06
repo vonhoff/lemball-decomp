@@ -46,7 +46,7 @@ void PauseWindow::CreateTheWindow(const VsRect& p_rect)
 // STUB: LEMBALL 0x00444050
 VsRect PauseWindow::CalculateWindow()
 {
-	return *(VsRect*) 0;
+	return VsRect();
 }
 
 // 68K 0x10b0eeba __ct__12CPauseWindowFP19CReceiveWindowStateP7CPVGWnd20ePauseWindowMessages

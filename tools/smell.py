@@ -9,7 +9,7 @@ Default errors:
                  ((int*)((short*)p + 0x16))[0] and *(T*)(obj + N)
   cast-deref     non-scalar dereferenced casts used for pointer arithmetic
                  or literal addresses
-  raw-casts      --raw-casts audits every direct scalar/pointer dereference cast
+  raw-cast       direct scalar/pointer dereference cast, including serialized reads
   expr-char-offset  (char*)expr +/- 0xN including -> chains and
                  (Ai*) ((char*) p->m_process - 0x10)
   mi-dtor-poke   ((T*) ((char*) this + 0x40))->~T() manual MI teardown
@@ -25,12 +25,15 @@ source-empty or synthetic-destructor-covered definitions for review.
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
+BASELINE = ROOT / "smell.baseline.json"
 
 RECCMP_MARK = re.compile(r"^\s*//\s*(FUNCTION|STUB|GLOBAL|LIBRARY|TEMPLATE|SYNTHETIC)\s*:")
 K68_MARK = re.compile(r"^\s*//\s*68K\s+")
@@ -185,12 +188,10 @@ def is_offset_poke(code: str) -> bool:
 	return any(not BUFFER_OK.search(match.group("expr")) for match in EXPR_CHAR_OFFSET.finditer(code))
 
 
-def raw_cast_reason(code: str, audit: bool = False) -> str | None:
+def raw_cast_reason(code: str) -> str | None:
 	for match in RAW_DEREF_CAST.finditer(code):
 		type_text = match.group("type")
 		rhs = match.group("rhs").strip()
-		if audit:
-			return "raw-cast"
 		base_type = re.sub(r"\s*\*\s*", "", type_text).strip()
 		scalar_type = re.fullmatch(
 			r"(?:(?:unsigned|signed)\s+)?(?:char|short|int|long|__int16|__int32)", base_type
@@ -199,14 +200,68 @@ def raw_cast_reason(code: str, audit: bool = False) -> str | None:
 			return "cast-deref-offset"
 		if scalar_type is None and re.match(r"^(?:0x[0-9A-Fa-f]+|\d+)\b", rhs):
 			return "literal-address-cast"
+		return "raw-cast"
 	return None
+
+
+def finding_key(record: str) -> tuple[str, str, str]:
+	match = re.match(r"^(.*):(\d+): ([^ ]+)(?: (.*))?$", record)
+	if match is None:
+		raise ValueError("invalid smell finding: %s" % record)
+	path = Path(match.group(1)).resolve()
+	rel = path.relative_to(ROOT).as_posix()
+	return rel, match.group(3), match.group(4) or ""
+
+
+def load_baseline() -> Counter[tuple[str, str, str]]:
+	try:
+		data = json.loads(BASELINE.read_text(encoding="utf-8"))
+	except (OSError, ValueError) as error:
+		raise ValueError("cannot read %s: %s" % (BASELINE, error))
+	if data.get("version") != 1 or not isinstance(data.get("findings"), list):
+		raise ValueError("%s must contain version 1 and a findings list" % BASELINE)
+	baseline: Counter[tuple[str, str, str]] = Counter()
+	for item in data["findings"]:
+		try:
+			key = (item["path"], item["rule"], item.get("code", ""))
+			count = item.get("count", 1)
+			reason = item["reason"]
+		except (AttributeError, KeyError):
+			raise ValueError("invalid finding in %s" % BASELINE)
+		if (
+			not all(isinstance(value, str) for value in key)
+			or not isinstance(count, int)
+			or count < 1
+			or not isinstance(reason, str)
+			or not reason.strip()
+		):
+			raise ValueError("invalid finding in %s" % BASELINE)
+		baseline[key] += count
+	return baseline
+
+
+def apply_baseline(hits: list[str], files: list[Path]) -> tuple[list[str], list[str]]:
+	baseline = load_baseline()
+	remaining = baseline.copy()
+	unbaselined = []
+	for hit in hits:
+		key = finding_key(hit)
+		if remaining[key] != 0:
+			remaining[key] -= 1
+		else:
+			unbaselined.append(hit)
+	scanned = {path.resolve().relative_to(ROOT).as_posix() for path in files}
+	stale = []
+	for (path, rule, code), count in sorted(remaining.items()):
+		if count != 0 and path in scanned:
+			stale.append("%s: baseline-stale %s %s (count %d)" % (path, rule, code, count))
+	return unbaselined, stale
 
 
 def scan_file(
 	path: Path,
 	annotation_mode: str,
 	synthetic_destructors: set[str],
-	raw_cast_audit: bool,
 ) -> tuple[list[str], list[tuple[str, str]]]:
 	lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
 	hits: list[str] = []
@@ -215,7 +270,7 @@ def scan_file(
 	if path.suffix.lower() in {".cpp", ".h", ".c"}:
 		for lineno, raw in enumerate(lines, 1):
 			code = strip_line_comment(raw)
-			raw_cast = raw_cast_reason(code, raw_cast_audit)
+			raw_cast = raw_cast_reason(code)
 			if raw_cast is not None:
 				hits.append("%s:%d: %s %s" % (rel, lineno, raw_cast, code.strip()[:100]))
 			if VBPTR_WALK.search(code):
@@ -300,11 +355,6 @@ def main(argv: list[str]) -> int:
 		action="store_true",
 		help="fail every definition lacking a reccmp annotation, including source-empty definitions",
 	)
-	parser.add_argument(
-		"--raw-casts",
-		action="store_true",
-		help="fail on every direct scalar/pointer dereference cast, including serialized reads",
-	)
 	parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
 	args = parser.parse_args(argv[1:])
 	targets = [Path(a) for a in args.paths] if args.paths else [SRC]
@@ -324,9 +374,16 @@ def main(argv: list[str]) -> int:
 		annotation_mode = ANNOT_STRICT
 	synthetic_destructors = collect_synthetic_destructors(list(iter_sources(SRC)))
 	for path in files:
-		file_hits, file_reviews = scan_file(path, annotation_mode, synthetic_destructors, args.raw_casts)
+		file_hits, file_reviews = scan_file(path, annotation_mode, synthetic_destructors)
 		hits.extend(file_hits)
 		reviews.extend(file_reviews)
+	try:
+		hits, stale = apply_baseline(hits, files)
+	except ValueError as error:
+		sys.stderr.write("smell: %s\n" % error)
+		return 2
+	if stale:
+		hits.extend(stale)
 	if reviews:
 		empty_reviews = sum(reason == "review-empty" for reason, _ in reviews)
 		synthetic_reviews = sum(reason == "review-synthetic" for reason, _ in reviews)
