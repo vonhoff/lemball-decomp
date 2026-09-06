@@ -134,37 +134,46 @@ void PasswordDrawer::Load()
 	int gridY;
 	int row;
 	int col;
-	int keyIndex;
 	void* storage;
 	VsPoint position;
 	int* offsetPtr;
+	int* keyMap;
 	int buttonIndex;
+	Prims* primitiveBundle;
+	int primitiveCount;
 
-	if (m_mode == 0) {
-		m_layout = g_abPasswordLayoutFull;
-		m_buttonAnimIds = g_dwPasswordButtonAnimIdsFull;
-		m_animationId = RES_NEWFRONT_ANIMS_HIRES_PASSWORD_HILITE;
-	}
-	else {
+	if (m_mode != 0) {
 		m_layout = g_abPasswordLayoutCompact;
 		m_buttonAnimIds = g_dwPasswordButtonAnimIdsCompact;
 		m_animationId = RES_NEWFRONT_ANIMS_LORES_PASSWORD_HILITE;
 	}
+	else {
+		m_layout = g_abPasswordLayoutFull;
+		m_buttonAnimIds = g_dwPasswordButtonAnimIdsFull;
+		m_animationId = RES_NEWFRONT_ANIMS_HIRES_PASSWORD_HILITE;
+	}
 	layout = (int*) m_layout;
 	animIds = (unsigned long*) m_buttonAnimIds;
-	m_primitiveBundle.m_primitive.m_x = (short) layout[0];
-	m_primitiveBundle.m_primitive.m_y = (short) layout[1];
-	m_primitiveBundle.m_primitive.m_resource = m_backgroundBitmap;
-	m_primitiveBundle.m_primitive.m_flags = 0x800;
-	m_primitiveBundle.m_primitive.m_remap = 0;
+	primitiveBundle = &m_primitiveBundle;
+	primitiveCount = 1;
+	do {
+		primitiveBundle->m_primitive.m_x = (short) layout[0];
+		primitiveBundle->m_primitive.m_y = (short) layout[1];
+		primitiveBundle->m_primitive.m_resource = m_backgroundBitmap;
+		primitiveBundle->m_primitive.m_flags = 0x800;
+		primitiveBundle->m_primitive.m_remap = 0;
+		primitiveBundle++;
+	} while (--primitiveCount != 0);
 	AnimsManager::LoadAnims(m_animationId);
-	keyIndex = 0;
+	keyMap = g_passwordKeyMap;
 	offsetPtr = m_buttonOffsets;
 	gridX = layout[2];
 	gridY = layout[3];
-	for (row = 0; row < 4; row++) {
-		for (col = 0; col < 3; col++) {
-			buttonIndex = g_passwordKeyMap[keyIndex];
+	row = 4;
+	do {
+		col = 3;
+		do {
+			buttonIndex = *keyMap;
 			storage = operator new(0x130);
 			if (storage == 0) {
 				m_buttons[buttonIndex] = 0;
@@ -184,12 +193,14 @@ void PasswordDrawer::Load()
 			offsetPtr[0] = gridX - layout[2];
 			offsetPtr[1] = gridY - layout[3];
 			gridX = gridX + layout[0x60 / 4] + layout[4];
-			keyIndex++;
+			keyMap++;
 			offsetPtr = offsetPtr + 2;
-		}
+			--col;
+		} while (col != 0);
 		gridX = layout[2];
 		gridY = gridY + layout[0x64 / 4] + layout[5];
-	}
+		--row;
+	} while (row != 0);
 	m_hiliteX = m_buttonOffsets[m_selectedButton * 2];
 	m_hiliteY = m_buttonOffsets[m_selectedButton * 2 + 1];
 	SetHiliteWindow();
