@@ -22,7 +22,7 @@ public:
 
 private:
 	unsigned int m_idleDeadline;           // 0x398
-	void* m_buttonLayout;                  // 0x39c
+	int* m_buttonLayout;                   // 0x39c
 	unsigned int m_previousModeButton;     // 0x3a0
 	unsigned int m_nextModeButton;         // 0x3a4
 	unsigned int m_auxButtonState0;        // 0x3a8

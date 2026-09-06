@@ -87,26 +87,17 @@ MainOptions1Drawer::MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const
 void MainOptions1Drawer::Load()
 {
 	unsigned long* previousModeAnim;
+	unsigned long* playAnim;
 	unsigned long* nextModeAnim;
 	unsigned long* toggleAnim;
-	unsigned long* playAnim;
 	unsigned long* modeAnim;
 	unsigned long* quitAnim;
-	int* layout;
 	void* storage;
+	Prims* primitiveBundle;
 	int i;
 
-	if (m_mode == 0) {
-		layout = g_anMainOptions1ButtonLayout;
-		previousModeAnim = &g_dwMainOptions1AnimIds[0];
-		playAnim = &g_dwMainOptions1AnimIds[2];
-		nextModeAnim = &g_dwMainOptions1AnimIds[1];
-		toggleAnim = &g_dwMainOptions1AnimIds[10];
-		modeAnim = &g_dwMainOptions1AnimIds[5];
-		quitAnim = &g_dwMainOptions1AnimIds[4];
-	}
-	else {
-		layout = g_anMainOptions1CompactButtonLayout;
+	if (m_mode != 0) {
+		m_buttonLayout = g_anMainOptions1CompactButtonLayout;
 		previousModeAnim = &g_dwMainOptions1CompactAnimIds[0];
 		playAnim = &g_dwMainOptions1CompactAnimIds[2];
 		nextModeAnim = &g_dwMainOptions1CompactAnimIds[1];
@@ -114,29 +105,59 @@ void MainOptions1Drawer::Load()
 		modeAnim = &g_dwMainOptions1CompactAnimIds[6];
 		quitAnim = &g_dwMainOptions1CompactAnimIds[3];
 	}
-	m_buttonLayout = layout;
+	else {
+		m_buttonLayout = g_anMainOptions1ButtonLayout;
+		previousModeAnim = &g_dwMainOptions1AnimIds[0];
+		playAnim = &g_dwMainOptions1AnimIds[2];
+		nextModeAnim = &g_dwMainOptions1AnimIds[1];
+		toggleAnim = &g_dwMainOptions1AnimIds[10];
+		modeAnim = &g_dwMainOptions1AnimIds[5];
+		quitAnim = &g_dwMainOptions1AnimIds[4];
+	}
 	i = 1;
+	primitiveBundle = &m_primitiveBundle;
 	do {
-		m_primitiveBundle.m_primitive.m_x =
+		primitiveBundle->m_primitive.m_x =
 			(short) (((int) m_display->m_rect.m_width - (int) m_backgroundBitmap->m_x) / 2);
-		m_primitiveBundle.m_primitive.m_y = 0;
-		m_primitiveBundle.m_primitive.m_resource = m_backgroundBitmap;
-		m_primitiveBundle.m_primitive.m_flags = 0x800;
-		m_primitiveBundle.m_primitive.m_remap = 0;
+		primitiveBundle->m_primitive.m_y = 0;
+		primitiveBundle->m_primitive.m_resource = m_backgroundBitmap;
+		primitiveBundle->m_primitive.m_flags = 0x800;
+		primitiveBundle->m_primitive.m_remap = 0;
+		primitiveBundle++;
 	} while (--i != 0);
 	storage = operator new(0x27c);
 	if (storage == 0) {
 		m_gunController = 0;
 	}
 	else {
-		m_gunController = new (storage) GunController((GWnd*) m_display, m_gdi, 6, (unsigned char) m_mode);
+		m_gunController = new (storage) GunController((GWnd*) m_display, m_gdi, 6, m_mode);
 	}
-	m_gunController->AddButton(layout[0], layout[1], previousModeAnim, 1, 0, 0, 0, &m_previousModeButton, 0xacef00a6);
-	m_gunController->AddButton(layout[2], layout[3], playAnim, 1, 0, 0, 0, &m_navigationButton, 0xacef0001);
-	m_gunController->AddButton(layout[4], layout[5], nextModeAnim, 1, 0, 0, 0, &m_nextModeButton, 0xacef00a7);
-	m_gunController->AddButton(layout[8], layout[9], toggleAnim, 1, 0, 0, 0, &m_toggleResolutionButton, 0xacef00a5);
-	m_gunController->AddButton(layout[6], layout[7], modeAnim, 0, 0, 3, 0, &m_selectedDisplayMode, 0xffffffff);
-	m_gunController->AddButton(layout[10], layout[11], quitAnim, 1, 0, 0, 0, &m_navigationButton, 0xacef00a4);
+	m_gunController->AddButton(m_buttonLayout[0],
+							   m_buttonLayout[1],
+							   previousModeAnim,
+							   1,
+							   0,
+							   0,
+							   0,
+							   &m_previousModeButton,
+							   0xacef00a6);
+	m_gunController
+		->AddButton(m_buttonLayout[2], m_buttonLayout[3], playAnim, 1, 0, 0, 0, &m_navigationButton, 0xacef0001);
+	m_gunController
+		->AddButton(m_buttonLayout[4], m_buttonLayout[5], nextModeAnim, 1, 0, 0, 0, &m_nextModeButton, 0xacef00a7);
+	m_gunController->AddButton(m_buttonLayout[8],
+							   m_buttonLayout[9],
+							   toggleAnim,
+							   1,
+							   0,
+							   0,
+							   0,
+							   &m_toggleResolutionButton,
+							   0xacef00a5);
+	m_gunController
+		->AddButton(m_buttonLayout[6], m_buttonLayout[7], modeAnim, 0, 0, 3, 0, &m_selectedDisplayMode, 0xffffffff);
+	m_gunController
+		->AddButton(m_buttonLayout[10], m_buttonLayout[11], quitAnim, 1, 0, 0, 0, &m_navigationButton, 0xacef00a4);
 	m_gunController->SetGun(0);
 	m_gunController->SetSpriteWindow();
 }
