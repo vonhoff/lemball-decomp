@@ -255,6 +255,14 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 	int widthCells;
 	int probeX;
 	int cell;
+	unsigned char* pixel;
+	short cellWidth;
+	short cellHeight;
+	short startXShort;
+	short itemWidth;
+	short itemHeight;
+	short itemX;
+	short itemY;
 	ChangeListItem* item;
 
 	mapWidth = (int) m_mapSize.m_width;
@@ -262,36 +270,39 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 	scanX = m_scanX;
 	row = m_map + scanY * mapWidth;
 	mapHeight = (int) m_mapSize.m_height;
-	if (scanY >= mapHeight) {
-		return 0;
-	}
-	while (1) {
+	do {
+		if (scanY >= mapHeight) {
+			return 0;
+		}
 		if (scanX < mapWidth) {
-			while (scanX < mapWidth) {
+			do {
 				if (row[scanX] == p_findMark) {
 					break;
 				}
 				scanX = scanX + 1;
-			}
+			} while (scanX < mapWidth);
 			if (scanX < mapWidth) {
+				widthPixels = 0;
+				startX = scanX;
 				break;
 			}
 		}
 		row = row + mapWidth;
 		scanX = 0;
 		scanY = scanY + 1;
-		if (scanY >= mapHeight) {
-			return 0;
-		}
-	}
+	} while (1);
 
-	startX = scanX;
-	widthPixels = 0;
-	if (scanX < mapWidth) {
-		while (scanX < mapWidth && row[scanX] == p_findMark) {
-			row[scanX] = p_replacementMark;
-			scanX = scanX + 1;
-			widthPixels = widthPixels + (int) m_cellSize.m_width;
+	pixel = row + scanX;
+	while (1) {
+		scanX = scanX + 1;
+		widthPixels = widthPixels + (int) m_cellSize.m_width;
+		*pixel = p_replacementMark;
+		if (scanX >= mapWidth) {
+			break;
+		}
+		pixel = pixel + 1;
+		if (*pixel != p_findMark) {
+			break;
 		}
 	}
 
@@ -310,23 +321,32 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 				break;
 			}
 			heightCells = heightCells + 1;
-			cell = 0;
 			probeX = startX;
-			while (cell < widthCells) {
-				row[probeX] = p_replacementMark;
-				probeX = probeX + 1;
-				cell = cell + 1;
+			if (widthCells > 0) {
+				cell = 0;
+				do {
+					row[probeX] = p_replacementMark;
+					probeX = probeX + 1;
+					cell = cell + 1;
+				} while (probeX - startX < widthCells);
 			}
 			row = row + mapWidth;
 		}
 	}
 
+	cellHeight = m_cellSize.m_height;
+	cellWidth = m_cellSize.m_width;
+	startXShort = (short) startX;
+	itemWidth = (short) widthPixels;
+	itemHeight = (short) heightCells * cellHeight;
+	itemX = cellWidth * startXShort;
+	itemY = (short) scanY * cellHeight;
 	item = m_items + m_itemCount;
-	item->width = (short) widthPixels;
-	item->height = (short) (heightCells * (int) m_cellSize.m_height);
-	item->x = (short) ((int) m_cellSize.m_width * startX);
-	item->y = (short) (scanY * (int) m_cellSize.m_height);
-	item->drawMark = p_itemMark;
+	item->width = itemWidth;
+	item->height = itemHeight;
+	item->x = itemX;
+	item->y = itemY;
+	m_items[m_itemCount].drawMark = p_itemMark;
 	m_scanX = 0;
 	m_itemCount = m_itemCount + 1;
 	if (mapWidth > scanX) {
