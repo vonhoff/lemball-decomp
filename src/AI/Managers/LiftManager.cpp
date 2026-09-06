@@ -48,15 +48,23 @@ void LiftManager::Initialise(int p_capacity)
 }
 
 // 68K 0x106152bc Process__12CLiftManagerFv
-// STUB: LEMBALL 0x00425d30
+// FUNCTION: LEMBALL 0x00425d30
 void LiftManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_lifts[i].m_requestEnabled = 1;
+		m_lifts[i].Process();
+		m_lifts[i].CheckObjects();
+	}
 }
 
 // 68K 0x10615344 StepOn__12CLiftManagerFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x00425d80
+// FUNCTION: LEMBALL 0x00425d80
 void LiftManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
+	for (int i = 0; i < m_count; i++) {
+		m_lifts[i].StepOn(p_position, p_object);
+	}
 }
 
 // 68K 0x106153be GetViewData__12CLiftManagerFP9CViewData
@@ -73,10 +81,13 @@ void LiftManager::Switch(swMessage p_message, int p_id, int p_legacyA, int p_leg
 }
 
 // 68K 0x1061561a Id__12CLiftManagerFi
-// STUB: LEMBALL 0x00425f90
+// FUNCTION: LEMBALL 0x00425f90
 unsigned short LiftManager::Id(int p_index)
 {
-	return 0;
+	if (p_index >= m_count) {
+		return 0xffff;
+	}
+	return m_lifts[p_index].GetId();
 }
 
 // 68K 0x10615668 LoadLevel__12CLiftManagerFPUciUc

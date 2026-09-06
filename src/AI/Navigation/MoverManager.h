@@ -14,7 +14,7 @@ public:
 	virtual void Process();                        // vtable+0x1c
 	virtual void Restart();                        // vtable+0x18
 	virtual ~MoverManager();                       // vtable+0x14
-	void Add(unsigned short p_id, int p_pathId, unsigned char p_movementMode, int p_startNode, int p_nodeCount);
+	void Add(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount);
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Switch(int p_message, int p_id);

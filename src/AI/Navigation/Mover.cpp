@@ -43,7 +43,7 @@ bool Mover::IsAt(int p_x, int p_y, int& p_height)
 
 // 68K 0x10617410 Set__6CMoverFUsiUcii
 // STUB: LEMBALL 0x0042e760
-void Mover::Set(unsigned short p_id, int p_pathId, unsigned char p_movementMode, int p_startNode, int p_nodeCount)
+void Mover::Set(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount)
 {
 }
 

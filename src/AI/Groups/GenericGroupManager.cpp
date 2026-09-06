@@ -132,9 +132,21 @@ GameObject* GenericGroupManager::GetFirstElement()
 }
 
 // 68K 0x1060d640 GetNextElement__20CGenericGroupManagerFv
-// STUB: LEMBALL 0x0041eb00
+// FUNCTION: LEMBALL 0x0041eb00
 GameObject* GenericGroupManager::GetNextElement()
 {
+	GenericGroup* group = GetCurrentGroup();
+	if (group != 0) {
+		GameObject* object = group->GetNextElementInGroup();
+		if (object != 0) {
+			return object;
+		}
+		group = GetNextGroup();
+		if (group != 0) {
+			return group->GetFirstElementInGroup();
+		}
+		return 0;
+	}
 	return 0;
 }
 
@@ -151,10 +163,16 @@ GameObject* GenericGroupManager::GetCurrentElement()
 }
 
 // 68K 0x1060d750 GetNthElement__20CGenericGroupManagerFi
-// STUB: LEMBALL 0x0041eb60
+// FUNCTION: LEMBALL 0x0041eb60
 GameObject* GenericGroupManager::GetNthElement(int p_index)
 {
-	return 0;
+	int i = 0;
+	GameObject* object = GetFirstElement();
+	while (object != 0 && i < p_index) {
+		i++;
+		object = GetNextElement();
+	}
+	return object;
 }
 
 // 68K 0x1060d7c8 GetGroupElementIsMemberOf__20CGenericGroupManagerFP11CGameObject

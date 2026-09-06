@@ -13,9 +13,14 @@ MoverManager::MoverManager(Ai* p_arg0, int p_arg1) : BaseObjectManager(0x1a, 0xf
 }
 
 // 68K 0x10617f9a Restart__13CMoverManagerFv
-// STUB: LEMBALL 0x0042f1f0
+// FUNCTION: LEMBALL 0x0042f1f0
 void MoverManager::Restart()
 {
+	if (m_movers != 0) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_movers[i].Restart();
+		}
+	}
 }
 
 // 68K 0x10617ffe Initialise__13CMoverManagerFi
@@ -52,9 +57,14 @@ Mover* MoverManager::Find(int p_x, int p_y, int& p_height)
 }
 
 // 68K 0x106181c2 Process__13CMoverManagerFv
-// STUB: LEMBALL 0x0042f500
+// FUNCTION: LEMBALL 0x0042f500
 void MoverManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		if (m_movers[i].m_active != 0) {
+			m_movers[i].Process();
+		}
+	}
 }
 
 // 68K 0x10618236 GetViewData__13CMoverManagerFP9CViewData
@@ -65,13 +75,13 @@ int MoverManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x106182b4 Add__13CMoverManagerFUsiUcii
-// STUB: LEMBALL 0x0042f5e0
-void MoverManager::Add(unsigned short p_id,
-					   int p_pathId,
-					   unsigned char p_movementMode,
-					   int p_startNode,
-					   int p_nodeCount)
+// FUNCTION: LEMBALL 0x0042f5e0
+void MoverManager::Add(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount)
 {
+	if (m_count < m_capacity) {
+		m_movers[m_count].Set(p_id, p_pathId, p_movementMode, p_startNode, p_nodeCount);
+		m_count++;
+	}
 }
 
 // 68K 0x10618322 Switch__13CMoverManagerF9swMessagei

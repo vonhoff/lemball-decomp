@@ -20,7 +20,7 @@ public:
 	virtual ~Mover();          // vtable+0x00
 	void Initialise();
 	void MoveObjects(int p_deltaX, int p_deltaY, int p_deltaZ);
-	void Set(unsigned short p_id, int p_pathId, unsigned char p_movementMode, int p_startNode, int p_nodeCount);
+	void Set(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount);
 	void SetPos();
 	void SetUpNextNode(unsigned int p_time);
 	void StopObjectsMoving();
