@@ -515,7 +515,7 @@ void Surface::Blit(class ClipRect* p_clipRect)
 		}
 	}
 	parent = m_parentSurface;
-	if (parent != (Surface*) g_pGdiHelperTarget && (p_clipRect->m_reserved0c & 0x10000) == 0 && parent != 0) {
+	if (parent != (Surface*) g_pGdiHelperTarget && (p_clipRect->m_reserved0c & 0x10000) == 0) {
 		clipRight = m_clipRect.m_x;
 		if (clipRight < parent->m_clipRect.m_x) {
 			m_clipRect.m_width = (short) (m_clipRect.m_width + (clipRight - parent->m_clipRect.m_x));
