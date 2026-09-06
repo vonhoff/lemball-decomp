@@ -7,6 +7,9 @@ Default errors:
   vbptr-walk     *(int*)(*(int*)(obj + 0x40) + 4) virtual-base poke
   offset-poke    pointer-cast +/- field offset, including Ghidra
                  ((int*)((short*)p + 0x16))[0] and *(T*)(obj + N)
+  cast-deref     non-scalar dereferenced casts used for pointer arithmetic
+                 or literal addresses
+  raw-casts      --raw-casts audits every direct scalar/pointer dereference cast
   expr-char-offset  (char*)expr +/- 0xN including -> chains and
                  (Ai*) ((char*) p->m_process - 0x10)
   mi-dtor-poke   ((T*) ((char*) this + 0x40))->~T() manual MI teardown
@@ -52,6 +55,16 @@ MI_DTOR_POKE = re.compile(
 )
 PTR_CAST = re.compile(
 	r"\(\s*(?:unsigned\s+|signed\s+)?(?:char|short|int|long|void|__int16|__int32)\s*\*\s*\)"
+)
+RAW_CAST_TYPE = (
+	r"(?:"
+	r"(?:unsigned\s+|signed\s+)(?:char|short|int|long)"
+	r"|(?:char|short|int|long|void|__int16|__int32)"
+	r"|[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*"
+	r")\s*(?:\*\s*)+"
+)
+RAW_DEREF_CAST = re.compile(
+	r"\*\s*\(\s*(?P<type>" + RAW_CAST_TYPE + r")\s*\)\s*(?P<rhs>[^;\n]+)"
 )
 CAST_THEN_ARITH = re.compile(
 	PTR_CAST.pattern
@@ -172,10 +185,28 @@ def is_offset_poke(code: str) -> bool:
 	return any(not BUFFER_OK.search(match.group("expr")) for match in EXPR_CHAR_OFFSET.finditer(code))
 
 
+def raw_cast_reason(code: str, audit: bool = False) -> str | None:
+	for match in RAW_DEREF_CAST.finditer(code):
+		type_text = match.group("type")
+		rhs = match.group("rhs").strip()
+		if audit:
+			return "raw-cast"
+		base_type = re.sub(r"\s*\*\s*", "", type_text).strip()
+		scalar_type = re.fullmatch(
+			r"(?:(?:unsigned|signed)\s+)?(?:char|short|int|long|__int16|__int32)", base_type
+		)
+		if scalar_type is None and re.search(r"\s[+-]\s|\b[+-]\s*(?:0x[0-9A-Fa-f]+|\d+|[A-Za-z_])", rhs):
+			return "cast-deref-offset"
+		if scalar_type is None and re.match(r"^(?:0x[0-9A-Fa-f]+|\d+)\b", rhs):
+			return "literal-address-cast"
+	return None
+
+
 def scan_file(
 	path: Path,
 	annotation_mode: str,
 	synthetic_destructors: set[str],
+	raw_cast_audit: bool,
 ) -> tuple[list[str], list[tuple[str, str]]]:
 	lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
 	hits: list[str] = []
@@ -184,6 +215,9 @@ def scan_file(
 	if path.suffix.lower() in {".cpp", ".h", ".c"}:
 		for lineno, raw in enumerate(lines, 1):
 			code = strip_line_comment(raw)
+			raw_cast = raw_cast_reason(code, raw_cast_audit)
+			if raw_cast is not None:
+				hits.append("%s:%d: %s %s" % (rel, lineno, raw_cast, code.strip()[:100]))
 			if VBPTR_WALK.search(code):
 				hits.append("%s:%d: vbptr-walk" % (rel, lineno))
 			if THIS_ADJUST.search(code):
@@ -266,6 +300,11 @@ def main(argv: list[str]) -> int:
 		action="store_true",
 		help="fail every definition lacking a reccmp annotation, including source-empty definitions",
 	)
+	parser.add_argument(
+		"--raw-casts",
+		action="store_true",
+		help="fail on every direct scalar/pointer dereference cast, including serialized reads",
+	)
 	parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
 	args = parser.parse_args(argv[1:])
 	targets = [Path(a) for a in args.paths] if args.paths else [SRC]
@@ -285,7 +324,7 @@ def main(argv: list[str]) -> int:
 		annotation_mode = ANNOT_STRICT
 	synthetic_destructors = collect_synthetic_destructors(list(iter_sources(SRC)))
 	for path in files:
-		file_hits, file_reviews = scan_file(path, annotation_mode, synthetic_destructors)
+		file_hits, file_reviews = scan_file(path, annotation_mode, synthetic_destructors, args.raw_casts)
 		hits.extend(file_hits)
 		reviews.extend(file_reviews)
 	if reviews:
