@@ -6,7 +6,7 @@
 #pragma intrinsic(strlen)
 
 // 68K 0x107001ea StrCmpI__FPCcPCci
-// STUB: LEMBALL 0x00406790
+// FUNCTION: LEMBALL 0x00406790
 int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 {
 	int len1 = strlen(p_left);
