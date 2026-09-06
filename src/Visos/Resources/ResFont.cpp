@@ -136,7 +136,7 @@ ResZrle* ResFont::AsciItoZrle(unsigned int p_ascii)
 
 // 68K 0x10203ef2 GetSize__8CResFONTCFPCcUl
 // FUNCTION: LEMBALL 0x0045db30
-VsPoint ResFont::GetSize(const char* p_text, unsigned int p_flags)
+VsPoint* ResFont::GetSize(VsPoint* p_result, const char* p_text, unsigned int p_flags)
 {
 	int i = 0;
 	short height = 0;
@@ -176,8 +176,7 @@ VsPoint ResFont::GetSize(const char* p_text, unsigned int p_flags)
 	if ((p_flags & 0x180) != 0) {
 		height--;
 	}
-	VsPoint result;
-	result.m_x = width;
-	result.m_y = height;
-	return result;
+	p_result->m_x = width;
+	p_result->m_y = height;
+	return p_result;
 }

@@ -437,7 +437,7 @@ void PasswordDrawer::DrawPassword()
 
 	layout = (int*) m_layout;
 	font = m_textManager->GetFont(m_chalkFontId);
-	textSize = font->GetSize(m_password, 0x20);
+	font->GetSize(&textSize, m_password, 0x20);
 	position.m_y = (short) layout[0x5c / 4];
 	position.m_x = (short) (m_width - layout[0x58 / 4] - textSize.m_x);
 	textSize.m_x = 0;

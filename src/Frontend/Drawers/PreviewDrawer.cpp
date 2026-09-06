@@ -280,6 +280,7 @@ void PreviewDrawer::DrawText()
 {
 	VsSize advance;
 	VsPoint pos;
+	VsPoint size;
 	char* line;
 	int* positions;
 	int count;
@@ -340,7 +341,8 @@ void PreviewDrawer::DrawText()
 
 		skill = g_pGameStatus->m_skill;
 		font = m_textManager->GetFont(m_chalkFontId);
-		pos.m_x = (short) layout[0xa0 / 4] - font->GetSize(g_szPreviewSkillNames[skill], 0x20).m_x / 2;
+		font->GetSize(&size, g_szPreviewSkillNames[skill], 0x20);
+		pos.m_x = (short) layout[0xa0 / 4] - size.m_x / 2;
 		advance.m_height = 0;
 		advance.m_width = 0;
 		pos.m_y = (short) layout[0xa4 / 4];
@@ -618,7 +620,7 @@ void PreviewDrawer::LoadLevelInformation()
 		memset(candidateLine, 0, sizeof(candidateLine));
 		while (1) {
 			endOfSource = (int) AddWord(source, candidateLine, sourcePos, linePos);
-			lineSize = font->GetSize(candidateLine, 0x20);
+			font->GetSize(&lineSize, candidateLine, 0x20);
 			if (lineSize.m_x > layoutWidth || endOfSource == 1) {
 				break;
 			}
@@ -630,7 +632,7 @@ void PreviewDrawer::LoadLevelInformation()
 			endOfSource = 0;
 			SubWord(source, candidateLine, sourcePos, linePos);
 		}
-		size = font->GetSize(candidateLine, 0x20);
+		font->GetSize(&size, candidateLine, 0x20);
 		targetPos[0] = (layoutWidth / 2 - (int) (size.m_x / 2)) + layoutX;
 		targetPos[1] = layoutY;
 		strcpy(targetLine, candidateLine);

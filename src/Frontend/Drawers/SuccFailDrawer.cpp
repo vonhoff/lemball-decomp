@@ -226,7 +226,7 @@ void SuccFailDrawer::CalculateText()
 	short lineX;
 	VsPoint textSize;
 	do {
-		textSize = font->GetSize(m_firstLine, 0x20);
+		font->GetSize(&textSize, m_firstLine, 0x20);
 		lineX = (short) layout[0x38 / 4] + (short) ((layout[0x40 / 4] - (int) textSize.m_x) / 2);
 		char* prevBreak = (m_secondLine == 0) ? 0 : (m_secondLine - 1);
 		if (lineX < layoutMinX) {
@@ -250,12 +250,12 @@ void SuccFailDrawer::CalculateText()
 	}
 	else {
 		layoutY = layoutY + textSize.m_y;
-		textSize = font->GetSize(m_secondLine, 0x20);
+		font->GetSize(&textSize, m_secondLine, 0x20);
 		m_secondLinePos.m_x = (short) layout[0x38 / 4] + (short) ((layout[0x40 / 4] - (int) textSize.m_x) / 2);
 		m_secondLinePos.m_y = layoutY;
 	}
 
-	textSize = font->GetSize(g_szPasswordLabel, 0x20);
+	font->GetSize(&textSize, g_szPasswordLabel, 0x20);
 	short labelHeight = textSize.m_y;
 	short labelWidth = textSize.m_x;
 	short passwordLabelY = (short) layout[0x64 / 4];
@@ -264,7 +264,7 @@ void SuccFailDrawer::CalculateText()
 	m_passwordLabelPos.m_y = passwordLabelY;
 	m_passwordLabelPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
 
-	textSize = font->GetSize(m_password, 0x20);
+	font->GetSize(&textSize, m_password, 0x20);
 	labelWidth = textSize.m_x;
 	m_passwordPos.m_y = passwordLabelY + labelHeight;
 	m_passwordPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
@@ -278,22 +278,7 @@ void SuccFailDrawer::Load()
 	unsigned long* returnAnim;
 	int* layout;
 
-	if (m_mode == 0) {
-		m_layout = g_abSuccFailLayoutFull;
-		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
-		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
-		if (m_variant == 0) {
-			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
-			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdFull;
-			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_BOARD;
-		}
-		else {
-			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_SUCCESS_EYES;
-			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdFull;
-			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_BOARD;
-		}
-	}
-	else {
+	if (m_mode != 0) {
 		m_layout = g_abSuccFailLayoutCompact;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsCompact;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsCompact;
@@ -306,6 +291,21 @@ void SuccFailDrawer::Load()
 			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_SUCCESS_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdCompact;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_BOARD;
+		}
+	}
+	else {
+		m_layout = g_abSuccFailLayoutFull;
+		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
+		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
+		if (m_variant == 0) {
+			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
+			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdFull;
+			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_BOARD;
+		}
+		else {
+			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_SUCCESS_EYES;
+			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdFull;
+			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_BOARD;
 		}
 	}
 	m_primaryBitmap = ResBitmap::Load(m_primaryBitmapId);
@@ -321,15 +321,18 @@ void SuccFailDrawer::Load()
 	m_primitiveBundle.m_primitive.m_y = (short) layout[0x14 / 4];
 	m_primitiveBundle.m_primitive.m_resource = m_backgroundBitmap;
 	m_primitiveBundle.m_primitive.m_flags = 0x800;
+	m_primitiveBundle.m_primitive.m_remap = 0;
 	m_primitives[0].m_primary.m_x = (short) bitmapX;
 	m_primitives[0].m_primary.m_y = (short) layout[0x1c / 4];
 	m_primitives[0].m_primary.m_resource = m_primaryBitmap;
-	m_primitives[0].m_primary.m_flags = 8;
+	m_primitives[0].m_primary.m_flags = 0x800;
+	m_primitives[0].m_primary.m_remap = 0;
 	if (m_secondaryBitmap != 0) {
 		m_primitives[0].m_secondary.m_x = (short) layout[0x50 / 4];
 		m_primitives[0].m_secondary.m_y = (short) layout[0x54 / 4];
 		m_primitives[0].m_secondary.m_resource = m_secondaryBitmap;
-		m_primitives[0].m_secondary.m_flags = 8;
+		m_primitives[0].m_secondary.m_flags = 0x800;
+		m_primitives[0].m_secondary.m_remap = 0;
 	}
 	layout[0x18 / 4] = bitmapX;
 	layout[0x28 / 4] = bitmapX;

@@ -116,7 +116,7 @@ void TargetAboutScreen::DrawRegistrationText()
 
 	key = (unsigned char*) g_szAboutWeatherManKey;
 	font = m_textManager->GetFont(RES_GAME_FONT3);
-	labelSize = font->GetSize(g_szRegisteredTo, 0x20);
+	font->GetSize(&labelSize, g_szRegisteredTo, 0x20);
 	advance.m_height = 0;
 	labelY = (int) (m_height / 2) - (int) (labelSize.m_y / 2);
 	advance.m_width = 0;
@@ -125,7 +125,7 @@ void TargetAboutScreen::DrawRegistrationText()
 	m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, 0);
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	VsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
-	buildSize = font->GetSize(g_szVisosBuildBuffer, 0x20);
+	font->GetSize(&buildSize, g_szVisosBuildBuffer, 0x20);
 	advance.m_height = 0;
 	advance.m_width = 0;
 	position.m_x = (short) (m_width - buildSize.m_x) / 2;
@@ -140,7 +140,7 @@ void TargetAboutScreen::DrawRegistrationText()
 		key = key + 1;
 	}
 	g_szAboutDecodeBuffer[index] = '\0';
-	nameSize = font->GetSize(g_szAboutDecodeBuffer, 0x20);
+	font->GetSize(&nameSize, g_szAboutDecodeBuffer, 0x20);
 	advance.m_height = 0;
 	advance.m_width = 0;
 	position.m_x = m_width / 2 - nameSize.m_x / 2;

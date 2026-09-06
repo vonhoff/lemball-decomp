@@ -364,15 +364,15 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 			len = 0x14;
 			do {
 				trimmedPeerName[len] = 0;
-				size = font->GetSize(trimmedPeerName, 0x20);
+				font->GetSize(&size, trimmedPeerName, 0x20);
 				len--;
 			} while (layout[0x98 / 4] < (int) size.m_x);
 
-			size = font->GetSize(gameName, 0x20);
+			font->GetSize(&size, gameName, 0x20);
 			posName.m_x -= size.m_x / 2;
-			size = font->GetSize(addressStr, 0x20);
+			font->GetSize(&size, addressStr, 0x20);
 			posAddress.m_x -= size.m_x / 2;
-			size = font->GetSize(peerName, 0x20);
+			font->GetSize(&size, peerName, 0x20);
 			posPeer.m_x -= size.m_x / 2;
 
 			advance.m_width = 0;
@@ -401,8 +401,8 @@ void NetworkOptionsDrawer::DrawText()
 	VsPoint posMyName;
 	VsPoint posMyIp;
 	VsPoint posMyComputer;
-	VsPoint size;
 	VsSize advance;
+	VsPoint size;
 	ResFont* font;
 	int row;
 	int* layout = (int*) m_layoutTable;
@@ -410,7 +410,99 @@ void NetworkOptionsDrawer::DrawText()
 	pos.m_y = (short) layout[0x5c / 4];
 	pos.m_x = (short) layout[0x58 / 4];
 
-	if (m_drawingBackBuffer == 0) {
+	if (m_drawingBackBuffer != 0) {
+		char* divider = (m_mode == 0) ? g_szNetworkOptionsDividerLocal : g_szNetworkOptionsDividerIp;
+		font = m_textManager->GetFont(m_chalkFontId);
+		posDivider.m_y = (short) layout[0x50 / 4];
+		posDivider.m_x = 0;
+		posLabel.m_y = (short) layout[0x54 / 4];
+		posLabel.m_x = (short) layout[0x68 / 4];
+		posIp.m_y = (short) layout[0x54 / 4];
+		posIp.m_x = (short) layout[0x78 / 4];
+		posComputer.m_y = (short) layout[0x54 / 4];
+		posComputer.m_x = (short) layout[0x80 / 4];
+
+		font->GetSize(&size, g_szNetworkOptionsHeaderName, 0x20);
+		posLabel.m_x -= size.m_x / 2;
+		advance.m_width = 0;
+		advance.m_height = 0;
+		m_textManager->DrawString(m_gdi, posLabel, advance, m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, 0);
+
+		font->GetSize(&size, g_szNetworkOptionsHeaderIp, 0x20);
+		posIp.m_x -= size.m_x / 2;
+		advance.m_width = 0;
+		advance.m_height = 0;
+		m_textManager->DrawString(m_gdi, posIp, advance, m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, 0);
+
+		font->GetSize(&size, g_szNetworkOptionsHeaderComputer, 0x20);
+		posComputer.m_x -= size.m_x / 2;
+		advance.m_width = 0;
+		advance.m_height = 0;
+		m_textManager
+			->DrawString(m_gdi, posComputer, advance, m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
+
+		font->GetSize(&size, divider, 0x20);
+		posDivider.m_x = (short) (((int) m_width - (int) size.m_x) / 2);
+		advance.m_width = 0;
+		advance.m_height = 0;
+		m_textManager->DrawString(m_gdi, posDivider, advance, m_chalkFontId, divider, 0x20, 0);
+
+		if (g_szNetworkGameName[0] != 0) {
+			posMyName.m_y = (short) layout[0x64 / 4];
+			posMyName.m_x = (short) layout[0x68 / 4];
+			posMyIp.m_y = (short) layout[0x64 / 4];
+			posMyIp.m_x = (short) layout[0x78 / 4];
+			posMyComputer.m_y = (short) layout[0x64 / 4];
+			posMyComputer.m_x = (short) layout[0x80 / 4];
+
+			font->GetSize(&size, g_szNetworkGameName, 0x20);
+			posMyName.m_x -= size.m_x / 2;
+			advance.m_width = 0;
+			advance.m_height = 0;
+			m_textManager
+				->DrawString(m_gdi, posMyName, advance, m_chalkFontId, g_szNetworkGameName, 0x20, (Remap*) m_remaps[0]);
+
+			char* myIp = (char*) m_stopPending;
+			if (myIp != 0 && *myIp != 0) {
+				font->GetSize(&size, myIp, 0x20);
+				posMyIp.m_x -= size.m_x / 2;
+				advance.m_width = 0;
+				advance.m_height = 0;
+				m_textManager->DrawString(m_gdi, posMyIp, advance, m_chalkFontId, myIp, 0x20, (Remap*) m_remaps[0]);
+			}
+
+			char* myPeer = (char*) m_connectionState;
+			if (myPeer != 0 && *myPeer != 0) {
+				char trimmed[24];
+				int len = 0x14;
+				memcpy(trimmed, myPeer, 0x14);
+				do {
+					trimmed[len] = 0;
+					len--;
+					font->GetSize(&size, trimmed, 0x20);
+				} while (layout[0x98 / 4] < (int) size.m_x);
+
+				String lowerPeer = String(trimmed).Lower();
+				font->GetSize(&size, trimmed, 0x20);
+				posMyComputer.m_x -= size.m_x / 2;
+				advance.m_width = 0;
+				advance.m_height = 0;
+				m_textManager
+					->DrawString(m_gdi, posMyComputer, advance, m_chalkFontId, lowerPeer, 0x20, (Remap*) m_remaps[0]);
+			}
+		}
+
+		if (g_pNetworkManager != 0) {
+			row = 0;
+			for (int i = 0; i < 10; i++) {
+				DrawEntry(i, row, 1);
+				if (row == 4) {
+					break;
+				}
+			}
+		}
+	}
+	else {
 		if (m_message != 0) {
 			VsPoint msgPos;
 			msgPos.m_y = (short) layout[0x4c / 4];
@@ -438,7 +530,7 @@ void NetworkOptionsDrawer::DrawText()
 			}
 			if (m_redrawPending != 0 || !special) {
 				font = m_textManager->GetFont(m_chalkFontId);
-				size = font->GetSize(msgText.m_text, 0x20);
+				font->GetSize(&size, msgText.m_text, 0x20);
 				msgPos.m_x -= size.m_x / 2;
 				advance.m_width = 0;
 				advance.m_height = 0;
@@ -451,10 +543,10 @@ void NetworkOptionsDrawer::DrawText()
 			int searchIndex;
 			row = 0;
 			int fallbackHighlighted = -1;
-			if (m_highlightedPlayer != -1 && m_playerEntries[m_highlightedPlayer].m_active == 0) {
+			if (m_highlightedPlayer != -1 && m_playerEntries[m_highlightedPlayer].m_hoverState == 0) {
 				searchIndex = 0;
 				do {
-					if (m_playerEntries[searchIndex].m_active != 0) {
+					if (m_playerEntries[searchIndex].m_hoverState != 0) {
 						m_highlightedPlayer = searchIndex;
 						break;
 					}
@@ -468,15 +560,15 @@ void NetworkOptionsDrawer::DrawText()
 				if (g_pNetworkManager->m_gameMessages[idx].m_valid != 0) {
 					int isAccepted = 0;
 					int state = 1;
-					if (m_playerEntries[idx].m_active != 0 || fallbackHighlighted == idx) {
+					if (m_playerEntries[idx].m_hoverState != 0 || fallbackHighlighted == idx) {
 						isAccepted = 1;
 					}
 					if (m_acceptedPlayer == idx) {
-						if (m_playerEntries[idx].m_entered == 0 || m_redrawPending != 0) {
+						if (m_playerEntries[idx].m_activationState == 0 || m_redrawPending != 0) {
 							state = 3;
 						}
 					}
-					else if (m_playerEntries[idx].m_entered != 0 && m_redrawPending == 0) {
+					else if (m_playerEntries[idx].m_activationState != 0 && m_redrawPending == 0) {
 						state = 3;
 					}
 					if (state + isAccepted == 1) {
@@ -502,98 +594,6 @@ void NetworkOptionsDrawer::DrawText()
 				advance.m_width = 0;
 				advance.m_height = 0;
 				m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, editText, 0x20, remap);
-			}
-		}
-	}
-	else {
-		char* divider = (m_mode == 0) ? g_szNetworkOptionsDividerLocal : g_szNetworkOptionsDividerIp;
-		font = m_textManager->GetFont(m_chalkFontId);
-		posDivider.m_y = (short) layout[0x50 / 4];
-		posDivider.m_x = 0;
-		posLabel.m_y = (short) layout[0x54 / 4];
-		posLabel.m_x = (short) layout[0x68 / 4];
-		posIp.m_y = (short) layout[0x54 / 4];
-		posIp.m_x = (short) layout[0x78 / 4];
-		posComputer.m_y = (short) layout[0x54 / 4];
-		posComputer.m_x = (short) layout[0x80 / 4];
-
-		size = font->GetSize(g_szNetworkOptionsHeaderName, 0x20);
-		posLabel.m_x -= size.m_x / 2;
-		advance.m_width = 0;
-		advance.m_height = 0;
-		m_textManager->DrawString(m_gdi, posLabel, advance, m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, 0);
-
-		size = font->GetSize(g_szNetworkOptionsHeaderIp, 0x20);
-		posIp.m_x -= size.m_x / 2;
-		advance.m_width = 0;
-		advance.m_height = 0;
-		m_textManager->DrawString(m_gdi, posIp, advance, m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, 0);
-
-		size = font->GetSize(g_szNetworkOptionsHeaderComputer, 0x20);
-		posComputer.m_x -= size.m_x / 2;
-		advance.m_width = 0;
-		advance.m_height = 0;
-		m_textManager
-			->DrawString(m_gdi, posComputer, advance, m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
-
-		size = font->GetSize(divider, 0x20);
-		posDivider.m_x = (short) (((int) m_width - (int) size.m_x) / 2);
-		advance.m_width = 0;
-		advance.m_height = 0;
-		m_textManager->DrawString(m_gdi, posDivider, advance, m_chalkFontId, divider, 0x20, 0);
-
-		if (g_szNetworkGameName[0] != 0) {
-			posMyName.m_y = (short) layout[0x64 / 4];
-			posMyName.m_x = (short) layout[0x68 / 4];
-			posMyIp.m_y = (short) layout[0x64 / 4];
-			posMyIp.m_x = (short) layout[0x78 / 4];
-			posMyComputer.m_y = (short) layout[0x64 / 4];
-			posMyComputer.m_x = (short) layout[0x80 / 4];
-
-			size = font->GetSize(g_szNetworkGameName, 0x20);
-			posMyName.m_x -= size.m_x / 2;
-			advance.m_width = 0;
-			advance.m_height = 0;
-			m_textManager
-				->DrawString(m_gdi, posMyName, advance, m_chalkFontId, g_szNetworkGameName, 0x20, (Remap*) m_remaps[0]);
-
-			char* myIp = (char*) m_stopPending;
-			if (myIp != 0 && *myIp != 0) {
-				size = font->GetSize(myIp, 0x20);
-				posMyIp.m_x -= size.m_x / 2;
-				advance.m_width = 0;
-				advance.m_height = 0;
-				m_textManager->DrawString(m_gdi, posMyIp, advance, m_chalkFontId, myIp, 0x20, (Remap*) m_remaps[0]);
-			}
-
-			char* myPeer = (char*) m_connectionState;
-			if (myPeer != 0 && *myPeer != 0) {
-				char trimmed[24];
-				int len = 0x14;
-				memcpy(trimmed, myPeer, 0x14);
-				do {
-					trimmed[len] = 0;
-					size = font->GetSize(trimmed, 0x20);
-					len--;
-				} while (layout[0x98 / 4] < (int) size.m_x);
-
-				String lowerPeer = String(trimmed).Lower();
-				size = font->GetSize(trimmed, 0x20);
-				posMyComputer.m_x -= size.m_x / 2;
-				advance.m_width = 0;
-				advance.m_height = 0;
-				m_textManager
-					->DrawString(m_gdi, posMyComputer, advance, m_chalkFontId, lowerPeer, 0x20, (Remap*) m_remaps[0]);
-			}
-		}
-
-		if (g_pNetworkManager != 0) {
-			row = 0;
-			for (unsigned long i = 0; i < 10; i++) {
-				DrawEntry(i, row, 1);
-				if (row == 4) {
-					break;
-				}
 			}
 		}
 	}
