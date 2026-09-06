@@ -62,7 +62,7 @@ void ObjectManager::Restart()
 	m_count = m_count - removedCount;
 }
 
-// 68K 0x1061a24c Initialise__14CObjectManagerFv
+// 68K 0x1061a24c Initialise__14CObjectManagerFi
 // FUNCTION: LEMBALL 0x0041b0c0
 void ObjectManager::Initialise(int p_objectCount)
 {

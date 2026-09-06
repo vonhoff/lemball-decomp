@@ -37,7 +37,6 @@ VsPoint* VsPoint::AddInPlace(VsPoint* p_delta)
 	return this;
 }
 
-// 68K 0x10108342 __as__7CVSRectFRC7CVSRect
 // FUNCTION: LEMBALL 0x0044e6c0
 VsRect::VsRect(const VsRect& p_source)
 {

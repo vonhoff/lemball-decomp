@@ -45,7 +45,7 @@ void SetRemoteGameTimeReal(unsigned long p_timestamp)
 
 // 68K 0x107009e2 _DEMO_Init__Fi
 // STUB: LEMBALL 0x00409150
-Demo* DemoInit(int p_arg0)
+Demo* InternalDemoInit(int p_arg0)
 {
 	void* storage;
 
@@ -60,7 +60,7 @@ Demo* DemoInit(int p_arg0)
 
 // 68K 0x10700a26 _DEMO_Quit__Fv
 // FUNCTION: LEMBALL 0x00409180
-void DemoQuit()
+void InternalDemoQuit()
 {
 	if (g_pDemo != 0) {
 		delete g_pDemo;

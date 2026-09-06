@@ -68,7 +68,7 @@ void AnimWnd::Initialise()
 	m_movieWindow = 0;
 	if (g_pAnimWnd != 0) {
 		MessageBoxA(0, g_szUnableToSupportMoreThanOneAnimWindow, g_szAnimWndError, 0x1000);
-		VsExit(0xaaaa);
+		InternalVsExit(0xaaaa);
 	}
 	g_pAnimWnd = this;
 }
@@ -96,9 +96,9 @@ AnimWnd::~AnimWnd()
 
 // 68K 0x10103df8 _OnCreate__8CAnimWndFv
 // FUNCTION: LEMBALL 0x0046ded0
-void AnimWnd::_OnCreate()
+void AnimWnd::InternalOnCreate()
 {
-	GWnd::_OnCreate();
+	GWnd::InternalOnCreate();
 	if (m_movieWindow != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
 		m_movieWindow = 0;
@@ -109,14 +109,14 @@ void AnimWnd::_OnCreate()
 
 // 68K 0x101040d4 _OnDestroy__8CAnimWndFv
 // FUNCTION: LEMBALL 0x0046df40
-void AnimWnd::_OnDestroy()
+void AnimWnd::InternalOnDestroy()
 {
 	Stop();
 	if (m_movieWindow != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
 		m_movieWindow = 0;
 	}
-	GWnd::_OnDestroy();
+	GWnd::InternalOnDestroy();
 	m_paused = 0;
 	m_playing = 0;
 }
@@ -248,7 +248,7 @@ void AnimWnd::SetAnim(unsigned int p_resourceId)
 		}
 	}
 	else {
-		cdDir = g_pTargetPlatformServices->GetCDDir(relative.m_text);
+		cdDir = g_pTargetPlatformServices->GetCdDir(relative.m_text);
 		if (cdDir != 0) {
 			m_moviePath = cdDir;
 		}

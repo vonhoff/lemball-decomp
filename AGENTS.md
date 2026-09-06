@@ -76,3 +76,15 @@ finally { Pop-Location }
 Use the same form for `reccmp-vtable.exe` and `reccmp-datacmp.exe`. `reccmp-decomplint.exe` can run from the repository root.
 
 Run clang-format on touched C and C++ files. After shared-header, ABI-sensitive, or multi-TU changes, audit prior effective 100% matches and run `detect_changes`. Prefer zero regressions. Accept a regression only when measured evidence shows a clear project-wide gain.
+
+## Naming
+
+Keep reconstructed C++ names in PascalCase. Leading Metrowerks `_` becomes `Internal` (`_DrawButton` -> `InternalDrawButton`). Underscores are word separators and are dropped (`EnemyRule_Radius50` -> `EnemyRuleRadius50`).
+
+Check with:
+
+```powershell
+python tools/check_names.py --inventory C:/Research/Mapping/Lemmings_Paintball__68K_.functions.tsv
+```
+
+Some 68K symbols intentionally diverge from the C++ name (Mac nested types flattened, free functions moved onto classes, Mac `OnZoomBox` kept as Windows `OnDriverChange` so it overrides `PvWnd`). Those entries live in `tools/check_names.py` as `INTENTIONAL` and report status `intentional`, not `mismatch`. Do not rename source to match the 68K spelling for those. Add or remove `INTENTIONAL` entries when a divergence is introduced or retired.

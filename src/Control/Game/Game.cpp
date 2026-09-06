@@ -136,7 +136,7 @@ Game::Game(char* p_arg0)
 
 	int cdResult = 0;
 	do {
-		if (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) != 0) {
+		if (g_pTargetPlatformServices->GetCdDir(g_szVsMemDll) != 0) {
 			break;
 		}
 		if (0) {
@@ -187,7 +187,7 @@ Game::Game(char* p_arg0)
 	}
 
 	if (IsValidResource() == 0) {
-		VsRelAssert(g_szIsValidResourceFile, g_szGameCpp, 0x16e);
+		InternalVsRelAssert(g_szIsValidResourceFile, g_szGameCpp, 0x16e);
 	}
 
 	storage = operator new(0xe4);

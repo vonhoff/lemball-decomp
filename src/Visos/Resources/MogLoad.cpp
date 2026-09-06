@@ -51,7 +51,7 @@ MogDir::MogDir(unsigned long p_fileOffset)
 	((RawRead*) this)->InputDword();
 	m_chunkCount = ((RawRead*) this)->InputDword();
 	if (((RawRead*) this)->InputDword() != kMogFormatVersion) {
-		VsRelAssert("IsValidResourceFile", "MOGLOAD.CPP", 0x1a2);
+		InternalVsRelAssert("IsValidResourceFile", "MOGLOAD.CPP", 0x1a2);
 	}
 	m_directoryEndOffset = ((RawRead*) this)->InputDword();
 	m_payloadStartOffset = VsTell(g_pMogFile);

@@ -21,14 +21,14 @@ extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code)
 
 // 68K 0x10213c3a _VSExit__Fi
 // FUNCTION: LEMBALL 0x00459970
-void VsExit(int p_exitCode)
+void InternalVsExit(int p_exitCode)
 {
 	longjmp(g_vsExitJumpBuffer, p_exitCode);
 }
 
 // 68K 0x10205a70 _VSRELassert
 // FUNCTION: LEMBALL 0x0045b8e0
-void VsRelAssert(const char* p_reason, const char* p_file, unsigned int p_line)
+void InternalVsRelAssert(const char* p_reason, const char* p_file, unsigned int p_line)
 {
 	DisplayRelAssert((void*) p_reason, (void*) p_file, p_line);
 }
@@ -48,7 +48,7 @@ void WriteDebugString2File(char* p_text)
 
 // 68K 0x1011006c _RAWOUT_DebugString__FPc
 // FUNCTION: LEMBALL 0x00472910
-int RawOutDebugString(char* p_text)
+int InternalRawOutDebugString(char* p_text)
 {
 	if (g_nDebugInitialized == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_DebugString", 0);
@@ -65,7 +65,7 @@ int RawOutDebugString(char* p_text)
 
 // 68K 0x101100a4 _RAWOUT_ErrorString__FPc
 // FUNCTION: LEMBALL 0x00472980
-int RawOutErrorString(char* p_text)
+int InternalRawOutErrorString(char* p_text)
 {
 	if (g_nDebugInitialized == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_ErrorString", 0);
@@ -82,7 +82,7 @@ int RawOutErrorString(char* p_text)
 
 // 68K 0x101100dc _RAWOUT_SysString__FPc
 // FUNCTION: LEMBALL 0x004729f0
-int RawOutSysString(char* p_text)
+int InternalRawOutSysString(char* p_text)
 {
 	if (g_nDebugInitialized == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_SysString", 0);
@@ -113,7 +113,7 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 	VsLtoa(p_line, lineBuf, 10);
 	msg += lineBuf;
 	MessageBoxA(NULL, msg.GetText(), "Error", 0);
-	VsExit(0xaaaa);
+	InternalVsExit(0xaaaa);
 }
 
 #include "VsOStream.h"

@@ -109,7 +109,7 @@ bool TargetPlatformServices::WriteRegistryFlag(const char* p_subkey, int p_enabl
 
 // 68K 0x1010c30e GetCDDir__FPCc
 // FUNCTION: LEMBALL 0x0045eda0
-char* TargetPlatformServices::GetCDDir(const char* p_requiredFile)
+char* TargetPlatformServices::GetCdDir(const char* p_requiredFile)
 {
 	char candidate[256];
 	unsigned int drives;

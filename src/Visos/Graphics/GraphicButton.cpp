@@ -156,7 +156,7 @@ void GraphicButton::OnDestroy()
 }
 
 // FUNCTION: LEMBALL 0x00468300 FOLDED
-void GraphicButton::_DrawButton()
+void GraphicButton::InternalDrawButton()
 {
 	if (m_enabled == m_state) {
 		if (m_gdi->m_renderTarget->HasBackBuff() == 0) {
@@ -248,7 +248,7 @@ void GraphicButton::OnPaint(const VsRect& p_rect)
 		(m_gdi->m_primitiveCount == 0 &&
 		 (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed))) {
 		if (GetSizeStatus() != 0) {
-			_DrawButton();
+			InternalDrawButton();
 			DrawButton();
 		}
 		changeList = m_gdi->m_renderTarget->GetChangeList();

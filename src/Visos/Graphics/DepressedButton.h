@@ -13,7 +13,7 @@ public:
 		m_depressed = 0;
 	}
 	virtual void OnPaint(const VsRect& p_rect); // vtable+0xa8
-	virtual void _DrawButton();                 // vtable+0xb8
+	virtual void InternalDrawButton();          // vtable+0xb8
 	virtual void OnReleased(int p_flags);       // vtable+0xc0
 	virtual void OnPressed(int p_flags);        // vtable+0xc4
 	virtual void OnEnterButton();               // vtable+0xc8

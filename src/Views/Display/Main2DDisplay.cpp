@@ -408,7 +408,7 @@ int Main2DDisplay::ProcessMsg(Message* p_message)
 		return 0;
 	case 2:
 		helpPath[0] = 0;
-		cdDir = g_pTargetPlatformServices->GetCDDir(g_szLemballHelpFile);
+		cdDir = g_pTargetPlatformServices->GetCdDir(g_szLemballHelpFile);
 		if (cdDir != 0) {
 			strcpy(helpPath, cdDir);
 			strcat(helpPath, g_szLemballHelpFile);
@@ -421,7 +421,7 @@ int Main2DDisplay::ProcessMsg(Message* p_message)
 		return 0;
 	case 3:
 		helpPath[0] = 0;
-		cdDir = g_pTargetPlatformServices->GetCDDir(g_szLemballHelpFile);
+		cdDir = g_pTargetPlatformServices->GetCdDir(g_szLemballHelpFile);
 		if (cdDir != 0) {
 			strcpy(helpPath, cdDir);
 			strcat(helpPath, g_szLemballHelpFile);

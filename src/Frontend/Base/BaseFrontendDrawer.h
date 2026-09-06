@@ -43,10 +43,10 @@ public:
 	virtual void DrawBackGround();                    // vtable+0x50
 	virtual bool ConfirmedAction(int p_action);       // vtable+0x54
 	void Action(int p_action, int p_stage);
-	void _DrawAnims();
-	void _DrawBackGround();
-	void _Load();
-	void _UnLoad();
+	void InternalDrawAnims();
+	void InternalDrawBackGround();
+	void InternalLoad();
+	void InternalUnLoad();
 	void DrawFrame(CoordPair p_start, CoordPair p_end);
 	void DrawFrame(VsRect p_rect);
 	void InitialiseBackBuffer();

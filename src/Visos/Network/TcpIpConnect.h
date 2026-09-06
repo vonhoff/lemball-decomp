@@ -11,7 +11,8 @@
 // VTABLE: LEMBALL 0x0049a398 BaseSocket's `WriteSocket
 // VTABLE: LEMBALL 0x0049a3c8 RwSocket
 // VTABLE: LEMBALL 0x0049a3d8 CConnect
-// 68K 0x1010e6a6 __dt__13CTCPIPConnectFv; x86 emits only the synthetic deleting destructor.
+// 68K 0x1010e6a6 __dt__13CTCPIPConnectFv
+// x86 emits only the synthetic deleting destructor.
 class TcpIpConnect : public Connect, public TcpIpRwSocket {
 public:
 	bool Start(const char* p_localName, const char* p_remoteName);

@@ -22,7 +22,7 @@ public:
 	bool InGroupByObjectNo(int p_objectNo);
 	bool IsInGrouping(GameObject* p_object);
 	bool ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY);
-	int CalcZValue_Sprite(int p_index);
+	int CalcZValueSprite(int p_index);
 	unsigned long LemmingFly(ViewData& p_viewData, int& p_frame);
 	unsigned short CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, unsigned short p_z);
 	void UseBalloon(int p_playerIndex);
@@ -91,8 +91,8 @@ public:
 	void DrawTimeBonus(ViewData& p_viewData);
 	void DrawTrampoline(ViewData& p_viewData);
 	void DrawTrapDoor(ViewData& p_viewData);
-	void DrawZBuff_Anim(int p_index, unsigned short p_z);
-	void DrawZBuff_Sprite(int p_index, unsigned short p_z);
+	void DrawZBuffAnim(int p_index, unsigned short p_z);
+	void DrawZBuffSprite(int p_index, unsigned short p_z);
 	void FormGroup();
 	void GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint, unsigned char p_alternate);
 	void InitSpriteGroundLu();

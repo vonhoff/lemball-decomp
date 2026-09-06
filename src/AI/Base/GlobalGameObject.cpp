@@ -32,7 +32,6 @@ GlobalGameObject::GlobalGameObject(eObjectType p_objectType,
 }
 
 // 68K 0x1060bbf2 Restart__17CGlobalGameObjectFv
-// 68K 0x10609340 Restart__17CGlobalGameObjectFv
 // FUNCTION: LEMBALL 0x00416d50
 void GlobalGameObject::Restart()
 {

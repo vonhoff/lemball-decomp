@@ -17,6 +17,7 @@
 class PlayerLemming : public GlobalGameObject, public NetworkMessage {
 public:
 	PlayerLemming(int p_x, int p_y, int p_z, int p_facing, unsigned int p_alternatePlayer, unsigned long p_spawnDelay);
+	// 68K 0x1061c15c __dt__14CPlayerLemmingFv
 	virtual ~PlayerLemming() {}
 	PlayerLemmingGroup* GetGroup();
 	bool CheckSfx();
@@ -44,8 +45,8 @@ public:
 	virtual void RandomAction();                                                    // vtable+0x94
 	virtual bool FacingTarget();                                                    // vtable+0x98
 	virtual void TurnToFaceTarget();                                                // vtable+0x9c
-	virtual bool HasObject(eObjectType p_objectType);                                     // vtable+0xb4
-	virtual bool AddObject(eObjectType p_objectType, GameObject* p_object);                 // vtable+0xb8
+	virtual bool HasObject(eObjectType p_objectType);                               // vtable+0xb4
+	virtual bool AddObject(eObjectType p_objectType, GameObject* p_object);         // vtable+0xb8
 	virtual void PickUpAmmo(unsigned short p_arg0);                                 // vtable+0xcc
 	virtual void ExternalControlEnd();                                              // vtable+0xd0
 	virtual void RequestBalloon();                                                  // vtable+0xd4
@@ -66,33 +67,32 @@ public:
 	void SetGroupLeader(unsigned int p_arg0);
 
 private:
-	unsigned int m_sfxChanged;            // 0x164
-	unsigned short m_playerIndex;         // 0x168
-	eObjectType m_balloonObjectType;      // 0x16c
-	unsigned int m_alternatePlayer;       // 0x170
-	unsigned int m_spawnDelay;            // 0x174
-	unsigned int m_wasHitByBullet;        // 0x178
-	unsigned int m_isGroupLeader;         // 0x17c
-	unsigned int m_groupIndex;            // 0x180
-	eFireRequestState m_fireRequestState; // 0x184
-	unsigned int m_onConveyor;            // 0x188
-	Ice* m_ice;                           // 0x18c
-	unsigned int m_boredDeadline;         // 0x190
-	AiCoord m_networkPositionCache;       // 0x194
-	short m_cachedFacingDirection;        // 0x1a0
-	eAction m_cachedAction;               // 0x1a4
-	short m_cachedActionArgument;         // 0x1a8
-	unsigned int m_cachedStateTimer;      // 0x1ac
-	eSoundEffect m_cachedSoundEffect;     // 0x1b0
-	AiCoord m_fireTarget;                 // 0x1b4
-	eObjectType m_inventoryTypes[PLAYER_INVENTORY_CAPACITY];     // 0x1c0
-	GameObject* m_inventoryObjects[PLAYER_INVENTORY_CAPACITY];   // 0x1f0
-	unsigned int m_inventoryCount;        // 0x220
-	PlayerLemmingGroup* m_group;          // 0x224
-	unsigned short m_ammoCount;           // 0x228
+	unsigned int m_sfxChanged;                                 // 0x164
+	unsigned short m_playerIndex;                              // 0x168
+	eObjectType m_balloonObjectType;                           // 0x16c
+	unsigned int m_alternatePlayer;                            // 0x170
+	unsigned int m_spawnDelay;                                 // 0x174
+	unsigned int m_wasHitByBullet;                             // 0x178
+	unsigned int m_isGroupLeader;                              // 0x17c
+	unsigned int m_groupIndex;                                 // 0x180
+	eFireRequestState m_fireRequestState;                      // 0x184
+	unsigned int m_onConveyor;                                 // 0x188
+	Ice* m_ice;                                                // 0x18c
+	unsigned int m_boredDeadline;                              // 0x190
+	AiCoord m_networkPositionCache;                            // 0x194
+	short m_cachedFacingDirection;                             // 0x1a0
+	eAction m_cachedAction;                                    // 0x1a4
+	short m_cachedActionArgument;                              // 0x1a8
+	unsigned int m_cachedStateTimer;                           // 0x1ac
+	eSoundEffect m_cachedSoundEffect;                          // 0x1b0
+	AiCoord m_fireTarget;                                      // 0x1b4
+	eObjectType m_inventoryTypes[PLAYER_INVENTORY_CAPACITY];   // 0x1c0
+	GameObject* m_inventoryObjects[PLAYER_INVENTORY_CAPACITY]; // 0x1f0
+	unsigned int m_inventoryCount;                             // 0x220
+	PlayerLemmingGroup* m_group;                               // 0x224
+	unsigned short m_ammoCount;                                // 0x228
 };
 
-// 68K 0x1061c15c __dt__14CPlayerLemmingFv
 // SYNTHETIC: LEMBALL 0x00410b20
 // PlayerLemming::`scalar deleting destructor'
 

@@ -236,14 +236,14 @@ int g_afInitOptionSelected[14];
 
 // 68K 0x10213030 _STRM_Init__Fv
 // FUNCTION: LEMBALL 0x00458f70
-bool StrmInit()
+bool InternalStrmInit()
 {
 	void* storage;
 
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pDebugStreambuf =
-			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) RawOutDebugString);
+			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutDebugString);
 	}
 	else {
 		g_pDebugStreambuf = 0;
@@ -252,7 +252,7 @@ bool StrmInit()
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pSysStreambuf =
-			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) RawOutSysString);
+			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutSysString);
 	}
 	else {
 		g_pSysStreambuf = 0;
@@ -261,7 +261,7 @@ bool StrmInit()
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pErrorStreambuf =
-			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) RawOutErrorString);
+			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutErrorString);
 	}
 	else {
 		g_pErrorStreambuf = 0;
@@ -296,14 +296,14 @@ bool StrmInit()
 
 // 68K 0x10213176 _STRM_Quit__Fv
 // STUB: LEMBALL 0x004590b0
-bool StrmQuit()
+bool InternalStrmQuit()
 {
 	return 0;
 }
 
 // 68K 0x10213258 _INP_Init__Fv
 // STUB: LEMBALL 0x00459130
-bool InpInit()
+bool InternalInpInit()
 {
 	void* storage;
 
@@ -337,7 +337,7 @@ bool InpInit()
 
 // 68K 0x1021332e _INP_Quit__Fv
 // FUNCTION: LEMBALL 0x004591f0
-bool InpQuit()
+bool InternalInpQuit()
 {
 	int result;
 
@@ -371,13 +371,13 @@ void InitSubSystems()
 	BaseStat* stat;
 	void* storage;
 
-	memOk = MemInit();
+	memOk = InternalMemInit();
 	if (memOk == 0) {
-		VsRelAssert("EnoughMemory", "VSINIT.CPP", 0x19e);
+		InternalVsRelAssert("EnoughMemory", "VSINIT.CPP", 0x19e);
 	}
 
-	strmOk = StrmInit();
-	dbgOk = DbgInit();
+	strmOk = InternalStrmInit();
+	dbgOk = InternalDbgInit();
 	g_nDebugInitialized = dbgOk;
 	TargetPlatformServicesInit();
 
@@ -390,19 +390,19 @@ void InitSubSystems()
 
 	g_nInitAllocBaseline = g_pMasterArena->GetAllocSize();
 
-	inpOk = InpInit();
+	inpOk = InternalInpInit();
 	*g_pSysOutput << "_INP_Init   : " << OkFailed(inpOk) << "...\n";
 
-	timeOk = TimeInit();
+	timeOk = InternalTimeInit();
 	*g_pSysOutput << "_TIME_Init  : " << OkFailed(timeOk) << "...\n";
 
-	gdiOk = GdiInit();
+	gdiOk = InternalGdiInit();
 	*g_pSysOutput << "_GDI_Init   : " << OkFailed(gdiOk) << "...\t(" << (int) g_preInitActive.m_flags << ")\n";
 
-	statOk = StatInit();
+	statOk = InternalStatInit();
 	*g_pSysOutput << "_STAT_Init  : " << OkFailed(statOk) << "...\n";
 
-	resOk = ResInit();
+	resOk = InternalResInit();
 	*g_pSysOutput << "_RES_Init   : " << OkFailed(resOk) << "...\n";
 
 	storage = operator new(0x20);
@@ -424,19 +424,19 @@ void InitQuitSubSystems()
 	*g_pSysOutput << g_szQuitNewlineSys;
 	*g_pDebugOutput << g_szQuitNewlineDebug;
 	*g_pErrorOutput << g_szQuitNewlineError;
-	ResQuit();
-	StatQuit();
-	TimeQuit();
-	GdiQuit();
-	InpQuit();
+	InternalResQuit();
+	InternalStatQuit();
+	InternalTimeQuit();
+	InternalGdiQuit();
+	InternalInpQuit();
 	if (g_pMasterArena->GetAllocSize() != (unsigned long) g_nInitAllocBaseline) {
 		*g_pErrorOutput << g_szMemoryLeakDump;
 		g_pMasterArena->StreamOut(*g_pErrorOutput) << g_szMemoryLeakNewline;
 	}
 	TargetPlatformServicesQuit();
-	DbgQuit(g_nStartupNoWait);
-	StrmQuit();
-	MemQuit();
+	InternalDbgQuit(g_nStartupNoWait);
+	InternalStrmQuit();
+	InternalMemQuit();
 }
 
 // 68K 0x102138be INIT_CheckOptions__FPc
@@ -572,7 +572,7 @@ int InitMain(char* p_arg0)
 	}
 	result = setjmp(g_vsDebugJumpBuffer);
 	if (result != 0) {
-		DbgQuit(g_nStartupNoWait);
+		InternalDbgQuit(g_nStartupNoWait);
 		return result;
 	}
 	mainResult = VsMain(g_cParsedArgs, g_apszParsedArgs);
@@ -582,7 +582,7 @@ int InitMain(char* p_arg0)
 
 // 68K 0x10218b78 _STAT_Init__Fv
 // FUNCTION: LEMBALL 0x0045aa80
-bool StatInit()
+bool InternalStatInit()
 {
 	void* storage;
 
@@ -600,7 +600,7 @@ bool StatInit()
 
 // 68K 0x10218bc6 _STAT_Quit__Fv
 // FUNCTION: LEMBALL 0x0045aab0
-bool StatQuit()
+bool InternalStatQuit()
 {
 	g_pStatManager->StreamOut(*g_pSysOutput);
 	delete g_pStatManager;
@@ -609,7 +609,7 @@ bool StatQuit()
 
 // 68K 0x10201420 _RES_Init__Fv
 // FUNCTION: LEMBALL 0x0045b900
-bool ResInit()
+bool InternalResInit()
 {
 	ResourceTypeList* list;
 	BasePalManager* palManager;
@@ -671,7 +671,7 @@ bool ResInit()
 
 // 68K 0x10201580 _RES_Quit__Fv
 // FUNCTION: LEMBALL 0x0045ba50
-bool ResQuit()
+bool InternalResQuit()
 {
 	ResourceTypeList* list;
 
@@ -699,21 +699,21 @@ bool ResQuit()
 
 // 68K 0x10110112 _TIME_Init__Fv
 // FUNCTION: LEMBALL 0x00462e60
-bool TimeInit()
+bool InternalTimeInit()
 {
 	return 1;
 }
 
 // 68K 0x1011012e _TIME_Quit__Fv
 // FUNCTION: LEMBALL 0x00462e70
-bool TimeQuit()
+bool InternalTimeQuit()
 {
 	return 1;
 }
 
 // 68K 0x10107ab6 _GDI_Init__Fv
 // FUNCTION: LEMBALL 0x0046ba80
-bool GdiInit()
+bool InternalGdiInit()
 {
 	void* storage;
 	Cursor* cursor;
@@ -764,7 +764,7 @@ bool GdiInit()
 
 // 68K 0x10107ca0 _GDI_Quit__Fv
 // FUNCTION: LEMBALL 0x0046bb70
-bool GdiQuit()
+bool InternalGdiQuit()
 {
 	Surface* surface;
 	GdiDevice* device;
@@ -798,7 +798,7 @@ bool GdiQuit()
 
 // 68K 0x1010fd50 _MEM_Init__Fv
 // STUB: LEMBALL 0x0046f060
-bool MemInit()
+bool InternalMemInit()
 {
 	void* locked;
 	void* storage;
@@ -844,7 +844,7 @@ bool MemInit()
 
 // 68K 0x1010ff2e _MEM_Quit__Fv
 // FUNCTION: LEMBALL 0x0046f120
-bool MemQuit()
+bool InternalMemQuit()
 {
 	SmallMemory* smallMemory;
 	unsigned int lastError;
@@ -1058,7 +1058,7 @@ unsigned int __stdcall DebugMessageThreadMain(void* p_unused)
 
 // 68K 0x1010fd1a _DBG_Init__Fv
 // FUNCTION: LEMBALL 0x00472be0
-bool DbgInit()
+bool InternalDbgInit()
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		g_pDebugSyncEvent = CreateEventA(0, 0, 0, "Sync_Debug");
@@ -1077,7 +1077,7 @@ bool DbgInit()
 
 // 68K 0x1010fd34 _DBG_Quit__FUc
 // FUNCTION: LEMBALL 0x00472c70
-bool DbgQuit(unsigned int p_force)
+bool InternalDbgQuit(unsigned int p_force)
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		if (p_force == 0) {

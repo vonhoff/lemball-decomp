@@ -64,7 +64,7 @@ void Text::Draw(Gdi* p_gdi)
 	p_gdi->AddToList(this);
 }
 
-// 68K 0x10101dac __dt__5CTextFv
+// 68K 0x10100b0a __dt__5CTextFv
 Text::~Text()
 {
 }

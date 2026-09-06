@@ -717,7 +717,7 @@ void Surface::NewBitmap(const VsRect& p_rect)
 			}
 		}
 		if (m_platformBitmap == 0) {
-			VsRelAssert("AllocatedBitmap", "VSGDI.CPP", 736);
+			InternalVsRelAssert("AllocatedBitmap", "VSGDI.CPP", 736);
 		}
 		TargetDibContext* dib = (TargetDibContext*) m_platformBitmap;
 		SetBitsBase(dib->GetBits(), dib->GetStride());

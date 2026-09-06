@@ -151,7 +151,7 @@ void PvButton::CheckForceDraw()
 
 // 68K 0x1020fdc2 _DrawButton__9CPVButtonFv
 // FUNCTION: LEMBALL 0x00467ef0
-void PvButton::_DrawButton()
+void PvButton::InternalDrawButton()
 {
 	if (m_pressed != m_lastDrawnPressed) {
 		m_gdi->m_renderTarget->m_flag78 = 1;
@@ -187,7 +187,7 @@ void PvButton::OnEnter()
 	if (m_buttonState[0] != 0 || m_buttonState[3] != 0) {
 		m_pressed = 1;
 	}
-	_OnEnterButton();
+	InternalOnEnterButton();
 	OnEnterButton();
 }
 
@@ -196,7 +196,7 @@ void PvButton::OnEnter()
 void PvButton::OnExit()
 {
 	m_pressed = 0;
-	_OnExitButton();
+	InternalOnExitButton();
 	OnExitButton();
 	if (m_autoDraw == 0) {
 		g_nGunButtonsRedrawPending = 1;
@@ -237,7 +237,7 @@ void PvButton::OnButtonDown(const VsPoint& p_point, int p_flags)
 	clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
 	m_clickX = clickPos.m_x;
 	m_clickY = clickPos.m_y;
-	_OnPressed(converted);
+	InternalOnPressed(converted);
 	OnPressed(converted);
 	if (m_autoDraw == 0) {
 		g_nGunButtonsRedrawPending = 1;
@@ -255,7 +255,7 @@ void PvButton::OnButtonUp(const VsPoint& p_point, int p_flags)
 		m_clickX = (short) (p_point.m_x - m_relativeTopLeft.m_x);
 		m_clickY = (short) (p_point.m_y - m_relativeTopLeft.m_y);
 		m_pressed = 0;
-		_OnReleased(converted);
+		InternalOnReleased(converted);
 		OnReleased(converted);
 		if (m_autoDraw == 0) {
 			g_nGunButtonsRedrawPending = 1;
@@ -283,7 +283,7 @@ void PvButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 
 // 68K 0x1021019e _OnReleased__9CPVButtonF12BUTTON_FLAGS
 // FUNCTION: LEMBALL 0x00468180
-void PvButton::_OnReleased(int p_flags)
+void PvButton::InternalOnReleased(int p_flags)
 {
 	Message posted;
 	int converted;
@@ -304,7 +304,7 @@ void PvButton::_OnReleased(int p_flags)
 
 // 68K 0x10210234 _OnPressed__9CPVButtonF12BUTTON_FLAGS
 // FUNCTION: LEMBALL 0x004681f0
-void PvButton::_OnPressed(int p_flags)
+void PvButton::InternalOnPressed(int p_flags)
 {
 	Message posted;
 	int converted;
@@ -325,7 +325,7 @@ void PvButton::_OnPressed(int p_flags)
 
 // 68K 0x102102ca _OnEnterButton__9CPVButtonFv
 // FUNCTION: LEMBALL 0x00468260
-void PvButton::_OnEnterButton()
+void PvButton::InternalOnEnterButton()
 {
 	Message posted;
 
@@ -340,7 +340,7 @@ void PvButton::_OnEnterButton()
 
 // 68K 0x10210330 _OnExitButton__9CPVButtonFv
 // FUNCTION: LEMBALL 0x004682b0
-void PvButton::_OnExitButton()
+void PvButton::InternalOnExitButton()
 {
 	Message posted;
 

@@ -274,7 +274,7 @@ void NetworkOptionsDrawer::UnLoad()
 	}
 }
 
-// 68K 0x108067f4 __dt__21CNetworkOptionsDrawerFv
+// 68K 0x10806800 __dt__21CNetworkOptionsDrawerFv
 // FUNCTION: LEMBALL 0x004535c0
 NetworkOptionsDrawer::~NetworkOptionsDrawer()
 {

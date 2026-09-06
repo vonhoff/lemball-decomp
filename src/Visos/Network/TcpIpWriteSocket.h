@@ -10,7 +10,8 @@
 // VTABLE: LEMBALL 0x0049a088 TargetNetworkWindow
 // VTABLE: LEMBALL 0x0049a090 BaseSocket
 // VTABLE: LEMBALL 0x0049a0c0 TcpIpWriteSocket
-// 68K 0x10106290 __dt__17CTCPIPWriteSocketFv; x86 emits only the synthetic deleting destructor.
+// 68K 0x10106290 __dt__17CTCPIPWriteSocketFv
+// x86 emits only the synthetic deleting destructor.
 class TcpIpWriteSocket : public virtual BaseCommonSocket, public virtual WriteSocket, public virtual TcpIpCommonSocket {
 public:
 	TcpIpWriteSocket();

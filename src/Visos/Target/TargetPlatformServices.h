@@ -9,7 +9,7 @@ class TargetPlatformServices {
 public:
 	TargetPlatformServices();
 	~TargetPlatformServices();
-	char* GetCDDir(const char* p_requiredFile);
+	char* GetCdDir(const char* p_requiredFile);
 	bool WriteRegistryFlag(const char* p_subkey, int p_enabled);
 };
 

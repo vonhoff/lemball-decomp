@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
-"""Compare source class/method names with adjacent // 68K Metrowerks symbols.
+"""Compare source names with adjacent // 68K Metrowerks symbols.
 
 python tools/check_names.py [src/path ...] [--strict] [--json] [--fail]
-python tools/check_names.py --research-root C:/Research
 python tools/check_names.py --inventory path/to/68K.functions.tsv
+python tools/check_names.py --research-root C:/Research
 
-The dropped class C prefix is allowed. Case-only differences are counted and
-shown with --strict. Underscores are significant. This checks recorded symbol
-comments, not ABI equivalence or the correctness of their x86 associations.
-With --inventory or --research-root, the unnormalized inventory symbol is the
-expected name; source comments are cross-checked separately. Scaffold naming
-rules are not used. Unsupported symbols and comments without an adjacent declaration are reported.
-No source is changed. --fail returns 1 for reported differences, 2 for gaps.
+Expected form: PascalCase, drop C/tag/t prefixes, '_' is a word separator,
+leading '_' becomes Internal. INTENTIONAL lists known Mac/Windows divergences.
+--strict also reports case-only diffs. No source is changed.
 """
 
 import argparse
@@ -23,25 +19,41 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 MARK = re.compile(r"//\s*68K\s+(0x[0-9a-fA-F]+)\s+(\S+)")
+FUNCTION = re.compile(
+    r"(?:(?P<owner>[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*)\s*::\s*)?"
+    r"(?P<method>operator\s*(?:new\b|delete\b|[^\w\s(]+)|~?[A-Za-z_]\w*)\s*\("
+)
 OPERATORS = {
     "__as": "operator=", "__ls": "operator<<", "__nw": "operatornew",
     "__dl": "operatordelete", "__apl": "operator+=", "__pl": "operator+",
     "__eq": "operator==", "__gt": "operator>", "__ml": "operator*",
 }
-FUNCTION = re.compile(
-    r"(?:(?P<owner>[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*)\s*::\s*)?"
-    r"(?P<method>operator\s*(?:new\b|delete\b|[^\w\s(]+)|~?[A-Za-z_]\w*)\s*\("
+ACRONYMS = (
+    ("TCPIP", "TcpIp"), ("MRAM", "Mram"), ("GDI", "Gdi"), ("RAM", "Ram"),
+    ("CD", "Cd"), ("PV", "Pv"), ("VS", "Vs"), ("AI", "Ai"),
 )
+# Do not rename source to match 68K for these; see AGENTS.md Naming.
+INTENTIONAL = {
+    ("Wnd", "OnZoomBox", "Wnd", "OnDriverChange"),
+    ("PreviewDrawer::Prims", "<constructor>", "PreviewDrawerPrims", "<constructor>"),
+    ("PreviewDrawer::Prims", "<destructor>", "PreviewDrawerPrims", "<destructor>"),
+    ("SuccFailDrawer::Prims", "<constructor>", "SuccFailDrawerPrims", "<constructor>"),
+    ("SuccFailDrawer::Prims", "<destructor>", "SuccFailDrawerPrims", "<destructor>"),
+    ("CdLoadAnim", "Draw", "CdLoadAnimDraw", "Draw"),
+    ("CdLoadAnim", "Draw", "CdLoadAnimProgress", "Draw"),
+    ("Process", "<destructor>", "BaseProcess", "<destructor>"),
+    ("", "GetCdDir", "TargetPlatformServices", "GetCdDir"),
+}
 
 
 def decode_symbol(symbol):
-    """Decode only a function's name and length-prefixed owner, never its ABI."""
     split = re.search(r"__(?=\d|Q\d|F)", symbol)
     if split is None:
+        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", symbol):
+            return "", symbol
         raise ValueError("unsupported symbol form")
     method, rest = symbol[:split.start()], symbol[split.end():]
-    owners = []
-    count = 1
+    owners, count = [], 1
     if rest.startswith("Q"):
         if len(rest) < 2 or not rest[1].isdigit():
             raise ValueError("unsupported qualified owner")
@@ -71,19 +83,70 @@ def decode_symbol(symbol):
     return "::".join(owners), method
 
 
+def normalize_word(word):
+    for acronym, pascal in ACRONYMS:
+        if word.startswith(acronym):
+            rest = word[len(acronym):]
+            if rest and rest[0].islower():
+                rest = rest[0].upper() + rest[1:]
+            word = pascal + rest
+            break
+
+    def replace_run(match):
+        run = match.group(0)
+        nxt = word[match.end():match.end() + 1]
+        if nxt and nxt.islower():
+            return run[0] + run[1:-1].lower() + run[-1]
+        return run[0] + run[1:].lower()
+
+    return re.sub(r"[A-Z]{2,}", replace_run, word)
+
+
+def normalize_segment(segment):
+    for prefix in ("tag", "t", "C"):
+        if (len(segment) > len(prefix) and segment.startswith(prefix)
+                and segment[len(prefix)].isupper()):
+            segment = segment[len(prefix):]
+            break
+    return "".join(normalize_word(part) for part in segment.split("_") if part)
+
+
+def class_name(name):
+    return "::".join(normalize_segment(part) for part in name.split("::"))
+
+
+def method_name(name):
+    if name.startswith("<") or name.startswith("operator"):
+        return name
+    internal = name.startswith("_")
+    body = "".join(
+        n[:1].upper() + n[1:]
+        for part in name.split("_") if part
+        for n in [normalize_segment(part)] if n
+    )
+    return "Internal" + body if internal else body
+
+
+def method_fold(name):
+    if name.startswith("<") or name.startswith("operator"):
+        return name
+    internal = name.startswith("_")
+    body = "".join(part for part in name.split("_") if part)
+    return ("Internal" + body if internal else body).lower()
+
+
 def mask_comments_and_strings(text):
     pattern = r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\''
     return re.sub(pattern, lambda m: re.sub(r"[^\n]", " ", m[0]), text)
 
 
 def class_ranges(code):
-    ends, stack = {}, []
+    ends, stack, result = {}, [], []
     for pos, char in enumerate(code):
         if char == "{":
             stack.append(pos)
         elif char == "}" and stack:
             ends[stack.pop()] = pos
-    result = []
     for match in re.finditer(r"\b(?:class|struct)\s+(\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{", code):
         opening = match.end() - 1
         if opening in ends:
@@ -95,8 +158,6 @@ def adjacent_name(code, offset, ranges):
     start = offset
     while start < len(code) and code[start].isspace():
         start += 1
-    # Stop at the next declaration/body boundary. Never associate a comment
-    # after a class with a function in the next class or function body.
     end = re.search(r"[;{}#]", code[start:])
     declaration = code[start:start + end.start()] if end else code[start:]
     match = FUNCTION.search(declaration)
@@ -104,20 +165,14 @@ def adjacent_name(code, offset, ranges):
         raise ValueError("no adjacent function declaration")
     owner = match["owner"]
     if not owner:
-        enclosing = [r for r in ranges if r[0] < start < r[1]]
-        owner = "::".join(r[2] for r in enclosing)
+        owner = "::".join(r[2] for r in ranges if r[0] < start < r[1])
     method = re.sub(r"\s+", "", match["method"])
-    if owner and method == owner.split("::")[-1]:
+    leaf = owner.split("::")[-1] if owner else ""
+    if owner and method == leaf:
         method = "<constructor>"
-    elif owner and method == "~" + owner.split("::")[-1]:
+    elif owner and method == "~" + leaf:
         method = "<destructor>"
     return owner, method
-
-
-def class_name(name):
-    # Only the established C class prefix is ignored. Preserve underscores.
-    return "::".join(part[1:] if re.match(r"C[A-Z]", part) else part
-                     for part in name.split("::"))
 
 
 def scan(path, symbols=None):
@@ -129,25 +184,43 @@ def scan(path, symbols=None):
         row = {"path": str(path), "line": text.count("\n", 0, mark.start()) + 1,
                "address_68k": mark[1], "symbol": mark[2]}
         try:
-            inventory_symbol = None if symbols is None else symbols.get(int(mark[1], 16))
-            row["expected_symbol"] = inventory_symbol or mark[2].rstrip(";")
-            row["name_evidence"] = "inventory" if inventory_symbol else "source comment"
-            expected = decode_symbol(row["expected_symbol"])
+            inventory = None if symbols is None else symbols.get(int(mark[1], 16))
+            expected_symbol = inventory or mark[2].rstrip(";")
+            expected = decode_symbol(expected_symbol)
             line_end = text.find("\n", mark.end())
             actual = adjacent_name(code, len(text) if line_end < 0 else line_end, ranges)
-            row.update(expected_class=expected[0], expected_method=expected[1],
-                       actual_class=actual[0], actual_method=actual[1])
-            differences = []
-            for kind, wanted, found in [("class", expected[0] if expected[0] == actual[0]
-                                        else class_name(expected[0]), actual[0]),
-                                        ("method", expected[1], actual[1])]:
-                if wanted != found:
-                    differences.append(kind + ("-case" if wanted.lower() == found.lower() else "-name"))
-            row["differences"] = differences
-            row["status"] = ("mismatch" if any(d.endswith("-name") for d in differences)
-                             else "case" if differences else "match")
+            wanted_class = expected[0] if expected[0] == actual[0] else class_name(expected[0])
+            wanted_method = method_name(expected[1])
+            diffs = []
+            if wanted_class != actual[0]:
+                diffs.append("class-case" if wanted_class.lower() == actual[0].lower() else "class-name")
+            if wanted_method != actual[1]:
+                if method_fold(expected[1]) != method_fold(actual[1]) or "_" in actual[1]:
+                    diffs.append("method-name")
+                else:
+                    diffs.append("method-case")
+            key = (wanted_class, wanted_method, actual[0], actual[1])
+            if diffs and key in INTENTIONAL:
+                status = "intentional"
+            elif any(d.endswith("-name") for d in diffs):
+                status = "mismatch"
+            elif diffs:
+                status = "case"
+            else:
+                status = "match"
+            row.update(wanted_class=wanted_class, wanted_method=wanted_method,
+                       actual_class=actual[0], actual_method=actual[1],
+                       differences=diffs, status=status,
+                       expected_symbol=expected_symbol,
+                       name_evidence="inventory" if inventory else "source comment")
         except ValueError as error:
-            row.update(status="unresolved", reason=str(error))
+            reason = str(error)
+            symbol = row["symbol"].rstrip(";")
+            after = text[mark.end():mark.end() + 500]
+            synthetic = (reason == "no adjacent function declaration"
+                         and symbol.startswith(("__ct__", "__dt__"))
+                         and re.search(r"SYNTHETIC:|^\s*(?:class|struct)\s+\w+", after, re.M))
+            row.update(status="synthetic" if synthetic else "unresolved", reason=reason)
         rows.append(row)
     return rows
 
@@ -186,7 +259,9 @@ def check_research(rows, symbols, pairs=None):
                 break
             if re.match(r"//\s*68K\s", stripped):
                 break
-            match = re.search(r"//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s+LEMBALL\s+(0x[0-9a-fA-F]+)", line)
+            match = re.search(
+                r"//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s+LEMBALL\s+(0x[0-9a-fA-F]+)",
+                line)
             if match:
                 windows = int(match[1], 16)
                 break
@@ -197,13 +272,14 @@ def check_research(rows, symbols, pairs=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("paths", type=Path, nargs="*", default=[ROOT / "src"])
-    parser.add_argument("--strict", action="store_true", help="also report case-only differences")
-    parser.add_argument("--json", action="store_true", help="emit all comparisons, including matches")
-    parser.add_argument("--fail", action="store_true", help="return nonzero for findings or coverage gaps")
-    parser.add_argument("--research-root", type=Path, help="also verify inventory symbols and confirmed address pairs")
-    parser.add_argument("--inventory", type=Path, help="use an unnormalized Ghidra 68K function inventory TSV")
+    parser.add_argument("--strict", action="store_true")
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--fail", action="store_true")
+    parser.add_argument("--research-root", type=Path)
+    parser.add_argument("--inventory", type=Path)
     args = parser.parse_args()
     files = set()
     for path in args.paths:
@@ -232,12 +308,11 @@ def main():
                 or (args.strict and r["status"] == "case") or r.get("evidence_findings")]
     if args.json:
         print(json.dumps({"files": len(files), "annotations": len(rows), "counts": counts,
-                          "evidence_findings": evidence_count,
-                          "comparisons": rows}, indent=2))
+                          "evidence_findings": evidence_count, "comparisons": rows}, indent=2))
     else:
         for row in selected:
             detail = row.get("reason") or (
-                f'{row["expected_class"]}::{row["expected_method"]} -> '
+                f'{row["wanted_class"]}::{row["wanted_method"]} -> '
                 f'{row["actual_class"]}::{row["actual_method"]} '
                 f'({", ".join(row["differences"])})')
             print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{row["symbol"]}]')

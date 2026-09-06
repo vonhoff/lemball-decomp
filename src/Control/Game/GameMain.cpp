@@ -98,7 +98,7 @@ int VsMain(int p_argc, char** p_argv)
 		g_pSentinel = 0;
 	}
 
-	DemoInit(0x19000);
+	InternalDemoInit(0x19000);
 	SetGameDefaults();
 	if (DoCommandLine(p_argc, p_argv) == 1) {
 		game = 0;
@@ -115,7 +115,7 @@ int VsMain(int p_argc, char** p_argv)
 		}
 	}
 
-	DemoQuit();
+	InternalDemoQuit();
 	operator delete(g_pSentinel);
 	operator delete(g_pVSTrig);
 	*g_pDebugOutput << g_szGameClosedDown;

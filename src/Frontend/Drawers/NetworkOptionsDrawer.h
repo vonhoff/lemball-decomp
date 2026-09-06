@@ -35,7 +35,8 @@ public:
 	bool HighlightNextEntry();
 	bool HighlightPreviousEntry();
 	bool ProcessMessages(Message* p_message);
-	virtual void DrawAnims();        // vtable+0x48
+	virtual void DrawAnims(); // vtable+0x48
+	// 68K 0x10806800 __dt__21CNetworkOptionsDrawerFv
 	virtual ~NetworkOptionsDrawer(); // vtable+0x00
 	void DrawBackGround();
 	void DrawEntry(unsigned long p_index, int& p_value, int p_remap);
@@ -93,7 +94,6 @@ private:
 	unsigned int m_handlerCount;         // 0x434
 };
 
-// 68K 0x10806800 __dt__21CNetworkOptionsDrawerFv
 // SYNTHETIC: LEMBALL 0x00455de0
 // NetworkOptionsDrawer::`scalar deleting destructor'
 

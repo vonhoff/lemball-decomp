@@ -145,14 +145,14 @@ PvWnd::~PvWnd()
 void PvWnd::SetInnerWindow(const VsRect& p_rect)
 {
 	m_innerRect = p_rect;
-	_OnSize();
+	InternalOnSize();
 }
 
 // 68K 0x10216b5e SetRect__6CPVWndFRC7CVSRect
 // FUNCTION: LEMBALL 0x00465df0
 void PvWnd::SetRect(const VsRect& p_rect)
 {
-	_SetRect(p_rect);
+	InternalSetRect(p_rect);
 }
 
 // 68K 0x10216b98 SetRectInnerZoom__6CPVWndFRC7CVSRectRC7CVSRecti
@@ -162,7 +162,7 @@ void PvWnd::SetRectInnerZoom(const VsRect& p_rect, const VsRect& p_innerRect, in
 	int oldZoom = m_zoom;
 	if (p_zoom != oldZoom) {
 		m_zoom = p_zoom;
-		_OnZoom(oldZoom);
+		InternalOnZoom(oldZoom);
 		OnZoom(oldZoom);
 	}
 	m_innerRect = p_innerRect;
@@ -214,7 +214,7 @@ unsigned int PvWnd::InitHotAreaList()
 
 // 68K 0x10216d90 _OnCreate__6CPVWndFv
 // FUNCTION: LEMBALL 0x00465f80
-void PvWnd::_OnCreate()
+void PvWnd::InternalOnCreate()
 {
 	WindowOwnerList* list;
 	WindowOwnerNode* node;
@@ -246,7 +246,7 @@ void PvWnd::_OnCreate()
 
 // 68K 0x10216e16 _OnDestroy__6CPVWndFv
 // FUNCTION: LEMBALL 0x00465fe0
-void PvWnd::_OnDestroy()
+void PvWnd::InternalOnDestroy()
 {
 	WindowOwnerList* ownerList;
 	WindowOwnerNode* node;
@@ -295,7 +295,7 @@ void PvWnd::_OnDestroy()
 
 // 68K 0x10216edc _OnSize__6CPVWndFv
 // FUNCTION: LEMBALL 0x00466060
-void PvWnd::_OnSize()
+void PvWnd::InternalOnSize()
 {
 	HotAreaList* list;
 	VsRect area;
@@ -358,19 +358,19 @@ void PvWnd::_OnSize()
 
 // 68K 0x10217024 _OnMove__6CPVWndFv
 // STUB: LEMBALL 0x00466160
-void PvWnd::_OnMove()
+void PvWnd::InternalOnMove()
 {
 }
 
 // 68K 0x1021716c _OnMove__6CPVWndF8CVSPoint
 // STUB: LEMBALL 0x00466260
-void PvWnd::_OnMove(const VsPoint& p_point)
+void PvWnd::InternalOnMove(const VsPoint& p_point)
 {
 }
 
 // 68K 0x102171cc _OnZoom__6CPVWndFi
 // FUNCTION: LEMBALL 0x00466280
-void PvWnd::_OnZoom(int p_oldZoom)
+void PvWnd::InternalOnZoom(int p_oldZoom)
 {
 	if (m_hotAreaList != 0) {
 		m_hotAreaList->m_scale = m_zoom;
@@ -389,9 +389,9 @@ void PvWnd::SetZoom(int p_zoom)
 	int oldZoom = m_zoom;
 	if (p_zoom != oldZoom) {
 		m_zoom = p_zoom;
-		_OnZoom(oldZoom);
+		InternalOnZoom(oldZoom);
 		OnZoom(oldZoom);
-		_OnSize();
+		InternalOnSize();
 		OnSize();
 	}
 }
@@ -410,7 +410,7 @@ void PvWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
 
 // 68K 0x10117e2e _SetRect__6CPVWndFRC7CVSRect
 // FUNCTION: LEMBALL 0x00466300
-void PvWnd::_SetRect(const VsRect& p_rect)
+void PvWnd::InternalSetRect(const VsRect& p_rect)
 {
 	const short* position;
 
@@ -428,7 +428,7 @@ void PvWnd::_SetRect(const VsRect& p_rect)
 
 // 68K 0x10117ef4 _SetRelTL__6CPVWndFRC8CVSPoint
 // FUNCTION: LEMBALL 0x00466330
-void PvWnd::_SetRelTL(const VsPoint& p_point)
+void PvWnd::InternalSetRelTL(const VsPoint& p_point)
 {
 }
 

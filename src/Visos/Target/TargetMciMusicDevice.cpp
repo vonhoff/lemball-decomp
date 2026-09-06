@@ -161,7 +161,7 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	else {
 		cdDir = 0;
 		if (g_pTargetPlatformServices != 0) {
-			cdDir = g_pTargetPlatformServices->GetCDDir(musicName);
+			cdDir = g_pTargetPlatformServices->GetCdDir(musicName);
 		}
 		if (cdDir == 0) {
 			strcpy(fullPath, g_szCurrentDirectory);

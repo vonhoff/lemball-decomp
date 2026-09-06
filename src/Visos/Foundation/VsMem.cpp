@@ -21,7 +21,7 @@ void* InternalNew(unsigned long p_size)
 		}
 	}
 	if (!g_pMasterArena->Allocate(&result, p_size, g_pCurrentAllocDescription)) {
-		VsRelAssert("EnoughMemory", "VSMEM.CPP", 1677);
+		InternalVsRelAssert("EnoughMemory", "VSMEM.CPP", 1677);
 	}
 	return result;
 }
@@ -37,7 +37,7 @@ void InternalDelete(void* p_ptr)
 	if (g_pMasterArena->Free((unsigned char*) p_ptr)) {
 		return;
 	}
-	VsRelAssert("EnoughMemory", "VSMEM.CPP", 1738);
+	InternalVsRelAssert("EnoughMemory", "VSMEM.CPP", 1738);
 }
 
 // 68K 0x10215c5e __nw__FUl

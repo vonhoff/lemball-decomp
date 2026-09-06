@@ -50,7 +50,7 @@ void DepressedButton::OnExitButton()
 
 // 68K 0x10210394 _DrawButton__16CDepressedButtonFv
 // FUNCTION: LEMBALL 0x00468300
-void DepressedButton::_DrawButton()
+void DepressedButton::InternalDrawButton()
 {
 	if (m_depressed != m_lastDrawnDepressed || m_gdi->m_renderTarget->HasBackBuff() != 0) {
 		m_gdi->m_renderTarget->m_flag78 = 1;
@@ -71,7 +71,7 @@ void DepressedButton::OnPaint(const VsRect& p_rect)
 		(m_gdi->m_primitiveCount == 0 &&
 		 (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed))) {
 		if (GetSizeStatus() != 0) {
-			_DrawButton();
+			InternalDrawButton();
 			DrawButton();
 		}
 		changeList = m_gdi->m_renderTarget->GetChangeList();

@@ -9,8 +9,8 @@
 class EnemyGroupManager : public GenericGroupManager {
 public:
 	EnemyGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2);
-	LoadEnemyDataAdditionalAction* LoadLevelAdditional_Waypoint(LoadEnemyDataAdditionalAction* p_data,
-																WaypointInformation*& p_waypointInfo);
+	LoadEnemyDataAdditionalAction* LoadLevelAdditionalWaypoint(LoadEnemyDataAdditionalAction* p_data,
+															   WaypointInformation*& p_waypointInfo);
 	void LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSize, unsigned char p_skip);
 	void Restart();
 };

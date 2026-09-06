@@ -33,14 +33,14 @@ public:
 	virtual bool GetMenu(int& p_menuResourceId, MenuList*** p_menuLists);                // vtable+0x0c
 	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists);                 // vtable+0x10
 	virtual unsigned int InitHotAreaList();                                              // vtable+0x14
-	virtual void _OnCreate();                                                            // vtable+0x18
-	virtual void _OnDestroy();                                                           // vtable+0x1c
-	virtual void _OnSize();                                                              // vtable+0x20
-	virtual void _OnMove();                                                              // vtable+0x28
-	virtual void _OnMove(const VsPoint& p_point);                                        // vtable+0x24
-	virtual void _OnZoom(int p_oldZoom);                                                 // vtable+0x2c
-	virtual void _SetRect(const VsRect& p_rect);                                         // vtable+0x30
-	virtual void _SetRelTL(const VsPoint& p_point);                                      // vtable+0x34
+	virtual void InternalOnCreate();                                                     // vtable+0x18
+	virtual void InternalOnDestroy();                                                    // vtable+0x1c
+	virtual void InternalOnSize();                                                       // vtable+0x20
+	virtual void InternalOnMove();                                                       // vtable+0x28
+	virtual void InternalOnMove(const VsPoint& p_point);                                 // vtable+0x24
+	virtual void InternalOnZoom(int p_oldZoom);                                          // vtable+0x2c
+	virtual void InternalSetRect(const VsRect& p_rect);                                  // vtable+0x30
+	virtual void InternalSetRelTL(const VsPoint& p_point);                               // vtable+0x34
 	virtual void Move(const VsPoint& p_point) = 0;                                       // vtable+0x38
 	virtual void OnCreate() = 0;                                                         // vtable+0x3c
 	virtual void OnDestroy() = 0;                                                        // vtable+0x40
