@@ -79,7 +79,7 @@ void IceManager::Add(unsigned short p_id,
 					 const Coord3d& p_cornerB,
 					 int p_velocityX,
 					 int p_velocityY,
-					 unsigned char p_initialSwitched)
+					 unsigned int p_initialSwitched)
 {
 }
 
@@ -115,7 +115,7 @@ void IceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char 
 			if (m_ai->m_levelVersion >= 10) {
 				initialSwitched = *data++;
 			}
-			Add(id, cornerA, cornerB, velocityX, velocityY, (unsigned char) initialSwitched);
+			Add(id, cornerA, cornerB, velocityX, velocityY, initialSwitched);
 			remaining--;
 		} while (remaining != 0);
 	}

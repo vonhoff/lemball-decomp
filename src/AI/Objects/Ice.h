@@ -20,7 +20,7 @@ public:
 			 const Coord3d& p_cornerB,
 			 int p_velocityX,
 			 int p_velocityY,
-			 unsigned char p_initialSwitched);
+			 unsigned int p_initialSwitched);
 	void Switch();
 	void Switched();
 

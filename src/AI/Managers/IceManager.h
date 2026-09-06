@@ -19,7 +19,7 @@ public:
 			 const Coord3d& p_cornerB,
 			 int p_velocityX,
 			 int p_velocityY,
-			 unsigned char p_initialSwitched);
+			 unsigned int p_initialSwitched);
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Switch(int p_message, int p_id);
