@@ -9,19 +9,19 @@
 
 // Style-sensitive resource IDs written by SetupStyleSensitive (0x00432c80).
 // GLOBAL: LEMBALL 0x004a7850
-unsigned int g_unk004a7850;
+unsigned int g_groundBlox1ResourceId;
 // GLOBAL: LEMBALL 0x004a7854
-unsigned int g_unk004a7854;
+unsigned int g_groundBlox2ResourceId;
 // GLOBAL: LEMBALL 0x004a7858
-unsigned int g_unk004a7858;
+unsigned int g_groundBlox3ResourceId;
 // GLOBAL: LEMBALL 0x004a785c
-unsigned int g_unk004a785c;
+unsigned int g_groundBlox4ResourceId;
 // GLOBAL: LEMBALL 0x004a7860
-unsigned int g_unk004a7860;
+unsigned int g_groundBlox5ResourceId;
 // GLOBAL: LEMBALL 0x004a7864
-unsigned int g_unk004a7864;
+unsigned int g_groundBlox6ResourceId;
 // GLOBAL: LEMBALL 0x004a7868
-unsigned int g_unk004a7868;
+unsigned int g_groundBlox7ResourceId;
 
 // 68K 0x10b09d40 __ct__20CLemmingAnimsManagerFP4CGDIP14CMain2DDisplayP3CAI
 // STUB: LEMBALL 0x00432b50
@@ -148,26 +148,26 @@ void LemmingAnimsManager::Unload()
 		UnLoadAnimation(RES_GAME_ELECTRIC);
 		UnLoadAnimation(RES_GAME_EMBERS);
 		UnLoadAnimation(RES_GAME_CONVEYOR);
-		if (g_unk004a7850 != 0) {
-			UnLoadAnimation(g_unk004a7850);
+		if (g_groundBlox1ResourceId != 0) {
+			UnLoadAnimation(g_groundBlox1ResourceId);
 		}
-		if (g_unk004a7854 != 0) {
-			UnLoadAnimation(g_unk004a7854);
+		if (g_groundBlox2ResourceId != 0) {
+			UnLoadAnimation(g_groundBlox2ResourceId);
 		}
-		if (g_unk004a7858 != 0) {
-			UnLoadAnimation(g_unk004a7858);
+		if (g_groundBlox3ResourceId != 0) {
+			UnLoadAnimation(g_groundBlox3ResourceId);
 		}
-		if (g_unk004a785c != 0) {
-			UnLoadAnimation(g_unk004a785c);
+		if (g_groundBlox4ResourceId != 0) {
+			UnLoadAnimation(g_groundBlox4ResourceId);
 		}
-		if (g_unk004a7860 != 0) {
-			UnLoadAnimation(g_unk004a7860);
+		if (g_groundBlox5ResourceId != 0) {
+			UnLoadAnimation(g_groundBlox5ResourceId);
 		}
-		if (g_unk004a7864 != 0) {
-			UnLoadAnimation(g_unk004a7864);
+		if (g_groundBlox6ResourceId != 0) {
+			UnLoadAnimation(g_groundBlox6ResourceId);
 		}
-		if (g_unk004a7868 != 0) {
-			UnLoadAnimation(g_unk004a7868);
+		if (g_groundBlox7ResourceId != 0) {
+			UnLoadAnimation(g_groundBlox7ResourceId);
 		}
 		if (g_anGroundStyleResourceIds[0] != 0) {
 			UnLoadAnimation(g_anGroundStyleResourceIds[0]);

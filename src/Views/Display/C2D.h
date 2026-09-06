@@ -135,7 +135,9 @@ private:
 	unsigned char* m_remapTables[4];                // 0x54
 	BaseRemap* m_remaps[5];                         // 0x64
 	TextManager* m_textManager;                     // 0x78
-	undefined m_pad0x7c[0x110];                     // 0x7c
+	undefined m_pad0x7c[0xea];                      // 0x7c
+	short m_groundAnimationFrame;                   // 0x166
+	undefined m_pad0x168[0x24];                     // 0x168
 	unsigned int m_mouseButtonDown;                 // 0x18c
 	undefined m_pad0x190[0x14];                     // 0x190
 	unsigned int m_cursorState;                     // 0x1a4

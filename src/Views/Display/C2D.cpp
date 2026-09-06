@@ -5,6 +5,7 @@
 #include "../../AI/Objects/PlayerLemming.h"
 #include "../../AI/Objects/ViewData.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Frontend/Resources/FrontendResourceLoader.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Resources/Manifest.h"
@@ -532,9 +533,90 @@ bool C2D::GetPauser()
 }
 
 // 68K 0x10b01120 DrawGround__3C2DFii11eObjectTypeUs
-// STUB: LEMBALL 0x0043a880
+// FUNCTION: LEMBALL 0x0043a880
 void C2D::DrawGround(int p_x, int p_y, eObjectType p_groundType, unsigned short p_frame)
 {
+	// GLOBAL: LEMBALL 0x0049705c
+	static const short g_treeGroundOffset[] = {0x20, 0x30};
+	// GLOBAL: LEMBALL 0x00497060
+	static const short g_groundOffset[] = {0x10, 0x10};
+
+	int frame;
+
+	switch (p_groundType) {
+	case TERRAIN_TREE:
+		m_lemmingAnims->DrawAnim(p_x - g_treeGroundOffset[0],
+								 p_y - g_treeGroundOffset[1],
+								 g_anGroundStyleResourceIds[3],
+								 p_frame,
+								 0,
+								 0);
+		return;
+	case TERRAIN_BLOX_1:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_groundBlox1ResourceId, p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_2:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_groundBlox2ResourceId, p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_3_SLOPE_SW_STEEP:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_groundBlox3ResourceId, p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_4:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_groundBlox4ResourceId, p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_5:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_groundBlox5ResourceId, p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_6:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_groundBlox6ResourceId, p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_7:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_groundBlox7ResourceId, p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_anGroundStyleResourceIds[0], p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_anGroundStyleResourceIds[4], p_frame, 0, 0);
+		return;
+	case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
+		m_lemmingAnims
+			->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], g_anGroundStyleResourceIds[5], p_frame, 0, 0);
+		return;
+	case TERRAIN_ANIM:
+		m_lemmingAnims->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], RES_GAME_ANIM, p_frame, 0, 0);
+		return;
+	case TERRAIN_FLAME:
+		frame = ((unsigned short) p_x >> 4) + (unsigned short) m_groundAnimationFrame;
+		m_lemmingAnims->DrawAnim(p_x - 0x10, p_y - 0x20, RES_GAME_FLAME, frame % 9, 0, 0);
+		return;
+	case TERRAIN_ELECTRIC:
+		m_lemmingAnims->DrawAnim(p_x - g_groundOffset[0],
+								 p_y - g_groundOffset[1],
+								 RES_GAME_ELECTRIC,
+								 (unsigned short) m_groundAnimationFrame & 3,
+								 0,
+								 0);
+		return;
+	case TERRAIN_EMBERS:
+		m_lemmingAnims->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], RES_GAME_EMBERS, p_frame, 0, 0);
+		return;
+	case TERRAIN_CONVEYOR_VARIANT_A:
+	case TERRAIN_CONVEYOR_VARIANT_B:
+		m_lemmingAnims->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], RES_GAME_CONVEYOR, p_frame, 0, 0);
+		return;
+	default:
+		return;
+	}
 }
 
 // 68K 0x10b015a6 DrawCliff__3C2DFiiii
@@ -737,8 +819,6 @@ void C2D::DrawRocket(ViewData& p_viewData)
 	}
 	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 13, p_viewData.m_positionY - 73, RES_GAME_ROCKET, frame, 0, 0);
 }
-
-#include "../../Frontend/Resources/FrontendResourceLoader.h"
 
 // 68K 0x10b02ede DrawHand__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043c7f0

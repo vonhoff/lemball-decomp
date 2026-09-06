@@ -6,6 +6,14 @@
 #include "../../Visos/Graphics/DrawingMark.h"   // complete type
 #include "../../Visos/Graphics/Primitive.h"     // complete type
 
+extern unsigned int g_groundBlox1ResourceId;
+extern unsigned int g_groundBlox2ResourceId;
+extern unsigned int g_groundBlox3ResourceId;
+extern unsigned int g_groundBlox4ResourceId;
+extern unsigned int g_groundBlox5ResourceId;
+extern unsigned int g_groundBlox6ResourceId;
+extern unsigned int g_groundBlox7ResourceId;
+
 // SIZE 0xb4
 // VTABLE: LEMBALL 0x00496ce0
 // Construction table 0x00496cdc is the embedded load-progress interface at +0x70.
