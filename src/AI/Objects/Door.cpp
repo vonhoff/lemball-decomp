@@ -5,8 +5,8 @@
 #include "../../Map/Base/Map.h"
 
 // 68K 0x106062b0 __ct__5CDoorFv
-// STUB: LEMBALL 0x0040d470
-Door::Door()
+// FUNCTION: LEMBALL 0x0040d470
+Door::Door() : GlobalGameObject(0x19, 0, 0)
 {
 }
 

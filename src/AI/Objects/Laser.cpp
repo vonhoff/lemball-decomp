@@ -1,8 +1,8 @@
 #include "Laser.h"
 
 // 68K 0x10613518 __ct__6CLaserFv
-// STUB: LEMBALL 0x00428890
-Laser::Laser()
+// FUNCTION: LEMBALL 0x00428890
+Laser::Laser() : GlobalGameObject(0x2f, 0, 0)
 {
 }
 

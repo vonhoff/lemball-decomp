@@ -1,8 +1,8 @@
 #include "Trampoline.h"
 
 // 68K 0x10620548 __ct__11CTrampolineFv
-// STUB: LEMBALL 0x0042a990
-Trampoline::Trampoline()
+// FUNCTION: LEMBALL 0x0042a990
+Trampoline::Trampoline() : GlobalGameObject(0x22, 0, 0)
 {
 }
 

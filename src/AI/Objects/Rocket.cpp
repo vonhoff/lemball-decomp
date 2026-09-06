@@ -1,8 +1,8 @@
 #include "Rocket.h"
 
 // 68K 0x1061d8ce __ct__7CRocketFv
-// STUB: LEMBALL 0x004267d0
-Rocket::Rocket()
+// FUNCTION: LEMBALL 0x004267d0
+Rocket::Rocket() : GlobalGameObject(0x20, 0, 0)
 {
 }
 

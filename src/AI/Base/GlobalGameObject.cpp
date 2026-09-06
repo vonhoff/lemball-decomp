@@ -21,9 +21,13 @@ void GlobalGameObject::DoActivate()
 }
 
 // 68K 0x1060bb8e __ct__17CGlobalGameObjectF11eObjectTypeUsUs
-// STUB: LEMBALL 0x00416d20
-GlobalGameObject::GlobalGameObject(eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity)
+// FUNCTION: LEMBALL 0x00416d20
+GlobalGameObject::GlobalGameObject(eObjectType p_objectType,
+								   unsigned short p_collisionFlags,
+								   unsigned short p_destinationCapacity)
+	: GameObject(p_objectType, p_collisionFlags, p_destinationCapacity)
 {
+	m_manager = 0;
 }
 
 // 68K 0x1060bbf2 Restart__17CGlobalGameObjectFv

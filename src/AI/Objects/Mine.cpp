@@ -8,8 +8,8 @@
 short g_mineTerrainOffsets[4];
 
 // 68K 0x10616282 __ct__5CMineFv
-// STUB: LEMBALL 0x00423c10
-Mine::Mine()
+// FUNCTION: LEMBALL 0x00423c10
+Mine::Mine() : GlobalGameObject(0x13, 0, 0)
 {
 }
 

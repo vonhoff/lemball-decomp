@@ -5,8 +5,8 @@
 #include "../Base/Coord3d.h"
 
 // 68K 0x1061176c __ct__4CIceFv
-// STUB: LEMBALL 0x0042ca70
-Ice::Ice()
+// FUNCTION: LEMBALL 0x0042ca70
+Ice::Ice() : GlobalGameObject(0x33, 0, 0)
 {
 }
 

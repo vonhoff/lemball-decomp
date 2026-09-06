@@ -4,8 +4,8 @@
 #include "../Navigation/Ai.h"
 
 // 68K 0x106129ea __ct__16CInvisibleSwitchFv
-// STUB: LEMBALL 0x00409ca0
-InvisibleSwitch::InvisibleSwitch()
+// FUNCTION: LEMBALL 0x00409ca0
+InvisibleSwitch::InvisibleSwitch() : GlobalGameObject(0x36, 0, 0)
 {
 }
 

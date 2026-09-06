@@ -1,8 +1,8 @@
 #include "PaintGun.h"
 
 // 68K 0x1061b270 __ct__9CPaintGunFv
-// STUB: LEMBALL 0x0042bad0
-PaintGun::PaintGun()
+// FUNCTION: LEMBALL 0x0042bad0
+PaintGun::PaintGun() : GlobalGameObject(0x21, 0, 0)
 {
 }
 

@@ -4,8 +4,8 @@
 #include "../../Control/Game/GameTime.h"
 
 // 68K 0x10610d62 __ct__5CHandFv
-// STUB: LEMBALL 0x00427ad0
-Hand::Hand()
+// FUNCTION: LEMBALL 0x00427ad0
+Hand::Hand() : GlobalGameObject(0x1f, 0, 0)
 {
 }
 
