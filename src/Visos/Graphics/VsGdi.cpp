@@ -1427,7 +1427,7 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 	int dx;
 	int dy;
 
-	if (m_clipRect.m_height < 1 || m_clipRect.m_width < 1) {
+	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return 1;
 	}
 	code1 = 0;
@@ -1456,7 +1456,7 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y2) {
 		code2 |= 8;
 	}
-	if (code2 != 0 || code1 != 0) {
+	if ((code1 | code2) != 0) {
 		do {
 			if ((code1 & code2) != 0) {
 				return 1;
@@ -1533,7 +1533,7 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 					code1 |= 8;
 				}
 			}
-		} while (code2 != 0 || code1 != 0);
+		} while ((code1 | code2) != 0);
 	}
 	return 0;
 }

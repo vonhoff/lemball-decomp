@@ -69,8 +69,8 @@ public:
 	virtual void OffLift(Coord3d& p_arg0);                                          // vtable+0xa8
 	virtual void OffLift(Coord3d& p_arg0, Coord3d& p_arg1);                         // vtable+0xac
 	virtual bool PossiblyOnLift();                                                  // vtable+0xb0
-	virtual bool HasObject(eObjectType p_objectType);                                     // vtable+0xb4
-	virtual bool AddObject(eObjectType p_objectType, class GameObject* p_object);           // vtable+0xb8
+	virtual bool HasObject(eObjectType p_objectType);                               // vtable+0xb4
+	virtual bool AddObject(eObjectType p_objectType, class GameObject* p_object);   // vtable+0xb8
 	virtual void ReNumberNode(int p_arg0, int p_arg1);                              // vtable+0xbc
 	virtual bool NeedsNode(int p_arg0);                                             // vtable+0xc0
 	virtual void ConvertVer0ToVer1();                                               // vtable+0xc4
@@ -109,6 +109,8 @@ public:
 	GameObject();
 
 	friend class GameObjectMess;
+	friend class Lift;
+	friend class BalloonPost;
 	friend class Bullet;
 	friend class BulletManager;
 	friend class Enemy;
@@ -206,7 +208,7 @@ protected:
 	undefined4 m_unk0x104;                // 0x104
 	undefined4 m_unk0x108;                // 0x108
 	undefined4 m_unk0x10c;                // 0x10c
-	undefined4 m_unk0x110;                // 0x110
+	unsigned int m_liftId;                // 0x110
 	unsigned int m_isRemoteObject;        // 0x114
 	undefined4 m_unk0x118;                // 0x118
 	undefined4 m_unk0x11c;                // 0x11c

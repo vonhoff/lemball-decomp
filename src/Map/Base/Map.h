@@ -42,6 +42,8 @@ public:
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;
+	friend class Lift;
+	friend class BalloonPost;
 
 private:
 	unsigned int m_reserved;   // 0x00

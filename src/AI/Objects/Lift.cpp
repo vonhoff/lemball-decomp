@@ -1,5 +1,6 @@
 #include "Lift.h"
 
+#include "../../Map/Base/Map.h"
 #include "../Base/Coord3d.h"
 
 // 68K 0x106145ea __ct__5CLiftFv
@@ -69,9 +70,56 @@ void Lift::CheckObjects()
 }
 
 // 68K 0x10614ea0 StepOn__5CLiftFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x004254a0
+// FUNCTION: LEMBALL 0x004254a0
 int Lift::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
+	if (m_liftId == p_object->m_liftId) {
+		return 1;
+	}
+	int startX = m_startX - 8;
+	int endX = m_endX + 7;
+	int startY = m_startY - 8;
+	int endY = m_endY + 7;
+	const AiCoord* position = &p_position;
+	int x = position->m_xFixed >> 12;
+	int y = position->m_yFixed >> 12;
+	if (x >= startX && x <= endX && y >= startY && y <= endY) {
+		int z = position->m_zFixed >> 12;
+		Map* map = g_pActiveMap;
+		int blockX = startX >> 4;
+		int blockY = startY >> 4;
+		unsigned short groundZ;
+		if (startX < 0 || startY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+			groundZ = 0;
+		}
+		else {
+			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(startX & 0xf, startY & 0xf);
+		}
+		int minZ = groundZ - 2;
+		if (minZ <= z && z <= minZ + 6) {
+			int i = 0;
+			GameObject** object = m_objects;
+			do {
+				if (*object == 0) {
+					m_objects[i] = p_object;
+					p_object->m_liftId = m_liftId;
+					if (m_activateType == 1) {
+						Activate();
+						return 1;
+					}
+					if (m_activateType == 4 && m_activationLatched != 1) {
+						Activate();
+					}
+					return 1;
+				}
+				object++;
+				i++;
+			} while (i < 8);
+		}
+	}
+	if (m_liftId == p_object->m_liftId) {
+		p_object->m_liftId = 0xffff;
+	}
 	return 0;
 }
 

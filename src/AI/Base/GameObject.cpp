@@ -450,7 +450,7 @@ void GameObject::Restart()
 	Initialise();
 	m_position.m_zFixed = 0;
 	m_unk0x120 = (undefined2) 0xffff;
-	m_unk0x110 = (undefined4) 0xffff;
+	m_liftId = 0xffff;
 	m_position.m_yFixed = 0;
 	m_position.m_xFixed = 0;
 	if (m_destinationList != 0) {

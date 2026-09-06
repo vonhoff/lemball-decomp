@@ -1,5 +1,7 @@
 #include "BalloonPost.h"
 
+#include "../../Map/Base/Map.h"
+
 // 68K 0x10602f0e __ct__12CBalloonPostFP3CAI
 // STUB: LEMBALL 0x00429f50
 BalloonPost::BalloonPost(Ai* p_arg0, Map* p_arg1)
@@ -37,10 +39,73 @@ bool BalloonPost::FindPost(eObjectType p_objectType, AiCoord& p_position)
 }
 
 // 68K 0x106031fe Process__12CBalloonPostFv
-// STUB: LEMBALL 0x0042a170
-unsigned int BalloonPost::Process()
+// FUNCTION: LEMBALL 0x0042a170
+void BalloonPost::Process()
 {
-	return 0;
+	if ((m_activeMask & 1) != 0) {
+		int y = m_positions[0].m_yFixed >> 12;
+		int x = m_positions[0].m_xFixed >> 12;
+		int blockX = x >> 4;
+		int blockY = y >> 4;
+		Map* map = m_map;
+		unsigned short z;
+		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+		}
+		else {
+			z = 0;
+		}
+		m_positions[0].m_zFixed = z << 12;
+		m_posts[0]->m_position.m_zFixed = z << 12;
+	}
+	if ((m_activeMask & 2) != 0) {
+		int y = m_positions[1].m_yFixed >> 12;
+		int x = m_positions[1].m_xFixed >> 12;
+		int blockX = x >> 4;
+		int blockY = y >> 4;
+		Map* map = m_map;
+		unsigned short z;
+		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+		}
+		else {
+			z = 0;
+		}
+		m_positions[1].m_zFixed = z << 12;
+		m_posts[1]->m_position.m_zFixed = z << 12;
+	}
+	if ((m_activeMask & 4) != 0) {
+		int y = m_positions[2].m_yFixed >> 12;
+		int x = m_positions[2].m_xFixed >> 12;
+		int blockX = x >> 4;
+		int blockY = y >> 4;
+		Map* map = m_map;
+		unsigned short z;
+		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+		}
+		else {
+			z = 0;
+		}
+		m_positions[2].m_zFixed = z << 12;
+		m_posts[2]->m_position.m_zFixed = z << 12;
+	}
+	if ((m_activeMask & 8) != 0) {
+		int y = m_positions[3].m_yFixed >> 12;
+		int x = m_positions[3].m_xFixed >> 12;
+		int blockX = x >> 4;
+		int blockY = y >> 4;
+		Map* map = m_map;
+		unsigned short z;
+		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+		}
+		else {
+			z = 0;
+		}
+		m_positions[3].m_zFixed = z << 12;
+		m_posts[3]->m_position.m_zFixed = z << 12;
+	}
 }
 
 // 68K 0x10603386 GetViewData__12CBalloonPostFP9CViewData

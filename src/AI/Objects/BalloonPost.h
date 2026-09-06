@@ -10,7 +10,7 @@ public:
 	BalloonPost(Ai* p_arg0, Map* p_arg1);
 	bool FindPost(eObjectType p_objectType, AiCoord& p_position);
 	int GetViewData(ViewData* p_viewData);
-	unsigned int Process();
+	void Process();
 	unsigned short LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Restart();
 	~BalloonPost();

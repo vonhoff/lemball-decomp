@@ -489,7 +489,7 @@ void PlayerLemming::Resurrect(const AiCoord& p_position)
 	m_unk0x104 = 0;
 	m_unk0x108 = 0;
 	m_unk0x10c = 0;
-	m_unk0x110 = 0xffff;
+	m_liftId = 0xffff;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
 	m_flightVelocity.m_xFixed = 0;
