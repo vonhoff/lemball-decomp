@@ -3192,28 +3192,16 @@ char g_szWarningZrleIs[] = "Warning: ZRLE is ";
 // FUNCTION: LEMBALL 0x004783c0
 void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 {
-	Zrle* primitive;
-	unsigned int flags;
-
-	primitive = p_primitive;
-	flags = primitive->m_flags;
+	unsigned int flags = p_primitive->m_flags;
 	if ((flags & 0xc0000) == 0) {
-		BlitZrle((int) primitive->m_x, (int) primitive->m_y, p_zrle, flags, primitive->m_remap, 0);
+		BlitZrle((int) p_primitive->m_x, (int) p_primitive->m_y, p_zrle, flags, p_primitive->m_remap, 0);
 		return;
 	}
 	{
-		unsigned short stateDepth;
-		Remap* remap;
-		ResZrle* resource;
-		int posX;
-		int posY;
+		unsigned short stateDepth = (unsigned short) p_primitive->m_state;
+		Remap* remap = p_primitive->m_remap;
 
-		stateDepth = (unsigned short) primitive->m_state;
-		remap = primitive->m_remap;
-		resource = p_zrle;
-		posX = (int) primitive->m_x;
-		posY = (int) primitive->m_y;
-		if ((int) resource->m_height * (int) resource->m_width == 0) {
+		if ((int) p_zrle->m_height * (int) p_zrle->m_width == 0) {
 			return;
 		}
 		{
@@ -3221,9 +3209,11 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 			unsigned int reverse;
 			unsigned char* remapData;
 
-			dest.InitFromSizeAndPosition((short) posX, (short) posY, (VsSize*) &resource->m_width);
+			dest.InitFromSizeAndPosition((short) p_primitive->m_x,
+										 (short) p_primitive->m_y,
+										 (VsSize*) &p_zrle->m_width);
 			if ((flags & 0x400) == 0) {
-				((VsPoint*) &dest.m_x)->AddInPlace((VsPoint*) &resource->m_x);
+				((VsPoint*) &dest.m_x)->AddInPlace((VsPoint*) &p_zrle->m_x);
 			}
 			{
 				VsRect clipped;
