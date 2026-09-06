@@ -19,11 +19,6 @@ void PushActive::Render(Gdi* p_gdi)
 	changeList->PushActive((unsigned char) m_activeMarker);
 }
 
-// 68K 0x10100cae __dt__11CPushActiveFv
-PushActive::~PushActive()
-{
-}
-
 // 68K 0x101174dc __ct__11CPushActiveFv
 // FUNCTION: LEMBALL 0x004698b0
 PushActive::PushActive()

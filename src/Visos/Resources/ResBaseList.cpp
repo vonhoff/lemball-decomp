@@ -161,12 +161,8 @@ unload_entries:
 void ResBaseList::UnLoadVramData(unsigned int p_force)
 {
 	if (GetfAnyVramLoaded()) {
-		unsigned int i = 0;
-		if (m_totalSize / m_listHeader->m_headerSize != 0) {
-			do {
-				UnLoadVramData(i, p_force);
-				i++;
-			} while (i < m_totalSize / m_listHeader->m_headerSize);
+		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_headerSize; i++) {
+			UnLoadVramData(i, p_force);
 		}
 	}
 }
