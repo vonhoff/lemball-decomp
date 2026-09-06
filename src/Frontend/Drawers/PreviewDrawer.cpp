@@ -365,37 +365,33 @@ void PreviewDrawer::DrawAnims()
 	VsPoint pos;
 	VsPoint point;
 	short width;
-	int* layout;
 	int x;
 	int y;
 	int i;
-	int step;
 
-	layout = (int*) m_layout;
-	pos.m_x = (short) layout[0x78 / 4];
-	pos.m_y = (short) layout[0x7c / 4];
+	pos.m_x = (short) ((int*) m_layout)[0x78 / 4];
+	pos.m_y = (short) ((int*) m_layout)[0x7c / 4];
 	AnimsManager::DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, 0);
 
-	pos.m_x = (short) layout[0x48 / 4];
-	pos.m_y = (short) layout[0x4c / 4];
+	pos.m_x = (short) ((int*) m_layout)[0x48 / 4];
+	pos.m_y = (short) ((int*) m_layout)[0x4c / 4];
 	AnimsManager::DrawAnim(pos, m_opponentAnimId, 0, m_opponentAnim, 0);
 
-	pos.m_x = (short) layout[0x60 / 4];
-	pos.m_y = (short) layout[0x64 / 4];
+	pos.m_x = (short) ((int*) m_layout)[0x60 / 4];
+	pos.m_y = (short) ((int*) m_layout)[0x64 / 4];
 	AnimsManager::DrawAnim(pos, m_teamAnimId, 0, m_teamAnim, 0);
 
 	if (m_networkMode != 0) {
-		pos.m_x = (short) layout[0xa8 / 4];
-		pos.m_y = (short) layout[0xac / 4];
+		pos.m_x = (short) ((int*) m_layout)[0xa8 / 4];
+		pos.m_y = (short) ((int*) m_layout)[0xac / 4];
 		AnimsManager::DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
 		width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
-		y = layout[0xbc / 4];
-		x = layout[0x28 / 4] - (short) ((width + ((width >> 15) & 3)) >> 2) + layout[0x30 / 4];
+		y = ((int*) m_layout)[0xbc / 4];
+		x = ((int*) m_layout)[0x28 / 4] - (short) ((width + ((width >> 15) & 3)) >> 2) + ((int*) m_layout)[0x30 / 4];
 		i = 0;
 		if (m_lemmingCount > 0) {
-			step = (short) ((width + ((width >> 15) & 7)) >> 3);
 			do {
-				x = x - (step + width);
+				x = x - ((short) ((width + ((width >> 15) & 7)) >> 3) + width);
 				i = i + 1;
 				point.m_x = (short) x;
 				point.m_y = (short) y;
@@ -405,13 +401,12 @@ void PreviewDrawer::DrawAnims()
 	}
 
 	width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
-	y = layout[0x8c / 4];
-	x = layout[0x28 / 4] - (short) ((width + ((width >> 15) & 3)) >> 2) + layout[0x30 / 4];
+	y = ((int*) m_layout)[0x8c / 4];
+	x = ((int*) m_layout)[0x28 / 4] - (short) ((width + ((width >> 15) & 3)) >> 2) + ((int*) m_layout)[0x30 / 4];
 	i = 0;
 	if (m_opponentCount > 0) {
-		step = (short) ((width + ((width >> 15) & 7)) >> 3);
 		do {
-			x = x - (step + width);
+			x = x - ((short) ((width + ((width >> 15) & 7)) >> 3) + width);
 			point.m_x = (short) x;
 			point.m_y = (short) y;
 			i = i + 1;
@@ -420,8 +415,8 @@ void PreviewDrawer::DrawAnims()
 	}
 
 	width = (short) AnimsManager::GetAnimSize(m_teamAnimId, 0).m_width;
-	y = layout[0x74 / 4];
-	x = layout[0x28 / 4] - layout[0xc8 / 4] + layout[0x30 / 4];
+	y = ((int*) m_layout)[0x74 / 4];
+	x = ((int*) m_layout)[0x28 / 4] - ((int*) m_layout)[0xc8 / 4] + ((int*) m_layout)[0x30 / 4];
 	if (m_teamCount <= 4 && m_teamCount > 0) {
 		i = 0;
 		do {
