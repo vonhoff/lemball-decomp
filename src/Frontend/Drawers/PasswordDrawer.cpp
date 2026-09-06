@@ -175,22 +175,12 @@ void PasswordDrawer::Load()
 				m_buttons[buttonIndex] =
 					new (storage) GraphicButton(position, (PvGWnd*) m_display, animIds[buttonIndex], 3);
 			}
-			if (m_buttons[buttonIndex] != 0) {
-				Gdi* buttonGdi;
-				Surface* target;
-
-				m_buttons[buttonIndex]->m_controlMessage = 0xabcd00b0 + buttonIndex;
-				m_buttons[buttonIndex]->m_messageHandler = g_pMasterInputQueue;
-				m_buttons[buttonIndex]->SetAutoDraw(0);
-				buttonGdi = m_buttons[buttonIndex]->m_gdi;
-				target = 0;
-				if (buttonGdi != 0) {
-					target = buttonGdi->m_renderTarget;
-				}
-				if (target != 0) {
-					target->m_flag70 = 0;
-				}
-			}
+			m_buttons[buttonIndex]->m_controlMessage = 0xabcd00b0 + buttonIndex;
+			m_buttons[buttonIndex]->m_messageHandler = g_pMasterInputQueue;
+			m_buttons[buttonIndex]->SetAutoDraw(0);
+			Gdi* buttonGdi = m_buttons[buttonIndex]->m_gdi;
+			Surface* target = buttonGdi->m_renderTarget;
+			target->m_flag70 = 0;
 			offsetPtr[0] = gridX - layout[2];
 			offsetPtr[1] = gridY - layout[3];
 			gridX = gridX + layout[0x60 / 4] + layout[4];
