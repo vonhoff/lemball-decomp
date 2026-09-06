@@ -22,6 +22,7 @@ public:
 
 	friend class PlayerLemming;
 	friend class Game;
+	friend class C2D;
 	friend void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
 
 private:

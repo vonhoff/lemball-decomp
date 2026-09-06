@@ -138,8 +138,8 @@ void PauseWindow::OnInside(const VsPoint& p_point)
 	int selection = m_minimumSelection;
 	m_cursorState = 0;
 	if (selection < m_menuItemCount) {
-		short relX = p_point.m_x - m_rect.m_x;
-		short relY = p_point.m_y - m_rect.m_y;
+		short relX = p_point.m_x - m_relativeTopLeft.m_x;
+		short relY = p_point.m_y - m_relativeTopLeft.m_y;
 		VsPoint* textSizes = m_textSizes + selection * 2 + 1;
 		do {
 			short textX = textSizes->m_x;

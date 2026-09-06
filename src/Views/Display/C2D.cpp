@@ -4,14 +4,20 @@
 #include "../../AI/Navigation/Ai.h"
 #include "../../AI/Objects/PlayerLemming.h"
 #include "../../AI/Objects/ViewData.h"
+#include "../../Control/Game/Demo.h"
+#include "../../Control/Game/GameMain.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Frontend/Resources/FrontendResourceLoader.h"
+#include "../../Visos/Foundation/TextManager.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Resources/Manifest.h"
+#include "../../Visos/Resources/ResFont.h"
 #include "../Animation/LemmingAnimsManager.h"
 #include "../Panel/Panel.h"
 #include "../Sound/SoundView.h"
+#include "../Target/TargetSpriteGroundLookup.h"
 #include "Main2DDisplay.h"
 
 #include <string.h>
@@ -506,9 +512,80 @@ void C2D::OnDriverChange()
 }
 
 // 68K 0x10b09a30 SetClipSize__3C2DFv
-// STUB: LEMBALL 0x00438500
+// FUNCTION: LEMBALL 0x00438500
 void C2D::SetClipSize()
 {
+	int width;
+	int height;
+	int count;
+	TargetSpriteGroundLookup* lookup;
+	ResFont* font;
+	VsPoint size;
+	short clipSizeX;
+	short translatedX;
+
+	if (g_nZoomEnabled != 0 && g_nCompactPrimaryContextLayout == 0) {
+		m_clipSize.m_x = 0x140;
+		m_clipSize.m_y = 0xf0;
+		m_clipOffsetX = 0xa0;
+		m_clipOffsetY = 0x78;
+	}
+	else {
+		m_clipSize.m_x = m_viewSize.m_x;
+		m_clipSize.m_y = m_viewSize.m_y;
+		m_clipOffsetX = 0;
+		m_clipOffsetY = 0;
+	}
+	if (g_pDemo != 0) {
+		short demoOffsetY = (short) m_clipOffsetY;
+		g_pDemo->m_offsetX = (short) m_clipOffsetX;
+		g_pDemo->m_offsetY = demoOffsetY;
+	}
+	lookup = m_spriteGroundLookup;
+	if (lookup != 0) {
+		width = (m_clipSize.m_x + 0xf) / 0x10;
+		height = (m_clipSize.m_y + 0xf) / 0x10;
+		if (lookup->m_width != width || lookup->m_height != height) {
+			if (lookup->m_maskA != 0) {
+				operator delete(lookup->m_maskA);
+				lookup->m_maskA = 0;
+			}
+			if (lookup->m_maskB != 0) {
+				operator delete(lookup->m_maskB);
+				lookup->m_maskB = 0;
+			}
+			lookup->m_width = (short) width;
+			lookup->m_height = (short) height;
+			lookup->m_maskA =
+				(unsigned char*) operator new((unsigned int) lookup->m_width*(unsigned int) lookup->m_height);
+			lookup->m_maskB =
+				(unsigned char*) operator new((unsigned int) lookup->m_width*(unsigned int) lookup->m_height);
+		}
+		count = (int) lookup->m_width * (int) lookup->m_height;
+		memset(lookup->m_maskA, 1, count);
+		count = (int) lookup->m_width * (int) lookup->m_height;
+		memset(lookup->m_maskB, 1, count);
+	}
+	clipSizeX = m_clipSize.m_x;
+	m_spriteGroundLookupRectA.m_width = 0x33;
+	translatedX = clipSizeX - 0x43;
+	m_clipConfigured = 1;
+	m_spriteGroundLookupRectA.m_height = 0x20;
+	m_spriteGroundLookupRectB.m_width = 0x60;
+	m_spriteGroundLookupRectB.m_x = 0x10;
+	m_spriteGroundLookupRectA.m_x = translatedX;
+	m_spriteGroundLookupRectA.m_y = 8;
+	m_spriteGroundLookupRectB.m_height = 0x20;
+	m_spriteGroundLookupRectB.m_y = 8;
+	g_nLevelViewportHorizontalRemainder = m_viewSize.m_x - clipSizeX;
+	g_nLevelViewportVerticalRemainder = m_viewSize.m_y - m_clipSize.m_y;
+	m_redrawPending = 1;
+	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+		font = m_textManager->GetFont(0xf8);
+		font->GetSize(&size, "Demo", 0x20);
+		m_demoTextPosition.m_y = 0;
+		m_demoTextPosition.m_x = (short) ((m_clipSize.m_x - size.m_x) / 2);
+	}
 }
 
 // 68K 0x1011cbe0 QuitYet__3C2DFv

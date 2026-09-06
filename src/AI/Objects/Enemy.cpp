@@ -15,9 +15,42 @@ struct EnemyFacingOffset {
 EnemyFacingOffset g_enemyFacingOffsets[8] = {{0, 3}, {-4, 1}, {-5, 0}, {-4, -3}, {0, -4}, {6, -3}, {5, 0}, {4, 1}};
 
 // 68K 0x10607884 __ct__6CEnemyFP3CAIiiii
-// STUB: LEMBALL 0x0041fba0
+// FUNCTION: LEMBALL 0x0041fba0
 Enemy::Enemy(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
+	: GameObject((eObjectType) 1, 0x118, 10), m_targetPosition(), m_fireTarget()
 {
+	unsigned short z;
+	int width;
+	int blockX;
+	int blockY;
+	Map* map;
+
+	g_pAI = p_arg0;
+	m_spawnPosition.m_xFixed = p_arg1 << 12;
+	m_spawnPosition.m_yFixed = p_arg2 << 12;
+	m_spawnPosition.m_zFixed = p_arg3 << 12;
+	map = g_pMap;
+	blockX = p_arg1 >> 4;
+	blockY = p_arg2 >> 4;
+	if (p_arg1 < 0 || p_arg2 < 0 || g_pMap->m_ground.m_width <= blockX || g_pMap->m_ground.m_height <= blockY) {
+		z = 0;
+	}
+	else {
+		width = map->m_ground.m_width;
+		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(p_arg1 & 0xf, p_arg2 & 0xf);
+	}
+	m_initialFacingDirection = (short) p_arg4;
+	m_spawnPosition.m_zFixed = (int) z << 12;
+	SetId((unsigned short) NextLoadingId());
+	m_state2Action = (eEnemyStateActions) 0;
+	m_state1Action = (eEnemyStateActions) 0;
+	m_state0Action = (eEnemyStateActions) 0;
+	m_state2Rule = (eEnemyStateRules) 0;
+	m_state1Rule = (eEnemyStateRules) 0;
+	m_state0Rule = (eEnemyStateRules) 0;
+	m_state0Data = 0;
+	m_state1Data = 0;
+	m_state2Data = 0;
 }
 
 // 68K 0x106079d6 Restart__6CEnemyFv
@@ -323,9 +356,9 @@ void Enemy::HitBall()
 // FUNCTION: LEMBALL 0x00420720
 void Enemy::GetHit()
 {
-	int& count = g_pAI->m_objectCount;
 	int i = 0;
-	if (count > 0) {
+	if (g_pAI->m_objectCount > 0) {
+		int& count = g_pAI->m_objectCount;
 		GameObject**& objects = g_pAI->m_objects;
 		do {
 			if (objects[i] == (GameObject*) this) {

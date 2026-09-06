@@ -162,7 +162,8 @@ bool GameStatus::DecodePassword(char* p_password)
 int GameStatus::StringToDWord()
 {
 	int result = 0;
-	for (unsigned int i = 0; i < strlen(m_password); i++) {
+	char* p = m_password;
+	for (unsigned int i = 0; i < strlen(p); i++) {
 		result = result * 10 + (m_password[i] - '0');
 	}
 	return result;

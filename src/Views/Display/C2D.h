@@ -146,7 +146,9 @@ private:
 	undefined m_pad0x1ae[0x724];                    // 0x1ae
 	VsRect m_spriteGroundLookupRectA;               // 0x8d2
 	VsRect m_spriteGroundLookupRectB;               // 0x8da
-	undefined m_pad0x8e2[0x1a];                     // 0x8e2
+	undefined m_pad0x8e2[4];                        // 0x8e2
+	VsPoint m_demoTextPosition;                     // 0x8e6
+	undefined m_pad0x8ea[0x12];                     // 0x8ea
 	int m_returnState;                              // 0x8fc
 	undefined m_pad0x900[0xc];                      // 0x900
 	undefined4 m_unk0x90c;                          // 0x90c
@@ -192,14 +194,17 @@ private:
 	unsigned int m_quitRequested;                   // 0xa78
 	unsigned int m_paused;                          // 0xa7c
 	unsigned int m_pauser;                          // 0xa80
+	undefined m_pad0xa84[0x1704];                   // 0xa84
 	unsigned int m_primitiveCount;                  // 0x2188
 	unsigned short m_groundHitMode;                 // 0x218c
+	undefined m_pad0x218e[0x86];                    // 0x218e
 	unsigned int m_redrawPending;                   // 0x2214
 	unsigned int m_scrollPending;                   // 0x2218
 	short m_scrollDeltaX;                           // 0x221c
 	short m_scrollDeltaY;                           // 0x221e
 	void* m_zBufferAnimations;                      // 0x2220
 	unsigned int m_zBufferAnimationCount;           // 0x2224
+	undefined m_pad0x2228[0x200];                   // 0x2228
 };
 
 // SYNTHETIC: LEMBALL 0x00439490
