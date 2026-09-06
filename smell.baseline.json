@@ -3,6 +3,7 @@
   "purpose": "Reviewed false positives only. Entries suppress legitimate low-level operations; actionable decompilation smells must never be baselined.",
   "identity": "path + rule + reported source; line numbers are informational and excluded",
   "findings": [
+
     {
       "path": "src/AI/Managers/BallManager.cpp",
       "rule": "raw-cast",
@@ -87,6 +88,7 @@
       "count": 1,
       "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
     },
+
     {
       "path": "src/AI/Managers/ObjectManager.cpp",
       "rule": "raw-cast",
@@ -255,6 +257,7 @@
       "count": 1,
       "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
     },
+
     {
       "path": "src/AI/Navigation/MoverManager.cpp",
       "rule": "raw-cast",
@@ -290,6 +293,7 @@
       "count": 1,
       "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
     },
+
     {
       "path": "src/AI/Navigation/NodeManager.cpp",
       "rule": "raw-cast",
@@ -472,6 +476,77 @@
       "count": 1,
       "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
     },
+
+    {
+      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
+      "rule": "raw-cast",
+      "code": "*(VsPoint*) &m_bitmapRes[0].m_x = *(VsPoint*) &m_centerX;",
+      "count": 1,
+      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
+    },
+    {
+      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
+      "rule": "raw-cast",
+      "code": "*(VsPoint*) &m_clearBitmap[0].m_x = point;",
+      "count": 1,
+      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
+    },
+    {
+      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
+      "rule": "raw-cast",
+      "code": "*(VsPoint*) &m_fgBlit[0].m_x = point;",
+      "count": 1,
+      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
+    },
+    {
+      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
+      "rule": "raw-cast",
+      "code": "*(VsPoint*) &m_needle0[0].m_x2 = tip;",
+      "count": 1,
+      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
+    },
+    {
+      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
+      "rule": "raw-cast",
+      "code": "*(VsPoint*) &m_needle1[0].m_x2 = point;",
+      "count": 1,
+      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
+    },
+    {
+      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
+      "rule": "raw-cast",
+      "code": "*(VsPoint*) &m_needle2[0].m_x2 = point;",
+      "count": 1,
+      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
+    },
+    {
+      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
+      "rule": "raw-cast",
+      "code": "*(VsRect*) &m_clearBitmap[0].m_width = rect;",
+      "count": 1,
+      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
+    },
+    {
+      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
+      "rule": "raw-cast",
+      "code": "*(VsRect*) &m_line[0].m_x1 = rect;",
+      "count": 1,
+      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
+    },
+    {
+      "path": "src/Frontend/Support/TargetAboutScreen.cpp",
+      "rule": "raw-cast",
+      "code": "area = *(VsRect*) item;",
+      "count": 1,
+      "reason": "Intentional access to the 8-byte VsRect bounding box at the head of ChangeListItem."
+    },
+    {
+      "path": "src/Frontend/Support/TargetAboutScreen.cpp",
+      "rule": "raw-cast",
+      "code": "area.ExpandToInclude(*(VsRect*) item);",
+      "count": 1,
+      "reason": "Intentional access to the 8-byte VsRect bounding box at the head of ChangeListItem."
+    },
     {
       "path": "src/Map/Base/Map.cpp",
       "rule": "raw-cast",
@@ -493,6 +568,7 @@
       "count": 1,
       "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
     },
+
     {
       "path": "src/Visos/Foundation/ChangeList.cpp",
       "rule": "raw-cast",
@@ -500,6 +576,7 @@
       "count": 1,
       "reason": "Intentional 32-bit fill of two packed 16-bit change-list cells."
     },
+
     {
       "path": "src/Visos/Graphics/PvGdiBitmap.cpp",
       "rule": "raw-cast",
@@ -521,6 +598,7 @@
       "count": 2,
       "reason": "Intentional byte/frame-buffer storage operation in bitmap conversion code."
     },
+
     {
       "path": "src/Visos/Graphics/VsGdi.cpp",
       "rule": "raw-cast",
@@ -541,6 +619,20 @@
       "code": "*(unsigned short**) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines + lineOffset) + x;",
       "count": 2,
       "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
+    },
+    {
+      "path": "src/Visos/Graphics/VsGdi.cpp",
+      "rule": "raw-cast",
+      "code": "CopyBackBuffToScreen(*(VsRect*) item);",
+      "count": 1,
+      "reason": "Intentional blit of the 8-byte VsRect bounding box at the head of ChangeListItem to the screen."
+    },
+    {
+      "path": "src/Visos/Graphics/VsGdi.cpp",
+      "rule": "raw-cast",
+      "code": "Move(*(VsPoint*) &m_rect0c.m_x);",
+      "count": 1,
+      "reason": "Intentional pass-by-reference of the (m_x, m_y) VsPoint coordinates within the surface rectangle."
     },
     {
       "path": "src/Visos/Graphics/VsGdi.cpp",
@@ -591,6 +683,7 @@
       "count": 1,
       "reason": "MSVC 4.00 MI adjustment required for the original virtual BaseNetwork::Process dispatch; both functions were verified as effective 100% matches."
     },
+
     {
       "path": "src/Visos/Network/TcpIpBroadcast.cpp",
       "rule": "raw-cast",
@@ -598,6 +691,7 @@
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
+
     {
       "path": "src/Visos/Network/TcpIpBroadcast.cpp",
       "rule": "raw-cast",
@@ -612,6 +706,7 @@
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
+
     {
       "path": "src/Visos/Network/TcpIpConnect.cpp",
       "rule": "raw-cast",
@@ -640,6 +735,7 @@
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
+
     {
       "path": "src/Visos/Network/WriteSocket.cpp",
       "rule": "raw-cast",

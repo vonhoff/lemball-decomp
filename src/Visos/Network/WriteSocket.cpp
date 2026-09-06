@@ -302,9 +302,9 @@ NetworkMessage* WriteSocket::ReceiveAcknowledgement()
 
 // 68K 0x1020c4cc Closed__12CWriteSocketFUc
 // FUNCTION: LEMBALL 0x00460260
-void WriteSocket::Closed(unsigned char p_arg0)
+void WriteSocket::Closed(int p_notifyPeer)
 {
-	(void) p_arg0;
+	(void) p_notifyPeer;
 	if (m_segmentIndex != -1) {
 		m_segmentIndex = -1;
 		m_segmentedMessage->m_pendingSendCount = 0;

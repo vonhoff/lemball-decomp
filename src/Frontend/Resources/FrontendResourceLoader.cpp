@@ -189,7 +189,7 @@ void FrontendResourceLoader::LoadFont(unsigned long p_resourceId)
 	m_loadedFonts = m_loadedFonts + 1;
 }
 
-// 68K 0x1080ddfa UnLoadFONT__23CFrontendResourceLoaderFUl
+// 68K 0x1080ddf8 UnLoadFONT__23CFrontendResourceLoaderFUl
 // FUNCTION: LEMBALL 0x00447e60
 void FrontendResourceLoader::UnLoadFont(unsigned long p_resourceId)
 {

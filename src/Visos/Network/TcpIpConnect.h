@@ -17,7 +17,7 @@ public:
 	bool Start(const char* p_localName, const char* p_remoteName);
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam);
 	virtual void InitSocket();                        // vtable+0x08
-	virtual void Closed(unsigned char p_notifyPeer);  // vtable+0x0c
+	virtual void Closed(int p_notifyPeer);            // vtable+0x0c
 	virtual void Connect();                           // vtable+0x10
 	virtual NetworkMessage* ReceiveAcknowledgement(); // vtable+0x1c
 	void GotHost(int p_failed);

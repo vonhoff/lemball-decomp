@@ -635,6 +635,7 @@ bool BaseFrontendDrawer::ProcessMessages(Message* p_message)
 	return 0;
 }
 
+// 68K 0x1011bd8c DrawAnims__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x00446f70
 void BaseFrontendDrawer::DrawAnims()
 {
@@ -646,6 +647,7 @@ void BaseFrontendDrawer::DrawText()
 {
 }
 
+// 68K 0x1011bdba DrawBackGround__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x00446f90
 void BaseFrontendDrawer::DrawBackGround()
 {

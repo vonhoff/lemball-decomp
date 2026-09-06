@@ -21,7 +21,7 @@ public:
 	NetworkMessage* ReceiveAcknowledgement();
 	bool CheckConnectTime();
 	bool Send(NetworkMessage& p_arg0);
-	void Closed(unsigned char p_arg0);
+	void Closed(int p_notifyPeer);
 	void FirstReceive();
 	void InitConnect(const char* p_arg0, NetworkAddress* p_arg1, short p_arg2);
 	void Kill();

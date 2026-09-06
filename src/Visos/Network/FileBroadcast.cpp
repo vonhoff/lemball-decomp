@@ -85,7 +85,7 @@ FileBroadcast::~FileBroadcast()
 
 // 68K 0x10116874 Closed__14CFileBroadcastFUc
 // STUB: LEMBALL 0x0047bbf0
-void FileBroadcast::Closed(unsigned char p_notifyPeer)
+void FileBroadcast::Closed(int p_notifyPeer)
 {
 }
 

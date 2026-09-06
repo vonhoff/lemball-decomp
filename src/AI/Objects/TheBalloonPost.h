@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x00496488
 class TheBalloonPost : public GameObject {
 public:
-	TheBalloonPost(eObjectType p_arg0, unsigned char p_arg1);
+	TheBalloonPost(eObjectType p_arg0, unsigned int p_arg1);
 	virtual ~TheBalloonPost(); // vtable+0x00
 
 private:

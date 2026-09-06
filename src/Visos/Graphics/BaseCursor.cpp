@@ -217,15 +217,13 @@ void BaseCursor::SetMainId(unsigned int p_resourceId)
 
 // 68K 0x10206134 SetActive__11CBaseCursorFUc
 // FUNCTION: LEMBALL 0x0046b370
-void BaseCursor::SetActive(unsigned char p_active)
+void BaseCursor::SetActive(unsigned int p_active)
 {
-	unsigned int active = *(unsigned int*) &p_active;
-
-	if (m_active == active) {
+	if (m_active == p_active) {
 		return;
 	}
-	m_active = active;
-	if (active == 0) {
+	m_active = p_active;
+	if (p_active == 0) {
 		RestoreSystemCursor();
 		return;
 	}

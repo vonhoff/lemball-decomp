@@ -34,7 +34,7 @@ FileWriteSocket::~FileWriteSocket()
 
 // 68K 0x101167b2 Closed__16CFileWriteSocketFUc
 // FUNCTION: LEMBALL 0x0047bd30
-void FileWriteSocket::Closed(unsigned char p_notifyPeer)
+void FileWriteSocket::Closed(int p_notifyPeer)
 {
 	WriteSocket::Closed(p_notifyPeer);
 }

@@ -28,7 +28,7 @@ public:
 	virtual int ProcessOtherMessages(unsigned int p_message,
 									 unsigned int p_wParam,
 									 unsigned int p_lParam);             // vtable+0xa0
-	virtual void Dummy3c();                                              // vtable+0x3c
+	virtual void OnCreate();                                             // vtable+0x3c
 	virtual void OnDestroy();                                            // vtable+0x40
 	virtual void OnMaximise();                                           // vtable+0x50
 	virtual void OnMinimise();                                           // vtable+0x4c
@@ -42,7 +42,7 @@ public:
 	virtual void Refresh(VsRect* p_rect);                                // vtable+0x70
 	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists); // vtable+0x10
 	virtual void _SetRect(const VsRect& p_rect);                         // vtable+0x30
-	virtual void SetRelTl(const VsPoint& p_point);                       // vtable+0x34
+	virtual void _SetRelTL(const VsPoint& p_point);                      // vtable+0x34
 	~Wnd();
 
 	friend class GWnd;

@@ -205,11 +205,28 @@ void PreviewDrawer::Load()
 	*nextDisabled = 0;
 	m_previousDisabled = 0;
 	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 4, (unsigned char) m_mode, 0);
-	m_hiliteController->AddButton(((int*) m_layout)[0], ((int*) m_layout)[1], returnAnim, 1, 0, 0, 0, buttonBinding, 0xacef000d);
-	m_hiliteController->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, buttonBinding, 0xacef000c);
-	m_hiliteController->AddButton(
-		((int*) m_layout)[4], ((int*) m_layout)[5], m_previousButtonAnimIds, 1, 0, 1, 0, &m_previousDisabled, 0xacef000f);
-	m_hiliteController->AddButton(((int*) m_layout)[6], ((int*) m_layout)[7], m_nextButtonAnimIds, 1, 0, 1, 0, nextDisabled, 0xacef000e);
+	m_hiliteController
+		->AddButton(((int*) m_layout)[0], ((int*) m_layout)[1], returnAnim, 1, 0, 0, 0, buttonBinding, 0xacef000d);
+	m_hiliteController
+		->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, buttonBinding, 0xacef000c);
+	m_hiliteController->AddButton(((int*) m_layout)[4],
+								  ((int*) m_layout)[5],
+								  m_previousButtonAnimIds,
+								  1,
+								  0,
+								  1,
+								  0,
+								  &m_previousDisabled,
+								  0xacef000f);
+	m_hiliteController->AddButton(((int*) m_layout)[6],
+								  ((int*) m_layout)[7],
+								  m_nextButtonAnimIds,
+								  1,
+								  0,
+								  1,
+								  0,
+								  nextDisabled,
+								  0xacef000e);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
 	LoadLevelInformation();
@@ -252,9 +269,9 @@ PreviewDrawer::~PreviewDrawer()
 // FUNCTION: LEMBALL 0x00449750
 void PreviewDrawer::DrawBackGround()
 {
-	int* layout = (int*) m_layout;
+	CoordPair* layout = (CoordPair*) m_layout;
 	m_primitive.m_bitmap.Draw(m_gdi);
-	DrawFrame(*(CoordPair*) &layout[0x28 / 4], *(CoordPair*) &layout[0x2c / 4]);
+	DrawFrame(layout[0x28 / sizeof(CoordPair)], layout[0x2c / sizeof(CoordPair)]);
 }
 
 // 68K 0x1080b52c DrawText__14CPreviewDrawerFv

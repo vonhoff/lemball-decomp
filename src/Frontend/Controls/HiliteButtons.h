@@ -14,7 +14,7 @@ public:
 				  int p_arg2,
 				  int p_arg3,
 				  unsigned long* p_arg4,
-				  unsigned char p_arg5,
+				  unsigned int p_arg5,
 				  int p_arg6,
 				  int p_arg7,
 				  int p_arg8,

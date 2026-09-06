@@ -15,9 +15,9 @@ bool FileRwSocket::SendPacket(const unsigned char* p_data, int p_size)
 
 // 68K 0x101167ec Closed__13CFileRWSocketFUc
 // FUNCTION: LEMBALL 0x0047ba60
-void FileRwSocket::Closed(unsigned char p_notifyPeer)
+void FileRwSocket::Closed(int p_notifyPeer)
 {
-	RwSocket::Closed(*(unsigned int*) &p_notifyPeer);
+	RwSocket::Closed(p_notifyPeer);
 }
 
 // 68K 0x101168ec SendAcknowledgement__13CFileRWSocketFv

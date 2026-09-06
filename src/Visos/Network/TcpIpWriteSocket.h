@@ -16,7 +16,7 @@ public:
 	TcpIpWriteSocket();
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
 	virtual bool SendPacket(const unsigned char* p_data, int p_size);                  // vtable+0x24
-	virtual void Closed(unsigned char p_notifyPeer);                                   // vtable+0x0c
+	virtual void Closed(int p_notifyPeer);                                             // vtable+0x0c
 	virtual void SetDestAddr(NetworkAddress* p_address);                               // vtable+0x20
 	virtual void SetPort(short p_port);                                                // vtable+0x28
 

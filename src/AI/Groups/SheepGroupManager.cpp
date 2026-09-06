@@ -34,10 +34,10 @@ int SheepGroupManager::Process()
 
 // 68K 0x1061ea8c LoadLevel__18CSheepGroupManagerFP16tagLoadSheepDataUlUc
 // FUNCTION: LEMBALL 0x0041f2e0
-void SheepGroupManager::LoadLevel(LoadSheepData* p_data, unsigned long p_dataSize, unsigned char p_skip)
+void SheepGroupManager::LoadLevel(LoadSheepData* p_data, unsigned long p_dataSize, unsigned int p_skip)
 {
 	int count = p_dataSize / sizeof(LoadSheepData);
-	if (*(unsigned int*) &p_skip != 0) {
+	if (p_skip != 0) {
 		return;
 	}
 

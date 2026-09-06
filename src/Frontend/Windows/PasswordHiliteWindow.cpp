@@ -12,7 +12,7 @@ PasswordHiliteWindow::PasswordHiliteWindow()
 
 // 68K 0x1080d55c OnCreate__21CPasswordHiliteWindowFv
 // FUNCTION: LEMBALL 0x00451fd0
-void PasswordHiliteWindow::Dummy3c()
+void PasswordHiliteWindow::OnCreate()
 {
 	m_gdi->m_renderTarget->m_flag74 = 1;
 }

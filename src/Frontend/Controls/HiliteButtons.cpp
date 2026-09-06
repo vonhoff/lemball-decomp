@@ -21,7 +21,7 @@ HiliteButtons::HiliteButtons(GWnd* p_arg0,
 							 int p_arg2,
 							 int p_arg3,
 							 unsigned long* p_arg4,
-							 unsigned char p_arg5,
+							 unsigned int p_arg5,
 							 int p_arg6,
 							 int p_arg7,
 							 int p_arg8,
@@ -48,16 +48,17 @@ HiliteButtons::HiliteButtons(GWnd* p_arg0,
 	m_maximum = p_arg7;
 	m_x = p_arg2;
 	m_y = p_arg3;
-	if (p_arg10 == 0) {
+	int* binding = (int*) p_arg10;
+	if (binding == 0) {
 		m_value = 0;
 	}
 	else {
-		m_value = *(int*) p_arg10;
+		m_value = *binding;
 	}
 	if (p_arg11 != 0xffffffff) {
 		m_actionMessage = p_arg11;
 	}
-	m_binding = (int*) p_arg10;
+	m_binding = binding;
 	m_mode = p_arg5;
 	g_pMasterInputQueue->Attach(this, 0);
 	LoadFaces(p_arg4);

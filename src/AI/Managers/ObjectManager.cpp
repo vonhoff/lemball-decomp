@@ -271,13 +271,13 @@ void ObjectManager::Remove(GlobalGameObject* p_object)
 
 // 68K 0x1061ade4 LoadLevel__14CObjectManagerFPUcUlUc
 // FUNCTION: LEMBALL 0x0041bbc0
-void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, unsigned char p_append)
+void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, unsigned int p_append)
 {
 	unsigned short count = *(unsigned short*) p_data;
 	int switchIndex = 0;
 	unsigned short id;
 	p_data += 2;
-	if (*(unsigned int*) &p_append == 0) {
+	if (p_append == 0) {
 		Initialise(count);
 	}
 	if (count != 0) {
@@ -311,7 +311,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 			case 0x29:
 			case 0x2b:
 			case 0x2d:
-				if (*(unsigned int*) &p_append == 0) {
+				if (p_append == 0) {
 					Add(id, position, objectType, 0xffff, 0xffff);
 				}
 				break;
@@ -321,7 +321,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 					ammoCount = *(unsigned short*) p_data;
 					p_data += 2;
 				}
-				if (*(unsigned int*) &p_append == 0) {
+				if (p_append == 0) {
 					Ammo* ammo = (Ammo*) Add(id, position, objectType, 0xffff, 0xffff);
 					ammo->m_ammo = ammoCount;
 				}
@@ -338,7 +338,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 				else {
 					contentsId = GameObject::NextId();
 				}
-				if (*(unsigned int*) &p_append == 0) {
+				if (p_append == 0) {
 					Add(id, position, 0x11, contentsId, contentsType);
 				}
 				break;
@@ -346,7 +346,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 			case OBJECT_SWITCH:
 				if (m_ai->m_levelVersion > 1) {
 					Switch* object;
-					if (*(unsigned int*) &p_append == 0) {
+					if (p_append == 0) {
 						object = (Switch*) Add(id, position, objectType, 0xffff, 0xffff);
 					}
 					else {
@@ -371,7 +371,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 					p_data += 2;
 					unsigned short legacyAux = *(unsigned short*) p_data;
 					p_data += 2;
-					if (*(unsigned int*) &p_append == 0) {
+					if (p_append == 0) {
 						AddSwitch(id, x, y, z, message, legacyFirst, legacyLast, legacyAux);
 					}
 				}
@@ -386,15 +386,11 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 // FUNCTION: LEMBALL 0x0041bec0
 void ObjectManager::ConvertVer0ToVer1()
 {
-	unsigned int offset = 0;
-	int i = 0;
-	while (i < m_count) {
-		GlobalGameObject* object = *(GlobalGameObject**) ((unsigned char*) m_objects + offset);
+	for (int i = 0; i < m_count; i++) {
+		GlobalGameObject* object = m_objects[i];
 		if (object->m_objectType == OBJECT_SWITCH) {
 			object->ConvertVer0ToVer1();
 		}
-		offset += sizeof(GlobalGameObject*);
-		i++;
 	}
 }
 

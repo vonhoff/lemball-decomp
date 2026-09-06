@@ -73,20 +73,20 @@ bool Collectable::Process()
 				pt.m_x = m_position.m_xFixed >> 12;
 				pt.m_y = m_position.m_yFixed >> 12;
 				pt.m_z = m_position.m_zFixed >> 12;
-				g_pAI->m_unk0x124[11] = 0;
-				*(Pt3*) &g_pAI->m_unk0x124[0] = pt;
-				ai->m_unk0x124[3] = 0;
+				g_pAI->m_collisionExclude = 0;
+				g_pAI->m_collisionPoint = pt;
+				ai->m_collisionIndex = 0;
 				GameObject* hit;
 				if (ai->m_objectCount > 0) {
 					do {
-						GameObject* obj = ai->m_objects[ai->m_unk0x124[3]];
-						if ((GameObject*) ai->m_unk0x124[11] != obj && obj->Collision(*(Pt3*) &ai->m_unk0x124[0])) {
-							hit = ai->m_objects[ai->m_unk0x124[3]];
-							ai->m_unk0x124[3]++;
+						GameObject* obj = ai->m_objects[ai->m_collisionIndex];
+						if (ai->m_collisionExclude != obj && obj->Collision(ai->m_collisionPoint)) {
+							hit = ai->m_objects[ai->m_collisionIndex];
+							ai->m_collisionIndex++;
 							goto found;
 						}
-						ai->m_unk0x124[3]++;
-					} while ((int) ai->m_unk0x124[3] < ai->m_objectCount);
+						ai->m_collisionIndex++;
+					} while ((int) ai->m_collisionIndex < ai->m_objectCount);
 				}
 				hit = 0;
 			found:

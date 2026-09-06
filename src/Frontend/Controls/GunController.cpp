@@ -43,14 +43,14 @@ int g_anGunSpriteOffsetCompact[20] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0,
 
 // 68K 0x10803146 __ct__14CGunControllerFP5CGWndP4CGDIiUc
 // FUNCTION: LEMBALL 0x0044c870
-GunController::GunController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned char p_arg3)
+GunController::GunController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned int p_arg3)
 	: AnimsManager(p_arg1, 0x2b6, 10, 5, 0, 0)
 {
 	int i;
 
 	m_staticAnim.m_frameState = 0;
 	m_buttonsActive = 1;
-	m_mode = *(unsigned int*) &p_arg3;
+	m_mode = p_arg3;
 	m_window = p_arg0;
 	m_gdi = p_arg1;
 	m_nextMessageId = 0xabcd0000;

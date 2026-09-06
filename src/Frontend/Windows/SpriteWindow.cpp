@@ -12,7 +12,7 @@ SpriteWindow::SpriteWindow()
 
 // 68K 0x10803104 OnCreate__13CSpriteWindowFv
 // FUNCTION: LEMBALL 0x0044c850
-void SpriteWindow::Dummy3c()
+void SpriteWindow::OnCreate()
 {
 	m_gdi->m_renderTarget->m_flag74 = 1;
 }

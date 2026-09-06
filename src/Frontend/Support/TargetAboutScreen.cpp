@@ -182,16 +182,7 @@ void TargetAboutScreen::DrawChangedRegion()
 	index = changes->GetDrawMark();
 	if (index < itemCount) {
 		item = changes->GetNItem(index);
-		area.m_width = item->width;
-		area.m_height = item->height;
-		if (item == 0) {
-			area.m_x = *(short*) 0;
-			area.m_y = ((short*) 0)[1];
-		}
-		else {
-			area.m_x = item->x;
-			area.m_y = item->y;
-		}
+		area = *(VsRect*) item;
 		index = index + 1;
 		while (index < itemCount) {
 			item = changes->GetNItem(index);

@@ -363,7 +363,7 @@ void TcpIpBroadcast::StopListen()
 
 // 68K 0x1010e602 Closed__15CTCPIPBroadcastFUc
 // FUNCTION: LEMBALL 0x00471fc0
-void TcpIpBroadcast::Closed(unsigned char p_notifyPeer)
+void TcpIpBroadcast::Closed(int p_notifyPeer)
 {
-	Broadcast::Closed(*(unsigned int*) &p_notifyPeer);
+	Broadcast::Closed(p_notifyPeer);
 }

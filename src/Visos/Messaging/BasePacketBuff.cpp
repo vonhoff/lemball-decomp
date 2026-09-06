@@ -12,7 +12,7 @@ BasePacketBuff::BasePacketBuff()
 // FUNCTION: LEMBALL 0x00461210
 BasePacketBuff::BasePacketBuff(int p_arg0, unsigned short p_arg1)
 {
-	*(unsigned int*) &m_packetSize = p_arg1;
+	m_packetSize = p_arg1;
 	m_packetCount = p_arg0;
 	if (p_arg0 > 0) {
 		m_packets = (BasePacket**) operator new(p_arg0 * sizeof(BasePacket*));

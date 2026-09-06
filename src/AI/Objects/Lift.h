@@ -22,14 +22,14 @@ public:
 			  int p_lowHeight,
 			  int p_highHeight,
 			  eLiftActivateType p_activateType,
-			  unsigned char p_initialActive);
+			  unsigned int p_initialActive);
 	void Set(const Coord3d& p_start,
 			 const Coord3d& p_end,
 			 short p_direction,
 			 int p_lowHeight,
 			 int p_highHeight,
 			 eLiftActivateType p_activateType,
-			 unsigned char p_initialActive);
+			 unsigned int p_initialActive);
 	void Set(int p_x,
 			 int p_y,
 			 int p_z,
@@ -37,7 +37,7 @@ public:
 			 int p_lowHeight,
 			 int p_highHeight,
 			 eLiftActivateType p_activateType,
-			 unsigned char p_initialActive);
+			 unsigned int p_initialActive);
 
 	friend class LiftManager;
 

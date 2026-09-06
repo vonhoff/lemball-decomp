@@ -20,7 +20,7 @@ public:
 	void AddButton(int p_x,
 				   int p_y,
 				   unsigned long* p_animIds,
-				   unsigned char p_mode,
+				   unsigned int p_mode,
 				   int p_minimum,
 				   int p_maximum,
 				   int p_value,

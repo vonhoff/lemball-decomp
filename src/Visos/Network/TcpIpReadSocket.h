@@ -20,7 +20,7 @@ public:
 	bool ReadBuff();
 	bool ReadBuffFrom();
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
-	virtual void Closed(unsigned char p_notifyPeer);                                   // vtable+0x0c
+	virtual void Closed(int p_notifyPeer);                                             // vtable+0x0c
 };
 #pragma vtordisp(on)
 

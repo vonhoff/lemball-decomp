@@ -22,7 +22,7 @@ public:
 	bool InGroupByObjectNo(int p_objectNo);
 	bool IsInGrouping(GameObject* p_object);
 	bool ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY);
-	int CalcZValueSprite(int p_index);
+	int CalcZValue_Sprite(int p_index);
 	unsigned long LemmingFly(ViewData& p_viewData, int& p_frame);
 	unsigned short CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, unsigned short p_z);
 	void UseBalloon(int p_playerIndex);
@@ -39,7 +39,7 @@ public:
 	virtual void Process();                                         // vtable+0x1c
 	virtual void ShutDown();                                        // vtable+0x04
 	virtual ~C2D();                                                 // vtable+0x00
-	void AddObjectToGroup(int p_objectNo, unsigned char p_markSelection);
+	void AddObjectToGroup(int p_objectNo, int p_markSelection);
 	void CancelMoves();
 	void CheckValidFormGroup();
 	void CursorChangeType(int p_cursorType, int p_value);
@@ -73,8 +73,8 @@ public:
 	void DrawLemmingFlyShadow(ViewData& p_viewData);
 	void DrawLemmingJump(ViewData& p_viewData, unsigned char p_remapped);
 	void DrawLemmingLanding(ViewData& p_viewData, unsigned char p_remapped);
-	void DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, unsigned char p_remapped);
-	void DrawLemmingOnConveyor(ViewData& p_viewData, unsigned char p_remapped);
+	void DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, int p_remapped);
+	void DrawLemmingOnConveyor(ViewData& p_viewData, int p_remapped);
 	void DrawMine(ViewData& p_viewData);
 	void DrawMover(ViewData& p_viewData);
 	void DrawObject(ViewData& p_viewData);
@@ -91,8 +91,8 @@ public:
 	void DrawTimeBonus(ViewData& p_viewData);
 	void DrawTrampoline(ViewData& p_viewData);
 	void DrawTrapDoor(ViewData& p_viewData);
-	void DrawZBuffAnim(int p_index, unsigned short p_z);
-	void DrawZBuffSprite(int p_index, unsigned short p_z);
+	void DrawZBuff_Anim(int p_index, unsigned short p_z);
+	void DrawZBuff_Sprite(int p_index, unsigned short p_z);
 	void FormGroup();
 	void GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint, unsigned char p_alternate);
 	void InitSpriteGroundLu();

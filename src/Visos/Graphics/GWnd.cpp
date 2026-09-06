@@ -13,7 +13,7 @@
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x0043a510
-void GWnd::Dummy3c()
+void GWnd::OnCreate()
 {
 }
 
@@ -54,7 +54,7 @@ void GWnd::Move(const VsPoint& p_point)
 
 // 68K 0x1010a808 _OnCreate__5CGWndFv
 // FUNCTION: LEMBALL 0x00463c30
-void GWnd::OnCreate()
+void GWnd::_OnCreate()
 {
 	VsRect localRect;
 	Surface* parentSurface;
@@ -121,7 +121,7 @@ void GWnd::OnCreate()
 
 // 68K 0x1010aa18 _OnDestroy__5CGWndFv
 // FUNCTION: LEMBALL 0x00463df0
-void GWnd::BaseOnDestroy()
+void GWnd::_OnDestroy()
 {
 	Gdi* gdi;
 	unsigned int style;
@@ -143,7 +143,7 @@ void GWnd::BaseOnDestroy()
 			m_createRect->SetDontUpdateRect(emptyRect);
 		}
 	}
-	PvWnd::BaseOnDestroy();
+	PvWnd::_OnDestroy();
 }
 
 // 68K 0x1010aa64 _OnSize__5CGWndFv
@@ -192,7 +192,7 @@ void GWnd::_OnSize()
 	surface.m_relOriginY = relY;
 }
 
-// 68K 0x1010b3ca _OnMove__5CGWndFv
+// 68K 0x1010ab48 _OnMove__5CGWndFv
 // FUNCTION: LEMBALL 0x00463f30
 void GWnd::_OnMove()
 {

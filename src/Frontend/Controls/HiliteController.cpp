@@ -166,7 +166,7 @@ int HiliteController::ProcessMsg(Message* p_message)
 void HiliteController::AddButton(int p_x,
 								 int p_y,
 								 unsigned long* p_animIds,
-								 unsigned char p_mode,
+								 unsigned int p_mode,
 								 int p_minimum,
 								 int p_maximum,
 								 int p_value,
@@ -179,7 +179,7 @@ void HiliteController::AddButton(int p_x,
 												 p_x,
 												 p_y,
 												 p_animIds,
-												 *(unsigned int*) &p_mode,
+												 p_mode,
 												 p_minimum,
 												 p_maximum,
 												 p_value,
@@ -218,6 +218,7 @@ void HiliteController::DrawButtons(int p_force)
 	} while (count != 0);
 }
 
+// 68K 0x1080578c DrawHiliteWindow__17CHiliteControllerFv
 // FUNCTION: LEMBALL 0x0044fa00
 void HiliteController::DrawHiliteWindow()
 {

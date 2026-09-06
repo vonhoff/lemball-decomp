@@ -17,6 +17,7 @@ public:
 	virtual NetworkMessage* ReceiveAcknowledgement();                     // vtable+0x1c
 	virtual void SetDestAddr(NetworkAddress* p_arg0) = 0;                 // vtable+0x20
 	virtual bool SendPacket(const unsigned char* p_data, int p_size) = 0; // vtable+0x24
+	// 68K 0x101074e2 SetPort__12CWriteSocketFs
 	// FUNCTION: LEMBALL 0x00462970
 	virtual void SetPort(short p_arg0) // vtable+0x28
 	{
@@ -26,7 +27,7 @@ public:
 	bool SendCritical(NetworkMessage& p_arg0);
 	bool SendNcms(NetworkMessage& p_arg0);
 	bool ResendCritical(WritePacket* p_arg0);
-	void Closed(unsigned char p_arg0);
+	void Closed(int p_notifyPeer);
 	void DeleteCBuffers();
 	void DeleteNcBuffers();
 	void Process();

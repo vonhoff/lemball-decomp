@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x00493438
 class TrapDoor : public BaseGlobalObject {
 public:
-	TrapDoor(AiCoord& p_arg0, unsigned char p_arg1);
+	TrapDoor(AiCoord& p_arg0, unsigned int p_arg1);
 	virtual bool Process();                         // vtable+0x14
 	virtual int Usage();                            // vtable+0x28
 	virtual void DoActivate();                      // vtable+0x10c

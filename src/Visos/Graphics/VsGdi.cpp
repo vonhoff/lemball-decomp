@@ -871,7 +871,7 @@ void Surface::CopyDIBBits(void* p_header, unsigned char* p_bits)
 	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 }
 
-// 68K 0x10108ec2 SetDefaultCtable__8CSurfaceFv
+// 68K 0x10108e58 SetDefaultCtable__8CSurfaceFv
 // FUNCTION: LEMBALL 0x0046d930
 void Surface::SetDefaultCtable()
 {

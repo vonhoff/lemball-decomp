@@ -21,7 +21,7 @@ public:
 	virtual void Process();                              // vtable+0x10
 	virtual void ResetPort(short p_port);                // vtable+0x04
 	virtual void StopListen();                           // vtable+0x18
-	void Closed(unsigned char p_notifyPeer);
+	void Closed(int p_notifyPeer);
 	void InitialiseFile();
 	static void Setup(const char* p_peerName, const char* p_path);
 	void StartListen();

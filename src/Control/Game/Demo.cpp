@@ -44,11 +44,10 @@ void Demo::Reset()
 
 // 68K 0x10701062 SetDemoMode__5CDemoFUc
 // FUNCTION: LEMBALL 0x00409600
-void Demo::SetDemoMode(unsigned char p_enabled)
+void Demo::SetDemoMode(int p_enabled)
 {
-	unsigned int enabled = *(unsigned int*) &p_enabled;
-	m_demoMode = enabled;
-	if (enabled != 0) {
+	m_demoMode = p_enabled;
+	if (p_enabled != 0) {
 		Reset();
 	}
 	else {

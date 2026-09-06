@@ -12,7 +12,7 @@ HiliteWindow::HiliteWindow()
 
 // 68K 0x10804ff8 OnCreate__13CHiliteWindowFv
 // FUNCTION: LEMBALL 0x0044f420
-void HiliteWindow::Dummy3c()
+void HiliteWindow::OnCreate()
 {
 	m_gdi->m_renderTarget->m_flag74 = 1;
 }

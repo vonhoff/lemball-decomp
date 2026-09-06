@@ -24,7 +24,7 @@ public:
 
 	NetworkMessage* ReceiveAcknowledgement() { return WriteSocket::ReceiveAcknowledgement(); }
 
-	void Closed(unsigned char p_arg0) { WriteSocket::Closed(p_arg0); }
+	void Closed(int p_notifyPeer) { WriteSocket::Closed(p_notifyPeer); }
 
 	void Process()
 	{

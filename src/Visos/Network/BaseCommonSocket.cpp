@@ -57,6 +57,7 @@ void BaseCommonSocket::CloseSocket()
 
 // 68K 0x1010e52c Closed__17CBaseCommonSocketFUc
 // FUNCTION: LEMBALL 0x004628d0
-void BaseCommonSocket::Closed(unsigned char p_arg0)
+void BaseCommonSocket::Closed(int p_notifyPeer)
 {
+	(void) p_notifyPeer;
 }

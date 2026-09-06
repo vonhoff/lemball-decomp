@@ -19,12 +19,12 @@ public:
 									 unsigned int p_lParam);                   // vtable+0xa0
 	virtual void Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title); // vtable+0x04
 	virtual void Move(const VsPoint& p_point);                                 // vtable+0x38
-	virtual void OnCreate();                                                   // vtable+0x18
-	virtual void BaseOnDestroy();                                              // vtable+0x1c
+	virtual void _OnCreate();                                                  // vtable+0x18
+	virtual void _OnDestroy();                                                 // vtable+0x1c
 	virtual void _OnMove();                                                    // vtable+0x28
 	virtual void _OnSize();                                                    // vtable+0x20
 	virtual void Refresh(VsRect* p_rect);                                      // vtable+0x70
-	virtual void Dummy3c();                                                    // vtable+0x3c
+	virtual void OnCreate();                                                   // vtable+0x3c
 	virtual void OnDestroy();                                                  // vtable+0x40
 	virtual void OnSize();                                                     // vtable+0x44
 	~GWnd();

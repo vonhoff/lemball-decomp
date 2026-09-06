@@ -12,7 +12,7 @@ class TcpIpRwSocket : public virtual RwSocket, public virtual TcpIpReadSocket, p
 public:
 	TcpIpRwSocket();
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
-	virtual void Closed(unsigned char p_notifyPeer);                                   // vtable+0x0c
+	virtual void Closed(int p_notifyPeer);                                             // vtable+0x0c
 	virtual NetworkMessage* ReceiveAcknowledgement();                                  // vtable+0x1c
 	virtual void SendAcknowledgement();                                                // vtable+0x18
 };

@@ -29,8 +29,8 @@ public:
 	void AddNewWaypointToCurrentGroup(int p_x, int p_y);
 	void AddPlayerLemmingToGroup(PlayerLemming* p_lemming, PlayerLemmingGroup* p_group);
 	void InitialiseNetwork();
-	void LoadAdditionalPlayerStartPositions(unsigned char* p_data, unsigned long p_dataSize, unsigned char p_skip);
-	void LoadLevel(unsigned char* p_data, unsigned long p_dataSize, unsigned char p_skip);
+	void LoadAdditionalPlayerStartPositions(unsigned char* p_data, unsigned long p_dataSize, unsigned int p_skip);
+	void LoadLevel(unsigned char* p_data, unsigned long p_dataSize, unsigned int p_skip);
 	void PlayerGroupRequestFire(int p_x, int p_y);
 	void ProcessDead();
 	void ReformAlteredGroups(PlayerLemmingGroup* p_excludedGroup);

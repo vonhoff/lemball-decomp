@@ -469,7 +469,7 @@ void BaseNetwork::CtoSgoConnect(NetworkAddress* p_arg0)
 // FUNCTION: LEMBALL 0x004624a0
 void BaseNetwork::Establish(NetworkAddress* p_arg0, unsigned char* p_arg1)
 {
-	(*(void(__fastcall**)(NetworkAddress*)) * (void***) p_arg0)(p_arg0);
+	p_arg0->GetStr();
 	if (g_pMessReqConnect->Set(p_arg1) != 0) {
 		CtoSRequestConnect(p_arg0);
 		return;

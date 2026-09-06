@@ -124,11 +124,11 @@ bool C2D::FindGameObject(const VsPoint& p_point, int& p_index, unsigned char p_p
 
 // 68K 0x10b0827e AddObjectToGroup__3C2DFiUc
 // FUNCTION: LEMBALL 0x00437130
-void C2D::AddObjectToGroup(int p_objectNo, unsigned char p_markSelection)
+void C2D::AddObjectToGroup(int p_objectNo, int p_markSelection)
 {
 	m_groupObjectIds[m_groupCount] = (unsigned short) p_objectNo;
 	m_groupCount++;
-	if (*(unsigned int*) &p_markSelection != 0) {
+	if (p_markSelection != 0) {
 		m_groupSelectionCount = m_groupCount;
 	}
 }
@@ -184,7 +184,7 @@ void C2D::PrevGroup()
 	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x1b;
 }
 
-// 68K 0x108084fe SelectLemming__3C2DFi
+// 68K 0x10b084fe SelectLemming__3C2DFi
 // FUNCTION: LEMBALL 0x00437340
 void C2D::SelectLemming(int p_playerIndex)
 {
@@ -689,7 +689,7 @@ void C2D::DrawLemmingExternal(ViewData& p_viewData, unsigned char p_remapped)
 
 // 68K 0x10b0274e DrawLemmingOnConveyor__3C2DFR9CViewDataUc
 // FUNCTION: LEMBALL 0x0043c1a0
-void C2D::DrawLemmingOnConveyor(ViewData& p_viewData, unsigned char p_remapped)
+void C2D::DrawLemmingOnConveyor(ViewData& p_viewData, int p_remapped)
 {
 	int x;
 	int y;
@@ -700,7 +700,7 @@ void C2D::DrawLemmingOnConveyor(ViewData& p_viewData, unsigned char p_remapped)
 	x = p_viewData.m_positionX;
 	y = p_viewData.m_positionY;
 	frame = (frame * 15 / 1000) % 8;
-	if (*(unsigned int*) &p_remapped != 0) {
+	if (p_remapped != 0) {
 		remap = m_paletteRemap;
 	}
 	else {
@@ -855,7 +855,7 @@ void C2D::DrawHand(ViewData& p_viewData)
 
 // 68K 0x10b02fb0 DrawLemmingOnBalloon__3C2DFR9CViewDataiUc
 // FUNCTION: LEMBALL 0x0043c8a0
-void C2D::DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, unsigned char p_remapped)
+void C2D::DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, int p_remapped)
 {
 	int x;
 	int y;
@@ -869,7 +869,7 @@ void C2D::DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, unsigned
 	y = p_viewData.m_positionY;
 	phase = ((p_viewData.m_animationTime - p_viewData.m_stateTimer) & 0x7ff) >> 7;
 
-	if (*(unsigned int*) &p_remapped != 0) {
+	if (p_remapped != 0) {
 		remap = m_paletteRemap;
 	}
 	else {
@@ -1627,13 +1627,13 @@ void C2D::ResetPrimitives()
 
 // 68K 0x10b06056 DrawZBuff_Sprite__3C2DFiUs
 // STUB: LEMBALL 0x00440460
-void C2D::DrawZBuffSprite(int p_index, unsigned short p_z)
+void C2D::DrawZBuff_Sprite(int p_index, unsigned short p_z)
 {
 }
 
 // 68K 0x10b060ac DrawZBuff_Anim__3C2DFiUs
 // STUB: LEMBALL 0x00440490
-void C2D::DrawZBuffAnim(int p_index, unsigned short p_z)
+void C2D::DrawZBuff_Anim(int p_index, unsigned short p_z)
 {
 }
 
@@ -1645,7 +1645,7 @@ void C2D::DrawObjectsZBuff()
 
 // 68K 0x10b06416 CalcZValue_Sprite__3C2DFi
 // STUB: LEMBALL 0x004407e0
-int C2D::CalcZValueSprite(int p_index)
+int C2D::CalcZValue_Sprite(int p_index)
 {
 	return 0;
 }

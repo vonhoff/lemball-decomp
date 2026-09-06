@@ -20,7 +20,7 @@ public:
 	virtual void StartListen() = 0;                       // vtable+0x14
 	virtual void StopListen() = 0;                        // vtable+0x18
 	void AddToMessage(BroadcastMessage& p_arg0);
-	void Closed(unsigned char p_arg0);
+	void Closed(int p_notifyPeer);
 	void Initialise(const char* p_arg0);
 	void PostRead(NetworkEvents p_arg0, BasePacket* p_arg1);
 	void Run();

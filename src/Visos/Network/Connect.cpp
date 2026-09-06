@@ -141,15 +141,13 @@ bool Connect::Send(NetworkMessage& p_arg0)
 
 // 68K 0x1020d4ea Closed__8CConnectFUc
 // FUNCTION: LEMBALL 0x00460f00
-void Connect::Closed(unsigned char p_arg0)
+void Connect::Closed(int p_notifyPeer)
 {
-	register unsigned int notifyPeer;
 	Message message;
 
-	notifyPeer = *(volatile unsigned int*) &p_arg0;
 	m_killRequested = 1;
-	RwSocket::Closed((unsigned char) notifyPeer);
-	if (notifyPeer != 0) {
+	RwSocket::Closed(p_notifyPeer);
+	if (p_notifyPeer != 0) {
 		message.type = 10;
 		message.code = 0;
 		message.payload = this;

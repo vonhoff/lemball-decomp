@@ -21,7 +21,7 @@ void Lift::Edit(int p_height,
 				int p_lowHeight,
 				int p_highHeight,
 				eLiftActivateType p_activateType,
-				unsigned char p_initialActive)
+				unsigned int p_initialActive)
 {
 }
 
@@ -34,13 +34,13 @@ void Lift::Set(int p_x,
 			   int p_lowHeight,
 			   int p_highHeight,
 			   eLiftActivateType p_activateType,
-			   unsigned char p_initialActive)
+			   unsigned int p_initialActive)
 {
 	Coord3d position;
 	position.m_x = p_x;
 	position.m_y = p_y;
 	position.m_z = p_z;
-	Set(position, position, p_direction, p_lowHeight, p_highHeight, p_activateType, *(unsigned int*) &p_initialActive);
+	Set(position, position, p_direction, p_lowHeight, p_highHeight, p_activateType, p_initialActive);
 }
 
 // 68K 0x10614a04 Set__5CLiftFR8tCoord3dR8tCoord3dsii17eLiftActivateTypeUc
@@ -51,7 +51,7 @@ void Lift::Set(const Coord3d& p_start,
 			   int p_lowHeight,
 			   int p_highHeight,
 			   eLiftActivateType p_activateType,
-			   unsigned char p_initialActive)
+			   unsigned int p_initialActive)
 {
 }
 

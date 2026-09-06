@@ -666,7 +666,7 @@ bool GameObject::DestinationExists()
 // FUNCTION: LEMBALL 0x004160e0
 void GameObject::EmptyDestinationList()
 {
-	*(unsigned short*) m_destinationList = 0;
+	m_destinationList->m_count = 0;
 }
 
 // 68K 0x1060a72e GetBoundingBox__11CGameObjectFR7CVSRect

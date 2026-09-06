@@ -22,7 +22,7 @@ public:
 	void Draw(GWnd* p_window);
 	void Initialise();
 	void Process();
-	void SetActive(unsigned char p_active);
+	void SetActive(unsigned int p_active);
 	void SetMainId(unsigned int p_resourceId);
 	void SetMainId(unsigned int p_resourceId, int p_frame);
 	void SetPos(const VsPoint& p_position);

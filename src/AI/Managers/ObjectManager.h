@@ -38,7 +38,7 @@ public:
 	virtual ~ObjectManager();                               // vtable+0x14
 	void ConvertVer0ToVer1();
 	void Initialise(int p_objectCount);
-	void LoadLevel(unsigned char* p_data, unsigned long p_length, unsigned char p_append);
+	void LoadLevel(unsigned char* p_data, unsigned long p_length, unsigned int p_append);
 	void Remove(GlobalGameObject* p_object);
 
 private:

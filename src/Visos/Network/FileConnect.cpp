@@ -56,7 +56,7 @@ FileConnect::~FileConnect()
 
 // 68K 0x10116932 Closed__12CFileConnectFUc
 // STUB: LEMBALL 0x0047bfc0
-void FileConnect::Closed(unsigned char p_notifyPeer)
+void FileConnect::Closed(int p_notifyPeer)
 {
 }
 

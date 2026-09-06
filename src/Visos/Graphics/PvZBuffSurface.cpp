@@ -37,9 +37,9 @@ void PvZBuffSurface::AllocateZBuff()
 
 // 68K 0x102164b6 EnableZBuff__15CPVZBuffSurfaceFUc
 // FUNCTION: LEMBALL 0x00466840
-void PvZBuffSurface::EnableZBuff(unsigned char p_enabled)
+void PvZBuffSurface::EnableZBuff(int p_enabled)
 {
-	if (*(unsigned int*) &p_enabled == 0) {
+	if (p_enabled == 0) {
 		FreeZBuff();
 		m_enabled = 0;
 		return;

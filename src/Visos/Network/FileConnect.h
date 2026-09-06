@@ -18,7 +18,7 @@ public:
 	virtual void InitSocket();                                             // vtable+0x08
 	virtual void Process();                                                // vtable+0x04
 	virtual NetworkMessage* ReceiveAcknowledgement();                      // vtable+0x1c
-	void Closed(unsigned char p_notifyPeer);
+	void Closed(int p_notifyPeer);
 	void ConnectSetup();
 	void InitialiseFile();
 	void Listen(NetworkAddress* p_address);

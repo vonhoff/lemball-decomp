@@ -66,9 +66,9 @@ Broadcast::~Broadcast()
 
 // 68K 0x1020c914 Closed__10CBroadcastFUc
 // FUNCTION: LEMBALL 0x004605b0
-void Broadcast::Closed(unsigned char p_arg0)
+void Broadcast::Closed(int p_notifyPeer)
 {
-	(void) p_arg0;
+	(void) p_notifyPeer;
 	g_pBaseNetwork->KillUnBornConnection(WriteSocket::m_destinationAddress);
 }
 

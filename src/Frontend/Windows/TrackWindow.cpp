@@ -25,7 +25,7 @@ TrackWindow::TrackWindow(const VsRect& p_rect, int p_value, PvGWnd* p_parent) : 
 
 // 68K 0x1080e3d6 OnCreate__12CTrackWindowFv
 // FUNCTION: LEMBALL 0x0044e940
-void TrackWindow::Dummy3c()
+void TrackWindow::OnCreate()
 {
 	m_gdi->m_renderTarget->m_flag74 = 1;
 }

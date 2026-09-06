@@ -103,8 +103,9 @@ unsigned int Main2DDisplay::GetStyle()
 	return style;
 }
 
+// 68K 0x10b0049a OnCreate__14CMain2DDisplayFv
 // FUNCTION: LEMBALL 0x00431780
-void Main2DDisplay::Dummy3c()
+void Main2DDisplay::OnCreate()
 {
 	SetZoom(1);
 	AttachPalette(RES_GAME_GAMEPALETTE);
@@ -154,7 +155,6 @@ void Main2DDisplay::OnSize()
 	}
 }
 
-// 68K 0x10b00746 OnMove__14CMain2DDisplayFv
 // 68K 0x10b006fe OnZoom__14CMain2DDisplayFi
 // FUNCTION: LEMBALL 0x00431880
 void Main2DDisplay::OnZoom(int p_zoom)

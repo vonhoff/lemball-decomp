@@ -26,8 +26,9 @@ void Enemy::Restart()
 {
 }
 
-// 68K 0x10607b5e
-// SetEnemyType__6CEnemyF18eEnemyStateActions16eEnemyStateRules18eEnemyStateActions16eEnemyStateRules18eEnemyStateActions16eEnemyStateRules
+// clang-format off
+// 68K 0x10607b5e SetEnemyType__6CEnemyF18eEnemyStateActions16eEnemyStateRules18eEnemyStateActions16eEnemyStateRules18eEnemyStateActions16eEnemyStateRules
+// clang-format on
 // FUNCTION: LEMBALL 0x0041fe30
 void Enemy::SetEnemyType(eEnemyStateActions p_action0,
 						 eEnemyStateRules p_rule0,

@@ -224,9 +224,9 @@ int TcpIpConnect::Process(unsigned int p_message, unsigned int p_wParam, long p_
 
 // 68K 0x1010e964 Closed__13CTCPIPConnectFUc
 // FUNCTION: LEMBALL 0x00471b80
-void TcpIpConnect::Closed(unsigned char p_notifyPeer)
+void TcpIpConnect::Closed(int p_notifyPeer)
 {
-	CConnect::Closed(*(unsigned int*) &p_notifyPeer);
+	CConnect::Closed(p_notifyPeer);
 }
 
 // 68K 0x1010e998 ReceiveAcknowledgement__13CTCPIPConnectFv

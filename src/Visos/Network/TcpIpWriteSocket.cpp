@@ -96,7 +96,7 @@ void TcpIpWriteSocket::SetPort(short p_port)
 
 // 68K 0x1010e556 Closed__17CTCPIPWriteSocketFUc
 // FUNCTION: LEMBALL 0x00471ee0
-void TcpIpWriteSocket::Closed(unsigned char p_notifyPeer)
+void TcpIpWriteSocket::Closed(int p_notifyPeer)
 {
 	WriteSocket::Closed(p_notifyPeer);
 }

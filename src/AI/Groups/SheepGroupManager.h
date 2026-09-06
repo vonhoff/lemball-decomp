@@ -10,7 +10,7 @@ class SheepGroupManager : public GenericGroupManager {
 public:
 	SheepGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2);
 	int Process();
-	void LoadLevel(LoadSheepData* p_data, unsigned long p_dataSize, unsigned char p_skip);
+	void LoadLevel(LoadSheepData* p_data, unsigned long p_dataSize, unsigned int p_skip);
 	void Restart();
 };
 

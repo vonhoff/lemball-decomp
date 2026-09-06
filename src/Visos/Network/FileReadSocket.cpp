@@ -33,6 +33,6 @@ FileReadSocket::~FileReadSocket()
 
 // 68K 0x101078ba Closed__15CFileReadSocketFUc
 // FUNCTION: LEMBALL 0x0047be10
-void FileReadSocket::Closed(unsigned char p_notifyPeer)
+void FileReadSocket::Closed(int p_notifyPeer)
 {
 }

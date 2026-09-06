@@ -8,10 +8,10 @@
 class BaseCommonSocket {
 public:
 	BaseCommonSocket();
-	virtual int SysCloseSocket() = 0;          // vtable+0x00
-	virtual ~BaseCommonSocket();               // vtable+0x04
-	virtual void SocketError() = 0;            // vtable+0x08
-	virtual void Closed(unsigned char p_arg0); // vtable+0x0c
+	virtual int SysCloseSocket() = 0;      // vtable+0x00
+	virtual ~BaseCommonSocket();           // vtable+0x04
+	virtual void SocketError() = 0;        // vtable+0x08
+	virtual void Closed(int p_notifyPeer); // vtable+0x0c
 	void CloseSocket();
 	void SocketError(NetworkErrors p_arg0);
 

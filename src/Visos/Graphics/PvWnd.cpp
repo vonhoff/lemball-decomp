@@ -223,7 +223,7 @@ unsigned int PvWnd::InitHotAreaList()
 
 // 68K 0x10216d90 _OnCreate__6CPVWndFv
 // FUNCTION: LEMBALL 0x00465f80
-void PvWnd::OnCreate()
+void PvWnd::_OnCreate()
 {
 	WindowOwnerList* list;
 	WindowOwnerNode* node;
@@ -255,7 +255,7 @@ void PvWnd::OnCreate()
 
 // 68K 0x10216e16 _OnDestroy__6CPVWndFv
 // FUNCTION: LEMBALL 0x00465fe0
-void PvWnd::BaseOnDestroy()
+void PvWnd::_OnDestroy()
 {
 	WindowOwnerList* ownerList;
 	WindowOwnerNode* node;
@@ -409,7 +409,7 @@ void PvWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
 {
 }
 
-// 68K 0x10216fdc _SetRect__6CPVWndFRC7CVSRect
+// 68K 0x10117e2e _SetRect__6CPVWndFRC7CVSRect
 // FUNCTION: LEMBALL 0x00466300
 void PvWnd::_SetRect(const VsRect& p_rect)
 {
@@ -429,7 +429,7 @@ void PvWnd::_SetRect(const VsRect& p_rect)
 
 // 68K 0x10117ef4 _SetRelTL__6CPVWndFRC8CVSPoint
 // FUNCTION: LEMBALL 0x00466330
-void PvWnd::SetRelTl(const VsPoint& p_point)
+void PvWnd::_SetRelTL(const VsPoint& p_point)
 {
 }
 
@@ -479,7 +479,7 @@ void PvWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 void PvWnd::Move(const VsPoint& p_point)
 {
 }
-void PvWnd::Dummy3c()
+void PvWnd::OnCreate()
 {
 }
 void PvWnd::OnDestroy()

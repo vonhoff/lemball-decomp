@@ -385,31 +385,30 @@ void PasswordDrawer::DrawText()
 	char text[24];
 	char* textPtr;
 	int skillIndex;
-	short* labelPos;
-	short* countPos;
 	VsPoint position;
 	VsSize advance;
 
 	layout = (int*) m_layout;
-	labelPos = (short*) &layout[0x1c / 4];
-	countPos = (short*) &layout[0x3c / 4];
+	int* labelPos = &layout[0x18 / 4];
+	int* countPos = &layout[0x38 / 4];
 	textPtr = text;
 	skillIndex = 0;
 	do {
 		advance.m_width = 0;
 		advance.m_height = 0;
-		position.m_y = labelPos[0];
-		position.m_x = (short) *(int*) (labelPos - 1);
-		m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillIndex], 0x20, 0);
+		position.m_x = (short) labelPos[0];
+		position.m_y = (short) labelPos[1];
+		m_textManager
+			->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillIndex], 0x20, 0);
 		strcpy(textPtr, g_szPasswordLevelFormat);
 		VsLtoa(g_pGameStatus->m_maxLevels[skillIndex] + 1, textPtr + 2, 10);
 		advance.m_width = 0;
 		advance.m_height = 0;
-		position.m_y = countPos[0];
-		position.m_x = (short) *(int*) (countPos - 1);
+		position.m_x = (short) countPos[0];
+		position.m_y = (short) countPos[1];
 		m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, text, 0x20, 0);
-		labelPos = labelPos + 4;
-		countPos = countPos + 4;
+		labelPos += 2;
+		countPos += 2;
 		skillIndex = skillIndex + 1;
 		textPtr = textPtr + 6;
 	} while (skillIndex < 4);

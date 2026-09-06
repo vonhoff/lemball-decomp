@@ -5,12 +5,12 @@
 
 // 68K 0x1062116c __ct__9CTrapDoorFR7AICOORDUc
 // FUNCTION: LEMBALL 0x0040c2d0
-TrapDoor::TrapDoor(AiCoord& p_arg0, unsigned char p_arg1) : BaseGlobalObject(p_arg0, OBJECT_TRAP_DOOR)
+TrapDoor::TrapDoor(AiCoord& p_arg0, unsigned int p_arg1) : BaseGlobalObject(p_arg0, OBJECT_TRAP_DOOR)
 {
 	m_spawnPosition.m_xFixed = p_arg0.m_xFixed;
 	m_spawnPosition.m_yFixed = p_arg0.m_yFixed;
 	m_spawnPosition.m_zFixed = p_arg0.m_zFixed;
-	m_mode = *(unsigned int*) &p_arg1;
+	m_mode = p_arg1;
 }
 
 // 68K 0x10621212 Restart__9CTrapDoorFv

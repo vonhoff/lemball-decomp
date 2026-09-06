@@ -23,7 +23,7 @@ public:
 	virtual void OnMove();         // vtable+0x58
 	virtual void OnRestore();      // vtable+0x54
 	void KillDrawer(eFlowProcesses p_flow);
-	virtual void Dummy3c(); // vtable+0x3c
+	virtual void OnCreate(); // vtable+0x3c
 	virtual void OnDestroy();
 	virtual void OnPaint(const VsRect& p_rect);
 	virtual void OnSize();

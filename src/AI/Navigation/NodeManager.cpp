@@ -44,7 +44,7 @@ Pt3 NodeManager::GetNodePosition(int p_node)
 
 // 68K 0x10618854 LoadLevel__12CNodeManagerFP22tagLoadNodeInformationUlUc
 // FUNCTION: LEMBALL 0x00421470
-void NodeManager::LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsigned char p_skip)
+void NodeManager::LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsigned int p_skip)
 {
 	unsigned char* end = p_data + p_dataSize;
 	int count = *(unsigned short*) p_data;
@@ -53,7 +53,7 @@ void NodeManager::LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsi
 	Initialise(count);
 	m_count = count;
 
-	if (*(unsigned int*) &p_skip != 0) {
+	if (p_skip != 0) {
 		return;
 	}
 	if (p_data >= end) {

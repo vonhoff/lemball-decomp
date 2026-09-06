@@ -174,7 +174,7 @@ void PlayerLemmingGroupManager::ReformAlteredGroups(PlayerLemmingGroup* p_exclud
 {
 }
 
-// 68K 0x10601042c PlayerGroupRequestFire__26CPlayerLemmingGroupManagerFii
+// 68K 0x1061042c PlayerGroupRequestFire__26CPlayerLemmingGroupManagerFii
 // FUNCTION: LEMBALL 0x00418b60
 void PlayerLemmingGroupManager::PlayerGroupRequestFire(int p_x, int p_y)
 {
@@ -196,7 +196,7 @@ void PlayerLemmingGroupManager::InitialiseNetwork()
 
 // 68K 0x106105a0 LoadLevel__26CPlayerLemmingGroupManagerFPUcUlUc
 // FUNCTION: LEMBALL 0x00418d20
-void PlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p_dataSize, unsigned char p_skip)
+void PlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p_dataSize, unsigned int p_skip)
 {
 	unsigned short* data = (unsigned short*) p_data;
 	m_startPositionCount = 1;
@@ -224,7 +224,7 @@ void PlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p
 	PlayerLemming** reuse = 0;
 	int count = g_pGenericGroupAI->m_lemmingCount;
 	int dead = 4 - count;
-	if (*(unsigned int*) &p_skip != 0) {
+	if (p_skip != 0) {
 		reuse = g_pGenericGroupAI->m_networkLemmings;
 	}
 	m_deadCount = 0;
@@ -279,7 +279,7 @@ void PlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p
 	m_lemmingCounts[2] = 0;
 	m_lemmingCounts[1] = 0;
 	MakeParticularGroupPlayerControlled(group);
-	if (*(unsigned int*) &p_skip == 0) {
+	if (p_skip == 0) {
 		g_pGenericGroupAI->AddNewTrapDoor(m_startX[0], m_startY[0], m_startZ[0], doorTime);
 	}
 }
@@ -288,7 +288,7 @@ void PlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p
 // FUNCTION: LEMBALL 0x00419060
 void PlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned char* p_data,
 																   unsigned long p_dataSize,
-																   unsigned char p_skip)
+																   unsigned int p_skip)
 {
 	Map* map = g_pMap;
 	unsigned short* data = (unsigned short*) p_data;
@@ -316,7 +316,7 @@ void PlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned char
 	g_pGenericGroupAI->NLemmings(total);
 	int dead = 4 - total;
 	PlayerLemming** reuse = 0;
-	if (*(unsigned int*) &p_skip != 0) {
+	if (p_skip != 0) {
 		reuse = g_pGenericGroupAI->m_networkLemmings;
 	}
 	m_deadCount = 0;
@@ -368,7 +368,7 @@ void PlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned char
 			g_pGenericGroupAI->m_unk0x5c = doorTime;
 		}
 		doorTime = (m_lemmingCounts[i] * 800 + 4100) / 50;
-		if (*(unsigned int*) &p_skip == 0) {
+		if (p_skip == 0) {
 			g_pGenericGroupAI->AddNewTrapDoor(m_startX[i], m_startY[i], m_startZ[i], doorTime);
 		}
 	}

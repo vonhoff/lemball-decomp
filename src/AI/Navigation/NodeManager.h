@@ -10,7 +10,7 @@ public:
 	NodeManager(int p_arg0);
 	Pt3 GetNodePosition(int p_node);
 	void Initialise(int p_count);
-	void LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsigned int p_skip);
 	void Restart();
 	~NodeManager();
 

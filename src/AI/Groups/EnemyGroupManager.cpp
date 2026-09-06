@@ -31,11 +31,12 @@ void EnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSiz
 {
 }
 
-// 68K 0x10608cba
-// LoadLevelAdditional_Waypoint__18CEnemyGroupManagerFP32tagLoadEnemyDataAdditionalActionRP22tagWaypointInformation
+// clang-format off
+// 68K 0x10608cba LoadLevelAdditional_Waypoint__18CEnemyGroupManagerFP32tagLoadEnemyDataAdditionalActionRP22tagWaypointInformation
+// clang-format on
 // FUNCTION: LEMBALL 0x00420f90
-LoadEnemyDataAdditionalAction* EnemyGroupManager::LoadLevelAdditionalWaypoint(LoadEnemyDataAdditionalAction* p_data,
-																			  WaypointInformation*& p_waypointInfo)
+LoadEnemyDataAdditionalAction* EnemyGroupManager::LoadLevelAdditional_Waypoint(LoadEnemyDataAdditionalAction* p_data,
+																			   WaypointInformation*& p_waypointInfo)
 {
 	unsigned char* data = (unsigned char*) p_data;
 	EnemyGetLong((unsigned long*) data);

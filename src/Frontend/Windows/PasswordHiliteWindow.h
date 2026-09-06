@@ -9,7 +9,7 @@
 class PasswordHiliteWindow : public GWnd {
 public:
 	PasswordHiliteWindow();
-	virtual void Dummy3c(); // vtable+0x3c
+	virtual void OnCreate(); // vtable+0x3c
 };
 
 #endif

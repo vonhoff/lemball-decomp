@@ -5,7 +5,7 @@
 
 // 68K 0x106219d8 LoadLevel__16CTrapDoorManagerFPUciUc
 // FUNCTION: LEMBALL 0x0040ca40
-void TrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void TrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip)
 {
 	unsigned short* data = (unsigned short*) p_data;
 	int count = *data++;
@@ -15,7 +15,7 @@ void TrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned 
 	}
 	for (int i = 0; i < count; i++) {
 		unsigned short id;
-		if (*(unsigned int*) &p_skip == 0) {
+		if (p_skip == 0) {
 			id = GameObject::NextLoadingId();
 		}
 		AiCoord position;
@@ -36,7 +36,7 @@ void TrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned 
 		}
 		position.m_zFixed = (unsigned int) z << 12;
 		selections[i] = *data++;
-		if (*(unsigned int*) &p_skip == 0) {
+		if (p_skip == 0) {
 			AddNewDoor(id, position, 1, 0);
 		}
 		g_pAI->AddANetworkStart(position.m_xFixed >> 12, position.m_yFixed >> 12, position.m_zFixed >> 12, i);

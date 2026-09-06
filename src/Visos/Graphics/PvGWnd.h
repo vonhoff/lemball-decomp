@@ -26,8 +26,8 @@ public:
 	virtual void _OnZoom(int p_oldZoom);                       // vtable+0x2c
 	virtual void SetDontUpdateRect(const VsRect& p_rect);      // vtable+0x84
 	virtual void SetInnerWindow(const VsRect& p_rect);         // vtable+0x08
-	virtual void OnCreate() = 0;                               // vtable+0x18
-	virtual void BaseOnDestroy() = 0;                          // vtable+0x1c
+	virtual void _OnCreate() = 0;                              // vtable+0x18
+	virtual void _OnDestroy() = 0;                             // vtable+0x1c
 	virtual void _OnMove() = 0;                                // vtable+0x28
 	virtual void _OnSize() = 0;                                // vtable+0x20
 	void Clear(int p_color);

@@ -18,7 +18,7 @@ public:
 	void GetUserPacket(unsigned char* p_data, unsigned long& p_size);
 	void Process();
 	void Reset();
-	void SetDemoMode(unsigned char p_enabled);
+	void SetDemoMode(int p_enabled);
 
 	friend class PlayerLemming;
 	friend class Game;
