@@ -471,7 +471,7 @@ void NetworkOptionsDrawer::DrawText()
 			if (myPeer != 0 && *myPeer != 0) {
 				char trimmed[21];
 				int len = 0x14;
-				memcpy(trimmed, myPeer, 0x14);
+				strncpy(trimmed, myPeer, 0x14);
 				do {
 					trimmed[len] = 0;
 					len--;
