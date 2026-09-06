@@ -1,15 +1,29 @@
 #include "GenericGroupManager.h"
 
+#include "../Managers/ObjectManager.h"
+#include "../Navigation/Ai.h"
+#include "FormationManager.h"
 #include "GenericGroup.h"
+
+#include <string.h>
+
+#pragma intrinsic(memset)
 
 GenericGroupManager::GenericGroupManager()
 {
 }
 
 // 68K 0x1060d1da __ct__20CGenericGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
-// STUB: LEMBALL 0x0041e8f0
+// FUNCTION: LEMBALL 0x0041e8f0
 GenericGroupManager::GenericGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
 {
+	g_pGenericGroupAI = p_arg0;
+	g_pGenericGroupObjectManager = p_arg1;
+	g_pGenericGroupFormationManager = p_arg2;
+	m_groupCount = 0;
+	m_currentGroup = 0;
+	m_state = 1;
+	memset(m_groups, 0, sizeof(m_groups));
 }
 
 // 68K 0x1060d272 __dt__20CGenericGroupManagerFv

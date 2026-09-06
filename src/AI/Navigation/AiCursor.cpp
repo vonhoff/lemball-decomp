@@ -16,9 +16,21 @@ void AiCursor::SetCursorXy(int p_x, int p_y)
 }
 
 // 68K 0x10606182 CheckAndClipCursorBounds__9CAICursorFv
-// STUB: LEMBALL 0x00414e20
+// FUNCTION: LEMBALL 0x00414e20
 void AiCursor::CheckAndClipCursorBounds()
 {
+	if (m_cursorX > m_maximumX) {
+		m_cursorX = m_maximumX;
+	}
+	else if (m_cursorX < 0) {
+		m_cursorX = 0;
+	}
+	if (m_cursorY > m_maximumY) {
+		m_cursorY = m_maximumY;
+	}
+	else if (m_cursorY < 0) {
+		m_cursorY = 0;
+	}
 }
 
 // 68K 0x106061f0 GetCursorSurfaceCoordinates__9CAICursorFRiRi

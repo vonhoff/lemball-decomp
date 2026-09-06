@@ -14,8 +14,9 @@ unsigned long EnemyGetLong(unsigned long* p_data)
 }
 
 // 68K 0x10608950 __ct__18CEnemyGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
-// STUB: LEMBALL 0x00420b80
+// FUNCTION: LEMBALL 0x00420b80
 EnemyGroupManager::EnemyGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
+	: GenericGroupManager(p_arg0, p_arg1, p_arg2)
 {
 }
 

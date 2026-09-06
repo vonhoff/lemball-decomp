@@ -144,16 +144,27 @@ void GenericGroup::RemoveElementFromGroup(GameObject* p_object)
 }
 
 // 68K 0x1060c814 ConfirmElementIsInGroup__13CGenericGroupFP11CGameObject
-// STUB: LEMBALL 0x0041e0c0
+// FUNCTION: LEMBALL 0x0041e0c0
 bool GenericGroup::ConfirmElementIsInGroup(GameObject* p_object)
 {
+	for (int i = 0; i < m_elementCount; i++) {
+		if (m_elements[i] == p_object) {
+			return 1;
+		}
+	}
 	return 0;
 }
 
 // 68K 0x1060c880 ConfirmElementIsInGroup__13CGenericGroupFUs
-// STUB: LEMBALL 0x0041e100
+// FUNCTION: LEMBALL 0x0041e100
 bool GenericGroup::ConfirmElementIsInGroup(unsigned short p_objectId)
 {
+	for (int i = 0; i < m_elementCount; i++) {
+		GameObject* object = m_elements[i];
+		if (object != 0 && object->m_objectId == p_objectId) {
+			return 1;
+		}
+	}
 	return 0;
 }
 

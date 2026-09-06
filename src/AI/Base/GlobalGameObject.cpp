@@ -1,6 +1,7 @@
 #include "GlobalGameObject.h"
 
 #include "../../Visos/Messaging/TransportObjectMess.h"
+#include "../../Visos/Network/Connect.h"
 #include "../Messages/ObjectChangeStateMess.h"
 #include "../Messages/ObjectDiesMess.h"
 #include "../Messages/ObjectHitMess.h"
@@ -55,9 +56,13 @@ int GlobalGameObject::UsableState()
 }
 
 // 68K 0x1060bc8c Action__17CGlobalGameObjectF7eAction
-// STUB: LEMBALL 0x00416db0
+// FUNCTION: LEMBALL 0x00416db0
 void GlobalGameObject::Action(eAction p_arg0)
 {
+	m_action = p_arg0;
+	if (g_pActiveConnection != 0) {
+		g_pObjectChangeStateMessage->Send(this);
+	}
 }
 
 // 68K 0x1060bce8 Action__17CGlobalGameObjectF7eActioni
@@ -75,9 +80,14 @@ void GlobalGameObject::RequestAction(eAction p_arg0)
 }
 
 // 68K 0x1060bdb8 CancelRequest__17CGlobalGameObjectFv
-// STUB: LEMBALL 0x00416e70
+// FUNCTION: LEMBALL 0x00416e70
 void GlobalGameObject::CancelRequest()
 {
+	if (m_requestActive != 0) {
+		m_isRemoteObject = 0;
+		m_requestActive = 0;
+		m_unk0x8c = 0;
+	}
 }
 
 // 68K 0x1060be00 Receive__17CGlobalGameObjectFUsP15CNetworkMessage

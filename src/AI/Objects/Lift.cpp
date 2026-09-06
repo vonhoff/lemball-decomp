@@ -3,8 +3,8 @@
 #include "../Base/Coord3d.h"
 
 // 68K 0x106145ea __ct__5CLiftFv
-// STUB: LEMBALL 0x00424d00
-Lift::Lift()
+// FUNCTION: LEMBALL 0x00424d00
+Lift::Lift() : GlobalGameObject(0x212, 0, 0)
 {
 }
 

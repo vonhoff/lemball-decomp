@@ -9,8 +9,9 @@
 #include "SheepGroup.h"
 
 // 68K 0x1061e91c __ct__18CSheepGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
-// STUB: LEMBALL 0x0041f0b0
+// FUNCTION: LEMBALL 0x0041f0b0
 SheepGroupManager::SheepGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
+	: GenericGroupManager(p_arg0, p_arg1, p_arg2)
 {
 }
 
