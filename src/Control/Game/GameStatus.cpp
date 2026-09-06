@@ -161,8 +161,9 @@ bool GameStatus::DecodePassword(char* p_password)
 // FUNCTION: LEMBALL 0x00406d80
 int GameStatus::StringToDWord()
 {
+	char* p = m_password;
 	int result = 0;
-	for (unsigned int i = 0; i < strlen(m_password); i++) {
+	for (unsigned int i = 0; i < strlen(p); i++) {
 		result = result * 10 + (m_password[i] - '0');
 	}
 	return result;

@@ -415,7 +415,7 @@ void BaseNetwork::CtoSRequestNewPort(NetworkAddress* p_arg0)
 void BaseNetwork::StoCokConnect(NetworkAddress* p_arg0)
 {
 	Connect* peer;
-	unsigned short port;
+	short port;
 
 	peer = FindConnection(p_arg0);
 	if (peer != 0 && peer->m_killRequested == 0 && peer->CheckConnectTime() != 0) {
@@ -430,8 +430,8 @@ void BaseNetwork::StoCokConnect(NetworkAddress* p_arg0)
 	}
 
 	port = g_pMessOKConnect->m_assignedPort;
-	if (m_broadcast->m_connectionData[(short) port] == 0) {
-		m_broadcast->m_connectionData[(short) port] = 1;
+	if (m_broadcast->m_connectionData[port] == 0) {
+		m_broadcast->m_connectionData[port] = 1;
 		peer = NewConnect();
 		peer->SetPort(port);
 		peer->Listen(p_arg0);
