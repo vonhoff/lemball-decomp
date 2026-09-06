@@ -8,12 +8,10 @@
 // FUNCTION: LEMBALL 0x00479620
 Headers::Headers(int p_arg0)
 {
-	int index;
-
 	m_count = p_arg0;
 	m_headers = new HeaderMessage[p_arg0];
 	m_sequences = new unsigned short[m_count];
-	for (index = 0; index < m_count; index++) {
+	for (int index = 0; index < m_count; index++) {
 		m_sequences[index] = 0;
 	}
 	m_payloadCapacity += m_headers->m_payloadCapacity * p_arg0;
