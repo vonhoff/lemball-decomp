@@ -34,7 +34,8 @@ unsigned int TimedAnim::GetFrameNo()
 		time = timeGetTime();
 	}
 	time -= m_frameState;
-	unsigned long frame = (m_frames * (time % m_animTime)) / m_animTime;
+	unsigned long remainder = time % m_animTime;
+	unsigned long frame = (remainder * m_frames) / m_animTime;
 	if (m_direction != 1) {
 		frame = m_frames - frame - 1;
 	}
