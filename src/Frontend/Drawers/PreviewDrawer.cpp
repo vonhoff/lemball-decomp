@@ -617,7 +617,7 @@ void PreviewDrawer::LoadLevelInformation()
 			break;
 		}
 		linePos = 0;
-		memset(candidateLine, 0, sizeof(candidateLine));
+		memset(candidateLine, '0', sizeof(candidateLine));
 		while (1) {
 			endOfSource = (int) AddWord(source, candidateLine, sourcePos, linePos);
 			font->GetSize(&lineSize, candidateLine, 0x20);

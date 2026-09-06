@@ -28,10 +28,6 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 extern char* g_szBroadcastPeerName;
 
-struct BroadcastAddressDispatch {
-	virtual char* GetStr() = 0;
-};
-
 // GLOBAL: LEMBALL 0x004a0180
 unsigned char g_abNetworkOptionsLayoutIp[0xa0] = {
 	0x3c, 0x00, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0x02, 0x01, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0xc7, 0x01,
@@ -462,7 +458,7 @@ void NetworkOptionsDrawer::DrawText()
 			m_textManager
 				->DrawString(m_gdi, posMyName, advance, m_chalkFontId, g_szNetworkGameName, 0x20, (Remap*) m_remaps[0]);
 
-			char* myIp = (char*) m_stopPending;
+			char* myIp = m_stopPending;
 			if (myIp != 0 && *myIp != 0) {
 				font->GetSize(&size, myIp, 0x20);
 				posMyIp.m_x -= size.m_x / 2;
@@ -471,9 +467,9 @@ void NetworkOptionsDrawer::DrawText()
 				m_textManager->DrawString(m_gdi, posMyIp, advance, m_chalkFontId, myIp, 0x20, (Remap*) m_remaps[0]);
 			}
 
-			char* myPeer = (char*) m_connectionState;
+			char* myPeer = m_connectionState;
 			if (myPeer != 0 && *myPeer != 0) {
-				char trimmed[24];
+				char trimmed[21];
 				int len = 0x14;
 				memcpy(trimmed, myPeer, 0x14);
 				do {
@@ -951,7 +947,7 @@ void NetworkOptionsDrawer::Processing()
 {
 	unsigned long now;
 	unsigned long duration;
-	unsigned int ident;
+	char* ident;
 	char* peer;
 	Connect* connection;
 	Connect** current;
@@ -980,15 +976,15 @@ void NetworkOptionsDrawer::Processing()
 		m_lastDrawTime = now;
 	}
 	if (g_pNetworkManager != 0) {
-		ident = (unsigned int) ((BroadcastAddressDispatch*) g_pBroadcastAddress)->GetStr();
+		ident = g_pBroadcastAddress->GetStr();
 		peer = g_szBroadcastPeerName;
 		if (m_stopPending != ident) {
 			m_backBufferNeeded = 1;
 			m_stopPending = ident;
 		}
-		if (m_connectionState != (unsigned int) peer) {
+		if (m_connectionState != peer) {
 			m_backBufferNeeded = 1;
-			m_connectionState = (unsigned int) peer;
+			m_connectionState = peer;
 		}
 		if (m_networkState == 0) {
 			if (g_pNetworkManager->m_connectionsChanged != 0) {

@@ -85,8 +85,8 @@ private:
 	int m_visibleEntryCount;             // 0x3d8
 	unsigned int m_locked;               // 0x3dc
 	unsigned int m_startPending;         // 0x3e0
-	unsigned int m_stopPending;          // 0x3e4
-	unsigned int m_connectionState;      // 0x3e8
+	char* m_stopPending;                 // 0x3e4
+	char* m_connectionState;             // 0x3e8
 	undefined m_unknown3ec[0x28];        // 0x3ec
 	BaseRemap* m_remaps[6];              // 0x414
 	NetworkOptionsLayout* m_layoutTable; // 0x42c
