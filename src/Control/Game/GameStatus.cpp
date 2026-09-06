@@ -185,9 +185,10 @@ void GameStatus::GotoLastLevels()
 // FUNCTION: LEMBALL 0x00408dc0
 void GameStatus::IncLevel()
 {
+	int skill = m_skill;
 	int maxLevel;
 
-	switch (m_skill) {
+	switch (skill) {
 	case 0:
 		maxLevel = 0x18;
 		break;
@@ -207,9 +208,9 @@ void GameStatus::IncLevel()
 	if (m_level < maxLevel) {
 		m_level = m_level + 1;
 	}
-	if (m_skill != 4) {
-		if (m_maxLevels[m_skill] < m_level) {
-			m_maxLevels[m_skill] = m_level;
+	if (skill != 4) {
+		if (m_maxLevels[skill] < m_level) {
+			m_maxLevels[skill] = m_level;
 		}
 	}
 	m_lastLevels[m_skill] = m_level;

@@ -21,7 +21,7 @@ public:
 	// FUNCTION: LEMBALL 0x00462970
 	virtual void SetPort(short p_arg0) // vtable+0x28
 	{
-		m_port = (unsigned short) p_arg0;
+		m_port = p_arg0;
 	}
 	bool Send(NetworkMessage& p_arg0);
 	bool SendCritical(NetworkMessage& p_arg0);

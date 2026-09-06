@@ -73,9 +73,17 @@ void GlobalGameObject::Action(eAction p_arg0, int p_arg1)
 }
 
 // 68K 0x1060bd38 RequestAction__17CGlobalGameObjectF7eAction
-// STUB: LEMBALL 0x00416e20
+// FUNCTION: LEMBALL 0x00416e20
 void GlobalGameObject::RequestAction(eAction p_arg0)
 {
+	if (g_pActiveConnection != 0) {
+		m_requestedAction = p_arg0;
+		g_pRequestActionMessage->Send(this);
+		return;
+	}
+	m_action = p_arg0;
+	DoActivate();
+	m_usableState = 2;
 }
 
 // 68K 0x1060bdb8 CancelRequest__17CGlobalGameObjectFv
@@ -90,10 +98,53 @@ void GlobalGameObject::CancelRequest()
 }
 
 // 68K 0x1060be00 Receive__17CGlobalGameObjectFUsP15CNetworkMessage
-// STUB: LEMBALL 0x00416e90
+// FUNCTION: LEMBALL 0x00416e90
 bool GlobalGameObject::Receive(unsigned short p_arg0, NetworkMessage* p_arg1)
 {
-	return 0;
+	GameObjectMess* msg;
+
+	switch (p_arg0) {
+	case 0x23:
+		msg = g_pObjectChangeStateMessage;
+		msg->m_object = this;
+		if (msg->Set(p_arg1->m_readCursor)) {
+			p_arg1->m_readCursor = msg->m_readCursor;
+		}
+		return 1;
+	case 0x24:
+		msg = g_pObjectPosMessage;
+		msg->m_object = this;
+		if (msg->Set(p_arg1->m_readCursor)) {
+			p_arg1->m_readCursor = msg->m_readCursor;
+		}
+		return 1;
+	case 0x25:
+		msg = g_pObjectHitMessage;
+		msg->m_object = this;
+		if (msg->Set(p_arg1->m_readCursor)) {
+			p_arg1->m_readCursor = msg->m_readCursor;
+		}
+		return 1;
+	case 0x27:
+		msg = g_pRequestActionMessage;
+		msg->m_object = this;
+		if (msg->Set(p_arg1->m_readCursor)) {
+			p_arg1->m_readCursor = msg->m_readCursor;
+		}
+		return 1;
+	case 0x28:
+		msg = g_pRequestReplyMessage;
+		msg->m_object = this;
+		if (msg->Set(p_arg1->m_readCursor)) {
+			p_arg1->m_readCursor = msg->m_readCursor;
+		}
+		return 1;
+	case 0x29:
+		CancelRequest();
+		return 1;
+	default:
+		return 0;
+	}
 }
 
 // 68K 0x1060bf4a SendRemove__17CGlobalGameObjectFv

@@ -13,6 +13,7 @@ public:
 		Initialise();
 	}
 	friend class GameObjectMess;
+	friend class GlobalGameObject;
 	friend class Bullet;
 	friend class Headers;
 	friend class BaseFrontendProcess;

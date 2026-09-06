@@ -1,22 +1,21 @@
 #include "BaseCommonSocket.h"
 
+#include "../Foundation/VsMem.h"
 #include "TcpIpNetwork.h"
-
-#include <new.h>
 
 // 68K 0x1020b1ec __ct__17CBaseCommonSocketFv
 // FUNCTION: LEMBALL 0x0045f680
 BaseCommonSocket::BaseCommonSocket()
 {
 	m_socketHandle = -1;
-	m_port = 0xffff;
 	m_readReady = 0;
 	m_isOpen = 0;
 	m_writeReady = 0;
+	m_port = -1;
 	m_closePending = 0;
 	m_eventPending = 0;
 	m_socketFlags = 0;
-	m_lastError = 0;
+	m_lastError = (NetworkErrors) 0;
 	m_platformState = operator new(0x10);
 }
 

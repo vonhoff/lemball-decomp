@@ -3,7 +3,6 @@
 
 #include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
-
 #include "GameMessageIds.h"
 
 // SIZE 0x30
@@ -25,6 +24,7 @@ public:
 	friend class RequestActionMess;
 	friend class RequestCancelMess;
 	friend class RequestReplyMess;
+	friend class GlobalGameObject;
 
 protected:
 	GlobalGameObject* m_object; // 0x2c

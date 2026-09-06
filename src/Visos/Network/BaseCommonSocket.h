@@ -34,7 +34,7 @@ private:
 	unsigned int m_writeReady;   // 0x14
 	unsigned int m_closePending; // 0x18
 	unsigned int m_eventPending; // 0x1c
-	unsigned short m_port;       // 0x20
+	short m_port;                // 0x20
 	unsigned int m_socketFlags;  // 0x24
 	void* m_platformState;       // 0x28
 };
