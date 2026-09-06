@@ -173,7 +173,7 @@ private:
 	BaseRemap* m_paletteRemap;                      // 0x968
 	Ai* m_ai;                                       // 0x96c
 	Gdi* m_gdi;                                     // 0x970
-	BaseQueueHandler* m_lemmingManager;             // 0x974
+	BaseQueue* m_lemmingManager;                    // 0x974
 	Main2DDisplay* m_display;                       // 0x978
 	Panel* m_panel;                                 // 0x97c
 	PauseWindow* m_pauseWindow;                     // 0x980

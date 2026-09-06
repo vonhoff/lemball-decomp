@@ -9,6 +9,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Frontend/Resources/FrontendResourceLoader.h"
+#include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/TextManager.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
@@ -24,8 +25,35 @@
 
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
 // STUB: LEMBALL 0x004358d0
-C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4)
+C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4) : HotAreaHandler(p_arg4)
 {
+	m_mouseButtonDown = 0;
+	m_cursorState = 0;
+	m_paused = 0;
+	m_pauser = 0;
+	InitSpriteGroundLu();
+	m_groundHitMode = 0;
+	m_pauseWindow = 0;
+	m_cursorState = 0;
+	m_returnState = 2;
+	m_cursorTimestamp = g_dwSimulationTimestamp;
+	m_ai = p_arg1;
+	m_gdi = p_arg2;
+	m_display = p_arg0;
+	m_map = p_arg3;
+	m_viewOriginX = 0;
+	m_viewOriginY = 0;
+	m_unk0x90c = 0;
+	m_groupCount = 0;
+	m_quitRequested = 0;
+	m_groupSelectionCount = 0;
+	m_groupingActive = 0;
+	m_lemmingManager = p_arg1->m_aiQueue;
+	m_clipConfigured = 1;
+	m_viewDataCount = 0;
+	m_primitiveCount = 0;
+	m_spriteGroundLookup = 0;
+	m_panel = 0;
 }
 
 // 68K 0x10b06e3e __dt__3C2DFv
@@ -158,7 +186,7 @@ void C2D::CancelMoves()
 	Message msg;
 	msg.type = 3;
 	memset(&msg.time, 0, sizeof(msg.time) + sizeof(msg.code) + sizeof(msg.payload) + sizeof(msg.source));
-	m_lemmingManager->ProcessMsg(&msg);
+	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
 	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x25;
@@ -171,7 +199,7 @@ void C2D::NextGroup()
 	Message msg;
 	msg.type = 7;
 	memset(&msg.time, 0, sizeof(msg.time) + sizeof(msg.code) + sizeof(msg.payload) + sizeof(msg.source));
-	m_lemmingManager->ProcessMsg(&msg);
+	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
 	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x1b;
@@ -184,7 +212,7 @@ void C2D::PrevGroup()
 	Message msg;
 	msg.type = 6;
 	memset(&msg.time, 0, sizeof(msg.time) + sizeof(msg.code) + sizeof(msg.payload) + sizeof(msg.source));
-	m_lemmingManager->ProcessMsg(&msg);
+	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
 	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x1b;
@@ -199,7 +227,7 @@ void C2D::SelectLemming(int p_playerIndex)
 	msg.time = 0;
 	msg.code = m_ai->m_networkLemmings[p_playerIndex]->m_objectId;
 	memset(&msg.payload, 0, sizeof(msg.payload) + sizeof(msg.source));
-	m_lemmingManager->ProcessMsg(&msg);
+	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
 	g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
@@ -214,7 +242,7 @@ void C2D::SelectObject(int p_viewIndex)
 	msg.time = 0;
 	msg.code = m_viewData[p_viewIndex].m_objectId;
 	memset(&msg.payload, 0, sizeof(msg.payload) + sizeof(msg.source));
-	m_lemmingManager->ProcessMsg(&msg);
+	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
 	g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
