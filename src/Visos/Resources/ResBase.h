@@ -3,6 +3,8 @@
 
 #include "../../Common.h"
 
+class MciMusicDevice;
+
 // SIZE 0x48
 // VTABLE: LEMBALL 0x00498980
 class ResBase {
@@ -50,6 +52,7 @@ public:
 	friend class BaseCursor;
 	friend class TargetAboutScreen;
 	friend class LevelLoader;
+	friend class MciMusicDevice;
 
 protected:
 	ResBaseList* m_externalList;   // 0x04

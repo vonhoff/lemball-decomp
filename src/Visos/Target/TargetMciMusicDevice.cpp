@@ -1,6 +1,7 @@
 #include "TargetMciMusicDevice.h"
 
 #include "../../Platform/Windows/Entry.h"
+#include "../Foundation/String.h"
 #include "../Foundation/VsIOs.h"
 #include "../Foundation/VsOStream.h"
 #include "../Resources/ResString.h"
@@ -104,90 +105,70 @@ MciMusicDevice::~MciMusicDevice()
 // FUNCTION: LEMBALL 0x0047ead0
 void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 {
+	String musicName;
 	MCI_OPEN_PARMS openParms;
 	MCI_SEEK_PARMS seekParms;
 	MCI_SET_PARMS setParms;
 	MCIERROR error;
 	char errorText[0x80];
-	char musicName[256];
-	char fullPath[512];
 	ResString* name;
-	const char* midi;
 	char* cdDir;
-	int length;
 
 	if (p_handle == 0) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Prepare Music (HL) with Invalid Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Prepare Music (HL) with Invalid Handle!\n";
 	}
 	if (m_preparedHandle != 0) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error! Call to Prepare Music when already prepared!\n";
-		}
+		*g_pErrorOutput << "Error! Call to Prepare Music when already prepared!\n";
 	}
 	if (m_playing == 1) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error! Cannot Prepare Music while playing.\n";
-		}
+		*g_pErrorOutput << "Error! Cannot Prepare Music while playing.\n";
 	}
 	m_preparedHandle = p_handle;
 	g_nPreparedMciMusicTrackHandle = p_handle;
 	name = ResString::Load(p_resourceId);
-	if (name == 0) {
-		m_preparedHandle = 0;
-		g_nPreparedMciMusicTrackHandle = 0;
-		return;
-	}
-	if (name->GetData() == 0) {
-		name->LoadData();
-	}
-	midi = (const char*) name->GetData();
-	musicName[0] = 0;
-	if (m_usePathPrefix != 0) {
-		strcpy(musicName, m_path.GetText());
-		length = (int) strlen(musicName);
-		if (length != 0 && musicName[length - 1] != '\\') {
-			strcat(musicName, "\\");
-		}
-	}
-	if (midi != 0) {
-		strcat(musicName, midi);
-	}
-	strcat(musicName, ".mid");
-	if (m_useCdDirectory == 0) {
-		strcpy(fullPath, g_szCurrentDirectory);
+	if (name->m_loaded != 0) {
+		name->m_age = 0;
 	}
 	else {
-		cdDir = 0;
-		if (g_pTargetPlatformServices != 0) {
-			cdDir = g_pTargetPlatformServices->GetCdDir(musicName);
+		name->LoadData();
+	}
+	name->m_directUseCount++;
+	if (m_usePathPrefix != 0) {
+		musicName = m_path;
+		if (musicName.GetText()[musicName.Getlength() - 1] != '\\') {
+			musicName += "\\";
 		}
+	}
+	musicName += (const char*) name->m_data;
+	musicName += ".mid";
+	String fullPath;
+	if (m_useCdDirectory == 0) {
+		fullPath = g_szCurrentDirectory;
+	}
+	else {
+		cdDir = g_pTargetPlatformServices->GetCdDir(musicName.GetText());
 		if (cdDir == 0) {
-			strcpy(fullPath, g_szCurrentDirectory);
+			fullPath = g_szCurrentDirectory;
 		}
 		else {
-			strcpy(fullPath, cdDir);
+			fullPath = cdDir;
 		}
 	}
-	length = (int) strlen(fullPath);
-	if (length != 0 && fullPath[length - 1] != '\\') {
-		strcat(fullPath, "\\");
+	if (fullPath.GetText()[fullPath.Getlength() - 1] != '\\') {
+		fullPath += "\\";
 	}
-	strcat(fullPath, musicName);
+	fullPath += musicName;
 	openParms.dwCallback = 0;
-	openParms.wDeviceID = 0;
 	openParms.lpstrDeviceType = (LPCSTR) 0x20b;
-	openParms.lpstrElementName = fullPath;
+	openParms.lpstrElementName = (char*) fullPath.GetText();
 	openParms.lpstrAlias = 0;
 	error = mciSendCommandA(0, 0x803, 0x3200, (DWORD) &openParms);
+	name->m_directUseCount--;
 	name->UnLoad();
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Prepare Music (Open) " << fullPath << "!\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Prepare Music (Open) " << fullPath << "!\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		m_preparedHandle = 0;
 		g_nPreparedMciMusicTrackHandle = 0;
 		return;
@@ -198,10 +179,8 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	error = mciSendCommandA(m_deviceId, 0x807, 0x100, (DWORD) &seekParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Prepare Music (Seek)!\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Prepare Music (Seek)!\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		m_preparedHandle = 0;
 		g_nPreparedMciMusicTrackHandle = 0;
 		return;
@@ -211,10 +190,8 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	error = mciSendCommandA(m_deviceId, 0x80d, 0x400, (DWORD) &setParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Prepare Music! (Time)\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Prepare Music! (Time)\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		m_preparedHandle = 0;
 		g_nPreparedMciMusicTrackHandle = 0;
 		return;
