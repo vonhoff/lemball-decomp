@@ -12,10 +12,13 @@ PanelLemming::PanelLemming(PlayerLemming* p_arg0, const VsPoint& p_arg1, Panel* 
 {
 }
 
+#include "PanelButton.h"
+
 // 68K 0x10b0d77a __dt__13CPanelLemmingFv
-// STUB: LEMBALL 0x00442db0
+// FUNCTION: LEMBALL 0x00442db0
 PanelLemming::~PanelLemming()
 {
+	delete m_button;
 }
 
 // 68K 0x10b0d7d8 UpdateStatus__13CPanelLemmingFv

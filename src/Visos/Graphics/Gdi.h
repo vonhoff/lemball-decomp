@@ -14,6 +14,7 @@ public:
 	~Gdi();
 
 	friend class Bitmap;
+	friend class BigBitmap;
 	friend class ClipRect;
 	friend class CopyColourToBackBuff;
 	friend class CopyToBackBuff;

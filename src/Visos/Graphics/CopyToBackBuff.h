@@ -11,7 +11,7 @@ public:
 	CopyToBackBuff();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~CopyToBackBuff();       // vtable+0x00
+	virtual ~CopyToBackBuff() {}     // vtable+0x00
 
 	friend class Surface;
 

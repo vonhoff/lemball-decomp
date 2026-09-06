@@ -58,10 +58,15 @@ void Panel::SetPause(unsigned char p_paused)
 }
 
 // 68K 0x10b0de2c TranslateKey__6CPanelFUl
-// STUB: LEMBALL 0x004432a0
+// FUNCTION: LEMBALL 0x004432a0
 unsigned long Panel::TranslateKey(unsigned long p_key)
 {
-	return 0;
+	switch (p_key) {
+	case 0x14:
+		return 8;
+	default:
+		return 0;
+	}
 }
 
 // 68K 0x10b0de64 ProcessMsg__6CPanelFP10tagMESSAGE

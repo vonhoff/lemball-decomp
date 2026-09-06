@@ -33,6 +33,7 @@ public:
 	~PvSurface();
 
 	friend class Surface;
+	friend class PvScrollableSurface;
 	friend class GWnd;
 	friend class PvGWnd;
 	friend class PvBackBuffSurface;

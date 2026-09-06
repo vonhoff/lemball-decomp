@@ -12,11 +12,6 @@ CopyToBackBuff::CopyToBackBuff() : m_field0a(0)
 	m_field0c = 0;
 }
 
-// 68K 0x10100c0e __dt__15CCopyToBackBuffFv
-CopyToBackBuff::~CopyToBackBuff()
-{
-}
-
 // 68K 0x10101efe Draw__15CCopyToBackBuffFP4CGDI
 // FUNCTION: LEMBALL 0x00439900
 void CopyToBackBuff::Draw(Gdi* p_gdi)

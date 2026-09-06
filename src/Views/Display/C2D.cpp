@@ -638,9 +638,16 @@ void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 }
 
 // 68K 0x10b01cf0 DrawClipData__3C2DFv
-// STUB: LEMBALL 0x0043b4b0
-void C2D::DrawClipData()
+// FUNCTION: LEMBALL 0x0043b4b0
+int C2D::DrawClipData()
 {
+	// GLOBAL: LEMBALL 0x0049ee28
+	static int g_clipDebug = 1;
+
+	if (g_clipDebug != 0) {
+		g_clipDebug = 0;
+	}
+	return 0;
 }
 
 // 68K 0x10b01d3a DrawClippedRectangle__3C2DFRC7CVSRect

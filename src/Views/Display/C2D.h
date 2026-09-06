@@ -55,7 +55,7 @@ public:
 	void DrawBullet(ViewData& p_viewData, int p_objectNo);
 	void DrawCatapult(ViewData& p_viewData, int p_objectNo);
 	void DrawCliff(int p_x, int p_y, int p_height, int p_count);
-	void DrawClipData();
+	int DrawClipData();
 	void DrawClippedRectangle(const VsRect& p_rect);
 	void DrawCrate(ViewData& p_viewData, int p_objectNo);
 	void DrawDemo();
