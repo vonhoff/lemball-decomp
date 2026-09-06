@@ -88,9 +88,9 @@ void Ice::Set(unsigned short p_id,
 	m_position.m_zFixed = ((int) p_cornerA.m_z) << 12;
 	for (int y = minY; y <= maxY; y += 0x10) {
 		for (int x = minX; x <= maxX; x += 0x10) {
-			int blockX = x / 0x10;
+			int blockX = (x + ((x >> 31) & 0xf)) >> 4;
 			if (blockX >= 0) {
-				int blockY = y / 0x10;
+				int blockY = (y + ((y >> 31) & 0xf)) >> 4;
 				if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
 					Ground* ground = g_pMap->m_ground.m_ground + g_pMap->m_ground.m_width * blockY + blockX;
 					ground->m_collision |= 0x8000;
