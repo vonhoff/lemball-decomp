@@ -281,8 +281,8 @@ void PreviewDrawer::DrawText()
 	VsSize advance;
 	VsPoint pos;
 	VsPoint size;
-	char* line;
 	int* positions;
+	char* line;
 	int count;
 	int* layout;
 	int skill;
