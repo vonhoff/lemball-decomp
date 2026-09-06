@@ -30,7 +30,7 @@ BaseNetwork::BaseNetwork()
 	m_lastConnect = 0;
 	m_firstConnect = 0;
 	m_unk0x34 = 0;
-	m_unk0x30 = 0;
+	m_suspendBroadcastOnConnect = 0;
 	m_initialized = 0;
 	m_initialisePending = 0;
 	m_pendingDetachQueue = 0;
@@ -40,7 +40,7 @@ BaseNetwork::BaseNetwork()
 	m_queueTransitionPending = 0;
 	m_shutdownRequested = 0;
 	m_serverMode = 0;
-	m_unk0x60 = 0x50;
+	m_criticalRetryLimit = 0x50;
 	m_broadcast = 0;
 
 	g_pNetworkStatusQueue = new BaseQueue(0x1e);
@@ -425,7 +425,7 @@ void BaseNetwork::StoCokConnect(NetworkAddress* p_arg0)
 		peer->Kill();
 	}
 
-	if (m_unk0x30 != 0) {
+	if (m_suspendBroadcastOnConnect != 0) {
 		m_broadcast->Suspend();
 	}
 

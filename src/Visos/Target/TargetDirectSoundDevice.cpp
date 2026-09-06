@@ -3,7 +3,7 @@
 #include "../Graphics/Wnd.h"
 
 // STUB: LEMBALL 0x0047dd80
-TargetDirectSoundDevice::TargetDirectSoundDevice(int p_channelCount, int p_flags)
+TargetDirectSoundDevice::TargetDirectSoundDevice(int p_effectCapacity, int p_buffersPerEffect)
 {
 	int i;
 
@@ -12,18 +12,18 @@ TargetDirectSoundDevice::TargetDirectSoundDevice(int p_channelCount, int p_flags
 		m_platformState[i] = 0;
 		i = i + 1;
 	}
-	m_platformState[0] = (unsigned char) p_channelCount;
-	m_platformState[1] = (unsigned char) p_flags;
+	m_platform.m_effectCapacity = p_effectCapacity;
+	m_platform.m_buffersPerEffect = p_buffersPerEffect;
 }
 
 // FUNCTION: LEMBALL 0x0047e000
-char* TargetDirectSoundDevice::Dummy04()
+char* TargetDirectSoundDevice::GetInfo()
 {
-	return m_platform.m_unk0x20 == 1 ? "Direct Sound Device\n" : "ERROR! No Effects Device for WinEff!\n";
+	return m_platform.m_available == 1 ? "Direct Sound Device\n" : "ERROR! No Effects Device for WinEff!\n";
 }
 
 // STUB: LEMBALL 0x0047e020
-int TargetDirectSoundDevice::Dummy0c(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
+int TargetDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
 	return 0;
 }
@@ -41,25 +41,25 @@ int TargetDirectSoundDevice::Dummy2c()
 }
 
 // FUNCTION: LEMBALL 0x0047e370
-int TargetDirectSoundDevice::Dummy30()
+int TargetDirectSoundDevice::GetBuffersPerEffect()
 {
-	return m_platform.m_unk0x18;
+	return m_platform.m_buffersPerEffect;
 }
 
 // FUNCTION: LEMBALL 0x0047e380
-int TargetDirectSoundDevice::Dummy08()
+int TargetDirectSoundDevice::IsAvailable()
 {
-	return m_platform.m_unk0x20;
+	return m_platform.m_available;
 }
 
 // STUB: LEMBALL 0x0047e390
-int TargetDirectSoundDevice::Dummy14()
+int TargetDirectSoundDevice::Close()
 {
 	return 0;
 }
 
 // STUB: LEMBALL 0x0047e450
-int TargetDirectSoundDevice::Dummy18()
+int TargetDirectSoundDevice::IsAnyEffectPlaying()
 {
 	return 0;
 }
@@ -71,21 +71,21 @@ int TargetDirectSoundDevice::Dummy1c()
 }
 
 // STUB: LEMBALL 0x0047e4a0
-int TargetDirectSoundDevice::Dummy20()
+int TargetDirectSoundDevice::StopAllEffects()
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e4e0
-int TargetDirectSoundDevice::Dummy24()
+int TargetDirectSoundDevice::IsMusicAvailable()
 {
-	return m_platform.m_unk0x1c;
+	return m_platform.m_musicAvailable;
 }
 
 // FUNCTION: LEMBALL 0x0047e4f0
-int TargetDirectSoundDevice::Dummy28()
+int TargetDirectSoundDevice::IsEffectAvailable()
 {
-	return m_platform.m_unk0x20;
+	return m_platform.m_available;
 }
 
 // FUNCTION: LEMBALL 0x0047e500
@@ -119,13 +119,13 @@ int TargetDirectSoundDevice::Dummy4c()
 }
 
 // STUB: LEMBALL 0x0047e5e0
-int TargetDirectSoundDevice::Dummy48(unsigned long p_effectId)
+int TargetDirectSoundDevice::FreeEffect(unsigned long p_effectId)
 {
 	return 0;
 }
 
 // STUB: LEMBALL 0x0047e620
-int TargetDirectSoundDevice::Dummy50()
+int TargetDirectSoundDevice::FreeAllEffects()
 {
 	return 0;
 }
@@ -198,7 +198,7 @@ void TargetDirectSoundDevice::SetWnd(Wnd* p_wnd)
 }
 
 // STUB: LEMBALL 0x0047e8c0
-int TargetDirectSoundDevice::Dummy3c(unsigned char* p_data, unsigned long* p_handle)
+int TargetDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_handle)
 {
 	return 0;
 }

@@ -59,7 +59,7 @@ private:
 	Broadcast* m_broadcast;                   // 0x24
 	Connect* m_firstConnect;                  // 0x28
 	Connect* m_lastConnect;                   // 0x2c
-	undefined4 m_unk0x30;                     // 0x30
+	undefined4 m_suspendBroadcastOnConnect;   // 0x30
 	undefined4 m_unk0x34;                     // 0x34
 	BaseQueueHandler* m_pendingAttachQueue;   // 0x38
 	void* m_activeStatusItem;                 // 0x3c
@@ -71,7 +71,7 @@ private:
 	unsigned int m_nonCriticalSubpacketCount; // 0x54
 	unsigned int m_criticalPacketCount;       // 0x58
 	unsigned int m_criticalSubpacketCount;    // 0x5c
-	undefined4 m_unk0x60;                     // 0x60
+	undefined4 m_criticalRetryLimit;          // 0x60
 };
 
 extern BaseNetwork* g_pBaseNetwork;

@@ -57,7 +57,7 @@ int MachineSoundDetect(BaseSoundDevice** p_devices,
 			else {
 				device = new (storage) TargetWaveSoundDevice(p_deviceParameter);
 			}
-			if (device != 0 && device->Dummy28() == 1) {
+			if (device != 0 && device->IsEffectAvailable() == 1) {
 				*p_devices = device;
 				return 1;
 			}
@@ -75,7 +75,7 @@ int MachineSoundDetect(BaseSoundDevice** p_devices,
 		music = new (storage) MciMusicDevice();
 	}
 	if (music != 0) {
-		if (music->Dummy2c() == 1) {
+		if (music->IsAvailable() == 1) {
 			*p_musicAvailable = 1;
 			*p_musicDevice = music;
 		}
@@ -93,7 +93,7 @@ int MachineSoundDetect(BaseSoundDevice** p_devices,
 	else {
 		device = new (storage) TargetDirectSoundDevice(p_deviceParameter, 5);
 	}
-	if (device != 0 && device->Dummy28() == 1) {
+	if (device != 0 && device->IsEffectAvailable() == 1) {
 		*p_devices = device;
 		return 1;
 	}
@@ -107,7 +107,7 @@ int MachineSoundDetect(BaseSoundDevice** p_devices,
 	else {
 		device = new (storage) TargetWaveSoundDevice(p_deviceParameter);
 	}
-	if (device != 0 && device->Dummy28() == 1) {
+	if (device != 0 && device->IsEffectAvailable() == 1) {
 		*p_devices = device;
 		return 1;
 	}

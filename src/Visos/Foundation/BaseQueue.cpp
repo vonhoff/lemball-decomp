@@ -73,7 +73,7 @@ BaseQueue::~BaseQueue()
 
 	ProcessNMsgs(m_messageCount);
 	operator delete(m_messageBuffer);
-	node = (QueueHandlerNode*) m_handlerList;
+	node = m_handlerList;
 	index = 0;
 	if (m_handlerCount != 0) {
 		do {
@@ -180,13 +180,13 @@ bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 		return 1;
 	}
 	index = 0;
-	previous = (QueueHandlerNode*) m_handlerList;
+	previous = m_handlerList;
 	current = previous;
 	if (count != 0) {
 		do {
 			if (p_priority < current->priority) {
 				if (index == 0) {
-					node->next = (QueueHandlerNode*) m_handlerList;
+					node->next = m_handlerList;
 					m_handlerList = node;
 				}
 				else {
@@ -222,7 +222,7 @@ bool BaseQueue::Detach(BaseQueueHandler* p_handler, int p_priority)
 	unsigned int index;
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
-	previous = (QueueHandlerNode*) m_handlerList;
+	previous = m_handlerList;
 	current = previous;
 	index = 0;
 	if (m_handlerCount != 0) {
@@ -459,7 +459,7 @@ bool BaseQueue::Process(Message* p_message)
 	int result;
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
-	node = (QueueHandlerNode*) m_handlerList;
+	node = m_handlerList;
 	index = 0;
 	if (m_handlerCount != 0) {
 		do {

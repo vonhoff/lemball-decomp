@@ -19,10 +19,10 @@ struct SoundDeviceDispatch {
 	virtual void Slot18() = 0;
 	virtual void Slot1c() = 0;
 	virtual void Slot20() = 0;
-	virtual int Slot24() = 0;
-	virtual int Slot28() = 0;
+	virtual int IsMusicAvailable() = 0;
+	virtual int IsEffectAvailable() = 0;
 	virtual unsigned char Slot2c() = 0;
-	virtual unsigned char Slot30() = 0;
+	virtual unsigned char GetBuffersPerEffect() = 0;
 	virtual void Slot34() = 0;
 	virtual void Slot38() = 0;
 	virtual void Prepare(unsigned char* p_data, unsigned long* p_handle) = 0;
@@ -51,11 +51,11 @@ struct SoundDeviceDispatch {
 struct MusicDeviceDispatch {
 	virtual void Delete(int p_delete) = 0;
 	virtual unsigned long Initialise(unsigned long p_resourceId, unsigned long p_flags) = 0;
-	virtual void Play(unsigned long p_allocated, unsigned long p_handle) = 0;
+	virtual void Prepare(unsigned long p_handle, unsigned long p_resourceId) = 0;
 	virtual void Slot0c() = 0;
-	virtual void ProcessHandle(unsigned long p_handle) = 0;
-	virtual void FreeHandle(unsigned long p_handle) = 0;
-	virtual void StopHandle(unsigned long p_handle) = 0;
+	virtual void Play(unsigned long p_handle) = 0;
+	virtual void Stop(unsigned long p_handle) = 0;
+	virtual void Pause(unsigned long p_handle) = 0;
 };
 
 // 68K 0x10218192 __ct__13CSoundManagerFUcUcUciP4CWnd
@@ -95,10 +95,10 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 	m_effectOutput = 0;
 	if (count > 0) {
 		for (i = 0; i < m_deviceCount; ++i) {
-			if (((SoundDeviceDispatch*) m_devices[i])->Slot24() == 1) {
+			if (((SoundDeviceDispatch*) m_devices[i])->IsMusicAvailable() == 1) {
 				m_musicOutput = m_devices[i];
 			}
-			if (((SoundDeviceDispatch*) m_devices[i])->Slot28() == 1) {
+			if (((SoundDeviceDispatch*) m_devices[i])->IsEffectAvailable() == 1) {
 				m_effectOutput = m_devices[i];
 			}
 		}
@@ -134,7 +134,7 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 	}
 	if (m_effectsAvailable == 1) {
 		m_effectsRequested = 1;
-		m_effectsCapability = ((SoundDeviceDispatch*) m_effectOutput)->Slot30();
+		m_effectsCapability = ((SoundDeviceDispatch*) m_effectOutput)->GetBuffersPerEffect();
 	}
 	else {
 		m_effectsRequested = 0;
@@ -274,7 +274,7 @@ unsigned long SoundManager::PlayMusic(unsigned long p_handle, unsigned long p_un
 		if (m_nextMusicHandle == 0) {
 			m_nextMusicHandle = 1;
 		}
-		((MusicDeviceDispatch*) m_musicDevice)->Play(allocated, p_handle);
+		((MusicDeviceDispatch*) m_musicDevice)->Prepare(allocated, p_handle);
 		return allocated;
 	}
 	return 0;
@@ -294,7 +294,7 @@ void SoundManager::ProcessMusic(unsigned long p_handle)
 	if (m_musicAvailable == 1) {
 		if (p_handle != 0) {
 			if (m_useMusicCD == 1) {
-				((MusicDeviceDispatch*) m_musicDevice)->ProcessHandle(p_handle);
+				((MusicDeviceDispatch*) m_musicDevice)->Play(p_handle);
 			}
 		}
 	}
@@ -306,7 +306,7 @@ void SoundManager::StopMusic(unsigned long p_handle)
 {
 	if (m_musicAvailable == 1) {
 		if (m_useMusicCD == 1) {
-			((MusicDeviceDispatch*) m_musicDevice)->StopHandle(p_handle);
+			((MusicDeviceDispatch*) m_musicDevice)->Pause(p_handle);
 		}
 	}
 }
@@ -317,7 +317,7 @@ void SoundManager::FreeMusic(unsigned long p_handle)
 {
 	if (m_musicAvailable == 1) {
 		if (m_useMusicCD == 1) {
-			((MusicDeviceDispatch*) m_musicDevice)->FreeHandle(p_handle);
+			((MusicDeviceDispatch*) m_musicDevice)->Stop(p_handle);
 		}
 	}
 }
@@ -426,14 +426,14 @@ void SoundManager::SetMusicWnd(Wnd* p_window)
 void SoundManager::SetMusicCdPath(char* p_path)
 {
 	m_musicDevice->m_path = p_path;
-	m_musicDevice->m_reserved08 = 1;
+	m_musicDevice->m_usePathPrefix = 1;
 }
 
 // 68K 0x10218b40 UseMusicCD__13CSoundManagerFUc
 // FUNCTION: LEMBALL 0x0045b5f0
 void SoundManager::UseMusicCd(unsigned int p_enabled)
 {
-	m_musicDevice->m_reserved0c = p_enabled;
+	m_musicDevice->m_useCdDirectory = p_enabled;
 }
 
 // GLOBAL: LEMBALL 0x004a1ca8
@@ -452,7 +452,7 @@ char* SoundManager::BuildDriverInfo()
 
 	g_szSoundDriverInfo[0] = 0;
 	if (m_effectOutput != 0 && m_requestedEffects != 0) {
-		text = m_effectOutput->Dummy04();
+		text = m_effectOutput->GetInfo();
 		if (text != 0) {
 			strcat(g_szSoundDriverInfo, g_szEffectsDriverPrefix);
 			strcat(g_szSoundDriverInfo, text);
@@ -466,7 +466,7 @@ char* SoundManager::BuildDriverInfo()
 		}
 	}
 	if (m_musicOutput != 0 && m_requestedMusic != 0) {
-		text = m_musicOutput->Dummy04();
+		text = m_musicOutput->GetInfo();
 		if (text != 0) {
 			strcat(g_szSoundDriverInfo, g_szMusicDriverPrefix);
 			strcat(g_szSoundDriverInfo, text);

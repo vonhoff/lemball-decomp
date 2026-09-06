@@ -270,7 +270,7 @@ void TcpIpBroadcast::HandleServiceLookupResult(bool p_failed)
 		Broadcast::SendFailedInit((NetworkErrors) 4);
 		return;
 	}
-	if (Broadcast::m_unk0x14 != 0) {
+	if (Broadcast::m_listenEnabled != 0) {
 		selectResult = WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 3);
 	}
 	else {
@@ -339,12 +339,12 @@ int TcpIpBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long 
 // FUNCTION: LEMBALL 0x00470d30
 void TcpIpBroadcast::StartListen()
 {
-	if (Broadcast::m_unk0x14 == 0) {
+	if (Broadcast::m_listenEnabled == 0) {
 		if (m_readReady != 0 && WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 3) == -1) {
 			SocketError();
 			return;
 		}
-		Broadcast::m_unk0x14 = 1;
+		Broadcast::m_listenEnabled = 1;
 	}
 }
 
@@ -352,12 +352,12 @@ void TcpIpBroadcast::StartListen()
 // FUNCTION: LEMBALL 0x00470d80
 void TcpIpBroadcast::StopListen()
 {
-	if (Broadcast::m_unk0x14 != 0) {
+	if (Broadcast::m_listenEnabled != 0) {
 		if (m_readReady != 0 && WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 2) == -1) {
 			SocketError();
 			return;
 		}
-		Broadcast::m_unk0x14 = 0;
+		Broadcast::m_listenEnabled = 0;
 	}
 }
 

@@ -33,7 +33,7 @@ Broadcast::Broadcast()
 {
 	int index;
 
-	m_unk0x14 = 0;
+	m_listenEnabled = 0;
 	m_runEnabled = 0;
 	m_addressMode = 0;
 	m_specificAddress = 0;

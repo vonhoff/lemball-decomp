@@ -4,6 +4,12 @@
 #include "../../Common.h"
 #include "../Sound/BaseSoundDevice.h" // complete type
 
+#define WIN32_LEAN_AND_MEAN
+// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
+#include <windows.h>
+#include <mmsystem.h>
+// clang-format on
+
 class TargetWaveEffect;
 
 // SIZE 0xb8
@@ -12,26 +18,26 @@ class TargetWaveSoundDevice : public BaseSoundDevice {
 public:
 	TargetWaveSoundDevice(int p_channelCount);
 	virtual ~TargetWaveSoundDevice();
-	virtual char* Dummy04();
-	virtual int Dummy08();
-	virtual int Dummy0c(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId);
+	virtual char* GetInfo();
+	virtual int IsAvailable();
+	virtual int Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId);
 	virtual int Dummy10(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId);
-	virtual int Dummy14();
-	virtual int Dummy18();
+	virtual int Close();
+	virtual int IsAnyEffectPlaying();
 	virtual int Dummy1c();
-	virtual int Dummy20();
-	virtual int Dummy24();
-	virtual int Dummy28();
+	virtual int StopAllEffects();
+	virtual int IsMusicAvailable();
+	virtual int IsEffectAvailable();
 	virtual int Dummy2c();
-	virtual int Dummy30();
+	virtual int GetBuffersPerEffect();
 	virtual int Dummy34(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3);
 	virtual int Dummy38(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3);
-	virtual int Dummy3c(unsigned char* p_data, unsigned long* p_handle);
+	virtual int PrepareEffect(unsigned char* p_data, unsigned long* p_handle);
 	virtual int Dummy40(undefined4 p_arg0);
 	virtual int Dummy44(undefined4 p_arg0);
-	virtual int Dummy48(unsigned long p_effectId);
+	virtual int FreeEffect(unsigned long p_effectId);
 	virtual int Dummy4c();
-	virtual int Dummy50();
+	virtual int FreeAllEffects();
 	virtual unsigned char EffectPlay(unsigned long p_effectId,
 									 unsigned short p_pitch,
 									 unsigned char p_volume); // vtable+0x90
@@ -51,16 +57,16 @@ private:
 	unsigned int m_channelState[8]; // 0x20
 	unsigned char m_pad0x40[8];     // 0x40
 	unsigned char m_pad0x48[8];     // 0x48
-	undefined m_caps[0x34];         // 0x50
-	unsigned int m_sampleRate;      // 0x84
-	unsigned int m_deviceId;        // 0x88
-	void* m_waveOut;                // 0x8c
-	undefined m_waveFormat[0x14];   // 0x90
+	WAVEOUTCAPSA m_caps;            // 0x50
+	DWORD m_sampleRate;             // 0x84
+	UINT m_deviceId;                // 0x88
+	HWAVEOUT m_waveOut;             // 0x8c
+	WAVEFORMATEX m_waveFormat;      // 0x90; next DWORD aligned at 0xa4
 	unsigned int m_nextHandle;      // 0xa4
 	TargetWaveEffect** m_effects;   // 0xa8
 	unsigned int* m_effectUsed;     // 0xac
 	unsigned int* m_effectHandles;  // 0xb0
-	unsigned int m_savedVolume;     // 0xb4
+	DWORD m_savedVolume;            // 0xb4
 };
 
 // SYNTHETIC: LEMBALL 0x0047d270

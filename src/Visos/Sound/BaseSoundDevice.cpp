@@ -2,7 +2,7 @@
 
 // 68K 0x101024f8 SetWnd__16CBaseSoundDeviceFP4CWnd
 // FUNCTION: LEMBALL 0x0047d260
-void BaseSoundDevice::SetWnd(Wnd* p_arg0)
+void BaseSoundDevice::SetWnd(Wnd* p_window)
 {
 }
 

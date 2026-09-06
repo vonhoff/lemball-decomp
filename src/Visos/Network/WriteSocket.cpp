@@ -138,21 +138,21 @@ bool WriteSocket::SendCritical(NetworkMessage& p_arg0)
 
 // 68K 0x1020c082 ResendCritical__12CWriteSocketFP12CWritePacket
 // FUNCTION: LEMBALL 0x0045ff20
-bool WriteSocket::ResendCritical(WritePacket* p_arg0)
+bool WriteSocket::ResendCritical(WritePacket* p_packet)
 {
 	int size;
 	unsigned char* data;
 	bool sent;
 
-	data = p_arg0->m_data;
+	data = p_packet->m_data;
 	Set(data);
 	size = ((BasePacketHeader*) data)->m_packetSize;
 	Set(data);
 	sent = SendPacket(data, size);
 	if (sent != 0) {
-		p_arg0->m_lastSendTime = timeGetTime();
-		p_arg0->m_retryCount++;
-		p_arg0->m_available = 0;
+		p_packet->m_lastSendTime = timeGetTime();
+		p_packet->m_retryCount++;
+		p_packet->m_available = 0;
 	}
 	return sent;
 }
@@ -334,7 +334,8 @@ void WriteSocket::Process()
 		}
 		packet = (WritePacket*) buffer->m_packets[index % buffer->m_packetCount];
 		if (packet->m_available == 0 && 1000 < timeGetTime() - packet->m_lastSendTime) {
-			if (g_pBaseNetwork->m_unk0x60 == 0 || packet->m_retryCount != g_pBaseNetwork->m_unk0x60) {
+			if (g_pBaseNetwork->m_criticalRetryLimit == 0 ||
+				packet->m_retryCount != g_pBaseNetwork->m_criticalRetryLimit) {
 				ResendCritical(packet);
 			}
 			else {

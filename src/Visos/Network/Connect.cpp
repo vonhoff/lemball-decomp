@@ -97,7 +97,7 @@ void Connect::FirstReceive()
 		m_closePending = 1;
 		WriteSocket::m_lastSendTime = timeGetTime() - 1000;
 		ReadSocket::m_lastReceiveTime = timeGetTime();
-		if (g_pBaseNetwork->m_unk0x30 != 0) {
+		if (g_pBaseNetwork->m_suspendBroadcastOnConnect != 0) {
 			g_pBaseNetwork->m_broadcast->Suspend();
 		}
 	}

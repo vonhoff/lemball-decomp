@@ -7,8 +7,8 @@
 // SIZE 0x18
 class WritePacket : public BasePacket {
 public:
-	WritePacket(unsigned short p_arg0);
-	void Fill(const unsigned char* p_arg0, unsigned short p_arg1, NetworkMessage* p_arg2);
+	WritePacket(unsigned short p_capacity);
+	void Fill(const unsigned char* p_data, unsigned short p_size, NetworkMessage* p_message);
 	~WritePacket();
 
 private:

@@ -4,6 +4,7 @@
 #include "../../Common.h"
 
 class TimedQueue;
+struct QueueHandlerNode;
 
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00499250
@@ -22,8 +23,8 @@ public:
 	unsigned int GetMessageCount() { return m_messageCount; }
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
 	virtual ~BaseQueue();                              // vtable+0x04
-	virtual bool Post(Message& p_message);                // vtable+0x08
-	virtual bool Send(Message& p_message);                // vtable+0x0c
+	virtual bool Post(Message& p_message);             // vtable+0x08
+	virtual bool Send(Message& p_message);             // vtable+0x0c
 	BaseQueue();
 
 	friend class TimedQueue;
@@ -44,7 +45,7 @@ private:
 	unsigned char* m_messageBufferEnd; // 0x48
 	unsigned char* m_readCursor;       // 0x4c
 	unsigned char* m_writeCursor;      // 0x50
-	void* m_handlerList;               // 0x54
+	QueueHandlerNode* m_handlerList;   // 0x54
 };
 
 extern BaseQueue* g_pMasterInputQueue;

@@ -1,12 +1,6 @@
 #include "TargetWaveEffect.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include "../Foundation/VsOStream.h"
-
-// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
-#include <windows.h>
-#include <mmsystem.h>
-// clang-format on
 
 struct EffPatchHeader {
 	unsigned int m_unk0;
@@ -64,8 +58,8 @@ unsigned int TargetByteSwap32(unsigned int p_value)
 
 // FUNCTION: LEMBALL 0x0047c260
 TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
-								   unsigned int p_waveOut,
-								   unsigned int p_sampleRate,
+								   HWAVEOUT p_waveOut,
+								   DWORD p_sampleRate,
 								   int p_use16Bit,
 								   int p_stereo)
 {
@@ -87,7 +81,7 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 	patchHeader.m_unk8 = TargetByteSwap16(patchHeader.m_unk8);
 	patchHeader.m_waveCount = TargetByteSwap16(patchHeader.m_waveCount);
 	m_prepared = 0;
-	m_waveOut = (void*) p_waveOut;
+	m_waveOut = p_waveOut;
 	if (patchHeader.m_waveCount != 1) {
 		name = (char*) p_patch;
 		name = name + 6;
@@ -119,21 +113,21 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 			*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave Header " << name << "\n";
 		}
 		else {
-			m_sampleData = (unsigned char*) GlobalLock((HGLOBAL) m_sampleHandle);
+			m_sampleData = (unsigned char*) GlobalLock(m_sampleHandle);
 			if (m_sampleData == 0) {
 				*g_pErrorOutput << "Error! Sound System unable to lock memory for Wave data " << name << "\n";
-				GlobalUnlock((HGLOBAL) m_sampleHandle);
-				GlobalFree((HGLOBAL) m_sampleHandle);
+				GlobalUnlock(m_sampleHandle);
+				GlobalFree(m_sampleHandle);
 			}
 			else {
-				m_waveHeader = GlobalLock((HGLOBAL) m_headerHandle);
+				m_waveHeader = (WAVEHDR*) GlobalLock(m_headerHandle);
 				if (m_waveHeader == 0) {
 					*g_pErrorOutput << "Error! Sound System unable to lock memory for Wave Header" << name << "\n";
-					GlobalUnlock((HGLOBAL) m_headerHandle);
-					GlobalFree((HGLOBAL) m_headerHandle);
+					GlobalUnlock(m_headerHandle);
+					GlobalFree(m_headerHandle);
 				}
 				else {
-					header = (WAVEHDR*) m_waveHeader;
+					header = m_waveHeader;
 					header->lpData = (char*) m_sampleData;
 					header->dwBufferLength = length;
 					header->dwUser = (DWORD) ((((int) (char) p_patch[9] * 0x100 + (int) (char) p_patch[8]) * 0x100 +
@@ -202,19 +196,17 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 					format.nSamplesPerSec = p_sampleRate;
 					format.cbSize = 0;
 					format.nAvgBytesPerSec = p_sampleRate * (unsigned int) format.nChannels;
-					format.nBlockAlign = (unsigned short) ((int) ((unsigned int) format.wBitsPerSample *
-																  (unsigned int) format.nChannels) >>
-														   3);
+					format.nBlockAlign = (unsigned short) ((format.wBitsPerSample * format.nChannels) / 8);
 					if (format.wBitsPerSample == 0x10) {
 						format.nAvgBytesPerSec = format.nAvgBytesPerSec * 2;
 					}
-					result = waveOutOpen((HWAVEOUT*) &m_waveOut, 0xffffffff, &format, 0, 0, WAVE_FORMAT_QUERY);
+					result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, WAVE_FORMAT_QUERY);
 					if (result == 0) {
-						result = waveOutOpen((HWAVEOUT*) &m_waveOut, 0xffffffff, &format, 0, 0, 0);
+						result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, 0);
 						if (result == 0) {
-							result = waveOutPrepareHeader((HWAVEOUT) m_waveOut, header, 0x20);
+							result = waveOutPrepareHeader(m_waveOut, header, 0x20);
 							if (result == 0) {
-								result = waveOutClose((HWAVEOUT) m_waveOut);
+								result = waveOutClose(m_waveOut);
 								if (result == 0) {
 									m_prepared = 1;
 								}
@@ -258,13 +250,13 @@ TargetWaveEffect::~TargetWaveEffect()
 	MMRESULT result;
 
 	if (m_prepared == 1) {
-		result = waveOutUnprepareHeader((HWAVEOUT) m_waveOut, (WAVEHDR*) m_waveHeader, 0x20);
+		result = waveOutUnprepareHeader(m_waveOut, m_waveHeader, 0x20);
 		if (result != 0) {
-			waveOutUnprepareHeader((HWAVEOUT) m_waveOut, (WAVEHDR*) m_waveHeader, 0x20);
+			waveOutUnprepareHeader(m_waveOut, m_waveHeader, 0x20);
 		}
-		GlobalUnlock((HGLOBAL) m_sampleHandle);
-		GlobalFree((HGLOBAL) m_sampleHandle);
-		GlobalUnlock((HGLOBAL) m_headerHandle);
-		GlobalFree((HGLOBAL) m_headerHandle);
+		GlobalUnlock(m_sampleHandle);
+		GlobalFree(m_sampleHandle);
+		GlobalUnlock(m_headerHandle);
+		GlobalFree(m_headerHandle);
 	}
 }

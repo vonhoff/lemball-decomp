@@ -7,9 +7,9 @@
 
 // 68K 0x1020d87c __ct__12CWritePacketFUs
 // FUNCTION: LEMBALL 0x00461190
-WritePacket::WritePacket(unsigned short p_arg0)
+WritePacket::WritePacket(unsigned short p_capacity)
 {
-	m_data = (unsigned char*) operator new(p_arg0);
+	m_data = (unsigned char*) operator new(p_capacity);
 	m_available = 1;
 	m_retryCount = 0;
 }
@@ -23,9 +23,9 @@ WritePacket::~WritePacket()
 
 // 68K 0x1020d932 Fill__12CWritePacketFPCUcUsP15CNetworkMessage
 // FUNCTION: LEMBALL 0x004611e0
-void WritePacket::Fill(const unsigned char* p_arg0, unsigned short p_arg1, NetworkMessage* p_arg2)
+void WritePacket::Fill(const unsigned char* p_data, unsigned short p_size, NetworkMessage* p_message)
 {
-	m_message = p_arg2;
+	m_message = p_message;
 	m_retryCount = 0;
-	memcpy(m_data, p_arg0, p_arg1);
+	memcpy(m_data, p_data, p_size);
 }

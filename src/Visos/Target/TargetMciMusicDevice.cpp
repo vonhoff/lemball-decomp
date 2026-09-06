@@ -8,12 +8,6 @@
 
 #include <string.h>
 
-#define WIN32_LEAN_AND_MEAN
-// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
-#include <windows.h>
-#include <mmsystem.h>
-// clang-format on
-
 // GLOBAL: LEMBALL 0x004aa228
 static MciMusicDevice* g_pActiveMciMusicDevice;
 
@@ -33,7 +27,7 @@ static const char g_szMciMusicWindow[] = "HLMusicWindow";
 static LRESULT CALLBACK MciMusicWindowProc(HWND p_hwnd, UINT p_message, WPARAM p_wParam, LPARAM p_lParam)
 {
 	if (p_message == 0x3b9 && p_wParam == 1) {
-		g_pActiveMciMusicDevice->Dummy1c(g_nPreparedMciMusicTrackHandle);
+		g_pActiveMciMusicDevice->Resume(g_nPreparedMciMusicTrackHandle);
 	}
 	return DefWindowProcA(p_hwnd, p_message, p_wParam, p_lParam);
 }
@@ -46,8 +40,8 @@ MciMusicDevice::MciMusicDevice()
 	MCIERROR error;
 	char errorText[0x80];
 
-	m_reserved0c = 0;
-	m_reserved08 = 0;
+	m_useCdDirectory = 0;
+	m_usePathPrefix = 0;
 	m_preparedHandle = 0;
 	g_nPreparedMciMusicTrackHandle = 0;
 	m_playing = 0;
@@ -108,7 +102,7 @@ MciMusicDevice::~MciMusicDevice()
 }
 
 // FUNCTION: LEMBALL 0x0047ead0
-void MciMusicDevice::Dummy08(unsigned long p_allocated, unsigned long p_resourceId)
+void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 {
 	MCI_OPEN_PARMS openParms;
 	MCI_SEEK_PARMS seekParms;
@@ -122,7 +116,7 @@ void MciMusicDevice::Dummy08(unsigned long p_allocated, unsigned long p_resource
 	char* cdDir;
 	int length;
 
-	if (p_allocated == 0) {
+	if (p_handle == 0) {
 		if (g_pErrorOutput != 0) {
 			*g_pErrorOutput << "Error Call to Prepare Music (HL) with Invalid Handle!\n";
 		}
@@ -137,8 +131,8 @@ void MciMusicDevice::Dummy08(unsigned long p_allocated, unsigned long p_resource
 			*g_pErrorOutput << "Error! Cannot Prepare Music while playing.\n";
 		}
 	}
-	m_preparedHandle = p_allocated;
-	g_nPreparedMciMusicTrackHandle = p_allocated;
+	m_preparedHandle = p_handle;
+	g_nPreparedMciMusicTrackHandle = p_handle;
 	name = ResString::Load(p_resourceId);
 	if (name == 0) {
 		m_preparedHandle = 0;
@@ -150,7 +144,7 @@ void MciMusicDevice::Dummy08(unsigned long p_allocated, unsigned long p_resource
 	}
 	midi = (const char*) name->GetData();
 	musicName[0] = 0;
-	if (m_reserved08 != 0) {
+	if (m_usePathPrefix != 0) {
 		strcpy(musicName, m_path.GetText());
 		length = (int) strlen(musicName);
 		if (length != 0 && musicName[length - 1] != '\\') {
@@ -161,7 +155,7 @@ void MciMusicDevice::Dummy08(unsigned long p_allocated, unsigned long p_resource
 		strcat(musicName, midi);
 	}
 	strcat(musicName, ".mid");
-	if (m_reserved0c == 0) {
+	if (m_useCdDirectory == 0) {
 		strcpy(fullPath, g_szCurrentDirectory);
 	}
 	else {
@@ -230,7 +224,7 @@ void MciMusicDevice::Dummy08(unsigned long p_allocated, unsigned long p_resource
 }
 
 // FUNCTION: LEMBALL 0x0047ee70
-void MciMusicDevice::Dummy0c(unsigned long p_handle)
+void MciMusicDevice::Free(unsigned long p_handle)
 {
 	if (p_handle == 0) {
 		if (g_pErrorOutput != 0) {
@@ -253,7 +247,7 @@ void MciMusicDevice::Dummy0c(unsigned long p_handle)
 }
 
 // FUNCTION: LEMBALL 0x0047eee0
-void MciMusicDevice::Dummy10(unsigned long p_handle)
+void MciMusicDevice::Play(unsigned long p_handle)
 {
 	MCI_SEEK_PARMS seekParms;
 	MCI_PLAY_PARMS playParms;
@@ -304,7 +298,7 @@ void MciMusicDevice::Dummy10(unsigned long p_handle)
 }
 
 // FUNCTION: LEMBALL 0x0047f040
-void MciMusicDevice::Dummy14(unsigned long p_handle)
+void MciMusicDevice::Stop(unsigned long p_handle)
 {
 	MCIERROR error;
 	char errorText[0x80];
@@ -338,7 +332,7 @@ void MciMusicDevice::Dummy14(unsigned long p_handle)
 }
 
 // FUNCTION: LEMBALL 0x0047f120
-void MciMusicDevice::Dummy18(unsigned long p_handle)
+void MciMusicDevice::Pause(unsigned long p_handle)
 {
 	MCI_STATUS_PARMS statusParms;
 	MCIERROR error;
@@ -381,7 +375,7 @@ void MciMusicDevice::Dummy18(unsigned long p_handle)
 }
 
 // FUNCTION: LEMBALL 0x0047f250
-void MciMusicDevice::Dummy1c(unsigned long p_handle)
+void MciMusicDevice::Resume(unsigned long p_handle)
 {
 	MCI_SEEK_PARMS seekParms;
 	MCI_PLAY_PARMS playParms;
@@ -426,7 +420,7 @@ void MciMusicDevice::Dummy1c(unsigned long p_handle)
 }
 
 // FUNCTION: LEMBALL 0x0047f390
-int MciMusicDevice::Dummy2c()
+int MciMusicDevice::IsAvailable()
 {
 	return (int) m_available;
 }

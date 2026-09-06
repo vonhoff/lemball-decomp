@@ -26,7 +26,7 @@ public:
 	bool Send(NetworkMessage& p_arg0);
 	bool SendCritical(NetworkMessage& p_arg0);
 	bool SendNcms(NetworkMessage& p_arg0);
-	bool ResendCritical(WritePacket* p_arg0);
+	bool ResendCritical(WritePacket* p_packet);
 	void Closed(int p_notifyPeer);
 	void DeleteCBuffers();
 	void DeleteNcBuffers();

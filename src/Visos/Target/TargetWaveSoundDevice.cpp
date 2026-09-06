@@ -5,19 +5,13 @@
 
 #include <new.h>
 
-#define WIN32_LEAN_AND_MEAN
-// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
-#include <windows.h>
-#include <mmsystem.h>
-// clang-format on
-
 // FUNCTION: LEMBALL 0x0047c880
 TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 {
 	WAVEOUTCAPSA* caps;
 	unsigned int i;
-	unsigned int deviceCount;
-	unsigned int deviceId;
+	UINT deviceCount;
+	UINT deviceId;
 	int found;
 	WAVEFORMATEX* format;
 
@@ -56,7 +50,7 @@ TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 	found = 0;
 	deviceCount = waveOutGetNumDevs();
 	deviceId = 0;
-	caps = (WAVEOUTCAPSA*) m_caps;
+	caps = &m_caps;
 	while (found == 0 && deviceId < deviceCount) {
 		if (waveOutGetDevCapsA(deviceId, caps, sizeof(WAVEOUTCAPSA)) == 0) {
 			if ((caps->dwFormats & 1) != 0) {
@@ -85,7 +79,7 @@ TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 			}
 		}
 		if (m_sampleRate != 0) {
-			format = (WAVEFORMATEX*) m_waveFormat;
+			format = &m_waveFormat;
 			format->wFormatTag = 1;
 			format->nChannels = 1;
 			format->nAvgBytesPerSec = 0;
@@ -106,8 +100,7 @@ TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 			format->nSamplesPerSec = m_sampleRate;
 			format->nAvgBytesPerSec = 1;
 			format->nAvgBytesPerSec = (unsigned int) format->nChannels * m_sampleRate;
-			format->nBlockAlign =
-				(unsigned short) (((unsigned int) format->wBitsPerSample * (unsigned int) format->nChannels) >> 3);
+			format->nBlockAlign = (unsigned short) ((format->wBitsPerSample * format->nChannels) / 8);
 			if (m_use16Bit == 1) {
 				format->nAvgBytesPerSec = format->nAvgBytesPerSec * 2;
 			}
@@ -121,26 +114,26 @@ TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 // FUNCTION: LEMBALL 0x0047caa0
 TargetWaveSoundDevice::~TargetWaveSoundDevice()
 {
-	Dummy14();
+	Close();
 	operator delete(m_effects);
 	operator delete(m_effectHandles);
 	operator delete(m_effectUsed);
 }
 
 // FUNCTION: LEMBALL 0x0047caf0
-char* TargetWaveSoundDevice::Dummy04()
+char* TargetWaveSoundDevice::GetInfo()
 {
 	WAVEOUTCAPSA* caps;
 
 	if (m_available == 1) {
-		caps = (WAVEOUTCAPSA*) m_caps;
+		caps = &m_caps;
 		return caps->szPname;
 	}
 	return "ERROR! No Effects Device for WinEff!\n";
 }
 
 // FUNCTION: LEMBALL 0x0047cb00
-int TargetWaveSoundDevice::Dummy0c(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
+int TargetWaveSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
 	MMRESULT result;
 	char errorText[0x100];
@@ -149,15 +142,15 @@ int TargetWaveSoundDevice::Dummy0c(unsigned int p_music, unsigned int p_effects,
 		return (int) m_musicDevice;
 	}
 	if (p_effects == 1) {
-		result = waveOutOpen((HWAVEOUT*) &m_waveOut, m_deviceId, (WAVEFORMATEX*) m_waveFormat, 0, 0, 0);
+		result = waveOutOpen(&m_waveOut, m_deviceId, &m_waveFormat, 0, 0, 0);
 		if (result != 0) {
 			*g_pErrorOutput << "Error! Windows Effect device cannot be opened!\n";
 			waveOutGetErrorTextA(result, errorText, 0x100);
 			*g_pErrorOutput << errorText << "\n";
 		}
-		if ((m_caps[0x30] & 4) != 0) {
-			waveOutGetVolume((HWAVEOUT) m_waveOut, (DWORD*) &m_savedVolume);
-			waveOutSetVolume((HWAVEOUT) m_waveOut, 0xffffffff);
+		if ((m_caps.dwSupport & 4) != 0) {
+			waveOutGetVolume(m_waveOut, &m_savedVolume);
+			waveOutSetVolume(m_waveOut, 0xffffffff);
 		}
 		if (result == 0) {
 			m_available = 1;
@@ -182,19 +175,19 @@ int TargetWaveSoundDevice::Dummy2c()
 }
 
 // FUNCTION: LEMBALL 0x0047cc00
-int TargetWaveSoundDevice::Dummy30()
+int TargetWaveSoundDevice::GetBuffersPerEffect()
 {
 	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0047cc10
-int TargetWaveSoundDevice::Dummy08()
+int TargetWaveSoundDevice::IsAvailable()
 {
 	return (int) m_available;
 }
 
 // FUNCTION: LEMBALL 0x0047cc20
-int TargetWaveSoundDevice::Dummy14()
+int TargetWaveSoundDevice::Close()
 {
 	MMRESULT result;
 	unsigned int tries;
@@ -207,19 +200,19 @@ int TargetWaveSoundDevice::Dummy14()
 			if (tries >= 500) {
 				break;
 			}
-			result = waveOutReset((HWAVEOUT) m_waveOut);
+			result = waveOutReset(m_waveOut);
 			tries = tries + 1;
 		} while (result != 0);
 		if (tries == 500) {
 			*g_pErrorOutput << "Error Shutting Down Wave Device : ";
-			*g_pErrorOutput << Dummy04() << ".\n";
+			*g_pErrorOutput << GetInfo() << ".\n";
 			*g_pErrorOutput << "System may be unstable!\n";
 			waveOutGetErrorTextA(result, errorText, 0x100);
 			*g_pErrorOutput << errorText << "\n";
 			return 0;
 		}
-		if ((m_caps[0x30] & 4) != 0) {
-			waveOutSetVolume((HWAVEOUT) m_waveOut, m_savedVolume);
+		if ((m_caps.dwSupport & 4) != 0) {
+			waveOutSetVolume(m_waveOut, m_savedVolume);
 		}
 		if (m_waveOut != 0) {
 			result = 0xffff;
@@ -228,12 +221,12 @@ int TargetWaveSoundDevice::Dummy14()
 				if (tries >= 500) {
 					break;
 				}
-				result = waveOutClose((HWAVEOUT) m_waveOut);
+				result = waveOutClose(m_waveOut);
 				tries = tries + 1;
 			} while (result != 0);
 			if (tries == 500) {
 				*g_pErrorOutput << "Error Closing Down Wave Device : ";
-				*g_pErrorOutput << Dummy04() << ".\n";
+				*g_pErrorOutput << GetInfo() << ".\n";
 				*g_pErrorOutput << "System may be unstable!\n";
 				waveOutGetErrorTextA(result, errorText, 0x100);
 				*g_pErrorOutput << errorText << "\n";
@@ -246,7 +239,7 @@ int TargetWaveSoundDevice::Dummy14()
 }
 
 // FUNCTION: LEMBALL 0x0047cdd0
-int TargetWaveSoundDevice::Dummy18()
+int TargetWaveSoundDevice::IsAnyEffectPlaying()
 {
 	unsigned int i;
 	int playing;
@@ -269,7 +262,7 @@ int TargetWaveSoundDevice::Dummy1c()
 }
 
 // FUNCTION: LEMBALL 0x0047ce00
-int TargetWaveSoundDevice::Dummy20()
+int TargetWaveSoundDevice::StopAllEffects()
 {
 	MMRESULT result;
 	unsigned int tries;
@@ -283,11 +276,11 @@ int TargetWaveSoundDevice::Dummy20()
 				break;
 			}
 			tries = tries + 1;
-			result = waveOutReset((HWAVEOUT) m_waveOut);
+			result = waveOutReset(m_waveOut);
 		} while (result != 0);
 		if (tries == 500) {
 			*g_pErrorOutput << "Error stopping playback in device : ";
-			*g_pErrorOutput << Dummy04() << ".\n";
+			*g_pErrorOutput << GetInfo() << ".\n";
 			*g_pErrorOutput << "System may be unstable!\n";
 			waveOutGetErrorTextA(result, errorText, 0x100);
 			*g_pErrorOutput << errorText << "\n";
@@ -298,13 +291,13 @@ int TargetWaveSoundDevice::Dummy20()
 }
 
 // FUNCTION: LEMBALL 0x0047ced0
-int TargetWaveSoundDevice::Dummy24()
+int TargetWaveSoundDevice::IsMusicAvailable()
 {
 	return (int) m_musicDevice;
 }
 
 // FUNCTION: LEMBALL 0x0047cee0
-int TargetWaveSoundDevice::Dummy28()
+int TargetWaveSoundDevice::IsEffectAvailable()
 {
 	return (int) m_available;
 }
@@ -322,22 +315,22 @@ int TargetWaveSoundDevice::Dummy38(undefined4 p_arg0, undefined4 p_arg1, undefin
 }
 
 // FUNCTION: LEMBALL 0x0047cf10
-int TargetWaveSoundDevice::Dummy3c(unsigned char* p_data, unsigned long* p_handle)
+int TargetWaveSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_handle)
 {
 	void* storage;
 
 	for (unsigned int i = 0; i < m_channelCount; i++) {
 		if (m_effectUsed[i] == 0) {
-			Dummy14();
+			Close();
 			storage = operator new(0x18);
 			if (storage == 0) {
 				m_effects[i] = 0;
 			}
 			else {
-				m_effects[i] = new (storage)
-					TargetWaveEffect(p_data, (unsigned int) m_waveOut, m_sampleRate, (int) m_use16Bit, (int) m_stereo);
+				m_effects[i] =
+					new (storage) TargetWaveEffect(p_data, m_waveOut, m_sampleRate, (int) m_use16Bit, (int) m_stereo);
 			}
-			Dummy0c(0, 1, 0);
+			Open(0, 1, 0);
 			m_effectUsed[i] = 1;
 			m_effectHandles[i] = m_nextHandle;
 			*p_handle = m_nextHandle;
@@ -370,7 +363,7 @@ int TargetWaveSoundDevice::Dummy4c()
 }
 
 // FUNCTION: LEMBALL 0x0047d010
-int TargetWaveSoundDevice::Dummy48(unsigned long p_effectId)
+int TargetWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 {
 	TargetWaveEffect* effect;
 	unsigned int i;
@@ -394,7 +387,7 @@ int TargetWaveSoundDevice::Dummy48(unsigned long p_effectId)
 }
 
 // FUNCTION: LEMBALL 0x0047d080
-int TargetWaveSoundDevice::Dummy50()
+int TargetWaveSoundDevice::FreeAllEffects()
 {
 	unsigned int i;
 	TargetWaveEffect* effect;
@@ -427,12 +420,12 @@ unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId,
 	i = 0;
 	while (i < m_channelCount) {
 		if (m_effectHandles[i] == p_effectId) {
-			result = waveOutReset((HWAVEOUT) m_waveOut);
+			result = waveOutReset(m_waveOut);
 			if (result != 0) {
 				*g_pErrorOutput << "waveOutReset errored: " << (unsigned long) result << "\n";
 			}
 			effect = m_effects[i];
-			result = waveOutWrite((HWAVEOUT) m_waveOut, (WAVEHDR*) effect->m_waveHeader, 0x20);
+			result = waveOutWrite(m_waveOut, effect->m_waveHeader, 0x20);
 			if (result != 0) {
 				*g_pErrorOutput << "waveOutWrite (play effect) errored: " << (unsigned long) result << "\n";
 			}
@@ -456,6 +449,6 @@ unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId,
 // FUNCTION: LEMBALL 0x0047d240
 bool TargetWaveSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect)
 {
-	waveOutReset((HWAVEOUT) m_waveOut);
+	waveOutReset(m_waveOut);
 	return 0;
 }

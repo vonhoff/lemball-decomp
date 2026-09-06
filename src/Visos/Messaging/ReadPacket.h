@@ -10,9 +10,9 @@
 // VTABLE: LEMBALL 0x004991c8 BasePacket
 class ReadPacket : public BasePacket, public Critical {
 public:
-	ReadPacket(unsigned short p_arg0);
+	ReadPacket(unsigned short p_capacity);
 	virtual ~ReadPacket();
-	void Fill(const unsigned char* p_arg0, unsigned short p_arg1);
+	void Fill(const unsigned char* p_data, unsigned short p_size);
 
 	friend class NetworkOptionsProc;
 	friend class BaseFrontendProcess;
