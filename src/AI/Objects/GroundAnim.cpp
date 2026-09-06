@@ -32,9 +32,42 @@ bool GroundAnim::CheckAllAnims()
 }
 
 // 68K 0x1060e4a4 Process__11CGroundAnimFv
-// STUB: LEMBALL 0x0040cff0
+// FUNCTION: LEMBALL 0x0040cff0
 void GroundAnim::Process()
 {
+	if (m_nextProcessTick <= g_dwGameTick) {
+		if (m_needsValidation != 0) {
+			CheckAllAnims();
+			m_needsValidation = 0;
+		}
+
+		m_nextProcessTick = g_dwGameTick + 2;
+		if (m_count > 0) {
+			GroundAnimEntry* entry = m_entries;
+			int index = 0;
+			do {
+				if (entry->m_active != 0) {
+					switch (entry->m_direction) {
+					case -1:
+						entry->m_currentFrame--;
+						if (entry->m_currentFrame < entry->m_endFrame) {
+							entry->m_currentFrame = entry->m_startFrame;
+						}
+						break;
+					case 1:
+						entry->m_currentFrame++;
+						if (entry->m_endFrame < entry->m_currentFrame) {
+							entry->m_currentFrame = entry->m_startFrame;
+						}
+						break;
+					}
+					entry->m_mapCell->m_objectData = entry->m_currentFrame;
+				}
+				entry++;
+				index++;
+			} while (index < m_count);
+		}
+	}
 }
 
 // 68K 0x1060e5ae Check__11CGroundAnimFRC8tCoord3d

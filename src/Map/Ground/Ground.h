@@ -19,6 +19,7 @@ public:
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;
+	friend class GroundAnim;
 
 private:
 	eObjectType m_objectType;    // 0x00
