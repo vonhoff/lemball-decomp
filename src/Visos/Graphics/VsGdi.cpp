@@ -58,9 +58,9 @@ Surface::Surface(const VsRect& p_rect, class Surface* p_parentSurface)
 	m_drawingPort = 0;
 	m_presentX = 0;
 	m_presentY = 0;
-	m_unk0x528 = 0;
-	m_unk0x52c = 0;
-	m_unk0x530 = 0;
+	m_childSurfaceHead = 0;
+	m_childSurfaceTail = 0;
+	m_childSurfaceCount = 0;
 	m_unk0x54c = 1;
 	m_changeList = 0;
 	m_parentSurface = p_parentSurface;
@@ -102,15 +102,15 @@ Surface::Surface(const VsRect& p_rect, class Surface* p_parentSurface)
 			node = (SurfaceListNode*) storage;
 			node->m_surface = this;
 			node->m_next = 0;
-			node->m_prev = p_parentSurface->m_unk0x52c;
-			if (p_parentSurface->m_unk0x52c != 0) {
-				p_parentSurface->m_unk0x52c->m_next = node;
+			node->m_prev = p_parentSurface->m_childSurfaceTail;
+			if (p_parentSurface->m_childSurfaceTail != 0) {
+				p_parentSurface->m_childSurfaceTail->m_next = node;
 			}
-			p_parentSurface->m_unk0x52c = node;
-			if (p_parentSurface->m_unk0x528 == 0) {
-				p_parentSurface->m_unk0x528 = node;
+			p_parentSurface->m_childSurfaceTail = node;
+			if (p_parentSurface->m_childSurfaceHead == 0) {
+				p_parentSurface->m_childSurfaceHead = node;
 			}
-			p_parentSurface->m_unk0x530 = p_parentSurface->m_unk0x530 + 1;
+			p_parentSurface->m_childSurfaceCount = p_parentSurface->m_childSurfaceCount + 1;
 		}
 	}
 	if (g_pSurfaceList != 0) {
@@ -248,14 +248,14 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 
 // 68K 0x10109048 __ct__8CSurfaceFP8GrafPort
 // FUNCTION: LEMBALL 0x0046c5d0
-Surface::Surface(GrafPort* p_arg0)
+Surface::Surface(GrafPort* p_port)
 {
 	m_presentY = 0;
-	m_unk0x528 = 0;
+	m_childSurfaceHead = 0;
 	m_presentX = 0;
-	m_unk0x52c = 0;
-	m_unk0x530 = 0;
-	m_drawingPort = new TargetDrawingContext(p_arg0);
+	m_childSurfaceTail = 0;
+	m_childSurfaceCount = 0;
+	m_drawingPort = new TargetDrawingContext(p_port);
 	m_platformBitmap = 0;
 	m_changeList = 0;
 	m_parentSurface = 0;
@@ -298,7 +298,7 @@ Surface::~Surface()
 	}
 	parent = m_parentSurface;
 	if (parent != 0) {
-		node = parent->m_unk0x528;
+		node = parent->m_childSurfaceHead;
 		while (node != 0) {
 			if (node->m_surface == this) {
 				break;
@@ -310,18 +310,18 @@ Surface::~Surface()
 			prev = node->m_prev;
 			operator delete(node);
 			if (next == 0) {
-				parent->m_unk0x52c = prev;
+				parent->m_childSurfaceTail = prev;
 			}
 			else {
 				next->m_prev = prev;
 			}
 			if (prev == 0) {
-				parent->m_unk0x528 = next;
+				parent->m_childSurfaceHead = next;
 			}
 			else {
 				prev->m_next = next;
 			}
-			parent->m_unk0x530 = parent->m_unk0x530 - 1;
+			parent->m_childSurfaceCount = parent->m_childSurfaceCount - 1;
 		}
 		m_parentSurface = 0;
 	}
@@ -367,13 +367,13 @@ Surface::~Surface()
 			}
 		}
 	}
-	node = (SurfaceListNode*) m_unk0x528;
+	node = (SurfaceListNode*) m_childSurfaceHead;
 	while (node != 0) {
 		next = node->m_next;
 		operator delete(node);
 		node = next;
 	}
-	m_unk0x528 = 0;
+	m_childSurfaceHead = 0;
 	PvGdiBitmap::Free();
 }
 
@@ -390,7 +390,7 @@ void Surface::ResetScroll()
 	if (HasZBuff() != 0) {
 		PvZBuffSurface::m_bitmap.ResetScroll();
 	}
-	for (node = m_unk0x528; node != 0; node = node->m_next) {
+	for (node = m_childSurfaceHead; node != 0; node = node->m_next) {
 		node->m_surface->PvGdiBitmap::ResetLinePtrs();
 	}
 }
@@ -486,36 +486,36 @@ ChangeList* Surface::GetChangeList()
 
 // 68K 0x1010959a Blit__8CSurfaceFP9CClipRect
 // FUNCTION: LEMBALL 0x0046cbe0
-void Surface::Blit(class ClipRect* p_arg0)
+void Surface::Blit(class ClipRect* p_clipRect)
 {
 	Surface* parent;
 	short clipRight;
 	short clipBottom;
 
-	if ((p_arg0->m_reserved0c & 0x1000) == 0) {
-		m_clipRect.m_width = p_arg0->m_left;
-		m_clipRect.m_height = p_arg0->m_top;
-		m_clipRect.m_x = p_arg0->m_right;
-		m_clipRect.m_y = p_arg0->m_bottom;
+	if ((p_clipRect->m_reserved0c & 0x1000) == 0) {
+		m_clipRect.m_width = p_clipRect->m_left;
+		m_clipRect.m_height = p_clipRect->m_top;
+		m_clipRect.m_x = p_clipRect->m_right;
+		m_clipRect.m_y = p_clipRect->m_bottom;
 	}
-	else if ((int) p_arg0->m_left * (int) p_arg0->m_top != 0) {
-		if (p_arg0->m_right < m_clipRect.m_x) {
-			m_clipRect.m_width = (short) (m_clipRect.m_width + (m_clipRect.m_x - p_arg0->m_right));
-			m_clipRect.m_x = p_arg0->m_right;
+	else if ((int) p_clipRect->m_left * (int) p_clipRect->m_top != 0) {
+		if (p_clipRect->m_right < m_clipRect.m_x) {
+			m_clipRect.m_width = (short) (m_clipRect.m_width + (m_clipRect.m_x - p_clipRect->m_right));
+			m_clipRect.m_x = p_clipRect->m_right;
 		}
-		if ((short) (m_clipRect.m_width + m_clipRect.m_x) < (short) (p_arg0->m_right + p_arg0->m_left)) {
-			m_clipRect.m_width = (short) ((p_arg0->m_left - m_clipRect.m_x) + p_arg0->m_right);
+		if ((short) (m_clipRect.m_width + m_clipRect.m_x) < (short) (p_clipRect->m_right + p_clipRect->m_left)) {
+			m_clipRect.m_width = (short) ((p_clipRect->m_left - m_clipRect.m_x) + p_clipRect->m_right);
 		}
-		if (p_arg0->m_bottom < m_clipRect.m_y) {
-			m_clipRect.m_height = (short) (m_clipRect.m_height + (m_clipRect.m_y - p_arg0->m_bottom));
-			m_clipRect.m_y = p_arg0->m_bottom;
+		if (p_clipRect->m_bottom < m_clipRect.m_y) {
+			m_clipRect.m_height = (short) (m_clipRect.m_height + (m_clipRect.m_y - p_clipRect->m_bottom));
+			m_clipRect.m_y = p_clipRect->m_bottom;
 		}
-		if ((short) (m_clipRect.m_height + m_clipRect.m_y) < (short) (p_arg0->m_bottom + p_arg0->m_top)) {
-			m_clipRect.m_height = (short) ((p_arg0->m_top - m_clipRect.m_y) + p_arg0->m_bottom);
+		if ((short) (m_clipRect.m_height + m_clipRect.m_y) < (short) (p_clipRect->m_bottom + p_clipRect->m_top)) {
+			m_clipRect.m_height = (short) ((p_clipRect->m_top - m_clipRect.m_y) + p_clipRect->m_bottom);
 		}
 	}
 	parent = m_parentSurface;
-	if (parent != (Surface*) g_pGdiHelperTarget && (p_arg0->m_reserved0c & 0x10000) == 0 && parent != 0) {
+	if (parent != (Surface*) g_pGdiHelperTarget && (p_clipRect->m_reserved0c & 0x10000) == 0 && parent != 0) {
 		clipRight = m_clipRect.m_x;
 		if (clipRight < parent->m_clipRect.m_x) {
 			m_clipRect.m_width = (short) (m_clipRect.m_width + (clipRight - parent->m_clipRect.m_x));
@@ -755,7 +755,7 @@ void Surface::Resize(const VsSize& p_size)
 			ResizeZBuff();
 		}
 	}
-	for (SurfaceListNode* node = m_unk0x528; node != 0; node = node->m_next) {
+	for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {
 		Surface* child = node->m_surface;
 		if (child != 0) {
 			VsSize childSize;
@@ -829,7 +829,7 @@ void Surface::Move(const VsPoint& p_position)
 		m_changeList = 0;
 		CreateLinePtrs();
 		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
-		for (SurfaceListNode* node = m_unk0x528; node != 0; node = node->m_next) {
+		for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {
 			node->m_surface->MoveRel(delta);
 		}
 	}
@@ -967,9 +967,9 @@ void Surface::EndRender()
 
 // 68K 0x1010171a Blit__8CSurfaceFP10CBigBitmapP10CResBITMAP
 // FUNCTION: LEMBALL 0x0046dbc0
-void Surface::Blit(BigBitmap* p_arg0, ResBitmap* p_arg1)
+void Surface::Blit(BigBitmap* p_primitive, ResBitmap* p_bitmap)
 {
-	Blit((Bitmap*) p_arg0, p_arg1);
+	Blit((Bitmap*) p_primitive, p_bitmap);
 }
 
 // 68K 0x10105df8 Flush__8CSurfaceFv
@@ -1009,19 +1009,19 @@ void Surface::Blit(ScreenScroll* p_scroll)
 
 // 68K 0x10111c76 Blit__8CSurfaceFP11CZBuffClear
 // FUNCTION: LEMBALL 0x00474d40
-void Surface::Blit(ZBuffClear* p_arg0)
+void Surface::Blit(ZBuffClear* p_clear)
 {
 	int startX;
 	int height;
-	int width = p_arg0->m_width;
-	height = p_arg0->m_height;
+	int width = p_clear->m_width;
+	height = p_clear->m_height;
 
 	if (width == 0 || height == 0) {
 		return;
 	}
-	startX = p_arg0->m_x;
-	int startY = p_arg0->m_y;
-	unsigned short depth = (unsigned short) p_arg0->m_depth;
+	startX = p_clear->m_x;
+	int startY = p_clear->m_y;
+	unsigned short depth = (unsigned short) p_clear->m_depth;
 	if (height <= 0) {
 		return;
 	}
@@ -1038,15 +1038,15 @@ void Surface::Blit(ZBuffClear* p_arg0)
 
 // 68K 0x10111d0c Blit__8CSurfaceFP12CZBuffScroll
 // FUNCTION: LEMBALL 0x00474dc0
-void Surface::Blit(ZBuffScroll* p_arg0)
+void Surface::Blit(ZBuffScroll* p_scroll)
 {
 }
 
 // 68K 0x10105b48 Blit__8CSurfaceFP15CCopyToBackBuff
 // FUNCTION: LEMBALL 0x00474dd0
-void Surface::Blit(CopyToBackBuff* p_arg0)
+void Surface::Blit(CopyToBackBuff* p_copy)
 {
-	CopyToBackBuff* primitive = p_arg0;
+	CopyToBackBuff* primitive = p_copy;
 	int width = primitive->m_field08;
 	int height = primitive->m_field0a;
 	if (width != 0 && height != 0) {
@@ -1073,19 +1073,19 @@ void Surface::Blit(CopyToBackBuff* p_arg0)
 
 // 68K 0x10105be0 Blit__8CSurfaceFP21CCopyColourToBackBuff
 // FUNCTION: LEMBALL 0x00474e60
-void Surface::Blit(CopyColourToBackBuff* p_arg0)
+void Surface::Blit(CopyColourToBackBuff* p_fill)
 {
 	int startX;
 	int startY;
-	int width = p_arg0->m_width;
-	int height = p_arg0->m_height;
+	int width = p_fill->m_width;
+	int height = p_fill->m_height;
 
 	if (width == 0 || height == 0) {
 		return;
 	}
-	startX = p_arg0->m_x;
-	startY = p_arg0->m_y;
-	int color = p_arg0->m_colour;
+	startX = p_fill->m_x;
+	startY = p_fill->m_y;
+	int color = p_fill->m_colour;
 	if (height <= 0) {
 		return;
 	}
@@ -1099,13 +1099,13 @@ void Surface::Blit(CopyColourToBackBuff* p_arg0)
 
 // 68K 0x10105c6c CopyBackBuffToScreen__8CSurfaceFRC7CVSRect
 // FUNCTION: LEMBALL 0x00474ee0
-void Surface::CopyBackBuffToScreen(const VsRect& p_arg0)
+void Surface::CopyBackBuffToScreen(const VsRect& p_rect)
 {
-	short height = p_arg0.m_height;
-	short width = p_arg0.m_width;
+	short height = p_rect.m_height;
+	short width = p_rect.m_width;
 
 	if ((int) height * (int) width != 0) {
-		const short* coords = &p_arg0.m_x;
+		const short* coords = &p_rect.m_x;
 		short x = coords[0];
 		short y = coords[1];
 		if ((int) (short) (x + width) > (int) PvBackBuffSurface::m_allocatedWidth) {

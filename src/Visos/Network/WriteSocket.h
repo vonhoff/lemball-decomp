@@ -39,7 +39,7 @@ public:
 	friend class Broadcast;
 
 protected:
-	void _SetDestAddr(NetworkAddress* p_arg0);
+	void CopyDestinationAddress(NetworkAddress* p_address);
 
 private:
 	WriteNcBuff* m_nonCriticalBuffer;     // 0x48

@@ -10,8 +10,8 @@
 class AnimWnd : public PvAnimWnd {
 public:
 	AnimWnd();
-	virtual void _OnCreate();            // vtable+0x18
-	virtual void _OnDestroy();           // vtable+0x1c
+	virtual void OnCreateInternal();     // vtable+0x18
+	virtual void OnDestroyInternal();    // vtable+0x1c
 	virtual void OnSkip(int p_position); // vtable+0xb8
 	virtual void OnFrame(int p_frame);   // vtable+0xbc
 	virtual void OnStart();              // vtable+0xc0

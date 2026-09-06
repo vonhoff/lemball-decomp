@@ -10,7 +10,7 @@
 class GraphicButton : public PvButton {
 public:
 	GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3);
-	virtual void _DrawButton();                 // vtable+0xb8
+	virtual void DrawButtonInternal();          // vtable+0xb8
 	virtual void DrawButton();                  // vtable+0xbc
 	virtual void OnDestroy();                   // vtable+0x40
 	virtual void OnPaint(const VsRect& p_rect); // vtable+0xa8

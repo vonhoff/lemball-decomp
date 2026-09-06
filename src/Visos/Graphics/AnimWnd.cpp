@@ -96,9 +96,9 @@ AnimWnd::~AnimWnd()
 
 // 68K 0x10103df8 _OnCreate__8CAnimWndFv
 // FUNCTION: LEMBALL 0x0046ded0
-void AnimWnd::_OnCreate()
+void AnimWnd::OnCreateInternal()
 {
-	GWnd::_OnCreate();
+	GWnd::OnCreateInternal();
 	if (m_movieWindow != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
 		m_movieWindow = 0;
@@ -109,14 +109,14 @@ void AnimWnd::_OnCreate()
 
 // 68K 0x101040d4 _OnDestroy__8CAnimWndFv
 // FUNCTION: LEMBALL 0x0046df40
-void AnimWnd::_OnDestroy()
+void AnimWnd::OnDestroyInternal()
 {
 	Stop();
 	if (m_movieWindow != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
 		m_movieWindow = 0;
 	}
-	GWnd::_OnDestroy();
+	GWnd::OnDestroyInternal();
 	m_paused = 0;
 	m_playing = 0;
 }
