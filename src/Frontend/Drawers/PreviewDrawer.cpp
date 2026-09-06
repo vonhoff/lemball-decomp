@@ -309,15 +309,15 @@ void PreviewDrawer::DrawText()
 		if (m_networkMode != 0) {
 			count = 4;
 		}
-		if (count != 0) {
+		if (count > 0) {
 			positions = g_anPreviewTextIndices;
 			do {
 				advance.m_height = 0;
 				advance.m_width = 0;
 				layout = (int*) ((char*) m_layout + *positions * 8);
-				positions = positions + 1;
 				pos.m_x = (short) *layout;
 				pos.m_y = (short) layout[1];
+				positions = positions + 1;
 				m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, (char*) g_szPreviewX, 0x20, 0);
 				count = count - 1;
 			} while (count != 0);
