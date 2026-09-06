@@ -131,9 +131,55 @@ bool InvisibleSwitch::Process()
 }
 
 // 68K 0x10613016 Load__16CInvisibleSwitchFRPUc
-// STUB: LEMBALL 0x0040a110
+// FUNCTION: LEMBALL 0x0040a110
 void InvisibleSwitch::Load(unsigned char*& p_data)
 {
+	unsigned short id = *(unsigned short*) p_data;
+	p_data += 2;
+	SetId(id);
+
+	Coord3d cornerA;
+	cornerA.m_x = *(short*) p_data;
+	p_data += 2;
+	cornerA.m_y = *(short*) p_data;
+	p_data += 2;
+	cornerA.m_z = *(short*) p_data;
+	p_data += 2;
+
+	Coord3d cornerB;
+	cornerB.m_x = *(short*) p_data;
+	p_data += 2;
+	cornerB.m_y = *(short*) p_data;
+	p_data += 2;
+	cornerB.m_z = *(short*) p_data;
+	p_data += 2;
+
+	Set(cornerA, cornerB);
+
+	if (g_pAI->m_levelVersion >= 9) {
+		unsigned int repeatable = *(unsigned short*) p_data;
+		p_data += 2;
+		m_repeatable = repeatable;
+	}
+	else {
+		m_repeatable = 0;
+	}
+
+	m_targetCount = *(unsigned short*) p_data;
+	p_data += 2;
+	InvisibleSwitchTarget* target;
+	int index = 0;
+	if (m_targetCount > 0) {
+		target = m_targets;
+		do {
+			target->m_message = *(unsigned short*) p_data;
+			p_data += 2;
+			target->m_objectId = *(unsigned short*) p_data;
+			p_data += 2;
+			target++;
+			index++;
+		} while (index < m_targetCount);
+	}
 }
 
 // 68K 0x10612ac0 __dt__16CInvisibleSwitchFv

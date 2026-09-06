@@ -89,6 +89,7 @@ public:
 	friend class LevelLoader;
 	friend class MoverManager;
 	friend class InvisibleSwitchManager;
+	friend class InvisibleSwitch;
 	friend class FormationManager;
 	friend class SheepGroupManager;
 	friend class EnemyGroupManager;
