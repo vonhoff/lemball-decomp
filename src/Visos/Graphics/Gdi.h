@@ -26,6 +26,7 @@ public:
 	friend class Text;
 	friend class Zrle;
 	friend class Main2DDisplay;
+	friend class C2D;
 	friend class GWnd;
 	friend class PvGWnd;
 	friend class BaseFrontendDrawer;

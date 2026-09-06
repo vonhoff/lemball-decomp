@@ -49,6 +49,7 @@ public:
 	friend class FileNetwork;
 	friend class CConnect;
 	friend class WriteSocket;
+	friend class C2D;
 
 private:
 	char* m_networkName;                      // 0x10

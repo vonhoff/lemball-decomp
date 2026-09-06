@@ -31,6 +31,7 @@ public:
 	friend class InvisibleSwitch;
 	friend class Lift;
 	friend class BalloonPost;
+	friend class C2D;
 
 private:
 	unsigned int m_reserved; // 0x00

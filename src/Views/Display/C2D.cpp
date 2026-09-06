@@ -5,32 +5,62 @@
 #include "../../AI/Objects/PlayerLemming.h"
 #include "../../AI/Objects/ViewData.h"
 #include "../../Control/Game/Demo.h"
+#include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameMain.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Frontend/Resources/FrontendResourceLoader.h"
+#include "../../Map/Base/Map.h"
+#include "../../Network/Game/NetworkManager.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/TextManager.h"
+#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Graphics/Gdi.h"
+#include "../../Visos/Graphics/HotAreaList.h"
+#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResFont.h"
 #include "../Animation/LemmingAnimsManager.h"
+#include "../Input/PadToButton.h"
 #include "../Panel/Panel.h"
+#include "../Pause/PauseWindow.h"
 #include "../Sound/SoundView.h"
+#include "../Target/TargetObjectClipCell.h"
+#include "../Target/TargetObjectClipGrid.h"
 #include "../Target/TargetSpriteGroundLookup.h"
 #include "Main2DDisplay.h"
 
+#include <new.h>
 #include <string.h>
 
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
 // STUB: LEMBALL 0x004358d0
 C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4) : HotAreaHandler(p_arg4)
 {
+	void* storage;
+	ViewData* viewData;
+	TargetObjectClipGrid* objectClipGrid;
+	TargetObjectClipCell* cells;
+	unsigned int cellCount;
+	unsigned int i;
+
 	m_mouseButtonDown = 0;
 	m_cursorState = 0;
 	m_paused = 0;
 	m_pauser = 0;
+	m_connectionTimeoutActive = 0;
+	m_frameCount = 0;
+	m_frameTime = 0;
+	if (g_nTestAllLevels != 0) {
+		m_testLevel = 0;
+	}
+	m_zBufferEnabled = 1;
+	m_externalEnabled = 1;
+	m_drawingMarkPosition.m_x = 0;
+	m_drawingMarkPosition.m_y = 0;
 	InitSpriteGroundLu();
 	m_groundHitMode = 0;
 	m_pauseWindow = 0;
@@ -41,6 +71,10 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 	m_gdi = p_arg2;
 	m_display = p_arg0;
 	m_map = p_arg3;
+	p_arg3->m_orientation = 0;
+	m_zoom = (unsigned short) p_arg0->m_zoom;
+	m_groundWidth = (unsigned short) p_arg3->m_ground.m_width;
+	m_groundHeight = (unsigned short) p_arg3->m_ground.m_height;
 	m_viewOriginX = 0;
 	m_viewOriginY = 0;
 	m_unk0x90c = 0;
@@ -54,6 +88,95 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 	m_primitiveCount = 0;
 	m_spriteGroundLookup = 0;
 	m_panel = 0;
+	m_objectClipGrid = 0;
+	m_pad0x8c8 = 0;
+	m_pad0x8cc = 0;
+	m_unk0xc90 = 0;
+
+	p_arg0->m_hotAreaList->AddToList(this);
+
+	storage = operator new(0xb4);
+	if (storage != 0) {
+		m_lemmingAnims = new (storage) LemmingAnimsManager(p_arg2, p_arg0, p_arg1);
+	}
+	else {
+		m_lemmingAnims = 0;
+	}
+
+	storage = operator new(0x24);
+	if (storage != 0) {
+		m_textManager = new (storage) TextManager(0x2b6, 2, 2, 10);
+	}
+	else {
+		m_textManager = 0;
+	}
+
+	ResetPrimitives();
+	RegisterRemaps();
+	m_cursorState = 0;
+	m_clipConfigured = 1;
+	m_viewDataCount = 0;
+
+	viewData = (ViewData*) operator new(0x3b60);
+	if (viewData != 0) {
+		for (i = 0; i < 0xc8; i++) {
+			new (viewData + i) ViewData();
+		}
+		m_viewData = viewData;
+	}
+	else {
+		m_viewData = 0;
+	}
+
+	m_zBuffer = (unsigned char*) operator new(0x800);
+	g_pMasterInputQueue->Attach(this, 0);
+	ClockEditMode(0);
+
+	storage = operator new(0x1c);
+	if (storage != 0) {
+		m_padToButton = new (storage) PadToButton(3);
+	}
+	else {
+		m_padToButton = 0;
+	}
+
+	SetUpRemapPalettes();
+	m_textManager->LoadFont(0x115);
+	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+		m_textManager->LoadFont(0xf8);
+	}
+
+	m_spriteGroundLookup = 0;
+	objectClipGrid = (TargetObjectClipGrid*) operator new(0x1a4);
+	if (objectClipGrid != 0) {
+		objectClipGrid->m_width = (short) p_arg3->m_ground.m_width;
+		objectClipGrid->m_height = (short) p_arg3->m_ground.m_height;
+		objectClipGrid->m_cellWidth = 0x10;
+		objectClipGrid->m_cellHeight = 0x10;
+		objectClipGrid->m_touchedCount = 0;
+		objectClipGrid->m_cells = 0;
+		cellCount = (unsigned int) (int) objectClipGrid->m_width * (unsigned int) (int) objectClipGrid->m_height;
+		objectClipGrid->m_cellCount = cellCount;
+		cells = (TargetObjectClipCell*) operator new(cellCount * 0xa);
+		if (cells != 0) {
+			for (i = 0; i < cellCount; i++) {
+				cells[i].m_count = 0;
+			}
+			objectClipGrid->m_cells = cells;
+		}
+	}
+	m_objectClipGrid = objectClipGrid;
+
+	m_panel = 0;
+	m_viewSize.m_x = p_arg4.m_width;
+	m_viewSize.m_y = p_arg4.m_height;
+	m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) p_arg0->m_zoom);
+	m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) p_arg0->m_zoom);
+	m_clipSize.m_x = m_viewSize.m_x;
+	m_clipSize.m_y = m_viewSize.m_y;
+	m_score = p_arg1->m_score;
+	m_levelScore = p_arg1->m_score;
+	m_scoreTimestamp = g_dwGameTick;
 }
 
 // 68K 0x10b06e3e __dt__3C2DFv
@@ -63,9 +186,84 @@ C2D::~C2D()
 }
 
 // 68K 0x10b070a2 ShutDown__3C2DFv
-// STUB: LEMBALL 0x00436190
+// FUNCTION: LEMBALL 0x00436190
 void C2D::ShutDown()
 {
+	TextManager* textManager;
+	TargetObjectClipGrid* objectClipGrid;
+	TargetSpriteGroundLookup* spriteGroundLookup;
+	LemmingAnimsManager* lemmingAnims;
+	unsigned long started;
+	unsigned long now;
+
+	m_gdi->m_renderTarget->EnableZBuff(0);
+	textManager = m_textManager;
+	m_textManager->UnLoadFont(0x115);
+	if (textManager != 0) {
+		textManager->~TextManager();
+		operator delete(textManager);
+	}
+	if (m_panel != 0) {
+		delete m_panel;
+		m_panel = 0;
+	}
+	if (m_pauseWindow != 0) {
+		delete m_pauseWindow;
+		m_pauseWindow = 0;
+	}
+	KillRemapPalettes();
+	objectClipGrid = m_objectClipGrid;
+	if (objectClipGrid != 0) {
+		operator delete(objectClipGrid->m_cells);
+		operator delete(objectClipGrid);
+	}
+	spriteGroundLookup = m_spriteGroundLookup;
+	if (spriteGroundLookup != 0) {
+		operator delete(spriteGroundLookup->m_maskA);
+		operator delete(spriteGroundLookup->m_maskB);
+		operator delete(spriteGroundLookup);
+	}
+	if (m_padToButton != 0) {
+		delete m_padToButton;
+	}
+	g_pMasterInputQueue->Detach(this, 0);
+	if (m_display->m_lifecycleRefs == 1) {
+		m_display->m_hotAreaList->RemoveFromList(this);
+	}
+	operator delete(m_zBuffer);
+	operator delete(m_viewData);
+	CursorChangeType(0, 0);
+	lemmingAnims = m_lemmingAnims;
+	if (lemmingAnims != 0) {
+		lemmingAnims->~LemmingAnimsManager();
+		operator delete(lemmingAnims);
+	}
+	UnRegisterRemaps();
+	if (m_ai->m_networkMode != 0 && m_returnState == 2) {
+		if (g_pNetworkManager != 0) {
+			g_pNetworkManager->Stop();
+		}
+		if (g_pBaseNetwork != 0) {
+			started = CurrentMilliTimer();
+			do {
+				now = CurrentMilliTimer();
+				if (now - started >= 2000) {
+					break;
+				}
+			} while (g_pBaseNetwork->m_queueTransitionPending != 0);
+		}
+		if (g_pNetworkManager != 0) {
+			delete g_pNetworkManager;
+			g_pNetworkManager = 0;
+		}
+	}
+	m_display->m_gdi->m_renderTarget->SetWorldWidth(0);
+	VsRect rect;
+	rect.m_x = 0;
+	rect.m_y = 0;
+	rect.m_width = 0;
+	rect.m_height = 0;
+	m_display->SetInnerWindow(rect);
 }
 
 // 68K 0x10b0735a RegisterRemaps__3C2DFv
@@ -266,9 +464,9 @@ bool C2D::InGroupByObjectNo(int p_objectNo)
 // FUNCTION: LEMBALL 0x00437460
 void C2D::RemoveFromGroupByObjectNo(int p_objectNo)
 {
-	unsigned int i;
-	unsigned short* write;
 	unsigned short* read;
+	unsigned short* write;
+	unsigned int i;
 	unsigned short id;
 
 	i = 0;

@@ -52,6 +52,7 @@ public:
 	friend class FrontendResourceLoader;
 	friend class CdLoadAnim;
 	friend class BaseCursor;
+	friend class C2D;
 	friend TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
 	friend int __stdcall TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state,
 												  void* p_request,

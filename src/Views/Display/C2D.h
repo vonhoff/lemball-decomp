@@ -1,14 +1,24 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_C2D_H
 #define LEMBALL_VIEWS_DISPLAY_C2D_H
 
-#include "../../AI/Base/AiCoord.h" // complete type
+#include "../../AI/Base/AiCoord.h"     // complete type
+#include "../../AI/Objects/ViewData.h" // complete type
 #include "../../Common.h"
-#include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/VsPoint.h"          // complete type
-#include "../../Visos/Foundation/VsRect.h"           // complete type
-#include "../../Visos/Graphics/Drawer.h"             // complete type
-#include "../../Visos/Graphics/HotAreaHandler.h"     // complete type
-#include "../../Visos/Graphics/ReceiveWindowState.h" // complete type
+#include "../../Visos/Foundation/BaseQueueHandler.h"   // complete type
+#include "../../Visos/Foundation/VsPoint.h"            // complete type
+#include "../../Visos/Foundation/VsRect.h"             // complete type
+#include "../../Visos/Graphics/BigBitmap.h"            // complete type
+#include "../../Visos/Graphics/Bitmap.h"               // complete type
+#include "../../Visos/Graphics/CopyColourToBackBuff.h" // complete type
+#include "../../Visos/Graphics/CopyToBackBuff.h"       // complete type
+#include "../../Visos/Graphics/Drawer.h"               // complete type
+#include "../../Visos/Graphics/DrawingMark.h"          // complete type
+#include "../../Visos/Graphics/HotAreaHandler.h"       // complete type
+#include "../../Visos/Graphics/Line.h"                 // complete type
+#include "../../Visos/Graphics/PopActive.h"            // complete type
+#include "../../Visos/Graphics/PushActive.h"           // complete type
+#include "../../Visos/Graphics/ReceiveWindowState.h"   // complete type
+#include "../../Visos/Graphics/SolidRect.h"            // complete type
 
 // SIZE 0x2428
 // VTABLE: LEMBALL 0x00496df8 Drawer
@@ -135,25 +145,39 @@ private:
 	unsigned char* m_remapTables[4];                // 0x54
 	BaseRemap* m_remaps[5];                         // 0x64
 	TextManager* m_textManager;                     // 0x78
-	undefined m_pad0x7c[0xea];                      // 0x7c
+	ViewData m_viewDataPrimitives[3];               // 0x7c
+	unsigned short m_zoom;                          // 0x160
+	unsigned short m_groundWidth;                   // 0x162
+	unsigned short m_groundHeight;                  // 0x164
 	short m_groundAnimationFrame;                   // 0x166
 	undefined m_pad0x168[0x24];                     // 0x168
 	unsigned int m_mouseButtonDown;                 // 0x18c
-	undefined m_pad0x190[0x14];                     // 0x190
+	unsigned int m_frameCount;                      // 0x190
+	unsigned int m_frameTime;                       // 0x194
+	unsigned int m_testLevel;                       // 0x198
+	undefined m_pad0x19c[8];                        // 0x19c
 	unsigned int m_cursorState;                     // 0x1a4
 	unsigned int m_cursorTimestamp;                 // 0x1a8
 	unsigned short m_cursorBlinkPhase;              // 0x1ac
-	undefined m_pad0x1ae[0x724];                    // 0x1ae
+	undefined m_pad0x1ae[0x71a];                    // 0x1ae
+	undefined4 m_pad0x8c8;                          // 0x8c8
+	undefined4 m_pad0x8cc;                          // 0x8cc
+	undefined m_pad0x8d0[2];                        // 0x8d0
 	VsRect m_spriteGroundLookupRectA;               // 0x8d2
 	VsRect m_spriteGroundLookupRectB;               // 0x8da
 	undefined m_pad0x8e2[4];                        // 0x8e2
 	VsPoint m_demoTextPosition;                     // 0x8e6
-	undefined m_pad0x8ea[0x12];                     // 0x8ea
+	undefined m_pad0x8ea[2];                        // 0x8ea
+	unsigned int m_zBufferEnabled;                  // 0x8ec
+	int m_score;                                    // 0x8f0
+	int m_levelScore;                               // 0x8f4
+	unsigned int m_scoreTimestamp;                  // 0x8f8
 	int m_returnState;                              // 0x8fc
-	undefined m_pad0x900[0xc];                      // 0x900
+	PushActive m_pushActive;                        // 0x900
+	PopActive m_popActive;                          // 0x908
 	undefined4 m_unk0x90c;                          // 0x90c
-	Map* m_map;                                     // 0x910
-	undefined4 m_pad0x914;                          // 0x914
+	undefined4 m_pad0x910;                          // 0x910
+	Map* m_map;                                     // 0x914
 	int m_viewOriginX;                              // 0x918
 	int m_viewOriginY;                              // 0x91c
 	undefined m_pad0x920[0xc];                      // 0x920
@@ -180,11 +204,12 @@ private:
 	unsigned int m_pauseSelection;                  // 0x984
 	int m_pauseMessage;                             // 0x988
 	int m_previousPauseMessage;                     // 0x98c
-	undefined m_pad0x990[4];                        // 0x990
+	DrawingMark m_drawingMark;                      // 0x990
 	unsigned int m_clipConfigured;                  // 0x994
-	undefined m_pad0x998[0x20];                     // 0x998
+	Line m_linesAt998[2];                           // 0x998
 	VsRect m_spriteGroundTranslatedPointRect;       // 0x9b8
-	undefined m_pad0x9c0[0x80];                     // 0x9c0
+	Line m_lines[4];                                // 0x9c0
+	BigBitmap m_bigBitmaps[4];                      // 0xa00
 	LemmingAnimsManager* m_lemmingAnims;            // 0xa40
 	undefined m_pad0xa44[4];                        // 0xa44
 	unsigned int m_groupingActive;                  // 0xa48
@@ -194,10 +219,24 @@ private:
 	unsigned int m_quitRequested;                   // 0xa78
 	unsigned int m_paused;                          // 0xa7c
 	unsigned int m_pauser;                          // 0xa80
-	undefined m_pad0xa84[0x1704];                   // 0xa84
+	unsigned int m_connectionTimeoutActive;         // 0xa84
+	unsigned int m_connectionTimeoutStart;          // 0xa88
+	undefined m_pad0xa8c[0x204];                    // 0xa8c
+	undefined4 m_unk0xc90;                          // 0xc90
+	undefined m_pad0xc94[0x7d4];                    // 0xc94
+	SolidRect m_solidRects[210];                    // 0x1468
 	unsigned int m_primitiveCount;                  // 0x2188
 	unsigned short m_groundHitMode;                 // 0x218c
-	undefined m_pad0x218e[0x86];                    // 0x218e
+	undefined m_pad0x218e[2];                       // 0x218e
+	SolidRect m_solidRect;                          // 0x2190
+	DrawingMark m_drawingMarkForObjects;            // 0x21a0
+	VsPoint m_drawingMarkPosition;                  // 0x21a4
+	VsRect m_drawingMarkRect;                       // 0x21a8
+	CopyColourToBackBuff m_copyColourToBackBuff;    // 0x21b0
+	CopyToBackBuff m_copyToBackBuff;                // 0x21c0
+	CopyToBackBuff m_scrollCopyToBackBuffs[2];      // 0x21d0
+	undefined4 m_pad0x21f0;                         // 0x21f0
+	Bitmap m_bitmaps[2];                            // 0x21f4
 	unsigned int m_redrawPending;                   // 0x2214
 	unsigned int m_scrollPending;                   // 0x2218
 	short m_scrollDeltaX;                           // 0x221c
