@@ -1430,30 +1430,38 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return 1;
 	}
+	int x1;
+	int y1;
+	int x2;
+	int y2;
 	code1 = 0;
-	if (p_x1 < (int) m_clipRect.m_x) {
+	x1 = p_x1;
+	if ((int) m_clipRect.m_x > x1) {
 		code1 = 1;
 	}
-	else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x1) {
+	else if (m_clipRect.m_x + m_clipRect.m_width - 1 < x1) {
 		code1 = 2;
 	}
-	if (p_y1 < (int) m_clipRect.m_y) {
+	y1 = p_y1;
+	if ((int) m_clipRect.m_y > y1) {
 		code1 |= 4;
 	}
-	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y1) {
+	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < y1) {
 		code1 |= 8;
 	}
 	code2 = 0;
-	if (p_x2 < (int) m_clipRect.m_x) {
+	x2 = p_x2;
+	if ((int) m_clipRect.m_x > x2) {
 		code2 = 1;
 	}
-	else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x2) {
+	else if (m_clipRect.m_x + m_clipRect.m_width - 1 < x2) {
 		code2 = 2;
 	}
-	if (p_y2 < (int) m_clipRect.m_y) {
+	y2 = p_y2;
+	if ((int) m_clipRect.m_y > y2) {
 		code2 |= 4;
 	}
-	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y2) {
+	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < y2) {
 		code2 |= 8;
 	}
 	if ((code1 | code2) != 0) {
@@ -1485,13 +1493,13 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 					p_x2 = m_clipRect.m_x;
 				}
 				code2 = 0;
-				if (p_x2 < (int) m_clipRect.m_x) {
+				if ((int) m_clipRect.m_x > p_x2) {
 					code2 = 1;
 				}
 				else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x2) {
 					code2 = 2;
 				}
-				if (p_y2 < (int) m_clipRect.m_y) {
+				if ((int) m_clipRect.m_y > p_y2) {
 					code2 |= 4;
 				}
 				else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y2) {
@@ -1520,13 +1528,13 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 					p_x1 = m_clipRect.m_x;
 				}
 				code1 = 0;
-				if (p_x1 < (int) m_clipRect.m_x) {
+				if ((int) m_clipRect.m_x > p_x1) {
 					code1 = 1;
 				}
 				else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x1) {
 					code1 = 2;
 				}
-				if (p_y1 < (int) m_clipRect.m_y) {
+				if ((int) m_clipRect.m_y > p_y1) {
 					code1 |= 4;
 				}
 				else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y1) {
