@@ -76,6 +76,7 @@ public:
 	friend class MainOptions1Drawer;
 	friend class MainOptions2Drawer;
 	friend class GWnd;
+	friend class PvGWnd;
 	friend class PvButton;
 	friend class GraphicButton;
 	friend class AnimWnd;

@@ -1,15 +1,24 @@
 #include "PvGWnd.h"
 
+#include "Gdi.h"
+#include "VsGdi.h"
+
 // 68K 0x1010b56c OnVisibilityChange__7CPVGWndFv
-// STUB: LEMBALL 0x00432530
+// FUNCTION: LEMBALL 0x00432530
 void PvGWnd::OnVisibilityChange()
 {
+	if (m_parent != 0) {
+		m_gdi->m_renderTarget->m_flag78 = 1;
+	}
 }
 
 // 68K 0x1010b5e0 SetDontUpdateRect__7CPVGWndFRC7CVSRect
-// STUB: LEMBALL 0x00432560
+// FUNCTION: LEMBALL 0x00432560
 void PvGWnd::SetDontUpdateRect(const VsRect& p_rect)
 {
+	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
+		m_gdi->m_renderTarget->SetDontUpdateRect(p_rect);
+	}
 }
 
 // 68K 0x1010b5ba GetStyle__7CPVGWndFv
@@ -33,7 +42,11 @@ void PvGWnd::SetInnerWindow(const VsRect& p_rect)
 }
 
 // 68K 0x1021692e _OnZoom__7CPVGWndFi
-// STUB: LEMBALL 0x00465c80
+// FUNCTION: LEMBALL 0x00465c80
 void PvGWnd::_OnZoom(int p_oldZoom)
 {
+	Wnd::_OnZoom(p_oldZoom);
+	if (m_gdi != 0 && m_gdi->m_renderTarget != 0 && m_parent == 0) {
+		m_gdi->m_renderTarget->PvSurface::m_zoom = m_zoom;
+	}
 }

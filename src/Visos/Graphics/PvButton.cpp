@@ -150,7 +150,7 @@ void PvButton::CheckForceDraw()
 }
 
 // 68K 0x1020fdc2 _DrawButton__9CPVButtonFv
-// STUB: LEMBALL 0x00467ef0
+// FUNCTION: LEMBALL 0x00467ef0
 void PvButton::_DrawButton()
 {
 	if (m_pressed != m_lastDrawnPressed) {

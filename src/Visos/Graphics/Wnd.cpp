@@ -437,7 +437,7 @@ static bool RegisterBaseWindowClass()
 }
 
 // 68K 0x10110d2c __ct__4CWndFv
-// STUB: LEMBALL 0x004651d0
+// FUNCTION: LEMBALL 0x004651d0
 Wnd::Wnd()
 {
 	if (g_cursorState == 1) {

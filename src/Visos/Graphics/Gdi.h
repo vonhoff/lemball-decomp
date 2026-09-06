@@ -26,6 +26,7 @@ public:
 	friend class Zrle;
 	friend class Main2DDisplay;
 	friend class GWnd;
+	friend class PvGWnd;
 	friend class BaseFrontendDrawer;
 	friend class AnimsManager;
 	friend class GraphicButton;

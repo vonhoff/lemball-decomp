@@ -34,6 +34,7 @@ public:
 
 	friend class Surface;
 	friend class GWnd;
+	friend class PvGWnd;
 	friend class PvBackBuffSurface;
 	friend class PvZBuffSurface;
 	friend class PvButton;

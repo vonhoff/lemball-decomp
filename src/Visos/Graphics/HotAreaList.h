@@ -22,6 +22,8 @@ public:
 	void ProcessHandlers(const VsPoint& p_point, Message* p_message);
 	void UpdateHandlers();
 
+	friend class PvWnd;
+
 private:
 	HotAreaElement* m_head;           // 0x48
 	HotAreaElement* m_tail;           // 0x4c

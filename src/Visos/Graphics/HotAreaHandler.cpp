@@ -98,7 +98,7 @@ HotAreaHandler::HotAreaHandler(const VsRect& p_arg0)
 }
 
 // 68K 0x10211d28 __ct__15CHotAreaHandlerFv
-// STUB: LEMBALL 0x0046a300
+// FUNCTION: LEMBALL 0x0046a300
 HotAreaHandler::HotAreaHandler()
 {
 	m_height = 0;

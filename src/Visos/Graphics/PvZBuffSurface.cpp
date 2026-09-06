@@ -11,7 +11,7 @@ PvZBuffSurface::PvZBuffSurface()
 }
 
 // 68K 0x102162b2 __dt__15CPVZBuffSurfaceFv
-// STUB: LEMBALL 0x004666e0
+// FUNCTION: LEMBALL 0x004666e0
 PvZBuffSurface::~PvZBuffSurface()
 {
 }

@@ -18,7 +18,7 @@ PvBackBuffSurface::PvBackBuffSurface()
 }
 
 // 68K 0x10215f38 __dt__18CPVBackBuffSurfaceFv
-// STUB: LEMBALL 0x004664b0
+// FUNCTION: LEMBALL 0x004664b0
 PvBackBuffSurface::~PvBackBuffSurface()
 {
 }

@@ -104,19 +104,11 @@ void PvWnd::SetDontUpdateRect(const VsRect& p_rect)
 }
 
 // 68K 0x10216992 __ct__6CPVWndFv
-// STUB: LEMBALL 0x00465cc0
+// FUNCTION: LEMBALL 0x00465cc0
 PvWnd::PvWnd()
 {
 	int previous;
 
-	m_rect.m_height = 0;
-	m_rect.m_width = 0;
-	m_rect.m_y = 0;
-	m_rect.m_x = 0;
-	m_innerRect.m_height = 0;
-	m_innerRect.m_width = 0;
-	m_innerRect.m_y = 0;
-	m_innerRect.m_x = 0;
 	m_childList = 0;
 	m_childListTail = 0;
 	m_childCount = 0;
@@ -127,20 +119,19 @@ PvWnd::PvWnd()
 	previous = g_cursorState;
 	g_cursorState = g_cursorState + 1;
 	if (previous == 0) {
-		g_pWindowOwnerList = (WindowOwnerList*) operator new(sizeof(WindowOwnerList));
-		if (g_pWindowOwnerList == 0) {
-			g_pWindowOwnerList = 0;
+		WindowOwnerList* list = (WindowOwnerList*) operator new(sizeof(WindowOwnerList));
+		if (list != 0) {
+			list->m_head = 0;
+			list->m_tail = 0;
+			list->m_count = 0;
+			g_pWindowOwnerList = list;
 		}
 		else {
-			g_pWindowOwnerList->m_head = 0;
-			g_pWindowOwnerList->m_tail = 0;
-			g_pWindowOwnerList->m_count = 0;
+			g_pWindowOwnerList = 0;
 		}
 	}
 	m_zoom = 1;
 	m_lifecycleRefs = 0;
-	m_parent = 0;
-	m_sizeStatus = 0;
 }
 
 // 68K 0x10216a50 __dt__6CPVWndFv
@@ -378,9 +369,17 @@ void PvWnd::_OnMove(const VsPoint& p_point)
 }
 
 // 68K 0x102171cc _OnZoom__6CPVWndFi
-// STUB: LEMBALL 0x00466280
+// FUNCTION: LEMBALL 0x00466280
 void PvWnd::_OnZoom(int p_oldZoom)
 {
+	if (m_hotAreaList != 0) {
+		m_hotAreaList->m_scale = m_zoom;
+	}
+	WindowOwnerNode* child = (WindowOwnerNode*) m_childList;
+	while (child != 0) {
+		child->m_window->SetZoom(m_zoom);
+		child = child->m_next;
+	}
 }
 
 // 68K 0x10217228 SetZoom__6CPVWndFi
