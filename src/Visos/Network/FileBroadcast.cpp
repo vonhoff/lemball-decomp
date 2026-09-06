@@ -1,9 +1,38 @@
 #include "FileBroadcast.h"
 
+#include "../Foundation/VsOStream.h"
+#include "../Foundation/VsString.h"
+#include "FileNetwork.h"
+#include "TcpIpNetwork.h"
+
+#include <new.h>
+#include <string.h>
+
+#pragma intrinsic(memcpy, strcpy, strlen)
+
 // 68K 0x10106e3e Setup__14CFileBroadcastFPCcPCc
-// STUB: LEMBALL 0x0046f4f0
+// FUNCTION: LEMBALL 0x0046f4f0
 void FileBroadcast::Setup(const char* p_peerName, const char* p_path)
 {
+	char port[2];
+	unsigned int length;
+
+	g_szBroadcastPeerName = (char*) operator new(strlen(p_peerName) + 1);
+	strcpy(g_szBroadcastPeerName, p_peerName);
+	*g_pDebugOutput << "Found Local host OK: " << g_szBroadcastPeerName << "\n";
+	g_unk0x4a1e44 = 1;
+
+	g_pFileBroadcastData = (char*) operator new(strlen(p_path) + 0xf);
+	strcpy(g_pFileBroadcastData, p_path);
+	length = strlen(g_pFileBroadcastData);
+	if (g_pFileBroadcastData[length - 1] != '\\' && g_pFileBroadcastData[length - 1] != ':') {
+		memcpy(g_pFileBroadcastData + length, "\\", 2);
+	}
+	memcpy(g_pFileBroadcastData + strlen(g_pFileBroadcastData), "VSNETv", 7);
+	VsLtoa(0, port, 10);
+	memcpy(g_pFileBroadcastData + strlen(g_pFileBroadcastData), port, strlen(port) + 1);
+	VsLtoa(9, port, 10);
+	memcpy(g_pFileBroadcastData + strlen(g_pFileBroadcastData), port, strlen(port) + 1);
 }
 
 // 68K 0x10208278 __ct__14CFileBroadcastFv

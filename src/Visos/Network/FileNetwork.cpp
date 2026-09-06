@@ -159,4 +159,4 @@ void* g_hFileNetworkThread = 0;
 int g_unk0x4a2268 = 0;
 
 // GLOBAL: LEMBALL 0x004a2de4
-void* g_pFileBroadcastData = 0;
+char* g_pFileBroadcastData = 0;
