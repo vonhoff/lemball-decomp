@@ -1,6 +1,8 @@
 #include "Ice.h"
 
 #include "../../Control/Game/Game.h"
+#include "../../Map/Base/Map.h"
+#include "../Base/Coord3d.h"
 
 // 68K 0x1061176c __ct__4CIceFv
 // STUB: LEMBALL 0x0042ca70
@@ -29,7 +31,7 @@ void Ice::Initialise()
 }
 
 // 68K 0x10611870 Set__4CIceFUsRC8tCoord3dRC8tCoord3diiUc
-// STUB: LEMBALL 0x0042cb00
+// FUNCTION: LEMBALL 0x0042cb00
 void Ice::Set(unsigned short p_id,
 			  const Coord3d& p_cornerA,
 			  const Coord3d& p_cornerB,
@@ -37,6 +39,70 @@ void Ice::Set(unsigned short p_id,
 			  int p_velocityY,
 			  unsigned char p_initialSwitched)
 {
+	SetId(p_id);
+	m_enabled = 1;
+	m_objectCount = 0;
+	m_lastMovementTick = g_dwGameTick;
+	m_velocityX = p_velocityX;
+	m_velocityY = p_velocityY;
+	m_initialSwitched = p_initialSwitched;
+	m_switched = p_initialSwitched;
+
+	int minX = p_cornerA.m_x;
+	int maxX = p_cornerB.m_x;
+	int minY = p_cornerA.m_y;
+	int maxY = p_cornerB.m_y;
+	if (maxX < minX) {
+		int temporary = minX;
+		minX = maxX;
+		maxX = temporary;
+	}
+	if (maxY < minY) {
+		int temporary = minY;
+		minY = maxY;
+		maxY = temporary;
+	}
+	m_minX = (short) minX;
+	m_minY = (short) minY;
+	m_maxX = (short) maxX;
+	m_maxY = (short) maxY;
+
+	int minXBlock = minX >> 4;
+	int minYBlock = minY >> 4;
+	m_minZ = 0;
+	if (minX >= 0 && minY >= 0 && minXBlock < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > minYBlock) {
+		m_minZ = (short) g_pMap->m_ground.m_ground[minYBlock * g_pMap->m_ground.m_width + minXBlock].GetZ(minX & 0xf,
+																										  minY & 0xf);
+	}
+
+	int maxXBlock = maxX >> 4;
+	int maxYBlock = maxY >> 4;
+	m_maxZ = 0;
+	if (maxX >= 0 && maxY >= 0 && maxXBlock < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > maxYBlock) {
+		m_maxZ = (short) g_pMap->m_ground.m_ground[maxYBlock * g_pMap->m_ground.m_width + maxXBlock].GetZ(maxX & 0xf,
+																										  maxY & 0xf);
+	}
+
+	m_position.m_xFixed = ((int) p_cornerA.m_x) << 12;
+	m_position.m_yFixed = ((int) p_cornerA.m_y) << 12;
+	m_position.m_zFixed = ((int) p_cornerA.m_z) << 12;
+	for (int y = minY; y <= maxY; y += 0x10) {
+		for (int x = minX; x <= maxX; x += 0x10) {
+			int blockX = x / 0x10;
+			if (blockX >= 0) {
+				int blockY = y / 0x10;
+				if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
+					Ground* ground = g_pMap->m_ground.m_ground + g_pMap->m_ground.m_width * blockY + blockX;
+					ground->m_collision |= 0x8000;
+				}
+			}
+		}
+	}
+
+	if (m_velocityX == 0 && m_velocityY == 0) {
+		m_velocityX = 1;
+		m_velocityY = 1;
+	}
 }
 
 // 68K 0x10611a44 Process__4CIceFv

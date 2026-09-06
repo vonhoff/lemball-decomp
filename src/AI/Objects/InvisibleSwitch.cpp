@@ -1,5 +1,6 @@
 #include "InvisibleSwitch.h"
 
+#include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
 
 // 68K 0x106129ea __ct__16CInvisibleSwitchFv
@@ -30,9 +31,40 @@ void InvisibleSwitch::Initialise()
 }
 
 // 68K 0x10612b24 Set__16CInvisibleSwitchFRC8tCoord3dRC8tCoord3d
-// STUB: LEMBALL 0x00409d70
+// FUNCTION: LEMBALL 0x00409d70
 void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
 {
+	m_objectCount = 0;
+	m_minCorner = p_cornerA;
+	m_maxCorner = p_cornerB;
+	if (m_maxCorner.m_x < m_minCorner.m_x) {
+		short temporary = m_minCorner.m_x;
+		m_minCorner.m_x = m_maxCorner.m_x;
+		m_maxCorner.m_x = temporary;
+	}
+	if (m_maxCorner.m_y < m_minCorner.m_y) {
+		short temporary = m_minCorner.m_y;
+		m_minCorner.m_y = m_maxCorner.m_y;
+		m_maxCorner.m_y = temporary;
+	}
+	m_repeatable = 0;
+	m_position.m_xFixed = ((int) m_minCorner.m_x) << 12;
+	m_triggered = 0;
+	m_position.m_yFixed = ((int) m_minCorner.m_y) << 12;
+	m_position.m_zFixed = ((int) m_minCorner.m_z) << 12;
+	for (int y = m_minCorner.m_y; y <= m_maxCorner.m_y; y += 0x10) {
+		for (int x = m_minCorner.m_x; x <= m_maxCorner.m_x; x += 0x10) {
+			int blockX = x / 0x10;
+			if (blockX >= 0) {
+				int blockY = y / 0x10;
+				if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
+					Ground* ground = g_pMap->m_ground.m_ground + g_pMap->m_ground.m_width * blockY + blockX;
+					((unsigned char*) &ground->m_collision)[1] |= 0x80;
+				}
+			}
+		}
+	}
+	m_targetCount = 0;
 }
 
 // 68K 0x10612c94 VerifyObjects__16CInvisibleSwitchFv

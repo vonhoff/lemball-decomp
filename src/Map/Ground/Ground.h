@@ -17,6 +17,8 @@ public:
 	friend class Map;
 	friend class Duplicator;
 	friend class Door;
+	friend class Ice;
+	friend class InvisibleSwitch;
 
 private:
 	eObjectType m_objectType;    // 0x00

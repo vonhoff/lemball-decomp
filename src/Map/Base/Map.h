@@ -40,6 +40,8 @@ public:
 	friend class Duplicator;
 	friend class Ball;
 	friend class Door;
+	friend class Ice;
+	friend class InvisibleSwitch;
 
 private:
 	unsigned int m_reserved;   // 0x00
