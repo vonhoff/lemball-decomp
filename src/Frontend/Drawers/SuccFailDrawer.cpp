@@ -277,6 +277,8 @@ void SuccFailDrawer::Load()
 	unsigned long* goAnim;
 	unsigned long* returnAnim;
 	int* layout;
+	int bitmapX;
+	int i;
 
 	if (m_mode != 0) {
 		m_layout = g_abSuccFailLayoutCompact;
@@ -316,23 +318,25 @@ void SuccFailDrawer::Load()
 		m_secondaryBitmap = 0;
 	}
 	layout = (int*) m_layout;
-	int bitmapX = (int) m_width - (int) (short) m_primaryBitmap->m_x;
-	m_primitiveBundle.m_primitive.m_x = m_width - m_backgroundBitmap->m_x;
-	m_primitiveBundle.m_primitive.m_y = (short) layout[0x14 / 4];
-	m_primitiveBundle.m_primitive.m_resource = m_backgroundBitmap;
-	m_primitiveBundle.m_primitive.m_flags = 0x800;
-	m_primitiveBundle.m_primitive.m_remap = 0;
-	m_primitives[0].m_primary.m_x = (short) bitmapX;
-	m_primitives[0].m_primary.m_y = (short) layout[0x1c / 4];
-	m_primitives[0].m_primary.m_resource = m_primaryBitmap;
-	m_primitives[0].m_primary.m_flags = 0x800;
-	m_primitives[0].m_primary.m_remap = 0;
-	if (m_secondaryBitmap != 0) {
-		m_primitives[0].m_secondary.m_x = (short) layout[0x50 / 4];
-		m_primitives[0].m_secondary.m_y = (short) layout[0x54 / 4];
-		m_primitives[0].m_secondary.m_resource = m_secondaryBitmap;
-		m_primitives[0].m_secondary.m_flags = 0x800;
-		m_primitives[0].m_secondary.m_remap = 0;
+	bitmapX = (int) m_width - (int) (short) m_primaryBitmap->m_x;
+	for (i = 0; i < 1; i++) {
+		(&m_primitiveBundle)[i].m_primitive.m_x = m_width - m_backgroundBitmap->m_x;
+		(&m_primitiveBundle)[i].m_primitive.m_y = (short) layout[0x14 / 4];
+		(&m_primitiveBundle)[i].m_primitive.m_resource = m_backgroundBitmap;
+		(&m_primitiveBundle)[i].m_primitive.m_flags = 0x800;
+		(&m_primitiveBundle)[i].m_primitive.m_remap = 0;
+		m_primitives[i].m_primary.m_x = (short) bitmapX;
+		m_primitives[i].m_primary.m_y = (short) layout[0x1c / 4];
+		m_primitives[i].m_primary.m_resource = m_primaryBitmap;
+		m_primitives[i].m_primary.m_flags = 0x800;
+		m_primitives[i].m_primary.m_remap = 0;
+		if (m_secondaryBitmap != 0) {
+			m_primitives[i].m_secondary.m_x = (short) layout[0x50 / 4];
+			m_primitives[i].m_secondary.m_y = (short) layout[0x54 / 4];
+			m_primitives[i].m_secondary.m_resource = m_secondaryBitmap;
+			m_primitives[i].m_secondary.m_flags = 0x800;
+			m_primitives[i].m_secondary.m_remap = 0;
+		}
 	}
 	layout[0x18 / 4] = bitmapX;
 	layout[0x28 / 4] = bitmapX;
