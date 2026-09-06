@@ -276,14 +276,15 @@ void SuccFailDrawer::Load()
 {
 	unsigned long* goAnim;
 	unsigned long* returnAnim;
-	int* layout;
+	Prims* primitiveBundle;
+	SuccFailDrawerPrims* primitives;
 	int bitmapX;
 	int i;
 
 	if (m_mode != 0) {
 		m_layout = g_abSuccFailLayoutCompact;
-		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsCompact;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsCompact;
+		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsCompact;
 		if (m_variant == 0) {
 			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdCompact;
 			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_FAIL_EYES;
@@ -297,8 +298,8 @@ void SuccFailDrawer::Load()
 	}
 	else {
 		m_layout = g_abSuccFailLayoutFull;
-		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
+		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
 		if (m_variant == 0) {
 			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdFull;
@@ -317,42 +318,48 @@ void SuccFailDrawer::Load()
 	else {
 		m_secondaryBitmap = 0;
 	}
-	layout = (int*) m_layout;
 	bitmapX = (int) m_width - (int) (short) m_primaryBitmap->m_x;
-	for (i = 0; i < 1; i++) {
-		(&m_primitiveBundle)[i].m_primitive.m_x = m_width - m_backgroundBitmap->m_x;
-		(&m_primitiveBundle)[i].m_primitive.m_y = (short) layout[0x14 / 4];
-		(&m_primitiveBundle)[i].m_primitive.m_resource = m_backgroundBitmap;
-		(&m_primitiveBundle)[i].m_primitive.m_flags = 0x800;
-		(&m_primitiveBundle)[i].m_primitive.m_remap = 0;
-		m_primitives[i].m_primary.m_x = (short) bitmapX;
-		m_primitives[i].m_primary.m_y = (short) layout[0x1c / 4];
-		m_primitives[i].m_primary.m_resource = m_primaryBitmap;
-		m_primitives[i].m_primary.m_flags = 0x800;
-		m_primitives[i].m_primary.m_remap = 0;
+	primitiveBundle = &m_primitiveBundle;
+	primitives = m_primitives;
+	i = 1;
+	do {
+		primitiveBundle->m_primitive.m_x = m_width - m_backgroundBitmap->m_x;
+		primitiveBundle->m_primitive.m_y = (short) ((int*) m_layout)[0x14 / 4];
+		primitiveBundle->m_primitive.m_resource = m_backgroundBitmap;
+		primitiveBundle->m_primitive.m_flags = 0x800;
+		primitiveBundle->m_primitive.m_remap = 0;
+		primitives->m_primary.m_x = (short) bitmapX;
+		primitives->m_primary.m_y = (short) ((int*) m_layout)[0x1c / 4];
+		primitives->m_primary.m_resource = m_primaryBitmap;
+		primitives->m_primary.m_flags = 0x800;
+		primitives->m_primary.m_remap = 0;
 		if (m_secondaryBitmap != 0) {
-			m_primitives[i].m_secondary.m_x = (short) layout[0x50 / 4];
-			m_primitives[i].m_secondary.m_y = (short) layout[0x54 / 4];
-			m_primitives[i].m_secondary.m_resource = m_secondaryBitmap;
-			m_primitives[i].m_secondary.m_flags = 0x800;
-			m_primitives[i].m_secondary.m_remap = 0;
+			primitives->m_secondary.m_x = (short) ((int*) m_layout)[0x50 / 4];
+			primitives->m_secondary.m_y = (short) ((int*) m_layout)[0x54 / 4];
+			primitives->m_secondary.m_resource = m_secondaryBitmap;
+			primitives->m_secondary.m_flags = 0x800;
+			primitives->m_secondary.m_remap = 0;
 		}
-	}
-	layout[0x18 / 4] = bitmapX;
-	layout[0x28 / 4] = bitmapX;
+		primitiveBundle++;
+		primitives++;
+	} while (--i != 0);
+	((int*) m_layout)[0x18 / 4] = bitmapX;
+	((int*) m_layout)[0x28 / 4] = bitmapX;
 	m_buttonBinding = 0;
 	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 2, (unsigned char) m_mode, 0);
-	m_hiliteController->AddButton(layout[0], layout[1], returnAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef0010);
-	m_hiliteController->AddButton(layout[2], layout[3], goAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef0011);
+	m_hiliteController
+		->AddButton(((int*) m_layout)[0], ((int*) m_layout)[1], returnAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef0010);
+	m_hiliteController
+		->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef0011);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
 	if (m_variant == 0) {
-		m_animPosition.m_x = (short) layout[0x28 / 4] + (short) layout[0x30 / 4];
-		m_animPosition.m_y = (short) layout[0x2c / 4] + (short) layout[0x34 / 4];
+		m_animPosition.m_x = (short) ((int*) m_layout)[0x28 / 4] + (short) ((int*) m_layout)[0x30 / 4];
+		m_animPosition.m_y = (short) ((int*) m_layout)[0x2c / 4] + (short) ((int*) m_layout)[0x34 / 4];
 	}
 	else {
-		m_animPosition.m_x = (short) layout[0x18 / 4] + (short) layout[0x20 / 4];
-		m_animPosition.m_y = (short) layout[0x1c / 4] + (short) layout[0x24 / 4];
+		m_animPosition.m_x = (short) ((int*) m_layout)[0x18 / 4] + (short) ((int*) m_layout)[0x20 / 4];
+		m_animPosition.m_y = (short) ((int*) m_layout)[0x1c / 4] + (short) ((int*) m_layout)[0x24 / 4];
 	}
 	CalculateText();
 	if (m_animationsEnabled != 0) {
