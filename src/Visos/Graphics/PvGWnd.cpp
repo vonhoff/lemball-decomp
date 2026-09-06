@@ -43,9 +43,9 @@ void PvGWnd::SetInnerWindow(const VsRect& p_rect)
 
 // 68K 0x1021692e _OnZoom__7CPVGWndFi
 // FUNCTION: LEMBALL 0x00465c80
-void PvGWnd::OnZoomInternal(int p_oldZoom)
+void PvGWnd::_OnZoom(int p_oldZoom)
 {
-	Wnd::OnZoomInternal(p_oldZoom);
+	Wnd::_OnZoom(p_oldZoom);
 	if (m_gdi != 0 && m_gdi->m_renderTarget != 0 && m_parent == 0) {
 		m_gdi->m_renderTarget->PvSurface::m_zoom = m_zoom;
 	}

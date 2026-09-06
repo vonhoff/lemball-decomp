@@ -54,7 +54,7 @@ void GWnd::Move(const VsPoint& p_point)
 
 // 68K 0x1010a808 _OnCreate__5CGWndFv
 // FUNCTION: LEMBALL 0x00463c30
-void GWnd::OnCreateInternal()
+void GWnd::_OnCreate()
 {
 	VsRect localRect;
 	Surface* parentSurface;
@@ -121,7 +121,7 @@ void GWnd::OnCreateInternal()
 
 // 68K 0x1010aa18 _OnDestroy__5CGWndFv
 // FUNCTION: LEMBALL 0x00463df0
-void GWnd::OnDestroyInternal()
+void GWnd::_OnDestroy()
 {
 	Gdi* gdi;
 	unsigned int style;
@@ -143,12 +143,12 @@ void GWnd::OnDestroyInternal()
 			m_createRect->SetDontUpdateRect(emptyRect);
 		}
 	}
-	PvWnd::OnDestroyInternal();
+	PvWnd::_OnDestroy();
 }
 
 // 68K 0x1010aa64 _OnSize__5CGWndFv
 // FUNCTION: LEMBALL 0x00463e70
-void GWnd::OnSizeInternal()
+void GWnd::_OnSize()
 {
 	Surface* target;
 	VsPoint* innerOrigin;
@@ -158,7 +158,7 @@ void GWnd::OnSizeInternal()
 	short relX;
 	short relY;
 
-	PvWnd::OnSizeInternal();
+	PvWnd::_OnSize();
 	if (m_gdi == 0) {
 		return;
 	}
@@ -194,9 +194,9 @@ void GWnd::OnSizeInternal()
 
 // 68K 0x1010ab48 _OnMove__5CGWndFv
 // FUNCTION: LEMBALL 0x00463f30
-void GWnd::OnMoveInternal()
+void GWnd::_OnMove()
 {
-	PvWnd::OnMoveInternal();
+	PvWnd::_OnMove();
 	m_gdi->m_renderTarget->Move(m_relativeTopLeft);
 }
 

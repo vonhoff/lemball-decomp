@@ -17,7 +17,7 @@ int FileWriteSocket::Write(NetworkMessage& p_message, unsigned char p_keepLock, 
 // FUNCTION: LEMBALL 0x0047a090
 void FileWriteSocket::SetDestAddr(NetworkAddress* p_address)
 {
-	CopyDestinationAddress(p_address);
+	_SetDestAddr(p_address);
 }
 
 // 68K 0x10207c0a SendPacket__16CFileWriteSocketFPCUci

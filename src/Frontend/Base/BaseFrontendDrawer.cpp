@@ -190,7 +190,7 @@ BaseFrontendDrawer::~BaseFrontendDrawer()
 		g_pMasterInputQueue->Detach(this != 0 ? static_cast<BaseQueueHandler*>(this) : 0, 0);
 	}
 	if (m_loaded != 0) {
-		UnloadCommonResources();
+		_UnLoad();
 	}
 	if (m_textManager != 0) {
 		delete m_textManager;
@@ -280,11 +280,11 @@ void BaseFrontendDrawer::ReplaceBackground()
 				m_primitiveBundle.m_lines[m_framePrimitiveCount].Draw(m_gdi);
 				m_framePrimitiveCount = m_framePrimitiveCount + 1;
 			}
-			DrawBackgroundInternal();
+			_DrawBackGround();
 			DrawBackGround();
 		}
 		if (m_drawingBackBuffer == 0) {
-			DrawAmbientAnim();
+			_DrawAnims();
 			DrawAnims();
 		}
 		DrawText();
@@ -299,7 +299,7 @@ void BaseFrontendDrawer::ReplaceBackground()
 
 // 68K 0x10800ae8 _DrawBackGround__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x00445c10
-void BaseFrontendDrawer::DrawBackgroundInternal()
+void BaseFrontendDrawer::_DrawBackGround()
 {
 	if (m_drawFrame != 0) {
 		short tileWidth = m_tileBitmap->m_x;
@@ -348,11 +348,11 @@ void BaseFrontendDrawer::Restart()
 	windowValid = m_display->IsWindowValid();
 	if (m_loaded != 0) {
 		UnLoad();
-		UnloadCommonResources();
+		_UnLoad();
 	}
 	m_mode = g_nCompactPrimaryContextLayout;
 	if (windowValid != 0) {
-		LoadCommonResources();
+		_Load();
 		Load();
 		m_backBufferNeeded = 1;
 	}
@@ -360,7 +360,7 @@ void BaseFrontendDrawer::Restart()
 
 // 68K 0x10800e3a _Load__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x00445ed0
-void BaseFrontendDrawer::LoadCommonResources()
+void BaseFrontendDrawer::_Load()
 {
 	m_loaded = 1;
 	if (m_mode == 0) {
@@ -389,7 +389,7 @@ void BaseFrontendDrawer::LoadCommonResources()
 
 // 68K 0x10800f3a _UnLoad__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x00445fe0
-void BaseFrontendDrawer::UnloadCommonResources()
+void BaseFrontendDrawer::_UnLoad()
 {
 	if (m_textManager != 0) {
 		m_textManager->UnLoadFont(m_chalkFontId);
@@ -404,7 +404,7 @@ void BaseFrontendDrawer::UnloadCommonResources()
 
 // 68K 0x10800fca _DrawAnims__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x00446050
-void BaseFrontendDrawer::DrawAmbientAnim()
+void BaseFrontendDrawer::_DrawAnims()
 {
 	if (m_ambientAnim != 0) {
 		m_ambientAnim->m_fixedTime = timeGetTime();

@@ -22,7 +22,7 @@ VsOStream::~VsOStream()
 
 // 68K 0x10213e2a _FormatNum__10CVSOStreamFv
 // FUNCTION: LEMBALL 0x004584c0
-void VsOStream::FormatNum()
+void VsOStream::_FormatNum()
 {
 	if (m_width != 0) {
 		bool isNeg = (m_numberBuffer[0] == '-');
@@ -87,7 +87,7 @@ VsOStream& VsOStream::operator<<(char p_arg0)
 VsOStream& VsOStream::operator<<(long p_arg0)
 {
 	VsLtoa(p_arg0, (char*) m_numberBuffer, m_radix);
-	FormatNum();
+	_FormatNum();
 	return *this << m_formattedText;
 }
 
@@ -96,7 +96,7 @@ VsOStream& VsOStream::operator<<(long p_arg0)
 VsOStream& VsOStream::operator<<(int p_arg0)
 {
 	VsLtoa(p_arg0, (char*) m_numberBuffer, m_radix);
-	FormatNum();
+	_FormatNum();
 	return *this << m_formattedText;
 }
 
@@ -108,7 +108,7 @@ VsOStream& VsOStream::operator<<(const void* p_arg0)
 		return *this << "(null)";
 	}
 	VsULtoa((unsigned long) p_arg0, (char*) m_numberBuffer, 16);
-	FormatNum();
+	_FormatNum();
 	return *this << "0x" << m_formattedText;
 }
 
@@ -117,7 +117,7 @@ VsOStream& VsOStream::operator<<(const void* p_arg0)
 VsOStream& VsOStream::operator<<(unsigned long p_arg0)
 {
 	VsULtoa(p_arg0, (char*) m_numberBuffer, m_radix);
-	FormatNum();
+	_FormatNum();
 	return *this << m_formattedText;
 }
 

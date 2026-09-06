@@ -31,7 +31,7 @@ TcpIpWriteSocket::TcpIpWriteSocket()
 // FUNCTION: LEMBALL 0x004700f0
 void TcpIpWriteSocket::SetDestAddr(NetworkAddress* p_address)
 {
-	CopyDestinationAddress(p_address);
+	_SetDestAddr(p_address);
 	m_destinationIPv4 = ((TcpIpNetworkAddress*) p_address)->m_ipv4Address;
 }
 

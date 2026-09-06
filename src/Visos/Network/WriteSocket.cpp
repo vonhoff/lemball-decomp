@@ -45,7 +45,7 @@ WriteSocket::~WriteSocket()
 
 // 68K 0x1020bdd8 _SetDestAddr__12CWriteSocketFP15CNetworkAddress
 // FUNCTION: LEMBALL 0x0045fde0
-void WriteSocket::CopyDestinationAddress(NetworkAddress* p_address)
+void WriteSocket::_SetDestAddr(NetworkAddress* p_address)
 {
 	*m_destinationAddress = *p_address;
 }

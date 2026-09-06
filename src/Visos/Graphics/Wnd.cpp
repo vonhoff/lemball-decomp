@@ -189,7 +189,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		window = (Wnd*) create->lpCreateParams;
 		SetWindowLongA((HWND) p_hwnd, GWL_USERDATA, (LONG) window);
 		window->m_nativeWindow = p_hwnd;
-		window->OnCreateInternal();
+		window->_OnCreate();
 		window->OnCreate();
 		return 0;
 	}
@@ -223,7 +223,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	if (p_message == WM_SIZE) {
 		window->m_rect.m_width = (short) p_lParam;
 		window->m_rect.m_height = (short) (p_lParam >> 16);
-		window->OnSizeInternal();
+		window->_OnSize();
 		window->OnSize();
 		return 0;
 	}
@@ -482,9 +482,9 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 			m_relativeTopLeft.m_x = p_rect.m_x;
 			m_relativeTopLeft.m_y = p_rect.m_y;
 			m_zoom = p_parent->m_zoom;
-			OnCreateInternal();
+			_OnCreate();
 			OnCreate();
-			OnSizeInternal();
+			_OnSize();
 			OnSize();
 			return;
 		}
@@ -562,9 +562,9 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 	m_nativeWindow = g_pTargetGraphicsDriver->m_window;
 	SetFocusWindow();
 	Dummy98();
-	OnCreateInternal();
+	_OnCreate();
 	OnCreate();
-	OnSizeInternal();
+	_OnSize();
 	OnSize();
 }
 
@@ -603,7 +603,7 @@ void Wnd::Destroy()
 			child->Destroy();
 		}
 		OnDestroy();
-		OnDestroyInternal();
+		_OnDestroy();
 		if ((g_pTargetGraphicsSystem->m_driverMode < 4 || g_pTargetGraphicsSystem->m_driverMode > 5) &&
 			m_nativeWindow != 0) {
 			DestroyWindow((HWND) m_nativeWindow);
@@ -691,12 +691,12 @@ int Wnd::SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int 
 
 // 68K 0x10111726 _OnZoom__4CWndFi
 // FUNCTION: LEMBALL 0x00465790
-void Wnd::OnZoomInternal(int p_oldZoom)
+void Wnd::_OnZoom(int p_oldZoom)
 {
 	RECT windowRect;
 	RECT clientRect;
 
-	PvWnd::OnZoomInternal(p_oldZoom);
+	PvWnd::_OnZoom(p_oldZoom);
 	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
 		GetWindowRect((HWND) m_nativeWindow, &windowRect);
 		GetClientRect((HWND) m_nativeWindow, &clientRect);
@@ -712,16 +712,16 @@ void Wnd::OnZoomInternal(int p_oldZoom)
 
 // 68K 0x1011177e _SetRect__4CWndFRC7CVSRect
 // STUB: LEMBALL 0x00465820
-void Wnd::SetRectInternal(const VsRect& p_rect)
+void Wnd::_SetRect(const VsRect& p_rect)
 {
 }
 
 // 68K 0x10111a0a _SetRelTL__4CWndFRC8CVSPoint
 // FUNCTION: LEMBALL 0x00465a00
-void Wnd::SetRelativeTopLeftInternal(const VsPoint& p_point)
+void Wnd::_SetRelTL(const VsPoint& p_point)
 {
 	VsRect rect(p_point.m_x, p_point.m_y, m_rect.m_width, m_rect.m_height);
-	SetRectInternal(rect);
+	_SetRect(rect);
 }
 
 // 68K 0x10110cb8 GetStyle__4CWndFv

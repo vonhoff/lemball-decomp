@@ -17,7 +17,7 @@ public:
 	virtual unsigned int GetStyle();                                      // vtable+0x64
 	virtual void OnPaint(const VsRect& p_rect);                           // vtable+0xa8
 	virtual void Destroy();                                               // vtable+0x74
-	virtual void DrawButtonInternal();                                    // vtable+0xb8
+	virtual void _DrawButton();                                           // vtable+0xb8
 	virtual void DrawButton() = 0;                                        // vtable+0xbc
 	virtual void OnReleased(int p_flags) = 0;                             // vtable+0xc0
 	virtual void OnPressed(int p_flags) = 0;                              // vtable+0xc4
@@ -35,10 +35,10 @@ public:
 	void Draw(unsigned int p_force);
 	void Initialise();
 	void SetAutoDraw(unsigned int p_enabled);
-	void OnReleasedInternal(int p_flags);
-	void OnPressedInternal(int p_flags);
-	void OnEnterButtonInternal();
-	void OnExitButtonInternal();
+	void _OnReleased(int p_flags);
+	void _OnPressed(int p_flags);
+	void _OnEnterButton();
+	void _OnExitButton();
 
 	friend class ToggleButton;
 	friend class GraphicButton;
