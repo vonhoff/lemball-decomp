@@ -204,21 +204,15 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 void MciMusicDevice::Free(unsigned long p_handle)
 {
 	if (p_handle == 0) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Free Music (HL) with Invalid Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Free Music (HL) with Invalid Handle!\n";
 	}
 	if (m_preparedHandle != p_handle) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Free Music (HL) with unknown Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Free Music (HL) with unknown Handle!\n";
 	}
 	m_preparedHandle = 0;
 	g_nPreparedMciMusicTrackHandle = 0;
 	if (m_playing == 1) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error! Must stop music before closing...\n";
-		}
+		*g_pErrorOutput << "Error! Must stop music before closing...\n";
 	}
 	mciSendCommandA(m_deviceId, 0x804, 0, 0);
 }
