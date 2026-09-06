@@ -32,8 +32,7 @@ BUILD = ROOT / "build-msvc400"
 REPORT = BUILD / "report.json"
 SRC = ROOT / "src"
 
-ANNOT_RE = re.compile(r"//\s*(FUNCTION|STUB):\s*LEMBALL\s+(0x[0-9A-Fa-f]+)")
-ENTRY_RE = re.compile(r"//\s*(?:FUNCTION|STUB|TEMPLATE|SYNTHETIC|LIBRARY):\s*LEMBALL\s+(0x[0-9A-Fa-f]+)")
+ANNOT_RE = re.compile(r"//\s*(FUNCTION|STUB|TEMPLATE|SYNTHETIC|LIBRARY):\s*LEMBALL\s+(0x[0-9A-Fa-f]+)")
 
 
 @dataclass(frozen=True)
@@ -66,11 +65,8 @@ class OriginalEvidence:
     reason: str = "reachable x86 span"
 
 
-def inspect_original(image, address: int, entries: set[int]) -> OriginalEvidence:
+def inspect_original(image, address: int, entries: set[int], decoder) -> OriginalEvidence:
     """Measure reachable original x86 code."""
-    from capstone import Cs, CS_ARCH_X86, CS_MODE_32
-
-    decoder = Cs(CS_ARCH_X86, CS_MODE_32)
     limit = min((a for a in entries if a > address), default=address + 65536)
     limit = min(limit, address + 65536)
     pending = [address]
@@ -128,10 +124,7 @@ def inspect_original(image, address: int, entries: set[int]) -> OriginalEvidence
     return OriginalEvidence(max(occupied) + 1 - address, tuple(sorted(callees)), indirect)
 
 
-def resolve_original_target(image, address: int) -> int | None:
-    from capstone import Cs, CS_ARCH_X86, CS_MODE_32
-
-    decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+def resolve_original_target(image, address: int, decoder) -> int | None:
     seen = set()
     while address not in seen and len(seen) < 32:
         seen.add(address)
@@ -148,19 +141,21 @@ def resolve_original_target(image, address: int) -> int | None:
 
 
 def add_original_evidence(funcs: list[Func]) -> list[Func]:
+    from capstone import Cs, CS_ARCH_X86, CS_MODE_32
     from reccmp.formats import detect_image
 
     image = detect_image(ROOT / "data" / "LEMBALL.EXE")
     if image is None:
         raise ValueError('original executable is unavailable')
+    decoder = Cs(CS_ARCH_X86, CS_MODE_32)
     entries = {f.addr for f in funcs}
     for path in (*SRC.rglob('*.h'), *SRC.rglob('*.cpp')):
-        entries.update(int(m[1], 16) for m in ENTRY_RE.finditer(path.read_text(encoding='utf-8', errors='replace')))
+        entries.update(int(m[2], 16) for m in ANNOT_RE.finditer(path.read_text(encoding='utf-8', errors='replace')))
     by_address = {f.addr: f for f in funcs}
     result = []
     for func in funcs:
-        evidence = inspect_original(image, func.addr, entries)
-        resolved = [resolve_original_target(image, a) for a in evidence.callees]
+        evidence = inspect_original(image, func.addr, entries, decoder)
+        resolved = [resolve_original_target(image, a, decoder) for a in evidence.callees]
         unresolved = sum(a is None for a in resolved)
         dependencies = {a for a in resolved if a is not None}
         dependencies.discard(func.addr)  # recursion is not a separate dependency
@@ -181,7 +176,8 @@ def load_annotations() -> dict[int, str]:
     for path in (*SRC.rglob("*.cpp"), *SRC.rglob("*.h")):
         text = path.read_text(encoding="utf-8", errors="replace")
         for match in ANNOT_RE.finditer(text):
-            found[int(match.group(2), 16)] = match.group(1).upper()
+            if match.group(1) in ("FUNCTION", "STUB"):
+                found[int(match.group(2), 16)] = match.group(1).upper()
     return found
 
 

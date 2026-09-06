@@ -13,12 +13,11 @@ from pathlib import Path
 from reccmp.compare.asm.fixes import find_effective_match
 from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
 
-from build import run_build
+from build import run_build, tool
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
 DEFAULT_JSON = BUILD / "scores.json"
-RECCMP = ROOT / ".decomp-venv" / "Scripts" / "reccmp-reccmp.exe"
 RELOCATION = re.compile(r"<OFFSET\d+>")
 ANNOTATED_SYMBOL = r".+? \((?:DATA|VTABLE|UNK|FUNCTION|IMPORT|IMPORT_THUNK|STRING)\)"
 BYTE_REGISTER_RE = re.compile(r"\b(?:ah|al|bh|bl|ch|cl|dh|dl)\b")
@@ -39,8 +38,12 @@ def insn_text(entry) -> str:
     return str(entry)
 
 
+def asm_head(s: str) -> str:
+    return s.split("\t")[0].strip()
+
+
 def normalize_asm(s: str) -> str:
-    s = s.split("\t")[0].strip()
+    s = asm_head(s)
     # Generated MSVC names contain apostrophes themselves (for example,
     # ``Thing::`scalar deleting destructor'``), so the wrapper quotes must be
     # matched greedily rather than stopping at the first apostrophe.
@@ -61,8 +64,8 @@ def is_unresolved_symbol(orig_text: str, recomp_text: str) -> bool:
 
 
 def is_unresolved_call(orig_text: str, recomp_text: str) -> bool:
-    orig_text = orig_text.split("\t")[0].strip()
-    recomp_text = recomp_text.split("\t")[0].strip()
+    orig_text = asm_head(orig_text)
+    recomp_text = asm_head(recomp_text)
     if not re.match(r"call <OFFSET\d+>$", orig_text):
         return False
     return bool(re.match(r"call (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$", recomp_text))
@@ -70,16 +73,16 @@ def is_unresolved_call(orig_text: str, recomp_text: str) -> bool:
 
 def is_unresolved_jmp(orig_text: str, recomp_text: str) -> bool:
     """Match an unresolved tail jump to a thunk."""
-    orig_text = orig_text.split("\t")[0].strip()
-    recomp_text = recomp_text.split("\t")[0].strip()
+    orig_text = asm_head(orig_text)
+    recomp_text = asm_head(recomp_text)
     if not re.match(r"jmp -?0x[0-9a-f]+\s*$", orig_text):
         return False
     return bool(re.match(r"jmp Thunk of '.+' \(THUNK\)$", recomp_text))
 
 
 def is_recomp_offset_call(orig_text: str, recomp_text: str) -> bool:
-    orig_text = orig_text.split("\t")[0].strip()
-    recomp_text = recomp_text.split("\t")[0].strip()
+    orig_text = asm_head(orig_text)
+    recomp_text = asm_head(recomp_text)
     if not re.match(r"call <OFFSET\d+>", recomp_text):
         return False
     return bool(re.match(r"call .+ \(FUNCTION\)$", orig_text))
@@ -273,7 +276,7 @@ def format_diff_text(diff) -> str:
 def run_reccmp(json_path: Path) -> None:
     json_path = json_path.resolve()
     json_path.unlink(missing_ok=True)
-    cmd = [str(RECCMP), "--target", "LEMBALL", "--json", str(json_path), "--silent"]
+    cmd = [tool("reccmp-reccmp"), "--target", "LEMBALL", "--json", str(json_path), "--silent"]
     proc = subprocess.run(cmd, cwd=BUILD, capture_output=True, text=True)
     if proc.returncode != 0:
         sys.stderr.write(proc.stderr or proc.stdout)
@@ -298,7 +301,6 @@ def main() -> int:
     parser.add_argument("--json", type=Path, default=DEFAULT_JSON)
     parser.add_argument("--no-build", action="store_true", help="Skip incremental build before check")
     parser.add_argument("--clean-first", action="store_true", help="Clean build before check")
-    parser.add_argument("--no-reccmp", action="store_true", help="Do not run reccmp; reuse existing JSON")
     args = parser.parse_args()
 
     if not args.no_build:
@@ -310,9 +312,7 @@ def main() -> int:
     if not args.addrs:
         return 0
 
-    if not args.no_reccmp or not args.json.exists():
-        run_reccmp(args.json)
-
+    run_reccmp(args.json)
     matches = load_matches(args.json)
 
     for raw in args.addrs:

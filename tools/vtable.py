@@ -288,46 +288,12 @@ def is_generated_adjuster(entity: object | None) -> bool:
     return bool(separator) and (encoding.startswith("W") or encoding.startswith("$4"))
 
 
-def is_same_generated_adjuster_identity(
-    orig_entity: object | None,
-    recomp_entity: object | None,
-) -> bool:
-    """Check for a duplicate vtordisp entity."""
-    orig_name = entity_name(orig_entity)
-    recomp_name = entity_name(recomp_entity)
-    return "`vtordisp" in orig_name and orig_name == recomp_name
-
-
 def deleting_destructor_identity(entity: object | None) -> tuple[str, str] | None:
     """Read a generated destructor kind."""
     match = DELETING_DESTRUCTOR_RE.match(entity_name(entity))
     if match is None:
         return None
     return match.group("class"), match.group("kind")
-
-
-def is_deleting_destructor_alias_pair(
-    orig_entity: object | None,
-    recomp_entity: object | None,
-) -> bool:
-    """Check opposite generated destructor names."""
-    orig_identity = deleting_destructor_identity(orig_entity)
-    recomp_identity = deleting_destructor_identity(recomp_entity)
-    return (
-        orig_identity is not None
-        and recomp_identity is not None
-        and orig_identity[0] == recomp_identity[0]
-        and orig_identity[1] != recomp_identity[1]
-    )
-
-
-def codegen_equivalent(comparison) -> bool:
-    """Apply check.py equivalence rules."""
-    orig = comparison.diff.orig_inst
-    recomp = comparison.diff.recomp_inst
-    if not orig or len(orig) != len(recomp):
-        return False
-    return is_codegen_equivalent_diff([["", [{"orig": orig, "recomp": recomp}]]])
 
 
 def generated_function_codegen_matches(
@@ -364,10 +330,16 @@ def generated_function_codegen_matches(
         comparison = engine.function_comparator.compare_function(ReccmpMatch(orig, recomp, attributes))
     except (AssertionError, IndexError, ValueError):
         return False
+    orig_inst = comparison.diff.orig_inst
+    recomp_inst = comparison.diff.recomp_inst
     return (
         comparison.match_ratio == 1.0
         or comparison.is_effective_match
-        or codegen_equivalent(comparison)
+        or (
+            bool(orig_inst)
+            and len(orig_inst) == len(recomp_inst)
+            and is_codegen_equivalent_diff([["", [{"orig": orig_inst, "recomp": recomp_inst}]]])
+        )
     )
 
 
@@ -379,15 +351,15 @@ def is_same_generated_adjuster(
     recomp_entity: object | None,
 ) -> bool:
     """Compare duplicate vtordisp bodies."""
-    return is_same_generated_adjuster_identity(
-        orig_entity, recomp_entity
-    ) and generated_function_codegen_matches(
+    orig_name = entity_name(orig_entity)
+    recomp_name = entity_name(recomp_entity)
+    return "`vtordisp" in orig_name and orig_name == recomp_name and generated_function_codegen_matches(
         engine,
         orig,
         recomp,
         orig_entity,
         recomp_entity,
-        f"{entity_name(orig_entity)} duplicate adjuster",
+        f"{orig_name} duplicate adjuster",
     )
 
 
@@ -400,10 +372,14 @@ def is_same_deleting_destructor_alias(
 ) -> bool:
     """Compare opposite destructor aliases."""
     orig_identity = deleting_destructor_identity(orig_entity)
+    recomp_identity = deleting_destructor_identity(recomp_entity)
     if (
         orig is None
         or recomp is None
-        or not is_deleting_destructor_alias_pair(orig_entity, recomp_entity)
+        or orig_identity is None
+        or recomp_identity is None
+        or orig_identity[0] != recomp_identity[0]
+        or orig_identity[1] == recomp_identity[1]
     ):
         return False
 
@@ -433,13 +409,13 @@ def comparison_is_thunk_equivalent(result) -> bool:
     )
 
 
-def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) -> int:
+def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
     # reccmp emits expected collision warnings while staging folded functions
     # and duplicate MSVC-generated thunks. They are classified below instead.
     logging.getLogger("reccmp.compare").setLevel(logging.ERROR)
     try:
         project = RecCmpProject.from_directory(BUILD)
-        engine = Compare.from_target(project.get(target_id))
+        engine = Compare.from_target(project.get("LEMBALL"))
     except RecCmpProjectException as error:
         sys.stderr.write(f"vtable: {error}\n")
         return 1
@@ -588,7 +564,6 @@ def run_comparison(target_id: str, verbose: bool, top: int, annot_strict: bool) 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Thunk-aware LEMBALL vtable comparison")
-    parser.add_argument("--target", default="LEMBALL", help="reccmp target id (default: LEMBALL)")
     parser.add_argument("--no-build", action="store_true", help="skip incremental build")
     parser.add_argument("--clean-first", action="store_true", help="clean before building")
     parser.add_argument("--verbose", "-v", action="store_true", help="show every mismatching slot")
@@ -605,7 +580,7 @@ def main() -> int:
         if result != 0:
             return result
 
-    return run_comparison(args.target, args.verbose, max(args.top, 0), args.annot_strict)
+    return run_comparison(args.verbose, max(args.top, 0), args.annot_strict)
 
 
 if __name__ == "__main__":

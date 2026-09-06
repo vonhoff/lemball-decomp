@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
 import re
 import struct
 import sys
@@ -17,7 +16,6 @@ MOG_VERSION = 3
 CHUNK_DIRC = 0x44495243
 DEFAULT_VSR = ROOT / "data" / "pbaimog.vsr"
 DEFAULT_HEADER = ROOT / "src" / "Visos" / "Resources" / "Manifest.h"
-DEFAULT_JSON = ROOT / "build-msvc400" / "resource_manifest.json"
 
 
 def fourcc(value: int) -> str:
@@ -134,18 +132,6 @@ class MogArchive:
         return resources
 
 
-def write_json(resources: list[dict], vsr_path: Path, out_path: Path, digest: str) -> None:
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "source": vsr_path.name,
-        "source_path": str(vsr_path.resolve()),
-        "sha256": digest,
-        "count": len(resources),
-        "entries": resources,
-    }
-    out_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-
-
 def write_header(resources: list[dict], vsr_path: Path, out_path: Path, digest: str) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
@@ -186,22 +172,6 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_HEADER,
         help=f"Output header path (default: {DEFAULT_HEADER.relative_to(ROOT)})",
     )
-    parser.add_argument(
-        "--json",
-        type=Path,
-        default=DEFAULT_JSON,
-        help=f"Output JSON path (default: {DEFAULT_JSON.relative_to(ROOT)})",
-    )
-    parser.add_argument(
-        "--header-only",
-        action="store_true",
-        help="Write only the header file",
-    )
-    parser.add_argument(
-        "--json-only",
-        action="store_true",
-        help="Write only the JSON manifest",
-    )
     return parser.parse_args()
 
 
@@ -221,13 +191,8 @@ def main() -> int:
         return 1
 
     digest = hashlib.sha256(archive.data).hexdigest()
-    if not args.json_only:
-        write_header(resources, vsr_path, args.header, digest)
-        print(f"Wrote {args.header} ({len(resources)} entries)")
-    if not args.header_only:
-        write_json(resources, vsr_path, args.json, digest)
-        print(f"Wrote {args.json} ({len(resources)} entries)")
-
+    write_header(resources, vsr_path, args.header, digest)
+    print(f"Wrote {args.header} ({len(resources)} entries)")
     return 0
 
 

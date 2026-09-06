@@ -4,12 +4,12 @@
 import argparse
 import csv
 import json
-import shutil
 import struct
 import subprocess
 from collections import defaultdict
 from pathlib import Path
 
+from build import tool
 from check import compute_ratio, load_matches
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,10 +45,6 @@ def measures(functions, total_units=1):
             matched_functions_percent=f32(len(matched) / len(functions) * 100),
         )
     return res
-
-
-def tool(name):
-    return shutil.which(name) or str(ROOT / ".decomp-venv" / "Scripts" / f"{name}.exe")
 
 
 def run_reccmp():

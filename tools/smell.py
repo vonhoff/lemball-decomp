@@ -35,6 +35,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 BASELINE = ROOT / "smell.baseline.json"
 
+# Hit: relative path, line, rule, optional code snippet
+Hit = tuple[str, int, str, str]
+
 RECCMP_MARK = re.compile(r"^\s*//\s*(FUNCTION|STUB|GLOBAL|LIBRARY|TEMPLATE|SYNTHETIC)\s*:")
 K68_MARK = re.compile(r"^\s*//\s*68K\s+")
 SYNTHETIC_MARK = re.compile(r"^\s*//\s*SYNTHETIC\s*:")
@@ -90,9 +93,6 @@ DTOR_DEF = re.compile(r"^(?P<class>[A-Za-z_][\w:]*)::~[A-Za-z_][\w]*\s*\(")
 FREE_DEF = re.compile(r"^(?:static\s+)?(?:[A-Za-z_][\w:*&]*\s+)+\w+\s*\(")
 BUFFER_OK = re.compile(r"m_numberBuffer|Bits\b|sz[A-Z]|\bp_bits\b")
 SKIP_LEAD = {"if", "while", "for", "switch", "return", "else", "case", "catch", "extern"}
-ANNOT_DEFAULT = "default"
-ANNOT_ACTIONABLE = "actionable"
-ANNOT_STRICT = "strict"
 
 
 def strip_line_comment(line: str) -> str:
@@ -139,28 +139,6 @@ def body_is_empty(lines: list[str], index: int) -> bool:
 	return False
 
 
-def annotation_disposition(
-	has_reccmp: bool,
-	has_68k: bool,
-	empty: bool,
-	has_synthetic_dtor: bool,
-	mode: str,
-) -> str | None:
-	if has_reccmp:
-		return None
-	if mode == ANNOT_STRICT:
-		return "hit"
-	if mode == ANNOT_ACTIONABLE:
-		if empty:
-			return "review-empty"
-		if has_synthetic_dtor:
-			return "review-synthetic"
-		return "hit"
-	if has_68k or empty:
-		return None
-	return "hit"
-
-
 def preceding_block(lines: list[str], index: int) -> list[str]:
 	block = []
 	i = index - 1
@@ -204,13 +182,11 @@ def raw_cast_reason(code: str) -> str | None:
 	return None
 
 
-def finding_key(record: str) -> tuple[str, str, str]:
-	match = re.match(r"^(.*):(\d+): ([^ ]+)(?: (.*))?$", record)
-	if match is None:
-		raise ValueError("invalid smell finding: %s" % record)
-	path = Path(match.group(1)).resolve()
-	rel = path.relative_to(ROOT).as_posix()
-	return rel, match.group(3), match.group(4) or ""
+def format_hit(hit: Hit) -> str:
+	rel, lineno, rule, code = hit
+	if code:
+		return "%s:%d: %s %s" % (rel, lineno, rule, code)
+	return "%s:%d: %s" % (rel, lineno, rule)
 
 
 def load_baseline() -> Counter[tuple[str, str, str]]:
@@ -240,12 +216,12 @@ def load_baseline() -> Counter[tuple[str, str, str]]:
 	return baseline
 
 
-def apply_baseline(hits: list[str], files: list[Path]) -> tuple[list[str], list[str]]:
+def apply_baseline(hits: list[Hit], files: list[Path]) -> tuple[list[Hit], list[str]]:
 	baseline = load_baseline()
 	remaining = baseline.copy()
-	unbaselined = []
+	unbaselined: list[Hit] = []
 	for hit in hits:
-		key = finding_key(hit)
+		key = (hit[0], hit[2], hit[3])
 		if remaining[key] != 0:
 			remaining[key] -= 1
 		else:
@@ -260,40 +236,41 @@ def apply_baseline(hits: list[str], files: list[Path]) -> tuple[list[str], list[
 
 def scan_file(
 	path: Path,
-	annotation_mode: str,
+	annot: bool,
+	annot_strict: bool,
 	synthetic_destructors: set[str],
-) -> tuple[list[str], list[tuple[str, str]]]:
+) -> tuple[list[Hit], list[tuple[str, str]]]:
 	lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-	hits: list[str] = []
+	hits: list[Hit] = []
 	reviews: list[tuple[str, str]] = []
-	rel = path.as_posix()
+	rel = path.resolve().relative_to(ROOT).as_posix()
 	if path.suffix.lower() in {".cpp", ".h", ".c"}:
 		for lineno, raw in enumerate(lines, 1):
 			code = strip_line_comment(raw)
 			raw_cast = raw_cast_reason(code)
 			if raw_cast is not None:
-				hits.append("%s:%d: %s %s" % (rel, lineno, raw_cast, code.strip()[:100]))
+				hits.append((rel, lineno, raw_cast, code.strip()[:100]))
 			if VBPTR_WALK.search(code):
-				hits.append("%s:%d: vbptr-walk" % (rel, lineno))
+				hits.append((rel, lineno, "vbptr-walk", ""))
 			if THIS_ADJUST.search(code):
-				hits.append("%s:%d: this-adjust-poke" % (rel, lineno))
+				hits.append((rel, lineno, "this-adjust-poke", ""))
 			poked = False
 			for match in EXPR_CHAR_OFFSET.finditer(code):
 				if not BUFFER_OK.search(match.group("expr")):
-					hits.append("%s:%d: expr-char-offset %s" % (rel, lineno, match.group(0).strip()[:100]))
+					hits.append((rel, lineno, "expr-char-offset", match.group(0).strip()[:100]))
 					poked = True
 					break
 			if MI_DTOR_POKE.search(code):
-				hits.append("%s:%d: mi-dtor-poke %s" % (rel, lineno, code.strip()[:100]))
+				hits.append((rel, lineno, "mi-dtor-poke", code.strip()[:100]))
 				poked = True
 			if not poked and is_offset_poke(code):
-				hits.append("%s:%d: offset-poke %s" % (rel, lineno, code.strip()[:100]))
+				hits.append((rel, lineno, "offset-poke", code.strip()[:100]))
 			for match in CHAR_VAR_OFFSET.finditer(code):
 				if BUFFER_OK.search(match.group("expr")):
 					continue
 				if match.group("off") == "sizeof":
 					continue
-				hits.append("%s:%d: offset-poke %s" % (rel, lineno, match.group(0).strip()))
+				hits.append((rel, lineno, "offset-poke", match.group(0).strip()))
 	if path.suffix.lower() != ".cpp":
 		return hits, reviews
 	for i, raw in enumerate(lines):
@@ -305,21 +282,27 @@ def scan_file(
 		has_68k = any(K68_MARK.match(line) for line in prev)
 		dtor = DTOR_DEF.match(stripped)
 		has_synthetic_dtor = dtor is not None and dtor.group("class") in synthetic_destructors
-		disposition = annotation_disposition(
-			has_reccmp,
-			has_68k,
-			body_is_empty(lines, i),
-			has_synthetic_dtor,
-			annotation_mode,
-		)
-		if disposition is None:
+		if has_reccmp:
 			continue
+		if annot_strict:
+			disposition = "hit"
+		elif annot:
+			if body_is_empty(lines, i):
+				disposition = "review-empty"
+			elif has_synthetic_dtor:
+				disposition = "review-synthetic"
+			else:
+				disposition = "hit"
+		elif has_68k or body_is_empty(lines, i):
+			continue
+		else:
+			disposition = "hit"
 		kind = "incomplete-annotation" if has_68k else "no-annotation"
 		record = "%s:%d: %s %s" % (rel, i + 1, kind, stripped[:90])
 		if disposition.startswith("review-"):
 			reviews.append((disposition, record))
 		else:
-			hits.append(record)
+			hits.append((rel, i + 1, kind, stripped[:90]))
 	return hits, reviews
 
 
@@ -365,16 +348,11 @@ def main(argv: list[str]) -> int:
 			files.extend(iter_sources(path))
 		else:
 			files.append(path)
-	hits: list[str] = []
+	hits: list[Hit] = []
 	reviews: list[tuple[str, str]] = []
-	annotation_mode = ANNOT_DEFAULT
-	if args.annot:
-		annotation_mode = ANNOT_ACTIONABLE
-	elif args.annot_strict:
-		annotation_mode = ANNOT_STRICT
 	synthetic_destructors = collect_synthetic_destructors(list(iter_sources(SRC)))
 	for path in files:
-		file_hits, file_reviews = scan_file(path, annotation_mode, synthetic_destructors)
+		file_hits, file_reviews = scan_file(path, args.annot, args.annot_strict, synthetic_destructors)
 		hits.extend(file_hits)
 		reviews.extend(file_reviews)
 	try:
@@ -382,8 +360,6 @@ def main(argv: list[str]) -> int:
 	except ValueError as error:
 		sys.stderr.write("smell: %s\n" % error)
 		return 2
-	if stale:
-		hits.extend(stale)
 	if reviews:
 		empty_reviews = sum(reason == "review-empty" for reason, _ in reviews)
 		synthetic_reviews = sum(reason == "review-synthetic" for reason, _ in reviews)
@@ -392,10 +368,12 @@ def main(argv: list[str]) -> int:
 			"require x86 evidence review; use --annot-strict to list/fail them\n"
 			% (empty_reviews, synthetic_reviews)
 		)
-	if hits:
-		sys.stderr.write("smell: %d hit(s)\n" % len(hits))
-		for hit in hits:
-			sys.stderr.write(hit + "\n")
+	messages = [format_hit(hit) for hit in hits]
+	messages.extend(stale)
+	if messages:
+		sys.stderr.write("smell: %d hit(s)\n" % len(messages))
+		for message in messages:
+			sys.stderr.write(message + "\n")
 		return 1
 	sys.stdout.write("smell: ok\n")
 	return 0

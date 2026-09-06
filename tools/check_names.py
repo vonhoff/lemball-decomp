@@ -3,7 +3,7 @@
 
 python tools/check_names.py [src/path ...] [--strict] [--json] [--fail]
 python tools/check_names.py --inventory path/to/68K.functions.tsv
-python tools/check_names.py --research-root C:/Research
+python tools/check_names.py --inventory path/to/68K.functions.tsv --confirmed path/to/confirmed-mappings.tsv
 
 Expected form: PascalCase, drop C/tag/t prefixes, '_' is a word separator,
 leading '_' becomes Internal. INTENTIONAL lists known Mac/Windows divergences.
@@ -230,13 +230,10 @@ def read_inventory(path):
         return {int(r["address"], 16): r["name"] for r in csv.DictReader(stream, delimiter="\t")}
 
 
-def read_research(root):
-    mapping = root / "Mapping"
-    symbols = read_inventory(mapping / "Lemmings_Paintball__68K_.functions.tsv")
-    with (mapping / "confirmed-mappings.tsv").open(encoding="utf-8-sig", newline="") as stream:
-        pairs = {(int(r["mac_address"], 16), int(r["windows_address"], 16))
-                 for r in csv.DictReader(stream, delimiter="\t")}
-    return symbols, pairs
+def read_confirmed(path):
+    with path.open(encoding="utf-8-sig", newline="") as stream:
+        return {(int(r["mac_address"], 16), int(r["windows_address"], 16))
+                for r in csv.DictReader(stream, delimiter="\t")}
 
 
 def check_research(rows, symbols, pairs=None):
@@ -278,8 +275,9 @@ def main():
     parser.add_argument("--strict", action="store_true")
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--fail", action="store_true")
-    parser.add_argument("--research-root", type=Path)
     parser.add_argument("--inventory", type=Path)
+    parser.add_argument("--confirmed", type=Path,
+                        help="confirmed-mappings.tsv (requires --inventory)")
     args = parser.parse_args()
     files = set()
     for path in args.paths:
@@ -289,14 +287,14 @@ def main():
                      if p.suffix in (".cpp", ".h"))
     if not files:
         parser.error("no C++ source files found")
-    if args.inventory and args.research_root:
-        parser.error("choose --inventory or --research-root")
+    if args.confirmed and not args.inventory:
+        parser.error("--confirmed requires --inventory")
     symbols, pairs = None, None
     try:
-        if args.research_root:
-            symbols, pairs = read_research(args.research_root)
-        elif args.inventory:
+        if args.inventory:
             symbols = read_inventory(args.inventory)
+        if args.confirmed:
+            pairs = read_confirmed(args.confirmed)
     except (OSError, KeyError, ValueError) as error:
         parser.error("cannot read symbol evidence: " + str(error))
     rows = [row for path in sorted(files) for row in scan(path, symbols)]

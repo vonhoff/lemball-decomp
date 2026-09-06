@@ -42,6 +42,11 @@ def resolve_cmake() -> str:
     sys.exit("cmake not found")
 
 
+def tool(name: str) -> str:
+    """Resolve a PATH or .decomp-venv tool."""
+    return shutil.which(name) or str(ROOT / ".decomp-venv" / "Scripts" / f"{name}.exe")
+
+
 def cache_cmake_command() -> str | None:
     cache = BUILD / "CMakeCache.txt"
     if not cache.exists():
@@ -76,23 +81,15 @@ def handle_link(args: list[str]) -> int:
     return res.returncode
 
 
-def run_build(clean_first: bool = False, fresh: bool = False, extra_args: list[str] | None = None) -> int:
+def run_build(clean_first: bool = False, extra_args: list[str] | None = None) -> int:
     cmake = resolve_cmake()
     BUILD.mkdir(parents=True, exist_ok=True)
 
     cached = cache_cmake_command()
     makefile = BUILD / "Makefile"
-    need_configure = (
-        fresh
-        or cached is None
-        or " " in cached
-        or not makefile.exists()
-    )
+    need_configure = cached is None or " " in cached or not makefile.exists()
     if need_configure:
-        configure = [cmake, "--preset", "msvc400"]
-        if fresh:
-            configure.insert(1, "--fresh")
-        res = subprocess.run(configure, cwd=ROOT)
+        res = subprocess.run([cmake, "--preset", "msvc400"], cwd=ROOT)
         if res.returncode != 0:
             return res.returncode
 
@@ -135,11 +132,10 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--clean-first", action="store_true", help="Perform full clean build")
-    parser.add_argument("--fresh", action="store_true", help="Re-run cmake configure before building")
     parser.add_argument("extra_args", nargs="*", help="Extra arguments passed to cmake --build")
     args = parser.parse_args()
 
-    return run_build(clean_first=args.clean_first, fresh=args.fresh, extra_args=args.extra_args)
+    return run_build(clean_first=args.clean_first, extra_args=args.extra_args)
 
 
 if __name__ == "__main__":
