@@ -296,10 +296,7 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 	}
 
 	heightCells = 1;
-	widthCells = 0;
-	if ((int) m_cellSize.m_width != 0) {
-		widthCells = widthPixels / (int) m_cellSize.m_width;
-	}
+	widthCells = widthPixels / (int) m_cellSize.m_width;
 	row = row + mapWidth;
 	if (scanY + 1 < mapHeight) {
 		while (scanY + heightCells < mapHeight) {
