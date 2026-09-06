@@ -62,8 +62,7 @@ DoorManager::~DoorManager()
 int DoorManager::GetViewData(ViewData* p_viewData)
 {
 	for (int i = 0; i < m_count; i++) {
-		m_doors[i].GetViewData(*p_viewData);
-		p_viewData++;
+		m_doors[i].GetViewData(p_viewData[i]);
 	}
 	return m_count;
 }
@@ -93,9 +92,16 @@ int DoorManager::Add(unsigned short p_id,
 // FUNCTION: LEMBALL 0x0040e500
 int DoorManager::Open(const AiCoord& p_position, GameObject* p_object)
 {
-	for (int i = 0; i < m_count; i++) {
-		if (m_doors[i].Hits(p_position, p_object) != 0) {
-			return 1;
+	int i = 0;
+	if (0 < m_count) {
+		while (true) {
+			if (m_doors[i].Hits(p_position, p_object)) {
+				return 1;
+			}
+			i++;
+			if (m_count <= i) {
+				break;
+			}
 		}
 	}
 	return 0;
@@ -139,7 +145,7 @@ void DoorManager::Switch(swMessage p_message, int p_id)
 unsigned short DoorManager::Id(int p_index)
 {
 	if (p_index < m_count) {
-		return (unsigned short) m_doors[p_index].GetId();
+		return m_doors[p_index].GetId();
 	}
 	return 0xffff;
 }

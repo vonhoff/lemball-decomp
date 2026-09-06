@@ -33,17 +33,23 @@ void Duplicator::Restart()
 // FUNCTION: LEMBALL 0x00427630
 void Duplicator::Set(const AiCoord& p_position)
 {
-	m_position = p_position;
+	m_position.m_xFixed = p_position.m_xFixed;
+	m_position.m_yFixed = p_position.m_yFixed;
+	m_position.m_zFixed = p_position.m_zFixed;
 	m_terrainCell0Set = 1;
 	m_terrainCell1Set = 1;
 	int blockX = (m_position.m_xFixed >> 12) / 16;
 	int blockY = (m_position.m_yFixed >> 12) / 16;
-	if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
-	}
-	blockY--;
-	if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
+	if (blockX >= 0) {
+		if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
+		}
+		if (blockX >= 0 && --blockY >= 0) {
+			int width = g_pMap->m_ground.m_width;
+			if (blockX < width && g_pMap->m_ground.m_height > blockY) {
+				g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= 1;
+			}
+		}
 	}
 }
 
@@ -126,17 +132,19 @@ bool Duplicator::Activate(GameObject* p_object)
 // FUNCTION: LEMBALL 0x00427910
 void Duplicator::DoActivate()
 {
+	m_stateTimer = g_dwSimulationTimestamp;
 	int y = m_position.m_yFixed - 0x3c000;
 	int z = m_position.m_zFixed;
-	m_stateTimer = g_dwSimulationTimestamp;
+	GameObject* activator = m_activator;
 	m_actionDeadline += g_dwGameTick;
-	m_duplicatedObject = m_activator;
+	m_duplicatedObject = activator;
 	int x = m_position.m_xFixed;
-	m_duplicatedObject->m_unk0xc0 = 1;
-	m_duplicatedObject->m_action = (eAction) 5;
-	m_duplicatedObject->m_position.m_xFixed = x;
-	m_duplicatedObject->m_position.m_yFixed = y;
-	m_duplicatedObject->m_position.m_zFixed = z;
+	activator->m_unk0xc0 = 1;
+	activator->m_action = (eAction) 5;
+	GameObject* dup = m_duplicatedObject;
+	dup->m_position.m_xFixed = x;
+	dup->m_position.m_yFixed = y;
+	dup->m_position.m_zFixed = z;
 	SetSndEffect((eSoundEffect) 12);
 	g_pAI->AddTime(100);
 }
