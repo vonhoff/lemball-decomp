@@ -16,15 +16,15 @@
 // VTABLE: LEMBALL 0x00497894 AnimsManager
 class BaseFrontendDrawer : public Drawer, public BaseQueueHandler, public AnimsManager {
 public:
-	BaseFrontendDrawer(Main2DDisplay* p_arg0,
-					   Gdi* p_arg1,
-					   const VsRect& p_arg2,
-					   eFlowProcesses p_arg3,
-					   int p_arg4,
-					   int p_arg5,
-					   int p_arg6,
-					   int p_arg7,
-					   int p_arg8);
+	BaseFrontendDrawer(Main2DDisplay* p_display,
+					   Gdi* p_gdi,
+					   const VsRect& p_rect,
+					   eFlowProcesses p_flowProcess,
+					   int p_resourceCapacity,
+					   int p_animCapacity,
+					   int p_zrleCapacity,
+					   int p_textPrimitiveCapacity,
+					   int p_maxStringLen);
 	virtual int ProcessMsg(Message* p_message);       // vtable+0x08
 	virtual ~BaseFrontendDrawer();                    // vtable+0x00
 	virtual void Draw(const VsRect& p_rect);          // vtable+0x08
@@ -73,8 +73,8 @@ protected:
 	unsigned int m_startupPending;        // 0x94
 	TextManager* m_textManager;           // 0x98
 	unsigned int m_loaded;                // 0x9c
-	int m_textCapacity;                   // 0xa0
-	int m_textStyle;                      // 0xa4
+	int m_textPrimitiveCapacity;          // 0xa0
+	int m_maxStringLen;                   // 0xa4
 	unsigned int m_drawBackground;        // 0xa8
 	unsigned int m_drawFrame;             // 0xac
 	unsigned int m_drawSolid;             // 0xb0
@@ -104,7 +104,7 @@ protected:
 	short m_width;                        // 0x37c
 	short m_height;                       // 0x37e
 	VsPoint m_animPosition;               // 0x380
-	undefined4 m_chalkFontId;              // 0x384
+	undefined4 m_chalkFontId;             // 0x384
 	unsigned int m_topFrameAnimId;        // 0x388
 	unsigned int m_sideFrameAnimId;       // 0x38c
 	unsigned int m_bottomFrameAnimId;     // 0x390

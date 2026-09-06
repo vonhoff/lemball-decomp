@@ -36,29 +36,29 @@ extern char g_szUnknownUserActionReceived[];
 
 // 68K 0x10800108 __ct__19CBaseFrontendDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect14eFlowProcessesiiiii
 // FUNCTION: LEMBALL 0x00445420
-BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_arg0,
-									   Gdi* p_arg1,
-									   const VsRect& p_arg2,
-									   eFlowProcesses p_arg3,
-									   int p_arg4,
-									   int p_arg5,
-									   int p_arg6,
-									   int p_arg7,
-									   int p_arg8)
-	: AnimsManager(p_arg1, 0x2b6, p_arg4 + 3, p_arg5 + 200, p_arg6, 0)
+BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_display,
+									   Gdi* p_gdi,
+									   const VsRect& p_rect,
+									   eFlowProcesses p_flowProcess,
+									   int p_resourceCapacity,
+									   int p_animCapacity,
+									   int p_zrleCapacity,
+									   int p_textPrimitiveCapacity,
+									   int p_maxStringLen)
+	: AnimsManager(p_gdi, 0x2b6, p_resourceCapacity + 3, p_animCapacity + 200, p_zrleCapacity, 0)
 {
 	m_height = 0;
 	m_width = 0;
 	m_staticAnim.m_frameState = 0;
 	m_animPosition.m_y = 0;
 	m_animPosition.m_x = 0;
-	m_flowProcess = p_arg3;
-	m_display = p_arg0;
-	m_gdi = p_arg1;
-	m_width = p_arg2.m_width;
-	m_height = p_arg2.m_height;
-	m_textCapacity = p_arg7;
-	m_textStyle = p_arg8;
+	m_flowProcess = p_flowProcess;
+	m_display = p_display;
+	m_gdi = p_gdi;
+	m_width = p_rect.m_width;
+	m_height = p_rect.m_height;
+	m_textPrimitiveCapacity = p_textPrimitiveCapacity;
+	m_maxStringLen = p_maxStringLen;
 	m_framePrimitiveCount = 0;
 	m_drawBackground = 1;
 	m_drawFrame = 1;
@@ -105,13 +105,13 @@ void BaseFrontendDrawer::Setup()
 	}
 	CursorChangeType(cursorType, 0);
 
-	if (m_textCapacity > 0) {
+	if (m_textPrimitiveCapacity > 0) {
 		storage = operator new(sizeof(TextManager));
 		if (storage == 0) {
 			m_textManager = 0;
 		}
 		else {
-			m_textManager = new (storage) TextManager(0x2b6, 1, m_textCapacity, m_textStyle);
+			m_textManager = new (storage) TextManager(0x2b6, 1, m_textPrimitiveCapacity, m_maxStringLen);
 		}
 	}
 

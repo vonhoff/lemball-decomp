@@ -9,7 +9,12 @@
 // VTABLE: LEMBALL 0x00499620
 class AnimsManager {
 public:
-	AnimsManager(Gdi* p_arg0, unsigned long p_arg1, int p_arg2, int p_arg3, int p_arg4, unsigned char p_arg5);
+	AnimsManager(Gdi* p_gdi,
+				 unsigned long p_resourceIdCount,
+				 int p_resourceCapacity,
+				 int p_animCapacity,
+				 int p_zrleCapacity,
+				 unsigned int p_doubleBuffered);
 	VsRect DrawAnim(const VsPoint& p_position,
 					unsigned long p_resourceId,
 					unsigned long p_animIndex,

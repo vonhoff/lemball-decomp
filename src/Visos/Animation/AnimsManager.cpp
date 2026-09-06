@@ -25,19 +25,24 @@ void AnimsManager::FreeVram()
 
 // 68K 0x1020019c __ct__13CAnimsManagerFP4CGDIUliiiUc
 // FUNCTION: LEMBALL 0x00467260
-AnimsManager::AnimsManager(Gdi* p_arg0, unsigned long p_arg1, int p_arg2, int p_arg3, int p_arg4, unsigned char p_arg5)
+AnimsManager::AnimsManager(Gdi* p_gdi,
+						   unsigned long p_resourceIdCount,
+						   int p_resourceCapacity,
+						   int p_animCapacity,
+						   int p_zrleCapacity,
+						   unsigned int p_doubleBuffered)
 {
 	int i;
 
 	m_animCount = 0;
 	m_zrleCount = 0;
-	m_gdi = p_arg0;
-	m_resourceCapacity = p_arg2;
-	m_resourceIdCount = (int) p_arg1;
+	m_gdi = p_gdi;
+	m_resourceCapacity = p_resourceCapacity;
+	m_resourceIdCount = (int) p_resourceIdCount;
 	m_animPrimitives = 0;
 	m_zrlePrimitives = 0;
 	m_previousGdi = 0;
-	m_doubleBuffered = p_arg5;
+	m_doubleBuffered = p_doubleBuffered;
 	m_loadedResourceCount = 0;
 	m_reserved6c = 0xffffffff;
 	m_resources = 0;
@@ -59,15 +64,15 @@ AnimsManager::AnimsManager(Gdi* p_arg0, unsigned long p_arg1, int p_arg2, int p_
 		}
 	}
 	if (m_doubleBuffered == 0) {
-		m_zrleCapacity = p_arg4;
-		m_animCapacity = p_arg3;
+		m_zrleCapacity = p_zrleCapacity;
+		m_animCapacity = p_animCapacity;
 	}
 	else {
 		m_bufferHalf = 0;
-		m_zrleCapacity = p_arg4 * 2;
+		m_zrleCapacity = p_zrleCapacity * 2;
 		m_bufferedZrleCount = 0;
 		m_bufferedAnimCount = 0;
-		m_animCapacity = p_arg3 * 2;
+		m_animCapacity = p_animCapacity * 2;
 	}
 	if (m_zrleCapacity != 0) {
 		m_zrlePrimitives = new Zrle[m_zrleCapacity];
