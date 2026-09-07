@@ -185,12 +185,12 @@ void PasswordDrawer::Load()
 			}
 			m_buttons[buttonIndex]->m_controlMessage = 0xabcd00b0 + buttonIndex;
 			m_buttons[buttonIndex]->m_messageHandler = g_pMasterInputQueue;
-			m_buttons[buttonIndex]->SetAutoDraw(0);
-			Gdi* buttonGdi = m_buttons[buttonIndex]->m_gdi;
-			Surface* target = buttonGdi->m_renderTarget;
-			target->m_flag70 = 0;
 			offsetPtr[0] = gridX - layout[2];
 			offsetPtr[1] = gridY - layout[3];
+			Gdi* buttonGdi = m_buttons[buttonIndex]->m_gdi;
+			Surface* target = buttonGdi->m_renderTarget;
+			m_buttons[buttonIndex]->SetAutoDraw(0);
+			target->m_flag70 = 0;
 			gridX = gridX + layout[0x60 / 4] + layout[4];
 			keyMap++;
 			offsetPtr = offsetPtr + 2;
