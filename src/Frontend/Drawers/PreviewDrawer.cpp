@@ -589,11 +589,16 @@ void PreviewDrawer::LoadLevelInformation()
 
 	font = m_textManager->GetFont(m_chalkFontId);
 
+	int i;
 	memset(candidateLine, 0, sizeof(candidateLine));
-	memset(m_levelNameLines, 0, sizeof(m_levelNameLines));
+	for (i = 0; i < 0x20; i++) {
+		m_levelNameLines[0][i] = 0;
+		m_levelNameLines[1][i] = 0;
+		m_levelNameLines[2][i] = 0;
+	}
 
 	targetPos = m_textPositions;
-	for (int i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++) {
 		targetPos[0] = -1;
 		targetPos[1] = -1;
 		targetPos += 2;
