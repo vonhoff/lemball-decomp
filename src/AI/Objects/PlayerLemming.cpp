@@ -799,8 +799,8 @@ bool PlayerLemming::IsSelectable()
 void PlayerLemming::GetViewData(ViewData& p_viewData)
 {
 	p_viewData.m_objectId = m_objectId;
-	p_viewData.m_playerIndex = 0;
 	p_viewData.m_objectType = m_objectType;
+	p_viewData.m_playerIndex = 0;
 	p_viewData.m_positionX = m_position.m_xFixed >> 12;
 	p_viewData.m_positionY = m_position.m_yFixed >> 12;
 	p_viewData.m_positionZ = m_position.m_zFixed >> 12;

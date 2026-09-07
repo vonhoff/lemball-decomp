@@ -153,7 +153,6 @@ void GWnd::InternalOnSize()
 	Surface* target;
 	VsPoint* innerOrigin;
 	VsPoint* parentOrigin;
-	VsPoint* relOrigin;
 	VsSize size;
 	short relX;
 	short relY;
