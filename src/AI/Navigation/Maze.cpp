@@ -1,5 +1,7 @@
 #include "Maze.h"
 
+#include <string.h>
+
 // 68K 0x10615900 __ct__5CMazeFP4CMap
 // STUB: LEMBALL 0x00423090
 Maze::Maze(Map* p_arg0)
@@ -106,9 +108,18 @@ void Maze::UpdateChangeNext(int p_x, int p_y)
 }
 
 // 68K 0x10615da4 Clear__5CMazeFPUc
-// STUB: LEMBALL 0x004234a0
+// FUNCTION: LEMBALL 0x004234a0
 void Maze::Clear(unsigned char* p_change)
 {
+	int row = 0;
+	if (m_height > 0) {
+		do {
+			row++;
+			int rowBytes = (m_width + (m_width >> 31 & 7)) >> 3;
+			memset(p_change, 0, rowBytes);
+			p_change += 0x10;
+		} while (row < m_height);
+	}
 }
 
 // 68K 0x10615e04 SwapChange__5CMazeFv
