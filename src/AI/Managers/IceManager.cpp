@@ -73,7 +73,7 @@ void IceManager::Switch(int p_message, int p_id)
 }
 
 // 68K 0x1061281e Add__11CIceManagerFUsRC8tCoord3dRC8tCoord3diiUc
-// STUB: LEMBALL 0x0042ddf0
+// FUNCTION: LEMBALL 0x0042ddf0
 void IceManager::Add(unsigned short p_id,
 					 const Coord3d& p_cornerA,
 					 const Coord3d& p_cornerB,
@@ -81,6 +81,10 @@ void IceManager::Add(unsigned short p_id,
 					 int p_velocityY,
 					 unsigned int p_initialSwitched)
 {
+	if (m_count < m_capacity) {
+		m_ice[m_count].Set(p_id, p_cornerA, p_cornerB, p_velocityX, p_velocityY, p_initialSwitched);
+		m_count++;
+	}
 }
 
 // 68K 0x106128a4 LoadLevel__11CIceManagerFPUciUc
