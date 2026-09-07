@@ -490,57 +490,58 @@ ChangeList* Surface::GetChangeList()
 void Surface::Blit(class ClipRect* p_clipRect)
 {
 	Surface* parent;
+	VsRect* clip;
 	short clipRight;
 	short clipBottom;
 
+	clip = &m_clipRect;
 	if ((p_clipRect->m_reserved0c & 0x1000) == 0) {
-		m_clipRect.m_width = p_clipRect->m_left;
-		m_clipRect.m_height = p_clipRect->m_top;
-		m_clipRect.m_x = p_clipRect->m_right;
-		m_clipRect.m_y = p_clipRect->m_bottom;
+		clip->m_width = p_clipRect->m_left;
+		clip->m_height = p_clipRect->m_top;
+		clip->m_x = p_clipRect->m_right;
+		clip->m_y = p_clipRect->m_bottom;
 	}
 	else if ((int) p_clipRect->m_left * (int) p_clipRect->m_top != 0) {
-		if (p_clipRect->m_right < m_clipRect.m_x) {
-			m_clipRect.m_width = (short) (m_clipRect.m_width + (m_clipRect.m_x - p_clipRect->m_right));
-			m_clipRect.m_x = p_clipRect->m_right;
+		if (p_clipRect->m_right < clip->m_x) {
+			clip->m_width = (short) (clip->m_width + (clip->m_x - p_clipRect->m_right));
+			clip->m_x = p_clipRect->m_right;
 		}
-		if ((short) (m_clipRect.m_width + m_clipRect.m_x) < (short) (p_clipRect->m_right + p_clipRect->m_left)) {
-			m_clipRect.m_width = (short) ((p_clipRect->m_left - m_clipRect.m_x) + p_clipRect->m_right);
+		if ((short) (clip->m_width + clip->m_x) < (short) (p_clipRect->m_right + p_clipRect->m_left)) {
+			clip->m_width = (short) ((p_clipRect->m_left - clip->m_x) + p_clipRect->m_right);
 		}
-		if (p_clipRect->m_bottom < m_clipRect.m_y) {
-			m_clipRect.m_height = (short) (m_clipRect.m_height + (m_clipRect.m_y - p_clipRect->m_bottom));
-			m_clipRect.m_y = p_clipRect->m_bottom;
+		if (p_clipRect->m_bottom < clip->m_y) {
+			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bottom));
+			clip->m_y = p_clipRect->m_bottom;
 		}
-		if ((short) (m_clipRect.m_height + m_clipRect.m_y) < (short) (p_clipRect->m_bottom + p_clipRect->m_top)) {
-			m_clipRect.m_height = (short) ((p_clipRect->m_top - m_clipRect.m_y) + p_clipRect->m_bottom);
+		if ((short) (clip->m_height + clip->m_y) < (short) (p_clipRect->m_bottom + p_clipRect->m_top)) {
+			clip->m_height = (short) ((p_clipRect->m_top - clip->m_y) + p_clipRect->m_bottom);
 		}
 	}
 	parent = m_parentSurface;
 	if (parent != (Surface*) g_pGdiHelperTarget && (p_clipRect->m_reserved0c & 0x10000) == 0) {
-		clipRight = m_clipRect.m_x;
+		clipRight = clip->m_x;
 		if (clipRight < parent->m_clipRect.m_x) {
-			m_clipRect.m_width = (short) (m_clipRect.m_width + (clipRight - parent->m_clipRect.m_x));
-			m_clipRect.m_x = parent->m_clipRect.m_x;
+			clip->m_width = (short) (clip->m_width + (clipRight - parent->m_clipRect.m_x));
+			clip->m_x = parent->m_clipRect.m_x;
 		}
-		clipRight = m_clipRect.m_x;
-		if ((short) (parent->m_clipRect.m_width + parent->m_clipRect.m_x) < (short) (m_clipRect.m_width + clipRight)) {
-			m_clipRect.m_width = (short) ((parent->m_clipRect.m_x - clipRight) + parent->m_clipRect.m_width);
+		clipRight = clip->m_x;
+		if ((short) (parent->m_clipRect.m_width + parent->m_clipRect.m_x) < (short) (clip->m_width + clipRight)) {
+			clip->m_width = (short) ((parent->m_clipRect.m_x - clipRight) + parent->m_clipRect.m_width);
 		}
-		clipBottom = m_clipRect.m_y;
+		clipBottom = clip->m_y;
 		if (clipBottom < parent->m_clipRect.m_y) {
-			m_clipRect.m_height = (short) (m_clipRect.m_height + (clipBottom - parent->m_clipRect.m_y));
-			m_clipRect.m_y = parent->m_clipRect.m_y;
+			clip->m_height = (short) (clip->m_height + (clipBottom - parent->m_clipRect.m_y));
+			clip->m_y = parent->m_clipRect.m_y;
 		}
-		clipBottom = m_clipRect.m_y;
-		if ((short) (parent->m_clipRect.m_y + parent->m_clipRect.m_height) <
-			(short) (m_clipRect.m_height + clipBottom)) {
-			m_clipRect.m_height = (short) ((parent->m_clipRect.m_height - clipBottom) + parent->m_clipRect.m_y);
+		clipBottom = clip->m_y;
+		if ((short) (parent->m_clipRect.m_y + parent->m_clipRect.m_height) < (short) (clip->m_height + clipBottom)) {
+			clip->m_height = (short) ((parent->m_clipRect.m_height - clipBottom) + parent->m_clipRect.m_y);
 		}
-		if (m_clipRect.m_width < 1 || m_clipRect.m_height < 1) {
-			m_clipRect.m_height = 0;
-			m_clipRect.m_width = 0;
-			m_clipRect.m_y = 0;
-			m_clipRect.m_x = 0;
+		if (clip->m_width < 1 || clip->m_height < 1) {
+			clip->m_height = 0;
+			clip->m_width = 0;
+			clip->m_y = 0;
+			clip->m_x = 0;
 		}
 	}
 }
