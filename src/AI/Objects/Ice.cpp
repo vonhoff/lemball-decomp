@@ -37,7 +37,7 @@ void Ice::Set(unsigned short p_id,
 			  const Coord3d& p_cornerB,
 			  int p_velocityX,
 			  int p_velocityY,
-			  unsigned int p_initialSwitched)
+			  unsigned char p_initialSwitched)
 {
 	SetId(p_id);
 	m_enabled = 1;
