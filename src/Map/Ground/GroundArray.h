@@ -37,6 +37,7 @@ public:
 	friend class C2D;
 	friend class Trampoline;
 	friend class GroundAnim;
+	friend class GameObject;
 
 private:
 	unsigned int m_reserved; // 0x00
