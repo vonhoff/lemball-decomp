@@ -10,6 +10,8 @@ public:
 	virtual void SetOptionSelection(int p_selection); // vtable+0x00
 	virtual bool GetPauser();                         // vtable+0x04
 
+	friend class C2D;
+
 private:
 	int m_optionSelection; // 0x04
 };

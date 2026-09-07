@@ -59,6 +59,19 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 	}
 	m_zBufferEnabled = 1;
 	m_externalEnabled = 1;
+	m_optionSelection = 0;
+	m_cursorBlinkPhase = 0;
+	m_demoTextPosition.m_x = 0;
+	m_demoTextPosition.m_y = 0;
+	m_spriteGroundTranslationPoint.m_x = 0;
+	m_spriteGroundTranslationPoint.m_y = 0;
+	m_cursorGamePoint.m_x = 0;
+	m_cursorGamePoint.m_y = 0;
+	m_copyColourToBackBuff.m_colour = 0;
+	m_copyColourToBackBuff.m_width = 0;
+	m_copyColourToBackBuff.m_height = 0;
+	m_copyColourToBackBuff.m_x = 0;
+	m_copyColourToBackBuff.m_y = 0;
 	m_drawingMarkPosition.m_x = 0;
 	m_drawingMarkPosition.m_y = 0;
 	InitSpriteGroundLu();

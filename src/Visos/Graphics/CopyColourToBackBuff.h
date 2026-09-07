@@ -13,6 +13,7 @@ public:
 	virtual ~CopyColourToBackBuff(); // vtable+0x00
 
 	friend class Surface;
+	friend class C2D;
 
 private:
 	int m_colour;   // 0x04
