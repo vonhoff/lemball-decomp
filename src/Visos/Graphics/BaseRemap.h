@@ -12,6 +12,8 @@ public:
 	~BaseRemap();
 	BaseRemap();
 
+	friend class Surface;
+
 private:
 	unsigned char* m_remap;  // 0x00
 	void* m_paletteResource; // 0x04

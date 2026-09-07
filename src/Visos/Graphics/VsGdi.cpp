@@ -20,6 +20,7 @@
 #include "GdiDevice.h"
 #include "Line.h"
 #include "Point.h"
+#include "Remap.h"
 #include "ScreenScroll.h"
 #include "SolidRect.h"
 #include "ZBuffClear.h"
@@ -3206,8 +3207,6 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 		}
 		{
 			VsRect dest;
-			unsigned int reverse;
-			unsigned char* remapData;
 
 			dest.InitFromSizeAndPosition((short) p_primitive->m_x,
 										 (short) p_primitive->m_y,
@@ -3230,8 +3229,6 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 						dest.m_height = 0xff;
 					}
 				}
-				reverse = (unsigned char) ((flags & 2) >> 1);
-				remapData = (unsigned char*) remap;
 				if (ClipRect(dest, &clipped) == 0) {
 					AddToChangeList(&dest);
 					if ((flags & 0x40000) != 0) {
@@ -3239,7 +3236,7 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 							BlitZrleNoClipZBuff(dest, p_zrle, stateDepth);
 							return;
 						}
-						BlitZrleNoClipZBuffRemap(dest, p_zrle, stateDepth, remapData);
+						BlitZrleNoClipZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
 						return;
 					}
 					if ((flags & 0x80000) != 0) {
@@ -3247,22 +3244,22 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 							BlitZrleNoClipQzBuff(dest, p_zrle, stateDepth);
 							return;
 						}
-						BlitZrleNoClipQzBuffRemap(dest, p_zrle, stateDepth, remapData);
+						BlitZrleNoClipQzBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
 						return;
 					}
 					if (remap == 0) {
 						if ((flags & 1) != 0) {
-							BlitZrleNoClipR(dest, p_zrle, reverse);
+							BlitZrleNoClipR(dest, p_zrle, (flags & 2) >> 1);
 							return;
 						}
-						BlitZrleNoClip(dest, p_zrle, reverse);
+						BlitZrleNoClip(dest, p_zrle, (flags & 2) >> 1);
 						return;
 					}
 					if ((flags & 1) != 0) {
-						BlitZrleNoClipRemapR(dest, p_zrle, reverse, remapData);
+						BlitZrleNoClipRemapR(dest, p_zrle, (flags & 2) >> 1, remap->m_remap);
 						return;
 					}
-					BlitZrleNoClipRemap(dest, p_zrle, reverse, remapData);
+					BlitZrleNoClipRemap(dest, p_zrle, (flags & 2) >> 1, remap->m_remap);
 					return;
 				}
 				if (clipped.m_width <= 0 || clipped.m_height <= 0) {
@@ -3274,7 +3271,7 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 						BlitZrleClipZBuff(dest, clipped, p_zrle, stateDepth);
 						return;
 					}
-					BlitZrleClipZBuffRemap(dest, clipped, p_zrle, stateDepth, remapData);
+					BlitZrleClipZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
 					return;
 				}
 				if ((flags & 0x80000) != 0) {
@@ -3282,22 +3279,22 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 						BlitZrleClipQzBuff(dest, clipped, p_zrle, stateDepth);
 						return;
 					}
-					BlitZrleClipQzBuffRemap(dest, clipped, p_zrle, stateDepth, remapData);
+					BlitZrleClipQzBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
 					return;
 				}
 				if (remap == 0) {
 					if ((flags & 1) != 0) {
-						BlitZrleClipR(dest, clipped, p_zrle, reverse);
+						BlitZrleClipR(dest, clipped, p_zrle, (flags & 2) >> 1);
 						return;
 					}
-					BlitZrleClip(dest, clipped, p_zrle, reverse);
+					BlitZrleClip(dest, clipped, p_zrle, (flags & 2) >> 1);
 					return;
 				}
 				if ((flags & 1) != 0) {
-					BlitZrleClipRemapR(dest, clipped, p_zrle, reverse, remapData);
+					BlitZrleClipRemapR(dest, clipped, p_zrle, (flags & 2) >> 1, remap->m_remap);
 					return;
 				}
-				BlitZrleClipRemap(dest, clipped, p_zrle, reverse, remapData);
+				BlitZrleClipRemap(dest, clipped, p_zrle, (flags & 2) >> 1, remap->m_remap);
 			}
 		}
 	}
