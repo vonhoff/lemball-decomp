@@ -22,9 +22,13 @@ void GodManager::Restart()
 }
 
 // 68K 0x1060e060 Register__11CGodManagerFP18CBaseObjectManager
-// STUB: LEMBALL 0x0040b150
+// FUNCTION: LEMBALL 0x0040b150
 void GodManager::Register(BaseObjectManager* p_manager)
 {
+	m_transportMap[p_manager->m_messageType] = m_count;
+	m_managers[m_count] = p_manager;
+	m_count++;
+	p_manager->Restart();
 }
 
 // 68K 0x1060e0dc ProcessMsg__11CGodManagerFP10tagMESSAGE

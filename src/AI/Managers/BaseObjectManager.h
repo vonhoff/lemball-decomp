@@ -32,6 +32,8 @@ public:
 	void Add(NetworkMessage* p_message);
 	void ProcessNetwork();
 
+	friend class GodManager;
+
 protected:
 	int m_messageType; // 0x2c
 };
