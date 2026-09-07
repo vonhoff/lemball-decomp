@@ -163,6 +163,7 @@ void PasswordDrawer::Load()
 		primitiveBundle++;
 	} while (--primitiveCount != 0);
 	AnimsManager::LoadAnims(m_animationId);
+	layout = (int*) m_layout;
 	keyMap = g_passwordKeyMap;
 	offsetPtr = m_buttonOffsets;
 	gridX = layout[2];
