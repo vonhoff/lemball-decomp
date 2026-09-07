@@ -17,6 +17,7 @@ public:
 	friend class CdLoadAnimDraw;
 	friend class TargetAboutScreen;
 	friend class Surface;
+	friend class PauseWindow;
 
 private:
 	short m_x1;           // 0x04

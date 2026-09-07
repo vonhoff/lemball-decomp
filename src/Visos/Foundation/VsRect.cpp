@@ -37,6 +37,14 @@ VsPoint* VsPoint::AddInPlace(VsPoint* p_delta)
 	return this;
 }
 
+// FUNCTION: LEMBALL 0x004452c0
+VsPoint* VsPoint::SubtractInPlace(VsPoint* p_delta)
+{
+	m_x = (short) (m_x - p_delta->m_x);
+	m_y = (short) (m_y - p_delta->m_y);
+	return this;
+}
+
 // FUNCTION: LEMBALL 0x0044e6c0
 VsRect::VsRect(const VsRect& p_source)
 {

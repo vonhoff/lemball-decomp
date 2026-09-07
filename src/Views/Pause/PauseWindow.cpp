@@ -45,9 +45,75 @@ void PauseWindow::Restart()
 }
 
 // 68K 0x10b0e390 CreateTheWindow__12CPauseWindowFRC7CVSRect
-// STUB: LEMBALL 0x00443db0
+// FUNCTION: LEMBALL 0x00443db0
 void PauseWindow::CreateTheWindow(const VsRect& p_rect)
 {
+	short verticalOffset = (short) m_verticalTextOffset;
+	VsPoint point;
+	VsRect borderRect;
+
+	if (m_pauseMessage == 3) {
+		short x = (short) ((p_rect.m_width - m_textSizes[0].m_x) / 2);
+		m_textSizes[1].m_x = x;
+		m_textSizes[1].m_y = verticalOffset;
+		verticalOffset = (short) (verticalOffset + m_textSizes[0].m_y + m_textSpacing.m_y);
+		m_textSizes[3].m_x = x;
+		m_textSizes[3].m_y = verticalOffset;
+		m_textSizes[5].m_x = (short) (x + m_textSizes[0].m_x - m_textSizes[4].m_x);
+		m_textSizes[5].m_y = verticalOffset;
+	}
+	else if (m_menuItemCount > 0) {
+		int item = 0;
+		VsPoint* textSize = m_textSizes;
+		VsPoint* textPosition = m_textSizes + 1;
+		do {
+			item++;
+			textPosition->m_x = (short) ((p_rect.m_width - textSize->m_x) / 2);
+			textPosition->m_y = verticalOffset;
+			verticalOffset = (short) (verticalOffset + textSize->m_y + m_textSpacing.m_y);
+			textSize += 2;
+			textPosition += 2;
+		} while (item < m_menuItemCount);
+	}
+
+	m_width = p_rect.m_width;
+	m_height = p_rect.m_height;
+	m_x = p_rect.m_x;
+	m_y = p_rect.m_y;
+	HotAreaHandler::SetActive(1);
+	m_externalEnabled = 1;
+
+	if (m_lifecycleRefs == 1) {
+		PvWnd::SetRect(p_rect);
+	}
+	else {
+		m_gdiFlags = m_borderAnimCount * 2 + 0x3ed;
+		Create(p_rect, m_parentWindow, "Pause mode");
+		m_parentWindow->m_hotAreaList->AddToList(this);
+	}
+
+	point = *(const VsPoint*) &p_rect;
+	borderRect.m_width = point.m_x;
+	borderRect.m_height = point.m_y;
+	borderRect.m_x = 0;
+	borderRect.m_y = 0;
+	m_borderPadding.m_x = 4;
+	m_borderPadding.m_y = 4;
+	if (m_lowResolution == 0) {
+		m_borderPadding.m_x = 8;
+		m_borderPadding.m_y = 8;
+	}
+	point.m_x = m_borderPadding.m_x;
+	point.m_y = m_borderPadding.m_y;
+	((VsPoint*) &borderRect.m_x)->AddInPlace(&point);
+	point.m_x = (short) (m_borderPadding.m_x * 2);
+	point.m_y = (short) (m_borderPadding.m_y * 2);
+	((VsPoint*) &borderRect.m_width)->SubtractInPlace(&point);
+	m_borderLine.m_x1 = borderRect.m_width;
+	m_borderLine.m_y1 = borderRect.m_height;
+	m_borderLine.m_x2 = borderRect.m_x;
+	m_borderLine.m_y2 = borderRect.m_y;
+	m_borderLine.m_color = 0xc;
 }
 
 // 68K 0x10b0e6ce CalculateWindow__12CPauseWindowFv

@@ -7,6 +7,7 @@
 struct VsPoint {
 	VsPoint& operator=(const VsPoint& p_source);
 	VsPoint* AddInPlace(VsPoint* p_delta);
+	VsPoint* SubtractInPlace(VsPoint* p_delta);
 
 	short m_x; // 0x00
 	short m_y; // 0x02
