@@ -1,5 +1,7 @@
 #include "NetworkManager.h"
 
+#include "../Messages/NetworkGameMessage.h"
+
 // 68K 0x10a00346 __ct__15CNetworkManagerFPCc
 // STUB: LEMBALL 0x00452550
 NetworkManager::NetworkManager(const char* p_arg0)
@@ -58,10 +60,14 @@ void NetworkManager::Process()
 }
 
 // 68K 0x10a00b92 GetGameMessage__15CNetworkManagerFP8CConnect
-// STUB: LEMBALL 0x00452b90
+// FUNCTION: LEMBALL 0x00452b90
 NetworkGameMessage* NetworkManager::GetGameMessage(Connect* p_connection)
 {
-	return 0;
+	int index = GetnGame(p_connection);
+	if (index == -1) {
+		return 0;
+	}
+	return m_gameMessages + index;
 }
 
 // 68K 0x10a00bfa GetnGame__15CNetworkManagerFP8CConnect
