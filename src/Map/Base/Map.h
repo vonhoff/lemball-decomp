@@ -45,6 +45,7 @@ public:
 	friend class Lift;
 	friend class BalloonPost;
 	friend class Mover;
+	friend class Maze;
 	friend class C2D;
 
 private:

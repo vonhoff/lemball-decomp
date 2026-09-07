@@ -1,5 +1,7 @@
 #include "Maze.h"
 
+#include "../../Map/Base/Map.h"
+
 #include <string.h>
 
 // 68K 0x10615900 __ct__5CMazeFP4CMap
@@ -21,9 +23,27 @@ void Maze::ReInitialise()
 }
 
 // 68K 0x10615a26 Initialise__5CMazeFv
-// STUB: LEMBALL 0x00423190
+// FUNCTION: LEMBALL 0x00423190
 void Maze::Initialise()
 {
+	if (m_distances != 0) {
+		int row = 0;
+		if (m_height > 0) {
+			do {
+				delete[] m_distances[row];
+				row++;
+			} while (row < m_height);
+		}
+		delete[] m_distances;
+	}
+
+	m_width = m_map->m_ground.m_width;
+	m_height = m_map->m_ground.m_height;
+	m_distances = new unsigned short*[m_height];
+	for (int row = 0; row < m_height; row++) {
+		m_distances[row] = new unsigned short[m_width];
+	}
+	ReInitialise();
 }
 
 // 68K 0x10615ad8 CalcNewDistance__5CMazeFii
