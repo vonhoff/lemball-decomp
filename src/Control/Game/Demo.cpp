@@ -1,5 +1,6 @@
 #include "Demo.h"
 
+#include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Resources/ResBin.h"
 
 // 68K 0x10700a70 __ct__5CDemoFi
@@ -9,9 +10,11 @@ Demo::Demo(int p_arg0)
 }
 
 // 68K 0x10700b20 __dt__5CDemoFv
-// STUB: LEMBALL 0x00409220
+// FUNCTION: LEMBALL 0x00409220
 Demo::~Demo()
 {
+	CleanUp();
+	g_pMasterInputQueue->Detach(this, -100);
 }
 
 // 68K 0x10700b8a SendNextPacket__5CDemoFi
