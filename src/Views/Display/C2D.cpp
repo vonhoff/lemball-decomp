@@ -975,10 +975,56 @@ void C2D::DrawClippedRectangle(const VsRect& p_rect)
 }
 
 // 68K 0x10b02196 LemmingFly__3C2DFR9CViewDataRi
-// STUB: LEMBALL 0x0043bce0
+// FUNCTION: LEMBALL 0x0043bce0
 unsigned long C2D::LemmingFly(ViewData& p_viewData, int& p_frame)
 {
-	return 0;
+	// GLOBAL: LEMBALL 0x0049eef8
+	static unsigned long flyResources[] = {
+		RES_GAME_JUMP_NE,
+		RES_GAME_JUMP_NE,
+		RES_GAME_JUMP_SE,
+		RES_GAME_JUMP_SE,
+		RES_GAME_JUMP_SW,
+		RES_GAME_JUMP_SW,
+		RES_GAME_JUMP_NW,
+		RES_GAME_JUMP_NW,
+	};
+
+	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	int frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
+
+	p_frame = 0;
+	if (frameDelta < 0) {
+		return flyResources[direction];
+	}
+
+	Map* map = m_map;
+	int viewX = (unsigned short) p_viewData.m_viewX;
+	int viewY = (unsigned short) p_viewData.m_viewY;
+	int blockX = viewX >> 4;
+	int blockY = viewY >> 4;
+	int groundZ;
+	if (viewX >= 0 && viewY >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+		groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(viewX & 0xf, viewY & 0xf);
+	}
+	else {
+		groundZ = 0;
+	}
+
+	int frame = frameDelta * 15;
+	if (p_viewData.m_positionZ <= groundZ) {
+		p_frame = frame / 1000 + 7;
+		if (p_frame > 12) {
+			p_frame = 12;
+		}
+	}
+	else {
+		p_frame = frame / 1000;
+		if (p_frame > 6) {
+			p_frame = 6;
+		}
+	}
+	return flyResources[direction];
 }
 
 // 68K 0x10b022ac DrawLemmingFlyShadow__3C2DFR9CViewData
