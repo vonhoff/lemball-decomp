@@ -1,9 +1,10 @@
 #include "FileWriteSocket.h"
 
 // 68K 0x102077ea __ct__16CFileWriteSocketFv
-// STUB: LEMBALL 0x00479e20
-FileWriteSocket::FileWriteSocket()
+// FUNCTION: LEMBALL 0x00479e20
+FileWriteSocket::FileWriteSocket() : FileBaseSocket(), WriteSocket(), FileCommonSocket()
 {
+	m_unk0x10 = 0;
 }
 
 // 68K 0x10207a8c Write__16CFileWriteSocketFR15CNetworkMessageUcUc
