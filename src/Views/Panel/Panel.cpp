@@ -84,8 +84,16 @@ int Panel::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x10b0df46 MouseInPanel__6CPanelFRC8CVSPoint
-// STUB: LEMBALL 0x00443360
+// FUNCTION: LEMBALL 0x00443360
 bool Panel::MouseInPanel(const VsPoint& p_point)
 {
-	return 0;
+	short panelWidth = m_panelSize.m_x;
+	short panelX = m_panelPosition.m_x;
+	short panelHeight = m_panelSize.m_y;
+	short panelY = m_panelPosition.m_y;
+	if (panelX <= p_point.m_x && p_point.m_x < (short) (panelX + panelWidth) && panelY <= p_point.m_y &&
+		p_point.m_y < (short) (panelY + panelHeight)) {
+		return true;
+	}
+	return false;
 }
