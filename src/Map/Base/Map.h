@@ -48,6 +48,7 @@ public:
 	friend class Maze;
 	friend class C2D;
 	friend class Trampoline;
+	friend class GroundAnim;
 
 private:
 	unsigned int m_reserved;   // 0x00

@@ -1,6 +1,7 @@
 #include "GroundAnim.h"
 
 #include "../../Control/Game/Game.h"
+#include "../../Map/Base/Map.h"
 
 // 68K 0x1060e30e __ct__11CGroundAnimFv
 // FUNCTION: LEMBALL 0x0040cf00
@@ -89,9 +90,28 @@ bool GroundAnim::Check(const Coord3d& p_coordinate)
 }
 
 // 68K 0x1060e62a Add__11CGroundAnimFRC8tCoord3dUsUs
-// STUB: LEMBALL 0x0040d130
+// FUNCTION: LEMBALL 0x0040d130
 void GroundAnim::Add(const Coord3d& p_coordinate, unsigned short p_startFrame, unsigned short p_endFrame)
 {
+	if (Check(p_coordinate) != 0 || m_count >= 200) {
+		return;
+	}
+
+	m_entries[m_count].m_active = 1;
+	m_entries[m_count].m_coordinate = p_coordinate;
+	m_entries[m_count].m_currentFrame = p_startFrame;
+	m_entries[m_count].m_startFrame = p_startFrame;
+	m_entries[m_count].m_endFrame = p_endFrame;
+	m_entries[m_count].m_direction = p_endFrame < p_startFrame ? -1 : 1;
+
+	int blockY = p_coordinate.m_y / 16;
+	int blockX = p_coordinate.m_x / 16;
+	m_entries[m_count].m_mapCell = &g_pCurrentMap->m_ground.m_ground[blockY * g_pCurrentMap->m_ground.m_width + blockX];
+
+	m_count++;
+	for (int i = 0; i < m_count; i++) {
+		m_entries[i].m_currentFrame = m_entries[i].m_startFrame;
+	}
 }
 
 // 68K 0x1060e768 LoadLevel__11CGroundAnimFPUciUc
