@@ -129,7 +129,6 @@ PasswordDrawer::PasswordDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect&
 void PasswordDrawer::Load()
 {
 	int* layout;
-	unsigned long* animIds;
 	int gridX;
 	int gridY;
 	int row;
@@ -153,7 +152,6 @@ void PasswordDrawer::Load()
 		m_animationId = RES_NEWFRONT_ANIMS_HIRES_PASSWORD_HILITE;
 	}
 	layout = (int*) m_layout;
-	animIds = (unsigned long*) m_buttonAnimIds;
 	primitiveBundle = &m_primitiveBundle;
 	primitiveCount = 1;
 	do {
@@ -181,8 +179,8 @@ void PasswordDrawer::Load()
 			else {
 				position.m_x = (short) gridX;
 				position.m_y = (short) gridY;
-				m_buttons[buttonIndex] =
-					new (storage) GraphicButton(position, (PvGWnd*) m_display, animIds[buttonIndex], 3);
+				m_buttons[buttonIndex] = new (storage)
+					GraphicButton(position, (PvGWnd*) m_display, ((unsigned long*) m_buttonAnimIds)[buttonIndex], 3);
 			}
 			m_buttons[buttonIndex]->m_controlMessage = 0xabcd00b0 + buttonIndex;
 			m_buttons[buttonIndex]->m_messageHandler = g_pMasterInputQueue;
