@@ -19,6 +19,7 @@ public:
 	friend class BaseFrontendProcess;
 	friend class BaseObjectManager;
 	friend class CConnect;
+	friend class PbNetworkGame;
 	friend class WriteSocket;
 	friend class ReadSocket;
 	bool Set(unsigned char* p_data);
