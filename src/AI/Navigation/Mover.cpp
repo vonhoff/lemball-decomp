@@ -2,6 +2,8 @@
 
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
+#include "../Groups/PlayerLemmingGroup.h"
+#include "../Objects/PlayerLemming.h"
 #include "Ai.h"
 
 // 68K 0x106171a6 __ct__6CMoverFv
@@ -134,9 +136,23 @@ bool Mover::GetOn(GameObject* p_object)
 }
 
 // 68K 0x10617e94 StopObjectsMoving__6CMoverFv
-// STUB: LEMBALL 0x0042f140
+// FUNCTION: LEMBALL 0x0042f140
 void Mover::StopObjectsMoving()
 {
+	int index = 0;
+	if (0 < m_objectCount) {
+		GameObject** object = m_objects;
+		do {
+			if ((*object)->m_objectType == (eObjectType) 2) {
+				((PlayerLemming*) *object)->GetGroup()->ClearExistingWaypoints();
+			}
+			else {
+				(*object)->ResetInstructions();
+			}
+			object++;
+			index++;
+		} while (index < m_objectCount);
+	}
 }
 
 // 68K 0x1011a914 DoActivate__6CMoverFv

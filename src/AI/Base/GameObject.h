@@ -147,6 +147,7 @@ public:
 	friend class Collectable;
 	friend class Crate;
 	friend class InvisibleSwitch;
+	friend class Mover;
 	friend class PlayerLemmingGroupManager;
 
 protected:
