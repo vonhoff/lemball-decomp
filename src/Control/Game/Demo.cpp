@@ -1,6 +1,7 @@
 #include "Demo.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/ResBin.h"
 
 // 68K 0x10700a70 __ct__5CDemoFi
@@ -61,9 +62,21 @@ void Demo::SetDemoMode(int p_enabled)
 }
 
 // 68K 0x107010ac Process__5CDemoFv
-// STUB: LEMBALL 0x00409620
+// FUNCTION: LEMBALL 0x00409620
 void Demo::Process()
 {
+	if (m_gameOver == 0 && m_demoMode != 0) {
+		unsigned long current = CurrentMilliTimer();
+		if (m_duration != 0 && m_duration <= current - m_startTime) {
+			GameIsOver();
+			return;
+		}
+		m_packetIndex++;
+		bool more;
+		do {
+			more = SendNextPacket(m_packetIndex);
+		} while (more);
+	}
 }
 
 // 68K 0x10701116 CleanUp__5CDemoFv
