@@ -9,7 +9,7 @@ class FileOpenManagement {
 public:
 	bool DecOpenCount();
 	bool IncOpenCount();
-	bool SysCloseSocket();
+	int SysCloseSocket();
 	~FileOpenManagement();
 
 private:

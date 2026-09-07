@@ -8,6 +8,11 @@
 // VTABLE: LEMBALL 0x0049a848
 class OpenCount : public NetworkMessage {
 public:
+	OpenCount() : NetworkMessage(0)
+	{
+		m_payloadCapacity += 2;
+		m_openCount = 0;
+	}
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
 	virtual ~OpenCount();   // vtable+0x14

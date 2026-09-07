@@ -16,7 +16,7 @@ bool FileOpenManagement::DecOpenCount()
 
 // 68K 0x102081fa SysCloseSocket__19CFileOpenManagementFv
 // STUB: LEMBALL 0x0047a530
-bool FileOpenManagement::SysCloseSocket()
+int FileOpenManagement::SysCloseSocket()
 {
 	return 0;
 }
