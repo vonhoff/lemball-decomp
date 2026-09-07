@@ -32,8 +32,8 @@ private:
 	unsigned int m_animationId;           // 0x398
 	undefined m_unknown39c[8];            // 0x39c
 	PasswordHiliteWindow* m_hiliteWindow; // 0x3a4
-	void* m_layout;                       // 0x3a8
-	void* m_buttonAnimIds;                // 0x3ac
+	int* m_layout;                        // 0x3a8
+	unsigned long* m_buttonAnimIds;       // 0x3ac
 	char m_password[16];                  // 0x3b0
 	int m_buttonOffsets[24];              // 0x3c0
 	int m_passwordLength;                 // 0x420

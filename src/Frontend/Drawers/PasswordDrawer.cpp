@@ -142,16 +142,16 @@ void PasswordDrawer::Load()
 	int primitiveCount;
 
 	if (m_mode != 0) {
-		m_layout = g_abPasswordLayoutCompact;
+		m_layout = (int*) g_abPasswordLayoutCompact;
 		m_buttonAnimIds = g_dwPasswordButtonAnimIdsCompact;
 		m_animationId = RES_NEWFRONT_ANIMS_LORES_PASSWORD_HILITE;
 	}
 	else {
-		m_layout = g_abPasswordLayoutFull;
+		m_layout = (int*) g_abPasswordLayoutFull;
 		m_buttonAnimIds = g_dwPasswordButtonAnimIdsFull;
 		m_animationId = RES_NEWFRONT_ANIMS_HIRES_PASSWORD_HILITE;
 	}
-	layout = (int*) m_layout;
+	layout = m_layout;
 	primitiveBundle = &m_primitiveBundle;
 	primitiveCount = 1;
 	do {
@@ -163,7 +163,7 @@ void PasswordDrawer::Load()
 		primitiveBundle++;
 	} while (--primitiveCount != 0);
 	AnimsManager::LoadAnims(m_animationId);
-	layout = (int*) m_layout;
+	layout = m_layout;
 	keyMap = g_passwordKeyMap;
 	offsetPtr = m_buttonOffsets;
 	gridX = layout[2];
@@ -180,8 +180,8 @@ void PasswordDrawer::Load()
 			else {
 				position.m_x = (short) gridX;
 				position.m_y = (short) gridY;
-				m_buttons[buttonIndex] = new (storage)
-					GraphicButton(position, (PvGWnd*) m_display, ((unsigned long*) m_buttonAnimIds)[buttonIndex], 3);
+				m_buttons[buttonIndex] =
+					new (storage) GraphicButton(position, (PvGWnd*) m_display, m_buttonAnimIds[buttonIndex], 3);
 			}
 			m_buttons[buttonIndex]->m_controlMessage = 0xabcd00b0 + buttonIndex;
 			m_buttons[buttonIndex]->m_messageHandler = g_pMasterInputQueue;
@@ -388,7 +388,7 @@ void PasswordDrawer::DrawText()
 	VsPoint position;
 	VsSize advance;
 
-	layout = (int*) m_layout;
+	layout = m_layout;
 	int* labelPos = &layout[0x18 / 4];
 	int* countPos = &layout[0x38 / 4];
 	textPtr = text;
@@ -435,7 +435,7 @@ void PasswordDrawer::DrawPassword()
 	VsPoint textSize;
 	ResFont* font;
 
-	layout = (int*) m_layout;
+	layout = m_layout;
 	font = m_textManager->GetFont(m_chalkFontId);
 	font->GetSize(&textSize, m_password, 0x20);
 	position.m_y = (short) layout[0x5c / 4];
@@ -538,7 +538,7 @@ void PasswordDrawer::SetHiliteWindow()
 	short pitch;
 	void* storage;
 
-	layout = (int*) m_layout;
+	layout = m_layout;
 	pitch = (short) layout[0x60 / 4] + (short) layout[0x10 / 4];
 	storage = operator new(0x90);
 	if (storage == 0) {
