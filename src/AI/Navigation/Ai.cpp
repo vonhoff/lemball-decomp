@@ -10,6 +10,7 @@
 #include "../Managers/LiftManager.h"
 #include "../Managers/TrampolineManager.h"
 #include "../Managers/TrapDoorManager.h"
+#include "../Objects/PlayerLemming.h"
 #include "MoverManager.h"
 #include "NodeManager.h"
 
@@ -192,9 +193,22 @@ void Ai::SwitchMessage(swMessage p_message, int p_first, int p_last, int p_arg3)
 }
 
 // 68K 0x106025ce GetPlayerPos__3CAIFiR7AICOORD
-// STUB: LEMBALL 0x00412dc0
+// FUNCTION: LEMBALL 0x00412dc0
 void Ai::GetPlayerPos(int p_id, AiCoord& p_position)
 {
+	PlayerLemming** lemming = m_networkLemmings;
+	int index = 0;
+	do {
+		if ((*lemming)->m_objectId == p_id) {
+			PlayerLemming* player = m_networkLemmings[index];
+			p_position.m_xFixed = player->m_position.m_xFixed;
+			p_position.m_yFixed = player->m_position.m_yFixed;
+			p_position.m_zFixed = player->m_position.m_zFixed;
+			return;
+		}
+		lemming++;
+		index++;
+	} while (index < 4);
 }
 
 // 68K 0x1060264e GetOrigin__3CAIFR7AICOORDRUc

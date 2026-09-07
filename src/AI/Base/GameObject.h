@@ -146,6 +146,7 @@ public:
 	friend class Balloon;
 	friend class Collectable;
 	friend class Crate;
+	friend class Ai;
 	friend class InvisibleSwitch;
 	friend class Mover;
 	friend class PlayerLemmingGroupManager;
