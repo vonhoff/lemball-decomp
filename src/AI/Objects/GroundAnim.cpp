@@ -71,9 +71,20 @@ void GroundAnim::Process()
 }
 
 // 68K 0x1060e5ae Check__11CGroundAnimFRC8tCoord3d
-// STUB: LEMBALL 0x0040d080
+// FUNCTION: LEMBALL 0x0040d080
 bool GroundAnim::Check(const Coord3d& p_coordinate)
 {
+	int index = 0;
+	if (0 < m_count) {
+		GroundAnimEntry* entry = m_entries;
+		do {
+			if (entry->m_coordinate.m_x == p_coordinate.m_x && entry->m_coordinate.m_y == p_coordinate.m_y) {
+				return 1;
+			}
+			entry++;
+			index++;
+		} while (index < m_count);
+	}
 	return 0;
 }
 
