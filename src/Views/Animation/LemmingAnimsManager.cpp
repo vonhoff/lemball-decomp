@@ -3,6 +3,9 @@
 #include "../../AI/Navigation/Ai.h"
 #include "../../Frontend/Resources/CdLoadAnim.h"
 #include "../../Frontend/Resources/FrontendResourceLoader.h"
+#include "../../Visos/Animation/PlayThruAnim.h"
+#include "../../Visos/Animation/RepeatAnim.h"
+#include "../../Visos/Animation/StaticAnim.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/MogRes.h"
 #include "../../Visos/Resources/ResFont.h"
@@ -42,15 +45,198 @@ void LemmingAnimsManager::SetupStyleSensitive()
 }
 
 // 68K 0x10b0a2ae LoadVrammed__20CLemmingAnimsManagerFv
-// STUB: LEMBALL 0x00432fe0
+// FUNCTION: LEMBALL 0x00432fe0
 void LemmingAnimsManager::LoadVrammed()
 {
+	if (g_groundBlox1ResourceId != 0) {
+		LoadAnimation(g_groundBlox1ResourceId, 2);
+	}
+	if (g_groundBlox2ResourceId != 0) {
+		LoadAnimation(g_groundBlox2ResourceId, 2);
+	}
+	if (g_groundBlox3ResourceId != 0) {
+		LoadAnimation(g_groundBlox3ResourceId, 2);
+	}
+	if (g_groundBlox4ResourceId != 0) {
+		LoadAnimation(g_groundBlox4ResourceId, 2);
+	}
+	if (g_groundBlox5ResourceId != 0) {
+		LoadAnimation(g_groundBlox5ResourceId, 2);
+	}
+	if (g_groundBlox6ResourceId != 0) {
+		LoadAnimation(g_groundBlox6ResourceId, 2);
+	}
+	if (g_groundBlox7ResourceId != 0) {
+		LoadAnimation(g_groundBlox7ResourceId, 2);
+	}
+	if (g_anGroundStyleResourceIds[0] != 0) {
+		LoadAnimation(g_anGroundStyleResourceIds[0], 2);
+	}
+	if (g_anGroundStyleResourceIds[4] != 0) {
+		LoadAnimation(g_anGroundStyleResourceIds[4], 2);
+	}
+	if (g_anGroundStyleResourceIds[5] != 0) {
+		LoadAnimation(g_anGroundStyleResourceIds[5], 2);
+	}
+	if (g_anGroundStyleResourceIds[3] != 0) {
+		LoadAnimation(g_anGroundStyleResourceIds[3], 2);
+	}
+	LoadAnimation(RES_GAME_CONVEYOR, 2);
+	if (m_ai->GetObjectRequired(4)) {
+		LoadAnimation(g_anGroundStyleResourceIds[8], 0);
+	}
+	LoadAnimation(RES_CURSORS_HAND, 0);
+	LoadAnimation(RES_GAME_LEMMINGSELECTED, 0);
+	LoadAnimation(RES_GAME_LEMMINGLEADER, 0);
+	LoadAnimation(RES_GAME_LEMMINGWALKN, RES_GAME_LEMMINGWALKNW, 1);
+	LoadAnimation(RES_GAME_LEMMINGSTANDN, RES_GAME_LEMMINGSTANDNW, 1);
+	LoadAnimation(RES_GAME_LEMMINGFIREN, RES_GAME_LEMMINGFIRENW, 1);
+	LoadAnimation(RES_GAME_LEMMINGPELLETN, RES_GAME_LEMMINGPELLETNW, 1);
+	LoadAnimation(RES_GAME_STARS, 0);
+	LoadAnimation(RES_GAME_FILLED_STARS, 0);
+	LoadAnimation(RES_GAME_CIRCLES, 0);
+	if (m_ai->GetObjectRequired(0x27) || m_ai->GetObjectRequired(0x29) || m_ai->GetObjectRequired(0x2b) ||
+		m_ai->GetObjectRequired(0x2d)) {
+		LoadAnimation(RES_GAME_BALLOON, 0);
+		LoadAnimation(RES_GAME_BALLOON_POST, 0);
+	}
+	LoadAnimation(RES_GAME_BALLOON_SHADOW, 0);
+	LoadAnimation(RES_GAME_JUMP_NE, 2);
+	LoadAnimation(RES_GAME_JUMP_NW, 2);
+	LoadAnimation(RES_GAME_JUMP_SE, 2);
+	LoadAnimation(RES_GAME_JUMP_SW, 2);
+	LoadAnimation(RES_GAME_LEMMING_SPIN, 2);
+	LoadAnimation(RES_GAME_YELLOW_AMMO, 1);
+	LoadAnimation(RES_GAME_EX_PELLET, 3);
+	LoadAnimation(RES_GAME_SPINARROW, 1);
+	LoadAnimation(RES_GAME_ONBALLOON, 2);
+	LoadAnimation(RES_GAME_ONFIRE, 2);
+	LoadAnimation(RES_GAME_FLAG_GREEN, 1);
+	LoadAnimation(RES_GAME_BONUS, 1);
+	if (m_ai->GetObjectRequired(0x14)) {
+		LoadAnimation(RES_GAME_SWITCH, 0);
+	}
+	if (m_ai->GetObjectRequired(7)) {
+		LoadAnimation(RES_GAME_SHEEP_WALK_N, RES_GAME_SHEEP_WALK_NW, 1);
+		LoadAnimation(RES_GAME_SHEEP_MUNCH_NE, RES_GAME_SHEEP_MUNCH_NW, 1);
+	}
+	if (m_ai->GetObjectRequired(0x11)) {
+		LoadAnimation(RES_GAME_CRATE, 0);
+	}
+	LoadAnimation(RES_GAME_FLAME, 2);
+	LoadAnimation(RES_GAME_ELECTRIC, 2);
+	LoadAnimation(RES_GAME_EMBERS, 2);
+	if (m_groundStyle != 3 && m_ai->GetObjectRequired(0x0d)) {
+		LoadAnimation(g_anGroundStyleResourceIds[6], 0);
+	}
+	if (m_ai->GetObjectRequired(0x15) || m_ai->GetObjectRequired(0x16) || m_ai->GetObjectRequired(0x17)) {
+		LoadAnimation(RES_GAME_KEYS, 0);
+	}
+	LoadAnimation(RES_GAME_ANIM, 2);
+	LoadAnimation(RES_GAME_MINE_STILL, 0);
+	LoadAnimation(RES_GAME_BUTAMMO, 2);
+	LoadAnimation(RES_GAME_BUTLEMMING, 2);
+	LoadAnimation(RES_GAME_BUTBALLOON, 2);
+	LoadAnimation(RES_GAME_BUTPAWS, 2);
+	if (m_countingLoads == 0) {
+		m_unk0x9c[0] = 0;
+		m_unk0x9c[1] = 0;
+		m_unk0x9c[2] = 0;
+		LoadAnims(RES_BORDERS_LORES_BORDERCORNERS);
+		LoadAnims(RES_BORDERS_LORES_BORDEREDGES);
+		m_unk0x9c[0] = ResFont::Load(RES_BORDERS_LORES_CUTFONT);
+		LoadAnims(RES_BORDERS_HIRES_BORDERCORNERS);
+		LoadAnims(RES_BORDERS_HIRES_BORDEREDGES);
+		m_unk0x9c[1] = ResFont::Load(RES_BORDERS_HIRES_CUTFONT);
+		m_unk0x9c[2] = ResFont::Load(RES_NEWFRONT_FONTS_GAME_SCORETIME);
+	}
+	LoadAnimation(RES_GAME_HIT_NORTH, 1);
+	LoadAnimation(RES_GAME_HIT_NORTH_EAST, 1);
+	LoadAnimation(RES_GAME_HIT_EAST, 1);
+	LoadAnimation(RES_GAME_HIT_SOUTH_EAST, 1);
+	if (m_ai->GetObjectRequired(0x2f) || m_ai->GetObjectRequired(0x1e)) {
+		LoadAnimation(RES_GAME_LEM_LASER_N, 2);
+		LoadAnimation(RES_GAME_LEM_LASER_E, 2);
+		LoadAnimation(RES_GAME_LEM_LASER_S, 2);
+		LoadAnimation(RES_GAME_LEM_LASER_W, 2);
+	}
 }
 
 // 68K 0x10b0a920 LoadMainRammed__20CLemmingAnimsManagerFv
-// STUB: LEMBALL 0x004334f0
+// FUNCTION: LEMBALL 0x004334f0
 void LemmingAnimsManager::LoadMainRammed()
 {
+	LoadAnimation(RES_GAME_STAR, 2);
+	if (g_anGroundStyleResourceIds[7] != 0) {
+		LoadAnimation(g_anGroundStyleResourceIds[7], 2);
+	}
+	if (g_dwGroundStyleResourceId != 0) {
+		LoadAnimation(g_dwGroundStyleResourceId, 2);
+	}
+	if (g_anGroundStyleResourceIds[2] != 0 && m_ai->GetObjectRequired(0x1f)) {
+		LoadAnimation(g_anGroundStyleResourceIds[2], 2);
+	}
+	LoadAnimation(RES_GAME_MINE, 3);
+	if (m_ai->GetObjectRequired(0x11)) {
+		LoadAnimation(RES_GAME_CRATE_EXPLODE, 3);
+	}
+	if (m_ai->GetObjectRequired(0x14)) {
+		LoadAnimation(RES_GAME_SWITCH_ANIM, 3);
+	}
+	if (m_ai->GetObjectRequired(4)) {
+		LoadAnimation(g_anGroundStyleResourceIds[9], 3);
+		LoadAnimation(RES_GAME_CATMOUNT_SE, 3);
+	}
+	LoadAnimation(RES_GAME_HIT_SOUTH, 1);
+	LoadAnimation(RES_GAME_HIT_SOUTH_WEST, 1);
+	LoadAnimation(RES_GAME_HIT_WEST, 1);
+	LoadAnimation(RES_GAME_HIT_NORTH_WEST, 1);
+	if (m_ai->GetObjectRequired(0x20)) {
+		LoadAnimation(RES_GAME_ROCKET, 2);
+	}
+	if (m_ai->GetObjectRequired(0x1c)) {
+		LoadAnimation(RES_GAME_DUPLICATOR, 2);
+	}
+	if (m_ai->GetObjectRequired(0x1e)) {
+		LoadAnimation(RES_GAME_LASER_EAST, 2);
+		LoadAnimation(RES_GAME_LASER_FIRE_EAST, 2);
+	}
+	if (m_ai->GetObjectRequired(0x2f)) {
+		LoadAnimation(RES_GAME_LASER_NORTH, 2);
+		LoadAnimation(RES_GAME_LASER_FIRE_NORTH, 2);
+	}
+	if (m_ai->GetObjectRequired(0x22)) {
+		LoadAnimation(RES_GAME_TRAMPOLINE, 2);
+	}
+	if (m_ai->GetObjectRequired(0x21)) {
+		LoadAnimation(g_anGroundStyleResourceIds[1], 2);
+		LoadAnimation(RES_GAME_PAINTGUNSHOT, 2);
+	}
+	if (m_ai->GetObjectRequired(0x35)) {
+		LoadAnimation(RES_GAME_SLINKY_SOUTH, 2);
+		LoadAnimation(RES_GAME_SLINKY_NORTH, 2);
+		LoadAnimation(RES_GAME_SLINKY_EAST, 2);
+		LoadAnimation(RES_GAME_SLINKY_WEST, 2);
+	}
+	LoadAnimation(RES_GAME_WAIT_LOOK, 1);
+	LoadAnimation(RES_GAME_WAIT_TOSS, 1);
+	LoadAnimation(RES_GAME_WAIT_JIG, 1);
+	LoadAnimation(RES_GAME_SOMMERSAULT, 1);
+	LoadAnimation(RES_GAME_SOMMERSAULT_REV, 1);
+	if (m_ai->GetObjectRequired(0x1a)) {
+		LoadAnimation(RES_GAME_DOOR, 2);
+	}
+	if (m_ai->GetObjectRequired(0x19)) {
+		LoadAnimation(RES_GAME_DOOR_2, 2);
+	}
+	if (m_ai->GetObjectRequired(9)) {
+		LoadAnimation(RES_GAME_BALL, 1);
+		LoadAnimation(RES_GAME_BALL_EXPLODE, 2);
+	}
+	if (m_ai->GetObjectRequired(0x1b)) {
+		LoadAnimation(RES_GAME_TIME_BONUS, 1);
+	}
+	LoadAnimation(RES_GAME_SHADOW, 2);
 }
 
 // 68K 0x10b0ad4c Load__20CLemmingAnimsManagerF7GROUNDS
@@ -262,9 +448,31 @@ void LemmingAnimsManager::DrawAnim(short p_x,
 }
 
 // 68K 0x10b0c052 LoadAnimation__20CLemmingAnimsManagerFUl9ANIM_TYPE
-// STUB: LEMBALL 0x00434bc0
+// FUNCTION: LEMBALL 0x00434bc0
 void LemmingAnimsManager::LoadAnimation(unsigned long p_resourceId, int p_animType)
 {
+	if (m_countingLoads != 0) {
+		m_loadProgress++;
+		return;
+	}
+	LoadAnims(p_resourceId);
+	Frames* frame = 0;
+	switch (p_animType) {
+	case 0:
+		frame = new StaticAnim();
+		break;
+	case 1:
+		frame = new RepeatAnim(GetnAnims(p_resourceId), 1);
+		break;
+	case 2:
+		frame = new Frames(1);
+		break;
+	case 3:
+		frame = new PlayThruAnim(GetnAnims(p_resourceId), 1);
+		break;
+	}
+	m_animFrames[m_resourceSlots[p_resourceId]] = frame;
+	UpdateNonCacheLoad();
 }
 
 // 68K 0x10b0c1da UpdateNonCacheLoad__20CLemmingAnimsManagerFv
@@ -274,9 +482,33 @@ void LemmingAnimsManager::UpdateNonCacheLoad()
 }
 
 // 68K 0x10b0c244 LoadAnimation__20CLemmingAnimsManagerFUlUl9ANIM_TYPE
-// STUB: LEMBALL 0x00434d40
+// FUNCTION: LEMBALL 0x00434d40
 void LemmingAnimsManager::LoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId, int p_animType)
 {
+	if (m_countingLoads != 0) {
+		m_loadProgress += p_lastResourceId - p_firstResourceId;
+		return;
+	}
+	for (; (int) p_lastResourceId >= (int) p_firstResourceId; p_firstResourceId++) {
+		LoadAnims(p_firstResourceId);
+		Frames* frame = 0;
+		switch (p_animType) {
+		case 0:
+			frame = new StaticAnim();
+			break;
+		case 1:
+			frame = new RepeatAnim(GetnAnims(p_firstResourceId), 1);
+			break;
+		case 2:
+			frame = new Frames(1);
+			break;
+		case 3:
+			frame = new PlayThruAnim(GetnAnims(p_firstResourceId), 1);
+			break;
+		}
+		m_animFrames[m_resourceSlots[p_firstResourceId]] = frame;
+		UpdateNonCacheLoad();
+	}
 }
 
 // 68K 0x10b0c3e4 UnLoadAnimation__20CLemmingAnimsManagerFUl
