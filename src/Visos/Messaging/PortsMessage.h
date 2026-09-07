@@ -16,6 +16,7 @@ public:
 	virtual ~PortsMessage() { delete[] m_useCounts; } // vtable+0x14
 
 private:
+	friend class FileBroadcast;
 	unsigned char* m_useCounts; // 0x2c
 };
 

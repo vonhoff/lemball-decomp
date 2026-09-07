@@ -2,13 +2,20 @@
 
 #include "../Foundation/VsOStream.h"
 #include "../Foundation/VsString.h"
+#include "../Messaging/BasePacketHeader.h"
+#include "../Messaging/Headers.h"
+#include "../Messaging/PortsMessage.h"
 #include "FileNetwork.h"
+#include "NetworkAddress.h"
 #include "TcpIpNetwork.h"
 
+#include <memory.h>
 #include <new.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy, strlen)
+
+extern "C" unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x10106e3e Setup__14CFileBroadcastFPCcPCc
 // FUNCTION: LEMBALL 0x0046f4f0
@@ -36,15 +43,40 @@ void FileBroadcast::Setup(const char* p_peerName, const char* p_path)
 }
 
 // 68K 0x10208278 __ct__14CFileBroadcastFv
-// STUB: LEMBALL 0x0047a570
+// FUNCTION: LEMBALL 0x0047a570
 FileBroadcast::FileBroadcast()
 {
+	m_message.Initialise();
+	m_message.m_payloadCapacity += 2;
+	m_message.m_openCount = 0;
+	*g_pBroadcastAddress = g_szBroadcastPeerName;
+
+	if (g_pFileBroadcast == 0) {
+		g_pFileBroadcast = new PortsMessage();
+	}
+
+	FileCommonSocket::m_unk0x08 = 0x14;
+	Headers* headers = new Headers(FileCommonSocket::m_unk0x08);
+	FileReadSocket::m_file = headers;
+	FileWriteSocket::m_file = headers;
+	m_portInfoLocked = 0;
 }
 
 // 68K 0x10208d44 InitialiseFile__14CFileBroadcastFv
-// STUB: LEMBALL 0x0047aa10
+// FUNCTION: LEMBALL 0x0047aa10
 void FileBroadcast::InitialiseFile()
 {
+	NetworkFile::Seek(0);
+	FileWriteSocket::Write(m_message, 0, 0);
+	FileWriteSocket::Write(*g_pFileBroadcast, 0, 0);
+	FileWriteSocket::Write(*FileWriteSocket::m_file, 0, 0);
+
+	unsigned char* data = (unsigned char*) operator new(g_networkPacketSize);
+	memset(data, 0, g_networkPacketSize);
+	for (int i = 0; i < FileWriteSocket::m_file->m_count; i++) {
+		NetworkFile::Write(data, g_networkPacketSize);
+	}
+	operator delete(data);
 }
 
 // 68K 0x10208e36 GetSpecificAddr__14CFileBroadcastFPCc
@@ -61,24 +93,59 @@ bool FileBroadcast::Start(const char* p_name)
 }
 
 // 68K 0x10208fb0 ReadPortInfo__14CFileBroadcastFv
-// STUB: LEMBALL 0x0047ac50
+// FUNCTION: LEMBALL 0x0047ac50
 bool FileBroadcast::ReadPortInfo()
 {
-	return 0;
+	NetworkFile::Seek(m_message.m_payloadCapacity);
+	unsigned int length = g_pFileBroadcast->m_payloadCapacity;
+	if (!NetworkFile::Lock(m_message.m_payloadCapacity, length)) {
+		return false;
+	}
+	if (NetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, length)) {
+		g_pFileBroadcast->Set((unsigned char*) g_pNetworkPacketScratch);
+		m_portInfoLocked = 1;
+		return true;
+	}
+	NetworkFile::UnLock(m_message.m_payloadCapacity, length);
+	return false;
 }
 
 // 68K 0x1020909c WritePortInfo__14CFileBroadcastFv
-// STUB: LEMBALL 0x0047ace0
+// FUNCTION: LEMBALL 0x0047ace0
 bool FileBroadcast::WritePortInfo()
 {
-	return 0;
+	g_pFileBroadcast->OpenDataStream();
+	unsigned int length = g_pFileBroadcast->m_payloadCapacity;
+	NetworkFile::Seek(m_message.m_payloadCapacity);
+	m_portInfoLocked = 0;
+	bool result = NetworkFile::Write(g_pFileBroadcast->m_buffer + sizeof(BasePacketHeader), length);
+	g_pFileBroadcast->CloseDataStream();
+	if (result) {
+		return NetworkFile::UnLock(m_message.m_payloadCapacity, length);
+	}
+	NetworkFile::UnLock(m_message.m_payloadCapacity, length);
+	return false;
 }
 
 // 68K 0x10209196 FindPort__14CFileBroadcastFPCUc
-// STUB: LEMBALL 0x0047ad70
+// FUNCTION: LEMBALL 0x0047ad70
 short FileBroadcast::FindPort(const unsigned char* p_data)
 {
-	return 0;
+	(void) p_data;
+	if (!ReadPortInfo()) {
+		return -1;
+	}
+	g_pFileBroadcast->Set((unsigned char*) g_pNetworkPacketScratch);
+	int port = 0;
+	while (port < 0x200 && g_pFileBroadcast->m_useCounts[port] != 0) {
+		port++;
+	}
+	if (port == 0x200) {
+		NetworkFile::UnLock(m_message.m_payloadCapacity, g_pFileBroadcast->m_payloadCapacity);
+		return -1;
+	}
+	g_pFileBroadcast->m_useCounts[port]++;
+	return WritePortInfo() ? (short) port : -1;
 }
 
 // 68K 0x10209276 ResetPort__14CFileBroadcastFs
@@ -91,20 +158,28 @@ void FileBroadcast::ResetPort(short p_port)
 // FUNCTION: LEMBALL 0x0047aed0
 void FileBroadcast::StartListen()
 {
-	m_listen = 1;
+	m_listenEnabled = 1;
 }
 
 // 68K 0x10209392 StopListen__14CFileBroadcastFv
 // FUNCTION: LEMBALL 0x0047aee0
 void FileBroadcast::StopListen()
 {
-	m_listen = 0;
+	m_listenEnabled = 0;
 }
 
 // 68K 0x102093c4 Process__14CFileBroadcastFv
-// STUB: LEMBALL 0x0047aef0
+// FUNCTION: LEMBALL 0x0047aef0
 void FileBroadcast::Process()
 {
+	unsigned long currentTime = timeGetTime();
+	if (100 < currentTime - m_lastProcessTime) {
+		if (m_listenEnabled != 0) {
+			FileReadSocket::Process();
+		}
+		m_lastProcessTime = timeGetTime();
+	}
+	Broadcast::Process();
 }
 
 // 68K 0x102088cc __dt__14CFileBroadcastFv
@@ -119,4 +194,4 @@ void FileBroadcast::Closed(int p_notifyPeer)
 }
 
 // GLOBAL: LEMBALL 0x004a2de0
-FileBroadcast* g_pFileBroadcast = 0;
+PortsMessage* g_pFileBroadcast = 0;

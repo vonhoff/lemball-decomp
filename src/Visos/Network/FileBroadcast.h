@@ -2,6 +2,8 @@
 #define LEMBALL_VISOS_NETWORK_FILEBROADCAST_H
 
 #include "../../Common.h"
+#include "Broadcast.h"          // complete type
+#include "FileOpenManagement.h" // complete type
 
 // SIZE 0x1b4
 // VTABLE: LEMBALL 0x0049a928 native callback
@@ -10,7 +12,7 @@
 // VTABLE: LEMBALL 0x0049a998 WriteSocket view
 // VTABLE: LEMBALL 0x0049a9c8 BaseCommonSocket view
 // VTABLE: LEMBALL 0x0049a9d8 primary Broadcast view
-class FileBroadcast {
+class FileBroadcast : public Broadcast, public FileOpenManagement {
 public:
 	FileBroadcast();
 	bool ReadPortInfo();
@@ -28,12 +30,11 @@ public:
 	~FileBroadcast();
 
 private:
-	undefined m_unk04[0x10];    // 0x04
-	unsigned int m_listen;      // 0x14
-	undefined m_storage[0x19c]; // 0x18
+	unsigned int m_portInfoLocked;  // 0x54
+	unsigned int m_lastProcessTime; // 0x58
 };
 
-extern FileBroadcast* g_pFileBroadcast;
+extern PortsMessage* g_pFileBroadcast;
 
 // SYNTHETIC: LEMBALL 0x0047bb60
 // FileBroadcast::`scalar deleting destructor'

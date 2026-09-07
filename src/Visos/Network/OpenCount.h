@@ -17,6 +17,7 @@ public:
 	virtual void GetData(); // vtable+0x08
 	virtual ~OpenCount();   // vtable+0x14
 	friend class FileOpenManagement;
+	friend class FileBroadcast;
 
 private:
 	unsigned short m_openCount; // 0x2c

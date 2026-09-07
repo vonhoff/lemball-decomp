@@ -15,6 +15,7 @@ public:
 	friend class FileConnect;
 
 private:
+	friend class FileBroadcast;
 	OpenCount m_message; // 0x04
 };
 
