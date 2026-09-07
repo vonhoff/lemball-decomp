@@ -67,20 +67,20 @@ void Ice::Set(unsigned short p_id,
 	m_maxX = (short) maxX;
 	m_maxY = (short) maxY;
 
-	int minXBlock = minX >> 4;
-	int minYBlock = minY >> 4;
 	m_minZ = 0;
-	if (minX >= 0 && minY >= 0 && minXBlock < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > minYBlock) {
-		m_minZ = (short) g_pMap->m_ground.m_ground[minYBlock * g_pMap->m_ground.m_width + minXBlock].GetZ(minX & 0xf,
-																										  minY & 0xf);
+	if (m_minX >= 0 && m_minY >= 0 && (m_minX >> 4) < g_pMap->m_ground.m_width &&
+		g_pMap->m_ground.m_height > (m_minY >> 4)) {
+		m_minZ = (short) g_pMap->m_ground.m_ground[(m_minY >> 4) * g_pMap->m_ground.m_width + (m_minX >> 4)].GetZ(
+			m_minX & 0xf,
+			m_minY & 0xf);
 	}
 
-	int maxXBlock = maxX >> 4;
-	int maxYBlock = maxY >> 4;
 	m_maxZ = 0;
-	if (maxX >= 0 && maxY >= 0 && maxXBlock < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > maxYBlock) {
-		m_maxZ = (short) g_pMap->m_ground.m_ground[maxYBlock * g_pMap->m_ground.m_width + maxXBlock].GetZ(maxX & 0xf,
-																										  maxY & 0xf);
+	if (m_maxX >= 0 && m_maxY >= 0 && (m_maxX >> 4) < g_pMap->m_ground.m_width &&
+		g_pMap->m_ground.m_height > (m_maxY >> 4)) {
+		m_maxZ = (short) g_pMap->m_ground.m_ground[(m_maxY >> 4) * g_pMap->m_ground.m_width + (m_maxX >> 4)].GetZ(
+			m_maxX & 0xf,
+			m_maxY & 0xf);
 	}
 
 	m_position.m_xFixed = ((int) p_cornerA.m_x) << 12;
