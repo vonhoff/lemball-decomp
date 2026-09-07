@@ -79,9 +79,9 @@ int Ai::GetData(ViewData* p_viewData)
 
 // 68K 0x10601c58 HitTrampoline__3CAIFRC7AICOORDP11CGameObject
 // FUNCTION: LEMBALL 0x004125c0
-void Ai::HitTrampoline(const AiCoord& p_position, GameObject* p_object)
+int Ai::HitTrampoline(const AiCoord& p_position, GameObject* p_object)
 {
-	m_trampolineManager->Hit(p_position, p_object);
+	return m_trampolineManager->Hit(p_position, p_object);
 }
 
 // 68K 0x10601ca6 IsLemmingPlayerControlled__3CAIFP14CPlayerLemming

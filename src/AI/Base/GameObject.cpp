@@ -509,9 +509,74 @@ void GameObject::StartFly(C3DVector& p_arg0, C3DVector* p_arg1)
 }
 
 // 68K 0x106094cc Fly__11CGameObjectFv
-// STUB: LEMBALL 0x00415300
+// FUNCTION: LEMBALL 0x00415300
 void GameObject::Fly()
 {
+	int timeDelta = (int) (g_dwGameTick - m_lastMovementTick);
+	if (timeDelta > 0) {
+		int x = m_flightVelocity.m_xFixed * 2 + m_flightOrigin.m_xFixed;
+		int y = m_flightVelocity.m_yFixed * 2 + m_flightOrigin.m_yFixed;
+		m_lastMovementTick = g_dwGameTick;
+		m_flightOrigin.m_xFixed = x;
+		m_flightOrigin.m_yFixed = y;
+		m_flightVelocity.m_zFixed -= 0x2000;
+		m_flightOrigin.m_zFixed = m_flightVelocity.m_zFixed * 2 + 0x4000 + m_flightOrigin.m_zFixed;
+		if (m_flightVelocity.m_zFixed < -0xa000) {
+			m_flightVelocity.m_zFixed = -0xa000;
+		}
+
+		Mover* mover = 0;
+		int groundZ = g_pMap->GetZ(x >> 12, y >> 12, &mover);
+		int flightZ = m_flightOrigin.m_zFixed >> 12;
+		if (flightZ > groundZ) {
+			m_position.m_xFixed = x;
+			m_position.m_yFixed = y;
+			m_position.m_zFixed = m_flightOrigin.m_zFixed;
+		}
+		else {
+			m_isFlying = 0;
+			m_balloonPostId = 0;
+			if (flightZ > groundZ - 12) {
+				m_position.m_xFixed = x;
+				m_position.m_yFixed = y;
+				m_position.m_zFixed = m_flightOrigin.m_zFixed;
+				m_position.m_zFixed = groundZ << 12;
+				if (g_pAI->HitTrampoline(m_position, this) == 0) {
+					m_flightVelocity.m_xFixed = 0;
+					m_flightVelocity.m_yFixed = 0;
+					m_flightVelocity.m_zFixed = 0;
+				}
+				else {
+					m_isFlying = 1;
+				}
+				if (m_unk0x11c == 0 && mover != 0) {
+					mover->GetOn(this);
+				}
+			}
+			else {
+				m_actionDeadline = g_dwGameTick;
+				if ((m_collisionFlags & 4) != 0) {
+					m_unk0x108 = 1;
+					m_flightVelocity.m_xFixed = 0x3000;
+					m_flightVelocity.m_yFixed = 0;
+					int objectZ = m_position.m_zFixed >> 12;
+					int deltaZ = objectZ - groundZ;
+					deltaZ += (deltaZ >> 31) & 7;
+					m_flightVelocity.m_zFixed = ((deltaZ >> 3) + 1) << 12;
+					m_actionArgument = 0;
+					m_lastMovementTick = g_dwGameTick;
+					m_flightZ = objectZ;
+					m_groundPosition.m_xFixed = m_position.m_xFixed;
+					m_groundPosition.m_yFixed = m_position.m_yFixed;
+					m_groundPosition.m_zFixed = groundZ << 12;
+				}
+			}
+		}
+		if (m_balloonPostId == 0 && m_actionDeadline <= g_dwGameTick) {
+			m_balloonPostId = 0;
+			g_pAI->HitTrampoline(m_position, this);
+		}
+	}
 }
 
 // 68K 0x106097cc RotateClockwise__11CGameObjectFv
