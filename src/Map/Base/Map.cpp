@@ -177,7 +177,7 @@ void Map::CreateWalkBits()
 						int previousBlockX = blockX - 1;
 						if (previousBlockX >= 0 && y >= 8 && previousBlockX < m_ground.m_width &&
 							blockY < m_ground.m_height) {
-							collision = m_ground.GetGroundCell(previousBlockX, blockY)->m_collision;
+							collision = m_ground.m_ground[blockY * m_ground.m_width + previousBlockX].m_collision;
 						}
 						if ((collision & 0x25) == 0) {
 							unsigned short currentZ = 0;
@@ -194,8 +194,9 @@ void Map::CreateWalkBits()
 							previousBlockX = previousX >> 4;
 							if (previousX >= 0 && y >= 0 && previousBlockX < m_ground.m_width &&
 								currentBlockY < m_ground.m_height) {
-								previousZ = m_ground.GetGroundCell(previousBlockX, currentBlockY)
-												->GetZ(previousX & 0xf, y & 0xf);
+								previousZ = m_ground.m_ground[currentBlockY * m_ground.m_width + previousBlockX].GetZ(
+									previousX & 0xf,
+									y & 0xf);
 							}
 							if (currentZ + 0xf >= previousZ) {
 								*walkBits |= 0x80;
