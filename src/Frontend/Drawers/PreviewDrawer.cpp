@@ -555,6 +555,7 @@ void PreviewDrawer::LoadLevelInformation()
 	PreviewData preview;
 	char* source;
 	ResFont* font;
+	VsPoint* measuredSize;
 	char candidateLine[32];
 	int sourcePos;
 	int linePos;
@@ -619,8 +620,8 @@ void PreviewDrawer::LoadLevelInformation()
 		memset(candidateLine, '0', sizeof(candidateLine));
 		while (1) {
 			endOfSource = (int) AddWord(source, candidateLine, sourcePos, linePos);
-			font->GetSize(&lineSize, candidateLine, 0x20);
-			if (lineSize.m_x > layoutWidth || endOfSource == 1) {
+			measuredSize = font->GetSize(&lineSize, candidateLine, 0x20);
+			if (measuredSize->m_x > layoutWidth || endOfSource == 1) {
 				break;
 			}
 			char* candidateEnd = candidateLine + strlen(candidateLine);
@@ -628,12 +629,12 @@ void PreviewDrawer::LoadLevelInformation()
 			candidateEnd[1] = 0;
 			linePos = linePos + 1;
 		}
-		if (lineSize.m_x > layoutWidth) {
+		if (measuredSize->m_x > layoutWidth) {
 			endOfSource = 0;
 			SubWord(source, candidateLine, sourcePos, linePos);
 		}
-		font->GetSize(&size, candidateLine, 0x20);
-		targetPos[0] = (layoutWidth / 2 - (int) (size.m_x / 2)) + layoutX;
+		measuredSize = font->GetSize(&size, candidateLine, 0x20);
+		targetPos[0] = (layoutWidth / 2 - (int) (measuredSize->m_x / 2)) + layoutX;
 		targetPos[1] = layoutY;
 		strcpy(targetLine, candidateLine);
 		layoutY = layoutY + size.m_y;
