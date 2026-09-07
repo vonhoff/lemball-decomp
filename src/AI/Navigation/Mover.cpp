@@ -116,10 +116,19 @@ void Mover::Switch()
 }
 
 // 68K 0x10617bb4 IsOn__6CMoverFR7AICOORD
-// STUB: LEMBALL 0x0042eee0
+// FUNCTION: LEMBALL 0x0042eee0
 bool Mover::IsOn(const AiCoord& p_position)
 {
-	return 0;
+	int minX = (m_position.m_xFixed >> 12) - 8;
+	int minY = (m_position.m_yFixed >> 12) - 8;
+	int maxX = minX + 15;
+	int maxY = minY + 15;
+	int x = p_position.m_xFixed >> 12;
+	int y = p_position.m_yFixed >> 12;
+	if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+		return true;
+	}
+	return false;
 }
 
 // 68K 0x10617c36 VerifyObjects__6CMoverFv
