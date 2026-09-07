@@ -107,9 +107,29 @@ void Demo::GameIsOver()
 }
 
 // 68K 0x107011aa ProcessMsg__5CDemoFP10tagMESSAGE
-// STUB: LEMBALL 0x004096b0
+// FUNCTION: LEMBALL 0x004096b0
 int Demo::ProcessMsg(Message* p_message)
 {
+	if (m_demoMode != 0) {
+		unsigned short type = p_message->type;
+		if ((type & 0x8000) != 0) {
+			p_message->type = type & 0x7fff;
+		}
+		else {
+			switch (type) {
+			case 1:
+			case 3:
+			case 5:
+				GameIsOver();
+				return 1;
+			case 7:
+			case 15:
+				break;
+			default:
+				return 1;
+			}
+		}
+	}
 	return 0;
 }
 
