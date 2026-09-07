@@ -92,16 +92,6 @@ bool Ai::IsLemmingPlayerControlled(PlayerLemming* p_lemming)
 }
 
 // 68K 0x10601cf6 FireBullet__3CAIFUs11eBulletType6eOwneri7AICOORD7AICOORD
-// STUB: LEMBALL 0x00412600
-void Ai::FireBullet(unsigned short p_id,
-					eBulletType p_bulletType,
-					eOwner p_owner,
-					int p_parameter,
-					AiCoord p_start,
-					AiCoord p_target)
-{
-}
-
 // 68K 0x10601d94 ProcessMsg__3CAIFP10tagMESSAGE
 // FUNCTION: LEMBALL 0x00412660
 int Ai::ProcessMsg(Message* p_message)
