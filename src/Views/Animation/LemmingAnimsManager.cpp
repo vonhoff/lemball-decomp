@@ -139,16 +139,17 @@ void LemmingAnimsManager::LoadVrammed()
 	LoadAnimation(RES_GAME_BUTBALLOON, 2);
 	LoadAnimation(RES_GAME_BUTPAWS, 2);
 	if (m_countingLoads == 0) {
-		m_unk0x9c[0] = 0;
-		m_unk0x9c[1] = 0;
-		m_unk0x9c[2] = 0;
+		ResFont** fontResources = m_unk0x9c;
+		fontResources[0] = 0;
+		fontResources[1] = 0;
+		fontResources[2] = 0;
 		LoadAnims(RES_BORDERS_LORES_BORDERCORNERS);
 		LoadAnims(RES_BORDERS_LORES_BORDEREDGES);
-		m_unk0x9c[0] = ResFont::Load(RES_BORDERS_LORES_CUTFONT);
+		fontResources[0] = ResFont::Load(RES_BORDERS_LORES_CUTFONT);
 		LoadAnims(RES_BORDERS_HIRES_BORDERCORNERS);
 		LoadAnims(RES_BORDERS_HIRES_BORDEREDGES);
-		m_unk0x9c[1] = ResFont::Load(RES_BORDERS_HIRES_CUTFONT);
-		m_unk0x9c[2] = ResFont::Load(RES_NEWFRONT_FONTS_GAME_SCORETIME);
+		fontResources[1] = ResFont::Load(RES_BORDERS_HIRES_CUTFONT);
+		fontResources[2] = ResFont::Load(RES_NEWFRONT_FONTS_GAME_SCORETIME);
 	}
 	LoadAnimation(RES_GAME_HIT_NORTH, 1);
 	LoadAnimation(RES_GAME_HIT_NORTH_EAST, 1);
