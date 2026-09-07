@@ -7,8 +7,8 @@
 #include "Ai.h"
 
 // 68K 0x106171a6 __ct__6CMoverFv
-// STUB: LEMBALL 0x0042e590
-Mover::Mover()
+// FUNCTION: LEMBALL 0x0042e590
+Mover::Mover() : GlobalGameObject((eObjectType) 0x34, 0, 0)
 {
 }
 
