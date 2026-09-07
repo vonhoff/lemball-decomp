@@ -30,9 +30,12 @@ void NodeManager::Initialise(int p_count)
 }
 
 // 68K 0x106185ee __dt__12CNodeManagerFv
-// STUB: LEMBALL 0x00421260
+// FUNCTION: LEMBALL 0x00421260
 NodeManager::~NodeManager()
 {
+	if (m_nodes != 0) {
+		delete[] m_nodes;
+	}
 }
 
 // 68K 0x10618642 GetNodePosition__12CNodeManagerFi
