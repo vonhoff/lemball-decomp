@@ -163,10 +163,15 @@ bool Mover::GetOn(GameObject* p_object)
 	p_object->m_unk0x11c = 1;
 	m_objectCount++;
 	StopObjectsMoving();
-	if (m_action == (eAction) 2 && p_object->m_objectType == (eObjectType) 2) {
+	if (m_action != (eAction) 2 && p_object->m_objectType == (eObjectType) 2) {
 		AiCoord destination(m_position.m_xFixed, m_position.m_yFixed, objectPosition.m_zFixed);
 		p_object->AddDestination(destination);
 		p_object->StartMoving();
+	}
+	else {
+		p_object->m_position.m_xFixed = objectPosition.m_xFixed;
+		p_object->m_position.m_yFixed = objectPosition.m_yFixed;
+		p_object->m_position.m_zFixed = m_position.m_zFixed + 0x8000;
 	}
 	return true;
 }

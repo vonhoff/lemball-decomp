@@ -1,5 +1,7 @@
 #include "Map.h"
 
+#include "../../AI/Navigation/Ai.h"
+
 // GLOBAL: LEMBALL 0x0049e4e0
 Map* g_pActiveMap = 0;
 
@@ -50,9 +52,26 @@ void Map::ReSize(int p_width, int p_height)
 }
 
 // 68K 0x10900630 GetZ__4CMapFiiPP6CMover
-// STUB: LEMBALL 0x004304e0
+// FUNCTION: LEMBALL 0x004304e0
 unsigned short Map::GetZ(int p_x, int p_y, Mover** p_mover)
 {
+	if (p_mover != 0) {
+		int blockX = p_x >> 4;
+		int blockY = p_y >> 4;
+		if ((m_ground.m_ground[blockY * m_ground.m_width + blockX].m_collision & 0x10) != 0) {
+			int height;
+			Mover* mover = m_ai->FindMoverHeight(p_x, p_y, height);
+			if (mover != 0) {
+				*p_mover = mover;
+				return (unsigned short) height;
+			}
+		}
+	}
+	int blockX = p_x >> 4;
+	int blockY = p_y >> 4;
+	if (p_x >= 0 && p_y >= 0 && blockX < m_ground.m_width && blockY < m_ground.m_height) {
+		return m_ground.m_ground[blockY * m_ground.m_width + blockX].GetZ(p_x & 0xf, p_y & 0xf);
+	}
 	return 0;
 }
 

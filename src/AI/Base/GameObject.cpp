@@ -2,11 +2,13 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
 #include "../Navigation/Ai.h"
 #include "../Navigation/AiDestinationEntry.h"
 #include "../Navigation/AiDestinationList.h"
 #include "../Navigation/Maze.h"
+#include "../Navigation/Mover.h"
 #include "../Objects/ViewData.h"
 #include "Pt3.h"
 
@@ -533,9 +535,57 @@ void GameObject::RotateAnticlockwise()
 }
 
 // 68K 0x10609852 StartMoving__11CGameObjectFv
-// STUB: LEMBALL 0x00415580
+// FUNCTION: LEMBALL 0x00415580
 void GameObject::StartMoving()
 {
+	if (m_destinationList != 0) {
+		Mover* mover = 0;
+		int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
+		int objectZ = m_position.m_zFixed >> 12;
+		if (m_unk0x11c == 0 && mover != 0) {
+			mover->GetOn(this);
+		}
+		if (objectZ == groundZ) {
+			AiCoord destination = GetDestination();
+			m_destination.m_xFixed = destination.m_xFixed;
+			m_destination.m_yFixed = destination.m_yFixed;
+			m_destination.m_zFixed = destination.m_zFixed;
+			int distance = Distance(m_position.m_xFixed >> 12,
+									m_position.m_yFixed >> 12,
+									m_destination.m_xFixed >> 12,
+									m_destination.m_yFixed >> 12);
+			m_lastMovementTick = g_dwGameTick;
+			m_moveDurationTicks = (g_anTurnDelayCursor[m_objectType] * distance) / 50;
+			if (m_moveDurationTicks == 0) {
+				m_moveDurationTicks = 1;
+			}
+			m_actionDeadline = m_moveDurationTicks + g_dwGameTick;
+			m_moveStartXFixed = m_position.m_xFixed;
+			m_moveStartYFixed = m_position.m_yFixed;
+			m_moveDeltaXFixed = m_destination.m_xFixed - m_moveStartXFixed;
+			m_moveDeltaYFixed = m_destination.m_yFixed - m_moveStartYFixed;
+		}
+		else if (m_balloonPostActive == 0) {
+			m_actionDeadline = g_dwGameTick;
+			if ((m_collisionFlags & 4) != 0) {
+				m_flightVelocity.m_yFixed = 0;
+				m_unk0x108 = 1;
+				m_flightVelocity.m_xFixed = 0x3000;
+				int deltaZ = objectZ - groundZ;
+				deltaZ += (deltaZ >> 31) & 7;
+				m_flightVelocity.m_zFixed = ((deltaZ >> 3) + 1) << 12;
+				m_actionArgument = 0;
+				m_lastMovementTick = g_dwGameTick;
+				m_flightZ = objectZ;
+				m_groundPosition.m_xFixed = m_position.m_xFixed;
+				m_groundPosition.m_yFixed = m_position.m_yFixed;
+				m_groundPosition.m_zFixed = (int) groundZ << 12;
+			}
+		}
+		else {
+			m_position.m_zFixed = (int) groundZ << 12;
+		}
+	}
 }
 
 // 68K 0x10609ab0 StopMoving__11CGameObjectFv
