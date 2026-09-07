@@ -244,8 +244,6 @@ unsigned int ChangeList::GetArea()
 // FUNCTION: LEMBALL 0x00466d40
 bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark, unsigned char p_replacementMark)
 {
-	int mapWidth;
-	int mapHeight;
 	int scanY;
 	int scanX;
 	unsigned char* row;
@@ -258,29 +256,27 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 	unsigned char* pixel;
 	ChangeListItem* item;
 
-	mapWidth = (int) m_mapSize.m_width;
 	scanY = m_scanY;
 	scanX = m_scanX;
-	row = m_map + scanY * mapWidth;
-	mapHeight = (int) m_mapSize.m_height;
+	row = m_map + scanY * (int) m_mapSize.m_width;
 	do {
-		if (scanY >= mapHeight) {
+		if (scanY >= (int) m_mapSize.m_height) {
 			return 0;
 		}
-		if (scanX < mapWidth) {
+		if (scanX < (int) m_mapSize.m_width) {
 			do {
 				if (row[scanX] == p_findMark) {
 					break;
 				}
 				scanX = scanX + 1;
-			} while (scanX < mapWidth);
-			if (scanX < mapWidth) {
+			} while (scanX < (int) m_mapSize.m_width);
+			if (scanX < (int) m_mapSize.m_width) {
 				widthPixels = 0;
 				startX = scanX;
 				break;
 			}
 		}
-		row = row + mapWidth;
+		row = row + (int) m_mapSize.m_width;
 		scanX = 0;
 		scanY = scanY + 1;
 	} while (1);
@@ -290,7 +286,7 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 		scanX = scanX + 1;
 		widthPixels = widthPixels + (int) m_cellSize.m_width;
 		*pixel = p_replacementMark;
-		if (scanX >= mapWidth) {
+		if (scanX >= (int) m_mapSize.m_width) {
 			break;
 		}
 		pixel = pixel + 1;
@@ -301,12 +297,12 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 
 	heightCells = 1;
 	widthCells = widthPixels / (int) m_cellSize.m_width;
-	row = row + mapWidth;
-	if (scanY + 1 < mapHeight) {
-		while (scanY + heightCells < mapHeight) {
+	row = row + (int) m_mapSize.m_width;
+	if (scanY + 1 < (int) m_mapSize.m_height) {
+		while (scanY + heightCells < (int) m_mapSize.m_height) {
 			probeX = startX;
-			if (probeX < mapWidth) {
-				while (probeX < mapWidth && row[probeX] == p_findMark) {
+			if (probeX < (int) m_mapSize.m_width) {
+				while (probeX < (int) m_mapSize.m_width && row[probeX] == p_findMark) {
 					probeX = probeX + 1;
 				}
 			}
@@ -323,7 +319,7 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 					cell = cell + 1;
 				} while (probeX - startX < widthCells);
 			}
-			row = row + mapWidth;
+			row = row + (int) m_mapSize.m_width;
 		}
 	}
 
@@ -335,7 +331,7 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 	m_items[m_itemCount].drawMark = p_itemMark;
 	m_scanX = 0;
 	m_itemCount = m_itemCount + 1;
-	if (mapWidth > scanX) {
+	if ((int) m_mapSize.m_width > scanX) {
 		m_scanX = scanX;
 	}
 	m_scanY = scanY;
