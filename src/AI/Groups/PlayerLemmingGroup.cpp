@@ -117,12 +117,8 @@ bool PlayerLemmingGroup::HasSfxChanged()
 	bool changed = false;
 	PlayerLemming* lemming = (PlayerLemming*) GenericGroup::GetFirstElementInGroup();
 	while (lemming != 0) {
-		bool current = lemming->CheckSfx();
-		if (current || (current = false, changed)) {
-			current = true;
-		}
+		changed = lemming->CheckSfx() || changed;
 		lemming = (PlayerLemming*) GenericGroup::GetNextElementInGroup();
-		changed = current;
 	}
 	return changed;
 }
