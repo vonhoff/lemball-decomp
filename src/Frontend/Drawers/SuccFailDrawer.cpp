@@ -285,30 +285,30 @@ void SuccFailDrawer::Load()
 		m_layout = g_abSuccFailLayoutCompact;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsCompact;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsCompact;
-		if (m_variant == 0) {
-			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdCompact;
-			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_FAIL_EYES;
-			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_FAILURE_BOARD;
-		}
-		else {
+		if (m_variant != 0) {
 			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_SUCCESS_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdCompact;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_BOARD;
+		}
+		else {
+			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdCompact;
+			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_FAIL_EYES;
+			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_FAILURE_BOARD;
 		}
 	}
 	else {
 		m_layout = g_abSuccFailLayoutFull;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
-		if (m_variant == 0) {
-			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
-			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdFull;
-			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_BOARD;
-		}
-		else {
+		if (m_variant != 0) {
 			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_SUCCESS_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdFull;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_BOARD;
+		}
+		else {
+			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
+			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdFull;
+			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_BOARD;
 		}
 	}
 	m_primaryBitmap = ResBitmap::Load(m_primaryBitmapId);
@@ -353,13 +353,13 @@ void SuccFailDrawer::Load()
 		->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef0011);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
-	if (m_variant == 0) {
-		m_animPosition.m_x = (short) ((int*) m_layout)[0x28 / 4] + (short) ((int*) m_layout)[0x30 / 4];
-		m_animPosition.m_y = (short) ((int*) m_layout)[0x2c / 4] + (short) ((int*) m_layout)[0x34 / 4];
-	}
-	else {
+	if (m_variant != 0) {
 		m_animPosition.m_x = (short) ((int*) m_layout)[0x18 / 4] + (short) ((int*) m_layout)[0x20 / 4];
 		m_animPosition.m_y = (short) ((int*) m_layout)[0x1c / 4] + (short) ((int*) m_layout)[0x24 / 4];
+	}
+	else {
+		m_animPosition.m_x = (short) ((int*) m_layout)[0x28 / 4] + (short) ((int*) m_layout)[0x30 / 4];
+		m_animPosition.m_y = (short) ((int*) m_layout)[0x2c / 4] + (short) ((int*) m_layout)[0x34 / 4];
 	}
 	CalculateText();
 	if (m_animationsEnabled != 0) {
