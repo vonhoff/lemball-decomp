@@ -43,7 +43,3 @@ void ShortSort(unsigned char* p_low,
 }
 
 // 68K 0x1021746c swap
-// STUB: LEMBALL 0x00463b20
-void Swap(unsigned char* p_first, unsigned char* p_second, unsigned int p_width)
-{
-}
