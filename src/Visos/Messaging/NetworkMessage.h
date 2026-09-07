@@ -22,6 +22,7 @@ public:
 	friend class PbNetworkGame;
 	friend class WriteSocket;
 	friend class ReadSocket;
+	friend class FileReadSocket;
 	bool Set(unsigned char* p_data);
 	int GetDword();
 	unsigned char GetByte();

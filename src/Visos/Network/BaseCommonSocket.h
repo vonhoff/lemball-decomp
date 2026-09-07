@@ -19,6 +19,7 @@ public:
 	friend class CConnect;
 	friend class Broadcast;
 	friend class ReadSocket;
+	friend class FileReadSocket;
 	friend class TcpIpReadSocket;
 	friend class TcpIpWriteSocket;
 	friend class TcpIpBroadcast;

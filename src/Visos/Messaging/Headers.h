@@ -14,6 +14,7 @@ public:
 	virtual ~Headers();     // vtable+0x14
 
 private:
+	friend class FileReadSocket;
 	HeaderMessage* m_headers;    // 0x2c
 	unsigned short* m_sequences; // 0x30
 	int m_count;                 // 0x34

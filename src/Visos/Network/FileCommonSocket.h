@@ -19,8 +19,8 @@ public:
 	virtual void SocketError();
 	virtual ~FileCommonSocket();
 
-private:
-	undefined4 m_unk0x08; // 0x08
+protected:
+	int m_unk0x08; // 0x08: header-slot count used by FileReadSocket
 };
 #pragma vtordisp(on)
 
