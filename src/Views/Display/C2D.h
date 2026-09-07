@@ -147,7 +147,7 @@ private:
 	unsigned char* m_remapTables[4];                // 0x54
 	BaseRemap* m_remaps[5];                         // 0x64
 	TextManager* m_textManager;                     // 0x78
-	ViewData m_viewDataPrimitives[3];               // 0x7c
+	undefined m_viewDataPrimitives[0xe4];           // 0x7c
 	unsigned short m_zoom;                          // 0x160
 	unsigned short m_groundWidth;                   // 0x162
 	unsigned short m_groundHeight;                  // 0x164
