@@ -37,7 +37,7 @@
 #include <string.h>
 
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
-// STUB: LEMBALL 0x004358d0
+// FUNCTION: LEMBALL 0x004358d0
 C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4) : HotAreaHandler(p_arg4)
 {
 	void* storage;
@@ -162,12 +162,14 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 	m_spriteGroundLookup = 0;
 	objectClipGrid = (TargetObjectClipGrid*) operator new(0x1a4);
 	if (objectClipGrid != 0) {
-		objectClipGrid->m_width = (short) p_arg3->m_ground.m_width;
-		objectClipGrid->m_height = (short) p_arg3->m_ground.m_height;
 		objectClipGrid->m_cellWidth = 0x10;
 		objectClipGrid->m_cellHeight = 0x10;
 		objectClipGrid->m_touchedCount = 0;
 		objectClipGrid->m_cells = 0;
+		objectClipGrid->m_width =
+			(short) (((p_arg3->m_ground.m_width << 4) + objectClipGrid->m_cellWidth - 1) / objectClipGrid->m_cellWidth);
+		objectClipGrid->m_height = (short) (((p_arg3->m_ground.m_height << 4) + objectClipGrid->m_cellHeight - 1) /
+											objectClipGrid->m_cellHeight);
 		cellCount = (unsigned int) (int) objectClipGrid->m_width * (unsigned int) (int) objectClipGrid->m_height;
 		objectClipGrid->m_cellCount = cellCount;
 		cells = (TargetObjectClipCell*) operator new(cellCount * 0xa);
