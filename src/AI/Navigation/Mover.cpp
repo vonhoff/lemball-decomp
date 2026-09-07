@@ -131,10 +131,44 @@ void Mover::VerifyObjects()
 }
 
 // 68K 0x10617d36 GetOn__6CMoverFP11CGameObject
-// STUB: LEMBALL 0x0042eff0
+// FUNCTION: LEMBALL 0x0042eff0
 bool Mover::GetOn(GameObject* p_object)
 {
-	return 0;
+	AiCoord objectPosition;
+	objectPosition.m_xFixed = p_object->m_position.m_xFixed;
+	objectPosition.m_yFixed = p_object->m_position.m_yFixed;
+	objectPosition.m_zFixed = p_object->m_position.m_zFixed;
+	int objectZ = objectPosition.m_zFixed >> 12;
+	int moverZ = m_position.m_zFixed >> 12;
+	if (objectZ < moverZ - 16 || objectZ > moverZ + 16 || IsOn(objectPosition) == 0) {
+		return false;
+	}
+
+	if (m_objectCount >= 10) {
+		return false;
+	}
+	GameObject** object = m_objects;
+	int i = 0;
+	if (m_objectCount > 0) {
+		do {
+			if (*object == p_object) {
+				return true;
+			}
+			object++;
+			i++;
+		} while (i < m_objectCount);
+	}
+
+	m_objects[m_objectCount] = p_object;
+	p_object->m_unk0x11c = 1;
+	m_objectCount++;
+	StopObjectsMoving();
+	if (m_action == (eAction) 2 && p_object->m_objectType == (eObjectType) 2) {
+		AiCoord destination(m_position.m_xFixed, m_position.m_yFixed, objectPosition.m_zFixed);
+		p_object->AddDestination(destination);
+		p_object->StartMoving();
+	}
+	return true;
 }
 
 // 68K 0x10617e94 StopObjectsMoving__6CMoverFv
