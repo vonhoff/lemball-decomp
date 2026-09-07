@@ -75,9 +75,14 @@ void InvisibleSwitch::VerifyObjects()
 }
 
 // 68K 0x10612d88 AddObject__16CInvisibleSwitchFP11CGameObject
-// STUB: LEMBALL 0x00409f70
+// FUNCTION: LEMBALL 0x00409f70
 void InvisibleSwitch::AddObject(GameObject* p_object)
 {
+	if (m_objectCount < 24) {
+		m_objects[m_objectCount] = p_object;
+		m_objectCount++;
+		p_object->m_unk0x120 = GetId();
+	}
 }
 
 // 68K 0x10612dfe StepOn__16CInvisibleSwitchFRC7AICOORDP11CGameObject
