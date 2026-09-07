@@ -153,42 +153,47 @@ void GunButtons::LoadFaces(unsigned long* p_animIds)
 	VsPoint position;
 	void* storage;
 	int i;
-	Gdi* gdi;
-	Surface* target;
 
 	m_animIds = p_animIds;
-	m_resources = 0;
+	m_resources = (ResAnim**) operator new(m_valueCount * 4);
 	if (m_valueCount > 0) {
-		m_resources = (ResAnim**) operator new(m_valueCount * 4);
 		i = 0;
 		while (i < m_valueCount) {
 			m_resources[i] = ResAnim::Load(p_animIds[i]);
 			i = i + 1;
 		}
 	}
-	storage = operator new(0x130);
+	if (m_mode == 0) {
+		storage = operator new(0x130);
+		if (storage == 0) {
+			m_graphicButton = 0;
+		}
+		else {
+			position.m_x = (short) m_x;
+			position.m_y = (short) m_y;
+			m_graphicButton = new (storage) GunButton(position, (PvGWnd*) m_window, p_animIds[m_value - m_minimum], 3);
+		}
+		m_graphicButton->SetAutoDraw(0);
+		m_graphicButton->m_gdi->m_renderTarget->m_flag70 = 0;
+		m_graphicButton->m_messageHandler = g_pMasterInputQueue;
+		m_graphicButton->m_controlMessage = m_controlMessage;
+		m_trackerButton = 0;
+		return;
+	}
+	storage = operator new(0x138);
 	if (storage == 0) {
-		m_graphicButton = 0;
+		m_trackerButton = 0;
 	}
 	else {
 		position.m_x = (short) m_x;
 		position.m_y = (short) m_y;
-		m_graphicButton = new (storage) GunButton(position, (PvGWnd*) m_window, p_animIds[m_value - m_minimum], 3);
+		m_trackerButton = new (storage) TrackerButton(position, (PvGWnd*) m_window, *p_animIds, m_trackRect, m_value);
 	}
-	if (m_graphicButton != 0) {
-		gdi = m_graphicButton->m_gdi;
-		target = 0;
-		if (gdi != 0) {
-			target = gdi->m_renderTarget;
-		}
-		m_graphicButton->SetAutoDraw(0);
-		if (target != 0) {
-			target->m_flag70 = 0;
-		}
-		m_graphicButton->m_messageHandler = g_pMasterInputQueue;
-		m_graphicButton->m_controlMessage = m_controlMessage;
-	}
-	m_trackerButton = 0;
+	m_trackerButton->SetAutoDraw(0);
+	m_trackerButton->m_gdi->m_renderTarget->m_flag70 = 0;
+	m_trackerButton->m_messageHandler = g_pMasterInputQueue;
+	m_trackerButton->m_controlMessage = m_controlMessage;
+	m_graphicButton = 0;
 }
 
 // 68K 0x1080301a UnLoadFaces__11CGunButtonsFv
