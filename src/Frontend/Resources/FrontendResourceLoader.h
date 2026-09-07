@@ -37,7 +37,7 @@ private:
 	int m_loadedBitmaps;               // 0x2c
 	int m_bitmapCapacity;              // 0x30
 	ResPalette** m_palettes;           // 0x34
-	int m_loadedPalettes;              // 0x38
+	unsigned int m_loadedPalettes;     // 0x38
 	ResString** m_strings;             // 0x3c
 	int m_loadedStrings;               // 0x40
 	ResMovie** m_movies;               // 0x44
