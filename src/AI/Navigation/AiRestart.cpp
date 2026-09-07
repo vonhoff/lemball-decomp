@@ -75,8 +75,8 @@ void Ai::Restart()
 		}
 		g_pGameStatus->m_levelState = 0;
 	}
-	int* networkStart = m_networkStartsZ;
 	int networkStartCount = 4;
+	int* networkStart = m_networkStartsZ;
 	do {
 		*networkStart = 0;
 		networkStart++;
