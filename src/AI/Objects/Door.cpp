@@ -215,11 +215,6 @@ int Door::Hits(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x10606be8 DoActivate__5CDoorFv
-// STUB: LEMBALL 0x0040dec0
-void Door::DoActivate()
-{
-}
-
 // 68K 0x10119b74 __dt__5CDoorFv
 Door::~Door()
 {
