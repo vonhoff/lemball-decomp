@@ -23,7 +23,7 @@ public:
 private:
 	C2D* m_game;                     // 0x10
 	PvGWnd* m_window;                // 0x14
-	void* m_lemmingManager;          // 0x18
+	Ai* m_ai;                        // 0x18
 	PanelLemming* m_lemmings[4];     // 0x1c
 	PanelPauseButton* m_pauseButton; // 0x2c
 	ResAnim* m_resources[4];         // 0x30

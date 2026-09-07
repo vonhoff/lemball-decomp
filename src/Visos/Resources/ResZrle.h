@@ -31,6 +31,7 @@ public:
 	friend class ResAnim;
 	friend class ResFont;
 	friend class AnimsManager;
+	friend class Panel;
 	friend class Surface;
 	friend class PauseWindow;
 	friend class GraphicButton;

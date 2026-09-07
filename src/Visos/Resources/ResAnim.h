@@ -39,6 +39,7 @@ public:
 	friend class GraphicButton;
 	friend class PauseWindow;
 	friend class BaseCursor;
+	friend class Panel;
 
 private:
 	ResZrle* m_animationEntries; // 0x78
