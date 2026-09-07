@@ -26,6 +26,7 @@ public:
 	friend class GunButton;
 	friend class GunButtons;
 	friend class HiliteButtons;
+	friend class Panel;
 	friend class PanelPauseButton;
 
 private:

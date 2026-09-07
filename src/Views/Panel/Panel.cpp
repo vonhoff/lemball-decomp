@@ -1,7 +1,9 @@
 #include "Panel.h"
 
 #include "../../Visos/Graphics/PvGWnd.h"
+#include "../Display/C2D.h"
 #include "PanelLemming.h"
+#include "PanelPauseButton.h"
 
 // 68K 0x10b0d942 GetPausePos__6CPanelFv
 // FUNCTION: LEMBALL 0x00442f00
@@ -52,9 +54,14 @@ void Panel::Process()
 }
 
 // 68K 0x10b0ddd8 SetPause__6CPanelFUc
-// STUB: LEMBALL 0x00443270
+// FUNCTION: LEMBALL 0x00443270
 void Panel::SetPause(unsigned char p_paused)
 {
+	m_game->SetPause(p_paused);
+	PanelPauseButton* pauseButton = m_pauseButton;
+	unsigned int paused = m_game->m_paused;
+	pauseButton->m_toggled = paused;
+	pauseButton->m_enabled = paused;
 }
 
 // 68K 0x10b0de2c TranslateKey__6CPanelFUl

@@ -139,6 +139,7 @@ public:
 	void TriggerPause(unsigned char p_paused);
 	void UnRegisterRemaps();
 	void UseBalloon(PlayerLemming* p_lemming);
+	friend class Panel;
 	friend class PanelPauseButton;
 
 private:
