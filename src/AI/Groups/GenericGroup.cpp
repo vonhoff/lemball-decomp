@@ -99,11 +99,6 @@ GameObject* GenericGroup::GetNthElementInGroup(int p_index)
 }
 
 // 68K 0x1060c68c SwapElements__13CGenericGroupFP11CGameObjectP11CGameObject
-// STUB: LEMBALL 0x0041dfc0
-void GenericGroup::SwapElements(GameObject* p_first, GameObject* p_second)
-{
-}
-
 // 68K 0x1060c71c AddElementToGroup__13CGenericGroupFP11CGameObject
 // FUNCTION: LEMBALL 0x0041e020
 void GenericGroup::AddElementToGroup(GameObject* p_object)
