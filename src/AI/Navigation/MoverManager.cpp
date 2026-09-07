@@ -50,12 +50,6 @@ MoverManager::~MoverManager()
 }
 
 // 68K 0x10618140 Find__13CMoverManagerFiiRi
-// STUB: LEMBALL 0x0042f2f0
-Mover* MoverManager::Find(int p_x, int p_y, int& p_height)
-{
-	return 0;
-}
-
 // 68K 0x106181c2 Process__13CMoverManagerFv
 // FUNCTION: LEMBALL 0x0042f500
 void MoverManager::Process()
