@@ -16,6 +16,7 @@ public:
 	friend class Text;
 	friend class AnimsManager;
 	friend class Anim;
+	friend class PauseWindow;
 	friend class Surface;
 	friend class GraphicButton;
 	friend class BaseCursor;

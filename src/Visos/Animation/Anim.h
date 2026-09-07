@@ -15,6 +15,7 @@ public:
 
 	friend class AnimsManager;
 	friend class GraphicButton;
+	friend class PauseWindow;
 
 private:
 	unsigned int m_animIndex; // 0x18

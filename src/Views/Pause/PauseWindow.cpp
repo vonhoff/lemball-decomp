@@ -6,6 +6,7 @@
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/ReceiveWindowState.h"
 #include "../../Visos/Resources/ResAnim.h"
+#include "../../Visos/Resources/ResFont.h"
 #include "../Sound/SoundView.h"
 
 // 68K 0x10b0e048 Initialise__12CPauseWindowFv
@@ -50,10 +51,178 @@ void PauseWindow::CreateTheWindow(const VsRect& p_rect)
 }
 
 // 68K 0x10b0e6ce CalculateWindow__12CPauseWindowFv
-// STUB: LEMBALL 0x00444050
+// FUNCTION: LEMBALL 0x00444050
 VsRect PauseWindow::CalculateWindow()
 {
-	return VsRect();
+	VsRect result;
+	VsPoint position;
+	VsPoint textSize;
+	VsPoint maxTextSize;
+	VsPoint* measuredTextSize;
+	VsSize windowSize;
+	short parentWidth;
+	short parentHeight;
+	short horizontalWidth;
+	short verticalHeight;
+	int itemCount;
+	int i;
+
+	if (m_lowResolution != 0) {
+		m_textSpacing.m_x = 0;
+		m_textSpacing.m_y = 2;
+		m_windowPadding.m_x = 0x14;
+		m_windowPadding.m_y = 0x0a;
+	}
+	else {
+		m_textSpacing.m_x = 0;
+		m_textSpacing.m_y = 4;
+		m_windowPadding.m_x = 0x28;
+		m_windowPadding.m_y = 0x14;
+	}
+
+	maxTextSize.m_x = 0;
+	maxTextSize.m_y = 0;
+	itemCount = m_menuItemCount;
+	if (m_pauseMessage == 3) {
+		itemCount--;
+	}
+	for (i = 0; i < m_menuItemCount; i++) {
+		measuredTextSize = m_font->GetSize(&textSize, m_menuLabels[i], 0x20);
+		m_textSizes[i * 2].m_x = measuredTextSize->m_x;
+		m_textSizes[i * 2].m_y = measuredTextSize->m_y;
+		if (i < itemCount) {
+			maxTextSize.m_y += measuredTextSize->m_y + m_textSpacing.m_y;
+		}
+		if (maxTextSize.m_x < measuredTextSize->m_x) {
+			maxTextSize.m_x = measuredTextSize->m_x;
+		}
+	}
+	maxTextSize.m_y -= m_textSpacing.m_y;
+	maxTextSize.m_x += m_windowPadding.m_x;
+
+	if ((int) m_parentWindow->m_innerRect.m_width * (int) m_parentWindow->m_innerRect.m_height != 0) {
+		parentWidth = (short) ((int) m_parentWindow->m_innerRect.m_width / (int) m_parentWindow->m_zoom);
+		parentHeight = (short) ((int) m_parentWindow->m_innerRect.m_height / (int) m_parentWindow->m_zoom);
+	}
+	else {
+		parentWidth = (short) ((int) m_parentWindow->m_rect.m_width / (int) m_parentWindow->m_zoom);
+		parentHeight = (short) ((int) m_parentWindow->m_rect.m_height / (int) m_parentWindow->m_zoom);
+	}
+
+	windowSize.m_width = maxTextSize.m_x;
+	windowSize.m_height = maxTextSize.m_y;
+	position.m_x = (short) (((int) parentWidth - (int) windowSize.m_width) / 2);
+	position.m_y = (short) (((int) parentHeight - (int) windowSize.m_height) / 2);
+
+	horizontalWidth = m_verticalBorderAnim->m_animationEntries[0].m_width;
+	verticalHeight = m_verticalBorderAnim->m_animationEntries[2].m_height;
+	windowSize.m_width = (short) (((int) windowSize.m_width + horizontalWidth - 1) / horizontalWidth);
+	windowSize.m_height = (short) (((int) windowSize.m_height + verticalHeight - 1) / verticalHeight);
+	windowSize.m_width = (short) (windowSize.m_width * horizontalWidth);
+	windowSize.m_height = (short) (windowSize.m_height * verticalHeight);
+	m_verticalTextOffset = (short) (((int) windowSize.m_height - (int) maxTextSize.m_y) / 2);
+	m_horizontalTiles = (short) ((int) windowSize.m_width / horizontalWidth - 2);
+	m_verticalTiles = (short) ((int) windowSize.m_height / verticalHeight - 2);
+
+	if (m_borderAnimCount != m_horizontalTiles + m_verticalTiles) {
+		if (m_borderAnims != 0) {
+			delete[] m_borderAnims;
+		}
+		m_borderAnimCount = m_horizontalTiles + m_verticalTiles;
+		m_borderAnims = new Anim[m_borderAnimCount * 2];
+	}
+
+	m_cornerAnims[0].m_x = windowSize.m_width;
+	m_cornerAnims[0].m_y = 0;
+	m_cornerAnims[0].m_flags = 0;
+	m_cornerAnims[0].m_remap = 0;
+	m_cornerAnims[0].m_state = 0;
+	m_cornerAnims[0].m_animIndex = 0;
+	m_cornerAnims[0].m_animResource = m_horizontalBorderAnim;
+	m_cornerAnims[1].m_x = windowSize.m_width;
+	m_cornerAnims[1].m_y = 0;
+	m_cornerAnims[1].m_flags = 1;
+	m_cornerAnims[1].m_remap = 0;
+	m_cornerAnims[1].m_state = 0;
+	m_cornerAnims[1].m_animIndex = 1;
+	m_cornerAnims[1].m_animResource = m_horizontalBorderAnim;
+	m_cornerAnims[2].m_x = 0;
+	m_cornerAnims[2].m_y = windowSize.m_height;
+	m_cornerAnims[2].m_flags = 2;
+	m_cornerAnims[2].m_remap = 0;
+	m_cornerAnims[2].m_state = 0;
+	m_cornerAnims[2].m_animIndex = 2;
+	m_cornerAnims[2].m_animResource = m_horizontalBorderAnim;
+	m_cornerAnims[3].m_x = windowSize.m_width;
+	m_cornerAnims[3].m_y = windowSize.m_height;
+	m_cornerAnims[3].m_flags = 3;
+	m_cornerAnims[3].m_remap = 0;
+	m_cornerAnims[3].m_state = 0;
+	m_cornerAnims[3].m_animIndex = 3;
+	m_cornerAnims[3].m_animResource = m_horizontalBorderAnim;
+
+	{
+		short topX = horizontalWidth;
+		short bottomX = horizontalWidth;
+		int index;
+
+		for (index = 0; index < m_horizontalTiles; index++) {
+			Anim& top = m_borderAnims[index];
+			Anim& bottom = m_borderAnims[m_borderAnimCount + index];
+			top.m_x = topX;
+			top.m_y = 0;
+			top.m_flags = 0;
+			top.m_remap = 0;
+			top.m_state = 0;
+			top.m_animIndex = 0;
+			top.m_animResource = m_verticalBorderAnim;
+			bottom.m_x = bottomX;
+			bottom.m_y = (short) (windowSize.m_height - verticalHeight);
+			bottom.m_flags = 1;
+			bottom.m_remap = 0;
+			bottom.m_state = 0;
+			bottom.m_animIndex = 1;
+			bottom.m_animResource = m_verticalBorderAnim;
+			topX = (short) (topX + horizontalWidth);
+			bottomX = (short) (bottomX + horizontalWidth);
+		}
+	}
+
+	{
+		short leftX = position.m_x;
+		short leftY = (short) (position.m_y + m_horizontalBorderAnim->m_animationEntries[0].m_height);
+		short rightX =
+			(short) (position.m_x + windowSize.m_width - m_verticalBorderAnim->m_animationEntries[2].m_width);
+		short rightY = leftY;
+		int index;
+
+		for (index = 0; index < m_verticalTiles; index++) {
+			Anim& left = m_borderAnims[m_horizontalTiles + index];
+			Anim& right = m_borderAnims[m_borderAnimCount + m_horizontalTiles + index];
+			left.m_x = leftX;
+			left.m_y = leftY;
+			left.m_flags = 2;
+			left.m_remap = 0;
+			left.m_state = 0;
+			left.m_animIndex = 2;
+			left.m_animResource = m_verticalBorderAnim;
+			right.m_x = rightX;
+			right.m_y = rightY;
+			right.m_flags = 3;
+			right.m_remap = 0;
+			right.m_state = 0;
+			right.m_animIndex = 3;
+			right.m_animResource = m_verticalBorderAnim;
+			leftY = (short) (leftY + verticalHeight);
+			rightY = (short) (rightY + verticalHeight);
+		}
+	}
+
+	result.m_width = windowSize.m_width;
+	result.m_height = windowSize.m_height;
+	result.m_x = position.m_x;
+	result.m_y = position.m_y;
+	return result;
 }
 
 // 68K 0x10b0eeba __ct__12CPauseWindowFP19CReceiveWindowStateP7CPVGWnd20ePauseWindowMessages

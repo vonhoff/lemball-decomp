@@ -37,6 +37,7 @@ public:
 	friend class AnimsManager;
 	friend class Anim;
 	friend class GraphicButton;
+	friend class PauseWindow;
 	friend class BaseCursor;
 
 private:
