@@ -164,10 +164,72 @@ void Maze::BInitialise(unsigned char p_resetStats, int p_startX, int p_startY, i
 }
 
 // 68K 0x10615f52 BIteration__5CMazeFRUcRUc
-// STUB: LEMBALL 0x00423650
+// FUNCTION: LEMBALL 0x00423650
 bool Maze::BIteration(unsigned char& p_reached, unsigned char& p_noChanges)
 {
-	return 0;
+	p_reached = 0;
+	if (m_endY < 0 || m_endX < 0 || m_height <= m_endY || m_width <= m_endX || m_distances[m_endY][m_endX] == 0xffff) {
+		return 1;
+	}
+
+	bool changed = false;
+	SwapChange();
+	int radius = m_radius + 1;
+	int xMin = m_startX - radius;
+	int xMax = m_startX + radius;
+	int yMax = m_startY + radius;
+	int yMin = m_startY - radius;
+	m_radius = radius;
+	if (xMin < 0) {
+		xMin = 0;
+	}
+	if (m_width - 1 < xMax) {
+		xMax = m_width - 1;
+	}
+	if (yMin < 0) {
+		yMin = 0;
+	}
+	if (m_height - 1 < yMax) {
+		yMax = m_height - 1;
+	}
+
+	int offset = (yMin * 0x80 + xMin) >> 3;
+	unsigned char* pChange;
+	if (m_changeSelect == 0) {
+		pChange = m_changeB + offset;
+	}
+	else {
+		pChange = m_changeA + offset;
+	}
+
+	if (yMin <= yMax) {
+		unsigned char mask = g_aChangeBitMasks[xMin & 7][0];
+		for (int y = yMin; y <= yMax; y++) {
+			unsigned short* pDistance = m_distances[y] + xMin;
+			unsigned char currentMask = mask;
+			unsigned char* pChangeRow = pChange;
+			for (int x = xMin; x <= xMax; x++) {
+				if ((currentMask & *pChangeRow) != 0 && *pDistance != 0xffff && CalcNewDistance(x, y)) {
+					changed = true;
+					UpdateChangeNext(x, y);
+				}
+				currentMask >>= 1;
+				if (currentMask == 0) {
+					currentMask = 0x80;
+					pChangeRow++;
+				}
+				pDistance++;
+			}
+			pChange += 0x10;
+		}
+	}
+
+	p_reached = m_distances[m_endY][m_endX] != 0xff00;
+	p_noChanges = !p_reached || changed ? 0 : 1;
+	if (!p_reached && changed && m_radius < 0x14) {
+		return 0;
+	}
+	return 1;
 }
 
 // 68K 0x10616122 Direction__Fiiii
