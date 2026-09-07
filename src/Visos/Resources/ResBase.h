@@ -50,6 +50,7 @@ public:
 	friend class BitmapResBase;
 	friend class FrontendResourceLoader;
 	friend class BaseCursor;
+	friend class Demo;
 	friend class TargetAboutScreen;
 	friend class LevelLoader;
 	friend class MciMusicDevice;

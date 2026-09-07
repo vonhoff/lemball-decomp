@@ -1,5 +1,7 @@
 #include "Demo.h"
 
+#include "../../Visos/Resources/ResBin.h"
+
 // 68K 0x10700a70 __ct__5CDemoFi
 // STUB: LEMBALL 0x004091b0
 Demo::Demo(int p_arg0)
@@ -62,9 +64,22 @@ void Demo::Process()
 }
 
 // 68K 0x10701116 CleanUp__5CDemoFv
-// STUB: LEMBALL 0x00409660
+// FUNCTION: LEMBALL 0x00409660
 void Demo::CleanUp()
 {
+	if (m_resource != 0) {
+		m_resource->m_directUseCount--;
+		m_resource->UnLoad();
+		m_resource = 0;
+		m_buffer = 0;
+		m_readCursor = 0;
+		return;
+	}
+	if (m_buffer != 0) {
+		operator delete(m_buffer);
+	}
+	m_buffer = 0;
+	m_readCursor = 0;
 }
 
 // 68K 0x10701178 GameIsOver__5CDemoFv
