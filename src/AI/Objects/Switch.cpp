@@ -9,7 +9,8 @@ word g_wNextSwitchIndex;
 
 // 68K 0x10619660 __ct__7CSwitchFR7AICOORD9swMessageiii
 // FUNCTION: LEMBALL 0x0041d040
-Switch::Switch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_arg4) : BaseGlobalObject(p_arg0, OBJECT_SWITCH)
+Switch::Switch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_arg4)
+	: BaseGlobalObject(p_arg0, OBJECT_SWITCH)
 {
 	m_position.m_xFixed = p_arg0.m_xFixed;
 	m_position.m_yFixed = p_arg0.m_yFixed;
@@ -98,9 +99,14 @@ AiCoord Switch::ActivatePosition()
 }
 
 // 68K 0x10619a9c AddEntry__7CSwitchF9swMessageUs
-// STUB: LEMBALL 0x0041d350
+// FUNCTION: LEMBALL 0x0041d350
 void Switch::AddEntry(int p_message, unsigned short p_objectId)
 {
+	if (m_entryCount < 0x20) {
+		m_entries[m_entryCount].m_message = p_message;
+		m_entries[m_entryCount].m_objectId = p_objectId;
+		m_entryCount++;
+	}
 }
 
 // 68K 0x10619afa ConvertVer0ToVer1__7CSwitchFv
