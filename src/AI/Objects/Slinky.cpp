@@ -13,10 +13,17 @@ void Slinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 }
 
 // 68K 0x1061eda0 GoodEndPt__7CSlinkyFRC7AICOORD
-// STUB: LEMBALL 0x0040b630
+// FUNCTION: LEMBALL 0x0040b630
 bool Slinky::GoodEndPt(const AiCoord& p_coordinate)
 {
-	return 0;
+	int x = p_coordinate.m_xFixed >> 12;
+	if (m_minX <= x) {
+		int y = p_coordinate.m_yFixed >> 12;
+		if (m_minY <= y && x <= m_maxX && y <= m_maxY) {
+			return true;
+		}
+	}
+	return false;
 }
 
 // 68K 0x1061ee14 Move__7CSlinkyFv
