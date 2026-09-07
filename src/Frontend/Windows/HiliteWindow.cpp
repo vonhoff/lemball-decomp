@@ -19,3 +19,6 @@ void HiliteWindow::OnCreate()
 
 // GLOBAL: LEMBALL 0x004a7b64
 unsigned int g_dwHiliteAnimationId;
+
+// GLOBAL: LEMBALL 0x004a7b68
+char g_abPasswordLevelText[24];

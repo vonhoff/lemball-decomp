@@ -6,6 +6,19 @@
 #include "../../Visos/Graphics/SolidRect.h"   // complete type
 #include "../Base/BaseFrontendDrawer.h"
 
+struct PasswordTextPosition {
+	int m_x;
+	int m_y;
+};
+
+struct PasswordTextLayout {
+	undefined4 m_unknown00[6];
+	PasswordTextPosition m_labelPositions[4];
+	PasswordTextPosition m_countPositions[4];
+	undefined4 m_unknown58[8];
+	PasswordTextPosition m_resultPosition;
+};
+
 // SIZE 0x494
 // VTABLE: LEMBALL 0x00498408 Drawer
 // VTABLE: LEMBALL 0x004983f8 BaseQueueHandler
