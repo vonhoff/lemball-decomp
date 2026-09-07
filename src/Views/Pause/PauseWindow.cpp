@@ -5,6 +5,7 @@
 #include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/ReceiveWindowState.h"
+#include "../../Visos/Resources/ResAnim.h"
 #include "../Sound/SoundView.h"
 
 // 68K 0x10b0e048 Initialise__12CPauseWindowFv
@@ -20,9 +21,15 @@ void PauseWindow::Load()
 }
 
 // 68K 0x10b0e2a0 UnLoad__12CPauseWindowFv
-// STUB: LEMBALL 0x00443d40
+// FUNCTION: LEMBALL 0x00443d40
 void PauseWindow::UnLoad()
 {
+	if (m_loaded != 0) {
+		m_textManager.UnLoadFont(m_fontId);
+		m_verticalBorderAnim->UnLoad();
+		m_horizontalBorderAnim->UnLoad();
+		m_loaded = 0;
+	}
 }
 
 // 68K 0x10b0e2fc Restart__12CPauseWindowFv
