@@ -223,10 +223,10 @@ bool MainOptions1Drawer::ProcessMessages(Message* p_message)
 	switch (type) {
 	case 3:
 	case 4:
-		m_idleDeadline = CurrentMilliTimer() + 20000;
+		m_idleDeadline = timeGetTime() + 20000;
 		break;
 	case 0xc:
-		m_idleDeadline = CurrentMilliTimer() + 20000;
+		m_idleDeadline = timeGetTime() + 20000;
 		switch (p_message->code) {
 		case 0xacef0001:
 			m_returnState = 3;
