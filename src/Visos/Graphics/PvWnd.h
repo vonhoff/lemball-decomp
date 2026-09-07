@@ -87,6 +87,7 @@ public:
 	friend class CdLoadAnim;
 	friend class CdLoadAnimDraw;
 	friend class C2D;
+	friend class PanelButton;
 	friend class BaseCursor;
 	friend int __stdcall TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state,
 												  void* p_request,

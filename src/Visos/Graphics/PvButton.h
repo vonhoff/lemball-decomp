@@ -49,6 +49,7 @@ public:
 	friend class GunController;
 	friend class HiliteController;
 	friend class PasswordDrawer;
+	friend class PanelButton;
 
 private:
 	PvGWnd* m_ownerWindow;           // 0xc8
@@ -59,7 +60,7 @@ private:
 	short m_buttonX;                 // 0xdc
 	short m_buttonY;                 // 0xde
 	Primitive* m_primitive;          // 0xe0
-	ClipRect m_clipRect;             // 0xe4
+	ClipRect m_clipRect[1];          // 0xe4
 	void* m_messageHandler;          // 0xf4
 	unsigned int m_autoDraw;         // 0xf8
 	unsigned int m_drawCompleted;    // 0xfc

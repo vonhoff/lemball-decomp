@@ -2,15 +2,17 @@
 #define LEMBALL_VISOS_NETWORK_FILEOPENMANAGEMENT_H
 
 #include "../../Common.h"
-#include "OpenCount.h" // complete type
+#include "FileRwSocket.h" // complete type
+#include "OpenCount.h"    // complete type
 
 // SIZE 0x34
-class FileOpenManagement {
+class FileOpenManagement : public virtual FileRwSocket {
 public:
 	bool DecOpenCount();
 	bool IncOpenCount();
 	int SysCloseSocket();
 	~FileOpenManagement();
+	friend class FileConnect;
 
 private:
 	OpenCount m_message; // 0x04

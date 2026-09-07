@@ -41,6 +41,7 @@ public:
 	friend class C2D;
 	friend class Panel;
 	friend class PanelPauseButton;
+	friend class PanelButton;
 
 private:
 	void* m_effectSpecTable;         // 0x00

@@ -75,12 +75,16 @@ void Ai::Restart()
 		}
 		g_pGameStatus->m_levelState = 0;
 	}
-	for (i = 0; i < 4; i++) {
-		m_networkStartsZ[i] = 0;
-		m_networkStartsY[i] = 0;
-		m_networkStartsX[i] = 0;
-		m_networkTrapDoors[i] = 0;
-	}
+	int* networkStart = m_networkStartsZ;
+	int networkStartCount = 4;
+	do {
+		*networkStart = 0;
+		networkStart++;
+		networkStart[-5] = 0;
+		networkStart[-9] = 0;
+		networkStart[3] = 0;
+		networkStartCount--;
+	} while (networkStartCount != 0);
 	m_networkTrapDoors[0] = 4;
 	m_levelVersion = 0;
 	m_networkTrapDoorCount = 1;

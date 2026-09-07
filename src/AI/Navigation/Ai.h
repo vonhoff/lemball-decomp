@@ -98,6 +98,7 @@ public:
 	friend class Enemy;
 	friend class Panel;
 	friend class PanelPauseButton;
+	friend class PanelButton;
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:

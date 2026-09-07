@@ -56,19 +56,22 @@ void PvButton::OnVisibilityChange()
 }
 
 // 68K 0x1020f994 __ct__9CPVButtonFRC7CVSRectP7CPVGWnd
-// STUB: LEMBALL 0x00467c10
+// FUNCTION: LEMBALL 0x00467c10
 PvButton::PvButton(const VsRect& p_arg0, PvGWnd* p_arg1)
+	: HotAreaHandler(VsRect(0, 0, p_arg0.m_width, p_arg0.m_height)), m_buttonY(0), m_buttonX(0)
 {
-	m_x = 0;
-	m_y = 0;
-	m_width = p_arg0.m_width;
-	m_height = p_arg0.m_height;
-	m_buttonY = 0;
-	m_buttonX = 0;
 	m_clickY = 0;
 	m_clickX = 0;
-	m_buttonX = p_arg0.m_x;
-	m_buttonY = p_arg0.m_y;
+	const VsRect* rect = &p_arg0;
+	const short* position;
+	if (rect != 0) {
+		position = &rect->m_x;
+	}
+	else {
+		position = 0;
+	}
+	m_buttonX = *position;
+	m_buttonY = position[1];
 	m_ownerWindow = p_arg1;
 	Initialise();
 }
@@ -136,17 +139,17 @@ void PvButton::CheckForceDraw()
 	m_gdi->m_renderTarget->GetCurrDb();
 	if (m_forceDrawCount != 0) {
 		m_forceDrawCount--;
-		m_clipRect.m_left = m_gdi->m_renderTarget->m_windowRect.m_width;
-		m_clipRect.m_top = m_gdi->m_renderTarget->m_windowRect.m_height;
-		m_clipRect.m_right = 0;
-		m_clipRect.m_bottom = 0;
-		m_clipRect.m_reserved0c = 0x10000;
+		m_clipRect[0].m_left = m_gdi->m_renderTarget->m_windowRect.m_width;
+		m_clipRect[0].m_top = m_gdi->m_renderTarget->m_windowRect.m_height;
+		m_clipRect[0].m_right = 0;
+		m_clipRect[0].m_bottom = 0;
+		m_clipRect[0].m_reserved0c = 0x10000;
 		m_gdi->m_renderTarget->m_flag78 = 1;
 	}
 	else {
-		m_clipRect.m_reserved0c = 0;
+		m_clipRect[0].m_reserved0c = 0;
 	}
-	m_clipRect.Draw(m_gdi);
+	m_clipRect[0].Draw(m_gdi);
 }
 
 // 68K 0x1020fdc2 _DrawButton__9CPVButtonFv

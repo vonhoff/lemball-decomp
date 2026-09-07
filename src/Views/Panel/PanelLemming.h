@@ -11,6 +11,8 @@ public:
 	void UpdateStatus();
 	~PanelLemming();
 
+	friend class PanelButton;
+
 private:
 	PvGWnd* m_window;                // 0x00
 	PanelButton* m_button;           // 0x04

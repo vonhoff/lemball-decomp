@@ -141,6 +141,7 @@ public:
 	void UseBalloon(PlayerLemming* p_lemming);
 	friend class Panel;
 	friend class PanelPauseButton;
+	friend class PanelButton;
 
 private:
 	unsigned char* m_remapTables[4];                // 0x54

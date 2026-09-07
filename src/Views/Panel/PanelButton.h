@@ -26,7 +26,7 @@ public:
 private:
 	unsigned int m_pressedInside;   // 0x10c
 	PanelLemming* m_lemming;        // 0x110
-	Line m_statusLine;              // 0x114
+	Line m_statusLine[1];           // 0x114
 	Line m_inventoryLines[3];       // 0x124
 	VsRect m_statusRect;            // 0x154
 	VsRect m_inventoryRect;         // 0x15c
@@ -35,8 +35,8 @@ private:
 	unsigned int m_alternatePlayer; // 0x16c
 	eObjectType m_lastBalloon;      // 0x170
 	unsigned int m_inventoryCount;  // 0x174
-	Anim m_statusAnim;              // 0x178
-	Anim m_inventoryAnim;           // 0x198
+	Anim m_statusAnim[1];           // 0x178
+	Anim m_inventoryAnim[1];        // 0x198
 };
 
 // SYNTHETIC: LEMBALL 0x00443950

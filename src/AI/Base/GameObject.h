@@ -138,6 +138,7 @@ public:
 	friend bool PlayerWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 	friend bool EnemyWaitingToFire(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 	friend class C2D;
+	friend class PanelButton;
 	friend class Tower;
 	friend class Catapult;
 	friend class Ammo;

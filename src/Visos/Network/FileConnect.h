@@ -2,6 +2,8 @@
 #define LEMBALL_VISOS_NETWORK_FILECONNECT_H
 
 #include "../../Common.h"
+#include "Connect.h"            // complete type
+#include "FileOpenManagement.h" // complete type
 
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x0049ab68 native callback
@@ -10,7 +12,7 @@
 // VTABLE: LEMBALL 0x0049abd8 WriteSocket view
 // VTABLE: LEMBALL 0x0049ac08 BaseCommonSocket view
 // VTABLE: LEMBALL 0x0049ac18 primary Connect view
-class FileConnect {
+class FileConnect : public Connect, public FileOpenManagement {
 public:
 	FileConnect();
 	virtual bool Start(const char* p_localName, const char* p_remoteName); // vtable+0x00
@@ -23,9 +25,6 @@ public:
 	void InitialiseFile();
 	void Listen(NetworkAddress* p_address);
 	~FileConnect();
-
-private:
-	undefined m_storage[0x1b8]; // 0x00
 };
 
 // SYNTHETIC: LEMBALL 0x0047bf40

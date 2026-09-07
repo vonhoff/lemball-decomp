@@ -90,7 +90,15 @@ void Map::CreateWalkBits()
 						}
 						if ((collision & 0x25) == 0) {
 							unsigned short currentZ = m_ground.GetZ(x, y - 8);
-							unsigned short previousZ = m_ground.GetZ(x, y - 9);
+							unsigned short previousZ = 0;
+							int previousY = y - 9;
+							int previousBlockX = x >> 4;
+							int previousBlockY = previousY >> 4;
+							if (x >= 0 && previousY >= 0 && previousBlockX < m_ground.m_width &&
+								previousBlockY < m_ground.m_height) {
+								previousZ = m_ground.GetGroundCell(previousBlockX, previousBlockY)
+												->GetZ(x & 0xf, previousY & 0xf);
+							}
 							if (currentZ + 0xf >= previousZ) {
 								*walkBits |= 0x10;
 							}

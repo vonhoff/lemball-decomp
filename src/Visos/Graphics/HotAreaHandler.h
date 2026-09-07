@@ -32,6 +32,7 @@ public:
 	friend class C2D;
 	friend class TrackWindow;
 	friend class PauseWindow;
+	friend class PanelButton;
 
 private:
 	unsigned int m_active;          // 0x04

@@ -19,6 +19,7 @@ public:
 	void Process();
 	void SetPause(unsigned char p_paused);
 	friend class PanelPauseButton;
+	friend class PanelButton;
 
 private:
 	C2D* m_game;                     // 0x10

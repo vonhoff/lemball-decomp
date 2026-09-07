@@ -9,9 +9,10 @@ public:
 	FileBaseSocket();
 
 private:
-	NetworkFile* m_file;  // 0x00
-	undefined4 m_unk0x04; // 0x04
-	undefined4 m_unk0x08; // 0x08
+	friend class FileConnect;
+	NetworkMessage* m_file; // 0x00
+	undefined4 m_unk0x04;   // 0x04
+	undefined4 m_unk0x08;   // 0x08
 };
 
 #endif

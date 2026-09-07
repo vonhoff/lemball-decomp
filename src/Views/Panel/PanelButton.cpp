@@ -1,11 +1,64 @@
 #include "PanelButton.h"
 
+#include "../../AI/Groups/PlayerLemmingGroup.h"
+#include "../../AI/Groups/PlayerLemmingGroupManager.h"
+#include "../../AI/Navigation/Ai.h"
+#include "../../AI/Objects/PlayerLemming.h"
 #include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Graphics/Gdi.h"
+#include "../../Visos/Graphics/HotAreaList.h"
+#include "../../Visos/Graphics/PvSurface.h"
+#include "../../Visos/Graphics/VsGdi.h"
+#include "../Display/C2D.h"
+#include "../Sound/SoundView.h"
+#include "Panel.h"
+#include "PanelLemming.h"
+
+extern char g_szButton[];
 
 // 68K 0x10b0c854 __ct__12CPanelButtonFP13CPanelLemmingRC7CVSRectP7CPVGWnd
-// STUB: LEMBALL 0x00442390
+// FUNCTION: LEMBALL 0x00442390
 PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_arg2) : DepressedButton(p_arg1, p_arg2)
 {
+	m_lemming = p_arg0;
+	{
+		VsPoint point;
+
+		point = p_arg0->m_panel->m_buttonSize;
+		m_statusRect.m_width = point.m_x;
+		m_statusRect.m_height = point.m_y;
+		m_statusRect.m_x = 0;
+		m_statusRect.m_y = 0;
+	}
+	m_unavailable = (unsigned int) (p_arg0->m_lemming->m_action == 8);
+	m_alternatePlayer = p_arg0->m_lemming->HasObject((eObjectType) 0xc);
+	m_lastAmmo = 0xffffffff;
+	m_lastBalloon = (eObjectType) 0xffffffff;
+	m_inventoryCount = 0;
+	{
+		VsPoint point;
+
+		point = p_arg0->m_panel->m_balloonSize;
+		m_gdiFlags += 7;
+		m_inventoryRect.m_width = point.m_x;
+		m_inventoryRect.m_height = point.m_y;
+		m_inventoryRect.m_x = p_arg0->m_panel->m_buttonSize.m_x;
+		m_inventoryRect.m_y = 0;
+	}
+	{
+		VsRect createRect;
+		createRect.m_width = m_width;
+		createRect.m_height = m_height;
+		createRect.m_x = m_buttonX;
+		createRect.m_y = m_buttonY;
+		Create(createRect, m_ownerWindow, g_szButton);
+	}
+	m_x = (short) (m_x + m_relativeTopLeft.m_x);
+	m_y = (short) (m_y + m_relativeTopLeft.m_y);
+	m_ownerWindow->m_hotAreaList->AddToList(static_cast<HotAreaHandler*>(this));
+	m_gdi->m_renderTarget->m_flag70 = 0;
+	m_externalEnabled = 1;
+	m_pressedInside = 0;
 }
 
 // 68K 0x10b0cb74 __dt__12CPanelButtonFv
@@ -52,9 +105,80 @@ void PanelButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 }
 
 // 68K 0x10b0d320 OnPressed__12CPanelButtonF12BUTTON_FLAGS
-// STUB: LEMBALL 0x00442ae0
+// FUNCTION: LEMBALL 0x00442ae0
 void PanelButton::OnPressed(int p_flags)
 {
+	PanelLemming* panelLemming = m_lemming;
+	C2D* game = panelLemming->m_panel->m_game;
+
+	if (game->m_paused != 0) {
+		return;
+	}
+	PlayerLemming* lemming = panelLemming->m_lemming;
+	eAction action = lemming->m_action;
+	PlayerLemmingGroupManager* groupManager;
+	PlayerLemmingGroup* group;
+	if (action == 8) {
+		return;
+	}
+
+	if (p_flags == 0) {
+		goto normal;
+	}
+	if (p_flags == 1) {
+		goto alternate;
+	}
+	goto pressed;
+
+normal:
+	if (panelLemming->m_balloonType != -1) {
+		if ((short) m_inventoryRect.m_x <= (short) m_clickX &&
+			(short) m_clickX < (short) (m_inventoryRect.m_width + m_inventoryRect.m_x)) {
+			short inventoryY = m_inventoryRect.m_y;
+			short clickY = m_clickY;
+			if (inventoryY > clickY) {
+				goto pressed;
+			}
+			if (clickY >= (short) (m_inventoryRect.m_height + inventoryY)) {
+				goto pressed;
+			}
+			if (action == 0 || action == 2 || action == 6) {
+				m_lemming->m_lemming->SetSndEffect((eSoundEffect) 0x1f);
+				game->UseBalloon(m_lemming->m_lemming);
+			}
+			goto pressed;
+		}
+	}
+	if (game->m_groupingActive == 1) {
+		if (game->InGroupByObjectNo(m_lemming->m_lemming->m_objectId) == 0) {
+			game->AddObjectToGroup(m_lemming->m_lemming->m_objectId, 1);
+		}
+		else {
+			game->RemoveFromGroupByObjectNo(m_lemming->m_lemming->m_objectId);
+		}
+	}
+	else {
+		game->m_groupingActive = 1;
+		game->m_groupCount = 0;
+		game->m_groupSelectionCount = 0;
+		game->AddObjectToGroup(m_lemming->m_lemming->m_objectId, 1);
+	}
+	m_lemming->UpdateStatus();
+	goto pressed;
+
+alternate:
+	groupManager = game->m_ai->m_playerGroupManager;
+	game->FormGroup();
+	group = m_lemming->m_lemming->GetGroup();
+	if (group != groupManager->GetPlayerControlledGroup()) {
+		groupManager->GetPlayerControlledGroup()->SetPlayerControlled(0, 0);
+	}
+	m_lemming->m_lemming->GetGroup()->SetPlayerControlled(1, m_lemming->m_lemming);
+
+pressed:
+	m_pressedInside = 1;
+	CursorChangeType((eCursorDisplayType) 1, 1);
+	g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
 }
 
 // 68K 0x1011cde6 OnEnterButton__12CPanelButtonFv

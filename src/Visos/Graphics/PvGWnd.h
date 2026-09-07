@@ -49,6 +49,7 @@ public:
 	friend class GunButtons;
 	friend class HiliteButtons;
 	friend class DepressedButton;
+	friend class PanelButton;
 	friend class FrontendResourceLoader;
 	friend class CdLoadAnim;
 	friend class BaseCursor;

@@ -50,6 +50,7 @@ public:
 	friend class PasswordDrawer;
 	friend class HiliteButtons;
 	friend class GunController;
+	friend class PanelButton;
 
 private:
 	VsRect m_dontUpdateRect;      // 0x04

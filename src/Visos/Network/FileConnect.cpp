@@ -1,22 +1,37 @@
 #include "FileConnect.h"
 
+#include "../Messaging/Headers.h"
+
+#include <new.h>
+#include <string.h>
+
+#pragma intrinsic(strcpy, strlen)
+
 // 68K 0x1020942a __ct__12CFileConnectFv
 // STUB: LEMBALL 0x0047af30
 FileConnect::FileConnect()
 {
+	FileReadSocket::m_file = new Headers(3);
+	FileWriteSocket::m_file = new Headers(3);
 }
 
 // 68K 0x10209eb2 InitialiseFile__12CFileConnectFv
-// STUB: LEMBALL 0x0047b370
+// FUNCTION: LEMBALL 0x0047b370
 void FileConnect::InitialiseFile()
 {
+	NetworkFile::Seek(0);
+	FileWriteSocket::Write(m_message, 0, 0);
 }
 
 // 68K 0x10209f16 Start__12CFileConnectFPCcPCc
-// STUB: LEMBALL 0x0047b3b0
+// FUNCTION: LEMBALL 0x0047b3b0
 bool FileConnect::Start(const char* p_localName, const char* p_remoteName)
 {
-	return 0;
+	m_address = (NetworkAddress*) operator new(strlen(p_remoteName) + 1);
+	strcpy((char*) m_address, p_remoteName);
+	m_name = (char*) operator new(strlen(p_localName) + 1);
+	strcpy(m_name, p_localName);
+	return true;
 }
 
 // 68K 0x10209fa2 InitSocket__12CFileConnectFv
@@ -44,9 +59,11 @@ void FileConnect::ConnectSetup()
 }
 
 // 68K 0x101168ac Process__12CFileConnectFv
-// STUB: LEMBALL 0x0047b990
+// FUNCTION: LEMBALL 0x0047b990
 void FileConnect::Process()
 {
+	FileReadSocket::Process();
+	CConnect::Process();
 }
 
 // 68K 0x10209a58 __dt__12CFileConnectFv
@@ -55,14 +72,15 @@ FileConnect::~FileConnect()
 }
 
 // 68K 0x10116932 Closed__12CFileConnectFUc
-// STUB: LEMBALL 0x0047bfc0
+// FUNCTION: LEMBALL 0x0047bfc0
 void FileConnect::Closed(int p_notifyPeer)
 {
+	CConnect::Closed(p_notifyPeer);
 }
 
 // 68K 0x10116968 ReceiveAcknowledgement__12CFileConnectFv
-// STUB: LEMBALL 0x0047bff0
+// FUNCTION: LEMBALL 0x0047bff0
 NetworkMessage* FileConnect::ReceiveAcknowledgement()
 {
-	return 0;
+	return CConnect::ReceiveAcknowledgement();
 }
