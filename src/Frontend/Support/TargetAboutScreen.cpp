@@ -125,7 +125,11 @@ void TargetAboutScreen::DrawRegistrationText()
 	m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, 0);
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	VsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
-	font->GetSize(&buildSize, g_szVisosBuildBuffer, 0x20);
+	{
+		VsPoint* measuredSize = font->GetSize(&buildSize, g_szVisosBuildBuffer, 0x20);
+		buildSize.m_x = measuredSize->m_x;
+		buildSize.m_y = measuredSize->m_y;
+	}
 	advance.m_height = 0;
 	advance.m_width = 0;
 	position.m_x = (short) (m_width - buildSize.m_x) / 2;
@@ -140,7 +144,11 @@ void TargetAboutScreen::DrawRegistrationText()
 		key = key + 1;
 	}
 	g_szAboutDecodeBuffer[index] = '\0';
-	font->GetSize(&nameSize, g_szAboutDecodeBuffer, 0x20);
+	{
+		VsPoint* measuredSize = font->GetSize(&nameSize, g_szAboutDecodeBuffer, 0x20);
+		nameSize.m_x = measuredSize->m_x;
+		nameSize.m_y = measuredSize->m_y;
+	}
 	advance.m_height = 0;
 	advance.m_width = 0;
 	position.m_x = m_width / 2 - nameSize.m_x / 2;
