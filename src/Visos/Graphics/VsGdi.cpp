@@ -490,24 +490,32 @@ ChangeList* Surface::GetChangeList()
 void Surface::Blit(class ClipRect* p_clipRect)
 {
 	Surface* parent;
-	VsRect* clip;
+	VsRect* clip = &m_clipRect;
 	short clipRight;
-	short clipBottom;
 
-	clip = &m_clipRect;
 	if ((p_clipRect->m_reserved0c & 0x1000) == 0) {
+		const short* coords;
+
 		clip->m_width = p_clipRect->m_left;
 		clip->m_height = p_clipRect->m_top;
-		clip->m_x = p_clipRect->m_right;
-		clip->m_y = p_clipRect->m_bottom;
+		if (&p_clipRect->m_left != 0) {
+			coords = &p_clipRect->m_right;
+		}
+		else {
+			coords = 0;
+		}
+		clip->m_x = *coords;
+		clip->m_y = coords[1];
 	}
 	else if ((int) p_clipRect->m_left * (int) p_clipRect->m_top != 0) {
-		if (p_clipRect->m_right < clip->m_x) {
-			clip->m_width = (short) (clip->m_width + (clip->m_x - p_clipRect->m_right));
+		clipRight = clip->m_x;
+		if (p_clipRect->m_right < clipRight) {
+			clip->m_width = (short) (clip->m_width + (clipRight - p_clipRect->m_right));
 			clip->m_x = p_clipRect->m_right;
 		}
-		if ((short) (clip->m_width + clip->m_x) < (short) (p_clipRect->m_right + p_clipRect->m_left)) {
-			clip->m_width = (short) ((p_clipRect->m_left - clip->m_x) + p_clipRect->m_right);
+		clipRight = clip->m_x;
+		if ((short) (clip->m_width + clipRight) < (short) (p_clipRect->m_right + p_clipRect->m_left)) {
+			clip->m_width = (short) ((p_clipRect->m_left - clipRight) + p_clipRect->m_right);
 		}
 		if (p_clipRect->m_bottom < clip->m_y) {
 			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bottom));
@@ -519,29 +527,29 @@ void Surface::Blit(class ClipRect* p_clipRect)
 	}
 	parent = m_parentSurface;
 	if (parent != (Surface*) g_pGdiHelperTarget && (p_clipRect->m_reserved0c & 0x10000) == 0) {
-		clipRight = clip->m_x;
-		if (clipRight < parent->m_clipRect.m_x) {
-			clip->m_width = (short) (clip->m_width + (clipRight - parent->m_clipRect.m_x));
-			clip->m_x = parent->m_clipRect.m_x;
+		VsRect* parentClip = &parent->m_clipRect;
+		VsRect* childClip = &m_clipRect;
+		clipRight = childClip->m_x;
+		if (clipRight < parentClip->m_x) {
+			childClip->m_width = (short) (childClip->m_width + (clipRight - parentClip->m_x));
+			childClip->m_x = parentClip->m_x;
 		}
-		clipRight = clip->m_x;
-		if ((short) (parent->m_clipRect.m_width + parent->m_clipRect.m_x) < (short) (clip->m_width + clipRight)) {
-			clip->m_width = (short) ((parent->m_clipRect.m_x - clipRight) + parent->m_clipRect.m_width);
+		clipRight = childClip->m_x;
+		if ((short) (parentClip->m_width + parentClip->m_x) < (short) (childClip->m_width + clipRight)) {
+			childClip->m_width = (short) ((parentClip->m_x - clipRight) + parentClip->m_width);
 		}
-		clipBottom = clip->m_y;
-		if (clipBottom < parent->m_clipRect.m_y) {
-			clip->m_height = (short) (clip->m_height + (clipBottom - parent->m_clipRect.m_y));
-			clip->m_y = parent->m_clipRect.m_y;
+		if (childClip->m_y < parentClip->m_y) {
+			childClip->m_height = (short) (childClip->m_height + (childClip->m_y - parentClip->m_y));
+			childClip->m_y = parentClip->m_y;
 		}
-		clipBottom = clip->m_y;
-		if ((short) (parent->m_clipRect.m_y + parent->m_clipRect.m_height) < (short) (clip->m_height + clipBottom)) {
-			clip->m_height = (short) ((parent->m_clipRect.m_height - clipBottom) + parent->m_clipRect.m_y);
+		if ((short) (parentClip->m_y + parentClip->m_height) < (short) (childClip->m_height + childClip->m_y)) {
+			childClip->m_height = (short) ((parentClip->m_height - childClip->m_y) + parentClip->m_y);
 		}
-		if (clip->m_width < 1 || clip->m_height < 1) {
-			clip->m_height = 0;
-			clip->m_width = 0;
-			clip->m_y = 0;
-			clip->m_x = 0;
+		if (childClip->m_width <= 0 || childClip->m_height <= 0) {
+			childClip->m_height = 0;
+			childClip->m_width = 0;
+			childClip->m_y = 0;
+			childClip->m_x = 0;
 		}
 	}
 }
