@@ -14,6 +14,7 @@ public:
 	friend class Bullet;
 	friend class PlayerLemming;
 	friend class GroundArray;
+	friend class GameObject;
 	friend class Map;
 	friend class Duplicator;
 	friend class Door;

@@ -667,10 +667,24 @@ void GameObject::StopMoving()
 }
 
 // 68K 0x10609afc MapCheck__11CGameObjectFii
-// STUB: LEMBALL 0x004157b0
-unsigned short GameObject::MapCheck(int p_arg0, int p_arg1)
+// FUNCTION: LEMBALL 0x004157b0
+unsigned short GameObject::MapCheck(int p_x, int p_y)
 {
-	return 0;
+	int blockY = (p_y + ((p_y >> 31) & 0xf)) >> 4;
+	int blockX = (p_x + ((p_x >> 31) & 0xf)) >> 4;
+	unsigned short collision = 0;
+
+	for (int x = blockX; x <= blockX; x++) {
+		for (int y = blockY; y <= blockY; y++) {
+			if (x >= 0 && y >= 0 && x < g_pMap->m_ground.m_width && y < g_pMap->m_ground.m_height) {
+				collision |= g_pMap->m_ground.m_ground[y * g_pMap->m_ground.m_width + x].m_collision;
+			}
+			else {
+				collision |= 3;
+			}
+		}
+	}
+	return collision;
 }
 
 // 68K 0x10609bba StartRoute__11CGameObjectFv
