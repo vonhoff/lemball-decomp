@@ -123,9 +123,18 @@ void Maze::Clear(unsigned char* p_change)
 }
 
 // 68K 0x10615e04 SwapChange__5CMazeFv
-// STUB: LEMBALL 0x004234f0
+// FUNCTION: LEMBALL 0x004234f0
 void Maze::SwapChange()
 {
+	unsigned char* pChange;
+	if (m_changeSelect == 0) {
+		pChange = m_changeB;
+	}
+	else {
+		pChange = m_changeA;
+	}
+	Clear(pChange);
+	m_changeSelect = m_changeSelect == 0;
 }
 
 // 68K 0x10615e5a BInitialise__5CMazeFUciiii
