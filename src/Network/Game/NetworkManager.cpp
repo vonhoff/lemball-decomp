@@ -1,11 +1,58 @@
 #include "NetworkManager.h"
 
+#include "../../Visos/Foundation/VsInit.h"
+#include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Network/BaseNetwork.h"
+#include "../../Visos/Network/Connect.h"
+#include "../../Visos/Network/FileNetwork.h"
+#include "../Messages/GameRejectMessage.h"
 #include "../Messages/NetworkGameMessage.h"
+#include "NetworkGameStage.h"
+
+#include <new.h>
 
 // 68K 0x10a00346 __ct__15CNetworkManagerFPCc
-// STUB: LEMBALL 0x00452550
-NetworkManager::NetworkManager(const char* p_arg0)
+// FUNCTION: LEMBALL 0x00452550
+NetworkManager::NetworkManager(const char* p_arg0) : BaseQueueHandler()
 {
+	int networkLoaded = 0;
+
+	m_connectionsChanged = networkLoaded;
+	m_externalDriverLoaded = networkLoaded;
+	m_localDriverLoaded = networkLoaded;
+	m_gameMessages = new NetworkGameMessage[10];
+	m_gameStage = new NetworkGameStage;
+	m_lastGameStateSendTime = CurrentMilliTimer() - 2000;
+	m_observedGameState = 0;
+	m_desiredGameState = 0;
+	m_gameMessage = new NetworkGameMessage;
+	m_rejectMessage = new GameRejectMessage;
+	for (int i = 0; i < 10; i++) {
+		m_connections[i] = 0;
+	}
+
+	if (p_arg0 != 0) {
+		networkLoaded = VsFNetInit();
+		if (networkLoaded != 0) {
+			m_externalDriverLoaded = 1;
+		}
+	}
+	else {
+		networkLoaded = VsNetInit();
+		m_localDriverLoaded = 1;
+	}
+	if (networkLoaded != 0) {
+		if (p_arg0 != 0) {
+			((FileNetwork*) g_pBaseNetwork)->Setup(p_arg0, "t:\\network");
+		}
+		if (g_pBaseNetwork->Initialise("Paintball v0.1", 0x400)) {
+			g_pBaseNetwork->SetCBuffers(100, 0x10);
+			g_pBaseNetwork->SetNcBuffers(4, 4, 0);
+			m_networkInitialised = 0;
+			g_pActiveConnection = 0;
+			m_killRequested = 0;
+		}
+	}
 }
 
 // 68K 0x10a005e8 Start__15CNetworkManagerFv
