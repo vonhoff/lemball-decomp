@@ -62,12 +62,11 @@ void Mover::SetUpNextNode(unsigned int p_time)
 
 	Pt3 nextPosition = g_pAI->GetNodePosition(m_startNode + nextNode);
 	Map* map = g_pMap;
+	int x = nextPosition.m_x >> 12;
+	int y = nextPosition.m_y >> 12;
 	unsigned short z = 0;
-	if ((nextPosition.m_x >> 12) >= 0 && (nextPosition.m_y >> 12) >= 0 &&
-		(nextPosition.m_x >> 16) < map->m_ground.m_width && map->m_ground.m_height > (nextPosition.m_y >> 16)) {
-		z = map->m_ground.m_ground[(nextPosition.m_y >> 16) * map->m_ground.m_width + (nextPosition.m_x >> 16)].GetZ(
-			nextPosition.m_x >> 12 & 0xf,
-			nextPosition.m_y >> 12 & 0xf);
+	if (x >= 0 && y >= 0 && (x >> 4) < map->m_ground.m_width && map->m_ground.m_height > (y >> 4)) {
+		z = map->m_ground.m_ground[(y >> 4) * map->m_ground.m_width + (x >> 4)].GetZ(x & 0xf, y & 0xf);
 	}
 	nextPosition.m_z = (unsigned int) z << 12;
 
