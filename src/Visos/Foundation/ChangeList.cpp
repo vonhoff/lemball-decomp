@@ -256,13 +256,6 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 	int probeX;
 	int cell;
 	unsigned char* pixel;
-	short cellWidth;
-	short cellHeight;
-	short startXShort;
-	short itemWidth;
-	short itemHeight;
-	short itemX;
-	short itemY;
 	ChangeListItem* item;
 
 	mapWidth = (int) m_mapSize.m_width;
@@ -334,18 +327,11 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark,
 		}
 	}
 
-	cellHeight = m_cellSize.m_height;
-	cellWidth = m_cellSize.m_width;
-	startXShort = (short) startX;
-	itemWidth = (short) widthPixels;
-	itemHeight = (short) heightCells * cellHeight;
-	itemX = cellWidth * startXShort;
-	itemY = (short) scanY * cellHeight;
 	item = m_items + m_itemCount;
-	item->width = itemWidth;
-	item->height = itemHeight;
-	item->x = itemX;
-	item->y = itemY;
+	item->width = (short) widthPixels;
+	item->height = (short) heightCells * m_cellSize.m_height;
+	item->x = m_cellSize.m_width * (short) startX;
+	item->y = (short) scanY * m_cellSize.m_height;
 	m_items[m_itemCount].drawMark = p_itemMark;
 	m_scanX = 0;
 	m_itemCount = m_itemCount + 1;
