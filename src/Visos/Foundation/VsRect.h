@@ -23,6 +23,7 @@ public:
 		m_x = p_x;
 		m_y = p_y;
 	}
+	VsRect(short p_x, short p_y, VsSize* p_size);
 	VsRect(const VsRect& p_source);
 
 	friend class Gdi;
@@ -36,7 +37,6 @@ public:
 	friend class BaseCursor;
 
 	VsRect& operator=(const VsRect& p_source);
-	VsRect* InitFromSizeAndPosition(short p_x, short p_y, VsSize* p_size);
 	void ExpandToInclude(const VsRect& p_rect);
 
 	short m_width;  // 0x00

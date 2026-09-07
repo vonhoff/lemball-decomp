@@ -63,11 +63,10 @@ VsRect::VsRect(const VsRect& p_source)
 }
 
 // FUNCTION: LEMBALL 0x00478b80
-VsRect* VsRect::InitFromSizeAndPosition(short p_x, short p_y, VsSize* p_size)
+VsRect::VsRect(short p_x, short p_y, VsSize* p_size)
 {
 	m_width = p_size->m_width;
 	m_height = p_size->m_height;
 	m_x = p_x;
 	m_y = p_y;
-	return this;
 }

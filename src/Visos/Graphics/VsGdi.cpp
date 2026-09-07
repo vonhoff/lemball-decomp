@@ -3177,11 +3177,7 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 			return;
 		}
 		{
-			VsRect dest;
-
-			dest.InitFromSizeAndPosition((short) p_primitive->m_x,
-										 (short) p_primitive->m_y,
-										 (VsSize*) &p_zrle->m_width);
+			VsRect dest((short) p_primitive->m_x, (short) p_primitive->m_y, (VsSize*) &p_zrle->m_width);
 			if ((flags & 0x400) == 0) {
 				((VsPoint*) &dest.m_x)->AddInPlace((VsPoint*) &p_zrle->m_x);
 			}
@@ -3189,8 +3185,11 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 				VsRect clipped;
 
 				if ((short) dest.m_width > 0xff || (short) dest.m_height > 0xff) {
-					*g_pDebugOutput << g_szWarningZrleIs << (int) (short) dest.m_width << g_szClippingWideAnd
-									<< (int) (short) dest.m_height << g_szClippingHighNewline;
+					short warningWidth = dest.m_width;
+					VsOStream& warningStream = *g_pDebugOutput << g_szWarningZrleIs;
+					short warningHeight = dest.m_height;
+					VsOStream& widthStream = warningStream << (int) warningWidth << g_szClippingWideAnd;
+					widthStream << (int) warningHeight << g_szClippingHighNewline;
 					if ((short) dest.m_width > 0xff) {
 						*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
 						dest.m_width = 0xff;
