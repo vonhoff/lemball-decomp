@@ -38,10 +38,71 @@ bool Maze::FindSquare(unsigned short p_distance, int& p_x, int& p_y)
 	return 0;
 }
 
+// GLOBAL: LEMBALL 0x00495b10
+static const unsigned char g_aChangeBitMasks[8][4] = {{0x80, 0, 0, 0},
+													  {0x40, 0, 0, 0},
+													  {0x20, 0, 0, 0},
+													  {0x10, 0, 0, 0},
+													  {0x08, 0, 0, 0},
+													  {0x04, 0, 0, 0},
+													  {0x02, 0, 0, 0},
+													  {0x01, 0, 0, 0}};
+
 // 68K 0x10615c8c UpdateChangeNext__5CMazeFii
-// STUB: LEMBALL 0x00423380
+// FUNCTION: LEMBALL 0x00423380
 void Maze::UpdateChangeNext(int p_x, int p_y)
 {
+	int xMin = p_x;
+	if (p_x > 0) {
+		xMin = p_x - 1;
+	}
+	int yMin = p_y;
+	if (p_y > 0) {
+		yMin = p_y - 1;
+	}
+	int xMax = p_x;
+	if (p_x < m_width - 1) {
+		xMax = p_x + 1;
+	}
+	int yMax = p_y;
+	if (p_y < m_height - 1) {
+		yMax = p_y + 1;
+	}
+
+	int offset = (yMin * 0x80 + xMin) >> 3;
+	unsigned char* pChange;
+	unsigned char* pOther;
+	if (m_changeSelect == 0) {
+		pChange = m_changeA + offset;
+		pOther = m_changeB + offset;
+	}
+	else {
+		pChange = m_changeB + offset;
+		pOther = m_changeA + offset;
+	}
+
+	unsigned char mask = g_aChangeBitMasks[xMin & 7][0];
+	for (int y = yMin; y <= yMax; y++) {
+		unsigned char currentMask = mask;
+		unsigned char* pChangeRow = pChange;
+		unsigned char* pOtherRow = pOther;
+		int x = xMin;
+		while (x <= xMax) {
+			if (x != p_x || y != p_y) {
+				*pChangeRow |= currentMask;
+				*pOtherRow |= currentMask;
+			}
+			currentMask >>= 1;
+			if (currentMask == 0) {
+				pChangeRow++;
+				pOtherRow++;
+				currentMask = 0x80;
+			}
+			x++;
+		}
+		pChange += 0x10;
+		pOther += 0x10;
+	}
 }
 
 // 68K 0x10615da4 Clear__5CMazeFPUc
