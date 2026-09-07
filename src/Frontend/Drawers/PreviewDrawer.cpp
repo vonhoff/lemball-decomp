@@ -341,8 +341,7 @@ void PreviewDrawer::DrawText()
 
 		skill = g_pGameStatus->m_skill;
 		font = m_textManager->GetFont(m_chalkFontId);
-		font->GetSize(&size, g_szPreviewSkillNames[skill], 0x20);
-		pos.m_x = (short) layout[0xa0 / 4] - size.m_x / 2;
+		pos.m_x = (short) layout[0xa0 / 4] - font->GetSize(&size, g_szPreviewSkillNames[skill], 0x20)->m_x / 2;
 		advance.m_height = 0;
 		advance.m_width = 0;
 		pos.m_y = (short) layout[0xa4 / 4];
