@@ -624,7 +624,9 @@ void PreviewDrawer::LoadLevelInformation()
 			if (lineSize.m_x > layoutWidth || endOfSource == 1) {
 				break;
 			}
-			strcat(candidateLine, " ");
+			char* candidateEnd = candidateLine + strlen(candidateLine);
+			candidateEnd[0] = ' ';
+			candidateEnd[1] = 0;
 			linePos = linePos + 1;
 		}
 		if (lineSize.m_x > layoutWidth) {
