@@ -3336,8 +3336,7 @@ void Surface::Blit(Bitmap* p_primitive, ResBitmap* p_bitmap)
 			if (clip.m_width < 1 || clip.m_height < 1) {
 				return;
 			}
-			((VsPoint*) &dest.m_width)->operator=(*(VsPoint*) &clip.m_width);
-			((VsPoint*) &dest.m_x)->operator=(*(VsPoint*) &clip.m_x);
+			dest = clip;
 		}
 		AddToChangeList(&dest);
 		int destX = dest.m_x;
