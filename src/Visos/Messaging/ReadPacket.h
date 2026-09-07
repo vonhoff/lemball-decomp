@@ -17,6 +17,7 @@ public:
 	friend class NetworkOptionsProc;
 	friend class BaseFrontendProcess;
 	friend class Broadcast;
+	friend class GodManager;
 	friend class ReadPacketBuff;
 	friend class ReadNcBuff;
 	friend class ReadCBuff;

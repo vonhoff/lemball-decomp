@@ -1,5 +1,7 @@
 #include "GodManager.h"
 
+#include "../../Visos/Messaging/BasePacketHeader.h"
+#include "../../Visos/Messaging/ReadPacket.h"
 #include "BaseObjectManager.h"
 
 // 68K 0x1060de8a __ct__11CGodManagerFi
@@ -33,10 +35,18 @@ int GodManager::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x1060e190 TransportReceive__11CGodManagerFP11CReadPacket
-// STUB: LEMBALL 0x0040b290
+// FUNCTION: LEMBALL 0x0040b290
 bool GodManager::TransportReceive(ReadPacket* p_packet)
 {
-	return 0;
+	unsigned char* data = p_packet->m_data;
+	BasePacketHeader* header = (BasePacketHeader*) data;
+	if (header->m_messageId < 0xb) {
+		return 0;
+	}
+	BaseObjectManager* manager = m_managers[m_transportMap[header->m_messageId - 0xb]];
+	manager->NetworkMessage::Set(data + sizeof(BasePacketHeader));
+	p_packet->m_used = 0;
+	return 1;
 }
 
 // 68K 0x1060e222 GetViewData__11CGodManagerFP9CViewData

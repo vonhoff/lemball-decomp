@@ -12,6 +12,7 @@ public:
 	friend class NetworkOptionsProc;
 	friend class BaseFrontendProcess;
 	friend class Broadcast;
+	friend class GodManager;
 	friend class WriteSocket;
 	friend class ReadNcmsBuff;
 	friend class ReadCmsBuff;
