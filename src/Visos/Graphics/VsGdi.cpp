@@ -3383,8 +3383,8 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 	Surface* self;
 	ResZrle* resource;
 	unsigned int ebpFlags;
-	short zWidth;
 	short zHeight;
+	short zWidth;
 	VsRect* dest;
 	VsRect* clipped;
 	int area;
@@ -3393,8 +3393,8 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 	resource = p_zrle;
 	dest = (VsRect*) (frameSpace + 4);
 	clipped = (VsRect*) (frameSpace + 12);
-	zHeight = resource->m_height;
 	zWidth = resource->m_width;
+	zHeight = resource->m_height;
 	area = (int) zWidth;
 	area = area * (int) zHeight;
 	if (area == 0) {
