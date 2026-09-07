@@ -117,12 +117,12 @@ void CdLoadAnimDraw::Draw()
 	VsPoint point;
 	VsPoint origin;
 	VsPoint tip;
-	Vector radius;
-	Vector left;
-	Vector right;
-	Vector thick;
-	Fixed sine;
-	Fixed cosine;
+	Vector radius(0, 0);
+	Vector left(0, 0);
+	Vector right(0, 0);
+	Vector thick(0, 0);
+	Fixed sine(0);
+	Fixed cosine(0);
 	int angle;
 	short rotX;
 	short rotY;
