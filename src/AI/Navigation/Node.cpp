@@ -28,9 +28,15 @@ Node::~Node()
 }
 
 // 68K 0x1061874a Initialise__5CNodeFiii
-// STUB: LEMBALL 0x00421330
+// FUNCTION: LEMBALL 0x00421330
 void Node::Initialise(int p_x, int p_y, int p_neighbourCapacity)
 {
+	if (p_neighbourCapacity != 0 && m_neighbours != 0) {
+		m_neighbours = (NodeNeighbour*) operator new(p_neighbourCapacity * sizeof(NodeNeighbour));
+	}
+	m_neighbourCapacity = p_neighbourCapacity;
+	m_xFixed = p_x << 12;
+	m_yFixed = p_y << 12;
 }
 
 // 68K 0x106187b4 AddANeighbour__5CNodeFii
