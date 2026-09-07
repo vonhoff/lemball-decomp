@@ -84,12 +84,6 @@ void MoverManager::Add(unsigned short p_id, int p_pathId, undefined4 p_movementM
 	}
 }
 
-// 68K 0x10618322 Switch__13CMoverManagerF9swMessagei
-// STUB: LEMBALL 0x0042f620
-void MoverManager::Switch(int p_message, int p_id)
-{
-}
-
 // 68K 0x106183b8 LoadLevel__13CMoverManagerFPUciUc
 // FUNCTION: LEMBALL 0x0042f680
 void MoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
