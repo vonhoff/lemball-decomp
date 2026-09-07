@@ -40,13 +40,6 @@ void Mover::SetPos()
 {
 }
 
-// 68K 0x106173a0 IsAt__6CMoverFiiRi
-// STUB: LEMBALL 0x0042e700
-bool Mover::IsAt(int p_x, int p_y, int& p_height)
-{
-	return 0;
-}
-
 // 68K 0x10617410 Set__6CMoverFUsiUcii
 // STUB: LEMBALL 0x0042e760
 void Mover::Set(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount)
