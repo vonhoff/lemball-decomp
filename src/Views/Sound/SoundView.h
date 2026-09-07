@@ -39,6 +39,7 @@ public:
 	~SoundView();
 
 	friend class C2D;
+	friend class Panel;
 	friend class PanelPauseButton;
 
 private:

@@ -96,6 +96,7 @@ public:
 	friend class NodeManager;
 	friend class Collectable;
 	friend class Enemy;
+	friend class Panel;
 	friend class PanelPauseButton;
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 

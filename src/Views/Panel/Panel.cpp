@@ -1,7 +1,9 @@
 #include "Panel.h"
 
+#include "../../AI/Navigation/Ai.h"
 #include "../../Visos/Graphics/PvGWnd.h"
 #include "../Display/C2D.h"
+#include "../Sound/SoundView.h"
 #include "PanelLemming.h"
 #include "PanelPauseButton.h"
 
@@ -77,9 +79,22 @@ unsigned long Panel::TranslateKey(unsigned long p_key)
 }
 
 // 68K 0x10b0de64 ProcessMsg__6CPanelFP10tagMESSAGE
-// STUB: LEMBALL 0x004432c0
+// FUNCTION: LEMBALL 0x004432c0
 int Panel::ProcessMsg(Message* p_message)
 {
+	if (m_game->m_paused == 0 && m_game->m_ai->m_gameStatus != 1) {
+		unsigned int type = p_message->type;
+		if (type == 4 && TranslateKey(p_message->code) == 8) {
+			g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+			unsigned int pause = m_game->m_paused == 0;
+			m_game->TriggerPause((unsigned char) pause);
+			PanelPauseButton* pauseButton = m_pauseButton;
+			unsigned int paused = m_game->m_paused;
+			pauseButton->m_toggled = paused;
+			pauseButton->m_enabled = paused;
+			return 1;
+		}
+	}
 	return 0;
 }
 
