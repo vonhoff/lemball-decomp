@@ -150,6 +150,7 @@ public:
 	friend class InvisibleSwitch;
 	friend class Mover;
 	friend class PlayerLemmingGroupManager;
+	friend class Trampoline;
 
 protected:
 	unsigned short m_runtimeFlags;        // 0x04
