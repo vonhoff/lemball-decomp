@@ -31,6 +31,7 @@ public:
 	friend class InvisibleSwitch;
 	friend class Lift;
 	friend class BalloonPost;
+	friend class Mover;
 	friend class C2D;
 
 private:

@@ -1,5 +1,9 @@
 #include "Mover.h"
 
+#include "../../Map/Base/Map.h"
+#include "../../Visos/Foundation/VsMath.h"
+#include "Ai.h"
+
 // 68K 0x106171a6 __ct__6CMoverFv
 // STUB: LEMBALL 0x0042e590
 Mover::Mover()
@@ -48,9 +52,39 @@ void Mover::Set(unsigned short p_id, int p_pathId, undefined4 p_movementMode, in
 }
 
 // 68K 0x106174da SetUpNextNode__6CMoverFUl
-// STUB: LEMBALL 0x0042e850
+// FUNCTION: LEMBALL 0x0042e850
 void Mover::SetUpNextNode(unsigned int p_time)
 {
+	int nextNode = m_currentNode + 1;
+	if (m_nodeCount <= nextNode) {
+		nextNode = 0;
+	}
+
+	Pt3 nextPosition = g_pAI->GetNodePosition(m_startNode + nextNode);
+	Map* map = g_pMap;
+	unsigned short z = 0;
+	if ((nextPosition.m_x >> 12) >= 0 && (nextPosition.m_y >> 12) >= 0 &&
+		(nextPosition.m_x >> 16) < map->m_ground.m_width && map->m_ground.m_height > (nextPosition.m_y >> 16)) {
+		z = map->m_ground.m_ground[(nextPosition.m_y >> 16) * map->m_ground.m_width + (nextPosition.m_x >> 16)].GetZ(
+			nextPosition.m_x >> 12 & 0xf,
+			nextPosition.m_y >> 12 & 0xf);
+	}
+	nextPosition.m_z = (unsigned int) z << 12;
+
+	Pt3 start;
+	start.m_x = m_position.m_xFixed >> 12;
+	start.m_y = m_position.m_yFixed >> 12;
+	start.m_z = m_position.m_zFixed >> 12;
+
+	Pt3 end;
+	end.m_x = nextPosition.m_x >> 12;
+	end.m_y = nextPosition.m_y >> 12;
+	end.m_z = nextPosition.m_z >> 12;
+
+	unsigned int distance = Distance(start.m_x, start.m_y, end.m_x, end.m_y);
+	m_lastMovementTick = p_time;
+	m_actionDeadline = distance + p_time;
+	m_motion.Set(start, end, p_time, 1);
 }
 
 // 68K 0x1061760a FindObjectsOnTopOfMe__6CMoverFv
