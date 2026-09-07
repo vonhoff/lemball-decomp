@@ -13,7 +13,7 @@
 
 // 68K 0x10b0d942 GetPausePos__6CPanelFv
 // FUNCTION: LEMBALL 0x00442f00
-VsPoint Panel::GetPausePos()
+VsPoint* Panel::GetPausePos(VsPoint* p_result)
 {
 	short width = m_window->m_innerRect.m_width;
 	short height = m_window->m_innerRect.m_height;
@@ -21,10 +21,9 @@ VsPoint Panel::GetPausePos()
 		width = m_window->m_rect.m_width;
 		height = m_window->m_rect.m_height;
 	}
-	VsPoint result;
-	result.m_x = (short) (((int) width / (int) m_window->m_zoom - (int) m_panelSize.m_x) / 2);
-	result.m_y = (short) ((int) height / (int) m_window->m_zoom - (int) m_pauseSize.m_y);
-	return result;
+	p_result->m_x = (short) (((int) width / (int) m_window->m_zoom - (int) m_panelSize.m_x) / 2);
+	p_result->m_y = (short) ((int) height / (int) m_window->m_zoom - (int) m_pauseSize.m_y);
+	return p_result;
 }
 
 // 68K 0x10b0da4a __ct__6CPanelFP3C2D
@@ -58,7 +57,8 @@ Panel::Panel(C2D* p_arg0) : BaseQueueHandler()
 	m_panelSize.m_x = m_pauseSize.m_x;
 	m_panelSize.m_y = m_pauseSize.m_y;
 	m_panelSize.m_x = (short) (m_panelSize.m_x + (m_balloonSize.m_x + m_buttonSize.m_x) * 4);
-	VsPoint position = GetPausePos();
+	VsPoint position;
+	GetPausePos(&position);
 	m_panelPosition.m_x = position.m_x;
 	m_panelPosition.m_y = position.m_y;
 	void* storage = operator new(0x13c);
@@ -161,7 +161,7 @@ bool Panel::MouseInPanel(const VsPoint& p_point)
 	short panelX = m_panelPosition.m_x;
 	short panelHeight = m_panelSize.m_y;
 	short panelY = m_panelPosition.m_y;
-	if (panelX <= p_point.m_x && p_point.m_x < (short) (panelX + panelWidth) && panelY <= p_point.m_y &&
+	if (p_point.m_x >= panelX && p_point.m_x < (short) (panelX + panelWidth) && p_point.m_y >= panelY &&
 		p_point.m_y < (short) (panelY + panelHeight)) {
 		return true;
 	}

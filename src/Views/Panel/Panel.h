@@ -10,7 +10,7 @@
 class Panel : public BaseQueueHandler {
 public:
 	Panel(C2D* p_arg0);
-	VsPoint GetPausePos();
+	VsPoint* GetPausePos(VsPoint* p_result);
 	bool MouseInPanel(const VsPoint& p_point);
 	unsigned long TranslateKey(unsigned long p_key);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
