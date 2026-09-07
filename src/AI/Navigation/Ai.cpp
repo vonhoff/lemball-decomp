@@ -8,7 +8,6 @@
 #include "../Managers/BulletManager.h"
 #include "../Managers/DoorManager.h"
 #include "../Managers/LiftManager.h"
-#include "../Managers/ObjectManager.h"
 #include "../Managers/TrampolineManager.h"
 #include "../Managers/TrapDoorManager.h"
 #include "../Objects/PlayerLemming.h"
@@ -237,21 +236,9 @@ Game* Ai::LevelName()
 }
 
 // 68K 0x1060281a FixUpLevel__3CAIFv
-// FUNCTION: LEMBALL 0x00412fb0
+// STUB: LEMBALL 0x00412fb0
 void Ai::FixUpLevel()
 {
-	int count = (unsigned short) g_wObjectCount;
-	unsigned int index = 0;
-	if (count > 0) {
-		do {
-			GameObject* object = g_pObjects[(unsigned short) index];
-			if (object->GetId() == (short) 0xffff) {
-				object->SetId((unsigned short) GameObject::NextId());
-			}
-			index++;
-		} while ((int) index < (int) count);
-	}
-	m_objectManager->ConvertVer0ToVer1();
 }
 
 // 68K 0x10602894 DoorId__3CAIFi
