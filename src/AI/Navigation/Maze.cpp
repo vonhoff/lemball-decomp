@@ -5,15 +5,31 @@
 #include <string.h>
 
 // 68K 0x10615900 __ct__5CMazeFP4CMap
-// STUB: LEMBALL 0x00423090
+// FUNCTION: LEMBALL 0x00423090
 Maze::Maze(Map* p_arg0)
 {
+	m_map = p_arg0;
+	m_distances = 0;
+	m_changeSelect = 0;
+	m_reserved = 0;
+	m_width = 0;
+	m_height = 0;
 }
 
 // 68K 0x1061593a __dt__5CMazeFv
-// STUB: LEMBALL 0x004230c0
+// FUNCTION: LEMBALL 0x004230c0
 Maze::~Maze()
 {
+	int row = 0;
+	if (m_distances != 0) {
+		if (m_height > 0) {
+			do {
+				delete[] m_distances[row];
+				row++;
+			} while (row < m_height);
+		}
+		delete[] m_distances;
+	}
 }
 
 // 68K 0x106159a4 ReInitialise__5CMazeFv
