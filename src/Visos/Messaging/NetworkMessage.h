@@ -23,6 +23,7 @@ public:
 	friend class WriteSocket;
 	friend class ReadSocket;
 	friend class FileReadSocket;
+	friend class FileConnect;
 	friend class FileBroadcast;
 	bool Set(unsigned char* p_data);
 	int GetDword();
