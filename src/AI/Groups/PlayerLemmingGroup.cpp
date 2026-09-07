@@ -1,5 +1,7 @@
 #include "PlayerLemmingGroup.h"
 
+#include "../Objects/PlayerLemming.h"
+
 // 68K 0x1060e81a __ct__19CPlayerLemmingGroupFP3CAIP14CObjectManagerP17CFormationManager
 // STUB: LEMBALL 0x00414010
 PlayerLemmingGroup::PlayerLemmingGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
@@ -60,10 +62,16 @@ void PlayerLemmingGroup::AddUseObject(GameObject* p_object, int p_objectId)
 }
 
 // 68K 0x1060f38c RemoveLemmingFromGroup__19CPlayerLemmingGroupFP14CPlayerLemming
-// STUB: LEMBALL 0x004147d0
+// FUNCTION: LEMBALL 0x004147d0
 bool PlayerLemmingGroup::RemoveLemmingFromGroup(PlayerLemming* p_lemming)
 {
-	return 0;
+	GenericGroup::RemoveElementFromGroup(p_lemming);
+	PlayerLemming* leader = (PlayerLemming*) GenericGroup::GetFirstElementInGroup();
+	if (m_playerControlled == 1 && leader != 0) {
+		leader->SetGroupLeader(1);
+	}
+	m_altered = 1;
+	return 1;
 }
 
 // 68K 0x1060f420 SetPlayerControlled__19CPlayerLemmingGroupFUcP14CPlayerLemming
@@ -80,10 +88,20 @@ bool PlayerLemmingGroup::CheckPlayerControlled()
 }
 
 // 68K 0x1060f526 GetFirstDeadLemming__19CPlayerLemmingGroupFv
-// STUB: LEMBALL 0x00414890
+// FUNCTION: LEMBALL 0x00414890
 PlayerLemming* PlayerLemmingGroup::GetFirstDeadLemming()
 {
-	return 0;
+	PlayerLemming* lemming = (PlayerLemming*) GenericGroup::GetFirstElementInGroup();
+	while (1) {
+		if (lemming == 0) {
+			return 0;
+		}
+		if (lemming->m_action == 8) {
+			break;
+		}
+		lemming = (PlayerLemming*) GenericGroup::GetNextElementInGroup();
+	}
+	return lemming;
 }
 
 // 68K 0x1060f596 ClearExistingWaypoints__19CPlayerLemmingGroupFv
@@ -93,10 +111,20 @@ void PlayerLemmingGroup::ClearExistingWaypoints()
 }
 
 // 68K 0x1060f66a HasSFXChanged__19CPlayerLemmingGroupFv
-// STUB: LEMBALL 0x004149a0
+// FUNCTION: LEMBALL 0x004149a0
 bool PlayerLemmingGroup::HasSfxChanged()
 {
-	return 0;
+	bool changed = false;
+	PlayerLemming* lemming = (PlayerLemming*) GenericGroup::GetFirstElementInGroup();
+	while (lemming != 0) {
+		bool current = lemming->CheckSfx();
+		if (current || (current = false, changed)) {
+			current = true;
+		}
+		lemming = (PlayerLemming*) GenericGroup::GetNextElementInGroup();
+		changed = current;
+	}
+	return changed;
 }
 
 // 68K 0x1060e8ec __dt__19CPlayerLemmingGroupFv
