@@ -1,9 +1,10 @@
 #include "FileReadSocket.h"
 
 // 68K 0x102071b6 __ct__15CFileReadSocketFv
-// STUB: LEMBALL 0x00479930
-FileReadSocket::FileReadSocket()
+// FUNCTION: LEMBALL 0x00479930
+FileReadSocket::FileReadSocket() : FileBaseSocket(), ReadSocket(), FileCommonSocket()
 {
+	m_unk0x10 = 0xffffffffUL;
 }
 
 // 68K 0x10207326 Read__15CFileReadSocketFR15CNetworkMessageUcUc

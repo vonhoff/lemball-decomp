@@ -1,8 +1,8 @@
 #include "FileRwSocket.h"
 
 // 68K 0x10207d98 __ct__13CFileRWSocketFv
-// STUB: LEMBALL 0x0047a220
-FileRwSocket::FileRwSocket()
+// FUNCTION: LEMBALL 0x0047a220
+FileRwSocket::FileRwSocket() : RwSocket(), FileReadSocket(), FileWriteSocket()
 {
 }
 
