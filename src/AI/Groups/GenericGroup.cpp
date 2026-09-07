@@ -181,9 +181,21 @@ VsRect GenericGroup::GetBoundingBox()
 }
 
 // 68K 0x1060c974 GetBoundingBox__13CGenericGroupFR7CVSRect
-// STUB: LEMBALL 0x0041e180
+// FUNCTION: LEMBALL 0x0041e180
 void GenericGroup::GetBoundingBox(VsRect& p_rect)
 {
+	const short* coords;
+
+	p_rect.m_width = m_minX;
+	p_rect.m_height = m_minY;
+	if (&m_minX != 0) {
+		coords = &m_maxX;
+	}
+	else {
+		coords = 0;
+	}
+	p_rect.m_x = *coords;
+	p_rect.m_y = coords[1];
 }
 
 // 68K 0x1060c9dc CalculateBoundingBox__13CGenericGroupFi
