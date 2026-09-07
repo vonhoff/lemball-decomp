@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/Fixed.h"
 #include "../Navigation/Ai.h"
 
@@ -22,16 +23,51 @@ void Trampoline::Restart()
 }
 
 // 68K 0x1062062e Set__11CTrampolineFUsRC7AICOORD
-// STUB: LEMBALL 0x0042a9e0
+// FUNCTION: LEMBALL 0x0042a9e0
 void Trampoline::Set(unsigned short p_id, const AiCoord& p_position)
 {
+	SetId(p_id);
+	m_position.m_xFixed = p_position.m_xFixed;
+	m_position.m_yFixed = p_position.m_yFixed;
+	m_position.m_zFixed = p_position.m_zFixed;
+	m_action = (eAction) 0x18;
+	m_active = 1;
+	m_enabled = 1;
+
+	int blockX = p_position.m_xFixed >> 12;
+	blockX += (p_position.m_xFixed >> 31) & 0xf;
+	blockX >>= 4;
+	int blockY = p_position.m_yFixed >> 12;
+	blockY += (p_position.m_yFixed >> 31) & 0xf;
+	blockY >>= 4;
+	if (blockX >= 0 && blockY >= 0) {
+		GroundArray* ground = &g_pMap->m_ground;
+		if (blockX < ground->m_width && blockY < ground->m_height) {
+			ground->m_ground[ground->m_width * blockY + blockX].m_collision |= 0x8000;
+		}
+	}
 }
 
 // 68K 0x106206e2 Process__11CTrampolineFv
-// STUB: LEMBALL 0x0042aa80
+// FUNCTION: LEMBALL 0x0042aa80
 bool Trampoline::Process()
 {
-	return 0;
+	if (m_isRemoteObject != 0) {
+		if (m_pendingAction != m_action) {
+			if (m_action == (eAction) 0x1b) {
+				SetSndEffect((eSoundEffect) 0x17);
+			}
+			m_pendingAction = m_action;
+		}
+		return 1;
+	}
+	if (m_enabled == 0) {
+		return 1;
+	}
+	if (m_action == (eAction) 0x1b && m_actionDeadline < g_dwGameTick) {
+		Action((eAction) 0x18);
+	}
+	return 1;
 }
 
 // 68K 0x10620788 Hit__11CTrampolineFRC7AICOORDP11CGameObject

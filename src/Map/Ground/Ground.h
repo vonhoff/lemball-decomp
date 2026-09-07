@@ -20,6 +20,7 @@ public:
 	friend class Ice;
 	friend class InvisibleSwitch;
 	friend class GroundAnim;
+	friend class Trampoline;
 
 private:
 	eObjectType m_objectType;    // 0x00

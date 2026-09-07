@@ -35,6 +35,7 @@ public:
 	friend class Mover;
 	friend class Maze;
 	friend class C2D;
+	friend class Trampoline;
 
 private:
 	unsigned int m_reserved; // 0x00
