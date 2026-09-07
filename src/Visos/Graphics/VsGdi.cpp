@@ -1428,52 +1428,38 @@ void Surface::BlitRect(VsRect p_rect, int p_colour)
 	AddToChangeList(&p_rect);
 }
 
+inline unsigned int Surface::ClipCode(int p_x, int p_y)
+{
+	unsigned int code = 0;
+	if (p_x < m_clipRect.m_x) {
+		code |= 1;
+	}
+	else if (p_x > m_clipRect.m_x + m_clipRect.m_width - 1) {
+		code |= 2;
+	}
+	if (p_y < m_clipRect.m_y) {
+		code |= 4;
+	}
+	else if (p_y > m_clipRect.m_y + m_clipRect.m_height - 1) {
+		code |= 8;
+	}
+	return code;
+}
+
 // 68K 0x101121bc LineClip__8CSurfaceFRiRiRiRi
 // FUNCTION: LEMBALL 0x004757a0
 int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 {
-	unsigned int code1;
 	unsigned int code2;
+	unsigned int code1;
 	int dx;
 	int dy;
 
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return 1;
 	}
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	code1 = 0;
-	x1 = p_x1;
-	if ((int) m_clipRect.m_x > x1) {
-		code1 = 1;
-	}
-	else if (m_clipRect.m_x + m_clipRect.m_width - 1 < x1) {
-		code1 = 2;
-	}
-	y1 = p_y1;
-	if ((int) m_clipRect.m_y > y1) {
-		code1 |= 4;
-	}
-	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < y1) {
-		code1 |= 8;
-	}
-	code2 = 0;
-	x2 = p_x2;
-	if ((int) m_clipRect.m_x > x2) {
-		code2 = 1;
-	}
-	else if (m_clipRect.m_x + m_clipRect.m_width - 1 < x2) {
-		code2 = 2;
-	}
-	y2 = p_y2;
-	if ((int) m_clipRect.m_y > y2) {
-		code2 |= 4;
-	}
-	else if (m_clipRect.m_y + m_clipRect.m_height - 1 < y2) {
-		code2 |= 8;
-	}
+	code1 = ClipCode(p_x1, p_y1);
+	code2 = ClipCode(p_x2, p_y2);
 	if ((code1 | code2) != 0) {
 		do {
 			if ((code1 & code2) != 0) {
@@ -1485,71 +1471,47 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 				if ((code2 & 1) == 0) {
 					if ((code2 & 2) == 0) {
 						if ((code2 & 4) != 0) {
-							p_x2 = p_x2 + ((m_clipRect.m_y - p_y2) * dx) / dy;
+							p_x2 += ((m_clipRect.m_y - p_y2) * dx) / dy;
 							p_y2 = m_clipRect.m_y;
 						}
 						else if ((code2 & 8) != 0) {
-							p_x2 = p_x2 + ((m_clipRect.m_y + m_clipRect.m_height - 1 - p_y2) * dx) / dy;
+							p_x2 += ((m_clipRect.m_y + m_clipRect.m_height - 1 - p_y2) * dx) / dy;
 							p_y2 = m_clipRect.m_y + m_clipRect.m_height - 1;
 						}
 					}
 					else {
-						p_y2 = p_y2 + ((m_clipRect.m_x + m_clipRect.m_width - 1 - p_x2) * dy) / dx;
+						p_y2 += ((m_clipRect.m_x + m_clipRect.m_width - 1 - p_x2) * dy) / dx;
 						p_x2 = m_clipRect.m_x + m_clipRect.m_width - 1;
 					}
 				}
 				else {
-					p_y2 = p_y2 + ((m_clipRect.m_x - p_x2) * dy) / dx;
+					p_y2 += ((m_clipRect.m_x - p_x2) * dy) / dx;
 					p_x2 = m_clipRect.m_x;
 				}
-				code2 = 0;
-				if ((int) m_clipRect.m_x > p_x2) {
-					code2 = 1;
-				}
-				else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x2) {
-					code2 = 2;
-				}
-				if ((int) m_clipRect.m_y > p_y2) {
-					code2 |= 4;
-				}
-				else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y2) {
-					code2 |= 8;
-				}
+				code2 = ClipCode(p_x2, p_y2);
 			}
 			else {
 				if ((code1 & 1) == 0) {
 					if ((code1 & 2) == 0) {
 						if ((code1 & 4) != 0) {
-							p_x1 = p_x1 + ((m_clipRect.m_y - p_y1) * dx) / dy;
+							p_x1 += ((m_clipRect.m_y - p_y1) * dx) / dy;
 							p_y1 = m_clipRect.m_y;
 						}
 						else if ((code1 & 8) != 0) {
-							p_x1 = p_x1 + ((m_clipRect.m_y + m_clipRect.m_height - 1 - p_y1) * dx) / dy;
+							p_x1 += ((m_clipRect.m_y + m_clipRect.m_height - 1 - p_y1) * dx) / dy;
 							p_y1 = m_clipRect.m_y + m_clipRect.m_height - 1;
 						}
 					}
 					else {
-						p_y1 = p_y1 + ((m_clipRect.m_x + m_clipRect.m_width - 1 - p_x1) * dy) / dx;
+						p_y1 += ((m_clipRect.m_x + m_clipRect.m_width - 1 - p_x1) * dy) / dx;
 						p_x1 = m_clipRect.m_x + m_clipRect.m_width - 1;
 					}
 				}
 				else {
-					p_y1 = p_y1 + ((m_clipRect.m_x - p_x1) * dy) / dx;
+					p_y1 += ((m_clipRect.m_x - p_x1) * dy) / dx;
 					p_x1 = m_clipRect.m_x;
 				}
-				code1 = 0;
-				if ((int) m_clipRect.m_x > p_x1) {
-					code1 = 1;
-				}
-				else if (m_clipRect.m_x + m_clipRect.m_width - 1 < p_x1) {
-					code1 = 2;
-				}
-				if ((int) m_clipRect.m_y > p_y1) {
-					code1 |= 4;
-				}
-				else if (m_clipRect.m_y + m_clipRect.m_height - 1 < p_y1) {
-					code1 |= 8;
-				}
+				code1 = ClipCode(p_x1, p_y1);
 			}
 		} while ((code1 | code2) != 0);
 	}

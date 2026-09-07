@@ -29,6 +29,7 @@ public:
 	Surface(const VsRect& p_rect, class Surface* p_parentSurface);
 	bool ClipRect(VsRect& p_rect, VsRect* p_clipped);
 	int ClipCircle(int p_centerX, int p_centerY, int p_radius);
+	inline unsigned int ClipCode(int p_x, int p_y);
 	int LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2);
 	virtual void Resize(const VsSize& p_size);          // vtable+0x28
 	virtual void SetLinePtrs();                         // vtable+0x00
