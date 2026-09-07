@@ -116,9 +116,26 @@ void Switch::ConvertVer0ToVer1()
 }
 
 // 68K 0x10619bce Load__7CSwitchFRPUc
-// STUB: LEMBALL 0x0041d430
-void Switch::Load(unsigned char*& p_data)
+// FUNCTION: LEMBALL 0x0041d430
+unsigned char* Switch::Load(unsigned char*& p_data)
 {
+	unsigned short* data = (unsigned short*) p_data;
+	unsigned short count = *data;
+	p_data += 2;
+	if (count != 0) {
+		unsigned int remaining = count;
+		do {
+			unsigned short objectId;
+			unsigned short* cursor = (unsigned short*) p_data;
+			int message = *cursor++;
+			p_data = (unsigned char*) cursor;
+			objectId = *cursor++;
+			p_data = (unsigned char*) cursor;
+			AddEntry(message, objectId);
+			remaining--;
+		} while (remaining != 0);
+	}
+	return p_data;
 }
 
 // 68K 0x1011abce Usage__7CSwitchFv

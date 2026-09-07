@@ -21,7 +21,7 @@ public:
 	virtual void Restart();                         // vtable+0x104
 	virtual ~Switch();                              // vtable+0x00
 	void AddEntry(int p_message, unsigned short p_objectId);
-	void Load(unsigned char*& p_data);
+	unsigned char* Load(unsigned char*& p_data);
 	void Throw();
 
 private:
