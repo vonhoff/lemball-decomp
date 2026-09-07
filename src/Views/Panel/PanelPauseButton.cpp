@@ -7,7 +7,7 @@
 #include "Panel.h"
 
 // 68K 0x10b0c502 __ct__17CPanelPauseButtonFP6CPanelRC8CVSPointP7CPVGWndUlUl
-// STUB: LEMBALL 0x004421d0
+// FUNCTION: LEMBALL 0x004421d0
 PanelPauseButton::PanelPauseButton(Panel* p_arg0,
 								   const VsPoint& p_arg1,
 								   PvGWnd* p_arg2,
