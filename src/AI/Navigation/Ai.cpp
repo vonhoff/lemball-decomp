@@ -203,10 +203,10 @@ void Ai::GetPlayerPos(int p_id, AiCoord& p_position)
 
 // 68K 0x1060264e GetOrigin__3CAIFR7AICOORDRUc
 // FUNCTION: LEMBALL 0x00412e20
-void Ai::GetOrigin(AiCoord& p_origin, unsigned int& p_player)
+bool Ai::GetOrigin(AiCoord& p_origin, unsigned int& p_player)
 {
 	p_player = 0;
-	m_playerGroupManager->GetLeaderPos(p_origin);
+	return m_playerGroupManager->GetLeaderPos(p_origin);
 }
 
 // 68K 0x1060268e AddNewTrapDoor__3CAIFiiiUl

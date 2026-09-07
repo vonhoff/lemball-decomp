@@ -1889,9 +1889,70 @@ void C2D::DrawObject(ViewData& p_viewData)
 }
 
 // 68K 0x10b04c66 SetOrigin__3C2DFv
-// STUB: LEMBALL 0x0043ed20
+// FUNCTION: LEMBALL 0x0043ed20
 void C2D::SetOrigin()
 {
+	AiCoord origin;
+	unsigned int player;
+	int changed = 0;
+
+	if (m_groupingActive == 1 && m_groupSelectionCount != 0) {
+		m_ai->GetPlayerPos(m_groupObjectIds[m_groupSelectionCount - 1], origin);
+	}
+	else if (m_ai->GetOrigin(origin, player) == 0) {
+		return;
+	}
+
+	int gameX = origin.m_xFixed >> 12;
+	int gameY = origin.m_yFixed >> 12;
+	int blockX = origin.m_xFixed >> 16;
+	int blockY = origin.m_yFixed >> 16;
+	unsigned short z = 0;
+	if (gameX >= 0 && gameY >= 0 && blockX < m_map->m_ground.m_width && blockY < m_map->m_ground.m_height) {
+		z = m_map->m_ground.m_ground[blockY * m_map->m_ground.m_width + blockX].GetZ((origin.m_xFixed >> 12) & 0xf,
+																					 (origin.m_yFixed >> 12) & 0xf);
+	}
+	origin.m_zFixed = (int) z << 12;
+
+	if (m_ai->m_gameStatus == 0 || m_ai->m_gameStatus == 2) {
+		int marginX = m_clipSize.m_x * 2 / 5;
+		int marginY = m_clipSize.m_y * 2 / 5;
+		int oldViewOriginX = m_viewOriginX;
+		int oldViewOriginY = m_viewOriginY;
+		m_originPosition = origin;
+
+		int screenX = origin.m_xFixed >> 12;
+		int screenY = origin.m_yFixed >> 12;
+		int screenZ = origin.m_zFixed >> 12;
+		m_map->GameToScreen(screenX, screenY);
+		int projectedX = screenX;
+		int projectedY = (screenY - screenZ) * 0x1000;
+		int projectedYGame = projectedY >> 12;
+		int differenceX = projectedX - m_viewOriginX;
+		int differenceY = projectedYGame - m_viewOriginY;
+		if (differenceX < marginX) {
+			changed = 1;
+			m_viewOriginX = projectedX - marginX;
+		}
+		if (differenceY < marginY) {
+			changed = 1;
+			m_viewOriginY = projectedYGame - marginY;
+		}
+		if (m_clipSize.m_x - marginX < differenceX) {
+			changed = 1;
+			m_viewOriginX = projectedX - m_clipSize.m_x + marginX;
+		}
+		if (m_clipSize.m_y - marginY < differenceY) {
+			changed = 1;
+			m_viewOriginY = projectedYGame - m_clipSize.m_y + marginY;
+		}
+		if (changed != 0) {
+			SendCursorMsg();
+			m_scrollPending = 1;
+			m_scrollDeltaX = (short) oldViewOriginX - (short) m_viewOriginX;
+			m_scrollDeltaY = (short) oldViewOriginY - (short) m_viewOriginY;
+		}
+	}
 }
 
 // 68K 0x10b04ede DrawObjects__3C2DFv
