@@ -256,20 +256,17 @@ void FrontendResourceLoader::LoadPalette(unsigned long p_resourceId)
 void FrontendResourceLoader::UnLoadPalette(unsigned long p_resourceId)
 {
 	unsigned int i = 0;
-	if (m_loadedPalettes != 0) {
+	if (m_loadedPalettes != i) {
 		ResPalette** slot = m_palettes;
-		while (1) {
+		do {
 			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
 				m_palettes[i]->UnLoad();
 				m_palettes[i] = 0;
-				return;
+				break;
 			}
 			slot++;
 			i++;
-			if (i >= (unsigned int) m_loadedPalettes) {
-				return;
-			}
-		}
+		} while (i < (unsigned int) m_loadedPalettes);
 	}
 }
 
