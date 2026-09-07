@@ -66,12 +66,6 @@ bool IceManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 	return 0;
 }
 
-// 68K 0x1061278a Switch__11CIceManagerF9swMessagei
-// STUB: LEMBALL 0x0042dd90
-void IceManager::Switch(int p_message, int p_id)
-{
-}
-
 // 68K 0x1061281e Add__11CIceManagerFUsRC8tCoord3dRC8tCoord3diiUc
 // FUNCTION: LEMBALL 0x0042ddf0
 void IceManager::Add(unsigned short p_id,
