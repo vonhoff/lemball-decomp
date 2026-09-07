@@ -7,6 +7,7 @@
 // SIZE 0x10
 class GroundArray {
 public:
+	Ground* GetGroundCell(int p_x, int p_y);
 	unsigned short GetZ(int p_x, int p_y);
 	void Clear();
 	void SetCollision(int p_x, int p_y, int p_collision);
