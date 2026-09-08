@@ -122,9 +122,9 @@ VsRect PauseWindow::CalculateWindow()
 {
 	VsRect result;
 	VsPoint position;
-	VsPoint textSize;
+	VsSize textSize;
 	VsPoint maxTextSize;
-	VsPoint* measuredTextSize;
+	VsSize* measuredTextSize;
 	VsSize windowSize;
 	short parentWidth;
 	short parentHeight;
@@ -154,13 +154,13 @@ VsRect PauseWindow::CalculateWindow()
 	}
 	for (i = 0; i < m_menuItemCount; i++) {
 		measuredTextSize = m_font->GetSize(&textSize, m_menuLabels[i], 0x20);
-		m_textSizes[i * 2].m_x = measuredTextSize->m_x;
-		m_textSizes[i * 2].m_y = measuredTextSize->m_y;
+		m_textSizes[i * 2].m_x = measuredTextSize->m_width;
+		m_textSizes[i * 2].m_y = measuredTextSize->m_height;
 		if (i < itemCount) {
-			maxTextSize.m_y += measuredTextSize->m_y + m_textSpacing.m_y;
+			maxTextSize.m_y += measuredTextSize->m_height + m_textSpacing.m_y;
 		}
-		if (maxTextSize.m_x < measuredTextSize->m_x) {
-			maxTextSize.m_x = measuredTextSize->m_x;
+		if (maxTextSize.m_x < measuredTextSize->m_width) {
+			maxTextSize.m_x = measuredTextSize->m_width;
 		}
 	}
 	maxTextSize.m_y -= m_textSpacing.m_y;

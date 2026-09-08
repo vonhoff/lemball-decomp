@@ -425,17 +425,17 @@ void PasswordDrawer::DrawPassword()
 {
 	int* layout;
 	VsPoint position;
-	VsPoint textSize;
+	VsSize textSize;
 	ResFont* font;
 
 	layout = (int*) m_layout;
 	font = m_textManager->GetFont(m_chalkFontId);
 	font->GetSize(&textSize, m_password, 0x20);
 	position.m_y = (short) layout[0x5c / 4];
-	position.m_x = (short) (m_width - layout[0x58 / 4] - textSize.m_x);
-	textSize.m_x = 0;
-	textSize.m_y = 0;
-	m_textManager->DrawString(m_gdi, position, (const VsSize&) textSize, m_chalkFontId, m_password, 0x20, 0);
+	position.m_x = (short) (m_width - layout[0x58 / 4] - textSize.m_width);
+	textSize.m_width = 0;
+	textSize.m_height = 0;
+	m_textManager->DrawString(m_gdi, position, textSize, m_chalkFontId, m_password, 0x20, 0);
 }
 
 // 68K 0x1080d0ec ButtonNumeric__15CPasswordDrawerFi

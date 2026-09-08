@@ -105,9 +105,9 @@ void TargetAboutScreen::DrawRegistrationText()
 {
 	ResFont* font;
 	unsigned char* key;
-	VsPoint labelSize;
-	VsPoint buildSize;
-	VsPoint nameSize;
+	VsSize labelSize;
+	VsSize buildSize;
+	VsSize nameSize;
 	VsPoint position;
 	VsSize advance;
 	int labelY;
@@ -118,22 +118,22 @@ void TargetAboutScreen::DrawRegistrationText()
 	font = m_textManager->GetFont(RES_GAME_FONT3);
 	font->GetSize(&labelSize, g_szRegisteredTo, 0x20);
 	advance.m_height = 0;
-	labelY = (int) (m_height / 2) - (int) (labelSize.m_y / 2);
+	labelY = (int) (m_height / 2) - (int) (labelSize.m_height / 2);
 	advance.m_width = 0;
-	position.m_x = m_width / 2 - labelSize.m_x / 2;
+	position.m_x = m_width / 2 - labelSize.m_width / 2;
 	position.m_y = (short) labelY;
 	m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, 0);
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	VsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
 	{
-		VsPoint* measuredSize = font->GetSize(&buildSize, g_szVisosBuildBuffer, 0x20);
-		buildSize.m_x = measuredSize->m_x;
-		buildSize.m_y = measuredSize->m_y;
+		VsSize* measuredSize = font->GetSize(&buildSize, g_szVisosBuildBuffer, 0x20);
+		buildSize.m_width = measuredSize->m_width;
+		buildSize.m_height = measuredSize->m_height;
 	}
 	advance.m_height = 0;
 	advance.m_width = 0;
-	position.m_x = (short) (m_width - buildSize.m_x) / 2;
-	position.m_y = (short) (m_height - buildSize.m_y) / 2 + buildSize.m_y * 4;
+	position.m_x = (short) (m_width - buildSize.m_width) / 2;
+	position.m_y = (short) (m_height - buildSize.m_height) / 2 + buildSize.m_height * 4;
 	m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, 0x20, 0);
 	ch = *m_aboutText;
 	index = 0;
@@ -145,13 +145,13 @@ void TargetAboutScreen::DrawRegistrationText()
 	}
 	g_szAboutDecodeBuffer[index] = '\0';
 	{
-		VsPoint* measuredSize = font->GetSize(&nameSize, g_szAboutDecodeBuffer, 0x20);
-		nameSize.m_x = measuredSize->m_x;
-		nameSize.m_y = measuredSize->m_y;
+		VsSize* measuredSize = font->GetSize(&nameSize, g_szAboutDecodeBuffer, 0x20);
+		nameSize.m_width = measuredSize->m_width;
+		nameSize.m_height = measuredSize->m_height;
 	}
 	advance.m_height = 0;
 	advance.m_width = 0;
-	position.m_x = m_width / 2 - nameSize.m_x / 2;
+	position.m_x = m_width / 2 - nameSize.m_width / 2;
 	position.m_y = (short) labelY + 0x23;
 	m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szAboutDecodeBuffer, 0x20, 0);
 	m_textManager->ResetPrimitives();

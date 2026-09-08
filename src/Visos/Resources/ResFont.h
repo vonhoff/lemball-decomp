@@ -2,10 +2,10 @@
 #define LEMBALL_VISOS_RESOURCES_RESFONT_H
 
 #include "../../Common.h"
-#include "../Foundation/VsPoint.h" // complete type
-#include "ResBaseList.h"           // complete type
-#include "ResInt.h"                // complete type
-#include "ResZrle.h"               // complete type
+#include "../Foundation/VsSize.h" // complete type
+#include "ResBaseList.h"          // complete type
+#include "ResInt.h"               // complete type
+#include "ResZrle.h"              // complete type
 
 // SIZE 0x84
 // VTABLE: LEMBALL 0x00498af0
@@ -13,7 +13,7 @@ class ResFont : public ResBaseList {
 public:
 	ResFont(unsigned long p_arg0);
 	ResZrle* AsciItoZrle(unsigned int p_ascii);
-	VsPoint* GetSize(VsPoint* p_result, const char* p_text, unsigned int p_flags);
+	VsSize* GetSize(VsSize* p_result, const char* p_text, unsigned int p_flags);
 	static ResFont* Load(unsigned int p_resourceId);
 	virtual void OnLoad();                                                        // vtable+0x2c
 	virtual bool ForceLoadVram(unsigned int p_index);                             // vtable+0x3c

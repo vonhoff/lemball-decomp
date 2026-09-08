@@ -739,7 +739,7 @@ void C2D::SetClipSize()
 	int count;
 	TargetSpriteGroundLookup* lookup;
 	ResFont* font;
-	VsPoint size;
+	VsSize size;
 	short clipSizeX;
 	short translatedX;
 
@@ -803,7 +803,7 @@ void C2D::SetClipSize()
 		font = m_textManager->GetFont(0xf8);
 		font->GetSize(&size, "Demo", 0x20);
 		m_demoTextPosition.m_y = 0;
-		m_demoTextPosition.m_x = (short) ((m_clipSize.m_x - size.m_x) / 2);
+		m_demoTextPosition.m_x = (short) ((m_clipSize.m_x - size.m_width) / 2);
 	}
 }
 

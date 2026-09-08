@@ -224,10 +224,10 @@ void SuccFailDrawer::CalculateText()
 	m_secondLine = 0;
 	bool done = false;
 	short lineX;
-	VsPoint textSize;
+	VsSize textSize;
 	do {
 		font->GetSize(&textSize, m_firstLine, 0x20);
-		lineX = (short) layout[0x38 / 4] + (short) ((layout[0x40 / 4] - (int) textSize.m_x) / 2);
+		lineX = (short) layout[0x38 / 4] + (short) ((layout[0x40 / 4] - (int) textSize.m_width) / 2);
 		char* prevBreak = (m_secondLine == 0) ? 0 : (m_secondLine - 1);
 		if (lineX < layoutMinX) {
 			char* space = strrchr(m_firstLine, ' ');
@@ -246,18 +246,18 @@ void SuccFailDrawer::CalculateText()
 	m_firstLinePos.m_x = lineX;
 	m_firstLinePos.m_y = layoutY;
 	if (m_secondLine == 0) {
-		m_firstLinePos.m_y = layoutY + textSize.m_y / 2;
+		m_firstLinePos.m_y = layoutY + textSize.m_height / 2;
 	}
 	else {
-		layoutY = layoutY + textSize.m_y;
+		layoutY = layoutY + textSize.m_height;
 		font->GetSize(&textSize, m_secondLine, 0x20);
-		m_secondLinePos.m_x = (short) layout[0x38 / 4] + (short) ((layout[0x40 / 4] - (int) textSize.m_x) / 2);
+		m_secondLinePos.m_x = (short) layout[0x38 / 4] + (short) ((layout[0x40 / 4] - (int) textSize.m_width) / 2);
 		m_secondLinePos.m_y = layoutY;
 	}
 
 	font->GetSize(&textSize, g_szPasswordLabel, 0x20);
-	short labelHeight = textSize.m_y;
-	short labelWidth = textSize.m_x;
+	short labelHeight = textSize.m_height;
+	short labelWidth = textSize.m_width;
 	short passwordLabelY = (short) layout[0x64 / 4];
 	int layoutWidth = layout[0x40 / 4];
 	int layoutBaseX = layout[0x38 / 4];
@@ -265,7 +265,7 @@ void SuccFailDrawer::CalculateText()
 	m_passwordLabelPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
 
 	font->GetSize(&textSize, m_password, 0x20);
-	labelWidth = textSize.m_x;
+	labelWidth = textSize.m_width;
 	m_passwordPos.m_y = passwordLabelY + labelHeight;
 	m_passwordPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
 }
