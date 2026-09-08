@@ -8,8 +8,9 @@
 // VTABLE: LEMBALL 0x00496d90
 class CopyColourToBackBuff : public Primitive {
 public:
-	CopyColourToBackBuff() : m_colour(0)
+	CopyColourToBackBuff() : m_field06(0)
 	{
+		m_colour = 0;
 		m_height = 0;
 		m_width = 0;
 		m_y = 0;
@@ -23,11 +24,12 @@ public:
 	friend class C2D;
 
 private:
-	int m_colour;   // 0x04
-	short m_width;  // 0x08
-	short m_height; // 0x0a
-	short m_x;      // 0x0c
-	short m_y;      // 0x0e
+	short m_colour;  // 0x04
+	short m_field06; // 0x06
+	short m_width;   // 0x08
+	short m_height;  // 0x0a
+	short m_x;       // 0x0c
+	short m_y;       // 0x0e
 };
 
 // SYNTHETIC: LEMBALL 0x00439680

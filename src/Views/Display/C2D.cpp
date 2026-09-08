@@ -41,6 +41,7 @@
 C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4) : HotAreaHandler(p_arg4)
 {
 	void* storage;
+	BaseQueueHandler* queueHandler;
 	TargetObjectClipGrid* objectClipGrid;
 	unsigned int cellCount;
 	int groundWidth;
@@ -107,7 +108,8 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 	m_viewData = new ViewData[200];
 
 	m_zBuffer = (unsigned char*) operator new(0x800);
-	g_pMasterInputQueue->Attach(this, 0);
+	queueHandler = this;
+	g_pMasterInputQueue->Attach(queueHandler, 0);
 	ClockEditMode(0);
 
 	storage = operator new(0x1c);
@@ -129,8 +131,8 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 	m_spriteGroundLookup = 0;
 	objectClipGrid = (TargetObjectClipGrid*) operator new(0x1a4);
 	if (objectClipGrid != 0) {
-		groundHeight = m_map->m_ground.m_height;
-		groundWidth = m_map->m_ground.m_width;
+		groundHeight = m_map->m_ground.m_height << 4;
+		groundWidth = m_map->m_ground.m_width << 4;
 		objectClipGrid->m_touchedCount = 0;
 		objectClipGrid->m_cells = 0;
 		objectClipGrid->m_cellWidth = 0x10;
@@ -140,9 +142,9 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 			objectClipGrid->m_cells = 0;
 		}
 		objectClipGrid->m_width =
-			(short) (((groundWidth << 4) + objectClipGrid->m_cellWidth - 1) / objectClipGrid->m_cellWidth);
+			(short) ((groundWidth + objectClipGrid->m_cellWidth - 1) / objectClipGrid->m_cellWidth);
 		objectClipGrid->m_height =
-			(short) (((groundHeight << 4) + objectClipGrid->m_cellHeight - 1) / objectClipGrid->m_cellHeight);
+			(short) ((groundHeight + objectClipGrid->m_cellHeight - 1) / objectClipGrid->m_cellHeight);
 		cellCount = (unsigned int) (int) objectClipGrid->m_width * (unsigned int) (int) objectClipGrid->m_height;
 		objectClipGrid->m_cellCount = cellCount;
 		objectClipGrid->m_cells = new ObjSq[cellCount];
