@@ -22,7 +22,7 @@ FileConnect::FileConnect()
 // FUNCTION: LEMBALL 0x0047b370
 void FileConnect::InitialiseFile()
 {
-	NetworkFile::Seek(0);
+	Seek(0);
 	FileWriteSocket::Write(m_message, 0, 0);
 }
 

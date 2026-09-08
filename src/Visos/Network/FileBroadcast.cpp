@@ -96,7 +96,7 @@ bool FileBroadcast::Start(const char* p_name)
 // FUNCTION: LEMBALL 0x0047ac50
 bool FileBroadcast::ReadPortInfo()
 {
-	NetworkFile::Seek(m_message.m_payloadCapacity);
+	Seek(m_message.m_payloadCapacity);
 	unsigned int length = g_pFileBroadcast->m_payloadCapacity;
 	if (!NetworkFile::Lock(m_message.m_payloadCapacity, length)) {
 		return false;
@@ -149,9 +149,29 @@ short FileBroadcast::FindPort(const unsigned char* p_data)
 }
 
 // 68K 0x10209276 ResetPort__14CFileBroadcastFs
-// STUB: LEMBALL 0x0047ae00
+// FUNCTION: LEMBALL 0x0047ae00
 void FileBroadcast::ResetPort(short p_port)
 {
+	m_connectionData[p_port] = 0;
+	if (m_portInfoLocked == 0) {
+		ReadPortInfo();
+		g_pFileBroadcast->m_useCounts[(unsigned short) p_port]--;
+		WritePortInfo();
+	}
+	else {
+		g_pFileBroadcast->m_useCounts[(unsigned short) p_port]--;
+	}
+
+	if (!g_pFileBroadcast->AnyUsed()) {
+		char* extension = strchr(g_pFileBroadcastData, '.');
+		if (extension != 0) {
+			strcpy(extension, ".con");
+		}
+		else {
+			memcpy(g_pFileBroadcastData + strlen(g_pFileBroadcastData), ".con", 5);
+		}
+		Delete(g_pFileBroadcastData);
+	}
 }
 
 // 68K 0x1020935e StartListen__14CFileBroadcastFv
