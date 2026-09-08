@@ -68,11 +68,9 @@ BallManager::~BallManager()
 int BallManager::Process()
 {
 	int i = 0;
-	if (0 < m_activeCount) {
-		while (i < m_activeCount) {
-			m_balls[i]->Process();
-			i++;
-		}
+	while (i < m_activeCount) {
+		m_balls[i]->Process();
+		i++;
 	}
 	return 1;
 }
