@@ -99,20 +99,22 @@ void MainOptions2Drawer::Load()
 	}
 
 	for (i = 0; i < 1; i++) {
+		ResBitmap* background = m_backgroundBitmap;
 		(&m_primitiveBundle)[i].m_primitive.m_x =
-			(short) (((int) m_display->m_rect.m_width - (int) m_backgroundBitmap->m_x) / 2);
+			(short) (((int) m_display->m_rect.m_width - (int) background->m_x) / 2);
 		(&m_primitiveBundle)[i].m_primitive.m_y = 0;
-		(&m_primitiveBundle)[i].m_primitive.m_resource = m_backgroundBitmap;
+		(&m_primitiveBundle)[i].m_primitive.m_resource = background;
 		(&m_primitiveBundle)[i].m_primitive.m_flags = 0x800;
 		(&m_primitiveBundle)[i].m_primitive.m_remap = 0;
 	}
 
+	GunController** gunController = &m_gunController;
 	storage = operator new(sizeof(GunController));
 	if (storage == 0) {
-		m_gunController = 0;
+		*gunController = 0;
 	}
 	else {
-		m_gunController = new (storage) GunController(m_display, m_gdi, 8, m_mode);
+		*gunController = new (storage) GunController(m_display, m_gdi, 8, m_mode);
 	}
 
 	int disableZoom = 0;
@@ -121,32 +123,34 @@ void MainOptions2Drawer::Load()
 		m_disableZoom = 1;
 	}
 
-	m_gunController
+	(*gunController)
 		->AddButton(m_buttonLayout[0], m_buttonLayout[1], zoomAnim, 0, disableZoom, 1, 0, &m_disableZoom, 0xacef0004);
-	m_gunController
+	(*gunController)
 		->AddButton(m_buttonLayout[2], m_buttonLayout[3], animationsAnim, 0, 0, 1, 0, &m_disableAnimations, 0xacef0007);
-	m_gunController->AddButton(m_buttonLayout[4],
-							   m_buttonLayout[5],
-							   effectsAnim,
-							   0,
-							   0,
-							   1,
-							   0,
-							   &g_nPendingEffectsVolume,
-							   0xacef0005);
-	m_gunController
+	(*gunController)
+		->AddButton(m_buttonLayout[4],
+					m_buttonLayout[5],
+					effectsAnim,
+					0,
+					0,
+					1,
+					0,
+					&g_nPendingEffectsVolume,
+					0xacef0005);
+	(*gunController)
 		->AddButton(m_buttonLayout[6], m_buttonLayout[7], musicAnim, 0, 0, 1, 0, &g_nPendingMusicVolume, 0xacef0006);
-	m_gunController->AddButton(m_buttonLayout[10],
-							   m_buttonLayout[11],
-							   navigationAnim,
-							   1,
-							   0,
-							   0,
-							   0,
-							   &m_transitionPending,
-							   0xacef0008);
-	m_gunController->SetGun(0);
-	m_gunController->SetSpriteWindow();
+	(*gunController)
+		->AddButton(m_buttonLayout[10],
+					m_buttonLayout[11],
+					navigationAnim,
+					1,
+					0,
+					0,
+					0,
+					&m_transitionPending,
+					0xacef0008);
+	(*gunController)->SetGun(0);
+	(*gunController)->SetSpriteWindow();
 }
 
 // 68K 0x1080aaf8 UnLoad__19CMainOptions2DrawerFv
