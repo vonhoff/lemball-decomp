@@ -18,6 +18,7 @@ public:
 	virtual void OnPressed(int p_flags);        // vtable+0xc4
 	virtual void OnEnterButton();               // vtable+0xc8
 	virtual void OnExitButton();                // vtable+0xcc
+	friend class PanelLemming;
 
 private:
 	unsigned int m_depressed;          // 0x104

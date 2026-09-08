@@ -66,6 +66,7 @@ public:
 	void SetGroup(unsigned int p_arg0);
 	void SetGroupLeader(unsigned int p_arg0);
 	friend class PanelButton;
+	friend class PanelLemming;
 
 private:
 	unsigned int m_sfxChanged;                                 // 0x164

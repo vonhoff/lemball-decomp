@@ -141,6 +141,7 @@ public:
 	void UnRegisterRemaps();
 	void UseBalloon(PlayerLemming* p_lemming);
 	friend class Panel;
+	friend class PanelLemming;
 	friend class PanelPauseButton;
 	friend class PanelButton;
 

@@ -18,6 +18,7 @@ public:
 	void OnSize();
 	void Process();
 	void SetPause(unsigned char p_paused);
+	friend class PanelLemming;
 	friend class PanelPauseButton;
 	friend class PanelButton;
 
