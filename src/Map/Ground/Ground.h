@@ -22,6 +22,7 @@ public:
 	friend class InvisibleSwitch;
 	friend class GroundAnim;
 	friend class Trampoline;
+	friend class C2D;
 
 private:
 	eObjectType m_objectType;    // 0x00

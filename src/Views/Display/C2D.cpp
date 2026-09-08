@@ -539,10 +539,56 @@ void C2D::RightClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint)
 }
 
 // 68K 0x10b08c70 ScreenToGame__3C2DFiiRiRi
-// STUB: LEMBALL 0x00437970
+// FUNCTION: LEMBALL 0x00437970
 bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 {
-	return 0;
+	int maxGameX = m_map->m_ground.m_width * 0x10 - 1;
+	int maxGameY = m_map->m_ground.m_height * 0x10 - 1;
+	int searchY = p_screenY + 0x50;
+	if (searchY >= p_screenY) {
+		int searchMinX = p_screenX - 0x20;
+		int searchMaxX = p_screenX + 0x20;
+		do {
+			int searchX = searchMinX;
+			if (searchMaxX >= searchX) {
+				do {
+					int gameX;
+					int gameY;
+					m_map->ScreenToGame(searchX, searchY, gameX, gameY);
+					if (gameX >= 0 && maxGameX >= gameX && gameY >= 0 && maxGameY >= gameY) {
+						gameX /= 0x10;
+						gameY /= 0x10;
+
+						int groundScreenX;
+						int groundScreenY;
+						m_map->GameToScreen(gameX << 4, gameY << 4, groundScreenX, groundScreenY);
+						groundScreenY -= m_map->m_ground.m_ground[m_map->m_ground.m_width * gameY + gameX].m_height;
+
+						int left = groundScreenX - 0x10;
+						int right = groundScreenX + 0xf;
+						int top = groundScreenY - 0x10;
+						int bottom = groundScreenY + 0xf;
+						if (left <= p_screenX && right >= p_screenX && top <= p_screenY && bottom >= p_screenY) {
+							Ground* ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * gameY + gameX;
+							int hitX = p_screenX - left;
+							int hitY = p_screenY - top;
+							if (hitX >= 0 && hitY >= 0 && hitX <= 0x1f && hitY <= 0x1f) {
+								unsigned int includeSpecial = m_groundHitMode >= 1;
+								if (ground->IsHit(hitX, hitY, (unsigned char) includeSpecial)) {
+									p_gameX = gameX * 0x10 + 8;
+									p_gameY = gameY * 0x10 + 8;
+									return true;
+								}
+							}
+						}
+					}
+					searchX += 0x10;
+				} while (searchMaxX >= searchX);
+			}
+			searchY -= 8;
+		} while (searchY >= p_screenY);
+	}
+	return false;
 }
 
 // 68K 0x10b08e94 ProcessMsg__3C2DFP10tagMESSAGE
