@@ -555,9 +555,9 @@ unsigned int __stdcall TargetWinGDrawCodec_GetInfo(void* p_info, unsigned int p_
 	if (p_size < 0x238) {
 		return 0;
 	}
+	info->dwSize = 0x238;
 	info->fccType = 0x63646976;
 	info->fccHandler = 0x4e415356;
-	info->dwSize = 0x238;
 	info->dwFlags = 0x10;
 	info->dwVersion = 0x10000;
 	info->dwVersionICM = 0x104;
