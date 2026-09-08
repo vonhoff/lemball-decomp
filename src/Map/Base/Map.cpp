@@ -46,9 +46,23 @@ Map::~Map()
 }
 
 // 68K 0x1090055c ReSize__4CMapFii
-// STUB: LEMBALL 0x00430440
+// FUNCTION: LEMBALL 0x00430440
 void Map::ReSize(int p_width, int p_height)
 {
+	if (m_walkWidth != p_width || m_walkHeight != p_height) {
+		m_walkWidth = p_width;
+		m_walkHeight = p_height;
+		if (m_ground.m_ground != 0) {
+			delete[] m_ground.m_ground;
+		}
+		m_ground.m_width = p_width;
+		m_ground.m_height = p_height;
+		m_ground.m_ground = new Ground[p_width * p_height];
+		if (m_walkBits != 0) {
+			delete[] m_walkBits;
+		}
+		m_walkBits = new unsigned char[m_walkWidth * m_walkHeight];
+	}
 }
 
 // 68K 0x10900630 GetZ__4CMapFiiPP6CMover
@@ -298,15 +312,49 @@ void Map::SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data)
 }
 
 // 68K 0x10900a04 ScreenToGame__4CMapFiiRiRi
-// STUB: LEMBALL 0x00430a50
+// FUNCTION: LEMBALL 0x00430a50
 void Map::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 {
+	switch (m_orientation) {
+	case 0:
+		p_gameX = p_screenX / 2 + p_screenY - 8;
+		p_gameY = p_screenY - p_screenX / 2 + 8;
+		break;
+	case 1:
+		p_gameX = p_screenY - p_screenX / 2 + 8;
+		p_gameY = 0x18 - p_screenX / 2 - p_screenY;
+		break;
+	case 2:
+		p_gameX = 0x18 - p_screenX / 2 - p_screenY;
+		p_gameY = p_screenX / 2 - p_screenY + 8;
+		break;
+	case 3:
+		p_gameX = p_screenX / 2 - p_screenY + 8;
+		p_gameY = p_screenX / 2 + p_screenY - 8;
+	}
 }
 
 // 68K 0x10900b1a GameToScreen__4CMapFiiRiRi
-// STUB: LEMBALL 0x00430be0
+// FUNCTION: LEMBALL 0x00430be0
 void Map::GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY)
 {
+	switch (m_orientation) {
+	case 0:
+		p_screenX = p_gameX - p_gameY + 0x10;
+		p_screenY = p_gameY / 2 + p_gameX / 2;
+		break;
+	case 1:
+		p_screenX = 0x20 - p_gameY - p_gameX;
+		p_screenY = p_gameX / 2 - p_gameY / 2 + 8;
+		break;
+	case 2:
+		p_screenX = p_gameY - p_gameX + 0x10;
+		p_screenY = 0x10 - p_gameY / 2 - p_gameX / 2;
+		break;
+	case 3:
+		p_screenX = p_gameX + p_gameY;
+		p_screenY = p_gameY / 2 - p_gameX / 2 + 8;
+	}
 }
 
 // 68K 0x10900c34 GameToScreen__4CMapFRiRi
