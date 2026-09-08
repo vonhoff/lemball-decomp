@@ -129,18 +129,14 @@ PasswordDrawer::PasswordDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect&
 // FUNCTION: LEMBALL 0x00451320
 void PasswordDrawer::Load()
 {
-	int* layout;
-	ResBitmap* background;
+	Prims* primitiveBundle;
 	int primitiveCount;
 	int gridStartX;
 	int gridX;
 	int gridY;
 	int row;
 	int col;
-	VsPoint position;
 	int buttonY;
-	int* keyMap;
-	int* offsetPtr;
 
 	if (m_mode != 0) {
 		m_layout = (int*) g_abPasswordLayoutCompact;
@@ -152,18 +148,22 @@ void PasswordDrawer::Load()
 		m_buttonAnimIds = g_dwPasswordButtonAnimIdsFull;
 		m_animationId = RES_NEWFRONT_ANIMS_HIRES_PASSWORD_HILITE;
 	}
-	background = m_backgroundBitmap;
-	layout = (int*) m_layout;
-	for (primitiveCount = 0; primitiveCount < 1; primitiveCount++) {
-		(&m_primitiveBundle)[primitiveCount].m_primitive.m_x = (short) layout[0];
-		(&m_primitiveBundle)[primitiveCount].m_primitive.m_y = (short) layout[1];
-		(&m_primitiveBundle)[primitiveCount].m_primitive.m_resource = background;
-		(&m_primitiveBundle)[primitiveCount].m_primitive.m_flags = 0x800;
-		(&m_primitiveBundle)[primitiveCount].m_primitive.m_remap = 0;
-	}
+	primitiveCount = 1;
+	primitiveBundle = &m_primitiveBundle;
+	do {
+		ResBitmap* background = m_backgroundBitmap;
+		int* layout = (int*) m_layout;
+		int layoutY = layout[1];
+		primitiveBundle->m_primitive.m_x = (short) layout[0];
+		primitiveBundle->m_primitive.m_y = (short) layoutY;
+		primitiveBundle->m_primitive.m_resource = background;
+		primitiveBundle->m_primitive.m_flags = 0x800;
+		primitiveBundle->m_primitive.m_remap = 0;
+		primitiveBundle++;
+	} while (--primitiveCount != 0);
 	AnimsManager::LoadAnims(m_animationId);
-	keyMap = g_passwordKeyMap;
-	offsetPtr = m_buttonOffsets;
+	int* keyMap = g_passwordKeyMap;
+	int* offsetPtr = m_buttonOffsets;
 	gridStartX = m_layout[2];
 	gridY = m_layout[3];
 	gridX = gridStartX;
@@ -172,11 +172,10 @@ void PasswordDrawer::Load()
 	do {
 		col = 3;
 		do {
-			m_buttons[*keyMap] =
-				new GraphicButton((position.m_x = (short) gridX, position.m_y = (short) buttonY, position),
-								  (PvGWnd*) m_display,
-								  m_buttonAnimIds[*keyMap],
-								  3);
+			m_buttons[*keyMap] = new GraphicButton(VsPoint((short) gridX, (short) buttonY),
+												   (PvGWnd*) m_display,
+												   m_buttonAnimIds[*keyMap],
+												   3);
 			m_buttons[*keyMap]->m_controlMessage = 0xabcd00b0 + *keyMap;
 			m_buttons[*keyMap]->m_messageHandler = g_pMasterInputQueue;
 			offsetPtr[0] = gridX - m_layout[2];
