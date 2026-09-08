@@ -12,7 +12,7 @@
 // VTABLE: LEMBALL 0x0049abd8 WriteSocket view
 // VTABLE: LEMBALL 0x0049ac08 BaseCommonSocket view
 // VTABLE: LEMBALL 0x0049ac18 primary Connect view
-class FileConnect : public Connect, public FileOpenManagement {
+class FileConnect : public FileOpenManagement, public Connect {
 public:
 	FileConnect();
 	virtual bool Start(const char* p_localName, const char* p_remoteName); // vtable+0x00

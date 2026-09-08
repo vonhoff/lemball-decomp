@@ -274,10 +274,12 @@ void SuccFailDrawer::CalculateText()
 // FUNCTION: LEMBALL 0x00450460
 void SuccFailDrawer::Load()
 {
-	unsigned long* goAnim;
 	unsigned long* returnAnim;
+	unsigned long* goAnim;
 	Prims* primitiveBundle;
+	BitmapRes* primitive;
 	SuccFailDrawerPrims* primitives;
+	BitmapRes* primary;
 	int bitmapX;
 	int i;
 
@@ -323,16 +325,18 @@ void SuccFailDrawer::Load()
 	primitives = m_primitives;
 	i = 1;
 	do {
-		primitiveBundle->m_primitive.m_x = m_width - m_backgroundBitmap->m_x;
-		primitiveBundle->m_primitive.m_y = (short) ((int*) m_layout)[0x14 / 4];
-		primitiveBundle->m_primitive.m_resource = m_backgroundBitmap;
-		primitiveBundle->m_primitive.m_flags = 0x800;
-		primitiveBundle->m_primitive.m_remap = 0;
-		primitives->m_primary.m_x = (short) bitmapX;
-		primitives->m_primary.m_y = (short) ((int*) m_layout)[0x1c / 4];
-		primitives->m_primary.m_resource = m_primaryBitmap;
-		primitives->m_primary.m_flags = 0x800;
-		primitives->m_primary.m_remap = 0;
+		primitive = &primitiveBundle->m_primitive;
+		primary = &primitives->m_primary;
+		primitive->m_x = m_width - m_backgroundBitmap->m_x;
+		primitive->m_y = (short) ((int*) m_layout)[0x14 / 4];
+		primitive->m_resource = m_backgroundBitmap;
+		primitive->m_flags = 0x800;
+		primitive->m_remap = 0;
+		primary->m_x = (short) bitmapX;
+		primary->m_y = (short) ((int*) m_layout)[0x1c / 4];
+		primary->m_resource = m_primaryBitmap;
+		primary->m_flags = 0x800;
+		primary->m_remap = 0;
 		if (m_secondaryBitmap != 0) {
 			primitives->m_secondary.m_x = (short) ((int*) m_layout)[0x50 / 4];
 			primitives->m_secondary.m_y = (short) ((int*) m_layout)[0x54 / 4];
@@ -340,8 +344,8 @@ void SuccFailDrawer::Load()
 			primitives->m_secondary.m_flags = 0x800;
 			primitives->m_secondary.m_remap = 0;
 		}
-		primitiveBundle++;
 		primitives++;
+		primitiveBundle++;
 	} while (--i != 0);
 	((int*) m_layout)[0x18 / 4] = bitmapX;
 	((int*) m_layout)[0x28 / 4] = bitmapX;

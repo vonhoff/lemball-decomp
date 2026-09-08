@@ -1454,8 +1454,32 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return 1;
 	}
-	code1 = ClipCode(p_x1, p_y1);
-	code2 = ClipCode(p_x2, p_y2);
+	code1 = 0;
+	if (p_x1 < m_clipRect.m_x) {
+		code1 = 1;
+	}
+	else if (m_clipRect.m_width + m_clipRect.m_x - 1 < p_x1) {
+		code1 = 2;
+	}
+	if (p_y1 < m_clipRect.m_y) {
+		code1 |= 4;
+	}
+	else if (m_clipRect.m_height + m_clipRect.m_y - 1 < p_y1) {
+		code1 |= 8;
+	}
+	code2 = 0;
+	if (p_x2 < m_clipRect.m_x) {
+		code2 = 1;
+	}
+	else if (m_clipRect.m_width + m_clipRect.m_x - 1 < p_x2) {
+		code2 = 2;
+	}
+	if (p_y2 < m_clipRect.m_y) {
+		code2 |= 4;
+	}
+	else if (m_clipRect.m_height + m_clipRect.m_y - 1 < p_y2) {
+		code2 |= 8;
+	}
 	if ((code1 | code2) != 0) {
 		do {
 			if ((code1 & code2) != 0) {
@@ -1486,7 +1510,19 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 					p_y1 += ((m_clipRect.m_x - p_x1) * dy) / dx;
 					p_x1 = m_clipRect.m_x;
 				}
-				code1 = ClipCode(p_x1, p_y1);
+				code1 = 0;
+				if (p_x1 < m_clipRect.m_x) {
+					code1 = 1;
+				}
+				else if (m_clipRect.m_width + m_clipRect.m_x - 1 < p_x1) {
+					code1 = 2;
+				}
+				if (p_y1 < m_clipRect.m_y) {
+					code1 |= 4;
+				}
+				else if (m_clipRect.m_height + m_clipRect.m_y - 1 < p_y1) {
+					code1 |= 8;
+				}
 			}
 			else {
 				if ((code2 & 1) == 0) {
@@ -1511,7 +1547,19 @@ int Surface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 					p_y2 += ((m_clipRect.m_x - p_x2) * dy) / dx;
 					p_x2 = m_clipRect.m_x;
 				}
-				code2 = ClipCode(p_x2, p_y2);
+				code2 = 0;
+				if (p_x2 < m_clipRect.m_x) {
+					code2 = 1;
+				}
+				else if (m_clipRect.m_width + m_clipRect.m_x - 1 < p_x2) {
+					code2 = 2;
+				}
+				if (p_y2 < m_clipRect.m_y) {
+					code2 |= 4;
+				}
+				else if (m_clipRect.m_height + m_clipRect.m_y - 1 < p_y2) {
+					code2 |= 8;
+				}
 			}
 		} while ((code1 | code2) != 0);
 	}

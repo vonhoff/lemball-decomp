@@ -120,34 +120,39 @@ void PauseWindow::CreateTheWindow(const VsRect& p_rect)
 // FUNCTION: LEMBALL 0x00444050
 VsRect PauseWindow::CalculateWindow()
 {
-	VsRect result;
-	VsPoint position;
+	short positionX;
+	short positionY;
 	VsSize textSize;
-	VsPoint maxTextSize;
+	VsSize maxTextSize;
 	VsSize* measuredTextSize;
-	VsSize windowSize;
 	short parentWidth;
 	short parentHeight;
 	short horizontalWidth;
 	short verticalHeight;
+	short cornerX;
+	short cornerY;
+	short* horizontalBorder;
+	short* verticalBorder;
+	short* verticalCorner;
+	int lowResolution;
 	int itemCount;
 	int i;
 
-	if (m_lowResolution != 0) {
-		m_textSpacing.m_x = 0;
-		m_textSpacing.m_y = 2;
-		m_windowPadding.m_x = 0x14;
-		m_windowPadding.m_y = 0x0a;
-	}
-	else {
-		m_textSpacing.m_x = 0;
+	lowResolution = m_lowResolution;
+	m_textSpacing.m_x = 0;
+	m_textSpacing.m_y = 2;
+	if (lowResolution == 0) {
 		m_textSpacing.m_y = 4;
+	}
+	m_windowPadding.m_x = 0x14;
+	m_windowPadding.m_y = 0x0a;
+	if (lowResolution == 0) {
 		m_windowPadding.m_x = 0x28;
 		m_windowPadding.m_y = 0x14;
 	}
 
-	maxTextSize.m_x = 0;
-	maxTextSize.m_y = 0;
+	maxTextSize.m_width = 0;
+	maxTextSize.m_height = 0;
 	itemCount = m_menuItemCount;
 	if (m_pauseMessage == 3) {
 		itemCount--;
@@ -157,14 +162,14 @@ VsRect PauseWindow::CalculateWindow()
 		m_textSizes[i * 2].m_x = measuredTextSize->m_width;
 		m_textSizes[i * 2].m_y = measuredTextSize->m_height;
 		if (i < itemCount) {
-			maxTextSize.m_y += measuredTextSize->m_height + m_textSpacing.m_y;
+			maxTextSize.m_height += measuredTextSize->m_height + m_textSpacing.m_y;
 		}
-		if (maxTextSize.m_x < measuredTextSize->m_width) {
-			maxTextSize.m_x = measuredTextSize->m_width;
+		if (maxTextSize.m_width < measuredTextSize->m_width) {
+			maxTextSize.m_width = measuredTextSize->m_width;
 		}
 	}
-	maxTextSize.m_y -= m_textSpacing.m_y;
-	maxTextSize.m_x += m_windowPadding.m_x;
+	maxTextSize.m_height -= m_textSpacing.m_y;
+	maxTextSize.m_width += m_windowPadding.m_x;
 
 	if ((int) m_parentWindow->m_innerRect.m_width * (int) m_parentWindow->m_innerRect.m_height != 0) {
 		parentWidth = (short) ((int) m_parentWindow->m_innerRect.m_width / (int) m_parentWindow->m_zoom);
@@ -175,18 +180,20 @@ VsRect PauseWindow::CalculateWindow()
 		parentHeight = (short) ((int) m_parentWindow->m_rect.m_height / (int) m_parentWindow->m_zoom);
 	}
 
-	windowSize.m_width = maxTextSize.m_x;
-	windowSize.m_height = maxTextSize.m_y;
-	position.m_x = (short) (((int) parentWidth - (int) windowSize.m_width) / 2);
-	position.m_y = (short) (((int) parentHeight - (int) windowSize.m_height) / 2);
+	VsSize windowSize(maxTextSize);
+	positionX = (short) (((int) parentWidth - (int) windowSize.m_width) / 2);
+	positionY = (short) (((int) parentHeight - (int) windowSize.m_height) / 2);
 
-	horizontalWidth = m_verticalBorderAnim->m_animationEntries[0].m_width;
-	verticalHeight = m_verticalBorderAnim->m_animationEntries[2].m_height;
+	horizontalBorder = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
+	verticalBorder = &m_verticalBorderAnim->m_animationEntries[0].m_width;
+	verticalCorner = &m_verticalBorderAnim->m_animationEntries[2].m_width;
+	horizontalWidth = verticalBorder[0];
+	verticalHeight = verticalCorner[1];
 	windowSize.m_width = (short) (((int) windowSize.m_width + horizontalWidth - 1) / horizontalWidth);
 	windowSize.m_height = (short) (((int) windowSize.m_height + verticalHeight - 1) / verticalHeight);
 	windowSize.m_width = (short) (windowSize.m_width * horizontalWidth);
 	windowSize.m_height = (short) (windowSize.m_height * verticalHeight);
-	m_verticalTextOffset = (short) (((int) windowSize.m_height - (int) maxTextSize.m_y) / 2);
+	m_verticalTextOffset = (short) (((int) windowSize.m_height - (int) maxTextSize.m_height) / 2);
 	m_horizontalTiles = (short) ((int) windowSize.m_width / horizontalWidth - 2);
 	m_verticalTiles = (short) ((int) windowSize.m_height / verticalHeight - 2);
 
@@ -198,14 +205,16 @@ VsRect PauseWindow::CalculateWindow()
 		m_borderAnims = new Anim[m_borderAnimCount * 2];
 	}
 
-	m_cornerAnims[0].m_x = windowSize.m_width;
+	cornerX = (short) (windowSize.m_width - horizontalBorder[0]);
+	cornerY = (short) (windowSize.m_height - horizontalBorder[1]);
+	m_cornerAnims[0].m_x = 0;
 	m_cornerAnims[0].m_y = 0;
 	m_cornerAnims[0].m_flags = 0;
 	m_cornerAnims[0].m_remap = 0;
 	m_cornerAnims[0].m_state = 0;
 	m_cornerAnims[0].m_animIndex = 0;
 	m_cornerAnims[0].m_animResource = m_horizontalBorderAnim;
-	m_cornerAnims[1].m_x = windowSize.m_width;
+	m_cornerAnims[1].m_x = cornerX;
 	m_cornerAnims[1].m_y = 0;
 	m_cornerAnims[1].m_flags = 1;
 	m_cornerAnims[1].m_remap = 0;
@@ -213,14 +222,14 @@ VsRect PauseWindow::CalculateWindow()
 	m_cornerAnims[1].m_animIndex = 1;
 	m_cornerAnims[1].m_animResource = m_horizontalBorderAnim;
 	m_cornerAnims[2].m_x = 0;
-	m_cornerAnims[2].m_y = windowSize.m_height;
+	m_cornerAnims[2].m_y = cornerY;
 	m_cornerAnims[2].m_flags = 2;
 	m_cornerAnims[2].m_remap = 0;
 	m_cornerAnims[2].m_state = 0;
 	m_cornerAnims[2].m_animIndex = 2;
 	m_cornerAnims[2].m_animResource = m_horizontalBorderAnim;
-	m_cornerAnims[3].m_x = windowSize.m_width;
-	m_cornerAnims[3].m_y = windowSize.m_height;
+	m_cornerAnims[3].m_x = cornerX;
+	m_cornerAnims[3].m_y = cornerY;
 	m_cornerAnims[3].m_flags = 3;
 	m_cornerAnims[3].m_remap = 0;
 	m_cornerAnims[3].m_state = 0;
@@ -228,8 +237,8 @@ VsRect PauseWindow::CalculateWindow()
 	m_cornerAnims[3].m_animResource = m_horizontalBorderAnim;
 
 	{
-		short topX = horizontalWidth;
-		short bottomX = horizontalWidth;
+		short topX = horizontalBorder[0];
+		short bottomX = horizontalBorder[0];
 		int index;
 
 		for (index = 0; index < m_horizontalTiles; index++) {
@@ -243,22 +252,21 @@ VsRect PauseWindow::CalculateWindow()
 			top.m_animIndex = 0;
 			top.m_animResource = m_verticalBorderAnim;
 			bottom.m_x = bottomX;
-			bottom.m_y = (short) (windowSize.m_height - verticalHeight);
+			bottom.m_y = (short) (windowSize.m_height - verticalBorder[1]);
 			bottom.m_flags = 1;
 			bottom.m_remap = 0;
 			bottom.m_state = 0;
 			bottom.m_animIndex = 1;
 			bottom.m_animResource = m_verticalBorderAnim;
-			topX = (short) (topX + horizontalWidth);
-			bottomX = (short) (bottomX + horizontalWidth);
+			topX = (short) (topX + horizontalBorder[0]);
+			bottomX = (short) (bottomX + horizontalBorder[0]);
 		}
 	}
 
 	{
-		short leftX = position.m_x;
-		short leftY = (short) (position.m_y + m_horizontalBorderAnim->m_animationEntries[0].m_height);
-		short rightX =
-			(short) (position.m_x + windowSize.m_width - m_verticalBorderAnim->m_animationEntries[2].m_width);
+		short leftX = 0;
+		short leftY = horizontalBorder[1];
+		short rightX = (short) (windowSize.m_width - verticalCorner[0]);
 		short rightY = leftY;
 		int index;
 
@@ -279,16 +287,12 @@ VsRect PauseWindow::CalculateWindow()
 			right.m_state = 0;
 			right.m_animIndex = 3;
 			right.m_animResource = m_verticalBorderAnim;
-			leftY = (short) (leftY + verticalHeight);
-			rightY = (short) (rightY + verticalHeight);
+			leftY = (short) (leftY + verticalCorner[1]);
+			rightY = (short) (rightY + verticalCorner[1]);
 		}
 	}
 
-	result.m_width = windowSize.m_width;
-	result.m_height = windowSize.m_height;
-	result.m_x = position.m_x;
-	result.m_y = position.m_y;
-	return result;
+	return VsRect(positionX, positionY, &windowSize);
 }
 
 // 68K 0x10b0eeba __ct__12CPauseWindowFP19CReceiveWindowStateP7CPVGWnd20ePauseWindowMessages

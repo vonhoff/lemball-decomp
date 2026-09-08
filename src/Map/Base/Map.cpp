@@ -89,151 +89,201 @@ unsigned char Map::GetWalk(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x00430620
 void Map::CreateWalkBits()
 {
-	if (m_walkHeight > 0) {
-		unsigned char* walkBits = m_walkBits;
-		int y = 8;
-		int blockY = 0;
-		while (blockY < m_walkHeight) {
-			if (m_walkWidth > 0) {
-				int x = 8;
-				int blockX = 0;
-				while (blockX < m_walkWidth) {
-					*walkBits = 0;
+	unsigned short collision;
+	unsigned short z;
+	int adjacentBlock;
+	Ground* ground;
+	unsigned int low;
+	unsigned int coordinate;
+	int nextBlock;
+	int blockCoordinate;
+	int currentBlockY;
+	int y;
+	int x;
+	unsigned int lowCoordinate;
+	int lowBlock;
+	unsigned char* walkBits;
+	int blockX;
+	int blockY;
 
-					if (y > 8) {
-						unsigned short collision = 3;
-						int previousBlockY = blockY - 1;
-						if (x >= 8 && previousBlockY >= 0 && blockX < m_ground.m_width &&
-							previousBlockY < m_ground.m_height) {
-							collision = m_ground.GetGroundCell(blockX, previousBlockY)->m_collision;
+	blockY = 0;
+	walkBits = m_walkBits;
+	if (m_walkHeight > 0) {
+		y = 8;
+		do {
+			blockX = 0;
+			if (m_walkWidth > 0) {
+				x = 8;
+				do {
+					*walkBits = 0;
+					blockCoordinate = (int) x >> 4;
+
+					if (8 < (int) y) {
+						if (((((int) x < 8) || (adjacentBlock = blockY - 1, adjacentBlock < 0)) ||
+							 m_ground.m_width <= blockX) ||
+							(m_ground.m_height <= adjacentBlock)) {
+							collision = 3;
+						}
+						else {
+							ground = m_ground.GetGroundCell(blockX, adjacentBlock);
+							collision = ground->m_collision;
 						}
 						if ((collision & 0x25) == 0) {
-							unsigned short currentZ = m_ground.GetZ(x, y - 8);
-							unsigned short previousZ = 0;
-							int previousY = y - 9;
-							int previousBlockX = x >> 4;
-							int previousBlockY = previousY >> 4;
-							if (x >= 0 && previousY >= 0 && previousBlockX < m_ground.m_width &&
-								previousBlockY < m_ground.m_height) {
-								previousZ = m_ground.GetGroundCell(previousBlockX, previousBlockY)
-												->GetZ(x & 0xf, previousY & 0xf);
+							collision = m_ground.GetZ(x, y - 8);
+							coordinate = y - 9;
+							if (((int) x < 0) || ((int) coordinate < 0) || m_ground.m_width <= blockCoordinate ||
+								m_ground.m_height <= (int) coordinate >> 4) {
+								z = 0;
 							}
-							if (currentZ + 0xf >= previousZ) {
+							else {
+								low = coordinate & 0xf;
+								lowCoordinate = x & 0xf;
+								ground = m_ground.GetGroundCell(blockCoordinate, (int) coordinate >> 4);
+								z = ground->GetZ(lowCoordinate, low);
+							}
+							if (z <= collision + 0xf) {
 								*walkBits |= 0x10;
 							}
-							if (previousZ + 0xf >= currentZ) {
+							if (collision <= z + 0xf) {
 								*walkBits |= 1;
 							}
 						}
 					}
 
+					blockCoordinate = (int) x >> 4;
+					currentBlockY = (int) y >> 4;
 					if (blockX < m_walkWidth - 1) {
-						unsigned short collision = 3;
-						int nextBlockX = blockX + 1;
-						if (y >= 8 && nextBlockX >= 0 && nextBlockX < m_ground.m_width && blockY < m_ground.m_height) {
-							collision = m_ground.GetGroundCell(nextBlockX, blockY)->m_collision;
+						nextBlock = blockX + 1;
+						if (((nextBlock < 0) || ((int) y < 8)) ||
+							((m_ground.m_width <= nextBlock) || (m_ground.m_height <= blockY))) {
+							collision = 3;
+						}
+						else {
+							ground = m_ground.GetGroundCell(nextBlock, blockY);
+							collision = ground->m_collision;
 						}
 						if ((collision & 0x25) == 0) {
-							unsigned short currentZ = 0;
-							int currentX = x + 7;
-							int currentBlockX = currentX >> 4;
-							int currentBlockY = y >> 4;
-							if (currentX >= 0 && y >= 0 && currentBlockX < m_ground.m_width &&
-								currentBlockY < m_ground.m_height) {
-								currentZ =
-									m_ground.GetGroundCell(currentBlockX, currentBlockY)->GetZ(currentX & 0xf, y & 0xf);
+							coordinate = x + 7;
+							if (((((int) coordinate < 0) || ((int) y < 0)) ||
+								 m_ground.m_width <= (int) coordinate >> 4) ||
+								m_ground.m_height <= currentBlockY) {
+								collision = 0;
 							}
-							unsigned short nextZ = 0;
-							int nextX = x + 8;
-							nextBlockX = nextX >> 4;
-							if (nextX >= 0 && y >= 0 && nextBlockX < m_ground.m_width &&
-								currentBlockY < m_ground.m_height) {
-								nextZ = m_ground.GetGroundCell(nextBlockX, currentBlockY)->GetZ(nextX & 0xf, y & 0xf);
+							else {
+								low = coordinate & 0xf;
+								lowCoordinate = y & 0xf;
+								ground = m_ground.GetGroundCell((int) coordinate >> 4, currentBlockY);
+								collision = ground->GetZ(low, lowCoordinate);
 							}
-							if (currentZ + 0xf >= nextZ) {
+							nextBlock = (int) (x + 8) >> 4;
+							if (((((int) (x + 8) < 0) || ((int) y < 0)) || m_ground.m_width <= nextBlock) ||
+								(m_ground.m_height <= currentBlockY)) {
+								z = 0;
+							}
+							else {
+								lowCoordinate = y & 0xf;
+								lowBlock = 0;
+								ground = m_ground.GetGroundCell(nextBlock, currentBlockY);
+								z = ground->GetZ(lowBlock, lowCoordinate);
+							}
+							if (z <= collision + 0xf) {
 								*walkBits |= 0x40;
 							}
-							if (nextZ + 0xf >= currentZ) {
+							if (collision <= z + 0xf) {
 								*walkBits |= 4;
 							}
 						}
 					}
 
 					if (blockY < m_walkHeight - 1) {
-						unsigned short collision = 3;
-						int nextBlockY = blockY + 1;
-						if (x >= 8 && nextBlockY >= 0 && blockX < m_ground.m_width && nextBlockY < m_ground.m_height) {
-							collision = m_ground.GetGroundCell(blockX, nextBlockY)->m_collision;
+						nextBlock = blockY + 1;
+						if (((((int) x < 8) || (nextBlock < 0)) || m_ground.m_width <= blockX) ||
+							m_ground.m_height <= nextBlock) {
+							collision = 3;
+						}
+						else {
+							ground = m_ground.GetGroundCell(blockX, nextBlock);
+							collision = ground->m_collision;
 						}
 						if ((collision & 0x25) == 0) {
-							unsigned short currentZ = 0;
-							int currentY = y + 7;
-							int currentBlockX = x >> 4;
-							int currentBlockY = currentY >> 4;
-							if (x >= 0 && currentY >= 0 && currentBlockX < m_ground.m_width &&
-								currentBlockY < m_ground.m_height) {
-								currentZ =
-									m_ground.GetGroundCell(currentBlockX, currentBlockY)->GetZ(x & 0xf, currentY & 0xf);
+							nextBlock = (int) (y + 7) >> 4;
+							if (((((int) x < 0) || ((int) (y + 7) < 0)) || m_ground.m_width <= blockCoordinate) ||
+								m_ground.m_height <= nextBlock) {
+								collision = 0;
 							}
-							unsigned short nextZ = 0;
-							int nextY = y + 8;
-							nextBlockY = nextY >> 4;
-							if (x >= 0 && nextY >= 0 && currentBlockX < m_ground.m_width &&
-								nextBlockY < m_ground.m_height) {
-								nextZ = m_ground.GetGroundCell(currentBlockX, nextBlockY)->GetZ(x & 0xf, nextY & 0xf);
+							else {
+								low = x & 0xf;
+								lowCoordinate = (y + 7) & 0xf;
+								ground = m_ground.GetGroundCell(blockCoordinate, nextBlock);
+								collision = ground->GetZ(low, lowCoordinate);
 							}
-							if (currentZ + 0xf >= nextZ) {
+							nextBlock = (int) (y + 8) >> 4;
+							if (((((int) x < 0) || ((int) (y + 8) < 0)) || m_ground.m_width <= blockCoordinate) ||
+								m_ground.m_height <= nextBlock) {
+								z = 0;
+							}
+							else {
+								lowBlock = 0;
+								low = x & 0xf;
+								ground = m_ground.GetGroundCell(blockCoordinate, nextBlock);
+								z = ground->GetZ(low, lowBlock);
+							}
+							if (z <= collision + 0xf) {
 								*walkBits |= 0x20;
 							}
-							if (nextZ + 0xf >= currentZ) {
+							if (collision <= z + 0xf) {
 								*walkBits |= 2;
 							}
 						}
 					}
 
-					if (x > 8) {
-						unsigned short collision = 3;
-						int previousBlockX = blockX - 1;
-						if (previousBlockX >= 0 && y >= 8 && previousBlockX < m_ground.m_width &&
-							blockY < m_ground.m_height) {
-							collision = m_ground.m_ground[blockY * m_ground.m_width + previousBlockX].m_collision;
+					if (8 < (int) x) {
+						if (((blockX - 1 < 0) || ((int) y < 8)) ||
+							((blockCoordinate = m_ground.m_width, blockCoordinate <= blockX - 1) ||
+							 m_ground.m_height <= blockY)) {
+							collision = 3;
+						}
+						else {
+							collision = m_ground.m_ground[blockCoordinate * blockY + blockX - 1].m_collision;
 						}
 						if ((collision & 0x25) == 0) {
-							unsigned short currentZ = 0;
-							int currentX = x - 8;
-							int currentBlockX = currentX >> 4;
-							int currentBlockY = y >> 4;
-							if (currentX >= 0 && y >= 0 && currentBlockX < m_ground.m_width &&
-								currentBlockY < m_ground.m_height) {
-								currentZ =
-									m_ground.GetGroundCell(currentBlockX, currentBlockY)->GetZ(currentX & 0xf, y & 0xf);
+							nextBlock = (int) (x - 8) >> 4;
+							if (((((int) (x - 8) < 0) || ((int) y < 0)) || m_ground.m_width <= nextBlock) ||
+								m_ground.m_height <= currentBlockY) {
+								collision = 0;
 							}
-							unsigned short previousZ = 0;
-							int previousX = x - 9;
-							previousBlockX = previousX >> 4;
-							if (previousX >= 0 && y >= 0 && previousBlockX < m_ground.m_width &&
-								currentBlockY < m_ground.m_height) {
-								previousZ = m_ground.m_ground[currentBlockY * m_ground.m_width + previousBlockX].GetZ(
-									previousX & 0xf,
-									y & 0xf);
+							else {
+								lowCoordinate = y & 0xf;
+								lowBlock = 0;
+								ground = m_ground.GetGroundCell(nextBlock, currentBlockY);
+								collision = ground->GetZ(lowBlock, lowCoordinate);
 							}
-							if (currentZ + 0xf >= previousZ) {
+							nextBlock = (int) (x - 9) >> 4;
+							if (((((int) (x - 9) < 0) || ((int) y < 0)) ||
+								 ((m_ground.m_width <= nextBlock) || m_ground.m_height <= currentBlockY))) {
+								z = 0;
+							}
+							else {
+								ground = m_ground.m_ground + m_ground.m_width * currentBlockY + nextBlock;
+								z = ground->GetZ((x - 9) & 0xf, y & 0xf);
+							}
+							if (z <= collision + 0xf) {
 								*walkBits |= 0x80;
 							}
-							if (previousZ + 0xf >= currentZ) {
+							if (collision <= z + 0xf) {
 								*walkBits |= 8;
 							}
 						}
 					}
 
-					walkBits++;
 					x += 0x10;
 					blockX++;
-				}
+					walkBits++;
+				} while (blockX < m_walkWidth);
 			}
 			y += 0x10;
 			blockY++;
-		}
+		} while (blockY < m_walkHeight);
 	}
 }
 

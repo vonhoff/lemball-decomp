@@ -11,11 +11,7 @@
 // FUNCTION: LEMBALL 0x0047af30
 FileConnect::FileConnect()
 {
-	m_message.Initialise();
-	m_message.m_payloadCapacity = 3;
-	m_message.m_openCount = 0;
-
-	FileCommonSocket::m_unk0x08 = m_message.m_payloadCapacity;
+	FileCommonSocket::m_unk0x08 = 3;
 	FileReadSocket::m_file = new Headers(FileCommonSocket::m_unk0x08);
 	FileWriteSocket::m_file = new Headers(FileCommonSocket::m_unk0x08);
 	FileReadSocket::m_unk0x04 = m_message.m_payloadCapacity;

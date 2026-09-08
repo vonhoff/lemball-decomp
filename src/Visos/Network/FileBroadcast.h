@@ -12,7 +12,7 @@
 // VTABLE: LEMBALL 0x0049a998 WriteSocket view
 // VTABLE: LEMBALL 0x0049a9c8 BaseCommonSocket view
 // VTABLE: LEMBALL 0x0049a9d8 primary Broadcast view
-class FileBroadcast : public Broadcast, public FileOpenManagement {
+class FileBroadcast : public FileOpenManagement, public Broadcast {
 public:
 	FileBroadcast();
 	bool ReadPortInfo();
