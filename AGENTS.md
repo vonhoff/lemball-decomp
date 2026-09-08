@@ -50,7 +50,7 @@ ALWAYS prefer MCP graph tools over grep/glob/file-search for code discovery.
 
 ## Build and source rules
 
-Use MSVC 4.00 with `/O2 /Ob1 /Oy /G4`. Do not use C++11 or newer, RTTI, exceptions, or inline assembly. Keep one primary class per `.h` and `.cpp`. Keep functions in ascending original x86 address order. Use `RES_*` from `src/Visos/Resources/Manifest.h` and preserve its values.
+Do not use inline assembly. Keep one primary class per `.h` and `.cpp`. Keep functions in ascending original x86 address order. Use `RES_*` from `src/Visos/Resources/Manifest.h` and preserve its values.
 
 Use `undefined`, `undefined2`, and `undefined4` for unknown-width values. Do not guess signedness. Prefer named members over raw offsets and vbptr operations.
 
