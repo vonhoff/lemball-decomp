@@ -3172,12 +3172,14 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 	{
 		unsigned short stateDepth = (unsigned short) p_primitive->m_state;
 		Remap* remap = p_primitive->m_remap;
+		int primitiveY = (int) p_primitive->m_y;
+		int primitiveX = (int) p_primitive->m_x;
 
 		if ((int) p_zrle->m_height * (int) p_zrle->m_width == 0) {
 			return;
 		}
 		{
-			VsRect dest((short) p_primitive->m_x, (short) p_primitive->m_y, (VsSize*) &p_zrle->m_width);
+			VsRect dest((short) primitiveX, (short) primitiveY, (VsSize*) &p_zrle->m_width);
 			if ((flags & 0x400) == 0) {
 				((VsPoint*) &dest.m_x)->AddInPlace((VsPoint*) &p_zrle->m_x);
 			}
