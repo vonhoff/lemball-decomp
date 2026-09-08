@@ -18,6 +18,7 @@
 #include "../../Visos/Graphics/PopActive.h"            // complete type
 #include "../../Visos/Graphics/PushActive.h"           // complete type
 #include "../../Visos/Graphics/ReceiveWindowState.h"   // complete type
+#include "../../Visos/Graphics/ScreenScroll.h"         // complete type
 #include "../../Visos/Graphics/SolidRect.h"            // complete type
 
 // SIZE 0x2428
@@ -235,9 +236,7 @@ private:
 	unsigned short m_groundHitMode;                 // 0x218c
 	undefined m_pad0x218e[2];                       // 0x218e
 	SolidRect m_solidRect[1];                       // 0x2190
-	DrawingMark m_drawingMarkForObjects;            // 0x21a0
-	VsPoint m_drawingMarkPosition;                  // 0x21a4
-	VsRect m_drawingMarkRect;                       // 0x21a8
+	ScreenScroll m_drawingMarkForObjects;           // 0x21a0
 	CopyColourToBackBuff m_copyColourToBackBuff;    // 0x21b0
 	CopyToBackBuff m_copyToBackBuff;                // 0x21c0
 	CopyToBackBuff m_scrollCopyToBackBuffs[2];      // 0x21d0

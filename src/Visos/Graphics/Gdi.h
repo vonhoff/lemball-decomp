@@ -19,6 +19,7 @@ public:
 	friend class CopyColourToBackBuff;
 	friend class CopyToBackBuff;
 	friend class DrawingMark;
+	friend class ScreenScroll;
 	friend class Line;
 	friend class PopActive;
 	friend class PushActive;

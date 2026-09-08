@@ -6,7 +6,6 @@
 
 // SIZE 0x04
 // VTABLE: LEMBALL 0x00496c98
-// A second original construction table exists at 0x00496e40.
 class DrawingMark : public Primitive {
 public:
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
@@ -15,9 +14,6 @@ public:
 };
 
 // SYNTHETIC: LEMBALL 0x00432320
-// DrawingMark::`scalar deleting destructor'
-
-// SYNTHETIC: LEMBALL 0x00439650
 // DrawingMark::`scalar deleting destructor'
 
 #endif
