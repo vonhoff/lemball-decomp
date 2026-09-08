@@ -21,6 +21,8 @@ public:
 	void Trigger(int p_index, int p_delay);
 	void Triggered(Mine* p_mine);
 
+	friend class Ai;
+
 private:
 	Ai* m_ai;             // 0x30
 	Mine* m_mines;        // 0x34

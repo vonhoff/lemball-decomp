@@ -21,6 +21,8 @@ public:
 	void Restart();
 	void Switch(swMessage p_message, int p_id);
 
+	friend class Ai;
+
 private:
 	Ai* m_ai;       // 0x30
 	int m_count;    // 0x34

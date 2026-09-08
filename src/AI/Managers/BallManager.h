@@ -14,6 +14,8 @@ public:
 	void Restart();
 	~BallManager();
 
+	friend class Ai;
+
 private:
 	Ai* m_ai;          // 0x00
 	Ball** m_balls;    // 0x04

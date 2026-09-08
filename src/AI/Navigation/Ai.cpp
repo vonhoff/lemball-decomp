@@ -5,9 +5,14 @@
 #include "../Groups/EnemyGroupManager.h"
 #include "../Groups/PlayerLemmingGroupManager.h"
 #include "../Groups/SheepGroupManager.h"
+#include "../Managers/BallManager.h"
 #include "../Managers/BulletManager.h"
 #include "../Managers/DoorManager.h"
+#include "../Managers/LaserManager.h"
 #include "../Managers/LiftManager.h"
+#include "../Managers/MineManager.h"
+#include "../Managers/RocketManager.h"
+#include "../Managers/SlinkyManager.h"
 #include "../Managers/TrampolineManager.h"
 #include "../Managers/TrapDoorManager.h"
 #include "../Objects/PlayerLemming.h"
@@ -15,9 +20,28 @@
 #include "NodeManager.h"
 
 // 68K 0x1060013a __ct__3CAIFP5CGame
-// STUB: LEMBALL 0x00410c10
+// FUNCTION: LEMBALL 0x00410c10
 Ai::Ai(Game* p_arg0)
 {
+	m_collisionPoint.m_x = 0;
+	m_collisionPoint.m_y = 0;
+	m_collisionPoint.m_z = 0;
+	m_unk0x134[0] = 0;
+	m_unk0x134[1] = 0;
+	m_unk0x134[2] = 0;
+	m_unk0x134[3] = 0xffffffff;
+	m_unk0x134[4] = 0xffffffff;
+	m_unk0x134[5] = 0xffffffff;
+	m_objectCount = 0;
+	m_objectCapacity = 100;
+	m_objects = new GameObject*[100];
+	for (int i = 0; i < m_objectCapacity; i++) {
+		m_objects[i] = 0;
+	}
+	m_game = p_arg0;
+	m_initialised = 0;
+	g_wObjectCount = 0;
+	Restart();
 }
 
 // 68K 0x10601170 Start__3CAIFv
@@ -52,9 +76,41 @@ void Ai::SetPlayerIDs()
 }
 
 // 68K 0x10601772 DecideAnimsRequired__3CAIFv
-// STUB: LEMBALL 0x00412100
+// FUNCTION: LEMBALL 0x00412100
 void Ai::DecideAnimsRequired()
 {
+	int count = (unsigned int) g_wObjectCount;
+	int i = 0;
+	for (;;) {
+		if (i >= count) {
+			break;
+		}
+		GameObject* object = g_pObjects[(unsigned short) i];
+		if (object != 0 && object->m_objectType != (eObjectType) 0xffff) {
+			SetObjectRequired(object->m_objectType, 1);
+		}
+		i++;
+	}
+	if (m_ballManager->m_activeCount == 0) {
+		SetObjectRequired((eObjectType) 9, 0);
+	}
+	if (m_doorManager->m_count == 0) {
+		SetObjectRequired((eObjectType) 0x1a, 0);
+		SetObjectRequired((eObjectType) 0x19, 0);
+	}
+	if (m_laserManager->m_count == 0) {
+		SetObjectRequired((eObjectType) 0x2f, 0);
+		SetObjectRequired((eObjectType) 0x1e, 0);
+	}
+	if (m_mineManager->m_count == 0) {
+		SetObjectRequired((eObjectType) 0x13, 0);
+	}
+	if (m_rocketManager->m_count == 0) {
+		SetObjectRequired((eObjectType) 0x20, 0);
+	}
+	if (m_slinkyManager->m_count == 0) {
+		SetObjectRequired((eObjectType) 0x35, 0);
+	}
 }
 
 // 68K 0x106018b4 AddTime__3CAIFi

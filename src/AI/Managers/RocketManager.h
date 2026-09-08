@@ -18,6 +18,8 @@ public:
 	void Process();
 	void Restart();
 
+	friend class Ai;
+
 private:
 	int m_capacity;    // 0x30
 	int m_count;       // 0x34

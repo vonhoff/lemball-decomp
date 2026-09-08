@@ -18,6 +18,8 @@ public:
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 
+	friend class Ai;
+
 private:
 	int m_capacity;  // 0x30
 	int m_count;     // 0x34

@@ -15,6 +15,8 @@ public:
 	void Restart();
 	~SlinkyManager();
 
+	friend class Ai;
+
 private:
 	Ai* m_ai;           // 0x00
 	Slinky* m_slinkies; // 0x04
