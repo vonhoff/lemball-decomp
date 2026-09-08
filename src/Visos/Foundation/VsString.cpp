@@ -43,7 +43,10 @@ int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 		maxLength--;
 	}
 
-	return 0;
+	if (maxLength == 0) {
+		return 0;
+	}
+	return (int) *p_left - (int) *p_right;
 }
 
 // 68K 0x1021429c vsLtoa__FlPci
