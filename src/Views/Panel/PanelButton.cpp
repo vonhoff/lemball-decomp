@@ -81,9 +81,32 @@ void PanelButton::DrawButton()
 }
 
 // 68K 0x10b0d146 OnPaint__12CPanelButtonFRC7CVSRect
-// STUB: LEMBALL 0x004429b0
+// FUNCTION: LEMBALL 0x004429b0
 void PanelButton::OnPaint(const VsRect& p_rect)
 {
+	PanelLemming* panelLemming = m_lemming;
+
+	if (panelLemming->m_lemming->m_ammoCount != m_lastAmmo) {
+		m_forceDrawCount = 1;
+		m_lastAmmo = panelLemming->m_lemming->m_ammoCount;
+	}
+	if (panelLemming->m_inventoryCount != m_inventoryCount) {
+		m_forceDrawCount = 1;
+		m_inventoryCount = panelLemming->m_inventoryCount;
+	}
+	if ((unsigned int) (panelLemming->m_lemming->m_action == 8) != m_unavailable) {
+		m_forceDrawCount = 1;
+		m_unavailable = !m_unavailable;
+	}
+	if ((unsigned int) panelLemming->m_lemming->HasObject((eObjectType) 0xc) != m_alternatePlayer) {
+		m_forceDrawCount = 1;
+		m_alternatePlayer = !m_alternatePlayer;
+	}
+	if (m_lemming->m_balloonType != m_lastBalloon) {
+		m_forceDrawCount = 1;
+		m_lastBalloon = m_lemming->m_balloonType;
+	}
+	DepressedButton::OnPaint(p_rect);
 }
 
 // 68K 0x10b0d262 OnReleased__12CPanelButtonF12BUTTON_FLAGS

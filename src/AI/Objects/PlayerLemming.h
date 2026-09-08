@@ -65,6 +65,7 @@ public:
 	void SetGroup(PlayerLemmingGroup* p_arg0);
 	void SetGroup(unsigned int p_arg0);
 	void SetGroupLeader(unsigned int p_arg0);
+	friend class PanelButton;
 
 private:
 	unsigned int m_sfxChanged;                                 // 0x164
