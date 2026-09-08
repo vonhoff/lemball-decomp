@@ -2,6 +2,7 @@
 
 #include "../../AI/Navigation/Ai.h"
 #include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Graphics/DepressedButton.h"
 #include "../Display/C2D.h"
 #include "../Sound/SoundView.h"
 #include "Panel.h"
@@ -38,7 +39,7 @@ void PanelPauseButton::DrawButton()
 // FUNCTION: LEMBALL 0x00442270
 void PanelPauseButton::OnPaint(const VsRect& p_rect)
 {
-	GraphicButton::OnPaint(p_rect);
+	reinterpret_cast<DepressedButton*>(this)->DepressedButton::OnPaint(p_rect);
 }
 
 // 68K 0x10b0c67e OnPressed__17CPanelPauseButtonF12BUTTON_FLAGS
