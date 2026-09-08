@@ -508,8 +508,9 @@ void Surface::Blit(class ClipRect* p_clipRect)
 			clip->m_x = p_clipRect->m_right;
 		}
 		clipRight = clip->m_x;
-		if ((short) (clip->m_width + clipRight) < (short) (p_clipRect->m_right + p_clipRect->m_left)) {
-			clip->m_width = (short) ((p_clipRect->m_left - clipRight) + p_clipRect->m_right);
+		short clipLeft = p_clipRect->m_left;
+		if ((short) (clip->m_width + clipRight) < (short) (p_clipRect->m_right + clipLeft)) {
+			clip->m_width = (short) ((clipLeft - clipRight) + p_clipRect->m_right);
 		}
 		if (p_clipRect->m_bottom < clip->m_y) {
 			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bottom));
