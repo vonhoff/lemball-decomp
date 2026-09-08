@@ -444,13 +444,11 @@ void NetworkOptionsDrawer::DrawText()
 			if (myPeer != 0 && *myPeer != 0) {
 				char trimmed[21];
 				int len = 0x14;
-				int measuredWidth;
 				strncpy(trimmed, myPeer, 0x14);
 				do {
 					trimmed[len] = 0;
 					len--;
-					measuredWidth = font->GetSize(&size, trimmed, 0x20)->m_width;
-				} while (((int*) m_layoutTable)[0x98 / 4] < measuredWidth);
+				} while (((int*) m_layoutTable)[0x98 / 4] < font->GetSize(&size, trimmed, 0x20)->m_width);
 
 				String lowerPeer(trimmed);
 				lowerPeer.Lower();
