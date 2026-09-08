@@ -20,7 +20,6 @@ public:
 	virtual void ForceProcess();                                                       // vtable+0x20
 	virtual void Initialise();                                                         // vtable+0x0c
 	virtual void UnInitialise();                                                       // vtable+0x10
-	virtual ~FileNetwork();                                                            // vtable+0x04
 	void ResetTimer(unsigned int p_interval);
 	void Setup(const char* p_peerName, const char* p_path);
 

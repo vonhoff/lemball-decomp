@@ -144,11 +144,6 @@ void* FileNetwork::GetNewBroadcast()
 	return 0;
 }
 
-// 68K 0x10107a3a __dt__12CFileNetworkFv
-FileNetwork::~FileNetwork()
-{
-}
-
 // GLOBAL: LEMBALL 0x004a2260
 unsigned int g_dwFileNetworkThreadId = 0x12345678;
 
