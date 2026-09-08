@@ -1091,7 +1091,7 @@ void Surface::Blit(CopyColourToBackBuff* p_fill)
 	}
 	startX = p_fill->m_x;
 	startY = p_fill->m_y;
-	int color = p_fill->m_colour;
+	int color = reinterpret_cast<int&>(p_fill->m_colour);
 	if (height <= 0) {
 		return;
 	}
