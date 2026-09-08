@@ -129,8 +129,8 @@ PasswordDrawer::PasswordDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect&
 // FUNCTION: LEMBALL 0x00451320
 void PasswordDrawer::Load()
 {
-	Prims* primitiveBundle;
 	int primitiveCount;
+	int primitiveIndex;
 	int gridStartX;
 	int gridX;
 	int gridY;
@@ -148,18 +148,18 @@ void PasswordDrawer::Load()
 		m_buttonAnimIds = g_dwPasswordButtonAnimIdsFull;
 		m_animationId = RES_NEWFRONT_ANIMS_HIRES_PASSWORD_HILITE;
 	}
+	primitiveIndex = 0;
 	primitiveCount = 1;
-	primitiveBundle = &m_primitiveBundle;
 	do {
 		ResBitmap* background = m_backgroundBitmap;
 		int* layout = (int*) m_layout;
 		int layoutY = layout[1];
-		primitiveBundle->m_primitive.m_x = (short) layout[0];
-		primitiveBundle->m_primitive.m_y = (short) layoutY;
-		primitiveBundle->m_primitive.m_resource = background;
-		primitiveBundle->m_primitive.m_flags = 0x800;
-		primitiveBundle->m_primitive.m_remap = 0;
-		primitiveBundle++;
+		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_x = (short) layout[0];
+		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_y = (short) layoutY;
+		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_resource = background;
+		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_flags = 0x800;
+		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_remap = 0;
+		primitiveIndex++;
 	} while (--primitiveCount != 0);
 	AnimsManager::LoadAnims(m_animationId);
 	int* keyMap = g_passwordKeyMap;
