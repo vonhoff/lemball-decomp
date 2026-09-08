@@ -18,10 +18,7 @@ char g_szButton[] = "Button";
 GraphicButton::GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3)
 	: PvButton(p_arg1)
 {
-	VsRect createRect;
 	HotAreaHandler* area;
-	PushActive* push;
-	int remaining;
 
 	m_graphicHeight = 0;
 	m_graphicWidth = 0;
@@ -29,29 +26,17 @@ GraphicButton::GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned lon
 	m_graphicOffsetX = 0;
 	m_state = 0;
 	m_enabled = 0;
-	remaining = 0;
-	push = (PushActive*) m_statRegion;
-	do {
-		new (push) PushActive();
-		remaining = remaining - 1;
-		push = push + 1;
-	} while (-1 < remaining);
 	m_alignmentFlags = p_arg3;
 	m_animationId = p_arg2;
 	Initialise();
 	m_buttonX = p_arg0.m_x;
 	m_buttonY = p_arg0.m_y;
-	area = this;
-	createRect.m_width = area->m_width;
-	createRect.m_height = area->m_height;
-	createRect.m_x = p_arg0.m_x;
-	createRect.m_y = p_arg0.m_y;
+	VsRect createRect(p_arg0.m_x, p_arg0.m_y, HotAreaHandler::m_width, HotAreaHandler::m_height);
 	Create(createRect, p_arg1, g_szButton);
-	area->m_x = (short) (area->m_x + m_relativeTopLeft.m_x);
-	area->m_y = (short) (area->m_y + m_relativeTopLeft.m_y);
-	if (m_ownerWindow != 0 && m_ownerWindow->m_hotAreaList != 0) {
-		m_ownerWindow->m_hotAreaList->AddToList(area);
-	}
+	HotAreaHandler::m_x = (short) (HotAreaHandler::m_x + m_relativeTopLeft.m_x);
+	HotAreaHandler::m_y = (short) (HotAreaHandler::m_y + m_relativeTopLeft.m_y);
+	area = this;
+	m_ownerWindow->m_hotAreaList->AddToList(area);
 }
 
 // 68K 0x1021068c Initialise__14CGraphicButtonFv

@@ -8,7 +8,14 @@
 // VTABLE: LEMBALL 0x00496da0
 class CopyToBackBuff : public Primitive {
 public:
-	CopyToBackBuff();
+	// 68K 0x1010a668 __ct__15CCopyToBackBuffFv
+	// FUNCTION: LEMBALL 0x00439550
+	CopyToBackBuff() : m_field0a(0)
+	{
+		m_field08 = 0;
+		m_field0e = 0;
+		m_field0c = 0;
+	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~CopyToBackBuff() {}     // vtable+0x00

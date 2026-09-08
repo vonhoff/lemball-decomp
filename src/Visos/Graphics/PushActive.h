@@ -8,10 +8,12 @@
 // VTABLE: LEMBALL 0x00496e70
 class PushActive : public Primitive {
 public:
-	PushActive();
+	// 68K 0x101174dc __ct__11CPushActiveFv
+	// FUNCTION: LEMBALL 0x004698b0
+	PushActive() { m_activeMarker = 0; }
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~PushActive() {} // vtable+0x00
+	virtual ~PushActive() {}         // vtable+0x00
 
 	friend class BaseCursor;
 

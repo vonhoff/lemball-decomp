@@ -8,7 +8,14 @@
 // VTABLE: LEMBALL 0x00496d38
 class Line : public Primitive {
 public:
-	Line();
+	// 68K 0x10115cd8 __ct__5CLineFv
+	// FUNCTION: LEMBALL 0x004394c0
+	Line() : m_y1(0)
+	{
+		m_x1 = 0;
+		m_y2 = 0;
+		m_x2 = 0;
+	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~Line() {}               // vtable+0x00

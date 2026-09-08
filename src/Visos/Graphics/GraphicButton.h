@@ -2,7 +2,8 @@
 #define LEMBALL_VISOS_GRAPHICS_GRAPHICBUTTON_H
 
 #include "../../Common.h"
-#include "PvButton.h" // complete type
+#include "PushActive.h" // complete type
+#include "PvButton.h"   // complete type
 
 // SIZE 0x130
 // VTABLE: LEMBALL 0x00499748 GWnd
@@ -41,7 +42,7 @@ private:
 	ResAnim* m_animation;           // 0x11c
 	unsigned int m_frame;           // 0x120
 	Primitive* m_primitive;         // 0x124
-	undefined m_statRegion[8];      // 0x128
+	PushActive m_statRegion[1];     // 0x128
 };
 
 // SYNTHETIC: LEMBALL 0x004698c0

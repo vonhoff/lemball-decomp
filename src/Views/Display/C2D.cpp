@@ -13,6 +13,7 @@
 #include "../../Map/Base/Map.h"
 #include "../../Network/Game/NetworkManager.h"
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/ObjSq.h"
 #include "../../Visos/Foundation/TextManager.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/BasePalManager.h"
@@ -28,7 +29,6 @@
 #include "../Panel/Panel.h"
 #include "../Pause/PauseWindow.h"
 #include "../Sound/SoundView.h"
-#include "../Target/TargetObjectClipCell.h"
 #include "../Target/TargetObjectClipGrid.h"
 #include "../Target/TargetSpriteGroundLookup.h"
 #include "Main2DDisplay.h"
@@ -41,76 +41,50 @@
 C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4) : HotAreaHandler(p_arg4)
 {
 	void* storage;
-	ViewData* viewData;
 	TargetObjectClipGrid* objectClipGrid;
-	TargetObjectClipCell* cells;
 	unsigned int cellCount;
-	unsigned int i;
+	int groundWidth;
+	int groundHeight;
 
-	m_mouseButtonDown = 0;
-	m_cursorState = 0;
+	m_frameCount = 0;
+	m_frameTime = 0;
 	m_paused = 0;
 	m_pauser = 0;
 	m_connectionTimeoutActive = 0;
-	m_frameCount = 0;
-	m_frameTime = 0;
-	if (g_nTestAllLevels != 0) {
-		m_testLevel = 0;
-	}
-	m_zBufferEnabled = 1;
-	m_externalEnabled = 1;
-	m_optionSelection = 0;
 	m_cursorBlinkPhase = 0;
-	m_demoTextPosition.m_x = 0;
-	m_demoTextPosition.m_y = 0;
-	m_spriteGroundTranslationPoint.m_x = 0;
-	m_spriteGroundTranslationPoint.m_y = 0;
-	m_cursorGamePoint.m_x = 0;
-	m_cursorGamePoint.m_y = 0;
-	m_copyColourToBackBuff.m_colour = 0;
-	m_copyColourToBackBuff.m_width = 0;
-	m_copyColourToBackBuff.m_height = 0;
-	m_copyColourToBackBuff.m_x = 0;
-	m_copyColourToBackBuff.m_y = 0;
-	m_drawingMarkPosition.m_x = 0;
-	m_drawingMarkPosition.m_y = 0;
+	m_pad0x920 = 0;
+	m_mouseButtonDown = 0;
+	m_zBufferEnabled = 1;
 	InitSpriteGroundLu();
 	m_groundHitMode = 0;
 	m_pauseWindow = 0;
+	m_optionSelection = 0;
 	m_cursorState = 0;
 	m_returnState = 2;
 	m_cursorTimestamp = g_dwSimulationTimestamp;
+	if (g_nTestAllLevels != 0) {
+		m_testLevel = 0;
+	}
 	m_ai = p_arg1;
 	m_gdi = p_arg2;
 	m_display = p_arg0;
 	m_map = p_arg3;
-	p_arg3->m_orientation = 0;
-	m_zoom = (unsigned short) p_arg0->m_zoom;
-	m_groundWidth = (unsigned short) p_arg3->m_ground.m_width;
-	m_groundHeight = (unsigned short) p_arg3->m_ground.m_height;
 	m_viewOriginX = 0;
 	m_viewOriginY = 0;
 	m_unk0x90c = 0;
+	p_arg3->m_orientation = 0;
 	m_groupCount = 0;
 	m_quitRequested = 0;
 	m_groupSelectionCount = 0;
 	m_groupingActive = 0;
-	m_lemmingManager = p_arg1->m_aiQueue;
-	m_clipConfigured = 1;
-	m_viewDataCount = 0;
-	m_primitiveCount = 0;
-	m_spriteGroundLookup = 0;
-	m_panel = 0;
-	m_objectClipGrid = 0;
-	m_pad0x8c8 = 0;
-	m_pad0x8cc = 0;
-	m_unk0xc90 = 0;
+	m_externalEnabled = 1;
+	m_lemmingManager = m_ai->m_aiQueue;
 
-	p_arg0->m_hotAreaList->AddToList(this);
+	m_display->m_hotAreaList->AddToList(this);
 
 	storage = operator new(0xb4);
 	if (storage != 0) {
-		m_lemmingAnims = new (storage) LemmingAnimsManager(p_arg2, p_arg0, p_arg1);
+		m_lemmingAnims = new (storage) LemmingAnimsManager(m_gdi, m_display, m_ai);
 	}
 	else {
 		m_lemmingAnims = 0;
@@ -130,16 +104,7 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 	m_clipConfigured = 1;
 	m_viewDataCount = 0;
 
-	viewData = (ViewData*) operator new(0x3b60);
-	if (viewData != 0) {
-		for (i = 0; i < 0xc8; i++) {
-			new (viewData + i) ViewData();
-		}
-		m_viewData = viewData;
-	}
-	else {
-		m_viewData = 0;
-	}
+	m_viewData = new ViewData[200];
 
 	m_zBuffer = (unsigned char*) operator new(0x800);
 	g_pMasterInputQueue->Attach(this, 0);
@@ -153,6 +118,8 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 		m_padToButton = 0;
 	}
 
+	m_unk0xc90 = 0;
+	m_primitiveCount = 0;
 	SetUpRemapPalettes();
 	m_textManager->LoadFont(0x115);
 	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
@@ -162,36 +129,47 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 	m_spriteGroundLookup = 0;
 	objectClipGrid = (TargetObjectClipGrid*) operator new(0x1a4);
 	if (objectClipGrid != 0) {
-		objectClipGrid->m_cellWidth = 0x10;
-		objectClipGrid->m_cellHeight = 0x10;
+		groundHeight = m_map->m_ground.m_height;
+		groundWidth = m_map->m_ground.m_width;
 		objectClipGrid->m_touchedCount = 0;
 		objectClipGrid->m_cells = 0;
+		objectClipGrid->m_cellWidth = 0x10;
+		objectClipGrid->m_cellHeight = 0x10;
+		if (objectClipGrid->m_cells != 0) {
+			operator delete(objectClipGrid->m_cells);
+			objectClipGrid->m_cells = 0;
+		}
 		objectClipGrid->m_width =
-			(short) (((p_arg3->m_ground.m_width << 4) + objectClipGrid->m_cellWidth - 1) / objectClipGrid->m_cellWidth);
-		objectClipGrid->m_height = (short) (((p_arg3->m_ground.m_height << 4) + objectClipGrid->m_cellHeight - 1) /
-											objectClipGrid->m_cellHeight);
+			(short) (((groundWidth << 4) + objectClipGrid->m_cellWidth - 1) / objectClipGrid->m_cellWidth);
+		objectClipGrid->m_height =
+			(short) (((groundHeight << 4) + objectClipGrid->m_cellHeight - 1) / objectClipGrid->m_cellHeight);
 		cellCount = (unsigned int) (int) objectClipGrid->m_width * (unsigned int) (int) objectClipGrid->m_height;
 		objectClipGrid->m_cellCount = cellCount;
-		cells = (TargetObjectClipCell*) operator new(cellCount * 0xa);
-		if (cells != 0) {
-			for (i = 0; i < cellCount; i++) {
-				cells[i].m_count = 0;
-			}
-			objectClipGrid->m_cells = cells;
-		}
+		objectClipGrid->m_cells = new ObjSq[cellCount];
+		m_objectClipGrid = objectClipGrid;
 	}
-	m_objectClipGrid = objectClipGrid;
+	else {
+		m_objectClipGrid = 0;
+	}
 
 	m_panel = 0;
+	m_pad0x8c8 = 0;
+	m_pad0x8cc = 0;
+	m_groundWidth = (unsigned short) m_map->m_ground.m_width;
+	m_groundHeight = (unsigned short) m_map->m_ground.m_height;
 	m_viewSize.m_x = p_arg4.m_width;
 	m_viewSize.m_y = p_arg4.m_height;
-	m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) p_arg0->m_zoom);
-	m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) p_arg0->m_zoom);
+	m_zoom = (unsigned short) m_display->m_zoom;
+	m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) (unsigned int) m_zoom);
+	m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) (unsigned int) m_zoom);
 	m_clipSize.m_x = m_viewSize.m_x;
 	m_clipSize.m_y = m_viewSize.m_y;
-	m_score = p_arg1->m_score;
-	m_levelScore = p_arg1->m_score;
 	m_scoreTimestamp = g_dwGameTick;
+	{
+		int score = m_ai->m_score;
+		m_score = score;
+		m_levelScore = score;
+	}
 }
 
 // 68K 0x10b06e3e __dt__3C2DFv

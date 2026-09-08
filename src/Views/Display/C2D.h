@@ -147,7 +147,9 @@ private:
 	unsigned char* m_remapTables[4];                // 0x54
 	BaseRemap* m_remaps[5];                         // 0x64
 	TextManager* m_textManager;                     // 0x78
-	undefined m_viewDataPrimitives[0xe4];           // 0x7c
+	ViewData m_unk0x7c;                             // 0x7c
+	ViewData m_unk0xc8;                             // 0xc8
+	ViewData m_unk0x114;                            // 0x114
 	unsigned short m_zoom;                          // 0x160
 	unsigned short m_groundWidth;                   // 0x162
 	unsigned short m_groundHeight;                  // 0x164
@@ -167,7 +169,7 @@ private:
 	undefined m_pad0x8d0[2];                        // 0x8d0
 	VsRect m_spriteGroundLookupRectA;               // 0x8d2
 	VsRect m_spriteGroundLookupRectB;               // 0x8da
-	undefined m_pad0x8e2[4];                        // 0x8e2
+	VsPoint m_unk0x8e2;                             // 0x8e2
 	VsPoint m_demoTextPosition;                     // 0x8e6
 	undefined m_pad0x8ea[2];                        // 0x8ea
 	unsigned int m_zBufferEnabled;                  // 0x8ec
@@ -182,7 +184,8 @@ private:
 	Map* m_map;                                     // 0x914
 	int m_viewOriginX;                              // 0x918
 	int m_viewOriginY;                              // 0x91c
-	undefined m_pad0x920[0xc];                      // 0x920
+	undefined4 m_pad0x920;                          // 0x920
+	undefined m_pad0x924[8];                        // 0x924
 	PadToButton* m_padToButton;                     // 0x92c
 	TargetSpriteGroundLookup* m_spriteGroundLookup; // 0x930
 	TargetObjectClipGrid* m_objectClipGrid;         // 0x934
@@ -208,7 +211,8 @@ private:
 	int m_previousPauseMessage;                     // 0x98c
 	DrawingMark m_drawingMark;                      // 0x990
 	unsigned int m_clipConfigured;                  // 0x994
-	Line m_linesAt998[2];                           // 0x998
+	Line m_lineAt998;                               // 0x998
+	Line m_lineAt9a8;                               // 0x9a8
 	VsRect m_spriteGroundTranslatedPointRect;       // 0x9b8
 	Line m_lines[4];                                // 0x9c0
 	BigBitmap m_bigBitmaps[4];                      // 0xa00
@@ -230,7 +234,7 @@ private:
 	unsigned int m_primitiveCount;                  // 0x2188
 	unsigned short m_groundHitMode;                 // 0x218c
 	undefined m_pad0x218e[2];                       // 0x218e
-	SolidRect m_solidRect;                          // 0x2190
+	SolidRect m_solidRect[1];                       // 0x2190
 	DrawingMark m_drawingMarkForObjects;            // 0x21a0
 	VsPoint m_drawingMarkPosition;                  // 0x21a4
 	VsRect m_drawingMarkRect;                       // 0x21a8

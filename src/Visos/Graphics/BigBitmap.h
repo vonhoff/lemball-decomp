@@ -8,7 +8,14 @@
 // VTABLE: LEMBALL 0x00496e80
 class BigBitmap : public Primitive {
 public:
-	BigBitmap();
+	// 68K 0x1011bcf2 __ct__10CBigBitmapFv
+	// FUNCTION: LEMBALL 0x004394f0
+	BigBitmap() : m_y(0)
+	{
+		m_x = 0;
+		m_height = 0;
+		m_width = 0;
+	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~BigBitmap();            // vtable+0x00

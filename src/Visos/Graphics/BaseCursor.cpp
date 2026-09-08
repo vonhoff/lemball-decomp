@@ -23,23 +23,14 @@ unsigned char g_cursorFocusFlag = 0;
 // FUNCTION: LEMBALL 0x0046aec0
 BaseCursor::BaseCursor()
 {
-	m_position.m_y = 0;
-	m_position.m_x = 0;
-	m_hotspot.m_y = 0;
-	m_hotspot.m_x = 0;
-	m_pushActive.m_activeMarker = 0;
 	m_maxSpeed = (int) 0xaa55aa55;
 	m_acceleration = (int) 0xaa55aa55;
 	m_fixedX = (int) 0xaa55aa55;
 	m_fixedY = (int) 0xaa55aa55;
 	m_velocityX = (int) 0xaa55aa55;
-	m_bounds.m_height = 0;
 	m_velocityY = (int) 0xaa55aa55;
-	m_bounds.m_width = 0;
 	m_directionX = (int) 0xaa55aa55;
-	m_bounds.m_y = 0;
 	m_directionY = (int) 0xaa55aa55;
-	m_bounds.m_x = 0;
 	Initialise();
 }
 

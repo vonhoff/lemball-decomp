@@ -2,12 +2,6 @@
 
 #include "Gdi.h"
 
-// 68K 0x1011bcf2 __ct__10CBigBitmapFv
-// STUB: LEMBALL 0x004394f0
-BigBitmap::BigBitmap()
-{
-}
-
 // 68K 0x10101768 __dt__10CBigBitmapFv
 BigBitmap::~BigBitmap()
 {

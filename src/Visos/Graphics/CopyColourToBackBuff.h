@@ -8,6 +8,13 @@
 // VTABLE: LEMBALL 0x00496d90
 class CopyColourToBackBuff : public Primitive {
 public:
+	CopyColourToBackBuff() : m_colour(0)
+	{
+		m_height = 0;
+		m_width = 0;
+		m_y = 0;
+		m_x = 0;
+	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual ~CopyColourToBackBuff(); // vtable+0x00
