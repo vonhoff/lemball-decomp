@@ -208,9 +208,10 @@ FileBroadcast::~FileBroadcast()
 }
 
 // 68K 0x10116874 Closed__14CFileBroadcastFUc
-// STUB: LEMBALL 0x0047bbf0
+// FUNCTION: LEMBALL 0x0047bbf0
 void FileBroadcast::Closed(int p_notifyPeer)
 {
+	Broadcast::Closed(p_notifyPeer);
 }
 
 // GLOBAL: LEMBALL 0x004a2de0
