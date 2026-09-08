@@ -483,7 +483,6 @@ ChangeList* Surface::GetChangeList()
 // FUNCTION: LEMBALL 0x0046cbe0
 void Surface::Blit(class ClipRect* p_clipRect)
 {
-	Surface* parent;
 	VsRect* clip = &m_clipRect;
 	short clipRight;
 
@@ -516,12 +515,14 @@ void Surface::Blit(class ClipRect* p_clipRect)
 			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bottom));
 			clip->m_y = p_clipRect->m_bottom;
 		}
-		if ((short) (clip->m_height + clip->m_y) < (short) (p_clipRect->m_bottom + p_clipRect->m_top)) {
+		short clipBottom = (short) (clip->m_height + clip->m_y);
+		short primitiveBottom = (short) (p_clipRect->m_bottom + p_clipRect->m_top);
+		if (clipBottom < primitiveBottom) {
 			clip->m_height = (short) ((p_clipRect->m_top - clip->m_y) + p_clipRect->m_bottom);
 		}
 	}
-	parent = m_parentSurface;
-	if (parent != (Surface*) g_pGdiHelperTarget && (p_clipRect->m_reserved0c & 0x10000) == 0) {
+	Surface* parent = m_parentSurface;
+	if ((Surface*) g_pGdiHelperTarget != parent && (p_clipRect->m_reserved0c & 0x10000) == 0) {
 		VsRect* parentClip = &parent->m_clipRect;
 		VsRect* childClip = &m_clipRect;
 		clipRight = childClip->m_x;
