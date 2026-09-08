@@ -60,11 +60,19 @@ void Duplicator::Delete()
 	int blockX = (m_position.m_xFixed >> 12) / 16;
 	int blockY = (m_position.m_yFixed >> 12) / 16;
 	if (blockX >= 0) {
-		if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+		if (blockY >= 0) {
+			Map* map = g_pMap;
+			int width = map->m_ground.m_width;
+			if (blockX < width && map->m_ground.m_height > blockY) {
+				map->m_ground.m_ground[blockY * width + blockX].m_collision &= ~1;
+			}
 		}
-		if (blockX >= 0 && --blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+		if (blockX >= 0 && --blockY >= 0) {
+			Map* map = g_pMap;
+			int width = map->m_ground.m_width;
+			if (blockX < width && map->m_ground.m_height > blockY) {
+				map->m_ground.m_ground[blockY * width + blockX].m_collision &= ~1;
+			}
 		}
 	}
 }
