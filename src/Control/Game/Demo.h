@@ -21,6 +21,7 @@ public:
 	void SetDemoMode(int p_enabled);
 
 	friend class PlayerLemming;
+	friend class Ai;
 	friend class Game;
 	friend class C2D;
 	friend void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);

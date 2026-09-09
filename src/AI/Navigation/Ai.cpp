@@ -1,6 +1,9 @@
 #include "Ai.h"
 
+#include "../../Control/Game/Demo.h"
 #include "../../Control/Game/GameStatus.h"
+#include "../../Network/Game/NetworkManager.h"
+#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Base/GameObject.h"
 #include "../Groups/EnemyGroupManager.h"
@@ -46,9 +49,29 @@ Ai::Ai(Game* p_arg0)
 }
 
 // 68K 0x10601170 Start__3CAIFv
-// STUB: LEMBALL 0x00411b10
+// FUNCTION: LEMBALL 0x00411b10
 void Ai::Start()
 {
+	Demo* demo;
+	NetworkManager* networkManager;
+
+	if (m_networkMode != 0) {
+		m_unk0x6c = 1;
+		m_unk0x70 = 0;
+		networkManager = g_pNetworkManager;
+		networkManager->m_desiredGameState = 3;
+		networkManager->m_observedGameState = 0;
+		return;
+	}
+
+	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+		demo = g_pDemo;
+		demo->m_startTime = CurrentMilliTimer();
+		demo->m_duration = 0;
+	}
+
+	GameState((eGameStatus) 2);
+	m_unk0x68 = 1;
 }
 
 // 68K 0x106011ec SendGameState__3CAIF11eGameStates16eGameStateStages
@@ -65,9 +88,63 @@ unsigned int Ai::RemoteGameState(GameStateMessage* p_message)
 }
 
 // 68K 0x1060156a GameState__3CAIF11eGameStatus
-// STUB: LEMBALL 0x00411f20
+// FUNCTION: LEMBALL 0x00411f20
 void Ai::GameState(eGameStatus p_status)
 {
+	if (m_networkMode == 0) {
+		switch (p_status) {
+		case (eGameStatus) 3:
+			g_pGameStatus->m_skillState = 2;
+			m_gameStatus = 3;
+			return;
+		case (eGameStatus) 5:
+			if (g_pGameStatus->m_skillState == 0) {
+				g_pGameStatus->m_skillState = 3;
+			}
+			m_gameStatus = 5;
+			return;
+		case (eGameStatus) 7:
+			g_pGameStatus->m_skillState = 4;
+			m_gameStatus = 5;
+			return;
+		default:
+			m_gameStatus = p_status;
+			return;
+		}
+	}
+	if (m_unk0x6c == 0) {
+		switch (p_status) {
+		case (eGameStatus) 1:
+			m_isSinglePlayer = 0;
+			SendGameState((eGameStates) 0, (eGameStateStages) 0);
+			return;
+		case (eGameStatus) 2:
+			SendGameState((eGameStates) 1, (eGameStateStages) 1);
+			if (m_gameStatus == 2) {
+				m_unk0x6c = 0;
+				return;
+			}
+			break;
+		case (eGameStatus) 3:
+			SendGameState((eGameStates) 2, (eGameStateStages) 0);
+			return;
+		case (eGameStatus) 4:
+			SendGameState((eGameStates) 3, (eGameStateStages) 0);
+			return;
+		case (eGameStatus) 5:
+			if (g_pGameStatus->m_skillState == 5) {
+				SendGameState((eGameStates) 6, (eGameStateStages) 0);
+				return;
+			}
+			SendGameState((eGameStates) 4, (eGameStateStages) 0);
+			return;
+		case (eGameStatus) 7:
+			SendGameState((eGameStates) 7, (eGameStateStages) 0);
+			return;
+		case (eGameStatus) 8:
+			SendGameState((eGameStates) 8, (eGameStateStages) 0);
+		}
+	}
 }
 
 // 68K 0x106016d8 SetPlayerIDs__3CAIFv
