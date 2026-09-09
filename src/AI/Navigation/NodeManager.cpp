@@ -30,35 +30,21 @@ void NodeManager::Restart()
 void NodeManager::Initialise(int p_count)
 {
 	m_count = 0;
-	if (p_count != 0) {
-		if (m_nodes == 0) {
-			int* allocation = (int*) operator new(m_capacity * sizeof(Node) + sizeof(int));
-			if (allocation == 0) {
-				m_nodes = 0;
-			}
-			else {
-				Node* nodes = (Node*) (allocation + 1);
-				*allocation = m_capacity;
-				int i = m_capacity;
-				while (i > 0) {
-					i--;
-					new ((void*) nodes) Node();
-					nodes++;
-				}
-				m_nodes = (Node*) (allocation + 1);
-			}
-		}
-
-		int i = 0;
-		if (m_capacity > 0) {
-			do {
-				m_nodes[i].Restart();
-				i++;
-			} while (i < m_capacity);
-		}
+	if (p_count == 0) {
+		m_nodes = 0;
 		return;
 	}
-	m_nodes = 0;
+	if (m_nodes == 0) {
+		m_nodes = new Node[m_capacity];
+	}
+
+	int i = 0;
+	if (m_capacity > 0) {
+		do {
+			m_nodes[i].Restart();
+			i++;
+		} while (i < m_capacity);
+	}
 }
 
 // 68K 0x106185ee __dt__12CNodeManagerFv
