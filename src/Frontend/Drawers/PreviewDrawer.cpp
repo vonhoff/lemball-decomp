@@ -279,14 +279,11 @@ void PreviewDrawer::DrawBackGround()
 void PreviewDrawer::DrawText()
 {
 	VsSize advance;
-	VsPoint pos;
-	VsSize size;
+	VsSize pos;
 	int* positions;
 	char* line;
 	int count;
-	int* layout;
 	int skill;
-	ResFont* font;
 
 	if (m_drawingBackBuffer != 0) {
 		line = (char*) m_levelNameLines;
@@ -294,11 +291,11 @@ void PreviewDrawer::DrawText()
 		count = 3;
 		do {
 			if (*positions != -1) {
-				pos.m_x = (short) *positions;
-				pos.m_y = (short) positions[1];
+				pos.m_width = (short) *positions;
+				pos.m_height = (short) positions[1];
 				advance.m_height = 0;
 				advance.m_width = 0;
-				m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, line, 0x20, 0);
+				m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, line, 0x20, 0);
 			}
 			line = line + 0x20;
 			positions = positions + 2;
@@ -314,45 +311,51 @@ void PreviewDrawer::DrawText()
 			do {
 				advance.m_height = 0;
 				advance.m_width = 0;
-				layout = (int*) ((char*) m_layout + *positions * 8);
-				pos.m_x = (short) *layout;
-				pos.m_y = (short) layout[1];
+				int* layout = (int*) ((char*) m_layout + *positions * 8);
+				pos.m_width = (short) *layout;
+				pos.m_height = (short) layout[1];
 				positions = positions + 1;
-				m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, (char*) g_szPreviewX, 0x20, 0);
+				m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, (char*) g_szPreviewX, 0x20, 0);
 				count = count - 1;
 			} while (count != 0);
 		}
 
-		layout = (int*) m_layout;
-		if (m_timeText[0] > '9') {
-			advance.m_height = 0;
-			advance.m_width = 0;
-			pos.m_x = (short) layout[0x58 / 4];
-			pos.m_y = (short) layout[0x5c / 4];
-			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, 0);
-		}
-		else {
-			advance.m_height = 0;
-			advance.m_width = 0;
-			pos.m_x = (short) layout[0x58 / 4];
-			pos.m_y = (short) layout[0x5c / 4];
-			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, m_timeText, 0x20, 0);
+		{
+			int* layout = (int*) m_layout;
+			if (m_timeText[0] > '9') {
+				advance.m_height = 0;
+				advance.m_width = 0;
+				pos.m_width = (short) layout[0x58 / 4];
+				pos.m_height = (short) layout[0x5c / 4];
+				m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, 0);
+			}
+			else {
+				advance.m_height = 0;
+				advance.m_width = 0;
+				pos.m_width = (short) layout[0x58 / 4];
+				pos.m_height = (short) layout[0x5c / 4];
+				m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, m_timeText, 0x20, 0);
+			}
 		}
 
 		skill = g_pGameStatus->m_skill;
-		font = m_textManager->GetFont(m_chalkFontId);
-		pos.m_x = (short) layout[0xa0 / 4] - font->GetSize(&size, g_szPreviewSkillNames[skill], 0x20)->m_width / 2;
+		int* skillLayout = (int*) m_layout;
+		int skillY = skillLayout[0xa4 / 4];
+		pos.m_width = (short) (skillLayout[0xa0 / 4] - m_textManager->GetFont(m_chalkFontId)
+															   ->GetSize(&advance, g_szPreviewSkillNames[skill], 0x20)
+															   ->m_width /
+														   2);
 		advance.m_height = 0;
 		advance.m_width = 0;
-		pos.m_y = (short) layout[0xa4 / 4];
-		m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewSkillNames[skill], 0x20, 0);
+		pos.m_height = (short) skillY;
+		m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, g_szPreviewSkillNames[skill], 0x20, 0);
 
 		if (m_teamCount > 4) {
 			advance.m_height = 0;
 			advance.m_width = 0;
-			pos.m_x = (short) layout[0x58 / 4];
-			pos.m_y = (short) layout[0xd4 / 4];
-			m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewNone, 0x20, 0);
+			pos.m_width = (short) ((int*) m_layout)[0x58 / 4];
+			pos.m_height = (short) ((int*) m_layout)[0xd4 / 4];
+			m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, g_szPreviewNone, 0x20, 0);
 		}
 	}
 }
