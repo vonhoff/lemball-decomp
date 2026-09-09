@@ -9,6 +9,8 @@
 // SIZE 0x144
 // 68K 0x101063e4 __dt__14CTCPIPRWSocketFv
 // x86 emits only the synthetic deleting destructor.
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class TcpIpRwSocket : public virtual RwSocket, public virtual TcpIpReadSocket, public virtual TcpIpWriteSocket {
 public:
 	TcpIpRwSocket();
@@ -17,6 +19,7 @@ public:
 	virtual NetworkMessage* ReceiveAcknowledgement();                                  // vtable+0x1c
 	virtual void SendAcknowledgement();                                                // vtable+0x18
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x00471af0 SYMBOL
 // ?SysCloseSocket@TcpIpCommonSocket@@WPPPPPONI@AEHXZ

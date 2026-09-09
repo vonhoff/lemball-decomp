@@ -6,6 +6,8 @@
 #include "OpenCount.h"    // complete type
 
 // SIZE 0x34
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class FileOpenManagement : public virtual FileRwSocket {
 public:
 	bool DecOpenCount();
@@ -18,6 +20,7 @@ private:
 	friend class FileBroadcast;
 	OpenCount m_message; // 0x04
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x0047b9d0
 // FileOpenManagement::`scalar deleting destructor'

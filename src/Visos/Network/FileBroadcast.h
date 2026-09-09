@@ -12,6 +12,8 @@
 // VTABLE: LEMBALL 0x0049a998 WriteSocket view
 // VTABLE: LEMBALL 0x0049a9c8 BaseCommonSocket view
 // VTABLE: LEMBALL 0x0049a9d8 primary Broadcast view
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class FileBroadcast : public FileOpenManagement, public Broadcast {
 public:
 	FileBroadcast();
@@ -33,6 +35,7 @@ private:
 	unsigned int m_portInfoLocked;  // 0x54
 	unsigned int m_lastProcessTime; // 0x58
 };
+#pragma warning(default : 4250)
 
 extern PortsMessage* g_pFileBroadcast;
 

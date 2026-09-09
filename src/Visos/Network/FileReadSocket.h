@@ -12,6 +12,8 @@
 // to NetworkFile's own table, whose single VTABLE annotation owns that address.
 // VTABLE: LEMBALL 0x0049a5b0 BaseSocket
 // VTABLE: LEMBALL 0x0049a5d8 BaseCommonSocket
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class FileReadSocket : public FileBaseSocket, public virtual ReadSocket, public virtual FileCommonSocket {
 public:
 	FileReadSocket();
@@ -24,6 +26,7 @@ public:
 private:
 	undefined4 m_unk0x10; // 0x10
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x0047bd80 SYMBOL
 // ?SysCloseSocket@FileCommonSocket@@WPPPPPPEI@AEHXZ

@@ -81,14 +81,15 @@ int GameObject::Usage()
 // FUNCTION: LEMBALL 0x0040a830 FOLDED
 AiCoord GameObject::Position()
 {
-	return m_position;
+	return AiCoord(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
 }
 
 // 68K 0x1011893a ActivatePosition__11CGameObjectFv
-// FUNCTION: LEMBALL 0x0040a830 FOLDED
+// Original Win32 code folds this with GameObject::Position at 0x0040a830;
+// the address is annotated on the canonical implementation above.
 AiCoord GameObject::ActivatePosition()
 {
-	return m_position;
+	return AiCoord(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
 }
 
 // 68K 0x10118982 StartStanding__11CGameObjectFv

@@ -12,6 +12,8 @@
 // VTABLE: LEMBALL 0x0049abd8 WriteSocket view
 // VTABLE: LEMBALL 0x0049ac08 BaseCommonSocket view
 // VTABLE: LEMBALL 0x0049ac18 primary Connect view
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class FileConnect : public FileOpenManagement, public Connect {
 public:
 	FileConnect();
@@ -26,6 +28,7 @@ public:
 	void Listen(NetworkAddress* p_address);
 	~FileConnect();
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x0047bf40
 // FileConnect::`scalar deleting destructor'

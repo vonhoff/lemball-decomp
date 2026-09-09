@@ -568,6 +568,7 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 	OnSize();
 }
 
+#pragma warning(disable : 4146)
 // FUNCTION: LEMBALL 0x004654f0
 unsigned int ConvertWindowStyleFlags(unsigned int p_style)
 {
@@ -575,6 +576,7 @@ unsigned int ConvertWindowStyleFlags(unsigned int p_style)
 		   (p_style & 0x400) << 8 | (p_style & 0x40) << 10 | (p_style & 0x20) << 15 | (p_style & 0x10) << 17 |
 		   (p_style & 0x80) << 10 | (p_style & 0x100) << 11;
 }
+#pragma warning(default : 4146)
 
 // 68K 0x1011126e __dt__4CWndFv
 // FUNCTION: LEMBALL 0x00465570

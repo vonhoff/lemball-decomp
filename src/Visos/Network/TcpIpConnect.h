@@ -13,6 +13,8 @@
 // VTABLE: LEMBALL 0x0049a3d8 CConnect
 // 68K 0x1010e6a6 __dt__13CTCPIPConnectFv
 // x86 emits only the synthetic deleting destructor.
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class TcpIpConnect : public Connect, public TcpIpRwSocket {
 public:
 	bool Start(const char* p_localName, const char* p_remoteName);
@@ -25,6 +27,7 @@ public:
 	void HandleServiceLookupResult(bool p_failed);
 	void Listen(NetworkAddress* p_address);
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x00471b10
 // TcpIpConnect::`scalar deleting destructor'

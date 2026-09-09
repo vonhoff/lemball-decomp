@@ -12,6 +12,8 @@
 // VTABLE: LEMBALL 0x0049a0c0 TcpIpWriteSocket
 // 68K 0x10106290 __dt__17CTCPIPWriteSocketFv
 // x86 emits only the synthetic deleting destructor.
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class TcpIpWriteSocket : public virtual BaseCommonSocket, public virtual WriteSocket, public virtual TcpIpCommonSocket {
 public:
 	TcpIpWriteSocket();
@@ -27,6 +29,7 @@ private:
 	unsigned int m_destinationIPv4; // 0x08
 	undefined m_sockaddrPadding[8]; // 0x0c
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x00471bf0 SYMBOL
 // ?SetDestAddr@TcpIpWriteSocket@@WPPPPPOMA@AEXPAVNetworkAddress@@@Z

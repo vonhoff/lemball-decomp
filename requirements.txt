@@ -1,2 +1,2 @@
-cmake==4.4.0
-reccmp==0.1.6
+cmake==4.4.3
+reccmp==0.1.7

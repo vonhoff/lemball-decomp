@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Build wrapper for LEMBALL MSVC 4.00 recompilation.
 
-CL/LINK use /WX (see cmake/msvc400-toolchain.cmake); warnings fail the build.
+CL uses /WX (see cmake/msvc400-toolchain.cmake); LINK warnings are detected here.
+Warnings from either tool fail the build.
 Stdout is filtered; full log is written to build-msvc400/last_build.log.
 """
 
@@ -21,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
 LOG_PATH = BUILD / "last_build.log"
 LOG_INTEREST = re.compile(r"warning|error|fatal|failed|built target|linking|\[\s*100%\s*\]", re.IGNORECASE)
+MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
 
 
 def win_short_path(path: str) -> str:
@@ -76,7 +78,19 @@ def handle_link(args: list[str]) -> int:
                 rsp_path.write_text("\n".join(tokens) + "\n", encoding="utf-8")
 
     out_arg = next((Path(arg[5:]) for arg in link_args if arg.upper().startswith("/OUT:")), None)
-    res = subprocess.run([linker, *link_args])
+    res = subprocess.run(
+        [linker, *link_args],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        errors="replace",
+    )
+    output = res.stdout or ""
+    sys.stdout.write(output)
+    warning_count = sum(1 for line in output.splitlines() if MSVC_WARNING.search(line))
+    if warning_count:
+        sys.stderr.write(f"linker emitted {warning_count} warning(s)\n")
+        return 1 if res.returncode == 0 else res.returncode
     if res.returncode == 0 and (out_arg is None or not out_arg.exists()):
         sys.stderr.write(f"linker produced no output: {out_arg}\n")
         return 1

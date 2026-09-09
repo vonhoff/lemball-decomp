@@ -15,6 +15,8 @@
 // byte field and a dynamic thunk instead.
 // 68K 0x1010633a __dt__16CTCPIPReadSocketFv
 // x86 emits only the synthetic deleting destructor.
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 #pragma vtordisp(off)
 class TcpIpReadSocket : public virtual BaseCommonSocket, public virtual ReadSocket, public virtual TcpIpCommonSocket {
 public:
@@ -24,6 +26,7 @@ public:
 	virtual void Closed(int p_notifyPeer);                                             // vtable+0x0c
 };
 #pragma vtordisp(on)
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x00471dc0 SYMBOL
 // ?SysCloseSocket@TcpIpCommonSocket@@WPPPPPPFM@AEHXZ

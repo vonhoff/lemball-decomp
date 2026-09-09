@@ -11,6 +11,8 @@
 // VTABLE: LEMBALL 0x0049a188 BaseSocket's `WriteSocket
 // VTABLE: LEMBALL 0x0049a1b8 RwSocket
 // VTABLE: LEMBALL 0x0049a1c8 Broadcast
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class TcpIpBroadcast : public Broadcast, public TcpIpRwSocket {
 public:
 	TcpIpBroadcast();
@@ -29,6 +31,7 @@ private:
 	char* m_specificNameBuffer;         // 0x24
 	unsigned int m_specificNameRequest; // 0x28
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x00471f60
 // TcpIpBroadcast::`scalar deleting destructor'

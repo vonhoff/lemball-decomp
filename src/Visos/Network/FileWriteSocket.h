@@ -11,6 +11,8 @@
 // VTABLE: LEMBALL 0x0049a698 NetworkFile
 // VTABLE: LEMBALL 0x0049a6d8 BaseSocket
 // VTABLE: LEMBALL 0x0049a708 BaseCommonSocket
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class FileWriteSocket : public FileBaseSocket, public virtual WriteSocket, public virtual FileCommonSocket {
 public:
 	FileWriteSocket();
@@ -23,6 +25,7 @@ public:
 private:
 	undefined4 m_unk0x10; // 0x10
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x0047bca0 SYMBOL
 // ?SysCloseSocket@FileCommonSocket@@WPPPPPPCI@AEHXZ

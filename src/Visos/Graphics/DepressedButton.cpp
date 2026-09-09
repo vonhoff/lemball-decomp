@@ -5,7 +5,7 @@
 #include "VsGdi.h"
 
 // 68K 0x101175de OnReleased__16CDepressedButtonF12BUTTON_FLAGS
-// FUNCTION: LEMBALL 0x0043a620
+// FUNCTION: LEMBALL 0x0043a620 FOLDED
 void DepressedButton::OnReleased(int p_flags)
 {
 	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
@@ -16,7 +16,7 @@ void DepressedButton::OnReleased(int p_flags)
 }
 
 // 68K 0x1011763e OnPressed__16CDepressedButtonF12BUTTON_FLAGS
-// FUNCTION: LEMBALL 0x0043a660
+// FUNCTION: LEMBALL 0x0043a660 FOLDED
 void DepressedButton::OnPressed(int p_flags)
 {
 	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
@@ -27,7 +27,7 @@ void DepressedButton::OnPressed(int p_flags)
 }
 
 // 68K 0x1011769c OnEnterButton__16CDepressedButtonFv
-// FUNCTION: LEMBALL 0x0043a6a0
+// FUNCTION: LEMBALL 0x0043a6a0 FOLDED
 void DepressedButton::OnEnterButton()
 {
 	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
@@ -38,7 +38,7 @@ void DepressedButton::OnEnterButton()
 }
 
 // 68K 0x101176f0 OnExitButton__16CDepressedButtonFv
-// FUNCTION: LEMBALL 0x0043a6e0
+// FUNCTION: LEMBALL 0x0043a6e0 FOLDED
 void DepressedButton::OnExitButton()
 {
 	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
@@ -49,7 +49,7 @@ void DepressedButton::OnExitButton()
 }
 
 // 68K 0x10210394 _DrawButton__16CDepressedButtonFv
-// FUNCTION: LEMBALL 0x00468300
+// FUNCTION: LEMBALL 0x00468300 FOLDED
 void DepressedButton::InternalDrawButton()
 {
 	if (m_depressed != m_lastDrawnDepressed || m_gdi->m_renderTarget->HasBackBuff() != 0) {
@@ -60,7 +60,7 @@ void DepressedButton::InternalDrawButton()
 }
 
 // 68K 0x10210416 OnPaint__16CDepressedButtonFRC7CVSRect
-// FUNCTION: LEMBALL 0x00468360
+// FUNCTION: LEMBALL 0x00468360 FOLDED
 void DepressedButton::OnPaint(const VsRect& p_rect)
 {
 	int clipOk;

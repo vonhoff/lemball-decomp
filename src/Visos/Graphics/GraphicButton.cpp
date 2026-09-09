@@ -140,7 +140,8 @@ void GraphicButton::OnDestroy()
 	}
 }
 
-// FUNCTION: LEMBALL 0x00468300 FOLDED
+// Original Win32 code folds this with DepressedButton::InternalDrawButton at 0x00468300;
+// the address is annotated on the canonical implementation.
 void GraphicButton::InternalDrawButton()
 {
 	if (m_enabled == m_state) {
@@ -180,7 +181,8 @@ void GraphicButton::DrawButton()
 	primitive->Draw(m_gdi);
 }
 
-// FUNCTION: LEMBALL 0x0043a620 FOLDED
+// Original Win32 code folds this with DepressedButton::OnReleased at 0x0043a620;
+// the address is annotated on the canonical implementation.
 void GraphicButton::OnReleased(int p_flags)
 {
 	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
@@ -190,7 +192,8 @@ void GraphicButton::OnReleased(int p_flags)
 	m_enabled = 0;
 }
 
-// FUNCTION: LEMBALL 0x0043a660 FOLDED
+// Original Win32 code folds this with DepressedButton::OnPressed at 0x0043a660;
+// the address is annotated on the canonical implementation.
 void GraphicButton::OnPressed(int p_flags)
 {
 	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
@@ -200,7 +203,8 @@ void GraphicButton::OnPressed(int p_flags)
 	m_enabled = 0;
 }
 
-// FUNCTION: LEMBALL 0x0043a6a0 FOLDED
+// Original Win32 code folds this with DepressedButton::OnEnterButton at 0x0043a6a0;
+// the address is annotated on the canonical implementation.
 void GraphicButton::OnEnterButton()
 {
 	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
@@ -211,7 +215,8 @@ void GraphicButton::OnEnterButton()
 	}
 }
 
-// FUNCTION: LEMBALL 0x0043a6e0 FOLDED
+// Original Win32 code folds this with DepressedButton::OnExitButton at 0x0043a6e0;
+// the address is annotated on the canonical implementation.
 void GraphicButton::OnExitButton()
 {
 	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
@@ -222,7 +227,8 @@ void GraphicButton::OnExitButton()
 	}
 }
 
-// FUNCTION: LEMBALL 0x00468360 FOLDED
+// Original Win32 code folds this with DepressedButton::OnPaint at 0x00468360;
+// the address is annotated on the canonical implementation.
 void GraphicButton::OnPaint(const VsRect& p_rect)
 {
 	int clipOk;

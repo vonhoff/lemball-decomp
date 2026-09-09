@@ -12,6 +12,8 @@
 // VTABLE: LEMBALL 0x0049a7e0 BaseSocket's `ReadSocket
 // VTABLE: LEMBALL 0x0049a808 BaseSocket's `WriteSocket
 // VTABLE: LEMBALL 0x0049a838 FileRwSocket
+// Original PDB/x86 has these inherited dominance adjustor thunks.
+#pragma warning(disable : 4250)
 class FileRwSocket : public virtual RwSocket, public virtual FileReadSocket, public virtual FileWriteSocket {
 public:
 	FileRwSocket();
@@ -21,6 +23,7 @@ public:
 	virtual void SendAcknowledgement();                               // vtable+0x18
 	virtual ~FileRwSocket();                                          // vtable+0x14
 };
+#pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x0047ba40 SYMBOL
 // ?SocketError@FileCommonSocket@@WPPPPPOMI@AEXXZ

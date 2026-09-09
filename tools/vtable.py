@@ -12,7 +12,6 @@ destructor aliases when codegen matches (same rules as check.py).
 from __future__ import annotations
 
 import argparse
-import logging
 import re
 import struct
 import sys
@@ -391,9 +390,6 @@ def comparison_is_thunk_equivalent(result) -> bool:
 
 
 def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
-    # reccmp emits expected collision warnings while staging folded functions
-    # and duplicate MSVC-generated thunks. They are classified below instead.
-    logging.getLogger("reccmp.compare").setLevel(logging.ERROR)
     try:
         project = RecCmpProject.from_directory(BUILD)
         engine = Compare.from_target(project.get("LEMBALL"))
