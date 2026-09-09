@@ -22,7 +22,6 @@ unsigned int g_cursorDisplayInited = 0;
 void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 {
 	Cursor* cursor;
-	int frame;
 
 	if ((unsigned int) p_arg0 > 3) {
 		return;
@@ -34,12 +33,9 @@ void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 		break;
 	case 1:
 		if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
-			frame = 0;
+			p_arg1 = 0;
 		}
-		else {
-			frame = p_arg1;
-		}
-		g_pCursor->SetMainId(g_cursorResourceIds[p_arg0], frame);
+		g_pCursor->SetMainId(g_cursorResourceIds[p_arg0], p_arg1);
 		if (g_cursorDisplayInited == 0) {
 			g_pCursor->m_mouseInput = 1;
 			g_cursorDisplayInited = 1;
