@@ -1,6 +1,7 @@
 #include "Ai.h"
 
 #include "../../Control/Game/GameStatus.h"
+#include "../../Visos/Network/Connect.h"
 #include "../Base/GameObject.h"
 #include "../Groups/EnemyGroupManager.h"
 #include "../Groups/PlayerLemmingGroupManager.h"
@@ -70,9 +71,30 @@ void Ai::GameState(eGameStatus p_status)
 }
 
 // 68K 0x106016d8 SetPlayerIDs__3CAIFv
-// STUB: LEMBALL 0x00412080
+// FUNCTION: LEMBALL 0x00412080
 void Ai::SetPlayerIDs()
 {
+	if (g_pActiveConnection != 0) {
+		int offsets[2] = {0, 0};
+		if (g_pActiveConnection->m_isHost != 0) {
+			offsets[0] = 4;
+		}
+		else {
+			offsets[1] = 4;
+		}
+
+		int* offset = offsets;
+		do {
+			PlayerLemming** lemming = m_networkLemmings + *offset;
+			int count = 4;
+			do {
+				(*lemming)->SetId(GameObject::NextLoadingId());
+				lemming++;
+				count--;
+			} while (count != 0);
+			offset++;
+		} while (offset < offsets + 2);
+	}
 }
 
 // 68K 0x10601772 DecideAnimsRequired__3CAIFv
