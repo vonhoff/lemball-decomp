@@ -71,9 +71,14 @@ int TrampolineManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x10620f66 Hit__18CTrampolineManagerFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x0042b550
+// FUNCTION: LEMBALL 0x0042b550
 int TrampolineManager::Hit(const AiCoord& p_position, GameObject* p_object)
 {
+	for (int i = 0; i < m_count; i++) {
+		if (m_trampolines[i].Hit(p_position, p_object) != 0) {
+			return 1;
+		}
+	}
 	return 0;
 }
 
