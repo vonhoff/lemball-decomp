@@ -116,8 +116,50 @@ int BalloonPost::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x10603486 LoadLevel__12CBalloonPostFPUciUc
-// STUB: LEMBALL 0x0042a4e0
-unsigned short BalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+// FUNCTION: LEMBALL 0x0042a4e0
+void BalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	return 0;
+	m_activeMask = *reinterpret_cast<unsigned short*>(p_data);
+	p_data += 2;
+
+	int count = 4;
+	AiCoord* position = m_positions;
+	TheBalloonPost** post = m_posts;
+	unsigned short z;
+	unsigned short x;
+	unsigned short y;
+	do {
+		x = *reinterpret_cast<unsigned short*>(p_data);
+		p_data += 2;
+		y = *reinterpret_cast<unsigned short*>(p_data);
+		p_data += 2;
+		z = *reinterpret_cast<unsigned short*>(p_data);
+		p_data += 2;
+
+		position->m_xFixed = (unsigned int) x << 12;
+		position->m_yFixed = (unsigned int) y << 12;
+		position->m_zFixed = (unsigned int) z << 12;
+		TheBalloonPost* currentPost = *post;
+		currentPost->m_position.m_xFixed = (unsigned int) x << 12;
+		currentPost->m_position.m_yFixed = (unsigned int) y << 12;
+		currentPost->m_position.m_zFixed = (unsigned int) z << 12;
+		(*post)->m_active = 0;
+
+		position++;
+		post++;
+		count--;
+	} while (count != 0);
+
+	if ((m_activeMask & 1) != 0) {
+		m_posts[0]->m_active = 1;
+	}
+	if ((m_activeMask & 2) != 0) {
+		m_posts[1]->m_active = 1;
+	}
+	if ((m_activeMask & 4) != 0) {
+		m_posts[2]->m_active = 1;
+	}
+	if ((m_activeMask & 8) != 0) {
+		m_posts[3]->m_active = 1;
+	}
 }

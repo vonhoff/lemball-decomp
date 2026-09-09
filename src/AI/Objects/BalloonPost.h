@@ -11,7 +11,7 @@ public:
 	bool FindPost(eObjectType p_objectType, AiCoord& p_position);
 	int GetViewData(ViewData* p_viewData);
 	void Process();
-	unsigned short LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Restart();
 	~BalloonPost();
 
