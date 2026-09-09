@@ -4,6 +4,10 @@
   python tools/smell.py src/Visos/Graphics
   python tools/smell.py --annot
   python tools/smell.py --annot-strict
+
+  type-erase-index    do not cast away a typed pointer to index by byte/N
+                      e.g. ((int*) layout)[0x58 / 4] — use a named field
+  cast-deref-offset   do not *((T**) p + N); use a typed member
 """
 
 from __future__ import annotations
@@ -56,6 +60,9 @@ RAW_CAST_TYPE = (
 RAW_DEREF_CAST = re.compile(
     r"\*\s*\(\s*(?P<type>" + RAW_CAST_TYPE + r")\s*\)\s*(?P<rhs>[^;\n]+)"
 )
+# *((TYPE) rhs) with balanced outer parens; TYPE is parsed separately.
+PAREN_RAW_DEREF_START = re.compile(r"\*\s*\(")
+CAST_TYPE_AT = re.compile(r"\(\s*(?P<type>" + RAW_CAST_TYPE + r")\s*\)")
 CAST_THEN_ARITH = re.compile(
     PTR_CAST.pattern
     + r"\s*(?:\([^;]{1,80}?\)|[A-Za-z_][\w.]*(?:\[[^\]]{0,40}\])?)"
@@ -64,6 +71,14 @@ CAST_THEN_ARITH = re.compile(
 )
 CAST_PAREN_ARITH = re.compile(
     PTR_CAST.pattern + r"\s*\(\s*[^;]{1,80}?\s*[+-]\s*(?:0x[0-9A-Fa-f]+|(?!1\b)\d+)\s*\)"
+)
+# Cast away a pointer type, then index with a byte offset / element size.
+# Bare int* tables like layout[0x58 / 4] are incomplete typing, not this smell.
+CAST_BYTE_DIV_INDEX = re.compile(
+    r"\(\s*\(\s*"
+    + RAW_CAST_TYPE
+    + r"\s*\)\s*[^;\n\[\]]{1,80}?"
+    + r"\)\s*\[\s*0x[0-9A-Fa-f]+\s*/\s*(?:0x[0-9A-Fa-f]+|[248])\s*\]"
 )
 NAKED_DATA_OFFSET = re.compile(
     r"(?:->|\.)(?:m_data|m_buffer)\s*\+\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
@@ -77,6 +92,11 @@ DTOR_DEF = re.compile(r"^(?P<class>[A-Za-z_][\w:]*)::~[A-Za-z_][\w]*\s*\(")
 FREE_DEF = re.compile(r"^(?:static\s+)?(?:[A-Za-z_][\w:*&]*\s+)+\w+\s*\(")
 BUFFER_OK = re.compile(r"m_numberBuffer|Bits\b|sz[A-Z]|\bp_bits\b")
 SKIP_LEAD = {"if", "while", "for", "switch", "return", "else", "case", "catch", "extern"}
+SCALAR_PTR_BASE = re.compile(
+    r"(?:(?:unsigned|signed)\s+)?(?:char|short|int|long|__int16|__int32)"
+)
+RHS_HAS_ARITH = re.compile(r"\s[+-]\s|\b[+-]\s*(?:0x[0-9A-Fa-f]+|\d+|[A-Za-z_])")
+RHS_LITERAL_ADDR = re.compile(r"^(?:0x[0-9A-Fa-f]+|\d+)\b")
 
 
 def strip_line_comment(line: str) -> str:
@@ -150,19 +170,45 @@ def is_offset_poke(code: str) -> bool:
     return any(not BUFFER_OK.search(match.group("expr")) for match in EXPR_CHAR_OFFSET.finditer(code))
 
 
-def raw_cast_reason(code: str) -> str | None:
+def iter_raw_deref_casts(code: str):
+    """Yield (type_text, rhs, form) for *(T*)rhs and *((T*) rhs)."""
     for match in RAW_DEREF_CAST.finditer(code):
-        type_text = match.group("type")
-        rhs = match.group("rhs").strip()
+        yield match.group("type"), match.group("rhs").strip(), "direct"
+
+    for start in PAREN_RAW_DEREF_START.finditer(code):
+        cast = CAST_TYPE_AT.match(code, start.end())
+        if cast is None:
+            continue
+        type_text = cast.group("type")
+        pos = cast.end()
+        depth = 1
+        rhs_start = pos
+        while pos < len(code) and depth:
+            ch = code[pos]
+            if ch == "(":
+                depth += 1
+            elif ch == ")":
+                depth -= 1
+            pos += 1
+        if depth != 0:
+            continue
+        rhs = code[rhs_start : pos - 1].strip()
+        if rhs:
+            yield type_text, rhs, "paren"
+
+
+def raw_cast_reason(code: str) -> str | None:
+    for type_text, rhs, form in iter_raw_deref_casts(code):
         base_type = re.sub(r"\s*\*\s*", "", type_text).strip()
-        scalar_type = re.fullmatch(
-            r"(?:(?:unsigned|signed)\s+)?(?:char|short|int|long|__int16|__int32)", base_type
-        )
-        if scalar_type is None and re.search(r"\s[+-]\s|\b[+-]\s*(?:0x[0-9A-Fa-f]+|\d+|[A-Za-z_])", rhs):
+        scalar_type = SCALAR_PTR_BASE.fullmatch(base_type)
+        if scalar_type is None and RHS_HAS_ARITH.search(rhs):
             return "cast-deref-offset"
-        if scalar_type is None and re.match(r"^(?:0x[0-9A-Fa-f]+|\d+)\b", rhs):
+        if scalar_type is None and RHS_LITERAL_ADDR.match(rhs):
             return "literal-address-cast"
-        return "raw-cast"
+        # Parenthesized scalar plots like *((unsigned char*) row + x) are not
+        # raw-casts; constant field pokes still hit offset-poke via CAST_THEN_ARITH.
+        if form == "direct":
+            return "raw-cast"
     return None
 
 
@@ -239,6 +285,10 @@ def scan_file(
             if THIS_ADJUST.search(code):
                 hits.append((rel, lineno, "this-adjust-poke", ""))
             poked = False
+            type_erase = CAST_BYTE_DIV_INDEX.search(code)
+            if type_erase is not None:
+                hits.append((rel, lineno, "type-erase-index", type_erase.group(0).strip()[:100]))
+                poked = True
             for match in EXPR_CHAR_OFFSET.finditer(code):
                 if not BUFFER_OK.search(match.group("expr")):
                     hits.append((rel, lineno, "expr-char-offset", match.group(0).strip()[:100]))
