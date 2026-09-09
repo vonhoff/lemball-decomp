@@ -44,8 +44,3 @@ bool TimedQueue::Send(Message& p_message)
 	m_sendCount = m_sendCount + 1;
 	return Process(&p_message);
 }
-
-// 68K 0x10117d58 __dt__11CTimedQueueFv
-TimedQueue::~TimedQueue()
-{
-}

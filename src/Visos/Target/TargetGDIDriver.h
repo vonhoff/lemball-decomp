@@ -8,7 +8,6 @@
 class TargetGDIDriver : public TargetGraphicsDriver {
 public:
 	TargetGDIDriver();
-	virtual ~TargetGDIDriver();                                                // vtable+0x00
 	virtual TargetDrawingContext* CreateDrawingContext();                      // vtable+0x04
 	virtual int DestroyDrawingContext(TargetDrawingContext* p_drawingContext); // vtable+0x08
 	virtual bool InitializeBitmapInfo(void* p_bitmapInfo);                     // vtable+0x0c

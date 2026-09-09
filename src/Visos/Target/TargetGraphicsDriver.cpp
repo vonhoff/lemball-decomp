@@ -363,10 +363,6 @@ bool TargetGraphicsDriver::HasPalette()
 	return m_palette != 0;
 }
 
-TargetGDIDriver::~TargetGDIDriver()
-{
-}
-
 // FUNCTION: LEMBALL 0x00458250
 void TargetDrawingContext::SetDC(void* p_hDC)
 {
