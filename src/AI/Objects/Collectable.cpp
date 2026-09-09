@@ -35,28 +35,31 @@ bool Collectable::Process()
 {
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
-			if (m_action == 8) {
+			switch (m_action) {
+			case 8:
 				m_enabled = 0;
-			}
-			else if (m_action == 26) {
-				Collected();
+				break;
+			case 26:
+				SetSfx();
+				break;
 			}
 			m_pendingAction = m_action;
 		}
 		return 1;
 	}
 	if (m_enabled != 0) {
-		if (m_action == 8) {
+		switch (m_action) {
+		case 8:
 			m_enabled = 0;
-		}
-		else if (m_action == 24) {
+			break;
+		case 24: {
 			if (g_pActiveConnection == 0 || m_requestedAction == 24) {
 				if (m_unk0x11c == 0) {
-					int x = m_position.m_xFixed >> 12;
 					int y = m_position.m_yFixed >> 12;
+					int x = m_position.m_xFixed >> 12;
 					Map* map = g_pMap;
-					int blockX = x >> 4;
 					int blockY = y >> 4;
+					int blockX = x >> 4;
 					unsigned short z;
 					if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 						int cellX = x & 0xf;
@@ -73,8 +76,8 @@ bool Collectable::Process()
 				pt.m_x = m_position.m_xFixed >> 12;
 				pt.m_y = m_position.m_yFixed >> 12;
 				pt.m_z = m_position.m_zFixed >> 12;
-				g_pAI->m_collisionExclude = 0;
-				g_pAI->m_collisionPoint = pt;
+				ai->m_collisionExclude = 0;
+				ai->m_collisionPoint = pt;
 				ai->m_collisionIndex = 0;
 				GameObject* hit;
 				if (ai->m_objectCount > 0) {
@@ -95,11 +98,13 @@ bool Collectable::Process()
 					RequestAction((eAction) 26);
 				}
 			}
+			break;
 		}
-		else if (m_action == 26) {
-			SetSfx();
+		case 26:
 			Collected();
+			SetSfx();
 			Action((eAction) 8);
+			break;
 		}
 	}
 	return 1;
