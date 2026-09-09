@@ -1,6 +1,7 @@
 #include "VsDebug.h"
 
 #include "../Target/TargetTextWindow.h"
+#include "LocalDebugOStream.h"
 #include "String.h"
 #include "VsDebugStreambuf.h"
 #include "VsFile.h"
@@ -115,13 +116,6 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 	MessageBoxA(NULL, msg.GetText(), "Error", 0);
 	InternalVsExit(0xaaaa);
 }
-
-#include "VsOStream.h"
-
-class LocalDebugOStream : public VsDebugStreambuf, public VsOStream {
-public:
-	LocalDebugOStream(char* p_buffer, int p_size) : VsDebugStreambuf(p_buffer, p_size, 0), VsOStream(this) {}
-};
 
 // FUNCTION: LEMBALL 0x00473790
 void FatalWin32Error(char* p_context)

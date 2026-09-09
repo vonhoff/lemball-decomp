@@ -1,7 +1,7 @@
 #include "GdiDevice.h"
 
+#include "../Foundation/LocalDebugOStream.h"
 #include "../Foundation/VsMem.h"
-#include "../Foundation/VsOStream.h"
 #include "VsGdi.h"
 
 #include <new.h>
@@ -76,31 +76,36 @@ int GdiDevice::FindFreeSurface()
 Surface* GdiDevice::AllocateSurface(const VsRect& p_rect, Surface* p_parentSurface)
 {
 	int i;
-	GdiSurfaceSlot* slot;
 	void* storage;
 	Surface* surface;
 
 	i = FindFreeSurface();
-	if (i < 0) {
+	if (i == -1) {
 		return 0;
 	}
 
-	slot = &m_surfaceSlots[i];
+	char buffer[0x20];
+	LocalDebugOStream stream(buffer, sizeof(buffer));
+	stream << "Surface" << i;
+
 	storage = operator new(0x5a0);
 	surface = 0;
 	if (storage != 0) {
 		surface = new (storage) Surface(p_rect, p_parentSurface);
 	}
-	slot->m_surface = surface;
-	slot->m_parent = p_parentSurface;
-	slot->m_timer = 0;
-	slot->m_flushed = 0;
-	slot->m_isPrimary = (void*) p_parentSurface == g_pGdiHelperTarget;
-	slot->m_available = 0;
-	if (slot->m_isPrimary != 0) {
+	m_surfaceSlots[i].m_surface = surface;
+	m_surfaceSlots[i].m_parent = p_parentSurface;
+	m_surfaceSlots[i].m_isPrimary = (void*) p_parentSurface == g_pGdiHelperTarget;
+	m_surfaceSlots[i].m_flushed = 0;
+	m_surfaceSlots[i].m_available = 0;
+	if (m_surfaceSlots[i].m_isPrimary != 0) {
+		m_surfaceSlots[i].m_timer = 0;
 		++m_primarySurfaceCount;
 	}
-	return slot->m_surface;
+	else {
+		m_surfaceSlots[i].m_timer = 0;
+	}
+	return m_surfaceSlots[i].m_surface;
 }
 
 // 68K 0x101080fa FreeSurface__10CGDIDeviceFP8CSurface
