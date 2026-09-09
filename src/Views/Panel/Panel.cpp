@@ -157,12 +157,12 @@ int Panel::ProcessMsg(Message* p_message)
 // FUNCTION: LEMBALL 0x00443360
 bool Panel::MouseInPanel(const VsPoint& p_point)
 {
-	short panelWidth = m_panelSize.m_x;
 	short panelX = m_panelPosition.m_x;
+	short panelWidth = m_panelSize.m_x;
 	short panelHeight = m_panelSize.m_y;
 	short panelY = m_panelPosition.m_y;
-	if (p_point.m_x >= panelX && p_point.m_x < (short) (panelX + panelWidth) && p_point.m_y >= panelY &&
-		p_point.m_y < (short) (panelY + panelHeight)) {
+	if (panelX <= p_point.m_x && (short) (panelWidth + panelX) > p_point.m_x && panelY <= p_point.m_y &&
+		(short) (panelY + panelHeight) > p_point.m_y) {
 		return true;
 	}
 	return false;
