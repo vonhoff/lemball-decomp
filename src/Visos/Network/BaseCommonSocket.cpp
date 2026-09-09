@@ -7,11 +7,14 @@
 // FUNCTION: LEMBALL 0x0045f680
 BaseCommonSocket::BaseCommonSocket()
 {
+	BaseCommonSocket* self;
+
 	m_socketHandle = -1;
+	self = this;
 	m_readReady = 0;
 	m_isOpen = 0;
+	self->m_port = -1;
 	m_writeReady = 0;
-	m_port = -1;
 	m_closePending = 0;
 	m_eventPending = 0;
 	m_socketFlags = 0;
