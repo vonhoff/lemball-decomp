@@ -19,8 +19,8 @@ bool TimedQueue::Post(Message& p_message)
 	}
 	index = 0;
 	count = m_messageCount;
-	timestamp = p_message.time;
 	if (count != 0) {
+		timestamp = p_message.time;
 		do {
 			message = (Message*) slot;
 			if ((int) (timestamp - (int) message->time) < 0) {
@@ -42,5 +42,5 @@ bool TimedQueue::Post(Message& p_message)
 bool TimedQueue::Send(Message& p_message)
 {
 	m_sendCount = m_sendCount + 1;
-	return Process(&p_message);
+	return (unsigned int) Process(&p_message) >= 1;
 }
