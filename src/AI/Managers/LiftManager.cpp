@@ -133,8 +133,7 @@ void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 				highHeight = (short) *data++;
 				direction = (short) *data++;
 				m_lifts[m_count].SetId(id);
-				m_lifts[m_count]
-					.Set(start, end, direction, lowHeight, highHeight, activateType, (unsigned char) initialActive);
+				m_lifts[m_count].Set(start, end, direction, lowHeight, highHeight, activateType, initialActive);
 			}
 			else {
 				short x;
@@ -150,8 +149,7 @@ void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 				highHeight = (short) *data++;
 				direction = (short) *data++;
 				m_lifts[m_count].SetId(id);
-				m_lifts[m_count]
-					.Set(x, y, z, direction, lowHeight, highHeight, activateType, (unsigned char) initialActive);
+				m_lifts[m_count].Set(x, y, z, direction, lowHeight, highHeight, activateType, initialActive);
 			}
 
 			m_count++;
