@@ -1,15 +1,20 @@
 #include "BalloonPost.h"
 
 #include "../../Map/Base/Map.h"
+#include "TheBalloonPost.h"
 #include "ViewData.h"
 
 // 68K 0x10602f0e __ct__12CBalloonPostFP3CAI
-// STUB: LEMBALL 0x00429f50
+// FUNCTION: LEMBALL 0x00429f50
 BalloonPost::BalloonPost(Ai* p_arg0, Map* p_arg1)
 {
+	m_ai = p_arg0;
+	m_map = p_arg1;
+	m_posts[0] = new TheBalloonPost(0x28, 0);
+	m_posts[1] = new TheBalloonPost(0x2a, 0);
+	m_posts[2] = new TheBalloonPost(0x2c, 0);
+	m_posts[3] = new TheBalloonPost(0x2e, 0);
 }
-
-#include "TheBalloonPost.h"
 
 // 68K 0x10603000 Restart__12CBalloonPostFv
 // FUNCTION: LEMBALL 0x0042a030
