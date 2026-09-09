@@ -67,8 +67,8 @@ void Ice::Set(unsigned short p_id,
 	m_maxX = (short) maxX;
 	m_maxY = (short) maxY;
 
-	int minGroundX = (short) minX;
 	int minGroundY = (short) minY;
+	int minGroundX = (short) minX;
 	unsigned short minZ;
 	{
 		Map* map = g_pMap;
@@ -84,8 +84,8 @@ void Ice::Set(unsigned short p_id,
 	}
 	m_minZ = (short) minZ;
 
-	int maxGroundX = m_maxX;
 	int maxGroundY = m_maxY;
+	int maxGroundX = m_maxX;
 	unsigned short maxZ;
 	{
 		Map* map = g_pMap;
