@@ -21,7 +21,3 @@ void ResTune::SetType()
 {
 	m_chunkType = kChunkTune;
 }
-
-ResTune::~ResTune()
-{
-}

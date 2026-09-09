@@ -21,7 +21,3 @@ void ResPatch::SetType()
 {
 	m_chunkType = kChunkPtch;
 }
-
-ResPatch::~ResPatch()
-{
-}

@@ -24,8 +24,3 @@ void ResEffect::SetType()
 {
 	m_chunkType = 0x45464620;
 }
-
-// 68K 0x1010105c __dt__10CResEFFECTFv
-ResEffect::~ResEffect()
-{
-}

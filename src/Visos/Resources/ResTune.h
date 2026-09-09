@@ -13,7 +13,6 @@ public:
 	inline ResTune(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	static ResTune* Load(unsigned int p_resourceId);
 	virtual void SetType(); // vtable+0x34
-	virtual ~ResTune();     // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x0045ec10

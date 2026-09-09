@@ -13,7 +13,6 @@ public:
 	inline ResPatch(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	static ResPatch* Load(unsigned int p_resourceId);
 	virtual void SetType(); // vtable+0x34
-	virtual ~ResPatch();    // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x0045ebe0
