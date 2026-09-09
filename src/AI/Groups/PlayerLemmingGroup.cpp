@@ -75,9 +75,28 @@ bool PlayerLemmingGroup::RemoveLemmingFromGroup(PlayerLemming* p_lemming)
 }
 
 // 68K 0x1060f420 SetPlayerControlled__19CPlayerLemmingGroupFUcP14CPlayerLemming
-// STUB: LEMBALL 0x00414810
-void PlayerLemmingGroup::SetPlayerControlled(unsigned char p_playerControlled, PlayerLemming* p_leader)
+// FUNCTION: LEMBALL 0x00414810
+void PlayerLemmingGroup::SetPlayerControlled(undefined4 p_playerControlled, PlayerLemming* p_leader)
 {
+	PlayerLemming* first = (PlayerLemming*) GenericGroup::GetFirstElementInGroup();
+	PlayerLemming* lemming = first;
+	if (first != 0) {
+		do {
+			lemming->SetGroup(p_playerControlled);
+			lemming->SetGroupLeader(0);
+			lemming = (PlayerLemming*) GenericGroup::GetNextElementInGroup();
+		} while (lemming != 0);
+	}
+	if (p_leader == 0) {
+		p_leader = first;
+	}
+	m_playerControlled = p_playerControlled;
+	if (p_leader != 0) {
+		p_leader->SetGroupLeader(1);
+		if (p_leader != first) {
+			GenericGroup::SwapElements(p_leader, first);
+		}
+	}
 }
 
 // 68K 0x1060f4e4 CheckPlayerControlled__19CPlayerLemmingGroupFv

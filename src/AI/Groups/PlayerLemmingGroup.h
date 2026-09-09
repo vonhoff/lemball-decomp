@@ -22,7 +22,7 @@ public:
 	virtual ~PlayerLemmingGroup();                  // vtable+0x00
 	void AddUseObject(GameObject* p_object, int p_objectId);
 	void AddUseObject(int p_objectId);
-	void SetPlayerControlled(unsigned char p_playerControlled, PlayerLemming* p_leader);
+	void SetPlayerControlled(undefined4 p_playerControlled, PlayerLemming* p_leader);
 
 private:
 	int m_playerControlled;  // 0x168
