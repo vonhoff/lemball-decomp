@@ -411,10 +411,20 @@ Game* Ai::LevelName()
 	return m_game;
 }
 
+#include "../Managers/ObjectManager.h"
+
 // 68K 0x1060281a FixUpLevel__3CAIFv
-// STUB: LEMBALL 0x00412fb0
+// FUNCTION: LEMBALL 0x00412fb0
 void Ai::FixUpLevel()
 {
+	int count = (unsigned int) g_wObjectCount;
+	for (int i = 0; i < count; i++) {
+		GameObject* object = g_pObjects[(unsigned short) i];
+		if (object->GetId() == (short) 0xffff) {
+			object->SetId(GameObject::NextId());
+		}
+	}
+	m_objectManager->ConvertVer0ToVer1();
 }
 
 // 68K 0x10602894 DoorId__3CAIFi
