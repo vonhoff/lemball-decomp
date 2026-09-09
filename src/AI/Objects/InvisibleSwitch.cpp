@@ -38,15 +38,16 @@ void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
 	m_minCorner = p_cornerA;
 	m_maxCorner = p_cornerB;
 	short temporary;
-	if (m_maxCorner.m_x < m_minCorner.m_x) {
-		temporary = m_maxCorner.m_x;
-		m_maxCorner.m_x = m_minCorner.m_x;
-		m_minCorner.m_x = temporary;
+	if (m_minCorner.m_x > m_maxCorner.m_x) {
+		temporary = m_minCorner.m_x;
+		m_minCorner.m_x = m_maxCorner.m_x;
+		m_maxCorner.m_x = temporary;
 	}
-	if (m_maxCorner.m_y < m_minCorner.m_y) {
-		temporary = m_minCorner.m_y;
-		m_minCorner.m_y = m_maxCorner.m_y;
-		m_maxCorner.m_y = temporary;
+	short maxY = m_maxCorner.m_y;
+	short minY = m_minCorner.m_y;
+	if (minY > maxY) {
+		m_minCorner.m_y = maxY;
+		m_maxCorner.m_y = minY;
 	}
 	m_repeatable = 0;
 	m_triggered = 0;
@@ -58,8 +59,15 @@ void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
 			int blockX = x / 0x10;
 			if (blockX >= 0) {
 				int blockY = y / 0x10;
-				if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
-					Ground* ground = g_pMap->m_ground.m_ground + g_pMap->m_ground.m_width * blockY + blockX;
+				if (blockY >= 0) {
+					int width = g_pMap->m_ground.m_width;
+					if (width <= blockX) {
+						continue;
+					}
+					if (g_pMap->m_ground.m_height <= blockY) {
+						continue;
+					}
+					Ground* ground = g_pMap->m_ground.m_ground + width * blockY + blockX;
 					((unsigned char*) &ground->m_collision)[1] |= 0x80;
 				}
 			}
