@@ -4,9 +4,11 @@
 #include "../../Control/Game/GameTime.h"
 
 // 68K 0x10a00c52 __ct__14CPBNetworkGameFP3CAI
-// STUB: LEMBALL 0x00452fe0
-PbNetworkGame::PbNetworkGame(Ai* p_arg0)
+// FUNCTION: LEMBALL 0x00452fe0
+PbNetworkGame::PbNetworkGame(Ai* p_arg0) : NetworkMessage(3), m_ai(p_arg0), m_networkLemmings(p_arg0->m_networkLemmings)
 {
+	m_payloadCapacity += p_arg0->m_payloadCapacity + 8;
+	m_headerEnabled = 0;
 }
 
 // 68K 0x10a00cd2 AddData__14CPBNetworkGameFv
