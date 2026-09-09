@@ -398,10 +398,10 @@ void NetworkOptionsDrawer::DrawText()
 			divider = g_szNetworkOptionsDividerLocal;
 		}
 		ResFont* font = m_textManager->GetFont(m_chalkFontId);
+		VsPoint posDivider(0, (short) ((int*) m_layoutTable)[0x50 / 4]);
 		VsPoint posLabel((short) ((int*) m_layoutTable)[0x68 / 4], (short) ((int*) m_layoutTable)[0x54 / 4]);
 		VsPoint posIp((short) ((int*) m_layoutTable)[0x78 / 4], (short) ((int*) m_layoutTable)[0x54 / 4]);
 		VsPoint posComputer((short) ((int*) m_layoutTable)[0x80 / 4], (short) ((int*) m_layoutTable)[0x54 / 4]);
-		VsPoint posDivider(0, (short) ((int*) m_layoutTable)[0x50 / 4]);
 		posLabel.m_x -= font->GetSize(&size, g_szNetworkOptionsHeaderName, 0x20)->m_width / 2;
 		size.m_width = 0;
 		size.m_height = 0;
@@ -473,7 +473,7 @@ void NetworkOptionsDrawer::DrawText()
 	else {
 		if (m_message != 0) {
 			VsPoint msgPos((short) ((int*) m_layoutTable)[0x48 / 4], (short) ((int*) m_layoutTable)[0x4c / 4]);
-			String msgText = g_apNetworkOptionsMessages[m_message - 1];
+			String msgText = g_apNetworkOptionsMessages[m_message];
 			bool special = false;
 			if (m_message == 4) {
 				if (g_szNetworkBroadcastAddress[0] != 0) {
