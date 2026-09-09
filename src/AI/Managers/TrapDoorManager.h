@@ -13,7 +13,7 @@ public:
 	virtual void Process();                        // vtable+0x1c
 	virtual ~TrapDoorManager();                    // vtable+0x14
 	void Restart();
-	void AddNewDoor(unsigned short p_id, const AiCoord& p_position, unsigned char p_mode, unsigned long p_deadline);
+	void AddNewDoor(unsigned short p_id, const AiCoord& p_position, unsigned int p_mode, unsigned long p_deadline);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip);
 
 private:

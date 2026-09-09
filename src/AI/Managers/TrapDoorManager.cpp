@@ -26,7 +26,7 @@ void TrapDoorManager::Restart()
 // FUNCTION: LEMBALL 0x0040c810
 void TrapDoorManager::AddNewDoor(unsigned short p_id,
 								 const AiCoord& p_position,
-								 unsigned char p_mode,
+								 unsigned int p_mode,
 								 unsigned long p_deadline)
 {
 	m_doors[m_count] = new TrapDoor((AiCoord&) p_position, p_mode);
