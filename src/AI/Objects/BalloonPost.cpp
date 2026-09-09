@@ -1,6 +1,7 @@
 #include "BalloonPost.h"
 
 #include "../../Map/Base/Map.h"
+#include "ViewData.h"
 
 // 68K 0x10602f0e __ct__12CBalloonPostFP3CAI
 // STUB: LEMBALL 0x00429f50
@@ -132,10 +133,27 @@ void BalloonPost::Process()
 }
 
 // 68K 0x10603386 GetViewData__12CBalloonPostFP9CViewData
-// STUB: LEMBALL 0x0042a320
+// FUNCTION: LEMBALL 0x0042a320
 int BalloonPost::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	if ((m_activeMask & 1) != 0) {
+		m_posts[0]->GetViewData(p_viewData[count]);
+		count++;
+	}
+	if ((m_activeMask & 2) != 0) {
+		m_posts[1]->GetViewData(p_viewData[count]);
+		count++;
+	}
+	if ((m_activeMask & 4) != 0) {
+		m_posts[2]->GetViewData(p_viewData[count]);
+		count++;
+	}
+	if ((m_activeMask & 8) != 0) {
+		m_posts[3]->GetViewData(p_viewData[count]);
+		count++;
+	}
+	return count;
 }
 
 // 68K 0x10603486 LoadLevel__12CBalloonPostFPUciUc
