@@ -158,25 +158,16 @@ void FrontendResourceLoader::LoadAnim(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447de0
 void FrontendResourceLoader::UnLoadAnim(unsigned long p_resourceId)
 {
-	unsigned int i;
-	unsigned int count;
-	ResAnim** anims;
 	ResAnim** slot;
+	unsigned int i;
 
-	i = 0;
-	count = m_loadedAnims;
-	if (count != 0) {
-		anims = m_anims;
-		slot = anims;
-		do {
-			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
-				anims[i]->UnLoad();
-				anims[i] = 0;
-				break;
-			}
-			slot++;
-			i++;
-		} while (i < count);
+	for (i = 0; i < (unsigned int) m_loadedAnims; i++) {
+		slot = &m_anims[i];
+		if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+			m_anims[i]->UnLoad();
+			m_anims[i] = 0;
+			break;
+		}
 	}
 }
 
@@ -194,20 +185,13 @@ void FrontendResourceLoader::LoadFont(unsigned long p_resourceId)
 void FrontendResourceLoader::UnLoadFont(unsigned long p_resourceId)
 {
 	unsigned int i;
-	ResFont** slot;
 
-	i = 0;
-	if (m_loadedFonts != 0) {
-		slot = m_fonts;
-		do {
-			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
-				m_fonts[i]->UnLoad();
-				m_fonts[i] = 0;
-				break;
-			}
-			slot++;
-			i++;
-		} while (i < (unsigned int) m_loadedFonts);
+	for (i = 0; i < (unsigned int) m_loadedFonts; i++) {
+		if (m_fonts[i] != 0 && m_fonts[i]->m_resourceId == p_resourceId) {
+			m_fonts[i]->UnLoad();
+			m_fonts[i] = 0;
+			break;
+		}
 	}
 }
 
@@ -225,20 +209,13 @@ void FrontendResourceLoader::LoadBitmap(unsigned long p_resourceId)
 void FrontendResourceLoader::UnLoadBitmap(unsigned long p_resourceId)
 {
 	unsigned int i;
-	ResBitmap** slot;
 
-	i = 0;
-	if (m_loadedBitmaps != 0) {
-		slot = m_bitmaps;
-		do {
-			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
-				m_bitmaps[i]->UnLoad();
-				m_bitmaps[i] = 0;
-				break;
-			}
-			slot++;
-			i++;
-		} while (i < (unsigned int) m_loadedBitmaps);
+	for (i = 0; i < (unsigned int) m_loadedBitmaps; i++) {
+		if (m_bitmaps[i] != 0 && m_bitmaps[i]->m_resourceId == p_resourceId) {
+			m_bitmaps[i]->UnLoad();
+			m_bitmaps[i] = 0;
+			break;
+		}
 	}
 }
 
@@ -255,18 +232,14 @@ void FrontendResourceLoader::LoadPalette(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447f60
 void FrontendResourceLoader::UnLoadPalette(unsigned long p_resourceId)
 {
-	unsigned int i = 0;
-	if (m_loadedPalettes != i) {
-		ResPalette** slot = m_palettes;
-		do {
-			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
-				m_palettes[i]->UnLoad();
-				m_palettes[i] = 0;
-				break;
-			}
-			slot++;
-			i++;
-		} while (i < (unsigned int) m_loadedPalettes);
+	unsigned int i;
+
+	for (i = 0; i < m_loadedPalettes; i++) {
+		if (m_palettes[i] != 0 && m_palettes[i]->m_resourceId == p_resourceId) {
+			m_palettes[i]->UnLoad();
+			m_palettes[i] = 0;
+			break;
+		}
 	}
 }
 
@@ -283,21 +256,16 @@ void FrontendResourceLoader::LoadString(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447fe0
 void FrontendResourceLoader::UnLoadString(unsigned long p_resourceId)
 {
-	unsigned int i;
 	ResString** slot;
+	unsigned int i;
 
-	i = 0;
-	if (m_loadedStrings != 0) {
-		slot = m_strings;
-		do {
-			if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
-				m_strings[i]->UnLoad();
-				m_strings[i] = 0;
-				break;
-			}
-			slot++;
-			i++;
-		} while (i < (unsigned int) m_loadedStrings);
+	for (i = 0; i < (unsigned int) m_loadedStrings; i++) {
+		slot = &m_strings[i];
+		if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+			m_strings[i]->UnLoad();
+			m_strings[i] = 0;
+			break;
+		}
 	}
 }
 
