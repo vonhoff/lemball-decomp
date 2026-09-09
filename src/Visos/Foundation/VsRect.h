@@ -44,7 +44,7 @@ public:
 // SYNTHETIC: LEMBALL 0x00442170
 // VsRect::VsRect
 
-// SYNTHETIC: LEMBALL 0x00447270
-// VsRect::VsRect
+// FUNCTION: LEMBALL 0x00447270
+// ??0VsRect@@QAE@FFFF@Z
 
 #endif

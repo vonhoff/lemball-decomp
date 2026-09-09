@@ -427,8 +427,7 @@ void BaseFrontendDrawer::ResetPrimitives()
 // FUNCTION: LEMBALL 0x004460d0
 void BaseFrontendDrawer::DrawFrame(CoordPair p_start, CoordPair p_end)
 {
-	VsRect rect(p_start.m_x, p_start.m_y, p_end.m_x - p_start.m_x, p_end.m_y - p_start.m_y);
-	DrawFrame(rect);
+	DrawFrame(VsRect(p_start.m_x, p_start.m_y, p_end.m_x, p_end.m_y));
 }
 
 // 68K 0x1080115a DrawFrame__19CBaseFrontendDrawerF7CVSRect
