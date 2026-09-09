@@ -25,9 +25,25 @@ void GenericGroup::SetGroupState(eGroupState p_state)
 }
 
 // 68K 0x1060c298 __ct__13CGenericGroupFP3CAIP14CObjectManagerP17CFormationManagerii
-// STUB: LEMBALL 0x0041dda0
-GenericGroup::GenericGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2, int p_arg3, int p_arg4)
+// FUNCTION: LEMBALL 0x0041dda0
+GenericGroup::GenericGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager)
+	: GameObject((eObjectType) 0x10, 0, 0x14)
 {
+	m_minY = 0;
+	m_minX = 0;
+	m_maxY = 0;
+	m_maxX = 0;
+	g_pUnknown0x4a7824 = p_ai;
+	g_pUnknown0x4a7820 = p_formationManager;
+	g_pUnknown0x4a781c = p_objectManager;
+	m_currentElement = 0;
+	m_elementCount = 0;
+	m_groupState = 0;
+	memset(m_elements, 0, sizeof(m_elements));
+	m_minY = 9999;
+	m_minX = 9999;
+	m_maxY = 9999;
+	m_maxX = 9999;
 }
 
 // 68K 0x1060c44c Restart__13CGenericGroupFv
@@ -270,3 +286,12 @@ void GenericGroup::GetViewData(ViewData* p_viewData)
 GenericGroup::~GenericGroup()
 {
 }
+
+// GLOBAL: LEMBALL 0x004a781c
+ObjectManager* g_pUnknown0x4a781c;
+
+// GLOBAL: LEMBALL 0x004a7820
+FormationManager* g_pUnknown0x4a7820;
+
+// GLOBAL: LEMBALL 0x004a7824
+Ai* g_pUnknown0x4a7824;

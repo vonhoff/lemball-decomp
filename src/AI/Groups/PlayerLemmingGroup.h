@@ -9,7 +9,7 @@
 class PlayerLemmingGroup : public GenericGroup {
 public:
 	PlayerLemming* GetFirstDeadLemming();
-	PlayerLemmingGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2);
+	PlayerLemmingGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager);
 	bool AddLemmingToGroup(PlayerLemming* p_lemming);
 	bool CheckPlayerControlled();
 	bool HasSfxChanged();

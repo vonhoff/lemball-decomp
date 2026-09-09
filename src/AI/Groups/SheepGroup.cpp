@@ -1,8 +1,9 @@
 #include "SheepGroup.h"
 
 // 68K 0x1061e4d6 __ct__11CSheepGroupFP3CAIP14CObjectManagerP17CFormationManager
-// STUB: LEMBALL 0x0041f500
-SheepGroup::SheepGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
+// FUNCTION: LEMBALL 0x0041f500
+SheepGroup::SheepGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager)
+	: GenericGroup(p_ai, p_objectManager, p_formationManager)
 {
 }
 

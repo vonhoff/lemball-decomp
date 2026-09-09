@@ -9,7 +9,7 @@
 // VTABLE: LEMBALL 0x00494dd8
 class SheepGroup : public GenericGroup {
 public:
-	SheepGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2);
+	SheepGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager);
 	bool CheckAgainstCatapults();
 	bool CheckAgainstLemmings();
 	bool RunAway(AiCoord p_threatPosition);

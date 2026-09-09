@@ -3,8 +3,9 @@
 #include "../Objects/PlayerLemming.h"
 
 // 68K 0x1060e81a __ct__19CPlayerLemmingGroupFP3CAIP14CObjectManagerP17CFormationManager
-// STUB: LEMBALL 0x00414010
-PlayerLemmingGroup::PlayerLemmingGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
+// FUNCTION: LEMBALL 0x00414010
+PlayerLemmingGroup::PlayerLemmingGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager)
+	: GenericGroup(p_ai, p_objectManager, p_formationManager)
 {
 }
 

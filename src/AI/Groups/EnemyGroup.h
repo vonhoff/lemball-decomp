@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x00495250
 class EnemyGroup : public GenericGroup {
 public:
-	EnemyGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2);
+	EnemyGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager);
 	virtual ~EnemyGroup(); // vtable+0x00
 };
 

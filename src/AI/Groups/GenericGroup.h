@@ -10,7 +10,7 @@
 // VTABLE: LEMBALL 0x00494b60
 class GenericGroup : public GameObject {
 public:
-	GenericGroup(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2, int p_arg3, int p_arg4);
+	GenericGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager);
 	virtual ~GenericGroup();                                                                 // vtable+0x00
 	virtual bool Process();                                                                  // vtable+0x14
 	virtual void Restart();                                                                  // vtable+0x104
@@ -52,6 +52,10 @@ protected:
 	int m_formationIndex;       // 0x160
 	int m_altered;              // 0x164
 };
+
+extern ObjectManager* g_pUnknown0x4a781c;
+extern FormationManager* g_pUnknown0x4a7820;
+extern Ai* g_pUnknown0x4a7824;
 
 // SYNTHETIC: LEMBALL 0x0041e8c0
 // GenericGroup::`scalar deleting destructor'
