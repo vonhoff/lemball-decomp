@@ -44,9 +44,14 @@ void Mine::Set(AiCoord p_position)
 }
 
 // 68K 0x106163f0 Trigger__5CMineFi
-// STUB: LEMBALL 0x00423d40
+// FUNCTION: LEMBALL 0x00423d40
 void Mine::Trigger(int p_delay)
 {
+	if (m_triggerPending == 0 && m_action == (eAction) 0x18) {
+		m_triggerPending = 1;
+		m_triggerDelay = p_delay;
+		RequestAction((eAction) 0x1a);
+	}
 }
 
 // 68K 0x1061643c DoActivate__5CMineFv
