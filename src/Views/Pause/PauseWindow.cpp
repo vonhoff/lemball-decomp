@@ -12,6 +12,9 @@
 #include "../../Visos/Resources/ResFont.h"
 #include "../Sound/SoundView.h"
 
+extern unsigned char* g_apPauseRemaps[4];
+extern char* g_apPauseMenuLabels[15];
+
 // 68K 0x10b0e048 Initialise__12CPauseWindowFv
 // STUB: LEMBALL 0x00443af0
 void PauseWindow::Initialise()
@@ -347,9 +350,17 @@ PauseWindow::~PauseWindow()
 }
 
 // 68K 0x10b0f1aa RegisterRemaps__12CPauseWindowFv
-// STUB: LEMBALL 0x004448c0
+// FUNCTION: LEMBALL 0x004448c0
 void PauseWindow::RegisterRemaps()
 {
+	PauseWindow* window = this;
+	BaseRemap** remaps = window->m_remaps;
+	unsigned char** mappings = g_apPauseRemaps;
+	do {
+		*remaps = g_pBasePalManager->RegisterRemap(window->m_parentWindow->m_paletteResourceId, *mappings, 2);
+		mappings++;
+		remaps++;
+	} while (mappings < (unsigned char**) g_apPauseMenuLabels);
 }
 
 // 68K 0x10b0f222 UnRegisterRemaps__12CPauseWindowFv
@@ -503,3 +514,76 @@ void PauseWindow::OnDriverChange()
 {
 	Restart();
 }
+
+// GLOBAL: LEMBALL 0x0049f038
+unsigned char g_pauseRemap0[8] = {0x02, 0xf1, 0x51, 0x5d, 0x3d, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f040
+unsigned char g_pauseRemap1[8] = {0x02, 0xf1, 0x51, 0xe0, 0xe7, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f048
+unsigned char g_pauseRemap2[8] = {0x02, 0xf1, 0x51, 0xa8, 0x6c, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f050
+unsigned char g_pauseRemap3[8] = {0x02, 0xf1, 0x51, 0x28, 0x13, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f058
+unsigned char* g_apPauseRemaps[4] = {g_pauseRemap0, g_pauseRemap1, g_pauseRemap2, g_pauseRemap3};
+
+extern char g_szPausePaused[];
+extern char g_szPauseResume[];
+extern char g_szPauseRestart[];
+extern char g_szPauseQuit[];
+extern char g_szPausePleaseWait[];
+extern char g_szPauseLoading[];
+extern char g_szPauseAreYouSure[];
+extern char g_szPauseYes[];
+extern char g_szPauseNo[];
+extern char g_szPauseConnectionLost[];
+
+// GLOBAL: LEMBALL 0x0049f068
+char* g_apPauseMenuLabels[15] = {g_szPausePaused,
+								 g_szPauseResume,
+								 g_szPauseRestart,
+								 g_szPauseQuit,
+								 0,
+								 g_szPausePleaseWait,
+								 0,
+								 g_szPauseLoading,
+								 0,
+								 g_szPauseAreYouSure,
+								 g_szPauseYes,
+								 g_szPauseNo,
+								 0,
+								 g_szPauseConnectionLost,
+								 0};
+
+// GLOBAL: LEMBALL 0x0049f0a4
+char g_szPausePaused[] = "Paused";
+
+// GLOBAL: LEMBALL 0x0049f0ac
+char g_szPauseResume[] = "Resume";
+
+// GLOBAL: LEMBALL 0x0049f0b4
+char g_szPauseRestart[] = "Restart";
+
+// GLOBAL: LEMBALL 0x0049f0bc
+char g_szPauseQuit[] = "Quit";
+
+// GLOBAL: LEMBALL 0x0049f0c4
+char g_szPausePleaseWait[] = "Please Wait";
+
+// GLOBAL: LEMBALL 0x0049f0d0
+char g_szPauseLoading[] = "Loading...";
+
+// GLOBAL: LEMBALL 0x0049f0dc
+char g_szPauseAreYouSure[] = "Are you sure?";
+
+// GLOBAL: LEMBALL 0x0049f0ec
+char g_szPauseYes[] = "Yes";
+
+// GLOBAL: LEMBALL 0x0049f0f0
+char g_szPauseNo[] = "No";
+
+// GLOBAL: LEMBALL 0x0049f0f4
+char g_szPauseConnectionLost[] = "Connection Lost...";
