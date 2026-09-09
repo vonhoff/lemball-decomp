@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
 
 // 68K 0x10610d62 __ct__5CHandFv
 // FUNCTION: LEMBALL 0x00427ad0
@@ -30,9 +31,37 @@ void Hand::Restart()
 }
 
 // 68K 0x10610e74 Set__5CHandFUsRC7AICOORD
-// STUB: LEMBALL 0x00427b50
+// FUNCTION: LEMBALL 0x00427b50
 void Hand::Set(unsigned short p_id, const AiCoord& p_position)
 {
+	SetId(p_id);
+	m_spawnPosition.m_xFixed = p_position.m_xFixed;
+	m_spawnPosition.m_yFixed = p_position.m_yFixed;
+	m_spawnPosition.m_zFixed = p_position.m_zFixed;
+	m_position.m_xFixed = p_position.m_xFixed;
+	m_position.m_yFixed = p_position.m_yFixed;
+	m_position.m_zFixed = p_position.m_zFixed;
+	m_enabled = 1;
+	m_action = (eAction) 0x18;
+	m_actionArgument = 0;
+	m_activated = 0;
+
+	int blockX = (p_position.m_xFixed >> 12) / 16;
+	int blockY = (p_position.m_yFixed >> 12) / 16;
+
+	if (blockX >= 0) {
+		int collisionY = blockY + 1;
+		if (collisionY >= 0 && g_pMap->m_ground.m_width > blockX && g_pMap->m_ground.m_height > collisionY) {
+			g_pMap->m_ground.m_ground[g_pMap->m_ground.m_width * collisionY + blockX].m_collision |= 0x8000;
+		}
+
+		if (blockX >= 0) {
+			collisionY = blockY + 2;
+			if (collisionY >= 0 && g_pMap->m_ground.m_width > blockX && g_pMap->m_ground.m_height > collisionY) {
+				g_pMap->m_ground.m_ground[g_pMap->m_ground.m_width * collisionY + blockX].m_collision |= 0x8000;
+			}
+		}
+	}
 }
 
 // 68K 0x10610f5a Process__5CHandFv

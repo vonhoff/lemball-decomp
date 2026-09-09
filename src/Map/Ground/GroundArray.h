@@ -30,6 +30,7 @@ public:
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;
+	friend class Hand;
 	friend class Lift;
 	friend class BalloonPost;
 	friend class Mover;

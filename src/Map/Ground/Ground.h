@@ -20,6 +20,7 @@ public:
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;
+	friend class Hand;
 	friend class GroundAnim;
 	friend class Trampoline;
 	friend class C2D;
