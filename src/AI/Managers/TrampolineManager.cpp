@@ -83,9 +83,14 @@ int TrampolineManager::Hit(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x10620fec Add__18CTrampolineManagerFUsiii
-// STUB: LEMBALL 0x0042b5a0
+// FUNCTION: LEMBALL 0x0042b5a0
 void TrampolineManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
+	if (m_count < m_capacity) {
+		AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+		m_trampolines[m_count].Set(p_id, position);
+		m_count++;
+	}
 }
 
 // 68K 0x10621092 LoadLevel__18CTrampolineManagerFPUciUc
