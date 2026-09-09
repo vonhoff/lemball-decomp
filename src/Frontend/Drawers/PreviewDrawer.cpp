@@ -153,10 +153,11 @@ void PreviewDrawer::Load()
 	int i;
 	unsigned long* returnAnim;
 	unsigned long* goAnim;
+	PreviewLayout* layout;
 
 	if (m_mode == 1) {
 		m_backgroundBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_GUNLEMM);
-		m_layout = g_abPreviewLayoutCompact;
+		m_layout = (PreviewLayout*) g_abPreviewLayoutCompact;
 		goAnim = &g_dwPreviewGoAnimIdsCompact;
 		returnAnim = &g_dwPreviewReturnAnimIdsCompact;
 		m_lemmingAnimId = RES_NEWFRONT_ANIMS_LORES_DANCE;
@@ -168,7 +169,7 @@ void PreviewDrawer::Load()
 	}
 	else {
 		m_backgroundBitmap = ResBitmap::Load(RES_NEWFRONT_BITMAPS_HIRES_GUNLEMM);
-		m_layout = g_abPreviewLayoutFull;
+		m_layout = (PreviewLayout*) g_abPreviewLayoutFull;
 		goAnim = &g_dwPreviewGoAnimIdsFull;
 		returnAnim = &g_dwPreviewReturnAnimIdsFull;
 		m_lemmingAnimId = RES_NEWFRONT_ANIMS_HIRES_DANCE;
@@ -178,19 +179,21 @@ void PreviewDrawer::Load()
 		m_nextButtonAnimIds = g_dwPreviewNextAnimIdsFull;
 		m_previousButtonAnimIds = g_dwPreviewPreviousAnimIdsFull;
 	}
-	int* layout = (int*) m_layout;
-	short y = (short) layout[0x3c / 4] + (short) layout[0x44 / 4];
-	short x = (short) layout[0x40 / 4] + (short) layout[0x38 / 4];
+	layout = m_layout;
+	short y =
+		(short) layout->m_positions[PreviewGunLemming].m_y + (short) layout->m_positions[PreviewGunLemmingOffset].m_y;
+	short x =
+		(short) layout->m_positions[PreviewGunLemmingOffset].m_x + (short) layout->m_positions[PreviewGunLemming].m_x;
 	m_animPosition.m_x = x;
 	m_animPosition.m_y = y;
 	for (i = 0; i < 1; i++) {
-		(&m_primitiveBundle)[i].m_primitive.m_x = (short) ((int*) m_layout)[0x20 / 4];
-		(&m_primitiveBundle)[i].m_primitive.m_y = (short) ((int*) m_layout)[0x24 / 4];
+		(&m_primitiveBundle)[i].m_primitive.m_x = (short) m_layout->m_positions[PreviewBackground].m_x;
+		(&m_primitiveBundle)[i].m_primitive.m_y = (short) m_layout->m_positions[PreviewBackground].m_y;
 		(&m_primitiveBundle)[i].m_primitive.m_resource = BaseFrontendDrawer::m_backgroundBitmap;
 		(&m_primitiveBundle)[i].m_primitive.m_flags = 0x800;
 		(&m_primitiveBundle)[i].m_primitive.m_remap = 0;
-		(&m_primitive.m_bitmap)[i].m_x = (short) ((int*) m_layout)[0x38 / 4];
-		(&m_primitive.m_bitmap)[i].m_y = (short) ((int*) m_layout)[0x3c / 4];
+		(&m_primitive.m_bitmap)[i].m_x = (short) m_layout->m_positions[PreviewGunLemming].m_x;
+		(&m_primitive.m_bitmap)[i].m_y = (short) m_layout->m_positions[PreviewGunLemming].m_y;
 		(&m_primitive.m_bitmap)[i].m_resource = m_backgroundBitmap;
 		(&m_primitive.m_bitmap)[i].m_flags = 0x800;
 		(&m_primitive.m_bitmap)[i].m_remap = 0;
@@ -205,12 +208,26 @@ void PreviewDrawer::Load()
 	*nextDisabled = 0;
 	m_previousDisabled = 0;
 	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 4, (unsigned char) m_mode, 0);
-	m_hiliteController
-		->AddButton(((int*) m_layout)[0], ((int*) m_layout)[1], returnAnim, 1, 0, 0, 0, buttonBinding, 0xacef000d);
-	m_hiliteController
-		->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, buttonBinding, 0xacef000c);
-	m_hiliteController->AddButton(((int*) m_layout)[4],
-								  ((int*) m_layout)[5],
+	m_hiliteController->AddButton(m_layout->m_positions[PreviewReturnButton].m_x,
+								  m_layout->m_positions[PreviewReturnButton].m_y,
+								  returnAnim,
+								  1,
+								  0,
+								  0,
+								  0,
+								  buttonBinding,
+								  0xacef000d);
+	m_hiliteController->AddButton(m_layout->m_positions[PreviewGoButton].m_x,
+								  m_layout->m_positions[PreviewGoButton].m_y,
+								  goAnim,
+								  1,
+								  0,
+								  0,
+								  0,
+								  buttonBinding,
+								  0xacef000c);
+	m_hiliteController->AddButton(m_layout->m_positions[PreviewPreviousButton].m_x,
+								  m_layout->m_positions[PreviewPreviousButton].m_y,
 								  m_previousButtonAnimIds,
 								  1,
 								  0,
@@ -218,8 +235,8 @@ void PreviewDrawer::Load()
 								  0,
 								  &m_previousDisabled,
 								  0xacef000f);
-	m_hiliteController->AddButton(((int*) m_layout)[6],
-								  ((int*) m_layout)[7],
+	m_hiliteController->AddButton(m_layout->m_positions[PreviewNextButton].m_x,
+								  m_layout->m_positions[PreviewNextButton].m_y,
 								  m_nextButtonAnimIds,
 								  1,
 								  0,
@@ -311,9 +328,9 @@ void PreviewDrawer::DrawText()
 			do {
 				advance.m_height = 0;
 				advance.m_width = 0;
-				int* layout = (int*) ((char*) m_layout + *positions * 8);
-				pos.m_width = (short) *layout;
-				pos.m_height = (short) layout[1];
+				PreviewPosition* layoutPosition = &m_layout->m_positions[*positions];
+				pos.m_width = (short) layoutPosition->m_x;
+				pos.m_height = (short) layoutPosition->m_y;
 				positions = positions + 1;
 				m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, (char*) g_szPreviewX, 0x20, 0);
 				count = count - 1;
@@ -321,30 +338,31 @@ void PreviewDrawer::DrawText()
 		}
 
 		{
-			int* layout = (int*) m_layout;
+			PreviewLayout* layout = m_layout;
 			if (m_timeText[0] > '9') {
 				advance.m_height = 0;
 				advance.m_width = 0;
-				pos.m_width = (short) layout[0x58 / 4];
-				pos.m_height = (short) layout[0x5c / 4];
+				pos.m_width = (short) layout->m_positions[PreviewTimeText].m_x;
+				pos.m_height = (short) layout->m_positions[PreviewTimeText].m_y;
 				m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, 0);
 			}
 			else {
 				advance.m_height = 0;
 				advance.m_width = 0;
-				pos.m_width = (short) layout[0x58 / 4];
-				pos.m_height = (short) layout[0x5c / 4];
+				pos.m_width = (short) layout->m_positions[PreviewTimeText].m_x;
+				pos.m_height = (short) layout->m_positions[PreviewTimeText].m_y;
 				m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, m_timeText, 0x20, 0);
 			}
 		}
 
 		skill = g_pGameStatus->m_skill;
-		int* skillLayout = (int*) m_layout;
-		int skillY = skillLayout[0xa4 / 4];
-		pos.m_width = (short) (skillLayout[0xa0 / 4] - m_textManager->GetFont(m_chalkFontId)
-															   ->GetSize(&advance, g_szPreviewSkillNames[skill], 0x20)
-															   ->m_width /
-														   2);
+		PreviewLayout* skillLayout = m_layout;
+		int skillY = skillLayout->m_positions[PreviewSkillText].m_y;
+		pos.m_width = (short) (skillLayout->m_positions[PreviewSkillText].m_x -
+							   m_textManager->GetFont(m_chalkFontId)
+									   ->GetSize(&advance, g_szPreviewSkillNames[skill], 0x20)
+									   ->m_width /
+								   2);
 		advance.m_height = 0;
 		advance.m_width = 0;
 		pos.m_height = (short) skillY;
@@ -353,8 +371,8 @@ void PreviewDrawer::DrawText()
 		if (m_teamCount > 4) {
 			advance.m_height = 0;
 			advance.m_width = 0;
-			pos.m_width = (short) ((int*) m_layout)[0x58 / 4];
-			pos.m_height = (short) ((int*) m_layout)[0xd4 / 4];
+			pos.m_width = (short) m_layout->m_positions[PreviewTimeText].m_x;
+			pos.m_height = (short) m_layout->m_positions[PreviewNoneText].m_y;
 			m_textManager->DrawString(m_gdi, (VsPoint&) pos, advance, m_chalkFontId, g_szPreviewNone, 0x20, 0);
 		}
 	}
@@ -371,25 +389,26 @@ void PreviewDrawer::DrawAnims()
 	int y;
 	int i;
 
-	pos.m_x = (short) ((int*) m_layout)[0x78 / 4];
-	pos.m_y = (short) ((int*) m_layout)[0x7c / 4];
+	pos.m_x = (short) m_layout->m_positions[PreviewLemmingAnim].m_x;
+	pos.m_y = (short) m_layout->m_positions[PreviewLemmingAnim].m_y;
 	AnimsManager::DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, 0);
 
-	pos.m_x = (short) ((int*) m_layout)[0x48 / 4];
-	pos.m_y = (short) ((int*) m_layout)[0x4c / 4];
+	pos.m_x = (short) m_layout->m_positions[PreviewOpponentAnim].m_x;
+	pos.m_y = (short) m_layout->m_positions[PreviewOpponentAnim].m_y;
 	AnimsManager::DrawAnim(pos, m_opponentAnimId, 0, m_opponentAnim, 0);
 
-	pos.m_x = (short) ((int*) m_layout)[0x60 / 4];
-	pos.m_y = (short) ((int*) m_layout)[0x64 / 4];
+	pos.m_x = (short) m_layout->m_positions[PreviewTeamAnim].m_x;
+	pos.m_y = (short) m_layout->m_positions[PreviewTeamAnim].m_y;
 	AnimsManager::DrawAnim(pos, m_teamAnimId, 0, m_teamAnim, 0);
 
 	if (m_networkMode != 0) {
-		pos.m_x = (short) ((int*) m_layout)[0xa8 / 4];
-		pos.m_y = (short) ((int*) m_layout)[0xac / 4];
+		pos.m_x = (short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_x;
+		pos.m_y = (short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_y;
 		AnimsManager::DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
 		width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
-		y = ((int*) m_layout)[0xbc / 4];
-		x = ((int*) m_layout)[0x28 / 4] - (short) ((width + ((width >> 15) & 3)) >> 2) + ((int*) m_layout)[0x30 / 4];
+		y = m_layout->m_positions[PreviewNetworkLemmingRow].m_y;
+		x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) ((width + ((width >> 15) & 3)) >> 2) +
+			m_layout->m_positions[PreviewFormationOffset].m_x;
 		i = 0;
 		if (m_lemmingCount > 0) {
 			do {
@@ -403,8 +422,9 @@ void PreviewDrawer::DrawAnims()
 	}
 
 	width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
-	y = ((int*) m_layout)[0x8c / 4];
-	x = ((int*) m_layout)[0x28 / 4] - (short) ((width + ((width >> 15) & 3)) >> 2) + ((int*) m_layout)[0x30 / 4];
+	y = m_layout->m_positions[PreviewOpponentRow].m_y;
+	x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) ((width + ((width >> 15) & 3)) >> 2) +
+		m_layout->m_positions[PreviewFormationOffset].m_x;
 	i = 0;
 	if (m_opponentCount > 0) {
 		do {
@@ -417,8 +437,9 @@ void PreviewDrawer::DrawAnims()
 	}
 
 	width = (short) AnimsManager::GetAnimSize(m_teamAnimId, 0).m_width;
-	y = ((int*) m_layout)[0x74 / 4];
-	x = ((int*) m_layout)[0x28 / 4] - ((int*) m_layout)[0xc8 / 4] + ((int*) m_layout)[0x30 / 4];
+	y = m_layout->m_positions[PreviewTeamRow].m_y;
+	x = m_layout->m_positions[PreviewFormationAnchor].m_x - m_layout->m_positions[PreviewTeamOffset].m_x +
+		m_layout->m_positions[PreviewFormationOffset].m_x;
 	if (m_teamCount <= 4 && m_teamCount > 0) {
 		i = 0;
 		do {
@@ -552,7 +573,6 @@ void PreviewDrawer::Processing()
 // FUNCTION: LEMBALL 0x00449f60
 void PreviewDrawer::LoadLevelInformation()
 {
-	int* layout;
 	VsSize size;
 	VsSize lineSize;
 	PreviewData preview;
@@ -607,11 +627,10 @@ void PreviewDrawer::LoadLevelInformation()
 		targetPos += 2;
 	}
 
-	layout = (int*) m_layout;
 	lineIndex = 0;
-	layoutX = layout[0x90 / 4];
-	layoutY = layout[0x94 / 4];
-	layoutWidth = layout[0x98 / 4];
+	layoutX = m_layout->m_positions[PreviewLevelNameOrigin].m_x;
+	layoutY = m_layout->m_positions[PreviewLevelNameOrigin].m_y;
+	layoutWidth = m_layout->m_positions[PreviewLevelNameBounds].m_x;
 	targetLine = (char*) m_levelNameLines;
 	targetPos = m_textPositions;
 

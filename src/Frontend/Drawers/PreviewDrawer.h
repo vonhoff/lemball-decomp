@@ -4,6 +4,45 @@
 #include "../Base/BaseFrontendDrawer.h"
 #include "PreviewDrawerPrims.h" // complete type
 
+struct PreviewPosition {
+	int m_x;
+	int m_y;
+};
+
+enum PreviewLayoutIndex {
+	PreviewReturnButton = 0,
+	PreviewGoButton = 1,
+	PreviewPreviousButton = 2,
+	PreviewNextButton = 3,
+	PreviewBackground = 4,
+	PreviewFormationAnchor = 5,
+	PreviewFormationOffset = 6,
+	PreviewGunLemming = 7,
+	PreviewGunLemmingOffset = 8,
+	PreviewOpponentAnim = 9,
+	PreviewOpponentText = 10,
+	PreviewTimeText = 11,
+	PreviewTeamAnim = 12,
+	PreviewTeamText = 13,
+	PreviewTeamRow = 14,
+	PreviewLemmingAnim = 15,
+	PreviewLemmingText = 16,
+	PreviewOpponentRow = 17,
+	PreviewLevelNameOrigin = 18,
+	PreviewLevelNameBounds = 19,
+	PreviewSkillText = 20,
+	PreviewNetworkLemmingAnim = 21,
+	PreviewNetworkLemmingText = 22,
+	PreviewNetworkLemmingRow = 23,
+	PreviewTeamOffset = 25,
+	PreviewNoneText = 26,
+};
+
+// SIZE 0xd8
+struct PreviewLayout {
+	PreviewPosition m_positions[27];
+};
+
 // SIZE 0x488
 // VTABLE: LEMBALL 0x00497bf0 Drawer
 // VTABLE: LEMBALL 0x00497be0 BaseQueueHandler
@@ -39,7 +78,7 @@ private:
 	RepeatAnim* m_opponentAnim;             // 0x3c8
 	unsigned char* m_remapTable;            // 0x3cc
 	BaseRemap* m_remap;                     // 0x3d0
-	void* m_layout;                         // 0x3d4
+	PreviewLayout* m_layout;                // 0x3d4
 	unsigned long m_lemmingAnimId;          // 0x3d8
 	unsigned long m_teamAnimId;             // 0x3dc
 	unsigned long m_opponentAnimId;         // 0x3e0
