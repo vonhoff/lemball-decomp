@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x0049a490
 class PvFontTable : public MogloadArena {
 public:
-	virtual ~PvFontTable(); // vtable+0x00
+	virtual ~PvFontTable() {} // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x00473770
