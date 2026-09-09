@@ -150,29 +150,9 @@ Game::Game(char* p_arg0)
 		return;
 	}
 
-	storage = operator new(0x50);
-	if (storage == 0) {
-		g_pGameStatus = 0;
-	}
-	else {
-		g_pGameStatus = new (storage) GameStatus();
-	}
-
-	storage = operator new(0x28);
-	if (storage == 0) {
-		m_processingStat = 0;
-	}
-	else {
-		m_processingStat = new (storage) TimeStat(g_szProcessing);
-	}
-
-	storage = operator new(0x28);
-	if (storage == 0) {
-		m_refreshingStat = 0;
-	}
-	else {
-		m_refreshingStat = new (storage) TimeStat(g_szRefreshing);
-	}
+	g_pGameStatus = new GameStatus();
+	m_processingStat = new TimeStat(g_szProcessing);
+	m_refreshingStat = new TimeStat(g_szRefreshing);
 
 	m_flowTicks = 0;
 	g_pStatManager->Register(m_processingStat);
@@ -190,13 +170,7 @@ Game::Game(char* p_arg0)
 		InternalVsRelAssert(g_szIsValidResourceFile, g_szGameCpp, 0x16e);
 	}
 
-	storage = operator new(0xe4);
-	if (storage == 0) {
-		m_mainDisplay = 0;
-	}
-	else {
-		m_mainDisplay = new (storage) Main2DDisplay(this);
-	}
+	m_mainDisplay = new Main2DDisplay(this);
 
 	{
 		VsDebugStreambuf streambuf(titleBuf, 80, 0);
@@ -212,13 +186,7 @@ Game::Game(char* p_arg0)
 		g_pSoundManager->SetMusicCdPath(g_szMusicCdPath);
 	}
 
-	storage = operator new(0x2cc);
-	if (storage == 0) {
-		g_pSoundView = 0;
-	}
-	else {
-		g_pSoundView = new (storage) SoundView();
-	}
+	g_pSoundView = new SoundView();
 
 	m_process = 0;
 	m_currentFlow = 1;
