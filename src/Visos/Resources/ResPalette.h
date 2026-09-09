@@ -22,6 +22,7 @@ public:
 											  ResPalette* p_palette,
 											  void* p_unused,
 											  unsigned int* p_fallbackEntries);
+	friend class C2D;
 
 private:
 	undefined4 m_paletteState; // 0x48
