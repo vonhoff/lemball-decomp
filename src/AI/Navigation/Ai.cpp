@@ -251,6 +251,37 @@ bool Ai::IsLemmingPlayerControlled(PlayerLemming* p_lemming)
 // FUNCTION: LEMBALL 0x00412660
 int Ai::ProcessMsg(Message* p_message)
 {
+	unsigned int messageType = p_message->type;
+	if (messageType != 4) {
+		if (m_playerGroups == 0) {
+			return 1;
+		}
+		switch (messageType) {
+		case 2:
+			m_playerGroupManager->AddNewWaypointToCurrentGroup(p_message->code, (int) p_message->payload);
+			return 0;
+		case 3:
+			m_playerGroupManager->RemoveWaypointsFromCurrentGroup();
+			return 0;
+		case 5:
+			m_playerGroupManager->CreateNewGroup((unsigned short) p_message->code,
+												 (unsigned short*) p_message->payload);
+			return 0;
+		case 6:
+			m_playerGroupManager->MakePreviousGroupPlayerControlled();
+			return 0;
+		case 7:
+			m_playerGroupManager->MakeNextGroupPlayerControlled();
+			return 0;
+		case 8:
+			m_playerGroupManager->UseObject(p_message->code);
+			return 0;
+		default:
+			m_processedCount = m_processedCount + 1;
+			return 0;
+		}
+	}
+	m_playerGroupManager->PlayerGroupRequestFire(p_message->code, (int) p_message->payload);
 	return 0;
 }
 

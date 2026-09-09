@@ -26,6 +26,7 @@ public:
 	friend class HotAreaList;
 	friend class BaseFrontendDrawer;
 	friend class TargetAboutScreen;
+	friend class Ai;
 
 private:
 	unsigned int m_signature;      // 0x04
