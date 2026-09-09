@@ -217,9 +217,9 @@ void SuccFailDrawer::CalculateText()
 		strcat(m_message, hash + 1);
 	}
 
-	int* layout = (int*) m_layout;
-	short layoutMinX = (short) layout[0x48 / 4];
-	short layoutY = (short) layout[0x4c / 4];
+	SuccFailLayout* layout = m_layout;
+	short layoutMinX = (short) layout->m_messagePosition.m_x;
+	short layoutY = (short) layout->m_messagePosition.m_y;
 	m_firstLine = m_message;
 	m_secondLine = 0;
 	bool done = false;
@@ -227,7 +227,7 @@ void SuccFailDrawer::CalculateText()
 	VsSize textSize;
 	do {
 		font->GetSize(&textSize, m_firstLine, 0x20);
-		lineX = (short) layout[0x38 / 4] + (short) ((layout[0x40 / 4] - (int) textSize.m_width) / 2);
+		lineX = (short) layout->m_frameStart.m_x + (short) ((layout->m_frameEnd.m_x - (int) textSize.m_width) / 2);
 		char* prevBreak = (m_secondLine == 0) ? 0 : (m_secondLine - 1);
 		if (lineX < layoutMinX) {
 			char* space = strrchr(m_firstLine, ' ');
@@ -251,16 +251,17 @@ void SuccFailDrawer::CalculateText()
 	else {
 		layoutY = layoutY + textSize.m_height;
 		font->GetSize(&textSize, m_secondLine, 0x20);
-		m_secondLinePos.m_x = (short) layout[0x38 / 4] + (short) ((layout[0x40 / 4] - (int) textSize.m_width) / 2);
+		m_secondLinePos.m_x =
+			(short) layout->m_frameStart.m_x + (short) ((layout->m_frameEnd.m_x - (int) textSize.m_width) / 2);
 		m_secondLinePos.m_y = layoutY;
 	}
 
 	font->GetSize(&textSize, g_szPasswordLabel, 0x20);
 	short labelHeight = textSize.m_height;
 	short labelWidth = textSize.m_width;
-	short passwordLabelY = (short) layout[0x64 / 4];
-	int layoutWidth = layout[0x40 / 4];
-	int layoutBaseX = layout[0x38 / 4];
+	short passwordLabelY = (short) layout->m_passwordLabelPosition.m_y;
+	int layoutWidth = layout->m_frameEnd.m_x;
+	int layoutBaseX = layout->m_frameStart.m_x;
 	m_passwordLabelPos.m_y = passwordLabelY;
 	m_passwordLabelPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
 
@@ -284,7 +285,7 @@ void SuccFailDrawer::Load()
 	int i;
 
 	if (m_mode != 0) {
-		m_layout = g_abSuccFailLayoutCompact;
+		m_layout = (SuccFailLayout*) g_abSuccFailLayoutCompact;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsCompact;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsCompact;
 		if (m_variant != 0) {
@@ -299,7 +300,7 @@ void SuccFailDrawer::Load()
 		}
 	}
 	else {
-		m_layout = g_abSuccFailLayoutFull;
+		m_layout = (SuccFailLayout*) g_abSuccFailLayoutFull;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
 		if (m_variant != 0) {
@@ -328,18 +329,18 @@ void SuccFailDrawer::Load()
 		primitive = &primitiveBundle->m_primitive;
 		primary = &primitives->m_primary;
 		primitive->m_x = m_width - m_backgroundBitmap->m_x;
-		primitive->m_y = (short) ((int*) m_layout)[0x14 / 4];
+		primitive->m_y = (short) m_layout->m_backgroundPosition.m_y;
 		primitive->m_resource = m_backgroundBitmap;
 		primitive->m_flags = 0x800;
 		primitive->m_remap = 0;
 		primary->m_x = (short) bitmapX;
-		primary->m_y = (short) ((int*) m_layout)[0x1c / 4];
+		primary->m_y = (short) m_layout->m_primaryPosition.m_y;
 		primary->m_resource = m_primaryBitmap;
 		primary->m_flags = 0x800;
 		primary->m_remap = 0;
 		if (m_secondaryBitmap != 0) {
-			primitives->m_secondary.m_x = (short) ((int*) m_layout)[0x50 / 4];
-			primitives->m_secondary.m_y = (short) ((int*) m_layout)[0x54 / 4];
+			primitives->m_secondary.m_x = (short) m_layout->m_secondaryPosition.m_x;
+			primitives->m_secondary.m_y = (short) m_layout->m_secondaryPosition.m_y;
 			primitives->m_secondary.m_resource = m_secondaryBitmap;
 			primitives->m_secondary.m_flags = 0x800;
 			primitives->m_secondary.m_remap = 0;
@@ -347,23 +348,37 @@ void SuccFailDrawer::Load()
 		primitives++;
 		primitiveBundle++;
 	} while (--i != 0);
-	((int*) m_layout)[0x18 / 4] = bitmapX;
-	((int*) m_layout)[0x28 / 4] = bitmapX;
+	m_layout->m_primaryPosition.m_x = bitmapX;
+	m_layout->m_failurePosition.m_x = bitmapX;
 	m_buttonBinding = 0;
 	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 2, (unsigned char) m_mode, 0);
-	m_hiliteController
-		->AddButton(((int*) m_layout)[0], ((int*) m_layout)[1], returnAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef0010);
-	m_hiliteController
-		->AddButton(((int*) m_layout)[2], ((int*) m_layout)[3], goAnim, 1, 0, 0, 0, &m_buttonBinding, 0xacef0011);
+	m_hiliteController->AddButton(m_layout->m_returnButton.m_x,
+								  m_layout->m_returnButton.m_y,
+								  returnAnim,
+								  1,
+								  0,
+								  0,
+								  0,
+								  &m_buttonBinding,
+								  0xacef0010);
+	m_hiliteController->AddButton(m_layout->m_goButton.m_x,
+								  m_layout->m_goButton.m_y,
+								  goAnim,
+								  1,
+								  0,
+								  0,
+								  0,
+								  &m_buttonBinding,
+								  0xacef0011);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
 	if (m_variant != 0) {
-		m_animPosition.m_x = (short) ((int*) m_layout)[0x18 / 4] + (short) ((int*) m_layout)[0x20 / 4];
-		m_animPosition.m_y = (short) ((int*) m_layout)[0x1c / 4] + (short) ((int*) m_layout)[0x24 / 4];
+		m_animPosition.m_x = (short) m_layout->m_primaryPosition.m_x + (short) m_layout->m_successAnimOffset.m_x;
+		m_animPosition.m_y = (short) m_layout->m_primaryPosition.m_y + (short) m_layout->m_successAnimOffset.m_y;
 	}
 	else {
-		m_animPosition.m_x = (short) ((int*) m_layout)[0x28 / 4] + (short) ((int*) m_layout)[0x30 / 4];
-		m_animPosition.m_y = (short) ((int*) m_layout)[0x2c / 4] + (short) ((int*) m_layout)[0x34 / 4];
+		m_animPosition.m_x = (short) m_layout->m_failurePosition.m_x + (short) m_layout->m_failureAnimOffset.m_x;
+		m_animPosition.m_y = (short) m_layout->m_failurePosition.m_y + (short) m_layout->m_failureAnimOffset.m_y;
 	}
 	CalculateText();
 	if (m_animationsEnabled != 0) {
@@ -513,17 +528,17 @@ bool SuccFailDrawer::ConfirmedAction(int p_action)
 void SuccFailDrawer::Processing()
 {
 	unsigned long now;
-	int* layout;
+	SuccFailLayout* layout;
 
 	if (m_animStarted == 0) {
 		now = timeGetTime();
 		if (now > m_animStartDeadline && m_animationsEnabled != 0) {
 			if (m_display->IsWindowValid() != 0) {
-				layout = (int*) m_layout;
-				VsRect rect((short) layout[0x50 / 4],
-							(short) layout[0x54 / 4],
-							(short) layout[0x58 / 4],
-							(short) layout[0x5c / 4]);
+				layout = m_layout;
+				VsRect rect((short) layout->m_secondaryPosition.m_x,
+							(short) layout->m_secondaryPosition.m_y,
+							(short) layout->m_animWindowEnd.m_x,
+							(short) layout->m_animWindowEnd.m_y);
 				m_animWindow.Create(rect, (PvGWnd*) m_display, g_szPaintballSequence);
 				m_animWindow.Play();
 				m_animStarted = 1;
@@ -556,10 +571,8 @@ sound:
 // FUNCTION: LEMBALL 0x00450ba0
 void SuccFailDrawer::DrawBackGround()
 {
-	int* layout = (int*) m_layout;
-	CoordPair* start = (CoordPair*) &layout[0x38 / 4];
-	CoordPair* end = (CoordPair*) &layout[0x40 / 4];
-	DrawFrame(*start, *end);
+	SuccFailLayout* layout = m_layout;
+	DrawFrame(layout->m_frameStart, layout->m_frameEnd);
 	m_primitives[m_primitiveBank].m_primary.Draw(m_gdi);
 	if (m_secondaryBitmap != 0) {
 		m_primitives[m_primitiveBank].m_secondary.Draw(m_gdi);

@@ -6,6 +6,23 @@
 #include "../Windows/SuccFailAnimWindow.h" // complete type
 #include "SuccFailDrawerPrims.h"           // complete type
 
+// SIZE 0x68
+struct SuccFailLayout {
+	CoordPair m_returnButton;          // 0x00
+	CoordPair m_goButton;              // 0x08
+	CoordPair m_backgroundPosition;    // 0x10
+	CoordPair m_primaryPosition;       // 0x18
+	CoordPair m_successAnimOffset;     // 0x20
+	CoordPair m_failurePosition;       // 0x28
+	CoordPair m_failureAnimOffset;     // 0x30
+	CoordPair m_frameStart;            // 0x38
+	CoordPair m_frameEnd;              // 0x40
+	CoordPair m_messagePosition;       // 0x48
+	CoordPair m_secondaryPosition;     // 0x50
+	CoordPair m_animWindowEnd;         // 0x58
+	CoordPair m_passwordLabelPosition; // 0x60
+};
+
 // SIZE 0x60c
 // VTABLE: LEMBALL 0x00498358 Drawer
 // VTABLE: LEMBALL 0x00498348 BaseQueueHandler
@@ -41,7 +58,7 @@ private:
 	unsigned int m_primaryBitmapId;      // 0x504
 	unsigned int m_backgroundId;         // 0x508
 	unsigned int m_secondaryBitmapId;    // 0x50c
-	void* m_layout;                      // 0x510
+	SuccFailLayout* m_layout;            // 0x510
 	unsigned int m_buttonBinding;        // 0x514
 	unsigned int m_variant;              // 0x518
 	unsigned int m_soundStarted;         // 0x51c

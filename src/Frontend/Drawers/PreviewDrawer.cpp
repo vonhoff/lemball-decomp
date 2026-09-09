@@ -286,9 +286,8 @@ PreviewDrawer::~PreviewDrawer()
 // FUNCTION: LEMBALL 0x00449750
 void PreviewDrawer::DrawBackGround()
 {
-	CoordPair* layout = (CoordPair*) m_layout;
 	m_primitive.m_bitmap.Draw(m_gdi);
-	DrawFrame(layout[0x28 / sizeof(CoordPair)], layout[0x2c / sizeof(CoordPair)]);
+	DrawFrame(m_layout->m_positions[PreviewFormationAnchor], m_layout->m_positions[PreviewFormationOffset]);
 }
 
 // 68K 0x1080b52c DrawText__14CPreviewDrawerFv
@@ -328,7 +327,7 @@ void PreviewDrawer::DrawText()
 			do {
 				advance.m_height = 0;
 				advance.m_width = 0;
-				PreviewPosition* layoutPosition = &m_layout->m_positions[*positions];
+				CoordPair* layoutPosition = &m_layout->m_positions[*positions];
 				pos.m_width = (short) layoutPosition->m_x;
 				pos.m_height = (short) layoutPosition->m_y;
 				positions = positions + 1;

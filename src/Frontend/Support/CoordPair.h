@@ -3,10 +3,10 @@
 
 #include "../../Common.h"
 
-// SIZE 0x04
+// SIZE 0x08
 struct CoordPair {
-	short m_x; // 0x00
-	short m_y; // 0x02
+	int m_x; // 0x00
+	int m_y; // 0x04
 };
 
 #endif

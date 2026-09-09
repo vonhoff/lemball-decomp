@@ -4,11 +4,6 @@
 #include "../Base/BaseFrontendDrawer.h"
 #include "PreviewDrawerPrims.h" // complete type
 
-struct PreviewPosition {
-	int m_x;
-	int m_y;
-};
-
 enum PreviewLayoutIndex {
 	PreviewReturnButton = 0,
 	PreviewGoButton = 1,
@@ -40,7 +35,7 @@ enum PreviewLayoutIndex {
 
 // SIZE 0xd8
 struct PreviewLayout {
-	PreviewPosition m_positions[27];
+	CoordPair m_positions[27];
 };
 
 // SIZE 0x488
