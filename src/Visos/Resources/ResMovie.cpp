@@ -51,7 +51,8 @@ void ResMovie::AllocateResources(unsigned int p_count)
 // FUNCTION: LEMBALL 0x0045e060
 bool ResMovie::DirectResources(unsigned int p_index, unsigned char** p_headerCursor, unsigned char** p_dataCursor)
 {
-	if (!m_movieEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this)) {
+	int direct = (unsigned int) m_movieEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this) >= 1;
+	if (direct == 0) {
 		if (!m_fontEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this)) {
 			return 0;
 		}
@@ -63,8 +64,11 @@ bool ResMovie::DirectResources(unsigned int p_index, unsigned char** p_headerCur
 // FUNCTION: LEMBALL 0x0045e0c0
 bool ResMovie::DirectResources(unsigned int p_index, unsigned char** p_cursor)
 {
-	if (m_movieEntries[p_index].Direct(*p_cursor, this) == 0 && m_fontEntries[p_index].Direct(*p_cursor, this) == 0) {
-		return 0;
+	int direct = (unsigned int) m_movieEntries[p_index].Direct(*p_cursor, this) >= 1;
+	if (direct == 0) {
+		if (m_fontEntries[p_index].Direct(*p_cursor, this) == 0) {
+			return 0;
+		}
 	}
 	return 1;
 }
