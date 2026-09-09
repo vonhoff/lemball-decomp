@@ -2,10 +2,11 @@
 #define LEMBALL_VISOS_FOUNDATION_VSRECT_H
 
 #include "../../Common.h"
-#include "VsSize.h" // complete type
+#include "VsPoint.h" // complete type
+#include "VsSize.h"  // complete type
 
 // SIZE 0x08
-class VsRect : public VsSize {
+class VsRect : public VsSize, public VsPoint {
 public:
 	VsRect()
 	{
@@ -37,9 +38,6 @@ public:
 
 	VsRect& operator=(const VsRect& p_source);
 	void ExpandToInclude(const VsRect& p_rect);
-
-	short m_x; // 0x04
-	short m_y; // 0x06
 };
 
 // 68K 0x1011c926 __ct__7CVSRectFv

@@ -655,6 +655,12 @@ int g_nMouseShapeGameY = 0;
 // GLOBAL: LEMBALL 0x0049ea1c
 unsigned int g_nMouseShapeOnGround = 0;
 
+// GLOBAL: LEMBALL 0x0049efcc
+int g_lastDrawnTime = 0;
+
+// GLOBAL: LEMBALL 0x004a78bc
+char g_timeText[5];
+
 // 68K 0x10b09208 SetMouseShape__3C2DFv
 // FUNCTION: LEMBALL 0x00437e90
 void C2D::SetMouseShape()
@@ -2042,9 +2048,39 @@ void C2D::DrawDemo()
 }
 
 // 68K 0x10b05804 DrawTime__3C2DFv
-// STUB: LEMBALL 0x0043fd80
+// FUNCTION: LEMBALL 0x0043fd80
 void C2D::DrawTime()
 {
+	unsigned short baseTime = (unsigned short) m_ai->m_unk0xe4;
+	short time = (short) m_ai->m_gameTime;
+	time = (short) (time + baseTime);
+	if (time < 0) {
+		time = 0;
+	}
+	if (time >= 600) {
+		if (baseTime >= 600) {
+			return;
+		}
+		if (time >= 600) {
+			time = 599;
+		}
+	}
+
+	if (time != g_lastDrawnTime) {
+		g_lastDrawnTime = time;
+		int seconds = time % 60;
+		g_timeText[0] = (char) (time / 60) + '0';
+		g_timeText[1] = ':';
+		g_timeText[2] = (char) (seconds / 10) + '0';
+		g_timeText[3] = (char) (seconds % 10) + '0';
+		g_timeText[4] = 0;
+	}
+
+	VsSize advance;
+	advance.m_width = -4;
+	advance.m_height = 0;
+	m_textManager
+		->DrawString(m_gdi, m_spriteGroundLookupRectA, advance, RES_NEWFRONT_FONTS_GAME_SCORETIME, g_timeText, 0x20, 0);
 }
 
 // 68K 0x10b05914 DrawPaused__3C2DFv
