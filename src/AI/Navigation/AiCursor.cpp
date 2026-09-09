@@ -19,10 +19,13 @@ void AiCursor::SetCursorXy(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x00414e20
 void AiCursor::CheckAndClipCursorBounds()
 {
-	if (m_cursorX > m_maximumX) {
-		m_cursorX = m_maximumX;
+	int cursorX = m_cursorX;
+	int maximumX = m_maximumX;
+
+	if (maximumX < cursorX) {
+		m_cursorX = maximumX;
 	}
-	else if (m_cursorX < 0) {
+	else if (cursorX < 0) {
 		m_cursorX = 0;
 	}
 	if (m_cursorY > m_maximumY) {
