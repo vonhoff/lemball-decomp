@@ -36,14 +36,14 @@ void NodeManager::Initialise(int p_count)
 	}
 	if (m_nodes == 0) {
 		m_nodes = new Node[m_capacity];
-	}
 
-	int i = 0;
-	if (m_capacity > 0) {
-		do {
-			m_nodes[i].Restart();
-			i++;
-		} while (i < m_capacity);
+		int i = 0;
+		if (m_capacity > 0) {
+			do {
+				m_nodes[i].Restart();
+				i++;
+			} while (i < m_capacity);
+		}
 	}
 }
 
