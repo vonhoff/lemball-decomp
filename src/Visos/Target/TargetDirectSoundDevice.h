@@ -37,22 +37,25 @@ public:
 	virtual unsigned char GetEffectVolume();
 	virtual void SetEffectVolume(unsigned char p_volume);
 	virtual bool SetVolume(unsigned long p_resourceId, int p_index, unsigned char p_volume);
-	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, unsigned char p_volume);
-	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume);
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume);
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume);
 	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect);
 	virtual void SetWnd(Wnd* p_wnd);
 
 private:
+	bool PrepareEffect(unsigned char* p_data, unsigned long* p_handle, unsigned int p_effectHandle);
+
 	union {
 		undefined m_platformState[0x50]; // 0x04
 		struct {
-			undefined m_unk0x04[0x0c];   // 0x04
-			void* m_nativeWindow;        // 0x10
-			int m_effectCapacity;        // 0x14
-			int m_buffersPerEffect;      // 0x18
-			undefined4 m_musicAvailable; // 0x1c
-			undefined4 m_available;      // 0x20
-			undefined m_unk0x24[0x30];   // 0x24
+			undefined m_unk0x04[0x0c];           // 0x04
+			void* m_nativeWindow;                // 0x10
+			int m_effectCapacity;                // 0x14
+			int m_buffersPerEffect;              // 0x18
+			undefined4 m_musicAvailable;         // 0x1c
+			undefined4 m_available;              // 0x20
+			undefined m_unk0x24[0x2c];           // 0x24
+			TargetDirectSoundEffect** m_effects; // 0x50
 		} m_platform;
 	};
 };

@@ -5,6 +5,10 @@
 
 // SIZE 0x1c
 class TargetDirectSoundEffect {
+public:
+	int Play(int p_loop);
+	int PlayWithVolume(int p_volume, int p_loop);
+
 private:
 	unsigned int m_prepared;     // 0x00
 	undefined4 m_unknown04;      // 0x04

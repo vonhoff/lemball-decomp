@@ -1,6 +1,7 @@
 #include "TargetDirectSoundDevice.h"
 
 #include "../Graphics/Wnd.h"
+#include "TargetDirectSoundEffect.h"
 
 // STUB: LEMBALL 0x0047dd80
 TargetDirectSoundDevice::TargetDirectSoundDevice(int p_effectCapacity, int p_buffersPerEffect)
@@ -100,6 +101,12 @@ int TargetDirectSoundDevice::Dummy38(undefined4 p_arg0, undefined4 p_arg1, undef
 	return 0;
 }
 
+// STUB: LEMBALL 0x0047e520
+bool TargetDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_handle, unsigned int p_effectHandle)
+{
+	return false;
+}
+
 // FUNCTION: LEMBALL 0x0047e5b0
 int TargetDirectSoundDevice::Dummy40(undefined4 p_arg0)
 {
@@ -169,20 +176,17 @@ bool TargetDirectSoundDevice::SetVolume(unsigned long p_resourceId, int p_index,
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e7c0
-unsigned char TargetDirectSoundDevice::EffectPlay(unsigned long p_effectId,
-												  unsigned short p_pitch,
-												  unsigned char p_volume)
+// FUNCTION: LEMBALL 0x0047e7c0
+unsigned char TargetDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
 {
-	return 0;
+	return m_platform.m_effects[p_effectId]->Play(p_volume);
 }
 
-// STUB: LEMBALL 0x0047e7e0
-unsigned char TargetDirectSoundDevice::EffectPlay(unsigned long p_effectId,
-												  unsigned char p_channel,
-												  unsigned char p_volume)
+// FUNCTION: LEMBALL 0x0047e7e0
+unsigned char TargetDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume)
 {
-	return 0;
+	int volume = (p_channel * 10000) / 0xff - 10000;
+	return m_platform.m_effects[p_effectId]->PlayWithVolume(volume, p_volume);
 }
 
 // FUNCTION: LEMBALL 0x0047e860
@@ -197,10 +201,10 @@ void TargetDirectSoundDevice::SetWnd(Wnd* p_wnd)
 	m_platform.m_nativeWindow = p_wnd->m_nativeWindow;
 }
 
-// STUB: LEMBALL 0x0047e8c0
+// FUNCTION: LEMBALL 0x0047e8c0
 int TargetDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_handle)
 {
-	return 0;
+	return PrepareEffect(p_data, p_handle, 1);
 }
 
 TargetDirectSoundDevice::~TargetDirectSoundDevice()

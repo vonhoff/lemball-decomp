@@ -103,14 +103,14 @@ void BaseSoundDevice::MusicMiscControlMessage(unsigned char p_channel, unsigned 
 
 // 68K 0x102180f8 EffectPlay__16CBaseSoundDeviceFUlUsUc
 // FUNCTION: LEMBALL 0x0047fa60
-unsigned char BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, unsigned char p_volume)
+unsigned char BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
 {
 	return 0;
 }
 
 // 68K 0x1021812c EffectPlay__16CBaseSoundDeviceFUlUcUc
 // FUNCTION: LEMBALL 0x0047fa70
-unsigned char BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, unsigned char p_volume)
+unsigned char BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume)
 {
 	return 0;
 }

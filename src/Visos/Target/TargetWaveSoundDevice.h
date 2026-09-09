@@ -38,13 +38,9 @@ public:
 	virtual int FreeEffect(unsigned long p_effectId);
 	virtual int Dummy4c();
 	virtual int FreeAllEffects();
-	virtual unsigned char EffectPlay(unsigned long p_effectId,
-									 unsigned short p_pitch,
-									 unsigned char p_volume); // vtable+0x90
-	virtual unsigned char EffectPlay(unsigned long p_effectId,
-									 unsigned char p_channel,
-									 unsigned char p_volume);                 // vtable+0x8c
-	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect); // vtable+0x94
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume);  // vtable+0x90
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume); // vtable+0x8c
+	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect);                          // vtable+0x94
 
 private:
 	unsigned int m_channelCount;    // 0x04

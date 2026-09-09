@@ -409,9 +409,7 @@ int TargetWaveSoundDevice::FreeAllEffects()
 }
 
 // FUNCTION: LEMBALL 0x0047d160
-unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId,
-												unsigned short p_pitch,
-												unsigned char p_volume)
+unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
 {
 	unsigned int i;
 	TargetWaveEffect* effect;
@@ -436,9 +434,7 @@ unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId,
 }
 
 // FUNCTION: LEMBALL 0x0047d220
-unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId,
-												unsigned char p_channel,
-												unsigned char p_volume)
+unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume)
 {
 	BaseSoundDevice* device;
 
