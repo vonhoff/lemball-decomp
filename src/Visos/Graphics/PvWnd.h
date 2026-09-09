@@ -37,7 +37,7 @@ public:
 	virtual void InternalOnDestroy();                                                    // vtable+0x1c
 	virtual void InternalOnSize();                                                       // vtable+0x20
 	virtual void InternalOnMove();                                                       // vtable+0x28
-	virtual void InternalOnMove(const VsPoint& p_point);                                 // vtable+0x24
+	virtual void InternalOnMove(VsPoint p_point);                                        // vtable+0x24
 	virtual void InternalOnZoom(int p_oldZoom);                                          // vtable+0x2c
 	virtual void InternalSetRect(const VsRect& p_rect);                                  // vtable+0x30
 	virtual void InternalSetRelTL(const VsPoint& p_point);                               // vtable+0x34

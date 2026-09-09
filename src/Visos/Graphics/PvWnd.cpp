@@ -363,9 +363,12 @@ void PvWnd::InternalOnMove()
 }
 
 // 68K 0x1021716c _OnMove__6CPVWndF8CVSPoint
-// STUB: LEMBALL 0x00466260
-void PvWnd::InternalOnMove(const VsPoint& p_point)
+// FUNCTION: LEMBALL 0x00466260
+void PvWnd::InternalOnMove(VsPoint p_point)
 {
+	m_rect.m_x = (short) (m_rect.m_x + p_point.m_x);
+	m_rect.m_y = (short) (m_rect.m_y + p_point.m_y);
+	InternalOnMove();
 }
 
 // 68K 0x102171cc _OnZoom__6CPVWndFi
