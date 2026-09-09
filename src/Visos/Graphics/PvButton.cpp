@@ -39,9 +39,15 @@ unsigned int PvButton::GetStyle()
 }
 
 // 68K 0x1011776a Move__9CPVButtonFRC8CVSPoint
-// STUB: LEMBALL 0x0043a580
+// FUNCTION: LEMBALL 0x0043a580
 void PvButton::Move(const VsPoint& p_point)
 {
+	m_forceDrawCount = 1;
+	HotAreaHandler::m_x -= m_relativeTopLeft.m_x;
+	HotAreaHandler::m_y -= m_relativeTopLeft.m_y;
+	GWnd::Move(p_point);
+	HotAreaHandler::m_x += m_relativeTopLeft.m_x;
+	HotAreaHandler::m_y += m_relativeTopLeft.m_y;
 }
 
 // 68K 0x101177f6 OnVisibilityChange__9CPVButtonFv
