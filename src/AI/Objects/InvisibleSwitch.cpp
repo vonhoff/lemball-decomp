@@ -37,14 +37,14 @@ void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
 	m_objectCount = 0;
 	m_minCorner = p_cornerA;
 	m_maxCorner = p_cornerB;
-	short temporary;
-	if (m_minCorner.m_x > m_maxCorner.m_x) {
-		temporary = m_minCorner.m_x;
-		m_minCorner.m_x = m_maxCorner.m_x;
-		m_maxCorner.m_x = temporary;
+	short maxX = m_maxCorner.m_x;
+	short minX = m_minCorner.m_x;
+	if (minX > maxX) {
+		m_minCorner.m_x = maxX;
+		m_maxCorner.m_x = minX;
 	}
-	short maxY = m_maxCorner.m_y;
 	short minY = m_minCorner.m_y;
+	short maxY = m_maxCorner.m_y;
 	if (minY > maxY) {
 		m_minCorner.m_y = maxY;
 		m_maxCorner.m_y = minY;
