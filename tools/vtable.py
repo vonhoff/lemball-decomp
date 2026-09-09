@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
-"""Compare vtables after normalizing transparent MSVC linker artifacts.
+"""Compare vtables after following MSVC 4.00 linker jmp-rel32 stubs.
 
-The MSVC 4.00 incremental linker routes most vtable entries through five-byte
-``jmp rel32`` stubs.  reccmp 0.1.6 compares the raw stub entities, so every
-table fails even when both stubs reach matched function bodies.  This wrapper
-keeps vtordisp/this-adjusting thunks intact and follows linker E9 stubs only
-until reaching a named function body.  This avoids mistaking an intentional
-tail call in an incomplete source function for another linker thunk.
-
-MSVC 4.00 also emits scalar/vector deleting-destructor names through weak
-aliases.  Opposite generated kinds for the same class are accepted only when
-a direct function comparison is exact, effectively matched, or passes the
-same conservative codegen-equivalence rules used by check.py.
+Keeps vtordisp/this-adjusting thunks. Accepts opposite scalar/vector deleting
+destructor aliases when codegen matches (same rules as check.py).
 
   python tools/vtable.py --no-build
   python tools/vtable.py --no-build --verbose
@@ -85,7 +76,6 @@ class SlotResult:
 
 
 def resolve_jump(image, address: int | None, stop_at=None) -> int | None:
-    """Follow linker jump stubs."""
     if address is None:
         return None
 
@@ -114,7 +104,6 @@ def resolve_jump(image, address: int | None, stop_at=None) -> int | None:
 
 
 def is_original_clone(image, address: int | None, entity: object | None) -> bool:
-    """Check whether two bodies are identical."""
     if address is None or entity is None or entity.orig_addr is None:
         return False
     size = entity.size(ImageId.RECOMP)
@@ -152,7 +141,6 @@ def read_table(engine: Compare, match) -> tuple[list[int], list[int]]:
 
 
 def collect_folded_aliases(engine: Compare, codebase: DecompCodebase) -> dict[int, set[int]]:
-    """Read folded source addresses."""
     aliases: dict[int, set[int]] = {}
     for function in codebase.iter_line_functions():
         if not function.is_folded:
@@ -169,7 +157,6 @@ def collect_folded_aliases(engine: Compare, codebase: DecompCodebase) -> dict[in
 
 
 def nested_vtable_symbol(class_name: str, base_class: str | None) -> str | None:
-    """Read a decorated nested-base name."""
     if base_class is None or SIMPLE_CLASS_RE.fullmatch(class_name) is None:
         return None
     match = NESTED_VTABLE_BASE_RE.fullmatch(base_class)
@@ -179,7 +166,6 @@ def nested_vtable_symbol(class_name: str, base_class: str | None) -> str | None:
 
 
 def collect_nested_vtable_matches(engine: Compare, source_vtables, mapped: set[int]) -> list[ReccmpMatch]:
-    """Pair nested-base tables."""
     candidates: dict[str, list[object]] = {}
     for entity in engine._db.unmatched(ImageId.RECOMP):
         if entity.get("type") != EntityType.VTABLE:
@@ -274,7 +260,6 @@ def entity_name(entity: object | None) -> str:
 
 
 def is_generated_adjuster(entity: object | None) -> bool:
-    """Check for an MSVC adjustment thunk."""
     if entity is None:
         return False
     if "`vtordisp" in entity_name(entity):
@@ -289,7 +274,6 @@ def is_generated_adjuster(entity: object | None) -> bool:
 
 
 def deleting_destructor_identity(entity: object | None) -> tuple[str, str] | None:
-    """Read a generated destructor kind."""
     match = DELETING_DESTRUCTOR_RE.match(entity_name(entity))
     if match is None:
         return None
@@ -304,7 +288,6 @@ def generated_function_codegen_matches(
     recomp_entity: object | None,
     name: str,
 ) -> bool:
-    """Compare compiler-generated functions."""
     if orig is None or recomp is None or orig_entity is None or recomp_entity is None:
         return False
 
@@ -350,7 +333,6 @@ def is_same_generated_adjuster(
     orig_entity: object | None,
     recomp_entity: object | None,
 ) -> bool:
-    """Compare duplicate vtordisp bodies."""
     orig_name = entity_name(orig_entity)
     recomp_name = entity_name(recomp_entity)
     return "`vtordisp" in orig_name and orig_name == recomp_name and generated_function_codegen_matches(
@@ -370,7 +352,6 @@ def is_same_deleting_destructor_alias(
     orig_entity: object | None,
     recomp_entity: object | None,
 ) -> bool:
-    """Compare opposite destructor aliases."""
     orig_identity = deleting_destructor_identity(orig_entity)
     recomp_identity = deleting_destructor_identity(recomp_entity)
     if (
@@ -424,14 +405,8 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
     matched_tables = 0
     slot_count = 0
     matched_slots = 0
-    unannotated_slots = 0
-    unknown_recomp_slots = 0
-    known_mismatch_slots = 0
-    layout_mismatch_slots = 0
-    folded_match_slots = 0
-    clone_match_slots = 0
-    adjuster_match_slots = 0
-    deleting_dtor_match_slots = 0
+    equiv = Counter()
+    remain = Counter()
     unknown_orig_counts: Counter[int] = Counter()
     known_mismatch_counts: Counter[tuple[int | None, str, int | None, str]] = Counter()
     codebase = DecompCodebase(engine.code_files, engine.target_id, aliases=engine.project_aliases)
@@ -451,10 +426,10 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
         matches = sum(slot.matches for slot in slots)
         slot_count += len(slots)
         matched_slots += matches
-        folded_match_slots += sum(slot.folded_match for slot in slots)
-        clone_match_slots += sum(slot.clone_match for slot in slots)
-        adjuster_match_slots += sum(slot.adjuster_match for slot in slots)
-        deleting_dtor_match_slots += sum(slot.deleting_dtor_match for slot in slots)
+        equiv["folded"] += sum(slot.folded_match for slot in slots)
+        equiv["clone"] += sum(slot.clone_match for slot in slots)
+        equiv["adjuster"] += sum(slot.adjuster_match for slot in slots)
+        equiv["dtor"] += sum(slot.deleting_dtor_match for slot in slots)
         if matches == len(slots):
             matched_tables += 1
             continue
@@ -468,16 +443,10 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
         for slot in slots:
             if slot.matches:
                 continue
-            if slot.category == "layout-mismatch":
-                layout_mismatch_slots += 1
-            elif slot.category == "unannotated-original":
-                unannotated_slots += 1
-                if slot.orig is not None:
-                    unknown_orig_counts[slot.orig] += 1
-            elif slot.category == "unknown-recompiled":
-                unknown_recomp_slots += 1
-            else:
-                known_mismatch_slots += 1
+            remain[slot.category] += 1
+            if slot.category == "unannotated-original" and slot.orig is not None:
+                unknown_orig_counts[slot.orig] += 1
+            elif slot.category == "known-mismatch":
                 known_mismatch_counts[
                     (
                         slot.orig,
@@ -514,32 +483,15 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
                 )
 
     percent = 100.0 * matched_slots / slot_count if slot_count else 0.0
+    annotated = len(source_vtables) - len(unmapped_vtables)
     print(
-        "Source vtable annotation coverage: "
-        f"{len(source_vtables) - len(unmapped_vtables)}/{len(source_vtables)} "
-        f"({len(unmapped_vtables)} unresolved)."
-    )
-    print(f"Thunk-normalized vtables matched: {matched_tables}/{table_count}.")
-    print(f"Nested-path tables recovered from decorated symbols: {len(nested_vtable_matches)}.")
-    print(f"Vtable slots matched: {matched_slots}/{slot_count} ({percent:.2f}%).")
-    print(
-        "Equivalent slots: "
-        f"{folded_match_slots} folded aliases, "
-        f"{clone_match_slots} exact original clones, "
-        f"{adjuster_match_slots} duplicate named adjusters, "
-        f"{deleting_dtor_match_slots} codegen-verified deleting-destructor aliases."
-    )
-    print(
-        "Remaining slots: "
-        f"{layout_mismatch_slots} layout/null mismatches, "
-        f"{unannotated_slots} unannotated original "
-        f"({len(unknown_orig_counts)} unique targets), "
-        f"{unknown_recomp_slots} unknown recompiled, "
-        f"{known_mismatch_slots} known mismatches."
-    )
-    print(
-        f"Adjuster thunks exact or target-equivalent: "
-        f"{adjuster_count - adjuster_problems}/{adjuster_count}."
+        f"vtables={matched_tables}/{table_count} slots={matched_slots}/{slot_count} ({percent:.2f}%) "
+        f"annot={annotated}/{len(source_vtables)} nested={len(nested_vtable_matches)} "
+        f"equiv folded={equiv['folded']} clone={equiv['clone']} "
+        f"adjuster={equiv['adjuster']} dtor={equiv['dtor']} "
+        f"remain layout={remain['layout-mismatch']} unannot={remain['unannotated-original']} "
+        f"unknown={remain['unknown-recompiled']} mismatch={remain['known-mismatch']} "
+        f"adjusters={adjuster_count - adjuster_problems}/{adjuster_count}"
     )
     if top > 0 and unmapped_vtables:
         print("Unmapped source vtable annotations:")

@@ -53,7 +53,6 @@ def normalize_asm(s: str) -> str:
 
 
 def is_unresolved_symbol(orig_text: str, recomp_text: str) -> bool:
-    """Match one relocation to one named symbol."""
     orig_text = normalize_asm(orig_text)
     recomp_text = normalize_asm(recomp_text)
     parts = RELOCATION.split(orig_text)
@@ -72,7 +71,6 @@ def is_unresolved_call(orig_text: str, recomp_text: str) -> bool:
 
 
 def is_unresolved_jmp(orig_text: str, recomp_text: str) -> bool:
-    """Match an unresolved tail jump to a thunk."""
     orig_text = asm_head(orig_text)
     recomp_text = asm_head(recomp_text)
     if not re.match(r"jmp -?0x[0-9a-f]+\s*$", orig_text):
@@ -89,7 +87,6 @@ def is_recomp_offset_call(orig_text: str, recomp_text: str) -> bool:
 
 
 def split_vtable_reference(instruction: str) -> tuple[str, str, bool] | None:
-    """Return instruction shape, concrete class, and decorated-name status."""
     instruction = normalize_asm(instruction)
     suffix = " (VTABLE)"
     if not instruction.endswith(suffix):
@@ -111,7 +108,6 @@ def split_vtable_reference(instruction: str) -> tuple[str, str, bool] | None:
 
 
 def is_vtable_display_alias(orig_text: str, recomp_text: str) -> bool:
-    """Accept a collapsed PDB vtable name against its decorated path name."""
     orig = split_vtable_reference(orig_text)
     recomp = split_vtable_reference(recomp_text)
     if orig is None or recomp is None:
@@ -164,7 +160,6 @@ def is_thunk_only_diff(diff) -> bool:
 
 
 def byte_register_swaps_consistent(orig_asm: list[str], recomp_asm: list[str]) -> bool:
-    """Check byte-register substitutions for consistency."""
     forward: dict[str, str] = {}
     reverse: dict[str, str] = {}
     for orig_text, recomp_text in zip(orig_asm, recomp_asm):
@@ -188,7 +183,6 @@ def byte_register_swaps_consistent(orig_asm: list[str], recomp_asm: list[str]) -
 
 
 def group_asm(chunks) -> tuple[list[str], list[str]]:
-    """Build aligned original and rebuilt instruction lists."""
     orig_asm: list[str] = []
     recomp_asm: list[str] = []
 
@@ -218,7 +212,6 @@ def group_asm(chunks) -> tuple[list[str], list[str]]:
 
 
 def is_codegen_equivalent_diff(diff) -> bool:
-    """Whether all remaining differences are accepted compiler entropy."""
     if not diff:
         return False
 
@@ -242,7 +235,6 @@ def is_codegen_equivalent_diff(diff) -> bool:
 
 
 def compute_ratio(match: dict | None) -> tuple[float, str]:
-    """Use reccmp's score plus general linker-label/compiler equivalence only."""
     if match is None or match.get("stub"):
         return 0.0, "STUB"
     ratio = float(match.get("matching", 0.0)) * 100.0

@@ -19,7 +19,6 @@ LOG_PATH = BUILD / "last_build.log"
 
 
 def win_short_path(path: str) -> str:
-    """Return a space-free Windows path when possible."""
     resolved = str(Path(path).resolve())
     if os.name != "nt" or " " not in resolved:
         return resolved
@@ -43,7 +42,6 @@ def resolve_cmake() -> str:
 
 
 def tool(name: str) -> str:
-    """Resolve a PATH or .decomp-venv tool."""
     return shutil.which(name) or str(ROOT / ".decomp-venv" / "Scripts" / f"{name}.exe")
 
 
@@ -58,7 +56,6 @@ def cache_cmake_command() -> str | None:
 
 
 def handle_link(args: list[str]) -> int:
-    """Run the linker and verify its output."""
     if not args:
         sys.exit("build.py --link requires linker executable and arguments")
 

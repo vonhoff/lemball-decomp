@@ -1,25 +1,9 @@
 #!/usr/bin/env python3
-"""Fail on decomp smells agents keep reintroducing.
+"""Fail on decomp smells (offset pokes, missing reccmp annotations).
 
   python tools/smell.py src/Visos/Graphics
-
-Default errors:
-  vbptr-walk     *(int*)(*(int*)(obj + 0x40) + 4) virtual-base poke
-  offset-poke    pointer-cast +/- field offset, including Ghidra
-                 ((int*)((short*)p + 0x16))[0] and *(T*)(obj + N)
-  cast-deref     non-scalar dereferenced casts used for pointer arithmetic
-                 or literal addresses
-  raw-cast       direct scalar/pointer dereference cast, including serialized reads
-  expr-char-offset  (char*)expr +/- 0xN including -> chains and
-                 (Ai*) ((char*) p->m_process - 0x10)
-  mi-dtor-poke   ((T*) ((char*) this + 0x40))->~T() manual MI teardown
-  this-adjust    (char*)this - N mixin poke
-
-Does not flag every `+ 0x` (resource ids, timers, LCG). Those are not field pokes.
-
---annot fails non-empty definitions that lack x86 reccmp evidence and summarizes
-source-empty or synthetic-destructor-covered definitions for review.
---annot-strict fails all of them.
+  python tools/smell.py --annot
+  python tools/smell.py --annot-strict
 """
 
 from __future__ import annotations
@@ -42,51 +26,51 @@ RECCMP_MARK = re.compile(r"^\s*//\s*(FUNCTION|STUB|GLOBAL|LIBRARY|TEMPLATE|SYNTH
 K68_MARK = re.compile(r"^\s*//\s*68K\s+")
 SYNTHETIC_MARK = re.compile(r"^\s*//\s*SYNTHETIC\s*:")
 SYNTHETIC_DTOR_NAME = re.compile(
-	r"^\s*//\s*(?P<class>[A-Za-z_][\w:]*)::`(?:scalar|vector) deleting destructor'\s*$"
+    r"^\s*//\s*(?P<class>[A-Za-z_][\w:]*)::`(?:scalar|vector) deleting destructor'\s*$"
 )
 VBPTR_WALK = re.compile(
-	r"\*\(\s*int\s*\*\s*\)\s*\(\s*\*\(\s*int\s*\*\s*\)\s*\(\s*[^;]{1,60}?\+\s*0x40\s*\)\s*\+\s*4\s*\)"
+    r"\*\(\s*int\s*\*\s*\)\s*\(\s*\*\(\s*int\s*\*\s*\)\s*\(\s*[^;]{1,60}?\+\s*0x40\s*\)\s*\+\s*4\s*\)"
 )
 THIS_ADJUST = re.compile(r"\(\s*char\s*\*\s*\)\s*this\s*-\s*(?:0x[0-9A-Fa-f]+|\d+)\b")
 EXPR_CHAR_OFFSET = re.compile(
-	r"\(\s*char\s*\*\s*\)"
-	r"(?:\(\s*)?"
-	r"\s*"
-	r"(?P<expr>this|[A-Za-z_][\w]*(?:\s*(?:->|\.)\s*[A-Za-z_][\w]*|\[[^\]]+\])*)"
-	r"\s+[+-]\s+(?:0x[0-9A-Fa-f]+|\d+)\b"
+    r"\(\s*char\s*\*\s*\)"
+    r"(?:\(\s*)?"
+    r"\s*"
+    r"(?P<expr>this|[A-Za-z_][\w]*(?:\s*(?:->|\.)\s*[A-Za-z_][\w]*|\[[^\]]+\])*)"
+    r"\s+[+-]\s+(?:0x[0-9A-Fa-f]+|\d+)\b"
 )
 MI_DTOR_POKE = re.compile(
-	r"\(\s*[A-Za-z_][\w]*\s*\*\s*\)\s*"
-	r"\(\s*\(\s*char\s*\*\s*\)[^;]{1,120}?~\s*[A-Za-z_][\w]*\s*\("
+    r"\(\s*[A-Za-z_][\w]*\s*\*\s*\)\s*"
+    r"\(\s*\(\s*char\s*\*\s*\)[^;]{1,120}?~\s*[A-Za-z_][\w]*\s*\("
 )
 PTR_CAST = re.compile(
-	r"\(\s*(?:unsigned\s+|signed\s+)?(?:char|short|int|long|void|__int16|__int32)\s*\*\s*\)"
+    r"\(\s*(?:unsigned\s+|signed\s+)?(?:char|short|int|long|void|__int16|__int32)\s*\*\s*\)"
 )
 RAW_CAST_TYPE = (
-	r"(?:"
-	r"(?:unsigned\s+|signed\s+)(?:char|short|int|long)"
-	r"|(?:char|short|int|long|void|__int16|__int32)"
-	r"|[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*"
-	r")\s*(?:\*\s*)+"
+    r"(?:"
+    r"(?:unsigned\s+|signed\s+)(?:char|short|int|long)"
+    r"|(?:char|short|int|long|void|__int16|__int32)"
+    r"|[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*"
+    r")\s*(?:\*\s*)+"
 )
 RAW_DEREF_CAST = re.compile(
-	r"\*\s*\(\s*(?P<type>" + RAW_CAST_TYPE + r")\s*\)\s*(?P<rhs>[^;\n]+)"
+    r"\*\s*\(\s*(?P<type>" + RAW_CAST_TYPE + r")\s*\)\s*(?P<rhs>[^;\n]+)"
 )
 CAST_THEN_ARITH = re.compile(
-	PTR_CAST.pattern
-	+ r"\s*(?:\([^;]{1,80}?\)|[A-Za-z_][\w.]*(?:\[[^\]]{0,40}\])?)"
-	+ r"(?:\s*[+-]\s*[A-Za-z_][\w]*)*"
-	+ r"\s*[+-]\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
+    PTR_CAST.pattern
+    + r"\s*(?:\([^;]{1,80}?\)|[A-Za-z_][\w.]*(?:\[[^\]]{0,40}\])?)"
+    + r"(?:\s*[+-]\s*[A-Za-z_][\w]*)*"
+    + r"\s*[+-]\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
 )
 CAST_PAREN_ARITH = re.compile(
-	PTR_CAST.pattern + r"\s*\(\s*[^;]{1,80}?\s*[+-]\s*(?:0x[0-9A-Fa-f]+|(?!1\b)\d+)\s*\)"
+    PTR_CAST.pattern + r"\s*\(\s*[^;]{1,80}?\s*[+-]\s*(?:0x[0-9A-Fa-f]+|(?!1\b)\d+)\s*\)"
 )
 NAKED_DATA_OFFSET = re.compile(
-	r"(?:->|\.)(?:m_data|m_buffer)\s*\+\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
-	r"|(?<![\w.])(?:m_data|m_buffer)\s*\+\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
+    r"(?:->|\.)(?:m_data|m_buffer)\s*\+\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
+    r"|(?<![\w.])(?:m_data|m_buffer)\s*\+\s*(?:0x[0-9A-Fa-f]+|\d+)\b"
 )
 CHAR_VAR_OFFSET = re.compile(
-	r"\(\s*char\s*\*\s*\)\s*(?P<expr>this|[A-Za-z_][\w]*)\s*[+-]\s*(?!0x)(?P<off>[A-Za-z_][\w]*)"
+    r"\(\s*char\s*\*\s*\)\s*(?P<expr>this|[A-Za-z_][\w]*)\s*[+-]\s*(?!0x)(?P<off>[A-Za-z_][\w]*)"
 )
 METHOD_DEF = re.compile(r"^[A-Za-z_][\w:]*::~?[A-Za-z_][\w]*\s*\(")
 DTOR_DEF = re.compile(r"^(?P<class>[A-Za-z_][\w:]*)::~[A-Za-z_][\w]*\s*\(")
@@ -96,288 +80,287 @@ SKIP_LEAD = {"if", "while", "for", "switch", "return", "else", "case", "catch", 
 
 
 def strip_line_comment(line: str) -> str:
-	in_str = False
-	for i, ch in enumerate(line):
-		if ch == '"' and (i == 0 or line[i - 1] != "\\"):
-			in_str = not in_str
-		if not in_str and line.startswith("//", i):
-			return line[:i]
-	return line
+    in_str = False
+    for i, ch in enumerate(line):
+        if ch == '"' and (i == 0 or line[i - 1] != "\\"):
+            in_str = not in_str
+        if not in_str and line.startswith("//", i):
+            return line[:i]
+    return line
 
 
 def is_func_def(stripped: str) -> bool:
-	if not stripped or stripped.startswith(("#", "//", ":", "*", "}")):
-		return False
-	if stripped.endswith(";") or stripped.endswith(","):
-		return False
-	lead = stripped.split(None, 1)
-	if lead and lead[0] in SKIP_LEAD:
-		return False
-	if METHOD_DEF.match(stripped):
-		return True
-	if "::" in stripped.split("(", 1)[0]:
-		return False
-	return bool(FREE_DEF.match(stripped))
+    if not stripped or stripped.startswith(("#", "//", ":", "*", "}")):
+        return False
+    if stripped.endswith(";") or stripped.endswith(","):
+        return False
+    lead = stripped.split(None, 1)
+    if lead and lead[0] in SKIP_LEAD:
+        return False
+    if METHOD_DEF.match(stripped):
+        return True
+    if "::" in stripped.split("(", 1)[0]:
+        return False
+    return bool(FREE_DEF.match(stripped))
 
 
 def body_is_empty(lines: list[str], index: int) -> bool:
-	saw_open = False
-	for line in lines[index:index + 6]:
-		text = line.strip()
-		if "{" in text:
-			saw_open = True
-			after = text.split("{", 1)[1].strip()
-			if after.startswith("}"):
-				return True
-			if after:
-				return False
-		elif saw_open:
-			if text.startswith("}"):
-				return True
-			if text:
-				return False
-	return False
+    saw_open = False
+    for line in lines[index:index + 6]:
+        text = line.strip()
+        if "{" in text:
+            saw_open = True
+            after = text.split("{", 1)[1].strip()
+            if after.startswith("}"):
+                return True
+            if after:
+                return False
+        elif saw_open:
+            if text.startswith("}"):
+                return True
+            if text:
+                return False
+    return False
 
 
 def preceding_block(lines: list[str], index: int) -> list[str]:
-	block = []
-	i = index - 1
-	while i >= 0:
-		raw = lines[i].strip()
-		if raw == "":
-			if block:
-				break
-			i -= 1
-			continue
-		if raw.startswith("//"):
-			block.append(raw)
-			i -= 1
-			continue
-		break
-	block.reverse()
-	return block
+    block = []
+    i = index - 1
+    while i >= 0:
+        raw = lines[i].strip()
+        if raw == "":
+            if block:
+                break
+            i -= 1
+            continue
+        if raw.startswith("//"):
+            block.append(raw)
+            i -= 1
+            continue
+        break
+    block.reverse()
+    return block
 
 
 def is_offset_poke(code: str) -> bool:
-	if BUFFER_OK.search(code):
-		return False
-	if CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code) or NAKED_DATA_OFFSET.search(code):
-		return True
-	return any(not BUFFER_OK.search(match.group("expr")) for match in EXPR_CHAR_OFFSET.finditer(code))
+    if BUFFER_OK.search(code):
+        return False
+    if CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code) or NAKED_DATA_OFFSET.search(code):
+        return True
+    return any(not BUFFER_OK.search(match.group("expr")) for match in EXPR_CHAR_OFFSET.finditer(code))
 
 
 def raw_cast_reason(code: str) -> str | None:
-	for match in RAW_DEREF_CAST.finditer(code):
-		type_text = match.group("type")
-		rhs = match.group("rhs").strip()
-		base_type = re.sub(r"\s*\*\s*", "", type_text).strip()
-		scalar_type = re.fullmatch(
-			r"(?:(?:unsigned|signed)\s+)?(?:char|short|int|long|__int16|__int32)", base_type
-		)
-		if scalar_type is None and re.search(r"\s[+-]\s|\b[+-]\s*(?:0x[0-9A-Fa-f]+|\d+|[A-Za-z_])", rhs):
-			return "cast-deref-offset"
-		if scalar_type is None and re.match(r"^(?:0x[0-9A-Fa-f]+|\d+)\b", rhs):
-			return "literal-address-cast"
-		return "raw-cast"
-	return None
+    for match in RAW_DEREF_CAST.finditer(code):
+        type_text = match.group("type")
+        rhs = match.group("rhs").strip()
+        base_type = re.sub(r"\s*\*\s*", "", type_text).strip()
+        scalar_type = re.fullmatch(
+            r"(?:(?:unsigned|signed)\s+)?(?:char|short|int|long|__int16|__int32)", base_type
+        )
+        if scalar_type is None and re.search(r"\s[+-]\s|\b[+-]\s*(?:0x[0-9A-Fa-f]+|\d+|[A-Za-z_])", rhs):
+            return "cast-deref-offset"
+        if scalar_type is None and re.match(r"^(?:0x[0-9A-Fa-f]+|\d+)\b", rhs):
+            return "literal-address-cast"
+        return "raw-cast"
+    return None
 
 
 def format_hit(hit: Hit) -> str:
-	rel, lineno, rule, code = hit
-	if code:
-		return "%s:%d: %s %s" % (rel, lineno, rule, code)
-	return "%s:%d: %s" % (rel, lineno, rule)
+    rel, lineno, rule, code = hit
+    if code:
+        return "%s:%d: %s %s" % (rel, lineno, rule, code)
+    return "%s:%d: %s" % (rel, lineno, rule)
 
 
 def load_baseline() -> Counter[tuple[str, str, str]]:
-	try:
-		data = json.loads(BASELINE.read_text(encoding="utf-8"))
-	except (OSError, ValueError) as error:
-		raise ValueError("cannot read %s: %s" % (BASELINE, error))
-	if data.get("version") != 1 or not isinstance(data.get("findings"), list):
-		raise ValueError("%s must contain version 1 and a findings list" % BASELINE)
-	baseline: Counter[tuple[str, str, str]] = Counter()
-	for item in data["findings"]:
-		try:
-			key = (item["path"], item["rule"], item.get("code", ""))
-			count = item.get("count", 1)
-			reason = item["reason"]
-		except (AttributeError, KeyError):
-			raise ValueError("invalid finding in %s" % BASELINE)
-		if (
-			not all(isinstance(value, str) for value in key)
-			or not isinstance(count, int)
-			or count < 1
-			or not isinstance(reason, str)
-			or not reason.strip()
-		):
-			raise ValueError("invalid finding in %s" % BASELINE)
-		baseline[key] += count
-	return baseline
+    try:
+        data = json.loads(BASELINE.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise ValueError("cannot read %s: %s" % (BASELINE, error))
+    if data.get("version") != 1 or not isinstance(data.get("findings"), list):
+        raise ValueError("%s must contain version 1 and a findings list" % BASELINE)
+    baseline: Counter[tuple[str, str, str]] = Counter()
+    for item in data["findings"]:
+        try:
+            key = (item["path"], item["rule"], item.get("code", ""))
+            count = item.get("count", 1)
+            reason = item["reason"]
+        except (AttributeError, KeyError):
+            raise ValueError("invalid finding in %s" % BASELINE)
+        if (
+            not all(isinstance(value, str) for value in key)
+            or not isinstance(count, int)
+            or count < 1
+            or not isinstance(reason, str)
+            or not reason.strip()
+        ):
+            raise ValueError("invalid finding in %s" % BASELINE)
+        baseline[key] += count
+    return baseline
 
 
 def apply_baseline(hits: list[Hit], files: list[Path]) -> tuple[list[Hit], list[str]]:
-	baseline = load_baseline()
-	remaining = baseline.copy()
-	unbaselined: list[Hit] = []
-	for hit in hits:
-		key = (hit[0], hit[2], hit[3])
-		if remaining[key] != 0:
-			remaining[key] -= 1
-		else:
-			unbaselined.append(hit)
-	scanned = {path.resolve().relative_to(ROOT).as_posix() for path in files}
-	stale = []
-	for (path, rule, code), count in sorted(remaining.items()):
-		if count != 0 and path in scanned:
-			stale.append("%s: baseline-stale %s %s (count %d)" % (path, rule, code, count))
-	return unbaselined, stale
+    baseline = load_baseline()
+    remaining = baseline.copy()
+    unbaselined: list[Hit] = []
+    for hit in hits:
+        key = (hit[0], hit[2], hit[3])
+        if remaining[key] != 0:
+            remaining[key] -= 1
+        else:
+            unbaselined.append(hit)
+    scanned = {path.resolve().relative_to(ROOT).as_posix() for path in files}
+    stale = []
+    for (path, rule, code), count in sorted(remaining.items()):
+        if count != 0 and path in scanned:
+            stale.append("%s: baseline-stale %s %s (count %d)" % (path, rule, code, count))
+    return unbaselined, stale
 
 
 def scan_file(
-	path: Path,
-	annot: bool,
-	annot_strict: bool,
-	synthetic_destructors: set[str],
+    path: Path,
+    annot: bool,
+    annot_strict: bool,
+    synthetic_destructors: set[str],
 ) -> tuple[list[Hit], list[tuple[str, str]]]:
-	lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-	hits: list[Hit] = []
-	reviews: list[tuple[str, str]] = []
-	rel = path.resolve().relative_to(ROOT).as_posix()
-	if path.suffix.lower() in {".cpp", ".h", ".c"}:
-		for lineno, raw in enumerate(lines, 1):
-			code = strip_line_comment(raw)
-			raw_cast = raw_cast_reason(code)
-			if raw_cast is not None:
-				hits.append((rel, lineno, raw_cast, code.strip()[:100]))
-			if VBPTR_WALK.search(code):
-				hits.append((rel, lineno, "vbptr-walk", ""))
-			if THIS_ADJUST.search(code):
-				hits.append((rel, lineno, "this-adjust-poke", ""))
-			poked = False
-			for match in EXPR_CHAR_OFFSET.finditer(code):
-				if not BUFFER_OK.search(match.group("expr")):
-					hits.append((rel, lineno, "expr-char-offset", match.group(0).strip()[:100]))
-					poked = True
-					break
-			if MI_DTOR_POKE.search(code):
-				hits.append((rel, lineno, "mi-dtor-poke", code.strip()[:100]))
-				poked = True
-			if not poked and is_offset_poke(code):
-				hits.append((rel, lineno, "offset-poke", code.strip()[:100]))
-			for match in CHAR_VAR_OFFSET.finditer(code):
-				if BUFFER_OK.search(match.group("expr")):
-					continue
-				if match.group("off") == "sizeof":
-					continue
-				hits.append((rel, lineno, "offset-poke", match.group(0).strip()))
-	if path.suffix.lower() != ".cpp":
-		return hits, reviews
-	for i, raw in enumerate(lines):
-		stripped = raw.strip()
-		if not is_func_def(stripped):
-			continue
-		prev = preceding_block(lines, i)
-		has_reccmp = any(RECCMP_MARK.match(line) for line in prev)
-		has_68k = any(K68_MARK.match(line) for line in prev)
-		dtor = DTOR_DEF.match(stripped)
-		has_synthetic_dtor = dtor is not None and dtor.group("class") in synthetic_destructors
-		if has_reccmp:
-			continue
-		if annot_strict:
-			disposition = "hit"
-		elif annot:
-			if body_is_empty(lines, i):
-				disposition = "review-empty"
-			elif has_synthetic_dtor:
-				disposition = "review-synthetic"
-			else:
-				disposition = "hit"
-		elif has_68k or body_is_empty(lines, i):
-			continue
-		else:
-			disposition = "hit"
-		kind = "incomplete-annotation" if has_68k else "no-annotation"
-		record = "%s:%d: %s %s" % (rel, i + 1, kind, stripped[:90])
-		if disposition.startswith("review-"):
-			reviews.append((disposition, record))
-		else:
-			hits.append((rel, i + 1, kind, stripped[:90]))
-	return hits, reviews
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    hits: list[Hit] = []
+    reviews: list[tuple[str, str]] = []
+    rel = path.resolve().relative_to(ROOT).as_posix()
+    if path.suffix.lower() in {".cpp", ".h", ".c"}:
+        for lineno, raw in enumerate(lines, 1):
+            code = strip_line_comment(raw)
+            raw_cast = raw_cast_reason(code)
+            if raw_cast is not None:
+                hits.append((rel, lineno, raw_cast, code.strip()[:100]))
+            if VBPTR_WALK.search(code):
+                hits.append((rel, lineno, "vbptr-walk", ""))
+            if THIS_ADJUST.search(code):
+                hits.append((rel, lineno, "this-adjust-poke", ""))
+            poked = False
+            for match in EXPR_CHAR_OFFSET.finditer(code):
+                if not BUFFER_OK.search(match.group("expr")):
+                    hits.append((rel, lineno, "expr-char-offset", match.group(0).strip()[:100]))
+                    poked = True
+                    break
+            if MI_DTOR_POKE.search(code):
+                hits.append((rel, lineno, "mi-dtor-poke", code.strip()[:100]))
+                poked = True
+            if not poked and is_offset_poke(code):
+                hits.append((rel, lineno, "offset-poke", code.strip()[:100]))
+            for match in CHAR_VAR_OFFSET.finditer(code):
+                if BUFFER_OK.search(match.group("expr")):
+                    continue
+                if match.group("off") == "sizeof":
+                    continue
+                hits.append((rel, lineno, "offset-poke", match.group(0).strip()))
+    if path.suffix.lower() != ".cpp":
+        return hits, reviews
+    for i, raw in enumerate(lines):
+        stripped = raw.strip()
+        if not is_func_def(stripped):
+            continue
+        prev = preceding_block(lines, i)
+        has_reccmp = any(RECCMP_MARK.match(line) for line in prev)
+        has_68k = any(K68_MARK.match(line) for line in prev)
+        dtor = DTOR_DEF.match(stripped)
+        has_synthetic_dtor = dtor is not None and dtor.group("class") in synthetic_destructors
+        if has_reccmp:
+            continue
+        if annot_strict:
+            disposition = "hit"
+        elif annot:
+            if body_is_empty(lines, i):
+                disposition = "review-empty"
+            elif has_synthetic_dtor:
+                disposition = "review-synthetic"
+            else:
+                disposition = "hit"
+        elif has_68k or body_is_empty(lines, i):
+            continue
+        else:
+            disposition = "hit"
+        kind = "incomplete-annotation" if has_68k else "no-annotation"
+        record = "%s:%d: %s %s" % (rel, i + 1, kind, stripped[:90])
+        if disposition.startswith("review-"):
+            reviews.append((disposition, record))
+        else:
+            hits.append((rel, i + 1, kind, stripped[:90]))
+    return hits, reviews
 
 
 def iter_sources(root: Path):
-	for path in sorted(root.rglob("*")):
-		if path.suffix.lower() in {".cpp", ".h", ".c"}:
-			yield path
+    for path in sorted(root.rglob("*")):
+        if path.suffix.lower() in {".cpp", ".h", ".c"}:
+            yield path
 
 
 def collect_synthetic_destructors(files: list[Path]) -> set[str]:
-	classes: set[str] = set()
-	for path in files:
-		lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-		for index, line in enumerate(lines[:-1]):
-			if not SYNTHETIC_MARK.match(line):
-				continue
-			name = SYNTHETIC_DTOR_NAME.match(lines[index + 1])
-			if name is not None:
-				classes.add(name.group("class"))
-	return classes
+    classes: set[str] = set()
+    for path in files:
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        for index, line in enumerate(lines[:-1]):
+            if not SYNTHETIC_MARK.match(line):
+                continue
+            name = SYNTHETIC_DTOR_NAME.match(lines[index + 1])
+            if name is not None:
+                classes.add(name.group("class"))
+    return classes
 
 
 def main(argv: list[str]) -> int:
-	parser = argparse.ArgumentParser(description="Decomp smell gate")
-	annot_group = parser.add_mutually_exclusive_group()
-	annot_group.add_argument(
-		"--annot",
-		action="store_true",
-		help="fail actionable unannotated definitions and summarize ambiguous review candidates",
-	)
-	annot_group.add_argument(
-		"--annot-strict",
-		action="store_true",
-		help="fail every definition lacking a reccmp annotation, including source-empty definitions",
-	)
-	parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
-	args = parser.parse_args(argv[1:])
-	targets = [Path(a) for a in args.paths] if args.paths else [SRC]
-	files: list[Path] = []
-	for target in targets:
-		path = target if target.is_absolute() else ROOT / target
-		if path.is_dir():
-			files.extend(iter_sources(path))
-		else:
-			files.append(path)
-	hits: list[Hit] = []
-	reviews: list[tuple[str, str]] = []
-	synthetic_destructors = collect_synthetic_destructors(list(iter_sources(SRC)))
-	for path in files:
-		file_hits, file_reviews = scan_file(path, args.annot, args.annot_strict, synthetic_destructors)
-		hits.extend(file_hits)
-		reviews.extend(file_reviews)
-	try:
-		hits, stale = apply_baseline(hits, files)
-	except ValueError as error:
-		sys.stderr.write("smell: %s\n" % error)
-		return 2
-	if reviews:
-		empty_reviews = sum(reason == "review-empty" for reason, _ in reviews)
-		synthetic_reviews = sum(reason == "review-synthetic" for reason, _ in reviews)
-		sys.stderr.write(
-			"smell: %d source-empty and %d synthetic-covered unannotated definition(s) "
-			"require x86 evidence review; use --annot-strict to list/fail them\n"
-			% (empty_reviews, synthetic_reviews)
-		)
-	messages = [format_hit(hit) for hit in hits]
-	messages.extend(stale)
-	if messages:
-		sys.stderr.write("smell: %d hit(s)\n" % len(messages))
-		for message in messages:
-			sys.stderr.write(message + "\n")
-		return 1
-	sys.stdout.write("smell: ok\n")
-	return 0
+    parser = argparse.ArgumentParser(description="Decomp smell gate")
+    annot_group = parser.add_mutually_exclusive_group()
+    annot_group.add_argument(
+        "--annot",
+        action="store_true",
+        help="fail actionable unannotated defs; summarize empty/synthetic for review",
+    )
+    annot_group.add_argument(
+        "--annot-strict",
+        action="store_true",
+        help="fail every definition lacking a reccmp annotation",
+    )
+    parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
+    args = parser.parse_args(argv[1:])
+    targets = [Path(a) for a in args.paths] if args.paths else [SRC]
+    files: list[Path] = []
+    for target in targets:
+        path = target if target.is_absolute() else ROOT / target
+        if path.is_dir():
+            files.extend(iter_sources(path))
+        else:
+            files.append(path)
+    hits: list[Hit] = []
+    reviews: list[tuple[str, str]] = []
+    synthetic_destructors = collect_synthetic_destructors(list(iter_sources(SRC)))
+    for path in files:
+        file_hits, file_reviews = scan_file(path, args.annot, args.annot_strict, synthetic_destructors)
+        hits.extend(file_hits)
+        reviews.extend(file_reviews)
+    try:
+        hits, stale = apply_baseline(hits, files)
+    except ValueError as error:
+        sys.stderr.write("smell: %s\n" % error)
+        return 2
+    if reviews:
+        empty_reviews = sum(reason == "review-empty" for reason, _ in reviews)
+        synthetic_reviews = sum(reason == "review-synthetic" for reason, _ in reviews)
+        sys.stderr.write(
+            "smell: review empty=%d synthetic=%d (use --annot-strict)\n"
+            % (empty_reviews, synthetic_reviews)
+        )
+    messages = [format_hit(hit) for hit in hits]
+    messages.extend(stale)
+    if messages:
+        sys.stderr.write("smell: %d hit(s)\n" % len(messages))
+        for message in messages:
+            sys.stderr.write(message + "\n")
+        return 1
+    sys.stdout.write("smell: ok\n")
+    return 0
 
 
 if __name__ == "__main__":
-	sys.exit(main(sys.argv))
+    sys.exit(main(sys.argv))

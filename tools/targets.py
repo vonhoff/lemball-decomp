@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Rank decomp targets using original x86 sizes and dependency readiness.
+"""Rank decomp targets from report.json and original x86 sizes.
 
-Reads build-msvc400/report.json (objdiff rules, same as tools/report.py) and
-src annotations. Sizes come from reachable instructions in data/LEMBALL.EXE;
-ambiguous control flow is reported as unknown, never replaced by stub sizes.
-Readiness and expected gain are conservative ranking heuristics, not proof
-of semantic completeness. Does not build or run reccmp unless --refresh.
+Sizes: reachable instructions in data/LEMBALL.EXE (unknown if control flow is
+ambiguous). readiness = known non-STUB callees with positive scores / all
+observed callees (indirects count as unproven). gain~ = original size *
+remaining fraction * readiness. Does not build unless --refresh.
 
   python tools/targets.py --kind tiny --max-size 5
   python tools/targets.py --kind near
@@ -45,11 +44,9 @@ class Func:
     annot: str | None
     original_size: int | None = None
     readiness: float = 0.0
-    size_status: str = "unknown"
 
     @property
     def expected_gain(self) -> float:
-        """Estimate recoverable bytes."""
         return (self.original_size or 0) * (1.0 - self.ratio / 100.0) * self.readiness
 
     @property
@@ -62,11 +59,9 @@ class OriginalEvidence:
     size: int | None
     callees: tuple[int, ...] = ()
     indirect_calls: int = 0
-    reason: str = "reachable x86 span"
 
 
 def inspect_original(image, address: int, entries: set[int], decoder) -> OriginalEvidence:
-    """Measure reachable original x86 code."""
     limit = min((a for a in entries if a > address), default=address + 65536)
     limit = min(limit, address + 65536)
     pending = [address]
@@ -75,34 +70,34 @@ def inspect_original(image, address: int, entries: set[int], decoder) -> Origina
     callees = set()
     indirect = 0
 
-    def unknown(reason):
-        return OriginalEvidence(None, tuple(sorted(callees)), indirect, reason)
+    def unknown():
+        return OriginalEvidence(None, tuple(sorted(callees)), indirect)
 
     while pending:
         current = pending.pop()
         if current in instructions:
             continue
         if not address <= current < limit:
-            return unknown("flow crosses known boundary")
+            return unknown()
         if current in occupied:
-            return unknown("branch into instruction")
+            return unknown()
         try:
             raw = image.read(current, min(15, limit - current))
         except (ValueError, IndexError):
-            return unknown("unreadable original bytes")
+            return unknown()
         ins = next(decoder.disasm_lite(raw, current), None)
         if ins is None:
-            return unknown("truncated/invalid instruction")
+            return unknown()
         _, size, mnemonic, operand = ins
         if any(a in occupied for a in range(current, current + size)):
-            return unknown("overlapping instructions")
+            return unknown()
         instructions.add(current)
         occupied.update(range(current, current + size))
         following = current + size
         if mnemonic.startswith('ret'):
             continue
         if mnemonic in ('int3', 'hlt', 'ud2', 'int', 'iret', 'iretd'):
-            return unknown("unsupported terminal instruction")
+            return unknown()
         if mnemonic == 'call':
             if re.fullmatch(r'0x[0-9a-f]+', operand):
                 callees.add(int(operand, 16))
@@ -110,13 +105,13 @@ def inspect_original(image, address: int, entries: set[int], decoder) -> Origina
                 indirect += 1
         if mnemonic.startswith('j') or mnemonic.startswith('loop'):
             if not re.fullmatch(r'0x[0-9a-f]+', operand):
-                return unknown("indirect jump requires table evidence")
+                return unknown()
             target = int(operand, 16)
             if not address <= target < limit:
                 if mnemonic == 'jmp' and target in entries:
                     callees.add(target)
                     continue
-                return unknown("unresolved external branch")
+                return unknown()
             pending.append(target)
             if mnemonic == 'jmp':
                 continue
@@ -140,7 +135,7 @@ def resolve_original_target(image, address: int, decoder) -> int | None:
     return None
 
 
-def add_original_evidence(funcs: list[Func]) -> list[Func]:
+def add_original_evidence(funcs: list[Func], entries: set[int]) -> list[Func]:
     from capstone import Cs, CS_ARCH_X86, CS_MODE_32
     from reccmp.formats import detect_image
 
@@ -148,9 +143,7 @@ def add_original_evidence(funcs: list[Func]) -> list[Func]:
     if image is None:
         raise ValueError('original executable is unavailable')
     decoder = Cs(CS_ARCH_X86, CS_MODE_32)
-    entries = {f.addr for f in funcs}
-    for path in (*SRC.rglob('*.h'), *SRC.rglob('*.cpp')):
-        entries.update(int(m[2], 16) for m in ANNOT_RE.finditer(path.read_text(encoding='utf-8', errors='replace')))
+    entries = entries | {f.addr for f in funcs}
     by_address = {f.addr: f for f in funcs}
     result = []
     for func in funcs:
@@ -162,7 +155,7 @@ def add_original_evidence(funcs: list[Func]) -> list[Func]:
         ready = sum(a in by_address and by_address[a].annot != 'STUB' and by_address[a].ratio > 0 for a in dependencies)
         total = len(dependencies) + unresolved + evidence.indirect_calls
         readiness = ready / total if total else 1.0
-        result.append(replace(func, original_size=evidence.size, readiness=readiness, size_status=evidence.reason))
+        result.append(replace(func, original_size=evidence.size, readiness=readiness))
     return result
 
 
@@ -171,19 +164,22 @@ def ranked_gain(funcs: list[Func]) -> list[Func]:
                   key=lambda f: (-f.expected_gain, -f.readiness, f.original_size, f.addr))
 
 
-def load_annotations() -> dict[int, str]:
+def scan_annotations() -> tuple[dict[int, str], set[int]]:
     found: dict[int, str] = {}
+    entries: set[int] = set()
     for path in (*SRC.rglob("*.cpp"), *SRC.rglob("*.h")):
         text = path.read_text(encoding="utf-8", errors="replace")
         for match in ANNOT_RE.finditer(text):
+            addr = int(match.group(2), 16)
+            entries.add(addr)
             if match.group(1) in ("FUNCTION", "STUB"):
-                found[int(match.group(2), 16)] = match.group(1).upper()
-    return found
+                found[addr] = match.group(1).upper()
+    return found, entries
 
 
 def load_report(path: Path) -> list[Func]:
     report = json.loads(path.read_text(encoding="utf-8"))
-    annot = load_annotations()
+    annot, entries = scan_annotations()
     funcs: list[Func] = []
     for unit in report["units"]:
         for item in unit["functions"]:
@@ -198,7 +194,7 @@ def load_report(path: Path) -> list[Func]:
                     annot=annot.get(addr),
                 )
             )
-    return add_original_evidence(funcs)
+    return add_original_evidence(funcs, entries)
 
 
 def ratio_bucket(ratio: float) -> str:
@@ -297,9 +293,6 @@ def print_snapshot(funcs: list[Func]) -> None:
     print(f"  report functions: {n100}/{n} at 100%  ({100.0 * n100 / n:.2f}%)")
     print(f"  rebuilt weights:  {matched_code}/{code} bytes  ({100.0 * matched_code / code:.2f}%)")
     print(f"  original sizing:  {sum(f.original_size is not None for f in funcs)}/{n} proven reachable spans")
-    print("  readiness: known non-STUB callees with positive scores / all observed callees")
-    print("  gain~: original size * remaining fraction * readiness (heuristic, not a match score)")
-    print("  indirect calls count as unproven; unknown sizes are excluded from tiny/clone/gain lists")
     print(f"  source FUNCTION:  {n_fn}  (not 100%: {n_grind})")
     print(f"  source STUB:      {n_stub}")
     print(f"  unannotated:      {n_unann}")
