@@ -8,6 +8,7 @@
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameMain.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Control/Level/LevelLoader.h"
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Frontend/Resources/FrontendResourceLoader.h"
 #include "../../Map/Base/Map.h"
@@ -287,9 +288,61 @@ void C2D::CursorChangeType(int p_cursorType, int p_value)
 }
 
 // 68K 0x10b074d8 OnLoaded__3C2DFv
-// STUB: LEMBALL 0x004364d0
+// FUNCTION: LEMBALL 0x004364d0
 void C2D::OnLoaded()
 {
+	int zoom;
+	unsigned int zoomDivisor;
+	unsigned int oldZoom;
+	Panel* panel;
+
+	CursorChangeType(1, 0);
+	if (g_nCompactPrimaryContextLayout != 0 || g_nEditLevelMode != 0 || g_nZoomEnabled != 0) {
+		zoom = 1;
+	}
+	else {
+		zoom = 2;
+	}
+
+	oldZoom = m_zoom;
+	m_zoom = (unsigned short) zoom;
+	zoomDivisor = (unsigned short) zoom;
+	VsRect* displayRect = &m_display->m_rect;
+	m_viewSize.m_x = displayRect->m_width;
+	m_viewSize.m_y = displayRect->m_height;
+	m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) zoomDivisor);
+	m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) zoomDivisor);
+	SetClipSize();
+
+	if (m_viewSize.m_x != m_clipSize.m_x || m_viewSize.m_y != m_clipSize.m_y) {
+		VsRect innerRect((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
+		m_display->SetInnerWindow(innerRect);
+	}
+
+	panel = (Panel*) operator new(0x58);
+	if (panel != 0) {
+		m_panel = new (panel) Panel(this);
+	}
+	else {
+		m_panel = 0;
+	}
+
+	if (oldZoom != (unsigned int) zoom) {
+		m_display->SetZoom(m_zoom);
+	}
+	else {
+		OnSize(m_display->m_rect);
+	}
+
+	m_display->m_gdi->m_renderTarget->SetWorldWidth(3000);
+	m_gdi->m_renderTarget->EnableZBuff(1);
+	m_redrawPending = 1;
+	m_scrollPending = 0;
+	if (g_pDemo != 0) {
+		g_pDemo->m_window = m_display;
+	}
+	m_display->Clear(0);
+	m_ai->Start();
 }
 
 // 68K 0x10b0780e DoButtons__3C2DFv
