@@ -5,6 +5,10 @@
 #include "../Base/AiCoord.h"    // complete type
 #include "../Base/GameObject.h" // complete type
 
+union EnemyLemmingUnion {
+	WaypointInformation* m_waypointInformation;
+};
+
 // SIZE 0x170
 // VTABLE: LEMBALL 0x00495110
 class Enemy : public GameObject {
@@ -47,13 +51,13 @@ private:
 	int m_stateIndex;                  // 0x128
 	eEnemyStateActions m_state0Action; // 0x12c
 	eEnemyStateRules m_state0Rule;     // 0x130
-	EnemyLemmingUnion* m_state0Data;   // 0x134
+	EnemyLemmingUnion m_state0Data;    // 0x134
 	eEnemyStateActions m_state1Action; // 0x138
 	eEnemyStateRules m_state1Rule;     // 0x13c
-	EnemyLemmingUnion* m_state1Data;   // 0x140
+	EnemyLemmingUnion m_state1Data;    // 0x140
 	eEnemyStateActions m_state2Action; // 0x144
 	eEnemyStateRules m_state2Rule;     // 0x148
-	EnemyLemmingUnion* m_state2Data;   // 0x14c
+	EnemyLemmingUnion m_state2Data;    // 0x14c
 	AiCoord m_targetPosition;          // 0x150
 	AiCoord m_fireTarget;              // 0x15c
 	int m_fireState;                   // 0x168

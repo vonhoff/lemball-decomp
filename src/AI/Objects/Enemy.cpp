@@ -3,6 +3,7 @@
 #include "../../Control/Game/Game.h"
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
+#include "../Base/WaypointInformation.h"
 #include "../Navigation/Ai.h"
 #include "Bullet.h"
 
@@ -48,15 +49,41 @@ Enemy::Enemy(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
 	m_state2Rule = (eEnemyStateRules) 0;
 	m_state1Rule = (eEnemyStateRules) 0;
 	m_state0Rule = (eEnemyStateRules) 0;
-	m_state0Data = 0;
-	m_state1Data = 0;
-	m_state2Data = 0;
+	m_state0Data.m_waypointInformation = 0;
+	m_state1Data.m_waypointInformation = 0;
+	m_state2Data.m_waypointInformation = 0;
 }
 
 // 68K 0x106079d6 Restart__6CEnemyFv
-// STUB: LEMBALL 0x0041fcd0
+// FUNCTION: LEMBALL 0x0041fcd0
 void Enemy::Restart()
 {
+	GameObject::Restart();
+	m_position.m_xFixed = m_spawnPosition.m_xFixed;
+	m_position.m_yFixed = m_spawnPosition.m_yFixed;
+	m_position.m_zFixed = m_spawnPosition.m_zFixed;
+	m_facingDirection = m_initialFacingDirection;
+	m_stateIndex = 0;
+	m_fireState = 0;
+	m_hit = 0;
+	m_unk0x2c = 0;
+
+	int* objectCount = &g_pAI->m_objectCount;
+	g_pAI->m_objects[*objectCount] = this;
+	(*objectCount)++;
+
+	if (m_state0Data.m_waypointInformation != 0) {
+		m_state0Data.m_waypointInformation->m_value = 0;
+		m_state0Data.m_waypointInformation->m_signedValue = 1;
+	}
+	if (m_state1Data.m_waypointInformation != 0) {
+		m_state1Data.m_waypointInformation->m_value = 0;
+		m_state1Data.m_waypointInformation->m_signedValue = 1;
+	}
+	if (m_state2Data.m_waypointInformation != 0) {
+		m_state2Data.m_waypointInformation->m_value = 0;
+		m_state2Data.m_waypointInformation->m_signedValue = 1;
+	}
 }
 
 // clang-format off

@@ -436,7 +436,7 @@ typedef int swMessage;
 typedef int eLiftActivateType;
 typedef int eSkill;
 class LoadUpdate;
-class EnemyLemmingUnion;
+union EnemyLemmingUnion;
 class Circle;
 class FilledCircle;
 class Point;
