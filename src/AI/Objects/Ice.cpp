@@ -37,7 +37,7 @@ void Ice::Set(unsigned short p_id,
 			  const Coord3d& p_cornerB,
 			  int p_velocityX,
 			  int p_velocityY,
-			  unsigned char p_initialSwitched)
+			  unsigned int p_initialSwitched)
 {
 	SetId(p_id);
 	m_enabled = 1;
@@ -67,30 +67,48 @@ void Ice::Set(unsigned short p_id,
 	m_maxX = (short) maxX;
 	m_maxY = (short) maxY;
 
-	m_minZ = 0;
-	if (m_minX >= 0 && m_minY >= 0 && (m_minX >> 4) < g_pMap->m_ground.m_width &&
-		g_pMap->m_ground.m_height > (m_minY >> 4)) {
-		m_minZ = (short) g_pMap->m_ground.m_ground[(m_minY >> 4) * g_pMap->m_ground.m_width + (m_minX >> 4)].GetZ(
-			m_minX & 0xf,
-			m_minY & 0xf);
+	int minGroundX = (short) minX;
+	int minGroundY = (short) minY;
+	unsigned short minZ;
+	{
+		Map* map = g_pMap;
+		int width = map->m_ground.m_width;
+		if (minGroundX < 0 || minGroundY < 0 || (minGroundX >> 4) >= width ||
+			(minGroundY >> 4) >= g_pMap->m_ground.m_height) {
+			minZ = 0;
+		}
+		else {
+			minZ = map->m_ground.m_ground[(minGroundY >> 4) * width + (minGroundX >> 4)].GetZ(minGroundX & 0xf,
+																							  minGroundY & 0xf);
+		}
 	}
+	m_minZ = (short) minZ;
 
-	m_maxZ = 0;
-	if (m_maxX >= 0 && m_maxY >= 0 && (m_maxX >> 4) < g_pMap->m_ground.m_width &&
-		g_pMap->m_ground.m_height > (m_maxY >> 4)) {
-		m_maxZ = (short) g_pMap->m_ground.m_ground[(m_maxY >> 4) * g_pMap->m_ground.m_width + (m_maxX >> 4)].GetZ(
-			m_maxX & 0xf,
-			m_maxY & 0xf);
+	int maxGroundX = m_maxX;
+	int maxGroundY = m_maxY;
+	unsigned short maxZ;
+	{
+		Map* map = g_pMap;
+		int width = map->m_ground.m_width;
+		if (maxGroundX < 0 || maxGroundY < 0 || (maxGroundX >> 4) >= width ||
+			(maxGroundY >> 4) >= g_pMap->m_ground.m_height) {
+			maxZ = 0;
+		}
+		else {
+			maxZ = map->m_ground.m_ground[(maxGroundY >> 4) * width + (maxGroundX >> 4)].GetZ(maxGroundX & 0xf,
+																							  maxGroundY & 0xf);
+		}
 	}
+	m_maxZ = (short) maxZ;
 
 	m_position.m_xFixed = ((int) p_cornerA.m_x) << 12;
 	m_position.m_yFixed = ((int) p_cornerA.m_y) << 12;
 	m_position.m_zFixed = ((int) p_cornerA.m_z) << 12;
 	for (int y = minY; y <= maxY; y += 0x10) {
 		for (int x = minX; x <= maxX; x += 0x10) {
-			int blockX = (x + ((x >> 31) & 0xf)) >> 4;
+			int blockX = x / 0x10;
 			if (blockX >= 0) {
-				int blockY = (y + ((y >> 31) & 0xf)) >> 4;
+				int blockY = y / 0x10;
 				if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
 					Ground* ground = g_pMap->m_ground.m_ground + g_pMap->m_ground.m_width * blockY + blockX;
 					ground->m_collision |= 0x8000;
@@ -120,9 +138,30 @@ bool Ice::StepOn(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x1061217a Leave__4CIceFP14CPlayerLemming
-// STUB: LEMBALL 0x0042d4d0
+// FUNCTION: LEMBALL 0x0042d4d0
 void Ice::Leave(PlayerLemming* p_lemming)
 {
+	short lemmingId = ((GameObject*) p_lemming)->GetId();
+	int index = 0;
+	if (m_objectCount > 0) {
+		GameObject** object = m_objects;
+		while ((*object)->GetId() != lemmingId) {
+			object++;
+			index++;
+			if (index >= m_objectCount) {
+				return;
+			}
+		}
+
+		index++;
+		if (index < m_objectCount) {
+			do {
+				m_objects[index - 1] = m_objects[index];
+				index++;
+			} while (index < m_objectCount);
+		}
+		m_objectCount--;
+	}
 }
 
 // 68K 0x1061220e Switch__4CIceFv
