@@ -215,10 +215,24 @@ void GenericGroup::CalculateBoundingBox(int p_radius)
 {
 }
 
+#include "../Navigation/AiDestinationEntry.h"
+
 // 68K 0x1060cb04 AddNewWaypoint__13CGenericGroupF7AICOORDP17CFormationManager
-// STUB: LEMBALL 0x0041e290
+// FUNCTION: LEMBALL 0x0041e290
 void GenericGroup::AddNewWaypoint(AiCoord p_coordinate, FormationManager* p_formationManager)
 {
+	g_pUnknown0x4a7820 = p_formationManager;
+	unsigned short count;
+	AiDestinationList* list = m_destinationList;
+	count = list->m_count;
+	if (count < list->m_capacity) {
+		list->m_count = count + 1;
+		AiDestinationEntry* entry = &list->m_entries[count];
+		entry->m_type = (eDestinationType) 1;
+		entry->m_coordinate.m_xFixed = p_coordinate.m_xFixed;
+		entry->m_coordinate.m_yFixed = p_coordinate.m_yFixed;
+		entry->m_coordinate.m_zFixed = p_coordinate.m_zFixed;
+	}
 }
 
 // 68K 0x1060cb96 SendNewWaypoint__13CGenericGroupF7AICOORD
