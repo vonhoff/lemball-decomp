@@ -32,10 +32,33 @@ BalloonPost::~BalloonPost()
 }
 
 // 68K 0x1060312c FindPost__12CBalloonPostF11eObjectTypeR7AICOORD
-// STUB: LEMBALL 0x0042a0b0
+// FUNCTION: LEMBALL 0x0042a0b0
 bool BalloonPost::FindPost(eObjectType p_objectType, AiCoord& p_position)
 {
-	return 0;
+	switch (p_objectType) {
+	case 0x28:
+		p_position.m_xFixed = m_positions[0].m_xFixed;
+		p_position.m_yFixed = m_positions[0].m_yFixed;
+		p_position.m_zFixed = m_positions[0].m_zFixed;
+		return m_activeMask & 1;
+	case 0x2a:
+		p_position.m_xFixed = m_positions[1].m_xFixed;
+		p_position.m_yFixed = m_positions[1].m_yFixed;
+		p_position.m_zFixed = m_positions[1].m_zFixed;
+		return m_activeMask & 2;
+	case 0x2c:
+		p_position.m_xFixed = m_positions[2].m_xFixed;
+		p_position.m_yFixed = m_positions[2].m_yFixed;
+		p_position.m_zFixed = m_positions[2].m_zFixed;
+		return m_activeMask & 4;
+	case 0x2e:
+		p_position.m_xFixed = m_positions[3].m_xFixed;
+		p_position.m_yFixed = m_positions[3].m_yFixed;
+		p_position.m_zFixed = m_positions[3].m_zFixed;
+		return m_activeMask & 8;
+	default:
+		return false;
+	}
 }
 
 // 68K 0x106031fe Process__12CBalloonPostFv
