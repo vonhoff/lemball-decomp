@@ -13,6 +13,8 @@ union EnemyLemmingUnion {
 // VTABLE: LEMBALL 0x00495110
 class Enemy : public GameObject {
 public:
+	friend class EnemyGroupManager;
+
 	Enemy(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4);
 	bool CheckRadius(int p_radius);
 	bool EnemyRuleRadius50();
