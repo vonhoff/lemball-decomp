@@ -41,9 +41,38 @@ void Mover::SetPos()
 }
 
 // 68K 0x10617410 Set__6CMoverFUsiUcii
-// STUB: LEMBALL 0x0042e760
+// FUNCTION: LEMBALL 0x0042e760
 void Mover::Set(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount)
 {
+	SetId(p_id);
+	const Pt3& position = g_pAI->GetNodePosition(p_startNode);
+	m_position.m_xFixed = position.m_x;
+	m_position.m_yFixed = position.m_y;
+	m_position.m_zFixed = position.m_z;
+
+	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> 12;
+	int groundX = x >> 4;
+	int groundY = y >> 4;
+	Map* map = g_pMap;
+	unsigned short z;
+	if (x < 0 || y < 0 || map->m_ground.m_width <= groundX || map->m_ground.m_height <= groundY) {
+		z = 0;
+	}
+	else {
+		x &= 0xf;
+		y &= 0xf;
+		z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
+	}
+
+	m_active = 1;
+	m_actionArgument = (short) p_pathId;
+	m_position.m_zFixed = (unsigned int) z << 12;
+	m_startNode = p_startNode;
+	m_currentNode = 0;
+	m_objectCount = 0;
+	m_movementMode = p_movementMode;
+	m_nodeCount = p_nodeCount;
 }
 
 // 68K 0x106174da SetUpNextNode__6CMoverFUl
