@@ -13,15 +13,29 @@ struct NetworkOptionsFramePos {
 };
 
 struct NetworkOptionsLayout {
-	NetworkOptionsFramePos m_framePos[14]; // 0x00
-	short m_entryX;                        // 0x70
-	short m_unknown72;                     // 0x72
-	short m_entryY;                        // 0x74
-	undefined m_unknown76[0x16];           // 0x76
-	int m_rowStride;                       // 0x8c
-	int m_entryWidth;                      // 0x90
-	unsigned short m_entryHeight;          // 0x94
-	undefined m_unknown96[0xa];            // 0x96
+	NetworkOptionsFramePos m_framePos[9]; // 0x00
+	NetworkOptionsFramePos m_messagePos;  // 0x48
+	int m_dividerY;                       // 0x50
+	int m_headerY;                        // 0x54
+	NetworkOptionsFramePos m_editPos;     // 0x58
+	undefined4 m_unknown60;               // 0x60
+	int m_localPlayerY;                   // 0x64
+	int m_headerNameX;                    // 0x68
+	int m_playerListY;                    // 0x6c
+	short m_entryX;                       // 0x70
+	short m_unknown72;                    // 0x72
+	short m_entryY;                       // 0x74
+	undefined2 m_unknown76;               // 0x76
+	int m_headerIpX;                      // 0x78
+	undefined4 m_unknown7c;               // 0x7c
+	int m_headerComputerX;                // 0x80
+	undefined m_unknown84[8];             // 0x84
+	int m_rowStride;                      // 0x8c
+	int m_entryWidth;                     // 0x90
+	unsigned short m_entryHeight;         // 0x94
+	undefined2 m_unknown96;               // 0x96
+	int m_peerNameWidth;                  // 0x98
+	undefined4 m_unknown9c;               // 0x9c
 };
 
 // SIZE 0x438

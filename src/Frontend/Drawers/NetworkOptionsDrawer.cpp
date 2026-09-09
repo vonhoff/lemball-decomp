@@ -336,16 +336,16 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 
 	if (g_pNetworkManager != 0) {
 		if (g_pNetworkManager->m_gameMessages[p_index].m_valid != 0) {
-			int* layout = (int*) m_layoutTable;
+			NetworkOptionsLayout* layout = m_layoutTable;
 			font = m_textManager->GetFont(m_chalkFontId);
-			posName.m_x = (short) layout[0x68 / 4];
-			posAddress.m_x = (short) layout[0x78 / 4];
-			posPeer.m_x = (short) layout[0x80 / 4];
+			posName.m_x = (short) layout->m_headerNameX;
+			posAddress.m_x = (short) layout->m_headerIpX;
+			posPeer.m_x = (short) layout->m_headerComputerX;
 			remap = 0;
-			int yOffset = (short) layout[0x8c / 4] * (short) p_value;
-			posName.m_y = (short) layout[0x6c / 4] + yOffset;
-			posAddress.m_y = (short) layout[0x6c / 4] + yOffset;
-			posPeer.m_y = (short) layout[0x6c / 4] + yOffset;
+			int yOffset = (short) layout->m_rowStride * (short) p_value;
+			posName.m_y = (short) layout->m_playerListY + yOffset;
+			posAddress.m_y = (short) layout->m_playerListY + yOffset;
+			posPeer.m_y = (short) layout->m_playerListY + yOffset;
 			if (p_remap != 6) {
 				remap = (Remap*) m_remaps[p_remap];
 			}
@@ -362,7 +362,7 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 				trimmedPeerName[len] = 0;
 				font->GetSize(&size, trimmedPeerName, 0x20);
 				len--;
-			} while (layout[0x98 / 4] < (int) size.m_width);
+			} while (layout->m_peerNameWidth < (int) size.m_width);
 
 			font->GetSize(&size, gameName, 0x20);
 			posName.m_x -= size.m_width / 2;
@@ -390,7 +390,7 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 void NetworkOptionsDrawer::DrawText()
 {
 	VsSize size;
-	VsPoint pos((short) ((int*) m_layoutTable)[0x58 / 4], (short) ((int*) m_layoutTable)[0x5c / 4]);
+	VsPoint pos((short) m_layoutTable->m_editPos.m_x, (short) m_layoutTable->m_editPos.m_y);
 
 	if (m_drawingBackBuffer != 0) {
 		char* divider = g_szNetworkOptionsDividerIp;
@@ -398,10 +398,10 @@ void NetworkOptionsDrawer::DrawText()
 			divider = g_szNetworkOptionsDividerLocal;
 		}
 		ResFont* font = m_textManager->GetFont(m_chalkFontId);
-		VsPoint posDivider(0, (short) ((int*) m_layoutTable)[0x50 / 4]);
-		VsPoint posLabel((short) ((int*) m_layoutTable)[0x68 / 4], (short) ((int*) m_layoutTable)[0x54 / 4]);
-		VsPoint posIp((short) ((int*) m_layoutTable)[0x78 / 4], (short) ((int*) m_layoutTable)[0x54 / 4]);
-		VsPoint posComputer((short) ((int*) m_layoutTable)[0x80 / 4], (short) ((int*) m_layoutTable)[0x54 / 4]);
+		VsPoint posDivider(0, (short) m_layoutTable->m_dividerY);
+		VsPoint posLabel((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_headerY);
+		VsPoint posIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_headerY);
+		VsPoint posComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_headerY);
 		posLabel.m_x -= font->GetSize(&size, g_szNetworkOptionsHeaderName, 0x20)->m_width / 2;
 		size.m_width = 0;
 		size.m_height = 0;
@@ -423,9 +423,9 @@ void NetworkOptionsDrawer::DrawText()
 		m_textManager->DrawString(m_gdi, posDivider, size, m_chalkFontId, divider, 0x20, 0);
 
 		if (g_szNetworkGameName[0] != 0) {
-			VsPoint posMyName((short) ((int*) m_layoutTable)[0x68 / 4], (short) ((int*) m_layoutTable)[0x64 / 4]);
-			VsPoint posMyIp((short) ((int*) m_layoutTable)[0x78 / 4], (short) ((int*) m_layoutTable)[0x64 / 4]);
-			VsPoint posMyComputer((short) ((int*) m_layoutTable)[0x80 / 4], (short) ((int*) m_layoutTable)[0x64 / 4]);
+			VsPoint posMyName((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_localPlayerY);
+			VsPoint posMyIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_localPlayerY);
+			VsPoint posMyComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_localPlayerY);
 			posMyName.m_x -= font->GetSize(&size, g_szNetworkGameName, 0x20)->m_width / 2;
 			size.m_width = 0;
 			size.m_height = 0;
@@ -448,7 +448,7 @@ void NetworkOptionsDrawer::DrawText()
 				do {
 					trimmed[len] = 0;
 					len--;
-				} while (((int*) m_layoutTable)[0x98 / 4] < font->GetSize(&size, trimmed, 0x20)->m_width);
+				} while (m_layoutTable->m_peerNameWidth < font->GetSize(&size, trimmed, 0x20)->m_width);
 
 				String lowerPeer(trimmed);
 				lowerPeer.Lower();
@@ -472,7 +472,7 @@ void NetworkOptionsDrawer::DrawText()
 	}
 	else {
 		if (m_message != 0) {
-			VsPoint msgPos((short) ((int*) m_layoutTable)[0x48 / 4], (short) ((int*) m_layoutTable)[0x4c / 4]);
+			VsPoint msgPos((short) m_layoutTable->m_messagePos.m_x, (short) m_layoutTable->m_messagePos.m_y);
 			String msgText = g_apNetworkOptionsMessages[m_message];
 			bool special = false;
 			if (m_message == 4) {
