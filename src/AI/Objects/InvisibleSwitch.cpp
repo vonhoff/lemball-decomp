@@ -69,9 +69,35 @@ void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
 }
 
 // 68K 0x10612c94 VerifyObjects__16CInvisibleSwitchFv
-// STUB: LEMBALL 0x00409ec0
+// FUNCTION: LEMBALL 0x00409ec0
 void InvisibleSwitch::VerifyObjects()
 {
+	undefined2 invalidObjectId;
+	int i;
+
+	invalidObjectId = 0xffff;
+	i = 0;
+	if (m_objectCount > 0) {
+		do {
+			GameObject* object = m_objects[i];
+			int x = object->m_position.m_xFixed >> 12;
+			int y = object->m_position.m_yFixed >> 12;
+			if (x < m_minCorner.m_x - 8 || x > m_maxCorner.m_x + 7 || y < m_minCorner.m_y - 8 ||
+				y > m_maxCorner.m_y + 7) {
+				object->m_unk0x120 = invalidObjectId;
+				int next = i + 1;
+				if (next < m_objectCount) {
+					do {
+						m_objects[next - 1] = m_objects[next];
+						next++;
+					} while (next < m_objectCount);
+				}
+				i--;
+				m_objectCount--;
+			}
+			i++;
+		} while (i < m_objectCount);
+	}
 }
 
 // 68K 0x10612d88 AddObject__16CInvisibleSwitchFP11CGameObject
@@ -86,9 +112,18 @@ void InvisibleSwitch::AddObject(GameObject* p_object)
 }
 
 // 68K 0x10612dfe StepOn__16CInvisibleSwitchFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x00409fa0
+// FUNCTION: LEMBALL 0x00409fa0
 void InvisibleSwitch::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
+	if (m_triggered == 0 && m_requestedAction == (eAction) 0x18 && GetId() != (short) p_object->m_unk0x120) {
+		int x = p_position.m_xFixed >> 12;
+		int y = p_position.m_yFixed >> 12;
+		if (x >= m_minCorner.m_x - 8 && x <= m_maxCorner.m_x + 7 && y >= m_minCorner.m_y - 8 &&
+			y <= m_maxCorner.m_y + 7) {
+			m_activator = p_object;
+			RequestAction((eAction) 0x1a);
+		}
+	}
 }
 
 // 68K 0x10612ec2 DoActivate__16CInvisibleSwitchFv
