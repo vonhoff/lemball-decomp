@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Build wrapper for LEMBALL MSVC 4.00 recompilation.
 
-Fails the build when CL/LINK emit warnings (agents must fix them).
+CL/LINK use /WX (see cmake/msvc400-toolchain.cmake); warnings fail the build.
+Stdout is filtered; full log is written to build-msvc400/last_build.log.
 """
 
 from __future__ import annotations
@@ -19,8 +20,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build-msvc400"
 LOG_PATH = BUILD / "last_build.log"
-# MSVC 4.00 / LINK: "warning C4101:", "warning LNK4010:", "Command line warning D4025 :"
-MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
 LOG_INTEREST = re.compile(r"warning|error|fatal|failed|built target|linking|\[\s*100%\s*\]", re.IGNORECASE)
 
 
@@ -90,7 +89,15 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
 
     cached = cache_cmake_command()
     makefile = BUILD / "Makefile"
+    toolchain = ROOT / "cmake" / "msvc400-toolchain.cmake"
     need_configure = cached is None or " " in cached or not makefile.exists()
+    if (
+        not need_configure
+        and toolchain.exists()
+        and makefile.exists()
+        and toolchain.stat().st_mtime > makefile.stat().st_mtime
+    ):
+        need_configure = True
     if need_configure:
         res = subprocess.run([cmake, "--preset", "msvc400"], cwd=ROOT)
         if res.returncode != 0:
@@ -117,26 +124,13 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
 
     output = proc.stdout or ""
     LOG_PATH.write_text(output, encoding="utf-8")
-
-    warning_lines = []
     for line in output.splitlines():
         if LOG_INTEREST.search(line):
             print(line)
-        if MSVC_WARNING.search(line):
-            warning_lines.append(line)
 
     has_exe = (BUILD / "LEMBALL.EXE").exists()
     has_pdb = (BUILD / "LEMBALL.pdb").exists()
-    print(
-        f"RESULT exit={proc.returncode} elapsed_s={elapsed:.1f} "
-        f"exe={has_exe} pdb={has_pdb} warnings={len(warning_lines)} log={LOG_PATH}"
-    )
-    if warning_lines:
-        sys.stderr.write(
-            "build: %d compiler warning(s); fix them (warnings fail the build)\n"
-            % len(warning_lines)
-        )
-        return 1 if proc.returncode == 0 else proc.returncode
+    print(f"RESULT exit={proc.returncode} elapsed_s={elapsed:.1f} exe={has_exe} pdb={has_pdb} log={LOG_PATH}")
     return proc.returncode
 
 
