@@ -1,10 +1,13 @@
 #include "PauseWindow.h"
 
+#include "../../Control/Game/GameMain.h"
+#include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/ReceiveWindowState.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResAnim.h"
 #include "../../Visos/Resources/ResFont.h"
 #include "../Sound/SoundView.h"
@@ -16,9 +19,26 @@ void PauseWindow::Initialise()
 }
 
 // 68K 0x10b0e1da Load__12CPauseWindowFv
-// STUB: LEMBALL 0x00443c70
+// FUNCTION: LEMBALL 0x00443c70
 void PauseWindow::Load()
 {
+	if (g_nCompactPrimaryContextLayout == 0 && g_nZoomEnabled != 0) {
+		m_lowResolution = 0;
+		m_horizontalBorderAnimId = RES_BORDERS_HIRES_BORDERCORNERS;
+		m_verticalBorderAnimId = RES_BORDERS_HIRES_BORDEREDGES;
+		m_fontId = RES_BORDERS_HIRES_CUTFONT;
+	}
+	else {
+		m_lowResolution = 1;
+		m_horizontalBorderAnimId = RES_BORDERS_LORES_BORDERCORNERS;
+		m_verticalBorderAnimId = RES_BORDERS_LORES_BORDEREDGES;
+		m_fontId = RES_BORDERS_LORES_CUTFONT;
+	}
+	m_horizontalBorderAnim = ResAnim::Load(m_horizontalBorderAnimId);
+	m_verticalBorderAnim = ResAnim::Load(m_verticalBorderAnimId);
+	m_textManager.LoadFont(m_fontId);
+	m_font = m_textManager.GetFont(m_fontId);
+	m_loaded = 1;
 }
 
 // 68K 0x10b0e2a0 UnLoad__12CPauseWindowFv
