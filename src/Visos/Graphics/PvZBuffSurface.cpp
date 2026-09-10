@@ -1,7 +1,7 @@
 #include "PvZBuffSurface.h"
 
 // 68K 0x1021623a __ct__15CPVZBuffSurfaceFv
-// STUB: LEMBALL 0x00466670
+// FUNCTION: LEMBALL 0x00466670
 PvZBuffSurface::PvZBuffSurface()
 {
 	m_allocatedWidth = 0;
@@ -30,9 +30,32 @@ void PvZBuffSurface::FreeZBuff()
 }
 
 // 68K 0x10216388 AllocateZBuff__15CPVZBuffSurfaceFv
-// STUB: LEMBALL 0x00466740
+// FUNCTION: LEMBALL 0x00466740
 void PvZBuffSurface::AllocateZBuff()
 {
+	VsSize size;
+	unsigned int allocatedArea;
+	unsigned int neededArea;
+
+	size.m_width = (short) (m_windowRect.m_width * 2);
+	size.m_height = m_windowRect.m_height;
+	size = m_bitmap.SetSize(size, (int) m_reserved40 * 2);
+	allocatedArea = (unsigned int) m_allocatedWidth * (unsigned int) m_allocatedHeight * 2;
+	neededArea = (unsigned int) ((int) size.m_height * (int) size.m_width);
+	if (allocatedArea < neededArea) {
+		FreeZBuff();
+	}
+	if ((int) m_windowRect.m_width * (int) m_windowRect.m_height != 0) {
+		if (m_buffer == 0) {
+			m_allocatedHeight = (unsigned short) size.m_height;
+			m_allocatedWidth = (unsigned short) ((unsigned int) (int) size.m_width >> 1);
+			m_buffer = new unsigned short[(unsigned int) m_allocatedWidth * (unsigned int) m_allocatedHeight];
+		}
+		if (m_buffer == 0) {
+			m_enabled = 0;
+		}
+		m_bitmap.SetBitsBase((unsigned char*) m_buffer, (int) size.m_width);
+	}
 }
 
 // 68K 0x102164b6 EnableZBuff__15CPVZBuffSurfaceFUc
