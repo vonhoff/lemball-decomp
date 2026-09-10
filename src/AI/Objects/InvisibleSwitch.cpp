@@ -37,22 +37,20 @@ void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
 	m_objectCount = 0;
 	m_minCorner = p_cornerA;
 	m_maxCorner = p_cornerB;
-	short maxX = m_maxCorner.m_x;
-	short minX = m_minCorner.m_x;
-	if (minX > maxX) {
-		m_minCorner.m_x = maxX;
-		m_maxCorner.m_x = minX;
+	if (m_minCorner.m_x > m_maxCorner.m_x) {
+		short x = m_minCorner.m_x;
+		m_minCorner.m_x = m_maxCorner.m_x;
+		m_maxCorner.m_x = x;
 	}
 	short minY = m_minCorner.m_y;
-	short maxY = m_maxCorner.m_y;
-	if (minY > maxY) {
-		m_minCorner.m_y = maxY;
+	if (minY > m_maxCorner.m_y) {
+		m_minCorner.m_y = m_maxCorner.m_y;
 		m_maxCorner.m_y = minY;
 	}
 	m_repeatable = 0;
-	m_triggered = 0;
 	m_position.m_xFixed = ((int) m_minCorner.m_x) << 12;
 	m_position.m_yFixed = ((int) m_minCorner.m_y) << 12;
+	m_triggered = 0;
 	m_position.m_zFixed = ((int) m_minCorner.m_z) << 12;
 	for (int y = m_minCorner.m_y; y <= m_maxCorner.m_y; y += 0x10) {
 		for (int x = m_minCorner.m_x; x <= m_maxCorner.m_x; x += 0x10) {
