@@ -140,12 +140,12 @@ void SoundView::PlayEffect(eSoundEffect p_soundId)
 }
 
 // 68K 0x10b0fcd2 SetMusicOn__10CSoundViewFUc
-// STUB: LEMBALL 0x00439ba0
+// FUNCTION: LEMBALL 0x00439ba0
 void SoundView::SetMusicOn(unsigned int p_enabled)
 {
 	unsigned long handle;
 
-	if (p_enabled == g_dwMusicOn) {
+	if ((p_enabled != 0 && g_dwMusicOn != 0) || (p_enabled == 0 && g_dwMusicOn == 0)) {
 		return;
 	}
 
