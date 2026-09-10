@@ -148,9 +148,14 @@ PlayerLemmingGroup* PlayerLemmingGroupManager::GetPlayerControlledGroup()
 }
 
 // 68K 0x1061018c AddNewWaypointToCurrentGroup__26CPlayerLemmingGroupManagerFii
-// STUB: LEMBALL 0x00418a30
+// FUNCTION: LEMBALL 0x00418a30
 void PlayerLemmingGroupManager::AddNewWaypointToCurrentGroup(int p_x, int p_y)
 {
+	AiCoord coordinate(p_x << 12, p_y << 12, 0);
+	PlayerLemmingGroup* group = GetPlayerControlledGroup();
+	if (group != 0) {
+		group->AddNewWaypoint(coordinate, g_pGenericGroupFormationManager);
+	}
 }
 
 // 68K 0x1061025e RemoveWaypointsFromCurrentGroup__26CPlayerLemmingGroupManagerFv
