@@ -75,9 +75,33 @@ int LiftManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x10615516 Switch__12CLiftManagerF9swMessageiii
-// STUB: LEMBALL 0x00425f10
+// FUNCTION: LEMBALL 0x00425f10
 void LiftManager::Switch(swMessage p_message, int p_id, int p_legacyA, int p_legacyB)
 {
+	int i = 0;
+	if (0 < m_count) {
+		while (true) {
+			if ((unsigned short) m_lifts[i].GetId() == p_id) {
+				break;
+			}
+			i++;
+			if (m_count <= i) {
+				return;
+			}
+		}
+		if (p_message == 1) {
+			Lift* lift = &m_lifts[i];
+			if (lift->m_activateType != (eLiftActivateType) 3) {
+				if (lift->m_activateType == (eLiftActivateType) 0) {
+					lift->ActivateDeactivate();
+				}
+				return;
+			}
+			if (lift->m_activationLatched == 0) {
+				lift->Activate();
+			}
+		}
+	}
 }
 
 // 68K 0x1061561a Id__12CLiftManagerFi
