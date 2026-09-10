@@ -4,9 +4,15 @@
 #include "../Navigation/Ai.h"
 
 // 68K 0x1061e282 __ct__6CSheepFP3CAIiiii
-// STUB: LEMBALL 0x0041f990
-Sheep::Sheep(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
+// FUNCTION: LEMBALL 0x0041f990
+Sheep::Sheep(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4) : GameObject((eObjectType) 7, 0x108, 0x14)
 {
+	g_pAI = p_arg0;
+	m_spawnPosition.m_xFixed = p_arg1 << 12;
+	m_initialFacingDirection = (short) p_arg4;
+	m_spawnPosition.m_yFixed = p_arg2 << 12;
+	m_spawnPosition.m_zFixed = p_arg3 << 12;
+	SetId(NextLoadingId());
 }
 
 // 68K 0x1061e344 Restart__6CSheepFv
