@@ -806,9 +806,23 @@ bool GameObject::Move()
 }
 
 // 68K 0x1060a266 TurnToFaceDestination__11CGameObjectFv
-// STUB: LEMBALL 0x00415d90
+// FUNCTION: LEMBALL 0x00415d90
 void GameObject::TurnToFaceDestination()
 {
+	AiCoord destination = GetDestination();
+	int direction = (int) ReturnFacingDirection(m_position.m_xFixed >> 12,
+												m_position.m_yFixed >> 12,
+												destination.m_xFixed >> 12,
+												destination.m_yFixed >> 12);
+	if (direction != m_facingDirection) {
+		if (g_anRotationDirections[(direction - (int) m_facingDirection) & 7] < 0) {
+			RotateAnticlockwise();
+		}
+		else {
+			RotateClockwise();
+		}
+	}
+	m_actionDeadline = g_dwGameTick + g_anTurnDelayTarget[m_objectType] / 50;
 }
 
 // 68K 0x1060a34a FacingDestination__11CGameObjectFv
