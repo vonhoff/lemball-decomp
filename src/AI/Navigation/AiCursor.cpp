@@ -1,9 +1,17 @@
 #include "AiCursor.h"
 
+#include "../../Visos/Foundation/BaseQueue.h"
+#include "Ai.h"
+
 // 68K 0x10606068 __ct__9CAICursorFP3CAIii
-// STUB: LEMBALL 0x00414da0
+// FUNCTION: LEMBALL 0x00414da0
 AiCursor::AiCursor(Ai* p_arg0, int p_arg1, int p_arg2)
 {
+	m_ai = p_arg0;
+	m_maximumX = p_arg1;
+	m_maximumY = p_arg2;
+	m_queue = p_arg0->m_aiQueue;
+	m_queue->Attach(this, 0);
 }
 
 // 68K 0x1060613e SetCursorXY__9CAICursorFii
@@ -19,8 +27,10 @@ void AiCursor::SetCursorXy(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x00414e20
 void AiCursor::CheckAndClipCursorBounds()
 {
-	int cursorX = m_cursorX;
-	int maximumX = m_maximumX;
+	int cursorX;
+	int maximumX;
+	maximumX = m_maximumX;
+	cursorX = m_cursorX;
 
 	if (maximumX < cursorX) {
 		m_cursorX = maximumX;
@@ -28,10 +38,14 @@ void AiCursor::CheckAndClipCursorBounds()
 	else if (cursorX < 0) {
 		m_cursorX = 0;
 	}
-	if (m_cursorY > m_maximumY) {
-		m_cursorY = m_maximumY;
+	int cursorY;
+	int maximumY;
+	cursorY = m_cursorY;
+	maximumY = m_maximumY;
+	if (maximumY < cursorY) {
+		m_cursorY = maximumY;
 	}
-	else if (m_cursorY < 0) {
+	else if (cursorY < 0) {
 		m_cursorY = 0;
 	}
 }

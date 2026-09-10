@@ -69,6 +69,7 @@ public:
 
 	friend class Ball;
 	friend class Bullet;
+	friend class AiCursor;
 	friend class ObjectManager;
 	friend class PlayerLemming;
 	friend class PlayerLemmingGroupManager;
