@@ -6,7 +6,6 @@
 class LoadUpdate {
 public:
 	virtual void UpdateNonCacheLoad() = 0; // vtable+0x00
-	~LoadUpdate() {}
 };
 
 #endif

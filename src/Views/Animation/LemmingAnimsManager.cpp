@@ -27,15 +27,37 @@ unsigned int g_groundBlox6ResourceId;
 unsigned int g_groundBlox7ResourceId;
 
 // 68K 0x10b09d40 __ct__20CLemmingAnimsManagerFP4CGDIP14CMain2DDisplayP3CAI
-// STUB: LEMBALL 0x00432b50
+// FUNCTION: LEMBALL 0x00432b50
 LemmingAnimsManager::LemmingAnimsManager(Gdi* p_arg0, Main2DDisplay* p_arg1, Ai* p_arg2)
+	: AnimsManager(p_arg0, 0x2b6, 0xc8, 0x28, 0x14, 1)
 {
+	m_display = p_arg1;
+	m_gdi = p_arg0;
+	m_ai = p_arg2;
+	m_animFrames = (Frames**) operator new(0xad8);
+	m_reservedac = 0;
+	for (int i = 0; i < 0x2b6; i++) {
+		m_animFrames[i] = 0;
+	}
+	m_loaded = 0;
+	m_loadAnim = new CdLoadAnim(m_gdi, m_display);
+	m_drawOffsetX = 0;
+	m_drawOffsetY = 0;
 }
 
 // 68K 0x10b09e58 __dt__20CLemmingAnimsManagerFv
-// STUB: LEMBALL 0x00432c20
+// FUNCTION: LEMBALL 0x00432c20
 LemmingAnimsManager::~LemmingAnimsManager()
 {
+	if (m_loadAnim != 0) {
+		delete m_loadAnim;
+		m_loadAnim = 0;
+	}
+
+	Unload();
+	if (m_animFrames != 0) {
+		operator delete(m_animFrames);
+	}
 }
 
 // 68K 0x10b09f1a SetupStyleSensitive__20CLemmingAnimsManagerFv

@@ -5,6 +5,7 @@
 #include "../../Visos/Animation/AnimsManager.h" // complete type
 #include "../../Visos/Graphics/DrawingMark.h"   // complete type
 #include "../../Visos/Graphics/Primitive.h"     // complete type
+#include "../Sound/LoadUpdate.h"                // complete type
 
 extern unsigned int g_groundBlox1ResourceId;
 extern unsigned int g_groundBlox2ResourceId;
@@ -16,8 +17,8 @@ extern unsigned int g_groundBlox7ResourceId;
 
 // SIZE 0xb4
 // VTABLE: LEMBALL 0x00496ce0
-// Construction table 0x00496cdc is the embedded load-progress interface at +0x70.
-class LemmingAnimsManager : public AnimsManager {
+// VTABLE: LEMBALL 0x00496cdc LoadUpdate
+class LemmingAnimsManager : public AnimsManager, public LoadUpdate {
 public:
 	LemmingAnimsManager(Gdi* p_arg0, Main2DDisplay* p_arg1, Ai* p_arg2);
 	void Draw();
@@ -36,12 +37,11 @@ public:
 	void UnLoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId);
 	void UnLoadAnimation(unsigned long p_resourceId);
 	void Unload();
-	void UpdateNonCacheLoad();
+	virtual void UpdateNonCacheLoad(); // vtable+0x00
 	~LemmingAnimsManager();
 
 private:
-	void* m_loadVtable;           // 0x70
-	void** m_animFrames;          // 0x74
+	Frames** m_animFrames;        // 0x74
 	CdLoadAnim* m_loadAnim;       // 0x78
 	Main2DDisplay* m_display;     // 0x7c
 	Gdi* m_gdi;                   // 0x80
