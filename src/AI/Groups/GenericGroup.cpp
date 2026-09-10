@@ -233,9 +233,49 @@ void GenericGroup::GetBoundingBox(VsRect& p_rect)
 }
 
 // 68K 0x1060c9dc CalculateBoundingBox__13CGenericGroupFi
-// STUB: LEMBALL 0x0041e1c0
+// FUNCTION: LEMBALL 0x0041e1c0
 void GenericGroup::CalculateBoundingBox(int p_radius)
 {
+	int minY = 99999;
+	int minX = 99999;
+	int maxY = -1;
+	int maxX = -1;
+	if (m_elementCount > 0) {
+		int radius = p_radius;
+		GameObject** element = m_elements;
+		int count = m_elementCount;
+		do {
+			GameObject* object = *element;
+			if (object != 0) {
+				int x = object->m_position.m_xFixed >> 12;
+				int y = object->m_position.m_yFixed >> 12;
+				int right = x + radius;
+				x -= radius;
+				int bottom = y + radius;
+				y -= radius;
+				if (x < minX) {
+					minX = x;
+				}
+				if (y < minY) {
+					minY = y;
+				}
+				if (right > maxX) {
+					maxX = right;
+				}
+				if (bottom > maxY) {
+					maxY = bottom;
+				}
+			}
+			element++;
+			count--;
+		} while (count != 0);
+	}
+	m_maxX = (short) minX;
+	maxX -= minX;
+	maxY -= minY;
+	m_maxY = (short) minY;
+	m_minX = (short) maxX;
+	m_minY = (short) maxY;
 }
 
 #include "../Navigation/AiDestinationEntry.h"
