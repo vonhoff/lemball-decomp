@@ -2,15 +2,43 @@
 
 #include "../../Visos/Messaging/BasePacketHeader.h"
 #include "../../Visos/Messaging/ReadPacket.h"
+#include "../../Visos/Network/BaseNetwork.h"
+#include "../Base/GlobalGameObject.h"
+#include "../Messages/GameStateMessage.h"
+#include "../Navigation/Ai.h"
 #include "BaseObjectManager.h"
+
+// 68K 0x1060de8a __ct__11CGodManagerFi
+// FUNCTION: LEMBALL 0x0040b020
+GodManager::GodManager(int p_arg0)
+{
+	m_capacity = p_arg0;
+	m_count = 0;
+	m_managers = new BaseObjectManager*[p_arg0];
+	m_transportMap = new int[24];
+	for (int i = 0; i < 24; i++) {
+		m_transportMap[i] = -1;
+	}
+	GlobalGameObject::SetMessages();
+	if (g_pBaseNetwork != 0) {
+		g_pBaseNetwork->AttachMessageQueue(this);
+	}
+	if (g_pActiveAI->m_networkMode != 0) {
+		m_gameStateMessage = new GameStateMessage();
+	}
+	else {
+		m_gameStateMessage = 0;
+	}
+}
 
 // 68K 0x1060e004 Restart__11CGodManagerFv
 // FUNCTION: LEMBALL 0x0040b120
 void GodManager::Restart()
 {
-	for (int i = 0; i < m_count; i++) {
-		if (m_managers[i] != 0) {
-			m_managers[i]->Restart();
+	GodManager* self = this;
+	for (int i = 0; i < self->m_count; i++) {
+		if (self->m_managers[i] != 0) {
+			self->m_managers[i]->Restart();
 		}
 	}
 }
