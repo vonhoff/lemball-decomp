@@ -263,19 +263,24 @@ void PvGdiBitmap::Scroll(const VsRect* p_rect, const VsPoint* p_destination)
 }
 
 // 68K 0x10212c50 SetSize__12CPVGDIBitmapFRC7CVSSizei
-// STUB: LEMBALL 0x004725f0
+// FUNCTION: LEMBALL 0x004725f0
 VsSize PvGdiBitmap::SetSize(const VsSize& p_size, int p_pitch)
 {
-	VsSize size;
-
 	m_width = p_size.m_width;
 	m_height = p_size.m_height;
-	if (p_pitch != 0) {
-		m_stride = p_pitch;
+	if (p_pitch == 0 || m_directScroll != 0) {
+		m_rowPadding = 0;
 	}
-	size.m_width = m_width;
-	size.m_height = m_height;
-	return size;
+	else {
+		m_rowPadding = p_pitch - m_width;
+	}
+	if (p_size.m_width == 0) {
+		m_extraRows = 0;
+	}
+	else {
+		m_extraRows = (int) (p_size.m_width - 1 + m_rowPadding * 2) / (int) p_size.m_width;
+	}
+	return VsSize(m_width, (short) (m_height + m_extraRows));
 }
 
 // 68K 0x10212d18 SetBitsBase__12CPVGDIBitmapFPUci
