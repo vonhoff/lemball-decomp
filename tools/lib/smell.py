@@ -187,7 +187,10 @@ def iter_raw_deref_casts(code: str):
             yield type_text, rhs, "paren"
 
 
-def raw_cast_reason(code: str) -> str | None:
+ADDR_OF = re.compile(r"^\(?\s*&")
+
+
+def raw_cast_reason(code: str, audit: bool = False) -> str | None:
     for type_text, rhs, form in iter_raw_deref_casts(code):
         base_type = re.sub(r"\s*\*\s*", "", type_text).strip()
         scalar_type = SCALAR_PTR_BASE.fullmatch(base_type)
@@ -195,9 +198,10 @@ def raw_cast_reason(code: str) -> str | None:
             return "cast-deref-offset"
         if scalar_type is None and RHS_LITERAL_ADDR.match(rhs):
             return "literal-address-cast"
-        # Parenthesized scalar plots like *((unsigned char*) row + x) are not
-        # raw-casts; constant field pokes still hit offset-poke via CAST_THEN_ARITH.
-        if form == "direct":
+        if ADDR_OF.match(rhs):
+            return "addr-cast-punning"
+        # In audit mode, report every direct cast dereference.
+        if audit and form == "direct":
             return "raw-cast"
     return None
 
@@ -259,6 +263,7 @@ def scan_file(
     annot: bool,
     annot_strict: bool,
     synthetic_destructors: set[str],
+    raw_cast_audit: bool = False,
 ) -> tuple[list[Hit], list[tuple[str, str]]]:
     lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
     hits: list[Hit] = []
@@ -267,7 +272,7 @@ def scan_file(
     if path.suffix.lower() in {".cpp", ".h", ".c"}:
         for lineno, raw in enumerate(lines, 1):
             code = strip_line_comment(raw)
-            raw_cast = raw_cast_reason(code)
+            raw_cast = raw_cast_reason(code, audit=raw_cast_audit)
             if raw_cast is not None:
                 hits.append((rel, lineno, raw_cast, code.strip()[:100]))
             if VBPTR_WALK.search(code):
@@ -347,6 +352,7 @@ def check_smell(
     paths: list[Path | str] | None = None,
     annot: bool = False,
     annot_strict: bool = False,
+    raw_cast_audit: bool = False,
 ) -> int:
     files = collect_sources(paths)
     if not files:
@@ -357,7 +363,9 @@ def check_smell(
     synthetic_roots = collect_sources() if paths is None else files
     synthetic_destructors = collect_synthetic_destructors(synthetic_roots)
     for path in files:
-        file_hits, file_reviews = scan_file(path, annot, annot_strict, synthetic_destructors)
+        file_hits, file_reviews = scan_file(
+            path, annot, annot_strict, synthetic_destructors, raw_cast_audit=raw_cast_audit
+        )
         hits.extend(file_hits)
         reviews.extend(file_reviews)
     try:
@@ -398,9 +406,19 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="fail every definition lacking a reccmp annotation",
     )
+    parser.add_argument(
+        "--raw-casts",
+        action="store_true",
+        help="fail on every direct scalar/pointer dereference cast (audit mode)",
+    )
     parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
     args = parser.parse_args(argv[1:])
-    return check_smell(args.paths, annot=args.annot, annot_strict=args.annot_strict)
+    return check_smell(
+        args.paths,
+        annot=args.annot,
+        annot_strict=args.annot_strict,
+        raw_cast_audit=args.raw_casts,
+    )
 
 
 if __name__ == "__main__":

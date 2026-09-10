@@ -3,621 +3,26 @@
   "purpose": "Reviewed false positives only. Entries suppress legitimate low-level operations; actionable decompilation smells must never be baselined.",
   "identity": "path + rule + reported source; line numbers are informational and excluded",
   "findings": [
-
-    {
-      "path": "src/AI/Managers/BallManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/HandManager.cpp",
-      "rule": "raw-cast",
-      "code": "id = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/HandManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/HandManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short x = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/HandManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short y = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/HandManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short z = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/InvisibleSwitchManager.cpp",
-      "rule": "raw-cast",
-      "code": "count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "ammoCount = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "contentsId = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "eObjectType contentsType = (eObjectType) * (unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "eObjectType objectType = (eObjectType) * (unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "id = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "int message = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "int x = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "int y = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "int z = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short legacyAux = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short legacyFirst = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/ObjectManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short legacyLast = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/PaintGunManager.cpp",
-      "rule": "raw-cast",
-      "code": "direction = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/PaintGunManager.cpp",
-      "rule": "raw-cast",
-      "code": "id = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/PaintGunManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/PaintGunManager.cpp",
-      "rule": "raw-cast",
-      "code": "x = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/PaintGunManager.cpp",
-      "rule": "raw-cast",
-      "code": "y = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/PaintGunManager.cpp",
-      "rule": "raw-cast",
-      "code": "z = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/RocketManager.cpp",
-      "rule": "raw-cast",
-      "code": "id = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/RocketManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/RocketManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short x = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/RocketManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short y = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/RocketManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short z = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/TrampolineManager.cpp",
-      "rule": "raw-cast",
-      "code": "id = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/TrampolineManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/TrampolineManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short x = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/TrampolineManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short y = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Managers/TrampolineManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short z = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-
-    {
-      "path": "src/AI/Navigation/MoverManager.cpp",
-      "rule": "raw-cast",
-      "code": "id = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Navigation/MoverManager.cpp",
-      "rule": "raw-cast",
-      "code": "int nodeCount = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Navigation/MoverManager.cpp",
-      "rule": "raw-cast",
-      "code": "int startNode = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Navigation/MoverManager.cpp",
-      "rule": "raw-cast",
-      "code": "pathId = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Navigation/MoverManager.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-
-    {
-      "path": "src/AI/Navigation/NodeManager.cpp",
-      "rule": "raw-cast",
-      "code": "int count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/Ball.cpp",
-      "rule": "raw-cast",
-      "code": "destination.m_xFixed = *(unsigned short*) p_data << 12;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/Ball.cpp",
-      "rule": "raw-cast",
-      "code": "destination.m_yFixed = *(unsigned short*) p_data << 12;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/Ball.cpp",
-      "rule": "raw-cast",
-      "code": "destination.m_zFixed = *(unsigned short*) p_data << 12;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/Ball.cpp",
-      "rule": "raw-cast",
-      "code": "start.m_xFixed = *(unsigned short*) p_data << 12;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/Ball.cpp",
-      "rule": "raw-cast",
-      "code": "start.m_yFixed = *(unsigned short*) p_data << 12;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/Ball.cpp",
-      "rule": "raw-cast",
-      "code": "start.m_zFixed = *(unsigned short*) p_data << 12;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/Ball.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short id = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/Ball.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short speed = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/GroundAnim.cpp",
-      "rule": "raw-cast",
-      "code": "coordinate.m_x = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/GroundAnim.cpp",
-      "rule": "raw-cast",
-      "code": "coordinate.m_y = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/GroundAnim.cpp",
-      "rule": "raw-cast",
-      "code": "coordinate.m_z = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/GroundAnim.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned int endFrame = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/GroundAnim.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned int startFrame = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/GroundAnim.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short count = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "cornerA.m_x = *(short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "cornerA.m_y = *(short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "cornerA.m_z = *(short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "cornerB.m_x = *(short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "cornerB.m_y = *(short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "cornerB.m_z = *(short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "m_targetCount = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "target->m_message = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "target->m_objectId = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned int repeatable = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/AI/Objects/InvisibleSwitch.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short id = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/Frontend/Support/TargetAboutScreen.cpp",
-      "rule": "raw-cast",
-      "code": "area = *(VsRect*) item;",
-      "count": 1,
-      "reason": "Intentional access to the 8-byte VsRect bounding box at the head of ChangeListItem."
-    },
-    {
-      "path": "src/Frontend/Support/TargetAboutScreen.cpp",
-      "rule": "raw-cast",
-      "code": "area.ExpandToInclude(*(VsRect*) item);",
-      "count": 1,
-      "reason": "Intentional access to the 8-byte VsRect bounding box at the head of ChangeListItem."
-    },
-    {
-      "path": "src/Map/Base/Map.cpp",
-      "rule": "raw-cast",
-      "code": "eObjectType objectType = (eObjectType) * (unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/Map/Base/Map.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short groundHeight = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-    {
-      "path": "src/Map/Base/Map.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned short objectData = *(unsigned short*) p_data;",
-      "count": 1,
-      "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
-    },
-
-    {
-      "path": "src/Visos/Foundation/ChangeList.cpp",
-      "rule": "raw-cast",
-      "code": "*(unsigned int*) cell = splat;",
-      "count": 1,
-      "reason": "Intentional 32-bit fill of two packed 16-bit change-list cells."
-    },
-
-    {
-      "path": "src/Visos/Graphics/PvGdiBitmap.cpp",
-      "rule": "raw-cast",
-      "code": "*(PvGdiBitmap**) frameSpace = this;",
-      "count": 1,
-      "reason": "Intentional byte/frame-buffer storage operation in bitmap conversion code."
-    },
-    {
-      "path": "src/Visos/Graphics/PvGdiBitmap.cpp",
-      "rule": "raw-cast",
-      "code": "*(unsigned char*) destPtr = *(unsigned char*) srcPtr;",
-      "count": 2,
-      "reason": "Intentional byte/frame-buffer storage operation in bitmap conversion code."
-    },
-    {
-      "path": "src/Visos/Graphics/PvGdiBitmap.cpp",
-      "rule": "raw-cast",
-      "code": "*(unsigned int*) dest = 0;",
-      "count": 2,
-      "reason": "Intentional byte/frame-buffer storage operation in bitmap conversion code."
-    },
-
     {
       "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
-      "code": "(unsigned char*) *(int*) ((int) PvBackBuffSurface::m_bitmap.m_lines + dstRow) + dstX;",
-      "count": 1,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
-      "code": "*(unsigned int*) &p_colour,",
-      "count": 1,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
-      "code": "*(unsigned short**) ((unsigned char*) PvZBuffSurface::m_bitmap.m_lines + lineOffset) + x;",
-      "count": 2,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
-      "code": "CopyBackBuffToScreen(*(VsRect*) item);",
-      "count": 1,
-      "reason": "Intentional blit of the 8-byte VsRect bounding box at the head of ChangeListItem to the screen."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
       "code": "Move(*(VsPoint*) &m_rect0c.m_x);",
       "count": 1,
       "reason": "Intentional pass-by-reference of the (m_x, m_y) VsPoint coordinates within the surface rectangle."
     },
     {
       "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
+      "code": "*(unsigned int*) &p_colour,",
+      "count": 1,
+      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
+    },
+    {
+      "path": "src/Visos/Graphics/VsGdi.cpp",
+      "rule": "addr-cast-punning",
       "code": "memset(negativeSpan, *(unsigned int*) &p_colour, spanWidth);",
       "count": 1,
       "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;",
-      "count": 1,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + startX;",
-      "count": 1,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + x;",
-      "count": 3,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "raw-cast",
-      "code": "unsigned char* src = (unsigned char*) *(int*) ((int) m_lines + srcRow) + srcX;",
-      "count": 1,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Messaging/ReadMsBuff.cpp",
-      "rule": "raw-cast",
-      "code": "*(BasePacketHeader*) m_data = *g_pNetworkPacketScratch;",
-      "count": 1,
-      "reason": "Intentional packet-header transfer using the on-wire header layout."
     },
     {
       "path": "src/Visos/Network/FileNetwork.cpp",
@@ -626,33 +31,23 @@
       "count": 1,
       "reason": "MSVC 4.00 MI adjustment required for the original virtual BaseNetwork::Process dispatch; both functions were verified as effective 100% matches."
     },
-
     {
       "path": "src/Visos/Network/TcpIpBroadcast.cpp",
-      "rule": "raw-cast",
-      "code": "*(unsigned int*) result.m_address.m_data)));",
-      "count": 1,
-      "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
-    },
-
-    {
-      "path": "src/Visos/Network/TcpIpBroadcast.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
       "code": "inet_ntoa(*(in_addr*) &(((TcpIpNetworkAddress*) address)->m_ipv4Address =",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
       "path": "src/Visos/Network/TcpIpBroadcast.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
       "code": "strcpy(address->m_text, inet_ntoa(*(in_addr*) &(address->m_ipv4Address = result.m_address.s_addr)));",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
-
     {
       "path": "src/Visos/Network/TcpIpConnect.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
       "code": "strcpy(address.m_text, inet_ntoa(*(in_addr*) &(address.m_ipv4Address = hostAddress.s_addr)));",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
@@ -666,65 +61,43 @@
     },
     {
       "path": "src/Visos/Network/TcpIpNetworkAddress.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
       "code": "in_addr in = *(in_addr*) &((TcpIpNetworkAddress*) &p_address)->m_ipv4Address;",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
       "path": "src/Visos/Network/TcpIpReadSocket.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
       "code": "inet_ntoa(*(in_addr*) &(address->m_ipv4Address = receiveData.m_address.m_address.s_addr)));",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
-
     {
       "path": "src/Visos/Network/WriteSocket.cpp",
-      "rule": "raw-cast",
-      "code": "*(BasePacketHeader*) data = m_savedHeader;",
-      "count": 1,
-      "reason": "Intentional packet-header transfer using the on-wire header layout."
-    },
-    {
-      "path": "src/Visos/Network/WriteSocket.cpp",
-      "rule": "raw-cast",
-      "code": "*(unsigned int*) &((BasePacketHeader*) data)->m_subpacketSequence;",
-      "count": 1,
-      "reason": "Intentional packet-header transfer using the on-wire header layout."
-    },
-    {
-      "path": "src/Visos/Network/WriteSocket.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
       "code": "*(unsigned int*) &m_savedHeader.m_messageId = *(unsigned int*) &((BasePacketHeader*) data)->m_messag",
       "count": 1,
       "reason": "Intentional packet-header transfer using the on-wire header layout."
     },
     {
       "path": "src/Visos/Network/WriteSocket.cpp",
-      "rule": "raw-cast",
+      "rule": "addr-cast-punning",
       "code": "*(unsigned int*) &m_savedHeader.m_subpacketSequence =",
       "count": 1,
       "reason": "Intentional packet-header transfer using the on-wire header layout."
     },
     {
-      "path": "src/Visos/Resources/ResCol.cpp",
-      "rule": "raw-cast",
-      "code": "m_colour = *(unsigned int*) m_data;",
+      "path": "src/Visos/Network/WriteSocket.cpp",
+      "rule": "addr-cast-punning",
+      "code": "*(unsigned int*) &((BasePacketHeader*) data)->m_subpacketSequence;",
       "count": 1,
-      "reason": "Intentional 32-bit read from the resource payload."
+      "reason": "Intentional packet-header transfer using the on-wire header layout."
     },
     {
       "path": "src/Visos/Target/TargetWaveEffect.cpp",
       "rule": "cast-deref-offset",
       "code": "waveHeader = *(EffWaveHeader*) (p_patch + sizeof(EffPatchHeader));",
-      "count": 1,
-      "reason": "Intentional read of the packed effect-patch format; the following fields are byte-swapped explicitly."
-    },
-    {
-      "path": "src/Visos/Target/TargetWaveEffect.cpp",
-      "rule": "raw-cast",
-      "code": "patchHeader = *(EffPatchHeader*) p_patch;",
       "count": 1,
       "reason": "Intentional read of the packed effect-patch format; the following fields are byte-swapped explicitly."
     }
