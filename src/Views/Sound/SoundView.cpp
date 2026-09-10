@@ -280,7 +280,7 @@ int SoundView::GetnEffects(unsigned short p_stateMask)
 }
 
 // 68K 0x10b100d0 ChangeState__10CSoundViewFUsP11CLoadUpdate
-// STUB: LEMBALL 0x00439e30
+// FUNCTION: LEMBALL 0x00439e30
 void SoundView::ChangeState(unsigned short p_state, LoadUpdate* p_loadUpdate)
 {
 	int restartMusic;
