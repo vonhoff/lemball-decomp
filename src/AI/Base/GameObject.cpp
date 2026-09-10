@@ -871,9 +871,44 @@ void GameObject::AddDestination(const AiCoord& p_arg0)
 }
 
 // 68K 0x1060a51c AlterDestination__11CGameObjectFRC7AICOORD
-// STUB: LEMBALL 0x00415f30
+// FUNCTION: LEMBALL 0x00415f30
 void GameObject::AlterDestination(const AiCoord& p_arg0)
 {
+	int i;
+	AiDestinationList* list = m_destinationList;
+	if (list->m_count != 0) {
+		for (i = 0; i < list->m_count - 1; i++) {
+			AiDestinationEntry* entry = &list->m_entries[i];
+			AiDestinationEntry* next = entry + 1;
+			entry->m_type = next->m_type;
+			entry->m_coordinate.m_xFixed = next->m_coordinate.m_xFixed;
+			entry->m_coordinate.m_yFixed = next->m_coordinate.m_yFixed;
+			entry->m_coordinate.m_zFixed = next->m_coordinate.m_zFixed;
+			entry->m_metadata = next->m_metadata;
+		}
+		list->m_count--;
+	}
+
+	AiDestinationList* destinationList = m_destinationList;
+	unsigned short count = destinationList->m_count;
+	if (count < destinationList->m_capacity) {
+		for (int i = count; i > 0; i--) {
+			AiDestinationEntry* entry = &destinationList->m_entries[i];
+			AiDestinationEntry* previous = entry - 1;
+			entry->m_type = previous->m_type;
+			entry->m_coordinate.m_xFixed = previous->m_coordinate.m_xFixed;
+			entry->m_coordinate.m_yFixed = previous->m_coordinate.m_yFixed;
+			entry->m_coordinate.m_zFixed = previous->m_coordinate.m_zFixed;
+			entry->m_metadata = previous->m_metadata;
+		}
+		destinationList->m_count++;
+		AiDestinationEntry* entry = destinationList->m_entries;
+		entry->m_type = (eDestinationType) 1;
+		entry->m_coordinate.m_xFixed = p_arg0.m_xFixed;
+		entry->m_coordinate.m_yFixed = p_arg0.m_yFixed;
+		entry->m_coordinate.m_zFixed = p_arg0.m_zFixed;
+	}
+	StartMoving();
 }
 
 // 68K 0x1060a626 GetDestination__11CGameObjectFv
