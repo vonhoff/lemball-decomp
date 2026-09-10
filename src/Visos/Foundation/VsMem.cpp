@@ -6,7 +6,6 @@
 #include "VsDebug.h"
 
 // 68K 0x10215b2e InternalNew__FUl
-// ASSERT: _VSRELassert("EnoughMemory", "VSMEM.CPP", 1677)
 // FUNCTION: LEMBALL 0x0045a6b0
 void* InternalNew(unsigned long p_size)
 {
@@ -27,7 +26,6 @@ void* InternalNew(unsigned long p_size)
 }
 
 // 68K 0x10215be0 InternalDelete__FPv
-// ASSERT: _VSRELassert("EnoughMemory", "VSMEM.CPP", 1738)
 // FUNCTION: LEMBALL 0x0045a730
 void InternalDelete(void* p_ptr)
 {

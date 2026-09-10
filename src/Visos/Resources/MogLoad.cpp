@@ -20,7 +20,6 @@ ChunkInfo* g_pChunkInfo = 0;
 #define kDirectoryEntryStride 9
 
 // 68K 0x1020189e __ct__7CMogDirFUl
-// ASSERT: _VSRELassert("IsValidResourceFile", "MOGLOAD.CPP", 418)
 // FUNCTION: LEMBALL 0x0045bda0
 MogDir::MogDir(unsigned long p_fileOffset)
 {

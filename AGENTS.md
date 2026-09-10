@@ -107,7 +107,7 @@ Only after `clion-index` fails or is unusable:
 
 ## Build and source rules
 
-Do not use inline assembly. Keep one primary class per `.h` and `.cpp`. Keep functions in ascending original x86 address order. Use `RES_*` from `src/Visos/Resources/Manifest.h` and preserve its values.
+Do not use inline assembly. Keep one primary class per `.h` and `.cpp`, with the file stem equal to that class name, unless `tools/check_tu.py` `OVERRIDE_STEMS` lists a proven original TU basename. Keep functions in ascending original x86 address order. Use `RES_*` from `src/Visos/Resources/Manifest.h` and preserve its values.
 
 Use `undefined`, `undefined2`, and `undefined4` for unknown-width values. Do not guess signedness. Prefer named members over raw offsets and vbptr operations.
 
@@ -148,8 +148,8 @@ python tools/report.py
 reccmp-decomplint --target LEMBALL --warnfail src
 python tools/smell.py
 python tools/smell.py --annot
+python tools/check_tu.py
 ```
-
 Run target-based tools from `build-msvc400` with its virtual environment:
 
 ```powershell
@@ -170,6 +170,9 @@ Check with:
 
 ```powershell
 python tools/check_names.py --inventory C:/Research/Mapping/Lemmings_Paintball__68K_.functions.tsv
+python tools/check_tu.py
 ```
 
 Some 68K symbols intentionally diverge from the C++ name (Mac nested types flattened, free functions moved onto classes, Mac `OnZoomBox` kept as Windows `OnDriverChange` so it overrides `PvWnd`). Those entries live in `tools/check_names.py` as `INTENTIONAL` and report status `intentional`, not `mismatch`. Do not rename source to match the 68K spelling for those. Add or remove `INTENTIONAL` entries when a divergence is introduced or retired.
+
+Translation units follow the same evidence rule: default stem is the primary class name; proven original basenames that differ live in `tools/check_tu.py` as `OVERRIDE_STEMS`. Full-path exceptions live there as `INTENTIONAL`.

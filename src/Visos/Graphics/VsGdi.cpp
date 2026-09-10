@@ -651,7 +651,6 @@ void Surface::AttachPalette(ResPalette* p_palette)
 }
 
 // 68K 0x10108642 NewBitmap__8CSurfaceFRC7CVSRect
-// ASSERT: _VSRELassert("AllocatedBitmap", "VSGDI.CPP", 736)
 // FUNCTION: LEMBALL 0x0046d090
 void Surface::NewBitmap(const VsRect& p_rect)
 {

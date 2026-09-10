@@ -356,7 +356,6 @@ bool InternalInpQuit()
 }
 
 // 68K 0x102133dc INIT_SubSystems__Fv
-// ASSERT: _VSRELassert("EnoughMemory", "VSINIT.CPP", 414)
 // FUNCTION: LEMBALL 0x00459250
 void InitSubSystems()
 {

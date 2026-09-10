@@ -112,7 +112,6 @@ char g_szMasterVersion[12] = "Master v1.3";
 extern StatManager* g_pStatManager;
 
 // 68K 0x1070185c __ct__5CGameFPc
-// ASSERT: _VSRELassert("IsValidResourceFile", "GAME.CPP", 366)
 // FUNCTION: LEMBALL 0x00406df0
 Game::Game(char* p_arg0)
 {
