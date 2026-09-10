@@ -94,6 +94,7 @@ public:
 	friend class InvisibleSwitchManager;
 	friend class InvisibleSwitch;
 	friend class FormationManager;
+	friend class Sheep;
 	friend class SheepGroupManager;
 	friend class EnemyGroupManager;
 	friend class NodeManager;

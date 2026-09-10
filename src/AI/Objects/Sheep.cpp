@@ -3,6 +3,8 @@
 #include "../Base/StateMachine.h"
 #include "../Navigation/Ai.h"
 
+#include <string.h>
+
 // 68K 0x1061e282 __ct__6CSheepFP3CAIiiii
 // FUNCTION: LEMBALL 0x0041f990
 Sheep::Sheep(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4) : GameObject((eObjectType) 7, 0x108, 0x14)
@@ -16,9 +18,30 @@ Sheep::Sheep(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4) : GameO
 }
 
 // 68K 0x1061e344 Restart__6CSheepFv
-// STUB: LEMBALL 0x0041f9f0
+// FUNCTION: LEMBALL 0x0041f9f0
 void Sheep::Restart()
 {
+	GameObject::Restart();
+	m_position.m_xFixed = m_spawnPosition.m_xFixed;
+	m_position.m_yFixed = m_spawnPosition.m_yFixed;
+	m_position.m_zFixed = m_spawnPosition.m_zFixed;
+	int tileX = m_spawnPosition.m_xFixed >> 12;
+	int tileY = m_spawnPosition.m_yFixed >> 12;
+	int tileZ = m_spawnPosition.m_zFixed >> 12;
+	int collision[6];
+	collision[0] = tileX - 8;
+	collision[1] = tileY - 8;
+	collision[2] = tileZ;
+	collision[3] = tileX + 7;
+	collision[4] = tileY + 7;
+	collision[5] = tileZ + 15;
+	memcpy(&m_collisionMinX, collision, sizeof(collision));
+	m_facingDirection = m_initialFacingDirection;
+	Ai* objectAi = g_pAI;
+	Ai* countAi = g_pAI;
+	int* objectCount = &countAi->m_objectCount;
+	objectAi->m_objects[*objectCount] = this;
+	(*objectCount)++;
 }
 
 // 68K 0x1061e424 Process__6CSheepFv
