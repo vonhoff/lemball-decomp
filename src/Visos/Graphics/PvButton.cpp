@@ -95,24 +95,16 @@ PvButton::PvButton(PvGWnd* p_arg0)
 }
 
 // 68K 0x1020fb1a Initialise__9CPVButtonFv
-// STUB: LEMBALL 0x00467d50
+// FUNCTION: LEMBALL 0x00467d50
 void PvButton::Initialise()
 {
-	void* storage;
-
 	m_forceDrawCount = 1;
 	m_autoDraw = 1;
 	m_reserved = 1;
 	m_pressed = 0;
 	m_lastDrawnPressed = 0;
 	m_drawCompleted = 0;
-	storage = operator new(4);
-	if (storage == 0) {
-		m_primitive = 0;
-	}
-	else {
-		m_primitive = new (storage) DrawingMark();
-	}
+	m_primitive = new DrawingMark();
 	m_gdiFlags = 2;
 	m_messageHandler = 0;
 	m_controlMessage = 0;
