@@ -110,9 +110,30 @@ void Switch::AddEntry(int p_message, unsigned short p_objectId)
 }
 
 // 68K 0x10619afa ConvertVer0ToVer1__7CSwitchFv
-// STUB: LEMBALL 0x0041d390
+// FUNCTION: LEMBALL 0x0041d390
 void Switch::ConvertVer0ToVer1()
 {
+	switch (m_legacyType) {
+	case 1: {
+		unsigned int liftId = g_pAI->LiftId(m_legacyFirst);
+		AddEntry(1, liftId);
+		break;
+	}
+	case 2: {
+		for (int i = m_legacyFirst; i < m_legacyLast; i++) {
+			unsigned int liftId = g_pAI->LiftId(i);
+			AddEntry(1, liftId);
+		}
+		break;
+	}
+	case 3: {
+		unsigned int doorId = g_pAI->DoorId(m_legacyFirst);
+		if (doorId != 0xffff) {
+			AddEntry(3, doorId);
+		}
+		break;
+	}
+	}
 }
 
 // 68K 0x10619bce Load__7CSwitchFRPUc
