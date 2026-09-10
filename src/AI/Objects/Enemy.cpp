@@ -383,21 +383,18 @@ void Enemy::HitBall()
 // FUNCTION: LEMBALL 0x00420720
 void Enemy::GetHit()
 {
-	int i = 0;
-	if (g_pAI->m_objectCount > 0) {
+	int i;
+	for (i = 0; i < g_pAI->m_objectCount; i++) {
 		int& count = g_pAI->m_objectCount;
 		GameObject**& objects = g_pAI->m_objects;
-		do {
-			if (objects[i] == (GameObject*) this) {
-				count--;
-				for (; i < count; i++) {
-					objects[i] = objects[i + 1];
-				}
-				objects[count] = 0;
-				break;
+		if (objects[i] == (GameObject*) this) {
+			count--;
+			for (; i < count; i++) {
+				objects[i] = objects[i + 1];
 			}
-			i++;
-		} while (i < count);
+			objects[count] = 0;
+			break;
+		}
 	}
 	g_pAI->Score(500);
 }
