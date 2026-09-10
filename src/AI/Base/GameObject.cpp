@@ -946,10 +946,33 @@ void GameObject::GetBoundingBox(VsRect& p_rect)
 }
 
 // 68K 0x1060a796 Jump__11CGameObjectFv
-// STUB: LEMBALL 0x00416130
+// FUNCTION: LEMBALL 0x00416130
 bool GameObject::Jump()
 {
-	return 0;
+	bool result = false;
+	Mover* mover = 0;
+	unsigned int actionArgument = (unsigned short) m_actionArgument;
+	if (actionArgument != 0) {
+		return (bool) actionArgument;
+	}
+
+	int elapsed = g_dwGameTick - m_lastMovementTick;
+	unsigned int groundZ = g_pMap->GetZ(m_groundPosition.m_xFixed >> 12, m_groundPosition.m_yFixed >> 12, &mover);
+	m_position.m_zFixed = (elapsed * 3 + m_flightZ) << 12;
+	groundZ <<= 12;
+	if (m_position.m_zFixed >= (int) groundZ) {
+		AiCoord* position = &m_position;
+		m_position = m_groundPosition;
+		position->m_zFixed = groundZ;
+		m_unk0x104 = 0;
+		if (m_unk0x11c == 0 && mover != 0) {
+			if (mover->GetOn(this)) {
+				return true;
+			}
+		}
+		g_pAI->StepOn(*position, this, m_collisionFlags);
+	}
+	return result;
 }
 
 // 68K 0x1060a8c6 Fall__11CGameObjectFv
