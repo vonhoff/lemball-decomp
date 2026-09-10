@@ -25,11 +25,6 @@ private:
 	String m_description;       // 0x18
 };
 
-// SIZE 0x20
-// VTABLE: LEMBALL 0x004988c8
-class MogloadStat : public BaseStat {
-public:
-	MogloadStat(char* p_description) : BaseStat(p_description) {}
-};
+#include "MogloadStat.h"
 
 #endif
