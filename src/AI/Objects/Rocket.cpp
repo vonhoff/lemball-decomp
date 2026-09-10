@@ -1,6 +1,7 @@
 #include "Rocket.h"
 
 #include "../../Map/Base/Map.h"
+#include "../../Visos/Foundation/VsMath.h"
 
 // 68K 0x1061d8ce __ct__7CRocketFv
 // FUNCTION: LEMBALL 0x004267d0
@@ -59,9 +60,22 @@ bool Rocket::Process()
 }
 
 // 68K 0x1061db8c StepOn__7CRocketFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x004269d0
+// FUNCTION: LEMBALL 0x004269d0
 int Rocket::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
+	if ((int) Distance(m_position.m_xFixed >> 12,
+					   m_position.m_yFixed >> 12,
+					   p_position.m_xFixed >> 12,
+					   p_position.m_yFixed >> 12) < 32) {
+		m_position.m_xFixed = p_position.m_xFixed + 0x4000;
+		m_position.m_yFixed = p_position.m_yFixed + 0x4000;
+		m_position.m_zFixed = p_position.m_zFixed;
+		m_launchBaseZ = m_position.m_zFixed >> 12;
+		m_activator = p_object;
+		m_lastMovementTick = 0x30;
+		RequestAction((eAction) 0x1b);
+		return 1;
+	}
 	return 0;
 }
 
