@@ -36,6 +36,7 @@ public:
 	friend class BalloonPost;
 	friend class Mover;
 	friend class Maze;
+	friend class Mine;
 	friend class C2D;
 	friend class Trampoline;
 	friend class GroundAnim;

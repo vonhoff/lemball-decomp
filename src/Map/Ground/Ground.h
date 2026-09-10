@@ -21,6 +21,7 @@ public:
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;
+	friend class Mine;
 	friend class Hand;
 	friend class GroundAnim;
 	friend class Trampoline;

@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
 #include "../Managers/MineManager.h"
 
 // GLOBAL: LEMBALL 0x004a7840
@@ -38,9 +39,27 @@ void Mine::Initialise()
 }
 
 // 68K 0x10616354 Set__5CMineF7AICOORD
-// STUB: LEMBALL 0x00423cb0
+// FUNCTION: LEMBALL 0x00423cb0
 void Mine::Set(AiCoord p_position)
 {
+	m_position.m_xFixed = p_position.m_xFixed;
+	m_position.m_yFixed = p_position.m_yFixed;
+	m_position.m_zFixed = p_position.m_zFixed;
+	m_activated = 0;
+	m_enabled = 1;
+	m_terrainSet = 0;
+	int blockX = (p_position.m_xFixed >> 12) / 16;
+	int blockY = (p_position.m_yFixed >> 12) / 16;
+	if (blockX >= 0 && blockY >= 0) {
+		int width = g_pMap->m_ground.m_width;
+		if (blockX >= width) {
+			return;
+		}
+		if (g_pMap->m_ground.m_height <= blockY) {
+			return;
+		}
+		g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= 0x8000;
+	}
 }
 
 // 68K 0x106163f0 Trigger__5CMineFi
