@@ -36,6 +36,7 @@ public:
 	friend class RequestCancelMess;
 	friend class RequestReplyMess;
 	friend class TrampolineManager;
+	friend class CollectableManager;
 	friend class DoorManager;
 	friend class LaserManager;
 	friend class LiftManager;

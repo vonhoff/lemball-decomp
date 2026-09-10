@@ -44,9 +44,13 @@ void CollectableManager::Initialise(int p_capacity)
 }
 
 // 68K 0x10605754 Process__19CCollectableManagerFv
-// STUB: LEMBALL 0x00422550
+// FUNCTION: LEMBALL 0x00422550
 void CollectableManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_collectables[i]->m_requestEnabled = 1;
+		m_collectables[i]->Process();
+	}
 }
 
 // 68K 0x106057bc Add__19CCollectableManagerFUsiii11eObjectType
