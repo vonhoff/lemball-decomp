@@ -2185,11 +2185,11 @@ void C2D::DrawTime()
 		g_timeText[4] = 0;
 	}
 
+	VsPoint& position = m_spriteGroundLookupRectA;
 	VsSize advance;
 	advance.m_width = -4;
 	advance.m_height = 0;
-	m_textManager
-		->DrawString(m_gdi, m_spriteGroundLookupRectA, advance, RES_NEWFRONT_FONTS_GAME_SCORETIME, g_timeText, 0x20, 0);
+	m_textManager->DrawString(m_gdi, position, advance, RES_NEWFRONT_FONTS_GAME_SCORETIME, g_timeText, 0x20, 0);
 }
 
 // 68K 0x10b05914 DrawPaused__3C2DFv
