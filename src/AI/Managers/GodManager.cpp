@@ -3,6 +3,7 @@
 #include "../../Visos/Messaging/BasePacketHeader.h"
 #include "../../Visos/Messaging/ReadPacket.h"
 #include "../../Visos/Network/BaseNetwork.h"
+#include "../../Visos/Network/Connect.h"
 #include "../Base/GlobalGameObject.h"
 #include "../Messages/GameStateMessage.h"
 #include "../Navigation/Ai.h"
@@ -92,9 +93,17 @@ int GodManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1060e298 Process__11CGodManagerFv
-// STUB: LEMBALL 0x0040b320
+// FUNCTION: LEMBALL 0x0040b320
 void GodManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_managers[i]->Process();
+	}
+	if (g_pActiveConnection != 0) {
+		for (int i = 0; i < m_count; i++) {
+			m_managers[i]->ProcessNetwork();
+		}
+	}
 }
 
 // 68K 0x1060df5c __dt__11CGodManagerFv
