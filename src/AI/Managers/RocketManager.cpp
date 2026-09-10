@@ -43,10 +43,21 @@ void RocketManager::Initialise(int p_capacity)
 }
 
 // 68K 0x1061df34 StepOn__14CRocketManagerFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x00426fb0
+// FUNCTION: LEMBALL 0x00426fb0
 int RocketManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
-	return 0;
+	int i = 0;
+	while (true) {
+		if (m_count <= i) {
+			return 0;
+		}
+		Rocket* rocket = &m_rockets[i];
+		if (rocket->m_active != 0 && rocket->m_action == (eAction) 0x18 &&
+			rocket->m_requestedAction == (eAction) 0x18 && rocket->StepOn(p_position, p_object) != 0) {
+			return 1;
+		}
+		i++;
+	}
 }
 
 // 68K 0x1061dffa Process__14CRocketManagerFv
