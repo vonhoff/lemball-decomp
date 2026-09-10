@@ -62,9 +62,10 @@ int TrampolineManager::GetViewData(ViewData* p_viewData)
 	int count = 0;
 	int i = 0;
 	while (i < m_count) {
-		m_trampolines[i].GetViewData(*p_viewData);
-		p_viewData++;
-		count++;
+		if (m_trampolines[i].m_enabled != 0) {
+			m_trampolines[i].GetViewData(*p_viewData++);
+			count++;
+		}
 		i++;
 	}
 	return count;
