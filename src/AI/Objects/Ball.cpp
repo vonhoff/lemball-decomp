@@ -68,9 +68,27 @@ void Ball::HitBullet(Bullet* p_bullet)
 }
 
 // 68K 0x10603ace Delete__5CBallFv
-// STUB: LEMBALL 0x00421ab0
+// FUNCTION: LEMBALL 0x00421ab0
 void Ball::Delete()
 {
+	int& objectCount = g_pAI->m_objectCount;
+	int i = 0;
+	if (i < objectCount) {
+		GameObject**& objects = g_pAI->m_objects;
+		do {
+			if (objects[i] == this) {
+				objectCount--;
+				for (; i < objectCount; i++) {
+					objects[i] = objects[i + 1];
+				}
+				objects[objectCount] = 0;
+				break;
+			}
+			i++;
+		} while (i < objectCount);
+	}
+	g_pBallManager->Delete(this);
+	SetId(0xffff);
 }
 
 // 68K 0x10603b26 SetHeightCorrect__5CBallFv

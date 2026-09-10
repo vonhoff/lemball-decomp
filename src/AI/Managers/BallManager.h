@@ -23,4 +23,6 @@ private:
 	int m_capacity;    // 0x0c
 };
 
+extern BallManager* g_pBallManager;
+
 #endif
