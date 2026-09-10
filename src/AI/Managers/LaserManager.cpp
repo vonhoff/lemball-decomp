@@ -1,6 +1,7 @@
 #include "LaserManager.h"
 
 #include "../Objects/Laser.h"
+#include "../Objects/ViewData.h"
 
 // 68K 0x1061403a __ct__13CLaserManagerFP3CAIi
 // FUNCTION: LEMBALL 0x00429320
@@ -54,10 +55,16 @@ void LaserManager::Process()
 }
 
 // 68K 0x106143d2 GetViewData__13CLaserManagerFP9CViewData
-// STUB: LEMBALL 0x004298a0
+// FUNCTION: LEMBALL 0x004298a0
 int LaserManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	for (int i = 0; i < m_count; i++) {
+		int laserCount = m_lasers[i].GetViewData(p_viewData);
+		count += laserCount;
+		p_viewData += laserCount;
+	}
+	return count;
 }
 
 // 68K 0x1061444c Add__13CLaserManagerFUsiii11eObjectType

@@ -2,6 +2,7 @@
 
 #include "../Navigation/Ai.h"
 #include "../Objects/PaintGun.h"
+#include "../Objects/ViewData.h"
 
 // 68K 0x1061b8a8 __ct__16CPaintGunManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0042bfe0
@@ -49,10 +50,17 @@ void PaintGunManager::Process()
 }
 
 // 68K 0x1061bb72 GetViewData__16CPaintGunManagerFP9CViewData
-// STUB: LEMBALL 0x0042c520
+// FUNCTION: LEMBALL 0x0042c520
 int PaintGunManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	for (int i = 0; i < m_count; i++) {
+		if (m_paintGuns[i].m_enabled != 0) {
+			m_paintGuns[i].GetViewData(*p_viewData++);
+			count++;
+		}
+	}
+	return count;
 }
 
 // 68K 0x1061bc0a Add__16CPaintGunManagerFUsiiii

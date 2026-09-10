@@ -146,6 +146,7 @@ public:
 	friend class Key;
 	friend class Balloon;
 	friend class Collectable;
+	friend class CollectableManager;
 	friend class Crate;
 	friend class Ai;
 	friend class InvisibleSwitch;

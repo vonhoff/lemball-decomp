@@ -1,6 +1,7 @@
 #include "CollectableManager.h"
 
 #include "../Objects/Collectable.h"
+#include "../Objects/ViewData.h"
 
 // 68K 0x10605528 __ct__19CCollectableManagerFP3CAIi
 // FUNCTION: LEMBALL 0x004223c0
@@ -66,10 +67,17 @@ void CollectableManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsign
 }
 
 // 68K 0x101198ea GetViewData__19CCollectableManagerFP9CViewData
-// STUB: LEMBALL 0x00422ef0
+// FUNCTION: LEMBALL 0x00422ef0
 int CollectableManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	for (int i = 0; i < m_count; i++) {
+		if (m_collectables[i]->m_enabled != 0 || m_collectables[i]->m_soundEffect != 0) {
+			m_collectables[i]->GetViewData(*p_viewData++);
+			count++;
+		}
+	}
+	return count;
 }
 
 // 68K 0x106056a4 __dt__19CCollectableManagerFv

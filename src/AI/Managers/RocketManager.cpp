@@ -2,6 +2,7 @@
 
 #include "../Navigation/Ai.h"
 #include "../Objects/Rocket.h"
+#include "../Objects/ViewData.h"
 
 // 68K 0x1061dcfe __ct__14CRocketManagerFP3CAIi
 // FUNCTION: LEMBALL 0x00426ac0
@@ -71,10 +72,17 @@ void RocketManager::Process()
 }
 
 // 68K 0x1061e06e GetViewData__14CRocketManagerFP9CViewData
-// STUB: LEMBALL 0x00427050
+// FUNCTION: LEMBALL 0x00427050
 int RocketManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	for (int i = 0; i < m_count; i++) {
+		if (m_rockets[i].m_action != (eAction) 0x18) {
+			m_rockets[i].GetViewData(*p_viewData++);
+			count++;
+		}
+	}
+	return count;
 }
 
 // 68K 0x1061e10a Add__14CRocketManagerFUsiii

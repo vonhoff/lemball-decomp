@@ -17,6 +17,8 @@ public:
 	virtual ~Collectable();    // vtable+0x00
 	Collectable();
 
+	friend class CollectableManager;
+
 private:
 	unsigned int m_enabled; // 0x138
 };

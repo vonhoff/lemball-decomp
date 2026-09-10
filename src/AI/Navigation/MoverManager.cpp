@@ -1,5 +1,6 @@
 #include "MoverManager.h"
 
+#include "../Objects/ViewData.h"
 #include "Ai.h"
 #include "Mover.h"
 
@@ -73,10 +74,15 @@ void MoverManager::Process()
 }
 
 // 68K 0x10618236 GetViewData__13CMoverManagerFP9CViewData
-// STUB: LEMBALL 0x0042f540
+// FUNCTION: LEMBALL 0x0042f540
 int MoverManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	for (int i = 0; i < m_count; i++) {
+		m_movers[i].GetViewData(*p_viewData++);
+		count++;
+	}
+	return count;
 }
 
 // 68K 0x106182b4 Add__13CMoverManagerFUsiUcii

@@ -2,6 +2,7 @@
 
 #include "../Navigation/Ai.h"
 #include "../Objects/Hand.h"
+#include "../Objects/ViewData.h"
 
 // 68K 0x106111f4 __ct__12CHandManagerFP3CAIi
 // FUNCTION: LEMBALL 0x00427e60
@@ -56,10 +57,15 @@ void HandManager::Process()
 }
 
 // 68K 0x1061157a GetViewData__12CHandManagerFP9CViewData
-// STUB: LEMBALL 0x00428410
+// FUNCTION: LEMBALL 0x00428410
 int HandManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	for (int i = 0; i < m_count; i++) {
+		m_hands[i].GetViewData(*p_viewData++);
+		count++;
+	}
+	return count;
 }
 
 // 68K 0x106115f8 Add__12CHandManagerFUsiii
