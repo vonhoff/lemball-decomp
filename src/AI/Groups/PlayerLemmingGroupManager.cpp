@@ -1,16 +1,37 @@
 #include "PlayerLemmingGroupManager.h"
 
 #include "../../Map/Base/Map.h"
+#include "../Managers/ObjectManager.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/PlayerLemming.h"
 #include "FormationManager.h"
 #include "PlayerLemmingGroup.h"
 
 // 68K 0x1060f6e4 __ct__26CPlayerLemmingGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
-// STUB: LEMBALL 0x00418400
+// FUNCTION: LEMBALL 0x00418400
 PlayerLemmingGroupManager::PlayerLemmingGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
 	: GenericGroupManager(p_arg0, p_arg1, p_arg2), BaseObjectManager(0x22, 0x17)
 {
+	m_deadCount = 0;
+	m_startX[0] = 0x112;
+	m_startZ[0] = 0;
+	m_lemmingCounts[3] = 0;
+	m_lemmingCounts[2] = 0;
+	m_lemmingCounts[1] = 0;
+	m_state = 0;
+	m_networkInitialized = 0;
+	m_startY[0] = 0x34a;
+	m_startPositionCount = 1;
+	m_lemmingCounts[0] = 4;
+
+	int remaining = 5;
+	do {
+		PlayerLemmingGroup* group =
+			new PlayerLemmingGroup(g_pGenericGroupAI, g_pGenericGroupObjectManager, g_pGenericGroupFormationManager);
+		group->Restart();
+		AddNewGroup(group);
+		remaining--;
+	} while (remaining != 0);
 }
 
 // 68K 0x1060f84a Restart__26CPlayerLemmingGroupManagerFv
