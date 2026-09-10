@@ -95,9 +95,25 @@ int NetworkManager::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x10a00996 Broadcast__15CNetworkManagerFPCc
-// STUB: LEMBALL 0x00452a40
+// FUNCTION: LEMBALL 0x00452a40
 void NetworkManager::Broadcast(const char* p_address)
 {
+	m_broadcastStartTime = CurrentMilliTimer();
+	class Broadcast* broadcast = g_pBaseNetwork->m_broadcast;
+	if (broadcast->m_runEnabled != 0) {
+		broadcast->Suspend();
+	}
+	if (p_address == 0 || *p_address == '\0') {
+		broadcast->m_addressMode = 0;
+	}
+	else {
+		broadcast->SetSpecificAddr(p_address);
+	}
+	class Broadcast** broadcastPtr = &g_pBaseNetwork->m_broadcast;
+	if ((*broadcastPtr)->m_runEnabled == 0) {
+		g_pBaseNetwork->m_suspendBroadcastOnConnect = 0;
+		(*broadcastPtr)->Run();
+	}
 }
 
 // 68K 0x10a00a42 Kill__15CNetworkManagerFv

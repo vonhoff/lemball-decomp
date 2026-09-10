@@ -32,6 +32,7 @@ public:
 	~Broadcast();
 
 	friend class BaseNetwork;
+	friend class NetworkManager;
 	friend class TcpIpBroadcast;
 
 protected:
