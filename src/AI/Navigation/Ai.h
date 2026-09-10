@@ -88,6 +88,7 @@ public:
 	friend class IceManager;
 	friend class BallManager;
 	friend class DoorManager;
+	friend class GodManager;
 	friend class LevelLoader;
 	friend class MoverManager;
 	friend class InvisibleSwitchManager;

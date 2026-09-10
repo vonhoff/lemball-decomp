@@ -4,12 +4,6 @@
 #include "../../Visos/Messaging/ReadPacket.h"
 #include "BaseObjectManager.h"
 
-// 68K 0x1060de8a __ct__11CGodManagerFi
-// STUB: LEMBALL 0x0040b020
-GodManager::GodManager(int p_arg0)
-{
-}
-
 // 68K 0x1060e004 Restart__11CGodManagerFv
 // FUNCTION: LEMBALL 0x0040b120
 void GodManager::Restart()
