@@ -34,9 +34,9 @@ Functions are matched without inline assembly:
 
 ### Macintosh Symbol Recovery
 
-The 1996 Classic Mac OS version retained unstripped MacsBug symbol tables. A total of 2,848 original function names, classes, and types were recovered from the 68000 and PowerPC binaries.
+The 1996 Macintosh version retained unstripped MacsBug symbol tables. A total of 2,848 original function names, classes, and types were recovered from the 68K binary.
 
-These symbols are mapped to the Windows x86 executable by comparing code structure, strings, and tables. This restores original class and function names instead of guessing.
+These symbols are mapped to the Windows x86 executable by comparing code structure, strings, and tables.
 
 ## Quick Start
 
@@ -126,16 +126,13 @@ AI suggestions are treated as hypotheses, not authoritative code. Every change i
 ## References
 
 ### Research
-- [Game Data Digs](https://gamedatadigs.neocities.org/lemmings_paintball) — File formats and data structures
-- [The Cutting Room Floor](https://tcrf.net/Lemmings_Paintball) — Unused assets and debug text
-- [Alex Bevilacqua](https://alexbevi.com/blog/2026/03/14/reverse-engineering-a-dos-game-with-ghidra-and-codex/) — AI-assisted reverse engineering
+- https://tcrf.net/Lemmings_Paintball
+- https://gamedatadigs.neocities.org/lemmings_paintball
+- https://alexbevi.com/blog/2026/03/14/reverse-engineering-a-dos-game-with-ghidra-and-codex
 
-### Tooling & Related Projects
-- [decomp.dev](https://decomp.dev) — Progress tracking
-- [isledecomp/reccmp](https://github.com/isledecomp/reccmp) — Binary comparison tool
-- [isledecomp/isle](https://github.com/isledecomp/isle) — LEGO Island decompilation
-- [openblack/bw1-decomp](https://github.com/openblack/bw1-decomp) — Black & White decompilation (inspiration)
-- [marijnvdwerf/legoland](https://github.com/marijnvdwerf/legoland) — Legoland decompilation (inspiration)
+### Inspirations
+- https://github.com/openblack/bw1-decomp
+- https://github.com/marijnvdwerf/legoland
 
 ## Legal
 
