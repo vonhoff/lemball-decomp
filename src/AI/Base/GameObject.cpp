@@ -1034,11 +1034,37 @@ bool GameObject::Fall()
 	return false;
 }
 
+// Keeping type completion local preserves the original MSVC 4.00 register allocation in preceding functions.
+#include "Coord3d.h"
+
 // 68K 0x1060aaac OnLift__11CGameObjectFR8tCoord3d
-// STUB: LEMBALL 0x00416340
+// FUNCTION: LEMBALL 0x00416340
 bool GameObject::OnLift(Coord3d& p_arg0)
 {
-	return 0;
+	if (m_action == (eAction) 8) {
+		return false;
+	}
+
+	int left = (int) p_arg0.m_x - 8;
+	int top = (int) p_arg0.m_y - 8;
+	int right = (int) p_arg0.m_x + 7;
+	int bottom = (int) p_arg0.m_y + 7;
+	if (left <= (m_position.m_xFixed >> 12) && right >= (m_position.m_xFixed >> 12) &&
+		(m_position.m_yFixed >> 12) >= top && (m_position.m_yFixed >> 12) <= bottom) {
+		Map* map = g_pMap;
+		int blockX = left >> 4;
+		int blockY = top >> 4;
+		unsigned short groundZ;
+		if (left < 0 || top < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+			groundZ = 0;
+		}
+		else {
+			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(left & 0xf, top & 0xf);
+		}
+		m_position.m_zFixed = (unsigned int) groundZ << 12;
+		return true;
+	}
+	return false;
 }
 
 // 68K 0x1060ab76 OffLift__11CGameObjectFR8tCoord3d
@@ -1049,10 +1075,33 @@ void GameObject::OffLift(Coord3d& p_arg0)
 }
 
 // 68K 0x1060abb8 OnLift__11CGameObjectFR8tCoord3dR8tCoord3d
-// STUB: LEMBALL 0x00416420
+// FUNCTION: LEMBALL 0x00416420
 bool GameObject::OnLift(Coord3d& p_arg0, Coord3d& p_arg1)
 {
-	return 0;
+	if (m_action == (eAction) 8) {
+		return false;
+	}
+
+	int left = (int) p_arg0.m_x - 8;
+	int right = (int) p_arg1.m_x + 7;
+	int top = (int) p_arg0.m_y - 8;
+	int bottom = (int) p_arg1.m_y + 7;
+	if ((m_position.m_xFixed >> 12) >= left && (m_position.m_xFixed >> 12) <= right &&
+		(m_position.m_yFixed >> 12) >= top && (m_position.m_yFixed >> 12) <= bottom) {
+		Map* map = g_pMap;
+		int blockX = left >> 4;
+		int blockY = top >> 4;
+		unsigned short groundZ;
+		if (left < 0 || top < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+			groundZ = 0;
+		}
+		else {
+			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(left & 0xf, top & 0xf);
+		}
+		m_position.m_zFixed = (unsigned int) groundZ << 12;
+		return true;
+	}
+	return false;
 }
 
 // 68K 0x1060ac8e OffLift__11CGameObjectFR8tCoord3dR8tCoord3d
@@ -1142,9 +1191,10 @@ void GameObject::ReSetId()
 short GameObject::NextId()
 {
 	int i = 0;
+	int j;
 	do {
 		if (g_abObjectIdBitmap[i] != 0xff) {
-			int j = 0;
+			j = 0;
 			do {
 				if ((g_abObjectIdBitmap[i] & g_abBitMasks[j]) == 0) {
 					return j + i * 8;
