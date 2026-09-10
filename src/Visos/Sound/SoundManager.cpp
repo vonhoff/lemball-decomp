@@ -66,42 +66,42 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 						   int p_deviceParameter,
 						   Wnd* p_window)
 {
-	unsigned int music;
 	unsigned int count;
-	unsigned char detectedCd;
+	undefined4 detectedCd;
 	unsigned int i;
 
-	music = 0;
-	if (p_useMusicCD == 0) {
-		music = p_musicEnabled;
+	if (p_useMusicCD != 0) {
+		p_musicEnabled = 0;
 	}
 	m_background = 1;
-	m_requestedMusic = music;
+	m_requestedMusic = p_musicEnabled;
 	m_requestedEffects = p_effectsEnabled;
 	m_resourceId = 0;
 	m_nextMusicHandle = 1;
+	i = 0;
+	detectedCd = 0;
 	m_useMusicCD = p_useMusicCD;
 	m_musicDevice = 0;
-	detectedCd = 0;
 	count = MachineSoundDetect(m_devices,
-							   music,
+							   p_musicEnabled,
 							   p_effectsEnabled,
 							   p_useMusicCD,
-							   &detectedCd,
+							   (unsigned char*) &detectedCd,
 							   &m_musicDevice,
 							   p_deviceParameter);
 	m_deviceCount = count;
 	m_musicOutput = 0;
 	m_effectOutput = 0;
-	if (count > 0) {
-		for (i = 0; i < m_deviceCount; ++i) {
+	if (i < count) {
+		do {
 			if (((SoundDeviceDispatch*) m_devices[i])->IsMusicAvailable() == 1) {
 				m_musicOutput = m_devices[i];
 			}
 			if (((SoundDeviceDispatch*) m_devices[i])->IsEffectAvailable() == 1) {
 				m_effectOutput = m_devices[i];
 			}
-		}
+			++i;
+		} while (i < m_deviceCount);
 	}
 	m_musicAvailable = 0;
 	m_effectsAvailable = 0;
@@ -142,9 +142,9 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 	}
 	m_musicState = m_musicAvailable;
 	m_effectsState = m_effectsAvailable;
-	m_advancedEffects = 0;
-	if (m_effectsCapability > 1) {
-		m_advancedEffects = 1;
+	m_advancedEffects = 1;
+	if (m_effectsCapability <= 1) {
+		m_advancedEffects = 0;
 	}
 	m_musicStateCopy = m_musicAvailable;
 }
