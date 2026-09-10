@@ -1,8 +1,8 @@
 #include "Slinky.h"
 
 // 68K 0x1061ec2c __ct__7CSlinkyFv
-// STUB: LEMBALL 0x0040b480
-Slinky::Slinky()
+// FUNCTION: LEMBALL 0x0040b480
+Slinky::Slinky() : GameObject((eObjectType) 0x35, 0, 0), m_unk0x138(0, 0, 0)
 {
 }
 
