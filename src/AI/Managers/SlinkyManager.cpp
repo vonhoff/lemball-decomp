@@ -36,6 +36,7 @@ void SlinkyManager::Initialise(int p_capacity)
 	}
 	if (m_slinkies == 0) {
 		m_slinkies = new Slinky[p_capacity];
+		// LINE: LEMBALL 0x0040b99b
 		for (int i = 0; i < m_capacity; i++) {
 			m_slinkies[i].Restart();
 		}
