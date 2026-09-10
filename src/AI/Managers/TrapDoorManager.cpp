@@ -45,11 +45,18 @@ void TrapDoorManager::AddNewDoor(unsigned short p_id,
 int TrapDoorManager::GetViewData(ViewData* p_viewData)
 {
 	int count = 0;
-	for (int i = 0; i < m_count; i++) {
-		if (m_doors[i]->m_action != 0x18 && m_doors[i]->m_action != 0x1e) {
-			m_doors[i]->GetViewData(*p_viewData++);
-			count++;
-		}
+	int i = 0;
+	if (m_count > 0) {
+		TrapDoor** door = m_doors;
+		ViewData* viewData = p_viewData;
+		do {
+			if ((*door)->m_action != 0x18 && (*door)->m_action != 0x1e) {
+				(*door)->GetViewData(*viewData++);
+				count++;
+			}
+			door++;
+			i++;
+		} while (i < m_count);
 	}
 	return count;
 }
