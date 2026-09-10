@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_RESOURCES_RESBITMAP_H
 
 #include "../../Common.h"
-#include "ResBase.h" // complete type
+#include "ResRaster.h"
 
 // SIZE 0x0c
 struct BitmapHeader {
@@ -11,30 +11,6 @@ struct BitmapHeader {
 	unsigned short m_pad0x06;
 	unsigned char m_depth;
 	unsigned char m_flags;
-};
-
-// SIZE 0x4c
-// VTABLE: LEMBALL 0x00498ab0
-class ResRaster : public ResBase {
-public:
-	inline ResRaster()
-	{
-		m_y = 0;
-		m_x = 0;
-	}
-
-	friend class BaseFrontendDrawer;
-	friend class MainOptions1Drawer;
-	friend class MainOptions2Drawer;
-	friend class SuccFailDrawer;
-	friend class Surface;
-	friend class AnimsManager;
-	friend class CdLoadAnim;
-	friend class TargetAboutScreen;
-
-protected:
-	short m_x; // 0x48
-	short m_y; // 0x4a
 };
 
 // SIZE 0x54
@@ -61,8 +37,5 @@ private:
 // 68K 0x101162f6 __dt__10CResBITMAPFv
 // SYNTHETIC: LEMBALL 0x0045eb80
 // ResBitmap::`scalar deleting destructor'
-
-// SYNTHETIC: LEMBALL 0x0045e820
-// ResRaster::`scalar deleting destructor'
 
 #endif
