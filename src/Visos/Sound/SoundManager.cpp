@@ -425,8 +425,9 @@ void SoundManager::SetMusicWnd(Wnd* p_window)
 // FUNCTION: LEMBALL 0x0045b5c0
 void SoundManager::SetMusicCdPath(char* p_path)
 {
-	m_musicDevice->m_path = p_path;
-	m_musicDevice->m_usePathPrefix = 1;
+	PvMusicDevice* musicDevice = m_musicDevice;
+	musicDevice->m_path = p_path;
+	musicDevice->m_usePathPrefix = 1;
 }
 
 // 68K 0x10218b40 UseMusicCD__13CSoundManagerFUc
