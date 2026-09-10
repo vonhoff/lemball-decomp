@@ -20,9 +20,31 @@ void Ball::Restart()
 }
 
 // 68K 0x106036f0 Set__5CBallF7AICOORD7AICOORDi
-// STUB: LEMBALL 0x004216c0
+// FUNCTION: LEMBALL 0x004216c0
 void Ball::Set(AiCoord p_start, AiCoord p_destination, int p_speed)
 {
+	m_position.m_xFixed = p_start.m_xFixed;
+	m_position.m_yFixed = p_start.m_yFixed;
+	m_position.m_zFixed = p_start.m_zFixed;
+	m_spawnPosition.m_xFixed = p_start.m_xFixed;
+	m_spawnPosition.m_yFixed = p_start.m_yFixed;
+	m_spawnPosition.m_zFixed = p_start.m_zFixed;
+	m_destination.m_xFixed = p_destination.m_xFixed;
+	m_destination.m_yFixed = p_destination.m_yFixed;
+	m_destination.m_zFixed = p_destination.m_zFixed;
+	m_action = (eAction) 0x25;
+	m_actionArgument = 0;
+	unsigned short* speed = &m_speed;
+	if (g_pAI->m_levelVersion < 7) {
+		*speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
+	}
+	else {
+		*speed = (unsigned short) p_speed;
+	}
+	if (*speed <= 1) {
+		*speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
+	}
+	m_enabled = 1;
 }
 
 // 68K 0x106037c0 StartMovement__5CBallFUc
