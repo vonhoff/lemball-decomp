@@ -953,10 +953,62 @@ bool GameObject::Jump()
 }
 
 // 68K 0x1060a8c6 Fall__11CGameObjectFv
-// STUB: LEMBALL 0x00416220
+// FUNCTION: LEMBALL 0x00416220
 bool GameObject::Fall()
 {
-	return 0;
+	Mover* mover = 0;
+	unsigned int actionArgument = (unsigned short) m_actionArgument;
+	if (actionArgument != 0) {
+		return (bool) actionArgument;
+	}
+	else {
+		AiCoord* position = &m_position;
+		int x = position->m_xFixed >> 12;
+		int y = position->m_yFixed >> 12;
+		m_position.m_zFixed = ((m_lastMovementTick - g_dwGameTick) * 3 + m_flightZ) << 12;
+
+		if ((x & 0xf) != 8) {
+			int centeredX;
+			if ((x & 0xf) < 8) {
+				centeredX = x + 1;
+			}
+			else {
+				centeredX = x - 1;
+			}
+			position->m_xFixed = centeredX << 12;
+		}
+
+		if ((y & 0xf) != 8) {
+			int centeredY;
+			if ((y & 0xf) < 8) {
+				centeredY = y + 1;
+			}
+			else {
+				centeredY = y - 1;
+			}
+			position->m_yFixed = centeredY << 12;
+		}
+
+		int groundZ = (int) g_pMap->GetZ(x, y, &mover) << 12;
+		if (m_position.m_zFixed <= groundZ) {
+			m_position.m_zFixed = groundZ;
+			m_flightVelocity.m_xFixed = 0;
+			m_flightVelocity.m_yFixed = 0;
+			m_flightVelocity.m_zFixed = 0;
+			m_unk0x108 = 0;
+			if (m_unk0x11c == 0 && mover != 0 && mover->GetOn(this)) {
+				ResetInstructions();
+			}
+		}
+
+		if (m_balloonPostId == 0) {
+			g_pAI->HitTrampoline(m_position, this);
+			if (m_balloonPostId == 0) {
+				g_pAI->StepOn(m_position, this, m_collisionFlags);
+			}
+		}
+	}
+	return false;
 }
 
 // 68K 0x1060aaac OnLift__11CGameObjectFR8tCoord3d
