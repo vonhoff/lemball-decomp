@@ -34,7 +34,7 @@ public:
 	virtual void OverideExistingWaypoints(AiCoord p_coordinate);                             // vtable+0x14c
 	virtual void ClearExistingWaypoints();                                                   // vtable+0x150
 	virtual void ReformAlteredGroup(FormationManager* p_formationManager);                   // vtable+0x154
-	virtual void GetViewData(ViewData* p_viewData);                                          // vtable+0x158
+	virtual int GetViewData(ViewData* p_viewData);                                           // vtable+0x158
 	virtual bool CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate);              // vtable+0x15c
 	virtual void GetBoundingBox(VsRect& p_rect);                                             // vtable+0x48
 	void SwapElements(GameObject* p_first, GameObject* p_second);

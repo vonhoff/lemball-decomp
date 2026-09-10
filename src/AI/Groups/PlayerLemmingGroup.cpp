@@ -1,6 +1,7 @@
 #include "PlayerLemmingGroup.h"
 
 #include "../Objects/PlayerLemming.h"
+#include "../Objects/ViewData.h"
 
 // 68K 0x1060e81a __ct__19CPlayerLemmingGroupFP3CAIP14CObjectManagerP17CFormationManager
 // FUNCTION: LEMBALL 0x00414010
@@ -21,9 +22,24 @@ void PlayerLemmingGroup::Restart()
 }
 
 // 68K 0x1060e946 GetViewData__19CPlayerLemmingGroupFP9CViewData
-// STUB: LEMBALL 0x00414080
-void PlayerLemmingGroup::GetViewData(ViewData* p_viewData)
+// FUNCTION: LEMBALL 0x00414080
+int PlayerLemmingGroup::GetViewData(ViewData* p_viewData)
 {
+	int count;
+	PlayerLemmingGroup* self = this;
+	GameObject* object = self->GetFirstElementInGroup();
+	count = 0;
+	if (object != 0) {
+		do {
+			if (object->m_action != (eAction) 0xc) {
+				object->GetViewData(*p_viewData);
+				p_viewData++;
+				count++;
+			}
+			object = self->GetNextElementInGroup();
+		} while (object != 0);
+	}
+	return count;
 }
 
 // 68K 0x1060ea70 Delete__19CPlayerLemmingGroupFv

@@ -1,6 +1,7 @@
 #include "GenericGroup.h"
 
 #include "../Navigation/AiDestinationList.h"
+#include "../Objects/ViewData.h"
 
 #include <string.h>
 
@@ -354,9 +355,22 @@ bool GenericGroup::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 }
 
 // 68K 0x1060d14a GetViewData__13CGenericGroupFP9CViewData
-// STUB: LEMBALL 0x0041e640
-void GenericGroup::GetViewData(ViewData* p_viewData)
+// FUNCTION: LEMBALL 0x0041e640
+int GenericGroup::GetViewData(ViewData* p_viewData)
 {
+	int count;
+	GenericGroup* self = this;
+	GameObject* object = self->GetFirstElementInGroup();
+	count = 0;
+	if (object != 0) {
+		do {
+			object->GetViewData(*p_viewData);
+			p_viewData++;
+			count++;
+			object = self->GetNextElementInGroup();
+		} while (object != 0);
+	}
+	return count;
 }
 
 // 68K 0x1060c3aa __dt__13CGenericGroupFv

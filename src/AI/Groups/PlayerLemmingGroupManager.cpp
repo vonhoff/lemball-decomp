@@ -1,9 +1,11 @@
 #include "PlayerLemmingGroupManager.h"
 
 #include "../../Map/Base/Map.h"
+#include "../../Visos/Network/Connect.h"
 #include "../Managers/ObjectManager.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/PlayerLemming.h"
+#include "../Objects/ViewData.h"
 #include "FormationManager.h"
 #include "PlayerLemmingGroup.h"
 
@@ -449,10 +451,17 @@ bool PlayerLemmingGroupManager::HasSfxChanged()
 }
 
 // 68K 0x10610cc6 GetViewData__26CPlayerLemmingGroupManagerFP9CViewData
-// STUB: LEMBALL 0x00419490
+// FUNCTION: LEMBALL 0x00419490
 int PlayerLemmingGroupManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	if (g_pActiveConnection != 0) {
+		count = 4;
+		for (int i = 0; i < 4; i++) {
+			m_networkLemmings[i]->GetViewData(*p_viewData++);
+		}
+	}
+	return GenericGroupManager::GetViewData(p_viewData) + count;
 }
 
 // 68K 0x1060f890 __dt__26CPlayerLemmingGroupManagerFv

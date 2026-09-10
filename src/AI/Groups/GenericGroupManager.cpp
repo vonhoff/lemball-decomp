@@ -2,6 +2,7 @@
 
 #include "../Managers/ObjectManager.h"
 #include "../Navigation/Ai.h"
+#include "../Objects/ViewData.h"
 #include "FormationManager.h"
 #include "GenericGroup.h"
 
@@ -242,10 +243,18 @@ int GenericGroupManager::GetAllBoundingBoxes(Rect* p_rects)
 }
 
 // 68K 0x1060dd46 GetViewData__20CGenericGroupManagerFP9CViewData
-// STUB: LEMBALL 0x0041ee90
+// FUNCTION: LEMBALL 0x0041ee90
 int GenericGroupManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int total = 0;
+	GenericGroup* group = GetFirstGroup();
+	if (group != 0) {
+		do {
+			total += group->GetViewData(p_viewData + total);
+			group = GetNextGroup();
+		} while (group != 0);
+	}
+	return total;
 }
 
 // 68K 0x1060ddde CheckGroupIntersection__20CGenericGroupManagerFP7CVSRectP7AICOORD

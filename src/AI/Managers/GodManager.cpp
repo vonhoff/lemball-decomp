@@ -6,6 +6,7 @@
 #include "../Base/GlobalGameObject.h"
 #include "../Messages/GameStateMessage.h"
 #include "../Navigation/Ai.h"
+#include "../Objects/ViewData.h"
 #include "BaseObjectManager.h"
 
 // 68K 0x1060de8a __ct__11CGodManagerFi
@@ -76,10 +77,18 @@ bool GodManager::TransportReceive(ReadPacket* p_packet)
 }
 
 // 68K 0x1060e222 GetViewData__11CGodManagerFP9CViewData
-// STUB: LEMBALL 0x0040b2e0
+// FUNCTION: LEMBALL 0x0040b2e0
 int GodManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int i = 0;
+	int total = 0;
+	if (m_count > 0) {
+		do {
+			total += m_managers[i]->GetViewData(p_viewData + total);
+			i++;
+		} while (i < m_count);
+	}
+	return total;
 }
 
 // 68K 0x1060e298 Process__11CGodManagerFv

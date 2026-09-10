@@ -14,12 +14,12 @@ public:
 	bool CheckPlayerControlled();
 	bool HasSfxChanged();
 	bool RemoveLemmingFromGroup(PlayerLemming* p_lemming);
-	virtual bool Process();                         // vtable+0x14
-	virtual void ClearExistingWaypoints();          // vtable+0x150
-	virtual void Delete();                          // vtable+0xc8
-	virtual void GetViewData(ViewData* p_viewData); // vtable+0x158
-	virtual void Restart();                         // vtable+0x104
-	virtual ~PlayerLemmingGroup();                  // vtable+0x00
+	virtual bool Process();                        // vtable+0x14
+	virtual void ClearExistingWaypoints();         // vtable+0x150
+	virtual void Delete();                         // vtable+0xc8
+	virtual int GetViewData(ViewData* p_viewData); // vtable+0x158
+	virtual void Restart();                        // vtable+0x104
+	virtual ~PlayerLemmingGroup();                 // vtable+0x00
 	void AddUseObject(GameObject* p_object, int p_objectId);
 	void AddUseObject(int p_objectId);
 	void SetPlayerControlled(undefined4 p_playerControlled, PlayerLemming* p_leader);
