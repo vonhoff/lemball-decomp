@@ -164,7 +164,7 @@ void SoundView::SetMusicOn(unsigned int p_enabled)
 }
 
 // 68K 0x10b0fd8a SoundEffect__10CSoundViewFP9CViewDataiR7AICOORD
-// STUB: LEMBALL 0x00439c40
+// FUNCTION: LEMBALL 0x00439c40
 void SoundView::SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listener)
 {
 	int dist;
@@ -178,8 +178,9 @@ void SoundView::SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listen
 
 	if (g_nEffectsAvailable != 0 && g_dwEffectsOn != 0) {
 		if (m_pendingEffect != 0) {
-			g_pSoundManager->PlayEffect(m_effectSlots[m_pendingEffect].m_handle);
+			eSoundEffect pendingEffect = m_pendingEffect;
 			m_pendingEffect = (eSoundEffect) 0;
+			g_pSoundManager->PlayEffect(m_effectSlots[pendingEffect].m_handle);
 		}
 		now = timeGetTime();
 		x = p_listener.m_xFixed >> 12;
@@ -199,7 +200,7 @@ void SoundView::SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listen
 						}
 					}
 					if (now - m_effectSlots[effectId].m_lastPlayed > 100) {
-						g_pSoundManager->PlayEffect(m_effectSlots[effectId].m_handle, (unsigned char) attenuatedVol);
+						g_pSoundManager->PlayEffect(m_effectSlots[effectId].m_handle, attenuatedVol);
 						m_effectSlots[effectId].m_lastPlayed = now;
 					}
 				}
