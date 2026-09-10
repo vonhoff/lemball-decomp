@@ -33,9 +33,42 @@ Maze::~Maze()
 }
 
 // 68K 0x106159a4 ReInitialise__5CMazeFv
-// STUB: LEMBALL 0x00423110
+// FUNCTION: LEMBALL 0x00423110
 void Maze::ReInitialise()
 {
+	int y = 0;
+	if (m_height > 0) {
+		do {
+			int x = 0;
+			if (m_width > 0) {
+				do {
+					unsigned short collision;
+					if (x < 0 || y < 0) {
+						collision = 3;
+					}
+					else {
+						int width;
+						Map* map = m_map;
+						width = map->m_ground.m_width;
+						if (width <= x || map->m_ground.m_height <= y) {
+							collision = 3;
+						}
+						else {
+							collision = map->m_ground.m_ground[y * width + x].m_collision;
+						}
+					}
+					if ((collision & 1) != 0) {
+						m_distances[y][x] = 0xffff;
+					}
+					else {
+						m_distances[y][x] = 0xff00;
+					}
+					x++;
+				} while (x < m_width);
+			}
+			y++;
+		} while (y < m_height);
+	}
 }
 
 // 68K 0x10615a26 Initialise__5CMazeFv
