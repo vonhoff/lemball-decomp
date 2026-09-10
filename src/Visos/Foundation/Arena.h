@@ -2,20 +2,11 @@
 #define LEMBALL_VISOS_FOUNDATION_ARENA_H
 
 #include "../../Common.h"
+#include "ArenaBase.h"
 #include "Critical.h"
 #include "MBlock.h"
 
 void InitSubSystems();
-
-// SIZE 0x08
-// VTABLE: LEMBALL 0x00498908
-class ArenaBase {
-public:
-	virtual VsOStream& StreamOut(VsOStream& p_stream) = 0; // vtable+0x00
-
-protected:
-	unsigned int m_signature; // 0x04
-};
 
 // SIZE 0x50
 // VTABLE: LEMBALL 0x004988e0 ArenaBase
