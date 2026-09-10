@@ -62,7 +62,14 @@ void AiCursor::GetCursorSurfaceCoordinates(int& p_x, int& p_y)
 // FUNCTION: LEMBALL 0x00414e80
 int AiCursor::ProcessMsg(Message* p_message)
 {
-	return 0;
+	switch (p_message->type) {
+	case 1:
+		SetCursorXy(p_message->code, (int) p_message->payload);
+		return 1;
+	default:
+		m_processedCount++;
+		return 0;
+	}
 }
 
 // 68K 0x106060dc __dt__9CAICursorFv

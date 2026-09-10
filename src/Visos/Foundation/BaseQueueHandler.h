@@ -27,6 +27,7 @@ public:
 	friend class BaseFrontendDrawer;
 	friend class TargetAboutScreen;
 	friend class Ai;
+	friend class AiCursor;
 
 private:
 	unsigned int m_signature;      // 0x04
