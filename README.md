@@ -7,7 +7,7 @@
 
 A matching decompilation of *Lemmings Paintball* (1996, Windows 95).
 
-The goal is a byte-accurate, maintainable C++ reconstruction of the original game. Reconstructed code is compiled with Microsoft Visual C++ 4.00 and verified function-by-function against the original executable with [reccmp](https://github.com/isledecomp/reccmp).
+The goal is a byte-accurate, semantic C++ reconstruction of the original game. Reconstructed code is compiled with Microsoft Visual C++ 4.00 and verified function-by-function against the original executable with [reccmp](https://github.com/isledecomp/reccmp).
 
 Live progress is tracked on [decomp.dev](https://decomp.dev/vonhoff/lemball-decomp).
 
@@ -92,7 +92,6 @@ Scripts in `tools/` support the matching workflow:
   ```pwsh
   python tools/match.py 0x00413e80
   ```
-  Builds and compares a function against the original binary, showing instruction diffs.
 
 - **Find next targets:**
   ```pwsh
