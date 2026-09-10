@@ -1,5 +1,7 @@
 #include "Rocket.h"
 
+#include "../../Map/Base/Map.h"
+
 // 68K 0x1061d8ce __ct__7CRocketFv
 // FUNCTION: LEMBALL 0x004267d0
 Rocket::Rocket() : GlobalGameObject(0x20, 0, 0)
@@ -24,9 +26,29 @@ void Rocket::Restart()
 }
 
 // 68K 0x1061d9cc Set__7CRocketFUsRC7AICOORD
-// STUB: LEMBALL 0x00426840
+// FUNCTION: LEMBALL 0x00426840
 void Rocket::Set(unsigned short p_id, const AiCoord& p_position)
 {
+	SetId(p_id);
+	m_position.m_xFixed = p_position.m_xFixed;
+	m_position.m_yFixed = p_position.m_yFixed;
+	int z = p_position.m_zFixed;
+	m_active = 1;
+	m_action = 0x18;
+	m_position.m_zFixed = z;
+	int x = p_position.m_xFixed >> 12;
+	int y = p_position.m_yFixed >> 12;
+	int blockX = x / 16;
+	if (blockX >= 0) {
+		int blockY = y / 16;
+		if (blockY < 0) {
+			return;
+		}
+		int width = g_pMap->m_ground.m_width;
+		if (blockX < width && g_pMap->m_ground.m_height > blockY) {
+			g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= 0x8000;
+		}
+	}
 }
 
 // 68K 0x1061da76 Process__7CRocketFv
