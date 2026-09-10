@@ -87,14 +87,23 @@ HotAreaHandler::~HotAreaHandler()
 }
 
 // 68K 0x10211c8a __ct__15CHotAreaHandlerFRC7CVSRect
-// STUB: LEMBALL 0x0046a290
-HotAreaHandler::HotAreaHandler(const VsRect& p_arg0)
+// FUNCTION: LEMBALL 0x0046a290
+HotAreaHandler::HotAreaHandler(const VsRect& p_arg0) : m_height(0), m_width(0), m_y(0), m_x(0)
 {
-	m_height = p_arg0.m_height;
-	m_width = p_arg0.m_width;
-	m_y = p_arg0.m_y;
-	m_x = p_arg0.m_x;
 	Initialise();
+	m_width = p_arg0.m_width;
+	m_height = p_arg0.m_height;
+	const VsRect* rect = &p_arg0;
+	const short* position;
+	if (rect != 0) {
+		position = &rect->m_x;
+	}
+	else {
+		position = 0;
+	}
+	m_x = *position;
+	m_y = position[1];
+	SetActive(1);
 }
 
 // 68K 0x10211d28 __ct__15CHotAreaHandlerFv
