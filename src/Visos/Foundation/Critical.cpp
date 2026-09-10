@@ -4,12 +4,12 @@
 // FUNCTION: LEMBALL 0x00459990
 void Critical::EnterCritical()
 {
-	EnterCriticalSection(m_criticalSection);
+	EnterCriticalSection((_RTL_CRITICAL_SECTION*) m_criticalSection);
 }
 
 // 68K 0x1010086a LeaveCritical__9CCriticalFv
 // FUNCTION: LEMBALL 0x004599a0
 void Critical::LeaveCritical()
 {
-	LeaveCriticalSection(m_criticalSection);
+	LeaveCriticalSection((_RTL_CRITICAL_SECTION*) m_criticalSection);
 }

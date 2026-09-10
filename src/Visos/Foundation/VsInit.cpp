@@ -302,7 +302,7 @@ bool InternalStrmQuit()
 }
 
 // 68K 0x10213258 _INP_Init__Fv
-// STUB: LEMBALL 0x00459130
+// FUNCTION: LEMBALL 0x00459130
 bool InternalInpInit()
 {
 	void* storage;

@@ -5,7 +5,8 @@
 #include "BaseQueue.h" // complete type
 
 // SIZE 0x58
-// VTABLE: LEMBALL 0x004988b8
+// VTABLE: LEMBALL 0x004988b0 Critical
+// VTABLE: LEMBALL 0x004988b8 ArenaBase
 class TimedQueue : public BaseQueue {
 public:
 	TimedQueue(unsigned int p_capacity, char* p_name) : BaseQueue(p_capacity, p_name) {}

@@ -2,9 +2,7 @@
 
 #include "BaseQueueHandler.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include <new.h>
-#include <windows.h>
 
 struct QueueHandlerNode {
 	BaseQueueHandler* handler;
@@ -22,7 +20,6 @@ BaseQueue::BaseQueue(unsigned int p_capacity)
 {
 	unsigned char* buffer;
 
-	InitializeCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	buffer = (unsigned char*) operator new(p_capacity * sizeof(Message));
 	m_messageBuffer = buffer;
 	m_capacity = p_capacity;
@@ -46,7 +43,6 @@ BaseQueue::BaseQueue(unsigned int p_capacity, char* p_name)
 	unsigned char* buffer;
 
 	(void) p_name;
-	InitializeCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 	buffer = (unsigned char*) operator new(p_capacity * sizeof(Message));
 	m_messageBuffer = buffer;
 	m_capacity = p_capacity;
@@ -71,9 +67,10 @@ BaseQueue::~BaseQueue()
 	QueueHandlerNode* next;
 	unsigned int index;
 
-	ProcessNMsgs(m_messageCount);
-	operator delete(m_messageBuffer);
 	node = m_handlerList;
+	if (ProcessNMsgs(m_messageCount) == 1) {
+		operator delete(m_messageBuffer);
+	}
 	index = 0;
 	if (m_handlerCount != 0) {
 		do {
@@ -83,7 +80,6 @@ BaseQueue::~BaseQueue()
 			node = next;
 		} while (index < m_handlerCount);
 	}
-	DeleteCriticalSection((CRITICAL_SECTION*) m_criticalSection);
 }
 
 // 68K 0x10204bfa Post__10CBaseQueueFR10tagMESSAGE

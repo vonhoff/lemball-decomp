@@ -2,13 +2,16 @@
 #define LEMBALL_VISOS_FOUNDATION_BASEQUEUE_H
 
 #include "../../Common.h"
+#include "ArenaBase.h"
+#include "Critical.h"
 
 class TimedQueue;
 struct QueueHandlerNode;
 
 // SIZE 0x58
-// VTABLE: LEMBALL 0x00499250
-class BaseQueue {
+// VTABLE: LEMBALL 0x00499248 Critical
+// VTABLE: LEMBALL 0x00499250 ArenaBase
+class BaseQueue : public ArenaBase, public Critical {
 public:
 	BaseQueue(unsigned int p_capacity);
 	BaseQueue(unsigned int p_capacity, char* p_name);
@@ -30,9 +33,6 @@ public:
 	friend class TimedQueue;
 
 private:
-	undefined4 m_unk0x04;              // 0x04
-	void* m_synchronizationVtable;     // 0x08
-	undefined m_criticalSection[0x18]; // 0x0c
 	unsigned int m_capacity;           // 0x24
 	unsigned int m_messageCount;       // 0x28
 	unsigned int m_handlerCount;       // 0x2c
