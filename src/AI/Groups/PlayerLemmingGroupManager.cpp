@@ -3,6 +3,7 @@
 #include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/PlayerLemming.h"
+#include "FormationManager.h"
 #include "PlayerLemmingGroup.h"
 
 // 68K 0x1060f6e4 __ct__26CPlayerLemmingGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
@@ -169,9 +170,16 @@ void PlayerLemmingGroupManager::UseObject(int p_objectId)
 }
 
 // 68K 0x1061038e ReformAlteredGroups__26CPlayerLemmingGroupManagerFP19CPlayerLemmingGroup
-// STUB: LEMBALL 0x00418b20
+// FUNCTION: LEMBALL 0x00418b20
 void PlayerLemmingGroupManager::ReformAlteredGroups(PlayerLemmingGroup* p_excludedGroup)
 {
+	PlayerLemmingGroup* group = (PlayerLemmingGroup*) GenericGroupManager::GetFirstGroup();
+	while (group != 0) {
+		if (group != p_excludedGroup) {
+			group->ReformAlteredGroup(g_pGenericGroupFormationManager);
+		}
+		group = (PlayerLemmingGroup*) GenericGroupManager::GetNextGroup();
+	}
 }
 
 // 68K 0x1061042c PlayerGroupRequestFire__26CPlayerLemmingGroupManagerFii
