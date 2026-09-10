@@ -13,6 +13,7 @@ struct TargetWinGDrawCodecState;
 // VTABLE: LEMBALL 0x00499260
 class PvGWnd : public Wnd {
 public:
+	PvGWnd();
 	virtual void Create(const VsRect& p_rect,
 						PvWnd* p_parent,
 						char* p_title,

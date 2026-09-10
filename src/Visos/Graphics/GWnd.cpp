@@ -27,10 +27,11 @@ void GWnd::OnSize()
 {
 }
 
-// STUB: LEMBALL 0x00463b50
+#include "PvGWnd.inl"
+
+// FUNCTION: LEMBALL 0x00463b50
 GWnd::GWnd()
 {
-	m_refreshHeight = 0;
 	m_refreshWidth = 0;
 	m_gdi = 0;
 	m_refreshY = 0;
