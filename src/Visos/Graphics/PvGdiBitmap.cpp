@@ -4,21 +4,11 @@
 #include <string.h>
 
 // 68K 0x1021284a __ct__12CPVGDIBitmapFv
-// STUB: LEMBALL 0x00472290
-PvGdiBitmap::PvGdiBitmap()
+// FUNCTION: LEMBALL 0x00472290
+PvGdiBitmap::PvGdiBitmap() : m_height(0)
 {
-	m_lines = 0;
-	m_bits = 0;
-	m_bitsBase = 0;
-	m_directScroll = 0;
-	m_firstLine = 0;
-	m_xOffset = 0;
-	m_stride = 0;
-	m_rowPadding = 0;
-	m_extraRows = 0;
-	m_lineCapacity = 0;
 	m_width = 0;
-	m_height = 0;
+	Initialise();
 }
 
 // 68K 0x102128ca __dt__12CPVGDIBitmapFv
