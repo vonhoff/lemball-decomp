@@ -5,9 +5,26 @@
 #include "../../Visos/Resources/ResBin.h"
 
 // 68K 0x10700a70 __ct__5CDemoFi
-// STUB: LEMBALL 0x004091b0
+// FUNCTION: LEMBALL 0x004091b0
 Demo::Demo(int p_arg0)
 {
+	m_offsetY = 0;
+	m_offsetX = 0;
+	m_sourceId = p_arg0;
+	m_buffer = 0;
+	m_window = 0;
+	m_currentResourceId = 0;
+	m_firstResourceId = 0;
+	m_resourceCount = 0;
+	m_resource = 0;
+	m_filePath = 0;
+	m_demoMode = 0;
+	m_state48 = 0;
+	m_gameOver = 0;
+	m_bytesRemaining = -1;
+	m_state54 = 0;
+	g_pMasterInputQueue->Attach(this, -100);
+	Reset();
 }
 
 // 68K 0x10700b20 __dt__5CDemoFv
