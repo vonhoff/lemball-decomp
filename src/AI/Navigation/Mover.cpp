@@ -152,9 +152,15 @@ void Mover::FindObjectsOnTopOfMe()
 }
 
 // 68K 0x1061772a MoveObjects__6CMoverFiii
-// STUB: LEMBALL 0x0042ea40
+// FUNCTION: LEMBALL 0x0042ea40
 void Mover::MoveObjects(int p_deltaX, int p_deltaY, int p_deltaZ)
 {
+	for (int i = 0; i < m_objectCount; i++) {
+		GameObject* object = m_objects[i];
+		object->m_position.m_xFixed += p_deltaX << 12;
+		object->m_position.m_yFixed += p_deltaY << 12;
+		object->m_position.m_zFixed += p_deltaZ << 12;
+	}
 }
 
 // 68K 0x106177d8 Process__6CMoverFv

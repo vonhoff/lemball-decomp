@@ -4,6 +4,11 @@
 
 #include <string.h>
 
+extern const int g_unk0x00495b30[10];
+extern const int g_unk0x00495b58[10];
+extern const int g_unk0x00495b80[10];
+extern const unsigned char g_unk0x00495ba8[16];
+
 // 68K 0x10615900 __ct__5CMazeFP4CMap
 // FUNCTION: LEMBALL 0x00423090
 Maze::Maze(Map* p_arg0)
@@ -103,10 +108,26 @@ bool Maze::CalcNewDistance(int p_x, int p_y)
 }
 
 // 68K 0x10615bd0 FindSquare__5CMazeFUsRiRi
-// STUB: LEMBALL 0x004232e0
+// FUNCTION: LEMBALL 0x004232e0
 bool Maze::FindSquare(unsigned short p_distance, int& p_x, int& p_y)
 {
-	return 0;
+	int x = p_x;
+	int y = p_y;
+	unsigned char walk = m_map->GetWalk(x, y);
+	bool found = false;
+	for (int i = 0; i < 9; i++) {
+		if (g_unk0x00495b80[i] != 0 && (g_unk0x00495ba8[i] & walk) != 0) {
+			int nextX = x + g_unk0x00495b30[i];
+			int nextY = y + g_unk0x00495b58[i];
+			if (m_distances[nextY][nextX] == p_distance) {
+				p_x = nextX;
+				p_y = nextY;
+				found = true;
+				break;
+			}
+		}
+	}
+	return found;
 }
 
 // GLOBAL: LEMBALL 0x00495b10
@@ -118,6 +139,18 @@ static const unsigned char g_aChangeBitMasks[8][4] = {{0x80, 0, 0, 0},
 													  {0x04, 0, 0, 0},
 													  {0x02, 0, 0, 0},
 													  {0x01, 0, 0, 0}};
+
+// GLOBAL: LEMBALL 0x00495b30
+const int g_unk0x00495b30[10] = {-1, 0, 1, -1, 0, 1, -1, 0, 1, 0};
+
+// GLOBAL: LEMBALL 0x00495b58
+const int g_unk0x00495b58[10] = {-1, -1, -1, 0, 0, 0, 1, 1, 1, 0};
+
+// GLOBAL: LEMBALL 0x00495b80
+const int g_unk0x00495b80[10] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 0};
+
+// GLOBAL: LEMBALL 0x00495ba8
+const unsigned char g_unk0x00495ba8[16] = {0, 1, 0, 8, 0, 4, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // 68K 0x10615c8c UpdateChangeNext__5CMazeFii
 // FUNCTION: LEMBALL 0x00423380
