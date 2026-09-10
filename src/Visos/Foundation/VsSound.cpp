@@ -2,8 +2,8 @@
 
 #include "../Sound/PvMusicDevice.h"
 #include "../Sound/SoundManager.h"
+#include "../Target/MciMusicDevice.h"
 #include "../Target/TargetDirectSoundDevice.h"
-#include "../Target/TargetMciMusicDevice.h"
 #include "../Target/TargetWaveSoundDevice.h"
 
 #include <new.h>

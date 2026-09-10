@@ -1,4 +1,4 @@
-#include "TargetMciMusicDevice.h"
+#include "MciMusicDevice.h"
 
 #include "../../Platform/Windows/Entry.h"
 #include "../Foundation/String.h"
