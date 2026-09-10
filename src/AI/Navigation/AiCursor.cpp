@@ -42,7 +42,7 @@ void AiCursor::CheckAndClipCursorBounds()
 	int cursorY;
 	maximumY = m_maximumY;
 	cursorY = m_cursorY;
-	if (maximumY < cursorY) {
+	if (cursorY > maximumY) {
 		m_cursorY = maximumY;
 	}
 	else if (cursorY < 0) {
