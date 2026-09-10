@@ -2261,9 +2261,13 @@ void C2D::ReplaceBackground()
 }
 
 // 68K 0x10b0600e ResetPrimitives__3C2DFv
-// STUB: LEMBALL 0x00440430
+// FUNCTION: LEMBALL 0x00440430
 void C2D::ResetPrimitives()
 {
+	m_lemmingAnims->ResetPrimitives();
+	m_textManager->ResetPrimitives();
+	m_unk0xc90 = 0;
+	m_primitiveCount = 0;
 }
 
 // 68K 0x10b06056 DrawZBuff_Sprite__3C2DFiUs
