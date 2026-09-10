@@ -10,6 +10,8 @@
 // VTABLE: LEMBALL 0x0049a050 BaseCommonSocket
 class TcpIpCommonSocket : public TargetNetworkWindow, public virtual BaseCommonSocket {
 public:
+	using BaseCommonSocket::SocketError;
+
 	TcpIpCommonSocket();
 	int HandleAsyncNameResolutionResult(unsigned int p_wParam, unsigned int p_lParam, char** p_buffer);
 	virtual int SysCloseSocket(); // vtable+0x00

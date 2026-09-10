@@ -33,7 +33,7 @@ int TcpIpCommonSocket::HandleAsyncNameResolutionResult(unsigned int p_wParam, un
 	}
 
 failure:
-	BaseCommonSocket::SocketError((NetworkErrors) error);
+	SocketError((NetworkErrors) error);
 	if (*p_buffer != 0) {
 		operator delete(*p_buffer);
 	}
@@ -63,5 +63,5 @@ TcpIpCommonSocket::~TcpIpCommonSocket()
 // FUNCTION: LEMBALL 0x00471ad0
 void TcpIpCommonSocket::SocketError()
 {
-	BaseCommonSocket::SocketError((NetworkErrors) WSAGetLastError());
+	SocketError((NetworkErrors) WSAGetLastError());
 }
