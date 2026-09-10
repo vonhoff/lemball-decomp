@@ -419,10 +419,23 @@ void C2D::KillRemapPalettes()
 	g_pBasePalManager->UnRegisterRemap(m_paletteRemap);
 }
 
+#include "../../Control/Game/GameStatus.h"
+
 // 68K 0x10b07a00 Restart__3C2DFv
-// STUB: LEMBALL 0x00436850
+// FUNCTION: LEMBALL 0x00436850
 void C2D::Restart()
 {
+	m_viewOriginX = 0;
+	m_viewOriginY = 0;
+	m_redrawPending = 1;
+	m_panel->SetPause(0);
+	m_ai->Restart();
+	m_display->Clear(0);
+	m_scoreTimestamp = g_dwGameTick;
+	g_pGameStatus->m_levelState = (unsigned int) m_levelScore;
+	m_ai->m_score = m_levelScore;
+	m_ai->Start();
+	m_score = m_ai->m_score;
 }
 
 // 68K 0x10b07a86 CheckValidFormGroup__3C2DFv
@@ -555,10 +568,10 @@ bool C2D::InGroupByObjectNo(int p_objectNo)
 // FUNCTION: LEMBALL 0x00437460
 void C2D::RemoveFromGroupByObjectNo(int p_objectNo)
 {
-	unsigned short* read;
+	unsigned short id;
 	unsigned short* write;
 	unsigned int i;
-	unsigned short id;
+	unsigned short* read;
 
 	i = 0;
 	if (m_groupCount <= i) {

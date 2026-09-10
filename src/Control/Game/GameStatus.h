@@ -34,6 +34,7 @@ public:
 	friend class BaseFrontendProcess;
 	friend class BaseFrontendDrawer;
 	friend class Ai;
+	friend class C2D;
 
 private:
 	int m_level;               // 0x00
