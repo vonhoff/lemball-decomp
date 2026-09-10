@@ -706,12 +706,16 @@ Pt3 Ai::GetNodePosition(int p_node)
 // FUNCTION: LEMBALL 0x00412b80
 void Ai::AddData()
 {
-	for (int i = 0; i < 4; i++) {
+	int remaining = 4;
+	PlayerLemming** lemming = m_networkLemmings;
+	do {
 		NetworkMessage* stream = this;
-		NetworkMessage* message = (NetworkMessage*) ((unsigned char*) m_networkLemmings[i] + sizeof(GlobalGameObject));
+		NetworkMessage* message = (NetworkMessage*) ((unsigned char*) *lemming + sizeof(GlobalGameObject));
 		message->CopyDataStream(stream->m_writeCursor, 0);
 		stream->m_writeCursor += message->m_writeCursor - message->m_buffer;
-	}
+		lemming++;
+		remaining--;
+	} while (remaining != 0);
 }
 
 // 68K 0x10602402 GetData__3CAIFv
