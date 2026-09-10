@@ -60,10 +60,19 @@ bool PlayerLemmingGroup::Process()
 }
 
 // 68K 0x1060f0f2 AddLemmingToGroup__19CPlayerLemmingGroupFP14CPlayerLemming
-// STUB: LEMBALL 0x00414600
+// FUNCTION: LEMBALL 0x00414600
 bool PlayerLemmingGroup::AddLemmingToGroup(PlayerLemming* p_lemming)
 {
-	return 0;
+	GenericGroup::AddElementToGroup(p_lemming);
+	m_altered = 1;
+	p_lemming->SetGroup(this);
+	if (GetElementsInGroup() == 0 && m_playerControlled == 1) {
+		p_lemming->SetGroupLeader(1);
+	}
+	else {
+		p_lemming->SetGroupLeader(0);
+	}
+	return true;
 }
 
 // 68K 0x1060f19e AddUseObject__19CPlayerLemmingGroupFi
