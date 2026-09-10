@@ -266,24 +266,3 @@ int TargetAboutScreen::GetReturnState()
 void TargetAboutScreen::ResetPrimitives()
 {
 }
-
-// FUNCTION: LEMBALL 0x0044c100
-void VsRect::ExpandToInclude(const VsRect& p_rect)
-{
-	if ((int) p_rect.m_width * (int) p_rect.m_height != 0) {
-		if (p_rect.m_x < m_x) {
-			m_width = m_width + (m_x - p_rect.m_x);
-			m_x = p_rect.m_x;
-		}
-		if ((short) (m_width + m_x) < (short) (p_rect.m_width + p_rect.m_x)) {
-			m_width = (p_rect.m_x - m_x) + p_rect.m_width;
-		}
-		if (p_rect.m_y < m_y) {
-			m_height = m_height + (m_y - p_rect.m_y);
-			m_y = p_rect.m_y;
-		}
-		if ((short) (m_height + m_y) < (short) (p_rect.m_y + p_rect.m_height)) {
-			m_height = (p_rect.m_height - m_y) + p_rect.m_y;
-		}
-	}
-}
