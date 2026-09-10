@@ -164,9 +164,26 @@ void PlayerLemmingGroupManager::RemoveWaypointsFromCurrentGroup()
 }
 
 // 68K 0x106102ce UseObject__26CPlayerLemmingGroupManagerFi
-// STUB: LEMBALL 0x00418ab0
+// FUNCTION: LEMBALL 0x00418ab0
 void PlayerLemmingGroupManager::UseObject(int p_objectId)
 {
+	PlayerLemmingGroup* controlledGroup = GetPlayerControlledGroup();
+	if (controlledGroup == 0) {
+		return;
+	}
+	GameObject* object = g_pObjects[(unsigned short) p_objectId];
+	if (object->m_objectType != 2) {
+		controlledGroup->AddUseObject(p_objectId);
+		return;
+	}
+	PlayerLemming* lemming = (PlayerLemming*) object;
+	if (lemming->m_action != 8) {
+		PlayerLemmingGroup* group = lemming->GetGroup();
+		if (group != controlledGroup) {
+			controlledGroup->SetPlayerControlled(0, 0);
+		}
+		group->SetPlayerControlled(1, lemming);
+	}
 }
 
 // 68K 0x1061038e ReformAlteredGroups__26CPlayerLemmingGroupManagerFP19CPlayerLemmingGroup
@@ -388,13 +405,19 @@ void PlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned char
 bool PlayerLemmingGroupManager::HasSfxChanged()
 {
 	int changed = 0;
-	for (int i = 0; i < m_groupCount; i++) {
-		if (((PlayerLemmingGroup*) m_groups[i])->HasSfxChanged() != 0 || changed != 0) {
-			changed = 1;
-		}
-		else {
-			changed = 0;
-		}
+	int i = 0;
+	if (m_groupCount > 0) {
+		GenericGroup** group = m_groups;
+		do {
+			if (((PlayerLemmingGroup*) *group)->HasSfxChanged() != 0 || changed != 0) {
+				changed = 1;
+			}
+			else {
+				changed = 0;
+			}
+			group++;
+			i++;
+		} while (m_groupCount > i);
 	}
 	return changed;
 }
