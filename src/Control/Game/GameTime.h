@@ -10,7 +10,7 @@ void ClockEditMode(unsigned int p_enabled);
 void ResetGameTimes();
 void SetGameTime();
 void SetRemoteGameTimeReal(unsigned long p_timestamp);
-Demo* InternalDemoInit(int p_arg0);
+void InternalDemoInit(int p_arg0);
 void InternalDemoQuit();
 
 extern unsigned long g_dwSimulationTimestamp;

@@ -44,18 +44,10 @@ void SetRemoteGameTimeReal(unsigned long p_timestamp)
 }
 
 // 68K 0x107009e2 _DEMO_Init__Fi
-// STUB: LEMBALL 0x00409150
-Demo* InternalDemoInit(int p_arg0)
+// FUNCTION: LEMBALL 0x00409150
+void InternalDemoInit(int p_arg0)
 {
-	void* storage;
-
-	storage = operator new(0x58);
-	if (storage != 0) {
-		g_pDemo = new (storage) Demo(p_arg0);
-		return g_pDemo;
-	}
-	g_pDemo = 0;
-	return 0;
+	g_pDemo = new Demo(p_arg0);
 }
 
 // 68K 0x10700a26 _DEMO_Quit__Fv
