@@ -2199,9 +2199,47 @@ void C2D::DrawPaused()
 }
 
 // 68K 0x10b05932 DrawScore__3C2DFv
-// STUB: LEMBALL 0x0043fe80
+// FUNCTION: LEMBALL 0x0043fe80
 void C2D::DrawScore()
 {
+	int targetScore = m_ai->m_score;
+	int score = m_score;
+	if (m_scoreTimestamp <= g_dwGameTick) {
+		if (score != targetScore) {
+			if (m_ai->m_gameStatus == 2) {
+				score += 10;
+				if (score >= targetScore) {
+					score = targetScore;
+				}
+			}
+			else {
+				score += 100;
+				if (score >= targetScore) {
+					score = targetScore;
+				}
+			}
+			m_score = score;
+		}
+		m_scoreTimestamp = g_dwGameTick + 1;
+	}
+	if (score >= 10000000) {
+		score = 9999999;
+	}
+
+	VsSize advance;
+	char scoreText[8];
+	scoreText[7] = 0;
+	int i = 1;
+	do {
+		scoreText[7 - i] = (char) (score % 10) + '0';
+		i++;
+		score /= 10;
+	} while (i <= 7);
+
+	VsPoint* position = &m_spriteGroundLookupRectB;
+	advance.m_width = -4;
+	advance.m_height = 0;
+	m_textManager->DrawString(m_gdi, *position, advance, RES_NEWFRONT_FONTS_GAME_SCORETIME, scoreText, 0x20, 0);
 }
 
 // 68K 0x10b05a64 SortViewData__3C2DFv
