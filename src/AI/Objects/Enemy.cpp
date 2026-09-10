@@ -3,6 +3,7 @@
 #include "../../Control/Game/Game.h"
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
+#include "../Base/StateMachine.h"
 #include "../Base/WaypointInformation.h"
 #include "../Navigation/Ai.h"
 #include "Bullet.h"
@@ -106,10 +107,26 @@ void Enemy::SetEnemyType(eEnemyStateActions p_action0,
 }
 
 // 68K 0x10607c1a Process__6CEnemyFv
-// STUB: LEMBALL 0x0041fec0
+// FUNCTION: LEMBALL 0x0041fec0
 bool Enemy::Process()
 {
-	return 0;
+	if (m_action != (eAction) 8) {
+		switch (m_stateIndex) {
+		case 0:
+			ProcessAction(m_state0Rule, m_state0Action, &m_state0Data);
+			break;
+		case 1:
+			ProcessAction(m_state1Rule, m_state1Action, &m_state1Data);
+			break;
+		case 2:
+			ProcessAction(m_state2Rule, m_state2Action, &m_state2Data);
+			break;
+		}
+
+		EnemyState(g_pAI, this);
+		g_pAI->StepOn(m_position, this, m_collisionFlags);
+	}
+	return false;
 }
 
 // 68K 0x10607cd2 ProcessAction__6CEnemyF16eEnemyStateRules18eEnemyStateActionsP18tEnemyLemmingUnion
@@ -383,16 +400,16 @@ void Enemy::HitBall()
 // FUNCTION: LEMBALL 0x00420720
 void Enemy::GetHit()
 {
+	int* count = &g_pAI->m_objectCount;
 	int i;
-	for (i = 0; i < g_pAI->m_objectCount; i++) {
-		int& count = g_pAI->m_objectCount;
+	for (i = 0; i < *count; i++) {
 		GameObject**& objects = g_pAI->m_objects;
 		if (objects[i] == (GameObject*) this) {
-			count--;
-			for (; i < count; i++) {
+			(*count)--;
+			for (; i < *count; i++) {
 				objects[i] = objects[i + 1];
 			}
-			objects[count] = 0;
+			objects[*count] = 0;
 			break;
 		}
 	}
