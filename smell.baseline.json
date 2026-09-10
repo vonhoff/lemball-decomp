@@ -476,63 +476,6 @@
       "count": 1,
       "reason": "Intentional read from the serialized level/object byte stream at the current cursor."
     },
-
-    {
-      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
-      "rule": "raw-cast",
-      "code": "*(VsPoint*) &m_bitmapRes[0].m_x = *(VsPoint*) &m_centerX;",
-      "count": 1,
-      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
-    },
-    {
-      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
-      "rule": "raw-cast",
-      "code": "*(VsPoint*) &m_clearBitmap[0].m_x = point;",
-      "count": 1,
-      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
-    },
-    {
-      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
-      "rule": "raw-cast",
-      "code": "*(VsPoint*) &m_fgBlit[0].m_x = point;",
-      "count": 1,
-      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
-    },
-    {
-      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
-      "rule": "raw-cast",
-      "code": "*(VsPoint*) &m_needle0[0].m_x2 = tip;",
-      "count": 1,
-      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
-    },
-    {
-      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
-      "rule": "raw-cast",
-      "code": "*(VsPoint*) &m_needle1[0].m_x2 = point;",
-      "count": 1,
-      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
-    },
-    {
-      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
-      "rule": "raw-cast",
-      "code": "*(VsPoint*) &m_needle2[0].m_x2 = point;",
-      "count": 1,
-      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
-    },
-    {
-      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
-      "rule": "raw-cast",
-      "code": "*(VsRect*) &m_clearBitmap[0].m_width = rect;",
-      "count": 1,
-      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
-    },
-    {
-      "path": "src/Frontend/Resources/CdLoadAnim.cpp",
-      "rule": "raw-cast",
-      "code": "*(VsRect*) &m_line[0].m_x1 = rect;",
-      "count": 1,
-      "reason": "Intentional assignment of packed VsPoint/VsRect coordinate geometry to/from primitive fields."
-    },
     {
       "path": "src/Frontend/Support/TargetAboutScreen.cpp",
       "rule": "raw-cast",
