@@ -31,7 +31,7 @@ public:
 	int NDead();
 	unsigned int RemoteGameState(GameStateMessage* p_message);
 	void SetObjectRequired(eObjectType p_objectType, unsigned int p_required);
-	unsigned int StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short p_mask);
+	void StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short p_mask);
 	unsigned short DoorId(int p_index);
 	unsigned short LiftId(int p_index);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08

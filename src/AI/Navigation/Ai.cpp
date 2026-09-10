@@ -583,10 +583,90 @@ bool Ai::BulletCheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 }
 
 // 68K 0x1060201a StepOn__3CAIFRC7AICOORDP11CGameObjectUs
-// STUB: LEMBALL 0x00412890
-unsigned int Ai::StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short p_mask)
+// FUNCTION: LEMBALL 0x00412890
+void Ai::StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short p_mask)
 {
-	return 0;
+	int y;
+	int x = p_position.m_xFixed >> 12;
+	y = p_position.m_yFixed >> 12;
+	int blockX = x / 16;
+	int blockY = y / 16;
+
+	if (p_object->m_unk0x11c != 0) {
+		return;
+	}
+
+	unsigned short groundZ;
+	{
+		int groundX = x >> 4;
+		int groundY = y >> 4;
+		Map* map = m_map;
+		if (x < 0 || y < 0 || groundX >= map->m_ground.m_width || groundY >= map->m_ground.m_height) {
+			groundZ = 0;
+		}
+		else {
+			int cellX = x & 0xf;
+			int cellY = y & 0xf;
+			groundZ = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(cellX, cellY);
+		}
+	}
+
+	if ((int) groundZ + 4 < (p_object->m_position.m_zFixed >> 12)) {
+		return;
+	}
+
+	unsigned short collision;
+	if (blockX < 0 || blockY < 0) {
+		collision = 3;
+	}
+	else {
+		int width = m_map->m_ground.m_width;
+		if (width <= blockX || m_map->m_ground.m_height <= blockY) {
+			collision = 3;
+		}
+		else {
+			collision = m_map->m_ground.m_ground[blockY * width + blockX].m_collision;
+		}
+	}
+
+	if (p_object->m_balloonPostId != 0) {
+		return;
+	}
+
+	if ((collision & 4) != 0 && (p_mask & 0x40) != 0) {
+		eObjectType objectType = m_map->m_ground.m_ground[blockY * m_map->m_ground.m_width + blockX].m_objectType;
+		p_object->m_actionDeadline = g_dwGameTick + 26;
+		p_object->m_action = (eAction) 15;
+		if (objectType != (eObjectType) 0x216) {
+			p_object->m_actionArgument = 2;
+			p_object->m_stateTimer = g_dwGameTick * 50;
+			p_object->SetSndEffect((eSoundEffect) 28);
+			return;
+		}
+
+		p_object->m_actionArgument = 1;
+		p_object->m_stateTimer = g_dwGameTick * 50;
+		p_object->SetSndEffect((eSoundEffect) 29);
+		return;
+	}
+
+	if ((collision & 0x8000) == 0) {
+		return;
+	}
+
+	if ((p_mask & 8) != 0) {
+		m_mineManager->StepOn(p_position, p_object);
+	}
+	if ((p_mask & 0x10) != 0) {
+		m_liftManager->StepOn(p_position, p_object);
+		m_rocketManager->StepOn(p_position, p_object);
+		m_handManager->StepOn(p_position, p_object);
+		m_laserManager->StepOn(p_position, p_object);
+		m_iceManager->StepOn(p_position, p_object);
+	}
+	if ((p_mask & 0x100) != 0) {
+		m_invisibleSwitchManager->StepOn(p_position, p_object);
+	}
 }
 
 // 68K 0x10602280 OpenDoor__3CAIFRC7AICOORDP11CGameObjectUs
