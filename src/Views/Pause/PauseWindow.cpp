@@ -5,6 +5,7 @@
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
+#include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/ReceiveWindowState.h"
 #include "../../Visos/Resources/Manifest.h"
@@ -503,9 +504,14 @@ int PauseWindow::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x10b0f8a0 FreeVram__12CPauseWindowFv
-// STUB: LEMBALL 0x00444da0
+// FUNCTION: LEMBALL 0x00444da0
 void PauseWindow::FreeVram()
 {
+	if (m_vramSurface != 0) {
+		m_vramSurface->FreeVram();
+	}
+	m_gdi->Render();
+	m_gdi->m_primitiveCount = 0;
 }
 
 // 68K 0x10b0f8fc OnDriverChange__12CPauseWindowFv

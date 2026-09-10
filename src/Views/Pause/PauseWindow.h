@@ -40,38 +40,38 @@ public:
 	~PauseWindow();
 
 private:
-	TextManager m_textManager;             // 0xdc
-	char** m_menuLabels;                   // 0x100
-	int m_pauseMessage;                    // 0x104
-	unsigned int m_cursorState;            // 0x108
-	unsigned int m_lowResolution;          // 0x10c
-	ReceiveWindowState* m_receiverState;   // 0x110
-	PvGWnd* m_parentWindow;                // 0x114
-	int m_selection;                       // 0x118
-	int m_unavailableItems;                // 0x11c
-	int m_menuItemCount;                   // 0x120
-	int m_minimumSelection;                // 0x124
-	int m_initialSelection;                // 0x128
-	int m_verticalTextOffset;              // 0x12c
-	short m_horizontalTiles;               // 0x130
-	short m_verticalTiles;                 // 0x132
-	int m_borderAnimCount;                 // 0x134
-	Line m_borderLine;                     // 0x138
-	VsPoint m_windowPadding;               // 0x148
-	VsPoint m_textSpacing;                 // 0x14c
-	VsPoint m_borderPadding;               // 0x150
-	ResAnim* m_horizontalBorderAnim;       // 0x154
-	ResAnim* m_verticalBorderAnim;         // 0x158
-	Anim m_cornerAnims[4];                 // 0x15c
-	Anim* m_borderAnims;                   // 0x1dc
-	BaseRemap* m_remaps[4];                // 0x1e0
-	ResFont* m_font;                       // 0x1f0
-	void* m_vramSurface;                   // 0x1f4
-	VsPoint* m_textSizes;                  // 0x1f8
-	unsigned int m_horizontalBorderAnimId; // 0x1fc
-	unsigned int m_verticalBorderAnimId;   // 0x200
-	unsigned int m_fontId;                 // 0x204
-	unsigned int m_loaded;                 // 0x208
+	TextManager m_textManager;                   // 0xdc
+	char** m_menuLabels;                         // 0x100
+	int m_pauseMessage;                          // 0x104
+	unsigned int m_cursorState;                  // 0x108
+	unsigned int m_lowResolution;                // 0x10c
+	ReceiveWindowState* m_receiverState;         // 0x110
+	PvGWnd* m_parentWindow;                      // 0x114
+	int m_selection;                             // 0x118
+	int m_unavailableItems;                      // 0x11c
+	int m_menuItemCount;                         // 0x120
+	int m_minimumSelection;                      // 0x124
+	int m_initialSelection;                      // 0x128
+	int m_verticalTextOffset;                    // 0x12c
+	short m_horizontalTiles;                     // 0x130
+	short m_verticalTiles;                       // 0x132
+	int m_borderAnimCount;                       // 0x134
+	Line m_borderLine;                           // 0x138
+	VsPoint m_windowPadding;                     // 0x148
+	VsPoint m_textSpacing;                       // 0x14c
+	VsPoint m_borderPadding;                     // 0x150
+	ResAnim* m_horizontalBorderAnim;             // 0x154
+	ResAnim* m_verticalBorderAnim;               // 0x158
+	Anim m_cornerAnims[4];                       // 0x15c
+	Anim* m_borderAnims;                         // 0x1dc
+	BaseRemap* m_remaps[4];                      // 0x1e0
+	ResFont* m_font;                             // 0x1f0
+	PauseWindowFreeVramInterface* m_vramSurface; // 0x1f4
+	VsPoint* m_textSizes;                        // 0x1f8
+	unsigned int m_horizontalBorderAnimId;       // 0x1fc
+	unsigned int m_verticalBorderAnimId;         // 0x200
+	unsigned int m_fontId;                       // 0x204
+	unsigned int m_loaded;                       // 0x208
 };
 
 // SYNTHETIC: LEMBALL 0x00445350

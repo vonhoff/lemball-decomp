@@ -51,6 +51,7 @@ public:
 	friend class PasswordHiliteWindow;
 	friend class HiliteController;
 	friend class PasswordDrawer;
+	friend class PauseWindow;
 	friend struct TargetWinGDrawCodecState;
 	friend TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
 
