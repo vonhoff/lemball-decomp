@@ -66,6 +66,27 @@ bool IceManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 	return 0;
 }
 
+// 68K 0x1061278a Switch__11CIceManagerF9swMessagei
+// FUNCTION: LEMBALL 0x0042dd90
+void IceManager::Switch(int p_message, int p_id)
+{
+	int index = 0;
+	if (0 < m_count) {
+		do {
+			if ((unsigned short) m_ice[index].GetId() == p_id) {
+				break;
+			}
+			index++;
+			if (m_count <= index) {
+				return;
+			}
+		} while (1);
+		if (p_message == 5) {
+			m_ice[index].Switch();
+		}
+	}
+}
+
 // 68K 0x1061281e Add__11CIceManagerFUsRC8tCoord3dRC8tCoord3diiUc
 // FUNCTION: LEMBALL 0x0042ddf0
 void IceManager::Add(unsigned short p_id,
