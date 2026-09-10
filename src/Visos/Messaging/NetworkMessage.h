@@ -14,6 +14,7 @@ public:
 	}
 	friend class GameObjectMess;
 	friend class GlobalGameObject;
+	friend class Ai;
 	friend class Bullet;
 	friend class Headers;
 	friend class BaseFrontendProcess;

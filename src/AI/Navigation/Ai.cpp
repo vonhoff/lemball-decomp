@@ -703,15 +703,30 @@ Pt3 Ai::GetNodePosition(int p_node)
 }
 
 // 68K 0x1060238e AddData__3CAIFv
-// STUB: LEMBALL 0x00412b80
+// FUNCTION: LEMBALL 0x00412b80
 void Ai::AddData()
 {
+	for (int i = 0; i < 4; i++) {
+		NetworkMessage* stream = this;
+		NetworkMessage* message = (NetworkMessage*) ((unsigned char*) m_networkLemmings[i] + sizeof(GlobalGameObject));
+		message->CopyDataStream(stream->m_writeCursor, 0);
+		stream->m_writeCursor += message->m_writeCursor - message->m_buffer;
+	}
 }
 
 // 68K 0x10602402 GetData__3CAIFv
-// STUB: LEMBALL 0x00412be0
+// FUNCTION: LEMBALL 0x00412be0
 void Ai::GetData()
 {
+	PlayerLemming** lemming = &m_networkLemmings[4];
+	for (int i = 0; i < 4; i++) {
+		NetworkMessage* stream = this;
+		NetworkMessage* message = (NetworkMessage*) ((unsigned char*) *lemming + sizeof(GlobalGameObject));
+		if (message->Set(stream->m_readCursor)) {
+			stream->m_readCursor = message->m_readCursor;
+		}
+		lemming++;
+	}
 }
 
 // 68K 0x10602470 LemmingsSFXChanged__3CAIFv
