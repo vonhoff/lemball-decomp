@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/Demo.h"
 #include "../../Control/Game/GameStatus.h"
+#include "../../Map/Base/Map.h"
 #include "../../Network/Game/NetworkManager.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Network/Connect.h"
@@ -321,10 +322,29 @@ unsigned int Ai::StepOn(const AiCoord& p_position, GameObject* p_object, unsigne
 }
 
 // 68K 0x10602280 OpenDoor__3CAIFRC7AICOORDP11CGameObjectUs
-// STUB: LEMBALL 0x00412ad0
+// FUNCTION: LEMBALL 0x00412ad0
 bool Ai::OpenDoor(const AiCoord& p_position, GameObject* p_object, unsigned short p_mask)
 {
-	return 0;
+	int blockX = (p_position.m_xFixed >> 12) / 16;
+	int blockY = (p_position.m_yFixed >> 12) / 16;
+	unsigned short collision;
+	if (blockX < 0 || blockY < 0) {
+		collision = 3;
+	}
+	else {
+		Map* map = m_map;
+		int width = map->m_ground.m_width;
+		if (width <= blockX || map->m_ground.m_height <= blockY) {
+			collision = 3;
+		}
+		else {
+			collision = map->m_ground.m_ground[blockY * width + blockX].m_collision;
+		}
+	}
+	if ((collision & 0x8000) != 0 && (p_mask & 0x20) != 0) {
+		return m_doorManager->Open(p_position, p_object);
+	}
+	return false;
 }
 
 // 68K 0x10602334 GetNodePosition__3CAIFi

@@ -12,6 +12,7 @@ public:
 	void SetCollision();
 
 	friend class Bullet;
+	friend class Ai;
 	friend class PlayerLemming;
 	friend class GroundArray;
 	friend class GameObject;
