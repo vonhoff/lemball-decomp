@@ -1,6 +1,7 @@
 #include "HotAreaList.h"
 
 #include "../Foundation/BaseQueue.h"
+#include "../Foundation/VsRect.h"
 #include "HotAreaElement.h"
 
 #include <new.h>
@@ -10,6 +11,27 @@ VsPoint* g_pHotAreaCursor = 0;
 
 // GLOBAL: LEMBALL 0x004a1ffc
 int g_nHotAreaListCount = 0;
+
+// FUNCTION: LEMBALL 0x00466370
+void HotAreaList::Set(const VsRect& p_rect, VsPoint p_point0, const VsPoint& p_point1)
+{
+	const short* coords;
+
+	m_width = p_rect.m_width;
+	m_height = p_rect.m_height;
+	if (&p_rect != 0) {
+		coords = &p_rect.m_x;
+	}
+	else {
+		coords = 0;
+	}
+	m_x = coords[0];
+	m_y = coords[1];
+	m_point0.m_x = p_point0.m_x;
+	m_point0.m_y = p_point0.m_y;
+	m_point1.m_x = p_point1.m_x;
+	m_point1.m_y = p_point1.m_y;
+}
 
 // 68K 0x10212102 __ct__12CHotAreaListFRC7CVSRectRC8CVSPointRC8CVSPoint
 // FUNCTION: LEMBALL 0x0046a580

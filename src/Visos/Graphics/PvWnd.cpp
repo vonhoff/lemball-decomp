@@ -454,27 +454,6 @@ void PvWnd::Resize(VsSize p_size)
 {
 }
 
-// FUNCTION: LEMBALL 0x00466370
-void HotAreaList::Set(const VsRect& p_rect, VsPoint p_point0, const VsPoint& p_point1)
-{
-	const short* coords;
-
-	m_width = p_rect.m_width;
-	m_height = p_rect.m_height;
-	if (&p_rect != 0) {
-		coords = &p_rect.m_x;
-	}
-	else {
-		coords = 0;
-	}
-	m_x = coords[0];
-	m_y = coords[1];
-	m_point0.m_x = p_point0.m_x;
-	m_point0.m_y = p_point0.m_y;
-	m_point1.m_x = p_point1.m_x;
-	m_point1.m_y = p_point1.m_y;
-}
-
 void PvWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 {
 }
