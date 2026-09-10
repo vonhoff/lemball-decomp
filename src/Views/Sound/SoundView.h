@@ -16,11 +16,7 @@ struct EffectSlot {
 	unsigned long m_lastPlayed; // 0x08
 };
 
-class LoadUpdate {
-public:
-	virtual void UpdateNonCacheLoad() = 0; // vtable+0x00
-	~LoadUpdate() {}
-};
+#include "LoadUpdate.h"
 
 // SIZE 0x2cc
 class SoundView {
