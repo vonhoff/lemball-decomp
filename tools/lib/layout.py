@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Check translation-unit layout against one-primary-class naming.
-
-python tools/check_tu.py [src/path ...] [--json] [--fail]
-
-Default rule: one primary class per .h/.cpp, file stem equals that class
-name (after dropping a leading C/tag/t type prefix). OVERRIDE_STEMS lists
-proven original TU basenames where the stem differs from the primary class.
-INTENTIONAL lists full-path exceptions. No source is changed.
-"""
+"""Check translation-unit layout (via tools/gate.py; OVERRIDE_STEMS / INTENTIONAL)."""
 
 from __future__ import annotations
 
@@ -16,10 +8,18 @@ from collections import Counter
 import json
 from pathlib import Path
 import re
+import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+from .paths import ROOT
+from .source import (
+    RECCMP_MARK,
+    VTABLE_MARK as VTABLE,
+    brace_ends,
+    collect_sources,
+    mask_comments_and_strings,
+    rel_posix,
+)
 
-VTABLE = re.compile(r"^\s*//\s*VTABLE:\s+LEMBALL\b", re.M)
 TYPE_DEF = re.compile(
     r"\b(?P<kind>class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
 )
@@ -29,10 +29,6 @@ METHOD_DEF = re.compile(
     r"[A-Za-z_][\w:]*(?:\s*<[^;{}<>]*>)?(?:\s*\*|\s*&)?)\s+)?"
     r"(?P<owner>[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*)::"
     r"(?P<method>~?[A-Za-z_]\w*|operator\s*[^\s(]+)\s*\(",
-    re.M,
-)
-RECCMP_MARK = re.compile(
-    r"^\s*//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY|GLOBAL)\s*:",
     re.M,
 )
 
@@ -47,21 +43,6 @@ OVERRIDE_STEMS = {
 INTENTIONAL = {
     "src/Common.h",  # scaffold forward declarations and tiny POD helpers
 }
-
-
-def mask_comments_and_strings(text: str) -> str:
-    pattern = r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\''
-    return re.sub(pattern, lambda m: re.sub(r"[^\n]", " ", m[0]), text)
-
-
-def brace_ends(code: str) -> dict[int, int]:
-    ends, stack = {}, []
-    for pos, char in enumerate(code):
-        if char == "{":
-            stack.append(pos)
-        elif char == "}" and stack:
-            ends[stack.pop()] = pos
-    return ends
 
 
 def drop_type_prefix(name: str) -> str:
@@ -178,10 +159,6 @@ def override_note(stem: str) -> str | None:
     return None
 
 
-def rel_posix(path: Path) -> str:
-    return path.resolve().relative_to(ROOT).as_posix()
-
-
 def scan(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
@@ -245,30 +222,20 @@ def scan(path: Path) -> dict:
     }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    parser.add_argument("paths", type=Path, nargs="*", default=[ROOT / "src"])
-    parser.add_argument("--json", action="store_true")
-    parser.add_argument("--fail", action="store_true")
-    args = parser.parse_args()
-    files = set()
-    for path in args.paths:
-        if not path.exists():
-            parser.error("path does not exist: " + str(path))
-        files.update(
-            p
-            for p in (path.rglob("*") if path.is_dir() else [path])
-            if p.suffix in (".cpp", ".h")
-        )
+def check_layout(
+    paths: list[Path | str] | None = None,
+    fail: bool = True,
+    as_json: bool = False,
+) -> int:
+    files = collect_sources(paths)
     if not files:
-        parser.error("no C++ source files found")
-    rows = [scan(path) for path in sorted(files)]
+        sys.stderr.write("layout: no C++ source files found\n")
+        return 2
+    rows = [scan(path) for path in files]
     counts = dict(Counter(row["status"] for row in rows))
     failing = {"multi-class", "stem-name"}
     selected = [row for row in rows if row["status"] in failing]
-    if args.json:
+    if as_json:
         print(
             json.dumps(
                 {"files": len(files), "counts": counts, "translations": rows},
@@ -280,9 +247,24 @@ def main() -> int:
             detail = row["detail"] or row["status"]
             print(f'{row["relpath"]}: {row["status"]}: {detail}')
         print(f'{len(files)} files: {counts}')
-    if args.fail and selected:
+    if fail and selected:
         return 1
     return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("paths", type=Path, nargs="*", default=[ROOT / "src"])
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--fail", action="store_true")
+    args = parser.parse_args()
+    return check_layout(
+        paths=args.paths,
+        fail=args.fail,
+        as_json=args.json,
+    )
 
 
 if __name__ == "__main__":

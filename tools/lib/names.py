@@ -1,23 +1,16 @@
 #!/usr/bin/env python3
-"""Compare source names with adjacent // 68K Metrowerks symbols.
-
-python tools/check_names.py [src/path ...] [--strict] [--json] [--fail]
-python tools/check_names.py --inventory path/to/68K.functions.tsv
-python tools/check_names.py --inventory path/to/68K.functions.tsv --confirmed path/to/confirmed-mappings.tsv
-
-Expected form: PascalCase, drop C/tag/t prefixes, '_' is a word separator,
-leading '_' becomes Internal. INTENTIONAL lists known Mac/Windows divergences.
---strict also reports case-only diffs. No source is changed.
-"""
+"""Compare source names with adjacent // 68K symbols (via tools/gate.py --names)."""
 
 import argparse
 from collections import Counter
-import csv
 import json
 from pathlib import Path
 import re
+import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+from .paths import ROOT
+from .source import brace_ends, collect_sources, mask_comments_and_strings
+
 MARK = re.compile(r"//\s*68K\s+(0x[0-9a-fA-F]+)\s+(\S+)")
 FUNCTION = re.compile(
     r"(?:(?P<owner>[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*)\s*::\s*)?"
@@ -135,18 +128,9 @@ def method_fold(name):
     return ("Internal" + body if internal else body).lower()
 
 
-def mask_comments_and_strings(text):
-    pattern = r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\''
-    return re.sub(pattern, lambda m: re.sub(r"[^\n]", " ", m[0]), text)
-
-
 def class_ranges(code):
-    ends, stack, result = {}, [], []
-    for pos, char in enumerate(code):
-        if char == "{":
-            stack.append(pos)
-        elif char == "}" and stack:
-            ends[stack.pop()] = pos
+    ends = brace_ends(code)
+    result = []
     for match in re.finditer(r"\b(?:class|struct)\s+(\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{", code):
         opening = match.end() - 1
         if opening in ends:
@@ -175,17 +159,20 @@ def adjacent_name(code, offset, ranges):
     return owner, method
 
 
-def scan(path, symbols=None):
+def scan(path):
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
     ranges = class_ranges(code)
     rows = []
     for mark in MARK.finditer(text):
-        row = {"path": str(path), "line": text.count("\n", 0, mark.start()) + 1,
-               "address_68k": mark[1], "symbol": mark[2]}
+        row = {
+            "path": str(path),
+            "line": text.count("\n", 0, mark.start()) + 1,
+            "address_68k": mark[1],
+            "symbol": mark[2],
+        }
         try:
-            inventory = None if symbols is None else symbols.get(int(mark[1], 16))
-            expected_symbol = inventory or mark[2].rstrip(";")
+            expected_symbol = mark[2].rstrip(";")
             expected = decode_symbol(expected_symbol)
             line_end = text.find("\n", mark.end())
             actual = adjacent_name(code, len(text) if line_end < 0 else line_end, ranges)
@@ -208,123 +195,92 @@ def scan(path, symbols=None):
                 status = "case"
             else:
                 status = "match"
-            row.update(wanted_class=wanted_class, wanted_method=wanted_method,
-                       actual_class=actual[0], actual_method=actual[1],
-                       differences=diffs, status=status,
-                       expected_symbol=expected_symbol,
-                       name_evidence="inventory" if inventory else "source comment")
+            row.update(
+                wanted_class=wanted_class,
+                wanted_method=wanted_method,
+                actual_class=actual[0],
+                actual_method=actual[1],
+                differences=diffs,
+                status=status,
+                expected_symbol=expected_symbol,
+            )
         except ValueError as error:
             reason = str(error)
             symbol = row["symbol"].rstrip(";")
             after = text[mark.end():mark.end() + 500]
-            synthetic = (reason == "no adjacent function declaration"
-                         and symbol.startswith(("__ct__", "__dt__"))
-                         and re.search(r"SYNTHETIC:|^\s*(?:class|struct)\s+\w+", after, re.M))
+            synthetic = (
+                reason == "no adjacent function declaration"
+                and symbol.startswith(("__ct__", "__dt__"))
+                and re.search(r"SYNTHETIC:|^\s*(?:class|struct)\s+\w+", after, re.M)
+            )
             row.update(status="synthetic" if synthetic else "unresolved", reason=reason)
         rows.append(row)
     return rows
 
 
-def read_inventory(path):
-    with path.open(encoding="utf-8-sig", newline="") as stream:
-        return {int(r["address"], 16): r["name"] for r in csv.DictReader(stream, delimiter="\t")}
-
-
-def read_confirmed(path):
-    with path.open(encoding="utf-8-sig", newline="") as stream:
-        return {(int(r["mac_address"], 16), int(r["windows_address"], 16))
-                for r in csv.DictReader(stream, delimiter="\t")}
-
-
-def check_research(rows, symbols, pairs=None):
-    sources = {}
-    for row in rows:
-        path = row["path"]
-        if path not in sources:
-            sources[path] = Path(path).read_text(encoding="utf-8").splitlines()
-        mac = int(row["address_68k"], 16)
-        issues = []
-        original = symbols.get(mac)
-        if original is None:
-            issues.append("68K address absent from inventory")
-        elif original != row["symbol"].rstrip(";"):
-            issues.append("inventory symbol differs: " + original)
-        windows = None
-        for line in sources[path][row["line"]:]:
-            stripped = line.strip()
-            if stripped and not stripped.startswith("//"):
-                break
-            if re.match(r"//\s*68K\s", stripped):
-                break
-            match = re.search(
-                r"//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s+LEMBALL\s+(0x[0-9a-fA-F]+)",
-                line)
-            if match:
-                windows = int(match[1], 16)
-                break
-        if pairs is not None and windows is not None and (mac, windows) not in pairs:
-            issues.append("address pair absent from confirmed ledger")
-        row["address_x86"] = None if windows is None else f"0x{windows:08x}"
-        row["evidence_findings"] = issues
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("paths", type=Path, nargs="*", default=[ROOT / "src"])
-    parser.add_argument("--strict", action="store_true")
-    parser.add_argument("--json", action="store_true")
-    parser.add_argument("--fail", action="store_true")
-    parser.add_argument("--inventory", type=Path)
-    parser.add_argument("--confirmed", type=Path,
-                        help="confirmed-mappings.tsv (requires --inventory)")
-    args = parser.parse_args()
-    files = set()
-    for path in args.paths:
-        if not path.exists():
-            parser.error("path does not exist: " + str(path))
-        files.update(p for p in (path.rglob("*") if path.is_dir() else [path])
-                     if p.suffix in (".cpp", ".h"))
+def check_names(
+    paths: list[Path | str] | None = None,
+    strict: bool = False,
+    as_json: bool = False,
+    fail: bool = True,
+) -> int:
+    files = collect_sources(paths)
     if not files:
-        parser.error("no C++ source files found")
-    if args.confirmed and not args.inventory:
-        parser.error("--confirmed requires --inventory")
-    symbols, pairs = None, None
-    try:
-        if args.inventory:
-            symbols = read_inventory(args.inventory)
-        if args.confirmed:
-            pairs = read_confirmed(args.confirmed)
-    except (OSError, KeyError, ValueError) as error:
-        parser.error("cannot read symbol evidence: " + str(error))
-    rows = [row for path in sorted(files) for row in scan(path, symbols)]
-    if symbols is not None:
-        check_research(rows, symbols, pairs)
+        sys.stderr.write("names: no C++ source files found\n")
+        return 2
+
+    rows = [row for path in files for row in scan(path)]
     counts = dict(Counter(row["status"] for row in rows))
-    evidence_count = sum(bool(r.get("evidence_findings")) for r in rows)
-    selected = [r for r in rows if r["status"] in ("mismatch", "unresolved")
-                or (args.strict and r["status"] == "case") or r.get("evidence_findings")]
-    if args.json:
-        print(json.dumps({"files": len(files), "annotations": len(rows), "counts": counts,
-                          "evidence_findings": evidence_count, "comparisons": rows}, indent=2))
+    selected = [
+        r
+        for r in rows
+        if r["status"] in ("mismatch", "unresolved")
+        or (strict and r["status"] == "case")
+    ]
+    if as_json:
+        print(
+            json.dumps(
+                {
+                    "files": len(files),
+                    "annotations": len(rows),
+                    "counts": counts,
+                    "comparisons": rows,
+                },
+                indent=2,
+            )
+        )
     else:
         for row in selected:
             detail = row.get("reason") or (
                 f'{row["wanted_class"]}::{row["wanted_method"]} -> '
                 f'{row["actual_class"]}::{row["actual_method"]} '
-                f'({", ".join(row["differences"])})')
+                f'({", ".join(row["differences"])})'
+            )
             print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{row["symbol"]}]')
-            for issue in row.get("evidence_findings", []):
-                print("  evidence: " + issue)
-        print(f'{len(files)} files, {len(rows)} annotations: {counts}')
-        if symbols is not None:
-            print(f'{evidence_count} annotations have inventory/ledger findings')
-    if args.fail:
+        print(f"{len(files)} files, {len(rows)} annotations: {counts}")
+    if fail:
         if counts.get("unresolved") or not rows:
             return 2
         if selected:
             return 1
     return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("paths", type=Path, nargs="*", default=[ROOT / "src"])
+    parser.add_argument("--strict", action="store_true")
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--fail", action="store_true")
+    args = parser.parse_args()
+    return check_names(
+        paths=args.paths,
+        strict=args.strict,
+        as_json=args.json,
+        fail=args.fail,
+    )
 
 
 if __name__ == "__main__":

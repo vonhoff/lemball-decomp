@@ -18,8 +18,8 @@ import sys
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "build-msvc400"
+from lib.paths import BUILD, ROOT
+
 LOG_PATH = BUILD / "last_build.log"
 LOG_INTEREST = re.compile(r"warning|error|fatal|failed|built target|linking|\[\s*100%\s*\]", re.IGNORECASE)
 MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
@@ -46,10 +46,6 @@ def resolve_cmake() -> str:
     if venv.exists():
         return win_short_path(str(venv))
     sys.exit("cmake not found")
-
-
-def tool(name: str) -> str:
-    return shutil.which(name) or str(ROOT / ".decomp-venv" / "Scripts" / f"{name}.exe")
 
 
 def cache_cmake_command() -> str | None:
@@ -117,14 +113,13 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
         if res.returncode != 0:
             return res.returncode
 
-    if not clean_first:
-        for fname in ("LEMBALL.pdb", "LEMBALL.ilk", "LEMBALL.EXE"):
-            p = BUILD / fname
-            if p.exists():
-                try:
-                    p.unlink()
-                except OSError:
-                    pass
+    for fname in ("LEMBALL.pdb", "LEMBALL.ilk", "LEMBALL.EXE"):
+        p = BUILD / fname
+        if p.exists():
+            try:
+                p.unlink()
+            except OSError:
+                pass
 
     cmake_args = [cmake, "--build", "--preset", "msvc400"]
     if clean_first:

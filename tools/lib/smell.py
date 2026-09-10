@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""Fail on decomp smells (offset pokes, missing reccmp annotations).
-
-  python tools/smell.py src/Visos/Graphics
-  python tools/smell.py --annot
-  python tools/smell.py --annot-strict
-
-  type-erase-index    do not cast away a typed pointer to index by byte/N
-                      e.g. ((int*) layout)[0x58 / 4] — use a named field
-  cast-deref-offset   do not *((T**) p + N); use a typed member
-"""
+"""Fail on decomp smells (via tools/gate.py)."""
 
 from __future__ import annotations
 
@@ -19,16 +10,15 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
+from .paths import ROOT, SRC
+from .source import RECCMP_MARK, SYNTHETIC_MARK, collect_sources
+
 BASELINE = ROOT / "smell.baseline.json"
 
 # Hit: relative path, line, rule, optional code snippet
 Hit = tuple[str, int, str, str]
 
-RECCMP_MARK = re.compile(r"^\s*//\s*(FUNCTION|STUB|GLOBAL|LIBRARY|TEMPLATE|SYNTHETIC)\s*:")
 K68_MARK = re.compile(r"^\s*//\s*68K\s+")
-SYNTHETIC_MARK = re.compile(r"^\s*//\s*SYNTHETIC\s*:")
 SYNTHETIC_DTOR_NAME = re.compile(
     r"^\s*//\s*(?P<class>[A-Za-z_][\w:]*)::`(?:scalar|vector) deleting destructor'\s*$"
 )
@@ -340,12 +330,6 @@ def scan_file(
     return hits, reviews
 
 
-def iter_sources(root: Path):
-    for path in sorted(root.rglob("*")):
-        if path.suffix.lower() in {".cpp", ".h", ".c"}:
-            yield path
-
-
 def collect_synthetic_destructors(files: list[Path]) -> set[str]:
     classes: set[str] = set()
     for path in files:
@@ -359,34 +343,21 @@ def collect_synthetic_destructors(files: list[Path]) -> set[str]:
     return classes
 
 
-def main(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(description="Decomp smell gate")
-    annot_group = parser.add_mutually_exclusive_group()
-    annot_group.add_argument(
-        "--annot",
-        action="store_true",
-        help="fail actionable unannotated defs; summarize empty/synthetic for review",
-    )
-    annot_group.add_argument(
-        "--annot-strict",
-        action="store_true",
-        help="fail every definition lacking a reccmp annotation",
-    )
-    parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
-    args = parser.parse_args(argv[1:])
-    targets = [Path(a) for a in args.paths] if args.paths else [SRC]
-    files: list[Path] = []
-    for target in targets:
-        path = target if target.is_absolute() else ROOT / target
-        if path.is_dir():
-            files.extend(iter_sources(path))
-        else:
-            files.append(path)
+def check_smell(
+    paths: list[Path | str] | None = None,
+    annot: bool = False,
+    annot_strict: bool = False,
+) -> int:
+    files = collect_sources(paths)
+    if not files:
+        sys.stderr.write("smell: no C++ source files found\n")
+        return 2
     hits: list[Hit] = []
     reviews: list[tuple[str, str]] = []
-    synthetic_destructors = collect_synthetic_destructors(list(iter_sources(SRC)))
+    synthetic_roots = collect_sources() if paths is None else files
+    synthetic_destructors = collect_synthetic_destructors(synthetic_roots)
     for path in files:
-        file_hits, file_reviews = scan_file(path, args.annot, args.annot_strict, synthetic_destructors)
+        file_hits, file_reviews = scan_file(path, annot, annot_strict, synthetic_destructors)
         hits.extend(file_hits)
         reviews.extend(file_reviews)
     try:
@@ -412,5 +383,25 @@ def main(argv: list[str]) -> int:
     return 0
 
 
+def main(argv: list[str] | None = None) -> int:
+    if argv is None:
+        argv = sys.argv
+    parser = argparse.ArgumentParser(description="Decomp smell gate")
+    annot_group = parser.add_mutually_exclusive_group()
+    annot_group.add_argument(
+        "--annot",
+        action="store_true",
+        help="fail actionable unannotated defs; summarize empty/synthetic for review",
+    )
+    annot_group.add_argument(
+        "--annot-strict",
+        action="store_true",
+        help="fail every definition lacking a reccmp annotation",
+    )
+    parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
+    args = parser.parse_args(argv[1:])
+    return check_smell(args.paths, annot=args.annot, annot_strict=args.annot_strict)
+
+
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(main())

@@ -89,6 +89,22 @@ jobs:
         run: |
           python tools/report.py
 
+      - name: Gate
+        shell: pwsh
+        run: |
+          python tools/gate.py
+
+      - name: 68K naming gate
+        shell: pwsh
+        run: |
+          python tools/gate.py --names
+
+      - name: Vtable compare (progress)
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python tools/gate.py --vtable
+
       - name: Upload progress report
         uses: actions/upload-artifact@v4
         with:

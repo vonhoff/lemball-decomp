@@ -41,5 +41,3 @@ void ShortSort(unsigned char* p_low,
 			   int (*p_compare)(const void*, const void*))
 {
 }
-
-// 68K 0x1021746c swap

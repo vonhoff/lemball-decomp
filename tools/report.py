@@ -5,15 +5,12 @@ import argparse
 import csv
 import json
 import struct
-import subprocess
 from collections import defaultdict
 from pathlib import Path
 
-from build import tool
-from check import compute_ratio, load_matches
-
-ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "build-msvc400"
+from lib.compare import compute_ratio, load_matches
+from lib.paths import REPORT_JSON, ROADMAP_CSV
+from lib.reccmp import run_reccmp
 
 
 def f32(value):
@@ -45,24 +42,6 @@ def measures(functions, total_units=1):
             matched_functions_percent=f32(len(matched) / len(functions) * 100),
         )
     return res
-
-
-def run_reccmp():
-    subprocess.run(
-        [tool("reccmp-project"), "detect", "--search-path", str(ROOT / "data")],
-        cwd=ROOT,
-        check=True,
-    )
-    subprocess.run(
-        [tool("reccmp-reccmp"), "--target", "LEMBALL", "--json", "reccmp.json", "--silent"],
-        cwd=BUILD,
-        check=True,
-    )
-    subprocess.run(
-        [tool("reccmp-roadmap"), "--target", "LEMBALL", "--csv", "roadmap.csv"],
-        cwd=BUILD,
-        check=True,
-    )
 
 
 def load_inventory(path):
@@ -121,17 +100,23 @@ def build_report(roadmap_path, reccmp_path):
     }
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=BUILD / "report.json")
-    args = parser.parse_args()
-    run_reccmp()
-    report = build_report(BUILD / "roadmap.csv", BUILD / "reccmp.json")
-    args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+def make_report(output_path: Path = REPORT_JSON) -> dict:
+    reccmp_path = run_reccmp(detect=True, roadmap=True)
+    report = build_report(ROADMAP_CSV, reccmp_path)
+    output_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
     print(f"{values['matched_functions']}/{values['total_functions']} functions matched")
-    print(f"wrote {args.output}")
+    print(f"wrote {output_path}")
+    return report
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=REPORT_JSON)
+    args = parser.parse_args()
+    make_report(args.output)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

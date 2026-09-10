@@ -1,17 +1,10 @@
 #!/usr/bin/env python3
-"""Rank decomp targets from report.json and original x86 sizes.
+"""Rank next decomp targets from report.json and original x86 sizes.
 
-Sizes: reachable instructions in data/LEMBALL.EXE (unknown if control flow is
-ambiguous). readiness = known non-STUB callees with positive scores / all
-observed callees (indirects count as unproven). gain~ = original size *
-remaining fraction * readiness. Does not build unless --refresh.
-
-  python tools/targets.py --kind tiny --max-size 5
-  python tools/targets.py --kind near
-  python tools/targets.py --kind gain
-  python tools/targets.py --kind unit
-  python tools/targets.py --kind clone
-  python tools/targets.py --kind tiny --addrs
+  python tools/next.py
+  python tools/next.py --kind tiny|near|gain|unit|clone
+  python tools/next.py --kind gain --addrs
+  python tools/next.py --refresh
 """
 
 from __future__ import annotations
@@ -19,19 +12,17 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import subprocess
 import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-TOOLS_DIR = Path(__file__).resolve().parent
-ROOT = TOOLS_DIR.parent
-BUILD = ROOT / "build-msvc400"
-REPORT = BUILD / "report.json"
-SRC = ROOT / "src"
+from lib.compare import resolve_original_target
+from lib.paths import ORIGINAL_EXE, REPORT_JSON, ROOT, SRC, TARGETS_CACHE, file_id
+from lib.source import ANNOT_WITH_ADDR
+from report import make_report
 
-ANNOT_RE = re.compile(r"//\s*(FUNCTION|STUB|TEMPLATE|SYNTHETIC|LIBRARY):\s*LEMBALL\s+(0x[0-9A-Fa-f]+)")
+REPORT = REPORT_JSON
 
 
 @dataclass(frozen=True)
@@ -119,27 +110,61 @@ def inspect_original(image, address: int, entries: set[int], decoder) -> Origina
     return OriginalEvidence(max(occupied) + 1 - address, tuple(sorted(callees)), indirect)
 
 
-def resolve_original_target(image, address: int, decoder) -> int | None:
-    seen = set()
-    while address not in seen and len(seen) < 32:
-        seen.add(address)
+def _load_targets_cache(report_path: Path) -> dict[int, tuple[int | None, float]] | None:
+    if not TARGETS_CACHE.exists():
+        return None
+    try:
+        data = json.loads(TARGETS_CACHE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if (
+        data.get("version") != 2
+        or data.get("original") != file_id(ORIGINAL_EXE)
+        or data.get("report") != file_id(report_path)
+    ):
+        return None
+    functions = data.get("functions")
+    if not isinstance(functions, dict):
+        return None
+    result: dict[int, tuple[int | None, float]] = {}
+    for key, entry in functions.items():
         try:
-            ins = next(decoder.disasm_lite(image.read(address, 15), address), None)
-        except (ValueError, IndexError):
+            addr = int(key, 16)
+            result[addr] = (entry.get("original_size"), float(entry["readiness"]))
+        except (AttributeError, KeyError, TypeError, ValueError):
             return None
-        if ins is None:
-            return None
-        if ins[2] != 'jmp' or not re.fullmatch(r'0x[0-9a-f]+', ins[3]):
-            return address
-        address = int(ins[3], 16)
-    return None
+    return result
 
 
-def add_original_evidence(funcs: list[Func], entries: set[int]) -> list[Func]:
+def _write_targets_cache(report_path: Path, funcs: list[Func]) -> None:
+    payload = {
+        "version": 2,
+        "original": file_id(ORIGINAL_EXE),
+        "report": file_id(report_path),
+        "functions": {
+            f"0x{func.addr:08x}": {
+                "original_size": func.original_size,
+                "readiness": func.readiness,
+            }
+            for func in funcs
+        },
+    }
+    TARGETS_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    TARGETS_CACHE.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+
+def add_original_evidence(funcs: list[Func], entries: set[int], report_path: Path) -> list[Func]:
+    cached = _load_targets_cache(report_path)
+    if cached is not None and all(func.addr in cached for func in funcs):
+        return [
+            replace(func, original_size=cached[func.addr][0], readiness=cached[func.addr][1])
+            for func in funcs
+        ]
+
     from capstone import Cs, CS_ARCH_X86, CS_MODE_32
     from reccmp.formats import detect_image
 
-    image = detect_image(ROOT / "data" / "LEMBALL.EXE")
+    image = detect_image(ORIGINAL_EXE)
     if image is None:
         raise ValueError('original executable is unavailable')
     decoder = Cs(CS_ARCH_X86, CS_MODE_32)
@@ -156,6 +181,7 @@ def add_original_evidence(funcs: list[Func], entries: set[int]) -> list[Func]:
         total = len(dependencies) + unresolved + evidence.indirect_calls
         readiness = ready / total if total else 1.0
         result.append(replace(func, original_size=evidence.size, readiness=readiness))
+    _write_targets_cache(report_path, result)
     return result
 
 
@@ -169,7 +195,7 @@ def scan_annotations() -> tuple[dict[int, str], set[int]]:
     entries: set[int] = set()
     for path in (*SRC.rglob("*.cpp"), *SRC.rglob("*.h")):
         text = path.read_text(encoding="utf-8", errors="replace")
-        for match in ANNOT_RE.finditer(text):
+        for match in ANNOT_WITH_ADDR.finditer(text):
             addr = int(match.group(2), 16)
             entries.add(addr)
             if match.group(1) in ("FUNCTION", "STUB"):
@@ -194,7 +220,7 @@ def load_report(path: Path) -> list[Func]:
                     annot=annot.get(addr),
                 )
             )
-    return add_original_evidence(funcs, entries)
+    return add_original_evidence(funcs, entries, path)
 
 
 def ratio_bucket(ratio: float) -> str:
@@ -392,13 +418,14 @@ def main() -> int:
         parser.error("--addrs requires --kind tiny, --kind near or --kind gain")
 
     if args.refresh:
-        subprocess.run([sys.executable, str(TOOLS_DIR / "report.py")], cwd=ROOT, check=True)
+        make_report()
+        TARGETS_CACHE.unlink(missing_ok=True)
 
     if not args.report.exists():
         sys.stderr.write(
             f"missing {args.report}\n"
             "run: python tools/report.py\n"
-            "or:  python tools/targets.py --refresh\n"
+            "or:  python tools/next.py --refresh\n"
         )
         return 1
 

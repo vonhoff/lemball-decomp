@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Compare vtables after following MSVC 4.00 linker jmp-rel32 stubs.
-
-Keeps vtordisp/this-adjusting thunks. Accepts opposite scalar/vector deleting
-destructor aliases when codegen matches (same rules as check.py).
-
-  python tools/vtable.py --no-build
-  python tools/vtable.py --no-build --verbose
-  python tools/vtable.py --no-build --annot-strict
-"""
+"""Thunk-aware LEMBALL vtable comparison (via tools/gate.py --vtable)."""
 
 from __future__ import annotations
 
@@ -18,7 +10,6 @@ import sys
 from collections import Counter
 from dataclasses import dataclass
 from itertools import zip_longest
-from pathlib import Path
 
 from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
@@ -26,12 +17,9 @@ from reccmp.parser.codebase import DecompCodebase
 from reccmp.project.detect import RecCmpProject, RecCmpProjectException
 from reccmp.types import EntityType, ImageId
 
-from build import run_build
-from check import is_equivalent_insn, is_codegen_equivalent_diff
+from .compare import is_codegen_equivalent_diff, is_equivalent_insn, resolve_jump
+from .paths import BUILD, RECOMP_EXE
 
-ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "build-msvc400"
-MAX_THUNK_DEPTH = 16
 DELETING_DESTRUCTOR_RE = re.compile(r"^(?P<class>.+)::`(?P<kind>scalar|vector) deleting destructor'")
 NESTED_VTABLE_BASE_RE = re.compile(
     r"^(?P<base>[A-Za-z_][A-Za-z0-9_]*)'s `(?P<via>[A-Za-z_][A-Za-z0-9_]*)$"
@@ -72,34 +60,6 @@ class SlotResult:
         if self.recomp_entity is None:
             return "unknown-recompiled"
         return "known-mismatch"
-
-
-def resolve_jump(image, address: int | None, stop_at=None) -> int | None:
-    if address is None:
-        return None
-
-    seen: set[int] = set()
-    current = address
-    for _ in range(MAX_THUNK_DEPTH):
-        if current in seen:
-            break
-        seen.add(current)
-        if stop_at is not None and stop_at(current):
-            break
-        if not image.is_valid_vaddr(current):
-            break
-        try:
-            instruction = image.read(current, 5)
-        except (IndexError, ValueError):
-            break
-        if len(instruction) != 5 or instruction[0] != 0xE9:
-            break
-        displacement = struct.unpack("<i", instruction[1:])[0]
-        destination = current + 5 + displacement
-        if not image.is_valid_vaddr(destination):
-            break
-        current = destination
-    return current
 
 
 def is_original_clone(image, address: int | None, entity: object | None) -> bool:
@@ -510,6 +470,23 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
     return 0 if comparisons_pass and coverage_pass else 1
 
 
+def check_vtable(
+    no_build: bool = True,
+    clean_first: bool = False,
+    verbose: bool = False,
+    top: int = 0,
+    annot_strict: bool = False,
+) -> int:
+    if not no_build or not RECOMP_EXE.is_file():
+        from build import run_build
+
+        result = run_build(clean_first=clean_first)
+        if result != 0:
+            return result
+
+    return run_comparison(verbose, max(top, 0), annot_strict)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Thunk-aware LEMBALL vtable comparison")
     parser.add_argument("--no-build", action="store_true", help="skip incremental build")
@@ -522,13 +499,13 @@ def main() -> int:
         help="also fail when a source VTABLE annotation cannot be paired",
     )
     args = parser.parse_args()
-
-    if not args.no_build:
-        result = run_build(clean_first=args.clean_first)
-        if result != 0:
-            return result
-
-    return run_comparison(args.verbose, max(args.top, 0), args.annot_strict)
+    return check_vtable(
+        no_build=args.no_build,
+        clean_first=args.clean_first,
+        verbose=args.verbose,
+        top=args.top,
+        annot_strict=args.annot_strict,
+    )
 
 
 if __name__ == "__main__":
