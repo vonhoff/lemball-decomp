@@ -126,10 +126,29 @@ void Mover::SetUpNextNode(unsigned int p_time)
 }
 
 // 68K 0x1061760a FindObjectsOnTopOfMe__6CMoverFv
-// STUB: LEMBALL 0x0042e980
-unsigned int Mover::FindObjectsOnTopOfMe()
+// FUNCTION: LEMBALL 0x0042e980
+void Mover::FindObjectsOnTopOfMe()
 {
-	return 0;
+	int minX = (m_position.m_xFixed >> 12) - 8;
+	int maxX = minX + 15;
+	int minY = (m_position.m_yFixed >> 12) - 8;
+	int maxY = minY + 15;
+	int objectCount = (unsigned short) g_wObjectCount;
+	if (objectCount > 0) {
+		int index = 0;
+		do {
+			GameObject* object = g_pObjects[(unsigned short) index];
+			if (object != 0 && object->GetId() != (short) 0xffff && GetId() != object->GetId() &&
+				object->m_objectType != (eObjectType) 7) {
+				int objectX = object->m_position.m_xFixed >> 12;
+				int objectY = object->m_position.m_yFixed >> 12;
+				if (objectX >= minX && objectX <= maxX && objectY >= minY && objectY <= maxY) {
+					GetOn(object);
+				}
+			}
+			index++;
+		} while (index < objectCount);
+	}
 }
 
 // 68K 0x1061772a MoveObjects__6CMoverFiii

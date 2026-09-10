@@ -13,7 +13,7 @@ public:
 	bool GetOn(GameObject* p_object);
 	bool IsAt(int p_x, int p_y, int& p_height);
 	bool IsOn(const AiCoord& p_position);
-	unsigned int FindObjectsOnTopOfMe();
+	void FindObjectsOnTopOfMe();
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c
 	virtual void Restart();    // vtable+0x104
