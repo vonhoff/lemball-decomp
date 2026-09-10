@@ -112,8 +112,8 @@ void Map::CreateWalkBits()
 	int nextBlock;
 	int blockCoordinate;
 	int currentBlockY;
-	int y;
-	int x;
+	unsigned int y;
+	unsigned int x;
 	unsigned int lowCoordinate;
 	int lowBlock;
 	unsigned char* walkBits;
