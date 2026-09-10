@@ -229,13 +229,13 @@ void SoundView::UnprepareEffects()
 }
 
 // 68K 0x10b0ff80 PrepareEffects__10CSoundViewFUs
-// STUB: LEMBALL 0x00439d90
+// FUNCTION: LEMBALL 0x00439d90
 void SoundView::PrepareEffects(unsigned short p_stateMask)
 {
-	EffectSlot* slot;
-	unsigned long timestamp;
-	int i;
 	EffectSpec* spec;
+	int i;
+	unsigned long timestamp;
+	EffectSlot* slot;
 
 	if (g_nEffectsAvailable != 0) {
 		slot = m_effectSlots;
