@@ -15,6 +15,7 @@ FontTable::FontTable(ResFont* p_font)
 	unsigned int index;
 	int glyphIndex;
 	int zrleOffset;
+	int intOffset;
 
 	m_glyphs = (ResZrle**) ::operator new(kGlyphTableBytes);
 	offset = 0;
@@ -26,7 +27,7 @@ FontTable::FontTable(ResFont* p_font)
 	zrleOffset = 0;
 	index = zrleOffset;
 	if (p_font->m_totalSize / p_font->m_listHeader->m_headerSize != 0) {
-		int intOffset = 0;
+		intOffset = 0;
 		do {
 			if (p_font->m_fontEntries == 0) {
 				glyphIndex =
