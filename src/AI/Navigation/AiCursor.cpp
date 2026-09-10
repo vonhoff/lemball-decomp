@@ -38,10 +38,10 @@ void AiCursor::CheckAndClipCursorBounds()
 	else if (cursorX < 0) {
 		m_cursorX = 0;
 	}
-	int cursorY;
 	int maximumY;
-	cursorY = m_cursorY;
+	int cursorY;
 	maximumY = m_maximumY;
+	cursorY = m_cursorY;
 	if (maximumY < cursorY) {
 		m_cursorY = maximumY;
 	}
