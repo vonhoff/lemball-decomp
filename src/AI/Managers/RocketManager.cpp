@@ -74,9 +74,14 @@ int RocketManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1061e10a Add__14CRocketManagerFUsiii
-// STUB: LEMBALL 0x004270b0
+// FUNCTION: LEMBALL 0x004270b0
 void RocketManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
+	if (m_count < m_capacity) {
+		AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+		m_rockets[m_count].Set(p_id, position);
+		m_count++;
+	}
 }
 
 // 68K 0x1061e1ac LoadLevel__14CRocketManagerFPUciUc
