@@ -66,7 +66,6 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 						   int p_deviceParameter,
 						   Wnd* p_window)
 {
-	unsigned int count;
 	undefined4 detectedCd;
 	unsigned int i;
 
@@ -82,17 +81,16 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 	detectedCd = 0;
 	m_useMusicCD = p_useMusicCD;
 	m_musicDevice = 0;
-	count = MachineSoundDetect(m_devices,
-							   p_musicEnabled,
-							   p_effectsEnabled,
-							   p_useMusicCD,
-							   (unsigned char*) &detectedCd,
-							   &m_musicDevice,
-							   p_deviceParameter);
-	m_deviceCount = count;
+	m_deviceCount = MachineSoundDetect(m_devices,
+									   p_musicEnabled,
+									   p_effectsEnabled,
+									   p_useMusicCD,
+									   (unsigned char*) &detectedCd,
+									   &m_musicDevice,
+									   p_deviceParameter);
 	m_musicOutput = 0;
 	m_effectOutput = 0;
-	if (i < count) {
+	if (i < m_deviceCount) {
 		do {
 			if (((SoundDeviceDispatch*) m_devices[i])->IsMusicAvailable() == 1) {
 				m_musicOutput = m_devices[i];
