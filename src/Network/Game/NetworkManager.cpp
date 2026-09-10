@@ -1,8 +1,10 @@
 #include "NetworkManager.h"
 
+#include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/VsInit.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Network/BaseNetwork.h"
+#include "../../Visos/Network/Broadcast.h"
 #include "../../Visos/Network/Connect.h"
 #include "../../Visos/Network/FileNetwork.h"
 #include "../Messages/GameRejectMessage.h"
@@ -56,16 +58,27 @@ NetworkManager::NetworkManager(const char* p_arg0) : BaseQueueHandler()
 }
 
 // 68K 0x10a005e8 Start__15CNetworkManagerFv
-// STUB: LEMBALL 0x00452740
+// FUNCTION: LEMBALL 0x00452740
 bool NetworkManager::Start()
 {
+	if (g_pBaseNetwork != 0 && g_pBaseNetwork->m_serverMode != 0) {
+		g_pBaseNetwork->m_activeStatusItem = this;
+		g_pBaseNetwork->ForceProcess();
+		g_pNetworkPacketQueue->Attach(this, 0x19);
+		return 1;
+	}
 	return 0;
 }
 
 // 68K 0x10a0065e StartBroadcast__15CNetworkManagerFPCc
-// STUB: LEMBALL 0x00452780
+// FUNCTION: LEMBALL 0x00452780
 void NetworkManager::StartBroadcast(const char* p_address)
 {
+	g_pBaseNetwork->m_broadcast->StopListen();
+	Broadcast(p_address);
+	BaseNetwork* network = g_pBaseNetwork;
+	network->m_unk0x34 = 1;
+	network->m_broadcast->StartListen();
 }
 
 // 68K 0x10a006d8 Stop__15CNetworkManagerFv

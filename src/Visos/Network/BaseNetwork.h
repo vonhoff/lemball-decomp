@@ -44,6 +44,7 @@ public:
 	friend bool VsFNetQuit();
 	friend bool VsNetQuit();
 	friend class NetworkOptionsProc;
+	friend class NetworkManager;
 	friend class Game;
 	friend class BaseFrontendDrawer;
 	friend class FileNetwork;
