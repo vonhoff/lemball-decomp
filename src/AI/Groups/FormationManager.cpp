@@ -1,9 +1,34 @@
 #include "FormationManager.h"
 
 // 68K 0x10608de2 __ct__17CFormationManagerFv
-// STUB: LEMBALL 0x0041a140
+// FUNCTION: LEMBALL 0x0041a140
 FormationManager::FormationManager()
 {
+	Vector* formation;
+	Vector* source;
+	int formationCount;
+	int vectorCount;
+	int y;
+	int x;
+
+	source = m_sourceVectors;
+	formation = g_aFormationTemplates;
+	formationCount = 3;
+	do {
+		vectorCount = 8;
+		do {
+			y = formation->m_yFixed;
+			x = formation->m_xFixed;
+			x <<= 12;
+			source++;
+			y <<= 12;
+			formation++;
+			vectorCount--;
+			source[-1].m_xFixed = x;
+			source[-1].m_yFixed = y;
+		} while (vectorCount != 0);
+		formationCount--;
+	} while (formationCount != 0);
 }
 
 // 68K 0x10608e92 Restart__17CFormationManagerFv
