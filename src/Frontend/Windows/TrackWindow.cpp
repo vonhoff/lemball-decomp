@@ -1,6 +1,7 @@
 #include "TrackWindow.h"
 
 #include "../../Visos/Graphics/Gdi.h"
+#include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/VsGdi.h"
 
 // 68K 0x1080e1a2 __ct__12CTrackWindowFRC7CVSRectiP7CPVGWnd
@@ -31,9 +32,20 @@ void TrackWindow::OnCreate()
 }
 
 // 68K 0x1080e418 Create__12CTrackWindowFRC7CVSRectP6CPVWndPc
-// STUB: LEMBALL 0x0044e960
+// FUNCTION: LEMBALL 0x0044e960
 void TrackWindow::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_name)
 {
+	HotAreaHandler* handler;
+	const VsPoint* position;
+
+	GWnd::Create(p_rect, p_parent, p_name);
+	HotAreaHandler::m_width = p_rect.m_width;
+	HotAreaHandler::m_height = p_rect.m_height;
+	position = &p_rect;
+	HotAreaHandler::m_x = position->m_x;
+	HotAreaHandler::m_y = position->m_y;
+	handler = this;
+	m_parent->m_hotAreaList->AddToList(handler);
 }
 
 // 68K 0x1080e4cc Move__12CTrackWindowFRC8CVSPoint
