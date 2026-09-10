@@ -6,9 +6,9 @@
 // SIZE 0x44
 class LemmingAnimsLoadSubobject {
 private:
-	CdLoadAnim* m_loadAnim;       // 0x08
-	unsigned int m_nonCacheState; // 0x1c
-	unsigned int m_loadProgress;  // 0x20
+	CdLoadAnim* m_loadAnim; // 0x08
+	int m_nonCacheState;    // 0x1c
+	int m_loadProgress;     // 0x20
 };
 
 #endif

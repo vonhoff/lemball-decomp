@@ -499,9 +499,14 @@ void LemmingAnimsManager::LoadAnimation(unsigned long p_resourceId, int p_animTy
 }
 
 // 68K 0x10b0c1da UpdateNonCacheLoad__20CLemmingAnimsManagerFv
-// STUB: LEMBALL 0x00434d10
+// FUNCTION: LEMBALL 0x00434d10
 void LemmingAnimsManager::UpdateNonCacheLoad()
 {
+	int loaded = m_nonCacheState + 1;
+	m_nonCacheState = loaded;
+	if (m_loadAnim != 0) {
+		m_loadAnim->m_progress.Draw((short) ((loaded * 100) / m_loadProgress));
+	}
 }
 
 // 68K 0x10b0c244 LoadAnimation__20CLemmingAnimsManagerFUlUl9ANIM_TYPE

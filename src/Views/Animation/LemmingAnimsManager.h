@@ -47,8 +47,8 @@ private:
 	Gdi* m_gdi;                   // 0x80
 	unsigned int m_loaded;        // 0x84
 	DrawingMark m_primitive;      // 0x88
-	unsigned int m_nonCacheState; // 0x8c
-	unsigned int m_loadProgress;  // 0x90
+	int m_nonCacheState;          // 0x8c
+	int m_loadProgress;           // 0x90
 	unsigned int m_countingLoads; // 0x94
 	Ai* m_ai;                     // 0x98
 	// LoadVrammed stores three ResFont::Load results (0x00433425/4a/5d).
