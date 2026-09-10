@@ -61,9 +61,13 @@ int RocketManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x1061dffa Process__14CRocketManagerFv
-// STUB: LEMBALL 0x00427010
+// FUNCTION: LEMBALL 0x00427010
 void RocketManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_rockets[i].m_requestEnabled = 1;
+		m_rockets[i].Process();
+	}
 }
 
 // 68K 0x1061e06e GetViewData__14CRocketManagerFP9CViewData
