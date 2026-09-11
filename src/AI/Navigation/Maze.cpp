@@ -7,7 +7,7 @@
 extern const int g_unk0x00495b30[10];
 extern const int g_unk0x00495b58[10];
 extern const int g_unk0x00495b80[10];
-extern const unsigned char g_unk0x00495ba8[16];
+extern const unsigned char g_unk0x00495ba8[32];
 
 // 68K 0x10615900 __ct__5CMazeFP4CMap
 // FUNCTION: LEMBALL 0x00423090
@@ -101,10 +101,25 @@ void Maze::Initialise()
 }
 
 // 68K 0x10615ad8 CalcNewDistance__5CMazeFii
-// STUB: LEMBALL 0x00423230
+// FUNCTION: LEMBALL 0x00423230
 bool Maze::CalcNewDistance(int p_x, int p_y)
 {
-	return 0;
+	unsigned short distance = m_distances[p_y][p_x];
+	unsigned char walk = m_map->GetWalk(p_x, p_y);
+	bool changed = false;
+	for (int i = 0; i < 9; i++) {
+		if (g_unk0x00495b80[i] != 0 && (g_unk0x00495ba8[i] & walk) != 0 && (g_unk0x00495ba8[i + 16] & walk) != 0) {
+			unsigned short newDistance = m_distances[p_y + g_unk0x00495b58[i]][p_x + g_unk0x00495b30[i]];
+			if (newDistance < distance) {
+				changed = true;
+				distance = newDistance;
+			}
+		}
+	}
+	if (changed) {
+		m_distances[p_y][p_x] = distance + 1;
+	}
+	return changed;
 }
 
 // 68K 0x10615bd0 FindSquare__5CMazeFUsRiRi
@@ -150,7 +165,8 @@ const int g_unk0x00495b58[10] = {-1, -1, -1, 0, 0, 0, 1, 1, 1, 0};
 const int g_unk0x00495b80[10] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 0};
 
 // GLOBAL: LEMBALL 0x00495ba8
-const unsigned char g_unk0x00495ba8[16] = {0, 1, 0, 8, 0, 4, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0};
+const unsigned char g_unk0x00495ba8[32] = {0, 1,  0, 8,   0, 4,  0, 2,  0, 0, 0, 0, 0, 0, 0, 0,
+										   0, 16, 0, 128, 0, 64, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // 68K 0x10615c8c UpdateChangeNext__5CMazeFii
 // FUNCTION: LEMBALL 0x00423380
