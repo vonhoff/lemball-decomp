@@ -435,6 +435,8 @@ void SoundManager::UseMusicCd(unsigned int p_enabled)
 	m_musicDevice->m_useCdDirectory = p_enabled;
 }
 
+#include "../Foundation/LocalDebugOStream.h"
+
 // GLOBAL: LEMBALL 0x004a1ca8
 char g_szEffectsDriverPrefix[12] = "Effects : ";
 
@@ -447,29 +449,16 @@ char g_szMusicDriverPrefix[12] = "Music : ";
 // FUNCTION: LEMBALL 0x0045b600
 char* SoundManager::BuildDriverInfo()
 {
-	char* text;
-
+	LocalDebugOStream stream(g_szSoundDriverInfo, sizeof(g_szSoundDriverInfo));
 	g_szSoundDriverInfo[0] = 0;
 	if (m_effectOutput != 0 && m_requestedEffects != 0) {
-		text = m_effectOutput->GetInfo();
-		if (text != 0) {
-			strcat(g_szSoundDriverInfo, g_szEffectsDriverPrefix);
-			strcat(g_szSoundDriverInfo, text);
-		}
+		stream << g_szEffectsDriverPrefix << m_effectOutput->GetInfo();
 	}
-	if (m_useMusicCD != 0 && m_requestedMusic != 0 && m_musicDevice != 0) {
-		text = m_musicDevice->GetInfo();
-		if (text != 0) {
-			strcat(g_szSoundDriverInfo, text);
-			strcat(g_szSoundDriverInfo, g_szSoundDriverNewline);
-		}
+	if (m_useMusicCD != 0 && m_requestedMusic != 0) {
+		stream << m_musicDevice->GetInfo() << g_szSoundDriverNewline;
 	}
 	if (m_musicOutput != 0 && m_requestedMusic != 0) {
-		text = m_musicOutput->GetInfo();
-		if (text != 0) {
-			strcat(g_szSoundDriverInfo, g_szMusicDriverPrefix);
-			strcat(g_szSoundDriverInfo, text);
-		}
+		stream << g_szMusicDriverPrefix << m_musicOutput->GetInfo();
 	}
 	return g_szSoundDriverInfo;
 }
