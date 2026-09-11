@@ -14,6 +14,8 @@ public:
 	virtual ~GameStateMessage(); // vtable+0x14
 
 private:
+	friend class Ai;
+
 	eGameStates m_state;       // 0x2c
 	eGameStateStages m_stage;  // 0x30
 	unsigned long m_levelTime; // 0x34

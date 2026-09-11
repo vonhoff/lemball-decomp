@@ -11,6 +11,7 @@
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Base/GameObject.h"
 #include "../Groups/EnemyGroupManager.h"
@@ -36,9 +37,11 @@
 #include "../Managers/TrapDoorManager.h"
 #include "../Messages/GameStateMessage.h"
 #include "../Objects/AnimSpecial.h"
+#include "../Objects/Ball.h"
 #include "../Objects/BalloonPost.h"
 #include "../Objects/GroundAnim.h"
 #include "../Objects/PlayerLemming.h"
+#include "../Objects/ViewData.h"
 #include "AiCursor.h"
 #include "Maze.h"
 #include "MoverManager.h"
@@ -75,10 +78,11 @@ Ai::Ai(Game* p_arg0)
 // FUNCTION: LEMBALL 0x00410d00
 void Ai::Restart()
 {
+	int i;
 	GameObject::Init(this);
 	g_pActiveAI = this;
 	m_objectCount = 0;
-	for (int i = 0; i < m_objectCapacity; i++) {
+	for (i = 0; i < m_objectCapacity; i++) {
 		m_objects[i] = 0;
 	}
 	g_wNetworkLemmingIndex = 0;
@@ -106,8 +110,8 @@ void Ai::Restart()
 		}
 		g_pGameStatus->m_levelState = 0;
 	}
-	int networkStartCount = 4;
 	int* networkStart = m_networkStartsZ;
+	int networkStartCount = 4;
 	do {
 		*networkStart = 0;
 		networkStart++;
@@ -333,9 +337,25 @@ void Ai::Start()
 }
 
 // 68K 0x106011ec SendGameState__3CAIF11eGameStates16eGameStateStages
-// STUB: LEMBALL 0x00411b70
+// FUNCTION: LEMBALL 0x00411b70
 void Ai::SendGameState(eGameStates p_state, eGameStateStages p_stage)
 {
+	if (g_pActiveConnection != 0) {
+		if (m_gameStateMessage->m_pendingSendCount != 0) {
+			unsigned long start = CurrentMilliTimer();
+			while (m_gameStateMessage->m_pendingSendCount != 0 && CurrentMilliTimer() - start < 2000) {
+				g_pBaseNetwork->WaitProcess();
+			}
+		}
+		if (m_gameStateMessage->m_pendingSendCount == 0) {
+			m_unk0x6c = 1;
+			m_gameStateMessage->m_state = p_state;
+			m_gameStateMessage->m_stage = p_stage;
+			m_gameStateMessage->m_levelTime = m_gameTime;
+			m_gameStateMessage->m_score = m_score;
+			m_gameStateMessage->Send(g_pActiveConnection);
+		}
+	}
 }
 
 // 68K 0x106012d6 RemoteGameState__3CAIFP17CGameStateMessage
@@ -484,10 +504,26 @@ void Ai::Process(unsigned char p_paused)
 }
 
 // 68K 0x10601b88 GetData__3CAIFP9CViewData
-// STUB: LEMBALL 0x004124d0
+// FUNCTION: LEMBALL 0x004124d0
 int Ai::GetData(ViewData* p_viewData)
 {
-	return 0;
+	int count = g_pGodManager->GetViewData(p_viewData);
+	count += m_enemyGroupManager->GetViewData(p_viewData + count);
+	count += m_sheepGroupManager->GetViewData(p_viewData + count);
+	int i = 0;
+	BallManager* balls = m_ballManager;
+	if (balls->m_activeCount > 0) {
+		ViewData* data = p_viewData + count;
+		do {
+			balls->m_balls[i]->GetViewData(*data);
+			data++;
+			i++;
+		} while (i < balls->m_activeCount);
+	}
+	count += balls->m_activeCount;
+	count += m_balloonPost->GetViewData(p_viewData + count);
+	count += m_slinkyManager->GetViewData(p_viewData + count);
+	return count;
 }
 
 // 68K 0x10601c58 HitTrampoline__3CAIFRC7AICOORDP11CGameObject
