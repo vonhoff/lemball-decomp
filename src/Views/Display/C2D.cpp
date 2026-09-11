@@ -1379,14 +1379,14 @@ void C2D::DrawRocket(ViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043c7f0
 void C2D::DrawHand(ViewData& p_viewData)
 {
-	int x;
-	int y;
+	int drawY;
+	int drawX;
 	int frame;
 	BaseRemap* remap;
 	eAction action = p_viewData.m_action;
 
-	x = p_viewData.m_positionX - 0x31;
-	y = p_viewData.m_positionY - 0x14;
+	drawX = p_viewData.m_positionX - 0x31;
+	drawY = p_viewData.m_positionY - 0x14;
 	remap = 0;
 	if (p_viewData.m_actionArgument != 0) {
 		remap = m_paletteRemap;
@@ -1395,7 +1395,7 @@ void C2D::DrawHand(ViewData& p_viewData)
 	switch (action) {
 	case (eAction) 0x17:
 	case (eAction) 0x18:
-		m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[2], 0, 0, 0);
+		m_lemmingAnims->DrawAnim(drawX, drawY, g_anGroundStyleResourceIds[2], 0, 0, 0);
 		break;
 	case (eAction) 0x19:
 	case (eAction) 0x1a:
@@ -1403,7 +1403,7 @@ void C2D::DrawHand(ViewData& p_viewData)
 		if (frame > 11) {
 			frame = 11;
 		}
-		m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[2], frame, 0, (Remap*) remap);
+		m_lemmingAnims->DrawAnim(drawX, drawY, g_anGroundStyleResourceIds[2], frame, 0, (Remap*) remap);
 		break;
 	}
 }

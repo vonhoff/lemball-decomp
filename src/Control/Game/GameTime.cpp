@@ -27,9 +27,34 @@ void ResetGameTimes()
 }
 
 // 68K 0x107012a4 SetGameTime__Fv
-// STUB: LEMBALL 0x004080d0
+// FUNCTION: LEMBALL 0x004080d0
 void SetGameTime()
 {
+	if (g_dwClockEditMode != 0) {
+		return;
+	}
+	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+		unsigned int nextElapsed = g_dwLastElapsedMilli + 80;
+		unsigned int elapsed;
+		do {
+			elapsed = CurrentMilliTimer() - g_dwCurrentMilli;
+		} while (elapsed < nextElapsed);
+		g_dwPausedMilli += 80;
+		g_dwLastElapsedMilli = elapsed;
+		g_dwGameTick = g_dwPausedMilli / GAME_TICK_MILLISECONDS;
+		g_dwSimulationTimestamp = g_dwGameTick * GAME_TICK_MILLISECONDS;
+		return;
+	}
+
+	unsigned int gameTick = CurrentMilliTimer() / GAME_TICK_MILLISECONDS - g_dwGameTimeTick;
+	unsigned int maximumTick = g_dwLastElapsedMilli + 2;
+	if (gameTick > maximumTick) {
+		g_dwGameTimeTick += gameTick - g_dwLastElapsedMilli - 2;
+		gameTick = maximumTick;
+	}
+	g_dwGameTick = gameTick;
+	g_dwSimulationTimestamp = gameTick * GAME_TICK_MILLISECONDS;
+	g_dwLastElapsedMilli = gameTick;
 }
 
 // 68K 0x10701386 SetRemoteGameTimeReal__FUl

@@ -20,6 +20,7 @@ public:
 	void Reset();
 	void SetDemoMode(int p_enabled);
 
+	friend void SetGameTime();
 	friend class PlayerLemming;
 	friend class Ai;
 	friend class Game;
