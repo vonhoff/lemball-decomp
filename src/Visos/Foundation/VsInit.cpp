@@ -7,6 +7,7 @@
 #include "../Graphics/BasePalManager.h"
 #include "../Graphics/Cursor.h"
 #include "../Graphics/GdiDevice.h"
+#include "../Graphics/PaletteManager.h"
 #include "../Graphics/VsGdi.h"
 #include "../Network/FileNetwork.h"
 #include "../Network/TcpIpNetwork.h"
@@ -621,17 +622,16 @@ bool InternalStatQuit()
 bool InternalResInit()
 {
 	ResourceTypeList* list;
-	BasePalManager* palManager;
 
 	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
-	if (list == 0) {
-		list = 0;
-	}
-	else {
+	if (list != 0) {
 		list->m_capacity = 2;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
 		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+	}
+	else {
+		list = 0;
 	}
 	list->m_typeCodes[list->m_count] = 0x494e5420;
 	list->m_count = list->m_count + 1;
@@ -640,28 +640,28 @@ bool InternalResInit()
 	g_pResourceTypes = list;
 
 	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
-	if (list == 0) {
-		list = 0;
-	}
-	else {
+	if (list != 0) {
 		list->m_capacity = 1;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
 		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+	}
+	else {
+		list = 0;
 	}
 	list->m_typeCodes[list->m_count] = 0x5a524c45;
 	list->m_count = list->m_count + 1;
 	g_pCompressedResourceTypes = list;
 
 	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
-	if (list == 0) {
-		list = 0;
-	}
-	else {
+	if (list != 0) {
 		list->m_capacity = 2;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
 		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+	}
+	else {
+		list = 0;
 	}
 	list->m_typeCodes[list->m_count] = 0x53545247;
 	list->m_count = list->m_count + 1;
@@ -669,12 +669,7 @@ bool InternalResInit()
 	list->m_count = list->m_count + 1;
 	g_pPreloadedResourceTypes = list;
 
-	palManager = (BasePalManager*) operator new(sizeof(BasePalManager));
-	if (palManager != 0) {
-		g_pBasePalManager = new (palManager) BasePalManager(0x20);
-		return 1;
-	}
-	g_pBasePalManager = 0;
+	g_pBasePalManager = new PaletteManager(0x20);
 	return 1;
 }
 
