@@ -188,7 +188,9 @@ void Mine::OnGround()
 		z = 0;
 	}
 	else {
-		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+		int groundX = x & 0xf;
+		int groundY = y & 0xf;
+		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
 	}
 	m_position.m_zFixed = (unsigned int) z << 12;
 }
