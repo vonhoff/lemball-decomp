@@ -62,9 +62,12 @@ PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_a
 }
 
 // 68K 0x10b0cb74 __dt__12CPanelButtonFv
-// STUB: LEMBALL 0x004425e0
+// FUNCTION: LEMBALL 0x004425e0
 PanelButton::~PanelButton()
 {
+	if (m_lifecycleRefs == 1) {
+		Destroy();
+	}
 }
 
 // 68K 0x10b0cc70 OnInside__12CPanelButtonFRC8CVSPoint
