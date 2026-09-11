@@ -211,9 +211,34 @@ bool Mover::IsOn(const AiCoord& p_position)
 }
 
 // 68K 0x10617c36 VerifyObjects__6CMoverFv
-// STUB: LEMBALL 0x0042ef40
+// FUNCTION: LEMBALL 0x0042ef40
 void Mover::VerifyObjects()
 {
+	int minX = (m_position.m_xFixed >> 12) - 8;
+	int maxX = minX + 15;
+	int minY = (m_position.m_yFixed >> 12) - 8;
+	int maxY = minY + 15;
+	int i = 0;
+	if (m_objectCount > 0) {
+		do {
+			GameObject* object = m_objects[i];
+			int x = object->m_position.m_xFixed >> 12;
+			int y = object->m_position.m_yFixed >> 12;
+			if (minX > x || maxX < x || minY > y || maxY < y) {
+				object->m_unk0x11c = 0;
+				int next = i + 1;
+				if (next < m_objectCount) {
+					do {
+						m_objects[next - 1] = m_objects[next];
+						next++;
+					} while (next < m_objectCount);
+				}
+				i--;
+				m_objectCount--;
+			}
+			i++;
+		} while (i < m_objectCount);
+	}
 }
 
 // 68K 0x10617d36 GetOn__6CMoverFP11CGameObject
