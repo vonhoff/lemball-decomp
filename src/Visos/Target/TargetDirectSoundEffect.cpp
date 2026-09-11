@@ -64,6 +64,25 @@ TargetDirectSoundEffect::~TargetDirectSoundEffect()
 	delete[] m_buffers;
 }
 
+// FUNCTION: LEMBALL 0x0047d720
+int TargetDirectSoundEffect::FindIdleBuffer()
+{
+	int i;
+	unsigned long status;
+	for (i = 0; i < m_bufferCount; i++) {
+		unsigned int result = m_buffers[i]->GetStatus(&status);
+		if (result != 0) {
+			*g_pErrorOutput << "Effect Buffer Status Request failed: " << TargetDescribeDirectSoundError(result & 0xfff)
+							<< "\n";
+			return -1;
+		}
+		if ((status & 1) == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 // FUNCTION: LEMBALL 0x0047d830
 bool TargetDirectSoundEffect::IsPlaying()
 {
@@ -82,16 +101,48 @@ bool TargetDirectSoundEffect::IsPlaying()
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047d8c0
+// FUNCTION: LEMBALL 0x0047d8c0
 int TargetDirectSoundEffect::Play(int p_loop)
 {
-	return -1;
+	m_looping = p_loop;
+	int index = FindIdleBuffer();
+	if (index != -1) {
+		unsigned int result = m_buffers[index]->SetCurrentPosition(0);
+		if (result != 0) {
+			*g_pErrorOutput << "Effect Set Current Position failed: " << TargetDescribeDirectSoundError(result & 0xfff)
+							<< "\n";
+			return -1;
+		}
+		PlayBuffer(index);
+	}
+	return index;
 }
 
-// STUB: LEMBALL 0x0047d940
+// FUNCTION: LEMBALL 0x0047d940
 int TargetDirectSoundEffect::PlayWithVolume(int p_volume, int p_loop)
 {
-	return -1;
+	m_looping = p_loop;
+	int index = FindIdleBuffer();
+	if (index != -1) {
+		unsigned int result = m_buffers[index]->SetCurrentPosition(0);
+		if (result != 0) {
+			*g_pErrorOutput << "Effect Set Current Position failed: " << TargetDescribeDirectSoundError(result & 0xfff)
+							<< "\n";
+			return -1;
+		}
+		SetBufferVolume(index, p_volume);
+		PlayBuffer(index);
+	}
+	return index;
+}
+
+// FUNCTION: LEMBALL 0x0047da20
+void TargetDirectSoundEffect::PlayBuffer(int p_index)
+{
+	unsigned int result = m_buffers[p_index]->Play(0, 0, m_looping != 0);
+	if (result != 0) {
+		*g_pErrorOutput << "Effect Play failed: " << TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+	}
 }
 
 // FUNCTION: LEMBALL 0x0047dad0

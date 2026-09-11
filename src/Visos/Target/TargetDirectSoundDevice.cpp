@@ -1,7 +1,15 @@
 #include "TargetDirectSoundDevice.h"
 
+#include "../Foundation/VsOStream.h"
 #include "../Graphics/Wnd.h"
+#include "IDirectSound.h"
 #include "TargetDirectSoundEffect.h"
+
+// GLOBAL: LEMBALL 0x004a3318
+static IDirectSoundBuffer* g_primarySoundBuffer = 0;
+
+// GLOBAL: LEMBALL 0x004a331c
+static IDirectSound* g_directSound = 0;
 
 // STUB: LEMBALL 0x0047dd80
 TargetDirectSoundDevice::TargetDirectSoundDevice(int p_effectCapacity, int p_buffersPerEffect)
@@ -53,10 +61,28 @@ int TargetDirectSoundDevice::IsAvailable()
 	return m_platform.m_available;
 }
 
-// STUB: LEMBALL 0x0047e390
+// FUNCTION: LEMBALL 0x0047e390
 int TargetDirectSoundDevice::Close()
 {
-	return 0;
+	if (g_primarySoundBuffer != 0) {
+		unsigned int result = g_primarySoundBuffer->Release();
+		if (result != 0) {
+			*g_pErrorOutput << "Primary Sound Buffer Release: " << TargetDescribeDirectSoundError(result & 0xfff)
+							<< "\n";
+			return 0;
+		}
+		g_primarySoundBuffer = 0;
+	}
+	if (g_directSound != 0) {
+		unsigned int result = g_directSound->Release();
+		if (result != 0) {
+			*g_pErrorOutput << "Direct Sound Release failed: " << TargetDescribeDirectSoundError(result & 0xfff)
+							<< "\n";
+			return 0;
+		}
+		g_directSound = 0;
+	}
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0047e450

@@ -4,6 +4,8 @@
 #include "../../Common.h"
 #include "IDirectSoundBuffer.h"
 
+const char* TargetDescribeDirectSoundError(unsigned int p_error);
+
 // SIZE 0x1c
 class TargetDirectSoundEffect {
 public:
@@ -15,6 +17,9 @@ public:
 	bool SetBufferVolume(int p_index, int p_volume);
 
 private:
+	int FindIdleBuffer();
+	void PlayBuffer(int p_index);
+
 	unsigned int m_prepared;        // 0x00
 	undefined4 m_unknown04;         // 0x04
 	IDirectSoundBuffer** m_buffers; // 0x08
