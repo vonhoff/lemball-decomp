@@ -837,14 +837,27 @@ bool GameObject::Move()
 	}
 
 	unsigned short currentGroundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
-	if ((int) groundZ < (int) currentGroundZ + 7) {
-		if ((int) currentGroundZ - 7 < (int) groundZ) {
-			m_position.m_xFixed = position.m_xFixed;
-			m_position.m_yFixed = position.m_yFixed;
-			m_position.m_zFixed = (int) groundZ << 12;
-			g_pAI->StepOn(m_position, this, m_collisionFlags);
-			return true;
+	if ((int) currentGroundZ + 7 <= (int) groundZ) {
+		m_actionDeadline = g_dwGameTick;
+		if ((int) currentGroundZ + 15 < (int) groundZ) {
+			Blocked();
+			return false;
 		}
+		if ((m_collisionFlags & 2) != 0) {
+			m_unk0x104 = 1;
+			m_lastMovementTick = g_dwGameTick;
+			m_flightZ = currentGroundZ;
+			m_groundPosition.m_xFixed = position.m_xFixed;
+			m_groundPosition.m_yFixed = position.m_yFixed;
+			m_groundPosition.m_zFixed = (int) groundZ << 12;
+			m_actionArgument = 0;
+			return false;
+		}
+		Blocked();
+		return false;
+	}
+
+	if ((int) groundZ <= (int) currentGroundZ - 7) {
 		m_actionDeadline = g_dwGameTick;
 		if ((m_collisionFlags & 4) != 0) {
 			m_unk0x108 = 1;
@@ -855,45 +868,38 @@ bool GameObject::Move()
 			int deltaY = y - (m_position.m_yFixed >> 12);
 			int absDeltaX = deltaX < 0 ? -deltaX : deltaX;
 			int absDeltaY = deltaY < 0 ? -deltaY : deltaY;
+			int velocityX;
+			int velocityY;
 			if (absDeltaY < absDeltaX) {
-				m_flightVelocity.m_xFixed = deltaX < 1 ? -0x1000 : 0x1000;
-				m_flightVelocity.m_yFixed = 0;
+				velocityX = deltaX < 1 ? -1 : 1;
+				velocityY = 0;
 			}
 			else {
-				m_flightVelocity.m_xFixed = 0;
-				m_flightVelocity.m_yFixed = deltaY < 1 ? -0x1000 : 0x1000;
+				velocityX = 0;
+				velocityY = deltaY < 1 ? -1 : 1;
 			}
 			m_position.m_xFixed = position.m_xFixed;
 			m_position.m_yFixed = position.m_yFixed;
 			m_groundPosition.m_xFixed = position.m_xFixed;
 			m_groundPosition.m_yFixed = position.m_yFixed;
 			m_groundPosition.m_zFixed = (int) groundZ << 12;
+			m_position.m_xFixed = position.m_xFixed;
+			m_position.m_yFixed = position.m_yFixed;
+			m_flightVelocity.m_xFixed = velocityX << 12;
+			m_flightVelocity.m_yFixed = velocityY << 12;
 			int deltaZ = (int) currentGroundZ - groundZ;
-			deltaZ += (deltaZ >> 31) & 7;
-			m_flightVelocity.m_zFixed = ((deltaZ >> 3) + 1) << 12;
+			m_flightVelocity.m_zFixed = ((deltaZ / 8) + 1) * 0x1000;
 			return false;
 		}
 		Blocked();
 		return false;
 	}
 
-	m_actionDeadline = g_dwGameTick;
-	if ((int) currentGroundZ + 15 < (int) groundZ) {
-		Blocked();
-		return false;
-	}
-	if ((m_collisionFlags & 2) != 0) {
-		m_unk0x104 = 1;
-		m_lastMovementTick = g_dwGameTick;
-		m_flightZ = currentGroundZ;
-		m_groundPosition.m_xFixed = position.m_xFixed;
-		m_groundPosition.m_yFixed = position.m_yFixed;
-		m_groundPosition.m_zFixed = (int) groundZ << 12;
-		m_actionArgument = 0;
-		return false;
-	}
-	Blocked();
-	return false;
+	m_position.m_xFixed = position.m_xFixed;
+	m_position.m_yFixed = position.m_yFixed;
+	m_position.m_zFixed = (int) groundZ << 12;
+	g_pAI->StepOn(m_position, this, m_collisionFlags);
+	return true;
 }
 
 // 68K 0x1060a266 TurnToFaceDestination__11CGameObjectFv
