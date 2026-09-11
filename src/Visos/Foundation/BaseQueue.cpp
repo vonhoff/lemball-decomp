@@ -269,34 +269,28 @@ bool BaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 bool BaseQueue::PutNth(Message* p_message, unsigned int p_index)
 {
 	unsigned char* slot;
-	unsigned char* dest;
-	unsigned char* src;
+	Message* src;
+	Message* dest;
 	unsigned int shifted;
-	unsigned int remain;
 
 	EnterCritical();
 	slot = m_readCursor + p_index * sizeof(Message);
 	if (m_messageBufferEnd <= slot) {
 		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / (int) sizeof(Message)) * sizeof(Message);
 	}
-	if (p_index < m_messageCount) {
-		dest = m_writeCursor;
-		src = dest - sizeof(Message);
-		shifted = 0;
-		remain = m_messageCount - p_index;
-		if (remain != 0) {
-			do {
-				if (src < m_messageBuffer) {
-					src = m_messageBufferEnd - sizeof(Message);
-				}
-				if (dest < m_messageBuffer) {
-					dest = m_messageBufferEnd - sizeof(Message);
-				}
-				*(Message*) dest = *(Message*) src;
-				src = src - sizeof(Message);
-				dest = dest - sizeof(Message);
-				shifted = shifted + 1;
-			} while (shifted < m_messageCount - p_index);
+	if (m_messageCount > p_index) {
+		dest = (Message*) m_writeCursor;
+		src = dest - 1;
+		for (shifted = 0; shifted < m_messageCount - p_index; shifted++) {
+			if (src < (Message*) m_messageBuffer) {
+				src = (Message*) m_messageBufferEnd - 1;
+			}
+			if (dest < (Message*) m_messageBuffer) {
+				dest = (Message*) m_messageBufferEnd - 1;
+			}
+			*dest = *src;
+			src--;
+			dest--;
 		}
 	}
 	*(Message*) slot = *p_message;
