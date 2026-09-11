@@ -23,9 +23,12 @@ void Lift::CalculateCliff()
 		}
 	}
 	if (startX > 0) {
-		for (int y = startY; y <= endX; y++) {
-			Ground* ground = &g_pActiveMap->m_ground.m_ground[y * g_pActiveMap->m_ground.m_width + startX - 1];
-			ground->m_cliff = (short) (((short) ground->m_height + 15) / 16);
+		if (startY <= endX) {
+			do {
+				Ground* ground = &g_pActiveMap->m_ground.m_ground[startY * g_pActiveMap->m_ground.m_width + startX - 1];
+				ground->m_cliff = (short) (((short) ground->m_height + 15) / 16);
+				startY++;
+			} while (startY <= endX);
 		}
 	}
 }
