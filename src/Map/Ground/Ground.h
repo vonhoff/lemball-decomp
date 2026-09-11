@@ -18,6 +18,7 @@ public:
 	friend class GameObject;
 	friend class Map;
 	friend class Duplicator;
+	friend class Flag;
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;

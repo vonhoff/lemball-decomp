@@ -39,6 +39,7 @@ public:
 	friend class Crate;
 	friend class Duplicator;
 	friend class Ball;
+	friend class Flag;
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;

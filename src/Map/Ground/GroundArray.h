@@ -28,6 +28,7 @@ public:
 	friend class Duplicator;
 	friend class Map;
 	friend class Ball;
+	friend class Flag;
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;
