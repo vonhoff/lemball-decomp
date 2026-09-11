@@ -19,7 +19,6 @@ void* g_pGdiHelperTarget = 0;
 GdiDevice::GdiDevice(int p_arg0)
 {
 	int i;
-	GdiSurfaceSlot* slot;
 
 	m_surfaceSlots = (GdiSurfaceSlot*) operator new((unsigned int) (p_arg0 * sizeof(GdiSurfaceSlot)));
 	m_surfaceCapacity = p_arg0;
@@ -28,14 +27,13 @@ GdiDevice::GdiDevice(int p_arg0)
 	if (0 < p_arg0) {
 		i = 0;
 		do {
-			slot = &m_surfaceSlots[i];
-			slot->m_surface = 0;
-			slot->m_timer = 0;
-			slot->m_parent = 0;
-			slot->m_isPrimary = 0;
-			slot->m_flushed = 0;
-			slot->m_available = 1;
-			slot->m_reserved18 = 0;
+			m_surfaceSlots[i].m_surface = 0;
+			m_surfaceSlots[i].m_timer = 0;
+			m_surfaceSlots[i].m_parent = 0;
+			m_surfaceSlots[i].m_isPrimary = 0;
+			m_surfaceSlots[i].m_flushed = 0;
+			m_surfaceSlots[i].m_available = 1;
+			m_surfaceSlots[i].m_reserved18 = 0;
 			++i;
 			--p_arg0;
 		} while (p_arg0 != 0);
