@@ -35,9 +35,26 @@ void Mover::Initialise()
 }
 
 // 68K 0x1061730e SetPos__6CMoverFv
-// STUB: LEMBALL 0x0042e650
+// FUNCTION: LEMBALL 0x0042e650
 void Mover::SetPos()
 {
+	int x = (m_position.m_xFixed >> 12) - 8;
+	int maxX = x + 15;
+	int y = (m_position.m_yFixed >> 12) - 8;
+	int maxY = y + 15;
+	x /= 16;
+	y /= 16;
+	maxX /= 16;
+	maxY /= 16;
+	for (int groundY = y; groundY <= maxY; groundY++) {
+		for (int groundX = x; groundX <= maxX; groundX++) {
+			if (groundX >= 0 && groundY >= 0 && groundX < g_pMap->m_ground.m_width &&
+				groundY < g_pMap->m_ground.m_height) {
+				Ground* ground = &g_pMap->m_ground.m_ground[groundY * g_pMap->m_ground.m_width + groundX];
+				ground->m_collision |= 0x10;
+			}
+		}
+	}
 }
 
 // 68K 0x106173a0 IsAt__6CMoverFiiRi

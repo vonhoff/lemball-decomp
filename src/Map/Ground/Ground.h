@@ -28,6 +28,7 @@ public:
 	friend class Hand;
 	friend class GroundAnim;
 	friend class Trampoline;
+	friend class Mover;
 	friend class C2D;
 
 private:
