@@ -213,19 +213,12 @@ void SoundView::SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listen
 // FUNCTION: LEMBALL 0x00439d60
 void SoundView::UnprepareEffects()
 {
-	int i;
-	EffectSlot* slot;
-
-	slot = m_effectSlots;
-	i = 50;
-	do {
-		if (slot->m_handle != 0xffffffff) {
-			g_pSoundManager->FreeEffect(slot->m_handle);
-			slot->m_handle = 0xffffffff;
+	for (int i = 0; i < 50; i++) {
+		if (m_effectSlots[i].m_handle != 0xffffffff) {
+			g_pSoundManager->FreeEffect(m_effectSlots[i].m_handle);
+			m_effectSlots[i].m_handle = 0xffffffff;
 		}
-		slot = slot + 1;
-		i--;
-	} while (i != 0);
+	}
 }
 
 // 68K 0x10b0ff80 PrepareEffects__10CSoundViewFUs
@@ -238,10 +231,9 @@ void SoundView::PrepareEffects(unsigned short p_stateMask)
 	EffectSlot* slot;
 
 	if (g_nEffectsAvailable != 0) {
-		slot = m_effectSlots;
 		timestamp = timeGetTime() - 100;
-		i = 50;
-		do {
+		for (i = 0; i < 50; i++) {
+			slot = &m_effectSlots[i];
 			spec = slot->m_spec;
 			if (spec != 0 && (spec->m_groupMask & p_stateMask) != 0) {
 				slot->m_handle = g_pSoundManager->PrepareEffect(spec->m_resourceId);
@@ -250,9 +242,7 @@ void SoundView::PrepareEffects(unsigned short p_stateMask)
 			if (m_loadUpdate != 0) {
 				m_loadUpdate->UpdateNonCacheLoad();
 			}
-			slot++;
-			i--;
-		} while (i != 0);
+		}
 	}
 }
 
