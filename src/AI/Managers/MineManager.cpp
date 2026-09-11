@@ -40,8 +40,9 @@ void MineManager::Initialise(int p_capacity)
 	if (m_mines == 0) {
 		m_mines = new Mine[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
-			m_mines[i].m_managerIndex = i;
-			m_mines[i].m_manager = this;
+			Mine* mine = &m_mines[i];
+			mine->m_managerIndex = i;
+			mine->m_manager = this;
 			m_mines[i].Restart();
 		}
 		m_positions = new Coord3d[m_capacity];
