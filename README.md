@@ -38,52 +38,6 @@ The 1996 Macintosh version retained unstripped MacsBug symbol tables. A total of
 
 These symbols are mapped to the Windows x86 executable by comparing code structure, strings, and tables.
 
-## Quick Start
-
-### 1. Requirements
-
-- Windows (or Linux/macOS with Wine/wibo)
-- Python 3.10+
-- CMake 3.15+
-- Git
-
-### 2. Install dependencies
-
-```pwsh
-python -m pip install -r requirements.txt
-```
-
-### 3. Provide LEMBALL.EXE
-
-Place the retail `LEMBALL.EXE` in the `data/` directory:
-
-```text
-data/LEMBALL.EXE
-```
-
-### 4. Setup compiler
-
-Clone the portable MSVC 4.00 toolchain into `msvc400/`:
-
-```pwsh
-git clone https://github.com/vonhoff/MSVC400 msvc400
-```
-
-### 5. Build
-
-Configure and build with CMake:
-
-```pwsh
-cmake --preset msvc400
-cmake --build --preset msvc400
-```
-
-Or run the build script:
-
-```pwsh
-python tools/build.py
-```
-
 ## AI Assistance
 
 This project is developed with assistance from AI agents.
