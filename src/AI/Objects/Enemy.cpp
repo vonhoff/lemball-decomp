@@ -206,9 +206,32 @@ bool Enemy::EnemyRuleRadius50AndLineOfSight()
 }
 
 // 68K 0x10607f6a EnemyAction_PATROL__6CEnemyFP18tEnemyLemmingUnion
-// STUB: LEMBALL 0x004200f0
+// FUNCTION: LEMBALL 0x004200f0
 void Enemy::EnemyActionPatrol(EnemyLemmingUnion* p_data)
 {
+	AiCoord destination;
+	if (DestinationExists() != 1) {
+		const Pt3& position =
+			g_pAI->GetNodePosition(p_data->m_waypointInformation->m_waypoints[p_data->m_waypointInformation->m_value]);
+		destination.m_xFixed = position.m_x;
+		destination.m_yFixed = position.m_y;
+		destination.m_zFixed = position.m_z;
+
+		p_data->m_waypointInformation->m_value += p_data->m_waypointInformation->m_signedValue;
+		if ((int) p_data->m_waypointInformation->m_waypointCount <= (int) p_data->m_waypointInformation->m_value ||
+			(int) p_data->m_waypointInformation->m_value < 0) {
+			switch (p_data->m_waypointInformation->m_action) {
+			case 0:
+				p_data->m_waypointInformation->m_signedValue = -p_data->m_waypointInformation->m_signedValue;
+				p_data->m_waypointInformation->m_value += p_data->m_waypointInformation->m_signedValue;
+				break;
+			case 1:
+				p_data->m_waypointInformation->m_value = 0;
+				break;
+			}
+		}
+		AddDestination(destination);
+	}
 }
 
 // 68K 0x1060807e EnemyAction_TURNANDFIRERAPID__6CEnemyFP18tEnemyLemmingUnion
