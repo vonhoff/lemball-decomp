@@ -504,9 +504,36 @@ void GameObject::Initialise()
 }
 
 // 68K 0x106093e4 StartFly__11CGameObjectFR9C3DVectorP9C3DVector
-// STUB: LEMBALL 0x00415240
+// FUNCTION: LEMBALL 0x00415240
 void GameObject::StartFly(C3DVector& p_arg0, C3DVector* p_arg1)
 {
+	m_unk0x104 = 0;
+	m_unk0x108 = 0;
+	m_balloonPostActive = 0;
+	m_balloonPostId = 0;
+	if (p_arg1 != 0) {
+		int y = p_arg1->m_yFixed;
+		int x = p_arg1->m_xFixed;
+		int z = p_arg1->m_zFixed;
+		m_flightOrigin.m_xFixed = x;
+		m_flightOrigin.m_yFixed = y;
+		m_flightOrigin.m_zFixed = z;
+		m_position.m_xFixed = x;
+		m_position.m_yFixed = y;
+		m_position.m_zFixed = z;
+	}
+	else {
+		m_flightOrigin.m_xFixed = m_position.m_xFixed;
+		m_flightOrigin.m_yFixed = m_position.m_yFixed;
+		m_flightOrigin.m_zFixed = m_position.m_zFixed;
+	}
+	m_isFlying = 1;
+	m_flightVelocity.m_xFixed = p_arg0.m_xFixed;
+	m_flightVelocity.m_yFixed = p_arg0.m_yFixed;
+	m_flightVelocity.m_zFixed = p_arg0.m_zFixed;
+	m_stateTimer = g_dwSimulationTimestamp;
+	m_lastMovementTick = g_dwGameTick;
+	m_actionDeadline = g_dwGameTick + 10;
 }
 
 // 68K 0x106094cc Fly__11CGameObjectFv
