@@ -20,6 +20,7 @@ public:
 	friend class Broadcast;
 	friend class ReadSocket;
 	friend class FileReadSocket;
+	friend class FileConnect;
 	friend class TcpIpReadSocket;
 	friend class TcpIpWriteSocket;
 	friend class TcpIpBroadcast;

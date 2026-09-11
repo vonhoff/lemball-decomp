@@ -1,5 +1,6 @@
 #include "FileConnect.h"
 
+#include "../Foundation/VsTime.h"
 #include "../Messaging/Headers.h"
 
 #include <new.h>
@@ -50,9 +51,14 @@ void FileConnect::Listen(NetworkAddress* p_address)
 }
 
 // 68K 0x1020a114 Connect__12CFileConnectFv
-// STUB: LEMBALL 0x0047b540
+// FUNCTION: LEMBALL 0x0047b540
 void FileConnect::Connect()
 {
+	InitSocket();
+	m_eventPending = 1;
+	m_isHost = 1;
+	ReadSocket::m_lastReceiveTime = CurrentMilliTimer();
+	ConnectSetup();
 }
 
 // 68K 0x1020a186 ConnectSetup__12CFileConnectFv
