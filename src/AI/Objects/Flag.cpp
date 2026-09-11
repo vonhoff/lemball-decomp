@@ -17,8 +17,8 @@ bool Flag::Process()
 {
 	if (m_isRemoteObject == 0 && m_objectType == (eObjectType) 0xb) {
 		if (m_action == (eAction) 0x18 && m_unk0x11c == 0) {
-			int y = m_position.m_yFixed >> 12;
 			int x = m_position.m_xFixed >> 12;
+			int y = m_position.m_yFixed >> 12;
 			unsigned short z;
 			int blockX = x >> 4;
 			int blockY = y >> 4;
