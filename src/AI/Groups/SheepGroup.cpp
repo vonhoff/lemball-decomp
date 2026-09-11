@@ -1,5 +1,8 @@
 #include "SheepGroup.h"
 
+#include "../../Visos/Foundation/VsRect.h"
+#include "../Navigation/Ai.h"
+
 // 68K 0x1061e4d6 __ct__11CSheepGroupFP3CAIP14CObjectManagerP17CFormationManager
 // FUNCTION: LEMBALL 0x0041f500
 SheepGroup::SheepGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager)
@@ -15,10 +18,23 @@ bool SheepGroup::RunAway(AiCoord p_threatPosition)
 }
 
 // 68K 0x1061e744 CheckAgainstLemmings__11CSheepGroupFv
-// STUB: LEMBALL 0x0041f730
+// FUNCTION: LEMBALL 0x0041f730
 bool SheepGroup::CheckAgainstLemmings()
 {
-	return 0;
+	AiCoord coordinate;
+	VsRect bounds;
+	GetBoundingBox(bounds);
+	if (g_pUnknown0x4a7824->PlayerCheckGroupIntersection(&bounds, &coordinate) == 1) {
+		return RunAway(coordinate);
+	}
+	if (g_pUnknown0x4a7824->EnemyCheckGroupIntersection(&bounds, &coordinate) == 1) {
+		return RunAway(coordinate);
+	}
+	bool result = g_pUnknown0x4a7824->BulletCheckGroupIntersection(&bounds, &coordinate);
+	if (result == 1) {
+		return RunAway(coordinate);
+	}
+	return result;
 }
 
 // 68K 0x1061e870 Process__11CSheepGroupFv
