@@ -10,9 +10,24 @@ Lift::Lift() : GlobalGameObject(0x212, 0, 0)
 }
 
 // 68K 0x10614682 CalculateCliff__5CLiftFv
-// STUB: LEMBALL 0x00424d30
+// FUNCTION: LEMBALL 0x00424d30
 void Lift::CalculateCliff()
 {
+	int startX = (short) (m_startX / 16);
+	int startY = (short) (m_startY / 16);
+	int endX = (short) (m_endX / 16);
+	if (startY > 0) {
+		for (int x = startX; x <= endX; x++) {
+			Ground* ground = &g_pActiveMap->m_ground.m_ground[(startY - 1) * g_pActiveMap->m_ground.m_width + x];
+			ground->m_cliff = (short) (((short) ground->m_height + 15) / 16);
+		}
+	}
+	if (startX > 0) {
+		for (int y = startY; y <= endX; y++) {
+			Ground* ground = &g_pActiveMap->m_ground.m_ground[y * g_pActiveMap->m_ground.m_width + startX - 1];
+			ground->m_cliff = (short) (((short) ground->m_height + 15) / 16);
+		}
+	}
 }
 
 // 68K 0x106147aa Edit__5CLiftFisii17eLiftActivateTypeUc

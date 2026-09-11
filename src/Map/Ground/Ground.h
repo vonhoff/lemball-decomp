@@ -29,6 +29,7 @@ public:
 	friend class GroundAnim;
 	friend class Trampoline;
 	friend class Mover;
+	friend class Lift;
 	friend class C2D;
 
 private:
