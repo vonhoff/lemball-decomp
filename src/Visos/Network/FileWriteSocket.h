@@ -21,9 +21,10 @@ public:
 	virtual void Closed(int p_notifyPeer);                            // vtable+0x0c
 	virtual void SetDestAddr(NetworkAddress* p_address);              // vtable+0x20
 	virtual ~FileWriteSocket();                                       // vtable+0x14
+	friend class FileRwSocket;
 
 private:
-	undefined4 m_unk0x10; // 0x10
+	int m_unk0x10; // 0x10: current file packet slot
 };
 #pragma warning(default : 4250)
 

@@ -7,10 +7,14 @@ FileRwSocket::FileRwSocket() : RwSocket(), FileReadSocket(), FileWriteSocket()
 }
 
 // 68K 0x10208024 SendPacket__13CFileRWSocketFPCUci
-// STUB: LEMBALL 0x0047a420
+// FUNCTION: LEMBALL 0x0047a420
 bool FileRwSocket::SendPacket(const unsigned char* p_data, int p_size)
 {
-	return 0;
+	bool sent = FileWriteSocket::SendPacket(p_data, p_size);
+	if (sent) {
+		FileWriteSocket::m_unk0x10 %= FileCommonSocket::m_unk0x08;
+	}
+	return sent;
 }
 
 // 68K 0x101167ec Closed__13CFileRWSocketFUc
