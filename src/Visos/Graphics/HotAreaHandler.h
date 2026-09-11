@@ -31,6 +31,7 @@ public:
 	friend class PanelPauseButton;
 	friend class C2D;
 	friend class TrackWindow;
+	friend class TrackerButton;
 	friend class PauseWindow;
 	friend class PanelButton;
 

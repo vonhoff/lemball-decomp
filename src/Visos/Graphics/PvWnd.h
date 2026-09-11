@@ -90,6 +90,7 @@ public:
 	friend class PanelButton;
 	friend class BaseCursor;
 	friend class TrackWindow;
+	friend class TrackerButton;
 	friend int __stdcall TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state,
 												  void* p_request,
 												  long p_param2);

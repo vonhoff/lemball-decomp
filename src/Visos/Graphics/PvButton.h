@@ -50,6 +50,7 @@ public:
 	friend class HiliteController;
 	friend class PasswordDrawer;
 	friend class PanelButton;
+	friend class TrackerButton;
 
 private:
 	PvGWnd* m_ownerWindow;           // 0xc8
