@@ -91,9 +91,23 @@ Panel::~Panel()
 }
 
 // 68K 0x10b0dd10 OnSize__6CPanelFv
-// STUB: LEMBALL 0x004431f0
+// FUNCTION: LEMBALL 0x004431f0
 void Panel::OnSize()
 {
+	VsPoint calculatedPosition;
+	VsPoint position;
+	VsPoint* calculated = GetPausePos(&calculatedPosition);
+	position.m_x = m_panelPosition.m_x = calculated->m_x;
+	position.m_y = m_panelPosition.m_y = calculated->m_y;
+	m_pauseButton->Move(position);
+	position.m_x += m_pauseSize.m_x;
+	PanelLemming** lemming = m_lemmings;
+	int count = 4;
+	do {
+		(*lemming)->Move(position);
+		lemming++;
+		count--;
+	} while (count != 0);
 }
 
 // 68K 0x10b0dd98 Process__6CPanelFv
