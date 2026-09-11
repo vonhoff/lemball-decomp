@@ -126,9 +126,46 @@ void PlayerLemmingGroupManager::DeleteGroup(PlayerLemmingGroup* p_group)
 }
 
 // 68K 0x1060fc30 CreateNewGroup__26CPlayerLemmingGroupManagerFUsPUs
-// STUB: LEMBALL 0x00418730
+// FUNCTION: LEMBALL 0x00418730
 void PlayerLemmingGroupManager::CreateNewGroup(unsigned short p_count, unsigned short* p_objectIds)
 {
+	PlayerLemmingGroup* group = 0;
+	GenericGroup** groups;
+	int index = 0;
+	MakeNoGroupsPlayerControlled();
+	if (m_groupCount > 0) {
+		groups = m_groups;
+		do {
+			if ((*groups)->GetElementsInGroup() == 0) {
+				group = (PlayerLemmingGroup*) GenericGroupManager::GetNthGroup(index);
+				break;
+			}
+			groups++;
+			index++;
+		} while (index < m_groupCount);
+	}
+
+	int added = 0;
+	if (p_count != 0) {
+		unsigned int remaining = p_count;
+		do {
+			unsigned short objectId = *p_objectIds;
+			p_objectIds++;
+			PlayerLemming* lemming = (PlayerLemming*) g_pObjects[objectId];
+			if (lemming->IsSelectable()) {
+				lemming->ResetInstructions();
+				AddPlayerLemmingToGroup(lemming, group);
+				lemming->EmptyDestinationList();
+				added++;
+			}
+			remaining--;
+		} while (remaining != 0);
+	}
+
+	if (added > 0) {
+		MakeParticularGroupPlayerControlled(group);
+		ReformAlteredGroups(group);
+	}
 }
 
 // 68K 0x1060fd36 AddPlayerLemmingToGroup__26CPlayerLemmingGroupManagerFP14CPlayerLemmingP19CPlayerLemmingGroup
