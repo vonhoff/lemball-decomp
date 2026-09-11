@@ -1391,9 +1391,149 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 }
 
 // 68K 0x10b01988 DoClipWidthSearch__3C2DFiii
-// STUB: LEMBALL 0x0043b0e0
+// FUNCTION: LEMBALL 0x0043b0e0
 void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 {
+	int screenX;
+	int screenY;
+	eObjectType defaultGroundType;
+	int defaultGroundData;
+	short baseZ;
+	int processed;
+	int delayed;
+	unsigned short groundWidth;
+	Ground* ground;
+	int groundStep;
+	unsigned short groundData;
+	short height;
+	unsigned short cliff;
+	eObjectType groundType;
+	int zOffset;
+	int heightValue;
+	int groundY;
+	int remaining;
+
+	screenX = m_clipScreenX;
+	screenY = m_clipScreenY;
+	defaultGroundType = m_map->m_defaultBlox;
+	defaultGroundData = m_map->m_defaultBloxData;
+	baseZ = ((short) p_mapY + (short) p_mapX) * 0x40;
+	if (baseZ < 0) {
+		baseZ = 0;
+	}
+	processed = 0;
+	m_lemmingAnims->m_primitiveSequence = baseZ;
+
+	if (p_count > 0) {
+		do {
+			if (p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight) {
+				break;
+			}
+			DrawGround(screenX, screenY, defaultGroundType, defaultGroundData);
+			screenX += 0x20;
+			processed++;
+			p_mapX += m_clipMapStepX;
+			p_mapY += m_clipMapStepY;
+		} while (processed < p_count);
+	}
+
+	if (processed < p_count) {
+		delayed = 0;
+		groundWidth = m_groundWidth;
+		ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * p_mapY + p_mapX;
+		groundStep = 1 - groundWidth;
+
+		for (; processed < p_count && p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight;
+			 p_mapY += m_clipMapStepY) {
+			if ((ground->m_collision & 0x20) == 0) {
+				groundData = ground->m_objectData;
+				height = ground->m_height;
+				cliff = ground->m_cliff;
+				groundType = ground->m_objectType;
+				if (height < 0) {
+					height = 0;
+					groundType = defaultGroundType;
+					groundData = (unsigned short) defaultGroundData;
+				}
+
+				zOffset = 0;
+				heightValue = height;
+				groundY = screenY - heightValue;
+				switch (groundType) {
+				case TERRAIN_TREE:
+					zOffset = 0x20;
+					break;
+				case TERRAIN_BLOX_1:
+					zOffset = 0x10;
+					break;
+				case TERRAIN_BLOX_2:
+				case TERRAIN_BLOX_5:
+					zOffset = 8;
+					break;
+				}
+				m_lemmingAnims->m_primitiveSequence = (unsigned short) (height + baseZ + zOffset);
+
+				switch (groundType) {
+				case TERRAIN_TREE:
+					if (height > 0) {
+						DrawCliff(screenX, screenY, heightValue, (short) cliff);
+					}
+					DrawGround(screenX, groundY, groundType, groundData);
+					break;
+				case TERRAIN_BLOX_1:
+				case TERRAIN_BLOX_2:
+				case TERRAIN_BLOX_3_SLOPE_SW_STEEP:
+				case TERRAIN_BLOX_4:
+				case TERRAIN_BLOX_5:
+				case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
+				case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
+				case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
+				case 0x214:
+				case TERRAIN_EMBERS:
+					if (height > 0) {
+						DrawCliff(screenX, screenY, heightValue, (short) cliff);
+					}
+					DrawGround(screenX, groundY, groundType, groundData);
+					break;
+				case TERRAIN_BLOX_6:
+				case TERRAIN_BLOX_7:
+					delayed = 1;
+					break;
+				case TERRAIN_ANIM:
+				case TERRAIN_FLAME:
+				case TERRAIN_ELECTRIC:
+				case TERRAIN_CONVEYOR_VARIANT_A:
+				case TERRAIN_CONVEYOR_VARIANT_B:
+					if (height > 0) {
+						DrawCliff(screenX, screenY, heightValue, (short) cliff);
+					}
+					break;
+				}
+
+				if (delayed != 0) {
+					if (height > 0x18) {
+						DrawCliff(screenX, screenY, heightValue, (short) cliff);
+					}
+					DrawGround(screenX, groundY, groundType, groundData);
+					delayed = 0;
+				}
+			}
+
+			screenX += 0x20;
+			p_mapX += m_clipMapStepX;
+			processed++;
+			ground += groundStep;
+		}
+	}
+
+	m_lemmingAnims->m_primitiveSequence = baseZ;
+	if (processed < p_count) {
+		remaining = p_count - processed;
+		do {
+			DrawGround(screenX, screenY, defaultGroundType, defaultGroundData);
+			screenX += 0x20;
+		} while (--remaining != 0);
+	}
 }
 
 // 68K 0x10b01cf0 DrawClipData__3C2DFv
