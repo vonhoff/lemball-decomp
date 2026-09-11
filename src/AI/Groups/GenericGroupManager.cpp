@@ -235,24 +235,20 @@ void GenericGroupManager::CreateNewGroup()
 void GenericGroupManager::DeleteGroup(GenericGroup* p_group)
 {
 	int index = 0;
-	if (m_groupCount > 0) {
-		while (m_groups[index] != p_group) {
-			index++;
-			if (m_groupCount <= index) {
-				return;
-			}
+	for (; index < m_groupCount; index++) {
+		if (m_groups[index] != p_group) {
+			continue;
 		}
 		delete p_group;
 		m_groupCount--;
 		if (index < m_groupCount) {
-			GenericGroup** group = m_groups + index;
 			do {
+				m_groups[index] = m_groups[index + 1];
 				index++;
-				*group = group[1];
-				group++;
 			} while (index < m_groupCount);
 		}
 		m_groups[index] = 0;
+		return;
 	}
 }
 
