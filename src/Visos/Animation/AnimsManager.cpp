@@ -174,39 +174,21 @@ unsigned long AnimsManager::GetnAnims(unsigned long p_resourceId)
 }
 
 // 68K 0x102005b8 GetAnimSize__13CAnimsManagerFUlUl
-// STUB: LEMBALL 0x00467570
+// FUNCTION: LEMBALL 0x00467570
 VsSize AnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex)
 {
 	VsSize size;
-	ResBase* resource;
-	ResZrle* entry;
-	int slot;
-
-	size.m_width = 0;
-	size.m_height = 0;
-	if (m_resourceSlots == 0 || m_resources == 0 || (int) p_resourceId >= m_resourceIdCount) {
-		return size;
+	ResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
+	if (resource->m_chunkType != 0x5a524c45) {
+		ResZrle* entry = ((ResAnim*) resource)->m_animationEntries + p_animIndex;
+		size.m_width = entry->m_width;
+		size.m_height = entry->m_height;
 	}
-	slot = m_resourceSlots[p_resourceId];
-	if (slot == m_resourceCapacity) {
-		return size;
+	else {
+		ResZrle* entry = (ResZrle*) resource;
+		size.m_width = entry->m_width;
+		size.m_height = entry->m_height;
 	}
-	resource = m_resources[slot];
-	if (resource == 0) {
-		return size;
-	}
-	if (resource->m_chunkType == 0x5a524c45) {
-		size.m_width = ((ResZrle*) resource)->m_width;
-		size.m_height = ((ResZrle*) resource)->m_height;
-		return size;
-	}
-	entry = ((ResAnim*) resource)->m_animationEntries;
-	if (entry == 0) {
-		return size;
-	}
-	entry = entry + p_animIndex;
-	size.m_width = entry->m_width;
-	size.m_height = entry->m_height;
 	return size;
 }
 
