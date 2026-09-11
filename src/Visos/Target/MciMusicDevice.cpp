@@ -226,41 +226,28 @@ void MciMusicDevice::Play(unsigned long p_handle)
 	char errorText[0x80];
 
 	if (p_handle == 0) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Play Music (HL) with Invalid Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Play Music (HL) with Invalid Handle!\n";
 	}
 	if (m_preparedHandle != p_handle) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Play (HL) with unknown Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Play (HL) with unknown Handle!\n";
 	}
 	if (m_playing == 1) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error! Play Command (HL) While already playing!\n";
-		}
+		*g_pErrorOutput << "Error! Play Command (HL) While already playing!\n";
 	}
-	seekParms.dwCallback = 0;
 	seekParms.dwTo = 0;
 	error = mciSendCommandA(m_deviceId, 0x807, 0x100, (DWORD) &seekParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Play Music (Seek)! (HL)\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Play Music (Seek)! (HL)\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		return;
 	}
 	playParms.dwCallback = (DWORD) m_notifyWindow;
-	playParms.dwFrom = 0;
-	playParms.dwTo = 0;
 	error = mciSendCommandA(m_deviceId, 0x806, 1, (DWORD) &playParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Play Music (Play)! (HL)\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Play Music (Play)! (HL)\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		return;
 	}
 	m_paused = 0;
