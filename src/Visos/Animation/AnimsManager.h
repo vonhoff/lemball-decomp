@@ -30,6 +30,7 @@ public:
 	AnimsManager();
 
 	friend class BaseFrontendDrawer;
+	friend class C2D;
 	friend class GraphicButton;
 	friend class GunController;
 	friend class HiliteController;

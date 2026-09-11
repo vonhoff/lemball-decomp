@@ -2319,9 +2319,11 @@ void C2D::ResetPrimitives()
 }
 
 // 68K 0x10b06056 DrawZBuff_Sprite__3C2DFiUs
-// STUB: LEMBALL 0x00440460
+// FUNCTION: LEMBALL 0x00440460
 void C2D::DrawZBuffSprite(int p_index, unsigned short p_z)
 {
+	m_lemmingAnims->m_primitiveSequence = p_z;
+	DrawObject(m_viewData[p_index]);
 }
 
 // 68K 0x10b060ac DrawZBuff_Anim__3C2DFiUs
