@@ -1715,6 +1715,18 @@ static unsigned long g_lemmingFlyResources[] = {
 	RES_GAME_JUMP_NW,
 };
 
+// GLOBAL: LEMBALL 0x0049efa8
+static unsigned long g_lemmingExternalResources[] = {
+	RES_GAME_LEM_LASER_N,
+	RES_GAME_LEM_LASER_E,
+	RES_GAME_LEM_LASER_E,
+	RES_GAME_LEM_LASER_S,
+	RES_GAME_LEM_LASER_S,
+	RES_GAME_LEM_LASER_W,
+	RES_GAME_LEM_LASER_W,
+	RES_GAME_LEM_LASER_N,
+};
+
 // 68K 0x10b02196 LemmingFly__3C2DFR9CViewDataRi
 // FUNCTION: LEMBALL 0x0043bce0
 unsigned long C2D::LemmingFly(ViewData& p_viewData, int& p_frame)
@@ -1866,9 +1878,36 @@ void C2D::DrawLemmingFall(ViewData& p_viewData, undefined4 p_remapped)
 }
 
 // 68K 0x10b02612 DrawLemmingExternal__3C2DFR9CViewDataUc
-// STUB: LEMBALL 0x0043c090
-void C2D::DrawLemmingExternal(ViewData& p_viewData, unsigned char p_remapped)
+// FUNCTION: LEMBALL 0x0043c090
+void C2D::DrawLemmingExternal(ViewData& p_viewData, undefined4 p_remapped)
 {
+	int x = p_viewData.m_positionX;
+	int y = p_viewData.m_positionY;
+	int frameDelta = (int) p_viewData.m_animationTime - (int) p_viewData.m_stateTimer;
+	unsigned int frame = frameDelta * 15 / 1000;
+	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	Remap* remap = 0;
+
+	if ((int) frame < 0) {
+		frame = 0;
+	}
+	if (p_remapped != 0) {
+		remap = (Remap*) m_paletteRemap;
+	}
+
+	switch ((unsigned short) p_viewData.m_actionArgument) {
+	case 1:
+		m_lemmingAnims->DrawAnim(x - 15, y - 22, g_lemmingExternalResources[direction], (int) frame % 4, 0, remap);
+		break;
+	case 2:
+		if ((int) frame <= 14) {
+			m_lemmingAnims->DrawAnim(x - 7, y - 28, RES_GAME_ONFIRE, frame, 0, remap);
+		}
+		break;
+	case 3:
+		m_lemmingAnims->DrawAnim(x - 15, y - 22, RES_GAME_LEMMING_SPIN, (int) frame % 8, 0, remap);
+		break;
+	}
 }
 
 // 68K 0x10b0274e DrawLemmingOnConveyor__3C2DFR9CViewDataUc

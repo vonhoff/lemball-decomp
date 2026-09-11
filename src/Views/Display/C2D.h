@@ -79,7 +79,7 @@ public:
 	void DrawLaser(ViewData& p_viewData);
 	void DrawLaserFire(ViewData& p_viewData);
 	void DrawLemming(ViewData& p_viewData, int p_objectNo, unsigned char p_remapped);
-	void DrawLemmingExternal(ViewData& p_viewData, unsigned char p_remapped);
+	void DrawLemmingExternal(ViewData& p_viewData, undefined4 p_remapped);
 	void DrawLemmingFall(ViewData& p_viewData, undefined4 p_remapped);
 	void DrawLemmingFlyShadow(ViewData& p_viewData);
 	void DrawLemmingJump(ViewData& p_viewData, undefined4 p_remapped);
