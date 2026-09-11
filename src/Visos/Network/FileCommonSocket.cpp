@@ -1,10 +1,26 @@
 #include "FileCommonSocket.h"
 
+#include "../Foundation/VsTime.h"
+
 // 68K 0x10207070 CreateSocket__17CFileCommonSocketFPCc
-// STUB: LEMBALL 0x00479880
+// FUNCTION: LEMBALL 0x00479880
 bool FileCommonSocket::CreateSocket(const char* p_path)
 {
-	return 0;
+	if (!Open(p_path, 1, 0)) {
+		if (!Create(p_path, 1)) {
+			unsigned long started = CurrentMilliTimer();
+			do {
+			} while (CurrentMilliTimer() - started < 100);
+
+			if (!Open(p_path, 1, 0)) {
+				return false;
+			}
+		}
+		else {
+			InitialiseFile();
+		}
+	}
+	return true;
 }
 
 // 68K 0x10207138 SysCloseSocket__17CFileCommonSocketFv

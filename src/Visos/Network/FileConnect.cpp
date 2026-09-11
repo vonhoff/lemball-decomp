@@ -2,12 +2,14 @@
 
 #include "../Foundation/VsTime.h"
 #include "../Messaging/Headers.h"
+#include "FileNetwork.h"
 #include "TcpIpNetwork.h"
 
+#include <memory.h>
 #include <new.h>
 #include <string.h>
 
-#pragma intrinsic(strcpy, strlen)
+#pragma intrinsic(memcpy, strcpy, strlen)
 
 // 68K 0x1020942a __ct__12CFileConnectFv
 // FUNCTION: LEMBALL 0x0047af30
@@ -40,15 +42,35 @@ bool FileConnect::Start(const char* p_localName, const char* p_remoteName)
 }
 
 // 68K 0x10209fa2 InitSocket__12CFileConnectFv
-// STUB: LEMBALL 0x0047b440
+// FUNCTION: LEMBALL 0x0047b440
 void FileConnect::InitSocket()
 {
+	char* path = g_pFileBroadcastData;
+	char* extension = strchr(path, '.');
+	if (extension != 0) {
+		strcpy(extension, ".con");
+	}
+	else {
+		memcpy(path + strlen(path), ".con", 5);
+	}
+
+	FileCommonSocket::CreateSocket(path);
+	FileOpenManagement::IncOpenCount();
+	FileReadSocket::m_dataOffset = FileReadSocket::m_file->m_payloadCapacity + FileReadSocket::m_unk0x04;
 }
 
 // 68K 0x1020a04c Listen__12CFileConnectFP15CNetworkAddress
-// STUB: LEMBALL 0x0047b4d0
+// FUNCTION: LEMBALL 0x0047b4d0
 void FileConnect::Listen(NetworkAddress* p_address)
 {
+	InitSocket();
+	SetDestAddr(p_address);
+	m_closePending = 1;
+	m_eventPending = 1;
+	m_isHost = 0;
+	WriteSocket::m_lastSendTime = CurrentMilliTimer() - 1000;
+	ReadSocket::m_lastReceiveTime = CurrentMilliTimer();
+	ConnectSetup();
 }
 
 // 68K 0x1020a114 Connect__12CFileConnectFv
