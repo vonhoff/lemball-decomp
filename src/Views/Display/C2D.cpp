@@ -401,15 +401,59 @@ void C2D::OnZoom(const VsRect& p_rect)
 }
 
 // 68K 0x10b0784c OnSize__3C2DFRC7CVSRect
-// STUB: LEMBALL 0x004366b0
+// FUNCTION: LEMBALL 0x004366b0
 void C2D::OnSize(const VsRect& p_rect)
 {
+	unsigned int zoomDivisor;
+
+	if (m_display->GetSizeStatus() == 0) {
+		if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+			g_pDemo->GameIsOver();
+			return;
+		}
+	}
+	else if (m_display->IsWindowValid()) {
+		m_viewSize.m_x = p_rect.m_width;
+		m_viewSize.m_y = p_rect.m_height;
+		zoomDivisor = m_zoom;
+		m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) zoomDivisor);
+		m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) zoomDivisor);
+		DoButtons();
+		m_redrawPending = 1;
+		if (m_panel != 0) {
+			m_panel->OnSize();
+		}
+	}
 }
 
 // 68K 0x10b07924 SetUpRemapPalettes__3C2DFv
-// STUB: LEMBALL 0x00436760
+// FUNCTION: LEMBALL 0x00436760
 void C2D::SetUpRemapPalettes()
 {
+	unsigned char* mapping = (unsigned char*) operator new(0x100);
+	int value;
+	int i = 0;
+	do {
+		switch (i) {
+		case 0x37:
+			value = 0x52;
+			break;
+		case 0x5c:
+		case 0x71:
+		case 0x75:
+			value = 0x74;
+			break;
+		case 0x80:
+			value = 0x8c;
+			break;
+		default:
+			value = i;
+			break;
+		}
+		mapping[i] = value;
+		i++;
+	} while (i < 0x100);
+	m_paletteRemap = g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, mapping, (ePaletteTypes) 0);
 }
 
 // 68K 0x10b079c8 KillRemapPalettes__3C2DFv
@@ -568,6 +612,7 @@ bool C2D::InGroupByObjectNo(int p_objectNo)
 // FUNCTION: LEMBALL 0x00437460
 void C2D::RemoveFromGroupByObjectNo(int p_objectNo)
 {
+	int objectNo = p_objectNo;
 	unsigned short id;
 	unsigned short* write;
 	unsigned int i;
@@ -581,7 +626,7 @@ void C2D::RemoveFromGroupByObjectNo(int p_objectNo)
 		read = write;
 		do {
 			id = *read;
-			if ((unsigned int) id != (unsigned int) p_objectNo) {
+			if ((unsigned int) id != (unsigned int) objectNo) {
 				*write = id;
 				write = write + 1;
 			}
@@ -651,8 +696,9 @@ void C2D::RightClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint)
 // FUNCTION: LEMBALL 0x00437970
 bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 {
-	int maxGameX = m_map->m_ground.m_width * 0x10 - 1;
-	int maxGameY = m_map->m_ground.m_height * 0x10 - 1;
+	Map* initialMap = m_map;
+	int maxGameX = initialMap->m_ground.m_width * 0x10 - 1;
+	int maxGameY = initialMap->m_ground.m_height * 0x10 - 1;
 	int searchY = p_screenY + 0x50;
 	if (searchY >= p_screenY) {
 		int searchMinX = p_screenX - 0x20;
@@ -1379,8 +1425,8 @@ void C2D::DrawRocket(ViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043c7f0
 void C2D::DrawHand(ViewData& p_viewData)
 {
-	int drawY;
 	int drawX;
+	int drawY;
 	int frame;
 	BaseRemap* remap;
 	eAction action = p_viewData.m_action;
