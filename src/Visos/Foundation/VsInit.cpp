@@ -61,10 +61,12 @@ extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(void* p_mem);
 extern "C" __declspec(dllimport) void* __stdcall GlobalFree(void* p_mem);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
 
-struct InitCmdOption {
-	char* m_name;
-	int* m_value;
+enum InitCmdOptionField {
+	kInitCmdOptionName,
+	kInitCmdOptionValue,
 };
+
+typedef void* InitCmdOption[2];
 
 // GLOBAL: LEMBALL 0x004a9368
 jmp_buf g_vsExitJumpBuffer;
@@ -452,19 +454,20 @@ bool InitCheckOptions(char* p_arg0)
 		option = g_aInitCmdOptions;
 		index = 0;
 		do {
-			colon = strchr(option->m_name, ':');
+			colon = strchr((char*) (*option)[kInitCmdOptionName], ':');
 			if (colon == 0) {
-				maxCount = strlen(option->m_name);
+				maxCount = strlen((char*) (*option)[kInitCmdOptionName]);
 			}
 			else {
-				maxCount = (unsigned int) (colon - option->m_name);
+				maxCount = (unsigned int) (colon - (char*) (*option)[kInitCmdOptionName]);
 			}
-			if (strncmp(p_arg0 + 1, option->m_name, maxCount) == 0) {
-				if (strlen(g_aInitCmdOptions[index].m_name) == maxCount) {
-					*g_aInitCmdOptions[index].m_value = *g_aInitCmdOptions[index].m_value ^ 1;
+			if (strncmp(p_arg0 + 1, (char*) (*option)[kInitCmdOptionName], maxCount) == 0) {
+				int* value = (int*) g_aInitCmdOptions[index][kInitCmdOptionValue];
+				if (strlen((char*) g_aInitCmdOptions[index][kInitCmdOptionName]) == maxCount) {
+					*value = *value ^ 1;
 				}
 				else {
-					*g_aInitCmdOptions[index].m_value = strtol(p_arg0 + 1 + maxCount + 1, &end, 10);
+					*value = strtol(p_arg0 + 1 + maxCount + 1, &end, 10);
 				}
 				g_afInitOptionSelected[index] = 1;
 				return 1;
@@ -557,7 +560,7 @@ int InitMain(char* p_arg0)
 	*g_pDebugOutput << g_szCommandLineOptions;
 	i = 0;
 	do {
-		*g_pDebugOutput << g_szOptionPrefix << g_aInitCmdOptions[i].m_name << g_szOptionIs;
+		*g_pDebugOutput << g_szOptionPrefix << (char*) g_aInitCmdOptions[i][kInitCmdOptionName] << g_szOptionIs;
 		if (g_afInitOptionSelected[i] == 0) {
 			*g_pDebugOutput << g_szOptionNot;
 		}
