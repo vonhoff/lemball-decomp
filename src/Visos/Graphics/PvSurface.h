@@ -43,6 +43,7 @@ public:
 	friend class GunButtons;
 	friend class DepressedButton;
 	friend class SpriteWindow;
+	friend class C2D;
 	friend class TrackWindow;
 	friend class HiliteWindow;
 	friend class PasswordHiliteWindow;

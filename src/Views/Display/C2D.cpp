@@ -44,6 +44,7 @@
 extern int g_anC2DRemapSourceIndices[17];
 extern int g_anC2DRemapTargetIndices[4][17];
 extern unsigned char g_abC2DType2Remap[5];
+extern "C" unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x10b06778 __ct__3C2DFP14CMain2DDisplayP3CAIP4CGDIP4CMapRC7CVSRect
 // FUNCTION: LEMBALL 0x004358d0
@@ -2357,9 +2358,119 @@ void C2D::SortViewData()
 }
 
 // 68K 0x10b05b06 Draw__3C2DFRC7CVSRect
-// STUB: LEMBALL 0x00440000
+// FUNCTION: LEMBALL 0x00440000
 void C2D::Draw(const VsRect& p_rect)
 {
+	if (m_gdi == 0 || m_clipSize.m_x <= 0 || m_clipSize.m_y <= 0) {
+		return;
+	}
+	if (m_lemmingAnims->m_loaded == 0) {
+		m_lemmingAnims->Draw();
+		return;
+	}
+
+	m_frameCount++;
+	m_groundAnimationFrame = (short) (g_dwSimulationTimestamp / 100);
+	unsigned long startTime = timeGetTime();
+	*(undefined2*) m_pad0x8d0 = 0x40;
+
+	VsRect* displayRect = &m_display->m_rect;
+	VsPoint* displayPosition = displayRect;
+	int zoom = m_display->m_zoom;
+	m_spriteGroundTranslationPoint.m_y = (short) ((short) (g_pCursor->m_position.m_y - displayPosition->m_y) / zoom);
+	m_spriteGroundTranslationPoint.m_x = (short) ((short) (g_pCursor->m_position.m_x - displayPosition->m_x) / zoom);
+	ReplaceBackground();
+	VsRect translatedBounds;
+	VsRect backgroundBounds;
+
+	if (m_clipOffsetX != 0 || m_clipOffsetY != 0) {
+		int left = m_clipOffsetX + m_spriteGroundTranslatedPointRect.m_x;
+		int height = m_spriteGroundTranslatedPointRect.m_height;
+		int top = m_clipOffsetY + m_spriteGroundTranslatedPointRect.m_y;
+		int right = m_spriteGroundTranslatedPointRect.m_width + left;
+		int bottom = height + top;
+		if (left < m_clipOffsetX || top < m_clipOffsetY || m_clipOffsetX + m_clipSize.m_x <= right ||
+			m_clipOffsetY + m_clipSize.m_y <= bottom) {
+			translatedBounds.m_x = (short) left;
+			translatedBounds.m_y = (short) top;
+			translatedBounds.m_width = m_spriteGroundTranslatedPointRect.m_width;
+			translatedBounds.m_height = m_spriteGroundTranslatedPointRect.m_height;
+			m_lineAt9a8.m_x1 = translatedBounds.m_width;
+			m_lineAt9a8.m_y1 = translatedBounds.m_height;
+			m_lineAt9a8.m_x2 = translatedBounds.m_x;
+			m_lineAt9a8.m_y2 = translatedBounds.m_y;
+			m_lineAt9a8.m_color = 0;
+			m_lineAt9a8.Draw(m_gdi);
+		}
+	}
+
+	m_viewDataCount = (unsigned short) m_ai->GetData(m_viewData);
+	m_pushActive.Draw(m_gdi);
+
+	{
+		SolidRect& background = m_solidRects[m_primitiveCount++];
+		if (m_clipConfigured == 0 && m_redrawPending == 0) {
+			backgroundBounds.m_width = m_clipSize.m_x;
+			backgroundBounds.m_height = m_clipSize.m_y;
+			backgroundBounds.m_x = 0;
+			backgroundBounds.m_y = 0;
+		}
+		else {
+			backgroundBounds.m_width = m_clipSize.m_x;
+			backgroundBounds.m_height = m_clipSize.m_y;
+			backgroundBounds.m_x = 0;
+			backgroundBounds.m_y = 0;
+		}
+		background.m_left = backgroundBounds.m_width;
+		background.m_top = backgroundBounds.m_height;
+		background.m_right = backgroundBounds.m_x;
+		background.m_bottom = backgroundBounds.m_y;
+		background.m_color = 0;
+		background.Draw(m_gdi);
+	}
+
+	if (m_clipConfigured != 0 || m_redrawPending != 0) {
+		m_clipConfigured = 0;
+		translatedBounds.m_width = m_clipSize.m_x;
+		translatedBounds.m_height = m_clipSize.m_y;
+		translatedBounds.m_x = 0;
+		translatedBounds.m_y = 0;
+		m_lineAt998.m_x1 = translatedBounds.m_width;
+		m_lineAt998.m_y1 = translatedBounds.m_height;
+		m_lineAt998.m_x2 = translatedBounds.m_x;
+		m_lineAt998.m_y2 = translatedBounds.m_y;
+		m_lineAt998.m_color = 0;
+		m_lineAt998.Draw(m_gdi);
+	}
+
+	DrawObjects();
+	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+		DrawDemo();
+	}
+	else {
+		DrawTime();
+		DrawScore();
+	}
+	if (m_paused != 0) {
+		DrawPaused();
+	}
+	m_popActive.Draw(m_gdi);
+	g_pSoundView->SoundEffect(m_viewData, m_viewDataCount, m_originPosition);
+
+	VsRect& windowRect = m_gdi->m_renderTarget->m_windowRect;
+	translatedBounds.m_width = windowRect.m_width;
+	translatedBounds.m_height = windowRect.m_height;
+	translatedBounds.m_x = 0;
+	translatedBounds.m_y = 0;
+	SolidRect& surfaceBackground = m_solidRects[m_primitiveCount++];
+	surfaceBackground.m_left = translatedBounds.m_width;
+	surfaceBackground.m_top = translatedBounds.m_height;
+	surfaceBackground.m_right = translatedBounds.m_x;
+	surfaceBackground.m_bottom = translatedBounds.m_y;
+	surfaceBackground.m_color = 0;
+	surfaceBackground.Draw(m_gdi);
+
+	m_frameTime += timeGetTime() - startTime;
 }
 
 #include "../../Visos/Foundation/ChangeList.h"

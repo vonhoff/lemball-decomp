@@ -25,6 +25,7 @@ public:
 	friend class TargetAboutScreen;
 	friend class Surface;
 	friend class PauseWindow;
+	friend class C2D;
 
 private:
 	short m_x1;           // 0x04
