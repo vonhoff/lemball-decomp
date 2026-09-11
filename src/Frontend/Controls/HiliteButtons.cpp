@@ -163,14 +163,11 @@ void HiliteButtons::UnLoadFaces()
 
 	if (m_button != 0) {
 		delete m_button;
-		m_button = 0;
 	}
 	index = 0;
 	if (0 < m_valueCount) {
 		do {
-			if (m_resources[index] != 0) {
-				m_resources[index]->UnLoad();
-			}
+			m_resources[index]->UnLoad();
 			index = index + 1;
 		} while (index < m_valueCount);
 	}

@@ -352,15 +352,9 @@ bool InternalInpQuit()
 
 	result = TargetInputQuit();
 	g_pMasterInputQueue->Detach(g_pInputTranslator, -0x32);
-	if (g_pInputTranslator != 0) {
-		delete g_pInputTranslator;
-	}
-	if (g_pMasterInput != 0) {
-		delete g_pMasterInput;
-	}
-	if (g_pMasterInputQueue != 0) {
-		delete g_pMasterInputQueue;
-	}
+	delete g_pInputTranslator;
+	delete g_pMasterInput;
+	delete g_pMasterInputQueue;
 	return result;
 }
 
