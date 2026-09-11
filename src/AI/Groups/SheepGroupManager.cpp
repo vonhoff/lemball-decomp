@@ -16,9 +16,26 @@ SheepGroupManager::SheepGroupManager(Ai* p_arg0, ObjectManager* p_arg1, Formatio
 }
 
 // 68K 0x1061e998 Restart__18CSheepGroupManagerFv
-// STUB: LEMBALL 0x0041f0e0
+// FUNCTION: LEMBALL 0x0041f0e0
 void SheepGroupManager::Restart()
 {
+	GenericGroup** group;
+	int groupIndex = 0;
+	if (groupIndex < m_groupCount) {
+		group = m_groups;
+		do {
+			int elementIndex = 0;
+			int elementCount = (*group)->GetElementsInGroup();
+			if (elementCount > 0) {
+				do {
+					(*group)->GetNthElementInGroup(elementIndex)->Restart();
+					elementIndex++;
+				} while (elementIndex < elementCount);
+			}
+			group++;
+			groupIndex++;
+		} while (groupIndex < m_groupCount);
+	}
 }
 
 // 68K 0x1061ea1c Process__18CSheepGroupManagerFv

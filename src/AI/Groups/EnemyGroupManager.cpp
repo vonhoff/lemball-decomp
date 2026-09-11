@@ -27,9 +27,26 @@ EnemyGroupManager::EnemyGroupManager(Ai* p_arg0, ObjectManager* p_arg1, Formatio
 }
 
 // 68K 0x10608a92 Restart__18CEnemyGroupManagerFv
-// STUB: LEMBALL 0x00420bb0
+// FUNCTION: LEMBALL 0x00420bb0
 void EnemyGroupManager::Restart()
 {
+	GenericGroup** group;
+	int groupIndex = 0;
+	if (groupIndex < m_groupCount) {
+		group = m_groups;
+		do {
+			int elementIndex = 0;
+			int elementCount = (*group)->GetElementsInGroup();
+			if (elementCount > 0) {
+				do {
+					(*group)->GetNthElementInGroup(elementIndex)->Restart();
+					elementIndex++;
+				} while (elementIndex < elementCount);
+			}
+			group++;
+			groupIndex++;
+		} while (groupIndex < m_groupCount);
+	}
 }
 
 // 68K 0x10608b06 LoadLevel__18CEnemyGroupManagerFP16tagLoadEnemyDataUlUc
