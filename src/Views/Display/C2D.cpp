@@ -2853,26 +2853,26 @@ void C2D::SetOrigin()
 		origin.m_xFixed = screenX << 12;
 		origin.m_yFixed = (screenY - screenZ) * 0x1000;
 		int oldViewOriginX = m_viewOriginX;
-		screenX = origin.m_xFixed >> 12;
-		screenY = origin.m_yFixed >> 12;
+		int projectedX = origin.m_xFixed >> 12;
+		int projectedY = origin.m_yFixed >> 12;
 		int oldViewOriginY = m_viewOriginY;
-		int differenceX = screenX - m_viewOriginX;
-		int differenceY = screenY - m_viewOriginY;
+		int differenceX = projectedX - m_viewOriginX;
+		int differenceY = projectedY - m_viewOriginY;
 		if (differenceX < marginX) {
 			changed = 1;
-			m_viewOriginX = screenX - marginX;
+			m_viewOriginX = projectedX - marginX;
 		}
 		if (differenceY < marginY) {
 			changed = 1;
-			m_viewOriginY = screenY - marginY;
+			m_viewOriginY = projectedY - marginY;
 		}
 		if (m_clipSize.m_x - marginX < differenceX) {
 			changed = 1;
-			m_viewOriginX = screenX - m_clipSize.m_x + marginX;
+			m_viewOriginX = projectedX - m_clipSize.m_x + marginX;
 		}
 		if (m_clipSize.m_y - marginY < differenceY) {
 			changed = 1;
-			m_viewOriginY = screenY - m_clipSize.m_y + marginY;
+			m_viewOriginY = projectedY - m_clipSize.m_y + marginY;
 		}
 		if (changed != 0) {
 			SendCursorMsg();
