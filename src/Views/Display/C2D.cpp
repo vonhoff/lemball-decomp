@@ -2297,10 +2297,15 @@ void C2D::Draw(const VsRect& p_rect)
 {
 }
 
+#include "../../Visos/Foundation/ChangeList.h"
+
 // 68K 0x10b05fa8 ReplaceBackground__3C2DFv
-// STUB: LEMBALL 0x00440400
+// FUNCTION: LEMBALL 0x00440400
 void C2D::ReplaceBackground()
 {
+	ChangeList* changeList = m_gdi->m_renderTarget->GetChangeList();
+	m_drawingMark.Draw(m_gdi);
+	changeList->Reset();
 }
 
 // 68K 0x10b0600e ResetPrimitives__3C2DFv
