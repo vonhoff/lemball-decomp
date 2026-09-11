@@ -1013,9 +1013,35 @@ void C2D::UseBalloon(PlayerLemming* p_lemming)
 }
 
 // 68K 0x10b09876 OnDriverChange__3C2DFv
-// STUB: LEMBALL 0x004383c0
+// FUNCTION: LEMBALL 0x004383c0
 void C2D::OnDriverChange()
 {
+	if (m_display->GetSizeStatus() != 0) {
+		VsRect useRect = m_display->GetUseRect(-1, -1);
+		int zoom;
+		if (g_nCompactPrimaryContextLayout != 0 || g_nEditLevelMode != 0 || g_nZoomEnabled != 0) {
+			zoom = 1;
+		}
+		else {
+			zoom = 2;
+		}
+		m_zoom = (unsigned short) zoom;
+		unsigned int zoomDivisor = m_zoom;
+		m_viewSize.m_x = (short) ((int) useRect.m_width / (int) zoomDivisor);
+		m_viewSize.m_y = (short) ((int) useRect.m_height / (int) zoomDivisor);
+		SetClipSize();
+
+		VsRect innerRect;
+		short clipSizeX = m_clipSize.m_x;
+		if (m_viewSize.m_x != clipSizeX || m_clipSize.m_y != m_viewSize.m_y) {
+			VsRect clipRect((short) m_clipOffsetX, (short) m_clipOffsetY, clipSizeX, m_clipSize.m_y);
+			innerRect = clipRect;
+		}
+		m_display->SetRectInnerZoom(useRect, innerRect, m_zoom);
+		if (m_pauseWindow != 0) {
+			m_pauseWindow->OnDriverChange();
+		}
+	}
 }
 
 // 68K 0x10b09a30 SetClipSize__3C2DFv
@@ -1665,9 +1691,9 @@ void C2D::DrawLaserFire(ViewData& p_viewData)
 void C2D::DrawLaser(ViewData& p_viewData)
 {
 	eAction action;
-	int x;
 	int y;
 	unsigned long resourceId;
+	int x;
 	int frame;
 
 	action = p_viewData.m_action;
