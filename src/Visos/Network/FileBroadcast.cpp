@@ -1,5 +1,6 @@
 #include "FileBroadcast.h"
 
+#include "../Foundation/BaseQueue.h"
 #include "../Foundation/VsOStream.h"
 #include "../Foundation/VsString.h"
 #include "../Messaging/BasePacketHeader.h"
@@ -86,10 +87,38 @@ void FileBroadcast::GetSpecificAddr(const char* p_name)
 }
 
 // 68K 0x10208e68 Start__14CFileBroadcastFPCc
-// STUB: LEMBALL 0x0047ab20
+// FUNCTION: LEMBALL 0x0047ab20
 bool FileBroadcast::Start(const char* p_name)
 {
-	return 0;
+	Broadcast::Initialise(p_name);
+
+	char* extension = strchr(g_pFileBroadcastData, '.');
+	if (extension != 0) {
+		strcpy(extension, ".bct");
+	}
+	else {
+		memcpy(g_pFileBroadcastData + strlen(g_pFileBroadcastData), ".bct", 5);
+	}
+
+	bool created = FileCommonSocket::CreateSocket(g_pFileBroadcastData);
+	FileOpenManagement::IncOpenCount();
+	FileWriteSocket::m_dataOffset = FileReadSocket::m_file->m_payloadCapacity + FileReadSocket::m_unk0x04;
+	FileReadSocket::m_dataOffset = FileWriteSocket::m_dataOffset;
+
+	if (created) {
+		m_isOpen = 1;
+		m_readReady = 1;
+		m_writeReady = 0;
+		m_socketFlags = 1;
+		m_lastBroadcastTime = timeGetTime() - 1000;
+
+		Message message;
+		message.type = 2;
+		message.code = 0;
+		g_pNetworkStatusQueue->Post(message);
+		m_lastProcessTime = timeGetTime();
+	}
+	return created;
 }
 
 // 68K 0x10208fb0 ReadPortInfo__14CFileBroadcastFv
