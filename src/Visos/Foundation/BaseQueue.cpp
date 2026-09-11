@@ -87,12 +87,9 @@ BaseQueue::~BaseQueue()
 bool BaseQueue::Post(Message& p_message)
 {
 	unsigned char* write;
-	unsigned int* dest;
-	unsigned int* src;
-	int i;
 	bool result;
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	m_postCount = m_postCount + 1;
 	p_message.time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
@@ -100,24 +97,18 @@ bool BaseQueue::Post(Message& p_message)
 		m_overflowCount = m_overflowCount + 1;
 		ProcessNMsgs(1);
 		result = Post(p_message);
-		LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+		LeaveCritical();
 		return result;
 	}
 	m_messageCount = m_messageCount + 1;
 	write = m_writeCursor;
-	dest = (unsigned int*) write;
-	src = (unsigned int*) &p_message;
-	for (i = 5; i != 0; i = i - 1) {
-		*dest = *src;
-		src = src + 1;
-		dest = dest + 1;
-	}
+	*(Message*) write = p_message;
 	write = m_writeCursor;
 	m_writeCursor = write + sizeof(Message);
 	if (m_messageBufferEnd <= write + sizeof(Message)) {
 		m_writeCursor = m_messageBuffer;
 	}
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 1;
 }
 
@@ -127,16 +118,16 @@ bool BaseQueue::Send(Message& p_message)
 {
 	bool result;
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	m_sendCount = m_sendCount + 1;
 	p_message.time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
 	result = Process(&p_message);
 	if (result != 0) {
-		LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+		LeaveCritical();
 		return 1;
 	}
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 0;
 }
 
@@ -157,7 +148,7 @@ bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 	unsigned int index;
 	unsigned int count;
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	node = (QueueHandlerNode*) operator new(0xc);
 	node->handler = p_handler;
 	node->priority = p_priority;
@@ -165,14 +156,14 @@ bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 		m_handlerList = node;
 		node->next = 0;
 		m_handlerCount = 1;
-		LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+		LeaveCritical();
 		return 1;
 	}
 	count = m_handlerCount;
 	if (count == 0) {
 		m_handlerList = node;
 		m_handlerCount = 1;
-		LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+		LeaveCritical();
 		return 1;
 	}
 	index = 0;
@@ -190,14 +181,14 @@ bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 					previous->next = node;
 				}
 				m_handlerCount = m_handlerCount + 1;
-				LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+				LeaveCritical();
 				return 1;
 			}
 			if (current->next == 0) {
 				node->next = 0;
 				current->next = node;
 				m_handlerCount = m_handlerCount + 1;
-				LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+				LeaveCritical();
 				return 1;
 			}
 			index = index + 1;
@@ -205,7 +196,7 @@ bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 			current = current->next;
 		} while (index < count);
 	}
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 0;
 }
 
@@ -217,7 +208,7 @@ bool BaseQueue::Detach(BaseQueueHandler* p_handler, int p_priority)
 	QueueHandlerNode* previous;
 	unsigned int index;
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	previous = m_handlerList;
 	current = previous;
 	index = 0;
@@ -228,13 +219,13 @@ bool BaseQueue::Detach(BaseQueueHandler* p_handler, int p_priority)
 					previous->next = current->next;
 					operator delete(current);
 					m_handlerCount = m_handlerCount - 1;
-					LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+					LeaveCritical();
 					return 1;
 				}
 				m_handlerList = current->next;
 				operator delete(current);
 				m_handlerCount = m_handlerCount - 1;
-				LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+				LeaveCritical();
 				return 1;
 			}
 			index = index + 1;
@@ -242,7 +233,7 @@ bool BaseQueue::Detach(BaseQueueHandler* p_handler, int p_priority)
 			current = current->next;
 		} while (index < m_handlerCount);
 	}
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 0;
 }
 
@@ -250,10 +241,10 @@ bool BaseQueue::Detach(BaseQueueHandler* p_handler, int p_priority)
 // FUNCTION: LEMBALL 0x00463570
 bool BaseQueue::GetNth(Message* p_message, unsigned int p_index)
 {
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	PeekNth(p_message, p_index);
 	DeleteNth(p_index);
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 1;
 }
 
@@ -262,23 +253,14 @@ bool BaseQueue::GetNth(Message* p_message, unsigned int p_index)
 bool BaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 {
 	unsigned char* slot;
-	unsigned int* dest;
-	unsigned int* src;
-	int i;
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	slot = m_readCursor + p_index * sizeof(Message);
 	if (m_messageBufferEnd <= slot) {
-		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / sizeof(Message)) * sizeof(Message);
+		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / (int) sizeof(Message)) * sizeof(Message);
 	}
-	dest = (unsigned int*) p_message;
-	src = (unsigned int*) slot;
-	for (i = 5; i != 0; i = i - 1) {
-		*dest = *src;
-		src = src + 1;
-		dest = dest + 1;
-	}
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	*p_message = *(Message*) slot;
+	LeaveCritical();
 	return 1;
 }
 
@@ -289,16 +271,13 @@ bool BaseQueue::PutNth(Message* p_message, unsigned int p_index)
 	unsigned char* slot;
 	unsigned char* dest;
 	unsigned char* src;
-	unsigned int* copyDest;
-	unsigned int* copySrc;
 	unsigned int shifted;
 	unsigned int remain;
-	int i;
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	slot = m_readCursor + p_index * sizeof(Message);
 	if (m_messageBufferEnd <= slot) {
-		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / sizeof(Message)) * sizeof(Message);
+		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / (int) sizeof(Message)) * sizeof(Message);
 	}
 	if (p_index < m_messageCount) {
 		dest = m_writeCursor;
@@ -313,33 +292,21 @@ bool BaseQueue::PutNth(Message* p_message, unsigned int p_index)
 				if (dest < m_messageBuffer) {
 					dest = m_messageBufferEnd - sizeof(Message);
 				}
-				copyDest = (unsigned int*) dest;
-				copySrc = (unsigned int*) src;
-				for (i = 5; i != 0; i = i - 1) {
-					*copyDest = *copySrc;
-					copySrc = copySrc + 1;
-					copyDest = copyDest + 1;
-				}
+				*(Message*) dest = *(Message*) src;
 				src = src - sizeof(Message);
 				dest = dest - sizeof(Message);
 				shifted = shifted + 1;
 			} while (shifted < m_messageCount - p_index);
 		}
 	}
-	copyDest = (unsigned int*) slot;
-	copySrc = (unsigned int*) p_message;
-	for (i = 5; i != 0; i = i - 1) {
-		*copyDest = *copySrc;
-		copySrc = copySrc + 1;
-		copyDest = copyDest + 1;
-	}
+	*(Message*) slot = *p_message;
 	slot = m_writeCursor;
 	m_writeCursor = slot + sizeof(Message);
 	if (m_messageBufferEnd <= slot + sizeof(Message)) {
 		m_writeCursor = m_messageBuffer;
 	}
 	m_messageCount = m_messageCount + 1;
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 1;
 }
 
@@ -352,23 +319,20 @@ bool BaseQueue::DeleteNth(unsigned int p_index)
 	unsigned char* src;
 	unsigned char* read;
 	unsigned char* end;
-	unsigned int* copyDest;
-	unsigned int* copySrc;
 	unsigned int count;
-	int i;
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	read = m_readCursor;
 	end = m_messageBufferEnd;
 	slot = read + p_index * sizeof(Message);
 	if (end <= slot) {
-		slot = m_messageBuffer + (((int) slot - (int) end) / sizeof(Message)) * sizeof(Message);
+		slot = m_messageBuffer + (((int) slot - (int) end) / (int) sizeof(Message)) * sizeof(Message);
 	}
 	count = m_messageCount;
 	if (count == 1) {
 		m_messageCount = 0;
 		m_readCursor = m_writeCursor;
-		LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+		LeaveCritical();
 		return 1;
 	}
 	if (slot == read) {
@@ -377,7 +341,7 @@ bool BaseQueue::DeleteNth(unsigned int p_index)
 			m_readCursor = m_messageBuffer;
 		}
 		m_messageCount = count - 1;
-		LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+		LeaveCritical();
 		return 1;
 	}
 	src = slot;
@@ -393,13 +357,7 @@ bool BaseQueue::DeleteNth(unsigned int p_index)
 			if (m_messageBufferEnd <= src) {
 				src = m_messageBuffer;
 			}
-			copyDest = (unsigned int*) dest;
-			copySrc = (unsigned int*) src;
-			for (i = 5; i != 0; i = i - 1) {
-				*copyDest = *copySrc;
-				copySrc = copySrc + 1;
-				copyDest = copyDest + 1;
-			}
+			*(Message*) dest = *(Message*) src;
 			src = src + sizeof(Message);
 			dest = dest + sizeof(Message);
 			p_index = p_index + 1;
@@ -411,7 +369,7 @@ bool BaseQueue::DeleteNth(unsigned int p_index)
 		m_writeCursor = m_messageBufferEnd - sizeof(Message);
 	}
 	m_messageCount = m_messageCount - 1;
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 1;
 }
 
@@ -424,7 +382,7 @@ bool BaseQueue::ProcessNMsgs(unsigned int p_count)
 	unsigned int index;
 
 	index = 0;
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	available = m_messageCount;
 	if (p_count != 0) {
 		do {
@@ -432,17 +390,17 @@ bool BaseQueue::ProcessNMsgs(unsigned int p_count)
 				break;
 			}
 			if (GetNth(&message, 0) == 0) {
-				LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+				LeaveCritical();
 				return 0;
 			}
 			if (Process(&message) == 0) {
-				LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+				LeaveCritical();
 				return 0;
 			}
 			index = index + 1;
 		} while (index < p_count);
 	}
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 1;
 }
 
@@ -454,14 +412,14 @@ bool BaseQueue::Process(Message* p_message)
 	unsigned int index;
 	int result;
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	EnterCritical();
 	node = m_handlerList;
 	index = 0;
 	if (m_handlerCount != 0) {
 		do {
 			result = node->handler->ProcessMsg(p_message);
 			if (result == 1) {
-				LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+				LeaveCritical();
 				return 1;
 			}
 			node = node->next;
@@ -469,7 +427,7 @@ bool BaseQueue::Process(Message* p_message)
 		} while (index < m_handlerCount);
 	}
 	m_unhandledCount = m_unhandledCount + 1;
-	LeaveCriticalSection((CRITICAL_SECTION*) m_criticalSection);
+	LeaveCritical();
 	return 1;
 }
 
