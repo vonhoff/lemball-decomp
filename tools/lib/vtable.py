@@ -338,7 +338,7 @@ def format_addr(address: int | None) -> str:
 
 
 def comparison_is_thunk_equivalent(result) -> bool:
-    diff = result.result.diff
+    diff = getattr(result, "rdiff", getattr(getattr(result, "result", None), "diff", None))
     if diff is None:
         return False
     orig = [instruction for _, instruction in diff.orig_inst]
@@ -428,8 +428,12 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
             continue
         adjuster_count += 1
         result = engine.compare_address(function.orig_addr)
+        ratio = getattr(result, "accuracy", getattr(result, "ratio", 0.0))
+        effective = getattr(result, "is_effective_match", False)
         if result is None or (
-            result.ratio < 1.0 and not comparison_is_thunk_equivalent(result)
+            not effective
+            and ratio < 1.0
+            and not comparison_is_thunk_equivalent(result)
         ):
             adjuster_problems += 1
             if verbose:

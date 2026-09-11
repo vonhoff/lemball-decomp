@@ -137,8 +137,9 @@ def run_reccmp(
     if not reuse:
         report = ReccmpStatusReport(filename=target.original_path.name)
         for match in engine.compare_all():
+            match_type = getattr(match, "type", getattr(match, "match_type", None))
             if (
-                match.match_type == EntityType.FUNCTION
+                match_type == EntityType.FUNCTION
                 and match.name in target.report_config.ignore_functions
             ):
                 continue
