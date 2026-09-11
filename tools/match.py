@@ -12,7 +12,6 @@ from pathlib import Path
 
 from build import run_build
 from lib.compare import norm_addr
-from lib.paths import RECCMP_JSON
 from lib.reccmp import _load_engine
 from reccmp.tools.asmcmp import print_match_verbose
 
@@ -21,7 +20,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("addrs", nargs="+", help="Addresses (e.g. 0x0045ca30)")
     parser.add_argument("--no-diff", action="store_true", help="Hide instruction diff")
-    parser.add_argument("--json", type=Path, default=RECCMP_JSON)
     parser.add_argument("--no-build", action="store_true", help="Skip incremental build")
     parser.add_argument("--clean-first", action="store_true")
     args = parser.parse_args()

@@ -54,28 +54,16 @@ def is_unresolved_symbol(orig_text: str, recomp_text: str) -> bool:
     return bool(re.match(pattern, recomp_text))
 
 
-def is_unresolved_call(orig_text: str, recomp_text: str) -> bool:
-    orig_text = asm_head(orig_text)
-    recomp_text = asm_head(recomp_text)
-    if not re.match(r"call <OFFSET\d+>$", orig_text):
-        return False
-    return bool(re.match(r"call (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$", recomp_text))
-
-
-def is_unresolved_jmp(orig_text: str, recomp_text: str) -> bool:
-    orig_text = asm_head(orig_text)
-    recomp_text = asm_head(recomp_text)
-    if not re.match(r"jmp -?0x[0-9a-f]+\s*$", orig_text):
-        return False
-    return bool(re.match(r"jmp (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$", recomp_text))
-
-
-def is_recomp_offset_call(orig_text: str, recomp_text: str) -> bool:
-    orig_text = asm_head(orig_text)
-    recomp_text = asm_head(recomp_text)
-    if not re.match(r"call <OFFSET\d+>", recomp_text):
-        return False
-    return bool(re.match(r"call .+ \(FUNCTION\)$", orig_text))
+def is_unresolved_branch(orig_text: str, recomp_text: str) -> bool:
+    orig = asm_head(orig_text)
+    recomp = asm_head(recomp_text)
+    if re.match(r"call <OFFSET\d+>$", orig):
+        return bool(re.match(r"call (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$", recomp))
+    if re.match(r"jmp -?0x[0-9a-f]+\s*$", orig):
+        return bool(re.match(r"jmp (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$", recomp))
+    if re.match(r"call <OFFSET\d+>", recomp):
+        return bool(re.match(r"call .+ \(FUNCTION\)$", orig))
+    return False
 
 
 def split_vtable_reference(instruction: str) -> tuple[str, str, bool] | None:
@@ -119,9 +107,7 @@ def is_equivalent_insn(orig_text: str, recomp_text: str) -> bool:
         or is_vtable_display_alias(orig_text, recomp_text)
         or is_unresolved_symbol(orig_text, recomp_text)
         or is_unresolved_symbol(recomp_text, orig_text)
-        or is_unresolved_call(orig_text, recomp_text)
-        or is_unresolved_jmp(orig_text, recomp_text)
-        or is_recomp_offset_call(orig_text, recomp_text)
+        or is_unresolved_branch(orig_text, recomp_text)
     )
 
 
@@ -237,24 +223,6 @@ def compute_ratio(match: dict | None) -> tuple[float, str]:
     if is_codegen_equivalent_diff(match.get("diff")):
         return 100.0, "MATCH (compiler entropy)"
     return ratio, ""
-
-
-def format_diff_text(diff) -> str:
-    if not diff:
-        return ""
-    lines = []
-    for _, chunks in diff:
-        for chunk in chunks:
-            orig = chunk.get("orig", [])
-            recomp = chunk.get("recomp", [])
-            if not orig and not recomp:
-                continue
-
-            for item in orig:
-                lines.append(f"- {insn_text(item)}")
-            for item in recomp:
-                lines.append(f"+ {insn_text(item)}")
-    return "\n".join(lines)
 
 
 def load_matches(json_path: Path) -> dict[int, dict]:
