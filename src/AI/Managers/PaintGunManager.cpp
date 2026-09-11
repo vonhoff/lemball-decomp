@@ -44,9 +44,15 @@ void PaintGunManager::Initialise(int p_capacity)
 }
 
 // 68K 0x1061bae6 Process__16CPaintGunManagerFv
-// STUB: LEMBALL 0x0042c4d0
+// FUNCTION: LEMBALL 0x0042c4d0
 void PaintGunManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_paintGuns[i].m_requestEnabled = 1;
+		if (m_paintGuns[i].m_enabled != 0) {
+			m_paintGuns[i].Process();
+		}
+	}
 }
 
 // 68K 0x1061bb72 GetViewData__16CPaintGunManagerFP9CViewData
