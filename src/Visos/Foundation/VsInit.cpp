@@ -297,10 +297,16 @@ bool InternalStrmInit()
 }
 
 // 68K 0x10213176 _STRM_Quit__Fv
-// STUB: LEMBALL 0x004590b0
+// FUNCTION: LEMBALL 0x004590b0
 bool InternalStrmQuit()
 {
-	return 0;
+	delete g_pErrorOutput;
+	delete g_pSysOutput;
+	delete g_pDebugOutput;
+	delete g_pErrorStreambuf;
+	delete g_pSysStreambuf;
+	delete g_pDebugStreambuf;
+	return 1;
 }
 
 // 68K 0x10213258 _INP_Init__Fv
