@@ -42,10 +42,21 @@ void LaserManager::Initialise(int p_capacity)
 }
 
 // 68K 0x10614266 StepOn__13CLaserManagerFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x004297f0
+// FUNCTION: LEMBALL 0x004297f0
 bool LaserManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
-	return 0;
+	int i = 0;
+	for (;;) {
+		if (i >= m_count) {
+			return 0;
+		}
+		Laser& laser = m_lasers[i];
+		if (laser.m_enabled != 0 && laser.m_autoActivate == 0 && laser.m_action == (eAction) 0x18 &&
+			laser.StepOn(p_position, p_object)) {
+			return 1;
+		}
+		i++;
+	}
 }
 
 // 68K 0x10614332 Process__13CLaserManagerFv
