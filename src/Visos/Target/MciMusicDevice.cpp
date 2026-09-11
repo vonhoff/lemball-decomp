@@ -275,28 +275,20 @@ void MciMusicDevice::Stop(unsigned long p_handle)
 	char errorText[0x80];
 
 	if (p_handle == 0) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Stop Music (HL) with Invalid Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Stop Music (HL) with Invalid Handle!\n";
 	}
 	if (m_preparedHandle != p_handle) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Stop (HL) with unknown Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Stop (HL) with unknown Handle!\n";
 	}
 	if (m_playing == 0) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error! Stop Command (HL) when not playing!\n";
-		}
+		*g_pErrorOutput << "Error! Stop Command (HL) when not playing!\n";
 		return;
 	}
 	error = mciSendCommandA(m_deviceId, 0x808, 0, 0);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Stop Music! (HL)\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Stop Music! (HL)\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		return;
 	}
 	m_playing = 0;
