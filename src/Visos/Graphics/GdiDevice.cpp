@@ -78,8 +78,6 @@ int GdiDevice::FindFreeSurface()
 Surface* GdiDevice::AllocateSurface(const VsRect& p_rect, Surface* p_parentSurface)
 {
 	int i;
-	void* storage;
-	Surface* surface;
 
 	i = FindFreeSurface();
 	if (i == -1) {
@@ -90,12 +88,7 @@ Surface* GdiDevice::AllocateSurface(const VsRect& p_rect, Surface* p_parentSurfa
 	LocalDebugOStream stream(buffer, sizeof(buffer));
 	stream << "Surface" << i;
 
-	storage = operator new(0x5a0);
-	surface = 0;
-	if (storage != 0) {
-		surface = new (storage) Surface(p_rect, p_parentSurface);
-	}
-	m_surfaceSlots[i].m_surface = surface;
+	m_surfaceSlots[i].m_surface = new Surface(p_rect, p_parentSurface);
 	m_surfaceSlots[i].m_parent = p_parentSurface;
 	m_surfaceSlots[i].m_isPrimary = (void*) p_parentSurface == g_pGdiHelperTarget;
 	m_surfaceSlots[i].m_flushed = 0;
