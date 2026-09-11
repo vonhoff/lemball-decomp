@@ -119,23 +119,71 @@ bool PlayerLemmingGroupManager::IsLemmingPlayerControlled(PlayerLemming* p_lemmi
 }
 
 // 68K 0x1060fe42 MakeNextGroupPlayerControlled__26CPlayerLemmingGroupManagerFv
-// STUB: LEMBALL 0x00418860
+// FUNCTION: LEMBALL 0x00418860
 bool PlayerLemmingGroupManager::MakeNextGroupPlayerControlled()
 {
+	MakeNoGroupsPlayerControlled();
+	int checked = 0;
+	if (m_groupCount > 0) {
+		do {
+			m_controlledGroupIndex++;
+			if (m_controlledGroupIndex == m_groupCount) {
+				m_controlledGroupIndex = 0;
+			}
+			PlayerLemmingGroup* group = (PlayerLemmingGroup*) m_groups[m_controlledGroupIndex];
+			if (group != 0 && group->GetElementsInGroup() > 0) {
+				((PlayerLemmingGroup*) m_groups[m_controlledGroupIndex])->SetPlayerControlled(1, 0);
+				return 1;
+			}
+			checked++;
+		} while (checked < m_groupCount);
+	}
 	return 0;
 }
 
 // 68K 0x1060ff02 MakePreviousGroupPlayerControlled__26CPlayerLemmingGroupManagerFv
-// STUB: LEMBALL 0x004188e0
+// FUNCTION: LEMBALL 0x004188e0
 bool PlayerLemmingGroupManager::MakePreviousGroupPlayerControlled()
 {
+	MakeNoGroupsPlayerControlled();
+	MakeNoGroupsPlayerControlled();
+	int checked = 0;
+	if (m_groupCount > 0) {
+		do {
+			m_controlledGroupIndex--;
+			if (m_controlledGroupIndex < 0) {
+				m_controlledGroupIndex += m_groupCount;
+			}
+			PlayerLemmingGroup* group = (PlayerLemmingGroup*) m_groups[m_controlledGroupIndex];
+			if (group != 0 && group->GetElementsInGroup() > 0) {
+				((PlayerLemmingGroup*) m_groups[m_controlledGroupIndex])->SetPlayerControlled(1, 0);
+				return 1;
+			}
+			checked++;
+		} while (checked < m_groupCount);
+	}
 	return 0;
 }
 
 // 68K 0x1060ffce MakeParticularGroupPlayerControlled__26CPlayerLemmingGroupManagerFP19CPlayerLemmingGroup
-// STUB: LEMBALL 0x00418960
+// FUNCTION: LEMBALL 0x00418960
 bool PlayerLemmingGroupManager::MakeParticularGroupPlayerControlled(PlayerLemmingGroup* p_group)
 {
+	MakeNoGroupsPlayerControlled();
+	int index = 0;
+	GenericGroup** groups = m_groups;
+	do {
+		if (*groups == p_group) {
+			m_controlledGroupIndex = index;
+			if (p_group->GetElementsInGroup() == 0) {
+				return MakeNextGroupPlayerControlled();
+			}
+			p_group->SetPlayerControlled(1, 0);
+			return 1;
+		}
+		groups++;
+		index++;
+	} while (index < 8);
 	return 0;
 }
 
