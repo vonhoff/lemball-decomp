@@ -21,7 +21,7 @@ public:
 			   unsigned long p_arg9,
 			   void* p_arg10,
 			   unsigned long p_arg11);
-	bool DrawBackBuffer();
+	static bool DrawBackBuffer();
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~GunButtons();                      // vtable+0x04
 	void Draw(unsigned char p_firstState, unsigned char p_secondState);

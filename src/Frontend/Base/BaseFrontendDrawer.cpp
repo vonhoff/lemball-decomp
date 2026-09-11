@@ -248,7 +248,7 @@ void BaseFrontendDrawer::Draw(const VsRect& p_rect)
 		m_gdi->m_renderTarget->GetCurrDb();
 		m_primitiveBank = 0;
 		if (m_gunController != 0) {
-			if (((GunButtons*) this)->DrawBackBuffer() == 0 && m_backBufferNeeded == 0) {
+			if (GunButtons::DrawBackBuffer() == 0 && m_backBufferNeeded == 0) {
 				m_backBufferNeeded = 0;
 			}
 			else {
