@@ -315,7 +315,7 @@ void Maze::BInitialise(unsigned char p_resetStats, int p_startX, int p_startY, i
 
 // 68K 0x10615f52 BIteration__5CMazeFRUcRUc
 // FUNCTION: LEMBALL 0x00423650
-bool Maze::BIteration(unsigned char& p_reached, unsigned char& p_noChanges)
+bool Maze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 {
 	p_reached = 0;
 	if (m_endY < 0 || m_endX < 0 || m_height <= m_endY || m_width <= m_endX || m_distances[m_endY][m_endX] == 0xffff) {

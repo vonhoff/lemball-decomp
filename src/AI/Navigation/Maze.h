@@ -7,7 +7,7 @@
 class Maze {
 public:
 	Maze(Map* p_arg0);
-	bool BIteration(unsigned char& p_reached, unsigned char& p_noChanges);
+	bool BIteration(unsigned int& p_reached, unsigned int& p_noChanges);
 	bool CalcNewDistance(int p_x, int p_y);
 	bool FindSquare(unsigned short p_distance, int& p_x, int& p_y);
 	void BInitialise(unsigned char p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY);

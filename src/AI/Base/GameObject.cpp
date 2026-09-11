@@ -11,6 +11,7 @@
 #include "../Navigation/Mover.h"
 #include "../Objects/ViewData.h"
 #include "Pt3.h"
+#include "Solution.h"
 
 #include <string.h>
 
@@ -716,16 +717,79 @@ unsigned short GameObject::MapCheck(int p_x, int p_y)
 }
 
 // 68K 0x10609bba StartRoute__11CGameObjectFv
-// STUB: LEMBALL 0x00415830
+// FUNCTION: LEMBALL 0x00415830
 bool GameObject::StartRoute()
 {
+	unsigned int* reserved = &g_pMaze->m_reserved;
+	m_routeSearchActive = *reserved == 0;
+	*reserved = 1;
+	if (m_routeSearchActive != 0) {
+		g_pMaze->BInitialise(0,
+							 (m_position.m_xFixed >> 12) / 16,
+							 (m_position.m_yFixed >> 12) / 16,
+							 (m_destination.m_xFixed >> 12) / 16,
+							 (m_destination.m_yFixed >> 12) / 16);
+	}
 	return 0;
 }
 
 // 68K 0x10609c9c SearchRoute__11CGameObjectFv
-// STUB: LEMBALL 0x004158b0
+// FUNCTION: LEMBALL 0x004158b0
 bool GameObject::SearchRoute()
 {
+	if (m_routeSearchActive != 0) {
+		int solutionCount;
+		int complete;
+		unsigned int reached;
+		unsigned int noChanges;
+		Solution solutions[120];
+
+		complete = g_pMaze->BIteration(reached, noChanges);
+		m_routeSearchFailed = complete == 0;
+		if (reached != 0) {
+			g_pMaze->BSolution(solutionCount, solutions);
+			m_destinationList->m_count = 0;
+			if (solutionCount < 80) {
+				int index = solutionCount - 1;
+				if (index >= 0) {
+					Solution* solution = &solutions[index];
+					do {
+						AiCoord coordinate;
+						coordinate.m_xFixed = ((unsigned int) (unsigned short) solution->m_x << 16) + 0x8000;
+						coordinate.m_yFixed = ((unsigned int) (unsigned short) solution->m_y << 16) + 0x8000;
+						coordinate.m_zFixed = 0;
+						AiDestinationList* list = m_destinationList;
+						unsigned short count = list->m_count;
+						if (count < list->m_capacity) {
+							list->m_count = count + 1;
+							AiDestinationEntry* entry = &list->m_entries[count];
+							entry->m_type = (eDestinationType) 1;
+							entry->m_coordinate.m_xFixed = coordinate.m_xFixed;
+							entry->m_coordinate.m_yFixed = coordinate.m_yFixed;
+							entry->m_coordinate.m_zFixed = coordinate.m_zFixed;
+						}
+						solution--;
+					} while (solution >= solutions);
+				}
+			}
+		}
+		if (complete != 0) {
+			g_pMaze->m_reserved = 0;
+			m_routeSearchActive = 0;
+		}
+	}
+	else {
+		unsigned int* reserved = &g_pMaze->m_reserved;
+		m_routeSearchActive = *reserved == 0;
+		*reserved = 1;
+		if (m_routeSearchActive != 0) {
+			g_pMaze->BInitialise(0,
+								 (m_position.m_xFixed >> 12) / 16,
+								 (m_position.m_yFixed >> 12) / 16,
+								 (m_destination.m_xFixed >> 12) / 16,
+								 (m_destination.m_yFixed >> 12) / 16);
+		}
+	}
 	return 0;
 }
 
