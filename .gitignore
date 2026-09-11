@@ -16,6 +16,7 @@ compile_commands.json
 *.pdb
 *.res
 *.vsr
+report-*.json
 
 # Local tools and settings
 .idea/
