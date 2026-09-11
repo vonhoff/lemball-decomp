@@ -441,9 +441,37 @@ void PauseWindow::OnInside(const VsPoint& p_point)
 }
 
 // 68K 0x10b0f506 OnButtonDown__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00444b20
+// FUNCTION: LEMBALL 0x00444b20
 void PauseWindow::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
+	int selection = m_minimumSelection;
+	if (selection < m_menuItemCount) {
+		short relX = p_point.m_x - m_relativeTopLeft.m_x;
+		short relY = p_point.m_y - m_relativeTopLeft.m_y;
+		VsPoint* textSizes = m_textSizes + selection * 2 + 1;
+		do {
+			short textX = textSizes->m_x;
+			if (textX <= relX) {
+				short boundX = textSizes[-1].m_x + textX;
+				if (boundX > relX) {
+					short textY = textSizes->m_y;
+					if (textY <= relY) {
+						short boundY = textSizes[-1].m_y + textY;
+						if (boundY > relY) {
+							m_receiverState->SetOptionSelection(m_selection + 1);
+							m_selection = selection;
+							m_cursorState = 1;
+							CursorChangeType((eCursorDisplayType) 1, 1);
+							g_pSoundView->PlayEffect((eSoundEffect) 3);
+							return;
+						}
+					}
+				}
+			}
+			textSizes += 2;
+			selection++;
+		} while (selection < m_menuItemCount);
+	}
 }
 
 // 68K 0x10b0f61a OnButtonUp__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS
