@@ -1,5 +1,6 @@
 #include "GenericGroupManager.h"
 
+#include "../Base/Rect.h"
 #include "../Managers/ObjectManager.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/ViewData.h"
@@ -177,16 +178,38 @@ GameObject* GenericGroupManager::GetNthElement(int p_index)
 }
 
 // 68K 0x1060d7c8 GetGroupElementIsMemberOf__20CGenericGroupManagerFP11CGameObject
-// STUB: LEMBALL 0x0041eb90
+// FUNCTION: LEMBALL 0x0041eb90
 GenericGroup* GenericGroupManager::GetGroupElementIsMemberOf(GameObject* p_object)
 {
+	GenericGroup* group = GetFirstGroup();
+	while (group != 0) {
+		if (group->ConfirmElementIsInGroup(p_object) == 1) {
+			return group;
+		}
+		group = GetNextGroup();
+	}
 	return 0;
 }
 
 // 68K 0x1060d86a CreateNewGroup__20CGenericGroupManagerFUsPUs
-// STUB: LEMBALL 0x0041ebe0
+// FUNCTION: LEMBALL 0x0041ebe0
 void GenericGroupManager::CreateNewGroup(unsigned short p_count, unsigned short* p_objectIds)
 {
+	if (m_groupCount < 40) {
+		GenericGroup* group =
+			new GenericGroup(g_pGenericGroupAI, g_pGenericGroupObjectManager, g_pGenericGroupFormationManager);
+		m_groups[m_groupCount] = group;
+		m_groupCount++;
+		if (p_count != 0) {
+			unsigned int remaining = p_count;
+			do {
+				unsigned short objectId = *p_objectIds;
+				p_objectIds++;
+				AddElementToGroup(g_pObjects[objectId], group);
+				remaining--;
+			} while (remaining != 0);
+		}
+	}
 }
 
 // 68K 0x1060d93e AddNewGroup__20CGenericGroupManagerFP13CGenericGroup
@@ -208,9 +231,29 @@ void GenericGroupManager::CreateNewGroup()
 }
 
 // 68K 0x1060d9cc DeleteGroup__20CGenericGroupManagerFP13CGenericGroup
-// STUB: LEMBALL 0x0041ecb0
+// FUNCTION: LEMBALL 0x0041ecb0
 void GenericGroupManager::DeleteGroup(GenericGroup* p_group)
 {
+	int index = 0;
+	if (m_groupCount > 0) {
+		while (m_groups[index] != p_group) {
+			index++;
+			if (m_groupCount <= index) {
+				return;
+			}
+		}
+		delete p_group;
+		m_groupCount--;
+		if (index < m_groupCount) {
+			GenericGroup** group = m_groups + index;
+			do {
+				index++;
+				*group = group[1];
+				group++;
+			} while (index < m_groupCount);
+		}
+		m_groups[index] = 0;
+	}
 }
 
 // 68K 0x1060da66 AddElementToGroup__20CGenericGroupManagerFP11CGameObjectP13CGenericGroup
@@ -222,10 +265,35 @@ void GenericGroupManager::AddElementToGroup(GameObject* p_object, GenericGroup* 
 }
 
 // 68K 0x1060dae2 RemoveElementFromGroup__20CGenericGroupManagerFP11CGameObjectP13CGenericGroup
-// STUB: LEMBALL 0x0041ed40
+// FUNCTION: LEMBALL 0x0041ed40
 bool GenericGroupManager::RemoveElementFromGroup(GameObject* p_object, GenericGroup* p_group)
 {
-	return 0;
+	bool groupExists = 1;
+	if (p_group != 0) {
+		p_group->RemoveElementFromGroup(p_object);
+		if (m_state != 0 && p_group->GetElementsInGroup() < 1) {
+			delete p_group;
+			m_groupCount--;
+			groupExists = 0;
+			for (int index = 0; index < 40; index++) {
+				if (m_groups[index] == p_group) {
+					int destination = index;
+					if (index < 39) {
+						int remaining = 39 - index;
+						destination += remaining;
+						GenericGroup** group = m_groups + index;
+						do {
+							*group = group[1];
+							group++;
+							remaining--;
+						} while (remaining != 0);
+					}
+					m_groups[destination] = 0;
+				}
+			}
+		}
+	}
+	return groupExists;
 }
 
 // 68K 0x1060dbd2 FindElementInGroupAndRemoveIt__20CGenericGroupManagerFP11CGameObject
@@ -236,10 +304,25 @@ void GenericGroupManager::FindElementInGroupAndRemoveIt(GameObject* p_object)
 }
 
 // 68K 0x1060dc5a GetAllBoundingBoxes__20CGenericGroupManagerFP5tRect
-// STUB: LEMBALL 0x0041ee00
+// FUNCTION: LEMBALL 0x0041ee00
 int GenericGroupManager::GetAllBoundingBoxes(Rect* p_rects)
 {
-	return 0;
+	int count = 0;
+	VsRect bounds;
+	GenericGroup* group = GetFirstGroup();
+	if (group != 0) {
+		do {
+			count++;
+			group->GetBoundingBox(bounds);
+			p_rects->m_left = bounds.m_x;
+			p_rects->m_top = bounds.m_y;
+			p_rects->m_right = bounds.m_x + bounds.m_width;
+			p_rects->m_bottom = bounds.m_y + bounds.m_height;
+			group = GetNextGroup();
+			p_rects++;
+		} while (group != 0);
+	}
+	return count;
 }
 
 // 68K 0x1060dd46 GetViewData__20CGenericGroupManagerFP9CViewData
@@ -258,8 +341,15 @@ int GenericGroupManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1060ddde CheckGroupIntersection__20CGenericGroupManagerFP7CVSRectP7AICOORD
-// STUB: LEMBALL 0x0041eed0
+// FUNCTION: LEMBALL 0x0041eed0
 bool GenericGroupManager::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 {
+	GenericGroup* group = GetFirstGroup();
+	while (group != 0) {
+		if (group->CheckGroupIntersection(p_rect, p_coordinate) == 1) {
+			return 1;
+		}
+		group = GetNextGroup();
+	}
 	return 0;
 }
