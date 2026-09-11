@@ -34,9 +34,7 @@ ReadNcmsBuff::~ReadNcmsBuff()
 		int index;
 
 		for (index = 0; index < m_messageCount; index++) {
-			if (m_messages[index] != 0) {
-				delete m_messages[index];
-			}
+			delete m_messages[index];
 		}
 		operator delete(m_messages);
 	}
