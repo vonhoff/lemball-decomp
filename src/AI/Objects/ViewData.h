@@ -23,6 +23,7 @@ public:
 
 	friend class GameObject;
 	friend class PlayerLemming;
+	friend class TrapDoor;
 	friend class SoundView;
 	friend class C2D;
 	friend int ViewDataCmp(const void* p_left, const void* p_right);

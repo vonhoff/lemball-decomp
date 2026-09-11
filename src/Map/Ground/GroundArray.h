@@ -14,6 +14,7 @@ public:
 
 	friend class Bullet;
 	friend class Ai;
+	friend class TrapDoor;
 	friend class TrapDoorManager;
 	friend class PlayerLemmingGroupManager;
 	friend class PlayerLemming;
