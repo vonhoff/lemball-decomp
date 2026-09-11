@@ -67,7 +67,7 @@ private:
 	unsigned int m_flag74;        // 0x34
 	unsigned int m_flag78;        // 0x38
 	unsigned int m_updateEnabled; // 0x3c
-	void* m_reserved40;           // 0x40
+	int m_reserved40;             // 0x40
 };
 
 #endif

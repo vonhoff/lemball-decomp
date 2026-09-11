@@ -56,7 +56,7 @@ void PvBackBuffSurface::AllocateBackBuff()
 
 	size.m_width = m_windowRect.m_width;
 	size.m_height = m_windowRect.m_height;
-	size = m_bitmap.SetSize(size, (int) m_reserved40);
+	size = m_bitmap.SetSize(size, m_reserved40);
 	allocatedArea = (int) m_allocatedWidth * (int) m_allocatedHeight;
 	neededArea = (int) size.m_height * (int) size.m_width;
 	if (allocatedArea < neededArea) {
