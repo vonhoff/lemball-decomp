@@ -1,7 +1,9 @@
 #include "GenericGroup.h"
 
+#include "../../Visos/Foundation/VsMath.h"
 #include "../Navigation/AiDestinationList.h"
 #include "../Objects/ViewData.h"
+#include "FormationManager.h"
 
 #include <string.h>
 
@@ -342,9 +344,34 @@ int GenericGroup::GetFormationIndex()
 }
 
 // 68K 0x1060ce2e ReformAlteredGroup__13CGenericGroupFP17CFormationManager
-// STUB: LEMBALL 0x0041e420
+// FUNCTION: LEMBALL 0x0041e420
 void GenericGroup::ReformAlteredGroup(FormationManager* p_formationManager)
 {
+	AiCoord coordinate;
+
+	if (m_altered != 0) {
+		GameObject* object = GetFirstElementInGroup();
+		if (object != 0) {
+			AiCoord destination;
+			destination = object->GetDestination();
+			unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> 12,
+														   object->m_position.m_yFixed >> 12,
+														   destination.m_xFixed >> 12,
+														   destination.m_yFixed >> 12);
+			p_formationManager->TransformFormation(m_formationIndex, (direction - 2) << 6);
+
+			int count = GetElementsInGroup();
+			for (int i = 0; i < count; i++) {
+				Vector* vector = p_formationManager->GetAVector(i);
+				coordinate.m_xFixed = vector->m_xFixed + destination.m_xFixed;
+				coordinate.m_yFixed = vector->m_yFixed + destination.m_yFixed;
+				coordinate.m_zFixed = destination.m_zFixed;
+				object->AlterDestination(coordinate);
+				object = GetNextElementInGroup();
+			}
+		}
+		m_altered = 0;
+	}
 }
 
 // 68K 0x1060cff2 CheckGroupIntersection__13CGenericGroupFP7CVSRectP7AICOORD
