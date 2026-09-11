@@ -2245,46 +2245,50 @@ void C2D::SetOrigin()
 
 	int gameX = origin.m_xFixed >> 12;
 	int gameY = origin.m_yFixed >> 12;
-	int blockX = origin.m_xFixed >> 16;
-	int blockY = origin.m_yFixed >> 16;
-	unsigned short z = 0;
-	if (gameX >= 0 && gameY >= 0 && blockX < m_map->m_ground.m_width && blockY < m_map->m_ground.m_height) {
-		z = m_map->m_ground.m_ground[blockY * m_map->m_ground.m_width + blockX].GetZ((origin.m_xFixed >> 12) & 0xf,
-																					 (origin.m_yFixed >> 12) & 0xf);
+	unsigned short z;
+	if (gameX >= 0 && gameY >= 0 && gameX >> 4 < m_map->m_ground.m_width && gameY >> 4 < m_map->m_ground.m_height) {
+		z = m_map->m_ground.m_ground[(gameY >> 4) * m_map->m_ground.m_width + (gameX >> 4)].GetZ(gameX & 0xf,
+																								 gameY & 0xf);
+	}
+	else {
+		z = 0;
 	}
 	origin.m_zFixed = (int) z << 12;
 
 	if (m_ai->m_gameStatus == 0 || m_ai->m_gameStatus == 2) {
 		int marginX = m_clipSize.m_x * 2 / 5;
 		int marginY = m_clipSize.m_y * 2 / 5;
-		int oldViewOriginX = m_viewOriginX;
-		int oldViewOriginY = m_viewOriginY;
-		m_originPosition = origin;
+		m_originPosition.m_xFixed = origin.m_xFixed;
+		m_originPosition.m_zFixed = origin.m_zFixed;
+		m_originPosition.m_yFixed = origin.m_yFixed;
 
 		int screenX = origin.m_xFixed >> 12;
 		int screenY = origin.m_yFixed >> 12;
 		int screenZ = origin.m_zFixed >> 12;
 		m_map->GameToScreen(screenX, screenY);
-		int projectedX = screenX;
-		int projectedY = (screenY - screenZ) * 0x1000;
-		int projectedYGame = projectedY >> 12;
-		int differenceX = projectedX - m_viewOriginX;
-		int differenceY = projectedYGame - m_viewOriginY;
+		origin.m_xFixed = screenX << 12;
+		origin.m_yFixed = (screenY - screenZ) * 0x1000;
+		int oldViewOriginX = m_viewOriginX;
+		screenX = origin.m_xFixed >> 12;
+		screenY = origin.m_yFixed >> 12;
+		int oldViewOriginY = m_viewOriginY;
+		int differenceX = screenX - m_viewOriginX;
+		int differenceY = screenY - m_viewOriginY;
 		if (differenceX < marginX) {
 			changed = 1;
-			m_viewOriginX = projectedX - marginX;
+			m_viewOriginX = screenX - marginX;
 		}
 		if (differenceY < marginY) {
 			changed = 1;
-			m_viewOriginY = projectedYGame - marginY;
+			m_viewOriginY = screenY - marginY;
 		}
 		if (m_clipSize.m_x - marginX < differenceX) {
 			changed = 1;
-			m_viewOriginX = projectedX - m_clipSize.m_x + marginX;
+			m_viewOriginX = screenX - m_clipSize.m_x + marginX;
 		}
 		if (m_clipSize.m_y - marginY < differenceY) {
 			changed = 1;
-			m_viewOriginY = projectedYGame - m_clipSize.m_y + marginY;
+			m_viewOriginY = screenY - m_clipSize.m_y + marginY;
 		}
 		if (changed != 0) {
 			SendCursorMsg();
