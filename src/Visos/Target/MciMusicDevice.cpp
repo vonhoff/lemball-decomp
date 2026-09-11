@@ -302,34 +302,24 @@ void MciMusicDevice::Pause(unsigned long p_handle)
 	char errorText[0x80];
 
 	if (p_handle == 0) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Pause Music (HL) with Invalid Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Pause Music (HL) with Invalid Handle!\n";
 	}
 	if (m_preparedHandle != p_handle) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Pause (HL) with unknown Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Pause (HL) with unknown Handle!\n";
 	}
-	statusParms.dwCallback = 0;
 	statusParms.dwItem = 2;
-	statusParms.dwReturn = 0;
 	error = mciSendCommandA(m_deviceId, 0x814, 0x100, (DWORD) &statusParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Get Position for Pause! (HL)\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Get Position for Pause! (HL)\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 	}
 	m_pausePosition = statusParms.dwReturn;
 	error = mciSendCommandA(m_deviceId, 0x808, 0, 0);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Stop Music! (HL)\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Stop Music! (HL)\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 	}
 	else {
 		m_playing = 0;
@@ -346,36 +336,25 @@ void MciMusicDevice::Resume(unsigned long p_handle)
 	char errorText[0x80];
 
 	if (p_handle == 0) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Resume Music (HL) with Invalid Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Resume Music (HL) with Invalid Handle!\n";
 	}
 	if (m_preparedHandle != p_handle) {
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error Call to Resume (HL) with unknown Handle!\n";
-		}
+		*g_pErrorOutput << "Error Call to Resume (HL) with unknown Handle!\n";
 	}
-	seekParms.dwCallback = 0;
 	seekParms.dwTo = 0;
 	error = mciSendCommandA(m_deviceId, 0x807, 0x100, (DWORD) &seekParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Restart Music (Seek)! (HL)\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Restart Music (Seek)! (HL)\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		return;
 	}
 	playParms.dwCallback = (DWORD) m_notifyWindow;
-	playParms.dwFrom = 0;
-	playParms.dwTo = 0;
 	error = mciSendCommandA(m_deviceId, 0x806, 1, (DWORD) &playParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
-		if (g_pErrorOutput != 0) {
-			*g_pErrorOutput << "Error!     Unable to Restart Music (Play)! (HL)\n";
-			*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		}
+		*g_pErrorOutput << "Error!     Unable to Restart Music (Play)! (HL)\n";
+		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		return;
 	}
 	m_playing = 1;
