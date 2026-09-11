@@ -209,27 +209,27 @@ bool BaseQueue::Detach(BaseQueueHandler* p_handler, int p_priority)
 	unsigned int index;
 
 	EnterCritical();
-	previous = m_handlerList;
-	current = previous;
+	current = m_handlerList;
 	index = 0;
+	previous = current;
 	if (m_handlerCount != 0) {
 		do {
 			if (current->priority == p_priority && current->handler == p_handler) {
-				if (index != 0) {
-					previous->next = current->next;
+				if (index == 0) {
+					m_handlerList = current->next;
 					operator delete(current);
 					m_handlerCount = m_handlerCount - 1;
 					LeaveCritical();
 					return 1;
 				}
-				m_handlerList = current->next;
+				previous->next = current->next;
 				operator delete(current);
 				m_handlerCount = m_handlerCount - 1;
 				LeaveCritical();
 				return 1;
 			}
-			index = index + 1;
 			previous = current;
+			index = index + 1;
 			current = current->next;
 		} while (index < m_handlerCount);
 	}
@@ -402,23 +402,17 @@ bool BaseQueue::ProcessNMsgs(unsigned int p_count)
 // FUNCTION: LEMBALL 0x004638a0
 bool BaseQueue::Process(Message* p_message)
 {
-	QueueHandlerNode* node;
 	unsigned int index;
-	int result;
+	QueueHandlerNode* node;
 
 	EnterCritical();
 	node = m_handlerList;
-	index = 0;
-	if (m_handlerCount != 0) {
-		do {
-			result = node->handler->ProcessMsg(p_message);
-			if (result == 1) {
-				LeaveCritical();
-				return 1;
-			}
-			node = node->next;
-			index = index + 1;
-		} while (index < m_handlerCount);
+	for (index = 0; index < m_handlerCount; index++) {
+		if (node->handler->ProcessMsg(p_message) == 1) {
+			LeaveCritical();
+			return 1;
+		}
+		node = node->next;
 	}
 	m_unhandledCount = m_unhandledCount + 1;
 	LeaveCritical();
