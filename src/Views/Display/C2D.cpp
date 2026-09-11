@@ -708,9 +708,22 @@ int C2D::ProcessMsg(Message* p_message)
 }
 
 // 68K 0x10b09008 NewPauseWindow__3C2DF20ePauseWindowMessages
-// STUB: LEMBALL 0x00437d00
+// FUNCTION: LEMBALL 0x00437d00
 void C2D::NewPauseWindow(int p_message)
 {
+	m_previousPauseMessage = m_pauseMessage;
+	m_pauseMessage = p_message;
+	if (m_pauseWindow != 0) {
+		BaseQueueHandler& queueHandler = *m_pauseWindow;
+		delete &queueHandler;
+		m_pauseWindow = 0;
+	}
+	if (m_pauseMessage != 5) {
+		m_pauseWindow = new PauseWindow(this, m_display, (ePauseWindowMessages) m_pauseMessage);
+	}
+	if (m_pauseMessage == 3) {
+		m_pauseSelection = m_optionSelection;
+	}
 }
 
 // 68K 0x10b090e0 TriggerPause__3C2DFUc
