@@ -57,18 +57,16 @@ char* NetworkFile::GetFilename()
 
 // 68K 0x1010f5d0 Open__12CNetworkFileFPCcUcUc
 // FUNCTION: LEMBALL 0x0047f5b0
-bool NetworkFile::Open(const char* p_filename, unsigned char p_mode, unsigned char p_create)
+bool NetworkFile::Open(const char* p_filename, unsigned char p_mode, int p_create)
 {
 	unsigned int length;
-	char* copy;
 	unsigned int creation;
 	void* handle;
 
 	(void) p_mode;
 	length = strlen(p_filename) + 1;
-	copy = (char*) operator new(length);
-	m_filename = copy;
-	memcpy(copy, p_filename, length);
+	m_filename = (char*) operator new(length);
+	strcpy(m_filename, p_filename);
 	if (p_create == 0) {
 		creation = 3;
 	}
