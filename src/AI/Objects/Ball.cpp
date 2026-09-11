@@ -1,8 +1,11 @@
 #include "Ball.h"
 
 #include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
+#include "../../Visos/Foundation/Vector.h"
 #include "../../Visos/Foundation/VsMath.h"
+#include "../Base/Pt3.h"
 #include "../Managers/BallManager.h"
 #include "../Navigation/Ai.h"
 
@@ -80,10 +83,85 @@ void Ball::StartMovement(unsigned char p_direction)
 }
 
 // 68K 0x10603926 Move__5CBallFv
-// STUB: LEMBALL 0x00421870
+// FUNCTION: LEMBALL 0x00421870
 bool Ball::Move()
 {
-	return 0;
+	int elapsed = (int) (g_dwGameTick - m_lastMovementTick);
+	int duration = m_moveDurationTicks;
+	unsigned int z;
+	int x;
+	int y;
+	{
+		Vector delta(m_moveDeltaXFixed, m_moveDeltaYFixed);
+		Vector movement = delta * elapsed;
+		movement.m_xFixed /= duration;
+		movement.m_yFixed /= duration;
+		x = (m_moveStartXFixed + movement.m_xFixed) >> 12;
+		y = (m_moveStartYFixed + movement.m_yFixed) >> 12;
+	}
+
+	Map* map = g_pMap;
+	int blockX = x >> 4;
+	int blockY = y >> 4;
+	unsigned short groundZ;
+	if (x < 0 || y < 0 || map->m_ground.m_width <= blockX || map->m_ground.m_height <= blockY) {
+		groundZ = 0;
+	}
+	else {
+		int groundX = x & 0xf;
+		int groundY = y & 0xf;
+		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
+	}
+	z = groundZ;
+
+	Ai* ai = g_pAI;
+	Pt3 point;
+	point.m_x = x;
+	point.m_y = y;
+	point.m_z = z;
+	ai->m_collisionExclude = this;
+	ai->m_collisionPoint = point;
+	ai->m_collisionIndex = 0;
+	GameObject* hit;
+	if (ai->m_objectCount > 0) {
+		do {
+			GameObject* object = ai->m_objects[ai->m_collisionIndex];
+			if (ai->m_collisionExclude != object && object->Collision(ai->m_collisionPoint)) {
+				hit = ai->m_objects[ai->m_collisionIndex];
+				ai->m_collisionIndex++;
+				goto found;
+			}
+			ai->m_collisionIndex++;
+		} while (ai->m_collisionIndex < ai->m_objectCount);
+	}
+	hit = 0;
+found:
+	if (hit != 0) {
+		hit->HitBall();
+		m_action = (eAction) 0x26;
+		m_stateTimer = g_dwSimulationTimestamp;
+		m_actionDeadline = g_dwGameTick + 0x16;
+		return 1;
+	}
+
+	if ((m_position.m_zFixed >> 12) + 12 < (int) z) {
+		switch ((unsigned short) m_actionArgument) {
+		case 2:
+			m_actionArgument = 5;
+			StartMovement(0);
+			return 1;
+		case 5:
+			m_actionArgument = 2;
+			StartMovement(1);
+			return 1;
+		}
+		return 1;
+	}
+
+	m_position.m_zFixed = (unsigned int) z << 12;
+	m_position.m_xFixed = x << 12;
+	m_position.m_yFixed = y << 12;
+	return 1;
 }
 
 // 68K 0x10603a98 HitBullet__5CBallFP7CBullet
