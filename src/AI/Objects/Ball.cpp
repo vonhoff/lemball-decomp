@@ -1,6 +1,8 @@
 #include "Ball.h"
 
+#include "../../Control/Game/Game.h"
 #include "../../Map/Base/Map.h"
+#include "../../Visos/Foundation/VsMath.h"
 #include "../Managers/BallManager.h"
 #include "../Navigation/Ai.h"
 
@@ -48,9 +50,33 @@ void Ball::Set(AiCoord p_start, AiCoord p_destination, int p_speed)
 }
 
 // 68K 0x106037c0 StartMovement__5CBallFUc
-// STUB: LEMBALL 0x00421770
+// FUNCTION: LEMBALL 0x00421770
 void Ball::StartMovement(unsigned char p_direction)
 {
+	m_direction = p_direction;
+
+	int targetX;
+	int targetY;
+	if (p_direction != 0) {
+		targetX = m_destination.m_xFixed;
+		targetY = m_destination.m_yFixed;
+	}
+	else {
+		targetX = m_spawnPosition.m_xFixed;
+		targetY = m_spawnPosition.m_yFixed;
+	}
+
+	int distance = Distance(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, targetX >> 12, targetY >> 12);
+	m_lastMovementTick = g_dwGameTick;
+	m_moveDurationTicks = (m_speed * distance) / 50;
+	if (m_moveDurationTicks == 0) {
+		m_moveDurationTicks = 1;
+	}
+	m_actionDeadline = m_moveDurationTicks + g_dwGameTick;
+	m_moveStartXFixed = m_position.m_xFixed;
+	m_moveStartYFixed = m_position.m_yFixed;
+	m_moveDeltaXFixed = targetX - m_moveStartXFixed;
+	m_moveDeltaYFixed = targetY - m_moveStartYFixed;
 }
 
 // 68K 0x10603926 Move__5CBallFv
