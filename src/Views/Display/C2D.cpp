@@ -547,9 +547,18 @@ void C2D::FormGroup()
 }
 
 // 68K 0x10b08354 MoveGroup__3C2DFRC8CVSPoint
-// STUB: LEMBALL 0x004371e0
+// FUNCTION: LEMBALL 0x004371e0
 void C2D::MoveGroup(const VsPoint& p_point)
 {
+	Message msg;
+	msg.type = 2;
+	memset(&msg.time, 0, sizeof(msg.time) + sizeof(msg.code) + sizeof(msg.payload) + sizeof(msg.source));
+	msg.code = p_point.m_x;
+	msg.payload = (void*) (int) p_point.m_y;
+	m_lemmingManager->Post(msg);
+	m_groupCount = 0;
+	m_groupingActive = 0;
+	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x25;
 }
 
 // 68K 0x10b083d6 CancelMoves__3C2DFv
