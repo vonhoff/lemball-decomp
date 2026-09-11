@@ -1,6 +1,6 @@
 # Lemmings Paintball Decompilation
 
-[![Build Status](https://github.com/vonhoff/lemball-decomp/actions/workflows/build-and-verify.yml/badge.svg)](https://github.com/vonhoff/lemball-decomp/actions/workflows/build-and-verify.yml)
+[![Build Status](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml/badge.svg)](https://github.com/vonhoff/lemball-decomp/actions/workflows/build-and-verify.yml)
 [![Code Progress](https://decomp.dev/vonhoff/lemball-decomp.svg?mode=shield&measure=code&label=Code)](https://decomp.dev/vonhoff/lemball-decomp)
 
 [<img src="https://decomp.dev/vonhoff/lemball-decomp.svg?w=512&h=256" width="512" height="256" alt="Decomp Progress Chart">](https://decomp.dev/vonhoff/lemball-decomp)
@@ -40,9 +40,7 @@ These symbols are mapped to the Windows x86 executable by comparing code structu
 
 ## AI Assistance
 
-This project is developed with assistance from AI agents.
-
-AI suggestions are treated as hypotheses, not authoritative code. Every change is verified against:
+This project is developed with assistance from AI agents. Every change is verified against:
 - Clean compilation with MSVC 4.00
 - Binary diffs and assembly matches
 - Recovered Mac 68K symbol evidence
