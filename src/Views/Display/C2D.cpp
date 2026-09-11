@@ -2501,10 +2501,109 @@ unsigned short C2D::CalcZValueSprite(int p_index)
 }
 
 // 68K 0x10b064c6 CalcGroundCode__3C2DF11eObjectTypeiiUs
-// STUB: LEMBALL 0x00440840
+// FUNCTION: LEMBALL 0x00440840
 unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, unsigned short p_z)
 {
-	return 0;
+	bool baseCodeOnly = false;
+	switch (p_objectType) {
+	case 0x18:
+		return 0x7d00;
+	case 0x19:
+	case 0x1a:
+		p_x += 0x10;
+		p_y += 0x10;
+		baseCodeOnly = true;
+		break;
+	case 0x1f:
+		return 0x7d00;
+	case 0x22:
+		baseCodeOnly = true;
+		break;
+	case 0x34:
+		p_x = (p_x - 8) & ~0xf;
+		p_y = (p_y - 8) & ~0xf;
+		break;
+	}
+
+	unsigned short tileX = (unsigned short) (p_x / 0x10);
+	unsigned short tileY = (unsigned short) (p_y / 0x10);
+	unsigned short code = (unsigned short) ((tileX + tileY) * 0x40 + 4);
+	if (baseCodeOnly) {
+		return code;
+	}
+
+	p_z += 2;
+
+	unsigned short southZ = 0;
+	int southTileX = p_x >> 4;
+	int southTileY = (p_y + 0x10) >> 4;
+	if (p_x >= 0 && p_y + 0x10 >= 0 && southTileX < m_map->m_ground.m_width && southTileY < m_map->m_ground.m_height) {
+		southZ = m_map->m_ground.m_ground[southTileY * m_map->m_ground.m_width + southTileX].GetZ(p_x & 0xf, p_y & 0xf);
+	}
+
+	unsigned short eastZ = 0;
+	int eastTileX = (p_x + 0x10) >> 4;
+	int eastTileY = p_y >> 4;
+	if (p_x + 0x10 >= 0 && p_y >= 0 && eastTileX < m_map->m_ground.m_width && eastTileY < m_map->m_ground.m_height) {
+		eastZ = m_map->m_ground.m_ground[eastTileY * m_map->m_ground.m_width + eastTileX].GetZ(p_x & 0xf, p_y & 0xf);
+	}
+
+	unsigned short southeastZ = 0;
+	if (p_x + 0x10 >= 0 && p_y + 0x10 >= 0 && eastTileX < m_map->m_ground.m_width &&
+		southTileY < m_map->m_ground.m_height) {
+		southeastZ =
+			m_map->m_ground.m_ground[southTileY * m_map->m_ground.m_width + eastTileX].GetZ(p_x & 0xf, p_y & 0xf);
+	}
+
+	int threshold = (int) p_z - 0x18;
+	bool southSolid = false;
+	if ((int) southZ >= threshold) {
+		int collisionX = (unsigned short) tileX;
+		int collisionY = (unsigned short) tileY;
+		collisionY++;
+		unsigned short collision = 3;
+		if (collisionY >= 0 && collisionX < m_map->m_ground.m_width && collisionY < m_map->m_ground.m_height) {
+			collision = m_map->m_ground.m_ground[collisionY * m_map->m_ground.m_width + collisionX].m_collision;
+		}
+		southSolid = (collision & 1) != 0;
+	}
+
+	bool eastSolid = false;
+	if ((int) eastZ >= threshold) {
+		int collisionX = (unsigned short) tileX;
+		int collisionY = (unsigned short) tileY;
+		collisionX++;
+		unsigned short collision = 3;
+		if (collisionX >= 0 && collisionX < m_map->m_ground.m_width && collisionY < m_map->m_ground.m_height) {
+			collision = m_map->m_ground.m_ground[collisionY * m_map->m_ground.m_width + collisionX].m_collision;
+		}
+		eastSolid = (collision & 1) != 0;
+	}
+
+	bool southeastSolid = false;
+	if ((int) southeastZ >= threshold) {
+		int collisionX = (unsigned short) tileX;
+		int collisionY = (unsigned short) tileY;
+		collisionX++;
+		collisionY++;
+		unsigned short collision = 3;
+		if (collisionX >= 0 && collisionY >= 0 && collisionX < m_map->m_ground.m_width &&
+			collisionY < m_map->m_ground.m_height) {
+			collision = m_map->m_ground.m_ground[collisionY * m_map->m_ground.m_width + collisionX].m_collision;
+		}
+		southeastSolid = (collision & 1) != 0;
+	}
+
+	bool southWithinZ = p_z >= southZ;
+	bool eastWithinZ = p_z >= eastZ;
+	bool southeastWithinZ = p_z >= southeastZ;
+	if (southWithinZ && eastWithinZ && southeastWithinZ && !southeastSolid && !eastSolid && !southSolid) {
+		code += 0x80;
+	}
+	else if (southWithinZ || eastWithinZ) {
+		code += 0x40;
+	}
+	return code;
 }
 
 // 68K 0x10b06752 InitSpriteGroundLU__3C2DFv
