@@ -71,14 +71,14 @@ bool FileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 		return false;
 	}
 
-	headerOffset = m_file->m_payloadCapacity * m_unk0x10 + m_unk0x04;
+	headerOffset = m_file->m_headers->m_payloadCapacity * m_unk0x10 + m_unk0x04;
 	Seek(headerOffset);
 	header = &m_file->m_headers[m_unk0x10];
 	strcpy(header->m_text0, g_pBroadcastAddress->GetStr());
 	strcpy(header->m_text1, m_destinationAddress->GetStr());
 	header->m_headerValue = (unsigned long) p_size;
 
-	lockLength = Write(*header, 1, 0);
+	lockLength = Write(m_file->m_headers[m_unk0x10], 1, 0);
 	if (lockLength != 0) {
 		Seek(m_dataOffset + m_unk0x10 * g_networkPacketSize);
 		if (!NetworkFile::Write(p_data, p_size)) {
