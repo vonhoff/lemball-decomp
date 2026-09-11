@@ -187,15 +187,17 @@ void SoundView::SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listen
 		y = p_listener.m_yFixed >> 12;
 		volume = g_pSoundManager->GetEffectVolume();
 		if (p_count > 0) {
-			for (i = 0; i < p_count; i++, p_viewData++) {
-				effectId = p_viewData->m_soundEffect;
+			for (i = 0; i < p_count; i++) {
+				effectId = p_viewData[i].m_soundEffect;
 				if (effectId != 0) {
-					dist = Distance(x, y, (unsigned short) p_viewData->m_viewX, (unsigned short) p_viewData->m_viewY);
+					int effectX = (unsigned short) p_viewData[i].m_viewX;
+					int effectY = (unsigned short) p_viewData[i].m_viewY;
+					dist = Distance(x, y, effectX, effectY);
 					attenuatedVol = volume;
 					dist -= 200;
 					if (dist > 0) {
 						attenuatedVol = volume + (int) (dist * volume * -40) / 124800;
-						if (volume < attenuatedVol) {
+						if (attenuatedVol > volume) {
 							attenuatedVol = volume;
 						}
 					}
