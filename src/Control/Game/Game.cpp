@@ -236,7 +236,7 @@ Game::~Game()
 	if (m_mainDisplay != 0) {
 		m_mainDisplay->Destroy();
 		if (m_mainDisplay != 0) {
-			delete (BaseQueueHandler*) m_mainDisplay;
+			delete m_mainDisplay;
 		}
 	}
 	if (m_process != 0) {
