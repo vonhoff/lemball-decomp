@@ -30,6 +30,7 @@ public:
 	friend class Trampoline;
 	friend class Mover;
 	friend class Lift;
+	friend class PaintGun;
 	friend class C2D;
 
 private:

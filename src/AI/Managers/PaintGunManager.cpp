@@ -64,9 +64,18 @@ int PaintGunManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1061bc0a Add__16CPaintGunManagerFUsiiii
-// STUB: LEMBALL 0x0042c590
+// FUNCTION: LEMBALL 0x0042c590
 void PaintGunManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, int p_direction)
 {
+	if (m_count < m_capacity) {
+		AiCoord position;
+		position.m_xFixed = p_x << 12;
+		position.m_yFixed = p_y << 12;
+		position.m_zFixed = p_z << 12;
+		m_paintGuns[m_count].Set(p_id, position, 0);
+		m_paintGuns[m_count].m_direction = p_direction;
+		m_count++;
+	}
 }
 
 // 68K 0x1061bcce LoadLevel__16CPaintGunManagerFPUciUc

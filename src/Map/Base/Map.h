@@ -47,6 +47,7 @@ public:
 	friend class Lift;
 	friend class BalloonPost;
 	friend class Mover;
+	friend class PaintGun;
 	friend class Maze;
 	friend class Mine;
 	friend class Rocket;

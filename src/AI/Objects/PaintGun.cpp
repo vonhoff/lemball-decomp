@@ -17,10 +17,32 @@ void PaintGun::Restart()
 	m_direction = 0;
 }
 
+#include "../../Map/Base/Map.h"
+
 // 68K 0x1061b352 Set__9CPaintGunFUsRC7AICOORDi
-// STUB: LEMBALL 0x0042bb30
+// FUNCTION: LEMBALL 0x0042bb30
 void PaintGun::Set(unsigned short p_id, const AiCoord& p_position, int p_direction)
 {
+	SetId(p_id);
+	int x = p_position.m_xFixed;
+	m_position.m_xFixed = x;
+	int y = p_position.m_yFixed;
+	m_position.m_yFixed = y;
+	m_position.m_zFixed = p_position.m_zFixed;
+	m_direction = p_direction;
+	m_active = 1;
+	m_enabled = 1;
+	m_action = (eAction) 0x18;
+	int groundX = (x >> 12) / 16;
+	int groundY = (y >> 12) / 16;
+	if (groundX >= 0 && groundY >= 0) {
+		Map* map = g_pMap;
+		int width = map->m_ground.m_width;
+		if (width > groundX && map->m_ground.m_height > groundY) {
+			Ground* ground = &g_pMap->m_ground.m_ground[groundY * width + groundX];
+			ground->m_collision |= 1;
+		}
+	}
 }
 
 // 68K 0x1061b40c Process__9CPaintGunFv
