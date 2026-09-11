@@ -128,9 +128,49 @@ bool Mine::IsUsable(eAction p_action)
 }
 
 // 68K 0x106165fa Process__5CMineFv
-// STUB: LEMBALL 0x00423eb0
+// FUNCTION: LEMBALL 0x00423eb0
 bool Mine::Process()
 {
+	eAction action = m_action;
+	if (m_isRemoteObject != 0) {
+		if (m_pendingAction != action) {
+			switch (action) {
+			case (eAction) 8:
+				m_enabled = m_activated = 0;
+				break;
+			case (eAction) 27:
+				SetTerrain();
+				break;
+			}
+		}
+		m_pendingAction = m_action;
+		return 1;
+	}
+
+	switch (action) {
+	case (eAction) 25:
+		m_terrainSet = 0;
+		return 0;
+	case (eAction) 26:
+		if (m_lastMovementTick < g_dwGameTick) {
+			SetTerrain();
+			m_stateTimer = g_dwSimulationTimestamp;
+			m_actionDeadline = g_dwGameTick + 20;
+			Action((eAction) 27);
+			return 0;
+		}
+		break;
+	case (eAction) 27:
+		if (m_actionDeadline < g_dwGameTick) {
+			m_activated = 0;
+			m_enabled = 0;
+			m_lastMovementTick = g_dwGameTick + 100;
+			Action((eAction) 8);
+		}
+		break;
+	default:
+		return 0;
+	}
 	return 0;
 }
 
@@ -138,8 +178,8 @@ bool Mine::Process()
 // FUNCTION: LEMBALL 0x00423fa0
 void Mine::OnGround()
 {
-	int y = m_position.m_yFixed >> 12;
 	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> 12;
 	Map* map = g_pMap;
 	int blockX = x >> 4;
 	int blockY = y >> 4;
