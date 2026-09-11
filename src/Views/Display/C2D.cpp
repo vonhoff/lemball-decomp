@@ -1142,14 +1142,15 @@ bool C2D::GetPauser()
 	return m_pauser;
 }
 
+// GLOBAL: LEMBALL 0x0049705c
+static const short g_treeGroundOffset[] = {0x20, 0x30};
+// GLOBAL: LEMBALL 0x00497060
+static const short g_groundOffset[] = {0x10, 0x10};
+
 // 68K 0x10b01120 DrawGround__3C2DFii11eObjectTypeUs
 // FUNCTION: LEMBALL 0x0043a880
 void C2D::DrawGround(int p_x, int p_y, eObjectType p_groundType, unsigned short p_frame)
 {
-	// GLOBAL: LEMBALL 0x0049705c
-	static const short g_treeGroundOffset[] = {0x20, 0x30};
-	// GLOBAL: LEMBALL 0x00497060
-	static const short g_groundOffset[] = {0x10, 0x10};
 
 	int frame;
 
@@ -1230,9 +1231,18 @@ void C2D::DrawGround(int p_x, int p_y, eObjectType p_groundType, unsigned short 
 }
 
 // 68K 0x10b015a6 DrawCliff__3C2DFiiii
-// STUB: LEMBALL 0x0043ace0
+// FUNCTION: LEMBALL 0x0043ace0
 void C2D::DrawCliff(int p_x, int p_y, int p_height, int p_count)
 {
+	int x = p_x - g_groundOffset[0];
+	int y = p_y + (p_count * 0x10 - p_height);
+
+	if (p_count > 0) {
+		do {
+			m_lemmingAnims->DrawAnim(x, y - g_groundOffset[1], g_groundBlox1ResourceId, 0, 0, 0);
+			y -= 0x10;
+		} while (--p_count != 0);
+	}
 }
 
 // 68K 0x10b0162c DoClipWidth__3C2DFiii
