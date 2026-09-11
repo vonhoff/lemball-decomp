@@ -1,6 +1,7 @@
 #include "Maze.h"
 
 #include "../../Map/Base/Map.h"
+#include "../Base/Solution.h"
 
 #include <string.h>
 
@@ -389,9 +390,41 @@ int Direction(int p_x0, int p_y0, int p_x1, int p_y1)
 }
 
 // 68K 0x1061616a BSolution__5CMazeFRiP9tSolution
-// STUB: LEMBALL 0x004238b0
+// FUNCTION: LEMBALL 0x004238b0
 void Maze::BSolution(int& p_count, Solution* p_solution)
 {
+	p_count = 0;
+	int x = m_endX;
+	int y = m_endY;
+	int distance = m_distances[y][x];
+	p_solution->m_x = (short) x;
+	p_solution[p_count].m_y = (short) y;
+	p_count++;
+
+	int previousX = x;
+	int previousY = y;
+	if (FindSquare(--distance, x, y)) {
+		distance--;
+		int direction = Direction(previousX, previousY, x, y);
+		while (distance >= 0) {
+			previousX = x;
+			previousY = y;
+			FindSquare(distance, x, y);
+			distance--;
+			int nextDirection = Direction(previousX, previousY, x, y);
+			if (direction != nextDirection) {
+				p_solution[p_count].m_x = (short) previousX;
+				p_solution[p_count].m_y = (short) previousY;
+				p_count++;
+				direction = nextDirection;
+			}
+		}
+	}
+
+	unsigned long elapsed = timeGetTime() - m_startTime;
+	m_startTime = elapsed;
+	m_totalTime += elapsed;
+	m_solutionCount++;
 }
 
 // GLOBAL: LEMBALL 0x0049cf58
