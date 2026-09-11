@@ -34,6 +34,48 @@ Use `--clean-first` only for PDB desync. After header/ABI/multi-TU edits, audit 
 
 Deep asm: `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400` when needed.
 
+## Reconstruction memory MCP
+
+The repo-local script table above remains authoritative. In addition, use the
+`reconstruction-memory` MCP server when its tools are available in the current agent
+session. It normally runs at `http://127.0.0.1:8765/mcp`; do not block reconstruction work
+if it is offline or absent from the tool inventory.
+
+Memory is keyed by original x86 function address. Always use the annotated LEMBALL
+address in canonical form such as `0x00408240`; pass the symbol as secondary metadata.
+
+Before modifying a reconstruction target:
+
+1. Call `get_function_memory` with its address and known symbol.
+2. Review prior attempts, dead ends, facts, open hypotheses, scores, and recorded Git state.
+3. Do not repeat an equivalent failed experiment under the same repository state unless
+   new evidence justifies it. Old failures are state-specific, not permanent prohibitions.
+
+While working:
+
+- Use `record_observation` for durable facts, notes, and strong evidence-backed dead ends.
+  Facts and dead ends must cite concrete evidence such as original/recompiled instructions,
+  reccmp output, PDB/Ghidra findings, or verified type/layout behavior.
+- Use `record_hypothesis` for unresolved, testable ideas. Never store a guess as a fact.
+- Use `resolve_hypothesis` when evidence confirms, rejects, supersedes, or leaves a
+  hypothesis inconclusive.
+- Use `set_function_state` when establishing or changing the function's current retained
+  score. Scores are percentages from 0 through 100.
+
+Before reverting, abandoning, or moving away from a target, call `record_attempt` for each
+meaningful experiment. Include the hypothesis, concise change, before/after score when
+available, status (`retained`, `reverted`, `partial`, `failed`, or `dead_end`), result,
+objective evidence, and repository state. Use `dead_end` only for strong negative evidence;
+ordinary unsuccessful work is `failed` or `reverted`.
+
+The server captures current Git state automatically, but record an explicit commit/state
+when the tested tree has already been reverted or differs from the current worktree. If a
+previous approach becomes relevant after surrounding code or types change, link the retry
+with `repeated_attempt_id` and state the `new_evidence`. Do not add trivial retries, raw chat
+logs, speculative summaries, or duplicate entries. Preserve history through resolution or
+supersession rather than deletion. Use `search_attempts` for deeper or cross-function lookup
+when the compact `get_function_memory` result is truncated.
+
 ## Source rules
 
 No inline asm. One primary class per `.h`/`.cpp` (stem = class), unless `tools/lib/layout.py` `OVERRIDE_STEMS`. Functions in ascending original x86 address order. Use `RES_*` from `Manifest.h`. Prefer named members over offset pokes. Keep `undefined`/`undefined2`/`undefined4` until Win32 evidence justifies a tighter type. Preserve original loop shape, 32-bit size math, post-virtual pointer re-fetches, and message `switch` widening. Stop at compiler noise (reg alloc, alignment NOPs).
