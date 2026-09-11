@@ -170,10 +170,11 @@ void TargetDirectSoundDevice::SetEffectVolume(unsigned char p_volume)
 {
 }
 
-// STUB: LEMBALL 0x0047e700
+// FUNCTION: LEMBALL 0x0047e700
 bool TargetDirectSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, unsigned char p_volume)
 {
-	return 0;
+	int volume = (p_volume * 10000) / 0xff - 10000;
+	return m_platform.m_effects[p_resourceId]->SetBufferVolume(p_index, volume);
 }
 
 // FUNCTION: LEMBALL 0x0047e7c0
