@@ -133,7 +133,7 @@ bool NetworkFile::Write(const unsigned char* p_data, int p_size)
 
 	success = WriteFile(m_handle, p_data, (unsigned int) p_size, &written, 0);
 	if (success == 0) {
-		*g_pErrorOutput << "Write error: " << (int) ::GetLastError() << "\n";
+		*g_pErrorOutput << "Write error: " << (int) GetLastError() << "\n";
 		return 0;
 	}
 
