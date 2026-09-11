@@ -52,11 +52,53 @@ void Rocket::Set(unsigned short p_id, const AiCoord& p_position)
 	}
 }
 
+#include "../../Control/Game/GameTime.h"
+
 // 68K 0x1061da76 Process__7CRocketFv
-// STUB: LEMBALL 0x004268e0
+// FUNCTION: LEMBALL 0x004268e0
 bool Rocket::Process()
 {
-	return 0;
+	unsigned int remoteObject = m_isRemoteObject;
+	unsigned long tick;
+	if (remoteObject != 0) {
+		tick = g_dwRemoteGameTick;
+	}
+	else {
+		tick = g_dwGameTick;
+	}
+	eAction action = m_action;
+	if (action == (eAction) 4) {
+		m_position.m_zFixed = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << 12;
+	}
+
+	if (remoteObject != 0) {
+		if (m_pendingAction != action) {
+			if (action == (eAction) 27) {
+				m_lastMovementTick = tick + 48;
+				m_launchBaseZ = m_position.m_zFixed >> 12;
+				SetSndEffect((eSoundEffect) 18);
+			}
+			m_pendingAction = m_action;
+		}
+		return 1;
+	}
+
+	switch (action) {
+	case (eAction) 4:
+		if ((m_position.m_zFixed & -4096) > 0xc8000) {
+			Action((eAction) 24);
+			return 1;
+		}
+		break;
+	case (eAction) 27:
+		if (m_lastMovementTick < g_dwGameTick) {
+			Action((eAction) 4);
+		}
+		break;
+	default:
+		return 1;
+	}
+	return 1;
 }
 
 // 68K 0x1061db8c StepOn__7CRocketFRC7AICOORDP11CGameObject
@@ -79,7 +121,6 @@ int Rocket::StepOn(const AiCoord& p_position, GameObject* p_object)
 	return 0;
 }
 
-#include "../../Control/Game/GameTime.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Messages/ObjectPosMess.h"
 
