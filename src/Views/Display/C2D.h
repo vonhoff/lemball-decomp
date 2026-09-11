@@ -83,7 +83,7 @@ public:
 	void DrawLemmingFall(ViewData& p_viewData, undefined4 p_remapped);
 	void DrawLemmingFlyShadow(ViewData& p_viewData);
 	void DrawLemmingJump(ViewData& p_viewData, undefined4 p_remapped);
-	void DrawLemmingLanding(ViewData& p_viewData, unsigned char p_remapped);
+	void DrawLemmingLanding(ViewData& p_viewData, undefined4 p_remapped);
 	void DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, int p_remapped);
 	void DrawLemmingOnConveyor(ViewData& p_viewData, int p_remapped);
 	void DrawMine(ViewData& p_viewData);

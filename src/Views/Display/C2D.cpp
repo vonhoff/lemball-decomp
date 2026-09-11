@@ -1830,9 +1830,32 @@ void C2D::DrawLemmingJump(ViewData& p_viewData, undefined4 p_remapped)
 }
 
 // 68K 0x10b024ea DrawLemmingLanding__3C2DFR9CViewDataUc
-// STUB: LEMBALL 0x0043bfc0
-void C2D::DrawLemmingLanding(ViewData& p_viewData, unsigned char p_remapped)
+// FUNCTION: LEMBALL 0x0043bfc0
+void C2D::DrawLemmingLanding(ViewData& p_viewData, undefined4 p_remapped)
 {
+	int x;
+	int y;
+	unsigned long resource;
+	unsigned int direction;
+	int frame;
+	int frameDelta;
+
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	resource = g_lemmingFlyResources[direction];
+	x = p_viewData.m_positionX - g_lemmingFlyOffsets[direction][0];
+	y = p_viewData.m_positionY - g_lemmingFlyOffsets[direction][1];
+	frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
+	frame = frameDelta * 15 / 1024 + 7;
+	if (frame > 12) {
+		frame = 12;
+	}
+
+	if (p_remapped != 0) {
+		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, (Remap*) m_paletteRemap);
+	}
+	else {
+		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, 0);
+	}
 }
 
 // 68K 0x10b025d2 DrawLemmingFall__3C2DFR9CViewDataUc
