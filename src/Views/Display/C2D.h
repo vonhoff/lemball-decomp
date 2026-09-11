@@ -156,7 +156,12 @@ private:
 	unsigned short m_groundWidth;                   // 0x162
 	unsigned short m_groundHeight;                  // 0x164
 	short m_groundAnimationFrame;                   // 0x166
-	undefined m_pad0x168[0x24];                     // 0x168
+	undefined m_pad0x168[8];                        // 0x168
+	int m_clipMapStepX;                             // 0x170
+	int m_clipMapStepY;                             // 0x174
+	undefined m_pad0x178[0x0c];                     // 0x178
+	int m_clipScreenX;                              // 0x184
+	int m_clipScreenY;                              // 0x188
 	unsigned int m_mouseButtonDown;                 // 0x18c
 	unsigned int m_frameCount;                      // 0x190
 	unsigned int m_frameTime;                       // 0x194
