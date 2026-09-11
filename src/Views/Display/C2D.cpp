@@ -18,6 +18,7 @@
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/ObjSq.h"
 #include "../../Visos/Foundation/TextManager.h"
+#include "../../Visos/Foundation/VsSort.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Graphics/Cursor.h"
@@ -2334,9 +2335,25 @@ void C2D::DrawScore()
 }
 
 // 68K 0x10b05a64 SortViewData__3C2DFv
-// STUB: LEMBALL 0x0043ff70
+// FUNCTION: LEMBALL 0x0043ff70
 void C2D::SortViewData()
 {
+	int index = 0;
+	if (m_viewDataCount > 0) {
+		do {
+			if (m_redrawPending == 0 && m_viewData[index].m_transientFlags == 0) {
+				m_redrawPending = 0;
+			}
+			else {
+				m_redrawPending = 1;
+			}
+
+			m_viewData[index].m_sortZKey = CalcZValueSprite(index);
+			index++;
+		} while (index < (int) m_viewDataCount);
+	}
+
+	VsQSort(m_viewData, m_viewDataCount, sizeof(ViewData), ViewDataCmp);
 }
 
 // 68K 0x10b05b06 Draw__3C2DFRC7CVSRect
