@@ -714,6 +714,7 @@ void C2D::LeftClick(const VsPoint& p_screenPoint,
 					unsigned char p_commitMoves,
 					unsigned char p_alternate)
 {
+	// Win32 dispatches state 0 to NoStateLeftClick and state 1 to GroupingLeftClick.
 }
 
 // 68K 0x10b08b30 NoStateRightClick__3C2DFRC8CVSPointRC8CVSPoint
