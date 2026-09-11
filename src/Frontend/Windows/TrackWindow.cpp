@@ -1,5 +1,7 @@
 #include "TrackWindow.h"
 
+#include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/VsGdi.h"
@@ -64,15 +66,35 @@ void TrackWindow::OnPaint(const VsRect& p_rect)
 }
 
 // 68K 0x1080e732 SetButtonValue__12CTrackWindowFi
-// STUB: LEMBALL 0x0044eb60
+// FUNCTION: LEMBALL 0x0044eb60
 void TrackWindow::SetButtonValue(int p_value)
 {
+	if (m_value != p_value) {
+		Message message;
+		message.type = 12;
+		m_value = p_value;
+		message.time = CurrentQueueTimer();
+		message.code = m_contextId;
+		message.payload = (void*) m_value;
+		message.source = (void*) 100;
+		g_pMasterInputQueue->Post(message);
+	}
 }
 
 // 68K 0x1080e7be OnInside__12CTrackWindowFRC8CVSPoint
-// STUB: LEMBALL 0x0044ebc0
+// FUNCTION: LEMBALL 0x0044ebc0
 void TrackWindow::OnInside(const VsPoint& p_point)
 {
+	if (m_buttonState[0] != 0) {
+		int distance = (int) p_point.m_x - (int) HotAreaHandler::m_x;
+		if (distance < 0) {
+			distance = 0;
+		}
+		else if (distance > m_trackRect.m_width) {
+			distance = m_trackRect.m_width;
+		}
+		SetButtonValue(distance * 100 / (int) HotAreaHandler::m_width);
+	}
 }
 
 // 68K 0x1080e842 OnButtonDown__12CTrackWindowFRC8CVSPoint12BUTTON_FLAGS
