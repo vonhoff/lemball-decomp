@@ -38,6 +38,14 @@ Deep asm: `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400` when needed.
 
 No inline asm. One primary class per `.h`/`.cpp` (stem = class), unless `tools/lib/layout.py` `OVERRIDE_STEMS`. Functions in ascending original x86 address order. Use `RES_*` from `Manifest.h`. Prefer named members over offset pokes. Keep `undefined`/`undefined2`/`undefined4` until Win32 evidence justifies a tighter type. Preserve original loop shape, 32-bit size math, post-virtual pointer re-fetches, and message `switch` widening. Stop at compiler noise (reg alloc, alignment NOPs).
 
+## MSVC 4.00 Codegen Quirks
+
+- **Register Allocation Order**: Callee-saved registers (`ESI`, `EDI`, `EBX`) are allocated by live-interval priority, but ties fall back to declaration and first-use order. If `esi` and `edi` are swapped across an entire function, reorder local variable declarations.
+- **Comparison Operand Order**: Inverted branch comparisons (`cmp a, b; jle` vs `cmp b, a; jge`) indicate operand order differences in the AST. Invert condition operands or loop bounds (`a <= b` vs `b >= a`).
+- **Loop Canonicalization**: `while (cond)` emits an initial `jmp` to the test at the bottom; `do { ... } while (cond)` emits no initial jump. If an unexpected jump precedes the loop, convert `do-while` to `while` or vice-versa.
+- **Type Widths & Sign Extension**: Coordinate and index math was predominantly 16-bit `short` or 8-bit `char`. Using 32-bit `int` hides necessary `movsx`/`movzx` instructions or 16-bit register usage (`ax`, `cx`).
+- **Post-Virtual Pointer Reloads**: MSVC assumes virtual function calls may clobber object state. Members accessed across virtual calls must be re-read from `this` rather than cached in locals, or MSVC will omit the reload from memory.
+
 ## Annotations
 
 `// <TYPE>: LEMBALL <ORIGINAL_X86_ADDR> [OPTION]` — address order in each file.

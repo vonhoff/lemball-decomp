@@ -67,7 +67,7 @@ def is_unresolved_jmp(orig_text: str, recomp_text: str) -> bool:
     recomp_text = asm_head(recomp_text)
     if not re.match(r"jmp -?0x[0-9a-f]+\s*$", orig_text):
         return False
-    return bool(re.match(r"jmp Thunk of '.+' \(THUNK\)$", recomp_text))
+    return bool(re.match(r"jmp (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$", recomp_text))
 
 
 def is_recomp_offset_call(orig_text: str, recomp_text: str) -> bool:

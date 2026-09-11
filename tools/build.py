@@ -39,12 +39,12 @@ def win_short_path(path: str) -> str:
 
 
 def resolve_cmake() -> str:
-    found = shutil.which("cmake")
-    if found:
-        return win_short_path(found)
     venv = ROOT / ".decomp-venv" / "Scripts" / "cmake.exe"
     if venv.exists():
         return win_short_path(str(venv))
+    found = shutil.which("cmake")
+    if found:
+        return win_short_path(found)
     sys.exit("cmake not found")
 
 

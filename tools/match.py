@@ -11,9 +11,10 @@ import argparse
 from pathlib import Path
 
 from build import run_build
-from lib.compare import compute_ratio, format_diff_text, load_matches, norm_addr
+from lib.compare import norm_addr
 from lib.paths import RECCMP_JSON
-from lib.reccmp import run_reccmp
+from lib.reccmp import _load_engine
+from reccmp.tools.asmcmp import print_match_verbose
 
 
 def main() -> int:
@@ -31,26 +32,22 @@ def main() -> int:
             print(f"BUILD_FAILED exit={exit_code} (see build-msvc400/last_build.log)")
             return exit_code
 
-    json_path = run_reccmp(args.json)
-    matches = load_matches(json_path)
+    target, engine = _load_engine()
 
     for raw in args.addrs:
         addr = norm_addr(raw)
-        m = matches.get(addr)
-        if not m:
+        match = engine.compare_address(addr)
+        if match is None:
             print(f"0x{addr:08x}: NOT_FOUND")
             continue
 
-        name = m.get("name") or "?"
-        ratio, tag = compute_ratio(m)
-        suffix = f" {tag}" if tag else ""
-        print(f"0x{addr:08x} {name}: {ratio:.2f}%{suffix}")
-        if not args.no_diff:
-            diff_text = format_diff_text(m.get("diff"))
-            if diff_text:
-                print("--- diff ---")
-                print(diff_text)
-                print("------------")
+        pct = match.effective_accuracy * 100.0
+        if args.no_diff:
+            status = "MATCH" if match.is_matched or pct == 100.0 else ("STUB" if match.is_stub else "")
+            suffix = f" {status}" if status else ""
+            print(f"0x{addr:08x} {match.name}: {pct:.2f}%{suffix}")
+        else:
+            print_match_verbose(match)
 
     return 0
 
