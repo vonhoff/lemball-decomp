@@ -72,12 +72,12 @@ BaseQueue::~BaseQueue()
 		operator delete(m_messageBuffer);
 	}
 	index = 0;
-	if (m_handlerCount != 0) {
+	if (index < m_handlerCount) {
 		do {
 			next = node->next;
 			operator delete(node);
-			index = index + 1;
 			node = next;
+			index = index + 1;
 		} while (index < m_handlerCount);
 	}
 }
