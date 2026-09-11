@@ -17,6 +17,7 @@ public:
 private:
 	unsigned int m_flag; // 0x2c
 
+	friend class NetworkManager;
 	friend class NetworkOptionsProc;
 };
 

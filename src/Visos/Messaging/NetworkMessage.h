@@ -26,6 +26,7 @@ public:
 	friend class FileReadSocket;
 	friend class FileConnect;
 	friend class FileBroadcast;
+	friend class NetworkManager;
 	bool Set(unsigned char* p_data);
 	int GetDword();
 	unsigned char GetByte();

@@ -15,6 +15,8 @@ public:
 
 private:
 	unsigned int m_stage; // 0x2c
+
+	friend class NetworkManager;
 };
 
 // SYNTHETIC: LEMBALL 0x00452e60

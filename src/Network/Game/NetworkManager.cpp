@@ -82,9 +82,24 @@ void NetworkManager::StartBroadcast(const char* p_address)
 }
 
 // 68K 0x10a006d8 Stop__15CNetworkManagerFv
-// STUB: LEMBALL 0x004527c0
+// FUNCTION: LEMBALL 0x004527c0
 void NetworkManager::Stop()
 {
+	if (g_pActiveConnection != 0) {
+		m_rejectMessage->m_flag = 1;
+		m_rejectMessage->Send(g_pActiveConnection);
+		unsigned int startTime = CurrentMilliTimer();
+		while (m_rejectMessage->m_pendingSendCount != 0 && CurrentMilliTimer() - startTime < 1000) {
+		}
+		g_pActiveConnection->Kill();
+		g_pActiveConnection = 0;
+	}
+	if (g_pBaseNetwork != 0 && g_pBaseNetwork->m_serverMode != 0) {
+		g_pNetworkPacketQueue->Detach(this, 0x19);
+		BaseNetwork* network = g_pBaseNetwork;
+		network->m_pendingDetachQueue = this;
+		network->ForceProcess();
+	}
 }
 
 // 68K 0x10a007a6 ProcessMsg__15CNetworkManagerFP10tagMESSAGE
@@ -124,9 +139,28 @@ void NetworkManager::Kill()
 }
 
 // 68K 0x10a00a70 GameProcess__15CNetworkManagerFv
-// STUB: LEMBALL 0x00452ac0
+// FUNCTION: LEMBALL 0x00452ac0
 void NetworkManager::GameProcess()
 {
+	if (m_killRequested != 0) {
+		g_pActiveConnection = 0;
+		m_killRequested = 0;
+	}
+	if (g_pActiveConnection != 0) {
+		if (g_pActiveConnection->ReadSocket::IsChanged(*m_gameStage)) {
+			g_pActiveConnection->ReadSocket::GetLatest(*m_gameStage);
+			if (m_observedGameState != m_gameStage->m_stage) {
+				m_observedGameState = m_gameStage->m_stage;
+				m_gameStage->m_stage = m_desiredGameState;
+				m_gameStage->Send(g_pActiveConnection);
+			}
+		}
+		if (m_observedGameState != m_desiredGameState && CurrentMilliTimer() - m_lastGameStateSendTime > 2000) {
+			m_gameStage->m_stage = m_desiredGameState;
+			m_gameStage->Send(g_pActiveConnection);
+			m_lastGameStateSendTime = CurrentMilliTimer();
+		}
+	}
 }
 
 // 68K 0x10a00b6a Process__15CNetworkManagerFv
