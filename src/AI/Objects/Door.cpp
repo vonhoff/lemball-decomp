@@ -205,9 +205,45 @@ bool Door::IsUsable(eAction p_action)
 }
 
 // 68K 0x10606a96 Hits__5CDoorFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x0040dd80
+// FUNCTION: LEMBALL 0x0040dd80
 int Door::Hits(const AiCoord& p_position, GameObject* p_object)
 {
+	int x = p_position.m_xFixed >> 12;
+	int y = p_position.m_yFixed >> 12;
+	int doorX = m_position.m_xFixed >> 12;
+	int doorY = m_position.m_yFixed >> 12;
+	doorX -= 40;
+	doorY -= 8;
+	int maxX = doorX + 48;
+	int maxY = doorY + 16;
+	if (doorX <= x && maxX >= x && doorY <= y && maxY >= y) {
+		switch (m_action) {
+		case (eAction) 0x1c:
+		case (eAction) 0x1d:
+			if (p_object->HasObject((eObjectType) (unsigned short) m_actionArgument)) {
+				m_actionDeadline = 20;
+				SetSndEffect((eSoundEffect) 11);
+				RequestAction((eAction) 0x20);
+				return 1;
+			}
+			m_actionDeadline = 40;
+			RequestAction((eAction) 0x1c);
+			return 0;
+		case (eAction) 0x1e:
+			m_actionDeadline = 20;
+			SetSndEffect((eSoundEffect) 11);
+			RequestAction((eAction) 0x20);
+			return 1;
+		case (eAction) 0x20:
+			return 1;
+		case (eAction) 0x21:
+			return 0;
+		case (eAction) 0x22:
+			return 1;
+		default:
+			return 1;
+		}
+	}
 	return 0;
 }
 
