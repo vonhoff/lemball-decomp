@@ -312,19 +312,11 @@ bool BaseCursor::InWindow(GWnd* p_window)
 			x = 0;
 		}
 	}
-	if (x > m_position.m_x) {
-		return 0;
+	if (x <= m_position.m_x && m_position.m_x < (short) (x + width) && y <= m_position.m_y &&
+		m_position.m_y < (short) (height + y)) {
+		return 1;
 	}
-	if ((short) (x + width) <= m_position.m_x) {
-		return 0;
-	}
-	if (y > m_position.m_y) {
-		return 0;
-	}
-	if ((short) (height + y) <= m_position.m_y) {
-		return 0;
-	}
-	return 1;
+	return 0;
 }
 
 // 68K 0x1020646c Draw__11CBaseCursorFP5CGWnd
