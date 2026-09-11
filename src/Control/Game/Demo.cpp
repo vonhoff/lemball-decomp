@@ -155,11 +155,8 @@ void Demo::CleanUp()
 		m_resource->m_directUseCount--;
 		m_resource->UnLoad();
 		m_resource = 0;
-		m_buffer = 0;
-		m_readCursor = 0;
-		return;
 	}
-	if (m_buffer != 0) {
+	else if (m_buffer != 0) {
 		operator delete(m_buffer);
 	}
 	m_buffer = 0;
