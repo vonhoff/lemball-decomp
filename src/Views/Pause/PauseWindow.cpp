@@ -153,8 +153,6 @@ VsRect PauseWindow::CalculateWindow()
 	short parentHeight;
 	short horizontalWidth;
 	short verticalHeight;
-	short cornerX;
-	short cornerY;
 	short* horizontalBorder;
 	short* verticalBorder;
 	short* verticalCorner;
@@ -166,6 +164,7 @@ VsRect PauseWindow::CalculateWindow()
 	m_textSpacing.m_x = 0;
 	m_textSpacing.m_y = 2;
 	if (lowResolution == 0) {
+		m_textSpacing.m_x = 0;
 		m_textSpacing.m_y = 4;
 	}
 	m_windowPadding.m_x = 0x14;
@@ -183,9 +182,10 @@ VsRect PauseWindow::CalculateWindow()
 	}
 	for (i = 0; i < m_menuItemCount; i++) {
 		measuredTextSize = m_font->GetSize(&textSize, m_menuLabels[i], 0x20);
-		m_textSizes[i * 2].m_x = measuredTextSize->m_width;
-		m_textSizes[i * 2].m_y = measuredTextSize->m_height;
-		if (i < itemCount) {
+		VsPoint* storedTextSize = m_textSizes + i * 2;
+		storedTextSize->m_x = measuredTextSize->m_width;
+		storedTextSize->m_y = measuredTextSize->m_height;
+		if (itemCount > i) {
 			maxTextSize.m_height += measuredTextSize->m_height + m_textSpacing.m_y;
 		}
 		if (maxTextSize.m_width < measuredTextSize->m_width) {
@@ -204,9 +204,12 @@ VsRect PauseWindow::CalculateWindow()
 		parentHeight = (short) ((int) m_parentWindow->m_rect.m_height / (int) m_parentWindow->m_zoom);
 	}
 
-	VsSize windowSize(maxTextSize);
-	positionX = (short) (((int) parentWidth - (int) windowSize.m_width) / 2);
-	positionY = (short) (((int) parentHeight - (int) windowSize.m_height) / 2);
+	VsSize paddedTextSize;
+	paddedTextSize.m_width = maxTextSize.m_width;
+	paddedTextSize.m_height = (short) (maxTextSize.m_height + m_windowPadding.m_y);
+	positionX = (short) (parentWidth - paddedTextSize.m_width) / 2;
+	VsSize windowSize(paddedTextSize);
+	positionY = (short) (parentHeight - paddedTextSize.m_height) / 2;
 
 	horizontalBorder = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
 	verticalBorder = &m_verticalBorderAnim->m_animationEntries[0].m_width;
@@ -217,7 +220,7 @@ VsRect PauseWindow::CalculateWindow()
 	windowSize.m_height = (short) (((int) windowSize.m_height + verticalHeight - 1) / verticalHeight);
 	windowSize.m_width = (short) (windowSize.m_width * horizontalWidth);
 	windowSize.m_height = (short) (windowSize.m_height * verticalHeight);
-	m_verticalTextOffset = (short) (((int) windowSize.m_height - (int) maxTextSize.m_height) / 2);
+	m_verticalTextOffset = ((int) windowSize.m_height - (int) maxTextSize.m_height) / 2;
 	m_horizontalTiles = (short) ((int) windowSize.m_width / horizontalWidth - 2);
 	m_verticalTiles = (short) ((int) windowSize.m_height / verticalHeight - 2);
 
@@ -229,86 +232,89 @@ VsRect PauseWindow::CalculateWindow()
 		m_borderAnims = new Anim[m_borderAnimCount * 2];
 	}
 
-	cornerX = (short) (windowSize.m_width - horizontalBorder[0]);
-	cornerY = (short) (windowSize.m_height - horizontalBorder[1]);
-	m_cornerAnims[0].m_x = 0;
-	m_cornerAnims[0].m_y = 0;
-	m_cornerAnims[0].m_animResource = m_horizontalBorderAnim;
-	m_cornerAnims[0].m_animIndex = 0;
-	m_cornerAnims[0].m_flags = 0;
-	m_cornerAnims[0].m_remap = 0;
-	m_cornerAnims[1].m_x = cornerX;
-	m_cornerAnims[1].m_y = 0;
-	m_cornerAnims[1].m_animResource = m_horizontalBorderAnim;
-	m_cornerAnims[1].m_animIndex = 1;
-	m_cornerAnims[1].m_flags = 0;
-	m_cornerAnims[1].m_remap = 0;
-	m_cornerAnims[2].m_x = 0;
-	m_cornerAnims[2].m_y = cornerY;
-	m_cornerAnims[2].m_animResource = m_horizontalBorderAnim;
-	m_cornerAnims[2].m_animIndex = 2;
-	m_cornerAnims[2].m_flags = 0;
-	m_cornerAnims[2].m_remap = 0;
-	m_cornerAnims[3].m_x = cornerX;
-	m_cornerAnims[3].m_y = cornerY;
-	m_cornerAnims[3].m_animResource = m_horizontalBorderAnim;
-	m_cornerAnims[3].m_animIndex = 3;
-	m_cornerAnims[3].m_flags = 0;
-	m_cornerAnims[3].m_remap = 0;
-
+	VsPoint cornerPositions[2] = {VsPoint(windowSize.m_width, windowSize.m_height), VsPoint(0, 0)};
+	cornerPositions[0].m_x = (short) (cornerPositions[0].m_x - horizontalBorder[0]);
+	cornerPositions[0].m_y = (short) (cornerPositions[0].m_y - horizontalBorder[1]);
 	{
-		short topX = horizontalBorder[0];
-		short bottomX = horizontalBorder[0];
-		int index;
-
-		for (index = 0; index < m_horizontalTiles; index++) {
-			Anim& top = m_borderAnims[index];
-			Anim& bottom = m_borderAnims[m_borderAnimCount + index];
-			top.m_x = topX;
-			top.m_y = 0;
-			top.m_animResource = m_verticalBorderAnim;
-			top.m_animIndex = 0;
-			top.m_flags = 0;
-			top.m_remap = 0;
-			bottom.m_x = bottomX;
-			bottom.m_y = (short) (windowSize.m_height - verticalBorder[1]);
-			bottom.m_animResource = m_verticalBorderAnim;
-			bottom.m_animIndex = 1;
-			bottom.m_flags = 0;
-			bottom.m_remap = 0;
-			topX = (short) (topX + horizontalBorder[0]);
-			bottomX = (short) (bottomX + horizontalBorder[0]);
-		}
+		int cornerBatchCount = 1;
+		Anim* corners = m_cornerAnims;
+		do {
+			corners[0].m_x = cornerPositions[1].m_x;
+			corners[0].m_y = cornerPositions[1].m_y;
+			corners[0].m_animResource = m_horizontalBorderAnim;
+			corners[0].m_animIndex = 0;
+			corners[0].m_flags = 0;
+			corners[0].m_remap = 0;
+			corners[1].m_x = cornerPositions[0].m_x;
+			corners[1].m_y = cornerPositions[1].m_y;
+			corners[1].m_animResource = m_horizontalBorderAnim;
+			corners[1].m_animIndex = 1;
+			corners[1].m_flags = 0;
+			corners[1].m_remap = 0;
+			corners[2].m_x = cornerPositions[1].m_x;
+			corners[2].m_y = cornerPositions[0].m_y;
+			corners[2].m_animResource = m_horizontalBorderAnim;
+			corners[2].m_animIndex = 2;
+			corners[2].m_flags = 0;
+			corners[2].m_remap = 0;
+			corners[3].m_x = cornerPositions[0].m_x;
+			corners[3].m_y = cornerPositions[0].m_y;
+			corners[3].m_animResource = m_horizontalBorderAnim;
+			corners[3].m_animIndex = 3;
+			corners[3].m_flags = 0;
+			corners[3].m_remap = 0;
+			corners += 4;
+		} while (--cornerBatchCount != 0);
 	}
 
-	{
-		short leftX = 0;
-		short leftY = horizontalBorder[1];
-		short rightX = (short) (windowSize.m_width - verticalCorner[0]);
-		short rightY = leftY;
-		int index;
-
-		for (index = 0; index < m_verticalTiles; index++) {
-			Anim& left = m_borderAnims[m_horizontalTiles + index];
-			Anim& right = m_borderAnims[m_borderAnimCount + m_horizontalTiles + index];
-			left.m_x = leftX;
-			left.m_y = leftY;
-			left.m_animResource = m_verticalBorderAnim;
-			left.m_animIndex = 2;
-			left.m_flags = 0;
-			left.m_remap = 0;
-			right.m_x = rightX;
-			right.m_y = rightY;
-			right.m_animResource = m_verticalBorderAnim;
-			right.m_animIndex = 3;
-			right.m_flags = 0;
-			right.m_remap = 0;
-			leftY = (short) (leftY + verticalCorner[1]);
-			rightY = (short) (rightY + verticalCorner[1]);
-		}
+	VsPoint firstBorderPosition;
+	VsPoint secondBorderPosition;
+	firstBorderPosition.m_x = horizontalBorder[0];
+	secondBorderPosition.m_x = horizontalBorder[0];
+	secondBorderPosition.m_y = (short) (windowSize.m_height - verticalBorder[1]);
+	for (i = 0; i < m_horizontalTiles; i++) {
+		Anim& firstBorder = m_borderAnims[i];
+		firstBorder.m_x = firstBorderPosition.m_x;
+		firstBorder.m_y = firstBorderPosition.m_y;
+		firstBorder.m_animResource = m_verticalBorderAnim;
+		firstBorder.m_animIndex = 0;
+		firstBorder.m_flags = 0;
+		firstBorder.m_remap = 0;
+		Anim& secondBorder = m_borderAnims[m_borderAnimCount + i];
+		secondBorder.m_x = secondBorderPosition.m_x;
+		secondBorder.m_y = secondBorderPosition.m_y;
+		secondBorder.m_animResource = m_verticalBorderAnim;
+		secondBorder.m_animIndex = 1;
+		secondBorder.m_flags = 0;
+		secondBorder.m_remap = 0;
+		firstBorderPosition.m_x = (short) (firstBorderPosition.m_x + horizontalBorder[0]);
+		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + horizontalBorder[0]);
 	}
 
-	return VsRect(positionX, positionY, &windowSize);
+	firstBorderPosition.m_x = 0;
+	firstBorderPosition.m_y = horizontalBorder[1];
+	secondBorderPosition.m_x = (short) (windowSize.m_width - verticalCorner[0]);
+	secondBorderPosition.m_y = firstBorderPosition.m_y;
+	for (i = 0; i < m_verticalTiles; i++) {
+		Anim& firstBorder = m_borderAnims[m_horizontalTiles + i];
+		firstBorder.m_x = firstBorderPosition.m_x;
+		firstBorder.m_y = firstBorderPosition.m_y;
+		firstBorder.m_animResource = m_verticalBorderAnim;
+		firstBorder.m_animIndex = 2;
+		firstBorder.m_flags = 0;
+		firstBorder.m_remap = 0;
+		Anim& secondBorder = m_borderAnims[m_borderAnimCount + m_horizontalTiles + i];
+		secondBorder.m_x = secondBorderPosition.m_x;
+		secondBorder.m_y = secondBorderPosition.m_y;
+		secondBorder.m_animResource = m_verticalBorderAnim;
+		secondBorder.m_animIndex = 3;
+		secondBorder.m_flags = 0;
+		secondBorder.m_remap = 0;
+		firstBorderPosition.m_y = (short) (firstBorderPosition.m_y + verticalCorner[1]);
+		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner[1]);
+	}
+
+	return VsRect(positionX, positionY, windowSize.m_width, windowSize.m_height);
 }
 
 // 68K 0x10b0eeba __ct__12CPauseWindowFP19CReceiveWindowStateP7CPVGWnd20ePauseWindowMessages
