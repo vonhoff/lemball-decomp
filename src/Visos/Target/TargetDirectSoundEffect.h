@@ -7,6 +7,7 @@
 // SIZE 0x1c
 class TargetDirectSoundEffect {
 public:
+	~TargetDirectSoundEffect();
 	int Play(int p_loop);
 	int PlayWithVolume(int p_volume, int p_loop);
 	bool SetBufferVolume(int p_index, int p_volume);

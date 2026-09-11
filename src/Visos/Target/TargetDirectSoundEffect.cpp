@@ -1,5 +1,16 @@
 #include "TargetDirectSoundEffect.h"
 
+// FUNCTION: LEMBALL 0x0047d6e0
+TargetDirectSoundEffect::~TargetDirectSoundEffect()
+{
+	for (int i = 0; m_bufferCount > i; i++) {
+		if (m_buffers[i] != 0) {
+			m_buffers[i]->Release();
+		}
+	}
+	delete[] m_buffers;
+}
+
 // STUB: LEMBALL 0x0047d8c0
 int TargetDirectSoundEffect::Play(int p_loop)
 {

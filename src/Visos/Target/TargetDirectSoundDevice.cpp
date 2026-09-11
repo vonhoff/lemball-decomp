@@ -125,16 +125,27 @@ int TargetDirectSoundDevice::Dummy4c()
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e5e0
+// FUNCTION: LEMBALL 0x0047e5e0
 int TargetDirectSoundDevice::FreeEffect(unsigned long p_effectId)
 {
+	if (m_platform.m_effects[p_effectId] != 0) {
+		delete m_platform.m_effects[p_effectId];
+		m_platform.m_effects[p_effectId] = 0;
+		return 1;
+	}
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e620
+// FUNCTION: LEMBALL 0x0047e620
 int TargetDirectSoundDevice::FreeAllEffects()
 {
-	return 0;
+	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
+		if (m_platform.m_effects[i] != 0) {
+			delete m_platform.m_effects[i];
+			m_platform.m_effects[i] = 0;
+		}
+	}
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0047e670
