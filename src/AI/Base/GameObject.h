@@ -153,6 +153,7 @@ public:
 	friend class Crate;
 	friend class Ai;
 	friend class InvisibleSwitch;
+	friend class Laser;
 	friend class Mover;
 	friend class PlayerLemmingGroupManager;
 	friend class Trampoline;

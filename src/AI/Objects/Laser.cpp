@@ -1,5 +1,7 @@
 #include "Laser.h"
 
+#include "../../Visos/Foundation/VsMath.h"
+
 // 68K 0x10613518 __ct__6CLaserFv
 // FUNCTION: LEMBALL 0x00428890
 Laser::Laser() : GlobalGameObject(0x2f, 0, 0)
@@ -52,9 +54,17 @@ bool Laser::Activate()
 }
 
 // 68K 0x10613b58 StepOn__6CLaserFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x00428f30
+// FUNCTION: LEMBALL 0x00428f30
 bool Laser::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
+	if (p_object->m_objectType == (eObjectType) 2 && (int) Distance(m_position.m_xFixed >> 12,
+																	m_position.m_yFixed >> 12,
+																	p_position.m_xFixed >> 12,
+																	p_position.m_yFixed >> 12) < 0x30) {
+		Activate();
+		m_target = p_object;
+		return 1;
+	}
 	return 0;
 }
 
