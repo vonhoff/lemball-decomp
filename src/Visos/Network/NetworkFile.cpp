@@ -133,12 +133,13 @@ bool NetworkFile::Write(const unsigned char* p_data, int p_size)
 
 	success = WriteFile(m_handle, p_data, (unsigned int) p_size, &written, 0);
 	if (success == 0) {
-		*g_pErrorOutput << "Write error: " << (int) GetLastError() << "\n";
+		int error = (int) GetLastError();
+		*g_pErrorOutput << "Write error: " << error << "\n";
 		return 0;
 	}
 
 	m_position += written;
-	if ((unsigned int) p_size != written) {
+	if (written != (unsigned int) p_size) {
 		*g_pErrorOutput << "Write error: " << (unsigned long) written << " bytes written instead of " << p_size << "\n";
 		return 0;
 	}
