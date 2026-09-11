@@ -150,6 +150,7 @@ bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 
 	EnterCritical();
 	node = (QueueHandlerNode*) operator new(0xc);
+	current = m_handlerList;
 	node->handler = p_handler;
 	node->priority = p_priority;
 	if (m_handlerList == 0) {
@@ -159,16 +160,15 @@ bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 		LeaveCritical();
 		return 1;
 	}
+	previous = current;
 	count = m_handlerCount;
 	if (count == 0) {
 		m_handlerList = node;
-		m_handlerCount = 1;
+		m_handlerCount = count + 1;
 		LeaveCritical();
 		return 1;
 	}
 	index = 0;
-	previous = m_handlerList;
-	current = previous;
 	if (count != 0) {
 		do {
 			if (p_priority < current->priority) {
@@ -184,16 +184,16 @@ bool BaseQueue::Attach(BaseQueueHandler* p_handler, int p_priority)
 				LeaveCritical();
 				return 1;
 			}
-			if (current->next == 0) {
+			previous = current;
+			current = current->next;
+			if (current == 0) {
 				node->next = 0;
-				current->next = node;
+				previous->next = node;
 				m_handlerCount = m_handlerCount + 1;
 				LeaveCritical();
 				return 1;
 			}
 			index = index + 1;
-			previous = current;
-			current = current->next;
 		} while (index < count);
 	}
 	LeaveCritical();
