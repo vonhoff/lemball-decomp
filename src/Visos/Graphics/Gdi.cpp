@@ -12,16 +12,12 @@
 Primitive* g_pCurrentPrimitive = 0;
 
 // 68K 0x1021184c __ct__4CGDIFRC7CVSRectiP8CSurface
-// STUB: LEMBALL 0x00467060
+// FUNCTION: LEMBALL 0x00467060
 Gdi::Gdi(const VsRect& p_arg0, int p_arg1, Surface* p_arg2)
 {
 	int i;
 	Surface* target;
 
-	m_primitives = 0;
-	m_primitiveCount = 0;
-	m_primitiveCapacity = 0;
-	m_renderTarget = 0;
 	if ((int) p_arg0.m_height * (int) p_arg0.m_width > 1) {
 		m_primitiveCapacity = p_arg1 + 3;
 		m_primitives = (Primitive**) operator new(m_primitiveCapacity * 4);

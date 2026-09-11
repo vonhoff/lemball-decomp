@@ -85,9 +85,25 @@ Panel::Panel(C2D* p_arg0) : BaseQueueHandler()
 }
 
 // 68K 0x10b0dc46 __dt__6CPanelFv
-// STUB: LEMBALL 0x00443140
+// FUNCTION: LEMBALL 0x00443140
 Panel::~Panel()
 {
+	int count;
+	PanelLemming** lemming;
+	lemming = m_lemmings;
+	count = 4;
+	g_pMasterInputQueue->Detach(this, 0);
+	do {
+		delete *lemming;
+		lemming++;
+	} while (--count != 0);
+	m_resources[3]->UnLoad();
+	m_resources[2]->UnLoad();
+	m_resources[1]->UnLoad();
+	m_resources[0]->UnLoad();
+	if (m_pauseButton != 0) {
+		delete m_pauseButton;
+	}
 }
 
 // 68K 0x10b0dd10 OnSize__6CPanelFv
