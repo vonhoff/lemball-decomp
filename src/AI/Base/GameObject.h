@@ -145,6 +145,7 @@ public:
 	friend class Duplicator;
 	friend class Hand;
 	friend class Key;
+	friend class Rocket;
 	friend class Balloon;
 	friend class Collectable;
 	friend class CollectableManager;

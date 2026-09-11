@@ -79,10 +79,22 @@ int Rocket::StepOn(const AiCoord& p_position, GameObject* p_object)
 	return 0;
 }
 
+#include "../../Control/Game/GameTime.h"
+#include "../../Visos/Network/Connect.h"
+#include "../Messages/ObjectPosMess.h"
+
 // 68K 0x1061dc6a DoActivate__7CRocketFv
-// STUB: LEMBALL 0x00426a60
+// FUNCTION: LEMBALL 0x00426a60
 void Rocket::DoActivate()
 {
+	m_lastMovementTick += g_dwGameTick;
+	m_stateTimer = g_dwSimulationTimestamp;
+	m_activator->Action((eAction) 21);
+	m_activator->m_actionDeadline = g_dwGameTick + 60;
+	SetSndEffect((eSoundEffect) 18);
+	if (g_pActiveConnection != 0) {
+		g_pObjectPosMessage->Send(this);
+	}
 }
 
 // 68K 0x1011b220 GetViewData__7CRocketFR9CViewData
