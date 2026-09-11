@@ -26,6 +26,7 @@ public:
 	friend class Surface;
 	friend class PauseWindow;
 	friend class C2D;
+	friend class TrackWindow;
 
 private:
 	short m_x1;           // 0x04

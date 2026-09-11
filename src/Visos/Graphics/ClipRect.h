@@ -14,6 +14,7 @@ public:
 	virtual ~ClipRect();             // vtable+0x00
 
 	friend class PvButton;
+	friend class TrackWindow;
 	friend class Surface;
 	friend class CdLoadAnimDraw;
 

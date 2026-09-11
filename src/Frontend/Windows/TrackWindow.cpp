@@ -60,9 +60,43 @@ void TrackWindow::Move(const VsPoint& p_position)
 }
 
 // 68K 0x1080e52c OnPaint__12CTrackWindowFRC7CVSRect
-// STUB: LEMBALL 0x0044ea00
+// FUNCTION: LEMBALL 0x0044ea00
 void TrackWindow::OnPaint(const VsRect& p_rect)
 {
+	int height = m_trackRect.m_height;
+	int width = (int) m_trackRect.m_width * m_value / 100;
+	if (m_value != 0) {
+		m_line.m_color = 0xac;
+		m_line.m_x1 = width;
+		m_line.m_y1 = height;
+		m_line.m_x2 = 0;
+		m_line.m_y2 = 0;
+		m_line.Draw(m_gdi);
+		m_clipRects[0].m_left = 0;
+		m_clipRects[0].m_top = 0;
+		m_clipRects[0].m_right = width;
+		m_clipRects[0].m_bottom = 0;
+		m_clipRects[0].m_reserved0c = 0xab;
+		m_clipRects[0].Draw(m_gdi);
+		m_clipRects[1].m_left = 0;
+		m_clipRects[1].m_top = 0;
+		m_clipRects[1].m_right = 0;
+		m_clipRects[1].m_bottom = height;
+		m_clipRects[1].m_reserved0c = 0xab;
+		m_clipRects[1].Draw(m_gdi);
+		m_clipRects[2].m_left = (short) m_value;
+		m_clipRects[2].m_top = height;
+		m_clipRects[2].m_right = 0;
+		m_clipRects[2].m_bottom = height;
+		m_clipRects[2].m_reserved0c = 0xbc;
+		m_clipRects[2].Draw(m_gdi);
+		m_clipRects[3].m_left = (short) m_value;
+		m_clipRects[3].m_top = height;
+		m_clipRects[3].m_right = width;
+		m_clipRects[3].m_bottom = 0;
+		m_clipRects[3].m_reserved0c = 0xbc;
+		m_clipRects[3].Draw(m_gdi);
+	}
 }
 
 // 68K 0x1080e732 SetButtonValue__12CTrackWindowFi
