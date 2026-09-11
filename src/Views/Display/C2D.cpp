@@ -1691,28 +1691,41 @@ int C2D::DrawClippedRectangle(const VsRect& p_rect)
 	return result;
 }
 
+// GLOBAL: LEMBALL 0x00497018
+static const short g_lemmingFlyOffsets[8][2] = {
+	{10, 16},
+	{10, 16},
+	{14, 17},
+	{14, 17},
+	{11, 18},
+	{11, 18},
+	{7, 18},
+	{7, 18},
+};
+
+// GLOBAL: LEMBALL 0x0049eef8
+static unsigned long g_lemmingFlyResources[] = {
+	RES_GAME_JUMP_NE,
+	RES_GAME_JUMP_NE,
+	RES_GAME_JUMP_SE,
+	RES_GAME_JUMP_SE,
+	RES_GAME_JUMP_SW,
+	RES_GAME_JUMP_SW,
+	RES_GAME_JUMP_NW,
+	RES_GAME_JUMP_NW,
+};
+
 // 68K 0x10b02196 LemmingFly__3C2DFR9CViewDataRi
 // FUNCTION: LEMBALL 0x0043bce0
 unsigned long C2D::LemmingFly(ViewData& p_viewData, int& p_frame)
 {
-	// GLOBAL: LEMBALL 0x0049eef8
-	static unsigned long flyResources[] = {
-		RES_GAME_JUMP_NE,
-		RES_GAME_JUMP_NE,
-		RES_GAME_JUMP_SE,
-		RES_GAME_JUMP_SE,
-		RES_GAME_JUMP_SW,
-		RES_GAME_JUMP_SW,
-		RES_GAME_JUMP_NW,
-		RES_GAME_JUMP_NW,
-	};
 
 	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
 	int frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 
 	p_frame = 0;
 	if (frameDelta < 0) {
-		return flyResources[direction];
+		return g_lemmingFlyResources[direction];
 	}
 
 	Map* map = m_map;
@@ -1741,7 +1754,7 @@ unsigned long C2D::LemmingFly(ViewData& p_viewData, int& p_frame)
 			p_frame = 6;
 		}
 	}
-	return flyResources[direction];
+	return g_lemmingFlyResources[direction];
 }
 
 // 68K 0x10b022ac DrawLemmingFlyShadow__3C2DFR9CViewData
@@ -1777,9 +1790,43 @@ void C2D::DrawLemmingFlyShadow(ViewData& p_viewData)
 }
 
 // 68K 0x10b023d4 DrawLemmingJump__3C2DFR9CViewDataUc
-// STUB: LEMBALL 0x0043bee0
-void C2D::DrawLemmingJump(ViewData& p_viewData, unsigned char p_remapped)
+// FUNCTION: LEMBALL 0x0043bee0
+void C2D::DrawLemmingJump(ViewData& p_viewData, undefined4 p_remapped)
 {
+	unsigned int direction;
+	int frame;
+	int frameDelta;
+	int y;
+	ViewData* viewData = &p_viewData;
+	unsigned long resource;
+	int x;
+	unsigned int actionArgument;
+
+	direction = ((unsigned short) viewData->m_facingDirection + m_unk0x90c * 2) & 7;
+	resource = g_lemmingFlyResources[direction];
+	x = viewData->m_positionX - g_lemmingFlyOffsets[direction][0];
+	y = viewData->m_positionY - g_lemmingFlyOffsets[direction][1];
+	frameDelta = viewData->m_animationTime - viewData->m_stateTimer;
+	actionArgument = (unsigned short) viewData->m_actionArgument;
+	if (actionArgument == 0) {
+		frame = frameDelta * 15 / 1024;
+		if (frame > 6) {
+			frame = 6;
+		}
+	}
+	else if (actionArgument == 1) {
+		frame = frameDelta * 15 / 1024 + 7;
+		if (frame > 12) {
+			frame = 12;
+		}
+	}
+
+	if (p_remapped != 0) {
+		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, (Remap*) m_paletteRemap);
+	}
+	else {
+		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, 0);
+	}
 }
 
 // 68K 0x10b024ea DrawLemmingLanding__3C2DFR9CViewDataUc
@@ -1790,7 +1837,7 @@ void C2D::DrawLemmingLanding(ViewData& p_viewData, unsigned char p_remapped)
 
 // 68K 0x10b025d2 DrawLemmingFall__3C2DFR9CViewDataUc
 // FUNCTION: LEMBALL 0x0043c070
-void C2D::DrawLemmingFall(ViewData& p_viewData, unsigned char p_remapped)
+void C2D::DrawLemmingFall(ViewData& p_viewData, undefined4 p_remapped)
 {
 	DrawLemmingJump(p_viewData, p_remapped);
 }
