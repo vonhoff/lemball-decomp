@@ -54,6 +54,7 @@ public:
 	friend class TargetAboutScreen;
 	friend class LevelLoader;
 	friend class MciMusicDevice;
+	friend class BaseRemap;
 
 protected:
 	ResBaseList* m_externalList;   // 0x04

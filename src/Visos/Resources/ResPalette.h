@@ -23,6 +23,7 @@ public:
 											  void* p_unused,
 											  unsigned int* p_fallbackEntries);
 	friend class C2D;
+	friend class BaseRemap;
 
 private:
 	undefined4 m_paletteState; // 0x48

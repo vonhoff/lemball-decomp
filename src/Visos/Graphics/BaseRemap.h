@@ -3,6 +3,8 @@
 
 #include "../../Common.h"
 
+class ResPalette;
+
 // SIZE 0x08
 class BaseRemap {
 public:
@@ -15,8 +17,8 @@ public:
 	friend class Surface;
 
 private:
-	unsigned char* m_remap;  // 0x00
-	void* m_paletteResource; // 0x04
+	unsigned char* m_remap;        // 0x00
+	ResPalette* m_paletteResource; // 0x04
 };
 
 #endif
