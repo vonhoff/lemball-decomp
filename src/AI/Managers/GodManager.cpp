@@ -56,9 +56,33 @@ void GodManager::Register(BaseObjectManager* p_manager)
 }
 
 // 68K 0x1060e0dc ProcessMsg__11CGodManagerFP10tagMESSAGE
-// STUB: LEMBALL 0x0040b210
+// FUNCTION: LEMBALL 0x0040b210
 int GodManager::ProcessMsg(Message* p_message)
 {
+	int code = p_message->code;
+	switch (p_message->type) {
+	case 5: {
+		ReadPacket* packet = (ReadPacket*) p_message->source;
+		if (code == 0) {
+			if (TransportReceive(packet)) {
+				return 1;
+			}
+
+			BasePacketHeader* header = (BasePacketHeader*) packet->m_data;
+			switch (header->m_messageId) {
+			case 10:
+				m_gameStateMessage->Set(packet->m_data + sizeof(BasePacketHeader));
+				packet->m_used = 0;
+				g_pActiveAI->RemoteGameState(m_gameStateMessage);
+				return 1;
+			}
+		}
+		else {
+			return 1;
+		}
+		break;
+	}
+	}
 	return 0;
 }
 
