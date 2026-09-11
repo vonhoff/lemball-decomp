@@ -65,10 +65,52 @@ void Hand::Set(unsigned short p_id, const AiCoord& p_position)
 }
 
 // 68K 0x10610f5a Process__5CHandFv
-// STUB: LEMBALL 0x00427c40
+// FUNCTION: LEMBALL 0x00427c40
 bool Hand::Process()
 {
-	return 0;
+	if (m_isRemoteObject != 0) {
+		m_actionArgument = 1;
+		if (m_pendingAction != m_action) {
+			if (m_action == (eAction) 26) {
+				SetSndEffect((eSoundEffect) 30);
+			}
+			m_pendingAction = m_action;
+		}
+		return 1;
+	}
+
+	m_actionArgument = 0;
+	if (m_activated != 0) {
+		switch (m_action) {
+		case (eAction) 23:
+			if (m_actionDeadline < g_dwGameTick) {
+				m_enabled = 1;
+				m_activated = 0;
+				Action((eAction) 24);
+				return 1;
+			}
+			break;
+		case (eAction) 25:
+			if (m_unk0xd0 < g_dwGameTick) {
+				m_target->Action((eAction) 21);
+				m_target->m_actionDeadline = g_dwGameTick + 40;
+				Action((eAction) 26);
+				SetSndEffect((eSoundEffect) 30);
+				return 1;
+			}
+			break;
+		case (eAction) 26:
+			if (m_actionDeadline < g_dwGameTick) {
+				m_enabled = 1;
+				m_actionDeadline = g_dwGameTick + 20;
+				Action((eAction) 23);
+			}
+			break;
+		default:
+			return 1;
+		}
+	}
+	return 1;
 }
 
 // 68K 0x106110b6 StepOn__5CHandFRC7AICOORDP11CGameObject
