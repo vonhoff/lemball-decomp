@@ -691,9 +691,19 @@ void C2D::NoStateRightClick(const VsPoint& p_screenPoint, const VsPoint& p_gameP
 }
 
 // 68K 0x10b08c02 RightClick__3C2DFRC8CVSPointRC8CVSPoint
-// STUB: LEMBALL 0x00437930
+// FUNCTION: LEMBALL 0x00437930
 void C2D::RightClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint)
 {
+	if (m_groupingActive != 0) {
+		if (m_groupingActive != 1) {
+			return;
+		}
+		FormGroup();
+		if (m_groupCount == 0) {
+			m_groupingActive = 0;
+		}
+	}
+	NoStateRightClick(p_screenPoint, p_gamePoint);
 }
 
 // 68K 0x10b08c70 ScreenToGame__3C2DFiiRiRi
