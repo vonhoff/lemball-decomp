@@ -1745,9 +1745,35 @@ unsigned long C2D::LemmingFly(ViewData& p_viewData, int& p_frame)
 }
 
 // 68K 0x10b022ac DrawLemmingFlyShadow__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043bde0
+// FUNCTION: LEMBALL 0x0043bde0
 void C2D::DrawLemmingFlyShadow(ViewData& p_viewData)
 {
+	int viewX;
+	int viewY;
+	int screenX;
+	Map* map;
+	unsigned short groundZ;
+
+	viewX = (unsigned short) p_viewData.m_viewX;
+	map = m_map;
+	viewY = (unsigned short) p_viewData.m_viewY;
+	int blockX = viewX >> 4;
+	int blockY = viewY >> 4;
+	if (viewX >= 0 && viewY >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+		groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(viewX & 0xf, viewY & 0xf);
+	}
+	else {
+		groundZ = 0;
+	}
+
+	screenX = (viewX << 12) >> 12;
+	viewY = (viewY << 12) >> 12;
+	m_map->GameToScreen(screenX, viewY);
+	viewX = viewY - ((int) ((unsigned int) groundZ << 12) >> 12);
+	int drawX = (screenX - m_viewOriginX) << 12;
+	int drawY = (viewX - m_viewOriginY) << 12;
+
+	m_lemmingAnims->DrawAnim((short) (drawX >> 12), (short) (drawY >> 12), RES_GAME_BALLOON_SHADOW, 0, 0, 0);
 }
 
 // 68K 0x10b023d4 DrawLemmingJump__3C2DFR9CViewDataUc
