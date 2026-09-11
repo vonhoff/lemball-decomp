@@ -1,5 +1,8 @@
 #include "PlayerLemmingGroup.h"
 
+#include "../../Visos/Network/Connect.h"
+#include "../Navigation/AiDestinationEntry.h"
+#include "../Navigation/AiDestinationList.h"
 #include "../Objects/PlayerLemming.h"
 #include "../Objects/ViewData.h"
 
@@ -76,15 +79,71 @@ bool PlayerLemmingGroup::AddLemmingToGroup(PlayerLemming* p_lemming)
 }
 
 // 68K 0x1060f19e AddUseObject__19CPlayerLemmingGroupFi
-// STUB: LEMBALL 0x00414660
+// FUNCTION: LEMBALL 0x00414660
 void PlayerLemmingGroup::AddUseObject(int p_objectId)
 {
+	unsigned short count;
+	AiDestinationList* list;
+	GameObject* p_object = 0;
+	int objectCount = g_wObjectCount;
+	for (unsigned int i = 0; (int) i < objectCount; i++) {
+		p_object = g_pObjects[(unsigned short) i];
+		if (p_object != 0 && (unsigned int) p_object->m_objectId == (unsigned int) p_objectId) {
+			break;
+		}
+	}
+	AiCoord position = p_object->ActivatePosition();
+	list = m_destinationList;
+	count = list->m_count;
+	if (count < list->m_capacity) {
+		list->m_count = count + 1;
+		AiDestinationEntry* entry = &list->m_entries[count];
+		entry->m_type = (eDestinationType) 1;
+		entry->m_coordinate.m_xFixed = position.m_xFixed;
+		entry->m_coordinate.m_yFixed = position.m_yFixed;
+		entry->m_coordinate.m_zFixed = position.m_zFixed;
+	}
+	AiDestinationList* useList = m_destinationList;
+	unsigned short useCount = useList->m_count;
+	if (useCount < useList->m_capacity) {
+		useList->m_count = useCount + 1;
+		AiDestinationEntry* entry = &useList->m_entries[useCount];
+		entry->m_type = (eDestinationType) 2;
+		entry->m_coordinate.m_xFixed = position.m_xFixed;
+		entry->m_coordinate.m_yFixed = position.m_yFixed;
+		entry->m_coordinate.m_zFixed = position.m_zFixed;
+		entry->m_metadata = (unsigned short) p_objectId;
+	}
 }
 
 // 68K 0x1060f2a6 AddUseObject__19CPlayerLemmingGroupFP11CGameObjecti
-// STUB: LEMBALL 0x00414730
+// FUNCTION: LEMBALL 0x00414730
 void PlayerLemmingGroup::AddUseObject(GameObject* p_object, int p_objectId)
 {
+	unsigned short count;
+	AiDestinationList* list;
+	AiCoord position = p_object->ActivatePosition();
+	list = m_destinationList;
+	count = list->m_count;
+	if (count < list->m_capacity) {
+		list->m_count = count + 1;
+		AiDestinationEntry* entry = &list->m_entries[count];
+		entry->m_type = (eDestinationType) 1;
+		entry->m_coordinate.m_xFixed = position.m_xFixed;
+		entry->m_coordinate.m_yFixed = position.m_yFixed;
+		entry->m_coordinate.m_zFixed = position.m_zFixed;
+	}
+	list = m_destinationList;
+	count = list->m_count;
+	if (count < list->m_capacity) {
+		list->m_count = count + 1;
+		AiDestinationEntry* entry = &list->m_entries[count];
+		entry->m_type = (eDestinationType) 2;
+		entry->m_coordinate.m_xFixed = position.m_xFixed;
+		entry->m_coordinate.m_yFixed = position.m_yFixed;
+		entry->m_coordinate.m_zFixed = position.m_zFixed;
+		entry->m_metadata = (unsigned short) p_objectId;
+	}
 }
 
 // 68K 0x1060f38c RemoveLemmingFromGroup__19CPlayerLemmingGroupFP14CPlayerLemming
@@ -150,9 +209,19 @@ PlayerLemming* PlayerLemmingGroup::GetFirstDeadLemming()
 }
 
 // 68K 0x1060f596 ClearExistingWaypoints__19CPlayerLemmingGroupFv
-// STUB: LEMBALL 0x004148f0
+// FUNCTION: LEMBALL 0x004148f0
 void PlayerLemmingGroup::ClearExistingWaypoints()
 {
+	GenericGroup::ClearExistingWaypoints();
+	if (m_useObject != 0) {
+		if (GetGroupState() == (eGroupState) 3 && m_useObject->m_heading != 0 && m_useObject->m_unk0x8c != 0) {
+			if (g_pActiveConnection != 0) {
+				m_useObject->SendCancel();
+			}
+			m_useObject->m_unk0x8c = 0;
+		}
+		m_currentUseElement = GetElementsInGroup();
+	}
 }
 
 // 68K 0x1060f66a HasSFXChanged__19CPlayerLemmingGroupFv
