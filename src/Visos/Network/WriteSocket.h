@@ -37,6 +37,7 @@ public:
 	friend class BaseObjectManager;
 	friend class BaseNetwork;
 	friend class Broadcast;
+	friend class FileWriteSocket;
 
 protected:
 	void InternalSetDestAddr(NetworkAddress* p_address);

@@ -15,6 +15,7 @@ public:
 
 private:
 	friend class FileReadSocket;
+	friend class FileWriteSocket;
 	unsigned short m_sequence;         // 0x2c
 	unsigned short m_mirroredSequence; // 0x2e
 	unsigned long m_headerValue;       // 0x30

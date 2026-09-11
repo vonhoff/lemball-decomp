@@ -1,5 +1,14 @@
 #include "FileWriteSocket.h"
 
+#include "../Messaging/HeaderMessage.h"
+#include "../Messaging/Headers.h"
+#include "NetworkAddress.h"
+#include "TcpIpNetwork.h"
+
+#include <string.h>
+
+#pragma intrinsic(strcpy)
+
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x102077ea __ct__16CFileWriteSocketFv
@@ -50,10 +59,44 @@ void FileWriteSocket::SetDestAddr(NetworkAddress* p_address)
 }
 
 // 68K 0x10207c0a SendPacket__16CFileWriteSocketFPCUci
-// STUB: LEMBALL 0x0047a0b0
+// FUNCTION: LEMBALL 0x0047a0b0
 bool FileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 {
-	return 0;
+	int error = 0;
+	HeaderMessage* header;
+	unsigned int headerOffset;
+	int lockLength;
+
+	if (m_socketFlags == 0) {
+		return false;
+	}
+
+	headerOffset = m_file->m_payloadCapacity * m_unk0x10 + m_unk0x04;
+	Seek(headerOffset);
+	header = &m_file->m_headers[m_unk0x10];
+	strcpy(header->m_text0, g_pBroadcastAddress->GetStr());
+	strcpy(header->m_text1, m_destinationAddress->GetStr());
+	header->m_headerValue = (unsigned long) p_size;
+
+	lockLength = Write(*header, 1, 0);
+	if (lockLength != 0) {
+		Seek(m_dataOffset + m_unk0x10 * g_networkPacketSize);
+		if (!NetworkFile::Write(p_data, p_size)) {
+			error = 1;
+		}
+	}
+	else {
+		error = 1;
+	}
+
+	if (error == 0) {
+		m_unk0x10++;
+		WriteSocket::m_lastSendTime = timeGetTime();
+	}
+	if (lockLength != 0) {
+		NetworkFile::UnLock(headerOffset, lockLength);
+	}
+	return error == 0;
 }
 
 // 68K 0x1020795a __dt__16CFileWriteSocketFv
