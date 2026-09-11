@@ -42,11 +42,49 @@ bool Demo::SendNextPacket(int p_packetIndex)
 	return 0;
 }
 
+#include "../../Visos/Foundation/VsFile.h"
+
 // 68K 0x10700e38 LoadBuffer__5CDemoFv
-// STUB: LEMBALL 0x00409460
+// FUNCTION: LEMBALL 0x00409460
 bool Demo::LoadBuffer()
 {
-	return 0;
+	if (m_filePath != 0) {
+		_Filet* file = VsOpen(m_filePath, "rb");
+		if (file == 0) {
+			return 0;
+		}
+		unsigned long size = VsGetFileSize(file);
+		m_buffer = new unsigned char[size];
+		unsigned long bytesRead = VsRead(file, m_buffer, size);
+		VsClose(file);
+		m_bytesRemaining = bytesRead;
+	}
+	else {
+		ResBin* resource = ResBin::Load(m_currentResourceId);
+		m_resource = resource;
+		if (resource->m_loaded != 0) {
+			resource->m_age = 0;
+		}
+		else {
+			resource->LoadData();
+		}
+		++resource->m_directUseCount;
+		m_buffer = m_resource->GetData();
+		m_bytesRemaining = m_resource->m_dataSize;
+		++m_currentResourceId;
+		if (m_firstResourceId + m_resourceCount <= m_currentResourceId) {
+			m_currentResourceId = m_firstResourceId;
+		}
+	}
+
+	unsigned char* cursor = m_buffer;
+	m_readCursor = cursor;
+	m_bytesRemaining = cursor[0];
+	m_bytesRemaining |= (unsigned int) cursor[1] << 8;
+	m_bytesRemaining |= (unsigned int) cursor[2] << 16;
+	m_bytesRemaining |= (unsigned int) cursor[3] << 24;
+	m_readCursor = cursor + 4;
+	return 1;
 }
 
 // 68K 0x10700f82 GetUserPacket__5CDemoFPUcRUl
