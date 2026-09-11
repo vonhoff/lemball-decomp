@@ -431,9 +431,27 @@ void Map::SetLevelName(char* p_name)
 }
 
 // 68K 0x10900f74 CalculateCliff__4CMapFv
-// STUB: LEMBALL 0x00431030
+// FUNCTION: LEMBALL 0x00431030
 void Map::CalculateCliff()
 {
+	Ground* ground;
+	int x;
+	int y = 0;
+	if (m_walkHeight > 0) {
+		do {
+			for (x = 0; x < m_walkWidth; x++) {
+				ground = &m_ground.m_ground[y * m_ground.m_width + x];
+				int height = ground->m_height;
+				if (x < m_walkWidth - 1 && y < m_walkHeight - 1) {
+					unsigned short rightHeight = ground[1].m_height;
+					unsigned short belowHeight = m_ground.m_ground[(y + 1) * m_ground.m_width + x].m_height;
+					height -= rightHeight <= belowHeight ? rightHeight : belowHeight;
+				}
+				ground->m_cliff = (unsigned short) ((height + 15) / 16);
+			}
+			y++;
+		} while (y < m_walkHeight);
+	}
 }
 
 // GLOBAL: LEMBALL 0x004a74b4
