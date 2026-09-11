@@ -107,32 +107,35 @@ void BaseFrontendProcess::Action(int p_action, int p_stage)
 // FUNCTION: LEMBALL 0x004468d0
 int BaseFrontendProcess::ProcessMsg(Message* p_message)
 {
+	int code = p_message->code;
 	ReadPacket* packet;
+	Connect* connection;
 	unsigned int id;
-	unsigned int type;
 
 	if (g_pBaseFrontendDrawer == 0) {
 		return 0;
 	}
-	if (ProcessMessages(p_message) != 0) {
-		return 1;
+	if (ProcessMessages(p_message) == 0) {
+		switch ((unsigned int) p_message->type) {
+		case 5:
+			connection = (Connect*) p_message->payload;
+			packet = (ReadPacket*) p_message->source;
+			if (code != 0) {
+				return 1;
+			}
+			id = ((BasePacketHeader*) packet->m_data)->m_messageId;
+			if (id != 8) {
+				return ReceiveCritical(id, packet, connection);
+			}
+			((UserActionMessage*) m_userActionMessage)->Set(packet->m_data + sizeof(BasePacketHeader));
+			packet->m_used = 0;
+			g_pBaseFrontendDrawer->RemoteAction(((UserActionMessage*) m_userActionMessage)->m_action,
+												((UserActionMessage*) m_userActionMessage)->m_stage);
+			return 1;
+		default:
+			return 0;
+		}
 	}
-	type = p_message->type;
-	if (type != 5) {
-		return 0;
-	}
-	packet = (ReadPacket*) p_message->source;
-	if (p_message->code != 0) {
-		return 1;
-	}
-	id = ((BasePacketHeader*) packet->m_data)->m_messageId;
-	if (id != 8) {
-		return ReceiveCritical(id, packet, (Connect*) p_message->payload);
-	}
-	((UserActionMessage*) m_userActionMessage)->Set(packet->m_data + sizeof(BasePacketHeader));
-	packet->m_used = 0;
-	g_pBaseFrontendDrawer->RemoteAction(((UserActionMessage*) m_userActionMessage)->m_action,
-										((UserActionMessage*) m_userActionMessage)->m_stage);
 	return 1;
 }
 

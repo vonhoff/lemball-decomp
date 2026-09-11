@@ -204,19 +204,16 @@ void GunButtons::UnLoadFaces()
 
 	if (m_graphicButton != 0) {
 		delete m_graphicButton;
-		m_graphicButton = 0;
 	}
 	if (m_trackerButton != 0) {
 		delete m_trackerButton;
-		m_trackerButton = 0;
 	}
 	i = 0;
 	if (0 < m_valueCount) {
 		do {
-			if (m_resources != 0 && m_resources[i] != 0) {
-				m_resources[i]->UnLoad();
-			}
-			i = i + 1;
+			ResBase* resource = m_resources[i];
+			i++;
+			resource->UnLoad();
 		} while (i < m_valueCount);
 	}
 	operator delete(m_resources);
