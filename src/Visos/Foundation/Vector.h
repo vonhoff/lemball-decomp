@@ -16,8 +16,15 @@ public:
 	int m_yFixed; // 0x04
 };
 
+enum FormationVectorComponent {
+	kFormationVectorX,
+	kFormationVectorY,
+};
+
+typedef int FormationVectorTemplate[2];
+
 Vector operator*(const Vector& p_vector, int p_scale);
 Vector operator+(const Vector& p_left, const Vector& p_right);
 
-extern Vector g_aFormationTemplates[24];
+extern FormationVectorTemplate g_aFormationTemplates[24];
 #endif

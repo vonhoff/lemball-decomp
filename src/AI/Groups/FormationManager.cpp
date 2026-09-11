@@ -14,7 +14,7 @@ FormationManager::FormationManager()
 	int x;
 
 	source = m_sourceVectors;
-	formation = g_aFormationTemplates;
+	formation = (Vector*) g_aFormationTemplates;
 	formationCount = 3;
 	do {
 		vectorCount = 8;

@@ -561,34 +561,36 @@ char g_szMenuHelpOnHelp[16] = "H&elp On Help";
 // GLOBAL: LEMBALL 0x0049e78c
 char g_szMenuAbout[12] = "&About...";
 
+typedef void* MenuListStorage[6];
+
 // GLOBAL: LEMBALL 0x0049e5f8
-MenuList g_aFileMenuItems[3] = {
-	{g_szMenuFile, 0, 0, 1, 0, 0},
-	{g_szMenuExit, 40001, 1, 1, 0, 0},
+MenuListStorage g_aFileMenuItems[3] = {
+	{g_szMenuFile, 0, 0, (void*) 1, 0, 0},
+	{g_szMenuExit, (void*) 40001, (void*) 1, (void*) 1, 0, 0},
 	{0, 0, 0, 0, 0, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049e640
-MenuList g_aOptionsMenuItems[3] = {
-	{g_szMenuOptions, 0, 0, 1, 0, 0},
-	{g_szMenuFullScreen, 40012, 5, 1, 0, 0},
+MenuListStorage g_aOptionsMenuItems[3] = {
+	{g_szMenuOptions, 0, 0, (void*) 1, 0, 0},
+	{g_szMenuFullScreen, (void*) 40012, (void*) 5, (void*) 1, 0, 0},
 	{0, 0, 0, 0, 0, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049e688
-MenuList g_aHelpMenuItems[6] = {
-	{g_szMenuHelp, 0, 0, 1, 0, 0},
-	{g_szMenuContents, 40003, 2, 1, 0, 0},
-	{g_szMenuSearchTopic, 40016, 3, 1, 0, 0},
-	{g_szMenuHelpOnHelp, 40013, 6, 1, 0, 0},
-	{g_szMenuAbout, 40011, 4, 1, 0, 0},
+MenuListStorage g_aHelpMenuItems[6] = {
+	{g_szMenuHelp, 0, 0, (void*) 1, 0, 0},
+	{g_szMenuContents, (void*) 40003, (void*) 2, (void*) 1, 0, 0},
+	{g_szMenuSearchTopic, (void*) 40016, (void*) 3, (void*) 1, 0, 0},
+	{g_szMenuHelpOnHelp, (void*) 40013, (void*) 6, (void*) 1, 0, 0},
+	{g_szMenuAbout, (void*) 40011, (void*) 4, (void*) 1, 0, 0},
 	{0, 0, 0, 0, 0, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049e718
 MenuList* g_apMainDisplayMenus[4] = {
-	g_aFileMenuItems,
-	g_aOptionsMenuItems,
-	g_aHelpMenuItems,
+	(MenuList*) g_aFileMenuItems,
+	(MenuList*) g_aOptionsMenuItems,
+	(MenuList*) g_aHelpMenuItems,
 	0,
 };
