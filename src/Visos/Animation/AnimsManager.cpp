@@ -3,6 +3,7 @@
 #include "../Foundation/VsPoint.h"
 #include "../Graphics/Gdi.h"
 #include "../Graphics/Line.h"
+#include "../Graphics/VsGdi.h"
 #include "../Graphics/Zrle.h"
 #include "../Resources/ResAnim.h"
 #include "../Resources/ResBase.h"
@@ -12,6 +13,7 @@
 #include "Frames.h"
 
 #include <new.h>
+#include <string.h>
 
 AnimsManager::AnimsManager()
 {
@@ -279,11 +281,21 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 }
 
 // 68K 0x1020087c ResetPrimitives__13CAnimsManagerFv
-// STUB: LEMBALL 0x004678c0
+// FUNCTION: LEMBALL 0x004678c0
 void AnimsManager::ResetPrimitives()
 {
-	m_animCount = 0;
-	m_zrleCount = 0;
-	m_bufferedAnimCount = 0;
+	m_resetState = 0;
+	if (m_doubleBuffered == 0) {
+		m_zrleCount = 0;
+		memcpy(&m_animCount, &m_zrleCount, sizeof(m_animCount) + sizeof(m_animDrawMark));
+		unsigned char* drawMark = (unsigned char*) m_gdi->m_renderTarget->GetCurrDb();
+		m_animDrawMark[0] = *drawMark;
+		m_zrleDrawMark[0] = *drawMark;
+		return;
+	}
+	m_gdi->Render();
+	m_gdi->m_primitiveCount = 0;
 	m_bufferedZrleCount = 0;
+	m_bufferedAnimCount = 0;
+	m_bufferHalf ^= 1;
 }

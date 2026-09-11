@@ -52,14 +52,14 @@ private:
 	unsigned int m_doubleBuffered;      // 0x38
 	int m_animCapacity;                 // 0x3c
 	int m_animCount;                    // 0x40
-	unsigned int m_animDrawMark;        // 0x44
+	undefined m_animDrawMark[4];        // 0x44
 	int m_bufferedAnimCount;            // 0x48
 	int m_bufferedZrleCount;            // 0x4c
 	unsigned int m_bufferHalf;          // 0x50
 	Anim* m_animPrimitives;             // 0x54
 	int m_zrleCapacity;                 // 0x58
 	int m_zrleCount;                    // 0x5c
-	unsigned int m_zrleDrawMark;        // 0x60
+	undefined m_zrleDrawMark[4];        // 0x60
 	Zrle* m_zrlePrimitives;             // 0x64
 	unsigned short m_primitiveSequence; // 0x68
 	undefined2 m_reserved6a;            // 0x6a
