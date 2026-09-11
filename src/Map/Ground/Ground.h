@@ -25,6 +25,7 @@ public:
 	friend class Mine;
 	friend class Maze;
 	friend class Rocket;
+	friend class Laser;
 	friend class Hand;
 	friend class GroundAnim;
 	friend class Trampoline;

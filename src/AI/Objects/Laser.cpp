@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
 #include "../../Visos/Network/Connect.h"
 
@@ -30,9 +31,59 @@ void Laser::Initialise()
 }
 
 // 68K 0x10613618 Set__6CLaserFUsRC7AICOORD11eObjectType
-// STUB: LEMBALL 0x00428900
+// FUNCTION: LEMBALL 0x00428900
 void Laser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_orientation)
 {
+	SetId(p_id);
+	int x = p_position.m_xFixed;
+	m_position.m_xFixed = x;
+	int y = p_position.m_yFixed;
+	int blockX = (x >> 12) / 16;
+	m_position.m_yFixed = y;
+	m_position.m_zFixed = p_position.m_zFixed;
+	int blockY = (y >> 12) / 16;
+	m_enabled = 1;
+	m_objectType = p_orientation;
+
+	switch (p_orientation) {
+	case (eObjectType) 0x1e:
+		m_action = (eAction) 0x18;
+		m_autoActivate = 1;
+		m_active = 1;
+		break;
+	case (eObjectType) 0x2f:
+		m_action = (eAction) 0x18;
+		m_autoActivate = 1;
+		m_active = 1;
+		break;
+	case (eObjectType) 0x30: {
+		m_autoActivate = 0;
+		m_action = (eAction) 0x18;
+		m_active = 1;
+		for (int i = 1; i < 8; i++) {
+			int collisionX = blockX + i;
+			if (collisionX >= 0 && blockY >= 0 && collisionX < g_pMap->m_ground.m_width &&
+				blockY < g_pMap->m_ground.m_height) {
+				g_pMap->m_ground.m_ground[g_pMap->m_ground.m_width * blockY + collisionX].m_collision |= 0x8000;
+			}
+		}
+		break;
+	}
+	case (eObjectType) 0x31: {
+		m_autoActivate = 0;
+		m_action = (eAction) 0x18;
+		m_active = 1;
+		for (int i = 1; i < 8; i++) {
+			int collisionY = blockY + i;
+			if (blockX >= 0 && collisionY >= 0 && blockX < g_pMap->m_ground.m_width &&
+				collisionY < g_pMap->m_ground.m_height) {
+				g_pMap->m_ground.m_ground[g_pMap->m_ground.m_width * collisionY + blockX].m_collision |= 0x8000;
+			}
+		}
+		break;
+	}
+	}
+	m_actionDeadline = g_dwGameTick + 0x3c;
 }
 
 // 68K 0x1061378e CheckHits__6CLaserFv

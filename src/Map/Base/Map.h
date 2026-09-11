@@ -52,6 +52,7 @@ public:
 	friend class Maze;
 	friend class Mine;
 	friend class Rocket;
+	friend class Laser;
 	friend class C2D;
 	friend class Trampoline;
 	friend class GroundAnim;
