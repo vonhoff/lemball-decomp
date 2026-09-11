@@ -47,6 +47,9 @@ protected:
 // SYNTHETIC: LEMBALL 0x00462bb0 SYMBOL
 // ??_EBroadcast@@$4PPPPPPPM@A@AEPAXI@Z
 
+// SYNTHETIC: LEMBALL 0x00462bc0
+// Broadcast::`scalar deleting destructor'
+
 // SYNTHETIC: LEMBALL 0x00462c10 SYMBOL
 // ??_EBroadcast@@$4PPPPPPPM@DA@AEPAXI@Z
 

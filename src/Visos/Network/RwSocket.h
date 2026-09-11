@@ -45,6 +45,12 @@ public:
 	}
 };
 
+// FUNCTION: LEMBALL 0x00462c30 SYMBOL
+// ?SendAcknowledgement@RwSocket@@UAEXXZ
+
+// FUNCTION: LEMBALL 0x00462c50 SYMBOL
+// ?ReceiveAcknowledgement@RwSocket@@UAEPAVNetworkMessage@@XZ
+
 // SYNTHETIC: LEMBALL 0x00462c70 SYMBOL
 // ?SendAcknowledgement@RwSocket@@$4PPPPPPPM@PPPPPPHA@AEXXZ
 

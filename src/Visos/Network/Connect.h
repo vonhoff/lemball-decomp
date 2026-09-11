@@ -59,6 +59,9 @@ extern Connect* g_pActiveConnection;
 // SYNTHETIC: LEMBALL 0x00462da0 SYMBOL
 // ??_ECConnect@@$4PPPPPPPM@A@AEPAXI@Z
 
+// SYNTHETIC: LEMBALL 0x00462db0
+// CConnect::`scalar deleting destructor'
+
 // SYNTHETIC: LEMBALL 0x00462e00 SYMBOL
 // ??_ECConnect@@$4PPPPPPPM@DA@AEPAXI@Z
 
