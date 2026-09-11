@@ -779,13 +779,10 @@ bool InternalGdiQuit()
 	GdiDevice* device;
 	TargetGraphicsSystemState* system;
 
-	if (g_pCursor != 0) {
-		delete g_pCursor;
-	}
+	delete g_pCursor;
 	surface = (Surface*) g_pGdiHelperTarget;
 	if (surface != 0) {
 		surface->~Surface();
-		surface->PvSurface::~PvSurface();
 		operator delete(surface);
 	}
 	device = g_pGdiDevice;
