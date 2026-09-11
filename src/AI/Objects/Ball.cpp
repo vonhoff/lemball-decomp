@@ -72,20 +72,16 @@ void Ball::HitBullet(Bullet* p_bullet)
 void Ball::Delete()
 {
 	int& objectCount = g_pAI->m_objectCount;
-	int i = 0;
-	if (i < objectCount) {
+	for (int i = 0; i < objectCount; i++) {
 		GameObject**& objects = g_pAI->m_objects;
-		do {
-			if (objects[i] == this) {
-				objectCount--;
-				for (; i < objectCount; i++) {
-					objects[i] = objects[i + 1];
-				}
-				objects[objectCount] = 0;
-				break;
+		if (objects[i] == this) {
+			objectCount--;
+			for (; i < objectCount; i++) {
+				objects[i] = objects[i + 1];
 			}
-			i++;
-		} while (i < objectCount);
+			objects[objectCount] = 0;
+			break;
+		}
 	}
 	g_pBallManager->Delete(this);
 	SetId(0xffff);
