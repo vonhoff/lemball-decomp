@@ -143,6 +143,7 @@ public:
 	friend class Catapult;
 	friend class Ammo;
 	friend class Duplicator;
+	friend class Hand;
 	friend class Key;
 	friend class Balloon;
 	friend class Collectable;

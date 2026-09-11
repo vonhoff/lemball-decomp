@@ -72,9 +72,23 @@ bool Hand::Process()
 }
 
 // 68K 0x106110b6 StepOn__5CHandFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x00427d70
+// FUNCTION: LEMBALL 0x00427d70
 bool Hand::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
+	if (p_object->m_objectType == (eObjectType) 2) {
+		int distanceY = (p_position.m_yFixed >> 12) - (m_position.m_yFixed >> 12);
+		int distanceX = (p_position.m_xFixed >> 12) - (m_position.m_xFixed >> 12);
+		if ((distanceX < 0 ? -distanceX : distanceX) < 16 && distanceY >= 0 && distanceY < 48) {
+			m_unk0xd0 = 6;
+			m_actionDeadline = 16;
+			m_activator = p_object;
+			p_object->ResetInstructions();
+			m_activator->Action((eAction) 0);
+			m_activator->m_actionDeadline = g_dwGameTick + 1000;
+			RequestAction((eAction) 25);
+			return 1;
+		}
+	}
 	return 0;
 }
 
