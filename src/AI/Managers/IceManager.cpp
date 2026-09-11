@@ -60,9 +60,14 @@ int IceManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x10612708 StepOn__11CIceManagerFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x0042dd40
+// FUNCTION: LEMBALL 0x0042dd40
 bool IceManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
+	for (int index = 0; index < m_count; ++index) {
+		if (m_ice[index].StepOn(p_position, p_object)) {
+			return 1;
+		}
+	}
 	return 0;
 }
 
