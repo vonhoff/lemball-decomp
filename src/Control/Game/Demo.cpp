@@ -60,8 +60,8 @@ bool Demo::LoadBuffer()
 		m_bytesRemaining = bytesRead;
 	}
 	else {
-		ResBin* resource = ResBin::Load(m_currentResourceId);
-		m_resource = resource;
+		m_resource = ResBin::Load(m_currentResourceId);
+		ResBin* resource = m_resource;
 		if (resource->m_loaded != 0) {
 			resource->m_age = 0;
 		}
