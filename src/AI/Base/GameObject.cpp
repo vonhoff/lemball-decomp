@@ -812,8 +812,7 @@ bool GameObject::Move()
 	position.m_yFixed = m_moveStartYFixed + (m_moveDeltaYFixed * elapsed) / m_moveDurationTicks;
 	int x = position.m_xFixed >> 12;
 	int y = position.m_yFixed >> 12;
-	if (x < 0 || (position.m_xFixed >> 16) >= g_pMap->m_ground.m_width || y < 0 ||
-		(position.m_yFixed >> 16) >= g_pMap->m_ground.m_height) {
+	if (x < 0 || (x >> 4) >= g_pMap->m_ground.m_width || y < 0 || (y >> 4) >= g_pMap->m_ground.m_height) {
 		m_actionDeadline = g_dwGameTick;
 		return false;
 	}
@@ -870,13 +869,13 @@ bool GameObject::Move()
 			int absDeltaY = deltaY < 0 ? -deltaY : deltaY;
 			int velocityX;
 			int velocityY;
-			if (absDeltaY < absDeltaX) {
-				velocityX = deltaX < 1 ? -1 : 1;
+			if (absDeltaX > absDeltaY) {
+				velocityX = deltaX <= 0 ? -1 : 1;
 				velocityY = 0;
 			}
 			else {
 				velocityX = 0;
-				velocityY = deltaY < 1 ? -1 : 1;
+				velocityY = deltaY <= 0 ? -1 : 1;
 			}
 			m_position.m_xFixed = position.m_xFixed;
 			m_position.m_yFixed = position.m_yFixed;
