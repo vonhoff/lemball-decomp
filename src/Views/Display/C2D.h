@@ -67,7 +67,7 @@ public:
 	void DrawCatapult(ViewData& p_viewData, int p_objectNo);
 	void DrawCliff(int p_x, int p_y, int p_height, int p_count);
 	int DrawClipData();
-	void DrawClippedRectangle(const VsRect& p_rect);
+	int DrawClippedRectangle(const VsRect& p_rect);
 	void DrawCrate(ViewData& p_viewData, int p_objectNo);
 	void DrawDemo();
 	void DrawDoor(ViewData& p_viewData);
@@ -173,7 +173,7 @@ private:
 	undefined m_pad0x1ae[0x71a];                    // 0x1ae
 	undefined4 m_pad0x8c8;                          // 0x8c8
 	undefined4 m_pad0x8cc;                          // 0x8cc
-	undefined m_pad0x8d0[2];                        // 0x8d0
+	unsigned short m_clipSearchHeight;              // 0x8d0
 	VsRect m_spriteGroundLookupRectA;               // 0x8d2
 	VsRect m_spriteGroundLookupRectB;               // 0x8da
 	VsPoint m_unk0x8e2;                             // 0x8e2
@@ -236,7 +236,8 @@ private:
 	unsigned int m_connectionTimeoutStart;          // 0xa88
 	undefined m_pad0xa8c[0x204];                    // 0xa8c
 	undefined4 m_unk0xc90;                          // 0xc90
-	undefined m_pad0xc94[0x7d4];                    // 0xc94
+	undefined m_pad0xc94[0x7d0];                    // 0xc94
+	undefined4 m_unk0x1464;                         // 0x1464
 	SolidRect m_solidRects[210];                    // 0x1468
 	unsigned int m_primitiveCount;                  // 0x2188
 	unsigned short m_groundHitMode;                 // 0x218c
@@ -246,7 +247,7 @@ private:
 	CopyColourToBackBuff m_copyColourToBackBuff;    // 0x21b0
 	CopyToBackBuff m_copyToBackBuff;                // 0x21c0
 	CopyToBackBuff m_scrollCopyToBackBuffs[2];      // 0x21d0
-	undefined4 m_pad0x21f0;                         // 0x21f0
+	unsigned int m_bitmapCount;                     // 0x21f0
 	Bitmap m_bitmaps[2];                            // 0x21f4
 	unsigned int m_redrawPending;                   // 0x2214
 	unsigned int m_scrollPending;                   // 0x2218

@@ -1549,10 +1549,146 @@ int C2D::DrawClipData()
 	return 0;
 }
 
+// GLOBAL: LEMBALL 0x00497218
+static const int g_clipMapStepXByOrientation[4] = {1, -1, -1, 1};
+// GLOBAL: LEMBALL 0x00497228
+static const int g_clipMapStepYByOrientation[4] = {-1, -1, 1, 1};
+// GLOBAL: LEMBALL 0x00497238
+static const int g_clipNeighborStepXByOrientation[4] = {0, 1, 0, -1};
+// GLOBAL: LEMBALL 0x00497248
+static const int g_clipNeighborStepYByOrientation[4] = {1, 0, -1, 0};
+// GLOBAL: LEMBALL 0x00497258
+static const int g_clipRowStepXByOrientation[4] = {1, -1, -1, 1};
+// GLOBAL: LEMBALL 0x00497268
+static const int g_clipRowStepYByOrientation[4] = {-1, -1, 1, 1};
+
 // 68K 0x10b01d3a DrawClippedRectangle__3C2DFRC7CVSRect
-// STUB: LEMBALL 0x0043b4d0
-void C2D::DrawClippedRectangle(const VsRect& p_rect)
+// FUNCTION: LEMBALL 0x0043b4d0
+int C2D::DrawClippedRectangle(const VsRect& p_rect)
 {
+	int orientationOffset;
+	int x;
+	int y;
+	int width;
+	int height;
+	VsRect clippedRect;
+	int left;
+	int right;
+	int bottom;
+	int gameX;
+	int gameY;
+	unsigned int rowCount;
+	int result;
+	int neighborStepX;
+	int neighborStepY;
+	int rowStepX;
+	int rowStepY;
+
+	orientationOffset = m_unk0x90c;
+	m_clipMapStepX = g_clipMapStepXByOrientation[orientationOffset];
+	m_clipMapStepY = g_clipMapStepYByOrientation[orientationOffset];
+	neighborStepX = g_clipNeighborStepXByOrientation[orientationOffset];
+	neighborStepY = g_clipNeighborStepYByOrientation[orientationOffset];
+	rowStepX = g_clipRowStepXByOrientation[orientationOffset];
+	rowStepY = g_clipRowStepYByOrientation[orientationOffset];
+	m_unk0x1464 = 0;
+
+	x = p_rect.m_x;
+	y = p_rect.m_y;
+	width = p_rect.m_width;
+	height = p_rect.m_height;
+	if (x + width > m_clipSize.m_x) {
+		width = m_clipSize.m_x - x;
+	}
+	if (y + height > m_clipSize.m_y) {
+		height = m_clipSize.m_y - y;
+	}
+
+	clippedRect.m_width = (short) width;
+	clippedRect.m_height = (short) height;
+	clippedRect.m_x = (short) x;
+	clippedRect.m_y = (short) y;
+	SolidRect& clipRect = m_solidRects[m_primitiveCount++];
+	clipRect.m_left = clippedRect.m_width;
+	clipRect.m_top = clippedRect.m_height;
+	clipRect.m_right = clippedRect.m_x;
+	clipRect.m_bottom = clippedRect.m_y;
+	clipRect.m_color = 0;
+	clipRect.Draw(m_gdi);
+
+	left = x - 0x10;
+	if (left < -0x10) {
+		left = -0x10;
+	}
+	y -= 0x18;
+	if (y < -0x18) {
+		y = -0x18;
+	}
+	right = left + width + 0x20;
+	if (right > m_clipSize.m_x) {
+		right = m_clipSize.m_x;
+	}
+	bottom = y + height + 0x30;
+	if (bottom > m_clipSize.m_y) {
+		bottom = m_clipSize.m_y;
+	}
+	width = right / 0x20 - left / 0x20 + 3;
+
+	m_map->ScreenToGame(m_viewOriginX + left, m_viewOriginY + y, gameX, gameY);
+	gameX /= 0x10;
+	gameY /= 0x10;
+	m_map->GameToScreen(gameX << 4, gameY << 4, m_clipScreenX, m_clipScreenY);
+	m_clipScreenX -= m_viewOriginX;
+	m_clipScreenY -= m_viewOriginY;
+
+	if (y < bottom) {
+		rowCount = ((unsigned int) (bottom - y) + 0xf) >> 4;
+		y += rowCount << 4;
+		do {
+			DoClipWidth(gameX, gameY, width);
+			m_clipScreenX -= 0x10;
+			m_clipScreenY += 8;
+			DoClipWidth(gameX + neighborStepX, gameY + neighborStepY, width + 1);
+			gameX += rowStepX;
+			gameY += rowStepY;
+			m_clipScreenX += 0x10;
+			m_clipScreenY += 8;
+		} while (--rowCount != 0);
+	}
+
+	bottom = y + m_clipSearchHeight;
+	m_map->ScreenToGame(m_viewOriginX + left, m_viewOriginY + y, gameX, gameY);
+	gameX /= 0x10;
+	gameY /= 0x10;
+	m_map->GameToScreen(gameX << 4, gameY << 4, m_clipScreenX, m_clipScreenY);
+	m_clipScreenX -= m_viewOriginX;
+	m_clipScreenY -= m_viewOriginY;
+
+	if (y < bottom) {
+		rowCount = ((unsigned int) (bottom - y) + 0xf) >> 4;
+		do {
+			DoClipWidthSearch(gameX, gameY, width);
+			m_clipScreenX -= 0x10;
+			m_clipScreenY += 8;
+			DoClipWidthSearch(gameX + neighborStepX, gameY + neighborStepY, width + 1);
+			gameX += rowStepX;
+			gameY += rowStepY;
+			m_clipScreenX += 0x10;
+			m_clipScreenY += 8;
+		} while (--rowCount != 0);
+	}
+
+	result = DrawClipData();
+	Bitmap& bitmap = m_bitmaps[m_bitmapCount];
+	bitmap.m_x = clippedRect.m_x;
+	bitmap.m_y = clippedRect.m_y;
+	bitmap.m_width = clippedRect.m_width;
+	bitmap.m_height = clippedRect.m_height;
+	bitmap.m_sourceX = clippedRect.m_x;
+	bitmap.m_sourceY = clippedRect.m_y;
+	bitmap.Draw(m_gdi);
+	m_bitmapCount++;
+	return result;
 }
 
 // 68K 0x10b02196 LemmingFly__3C2DFR9CViewDataRi
@@ -2723,7 +2859,7 @@ void C2D::Draw(const VsRect& p_rect)
 	m_frameCount++;
 	m_groundAnimationFrame = (short) (g_dwSimulationTimestamp / 100);
 	unsigned long startTime = timeGetTime();
-	*(undefined2*) m_pad0x8d0 = 0x40;
+	m_clipSearchHeight = 0x40;
 
 	VsRect* displayRect = &m_display->m_rect;
 	VsPoint* displayPosition = displayRect;
