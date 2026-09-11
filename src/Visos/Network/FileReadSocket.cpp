@@ -48,19 +48,19 @@ bool FileReadSocket::Read(NetworkMessage& p_message, int p_remove, int p_wait)
 // FUNCTION: LEMBALL 0x00479b30
 bool FileReadSocket::ReadBuff(int p_index)
 {
-	if (!NetworkFile::Seek(g_networkPacketSize * p_index + FileBaseSocket::m_dataOffset)) {
+	if (!Seek(g_networkPacketSize * p_index + FileBaseSocket::m_dataOffset)) {
 		return false;
 	}
 	HeaderMessage* header = &m_file->m_headers[p_index];
 	if (!NetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, header->m_headerValue)) {
-		FileCommonSocket::SocketError();
+		SocketError();
 		return false;
 	}
 	m_lastReceiveTime = CurrentMilliTimer();
-	g_receivedPacketSize = header->m_headerValue;
+	g_receivedPacketSize = m_file->m_headers[p_index].m_headerValue;
 	*g_pBroadcastReceiveAddress = header->m_text0;
-	if (FileCommonSocket::m_eventPending == 0) {
-		ReadSocket::FirstReceive();
+	if (m_readReady == 0) {
+		FirstReceive();
 	}
 	ReadSocket::ProcessPacket();
 	return true;
@@ -70,66 +70,50 @@ bool FileReadSocket::ReadBuff(int p_index)
 // FUNCTION: LEMBALL 0x00479c10
 void FileReadSocket::Process()
 {
-	if ((FileCommonSocket::m_eventPending != 0 || FileCommonSocket::m_platformState != 0) &&
-		FileCommonSocket::m_closePending != 0) {
+	if ((m_readReady != 0 || m_eventPending != 0) && m_isOpen != 0) {
 		if (!NetworkFile::Lock(m_unk0x04, m_file->m_payloadCapacity)) {
-			FileNetwork* network = 0;
-			if (g_pBaseNetwork != 0) {
-				network = static_cast<FileNetwork*>(g_pBaseNetwork);
-			}
-			network->ResetTimer(0x32);
+			static_cast<FileNetwork*>(g_pBaseNetwork)->ResetTimer(0x32);
 			return;
 		}
-		if (m_unk0x10 == -1) {
-			NetworkFile::Seek(m_unk0x04);
+		if (m_unk0x10 != -1) {
+			Seek(m_file->m_headers->m_payloadCapacity * m_unk0x10 + m_unk0x04);
 			NetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, m_file->m_payloadCapacity);
 			if (NetworkFile::UnLock(m_unk0x04, m_file->m_payloadCapacity)) {
-				m_file->Set((unsigned char*) g_pNetworkPacketScratch);
-				if (FileCommonSocket::m_unk0x08 > 0) {
-					bool found = false;
-					int index = 0;
-					do {
-						HeaderMessage* header = &m_file->m_headers[index];
-						if (header->m_mirroredSequence < header->m_sequence) {
-							if (found) {
-								m_unk0x10 = index;
-								return;
-							}
-							ReadBuff(index);
-							header = &m_file->m_headers[index];
-							header->m_mirroredSequence = header->m_sequence;
-							found = true;
-						}
-						++index;
-					} while (index < FileCommonSocket::m_unk0x08);
-				}
-			}
-		}
-		else {
-			int index = m_unk0x10;
-			NetworkFile::Seek(m_file->m_headers->m_payloadCapacity * index + m_unk0x04);
-			NetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, m_file->m_payloadCapacity);
-			if (NetworkFile::UnLock(m_unk0x04, m_file->m_payloadCapacity)) {
-				HeaderMessage* header = &m_file->m_headers[index];
-				header->Set((unsigned char*) g_pNetworkPacketScratch);
-				ReadBuff(index);
-				header = &m_file->m_headers[index];
+				m_file->m_headers[m_unk0x10].Set((unsigned char*) g_pNetworkPacketScratch);
+				ReadBuff(m_unk0x10);
+				HeaderMessage* header = &m_file->m_headers[m_unk0x10];
 				header->m_mirroredSequence = header->m_sequence;
-				if (index < FileCommonSocket::m_unk0x08) {
-					for (;; ++index) {
-						header = &m_file->m_headers[index];
-						if (header->m_mirroredSequence < header->m_sequence) {
-							m_unk0x10 = index;
-							break;
-						}
-						if (index + 1 >= FileCommonSocket::m_unk0x08) {
-							++index;
-							break;
-						}
+				int index;
+				for (index = m_unk0x10; index < FileCommonSocket::m_unk0x08; index++) {
+					header = &m_file->m_headers[index];
+					if (header->m_sequence > header->m_mirroredSequence) {
+						m_unk0x10 = index;
+						break;
 					}
 				}
 				if (index == FileCommonSocket::m_unk0x08) {
 					m_unk0x10 = 0xffffffffUL;
+				}
+			}
+		}
+		else {
+			Seek(m_unk0x04);
+			NetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, m_file->m_payloadCapacity);
+			if (NetworkFile::UnLock(m_unk0x04, m_file->m_payloadCapacity)) {
+				m_file->Set((unsigned char*) g_pNetworkPacketScratch);
+				bool found = false;
+				for (int index = 0; index < FileCommonSocket::m_unk0x08; index++) {
+					HeaderMessage* header = &m_file->m_headers[index];
+					if (header->m_mirroredSequence < header->m_sequence) {
+						if (found) {
+							m_unk0x10 = index;
+							return;
+						}
+						ReadBuff(index);
+						header = &m_file->m_headers[index];
+						header->m_mirroredSequence = header->m_sequence;
+						found = true;
+					}
 				}
 			}
 		}
