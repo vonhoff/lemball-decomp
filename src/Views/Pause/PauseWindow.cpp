@@ -287,8 +287,8 @@ VsRect PauseWindow::CalculateWindow()
 		secondBorder.m_animIndex = 1;
 		secondBorder.m_flags = 0;
 		secondBorder.m_remap = 0;
-		firstBorderPosition.m_x = (short) (firstBorderPosition.m_x + horizontalBorder[0]);
-		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + horizontalBorder[0]);
+		firstBorderPosition.m_x = (short) (firstBorderPosition.m_x + verticalBorder[0]);
+		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + verticalBorder[0]);
 	}
 
 	firstBorderPosition.m_x = 0;
