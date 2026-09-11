@@ -16,27 +16,32 @@ FileReadSocket::FileReadSocket() : FileBaseSocket(), ReadSocket(), FileCommonSoc
 
 // 68K 0x10207326 Read__15CFileReadSocketFR15CNetworkMessageUcUc
 // FUNCTION: LEMBALL 0x00479a40
-bool FileReadSocket::Read(NetworkMessage& p_message, unsigned char p_remove, unsigned char p_wait)
+bool FileReadSocket::Read(NetworkMessage& p_message, int p_remove, int p_wait)
 {
-	int offset = NetworkFile::Tell();
+	int offset = Tell();
 	int length = p_message.m_payloadCapacity;
 	if (p_wait == 0) {
 		unsigned long started = CurrentMilliTimer();
-		while (!NetworkFile::Lock(offset, length)) {
-			if (100 <= CurrentMilliTimer() - started) {
-				return false;
+		int locked;
+		do {
+			locked = NetworkFile::Lock(offset, length);
+			if (locked) {
+				break;
 			}
-		}
-	}
-	if (NetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, length)) {
-		p_message.Set((unsigned char*) g_pNetworkPacketScratch);
-		if (p_remove == 0 && !NetworkFile::UnLock(offset, length)) {
+		} while (CurrentMilliTimer() - started < 100);
+		if (!locked) {
 			return false;
 		}
-		return true;
 	}
-	NetworkFile::UnLock(offset, length);
-	return false;
+	if (!NetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, length)) {
+		NetworkFile::UnLock(offset, length);
+		return false;
+	}
+	p_message.Set((unsigned char*) g_pNetworkPacketScratch);
+	if (p_remove == 0 && !NetworkFile::UnLock(offset, length)) {
+		return false;
+	}
+	return true;
 }
 
 // 68K 0x1020742e ReadBuff__15CFileReadSocketFi

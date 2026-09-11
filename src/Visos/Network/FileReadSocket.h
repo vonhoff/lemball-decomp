@@ -17,7 +17,7 @@
 class FileReadSocket : public FileBaseSocket, public virtual ReadSocket, public virtual FileCommonSocket {
 public:
 	FileReadSocket();
-	bool Read(NetworkMessage& p_message, unsigned char p_remove, unsigned char p_wait);
+	bool Read(NetworkMessage& p_message, int p_remove, int p_wait);
 	bool ReadBuff(int p_index);
 	virtual void Closed(int p_notifyPeer); // vtable+0x0c
 	virtual ~FileReadSocket();             // vtable+0x14
