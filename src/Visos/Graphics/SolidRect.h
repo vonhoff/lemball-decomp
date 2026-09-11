@@ -26,6 +26,7 @@ public:
 	friend class HiliteController;
 	friend class PasswordDrawer;
 	friend class Surface;
+	friend class C2D;
 
 private:
 	short m_left;         // 0x04

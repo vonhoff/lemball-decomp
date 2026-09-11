@@ -9,7 +9,7 @@ struct AnimSpecialEntry {
 	short m_y;                     // 0x02
 	unsigned short m_sortKey;      // 0x04
 	undefined2 m_alignmentPadding; // 0x06
-	void* m_groundEntry;           // 0x08
+	Ground* m_groundEntry;         // 0x08
 };
 
 #endif

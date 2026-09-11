@@ -33,7 +33,7 @@ public:
 	bool InGroupByObjectNo(int p_objectNo);
 	bool IsInGrouping(GameObject* p_object);
 	bool ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY);
-	int CalcZValueSprite(int p_index);
+	unsigned short CalcZValueSprite(int p_index);
 	unsigned long LemmingFly(ViewData& p_viewData, int& p_frame);
 	unsigned short CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, unsigned short p_z);
 	void UseBalloon(int p_playerIndex);
@@ -247,8 +247,8 @@ private:
 	unsigned int m_scrollPending;                   // 0x2218
 	short m_scrollDeltaX;                           // 0x221c
 	short m_scrollDeltaY;                           // 0x221e
-	void* m_zBufferAnimations;                      // 0x2220
-	unsigned int m_zBufferAnimationCount;           // 0x2224
+	AnimSpecialEntry* m_zBufferAnimations;          // 0x2220
+	int m_zBufferAnimationCount;                    // 0x2224
 	undefined m_pad0x2228[0x200];                   // 0x2228
 };
 

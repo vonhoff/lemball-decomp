@@ -9,6 +9,7 @@ public:
 	// Inlined in Ai::Restart at 0x0041170d.
 	AnimSpecial() : m_entries(0), m_entryCount(0) {}
 	unsigned int Initialise(Map* p_map);
+	friend class C2D;
 
 private:
 	AnimSpecialEntry* m_entries; // 0x00

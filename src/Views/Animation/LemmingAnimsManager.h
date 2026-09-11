@@ -39,6 +39,7 @@ public:
 	void Unload();
 	virtual void UpdateNonCacheLoad(); // vtable+0x00
 	~LemmingAnimsManager();
+	friend class C2D;
 
 private:
 	Frames** m_animFrames;        // 0x74

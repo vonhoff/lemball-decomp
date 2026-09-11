@@ -2,6 +2,8 @@
 
 #include "../../AI/Base/ObjectActions.h"
 #include "../../AI/Navigation/Ai.h"
+#include "../../AI/Objects/AnimSpecial.h"
+#include "../../AI/Objects/AnimSpecialEntry.h"
 #include "../../AI/Objects/PlayerLemming.h"
 #include "../../AI/Objects/ViewData.h"
 #include "../../Control/Game/Demo.h"
@@ -2373,22 +2375,129 @@ void C2D::DrawZBuffSprite(int p_index, unsigned short p_z)
 }
 
 // 68K 0x10b060ac DrawZBuff_Anim__3C2DFiUs
-// STUB: LEMBALL 0x00440490
+// FUNCTION: LEMBALL 0x00440490
 void C2D::DrawZBuffAnim(int p_index, unsigned short p_z)
 {
+	AnimSpecialEntry* animation = m_zBufferAnimations + p_index;
+	int gameX = (unsigned short) animation->m_x << 4;
+	int gameY = (unsigned short) animation->m_y << 4;
+	Ground* ground = animation->m_groundEntry;
+	int height = ground->m_height;
+	unsigned short collision = ground->m_collision;
+	unsigned short frame = ground->m_objectData;
+	int cliff = (short) ground->m_cliff;
+	eObjectType groundType = ground->m_objectType;
+	int screenX;
+	int screenY;
+
+	m_map->GameToScreen(gameX, gameY, screenX, screenY);
+	screenX -= m_viewOriginX;
+	screenY -= m_viewOriginY;
+	m_lemmingAnims->m_primitiveSequence = p_z;
+	if ((collision & 0x20) != 0 && height > 0) {
+		DrawCliff(screenX, screenY, height, cliff);
+	}
+	DrawGround(screenX, screenY - height, groundType, frame);
 }
 
 // 68K 0x10b061ac DrawObjectsZBuff__3C2DFv
-// STUB: LEMBALL 0x00440560
+// FUNCTION: LEMBALL 0x00440560
 void C2D::DrawObjectsZBuff()
 {
+	VsRect backgroundBounds(0, 0, m_clipSize.m_x, m_clipSize.m_y);
+	SolidRect& background = m_solidRects[m_primitiveCount++];
+	background.m_left = backgroundBounds.m_width;
+	background.m_top = backgroundBounds.m_height;
+	background.m_right = backgroundBounds.m_x;
+	background.m_bottom = backgroundBounds.m_y;
+	background.m_color = 0;
+	background.Draw(m_gdi);
+
+	int viewIndex = 0;
+	if ((int) m_viewDataCount > 0) {
+		do {
+			m_viewData[viewIndex].m_viewX = (short) m_viewData[viewIndex].m_positionX;
+			m_viewData[viewIndex].m_viewY = (short) m_viewData[viewIndex].m_positionY;
+
+			C3DVector position;
+			position.m_xFixed = m_viewData[viewIndex].m_positionX;
+			position.m_yFixed = m_viewData[viewIndex].m_positionY;
+			position.m_zFixed = m_viewData[viewIndex].m_positionZ;
+			m_map->GameToScreen(position.m_xFixed, position.m_yFixed);
+			position.m_xFixed -= m_viewOriginX;
+			position.m_yFixed -= position.m_zFixed;
+			position.m_yFixed -= m_viewOriginY;
+			m_viewData[viewIndex].m_positionX = position.m_xFixed;
+			m_viewData[viewIndex].m_positionY = position.m_yFixed;
+			m_viewData[viewIndex].m_positionZ = position.m_zFixed;
+			viewIndex++;
+		} while ((int) m_viewDataCount > viewIndex);
+	}
+
+	SortViewData();
+	m_lemmingAnims->m_reservedac = 0x80000;
+
+	int spriteIndex = 0;
+	int animationIndex = 0;
+	bool spriteZValid = false;
+	bool animationZValid = false;
+	unsigned short spriteZ;
+	unsigned short animationZ;
+	int animationOffset = 0;
+	AnimSpecial* animations = m_ai->m_animSpecial;
+	m_zBufferAnimationCount = animations->m_entryCount;
+	m_zBufferAnimations = animations->m_entries;
+
+	while (spriteIndex < (int) m_viewDataCount && animationIndex < m_zBufferAnimationCount) {
+		if (!spriteZValid) {
+			spriteZ = (unsigned short) CalcZValueSprite(spriteIndex);
+			spriteZValid = true;
+		}
+		if (!animationZValid) {
+			AnimSpecialEntry* animation = (AnimSpecialEntry*) ((unsigned char*) m_zBufferAnimations + animationOffset);
+			animationZ = animation->m_groundEntry->m_height + animation->m_sortKey;
+			animationZValid = true;
+		}
+		if (animationZ < spriteZ) {
+			DrawZBuffAnim(animationIndex, animationZ);
+			animationOffset += sizeof(AnimSpecialEntry);
+			animationIndex++;
+			animationZValid = false;
+		}
+		else {
+			DrawZBuffSprite(spriteIndex, spriteZ);
+			spriteIndex++;
+			spriteZValid = false;
+		}
+	}
+
+	while (spriteIndex < (int) m_viewDataCount) {
+		unsigned short z = (unsigned short) CalcZValueSprite(spriteIndex);
+		DrawZBuffSprite(spriteIndex, z);
+		spriteIndex++;
+	}
+
+	while (animationIndex < m_zBufferAnimationCount) {
+		AnimSpecialEntry* animation = m_zBufferAnimations + animationIndex;
+		unsigned short z = animation->m_groundEntry->m_height + animation->m_sortKey;
+		DrawZBuffAnim(animationIndex, z);
+		animationIndex++;
+	}
 }
 
 // 68K 0x10b06416 CalcZValue_Sprite__3C2DFi
-// STUB: LEMBALL 0x004407e0
-int C2D::CalcZValueSprite(int p_index)
+// FUNCTION: LEMBALL 0x004407e0
+unsigned short C2D::CalcZValueSprite(int p_index)
 {
-	return 0;
+	eObjectType objectType = m_viewData[p_index].m_objectType;
+	if (objectType == 0x18) {
+		return 0x7fff;
+	}
+
+	ViewData* viewData = m_viewData + p_index;
+	unsigned short z = (unsigned short) viewData->m_positionZ;
+	return CalcGroundCode(objectType, (unsigned short) viewData->m_viewX, (unsigned short) viewData->m_viewY, z) + z +
+		   1;
 }
 
 // 68K 0x10b064c6 CalcGroundCode__3C2DF11eObjectTypeiiUs
