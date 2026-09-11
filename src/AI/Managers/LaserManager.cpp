@@ -49,9 +49,15 @@ bool LaserManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x10614332 Process__13CLaserManagerFv
-// STUB: LEMBALL 0x00429850
+// FUNCTION: LEMBALL 0x00429850
 void LaserManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_lasers[i].m_requestEnabled = 1;
+		if (m_lasers[i].m_active != 0 || m_lasers[i].m_isRemoteObject != 0) {
+			m_lasers[i].Process();
+		}
+	}
 }
 
 // 68K 0x106143d2 GetViewData__13CLaserManagerFP9CViewData
