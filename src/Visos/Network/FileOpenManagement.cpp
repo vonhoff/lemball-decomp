@@ -4,12 +4,12 @@
 // FUNCTION: LEMBALL 0x0047a470
 bool FileOpenManagement::IncOpenCount()
 {
-	NetworkFile::Seek(0);
+	Seek(0);
 	if (!FileReadSocket::Read(m_message, 1, 0)) {
 		return 0;
 	}
 	m_message.m_openCount++;
-	NetworkFile::Seek(0);
+	Seek(0);
 	return FileWriteSocket::Write(m_message, 0, 1);
 }
 
@@ -17,12 +17,12 @@ bool FileOpenManagement::IncOpenCount()
 // FUNCTION: LEMBALL 0x0047a4d0
 bool FileOpenManagement::DecOpenCount()
 {
-	NetworkFile::Seek(0);
+	Seek(0);
 	if (!FileReadSocket::Read(m_message, 1, 0)) {
 		return 0;
 	}
 	m_message.m_openCount--;
-	NetworkFile::Seek(0);
+	Seek(0);
 	return FileWriteSocket::Write(m_message, 0, 1);
 }
 
