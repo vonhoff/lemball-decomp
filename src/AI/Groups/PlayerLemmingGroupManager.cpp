@@ -290,9 +290,24 @@ void PlayerLemmingGroupManager::PlayerGroupRequestFire(int p_x, int p_y)
 }
 
 // 68K 0x106104be InitialiseNetwork__26CPlayerLemmingGroupManagerFv
-// STUB: LEMBALL 0x00418ca0
+// FUNCTION: LEMBALL 0x00418ca0
 void PlayerLemmingGroupManager::InitialiseNetwork()
 {
+	if (g_pActiveConnection != 0) {
+		PlayerLemming** lemmings = m_networkLemmings;
+		int remaining = 4;
+		do {
+			if (m_networkInitialized == 0) {
+				*lemmings = new PlayerLemming(0, 0, 0, 0, 1, 0);
+			}
+			(*lemmings)->Restart();
+			BaseObjectManager* manager = this;
+			(*lemmings)->m_manager = manager;
+			lemmings++;
+			remaining--;
+		} while (remaining != 0);
+		m_networkInitialized = 1;
+	}
 }
 
 // 68K 0x106105a0 LoadLevel__26CPlayerLemmingGroupManagerFPUcUlUc
