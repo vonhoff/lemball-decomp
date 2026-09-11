@@ -487,9 +487,18 @@ void C2D::Restart()
 }
 
 // 68K 0x10b07a86 CheckValidFormGroup__3C2DFv
-// STUB: LEMBALL 0x004369b0
+// FUNCTION: LEMBALL 0x004369b0
 void C2D::CheckValidFormGroup()
 {
+	int i;
+
+	if (m_groupingActive == 1) {
+		for (i = 0; i < m_groupCount; i++) {
+			if (!g_pObjects[m_groupObjectIds[i]]->IsSelectable()) {
+				RemoveFromGroupByObjectNo(m_groupObjectIds[i]);
+			}
+		}
+	}
 }
 
 // 68K 0x10b07b18 Process__3C2DFv
@@ -950,15 +959,28 @@ void C2D::SendCursorMsg()
 }
 
 // 68K 0x10b09514 OnInside__3C2DFRC8CVSPoint
-// STUB: LEMBALL 0x00438170
+// FUNCTION: LEMBALL 0x00438170
 void C2D::OnInside(const VsPoint& p_point)
 {
+	if ((g_pDemo == 0 || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
+		return;
+	}
+	m_cursorGamePoint.m_x = p_point.m_x;
+	m_cursorGamePoint.m_y = p_point.m_y;
+	SendCursorMsg();
 }
 
 // 68K 0x10b0958c OnButtonUp__3C2DFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x004381c0
+// FUNCTION: LEMBALL 0x004381c0
 void C2D::OnButtonUp(const VsPoint& p_point, int p_flags)
 {
+	m_mouseButtonDown = 0;
+	if (m_paused == 0) {
+		if ((g_pDemo == 0 || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
+			return;
+		}
+		SendCursorMsg();
+	}
 }
 
 // 68K 0x10b0960a OnButtonDown__3C2DFRC8CVSPoint12BUTTON_FLAGS
