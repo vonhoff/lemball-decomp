@@ -24,6 +24,7 @@ public:
 	friend class WriteSocket;
 	friend class ReadSocket;
 	friend class FileReadSocket;
+	friend class FileWriteSocket;
 	friend class FileConnect;
 	friend class FileBroadcast;
 	friend class NetworkManager;
