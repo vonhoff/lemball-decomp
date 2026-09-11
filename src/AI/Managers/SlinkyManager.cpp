@@ -49,9 +49,14 @@ SlinkyManager::~SlinkyManager()
 }
 
 // 68K 0x1061f230 Add__14CSlinkyManagerFiiiii
-// STUB: LEMBALL 0x0040b9e0
+// FUNCTION: LEMBALL 0x0040b9e0
 void SlinkyManager::Add(int p_id, int p_minX, int p_minY, int p_maxX, int p_maxY)
 {
+	if (m_count < m_capacity) {
+		m_slinkies[m_count].SetId((unsigned short) p_id);
+		m_slinkies[m_count].Set(p_minX, p_maxX, p_minY, p_maxY);
+		m_count++;
+	}
 }
 
 // 68K 0x1061f2aa GetViewData__14CSlinkyManagerFP9CViewData
