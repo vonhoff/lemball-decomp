@@ -36,4 +36,7 @@ public:
 // LIBRARY: LEMBALL 0x0047fe00 SYMBOL
 // _strchr
 
+// LIBRARY: LEMBALL 0x00480010 SYMBOL
+// _strncmp
+
 #endif

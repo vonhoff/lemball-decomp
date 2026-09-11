@@ -441,7 +441,7 @@ void InitQuitSubSystems()
 }
 
 // 68K 0x102138be INIT_CheckOptions__FPc
-// STUB: LEMBALL 0x004595d0
+// FUNCTION: LEMBALL 0x004595d0
 bool InitCheckOptions(char* p_arg0)
 {
 	InitCmdOption* option;
@@ -451,23 +451,24 @@ bool InitCheckOptions(char* p_arg0)
 	char* end;
 
 	if (*p_arg0 == '-' || *p_arg0 == '/') {
+		p_arg0++;
 		option = g_aInitCmdOptions;
 		index = 0;
 		do {
 			colon = strchr((char*) (*option)[kInitCmdOptionName], ':');
-			if (colon == 0) {
-				maxCount = strlen((char*) (*option)[kInitCmdOptionName]);
-			}
-			else {
+			if (colon != 0) {
 				maxCount = (unsigned int) (colon - (char*) (*option)[kInitCmdOptionName]);
 			}
-			if (strncmp(p_arg0 + 1, (char*) (*option)[kInitCmdOptionName], maxCount) == 0) {
-				int* value = (int*) g_aInitCmdOptions[index][kInitCmdOptionValue];
-				if (strlen((char*) g_aInitCmdOptions[index][kInitCmdOptionName]) == maxCount) {
-					*value = *value ^ 1;
+			else {
+				maxCount = strlen((char*) (*option)[kInitCmdOptionName]);
+			}
+			if (strncmp(p_arg0, (char*) (*option)[kInitCmdOptionName], maxCount) == 0) {
+				if (strlen((char*) g_aInitCmdOptions[index][kInitCmdOptionName]) != maxCount) {
+					*(int*) g_aInitCmdOptions[index][kInitCmdOptionValue] = Strtol(p_arg0 + maxCount + 1, &end, 10);
 				}
 				else {
-					*value = strtol(p_arg0 + 1 + maxCount + 1, &end, 10);
+					int* value = (int*) g_aInitCmdOptions[index][kInitCmdOptionValue];
+					*value = *value ^ 1;
 				}
 				g_afInitOptionSelected[index] = 1;
 				return 1;
