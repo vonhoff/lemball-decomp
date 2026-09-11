@@ -394,51 +394,55 @@ void Surface::ResetScroll()
 // FUNCTION: LEMBALL 0x0046c9f0
 void Surface::SetLinePtrs()
 {
-	Surface* parent;
 	int y;
-	int originX;
-	int originY;
+	int parentY;
 	int parentStride;
 	unsigned char* bits;
 
-	parent = (Surface*) PvScrollableSurface::m_parentSurface;
-	if (parent == (Surface*) g_pGdiHelperTarget) {
+	if (PvScrollableSurface::m_parentSurface != (Surface*) g_pGdiHelperTarget) {
+		parentStride = PvScrollableSurface::m_parentSurface->m_stride;
+		m_stride = parentStride;
+		bits = (unsigned char*)
+				   PvScrollableSurface::m_parentSurface->m_lines[(int) PvScrollableSurface::m_windowRect.m_y] +
+			   (int) PvScrollableSurface::m_windowRect.m_x;
+		m_bitsBase = bits;
+		m_bits = bits;
+		m_xOffset = 0;
+		m_firstLine = 0;
+		if (PvScrollableSurface::m_parentSurface->PvBackBuffSurface::m_enabled != 0) {
+			PvBackBuffSurface::m_enabled = PvScrollableSurface::m_parentSurface->PvBackBuffSurface::m_enabled;
+			PvBackBuffSurface::m_buffer = PvScrollableSurface::m_parentSurface->PvBackBuffSurface::m_buffer +
+										  (int) PvScrollableSurface::m_windowRect.m_y * parentStride +
+										  (int) PvScrollableSurface::m_windowRect.m_x;
+		}
+		else {
+			PvBackBuffSurface::m_enabled = 0;
+		}
+		if (PvScrollableSurface::m_parentSurface->PvZBuffSurface::m_enabled != 0) {
+			PvZBuffSurface::m_enabled = PvScrollableSurface::m_parentSurface->PvZBuffSurface::m_enabled;
+			PvZBuffSurface::m_buffer =
+				(unsigned short*) ((int) PvScrollableSurface::m_parentSurface->PvZBuffSurface::m_buffer +
+								   ((int) PvScrollableSurface::m_windowRect.m_y * parentStride +
+									(int) PvScrollableSurface::m_windowRect.m_x) *
+									   2);
+		}
+		else {
+			PvZBuffSurface::m_enabled = 0;
+		}
+		y = 0;
+		parentY = (int) PvScrollableSurface::m_windowRect.m_y;
+		if (0 < (short) m_height) {
+			do {
+				m_lines[y] = (void*) ((int) PvScrollableSurface::m_parentSurface->m_lines[parentY] +
+									  (int) PvScrollableSurface::m_windowRect.m_x);
+				y = y + 1;
+				parentY = parentY + 1;
+			} while (y < (int) (short) m_height);
+		}
+	}
+	else {
 		PvGdiBitmap::SetLinePtrs();
-		return;
 	}
-	parentStride = parent->m_stride;
-	m_stride = parentStride;
-	originX = (int) PvScrollableSurface::m_windowRect.m_x;
-	originY = (int) PvScrollableSurface::m_windowRect.m_y;
-	bits = (unsigned char*) parent->m_lines[originY] + originX;
-	m_bitsBase = bits;
-	m_bits = bits;
-	m_xOffset = 0;
-	m_firstLine = 0;
-	if (parent->PvZBuffSurface::m_bitmap.m_lines != 0) {
-		PvZBuffSurface::m_bitmap.m_lines = parent->PvZBuffSurface::m_bitmap.m_lines;
-		PvZBuffSurface::m_bitmap.m_bits =
-			(unsigned char*) (originY * parentStride + (int) parent->PvZBuffSurface::m_bitmap.m_bits + originX);
-	}
-	else {
-		PvZBuffSurface::m_bitmap.m_lines = 0;
-	}
-	if (parent->PvBackBuffSurface::m_bitmap.m_lines != 0) {
-		PvBackBuffSurface::m_bitmap.m_lines = parent->PvBackBuffSurface::m_bitmap.m_lines;
-		PvBackBuffSurface::m_bitmap.m_bits = (unsigned char*) ((originY * parentStride + originX) * 2 +
-															   (int) parent->PvBackBuffSurface::m_bitmap.m_bits);
-	}
-	else {
-		PvBackBuffSurface::m_bitmap.m_lines = 0;
-	}
-	y = 0;
-	if ((short) m_height <= 0) {
-		return;
-	}
-	do {
-		m_lines[y] = (void*) ((int) parent->m_lines[originY + y] + originX);
-		y = y + 1;
-	} while (y < (int) (short) m_height);
 }
 
 // 68K 0x10109466 AddToChangeList__8CSurfaceFRC7CVSRect
