@@ -2,6 +2,7 @@
 
 #include "../Foundation/VsTime.h"
 #include "../Messaging/Headers.h"
+#include "TcpIpNetwork.h"
 
 #include <new.h>
 #include <string.h>
@@ -62,9 +63,70 @@ void FileConnect::Connect()
 }
 
 // 68K 0x1020a186 ConnectSetup__12CFileConnectFv
-// STUB: LEMBALL 0x0047b580
+// FUNCTION: LEMBALL 0x0047b580
 void FileConnect::ConnectSetup()
 {
+	int writeIndex = m_port * 2;
+	int readIndex = writeIndex;
+	if (m_isHost == 0) {
+		readIndex++;
+	}
+	else {
+		writeIndex++;
+	}
+
+	FileReadSocket::m_unk0x04 +=
+		(FileCommonSocket::m_unk0x08 * g_networkPacketSize + FileReadSocket::m_file->m_payloadCapacity) * readIndex;
+	FileReadSocket::m_dataOffset = FileReadSocket::m_file->m_payloadCapacity + FileReadSocket::m_unk0x04;
+	FileWriteSocket::m_unk0x04 +=
+		(FileCommonSocket::m_unk0x08 * g_networkPacketSize + FileWriteSocket::m_file->m_payloadCapacity) * writeIndex;
+	FileWriteSocket::m_dataOffset = FileWriteSocket::m_file->m_payloadCapacity + FileWriteSocket::m_unk0x04;
+
+	unsigned int packetBytes = FileCommonSocket::m_unk0x08 * g_networkPacketSize;
+	unsigned int requiredSize = FileReadSocket::m_dataOffset + packetBytes;
+	unsigned int writeSize = FileWriteSocket::m_dataOffset + packetBytes;
+	if (requiredSize < writeSize) {
+		requiredSize = writeSize;
+	}
+
+	unsigned long started = CurrentMilliTimer();
+	bool locked;
+	do {
+		locked = NetworkFile::Lock(0, m_message.m_payloadCapacity);
+	} while (!locked && CurrentMilliTimer() - started < 100);
+
+	if (!locked) {
+		goto setupComplete;
+	}
+
+	while (GetFileSize() < requiredSize) {
+		unsigned char* data = (unsigned char*) operator new(g_networkPacketSize);
+		memset(data, 0, g_networkPacketSize);
+		Seek(GetFileSize());
+
+		FileWriteSocket::Write(*FileWriteSocket::m_file, 0, 0);
+		int i = 0;
+		for (; i < FileCommonSocket::m_unk0x08; i++) {
+			NetworkFile::Write(data, g_networkPacketSize);
+		}
+
+		FileWriteSocket::Write(*FileReadSocket::m_file, 0, 0);
+		i = 0;
+		for (; i < FileCommonSocket::m_unk0x08; i++) {
+			NetworkFile::Write(data, g_networkPacketSize);
+		}
+
+		operator delete(data);
+	}
+
+	if (!NetworkFile::UnLock(0, m_message.m_payloadCapacity)) {
+		SocketError();
+		return;
+	}
+
+setupComplete:
+	m_isOpen = 1;
+	m_socketFlags = 1;
 }
 
 // 68K 0x101168ac Process__12CFileConnectFv

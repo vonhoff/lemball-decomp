@@ -12,9 +12,9 @@ private:
 	friend class FileConnect;
 	friend class FileBroadcast;
 	friend class FileReadSocket;
-	Headers* m_file;      // 0x00
-	undefined4 m_unk0x04; // 0x04
-	undefined4 m_unk0x08; // 0x08
+	Headers* m_file;         // 0x00
+	undefined4 m_unk0x04;    // 0x04
+	undefined4 m_dataOffset; // 0x08: packet-data offset after the serialized headers
 };
 
 #endif

@@ -43,7 +43,7 @@ bool FileReadSocket::Read(NetworkMessage& p_message, unsigned char p_remove, uns
 // FUNCTION: LEMBALL 0x00479b30
 bool FileReadSocket::ReadBuff(int p_index)
 {
-	if (!NetworkFile::Seek(g_networkPacketSize * p_index + FileBaseSocket::m_unk0x08)) {
+	if (!NetworkFile::Seek(g_networkPacketSize * p_index + FileBaseSocket::m_dataOffset)) {
 		return false;
 	}
 	HeaderMessage* header = &m_file->m_headers[p_index];
