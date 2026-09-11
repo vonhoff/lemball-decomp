@@ -145,12 +145,12 @@ bool FileBroadcast::WritePortInfo()
 {
 	g_pFileBroadcast->OpenDataStream();
 	unsigned int length = g_pFileBroadcast->m_payloadCapacity;
-	NetworkFile::Seek(m_message.m_payloadCapacity);
+	Seek(m_message.m_payloadCapacity);
 	m_portInfoLocked = 0;
 	bool result = NetworkFile::Write(g_pFileBroadcast->m_buffer + sizeof(BasePacketHeader), length);
 	g_pFileBroadcast->CloseDataStream();
 	if (result) {
-		return NetworkFile::UnLock(m_message.m_payloadCapacity, length);
+		return NetworkFile::UnLock(m_message.m_payloadCapacity, length) != 0;
 	}
 	NetworkFile::UnLock(m_message.m_payloadCapacity, length);
 	return false;
@@ -166,15 +166,22 @@ short FileBroadcast::FindPort(const unsigned char* p_data)
 	}
 	g_pFileBroadcast->Set((unsigned char*) g_pNetworkPacketScratch);
 	int port = 0;
-	while (port < 0x200 && g_pFileBroadcast->m_useCounts[port] != 0) {
+	unsigned int length = g_pFileBroadcast->m_payloadCapacity;
+	unsigned char* counts = g_pFileBroadcast->m_useCounts;
+	while (port < 0x200 && counts[(unsigned short) port] != 0) {
 		port++;
 	}
-	if (port == 0x200) {
-		NetworkFile::UnLock(m_message.m_payloadCapacity, g_pFileBroadcast->m_payloadCapacity);
-		return -1;
+	if (port != 0x200) {
+		counts[(unsigned short) port]++;
+		int written = WritePortInfo();
+		int result = -1;
+		if (written) {
+			result = port;
+		}
+		return result;
 	}
-	g_pFileBroadcast->m_useCounts[port]++;
-	return WritePortInfo() ? (short) port : -1;
+	NetworkFile::UnLock(m_message.m_payloadCapacity, length);
+	return -1;
 }
 
 // 68K 0x10209276 ResetPort__14CFileBroadcastFs
