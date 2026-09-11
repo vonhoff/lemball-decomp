@@ -74,9 +74,17 @@ int LaserManager::GetViewData(ViewData* p_viewData)
 }
 
 // 68K 0x1061444c Add__13CLaserManagerFUsiii11eObjectType
-// STUB: LEMBALL 0x004298f0
+// FUNCTION: LEMBALL 0x004298f0
 void LaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectType p_orientation)
 {
+	if (m_count < m_capacity) {
+		AiCoord position;
+		position.m_xFixed = p_x << 12;
+		position.m_yFixed = p_y << 12;
+		position.m_zFixed = p_z << 12;
+		m_lasers[m_count].Set(p_id, position, p_orientation);
+		m_count++;
+	}
 }
 
 #include "../Navigation/Ai.h"
