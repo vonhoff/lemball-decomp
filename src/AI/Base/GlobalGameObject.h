@@ -44,6 +44,7 @@ public:
 	friend class MineManager;
 	friend class RocketManager;
 	friend class TrapDoorManager;
+	friend class HandManager;
 
 protected:
 	unsigned int m_requestEnabled; // 0x124

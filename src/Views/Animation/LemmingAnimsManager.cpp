@@ -9,6 +9,8 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/MogRes.h"
 #include "../../Visos/Resources/ResFont.h"
+#include "../Display/Main2DDisplay.h"
+#include "../Sound/SoundView.h"
 
 // Style-sensitive resource IDs written by SetupStyleSensitive (0x00432c80).
 // GLOBAL: LEMBALL 0x004a7850
@@ -263,9 +265,29 @@ void LemmingAnimsManager::LoadMainRammed()
 }
 
 // 68K 0x10b0ad4c Load__20CLemmingAnimsManagerF7GROUNDS
-// STUB: LEMBALL 0x004337f0
+// FUNCTION: LEMBALL 0x004337f0
 void LemmingAnimsManager::Load(int p_groundStyle)
 {
+	m_groundStyle = p_groundStyle;
+	if (m_loadAnim != 0) {
+		m_loadAnim->InitialiseScreen();
+	}
+	m_nonCacheState = 0;
+	m_loadProgress = g_pSoundView->GetnEffects(4);
+	m_countingLoads = 1;
+	LoadVrammed();
+	LoadMainRammed();
+	m_countingLoads = 0;
+	g_pSoundView->ChangeState(4, (LoadUpdate*) this);
+	SetupStyleSensitive();
+	LoadVrammed();
+	LoadMainRammed();
+	if (m_loadAnim != 0) {
+		delete m_loadAnim;
+		m_loadAnim = 0;
+	}
+	m_display->AttachPalette(RES_GAME_GAMEPALETTE);
+	m_loaded = 1;
 }
 
 // 68K 0x10b0ae48 Unload__20CLemmingAnimsManagerFv

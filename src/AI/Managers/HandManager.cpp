@@ -62,9 +62,15 @@ bool HandManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x106114e2 Process__12CHandManagerFv
-// STUB: LEMBALL 0x004283c0
+// FUNCTION: LEMBALL 0x004283c0
 void HandManager::Process()
 {
+	for (int i = 0; i < m_count; i++) {
+		m_hands[i].m_requestEnabled = 1;
+		if (m_hands[i].m_activated != 0 || m_hands[i].m_isRemoteObject != 0) {
+			m_hands[i].Process();
+		}
+	}
 }
 
 // 68K 0x1061157a GetViewData__12CHandManagerFP9CViewData
