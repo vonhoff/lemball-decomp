@@ -410,7 +410,7 @@ void GWnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 }
 
 // 68K 0x1010b30c AttachPalette__5CGWndFUl
-// STUB: LEMBALL 0x00464490
+// FUNCTION: LEMBALL 0x00464490
 void GWnd::AttachPalette(unsigned long p_paletteId)
 {
 	ResPalette* palette;
@@ -419,19 +419,14 @@ void GWnd::AttachPalette(unsigned long p_paletteId)
 		return;
 	}
 	palette = ResPalette::Load(p_paletteId);
-	if (palette == 0) {
-		return;
-	}
-	if (palette->m_loaded == 0) {
-		palette->LoadData();
-	}
-	else {
+	if (palette->m_loaded != 0) {
 		palette->m_age = 0;
 	}
-	palette->m_directUseCount = palette->m_directUseCount + 1;
-	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
-		m_gdi->m_renderTarget->AttachPalette(palette);
+	else {
+		palette->LoadData();
 	}
+	palette->m_directUseCount = palette->m_directUseCount + 1;
+	m_gdi->m_renderTarget->AttachPalette(palette);
 	palette->m_directUseCount = palette->m_directUseCount - 1;
 	palette->UnLoad();
 	m_paletteResourceId = p_paletteId;
