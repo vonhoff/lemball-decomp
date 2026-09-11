@@ -113,13 +113,14 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
         if res.returncode != 0:
             return res.returncode
 
-    for fname in ("LEMBALL.pdb", "LEMBALL.ilk", "LEMBALL.EXE"):
-        p = BUILD / fname
-        if p.exists():
-            try:
-                p.unlink()
-            except OSError:
-                pass
+    if clean_first:
+        for fname in ("LEMBALL.pdb", "LEMBALL.ilk", "LEMBALL.EXE"):
+            p = BUILD / fname
+            if p.exists():
+                try:
+                    p.unlink()
+                except OSError:
+                    pass
 
     cmake_args = [cmake, "--build", "--preset", "msvc400"]
     if clean_first:
