@@ -1,7 +1,9 @@
 #include "GdiDevice.h"
 
+#include "../Animation/TimeStat.h"
 #include "../Foundation/LocalDebugOStream.h"
 #include "../Foundation/VsMem.h"
+#include "../Foundation/VsTime.h"
 #include "VsGdi.h"
 
 #include <new.h>
@@ -157,21 +159,23 @@ int GdiDevice::FindSurface(Surface* p_surface)
 }
 
 // 68K 0x1010823a Flush__10CGDIDeviceFP8CSurface
-// STUB: LEMBALL 0x0046bfd0
+// FUNCTION: LEMBALL 0x0046bfd0
 void GdiDevice::Flush(Surface* p_surface)
 {
 	int i;
-	GdiSurfaceSlot* slot;
+	TimeStat* timer;
 
-	if (p_surface == 0) {
-		return;
-	}
 	i = FindSurface(p_surface);
-	if (i < 0) {
-		p_surface->ToScreen((Surface*) g_pGdiHelperTarget);
-		return;
+	m_surfaceSlots[i].m_flushed = 1;
+	timer = m_surfaceSlots[i].m_timer;
+	if (timer != 0) {
+		if (timer->m_timingActive != 0) {
+			timer->Update(CurrentMilliTimer() - timer->m_timingStart);
+			timer->m_timingActive = 0;
+		}
+		timer = m_surfaceSlots[i].m_timer;
+		timer->m_timingStart = CurrentMilliTimer();
+		timer->m_timingActive = 1;
 	}
-	slot = &m_surfaceSlots[i];
-	slot->m_flushed = 1;
-	p_surface->ToScreen((Surface*) g_pGdiHelperTarget);
+	m_surfaceSlots[i].m_surface->ToScreen((Surface*) g_pGdiHelperTarget);
 }
