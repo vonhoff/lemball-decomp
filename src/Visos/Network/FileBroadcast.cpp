@@ -67,14 +67,14 @@ FileBroadcast::FileBroadcast()
 // FUNCTION: LEMBALL 0x0047aa10
 void FileBroadcast::InitialiseFile()
 {
-	NetworkFile::Seek(0);
+	Seek(0);
 	FileWriteSocket::Write(m_message, 0, 0);
 	FileWriteSocket::Write(*g_pFileBroadcast, 0, 0);
 	FileWriteSocket::Write(*FileWriteSocket::m_file, 0, 0);
 
 	unsigned char* data = (unsigned char*) operator new(g_networkPacketSize);
 	memset(data, 0, g_networkPacketSize);
-	for (int i = 0; i < FileWriteSocket::m_file->m_count; i++) {
+	for (int i = 0; i < FileCommonSocket::m_unk0x08; i++) {
 		NetworkFile::Write(data, g_networkPacketSize);
 	}
 	operator delete(data);
