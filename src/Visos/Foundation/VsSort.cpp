@@ -28,9 +28,74 @@ int ViewDataCmp(const void* p_left, const void* p_right)
 }
 
 // 68K 0x102172a4 VSQSort
-// STUB: LEMBALL 0x00463960
+// FUNCTION: LEMBALL 0x00463960
 void VsQSort(void* p_base, unsigned int p_count, unsigned int p_width, int (*p_compare)(const void*, const void*))
 {
+	unsigned char* low;
+	unsigned char* high;
+	unsigned char* first;
+	unsigned char* second;
+	unsigned int size;
+	unsigned char* lowStack[30];
+	unsigned char* highStack[30];
+	int stackIndex;
+
+	if (p_count < 2 || p_width == 0) {
+		return;
+	}
+	stackIndex = 0;
+	low = (unsigned char*) p_base;
+	high = low + (p_count - 1) * p_width;
+nextPartition:
+	size = (unsigned int) (high - low) / p_width + 1;
+	if (size <= 8) {
+		ShortSort(low, high, p_width, p_compare);
+	}
+	else {
+		Swap(low + (size / 2) * p_width, low, p_width);
+		first = low;
+		second = high + p_width;
+		for (;;) {
+			do {
+				first += p_width;
+			} while (first <= high && p_compare(first, low) <= 0);
+			do {
+				second -= p_width;
+			} while (second > low && p_compare(second, low) >= 0);
+			if (first > second) {
+				break;
+			}
+			Swap(first, second, p_width);
+		}
+		Swap(low, second, p_width);
+		if (second - low - 1 >= high - first) {
+			if (low + p_width < second) {
+				lowStack[stackIndex] = low;
+				highStack[stackIndex] = second - p_width;
+				++stackIndex;
+			}
+			if (first < high) {
+				low = first;
+				goto nextPartition;
+			}
+		}
+		else {
+			if (first < high) {
+				lowStack[stackIndex] = first;
+				highStack[stackIndex] = high;
+				++stackIndex;
+			}
+			if (low + p_width < second) {
+				high = second - p_width;
+				goto nextPartition;
+			}
+		}
+	}
+	if (--stackIndex >= 0) {
+		low = lowStack[stackIndex];
+		high = highStack[stackIndex];
+		goto nextPartition;
+	}
 }
 
 // 68K 0x1021740a shortsort
