@@ -347,15 +347,56 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 }
 
 // 68K 0x101112b8 MoveAbsolute__4CWndFRC8CVSPoint
-// STUB: LEMBALL 0x00464f10
+// FUNCTION: LEMBALL 0x00464f10
 void Wnd::MoveAbsolute(const VsPoint& p_point)
 {
+	void** node = (void**) m_childList;
+	VsPoint* position;
+	if (this != (Wnd*) -8) {
+		position = (VsPoint*) &m_rect.m_x;
+	}
+	else {
+		position = 0;
+	}
+	VsPoint delta((short) (p_point.m_x - position->m_x), (short) (p_point.m_y - position->m_y));
+	for (;;) {
+		if (node == 0) {
+			break;
+		}
+		((PvWnd*) node[0])->InternalOnMove(delta);
+		node = (void**) node[1];
+	}
+	m_rect.m_x = p_point.m_x;
+	m_rect.m_y = p_point.m_y;
+	m_relativeTopLeft.m_x = p_point.m_x;
+	m_relativeTopLeft.m_y = p_point.m_y;
+	InternalOnMove();
 }
 
 // 68K 0x10111384 Move__4CWndFRC8CVSPoint
-// STUB: LEMBALL 0x00464fa0
+// FUNCTION: LEMBALL 0x00464fa0
 void Wnd::Move(const VsPoint& p_point)
 {
+	void** node = (void**) m_childList;
+	VsPoint delta((short) (p_point.m_x - m_relativeTopLeft.m_x), (short) (p_point.m_y - m_relativeTopLeft.m_y));
+	for (;;) {
+		if (node == 0) {
+			break;
+		}
+		PvWnd* child = (PvWnd*) node[0];
+		child->InternalOnMove(delta);
+		child->OnMove();
+		node = (void**) node[1];
+	}
+	m_rect.m_x = (short) (m_rect.m_x + delta.m_x);
+	m_rect.m_y = (short) (m_rect.m_y + delta.m_y);
+	m_relativeTopLeft.m_x = p_point.m_x;
+	m_relativeTopLeft.m_y = p_point.m_y;
+	InternalOnMove();
+	OnMove();
+	if (m_nativeWindow != 0) {
+		SetWindowPos((HWND) m_nativeWindow, 0, p_point.m_x, p_point.m_y, 0, 0, 5);
+	}
 }
 
 // 68K 0x1011023e ProcessMouseMoves__4CWndFv
