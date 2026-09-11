@@ -200,14 +200,10 @@ void GenericGroupManager::CreateNewGroup(unsigned short p_count, unsigned short*
 			new GenericGroup(g_pGenericGroupAI, g_pGenericGroupObjectManager, g_pGenericGroupFormationManager);
 		m_groups[m_groupCount] = group;
 		m_groupCount++;
-		if (p_count != 0) {
-			unsigned int remaining = p_count;
-			do {
-				unsigned short objectId = *p_objectIds;
-				p_objectIds++;
-				AddElementToGroup(g_pObjects[objectId], group);
-				remaining--;
-			} while (remaining != 0);
+		for (unsigned int index = 0; index < p_count; index++) {
+			unsigned short objectId = *p_objectIds;
+			p_objectIds++;
+			AddElementToGroup(g_pObjects[objectId], group);
 		}
 	}
 }
