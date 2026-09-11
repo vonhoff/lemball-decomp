@@ -108,29 +108,22 @@ Surface* GdiDevice::AllocateSurface(const VsRect& p_rect, Surface* p_parentSurfa
 void GdiDevice::FreeSurface(Surface* p_surface)
 {
 	int i;
-	GdiSurfaceSlot* slot;
+	Surface* surface;
 
-	if (p_surface == 0) {
-		return;
-	}
 	i = FindSurface(p_surface);
-	if (i < 0) {
-		return;
+	surface = m_surfaceSlots[i].m_surface;
+	if (surface != 0) {
+		delete surface;
 	}
-	slot = &m_surfaceSlots[i];
-	if (slot->m_surface != 0) {
-		slot->m_surface->~Surface();
-		operator delete(slot->m_surface);
-	}
-	if (slot->m_isPrimary != 0) {
+	if (m_surfaceSlots[i].m_isPrimary != 0) {
 		--m_primarySurfaceCount;
 	}
-	slot->m_surface = 0;
-	slot->m_timer = 0;
-	slot->m_parent = 0;
-	slot->m_isPrimary = 0;
-	slot->m_flushed = 0;
-	slot->m_available = 1;
+	m_surfaceSlots[i].m_surface = 0;
+	m_surfaceSlots[i].m_timer = 0;
+	m_surfaceSlots[i].m_parent = 0;
+	m_surfaceSlots[i].m_isPrimary = 0;
+	m_surfaceSlots[i].m_flushed = 0;
+	m_surfaceSlots[i].m_available = 1;
 }
 
 // 68K 0x101081bc Sync__10CGDIDeviceFv
