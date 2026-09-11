@@ -800,7 +800,7 @@ bool InternalGdiQuit()
 }
 
 // 68K 0x1010fd50 _MEM_Init__Fv
-// STUB: LEMBALL 0x0046f060
+// FUNCTION: LEMBALL 0x0046f060
 bool InternalMemInit()
 {
 	void* locked;
@@ -818,18 +818,12 @@ bool InternalMemInit()
 		return 0;
 	}
 
-	storage = Arena::operator new(0x50, locked);
-	if (storage == 0) {
-		g_pMasterArena = 0;
-	}
-	else {
-		g_pMasterArena = new (storage) RamArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
-	}
+	g_pMasterArena = new (locked) RamArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
 
-	smallEnabled = g_nSmallMemoryEnabled;
 	smallMemory = 0;
-	g_pSmallMemory = 0;
-	if (g_nSmallMemoryEnabled != 0) {
+	smallEnabled = g_nSmallMemoryEnabled;
+	g_pSmallMemory = smallMemory;
+	if (smallEnabled != 0) {
 		g_nSmallMemoryEnabled = 0;
 		storage = operator new(0x3c);
 		smallMemory = 0;
