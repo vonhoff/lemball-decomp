@@ -867,9 +867,26 @@ void C2D::SetMouseShape()
 }
 
 // 68K 0x10b09436 SendCursorMsg__3C2DFv
-// STUB: LEMBALL 0x004380c0
+// FUNCTION: LEMBALL 0x004380c0
 void C2D::SendCursorMsg()
 {
+	Message message;
+	VsPoint screenPoint;
+	int gameX;
+	int gameY;
+
+	message.type = 1;
+	memset(&message.time,
+		   0,
+		   sizeof(message.time) + sizeof(message.code) + sizeof(message.payload) + sizeof(message.source));
+	screenPoint.m_x = (short) m_viewOriginX + m_cursorGamePoint.m_x;
+	screenPoint.m_y = m_cursorGamePoint.m_y + (short) m_viewOriginY;
+	if (!ScreenToGame(screenPoint.m_x, screenPoint.m_y, gameX, gameY)) {
+		m_map->ScreenToGame(screenPoint.m_x, screenPoint.m_y, gameX, gameY);
+	}
+	message.code = gameX;
+	message.payload = (void*) gameY;
+	m_lemmingManager->Post(message);
 }
 
 // 68K 0x10b09514 OnInside__3C2DFRC8CVSPoint
