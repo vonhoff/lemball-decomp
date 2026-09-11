@@ -87,10 +87,23 @@ bool Demo::LoadBuffer()
 	return 1;
 }
 
+#include <string.h>
+
 // 68K 0x10700f82 GetUserPacket__5CDemoFPUcRUl
-// STUB: LEMBALL 0x00409560
+// FUNCTION: LEMBALL 0x00409560
 void Demo::GetUserPacket(unsigned char* p_data, unsigned long& p_size)
 {
+	if (m_bytesRemaining == -1) {
+		LoadBuffer();
+	}
+	p_size = m_readCursor[0];
+	p_size |= (unsigned long) m_readCursor[1] << 8;
+	p_size |= (unsigned long) m_readCursor[2] << 16;
+	p_size |= (unsigned long) m_readCursor[3] << 24;
+	m_readCursor += 4;
+	m_bytesRemaining -= p_size + 4;
+	memcpy(p_data, m_readCursor, p_size);
+	m_readCursor += p_size;
 }
 
 // 68K 0x10701032 Reset__5CDemoFv
