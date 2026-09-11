@@ -8,6 +8,8 @@
 class TargetDirectSoundEffect {
 public:
 	~TargetDirectSoundEffect();
+	bool IsPlaying();
+	void Stop();
 	int Play(int p_loop);
 	int PlayWithVolume(int p_volume, int p_loop);
 	bool SetBufferVolume(int p_index, int p_volume);

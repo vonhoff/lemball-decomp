@@ -27,6 +27,9 @@ public:
 	virtual long __stdcall SetCurrentPosition(unsigned long p_position) = 0;
 	virtual long __stdcall SetFormat(const void* p_format) = 0;
 	virtual long __stdcall SetVolume(long p_volume) = 0;
+	virtual long __stdcall SetPan(long p_pan) = 0;
+	virtual long __stdcall SetFrequency(unsigned long p_frequency) = 0;
+	virtual long __stdcall Stop() = 0;
 };
 
 #endif

@@ -59,9 +59,14 @@ int TargetDirectSoundDevice::Close()
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e450
+// FUNCTION: LEMBALL 0x0047e450
 int TargetDirectSoundDevice::IsAnyEffectPlaying()
 {
+	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
+		if (m_platform.m_effects[i] != 0 && m_platform.m_effects[i]->IsPlaying()) {
+			return 1;
+		}
+	}
 	return 0;
 }
 
@@ -71,10 +76,15 @@ int TargetDirectSoundDevice::Dummy1c()
 	return 1;
 }
 
-// STUB: LEMBALL 0x0047e4a0
+// FUNCTION: LEMBALL 0x0047e4a0
 int TargetDirectSoundDevice::StopAllEffects()
 {
-	return 0;
+	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
+		if (m_platform.m_effects[i] != 0) {
+			m_platform.m_effects[i]->Stop();
+		}
+	}
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0047e4e0
@@ -139,11 +149,17 @@ int TargetDirectSoundDevice::FreeEffect(unsigned long p_effectId)
 // FUNCTION: LEMBALL 0x0047e620
 int TargetDirectSoundDevice::FreeAllEffects()
 {
-	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
-		if (m_platform.m_effects[i] != 0) {
-			delete m_platform.m_effects[i];
-			m_platform.m_effects[i] = 0;
-		}
+	int index = 1;
+	TargetDirectSoundDevice* device = this;
+	if (index <= device->m_platform.m_effectCapacity) {
+		do {
+			TargetDirectSoundEffect* effect = device->m_platform.m_effects[index];
+			if (effect != 0) {
+				delete effect;
+				device->m_platform.m_effects[index] = 0;
+			}
+			index++;
+		} while (index <= device->m_platform.m_effectCapacity);
 	}
 	return 1;
 }
