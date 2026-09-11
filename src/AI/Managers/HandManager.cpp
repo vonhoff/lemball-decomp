@@ -44,10 +44,21 @@ void HandManager::Initialise(int p_capacity)
 }
 
 // 68K 0x10611422 StepOn__12CHandManagerFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x00428360
+// FUNCTION: LEMBALL 0x00428360
 bool HandManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
-	return 0;
+	int i = 0;
+	for (;;) {
+		if (i >= m_count) {
+			return 0;
+		}
+		Hand& hand = m_hands[i];
+		if (hand.m_enabled != 0 && hand.m_activated == 0 && hand.m_isRemoteObject == 0 &&
+			hand.StepOn(p_position, p_object)) {
+			return 1;
+		}
+		i++;
+	}
 }
 
 // 68K 0x106114e2 Process__12CHandManagerFv

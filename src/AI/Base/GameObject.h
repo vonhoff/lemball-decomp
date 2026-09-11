@@ -144,6 +144,7 @@ public:
 	friend class Ammo;
 	friend class Duplicator;
 	friend class Hand;
+	friend class HandManager;
 	friend class Key;
 	friend class Rocket;
 	friend class Balloon;
