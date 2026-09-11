@@ -5,7 +5,7 @@
 
 // SIZE 0x08
 struct PadToButtonEntry {
-	void* m_button;         // 0x00
+	PvButton* m_button;     // 0x00
 	unsigned int m_padCode; // 0x04
 };
 
