@@ -130,7 +130,6 @@ void Map::CreateWalkBits()
 				x = 8;
 				do {
 					*walkBits = 0;
-					blockCoordinate = (int) x >> 4;
 
 					if (8 < (int) y) {
 						if (((((int) x < 8) || (adjacentBlock = blockY - 1, adjacentBlock < 0)) ||
@@ -145,6 +144,7 @@ void Map::CreateWalkBits()
 						if ((collision & 0x25) == 0) {
 							collision = m_ground.GetZ(x, y - 8);
 							coordinate = y - 9;
+							blockCoordinate = (int) x >> 4;
 							if (((int) x < 0) || ((int) coordinate < 0) || m_ground.m_width <= blockCoordinate ||
 								m_ground.m_height <= (int) coordinate >> 4) {
 								z = 0;
