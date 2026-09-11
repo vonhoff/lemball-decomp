@@ -527,9 +527,23 @@ void C2D::AddObjectToGroup(int p_objectNo, int p_markSelection)
 }
 
 // 68K 0x10b082cc FormGroup__3C2DFv
-// STUB: LEMBALL 0x00437170
+// FUNCTION: LEMBALL 0x00437170
 void C2D::FormGroup()
 {
+	Message message;
+	message.type = 5;
+	message.code = m_groupCount;
+	message.time = 0;
+	message.payload = m_groupObjectIds;
+	message.source = 0;
+
+	CheckValidFormGroup();
+	if (m_groupCount > 0) {
+		m_lemmingManager->Post(message);
+		m_groupCount = 0;
+		m_groupingActive = 0;
+		g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+	}
 }
 
 // 68K 0x10b08354 MoveGroup__3C2DFRC8CVSPoint
