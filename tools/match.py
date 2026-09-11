@@ -8,11 +8,9 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 
 from build import run_build
-from lib.compare import norm_addr
-from lib.reccmp import _load_engine
+from lib.reccmp import load_engine
 from reccmp.tools.asmcmp import print_match_verbose
 
 
@@ -30,10 +28,10 @@ def main() -> int:
             print(f"BUILD_FAILED exit={exit_code} (see build-msvc400/last_build.log)")
             return exit_code
 
-    target, engine = _load_engine()
+    target, engine = load_engine()
 
     for raw in args.addrs:
-        addr = norm_addr(raw)
+        addr = int(raw, 16)
         match = engine.compare_address(addr)
         if match is None:
             print(f"0x{addr:08x}: NOT_FOUND")

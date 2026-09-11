@@ -17,8 +17,36 @@ from reccmp.parser.codebase import DecompCodebase
 from reccmp.project.detect import RecCmpProject, RecCmpProjectException
 from reccmp.types import EntityType, ImageId
 
-from .compare import is_codegen_equivalent_diff, is_equivalent_insn, resolve_jump
+from .compare import is_codegen_equivalent_diff, is_equivalent_insn
 from .paths import BUILD, RECOMP_EXE
+
+
+def resolve_jump(image, address: int | None, stop_at=None, max_depth: int = 16) -> int | None:
+    """Follow E9 rel32 jumps until a non-jump or stop_at predicate."""
+    if address is None:
+        return None
+    seen: set[int] = set()
+    current = address
+    for _ in range(max_depth):
+        if current in seen:
+            break
+        seen.add(current)
+        if stop_at is not None and stop_at(current):
+            break
+        if not image.is_valid_vaddr(current):
+            break
+        try:
+            instruction = image.read(current, 5)
+        except (IndexError, ValueError):
+            break
+        if len(instruction) != 5 or instruction[0] != 0xE9:
+            break
+        displacement = struct.unpack("<i", instruction[1:])[0]
+        destination = current + 5 + displacement
+        if not image.is_valid_vaddr(destination):
+            break
+        current = destination
+    return current
 
 DELETING_DESTRUCTOR_RE = re.compile(r"^(?P<class>.+)::`(?P<kind>scalar|vector) deleting destructor'")
 NESTED_VTABLE_BASE_RE = re.compile(

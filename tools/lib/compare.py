@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import re
-import struct
 from pathlib import Path
 
 from reccmp.compare.asm.fixes import find_effective_match
@@ -13,15 +12,17 @@ from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
 RELOCATION = re.compile(r"<OFFSET\d+>")
 ANNOTATED_SYMBOL = r".+? \((?:DATA|VTABLE|UNK|FUNCTION|IMPORT|IMPORT_THUNK|STRING)\)"
 BYTE_REGISTER_RE = re.compile(r"\b(?:ah|al|bh|bl|ch|cl|dh|dl)\b")
+THUNK_RE = re.compile(r"Thunk of '(.+)' \(THUNK\)$")
+CALL_OFFSET_RE = re.compile(r"^call <OFFSET\d+>$")
+CALL_TARGET_RE = re.compile(r"^call (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$")
+JMP_OFFSET_RE = re.compile(r"^jmp -?0x[0-9a-f]+\s*$")
+JMP_TARGET_RE = re.compile(r"^jmp (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$")
+CALL_FUNC_RE = re.compile(r"^call .+ \(FUNCTION\)$")
+VTABLE_RE = re.compile(r"(.+?)::`vftable'(?:\{for `.+?'\})?")
 
 
 def norm_addr(value: str | int) -> int:
-    if isinstance(value, int):
-        return value
-    value = value.strip().lower()
-    if value.startswith("0x"):
-        return int(value, 16)
-    return int(value, 16) if any(c in value for c in "abcdef") else int(value, 0)
+    return int(value, 16) if isinstance(value, str) else int(value)
 
 
 def insn_text(entry) -> str:
@@ -36,15 +37,14 @@ def asm_head(s: str) -> str:
 
 def normalize_asm(s: str) -> str:
     s = asm_head(s)
-    # Generated MSVC names contain apostrophes themselves (for example,
-    # ``Thing::`scalar deleting destructor'``), so the wrapper quotes must be
-    # matched greedily rather than stopping at the first apostrophe.
-    s = re.sub(r"Thunk of '(.+)' \(THUNK\)$", r"\1 (FUNCTION)", s)
-    s = re.sub(r" \(THUNK\)", " (FUNCTION)", s)
-    return s
+    if "(THUNK)" not in s:
+        return s
+    return THUNK_RE.sub(r"\1 (FUNCTION)", s).replace(" (THUNK)", " (FUNCTION)")
 
 
 def is_unresolved_symbol(orig_text: str, recomp_text: str) -> bool:
+    if "<OFFSET" not in orig_text:
+        return False
     orig_text = normalize_asm(orig_text)
     recomp_text = normalize_asm(recomp_text)
     parts = RELOCATION.split(orig_text)
@@ -57,12 +57,14 @@ def is_unresolved_symbol(orig_text: str, recomp_text: str) -> bool:
 def is_unresolved_branch(orig_text: str, recomp_text: str) -> bool:
     orig = asm_head(orig_text)
     recomp = asm_head(recomp_text)
-    if re.match(r"call <OFFSET\d+>$", orig):
-        return bool(re.match(r"call (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$", recomp))
-    if re.match(r"jmp -?0x[0-9a-f]+\s*$", orig):
-        return bool(re.match(r"jmp (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$", recomp))
-    if re.match(r"call <OFFSET\d+>", recomp):
-        return bool(re.match(r"call .+ \(FUNCTION\)$", orig))
+    if not (orig.startswith(("call ", "jmp ")) or recomp.startswith("call ")):
+        return False
+    if CALL_OFFSET_RE.match(orig):
+        return bool(CALL_TARGET_RE.match(recomp))
+    if JMP_OFFSET_RE.match(orig):
+        return bool(JMP_TARGET_RE.match(recomp))
+    if recomp.startswith("call <OFFSET") and CALL_FUNC_RE.match(orig):
+        return True
     return False
 
 
@@ -79,7 +81,7 @@ def split_vtable_reference(instruction: str) -> tuple[str, str, bool] | None:
     if not separator or not head or not symbol:
         return None
 
-    decorated = re.fullmatch(r"(.+?)::`vftable'(?:\{for `.+?'\})?", symbol)
+    decorated = VTABLE_RE.fullmatch(symbol)
     if decorated:
         return head, decorated.group(1), True
     if "`vftable'" in symbol:
@@ -88,6 +90,8 @@ def split_vtable_reference(instruction: str) -> tuple[str, str, bool] | None:
 
 
 def is_vtable_display_alias(orig_text: str, recomp_text: str) -> bool:
+    if "(VTABLE)" not in orig_text or "(VTABLE)" not in recomp_text:
+        return False
     orig = split_vtable_reference(orig_text)
     recomp = split_vtable_reference(recomp_text)
     if orig is None or recomp is None:
@@ -102,6 +106,8 @@ def is_vtable_display_alias(orig_text: str, recomp_text: str) -> bool:
 
 
 def is_equivalent_insn(orig_text: str, recomp_text: str) -> bool:
+    if orig_text == recomp_text:
+        return True
     return (
         normalize_asm(orig_text) == normalize_asm(recomp_text)
         or is_vtable_display_alias(orig_text, recomp_text)
@@ -111,25 +117,20 @@ def is_equivalent_insn(orig_text: str, recomp_text: str) -> bool:
     )
 
 
-def collect_diff_insns(diff, key: str) -> list[str]:
-    insns = []
-    if not diff:
-        return insns
-    for _, chunks in diff:
-        for chunk in chunks:
-            for entry in chunk.get(key, []) or []:
-                insns.append(insn_text(entry))
-    return insns
-
-
 def is_thunk_only_diff(diff) -> bool:
     if not diff:
         return False
-    orig_insns = collect_diff_insns(diff, "orig")
-    recomp_insns = collect_diff_insns(diff, "recomp")
-    if not orig_insns and not recomp_insns:
-        return False
-    if len(orig_insns) != len(recomp_insns):
+    orig_insns: list[str] = []
+    recomp_insns: list[str] = []
+    for _, chunks in diff:
+        for chunk in chunks:
+            orig = chunk.get("orig")
+            if orig:
+                orig_insns.extend(insn_text(e) for e in orig)
+            recomp = chunk.get("recomp")
+            if recomp:
+                recomp_insns.extend(insn_text(e) for e in recomp)
+    if not orig_insns or len(orig_insns) != len(recomp_insns):
         return False
     return all(
         is_equivalent_insn(orig_text, recomp_text)
@@ -229,51 +230,6 @@ def load_matches(json_path: Path) -> dict[int, dict]:
     with json_path.open(encoding="utf-8") as f:
         data = json.load(f)["data"]
     return {
-        norm_addr(match["address"]): match
+        int(match["address"], 16): match
         for match in data if match.get("type") in (None, 1)
     }
-
-
-def resolve_jump(image, address: int | None, stop_at=None, max_depth: int = 16) -> int | None:
-    """Follow E9 rel32 jumps until a non-jump or stop_at predicate."""
-    if address is None:
-        return None
-    seen: set[int] = set()
-    current = address
-    for _ in range(max_depth):
-        if current in seen:
-            break
-        seen.add(current)
-        if stop_at is not None and stop_at(current):
-            break
-        if not image.is_valid_vaddr(current):
-            break
-        try:
-            instruction = image.read(current, 5)
-        except (IndexError, ValueError):
-            break
-        if len(instruction) != 5 or instruction[0] != 0xE9:
-            break
-        displacement = struct.unpack("<i", instruction[1:])[0]
-        destination = current + 5 + displacement
-        if not image.is_valid_vaddr(destination):
-            break
-        current = destination
-    return current
-
-
-def resolve_original_target(image, address: int, decoder, max_depth: int = 32) -> int | None:
-    """Follow Capstone-decoded absolute jmp targets."""
-    seen: set[int] = set()
-    while address not in seen and len(seen) < max_depth:
-        seen.add(address)
-        try:
-            ins = next(decoder.disasm_lite(image.read(address, 15), address), None)
-        except (ValueError, IndexError):
-            return None
-        if ins is None:
-            return None
-        if ins[2] != "jmp" or not re.fullmatch(r"0x[0-9a-f]+", ins[3]):
-            return address
-        address = int(ins[3], 16)
-    return None

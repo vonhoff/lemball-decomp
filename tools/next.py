@@ -17,7 +17,6 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-from lib.compare import resolve_original_target
 from lib.paths import ORIGINAL_EXE, REPORT_JSON, ROOT, SRC, TARGETS_CACHE, file_id
 from lib.source import ANNOT_WITH_ADDR
 from report import make_report
@@ -50,6 +49,23 @@ class OriginalEvidence:
     size: int | None
     callees: tuple[int, ...] = ()
     indirect_calls: int = 0
+
+
+def resolve_original_target(image, address: int, decoder, max_depth: int = 32) -> int | None:
+    """Follow Capstone-decoded absolute jmp targets."""
+    seen: set[int] = set()
+    while address not in seen and len(seen) < max_depth:
+        seen.add(address)
+        try:
+            ins = next(decoder.disasm_lite(image.read(address, 15), address), None)
+        except (ValueError, IndexError):
+            return None
+        if ins is None:
+            return None
+        if ins[2] != "jmp" or not re.fullmatch(r"0x[0-9a-f]+", ins[3]):
+            return address
+        address = int(ins[3], 16)
+    return None
 
 
 def inspect_original(image, address: int, entries: set[int], decoder) -> OriginalEvidence:

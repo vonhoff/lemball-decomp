@@ -36,11 +36,14 @@ def _stamp() -> dict:
     }
 
 
-def _load_engine() -> tuple[object, Compare]:
+def load_engine() -> tuple[object, Compare]:
     project = RecCmpProject.from_directory(BUILD)
     target = project.get("LEMBALL")
     logging.getLogger("reccmp").setLevel(logging.WARNING)
     return target, Compare.from_target(target)
+
+
+_load_engine = load_engine
 
 
 def _write_roadmap(target, engine: Compare, csv_path: Path) -> None:

@@ -12,13 +12,11 @@ from __future__ import annotations
 
 import argparse
 
-from lib import (
-    check_decomplint,
-    check_layout,
-    check_names,
-    check_smell,
-    check_vtable,
-)
+from lib.layout import check_layout
+from lib.names import check_names
+from lib.reccmp import check_decomplint
+from lib.smell import check_smell
+from lib.vtable import check_vtable
 
 
 def main() -> int:
