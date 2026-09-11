@@ -84,34 +84,6 @@ Or run the build script:
 python tools/build.py
 ```
 
-## Development Tools
-
-Scripts in `tools/` support the matching workflow:
-
-- **Check a function:**
-  ```pwsh
-  python tools/match.py 0x00413e80
-  ```
-
-- **Find next targets:**
-  ```pwsh
-  python tools/next.py --kind near    # Functions close to matching
-  python tools/next.py --kind tiny    # Smallest unmatched functions
-  python tools/next.py --kind gain    # High-impact functions
-  ```
-
-- **Run quality gates:**
-  ```pwsh
-  python tools/gate.py                # Check layout, annotations, code smells, and decomplint
-  python tools/gate.py --names        # Audit naming against recovered 68K symbols
-  python tools/gate.py --vtable       # Validate virtual method tables
-  ```
-
-- **Update progress report:**
-  ```pwsh
-  python tools/report.py              # Updates build-msvc400/report.json
-  ```
-
 ## AI Assistance
 
 This project is developed with assistance from AI agents.
