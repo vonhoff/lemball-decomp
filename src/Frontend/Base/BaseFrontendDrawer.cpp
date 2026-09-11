@@ -580,7 +580,8 @@ void BaseFrontendDrawer::RemoteAction(int p_action, int p_stage)
 {
 	int confirmed;
 
-	if (p_stage == 0) {
+	switch (p_stage) {
+	case 0:
 		if (m_actionPending != 0) {
 			Action(p_action, 2);
 			return;
@@ -594,19 +595,16 @@ void BaseFrontendDrawer::RemoteAction(int p_action, int p_stage)
 		}
 		m_actionPending = 0;
 		return;
-	}
-	if (p_stage != 1) {
-		if (p_stage != 2) {
-			return;
+	case 1:
+		confirmed = ConfirmedAction(p_action);
+		if (confirmed == 0) {
+			*g_pErrorOutput << g_szUnknownUserActionReceived;
 		}
 		m_actionPending = 0;
 		return;
+	case 2:
+		m_actionPending = 0;
 	}
-	confirmed = ConfirmedAction(p_action);
-	if (confirmed == 0) {
-		*g_pErrorOutput << g_szUnknownUserActionReceived;
-	}
-	m_actionPending = 0;
 }
 
 // 68K 0x108018b4 OnDriverChange__19CBaseFrontendDrawerFv
