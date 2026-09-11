@@ -43,17 +43,15 @@ TextManager::TextManager(unsigned long p_fontIdCount,
 // FUNCTION: LEMBALL 0x00469e20
 TextManager::~TextManager()
 {
-	if ((int) m_loadedFontCount > 0) {
-		int slot = 0;
-		int unloaded = 0;
-		do {
+	int slot = 0;
+	if (m_loadedFontCount != 0) {
+		for (int unloaded = 0; unloaded < (int) m_loadedFontCount; unloaded++) {
 			while (m_fonts[slot] == 0) {
 				slot++;
 			}
 			m_fonts[slot]->UnLoad();
 			slot++;
-			unloaded++;
-		} while ((int) m_loadedFontCount > unloaded);
+		}
 	}
 	if (m_fonts != 0) {
 		delete[] m_fonts;
