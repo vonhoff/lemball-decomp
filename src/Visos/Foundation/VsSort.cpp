@@ -34,10 +34,27 @@ void VsQSort(void* p_base, unsigned int p_count, unsigned int p_width, int (*p_c
 }
 
 // 68K 0x1021740a shortsort
-// STUB: LEMBALL 0x00463ac0
+// FUNCTION: LEMBALL 0x00463ac0
 void ShortSort(unsigned char* p_low,
 			   unsigned char* p_high,
 			   unsigned int p_width,
 			   int (*p_compare)(const void*, const void*))
 {
+	while (p_high > p_low) {
+		unsigned char* current;
+		unsigned char* selected;
+
+		selected = p_low;
+		current = p_low + p_width;
+		if (p_high >= current) {
+			do {
+				if (p_compare(current, selected) > 0) {
+					selected = current;
+				}
+				current += p_width;
+			} while (p_high >= current);
+		}
+		Swap(selected, p_high, p_width);
+		p_high -= p_width;
+	}
 }
