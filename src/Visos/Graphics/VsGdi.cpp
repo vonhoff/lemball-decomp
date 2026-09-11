@@ -394,8 +394,8 @@ void Surface::ResetScroll()
 // FUNCTION: LEMBALL 0x0046c9f0
 void Surface::SetLinePtrs()
 {
-	int y;
 	int parentY;
+	int y;
 	int parentStride;
 	unsigned char* bits;
 
@@ -429,8 +429,8 @@ void Surface::SetLinePtrs()
 		else {
 			PvZBuffSurface::m_enabled = 0;
 		}
-		y = 0;
 		parentY = (int) PvScrollableSurface::m_windowRect.m_y;
+		y = 0;
 		if (0 < (short) m_height) {
 			do {
 				m_lines[y] = (void*) ((int) PvScrollableSurface::m_parentSurface->m_lines[parentY] +
