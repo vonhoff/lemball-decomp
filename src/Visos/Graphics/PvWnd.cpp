@@ -135,9 +135,30 @@ PvWnd::PvWnd()
 }
 
 // 68K 0x10216a50 __dt__6CPVWndFv
-// STUB: LEMBALL 0x00465d50
+// FUNCTION: LEMBALL 0x00465d50
 PvWnd::~PvWnd()
 {
+	if (--g_cursorState == 0) {
+		WindowOwnerList* list = g_pWindowOwnerList;
+		if (list != 0) {
+			WindowOwnerNode* node = list->m_head;
+			for (;;) {
+				if (node == 0) {
+					break;
+				}
+				WindowOwnerNode* next = node->m_next;
+				operator delete(node);
+				node = next;
+			}
+			operator delete(list);
+		}
+	}
+	void** child = (void**) m_childList;
+	while (child != 0) {
+		void** next = (void**) child[1];
+		operator delete(child);
+		child = next;
+	}
 }
 
 // 68K 0x10216aee SetInnerWindow__6CPVWndFRC7CVSRect
@@ -357,9 +378,64 @@ void PvWnd::InternalOnSize()
 }
 
 // 68K 0x10217024 _OnMove__6CPVWndFv
-// STUB: LEMBALL 0x00466160
+// FUNCTION: LEMBALL 0x00466160
 void PvWnd::InternalOnMove()
 {
+	HotAreaList* list;
+	VsPoint* innerXY;
+	VsPoint* rectXY;
+
+	list = m_hotAreaList;
+	if (list == 0) {
+		return;
+	}
+	VsRect area;
+	if ((int) m_innerRect.m_height * (int) m_innerRect.m_width != 0) {
+		area.m_width = m_innerRect.m_width;
+		area.m_height = m_innerRect.m_height;
+		if (this != (PvWnd*) -16) {
+			innerXY = (VsPoint*) &m_innerRect.m_x;
+		}
+		else {
+			innerXY = 0;
+		}
+		area.m_x = innerXY->m_x;
+		area.m_y = innerXY->m_y;
+		if (this != (PvWnd*) -8) {
+			rectXY = (VsPoint*) &m_rect.m_x;
+		}
+		else {
+			rectXY = 0;
+		}
+		short y = rectXY->m_y;
+		short x = rectXY->m_x;
+		area.m_x = (short) (area.m_x + x);
+		area.m_y = (short) (area.m_y + y);
+	}
+	else {
+		area.m_width = m_rect.m_width;
+		area.m_height = m_rect.m_height;
+		if (this != (PvWnd*) -8) {
+			rectXY = (VsPoint*) &m_rect.m_x;
+		}
+		else {
+			rectXY = 0;
+		}
+		area.m_x = rectXY->m_x;
+		area.m_y = rectXY->m_y;
+	}
+	VsPoint origin(m_relativeTopLeft);
+	if (m_parent == 0) {
+		origin.m_x = 0;
+		origin.m_y = 0;
+	}
+	if (this != (PvWnd*) -16) {
+		innerXY = (VsPoint*) &m_innerRect.m_x;
+	}
+	else {
+		innerXY = 0;
+	}
+	list->Set(area, origin, *innerXY);
 }
 
 // 68K 0x1021716c _OnMove__6CPVWndF8CVSPoint
