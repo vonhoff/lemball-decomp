@@ -1,6 +1,9 @@
 #include "Laser.h"
 
+#include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
 #include "../../Visos/Foundation/VsMath.h"
+#include "../../Visos/Network/Connect.h"
 
 // 68K 0x10613518 __ct__6CLaserFv
 // FUNCTION: LEMBALL 0x00428890
@@ -47,10 +50,20 @@ bool Laser::Process()
 }
 
 // 68K 0x10613ace Activate__6CLaserFv
-// STUB: LEMBALL 0x00428ec0
+// FUNCTION: LEMBALL 0x00428ec0
 bool Laser::Activate()
 {
-	return 0;
+	m_active = 1;
+	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
+		return 0;
+	}
+	m_lastMovementTick = g_dwGameTick;
+	m_unk0xd0 = g_dwGameTick + 6;
+	m_actionDeadline = g_dwGameTick + 0x18;
+	m_target = 0;
+	m_stateTimer = g_dwSimulationTimestamp;
+	Action((eAction) 0x19);
+	return 1;
 }
 
 // 68K 0x10613b58 StepOn__6CLaserFRC7AICOORDP11CGameObject
