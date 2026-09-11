@@ -118,9 +118,22 @@ bool Mine::Process()
 }
 
 // 68K 0x106166fc OnGround__5CMineFv
-// STUB: LEMBALL 0x00423fa0
+// FUNCTION: LEMBALL 0x00423fa0
 void Mine::OnGround()
 {
+	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> 12;
+	Map* map = g_pMap;
+	int blockX = x >> 4;
+	int blockY = y >> 4;
+	unsigned short z;
+	if (x < 0 || y < 0 || map->m_ground.m_width <= blockX || g_pMap->m_ground.m_height <= blockY) {
+		z = 0;
+	}
+	else {
+		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+	}
+	m_position.m_zFixed = (unsigned int) z << 12;
 }
 
 // 68K 0x1011a84c __dt__5CMineFv
