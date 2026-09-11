@@ -375,9 +375,30 @@ void GenericGroup::ReformAlteredGroup(FormationManager* p_formationManager)
 }
 
 // 68K 0x1060cff2 CheckGroupIntersection__13CGenericGroupFP7CVSRectP7AICOORD
-// STUB: LEMBALL 0x0041e530
+// FUNCTION: LEMBALL 0x0041e530
 bool GenericGroup::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 {
+	int groupRight = m_minX + m_maxX;
+	int groupBottom = m_minY + m_maxY;
+	int rectX = p_rect->m_x;
+	int rectRight = p_rect->m_width + rectX;
+	int rectY = p_rect->m_y;
+	int rectBottom = p_rect->m_height + rectY;
+
+	if (m_maxX < rectRight && rectX < groupRight && m_maxY < rectBottom && rectY < groupBottom) {
+		GameObject* object = GetFirstElementInGroup();
+		while (object != 0) {
+			int x = object->m_position.m_xFixed >> 12;
+			int y = object->m_position.m_yFixed >> 12;
+			if (x - 24 < rectRight && rectX < x + 24 && y - 24 < rectBottom && rectY < y + 24) {
+				p_coordinate->m_xFixed = object->m_position.m_xFixed;
+				p_coordinate->m_yFixed = object->m_position.m_yFixed;
+				p_coordinate->m_zFixed = object->m_position.m_zFixed;
+				return 1;
+			}
+			object = GetNextElementInGroup();
+		}
+	}
 	return 0;
 }
 
