@@ -437,7 +437,8 @@ void NetworkOptionsDrawer::DrawText()
 				posMyIp.m_x -= font->GetSize(&size, myIp, 0x20)->m_width / 2;
 				size.m_width = 0;
 				size.m_height = 0;
-				m_textManager->DrawString(m_gdi, posMyIp, size, m_chalkFontId, myIp, 0x20, (Remap*) m_remaps[0]);
+				m_textManager
+					->DrawString(m_gdi, posMyIp, size, m_chalkFontId, m_stopPending, 0x20, (Remap*) m_remaps[0]);
 			}
 
 			char* myPeer = m_connectionState;
