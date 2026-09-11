@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x004955d0
 class TimeBonus : public Collectable {
 public:
+	TimeBonus(int p_x, int p_y, int p_z, eObjectType p_objectType) : Collectable(p_x, p_y, p_z, p_objectType) {}
 	virtual int Collected(); // vtable+0x114
 	virtual void SetSfx();   // vtable+0x110
 	virtual ~TimeBonus();    // vtable+0x00

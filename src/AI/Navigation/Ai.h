@@ -99,6 +99,7 @@ public:
 	friend class SheepGroupManager;
 	friend class EnemyGroupManager;
 	friend class NodeManager;
+	friend class CollectableManager;
 	friend class Collectable;
 	friend class Enemy;
 	friend class Panel;
