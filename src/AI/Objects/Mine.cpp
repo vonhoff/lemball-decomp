@@ -90,9 +90,26 @@ void Mine::DoActivate()
 }
 
 // 68K 0x106164b0 SetTerrain__5CMineFv
-// STUB: LEMBALL 0x00423dd0
+// FUNCTION: LEMBALL 0x00423dd0
 void Mine::SetTerrain()
 {
+	int blockX = (m_position.m_xFixed >> 12) / 16;
+	int blockY = (m_position.m_yFixed >> 12) / 16;
+	if (m_terrainSet == 0) {
+		g_pMap->SetTerrain(blockX,
+						   blockY,
+						   (eObjectType) 0x20a,
+						   (unsigned short) g_mineTerrainOffsets[g_pMap->m_reserved]);
+		m_transientFlags = 1;
+		if (blockX >= 0 && blockY >= 0) {
+			Map* map = g_pMap;
+			int width = map->m_ground.m_width;
+			if (blockX < width && blockY < map->m_ground.m_height) {
+				map->m_ground.m_ground[width * blockY + blockX].m_collision |= 4;
+			}
+		}
+	}
+	SetSndEffect((eSoundEffect) 16);
 }
 
 // 68K 0x10616578 StepOn__5CMineFP11CGameObject
@@ -121,8 +138,8 @@ bool Mine::Process()
 // FUNCTION: LEMBALL 0x00423fa0
 void Mine::OnGround()
 {
-	int x = m_position.m_xFixed >> 12;
 	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> 12;
 	Map* map = g_pMap;
 	int blockX = x >> 4;
 	int blockY = y >> 4;
