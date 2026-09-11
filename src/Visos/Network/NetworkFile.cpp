@@ -156,7 +156,7 @@ bool NetworkFile::Read(unsigned char* p_data, int p_size)
 
 	success = ReadFile(m_handle, p_data, (unsigned int) p_size, &got, 0);
 	if (success == 0) {
-		error = ::GetLastError();
+		error = GetLastError();
 		if (error != 0x21) {
 			*g_pErrorOutput << "Read error: " << (int) error << "\n";
 		}
@@ -165,8 +165,9 @@ bool NetworkFile::Read(unsigned char* p_data, int p_size)
 
 	m_position += got;
 	if (got != (unsigned int) p_size) {
-		*g_pErrorOutput << "Read error: " << (unsigned long) got << " bytes read instead of " << p_size << "in file "
-						<< m_filename << " which is " << (unsigned long) GetFileSize() << " bytes long.\n";
+		*g_pErrorOutput << "Read error: " << (unsigned long) got << " bytes read instead of " << p_size << "\n";
+		*g_pErrorOutput << "in file " << m_filename << " which is " << (unsigned long) GetFileSize()
+						<< " bytes long.\n";
 		return 0;
 	}
 	return 1;
