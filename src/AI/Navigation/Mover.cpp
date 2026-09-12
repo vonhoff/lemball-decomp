@@ -221,9 +221,11 @@ void Mover::VerifyObjects()
 	int i = 0;
 	if (m_objectCount > 0) {
 		do {
+			int x;
+			int y;
 			GameObject* object = m_objects[i];
-			int x = object->m_position.m_xFixed >> 12;
-			int y = object->m_position.m_yFixed >> 12;
+			x = object->m_position.m_xFixed >> 12;
+			y = object->m_position.m_yFixed >> 12;
 			if (minX > x || maxX < x || minY > y || maxY < y) {
 				object->m_unk0x11c = 0;
 				int next = i + 1;
