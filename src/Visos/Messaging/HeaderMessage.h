@@ -25,6 +25,6 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x0047b7f0
-// HeaderMessage::`scalar deleting destructor'
+// HeaderMessage::`vector deleting destructor'
 
 #endif
