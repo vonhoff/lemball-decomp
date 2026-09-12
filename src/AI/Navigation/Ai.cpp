@@ -498,9 +498,96 @@ void Ai::AddTime(int p_time)
 }
 
 // 68K 0x106018da Process__3CAIFUc
-// STUB: LEMBALL 0x004121f0
-void Ai::Process(unsigned char p_paused)
+// FUNCTION: LEMBALL 0x004121f0
+void Ai::Process(int p_paused)
 {
+	if (m_networkMode != 0 && g_pActiveConnection == 0) {
+		return;
+	}
+	m_aiQueue->ProcessNMsgs(m_aiQueue->GetMessageCount());
+	if (m_networkMode != 0 && m_unk0x70 == 0 &&
+		g_pNetworkManager->m_desiredGameState == g_pNetworkManager->m_observedGameState) {
+		m_unk0x6c = 0;
+		m_unk0x70 = 1;
+		GameState((eGameStatus) 2);
+	}
+	if (p_paused == 0 && m_paused != 0) {
+		SetGameTime();
+		return;
+	}
+	switch (m_gameStatus) {
+	case 0:
+	case 2:
+	case 4:
+	case 6:
+		break;
+	default:
+		SetGameTime();
+		return;
+	}
+	if (m_unk0x68 == 0 || m_unk0x6c != 0) {
+		return;
+	}
+	SetGameTime();
+	if (m_networkMode != 0) {
+		if (g_pActiveConnection != 0 && g_pActiveConnection->IsChanged(*m_networkGame)) {
+			g_pActiveConnection->GetLatest(*m_networkGame);
+			m_unk0x88 = 1;
+		}
+	}
+	unsigned int time;
+	if (m_networkMode != 0 && g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
+		time = g_dwRemoteGameTick;
+	}
+	else {
+		time = g_dwGameTick;
+		m_unk0x88 = 1;
+	}
+	if (m_unk0xdc != 0) {
+		if (m_unk0x88 != 0) {
+			m_unk0xe0 = time;
+			m_unk0xdc = 0;
+			m_unk0xe4 = m_timeLimit;
+		}
+	}
+	else {
+		if (g_nGameOver == 0 && m_unk0xe4 < 600) {
+			m_unk0xe4 = m_timeLimit - (time - m_unk0xe0) / 20;
+		}
+		int remaining = m_unk0xe4;
+		remaining += m_gameTime;
+		if (remaining < 0) {
+			GameState((eGameStatus) 7);
+			m_unk0xe4 = -1 - m_gameTime;
+		}
+		if (m_playerGroups == 0 && m_unk0x5c < time - m_unk0xe0) {
+			m_playerGroups = 1;
+		}
+	}
+	m_enemyGroupManager->Process();
+	m_sheepGroupManager->Process();
+	m_ballManager->Process();
+	m_balloonPost->Process();
+	m_slinkyManager->Process();
+	m_groundAnim->Process();
+	g_pGodManager->Process();
+	if (m_flagCounts[0] <= 0) {
+		if (g_nGameOver == 0) {
+			GameState((eGameStatus) 4);
+			g_nGameOver = 1;
+			m_unk0x104 = g_dwGameTick + 0x3c;
+		}
+		if (m_gameStatus == 4 && m_unk0x104 < g_dwGameTick) {
+			GameState((eGameStatus) 3);
+		}
+	}
+	if (g_pActiveConnection != 0 && (LemmingsSfxChanged() || g_dwSimulationTimestamp - m_unk0x80[1] > 0x42)) {
+		Connect* connection = g_pActiveConnection;
+		if (m_networkGame->m_pendingSendCount == 0) {
+			m_networkGame->Send(connection);
+		}
+		m_unk0x80[1] = g_dwSimulationTimestamp;
+	}
 }
 
 // 68K 0x10601b88 GetData__3CAIFP9CViewData

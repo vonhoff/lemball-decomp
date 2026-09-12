@@ -56,7 +56,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void NLemmings(int p_count);
 	virtual void Process(); // vtable+0x04
-	void Process(unsigned char p_paused);
+	void Process(int p_paused);
 	void QuitGame();
 	void Restart();
 	void Score(int p_score);
@@ -110,14 +110,14 @@ public:
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:
-	undefined4 m_unk0x48;                      // 0x48
-	int m_initialised;                         // 0x4c
-	unsigned int* m_objectRequired;            // 0x50
-	unsigned short m_levelVersion;             // 0x54
-	undefined2 m_pad0x56;                      // 0x56
-	PlayerLemmingGroupManager* m_playerGroups; // 0x58
-	undefined4 m_unk0x5c;                      // 0x5c
-	undefined4 m_mapType;                      // 0x60: level map type (LoadLevel 0x00412f4c)
+	undefined4 m_unk0x48;           // 0x48
+	int m_initialised;              // 0x4c
+	unsigned int* m_objectRequired; // 0x50
+	unsigned short m_levelVersion;  // 0x54
+	undefined2 m_pad0x56;           // 0x56
+	unsigned int m_playerGroups;    // 0x58: gameplay enable flag, set to 1 at 0x004123bb
+	undefined4 m_unk0x5c;           // 0x5c
+	undefined4 m_mapType;           // 0x60: level map type (LoadLevel 0x00412f4c)
 	// Restart (0x00410d98): 32-bit result of skill == 4 (0 or 1).
 	undefined4 m_networkMode;             // 0x64
 	undefined4 m_unk0x68;                 // 0x68
