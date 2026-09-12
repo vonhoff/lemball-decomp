@@ -4,6 +4,13 @@
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
 
+#include <memory.h>
+
+inline VsOStream& operator<<(VsOStream& p_stream, unsigned short p_value)
+{
+	return p_stream << (unsigned int) p_value;
+}
+
 // FUNCTION: LEMBALL 0x0047c210
 unsigned short TargetByteSwap16(unsigned short p_value)
 {
@@ -54,7 +61,7 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 		char errorText[0x100];
 	} work;
 
-	patchHeader = *(EffPatchHeader*) p_patch;
+	memcpy(&patchHeader, p_patch, sizeof(patchHeader));
 	patchHeader.m_unk4 = TargetByteSwap16(patchHeader.m_unk4);
 	patchHeader.m_waveCount = TargetByteSwap16(patchHeader.m_waveCount);
 	m_prepared = 0;
@@ -64,7 +71,7 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 		*g_pErrorOutput << "one Wave. Only one is supported!\n";
 	}
 	wave = p_patch + sizeof(EffPatchHeader);
-	waveHeader = *(EffWaveHeader*) wave;
+	memcpy(&waveHeader, wave, sizeof(waveHeader));
 	waveHeader.m_unk4 = TargetByteSwap16(waveHeader.m_unk4);
 	waveHeader.m_length = TargetByteSwap32(waveHeader.m_length);
 	waveHeader.m_sampleRate = TargetByteSwap32(waveHeader.m_sampleRate);
@@ -133,22 +140,19 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 	}
 	else {
 		source = wave + sizeof(EffWaveHeader);
+		dest = m_sampleData;
 		if (work.downsample == 0) {
-			if ((length & 0xfffffffe) != 0) {
+			if ((length >> 1) > 0) {
 				length >>= 1;
-				dest = m_sampleData;
 				do {
-					unsigned char high = source[0];
-					dest[0] = source[1];
-					source += 2;
-					dest[1] = (unsigned char) (high ^ 0x80);
-					dest += 2;
+					unsigned char high = *source++;
+					*dest++ = *source++;
+					*dest++ = (unsigned char) (high ^ 0x80);
 				} while (--length != 0);
 			}
 		}
-		else if ((length & 0xfffffffc) != 0) {
+		else if ((length >> 2) > 0) {
 			length >>= 2;
-			dest = m_sampleData;
 			do {
 				unsigned char high = source[0];
 				source++;
@@ -159,8 +163,10 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 		}
 	}
 	format.wFormatTag = 1;
-	format.nChannels = 2;
-	if (p_stereo != 1) {
+	if (p_stereo == 1) {
+		format.nChannels = 2;
+	}
+	else {
 		format.nChannels = 1;
 	}
 	format.wBitsPerSample = 0x10;
@@ -169,8 +175,8 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 	}
 	format.nSamplesPerSec = p_sampleRate;
 	format.cbSize = 0;
-	format.nAvgBytesPerSec = p_sampleRate * (unsigned int) format.nChannels;
 	format.nBlockAlign = (unsigned short) ((format.wBitsPerSample * format.nChannels) / 8);
+	format.nAvgBytesPerSec = p_sampleRate * (unsigned int) format.nChannels;
 	if (format.wBitsPerSample == 0x10) {
 		format.nAvgBytesPerSec *= 2;
 	}
@@ -182,8 +188,8 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 		*g_pErrorOutput << "Wave Format:\n";
 		*g_pErrorOutput << "Samples/Sec: " << format.nSamplesPerSec << "\n";
 		*g_pErrorOutput << "Avg Bytes/S: " << format.nAvgBytesPerSec << "\n";
-		*g_pErrorOutput << "Align      : " << (unsigned int) format.nBlockAlign << "\n";
-		*g_pErrorOutput << "Type       : " << (unsigned int) format.wBitsPerSample << " bit\n";
+		*g_pErrorOutput << "Align      : " << format.nBlockAlign << "\n";
+		*g_pErrorOutput << "Type       : " << format.wBitsPerSample << " bit\n";
 		return;
 	}
 	result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, 0);
