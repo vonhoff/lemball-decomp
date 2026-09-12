@@ -36,13 +36,18 @@ jobs:
         shell: pwsh
         run: python -m pip install --requirement requirements.txt
 
+      - name: Set up short workspace drive
+        shell: pwsh
+        run: |
+          subst S: $env:GITHUB_WORKSPACE
+
       - name: Configure MSVC 4.00 environment
         shell: pwsh
         run: |
-          "MSVC400_ROOT=$env:GITHUB_WORKSPACE\msvc400" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "INCLUDE=$env:GITHUB_WORKSPACE\msvc400\include" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "LIB=$env:GITHUB_WORKSPACE\msvc400\lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "$env:GITHUB_WORKSPACE\msvc400\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          "MSVC400_ROOT=S:\msvc400" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "INCLUDE=S:\msvc400\include" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "LIB=S:\msvc400\lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "S:\msvc400\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Prepare target binary
         shell: bash
@@ -77,31 +82,35 @@ jobs:
           cp "$RUNNER_TEMP/LEMBALL.EXE" data/LEMBALL.EXE
       - name: Configure and build
         shell: pwsh
+        working-directory: S:\
         run: |
-          cmake --fresh --preset msvc400
-          cmake --build --preset msvc400 --clean-first
+          python tools/build.py --clean-first
           if (!(Test-Path build-msvc400\LEMBALL.EXE)) {
             throw 'build did not produce LEMBALL.EXE'
           }
 
       - name: Generate objdiff report
         shell: pwsh
+        working-directory: S:\
         run: |
           python tools/report.py
 
       - name: Gate
         shell: pwsh
+        working-directory: S:\
         run: |
           python tools/gate.py
 
       - name: 68K naming gate
         shell: pwsh
+        working-directory: S:\
         run: |
           python tools/gate.py --names
 
       - name: Vtable compare (progress)
         continue-on-error: true
         shell: pwsh
+        working-directory: S:\
         run: |
           python tools/gate.py --vtable
 
@@ -120,3 +129,4 @@ jobs:
         run: |
           Remove-Item -LiteralPath "$env:RUNNER_TEMP\LEMBALL.EXE" -Force -ErrorAction SilentlyContinue
           Remove-Item -LiteralPath "$env:GITHUB_WORKSPACE\data\LEMBALL.EXE" -Force -ErrorAction SilentlyContinue
+          subst S: /D -ErrorAction SilentlyContinue

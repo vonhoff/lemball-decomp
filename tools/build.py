@@ -26,16 +26,16 @@ MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
 
 
 def win_short_path(path: str) -> str:
-    resolved = str(Path(path).resolve())
-    if os.name != "nt" or " " not in resolved:
-        return resolved
+    if os.name != "nt":
+        return str(path)
+    absp = os.path.abspath(path)
     get_short = ctypes.windll.kernel32.GetShortPathNameW
     get_short.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint]
     get_short.restype = ctypes.c_uint
     buf = ctypes.create_unicode_buffer(32768)
-    if get_short(resolved, buf, 32768) and buf.value and " " not in buf.value:
+    if get_short(absp, buf, 32768) and buf.value:
         return buf.value
-    return resolved
+    return absp
 
 
 def resolve_cmake() -> str:
@@ -62,8 +62,22 @@ def handle_link(args: list[str]) -> int:
     if not args:
         sys.exit("build.py --link requires linker executable and arguments")
 
-    linker = args[0]
+    linker = win_short_path(args[0])
     link_args = args[1:]
+
+    # MSVC 4.00 LINK.EXE fails during Pass 1 when environment variables or working directory paths
+    # are long. Shorten the working directory and toolchain environment variables.
+    if os.name == "nt":
+        short_cwd = win_short_path(os.getcwd())
+        if short_cwd != os.getcwd():
+            os.chdir(short_cwd)
+        for env_var in ("LIB", "INCLUDE", "PATH"):
+            val = os.environ.get(env_var, "")
+            if val:
+                parts = [win_short_path(p) for p in val.split(";") if p]
+                new_val = ";".join(parts)
+                os.environ[env_var] = new_val
+                ctypes.windll.kernel32.SetEnvironmentVariableW(env_var, new_val)
 
     new_link_args: list[str] = []
     for arg in link_args:
@@ -72,31 +86,12 @@ def handle_link(args: list[str]) -> int:
             if rsp_path.exists():
                 content = rsp_path.read_text(encoding="utf-8", errors="ignore")
                 tokens = content.split()
-                # MSVC 4.00 LINK.EXE reads response files in 16KB (0x4000) chunks without proper
-                # null-termination or line-split handling, corrupting tokens on files > 16KB.
-                # Split large response files into <= 8KB parts.
-                chunk_tokens: list[str] = []
-                chunk_size = 0
-                part_idx = 1
-                for token in tokens:
-                    token_len = len(token) + 2
-                    if chunk_tokens and chunk_size + token_len > 8000:
-                        part_path = rsp_path.with_name(f"{rsp_path.stem}_part{part_idx}{rsp_path.suffix}")
-                        part_path.write_text("\n".join(chunk_tokens) + "\n", encoding="utf-8")
-                        new_link_args.append(f"@{part_path}")
-                        part_idx += 1
-                        chunk_tokens = []
-                        chunk_size = 0
-                    chunk_tokens.append(token)
-                    chunk_size += token_len
-                if chunk_tokens:
-                    if part_idx == 1:
-                        rsp_path.write_text("\n".join(chunk_tokens) + "\n", encoding="utf-8")
-                        new_link_args.append(arg)
-                    else:
-                        part_path = rsp_path.with_name(f"{rsp_path.stem}_part{part_idx}{rsp_path.suffix}")
-                        part_path.write_text("\n".join(chunk_tokens) + "\n", encoding="utf-8")
-                        new_link_args.append(f"@{part_path}")
+                # MSVC 4.00 LINK.EXE has a limit of 16383 characters per line (fatal error LNK1170).
+                # NMake/CMake writes response files as a single long line. Break onto multiple lines.
+                # Note: Do not split into multiple response files, as MSVC 4.00 LINK crashes during
+                # Pass 1 when multiple response files are passed.
+                rsp_path.write_text("\n".join(tokens) + "\n", encoding="utf-8")
+                new_link_args.append(arg)
             else:
                 new_link_args.append(arg)
         else:
