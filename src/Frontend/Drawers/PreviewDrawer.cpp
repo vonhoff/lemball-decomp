@@ -207,7 +207,7 @@ void PreviewDrawer::Load()
 	*buttonBinding = 0;
 	*nextDisabled = 0;
 	m_previousDisabled = 0;
-	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 4, (unsigned char) m_mode, 0);
+	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 4, m_mode, 0);
 	m_hiliteController->AddButton(m_layout->m_positions[PreviewReturnButton].m_x,
 								  m_layout->m_positions[PreviewReturnButton].m_y,
 								  returnAnim,

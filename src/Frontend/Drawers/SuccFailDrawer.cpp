@@ -351,7 +351,7 @@ void SuccFailDrawer::Load()
 	m_layout->m_primaryPosition.m_x = bitmapX;
 	m_layout->m_failurePosition.m_x = bitmapX;
 	m_buttonBinding = 0;
-	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 2, (unsigned char) m_mode, 0);
+	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 2, m_mode, 0);
 	m_hiliteController->AddButton(m_layout->m_returnButton.m_x,
 								  m_layout->m_returnButton.m_y,
 								  returnAnim,
