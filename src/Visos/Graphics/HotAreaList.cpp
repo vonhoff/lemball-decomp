@@ -39,29 +39,16 @@ HotAreaList::HotAreaList(const VsRect& p_arg0, const VsPoint& p_arg1, const VsPo
 {
 	int previous;
 
-	m_point0.m_y = 0;
-	m_point0.m_x = 0;
-	m_point1.m_y = 0;
-	m_point1.m_x = 0;
 	previous = g_nHotAreaListCount;
 	g_nHotAreaListCount = g_nHotAreaListCount + 1;
 	if (previous == 0) {
-		g_pHotAreaCursor = (VsPoint*) operator new(4);
-		if (g_pHotAreaCursor == 0) {
-			g_pHotAreaCursor = 0;
-		}
-		else {
-			g_pHotAreaCursor->m_y = 0;
-			g_pHotAreaCursor->m_x = 0;
-		}
+		g_pHotAreaCursor = new VsPoint;
 	}
 	m_point0.m_x = p_arg1.m_x;
 	m_point0.m_y = p_arg1.m_y;
 	m_point1.m_x = p_arg2.m_x;
 	m_point1.m_y = p_arg2.m_y;
-	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->Attach(this != 0 ? static_cast<BaseQueueHandler*>(this) : 0, -0x19);
-	}
+	g_pMasterInputQueue->Attach(static_cast<BaseQueueHandler*>(this), -0x19);
 	m_tail = 0;
 	m_head = 0;
 	m_scale = 1;
