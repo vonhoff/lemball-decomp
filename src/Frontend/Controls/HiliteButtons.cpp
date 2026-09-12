@@ -118,7 +118,7 @@ int HiliteButtons::ProcessMsg(Message* p_message)
 
 // 68K 0x10804d7a Draw__14CHiliteButtonsFUc
 // FUNCTION: LEMBALL 0x0044f270
-void HiliteButtons::Draw(unsigned char p_force)
+void HiliteButtons::Draw(int p_force)
 {
 	if (m_button != 0) {
 		m_button->Draw(p_force);

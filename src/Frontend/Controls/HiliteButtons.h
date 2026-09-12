@@ -23,7 +23,7 @@ public:
 				  unsigned long p_arg11);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~HiliteButtons();                   // vtable+0x04
-	void Draw(unsigned char p_force);
+	void Draw(int p_force);
 	void LoadFaces(unsigned long* p_animIds);
 	void UnLoadFaces();
 	void UpdateAnimId();
