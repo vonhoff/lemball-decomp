@@ -1929,7 +1929,7 @@ void C2D::DrawLemmingExternal(ViewData& p_viewData, undefined4 p_remapped)
 	int frameDelta = (int) p_viewData.m_animationTime - (int) p_viewData.m_stateTimer;
 	unsigned int frame = frameDelta * 15 / 1000;
 	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
-	Remap* remap = 0;
+	Remap* remap;
 
 	if ((int) frame < 0) {
 		frame = 0;
@@ -1937,19 +1937,26 @@ void C2D::DrawLemmingExternal(ViewData& p_viewData, undefined4 p_remapped)
 	if (p_remapped != 0) {
 		remap = (Remap*) m_paletteRemap;
 	}
+	else {
+		remap = 0;
+	}
 
 	switch ((unsigned short) p_viewData.m_actionArgument) {
-	case 1:
-		m_lemmingAnims->DrawAnim(x - 15, y - 22, g_lemmingExternalResources[direction], (int) frame % 4, 0, remap);
+	case 1: {
+		unsigned int frameIndex = (int) frame % 4;
+		m_lemmingAnims->DrawAnim(x - 15, y - 22, g_lemmingExternalResources[direction], frameIndex, 0, remap);
 		break;
+	}
 	case 2:
 		if ((int) frame <= 14) {
 			m_lemmingAnims->DrawAnim(x - 7, y - 28, RES_GAME_ONFIRE, frame, 0, remap);
 		}
 		break;
-	case 3:
-		m_lemmingAnims->DrawAnim(x - 15, y - 22, RES_GAME_LEMMING_SPIN, (int) frame % 8, 0, remap);
+	case 3: {
+		unsigned int frameIndex = (int) frame % 8;
+		m_lemmingAnims->DrawAnim(x - 15, y - 22, RES_GAME_LEMMING_SPIN, frameIndex, 0, remap);
 		break;
+	}
 	}
 }
 
@@ -1957,8 +1964,8 @@ void C2D::DrawLemmingExternal(ViewData& p_viewData, undefined4 p_remapped)
 // FUNCTION: LEMBALL 0x0043c1a0
 void C2D::DrawLemmingOnConveyor(ViewData& p_viewData, int p_remapped)
 {
-	int y;
 	int x;
+	int y;
 	int frame;
 	BaseRemap* remap;
 
@@ -2579,7 +2586,7 @@ void C2D::DrawPaintGun(ViewData& p_viewData)
 			m_lemmingAnims->DrawAnim(x, y, RES_GAME_PAINTGUNSHOT, frame - 12, 0, 0);
 		}
 		if (frame > 46) {
-			m_lemmingAnims->DrawAnim(x, y + frame - 47, g_anGroundStyleResourceIds[1], 11, 0, 0);
+			m_lemmingAnims->DrawAnim(x, frame + y - 47, g_anGroundStyleResourceIds[1], 11, 0, 0);
 		}
 	}
 }
