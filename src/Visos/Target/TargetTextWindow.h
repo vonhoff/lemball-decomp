@@ -14,6 +14,12 @@ public:
 	int UpdateVisibleRows();
 	int UpdateClientWidth();
 	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, undefined4 p_arg2);
+	void Scroll(int p_scrollCode, int p_thumbPos);
+	void BeginSelection(int p_x, int p_y, undefined4 p_arg2);
+	void EndSelection(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2);
+	void SetSelectionHighlight(int p_selected);
+	void EnsureLineVisible(int p_line);
+	void UpdateSelection(int p_x, int p_y, undefined4 p_arg2);
 
 private:
 	void* m_windowHandle;               // 0x1c

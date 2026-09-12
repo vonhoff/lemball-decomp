@@ -1,6 +1,8 @@
 #include "TargetTextWindow.h"
 
 #include "../Foundation/VsDebug.h"
+#include "TargetTextLine.h"
+#include "TargetTextLineBuffer.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -142,6 +144,131 @@ void TargetTextWindow::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, 
 	else {
 		UpdateVisibleRows();
 		UpdateClientWidth();
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00474290
+void TargetTextWindow::Scroll(int p_scrollCode, int p_thumbPos)
+{
+	EnterCritical();
+	switch (p_scrollCode) {
+	case 0:
+		m_topLine--;
+		break;
+	case 1:
+		m_topLine++;
+		break;
+	case 2:
+		m_topLine -= m_visibleRowsCeiling;
+		break;
+	case 3:
+		m_topLine += m_visibleRowsCeiling;
+		break;
+	case 4:
+	case 5:
+		m_topLine = p_thumbPos;
+		break;
+	case 6:
+		m_topLine = 0;
+		break;
+	case 7:
+		m_topLine = m_lineCount;
+		break;
+	}
+	if (m_topLine >= m_lineCount) {
+		m_topLine = m_lineCount - 1;
+	}
+	if (m_topLine < 0) {
+		m_topLine = 0;
+	}
+	SetScrollPos((HWND) m_windowHandle, 1, m_topLine, 1);
+	RedrawAll();
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00474340
+void TargetTextWindow::BeginSelection(int p_x, int p_y, undefined4 p_arg2)
+{
+	EnterCritical();
+	m_dragLine = PointToLine(p_x, p_y);
+	if (m_lineCount <= m_dragLine) {
+		LeaveCritical();
+		return;
+	}
+	SetCapture((HWND) m_windowHandle);
+	m_selecting = 1;
+	SetSelectionHighlight(0);
+	m_selectionEnd = m_dragLine;
+	m_selectionStart = m_dragLine;
+	m_selectionAnchor = m_dragLine;
+	SetSelectionHighlight(1);
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x004743b0
+void TargetTextWindow::EndSelection(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2)
+{
+	EnterCritical();
+	if (m_selecting != 0) {
+		ReleaseCapture();
+		m_selecting = 0;
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x004743e0
+void TargetTextWindow::SetSelectionHighlight(int p_selected)
+{
+	EnterCritical();
+	for (int line = m_selectionStart; line <= m_selectionEnd; line++) {
+		m_lineBuffer->m_lines[line].m_selected = p_selected;
+		RedrawLines(line, 1);
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00474430
+void TargetTextWindow::EnsureLineVisible(int p_line)
+{
+	EnterCritical();
+	if (p_line < m_topLine) {
+		m_topLine = p_line;
+		SetScrollPos((HWND) m_windowHandle, 1, p_line, 1);
+		RedrawAll();
+		LeaveCritical();
+		return;
+	}
+	if (p_line >= m_topLine + m_visibleRows) {
+		m_topLine = p_line - m_visibleRows + 1;
+		SetScrollPos((HWND) m_windowHandle, 1, m_topLine, 1);
+		RedrawAll();
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x004744a0
+void TargetTextWindow::UpdateSelection(int p_x, int p_y, undefined4 p_arg2)
+{
+	EnterCritical();
+	if (m_selecting != 0) {
+		m_dragLine = PointToLine(p_x, p_y);
+		if (m_dragLine >= m_lineCount) {
+			m_dragLine = m_lineCount - 1;
+		}
+		if (m_dragLine < 0) {
+			LeaveCritical();
+			return;
+		}
+		SetSelectionHighlight(0);
+		if (m_dragLine <= m_selectionAnchor) {
+			m_selectionStart = m_dragLine;
+		}
+		if (m_dragLine >= m_selectionAnchor) {
+			m_selectionEnd = m_dragLine;
+		}
+		SetSelectionHighlight(1);
+		EnsureLineVisible(m_dragLine);
 	}
 	LeaveCritical();
 }
