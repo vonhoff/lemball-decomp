@@ -20,6 +20,7 @@ public:
 		m_zFixed = p_z;
 	}
 	AiCoord(const AiCoord& p_other);
+	AiCoord& operator=(const AiCoord& p_other);
 
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04
