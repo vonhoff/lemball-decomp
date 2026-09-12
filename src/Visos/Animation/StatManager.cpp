@@ -52,14 +52,12 @@ VsOStream& StatManager::StreamOut(VsOStream& p_stream)
 	p_stream << "Stats Output\n";
 	p_stream << "---------------------------------------------------\n";
 	p_stream << "Average  Total    Max      Min      nSamples Desc\n";
-	p_stream << "---------------------------------------------------\n";
 	i = 0;
 	while (i < m_statCount) {
-		if (m_stats[i] != 0) {
-			m_stats[i]->StreamOut(p_stream);
-		}
+		m_stats[i]->StreamOut(p_stream);
 		++i;
 	}
+	p_stream << "---------------------------------------------------\n";
 	return p_stream;
 }
 
