@@ -24,7 +24,7 @@ public:
 	static bool DrawBackBuffer();
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~GunButtons();                      // vtable+0x04
-	void Draw(unsigned char p_firstState, unsigned char p_secondState);
+	void Draw(int p_firstState, int p_secondState);
 	void LoadFaces(unsigned long* p_animIds);
 	void UnLoadFaces();
 

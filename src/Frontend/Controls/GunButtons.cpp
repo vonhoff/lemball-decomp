@@ -134,7 +134,7 @@ int GunButtons::ProcessMsg(Message* p_message)
 
 // 68K 0x10802dfc Draw__11CGunButtonsFUcUc
 // FUNCTION: LEMBALL 0x0044c600
-void GunButtons::Draw(unsigned char p_firstState, unsigned char p_secondState)
+void GunButtons::Draw(int p_firstState, int p_secondState)
 {
 	if (m_graphicButton != 0) {
 		m_graphicButton->Draw(p_firstState);

@@ -27,7 +27,7 @@ public:
 				   void* p_binding,
 				   unsigned long p_actionMessage);
 	void AddJunction(int p_x, int p_y, unsigned char p_side, unsigned long p_message);
-	void DrawButtons(unsigned char p_firstState, unsigned char p_secondState);
+	void DrawButtons(int p_firstState, int p_secondState);
 	void DrawSpriteWindow();
 	void MoveDown();
 	void MoveLeft();

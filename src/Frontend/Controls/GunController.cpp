@@ -320,12 +320,12 @@ void GunController::AddJunction(int p_x, int p_y, unsigned char p_side, unsigned
 
 // 68K 0x10803cc4 DrawButtons__14CGunControllerFUcUc
 // FUNCTION: LEMBALL 0x0044d290
-void GunController::DrawButtons(unsigned char p_firstState, unsigned char p_secondState)
+void GunController::DrawButtons(int p_firstState, int p_secondState)
 {
 	int i;
 
 	i = 0;
-	while (i < m_buttonCount) {
+	while (i < 8) {
 		if (m_buttons[i] != 0) {
 			m_buttons[i]->Draw(p_firstState, p_secondState);
 		}
