@@ -65,13 +65,43 @@ def handle_link(args: list[str]) -> int:
     linker = args[0]
     link_args = args[1:]
 
+    new_link_args: list[str] = []
     for arg in link_args:
         if arg.startswith("@"):
             rsp_path = Path(arg[1:])
             if rsp_path.exists():
                 content = rsp_path.read_text(encoding="utf-8", errors="ignore")
                 tokens = content.split()
-                rsp_path.write_text("\n".join(tokens) + "\n", encoding="utf-8")
+                # MSVC 4.00 LINK.EXE reads response files in 16KB (0x4000) chunks without proper
+                # null-termination or line-split handling, corrupting tokens on files > 16KB.
+                # Split large response files into <= 8KB parts.
+                chunk_tokens: list[str] = []
+                chunk_size = 0
+                part_idx = 1
+                for token in tokens:
+                    token_len = len(token) + 2
+                    if chunk_tokens and chunk_size + token_len > 8000:
+                        part_path = rsp_path.with_name(f"{rsp_path.stem}_part{part_idx}{rsp_path.suffix}")
+                        part_path.write_text("\n".join(chunk_tokens) + "\n", encoding="utf-8")
+                        new_link_args.append(f"@{part_path}")
+                        part_idx += 1
+                        chunk_tokens = []
+                        chunk_size = 0
+                    chunk_tokens.append(token)
+                    chunk_size += token_len
+                if chunk_tokens:
+                    if part_idx == 1:
+                        rsp_path.write_text("\n".join(chunk_tokens) + "\n", encoding="utf-8")
+                        new_link_args.append(arg)
+                    else:
+                        part_path = rsp_path.with_name(f"{rsp_path.stem}_part{part_idx}{rsp_path.suffix}")
+                        part_path.write_text("\n".join(chunk_tokens) + "\n", encoding="utf-8")
+                        new_link_args.append(f"@{part_path}")
+            else:
+                new_link_args.append(arg)
+        else:
+            new_link_args.append(arg)
+    link_args = new_link_args
 
     out_arg = next((Path(arg[5:]) for arg in link_args if arg.upper().startswith("/OUT:")), None)
     res = subprocess.run(
