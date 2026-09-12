@@ -2445,16 +2445,93 @@ void C2D::DrawTrampoline(ViewData& p_viewData)
 	}
 }
 
+// GLOBAL: LEMBALL 0x004970b0
+static const short moverOffset[] = {17, 30};
+
 // 68K 0x10b032ec DrawMover__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043cac0
+// FUNCTION: LEMBALL 0x0043cac0
 void C2D::DrawMover(ViewData& p_viewData)
 {
+	unsigned short frame;
+	unsigned short state = p_viewData.m_actionArgument;
+	int x = p_viewData.m_positionX;
+	int y = p_viewData.m_positionY;
+	switch (m_ai->m_mapType) {
+	case 0:
+		frame = 0x50;
+		break;
+	case 1:
+		frame = 0x1a;
+		break;
+	case 2:
+		frame = 0x52;
+		break;
+	case 3:
+		frame = 0x38;
+		break;
+	}
+	switch ((unsigned int) state) {
+	case 0:
+		m_lemmingAnims
+			->DrawAnim(x - g_groundOffset[0], y - g_groundOffset[1] - 12, g_groundBlox4ResourceId, frame, 0, 0);
+		break;
+	case 1: {
+		unsigned int animFrame = (g_dwSimulationTimestamp / 70) & 7;
+		m_lemmingAnims->DrawAnim(x - moverOffset[0], y - moverOffset[1] - 8, RES_GAME_STAR, animFrame, 0, 0);
+		break;
+	}
+	}
 }
 
+// GLOBAL: LEMBALL 0x004970a0
+static const short slinkyOffsets[][2] = {{13, 25}, {30, 32}, {29, 26}, {14, 34}};
+
 // 68K 0x10b033f0 DrawSlinky__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043cbb0
+// FUNCTION: LEMBALL 0x0043cbb0
 void C2D::DrawSlinky(ViewData& p_viewData)
 {
+	unsigned int direction = (unsigned short) p_viewData.m_actionArgument;
+	int x = p_viewData.m_positionX - slinkyOffsets[direction][0];
+	int y = p_viewData.m_positionY - slinkyOffsets[direction][1];
+	int frame;
+	switch (p_viewData.m_action) {
+	case 0x18:
+		switch (direction) {
+		case 0:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_EAST, 0, 0, 0);
+			break;
+		case 1:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_WEST, 0, 0, 0);
+			break;
+		case 2:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_SOUTH, 0, 0, 0);
+			break;
+		case 3:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_NORTH, 0, 0, 0);
+			break;
+		}
+		break;
+	case 0x1b:
+		frame = (int) ((p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15) / 1000;
+		if (frame > 12) {
+			frame = 12;
+		}
+		switch (direction) {
+		case 0:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_EAST, frame, 0, 0);
+			break;
+		case 1:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_WEST, frame, 0, 0);
+			break;
+		case 2:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_SOUTH, frame, 0, 0);
+			break;
+		case 3:
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_NORTH, frame, 0, 0);
+			break;
+		}
+		break;
+	}
 }
 
 // GLOBAL: LEMBALL 0x0049709c
@@ -3041,10 +3118,77 @@ void C2D::DrawBonus(ViewData& p_viewData)
 							 0);
 }
 
+// GLOBAL: LEMBALL 0x00497090
+static const short trapDoorOffset[] = {48, 40};
+
 // 68K 0x10b0454a DrawTrapDoor__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043d990
+// FUNCTION: LEMBALL 0x0043d990
 void C2D::DrawTrapDoor(ViewData& p_viewData)
 {
+	int x = p_viewData.m_positionX - trapDoorOffset[0];
+	int y = p_viewData.m_positionY - trapDoorOffset[1];
+	int shadowX = x + 16;
+	int shadowY = y + 78;
+	int frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) / 66;
+	switch (p_viewData.m_action) {
+	case 0x1f:
+		if (frame > 40) {
+			frame = 40;
+		}
+		if (frame < 33) {
+			m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[7], frame, 0, 0);
+		}
+		else {
+			m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[7], 33, 0, 0);
+			m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[7], frame + 1, 0, 0);
+		}
+		if (frame > 23) {
+			if (frame > 33) {
+				frame = 33;
+			}
+			m_lemmingAnims->DrawAnim(shadowX, shadowY, RES_GAME_SHADOW, frame - 23, 0, 0);
+		}
+		break;
+	case 0x20:
+		if (frame > 14) {
+			frame = 14;
+		}
+		m_lemmingAnims->DrawAnim(x, y, g_dwGroundStyleResourceId, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x, y, g_dwGroundStyleResourceId, frame + 1, 0, 0);
+		m_lemmingAnims->DrawAnim(shadowX, shadowY, RES_GAME_SHADOW, 10, 0, 0);
+		break;
+	case 0x21:
+		m_lemmingAnims->DrawAnim(x, y, g_dwGroundStyleResourceId, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x, y, g_dwGroundStyleResourceId, 15, 0, 0);
+		m_lemmingAnims->DrawAnim(shadowX, shadowY, RES_GAME_SHADOW, 10, 0, 0);
+		break;
+	case 0x22:
+		if (frame > 7) {
+			frame = 7;
+		}
+		m_lemmingAnims->DrawAnim(x, y, g_dwGroundStyleResourceId, 0, 0, 0);
+		m_lemmingAnims->DrawAnim(x, y, g_dwGroundStyleResourceId, 8 - frame, 0, 0);
+		m_lemmingAnims->DrawAnim(shadowX, shadowY, RES_GAME_SHADOW, 10, 0, 0);
+		break;
+	case 0x23:
+		if (frame > 40) {
+			frame = 40;
+		}
+		if (40 - frame < 33) {
+			m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[7], 40 - frame, 0, 0);
+		}
+		else {
+			m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[7], 33, 0, 0);
+			m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[7], 41 - frame, 0, 0);
+		}
+		if (frame < 13) {
+			m_lemmingAnims->DrawAnim(shadowX, shadowY, RES_GAME_SHADOW, 10, 0, 0);
+		}
+		else if (frame < 23) {
+			m_lemmingAnims->DrawAnim(shadowX, shadowY, RES_GAME_SHADOW, 23 - frame, 0, 0);
+		}
+		break;
+	}
 }
 
 extern const undefined4* g_styleObjectClip;
