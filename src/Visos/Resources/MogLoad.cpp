@@ -270,22 +270,21 @@ void MogDir::FindFirst(Chunk& p_chunk, unsigned int p_type)
 // FUNCTION: LEMBALL 0x0045c2d0
 void MogDir::Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse)
 {
-	ChunkInfo* savedChunk;
-	int savedIndex;
+	Chunk saved;
 	MogDir* dir;
-	int* current;
+	Chunk* current;
+	Chunk* root;
 
 	FindFirst(p_chunk, kAnyChunkType);
 	while (p_chunk.m_info != 0 && p_chunk.m_info->m_id != p_id) {
 		FindNext(p_chunk, kAnyChunkType);
 	}
 	if (p_chunk.m_info == 0) {
-		current = &m_currentDirIndex;
-		savedIndex = *current;
-		savedChunk = m_currentDirChunk;
-		current[0] = m_rootIndex;
-		current[1] = (int) m_rootChunk;
-		*current = -1;
+		current = (Chunk*) &m_currentDirIndex;
+		saved = *current;
+		root = (Chunk*) &m_rootIndex;
+		*current = *root;
+		current->m_index = -1;
 		while (p_chunk.m_info == 0) {
 			dir = GetNextDir();
 			if (dir == 0) {
@@ -293,7 +292,6 @@ void MogDir::Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse)
 			}
 			dir->Find(p_chunk, p_id, p_recurse);
 		}
-		current[0] = savedIndex;
-		current[1] = (int) savedChunk;
+		*current = saved;
 	}
 }
