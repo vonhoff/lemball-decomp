@@ -61,10 +61,12 @@ void SetGameDefaults()
 	g_nDisplayMode = 0;
 	g_nEditLevelMode = 0;
 	g_nPlayLevelMode = 0;
-	if (graphicsSystem->m_driverMode >= 2 && graphicsSystem->m_driverMode <= 3) {
+	switch (graphicsSystem->m_driverMode) {
+	case 2:
+	case 3:
 		g_nCompactPrimaryContextLayout = 1;
-	}
-	else {
+		break;
+	default:
 		g_nCompactPrimaryContextLayout = 0;
 	}
 	g_nLevelViewportHorizontalRemainder = 0;
