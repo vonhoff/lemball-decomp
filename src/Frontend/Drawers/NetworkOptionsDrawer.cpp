@@ -931,6 +931,7 @@ void NetworkOptionsDrawer::Processing()
 	Connect** connections;
 	int index;
 	int activation;
+	int acceptedPlayer;
 
 	if (m_messageDirty != (unsigned int) m_message) {
 		return;
@@ -982,8 +983,9 @@ void NetworkOptionsDrawer::Processing()
 		do {
 			if (m_playerEntries[index].m_pressed != 0 && m_acceptedPlayer != index) {
 				g_pSoundView->PlayEffect((eSoundEffect) 0x25);
-				if (m_acceptedPlayer != -1) {
-					connection = connections[m_acceptedPlayer];
+				acceptedPlayer = m_acceptedPlayer;
+				if (acceptedPlayer != -1) {
+					connection = connections[acceptedPlayer];
 					if (connection != 0) {
 						((NetworkOptionsProc*) g_pCurrentFrontendProcess)->Reject(connection);
 					}
@@ -997,9 +999,9 @@ void NetworkOptionsDrawer::Processing()
 					((NetworkOptionsProc*) g_pCurrentFrontendProcess)->Accept(*current, activation);
 				}
 			}
+			m_playerEntries[index].m_pressed = 0;
 			current = current + 1;
 			index = index + 1;
-			m_playerEntries[index - 1].m_pressed = 0;
 		} while (index < 10);
 	}
 	if (m_message != 0) {
