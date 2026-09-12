@@ -53,11 +53,16 @@ public:
 	friend class C2D;
 
 private:
-	char* m_networkName;                      // 0x10
-	unsigned int m_shutdownRequested;         // 0x14
-	unsigned int m_serverMode;                // 0x18
-	unsigned int m_initialized;               // 0x1c
-	unsigned int m_initialisePending;         // 0x20
+	char* m_networkName; // 0x10
+
+public:
+	// Lifecycle state shared with the network worker thread.
+	unsigned int m_shutdownRequested; // 0x14
+	unsigned int m_serverMode;        // 0x18
+	unsigned int m_initialized;       // 0x1c
+	unsigned int m_initialisePending; // 0x20
+
+private:
 	Broadcast* m_broadcast;                   // 0x24
 	Connect* m_firstConnect;                  // 0x28
 	Connect* m_lastConnect;                   // 0x2c

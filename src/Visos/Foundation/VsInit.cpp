@@ -61,6 +61,18 @@ extern "C" __declspec(dllimport) void* __stdcall GlobalLock(void* p_mem);
 extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(void* p_mem);
 extern "C" __declspec(dllimport) void* __stdcall GlobalFree(void* p_mem);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
+extern "C" __declspec(dllimport) int __stdcall WaitMessage();
+extern "C" __declspec(dllimport) int __stdcall GetMessageA(void* p_message,
+														   void* p_window,
+														   unsigned int p_min,
+														   unsigned int p_max);
+extern "C" __declspec(dllimport) int __stdcall TranslateMessage(const void* p_message);
+extern "C" __declspec(dllimport) int __stdcall PeekMessageA(void* p_message,
+															void* p_window,
+															unsigned int p_min,
+															unsigned int p_max,
+															unsigned int p_remove);
+extern "C" __declspec(dllimport) long __stdcall DispatchMessageA(const void* p_message);
 
 enum InitCmdOptionField {
 	kInitCmdOptionName,
@@ -858,11 +870,49 @@ bool InternalMemQuit()
 	return 1;
 }
 
-// STUB: LEMBALL 0x0046f210
-unsigned int __stdcall FileNetworkMessageThread(void* p_unused)
+// FUNCTION: LEMBALL 0x0046f210
+unsigned int FileNetworkMessageThread()
 {
-	(void) p_unused;
-	return 0;
+	// Win32 MSG storage: seven 32-bit words.
+	undefined4 message[7];
+	unsigned int count;
+
+	g_pBaseNetwork = new FileNetwork();
+	while (g_pBaseNetwork->m_initialisePending == 0 && g_pBaseNetwork->m_serverMode == 0 &&
+		   g_pBaseNetwork->m_shutdownRequested == 0) {
+		WaitMessage();
+		GetMessageA(message, 0, 0, 0);
+	}
+	if (g_pBaseNetwork->m_initialisePending != 0) {
+		g_pBaseNetwork->DoInitialise();
+	}
+	while (g_pBaseNetwork->m_serverMode == 0 && g_pBaseNetwork->m_shutdownRequested == 0) {
+		WaitMessage();
+		GetMessageA(message, 0, 0, 0);
+	}
+	if (g_pBaseNetwork->m_shutdownRequested == 0) {
+		while (g_pBaseNetwork->m_serverMode != 0) {
+			WaitMessage();
+			if (PeekMessageA(message, 0, 0, 0, 0) != 0) {
+				while (PeekMessageA(message, 0, 0, 0, 0) != 0) {
+					GetMessageA(message, 0, 0, 0);
+					TranslateMessage(message);
+					DispatchMessageA(message);
+				}
+			}
+			if (g_pNetworkStatusQueue != 0) {
+				do {
+					count = ((BaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
+					if (count != 0) {
+						((BaseQueue*) g_pNetworkStatusQueue)->ProcessNMsgs(count);
+					}
+				} while (count != 0);
+			}
+		}
+	}
+	delete g_pBaseNetwork;
+	g_pBaseNetwork = 0;
+	return 1;
 }
 
 // 68K 0x10106d86 VSFNET_Init__Fv
@@ -871,7 +921,8 @@ bool VsFNetInit()
 {
 	unsigned long startTime;
 
-	g_hFileNetworkThread = CreateThread(0, 0, FileNetworkMessageThread, 0, 0, &g_dwFileNetworkThreadId);
+	g_hFileNetworkThread =
+		CreateThread(0, 0, (unsigned int(__stdcall*)(void*)) FileNetworkMessageThread, 0, 0, &g_dwFileNetworkThreadId);
 	if (g_hFileNetworkThread == 0) {
 		MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
 		ExitProcess(0xbbbb);
@@ -919,11 +970,49 @@ bool VsFNetQuit()
 	return 0;
 }
 
-// STUB: LEMBALL 0x0046fa10
-unsigned int __stdcall TcpIpNetworkMessageThread(void* p_unused)
+// FUNCTION: LEMBALL 0x0046fa10
+unsigned int TcpIpNetworkMessageThread()
 {
-	(void) p_unused;
-	return 0;
+	// Win32 MSG storage: seven 32-bit words.
+	undefined4 message[7];
+	unsigned int count;
+
+	g_pBaseNetwork = new TcpIpNetwork();
+	while (g_pBaseNetwork->m_initialisePending == 0 && g_pBaseNetwork->m_serverMode == 0 &&
+		   g_pBaseNetwork->m_shutdownRequested == 0) {
+		WaitMessage();
+		GetMessageA(message, 0, 0, 0);
+	}
+	if (g_pBaseNetwork->m_initialisePending != 0) {
+		g_pBaseNetwork->DoInitialise();
+	}
+	while (g_pBaseNetwork->m_serverMode == 0 && g_pBaseNetwork->m_shutdownRequested == 0) {
+		WaitMessage();
+		GetMessageA(message, 0, 0, 0);
+	}
+	if (g_pBaseNetwork->m_shutdownRequested == 0) {
+		while (g_pBaseNetwork->m_serverMode != 0) {
+			WaitMessage();
+			if (PeekMessageA(message, 0, 0, 0, 0) != 0) {
+				while (PeekMessageA(message, 0, 0, 0, 0) != 0) {
+					GetMessageA(message, 0, 0, 0);
+					TranslateMessage(message);
+					DispatchMessageA(message);
+				}
+			}
+			if (g_pNetworkStatusQueue != 0) {
+				do {
+					count = ((BaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
+					if (count != 0) {
+						((BaseQueue*) g_pNetworkStatusQueue)->ProcessNMsgs(count);
+					}
+				} while (count != 0);
+			}
+		}
+	}
+	delete g_pBaseNetwork;
+	g_pBaseNetwork = 0;
+	return 1;
 }
 
 // 68K 0x1010c64e VSNET_Init__Fv
@@ -932,7 +1021,12 @@ bool VsNetInit()
 {
 	unsigned long startTime;
 
-	g_hTCPIPNetworkThread = CreateThread(0, 0, TcpIpNetworkMessageThread, 0, 0, &g_dwTCPIPNetworkThreadId);
+	g_hTCPIPNetworkThread = CreateThread(0,
+										 0,
+										 (unsigned int(__stdcall*)(void*)) TcpIpNetworkMessageThread,
+										 0,
+										 0,
+										 &g_dwTCPIPNetworkThreadId);
 	if (g_hTCPIPNetworkThread == 0) {
 		MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
 		ExitProcess(0xbbbb);
