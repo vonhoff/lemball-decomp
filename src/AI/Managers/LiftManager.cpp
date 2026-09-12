@@ -118,6 +118,9 @@ unsigned short LiftManager::Id(int p_index)
 // FUNCTION: LEMBALL 0x00425fc0
 void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	Coord3d start;
+	Coord3d end;
+	Coord3d position;
 	unsigned short* data;
 	unsigned short count;
 
@@ -142,8 +145,6 @@ void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 			}
 
 			if (m_ai->m_levelVersion >= 5) {
-				Coord3d start;
-				Coord3d end;
 
 				initialActive = *data++;
 				activateType = (eLiftActivateType) *data++;
@@ -160,20 +161,24 @@ void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 				m_lifts[m_count].Set(start, end, direction, lowHeight, highHeight, activateType, initialActive);
 			}
 			else {
-				short x;
-				short y;
-				short z;
 
 				initialActive = *data++;
 				activateType = (eLiftActivateType) *data++;
-				x = (short) *data++;
-				y = (short) *data++;
-				z = (short) *data++;
+				position.m_x = (short) *data++;
+				position.m_y = (short) *data++;
+				position.m_z = (short) *data++;
 				lowHeight = (short) *data++;
 				highHeight = (short) *data++;
 				direction = (short) *data++;
 				m_lifts[m_count].SetId(id);
-				m_lifts[m_count].Set(x, y, z, direction, lowHeight, highHeight, activateType, initialActive);
+				m_lifts[m_count].Set(position.m_x,
+									 position.m_y,
+									 position.m_z,
+									 direction,
+									 lowHeight,
+									 highHeight,
+									 activateType,
+									 initialActive);
 			}
 
 			m_count++;
