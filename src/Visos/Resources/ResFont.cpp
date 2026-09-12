@@ -4,8 +4,6 @@
 #include "MogRes.h"
 #include "ResourceTypeList.h"
 
-#include <string.h>
-
 // 68K 0x10203950 __ct__8CResFONTFUl
 // FUNCTION: LEMBALL 0x0045d7b0
 ResFont::ResFont(unsigned long p_resourceId) : ResBaseList((ResListHeader*) g_pResourceTypes)
@@ -135,6 +133,8 @@ ResZrle* ResFont::AsciItoZrle(unsigned int p_ascii)
 {
 	return m_fontTable->GetZrle(p_ascii);
 }
+
+#include <string.h>
 
 // 68K 0x10203ef2 GetSize__8CResFONTCFPCcUl
 // FUNCTION: LEMBALL 0x0045db30
