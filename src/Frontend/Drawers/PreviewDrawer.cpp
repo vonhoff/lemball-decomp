@@ -382,9 +382,9 @@ void PreviewDrawer::DrawText()
 void PreviewDrawer::DrawAnims()
 {
 	short width;
+	int i;
 	int x;
 	int y;
-	int i;
 
 	AnimsManager::DrawAnim(VsPoint((short) m_layout->m_positions[PreviewLemmingAnim].m_x,
 								   (short) m_layout->m_positions[PreviewLemmingAnim].m_y),
@@ -415,46 +415,45 @@ void PreviewDrawer::DrawAnims()
 							   m_lemmingAnim,
 							   (Remap*) m_remap);
 		width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
-		y = m_layout->m_positions[PreviewNetworkLemmingRow].m_y;
 		x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
 			m_layout->m_positions[PreviewFormationOffset].m_x;
+		y = m_layout->m_positions[PreviewNetworkLemmingRow].m_y;
 		i = 0;
 		if (m_lemmingCount > 0) {
 			do {
 				x = x - ((short) (width / 8) + width);
+				VsPoint point((short) x, (short) y);
 				i = i + 1;
-				AnimsManager::DrawAnim(VsPoint((short) x, (short) y),
-									   m_lemmingAnimId,
-									   0,
-									   m_lemmingAnim,
-									   (Remap*) m_remap);
+				AnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
 			} while (i < m_lemmingCount);
 		}
 	}
 
 	width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
-	y = m_layout->m_positions[PreviewOpponentRow].m_y;
 	x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
 		m_layout->m_positions[PreviewFormationOffset].m_x;
+	y = m_layout->m_positions[PreviewOpponentRow].m_y;
 	i = 0;
 	if (m_opponentCount > 0) {
 		do {
 			x = x - ((short) (width / 8) + width);
+			VsPoint point((short) x, (short) y);
 			i = i + 1;
-			AnimsManager::DrawAnim(VsPoint((short) x, (short) y), m_lemmingAnimId, 0, m_lemmingAnim, 0);
+			AnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, 0);
 		} while (i < m_opponentCount);
 	}
 
 	width = (short) AnimsManager::GetAnimSize(m_teamAnimId, 0).m_width;
-	y = m_layout->m_positions[PreviewTeamRow].m_y;
 	x = m_layout->m_positions[PreviewFormationAnchor].m_x - m_layout->m_positions[PreviewTeamOffset].m_x +
 		m_layout->m_positions[PreviewFormationOffset].m_x;
+	y = m_layout->m_positions[PreviewTeamRow].m_y;
 	if (m_teamCount <= 4 && m_teamCount > 0) {
 		i = 0;
 		do {
 			x = x - width;
+			VsPoint point((short) x, (short) y);
 			i = i + 1;
-			AnimsManager::DrawAnim(VsPoint((short) x, (short) y), m_teamAnimId, 0, m_teamAnim, 0);
+			AnimsManager::DrawAnim(point, m_teamAnimId, 0, m_teamAnim, 0);
 		} while (i < m_teamCount);
 	}
 }
