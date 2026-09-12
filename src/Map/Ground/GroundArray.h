@@ -35,6 +35,7 @@ public:
 	friend class InvisibleSwitch;
 	friend class Hand;
 	friend class Lift;
+	friend class Slinky;
 	friend class BalloonPost;
 	friend class Mover;
 	friend class PaintGun;

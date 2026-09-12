@@ -77,6 +77,7 @@ public:
 	friend class C2D;
 	friend class Main2DDisplay;
 	friend class SlinkyManager;
+	friend class Slinky;
 	friend class TrampolineManager;
 	friend class TrapDoorManager;
 	friend class RocketManager;
@@ -155,7 +156,8 @@ private:
 	GameObject** m_objects;                           // 0x120
 	Pt3 m_collisionPoint;                             // 0x124
 	int m_collisionIndex;                             // 0x130
-	undefined4 m_unk0x134[7];                         // 0x134
+	Rect3 m_collisionRect;                            // 0x134
+	int m_rectCollisionIndex;                         // 0x14c
 	GameObject* m_collisionExclude;                   // 0x150
 	Game* m_game;                                     // 0x154
 	ObjectManager* m_objectManager;                   // 0x158
