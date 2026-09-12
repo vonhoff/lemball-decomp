@@ -12,6 +12,15 @@
 #include "../Display/Main2DDisplay.h"
 #include "../Sound/SoundView.h"
 
+// GLOBAL: LEMBALL 0x00496f78
+const undefined4 g_style0ObjectClip[4] = {31, 90, 64, 96};
+// GLOBAL: LEMBALL 0x00496f88
+const undefined4 g_style1ObjectClip[4] = {34, 96, 68, 96};
+// GLOBAL: LEMBALL 0x00496f98
+const undefined4 g_style2ObjectClip[4] = {34, 96, 68, 96};
+// GLOBAL: LEMBALL 0x0049e8b4
+const undefined4* g_styleObjectClip = 0;
+
 // Style-sensitive resource IDs written by SetupStyleSensitive (0x00432c80).
 // GLOBAL: LEMBALL 0x004a7850
 unsigned int g_groundBlox1ResourceId;
@@ -63,9 +72,110 @@ LemmingAnimsManager::~LemmingAnimsManager()
 }
 
 // 68K 0x10b09f1a SetupStyleSensitive__20CLemmingAnimsManagerFv
-// STUB: LEMBALL 0x00432c80
+// FUNCTION: LEMBALL 0x00432c80
 void LemmingAnimsManager::SetupStyleSensitive()
 {
+	g_groundBlox1ResourceId = 0;
+	g_groundBlox2ResourceId = 0;
+	g_groundBlox3ResourceId = 0;
+	g_groundBlox4ResourceId = 0;
+	g_groundBlox5ResourceId = 0;
+	g_groundBlox6ResourceId = 0;
+	g_groundBlox7ResourceId = 0;
+	g_anGroundStyleResourceIds[0] = 0;
+	g_anGroundStyleResourceIds[4] = 0;
+	g_anGroundStyleResourceIds[5] = 0;
+	g_anGroundStyleResourceIds[3] = 0;
+	g_anGroundStyleResourceIds[7] = 0;
+	g_dwGroundStyleResourceId = 0;
+	g_anGroundStyleResourceIds[2] = 0;
+	g_anGroundStyleResourceIds[8] = 0;
+	g_anGroundStyleResourceIds[9] = 0;
+	g_anGroundStyleResourceIds[1] = 0;
+	g_anGroundStyleResourceIds[6] = 0;
+	switch (m_groundStyle) {
+	case 0:
+		g_groundBlox1ResourceId = RES_GAME_BLOX_1;
+		g_groundBlox2ResourceId = RES_GAME_BLOX_2;
+		g_groundBlox3ResourceId = RES_GAME_BLOX_3;
+		g_groundBlox4ResourceId = RES_GAME_BLOX_4;
+		g_groundBlox5ResourceId = RES_GAME_BLOX_5;
+		g_groundBlox6ResourceId = RES_GAME_BLOX_6;
+		g_groundBlox7ResourceId = RES_GAME_BLOX_7;
+		g_anGroundStyleResourceIds[0] = RES_GAME_BLOX_8;
+		g_anGroundStyleResourceIds[4] = RES_GAME_BLOX_14;
+		g_anGroundStyleResourceIds[5] = RES_GAME_BLOX_15;
+		g_anGroundStyleResourceIds[3] = RES_GRASS_TREE;
+		g_anGroundStyleResourceIds[7] = RES_GAME_SPARKLE;
+		g_dwGroundStyleResourceId = RES_GAME_TRAP_DOOR;
+		g_anGroundStyleResourceIds[2] = RES_GAME_SPACE_HAND;
+		g_anGroundStyleResourceIds[8] = RES_GAME_CATAPULT_SE;
+		g_anGroundStyleResourceIds[9] = RES_GAME_CATAPULT_ANIMSE;
+		g_anGroundStyleResourceIds[1] = RES_GAME_GRASSPAINTGUN;
+		g_anGroundStyleResourceIds[6] = RES_GRASS_TOWER;
+		g_styleObjectClip = g_style0ObjectClip;
+		break;
+	case 1:
+		g_groundBlox1ResourceId = RES_GAME_LEGO_1;
+		g_groundBlox2ResourceId = RES_GAME_LEGO_2;
+		g_groundBlox3ResourceId = RES_GAME_LEGO_3;
+		g_groundBlox4ResourceId = RES_GAME_LEGO_4;
+		g_groundBlox5ResourceId = RES_GAME_LEGO_5;
+		g_groundBlox6ResourceId = RES_GAME_LEGO_6;
+		g_groundBlox7ResourceId = RES_GAME_LEGO_7;
+		g_anGroundStyleResourceIds[0] = RES_GAME_LEGO_8;
+		g_anGroundStyleResourceIds[4] = RES_GAME_LEGO_14;
+		g_anGroundStyleResourceIds[5] = RES_GAME_LEGO_15;
+		g_anGroundStyleResourceIds[3] = RES_LEGO_LEGOTREE;
+		g_anGroundStyleResourceIds[7] = RES_GAME_LEGO_SPARKLE;
+		g_dwGroundStyleResourceId = RES_GAME_LEGO_TRAP_DOOR;
+		g_anGroundStyleResourceIds[2] = RES_GAME_SPACE_HAND;
+		g_anGroundStyleResourceIds[8] = RES_GAME_LEGO_CATAPULT_SE;
+		g_anGroundStyleResourceIds[9] = RES_GAME_LEGO_CATAPULT_ANIMSE;
+		g_anGroundStyleResourceIds[1] = RES_GAME_SPACEPAINTGUN;
+		g_anGroundStyleResourceIds[6] = RES_LEGO_HUT;
+		g_styleObjectClip = g_style1ObjectClip;
+		break;
+	case 2:
+		g_groundBlox1ResourceId = RES_GAME_SNOW_1;
+		g_groundBlox2ResourceId = RES_GAME_SNOW_2;
+		g_groundBlox3ResourceId = RES_GAME_SNOW_3;
+		g_groundBlox4ResourceId = RES_GAME_SNOW_4;
+		g_groundBlox5ResourceId = RES_GAME_SNOW_5;
+		g_groundBlox6ResourceId = RES_GAME_SNOW_6;
+		g_groundBlox7ResourceId = RES_GAME_SNOW_7;
+		g_anGroundStyleResourceIds[0] = RES_GAME_SNOW_8;
+		g_anGroundStyleResourceIds[4] = RES_GAME_SNOW_14;
+		g_anGroundStyleResourceIds[5] = RES_GAME_SNOW_15;
+		g_anGroundStyleResourceIds[3] = RES_SNOW_SNOWTREE;
+		g_anGroundStyleResourceIds[7] = RES_GAME_SNOW_SPARKLE;
+		g_dwGroundStyleResourceId = RES_GAME_SNOW_TRAP_DOOR;
+		g_anGroundStyleResourceIds[2] = RES_GAME_SNOW_HAND;
+		g_anGroundStyleResourceIds[8] = RES_GAME_SNOW_CATAPULT_SE;
+		g_anGroundStyleResourceIds[9] = RES_GAME_SNOW_CATAPULT_ANIMSE;
+		g_anGroundStyleResourceIds[1] = RES_GAME_SNOWPAINTGUN;
+		g_anGroundStyleResourceIds[6] = RES_SNOW_HUT;
+		g_styleObjectClip = g_style2ObjectClip;
+		break;
+	case 3:
+		g_groundBlox1ResourceId = RES_GAME_SPACE_1;
+		g_groundBlox2ResourceId = RES_GAME_SPACE_2;
+		g_groundBlox3ResourceId = RES_GAME_SPACE_3;
+		g_groundBlox4ResourceId = RES_GAME_SPACE_4;
+		g_groundBlox5ResourceId = RES_GAME_SPACE_5;
+		g_groundBlox6ResourceId = RES_GAME_SPACE_6;
+		g_groundBlox7ResourceId = RES_GAME_SPACE_7;
+		g_anGroundStyleResourceIds[0] = RES_GAME_SPACE_8;
+		g_anGroundStyleResourceIds[4] = RES_GAME_SPACE_14;
+		g_anGroundStyleResourceIds[5] = RES_GAME_SPACE_15;
+		g_anGroundStyleResourceIds[7] = RES_GAME_SPACE_SPARKLE;
+		g_dwGroundStyleResourceId = RES_GAME_SPACE_TRAP_DOOR;
+		g_anGroundStyleResourceIds[2] = RES_GAME_SPACE_HAND;
+		g_anGroundStyleResourceIds[8] = RES_GAME_CATAPULT_SE;
+		g_anGroundStyleResourceIds[9] = RES_GAME_CATAPULT_ANIMSE;
+		g_anGroundStyleResourceIds[1] = RES_GAME_SPACEPAINTGUN;
+		break;
+	}
 }
 
 // 68K 0x10b0a2ae LoadVrammed__20CLemmingAnimsManagerFv
