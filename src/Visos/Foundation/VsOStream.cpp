@@ -169,13 +169,10 @@ VsOStream& VsOStream::operator<<(Hex8 p_arg0)
 // FUNCTION: LEMBALL 0x00458d40
 VsOStream& VsOStream::operator<<(Har4 p_arg0)
 {
-	unsigned char shift = 0x18;
-	int i = 3;
 	unsigned long value = p_arg0.m_value;
-	do {
-		m_streamBuffer->Sputc((char) (value >> shift));
-		shift = (unsigned char) ((signed char) shift - 8);
-	} while (--i >= 0);
+	for (int i = 3; i >= 0; --i) {
+		m_streamBuffer->Sputc((char) (value >> (char) (i * 8)));
+	}
 	return *this;
 }
 
