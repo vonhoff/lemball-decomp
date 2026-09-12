@@ -1958,10 +1958,224 @@ void C2D::DrawLemmingOnConveyor(ViewData& p_viewData, int p_remapped)
 // GLOBAL: LEMBALL 0x00496fd8
 static const short g_unk0x496fd8[] = {8, 18};
 
+// GLOBAL: LEMBALL 0x00496fdc
+static const short g_lemmingWalkOffset[] = {8, 18};
+// GLOBAL: LEMBALL 0x00496fe0
+static const short g_lemmingAirOffset[] = {4, 12};
+// GLOBAL: LEMBALL 0x00496fe8
+static const short g_lemmingWaitOffsets[][2] = {{13, 25}, {10, 18}, {7, 14}, {7, 14}};
+// GLOBAL: LEMBALL 0x00496ff8
+static const short g_lemmingHitOffsets[][2] =
+	{{28, 25}, {24, 24}, {24, 31}, {19, 25}, {23, 24}, {25, 21}, {32, 36}, {25, 26}};
+// GLOBAL: LEMBALL 0x00497038
+static const short g_lemmingSommersaultOffset[] = {14, 27};
+// GLOBAL: LEMBALL 0x0049ee30
+static int g_lemmingFireOffsets[][2] = {{11, 9}, {8, 5}, {10, 5}, {16, 4}, {19, 4}, {26, 6}, {26, 9}, {14, 13}};
+// GLOBAL: LEMBALL 0x0049ee78
+static unsigned long g_lemmingStandResources[] = {RES_GAME_LEMMINGSTANDNE,
+												  RES_GAME_LEMMINGSTANDE,
+												  RES_GAME_LEMMINGSTANDSE,
+												  RES_GAME_LEMMINGSTANDS,
+												  RES_GAME_LEMMINGSTANDSW,
+												  RES_GAME_LEMMINGSTANDW,
+												  RES_GAME_LEMMINGSTANDNW,
+												  RES_GAME_LEMMINGSTANDN};
+// GLOBAL: LEMBALL 0x0049ee98
+static unsigned long g_lemmingFireResources[] = {RES_GAME_LEMMINGFIRENE,
+												 RES_GAME_LEMMINGFIREE,
+												 RES_GAME_LEMMINGFIRESE,
+												 RES_GAME_LEMMINGFIRES,
+												 RES_GAME_LEMMINGFIRESW,
+												 RES_GAME_LEMMINGFIREW,
+												 RES_GAME_LEMMINGFIRENW,
+												 RES_GAME_LEMMINGFIREN};
+// GLOBAL: LEMBALL 0x0049eed8
+static unsigned long g_lemmingHitResources[] = {RES_GAME_HIT_NORTH_EAST,
+												RES_GAME_HIT_EAST,
+												RES_GAME_HIT_SOUTH_EAST,
+												RES_GAME_HIT_SOUTH,
+												RES_GAME_HIT_SOUTH_WEST,
+												RES_GAME_HIT_WEST,
+												RES_GAME_HIT_NORTH_WEST,
+												RES_GAME_HIT_NORTH};
+// GLOBAL: LEMBALL 0x0049ef18
+static unsigned long g_lemmingWalkResources[] = {RES_GAME_LEMMINGWALKNE,
+												 RES_GAME_LEMMINGWALKE,
+												 RES_GAME_LEMMINGWALKSE,
+												 RES_GAME_LEMMINGWALKS,
+												 RES_GAME_LEMMINGWALKSW,
+												 RES_GAME_LEMMINGWALKW,
+												 RES_GAME_LEMMINGWALKNW,
+												 RES_GAME_LEMMINGWALKN};
+// GLOBAL: LEMBALL 0x0049ef98
+static unsigned long g_lemmingWaitResources[] = {RES_GAME_WAIT_JIG,
+												 RES_GAME_WAIT_TOSS,
+												 RES_GAME_WAIT_LOOK,
+												 RES_GAME_WAIT_LOOK};
+
 // 68K 0x10b027f2 DrawLemming__3C2DFR9CViewDataiUc
-// STUB: LEMBALL 0x0043c200
-void C2D::DrawLemming(ViewData& p_viewData, int p_objectNo, unsigned char p_remapped)
+// FUNCTION: LEMBALL 0x0043c200
+void C2D::DrawLemming(ViewData& p_viewData, int p_objectNo, undefined4 p_remapped)
 {
+	int x;
+	int y;
+	int frame;
+	unsigned int direction;
+	unsigned short player;
+	int drawEquipment;
+	int drawBody;
+	unsigned long resource;
+	int offsetX;
+	int offsetY;
+
+	frame = p_viewData.m_stateTimer;
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	y = p_viewData.m_positionY;
+	drawEquipment = 1;
+	drawBody = 1;
+	x = p_viewData.m_positionX;
+	player = p_viewData.m_playerIndex;
+
+	switch (p_viewData.m_action) {
+	case 0:
+	case 1:
+	case 9:
+	case 0xd:
+	case 0x23:
+		resource = g_lemmingStandResources[direction];
+		offsetX = g_unk0x496fd8[0];
+		offsetY = g_unk0x496fd8[1];
+		break;
+	case 2:
+		resource = g_lemmingWalkResources[direction];
+		offsetX = g_lemmingWalkOffset[0];
+		offsetY = g_lemmingWalkOffset[1];
+		break;
+	case 3:
+		resource = g_lemmingFireResources[direction];
+		offsetY = g_lemmingFireOffsets[direction][1] + g_unk0x496fd8[1];
+		offsetX = g_lemmingFireOffsets[direction][0] + g_unk0x496fd8[0];
+		drawEquipment = 0;
+		break;
+	case 4:
+		DrawLemmingFlyShadow(p_viewData);
+		drawEquipment = 0;
+		resource = LemmingFly(p_viewData, frame);
+		offsetX = g_lemmingAirOffset[0];
+		offsetY = g_lemmingAirOffset[1];
+		break;
+	case 5:
+		drawBody = 0;
+		drawEquipment = 0;
+		break;
+	case 6: {
+		unsigned int index;
+		if (p_remapped == 0) {
+			index = (unsigned short) p_viewData.m_actionArgument;
+		}
+		else {
+			index = 0;
+		}
+		offsetX = g_lemmingWaitOffsets[index][0];
+		offsetY = g_lemmingWaitOffsets[index][1];
+		resource = g_lemmingWaitResources[index];
+		break;
+	}
+	case 7:
+		drawEquipment = 0;
+		resource = g_lemmingHitResources[direction];
+		offsetX = g_lemmingHitOffsets[direction][0];
+		offsetY = g_lemmingHitOffsets[direction][1];
+		break;
+	case 8:
+	case 0xc:
+	case 0x15:
+		return;
+	case 0xa:
+		drawBody = 0;
+		drawEquipment = 0;
+		DrawLemmingJump(p_viewData, p_remapped);
+		break;
+	case 0xb:
+		drawBody = 0;
+		drawEquipment = 0;
+		DrawLemmingFall(p_viewData, p_remapped);
+		break;
+	case 0xe:
+		offsetX = g_lemmingSommersaultOffset[0];
+		offsetY = g_lemmingSommersaultOffset[1];
+		drawEquipment = 0;
+		resource = p_viewData.m_actionArgument == 0 ? RES_GAME_SOMMERSAULT : RES_GAME_SOMMERSAULT_REV;
+		break;
+	case 0xf:
+		DrawLemmingExternal(p_viewData, p_remapped);
+		return;
+	case 0x10:
+		drawBody = 0;
+		drawEquipment = 0;
+		DrawLemmingOnBalloon(p_viewData, (unsigned short) p_viewData.m_actionArgument, p_remapped);
+		break;
+	case 0x13:
+		drawBody = 0;
+		drawEquipment = 0;
+		DrawLemmingLanding(p_viewData, p_remapped);
+		break;
+	case 0x16:
+		DrawLemmingOnConveyor(p_viewData, p_remapped);
+		return;
+	}
+	if (drawEquipment && p_remapped == 0) {
+		if (((unsigned short) p_viewData.m_statusFlags & 1) == 0) {
+			m_lemmingAnims->DrawAnim((short) x - g_unk0x496fd8[0] - 1,
+									 (short) y - g_unk0x496fd8[1] + 14,
+									 RES_GAME_CIRCLES,
+									 0,
+									 0,
+									 (Remap*) m_remaps[player]);
+		}
+		else if ((unsigned short) p_viewData.m_statusFlags & 2) {
+			m_lemmingAnims->DrawAnim((short) x - g_unk0x496fd8[0] - 5,
+									 (short) y - g_unk0x496fd8[1] + 11,
+									 RES_GAME_FILLED_STARS,
+									 0,
+									 0,
+									 (Remap*) m_remaps[player]);
+		}
+		else {
+			m_lemmingAnims->DrawAnim((short) x - g_unk0x496fd8[0] - 5,
+									 (short) y - g_unk0x496fd8[1] + 11,
+									 RES_GAME_STARS,
+									 0,
+									 0,
+									 (Remap*) m_remaps[player]);
+		}
+	}
+	if (drawBody) {
+		if (p_remapped == 0) {
+			m_lemmingAnims->DrawAnim((short) x - (short) offsetX,
+									 (short) y - (short) offsetY,
+									 resource,
+									 frame,
+									 p_viewData.m_animationTime,
+									 0);
+		}
+		else {
+			m_lemmingAnims->DrawAnim((short) x - (short) offsetX,
+									 (short) y - (short) offsetY,
+									 resource,
+									 frame,
+									 p_viewData.m_animationTime,
+									 (Remap*) m_paletteRemap);
+		}
+	}
+	if (drawEquipment && p_remapped == 0 && InGroupByObjectNo(p_objectNo)) {
+		m_lemmingAnims->DrawAnim((short) x - g_unk0x496fd8[0] + 2,
+								 (short) y - g_unk0x496fd8[1] - 16,
+								 RES_GAME_SPINARROW,
+								 0,
+								 p_viewData.m_animationTime,
+								 0);
+	}
 }
 
 // GLOBAL: LEMBALL 0x00497070
