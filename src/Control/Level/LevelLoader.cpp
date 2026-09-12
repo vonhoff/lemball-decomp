@@ -349,11 +349,11 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 				total += (unsigned int) *data16++;
 				count--;
 			}
-			if (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost == 1) {
-				p_preview->m_opponentLemmingCount = total;
+			if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 1) {
+				p_preview->m_lemmingCount = total;
 			}
 			else {
-				p_preview->m_lemmingCount = total;
+				p_preview->m_opponentLemmingCount = total;
 			}
 			break;
 		}
@@ -373,11 +373,11 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 				p_preview->m_lemmingCount = total;
 			}
 			else {
-				if (g_pActiveConnection->m_isHost != 1) {
-					p_preview->m_opponentLemmingCount = total;
+				if (g_pActiveConnection->m_isHost == 1) {
+					p_preview->m_lemmingCount = total;
 				}
 				else {
-					p_preview->m_lemmingCount = total;
+					p_preview->m_opponentLemmingCount = total;
 				}
 			}
 			break;
