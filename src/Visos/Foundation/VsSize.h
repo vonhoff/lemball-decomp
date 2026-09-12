@@ -5,7 +5,7 @@
 
 // SIZE 0x04
 struct VsSize {
-	VsSize() {}
+	VsSize() { m_width = m_height = 0; }
 	VsSize(short p_width, short p_height);
 	VsSize(const VsSize& p_source);
 	VsSize& operator=(const VsSize& p_source);

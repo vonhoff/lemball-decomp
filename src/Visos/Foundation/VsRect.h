@@ -8,13 +8,7 @@
 // SIZE 0x08
 class VsRect : public VsSize, public VsPoint {
 public:
-	VsRect()
-	{
-		m_height = 0;
-		m_width = 0;
-		m_y = 0;
-		m_x = 0;
-	}
+	VsRect() {}
 
 	VsRect(short p_x, short p_y, short p_width, short p_height)
 	{
