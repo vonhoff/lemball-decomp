@@ -3,6 +3,9 @@
 #include "../../Control/Game/Game.h"
 #include "../../Map/Base/Map.h"
 #include "../Base/Coord3d.h"
+#include "../Navigation/Ai.h"
+
+#include <stdlib.h>
 
 // 68K 0x1061176c __ct__4CIceFv
 // FUNCTION: LEMBALL 0x0042ca70
@@ -124,10 +127,178 @@ void Ice::Set(unsigned short p_id,
 }
 
 // 68K 0x10611a44 Process__4CIceFv
-// STUB: LEMBALL 0x0042cd70
+// FUNCTION: LEMBALL 0x0042cd70
 bool Ice::Process()
 {
-	return 0;
+	if (m_isRemoteObject) {
+		if (m_pendingAction != m_action) {
+			if (m_action == 0x1a) {
+				m_switched = !m_switched;
+				Switched();
+			}
+			m_pendingAction = m_action;
+		}
+	}
+	else if (m_action == 0x1a) {
+		m_switched = !m_switched;
+		Switched();
+		Action(0x18);
+	}
+	if (!m_switched) {
+		return true;
+	}
+	int elapsed = g_dwGameTick - m_lastMovementTick;
+	if (!elapsed) {
+		return true;
+	}
+	m_lastMovementTick = g_dwGameTick;
+	int minX = m_minX - 8;
+	int minY = m_minY - 8;
+	int maxX = m_maxX + 7;
+	int maxY = m_maxY + 7;
+	AiCoord position;
+	for (int i = 0; i < m_objectCount; i++) {
+		GameObject* object = m_objects[i];
+		position.m_xFixed = object->m_position.m_xFixed;
+		position.m_yFixed = object->m_position.m_yFixed;
+		position.m_zFixed = object->m_position.m_zFixed;
+		int dx = (m_velocityX * elapsed * 4096) / 8;
+		int dy = (m_velocityY * elapsed * 4096) / 8;
+		int ax = abs(dx >> 12);
+		int ay = abs(dy >> 12);
+		while (ax > 15 || ay > 15) {
+			ax /= 2;
+			ay /= 2;
+			dx /= 2;
+			dy /= 2;
+		}
+		position.m_xFixed += dx;
+		position.m_yFixed += dy;
+		unsigned short groundZ;
+		{
+			Map* map = g_pMap;
+			int y = (position.m_yFixed >> 12);
+			int x = (position.m_xFixed >> 12);
+			int by = y >> 4;
+			int bx = x >> 4;
+			if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+				groundZ = 0;
+			}
+			else {
+				groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+			}
+		}
+		int z = position.m_zFixed >> 12;
+		if (z < groundZ) {
+			position.m_zFixed = groundZ << 12;
+		}
+		else if (groundZ < z) {
+			z -= elapsed * 4;
+			if (z < groundZ) {
+				z = groundZ;
+			}
+			position.m_zFixed = z << 12;
+		}
+		if (m_velocityX == 0) {
+			int fraction = (position.m_xFixed & 0xf000U) >> 12;
+			if (fraction > 8) {
+				position.m_xFixed -= 4096;
+			}
+			else if (fraction < 8) {
+				position.m_xFixed += 4096;
+			}
+		}
+		else if (m_velocityY == 0) {
+			int fraction = (position.m_yFixed & 0xf000U) >> 12;
+			if (fraction > 8) {
+				position.m_yFixed -= 4096;
+			}
+			else if (fraction < 8) {
+				position.m_yFixed += 4096;
+			}
+		}
+		object->m_position = position;
+	}
+	for (i = 0; i < m_objectCount; i++) {
+		GameObject* object = m_objects[i];
+		AiCoord current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
+		if ((current.m_xFixed >> 12) < minX || maxX < (current.m_xFixed >> 12) || (current.m_yFixed >> 12) < minY ||
+			maxY < (current.m_yFixed >> 12)) {
+			object->m_unk0xc0 = 0;
+			object->m_action = 0;
+			object->m_actionDeadline = g_dwGameTick;
+			unsigned short groundZ;
+			if (object->m_objectType == 2) {
+				object->SetBored(4000);
+				object->OnConveyor(0, 0, 0);
+				{
+					Map* map = g_pMap;
+					int y = (current.m_yFixed >> 12);
+					int x = (current.m_xFixed >> 12);
+					int by = y >> 4;
+					int bx = x >> 4;
+					if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+						groundZ = 0;
+					}
+					else {
+						groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+					}
+				}
+				if (groundZ < (current.m_zFixed >> 12)) {
+					C3DVector velocity;
+					velocity.m_xFixed = (m_velocityX << 12) / 6;
+					velocity.m_yFixed = (m_velocityY << 12) / 6;
+					velocity.m_zFixed = 0;
+					object->StartFly(velocity, 0);
+				}
+			}
+			for (int j = i + 1; j < m_objectCount; j++) {
+				m_objects[j - 1] = m_objects[j];
+			}
+			i--;
+			m_objectCount--;
+			{
+				Map* map = g_pMap;
+				int y = (current.m_yFixed >> 12);
+				int x = (current.m_xFixed >> 12);
+				int by = y >> 4;
+				int bx = x >> 4;
+				if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+					groundZ = 0;
+				}
+				else {
+					groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+				}
+			}
+			if ((current.m_zFixed >> 12) <= groundZ) {
+				g_pAI->StepOn(current, object, object->m_collisionFlags);
+			}
+		}
+	}
+	for (i = 0; i < m_objectCount; i++) {
+		GameObject* object = m_objects[i];
+		position.m_xFixed = object->m_position.m_xFixed;
+		position.m_yFixed = object->m_position.m_yFixed;
+		position.m_zFixed = object->m_position.m_zFixed;
+		unsigned short groundZ;
+		{
+			Map* map = g_pMap;
+			int y = (position.m_yFixed >> 12);
+			int x = (position.m_xFixed >> 12);
+			int by = y >> 4;
+			int bx = x >> 4;
+			if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+				groundZ = 0;
+			}
+			else {
+				groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+			}
+		}
+		if ((position.m_zFixed >> 12) <= groundZ) {
+			g_pAI->StepOn(position, object, object->m_collisionFlags);
+		}
+	}
+	return true;
 }
 
 // 68K 0x1061200c StepOn__4CIceFRC7AICOORDP11CGameObject
@@ -204,9 +375,68 @@ void Ice::Switch()
 }
 
 // 68K 0x10612236 Switched__4CIceFv
-// STUB: LEMBALL 0x0042d560
+// FUNCTION: LEMBALL 0x0042d560
 void Ice::Switched()
 {
+	if (m_switched != 0) {
+		m_lastMovementTick = g_dwGameTick;
+		return;
+	}
+	{
+		for (int i = 0; i < m_objectCount; i++) {
+			GameObject* object = m_objects[i];
+			AiCoord current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
+			object->m_unk0xc0 = 0;
+			object->m_action = 0;
+			object->m_actionDeadline = g_dwGameTick;
+			unsigned short groundZ;
+			if (object->m_objectType == 2) {
+				object->SetBored(4000);
+				object->OnConveyor(0, 0, 0);
+				{
+					Map* map = g_pMap;
+					int y = (current.m_yFixed >> 12);
+					int x = (current.m_xFixed >> 12);
+					int by = y >> 4;
+					int bx = x >> 4;
+					if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+						groundZ = 0;
+					}
+					else {
+						groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+					}
+				}
+				if (groundZ < (current.m_zFixed >> 12)) {
+					C3DVector velocity;
+					velocity.m_xFixed = (m_velocityX << 12) / 6;
+					velocity.m_yFixed = (m_velocityY << 12) / 6;
+					velocity.m_zFixed = 0;
+					object->StartFly(velocity, 0);
+				}
+			}
+			for (int j = i + 1; j < m_objectCount; j++) {
+				m_objects[j - 1] = m_objects[j];
+			}
+			i--;
+			m_objectCount--;
+			{
+				Map* map = g_pMap;
+				int y = (current.m_yFixed >> 12);
+				int x = (current.m_xFixed >> 12);
+				int by = y >> 4;
+				int bx = x >> 4;
+				if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+					groundZ = 0;
+				}
+				else {
+					groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+				}
+			}
+			if ((current.m_zFixed >> 12) <= groundZ) {
+				g_pAI->StepOn(current, object, object->m_collisionFlags);
+			}
+		}
+	}
 }
 
 // 68K 0x1061181a __dt__4CIceFv
