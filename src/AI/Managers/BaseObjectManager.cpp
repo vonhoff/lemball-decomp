@@ -84,15 +84,14 @@ void BaseObjectManager::ProcessNetwork()
 		return;
 	}
 	NetworkMessage::Add((unsigned short) 0x2f);
-	Connect* connection = g_pActiveConnection;
-	if (connection->WriteSocket::m_segmentIndex != -1 ||
-		!connection->WriteSocket::m_criticalBuffer->IsPacketAvailable(connection->WriteSocket::m_criticalSequence)) {
+	WriteSocket* connection = &static_cast<WriteSocket&>(*g_pActiveConnection);
+	if (connection->m_segmentIndex != -1 ||
+		!connection->m_criticalBuffer->IsPacketAvailable(connection->m_criticalSequence)) {
 		unsigned long start = timeGetTime();
 		while (1) {
-			connection = g_pActiveConnection;
-			if (connection->WriteSocket::m_segmentIndex == -1 &&
-				connection->WriteSocket::m_criticalBuffer->IsPacketAvailable(
-					connection->WriteSocket::m_criticalSequence)) {
+			connection = &static_cast<WriteSocket&>(*g_pActiveConnection);
+			if (connection->m_segmentIndex == -1 &&
+				connection->m_criticalBuffer->IsPacketAvailable(connection->m_criticalSequence)) {
 				break;
 			}
 			if (timeGetTime() - start >= 4000) {
@@ -101,9 +100,9 @@ void BaseObjectManager::ProcessNetwork()
 			g_pBaseNetwork->WaitProcess();
 		}
 	}
-	connection = g_pActiveConnection;
-	if (connection->WriteSocket::m_segmentIndex == -1 &&
-		connection->WriteSocket::m_criticalBuffer->IsPacketAvailable(connection->WriteSocket::m_criticalSequence)) {
+	connection = &static_cast<WriteSocket&>(*g_pActiveConnection);
+	if (connection->m_segmentIndex == -1 &&
+		connection->m_criticalBuffer->IsPacketAvailable(connection->m_criticalSequence)) {
 		Send(g_pActiveConnection);
 		CloseDataStream();
 		return;
