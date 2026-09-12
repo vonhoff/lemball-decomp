@@ -95,24 +95,16 @@ jobs:
         run: |
           python tools/report.py
 
-      - name: Gate
+      - name: Gate checks and comparisons
         shell: pwsh
         working-directory: S:\
         run: |
           python tools/gate.py
-
-      - name: 68K naming gate
-        shell: pwsh
-        working-directory: S:\
-        run: |
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python tools/gate.py --names
-
-      - name: Vtable compare (progress)
-        continue-on-error: true
-        shell: pwsh
-        working-directory: S:\
-        run: |
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python tools/gate.py --vtable
+          exit 0
 
       - name: Upload progress report
         uses: actions/upload-artifact@v4
@@ -122,11 +114,3 @@ jobs:
           path: |
             build-msvc400/report.json
             build-msvc400/reccmp.json
-
-      - name: Remove target binary
-        if: always()
-        shell: pwsh
-        run: |
-          Remove-Item -LiteralPath "$env:RUNNER_TEMP\LEMBALL.EXE" -Force -ErrorAction SilentlyContinue
-          Remove-Item -LiteralPath "$env:GITHUB_WORKSPACE\data\LEMBALL.EXE" -Force -ErrorAction SilentlyContinue
-          subst S: /D -ErrorAction SilentlyContinue
