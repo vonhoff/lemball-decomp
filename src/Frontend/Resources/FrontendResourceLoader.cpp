@@ -115,11 +115,13 @@ FrontendResourceLoader::~FrontendResourceLoader()
 	}
 	id = g_dwFrontendPaletteIds;
 	do {
-		UnLoadPalette(*id++);
+		UnLoadPalette(*id);
+		++id;
 	} while (id < g_dwFrontendPaletteIds + 2);
 	id = g_dwFrontendStringIds;
 	do {
-		UnLoadString(*id++);
+		UnLoadString(*id);
+		++id;
 	} while (id < g_dwFrontendStringIds + 1);
 	for (i = 0; i < 6; i++) {
 		m_movies[i]->UnLoad();
