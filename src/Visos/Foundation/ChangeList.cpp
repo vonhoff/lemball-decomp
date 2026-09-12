@@ -6,44 +6,19 @@
 // FUNCTION: LEMBALL 0x004669a0
 ChangeList::ChangeList(int p_arg0, VsSize p_arg1, VsSize p_arg2)
 {
-	ChangeListItem* items;
-	ChangeListItem* item;
-	int remaining;
-
-	m_viewSize.m_height = 0;
-	m_viewSize.m_width = 0;
-	m_cellSize.m_height = 0;
-	m_cellSize.m_width = 0;
-	m_mapSize.m_height = 0;
-	m_mapSize.m_width = 0;
-	m_currentArea.m_height = 0;
-	m_currentArea.m_width = 0;
-	m_currentArea.m_y = 0;
-	m_currentArea.m_x = 0;
-	items = 0;
 	if (p_arg0 != 0) {
-		items = (ChangeListItem*) operator new((unsigned int) p_arg0 * sizeof(ChangeListItem));
-	}
-	if (items == 0) {
-		m_items = 0;
+		m_items = new ChangeListItem[p_arg0];
 	}
 	else {
-		item = items;
-		remaining = p_arg0;
-		while (remaining > 0) {
-			new (item) ChangeListItem();
-			item = item + 1;
-			remaining = remaining - 1;
-		}
-		m_items = items;
+		m_items = 0;
 	}
 	m_capacity = p_arg0;
 	m_cellSize.m_width = p_arg2.m_width;
 	m_cellSize.m_height = p_arg2.m_height;
 	m_viewSize.m_width = p_arg1.m_width;
 	m_viewSize.m_height = p_arg1.m_height;
-	m_mapSize.m_width = (short) ((p_arg1.m_width + p_arg2.m_width - 1) / p_arg2.m_width);
-	m_mapSize.m_height = (short) ((p_arg1.m_height + p_arg2.m_height - 1) / p_arg2.m_height);
+	m_mapSize.m_width = (short) (p_arg1.m_width + p_arg2.m_width - 1) / p_arg2.m_width;
+	m_mapSize.m_height = (short) (p_arg1.m_height + p_arg2.m_height - 1) / p_arg2.m_height;
 	m_activeDepth = 0;
 	m_map = 0;
 	AllocMap();
