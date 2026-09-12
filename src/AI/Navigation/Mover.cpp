@@ -251,40 +251,46 @@ bool Mover::GetOn(GameObject* p_object)
 	objectPosition.m_zFixed = p_object->m_position.m_zFixed;
 	int objectZ = objectPosition.m_zFixed >> 12;
 	int moverZ = m_position.m_zFixed >> 12;
-	if (objectZ < moverZ - 16 || objectZ > moverZ + 16 || IsOn(objectPosition) == 0) {
+	if (objectZ < moverZ - 16 || objectZ > moverZ + 16) {
 		return false;
 	}
 
-	if (m_objectCount >= 10) {
+	if (IsOn(objectPosition) == 0) {
 		return false;
 	}
-	GameObject** object = m_objects;
-	int i = 0;
-	if (m_objectCount > 0) {
-		do {
-			if (*object == p_object) {
-				return true;
-			}
-			object++;
-			i++;
-		} while (i < m_objectCount);
-	}
+	GameObject** object;
+	int count = m_objectCount;
+	if (count < 10) {
+		int i = 0;
+		if (count > 0) {
+			object = m_objects;
+			do {
+				if (*object == p_object) {
+					return true;
+				}
+				object++;
+				i++;
+			} while (i < count);
+		}
 
-	m_objects[m_objectCount] = p_object;
-	p_object->m_unk0x11c = 1;
-	m_objectCount++;
-	StopObjectsMoving();
-	if (m_action != (eAction) 2 && p_object->m_objectType == (eObjectType) 2) {
-		AiCoord destination(m_position.m_xFixed, m_position.m_yFixed, objectPosition.m_zFixed);
-		p_object->AddDestination(destination);
-		p_object->StartMoving();
+		m_objects[count] = p_object;
+		p_object->m_unk0x11c = 1;
+		m_objectCount++;
+		StopObjectsMoving();
+		if (m_action != (eAction) 2 && p_object->m_objectType == (eObjectType) 2) {
+			AiCoord destination(m_position.m_xFixed, m_position.m_yFixed, objectPosition.m_zFixed);
+			p_object->AddDestination(destination);
+			p_object->StartMoving();
+		}
+		else {
+			objectPosition.m_zFixed = m_position.m_zFixed + 0x8000;
+			p_object->m_position.m_xFixed = objectPosition.m_xFixed;
+			p_object->m_position.m_yFixed = objectPosition.m_yFixed;
+			p_object->m_position.m_zFixed = objectPosition.m_zFixed;
+		}
+		return true;
 	}
-	else {
-		p_object->m_position.m_xFixed = objectPosition.m_xFixed;
-		p_object->m_position.m_yFixed = objectPosition.m_yFixed;
-		p_object->m_position.m_zFixed = m_position.m_zFixed + 0x8000;
-	}
-	return true;
+	return false;
 }
 
 // 68K 0x10617e94 StopObjectsMoving__6CMoverFv
