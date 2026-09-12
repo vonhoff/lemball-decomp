@@ -1160,9 +1160,10 @@ void C2D::SetClipSize()
 	m_redrawPending = 1;
 	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
 		font = m_textManager->GetFont(0xf8);
-		font->GetSize(&size, "Demo", 0x20);
+		short remainingWidth = m_clipSize.m_x;
+		remainingWidth -= font->GetSize(&size, "Demo", 0x20)->m_width;
 		m_demoTextRect.m_y = 0;
-		m_demoTextRect.m_x = (short) ((m_clipSize.m_x - size.m_width) / 2);
+		m_demoTextRect.m_x = remainingWidth / 2;
 	}
 }
 
