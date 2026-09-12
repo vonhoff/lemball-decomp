@@ -232,7 +232,6 @@ void Main2DDisplay::KillDrawer(eFlowProcesses p_flow)
 // FUNCTION: LEMBALL 0x00431990
 void Main2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 {
-	VsRect localRect;
 	void* storage;
 	ChangeList* changeList;
 	unsigned char variant;
@@ -242,6 +241,7 @@ void Main2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 	}
 
 	SetZoom(1);
+	VsRect localRect;
 	localRect.m_width = m_rect.m_width;
 	localRect.m_height = m_rect.m_height;
 	localRect.m_y = 0;
@@ -289,18 +289,8 @@ void Main2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 	case 0x13: {
 		Ai* ai;
 
-		if (m_game->m_process == 0) {
-			m_activeProcess = 0;
-		}
-		else {
-			m_activeProcess = (Ai*) m_game->m_process;
-		}
-		if (m_game->m_process == 0) {
-			ai = 0;
-		}
-		else {
-			ai = (Ai*) m_game->m_process;
-		}
+		m_activeProcess = (Ai*) m_game->m_process;
+		ai = (Ai*) m_game->m_process;
 		m_activePalette = ai->m_map;
 		storage = operator new(0x2428);
 		if (storage == 0) {
