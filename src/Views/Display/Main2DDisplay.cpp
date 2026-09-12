@@ -66,7 +66,7 @@ Main2DDisplay::Main2DDisplay(Game* p_arg0)
 	m_primaryPalette = ResPalette::Load(RES_GAME_GAMEPALETTE);
 	m_secondaryPalette = ResPalette::Load(RES_GAME_TITLEPALETTE);
 	CursorChangeType(2, 0);
-	g_pMasterInputQueue->Attach(this != 0 ? static_cast<BaseQueueHandler*>(this) : 0, -0x19);
+	g_pMasterInputQueue->Attach(static_cast<BaseQueueHandler*>(this), -0x19);
 	m_lowWidth = 0x140;
 	m_lowHeight = 0xf0;
 	m_highWidth = 0x280;
@@ -86,7 +86,7 @@ Main2DDisplay::~Main2DDisplay()
 	resource->UnLoad();
 	resource = (ResBase*) m_background;
 	resource->UnLoad();
-	g_pMasterInputQueue->Detach(this != 0 ? static_cast<BaseQueueHandler*>(this) : 0, -0x19);
+	g_pMasterInputQueue->Detach(static_cast<BaseQueueHandler*>(this), -0x19);
 }
 
 // 68K 0x10b003f8 GetStyle__14CMain2DDisplayFv
