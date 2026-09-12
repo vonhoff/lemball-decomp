@@ -104,9 +104,12 @@ void Door::ResetCollision()
 			if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
 			}
-			if (blockX >= 0 && --blockY >= 0 && blockX < g_pMap->m_ground.m_width &&
-				g_pMap->m_ground.m_height > blockY) {
-				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
+			if (blockX >= 0 && --blockY >= 0) {
+				Map* map = g_pMap;
+				int width = map->m_ground.m_width;
+				if (blockX < width && map->m_ground.m_height > blockY) {
+					g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision &= ~1;
+				}
 			}
 		}
 		break;
