@@ -99,15 +99,15 @@ int Trampoline::Hit(const AiCoord& p_position, GameObject* p_object)
 		else {
 			velocity.m_xFixed = p_object->m_flightVelocity.m_xFixed + 0x2000;
 		}
-		velocity.m_yFixed = (Fixed(0) + verticalVelocity).m_value;
+		velocity.m_yFixed = (Fixed(0) + Fixed(p_object->m_flightVelocity.m_yFixed)).m_value;
 	}
 	else {
 		velocity.m_xFixed = p_object->m_flightVelocity.m_xFixed;
 		if (p_object->m_flightVelocity.m_yFixed < 1) {
-			velocity.m_yFixed = -0x2000;
+			velocity.m_yFixed = (Fixed(-0x2000) + Fixed(p_object->m_flightVelocity.m_yFixed)).m_value;
 		}
 		else {
-			velocity.m_yFixed = 0x2000;
+			velocity.m_yFixed = (Fixed(0x2000) + Fixed(p_object->m_flightVelocity.m_yFixed)).m_value;
 		}
 	}
 	velocity.m_zFixed = (Fixed(0x4000) + verticalVelocity).m_value;
