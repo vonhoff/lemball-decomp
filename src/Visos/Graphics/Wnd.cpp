@@ -446,7 +446,7 @@ void Wnd::ProcessMouseMoves()
 	}
 }
 
-// STUB: LEMBALL 0x00465110
+// FUNCTION: LEMBALL 0x00465110
 static bool RegisterBaseWindowClass()
 {
 	WNDCLASSA windowClass;
@@ -458,9 +458,11 @@ static bool RegisterBaseWindowClass()
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 4;
 	windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
-	windowClass.hIcon = (HICON) g_preInitActive.m_icon;
 	if (g_preInitActive.m_icon == 0) {
 		windowClass.hIcon = LoadIconA(0, (LPCSTR) 0x7f00);
+	}
+	else {
+		windowClass.hIcon = (HICON) g_preInitActive.m_icon;
 	}
 	windowClass.hCursor = 0;
 	windowClass.hbrBackground = (HBRUSH) GetStockObject(4);
@@ -470,11 +472,10 @@ static bool RegisterBaseWindowClass()
 	atom = RegisterClassA(&windowClass);
 	SetCursor(cursor);
 	ShowCursor(1);
-	if (atom != 0) {
-		return 1;
+	if (atom == 0) {
+		FatalWin32Error(g_szUnableToRegisterBaseWindowClass);
 	}
-	FatalWin32Error(g_szUnableToRegisterBaseWindowClass);
-	return 0;
+	return 1;
 }
 
 // 68K 0x10110d2c __ct__4CWndFv

@@ -8,6 +8,7 @@
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/ReceiveWindowState.h"
+#include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResAnim.h"
 #include "../../Visos/Resources/ResFont.h"
@@ -444,9 +445,29 @@ BaseRemap* PauseWindow::Remap(int p_item)
 }
 
 // 68K 0x10b0f2d8 OnPaint__12CPauseWindowFRC7CVSRect
-// STUB: LEMBALL 0x00444980
+// FUNCTION: LEMBALL 0x00444980
 void PauseWindow::OnPaint(const VsRect& p_rect)
 {
+	m_gdi->m_renderTarget->GetCurrDb();
+	m_borderLine.Draw(m_gdi);
+	int i;
+	for (i = 0; i < m_borderAnimCount * 2; i++) {
+		m_borderAnims[i].Draw(m_gdi);
+	}
+	int count = 4;
+	Anim* corner = m_cornerAnims;
+	do {
+		corner->Draw(m_gdi);
+		corner++;
+	} while (--count != 0);
+	for (i = 0; i < m_menuItemCount; i++) {
+		VsPoint* position = (VsRect*) (void*) m_textSizes + i;
+		VsSize advance;
+		advance.m_height = 0;
+		advance.m_width = 0;
+		m_textManager.DrawString(m_gdi, *position, advance, m_fontId, m_menuLabels[i], 0x20, (class Remap*) Remap(i));
+	}
+	m_textManager.ResetPrimitives();
 }
 
 // 68K 0x10b0f404 OnInside__12CPauseWindowFRC8CVSPoint
