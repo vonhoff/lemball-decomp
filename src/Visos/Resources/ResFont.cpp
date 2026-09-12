@@ -4,6 +4,8 @@
 #include "MogRes.h"
 #include "ResourceTypeList.h"
 
+#include <string.h>
+
 // 68K 0x10203950 __ct__8CResFONTFUl
 // FUNCTION: LEMBALL 0x0045d7b0
 ResFont::ResFont(unsigned long p_resourceId) : ResBaseList((ResListHeader*) g_pResourceTypes)
@@ -139,8 +141,9 @@ ResZrle* ResFont::AsciItoZrle(unsigned int p_ascii)
 VsSize* ResFont::GetSize(VsSize* p_result, const char* p_text, unsigned int p_flags)
 {
 	int i = 0;
-	short height = 0;
-	short width = 0;
+	VsSize size;
+	size.m_height = 0;
+	size.m_width = 0;
 	if (p_text[0] != '\0') {
 		do {
 			ResZrle* glyph = AsciItoZrle(p_text[i]);
@@ -151,32 +154,33 @@ VsSize* ResFont::GetSize(VsSize* p_result, const char* p_text, unsigned int p_fl
 				}
 			}
 			short* psVar = &glyph->m_width;
-			if ((p_flags & 0x60) == 0) {
-				if (width < glyph->m_x + *psVar) {
-					width = glyph->m_x + *psVar;
-				}
+			short* position = &glyph->m_x;
+			if ((p_flags & 0x60) != 0) {
+				size.m_width += *psVar + 1;
 			}
 			else {
-				width += *psVar + 1;
-			}
-			if ((p_flags & 0x180) == 0) {
-				if (height < glyph->m_y + psVar[1]) {
-					height = psVar[1] + glyph->m_y;
+				if (position[0] + *psVar > size.m_width) {
+					size.m_width = position[0] + *psVar;
 				}
 			}
+			if ((p_flags & 0x180) != 0) {
+				size.m_height += psVar[1] + 1;
+			}
 			else {
-				height += psVar[1] + 1;
+				if (position[1] + psVar[1] > size.m_height) {
+					size.m_height = psVar[1] + position[1];
+				}
 			}
 			i++;
 		} while (p_text[i] != '\0');
 	}
 	if ((p_flags & 0x60) != 0) {
-		width--;
+		size.m_width--;
 	}
 	if ((p_flags & 0x180) != 0) {
-		height--;
+		size.m_height--;
 	}
-	p_result->m_width = width;
-	p_result->m_height = height;
+	memcpy(&p_result->m_width, &size.m_width, sizeof(size.m_width));
+	memcpy(&p_result->m_height, &size.m_height, sizeof(size.m_height));
 	return p_result;
 }
