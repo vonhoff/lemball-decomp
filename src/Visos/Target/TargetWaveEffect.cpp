@@ -4,14 +4,11 @@
 
 struct EffPatchHeader {
 	unsigned int m_unk0;
-	unsigned int m_unk4;
-	unsigned short m_unk8;
-	unsigned short m_unka;
-	unsigned int m_unkc;
-	unsigned int m_unk10;
-	unsigned int m_unk14;
+	unsigned short m_unk4;
+	char m_name[14];
 	unsigned short m_waveCount;
-	unsigned short m_unk1a;
+	unsigned short m_unk16;
+	unsigned int m_unk18;
 };
 
 struct EffWaveHeader {
@@ -66,11 +63,10 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 	WAVEFORMATEX format;
 	EffPatchHeader patchHeader;
 	EffWaveHeader waveHeader;
-	WAVEHDR* header;
+	unsigned char* wave;
 	unsigned char* source;
 	unsigned char* dest;
 	unsigned int length;
-	char* name;
 	MMRESULT result;
 	union {
 		unsigned int downsample;
@@ -78,170 +74,159 @@ TargetWaveEffect::TargetWaveEffect(unsigned char* p_patch,
 	} work;
 
 	patchHeader = *(EffPatchHeader*) p_patch;
-	patchHeader.m_unk8 = TargetByteSwap16(patchHeader.m_unk8);
+	patchHeader.m_unk4 = TargetByteSwap16(patchHeader.m_unk4);
 	patchHeader.m_waveCount = TargetByteSwap16(patchHeader.m_waveCount);
 	m_prepared = 0;
 	m_waveOut = p_waveOut;
 	if (patchHeader.m_waveCount != 1) {
-		name = (char*) p_patch;
-		name = name + 6;
-		*g_pErrorOutput << "Warning! Effect Patch " << name << " has more than "
-						<< "one Wave. Only one is supported!\n";
+		*g_pErrorOutput << "Warning! Effect Patch " << ((EffPatchHeader*) p_patch)->m_name << " has more than ";
+		*g_pErrorOutput << "one Wave. Only one is supported!\n";
 	}
-	waveHeader = *(EffWaveHeader*) (p_patch + sizeof(EffPatchHeader));
+	wave = p_patch + sizeof(EffPatchHeader);
+	waveHeader = *(EffWaveHeader*) wave;
 	waveHeader.m_unk4 = TargetByteSwap16(waveHeader.m_unk4);
 	waveHeader.m_length = TargetByteSwap32(waveHeader.m_length);
 	waveHeader.m_sampleRate = TargetByteSwap32(waveHeader.m_sampleRate);
 	length = waveHeader.m_length;
 	if (p_use16Bit == 0) {
-		length = length >> 1;
+		length >>= 1;
 	}
 	work.downsample = 0;
 	if (waveHeader.m_sampleRate != p_sampleRate) {
 		work.downsample = 1;
-		length = length >> 1;
+		length >>= 1;
 	}
-	name = (char*) &patchHeader;
-	name = name + 6;
 	m_sampleHandle = GlobalAlloc(0x2002, length);
 	if (m_sampleHandle == 0) {
-		*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave data " << name << "\n";
+		*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave data ";
+		*g_pErrorOutput << patchHeader.m_name << "\n";
+		return;
 	}
-	else {
-		m_headerHandle = GlobalAlloc(0x2002, 0x20);
-		if (m_headerHandle == 0) {
-			*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave Header " << name << "\n";
+	m_headerHandle = GlobalAlloc(0x2002, 0x20);
+	if (m_headerHandle == 0) {
+		*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave Header ";
+		*g_pErrorOutput << patchHeader.m_name << "\n";
+		return;
+	}
+	m_sampleData = (unsigned char*) GlobalLock(m_sampleHandle);
+	if (m_sampleData == 0) {
+		*g_pErrorOutput << "Error! Sound System unable to lock memory for Wave data ";
+		*g_pErrorOutput << patchHeader.m_name << "\n";
+		GlobalUnlock(m_sampleHandle);
+		GlobalFree(m_sampleHandle);
+		return;
+	}
+	m_waveHeader = (WAVEHDR*) GlobalLock(m_headerHandle);
+	if (m_waveHeader == 0) {
+		*g_pErrorOutput << "Error! Sound System unable to lock memory for Wave Header";
+		*g_pErrorOutput << patchHeader.m_name << "\n";
+		GlobalUnlock(m_headerHandle);
+		GlobalFree(m_headerHandle);
+		return;
+	}
+	m_waveHeader->lpData = (char*) m_sampleData;
+	m_waveHeader->dwBufferLength = length;
+	m_waveHeader->dwUser =
+		(DWORD) ((((int) (char) p_patch[9] * 0x100 + (int) (char) p_patch[8]) * 0x100 + (int) (char) p_patch[7]) *
+					 0x100 +
+				 (int) (char) p_patch[6]);
+	m_waveHeader->dwFlags = 0;
+	m_waveHeader->dwLoops = 0;
+	if (p_use16Bit == 0) {
+		source = wave + sizeof(EffWaveHeader);
+		dest = m_sampleData;
+		if (work.downsample == 0) {
+			while (length != 0) {
+				*dest++ = *source++;
+				source++;
+				length--;
+			}
 		}
 		else {
-			m_sampleData = (unsigned char*) GlobalLock(m_sampleHandle);
-			if (m_sampleData == 0) {
-				*g_pErrorOutput << "Error! Sound System unable to lock memory for Wave data " << name << "\n";
-				GlobalUnlock(m_sampleHandle);
-				GlobalFree(m_sampleHandle);
-			}
-			else {
-				m_waveHeader = (WAVEHDR*) GlobalLock(m_headerHandle);
-				if (m_waveHeader == 0) {
-					*g_pErrorOutput << "Error! Sound System unable to lock memory for Wave Header" << name << "\n";
-					GlobalUnlock(m_headerHandle);
-					GlobalFree(m_headerHandle);
-				}
-				else {
-					header = m_waveHeader;
-					header->lpData = (char*) m_sampleData;
-					header->dwBufferLength = length;
-					header->dwUser = (DWORD) ((((int) (char) p_patch[9] * 0x100 + (int) (char) p_patch[8]) * 0x100 +
-											   (int) (char) p_patch[7]) *
-												  0x100 +
-											  (int) (char) p_patch[6]);
-					header->dwFlags = 0;
-					header->dwLoops = 0;
-					if (p_use16Bit == 0) {
-						source = p_patch + sizeof(EffPatchHeader) + sizeof(EffWaveHeader);
-						dest = m_sampleData;
-						if (work.downsample == 0) {
-							while (length != 0) {
-								*dest = *source;
-								dest = dest + 1;
-								source = source + 2;
-								length = length - 1;
-							}
-						}
-						else {
-							while (length != 0) {
-								*dest = *source;
-								source = source + 1;
-								dest = dest + 1;
-								*source = (unsigned char) (*source + 3);
-								length = length - 1;
-							}
-						}
-					}
-					else {
-						source = p_patch + sizeof(EffPatchHeader) + sizeof(EffWaveHeader);
-						if (work.downsample == 0) {
-							if ((length & 0xfffffffe) != 0) {
-								length = length >> 1;
-								dest = m_sampleData;
-								while (length != 0) {
-									dest[0] = source[1];
-									dest[1] = (unsigned char) (source[0] ^ 0x80);
-									source = source + 2;
-									dest = dest + 2;
-									length = length - 1;
-								}
-							}
-						}
-						else if ((length & 0xfffffffc) != 0) {
-							length = length >> 2;
-							dest = m_sampleData;
-							while (length != 0) {
-								dest[0] = source[1];
-								dest[1] = (unsigned char) (source[0] ^ 0x80);
-								source = source + 4;
-								dest = dest + 2;
-								length = length - 1;
-							}
-						}
-					}
-					format.wFormatTag = 1;
-					format.nChannels = 2;
-					if (p_stereo != 1) {
-						format.nChannels = 1;
-					}
-					format.wBitsPerSample = 0x10;
-					if (p_use16Bit != 1) {
-						format.wBitsPerSample = 8;
-					}
-					format.nSamplesPerSec = p_sampleRate;
-					format.cbSize = 0;
-					format.nAvgBytesPerSec = p_sampleRate * (unsigned int) format.nChannels;
-					format.nBlockAlign = (unsigned short) ((format.wBitsPerSample * format.nChannels) / 8);
-					if (format.wBitsPerSample == 0x10) {
-						format.nAvgBytesPerSec = format.nAvgBytesPerSec * 2;
-					}
-					result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, WAVE_FORMAT_QUERY);
-					if (result == 0) {
-						result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, 0);
-						if (result == 0) {
-							result = waveOutPrepareHeader(m_waveOut, header, 0x20);
-							if (result == 0) {
-								result = waveOutClose(m_waveOut);
-								if (result == 0) {
-									m_prepared = 1;
-								}
-								else {
-									*g_pErrorOutput << "Error! Sound System cannot close Wave Device!\n";
-									waveOutGetErrorTextA(result, work.errorText, 0x100);
-									*g_pErrorOutput << work.errorText << "\n";
-								}
-							}
-							else {
-								*g_pErrorOutput << "Error! Sound System cannot prepare Wave Header!\n";
-								waveOutGetErrorTextA(result, work.errorText, 0x100);
-								*g_pErrorOutput << work.errorText << "\n";
-							}
-						}
-						else {
-							*g_pErrorOutput << "Error! Sound System cannot open Wave Device!\n";
-							waveOutGetErrorTextA(result, work.errorText, 0x100);
-							*g_pErrorOutput << work.errorText << "\n";
-						}
-					}
-					else {
-						*g_pErrorOutput << "Error! Sound System cannot support Wave Format!\n";
-						waveOutGetErrorTextA(result, work.errorText, 0x100);
-						*g_pErrorOutput << work.errorText << "\n";
-						*g_pErrorOutput << "Wave Format:\n";
-						*g_pErrorOutput << "Samples/Sec: " << format.nSamplesPerSec << "\n";
-						*g_pErrorOutput << "Avg Bytes/S: " << format.nAvgBytesPerSec << "\n";
-						*g_pErrorOutput << "Align      : " << (unsigned long) format.nBlockAlign << "\n";
-						*g_pErrorOutput << "Type       : " << (unsigned long) format.wBitsPerSample << " bit\n";
-					}
-				}
+			while (length != 0) {
+				*dest++ = *source++;
+				*source = (unsigned char) (*source + 3);
+				length--;
 			}
 		}
 	}
+	else {
+		source = wave + sizeof(EffWaveHeader);
+		if (work.downsample == 0) {
+			if ((length & 0xfffffffe) != 0) {
+				length >>= 1;
+				dest = m_sampleData;
+				do {
+					unsigned char high = source[0];
+					dest[0] = source[1];
+					source += 2;
+					dest[1] = (unsigned char) (high ^ 0x80);
+					dest += 2;
+				} while (--length != 0);
+			}
+		}
+		else if ((length & 0xfffffffc) != 0) {
+			length >>= 2;
+			dest = m_sampleData;
+			do {
+				unsigned char high = source[0];
+				source++;
+				*dest++ = *source++;
+				*dest++ = (unsigned char) (high ^ 0x80);
+				source += 2;
+			} while (--length != 0);
+		}
+	}
+	format.wFormatTag = 1;
+	format.nChannels = 2;
+	if (p_stereo != 1) {
+		format.nChannels = 1;
+	}
+	format.wBitsPerSample = 0x10;
+	if (p_use16Bit != 1) {
+		format.wBitsPerSample = 8;
+	}
+	format.nSamplesPerSec = p_sampleRate;
+	format.cbSize = 0;
+	format.nAvgBytesPerSec = p_sampleRate * (unsigned int) format.nChannels;
+	format.nBlockAlign = (unsigned short) ((format.wBitsPerSample * format.nChannels) / 8);
+	if (format.wBitsPerSample == 0x10) {
+		format.nAvgBytesPerSec *= 2;
+	}
+	result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, WAVE_FORMAT_QUERY);
+	if (result != 0) {
+		*g_pErrorOutput << "Error! Sound System cannot support Wave Format!\n";
+		waveOutGetErrorTextA(result, work.errorText, 0x100);
+		*g_pErrorOutput << work.errorText << "\n";
+		*g_pErrorOutput << "Wave Format:\n";
+		*g_pErrorOutput << "Samples/Sec: " << format.nSamplesPerSec << "\n";
+		*g_pErrorOutput << "Avg Bytes/S: " << format.nAvgBytesPerSec << "\n";
+		*g_pErrorOutput << "Align      : " << (unsigned int) format.nBlockAlign << "\n";
+		*g_pErrorOutput << "Type       : " << (unsigned int) format.wBitsPerSample << " bit\n";
+		return;
+	}
+	result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, 0);
+	if (result != 0) {
+		*g_pErrorOutput << "Error! Sound System cannot open Wave Device!\n";
+		waveOutGetErrorTextA(result, work.errorText, 0x100);
+		*g_pErrorOutput << work.errorText << "\n";
+		return;
+	}
+	result = waveOutPrepareHeader(m_waveOut, m_waveHeader, 0x20);
+	if (result != 0) {
+		*g_pErrorOutput << "Error! Sound System cannot prepare Wave Header!\n";
+		waveOutGetErrorTextA(result, work.errorText, 0x100);
+		*g_pErrorOutput << work.errorText << "\n";
+		return;
+	}
+	result = waveOutClose(m_waveOut);
+	if (result != 0) {
+		*g_pErrorOutput << "Error! Sound System cannot close Wave Device!\n";
+		waveOutGetErrorTextA(result, work.errorText, 0x100);
+		*g_pErrorOutput << work.errorText << "\n";
+		return;
+	}
+	m_prepared = 1;
 }
 
 // FUNCTION: LEMBALL 0x0047c820

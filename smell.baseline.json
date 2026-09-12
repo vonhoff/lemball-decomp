@@ -93,13 +93,6 @@
       "code": "*(unsigned int*) &((BasePacketHeader*) data)->m_subpacketSequence;",
       "count": 1,
       "reason": "Intentional packet-header transfer using the on-wire header layout."
-    },
-    {
-      "path": "src/Visos/Target/TargetWaveEffect.cpp",
-      "rule": "cast-deref-offset",
-      "code": "waveHeader = *(EffWaveHeader*) (p_patch + sizeof(EffPatchHeader));",
-      "count": 1,
-      "reason": "Intentional read of the packed effect-patch format; the following fields are byte-swapped explicitly."
     }
   ]
 }
