@@ -722,9 +722,27 @@ void C2D::LeftClick(const VsPoint& p_screenPoint,
 }
 
 // 68K 0x10b08b30 NoStateRightClick__3C2DFRC8CVSPointRC8CVSPoint
-// STUB: LEMBALL 0x00437890
+// FUNCTION: LEMBALL 0x00437890
 void C2D::NoStateRightClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint)
 {
+	ViewData* views;
+	int index;
+	Message message;
+	message.type = 4;
+	memset(&message.time,
+		   0,
+		   sizeof(message.time) + sizeof(message.code) + sizeof(message.payload) + sizeof(message.source));
+	if (FindGameObject(p_screenPoint, index, 1)) {
+		views = m_viewData;
+		if ((index + views)->m_objectType == 2) {
+			SelectObject(index);
+			return;
+		}
+	}
+	message.code = p_gamePoint.m_x;
+	message.payload = (void*) (int) p_gamePoint.m_y;
+	m_lemmingManager->Post(message);
+	m_groupingActive = 0;
 }
 
 // 68K 0x10b08c02 RightClick__3C2DFRC8CVSPointRC8CVSPoint
@@ -1939,8 +1957,8 @@ void C2D::DrawLemmingExternal(ViewData& p_viewData, undefined4 p_remapped)
 // FUNCTION: LEMBALL 0x0043c1a0
 void C2D::DrawLemmingOnConveyor(ViewData& p_viewData, int p_remapped)
 {
-	int x;
 	int y;
+	int x;
 	int frame;
 	BaseRemap* remap;
 
@@ -2322,11 +2340,11 @@ void C2D::DrawHand(ViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043c8a0
 void C2D::DrawLemmingOnBalloon(ViewData& p_viewData, int p_balloonType, int p_remapped)
 {
+	unsigned int phase;
 	int x;
 	int y;
 	int xOffset;
 	int yOffset;
-	unsigned int phase;
 	BaseRemap* remap;
 	BaseRemap* balloonRemap;
 
@@ -3129,11 +3147,12 @@ static const short trapDoorOffset[] = {48, 40};
 // FUNCTION: LEMBALL 0x0043d990
 void C2D::DrawTrapDoor(ViewData& p_viewData)
 {
+	int frame;
 	int x = p_viewData.m_positionX - trapDoorOffset[0];
 	int y = p_viewData.m_positionY - trapDoorOffset[1];
 	int shadowX = x + 16;
 	int shadowY = y + 78;
-	int frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) / 66;
+	frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) / 66;
 	switch (p_viewData.m_action) {
 	case 0x1f:
 		if (frame > 40) {
