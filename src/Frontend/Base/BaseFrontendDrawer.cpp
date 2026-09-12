@@ -171,10 +171,7 @@ BaseFrontendDrawer::~BaseFrontendDrawer()
 		}
 		if (g_pBaseNetwork != 0) {
 			unsigned long start = CurrentMilliTimer();
-			while (g_pBaseNetwork->m_queueTransitionPending != 0) {
-				if (1999 < CurrentMilliTimer() - start) {
-					break;
-				}
+			while (CurrentMilliTimer() - start < 2000 && g_pBaseNetwork->m_queueTransitionPending != 0) {
 			}
 		}
 		if (g_pNetworkManager != 0) {
@@ -184,21 +181,15 @@ BaseFrontendDrawer::~BaseFrontendDrawer()
 	}
 	if (m_ambientAnim != 0) {
 		delete m_ambientAnim;
-		m_ambientAnim = 0;
 	}
-	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->Detach(this != 0 ? static_cast<BaseQueueHandler*>(this) : 0, 0);
-	}
+	g_pMasterInputQueue->Detach(this, 0);
 	if (m_loaded != 0) {
 		InternalUnLoad();
 	}
 	if (m_textManager != 0) {
 		delete m_textManager;
-		m_textManager = 0;
 	}
-	if (g_pMogRes != 0) {
-		g_pMogRes->CleanUpResources();
-	}
+	g_pMogRes->CleanUpResources();
 }
 
 // 68K 0x1080070e InitialiseBackBuffer__19CBaseFrontendDrawerFv
