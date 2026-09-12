@@ -140,7 +140,7 @@ GlobalGameObject* ObjectManager::Add(unsigned short p_id,
 		case 0x29:
 		case 0x2b:
 		case 0x2d:
-			linkedObject = new Balloon(p_position, p_linkedObjectType);
+			object = new Balloon(p_position, p_linkedObjectType);
 			break;
 		case 0xffff:
 			linkedObject = 0;
