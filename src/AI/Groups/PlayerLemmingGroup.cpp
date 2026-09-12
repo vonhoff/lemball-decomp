@@ -1,6 +1,9 @@
 #include "PlayerLemmingGroup.h"
 
+#include "../../Visos/Foundation/VsMath.h"
 #include "../../Visos/Network/Connect.h"
+#include "../Base/GlobalGameObject.h"
+#include "../Managers/ObjectManager.h"
 #include "../Navigation/AiDestinationEntry.h"
 #include "../Navigation/AiDestinationList.h"
 #include "../Objects/PlayerLemming.h"
@@ -56,10 +59,179 @@ void PlayerLemmingGroup::Delete()
 }
 
 // 68K 0x1060eab2 Process__19CPlayerLemmingGroupFv
-// STUB: LEMBALL 0x00414150
+// FUNCTION: LEMBALL 0x00414150
 bool PlayerLemmingGroup::Process()
 {
-	return 0;
+	int count = 0;
+	int moving = 0;
+	AiCoord position;
+	AiCoord memberPosition;
+	GenericGroup::CalculateBoundingBox(0x18);
+	GameObject* member = GenericGroup::GetFirstElementInGroup();
+	while (member != 0) {
+		count++;
+		member->Process();
+		if (member->DestinationExists()) {
+			moving++;
+		}
+		member = GenericGroup::GetNextElementInGroup();
+	}
+	if (count > 0 && moving == 0) {
+		switch (GetGroupState()) {
+		case 0: {
+			AiDestinationList* list = m_destinationList;
+			if (list->m_count > 0) {
+				AiDestinationEntry entry = list->PopFirst();
+				switch (entry.m_type) {
+				case 1:
+					SendNewWaypoint(entry.GetCoordinate());
+					break;
+				case 2: {
+					int id = entry.m_metadata;
+					GameObject* object = g_pUnknown0x4a781c->FindObject(id);
+					if (object != 0) {
+						if (object->m_unk0x8c != 0) {
+							const AiCoord& activation = object->ActivatePosition();
+							position.m_xFixed = activation.m_xFixed;
+							position.m_yFixed = activation.m_yFixed;
+							position.m_zFixed = activation.m_zFixed;
+							list = m_destinationList;
+							if (list->m_capacity > list->m_count) {
+								list->PrependSlot();
+								AiDestinationEntry* dest = list->m_entries;
+								dest->m_type = (eDestinationType) 2;
+								dest->m_coordinate.m_xFixed = position.m_xFixed;
+								dest->m_coordinate.m_yFixed = position.m_yFixed;
+								dest->m_coordinate.m_zFixed = position.m_zFixed;
+								dest->m_metadata = id;
+							}
+						}
+						else {
+							member = GenericGroup::GetNthElementInGroup(0);
+							if (member != 0) {
+								const AiCoord& activation = object->ActivatePosition();
+								position.m_xFixed = activation.m_xFixed;
+								position.m_yFixed = activation.m_yFixed;
+								position.m_zFixed = activation.m_zFixed;
+								{
+									int y = member->m_position.m_yFixed;
+									int z = member->m_position.m_zFixed;
+									int x = member->m_position.m_xFixed;
+									memberPosition.m_xFixed = x;
+									memberPosition.m_yFixed = y;
+									memberPosition.m_zFixed = z;
+								}
+								if (CloseTo(memberPosition, position)) {
+									m_useObject = object;
+									object->m_unk0x8c = 1;
+									m_currentUseElement = 0;
+									if (m_useObject->Activate(member)) {
+										SetGroupState((eGroupState) 3);
+									}
+									else {
+										m_useObject->m_unk0x8c = 0;
+									}
+								}
+								else {
+									AddUseObject(object, entry.m_metadata);
+								}
+							}
+						}
+					}
+					break;
+				}
+				}
+			}
+			break;
+		}
+		case 1:
+			member = GenericGroup::GetNthElementInGroup(m_currentUseElement);
+			if (member == 0) {
+				SetGroupState((eGroupState) 0);
+				m_useObject->m_unk0x8c = 0;
+				m_useObject = 0;
+			}
+			else {
+				switch (m_useObject->Usage()) {
+				case 1:
+					m_currentUseElement++;
+					{
+						int y = member->m_position.m_yFixed;
+						int z = member->m_position.m_zFixed;
+						int x = member->m_position.m_xFixed;
+						position.m_xFixed = x;
+						position.m_yFixed = y;
+						position.m_zFixed = z;
+					}
+					member = GenericGroup::GetNextElementInGroup();
+					while (member != 0) {
+						member->AddDestination(position);
+						{
+							int z;
+							int y = member->m_position.m_yFixed;
+							z = member->m_position.m_zFixed;
+							int x = member->m_position.m_xFixed;
+							position.m_xFixed = x;
+							position.m_yFixed = y;
+							position.m_zFixed = z;
+						}
+						member = GenericGroup::GetNextElementInGroup();
+					}
+					SetGroupState((eGroupState) 2);
+					break;
+				case 2:
+					SetGroupState((eGroupState) 0);
+					m_useObject->m_unk0x8c = 0;
+					m_useObject = 0;
+					break;
+				}
+			}
+			break;
+		case 2:
+			if (m_useObject->m_action == (eAction) 0x18 && moving == 0) {
+				if (GetElementsInGroup() <= m_currentUseElement) {
+					SetGroupState((eGroupState) 0);
+					m_useObject->m_unk0x8c = 0;
+					m_useObject = 0;
+				}
+				else {
+					member = GenericGroup::GetNthElementInGroup(m_currentUseElement);
+					m_useObject->Activate(member);
+					SetGroupState((eGroupState) 3);
+				}
+			}
+			break;
+		case 3:
+			switch (m_useObject->UsableState()) {
+			case 1:
+				m_useObject->m_unk0x8c = 0;
+				if (m_useObject->m_heading != 0) {
+					const AiCoord& activation = m_useObject->ActivatePosition();
+					position.m_xFixed = activation.m_xFixed;
+					position.m_yFixed = activation.m_yFixed;
+					position.m_zFixed = activation.m_zFixed;
+					int id = m_useObject->m_objectId;
+					AiDestinationList* list = m_destinationList;
+					if (list->m_capacity > list->m_count) {
+						list->PrependSlot();
+						AiDestinationEntry* dest = list->m_entries;
+						dest->m_type = (eDestinationType) 2;
+						dest->m_coordinate.m_xFixed = position.m_xFixed;
+						dest->m_coordinate.m_yFixed = position.m_yFixed;
+						dest->m_coordinate.m_zFixed = position.m_zFixed;
+						dest->m_metadata = id;
+					}
+					SetGroupState((eGroupState) 0);
+				}
+				break;
+			case 2:
+				SetGroupState((eGroupState) 1);
+				break;
+			}
+			break;
+		}
+	}
+	return 1;
 }
 
 // 68K 0x1060f0f2 AddLemmingToGroup__19CPlayerLemmingGroupFP14CPlayerLemming
