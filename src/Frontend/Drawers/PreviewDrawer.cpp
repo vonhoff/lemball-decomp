@@ -381,57 +381,67 @@ void PreviewDrawer::DrawText()
 // FUNCTION: LEMBALL 0x00449a40
 void PreviewDrawer::DrawAnims()
 {
-	VsPoint pos;
-	VsPoint point;
 	short width;
 	int x;
 	int y;
 	int i;
 
-	pos.m_x = (short) m_layout->m_positions[PreviewLemmingAnim].m_x;
-	pos.m_y = (short) m_layout->m_positions[PreviewLemmingAnim].m_y;
-	AnimsManager::DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, 0);
+	AnimsManager::DrawAnim(VsPoint((short) m_layout->m_positions[PreviewLemmingAnim].m_x,
+								   (short) m_layout->m_positions[PreviewLemmingAnim].m_y),
+						   m_lemmingAnimId,
+						   0,
+						   m_lemmingAnim,
+						   0);
 
-	pos.m_x = (short) m_layout->m_positions[PreviewOpponentAnim].m_x;
-	pos.m_y = (short) m_layout->m_positions[PreviewOpponentAnim].m_y;
-	AnimsManager::DrawAnim(pos, m_opponentAnimId, 0, m_opponentAnim, 0);
+	AnimsManager::DrawAnim(VsPoint((short) m_layout->m_positions[PreviewOpponentAnim].m_x,
+								   (short) m_layout->m_positions[PreviewOpponentAnim].m_y),
+						   m_opponentAnimId,
+						   0,
+						   m_opponentAnim,
+						   0);
 
-	pos.m_x = (short) m_layout->m_positions[PreviewTeamAnim].m_x;
-	pos.m_y = (short) m_layout->m_positions[PreviewTeamAnim].m_y;
-	AnimsManager::DrawAnim(pos, m_teamAnimId, 0, m_teamAnim, 0);
+	DrawAnim(
+		VsPoint((short) m_layout->m_positions[PreviewTeamAnim].m_x, (short) m_layout->m_positions[PreviewTeamAnim].m_y),
+		m_teamAnimId,
+		0,
+		m_teamAnim,
+		0);
 
 	if (m_networkMode != 0) {
-		pos.m_x = (short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_x;
-		pos.m_y = (short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_y;
-		AnimsManager::DrawAnim(pos, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
+		AnimsManager::DrawAnim(VsPoint((short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_x,
+									   (short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_y),
+							   m_lemmingAnimId,
+							   0,
+							   m_lemmingAnim,
+							   (Remap*) m_remap);
 		width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
 		y = m_layout->m_positions[PreviewNetworkLemmingRow].m_y;
-		x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) ((width + ((width >> 15) & 3)) >> 2) +
+		x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
 			m_layout->m_positions[PreviewFormationOffset].m_x;
 		i = 0;
 		if (m_lemmingCount > 0) {
 			do {
-				x = x - ((short) ((width + ((width >> 15) & 7)) >> 3) + width);
+				x = x - ((short) (width / 8) + width);
 				i = i + 1;
-				point.m_x = (short) x;
-				point.m_y = (short) y;
-				AnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
+				AnimsManager::DrawAnim(VsPoint((short) x, (short) y),
+									   m_lemmingAnimId,
+									   0,
+									   m_lemmingAnim,
+									   (Remap*) m_remap);
 			} while (i < m_lemmingCount);
 		}
 	}
 
 	width = AnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
 	y = m_layout->m_positions[PreviewOpponentRow].m_y;
-	x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) ((width + ((width >> 15) & 3)) >> 2) +
+	x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
 		m_layout->m_positions[PreviewFormationOffset].m_x;
 	i = 0;
 	if (m_opponentCount > 0) {
 		do {
-			x = x - ((short) ((width + ((width >> 15) & 7)) >> 3) + width);
-			point.m_x = (short) x;
-			point.m_y = (short) y;
+			x = x - ((short) (width / 8) + width);
 			i = i + 1;
-			AnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, 0);
+			AnimsManager::DrawAnim(VsPoint((short) x, (short) y), m_lemmingAnimId, 0, m_lemmingAnim, 0);
 		} while (i < m_opponentCount);
 	}
 
@@ -443,10 +453,8 @@ void PreviewDrawer::DrawAnims()
 		i = 0;
 		do {
 			x = x - width;
-			point.m_x = (short) x;
-			point.m_y = (short) y;
 			i = i + 1;
-			AnimsManager::DrawAnim(point, m_teamAnimId, 0, m_teamAnim, 0);
+			AnimsManager::DrawAnim(VsPoint((short) x, (short) y), m_teamAnimId, 0, m_teamAnim, 0);
 		} while (i < m_teamCount);
 	}
 }
