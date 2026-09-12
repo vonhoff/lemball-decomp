@@ -8,8 +8,6 @@
 #include "PushActive.h"
 #include "VsGdi.h"
 
-#include <new.h>
-
 // GLOBAL: LEMBALL 0x0049f02c
 char g_szButton[] = "Button";
 
@@ -44,77 +42,67 @@ GraphicButton::GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned lon
 void GraphicButton::Initialise()
 {
 	ResZrle* entries;
-	void* storage;
-	HotAreaHandler* area;
+	ResAnim* animation;
 	short boxWidth;
 	short boxHeight;
 
 	m_frame = 0;
-	storage = operator new(0x20);
-	if (storage == 0) {
-		m_primitive = 0;
-	}
-	else {
-		m_primitive = new (storage) Anim();
-	}
+	m_primitive = new Anim[1];
 	m_gdiFlags = m_gdiFlags + 1;
 	m_animation = ResAnim::Load(m_animationId);
-	if (m_animation == 0) {
-		return;
-	}
-	if (m_animation->m_loaded == 0) {
-		m_animation->LoadData();
+	animation = m_animation;
+	if (animation->m_loaded != 0) {
+		animation->m_age = 0;
 	}
 	else {
-		m_animation->m_age = 0;
+		animation->LoadData();
 	}
-	m_animation->m_directUseCount = m_animation->m_directUseCount + 1;
+	animation->m_directUseCount++;
 	entries = m_animation->m_animationEntries;
-	if (entries != 0) {
-		m_graphicWidth = (unsigned short) entries->m_width;
-		m_graphicHeight = (unsigned short) entries->m_height;
-		if (m_animation->m_totalSize > 1) {
-			if ((short) m_graphicWidth < entries[1].m_width) {
-				m_graphicWidth = (unsigned short) entries[1].m_width;
-			}
-			if ((short) m_graphicHeight < entries[1].m_height) {
-				m_graphicHeight = (unsigned short) entries[1].m_height;
-			}
-		}
+	m_graphicWidth = (unsigned short) entries->m_width;
+	m_graphicHeight = (unsigned short) entries->m_height;
+	ResZrle* second = entries + 1;
+	short width = second->m_width;
+	short height = second->m_height;
+	if ((short) m_graphicWidth < width) {
+		m_graphicWidth = (unsigned short) width;
+	}
+	if ((short) m_graphicHeight < height) {
+		m_graphicHeight = (unsigned short) height;
 	}
 	m_animation->m_directUseCount = m_animation->m_directUseCount - 1;
-	area = this;
-	m_graphicOffsetX = area->m_x;
-	m_graphicOffsetY = area->m_y;
-	boxWidth = area->m_width;
+	const VsPoint* position = (const VsRect*) &this->HotAreaHandler::m_width;
+	m_graphicOffsetX = position->m_x;
+	m_graphicOffsetY = position->m_y;
+	boxWidth = HotAreaHandler::m_width;
 	if (boxWidth < 0) {
-		area->m_width = (short) (-(short) m_graphicWidth * boxWidth);
+		HotAreaHandler::m_width = (short) (-(short) m_graphicWidth * boxWidth);
 	}
 	else if (boxWidth == 0) {
-		area->m_width = (short) m_graphicWidth;
+		HotAreaHandler::m_width = (short) m_graphicWidth;
 	}
-	boxHeight = area->m_height;
+	boxHeight = HotAreaHandler::m_height;
 	if (boxHeight < 0) {
-		area->m_height = (short) (-(short) m_graphicHeight * boxHeight);
+		HotAreaHandler::m_height = (short) (-(short) m_graphicHeight * boxHeight);
 	}
 	else if (boxHeight == 0) {
-		area->m_height = (short) m_graphicHeight;
+		HotAreaHandler::m_height = (short) m_graphicHeight;
 	}
-	if ((int) area->m_width * (int) area->m_height != 0) {
-		area->SetActive(1);
+	if ((int) HotAreaHandler::m_width * (int) HotAreaHandler::m_height != 0) {
+		HotAreaHandler::SetActive(1);
 	}
 	if ((m_alignmentFlags & 4) != 0) {
-		m_graphicOffsetX = (short) (((int) area->m_width - (int) (short) m_graphicWidth) / 2);
+		m_graphicOffsetX = (short) (((int) HotAreaHandler::m_width - (int) (short) m_graphicWidth) / 2);
 	}
 	else if ((m_alignmentFlags & 0x10) != 0) {
-		m_graphicOffsetX = (short) (area->m_width - (short) m_graphicWidth);
+		m_graphicOffsetX = (short) (HotAreaHandler::m_width - (short) m_graphicWidth);
 	}
 	if ((m_alignmentFlags & 8) != 0) {
-		m_graphicOffsetY = (short) (((int) area->m_height - (int) (short) m_graphicHeight) / 2);
+		m_graphicOffsetY = (short) (((int) HotAreaHandler::m_height - (int) (short) m_graphicHeight) / 2);
 		return;
 	}
 	if ((m_alignmentFlags & 0x20) != 0) {
-		m_graphicOffsetY = (short) (area->m_height - (short) m_graphicHeight);
+		m_graphicOffsetY = (short) (HotAreaHandler::m_height - (short) m_graphicHeight);
 	}
 }
 
