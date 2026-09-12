@@ -26,8 +26,11 @@ int Crate::Usage()
 }
 
 // 68K 0x1011aa7e __dt__6CCrateFv
-Crate::~Crate()
+inline Crate::~Crate()
 {
+	if (m_contents != 0 && m_contentsType != 0xffff) {
+		delete m_contents;
+	}
 }
 
 // 68K 0x1061918c Restart__6CCrateFv
