@@ -3,6 +3,8 @@
 #include "../../Map/Base/Map.h"
 #include "../Base/Coord3d.h"
 
+extern unsigned short g_wMovingLiftCount;
+
 // 68K 0x106145ea __ct__5CLiftFv
 // FUNCTION: LEMBALL 0x00424d00
 Lift::Lift() : GlobalGameObject(0x212, 0, 0)
@@ -13,9 +15,9 @@ Lift::Lift() : GlobalGameObject(0x212, 0, 0)
 // FUNCTION: LEMBALL 0x00424d30
 void Lift::CalculateCliff()
 {
-	int startX = (short) (m_startX / 16);
-	int startY = (short) (m_startY / 16);
-	int endX = (short) (m_endX / 16);
+	int startX = (short) (m_start.m_x / 16);
+	int startY = (short) (m_start.m_y / 16);
+	int endX = (short) (m_end.m_x / 16);
 	if (startY > 0) {
 		for (int x = startX; x <= endX; x++) {
 			Ground* ground = &g_pActiveMap->m_ground.m_ground[(startY - 1) * g_pActiveMap->m_ground.m_width + x];
@@ -63,7 +65,7 @@ void Lift::Set(int p_x,
 }
 
 // 68K 0x10614a04 Set__5CLiftFR8tCoord3dR8tCoord3dsii17eLiftActivateTypeUc
-// STUB: LEMBALL 0x00425060
+// FUNCTION: LEMBALL 0x00425060
 void Lift::Set(const Coord3d& p_start,
 			   const Coord3d& p_end,
 			   short p_direction,
@@ -72,6 +74,13 @@ void Lift::Set(const Coord3d& p_start,
 			   eLiftActivateType p_activateType,
 			   unsigned int p_initialActive)
 {
+	m_position.m_xFixed = p_start.m_x << 12;
+	m_position.m_yFixed = p_start.m_y << 12;
+	m_position.m_zFixed = p_start.m_z << 12;
+	m_liftId = g_wMovingLiftCount++;
+	m_start = p_start;
+	m_end = p_end;
+	Edit(m_start.m_z, p_direction, p_lowHeight, p_highHeight, p_activateType, p_initialActive);
 }
 
 // 68K 0x10614b04 Process__5CLiftFv
@@ -82,9 +91,20 @@ bool Lift::Process()
 }
 
 // 68K 0x10614dee CheckObjects__5CLiftFv
-// STUB: LEMBALL 0x00425440
+// FUNCTION: LEMBALL 0x00425440
 void Lift::CheckObjects()
 {
+	int count = 8;
+	GameObject** object = m_objects;
+	do {
+		if (*object != 0) {
+			if ((*object)->QOnBalloon() || !(*object)->OnLift(m_start, m_end)) {
+				(*object)->m_liftId = 0xffff;
+				*object = 0;
+			}
+		}
+		object++;
+	} while (--count);
 }
 
 // 68K 0x10614ea0 StepOn__5CLiftFRC7AICOORDP11CGameObject
@@ -94,10 +114,10 @@ int Lift::StepOn(const AiCoord& p_position, GameObject* p_object)
 	if (m_liftId == p_object->m_liftId) {
 		return 1;
 	}
-	int startX = m_startX - 8;
-	int endX = m_endX + 7;
-	int startY = m_startY - 8;
-	int endY = m_endY + 7;
+	int startX = m_start.m_x - 8;
+	int endX = m_end.m_x + 7;
+	int startY = m_start.m_y - 8;
+	int endY = m_end.m_y + 7;
 	const AiCoord* position = &p_position;
 	int x = position->m_xFixed >> 12;
 	int y = position->m_yFixed >> 12;

@@ -2,6 +2,7 @@
 #define LEMBALL_AI_OBJECTS_LIFT_H
 
 #include "../../Common.h"
+#include "../Base/Coord3d.h"
 #include "../Base/GlobalGameObject.h" // complete type
 
 // SIZE 0x190
@@ -43,12 +44,8 @@ public:
 
 private:
 	unsigned short m_liftId;          // 0x138
-	short m_startX;                   // 0x13a
-	short m_startY;                   // 0x13c
-	short m_currentHeight;            // 0x13e
-	short m_endX;                     // 0x140
-	short m_endY;                     // 0x142
-	short m_endZ;                     // 0x144
+	Coord3d m_start;                  // 0x13a
+	Coord3d m_end;                    // 0x140
 	int m_lowHeight;                  // 0x148
 	int m_highHeight;                 // 0x14c
 	int m_movementStartHeight;        // 0x150
