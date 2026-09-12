@@ -614,7 +614,8 @@ void GameObject::RotateClockwise()
 {
 	m_facingDirection++;
 	if (m_facingDirection >= 8) {
-		m_facingDirection %= 8;
+		unsigned short turns = (unsigned short) m_facingDirection / 8;
+		m_facingDirection -= turns * 8;
 	}
 }
 
