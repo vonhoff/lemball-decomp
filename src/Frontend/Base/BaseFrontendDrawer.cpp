@@ -425,69 +425,82 @@ void BaseFrontendDrawer::DrawFrame(CoordPair p_start, CoordPair p_end)
 // FUNCTION: LEMBALL 0x00446110
 void BaseFrontendDrawer::DrawFrame(VsRect p_rect)
 {
-	VsSize tileSize;
-	VsPoint position;
+	int startX = p_rect.m_x;
+	int startY = p_rect.m_y;
+	int width = p_rect.m_width;
+	int height = p_rect.m_height;
 	int tileWidth;
 	int tileHeight;
-	int x;
-	int y;
-	int right;
-	int bottom;
-
-	if (m_gdi == 0) {
-		return;
+	{
+		const VsSize& tileSize = AnimsManager::GetAnimSize(m_topFrameAnimId, 0);
+		tileWidth = tileSize.m_width;
+		tileHeight = tileSize.m_height;
 	}
-	tileSize = AnimsManager::GetAnimSize(m_topFrameAnimId, 0);
-	tileWidth = tileSize.m_width;
-	tileHeight = tileSize.m_height;
-	if (tileWidth < 1 || tileHeight < 1) {
-		return;
-	}
-	right = p_rect.m_x + p_rect.m_width;
-	bottom = p_rect.m_y + p_rect.m_height;
+	width += tileWidth - 1;
+	width -= width % tileWidth;
+	height += tileHeight - 1;
+	height -= height % tileHeight;
+	VsRect frame(p_rect.m_x, p_rect.m_y, (short) width, (short) height);
+	Line& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
+	line.m_x1 = frame.m_width;
+	line.m_y1 = frame.m_height;
+	line.m_x2 = frame.m_x;
+	line.m_y2 = frame.m_y;
+	line.m_color = 0x10;
+	m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount].Draw(m_gdi);
+	m_framePrimitiveCount++;
 	m_staticAnim.m_frameState = 0;
-	position.m_x = p_rect.m_x;
-	position.m_y = p_rect.m_y;
-	AnimsManager::DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
-	x = p_rect.m_x + tileWidth;
-	while (x + tileWidth < right) {
+	AnimsManager::DrawAnim(VsPoint((short) startX, (short) startY), m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+	int x = tileWidth;
+	int right = width - tileWidth;
+	for (; right > x; x += tileWidth) {
 		m_staticAnim.m_frameState = 1;
-		position.m_x = (short) x;
-		position.m_y = p_rect.m_y;
-		AnimsManager::DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
-		x = x + tileWidth;
+		AnimsManager::DrawAnim(VsPoint((short) (startX + x), (short) startY),
+							   m_topFrameAnimId,
+							   0,
+							   (Frames*) &m_staticAnim,
+							   0);
 	}
 	m_staticAnim.m_frameState = 2;
-	position.m_x = (short) (right - tileWidth);
-	position.m_y = p_rect.m_y;
-	AnimsManager::DrawAnim(position, m_topFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
-	y = p_rect.m_y + tileHeight;
-	while (y + tileHeight < bottom) {
+	AnimsManager::DrawAnim(VsPoint((short) (startX + x), (short) startY),
+						   m_topFrameAnimId,
+						   0,
+						   (Frames*) &m_staticAnim,
+						   0);
+	int y = tileHeight;
+	height -= tileHeight;
+	for (; y < height; y += tileHeight) {
 		m_staticAnim.m_frameState = 0;
-		position.m_x = p_rect.m_x;
-		position.m_y = (short) y;
-		AnimsManager::DrawAnim(position, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+		short currentY = (short) (startY + y);
+		VsPoint left((short) startX, currentY);
+		AnimsManager::DrawAnim(left, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
 		m_staticAnim.m_frameState = 2;
-		position.m_x = (short) (right - tileWidth);
-		AnimsManager::DrawAnim(position, m_sideFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
-		y = y + tileHeight;
+		AnimsManager::DrawAnim(VsPoint((short) (width - tileWidth + startX), currentY),
+							   m_sideFrameAnimId,
+							   0,
+							   (Frames*) &m_staticAnim,
+							   0);
 	}
 	m_staticAnim.m_frameState = 0;
-	position.m_x = p_rect.m_x;
-	position.m_y = (short) (bottom - tileHeight);
-	AnimsManager::DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
-	x = p_rect.m_x + tileWidth;
-	while (x + tileWidth < right) {
+	AnimsManager::DrawAnim(VsPoint((short) startX, (short) (startY + y)),
+						   m_bottomFrameAnimId,
+						   0,
+						   (Frames*) &m_staticAnim,
+						   0);
+	for (x = tileWidth; right > x; x += tileWidth) {
 		m_staticAnim.m_frameState = 1;
-		position.m_x = (short) x;
-		position.m_y = (short) (bottom - tileHeight);
-		AnimsManager::DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
-		x = x + tileWidth;
+		AnimsManager::DrawAnim(VsPoint((short) (startX + x), (short) (startY + y)),
+							   m_bottomFrameAnimId,
+							   0,
+							   (Frames*) &m_staticAnim,
+							   0);
 	}
 	m_staticAnim.m_frameState = 2;
-	position.m_x = (short) (right - tileWidth);
-	position.m_y = (short) (bottom - tileHeight);
-	AnimsManager::DrawAnim(position, m_bottomFrameAnimId, 0, (Frames*) &m_staticAnim, 0);
+	AnimsManager::DrawAnim(VsPoint((short) (startX + x), (short) (startY + y)),
+						   m_bottomFrameAnimId,
+						   0,
+						   (Frames*) &m_staticAnim,
+						   0);
 }
 
 // 68K 0x108014f4 ProcessMsg__19CBaseFrontendDrawerFP10tagMESSAGE
