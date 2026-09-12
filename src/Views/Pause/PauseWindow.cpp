@@ -251,7 +251,8 @@ VsRect PauseWindow::CalculateWindow()
 	paddedTextSize.m_width = maxTextSize.m_width;
 	paddedTextSize.m_height = (short) (maxTextSize.m_height + m_windowPadding.m_y);
 	positionX = (short) (parentWidth - paddedTextSize.m_width) / 2;
-	VsSize windowSize(paddedTextSize);
+	VsSize windowSize;
+	windowSize = paddedTextSize;
 	positionY = (short) (parentHeight - paddedTextSize.m_height) / 2;
 
 	horizontalBorder = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
@@ -267,17 +268,19 @@ VsRect PauseWindow::CalculateWindow()
 	m_horizontalTiles = (short) ((int) windowSize.m_width / horizontalWidth - 2);
 	m_verticalTiles = (short) ((int) windowSize.m_height / verticalHeight - 2);
 
-	if (m_borderAnimCount != m_horizontalTiles + m_verticalTiles) {
+	int borderAnimCount = m_horizontalTiles + m_verticalTiles;
+	if (m_borderAnimCount != borderAnimCount) {
 		if (m_borderAnims != 0) {
 			delete[] m_borderAnims;
 		}
-		m_borderAnimCount = m_horizontalTiles + m_verticalTiles;
+		m_borderAnimCount = borderAnimCount;
 		m_borderAnims = new Anim[m_borderAnimCount * 2];
 	}
 
 	VsPoint cornerPositions[2] = {VsPoint(windowSize.m_width, windowSize.m_height), VsPoint(0, 0)};
-	cornerPositions[0].m_x = (short) (cornerPositions[0].m_x - horizontalBorder[0]);
-	cornerPositions[0].m_y = (short) (cornerPositions[0].m_y - horizontalBorder[1]);
+	short* cornerSize = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
+	cornerPositions[0].m_x = (short) (cornerPositions[0].m_x - cornerSize[0]);
+	cornerPositions[0].m_y = (short) (cornerPositions[0].m_y - cornerSize[1]);
 	{
 		int cornerBatchCount = 1;
 		Anim* corners = m_cornerAnims;
@@ -357,7 +360,11 @@ VsRect PauseWindow::CalculateWindow()
 		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner[1]);
 	}
 
-	return VsRect(positionX, positionY, windowSize.m_width, windowSize.m_height);
+	VsRect result;
+	(VsSize&) result = windowSize;
+	result.m_x = positionX;
+	result.m_y = positionY;
+	return result;
 }
 
 // 68K 0x10b0eeba __ct__12CPauseWindowFP19CReceiveWindowStateP7CPVGWnd20ePauseWindowMessages
