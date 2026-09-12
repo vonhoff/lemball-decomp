@@ -442,8 +442,8 @@ void Arena::MemSet(unsigned char* p_destination, unsigned char p_value, unsigned
 	memset(p_destination, p_value, p_size);
 }
 
-// 68K 0x10215686 MemCopy__6CArenaFPUcPUcUl
 #pragma function(memcpy)
+// 68K 0x10215686 MemCopy__6CArenaFPUcPUcUl
 // FUNCTION: LEMBALL 0x0045a3d0
 void Arena::MemCopy(unsigned char* p_destination, unsigned char* p_source, unsigned long p_size)
 {
