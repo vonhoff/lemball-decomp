@@ -22,15 +22,10 @@ unsigned char g_cursorFocusFlag = 0;
 // 68K 0x10205a9a __ct__11CBaseCursorFv
 // FUNCTION: LEMBALL 0x0046aec0
 BaseCursor::BaseCursor()
+	: m_maxSpeed((int) 0xaa55aa55), m_acceleration((int) 0xaa55aa55), m_fixedX((int) 0xaa55aa55),
+	  m_fixedY((int) 0xaa55aa55), m_velocityX((int) 0xaa55aa55), m_velocityY((int) 0xaa55aa55),
+	  m_directionX((int) 0xaa55aa55), m_directionY((int) 0xaa55aa55)
 {
-	m_maxSpeed = (int) 0xaa55aa55;
-	m_acceleration = (int) 0xaa55aa55;
-	m_fixedX = (int) 0xaa55aa55;
-	m_fixedY = (int) 0xaa55aa55;
-	m_velocityX = (int) 0xaa55aa55;
-	m_velocityY = (int) 0xaa55aa55;
-	m_directionX = (int) 0xaa55aa55;
-	m_directionY = (int) 0xaa55aa55;
 	Initialise();
 }
 

@@ -14,15 +14,17 @@ BaseRemap::BaseRemap()
 BaseRemap::BaseRemap(unsigned long p_arg0, unsigned char* p_arg1, ePaletteTypes p_arg2)
 {
 	m_paletteResource = ResPalette::Load(p_arg0);
-	if (p_arg2 == 1) {
+	switch (p_arg2) {
+	case 1:
 		CalculateGreyScale();
-		return;
-	}
-	if (p_arg2 != 2) {
+		break;
+	case 2:
+		MapRemap(p_arg1);
+		break;
+	default:
 		m_remap = p_arg1;
-		return;
+		break;
 	}
-	MapRemap(p_arg1);
 }
 
 // 68K 0x1020099e __dt__10CBaseRemapFv
