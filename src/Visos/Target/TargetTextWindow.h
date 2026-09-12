@@ -8,6 +8,12 @@
 class TargetTextWindow : public Critical {
 public:
 	void PostAllocatedTextControlString(const char* p_text, unsigned int p_color);
+	int PointToLine(int p_x, int p_y);
+	void RedrawAll();
+	void RedrawLines(int p_firstLine, int p_lineCount);
+	int UpdateVisibleRows();
+	int UpdateClientWidth();
+	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, undefined4 p_arg2);
 
 private:
 	void* m_windowHandle;               // 0x1c
