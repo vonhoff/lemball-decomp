@@ -55,19 +55,14 @@ void Gdi::AddToList(Primitive* p_primitive)
 void Gdi::Render()
 {
 	int i;
-	Primitive* primitive;
 
-	if (m_renderTarget == 0) {
-		return;
-	}
 	if (m_renderTarget->BeginRender()) {
 		i = 0;
 		if (0 < m_primitiveCount) {
 			do {
-				primitive = m_primitives[i];
-				g_pCurrentPrimitive = primitive;
-				if (CheckValidPointer(primitive)) {
-					primitive->Render(this);
+				g_pCurrentPrimitive = m_primitives[i];
+				if (CheckValidPointer(m_primitives[i])) {
+					m_primitives[i]->Render(this);
 				}
 				i++;
 			} while (i < m_primitiveCount);
