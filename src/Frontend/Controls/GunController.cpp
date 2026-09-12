@@ -48,7 +48,6 @@ GunController::GunController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned int
 {
 	int i;
 
-	m_staticAnim.m_frameState = 0;
 	m_buttonsActive = 1;
 	m_mode = p_arg3;
 	m_window = p_arg0;
