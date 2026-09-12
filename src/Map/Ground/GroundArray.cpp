@@ -21,16 +21,23 @@ void GroundArray::SetCollision(int p_x, int p_y, int p_collision)
 // FUNCTION: LEMBALL 0x00430370
 void GroundArray::Clear()
 {
+	Ground* ground;
+	int x;
 	int y = 0;
 	if (m_height > 0) {
 		do {
-			for (int x = 0; x < m_width; x++) {
-				Ground* ground = m_ground + y * m_width + x;
+			x = 0;
+			for (;;) {
+				if (x >= m_width) {
+					break;
+				}
+				ground = m_ground + y * m_width + x;
 				ground->m_objectType = (eObjectType) 0x209;
 				ground->m_objectData = 0;
 				ground->m_collision = 0;
 				ground->m_height = 0;
 				ground->m_cliff = 0;
+				x++;
 			}
 			y++;
 		} while (y < m_height);
