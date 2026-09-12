@@ -126,6 +126,7 @@ public:
 	friend class RequestCancelMess;
 	friend class RequestReplyMess;
 	friend class GenericGroup;
+	friend class SheepGroup;
 	friend class PlayerLemmingGroup;
 	friend void StateMachine(StateEntry** p_arg0, Ai* p_arg1, GameObject* p_arg2);
 

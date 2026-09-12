@@ -11,8 +11,8 @@ class SheepGroup : public GenericGroup {
 public:
 	SheepGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager);
 	bool CheckAgainstCatapults();
-	bool CheckAgainstLemmings();
-	bool RunAway(AiCoord p_threatPosition);
+	void CheckAgainstLemmings();
+	void RunAway(AiCoord p_threatPosition);
 	virtual bool Process(); // vtable+0x14
 	virtual ~SheepGroup();  // vtable+0x00
 

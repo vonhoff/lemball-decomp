@@ -14,6 +14,7 @@ public:
 	VsTrig();
 
 private:
+	friend class SheepGroup;
 	Fixed m_sine[512]; // 0x00
 };
 
