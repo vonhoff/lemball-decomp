@@ -569,10 +569,9 @@ void GunController::MoveRight()
 // FUNCTION: LEMBALL 0x0044da70
 void GunController::SetGun(int p_junction)
 {
-	VsSize animSize;
 	int direction;
 
-	animSize = AnimsManager::GetAnimSize(g_dwGunAnim14c, 0);
+	const VsSize& animSize = AnimsManager::GetAnimSize(g_dwGunAnim14c, 0);
 	m_gunX = (int) (m_window->m_rect.m_width / 2) - (int) (animSize.m_width / 2);
 	m_gunY = m_junctions[p_junction].m_y;
 	direction = m_junctions[p_junction].m_direction;
