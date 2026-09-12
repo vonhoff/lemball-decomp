@@ -11,11 +11,6 @@
 #include "../Messages/GameMessageIds.h"
 #include "../Navigation/Ai.h"
 
-// 68K 0x10119804 __dt__7CBulletFv
-Bullet::~Bullet()
-{
-}
-
 // 68K 0x10604572 __ct__7CBulletFv
 // FUNCTION: LEMBALL 0x0041a510
 Bullet::Bullet() : GlobalGameObject((eObjectType) OBJECT_BULLET, 0x100, 0)

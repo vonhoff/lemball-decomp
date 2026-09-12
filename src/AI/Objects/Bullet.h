@@ -17,7 +17,6 @@ public:
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c
 	virtual void Restart();    // vtable+0x104
-	virtual ~Bullet();         // vtable+0x00
 	void AddData();
 	void FireBullet();
 	void Free();
