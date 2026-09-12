@@ -1129,12 +1129,7 @@ void InitPreInit()
 	g_nGraphicsDriverCds = 0;
 }
 
-// STUB: LEMBALL 0x00472b10
-unsigned int __stdcall DebugMessageThreadMain(void* p_unused)
-{
-	(void) p_unused;
-	return 0;
-}
+unsigned int __cdecl DebugMessageThreadMain();
 
 // 68K 0x1010fd1a _DBG_Init__Fv
 // FUNCTION: LEMBALL 0x00472be0
@@ -1142,7 +1137,12 @@ bool InternalDbgInit()
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		g_pDebugSyncEvent = CreateEventA(0, 0, 0, "Sync_Debug");
-		g_pDebugThread = CreateThread(0, 0, DebugMessageThreadMain, 0, 0, (unsigned int*) &g_nDebugThreadId);
+		g_pDebugThread = CreateThread(0,
+									  0,
+									  (unsigned int(__stdcall*)(void*)) DebugMessageThreadMain,
+									  0,
+									  0,
+									  (unsigned int*) &g_nDebugThreadId);
 		if (g_pDebugThread == 0) {
 			MessageBoxA(0, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
 			ExitProcess(0xbbbb);

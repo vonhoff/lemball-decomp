@@ -7,8 +7,11 @@
 struct tagPAINTSTRUCT;
 
 // SIZE 0x58
+// VTABLE: LEMBALL 0x0049a4a0
 class TargetTextWindow : public Critical {
 public:
+	TargetTextWindow(const char* p_title, int p_lineCapacity);
+	~TargetTextWindow();
 	void PostAllocatedTextControlString(const char* p_text, unsigned int p_color);
 	void AppendPostedText(char* p_text, unsigned int p_color);
 	int PointToLine(int p_x, int p_y);
@@ -26,6 +29,7 @@ public:
 	void UpdateSelection(int p_x, int p_y, undefined4 p_arg2);
 	char* GetSelectionText();
 	void CopySelection();
+	static long __stdcall WindowProc(void* p_window, unsigned int p_message, unsigned int p_wParam, long p_lParam);
 
 private:
 	void* m_windowHandle;               // 0x1c
@@ -49,7 +53,6 @@ extern TargetTextWindow* g_pDebugWindow;
 extern int g_nTargetTextWindowClassRegistered;
 extern int g_nTargetTextWindowActive;
 extern int g_nTargetTextWindowCreated;
-extern void* g_apTargetTextWindowLockVtable[2];
 // LIBRARY: LEMBALL 0x0047ffc0 SYMBOL
 // __amsg_exit
 

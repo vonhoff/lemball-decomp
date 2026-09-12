@@ -1,5 +1,6 @@
 #include "TargetTextWindow.h"
 
+#include "../../Platform/Windows/Entry.h"
 #include "../Foundation/VsDebug.h"
 #include "TargetTextLine.h"
 #include "TargetTextLineBuffer.h"
@@ -10,6 +11,27 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+extern void* g_pDebugAcceleratorTable;
+extern void* g_pDebugSyncEvent;
+
+// FUNCTION: LEMBALL 0x00472b10
+unsigned int __cdecl DebugMessageThreadMain()
+{
+	// STRING: LEMBALL 0x004a2a20
+	g_pDebugWindow = new TargetTextWindow("Debug Window", 0x2800);
+	SetEvent(g_pDebugSyncEvent);
+	MSG message;
+	while (GetMessageA(&message, 0, 0, 0) != 0) {
+		if (g_pDebugAcceleratorTable == 0 ||
+			TranslateAcceleratorA(message.hwnd, (HACCEL) g_pDebugAcceleratorTable, &message) == 0) {
+			TranslateMessage(&message);
+			DispatchMessageA(&message);
+		}
+	}
+	SetEvent(g_pDebugSyncEvent);
+	return 1;
+}
+
 // GLOBAL: LEMBALL 0x004a2c40
 static char g_unableToAllocateTextCopy[] = "Unable to allocate memory for string copy";
 
@@ -18,6 +40,90 @@ static char g_textWindowInfo[] = "INFO";
 
 // GLOBAL: LEMBALL 0x004a2c74
 static char g_unableToInvalidateTextLines[] = "RedrawLines : InvalidateRect==FALSE";
+
+// GLOBAL: LEMBALL 0x004a2b70
+static char g_textWindowClassName[] = "CTextWindow";
+
+// FUNCTION: LEMBALL 0x00473a60
+TargetTextWindow::TargetTextWindow(const char* p_title, int p_lineCapacity)
+{
+	m_lineBuffer = new TargetTextLineBuffer(p_lineCapacity);
+	if (m_lineBuffer == 0) {
+		// STRING: LEMBALL 0x004a2bb4
+		FatalWin32Error("Unable to allocate TextLineBuffer");
+	}
+	if (g_nTargetTextWindowClassRegistered == 0) {
+		WNDCLASSA windowClass;
+		windowClass.style = 3;
+		windowClass.lpfnWndProc = (WNDPROC) WindowProc;
+		windowClass.cbClsExtra = 0;
+		windowClass.cbWndExtra = 4;
+		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
+		windowClass.hIcon = LoadIconA(0, IDI_APPLICATION);
+		windowClass.hCursor = LoadCursorA(0, IDC_ARROW);
+		windowClass.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
+		windowClass.lpszMenuName = 0;
+		windowClass.lpszClassName = g_textWindowClassName;
+		if (RegisterClassA(&windowClass) == 0) {
+			// STRING: LEMBALL 0x004a2bd8
+			FatalWin32Error("Unable to register text window class");
+		}
+		g_nTargetTextWindowClassRegistered = 1;
+		g_nTargetTextWindowActive = 1;
+	}
+	m_selecting = 0;
+	m_windowHandle = CreateWindowExA(0,
+									 g_textWindowClassName,
+									 p_title,
+									 0xcf0000,
+									 CW_USEDEFAULT,
+									 CW_USEDEFAULT,
+									 GetSystemMetrics(0) / 2,
+									 GetSystemMetrics(1) / 2,
+									 0,
+									 0,
+									 (HINSTANCE) g_pApplicationInstance,
+									 this);
+	if (m_windowHandle == 0) {
+		// STRING: LEMBALL 0x004a2c00
+		FatalWin32Error("Unable to create text window");
+	}
+	// STRING: LEMBALL 0x004a2c20
+	m_fontHandle = CreateFontA(8, 6, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0x30, "Courier");
+	if (m_fontHandle == 0) {
+		// STRING: LEMBALL 0x004a2c28
+		FatalWin32Error("Unable to create font");
+	}
+	HDC dc = GetDC((HWND) m_windowHandle);
+	SelectObject(dc, (HFONT) m_fontHandle);
+	TEXTMETRICA metrics;
+	GetTextMetricsA(dc, &metrics);
+	m_lineHeight = metrics.tmExternalLeading + metrics.tmHeight;
+	ReleaseDC((HWND) m_windowHandle, dc);
+	UpdateClientWidth();
+	UpdateVisibleRows();
+	m_lineCapacity = p_lineCapacity;
+	m_lineCount = m_lineBuffer->m_count;
+	m_selectionStart = -1;
+	m_selectionEnd = -1;
+	m_topLine = 0;
+	SetScrollPos((HWND) m_windowHandle, 1, 0, 1);
+	ShowWindow((HWND) m_windowHandle, 5);
+	UpdateWindow((HWND) m_windowHandle);
+}
+
+// FUNCTION: LEMBALL 0x00473cf0
+TargetTextWindow::~TargetTextWindow()
+{
+	if (m_selecting != 0) {
+		ReleaseCapture();
+		m_selecting = 0;
+	}
+	delete m_lineBuffer;
+	g_nTargetTextWindowActive = 0;
+	m_windowHandle = 0;
+	DeleteObject((HFONT) m_fontHandle);
+}
 
 // FUNCTION: LEMBALL 0x00473d90
 void TargetTextWindow::PostAllocatedTextControlString(const char* p_text, unsigned int p_color)
@@ -410,6 +516,88 @@ void TargetTextWindow::CopySelection()
 	m_selectionEnd = -1;
 	m_selectionStart = -1;
 	LeaveCritical();
+}
+
+// GLOBAL: LEMBALL 0x004a2b80
+static ACCEL g_textWindowAccelerators[2] = {{9, 0x2d, 0x421}, {9, 0x43, 0x421}};
+
+// FUNCTION: LEMBALL 0x00474750
+long __stdcall TargetTextWindow::WindowProc(void* p_window,
+											unsigned int p_message,
+											unsigned int p_wParam,
+											long p_lParam)
+{
+	POINT origin;
+	origin.x = 0;
+	origin.y = 0;
+	ClientToScreen((HWND) p_window, &origin);
+	TargetTextWindow* window;
+	if (p_message == WM_CREATE) {
+		window = (TargetTextWindow*) ((CREATESTRUCTA*) p_lParam)->lpCreateParams;
+		g_nTargetTextWindowCreated = 1;
+		SetWindowLongA((HWND) p_window, 0, (LONG) window);
+	}
+	else if (g_nTargetTextWindowCreated != 0) {
+		window = (TargetTextWindow*) GetWindowLongA((HWND) p_window, 0);
+	}
+	switch (p_message) {
+	case WM_DESTROY:
+		delete window;
+		g_pDebugWindow = 0;
+		PostQuitMessage(0);
+		break;
+	case WM_SIZE:
+		window->ResizeToWholeRows(LOWORD(p_lParam), HIWORD(p_lParam), p_wParam);
+		break;
+	case WM_SETFOCUS: {
+		HACCEL accelerators = CreateAcceleratorTableA(g_textWindowAccelerators, 2);
+		if (accelerators != 0) {
+			g_pDebugAcceleratorTable = accelerators;
+		}
+		break;
+	}
+	case WM_KILLFOCUS:
+		break;
+	case WM_PAINT: {
+		PAINTSTRUCT paint;
+		HDC dc = BeginPaint((HWND) p_window, &paint);
+		window->Paint(dc, &paint);
+		EndPaint((HWND) p_window, &paint);
+		break;
+	}
+	case WM_COMMAND:
+		switch (p_wParam & 0xffff) {
+		case 0x421:
+			window->CopySelection();
+			break;
+		}
+		break;
+	case WM_VSCROLL:
+		window->Scroll(LOWORD(p_wParam), HIWORD(p_wParam));
+		break;
+	case WM_MOUSEMOVE: {
+		int x = (short) LOWORD(p_lParam) + origin.x;
+		int y = (short) HIWORD(p_lParam) + origin.y;
+		window->UpdateSelection(x, y, p_wParam);
+		break;
+	}
+	case WM_LBUTTONDOWN: {
+		int x = (short) LOWORD(p_lParam) + origin.x;
+		int y = (short) HIWORD(p_lParam) + origin.y;
+		window->BeginSelection(x, y, p_wParam);
+		break;
+	}
+	case WM_LBUTTONUP: {
+		int x = (short) LOWORD(p_lParam) + origin.x;
+		int y = (short) HIWORD(p_lParam) + origin.y;
+		window->EndSelection(x, y, p_wParam);
+		break;
+	}
+	case 0x420:
+		window->AppendPostedText((char*) p_wParam, p_lParam);
+		break;
+	}
+	return DefWindowProcA((HWND) p_window, p_message, p_wParam, p_lParam);
 }
 
 // GLOBAL: LEMBALL 0x004a44d8 SYMBOL
