@@ -60,6 +60,6 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x00426710
-// Lift::`scalar deleting destructor'
+// Lift::`vector deleting destructor'
 
 #endif

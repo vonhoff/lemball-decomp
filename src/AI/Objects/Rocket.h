@@ -27,6 +27,6 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x00427520
-// Rocket::`scalar deleting destructor'
+// Rocket::`vector deleting destructor'
 
 #endif

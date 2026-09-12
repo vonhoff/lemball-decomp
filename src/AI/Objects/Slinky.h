@@ -26,6 +26,6 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x0040c1d0
-// Slinky::`scalar deleting destructor'
+// Slinky::`vector deleting destructor'
 
 #endif
