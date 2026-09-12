@@ -417,8 +417,8 @@ void PreviewDrawer::DrawAnims()
 			do {
 				x = x - ((short) (width / 8) + width);
 				VsPoint point((short) x, (short) y);
-				i = i + 1;
 				AnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, (Remap*) m_remap);
+				i = i + 1;
 			} while (i < m_lemmingCount);
 		}
 	}
@@ -432,8 +432,8 @@ void PreviewDrawer::DrawAnims()
 		do {
 			x = x - ((short) (width / 8) + width);
 			VsPoint point((short) x, (short) y);
-			i = i + 1;
 			AnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, 0);
+			i = i + 1;
 		} while (i < m_opponentCount);
 	}
 
@@ -441,14 +441,16 @@ void PreviewDrawer::DrawAnims()
 	x = m_layout->m_positions[PreviewFormationAnchor].m_x - m_layout->m_positions[PreviewTeamOffset].m_x +
 		m_layout->m_positions[PreviewFormationOffset].m_x;
 	y = m_layout->m_positions[PreviewTeamRow].m_y;
-	if (m_teamCount <= 4 && m_teamCount > 0) {
+	if (m_teamCount <= 4) {
 		i = 0;
-		do {
-			x = x - width;
-			VsPoint point((short) x, (short) y);
-			i = i + 1;
-			AnimsManager::DrawAnim(point, m_teamAnimId, 0, m_teamAnim, 0);
-		} while (i < m_teamCount);
+		if (m_teamCount > 0) {
+			do {
+				x = x - width;
+				VsPoint point((short) x, (short) y);
+				AnimsManager::DrawAnim(point, m_teamAnimId, 0, m_teamAnim, 0);
+				i = i + 1;
+			} while (i < m_teamCount);
+		}
 	}
 }
 
