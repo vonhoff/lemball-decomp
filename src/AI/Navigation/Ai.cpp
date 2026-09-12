@@ -786,9 +786,33 @@ void Ai::QuitGame()
 }
 
 // 68K 0x106024e8 SwitchMessage__3CAIF9swMessageiii
-// STUB: LEMBALL 0x00412c80
+// FUNCTION: LEMBALL 0x00412c80
 void Ai::SwitchMessage(swMessage p_message, int p_first, int p_last, int p_arg3)
 {
+	switch (p_message) {
+	case 1:
+		m_liftManager->Switch(p_message, p_first, p_last, p_arg3);
+		return;
+	case 2: {
+		int index = p_first;
+		if (index < p_last) {
+			do {
+				m_liftManager->Switch((swMessage) 1, index, 0, 0);
+				index++;
+			} while (index < p_last);
+			return;
+		}
+		break;
+	}
+	case 3:
+		m_doorManager->Switch((swMessage) 3, p_first);
+		return;
+	case 4:
+		m_moverManager->Switch((swMessage) 4, p_first);
+		return;
+	case 5:
+		m_iceManager->Switch((swMessage) 5, p_first);
+	}
 }
 
 // 68K 0x106025ce GetPlayerPos__3CAIFiR7AICOORD
