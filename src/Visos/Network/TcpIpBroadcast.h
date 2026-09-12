@@ -45,4 +45,28 @@ private:
 // SYNTHETIC: LEMBALL 0x00472020 SYMBOL
 // ?ReceiveAcknowledgement@TcpIpRwSocket@@$4PPPPPPPM@IA@AEPAVNetworkMessage@@XZ
 
+// GLOBAL: LEMBALL 0x0049a0d0
+// TcpIpBroadcast::`vbtable'{for `TcpIpWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a0e0
+// TcpIpBroadcast::`vbtable'{for `TcpIpReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a0f0
+// TcpIpBroadcast::`vbtable'{for `TcpIpCommonSocket'}
+
+// GLOBAL: LEMBALL 0x0049a0f8
+// TcpIpBroadcast::`vbtable'{for `RwSocket'}
+
+// GLOBAL: LEMBALL 0x0049a108
+// TcpIpBroadcast::`vbtable'{for `ReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a110
+// TcpIpBroadcast::`vbtable'{for `WriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a118
+// TcpIpBroadcast::`vbtable'{for `TcpIpRwSocket'}
+
+// GLOBAL: LEMBALL 0x0049a138
+// TcpIpBroadcast::`vbtable'{for `Broadcast'}
+
 #endif

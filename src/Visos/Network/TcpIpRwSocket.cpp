@@ -12,11 +12,6 @@ int TcpIpRwSocket::Process(unsigned int p_message, unsigned int p_wParam, long p
 	return result;
 }
 
-// FUNCTION: LEMBALL 0x00471830
-TcpIpRwSocket::TcpIpRwSocket()
-{
-}
-
 // 68K 0x1010e9d8 SendAcknowledgement__14CTCPIPRWSocketFv
 // FUNCTION: LEMBALL 0x00471bb0
 void TcpIpRwSocket::SendAcknowledgement()
