@@ -134,8 +134,8 @@ void Demo::SetDemoMode(int p_enabled)
 void Demo::Process()
 {
 	if (m_gameOver == 0 && m_demoMode != 0) {
-		unsigned long current = CurrentMilliTimer();
-		if (m_duration != 0 && m_duration <= current - m_startTime) {
+		unsigned long elapsed = CurrentMilliTimer() - m_startTime;
+		if (m_duration != 0 && m_duration <= elapsed) {
 			GameIsOver();
 			return;
 		}
