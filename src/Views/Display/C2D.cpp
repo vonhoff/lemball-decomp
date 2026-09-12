@@ -1175,7 +1175,6 @@ static const short g_groundOffset[] = {0x10, 0x10};
 // FUNCTION: LEMBALL 0x0043a880
 void C2D::DrawGround(int p_x, int p_y, eObjectType p_groundType, unsigned short p_frame)
 {
-
 	int frame;
 
 	switch (p_groundType) {
@@ -1755,7 +1754,6 @@ static unsigned long g_lemmingExternalResources[] = {
 // FUNCTION: LEMBALL 0x0043bce0
 unsigned long C2D::LemmingFly(ViewData& p_viewData, int& p_frame)
 {
-
 	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
 	int frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 
@@ -1966,6 +1964,9 @@ void C2D::DrawLemming(ViewData& p_viewData, int p_objectNo, unsigned char p_rema
 {
 }
 
+// GLOBAL: LEMBALL 0x00497070
+static const short bulletOffset[] = {4, 4};
+
 // 68K 0x10b02c40 DrawBullet__3C2DFR9CViewDatai
 // FUNCTION: LEMBALL 0x0043c610
 void C2D::DrawBullet(ViewData& p_viewData, int p_objectNo)
@@ -1981,8 +1982,6 @@ void C2D::DrawBullet(ViewData& p_viewData, int p_objectNo)
 		RES_GAME_LEMMINGPELLETNW,
 		RES_GAME_LEMMINGPELLETN,
 	};
-	// GLOBAL: LEMBALL 0x00497070
-	static const short bulletOffset[] = {4, 4};
 
 	unsigned int direction;
 
@@ -1995,15 +1994,16 @@ void C2D::DrawBullet(ViewData& p_viewData, int p_objectNo)
 							 0);
 }
 
+// GLOBAL: LEMBALL 0x00497064
+static const short ammoOffset[] = {8, 16};
+
+// GLOBAL: LEMBALL 0x00497068
+static const short pelletOffset[] = {16, 16};
+
 // 68K 0x10b02cce DrawAmmo__3C2DFR9CViewDatai
 // FUNCTION: LEMBALL 0x0043c660
 void C2D::DrawAmmo(ViewData& p_viewData, int p_objectNo)
 {
-	// GLOBAL: LEMBALL 0x00497064
-	static const short ammoOffset[] = {8, 16};
-	// GLOBAL: LEMBALL 0x00497068
-	static const short pelletOffset[] = {16, 16};
-
 	switch (p_viewData.m_action) {
 	case (eAction) 0x18:
 	case (eAction) 0x19:
@@ -2202,13 +2202,13 @@ void C2D::DrawBalloonPost(ViewData& p_viewData, int p_playerIndex)
 	m_lemmingAnims->DrawAnim(x, y, RES_GAME_BALLOON_POST, 0, 0, (Remap*) remap);
 }
 
+// GLOBAL: LEMBALL 0x00497098
+static const short trampolineOffset[] = {22, 22};
+
 // 68K 0x10b03222 DrawTrampoline__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043ca30
 void C2D::DrawTrampoline(ViewData& p_viewData)
 {
-	// GLOBAL: LEMBALL 0x00497098
-	static const short trampolineOffset[] = {22, 22};
-
 	int x;
 	int y;
 	int frame;
@@ -2349,15 +2349,16 @@ void C2D::DrawDuplicator(ViewData& p_viewData)
 	}
 }
 
+// GLOBAL: LEMBALL 0x0049703c
+static const short crateOffset[] = {8, 24};
+
+// GLOBAL: LEMBALL 0x00497040
+static const short crateExplosionOffset[] = {34, 50};
+
 // 68K 0x10b0397e DrawCrate__3C2DFR9CViewDatai
 // FUNCTION: LEMBALL 0x0043d070
 void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 {
-	// GLOBAL: LEMBALL 0x0049703c
-	static const short crateOffset[] = {8, 24};
-	// GLOBAL: LEMBALL 0x00497040
-	static const short crateExplosionOffset[] = {34, 50};
-
 	eAction action;
 	unsigned int stateTimer;
 
@@ -2385,13 +2386,13 @@ void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 	}
 }
 
+// GLOBAL: LEMBALL 0x00497088
+static const short timeBonusOffset[] = {16, 18};
+
 // 68K 0x10b03a4e DrawTimeBonus__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043d0f0
 void C2D::DrawTimeBonus(ViewData& p_viewData)
 {
-	// GLOBAL: LEMBALL 0x00497088
-	static const short timeBonusOffset[] = {16, 18};
-
 	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - timeBonusOffset[0],
 							 p_viewData.m_positionY - timeBonusOffset[1],
 							 RES_GAME_TIME_BONUS,
@@ -2400,15 +2401,16 @@ void C2D::DrawTimeBonus(ViewData& p_viewData)
 							 0);
 }
 
+// GLOBAL: LEMBALL 0x00497044
+static const short baseOffset[] = {40, 60};
+
+// GLOBAL: LEMBALL 0x00497048
+static const short animOffset[] = {40, 60};
+
 // 68K 0x10b03acc DrawCatapult__3C2DFR9CViewDatai
 // FUNCTION: LEMBALL 0x0043d130
 void C2D::DrawCatapult(ViewData& p_viewData, int p_objectNo)
 {
-	// GLOBAL: LEMBALL 0x00497044
-	static const short baseOffset[] = {40, 60};
-	// GLOBAL: LEMBALL 0x00497048
-	static const short animOffset[] = {40, 60};
-
 	int x;
 	int y;
 	BaseRemap* remap;
@@ -2470,6 +2472,9 @@ void C2D::DrawCatapult(ViewData& p_viewData, int p_objectNo)
 	}
 }
 
+// GLOBAL: LEMBALL 0x0049706c
+static const short sheepOffset[] = {9, 8};
+
 // 68K 0x10b03d7e DrawSheep__3C2DFR9CViewDatai
 // FUNCTION: LEMBALL 0x0043d370
 void C2D::DrawSheep(ViewData& p_viewData, int p_objectNo)
@@ -2496,8 +2501,6 @@ void C2D::DrawSheep(ViewData& p_viewData, int p_objectNo)
 		RES_GAME_SHEEP_MUNCH_NW,
 		RES_GAME_SHEEP_WALK_N,
 	};
-	// GLOBAL: LEMBALL 0x0049706c
-	static const short sheepOffset[] = {9, 8};
 
 	unsigned int direction;
 	unsigned int stateTimer;
@@ -2532,15 +2535,16 @@ void C2D::DrawSheep(ViewData& p_viewData, int p_objectNo)
 	}
 }
 
+// GLOBAL: LEMBALL 0x00497074
+static const short ballOffset[] = {10, 15};
+
+// GLOBAL: LEMBALL 0x00497078
+static const short explosionOffset[] = {15, 17};
+
 // 68K 0x10b03e6e DrawBall__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043d420
 void C2D::DrawBall(ViewData& p_viewData)
 {
-	// GLOBAL: LEMBALL 0x00497074
-	static const short ballOffset[] = {10, 15};
-	// GLOBAL: LEMBALL 0x00497078
-	static const short explosionOffset[] = {15, 17};
-
 	int x;
 	int y;
 	int elapsed;
@@ -2564,13 +2568,13 @@ void C2D::DrawBall(ViewData& p_viewData)
 	}
 }
 
+// GLOBAL: LEMBALL 0x00497054
+static const short keyOffset[] = {8, 32};
+
 // 68K 0x10b03f56 DrawKey__3C2DFR9CViewDatai
 // FUNCTION: LEMBALL 0x0043d4b0
 void C2D::DrawKey(ViewData& p_viewData, int p_playerIndex)
 {
-	// GLOBAL: LEMBALL 0x00497054
-	static const short keyOffset[] = {8, 32};
-
 	BaseRemap* remap;
 
 	if (p_playerIndex < 4) {
@@ -2588,15 +2592,16 @@ void C2D::DrawKey(ViewData& p_viewData, int p_playerIndex)
 							 (Remap*) remap);
 }
 
+// GLOBAL: LEMBALL 0x0049704c
+static const short mineOffset[] = {30, 35};
+
+// GLOBAL: LEMBALL 0x00497050
+static const short mineStillOffset[] = {2, 2};
+
 // 68K 0x10b03fc8 DrawMine__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043d500
 void C2D::DrawMine(ViewData& p_viewData)
 {
-	// GLOBAL: LEMBALL 0x0049704c
-	static const short mineOffset[] = {30, 35};
-	// GLOBAL: LEMBALL 0x00497050
-	static const short mineStillOffset[] = {2, 2};
-
 	unsigned int stateTimer;
 	int x;
 	int y;
@@ -2622,13 +2627,13 @@ void C2D::DrawMine(ViewData& p_viewData)
 	}
 }
 
+// GLOBAL: LEMBALL 0x00497094
+static const short doorOffset[] = {26, 24};
+
 // 68K 0x10b0409a DrawDoor__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043d590
 void C2D::DrawDoor(ViewData& p_viewData)
 {
-	// GLOBAL: LEMBALL 0x00497094
-	static const short doorOffset[] = {26, 24};
-
 	int x;
 	int y;
 	int elapsed;
@@ -2716,13 +2721,13 @@ void C2D::DrawDoor(ViewData& p_viewData)
 	}
 }
 
+// GLOBAL: LEMBALL 0x0049707c
+static const short switchOffset[] = {5, 25};
+
 // 68K 0x10b042fa DrawSwitch__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043d7e0
 void C2D::DrawSwitch(ViewData& p_viewData)
 {
-	// GLOBAL: LEMBALL 0x0049707c
-	static const short switchOffset[] = {5, 25};
-
 	int x;
 	int y;
 	unsigned int stateTimer;
@@ -2761,13 +2766,13 @@ void C2D::DrawSwitch(ViewData& p_viewData)
 	}
 }
 
+// GLOBAL: LEMBALL 0x00497080
+static const short flagOffset[] = {15, 28};
+
 // 68K 0x10b0440c DrawFlag__3C2DFR9CViewData11eObjectType
 // FUNCTION: LEMBALL 0x0043d8d0
 void C2D::DrawFlag(ViewData& p_viewData, eObjectType p_objectType)
 {
-	// GLOBAL: LEMBALL 0x00497080
-	static const short flagOffset[] = {15, 28};
-
 	int x;
 	int y;
 
@@ -2785,13 +2790,13 @@ void C2D::DrawFlag(ViewData& p_viewData, eObjectType p_objectType)
 	}
 }
 
+// GLOBAL: LEMBALL 0x00497084
+static const short bonusOffset[] = {16, 16};
+
 // 68K 0x10b044dc DrawBonus__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043d950
 void C2D::DrawBonus(ViewData& p_viewData)
 {
-	// GLOBAL: LEMBALL 0x00497084
-	static const short bonusOffset[] = {16, 16};
-
 	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - bonusOffset[0],
 							 p_viewData.m_positionY - bonusOffset[1],
 							 RES_GAME_BONUS,
