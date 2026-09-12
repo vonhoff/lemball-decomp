@@ -44,19 +44,21 @@ Maze::~Maze()
 // FUNCTION: LEMBALL 0x00423110
 void Maze::ReInitialise()
 {
+	Map* map;
+	int width;
+	unsigned short collision;
 	int y = 0;
+	int x;
 	if (m_height > 0) {
 		do {
-			int x = 0;
+			x = 0;
 			if (m_width > 0) {
 				do {
-					unsigned short collision;
 					if (x < 0 || y < 0) {
 						collision = 3;
 					}
 					else {
-						int width;
-						Map* map = m_map;
+						map = m_map;
 						width = map->m_ground.m_width;
 						if (width <= x || map->m_ground.m_height <= y) {
 							collision = 3;
