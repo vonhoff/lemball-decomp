@@ -66,9 +66,7 @@ GunButtons::GunButtons(GWnd* p_arg0,
 // FUNCTION: LEMBALL 0x0044c410
 GunButtons::~GunButtons()
 {
-	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->Detach(this, 0);
-	}
+	g_pMasterInputQueue->Detach(this, 0);
 	UnLoadFaces();
 }
 

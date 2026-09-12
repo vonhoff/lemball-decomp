@@ -19,15 +19,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 // FUNCTION: LEMBALL 0x0043a540
 void PvButton::Destroy()
 {
-	HotAreaHandler* handler;
-
-	handler = this;
-	if (this == 0) {
-		handler = 0;
-	}
-	if (m_ownerWindow != 0 && m_ownerWindow->m_hotAreaList != 0) {
-		m_ownerWindow->m_hotAreaList->RemoveFromList(handler);
-	}
+	m_ownerWindow->m_hotAreaList->RemoveFromList(this);
 	Wnd::Destroy();
 }
 
