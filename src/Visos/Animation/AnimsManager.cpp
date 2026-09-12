@@ -277,7 +277,13 @@ void AnimsManager::ResetPrimitives()
 	m_resetState = 0;
 	if (m_doubleBuffered == 0) {
 		m_zrleCount = 0;
-		memcpy(&m_animCount, &m_zrleCount, sizeof(m_animCount) + sizeof(m_animDrawMark));
+		struct PrimitiveState {
+			int count;
+			undefined drawMark[4];
+		};
+		PrimitiveState* animState = (PrimitiveState*) &m_animCount;
+		PrimitiveState* zrleState = (PrimitiveState*) &m_zrleCount;
+		*animState = *zrleState;
 		unsigned char* drawMark = (unsigned char*) m_gdi->m_renderTarget->GetCurrDb();
 		m_animDrawMark[0] = *drawMark;
 		m_zrleDrawMark[0] = *drawMark;
