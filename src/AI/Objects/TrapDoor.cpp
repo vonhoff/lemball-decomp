@@ -5,6 +5,12 @@
 #include "../../Map/Base/Map.h"
 #include "ViewData.h"
 
+// GLOBAL: LEMBALL 0x0049cf3c
+unsigned int g_dwTrapDoorLocalSfxState = 0;
+
+// GLOBAL: LEMBALL 0x0049cf40
+unsigned int g_dwTrapDoorRemoteSfxState = 0;
+
 // 68K 0x1062116c __ct__9CTrapDoorFR7AICOORDUc
 // FUNCTION: LEMBALL 0x0040c2d0
 TrapDoor::TrapDoor(AiCoord& p_arg0, unsigned int p_arg1) : BaseGlobalObject(p_arg0, OBJECT_TRAP_DOOR)
@@ -81,10 +87,87 @@ void TrapDoor::GetViewData(ViewData& p_viewData)
 }
 
 // 68K 0x106213e8 Process__9CTrapDoorFv
-// STUB: LEMBALL 0x0040c4f0
+// FUNCTION: LEMBALL 0x0040c4f0
 bool TrapDoor::Process()
 {
-	return 0;
+	if (m_active == 0) {
+		return true;
+	}
+	if (m_isRemoteObject != 0) {
+		bool finished = false;
+		if (m_pendingAction != m_action) {
+			switch (m_action) {
+			case 0x1e:
+				finished = true;
+				break;
+			case 0x20:
+				if (g_dwTrapDoorRemoteSfxState == 0) {
+					g_dwTrapDoorRemoteSfxState = 1;
+					SetSndEffect((eSoundEffect) 0x18);
+				}
+				break;
+			case 0x22:
+				if (g_dwTrapDoorRemoteSfxState == 1) {
+					g_dwTrapDoorRemoteSfxState = 0;
+					SetSndEffect((eSoundEffect) 0x18);
+				}
+				break;
+			}
+			m_pendingAction = m_action;
+		}
+		return !finished;
+	}
+	if (m_mode != 0) {
+		return true;
+	}
+	if (m_actionDeadline <= g_dwGameTick) {
+		m_stateTimer = g_dwSimulationTimestamp;
+		switch (m_action) {
+		case 0x18:
+			if (g_dwTrapDoorLocalSfxState == 0) {
+				SetSndEffect((eSoundEffect) 0x20);
+				g_dwTrapDoorLocalSfxState = 1;
+			}
+			m_actionDeadline = g_dwGameTick + 0x36;
+			Action((eAction) 0x1f);
+			break;
+		case 0x1f:
+			if (g_dwTrapDoorLocalSfxState == 1) {
+				g_dwTrapDoorLocalSfxState = 0;
+				SetSndEffect((eSoundEffect) 0x18);
+			}
+			m_actionDeadline = g_dwGameTick + 0x14;
+			Action((eAction) 0x20);
+			return true;
+		case 0x20:
+			if (g_dwTrapDoorLocalSfxState == 0) {
+				g_dwTrapDoorLocalSfxState = 1;
+				SetSndEffect((eSoundEffect) 1);
+			}
+			m_actionDeadline = g_dwGameTick + 0x50;
+			Action((eAction) 0x21);
+			return true;
+		case 0x21:
+			if (g_dwTrapDoorLocalSfxState == 1) {
+				g_dwTrapDoorLocalSfxState = 0;
+				SetSndEffect((eSoundEffect) 0x18);
+			}
+			m_actionDeadline = g_dwGameTick + 0x14;
+			Action((eAction) 0x22);
+			return true;
+		case 0x22:
+			if (g_dwTrapDoorLocalSfxState == 0) {
+				SetSndEffect((eSoundEffect) 0x21);
+			}
+			m_actionDeadline = g_dwGameTick + 0x36;
+			Action((eAction) 0x23);
+			return true;
+		case 0x23:
+			Action((eAction) 0x1e);
+			return false;
+		}
+	}
+	return true;
 }
 
 // 68K 0x1011b660 Usage__9CTrapDoorFv
