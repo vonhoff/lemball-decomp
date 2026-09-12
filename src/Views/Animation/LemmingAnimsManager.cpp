@@ -482,7 +482,7 @@ void LemmingAnimsManager::Draw()
 }
 
 // 68K 0x10b0b6f2 DrawAnim__20CLemmingAnimsManagerFssUlUlUlP6CRemap
-// STUB: LEMBALL 0x00433fc0
+// FUNCTION: LEMBALL 0x00433fc0
 void LemmingAnimsManager::DrawAnim(short p_x,
 								   short p_y,
 								   unsigned long p_resourceId,
@@ -490,6 +490,344 @@ void LemmingAnimsManager::DrawAnim(short p_x,
 								   unsigned long p_time,
 								   Remap* p_remap)
 {
+	if (p_resourceId == 0) {
+		return;
+	}
+	p_x += m_drawOffsetX;
+	p_y += m_drawOffsetY;
+	switch (p_resourceId) {
+	case RES_GAME_NUMERALS:
+	case RES_GAME_COLON: {
+		Frames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->m_frameState = p_animIndex;
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, 0, frame, p_remap);
+		break;
+	}
+	case RES_GAME_WAIT:
+	case RES_GAME_STARS:
+	case RES_GAME_FILLED_STARS:
+	case RES_GAME_CIRCLES:
+	case RES_GAME_MINE_STILL:
+	case RES_GAME_CRATE:
+	case RES_GAME_BALLOON:
+	case RES_GAME_BALLOON_POST:
+	case RES_GAME_BALLOON_SHADOW:
+	case RES_GAME_LEMMINGSELECTED:
+	case RES_GAME_LEMMINGLEADER:
+	case RES_GAME_SWITCH:
+	case RES_GAME_KEYS:
+	case RES_GAME_CLOUD:
+	case RES_GRASS_TOWER:
+	case RES_CURSORS_HAND:
+	case RES_SNOW_HUT:
+	case RES_LEGO_HUT: {
+		Frames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_SHADOW:
+	case RES_GAME_SPARKLE:
+	case RES_GAME_TRAP_DOOR:
+	case RES_GAME_LEGO_SPARKLE:
+	case RES_GAME_LEGO_TRAP_DOOR:
+	case RES_GAME_SNOW_SPARKLE:
+	case RES_GAME_SNOW_TRAP_DOOR:
+	case RES_GAME_SPACE_SPARKLE:
+	case RES_GAME_SPACE_TRAP_DOOR:
+	case RES_GAME_DOOR:
+	case RES_GAME_DOOR_2:
+	case RES_GAME_LEMMING_SPIN:
+	case RES_GAME_JUMP_NW:
+	case RES_GAME_JUMP_NE:
+	case RES_GAME_JUMP_SW:
+	case RES_GAME_JUMP_SE:
+	case RES_GAME_CATAPULT_SE:
+	case RES_GAME_ONBALLOON:
+	case RES_GAME_ONFIRE:
+	case RES_GAME_SNOW_CATAPULT_SE:
+	case RES_GAME_LEGO_CATAPULT_SE:
+	case RES_GAME_BALL_EXPLODE:
+	case RES_GAME_ROCKET:
+	case RES_GAME_DUPLICATOR:
+	case RES_GAME_SNOW_HAND:
+	case RES_GAME_SPACE_HAND:
+	case RES_GAME_LASER_EAST:
+	case RES_GAME_LASER_FIRE_EAST:
+	case RES_GAME_LASER_NORTH:
+	case RES_GAME_LASER_FIRE_NORTH:
+	case RES_GAME_LEM_LASER_N:
+	case RES_GAME_LEM_LASER_E:
+	case RES_GAME_LEM_LASER_S:
+	case RES_GAME_LEM_LASER_W:
+	case RES_GAME_TRAMPOLINE:
+	case RES_GAME_PAINTGUNSHOT:
+	case RES_GAME_GRASSPAINTGUN:
+	case RES_GAME_SNOWPAINTGUN:
+	case RES_GAME_SPACEPAINTGUN:
+	case RES_GAME_SLINKY_EAST:
+	case RES_GAME_SLINKY_SOUTH:
+	case RES_GAME_SLINKY_WEST:
+	case RES_GAME_SLINKY_NORTH:
+	case RES_GAME_STAR:
+	case RES_GAME_OUTLINE:
+	case RES_GAME_ANIM:
+	case RES_LEGO_LEGOTREE: {
+		Frames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->m_frameState = p_animIndex;
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_LEMMINGWALKN:
+	case RES_GAME_LEMMINGWALKNE:
+	case RES_GAME_LEMMINGWALKE:
+	case RES_GAME_LEMMINGWALKSE:
+	case RES_GAME_LEMMINGWALKS:
+	case RES_GAME_LEMMINGWALKSW:
+	case RES_GAME_LEMMINGWALKW:
+	case RES_GAME_LEMMINGWALKNW:
+	case RES_GAME_SOMMERSAULT:
+	case RES_GAME_SOMMERSAULT_REV:
+	case RES_GAME_LEMMINGSTANDN:
+	case RES_GAME_LEMMINGSTANDNE:
+	case RES_GAME_LEMMINGSTANDE:
+	case RES_GAME_LEMMINGSTANDSE:
+	case RES_GAME_LEMMINGSTANDS:
+	case RES_GAME_LEMMINGSTANDSW:
+	case RES_GAME_LEMMINGSTANDW:
+	case RES_GAME_LEMMINGSTANDNW: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(1000);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_WAIT_LOOK: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(1933);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_WAIT_TOSS: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(1600);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_WAIT_JIG: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(2700);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_LEMMINGFIREN:
+	case RES_GAME_LEMMINGFIRENE:
+	case RES_GAME_LEMMINGFIREE:
+	case RES_GAME_LEMMINGFIRESE:
+	case RES_GAME_LEMMINGFIRES:
+	case RES_GAME_LEMMINGFIRESW:
+	case RES_GAME_LEMMINGFIREW:
+	case RES_GAME_LEMMINGFIRENW: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(2000);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_LEMMINGPELLETN:
+	case RES_GAME_LEMMINGPELLETNE:
+	case RES_GAME_LEMMINGPELLETE:
+	case RES_GAME_LEMMINGPELLETSE:
+	case RES_GAME_LEMMINGPELLETS:
+	case RES_GAME_LEMMINGPELLETSW:
+	case RES_GAME_LEMMINGPELLETW:
+	case RES_GAME_LEMMINGPELLETNW:
+	case RES_GAME_BALL: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(500);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_HIT_NORTH:
+	case RES_GAME_HIT_NORTH_EAST:
+	case RES_GAME_HIT_EAST:
+	case RES_GAME_HIT_SOUTH_EAST:
+	case RES_GAME_HIT_SOUTH:
+	case RES_GAME_HIT_SOUTH_WEST:
+	case RES_GAME_HIT_WEST:
+	case RES_GAME_HIT_NORTH_WEST: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(3000);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_CATAPULT_ANIMSE:
+	case RES_GAME_SNOW_CATAPULT_ANIMSE:
+	case RES_GAME_LEGO_CATAPULT_ANIMSE: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(3133);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_CATMOUNT_SE: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(2333);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_YELLOW_AMMO:
+	case RES_GAME_TIME_BONUS: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(1000);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_FLAG_GREEN:
+	case RES_GAME_BONUS: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(1500);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_EX_PELLET: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(400);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_MINE:
+	case RES_GAME_SWITCH_ANIM: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(900);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_CRATE_EXPLODE: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(1500);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_SHEEP_WALK_N:
+	case RES_GAME_SHEEP_WALK_NE:
+	case RES_GAME_SHEEP_WALK_E:
+	case RES_GAME_SHEEP_WALK_SE:
+	case RES_GAME_SHEEP_WALK_S:
+	case RES_GAME_SHEEP_WALK_SW:
+	case RES_GAME_SHEEP_WALK_W:
+	case RES_GAME_SHEEP_WALK_NW: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(1400);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_SHEEP_MUNCH_NE:
+	case RES_GAME_SHEEP_MUNCH_SE:
+	case RES_GAME_SHEEP_MUNCH_SW:
+	case RES_GAME_SHEEP_MUNCH_NW: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(p_animIndex);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(2400);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_SPINARROW: {
+		TimedAnim* frame = (TimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->SetStartTime(0);
+		frame->m_fixedTime = p_time;
+		frame->SetAnimTime(560);
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_BLOX_1:
+	case RES_GAME_BLOX_2:
+	case RES_GAME_BLOX_3:
+	case RES_GAME_BLOX_4:
+	case RES_GAME_BLOX_5:
+	case RES_GAME_BLOX_6:
+	case RES_GAME_BLOX_7:
+	case RES_GAME_BLOX_8:
+	case RES_GAME_BLOX_14:
+	case RES_GAME_BLOX_15:
+	case RES_GAME_LEGO_1:
+	case RES_GAME_LEGO_2:
+	case RES_GAME_LEGO_3:
+	case RES_GAME_LEGO_4:
+	case RES_GAME_LEGO_5:
+	case RES_GAME_LEGO_6:
+	case RES_GAME_LEGO_7:
+	case RES_GAME_LEGO_8:
+	case RES_GAME_LEGO_14:
+	case RES_GAME_LEGO_15:
+	case RES_GAME_SNOW_1:
+	case RES_GAME_SNOW_2:
+	case RES_GAME_SNOW_3:
+	case RES_GAME_SNOW_4:
+	case RES_GAME_SNOW_5:
+	case RES_GAME_SNOW_6:
+	case RES_GAME_SNOW_7:
+	case RES_GAME_SNOW_8:
+	case RES_GAME_SNOW_14:
+	case RES_GAME_SNOW_15:
+	case RES_GAME_SPACE_1:
+	case RES_GAME_SPACE_2:
+	case RES_GAME_SPACE_3:
+	case RES_GAME_SPACE_4:
+	case RES_GAME_SPACE_5:
+	case RES_GAME_SPACE_6:
+	case RES_GAME_SPACE_7:
+	case RES_GAME_SPACE_8:
+	case RES_GAME_SPACE_14:
+	case RES_GAME_SPACE_15:
+	case RES_GRASS_FLAT:
+	case RES_GRASS_BLOX:
+	case RES_GRASS_TREE:
+	case RES_GRASS_PATH:
+	case RES_GRASS_ROCK:
+	case RES_SNOW_SNOWTREE: {
+		Frames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->m_frameState = p_animIndex;
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	case RES_GAME_CONVEYOR:
+	case RES_GAME_FLAME:
+	case RES_GAME_ELECTRIC:
+	case RES_GAME_EMBERS: {
+		Frames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->m_frameState = p_animIndex;
+		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	}
 }
 
 // 68K 0x10b0c052 LoadAnimation__20CLemmingAnimsManagerFUl9ANIM_TYPE

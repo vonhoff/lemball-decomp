@@ -7,10 +7,7 @@
 // VTABLE: LEMBALL 0x00496d04
 class Frames {
 public:
-	Frames(unsigned int p_frames = 0)
-	{
-		m_frames = p_frames;
-	}
+	Frames(unsigned int p_frames = 0) { m_frames = p_frames; }
 	virtual unsigned int GetFrameNo(); // vtable+0x00
 
 	friend class BaseFrontendDrawer;
@@ -19,6 +16,7 @@ public:
 	friend class CdLoadAnim;
 	friend class HiliteController;
 	friend class PasswordDrawer;
+	friend class LemmingAnimsManager;
 
 protected:
 	unsigned int m_frames;     // 0x04
