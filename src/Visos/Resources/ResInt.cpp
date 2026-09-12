@@ -20,8 +20,3 @@ void ResInt::OnLoad()
 {
 	m_value = ((IntPayload*) m_data)->m_value;
 }
-
-// 68K 0x10100e7a __dt__7CResINTFv
-ResInt::~ResInt()
-{
-}

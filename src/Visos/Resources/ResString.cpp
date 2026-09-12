@@ -30,8 +30,3 @@ ResString::ResString()
 {
 	Initialise();
 }
-
-// 68K 0x10100fdc __dt__10CResSTRINGFv
-ResString::~ResString()
-{
-}

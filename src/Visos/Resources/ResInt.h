@@ -16,7 +16,6 @@ public:
 	ResInt();
 	virtual void OnLoad();  // vtable+0x2c
 	virtual void SetType(); // vtable+0x34
-	virtual ~ResInt();      // vtable+0x00
 
 	friend class FontTable;
 

@@ -12,7 +12,6 @@ public:
 	ResString();
 	static ResString* Load(unsigned int p_resourceId);
 	virtual void SetType(); // vtable+0x34
-	virtual ~ResString();   // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x0045eac0
