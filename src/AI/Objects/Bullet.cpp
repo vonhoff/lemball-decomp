@@ -1,7 +1,5 @@
 #include "Bullet.h"
 
-#include "../Messages/GameMessageIds.h"
-
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
@@ -10,6 +8,7 @@
 #include "../../Visos/Network/Connect.h"
 #include "../Managers/BaseObjectManager.h"
 #include "../Managers/BulletManager.h"
+#include "../Messages/GameMessageIds.h"
 #include "../Navigation/Ai.h"
 
 // 68K 0x10119804 __dt__7CBulletFv
@@ -106,79 +105,101 @@ void Bullet::FireBullet()
 // FUNCTION: LEMBALL 0x0041a7a0
 bool Bullet::Process()
 {
-	unsigned int currentTick = g_dwGameTick;
+	Ai* ai;
+	Map* map;
+	GameObject* candidate;
+	unsigned int currentTick;
 	if (m_isRemoteObject != 0) {
 		currentTick = g_dwRemoteGameTick;
 	}
-	if (m_action == 8) {
-		return 0;
+	else {
+		currentTick = g_dwGameTick;
 	}
-	Pt3 pos;
-	pos.m_x = 0;
-	pos.m_y = 0;
-	pos.m_z = 0;
-	unsigned int tick = m_lastMovementTick;
-	if ((int) tick <= (int) currentTick) {
-		do {
-			if (m_actionDeadline < tick) {
-				return 0;
-			}
-			m_movement.Position(pos, tick);
-			if (pos.m_x < 0 || pos.m_x > 0x3ff || pos.m_y < 0 || pos.m_y > 0x3ff) {
-				return 0;
-			}
-			int tileX = (pos.m_x + ((pos.m_x >> 31) & 0xf)) >> 4;
-			int tileY = (pos.m_y + ((pos.m_y >> 31) & 0xf)) >> 4;
-			int width = g_pMap->m_ground.m_width;
-			int height = g_pMap->m_ground.m_height;
-			unsigned short collision;
-			if (tileX < 0 || tileY < 0 || width <= tileX || height <= tileY) {
-				collision = 3;
-			}
-			else {
-				collision = g_pMap->m_ground.m_ground[width * tileY + tileX].m_collision;
-			}
-			if ((collision & 2) != 0) {
-				return 0;
-			}
-			if (m_isRemoteObject == 0) {
-				unsigned short groundZ;
-				if (pos.m_x < 0 || pos.m_y < 0 || width <= (pos.m_x >> 4) || height <= (pos.m_y >> 4)) {
-					groundZ = 0;
-				}
-				else {
-					groundZ = g_pMap->m_ground.GetZ(pos.m_x, pos.m_y);
-				}
-				if (pos.m_z <= (int) groundZ) {
-					m_position.m_xFixed = pos.m_x << 12;
-					m_position.m_yFixed = pos.m_y << 12;
-					m_position.m_zFixed = pos.m_z << 12;
-					g_pAI->StepOn(m_position, this, m_collisionFlags);
+	if (m_action != 8) {
+		Pt3 pos;
+		pos.m_x = 0;
+		pos.m_y = 0;
+		pos.m_z = 0;
+		unsigned int tick = m_lastMovementTick;
+		if ((int) currentTick >= (int) tick) {
+			do {
+				if (m_actionDeadline < tick) {
 					return 0;
 				}
-			}
-			GameObject* hitObject = 0;
-			for (int i = 0; i < g_pAI->m_objectCount; i++) {
-				GameObject* obj = g_pAI->m_objects[i];
-				if (obj != this && obj->Collision(pos)) {
-					hitObject = obj;
-					break;
+				m_movement.Position(pos, tick);
+				if (pos.m_x < 0 || pos.m_x > 0x3ff || pos.m_y < 0 || pos.m_y > 0x3ff) {
+					return 0;
 				}
-			}
-			if (hitObject != 0 && hitObject->GetId() != m_sourceObjectId) {
-				if (m_owner != 2 || hitObject->m_objectType == 2) {
-					hitObject->HitBullet(this);
+				int tileX = pos.m_x / 16;
+				int tileY;
+				int width;
+				Map* collisionMap;
+				unsigned short collision;
+				if (tileX < 0 || (tileY = pos.m_y / 16) < 0 ||
+					(width = (collisionMap = g_pMap)->m_ground.m_width) <= tileX ||
+					g_pMap->m_ground.m_height <= tileY) {
+					collision = 3;
 				}
-				return 0;
-			}
-			tick++;
-		} while ((int) tick <= (int) currentTick);
+				else {
+					collision = g_pMap->m_ground.m_ground[width * tileY + tileX].m_collision;
+				}
+				if ((collision & 2) != 0) {
+					return 0;
+				}
+				if (m_isRemoteObject == 0) {
+					unsigned short groundZ;
+					map = g_pMap;
+					int blockX = pos.m_x >> 4;
+					int blockY = pos.m_y >> 4;
+					if (pos.m_x < 0 || pos.m_y < 0 || map->m_ground.m_width <= blockX ||
+						map->m_ground.m_height <= blockY) {
+						groundZ = 0;
+					}
+					else {
+						int x = pos.m_x & 15;
+						int y = pos.m_y & 15;
+						groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(x, y);
+					}
+					if (pos.m_z <= (int) groundZ) {
+						m_position.m_xFixed = pos.m_x << 12;
+						m_position.m_yFixed = pos.m_y << 12;
+						m_position.m_zFixed = pos.m_z << 12;
+						g_pAI->StepOn(m_position, this, m_collisionFlags);
+						return 0;
+					}
+				}
+				ai = g_pAI;
+				ai->m_collisionExclude = 0;
+				ai->m_collisionPoint = pos;
+				ai->m_collisionIndex = 0;
+				while (ai->m_collisionIndex < ai->m_objectCount) {
+					GameObject* object = ai->m_objects[ai->m_collisionIndex];
+					if (object != ai->m_collisionExclude && object->Collision(ai->m_collisionPoint)) {
+						candidate = ai->m_objects[ai->m_collisionIndex];
+						ai->m_collisionIndex++;
+						goto hitFound;
+					}
+					ai->m_collisionIndex++;
+				}
+				candidate = 0;
+			hitFound:
+				GameObject* hitObject = candidate;
+				if (hitObject != 0 && (unsigned short) hitObject->GetId() != m_sourceObjectId) {
+					if (m_owner != 2 || hitObject->m_objectType == 2) {
+						hitObject->HitBullet(this);
+					}
+					return 0;
+				}
+				tick++;
+			} while ((int) currentTick >= (int) tick);
+		}
+		m_position.m_xFixed = pos.m_x << 12;
+		m_position.m_yFixed = pos.m_y << 12;
+		m_position.m_zFixed = pos.m_z << 12;
+		m_lastMovementTick = currentTick;
+		return 1;
 	}
-	m_position.m_xFixed = pos.m_x << 12;
-	m_position.m_yFixed = pos.m_y << 12;
-	m_position.m_zFixed = pos.m_z << 12;
-	m_lastMovementTick = currentTick;
-	return 1;
+	return 0;
 }
 
 // 68K 0x10604b20 AddData__7CBulletFv
