@@ -16,7 +16,7 @@ public:
 
 	friend class Surface;
 
-private:
+public:
 	unsigned char* m_remap;        // 0x00
 	ResPalette* m_paletteResource; // 0x04
 };

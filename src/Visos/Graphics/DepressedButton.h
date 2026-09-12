@@ -20,7 +20,7 @@ public:
 	virtual void OnExitButton();                // vtable+0xcc
 	friend class PanelLemming;
 
-private:
+protected:
 	unsigned int m_depressed;          // 0x104
 	unsigned int m_lastDrawnDepressed; // 0x108
 };

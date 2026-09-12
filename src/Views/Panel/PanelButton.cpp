@@ -4,6 +4,7 @@
 #include "../../AI/Groups/PlayerLemmingGroupManager.h"
 #include "../../AI/Navigation/Ai.h"
 #include "../../AI/Objects/PlayerLemming.h"
+#include "../../Visos/Graphics/BaseRemap.h"
 #include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/HotAreaList.h"
@@ -13,6 +14,8 @@
 #include "../Sound/SoundView.h"
 #include "Panel.h"
 #include "PanelLemming.h"
+
+#include <memory.h>
 
 extern char g_szButton[];
 
@@ -78,9 +81,126 @@ void PanelButton::OnInside(const VsPoint& p_point)
 }
 
 // 68K 0x10b0ccb6 DrawButton__12CPanelButtonFv
-// STUB: LEMBALL 0x00442690
+// FUNCTION: LEMBALL 0x00442690
 void PanelButton::DrawButton()
 {
+	BaseRemap* playerRemap;
+	BaseRemap* balloonRemap = 0;
+	PanelLemming* lemming = m_lemming;
+	if ((int) lemming->m_playerIndex < 4) {
+		playerRemap = lemming->m_panel->m_game->m_remaps[lemming->m_playerIndex];
+	}
+	else {
+		playerRemap = 0;
+	}
+	if (lemming->m_balloonType != -1) {
+		if ((int) lemming->m_balloonType < 4) {
+			balloonRemap = lemming->m_panel->m_game->m_remaps[lemming->m_balloonType];
+		}
+		else {
+			balloonRemap = 0;
+		}
+	}
+	unsigned int frame;
+	if (m_depressed != 0 && m_unavailable == 0) {
+		frame = 0;
+	}
+	else {
+		frame = 1;
+	}
+	m_gdi->m_renderTarget->GetCurrDb();
+	const VsPoint* position = (const VsPoint*) &m_statusRect;
+	ResAnim* resource = m_lemming->m_panel->m_resources[1];
+	m_statusAnim[0].m_x = position->m_x;
+	m_statusAnim[0].m_y = position->m_y;
+	m_statusAnim[0].m_animResource = resource;
+	m_statusAnim[0].m_animIndex = frame;
+	m_statusAnim[0].m_flags = 0;
+	m_statusAnim[0].m_remap = (Remap*) playerRemap;
+	m_statusAnim[0].Draw(m_gdi);
+	lemming = m_lemming;
+	if (lemming->m_balloonType != -1 && m_unavailable == 0) {
+		position = (const VsPoint*) &m_inventoryRect;
+		resource = lemming->m_panel->m_resources[3];
+		m_inventoryAnim[0].m_x = position->m_x;
+		m_inventoryAnim[0].m_y = position->m_y;
+		m_inventoryAnim[0].m_animResource = resource;
+	}
+	else {
+		if (m_unavailable != 0) {
+			frame = 2;
+		}
+		if (m_alternatePlayer != 0) {
+			frame += 3;
+		}
+		position = (const VsPoint*) &m_inventoryRect;
+		resource = lemming->m_panel->m_resources[2];
+		m_inventoryAnim[0].m_x = position->m_x;
+		m_inventoryAnim[0].m_y = position->m_y;
+		m_inventoryAnim[0].m_animResource = resource;
+	}
+	m_inventoryAnim[0].m_animIndex = frame;
+	m_inventoryAnim[0].m_flags = 0;
+	m_inventoryAnim[0].m_remap = (Remap*) balloonRemap;
+	m_inventoryAnim[0].Draw(m_gdi);
+	int ammo = m_lemming->m_lemming->m_ammoCount;
+	VsSize ammoSize;
+	ammoSize.m_width = 27;
+	ammoSize.m_height = 9;
+	VsPoint ammoPosition(7, 11);
+	unsigned int color;
+	VsSize inventorySize;
+	inventorySize.m_width = 6;
+	inventorySize.m_height = 4;
+	VsPoint inventoryPosition(7, 4);
+	ammoSize.m_width = (short) (ammo * ammoSize.m_width / 50);
+	if (m_depressed != 0 && m_unavailable == 0) {
+		color = 0x76;
+	}
+	else {
+		color = 0x45;
+		ammoPosition.m_x++;
+		ammoPosition.m_y++;
+		inventoryPosition.m_x++;
+		inventoryPosition.m_y++;
+	}
+	unsigned int mappedColor;
+	if (playerRemap != 0) {
+		mappedColor = playerRemap->m_remap[color];
+	}
+	else {
+		// Original fallback reads the packed ammunition size at 0x004428c1.
+		memcpy(&mappedColor, &ammoSize, sizeof(mappedColor));
+	}
+	*(VsSize*) &m_statusLine[0].m_x1 = ammoSize;
+	*(VsPoint*) &m_statusLine[0].m_x2 = ammoPosition;
+	m_statusLine[0].m_color = mappedColor;
+	m_statusLine[0].Draw(m_gdi);
+	if (m_unavailable == 0) {
+		Line* line = m_inventoryLines;
+		for (int i = 0; i < (int) m_lemming->m_inventoryCount; i++) {
+			int type = m_lemming->m_inventoryTypes[i];
+			BaseRemap* remap;
+			if (type < 4) {
+				remap = m_lemming->m_panel->m_game->m_remaps[type];
+			}
+			else {
+				remap = 0;
+			}
+			if (remap == 0) {
+				mappedColor = color;
+			}
+			else {
+				mappedColor = remap->m_remap[color];
+			}
+			*(VsSize*) &line->m_x1 = inventorySize;
+			*(VsPoint*) &line->m_x2 = inventoryPosition;
+			line->m_color = mappedColor;
+			line->Draw(m_gdi);
+			line++;
+			inventoryPosition.m_x += 11;
+		}
+	}
 }
 
 // 68K 0x10b0d146 OnPaint__12CPanelButtonFRC7CVSRect

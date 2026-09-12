@@ -5,7 +5,6 @@
 
 // SIZE 0x04
 struct VsPoint {
-	// FUNCTION: LEMBALL 0x00442150
 	VsPoint(const VsPoint& p_source) : m_x(p_source.m_x), m_y(p_source.m_y) {}
 
 	// FUNCTION: LEMBALL 0x0044b5d0

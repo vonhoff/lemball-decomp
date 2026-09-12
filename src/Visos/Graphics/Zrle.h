@@ -21,7 +21,7 @@ public:
 	friend class GraphicButton;
 	friend class BaseCursor;
 
-private:
+public:
 	short m_x;            // 0x04
 	short m_y;            // 0x06
 	ResBase* m_resource;  // 0x08

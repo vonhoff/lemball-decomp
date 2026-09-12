@@ -93,6 +93,34 @@
       "code": "*(unsigned int*) &((BasePacketHeader*) data)->m_subpacketSequence;",
       "count": 1,
       "reason": "Intentional packet-header transfer using the on-wire header layout."
+    },
+    {
+      "path": "src/Views/Panel/PanelButton.cpp",
+      "rule": "addr-cast-punning",
+      "code": "*(VsSize*) &m_statusLine[0].m_x1 = ammoSize;",
+      "count": 1,
+      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at Line+4; 0x004428e0/0x0044296b calls point assignment at Line+8. Named field pairs preserve the existing Line layout."
+    },
+    {
+      "path": "src/Views/Panel/PanelButton.cpp",
+      "rule": "addr-cast-punning",
+      "code": "*(VsPoint*) &m_statusLine[0].m_x2 = ammoPosition;",
+      "count": 1,
+      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at Line+4; 0x004428e0/0x0044296b calls point assignment at Line+8. Named field pairs preserve the existing Line layout."
+    },
+    {
+      "path": "src/Views/Panel/PanelButton.cpp",
+      "rule": "addr-cast-punning",
+      "code": "*(VsSize*) &line->m_x1 = inventorySize;",
+      "count": 1,
+      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at Line+4; 0x004428e0/0x0044296b calls point assignment at Line+8. Named field pairs preserve the existing Line layout."
+    },
+    {
+      "path": "src/Views/Panel/PanelButton.cpp",
+      "rule": "addr-cast-punning",
+      "code": "*(VsPoint*) &line->m_x2 = inventoryPosition;",
+      "count": 1,
+      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at Line+4; 0x004428e0/0x0044296b calls point assignment at Line+8. Named field pairs preserve the existing Line layout."
     }
   ]
 }

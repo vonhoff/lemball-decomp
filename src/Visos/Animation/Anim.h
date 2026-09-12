@@ -17,7 +17,7 @@ public:
 	friend class GraphicButton;
 	friend class PauseWindow;
 
-private:
+public:
 	unsigned int m_animIndex; // 0x18
 	ResAnim* m_animResource;  // 0x1c
 };

@@ -28,7 +28,7 @@ public:
 	friend class C2D;
 	friend class TrackWindow;
 
-private:
+public:
 	short m_x1;           // 0x04
 	short m_y1;           // 0x06
 	short m_x2;           // 0x08
