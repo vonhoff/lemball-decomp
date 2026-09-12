@@ -176,8 +176,7 @@ private:
 	unsigned short m_clipSearchHeight;              // 0x8d0
 	VsRect m_spriteGroundLookupRectA;               // 0x8d2
 	VsRect m_spriteGroundLookupRectB;               // 0x8da
-	VsPoint m_unk0x8e2;                             // 0x8e2
-	VsPoint m_demoTextPosition;                     // 0x8e6
+	VsRect m_demoTextRect;                          // 0x8e2
 	undefined m_pad0x8ea[2];                        // 0x8ea
 	unsigned int m_zBufferEnabled;                  // 0x8ec
 	int m_score;                                    // 0x8f0

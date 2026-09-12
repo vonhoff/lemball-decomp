@@ -1140,8 +1140,8 @@ void C2D::SetClipSize()
 	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
 		font = m_textManager->GetFont(0xf8);
 		font->GetSize(&size, "Demo", 0x20);
-		m_demoTextPosition.m_y = 0;
-		m_demoTextPosition.m_x = (short) ((m_clipSize.m_x - size.m_width) / 2);
+		m_demoTextRect.m_y = 0;
+		m_demoTextRect.m_x = (short) ((m_clipSize.m_x - size.m_width) / 2);
 	}
 }
 
@@ -2457,10 +2457,32 @@ void C2D::DrawSlinky(ViewData& p_viewData)
 {
 }
 
+// GLOBAL: LEMBALL 0x0049709c
+static const short paintGunOffset[] = {25, 27};
+
 // 68K 0x10b035b4 DrawPaintGun__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043cd50
+// FUNCTION: LEMBALL 0x0043cd50
 void C2D::DrawPaintGun(ViewData& p_viewData)
 {
+	int x = p_viewData.m_positionX - paintGunOffset[0];
+	int y = p_viewData.m_positionY - paintGunOffset[1];
+	int frame;
+	if (p_viewData.m_action == 3 || p_viewData.m_action == 0x1b) {
+		frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 8 / 1000;
+		if (frame > 57) {
+			frame = 0;
+		}
+		if (frame < 12) {
+			m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[1], frame, 0, 0);
+		}
+		if (frame > 11 && frame < 47) {
+			m_lemmingAnims->DrawAnim(x, y, g_anGroundStyleResourceIds[1], 11, 0, 0);
+			m_lemmingAnims->DrawAnim(x, y, RES_GAME_PAINTGUNSHOT, frame - 12, 0, 0);
+		}
+		if (frame > 46) {
+			m_lemmingAnims->DrawAnim(x, y + frame - 47, g_anGroundStyleResourceIds[1], 11, 0, 0);
+		}
+	}
 }
 
 // 68K 0x10b036dc DrawLaserFire__3C2DFR9CViewData
@@ -3237,9 +3259,29 @@ void C2D::DrawObjects()
 }
 
 // 68K 0x10b05744 DrawDemo__3C2DFv
-// STUB: LEMBALL 0x0043fce0
+// FUNCTION: LEMBALL 0x0043fce0
 void C2D::DrawDemo()
 {
+	// GLOBAL: LEMBALL 0x004a78c4
+	static unsigned long lastBlink = CurrentMilliTimer();
+	// GLOBAL: LEMBALL 0x004a78c8
+	// ?$S2@?1??DrawDemo@C2D@@QAEXXZ@4EA
+	// GLOBAL: LEMBALL 0x0049efc8
+	static int visible = 0;
+	// GLOBAL: LEMBALL 0x0049ee70
+	static char* demoText = "Demo";
+	if (CurrentMilliTimer() - lastBlink > 500) {
+		visible = !visible;
+		lastBlink = CurrentMilliTimer();
+	}
+	if (visible) {
+		VsPoint& position = m_demoTextRect;
+		VsSize advance;
+		advance.m_height = 0;
+		advance.m_width = 0;
+		m_textManager
+			->DrawString(m_gdi, position, advance, RES_BORDERS_LORES_CUTFONT, demoText, 0x20, (Remap*) m_remaps[4]);
+	}
 }
 
 // 68K 0x10b05804 DrawTime__3C2DFv
