@@ -20,6 +20,8 @@ public:
 	void SetSelectionHighlight(int p_selected);
 	void EnsureLineVisible(int p_line);
 	void UpdateSelection(int p_x, int p_y, undefined4 p_arg2);
+	char* GetSelectionText();
+	void CopySelection();
 
 private:
 	void* m_windowHandle;               // 0x1c

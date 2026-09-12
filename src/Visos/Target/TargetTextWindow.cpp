@@ -273,6 +273,79 @@ void TargetTextWindow::UpdateSelection(int p_x, int p_y, undefined4 p_arg2)
 	LeaveCritical();
 }
 
+// GLOBAL: LEMBALL 0x004a2c9c
+static char g_unableToAllocateSelectionText[] = "GetSelectionAsString: Unable to allocate string memory";
+
+// GLOBAL: LEMBALL 0x004a2cd8
+static char g_copyBufferInfo[] = "INFO";
+
+// GLOBAL: LEMBALL 0x004a2ce0
+static char g_unableToAllocateCopyBuffer[] = "Unable to allocate copy buffer";
+
+// GLOBAL: LEMBALL 0x004a2d00
+static char g_clipboardInfo[] = "INFO";
+
+// GLOBAL: LEMBALL 0x004a2d08
+static char g_unableToAllocateClipboard[] = "Unable to allocate clipboard";
+
+// FUNCTION: LEMBALL 0x00474520
+char* TargetTextWindow::GetSelectionText()
+{
+	EnterCritical();
+	unsigned int length = 0;
+	int line;
+	for (line = m_selectionStart; line <= m_selectionEnd; line++) {
+		length += strlen(m_lineBuffer->m_lines[line].m_text) + 2;
+	}
+	char* text = (char*) malloc(length + 1);
+	if (text == 0) {
+		FatalWin32Error(g_unableToAllocateSelectionText);
+	}
+	text[0] = 0;
+	for (line = m_selectionStart; line <= m_selectionEnd; line++) {
+		strcat(text, m_lineBuffer->m_lines[line].m_text);
+		// STRING: LEMBALL 0x004a2cd4
+		memcpy(text + strlen(text), "\r\n", 3);
+	}
+	LeaveCritical();
+	return text;
+}
+
+// FUNCTION: LEMBALL 0x00474620
+void TargetTextWindow::CopySelection()
+{
+	EnterCritical();
+	if (m_selectionStart == -1 || m_selectionEnd == -1) {
+		LeaveCritical();
+		return;
+	}
+	char* text = GetSelectionText();
+	HGLOBAL memory = GlobalAlloc(0x2002, strlen(text) + 1);
+	if (memory == 0) {
+		free(text);
+		MessageBoxA(0, g_unableToAllocateCopyBuffer, g_copyBufferInfo, 0);
+		LeaveCritical();
+		return;
+	}
+	char* copy = (char*) GlobalLock(memory);
+	strcpy(copy, text);
+	GlobalUnlock(memory);
+	free(text);
+	if (OpenClipboard((HWND) m_windowHandle) != 0) {
+		EmptyClipboard();
+		SetClipboardData(1, memory);
+		CloseClipboard();
+	}
+	else {
+		MessageBoxA(0, g_unableToAllocateClipboard, g_clipboardInfo, 0);
+		GlobalFree(memory);
+	}
+	SetSelectionHighlight(0);
+	m_selectionEnd = -1;
+	m_selectionStart = -1;
+	LeaveCritical();
+}
+
 // GLOBAL: LEMBALL 0x004a44d8 SYMBOL
 // __locktable
 
