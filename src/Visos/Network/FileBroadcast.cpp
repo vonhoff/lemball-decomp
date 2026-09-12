@@ -47,9 +47,6 @@ void FileBroadcast::Setup(const char* p_peerName, const char* p_path)
 // FUNCTION: LEMBALL 0x0047a570
 FileBroadcast::FileBroadcast()
 {
-	m_message.Initialise();
-	m_message.m_payloadCapacity += 2;
-	m_message.m_openCount = 0;
 	*g_pBroadcastAddress = g_szBroadcastPeerName;
 
 	if (g_pFileBroadcast == 0) {
@@ -57,9 +54,10 @@ FileBroadcast::FileBroadcast()
 	}
 
 	FileCommonSocket::m_unk0x08 = 0x14;
-	Headers* headers = new Headers(FileCommonSocket::m_unk0x08);
-	FileReadSocket::m_file = headers;
-	FileWriteSocket::m_file = headers;
+	FileWriteSocket::m_file = new Headers(FileCommonSocket::m_unk0x08);
+	FileReadSocket::m_file = FileWriteSocket::m_file;
+	FileWriteSocket::m_unk0x04 = g_pFileBroadcast->m_payloadCapacity + m_message.m_payloadCapacity;
+	FileReadSocket::m_unk0x04 = FileWriteSocket::m_unk0x04;
 	m_portInfoLocked = 0;
 }
 

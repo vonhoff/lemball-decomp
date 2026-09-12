@@ -7,6 +7,7 @@
 // VTABLE: LEMBALL 0x0049a570
 class NetworkFile {
 public:
+	NetworkFile() : m_filename(0), m_closed(1) {}
 	virtual bool Open(const char* p_filename, unsigned char p_mode, int p_create); // vtable+0x00
 	virtual bool Create(const char* p_filename, unsigned char p_mode);             // vtable+0x04
 	virtual bool CheckExists(const char* p_filename);                              // vtable+0x08
