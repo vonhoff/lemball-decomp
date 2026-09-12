@@ -13,7 +13,7 @@
 // VTABLE: LEMBALL 0x0049823c AnimsManager
 class HiliteController : public BaseQueueHandler, public AnimsManager {
 public:
-	HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned char p_arg3, unsigned char p_arg4);
+	HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned int p_arg3, unsigned int p_arg4);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~HiliteController();                // vtable+0x04
 	void ActivateButtons(int p_active);

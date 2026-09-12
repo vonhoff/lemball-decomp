@@ -16,7 +16,7 @@
 
 // 68K 0x1080503a __ct__17CHiliteControllerFP5CGWndP4CGDIiUcUc
 // FUNCTION: LEMBALL 0x0044f440
-HiliteController::HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned char p_arg3, unsigned char p_arg4)
+HiliteController::HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned int p_arg3, unsigned int p_arg4)
 	: AnimsManager(p_arg1, 0x2b6, 1, 1, 0, 0)
 {
 	int index;
