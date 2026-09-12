@@ -4,6 +4,8 @@
 #include "../../Common.h"
 #include "../Foundation/Critical.h"
 
+struct tagPAINTSTRUCT;
+
 // SIZE 0x58
 class TargetTextWindow : public Critical {
 public:
@@ -14,6 +16,7 @@ public:
 	int UpdateVisibleRows();
 	int UpdateClientWidth();
 	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, undefined4 p_arg2);
+	void Paint(void* p_dc, const tagPAINTSTRUCT* p_paint);
 	void Scroll(int p_scrollCode, int p_thumbPos);
 	void BeginSelection(int p_x, int p_y, undefined4 p_arg2);
 	void EndSelection(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2);

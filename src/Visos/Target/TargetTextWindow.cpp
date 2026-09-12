@@ -148,6 +148,50 @@ void TargetTextWindow::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, 
 	LeaveCritical();
 }
 
+// FUNCTION: LEMBALL 0x00474130
+void TargetTextWindow::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
+{
+	EnterCritical();
+	RECT paintRect;
+	if (p_paint == 0) {
+		GetClientRect((HWND) m_windowHandle, &paintRect);
+	}
+	else {
+		paintRect = p_paint->rcPaint;
+	}
+	SelectObject((HDC) p_dc, (HFONT) m_fontHandle);
+	int lineHeight = m_lineHeight;
+	int count = (paintRect.bottom - paintRect.top + lineHeight - 1) / lineHeight;
+	int first = m_topLine + paintRect.top / lineHeight;
+	for (int line = first; line < first + count; line++) {
+		unsigned int foreground = 0;
+		unsigned int background = 0xffffff;
+		const char* text;
+		if (line < m_lineCount) {
+			TargetTextLine* entry = &m_lineBuffer->m_lines[line];
+			text = entry->m_text;
+			foreground = entry->m_textColor;
+			if (entry->m_selected != 0) {
+				background = 0;
+				foreground = 0xffffff;
+			}
+		}
+		else {
+			// STRING: LEMBALL 0x004a2c98
+			text = "";
+		}
+		RECT row;
+		row.top = (line - m_topLine) * m_lineHeight;
+		row.left = 0;
+		row.right = m_clientWidth;
+		row.bottom = row.top + m_lineHeight;
+		SetTextColor((HDC) p_dc, foreground);
+		SetBkColor((HDC) p_dc, background);
+		ExtTextOutA((HDC) p_dc, row.left, row.top, 2, &row, text, strlen(text), 0);
+	}
+	LeaveCritical();
+}
+
 // FUNCTION: LEMBALL 0x00474290
 void TargetTextWindow::Scroll(int p_scrollCode, int p_thumbPos)
 {
