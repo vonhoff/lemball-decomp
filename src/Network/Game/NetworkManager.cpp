@@ -39,7 +39,7 @@ NetworkManager::NetworkManager(const char* p_arg0) : BaseQueueHandler()
 			m_externalDriverLoaded = 1;
 		}
 	}
-	else {
+	if (p_arg0 == 0) {
 		networkLoaded = VsNetInit();
 		m_localDriverLoaded = 1;
 	}
