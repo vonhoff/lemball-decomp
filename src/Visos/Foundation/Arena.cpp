@@ -443,11 +443,13 @@ void Arena::MemSet(unsigned char* p_destination, unsigned char p_value, unsigned
 }
 
 // 68K 0x10215686 MemCopy__6CArenaFPUcPUcUl
+#pragma function(memcpy)
 // FUNCTION: LEMBALL 0x0045a3d0
 void Arena::MemCopy(unsigned char* p_destination, unsigned char* p_source, unsigned long p_size)
 {
 	memcpy(p_destination, p_source, p_size);
 }
+#pragma intrinsic(memcpy)
 
 // GLOBAL: LEMBALL 0x004a117c
 unsigned char* g_pArenaHighWater = 0;
