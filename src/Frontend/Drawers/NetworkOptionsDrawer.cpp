@@ -190,7 +190,7 @@ NetworkOptionsDrawer::NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, c
 	m_locked = 0;
 	m_startPending = 0;
 	m_pendingStage = 0;
-	m_pendingEvent = 0;
+	m_visibleEntryCount = 0;
 	m_editor = new EditString(0x28);
 	m_playerEntries = new EntryHandler[10];
 	m_acceptedPlayer = -1;
