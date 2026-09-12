@@ -1,6 +1,7 @@
 #include "ChangeList.h"
 
 #include <new.h>
+#include <string.h>
 
 // 68K 0x10210cf8 __ct__11CChangeListFi7CVSSize7CVSSize
 // FUNCTION: LEMBALL 0x004669a0
@@ -122,7 +123,6 @@ void ChangeList::PopActive()
 // FUNCTION: LEMBALL 0x00466be0
 void ChangeList::Add(const VsRect& p_area)
 {
-	unsigned char mark;
 	short cellWidth;
 	short cellHeight;
 	int cellX;
@@ -132,51 +132,31 @@ void ChangeList::Add(const VsRect& p_area)
 	int mapHeight;
 	int mapWidth;
 	unsigned char* row;
-	unsigned char* cell;
-	unsigned int dwordCount;
-	unsigned int tail;
-	unsigned int splat;
 
-	if (m_map == 0) {
-		return;
-	}
-	cellWidth = m_cellSize.m_width;
-	cellHeight = m_cellSize.m_height;
-	cellX = (int) (p_area.m_x / cellWidth);
-	cellY = (int) (p_area.m_y / cellHeight);
-	spanX = ((int) p_area.m_width + (int) p_area.m_x - 1 + (int) cellWidth) / (int) cellWidth - cellX;
-	spanY = ((int) p_area.m_height + (int) p_area.m_y - 1 + (int) cellHeight) / (int) cellHeight - cellY;
-	mapHeight = (int) m_mapSize.m_height;
-	if (mapHeight < cellY + spanY) {
-		spanY = mapHeight - cellY;
-	}
-	mapWidth = (int) m_mapSize.m_width;
-	if (mapWidth < (int) (cellX + spanX)) {
-		spanX = (unsigned int) (mapWidth - cellX);
-	}
-	if ((int) spanX > 0 && spanY > 0) {
-		row = m_map + cellX + mapWidth * cellY;
-		do {
-			mark = m_activeMark;
-			splat = (unsigned int) mark | ((unsigned int) mark << 8) | ((unsigned int) mark << 16) |
-					((unsigned int) mark << 24);
-			cell = row;
-			dwordCount = spanX >> 2;
-			while (dwordCount != 0) {
-				*(unsigned int*) cell = splat;
-				cell = cell + 4;
-				dwordCount = dwordCount - 1;
+	if (m_map != 0) {
+		cellWidth = m_cellSize.m_width;
+		cellHeight = m_cellSize.m_height;
+		cellX = (int) (p_area.m_x / cellWidth);
+		cellY = (int) (p_area.m_y / cellHeight);
+		spanX = ((int) p_area.m_width + (int) p_area.m_x - 1 + (int) cellWidth) / (int) cellWidth - cellX;
+		spanY = ((int) p_area.m_height + (int) p_area.m_y - 1 + (int) cellHeight) / (int) cellHeight - cellY;
+		mapHeight = (int) m_mapSize.m_height;
+		if (mapHeight < cellY + spanY) {
+			spanY = mapHeight - cellY;
+		}
+		mapWidth = (int) m_mapSize.m_width;
+		if (mapWidth < (int) (cellX + spanX)) {
+			spanX = (unsigned int) (mapWidth - cellX);
+		}
+		if ((int) spanX > 0 && spanY > 0) {
+			row = m_map + cellX + mapWidth * cellY;
+			while (spanY > 0) {
+				memset(row, m_activeMark, spanX);
+				row = row + m_mapSize.m_width;
+				spanY = spanY - 1;
 			}
-			tail = spanX & 3;
-			while (tail != 0) {
-				*cell = mark;
-				cell = cell + 1;
-				tail = tail - 1;
-			}
-			row = row + m_mapSize.m_width;
-			spanY = spanY - 1;
-		} while (spanY != 0);
-		m_area = m_area + (int) p_area.m_width * (int) p_area.m_height;
+			m_area = m_area + (int) p_area.m_width * (int) p_area.m_height;
+		}
 	}
 }
 
@@ -214,8 +194,6 @@ unsigned int ChangeList::GetArea()
 {
 	return m_area;
 }
-
-#include <string.h>
 
 // 68K 0x102112b8 GetNextArea__11CChangeListFUcUcUc
 // FUNCTION: LEMBALL 0x00466d40
