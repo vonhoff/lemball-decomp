@@ -252,7 +252,7 @@ void GenericGroup::CalculateBoundingBox(int p_radius)
 			if (object != 0) {
 				int x = object->m_position.m_xFixed >> 12;
 				int y = object->m_position.m_yFixed >> 12;
-				int right = x + radius;
+				int right = radius + x;
 				x -= radius;
 				int bottom = y + radius;
 				y -= radius;
@@ -262,7 +262,7 @@ void GenericGroup::CalculateBoundingBox(int p_radius)
 				if (y < minY) {
 					minY = y;
 				}
-				if (right > maxX) {
+				if (maxX < right) {
 					maxX = right;
 				}
 				if (bottom > maxY) {
@@ -273,9 +273,9 @@ void GenericGroup::CalculateBoundingBox(int p_radius)
 			count--;
 		} while (count != 0);
 	}
-	m_maxX = (short) minX;
 	maxX -= minX;
 	maxY -= minY;
+	m_maxX = (short) minX;
 	m_maxY = (short) minY;
 	m_minX = (short) maxX;
 	m_minY = (short) maxY;
