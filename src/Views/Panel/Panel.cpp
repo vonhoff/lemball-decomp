@@ -169,16 +169,21 @@ int Panel::ProcessMsg(Message* p_message)
 {
 	if (m_game->m_paused == 0 && m_game->m_ai->m_gameStatus != 1) {
 		unsigned int type = p_message->type;
-		if (type == 4 && TranslateKey(p_message->code) == 8) {
-			g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
-			unsigned int pause = m_game->m_paused == 0;
-			m_game->TriggerPause((unsigned char) pause);
-			PanelPauseButton* pauseButton = m_pauseButton;
-			unsigned int paused = m_game->m_paused;
-			pauseButton->m_toggled = paused;
-			pauseButton->m_enabled = paused;
-			return 1;
+		switch (type) {
+		case 4:
+			if (TranslateKey(p_message->code) == 8) {
+				g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+				unsigned int pause = m_game->m_paused == 0;
+				m_game->TriggerPause((unsigned char) pause);
+				PanelPauseButton* pauseButton = m_pauseButton;
+				unsigned int paused = m_game->m_paused;
+				pauseButton->m_toggled = paused;
+				pauseButton->m_enabled = paused;
+				return 1;
+			}
+			break;
 		}
+		return 0;
 	}
 	return 0;
 }
