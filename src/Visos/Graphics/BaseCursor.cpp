@@ -230,8 +230,6 @@ void BaseCursor::SetActive(unsigned int p_active)
 // FUNCTION: LEMBALL 0x0046b3b0
 void BaseCursor::SetMainId(unsigned int p_resourceId, int p_frame)
 {
-	ResZrle* entries;
-
 	if (p_resourceId != m_resourceId) {
 		if (m_resourceId != 0) {
 			m_resource->UnLoad();
@@ -245,15 +243,12 @@ void BaseCursor::SetMainId(unsigned int p_resourceId, int p_frame)
 			m_resource = 0;
 		}
 	}
-	if (m_frame == p_frame) {
-		return;
+	if (m_frame != p_frame && m_resource != 0) {
+		m_frame = p_frame;
+		for (int i = 0; i < 1; i++) {
+			m_renderState[i].m_resource = &((ResAnim*) m_resource)->m_animationEntries[m_frame];
+		}
 	}
-	if (m_resource == 0) {
-		return;
-	}
-	m_frame = p_frame;
-	entries = ((ResAnim*) m_resource)->m_animationEntries;
-	m_renderState[0].m_resource = &entries[m_frame];
 }
 
 // 68K 0x10206282 InWindow__11CBaseCursorFP5CGWnd
