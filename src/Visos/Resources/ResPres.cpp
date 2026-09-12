@@ -2,12 +2,23 @@
 
 #include "MogRes.h"
 
+#include <new.h>
+
 // FUNCTION: LEMBALL 0x0045e4d0
 ResPres* ResPres::Load(unsigned int p_resourceId)
 {
-	ResPres* res = (ResPres*) g_pActiveMogRes->Find(p_resourceId);
+	void* storage;
+	ResPres* res;
+	res = (ResPres*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == 0) {
-		return (ResPres*) (new ResPres(p_resourceId))->CheckError();
+		storage = operator new(sizeof(ResPres));
+		if (storage != 0) {
+			res = new (storage) ResPres(p_resourceId);
+		}
+		else {
+			res = 0;
+		}
+		return (ResPres*) res->CheckError();
 	}
 	if (res->m_chunkType != kChunkPres) {
 		res->UnLoad();

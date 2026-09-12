@@ -2,14 +2,25 @@
 
 #include "MogRes.h"
 
+#include <new.h>
+
 // 68K 0x1020401a Load__11CResPALETTEFUl
 // FUNCTION: LEMBALL 0x0045dd90
 ResPalette* ResPalette::Load(unsigned int p_resourceId)
 {
+	void* storage;
+	ResPalette* res;
 	register unsigned int id = p_resourceId;
-	ResPalette* res = (ResPalette*) g_pActiveMogRes->Find(id);
+	res = (ResPalette*) g_pActiveMogRes->Find(id);
 	if (res == 0) {
-		return (ResPalette*) (new ResPalette(id))->CheckError();
+		storage = operator new(sizeof(ResPalette));
+		if (storage != 0) {
+			res = new (storage) ResPalette(id);
+		}
+		else {
+			res = 0;
+		}
+		return (ResPalette*) res->CheckError();
 	}
 	if (res->m_chunkType != 0x50414c20) {
 		res->UnLoad();

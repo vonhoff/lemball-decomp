@@ -2,13 +2,23 @@
 
 #include "MogRes.h"
 
+#include <new.h>
+
 // 68K 0x10204846 Load__7CResBINFUl
 // FUNCTION: LEMBALL 0x0045e540
 ResBin* ResBin::Load(unsigned int p_resourceId)
 {
+	void* storage;
 	ResBin* res;
 	if ((res = (ResBin*) g_pActiveMogRes->Find(p_resourceId)) == 0) {
-		return (ResBin*) (new ResBin(p_resourceId))->CheckError();
+		storage = operator new(sizeof(ResBin));
+		if (storage != 0) {
+			res = new (storage) ResBin(p_resourceId);
+		}
+		else {
+			res = 0;
+		}
+		return (ResBin*) res->CheckError();
 	}
 	if (res->m_chunkType != 0x42494e20) {
 		res->UnLoad();
