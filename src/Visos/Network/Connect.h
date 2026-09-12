@@ -37,6 +37,7 @@ public:
 	friend class LevelLoader;
 	friend class Ai;
 	friend class Laser;
+	friend class Lift;
 	friend class FileConnect;
 	friend class TcpIpConnect;
 

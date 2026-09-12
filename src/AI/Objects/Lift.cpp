@@ -1,6 +1,9 @@
 #include "Lift.h"
 
+#include "../../Control/Game/Game.h"
+#include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
+#include "../../Visos/Network/Connect.h"
 #include "../Base/Coord3d.h"
 
 extern unsigned short g_wMovingLiftCount;
@@ -36,7 +39,7 @@ void Lift::CalculateCliff()
 }
 
 // 68K 0x106147aa Edit__5CLiftFisii17eLiftActivateTypeUc
-// STUB: LEMBALL 0x00424df0
+// FUNCTION: LEMBALL 0x00424df0
 void Lift::Edit(int p_height,
 				short p_direction,
 				int p_lowHeight,
@@ -44,6 +47,59 @@ void Lift::Edit(int p_height,
 				eLiftActivateType p_activateType,
 				unsigned int p_initialActive)
 {
+	if (p_lowHeight == -1) {
+		p_lowHeight = p_height;
+	}
+	m_direction = p_direction;
+	m_lowHeight = p_lowHeight;
+	m_defaultActive = p_initialActive;
+	m_highHeight = p_highHeight;
+	m_activateType = p_activateType;
+	m_action = 0x18;
+	m_activationLatched = 0;
+	for (int i = 0; i < 8; i++) {
+		m_objects[i] = 0;
+	}
+	m_start.m_z = p_height;
+	m_end.m_z = p_height;
+	if (m_lowHeight == m_start.m_z && m_direction != 1) {
+		m_direction = 1;
+	}
+	else if (m_highHeight == m_start.m_z && m_direction == 1) {
+		m_direction = -1;
+	}
+	for (int x = m_start.m_x; x <= m_end.m_x; x += 16) {
+		for (int y = m_start.m_y; y <= m_end.m_y; y += 16) {
+			int bx = x / 16;
+			int by = y / 16;
+			switch (p_activateType) {
+			case 0:
+				m_active = 0;
+				break;
+			case 1:
+				m_active = 0;
+				break;
+			case 2:
+				Activate();
+				break;
+			case 3:
+				m_active = 0;
+				break;
+			case 4:
+				m_active = 0;
+				m_defaultActive = 0;
+				break;
+			}
+			if (bx >= 0 && by >= 0 && bx < g_pActiveMap->m_ground.m_width && by < g_pActiveMap->m_ground.m_height) {
+				Ground* ground = g_pActiveMap->m_ground.m_ground + by * g_pActiveMap->m_ground.m_width + bx;
+				ground->m_collision |= 0x8020;
+			}
+			m_mapCell = g_pActiveMap->m_ground.m_ground + g_pActiveMap->m_ground.m_width * by + bx;
+			m_mapCell->m_height = p_height;
+			m_mapCell->m_cliff = (p_height + 15) / 16;
+		}
+	}
+	CalculateCliff();
 }
 
 // 68K 0x10614982 Set__5CLiftFiiisii17eLiftActivateTypeUc
@@ -84,10 +140,91 @@ void Lift::Set(const Coord3d& p_start,
 }
 
 // 68K 0x10614b04 Process__5CLiftFv
-// STUB: LEMBALL 0x00425100
+// FUNCTION: LEMBALL 0x00425100
 bool Lift::Process()
 {
-	return 0;
+	unsigned int time;
+	if (g_pActiveConnection != 0 && !g_pActiveConnection->m_isHost) {
+		time = g_dwRemoteGameTick;
+	}
+	else {
+		time = g_dwGameTick;
+	}
+	switch (m_action) {
+	case 8:
+		m_active = 0;
+		m_action = 0x18;
+		break;
+	case 0x19:
+		m_active = 1;
+		m_activationLatched = 1;
+		SetSndEffect(0x2c);
+		if (m_active && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
+			m_stateTimer = time;
+			if (m_direction == 1) {
+				Action(0x1f);
+			}
+			else {
+				Action(0x23);
+			}
+		}
+		break;
+	case 0x1f:
+		m_movementStartHeight = m_start.m_z;
+		m_direction = 1;
+		m_active = 1;
+		m_action = 0x20;
+		m_start.m_z = m_movementStartHeight + time - m_stateTimer;
+		break;
+	case 0x20:
+		m_start.m_z = (short) m_movementStartHeight - (short) m_stateTimer + (short) time;
+		if (m_start.m_z >= m_highHeight) {
+			m_start.m_z = m_highHeight;
+			m_active = m_defaultActive;
+			m_direction = -1;
+			if (m_defaultActive && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
+				m_stateTimer = time;
+				Action(0x23);
+			}
+			else {
+				m_action = 0x18;
+			}
+		}
+		break;
+	case 0x22:
+		m_start.m_z = (short) m_movementStartHeight - (short) time + (short) m_stateTimer;
+		if (m_start.m_z <= m_lowHeight) {
+			m_start.m_z = m_lowHeight;
+			m_active = m_defaultActive;
+			m_direction = 1;
+			if (m_defaultActive && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
+				m_stateTimer = time;
+				Action(0x1f);
+			}
+			else {
+				m_action = 0x18;
+			}
+		}
+		break;
+	case 0x23:
+		m_movementStartHeight = m_start.m_z;
+		m_direction = -1;
+		m_action = 0x22;
+		m_active = 1;
+		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
+		break;
+	}
+	int height = m_start.m_z;
+	for (int y = m_start.m_y; y <= m_end.m_y; y += 16) {
+		short startX = m_start.m_x;
+		m_mapCell = g_pActiveMap->m_ground.m_ground + g_pActiveMap->m_ground.m_width * (y / 16) + (short) (startX / 16);
+		for (int x = startX; x <= m_end.m_x; x += 16) {
+			m_mapCell->m_height = height;
+			m_mapCell->m_cliff = (height + 15) / 16;
+			m_mapCell++;
+		}
+	}
+	return true;
 }
 
 // 68K 0x10614dee CheckObjects__5CLiftFv

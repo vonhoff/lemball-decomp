@@ -52,7 +52,7 @@ private:
 	short m_direction;                // 0x154
 	undefined4 m_unk0x158;            // 0x158
 	eLiftActivateType m_activateType; // 0x15c
-	void* m_mapCell;                  // 0x160
+	Ground* m_mapCell;                // 0x160
 	unsigned int m_active;            // 0x164
 	unsigned int m_defaultActive;     // 0x168
 	unsigned int m_activationLatched; // 0x16c
