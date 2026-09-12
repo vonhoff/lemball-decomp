@@ -213,10 +213,75 @@ void Ball::SetHeightCorrect()
 }
 
 // 68K 0x10603b92 Process__5CBallFv
-// STUB: LEMBALL 0x00421bc0
+// FUNCTION: LEMBALL 0x00421bc0
 bool Ball::Process()
 {
-	return 0;
+	switch (m_action) {
+	case 0x25:
+		switch ((unsigned short) m_actionArgument) {
+		case 0:
+			m_actionDeadline = g_dwGameTick;
+			m_position.m_xFixed = m_spawnPosition.m_xFixed;
+			m_position.m_yFixed = m_spawnPosition.m_yFixed;
+			m_position.m_zFixed = m_spawnPosition.m_zFixed;
+			SetHeightCorrect();
+			m_actionArgument = 1;
+			break;
+		case 1:
+			if (m_actionDeadline < g_dwGameTick) {
+				m_actionArgument = 2;
+				StartMovement(1);
+			}
+			break;
+		case 2:
+			if (m_actionDeadline < g_dwGameTick) {
+				m_position.m_xFixed = m_destination.m_xFixed;
+				m_position.m_yFixed = m_destination.m_yFixed;
+				m_position.m_zFixed = m_destination.m_zFixed;
+				SetHeightCorrect();
+				m_actionArgument = 3;
+			}
+			else {
+				Move();
+			}
+			break;
+		case 3:
+			m_actionDeadline = g_dwGameTick;
+			m_position.m_xFixed = m_destination.m_xFixed;
+			m_position.m_yFixed = m_destination.m_yFixed;
+			m_position.m_zFixed = m_destination.m_zFixed;
+			SetHeightCorrect();
+			m_actionArgument = 4;
+			break;
+		case 4:
+			if (m_actionDeadline < g_dwGameTick) {
+				m_actionArgument = 5;
+				StartMovement(0);
+			}
+			break;
+		case 5:
+			if (m_actionDeadline < g_dwGameTick) {
+				m_position.m_xFixed = m_spawnPosition.m_xFixed;
+				m_position.m_yFixed = m_spawnPosition.m_yFixed;
+				m_position.m_zFixed = m_spawnPosition.m_zFixed;
+				SetHeightCorrect();
+				m_actionArgument = 0;
+			}
+			else {
+				Move();
+			}
+			break;
+		}
+		UpdateCollision();
+		return 1;
+	case 0x26:
+		if (m_actionDeadline < g_dwGameTick) {
+			g_pBallManager->Delete(this);
+			return 0;
+		}
+		return 1;
+	}
+	return 1;
 }
 
 // 68K 0x10603d56 LoadLevel__5CBallFRPUc
