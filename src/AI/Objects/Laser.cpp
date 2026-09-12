@@ -94,10 +94,74 @@ bool Laser::CheckHits()
 }
 
 // 68K 0x106138ea Process__6CLaserFv
-// STUB: LEMBALL 0x00428cf0
+// FUNCTION: LEMBALL 0x00428cf0
 bool Laser::Process()
 {
-	return 0;
+	if (m_isRemoteObject != 0) {
+		m_active = m_action != (eAction) 0x18;
+		if (m_action == (eAction) 0x1a && m_target == 0) {
+			CheckHits();
+		}
+		if (m_pendingAction != m_action) {
+			switch (m_action) {
+			case 0x17:
+				if (m_target != 0) {
+					m_target->m_unk0x2c = 1;
+					m_target = 0;
+				}
+				Action((eAction) 0x18);
+				break;
+			case 0x19:
+				m_target = 0;
+				break;
+			}
+			m_pendingAction = m_action;
+		}
+		return 1;
+	}
+	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
+		return 1;
+	}
+	if (m_active != 0) {
+		switch (m_action) {
+		case 0x17:
+			if (m_target != 0) {
+				m_target->SetSndEffect((eSoundEffect) 0x22);
+				m_target->m_unk0x2c = 1;
+				m_target = 0;
+			}
+			Action((eAction) 0x18);
+			return 1;
+		case 0x18:
+			if (m_actionDeadline < g_dwGameTick) {
+				Activate();
+				return 1;
+			}
+			break;
+		case 0x19:
+			if (m_unk0xd0 < g_dwGameTick) {
+				m_target = 0;
+				Action((eAction) 0x1a);
+				return 1;
+			}
+			break;
+		case 0x1a:
+			if (m_target == 0) {
+				CheckHits();
+			}
+			if (m_actionDeadline < g_dwGameTick) {
+				m_enabled = 1;
+				m_active = m_autoActivate;
+				m_actionDeadline = g_dwGameTick + 0x3c;
+				if (m_target != 0) {
+					m_target->m_unk0x2c = 1;
+					m_target = 0;
+				}
+				Action((eAction) 0x17);
+			}
+		}
+	}
+	return 1;
 }
 
 // 68K 0x10613ace Activate__6CLaserFv
