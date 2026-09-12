@@ -5,6 +5,8 @@
 #include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
 
+extern word g_wNextDoorIndex;
+
 // 68K 0x106062b0 __ct__5CDoorFv
 // FUNCTION: LEMBALL 0x0040d470
 Door::Door() : GlobalGameObject(0x19, 0, 0)
@@ -19,9 +21,91 @@ void Door::Restart()
 }
 
 // 68K 0x10606316 Set__5CDoorF11eObjectTypeUsiii
-// STUB: LEMBALL 0x0040d4a0
+// FUNCTION: LEMBALL 0x0040d4a0
 void Door::Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, int p_y, int p_z)
 {
+	m_objectType = p_objectType;
+	m_spawnPosition.m_xFixed = p_x << 12;
+	m_spawnPosition.m_yFixed = p_y << 12;
+	m_spawnPosition.m_zFixed = p_z << 12;
+	m_doorType = p_doorType;
+	m_doorIndex = g_wNextDoorIndex++;
+	m_action = (eAction) 0x1e;
+	if (m_doorType != 0) {
+		m_action = (eAction) 0x1d;
+	}
+	switch ((unsigned short) m_doorType) {
+	case 0:
+		m_actionArgument = -1;
+		break;
+	case 1:
+		m_actionArgument = 0x15;
+		break;
+	case 2:
+		m_actionArgument = 0x16;
+		break;
+	case 3:
+		m_actionArgument = 0x17;
+		break;
+	case 4:
+		m_actionArgument = 0x14;
+		break;
+	}
+	m_setTick = g_dwGameTick;
+	m_position.m_xFixed = m_spawnPosition.m_xFixed;
+	m_position.m_yFixed = m_spawnPosition.m_yFixed;
+	m_position.m_zFixed = m_spawnPosition.m_zFixed;
+	m_activationPending = 0;
+	int blockY;
+	int blockX = p_x / 16;
+	blockY = p_y / 16;
+	Map* groundMap;
+	switch (m_objectType) {
+	case 0x19:
+		groundMap = g_pMap;
+		if (blockX >= 0 && blockY + 1 >= 0 && blockX < groundMap->m_ground.m_width &&
+			blockY + 1 < groundMap->m_ground.m_height) {
+			groundMap->m_ground.GetGroundCell(blockX, blockY + 1)->m_collision |= 0x8000;
+		}
+		groundMap = g_pMap;
+		if (blockX >= 0 && blockY + 1 >= 0 && blockX < groundMap->m_ground.m_width &&
+			blockY + 1 < groundMap->m_ground.m_height) {
+			groundMap->m_ground.GetGroundCell(blockX, blockY + 1)->m_collision |= 1;
+		}
+		groundMap = g_pMap;
+		if (blockX >= 0 && blockY >= 0 && blockX < groundMap->m_ground.m_width &&
+			blockY < groundMap->m_ground.m_height) {
+			groundMap->m_ground.GetGroundCell(blockX, blockY)->m_collision |= 0x8000;
+		}
+		groundMap = g_pMap;
+		if (blockX >= 0 && blockY >= 0 && blockX < groundMap->m_ground.m_width &&
+			blockY < groundMap->m_ground.m_height) {
+			groundMap->m_ground.GetGroundCell(blockX, blockY)->m_collision |= 1;
+		}
+		groundMap = g_pMap;
+		if (blockX >= 0 && blockY - 1 >= 0 && blockX < groundMap->m_ground.m_width &&
+			blockY - 1 < groundMap->m_ground.m_height) {
+			groundMap->m_ground.GetGroundCell(blockX, blockY - 1)->m_collision |= 0x8000;
+		}
+		groundMap = g_pMap;
+		if (blockX >= 0 && --blockY >= 0 && blockX < groundMap->m_ground.m_width &&
+			blockY < groundMap->m_ground.m_height) {
+			groundMap->m_ground.GetGroundCell(blockX, blockY)->m_collision |= 1;
+		}
+		break;
+	case 0x1a:
+		g_pMap->m_ground.SetCollision(blockX + 1, blockY, 0x8000);
+		g_pMap->m_ground.SetCollision(blockX + 1, blockY, 1);
+		g_pMap->m_ground.SetCollision(blockX, blockY, 0x8000);
+		g_pMap->m_ground.SetCollision(blockX, blockY, 1);
+		g_pMap->m_ground.SetCollision(--blockX, blockY, 0x8000);
+		groundMap = g_pMap;
+		if (blockX >= 0 && blockY >= 0 && blockX < groundMap->m_ground.m_width &&
+			blockY < groundMap->m_ground.m_height) {
+			groundMap->m_ground.GetGroundCell(blockX, blockY)->m_collision |= 1;
+		}
+		break;
+	}
 }
 
 // 68K 0x106065bc Delete__5CDoorFv
