@@ -602,11 +602,9 @@ void BaseFrontendDrawer::RemoteAction(int p_action, int p_stage)
 // FUNCTION: LEMBALL 0x004466e0
 void BaseFrontendDrawer::OnDriverChange()
 {
-	VsRect useRect;
-
 	if (m_display->GetSizeStatus() != 0) {
-		useRect = m_display->GetUseRect(-1, -1);
-		m_display->SetRect(useRect);
+		Main2DDisplay* display = m_display;
+		display->SetRect(display->GetUseRect(-1, -1));
 	}
 }
 

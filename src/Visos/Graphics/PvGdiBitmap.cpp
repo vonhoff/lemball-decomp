@@ -1,6 +1,7 @@
 #include "PvGdiBitmap.h"
 
 #include <new.h>
+#include <stdlib.h>
 #include <string.h>
 
 // 68K 0x1021284a __ct__12CPVGDIBitmapFv
@@ -76,52 +77,12 @@ void PvGdiBitmap::CreateLinePtrs()
 // FUNCTION: LEMBALL 0x004723a0
 void PvGdiBitmap::ResetLinePtrs()
 {
-	unsigned int pad;
-	unsigned char* dest;
-	unsigned int count;
-	unsigned int rowPad;
-	int stride;
-	int strideAbs;
-	short heightWord;
-	int sign;
-
 	m_xOffset = 0;
 	m_firstLine = 0;
 	SetLinePtrs();
-	pad = m_rowPadding;
-	if ((int) pad <= 0) {
-		return;
-	}
-	dest = m_bitsBase;
-	count = pad >> 2;
-	while (count != 0) {
-		*(unsigned int*) dest = 0;
-		dest = dest + 4;
-		count = count - 1;
-	}
-	count = pad & 3;
-	while (count != 0) {
-		*dest = 0;
-		dest = dest + 1;
-		count = count - 1;
-	}
-	rowPad = m_rowPadding;
-	stride = m_stride;
-	sign = stride >> 31;
-	strideAbs = (stride ^ sign) - sign;
-	heightWord = m_height;
-	dest = m_bitsBase + rowPad + strideAbs * (int) heightWord;
-	count = rowPad >> 2;
-	while (count != 0) {
-		*(unsigned int*) dest = 0;
-		dest = dest + 4;
-		count = count - 1;
-	}
-	count = rowPad & 3;
-	while (count != 0) {
-		*dest = 0;
-		dest = dest + 1;
-		count = count - 1;
+	if ((int) m_rowPadding > 0) {
+		memset(m_bitsBase, 0, m_rowPadding);
+		memset(m_bitsBase + abs(m_stride) * (int) (short) m_height + m_rowPadding, 0, m_rowPadding);
 	}
 }
 
