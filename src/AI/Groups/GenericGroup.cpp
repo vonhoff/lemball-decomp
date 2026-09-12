@@ -353,7 +353,12 @@ void GenericGroup::ReformAlteredGroup(FormationManager* p_formationManager)
 		GameObject* object = GetFirstElementInGroup();
 		if (object != 0) {
 			AiCoord destination;
-			destination = object->GetDestination();
+			{
+				const AiCoord& returnedDestination = object->GetDestination();
+				destination.m_xFixed = returnedDestination.m_xFixed;
+				destination.m_yFixed = returnedDestination.m_yFixed;
+				destination.m_zFixed = returnedDestination.m_zFixed;
+			}
 			unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> 12,
 														   object->m_position.m_yFixed >> 12,
 														   destination.m_xFixed >> 12,
