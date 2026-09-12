@@ -214,13 +214,13 @@ void BaseFrontendDrawer::InitialiseBackBuffer()
 	m_backBufferReady = 1;
 	g_pCursor->SetActive(0);
 	m_display->Render();
-	m_primitiveBundle.m_bitmap.m_x = 0;
-	m_primitiveBundle.m_bitmap.m_y = 0;
-	m_primitiveBundle.m_bitmap.m_width = m_width;
-	m_primitiveBundle.m_bitmap.m_height = m_height;
-	m_primitiveBundle.m_bitmap.m_sourceX = 0;
-	m_primitiveBundle.m_bitmap.m_sourceY = 0;
-	m_primitiveBundle.m_bitmap.Draw(m_gdi);
+	m_primitiveBundle[0].m_bitmap.m_x = 0;
+	m_primitiveBundle[0].m_bitmap.m_y = 0;
+	m_primitiveBundle[0].m_bitmap.m_width = m_width;
+	m_primitiveBundle[0].m_bitmap.m_height = m_height;
+	m_primitiveBundle[0].m_bitmap.m_sourceX = 0;
+	m_primitiveBundle[0].m_bitmap.m_sourceY = 0;
+	m_primitiveBundle[0].m_bitmap.Draw(m_gdi);
 	m_drawingBackBuffer = 0;
 	if (m_hiliteController != 0 && hiliteActive != 0) {
 		m_hiliteController->ActivateButtons(1);
@@ -260,15 +260,15 @@ void BaseFrontendDrawer::ReplaceBackground()
 {
 	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
 		m_gdi->m_renderTarget->GetChangeList()->Reset();
-		m_primitiveBundle.m_drawingMark.Draw(m_gdi);
+		m_primitiveBundle[0].m_drawingMark.Draw(m_gdi);
 		if (m_drawingBackBuffer != 0) {
 			if (m_drawFrame == 0) {
-				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_x1 = m_width;
-				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_y1 = m_height;
-				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_x2 = 0;
-				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_y2 = 0;
-				m_primitiveBundle.m_lines[m_framePrimitiveCount].m_color = 0;
-				m_primitiveBundle.m_lines[m_framePrimitiveCount].Draw(m_gdi);
+				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_x1 = m_width;
+				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_y1 = m_height;
+				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_x2 = 0;
+				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_y2 = 0;
+				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_color = 0;
+				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].Draw(m_gdi);
 				m_framePrimitiveCount = m_framePrimitiveCount + 1;
 			}
 			InternalDrawBackGround();
@@ -304,7 +304,7 @@ void BaseFrontendDrawer::InternalDrawBackGround()
 		for (short row = startRow; row < (short) (rowCount + startRow); row++) {
 			oddRow ^= 1;
 			for (short col = startCol; col < (short) (colCount + startCol + oddRow); col++) {
-				BitmapRes& rec = m_primitiveBundle.m_records[recordIndex];
+				BitmapRes& rec = m_primitiveBundle[0].m_records[recordIndex];
 				rec.m_x = col * tileWidth - (tileWidth / 2) * oddRow;
 				rec.m_y = tileHeight * row;
 				rec.m_resource = m_tileBitmap;
@@ -316,7 +316,7 @@ void BaseFrontendDrawer::InternalDrawBackGround()
 		}
 	}
 	if (m_drawSolid != 0) {
-		m_primitiveBundle.m_primitive.Draw(m_gdi);
+		m_primitiveBundle[0].m_primitive.Draw(m_gdi);
 	}
 	if (m_gunController != 0) {
 		m_gunController->DrawButtons(1, 0);

@@ -154,11 +154,11 @@ void PasswordDrawer::Load()
 		ResBitmap* background = m_backgroundBitmap;
 		int* layout = (int*) m_layout;
 		int layoutY = layout[1];
-		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_x = (short) layout[0];
-		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_y = (short) layoutY;
-		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_resource = background;
-		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_flags = 0x800;
-		(&m_primitiveBundle)[primitiveIndex].m_primitive.m_remap = 0;
+		m_primitiveBundle[primitiveIndex].m_primitive.m_x = (short) layout[0];
+		m_primitiveBundle[primitiveIndex].m_primitive.m_y = (short) layoutY;
+		m_primitiveBundle[primitiveIndex].m_primitive.m_resource = background;
+		m_primitiveBundle[primitiveIndex].m_primitive.m_flags = 0x800;
+		m_primitiveBundle[primitiveIndex].m_primitive.m_remap = 0;
 		primitiveIndex++;
 	} while (--primitiveCount != 0);
 	AnimsManager::LoadAnims(m_animationId);

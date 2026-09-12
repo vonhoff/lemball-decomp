@@ -115,7 +115,7 @@ void MainOptions1Drawer::Load()
 		quitAnim = &g_dwMainOptions1AnimIds[4];
 	}
 	i = 1;
-	primitiveBundle = &m_primitiveBundle;
+	primitiveBundle = m_primitiveBundle;
 	do {
 		primitiveBundle->m_primitive.m_x =
 			(short) (((int) m_display->m_rect.m_width - (int) m_backgroundBitmap->m_x) / 2);

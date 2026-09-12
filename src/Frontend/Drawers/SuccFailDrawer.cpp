@@ -322,7 +322,7 @@ void SuccFailDrawer::Load()
 		m_secondaryBitmap = 0;
 	}
 	bitmapX = (int) m_width - (int) (short) m_primaryBitmap->m_x;
-	primitiveBundle = &m_primitiveBundle;
+	primitiveBundle = m_primitiveBundle;
 	primitives = m_primitives;
 	i = 1;
 	do {

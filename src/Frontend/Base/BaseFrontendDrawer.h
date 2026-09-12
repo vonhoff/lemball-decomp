@@ -83,7 +83,7 @@ protected:
 	unsigned int m_createdAt;             // 0xbc
 	ResBitmap* m_backgroundBitmap;        // 0xc0
 	ResBitmap* m_tileBitmap;              // 0xc4
-	Prims m_primitiveBundle;              // 0xc8
+	Prims m_primitiveBundle[1];           // 0xc8
 	int m_primitiveBank;                  // 0x328
 	int m_mode;                           // 0x32c
 	unsigned int m_ready;                 // 0x330
