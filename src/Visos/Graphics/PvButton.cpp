@@ -189,9 +189,6 @@ void PvButton::OnExit()
 	m_pressed = 0;
 	InternalOnExitButton();
 	OnExitButton();
-	if (m_autoDraw == 0) {
-		g_nGunButtonsRedrawPending = 1;
-	}
 }
 
 // 68K 0x1020ff28 ConvertDoubleClick__9CPVButtonF12BUTTON_FLAGS
