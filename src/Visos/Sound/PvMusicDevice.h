@@ -8,6 +8,11 @@
 // VTABLE: LEMBALL 0x0049adb0
 class PvMusicDevice {
 public:
+	PvMusicDevice()
+	{
+		m_useCdDirectory = 0;
+		m_usePathPrefix = 0;
+	}
 	// 68K 0x101023b4 __dt__14CPVMusicDeviceFv
 	virtual ~PvMusicDevice() {}                                                   // vtable+0x00
 	virtual void Initialise(unsigned long p_resourceId, unsigned long p_flags);   // vtable+0x04

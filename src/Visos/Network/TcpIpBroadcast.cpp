@@ -324,7 +324,8 @@ int TcpIpBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long 
 		event = (unsigned short) p_lParam;
 		error = (unsigned short) ((unsigned long) p_lParam >> 16);
 		BaseCommonSocket::SocketError((NetworkErrors) error);
-		if (event == 1) {
+		switch (event) {
+		case 1:
 			if (error == 0) {
 				TcpIpReadSocket::ReadBuffFrom();
 			}
