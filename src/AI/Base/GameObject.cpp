@@ -447,7 +447,9 @@ GameObject::GameObject(eObjectType p_objectType, unsigned short p_collisionFlags
 // FUNCTION: LEMBALL 0x004150d0
 void GameObject::Restart()
 {
-	m_position = m_spawnPosition;
+	m_position.m_xFixed = m_spawnPosition.m_xFixed;
+	m_position.m_yFixed = m_spawnPosition.m_yFixed;
+	m_position.m_zFixed = m_spawnPosition.m_zFixed;
 	m_auxiliaryPosition.m_xFixed = 0;
 	m_auxiliaryPosition.m_yFixed = 0;
 	m_auxiliaryPosition.m_zFixed = 0;
