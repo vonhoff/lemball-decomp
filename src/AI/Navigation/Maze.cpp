@@ -206,9 +206,11 @@ void Maze::UpdateChangeNext(int p_x, int p_y)
 		pOther = m_changeA + offset;
 	}
 
-	unsigned char mask = g_aChangeBitMasks[xMin & 7][0];
+	unsigned int mask;
+	memcpy(&mask, &g_aChangeBitMasks[xMin & 7][0], 1);
 	for (int y = yMin; y <= yMax; y++) {
-		unsigned char currentMask = mask;
+		unsigned char currentMask;
+		memcpy(&currentMask, &mask, 1);
 		unsigned char* pChangeRow = pChange;
 		unsigned char* pOtherRow = pOther;
 		int x = xMin;
@@ -324,12 +326,11 @@ bool Maze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 
 	bool changed = false;
 	SwapChange();
-	int radius = m_radius + 1;
+	int radius = ++m_radius;
 	int xMin = m_startX - radius;
 	int xMax = m_startX + radius;
-	int yMax = m_startY + radius;
 	int yMin = m_startY - radius;
-	m_radius = radius;
+	int yMax = m_startY + radius;
 	if (xMin < 0) {
 		xMin = 0;
 	}
@@ -343,22 +344,25 @@ bool Maze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 		yMax = m_height - 1;
 	}
 
-	int offset = (yMin * 0x80 + xMin) >> 3;
 	unsigned char* pChange;
-	if (m_changeSelect == 0) {
-		pChange = m_changeB + offset;
+	if (m_changeSelect != 0) {
+		pChange = m_changeA + ((yMin * 0x80 + xMin) >> 3);
 	}
 	else {
-		pChange = m_changeA + offset;
+		pChange = m_changeB + ((yMin * 0x80 + xMin) >> 3);
 	}
 
 	if (yMin <= yMax) {
-		unsigned char mask = g_aChangeBitMasks[xMin & 7][0];
-		for (int y = yMin; y <= yMax; y++) {
+		unsigned int mask;
+		memcpy(&mask, &g_aChangeBitMasks[xMin & 7][0], 1);
+		int y = yMin;
+		do {
 			unsigned short* pDistance = m_distances[y] + xMin;
-			unsigned char currentMask = mask;
 			unsigned char* pChangeRow = pChange;
-			for (int x = xMin; x <= xMax; x++) {
+			int x;
+			unsigned char currentMask;
+			memcpy(&currentMask, &mask, 1);
+			for (x = xMin; x <= xMax; x++, pDistance++) {
 				if ((currentMask & *pChangeRow) != 0 && *pDistance != 0xffff && CalcNewDistance(x, y)) {
 					changed = true;
 					UpdateChangeNext(x, y);
@@ -368,10 +372,10 @@ bool Maze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 					currentMask = 0x80;
 					pChangeRow++;
 				}
-				pDistance++;
 			}
 			pChange += 0x10;
-		}
+			y++;
+		} while (y <= yMax);
 	}
 
 	p_reached = m_distances[m_endY][m_endX] != 0xff00;
