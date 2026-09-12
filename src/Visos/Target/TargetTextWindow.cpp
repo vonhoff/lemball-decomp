@@ -36,6 +36,28 @@ void TargetTextWindow::PostAllocatedTextControlString(const char* p_text, unsign
 	}
 }
 
+// FUNCTION: LEMBALL 0x00473e20
+void TargetTextWindow::AppendPostedText(char* p_text, unsigned int p_color)
+{
+	EnterCritical();
+	m_lineBuffer->AddText(p_text, p_color);
+	int first = m_lineCount;
+	int count = m_lineBuffer->m_count;
+	m_lineCount = count;
+	if (count == first) {
+		RedrawAll();
+	}
+	else {
+		RedrawLines(first, count - first);
+	}
+	SetScrollRange((HWND) m_windowHandle, 1, 0, count - 1, 1);
+	if (m_selectionStart == -1 || m_selectionEnd == -1) {
+		EnsureLineVisible(first);
+	}
+	free(p_text);
+	LeaveCritical();
+}
+
 // FUNCTION: LEMBALL 0x00473eb0
 static void GetWindowClientScreenRect(HWND p_window, RECT* p_rect)
 {
