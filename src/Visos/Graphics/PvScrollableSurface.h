@@ -4,6 +4,8 @@
 #include "PvGdiBitmap.h" // complete type
 #include "PvSurface.h"   // complete type
 
+// VTABLE: LEMBALL 0x00499d88 PvSurface
+// VTABLE: LEMBALL 0x00499dd4 PvGdiBitmap
 class PvScrollableSurface : public PvGdiBitmap, public virtual PvSurface {
 public:
 	virtual int GetWorldWidth();             // vtable+0x48

@@ -1710,7 +1710,7 @@ int C2D::DrawClippedRectangle(const VsRect& p_rect)
 	bitmap.m_height = clippedRect.m_height;
 	bitmap.m_sourceX = clippedRect.m_x;
 	bitmap.m_sourceY = clippedRect.m_y;
-	bitmap.Draw(m_gdi);
+	m_bitmaps[m_bitmapCount].Draw(m_gdi);
 	m_bitmapCount++;
 	return result;
 }

@@ -46,89 +46,102 @@ SurfaceListHead* g_pSurfaceList = 0;
 // 68K 0x1010830c __ct__8CSurfaceFRC7CVSRectP8CSurface
 // FUNCTION: LEMBALL 0x0046c050
 Surface::Surface(const VsRect& p_rect, class Surface* p_parentSurface)
+	: m_presentX(0), m_presentY(0), m_childSurfaceHead(0), m_childSurfaceTail(0), m_childSurfaceCount(0)
 {
-	void* storage;
-	TargetDrawingContext* context;
+	SurfaceListHead* head;
 	SurfaceListNode* node;
-	ChangeList* list;
-	int capacity;
+	SurfaceListHead* parentList;
+	void* storage;
 
-	m_platformBitmap = 0;
-	m_drawingPort = 0;
-	m_presentX = 0;
-	m_presentY = 0;
-	m_childSurfaceHead = 0;
-	m_childSurfaceTail = 0;
-	m_childSurfaceCount = 0;
-	m_unk0x54c = 1;
-	m_changeList = 0;
-	m_parentSurface = p_parentSurface;
 	m_flag70 = 1;
-	m_flag74 = 0;
 	m_flag78 = 0;
-	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
-	if (p_parentSurface == (Surface*) g_pGdiHelperTarget) {
-		capacity = 0x1000;
+	m_flag74 = 0;
+	m_parentSurface = p_parentSurface;
+	parentList = (SurfaceListHead*) &m_parentSurface->m_childSurfaceHead;
+	storage = operator new(0xc);
+	if (storage != 0) {
+		node = (SurfaceListNode*) storage;
+		node->m_surface = this;
+		node->m_next = 0;
+		node->m_prev = 0;
 	}
 	else {
-		capacity = 0;
+		node = 0;
 	}
-	storage = operator new(0x4c);
-	list = 0;
-	if (storage != 0) {
-		list = new (storage) ChangeList(capacity, p_rect, VsSize(8, 8));
+	node->m_prev = (SurfaceListNode*) parentList->m_last;
+	if (parentList->m_last != 0) {
+		((SurfaceListNode*) parentList->m_last)->m_next = node;
 	}
-	m_changeList = list;
+	parentList->m_last = node;
+	if (parentList->m_first == 0) {
+		parentList->m_first = node;
+	}
+	parentList->m_count++;
+
 	if (g_pSurfaceList == 0) {
-		storage = operator new(0xc);
-		if (storage == 0) {
-			g_pSurfaceList = 0;
+		head = (SurfaceListHead*) operator new(0xc);
+		if (head != 0) {
+			head->m_first = 0;
+			head->m_last = 0;
+			head->m_count = 0;
+			g_pSurfaceList = head;
 		}
 		else {
-			g_pSurfaceList = (SurfaceListHead*) storage;
-			g_pSurfaceList->m_first = 0;
-			g_pSurfaceList->m_last = 0;
-			g_pSurfaceList->m_count = 0;
+			g_pSurfaceList = 0;
 		}
 	}
-	if (p_parentSurface != 0) {
-		storage = operator new(0xc);
-		if (storage != 0) {
-			node = (SurfaceListNode*) storage;
-			node->m_surface = this;
-			node->m_next = 0;
-			node->m_prev = p_parentSurface->m_childSurfaceTail;
-			if (p_parentSurface->m_childSurfaceTail != 0) {
-				p_parentSurface->m_childSurfaceTail->m_next = node;
-			}
-			p_parentSurface->m_childSurfaceTail = node;
-			if (p_parentSurface->m_childSurfaceHead == 0) {
-				p_parentSurface->m_childSurfaceHead = node;
-			}
-			p_parentSurface->m_childSurfaceCount = p_parentSurface->m_childSurfaceCount + 1;
-		}
+	head = g_pSurfaceList;
+	storage = operator new(0xc);
+	if (storage != 0) {
+		node = (SurfaceListNode*) storage;
+		node->m_surface = this;
+		node->m_next = 0;
+		node->m_prev = 0;
 	}
-	if (g_pSurfaceList != 0) {
-		storage = operator new(0xc);
-		if (storage != 0) {
-			node = (SurfaceListNode*) storage;
-			node->m_surface = this;
-			node->m_next = 0;
-			node->m_prev = (SurfaceListNode*) g_pSurfaceList->m_last;
-			if (g_pSurfaceList->m_last != 0) {
-				((SurfaceListNode*) g_pSurfaceList->m_last)->m_next = node;
-			}
-			g_pSurfaceList->m_last = node;
-			if (g_pSurfaceList->m_first == 0) {
-				g_pSurfaceList->m_first = node;
-			}
-			g_pSurfaceList->m_count = g_pSurfaceList->m_count + 1;
-		}
+	else {
+		node = 0;
 	}
-	if (p_parentSurface == (Surface*) g_pGdiHelperTarget && g_pTargetGraphicsDriver != 0) {
-		context = g_pTargetGraphicsDriver->CreateDrawingContext();
-		m_drawingPort = context;
+	node->m_prev = (SurfaceListNode*) head->m_last;
+	if (head->m_last != 0) {
+		((SurfaceListNode*) head->m_last)->m_next = node;
 	}
+	head->m_last = node;
+	if (head->m_first == 0) {
+		head->m_first = node;
+	}
+	head->m_count++;
+
+	m_zoom = 1;
+	m_platformBitmap = 0;
+	m_drawingPort = 0;
+	m_reserved40 = 0;
+	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
+	m_unk0x54c = 1;
+	if (m_parentSurface == (Surface*) g_pGdiHelperTarget) {
+		m_changeList = new ChangeList(0x1000, p_rect, VsSize(8, 8));
+	}
+	else {
+		m_changeList = new ChangeList(0, p_rect, VsSize(8, 8));
+	}
+	if (m_parentSurface == (Surface*) g_pGdiHelperTarget) {
+		TargetBuildSurfaceColourTable((unsigned int*) m_colourTable,
+									  0,
+									  0,
+									  g_pTargetGraphicsDriver->HasPalette() ? g_dwWinGDrawColourTable : 0);
+		m_drawingPort = g_pTargetGraphicsDriver->CreateDrawingContext();
+	}
+	VsRect& rect = m_rect0c;
+	rect.m_width = p_rect.m_width;
+	rect.m_height = p_rect.m_height;
+	const short* coords;
+	if (&p_rect != 0) {
+		coords = &p_rect.m_x;
+	}
+	else {
+		coords = 0;
+	}
+	rect.m_x = *coords;
+	rect.m_y = coords[1];
 	NewBitmap(p_rect);
 }
 

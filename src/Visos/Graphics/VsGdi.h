@@ -18,6 +18,10 @@ struct SurfaceListNode {
 
 // SIZE 0x5a0
 // PvScrollableSurface at 0. Shared PvSurface virtual base.
+// VTABLE: LEMBALL 0x00499df0 PvSurface
+// VTABLE: LEMBALL 0x00499e40 PvBackBuffSurface
+// VTABLE: LEMBALL 0x00499e50 PvZBuffSurface
+// VTABLE: LEMBALL 0x00499e58 PvGdiBitmap
 class Surface : public PvScrollableSurface, public PvZBuffSurface, public PvBackBuffSurface {
 public:
 	friend class PvButton;
