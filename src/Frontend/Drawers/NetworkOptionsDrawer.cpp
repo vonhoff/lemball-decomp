@@ -278,13 +278,13 @@ NetworkOptionsDrawer::~NetworkOptionsDrawer()
 	EditString* editor;
 
 	if (m_returnState == 0) {
-		if (g_pNetworkOptionsProc != 0) {
-			delete g_pNetworkOptionsProc;
+		if (g_pCurrentFrontendProcess != 0) {
+			Stop();
 		}
 	}
 	else {
-		if (g_pNetworkOptionsProc != 0) {
-			g_pNetworkOptionsProc->StopBroadcast();
+		if (g_pCurrentFrontendProcess != 0) {
+			((NetworkOptionsProc*) g_pCurrentFrontendProcess)->StopBroadcast();
 		}
 	}
 	index = 0;
@@ -297,6 +297,10 @@ NetworkOptionsDrawer::~NetworkOptionsDrawer()
 	if (editor != 0) {
 		operator delete(editor->m_text);
 		operator delete(editor);
+	}
+	UnRegisterRemaps();
+	if (m_loaded != 0) {
+		UnLoad();
 	}
 }
 
