@@ -5,24 +5,94 @@
 #include "IDirectSound.h"
 #include "TargetDirectSoundEffect.h"
 
+#include <memory.h>
+#include <new.h>
+#include <string.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winver.h>
+
+#pragma intrinsic(memset, memcpy, strlen)
+
 // GLOBAL: LEMBALL 0x004a3318
 static IDirectSoundBuffer* g_primarySoundBuffer = 0;
 
 // GLOBAL: LEMBALL 0x004a331c
 static IDirectSound* g_directSound = 0;
 
-// STUB: LEMBALL 0x0047dd80
+// FUNCTION: LEMBALL 0x0047dd80
 TargetDirectSoundDevice::TargetDirectSoundDevice(int p_effectCapacity, int p_buffersPerEffect)
 {
-	int i;
+	char path[256];
+	DWORD versionHandle;
+	unsigned int versionLength;
+	void* versionInfo;
+	unsigned long versionLow;
+	int valid;
 
-	i = 0;
-	while (i < 0x50) {
-		m_platformState[i] = 0;
-		i = i + 1;
-	}
 	m_platform.m_effectCapacity = p_effectCapacity;
 	m_platform.m_buffersPerEffect = p_buffersPerEffect;
+	m_platform.m_nativeWindow = 0;
+	m_platform.m_effects = (TargetDirectSoundEffect**) operator new(p_effectCapacity * 4 + 4);
+	m_platform.m_open = 0;
+	m_platform.m_musicAvailable = 0;
+	m_platform.m_available = 0;
+	m_platform.m_unk0x24 = 0;
+	m_platform.m_unk0x28 = 0;
+	m_platform.m_unk0x2c = 0;
+	m_platform.m_sampleRate = 0;
+	m_platform.m_unk0x38 = 0xffffffff;
+	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
+		m_platform.m_effects[i] = 0;
+	}
+	m_platform.m_sampleRate = 0x5622;
+	m_platform.m_unk0x38 = 0;
+	m_platform.m_samplesPerSecond = 0x5622;
+	m_platform.m_extraFormatBytes = 0;
+	m_platform.m_bitsPerSample = 16;
+	m_platform.m_blockAlign = 2;
+	m_platform.m_formatTag = 1;
+	m_platform.m_unk0x28 = 1;
+	m_platform.m_channels = 1;
+	m_platform.m_averageBytesPerSecond = 1;
+	m_platform.m_averageBytesPerSecond *= m_platform.m_samplesPerSecond * m_platform.m_blockAlign;
+	m_platform.m_library = LoadLibraryA("DSOUND.DLL");
+	if (m_platform.m_library != 0) {
+		if (GetSystemDirectoryA(path, sizeof(path)) != 0) {
+			memcpy(path + strlen(path), "\\DSOUND.DLL", 12);
+			DWORD size = GetFileVersionInfoSizeA(path, &versionHandle);
+			void* data = operator new(size);
+			valid = GetFileVersionInfoA(path, 0, size, data);
+			if (valid != 0) {
+				VerQueryValueA(data, "\\", &versionInfo, &versionLength);
+				unsigned long versionHigh = ((VS_FIXEDFILEINFO*) versionInfo)->dwFileVersionMS;
+				versionLow = ((VS_FIXEDFILEINFO*) versionInfo)->dwFileVersionLS;
+				unsigned short major = (unsigned short) (versionHigh >> 16);
+				unsigned short minor = (unsigned short) versionHigh;
+				*g_pDebugOutput << "DSOUND version " << (unsigned int) major << "." << (unsigned int) minor << "."
+								<< versionLow << "\n";
+				if (major >= 4 && (major != 4 || minor >= 2)) {
+					valid = 1;
+				}
+				else {
+					valid = 0;
+					*g_pErrorOutput << "DSOUND version too old\n";
+					*g_pErrorOutput << "Defaulting to windows sound device\n";
+				}
+			}
+			operator delete(data);
+			if (valid) {
+				m_platform.m_createDirectSound = (long(__stdcall*)(const void*, IDirectSound**, void*)) GetProcAddress(
+					(HMODULE) m_platform.m_library,
+					"DirectSoundCreate");
+				if (m_platform.m_createDirectSound != 0) {
+					m_platform.m_available = 1;
+					m_platform.m_open = 0;
+				}
+			}
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x0047e000
@@ -31,10 +101,74 @@ char* TargetDirectSoundDevice::GetInfo()
 	return m_platform.m_available == 1 ? "Direct Sound Device\n" : "ERROR! No Effects Device for WinEff!\n";
 }
 
-// STUB: LEMBALL 0x0047e020
+// FUNCTION: LEMBALL 0x0047e020
 int TargetDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
-	return 0;
+	unsigned int description[5];
+	unsigned int result;
+
+	result = m_platform.m_createDirectSound(0, &g_directSound, 0);
+	if (result != 0) {
+		*g_pErrorOutput << "Direct Sound Create failed: " << TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+		m_platform.m_available = 0;
+		return 0;
+	}
+	memset(description, 0, sizeof(description));
+	description[0] = sizeof(description);
+	description[1] = 1;
+	description[2] = 0;
+	description[4] = 0;
+	result = g_directSound->SetCooperativeLevel(m_platform.m_nativeWindow, 2);
+	if (result != 0) {
+		*g_pErrorOutput << "Effect Buffer Set Cooperative Level failed: "
+						<< TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+		m_platform.m_available = 0;
+		return 0;
+	}
+	result = g_directSound->CreateSoundBuffer(description, &g_primarySoundBuffer, 0);
+	if (result != 0) {
+		*g_pErrorOutput << "Primary Sound Buffer failed: " << TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+		m_platform.m_available = 0;
+		return 0;
+	}
+	void* format = &m_platform.m_formatTag;
+	result = g_primarySoundBuffer->SetFormat(format);
+	if (result != 0) {
+		*g_pSysOutput << "Primary Buffer Set Format failed: " << TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pSysOutput << "Trying 22Khz/8-bit...\n";
+		m_platform.m_bitsPerSample = 8;
+		result = g_primarySoundBuffer->SetFormat(format);
+		if (result != 0) {
+			*g_pSysOutput << "Primary Buffer Set Format failed: " << TargetDescribeDirectSoundError(result & 0xfff)
+						  << "\n";
+			*g_pSysOutput << "Trying 11khz/16-bit...\n";
+			m_platform.m_samplesPerSecond = 0x2b11;
+			m_platform.m_bitsPerSample = 16;
+			result = g_primarySoundBuffer->SetFormat(format);
+			if (result != 0) {
+				*g_pSysOutput << "Primary Buffer Set Format failed: " << TargetDescribeDirectSoundError(result & 0xfff)
+							  << "\n";
+				*g_pSysOutput << "Trying 11khz/8-bit...\n";
+				m_platform.m_bitsPerSample = 8;
+				result = g_primarySoundBuffer->SetFormat(format);
+				if (result != 0) {
+					*g_pErrorOutput << "Primary Buffer Set Format failed: "
+									<< TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+					*g_pErrorOutput << "Exausted iterations - cannot play sample\n";
+					return 0;
+				}
+			}
+		}
+	}
+	result = g_primarySoundBuffer->Play(0, 0, 1);
+	if (result != 0) {
+		*g_pErrorOutput << "Primary Sound Buffer play: " << TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+		m_platform.m_available = 0;
+		return 0;
+	}
+	m_platform.m_available = 1;
+	m_platform.m_open = 1;
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0047e350

@@ -121,6 +121,14 @@ VsOStream& VsOStream::operator<<(unsigned long p_arg0)
 	return *this << m_formattedText;
 }
 
+// FUNCTION: LEMBALL 0x00458720
+VsOStream& VsOStream::operator<<(unsigned int p_arg0)
+{
+	VsULtoa(p_arg0, (char*) m_numberBuffer, m_radix);
+	InternalFormatNum();
+	return *this << m_formattedText;
+}
+
 // 68K 0x1021410a __ls__10CVSOStreamF3HEX
 // FUNCTION: LEMBALL 0x00458780
 VsOStream& VsOStream::operator<<(Hex p_arg0)

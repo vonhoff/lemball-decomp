@@ -4,6 +4,8 @@
 #include "../../Common.h"
 #include "../Sound/BaseSoundDevice.h" // complete type
 
+class IDirectSound;
+
 // SIZE 0x54
 // VTABLE: LEMBALL 0x0049acd8
 class TargetDirectSoundDevice : public BaseSoundDevice {
@@ -48,14 +50,29 @@ private:
 	union {
 		undefined m_platformState[0x50]; // 0x04
 		struct {
-			undefined m_unk0x04[0x0c];           // 0x04
-			void* m_nativeWindow;                // 0x10
-			int m_effectCapacity;                // 0x14
-			int m_buffersPerEffect;              // 0x18
-			undefined4 m_musicAvailable;         // 0x1c
-			undefined4 m_available;              // 0x20
-			undefined m_unk0x24[0x2c];           // 0x24
-			TargetDirectSoundEffect** m_effects; // 0x50
+			void* m_library;                                                          // 0x04
+			long(__stdcall* m_createDirectSound)(const void*, IDirectSound**, void*); // 0x08
+			undefined4 m_open;                                                        // 0x0c
+			void* m_nativeWindow;                                                     // 0x10
+			int m_effectCapacity;                                                     // 0x14
+			int m_buffersPerEffect;                                                   // 0x18
+			undefined4 m_musicAvailable;                                              // 0x1c
+			undefined4 m_available;                                                   // 0x20
+			undefined4 m_unk0x24;                                                     // 0x24
+			undefined4 m_unk0x28;                                                     // 0x28
+			undefined4 m_unk0x2c;                                                     // 0x2c
+			undefined4 m_unk0x30;                                                     // 0x30
+			unsigned int m_sampleRate;                                                // 0x34
+			undefined4 m_unk0x38;                                                     // 0x38
+			unsigned short m_formatTag;                                               // 0x3c
+			unsigned short m_channels;                                                // 0x3e
+			unsigned int m_samplesPerSecond;                                          // 0x40
+			unsigned int m_averageBytesPerSecond;                                     // 0x44
+			unsigned short m_blockAlign;                                              // 0x48
+			unsigned short m_bitsPerSample;                                           // 0x4a
+			unsigned short m_extraFormatBytes;                                        // 0x4c
+			undefined2 m_pad0x4e;                                                     // 0x4e
+			TargetDirectSoundEffect** m_effects;                                      // 0x50
 		} m_platform;
 	};
 };

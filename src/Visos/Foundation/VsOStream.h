@@ -16,6 +16,7 @@ public:
 	VsOStream& operator<<(int p_arg0);
 	VsOStream& operator<<(long p_arg0);
 	VsOStream& operator<<(unsigned long p_arg0);
+	VsOStream& operator<<(unsigned int p_arg0);
 	VsOStream(VsStreambuf* p_arg0);
 	void InternalFormatNum();
 	~VsOStream();
