@@ -116,18 +116,17 @@ GunController::GunController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned int
 
 // 68K 0x108035a6 ActivateButtons__14CGunControllerFUc
 // FUNCTION: LEMBALL 0x0044cc90
-void GunController::ActivateButtons(unsigned char p_active)
+void GunController::ActivateButtons(int p_active)
 {
 	int i;
 
-	i = 0;
 	m_buttonsActive = p_active;
+	i = 0;
 	while (i < m_buttonCount) {
-		if (m_buttons[i] != 0) {
-			m_buttons[i]->m_active = p_active;
-			if (m_buttons[i]->m_graphicButton != 0) {
-				static_cast<HotAreaHandler*>(m_buttons[i]->m_graphicButton)->SetActive(p_active);
-			}
+		GunButtons* button = m_buttons[i];
+		if (button != 0) {
+			button->m_active = p_active;
+			button->m_graphicButton->SetActive(p_active);
 		}
 		i = i + 1;
 	}

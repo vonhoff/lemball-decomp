@@ -16,7 +16,7 @@ public:
 	GunController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsigned int p_arg3);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~GunController();                   // vtable+0x04
-	void ActivateButtons(unsigned char p_active);
+	void ActivateButtons(int p_active);
 	void AddButton(int p_x,
 				   int p_y,
 				   unsigned long* p_animIds,
