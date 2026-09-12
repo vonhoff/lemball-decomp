@@ -673,10 +673,7 @@ bool InternalResQuit()
 {
 	ResourceTypeList* list;
 
-	if (g_pBasePalManager != 0) {
-		g_pBasePalManager->~BasePalManager();
-		operator delete(g_pBasePalManager);
-	}
+	delete g_pBasePalManager;
 	list = g_pPreloadedResourceTypes;
 	if (list != 0) {
 		operator delete(list->m_typeCodes);
