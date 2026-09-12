@@ -22,10 +22,7 @@ StatManager::~StatManager()
 	if (m_stats != 0) {
 		i = 0;
 		while (i < m_statCount) {
-			if (m_stats[i] != 0) {
-				m_stats[i]->~BaseStat();
-				operator delete(m_stats[i]);
-			}
+			delete m_stats[i];
 			++i;
 		}
 		operator delete(m_stats);
