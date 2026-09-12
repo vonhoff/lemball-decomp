@@ -52,23 +52,12 @@ void BaseStat::Update(unsigned int p_value)
 // FUNCTION: LEMBALL 0x0045ac90
 VsOStream& BaseStat::StreamOut(VsOStream& p_stream)
 {
-	unsigned int sampleCount;
-	unsigned int minimum;
-	unsigned int maximum;
-	unsigned int total;
-	unsigned int average;
-
-	sampleCount = m_sampleCount;
-	if (sampleCount != 0) {
-		minimum = m_minimum;
-		maximum = m_maximum;
-		total = m_total;
-		average = total / sampleCount;
-		p_stream << Hex8(average) << " " << Hex8(total) << " " << Hex8(maximum) << " " << Hex8(minimum) << " "
-				 << Hex8(sampleCount) << " " << m_description << "\n";
-		return p_stream;
+	if (m_sampleCount != 0) {
+		p_stream << Hex8(m_total / m_sampleCount) << " " << Hex8(m_total) << " " << Hex8(m_maximum) << " "
+				 << Hex8(m_minimum) << " " << Hex8(m_sampleCount) << " " << m_description << "\n";
 	}
-
-	p_stream << "----\n";
+	else {
+		p_stream << "----\n";
+	}
 	return p_stream;
 }
