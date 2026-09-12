@@ -227,9 +227,6 @@ void PvButton::OnButtonDown(const VsPoint& p_point, int p_flags)
 	m_clickY = clickPos.m_y;
 	InternalOnPressed(converted);
 	OnPressed(converted);
-	if (m_autoDraw == 0) {
-		g_nGunButtonsRedrawPending = 1;
-	}
 }
 
 // 68K 0x1021004e OnButtonUp__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS
@@ -240,14 +237,14 @@ void PvButton::OnButtonUp(const VsPoint& p_point, int p_flags)
 
 	if (m_pressed != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		m_clickX = (short) (p_point.m_x - m_relativeTopLeft.m_x);
-		m_clickY = (short) (p_point.m_y - m_relativeTopLeft.m_y);
+		VsPoint clickPos;
+		clickPos.m_y = (short) (p_point.m_y - m_relativeTopLeft.m_y);
+		clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
+		m_clickX = clickPos.m_x;
+		m_clickY = clickPos.m_y;
 		m_pressed = 0;
 		InternalOnReleased(converted);
 		OnReleased(converted);
-		if (m_autoDraw == 0) {
-			g_nGunButtonsRedrawPending = 1;
-		}
 	}
 }
 
