@@ -26,16 +26,6 @@
 void CdLoadAnimDraw::Draw()
 {
 	CdLoadAnim* anims;
-	VsRect rect;
-	VsPoint point;
-	VsPoint origin;
-	VsPoint tip;
-	Vector radius(0, 0);
-	Vector left(0, 0);
-	Vector right(0, 0);
-	Vector thick(0, 0);
-	Fixed sine(0);
-	Fixed cosine(0);
 	int angle;
 	short rotX;
 	short rotY;
@@ -45,6 +35,7 @@ void CdLoadAnimDraw::Draw()
 	m_display->SetZoom(1);
 	if (m_initialDraw != 0) {
 		m_initialDraw = m_initialDraw - 1;
+		VsRect rect;
 		rect.m_width = m_display->m_rect.m_width;
 		rect.m_height = m_display->m_rect.m_height;
 		rect.m_x = 0;
@@ -61,8 +52,7 @@ void CdLoadAnimDraw::Draw()
 		m_bitmapRes[0].m_flags = 0;
 		m_bitmapRes[0].m_remap = 0;
 		m_bitmapRes[0].Draw(m_gdi);
-		point.m_x = 0;
-		point.m_y = 0;
+		VsPoint point(0, 0);
 		m_clearBitmap[0].m_x = point.m_x;
 		m_clearBitmap[0].m_y = point.m_y;
 		rect.m_width = m_display->m_rect.m_width;
@@ -75,8 +65,7 @@ void CdLoadAnimDraw::Draw()
 		m_clearBitmap[0].m_sourceY = rect.m_y;
 		m_clearBitmap[0].Draw(m_gdi);
 	}
-	point.m_x = (short) (m_points->m_x + m_centerX);
-	point.m_y = (short) (m_points->m_y + m_centerY);
+	VsPoint point((short) (m_points->m_x + m_centerX), (short) (m_points->m_y + m_centerY));
 	m_fgBlit[0].m_x = point.m_x;
 	m_fgBlit[0].m_y = point.m_y;
 	m_fgBlit[0].m_resource = m_foregroundBitmap;
@@ -87,31 +76,34 @@ void CdLoadAnimDraw::Draw()
 	point.m_y = (short) (m_points[1].m_y + m_centerY);
 	anims = (CdLoadAnim*) ((unsigned int) this - 0x74);
 	anims->DrawAnim(point, m_animResourceId, 0, (Frames*) m_repeatAnim, 0);
-	origin.m_x = (short) (m_points[2].m_x + m_centerX);
-	origin.m_y = (short) (m_points[2].m_y + m_centerY);
-	radius.SetIntegers(-m_points[3].m_x, 0);
-	thick.m_xFixed = ((int) m_points[4].m_x) << 12;
-	thick.m_yFixed = ((int) m_points[4].m_y) << 12;
-	left = radius + thick;
+	VsPoint origin((short) (m_points[2].m_x + m_centerX), (short) (m_points[2].m_y + m_centerY));
+	Vector radius(0, 0);
+	radius.SetIntegers((short) -m_points[3].m_x, 0);
+	Vector thick(((int) m_points[4].m_x) << 12, ((int) m_points[4].m_y) << 12);
+	Vector left = radius + thick;
 	thick.m_xFixed = ((int) m_points[4].m_x) << 12;
 	thick.m_yFixed = ((int) -m_points[4].m_y) << 12;
-	right = radius + thick;
+	Vector right = radius + thick;
 	angle = m_progress;
 	if (100 < angle) {
 		angle = 100;
 	}
 	angle = (angle << 8) / 100;
-	sine = g_pVSTrig->Sin(angle);
-	cosine = g_pVSTrig->Cos(angle);
-	radius = g_pVSTrig->Rotate(radius, sine, cosine);
-	rotX = (short) (radius.m_xFixed >> 12);
-	rotY = (short) (radius.m_yFixed >> 12);
-	sine = g_pVSTrig->Sin(angle);
-	cosine = g_pVSTrig->Sin(angle + 0x80);
-	left = g_pVSTrig->Rotate(left, sine, cosine);
-	sine = g_pVSTrig->Sin(angle);
-	cosine = g_pVSTrig->Sin(angle + 0x80);
-	right = g_pVSTrig->Rotate(right, sine, cosine);
+	VsTrig* trig = g_pVSTrig;
+	Fixed sine = trig->Sin(angle);
+	Fixed cosine = trig->Cos(angle);
+	Vector rotatedRadius = trig->Rotate(radius, sine, cosine);
+	rotX = (short) (rotatedRadius.m_xFixed >> 12);
+	rotY = (short) (rotatedRadius.m_yFixed >> 12);
+	trig = g_pVSTrig;
+	Fixed leftSine = trig->Sin(angle);
+	Fixed leftCosine = trig->Sin(angle + 0x80);
+	Vector rotatedLeft = trig->Rotate(left, leftSine, leftCosine);
+	trig = g_pVSTrig;
+	Fixed rightSine = trig->Sin(angle);
+	Fixed rightCosine = trig->Sin(angle + 0x80);
+	Vector rotatedRight = trig->Rotate(right, rightSine, rightCosine);
+	VsPoint tip(0, 0);
 	tip.m_x = (short) (origin.m_x + rotX);
 	tip.m_y = (short) (origin.m_y + rotY);
 	m_needle0[0].m_x1 = origin.m_x;
@@ -120,16 +112,16 @@ void CdLoadAnimDraw::Draw()
 	m_needle0[0].m_y2 = tip.m_y;
 	m_needle0[0].m_color = 0x66;
 	m_needle0[0].Draw(m_gdi);
-	point.m_x = (short) ((left.m_xFixed >> 12) + tip.m_x);
-	point.m_y = (short) ((left.m_yFixed >> 12) + tip.m_y);
+	point.m_x = (short) ((rotatedLeft.m_xFixed >> 12) + origin.m_x);
+	point.m_y = (short) ((rotatedLeft.m_yFixed >> 12) + origin.m_y);
 	m_needle1[0].m_x1 = tip.m_x;
 	m_needle1[0].m_y1 = tip.m_y;
 	m_needle1[0].m_x2 = point.m_x;
 	m_needle1[0].m_y2 = point.m_y;
 	m_needle1[0].m_color = 0xba;
 	m_needle1[0].Draw(m_gdi);
-	point.m_x = (short) ((right.m_xFixed >> 12) + tip.m_x);
-	point.m_y = (short) ((right.m_yFixed >> 12) + tip.m_y);
+	point.m_x = (short) ((rotatedRight.m_xFixed >> 12) + origin.m_x);
+	point.m_y = (short) ((rotatedRight.m_yFixed >> 12) + origin.m_y);
 	m_needle2[0].m_x1 = tip.m_x;
 	m_needle2[0].m_y1 = tip.m_y;
 	m_needle2[0].m_x2 = point.m_x;
