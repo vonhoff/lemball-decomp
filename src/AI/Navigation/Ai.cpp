@@ -274,8 +274,8 @@ void Ai::Restart()
 		unsigned long packetSize;
 		g_pDemo->SetDemoMode(1);
 		g_pDemo->GetUserPacket(packet, packetSize);
-		skill = (eSkill) packet[1];
 		level = packet[0];
+		skill = (eSkill) packet[1];
 		*g_pSysOutput << "Starting demo mode for level " << level << " on skill " << (int) skill << "\n";
 		*g_pSentinel = 0xad28;
 	}
