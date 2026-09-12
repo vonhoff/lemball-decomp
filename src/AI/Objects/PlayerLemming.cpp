@@ -74,8 +74,9 @@ void PlayerLemming::Restart()
 		collision[4] = tileY + 7;
 		collision[5] = tileZ + 15;
 		memcpy(&m_collisionMinX, collision, sizeof(collision));
-		g_pAI->m_objects[g_pAI->m_objectCount] = this;
-		g_pAI->m_objectCount++;
+		int& objectCount = g_pAI->m_objectCount;
+		g_pAI->m_objects[objectCount] = this;
+		objectCount++;
 		m_flightVelocity.m_xFixed = 0x3000;
 		m_flightVelocity.m_yFixed = 0;
 		m_flightVelocity.m_zFixed = 0xa000;
@@ -90,7 +91,9 @@ void PlayerLemming::Restart()
 		dest.m_yFixed = tileY << 12;
 		dest.m_zFixed = tileZ << 12;
 		AddDestination(dest);
-		m_position = m_spawnPosition;
+		m_position.m_xFixed = m_spawnPosition.m_xFixed;
+		m_position.m_yFixed = m_spawnPosition.m_yFixed;
+		m_position.m_zFixed = m_spawnPosition.m_zFixed;
 		m_unk0x2c = 0;
 		m_sfxChanged = 1;
 		m_group = 0;
