@@ -34,7 +34,10 @@ void Arena::DeleteLists()
 	EnterCritical();
 	MBlock* block = m_lastBlock;
 	m_lastBlock = 0;
-	while (block != 0) {
+	for (;;) {
+		if (block == 0) {
+			break;
+		}
 		MBlock* next = block->m_nextBlock;
 		delete block;
 		block = next;
