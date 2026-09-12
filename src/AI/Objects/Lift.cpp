@@ -50,10 +50,10 @@ void Lift::Edit(int p_height,
 	if (p_lowHeight == -1) {
 		p_lowHeight = p_height;
 	}
-	m_direction = p_direction;
 	m_lowHeight = p_lowHeight;
-	m_defaultActive = p_initialActive;
 	m_highHeight = p_highHeight;
+	m_direction = p_direction;
+	m_defaultActive = p_initialActive;
 	m_activateType = p_activateType;
 	m_action = 0x18;
 	m_activationLatched = 0;
