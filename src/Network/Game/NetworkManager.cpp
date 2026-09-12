@@ -62,8 +62,9 @@ NetworkManager::NetworkManager(const char* p_arg0) : BaseQueueHandler()
 bool NetworkManager::Start()
 {
 	if (g_pBaseNetwork != 0 && g_pBaseNetwork->m_serverMode != 0) {
-		g_pBaseNetwork->m_activeStatusItem = this;
-		g_pBaseNetwork->ForceProcess();
+		BaseNetwork* network = g_pBaseNetwork;
+		network->m_activeStatusItem = this;
+		network->ForceProcess();
 		g_pNetworkPacketQueue->Attach(this, 0x19);
 		return 1;
 	}
