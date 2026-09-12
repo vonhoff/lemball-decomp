@@ -192,11 +192,11 @@ void PreviewDrawer::Load()
 		(&m_primitiveBundle)[i].m_primitive.m_resource = BaseFrontendDrawer::m_backgroundBitmap;
 		(&m_primitiveBundle)[i].m_primitive.m_flags = 0x800;
 		(&m_primitiveBundle)[i].m_primitive.m_remap = 0;
-		(&m_primitive.m_bitmap)[i].m_x = (short) m_layout->m_positions[PreviewGunLemming].m_x;
-		(&m_primitive.m_bitmap)[i].m_y = (short) m_layout->m_positions[PreviewGunLemming].m_y;
-		(&m_primitive.m_bitmap)[i].m_resource = m_backgroundBitmap;
-		(&m_primitive.m_bitmap)[i].m_flags = 0x800;
-		(&m_primitive.m_bitmap)[i].m_remap = 0;
+		m_primitive[i].m_bitmap.m_x = (short) m_layout->m_positions[PreviewGunLemming].m_x;
+		m_primitive[i].m_bitmap.m_y = (short) m_layout->m_positions[PreviewGunLemming].m_y;
+		m_primitive[i].m_bitmap.m_resource = m_backgroundBitmap;
+		m_primitive[i].m_bitmap.m_flags = 0x800;
+		m_primitive[i].m_bitmap.m_remap = 0;
 	}
 	LoadAnims(m_lemmingAnimId);
 	LoadAnims(m_teamAnimId);
@@ -267,15 +267,9 @@ void PreviewDrawer::UnLoad()
 // FUNCTION: LEMBALL 0x004496d0
 PreviewDrawer::~PreviewDrawer()
 {
-	if (m_lemmingAnim != 0) {
-		delete m_lemmingAnim;
-	}
-	if (m_opponentAnim != 0) {
-		delete m_opponentAnim;
-	}
-	if (m_teamAnim != 0) {
-		delete m_teamAnim;
-	}
+	delete m_lemmingAnim;
+	delete m_opponentAnim;
+	delete m_teamAnim;
 	UnRegisterRemaps();
 	if (m_loaded != 0) {
 		UnLoad();
@@ -286,7 +280,7 @@ PreviewDrawer::~PreviewDrawer()
 // FUNCTION: LEMBALL 0x00449750
 void PreviewDrawer::DrawBackGround()
 {
-	m_primitive.m_bitmap.Draw(m_gdi);
+	m_primitive[0].m_bitmap.Draw(m_gdi);
 	DrawFrame(m_layout->m_positions[PreviewFormationAnchor], m_layout->m_positions[PreviewFormationOffset]);
 }
 

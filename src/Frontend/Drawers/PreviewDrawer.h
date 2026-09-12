@@ -66,7 +66,7 @@ public:
 	void UnRegisterRemaps();
 
 private:
-	PreviewDrawerPrims m_primitive;         // 0x398
+	PreviewDrawerPrims m_primitive[1];      // 0x398
 	ResBitmap* m_backgroundBitmap;          // 0x3bc
 	RepeatAnim* m_teamAnim;                 // 0x3c0
 	RepeatAnim* m_lemmingAnim;              // 0x3c4
