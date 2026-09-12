@@ -42,6 +42,7 @@
 #include <string.h>
 
 extern int g_anC2DRemapSourceIndices[17];
+extern int g_anC2DHitBounds[11][4];
 extern int g_anC2DRemapTargetIndices[4][17];
 extern unsigned char g_abC2DType2Remap[5];
 extern "C" unsigned long __stdcall timeGetTime(void);
@@ -513,9 +514,123 @@ void C2D::Process()
 }
 
 // 68K 0x10b07f46 FindGameObject__3C2DFRC8CVSPointRiUc
-// STUB: LEMBALL 0x00436e40
-bool C2D::FindGameObject(const VsPoint& p_point, int& p_index, unsigned char p_preferLemming)
+// FUNCTION: LEMBALL 0x00436e40
+bool C2D::FindGameObject(const VsPoint& p_point, int& p_index, int p_preferLemming)
 {
+	int pointX = p_point.m_x - m_viewOriginX;
+	int pointY = p_point.m_y - m_viewOriginY;
+	int index;
+	int selected = -1;
+	int lemming = -1;
+	index = 0;
+	if (m_viewDataCount != 0) {
+		do {
+			int type = m_viewData[index].m_objectType;
+			int x = m_viewData[index].m_positionX;
+			int y = m_viewData[index].m_positionY;
+			int left, top, right, bottom;
+			switch (type) {
+			case 0x2:
+				left = x + g_anC2DHitBounds[0][0];
+				top = y + g_anC2DHitBounds[0][1];
+				right = x + g_anC2DHitBounds[0][2];
+				bottom = y + g_anC2DHitBounds[0][3];
+				break;
+			case 0x4:
+				left = x + g_anC2DHitBounds[2][0];
+				top = y + g_anC2DHitBounds[2][1];
+				right = x + g_anC2DHitBounds[2][2];
+				bottom = y + g_anC2DHitBounds[2][3];
+				break;
+			case 0x5:
+				left = x + g_anC2DHitBounds[3][0];
+				top = y + g_anC2DHitBounds[3][1];
+				right = x + g_anC2DHitBounds[3][2];
+				bottom = y + g_anC2DHitBounds[3][3];
+				break;
+			case 0xc:
+				left = x + g_anC2DHitBounds[10][0];
+				top = y + g_anC2DHitBounds[10][1];
+				right = x + g_anC2DHitBounds[10][2];
+				bottom = y + g_anC2DHitBounds[10][3];
+				break;
+			case 0x11:
+				left = x + g_anC2DHitBounds[1][0];
+				top = y + g_anC2DHitBounds[1][1];
+				right = x + g_anC2DHitBounds[1][2];
+				bottom = y + g_anC2DHitBounds[1][3];
+				break;
+			case 0x14:
+				left = x + g_anC2DHitBounds[4][0];
+				top = y + g_anC2DHitBounds[4][1];
+				right = x + g_anC2DHitBounds[4][2];
+				bottom = y + g_anC2DHitBounds[4][3];
+				break;
+			case 0x15:
+			case 0x16:
+			case 0x17:
+				left = x + g_anC2DHitBounds[5][0];
+				top = y + g_anC2DHitBounds[5][1];
+				right = x + g_anC2DHitBounds[5][2];
+				bottom = y + g_anC2DHitBounds[5][3];
+				break;
+			case 0x1c:
+				left = x + g_anC2DHitBounds[6][0];
+				top = y + g_anC2DHitBounds[6][1];
+				right = x + g_anC2DHitBounds[6][2];
+				bottom = y + g_anC2DHitBounds[6][3];
+				break;
+			case 0x22:
+				left = x + g_anC2DHitBounds[9][0];
+				top = y + g_anC2DHitBounds[9][1];
+				right = x + g_anC2DHitBounds[9][2];
+				bottom = y + g_anC2DHitBounds[9][3];
+				break;
+			case 0x27:
+			case 0x29:
+			case 0x2b:
+			case 0x2d:
+				left = x + g_anC2DHitBounds[7][0];
+				top = y + g_anC2DHitBounds[7][1];
+				right = x + g_anC2DHitBounds[7][2];
+				bottom = y + g_anC2DHitBounds[7][3];
+				break;
+			case 0x34:
+				left = x + g_anC2DHitBounds[8][0];
+				top = y + g_anC2DHitBounds[8][1];
+				right = x + g_anC2DHitBounds[8][2];
+				bottom = y + g_anC2DHitBounds[8][3];
+				break;
+			default:
+				goto next;
+			}
+			if (left <= pointX && pointX < right && top <= pointY && pointY < bottom) {
+				if (p_preferLemming != 0) {
+					if (type == 2 && bottom > -1) {
+						selected = index;
+					}
+				}
+				else if (type == 2) {
+					if (bottom > -1) {
+						lemming = index;
+					}
+				}
+				else if (bottom > -1) {
+					selected = index;
+				}
+			}
+		next:
+			index++;
+		} while (m_viewDataCount > index);
+	}
+	if (selected != -1) {
+		p_index = selected;
+		return 1;
+	}
+	if (lemming != -1) {
+		p_index = lemming;
+		return 1;
+	}
 	return 0;
 }
 
@@ -881,6 +996,19 @@ void C2D::SetPause(unsigned char p_paused)
 		NewPauseWindow(5);
 	}
 }
+
+// GLOBAL: LEMBALL 0x00496ec8
+int g_anC2DHitBounds[11][4] = {{-8, -16, 8, 8},
+							   {-8, -12, 8, 4},
+							   {-28, -48, 20, 8},
+							   {-8, -16, 8, 2},
+							   {-10, -17, 8, 2},
+							   {-8, -32, 8, 32},
+							   {-10, -37, 36, 6},
+							   {-10, -48, 10, 0},
+							   {-16, -16, 15, 8},
+							   {-16, -16, 16, -8},
+							   {-13, -27, 15, 2}};
 
 // GLOBAL: LEMBALL 0x0049e8b8
 int g_anC2DRemapSourceIndices[17] = {250, 204, 205, 206, 118, 107, 101, 95, 85, 75, 69, 59, 49, 46, 44, 37, 48};

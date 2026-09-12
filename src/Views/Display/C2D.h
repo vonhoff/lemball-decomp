@@ -29,7 +29,7 @@
 class C2D : public Drawer, public BaseQueueHandler, public HotAreaHandler, public ReceiveWindowState {
 public:
 	C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRect& p_arg4);
-	bool FindGameObject(const VsPoint& p_point, int& p_index, unsigned char p_preferLemming);
+	bool FindGameObject(const VsPoint& p_point, int& p_index, int p_preferLemming);
 	bool InGroupByObjectNo(int p_objectNo);
 	bool IsInGrouping(GameObject* p_object);
 	bool ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY);
