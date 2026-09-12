@@ -47,34 +47,24 @@ AnimsManager::AnimsManager(Gdi* p_gdi,
 	m_doubleBuffered = p_doubleBuffered;
 	m_loadedResourceCount = 0;
 	m_reserved6c = 0xffffffff;
-	m_resources = 0;
-	m_resourceSlots = 0;
-	if (m_resourceCapacity > 0) {
-		m_resources = (ResBase**) operator new(m_resourceCapacity * 4);
-		i = 0;
-		while (i < m_resourceCapacity) {
-			m_resources[i] = 0;
-			i = i + 1;
-		}
+	m_resources = (ResBase**) operator new(m_resourceCapacity * 4);
+	m_resourceSlots = (short*) operator new(m_resourceIdCount * 2);
+	for (i = 0; i < m_resourceCapacity; i++) {
+		m_resources[i] = 0;
 	}
-	if (m_resourceIdCount > 0) {
-		m_resourceSlots = (short*) operator new(m_resourceIdCount * 2);
-		i = 0;
-		while (i < m_resourceIdCount) {
-			m_resourceSlots[i] = (short) m_resourceCapacity;
-			i = i + 1;
-		}
+	for (i = 0; i < m_resourceIdCount; i++) {
+		m_resourceSlots[i] = (short) m_resourceCapacity;
 	}
-	if (m_doubleBuffered == 0) {
-		m_zrleCapacity = p_zrleCapacity;
-		m_animCapacity = p_animCapacity;
-	}
-	else {
+	if (m_doubleBuffered != 0) {
 		m_bufferHalf = 0;
 		m_zrleCapacity = p_zrleCapacity * 2;
 		m_bufferedZrleCount = 0;
 		m_bufferedAnimCount = 0;
 		m_animCapacity = p_animCapacity * 2;
+	}
+	else {
+		m_zrleCapacity = p_zrleCapacity;
+		m_animCapacity = p_animCapacity;
 	}
 	if (m_zrleCapacity != 0) {
 		m_zrlePrimitives = new Zrle[m_zrleCapacity];
