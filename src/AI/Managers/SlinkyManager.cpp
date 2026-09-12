@@ -44,8 +44,12 @@ void SlinkyManager::Initialise(int p_capacity)
 }
 
 // 68K 0x1061f1d6 __dt__14CSlinkyManagerFv
+// FUNCTION: LEMBALL 0x0040b9d0
 SlinkyManager::~SlinkyManager()
 {
+	if (m_slinkies != 0) {
+		delete[] m_slinkies;
+	}
 }
 
 // 68K 0x1061f230 Add__14CSlinkyManagerFiiiii

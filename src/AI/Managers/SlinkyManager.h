@@ -24,7 +24,4 @@ private:
 	int m_count;        // 0x0c
 };
 
-// SYNTHETIC: LEMBALL 0x0040b9d0
-// SlinkyManager::`vector deleting destructor'
-
 #endif

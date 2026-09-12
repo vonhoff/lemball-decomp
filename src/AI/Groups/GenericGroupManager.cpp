@@ -29,8 +29,14 @@ GenericGroupManager::GenericGroupManager(Ai* p_arg0, ObjectManager* p_arg1, Form
 }
 
 // 68K 0x1060d272 __dt__20CGenericGroupManagerFv
+// FUNCTION: LEMBALL 0x0041e940
 GenericGroupManager::~GenericGroupManager()
 {
+	for (int i = 0; i < 40; i++) {
+		if (m_groups[i] != 0) {
+			delete m_groups[i];
+		}
+	}
 }
 
 // 68K 0x1060d2f6 Restart__20CGenericGroupManagerFv
