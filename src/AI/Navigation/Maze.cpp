@@ -262,8 +262,9 @@ void Maze::SwapChange()
 
 // 68K 0x10615e5a BInitialise__5CMazeFUciiii
 // FUNCTION: LEMBALL 0x00423530
-void Maze::BInitialise(unsigned char p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY)
+void Maze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY)
 {
+	Map* map;
 	if (p_resetStats != 0) {
 		m_totalTime = 0;
 		m_solutionCount = 0;
@@ -286,7 +287,7 @@ void Maze::BInitialise(unsigned char p_resetStats, int p_startX, int p_startY, i
 						collision = 3;
 					}
 					else {
-						Map* map = m_map;
+						map = m_map;
 						int width = map->m_ground.m_width;
 						if (width <= x || map->m_ground.m_height <= y) {
 							collision = 3;

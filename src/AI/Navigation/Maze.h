@@ -10,7 +10,7 @@ public:
 	bool BIteration(unsigned int& p_reached, unsigned int& p_noChanges);
 	bool CalcNewDistance(int p_x, int p_y);
 	bool FindSquare(unsigned short p_distance, int& p_x, int& p_y);
-	void BInitialise(unsigned char p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY);
+	void BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY);
 	void BSolution(int& p_count, Solution* p_solution);
 	void Clear(unsigned char* p_change);
 	void Initialise();
