@@ -30,9 +30,10 @@ bool FileOpenManagement::DecOpenCount()
 // FUNCTION: LEMBALL 0x0047a530
 int FileOpenManagement::SysCloseSocket()
 {
-	int result = DecOpenCount();
+	DecOpenCount();
+	int result = FileCommonSocket::SysCloseSocket();
 	if (m_message.m_openCount == 0) {
-		FileCommonSocket::SysCloseSocket();
+		Delete();
 	}
 	return result;
 }
