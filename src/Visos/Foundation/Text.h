@@ -11,7 +11,7 @@
 class Text : public Primitive {
 public:
 	inline Text()
-		: m_x(0), m_y(0), m_offsetX(0), m_offsetY(0), m_startX(0), m_startY(0), m_advanceX(0), m_advanceY(0), m_glyph()
+		: m_x(m_y = 0), m_offsetX(m_offsetY = 0), m_startX(m_startY = 0), m_advanceX(m_advanceY = 0), m_glyph()
 	{
 	}
 
