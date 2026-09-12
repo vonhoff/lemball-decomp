@@ -131,10 +131,42 @@ bool Ice::Process()
 }
 
 // 68K 0x1061200c StepOn__4CIceFRC7AICOORDP11CGameObject
-// STUB: LEMBALL 0x0042d380
+// FUNCTION: LEMBALL 0x0042d380
 bool Ice::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
-	return 0;
+	if (!m_switched) {
+		return false;
+	}
+	int alreadyOn;
+	if (p_object->m_objectType == 2) {
+		alreadyOn = p_object->OnConveyor();
+	}
+	else {
+		alreadyOn = p_object->m_action == 0xf && p_object->m_actionArgument == 3;
+	}
+	if (alreadyOn) {
+		return false;
+	}
+	int x = p_position.m_xFixed >> 12;
+	int y = p_position.m_yFixed >> 12;
+	if (m_minX - 8 <= x && x <= m_maxX + 7 && m_minY - 8 <= y && y <= m_maxY + 7) {
+		if (m_objectCount < 10) {
+			m_objects[m_objectCount++] = p_object;
+			p_object->ResetInstructions();
+			p_object->m_stateTimer = g_dwGameTick * 50;
+			p_object->m_actionDeadline = g_dwGameTick + 1000;
+			if (p_object->m_objectType == 2) {
+				p_object->Action(0x16);
+				p_object->SetSndEffect(0x2d);
+				p_object->OnConveyor(1, this, 0);
+				return true;
+			}
+			p_object->Action(0xf, 3);
+			p_object->SetSndEffect(0x2d);
+		}
+		return true;
+	}
+	return false;
 }
 
 // 68K 0x1061217a Leave__4CIceFP14CPlayerLemming

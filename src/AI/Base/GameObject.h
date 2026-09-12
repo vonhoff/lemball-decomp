@@ -157,6 +157,7 @@ public:
 	friend class Mover;
 	friend class PlayerLemmingGroupManager;
 	friend class Trampoline;
+	friend class Ice;
 
 protected:
 	unsigned short m_runtimeFlags;        // 0x04
