@@ -2806,10 +2806,138 @@ void C2D::DrawTrapDoor(ViewData& p_viewData)
 {
 }
 
+extern const undefined4* g_styleObjectClip;
+
 // 68K 0x10b0487c DrawObject__3C2DFR9CViewData
-// STUB: LEMBALL 0x0043dc70
+// FUNCTION: LEMBALL 0x0043dc70
 void C2D::DrawObject(ViewData& p_viewData)
 {
+	int objectNo = p_viewData.m_objectId;
+	switch (p_viewData.m_objectType) {
+	case 1:
+		DrawLemming(p_viewData, objectNo, 1);
+		return;
+	case 2:
+		DrawLemming(p_viewData, objectNo, 0);
+		return;
+	case 3:
+		DrawBullet(p_viewData, objectNo);
+		return;
+	case 4:
+		DrawCatapult(p_viewData, objectNo);
+		return;
+	case 5:
+		DrawAmmo(p_viewData, objectNo);
+		return;
+	case 7:
+		DrawSheep(p_viewData, objectNo);
+		return;
+	case 9:
+		DrawBall(p_viewData);
+		return;
+	case 0xb:
+		DrawFlag(p_viewData, 0xb);
+		return;
+	case 0xc:
+		DrawFlag(p_viewData, 0xc);
+		return;
+	case 0xd:
+		if (m_ai->m_mapType != 3) {
+			m_lemmingAnims->DrawAnim((short) p_viewData.m_positionX - (short) g_styleObjectClip[0],
+									 (short) p_viewData.m_positionY - (short) g_styleObjectClip[1],
+									 g_anGroundStyleResourceIds[6],
+									 0,
+									 0,
+									 0);
+		}
+		return;
+	case 0x11:
+		DrawCrate(p_viewData, objectNo);
+		return;
+	case 0x12:
+		DrawBonus(p_viewData);
+		return;
+	case 0x13:
+		DrawMine(p_viewData);
+		return;
+	case 0x14:
+		DrawSwitch(p_viewData);
+		return;
+	case 0x15:
+		DrawKey(p_viewData, 3);
+		return;
+	case 0x16:
+		DrawKey(p_viewData, 1);
+		return;
+	case 0x17:
+		DrawKey(p_viewData, 4);
+		return;
+	case 0x18:
+		DrawTrapDoor(p_viewData);
+		return;
+	case 0x19:
+	case 0x1a:
+		DrawDoor(p_viewData);
+		return;
+	case 0x1b:
+		DrawTimeBonus(p_viewData);
+		return;
+	case 0x1c:
+		DrawDuplicator(p_viewData);
+		return;
+	case 0x1e:
+	case 0x2f:
+	case 0x30:
+	case 0x31:
+		DrawLaser(p_viewData);
+		return;
+	case 0x1f:
+		DrawHand(p_viewData);
+		return;
+	case 0x20:
+		DrawRocket(p_viewData);
+		return;
+	case 0x21:
+		DrawPaintGun(p_viewData);
+		return;
+	case 0x22:
+		DrawTrampoline(p_viewData);
+		return;
+	case 0x26:
+	case 0x32:
+		DrawLaserFire(p_viewData);
+		return;
+	case 0x27:
+		DrawBalloon(p_viewData, 3);
+		return;
+	case 0x28:
+		DrawBalloonPost(p_viewData, 3);
+		return;
+	case 0x29:
+		DrawBalloon(p_viewData, 1);
+		return;
+	case 0x2a:
+		DrawBalloonPost(p_viewData, 1);
+		return;
+	case 0x2b:
+		DrawBalloon(p_viewData, 4);
+		return;
+	case 0x2c:
+		DrawBalloonPost(p_viewData, 4);
+		return;
+	case 0x2d:
+		DrawBalloon(p_viewData, 0);
+		return;
+	case 0x2e:
+		DrawBalloonPost(p_viewData, 0);
+		return;
+	case 0x34:
+		DrawMover(p_viewData);
+		return;
+	case 0x35:
+		DrawSlinky(p_viewData);
+		return;
+	}
 }
 
 // 68K 0x10b04c66 SetOrigin__3C2DFv
