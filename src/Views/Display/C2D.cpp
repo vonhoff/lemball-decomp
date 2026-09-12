@@ -2248,9 +2248,10 @@ void C2D::DrawRocket(ViewData& p_viewData)
 {
 	int elapsed;
 	int frame;
-	int extraFrame = -1;
+	int extraFrame;
 
 	elapsed = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15 / 1000;
+	extraFrame = -1;
 	if (elapsed <= 7) {
 		frame = elapsed < 4 ? elapsed : 4;
 	}
