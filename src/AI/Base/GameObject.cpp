@@ -1062,7 +1062,9 @@ bool GameObject::Jump()
 	groundZ <<= 12;
 	if (m_position.m_zFixed >= (int) groundZ) {
 		AiCoord* position = &m_position;
-		m_position = m_groundPosition;
+		m_position.m_xFixed = m_groundPosition.m_xFixed;
+		m_position.m_yFixed = m_groundPosition.m_yFixed;
+		m_position.m_zFixed = m_groundPosition.m_zFixed;
 		position->m_zFixed = groundZ;
 		m_unk0x104 = 0;
 		if (m_unk0x11c == 0 && mover != 0) {
