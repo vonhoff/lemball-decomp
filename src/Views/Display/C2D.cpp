@@ -216,7 +216,8 @@ void C2D::ShutDown()
 		m_panel = 0;
 	}
 	if (m_pauseWindow != 0) {
-		delete m_pauseWindow;
+		PauseWindow& pauseWindow = *m_pauseWindow;
+		delete &pauseWindow;
 		m_pauseWindow = 0;
 	}
 	KillRemapPalettes();
@@ -810,8 +811,7 @@ void C2D::NewPauseWindow(int p_message)
 	m_previousPauseMessage = m_pauseMessage;
 	m_pauseMessage = p_message;
 	if (m_pauseWindow != 0) {
-		BaseQueueHandler& queueHandler = *m_pauseWindow;
-		delete &queueHandler;
+		delete m_pauseWindow;
 		m_pauseWindow = 0;
 	}
 	if (m_pauseMessage != 5) {
