@@ -32,7 +32,6 @@ public:
 	virtual void InternalOnMove() = 0;                         // vtable+0x28
 	virtual void InternalOnSize() = 0;                         // vtable+0x20
 	void Clear(int p_color);
-	~PvGWnd() {}
 
 	friend class GWnd;
 	friend class Main2DDisplay;

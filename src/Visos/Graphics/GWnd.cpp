@@ -41,7 +41,7 @@ GWnd::GWnd()
 }
 
 // 68K 0x1010a70a __dt__5CGWndFv
-// STUB: LEMBALL 0x00463bd0
+// FUNCTION: LEMBALL 0x00463bd0
 GWnd::~GWnd()
 {
 }
