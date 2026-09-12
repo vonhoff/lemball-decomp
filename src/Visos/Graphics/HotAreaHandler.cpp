@@ -81,11 +81,6 @@ bool HotAreaHandler::InArea(const VsPoint& p_point)
 	return 0;
 }
 
-// 68K 0x10100b76 __dt__15CHotAreaHandlerFv
-HotAreaHandler::~HotAreaHandler()
-{
-}
-
 // 68K 0x10211c8a __ct__15CHotAreaHandlerFRC7CVSRect
 // FUNCTION: LEMBALL 0x0046a290
 HotAreaHandler::HotAreaHandler(const VsRect& p_arg0) : m_height(0), m_width(0), m_y(0), m_x(0)

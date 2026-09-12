@@ -185,9 +185,12 @@ C2D::C2D(Main2DDisplay* p_arg0, Ai* p_arg1, Gdi* p_arg2, Map* p_arg3, const VsRe
 }
 
 // 68K 0x10b06e3e __dt__3C2DFv
-// STUB: LEMBALL 0x00436050
+// FUNCTION: LEMBALL 0x00436050
 C2D::~C2D()
 {
+	if (g_nTestAllLevels != 0) {
+		g_nZoomEnabled = g_nZoomEnabled == 0;
+	}
 }
 
 // 68K 0x10b070a2 ShutDown__3C2DFv
