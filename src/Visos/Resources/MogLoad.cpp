@@ -84,23 +84,20 @@ MogDir::MogDir(unsigned long p_fileOffset)
 // FUNCTION: LEMBALL 0x0045bf10
 MogDir::~MogDir()
 {
-	int* iterator;
-	int* first;
+	Chunk* first;
+	Chunk* iterator;
 	ChunkInfo* chunk;
-	int* next;
+	Chunk* next;
 
-	iterator = &m_iteratorIndex;
-	first = &m_firstIndex;
-	iterator[0] = first[0];
-	iterator[1] = first[1];
+	iterator = (Chunk*) &m_iteratorIndex;
+	first = (Chunk*) &m_firstIndex;
+	*iterator = *first;
 	chunk = m_firstChunk;
 	while (chunk != 0) {
-		first[0] = iterator[0];
-		first[1] = iterator[1];
+		*first = *iterator;
 		chunk = m_firstChunk;
-		next = &chunk->m_nextIndex;
-		iterator[0] = next[0];
-		iterator[1] = next[1];
+		next = (Chunk*) &chunk->m_nextIndex;
+		*iterator = *next;
 		if (chunk->m_type == kChunkDirc && chunk->m_directory != 0) {
 			MogloadArena::operator delete(chunk->m_directory);
 			m_firstChunk->m_directory = 0;
