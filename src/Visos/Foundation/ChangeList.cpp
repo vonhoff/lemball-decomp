@@ -240,6 +240,8 @@ unsigned int ChangeList::GetArea()
 	return m_area;
 }
 
+#include <string.h>
+
 // 68K 0x102112b8 GetNextArea__11CChangeListFUcUcUc
 // FUNCTION: LEMBALL 0x00466d40
 bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark)
@@ -258,11 +260,8 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, 
 
 	scanY = m_scanY;
 	scanX = m_scanX;
-	row = m_map + scanY * (int) m_mapSize.m_width;
-	do {
-		if (scanY >= (int) m_mapSize.m_height) {
-			return 0;
-		}
+	row = scanY * (int) m_mapSize.m_width + m_map;
+	while (scanY < (int) m_mapSize.m_height) {
 		if (scanX < (int) m_mapSize.m_width) {
 			do {
 				if (row[scanX] == p_findMark) {
@@ -271,28 +270,26 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, 
 				scanX = scanX + 1;
 			} while (scanX < (int) m_mapSize.m_width);
 			if (scanX < (int) m_mapSize.m_width) {
-				widthPixels = 0;
-				startX = scanX;
-				break;
+				goto found;
 			}
 		}
 		row = row + (int) m_mapSize.m_width;
 		scanX = 0;
 		scanY = scanY + 1;
-	} while (1);
+	}
+	return 0;
 
-	pixel = row + scanX;
-	while (1) {
-		scanX = scanX + 1;
-		widthPixels = widthPixels + (int) m_cellSize.m_width;
-		*pixel = p_replacementMark;
-		if (scanX >= (int) m_mapSize.m_width) {
-			break;
-		}
-		pixel = pixel + 1;
+found:
+	startX = scanX;
+	widthPixels = 0;
+	while (scanX < (int) m_mapSize.m_width) {
+		pixel = row + scanX;
 		if (*pixel != p_findMark) {
 			break;
 		}
+		scanX = scanX + 1;
+		widthPixels = widthPixels + (int) m_cellSize.m_width;
+		*pixel = p_replacementMark;
 	}
 
 	heightCells = 1;
@@ -323,11 +320,16 @@ bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, 
 		}
 	}
 
+	VsRect area;
+	area.m_width = (short) widthPixels;
+	area.m_height = (short) heightCells * m_cellSize.m_height;
+	area.m_x = m_cellSize.m_width * (short) startX;
+	area.m_y = (short) scanY * m_cellSize.m_height;
 	item = m_items + m_itemCount;
-	item->width = (short) widthPixels;
-	item->height = (short) heightCells * m_cellSize.m_height;
-	item->x = m_cellSize.m_width * (short) startX;
-	item->y = (short) scanY * m_cellSize.m_height;
+	memcpy(&item->width, &area.m_width, sizeof(area.m_width));
+	memcpy(&item->height, &area.m_height, sizeof(area.m_height));
+	memcpy(&item->x, &area.m_x, sizeof(area.m_x));
+	memcpy(&item->y, &area.m_y, sizeof(area.m_y));
 	m_items[m_itemCount].drawMark = p_itemMark;
 	m_scanX = 0;
 	m_itemCount = m_itemCount + 1;
