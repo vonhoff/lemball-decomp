@@ -126,8 +126,7 @@ int g_nVisosVersionMinor = 0;
 // GLOBAL: LEMBALL 0x004a93b0
 char g_szStreamFixedBuffer[0x400];
 
-// GLOBAL: LEMBALL 0x004a0f20
-char g_szOptionParanoid[12] = "paranoid";
+extern char g_szOptionParanoid[12];
 
 // GLOBAL: LEMBALL 0x004a0f2c
 char g_szOptionNoWait[8] = "nowait";
@@ -239,6 +238,9 @@ InitCmdOption g_aInitCmdOptions[14] = {
 	{g_szOptionDebugFile, &g_nDebugFileOutputEnabled},
 	{g_szOptionGc, &g_nGarbageCollector},
 };
+
+// GLOBAL: LEMBALL 0x004a0f20
+char g_szOptionParanoid[12] = "paranoid";
 
 // GLOBAL: LEMBALL 0x004a8320
 int g_cParsedArgs = 0;
