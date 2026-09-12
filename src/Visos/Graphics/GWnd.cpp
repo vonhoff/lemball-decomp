@@ -126,7 +126,6 @@ void GWnd::InternalOnDestroy()
 {
 	Gdi* gdi;
 	unsigned int style;
-	VsRect emptyRect;
 
 	gdi = m_gdi;
 	if (gdi != 0) {
@@ -137,10 +136,7 @@ void GWnd::InternalOnDestroy()
 	style = GetStyle();
 	if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
 		if ((GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE) & 0x40000000) != 0) {
-			emptyRect.m_x = 0;
-			emptyRect.m_y = 0;
-			emptyRect.m_width = 0;
-			emptyRect.m_height = 0;
+			VsRect emptyRect(0, 0, 0, 0);
 			m_createRect->SetDontUpdateRect(emptyRect);
 		}
 	}
