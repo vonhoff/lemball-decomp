@@ -21,7 +21,8 @@ extern char* g_apPauseMenuLabels[15];
 void PauseWindow::Initialise()
 {
 	int index = 0;
-	for (int menu = 0; menu <= m_pauseMessage; menu++) {
+	int pauseMessage = m_pauseMessage;
+	for (int menu = 0; menu <= pauseMessage; menu++) {
 		m_menuItemCount = 0;
 		do {
 			m_menuItemCount++;
@@ -32,7 +33,7 @@ void PauseWindow::Initialise()
 	m_minimumSelection = 0;
 	m_unavailableItems = 0;
 	m_menuLabels = g_apPauseMenuLabels + index - m_menuItemCount - 1;
-	switch (m_pauseMessage) {
+	switch (pauseMessage) {
 	case 0:
 		m_minimumSelection = 1;
 		if (!m_receiverState->GetPauser()) {
@@ -57,8 +58,7 @@ void PauseWindow::Initialise()
 	m_initialSelection = m_selection;
 	g_pMasterInputQueue->Attach(this, 0);
 	m_vramSurface = 0;
-	void* textSizes = new VsRect[m_menuItemCount];
-	m_textSizes = (VsPoint*) textSizes;
+	m_textSizes = (VsPoint*) (void*) new VsRect[m_menuItemCount];
 	RegisterRemaps();
 	m_loaded = 0;
 	m_borderAnims = 0;
