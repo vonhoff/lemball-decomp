@@ -5,9 +5,8 @@
 bool TimedQueue::Post(Message& p_message)
 {
 	unsigned char* slot;
-	unsigned int index;
 	unsigned int count;
-	int timestamp;
+	unsigned int index;
 	Message* message;
 
 	slot = m_readCursor;
@@ -20,10 +19,9 @@ bool TimedQueue::Post(Message& p_message)
 	index = 0;
 	count = m_messageCount;
 	if (count != 0) {
-		timestamp = p_message.time;
 		do {
 			message = (Message*) slot;
-			if ((int) (timestamp - (int) message->time) < 0) {
+			if ((int) (p_message.time - message->time) < 0) {
 				break;
 			}
 			slot = slot + sizeof(Message);
