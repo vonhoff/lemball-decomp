@@ -165,7 +165,18 @@ PvWnd::~PvWnd()
 // FUNCTION: LEMBALL 0x00465db0
 void PvWnd::SetInnerWindow(const VsRect& p_rect)
 {
-	m_innerRect = p_rect;
+	const short* position;
+
+	m_innerRect.m_width = p_rect.m_width;
+	m_innerRect.m_height = p_rect.m_height;
+	if (&p_rect != 0) {
+		position = &p_rect.m_x;
+	}
+	else {
+		position = 0;
+	}
+	m_innerRect.m_x = *position;
+	m_innerRect.m_y = position[1];
 	InternalOnSize();
 }
 
@@ -181,13 +192,18 @@ void PvWnd::SetRect(const VsRect& p_rect)
 void PvWnd::SetRectInnerZoom(const VsRect& p_rect, const VsRect& p_innerRect, int p_zoom)
 {
 	int oldZoom = m_zoom;
+	const VsPoint* innerXY;
 	if (p_zoom != oldZoom) {
 		m_zoom = p_zoom;
 		InternalOnZoom(oldZoom);
 		OnZoom(oldZoom);
 	}
-	m_innerRect = p_innerRect;
-	SetRect(p_rect);
+	m_innerRect.m_width = p_innerRect.m_width;
+	m_innerRect.m_height = p_innerRect.m_height;
+	innerXY = (const VsPoint*) &p_innerRect;
+	m_innerRect.m_x = innerXY->m_x;
+	m_innerRect.m_y = innerXY->m_y;
+	InternalSetRect(p_rect);
 }
 
 // 68K 0x10216c50 InitHotAreaList__6CPVWndFv
