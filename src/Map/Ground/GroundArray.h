@@ -33,6 +33,7 @@ public:
 	friend class Door;
 	friend class Ice;
 	friend class InvisibleSwitch;
+	friend class Switch;
 	friend class Hand;
 	friend class Lift;
 	friend class Slinky;

@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
+#include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
 
 // GLOBAL: LEMBALL 0x0049e1b8
@@ -50,10 +51,47 @@ void Switch::Throw()
 }
 
 // 68K 0x10619852 Process__7CSwitchFv
-// STUB: LEMBALL 0x0041d180
+// FUNCTION: LEMBALL 0x0041d180
 bool Switch::Process()
 {
-	return 0;
+	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> 12;
+	Map* map = g_pMap;
+	int blockX = x >> 4;
+	int blockY = y >> 4;
+	unsigned short z;
+	if (x < 0 || y < 0 || blockX >= g_pMap->m_ground.m_width || blockY >= g_pMap->m_ground.m_height) {
+		z = 0;
+	}
+	else {
+		x &= 15;
+		y &= 15;
+		z = map->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x, y);
+	}
+	m_position.m_zFixed = ((int) z) << 12;
+	if (m_isRemoteObject != 0) {
+		if (m_pendingAction != m_action) {
+			if (m_action == (eAction) 7) {
+				SetSndEffect((eSoundEffect) 0x15);
+			}
+			m_pendingAction = m_action;
+		}
+		return true;
+	}
+	switch (m_action) {
+	case (eAction) 7:
+		Throw();
+		Action((eAction) 24);
+		break;
+	case (eAction) 25:
+		break;
+	case (eAction) 26:
+		if (m_unk0xd4 < g_dwGameTick) {
+			Action((eAction) 7);
+		}
+		break;
+	}
+	return true;
 }
 
 // 68K 0x10619950 Activate__7CSwitchFP11CGameObject
