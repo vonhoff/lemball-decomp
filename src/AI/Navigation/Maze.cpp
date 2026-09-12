@@ -247,14 +247,12 @@ void Maze::Clear(unsigned char* p_change)
 // FUNCTION: LEMBALL 0x004234f0
 void Maze::SwapChange()
 {
-	unsigned char* pChange;
-	if (m_changeSelect == 0) {
-		pChange = m_changeB;
+	if (m_changeSelect != 0) {
+		Clear(m_changeA);
 	}
 	else {
-		pChange = m_changeA;
+		Clear(m_changeB);
 	}
-	Clear(pChange);
 	m_changeSelect = m_changeSelect == 0;
 }
 
