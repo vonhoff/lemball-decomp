@@ -2,8 +2,28 @@
 
 #include "../Foundation/VsOStream.h"
 #include "../Foundation/VsString.h"
+#include "EffPatchHeader.h"
+#include "EffWaveHeader.h"
+#include "IDirectSound.h"
 
 #include <string.h>
+
+#define WIN32_LEAN_AND_MEAN
+// clang-format off: mmsystem.h requires Win32 types.
+#include <windows.h>
+#include <mmsystem.h>
+// clang-format on
+
+unsigned short TargetByteSwap16(unsigned short p_value);
+unsigned int TargetByteSwap32(unsigned int p_value);
+
+struct DirectSoundBufferDescription {
+	unsigned int m_size;
+	unsigned int m_flags;
+	unsigned int m_bytes;
+	unsigned int m_reserved;
+	WAVEFORMATEX* m_format;
+};
 
 struct DirectSoundError {
 	const char* name;
@@ -51,6 +71,132 @@ const char* TargetDescribeDirectSoundError(unsigned int p_error)
 	} while (code != 0);
 	VsLtoa(p_error, g_directSoundErrorText + strlen(g_unknownDirectSoundError), 10);
 	return g_directSoundErrorText;
+}
+
+// FUNCTION: LEMBALL 0x0047d310
+TargetDirectSoundEffect::TargetDirectSoundEffect(int p_bufferCount,
+												 unsigned char* p_patch,
+												 unsigned int p_sampleRate,
+												 int p_use16Bit,
+												 int p_stereo,
+												 unsigned int p_controlFlags)
+{
+	unsigned int length;
+	unsigned int downsample;
+	unsigned long audioBytes[2];
+	unsigned char* audio[2];
+	DirectSoundBufferDescription description;
+	WAVEFORMATEX format;
+	EffPatchHeader patchHeader;
+	EffWaveHeader waveHeader;
+	unsigned char* wave;
+	unsigned char* source;
+	unsigned int result;
+	int index;
+
+	m_unknown04 = 0;
+	m_controlFlags = p_controlFlags;
+	m_bufferCount = p_bufferCount;
+	m_buffers = new IDirectSoundBuffer*[p_bufferCount];
+	for (index = 0; index < m_bufferCount; index++) {
+		m_buffers[index] = 0;
+	}
+	memcpy(&patchHeader, p_patch, sizeof(patchHeader));
+	patchHeader.m_unk4 = TargetByteSwap16(patchHeader.m_unk4);
+	patchHeader.m_waveCount = TargetByteSwap16(patchHeader.m_waveCount);
+	m_prepared = 0;
+	m_unknown04 = 0;
+	if (patchHeader.m_waveCount != 1) {
+		// STRING: LEMBALL 0x004a34dc
+		*g_pErrorOutput << "Warning! Effect Patch " << ((EffPatchHeader*) p_patch)->m_name << " has more than ";
+		// STRING: LEMBALL 0x004a3504
+		*g_pErrorOutput << "one Wave. Only one is supported!\n";
+	}
+	wave = p_patch + sizeof(EffPatchHeader);
+	memcpy(&waveHeader, wave, sizeof(waveHeader));
+	waveHeader.m_unk4 = TargetByteSwap16(waveHeader.m_unk4);
+	waveHeader.m_length = TargetByteSwap32(waveHeader.m_length);
+	waveHeader.m_sampleRate = TargetByteSwap32(waveHeader.m_sampleRate);
+	length = p_use16Bit != 0 ? waveHeader.m_length : waveHeader.m_length >> 1;
+	downsample = 0;
+	if (waveHeader.m_sampleRate != p_sampleRate) {
+		length >>= 1;
+		downsample = 1;
+	}
+	format.wFormatTag = 1;
+	format.nSamplesPerSec = p_sampleRate;
+	format.nChannels = 1;
+	format.cbSize = 0;
+	format.nBlockAlign = 2;
+	format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
+	format.wBitsPerSample = 16;
+	memset(&description, 0, sizeof(description));
+	description.m_bytes = length;
+	description.m_format = &format;
+	description.m_flags = 2;
+	description.m_size = sizeof(description);
+	if ((m_controlFlags & 1) != 0) {
+		description.m_flags |= 0x80;
+	}
+	if ((m_controlFlags & 2) != 0) {
+		description.m_flags |= 0x40;
+	}
+	if ((m_controlFlags & 4) != 0) {
+		description.m_flags |= 0x20;
+	}
+	result = g_directSound->CreateSoundBuffer(&description, m_buffers, 0);
+	if (result != 0) {
+		// STRING: LEMBALL 0x004a3528
+		*g_pErrorOutput << "Effect Buffer Create failed: " << TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+		return;
+	}
+	result = m_buffers[0]->Lock(0, length, (void**) &audio[0], &audioBytes[0], (void**) &audio[1], &audioBytes[1], 0);
+	if (result != 0) {
+		// STRING: LEMBALL 0x004a354c
+		*g_pErrorOutput << "Effect Buffer Lock failed: " << TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+		return;
+	}
+	source = wave + sizeof(EffWaveHeader);
+	for (index = 0; index < 2; index++) {
+		unsigned char* dest = audio[index];
+		if (audioBytes[index] != 0) {
+			if (downsample == 0) {
+				if ((length >> 1) > 0) {
+					unsigned int count = length >> 1;
+					do {
+						unsigned char high = *source++;
+						*dest++ = *source++;
+						*dest++ = (unsigned char) (high ^ 0x80);
+					} while (--count != 0);
+				}
+			}
+			else if ((length >> 2) > 0) {
+				unsigned int count = length >> 2;
+				do {
+					unsigned char high = *source++;
+					*dest++ = *source++;
+					*dest++ = (unsigned char) (high ^ 0x80);
+					source += 2;
+				} while (--count != 0);
+			}
+		}
+	}
+	result = m_buffers[0]->Unlock(audio[0], audioBytes[0], audio[1], audioBytes[1]);
+	if (result != 0) {
+		// STRING: LEMBALL 0x004a356c
+		*g_pErrorOutput << "Effect Buffer Unlock failed: " << TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+		return;
+	}
+	for (index = 1; index < m_bufferCount; index++) {
+		result = g_directSound->DuplicateSoundBuffer(m_buffers[0], &m_buffers[index]);
+		if (result != 0) {
+			// STRING: LEMBALL 0x004a3590
+			*g_pErrorOutput << "Duplicate Effect Buffer Create failed: "
+							<< TargetDescribeDirectSoundError(result & 0xfff) << "\n";
+			return;
+		}
+	}
+	m_prepared = 1;
 }
 
 // FUNCTION: LEMBALL 0x0047d6e0

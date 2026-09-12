@@ -16,4 +16,6 @@ public:
 	virtual long __stdcall SetCooperativeLevel(void* p_window, unsigned long p_level) = 0;
 };
 
+extern IDirectSound* g_directSound;
+
 #endif

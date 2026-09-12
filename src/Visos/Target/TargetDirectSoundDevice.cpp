@@ -19,7 +19,7 @@
 static IDirectSoundBuffer* g_primarySoundBuffer = 0;
 
 // GLOBAL: LEMBALL 0x004a331c
-static IDirectSound* g_directSound = 0;
+IDirectSound* g_directSound = 0;
 
 // FUNCTION: LEMBALL 0x0047dd80
 TargetDirectSoundDevice::TargetDirectSoundDevice(int p_effectCapacity, int p_buffersPerEffect)
@@ -271,9 +271,24 @@ int TargetDirectSoundDevice::Dummy38(undefined4 p_arg0, undefined4 p_arg1, undef
 	return 0;
 }
 
-// STUB: LEMBALL 0x0047e520
+// FUNCTION: LEMBALL 0x0047e520
 bool TargetDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_handle, unsigned int p_effectHandle)
 {
+	int index;
+	for (index = 1; index <= m_platform.m_effectCapacity; index++) {
+		if (m_platform.m_effects[index] == 0) {
+			m_platform.m_effects[index] = new TargetDirectSoundEffect(m_platform.m_buffersPerEffect,
+																	  p_data,
+																	  m_platform.m_sampleRate,
+																	  m_platform.m_unk0x28,
+																	  m_platform.m_unk0x24,
+																	  p_effectHandle);
+			if (m_platform.m_effects[index]->IsPrepared()) {
+				*p_handle = index;
+			}
+			return true;
+		}
+	}
 	return false;
 }
 

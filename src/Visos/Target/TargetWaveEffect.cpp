@@ -1,27 +1,8 @@
 #include "TargetWaveEffect.h"
 
 #include "../Foundation/VsOStream.h"
-
-struct EffPatchHeader {
-	unsigned int m_unk0;
-	unsigned short m_unk4;
-	char m_name[14];
-	unsigned short m_waveCount;
-	unsigned short m_unk16;
-	unsigned int m_unk18;
-};
-
-struct EffWaveHeader {
-	unsigned int m_unk0;
-	unsigned short m_unk4;
-	unsigned short m_unk6;
-	unsigned int m_length;
-	unsigned int m_unk0c;
-	unsigned int m_unk10;
-	unsigned int m_sampleRate;
-	unsigned int m_unk18;
-	unsigned int m_unk1c[7];
-};
+#include "EffPatchHeader.h"
+#include "EffWaveHeader.h"
 
 // FUNCTION: LEMBALL 0x0047c210
 unsigned short TargetByteSwap16(unsigned short p_value)

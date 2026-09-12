@@ -9,12 +9,19 @@ const char* TargetDescribeDirectSoundError(unsigned int p_error);
 // SIZE 0x1c
 class TargetDirectSoundEffect {
 public:
+	TargetDirectSoundEffect(int p_bufferCount,
+							unsigned char* p_patch,
+							unsigned int p_sampleRate,
+							int p_use16Bit,
+							int p_stereo,
+							unsigned int p_controlFlags);
 	~TargetDirectSoundEffect();
 	bool IsPlaying();
 	void Stop();
 	int Play(int p_loop);
 	int PlayWithVolume(int p_volume, int p_loop);
 	bool SetBufferVolume(int p_index, int p_volume);
+	bool IsPrepared() const { return m_prepared != 0; }
 
 private:
 	int FindIdleBuffer();

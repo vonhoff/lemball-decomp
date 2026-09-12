@@ -30,6 +30,10 @@ public:
 	virtual long __stdcall SetPan(long p_pan) = 0;
 	virtual long __stdcall SetFrequency(unsigned long p_frequency) = 0;
 	virtual long __stdcall Stop() = 0;
+	virtual long __stdcall Unlock(void* p_audio1,
+								  unsigned long p_audioBytes1,
+								  void* p_audio2,
+								  unsigned long p_audioBytes2) = 0;
 };
 
 #endif
