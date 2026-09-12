@@ -118,3 +118,17 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 	m_driverMode = 1;
 	return 1;
 }
+
+// FUNCTION: LEMBALL 0x00458180
+bool TargetGraphicsSystemState::IsFullscreenDriver()
+{
+	switch (m_driverMode) {
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+		return 1;
+	default:
+		return 0;
+	}
+}
