@@ -242,7 +242,7 @@ unsigned int ChangeList::GetArea()
 
 // 68K 0x102112b8 GetNextArea__11CChangeListFUcUcUc
 // FUNCTION: LEMBALL 0x00466d40
-bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned char p_itemMark, unsigned char p_replacementMark)
+bool ChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark)
 {
 	int scanY;
 	int scanX;

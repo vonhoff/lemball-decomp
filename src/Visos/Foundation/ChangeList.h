@@ -10,7 +10,7 @@ class ChangeList {
 public:
 	ChangeList(int p_arg0, VsSize p_arg1, VsSize p_arg2);
 	ChangeListItem* GetNItem(int p_index);
-	bool GetNextArea(unsigned char p_findMark, unsigned char p_itemMark, unsigned char p_replacementMark);
+	bool GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark);
 	int GetDrawMark();
 	int GetNumItems();
 	unsigned int GetArea();
