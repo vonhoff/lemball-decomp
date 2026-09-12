@@ -263,18 +263,32 @@ void PvGdiBitmap::SetBitsBase(unsigned char* p_bits, int p_stride)
 // FUNCTION: LEMBALL 0x004726b0
 void PvGdiBitmap::GetRects(const VsRect& p_rect, VsRect*& p_rect0, VsRect*& p_rect1)
 {
+	const short* position;
+
 	m_rect0.m_width = p_rect.m_width;
 	m_rect0.m_height = p_rect.m_height;
-	m_rect0.m_x = p_rect.m_x;
-	m_rect0.m_y = p_rect.m_y;
+	if (&p_rect != 0) {
+		position = &p_rect.m_x;
+	}
+	else {
+		position = 0;
+	}
+	m_rect0.m_x = position[0];
+	m_rect0.m_y = position[1];
 	p_rect0 = &m_rect0;
 	p_rect1 = 0;
 	if ((int) m_firstLine < (int) (short) (p_rect.m_height + p_rect.m_y) && (int) p_rect.m_y < (int) m_firstLine) {
 		m_rect0.m_height = (short) m_firstLine - m_rect0.m_y;
 		m_rect1.m_width = p_rect.m_width;
 		m_rect1.m_height = p_rect.m_height;
-		m_rect1.m_x = p_rect.m_x;
-		m_rect1.m_y = p_rect.m_y;
+		if (&p_rect != 0) {
+			position = &p_rect.m_x;
+		}
+		else {
+			position = 0;
+		}
+		m_rect1.m_x = position[0];
+		m_rect1.m_y = position[1];
 		m_rect1.m_height = (short) ((p_rect.m_height - (short) m_firstLine) + p_rect.m_y);
 		m_rect1.m_y = (short) m_firstLine;
 		p_rect1 = &m_rect1;
