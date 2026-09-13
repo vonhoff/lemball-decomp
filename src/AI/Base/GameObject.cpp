@@ -932,19 +932,22 @@ bool GameObject::FacingDestination()
 // FUNCTION: LEMBALL 0x00415e80
 void GameObject::DeleteFirstEntryFromDestinationList()
 {
+	int i;
 	AiDestinationList* list = m_destinationList;
 	if (list->m_count != 0) {
-		int count = list->m_count - 1;
-		if (count > 0) {
-			for (int i = 0; i < count; i++) {
-				list->m_entries[i] = list->m_entries[i + 1];
-			}
+		for (i = 0; i < list->m_count - 1; i++) {
+			AiDestinationEntry* entry = &list->m_entries[i];
+			AiDestinationEntry* next = entry + 1;
+			entry->m_type = next->m_type;
+			entry->m_coordinate.m_xFixed = next->m_coordinate.m_xFixed;
+			entry->m_coordinate.m_yFixed = next->m_coordinate.m_yFixed;
+			entry->m_coordinate.m_zFixed = next->m_coordinate.m_zFixed;
+			entry->m_metadata = next->m_metadata;
 		}
 		list->m_count--;
 	}
-	m_hasDestination = (m_destinationList->m_count != 0);
+	m_hasDestination = (unsigned short) 0 < m_destinationList->m_count;
 }
-
 // 68K 0x1060a4a4 AddDestination__11CGameObjectFRC7AICOORD
 // FUNCTION: LEMBALL 0x00415ef0
 void GameObject::AddDestination(const AiCoord& p_arg0)
