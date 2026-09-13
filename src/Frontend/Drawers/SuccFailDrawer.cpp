@@ -68,6 +68,9 @@ char g_szSuccFailRanOutOfTimeLose[] = "You ran out of time!";
 // GLOBAL: LEMBALL 0x0049fe04
 char g_szSuccFailGaveUpLose[] = "You gave up!";
 
+// GLOBAL: LEMBALL 0x0049fe10
+char g_szSuccFailMoviePrefix[] = "lemball";
+
 // GLOBAL: LEMBALL 0x0049fb38
 char* g_apSuccFailSingleWin[8] = {0, 0, g_szSuccFailCollectedAllFlags, 0, 0, 0, 0, 0};
 
@@ -142,32 +145,22 @@ unsigned long g_dwSuccFailSingleLoseBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_SU
 // GLOBAL: LEMBALL 0x0049fcb0
 unsigned long g_dwSuccFailSingleLoseBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_LEMMING;
 
-extern char g_szMoviePrefix[];
-
 // 68K 0x10809058 __ct__15CSuccFailDrawerFP14CMain2DDisplayP4CGDIRC7CVSRectUc
 // FUNCTION: LEMBALL 0x00450020
-SuccFailDrawer::SuccFailDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3)
+SuccFailDrawer::SuccFailDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned int p_arg3)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 0xe, 0x32, 200, 0, 0x28, 0x30)
 {
-	m_firstLinePos.m_y = 0;
-	m_firstLinePos.m_x = 0;
-	m_secondLinePos.m_y = 0;
-	m_secondLinePos.m_x = 0;
-	m_passwordLabelPos.m_y = 0;
-	m_passwordLabelPos.m_x = 0;
-	m_passwordPos.m_y = 0;
-	m_passwordPos.m_x = 0;
 	m_variant = p_arg3;
 	m_animationsEnabled = (unsigned int) (g_nAnimationsDisabled == 0);
 	m_animWindow.Initialise(this, m_display, p_arg3);
 	m_animWindow.m_resolveMoviePath = 1;
-	m_animWindow.m_moviePrefix = g_szMoviePrefix;
+	m_animWindow.m_moviePrefix = g_szSuccFailMoviePrefix;
 	m_animWindow.m_useMoviePrefix = 1;
 	m_animStarted = 0;
 	m_soundStarted = 0;
 	m_soundStopped = 0;
-	m_drawBackground = 1;
 	m_animStartDeadline = CurrentMilliTimer() + 0x28;
+	m_drawBackground = 1;
 	m_drawFrame = 1;
 	m_drawSolid = 1;
 	m_password = g_pGameStatus->EncodePassword();
