@@ -280,18 +280,19 @@ int GWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, un
 void GWnd::Render()
 {
 	VsRect paintRect;
-	paintRect.m_x = 0;
-	paintRect.m_y = 0;
-	paintRect.m_height = 0;
-	paintRect.m_width = 0;
 	if (m_lifecycleRefs == 0 || m_active == 0) {
 		return;
 	}
 	OnPaint(paintRect);
 	m_gdi->Render();
 	m_gdi->m_primitiveCount = 0;
-	for (void** childNode = (void**) m_childList; childNode != 0; childNode = (void**) childNode[1]) {
+	void** childNode = (void**) m_childList;
+	for (;;) {
+		if (childNode == 0) {
+			break;
+		}
 		((GWnd*) childNode[0])->Render();
+		childNode = (void**) childNode[1];
 	}
 	if (m_parent == 0 && g_pCursor != 0) {
 		g_pCursor->Draw(this);
