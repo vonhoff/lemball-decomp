@@ -7,7 +7,8 @@
 // VTABLE: LEMBALL 0x00496d48
 class Drawer {
 public:
-	virtual ~Drawer();                           // vtable+0x00
+	// 68K 0x1011ae42 __dt__7CDrawerFv
+	virtual ~Drawer() {}                         // vtable+0x00
 	virtual void ShutDown();                     // vtable+0x04
 	virtual void Draw(const VsRect& p_rect) = 0; // vtable+0x08
 	virtual void OnZoom(const VsRect& p_rect);   // vtable+0x0c

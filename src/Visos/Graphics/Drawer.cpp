@@ -53,8 +53,3 @@ void Drawer::OnDriverChange()
 void Drawer::RefreshView()
 {
 }
-
-// 68K 0x1011ae42 __dt__7CDrawerFv
-Drawer::~Drawer()
-{
-}
