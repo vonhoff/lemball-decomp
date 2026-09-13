@@ -70,16 +70,28 @@ int HiliteButtons::ProcessMsg(Message* p_message)
 {
 	Message posted;
 	int nextValue;
+	posted.type = 0xc;
+	posted.time = CurrentQueueTimer();
+	posted.code = 0;
+	posted.payload = 0;
+	posted.source = 0;
 
 	if (p_message->code != (int) m_controlMessage) {
 		return 0;
 	}
-	if (p_message->type == 0xb) {
+	switch ((int) p_message->type) {
+	default:
+		return 0;
+	case 0xb:
 		g_pSoundView->PlayEffect((eSoundEffect) 0x25);
 		return 0;
-	}
-	if (p_message->type == 0xc) {
-		if (m_mode != 1) {
+	case 0xc:
+		if (m_mode == 1) {
+			posted.code = (int) m_actionMessage;
+			g_pMasterInputQueue->Post(posted);
+			return 0;
+		}
+		else {
 			nextValue = m_value + 1;
 			m_value = nextValue;
 			if (m_maximum < nextValue) {
@@ -98,22 +110,10 @@ int HiliteButtons::ProcessMsg(Message* p_message)
 					*m_binding = m_value;
 				}
 			}
-			if (m_button != 0) {
-				m_button->SetAnimId(m_animIds[m_value - m_minimum]);
-			}
+			m_button->SetAnimId(m_animIds[m_value - m_minimum]);
 			return 0;
 		}
-		posted.type = 0xc;
-		posted.time = CurrentQueueTimer();
-		posted.code = (int) m_actionMessage;
-		posted.payload = 0;
-		posted.source = 0;
-		if (g_pMasterInputQueue != 0) {
-			g_pMasterInputQueue->Post(posted);
-		}
-		return 0;
 	}
-	return 0;
 }
 
 // 68K 0x10804d7a Draw__14CHiliteButtonsFUc
