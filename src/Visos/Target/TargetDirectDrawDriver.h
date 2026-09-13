@@ -8,6 +8,7 @@
 // VTABLE: LEMBALL 0x004987e8
 class TargetDirectDrawDriver : public TargetGraphicsDriver {
 public:
+	virtual TargetDrawingContext* CreateDrawingContext();
 	virtual int DestroyDrawingContext(TargetDrawingContext* p_drawingContext);
 	virtual bool InitializeBitmapInfo(void* p_bitmapInfo);
 	virtual int DestroyDIBContext(TargetDibContext* p_dibContext);

@@ -1,7 +1,18 @@
 #include "TargetDirectDrawDriver.h"
 
+#include "TargetDirectDrawContext.h"
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+// FUNCTION: LEMBALL 0x00457760
+TargetDrawingContext* TargetDirectDrawDriver::CreateDrawingContext()
+{
+	int index = m_nextContextIndex;
+	m_contextSurfaces[index] = 0;
+	m_nextContextIndex++;
+	return new TargetDirectDrawContext(index);
+}
 
 // FUNCTION: LEMBALL 0x004577a0
 int TargetDirectDrawDriver::DestroyDrawingContext(TargetDrawingContext* p_drawingContext)

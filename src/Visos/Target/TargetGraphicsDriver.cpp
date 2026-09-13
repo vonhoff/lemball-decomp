@@ -8,6 +8,7 @@
 #include "../Graphics/PvWnd.h"
 #include "../Graphics/VsGdi.h"
 #include "TargetGDIDriver.h"
+#include "TargetGdiDrawingContext.h"
 #include "TargetGraphicsSystemState.h"
 #include "TargetWinGDrawCodecState.h"
 
@@ -103,8 +104,8 @@ bool TargetGraphicsDriver::CreatePalette(void* p_paletteDescription)
 bool TargetGraphicsDriver::RealizePalette(TargetDrawingContext* p_drawingContext)
 {
 	if (m_palette != 0) {
-		SelectPalette((HDC) p_drawingContext->m_hDC, (HPALETTE) m_palette, 0);
-		::RealizePalette((HDC) p_drawingContext->m_hDC);
+		SelectPalette((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC, (HPALETTE) m_palette, 0);
+		::RealizePalette((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC);
 	}
 	return 1;
 }

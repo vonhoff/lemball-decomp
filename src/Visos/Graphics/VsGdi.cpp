@@ -9,6 +9,7 @@
 #include "../Resources/ResZrle.h"
 #include "../Target/TargetDibContext.h"
 #include "../Target/TargetDrawingContext.h"
+#include "../Target/TargetGdiDrawingContext.h"
 #include "../Target/TargetGraphicsDriver.h"
 #include "Bitmap.h"
 #include "BitmapRes.h"
@@ -263,7 +264,7 @@ Surface::Surface(GrafPort* p_port)
 	m_presentX = 0;
 	m_childSurfaceTail = 0;
 	m_childSurfaceCount = 0;
-	m_drawingPort = new TargetDrawingContext(p_port);
+	m_drawingPort = new TargetGdiDrawingContext(p_port);
 	m_platformBitmap = 0;
 	m_changeList = 0;
 	m_parentSurface = 0;
@@ -3154,14 +3155,15 @@ void Surface::BlitZrleNoClipRemap(const VsRect& p_rect, ResZrle* p_zrle, unsigne
 				}
 				else if (run > 0x80) {
 					run &= 0x7f;
-					int i = (int) run;
+					int count = (int) run;
+					int i = count;
 					unsigned char* copySrc = src;
 					unsigned char* copyDst = dst;
 					for (; i > 0; i--) {
 						*copyDst++ = p_remap[*copySrc++];
 					}
-					dst += run;
-					src += run;
+					dst += count;
+					src += count;
 				}
 			} while (run != 0x80);
 			y += step;
@@ -3197,14 +3199,15 @@ void Surface::BlitZrleNoClipRemapR(const VsRect& p_rect,
 				}
 				else if (run > 0x80) {
 					run &= 0x7f;
-					int i = (int) run;
+					int count = (int) run;
+					int i = count;
 					unsigned char* copySrc = src;
 					unsigned char* copyDst = dst;
 					for (; i > 0; i--) {
 						*copyDst-- = p_remap[*copySrc++];
 					}
-					dst -= run;
-					src += run;
+					dst -= count;
+					src += count;
 				}
 			} while (run != 0x80);
 			y += step;

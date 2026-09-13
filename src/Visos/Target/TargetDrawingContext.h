@@ -1,30 +1,15 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDRAWINGCONTEXT_H
 #define LEMBALL_VISOS_TARGET_TARGETDRAWINGCONTEXT_H
 
-#include "../../Common.h"
-
-// SIZE 0x0c
-// VTABLE: LEMBALL 0x00498770
+// SIZE 0x04
+// VTABLE: LEMBALL 0x00498778
 class TargetDrawingContext {
 public:
-	TargetDrawingContext(void* p_hDC = 0)
-	{
-		m_hDC = p_hDC;
-		m_hBitmap = 0;
-	}
-	virtual ~TargetDrawingContext(); // vtable+0x00
-	virtual void SetDC(void* p_hDC); // vtable+0x04
-
-	friend class TargetGraphicsDriver;
-	friend class TargetGDIDriver;
-	friend class Surface;
-
-private:
-	void* m_hDC;     // 0x04
-	void* m_hBitmap; // 0x08
+	virtual ~TargetDrawingContext() {}
+	virtual void SetDC(void* p_hDC);
 };
 
-// SYNTHETIC: LEMBALL 0x00458260
+// SYNTHETIC: LEMBALL 0x00458290
 // TargetDrawingContext::`scalar deleting destructor'
 
 #endif

@@ -8,6 +8,7 @@
 #include "../Graphics/PvWnd.h"
 #include "../Graphics/VsGdi.h"
 #include "TargetGDIDriver.h"
+#include "TargetGdiDrawingContext.h"
 #include "TargetGraphicsSystemState.h"
 #include "TargetWinGDrawCodecState.h"
 
@@ -93,7 +94,7 @@ TargetDrawingContext* TargetGDIDriver::CreateDrawingContext()
 	if (hdc != 0) {
 		storage = operator new(0xc);
 		if (storage != 0) {
-			context = new (storage) TargetDrawingContext(hdc);
+			context = new (storage) TargetGdiDrawingContext(hdc);
 			return context;
 		}
 		return 0;
@@ -109,7 +110,7 @@ int TargetGDIDriver::DestroyDrawingContext(TargetDrawingContext* p_drawingContex
 	if (p_drawingContext == 0) {
 		return 0;
 	}
-	deleted = DeleteDC((HDC) p_drawingContext->m_hDC);
+	deleted = DeleteDC((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC);
 	delete p_drawingContext;
 	return deleted;
 }
@@ -142,7 +143,7 @@ TargetDibContext* TargetGDIDriver::CreateDIBContext(TargetDrawingContext* p_draw
 	BITMAPINFO* info;
 
 	info = (BITMAPINFO*) p_bitmapInfo;
-	bitmap = CreateDIBSection((HDC) p_drawingContext->m_hDC, info, 0, &bits, 0, 0);
+	bitmap = CreateDIBSection((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC, info, 0, &bits, 0, 0);
 	if (bitmap == 0) {
 		return 0;
 	}
@@ -150,7 +151,7 @@ TargetDibContext* TargetGDIDriver::CreateDIBContext(TargetDrawingContext* p_draw
 	context->m_hBitmap = bitmap;
 	context->m_width = info->bmiHeader.biWidth;
 	context->m_bits = (unsigned char*) bits;
-	p_drawingContext->m_hBitmap = context;
+	((TargetGdiDrawingContext*) p_drawingContext)->m_hBitmap = context;
 	return context;
 }
 
@@ -173,7 +174,10 @@ void TargetGDIDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawingContex
 										   unsigned int p_entryCount,
 										   void* p_colours)
 {
-	SetDIBColorTable((HDC) p_drawingContext->m_hDC, p_startIndex, p_entryCount, (RGBQUAD*) p_colours);
+	SetDIBColorTable((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC,
+					 p_startIndex,
+					 p_entryCount,
+					 (RGBQUAD*) p_colours);
 }
 
 // FUNCTION: LEMBALL 0x00456c70
@@ -182,12 +186,12 @@ void TargetGDIDriver::BitBltContexts(TargetDrawingContext* p_destination,
 									 TargetDrawingContext* p_source,
 									 VsPoint* p_sourcePosition)
 {
-	BitBlt((HDC) p_destination->m_hDC,
+	BitBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
 		   (int) p_destinationRect->m_x,
 		   (int) p_destinationRect->m_y,
 		   (int) p_destinationRect->m_width,
 		   (int) p_destinationRect->m_height,
-		   (HDC) p_source->m_hDC,
+		   (HDC) ((TargetGdiDrawingContext*) p_source)->m_hDC,
 		   (int) p_sourcePosition->m_x,
 		   (int) p_sourcePosition->m_y,
 		   0xcc0020);
@@ -199,12 +203,12 @@ void TargetGDIDriver::StretchBltContexts(TargetDrawingContext* p_destination,
 										 TargetDrawingContext* p_source,
 										 VsRect* p_sourceRect)
 {
-	StretchBlt((HDC) p_destination->m_hDC,
+	StretchBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
 			   (int) p_destinationRect->m_x,
 			   (int) p_destinationRect->m_y,
 			   (int) p_destinationRect->m_width,
 			   (int) p_destinationRect->m_height,
-			   (HDC) p_source->m_hDC,
+			   (HDC) ((TargetGdiDrawingContext*) p_source)->m_hDC,
 			   (int) p_sourceRect->m_x,
 			   (int) p_sourceRect->m_y,
 			   (int) p_sourceRect->m_width,
@@ -218,7 +222,7 @@ TargetDibContext* TargetGDIDriver::SelectDIBContext(TargetDrawingContext* p_draw
 {
 	HGDIOBJ prior;
 
-	prior = SelectObject((HDC) p_drawingContext->m_hDC, (HGDIOBJ) p_dibContext->m_hBitmap);
+	prior = SelectObject((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC, (HGDIOBJ) p_dibContext->m_hBitmap);
 	if (prior == 0) {
 		return 0;
 	}
@@ -232,7 +236,8 @@ TargetDibContext* TargetGDIDriver::RestoreDIBContext(TargetDrawingContext* p_dra
 {
 	HGDIOBJ prior;
 
-	prior = SelectObject((HDC) p_drawingContext->m_hDC, (HGDIOBJ) p_dibContext->m_previousBitmap);
+	prior = SelectObject((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC,
+						 (HGDIOBJ) p_dibContext->m_previousBitmap);
 	if (prior == 0) {
 		return 0;
 	}
