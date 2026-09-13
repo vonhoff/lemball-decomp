@@ -6,9 +6,9 @@
 #include "../../Visos/Resources/Manifest.h"
 
 // FUNCTION: LEMBALL 0x00450c40
-unsigned int SuccFailAnimWindow::Initialise(SuccFailDrawer* p_owner, Main2DDisplay* p_display, int p_variant)
+void SuccFailAnimWindow::Initialise(SuccFailDrawer* p_owner, Main2DDisplay* p_display, int p_variant)
 {
-	unsigned int sample;
+	int sample;
 
 	m_owner = p_owner;
 	m_display = p_display;
@@ -21,14 +21,13 @@ unsigned int SuccFailAnimWindow::Initialise(SuccFailDrawer* p_owner, Main2DDispl
 		sample = *g_pSentinel * 0x29 + 0x1f & 0x7fffff;
 		*g_pSentinel = sample;
 		m_variantIndex = sample % 3;
-		return sample / 3;
+		return;
 	}
 	m_primaryAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1;
 	m_secondaryAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_FAIL_FAIL1;
 	sample = *g_pSentinel * 0x29 + 0x1f & 0x7fffff;
 	*g_pSentinel = sample;
 	m_variantIndex = sample % 3;
-	return sample / 3;
 }
 
 // FUNCTION: LEMBALL 0x00450d00
