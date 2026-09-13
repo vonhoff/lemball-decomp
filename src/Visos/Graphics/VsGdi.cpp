@@ -763,33 +763,27 @@ void Surface::NewBitmap(const VsRect& p_rect)
 // FUNCTION: LEMBALL 0x0046d420
 void Surface::Resize(const VsSize& p_size)
 {
-	VsRect rect;
-	rect.m_x = m_clipRect.m_x;
-	rect.m_y = m_clipRect.m_y;
+	VsRect rect(m_rect0c);
 	rect.m_width = p_size.m_width;
 	rect.m_height = p_size.m_height;
 	if (m_changeList != 0) {
-		VsRect clipped;
-		ClipRect(rect, &clipped);
-		m_changeList->Add(clipped);
+		m_changeList->Resize(rect);
 	}
 	NewBitmap(rect);
 	if (m_parentSurface == (Surface*) g_pGdiHelperTarget) {
 		if (HasBackBuff()) {
 			ResizeBackBuff();
 		}
+	}
+	if (m_parentSurface == (Surface*) g_pGdiHelperTarget) {
 		if (HasZBuff()) {
 			ResizeZBuff();
 		}
 	}
 	for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {
 		Surface* child = node->m_surface;
-		if (child != 0) {
-			VsSize childSize;
-			childSize.m_width = child->m_clipRect.m_width;
-			childSize.m_height = child->m_clipRect.m_height;
-			child->Resize(childSize);
-		}
+		VsSize childSize(child->m_rect0c);
+		child->Resize(childSize);
 	}
 }
 
