@@ -15,18 +15,19 @@ jobs:
     if: github.event_name != 'pull_request'
     name: Build + verify (MSVC 4.00)
     runs-on: windows-latest
+
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Check out portable MSVC 4.00
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: vonhoff/MSVC400
           path: msvc400
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.x"
           cache: pip
@@ -80,6 +81,7 @@ jobs:
           fi
           mkdir -p data
           cp "$RUNNER_TEMP/LEMBALL.EXE" data/LEMBALL.EXE
+
       - name: Configure and build
         shell: pwsh
         working-directory: S:\
@@ -107,7 +109,7 @@ jobs:
           exit 0
 
       - name: Upload progress report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: LEMBALL_report
           if-no-files-found: error
