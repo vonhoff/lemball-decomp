@@ -427,18 +427,14 @@ void PasswordDrawer::DrawText()
 // FUNCTION: LEMBALL 0x00451c90
 void PasswordDrawer::DrawPassword()
 {
-	int* layout;
-	VsPoint position;
+	int* layout = (int*) m_layout;
+	int y = layout[0x5c / 4];
+	int x = m_width - layout[0x58 / 4];
 	VsSize textSize;
-	ResFont* font;
-
-	layout = (int*) m_layout;
-	font = m_textManager->GetFont(m_chalkFontId);
-	font->GetSize(&textSize, m_password, 0x20);
-	position.m_y = (short) layout[0x5c / 4];
-	position.m_x = (short) (m_width - layout[0x58 / 4] - textSize.m_width);
-	textSize.m_width = 0;
+	VsPoint position((short) (x - m_textManager->GetFont(m_chalkFontId)->GetSize(&textSize, m_password, 0x20)->m_width),
+					 (short) y);
 	textSize.m_height = 0;
+	textSize.m_width = 0;
 	m_textManager->DrawString(m_gdi, position, textSize, m_chalkFontId, m_password, 0x20, 0);
 }
 
