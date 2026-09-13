@@ -3,8 +3,8 @@
 
 #include "../../Common.h"
 
-// SIZE 0x14
-// VTABLE: LEMBALL 0x00498798
+// SIZE 0x0c
+// VTABLE: LEMBALL 0x00498780
 class TargetDibContext {
 public:
 	TargetDibContext()
@@ -12,7 +12,7 @@ public:
 		m_bits = 0;
 		m_width = 0;
 	}
-	virtual ~TargetDibContext();      // vtable+0x00
+	virtual ~TargetDibContext() {}    // vtable+0x00
 	virtual bool Lock();              // vtable+0x04
 	virtual bool Unlock();            // vtable+0x08
 	virtual unsigned char* GetBits(); // vtable+0x0c
@@ -22,14 +22,12 @@ public:
 	friend class TargetGDIDriver;
 	friend class Surface;
 
-private:
-	unsigned char* m_bits;  // 0x04
-	int m_width;            // 0x08
-	void* m_previousBitmap; // 0x0c
-	void* m_hBitmap;        // 0x10
+protected:
+	unsigned char* m_bits; // 0x04
+	int m_width;           // 0x08
 };
 
-// SYNTHETIC: LEMBALL 0x00458310
+// SYNTHETIC: LEMBALL 0x004582f0
 // TargetDibContext::`scalar deleting destructor'
 
 #endif

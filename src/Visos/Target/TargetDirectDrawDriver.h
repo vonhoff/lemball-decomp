@@ -11,7 +11,9 @@ public:
 	virtual TargetDrawingContext* CreateDrawingContext();
 	virtual int DestroyDrawingContext(TargetDrawingContext* p_drawingContext);
 	virtual bool InitializeBitmapInfo(void* p_bitmapInfo);
+	virtual TargetDibContext* CreateDIBContext(TargetDrawingContext* p_drawingContext, void* p_bitmapInfo);
 	virtual int DestroyDIBContext(TargetDibContext* p_dibContext);
+	virtual TargetDibContext* SelectDIBContext(TargetDrawingContext* p_drawingContext, TargetDibContext* p_dibContext);
 	virtual TargetDibContext* RestoreDIBContext(TargetDrawingContext* p_drawingContext, TargetDibContext* p_dibContext);
 
 private:

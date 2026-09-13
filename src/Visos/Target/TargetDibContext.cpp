@@ -74,10 +74,6 @@ extern "C" __declspec(dllimport) long __stdcall DefDriverProc(unsigned int p_dri
 															  long p_param1,
 															  long p_param2);
 
-TargetDibContext::~TargetDibContext()
-{
-}
-
 // FUNCTION: LEMBALL 0x004582b0
 bool TargetDibContext::Lock()
 {

@@ -8,6 +8,7 @@
 #include "../Graphics/PvWnd.h"
 #include "../Graphics/VsGdi.h"
 #include "TargetGDIDriver.h"
+#include "TargetGdiDibContext.h"
 #include "TargetGdiDrawingContext.h"
 #include "TargetGraphicsSystemState.h"
 #include "TargetWinGDrawCodecState.h"
@@ -147,8 +148,7 @@ TargetDibContext* TargetGDIDriver::CreateDIBContext(TargetDrawingContext* p_draw
 	if (bitmap == 0) {
 		return 0;
 	}
-	context = new TargetDibContext();
-	context->m_hBitmap = bitmap;
+	context = new TargetGdiDibContext(bitmap);
 	context->m_width = info->bmiHeader.biWidth;
 	context->m_bits = (unsigned char*) bits;
 	((TargetGdiDrawingContext*) p_drawingContext)->m_hBitmap = context;
@@ -163,7 +163,7 @@ int TargetGDIDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 	if (p_dibContext == 0) {
 		return 1;
 	}
-	deleted = DeleteObject((HGDIOBJ) p_dibContext->m_hBitmap);
+	deleted = DeleteObject((HGDIOBJ) ((TargetGdiDibContext*) p_dibContext)->m_hBitmap);
 	delete p_dibContext;
 	return deleted;
 }
@@ -222,11 +222,12 @@ TargetDibContext* TargetGDIDriver::SelectDIBContext(TargetDrawingContext* p_draw
 {
 	HGDIOBJ prior;
 
-	prior = SelectObject((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC, (HGDIOBJ) p_dibContext->m_hBitmap);
+	prior = SelectObject((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC,
+						 (HGDIOBJ) ((TargetGdiDibContext*) p_dibContext)->m_hBitmap);
 	if (prior == 0) {
 		return 0;
 	}
-	p_dibContext->m_previousBitmap = prior;
+	((TargetGdiDibContext*) p_dibContext)->m_previousBitmap = prior;
 	return p_dibContext;
 }
 
@@ -237,7 +238,7 @@ TargetDibContext* TargetGDIDriver::RestoreDIBContext(TargetDrawingContext* p_dra
 	HGDIOBJ prior;
 
 	prior = SelectObject((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC,
-						 (HGDIOBJ) p_dibContext->m_previousBitmap);
+						 (HGDIOBJ) ((TargetGdiDibContext*) p_dibContext)->m_previousBitmap);
 	if (prior == 0) {
 		return 0;
 	}

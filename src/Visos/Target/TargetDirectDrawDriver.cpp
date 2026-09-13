@@ -1,6 +1,8 @@
 #include "TargetDirectDrawDriver.h"
 
+#include "IDirectDraw.h"
 #include "TargetDirectDrawContext.h"
+#include "TargetDirectDrawSurfaceContext.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -38,6 +40,32 @@ bool TargetDirectDrawDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 	return 1;
 }
 
+// FUNCTION: LEMBALL 0x00457800
+TargetDibContext* TargetDirectDrawDriver::CreateDIBContext(TargetDrawingContext* p_drawingContext, void* p_bitmapInfo)
+{
+	DDSURFACEDESC description;
+	IDirectDrawSurface* surface;
+	TargetDirectDrawSurfaceContext* context;
+	BITMAPINFOHEADER* info = (BITMAPINFOHEADER*) p_bitmapInfo;
+	long height = info->biHeight;
+	description.dwSize = sizeof(DDSURFACEDESC);
+	description.dwFlags = 6;
+	description.ddsCaps = 0x40;
+	if (height < 0) {
+		height = -height;
+	}
+	long width = info->biWidth;
+	description.dwHeight = height;
+	description.dwWidth = width;
+	IDirectDraw* directDraw = (IDirectDraw*) m_directDraw;
+	if (directDraw->CreateSurface(&description, &surface, 0) != 0) {
+		return 0;
+	}
+	context = new TargetDirectDrawSurfaceContext(surface);
+	context->RefreshDescription();
+	return context;
+}
+
 // FUNCTION: LEMBALL 0x004578a0
 int TargetDirectDrawDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 {
@@ -46,6 +74,15 @@ int TargetDirectDrawDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 		return 1;
 	}
 	return 1;
+}
+
+// FUNCTION: LEMBALL 0x00457c50
+TargetDibContext* TargetDirectDrawDriver::SelectDIBContext(TargetDrawingContext* p_drawingContext,
+														   TargetDibContext* p_dibContext)
+{
+	TargetDirectDrawContext* context = (TargetDirectDrawContext*) p_drawingContext;
+	m_contextSurfaces[context->m_surfaceIndex] = p_dibContext;
+	return p_dibContext;
 }
 
 // FUNCTION: LEMBALL 0x00457c70

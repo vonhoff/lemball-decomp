@@ -11,6 +11,8 @@ public:
 	TargetDirectDrawContext(int p_surfaceIndex) { m_surfaceIndex = p_surfaceIndex; }
 	virtual ~TargetDirectDrawContext() {}
 
+	friend class TargetDirectDrawDriver;
+
 private:
 	int m_surfaceIndex; // 0x04
 };
