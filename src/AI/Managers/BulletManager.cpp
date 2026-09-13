@@ -38,12 +38,17 @@ void BulletManager::Restart()
 // FUNCTION: LEMBALL 0x00417ee0
 Bullet* BulletManager::NextFreeBullet()
 {
-	for (int i = 0; i < 0x14; i++) {
-		if (m_bullets[m_poolStart + i].m_active == 0) {
-			return m_bullets + m_poolStart + i;
+	int i = 0;
+	while (1) {
+		if (i >= 0x14) {
+			return 0;
 		}
+		if (m_bullets[m_poolStart + i].m_active == 0) {
+			break;
+		}
+		i++;
 	}
-	return 0;
+	return m_bullets + m_poolStart + i;
 }
 
 // 68K 0x10605114 GetFirstBullet__14CBulletManagerFv
