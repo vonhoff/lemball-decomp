@@ -3097,9 +3097,9 @@ static const short mineStillOffset[] = {2, 2};
 // FUNCTION: LEMBALL 0x0043d500
 void C2D::DrawMine(ViewData& p_viewData)
 {
-	unsigned int stateTimer;
 	int x;
 	int y;
+	unsigned int stateTimer;
 	eAction action;
 
 	x = p_viewData.m_positionX;

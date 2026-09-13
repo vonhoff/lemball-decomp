@@ -3234,9 +3234,9 @@ void Surface::BlitZrleNoClipRemapR(const VsRect& p_rect,
 				else if (run > 0x80) {
 					run &= 0x7f;
 					int count = (int) run;
-					int i = count;
 					unsigned char* copySrc = src;
 					unsigned char* copyDst = dst;
+					int i = count;
 					for (; i > 0; i--) {
 						*copyDst-- = p_remap[*copySrc++];
 					}

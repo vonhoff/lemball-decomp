@@ -18,7 +18,8 @@ public:
 	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~CopyColourToBackBuff(); // vtable+0x00
+	// 68K 0x10102006 __dt__21CCopyColourToBackBuffFv
+	virtual ~CopyColourToBackBuff() {} // vtable+0x00
 
 	friend class Surface;
 	friend class C2D;
