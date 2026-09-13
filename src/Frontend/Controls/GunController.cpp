@@ -657,78 +657,59 @@ void GunController::Process()
 	unsigned long now;
 	unsigned long fireTime;
 	int step;
-	int* offsets;
-
+	unsigned long elapsed;
 	now = CurrentMilliTimer();
-	if (m_currentSide == m_targetSide || m_selectionState == 1) {
-		if (m_selectionState == 1) {
+	if (m_currentSide != m_targetSide && m_selectionState != 1) {
+		m_sideStartTime = now;
+		m_sideEndTime = now + 0xfa;
+		m_selectionState = 1;
+		m_sideAnim->StartAnim(0xfa);
+		if (m_targetSide == 0) {
+			m_sideAnim->SetAnimDirection(0xffffffff);
+		}
+		else {
+			m_sideAnim->SetAnimDirection(1);
+		}
+	}
+	else {
+		switch (m_selectionState) {
+		case 1:
 			if (m_sideEndTime <= now) {
 				m_selectionState = 0;
 				m_currentSide = m_targetSide;
 			}
-		}
-		else if (m_selectionState == 2) {
-			if (now < m_selectEndTime) {
-				offsets = g_anGunSpriteOffsetCompact;
-				if (m_alternateAssets != 1) {
-					offsets = g_anGunSpriteOffset;
-				}
-				if (m_targetSide == 0) {
-					step = offsets[6] + m_selectionStartX;
-				}
-				else {
-					step = offsets[12] + m_selectionStartX;
-				}
-				m_projectileX = Sgn(m_projectileTargetX - step) * (int) ((now - m_selectStartTime) >> 1) + step;
-				if (m_projectileTargetX < m_projectileX && step < m_projectileTargetX) {
-					m_projectileX = m_projectileTargetX;
-				}
-				else if (m_projectileX < m_projectileTargetX && m_projectileTargetX < step) {
-					m_projectileX = m_projectileTargetX;
-				}
-			}
-			else {
-				if (g_pSoundView != 0) {
-					g_pSoundView->PlayEffect(0xe);
-				}
+			break;
+		case 2:
+			if (m_selectEndTime <= now) {
+				g_pSoundView->PlayEffect(0xe);
 				m_fireStartTime = now;
 				m_fireEndTime = now + 500;
 				m_selectionState = 3;
-				if (m_rightShotAnim != 0) {
-					m_rightShotAnim->StartAnim(500);
-				}
+				m_rightShotAnim->StartAnim(500);
 			}
-		}
-		else if (m_selectionState == 3) {
+			else {
+				elapsed = (now - m_selectStartTime) >> 1;
+				step = m_projectileX;
+				int direction = Sgn(m_projectileTargetX - step);
+				m_selectStartTime = now;
+				m_projectileX = direction * elapsed + step;
+			}
+			break;
+		case 3:
 			fireTime = m_fireEndTime;
 			if (m_selectedMessage != 0) {
-				fireTime = fireTime - 0x177;
+				fireTime -= 0x177;
 			}
 			if (fireTime <= now && m_messageSent != 1) {
 				m_selectionMessage.time = CurrentQueueTimer();
-				if (g_pMasterInputQueue != 0) {
-					g_pMasterInputQueue->Post(m_selectionMessage);
-				}
+				g_pMasterInputQueue->Post(m_selectionMessage);
 				m_messageSent = 1;
 			}
 			if (m_fireEndTime <= now) {
 				m_selectionState = 0;
 				m_messageSent = 0;
 			}
-		}
-	}
-	else {
-		m_sideStartTime = now;
-		m_sideEndTime = now + 0xfa;
-		m_selectionState = 1;
-		if (m_sideAnim != 0) {
-			m_sideAnim->StartAnim(0xfa);
-			if (m_targetSide == 0) {
-				m_sideAnim->SetAnimDirection(0xffffffff);
-			}
-			else {
-				m_sideAnim->SetAnimDirection(1);
-			}
+			break;
 		}
 	}
 	if (m_verticalMoving != 0) {
