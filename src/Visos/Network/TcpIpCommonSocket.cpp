@@ -8,9 +8,10 @@ extern "C" int __stdcall WSAGetLastError();
 
 // 68K 0x1010c74e __ct__18CTCPIPCommonSocketFv
 // FUNCTION: LEMBALL 0x0046fcf0
-TcpIpCommonSocket::TcpIpCommonSocket()
-	: TargetNetworkWindow("Socket Window", &g_unk0x4a23b8), m_asyncBuffer(0), m_asyncRequest(0)
+TcpIpCommonSocket::TcpIpCommonSocket() : TargetNetworkWindow("Socket Window", &g_unk0x4a23b8)
 {
+	m_asyncBuffer = 0;
+	m_asyncRequest = 0;
 	m_firstMessage = 0x440;
 	m_lastMessage = 0x45f;
 }
