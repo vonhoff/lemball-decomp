@@ -710,8 +710,9 @@ void PlayerLemming::RequestBalloon()
 // FUNCTION: LEMBALL 0x00410090
 void PlayerLemming::SetBored(unsigned long p_minimumDelay)
 {
-	*g_pSentinel = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-	m_boredDeadline = p_minimumDelay + *g_pSentinel % 5000;
+	int random = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
+	*g_pSentinel = random;
+	m_boredDeadline = p_minimumDelay + random % 5000;
 	m_boredDeadline = m_boredDeadline - m_boredDeadline % 0x42;
 	m_boredDeadline = m_boredDeadline / GAME_TICK_MILLISECONDS;
 	m_boredDeadline = m_actionDeadline + m_boredDeadline;
