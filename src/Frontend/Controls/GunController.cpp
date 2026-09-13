@@ -14,6 +14,7 @@
 #include "GunButtons.h"
 
 #include <new.h>
+#include <stdlib.h>
 
 int Sgn(int p_value);
 
@@ -459,10 +460,8 @@ void GunController::MoveUp()
 				m_targetSide = direction;
 			}
 			foundY = m_junctions[i].m_y;
-			if (g_pSoundView != 0) {
-				g_pSoundView->PlayEffect(0x11);
-			}
 			bestY = foundY;
+			g_pSoundView->PlayEffect(0x11);
 		}
 		i = i + 1;
 	}
@@ -472,12 +471,7 @@ void GunController::MoveUp()
 	m_moveStartTime = CurrentMilliTimer();
 	m_moveStartY = m_gunY;
 	m_verticalMoving = 1;
-	if (m_targetY - m_gunY < 0) {
-		m_moveEndTime = (m_gunY - m_targetY) * 3 + m_moveStartTime;
-	}
-	else {
-		m_moveEndTime = (m_targetY - m_gunY) * 3 + m_moveStartTime;
-	}
+	m_moveEndTime = abs(m_targetY - m_gunY) * 3 + m_moveStartTime;
 }
 
 // 68K 0x1080435e MoveDown__14CGunControllerFv
@@ -499,10 +493,8 @@ void GunController::MoveDown()
 				m_targetSide = direction;
 			}
 			foundY = m_junctions[i].m_y;
-			if (g_pSoundView != 0) {
-				g_pSoundView->PlayEffect(0x11);
-			}
 			bestY = foundY;
+			g_pSoundView->PlayEffect(0x11);
 		}
 		i = i + 1;
 	}
@@ -512,12 +504,7 @@ void GunController::MoveDown()
 	m_moveStartTime = CurrentMilliTimer();
 	m_moveStartY = m_gunY;
 	m_verticalMoving = 1;
-	if (m_targetY - m_gunY < 0) {
-		m_moveEndTime = (m_gunY - m_targetY) * 3 + m_moveStartTime;
-	}
-	else {
-		m_moveEndTime = (m_targetY - m_gunY) * 3 + m_moveStartTime;
-	}
+	m_moveEndTime = abs(m_targetY - m_gunY) * 3 + m_moveStartTime;
 }
 
 // 68K 0x10804474 MoveLeft__14CGunControllerFv
