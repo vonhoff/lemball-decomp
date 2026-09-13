@@ -306,33 +306,27 @@ void GWnd::Flush()
 {
 	HDC dc;
 	void** childNode;
-	Surface* helper;
 
 	if (m_lifecycleRefs == 0) {
 		return;
 	}
-	dc = 0;
-	helper = (Surface*) g_pGdiHelperTarget;
 	if (m_nativeWindow != 0) {
 		dc = GetDC((HWND) m_nativeWindow);
-		if (helper != 0) {
-			EnterCriticalSection((CRITICAL_SECTION*) helper->m_lock);
-			helper->SetWindowPtr(dc);
-		}
+		EnterCriticalSection((CRITICAL_SECTION*) ((Surface*) g_pGdiHelperTarget)->m_lock);
+		((Surface*) g_pGdiHelperTarget)->SetWindowPtr(dc);
 	}
 	childNode = (void**) m_childList;
-	while (childNode != 0) {
+	for (;;) {
+		if (childNode == 0) {
+			break;
+		}
 		((GWnd*) childNode[0])->Flush();
 		childNode = (void**) childNode[1];
 	}
-	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
-		m_gdi->m_renderTarget->Flush();
-	}
+	m_gdi->m_renderTarget->Flush();
 	if (m_nativeWindow != 0) {
 		ReleaseDC((HWND) m_nativeWindow, dc);
-		if (helper != 0) {
-			LeaveCriticalSection((CRITICAL_SECTION*) helper->m_lock);
-		}
+		LeaveCriticalSection((CRITICAL_SECTION*) ((Surface*) g_pGdiHelperTarget)->m_lock);
 	}
 }
 
