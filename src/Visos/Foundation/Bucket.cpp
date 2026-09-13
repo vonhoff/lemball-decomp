@@ -220,12 +220,11 @@ void Bucket::RemoveThis()
 // FUNCTION: LEMBALL 0x00473140
 bool Bucket::CheckValidPointer(unsigned char* p_memory)
 {
-	Bucket* current = this;
-	do {
-		if (p_memory >= current->m_memory && current->m_totalBytes + current->m_memory > p_memory) {
-			return 1;
-		}
-		current = current->m_child;
-	} while (current != 0);
+	if (p_memory >= m_memory && m_totalBytes + m_memory > p_memory) {
+		return 1;
+	}
+	if (m_child != 0) {
+		return m_child->CheckValidPointer(p_memory);
+	}
 	return 0;
 }
