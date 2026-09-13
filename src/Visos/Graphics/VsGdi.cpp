@@ -662,7 +662,12 @@ void Surface::AttachPalette(ResPalette* p_palette)
 {
 	unsigned int* fallbackEntries;
 
-	fallbackEntries = g_pTargetGraphicsDriver->HasPalette() ? g_dwWinGDrawColourTable : 0;
+	if (g_pTargetGraphicsDriver->HasPalette()) {
+		fallbackEntries = g_dwWinGDrawColourTable;
+	}
+	else {
+		fallbackEntries = 0;
+	}
 	TargetBuildSurfaceColourTable(g_dwWinGDrawColourTable, p_palette, 0, fallbackEntries);
 	SetDefaultCtable();
 }
