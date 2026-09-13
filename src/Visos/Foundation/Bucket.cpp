@@ -167,12 +167,16 @@ Boffset Bucket::FindFreeOffset(Boffset p_offset)
 		} while (m_map[word] == 0xFFFFFFFF);
 	}
 	p_offset.wBit = 0;
-	while ((m_map[word] & s_bitMasks[p_offset.wBit]) != 0) {
-		p_offset.wBit++;
-		if (p_offset.wBit >= 32) {
+	unsigned int* mask;
+	unsigned int bits = m_map[word];
+	mask = s_bitMasks;
+	do {
+		if ((*mask & bits) == 0) {
 			break;
 		}
-	}
+		p_offset.wBit++;
+		mask++;
+	} while (mask < s_bitMasks + 32);
 	p_offset.wWord = word;
 	return p_offset;
 }
