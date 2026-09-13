@@ -64,8 +64,10 @@ void VsLtoa(long p_value, char* p_buffer, int p_radix)
 // FUNCTION: LEMBALL 0x00458db0
 char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 {
-	static unsigned int s_maxPowers[17];
+	// GLOBAL: LEMBALL 0x004a0e54
 	static int s_powersInitialized = 0;
+	// GLOBAL: LEMBALL 0x004a8298
+	static unsigned int s_maxPowers[17];
 
 	if (s_powersInitialized == 0) {
 		unsigned int r = 2;
