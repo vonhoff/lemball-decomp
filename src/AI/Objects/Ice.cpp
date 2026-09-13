@@ -112,8 +112,11 @@ void Ice::Set(unsigned short p_id,
 			int blockX = x / 0x10;
 			if (blockX >= 0) {
 				int blockY = y / 0x10;
-				if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
-					Ground* ground = g_pMap->m_ground.m_ground + g_pMap->m_ground.m_width * blockY + blockX;
+				int width;
+				Map* map;
+				if (blockY >= 0 && (width = g_pMap->m_ground.m_width) > blockX &&
+					blockY < (map = g_pMap)->m_ground.m_height) {
+					Ground* ground = map->m_ground.m_ground + width * blockY + blockX;
 					ground->m_collision |= 0x8000;
 				}
 			}
