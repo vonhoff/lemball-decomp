@@ -88,21 +88,23 @@ bool Ball::Move()
 {
 	int elapsed = (int) (g_dwGameTick - m_lastMovementTick);
 	int duration = m_moveDurationTicks;
+	int blockX;
+	int blockY;
+	Map* map;
 	unsigned int z;
 	int x;
 	int y;
 	{
-		Vector delta(m_moveDeltaXFixed, m_moveDeltaYFixed);
-		Vector movement = delta * elapsed;
+		Vector movement = *(const Vector*) &m_moveDeltaXFixed * elapsed;
 		movement.m_xFixed /= duration;
 		movement.m_yFixed /= duration;
 		x = (m_moveStartXFixed + movement.m_xFixed) >> 12;
 		y = (m_moveStartYFixed + movement.m_yFixed) >> 12;
 	}
 
-	Map* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	map = g_pMap;
+	blockX = x >> 4;
+	blockY = y >> 4;
 	unsigned short groundZ;
 	if (x < 0 || y < 0 || map->m_ground.m_width <= blockX || map->m_ground.m_height <= blockY) {
 		groundZ = 0;
@@ -114,10 +116,10 @@ bool Ball::Move()
 	}
 	z = groundZ;
 
-	Ai* ai = g_pAI;
 	Pt3 point;
 	point.m_x = x;
 	point.m_y = y;
+	Ai* ai = g_pAI;
 	point.m_z = z;
 	ai->m_collisionExclude = this;
 	ai->m_collisionPoint = point;
