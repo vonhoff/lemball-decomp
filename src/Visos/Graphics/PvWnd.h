@@ -32,7 +32,7 @@ public:
 	virtual void SetInnerWindow(const VsRect& p_rect);                                   // vtable+0x08
 	virtual bool GetMenu(int& p_menuResourceId, MenuList*** p_menuLists);                // vtable+0x0c
 	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists);                 // vtable+0x10
-	virtual unsigned int InitHotAreaList();                                              // vtable+0x14
+	virtual void InitHotAreaList();                                                      // vtable+0x14
 	virtual void InternalOnCreate();                                                     // vtable+0x18
 	virtual void InternalOnDestroy();                                                    // vtable+0x1c
 	virtual void InternalOnSize();                                                       // vtable+0x20

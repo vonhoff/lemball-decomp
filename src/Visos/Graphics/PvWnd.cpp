@@ -208,45 +208,38 @@ void PvWnd::SetRectInnerZoom(const VsRect& p_rect, const VsRect& p_innerRect, in
 
 // 68K 0x10216c50 InitHotAreaList__6CPVWndFv
 // FUNCTION: LEMBALL 0x00465e60
-unsigned int PvWnd::InitHotAreaList()
+void PvWnd::InitHotAreaList()
 {
-	VsRect listRect;
-	VsPoint offset;
-	VsPoint innerPoint;
-	void* storage;
 	unsigned int style;
 
 	style = GetStyle();
 	if ((style & 0x800) != 0 && m_hotAreaList == 0) {
-		listRect.m_width = m_innerRect.m_width;
-		listRect.m_height = m_innerRect.m_height;
-		if ((int) listRect.m_width * (int) listRect.m_height == 0) {
-			listRect.m_width = m_rect.m_width;
-			listRect.m_height = m_rect.m_height;
-			listRect.m_x = m_rect.m_x;
-			listRect.m_y = m_rect.m_y;
+		VsRect listRect;
+		if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
+			listRect.m_width = m_innerRect.m_width;
+			listRect.m_height = m_innerRect.m_height;
+			VsPoint* innerPoint = static_cast<VsPoint*>(&m_innerRect);
+			listRect.m_x = innerPoint->m_x;
+			listRect.m_y = innerPoint->m_y;
+			VsPoint* rectPoint = static_cast<VsPoint*>(&m_rect);
+			short y = rectPoint->m_y;
+			listRect.m_x += rectPoint->m_x;
+			listRect.m_y += y;
 		}
 		else {
-			listRect.m_x = (short) (m_innerRect.m_x + m_rect.m_x);
-			listRect.m_y = (short) (m_innerRect.m_y + m_rect.m_y);
+			listRect.m_width = m_rect.m_width;
+			listRect.m_height = m_rect.m_height;
+			VsPoint* rectPoint = static_cast<VsPoint*>(&m_rect);
+			listRect.m_x = rectPoint->m_x;
+			listRect.m_y = rectPoint->m_y;
 		}
-		offset.m_x = m_relativeTopLeft.m_x;
-		offset.m_y = m_relativeTopLeft.m_y;
+		VsPoint offset(m_relativeTopLeft.m_x, m_relativeTopLeft.m_y);
 		if (m_parent == 0) {
 			offset.m_x = 0;
 			offset.m_y = 0;
 		}
-		innerPoint.m_x = m_innerRect.m_x;
-		innerPoint.m_y = m_innerRect.m_y;
-		storage = operator new(0x60);
-		if (storage == 0) {
-			m_hotAreaList = 0;
-		}
-		else {
-			m_hotAreaList = new (storage) HotAreaList(listRect, offset, innerPoint);
-		}
+		m_hotAreaList = new HotAreaList(listRect, offset, *static_cast<VsPoint*>(&m_innerRect));
 	}
-	return 0;
 }
 
 // 68K 0x10216d90 _OnCreate__6CPVWndFv
