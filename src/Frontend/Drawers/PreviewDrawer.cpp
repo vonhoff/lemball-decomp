@@ -458,53 +458,55 @@ void PreviewDrawer::DrawAnims()
 // FUNCTION: LEMBALL 0x00449d30
 bool PreviewDrawer::ProcessMessages(Message* p_message)
 {
-	if (p_message->type != 0xc) {
+	switch ((int) p_message->type) {
+	default:
 		m_processedCount = m_processedCount + 1;
 		return 0;
+	case 0xc:
+		break;
 	}
 	switch (p_message->code) {
+	default:
+		return 0;
 	case 0xacef000c:
-		if (m_networkMode == 0) {
-			m_quitYet = 1;
-			m_returnState = 2;
+		if (m_networkMode != 0) {
+			Action(2, 0);
 			return 1;
 		}
-		Action(2, 0);
+		m_quitYet = 1;
+		m_returnState = 2;
 		return 1;
 	case 0xacef000d:
-		if (m_networkMode == 0) {
-			m_quitYet = 1;
-			m_returnState = 5;
+		if (m_networkMode != 0) {
+			Action(3, 0);
 			return 1;
 		}
-		Action(3, 0);
+		m_quitYet = 1;
+		m_returnState = 5;
 		return 1;
 	case 0xacef000e:
-		break;
+		if (m_nextDisabled == 1) {
+			m_ready = 1;
+			return 1;
+		}
+		if (m_networkMode != 0) {
+			Action(0, 0);
+			return 1;
+		}
+		NextLevel();
+		return 1;
 	case 0xacef000f:
 		if (m_previousDisabled == 1) {
 			m_ready = 1;
 			return 1;
 		}
-		if (m_networkMode == 0) {
-			PreviousLevel();
+		if (m_networkMode != 0) {
+			Action(1, 0);
 			return 1;
 		}
-		Action(1, 0);
-		return 1;
-	default:
-		return 0;
-	}
-	if (m_nextDisabled == 1) {
-		m_ready = 1;
+		PreviousLevel();
 		return 1;
 	}
-	if (m_networkMode == 0) {
-		NextLevel();
-		return 1;
-	}
-	Action(0, 0);
-	return 1;
 }
 
 // 68K 0x1080bc92 NextLevel__14CPreviewDrawerFv
