@@ -35,8 +35,8 @@ void EnemyGroupManager::Restart()
 	if (groupIndex < m_groupCount) {
 		group = m_groups;
 		do {
-			int elementIndex = 0;
 			int elementCount = (*group)->GetElementsInGroup();
+			int elementIndex = 0;
 			if (elementCount > 0) {
 				do {
 					(*group)->GetNthElementInGroup(elementIndex)->Restart();
