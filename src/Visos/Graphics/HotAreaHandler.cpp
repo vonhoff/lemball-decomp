@@ -145,9 +145,7 @@ void HotAreaHandler::Reset()
 
 // 68K 0x10211e2a ProcessArea__15CHotAreaHandlerFP10tagMESSAGERC8CVSPointP15CHotAreaHandler
 // FUNCTION: LEMBALL 0x0046a380
-unsigned int HotAreaHandler::ProcessArea(Message* p_message,
-										 const VsPoint& p_point,
-										 class HotAreaHandler* p_currentHandler)
+void HotAreaHandler::ProcessArea(Message* p_message, const VsPoint& p_point, class HotAreaHandler* p_currentHandler)
 {
 	unsigned short type;
 	int button;
@@ -155,34 +153,33 @@ unsigned int HotAreaHandler::ProcessArea(Message* p_message,
 
 	type = p_message->type;
 	switch (type) {
-	case 7:
-		goto mouseMove;
 	case 8:
 	case 9:
-		if (g_pMasterInput != 0 && (g_pMasterInput->m_state & 1) != 0) {
-			return 0;
+		if ((g_pMasterInput->m_state & 1) != 0) {
+			return;
 		}
 	case 5:
 	case 6:
 		payload = (unsigned int) p_message->payload;
-		button = 0;
-		if (payload == 0x43) {
+		switch (payload) {
+		case 0x43:
 			button = 0;
-		}
-		else if (payload == 0x44) {
+			break;
+		case 0x44:
 			button = 1;
-		}
-		else if (payload == 0x45) {
+			break;
+		case 0x45:
 			button = 2;
-		}
-		else if (payload == 0x46) {
+			break;
+		case 0x46:
 			button = 3;
-		}
-		else if (payload == 0x47) {
+			break;
+		case 0x47:
 			button = 4;
-		}
-		else if (payload == 0x48) {
+			break;
+		case 0x48:
 			button = 5;
+			break;
 		}
 		if (type == 6 || type == 8) {
 			m_buttonState[button] = 1;
@@ -193,42 +190,44 @@ unsigned int HotAreaHandler::ProcessArea(Message* p_message,
 		}
 		if (p_message->type != 5 && p_message->type != 9) {
 			OnButtonDown(p_point, button);
-			return 0;
+			return;
 		}
 		if (m_x <= p_point.m_x && p_point.m_x < (short) (m_width + m_x)) {
-			if (m_y <= p_point.m_y && p_point.m_y < (short) (m_height + m_y)) {
+			short top = m_y;
+			short y = p_point.m_y;
+			if (top <= y && y < (short) (m_height + top)) {
 				OnButtonUp(p_point, button);
-				return 0;
+				return;
 			}
 		}
 		OnExternalButtonUp(p_point, button);
-		return 0;
+		return;
 	case 10:
-		if (g_pMasterInput != 0 && (g_pMasterInput->m_state & 1) != 0) {
-			return 0;
+		if ((g_pMasterInput->m_state & 1) != 0) {
+			return;
+		}
+	case 7:
+		if (m_externalEnabled != 0) {
+			OnInside(p_point);
+		}
+		if (m_entered != 0 && this == p_currentHandler) {
+			return;
 		}
 		break;
 	default:
-		return 0;
-	}
-mouseMove:
-	if (m_externalEnabled != 0) {
-		OnInside(p_point);
-	}
-	if (m_entered != 0 && this == p_currentHandler) {
-		return 0;
+		return;
 	}
 	m_entered = 1;
 	OnEnter();
 	if (p_currentHandler == 0) {
-		return 0;
+		return;
 	}
 	if (p_currentHandler->m_entered == 0) {
-		return 0;
+		return;
 	}
 	p_currentHandler->m_entered = 0;
 	p_currentHandler->OnExit();
-	return 0;
+	return;
 }
 
 // 68K 0x10212060 SetActive__15CHotAreaHandlerFUc
