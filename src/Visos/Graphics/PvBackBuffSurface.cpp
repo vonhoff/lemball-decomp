@@ -50,13 +50,16 @@ void PvBackBuffSurface::FreeBackBuff()
 // FUNCTION: LEMBALL 0x00466540
 void PvBackBuffSurface::AllocateBackBuff()
 {
-	VsSize size;
+	const VsSize& dimensions = m_windowRect;
+	short height = dimensions.m_height;
+	short width = dimensions.m_width;
+	VsRect size(0, 0, width, height);
 	int allocatedArea;
 	int neededArea;
 
-	size.m_width = m_windowRect.m_width;
-	size.m_height = m_windowRect.m_height;
-	size = m_bitmap.SetSize(size, m_reserved40);
+	const VsSize& actualSize = m_bitmap.SetSize(size, m_reserved40);
+	size.m_width = actualSize.m_width;
+	size.m_height = actualSize.m_height;
 	allocatedArea = (int) m_allocatedWidth * (int) m_allocatedHeight;
 	neededArea = (int) size.m_height * (int) size.m_width;
 	if (allocatedArea < neededArea) {
@@ -67,7 +70,7 @@ void PvBackBuffSurface::AllocateBackBuff()
 			m_allocatedWidth = (unsigned short) size.m_width;
 			m_allocatedHeight = (unsigned short) size.m_height;
 			m_buffer = (unsigned char*) operator new(
-				(unsigned int) (unsigned short) size.m_width*(unsigned int) (unsigned short) size.m_height);
+				(unsigned int) (unsigned short) size.m_height*(unsigned int) (unsigned short) size.m_width);
 		}
 		if (m_buffer == 0) {
 			m_enabled = 0;
