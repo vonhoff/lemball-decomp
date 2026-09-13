@@ -50,10 +50,10 @@ void Crate::TriggerContents()
 {
 	if (m_contentsType != 0xffff) {
 		GlobalGameObject* contents = (GlobalGameObject*) m_contents;
-		contents->m_position.m_xFixed = m_position.m_xFixed;
-		contents->m_position.m_yFixed = m_position.m_yFixed;
-		contents->m_position.m_zFixed = m_position.m_zFixed;
-		g_pGenericGroupObjectManager->AddObject(0xffff, contents, 0);
+		m_position.m_xFixed = contents->m_position.m_xFixed;
+		m_position.m_yFixed = contents->m_position.m_yFixed;
+		m_position.m_zFixed = contents->m_position.m_zFixed;
+		g_pObjectManager->AddObject(0xffff, contents, 0);
 		m_contentsType = 0xffff;
 	}
 }
