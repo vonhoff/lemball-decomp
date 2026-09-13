@@ -61,11 +61,11 @@ void EnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSiz
 	unsigned int x;
 	unsigned int y;
 	unsigned int facing;
-	register eEnemyStateActions action1;
+	eEnemyStateActions action2;
 	eEnemyStateActions action0;
 	eEnemyStateRules rule0;
 	eEnemyStateRules rule1;
-	eEnemyStateActions action2;
+	eEnemyStateActions action1;
 	eEnemyStateRules rule2;
 	WaypointInformation* waypoint0;
 	WaypointInformation* waypoint1;
