@@ -20,13 +20,13 @@ public:
 	void AddButton(int p_x,
 				   int p_y,
 				   unsigned long* p_animIds,
-				   unsigned char p_postAction,
+				   unsigned int p_postAction,
 				   int p_minimum,
 				   int p_maximum,
 				   int p_value,
 				   void* p_binding,
 				   unsigned long p_actionMessage);
-	void AddJunction(int p_x, int p_y, unsigned char p_side, unsigned long p_message);
+	void AddJunction(int p_x, int p_y, unsigned int p_side, unsigned long p_message);
 	void DrawButtons(int p_firstState, int p_secondState);
 	void DrawSpriteWindow();
 	void MoveDown();

@@ -228,45 +228,38 @@ int GunController::ProcessMsg(Message* p_message)
 void GunController::AddButton(int p_x,
 							  int p_y,
 							  unsigned long* p_animIds,
-							  unsigned char p_postAction,
+							  unsigned int p_postAction,
 							  int p_minimum,
 							  int p_maximum,
 							  int p_value,
 							  void* p_binding,
 							  unsigned long p_actionMessage)
 {
-	void* storage;
+
 	unsigned long controlMessage;
 
 	controlMessage = m_nextMessageId + 1;
 	m_nextMessageId = controlMessage;
-	storage = operator new(0x60);
-	if (storage == 0) {
-		m_buttons[m_buttonCount] = 0;
-	}
-	else {
-		m_buttons[m_buttonCount] = new (storage) GunButtons(m_window,
-															m_gdi,
-															p_x,
-															p_y,
-															p_animIds,
-															p_postAction,
-															p_minimum,
-															p_maximum,
-															p_value,
-															controlMessage,
-															p_binding,
-															p_actionMessage);
-	}
-	if (m_buttons[m_buttonCount] != 0) {
-		AddJunction(p_x, p_y, 0 < p_maximum, m_buttons[m_buttonCount]->m_controlMessage);
-	}
+	m_buttons[m_buttonCount] = new GunButtons(m_window,
+											  m_gdi,
+											  p_x,
+											  p_y,
+											  p_animIds,
+											  p_postAction,
+											  p_minimum,
+											  p_maximum,
+											  p_value,
+											  controlMessage,
+											  p_binding,
+											  p_actionMessage);
+	unsigned int side = 0 < p_maximum;
+	AddJunction(p_x, p_y, side, m_buttons[m_buttonCount]->m_controlMessage);
 	m_buttonCount = m_buttonCount + 1;
 }
 
 // 68K 0x10803ab0 AddJunction__14CGunControllerFiiUcUl
 // FUNCTION: LEMBALL 0x0044d150
-void GunController::AddJunction(int p_x, int p_y, unsigned char p_side, unsigned long p_message)
+void GunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned long p_message)
 {
 	int mid = (short) ((int) m_window->m_rect.m_width / 2);
 	int side;
