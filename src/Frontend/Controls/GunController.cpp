@@ -594,15 +594,9 @@ void GunController::SelectOption()
 		if (m_alternateAssets != 1) {
 			offsets = g_anGunSpriteOffset;
 		}
-		if (m_cursorAnim != 0) {
-			m_cursorAnim->StartAnim(0xfa);
-		}
-		if (m_hitAnim != 0) {
-			m_hitAnim->StartAnim(500);
-		}
-		if (m_leftShotAnim != 0) {
-			m_leftShotAnim->StartAnim(500);
-		}
+		m_cursorAnim->StartAnim(0xfa);
+		m_hitAnim->StartAnim(500);
+		m_leftShotAnim->StartAnim(500);
 		if (m_targetSide == 0) {
 			m_projectileX = offsets[6] + m_selectionStartX;
 			m_projectileY = offsets[7] + m_targetY;
@@ -619,14 +613,10 @@ void GunController::SelectOption()
 		}
 		m_selectStartTime = CurrentMilliTimer();
 		delta = m_projectileTargetX - m_projectileX;
+		delta = abs((int) delta);
 		m_selectionState = 2;
-		if ((int) delta < 0) {
-			delta = (unsigned int) -(int) delta;
-		}
 		m_selectEndTime = delta * 2 + m_selectStartTime;
-		if (g_pSoundView != 0) {
-			g_pSoundView->PlayEffect(7);
-		}
+		g_pSoundView->PlayEffect(7);
 	}
 }
 
