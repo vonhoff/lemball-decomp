@@ -104,10 +104,9 @@ void PauseWindow::UnLoad()
 // FUNCTION: LEMBALL 0x00443d80
 void PauseWindow::Restart()
 {
-	VsRect rect;
 	UnLoad();
 	Load();
-	rect = CalculateWindow();
+	VsRect rect = CalculateWindow();
 	CreateTheWindow(rect);
 }
 
