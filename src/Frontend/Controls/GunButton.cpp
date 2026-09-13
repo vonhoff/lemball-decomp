@@ -3,11 +3,6 @@
 #include "../../Views/Sound/SoundView.h"
 #include "GunButtons.h"
 
-GunButton::GunButton(const VsPoint& p_position, PvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
-	: GraphicButton(p_position, p_parent, p_animId, p_flags)
-{
-}
-
 // 68K 0x10802938 sgn__Fi
 // FUNCTION: LEMBALL 0x0044c1e0
 int Sgn(int p_value)

@@ -9,7 +9,10 @@
 // VTABLE: LEMBALL 0x00497d08 HotAreaHandler
 class GunButton : public GraphicButton {
 public:
-	GunButton(const VsPoint& p_position, PvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags);
+	GunButton(const VsPoint& p_position, PvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
+		: GraphicButton(p_position, p_parent, p_animId, p_flags)
+	{
+	}
 	virtual void OnPressed(int p_flags);  // vtable+0xc4
 	virtual void OnReleased(int p_flags); // vtable+0xc0
 	virtual ~GunButton();                 // vtable+0x00

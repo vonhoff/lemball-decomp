@@ -150,47 +150,46 @@ void GunButtons::Draw(int p_firstState, int p_secondState)
 // FUNCTION: LEMBALL 0x0044c630
 void GunButtons::LoadFaces(unsigned long* p_animIds)
 {
-	VsPoint position;
-	void* storage;
 	int i;
+	void* storage;
 
 	m_animIds = p_animIds;
 	m_resources = (ResAnim**) operator new(m_valueCount * 4);
-	if (m_valueCount > 0) {
-		i = 0;
-		while (i < m_valueCount) {
-			m_resources[i] = ResAnim::Load(p_animIds[i]);
+	i = 0;
+	if (m_valueCount > i) {
+		do {
+			m_resources[i] = ResAnim::Load(m_animIds[i]);
 			i = i + 1;
-		}
+		} while (i < m_valueCount);
 	}
 	if (m_mode == 0) {
 		storage = operator new(0x130);
-		if (storage == 0) {
-			m_graphicButton = 0;
+		if (storage != 0) {
+			VsPoint position((short) m_x, (short) m_y);
+			m_graphicButton = new (storage) GunButton(position, (PvGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
 		}
 		else {
-			position.m_x = (short) m_x;
-			position.m_y = (short) m_y;
-			m_graphicButton = new (storage) GunButton(position, (PvGWnd*) m_window, p_animIds[m_value - m_minimum], 3);
+			m_graphicButton = 0;
 		}
+		Surface* surface = m_graphicButton->m_gdi->m_renderTarget;
 		m_graphicButton->SetAutoDraw(0);
-		m_graphicButton->m_gdi->m_renderTarget->m_flag70 = 0;
+		surface->m_flag70 = 0;
 		m_graphicButton->m_messageHandler = g_pMasterInputQueue;
 		m_graphicButton->m_controlMessage = m_controlMessage;
 		m_trackerButton = 0;
 		return;
 	}
 	storage = operator new(0x138);
-	if (storage == 0) {
-		m_trackerButton = 0;
+	if (storage != 0) {
+		VsPoint position((short) m_x, (short) m_y);
+		m_trackerButton = new (storage) TrackerButton(position, (PvGWnd*) m_window, *m_animIds, m_trackRect, m_value);
 	}
 	else {
-		position.m_x = (short) m_x;
-		position.m_y = (short) m_y;
-		m_trackerButton = new (storage) TrackerButton(position, (PvGWnd*) m_window, *p_animIds, m_trackRect, m_value);
+		m_trackerButton = 0;
 	}
+	Surface* surface = m_trackerButton->m_gdi->m_renderTarget;
 	m_trackerButton->SetAutoDraw(0);
-	m_trackerButton->m_gdi->m_renderTarget->m_flag70 = 0;
+	surface->m_flag70 = 0;
 	m_trackerButton->m_messageHandler = g_pMasterInputQueue;
 	m_trackerButton->m_controlMessage = m_controlMessage;
 	m_graphicButton = 0;
