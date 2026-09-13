@@ -238,23 +238,11 @@ VsSize PvGdiBitmap::SetSize(const VsSize& p_size, int p_pitch)
 // FUNCTION: LEMBALL 0x00472670
 void PvGdiBitmap::SetBitsBase(unsigned char* p_bits, int p_stride)
 {
-	unsigned char* bits;
-	unsigned char* padded;
-	int stride;
-
-	bits = p_bits;
-	padded = bits + m_rowPadding;
-	m_bitsBase = bits;
-	stride = p_stride;
-	m_bits = padded;
-	m_stride = stride;
-	if (stride < 0) {
-		int adjust;
-
-		adjust = 1;
-		adjust = adjust - (int) (short) m_height;
-		adjust = adjust * stride;
-		m_bits = padded + adjust;
+	m_bitsBase = p_bits;
+	m_bits = m_rowPadding + p_bits;
+	m_stride = p_stride;
+	if (p_stride < 0) {
+		m_bits += (1 - (int) (short) m_height) * p_stride;
 	}
 	CreateLinePtrs();
 }
