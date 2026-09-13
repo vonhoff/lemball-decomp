@@ -354,7 +354,7 @@ void SuccFailDrawer::Load()
 	m_hiliteController = new HiliteController((GWnd*) m_display, m_gdi, 2, m_mode, 0);
 	m_hiliteController->AddButton(m_layout->m_returnButton.m_x,
 								  m_layout->m_returnButton.m_y,
-								  returnAnim,
+								  goAnim,
 								  1,
 								  0,
 								  0,
@@ -363,7 +363,7 @@ void SuccFailDrawer::Load()
 								  0xacef0010);
 	m_hiliteController->AddButton(m_layout->m_goButton.m_x,
 								  m_layout->m_goButton.m_y,
-								  goAnim,
+								  returnAnim,
 								  1,
 								  0,
 								  0,
