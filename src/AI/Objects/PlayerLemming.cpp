@@ -698,33 +698,30 @@ void PlayerLemming::RequestBalloon()
 	postPos.m_yFixed = DEBUG_SENTINEL;
 	postPos.m_zFixed = DEBUG_SENTINEL;
 	int lastBalloon = GetLastBalloon();
-	if (lastBalloon <= 0xffff) {
-		if (lastBalloon == 0xffff) {
-			m_balloonPostActive = 0;
-			return;
-		}
-		switch (lastBalloon) {
-		case 0x27:
-			m_balloonObjectType = (eObjectType) 0x28;
-			RemoveObject((eObjectType) 0x27);
-			m_actionArgument = 3;
-			break;
-		case 0x29:
-			m_balloonObjectType = (eObjectType) 0x2a;
-			RemoveObject((eObjectType) 0x29);
-			m_actionArgument = 1;
-			break;
-		case 0x2b:
-			m_balloonObjectType = (eObjectType) 0x2c;
-			RemoveObject((eObjectType) 0x2b);
-			m_actionArgument = 4;
-			break;
-		case 0x2d:
-			m_balloonObjectType = (eObjectType) 0x2e;
-			RemoveObject((eObjectType) 0x2d);
-			m_actionArgument = 0;
-			break;
-		}
+	switch (lastBalloon) {
+	case 0xffff:
+		m_balloonPostActive = 0;
+		return;
+	case 0x27:
+		m_balloonObjectType = (eObjectType) 0x28;
+		RemoveObject((eObjectType) 0x27);
+		m_actionArgument = 3;
+		break;
+	case 0x29:
+		m_balloonObjectType = (eObjectType) 0x2a;
+		RemoveObject((eObjectType) 0x29);
+		m_actionArgument = 1;
+		break;
+	case 0x2b:
+		m_balloonObjectType = (eObjectType) 0x2c;
+		RemoveObject((eObjectType) 0x2b);
+		m_actionArgument = 4;
+		break;
+	case 0x2d:
+		m_balloonObjectType = (eObjectType) 0x2e;
+		RemoveObject((eObjectType) 0x2d);
+		m_actionArgument = 0;
+		break;
 	}
 	m_balloonPostActive = g_pAI->m_balloonPost->FindPost(m_balloonObjectType, postPos);
 	m_lastMovementTick = g_dwGameTick;
