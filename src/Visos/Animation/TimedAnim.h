@@ -5,9 +5,10 @@
 #include "Frames.h" // complete type
 
 // SIZE 0x1c
+// VTABLE: LEMBALL 0x00496d08
 class TimedAnim : public Frames {
 public:
-	TimedAnim(unsigned int p_frames = 0, int p_direction = 0) : Frames(p_frames), m_direction(p_direction) {}
+	TimedAnim(unsigned int p_frames = 0, int p_direction = 0) : Frames(p_frames) { m_direction = p_direction; }
 	virtual unsigned int GetFrameNo();                    // vtable+0x00
 	virtual void StartAnim(unsigned long p_animTime) = 0; // vtable+0x04
 	virtual void SetAnimTime(unsigned long p_animTime);   // vtable+0x08
