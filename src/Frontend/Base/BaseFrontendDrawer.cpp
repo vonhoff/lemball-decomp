@@ -526,12 +526,9 @@ int BaseFrontendDrawer::ProcessMsg(Message* p_message)
 void BaseFrontendDrawer::Process()
 {
 	unsigned long now;
-	unsigned int seed;
-
-	if (m_backBufferNeeded != 0) {
-		InitialiseBackBuffer();
-	}
-	if (m_networkMode != 0 && m_startupPending == 0) {
+	int seed;
+	if (m_networkMode != 0 && m_startupPending == 0 &&
+		g_pNetworkManager->m_observedGameState == g_pNetworkManager->m_desiredGameState) {
 		m_actionPending = 0;
 		m_startupPending = 1;
 		if (m_hiliteController != 0) {
@@ -545,11 +542,9 @@ void BaseFrontendDrawer::Process()
 			now = CurrentMilliTimer();
 			m_ambientUpdatedAt = now;
 			m_ambientAnim->SetStartTime(now);
-			if (g_pSentinel != 0) {
-				seed = *g_pSentinel * 0x29 + 0x1fU & 0x7fffff;
-				*g_pSentinel = (int) seed;
-				m_ambientDelay = seed % 6000;
-			}
+			seed = *g_pSentinel * 0x29 + 0x1f & 0x7fffff;
+			*g_pSentinel = seed;
+			m_ambientDelay = seed % 6000;
 		}
 	}
 	if (m_gunController != 0) {
