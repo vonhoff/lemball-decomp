@@ -18,7 +18,7 @@ GunButtons::GunButtons(GWnd* p_arg0,
 					   int p_arg2,
 					   int p_arg3,
 					   unsigned long* p_arg4,
-					   unsigned char p_arg5,
+					   unsigned int p_arg5,
 					   int p_arg6,
 					   int p_arg7,
 					   int p_arg8,
@@ -28,17 +28,13 @@ GunButtons::GunButtons(GWnd* p_arg0,
 {
 	int range;
 
-	m_trackRect.m_height = 0;
 	m_mode = 0;
-	m_trackRect.m_width = 0;
-	m_trackRect.m_y = 0;
-	m_trackRect.m_x = 0;
 	m_window = p_arg0;
 	m_gdi = p_arg1;
 	m_active = 1;
 	range = (p_arg7 - p_arg6) + 1;
 	m_valueCount = range;
-	if (range < 2) {
+	if (range <= 1) {
 		m_valueCount = 1;
 	}
 	m_minimum = p_arg6;
@@ -47,11 +43,17 @@ GunButtons::GunButtons(GWnd* p_arg0,
 	m_x = p_arg2;
 	m_y = p_arg3;
 	int* binding = (int*) p_arg10;
-	if (binding == 0) {
-		m_value = 0;
+	if (binding != 0) {
+		// The original tests the range even though both paths read the same binding.
+		if (m_valueCount == 1) {
+			m_value = *binding;
+		}
+		else {
+			m_value = *binding;
+		}
 	}
 	else {
-		m_value = *binding;
+		m_value = 0;
 	}
 	if (p_arg11 != 0xffffffff) {
 		m_actionMessage = p_arg11;
