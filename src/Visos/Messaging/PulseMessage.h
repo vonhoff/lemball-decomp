@@ -11,7 +11,8 @@ public:
 	inline PulseMessage() : NetworkMessage(1) { OpenDataStream(); }
 	void AddData();
 	void GetData();
-	~PulseMessage();
+	// 68K 0x101073a2 __dt__13CPulseMessageFv
+	~PulseMessage() { CloseDataStream(); }
 };
 
 extern PulseMessage* g_pPulseMessage;

@@ -12,10 +12,5 @@ void PulseMessage::GetData()
 {
 }
 
-// 68K 0x101073a2 __dt__13CPulseMessageFv
-PulseMessage::~PulseMessage()
-{
-}
-
 // GLOBAL: LEMBALL 0x004a1e10
 PulseMessage* g_pPulseMessage = 0;
