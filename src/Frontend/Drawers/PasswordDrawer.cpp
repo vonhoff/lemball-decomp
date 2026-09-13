@@ -90,10 +90,10 @@ char g_szPasswordSkillTaxing[] = "Taxing";
 char g_szPasswordSkillMayhem[] = "Mayhem";
 
 // GLOBAL: LEMBALL 0x004a0068
-char g_szPasswordOk[] = "Password OK!";
+char* g_szPasswordOk = "Password OK!";
 
 // GLOBAL: LEMBALL 0x004a006c
-char g_szPasswordInvalid[] = "Invalid Password!";
+char* g_szPasswordInvalid = "Invalid Password!";
 
 // GLOBAL: LEMBALL 0x004a00b0
 char g_szPasswordLevelFormat[] = ": ";
@@ -384,45 +384,40 @@ void PasswordDrawer::Processing()
 // FUNCTION: LEMBALL 0x00451aa0
 void PasswordDrawer::DrawText()
 {
-	short* countPos;
-	short* labelPos;
-	int skillOffset;
+	int* countPos;
+	int skillIndex;
+	int* labelPos;
 	char* textPtr;
-	VsPoint position;
-	VsSize advance;
-
-	countPos = (short*) &((PasswordTextLayout*) m_layout)->m_countPositions[0].m_y;
-	labelPos = (short*) &((PasswordTextLayout*) m_layout)->m_labelPositions[0].m_y;
+	countPos = &((PasswordTextLayout*) m_layout)->m_countPositions[0].m_y;
+	labelPos = &((PasswordTextLayout*) m_layout)->m_labelPositions[0].m_y;
 	textPtr = g_abPasswordLevelText;
-	skillOffset = 0;
+	skillIndex = 0;
 	do {
-		advance.m_width = 0;
-		advance.m_height = 0;
-		position.m_x = labelPos[-2];
-		position.m_y = labelPos[0];
+		VsSize advance;
+		VsPoint position((short) labelPos[-1], (short) labelPos[0]);
 		m_textManager
-			->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillOffset / 4], 0x20, 0);
+			->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillIndex], 0x20, 0);
 		strcpy(textPtr, g_szPasswordLevelFormat);
-		VsLtoa(g_pGameStatus->m_maxLevels[skillOffset / 4] + 1, textPtr + 2, 10);
-		advance.m_width = 0;
-		advance.m_height = 0;
-		position.m_x = countPos[-2];
-		position.m_y = countPos[0];
-		m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, textPtr, 0x20, 0);
-		labelPos += 4;
-		countPos += 4;
-		skillOffset += 4;
+		VsLtoa(g_pGameStatus->m_maxLevels[skillIndex] + 1, textPtr + 2, 10);
+		VsSize countAdvance;
+		VsPoint countPosition((short) countPos[-1], (short) countPos[0]);
+		m_textManager->DrawString(m_gdi, countPosition, countAdvance, m_chalkFontId, textPtr, 0x20, 0);
+		labelPos += 2;
+		countPos += 2;
+		skillIndex++;
 		textPtr = textPtr + 6;
 	} while (textPtr < g_abPasswordLevelText + 24);
 	if (m_passwordSubmitted == 1) {
-		advance.m_width = 0;
-		advance.m_height = 0;
-		position.m_y = (short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_y;
-		position.m_x = (short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_x;
 		if (m_passwordValid == 1) {
+			VsSize advance;
+			VsPoint position((short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_x,
+							 (short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_y);
 			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordOk, 0x20, 0);
 		}
 		else {
+			VsSize advance;
+			VsPoint position((short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_x,
+							 (short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_y);
 			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordInvalid, 0x20, 0);
 		}
 	}
