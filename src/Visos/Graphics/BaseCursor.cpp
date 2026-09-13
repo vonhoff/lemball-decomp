@@ -75,102 +75,105 @@ void BaseCursor::Initialise()
 // FUNCTION: LEMBALL 0x0046b0e0
 int BaseCursor::ProcessMsg(Message* p_message)
 {
-	unsigned short type;
 	int code;
 	unsigned long now;
-	VsPoint position;
-	Message posted;
-	int action;
+	unsigned long time;
 	int match;
 
 	if (m_active == 0) {
-		return 0;
+		goto done;
 	}
-	type = p_message->type;
-	if (type < 3) {
+	time = p_message->time;
+	switch ((int) p_message->type) {
+	default:
+	done:
 		return 0;
-	}
-	if (4 < type) {
-		if (type != 7) {
-			return 0;
+	case 3:
+	case 4: {
+		Message posted;
+		if (m_keyboardInput == 0) {
+			goto done;
 		}
-		if (m_mouseInput != 0) {
-			if (p_message->payload == 0) {
-				position.m_x = (short) p_message->code;
-				position.m_y = (short) (p_message->code >> 16);
-				SetPos(position);
+		now = CurrentMilliTimer();
+		code = p_message->code;
+		if (m_changingCursor == 0) {
+			goto skipAction;
+		}
+		match = 0;
+		if (m_keys[4] == code) {
+			posted.payload = (void*) 0x43;
+			match = 1;
+		}
+		else if (m_keys[6] == code) {
+			posted.payload = (void*) 0x44;
+			match = 1;
+		}
+		else if (m_keys[5] == code) {
+			posted.payload = (void*) 0x45;
+			match = 1;
+		}
+		if (match != 0) {
+			posted.type = 8;
+			if (p_message->type != 4) {
+				posted.type = 9;
 			}
+			posted.time = time;
+			posted.code = PackParam(m_position.m_x, m_position.m_y);
+			posted.source = 0;
+			g_pMasterInputQueue->Post(posted);
 			return 0;
+		}
+	skipAction:
+		if (p_message->type == 3) {
+			if (m_keys[2] == code || m_keys[3] == code) {
+				m_velocityY = 0;
+				m_directionY = 0;
+				break;
+			}
+			if (m_keys[0] == code || m_keys[1] == code) {
+				m_velocityX = 0;
+				m_directionX = 0;
+				break;
+			}
+		}
+		else {
+			if (m_keys[2] != code) {
+				if (m_keys[3] != code) {
+					if (m_keys[0] != code) {
+						if (m_keys[1] == code) {
+							m_directionX = m_maxSpeed;
+							m_lastInputX = now;
+							return 0;
+						}
+					}
+					else {
+						m_directionX = -m_maxSpeed;
+						m_lastInputX = now;
+						return 0;
+					}
+				}
+				else {
+					m_directionY = m_maxSpeed;
+					m_lastInputY = now;
+					return 0;
+				}
+			}
+			else {
+				m_directionY = -m_maxSpeed;
+				m_lastInputY = now;
+			}
 		}
 		return 0;
 	}
-	if (m_keyboardInput == 0) {
+	case 7:
+		if (m_mouseInput == 0) {
+			return 0;
+		}
+		if (p_message->source == 0) {
+			VsPoint position((short) p_message->code, (short) ((unsigned int) p_message->code >> 16));
+			SetPos(position);
+		}
 		return 0;
-	}
-	now = CurrentMilliTimer();
-	code = p_message->code;
-	if (m_changingCursor == 0) {
-		goto skipAction;
-	}
-	match = 0;
-	action = 0;
-	if (m_keys[4] == code) {
-		action = 0x43;
-		match = 1;
-	}
-	else if (m_keys[6] == code) {
-		action = 0x44;
-		match = 1;
-	}
-	else if (m_keys[5] == code) {
-		action = 0x45;
-		match = 1;
-	}
-	if (match != 0) {
-		posted.type = 8;
-		if (p_message->type != 4) {
-			posted.type = 9;
-		}
-		posted.time = p_message->time;
-		posted.code = PackParam(m_position.m_x, m_position.m_y);
-		posted.payload = (void*) action;
-		posted.source = 0;
-		g_pMasterInputQueue->Post(posted);
-		return 0;
-	}
-skipAction:
-	if (p_message->type == 3) {
-		if (m_keys[2] == code || m_keys[3] == code) {
-			m_velocityY = 0;
-			m_directionY = 0;
-			return 0;
-		}
-		if (m_keys[0] == code || m_keys[1] == code) {
-			m_velocityX = 0;
-			m_directionX = 0;
-			return 0;
-		}
-	}
-	else if (m_keys[2] == code) {
-		m_lastInputY = now;
-		m_directionY = -m_maxSpeed;
-	}
-	else {
-		if (m_keys[3] == code) {
-			m_directionY = m_maxSpeed;
-			m_lastInputY = now;
-			return 0;
-		}
-		if (m_keys[0] == code) {
-			m_directionX = -m_maxSpeed;
-			m_lastInputX = now;
-			return 0;
-		}
-		if (m_keys[1] == code) {
-			m_directionX = m_maxSpeed;
-			m_lastInputX = now;
-			return 0;
-		}
 	}
 	return 0;
 }
