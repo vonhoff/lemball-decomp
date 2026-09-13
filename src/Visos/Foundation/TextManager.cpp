@@ -71,8 +71,9 @@ TextManager::~TextManager()
 // FUNCTION: LEMBALL 0x00469eb0
 void TextManager::LoadFont(unsigned long p_fontId)
 {
+	ResFont** fonts;
 	int slot = 0;
-	ResFont** fonts = m_fonts;
+	fonts = m_fonts;
 	if (fonts[0] != 0) {
 		do {
 			slot++;
