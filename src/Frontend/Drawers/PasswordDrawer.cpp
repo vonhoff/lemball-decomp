@@ -532,18 +532,12 @@ void PasswordDrawer::DrawHilite()
 void PasswordDrawer::SetHiliteWindow()
 {
 	int* layout;
-	short pitch;
-	void* storage;
+	int pitch;
 
 	layout = (int*) m_layout;
-	pitch = (short) layout[0x60 / 4] + (short) layout[0x10 / 4];
-	storage = operator new(0x90);
-	if (storage == 0) {
-		m_hiliteWindow = 0;
-	}
-	else {
-		m_hiliteWindow = new (storage) PasswordHiliteWindow();
-	}
+	pitch = layout[0x60 / 4] + layout[0x10 / 4];
+	m_hiliteWindow = new PasswordHiliteWindow();
+	layout = (int*) m_layout;
 	VsRect rect((short) (layout[2] - 1), (short) (layout[3] - 1), (short) (pitch * 3), (short) (pitch * 4));
 	m_hiliteWindow->Create(rect, (PvGWnd*) m_display, 0);
 	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
