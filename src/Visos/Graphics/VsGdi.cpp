@@ -846,36 +846,37 @@ void Surface::Move(const VsPoint& p_position)
 		m_rect0c.m_y = p_position.m_y;
 		short oldWidth = m_windowRect.m_width;
 		short oldHeight = m_windowRect.m_height;
-		m_windowRect.m_width = m_dontUpdateRect.m_width;
-		m_windowRect.m_height = m_dontUpdateRect.m_height;
+		m_windowRect.m_width = m_rect0c.m_width;
+		m_windowRect.m_height = m_rect0c.m_height;
 		m_windowRect.m_x = m_rect0c.m_x;
 		m_windowRect.m_y = m_rect0c.m_y;
 
-		short parentWidth = m_parentSurface->m_clipRect.m_width;
-		short parentHeight = m_parentSurface->m_clipRect.m_height;
+		VsRect& clipped = m_windowRect;
+		short parentWidth = m_parentSurface->m_windowRect.m_width;
+		short parentHeight = m_parentSurface->m_windowRect.m_height;
 
-		if (m_windowRect.m_x < 0) {
-			m_windowRect.m_width += m_windowRect.m_x;
-			m_windowRect.m_x = 0;
+		if (clipped.m_x < 0) {
+			clipped.m_width += clipped.m_x;
+			clipped.m_x = 0;
 		}
-		if (parentWidth < (short) (m_windowRect.m_x + m_windowRect.m_width)) {
-			m_windowRect.m_width = parentWidth - m_windowRect.m_x;
+		if (parentWidth < (short) (clipped.m_x + clipped.m_width)) {
+			clipped.m_width = parentWidth - clipped.m_x;
 		}
-		if (m_windowRect.m_y < 0) {
-			m_windowRect.m_height += m_windowRect.m_y;
-			m_windowRect.m_y = 0;
+		if (clipped.m_y < 0) {
+			clipped.m_height += clipped.m_y;
+			clipped.m_y = 0;
 		}
-		if (parentHeight < (short) (m_windowRect.m_y + m_windowRect.m_height)) {
-			m_windowRect.m_height = parentHeight - m_windowRect.m_y;
+		if (parentHeight < (short) (clipped.m_y + clipped.m_height)) {
+			clipped.m_height = parentHeight - clipped.m_y;
 		}
-		if (m_windowRect.m_width < 1 || m_windowRect.m_height < 1) {
-			m_windowRect.m_x = 0;
-			m_windowRect.m_width = 0;
-			m_windowRect.m_y = 0;
-			m_windowRect.m_height = 0;
+		if (clipped.m_width < 1 || clipped.m_height < 1) {
+			clipped.m_x = 0;
+			clipped.m_width = 0;
+			clipped.m_y = 0;
+			clipped.m_height = 0;
 		}
-		m_relOriginX = m_windowRect.m_width;
-		m_relOriginY = m_windowRect.m_height;
+		m_clipRect.m_width = m_windowRect.m_width;
+		m_clipRect.m_height = m_windowRect.m_height;
 		if (m_windowRect.m_width != oldWidth || m_windowRect.m_height != oldHeight) {
 			Resize((VsSize&) m_windowRect);
 		}
@@ -883,7 +884,7 @@ void Surface::Move(const VsPoint& p_position)
 			g_pTargetGraphicsDriver->DestroyDIBContext((TargetDibContext*) m_platformBitmap);
 			m_platformBitmap = 0;
 		}
-		m_changeList = 0;
+		m_unk0x524 = 0;
 		CreateLinePtrs();
 		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 		for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {
