@@ -4,7 +4,8 @@
 #include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/VsRect.h"           // complete type
-#include "../../Visos/Graphics/GWnd.h"               // complete type
+#include "../../Visos/Graphics/DrawingMark.h"
+#include "../../Visos/Graphics/GWnd.h" // complete type
 
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8 GWnd
@@ -55,7 +56,7 @@ private:
 	void* m_activeProcess;         // 0xc4
 	void* m_pauseWindow;           // 0xc8
 	eFlowProcesses m_currentFlow;  // 0xcc
-	void* m_processVtable;         // 0xd0
+	DrawingMark m_drawingMark;     // 0xd0
 	class Drawer* m_drawer;        // 0xd4
 	unsigned int m_resolutionMode; // 0xd8
 	short m_lowWidth;              // 0xdc
