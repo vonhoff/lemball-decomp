@@ -5,12 +5,19 @@
 #include "PvButton.h" // complete type
 
 // SIZE 0x10c
+// VTABLE: LEMBALL 0x00497630 GWnd
+// VTABLE: LEMBALL 0x00497608 HotAreaHandler
 class DepressedButton : public PvButton {
 public:
+	DepressedButton(PvGWnd* p_parent) : PvButton(p_parent)
+	{
+		m_state = 0;
+		m_enabled = 0;
+	}
 	DepressedButton(const VsRect& p_rect, PvGWnd* p_parent) : PvButton(p_rect, p_parent)
 	{
-		m_lastDrawnDepressed = 0;
-		m_depressed = 0;
+		m_state = 0;
+		m_enabled = 0;
 	}
 	virtual void OnPaint(const VsRect& p_rect); // vtable+0xa8
 	virtual void InternalDrawButton();          // vtable+0xb8
@@ -21,8 +28,8 @@ public:
 	friend class PanelLemming;
 
 protected:
-	unsigned int m_depressed;          // 0x104
-	unsigned int m_lastDrawnDepressed; // 0x108
+	unsigned int m_enabled; // 0x104
+	unsigned int m_state;   // 0x108
 };
 
 #endif

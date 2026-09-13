@@ -101,5 +101,5 @@ void PanelLemming::UpdateStatus()
 		}
 	}
 
-	m_button->m_depressed = selected;
+	m_button->m_enabled = selected;
 }

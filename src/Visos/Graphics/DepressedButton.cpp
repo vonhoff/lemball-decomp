@@ -9,10 +9,10 @@
 void DepressedButton::OnReleased(int p_flags)
 {
 	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
-		m_depressed = 1;
+		m_enabled = 1;
 		return;
 	}
-	m_depressed = 0;
+	m_enabled = 0;
 }
 
 // 68K 0x1011763e OnPressed__16CDepressedButtonF12BUTTON_FLAGS
@@ -20,10 +20,10 @@ void DepressedButton::OnReleased(int p_flags)
 void DepressedButton::OnPressed(int p_flags)
 {
 	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
-		m_depressed = 1;
+		m_enabled = 1;
 		return;
 	}
-	m_depressed = 0;
+	m_enabled = 0;
 }
 
 // 68K 0x1011769c OnEnterButton__16CDepressedButtonFv
@@ -31,10 +31,10 @@ void DepressedButton::OnPressed(int p_flags)
 void DepressedButton::OnEnterButton()
 {
 	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
-		m_depressed = 1;
+		m_enabled = 1;
 		return;
 	}
-	m_depressed = 0;
+	m_enabled = 0;
 }
 
 // 68K 0x101176f0 OnExitButton__16CDepressedButtonFv
@@ -42,19 +42,19 @@ void DepressedButton::OnEnterButton()
 void DepressedButton::OnExitButton()
 {
 	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
-		m_depressed = 1;
+		m_enabled = 1;
 		return;
 	}
-	m_depressed = 0;
+	m_enabled = 0;
 }
 
 // 68K 0x10210394 _DrawButton__16CDepressedButtonFv
 // FUNCTION: LEMBALL 0x00468300 FOLDED
 void DepressedButton::InternalDrawButton()
 {
-	if (m_depressed != m_lastDrawnDepressed || m_gdi->m_renderTarget->HasBackBuff() != 0) {
+	if (m_enabled != m_state || m_gdi->m_renderTarget->HasBackBuff() != 0) {
 		m_gdi->m_renderTarget->m_flag78 = 1;
-		m_lastDrawnDepressed = m_depressed;
+		m_state = m_enabled;
 	}
 	CheckForceDraw();
 }
@@ -67,7 +67,7 @@ void DepressedButton::OnPaint(const VsRect& p_rect)
 	ChangeList* changeList;
 
 	clipOk = m_gdi->m_renderTarget->HasBackBuff();
-	if ((clipOk != 0 && (m_pressed != 0 || m_depressed != m_lastDrawnDepressed)) ||
+	if ((clipOk != 0 && (m_pressed != 0 || m_enabled != m_state)) ||
 		(m_gdi->m_primitiveCount == 0 &&
 		 (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed))) {
 		if (GetSizeStatus() != 0) {

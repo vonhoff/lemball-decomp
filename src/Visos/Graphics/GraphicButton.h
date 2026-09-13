@@ -2,24 +2,18 @@
 #define LEMBALL_VISOS_GRAPHICS_GRAPHICBUTTON_H
 
 #include "../../Common.h"
-#include "PushActive.h" // complete type
-#include "PvButton.h"   // complete type
+#include "DepressedButton.h" // complete type
+#include "PushActive.h"      // complete type
 
 // SIZE 0x130
 // VTABLE: LEMBALL 0x00499748 GWnd
 // VTABLE: LEMBALL 0x00499728 HotAreaHandler
-class GraphicButton : public PvButton {
+class GraphicButton : public DepressedButton {
 public:
 	GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3);
-	virtual void InternalDrawButton();          // vtable+0xb8
-	virtual void DrawButton();                  // vtable+0xbc
-	virtual void OnDestroy();                   // vtable+0x40
-	virtual void OnPaint(const VsRect& p_rect); // vtable+0xa8
-	virtual void OnReleased(int p_flags);       // vtable+0xc0
-	virtual void OnPressed(int p_flags);        // vtable+0xc4
-	virtual void OnEnterButton();               // vtable+0xc8
-	virtual void OnExitButton();                // vtable+0xcc
-	virtual ~GraphicButton();                   // vtable+0x00
+	virtual void DrawButton(); // vtable+0xbc
+	virtual void OnDestroy();  // vtable+0x40
+	virtual ~GraphicButton();  // vtable+0x00
 	void Initialise();
 	void SetAnimId(unsigned long p_animId);
 
@@ -31,8 +25,6 @@ public:
 	friend class PanelPauseButton;
 
 private:
-	unsigned int m_enabled;         // 0x104
-	unsigned int m_state;           // 0x108
 	unsigned int m_animationId;     // 0x10c
 	unsigned int m_alignmentFlags;  // 0x110
 	unsigned short m_graphicWidth;  // 0x114

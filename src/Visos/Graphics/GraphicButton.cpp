@@ -14,23 +14,20 @@ char g_szButton[] = "Button";
 // 68K 0x10210510 __ct__14CGraphicButtonFRC8CVSPointP7CPVGWndUlUl
 // FUNCTION: LEMBALL 0x00468530
 GraphicButton::GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3)
-	: PvButton(p_arg1)
+	: DepressedButton(p_arg1), m_graphicWidth(m_graphicHeight = 0), m_graphicOffsetX(m_graphicOffsetY = 0)
 {
 	HotAreaHandler* area;
 
-	m_graphicHeight = 0;
-	m_graphicWidth = 0;
-	m_graphicOffsetY = 0;
-	m_graphicOffsetX = 0;
-	m_state = 0;
-	m_enabled = 0;
 	m_alignmentFlags = p_arg3;
 	m_animationId = p_arg2;
 	Initialise();
-	m_buttonX = p_arg0.m_x;
-	m_buttonY = p_arg0.m_y;
-	VsRect createRect(p_arg0.m_x, p_arg0.m_y, HotAreaHandler::m_width, HotAreaHandler::m_height);
-	Create(createRect, p_arg1, g_szButton);
+	short x = p_arg0.m_x;
+	m_buttonX = x;
+	short y = p_arg0.m_y;
+	m_buttonY = y;
+	VsRect createRect(x, y, HotAreaHandler::m_width, HotAreaHandler::m_height);
+	GWnd* window = this;
+	window->Create(createRect, m_ownerWindow, g_szButton);
 	HotAreaHandler::m_x = (short) (HotAreaHandler::m_x + m_relativeTopLeft.m_x);
 	HotAreaHandler::m_y = (short) (HotAreaHandler::m_y + m_relativeTopLeft.m_y);
 	area = this;
@@ -128,21 +125,6 @@ void GraphicButton::OnDestroy()
 	}
 }
 
-// Original Win32 code folds this with DepressedButton::InternalDrawButton at 0x00468300;
-// the address is annotated on the canonical implementation.
-void GraphicButton::InternalDrawButton()
-{
-	if (m_enabled == m_state) {
-		if (m_gdi->m_renderTarget->HasBackBuff() == 0) {
-			CheckForceDraw();
-			return;
-		}
-	}
-	m_gdi->m_renderTarget->m_flag78 = 1;
-	m_state = m_enabled;
-	CheckForceDraw();
-}
-
 // 68K 0x10210a70 DrawButton__14CGraphicButtonFv
 // FUNCTION: LEMBALL 0x004689a0
 void GraphicButton::DrawButton()
@@ -167,74 +149,6 @@ void GraphicButton::DrawButton()
 	primitive->m_flags = 0;
 	primitive->m_remap = (Remap*) m_frame;
 	primitive->Draw(m_gdi);
-}
-
-// Original Win32 code folds this with DepressedButton::OnReleased at 0x0043a620;
-// the address is annotated on the canonical implementation.
-void GraphicButton::OnReleased(int p_flags)
-{
-	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
-		m_enabled = 1;
-		return;
-	}
-	m_enabled = 0;
-}
-
-// Original Win32 code folds this with DepressedButton::OnPressed at 0x0043a660;
-// the address is annotated on the canonical implementation.
-void GraphicButton::OnPressed(int p_flags)
-{
-	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
-		m_enabled = 1;
-		return;
-	}
-	m_enabled = 0;
-}
-
-// Original Win32 code folds this with DepressedButton::OnEnterButton at 0x0043a6a0;
-// the address is annotated on the canonical implementation.
-void GraphicButton::OnEnterButton()
-{
-	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
-		m_enabled = 1;
-	}
-	else {
-		m_enabled = 0;
-	}
-}
-
-// Original Win32 code folds this with DepressedButton::OnExitButton at 0x0043a6e0;
-// the address is annotated on the canonical implementation.
-void GraphicButton::OnExitButton()
-{
-	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
-		m_enabled = 1;
-	}
-	else {
-		m_enabled = 0;
-	}
-}
-
-// Original Win32 code folds this with DepressedButton::OnPaint at 0x00468360;
-// the address is annotated on the canonical implementation.
-void GraphicButton::OnPaint(const VsRect& p_rect)
-{
-	int clipOk;
-	ChangeList* changeList;
-
-	clipOk = m_gdi->m_renderTarget->HasBackBuff();
-	if ((clipOk != 0 && (m_pressed != 0 || m_enabled != m_state)) ||
-		(m_gdi->m_primitiveCount == 0 &&
-		 (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed))) {
-		if (GetSizeStatus() != 0) {
-			InternalDrawButton();
-			DrawButton();
-		}
-		changeList = m_gdi->m_renderTarget->GetChangeList();
-		m_gdi->AddToList(PvButton::m_primitive);
-		changeList->Reset();
-		m_drawCompleted = 1;
-	}
 }
 
 // 68K 0x10210966 __dt__14CGraphicButtonFv

@@ -102,7 +102,7 @@ void PanelButton::DrawButton()
 		}
 	}
 	unsigned int frame;
-	if (m_depressed != 0 && m_unavailable == 0) {
+	if (m_enabled != 0 && m_unavailable == 0) {
 		frame = 0;
 	}
 	else {
@@ -154,7 +154,7 @@ void PanelButton::DrawButton()
 	inventorySize.m_height = 4;
 	VsPoint inventoryPosition(7, 4);
 	ammoSize.m_width = (short) (ammo * ammoSize.m_width / 50);
-	if (m_depressed != 0 && m_unavailable == 0) {
+	if (m_enabled != 0 && m_unavailable == 0) {
 		color = 0x76;
 	}
 	else {
