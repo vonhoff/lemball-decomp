@@ -524,21 +524,23 @@ void PlayerLemming::Resurrect(const AiCoord& p_position)
 	m_flightVelocity.m_zFixed = 0;
 	m_desiredFacingDirection = 0;
 	m_unk0x58 = 0;
-	m_activator = 0;
 	m_unk0x11c = 0;
 	m_ammoCount = PLAYER_START_AMMO;
 	SetBored(4000);
 	int tileX = m_position.m_xFixed >> 12;
 	int tileY = m_position.m_yFixed >> 12;
 	int tileZ = m_position.m_zFixed >> 12;
-	m_collisionMinX = tileX - 8;
-	m_collisionMinY = tileY - 8;
-	m_collisionMinZ = tileZ;
-	m_collisionMaxX = tileX + 7;
-	m_collisionMaxY = tileY + 7;
-	m_collisionMaxZ = tileZ + 15;
-	g_pAI->m_objects[g_pAI->m_objectCount] = this;
-	g_pAI->m_objectCount++;
+	int collision[6];
+	collision[0] = tileX - 8;
+	collision[1] = tileY - 8;
+	collision[2] = tileZ;
+	collision[3] = tileX + 7;
+	collision[4] = tileY + 7;
+	collision[5] = tileZ + 15;
+	memcpy(&m_collisionMinX, collision, sizeof(collision));
+	int& objectCount = g_pAI->m_objectCount;
+	g_pAI->m_objects[objectCount] = this;
+	objectCount++;
 	m_destinationList->m_count = 0;
 }
 
