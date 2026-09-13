@@ -130,13 +130,11 @@ void MineManager::Add(unsigned short p_id, AiCoord p_position)
 // FUNCTION: LEMBALL 0x004247b0
 void MineManager::Process()
 {
-	if (0 < m_count) {
-		for (int i = 0; i < m_count; i++) {
-			m_mines[i].OnGround();
-			m_mines[i].m_requestEnabled = 1;
-			if (m_mines[i].m_enabled != 0) {
-				m_mines[i].Process();
-			}
+	for (int i = 0; i < m_count; i++) {
+		m_mines[i].OnGround();
+		m_mines[i].m_requestEnabled = 1;
+		if (m_mines[i].m_enabled != 0) {
+			m_mines[i].Process();
 		}
 	}
 }
