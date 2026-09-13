@@ -134,7 +134,7 @@ public:
 	void SetClipSize();
 	void SetMouseShape();
 	void SetOrigin();
-	void SetPause(unsigned char p_paused);
+	void SetPause(unsigned int p_paused);
 	void SetUpRemapPalettes();
 	void SortViewData();
 	void TriggerPause(unsigned char p_paused);

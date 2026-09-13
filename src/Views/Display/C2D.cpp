@@ -971,9 +971,9 @@ void C2D::TriggerPause(unsigned char p_paused)
 
 // 68K 0x10b0914c SetPause__3C2DFUc
 // FUNCTION: LEMBALL 0x00437de0
-void C2D::SetPause(unsigned char p_paused)
+void C2D::SetPause(unsigned int p_paused)
 {
-	m_pauser = m_ai->m_isSinglePlayer >= 1;
+	m_pauser = m_ai->m_isSinglePlayer == 0;
 	if (p_paused != 0) {
 		if (m_ai->m_gameStatus < 1 || m_ai->m_gameStatus > 2) {
 			return;

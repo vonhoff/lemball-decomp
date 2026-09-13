@@ -142,7 +142,7 @@ void Panel::Process()
 
 // 68K 0x10b0ddd8 SetPause__6CPanelFUc
 // FUNCTION: LEMBALL 0x00443270
-void Panel::SetPause(unsigned char p_paused)
+void Panel::SetPause(unsigned int p_paused)
 {
 	m_game->SetPause(p_paused);
 	PanelPauseButton* pauseButton = m_pauseButton;
