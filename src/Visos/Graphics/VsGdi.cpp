@@ -1602,10 +1602,10 @@ int Surface::ClipCircle(int p_centerX, int p_centerY, int p_radius)
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return 1;
 	}
-	int clipRight = (int) m_clipRect.m_x + (int) m_clipRect.m_width - 1;
-	int clipBottom = (int) m_clipRect.m_y + (int) m_clipRect.m_height - 1;
-	if (right >= m_clipRect.m_x && left <= clipRight && bottom >= m_clipRect.m_y && top <= clipBottom) {
-		if (left >= m_clipRect.m_x && right <= clipRight && top >= m_clipRect.m_y && bottom <= clipBottom) {
+	if (right >= m_clipRect.m_x && left <= ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1) &&
+		bottom >= m_clipRect.m_y && top <= ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1)) {
+		if (left >= m_clipRect.m_x && right <= ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1) &&
+			top >= m_clipRect.m_y && bottom <= ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1)) {
 			return 2;
 		}
 		return 3;
