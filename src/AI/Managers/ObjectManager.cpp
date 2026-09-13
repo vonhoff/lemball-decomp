@@ -220,16 +220,15 @@ void ObjectManager::Process()
 // FUNCTION: LEMBALL 0x0041b830
 int ObjectManager::GetViewData(ViewData* p_viewData)
 {
-	int count = 0;
 	int i = 0;
+	int count = i;
 	while (i < m_count) {
 		GlobalGameObject* object = m_objects[i];
 		if (object->m_heading != 0 || object->GetSndEffect() != 0) {
 			object = m_objects[i];
 			if (object->m_objectType != 5 || object->m_action != 0x1b) {
-				object->GetViewData(*p_viewData);
 				count++;
-				p_viewData++;
+				object->GetViewData(*p_viewData++);
 			}
 		}
 		i++;
