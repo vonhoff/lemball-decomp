@@ -141,4 +141,13 @@ private:
 	void* m_currDb;                      // 0x554
 };
 
+// GLOBAL: LEMBALL 0x00499dd8
+// Surface::`vbtable'{for `PvBackBuffSurface'}
+
+// GLOBAL: LEMBALL 0x00499de0
+// Surface::`vbtable'{for `PvZBuffSurface'}
+
+// GLOBAL: LEMBALL 0x00499de8
+// Surface::`vbtable'{for `PvScrollableSurface'}
+
 #endif
