@@ -40,4 +40,25 @@ public:
 // SYNTHETIC: LEMBALL 0x0047bf00 SYMBOL
 // ??_EFileRwSocket@@$4PPPPPPPM@KI@AEPAXI@Z
 
+// GLOBAL: LEMBALL 0x0049a718
+// FileRwSocket::`vbtable'{for `FileWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a730
+// FileRwSocket::`vbtable'{for `FileReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a748
+// FileRwSocket::`vbtable'{for `FileCommonSocket'}
+
+// GLOBAL: LEMBALL 0x0049a758
+// FileRwSocket::`vbtable'{for `RwSocket'}
+
+// GLOBAL: LEMBALL 0x0049a768
+// FileRwSocket::`vbtable'{for `ReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a770
+// FileRwSocket::`vbtable'{for `WriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a778
+// FileRwSocket::`vbtable'
+
 #endif

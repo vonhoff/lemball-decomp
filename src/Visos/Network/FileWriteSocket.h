@@ -37,4 +37,13 @@ private:
 // SYNTHETIC: LEMBALL 0x0047bd10 SYMBOL
 // ?SocketError@FileCommonSocket@@WPPPPPPCI@AEXXZ
 
+// GLOBAL: LEMBALL 0x0049a668
+// FileWriteSocket::`vbtable'{for `FileCommonSocket'}
+
+// GLOBAL: LEMBALL 0x0049a678
+// FileWriteSocket::`vbtable'{for `WriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a680
+// FileWriteSocket::`vbtable'{for `FileWriteSocket'}
+
 #endif
