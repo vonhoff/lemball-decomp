@@ -382,62 +382,55 @@ int Main2DDisplay::ProcessMsg(Message* p_message)
 	char* cdDir;
 	char helpPath[256];
 
-	if (p_message->type == 4) {
-		if (p_message->code != 0x25) {
-			return 0;
-		}
-		ToggleResolution();
-		return 1;
-	}
-	if (p_message->type != 0xf) {
-		return 0;
-	}
-	switch (p_message->code) {
-	case 1:
-		m_pauseWindow = (void*) 1;
-		return 0;
-	case 2:
-		helpPath[0] = 0;
-		cdDir = g_pTargetPlatformServices->GetCdDir(g_szLemballHelpFile);
-		if (cdDir != 0) {
-			strcpy(helpPath, cdDir);
-			strcat(helpPath, g_szLemballHelpFile);
-			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x101, (unsigned long) g_szHelpContentsKey);
-			if (helpOk != 0) {
-				return 0;
-			}
-		}
-		*g_pErrorOutput << g_szCouldntHelpYa;
-		return 0;
-	case 3:
-		helpPath[0] = 0;
-		cdDir = g_pTargetPlatformServices->GetCdDir(g_szLemballHelpFile);
-		if (cdDir != 0) {
-			strcpy(helpPath, cdDir);
-			strcat(helpPath, g_szLemballHelpFile);
-			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x105, (unsigned long) "");
-			if (helpOk != 0) {
-				return 0;
-			}
-		}
-		*g_pErrorOutput << g_szCouldntHelpYa;
-		return 0;
+	switch ((int) p_message->type) {
 	case 4:
-		DialogBoxParamA(g_pApplicationInstance, g_szAboutBox, (HWND) m_nativeWindow, (DLGPROC) AboutDialogProc, 0);
-		return 0;
-	case 5:
-		ToggleResolution();
-		return 0;
-	case 6:
-		helpOk = WinHelpA((HWND) m_nativeWindow, 0, 4, 0);
-		if (helpOk != 0) {
-			return 0;
+		if (p_message->code != 0x25) {
+			break;
 		}
-		*g_pErrorOutput << g_szCouldntHelpYa;
-		return 0;
-	default:
+		ToggleResolution();
 		return 1;
+	case 0xf:
+		switch (p_message->code) {
+		default:
+			return 1;
+		case 1:
+			m_pauseWindow = (void*) 1;
+			break;
+		case 2:
+			helpPath[0] = 0;
+			cdDir = g_pTargetPlatformServices->GetCdDir(g_szLemballHelpFile);
+			strcpy(helpPath, cdDir);
+			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
+			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x101, (unsigned long) g_szHelpContentsKey);
+			if (helpOk == 0) {
+				*g_pErrorOutput << g_szCouldntHelpYa;
+			}
+			break;
+		case 3:
+			helpPath[0] = 0;
+			cdDir = g_pTargetPlatformServices->GetCdDir("lemball\\lemball.hlp");
+			strcpy(helpPath, cdDir);
+			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
+			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x105, (unsigned long) "");
+			if (helpOk == 0) {
+				*g_pErrorOutput << "Couldn't help ya!\n";
+			}
+			break;
+		case 4:
+			DialogBoxParamA(g_pApplicationInstance, g_szAboutBox, (HWND) m_nativeWindow, (DLGPROC) AboutDialogProc, 0);
+			break;
+		case 5:
+			ToggleResolution();
+			break;
+		case 6:
+			helpOk = WinHelpA((HWND) m_nativeWindow, 0, 4, 0);
+			if (helpOk == 0) {
+				*g_pErrorOutput << "Couldn't help ya!\n";
+			}
+			break;
+		}
 	}
+	return 0;
 }
 
 // 68K 0x10b00e32 GetMenu__14CMain2DDisplayFRiPPP11tagMenuList
