@@ -264,9 +264,11 @@ void Enemy::EnemyActionTurnAndFireRandom(EnemyLemmingUnion* p_data)
 bool Enemy::CheckRadius(int p_radius)
 {
 	VsRect rect;
-	rect.m_x = (m_position.m_xFixed >> 12) - p_radius;
-	rect.m_y = (m_position.m_yFixed >> 12) - p_radius;
-	rect.m_width = rect.m_height = p_radius * 2;
+	VsPoint* position = &rect;
+	position->m_x = (m_position.m_xFixed >> 12) - p_radius;
+	position->m_y = (m_position.m_yFixed >> 12) - p_radius;
+	VsSize* size = &rect;
+	size->m_width = size->m_height = p_radius * 2;
 
 	if (g_pAI->PlayerCheckGroupIntersection(&rect, &m_targetPosition) == 1) {
 		return 1;
