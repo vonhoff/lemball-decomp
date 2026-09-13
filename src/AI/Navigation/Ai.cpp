@@ -721,9 +721,9 @@ void Ai::StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short 
 
 	unsigned short groundZ;
 	{
+		Map* map = m_map;
 		int groundX = x >> 4;
 		int groundY = y >> 4;
-		Map* map = m_map;
 		if (x < 0 || y < 0 || groundX >= map->m_ground.m_width || groundY >= map->m_ground.m_height) {
 			groundZ = 0;
 		}
