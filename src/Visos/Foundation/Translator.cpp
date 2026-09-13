@@ -6,11 +6,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-// 68K 0x10100890 __dt__11CTranslatorFv
-Translator::~Translator()
-{
-}
-
 // 68K 0x10100692 ProcessMsg__11CTranslatorFP10tagMESSAGE
 // FUNCTION: LEMBALL 0x00472a60
 int Translator::ProcessMsg(Message* p_message)
