@@ -50,6 +50,7 @@ public:
 								   unsigned long p_arg4) = 0; // vtable+0x24
 	void DeleteLists();
 	void* operator new(size_t p_arg0, void* p_arg1);
+	void operator delete(void*) {}
 	Arena();
 
 	friend class MogRes;
