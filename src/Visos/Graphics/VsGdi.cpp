@@ -160,96 +160,134 @@ void TargetBuildSurfaceColourTable(unsigned int* p_entries,
 								   unsigned int* p_fallbackEntries)
 {
 	unsigned char paletteStorage[0x404];
-	PALETTEENTRY* systemEntries;
-	unsigned char* data;
-	HDC hdc;
-	int i;
-	int colorCount;
-	unsigned int color;
+	PALETTEENTRY* systemEntries = (PALETTEENTRY*) (paletteStorage + 4);
+	PALETTEENTRY* entry;
+	unsigned char* output;
+	const unsigned char* source;
+	HDC hdc = GetDC(0);
+	unsigned int first = GetSystemPaletteEntries(hdc, 0, 10, systemEntries);
+	unsigned int last = GetSystemPaletteEntries(hdc, 0xf6, 10, systemEntries + 0xf6);
+	if ((last | first) == 0) {
+		source = &g_anFallbackSystemColors[0][0];
+		entry = systemEntries;
+		do {
+			entry->peRed = *source++;
+			entry->peGreen = *source++;
+			entry->peBlue = *source++;
+			entry++;
 
-	systemEntries = (PALETTEENTRY*) (paletteStorage + 4);
-	((LOGPALETTE*) paletteStorage)->palVersion = 0x300;
-	((LOGPALETTE*) paletteStorage)->palNumEntries = 0x100;
-	hdc = GetDC(0);
-	if ((GetSystemPaletteEntries(hdc, 0, 10, systemEntries) |
-		 GetSystemPaletteEntries(hdc, 0xf6, 10, systemEntries + 0xf6)) == 0) {
-		i = 0;
-		while (i < 10) {
-			systemEntries[i].peRed = g_anFallbackSystemColors[i][0];
-			systemEntries[i].peGreen = g_anFallbackSystemColors[i][1];
-			systemEntries[i].peBlue = g_anFallbackSystemColors[i][2];
-			systemEntries[0xf6 + i].peRed = g_anFallbackSystemColors[10 + i][0];
-			systemEntries[0xf6 + i].peGreen = g_anFallbackSystemColors[10 + i][1];
-			systemEntries[0xf6 + i].peBlue = g_anFallbackSystemColors[10 + i][2];
-			i = i + 1;
-		}
+		} while (entry < systemEntries + 10);
+		entry = systemEntries + 0xf6;
+		do {
+			entry->peRed = *source++;
+			entry->peGreen = *source++;
+			entry->peBlue = *source++;
+			entry++;
+
+		} while (entry < systemEntries + 0x100);
 	}
 	if (hdc != 0) {
 		ReleaseDC(0, hdc);
 	}
+	((LOGPALETTE*) paletteStorage)->palVersion = 0x300;
+	((LOGPALETTE*) paletteStorage)->palNumEntries = 0x100;
+	output = &((RGBQUAD*) p_entries)[0].rgbRed;
+	entry = systemEntries;
+	do {
+		output[0] = entry->peRed;
+		output[-1] = entry->peGreen;
+		entry->peFlags = 0;
+		output[-2] = entry->peBlue;
+		unsigned char red = entry[0xf6].peRed;
+		output[1] = 0;
+		output[0x3d8] = red;
+		output[0x3d7] = entry[0xf6].peGreen;
+		entry[0xf6].peFlags = 0;
+		output[0x3d6] = entry[0xf6].peBlue;
+		output[0x3d9] = 0;
+		output += 4;
+		entry++;
+	} while (entry < systemEntries + 10);
+	int count = 2;
+	output = &((RGBQUAD*) p_entries)[10].rgbRed;
+	source = &g_anReservedOutputColors[0][0];
+	do {
+		output[0] = *source++;
+		count--;
+		output[-1] = *source++;
+		output[-2] = *source++;
+		output[1] = 0;
+		output += 4;
 
-	i = 0;
-	while (i < 10) {
-		p_entries[i] = ((unsigned int) systemEntries[i].peRed << 16) | ((unsigned int) systemEntries[i].peGreen << 8) |
-					   systemEntries[i].peBlue;
-		p_entries[0xf6 + i] = ((unsigned int) systemEntries[0xf6 + i].peRed << 16) |
-							  ((unsigned int) systemEntries[0xf6 + i].peGreen << 8) | systemEntries[0xf6 + i].peBlue;
-		systemEntries[i].peFlags = 0;
-		systemEntries[0xf6 + i].peFlags = 0;
-		i = i + 1;
-	}
-	p_entries[10] = ((unsigned int) g_anReservedOutputColors[0][0] << 16) |
-					((unsigned int) g_anReservedOutputColors[0][1] << 8) | g_anReservedOutputColors[0][2];
-	p_entries[11] = ((unsigned int) g_anReservedOutputColors[1][0] << 16) |
-					((unsigned int) g_anReservedOutputColors[1][1] << 8) | g_anReservedOutputColors[1][2];
-
+	} while (count != 0);
 	if (p_palette == 0) {
 		if (p_fallbackEntries == 0) {
-			i = 12;
-			while (i < 0xf6) {
-				color = (unsigned char) (0u - (unsigned int) i);
-				p_entries[i] = (color << 16) | (color << 8) | color;
-				systemEntries[i].peRed = (unsigned char) color;
-				systemEntries[i].peGreen = (unsigned char) color;
-				systemEntries[i].peBlue = (unsigned char) color;
-				systemEntries[i].peFlags = 1;
-				i = i + 1;
-			}
+			output = &((RGBQUAD*) p_entries)[12].rgbRed;
+			entry = systemEntries + 12;
+			int index = 12;
+			do {
+				unsigned char color = -index;
+				entry->peRed = color;
+				output[0] = color;
+				entry->peGreen = color;
+				output[-1] = color;
+				entry->peBlue = color;
+				output[-2] = color;
+				output[1] = 0;
+				entry->peFlags = 1;
+				output += 4;
+				entry++;
+				index++;
+			} while (entry < systemEntries + 0xf6);
 		}
 		else {
-			i = 12;
-			while (i < 0xf6) {
-				p_entries[i] = p_fallbackEntries[i] & 0xffffff;
-				systemEntries[i].peRed = (unsigned char) (p_entries[i] >> 16);
-				systemEntries[i].peGreen = (unsigned char) (p_entries[i] >> 8);
-				systemEntries[i].peBlue = (unsigned char) p_entries[i];
-				systemEntries[i].peFlags = 1;
-				i = i + 1;
-			}
+			unsigned char* fallback = &((RGBQUAD*) p_fallbackEntries)[12].rgbRed;
+			output = &((RGBQUAD*) p_entries)[12].rgbRed;
+			entry = systemEntries + 12;
+			do {
+				unsigned char color = fallback[0];
+				output[0] = color;
+				entry->peRed = color;
+				color = fallback[-1];
+				entry->peGreen = color;
+				output[-1] = color;
+				color = fallback[-2];
+				entry->peBlue = color;
+				output[-2] = color;
+				entry->peFlags = 1;
+				output[1] = 0;
+				fallback += 4;
+				output += 4;
+				entry++;
+			} while (entry < systemEntries + 0xf6);
 		}
 	}
 	else {
-		colorCount = (int) p_palette->m_paletteState - 10;
-		if (colorCount > 0xf6) {
-			colorCount = 0xec;
+		count = (int) p_palette->m_paletteState - 10;
+		if (count > 0xf6) {
+			count = 0xec;
 		}
-		if (colorCount > 12) {
-			colorCount = colorCount - 12;
-			data = p_palette->GetData();
-			if (data != 0) {
-				data = data + 12 * 4;
-				i = 12;
-				while (colorCount != 0) {
-					p_entries[i] = ((unsigned int) data[0] << 16) | ((unsigned int) data[1] << 8) | data[2];
-					systemEntries[i].peRed = data[0];
-					systemEntries[i].peGreen = data[1];
-					systemEntries[i].peBlue = data[2];
-					systemEntries[i].peFlags = 1;
-					data = data + 4;
-					i = i + 1;
-					colorCount = colorCount - 1;
-				}
-			}
+		if (count > 12) {
+			count -= 12;
+			output = &((RGBQUAD*) p_entries)[12].rgbRed;
+			int i = 12;
+			do {
+				source = p_palette->m_data + i * 4;
+				unsigned char color = source[0];
+				systemEntries[i].peRed = color;
+				output[0] = color;
+				color = source[1];
+				systemEntries[i].peGreen = color;
+				output[-1] = color;
+				color = source[2];
+				systemEntries[i].peBlue = color;
+				output[-2] = color;
+				output[1] = 0;
+				systemEntries[i].peFlags = 1;
+				output += 4;
+				i++;
+				count--;
+			} while (count != 0);
 		}
 	}
 	g_pTargetGraphicsDriver->CreatePalette((LOGPALETTE*) paletteStorage);
