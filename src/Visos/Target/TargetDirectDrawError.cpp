@@ -19,3 +19,8 @@ char* FormatUnknownDirectDrawError(long p_result)
 	VsLtoa(p_result, g_directDrawErrorText + strlen(g_directDrawErrorPrefix), 10);
 	return g_directDrawErrorText;
 }
+
+// FUNCTION: LEMBALL 0x00456780
+void TargetDirectDrawCreateFailureHook(int p_context, long p_result)
+{
+}

@@ -5,11 +5,15 @@
 #include "TargetGraphicsDriver.h" // complete type
 
 struct IDirectDrawPalette;
+struct IDirectDraw;
+struct IDirectDrawSurface;
 
 // SIZE 0x4a8
 // VTABLE: LEMBALL 0x004987e8
 class TargetDirectDrawDriver : public TargetGraphicsDriver {
 public:
+	TargetDirectDrawDriver(VsSize* p_size, int p_fullScreen);
+	virtual ~TargetDirectDrawDriver();
 	virtual TargetDrawingContext* CreateDrawingContext();
 	virtual int DestroyDrawingContext(TargetDrawingContext* p_drawingContext);
 	virtual bool InitializeBitmapInfo(void* p_bitmapInfo);
@@ -22,10 +26,19 @@ public:
 	virtual TargetDibContext* SelectDIBContext(TargetDrawingContext* p_drawingContext, TargetDibContext* p_dibContext);
 	virtual TargetDibContext* RestoreDIBContext(TargetDrawingContext* p_drawingContext, TargetDibContext* p_dibContext);
 	virtual bool CreatePalette(void* p_paletteDescription);
+	virtual bool HasPalette();
+	virtual int BitBltContexts(TargetDrawingContext* p_destination,
+							   VsRect* p_destinationRect,
+							   TargetDrawingContext* p_source,
+							   VsPoint* p_sourcePosition);
+	virtual int StretchBltContexts(TargetDrawingContext* p_destination,
+								   VsRect* p_destinationRect,
+								   TargetDrawingContext* p_source,
+								   VsRect* p_sourceRect);
 
 private:
-	void* m_directDraw;                     // 0x1c
-	void* m_primarySurface;                 // 0x20
+	IDirectDraw* m_directDraw;              // 0x1c
+	IDirectDrawSurface* m_primarySurface;   // 0x20
 	void* m_surface24;                      // 0x24
 	void* m_surface28;                      // 0x28
 	void* m_surface2c;                      // 0x2c
@@ -34,5 +47,8 @@ private:
 	void* m_contextSurfaces[257];           // 0xa0
 	int m_nextContextIndex;                 // 0x4a4
 };
+
+// SYNTHETIC: LEMBALL 0x00458360
+// TargetDirectDrawDriver::`scalar deleting destructor'
 
 #endif

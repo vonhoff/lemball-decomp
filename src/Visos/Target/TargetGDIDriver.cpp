@@ -181,39 +181,39 @@ unsigned int TargetGDIDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawi
 }
 
 // FUNCTION: LEMBALL 0x00456c70
-void TargetGDIDriver::BitBltContexts(TargetDrawingContext* p_destination,
-									 VsRect* p_destinationRect,
-									 TargetDrawingContext* p_source,
-									 VsPoint* p_sourcePosition)
+int TargetGDIDriver::BitBltContexts(TargetDrawingContext* p_destination,
+									VsRect* p_destinationRect,
+									TargetDrawingContext* p_source,
+									VsPoint* p_sourcePosition)
 {
-	BitBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
-		   (int) p_destinationRect->m_x,
-		   (int) p_destinationRect->m_y,
-		   (int) p_destinationRect->m_width,
-		   (int) p_destinationRect->m_height,
-		   (HDC) ((TargetGdiDrawingContext*) p_source)->m_hDC,
-		   (int) p_sourcePosition->m_x,
-		   (int) p_sourcePosition->m_y,
-		   0xcc0020);
+	return BitBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
+				  (int) p_destinationRect->m_x,
+				  (int) p_destinationRect->m_y,
+				  (int) p_destinationRect->m_width,
+				  (int) p_destinationRect->m_height,
+				  (HDC) ((TargetGdiDrawingContext*) p_source)->m_hDC,
+				  (int) p_sourcePosition->m_x,
+				  (int) p_sourcePosition->m_y,
+				  0xcc0020);
 }
 
 // FUNCTION: LEMBALL 0x00456cc0
-void TargetGDIDriver::StretchBltContexts(TargetDrawingContext* p_destination,
-										 VsRect* p_destinationRect,
-										 TargetDrawingContext* p_source,
-										 VsRect* p_sourceRect)
+int TargetGDIDriver::StretchBltContexts(TargetDrawingContext* p_destination,
+										VsRect* p_destinationRect,
+										TargetDrawingContext* p_source,
+										VsRect* p_sourceRect)
 {
-	StretchBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
-			   (int) p_destinationRect->m_x,
-			   (int) p_destinationRect->m_y,
-			   (int) p_destinationRect->m_width,
-			   (int) p_destinationRect->m_height,
-			   (HDC) ((TargetGdiDrawingContext*) p_source)->m_hDC,
-			   (int) p_sourceRect->m_x,
-			   (int) p_sourceRect->m_y,
-			   (int) p_sourceRect->m_width,
-			   (int) p_sourceRect->m_height,
-			   0xcc0020);
+	return StretchBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
+					  (int) p_destinationRect->m_x,
+					  (int) p_destinationRect->m_y,
+					  (int) p_destinationRect->m_width,
+					  (int) p_destinationRect->m_height,
+					  (HDC) ((TargetGdiDrawingContext*) p_source)->m_hDC,
+					  (int) p_sourceRect->m_x,
+					  (int) p_sourceRect->m_y,
+					  (int) p_sourceRect->m_width,
+					  (int) p_sourceRect->m_height,
+					  0xcc0020);
 }
 
 // FUNCTION: LEMBALL 0x00456d10

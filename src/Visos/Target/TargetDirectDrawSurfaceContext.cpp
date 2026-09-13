@@ -6,7 +6,7 @@
 // FUNCTION: LEMBALL 0x00457310
 DDSURFACEDESC* TargetDirectDrawSurfaceContext::RefreshDescription()
 {
-	long result = m_surface->lpVtbl->GetSurfaceDesc(m_surface, &m_surfaceDescription);
+	long result = m_surface->GetSurfaceDesc(&m_surfaceDescription);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Surface Get Description failed: "
 						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
@@ -39,7 +39,7 @@ int TargetDirectDrawSurfaceContext::GetStride()
 bool TargetDirectDrawSurfaceContext::Lock()
 {
 	long result;
-	while ((result = m_surface->lpVtbl->Lock(m_surface, 0, &m_surfaceDescription, 0, 0)) != 0) {
+	while ((result = m_surface->Lock(0, &m_surfaceDescription, 0, 0)) != 0) {
 		if (result == (long) 0x887601c2) {
 			return 0;
 		}
@@ -53,7 +53,7 @@ bool TargetDirectDrawSurfaceContext::Lock()
 bool TargetDirectDrawSurfaceContext::Unlock()
 {
 	long result;
-	while ((result = m_surface->lpVtbl->Unlock(m_surface, m_bits)) != 0) {
+	while ((result = m_surface->Unlock(m_bits)) != 0) {
 		if (result == (long) 0x887601c2) {
 			return 0;
 		}

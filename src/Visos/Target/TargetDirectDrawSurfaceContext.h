@@ -19,6 +19,7 @@ public:
 	virtual unsigned char* GetBits();
 	virtual int GetStride();
 	DDSURFACEDESC* RefreshDescription();
+	friend class TargetDirectDrawDriver;
 
 private:
 	IDirectDrawSurface* m_surface;      // 0x0c
