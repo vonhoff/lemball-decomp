@@ -51,24 +51,16 @@ HiliteController::HiliteController(GWnd* p_arg0, Gdi* p_arg1, int p_arg2, unsign
 // FUNCTION: LEMBALL 0x0044f590
 void HiliteController::SetHiliteWindow()
 {
-	void* storage;
-	VsRect rect;
-
-	storage = operator new(0x90);
+	void* storage = operator new(0x90);
 	if (storage == 0) {
 		m_hiliteWindow = 0;
 	}
 	else {
 		m_hiliteWindow = new (storage) HiliteWindow();
 	}
-	if (m_hiliteWindow != 0 && m_window != 0) {
-		rect.m_width = m_window->m_rect.m_width;
-		rect.m_height = m_window->m_rect.m_height;
-		rect.m_x = 0;
-		rect.m_y = 0;
-		m_hiliteWindow->Create(rect, (PvGWnd*) m_window, 0);
-		m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
-	}
+	VsRect rect(0, 0, m_window->m_rect.m_width, m_window->m_rect.m_height);
+	m_hiliteWindow->Create(rect, (PvGWnd*) m_window, 0);
+	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
 }
 
 // 68K 0x10805292 __dt__17CHiliteControllerFv
