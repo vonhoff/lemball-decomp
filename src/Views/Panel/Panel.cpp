@@ -3,6 +3,7 @@
 #include "../../AI/Navigation/Ai.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Graphics/PvGWnd.h"
+#include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResAnim.h"
 #include "../Display/C2D.h"
 #include "../Sound/SoundView.h"
@@ -30,40 +31,33 @@ VsPoint* Panel::GetPausePos(VsPoint* p_result)
 // FUNCTION: LEMBALL 0x00442f80
 Panel::Panel(C2D* p_arg0) : BaseQueueHandler()
 {
-	m_buttonSize.m_x = 0;
-	m_buttonSize.m_y = 0;
-	m_balloonSize.m_x = 0;
-	m_balloonSize.m_y = 0;
-	m_pauseSize.m_x = 0;
-	m_pauseSize.m_y = 0;
-	m_panelSize.m_x = 0;
-	m_panelSize.m_y = 0;
-	m_panelPosition.m_x = 0;
-	m_panelPosition.m_y = 0;
 	m_game = p_arg0;
 	m_window = (PvGWnd*) p_arg0->m_display;
 	m_ai = p_arg0->m_ai;
-	m_resources[0] = ResAnim::Load(0x2d);
-	m_resources[1] = ResAnim::Load(0x2a);
-	m_resources[2] = ResAnim::Load(0x2c);
-	m_resources[3] = ResAnim::Load(0x2b);
+	m_resources[0] = ResAnim::Load(RES_GAME_BUTPAWS);
+	m_resources[1] = ResAnim::Load(RES_GAME_BUTAMMO);
+	m_resources[2] = ResAnim::Load(RES_GAME_BUTLEMMING);
+	m_resources[3] = ResAnim::Load(RES_GAME_BUTBALLOON);
 
-	m_buttonSize.m_x = m_resources[1]->m_animationEntries[0].m_width;
-	m_buttonSize.m_y = m_resources[1]->m_animationEntries[0].m_height;
-	m_balloonSize.m_x = m_resources[2]->m_animationEntries[0].m_width;
-	m_balloonSize.m_y = m_resources[2]->m_animationEntries[0].m_height;
-	m_pauseSize.m_x = m_resources[0]->m_animationEntries[0].m_width;
-	m_pauseSize.m_y = m_resources[0]->m_animationEntries[0].m_height;
+	ResZrle* entry = m_resources[1]->m_animationEntries;
+	m_buttonSize.m_x = entry->m_width;
+	m_buttonSize.m_y = entry->m_height;
+	entry = m_resources[2]->m_animationEntries;
+	m_balloonSize.m_x = entry->m_width;
+	m_balloonSize.m_y = entry->m_height;
+	entry = m_resources[0]->m_animationEntries;
+	m_pauseSize.m_x = entry->m_width;
+	m_pauseSize.m_y = entry->m_height;
 	m_panelSize.m_x = m_pauseSize.m_x;
 	m_panelSize.m_y = m_pauseSize.m_y;
 	m_panelSize.m_x = (short) (m_panelSize.m_x + (m_balloonSize.m_x + m_buttonSize.m_x) * 4);
-	VsPoint position;
-	GetPausePos(&position);
+	VsPoint calculatedPosition;
+	VsPoint position(*GetPausePos(&calculatedPosition));
 	m_panelPosition.m_x = position.m_x;
 	m_panelPosition.m_y = position.m_y;
 	void* storage = operator new(0x13c);
 	if (storage != 0) {
-		m_pauseButton = new (storage) PanelPauseButton(this, position, m_window, 0x2d, 3);
+		m_pauseButton = new (storage) PanelPauseButton(this, position, m_window, RES_GAME_BUTPAWS, 3);
 	}
 	else {
 		m_pauseButton = 0;
@@ -73,11 +67,11 @@ Panel::Panel(C2D* p_arg0) : BaseQueueHandler()
 	PanelLemming** lemming = m_lemmings;
 	for (int i = 0; i < 4; i++) {
 		storage = operator new(0x2c);
-		if (storage != 0) {
-			*lemming = new (storage) PanelLemming(m_ai->m_networkLemmings[i], position, this);
+		if (storage == 0) {
+			*lemming = 0;
 		}
 		else {
-			*lemming = 0;
+			*lemming = new (storage) PanelLemming(m_ai->m_networkLemmings[i], position, this);
 		}
 		lemming++;
 	}
