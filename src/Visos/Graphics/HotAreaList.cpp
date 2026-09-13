@@ -113,16 +113,20 @@ void HotAreaList::DeleteEntry(HotAreaElement* p_entry)
 // FUNCTION: LEMBALL 0x0046a710
 int HotAreaList::ProcessMsg(Message* p_message)
 {
-	VsPoint point;
-
-	if (p_message->type > 4 && p_message->type < 0xb && p_message->source == 0) {
-		point.m_x = (short) p_message->code;
-		point.m_y = (short) (p_message->code >> 16);
-		if (g_pHotAreaCursor != 0) {
-			g_pHotAreaCursor->m_x = point.m_x;
-			g_pHotAreaCursor->m_y = point.m_y;
+	switch ((int) p_message->type) {
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+		if (p_message->source == 0) {
+			VsPoint point((short) p_message->code, (short) ((unsigned int) p_message->code >> 16));
+			VsPoint* cursor = g_pHotAreaCursor;
+			cursor->m_x = point.m_x;
+			cursor->m_y = point.m_y;
+			ProcessHandlers(point, p_message);
 		}
-		ProcessHandlers(point, p_message);
 	}
 	return 0;
 }
