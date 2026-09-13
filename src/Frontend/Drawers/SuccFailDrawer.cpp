@@ -176,31 +176,25 @@ void SuccFailDrawer::CalculateText()
 	char* hash;
 
 	font = m_textManager->GetFont(m_chalkFontId);
-	if (m_networkMode == 0) {
+	char** messages;
+	if (m_networkMode != 0) {
+		messages = g_apSuccFailNetWin;
 		if (m_variant == 0) {
-			format = g_apSuccFailSingleLose[g_pGameStatus->m_skillState];
-		}
-		else {
-			format = g_apSuccFailSingleWin[g_pGameStatus->m_skillState];
+			messages = g_apSuccFailNetLose;
 		}
 	}
 	else {
+		messages = g_apSuccFailSingleWin;
 		if (m_variant == 0) {
-			format = g_apSuccFailNetLose[g_pGameStatus->m_skillState];
-		}
-		else {
-			format = g_apSuccFailNetWin[g_pGameStatus->m_skillState];
+			messages = g_apSuccFailSingleLose;
 		}
 	}
-
+	format = messages[g_pGameStatus->m_skillState];
 	hash = strchr(format, '#');
-	if (hash == 0) {
-		strcpy(m_message, format);
-	}
-	else {
+	if (hash != 0) {
 		int prefixLen = hash - format;
 		if (prefixLen != 0) {
-			memcpy(m_message, format, prefixLen);
+			strncpy(m_message, format, prefixLen);
 		}
 		m_message[prefixLen] = 0;
 		if (g_pActiveConnection != 0) {
@@ -209,18 +203,23 @@ void SuccFailDrawer::CalculateText()
 		}
 		strcat(m_message, hash + 1);
 	}
+	else {
+		strcpy(m_message, format);
+	}
 
-	SuccFailLayout* layout = m_layout;
-	short layoutMinX = (short) layout->m_messagePosition.m_x;
-	short layoutY = (short) layout->m_messagePosition.m_y;
+	short layoutMinX = (short) m_layout->m_messagePosition.m_x;
+	short layoutY = (short) m_layout->m_messagePosition.m_y;
 	m_firstLine = m_message;
 	m_secondLine = 0;
 	bool done = false;
 	short lineX;
-	VsSize textSize;
+	short lineHeight;
+	VsSize sizeBuffer;
+	VsSize* textSize;
 	do {
-		font->GetSize(&textSize, m_firstLine, 0x20);
-		lineX = (short) layout->m_frameStart.m_x + (short) ((layout->m_frameEnd.m_x - (int) textSize.m_width) / 2);
+		textSize = font->GetSize(&sizeBuffer, m_firstLine, 0x20);
+		lineHeight = textSize->m_height;
+		lineX = (short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - (int) textSize->m_width) / 2);
 		char* prevBreak = (m_secondLine == 0) ? 0 : (m_secondLine - 1);
 		if (lineX < layoutMinX) {
 			char* space = strrchr(m_firstLine, ' ');
@@ -239,27 +238,29 @@ void SuccFailDrawer::CalculateText()
 	m_firstLinePos.m_x = lineX;
 	m_firstLinePos.m_y = layoutY;
 	if (m_secondLine == 0) {
-		m_firstLinePos.m_y = layoutY + textSize.m_height / 2;
+		m_firstLinePos.m_y = layoutY + lineHeight / 2;
 	}
 	else {
-		layoutY = layoutY + textSize.m_height;
-		font->GetSize(&textSize, m_secondLine, 0x20);
+		layoutY = layoutY + lineHeight;
+		textSize = font->GetSize(&sizeBuffer, m_secondLine, 0x20);
 		m_secondLinePos.m_x =
-			(short) layout->m_frameStart.m_x + (short) ((layout->m_frameEnd.m_x - (int) textSize.m_width) / 2);
+			(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - (int) textSize->m_width) / 2);
 		m_secondLinePos.m_y = layoutY;
 	}
 
-	font->GetSize(&textSize, g_szPasswordLabel, 0x20);
-	short labelHeight = textSize.m_height;
-	short labelWidth = textSize.m_width;
-	short passwordLabelY = (short) layout->m_passwordLabelPosition.m_y;
-	int layoutWidth = layout->m_frameEnd.m_x;
-	int layoutBaseX = layout->m_frameStart.m_x;
+	textSize = font->GetSize(&sizeBuffer, g_szPasswordLabel, 0x20);
+	short labelHeight = textSize->m_height;
+	int labelWidth = textSize->m_width;
+	short passwordLabelY = (short) m_layout->m_passwordLabelPosition.m_y;
+	int layoutWidth = m_layout->m_frameEnd.m_x;
+	int layoutBaseX = m_layout->m_frameStart.m_x;
 	m_passwordLabelPos.m_y = passwordLabelY;
 	m_passwordLabelPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
 
-	font->GetSize(&textSize, m_password, 0x20);
-	labelWidth = textSize.m_width;
+	textSize = font->GetSize(&sizeBuffer, m_password, 0x20);
+	labelWidth = textSize->m_width;
+	layoutWidth = m_layout->m_frameEnd.m_x;
+	layoutBaseX = m_layout->m_frameStart.m_x;
 	m_passwordPos.m_y = passwordLabelY + labelHeight;
 	m_passwordPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
 }
