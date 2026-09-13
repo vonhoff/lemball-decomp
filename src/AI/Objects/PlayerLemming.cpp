@@ -337,7 +337,24 @@ void PlayerLemming::Die()
 			break;
 		}
 	}
-	GetHit();
+	int index = 0;
+	int& count = g_pAI->m_objectCount;
+	int objectCount = count;
+	if (index < objectCount) {
+		GameObject**& objects = g_pAI->m_objects;
+		do {
+			if (objects[index] == this) {
+				count = objectCount - 1;
+				while (index < count) {
+					objects[index] = objects[index + 1];
+					index++;
+				}
+				objects[count] = 0;
+				break;
+			}
+			index++;
+		} while (index < objectCount);
+	}
 	g_wLemmingCount--;
 	if (g_wLemmingCount == 0) {
 		g_pAI->GameState((eGameStatus) 5);
