@@ -870,20 +870,23 @@ int PlayerLemming::IsHit()
 // FUNCTION: LEMBALL 0x00410a20
 void PlayerLemming::GetHit()
 {
-	int count = g_pAI->m_objectCount;
-	int i = 0;
-	if (count > 0) {
-		GameObject** objects = g_pAI->m_objects;
-		for (i = 0; i < count; i++) {
-			if (objects[i] == this) {
-				g_pAI->m_objectCount = --count;
-				for (; i < count; i++) {
-					g_pAI->m_objects[i] = g_pAI->m_objects[i + 1];
+	int& count = g_pAI->m_objectCount;
+	int index = 0;
+	int objectCount = count;
+	if (index < objectCount) {
+		GameObject**& objects = g_pAI->m_objects;
+		do {
+			if (objects[index] == this) {
+				count = objectCount - 1;
+				while (index < count) {
+					objects[index] = objects[index + 1];
+					index++;
 				}
-				g_pAI->m_objects[count] = 0;
+				objects[count] = 0;
 				return;
 			}
-		}
+			index++;
+		} while (index < objectCount);
 	}
 }
 
