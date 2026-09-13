@@ -1466,7 +1466,6 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 	int heightValue;
 	int groundY;
 	int zOffset;
-	int remaining;
 
 	screenY = m_clipScreenY;
 	screenX = m_clipScreenX;
@@ -1499,8 +1498,8 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 		ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * p_mapY + p_mapX;
 		groundStep = 1 - groundWidth;
 
-		for (; processed < p_count && p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight;
-			 p_mapY += m_clipMapStepY) {
+		for (;
+			 p_count > processed && p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight;) {
 			if ((ground->m_collision & 0x20) == 0) {
 				groundData = ground->m_objectData;
 				height = ground->m_height;
@@ -1508,9 +1507,9 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 				groundType = ground->m_objectType;
 
 				if ((short) height < 0) {
-					height = 0;
 					groundType = defaultGroundType;
-					groundData = (unsigned short) defaultGroundData;
+					groundData = defaultGroundData;
+					height = 0;
 				}
 
 				heightValue = (short) height;
@@ -1540,10 +1539,20 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 				case TERRAIN_CONVEYOR_VARIANT_B:
 					drawGround = 0;
 				case TERRAIN_BLOX_3_SLOPE_SW_STEEP:
+					zOffset = 0;
+					break;
 				case TERRAIN_BLOX_4:
+					zOffset = 0;
+					break;
 				case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
+					zOffset = 0;
+					break;
 				case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
+					zOffset = 0;
+					break;
 				case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
+					zOffset = 0;
+					break;
 				case 0x214:
 				case TERRAIN_EMBERS:
 					zOffset = 0;
@@ -1558,8 +1567,8 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 					if (drawGround != 0) {
 						DrawGround(screenX, groundY, groundType, groundData);
 					}
+					drawGround = 1;
 				}
-				drawGround = 1;
 				if (delayed != 0) {
 					if ((short) height > 0) {
 						DrawCliff(screenX, screenY, heightValue, (short) cliff);
@@ -1573,6 +1582,7 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 			}
 
 			p_mapX += m_clipMapStepX;
+			p_mapY += m_clipMapStepY;
 			screenX += 0x20;
 			processed++;
 			ground += groundStep;
@@ -1581,11 +1591,11 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 
 	m_lemmingAnims->m_primitiveSequence = baseZ;
 	if (processed < p_count) {
-		remaining = p_count - processed;
+		processed = p_count - processed;
 		do {
 			DrawGround(screenX, screenY, defaultGroundType, defaultGroundData);
 			screenX += 0x20;
-		} while (--remaining != 0);
+		} while (--processed != 0);
 	}
 }
 
