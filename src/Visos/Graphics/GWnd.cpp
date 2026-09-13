@@ -212,41 +212,46 @@ int GWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, un
 	short paintWidth;
 	short paintHeight;
 
-	if (p_message == WM_PAINT) {
-		if (g_pTargetGraphicsSystem->m_driverMode > 3 && g_pTargetGraphicsSystem->m_driverMode < 6) {
-			return DefWindowProcA((HWND) g_pTargetGraphicsDriver->m_window, WM_PAINT, p_wParam, p_lParam);
+	switch (p_message) {
+	case WM_PAINT:
+		switch (g_pTargetGraphicsSystem->m_driverMode) {
+		case 4:
+		case 5:
+			return DefWindowProcA((HWND) g_pTargetGraphicsDriver->m_window, p_message, p_wParam, p_lParam);
+		default:
+			BeginPaint((HWND) m_nativeWindow, &paint);
+			paintX = (short) paint.rcPaint.left;
+			paintWidth = (short) ((short) paint.rcPaint.right - (unsigned short) paint.rcPaint.left);
+			paintY = (short) paint.rcPaint.top;
+			paintHeight = (short) ((short) paint.rcPaint.bottom - (unsigned short) paint.rcPaint.top);
+			if ((int) paintHeight * (int) paintWidth != 0) {
+				if (paintX < (short) m_refreshX) {
+					m_refreshWidth = (unsigned short) (m_refreshWidth + (m_refreshX - (unsigned short) paintX));
+					m_refreshX = (unsigned short) paintX;
+				}
+				if ((short) (m_refreshWidth + m_refreshX) < (short) ((unsigned short) paintX + paintWidth)) {
+					m_refreshWidth = (unsigned short) ((paintWidth - m_refreshX) + (unsigned short) paintX);
+				}
+				if (paintY < (short) m_refreshY) {
+					m_refreshHeight = (unsigned short) (m_refreshHeight + (m_refreshY - (unsigned short) paintY));
+					m_refreshY = (unsigned short) paintY;
+				}
+				if ((short) (m_refreshHeight + m_refreshY) < (short) ((unsigned short) paintY + paintHeight)) {
+					m_refreshHeight = (unsigned short) ((paintHeight - m_refreshY) + (unsigned short) paintY);
+				}
+			}
+			EndPaint((HWND) m_nativeWindow, &paint);
+			return 0;
 		}
-		BeginPaint((HWND) m_nativeWindow, &paint);
-		paintX = (short) paint.rcPaint.left;
-		paintY = (short) paint.rcPaint.top;
-		paintWidth = (short) ((short) paint.rcPaint.right - (unsigned short) paint.rcPaint.left);
-		paintHeight = (short) ((short) paint.rcPaint.bottom - (unsigned short) paint.rcPaint.top);
-		if ((int) paintHeight * (int) paintWidth != 0) {
-			if (paintX < (short) m_refreshX) {
-				m_refreshWidth = (unsigned short) (m_refreshWidth + (m_refreshX - (unsigned short) paintX));
-				m_refreshX = (unsigned short) paintX;
-			}
-			if ((short) (m_refreshWidth + m_refreshX) < (short) ((unsigned short) paintX + paintWidth)) {
-				m_refreshWidth = (unsigned short) ((paintWidth - m_refreshX) + (unsigned short) paintX);
-			}
-			if (paintY < (short) m_refreshY) {
-				m_refreshHeight = (unsigned short) (m_refreshHeight + (m_refreshY - (unsigned short) paintY));
-				m_refreshY = (unsigned short) paintY;
-			}
-			if ((short) (m_refreshHeight + m_refreshY) < (short) ((unsigned short) paintY + paintHeight)) {
-				m_refreshHeight = (unsigned short) ((paintHeight - m_refreshY) + (unsigned short) paintY);
-			}
-		}
-		EndPaint((HWND) m_nativeWindow, &paint);
-		return 0;
-	}
-	if (p_message == WM_ACTIVATEAPP) {
+	case WM_ACTIVATEAPP:
 		if (p_wParam != 0 && m_gdi != 0) {
 			m_gdi->m_renderTarget->SetDefaultCtable();
 		}
-	}
-	else if (p_message == 0x311) {
-		if ((int) m_rect.m_height * (int) m_rect.m_width != 0) {
+		break;
+	case 0x311:
+		paintWidth = m_rect.m_width;
+		paintHeight = m_rect.m_height;
+		if ((int) paintHeight * (int) paintWidth != 0) {
 			if (0 < (short) m_refreshX) {
 				m_refreshWidth = (unsigned short) (m_refreshWidth + m_refreshX);
 				m_refreshX = 0;
@@ -262,11 +267,12 @@ int GWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, un
 				m_refreshHeight = (unsigned short) (m_rect.m_height - m_refreshY);
 			}
 		}
+		break;
 	}
-	if (m_nativeWindow == 0) {
-		return 0;
+	if (m_nativeWindow != 0) {
+		return DefWindowProcA((HWND) m_nativeWindow, p_message, p_wParam, p_lParam);
 	}
-	return DefWindowProcA((HWND) m_nativeWindow, p_message, p_wParam, p_lParam);
+	return 0;
 }
 
 // 68K 0x1010ac9c Render__5CGWndFv
