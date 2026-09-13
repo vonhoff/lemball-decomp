@@ -1395,20 +1395,20 @@ void Surface::Blit(FilledCircle* p_circle)
 		int minY = y - radius;
 		int diameter = radius * 2 + 1;
 		int width = diameter;
-		if (minX < (int) m_windowRect.m_x) {
-			width += minX - m_windowRect.m_x;
-			minX = m_windowRect.m_x;
+		if (minX < (int) m_clipRect.m_x) {
+			width += minX - m_clipRect.m_x;
+			minX = m_clipRect.m_x;
 		}
-		if (m_windowRect.m_x + m_windowRect.m_width - 1 < minX + width) {
-			width = m_windowRect.m_x + m_windowRect.m_width - minX;
+		if (m_clipRect.m_x + m_clipRect.m_width - 1 < minX + width) {
+			width = m_clipRect.m_x + m_clipRect.m_width - minX;
 		}
 		int height = diameter;
-		if (minY < (int) m_windowRect.m_y) {
-			height += minY - m_windowRect.m_y;
-			minY = m_windowRect.m_y;
+		if (minY < (int) m_clipRect.m_y) {
+			height += minY - m_clipRect.m_y;
+			minY = m_clipRect.m_y;
 		}
-		if (m_windowRect.m_y + m_windowRect.m_height - 1 < minY + height) {
-			height = m_windowRect.m_y + m_windowRect.m_height - minY;
+		if (m_clipRect.m_y + m_clipRect.m_height - 1 < minY + height) {
+			height = m_clipRect.m_y + m_clipRect.m_height - minY;
 		}
 		VsRect rect;
 		rect.m_width = (short) width;
