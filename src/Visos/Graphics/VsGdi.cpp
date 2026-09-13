@@ -2526,6 +2526,7 @@ void Surface::BlitZrleNoClipZBuffRemap(const VsRect& p_rect,
 				}
 			} while (run != 0x80);
 			row++;
+			y++;
 		} while (row < p_rect.m_height);
 	}
 }
