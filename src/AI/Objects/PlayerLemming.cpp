@@ -113,6 +113,12 @@ void PlayerLemming::Restart()
 	m_inventoryCount = 0;
 }
 
+// 68K 0x1061c15c __dt__14CPlayerLemmingFv
+// FUNCTION: LEMBALL 0x0040efd0
+PlayerLemming::~PlayerLemming()
+{
+}
+
 // 68K 0x1061c1d8 HitBullet__14CPlayerLemmingFP7CBullet
 // FUNCTION: LEMBALL 0x0040f000
 void PlayerLemming::HitBullet(Bullet* p_bullet)

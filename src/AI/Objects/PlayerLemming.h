@@ -17,8 +17,7 @@
 class PlayerLemming : public GlobalGameObject, public NetworkMessage {
 public:
 	PlayerLemming(int p_x, int p_y, int p_z, int p_facing, unsigned int p_alternatePlayer, unsigned long p_spawnDelay);
-	// 68K 0x1061c15c __dt__14CPlayerLemmingFv
-	virtual ~PlayerLemming() {}
+	virtual ~PlayerLemming();
 	PlayerLemmingGroup* GetGroup();
 	bool CheckSfx();
 	int GetLastBalloon();
