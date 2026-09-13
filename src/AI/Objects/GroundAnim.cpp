@@ -44,27 +44,25 @@ void GroundAnim::Process()
 
 		m_nextProcessTick = g_dwGameTick + 2;
 		if (m_count > 0) {
-			GroundAnimEntry* entry = m_entries;
 			int index = 0;
 			do {
-				if (entry->m_active != 0) {
-					switch (entry->m_direction) {
+				if (m_entries[index].m_active != 0) {
+					switch (m_entries[index].m_direction) {
 					case -1:
-						entry->m_currentFrame--;
-						if (entry->m_currentFrame < entry->m_endFrame) {
-							entry->m_currentFrame = entry->m_startFrame;
+						m_entries[index].m_currentFrame--;
+						if (m_entries[index].m_currentFrame < m_entries[index].m_endFrame) {
+							m_entries[index].m_currentFrame = m_entries[index].m_startFrame;
 						}
 						break;
 					case 1:
-						entry->m_currentFrame++;
-						if (entry->m_endFrame < entry->m_currentFrame) {
-							entry->m_currentFrame = entry->m_startFrame;
+						m_entries[index].m_currentFrame++;
+						if (m_entries[index].m_endFrame < m_entries[index].m_currentFrame) {
+							m_entries[index].m_currentFrame = m_entries[index].m_startFrame;
 						}
 						break;
 					}
-					entry->m_mapCell->m_objectData = entry->m_currentFrame;
+					m_entries[index].m_mapCell->m_objectData = m_entries[index].m_currentFrame;
 				}
-				entry++;
 				index++;
 			} while (index < m_count);
 		}
