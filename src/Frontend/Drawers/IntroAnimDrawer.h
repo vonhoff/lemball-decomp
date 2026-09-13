@@ -12,7 +12,7 @@
 // VTABLE: LEMBALL 0x00497a50 AnimsManager
 class IntroAnimDrawer : public BaseFrontendDrawer {
 public:
-	IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3);
+	IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned int p_arg3);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void Load();                              // vtable+0x40
 	virtual void Processing();                        // vtable+0x38

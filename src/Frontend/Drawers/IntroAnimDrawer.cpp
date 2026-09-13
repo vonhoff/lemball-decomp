@@ -12,7 +12,7 @@ extern char g_szMoviePrefix[];
 
 // 68K 0x10805c12 __ct__16CIntroAnimDrawerFP14CMain2DDisplayP4CGDIRC7CVSRectUc
 // FUNCTION: LEMBALL 0x00447410
-IntroAnimDrawer::IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned char p_arg3)
+IntroAnimDrawer::IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned int p_arg3)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, 1, 0, 0, 0, 0, 0)
 {
 	m_variant = p_arg3;
@@ -23,7 +23,7 @@ IntroAnimDrawer::IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRec
 	m_started = 0;
 	m_startCountdown = 10;
 	m_display->Clear(-1);
-	m_animWindow.Initialise(this, m_display, p_arg3);
+	m_animWindow.Initialise(this, m_display, m_variant);
 	m_animWindow.m_resolveMoviePath = 1;
 	m_animWindow.m_moviePrefix = g_szMoviePrefix;
 	m_animWindow.m_useMoviePrefix = 1;
