@@ -73,17 +73,19 @@ void MineManager::Trigger(int p_index, int p_delay)
 	int x = m_positions[p_index].m_x;
 	int y = m_positions[p_index].m_y;
 	int z = m_positions[p_index].m_z;
+	int i = 0;
 	if (0 < m_count) {
-		for (int i = 0; i < m_count; i++) {
+		do {
 			if (p_index != i && m_mines[i].m_action == 0x18) {
 				int dx = m_positions[i].m_x - x;
 				int dy = m_positions[i].m_y - y;
 				int dz = m_positions[i].m_z - z;
-				if (dz * dz + dy * dy + dx * dx < 0x801) {
+				if (dz * dz + dy * dy + dx * dx <= 0x800) {
 					m_mines[i].Trigger(p_delay + 6);
 				}
 			}
-		}
+			i++;
+		} while (i < m_count);
 	}
 }
 
