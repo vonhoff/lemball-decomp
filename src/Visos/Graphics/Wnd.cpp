@@ -405,44 +405,21 @@ void Wnd::ProcessMouseMoves()
 {
 	POINT position;
 	Message posted;
-	void* nativeWindow;
-	WindowOwnerNode* node;
 
 	GetCursorPos(&position);
-	nativeWindow = 0;
-	if (g_pFocusWindow != 0) {
-		nativeWindow = g_pFocusWindow->m_nativeWindow;
-	}
-	if (nativeWindow == 0 && g_pTargetGraphicsDriver != 0) {
-		nativeWindow = g_pTargetGraphicsDriver->m_window;
-	}
-	if (nativeWindow == 0 && g_pWindowOwnerList != 0) {
-		node = g_pWindowOwnerList->m_head;
-		while (node != 0 && nativeWindow == 0) {
-			if (node->m_window != 0) {
-				nativeWindow = ((Wnd*) node->m_window)->m_nativeWindow;
-			}
-			node = node->m_next;
-		}
-	}
-	if (nativeWindow != 0) {
-		ScreenToClient((HWND) nativeWindow, &position);
-	}
-	else if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0 && g_pFocusWindow != 0) {
-		position.x = position.x + g_pFocusWindow->m_rect.m_x;
-		position.y = position.y + g_pFocusWindow->m_rect.m_y;
-	}
 	if (position.x != g_nLastCursorX || position.y != g_nLastCursorY) {
 		g_nLastCursorX = position.x;
 		g_nLastCursorY = position.y;
+		if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0 && g_pFocusWindow != 0) {
+			g_nLastCursorX += g_pFocusWindow->m_rect.m_x;
+			g_nLastCursorY += g_pFocusWindow->m_rect.m_y;
+		}
 		posted.type = 7;
 		posted.time = CurrentQueueTimer();
 		posted.code = PackParam((short) g_nLastCursorX, (short) g_nLastCursorY);
 		posted.payload = 0;
 		posted.source = 0;
-		if (g_pMasterInputQueue != 0) {
-			g_pMasterInputQueue->Post(posted);
-		}
+		g_pMasterInputQueue->Post(posted);
 	}
 }
 
