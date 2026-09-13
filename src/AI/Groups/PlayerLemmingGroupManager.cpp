@@ -281,8 +281,8 @@ PlayerLemmingGroup* PlayerLemmingGroupManager::GetPlayerControlledGroup()
 			if (group != 0 && group->CheckPlayerControlled() == 1) {
 				return (PlayerLemmingGroup*) m_groups[i];
 			}
-			i++;
 			groups++;
+			i++;
 		} while (m_groupCount > i);
 	}
 	return 0;
