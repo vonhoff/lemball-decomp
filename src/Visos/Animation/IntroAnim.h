@@ -5,7 +5,8 @@
 #include "../../Frontend/Base/BaseFrontendProcess.h" // complete type
 
 // SIZE 0x28
-// VTABLE: LEMBALL 0x00493050
+// VTABLE: LEMBALL 0x00493040 BaseQueueHandler
+// VTABLE: LEMBALL 0x00493050 BaseProcess
 class IntroAnim : public BaseFrontendProcess {
 public:
 	IntroAnim(Game* p_game) : BaseFrontendProcess(p_game) {}

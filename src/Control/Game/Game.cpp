@@ -329,8 +329,6 @@ void Game::UnLoadFrontendResources()
 // FUNCTION: LEMBALL 0x00407420
 void Game::NextProcess(eFlowProcesses p_flow)
 {
-	void* storage;
-	Ai* ai;
 
 	if (m_mainDisplay->m_drawer != 0) {
 		m_mainDisplay->m_drawer->ShutDown();
@@ -352,13 +350,7 @@ void Game::NextProcess(eFlowProcesses p_flow)
 		UnLoadFrontendResources();
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		storage = operator new(0x28);
-		if (storage == 0) {
-			m_process = 0;
-		}
-		else {
-			m_process = new (storage) IntroAnim(this);
-		}
+		m_process = new IntroAnim(this);
 		m_flowTicks = 0;
 		goto done;
 	case 2:
@@ -368,123 +360,72 @@ void Game::NextProcess(eFlowProcesses p_flow)
 		if (g_nDemoMode != 0) {
 			g_nDemoMode = g_nStoredLevelDemoModeEnabled;
 		}
-		storage = operator new(0x28);
-		if (storage != 0) {
-			m_process = new (storage) MainOptions1(this);
-			goto done;
-		}
-		break;
+		m_process = new MainOptions1(this);
+		goto done;
 	case 3:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		storage = operator new(0x28);
-		if (storage != 0) {
-			m_process = new (storage) MainOptions2(this);
-			goto done;
-		}
-		break;
+		m_process = new MainOptions2(this);
+		goto done;
 	case 4:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		storage = operator new(0x28);
-		if (storage != 0) {
-			m_process = new (storage) Preview(this);
-			goto done;
-		}
-		break;
+		m_process = new Preview(this);
+		goto done;
 	case 0x13:
-		if (g_nDemoMode == 0) {
-			g_pDemo->m_filePath = 0;
+		if (g_nDemoMode != 0) {
+			g_pDemo->m_filePath = g_szDemoFilePath;
 		}
 		else {
-			g_pDemo->m_filePath = g_szDemoFilePath;
+			g_pDemo->m_filePath = 0;
 		}
 		g_nDemoMode = 1;
 	case 5:
 		UnLoadFrontendResources();
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		storage = operator new(0x1f0);
-		ai = (Ai*) 0;
-		if (storage != 0) {
-			ai = new (storage) Ai(this);
-		}
-		if (ai != 0) {
-			m_process = ai;
-			goto done;
-		}
-		break;
+		m_process = new Ai(this);
+		goto done;
 	case 10:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		storage = operator new(0x10);
-		if (storage != 0) {
-			m_process = new (storage) TargetAbout(this);
-			goto done;
-		}
-		break;
+		m_process = new TargetAbout(this);
+		goto done;
 	case 0xc:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		storage = operator new(0x38);
-		if (storage != 0) {
-			m_process = new (storage) NetworkOptionsProc(this);
-			goto done;
-		}
-		break;
+		m_process = new NetworkOptionsProc(this);
+		goto done;
 	case 0xe:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		LoadFrontendResources(2);
-		storage = operator new(0x2c);
-		if (storage == 0) {
-			m_process = 0;
-		}
-		else {
-			m_process = new (storage) SuccFail(this, 1);
-		}
+		m_process = new SuccFail(this, 1);
 		m_flowTicks = 0;
 		goto done;
 	case 0xf:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		LoadFrontendResources(2);
-		storage = operator new(0x2c);
-		if (storage == 0) {
-			m_process = 0;
-		}
-		else {
-			m_process = new (storage) SuccFail(this, 0);
-		}
+		m_process = new SuccFail(this, 0);
 		m_flowTicks = 0;
 		goto done;
 	case 0x10:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		storage = operator new(0x28);
-		if (storage != 0) {
-			m_process = new (storage) PasswordProc(this);
-			goto done;
-		}
-		break;
+		m_process = new PasswordProc(this);
+		goto done;
 	case 0x12:
 		UnLoadFrontendResources();
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		storage = operator new(0x28);
-		if (storage == 0) {
-			m_process = 0;
-		}
-		else {
-			m_process = new (storage) IntroAnim(this);
-		}
+		m_process = new IntroAnim(this);
 		m_flowTicks = 0;
 		goto done;
 	default:
 		goto done;
 	}
 
-	m_process = 0;
 done:
 	m_mainDisplay->StatusUpdate(m_currentFlow);
 }

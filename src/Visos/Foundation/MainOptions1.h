@@ -5,7 +5,8 @@
 #include "../../Frontend/Base/BaseFrontendProcess.h" // complete type
 
 // SIZE 0x28
-// VTABLE: LEMBALL 0x00493078
+// VTABLE: LEMBALL 0x00493068 BaseQueueHandler
+// VTABLE: LEMBALL 0x00493078 BaseProcess
 class MainOptions1 : public BaseFrontendProcess {
 public:
 	MainOptions1(Game* p_game) : BaseFrontendProcess(p_game) {}

@@ -5,7 +5,8 @@
 #include "../Base/BaseFrontendProcess.h" // complete type
 
 // SIZE 0x28
-// VTABLE: LEMBALL 0x004930e8
+// VTABLE: LEMBALL 0x004930d8 BaseQueueHandler
+// VTABLE: LEMBALL 0x004930e8 BaseProcess
 class PasswordProc : public BaseFrontendProcess {
 public:
 	PasswordProc(Game* p_game) : BaseFrontendProcess(p_game) {}
