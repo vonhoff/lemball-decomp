@@ -282,11 +282,12 @@ Surface::~Surface()
 	Surface* parent;
 	int locked;
 
-	locked = m_unk0x54c;
-	if (locked != 0) {
+	locked = 0;
+	if (m_unk0x54c != 0) {
 		EnterCriticalSection((CRITICAL_SECTION*) m_lock);
+		locked = 1;
 	}
-	if (m_platformBitmap != 0 && g_pTargetGraphicsDriver != 0) {
+	if (m_platformBitmap != 0) {
 		g_pTargetGraphicsDriver->RestoreDIBContext((TargetDrawingContext*) m_drawingPort,
 												   (TargetDibContext*) m_platformBitmap);
 		g_pTargetGraphicsDriver->DestroyDIBContext((TargetDibContext*) m_platformBitmap);
@@ -296,7 +297,7 @@ Surface::~Surface()
 		FreeBackBuff();
 		FreeZBuff();
 	}
-	if (m_drawingPort != 0 && g_pTargetGraphicsDriver != 0) {
+	if (m_drawingPort != 0) {
 		g_pTargetGraphicsDriver->DestroyDrawingContext((TargetDrawingContext*) m_drawingPort);
 		m_drawingPort = 0;
 	}
@@ -381,8 +382,6 @@ Surface::~Surface()
 		operator delete(node);
 		node = next;
 	}
-	m_childSurfaceHead = 0;
-	PvGdiBitmap::Free();
 }
 
 // 68K 0x10108bf2 ResetScroll__8CSurfaceFv
