@@ -132,8 +132,6 @@ void HiliteButtons::Draw(int p_force)
 void HiliteButtons::LoadFaces(unsigned long* p_animIds)
 {
 	int index;
-	void* storage;
-	VsPoint position;
 
 	m_animIds = p_animIds;
 	m_resources = (ResAnim**) operator new(m_valueCount << 2);
@@ -142,17 +140,11 @@ void HiliteButtons::LoadFaces(unsigned long* p_animIds)
 		m_resources[index] = ResAnim::Load(m_animIds[index]);
 		index = index + 1;
 	}
-	storage = operator new(0x130);
-	if (storage == 0) {
-		m_button = 0;
-	}
-	else {
-		position.m_x = (short) m_x;
-		position.m_y = (short) m_y;
-		m_button = new (storage) GraphicButton(position, (PvGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
-	}
+	m_button =
+		new GraphicButton(VsPoint((short) m_x, (short) m_y), (PvGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
+	Surface* surface = m_button->m_gdi->m_renderTarget;
 	m_button->SetAutoDraw(0);
-	m_button->m_gdi->m_renderTarget->m_flag70 = 0;
+	surface->m_flag70 = 0;
 	m_button->m_messageHandler = g_pMasterInputQueue;
 	m_button->m_controlMessage = m_controlMessage;
 }
