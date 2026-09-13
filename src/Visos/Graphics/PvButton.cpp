@@ -76,7 +76,7 @@ PvButton::PvButton(const VsRect& p_arg0, PvGWnd* p_arg1)
 
 // 68K 0x1020fa78 __ct__9CPVButtonFP7CPVGWnd
 // FUNCTION: LEMBALL 0x00467cd0
-PvButton::PvButton(PvGWnd* p_arg0) : m_buttonY(0), m_buttonX(0)
+PvButton::PvButton(PvGWnd* p_arg0) : m_buttonX(m_buttonY = 0)
 {
 	m_clickY = 0;
 	m_clickX = 0;
