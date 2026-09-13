@@ -8,8 +8,7 @@
 
 // SIZE 0xbc
 // VTABLE: LEMBALL 0x0049a56c FileCommonSocket
-// Original NetworkFile subobject table: LEMBALL 0x0049a570. It is byte-identical
-// to NetworkFile's own table, whose single VTABLE annotation owns that address.
+// VTABLE: LEMBALL 0x0049a570 NetworkFile
 // VTABLE: LEMBALL 0x0049a5b0 BaseSocket
 // VTABLE: LEMBALL 0x0049a5d8 BaseCommonSocket
 // Original PDB/x86 has these inherited dominance adjustor thunks.
@@ -39,5 +38,14 @@ private:
 
 // SYNTHETIC: LEMBALL 0x0047be20 SYMBOL
 // ??_EFileReadSocket@@WCM@AEPAXI@Z
+
+// GLOBAL: LEMBALL 0x0049a540
+// FileReadSocket::`vbtable'{for `FileCommonSocket'}
+
+// GLOBAL: LEMBALL 0x0049a550
+// FileReadSocket::`vbtable'{for `ReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a558
+// FileReadSocket::`vbtable'{for `FileReadSocket'}
 
 #endif

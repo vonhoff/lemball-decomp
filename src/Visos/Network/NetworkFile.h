@@ -5,7 +5,7 @@
 #include "AbstractFile.h"
 
 // SIZE 0x14
-// VTABLE: LEMBALL 0x0049a570
+// VTABLE: LEMBALL 0x0049a628
 class NetworkFile : public AbstractFile {
 public:
 	NetworkFile() {}

@@ -6,6 +6,9 @@
 #include "NetworkFile.h"      // complete type
 
 // SIZE 0x4c
+// VTABLE: LEMBALL 0x0049a4f0 BaseCommonSocket
+// VTABLE: LEMBALL 0x0049a500 NetworkFile
+// VTABLE: LEMBALL 0x0049a53c FileCommonSocket
 // FileReadSocket/FileWriteSocket/FileRwSocket place the next virtual base four
 // bytes after this class's vbptr, while their generated FileCommonSocket
 // adjustors retain the original 0x20 BaseCommonSocket displacement. Together,
