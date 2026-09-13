@@ -257,36 +257,39 @@ void BaseFrontendDrawer::Draw(const VsRect& p_rect)
 // FUNCTION: LEMBALL 0x00445ac0
 void BaseFrontendDrawer::ReplaceBackground()
 {
-	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
-		m_gdi->m_renderTarget->GetChangeList()->Reset();
-		m_primitiveBundle[0].m_drawingMark.Draw(m_gdi);
-		if (m_drawingBackBuffer != 0) {
-			if (m_drawFrame == 0) {
-				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_x1 = m_width;
-				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_y1 = m_height;
-				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_x2 = 0;
-				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_y2 = 0;
-				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].m_color = 0;
-				m_primitiveBundle[0].m_lines[m_framePrimitiveCount].Draw(m_gdi);
-				m_framePrimitiveCount = m_framePrimitiveCount + 1;
-			}
-			InternalDrawBackGround();
-			DrawBackGround();
+	m_gdi->m_renderTarget->GetChangeList()->Reset();
+	m_gdi->AddToList(&m_primitiveBundle[m_primitiveBank].m_drawingMark);
+	if (m_drawingBackBuffer != 0) {
+		if (m_drawFrame == 0) {
+			short height = m_height;
+			short width = m_width;
+			Line& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
+			line.m_x1 = width;
+			line.m_y1 = height;
+			line.m_x2 = 0;
+			line.m_y2 = 0;
+			line.m_color = 0;
+			Primitive* primitive = &m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
+			primitive->Draw(m_gdi);
+			m_framePrimitiveCount++;
 		}
-		if (m_drawingBackBuffer == 0) {
-			InternalDrawAnims();
-			DrawAnims();
-		}
-		DrawText();
-		if (m_drawingBackBuffer == 0 && m_gunController != 0) {
+		InternalDrawBackGround();
+		DrawBackGround();
+	}
+	if (m_drawingBackBuffer == 0) {
+		InternalDrawAnims();
+		DrawAnims();
+	}
+	DrawText();
+	if (m_drawingBackBuffer == 0) {
+		if (m_gunController != 0) {
 			m_gunController->DrawSpriteWindow();
 		}
-		if (m_drawingBackBuffer == 0 && m_hiliteController != 0) {
+		if (m_hiliteController != 0) {
 			m_hiliteController->DrawHiliteWindow();
 		}
 	}
 }
-
 // 68K 0x10800ae8 _DrawBackGround__19CBaseFrontendDrawerFv
 // FUNCTION: LEMBALL 0x00445c10
 void BaseFrontendDrawer::InternalDrawBackGround()
