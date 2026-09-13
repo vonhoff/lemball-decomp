@@ -1186,11 +1186,7 @@ void Surface::Blit(Line* p_line)
 	int y;
 	int remaining;
 	unsigned char color;
-	VsRect bounds;
 
-	if (p_line == 0 || m_lines == 0) {
-		return;
-	}
 	x1 = p_line->m_x1;
 	y1 = p_line->m_y1;
 	x2 = p_line->m_x2;
@@ -1254,6 +1250,7 @@ void Surface::Blit(Line* p_line)
 			} while (remaining != 0);
 		}
 	}
+	VsRect bounds;
 	bounds.m_width = (short) (dx + 1);
 	if (dy < 0) {
 		bounds.m_height = (short) (-dy + 1);
