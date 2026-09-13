@@ -33,19 +33,20 @@ PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_a
 		m_statusRect.m_x = 0;
 		m_statusRect.m_y = 0;
 	}
-	m_unavailable = (unsigned int) (p_arg0->m_lemming->m_action == 8);
-	m_alternatePlayer = p_arg0->m_lemming->HasObject((eObjectType) 0xc);
+	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == 8);
+	m_alternatePlayer = m_lemming->m_lemming->HasObject((eObjectType) 0xc);
 	m_lastAmmo = 0xffffffff;
 	m_lastBalloon = (eObjectType) 0xffffffff;
 	m_inventoryCount = 0;
 	{
 		VsPoint point;
 
-		point = p_arg0->m_panel->m_balloonSize;
+		short x = m_lemming->m_panel->m_buttonSize.m_x;
+		point = m_lemming->m_panel->m_balloonSize;
 		m_gdiFlags += 7;
 		m_inventoryRect.m_width = point.m_x;
 		m_inventoryRect.m_height = point.m_y;
-		m_inventoryRect.m_x = p_arg0->m_panel->m_buttonSize.m_x;
+		m_inventoryRect.m_x = x;
 		m_inventoryRect.m_y = 0;
 	}
 	{
@@ -54,7 +55,8 @@ PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_a
 		createRect.m_height = m_height;
 		createRect.m_x = m_buttonX;
 		createRect.m_y = m_buttonY;
-		Create(createRect, m_ownerWindow, g_szButton);
+		GWnd* window = this;
+		window->Create(createRect, m_ownerWindow, g_szButton);
 	}
 	m_x = (short) (m_x + m_relativeTopLeft.m_x);
 	m_y = (short) (m_y + m_relativeTopLeft.m_y);
