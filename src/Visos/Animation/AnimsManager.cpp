@@ -123,11 +123,11 @@ AnimsManager::~AnimsManager()
 // FUNCTION: LEMBALL 0x00467490
 void AnimsManager::LoadAnims(unsigned long p_resourceId)
 {
-	int slot;
-
-	slot = m_resourceSlots[p_resourceId];
-	if (m_resourceCapacity == slot) {
-		slot = 0;
+	int slot = 0;
+	if (m_resourceCapacity != m_resourceSlots[p_resourceId]) {
+		slot = m_resourceSlots[p_resourceId];
+	}
+	else {
 		while (m_resources[slot] != 0) {
 			slot = slot + 1;
 		}
