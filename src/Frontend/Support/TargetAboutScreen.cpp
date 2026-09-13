@@ -108,7 +108,6 @@ void TargetAboutScreen::DrawRegistrationText()
 	VsSize size;
 	int labelY;
 	int index;
-	char ch;
 
 	font = m_textManager->GetFont(RES_GAME_FONT3);
 	font->GetSize(&size, g_szRegisteredTo, 0x20);
@@ -131,15 +130,13 @@ void TargetAboutScreen::DrawRegistrationText()
 		VsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		VsPoint position((short) (m_width - size.m_width) / 2,
-						 (short) (m_height - size.m_height) / 2 + size.m_height * 4);
+		VsPoint position((short) (m_width - size.m_width) / 2, (short) (m_height - size.m_height) / 2);
+		position.m_y += size.m_height * 4;
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, 0x20, 0);
 	}
-	ch = *m_aboutText;
 	index = 0;
-	while (ch != '\0') {
+	while (m_aboutText[index] != '\0') {
 		g_szAboutDecodeBuffer[index] = m_aboutText[index] - 1U ^ *key;
-		ch = m_aboutText[index + 1];
 		index = index + 1;
 		key = key + 1;
 	}
