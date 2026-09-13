@@ -29,6 +29,8 @@ public:
 	friend class PvBackBuffSurface;
 	friend class PvZBuffSurface;
 	friend class TargetGraphicsDriver;
+	friend class TargetPlanarDisplayDibDriver;
+	friend struct TargetGraphicsSystemState;
 	friend class GWnd;
 
 private:

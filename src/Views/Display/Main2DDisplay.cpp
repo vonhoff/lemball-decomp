@@ -366,10 +366,10 @@ void Main2DDisplay::ToggleResolution()
 	}
 	switch (g_pTargetGraphicsSystem->m_driverMode) {
 	case 1:
-		g_pTargetGraphicsSystem->SelectDriver(3);
+		g_pTargetGraphicsSystem->ChangeDriver(3);
 		break;
 	case 3:
-		g_pTargetGraphicsSystem->SelectDriver(1);
+		g_pTargetGraphicsSystem->ChangeDriver(1);
 		break;
 	}
 }

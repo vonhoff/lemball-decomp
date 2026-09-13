@@ -18,6 +18,8 @@ public:
 
 	friend class TargetGraphicsDriver;
 	friend class TargetGDIDriver;
+	friend class TargetDisplayDibDriver;
+	friend class TargetPlanarDisplayDibDriver;
 	friend class Surface;
 
 private:

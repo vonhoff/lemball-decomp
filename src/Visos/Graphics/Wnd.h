@@ -45,6 +45,7 @@ public:
 	virtual void InternalSetRelTL(const VsPoint& p_point);               // vtable+0x34
 	~Wnd();
 
+	friend struct TargetGraphicsSystemState;
 	friend class GWnd;
 	friend class AnimWnd;
 	friend class Main2DDisplay;

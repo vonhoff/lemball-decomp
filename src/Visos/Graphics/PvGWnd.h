@@ -33,6 +33,7 @@ public:
 	virtual void InternalOnSize() = 0;                         // vtable+0x20
 	void Clear(int p_color);
 
+	friend struct TargetGraphicsSystemState;
 	friend class GWnd;
 	friend class Main2DDisplay;
 	friend class NetworkOptionsDrawer;

@@ -6,6 +6,8 @@
 // SIZE 0x0c
 struct TargetGraphicsSystemState {
 	bool SelectDriver(int p_driverMode);
+	void NotifyWindowsOfGraphicsDriverChange();
+	bool ChangeDriver(int p_driverMode);
 	bool IsFullscreenDriver();
 
 	int m_driverMode;                    // 0x00
