@@ -1759,24 +1759,24 @@ void Surface::DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius
 	int step = 1;
 	int errLimit = p_radius * 2 - 1;
 
-	if (m_clipRect.m_x <= p_centerX && p_centerX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
-		int y1 = p_centerY + p_radius;
-		if (m_clipRect.m_y <= y1 && y1 <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-			*((unsigned char*) m_lines[y1] + p_centerX) = (unsigned char) p_colour;
+	if (p_centerX >= m_clipRect.m_x && p_centerX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
+		if ((p_centerY + p_radius) >= m_clipRect.m_y &&
+			(p_centerY + p_radius) <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+			*((unsigned char*) m_lines[(p_centerY + p_radius)] + p_centerX) = (unsigned char) p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= p_centerX && p_centerX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
-		int y2 = p_centerY - p_radius;
-		if (m_clipRect.m_y <= y2 && y2 <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-			*((unsigned char*) m_lines[y2] + p_centerX) = (unsigned char) p_colour;
+	if (p_centerX >= m_clipRect.m_x && p_centerX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
+		if ((p_centerY - p_radius) >= m_clipRect.m_y &&
+			(p_centerY - p_radius) <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+			*((unsigned char*) m_lines[(p_centerY - p_radius)] + p_centerX) = (unsigned char) p_colour;
 		}
 	}
-	if (m_clipRect.m_y <= p_centerY && p_centerY <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+	if (p_centerY >= m_clipRect.m_y && p_centerY <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
 		int x1 = p_centerX - p_radius;
+		int x2 = p_centerX + p_radius;
 		if (x1 < m_clipRect.m_x) {
 			x1 = m_clipRect.m_x;
 		}
-		int x2 = p_centerX + p_radius;
 		if ((int) (m_clipRect.m_width + m_clipRect.m_x - 1) < x2) {
 			x2 = m_clipRect.m_width + m_clipRect.m_x - 1;
 		}
@@ -1784,34 +1784,35 @@ void Surface::DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius
 	}
 
 	if (p_radius > 1) {
-		do {
-			int oldErrLimit = errLimit;
+		while (x < p_radius) {
+			int changed = 0;
 			x++;
 			err += step;
 			step += 2;
 			int doubleErr = err * 2;
 			if (errLimit < doubleErr) {
 				p_radius--;
+				changed = 1;
 				err -= errLimit;
 				errLimit -= 2;
 			}
 			if (x <= p_radius) {
-				if (oldErrLimit < doubleErr) {
+				if (changed != 0) {
 					int yTop = p_centerY - p_radius;
 					int yBottom = p_centerY + p_radius;
 					int clipY = m_clipRect.m_y;
-					if (yTop <= (int) (m_clipRect.m_height + clipY - 1) && clipY <= yBottom) {
+					if (yTop <= (int) (m_clipRect.m_height + clipY - 1) && yBottom >= clipY) {
 						int xLeft = p_centerX - x;
 						int xRight = p_centerX + x;
 						int clipX = m_clipRect.m_x;
-						if (clipX <= xRight && xLeft <= (int) (m_clipRect.m_width + clipX - 1)) {
-							if ((int) (m_clipRect.m_width + clipX - 1) < xRight) {
+						if (clipX <= xRight && (int) (m_clipRect.m_width + clipX - 1) >= xLeft) {
+							if (xRight > (int) (m_clipRect.m_width + clipX - 1)) {
 								xRight = m_clipRect.m_width + clipX - 1;
 							}
 							if (xLeft < clipX) {
 								xLeft = clipX;
 							}
-							if (clipY <= yTop) {
+							if (yTop >= clipY) {
 								memset((unsigned char*) m_lines[yTop] + xLeft, p_colour, xRight - xLeft + 1);
 							}
 							if (yBottom <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
@@ -1824,7 +1825,7 @@ void Surface::DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius
 					FilledCircleClipPoints(p_centerX, p_centerY, p_radius, x, p_colour);
 				}
 			}
-		} while (x < p_radius);
+		}
 	}
 }
 
