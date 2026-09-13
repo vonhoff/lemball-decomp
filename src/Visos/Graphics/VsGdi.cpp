@@ -949,27 +949,25 @@ bool Surface::BeginRender()
 		if (!dib->Lock()) {
 			return 0;
 		}
-		unsigned char* bits = dib->GetBits();
-		if (bits != 0 && (unsigned char*) m_lines[0] != bits) {
-			m_lines[0] = bits;
-			SetLinePtrs();
+		unsigned char* bits = ((TargetDibContext*) m_platformBitmap)->GetBits();
+		if (bits != 0 && m_bitsBase != bits) {
+			m_bitsBase = bits;
+			CreateLinePtrs();
 			return 1;
 		}
-		return 1;
 	}
-	if (m_parentSurface == 0) {
-		return 0;
-	}
-	if (!m_parentSurface->BeginRender()) {
-		return 0;
-	}
-	if (m_parentSurface->m_lines == 0) {
-		return 0;
-	}
-	unsigned char* expected = (unsigned char*) m_parentSurface->m_lines[m_windowRect.m_y] + m_windowRect.m_x;
-	if (expected != (unsigned char*) m_lines[0]) {
-		SetLinePtrs();
-		return 1;
+	else {
+		if (m_parentSurface == 0) {
+			return 0;
+		}
+		if (!m_parentSurface->BeginRender()) {
+			return 0;
+		}
+		unsigned char* expected = (unsigned char*) m_parentSurface->m_lines[m_windowRect.m_y] + m_windowRect.m_x;
+		if (expected != m_bitsBase) {
+			CreateLinePtrs();
+			return 1;
+		}
 	}
 	return 1;
 }
