@@ -571,20 +571,17 @@ void Surface::Blit(class ClipRect* p_clipRect)
 // FUNCTION: LEMBALL 0x0046cda0
 void Surface::ToScreen(class Surface* p_destinationSurface)
 {
-	Surface* parent = (Surface*) m_parentSurface;
-	if ((void*) parent != g_pGdiHelperTarget) {
+	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
 		if (m_flag74 == 0) {
 			if (m_flag78 != 0) {
-				parent->AddToChangeList(&m_windowRect);
+				m_parentSurface->AddToChangeList(&m_windowRect);
 				m_flag78 = 0;
 			}
 			else if (m_flag70 != 0) {
 				ChangeList* list = GetChangeList();
-				if (list != 0) {
-					int diff = list->GetNumItems() - list->GetDrawMark();
-					if (diff > 0) {
-						parent->AddToChangeList(&m_windowRect);
-					}
+				int diff = list->GetNumItems() - list->GetDrawMark();
+				if (diff > 0) {
+					m_parentSurface->AddToChangeList(&m_windowRect);
 				}
 			}
 		}
@@ -644,12 +641,13 @@ void Surface::ToScreen(class Surface* p_destinationSurface)
 	}
 	GdiFlush();
 	if (HasBackBuff() != 0) {
-		int num = m_changeList->GetNumItems();
-		if (num > 0) {
-			for (int i = 0; i < num; i++) {
+		int i = 0;
+		if (m_changeList->GetNumItems() > 0) {
+			do {
 				ChangeListItem* item = m_changeList->GetNItem(i);
 				CopyBackBuffToScreen(*(VsRect*) item);
-			}
+				i++;
+			} while (i < m_changeList->GetNumItems());
 		}
 	}
 	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
