@@ -203,8 +203,9 @@ bool Arena::RemoveFromArenaList(class Arena* p_arena)
 // FUNCTION: LEMBALL 0x00459d20
 MBlock* Arena::FindSmallestBlock(unsigned long p_size, char* p_description)
 {
+	MBlock* current = m_firstFreeBlock;
 	MBlock* best = 0;
-	for (MBlock* current = m_firstFreeBlock; current != 0; current = current->m_nextFree) {
+	for (; current != 0; current = current->m_nextFree) {
 		if (CheckFreeMemoryBlock(current) && p_size <= current->m_size) {
 			if (best == 0 || best->m_size > current->m_size) {
 				best = current;
