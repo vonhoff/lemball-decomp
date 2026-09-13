@@ -31,16 +31,12 @@ HiliteButtons::HiliteButtons(GWnd* p_arg0,
 {
 	int count;
 
-	m_bounds.m_height = 0;
-	m_bounds.m_width = 0;
-	m_bounds.m_y = 0;
 	m_window = p_arg0;
-	m_bounds.m_x = 0;
 	m_active = 1;
 	m_gdi = p_arg1;
 	count = (p_arg7 - p_arg6) + 1;
 	m_valueCount = count;
-	if (count < 2) {
+	if (count <= 1) {
 		m_valueCount = 1;
 	}
 	m_minimum = p_arg6;
@@ -49,11 +45,17 @@ HiliteButtons::HiliteButtons(GWnd* p_arg0,
 	m_x = p_arg2;
 	m_y = p_arg3;
 	int* binding = (int*) p_arg10;
-	if (binding == 0) {
-		m_value = 0;
+	if (binding != 0) {
+		// The original retains this comparison before the identical binding reads.
+		if (m_valueCount == 1) {
+			m_value = *binding;
+		}
+		else {
+			m_value = *binding;
+		}
 	}
 	else {
-		m_value = *binding;
+		m_value = 0;
 	}
 	if (p_arg11 != 0xffffffff) {
 		m_actionMessage = p_arg11;
