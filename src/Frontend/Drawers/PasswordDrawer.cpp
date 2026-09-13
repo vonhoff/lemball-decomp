@@ -270,7 +270,6 @@ void PasswordDrawer::ShiftHilite(int p_delta)
 // FUNCTION: LEMBALL 0x004516f0
 bool PasswordDrawer::ProcessMessages(Message* p_message)
 {
-	VsPoint pt;
 	unsigned int code;
 
 	switch (p_message->type) {
@@ -278,28 +277,33 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 		code = p_message->code;
 		switch (code) {
 		case 0x1f:
-		case 0x22:
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_buttons[g_passwordKeyMap[m_selectedButton]]->OnButtonDown(pt, 0);
-			return 1;
-		case 0x4c:
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_buttons[11]->OnButtonDown(pt, 0);
-			return 1;
-		case 0x4d:
-		case 0x4e:
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_buttons[10]->OnButtonDown(pt, 0);
+		case 0x22: {
+			PvButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
+			VsPoint pt(0, 0);
+			button->OnButtonUp(pt, 0);
 			return 1;
 		}
-		if (code >= 0x39 && code <= 0x42) {
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_buttons[code - 0x39]->OnButtonDown(pt, 0);
+		case 0x4c: {
+			PvButton* button = m_buttons[11];
+			VsPoint pt(0, 0);
+			button->OnButtonUp(pt, 0);
 			return 1;
+		}
+		case 0x4d:
+		case 0x4e: {
+			PvButton* button = m_buttons[10];
+			VsPoint pt(0, 0);
+			button->OnButtonUp(pt, 0);
+			return 1;
+		}
+		}
+		if (code >= 0x39 && code <= 0x42) {
+			{
+				PvButton* button = m_buttons[code - 0x39];
+				VsPoint pt(0, 0);
+				button->OnButtonUp(pt, 0);
+				return 1;
+			}
 		}
 		break;
 	case 4:
@@ -318,28 +322,33 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 			ShiftHilite(1);
 			return 1;
 		case 0x1f:
-		case 0x22:
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_buttons[g_passwordKeyMap[m_selectedButton]]->OnButtonUp(pt, 0);
-			return 1;
-		case 0x4c:
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_buttons[11]->OnButtonUp(pt, 0);
-			return 1;
-		case 0x4d:
-		case 0x4e:
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_buttons[10]->OnButtonUp(pt, 0);
+		case 0x22: {
+			PvButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
+			VsPoint pt(0, 0);
+			button->OnButtonDown(pt, 0);
 			return 1;
 		}
-		if (code >= 0x39 && code <= 0x42) {
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_buttons[code - 0x39]->OnButtonUp(pt, 0);
+		case 0x4c: {
+			PvButton* button = m_buttons[11];
+			VsPoint pt(0, 0);
+			button->OnButtonDown(pt, 0);
 			return 1;
+		}
+		case 0x4d:
+		case 0x4e: {
+			PvButton* button = m_buttons[10];
+			VsPoint pt(0, 0);
+			button->OnButtonDown(pt, 0);
+			return 1;
+		}
+		}
+		if (code >= 0x39 && code <= 0x42) {
+			{
+				PvButton* button = m_buttons[code - 0x39];
+				VsPoint pt(0, 0);
+				button->OnButtonDown(pt, 0);
+				return 1;
+			}
 		}
 		break;
 	case 0xb:
