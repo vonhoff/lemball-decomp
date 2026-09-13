@@ -195,7 +195,9 @@ void BaseCursor::SetMainId(unsigned int p_resourceId)
 	m_resourceId = p_resourceId;
 	if (p_resourceId != 0) {
 		m_resource = ResZrle::Load(p_resourceId);
-		m_renderState[0].m_resource = m_resource;
+		for (int i = 0; i < 1; i++) {
+			m_renderState[i].m_resource = m_resource;
+		}
 		return;
 	}
 	m_resource = 0;
