@@ -8,22 +8,15 @@
 // FUNCTION: LEMBALL 0x0047c880
 TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 {
-	WAVEOUTCAPSA* caps;
 	unsigned int i;
 	UINT deviceCount;
 	UINT deviceId;
 	int found;
-	WAVEFORMATEX* format;
 
 	m_channelCount = (unsigned int) p_channelCount;
-	m_effects = 0;
-	m_effectHandles = 0;
-	m_effectUsed = 0;
-	if (p_channelCount != 0) {
-		m_effects = (TargetWaveEffect**) operator new((unsigned int) p_channelCount * 4);
-		m_effectHandles = (unsigned int*) operator new((unsigned int) p_channelCount * 4);
-		m_effectUsed = (unsigned int*) operator new((unsigned int) p_channelCount * 4);
-	}
+	m_effects = (TargetWaveEffect**) operator new((unsigned int) p_channelCount * 4);
+	m_effectHandles = (unsigned int*) operator new((unsigned int) p_channelCount * 4);
+	m_effectUsed = (unsigned int*) operator new((unsigned int) p_channelCount * 4);
 	m_musicDevice = 0;
 	m_available = 0;
 	m_stereo = 0;
@@ -46,32 +39,36 @@ TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 		m_effectHandles[i] = 0;
 		i = i + 1;
 	}
-	m_waveOut = 0;
 	found = 0;
 	deviceCount = waveOutGetNumDevs();
+	if (deviceCount == 0) {
+		return;
+	}
 	deviceId = 0;
-	caps = &m_caps;
-	while (found == 0 && deviceId < deviceCount) {
-		if (waveOutGetDevCapsA(deviceId, caps, sizeof(WAVEOUTCAPSA)) == 0) {
-			if ((caps->dwFormats & 1) != 0) {
+	while (deviceId < deviceCount) {
+		if (found != 0) {
+			return;
+		}
+		if (waveOutGetDevCapsA(deviceId, &m_caps, sizeof(WAVEOUTCAPSA)) == 0) {
+			if ((m_caps.dwFormats & 1) != 0) {
 				m_available = 1;
 				m_deviceId = deviceId;
 				m_use16Bit = 0;
 				m_sampleRate = 0x2b11;
 			}
-			if ((caps->dwFormats & 4) != 0) {
+			if ((m_caps.dwFormats & 4) != 0) {
 				m_use16Bit = 1;
 				m_available = 1;
 				m_sampleRate = 0x2b11;
 				m_deviceId = deviceId;
 			}
-			if ((caps->dwFormats & 0x10) != 0) {
+			if ((m_caps.dwFormats & 0x10) != 0) {
 				m_available = 1;
 				m_deviceId = deviceId;
 				m_use16Bit = 0;
 				m_sampleRate = 0x5622;
 			}
-			if ((caps->dwFormats & 0x40) != 0) {
+			if ((m_caps.dwFormats & 0x40) != 0) {
 				m_use16Bit = 1;
 				m_available = 1;
 				m_sampleRate = 0x5622;
@@ -79,36 +76,30 @@ TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 			}
 		}
 		if (m_sampleRate != 0) {
-			format = &m_waveFormat;
-			format->wFormatTag = 1;
-			format->nChannels = 1;
-			format->nAvgBytesPerSec = 0;
-			format->nBlockAlign = 0;
-			format->cbSize = 0;
+			m_waveFormat.wFormatTag = 1;
 			if (m_stereo == 1) {
-				format->nChannels = 2;
+				m_waveFormat.nChannels = 2;
 			}
 			else {
-				format->nChannels = 1;
+				m_waveFormat.nChannels = 1;
 			}
 			if (m_use16Bit == 1) {
-				format->wBitsPerSample = 0x10;
+				m_waveFormat.wBitsPerSample = 0x10;
 			}
 			else {
-				format->wBitsPerSample = 8;
+				m_waveFormat.wBitsPerSample = 8;
 			}
-			format->nSamplesPerSec = m_sampleRate;
-			format->nAvgBytesPerSec = 1;
-			format->nAvgBytesPerSec = (unsigned int) format->nChannels * m_sampleRate;
-			format->nBlockAlign = (unsigned short) ((format->wBitsPerSample * format->nChannels) / 8);
+			m_waveFormat.nSamplesPerSec = m_sampleRate;
+			m_waveFormat.nAvgBytesPerSec = 1;
+			m_waveFormat.nAvgBytesPerSec = (unsigned int) m_waveFormat.nChannels * m_sampleRate;
+			m_waveFormat.nBlockAlign = (unsigned short) ((m_waveFormat.wBitsPerSample * m_waveFormat.nChannels) / 8);
 			if (m_use16Bit == 1) {
-				format->nAvgBytesPerSec = format->nAvgBytesPerSec * 2;
+				m_waveFormat.nAvgBytesPerSec = m_waveFormat.nAvgBytesPerSec * 2;
 			}
 			found = 1;
 		}
 		deviceId = deviceId + 1;
 	}
-	m_waveOut = 0;
 }
 
 // FUNCTION: LEMBALL 0x0047caa0
