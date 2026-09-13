@@ -64,42 +64,49 @@ bool Crate::Process()
 {
 	int y = m_position.m_yFixed >> 12;
 	int x = m_position.m_xFixed >> 12;
+	Map* map = g_pMap;
 	int blockX = x >> 4;
 	int blockY = y >> 4;
-	if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
+	unsigned short z;
+	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 		int cellX = x & 0xf;
 		int cellY = y & 0xf;
-		m_position.m_zFixed = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY)
-							  << 12;
+		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	else {
-		m_position.m_zFixed = 0;
+		z = 0;
 	}
-	if (m_isRemoteObject == 0) {
-		if (m_action == 25) {
-			if (m_unk0xd0 < g_dwGameTick) {
+	m_position.m_zFixed = (unsigned int) z << 12;
+	if (m_isRemoteObject != 0) {
+		if (m_pendingAction != m_action) {
+			switch (m_action) {
+			case 25:
+				SetSndEffect((eSoundEffect) 20);
+				break;
+			case 26:
 				TriggerContents();
 				SetSndEffect((eSoundEffect) 10);
-				Action((eAction) 26);
+				break;
 			}
+			m_pendingAction = m_action;
 		}
-		else if (m_action == 26 && m_unk0xd4 < g_dwGameTick) {
+		return 1;
+	}
+	switch (m_action) {
+	case 25:
+		if (m_unk0xd0 < g_dwGameTick) {
+			TriggerContents();
+			SetSndEffect((eSoundEffect) 10);
+			Action((eAction) 26);
+		}
+		break;
+	case 26:
+		if (m_unk0xd4 < g_dwGameTick) {
 			Action((eAction) 24);
 			m_heading = 0;
 		}
-		return 1;
+		break;
 	}
-	if (m_pendingAction == m_action) {
-		return 1;
-	}
-	if (m_action == 25) {
-		SetSndEffect((eSoundEffect) 20);
-	}
-	else if (m_action == 26) {
-		TriggerContents();
-		SetSndEffect((eSoundEffect) 10);
-	}
-	m_pendingAction = m_action;
 	return 1;
 }
 
