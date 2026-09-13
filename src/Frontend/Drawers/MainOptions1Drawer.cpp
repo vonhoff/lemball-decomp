@@ -92,46 +92,39 @@ void MainOptions1Drawer::Load()
 	unsigned long* toggleAnim;
 	unsigned long* modeAnim;
 	unsigned long* quitAnim;
-	void* storage;
 	Prims* primitiveBundle;
 	int i;
 
 	if (m_mode != 0) {
 		m_buttonLayout = g_anMainOptions1CompactButtonLayout;
 		previousModeAnim = &g_dwMainOptions1CompactAnimIds[0];
-		playAnim = &g_dwMainOptions1CompactAnimIds[2];
 		nextModeAnim = &g_dwMainOptions1CompactAnimIds[1];
 		toggleAnim = &g_dwMainOptions1CompactAnimIds[11];
+		playAnim = &g_dwMainOptions1CompactAnimIds[2];
 		modeAnim = &g_dwMainOptions1CompactAnimIds[6];
 		quitAnim = &g_dwMainOptions1CompactAnimIds[3];
 	}
 	else {
 		m_buttonLayout = g_anMainOptions1ButtonLayout;
 		previousModeAnim = &g_dwMainOptions1AnimIds[0];
-		playAnim = &g_dwMainOptions1AnimIds[2];
 		nextModeAnim = &g_dwMainOptions1AnimIds[1];
 		toggleAnim = &g_dwMainOptions1AnimIds[10];
+		playAnim = &g_dwMainOptions1AnimIds[2];
 		modeAnim = &g_dwMainOptions1AnimIds[5];
 		quitAnim = &g_dwMainOptions1AnimIds[4];
 	}
 	i = 1;
 	primitiveBundle = m_primitiveBundle;
 	do {
-		primitiveBundle->m_primitive.m_x =
-			(short) (((int) m_display->m_rect.m_width - (int) m_backgroundBitmap->m_x) / 2);
+		ResBitmap* bitmap = m_backgroundBitmap;
+		primitiveBundle->m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) bitmap->m_x) / 2);
 		primitiveBundle->m_primitive.m_y = 0;
-		primitiveBundle->m_primitive.m_resource = m_backgroundBitmap;
+		primitiveBundle->m_primitive.m_resource = bitmap;
 		primitiveBundle->m_primitive.m_flags = 0x800;
 		primitiveBundle->m_primitive.m_remap = 0;
 		primitiveBundle++;
 	} while (--i != 0);
-	storage = operator new(0x27c);
-	if (storage == 0) {
-		m_gunController = 0;
-	}
-	else {
-		m_gunController = new (storage) GunController((GWnd*) m_display, m_gdi, 6, m_mode);
-	}
+	m_gunController = new GunController((GWnd*) m_display, m_gdi, 6, m_mode);
 	m_gunController->AddButton(m_buttonLayout[0],
 							   m_buttonLayout[1],
 							   previousModeAnim,
