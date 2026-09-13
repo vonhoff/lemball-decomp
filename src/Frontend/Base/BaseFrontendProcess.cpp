@@ -83,24 +83,22 @@ void BaseFrontendProcess::Process()
 // FUNCTION: LEMBALL 0x00446860
 void BaseFrontendProcess::Action(int p_action, int p_stage)
 {
-	UserActionMessage* message;
 	unsigned long started;
 	unsigned long now;
 
-	message = (UserActionMessage*) m_userActionMessage;
-	if (message->m_pendingSendCount != 0) {
+	if (((UserActionMessage*) m_userActionMessage)->m_pendingSendCount != 0) {
 		started = CurrentMilliTimer();
-		while (message->m_pendingSendCount != 0) {
+		while (((UserActionMessage*) m_userActionMessage)->m_pendingSendCount != 0) {
 			now = CurrentMilliTimer();
-			if (1999 < now - started) {
+			if (now - started >= 2000) {
 				break;
 			}
 			g_pBaseNetwork->WaitProcess();
 		}
 	}
-	message->m_action = (eUserActions) p_action;
-	message->m_stage = (eUserActionStages) p_stage;
-	message->Send(g_pActiveConnection);
+	((UserActionMessage*) m_userActionMessage)->m_action = (eUserActions) p_action;
+	((UserActionMessage*) m_userActionMessage)->m_stage = (eUserActionStages) p_stage;
+	((UserActionMessage*) m_userActionMessage)->Send(g_pActiveConnection);
 }
 
 // 68K 0x10801bde ProcessMsg__20CBaseFrontendProcessFP10tagMESSAGE
