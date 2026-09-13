@@ -180,11 +180,14 @@ void HiliteButtons::UnLoadFaces()
 void HiliteButtons::UpdateAnimId()
 {
 	if (m_binding != 0) {
-		m_value = *m_binding;
+		if (m_valueCount == 1) {
+			m_value = *m_binding;
+		}
+		else {
+			m_value = *m_binding;
+		}
 	}
-	if (m_button != 0) {
-		m_button->SetAnimId(m_animIds[m_value - m_minimum]);
-	}
+	m_button->SetAnimId(m_animIds[m_value - m_minimum]);
 }
 
 // 68K 0x10804be0 __dt__14CHiliteButtonsFv
