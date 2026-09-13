@@ -326,10 +326,6 @@ void NetworkOptionsDrawer::DrawFrame(int p_position)
 void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_remap)
 {
 	VsSize size;
-	VsSize advance;
-	VsPoint posName;
-	VsPoint posAddress;
-	VsPoint posPeer;
 	char* gameName;
 	char* peerName;
 	char* addressStr;
@@ -339,51 +335,49 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 	int len;
 
 	if (g_pNetworkManager != 0) {
+		Connect** connections = g_pNetworkManager->m_connections;
 		if (g_pNetworkManager->m_gameMessages[p_index].m_valid != 0) {
-			NetworkOptionsLayout* layout = m_layoutTable;
 			font = m_textManager->GetFont(m_chalkFontId);
-			posName.m_x = (short) layout->m_headerNameX;
-			posAddress.m_x = (short) layout->m_headerIpX;
-			posPeer.m_x = (short) layout->m_headerComputerX;
+			NetworkOptionsLayout* layout = m_layoutTable;
+			NetworkGameMessage* entries = g_pNetworkManager->m_gameMessages;
+			VsPoint posName((short) layout->m_headerNameX, (short) layout->m_playerListY);
+			VsPoint posAddress((short) layout->m_headerIpX, (short) layout->m_playerListY);
+			VsPoint posPeer((short) layout->m_headerComputerX, (short) layout->m_playerListY);
 			remap = 0;
-			int yOffset = (short) layout->m_rowStride * (short) p_value;
-			posName.m_y = (short) layout->m_playerListY + yOffset;
-			posAddress.m_y = (short) layout->m_playerListY + yOffset;
-			posPeer.m_y = (short) layout->m_playerListY + yOffset;
+			short yOffset = (short) layout->m_rowStride * (short) p_value;
+			posName.m_y += yOffset;
+			posAddress.m_y += yOffset;
+			posPeer.m_y += yOffset;
 			if (p_remap != 6) {
 				remap = (Remap*) m_remaps[p_remap];
 			}
-			gameName = g_pNetworkManager->m_gameMessages[p_index].m_gameName;
-			peerName = g_pNetworkManager->m_gameMessages[p_index].m_peerName;
-			if (g_pNetworkManager->m_connections[p_index] == 0 ||
-				g_pNetworkManager->m_connections[p_index]->m_address == 0) {
-				return;
-			}
-			addressStr = g_pNetworkManager->m_connections[p_index]->m_address->GetStr();
-			memcpy(trimmedPeerName, peerName, 0x14);
+			gameName = entries[p_index].m_gameName;
+			peerName = entries[p_index].m_peerName;
+			addressStr = connections[p_index]->m_destinationAddress->GetStr();
+			strncpy(trimmedPeerName, peerName, 0x14);
 			len = 0x14;
 			do {
 				trimmedPeerName[len] = 0;
-				font->GetSize(&size, trimmedPeerName, 0x20);
+				VsSize* measuredSize = font->GetSize(&size, trimmedPeerName, 0x20);
 				len--;
-			} while (layout->m_peerNameWidth < (int) size.m_width);
+				if (m_layoutTable->m_peerNameWidth >= (int) measuredSize->m_width) {
+					break;
+				}
+			} while (1);
 
-			font->GetSize(&size, gameName, 0x20);
-			posName.m_x -= size.m_width / 2;
-			font->GetSize(&size, addressStr, 0x20);
-			posAddress.m_x -= size.m_width / 2;
-			font->GetSize(&size, peerName, 0x20);
-			posPeer.m_x -= size.m_width / 2;
+			posName.m_x -= font->GetSize(&size, gameName, 0x20)->m_width / 2;
+			posAddress.m_x -= font->GetSize(&size, addressStr, 0x20)->m_width / 2;
+			posPeer.m_x -= font->GetSize(&size, peerName, 0x20)->m_width / 2;
 
-			advance.m_width = 0;
-			advance.m_height = 0;
-			m_textManager->DrawString(m_gdi, posName, advance, m_chalkFontId, gameName, 0x20, remap);
-			advance.m_width = 0;
-			advance.m_height = 0;
-			m_textManager->DrawString(m_gdi, posAddress, advance, m_chalkFontId, addressStr, 0x20, remap);
-			advance.m_width = 0;
-			advance.m_height = 0;
-			m_textManager->DrawString(m_gdi, posPeer, advance, m_chalkFontId, peerName, 0x20, remap);
+			size.m_width = 0;
+			size.m_height = 0;
+			m_textManager->DrawString(m_gdi, posName, size, m_chalkFontId, gameName, 0x20, remap);
+			size.m_width = 0;
+			size.m_height = 0;
+			m_textManager->DrawString(m_gdi, posAddress, size, m_chalkFontId, addressStr, 0x20, remap);
+			size.m_width = 0;
+			size.m_height = 0;
+			m_textManager->DrawString(m_gdi, posPeer, size, m_chalkFontId, peerName, 0x20, remap);
 			p_value++;
 		}
 	}
