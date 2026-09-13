@@ -117,35 +117,33 @@ bool TargetGraphicsDriver::BlitWrappedBitmap(TargetDrawingContext* p_destination
 											 VsRect* p_sourceRect,
 											 PvGdiBitmap* p_bitmap)
 {
-	short scale;
+	int scale;
 	VsRect* rect0;
 	VsRect* rect1;
-	unsigned char copied;
-	VsRect destRect;
+	bool copied;
 
 	copied = 0;
 	rect0 = 0;
 	rect1 = 0;
 	m_currentBitmap = p_bitmap;
-	scale = p_destinationRect->m_width / p_sourceRect->m_width;
+	scale = (short) (p_destinationRect->m_width / p_sourceRect->m_width);
 	p_bitmap->GetRects(*p_sourceRect, rect0, rect1);
+	bool copiedSecond = 0;
 	if (rect0 != 0) {
-		destRect.m_width = (short) (rect0->m_width * scale);
-		destRect.m_height = (short) (rect0->m_height * scale);
-		destRect.m_x = p_destinationRect->m_x;
-		destRect.m_y = p_destinationRect->m_y;
-		StretchBltContexts(p_destination, &destRect, p_source, rect0);
-		copied = 1;
+		VsPoint* point = p_destinationRect;
+		short height = (short) (rect0->m_height * scale);
+		short width = (short) (rect0->m_width * scale);
+		VsRect destRect(point->m_x, point->m_y, width, height);
+		copied = StretchBltContexts(p_destination, &destRect, p_source, rect0);
 	}
 	if (rect1 != 0) {
-		destRect.m_width = (short) (rect1->m_width * scale);
-		destRect.m_height = (short) (rect1->m_height * scale);
-		destRect.m_x = p_destinationRect->m_x;
-		destRect.m_y = (short) (rect0->m_height * scale + p_destinationRect->m_y);
-		StretchBltContexts(p_destination, &destRect, p_source, rect1);
-		copied = 1;
+		short height = (short) (rect1->m_height * scale);
+		short y = (short) (rect0->m_height * scale + p_destinationRect->m_y);
+		short width = (short) (rect1->m_width * scale);
+		VsRect destRect(p_destinationRect->m_x, y, width, height);
+		copiedSecond = StretchBltContexts(p_destination, &destRect, p_source, rect1);
 	}
-	return copied != 0;
+	return copied | copiedSecond;
 }
 
 // FUNCTION: LEMBALL 0x00458200
