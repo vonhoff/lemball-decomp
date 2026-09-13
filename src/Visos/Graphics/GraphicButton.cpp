@@ -130,25 +130,27 @@ void GraphicButton::OnDestroy()
 void GraphicButton::DrawButton()
 {
 	short x = m_graphicOffsetX;
+	unsigned int pressed;
 	short y = m_graphicOffsetY;
-	unsigned int pressed = 0;
 
-	if (m_enabled != 0 && HotAreaHandler::m_active != 0) {
-		pressed = 1;
+	if (m_enabled == 0 || (pressed = 1, HotAreaHandler::m_active == 0)) {
+		pressed = 0;
 	}
 	if ((m_alignmentFlags & 0x40) != 0 && pressed != 0) {
 		x++;
 		y++;
 	}
 	m_gdi->m_renderTarget->GetCurrDb();
+	Remap* remap = (Remap*) m_frame;
+	ResAnim* animation = m_animation;
 	Anim* primitive = (Anim*) m_primitive;
 	primitive->m_x = x;
 	primitive->m_y = y;
-	primitive->m_animResource = m_animation;
+	primitive->m_animResource = animation;
 	primitive->m_animIndex = (unsigned int) (pressed >= 1);
 	primitive->m_flags = 0;
-	primitive->m_remap = (Remap*) m_frame;
-	primitive->Draw(m_gdi);
+	primitive->m_remap = remap;
+	((Anim*) m_primitive)->Draw(m_gdi);
 }
 
 // 68K 0x10210966 __dt__14CGraphicButtonFv
