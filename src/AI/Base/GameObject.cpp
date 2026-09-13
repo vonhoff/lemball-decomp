@@ -1141,12 +1141,13 @@ bool GameObject::OnLift(Coord3d& p_arg0)
 		return false;
 	}
 
+	int x = m_position.m_xFixed >> 12;
 	int left = (int) p_arg0.m_x - 8;
 	int top = (int) p_arg0.m_y - 8;
 	int right = (int) p_arg0.m_x + 7;
 	int bottom = (int) p_arg0.m_y + 7;
-	if (left <= (m_position.m_xFixed >> 12) && right >= (m_position.m_xFixed >> 12) &&
-		(m_position.m_yFixed >> 12) >= top && (m_position.m_yFixed >> 12) <= bottom) {
+	int y = m_position.m_yFixed >> 12;
+	if (left <= x && right >= x && y >= top && y <= bottom) {
 		Map* map = g_pMap;
 		int blockX = left >> 4;
 		int blockY = top >> 4;
