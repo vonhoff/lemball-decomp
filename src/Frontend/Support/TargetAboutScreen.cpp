@@ -48,28 +48,29 @@ TargetAboutScreen::TargetAboutScreen(Main2DDisplay* p_display, Gdi* p_gdi, const
 	g_pMasterInputQueue->Attach(this, 0);
 	m_display = p_display;
 	m_gdi = p_gdi;
-	m_width = p_rect.m_width;
-	m_height = p_rect.m_height;
+	m_size.m_width = p_rect.m_width;
+	m_size.m_height = p_rect.m_height;
 	p_display->AttachPalette(RES_REGISTRATION_VISOS_PALETTE);
 	m_backgroundBitmap = ResBitmap::Load(RES_REGISTRATION_VISOS_LOGO);
 	m_textWindow = 0;
 	storage = operator new(0x24);
-	if (storage == 0) {
-		m_textManager = 0;
+	if (storage != 0) {
+		m_textManager = new (storage) TextManager(0x2b6, 1, 10, 0);
 	}
 	else {
-		m_textManager = new (storage) TextManager(0x2b6, 1, 10, 0);
+		m_textManager = 0;
 	}
 	m_textManager->LoadFont(RES_GAME_FONT3);
 	m_aboutString = ResString::Load(RES_REGISTRATION_FINGERPRINT);
-	if (m_aboutString->m_loaded == 0) {
-		m_aboutString->LoadData();
+	ResString* aboutString = m_aboutString;
+	if (aboutString->m_loaded != 0) {
+		aboutString->m_age = 0;
 	}
 	else {
-		m_aboutString->m_age = 0;
+		aboutString->LoadData();
 	}
-	m_aboutString->m_directUseCount = m_aboutString->m_directUseCount + 1;
-	m_aboutText = (char*) m_aboutString->m_data;
+	aboutString->m_directUseCount = aboutString->m_directUseCount + 1;
+	m_aboutText = (char*) aboutString->m_data;
 	m_startTime = CurrentMilliTimer();
 	m_endTime = m_startTime + 5000;
 }
@@ -111,12 +112,12 @@ void TargetAboutScreen::DrawRegistrationText()
 
 	font = m_textManager->GetFont(RES_GAME_FONT3);
 	font->GetSize(&size, g_szRegisteredTo, 0x20);
-	labelY = (int) (m_height / 2) - (int) (size.m_height / 2);
+	labelY = (int) (m_size.m_height / 2) - (int) (size.m_height / 2);
 	{
 		VsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		VsPoint position((short) (m_width / 2 - size.m_width / 2), (short) labelY);
+		VsPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY);
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, 0);
 	}
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
@@ -130,7 +131,7 @@ void TargetAboutScreen::DrawRegistrationText()
 		VsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		VsPoint position((short) (m_width - size.m_width) / 2, (short) (m_height - size.m_height) / 2);
+		VsPoint position((short) (m_size.m_width - size.m_width) / 2, (short) (m_size.m_height - size.m_height) / 2);
 		position.m_y += size.m_height * 4;
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, 0x20, 0);
 	}
@@ -150,7 +151,7 @@ void TargetAboutScreen::DrawRegistrationText()
 		VsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		VsPoint position((short) (m_width / 2 - size.m_width / 2), (short) labelY + 0x23);
+		VsPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY + 0x23);
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szAboutDecodeBuffer, 0x20, 0);
 	}
 	m_textManager->ResetPrimitives();
@@ -163,8 +164,8 @@ void TargetAboutScreen::OnSize(const VsRect& p_rect)
 	int textY;
 	int textX;
 
-	m_width = p_rect.m_width;
-	m_height = p_rect.m_height;
+	m_size.m_width = p_rect.m_width;
+	m_size.m_height = p_rect.m_height;
 	textY = (int) p_rect.m_height - 0x20;
 	textX = ((int) p_rect.m_width - 0x60) / 2;
 	if (m_textWindow != 0) {
@@ -197,11 +198,11 @@ void TargetAboutScreen::DrawChangedRegion()
 			index = index + 1;
 		}
 		if (0 < (int) area.m_height * (int) area.m_width) {
-			if (m_width < area.m_width) {
-				area.m_width = m_width;
+			if (m_size.m_width < area.m_width) {
+				area.m_width = m_size.m_width;
 			}
-			if (m_height < area.m_height) {
-				area.m_height = m_height;
+			if (m_size.m_height < area.m_height) {
+				area.m_height = m_size.m_height;
 			}
 			m_rects[0].m_left = area.m_width;
 			m_rects[0].m_top = area.m_height;
@@ -210,14 +211,14 @@ void TargetAboutScreen::DrawChangedRegion()
 			m_rects[0].m_color = 0;
 			m_rects[0].Draw(m_gdi);
 			bitmap = m_backgroundBitmap;
-			m_line.m_x1 = m_width;
+			m_line.m_x1 = m_size.m_width;
 			m_line.m_color = 0;
-			m_line.m_y1 = m_height;
+			m_line.m_y1 = m_size.m_height;
 			m_line.m_x2 = 0;
 			m_line.m_y2 = 0;
 			m_line.Draw(m_gdi);
-			m_bitmap.m_y = (short) (((int) m_height - (int) (short) bitmap->m_y) / 2);
-			m_bitmap.m_x = (short) (((int) m_width - (int) (short) bitmap->m_x) / 2);
+			m_bitmap.m_y = (short) (((int) m_size.m_height - (int) (short) bitmap->m_y) / 2);
+			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) (short) bitmap->m_x) / 2);
 			m_bitmap.m_resource = m_backgroundBitmap;
 			m_bitmap.m_remap = 0;
 			m_bitmap.m_flags = 8;

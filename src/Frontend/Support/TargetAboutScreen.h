@@ -31,8 +31,7 @@ public:
 
 private:
 	unsigned int m_returnState;    // 0x14
-	short m_width;                 // 0x18
-	short m_height;                // 0x1a
+	VsSize m_size;                 // 0x18
 	Main2DDisplay* m_display;      // 0x1c
 	Gdi* m_gdi;                    // 0x20
 	Line m_line;                   // 0x24
