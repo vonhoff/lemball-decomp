@@ -138,22 +138,29 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 	HotAreaHandler* handler;
 	HotAreaElement* entry;
 	HotAreaElement* previous;
-	VsPoint localPoint;
-	Message fallback = {7};
-	unsigned short type;
+	Message fallback;
+	unsigned int type;
 	short scaledX;
 	short scaledY;
 	short scaledWidth;
 	short scaledHeight;
 
+	fallback.type = 7;
+	fallback.time = 0;
+	fallback.code = 0;
+	fallback.payload = 0;
+	fallback.source = 0;
 	if (p_message == 0) {
 		p_message = &fallback;
 	}
 	type = p_message->type;
-	localPoint.m_y = (short) ((int) (short) (p_point.m_y - m_y) / (int) m_scale);
-	localPoint.m_x = (short) ((int) (short) (p_point.m_x - m_x) / (int) m_scale);
+	VsPoint localPoint((short) ((int) (short) (p_point.m_x - m_x) / (int) m_scale),
+					   (short) ((int) (short) (p_point.m_y - m_y) / (int) m_scale));
 	entry = m_tail;
-	while (entry != 0) {
+	for (;;) {
+		if (entry == 0) {
+			break;
+		}
 		handler = entry->m_handler;
 		entry = entry->m_previous;
 		if (handler->m_active != 0 && handler->InArea(localPoint) == 0) {
