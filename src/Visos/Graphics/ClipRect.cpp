@@ -27,6 +27,7 @@ void ClipRect::Render(Gdi* p_gdi)
 }
 
 // 68K 0x10101afa __dt__9CClipRectFv
+// FUNCTION: LEMBALL 0x00439730
 ClipRect::~ClipRect()
 {
 }

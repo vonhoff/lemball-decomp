@@ -104,12 +104,11 @@ void PvButton::Initialise()
 // FUNCTION: LEMBALL 0x00467dd0
 PvButton::~PvButton()
 {
-	if (m_lifecycleRefs == 1) {
+	if (m_ownerWindow->m_lifecycleRefs == 1) {
 		Destroy();
 	}
 	if (m_primitive != 0) {
 		delete m_primitive;
-		m_primitive = 0;
 	}
 }
 
