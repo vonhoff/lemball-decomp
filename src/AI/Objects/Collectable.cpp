@@ -71,11 +71,11 @@ bool Collectable::Process()
 					}
 					m_position.m_zFixed = (int) z << 12;
 				}
-				Ai* ai = g_pAI;
 				Pt3 pt;
 				pt.m_x = m_position.m_xFixed >> 12;
 				pt.m_y = m_position.m_yFixed >> 12;
 				pt.m_z = m_position.m_zFixed >> 12;
+				Ai* ai = g_pAI;
 				ai->m_collisionExclude = 0;
 				ai->m_collisionPoint = pt;
 				ai->m_collisionIndex = 0;
