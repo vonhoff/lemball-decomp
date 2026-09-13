@@ -178,7 +178,7 @@ protected:
 	int m_heading;                        // 0x38
 	undefined4 m_unk0x3c;                 // 0x3c
 	AiCoord m_spawnPosition;              // 0x40
-	C3DVector m_flightVelocity;           // 0x4c
+	AiCoord m_flightVelocity;             // 0x4c
 	undefined4 m_unk0x58;                 // 0x58
 	GameObject* m_activator;              // 0x5c
 	BaseObjectManager* m_manager;         // 0x60
@@ -212,7 +212,7 @@ protected:
 	unsigned int m_actionDeadline;        // 0xcc
 	unsigned int m_unk0xd0;               // 0xd0
 	unsigned int m_unk0xd4;               // 0xd4
-	C3DVector m_flightOrigin;             // 0xd8
+	AiCoord m_flightOrigin;               // 0xd8
 	AiCoord m_auxiliaryPosition;          // 0xe4
 	unsigned int m_isFlying;              // 0xf0
 	AiCoord m_groundPosition;             // 0xf4

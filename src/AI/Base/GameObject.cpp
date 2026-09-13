@@ -398,35 +398,26 @@ int GameObject::UsableState()
 // 68K 0x10608fec __ct__11CGameObjectF11eObjectTypeUsUs
 // FUNCTION: LEMBALL 0x00414f30
 GameObject::GameObject(eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity)
+	: m_collisionMaxX(-1), m_collisionMaxY(-1), m_collisionMinX(0), m_collisionMinY(0), m_collisionMinZ(0),
+	  m_collisionMaxZ(-1), m_moveStartXFixed(DEBUG_SENTINEL), m_moveStartYFixed(DEBUG_SENTINEL),
+	  m_moveDeltaXFixed(DEBUG_SENTINEL), m_moveDeltaYFixed(DEBUG_SENTINEL)
 {
-	m_collisionMaxX = -1;
-	m_collisionMaxY = -1;
-	m_collisionMinX = 0;
-	m_collisionMinY = 0;
-	m_collisionMinZ = 0;
-	m_collisionMaxZ = -1;
-	m_collisionFlags = p_collisionFlags;
 	m_objectType = p_objectType;
-	if (p_destinationCapacity == 0) {
-		m_destinationList = 0;
+	m_collisionFlags = p_collisionFlags;
+	AiDestinationList* list;
+	if (p_destinationCapacity != 0 && (list = new AiDestinationList) != 0) {
+		list->m_count = 0;
+		list->m_capacity = p_destinationCapacity;
+		list->m_entries = new AiDestinationEntry[p_destinationCapacity];
+		m_destinationList = list;
 	}
 	else {
-		AiDestinationList* list = new AiDestinationList;
-		if (list == 0) {
-			m_destinationList = 0;
-		}
-		else {
-			list->m_count = 0;
-			list->m_capacity = p_destinationCapacity;
-			AiDestinationEntry* entries = new AiDestinationEntry[p_destinationCapacity];
-			list->m_entries = entries;
-			m_destinationList = list;
-		}
+		m_destinationList = 0;
 	}
 	m_linkedObjectId = 0xffff;
 	bool found = false;
 	int i = 0;
-	if (g_wObjectCount != 0) {
+	if (0 < g_wObjectCount) {
 		do {
 			if (g_pObjects[i] == 0) {
 				m_objectId = (unsigned short) i;
