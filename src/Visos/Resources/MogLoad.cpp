@@ -254,12 +254,11 @@ void MogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 // FUNCTION: LEMBALL 0x0045c2a0
 void MogDir::FindFirst(Chunk& p_chunk, unsigned int p_type)
 {
-	int* iterator = &m_iteratorIndex;
-	int* first = &m_firstIndex;
+	Chunk* iterator = (Chunk*) &m_iteratorIndex;
+	Chunk* first = (Chunk*) &m_firstIndex;
 
-	iterator[0] = first[0];
-	iterator[1] = first[1];
-	*iterator = -1;
+	*iterator = *first;
+	m_iteratorIndex = -1;
 	FindNext(p_chunk, p_type);
 }
 
