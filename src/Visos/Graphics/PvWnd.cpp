@@ -336,7 +336,6 @@ void PvWnd::InternalOnSize()
 {
 	HotAreaList* list;
 	VsRect area;
-	VsPoint origin;
 	VsPoint* innerXY;
 	VsPoint* rectXY;
 
@@ -344,8 +343,8 @@ void PvWnd::InternalOnSize()
 	if (list == 0) {
 		return;
 	}
-	area.m_x = 0;
 	area.m_y = 0;
+	area.m_x = 0;
 	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
 		area.m_width = m_innerRect.m_width;
 		area.m_height = m_innerRect.m_height;
@@ -363,8 +362,9 @@ void PvWnd::InternalOnSize()
 		else {
 			rectXY = 0;
 		}
+		short y = rectXY->m_y;
 		area.m_x = (short) (area.m_x + rectXY->m_x);
-		area.m_y = (short) (area.m_y + rectXY->m_y);
+		area.m_y = (short) (area.m_y + y);
 	}
 	else {
 		area.m_width = m_rect.m_width;
@@ -378,8 +378,7 @@ void PvWnd::InternalOnSize()
 		area.m_x = rectXY->m_x;
 		area.m_y = rectXY->m_y;
 	}
-	origin.m_x = m_relativeTopLeft.m_x;
-	origin.m_y = m_relativeTopLeft.m_y;
+	VsPoint origin(m_relativeTopLeft.m_x, m_relativeTopLeft.m_y);
 	if (m_parent == 0) {
 		origin.m_x = 0;
 		origin.m_y = 0;
