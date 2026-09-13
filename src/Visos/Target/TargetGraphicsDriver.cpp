@@ -159,72 +159,56 @@ long __stdcall TargetWinGDrawCodec_DriverProc(unsigned int p_driverId,
 											  long p_param1,
 											  long p_param2)
 {
-	TargetWinGDrawCodecState* state;
-
-	state = (TargetWinGDrawCodecState*) p_driverId;
-	if (p_message <= 0x400f) {
-		if (p_message == 0x400f) {
-			return TargetWinGDrawCodec_Begin(state, (void*) p_param1, p_param2);
-		}
-		switch (p_message) {
-		case 1:
-		case 2:
-		case 5:
-		case 6:
-		case 7:
-		case 9:
-		case 10:
+	TargetWinGDrawCodecState* state = (TargetWinGDrawCodecState*) p_driverId;
+	switch (p_message) {
+	case 1:
+	case 6:
+		return 1;
+	case 2:
+	case 5:
+		return 1;
+	case 3:
+		if (p_param2 == 0) {
 			return 1;
-		case 3:
-			if (p_param2 != 0) {
-				return (long) TargetWinGDrawCodec_Open((void*) p_param2);
-			}
-			return 1;
-		case 4:
-			return TargetWinGDrawCodec_Close(state);
-		case 8:
-			return 0;
 		}
-	}
-	else if (p_message <= 0x401f) {
-		if (p_message == 0x401f) {
-			return TargetWinGDrawCodec_QueryFormat(state, (void*) p_param1);
-		}
-		if (p_message == 0x4015) {
-			return TargetWinGDrawCodec_End(state);
-		}
-	}
-	else if (p_message <= 0x4024) {
-		if (p_message == 0x4024) {
-			state->m_targetDC = (void*) p_param1;
-		}
-		else if (p_message == 0x4021) {
-			return TargetWinGDrawCodec_Draw(state, (void*) p_param1, p_param2);
-		}
-	}
-	else if (p_message <= 0x5001) {
-		if (p_message > 0x4fff) {
-			return 0;
-		}
-		if (p_message == 0x4032) {
-			return TargetWinGDrawCodec_SuggestFormat(state, (void*) p_param1, p_param2);
-		}
-		if (p_message == 0x4033) {
-			return TargetWinGDrawCodec_ChangePalette(state, (void*) p_param1);
-		}
-	}
-	else {
-		if (p_message == 0x5002) {
-			return (long) TargetWinGDrawCodec_GetInfo((void*) p_param1, (unsigned int) p_param2);
-		}
-		if (p_message > 0x5009 && p_message < 0x500c) {
-			return -1;
-		}
-	}
-	if (p_message > 0x3fff) {
+		return (long) TargetWinGDrawCodec_Open((void*) p_param2);
+	case 4:
+		return TargetWinGDrawCodec_Close(state);
+	case 7:
+		return 1;
+	case 8:
+		return 0;
+	case 9:
+	case 10:
+		return 1;
+	case 0x400f:
+		return TargetWinGDrawCodec_Begin(state, (void*) p_param1, p_param2);
+	case 0x4015:
+		return TargetWinGDrawCodec_End(state);
+	case 0x401f:
+		return TargetWinGDrawCodec_QueryFormat(state, (void*) p_param1);
+	case 0x4021:
+		return TargetWinGDrawCodec_Draw(state, (void*) p_param1, p_param2);
+	case 0x4024:
+		state->m_targetDC = (void*) p_param1;
+		break;
+	case 0x4032:
+		return TargetWinGDrawCodec_SuggestFormat(state, (void*) p_param1, p_param2);
+	case 0x4033:
+		return TargetWinGDrawCodec_ChangePalette(state, (void*) p_param1);
+	case 0x5000:
+	case 0x5001:
+		return 0;
+	case 0x5002:
+		return (long) TargetWinGDrawCodec_GetInfo((void*) p_param1, (unsigned int) p_param2);
+	case 0x500a:
+	case 0x500b:
 		return -1;
 	}
-	return DefDriverProc(p_driverId, p_driverHandle, p_message, p_param1, p_param2);
+	if (p_message < 0x4000) {
+		return DefDriverProc(p_driverId, p_driverHandle, p_message, p_param1, p_param2);
+	}
+	return -1;
 }
 
 // FUNCTION: LEMBALL 0x00479190
