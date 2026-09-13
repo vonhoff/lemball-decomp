@@ -1042,34 +1042,24 @@ char g_timeText[5];
 // FUNCTION: LEMBALL 0x00437e90
 void C2D::SetMouseShape()
 {
-	VsPoint screen;
-	VsPoint game;
 	int objectIndex;
 	int zoom;
-	short originX;
-	short originY;
-	unsigned int groundFlag;
 
-	groundFlag = g_nMouseShapeOnGround;
 	if (m_paused != 0) {
-		g_nMouseShapeOnGround = groundFlag;
 		return;
 	}
+	const VsPoint* origin = &m_display->m_rect;
 	zoom = (int) m_display->m_zoom;
-	originX = m_display->m_rect.m_x;
-	originY = m_display->m_rect.m_y;
-	screen.m_x = (short) ((int) (short) (g_pCursor->m_position.m_x - originX) / zoom);
-	screen.m_y = (short) ((int) (short) (g_pCursor->m_position.m_y - originY) / zoom);
-	if (m_panel->MouseInPanel(screen) != 0) {
+	short screenX = (short) ((int) (short) (g_pCursor->m_position.m_x - origin->m_x) / zoom);
+	short screenY = (short) ((int) (short) (g_pCursor->m_position.m_y - origin->m_y) / zoom);
+	if (m_panel->MouseInPanel(VsPoint(screenX, screenY)) != 0) {
 		m_cursorState = 3;
 		return;
 	}
-	game.m_x = (short) (m_viewOriginX + m_cursorGamePoint.m_x);
-	game.m_y = (short) (m_cursorGamePoint.m_y + (short) m_viewOriginY);
-	if (screen.m_x < m_x || (short) (m_width + m_x) <= screen.m_x || screen.m_y < m_y ||
-		(short) (m_height + m_y) <= screen.m_y) {
+	VsPoint game((short) (m_viewOriginX + m_cursorGamePoint.m_x),
+				 (short) (m_cursorGamePoint.m_y + (short) m_viewOriginY));
+	if (screenX < m_x || (short) (m_width + m_x) <= screenX || screenY < m_y || (short) (m_height + m_y) <= screenY) {
 		CursorChangeType(1, 0);
-		groundFlag = g_nMouseShapeOnGround;
 	}
 	else if (FindGameObject(game, objectIndex, 0) != 0) {
 		if (m_cursorState != 2) {
@@ -1097,7 +1087,6 @@ void C2D::SetMouseShape()
 			CursorChangeType(1, 2);
 			return;
 		}
-		groundFlag = 0;
 		if (m_cursorTimestamp + 100 < g_dwSimulationTimestamp) {
 			m_cursorBlinkPhase = (unsigned short) (m_cursorBlinkPhase ^ 1);
 			m_cursorTimestamp = g_dwSimulationTimestamp;
@@ -1105,7 +1094,6 @@ void C2D::SetMouseShape()
 			return;
 		}
 	}
-	g_nMouseShapeOnGround = groundFlag;
 }
 
 // 68K 0x10b09436 SendCursorMsg__3C2DFv
