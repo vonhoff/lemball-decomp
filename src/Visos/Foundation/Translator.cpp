@@ -11,18 +11,21 @@
 int Translator::ProcessMsg(Message* p_message)
 {
 	Message translated;
-	int index;
 	TargetInputTranslationEntry* entry;
+	int index;
 	short keyState;
+	unsigned short type = p_message->type;
 
 	translated.time = p_message->time;
-	if (p_message->type != 0 && p_message->type < 3) {
+	switch ((int) type) {
+	case 1:
+	case 2:
 		index = 0;
 		entry = g_dwInputTranslationPairs;
-		while (index < 61) {
+		do {
 			if (entry->m_platformCode == (unsigned int) p_message->code) {
 				translated.type = 3;
-				if (p_message->type != 1) {
+				if (type != 1) {
 					translated.type = 4;
 				}
 				translated.code = (int) g_dwInputTranslationPairs[index].m_inputCode;
@@ -32,14 +35,12 @@ int Translator::ProcessMsg(Message* p_message)
 						translated.code = 0x4a;
 					}
 				}
-				translated.payload = 0;
-				translated.source = 0;
 				g_pMasterInputQueue->Post(translated);
 				return 1;
 			}
 			entry = entry + 1;
 			index = index + 1;
-		}
+		} while (entry < g_dwInputTranslationPairs + 61);
 	}
 	m_processedCount = m_processedCount + 1;
 	return 0;
