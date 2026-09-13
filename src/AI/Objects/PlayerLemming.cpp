@@ -259,7 +259,7 @@ void PlayerLemming::Fire()
 {
 	AiCoord start;
 	start.m_xFixed = m_position.m_xFixed;
-	short facing = m_facingDirection;
+	int facing = m_facingDirection;
 	start.m_yFixed = m_position.m_yFixed;
 	start.m_zFixed = m_position.m_zFixed + 0xa000;
 	switch (m_action) {
