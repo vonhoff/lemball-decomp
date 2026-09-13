@@ -508,21 +508,21 @@ void PasswordDrawer::DrawButtons()
 void PasswordDrawer::DrawHilite()
 {
 	Gdi* savedGdi;
-	VsPoint position;
 	Surface* surface;
 
 	surface = ((Gdi*) m_hiliteSurface)->m_renderTarget;
+	short width = surface->m_windowRect.m_width;
+	short height = surface->m_windowRect.m_height;
 	m_hiliteRect.m_color = 0x10000;
-	m_hiliteRect.m_left = surface->m_windowRect.m_width;
-	m_hiliteRect.m_top = surface->m_windowRect.m_height;
+	m_hiliteRect.m_left = width;
+	m_hiliteRect.m_top = height;
 	m_hiliteRect.m_right = 0;
 	m_hiliteRect.m_bottom = 0;
 	m_hiliteRect.Draw((Gdi*) m_hiliteSurface);
+	VsPoint position((short) m_hiliteX, (short) m_hiliteY);
 	savedGdi = AnimsManager::m_gdi;
 	m_hiliteAnim.m_frameState = 0;
 	AnimsManager::m_gdi = (Gdi*) m_hiliteSurface;
-	position.m_x = (short) m_hiliteX;
-	position.m_y = (short) m_hiliteY;
 	AnimsManager::DrawAnim(position, m_animationId, 0, (Frames*) &m_hiliteAnim, 0);
 	AnimsManager::m_gdi = savedGdi;
 }
