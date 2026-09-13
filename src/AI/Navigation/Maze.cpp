@@ -239,10 +239,10 @@ void Maze::Clear(unsigned char* p_change)
 	int row = 0;
 	if (m_height > 0) {
 		do {
-			row++;
-			int rowBytes = (m_width + (m_width >> 31 & 7)) >> 3;
+			int rowBytes = m_width / 8;
 			memset(p_change, 0, rowBytes);
 			p_change += 0x10;
+			row++;
 		} while (row < m_height);
 	}
 }
