@@ -11,14 +11,15 @@
 TrackWindow::TrackWindow(const VsRect& p_rect, int p_value, PvGWnd* p_parent) : HotAreaHandler(p_rect)
 {
 	m_reserved128 = 0;
-	m_trackSize.m_x = p_rect.m_width;
-	m_trackSize.m_y = 0;
+	m_trackWidth = p_rect.m_width;
 	m_value = p_value;
 	m_trackRect.m_width = p_rect.m_width;
 	m_trackRect.m_height = p_rect.m_height;
-	m_trackRect.m_x = p_rect.m_x;
+	const VsPoint* position = &p_rect;
+	m_trackRect.m_x = position->m_x;
+	short y = position->m_y;
 	m_gdiFlags = m_gdiFlags + 6;
-	m_trackRect.m_y = p_rect.m_y;
+	m_trackRect.m_y = y;
 	m_parent = p_parent;
 	m_contextId = -1;
 	SetActive(1);

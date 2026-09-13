@@ -31,7 +31,7 @@ private:
 	Line m_line;                // 0xd0
 	ClipRect m_clipRects[4];    // 0xe0
 	int m_value;                // 0x120
-	VsPoint m_trackSize;        // 0x124
+	int m_trackWidth;           // 0x124
 	unsigned int m_reserved128; // 0x128
 	PvGWnd* m_parent;           // 0x12c
 	int m_contextId;            // 0x130
