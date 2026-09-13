@@ -238,14 +238,19 @@ VsRect PauseWindow::CalculateWindow()
 	maxTextSize.m_height -= m_textSpacing.m_y;
 	maxTextSize.m_width += m_windowPadding.m_x;
 
-	if ((int) m_parentWindow->m_innerRect.m_width * (int) m_parentWindow->m_innerRect.m_height != 0) {
-		parentWidth = (short) ((int) m_parentWindow->m_innerRect.m_width / (int) m_parentWindow->m_zoom);
-		parentHeight = (short) ((int) m_parentWindow->m_innerRect.m_height / (int) m_parentWindow->m_zoom);
+	PvGWnd* parent = m_parentWindow;
+	int zoom;
+	if ((int) parent->m_innerRect.m_width * (int) parent->m_innerRect.m_height == 0) {
+		zoom = parent->m_zoom;
+		parentWidth = (short) ((int) parent->m_rect.m_width / zoom);
+		parentHeight = parent->m_rect.m_height;
 	}
 	else {
-		parentWidth = (short) ((int) m_parentWindow->m_rect.m_width / (int) m_parentWindow->m_zoom);
-		parentHeight = (short) ((int) m_parentWindow->m_rect.m_height / (int) m_parentWindow->m_zoom);
+		zoom = parent->m_zoom;
+		parentWidth = (short) ((int) parent->m_innerRect.m_width / zoom);
+		parentHeight = parent->m_innerRect.m_height;
 	}
+	parentHeight = (short) ((int) parentHeight / zoom);
 
 	VsSize paddedTextSize;
 	paddedTextSize.m_width = maxTextSize.m_width;
