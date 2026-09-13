@@ -32,10 +32,10 @@ public:
 	virtual TargetDibContext* CreateDIBContext(TargetDrawingContext* p_drawingContext,
 											   void* p_bitmapInfo) = 0; // vtable+0x10
 	virtual int DestroyDIBContext(TargetDibContext* p_dibContext) = 0;  // vtable+0x14
-	virtual void UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
-									  unsigned int p_startIndex,
-									  unsigned int p_entryCount,
-									  void* p_colours) = 0; // vtable+0x18
+	virtual unsigned int UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
+											  unsigned int p_startIndex,
+											  unsigned int p_entryCount,
+											  void* p_colours) = 0; // vtable+0x18
 	virtual void StretchBltContexts(TargetDrawingContext* p_destination,
 									VsRect* p_destinationRect,
 									TargetDrawingContext* p_source,

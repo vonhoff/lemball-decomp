@@ -1,7 +1,9 @@
 #include "TargetDirectDrawDriver.h"
 
+#include "../Foundation/VsOStream.h"
 #include "IDirectDraw.h"
 #include "TargetDirectDrawContext.h"
+#include "TargetDirectDrawError.h"
 #include "TargetDirectDrawSurfaceContext.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -76,6 +78,15 @@ int TargetDirectDrawDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 	return 1;
 }
 
+// FUNCTION: LEMBALL 0x004578c0
+unsigned int TargetDirectDrawDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
+														  unsigned int p_startIndex,
+														  unsigned int p_entryCount,
+														  void* p_colours)
+{
+	return 256;
+}
+
 // FUNCTION: LEMBALL 0x00457c50
 TargetDibContext* TargetDirectDrawDriver::SelectDIBContext(TargetDrawingContext* p_drawingContext,
 														   TargetDibContext* p_dibContext)
@@ -90,4 +101,45 @@ TargetDibContext* TargetDirectDrawDriver::RestoreDIBContext(TargetDrawingContext
 															TargetDibContext* p_dibContext)
 {
 	return p_dibContext;
+}
+
+// FUNCTION: LEMBALL 0x00457c80
+bool TargetDirectDrawDriver::CreatePalette(void* p_paletteDescription)
+{
+	DDBLTFX effects;
+	long result;
+	LOGPALETTE* palette = (LOGPALETTE*) p_paletteDescription;
+	effects.dwSize = sizeof(DDBLTFX);
+	effects.dwFillColor = 0;
+	IDirectDrawSurface* primary = (IDirectDrawSurface*) m_primarySurface;
+	result = primary->lpVtbl->Blt(primary, 0, 0, 0, 0x400, &effects);
+	if (result != 0) {
+		*g_pErrorOutput << "Direct Draw Initial rectangle blit failed : "
+						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+		return 0;
+	}
+	if (m_paletteInterface != 0) {
+		result = m_paletteInterface->SetEntries(0, 0, palette->palNumEntries, palette->palPalEntry);
+		if (result != 0) {
+			*g_pErrorOutput << "Direct Draw Set Palette Entries failed: "
+							<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+			return 0;
+		}
+	}
+	else {
+		result = ((IDirectDraw*) m_directDraw)->CreatePalette(0xc, palette->palPalEntry, &m_paletteInterface, 0);
+		if (result != 0) {
+			*g_pErrorOutput << "Direct Draw Create Palette failed: " << FormatUnknownDirectDrawError(result & 0xfff)
+							<< "\n";
+			return 0;
+		}
+		primary = (IDirectDrawSurface*) m_primarySurface;
+		result = primary->lpVtbl->SetPalette(primary, m_paletteInterface);
+		if (result != 0) {
+			*g_pErrorOutput << "Direct Draw Set Palette failed: " << FormatUnknownDirectDrawError(result & 0xfff)
+							<< "\n";
+			return 0;
+		}
+	}
+	return 1;
 }

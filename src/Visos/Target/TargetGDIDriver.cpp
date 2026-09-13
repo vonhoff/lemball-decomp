@@ -169,15 +169,15 @@ int TargetGDIDriver::DestroyDIBContext(TargetDibContext* p_dibContext)
 }
 
 // FUNCTION: LEMBALL 0x00456c50
-void TargetGDIDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
-										   unsigned int p_startIndex,
-										   unsigned int p_entryCount,
-										   void* p_colours)
+unsigned int TargetGDIDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawingContext,
+												   unsigned int p_startIndex,
+												   unsigned int p_entryCount,
+												   void* p_colours)
 {
-	SetDIBColorTable((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC,
-					 p_startIndex,
-					 p_entryCount,
-					 (RGBQUAD*) p_colours);
+	return SetDIBColorTable((HDC) ((TargetGdiDrawingContext*) p_drawingContext)->m_hDC,
+							p_startIndex,
+							p_entryCount,
+							(RGBQUAD*) p_colours);
 }
 
 // FUNCTION: LEMBALL 0x00456c70
