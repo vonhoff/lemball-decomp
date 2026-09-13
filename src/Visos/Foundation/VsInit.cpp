@@ -1111,24 +1111,23 @@ void InitPreInit()
 		capability = capability + 1;
 	} while (capability < g_anPreInitCapabilities + 7);
 	displayMode = g_preInitActive.m_shift;
-	if (displayMode == 0) {
+	switch (displayMode) {
+	case 0:
 		g_nGraphicsDriverCds = 0;
 		g_nGraphicsDriverWing = 1;
 		g_nGraphicsDriverGdk = 0;
 		return;
-	}
-	if (displayMode == 1) {
+	case 1:
 		g_nGraphicsDriverWing = 0;
 		g_nGraphicsDriverCds = 1;
 		g_nGraphicsDriverGdk = 0;
 		return;
-	}
-	if (displayMode != 2) {
+	case 2:
+		g_nGraphicsDriverWing = 0;
+		g_nGraphicsDriverGdk = 1;
+		g_nGraphicsDriverCds = 0;
 		return;
 	}
-	g_nGraphicsDriverWing = 0;
-	g_nGraphicsDriverGdk = 1;
-	g_nGraphicsDriverCds = 0;
 }
 
 unsigned int __cdecl DebugMessageThreadMain();
