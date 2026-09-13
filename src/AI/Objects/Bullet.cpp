@@ -257,9 +257,11 @@ void Bullet::Free()
 // FUNCTION: LEMBALL 0x0041aca0
 bool Bullet::Receive(unsigned short p_messageId, NetworkMessage* p_message)
 {
-	int messageId = p_messageId;
-	if (messageId != MESSAGE_BULLET_STATE) {
-		return GlobalGameObject::Receive(messageId, p_message);
+	switch ((int) p_messageId) {
+	default:
+		return GlobalGameObject::Receive(p_messageId, p_message);
+	case MESSAGE_BULLET_STATE:
+		break;
 	}
 	if (NetworkMessage::Set(p_message->m_readCursor)) {
 		p_message->m_readCursor = m_readCursor;
