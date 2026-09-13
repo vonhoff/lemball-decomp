@@ -438,7 +438,7 @@ void BaseCursor::Process()
 	Vector clipped;
 
 	if (m_drawn == 0 && m_systemCursorVisible == 0) {
-		RefreshPos();
+		RestoreSystemCursor();
 	}
 	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & 1) == 0) &&
 		(m_keyboardInput == 0 || (g_pMasterInput->m_state & 6) == 0)) {
