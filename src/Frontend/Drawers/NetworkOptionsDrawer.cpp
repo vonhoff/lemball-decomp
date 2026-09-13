@@ -576,13 +576,127 @@ void NetworkOptionsDrawer::DrawAnims()
 // FUNCTION: LEMBALL 0x00454060
 bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 {
-	int code;
+	bool handled;
+	unsigned int code;
 
 	if (m_startPending != 0 || (unsigned int) m_message != m_messageDirty) {
 		return 0;
 	}
 
-	if (p_message->type == 3) {
+	switch ((int) p_message->type) {
+	case 4: {
+
+		code = p_message->code;
+		if (code == 0x49) {
+			g_nNetworkOptionsShiftHeld = 1;
+			g_nNetworkOptionsCapsOrShift |= 1;
+			return 1;
+		}
+
+		if (m_editingActive != 0) {
+			handled = false;
+			if (code >= 5 && code <= 0x1e) {
+				if (m_editor->m_length != m_editor->m_maxLength) {
+					char offset = ((g_nNetworkOptionsShiftHeld == 0) ? 0xe0 : 0) - 0x3c;
+					char ch = (char) code - offset;
+					*m_editor += ch;
+					handled = true;
+				}
+				else {
+					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+				}
+			}
+			else if (code >= 0x39 && code <= 0x42) {
+				if (m_editor->m_length != m_editor->m_maxLength) {
+					*m_editor += (char) (code - 9);
+					handled = true;
+				}
+				else {
+					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+				}
+			}
+			else {
+				switch (code) {
+				case 0x1f:
+					if (m_editor->m_length != m_editor->m_maxLength) {
+						*m_editor += ' ';
+						handled = true;
+					}
+					else {
+						g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+					}
+					break;
+				case 0x20:
+					if (m_editor->m_length != m_editor->m_maxLength) {
+						*m_editor += '.';
+						handled = true;
+					}
+					else {
+						g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+					}
+					break;
+				case 0x23:
+					m_broadcasting = 0;
+					m_editingActive = 0;
+					m_pendingEvent = 0;
+					SetMessage(1);
+					handled = true;
+					break;
+				case 0x4c:
+					StopEditing();
+					handled = true;
+					break;
+				case 0x4d:
+				case 0x4e: {
+					EditString* editor = m_editor;
+					if (editor->m_length != 0) {
+						if (editor->m_length > 0) {
+							editor->m_length--;
+							editor->m_text[editor->m_length] = 0;
+						}
+						handled = true;
+					}
+					else {
+						g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+					}
+					break;
+				}
+				}
+			}
+
+			if (handled) {
+				m_lastDrawTime = CurrentMilliTimer();
+				m_redrawPending = 0;
+				g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+				return 1;
+			}
+		}
+
+		switch (p_message->code) {
+		case 1:
+			if (HighlightPreviousEntry()) {
+				g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+				return 1;
+			}
+			break;
+		case 2:
+			if (HighlightNextEntry()) {
+				g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+				return 1;
+			}
+			break;
+		case 0x1f:
+		case 0x22:
+		case 0x4c:
+			if (m_highlightedPlayer != -1) {
+				VsPoint pt;
+				m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, 0);
+				return 1;
+			}
+			break;
+		}
+	}
+	case 3:
 		code = p_message->code;
 		if (code == 0x49) {
 			g_nNetworkOptionsCapsOrShift &= ~1;
@@ -590,7 +704,7 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			return 1;
 		}
 		if (m_editingActive != 0) {
-			if (code > 4 && code < 0x1f) {
+			if (code >= 5 && code <= 0x1e) {
 				return 1;
 			}
 			switch (code) {
@@ -603,143 +717,29 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			}
 		}
 		return 0;
-	}
-
-	if (p_message->type != 4) {
-		if (p_message->type != 0xc) {
-			m_processedCount++;
-			return 0;
-		}
-		code = p_message->code;
-		if (code == 0xacef000c) {
+	case 0xc:
+		switch (p_message->code) {
+		case 0xacef000c:
 			if (m_locked == 0) {
 				Start(0);
-				return 0;
 			}
-		}
-		else if (code == 0xacef000d) {
+			break;
+		case 0xacef000d:
 			if (m_locked == 0) {
 				Start(1);
-				return 0;
 			}
-		}
-		else if (code == 0xacef000e) {
+			break;
+		case 0xacef000e:
 			Stop();
 			m_quitYet = 1;
 			m_returnState = 2;
 			return 1;
 		}
 		return 0;
+	default:
+		m_processedCount++;
+		return 0;
 	}
-
-	code = p_message->code;
-	if (code == 0x49) {
-		g_nNetworkOptionsShiftHeld = 1;
-		g_nNetworkOptionsCapsOrShift |= 1;
-		return 1;
-	}
-
-	if (m_editingActive != 0) {
-		bool handled = false;
-		if (code > 4 && code < 0x1f) {
-			if (m_editor->m_length != m_editor->m_maxLength) {
-				char ch = (char) code - (((g_nNetworkOptionsShiftHeld == 0) ? 0xe0 : 0) - 0x3c);
-				*m_editor += ch;
-				handled = true;
-			}
-			else {
-				g_pSoundView->PlayEffect((eSoundEffect) 0x19);
-			}
-		}
-		else if (code > 0x38 && code < 0x43) {
-			if (m_editor->m_length != m_editor->m_maxLength) {
-				*m_editor += (char) (code - 9);
-				handled = true;
-			}
-			else {
-				g_pSoundView->PlayEffect((eSoundEffect) 0x19);
-			}
-		}
-		else {
-			switch (code) {
-			case 0x1f:
-				if (m_editor->m_length != m_editor->m_maxLength) {
-					*m_editor += ' ';
-					handled = true;
-				}
-				else {
-					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
-				}
-				break;
-			case 0x20:
-				if (m_editor->m_length != m_editor->m_maxLength) {
-					*m_editor += '.';
-					handled = true;
-				}
-				else {
-					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
-				}
-				break;
-			case 0x23:
-				m_broadcasting = 0;
-				m_editingActive = 0;
-				m_pendingEvent = 0;
-				SetMessage(1);
-				handled = true;
-				break;
-			case 0x4c:
-				StopEditing();
-				handled = true;
-				break;
-			case 0x4d:
-			case 0x4e:
-				if (m_editor->m_length > 0) {
-					m_editor->m_length--;
-					m_editor->m_text[m_editor->m_length] = 0;
-					handled = true;
-				}
-				else {
-					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
-				}
-				break;
-			}
-		}
-
-		if (handled) {
-			m_lastDrawTime = CurrentMilliTimer();
-			m_redrawPending = 0;
-			g_pSoundView->PlayEffect((eSoundEffect) 0x25);
-			return 1;
-		}
-	}
-
-	switch (code) {
-	case 1:
-		if (HighlightPreviousEntry()) {
-			g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
-			return 1;
-		}
-		break;
-	case 2:
-		if (HighlightNextEntry()) {
-			g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
-			return 1;
-		}
-		break;
-	case 0x1f:
-	case 0x22:
-	case 0x4c:
-		if (m_highlightedPlayer != -1) {
-			VsPoint pt;
-			pt.m_x = 0;
-			pt.m_y = 0;
-			m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, 0);
-			return 1;
-		}
-		break;
-	}
-
-	return 0;
 }
 
 // 68K 0x10807a3c Start__21CNetworkOptionsDrawerFUc
