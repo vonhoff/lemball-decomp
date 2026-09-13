@@ -347,8 +347,7 @@ bool Arena::CheckValidPointer(void* p_pointer)
 	if (p_pointer == 0) {
 		return 0;
 	}
-	int sizeOf = GetSizeOf();
-	unsigned char* start = (unsigned char*) this + sizeOf;
+	unsigned char* start = (unsigned char*) this + GetSizeOf();
 	unsigned char* end = (unsigned char*) this + GetSizeOf() + m_arenaSize;
 	if (start <= p_pointer && p_pointer < end) {
 		return 1;
