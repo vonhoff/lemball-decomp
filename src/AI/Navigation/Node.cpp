@@ -58,3 +58,10 @@ Pt3 Node::Position()
 	result.m_z = 0xaa55aa55;
 	return result;
 }
+
+// FUNCTION: LEMBALL 0x004213f0
+void Node::ExtractIntegerPosition(int* p_x, int* p_y)
+{
+	*p_x = m_xFixed >> 12;
+	*p_y = m_yFixed >> 12;
+}

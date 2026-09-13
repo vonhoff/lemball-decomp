@@ -9,6 +9,7 @@ class Node {
 public:
 	Node();
 	Pt3 Position();
+	void ExtractIntegerPosition(int* p_x, int* p_y);
 	void AddANeighbour(int p_node, int p_cost);
 	void Initialise(int p_x, int p_y, int p_neighbourCapacity);
 	void Restart();
