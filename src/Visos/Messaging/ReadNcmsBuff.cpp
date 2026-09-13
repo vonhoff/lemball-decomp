@@ -47,11 +47,10 @@ ReadMsBuff* ReadNcmsBuff::UpdateSubPacket()
 	unsigned short messageId = g_pNetworkPacketScratch->m_messageId;
 	unsigned int index = messageId - m_firstMessageId;
 	ReadMsBuff* message = m_messages[index];
+	BasePacketHeader* header = (BasePacketHeader*) message->m_data;
 	unsigned short packetSequence;
 
-	if (messageId >= 3 && (int) g_pNetworkPacketScratch->m_packetSequence -
-								  (int) ((BasePacketHeader*) message->m_data)->m_packetSequence <
-							  0) {
+	if (messageId >= 3 && (int) g_pNetworkPacketScratch->m_packetSequence - (int) header->m_packetSequence < 0) {
 		return 0;
 	}
 
@@ -60,8 +59,7 @@ ReadMsBuff* ReadNcmsBuff::UpdateSubPacket()
 		return 0;
 	}
 
-	if (((BasePacketHeader*) message->m_data)->m_packetSequence != packetSequence &&
-		(int) message->m_receivedSubpacketCount > 0) {
+	if (header->m_packetSequence != packetSequence && (int) message->m_receivedSubpacketCount > 0) {
 		m_nextExpectedSequence = (unsigned int) packetSequence + 1;
 		return 0;
 	}
