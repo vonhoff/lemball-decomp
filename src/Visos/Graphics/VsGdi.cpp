@@ -1707,30 +1707,32 @@ int Surface::ClipCirclePoint(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x00475fb0
 void Surface::DrawClippedCirclePoint(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour)
 {
-	int px1 = p_centerX + p_xOffset;
-	if (m_clipRect.m_x <= px1 && px1 <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		int py1 = p_centerY + p_yOffset;
-		if (m_clipRect.m_y <= py1 && py1 <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[py1] + px1) = p_colour;
+	if (m_clipRect.m_x <= (p_centerX + p_xOffset) &&
+		(p_centerX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centerY + p_yOffset) &&
+			(p_centerY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centerY + p_yOffset)] + (p_centerX + p_xOffset)) = p_colour;
 		}
 	}
-	int px2 = p_centerX - p_xOffset;
-	if (m_clipRect.m_x <= px2 && px2 <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		int py1 = p_centerY + p_yOffset;
-		if (m_clipRect.m_y <= py1 && py1 <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[py1] + px2) = p_colour;
+	if (m_clipRect.m_x <= (p_centerX - p_xOffset) &&
+		(p_centerX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centerY + p_yOffset) &&
+			(p_centerY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centerY + p_yOffset)] + (p_centerX - p_xOffset)) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= px1 && px1 <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		int py2 = p_centerY - p_yOffset;
-		if (m_clipRect.m_y <= py2 && py2 <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[py2] + px1) = p_colour;
+	if (m_clipRect.m_x <= (p_centerX + p_xOffset) &&
+		(p_centerX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centerY - p_yOffset) &&
+			(p_centerY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centerY - p_yOffset)] + (p_centerX + p_xOffset)) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= px2 && px2 <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		int py2 = p_centerY - p_yOffset;
-		if (m_clipRect.m_y <= py2 && py2 <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[py2] + px2) = p_colour;
+	if (m_clipRect.m_x <= (p_centerX - p_xOffset) &&
+		(p_centerX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centerY - p_yOffset) &&
+			(p_centerY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centerY - p_yOffset)] + (p_centerX - p_xOffset)) = p_colour;
 		}
 	}
 }
