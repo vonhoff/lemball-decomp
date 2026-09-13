@@ -46,13 +46,14 @@ void TrapDoor::GetViewData(ViewData& p_viewData)
 	int blockX = x >> 4;
 	int blockY = y >> 4;
 	unsigned short z;
-	if (x < 0 || y < 0 || map->m_ground.m_width <= blockX || map->m_ground.m_height <= blockY) {
+	int width;
+	if (x < 0 || y < 0 || (width = map->m_ground.m_width) <= blockX || map->m_ground.m_height <= blockY) {
 		z = 0;
 	}
 	else {
 		int groundX = x & 0xf;
 		int groundY = y & 0xf;
-		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
+		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(groundX, groundY);
 	}
 	m_position.m_zFixed = (z + 0x4e) << 12;
 
