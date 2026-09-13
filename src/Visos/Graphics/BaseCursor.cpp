@@ -181,8 +181,8 @@ void BaseCursor::SetPos(const VsPoint& p_position)
 {
 	m_position.m_x = p_position.m_x;
 	m_position.m_y = p_position.m_y;
-	m_fixedX = (int) p_position.m_x << 12;
-	m_fixedY = (int) p_position.m_y << 12;
+	m_fixedX = (int) m_position.m_x << 12;
+	m_fixedY = (int) m_position.m_y << 12;
 }
 
 // 68K 0x102060aa SetMainID__11CBaseCursorFUl
