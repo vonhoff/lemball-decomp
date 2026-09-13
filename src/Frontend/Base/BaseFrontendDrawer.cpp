@@ -66,15 +66,13 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_display,
 	m_activePalette = 0;
 	m_loaded = 0;
 	m_desiredPalette = RES_PALETTES_TITLEPALETTE;
-	if (g_pMasterInputQueue != 0) {
-		g_pMasterInputQueue->Attach(this, 0);
-	}
+	g_pMasterInputQueue->Attach(this, 0);
 	m_returnState = 0;
 	m_quitYet = 0;
 	m_backBufferReady = 0;
 	m_drawingBackBuffer = 0;
 	m_ready = 1;
-	if (g_pGameStatus != 0 && g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
+	if (g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
 		m_networkMode = 1;
 	}
 	else {
