@@ -92,16 +92,14 @@ BaseFrontendDrawer::BaseFrontendDrawer(Main2DDisplay* p_display,
 // FUNCTION: LEMBALL 0x004455f0
 void BaseFrontendDrawer::Setup()
 {
-	int cursorType;
 	void* storage;
 
-	if (m_drawBackground == 0) {
-		cursorType = 0;
+	if (m_drawBackground != 0) {
+		CursorChangeType(2, 0);
 	}
 	else {
-		cursorType = 2;
+		CursorChangeType(0, 0);
 	}
-	CursorChangeType(cursorType, 0);
 
 	if (m_textPrimitiveCapacity > 0) {
 		storage = operator new(sizeof(TextManager));
@@ -124,14 +122,16 @@ void BaseFrontendDrawer::Setup()
 			m_ambientAnim = new (storage) PlayThruAnim(AnimsManager::GetnAnims(m_ambientAnimId), 1);
 		}
 		m_ambientAnim->m_fixedTime = 0xffffffff;
-		m_ambientAnim->StartAnim(500);
+		m_ambientAnim->SetAnimTime(500);
+		unsigned long now = CurrentMilliTimer();
 		m_ambientDelay = 0;
-		m_ambientUpdatedAt = CurrentMilliTimer();
+		m_ambientUpdatedAt = now;
 	}
 
 	g_pBaseFrontendDrawer = this;
 
 	if (m_networkMode != 0) {
+		NetworkManager* network;
 		int desiredState;
 		m_startupPending = 0;
 		m_actionPending = 1;
@@ -152,8 +152,9 @@ void BaseFrontendDrawer::Setup()
 			break;
 		}
 		if (desiredState != 0) {
-			g_pNetworkManager->m_desiredGameState = desiredState;
-			g_pNetworkManager->m_observedGameState = 0;
+			network = g_pNetworkManager;
+			network->m_desiredGameState = desiredState;
+			network->m_observedGameState = 0;
 		}
 	}
 }
