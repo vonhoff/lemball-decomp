@@ -38,8 +38,3 @@ void EntryHandler::OnExit()
 {
 	m_hoverState = 0;
 }
-
-// 68K 0x1011c36e __dt__13CEntryHandlerFv
-EntryHandler::~EntryHandler()
-{
-}
