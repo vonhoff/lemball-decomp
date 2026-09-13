@@ -17,7 +17,11 @@
 // VTABLE: LEMBALL 0x00497788 BaseQueueHandler
 // VTABLE: LEMBALL 0x00497780 PauseWindowFreeVramInterface
 // VTABLE: LEMBALL 0x00497758 HotAreaHandler
-class PauseWindow : public GWnd, public BaseQueueHandler, public PauseWindowFreeVramInterface, public HotAreaHandler {
+class PauseWindow : public GWnd,
+					public TextManager,
+					public BaseQueueHandler,
+					public PauseWindowFreeVramInterface,
+					public HotAreaHandler {
 public:
 	BaseRemap* Remap(int p_item);
 	PauseWindow(ReceiveWindowState* p_arg0, PvGWnd* p_arg1, ePauseWindowMessages p_arg2);
@@ -40,7 +44,6 @@ public:
 	~PauseWindow();
 
 private:
-	TextManager m_textManager;                   // 0xdc
 	char** m_menuLabels;                         // 0x100
 	int m_pauseMessage;                          // 0x104
 	unsigned int m_cursorState;                  // 0x108
@@ -53,10 +56,9 @@ private:
 	int m_minimumSelection;                      // 0x124
 	int m_initialSelection;                      // 0x128
 	int m_verticalTextOffset;                    // 0x12c
-	short m_horizontalTiles;                     // 0x130
-	short m_verticalTiles;                       // 0x132
+	VsSize m_borderTiles;                        // 0x130
 	int m_borderAnimCount;                       // 0x134
-	Line m_borderLine;                           // 0x138
+	Line m_borderLine[1];                        // 0x138
 	VsPoint m_windowPadding;                     // 0x148
 	VsPoint m_textSpacing;                       // 0x14c
 	VsPoint m_borderPadding;                     // 0x150

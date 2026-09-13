@@ -83,8 +83,8 @@ void PauseWindow::Load()
 	}
 	m_horizontalBorderAnim = ResAnim::Load(m_horizontalBorderAnimId);
 	m_verticalBorderAnim = ResAnim::Load(m_verticalBorderAnimId);
-	m_textManager.LoadFont(m_fontId);
-	m_font = m_textManager.GetFont(m_fontId);
+	TextManager::LoadFont(m_fontId);
+	m_font = TextManager::GetFont(m_fontId);
 	m_loaded = 1;
 }
 
@@ -93,7 +93,7 @@ void PauseWindow::Load()
 void PauseWindow::UnLoad()
 {
 	if (m_loaded != 0) {
-		m_textManager.UnLoadFont(m_fontId);
+		TextManager::UnLoadFont(m_fontId);
 		m_verticalBorderAnim->UnLoad();
 		m_horizontalBorderAnim->UnLoad();
 		m_loaded = 0;
@@ -175,11 +175,11 @@ void PauseWindow::CreateTheWindow(const VsRect& p_rect)
 	point.m_x = (short) (m_borderPadding.m_x * 2);
 	point.m_y = (short) (m_borderPadding.m_y * 2);
 	((VsPoint*) &borderRect.m_width)->SubtractInPlace(&point);
-	m_borderLine.m_x1 = borderRect.m_width;
-	m_borderLine.m_y1 = borderRect.m_height;
-	m_borderLine.m_x2 = borderRect.m_x;
-	m_borderLine.m_y2 = borderRect.m_y;
-	m_borderLine.m_color = 0xc;
+	m_borderLine[0].m_x1 = borderRect.m_width;
+	m_borderLine[0].m_y1 = borderRect.m_height;
+	m_borderLine[0].m_x2 = borderRect.m_x;
+	m_borderLine[0].m_y2 = borderRect.m_y;
+	m_borderLine[0].m_color = 0xc;
 }
 
 // 68K 0x10b0e6ce CalculateWindow__12CPauseWindowFv
@@ -269,10 +269,10 @@ VsRect PauseWindow::CalculateWindow()
 	windowSize.m_width = (short) (windowSize.m_width * horizontalWidth);
 	windowSize.m_height = (short) (windowSize.m_height * verticalHeight);
 	m_verticalTextOffset = ((int) windowSize.m_height - (int) maxTextSize.m_height) / 2;
-	m_horizontalTiles = (short) ((int) windowSize.m_width / horizontalWidth - 2);
-	m_verticalTiles = (short) ((int) windowSize.m_height / verticalHeight - 2);
+	m_borderTiles.m_width = (short) ((int) windowSize.m_width / horizontalWidth - 2);
+	m_borderTiles.m_height = (short) ((int) windowSize.m_height / verticalHeight - 2);
 
-	int borderAnimCount = m_horizontalTiles + m_verticalTiles;
+	int borderAnimCount = m_borderTiles.m_width + m_borderTiles.m_height;
 	if (m_borderAnimCount != borderAnimCount) {
 		if (m_borderAnims != 0) {
 			delete[] m_borderAnims;
@@ -322,7 +322,7 @@ VsRect PauseWindow::CalculateWindow()
 	firstBorderPosition.m_x = horizontalBorder[0];
 	secondBorderPosition.m_x = horizontalBorder[0];
 	secondBorderPosition.m_y = (short) (windowSize.m_height - verticalBorder[1]);
-	for (i = 0; i < m_horizontalTiles; i++) {
+	for (i = 0; i < m_borderTiles.m_width; i++) {
 		Anim& firstBorder = m_borderAnims[i];
 		firstBorder.m_x = firstBorderPosition.m_x;
 		firstBorder.m_y = firstBorderPosition.m_y;
@@ -345,15 +345,15 @@ VsRect PauseWindow::CalculateWindow()
 	firstBorderPosition.m_y = horizontalBorder[1];
 	secondBorderPosition.m_x = (short) (windowSize.m_width - verticalCorner[0]);
 	secondBorderPosition.m_y = firstBorderPosition.m_y;
-	for (i = 0; i < m_verticalTiles; i++) {
-		Anim& firstBorder = m_borderAnims[m_horizontalTiles + i];
+	for (i = 0; i < m_borderTiles.m_height; i++) {
+		Anim& firstBorder = m_borderAnims[m_borderTiles.m_width + i];
 		firstBorder.m_x = firstBorderPosition.m_x;
 		firstBorder.m_y = firstBorderPosition.m_y;
 		firstBorder.m_animResource = m_verticalBorderAnim;
 		firstBorder.m_animIndex = 2;
 		firstBorder.m_flags = 0;
 		firstBorder.m_remap = 0;
-		Anim& secondBorder = m_borderAnims[m_borderAnimCount + m_horizontalTiles + i];
+		Anim& secondBorder = m_borderAnims[m_borderAnimCount + m_borderTiles.m_width + i];
 		secondBorder.m_x = secondBorderPosition.m_x;
 		secondBorder.m_y = secondBorderPosition.m_y;
 		secondBorder.m_animResource = m_verticalBorderAnim;
@@ -374,16 +374,8 @@ VsRect PauseWindow::CalculateWindow()
 // 68K 0x10b0eeba __ct__12CPauseWindowFP19CReceiveWindowStateP7CPVGWnd20ePauseWindowMessages
 // FUNCTION: LEMBALL 0x00444680
 PauseWindow::PauseWindow(ReceiveWindowState* p_arg0, PvGWnd* p_arg1, ePauseWindowMessages p_arg2)
-	: m_textManager(0x2b6, 1, 15, 0)
+	: TextManager(0x2b6, 1, 15, 0)
 {
-	m_verticalTiles = 0;
-	m_horizontalTiles = 0;
-	m_windowPadding.m_x = 0;
-	m_windowPadding.m_y = 0;
-	m_textSpacing.m_x = 0;
-	m_textSpacing.m_y = 0;
-	m_borderPadding.m_x = 0;
-	m_borderPadding.m_y = 0;
 	m_receiverState = p_arg0;
 	m_pauseMessage = p_arg2;
 	m_parentWindow = p_arg1;
@@ -460,7 +452,7 @@ BaseRemap* PauseWindow::Remap(int p_item)
 void PauseWindow::OnPaint(const VsRect& p_rect)
 {
 	m_gdi->m_renderTarget->GetCurrDb();
-	m_borderLine.Draw(m_gdi);
+	m_borderLine[0].Draw(m_gdi);
 	int i;
 	for (i = 0; i < m_borderAnimCount * 2; i++) {
 		m_borderAnims[i].Draw(m_gdi);
@@ -476,9 +468,9 @@ void PauseWindow::OnPaint(const VsRect& p_rect)
 		VsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager.DrawString(m_gdi, *position, advance, m_fontId, m_menuLabels[i], 0x20, (class Remap*) Remap(i));
+		TextManager::DrawString(m_gdi, *position, advance, m_fontId, m_menuLabels[i], 0x20, (class Remap*) Remap(i));
 	}
-	m_textManager.ResetPrimitives();
+	TextManager::ResetPrimitives();
 }
 
 // 68K 0x10b0f404 OnInside__12CPauseWindowFRC8CVSPoint
