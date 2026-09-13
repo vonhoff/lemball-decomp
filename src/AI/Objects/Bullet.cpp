@@ -13,12 +13,10 @@
 
 // 68K 0x10604572 __ct__7CBulletFv
 // FUNCTION: LEMBALL 0x0041a510
-Bullet::Bullet() : GlobalGameObject((eObjectType) OBJECT_BULLET, 0x100, 0)
+Bullet::Bullet()
+	: GlobalGameObject((eObjectType) OBJECT_BULLET, 0x100, 0), m_unk0x174(DEBUG_SENTINEL), m_unk0x178(DEBUG_SENTINEL),
+	  m_unk0x17c(DEBUG_SENTINEL), m_unk0x180(DEBUG_SENTINEL)
 {
-	m_unk0x174 = DEBUG_SENTINEL;
-	m_unk0x178 = DEBUG_SENTINEL;
-	m_unk0x17c = DEBUG_SENTINEL;
-	m_unk0x180 = DEBUG_SENTINEL;
 	m_payloadCapacity += 0x28;
 }
 
