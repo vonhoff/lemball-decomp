@@ -2,12 +2,13 @@
 #define LEMBALL_VISOS_NETWORK_NETWORKFILE_H
 
 #include "../../Common.h"
+#include "AbstractFile.h"
 
 // SIZE 0x14
 // VTABLE: LEMBALL 0x0049a570
-class NetworkFile {
+class NetworkFile : public AbstractFile {
 public:
-	NetworkFile() : m_filename(0), m_closed(1) {}
+	NetworkFile() {}
 	virtual bool Open(const char* p_filename, unsigned char p_mode, int p_create); // vtable+0x00
 	virtual bool Create(const char* p_filename, unsigned char p_mode);             // vtable+0x04
 	virtual bool CheckExists(const char* p_filename);                              // vtable+0x08
@@ -25,8 +26,6 @@ public:
 	virtual char* GetFilename();                                                   // vtable+0x38
 
 private:
-	char* m_filename;        // 0x04
-	unsigned int m_closed;   // 0x08
 	void* m_handle;          // 0x0c
 	unsigned int m_position; // 0x10
 };
