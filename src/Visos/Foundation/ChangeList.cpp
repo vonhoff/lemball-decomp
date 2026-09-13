@@ -55,18 +55,18 @@ void ChangeList::AllocMap()
 void ChangeList::Resize(VsSize p_size)
 {
 	short mapWidth;
-	short mapHeight;
+	int mapHeight;
 	int needed;
 
 	if (m_viewSize.m_width != p_size.m_width || m_viewSize.m_height != p_size.m_height) {
 		mapWidth = p_size.m_width / m_cellSize.m_width;
-		mapHeight = p_size.m_height / m_cellSize.m_height;
+		mapHeight = (short) (p_size.m_height / m_cellSize.m_height);
 		m_viewSize.m_width = p_size.m_width;
 		m_viewSize.m_height = p_size.m_height;
 		m_mapSize.m_width = mapWidth;
-		m_mapSize.m_height = mapHeight;
 		needed = (int) mapWidth * (int) mapHeight;
-		if (needed - (int) m_mapCapacity != 0 && (int) m_mapCapacity <= needed) {
+		m_mapSize.m_height = mapHeight;
+		if (needed > (int) m_mapCapacity) {
 			FreeMap();
 		}
 		if (0 < (int) p_size.m_height * (int) p_size.m_width) {
