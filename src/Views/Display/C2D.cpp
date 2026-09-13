@@ -1157,9 +1157,33 @@ void C2D::OnButtonUp(const VsPoint& p_point, int p_flags)
 }
 
 // 68K 0x10b0960a OnButtonDown__3C2DFRC8CVSPoint12BUTTON_FLAGS
-// STUB: LEMBALL 0x00438210
+// FUNCTION: LEMBALL 0x00438210
 void C2D::OnButtonDown(const VsPoint& p_point, int p_flags)
 {
+	m_mouseButtonDown = 1;
+	if (m_paused == 0) {
+		if ((g_pDemo == 0 || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
+			return;
+		}
+		VsPoint screenPoint((short) m_viewOriginX + p_point.m_x, p_point.m_y + (short) m_viewOriginY);
+		int screenX = screenPoint.m_x;
+		int screenY = screenPoint.m_y;
+		g_nMouseShapeOnGround = ScreenToGame(screenX, screenY, g_nMouseShapeGameX, g_nMouseShapeGameY);
+		if (g_nMouseShapeOnGround == 0) {
+			m_map->ScreenToGame(screenX, screenY, g_nMouseShapeGameX, g_nMouseShapeGameY);
+		}
+		VsPoint gamePoint((short) g_nMouseShapeGameX, (short) g_nMouseShapeGameY);
+		switch (p_flags) {
+		case 0:
+		case 3:
+			LeftClick(screenPoint, gamePoint, 1, 0);
+			break;
+		case 1:
+		case 4:
+			RightClick(screenPoint, gamePoint);
+			break;
+		}
+	}
 }
 
 // 68K 0x10b09786 UseBalloon__3C2DFi
@@ -1325,8 +1349,6 @@ static const short g_groundOffset[] = {0x10, 0x10};
 // FUNCTION: LEMBALL 0x0043a880
 void C2D::DrawGround(int p_x, int p_y, eObjectType p_groundType, unsigned short p_frame)
 {
-	int frame;
-
 	switch (p_groundType) {
 	case TERRAIN_TREE:
 		m_lemmingAnims->DrawAnim(p_x - g_treeGroundOffset[0],
@@ -1380,8 +1402,12 @@ void C2D::DrawGround(int p_x, int p_y, eObjectType p_groundType, unsigned short 
 		m_lemmingAnims->DrawAnim(p_x - g_groundOffset[0], p_y - g_groundOffset[1], RES_GAME_ANIM, p_frame, 0, 0);
 		return;
 	case TERRAIN_FLAME:
-		frame = ((unsigned short) p_x >> 4) + (unsigned short) m_groundAnimationFrame;
-		m_lemmingAnims->DrawAnim(p_x - 0x10, p_y - 0x20, RES_GAME_FLAME, frame % 9, 0, 0);
+		m_lemmingAnims->DrawAnim(p_x - 0x10,
+								 p_y - 0x20,
+								 RES_GAME_FLAME,
+								 (((unsigned short) p_x >> 4) + (unsigned short) m_groundAnimationFrame) % 9,
+								 0,
+								 0);
 		return;
 	case TERRAIN_ELECTRIC:
 		m_lemmingAnims->DrawAnim(p_x - g_groundOffset[0],
