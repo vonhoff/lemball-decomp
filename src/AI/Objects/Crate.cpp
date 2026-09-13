@@ -124,19 +124,21 @@ void Crate::DoActivate()
 	m_unk0xd0 += g_dwGameTick;
 	m_unk0xd4 += g_dwGameTick;
 	SetSndEffect((eSoundEffect) 20);
-	int time;
-	if (m_contentsType <= 23) {
-		if (m_contentsType >= 21) {
-			time = 50;
-		}
-		else if (m_contentsType == 4) {
-			time = 100;
-		}
+	int score;
+	switch (m_contentsType) {
+	case 4:
+		score = 100;
+		break;
+	case 21:
+	case 22:
+	case 23:
+		score = 50;
+		break;
+	case 0xffff:
+		score = 25;
+		break;
 	}
-	else if (m_contentsType == 0xffff) {
-		time = 25;
-	}
-	g_pAI->AddTime(time);
+	g_pAI->Score(score);
 }
 
 // 68K 0x1061947a ActivatePosition__6CCrateFv
