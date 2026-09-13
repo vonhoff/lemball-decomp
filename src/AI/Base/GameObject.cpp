@@ -1188,17 +1188,21 @@ bool GameObject::OnLift(Coord3d& p_arg0, Coord3d& p_arg1)
 	int right = (int) p_arg1.m_x + 7;
 	int top = (int) p_arg0.m_y - 8;
 	int bottom = (int) p_arg1.m_y + 7;
-	if ((m_position.m_xFixed >> 12) >= left && (m_position.m_xFixed >> 12) <= right &&
-		(m_position.m_yFixed >> 12) >= top && (m_position.m_yFixed >> 12) <= bottom) {
+	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> 12;
+	if (x >= left && x <= right && y >= top && y <= bottom) {
 		Map* map = g_pMap;
 		int blockX = left >> 4;
 		int blockY = top >> 4;
+		int width;
 		unsigned short groundZ;
-		if (left < 0 || top < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+		if (left < 0 || top < 0 || (width = map->m_ground.m_width) <= blockX || map->m_ground.m_height <= blockY) {
 			groundZ = 0;
 		}
 		else {
-			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(left & 0xf, top & 0xf);
+			left &= 0xf;
+			top &= 0xf;
+			groundZ = map->m_ground.m_ground[width * blockY + blockX].GetZ(left, top);
 		}
 		m_position.m_zFixed = (unsigned int) groundZ << 12;
 		return true;
