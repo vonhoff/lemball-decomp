@@ -136,20 +136,8 @@ void GunController::ActivateButtons(int p_active)
 // FUNCTION: LEMBALL 0x0044cce0
 void GunController::SetSpriteWindow()
 {
-	void* storage;
-	VsRect createRect;
-
-	storage = operator new(0x90);
-	if (storage == 0) {
-		m_spriteWindow = 0;
-	}
-	else {
-		m_spriteWindow = new (storage) SpriteWindow();
-	}
-	createRect.m_width = m_window->m_rect.m_width;
-	createRect.m_height = m_window->m_rect.m_height;
-	createRect.m_x = 0;
-	createRect.m_y = 0;
+	m_spriteWindow = new SpriteWindow();
+	VsRect createRect(0, 0, m_window->m_rect.m_width, m_window->m_rect.m_height);
 	m_spriteWindow->Create(createRect, m_window, 0);
 	m_spriteSurface = m_spriteWindow->m_gdi;
 }
