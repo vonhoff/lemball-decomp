@@ -21,13 +21,14 @@ extern char* g_szGameName;
 // FUNCTION: LEMBALL 0x00452420
 void NetworkGameMessage::AddData()
 {
-	char peerName[20];
+	char peerName[21];
 	Add(g_szGameName);
-	strncpy(peerName, g_szBroadcastPeerName, 20);
-	peerName[19] = '\0';
+	char* broadcastPeerName = g_szBroadcastPeerName;
+	strncpy(peerName, broadcastPeerName, 20);
+	peerName[20] = '\0';
 	String peerString(peerName);
-	String lowerPeer = peerString.Lower();
-	Add(lowerPeer.GetText());
+	peerString.Lower();
+	Add(peerString.GetText());
 }
 
 // 68K 0x10a00184 GetData__19CNetworkGameMessageFv
