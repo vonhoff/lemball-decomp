@@ -2552,18 +2552,22 @@ void Surface::BlitZrleNoClipQzBuff(const VsRect& p_rect, ResZrle* p_zrle, unsign
 				}
 				else if (run > 0x80) {
 					run &= 0x7f;
+					unsigned short* copyZ = zlines;
 					unsigned char count = run;
 					unsigned char* copySrc = src;
-					while (count != 0) {
+					unsigned char* copyDst = dst;
+					while (count > 0) {
 						count--;
-						if (*zlines <= p_depth) {
-							*dst = *copySrc;
+						if (*copyZ <= p_depth) {
+							*copyDst = *copySrc;
 						}
-						dst++;
-						zlines++;
+						copyDst++;
+						copyZ++;
 						copySrc++;
 					}
 					src += run;
+					dst += run;
+					zlines += run;
 				}
 			} while (run != 0x80);
 			row++;
@@ -3190,10 +3194,10 @@ void Surface::BlitZrleNoClipRemap(const VsRect& p_rect, ResZrle* p_zrle, unsigne
 				}
 				else if (run > 0x80) {
 					run &= 0x7f;
-					int count = (int) run;
-					int i = count;
 					unsigned char* copySrc = src;
 					unsigned char* copyDst = dst;
+					int count = (int) run;
+					int i = count;
 					for (; i > 0; i--) {
 						*copyDst++ = p_remap[*copySrc++];
 					}
@@ -3234,9 +3238,9 @@ void Surface::BlitZrleNoClipRemapR(const VsRect& p_rect,
 				}
 				else if (run > 0x80) {
 					run &= 0x7f;
-					int count = (int) run;
 					unsigned char* copySrc = src;
 					unsigned char* copyDst = dst;
+					int count = (int) run;
 					int i = count;
 					for (; i > 0; i--) {
 						*copyDst-- = p_remap[*copySrc++];
