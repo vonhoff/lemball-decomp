@@ -221,7 +221,7 @@ void TargetAboutScreen::DrawChangedRegion()
 			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) (short) bitmap->m_x) / 2);
 			m_bitmap.m_resource = m_backgroundBitmap;
 			m_bitmap.m_remap = 0;
-			m_bitmap.m_flags = 8;
+			m_bitmap.m_flags = 0x800;
 			m_bitmap.Draw(m_gdi);
 			DrawRegistrationText();
 			m_rects[1].m_color = 0;
