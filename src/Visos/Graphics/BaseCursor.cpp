@@ -35,11 +35,14 @@ void BaseCursor::Initialise()
 {
 	m_resourceId = 0;
 	m_renderState = new Zrle[1];
-	m_renderState[0].m_x = 0;
-	m_renderState[0].m_y = 0;
-	m_renderState[0].m_resource = 0;
-	m_renderState[0].m_flags = 0;
-	m_renderState[0].m_remap = 0;
+	for (int i = 0; i < 1; i++) {
+		Zrle* state = &m_renderState[i];
+		state->m_x = 0;
+		state->m_y = 0;
+		state->m_resource = 0;
+		state->m_flags = 0;
+		state->m_remap = 0;
+	}
 	g_pMasterInputQueue->Attach(this, -0x19);
 	m_changingCursor = 0;
 	m_keyboardInput = 0;
