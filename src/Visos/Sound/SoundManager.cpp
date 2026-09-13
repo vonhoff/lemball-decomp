@@ -85,7 +85,7 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 									   p_musicEnabled,
 									   p_effectsEnabled,
 									   p_useMusicCD,
-									   (unsigned char*) &detectedCd,
+									   &detectedCd,
 									   &m_musicDevice,
 									   p_deviceParameter);
 	m_musicOutput = 0;

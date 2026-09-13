@@ -36,83 +36,51 @@ void EndSound()
 // FUNCTION: LEMBALL 0x00473390
 int MachineSoundDetect(BaseSoundDevice** p_devices,
 					   unsigned char p_musicEnabled,
-					   unsigned char p_effectsEnabled,
-					   unsigned char p_useMusicCD,
-					   unsigned char* p_musicAvailable,
+					   unsigned int p_effectsEnabled,
+					   unsigned int p_useMusicCD,
+					   unsigned int* p_musicAvailable,
 					   PvMusicDevice** p_musicDevice,
 					   int p_deviceParameter)
 {
-	void* storage;
-	BaseSoundDevice* device;
-	PvMusicDevice* music;
-
+	int count = 0;
 	*p_musicAvailable = 0;
 	*p_musicDevice = 0;
-	if (p_useMusicCD != 1) {
+	if (p_useMusicCD == 1) {
+		PvMusicDevice* music = new MciMusicDevice();
+		if (music->IsAvailable() == 1) {
+			*p_musicAvailable = 1;
+			*p_musicDevice = music;
+		}
+		else if (music != 0) {
+			delete music;
+		}
 		if (p_effectsEnabled == 1) {
-			storage = operator new(0xb8);
-			if (storage == 0) {
-				device = 0;
-			}
-			else {
-				device = new (storage) TargetWaveSoundDevice(p_deviceParameter);
-			}
-			if (device != 0 && device->IsEffectAvailable() == 1) {
+			BaseSoundDevice* device = new TargetDirectSoundDevice(p_deviceParameter, 5);
+			if (device->IsEffectAvailable() == 1) {
 				*p_devices = device;
 				return 1;
 			}
 			if (device != 0) {
 				delete device;
 			}
+			BaseSoundDevice* wave = new TargetWaveSoundDevice(p_deviceParameter);
+			if (wave->IsEffectAvailable() == 1) {
+				*p_devices = wave;
+				return 1;
+			}
+			return 0;
 		}
 		return 0;
 	}
-	storage = operator new(0x34);
-	if (storage == 0) {
-		music = 0;
-	}
-	else {
-		music = new (storage) MciMusicDevice();
-	}
-	if (music != 0) {
-		if (music->IsAvailable() == 1) {
-			*p_musicAvailable = 1;
-			*p_musicDevice = music;
+	if (p_effectsEnabled == 1) {
+		BaseSoundDevice* wave = new TargetWaveSoundDevice(p_deviceParameter);
+		if (wave->IsEffectAvailable() == 1) {
+			count = 1;
+			*p_devices = wave;
 		}
-		else {
-			delete music;
+		else if (wave != 0) {
+			delete wave;
 		}
 	}
-	if (p_effectsEnabled != 1) {
-		return 0;
-	}
-	storage = operator new(0x54);
-	if (storage == 0) {
-		device = 0;
-	}
-	else {
-		device = new (storage) TargetDirectSoundDevice(p_deviceParameter, 5);
-	}
-	if (device != 0 && device->IsEffectAvailable() == 1) {
-		*p_devices = device;
-		return 1;
-	}
-	if (device != 0) {
-		delete device;
-	}
-	storage = operator new(0xb8);
-	if (storage == 0) {
-		device = 0;
-	}
-	else {
-		device = new (storage) TargetWaveSoundDevice(p_deviceParameter);
-	}
-	if (device != 0 && device->IsEffectAvailable() == 1) {
-		*p_devices = device;
-		return 1;
-	}
-	if (device != 0) {
-		delete device;
-	}
-	return 0;
+	return count;
 }

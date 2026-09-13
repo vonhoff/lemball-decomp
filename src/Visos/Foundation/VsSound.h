@@ -11,9 +11,9 @@ bool InitSound(unsigned int p_musicEnabled,
 void EndSound();
 int MachineSoundDetect(BaseSoundDevice** p_devices,
 					   unsigned char p_musicEnabled,
-					   unsigned char p_effectsEnabled,
-					   unsigned char p_useMusicCD,
-					   unsigned char* p_musicAvailable,
+					   unsigned int p_effectsEnabled,
+					   unsigned int p_useMusicCD,
+					   unsigned int* p_musicAvailable,
 					   PvMusicDevice** p_musicDevice,
 					   int p_deviceParameter);
 #endif
