@@ -25,6 +25,25 @@ Headers::~Headers()
 	delete[] m_headers;
 }
 
+// FUNCTION: LEMBALL 0x00479720
+HeaderMessage* Headers::GetNextHeaderBySequence()
+{
+	int index = m_currentIndex;
+	int count = m_count;
+	for (; index < count; index++) {
+		if (m_sequences[index] < m_headers[index].m_sequence) {
+			break;
+		}
+	}
+	if (index == count) {
+		m_currentIndex = -1;
+		return 0;
+	}
+	m_currentIndex = index;
+	m_sequences[index] = m_headers[index].m_sequence;
+	return m_headers + m_currentIndex;
+}
+
 // 68K 0x10206eec AddData__8CHeadersFv
 // FUNCTION: LEMBALL 0x00479790
 void Headers::AddData()

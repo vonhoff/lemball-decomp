@@ -9,6 +9,7 @@
 class Headers : public NetworkMessage {
 public:
 	Headers(int p_arg0);
+	HeaderMessage* GetNextHeaderBySequence();
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
 	virtual ~Headers();     // vtable+0x14

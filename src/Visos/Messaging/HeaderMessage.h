@@ -13,6 +13,7 @@ public:
 	virtual void GetData(); // vtable+0x08
 
 private:
+	friend class Headers;
 	friend class FileReadSocket;
 	friend class FileWriteSocket;
 	unsigned short m_sequence;         // 0x2c
