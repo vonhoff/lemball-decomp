@@ -32,4 +32,7 @@ protected:
 	unsigned int m_state;   // 0x108
 };
 
+// SYNTHETIC: LEMBALL 0x00443ab0
+// DepressedButton::`scalar deleting destructor'
+
 #endif
