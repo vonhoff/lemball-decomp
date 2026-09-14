@@ -6,8 +6,3 @@ TheBalloonPost::TheBalloonPost(eObjectType p_arg0, unsigned int p_arg1) : GameOb
 {
 	m_active = p_arg1;
 }
-
-// 68K 0x101186cc __dt__15CTheBalloonPostFv
-TheBalloonPost::~TheBalloonPost()
-{
-}
