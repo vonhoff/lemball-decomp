@@ -150,8 +150,3 @@ hitObject:
 	}
 	return true;
 }
-
-// 68K 0x1011b484 __dt__7CSlinkyFv
-Slinky::~Slinky()
-{
-}

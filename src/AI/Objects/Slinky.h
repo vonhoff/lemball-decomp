@@ -12,7 +12,6 @@ public:
 	bool GoodEndPt(const AiCoord& p_coordinate);
 	virtual bool Move();    // vtable+0x44
 	virtual bool Process(); // vtable+0x14
-	virtual ~Slinky();      // vtable+0x00
 	void Set(int p_minX, int p_maxX, int p_minY, int p_maxY);
 
 private:
@@ -27,5 +26,9 @@ private:
 
 // SYNTHETIC: LEMBALL 0x0040c1d0
 // Slinky::`vector deleting destructor'
+
+// 68K 0x1011b484 __dt__7CSlinkyFv
+// SYNTHETIC: LEMBALL 0x0040c260
+// Slinky::~Slinky
 
 #endif
