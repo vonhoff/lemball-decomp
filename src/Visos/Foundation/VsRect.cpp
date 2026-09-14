@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_VSSIZE_COPY
 #include "VsRect.h"
 
 #include "VsPoint.h"
@@ -43,27 +44,11 @@ void VsRect::ExpandToInclude(const VsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x0044e6c0
-VsRect::VsRect(const VsRect& p_source)
+VsRect::VsRect(const VsRect& p_source) : VsSize(p_source), VsPoint(p_source)
 {
-	const short* coords;
-
-	m_width = p_source.m_width;
-	m_height = p_source.m_height;
-	if (&p_source != 0) {
-		coords = &p_source.m_x;
-	}
-	else {
-		coords = 0;
-	}
-	m_x = *coords;
-	m_y = coords[1];
 }
 
 // FUNCTION: LEMBALL 0x00478b80
-VsRect::VsRect(short p_x, short p_y, VsSize* p_size)
+VsRect::VsRect(short p_x, short p_y, VsSize* p_size) : VsSize(*p_size), VsPoint(p_x, p_y)
 {
-	m_width = p_size->m_width;
-	m_height = p_size->m_height;
-	m_x = p_x;
-	m_y = p_y;
 }
