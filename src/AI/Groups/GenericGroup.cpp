@@ -49,6 +49,15 @@ GenericGroup::GenericGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationMa
 	m_maxX = 9999;
 }
 
+// 68K 0x1060c3aa __dt__13CGenericGroupFv
+// FUNCTION: LEMBALL 0x0041de40
+GenericGroup::~GenericGroup()
+{
+	for (int i = 0; i < 10; i++) {
+		delete m_elements[i];
+	}
+}
+
 // 68K 0x1060c44c Restart__13CGenericGroupFv
 // FUNCTION: LEMBALL 0x0041de80
 void GenericGroup::Restart()
@@ -424,11 +433,6 @@ int GenericGroup::GetViewData(ViewData* p_viewData)
 		} while (object != 0);
 	}
 	return count;
-}
-
-// 68K 0x1060c3aa __dt__13CGenericGroupFv
-GenericGroup::~GenericGroup()
-{
 }
 
 // GLOBAL: LEMBALL 0x004a781c
