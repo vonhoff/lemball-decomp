@@ -14,31 +14,19 @@ inline VsOStream& operator<<(VsOStream& p_stream, unsigned short p_value)
 // FUNCTION: LEMBALL 0x0047c210
 unsigned short TargetByteSwap16(unsigned short p_value)
 {
-	unsigned short ax;
-	unsigned short cx;
-
-	cx = p_value;
-	ax = cx;
-	ax = (unsigned short) (ax >> 8);
-	cx = (unsigned short) (cx << 8);
-	return (unsigned short) (ax + cx);
+	unsigned short high = (unsigned short) (p_value >> 8);
+	p_value = (unsigned short) (p_value << 8);
+	return (unsigned short) (high + p_value);
 }
 
 // FUNCTION: LEMBALL 0x0047c230
 unsigned int TargetByteSwap32(unsigned int p_value)
 {
-	unsigned int esi;
-	unsigned int edi;
-	unsigned int eax;
-
-	esi = p_value;
-	eax = esi;
-	esi = esi >> 16;
-	eax = eax & 0xffff;
-	edi = TargetByteSwap16((unsigned short) eax);
-	edi = edi << 16;
-	eax = TargetByteSwap16((unsigned short) esi);
-	return eax + edi;
+	unsigned int low = p_value & 0xffff;
+	p_value >>= 16;
+	low = TargetByteSwap16((unsigned short) low);
+	low <<= 16;
+	return TargetByteSwap16((unsigned short) p_value) + low;
 }
 
 // FUNCTION: LEMBALL 0x0047c260
