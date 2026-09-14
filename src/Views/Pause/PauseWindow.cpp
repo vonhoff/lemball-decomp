@@ -265,12 +265,16 @@ VsRect PauseWindow::CalculateWindow()
 	horizontalWidth = verticalBorder[0];
 	verticalHeight = verticalCorner[1];
 	windowSize.m_width = (short) (((int) windowSize.m_width + horizontalWidth - 1) / horizontalWidth);
-	windowSize.m_height = (short) (((int) windowSize.m_height + verticalHeight - 1) / verticalHeight);
 	windowSize.m_width = (short) (windowSize.m_width * horizontalWidth);
+	windowSize.m_height = (short) (((int) windowSize.m_height + verticalHeight - 1) / verticalHeight);
 	windowSize.m_height = (short) (windowSize.m_height * verticalHeight);
 	m_verticalTextOffset = ((int) windowSize.m_height - (int) maxTextSize.m_height) / 2;
-	m_borderTiles.m_width = (short) ((int) windowSize.m_width / horizontalWidth - 2);
-	m_borderTiles.m_height = (short) ((int) windowSize.m_height / verticalHeight - 2);
+	short horizontalTiles = windowSize.m_width / horizontalWidth;
+	short verticalTiles = windowSize.m_height / verticalHeight;
+	horizontalTiles -= 2;
+	verticalTiles -= 2;
+	m_borderTiles.m_width = horizontalTiles;
+	m_borderTiles.m_height = verticalTiles;
 
 	int borderAnimCount = m_borderTiles.m_width + m_borderTiles.m_height;
 	if (m_borderAnimCount != borderAnimCount) {
