@@ -68,6 +68,16 @@ void GodManager::Register(BaseObjectManager* p_manager)
 	p_manager->Restart();
 }
 
+// FUNCTION: LEMBALL 0x0040b1f0
+BaseObjectManager* GodManager::GetManagerForTransport(int p_transportId)
+{
+	int index = m_transportMap[p_transportId];
+	if (index != -1) {
+		return m_managers[index];
+	}
+	return 0;
+}
+
 // 68K 0x1060e0dc ProcessMsg__11CGodManagerFP10tagMESSAGE
 // FUNCTION: LEMBALL 0x0040b210
 int GodManager::ProcessMsg(Message* p_message)

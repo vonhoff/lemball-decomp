@@ -11,6 +11,7 @@ public:
 	GodManager(int p_arg0);
 	bool TransportReceive(ReadPacket* p_packet);
 	int GetViewData(ViewData* p_viewData);
+	BaseObjectManager* GetManagerForTransport(int p_transportId);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~GodManager();                      // vtable+0x04
 	void Process();
