@@ -47,6 +47,13 @@ void LiftManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x1061524c __dt__12CLiftManagerFv
+// FUNCTION: LEMBALL 0x004257c0
+LiftManager::~LiftManager()
+{
+	delete[] m_lifts;
+}
+
 // 68K 0x106152bc Process__12CLiftManagerFv
 // FUNCTION: LEMBALL 0x00425d30
 void LiftManager::Process()
@@ -185,9 +192,4 @@ void LiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 			remaining--;
 		} while (remaining != 0);
 	}
-}
-
-// 68K 0x1061524c __dt__12CLiftManagerFv
-LiftManager::~LiftManager()
-{
 }

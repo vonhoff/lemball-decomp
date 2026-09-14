@@ -43,6 +43,13 @@ void PaintGunManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x1061ba6c __dt__16CPaintGunManagerFv
+// FUNCTION: LEMBALL 0x0042c120
+PaintGunManager::~PaintGunManager()
+{
+	delete[] m_paintGuns;
+}
+
 // 68K 0x1061bae6 Process__16CPaintGunManagerFv
 // FUNCTION: LEMBALL 0x0042c4d0
 void PaintGunManager::Process()
@@ -118,9 +125,4 @@ void PaintGunManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned 
 			remaining--;
 		} while (remaining != 0);
 	}
-}
-
-// 68K 0x1061ba6c __dt__16CPaintGunManagerFv
-PaintGunManager::~PaintGunManager()
-{
 }

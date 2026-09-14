@@ -43,6 +43,13 @@ void RocketManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x1061debc __dt__14CRocketManagerFv
+// FUNCTION: LEMBALL 0x00426c00
+RocketManager::~RocketManager()
+{
+	delete[] m_rockets;
+}
+
 // 68K 0x1061df34 StepOn__14CRocketManagerFRC7AICOORDP11CGameObject
 // FUNCTION: LEMBALL 0x00426fb0
 int RocketManager::StepOn(const AiCoord& p_position, GameObject* p_object)
@@ -124,9 +131,4 @@ void RocketManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned ch
 			remaining--;
 		} while (remaining != 0);
 	}
-}
-
-// 68K 0x1061debc __dt__14CRocketManagerFv
-RocketManager::~RocketManager()
-{
 }
