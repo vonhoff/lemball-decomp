@@ -1,3 +1,4 @@
+#define LEMBALL_IMPLICIT_GLOBAL_CLEANUP
 #include "BulletManager.h"
 
 #include "../../Visos/Network/Connect.h"
