@@ -3464,9 +3464,9 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 	unsigned char frameSpace[0x14];
 	Surface* self;
 	ResZrle* resource;
-	unsigned int ebpFlags;
 	short zHeight;
 	short zWidth;
+	unsigned int ebpFlags;
 	VsRect* dest;
 	VsRect* clipped;
 	int area;
@@ -3478,8 +3478,7 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 	zWidth = resource->m_width;
 	zHeight = resource->m_height;
 	area = (int) zWidth;
-	area = area * (int) zHeight;
-	if (area == 0) {
+	if ((int) zHeight * area == 0) {
 		return;
 	}
 	dest->m_width = zWidth;
@@ -3496,8 +3495,7 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 	clipped->m_y = 0;
 	clipped->m_x = 0;
 	if ((short) dest->m_width > 0xff || (short) dest->m_height > 0xff) {
-		*g_pDebugOutput << g_szWarningZrleIs << (int) (short) dest->m_width << g_szClippingWideAnd
-						<< (int) (short) dest->m_height << g_szClippingHighNewline;
+		*g_pDebugOutput << g_szWarningZrleIs << area << g_szClippingWideAnd << (int) zHeight << g_szClippingHighNewline;
 		if ((short) dest->m_width > 0xff) {
 			*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
 			dest->m_width = 0xff;
@@ -3508,29 +3506,25 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 		}
 	}
 	{
-		unsigned char* remapData;
 		Remap* remap;
-		unsigned short depth;
 
 		remap = p_remap;
-		depth = p_depth;
-		remapData = (unsigned char*) remap;
 		if (ClipRect(*dest, clipped) == 0) {
 			AddToChangeList(dest);
 			if ((ebpFlags & 0x40000) != 0) {
 				if (remap == 0) {
-					BlitZrleNoClipZBuff(*dest, resource, depth);
+					BlitZrleNoClipZBuff(*dest, resource, p_depth);
 					return;
 				}
-				BlitZrleNoClipZBuffRemap(*dest, resource, depth, remapData);
+				BlitZrleNoClipZBuffRemap(*dest, resource, p_depth, remap->m_remap);
 				return;
 			}
 			if ((ebpFlags & 0x80000) != 0) {
 				if (remap == 0) {
-					BlitZrleNoClipQzBuff(*dest, resource, depth);
+					BlitZrleNoClipQzBuff(*dest, resource, p_depth);
 					return;
 				}
-				BlitZrleNoClipQzBuffRemap(*dest, resource, depth, remapData);
+				BlitZrleNoClipQzBuffRemap(*dest, resource, p_depth, remap->m_remap);
 				return;
 			}
 			if (remap == 0) {
@@ -3542,10 +3536,10 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 				return;
 			}
 			if ((ebpFlags & 1) != 0) {
-				BlitZrleNoClipRemapR(*dest, resource, (ebpFlags & 2) >> 1, remapData);
+				BlitZrleNoClipRemapR(*dest, resource, (ebpFlags & 2) >> 1, remap->m_remap);
 				return;
 			}
-			BlitZrleNoClipRemap(*dest, resource, (ebpFlags & 2) >> 1, remapData);
+			BlitZrleNoClipRemap(*dest, resource, (ebpFlags & 2) >> 1, remap->m_remap);
 			return;
 		}
 		if (clipped->m_width <= 0 || clipped->m_height <= 0) {
@@ -3554,18 +3548,18 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 		AddToChangeList(dest);
 		if ((ebpFlags & 0x40000) != 0) {
 			if (remap == 0) {
-				BlitZrleClipZBuff(*dest, *clipped, resource, depth);
+				BlitZrleClipZBuff(*dest, *clipped, resource, p_depth);
 				return;
 			}
-			BlitZrleClipZBuffRemap(*dest, *clipped, resource, depth, remapData);
+			BlitZrleClipZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
 			return;
 		}
 		if ((ebpFlags & 0x80000) != 0) {
 			if (remap == 0) {
-				BlitZrleClipQzBuff(*dest, *clipped, resource, depth);
+				BlitZrleClipQzBuff(*dest, *clipped, resource, p_depth);
 				return;
 			}
-			BlitZrleClipQzBuffRemap(*dest, *clipped, resource, depth, remapData);
+			BlitZrleClipQzBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
 			return;
 		}
 		if (remap == 0) {
@@ -3577,9 +3571,9 @@ void Surface::BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, 
 			return;
 		}
 		if ((ebpFlags & 1) != 0) {
-			BlitZrleClipRemapR(*dest, *clipped, resource, (ebpFlags & 2) >> 1, remapData);
+			BlitZrleClipRemapR(*dest, *clipped, resource, (ebpFlags & 2) >> 1, remap->m_remap);
 			return;
 		}
-		BlitZrleClipRemap(*dest, *clipped, resource, (ebpFlags & 2) >> 1, remapData);
+		BlitZrleClipRemap(*dest, *clipped, resource, (ebpFlags & 2) >> 1, remap->m_remap);
 	}
 }
