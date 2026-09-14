@@ -1103,12 +1103,12 @@ void Surface::Blit(ZBuffScroll* p_scroll)
 void Surface::Blit(CopyToBackBuff* p_copy)
 {
 	CopyToBackBuff* primitive = p_copy;
-	int width = primitive->m_field08;
-	int height = primitive->m_field0a;
+	int width = primitive->m_destination.m_width;
+	int height = primitive->m_destination.m_height;
 	if (width != 0 && height != 0) {
-		int dstX = primitive->m_field0c;
+		int dstX = primitive->m_destination.m_x;
 		int srcX = primitive->m_field04;
-		int dstY = primitive->m_field0e;
+		int dstY = primitive->m_destination.m_y;
 		int srcY = primitive->m_field06;
 		if (height > 0) {
 			int srcRow = srcY * 4;

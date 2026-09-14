@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_COPYTOBACKBUFF_H
 
 #include "../../Common.h"
+#include "../Foundation/VsRect.h"
 #include "Primitive.h" // complete type
 
 // SIZE 0x10
@@ -10,12 +11,7 @@ class CopyToBackBuff : public Primitive {
 public:
 	// 68K 0x1010a668 __ct__15CCopyToBackBuffFv
 	// FUNCTION: LEMBALL 0x00439550
-	CopyToBackBuff() : m_field0a(0)
-	{
-		m_field08 = 0;
-		m_field0e = 0;
-		m_field0c = 0;
-	}
+	CopyToBackBuff() {}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	// FUNCTION: LEMBALL 0x00439740
@@ -24,12 +20,9 @@ public:
 	friend class Surface;
 
 private:
-	short m_field04; // 0x04
-	short m_field06; // 0x06
-	short m_field08; // 0x08
-	short m_field0a; // 0x0a
-	short m_field0c; // 0x0c
-	short m_field0e; // 0x0e
+	short m_field04;      // 0x04
+	short m_field06;      // 0x06
+	VsRect m_destination; // 0x08
 };
 
 // SYNTHETIC: LEMBALL 0x004396b0
