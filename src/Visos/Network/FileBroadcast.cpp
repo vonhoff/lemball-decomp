@@ -61,6 +61,21 @@ FileBroadcast::FileBroadcast()
 	m_portInfoLocked = 0;
 }
 
+// 68K 0x102088cc __dt__14CFileBroadcastFv
+// FUNCTION: LEMBALL 0x0047a910
+FileBroadcast::~FileBroadcast()
+{
+	delete FileReadSocket::m_file;
+	if (g_pFileBroadcastData != 0) {
+		operator delete(g_pFileBroadcastData);
+		g_pFileBroadcastData = 0;
+	}
+	if (g_pFileBroadcast != 0) {
+		delete g_pFileBroadcast;
+		g_pFileBroadcast = 0;
+	}
+}
+
 // 68K 0x10208d44 InitialiseFile__14CFileBroadcastFv
 // FUNCTION: LEMBALL 0x0047aa10
 void FileBroadcast::InitialiseFile()
@@ -234,11 +249,6 @@ void FileBroadcast::Process()
 		m_lastProcessTime = timeGetTime();
 	}
 	Broadcast::Process();
-}
-
-// 68K 0x102088cc __dt__14CFileBroadcastFv
-FileBroadcast::~FileBroadcast()
-{
 }
 
 // 68K 0x10116874 Closed__14CFileBroadcastFUc

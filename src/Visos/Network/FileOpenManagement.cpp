@@ -37,8 +37,3 @@ int FileOpenManagement::SysCloseSocket()
 	}
 	return result;
 }
-
-// 68K 0x10106a58 __dt__19CFileOpenManagementFv
-FileOpenManagement::~FileOpenManagement()
-{
-}

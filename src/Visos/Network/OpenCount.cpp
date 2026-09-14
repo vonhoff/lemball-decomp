@@ -13,8 +13,3 @@ void OpenCount::GetData()
 {
 	Get(m_openCount);
 }
-
-// 68K 0x101067cc __dt__10COpenCountFv
-OpenCount::~OpenCount()
-{
-}

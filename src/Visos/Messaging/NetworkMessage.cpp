@@ -3,6 +3,7 @@
 #include "../Foundation/BaseQueue.h"
 #include "../Foundation/BaseQueueHandler.h"
 #include "../Foundation/VsMem.h"
+#include "../Foundation/VsTime.h"
 #include "../Network/BaseNetwork.h"
 #include "BasePacketHeader.h"
 
@@ -38,11 +39,6 @@ void NetworkMessage::AddData()
 {
 }
 
-// 68K 0x1020a4ce __dt__15CNetworkMessageFv
-NetworkMessage::~NetworkMessage()
-{
-}
-
 // 68K 0x1020a488 Initialise__15CNetworkMessageFv
 // FUNCTION: LEMBALL 0x0045ee80
 void NetworkMessage::Initialise()
@@ -53,6 +49,27 @@ void NetworkMessage::Initialise()
 	m_buffer = 0;
 	m_payloadCapacity = 0;
 	m_openDepth = 0;
+}
+
+// 68K 0x1020a4ce __dt__15CNetworkMessageFv
+// FUNCTION: LEMBALL 0x0045eea0
+NetworkMessage::~NetworkMessage()
+{
+	if (m_pendingSendCount != 0) {
+		unsigned long start = CurrentMilliTimer();
+		while (m_pendingSendCount != 0) {
+			if (CurrentMilliTimer() - start >= 2000) {
+				break;
+			}
+			if (g_pBaseNetwork != 0) {
+				g_pBaseNetwork->WaitProcess();
+			}
+		}
+	}
+	if (m_ownsBuffer != 0) {
+		operator delete(m_buffer);
+		m_buffer = 0;
+	}
 }
 
 // 68K 0x1020a574 Add__15CNetworkMessageFUl

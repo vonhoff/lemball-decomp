@@ -13,7 +13,6 @@ public:
 	bool DecOpenCount();
 	bool IncOpenCount();
 	int SysCloseSocket();
-	~FileOpenManagement();
 	friend class FileConnect;
 
 private:

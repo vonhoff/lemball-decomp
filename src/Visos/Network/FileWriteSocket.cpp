@@ -18,6 +18,12 @@ FileWriteSocket::FileWriteSocket() : FileBaseSocket(), WriteSocket(), FileCommon
 	m_unk0x10 = 0;
 }
 
+// 68K 0x1020795a __dt__16CFileWriteSocketFv
+// FUNCTION: LEMBALL 0x00479f40
+FileWriteSocket::~FileWriteSocket()
+{
+}
+
 // 68K 0x10207a8c Write__16CFileWriteSocketFR15CNetworkMessageUcUc
 // FUNCTION: LEMBALL 0x00479fa0
 int FileWriteSocket::Write(NetworkMessage& p_message, undefined4 p_keepLock, undefined4 p_wait)
@@ -97,11 +103,6 @@ bool FileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 		NetworkFile::UnLock(headerOffset, lockLength);
 	}
 	return error == 0;
-}
-
-// 68K 0x1020795a __dt__16CFileWriteSocketFv
-FileWriteSocket::~FileWriteSocket()
-{
 }
 
 // 68K 0x101167b2 Closed__16CFileWriteSocketFUc
