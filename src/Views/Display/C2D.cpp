@@ -815,25 +815,78 @@ bool C2D::IsInGrouping(GameObject* p_object)
 // STUB: LEMBALL 0x00437520
 void C2D::NoStateLeftClick(const VsPoint& p_screenPoint,
 						   const VsPoint& p_gamePoint,
-						   unsigned char p_commitMoves,
-						   unsigned char p_alternate)
+						   undefined4 p_commitMoves,
+						   undefined4 p_alternate)
 {
 }
 
 // 68K 0x10b088fa GroupingLeftClick__3C2DFRC8CVSPointRC8CVSPointUc
-// STUB: LEMBALL 0x004376b0
-void C2D::GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint, unsigned char p_alternate)
+// FUNCTION: LEMBALL 0x004376b0
+void C2D::GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint, undefined4 p_alternate)
 {
+	int index;
+	if (FindGameObject(p_screenPoint, index, 0)) {
+		switch (m_viewData[index].m_objectType) {
+		case 2:
+			if (p_alternate == 0) {
+				if (InGroupByObjectNo(m_viewData[index].m_objectId)) {
+					RemoveFromGroupByObjectNo(m_viewData[index].m_objectId);
+				}
+				else {
+					AddObjectToGroup(m_viewData[index].m_objectId, 0);
+				}
+				g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+				return;
+			}
+			break;
+		case 4:
+		case 5:
+		case 0xc:
+		case 0x11:
+		case 0x14:
+		case 0x15:
+		case 0x16:
+		case 0x17:
+		case 0x1c:
+		case 0x22:
+		case 0x27:
+		case 0x29:
+		case 0x2b:
+		case 0x2d:
+			if (m_groupCount > 0) {
+				FormGroup();
+			}
+			SelectObject(index);
+			return;
+		case 0x34:
+			break;
+		default:
+			return;
+		}
+	}
+	if (m_groupCount > 0) {
+		FormGroup();
+		MoveGroup(p_gamePoint);
+		return;
+	}
+	MoveGroup(p_gamePoint);
 }
 
 // 68K 0x10b08aae LeftClick__3C2DFRC8CVSPointRC8CVSPointUcUc
-// STUB: LEMBALL 0x00437840
+// FUNCTION: LEMBALL 0x00437840
 void C2D::LeftClick(const VsPoint& p_screenPoint,
 					const VsPoint& p_gamePoint,
-					unsigned char p_commitMoves,
-					unsigned char p_alternate)
+					undefined4 p_commitMoves,
+					undefined4 p_alternate)
 {
-	// Win32 dispatches state 0 to NoStateLeftClick and state 1 to GroupingLeftClick.
+	switch (m_groupingActive) {
+	case 0:
+		NoStateLeftClick(p_screenPoint, p_gamePoint, p_commitMoves, p_alternate);
+		break;
+	case 1:
+		GroupingLeftClick(p_screenPoint, p_gamePoint, p_alternate);
+		break;
+	}
 }
 
 // 68K 0x10b08b30 NoStateRightClick__3C2DFRC8CVSPointRC8CVSPoint

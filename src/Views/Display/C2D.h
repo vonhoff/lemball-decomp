@@ -105,20 +105,20 @@ public:
 	void DrawZBuffAnim(int p_index, unsigned short p_z);
 	void DrawZBuffSprite(int p_index, unsigned short p_z);
 	void FormGroup();
-	void GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint, unsigned char p_alternate);
+	void GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint, undefined4 p_alternate);
 	void InitSpriteGroundLu();
 	void KillRemapPalettes();
 	void LeftClick(const VsPoint& p_screenPoint,
 				   const VsPoint& p_gamePoint,
-				   unsigned char p_commitMoves,
-				   unsigned char p_alternate);
+				   undefined4 p_commitMoves,
+				   undefined4 p_alternate);
 	void MoveGroup(const VsPoint& p_point);
 	void NewPauseWindow(int p_message);
 	void NextGroup();
 	void NoStateLeftClick(const VsPoint& p_screenPoint,
 						  const VsPoint& p_gamePoint,
-						  unsigned char p_commitMoves,
-						  unsigned char p_alternate);
+						  undefined4 p_commitMoves,
+						  undefined4 p_alternate);
 	void NoStateRightClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint);
 	void OnLoaded();
 	void PrevGroup();
