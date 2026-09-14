@@ -157,6 +157,41 @@ def relocate_instructions(codes, orig_asm, recomp_asm):
     return fixed
 
 
+def table_end_expressions(data, start, relocation_sites):
+    """Recognize a bounded literal-table scan, not an adjacent global access.
+
+    The accepted sequence initializes EAX with a relocated table pointer,
+    compares [EAX] with ECX, exits on equality, advances EAX by a positive
+    stride, increments ESI, and compares EAX with a relocated end pointer.
+    JB must return to that same key comparison. All other code is untouched.
+    """
+    expressions = {}
+    decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+    for address, _, _, _ in decoder.disasm_lite(data, start):
+        offset = address - start
+        if offset + 20 > len(data):
+            continue
+        loop = data[offset:offset + 20]
+        if not (
+            loop[0] == 0xB8
+            and loop[5:8] == b"\x39\x08\x74"
+            and 9 + loop[8] >= 20 and loop[8] < 0x80
+            and loop[9:11] == b"\x83\xc0"
+            and 0 < loop[11] < 0x80
+            and loop[12:14] == b"\x46\x3d"
+            and loop[18:20] == b"\x72\xf1"
+            and start + offset + 1 in relocation_sites
+            and start + offset + 14 in relocation_sites
+        ):
+            continue
+        begin = struct.unpack_from("<I", loop, 1)[0]
+        end = struct.unpack_from("<I", loop, 14)[0]
+        length = end - begin
+        if 0 < length <= 65536 and length % loop[11] == 0:
+            expressions[start + offset + 13] = (begin, length)
+    return expressions
+
+
 class RelocationAwareParseAsm(parse.ParseAsm):
     """Recognize CMP pointer immediates at verified PE relocation sites."""
 
@@ -169,6 +204,7 @@ class RelocationAwareParseAsm(parse.ParseAsm):
     def parse_asm(self, data, start_addr):
         self._data = bytes(data)
         self._start = start_addr
+        self._table_ends = table_end_expressions(self._data, start_addr, self.relocation_sites)
         return super().parse_asm(data, start_addr)
 
     def sanitize(self, inst):
@@ -191,6 +227,9 @@ class RelocationAwareParseAsm(parse.ParseAsm):
                 value = int(operands.rpartition(", ")[2], 16)
                 mnemonic, sanitized = super().sanitize(inst)
                 head, separator, _ = sanitized.rpartition(", ")
+                if address in self._table_ends:
+                    begin, length = self._table_ends[address]
+                    return mnemonic, head + separator + f"{self.replace(begin)} + {length:#x}"
                 return mnemonic, head + separator + self.replace(value)
         return super().sanitize(inst)
 

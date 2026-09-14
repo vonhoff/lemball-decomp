@@ -62,3 +62,23 @@ class CrtPointerRelocationTests(unittest.TestCase):
             code[0xC:0x10] = bytes(4)
             normalized.append(code)
         self.assertEqual(*normalized)
+
+    def test_dosmaperr_bound_is_one_past_identical_error_tables(self):
+        tables = []
+        loops = []
+        for image, address in self.sides(0x00483EA0):
+            begin = self.pointer(image, address + 0xF)
+            end = self.pointer(image, address + 0x1C)
+            self.assertEqual(end - begin, 45 * 8)
+            tables.append(bytes(image.read(begin, end - begin)))
+            # MOV EAX,begin; compare key; advance eight bytes; CMP EAX,end;
+            # JB back to the key comparison. Only the two pointers relocate.
+            loop = bytearray(image.read(address + 0xE, 0x14))
+            self.assertEqual(loop[5:13], b"\x39\x08\x74\x22\x83\xc0\x08\x46")
+            self.assertEqual(loop[13], 0x3D)
+            self.assertEqual(loop[18:20], b"\x72\xf1")
+            loop[1:5] = bytes(4)
+            loop[14:18] = bytes(4)
+            loops.append(loop)
+        self.assertEqual(*tables)
+        self.assertEqual(*loops)

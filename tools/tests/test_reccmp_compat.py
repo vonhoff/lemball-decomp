@@ -4,7 +4,7 @@ import struct
 import unittest
 from unittest.mock import patch
 
-from lib.reccmp_compat import BoundedInstructGen, RelocationAwareParseAsm
+from lib.reccmp_compat import BoundedInstructGen, RelocationAwareParseAsm, table_end_expressions
 from reccmp.compare.asm import parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 
@@ -75,6 +75,55 @@ class JumpTableBoundaryTests(unittest.TestCase):
         for blob in fixtures:
             with self.subTest(blob=blob.hex()):
                 self.assertEqual(BoundedInstructGen(blob, start).sections, InstructGen(blob, start).sections)
+
+
+class TableEndComparisonTests(unittest.TestCase):
+    def loop(self, begin=0x4000, length=0x168):
+        return (b"\xb8" + struct.pack("<I", begin)
+                + b"\x39\x08\x74\x22\x83\xc0\x08\x46\x3d"
+                + struct.pack("<I", begin + length) + b"\x72\xf1")
+
+    def render(self, begin, adjacent_name, length=0x168, base_name="errors (DATA)"):
+        def names(address, **kwargs):
+            return {begin: base_name, begin + length: adjacent_name}.get(address)
+        parser = RelocationAwareParseAsm(
+            relocation_sites=(0x1001, 0x100E), name_lookup=names,
+            addr_test=lambda address: True,
+        )
+        return [line for _, line in parser.parse_asm(self.loop(begin, length), 0x1000)]
+
+    def test_adjacent_symbol_does_not_name_table_bound(self):
+        original = self.render(0x4000, "next_original (DATA)")
+        rebuilt = self.render(0x8000, "next_rebuilt (DATA)")
+        self.assertEqual(original, rebuilt)
+        self.assertIn("cmp eax, errors (DATA) + 0x168", original)
+
+    def test_different_bounds_and_base_symbols_remain_distinct(self):
+        original = self.render(0x4000, "next (DATA)")
+        self.assertNotEqual(original, self.render(0x8000, "next (DATA)", length=0x160))
+        self.assertNotEqual(original, self.render(0x8000, "next (DATA)", base_name="other (DATA)"))
+
+    def test_requires_both_operand_relocations(self):
+        for sites in ((), (0x1001,), (0x100E,)):
+            with self.subTest(sites=sites):
+                self.assertEqual(table_end_expressions(self.loop(), 0x1000, sites), {})
+
+    def test_declines_changed_control_flow_and_pointer_updates(self):
+        for offset, value in ((5, 0x89), (7, 0x75), (8, 0), (9, 0x81),
+                              (11, 0), (11, 0xFF), (12, 0x40), (18, 0x73), (19, 0xF0)):
+            blob = bytearray(self.loop())
+            blob[offset] = value
+            with self.subTest(offset=offset, value=value):
+                self.assertEqual(table_end_expressions(blob, 0x1000, (0x1001, 0x100E)), {})
+
+    def test_declines_invalid_extent_and_embedded_opcode(self):
+        for length in (0, -8, 7, 0x10008):
+            with self.subTest(length=length):
+                self.assertEqual(table_end_expressions(self.loop(length=length), 0x1000,
+                                                      (0x1001, 0x100E)), {})
+        # The apparent MOV starts inside a PUSH immediate, not at an instruction.
+        blob = b"\x68" + self.loop()
+        self.assertEqual(table_end_expressions(blob, 0x1000, (0x1002, 0x100F)), {})
 
 
 class PointerComparisonTests(unittest.TestCase):
