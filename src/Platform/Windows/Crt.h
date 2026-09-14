@@ -85,6 +85,54 @@
 // LIBRARY: LEMBALL 0x00481690 SYMBOL
 // ___crtGetStringTypeA
 
+// LIBRARY: LEMBALL 0x004817c0 SYMBOL
+// __cinit
+
+// LIBRARY: LEMBALL 0x004817f0 SYMBOL
+// _exit
+
+// LIBRARY: LEMBALL 0x00481810 SYMBOL
+// __exit
+
+// LIBRARY: LEMBALL 0x004818e0 SYMBOL
+// __lockexit
+
+// LIBRARY: LEMBALL 0x004818f0 SYMBOL
+// __unlockexit
+
+// LIBRARY: LEMBALL 0x00481dd0 SYMBOL
+// __setenvp
+
+// LIBRARY: LEMBALL 0x00481eb0 SYMBOL
+// __setargv
+
+// LIBRARY: LEMBALL 0x00482130 SYMBOL
+// ___crtGetEnvironmentStringsW
+
+// LIBRARY: LEMBALL 0x00482330 SYMBOL
+// ___crtGetEnvironmentStringsA
+
+// LIBRARY: LEMBALL 0x004824d0 SYMBOL
+// __setmbcp
+
+// LIBRARY: LEMBALL 0x004827f0 SYMBOL
+// ___initmbctable
+
+// LIBRARY: LEMBALL 0x00482800 SYMBOL
+// __ioinit
+
+// LIBRARY: LEMBALL 0x004829e0 SYMBOL
+// __ioterm
+
+// LIBRARY: LEMBALL 0x00482a40 SYMBOL
+// __mtinit
+
+// LIBRARY: LEMBALL 0x00482ad0 SYMBOL
+// __initptd
+
+// LIBRARY: LEMBALL 0x00482af0 SYMBOL
+// __getptd
+
 // LIBRARY: LEMBALL 0x00483030 SYMBOL
 // __openfile
 
