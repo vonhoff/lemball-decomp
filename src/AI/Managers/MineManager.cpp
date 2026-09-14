@@ -162,8 +162,9 @@ int MineManager::GetViewData(ViewData* p_viewData)
 // FUNCTION: LEMBALL 0x00424850
 void MineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
+	unsigned short count;
 	unsigned short* data = (unsigned short*) p_data;
-	unsigned short count = *data++;
+	count = *data++;
 	Initialise(count);
 	if (count != 0) {
 		unsigned int remaining = count;

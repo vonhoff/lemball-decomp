@@ -2,7 +2,7 @@
 #define LEMBALL_AI_OBJECTS_VIEWDATA_H
 
 #include "../../Common.h"
-#include "../Base/C3DVector.h" // complete type
+#include "../Base/AiCoord.h" // complete type
 
 // SIZE 0x4c
 class ViewData {
@@ -12,9 +12,6 @@ public:
 	ViewData()
 	{
 		m_objectId = 0xffff;
-		m_auxiliaryPosition.m_xFixed = 0xaa55aa55;
-		m_auxiliaryPosition.m_yFixed = 0xaa55aa55;
-		m_auxiliaryPosition.m_zFixed = 0xaa55aa55;
 		m_transientFlags = 0;
 		m_unk0x30 = 0;
 		m_action = 0;
@@ -46,7 +43,7 @@ private:
 	unsigned short m_playerIndex;  // 0x2e
 	undefined4 m_unk0x30;          // 0x30
 	unsigned int m_transientFlags; // 0x34
-	C3DVector m_auxiliaryPosition; // 0x38
+	AiCoord m_auxiliaryPosition;   // 0x38
 	eSoundEffect m_soundEffect;    // 0x44
 	unsigned int m_sortZKey;       // 0x48
 };
