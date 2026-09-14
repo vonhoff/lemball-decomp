@@ -1,3 +1,4 @@
+#define LEMBALL_IMPLICIT_GLOBAL_CLEANUP
 #include "TrapDoor.h"
 
 #include "../../Control/Game/Game.h"
@@ -188,10 +189,5 @@ int TrapDoor::Usage()
 // 68K 0x1011b680 DoActivate__9CTrapDoorFv
 // FUNCTION: LEMBALL 0x0040ce90
 void TrapDoor::DoActivate()
-{
-}
-
-// 68K 0x1011b5f8 __dt__9CTrapDoorFv
-TrapDoor::~TrapDoor()
 {
 }

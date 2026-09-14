@@ -15,7 +15,6 @@ public:
 	virtual void DoActivate();                      // vtable+0x10c
 	virtual void GetViewData(ViewData& p_viewData); // vtable+0x0c
 	virtual void Restart();                         // vtable+0x104
-	virtual ~TrapDoor();                            // vtable+0x00
 
 	friend class TrapDoorManager;
 
