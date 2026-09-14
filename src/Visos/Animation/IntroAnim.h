@@ -10,7 +10,6 @@
 class IntroAnim : public BaseFrontendProcess {
 public:
 	IntroAnim(Game* p_game) : BaseFrontendProcess(p_game) {}
-	virtual ~IntroAnim(); // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x00407f40

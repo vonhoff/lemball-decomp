@@ -10,7 +10,6 @@
 class PasswordProc : public BaseFrontendProcess {
 public:
 	PasswordProc(Game* p_game) : BaseFrontendProcess(p_game) {}
-	virtual ~PasswordProc(); // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x00407fd0

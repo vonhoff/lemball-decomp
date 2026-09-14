@@ -10,7 +10,6 @@
 class MainOptions1 : public BaseFrontendProcess {
 public:
 	MainOptions1(Game* p_game) : BaseFrontendProcess(p_game) {}
-	virtual ~MainOptions1(); // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x00407f70

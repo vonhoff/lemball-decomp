@@ -7,8 +7,3 @@
 Preview::Preview(Game* p_arg0) : BaseFrontendProcess(p_arg0)
 {
 }
-
-// 68K 0x1011ba0e __dt__8CPreviewFv
-Preview::~Preview()
-{
-}

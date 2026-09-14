@@ -10,7 +10,6 @@
 class SuccFail : public BaseFrontendProcess {
 public:
 	SuccFail(Game* p_arg0, unsigned int p_arg1);
-	virtual ~SuccFail(); // vtable+0x00
 
 private:
 	unsigned int m_variant; // 0x28

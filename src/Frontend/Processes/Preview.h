@@ -10,7 +10,6 @@
 class Preview : public BaseFrontendProcess {
 public:
 	Preview(Game* p_arg0);
-	virtual ~Preview(); // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x0044a9d0
