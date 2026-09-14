@@ -183,10 +183,24 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	mouseY = (short) (p_lParam >> 16);
 
 	if (p_message == WM_CREATE) {
+		POINT position;
 		create = (CREATESTRUCTA*) p_lParam;
 		window = (Wnd*) create->lpCreateParams;
 		SetWindowLongA((HWND) p_hwnd, GWL_USERDATA, (LONG) window);
 		window->m_nativeWindow = p_hwnd;
+		position.x = 0;
+		position.y = 0;
+		ClientToScreen((HWND) p_hwnd, &position);
+		mouseX = (short) position.x;
+		mouseY = (short) position.y;
+		if ((window->GetStyle() & WS_CHILD) != 0 && g_pTargetGraphicsSystem->IsFullscreenDriver()) {
+			mouseX += window->m_createRect->m_relativeTopLeft.m_x;
+			mouseY += window->m_createRect->m_relativeTopLeft.m_y;
+		}
+		window->m_rect.m_x = mouseX;
+		window->m_rect.m_y = mouseY;
+		window->m_relativeTopLeft.m_x = window->m_rect.m_x;
+		window->m_relativeTopLeft.m_y = window->m_rect.m_y;
 		window->InternalOnCreate();
 		window->OnCreate();
 		return 0;
@@ -216,6 +230,17 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 			*g_pDebugOutput << g_szQuitting;
 		}
 		ReleaseCapture();
+		return 0;
+	}
+	if (p_message == WM_MOVE) {
+		if (!g_pTargetGraphicsSystem->IsFullscreenDriver()) {
+			POINT position;
+			position.x = 0;
+			position.y = 0;
+			ClientToScreen((HWND) p_hwnd, &position);
+			VsPoint point((short) position.x, (short) position.y);
+			window->MoveAbsolute(point);
+		}
 		return 0;
 	}
 	if (p_message == WM_SIZE) {
