@@ -8,6 +8,13 @@ class AnimSpecial {
 public:
 	// Inlined in Ai::Restart at 0x0041170d.
 	AnimSpecial() : m_entries(0), m_entryCount(0) {}
+	// Inlined in Ai::~Ai at 0x00411a3e.
+	~AnimSpecial()
+	{
+		if (m_entries != 0) {
+			operator delete(m_entries);
+		}
+	}
 	unsigned int Initialise(Map* p_map);
 	friend class C2D;
 

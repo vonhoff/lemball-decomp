@@ -310,6 +310,58 @@ void Ai::Restart()
 	m_initialised = 1;
 }
 
+// 68K 0x10600d02 __dt__3CAIFv
+// FUNCTION: LEMBALL 0x004117a0
+Ai::~Ai()
+{
+	if (g_nDemoMode != 0) {
+		g_pDemo->SetDemoMode(0);
+	}
+	GameObject::Init(0);
+	g_pActiveAI = 0;
+	m_aiQueue->Detach(this, 0);
+	delete m_cursor;
+	delete m_playerGroupManager;
+	delete m_bulletManager;
+	delete m_objectManager;
+	delete m_formationManager;
+	delete m_sheepGroupManager;
+	delete m_enemyGroupManager;
+	delete m_maze;
+	delete m_map;
+	delete m_nodeManager;
+	delete m_ballManager;
+	delete m_collectableManager;
+	delete m_mineManager;
+	delete m_liftManager;
+	delete m_doorManager;
+	delete m_rocketManager;
+	delete m_laserManager;
+	delete m_handManager;
+	delete m_groundAnim;
+	delete m_balloonPost;
+	delete m_trampolineManager;
+	delete m_paintGunManager;
+	delete m_iceManager;
+	delete m_moverManager;
+	delete m_slinkyManager;
+	delete m_trapDoorManager;
+	delete m_invisibleSwitchManager;
+	delete m_levelLoader;
+	delete m_animSpecial;
+	delete g_pGodManager;
+	delete m_aiQueue;
+	if (m_networkMode != 0) {
+		delete m_networkGame;
+		delete m_gameStateMessage;
+	}
+	operator delete(m_objectRequired);
+	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+		g_pGameStatus->m_levelState = m_score;
+	}
+	operator delete(m_objects);
+}
+
 // 68K 0x10601170 Start__3CAIFv
 // FUNCTION: LEMBALL 0x00411b10
 void Ai::Start()
@@ -1120,11 +1172,6 @@ void Ai::Score(int p_score)
 void Ai::Process()
 {
 	Process(0);
-}
-
-// 68K 0x10600d02 __dt__3CAIFv
-Ai::~Ai()
-{
 }
 
 // GLOBAL: LEMBALL 0x004a782c
