@@ -16,6 +16,15 @@ TcpIpCommonSocket::TcpIpCommonSocket() : TargetNetworkWindow("Socket Window", &g
 	m_lastMessage = 0x45f;
 }
 
+// 68K 0x1010c7b0 __dt__18CTCPIPCommonSocketFv
+// FUNCTION: LEMBALL 0x0046fd70
+TcpIpCommonSocket::~TcpIpCommonSocket()
+{
+	if (m_asyncBuffer != 0) {
+		operator delete(m_asyncBuffer);
+	}
+}
+
 // FUNCTION: LEMBALL 0x0046fdb0
 int TcpIpCommonSocket::HandleAsyncNameResolutionResult(unsigned int p_wParam, unsigned int p_lParam, char** p_buffer)
 {
@@ -53,11 +62,6 @@ retry:
 int TcpIpCommonSocket::SysCloseSocket()
 {
 	return closesocket(m_socketHandle);
-}
-
-// 68K 0x1010c7b0 __dt__18CTCPIPCommonSocketFv
-TcpIpCommonSocket::~TcpIpCommonSocket()
-{
 }
 
 // 68K 0x101075e2 SocketError__18CTCPIPCommonSocketFv
