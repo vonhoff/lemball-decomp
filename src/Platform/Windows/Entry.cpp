@@ -40,10 +40,15 @@ bool TargetPumpEvents()
 	}
 
 	if (PeekMessageA(&message, 0, 0, 0, 0) != 0) {
-		while (PeekMessageA(&message, 0, 0, 0, 0) != 0) {
-			GetMessageA(&message, 0, 0, 0);
-			TranslateMessage(&message);
-			DispatchMessageA(&message);
+		if (PeekMessageA(&message, 0, 0, 0, 0) != 0) {
+			BOOL(WINAPI * translateMessage)(const MSG*) = TranslateMessage;
+			LONG(WINAPI * dispatchMessage)(const MSG*) = DispatchMessageA;
+			BOOL(WINAPI * getMessage)(MSG*, HWND, UINT, UINT) = GetMessageA;
+			do {
+				getMessage(&message, 0, 0, 0);
+				translateMessage(&message);
+				dispatchMessage(&message);
+			} while (PeekMessageA(&message, 0, 0, 0, 0) != 0);
 		}
 	}
 
