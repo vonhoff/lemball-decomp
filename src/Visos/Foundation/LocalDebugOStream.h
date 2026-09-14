@@ -24,4 +24,10 @@ private:
 // SYNTHETIC: LEMBALL 0x00407e80
 // LocalDebugOStream::`scalar deleting destructor'
 
+// GLOBAL: LEMBALL 0x00493000
+// LocalDebugOStream::`vbtable'{for `VsOStream'}
+
+// GLOBAL: LEMBALL 0x00493010
+// LocalDebugOStream::`vbtable'{for `LocalDebugOStream'}
+
 #endif

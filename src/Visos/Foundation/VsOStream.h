@@ -5,6 +5,7 @@
 #include "VsIOs.h" // complete type
 
 // SIZE 0x14c
+// VTABLE: LEMBALL 0x00493038
 class VsOStream : public virtual VsIOs {
 public:
 	VsOStream& operator<<(Har4 p_arg0);
@@ -35,5 +36,8 @@ extern VsOStream* g_pDebugOutput;
 
 // SYNTHETIC: LEMBALL 0x00407e40
 // VsOStream::`scalar deleting destructor'
+
+// GLOBAL: LEMBALL 0x00498898
+// VsOStream::`vbtable'
 
 #endif

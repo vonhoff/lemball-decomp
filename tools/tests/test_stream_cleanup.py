@@ -1,5 +1,6 @@
 """Verify the local debug stream owns its stream buffer as a member."""
 
+import struct
 import unittest
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
@@ -14,6 +15,19 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class StreamCleanupTests(unittest.TestCase):
+    def test_virtual_base_tables_match_original_offsets(self):
+        _, engine = load_engine()
+        matches = {match.orig_addr: match for match in engine.get_all()}
+        for original, offsets in ((0x00498898, (0, 0x12c)),
+                                  (0x00493000, (0, -0x20)),
+                                  (0x00493010, (0, 0x20, 0x40))):
+            expected = struct.pack("<" + "i" * len(offsets), *offsets)
+            match = matches[original]
+            for image, address in ((engine.orig_bin, original),
+                                   (engine.recomp_bin, match.recomp_addr)):
+                with self.subTest(original=hex(original), address=hex(address)):
+                    self.assertEqual(image.read(address, len(expected)), expected)
+
     def test_member_buffer_precedes_virtual_base_cleanup(self):
         _, engine = load_engine()
         matches = {match.orig_addr: match for match in engine.get_all()}
