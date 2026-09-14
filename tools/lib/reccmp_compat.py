@@ -172,6 +172,54 @@ def configure_original_extents(engine):
 
 _upstream_relocate_instructions = fixes.relocate_instructions
 _upstream_naive_register_replacement = fixes.naive_register_replacement
+_upstream_is_operand_swap = fixes.is_operand_swap
+_upstream_patch_mov_compare_jmp = fixes.patch_mov_compare_jmp
+
+
+def _register_operand_pair(instruction):
+    """Split a two-operand instruction with a register at either end.
+
+    Register endpoints identify the separator without splitting commas inside
+    normalized template names or string literals. An x86 CMP/TEST operand swap
+    requires a register: memory-memory and immediate-first forms are invalid.
+    """
+    _, separator, operands = instruction.partition(" ")
+    if not separator:
+        return None
+    for register in fixes.REGISTER_SET:
+        if operands.startswith(register + ", "):
+            return register, operands[len(register) + 2:]
+        if operands.endswith(", " + register):
+            return operands[:-len(register) - 2], register
+    return None
+
+
+def is_operand_swap(original, rebuilt):
+    if original.partition(" ")[0] != rebuilt.partition(" ")[0]:
+        return False
+    left = _register_operand_pair(original)
+    right = _register_operand_pair(rebuilt)
+    return left is not None and right is not None and left != right and left == right[::-1]
+
+
+def patch_mov_compare_jmp(original, rebuilt, mnemonic):
+    # Keep the upstream eligibility and jump-target checks, but require exact
+    # source operands instead of accepting anagrams of the instruction text.
+    fixed = _upstream_patch_mov_compare_jmp(original, rebuilt, mnemonic)
+    if not fixed:
+        return set()
+    index = next(i for i, line in enumerate(original) if line.startswith(mnemonic))
+    left_mov = _register_operand_pair(original[index - 1])
+    right_mov = _register_operand_pair(rebuilt[index - 1])
+    left_cmp = _register_operand_pair(original[index])
+    right_cmp = _register_operand_pair(rebuilt[index])
+    if any(pair is None for pair in (left_mov, right_mov, left_cmp, right_cmp)):
+        return set()
+    if left_mov[0] != right_mov[0] or left_mov[0] not in fixes.REGISTER_SET:
+        return set()
+    left = tuple(left_mov[1] if operand == left_mov[0] else operand for operand in left_cmp)
+    right = tuple(right_mov[1] if operand == right_mov[0] else operand for operand in right_cmp)
+    return {index - 1, index, index + 1} if left == right[::-1] else set()
 
 
 def naive_register_replacement(orig_asm, recomp_asm):
@@ -415,5 +463,7 @@ def install_parser_fix() -> None:
     parse.InstructGen = BoundedInstructGen
     fixes.relocate_instructions = relocate_instructions
     fixes.naive_register_replacement = naive_register_replacement
+    fixes.is_operand_swap = is_operand_swap
+    fixes.patch_mov_compare_jmp = patch_mov_compare_jmp
     fixes.assert_fixup = normalize_assert_arguments
     functions.assert_fixup = normalize_assert_arguments
