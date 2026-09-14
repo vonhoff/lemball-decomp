@@ -20,8 +20,10 @@ public:
 		m_initialPosition.m_zFixed = p_position.m_zFixed;
 #endif
 	}
-	virtual void Restart();      // vtable+0x104
+	virtual void Restart(); // vtable+0x104
+#ifndef LEMBALL_IMPLICIT_GLOBAL_CLEANUP
 	virtual ~BaseGlobalObject(); // vtable+0x00
+#endif
 	void OldRestart();
 
 private:

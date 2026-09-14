@@ -22,7 +22,9 @@ public:
 	static void DeleteMessages();
 	void RequestAction(eAction p_arg0);
 	static void SetMessages();
+#ifndef LEMBALL_IMPLICIT_GLOBAL_CLEANUP
 	virtual ~GlobalGameObject();
+#endif
 	GlobalGameObject();
 
 	friend class GameObjectMess;

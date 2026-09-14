@@ -12,11 +12,6 @@ int Ammo::Usage()
 	return 2;
 }
 
-// 68K 0x1011aa1a __dt__5CAmmoFv
-Ammo::~Ammo()
-{
-}
-
 // 68K 0x10618ede Restart__5CAmmoFv
 // FUNCTION: LEMBALL 0x0041ca90
 void Ammo::Restart()

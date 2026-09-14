@@ -11,11 +11,6 @@ int Catapult::Usage()
 	return 1;
 }
 
-// 68K 0x1011a996 __dt__9CCatapultFv
-Catapult::~Catapult()
-{
-}
-
 // 68K 0x10618a46 Restart__9CCatapultFv
 // FUNCTION: LEMBALL 0x0041c700
 void Catapult::Restart()

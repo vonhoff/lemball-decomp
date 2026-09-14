@@ -16,7 +16,6 @@ public:
 	virtual int Usage();                         // vtable+0x28
 	virtual void DoActivate();                   // vtable+0x10c
 	virtual void Restart();                      // vtable+0x104
-	virtual ~Balloon();                          // vtable+0x00
 
 private:
 	AiCoord m_unk0x144; // 0x144

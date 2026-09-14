@@ -10,11 +10,6 @@ int Key::Usage()
 	return 2;
 }
 
-// 68K 0x1011ad36 __dt__4CKeyFv
-Key::~Key()
-{
-}
-
 // 68K 0x10619c40 Process__4CKeyFv
 // FUNCTION: LEMBALL 0x0041d480
 bool Key::Process()

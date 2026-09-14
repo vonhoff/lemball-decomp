@@ -15,11 +15,6 @@ int Tower::Usage()
 	return 1;
 }
 
-// 68K 0x1011ab6a __dt__6CTowerFv
-Tower::~Tower()
-{
-}
-
 // 68K 0x10619554 Process__6CTowerFv
 // FUNCTION: LEMBALL 0x0041cf70
 bool Tower::Process()

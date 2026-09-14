@@ -12,11 +12,6 @@ int Balloon::Usage()
 	return 2;
 }
 
-// 68K 0x1011adb8 __dt__8CBalloonFv
-Balloon::~Balloon()
-{
-}
-
 // 68K 0x10619e44 Restart__8CBalloonFv
 // FUNCTION: LEMBALL 0x0041d600
 void Balloon::Restart()

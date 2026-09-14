@@ -15,7 +15,6 @@ public:
 	virtual bool Process();                      // vtable+0x14
 	virtual int Usage();                         // vtable+0x28
 	virtual void DoActivate();                   // vtable+0x10c
-	virtual ~Tower();                            // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x0041c5c0
