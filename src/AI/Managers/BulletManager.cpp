@@ -34,6 +34,13 @@ void BulletManager::Restart()
 	}
 }
 
+// 68K 0x1060502c __dt__14CBulletManagerFv
+// FUNCTION: LEMBALL 0x00417ec0
+BulletManager::~BulletManager()
+{
+	delete[] m_bullets;
+}
+
 // 68K 0x106050a0 NextFreeBullet__14CBulletManagerFv
 // FUNCTION: LEMBALL 0x00417ee0
 Bullet* BulletManager::NextFreeBullet()
@@ -170,9 +177,4 @@ bool BulletManager::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate
 		bullet = GetNextBullet();
 	}
 	return 0;
-}
-
-// 68K 0x1060502c __dt__14CBulletManagerFv
-BulletManager::~BulletManager()
-{
 }
