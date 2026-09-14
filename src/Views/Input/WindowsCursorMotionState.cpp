@@ -1,5 +1,6 @@
 #include "WindowsCursorMotionState.h"
 
+#include "../../AI/Navigation/Ai.h"
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/Fixed.h"
@@ -9,6 +10,26 @@
 #include "../Animation/LemmingAnimsManager.h"
 
 #include <string.h>
+
+// FUNCTION: LEMBALL 0x00432590
+WindowsCursorMotionState::WindowsCursorMotionState(LemmingAnimsManager* p_anims, Ai* p_ai, Map* p_map)
+	: m_fixedX(DEBUG_SENTINEL), m_fixedY(DEBUG_SENTINEL), m_velocityX(DEBUG_SENTINEL), m_velocityY(DEBUG_SENTINEL),
+	  m_accelerationX(DEBUG_SENTINEL), m_accelerationY(DEBUG_SENTINEL)
+{
+	m_ai = p_ai;
+	m_map = p_map;
+	m_anims = p_anims;
+	m_aiQueue = p_ai->m_aiQueue;
+	m_velocityX = 0;
+	m_velocityY = 0;
+	m_accelerationX = 0;
+	m_accelerationY = 0;
+	m_horizontalActive = 0;
+	m_verticalActive = 0;
+	m_fixedX = 0xa0000;
+	m_fixedY = 0x64000;
+	SendCursorPositionMessage();
+}
 
 // FUNCTION: LEMBALL 0x00432650
 WindowsCursorMotionState::~WindowsCursorMotionState()

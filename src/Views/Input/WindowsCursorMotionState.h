@@ -8,6 +8,7 @@
 // SIZE 0x78
 class WindowsCursorMotionState {
 public:
+	WindowsCursorMotionState(LemmingAnimsManager* p_anims, Ai* p_ai, Map* p_map);
 	~WindowsCursorMotionState();
 	void SendCursorPositionMessage();
 	void ProcessCursorMotion();

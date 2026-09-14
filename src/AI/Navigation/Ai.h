@@ -78,6 +78,7 @@ public:
 	friend class Main2DDisplay;
 	friend class SlinkyManager;
 	friend class Slinky;
+	friend class WindowsCursorMotionState;
 	friend class TrampolineManager;
 	friend class TrapDoorManager;
 	friend class RocketManager;
