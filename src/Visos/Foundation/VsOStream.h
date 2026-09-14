@@ -32,4 +32,8 @@ VsOStream& operator<<(VsOStream& p_arg0, String& p_arg1);
 extern VsOStream* g_pErrorOutput;
 extern VsOStream* g_pSysOutput;
 extern VsOStream* g_pDebugOutput;
+
+// SYNTHETIC: LEMBALL 0x00407e40
+// VsOStream::`scalar deleting destructor'
+
 #endif
