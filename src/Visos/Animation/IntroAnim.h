@@ -16,4 +16,7 @@ public:
 // SYNTHETIC: LEMBALL 0x00407f40
 // IntroAnim::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x00408070
+// IntroAnim::`vector deleting destructor'
+
 #endif
