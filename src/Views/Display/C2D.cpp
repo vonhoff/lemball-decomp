@@ -2770,9 +2770,9 @@ void C2D::DrawLaserFire(ViewData& p_viewData)
 void C2D::DrawLaser(ViewData& p_viewData)
 {
 	eAction action;
+	int x;
 	int y;
 	unsigned long resourceId;
-	int x;
 	int frame;
 
 	action = p_viewData.m_action;
