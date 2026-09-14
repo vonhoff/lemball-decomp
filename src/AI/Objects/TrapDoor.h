@@ -9,6 +9,7 @@
 class TrapDoor : public BaseGlobalObject {
 public:
 	TrapDoor(AiCoord& p_arg0, unsigned int p_arg1);
+	void SetPositionFromIntegers(int p_x, int p_y, int p_z);
 	virtual bool Process();                         // vtable+0x14
 	virtual int Usage();                            // vtable+0x28
 	virtual void DoActivate();                      // vtable+0x10c

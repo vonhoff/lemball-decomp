@@ -171,6 +171,14 @@ bool TrapDoor::Process()
 	return true;
 }
 
+// FUNCTION: LEMBALL 0x0040c720
+void TrapDoor::SetPositionFromIntegers(int p_x, int p_y, int p_z)
+{
+	m_position.m_xFixed = p_x << 12;
+	m_position.m_yFixed = p_y << 12;
+	m_position.m_zFixed = p_z << 12;
+}
+
 // 68K 0x1011b660 Usage__9CTrapDoorFv
 // FUNCTION: LEMBALL 0x0040ce80
 int TrapDoor::Usage()
