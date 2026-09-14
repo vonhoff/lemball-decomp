@@ -15,6 +15,21 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class FramePrimitiveTests(unittest.TestCase):
+    def test_input_text_destructor_guards_owned_buffer_delete(self):
+        for address, instructions in self.instructions(0x0043a190, 47):
+            with self.subTest(address=hex(address)):
+                loads = [i.operands[1].mem.disp for i in instructions
+                         if i.mnemonic == "mov" and len(i.operands) == 2
+                         and i.operands[1].type == X86_OP_MEM]
+                self.assertEqual(loads, [0xbc])
+                branch = next(index for index, i in enumerate(instructions) if i.mnemonic == "je")
+                calls = [index for index, i in enumerate(instructions) if i.mnemonic == "call"]
+                self.assertEqual(len(calls), 2)
+                self.assertLess(branch, calls[0])
+                target = instructions[branch].operands[0].imm
+                self.assertGreater(target, instructions[calls[0]].address)
+                self.assertLess(target, instructions[calls[1]].address)
+
     def test_text_alignment_uses_signed_centering_and_original_flags(self):
         for address, instructions in self.instructions(0x00469180, 143):
             with self.subTest(address=hex(address)):

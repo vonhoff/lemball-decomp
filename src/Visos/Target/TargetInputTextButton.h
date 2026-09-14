@@ -5,11 +5,17 @@
 #include "TargetTextButton.h" // complete type
 
 // MINIMUM SIZE 0x150
-// VTABLE: LEMBALL 0x00497108 primary
-// VTABLE: LEMBALL 0x004970e0 hot-area view at +0x90
+// VTABLE: LEMBALL 0x00497108 GWnd
+// VTABLE: LEMBALL 0x004970e0 HotAreaHandler
 class TargetInputTextButton : public TargetTextButton {
+public:
+	virtual ~TargetInputTextButton();
+
 private:
 	char* m_ownedText; // 0x14c
 };
+
+// SYNTHETIC: LEMBALL 0x0043a450
+// TargetInputTextButton::`scalar deleting destructor'
 
 #endif
