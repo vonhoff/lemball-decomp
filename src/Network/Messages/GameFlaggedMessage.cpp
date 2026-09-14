@@ -26,8 +26,3 @@ void GameFlaggedMessage::GetData()
 {
 	m_flag = GetDword();
 }
-
-// 68K 0x10118182 __dt__19CGameFlaggedMessageFv
-GameFlaggedMessage::~GameFlaggedMessage()
-{
-}

@@ -20,8 +20,3 @@ void NetworkGameStage::GetData()
 {
 	m_stage = (unsigned int) GetDword();
 }
-
-// 68K 0x101191cc __dt__17CNetworkGameStageFv
-NetworkGameStage::~NetworkGameStage()
-{
-}

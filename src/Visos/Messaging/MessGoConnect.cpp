@@ -28,10 +28,5 @@ void MessGoConnect::AddData()
 	Add((unsigned long) m_connectionId);
 }
 
-// 68K 0x101170a8 __dt__14CMessGOConnectFv
-MessGoConnect::~MessGoConnect()
-{
-}
-
 // GLOBAL: LEMBALL 0x004a1e5c
 MessGoConnect* g_pMessGOConnect = 0;

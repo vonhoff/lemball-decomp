@@ -21,8 +21,3 @@ bool BroadcastMessage::GetHeader()
 	m_readCursor += strlen(m_header) + 1;
 	return different == 0;
 }
-
-// 68K 0x1010609c __dt__17CBroadcastMessageFv
-BroadcastMessage::~BroadcastMessage()
-{
-}

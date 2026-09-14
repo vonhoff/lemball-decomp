@@ -9,9 +9,8 @@
 class PbNetworkGame : public NetworkMessage {
 public:
 	PbNetworkGame(Ai* p_arg0);
-	virtual void AddData();   // vtable+0x10
-	virtual void GetData();   // vtable+0x08
-	virtual ~PbNetworkGame(); // vtable+0x14
+	virtual void AddData(); // vtable+0x10
+	virtual void GetData(); // vtable+0x08
 
 private:
 	Ai* m_ai;                          // 0x2c

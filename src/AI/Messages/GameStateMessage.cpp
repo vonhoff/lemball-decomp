@@ -29,8 +29,3 @@ void GameStateMessage::GetData()
 	Get(m_levelTime);
 	Get(m_score);
 }
-
-// 68K 0x101181dc __dt__17CGameStateMessageFv
-GameStateMessage::~GameStateMessage()
-{
-}

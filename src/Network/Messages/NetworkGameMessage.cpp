@@ -39,8 +39,3 @@ void NetworkGameMessage::GetData()
 	GetCopy(m_peerName);
 	m_valid = 1;
 }
-
-// 68K 0x1011c6f0 __dt__19CNetworkGameMessageFv
-NetworkGameMessage::~NetworkGameMessage()
-{
-}

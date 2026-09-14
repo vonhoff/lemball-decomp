@@ -11,7 +11,6 @@ public:
 	MessReqNewPort(const char* p_arg0);
 	void AddData();
 	void GetData();
-	~MessReqNewPort();
 
 	friend class BaseNetwork;
 

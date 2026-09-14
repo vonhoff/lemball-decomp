@@ -11,7 +11,6 @@ public:
 	MessReqConnect(const char* p_arg0);
 	void AddData();
 	void GetData();
-	~MessReqConnect();
 
 	friend class BaseNetwork;
 	friend class Broadcast;

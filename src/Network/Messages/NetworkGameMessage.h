@@ -9,9 +9,8 @@
 class NetworkGameMessage : public NetworkMessage {
 public:
 	NetworkGameMessage();
-	virtual void AddData();        // vtable+0x10
-	virtual void GetData();        // vtable+0x08
-	virtual ~NetworkGameMessage(); // vtable+0x14
+	virtual void AddData(); // vtable+0x10
+	virtual void GetData(); // vtable+0x08
 
 	friend class NetworkOptionsDrawer;
 	friend class SuccFailDrawer;

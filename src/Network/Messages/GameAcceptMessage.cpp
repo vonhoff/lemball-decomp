@@ -5,8 +5,3 @@
 GameAcceptMessage::GameAcceptMessage() : GameFlaggedMessage(7)
 {
 }
-
-// 68K 0x1011928a __dt__18CGameAcceptMessageFv
-GameAcceptMessage::~GameAcceptMessage()
-{
-}

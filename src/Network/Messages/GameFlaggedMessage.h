@@ -9,9 +9,8 @@
 class GameFlaggedMessage : public NetworkMessage {
 public:
 	GameFlaggedMessage(unsigned long p_arg0);
-	virtual void AddData();        // vtable+0x10
-	virtual void GetData();        // vtable+0x08
-	virtual ~GameFlaggedMessage(); // vtable+0x14
+	virtual void AddData(); // vtable+0x10
+	virtual void GetData(); // vtable+0x08
 	GameFlaggedMessage();
 
 private:

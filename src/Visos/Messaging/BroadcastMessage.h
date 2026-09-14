@@ -20,7 +20,6 @@ public:
 	}
 	virtual bool GetHeader(); // vtable+0x04
 	virtual void AddHeader(); // vtable+0x0c
-	virtual ~BroadcastMessage();
 
 protected:
 	const char* m_header; // 0x2c

@@ -11,7 +11,6 @@ public:
 	MessFailedConnect(const char* p_arg0);
 	void AddData();
 	void GetData();
-	~MessFailedConnect();
 
 	friend class BaseNetwork;
 

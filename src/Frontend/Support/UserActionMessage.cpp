@@ -23,8 +23,3 @@ void UserActionMessage::GetData()
 	m_action = (eUserActions) GetDword();
 	m_stage = (eUserActionStages) GetDword();
 }
-
-// 68K 0x1011bf5e __dt__18CUserActionMessageFv
-UserActionMessage::~UserActionMessage()
-{
-}

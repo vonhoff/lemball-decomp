@@ -25,10 +25,5 @@ void MessFailedConnect::AddData()
 	Add(m_failureReason);
 }
 
-// 68K 0x10117044 __dt__18CMessFAILEDConnectFv
-MessFailedConnect::~MessFailedConnect()
-{
-}
-
 // GLOBAL: LEMBALL 0x004a1e60
 MessFailedConnect* g_pMessFAILEDConnect = 0;

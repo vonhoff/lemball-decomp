@@ -11,7 +11,6 @@ public:
 	MessOkConnect(const char* p_arg0);
 	void AddData();
 	void GetData();
-	~MessOkConnect();
 
 	friend class BaseNetwork;
 

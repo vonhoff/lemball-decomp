@@ -28,10 +28,5 @@ void MessOkConnect::AddData()
 	Add((unsigned long) m_connectionId);
 }
 
-// 68K 0x10117108 __dt__14CMessOKConnectFv
-MessOkConnect::~MessOkConnect()
-{
-}
-
 // GLOBAL: LEMBALL 0x004a1e58
 MessOkConnect* g_pMessOKConnect = 0;

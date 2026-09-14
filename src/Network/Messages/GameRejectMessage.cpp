@@ -5,8 +5,3 @@
 GameRejectMessage::GameRejectMessage() : GameFlaggedMessage(6)
 {
 }
-
-// 68K 0x10119224 __dt__18CGameRejectMessageFv
-GameRejectMessage::~GameRejectMessage()
-{
-}

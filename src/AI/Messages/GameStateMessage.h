@@ -9,9 +9,8 @@
 class GameStateMessage : public NetworkMessage {
 public:
 	GameStateMessage();
-	virtual void AddData();      // vtable+0x10
-	virtual void GetData();      // vtable+0x08
-	virtual ~GameStateMessage(); // vtable+0x14
+	virtual void AddData(); // vtable+0x10
+	virtual void GetData(); // vtable+0x08
 
 private:
 	friend class Ai;

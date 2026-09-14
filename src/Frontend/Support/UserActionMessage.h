@@ -9,9 +9,8 @@
 class UserActionMessage : public NetworkMessage {
 public:
 	UserActionMessage();
-	virtual void AddData();       // vtable+0x10
-	virtual void GetData();       // vtable+0x08
-	virtual ~UserActionMessage(); // vtable+0x14
+	virtual void AddData(); // vtable+0x10
+	virtual void GetData(); // vtable+0x08
 
 	friend class BaseFrontendProcess;
 

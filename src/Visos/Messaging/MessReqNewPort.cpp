@@ -25,10 +25,5 @@ void MessReqNewPort::AddData()
 	Add((unsigned long) m_connectionId);
 }
 
-// 68K 0x10117168 __dt__15CMessReqNewPortFv
-MessReqNewPort::~MessReqNewPort()
-{
-}
-
 // GLOBAL: LEMBALL 0x004a1e54
 MessReqNewPort* g_pMessReqNewPort = 0;

@@ -9,7 +9,6 @@
 class GameAcceptMessage : public GameFlaggedMessage {
 public:
 	GameAcceptMessage();
-	virtual ~GameAcceptMessage(); // vtable+0x14
 };
 
 // SYNTHETIC: LEMBALL 0x00452ef0

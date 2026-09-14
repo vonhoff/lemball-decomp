@@ -9,9 +9,8 @@
 class NetworkGameStage : public NetworkMessage {
 public:
 	NetworkGameStage();
-	virtual void AddData();      // vtable+0x10
-	virtual void GetData();      // vtable+0x08
-	virtual ~NetworkGameStage(); // vtable+0x14
+	virtual void AddData(); // vtable+0x10
+	virtual void GetData(); // vtable+0x08
 
 private:
 	unsigned int m_stage; // 0x2c

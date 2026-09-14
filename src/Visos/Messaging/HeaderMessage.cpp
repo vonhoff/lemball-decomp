@@ -42,8 +42,3 @@ void HeaderMessage::GetData()
 	}
 	m_readCursor += 0x2e;
 }
-
-// 68K 0x1011667c __dt__14CHeaderMessageFv
-HeaderMessage::~HeaderMessage()
-{
-}

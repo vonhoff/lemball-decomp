@@ -48,8 +48,3 @@ void PbNetworkGame::GetData()
 		marker = NetworkMessage::GetWord();
 	}
 }
-
-// 68K 0x10118234 __dt__14CPBNetworkGameFv
-PbNetworkGame::~PbNetworkGame()
-{
-}
