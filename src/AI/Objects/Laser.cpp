@@ -5,6 +5,7 @@
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
 #include "../../Visos/Network/Connect.h"
+#include "ViewData.h"
 
 // 68K 0x10613518 __ct__6CLaserFv
 // FUNCTION: LEMBALL 0x00428890
@@ -197,10 +198,72 @@ bool Laser::StepOn(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x10613bec GetViewData__6CLaserFP9CViewData
-// STUB: LEMBALL 0x00428f90
+// FUNCTION: LEMBALL 0x00428f90
 int Laser::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	GameObject::GetViewData(*p_viewData++);
+	int count = 1;
+	if (m_action == (eAction) 0x1a) {
+		switch (m_objectType) {
+		case (eObjectType) 0x1e:
+		case (eObjectType) 0x30: {
+			int x = (m_position.m_xFixed >> 12) + 0x26;
+			int y = m_position.m_yFixed >> 12;
+			int z = (m_position.m_zFixed >> 12) + 3;
+			for (unsigned int i = 1; i < 8; i++) {
+				unsigned short height = 0;
+				int blockX = x >> 4;
+				int blockY = y >> 4;
+				if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
+					height = g_pMap->m_ground.GetGroundCell(blockX, blockY)->GetZ(x & 0xf, y & 0xf);
+				}
+				if (height > z) {
+					break;
+				}
+				GameObject::GetViewData(*p_viewData);
+				p_viewData->m_positionX = x;
+				p_viewData->m_positionY = y;
+				p_viewData->m_positionZ = z;
+				p_viewData->m_objectType = (eObjectType) 0x32;
+				p_viewData->m_facingDirection = 0;
+				p_viewData->m_action = (eAction) 0x1a;
+				p_viewData++;
+				count++;
+				x += 0x10;
+			}
+			break;
+		}
+		case (eObjectType) 0x2f:
+		case (eObjectType) 0x31: {
+			int x = m_position.m_xFixed >> 12;
+			int y = (m_position.m_yFixed >> 12) + 0x14;
+			int z = (m_position.m_zFixed >> 12) + 3;
+			for (unsigned int i = 1; i < 8; i++) {
+				unsigned short height = 0;
+				int blockX = x >> 4;
+				int blockY = y >> 4;
+				if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
+					height = g_pMap->m_ground.GetGroundCell(blockX, blockY)->GetZ(x & 0xf, y & 0xf);
+				}
+				if (height > z) {
+					break;
+				}
+				GameObject::GetViewData(*p_viewData);
+				p_viewData->m_positionX = x;
+				p_viewData->m_positionY = y;
+				p_viewData->m_positionZ = z;
+				p_viewData->m_objectType = (eObjectType) 0x26;
+				p_viewData->m_facingDirection = 0;
+				p_viewData->m_action = (eAction) 0x1a;
+				p_viewData++;
+				count++;
+				y += 0x10;
+			}
+			break;
+		}
+		}
+	}
+	return count;
 }
 
 // 68K 0x1011a726 DoActivate__6CLaserFv
