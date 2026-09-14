@@ -16,6 +16,7 @@ VsDebugStreambuf::VsDebugStreambuf(char* p_buffer, int p_size, void (*p_flushCal
 }
 
 // 68K 0x10214448 __dt__17CVSDebugStreambufFv
+// FUNCTION: LEMBALL 0x0045adc0
 VsDebugStreambuf::~VsDebugStreambuf()
 {
 }

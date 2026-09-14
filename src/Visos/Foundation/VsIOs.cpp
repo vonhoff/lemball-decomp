@@ -4,14 +4,15 @@ VsIOs::VsIOs()
 {
 }
 
-// 68K 0x10213d20 __dt__6CVSIOsFv
-VsIOs::~VsIOs()
-{
-}
-
 // 68K 0x10213cca __ct__6CVSIOsFP12CVSStreambuf
 // FUNCTION: LEMBALL 0x00458410
 VsIOs::VsIOs(VsStreambuf* p_arg0) : m_streamBuffer(p_arg0), m_flags(0x14), m_fill(' '), m_width(0), m_radix(10)
+{
+}
+
+// 68K 0x10213d20 __dt__6CVSIOsFv
+// FUNCTION: LEMBALL 0x00458440
+VsIOs::~VsIOs()
 {
 }
 
