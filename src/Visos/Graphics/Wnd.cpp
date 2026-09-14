@@ -659,9 +659,34 @@ int Wnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, uns
 }
 
 // 68K 0x10111552 ReSetMenu__4CWndFv
-// STUB: LEMBALL 0x00465660
+// FUNCTION: LEMBALL 0x00465660
 void Wnd::ReSetMenu()
 {
+	HMENU menu = ::GetMenu((HWND) m_nativeWindow);
+	MenuList** lists = (MenuList**) m_menuLists;
+	if (*lists != 0) {
+		BOOL(WINAPI * enableMenuItem)(HMENU, UINT, UINT) = EnableMenuItem;
+		DWORD(WINAPI * checkMenuItem)(HMENU, UINT, UINT) = CheckMenuItem;
+		do {
+			MenuList* item = *lists;
+			while (item->m_name != 0) {
+				if (item->m_enabled != 0) {
+					enableMenuItem(menu, item->m_commandId, MF_ENABLED);
+				}
+				else {
+					enableMenuItem(menu, item->m_commandId, MF_GRAYED);
+				}
+				if (item->m_unk10 != 0) {
+					checkMenuItem(menu, item->m_commandId, MF_CHECKED);
+				}
+				else {
+					checkMenuItem(menu, item->m_commandId, MF_UNCHECKED);
+				}
+				item++;
+			}
+			lists++;
+		} while (*lists != 0);
+	}
 }
 
 // 68K 0x10111570 SetMenu__4CWndFRiPP11tagMenuList
