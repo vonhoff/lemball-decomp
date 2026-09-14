@@ -18,7 +18,8 @@ public:
 	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~CopyToBackBuff() {}     // vtable+0x00
+	// FUNCTION: LEMBALL 0x00439740
+	virtual ~CopyToBackBuff() {} // vtable+0x00
 
 	friend class Surface;
 

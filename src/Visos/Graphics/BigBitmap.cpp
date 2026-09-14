@@ -3,6 +3,7 @@
 #include "Gdi.h"
 
 // 68K 0x10101768 __dt__10CBigBitmapFv
+// FUNCTION: LEMBALL 0x00439720
 BigBitmap::~BigBitmap()
 {
 }

@@ -13,7 +13,8 @@ public:
 	Bitmap() : m_y(0), m_x(0), m_height(0), m_width(0), m_sourceY(0), m_sourceX(0) {}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~Bitmap() {}             // vtable+0x00
+	// FUNCTION: LEMBALL 0x00439750
+	virtual ~Bitmap() {} // vtable+0x00
 
 	friend class BaseFrontendDrawer;
 	friend class Surface;
