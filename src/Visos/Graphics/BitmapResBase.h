@@ -27,7 +27,7 @@ public:
 	friend class PreviewDrawer;
 	friend class SuccFailDrawer;
 	friend class Surface;
-	friend class CdLoadAnimDraw;
+	friend class CdLoadAnim;
 	friend class TargetAboutScreen;
 
 protected:

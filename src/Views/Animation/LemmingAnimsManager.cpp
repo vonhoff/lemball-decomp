@@ -588,7 +588,7 @@ void LemmingAnimsManager::Unload()
 // FUNCTION: LEMBALL 0x00433fb0
 void LemmingAnimsManager::Draw()
 {
-	m_loadAnim->m_progress.m_draw.Draw();
+	m_loadAnim->Draw();
 }
 
 // 68K 0x10b0b6f2 DrawAnim__20CLemmingAnimsManagerFssUlUlUlP6CRemap
@@ -975,7 +975,7 @@ void LemmingAnimsManager::UpdateNonCacheLoad()
 	int loaded = m_nonCacheState + 1;
 	m_nonCacheState = loaded;
 	if (m_loadAnim != 0) {
-		m_loadAnim->m_progress.Draw((short) ((loaded * 100) / m_loadProgress));
+		m_loadAnim->Draw((short) ((loaded * 100) / m_loadProgress));
 	}
 }
 

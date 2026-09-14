@@ -41,7 +41,7 @@ public:
 	friend class GunController;
 	friend class BitmapRes;
 	friend class BitmapResBase;
-	friend class CdLoadAnimDraw;
+	friend class CdLoadAnim;
 	friend class BaseCursor;
 	friend class Anim;
 	friend class SpriteWindow;

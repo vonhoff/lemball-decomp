@@ -17,7 +17,7 @@ public:
 
 	friend class BaseFrontendDrawer;
 	friend class Surface;
-	friend class CdLoadAnimDraw;
+	friend class CdLoadAnim;
 	friend class C2D;
 
 private:

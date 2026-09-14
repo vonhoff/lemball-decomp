@@ -3,7 +3,7 @@
 import unittest
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
-from capstone.x86 import X86_OP_MEM, X86_OP_REG
+from capstone.x86 import X86_OP_IMM, X86_OP_MEM, X86_OP_REG
 from reccmp.types import ImageId
 
 from lib.paths import ORIGINAL_EXE, RECOMP_EXE, RECOMP_PDB
@@ -15,6 +15,29 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class LoadingPrimitiveTests(unittest.TestCase):
+    def test_destructor_restores_both_callback_vtables_before_cleanup(self):
+        _, engine = load_engine()
+        matches = {match.orig_addr: match for match in engine.get_all()}
+        destructor = matches[0x0044ad60]
+        decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+        decoder.detail = True
+        for image, address, size, tables in (
+            (engine.orig_bin, 0x0044ad60, 276, {0x70: 0x00497c8c, 0x74: 0x00497c88}),
+            (engine.recomp_bin, destructor.recomp_addr, destructor.size(ImageId.RECOMP),
+             {0x70: matches[0x00497c8c].recomp_addr, 0x74: matches[0x00497c88].recomp_addr}),
+        ):
+            with self.subTest(address=hex(address)):
+                stores = {}
+                for instruction in decoder.disasm(image.read(address, size), address):
+                    if instruction.mnemonic == "call":
+                        break
+                    operands = instruction.operands
+                    if (instruction.mnemonic == "mov" and len(operands) == 2
+                            and operands[0].type == X86_OP_MEM and operands[1].type == X86_OP_IMM
+                            and operands[0].mem.disp in tables):
+                        stores[operands[0].mem.disp] = operands[1].imm
+                self.assertEqual(stores, tables)
+
     def test_centering_subtracts_at_word_width_before_division(self):
         _, engine = load_engine()
         constructor = next(m for m in engine.get_all() if m.orig_addr == 0x0044aa80)

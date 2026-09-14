@@ -58,7 +58,7 @@ FrontendResourceLoader::FrontendResourceLoader(Main2DDisplay* p_arg0, int p_arg1
 	m_movies = (ResMovie**) operator new(0x18);
 	m_loadAnim = new CdLoadAnim(p_arg0->m_gdi, p_arg0);
 	if (m_loadAnim != 0) {
-		p_arg0->m_drawPrimitive = &m_loadAnim->m_progress.m_draw;
+		p_arg0->m_drawPrimitive = &static_cast<CdLoadAnimDraw&>(*m_loadAnim);
 	}
 	else {
 		p_arg0->m_drawPrimitive = 0;
@@ -144,7 +144,7 @@ void FrontendResourceLoader::UpdateNonCacheLoad()
 
 	loaded = m_loadedResources + 1;
 	m_loadedResources = loaded;
-	m_loadAnim->m_progress.Draw((short) ((loaded * 100) / m_totalResources));
+	m_loadAnim->Draw((short) ((loaded * 100) / m_totalResources));
 }
 
 // 68K 0x1080dbca LoadANIM__23CFrontendResourceLoaderFUl
