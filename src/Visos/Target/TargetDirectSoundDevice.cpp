@@ -95,6 +95,16 @@ TargetDirectSoundDevice::TargetDirectSoundDevice(int p_effectCapacity, int p_buf
 	}
 }
 
+// FUNCTION: LEMBALL 0x0047dfc0
+TargetDirectSoundDevice::~TargetDirectSoundDevice()
+{
+	operator delete(m_platform.m_effects);
+	if (m_platform.m_library != 0) {
+		FreeLibrary((HMODULE) m_platform.m_library);
+		m_platform.m_library = 0;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0047e000
 char* TargetDirectSoundDevice::GetInfo()
 {
@@ -408,8 +418,4 @@ void TargetDirectSoundDevice::SetWnd(Wnd* p_wnd)
 int TargetDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_handle)
 {
 	return PrepareEffect(p_data, p_handle, 1);
-}
-
-TargetDirectSoundDevice::~TargetDirectSoundDevice()
-{
 }

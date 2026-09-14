@@ -89,6 +89,7 @@ MciMusicDevice::MciMusicDevice()
 	}
 }
 
+// FUNCTION: LEMBALL 0x0047eac0
 MciMusicDevice::~MciMusicDevice()
 {
 }

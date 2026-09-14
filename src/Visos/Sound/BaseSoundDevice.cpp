@@ -12,6 +12,12 @@ BaseSoundDevice::BaseSoundDevice()
 {
 }
 
+// 68K 0x10217db8 __dt__16CBaseSoundDeviceFv
+// FUNCTION: LEMBALL 0x0047f950
+BaseSoundDevice::~BaseSoundDevice()
+{
+}
+
 // 68K 0x10217e02 GetMasterVolume__16CBaseSoundDeviceFv
 // FUNCTION: LEMBALL 0x0047f980
 unsigned char BaseSoundDevice::GetMasterVolume()
@@ -120,9 +126,4 @@ unsigned char BaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned cha
 bool BaseSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect)
 {
 	return 1;
-}
-
-// 68K 0x10217db8 __dt__16CBaseSoundDeviceFv
-BaseSoundDevice::~BaseSoundDevice()
-{
 }
