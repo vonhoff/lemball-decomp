@@ -16,10 +16,5 @@ void AckMessage::GetData()
 	Get(m_subpacketSequence);
 }
 
-// 68K 0x10107490 __dt__11CAckMessageFv
-AckMessage::~AckMessage()
-{
-}
-
 // GLOBAL: LEMBALL 0x004a1e14
 AckMessage* g_pAckMessage = 0;

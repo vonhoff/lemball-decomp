@@ -37,8 +37,3 @@ void RequestActionMess::GetData()
 	}
 	g_pRequestReplyMessage->Send(m_object);
 }
-
-// 68K 0x1011a1f0 __dt__18CRequestActionMessFv
-RequestActionMess::~RequestActionMess()
-{
-}

@@ -9,7 +9,6 @@ public:
 	ObjectDiesMess();
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
-	~ObjectDiesMess();
 };
 
 // SYNTHETIC: LEMBALL 0x00417cd0

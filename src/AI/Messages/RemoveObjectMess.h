@@ -7,7 +7,6 @@
 class RemoveObjectMess : public GameObjectMess {
 public:
 	RemoveObjectMess();
-	~RemoveObjectMess();
 };
 
 // SYNTHETIC: LEMBALL 0x00417c40

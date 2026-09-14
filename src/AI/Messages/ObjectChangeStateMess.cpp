@@ -46,8 +46,3 @@ void ObjectChangeStateMess::GetData()
 	m_object->m_pendingAction = 0x18;
 	m_object->m_unk0x8c = 0;
 }
-
-// 68K 0x1011a256 __dt__22CObjectChangeStateMessFv
-ObjectChangeStateMess::~ObjectChangeStateMess()
-{
-}

@@ -30,8 +30,3 @@ void ObjectPosMess::GetData()
 	m_object->m_position.m_zFixed = GetDword() << 12;
 	m_object->m_heading = GetDword();
 }
-
-// 68K 0x1011a2c0 __dt__14CObjectPosMessFv
-ObjectPosMess::~ObjectPosMess()
-{
-}

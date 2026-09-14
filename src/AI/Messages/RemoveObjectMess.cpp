@@ -5,8 +5,3 @@
 RemoveObjectMess::RemoveObjectMess() : GameObjectMess(MESSAGE_REMOVE_OBJECT)
 {
 }
-
-// 68K 0x10118668 __dt__17CRemoveObjectMessFv
-RemoveObjectMess::~RemoveObjectMess()
-{
-}

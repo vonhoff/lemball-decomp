@@ -5,8 +5,3 @@
 RequestCancelMess::RequestCancelMess() : GameObjectMess(MESSAGE_REQUEST_CANCEL)
 {
 }
-
-// 68K 0x10118602 __dt__18CRequestCancelMessFv
-RequestCancelMess::~RequestCancelMess()
-{
-}

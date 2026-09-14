@@ -36,8 +36,3 @@ void GameObjectMess::AddData()
 void GameObjectMess::GetData()
 {
 }
-
-// 68K 0x10117fd4 __dt__15CGameObjectMessFv
-GameObjectMess::~GameObjectMess()
-{
-}

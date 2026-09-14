@@ -10,9 +10,8 @@
 class GameObjectMess : public NetworkMessage {
 public:
 	GameObjectMess(unsigned long p_messageId);
-	virtual void AddData();    // vtable+0x10
-	virtual void GetData();    // vtable+0x08
-	virtual ~GameObjectMess(); // vtable+0x14
+	virtual void AddData(); // vtable+0x10
+	virtual void GetData(); // vtable+0x08
 	void Send(GlobalGameObject* p_object);
 	GameObjectMess();
 

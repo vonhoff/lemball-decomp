@@ -9,8 +9,7 @@
 class TransportObjectMess : public GameObjectMess {
 public:
 	inline TransportObjectMess() : GameObjectMess(0) {}
-	virtual void GetData();         // vtable+0x08
-	virtual ~TransportObjectMess(); // vtable+0x14
+	virtual void GetData(); // vtable+0x08
 
 private:
 	unsigned short m_transportObjectId; // 0x30

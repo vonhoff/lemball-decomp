@@ -19,8 +19,3 @@ void ObjectDiesMess::AddData()
 void ObjectDiesMess::GetData()
 {
 }
-
-// 68K 0x1011a384 __dt__15CObjectDiesMessFv
-ObjectDiesMess::~ObjectDiesMess()
-{
-}

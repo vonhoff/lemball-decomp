@@ -25,8 +25,3 @@ void ObjectHitMess::GetData()
 	GetDword();
 	g_pAI->Score(0x9c4);
 }
-
-// 68K 0x1011a322 __dt__14CObjectHitMessFv
-ObjectHitMess::~ObjectHitMess()
-{
-}

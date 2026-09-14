@@ -6,8 +6,3 @@ void TransportObjectMess::GetData()
 {
 	m_transportObjectId = GetWord();
 }
-
-// 68K 0x1011859a __dt__20CTransportObjectMessFv
-TransportObjectMess::~TransportObjectMess()
-{
-}

@@ -9,7 +9,6 @@ public:
 	ObjectChangeStateMess();
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
-	~ObjectChangeStateMess();
 };
 
 // SYNTHETIC: LEMBALL 0x00417b80

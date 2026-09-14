@@ -7,7 +7,6 @@
 class RequestCancelMess : public GameObjectMess {
 public:
 	RequestCancelMess();
-	~RequestCancelMess();
 };
 
 // SYNTHETIC: LEMBALL 0x00417c10

@@ -9,7 +9,6 @@ public:
 	RequestActionMess();
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
-	~RequestActionMess();
 };
 
 // SYNTHETIC: LEMBALL 0x00417bb0

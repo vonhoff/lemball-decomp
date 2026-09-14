@@ -11,7 +11,6 @@ public:
 	inline AckMessage() : NetworkMessage(2) { m_payloadCapacity += 4; }
 	void AddData();
 	void GetData();
-	~AckMessage();
 
 private:
 	unsigned short m_packetSequence;    // 0x2c

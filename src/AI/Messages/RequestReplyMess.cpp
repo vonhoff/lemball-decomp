@@ -33,8 +33,3 @@ void RequestReplyMess::GetData()
 	}
 	m_object->m_requestedAction = (eAction) 0x18;
 }
-
-// 68K 0x1011a18c __dt__17CRequestReplyMessFv
-RequestReplyMess::~RequestReplyMess()
-{
-}
