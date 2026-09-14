@@ -25,11 +25,11 @@ GraphicButton::GraphicButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned lon
 	m_buttonX = x;
 	short y = p_arg0.m_y;
 	m_buttonY = y;
-	VsRect createRect(x, y, HotAreaHandler::m_width, HotAreaHandler::m_height);
+	VsRect createRect(x, y, HotAreaHandler::m_bounds.m_width, HotAreaHandler::m_bounds.m_height);
 	GWnd* window = this;
 	window->Create(createRect, m_ownerWindow, g_szButton);
-	HotAreaHandler::m_x = (short) (HotAreaHandler::m_x + m_relativeTopLeft.m_x);
-	HotAreaHandler::m_y = (short) (HotAreaHandler::m_y + m_relativeTopLeft.m_y);
+	HotAreaHandler::m_bounds.m_x = (short) (HotAreaHandler::m_bounds.m_x + m_relativeTopLeft.m_x);
+	HotAreaHandler::m_bounds.m_y = (short) (HotAreaHandler::m_bounds.m_y + m_relativeTopLeft.m_y);
 	area = this;
 	m_ownerWindow->m_hotAreaList->AddToList(area);
 }
@@ -68,38 +68,38 @@ void GraphicButton::Initialise()
 		m_graphicHeight = (unsigned short) height;
 	}
 	m_animation->m_directUseCount = m_animation->m_directUseCount - 1;
-	const VsPoint* position = (const VsRect*) &this->HotAreaHandler::m_width;
+	const VsPoint* position = &this->HotAreaHandler::m_bounds;
 	m_graphicOffsetX = position->m_x;
 	m_graphicOffsetY = position->m_y;
-	boxWidth = HotAreaHandler::m_width;
+	boxWidth = HotAreaHandler::m_bounds.m_width;
 	if (boxWidth < 0) {
-		HotAreaHandler::m_width = (short) (-(short) m_graphicWidth * boxWidth);
+		HotAreaHandler::m_bounds.m_width = (short) (-(short) m_graphicWidth * boxWidth);
 	}
 	else if (boxWidth == 0) {
-		HotAreaHandler::m_width = (short) m_graphicWidth;
+		HotAreaHandler::m_bounds.m_width = (short) m_graphicWidth;
 	}
-	boxHeight = HotAreaHandler::m_height;
+	boxHeight = HotAreaHandler::m_bounds.m_height;
 	if (boxHeight < 0) {
-		HotAreaHandler::m_height = (short) (-(short) m_graphicHeight * boxHeight);
+		HotAreaHandler::m_bounds.m_height = (short) (-(short) m_graphicHeight * boxHeight);
 	}
 	else if (boxHeight == 0) {
-		HotAreaHandler::m_height = (short) m_graphicHeight;
+		HotAreaHandler::m_bounds.m_height = (short) m_graphicHeight;
 	}
-	if ((int) HotAreaHandler::m_width * (int) HotAreaHandler::m_height != 0) {
+	if ((int) HotAreaHandler::m_bounds.m_width * (int) HotAreaHandler::m_bounds.m_height != 0) {
 		HotAreaHandler::SetActive(1);
 	}
 	if ((m_alignmentFlags & 4) != 0) {
-		m_graphicOffsetX = (short) (((int) HotAreaHandler::m_width - (int) (short) m_graphicWidth) / 2);
+		m_graphicOffsetX = (short) (((int) HotAreaHandler::m_bounds.m_width - (int) (short) m_graphicWidth) / 2);
 	}
 	else if ((m_alignmentFlags & 0x10) != 0) {
-		m_graphicOffsetX = (short) (HotAreaHandler::m_width - (short) m_graphicWidth);
+		m_graphicOffsetX = (short) (HotAreaHandler::m_bounds.m_width - (short) m_graphicWidth);
 	}
 	if ((m_alignmentFlags & 8) != 0) {
-		m_graphicOffsetY = (short) (((int) HotAreaHandler::m_height - (int) (short) m_graphicHeight) / 2);
+		m_graphicOffsetY = (short) (((int) HotAreaHandler::m_bounds.m_height - (int) (short) m_graphicHeight) / 2);
 		return;
 	}
 	if ((m_alignmentFlags & 0x20) != 0) {
-		m_graphicOffsetY = (short) (HotAreaHandler::m_height - (short) m_graphicHeight);
+		m_graphicOffsetY = (short) (HotAreaHandler::m_bounds.m_height - (short) m_graphicHeight);
 	}
 }
 

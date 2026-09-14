@@ -35,11 +35,11 @@ unsigned int PvButton::GetStyle()
 void PvButton::Move(const VsPoint& p_point)
 {
 	m_forceDrawCount = 1;
-	HotAreaHandler::m_x -= m_relativeTopLeft.m_x;
-	HotAreaHandler::m_y -= m_relativeTopLeft.m_y;
+	HotAreaHandler::m_bounds.m_x -= m_relativeTopLeft.m_x;
+	HotAreaHandler::m_bounds.m_y -= m_relativeTopLeft.m_y;
 	GWnd::Move(p_point);
-	HotAreaHandler::m_x += m_relativeTopLeft.m_x;
-	HotAreaHandler::m_y += m_relativeTopLeft.m_y;
+	HotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;
+	HotAreaHandler::m_bounds.m_y += m_relativeTopLeft.m_y;
 }
 
 // 68K 0x101177f6 OnVisibilityChange__9CPVButtonFv

@@ -142,10 +142,10 @@ void PauseWindow::CreateTheWindow(const VsRect& p_rect)
 		} while (item < m_menuItemCount);
 	}
 
-	m_width = p_rect.m_width;
-	m_height = p_rect.m_height;
-	m_x = p_rect.m_x;
-	m_y = p_rect.m_y;
+	m_bounds.m_width = p_rect.m_width;
+	m_bounds.m_height = p_rect.m_height;
+	m_bounds.m_x = p_rect.m_x;
+	m_bounds.m_y = p_rect.m_y;
 	HotAreaHandler::SetActive(1);
 	m_externalEnabled = 1;
 

@@ -17,16 +17,16 @@ void HotAreaList::Set(const VsRect& p_rect, VsPoint p_point0, const VsPoint& p_p
 {
 	const short* coords;
 
-	m_width = p_rect.m_width;
-	m_height = p_rect.m_height;
+	m_bounds.m_width = p_rect.m_width;
+	m_bounds.m_height = p_rect.m_height;
 	if (&p_rect != 0) {
 		coords = &p_rect.m_x;
 	}
 	else {
 		coords = 0;
 	}
-	m_x = coords[0];
-	m_y = coords[1];
+	m_bounds.m_x = coords[0];
+	m_bounds.m_y = coords[1];
 	m_point0.m_x = p_point0.m_x;
 	m_point0.m_y = p_point0.m_y;
 	m_point1.m_x = p_point1.m_x;
@@ -154,8 +154,8 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 		p_message = &fallback;
 	}
 	type = p_message->type;
-	VsPoint localPoint((short) ((int) (short) (p_point.m_x - m_x) / (int) m_scale),
-					   (short) ((int) (short) (p_point.m_y - m_y) / (int) m_scale));
+	VsPoint localPoint((short) ((int) (short) (p_point.m_x - m_bounds.m_x) / (int) m_scale),
+					   (short) ((int) (short) (p_point.m_y - m_bounds.m_y) / (int) m_scale));
 	entry = m_tail;
 	for (;;) {
 		if (entry == 0) {
@@ -173,10 +173,10 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 			}
 		}
 	}
-	scaledX = (short) (m_point0.m_x * ((short) m_scale - 1) + m_x);
-	scaledY = (short) (m_point0.m_y * ((short) m_scale - 1) + m_y);
-	scaledWidth = (short) (m_width * (short) m_scale);
-	scaledHeight = (short) (m_height * (short) m_scale);
+	scaledX = (short) (m_point0.m_x * ((short) m_scale - 1) + m_bounds.m_x);
+	scaledY = (short) (m_point0.m_y * ((short) m_scale - 1) + m_bounds.m_y);
+	scaledWidth = (short) (m_bounds.m_width * (short) m_scale);
+	scaledHeight = (short) (m_bounds.m_height * (short) m_scale);
 	if (p_point.m_x < scaledX || (short) (scaledX + scaledWidth) <= p_point.m_x || p_point.m_y < scaledY ||
 		(short) (scaledHeight + scaledY) <= p_point.m_y) {
 		if (m_entered != 0) {

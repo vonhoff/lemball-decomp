@@ -65,14 +65,14 @@ bool HotAreaHandler::InArea(const VsPoint& p_point)
 	short left;
 	short py;
 
-	left = m_x;
+	left = m_bounds.m_x;
 	px = p_point.m_x;
 	if (left <= px) {
-		if (px < (short) (m_width + left)) {
+		if (px < (short) (m_bounds.m_width + left)) {
 			py = p_point.m_y;
-			top = m_y;
+			top = m_bounds.m_y;
 			if (py >= top) {
-				if (py < (short) (m_height + top)) {
+				if (py < (short) (m_bounds.m_height + top)) {
 					return 1;
 				}
 			}
@@ -83,11 +83,11 @@ bool HotAreaHandler::InArea(const VsPoint& p_point)
 
 // 68K 0x10211c8a __ct__15CHotAreaHandlerFRC7CVSRect
 // FUNCTION: LEMBALL 0x0046a290
-HotAreaHandler::HotAreaHandler(const VsRect& p_arg0) : m_height(0), m_width(0), m_y(0), m_x(0)
+HotAreaHandler::HotAreaHandler(const VsRect& p_arg0)
 {
 	Initialise();
-	m_width = p_arg0.m_width;
-	m_height = p_arg0.m_height;
+	m_bounds.m_width = p_arg0.m_width;
+	m_bounds.m_height = p_arg0.m_height;
 	const VsRect* rect = &p_arg0;
 	const short* position;
 	if (rect != 0) {
@@ -96,8 +96,8 @@ HotAreaHandler::HotAreaHandler(const VsRect& p_arg0) : m_height(0), m_width(0), 
 	else {
 		position = 0;
 	}
-	m_x = *position;
-	m_y = position[1];
+	m_bounds.m_x = *position;
+	m_bounds.m_y = position[1];
 	SetActive(1);
 }
 
@@ -105,10 +105,6 @@ HotAreaHandler::HotAreaHandler(const VsRect& p_arg0) : m_height(0), m_width(0), 
 // FUNCTION: LEMBALL 0x0046a300
 HotAreaHandler::HotAreaHandler()
 {
-	m_height = 0;
-	m_width = 0;
-	m_y = 0;
-	m_x = 0;
 	Initialise();
 }
 
@@ -192,10 +188,10 @@ void HotAreaHandler::ProcessArea(Message* p_message, const VsPoint& p_point, cla
 			OnButtonDown(p_point, button);
 			return;
 		}
-		if (m_x <= p_point.m_x && p_point.m_x < (short) (m_width + m_x)) {
-			short top = m_y;
+		if (m_bounds.m_x <= p_point.m_x && p_point.m_x < (short) (m_bounds.m_width + m_bounds.m_x)) {
+			short top = m_bounds.m_y;
 			short y = p_point.m_y;
-			if (top <= y && y < (short) (m_height + top)) {
+			if (top <= y && y < (short) (m_bounds.m_height + top)) {
 				OnButtonUp(p_point, button);
 				return;
 			}

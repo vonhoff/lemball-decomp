@@ -45,11 +45,11 @@ TrackerButton::~TrackerButton()
 void TrackerButton::Move(const VsPoint& p_point)
 {
 	m_forceDrawCount = 1;
-	HotAreaHandler::m_x -= m_relativeTopLeft.m_x;
-	HotAreaHandler::m_y -= m_relativeTopLeft.m_y;
+	HotAreaHandler::m_bounds.m_x -= m_relativeTopLeft.m_x;
+	HotAreaHandler::m_bounds.m_y -= m_relativeTopLeft.m_y;
 	GWnd::Move(p_point);
-	HotAreaHandler::m_x += m_relativeTopLeft.m_x;
-	HotAreaHandler::m_y += m_relativeTopLeft.m_y;
+	HotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;
+	HotAreaHandler::m_bounds.m_y += m_relativeTopLeft.m_y;
 	m_trackWindow->Move(VsPoint(m_buttonX + m_trackOffsetX, m_buttonY + m_trackOffsetY));
 	m_trackWindow->Move(VsPoint(p_point.m_x + m_trackOffsetX, p_point.m_y + m_trackOffsetY));
 }

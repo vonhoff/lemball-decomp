@@ -12,11 +12,11 @@ void TargetTextButton::ExpandToFitText(const VsSize& p_textSize)
 	if (m_horizontalMargin * m_verticalMargin != 0) {
 		short width = (short) (p_textSize.m_width + 2 * m_horizontalMargin);
 		short height = (short) (p_textSize.m_height + 2 * m_verticalMargin);
-		if (m_width < width) {
-			m_width = width;
+		if (m_bounds.m_width < width) {
+			m_bounds.m_width = width;
 		}
-		if (m_height < height) {
-			m_height = height;
+		if (m_bounds.m_height < height) {
+			m_bounds.m_height = height;
 		}
 	}
 }
@@ -25,16 +25,16 @@ void TargetTextButton::ExpandToFitText(const VsSize& p_textSize)
 void TargetTextButton::AlignTextPosition(VsPoint& p_position, const VsSize& p_textSize)
 {
 	if ((m_alignmentFlags & 0x10) != 0) {
-		p_position.m_x = (short) (m_width - p_textSize.m_width);
+		p_position.m_x = (short) (m_bounds.m_width - p_textSize.m_width);
 	}
 	else if ((m_alignmentFlags & 4) != 0) {
-		p_position.m_x = (short) ((m_width - p_textSize.m_width) / 2);
+		p_position.m_x = (short) ((m_bounds.m_width - p_textSize.m_width) / 2);
 	}
 	if ((m_alignmentFlags & 0x20) != 0) {
-		p_position.m_y = (short) (m_height - p_textSize.m_height);
+		p_position.m_y = (short) (m_bounds.m_height - p_textSize.m_height);
 	}
 	else if ((m_alignmentFlags & 8) != 0) {
-		p_position.m_y = (short) ((m_height - p_textSize.m_height) / 2);
+		p_position.m_y = (short) ((m_bounds.m_height - p_textSize.m_height) / 2);
 	}
 	m_forceDrawCount = 1;
 }

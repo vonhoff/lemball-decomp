@@ -1111,7 +1111,8 @@ void C2D::SetMouseShape()
 	}
 	VsPoint game((short) (m_viewOriginX + m_cursorGamePoint.m_x),
 				 (short) (m_cursorGamePoint.m_y + (short) m_viewOriginY));
-	if (screenX < m_x || (short) (m_width + m_x) <= screenX || screenY < m_y || (short) (m_height + m_y) <= screenY) {
+	if (screenX < m_bounds.m_x || (short) (m_bounds.m_width + m_bounds.m_x) <= screenX || screenY < m_bounds.m_y ||
+		(short) (m_bounds.m_height + m_bounds.m_y) <= screenY) {
 		CursorChangeType(1, 0);
 	}
 	else if (FindGameObject(game, objectIndex, 0) != 0) {

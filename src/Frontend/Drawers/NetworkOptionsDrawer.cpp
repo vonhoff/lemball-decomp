@@ -1194,10 +1194,10 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 	do {
 		EntryHandler* entry = &m_playerEntries[index];
 		if (m_visibleEntryCount < 4 && connections != 0 && connections[index] != 0 && messages[index].m_valid != 0) {
-			entry->m_width = rect[0];
-			entry->m_height = rect[1];
-			entry->m_x = rect[2];
-			entry->m_y = rect[3];
+			entry->m_bounds.m_width = rect[0];
+			entry->m_bounds.m_height = rect[1];
+			entry->m_bounds.m_x = rect[2];
+			entry->m_bounds.m_y = rect[3];
 			entry->SetActive(1);
 			rect[3] += (short) m_layoutTable->m_rowStride;
 			m_visibleEntryCount++;

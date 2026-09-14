@@ -51,11 +51,11 @@ void TrackWindow::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_name)
 	const VsPoint* position;
 
 	GWnd::Create(p_rect, p_parent, p_name);
-	HotAreaHandler::m_width = p_rect.m_width;
-	HotAreaHandler::m_height = p_rect.m_height;
+	HotAreaHandler::m_bounds.m_width = p_rect.m_width;
+	HotAreaHandler::m_bounds.m_height = p_rect.m_height;
 	position = &p_rect;
-	HotAreaHandler::m_x = position->m_x;
-	HotAreaHandler::m_y = position->m_y;
+	HotAreaHandler::m_bounds.m_x = position->m_x;
+	HotAreaHandler::m_bounds.m_y = position->m_y;
 	handler = this;
 	m_parent->m_hotAreaList->AddToList(handler);
 }
@@ -130,14 +130,14 @@ void TrackWindow::SetButtonValue(int p_value)
 void TrackWindow::OnInside(const VsPoint& p_point)
 {
 	if (m_buttonState[0] != 0) {
-		int distance = (int) p_point.m_x - (int) HotAreaHandler::m_x;
+		int distance = (int) p_point.m_x - (int) HotAreaHandler::m_bounds.m_x;
 		if (distance < 0) {
 			distance = 0;
 		}
 		else if (distance > m_trackRect.m_width) {
 			distance = m_trackRect.m_width;
 		}
-		SetButtonValue(distance * 100 / (int) HotAreaHandler::m_width);
+		SetButtonValue(distance * 100 / (int) HotAreaHandler::m_bounds.m_width);
 	}
 }
 

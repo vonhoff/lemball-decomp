@@ -51,15 +51,15 @@ PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_a
 	}
 	{
 		VsRect createRect;
-		createRect.m_width = m_width;
-		createRect.m_height = m_height;
+		createRect.m_width = m_bounds.m_width;
+		createRect.m_height = m_bounds.m_height;
 		createRect.m_x = m_buttonX;
 		createRect.m_y = m_buttonY;
 		GWnd* window = this;
 		window->Create(createRect, m_ownerWindow, g_szButton);
 	}
-	m_x = (short) (m_x + m_relativeTopLeft.m_x);
-	m_y = (short) (m_y + m_relativeTopLeft.m_y);
+	m_bounds.m_x = (short) (m_bounds.m_x + m_relativeTopLeft.m_x);
+	m_bounds.m_y = (short) (m_bounds.m_y + m_relativeTopLeft.m_y);
 	m_ownerWindow->m_hotAreaList->AddToList(static_cast<HotAreaHandler*>(this));
 	m_gdi->m_renderTarget->m_flag70 = 0;
 	m_externalEnabled = 1;

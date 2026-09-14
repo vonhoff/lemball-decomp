@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_HOTAREAHANDLER_H
 
 #include "../../Common.h"
+#include "../Foundation/VsRect.h"
 
 // SIZE 0x38
 // VTABLE: LEMBALL 0x00496ea0
@@ -45,10 +46,7 @@ private:
 	unsigned int m_buttonState[6];  // 0x10
 	unsigned int m_externalEnabled; // 0x28
 	unsigned int m_reserved;        // 0x2c
-	short m_width;                  // 0x30
-	short m_height;                 // 0x32
-	short m_x;                      // 0x34
-	short m_y;                      // 0x36
+	VsRect m_bounds;                // 0x30
 };
 
 // SYNTHETIC: LEMBALL 0x00439a40
