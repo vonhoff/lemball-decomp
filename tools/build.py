@@ -21,7 +21,7 @@ from pathlib import Path
 from lib.paths import BUILD, ROOT
 
 LOG_PATH = BUILD / "last_build.log"
-LOG_INTEREST = re.compile(r"warning|error|fatal|failed|built target|linking|\[\s*100%\s*\]", re.IGNORECASE)
+LOG_INTEREST = re.compile(r"warning|error|fatal|failed|built target|linking|relink|\[\s*100%\s*\]", re.IGNORECASE)
 MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
 
 
@@ -118,6 +118,49 @@ def handle_link(args: list[str]) -> int:
     return res.returncode
 
 
+def stale_link_inputs(build_dir: Path) -> list[Path]:
+    """Find generated linker dependencies newer than the executable."""
+    executable = build_dir / "LEMBALL.EXE"
+    if not executable.exists():
+        return []
+    target_dir = build_dir / "CMakeFiles" / "LEMBALL.dir"
+    inputs = list(target_dir.rglob("*.obj"))
+    inputs.extend((build_dir / "LEMBALL.RES", target_dir / "build.make", target_dir / "objects1.rsp"))
+    timestamp = executable.stat().st_mtime_ns
+    return [path for path in inputs if path.exists() and path.stat().st_mtime_ns > timestamp]
+
+
+def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) -> tuple[int, str]:
+    """Retry a skipped stale link once; never report stale output as success."""
+    def invoke():
+        return subprocess.run(
+            cmake_args, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, errors="replace",
+        )
+
+    proc = invoke()
+    output = proc.stdout or ""
+    if proc.returncode != 0:
+        return proc.returncode, output
+
+    stale = stale_link_inputs(build_dir)
+    if stale:
+        output += "\nLink output is stale; forcing one relink after " + str(stale[0]) + "\n"
+        # This is only the generated executable, not the reference image or PDB.
+        # Removing it makes old NMake invoke the existing CMake link rule.
+        (build_dir / "LEMBALL.EXE").unlink()
+        proc = invoke()
+        output += proc.stdout or ""
+        if proc.returncode != 0:
+            return proc.returncode, output
+
+    if not all((build_dir / name).exists() for name in ("LEMBALL.EXE", "LEMBALL.pdb")):
+        return 1, output + "\nerror: build did not produce both LEMBALL.EXE and LEMBALL.pdb\n"
+    if stale_link_inputs(build_dir):
+        return 1, output + "\nerror: executable is still older than its link inputs after retry\n"
+    return 0, output
+
+
 def run_build(clean_first: bool = False, extra_args: list[str] | None = None) -> int:
     cmake = resolve_cmake()
     BUILD.mkdir(parents=True, exist_ok=True)
@@ -154,10 +197,9 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
         cmake_args.extend(extra_args)
 
     start = time.perf_counter()
-    proc = subprocess.run(cmake_args, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace")
+    returncode, output = build_with_link_check(cmake_args, BUILD, ROOT)
     elapsed = time.perf_counter() - start
 
-    output = proc.stdout or ""
     LOG_PATH.write_text(output, encoding="utf-8")
     for line in output.splitlines():
         if LOG_INTEREST.search(line):
@@ -165,8 +207,8 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
 
     has_exe = (BUILD / "LEMBALL.EXE").exists()
     has_pdb = (BUILD / "LEMBALL.pdb").exists()
-    print(f"RESULT exit={proc.returncode} elapsed_s={elapsed:.1f} exe={has_exe} pdb={has_pdb} log={LOG_PATH}")
-    return proc.returncode
+    print(f"RESULT exit={returncode} elapsed_s={elapsed:.1f} exe={has_exe} pdb={has_pdb} log={LOG_PATH}")
+    return returncode
 
 
 def main() -> int:
