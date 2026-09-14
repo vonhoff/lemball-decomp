@@ -19,16 +19,10 @@ from reccmp.types import ImageId
 
 
 def bounded_switch_edges(image, address, start, limit):
-    """Recognize a complete range guard and bounded MSVC switch dispatch.
+    """Recognize guarded EAX/EDX/EDI switch tables within the function bound.
 
-    Accept CMP EAX,maximum; JA default; XOR ECX,ECX;
-    MOV CL,[EAX+byte_table]; JMP [ECX*4+target_table], or the verified
-    EDX-to-EAX variant of that sequence. Also accept CMP EAX,maximum;
-    JA default; JMP [EAX*4+target_table]. A single word-sized register store
-    to [ESP+disp8] may separate CMP and JA: it changes neither flags nor the
-    dispatch index. All tables must
-    reside inside the known function bound. The caller treats this sequence
-    atomically, so another edge into its interior invalidates the proof.
+    The caller rejects edges into the dispatch interior. Only a flag-preserving
+    word store to [ESP+disp8] may separate CMP from JA.
     """
     def read(at, count):
         if count <= 0 or not start <= at < at + count <= limit:
@@ -41,9 +35,9 @@ def bounded_switch_edges(image, address, start, limit):
     try:
         raw = bytes(image.read(address, min(32, limit - address)))
         source = "eax"
-        if raw[:2] in (b"\x83\xf8", b"\x83\xfa") and len(raw) >= 3 and raw[2] < 0x80:
+        if raw[:2] in (b"\x83\xf8", b"\x83\xfa", b"\x83\xff") and len(raw) >= 3 and raw[2] < 0x80:
             maximum, cursor = raw[2], 3
-            source = "edx" if raw[1] == 0xfa else "eax"
+            source = {0xf8: "eax", 0xfa: "edx", 0xff: "edi"}[raw[1]]
         elif raw[:1] == b"\x3d" and len(raw) >= 5:
             maximum, cursor = struct.unpack_from("<I", raw, 1)[0], 5
         else:
@@ -73,8 +67,8 @@ def bounded_switch_edges(image, address, start, limit):
                 return None
             return cursor + 7, edges, ((target_table, len(targets)),)
         zero, load, jump = (
-            ((b"\x33\xc0", b"\x31\xc0"), b"\x8a\x82", b"\xff\x24\x85")
-            if source == "edx" else
+            ((b"\x33\xc0", b"\x31\xc0"), b"\x8a\x82" if source == "edx" else b"\x8a\x87", b"\xff\x24\x85")
+            if source != "eax" else
             ((b"\x33\xc9", b"\x31\xc9"), b"\x8a\x88", b"\xff\x24\x8d")
         )
         if (len(raw) < cursor + 15

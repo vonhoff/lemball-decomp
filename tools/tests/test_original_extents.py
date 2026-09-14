@@ -244,6 +244,34 @@ class OriginalExtentTests(unittest.TestCase):
     def test_edx_switch_includes_complete_tables(self):
         self.assertEqual(self.extent(self.edx_switch()), 0x92)
 
+    def edi_switch(self):
+        data = self.edx_switch()
+        data[1] = 0xff  # CMP EDI,maximum
+        data[8] = 0x87  # MOV AL,[EDI+byte_table]
+        return data
+
+    def test_edi_switch_includes_complete_tables(self):
+        self.assertEqual(self.extent(self.edi_switch()), 0x92)
+
+    def test_edi_switch_rejects_inconsistent_registers(self):
+        for offset, value in ((1, 0xfa), (6, 0xc9), (8, 0x82), (15, 0x8d)):
+            with self.subTest(offset=offset):
+                data = self.edi_switch()
+                data[offset] = value
+                self.assertIsNone(self.extent(data))
+
+    def test_edi_switch_keeps_bounds_and_control_flow_checks(self):
+        self.assertIsNone(self.extent(self.edi_switch(), limit=0x91))
+        for target in (0x0fff, 0x10a0, 0x1080, 0x1090, 0x1005, 0x1043):
+            with self.subTest(target=target):
+                data = self.edi_switch()
+                data[0x42:0x48] = bytes.fromhex("b8 01000000 c3")
+                struct.pack_into("<I", data, 0x84, target)
+                self.assertIsNone(self.extent(data))
+        data = self.edi_switch()
+        data[0x40:0x42] = bytes.fromhex("eb c3")
+        self.assertIsNone(self.extent(data))
+
     def test_edx_switch_rejects_inconsistent_registers(self):
         for offset, value in ((1, 0xf8), (6, 0xc9), (8, 0x80), (15, 0x8d)):
             with self.subTest(offset=offset):
@@ -302,6 +330,15 @@ class OriginalExtentTests(unittest.TestCase):
     "requires the reference executable and a local build",
 )
 class OriginalExtentBinaryTests(unittest.TestCase):
+    def test_mover_process_includes_all_37_action_indices(self):
+        _, engine = load_engine()
+        extent = complete_original_extent(
+            engine.orig_bin, 0x0042eb00, 0x0042eeb0, Cs(CS_ARCH_X86, CS_MODE_32)
+        )
+        self.assertEqual(extent, 0x3a9)
+        self.assertEqual(bytes(engine.orig_bin.read(0x0042ebb5, 3)), bytes.fromhex("83ff24"))
+        self.assertEqual(bytes(engine.orig_bin.read(0x0042eea5, 4)), bytes((6, 6, 6, 5)))
+
     def test_main_display_switch_does_not_consume_following_data(self):
         _, engine = load_engine()
         blob = engine.orig_bin.read(0x00431cd0, 0x1dc)

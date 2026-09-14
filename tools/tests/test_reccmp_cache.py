@@ -66,6 +66,11 @@ class ReccmpCacheTests(unittest.TestCase):
     def test_source_edits_additions_removals_and_moves_refresh_both_outputs(self):
         with tempfile.TemporaryDirectory() as directory, ExitStack() as patches:
             root = Path(directory)
+            implementation = root / "reccmp.py"
+            compatibility = root / "reccmp_compat.py"
+            implementation.write_text("# comparator\n", encoding="utf-8")
+            compatibility.write_text("# parser\n", encoding="utf-8")
+            patches.enter_context(patch.object(reccmp, "__file__", str(implementation)))
             source = root / "src"
             source.mkdir()
             header = source / "Unused.h"
@@ -122,10 +127,16 @@ class ReccmpCacheTests(unittest.TestCase):
             check_generation(6)
             config.write_text("targets: {LEMBALL: {}}\n", encoding="utf-8")
             check_generation(7)
+
+            compatibility.write_text("# corrected parser\n", encoding="utf-8")
+            check_generation(8)
+            implementation.write_text("# corrected comparator\n", encoding="utf-8")
+            check_generation(9)
+            check_generation(9)
             # Detection can rewrite identical configuration without changing its meaning.
             config.write_text("targets: {LEMBALL: {}}\n", encoding="utf-8")
             os.utime(config, ns=(1_000_000_000, 1_000_000_000))
-            check_generation(7)
+            check_generation(9)
 
 
 if __name__ == "__main__":

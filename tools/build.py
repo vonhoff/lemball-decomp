@@ -79,24 +79,13 @@ def handle_link(args: list[str]) -> int:
                 os.environ[env_var] = new_val
                 ctypes.windll.kernel32.SetEnvironmentVariableW(env_var, new_val)
 
-    new_link_args: list[str] = []
     for arg in link_args:
         if arg.startswith("@"):
             rsp_path = Path(arg[1:])
             if rsp_path.exists():
                 content = rsp_path.read_text(encoding="utf-8", errors="ignore")
-                tokens = content.split()
-                # MSVC 4.00 LINK.EXE has a limit of 16383 characters per line (fatal error LNK1170).
-                # NMake/CMake writes response files as a single long line. Break onto multiple lines.
-                # Note: Do not split into multiple response files, as MSVC 4.00 LINK crashes during
-                # Pass 1 when multiple response files are passed.
-                rsp_path.write_text("\n".join(tokens) + "\n", encoding="utf-8")
-                new_link_args.append(arg)
-            else:
-                new_link_args.append(arg)
-        else:
-            new_link_args.append(arg)
-    link_args = new_link_args
+                # LINK 4.00 limits lines to 16383 characters; multiple response files crash it.
+                rsp_path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
 
     out_arg = next((Path(arg[5:]) for arg in link_args if arg.upper().startswith("/OUT:")), None)
     res = subprocess.run(

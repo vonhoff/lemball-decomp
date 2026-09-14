@@ -33,7 +33,6 @@ from .paths import (
 
 def _stamp() -> dict:
     return {
-        "version": 19,
         "original": file_id(ORIGINAL_EXE),
         "recomp": file_id(RECOMP_EXE),
         "pdb": file_id(RECOMP_PDB),
@@ -45,7 +44,8 @@ def _stamp() -> dict:
             str(path): hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
             for path in (ROOT / "reccmp-project.yml", ROOT / "reccmp-user.yml",
                          ROOT / "reccmp-build.yml",
-                         BUILD / "reccmp-build.yml")
+                         BUILD / "reccmp-build.yml", Path(__file__),
+                         Path(__file__).with_name("reccmp_compat.py"))
         },
     }
 
