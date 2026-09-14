@@ -4,6 +4,8 @@
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/VsPoint.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Resources/Manifest.h"
+#include "../Animation/LemmingAnimsManager.h"
 
 #include <string.h>
 
@@ -62,6 +64,20 @@ void WindowsCursorMotionState::ProcessCursorMotion()
 		SendCursorPositionMessage();
 		m_positionDirty = 0;
 	}
+}
+
+// FUNCTION: LEMBALL 0x004327b0
+void WindowsCursorMotionState::DrawCursorMotionAtCurrentPosition(undefined4 p_unused)
+{
+	int x = (m_fixedX >> 12) - m_aux0;
+	int y = (m_fixedY >> 12) - m_aux1;
+	m_anims->DrawAnim((short) x, (short) y, RES_CURSORS_HAND, 0, 0, 0);
+}
+
+// FUNCTION: LEMBALL 0x004327e0
+void WindowsCursorMotionState::DrawCursorMotionAtPoint(undefined4 p_unused, const VsPoint& p_position)
+{
+	m_anims->DrawAnim(p_position.m_x, p_position.m_y, RES_CURSORS_HAND, 0, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x00432810

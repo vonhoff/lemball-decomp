@@ -11,6 +11,8 @@ public:
 	~WindowsCursorMotionState();
 	void SendCursorPositionMessage();
 	void ProcessCursorMotion();
+	void DrawCursorMotionAtCurrentPosition(undefined4 p_unused);
+	void DrawCursorMotionAtPoint(undefined4 p_unused, const VsPoint& p_position);
 	void SetCursorMotionPoint(const VsPoint& p_position);
 	VsPoint GetCursorMotionPoint();
 	void SetCursorMotionAuxValues(unsigned int p_aux0, unsigned int p_aux1);
