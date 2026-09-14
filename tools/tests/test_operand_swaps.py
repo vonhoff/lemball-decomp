@@ -8,12 +8,44 @@ from reccmp.compare.asm import fixes
 from lib.reccmp_compat import (
     _upstream_is_operand_swap,
     _upstream_patch_mov_compare_jmp,
+    _upstream_patch_compare_jmp,
     is_operand_swap,
     patch_mov_compare_jmp,
+    patch_compare_jmp,
 )
 
 
 class OperandSwapTests(unittest.TestCase):
+    def test_test_operand_swap_cannot_reverse_branch(self):
+        left = ["test eax, ebx", "ja 0x10", "ret "]
+        right = ["test ebx, eax", "jb 0x10", "ret "]
+        self.assertEqual(_upstream_patch_compare_jmp(left, right, "test"), {0, 1})
+        self.assertEqual(patch_compare_jmp(left, right, "test"), set())
+        codes = SequenceMatcher(None, left, right).get_opcodes()
+        with patch.object(fixes, "patch_compare_jmp", _upstream_patch_compare_jmp):
+            self.assertTrue(fixes.find_effective_match(codes, left, right))
+        with patch.object(fixes, "patch_compare_jmp", patch_compare_jmp):
+            self.assertFalse(fixes.find_effective_match(codes, left, right))
+
+    def test_mov_test_operand_swap_cannot_reverse_branch(self):
+        left = ["mov eax, dword ptr [ebp + 4]", "test eax, ecx", "ja 0x10", "ret "]
+        right = ["mov eax, ecx", "test eax, dword ptr [ebp + 4]", "jb 0x10", "ret "]
+        self.assertEqual(_upstream_patch_mov_compare_jmp(left, right, "test"), {0, 1, 2})
+        self.assertEqual(patch_mov_compare_jmp(left, right, "test"), set())
+        codes = SequenceMatcher(None, left, right).get_opcodes()
+        with patch.object(fixes, "patch_mov_compare_jmp", _upstream_patch_mov_compare_jmp):
+            self.assertTrue(fixes.find_effective_match(codes, left, right))
+        with patch.object(fixes, "patch_mov_compare_jmp", patch_mov_compare_jmp):
+            self.assertFalse(fixes.find_effective_match(codes, left, right))
+
+    def test_existing_test_equality_swaps_remain_valid(self):
+        for jump in ("je 0x10", "jne 0x10"):
+            self.assertEqual(patch_compare_jmp(
+                ["test eax, ebx", jump], ["test ebx, eax", jump], "test"), {0, 1})
+            self.assertEqual(patch_mov_compare_jmp(
+                ["mov eax, dword ptr [ebp + 4]", "test eax, ecx", jump],
+                ["mov eax, ecx", "test eax, dword ptr [ebp + 4]", jump], "test"), {0, 1, 2})
+
     def test_upstream_accepts_changed_offsets(self):
         left = "cmp eax, dword ptr [ebx + 0x12]"
         right = "cmp dword ptr [ebx + 0x21], eax"

@@ -174,6 +174,7 @@ _upstream_relocate_instructions = fixes.relocate_instructions
 _upstream_naive_register_replacement = fixes.naive_register_replacement
 _upstream_is_operand_swap = fixes.is_operand_swap
 _upstream_patch_mov_compare_jmp = fixes.patch_mov_compare_jmp
+_upstream_patch_compare_jmp = fixes.patch_compare_jmp
 
 
 def _register_operand_pair(instruction):
@@ -202,6 +203,17 @@ def is_operand_swap(original, rebuilt):
     return left is not None and right is not None and left != right and left == right[::-1]
 
 
+def patch_compare_jmp(original, rebuilt, mnemonic):
+    fixed = _upstream_patch_compare_jmp(original, rebuilt, mnemonic)
+    if fixed and mnemonic == "test":
+        index = next(i for i, line in enumerate(original) if line.startswith(mnemonic))
+        # TEST is commutative: swapping operands does not reverse ordering flags.
+        # Retain upstream eligibility, but never excuse a changed jump.
+        if original[index + 1] != rebuilt[index + 1]:
+            return set()
+    return fixed
+
+
 def patch_mov_compare_jmp(original, rebuilt, mnemonic):
     # Keep the upstream eligibility and jump-target checks, but require exact
     # source operands instead of accepting anagrams of the instruction text.
@@ -209,6 +221,8 @@ def patch_mov_compare_jmp(original, rebuilt, mnemonic):
     if not fixed:
         return set()
     index = next(i for i, line in enumerate(original) if line.startswith(mnemonic))
+    if mnemonic == "test" and original[index + 1] != rebuilt[index + 1]:
+        return set()
     left_mov = _register_operand_pair(original[index - 1])
     right_mov = _register_operand_pair(rebuilt[index - 1])
     left_cmp = _register_operand_pair(original[index])
@@ -464,6 +478,7 @@ def install_parser_fix() -> None:
     fixes.relocate_instructions = relocate_instructions
     fixes.naive_register_replacement = naive_register_replacement
     fixes.is_operand_swap = is_operand_swap
+    fixes.patch_compare_jmp = patch_compare_jmp
     fixes.patch_mov_compare_jmp = patch_mov_compare_jmp
     fixes.assert_fixup = normalize_assert_arguments
     functions.assert_fixup = normalize_assert_arguments
