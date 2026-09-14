@@ -8,6 +8,9 @@
 // VTABLE: LEMBALL 0x00499838 primary
 // VTABLE: LEMBALL 0x00499818 hot-area view at +0x90
 class TargetFramedButton : public DepressedButton {
+public:
+	void InitializeFramePrimitives();
+
 private:
 	Line* m_frameLine;         // 0x10c
 	ClipRect* m_frameRects;    // 0x110

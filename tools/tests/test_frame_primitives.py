@@ -1,0 +1,52 @@
+"""Verify the framed-button allocations and their array-delete helpers."""
+
+import unittest
+
+from capstone import Cs, CS_ARCH_X86, CS_MODE_32
+from capstone.x86 import X86_OP_IMM, X86_OP_MEM
+from reccmp.types import ImageId
+
+from lib.paths import ORIGINAL_EXE, RECOMP_EXE, RECOMP_PDB
+from lib.reccmp import load_engine
+
+
+@unittest.skipUnless(
+    all(path.exists() for path in (ORIGINAL_EXE, RECOMP_EXE, RECOMP_PDB)),
+    "requires the reference executable and a local build",
+)
+class FramePrimitiveTests(unittest.TestCase):
+    def instructions(self, original_address, original_size):
+        _, engine = load_engine()
+        match = next(m for m in engine.get_all() if m.orig_addr == original_address)
+        decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+        decoder.detail = True
+        for image, address, size in (
+            (engine.orig_bin, original_address, original_size),
+            (engine.recomp_bin, match.recomp_addr, match.size(ImageId.RECOMP)),
+        ):
+            yield address, list(decoder.disasm(image.read(address, size), address))
+
+    def test_frame_allocations_have_array_cookies(self):
+        for address, instructions in self.instructions(0x00468b80, 144):
+            with self.subTest(address=hex(address)):
+                sizes = [i.operands[0].imm for i in instructions
+                         if i.mnemonic == "push" and i.operands[0].type == X86_OP_IMM]
+                self.assertEqual(sizes, [0x14, 0x44])
+                cookies = [i.operands[1].imm for i in instructions
+                           if i.mnemonic == "mov" and len(i.operands) == 2
+                           and i.operands[0].type == X86_OP_MEM
+                           and i.operands[0].mem.disp == 0
+                           and i.operands[1].type == X86_OP_IMM]
+                self.assertEqual(cookies, [1, 4])
+
+    def test_both_delete_helpers_handle_arrays(self):
+        for helper in (0x00469930, 0x00467bb0):
+            for address, instructions in self.instructions(helper, 89):
+                with self.subTest(helper=hex(helper), address=hex(address)):
+                    tests = [i for i in instructions if i.mnemonic == "test"]
+                    self.assertEqual(tests[0].operands[1].imm, 2)
+                    self.assertTrue(any(i.mnemonic == "sub" and len(i.operands) == 2
+                                        and i.operands[1].type == X86_OP_IMM
+                                        and i.operands[1].imm == 0x10 for i in instructions))
+                    self.assertEqual([i.operands[0].imm for i in instructions
+                                      if i.mnemonic == "ret"], [4, 4])

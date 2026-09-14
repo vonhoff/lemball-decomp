@@ -37,6 +37,6 @@ public:
 };
 
 // SYNTHETIC: LEMBALL 0x00469930
-// Line::`scalar deleting destructor'
+// Line::`vector deleting destructor'
 
 #endif
