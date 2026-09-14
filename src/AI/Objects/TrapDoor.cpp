@@ -66,9 +66,8 @@ void TrapDoor::GetViewData(ViewData& p_viewData)
 	p_viewData.m_facingDirection = m_facingDirection;
 	unsigned int actionArgument = (unsigned short) m_actionArgument;
 	unsigned int stateTimer = m_stateTimer;
-	eAction action = m_action;
+	p_viewData.m_action = m_action;
 	p_viewData.m_actionArgument = actionArgument;
-	p_viewData.m_action = action;
 	p_viewData.m_stateTimer = stateTimer;
 	p_viewData.m_statusFlags = 0;
 	p_viewData.m_unk0x30 = m_unk0xc0;
