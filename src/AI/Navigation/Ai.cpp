@@ -411,10 +411,124 @@ void Ai::SendGameState(eGameStates p_state, eGameStateStages p_stage)
 }
 
 // 68K 0x106012d6 RemoteGameState__3CAIFP17CGameStateMessage
-// STUB: LEMBALL 0x00411c10
-unsigned int Ai::RemoteGameState(GameStateMessage* p_message)
+// FUNCTION: LEMBALL 0x00411c10
+void Ai::RemoteGameState(GameStateMessage* p_message)
 {
-	return 0;
+	eGameStates state;
+	int apply;
+	eGameStateStages stage;
+
+	apply = 0;
+	state = p_message->m_state;
+	stage = p_message->m_stage;
+	*g_pSysOutput << "Received Game State " << (int) state << ", stage " << (int) stage << "\n";
+	switch (stage) {
+	case 0:
+		if (m_unk0x6c != 0) {
+			if (m_isHost != 0) {
+				SendGameState(state, (eGameStateStages) 2);
+				return;
+			}
+			m_unk0x6c = 0;
+		}
+		switch (state) {
+		case 0:
+			if (m_gameStatus == 1) {
+				SendGameState(state, (eGameStateStages) 2);
+				m_unk0x6c = 0;
+				return;
+			}
+			apply = 1;
+			m_isSinglePlayer = 1;
+			break;
+		case 2:
+			g_pGameStatus->m_skillState = 2;
+			m_gameStatus = 5;
+			break;
+		case 3:
+			if (m_gameStatus == 4 || m_gameStatus == 3) {
+				SendGameState(state, (eGameStateStages) 2);
+				m_unk0x6c = 0;
+				return;
+			}
+			m_gameStatus = 6;
+			g_nGameOver = 1;
+			break;
+		case 4:
+			g_pGameStatus->m_skillState = 3;
+			m_gameStatus = 3;
+			break;
+		case 6:
+			g_pGameStatus->m_skillState = 5;
+			m_gameStatus = 3;
+			break;
+		default:
+			apply = 1;
+			break;
+		}
+		SendGameState(state, (eGameStateStages) 1);
+		m_unk0x6c = 0;
+		if (apply == 0) {
+			return;
+		}
+	case 1:
+		switch (state) {
+		case 0:
+			m_gameStatus = 1;
+			break;
+		case 1:
+			if (m_gameStatus != 8) {
+				m_unk0x68 = 1;
+				m_gameStatus = 2;
+			}
+			break;
+		case 2:
+			g_pGameStatus->m_skillState = 2;
+			m_gameStatus = 3;
+			break;
+		case 3:
+			m_gameStatus = 4;
+			break;
+		case 4:
+			g_pGameStatus->m_skillState = 3;
+			m_gameStatus = 5;
+			break;
+		case 6:
+			g_pGameStatus->m_skillState = 5;
+			m_gameStatus = 5;
+			break;
+		case 7:
+			if ((unsigned int) m_gameTime > p_message->m_levelTime) {
+				g_pGameStatus->m_skillState = 4;
+				m_gameStatus = 3;
+			}
+			else if ((unsigned int) m_gameTime != p_message->m_levelTime) {
+				g_pGameStatus->m_skillState = 4;
+				m_gameStatus = 5;
+			}
+			else if ((unsigned int) m_score > p_message->m_score) {
+				g_pGameStatus->m_skillState = 1;
+				m_gameStatus = 3;
+			}
+			else if ((unsigned int) m_score < p_message->m_score) {
+				g_pGameStatus->m_skillState = 1;
+				m_gameStatus = 5;
+			}
+			else {
+				g_pGameStatus->m_skillState = 4;
+				m_gameStatus = 5;
+			}
+			break;
+		case 8:
+			m_gameStatus = 8;
+			return;
+		}
+		m_unk0x6c = 0;
+		break;
+	case 2:
+		m_unk0x6c = 0;
+		return;
+	}
 }
 
 // 68K 0x1060156a GameState__3CAIF11eGameStatus

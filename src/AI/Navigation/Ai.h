@@ -29,7 +29,7 @@ public:
 	bool SheepCheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate);
 	int GetData(ViewData* p_viewData);
 	int NDead();
-	unsigned int RemoteGameState(GameStateMessage* p_message);
+	void RemoteGameState(GameStateMessage* p_message);
 	void SetObjectRequired(eObjectType p_objectType, unsigned int p_required);
 	void StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short p_mask);
 	unsigned short DoorId(int p_index);
