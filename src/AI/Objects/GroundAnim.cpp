@@ -26,10 +26,41 @@ GroundAnim::~GroundAnim()
 }
 
 // 68K 0x1060e3ac CheckAllAnims__11CGroundAnimFv
-// STUB: LEMBALL 0x0040cf40
+// FUNCTION: LEMBALL 0x0040cf40
 bool GroundAnim::CheckAllAnims()
 {
-	return 0;
+	int index = 0;
+	while (index < m_count) {
+		unsigned int& active = m_entries[index].m_active;
+		if (active != 0) {
+			switch (m_entries[index].m_mapCell->m_objectType) {
+			case 0x210:
+				active = 1;
+				break;
+			case 0x215:
+			case 0x216:
+				active = 0;
+				break;
+			case 0x219:
+			case 0x21a:
+				active = 1;
+				break;
+			default: {
+				int next = index + 1;
+				active = 0;
+				while (next < m_count) {
+					m_entries[next - 1] = m_entries[next];
+					next++;
+				}
+				index--;
+				m_count--;
+				break;
+			}
+			}
+		}
+		index++;
+	}
+	return true;
 }
 
 // 68K 0x1060e4a4 Process__11CGroundAnimFv
