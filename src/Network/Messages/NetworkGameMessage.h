@@ -25,4 +25,7 @@ private:
 // SYNTHETIC: LEMBALL 0x00452f50
 // NetworkGameMessage::`vector deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x00452fd0
+// NetworkGameMessage::~NetworkGameMessage
+
 #endif

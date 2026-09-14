@@ -26,4 +26,7 @@ private:
 // SYNTHETIC: LEMBALL 0x0047b7f0
 // HeaderMessage::`vector deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0047b860
+// HeaderMessage::~HeaderMessage
+
 #endif
