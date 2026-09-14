@@ -429,12 +429,30 @@ def normalize_assert_arguments(assembly):
         assembly[index - 2] = (assembly[index - 2][0], "push __FILE__")
 
 
+def incremental_thunks(image):
+    """Read a section-leading E9 table, even when debug metadata was stripped."""
+    result = {}
+    for region in image.get_code_regions():
+        offset, entries = 0, {}
+        while offset + 5 <= len(region.data) and region.data[offset] == 0xe9:
+            address = region.addr + offset
+            entries[address] = address + 5 + struct.unpack_from("<i", region.data, offset + 1)[0]
+            offset += 5
+        # Linker padding closes the table; every destination must be later code.
+        if (entries and region.data[offset:offset + 16] == b"\xcc" * 16
+                and all(region.addr + offset + 16 <= target < region.addr + len(region.data)
+                        for target in entries.values())):
+            result.update(entries)
+    return result
+
+
 class RelocationAwareParseAsm(parse.ParseAsm):
     """Recognize CMP pointer immediates at verified PE relocation sites."""
 
-    def __init__(self, *, relocation_sites=(), **kwargs):
+    def __init__(self, *, relocation_sites=(), thunk_targets=None, **kwargs):
         super().__init__(**kwargs)
         self.relocation_sites = frozenset(relocation_sites)
+        self.thunk_targets = thunk_targets or {}
         self._decoder = Cs(CS_ARCH_X86, CS_MODE_32)
         self._decoder.detail = True
 
@@ -448,6 +466,11 @@ class RelocationAwareParseAsm(parse.ParseAsm):
 
     def sanitize(self, inst):
         address, size, mnemonic, operands = inst
+        if self.is_32bit and mnemonic == "call" and re.fullmatch(r"0x[0-9a-f]+", operands):
+            target = self.thunk_targets.get(int(operands, 16))
+            if (target is not None and self.lookup(int(operands, 16), exact=True) is None
+                    and self.lookup(target, exact=True) is not None):
+                return mnemonic, self.replace(target, exact=True)
         if (
             self.is_32bit
             and mnemonic == "cmp"
@@ -483,6 +506,7 @@ def configure_pointer_comparisons(engine) -> None:
             side + "_sanitize",
             RelocationAwareParseAsm(
                 relocation_sites=image.relocations,
+                thunk_targets=incremental_thunks(image),
                 addr_test=parser.addr_test,
                 name_lookup=parser.name_lookup,
                 is_32bit=parser.is_32bit,
