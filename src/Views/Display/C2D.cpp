@@ -1245,8 +1245,8 @@ void C2D::UseBalloon(PlayerLemming* p_lemming)
 {
 	if (p_lemming->m_action != 8) {
 		m_groupCount = 0;
-		CursorChangeType((eCursorDisplayType) p_lemming->m_objectId, 0);
-		SendCursorMsg();
+		AddObjectToGroup(p_lemming->m_objectId, 0);
+		FormGroup();
 		p_lemming->RequestBalloon();
 	}
 }

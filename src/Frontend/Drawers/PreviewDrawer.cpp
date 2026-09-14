@@ -553,10 +553,10 @@ bool PreviewDrawer::ConfirmedAction(int p_action)
 		PreviousLevel();
 		return 1;
 	case 2:
-		Go();
+		Return();
 		return 1;
 	case 3:
-		Return();
+		Go();
 		return 1;
 	default:
 		return 0;
