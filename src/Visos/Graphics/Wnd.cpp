@@ -17,6 +17,7 @@
 #include "Cursor.h"
 
 #include <conio.h>
+#include <string.h>
 #include <windows.h>
 
 #pragma intrinsic(_outpw)
@@ -196,9 +197,6 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 
-	mouseX = (short) p_lParam;
-	mouseY = (short) (p_lParam >> 16);
-
 	switch (p_message) {
 	case WM_CREATE: {
 		POINT position;
@@ -245,9 +243,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 	case WM_QUIT: {
-		if (g_pDebugOutput != 0) {
-			*g_pDebugOutput << g_szQuitting;
-		}
+		*g_pDebugOutput << g_szQuitting;
 		ReleaseCapture();
 		return 0;
 	}
@@ -288,7 +284,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		return 0;
 	}
 	case WM_SETFOCUS: {
-		if (g_hFocusWindow != 0 && g_pFocusWindow != 0) {
+		if (g_hFocusWindow != 0) {
 			g_pFocusWindow->Dummy94();
 			g_pFocusWindow->Dummy9c();
 		}
@@ -298,7 +294,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	}
 	case WM_KILLFOCUS: {
 		if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
-			if (g_hFocusWindow != 0 && g_pFocusWindow != 0) {
+			if (g_hFocusWindow != 0) {
 				g_pFocusWindow->Dummy94();
 				g_pFocusWindow->Dummy9c();
 			}
@@ -349,13 +345,11 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 				int mouseParameters[3];
 				RECT clipRect;
 				SystemParametersInfoA(SPI_GETMOUSE, 0, mouseParameters, 0);
-				g_savedMouseParameters[0] = mouseParameters[0];
-				g_savedMouseParameters[1] = mouseParameters[1];
-				g_savedMouseParameters[2] = mouseParameters[2];
+				memcpy(g_savedMouseParameters, mouseParameters, sizeof(mouseParameters));
 				GetSystemMetrics(SM_CYSCREEN);
 				short screenWidth = (short) GetSystemMetrics(SM_CXSCREEN);
-				TargetGraphicsDriver* driver = g_pTargetGraphicsDriver;
-				mouseParameters[2] = driver->m_screenSize.m_width * mouseParameters[2] / screenWidth;
+				VsSize* screenSize = &g_pTargetGraphicsDriver->m_screenSize;
+				mouseParameters[2] = screenSize->m_width * mouseParameters[2] / screenWidth;
 				SystemParametersInfoA(SPI_SETMOUSE, 0, mouseParameters, 0);
 				SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &g_nSavedScreenSaverActive, 0);
 				if (g_nSavedScreenSaverActive != 0) {
@@ -363,8 +357,8 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 				}
 				clipRect.top = 0;
 				clipRect.left = 0;
-				clipRect.right = driver->m_screenSize.m_width;
-				clipRect.bottom = driver->m_screenSize.m_height;
+				clipRect.right = screenSize->m_width;
+				clipRect.bottom = screenSize->m_height;
 				ClipCursor(&clipRect);
 			}
 		}
@@ -383,11 +377,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	case WM_KEYUP: {
 		posted.type = (unsigned short) ((p_message == WM_KEYDOWN) + 1);
 		posted.code = (int) p_wParam;
-		posted.payload = 0;
-		posted.source = 0;
-		if (g_pMasterInputQueue != 0) {
-			g_pMasterInputQueue->Post(posted);
-		}
+		g_pMasterInputQueue->Post(posted);
 		return 0;
 	}
 	case WM_LBUTTONDOWN:
@@ -398,44 +388,49 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	case WM_MBUTTONDBLCLK: {
 		posted.type = 6;
 		style = window->GetStyle();
-		if ((style & 0x1000) == 0) {
-			if (p_message == WM_LBUTTONDOWN || p_message == WM_LBUTTONDBLCLK) {
+		if ((style & 0x1000) != 0) {
+			switch (p_message) {
+			case WM_LBUTTONDOWN:
 				posted.payload = (void*) 0x43;
-			}
-			else if (p_message == WM_RBUTTONDOWN || p_message == WM_RBUTTONDBLCLK) {
+				break;
+			case WM_LBUTTONDBLCLK:
+				posted.payload = (void*) 0x46;
+				break;
+			case WM_RBUTTONDOWN:
 				posted.payload = (void*) 0x44;
-			}
-			else {
+				break;
+			case WM_RBUTTONDBLCLK:
+				posted.payload = (void*) 0x47;
+				break;
+			case WM_MBUTTONDOWN:
 				posted.payload = (void*) 0x45;
+				break;
+			case WM_MBUTTONDBLCLK:
+				posted.payload = (void*) 0x48;
+				break;
 			}
 		}
 		else {
-			if (p_message == WM_LBUTTONDOWN) {
+			switch (p_message) {
+			case WM_LBUTTONDOWN:
+			case WM_LBUTTONDBLCLK:
 				posted.payload = (void*) 0x43;
-			}
-			else if (p_message == WM_LBUTTONDBLCLK) {
-				posted.payload = (void*) 0x46;
-			}
-			else if (p_message == WM_RBUTTONDOWN) {
+				break;
+			case WM_RBUTTONDOWN:
+			case WM_RBUTTONDBLCLK:
 				posted.payload = (void*) 0x44;
-			}
-			else if (p_message == WM_RBUTTONDBLCLK) {
-				posted.payload = (void*) 0x47;
-			}
-			else if (p_message == WM_MBUTTONDOWN) {
+				break;
+			case WM_MBUTTONDOWN:
+			case WM_MBUTTONDBLCLK:
 				posted.payload = (void*) 0x45;
-			}
-			else {
-				posted.payload = (void*) 0x48;
+				break;
 			}
 		}
-		posted.code = PackParam((short) (window->m_rect.m_x + mouseX), (short) (window->m_rect.m_y + mouseY));
+		posted.code = PackParam((short) (window->m_rect.m_x + (short) p_lParam),
+								(short) (window->m_rect.m_y + (short) (p_lParam >> 16)));
 		posted.source = 0;
-		if (g_pMasterInputQueue != 0) {
-			g_pMasterInputQueue->Post(posted);
-		}
-		g_nMouseCaptureCount = g_nMouseCaptureCount + 1;
-		if (g_nMouseCaptureCount == 1) {
+		g_pMasterInputQueue->Post(posted);
+		if (g_nMouseCaptureCount++ == 0) {
 			SetCapture((HWND) p_hwnd);
 		}
 		return 0;
@@ -453,11 +448,10 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		else {
 			posted.payload = (void*) 0x45;
 		}
-		posted.code = PackParam((short) (window->m_rect.m_x + mouseX), (short) (window->m_rect.m_y + mouseY));
+		posted.code = PackParam((short) (window->m_rect.m_x + (short) p_lParam),
+								(short) (window->m_rect.m_y + (short) (p_lParam >> 16)));
 		posted.source = 0;
-		if (g_pMasterInputQueue != 0) {
-			g_pMasterInputQueue->Post(posted);
-		}
+		g_pMasterInputQueue->Post(posted);
 		g_nMouseCaptureCount = g_nMouseCaptureCount - 1;
 		if (g_nMouseCaptureCount == 0) {
 			ReleaseCapture();
@@ -467,14 +461,11 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	case WM_COMMAND: {
 		menuAction = window->SelectMenu(p_message, p_wParam, p_lParam);
 		if (menuAction != 0) {
-			posted.type = 0xf;
-			posted.time = CurrentQueueTimer();
-			posted.code = menuAction;
-			posted.payload = 0;
-			posted.source = 0;
-			if (g_pMasterInputQueue != 0) {
-				g_pMasterInputQueue->Post(posted);
-			}
+			Message command;
+			command.type = 0xf;
+			command.time = CurrentQueueTimer();
+			command.code = menuAction;
+			g_pMasterInputQueue->Post(command);
 			return 0;
 		}
 		return window->ProcessOtherMessages(p_message, p_wParam, p_lParam);
