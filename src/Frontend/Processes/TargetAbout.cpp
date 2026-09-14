@@ -4,7 +4,3 @@
 void TargetAbout::Process()
 {
 }
-
-TargetAbout::~TargetAbout()
-{
-}
