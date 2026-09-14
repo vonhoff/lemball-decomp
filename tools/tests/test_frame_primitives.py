@@ -15,6 +15,19 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class FramePrimitiveTests(unittest.TestCase):
+    def test_text_constructor_initializes_only_original_fields(self):
+        for address, instructions in self.instructions(0x00469a00, 71):
+            with self.subTest(address=hex(address)):
+                stores = [(i.operands[0].mem.disp, i.operands[0].size)
+                          for i in instructions if i.mnemonic == "mov"
+                          and i.operands[0].type == X86_OP_MEM]
+                self.assertCountEqual(stores, [
+                    (0, 4), (0, 4), (0x2c, 4), (0x2c, 4),
+                    (0x0c, 2), (0x0e, 2), (0x18, 2), (0x1a, 2),
+                    (0x1c, 2), (0x1e, 2), (0x24, 2), (0x26, 2),
+                    (0x30, 2), (0x32, 2),
+                ])
+
     def test_text_allocation_has_one_element_cookie(self):
         for address, instructions in self.instructions(0x004693b0, 131):
             with self.subTest(address=hex(address)):
