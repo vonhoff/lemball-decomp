@@ -57,6 +57,22 @@ NetworkManager::NetworkManager(const char* p_arg0) : BaseQueueHandler()
 	}
 }
 
+// 68K 0x10a00500 __dt__15CNetworkManagerFv
+// FUNCTION: LEMBALL 0x004526e0
+NetworkManager::~NetworkManager()
+{
+	if (m_externalDriverLoaded != 0) {
+		VsFNetQuit();
+	}
+	if (m_localDriverLoaded != 0) {
+		VsNetQuit();
+	}
+	delete m_rejectMessage;
+	delete m_gameStage;
+	delete m_gameMessage;
+	delete[] m_gameMessages;
+}
+
 // 68K 0x10a005e8 Start__15CNetworkManagerFv
 // FUNCTION: LEMBALL 0x00452740
 bool NetworkManager::Start()
@@ -201,11 +217,6 @@ int NetworkManager::GetnGame(Connect* p_connection)
 		return -1;
 	}
 	return index;
-}
-
-// 68K 0x10a00500 __dt__15CNetworkManagerFv
-NetworkManager::~NetworkManager()
-{
 }
 
 // GLOBAL: LEMBALL 0x004a0120

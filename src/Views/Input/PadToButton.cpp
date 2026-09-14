@@ -17,6 +17,14 @@ PadToButton::PadToButton(int p_arg0)
 	g_pMasterInputQueue->Attach(this, -25);
 }
 
+// 68K 0x10b0f9e2 __dt__12CPadToButtonFv
+// FUNCTION: LEMBALL 0x0043a2b0
+PadToButton::~PadToButton()
+{
+	g_pMasterInputQueue->Detach(this, -25);
+	delete[] m_entries;
+}
+
 // 68K 0x10b0fa5c ProcessMsg__12CPadToButtonFP10tagMESSAGE
 // FUNCTION: LEMBALL 0x0043a2e0
 int PadToButton::ProcessMsg(Message* p_message)
@@ -45,9 +53,4 @@ int PadToButton::ProcessMsg(Message* p_message)
 		result = 1;
 	}
 	return result;
-}
-
-// 68K 0x10b0f9e2 __dt__12CPadToButtonFv
-PadToButton::~PadToButton()
-{
 }
