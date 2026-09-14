@@ -23,6 +23,12 @@ void PaintGun::Restart()
 	m_direction = 0;
 }
 
+// 68K 0x1061b2f6 __dt__9CPaintGunFv
+// FUNCTION: LEMBALL 0x0042bb20
+PaintGun::~PaintGun()
+{
+}
+
 // 68K 0x1061b352 Set__9CPaintGunFUsRC7AICOORDi
 // FUNCTION: LEMBALL 0x0042bb30
 void PaintGun::Set(unsigned short p_id, const AiCoord& p_position, int p_direction)
@@ -155,10 +161,5 @@ bool PaintGun::Process()
 // 68K 0x1011ae1e DoActivate__9CPaintGunFv
 // FUNCTION: LEMBALL 0x0042c9a0
 void PaintGun::DoActivate()
-{
-}
-
-// 68K 0x1061b2f6 __dt__9CPaintGunFv
-PaintGun::~PaintGun()
 {
 }

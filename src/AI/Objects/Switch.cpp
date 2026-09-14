@@ -33,6 +33,12 @@ void Switch::Restart()
 	m_actionArgument = 0;
 }
 
+// 68K 0x1061976c __dt__7CSwitchFv
+// FUNCTION: LEMBALL 0x0041d120
+Switch::~Switch()
+{
+}
+
 // 68K 0x106197d2 Throw__7CSwitchFv
 // FUNCTION: LEMBALL 0x0041d130
 void Switch::Throw()
@@ -207,10 +213,5 @@ int Switch::Usage()
 // 68K 0x1011abec GetViewData__7CSwitchFR9CViewData
 // STUB: LEMBALL 0x0041dc50
 void Switch::GetViewData(ViewData& p_viewData)
-{
-}
-
-// 68K 0x1061976c __dt__7CSwitchFv
-Switch::~Switch()
 {
 }
