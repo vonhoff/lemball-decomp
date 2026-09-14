@@ -22,6 +22,14 @@ FileConnect::FileConnect()
 	FileWriteSocket::m_unk0x04 = m_message.m_payloadCapacity;
 }
 
+// 68K 0x10209a58 __dt__12CFileConnectFv
+// FUNCTION: LEMBALL 0x0047b2a0
+FileConnect::~FileConnect()
+{
+	delete FileReadSocket::m_file;
+	delete FileWriteSocket::m_file;
+}
+
 // 68K 0x10209eb2 InitialiseFile__12CFileConnectFv
 // FUNCTION: LEMBALL 0x0047b370
 void FileConnect::InitialiseFile()
@@ -157,11 +165,6 @@ void FileConnect::Process()
 {
 	FileReadSocket::Process();
 	CConnect::Process();
-}
-
-// 68K 0x10209a58 __dt__12CFileConnectFv
-FileConnect::~FileConnect()
-{
 }
 
 // 68K 0x10116932 Closed__12CFileConnectFUc
