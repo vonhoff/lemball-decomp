@@ -2,6 +2,8 @@
 
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Graphics/PvWnd.h"
+#include "../../Visos/Messaging/PackParam.h"
 #include "../../Visos/Resources/ResBin.h"
 
 // 68K 0x10700a70 __ct__5CDemoFi
@@ -36,10 +38,64 @@ Demo::~Demo()
 }
 
 // 68K 0x10700b8a SendNextPacket__5CDemoFi
-// STUB: LEMBALL 0x00409250
+// FUNCTION: LEMBALL 0x00409250
 bool Demo::SendNextPacket(int p_packetIndex)
 {
-	return 0;
+	if (m_bytesRemaining == -1 && !LoadBuffer()) {
+		return false;
+	}
+	if (*m_readCursor != (p_packetIndex & 0xff)) {
+		return false;
+	}
+	Message message;
+	message.time = CurrentQueueTimer();
+	m_readCursor++;
+	message.type = m_readCursor[0];
+	message.type |= (unsigned short) m_readCursor[1] << 8;
+	m_readCursor += 2;
+	message.code = m_readCursor[0];
+	message.code |= (unsigned int) m_readCursor[1] << 8;
+	message.code |= (unsigned int) m_readCursor[2] << 16;
+	message.code |= (unsigned int) m_readCursor[3] << 24;
+	m_readCursor += 4;
+	message.payload = (void*) m_readCursor[0];
+	message.payload = (void*) ((unsigned int) message.payload | (unsigned int) m_readCursor[1] << 8);
+	message.payload = (void*) ((unsigned int) message.payload | (unsigned int) m_readCursor[2] << 16);
+	message.payload = (void*) ((unsigned int) message.payload | (unsigned int) m_readCursor[3] << 24);
+	m_readCursor += 4;
+	message.source = (void*) m_readCursor[0];
+	message.source = (void*) ((unsigned int) message.source | (unsigned int) m_readCursor[1] << 8);
+	message.source = (void*) ((unsigned int) message.source | (unsigned int) m_readCursor[2] << 16);
+	message.source = (void*) ((unsigned int) message.source | (unsigned int) m_readCursor[3] << 24);
+	m_readCursor += 4;
+	if (m_window == 0) {
+		return false;
+	}
+	switch ((unsigned int) message.type) {
+	case 5:
+	case 6:
+	case 8:
+	case 9: {
+		VsPoint point((short) message.code, (short) ((unsigned int) message.code >> 16));
+		short zoom = (short) m_window->m_zoom;
+		point.m_x *= zoom;
+		point.m_y *= zoom;
+		point.m_x += m_window->m_rect.m_x;
+		point.m_y += m_window->m_rect.m_y;
+		point.m_x += m_offsetX;
+		point.m_y += m_offsetY;
+		const VsRect& bounds = m_window->m_rect;
+		if (point.m_x < bounds.m_x || (short) (bounds.m_width + bounds.m_x) <= point.m_x || point.m_y < bounds.m_y ||
+			(short) (bounds.m_height + bounds.m_y) <= point.m_y) {
+			return false;
+		}
+		message.code = PackParam(point.m_x, point.m_y);
+		break;
+	}
+	}
+	message.type |= 0x8000;
+	g_pMasterInputQueue->Post(message);
+	return true;
 }
 
 #include "../../Visos/Foundation/VsFile.h"
