@@ -95,7 +95,7 @@ void Ammo::DoActivate()
 	m_unk0xd4 += g_dwGameTick;
 	SetSndEffect((eSoundEffect) 0x11);
 	m_activator->PickUpAmmo(25);
-	g_pAI->AddTime(50);
+	g_pAI->Score(50);
 }
 
 // 68K 0x10619118 ActivatePosition__5CAmmoFv

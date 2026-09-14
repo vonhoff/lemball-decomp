@@ -68,7 +68,7 @@ void Key::DoActivate()
 {
 	m_activator->AddObject(m_objectType, this);
 	SetSndEffect((eSoundEffect) 41);
-	g_pAI->AddTime(10);
+	g_pAI->Score(10);
 }
 
 // 68K 0x10619dd0 ActivatePosition__4CKeyFv

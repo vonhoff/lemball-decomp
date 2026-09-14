@@ -126,7 +126,7 @@ void Catapult::DoActivate()
 	m_unk0x90 = activator->m_objectType;
 	activator->m_unk0xc0 = 1;
 	activator->m_action = (eAction) 5;
-	g_pAI->AddTime(20);
+	g_pAI->Score(20);
 }
 
 // 68K 0x10618e62 ActivatePosition__9CCatapultFv

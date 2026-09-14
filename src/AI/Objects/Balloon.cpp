@@ -81,7 +81,7 @@ void Balloon::DoActivate()
 {
 	m_activator->AddObject(m_objectType, this);
 	SetSndEffect((eSoundEffect) 42);
-	g_pAI->AddTime(50);
+	g_pAI->Score(50);
 }
 
 // 68K 0x1061a044 ActivatePosition__8CBalloonFv

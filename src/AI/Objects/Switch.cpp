@@ -128,7 +128,7 @@ void Switch::DoActivate()
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_unk0xd4 += g_dwGameTick;
 	if (m_scoreAwarded == 0) {
-		g_pAI->AddTime(25);
+		g_pAI->Score(25);
 		m_scoreAwarded = 1;
 	}
 }

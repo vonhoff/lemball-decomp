@@ -154,7 +154,7 @@ void Duplicator::DoActivate()
 	dup->m_position.m_yFixed = y;
 	dup->m_position.m_zFixed = z;
 	SetSndEffect((eSoundEffect) 12);
-	g_pAI->AddTime(100);
+	g_pAI->Score(100);
 }
 
 // 68K 0x10119bcc Usage__11CDuplicatorFv
