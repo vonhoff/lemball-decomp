@@ -10,6 +10,7 @@
 // VTABLE: LEMBALL 0x00498c88
 class ResMovie : public ResBaseList {
 public:
+	ResMovie();
 	ResMovie(unsigned long p_arg0);
 	static ResMovie* Load(unsigned int p_resourceId);
 	virtual void AllocateResources(unsigned int p_count);                         // vtable+0x44
