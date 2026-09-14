@@ -1,22 +1,30 @@
 #!/usr/bin/env python3
 """Run source and compare gates.
 
-  python tools/gate.py                 # smell + annot + layout + decomplint
+  python tools/gate.py                 # smell + annot + layout + decomplint + tests
   python tools/gate.py --path src/Foo  # scoped smell
   python tools/gate.py --names         # // 68K comments in src
   python tools/gate.py --vtable        # vtable comparison
+  python tools/gate.py --tools         # comparison-tool regression tests
   python tools/gate.py --all           # default + vtable + names
 """
 
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
+import unittest
 
 from lib.layout import check_layout
 from lib.names import check_names
 from lib.reccmp import check_decomplint
 from lib.smell import check_smell
 from lib.vtable import check_vtable
+
+
+def check_tool_tests() -> int:
+    suite = unittest.defaultTestLoader.discover(str(Path(__file__).parent / "tests"))
+    return 0 if unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful() else 1
 
 
 def main() -> int:
@@ -30,11 +38,15 @@ def main() -> int:
         "--names", action="store_true", help="68K naming vs source comments"
     )
     parser.add_argument("--vtable", action="store_true", help="vtable slot comparison")
+    parser.add_argument("--tools", action="store_true", help="comparison-tool regression tests")
     parser.add_argument(
         "--all", action="store_true", help="run all gates (default + vtable + names)"
     )
     args = parser.parse_args()
     paths = args.paths or None
+
+    if args.tools and not args.all:
+        return check_tool_tests()
 
     if paths and not (args.names or args.vtable or args.all):
         return check_smell(paths=paths)
@@ -54,6 +66,10 @@ def main() -> int:
         return code
 
     code = check_decomplint(paths=paths)
+    if code != 0:
+        return code
+
+    code = check_tool_tests()
     if code != 0:
         return code
 
