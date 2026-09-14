@@ -194,8 +194,3 @@ void Mine::OnGround()
 	}
 	m_position.m_zFixed = (unsigned int) z << 12;
 }
-
-// 68K 0x1011a84c __dt__5CMineFv
-Mine::~Mine()
-{
-}

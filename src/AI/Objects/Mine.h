@@ -14,7 +14,6 @@ public:
 	virtual bool Process();                  // vtable+0x14
 	virtual void DoActivate();               // vtable+0x08
 	virtual void Restart();                  // vtable+0x104
-	virtual ~Mine();                         // vtable+0x00
 	void Initialise();
 	void OnGround();
 	void Set(AiCoord p_position);
@@ -35,6 +34,10 @@ private:
 
 // SYNTHETIC: LEMBALL 0x00424c60
 // Mine::`vector deleting destructor'
+
+// 68K 0x1011a84c __dt__5CMineFv
+// SYNTHETIC: LEMBALL 0x00424cf0
+// Mine::~Mine
 
 extern short g_mineTerrainOffsets[4];
 
