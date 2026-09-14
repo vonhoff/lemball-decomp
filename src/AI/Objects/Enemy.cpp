@@ -87,6 +87,24 @@ void Enemy::Restart()
 	}
 }
 
+// 68K 0x10607a9e __dt__6CEnemyFv
+// FUNCTION: LEMBALL 0x0041fda0
+Enemy::~Enemy()
+{
+	if (m_state0Action == 1) {
+		delete[] m_state0Data.m_waypointInformation->m_waypoints;
+		delete m_state0Data.m_waypointInformation;
+	}
+	if (m_state1Action == 1) {
+		delete[] m_state1Data.m_waypointInformation->m_waypoints;
+		delete m_state1Data.m_waypointInformation;
+	}
+	if (m_state2Action == 1) {
+		delete[] m_state2Data.m_waypointInformation->m_waypoints;
+		delete m_state2Data.m_waypointInformation;
+	}
+}
+
 // clang-format off
 // 68K 0x10607b5e SetEnemyType__6CEnemyF18eEnemyStateActions16eEnemyStateRules18eEnemyStateActions16eEnemyStateRules18eEnemyStateActions16eEnemyStateRules
 // clang-format on
@@ -446,9 +464,4 @@ void Enemy::GetHit()
 int Enemy::IsHit()
 {
 	return m_hit;
-}
-
-// 68K 0x10607a9e __dt__6CEnemyFv
-Enemy::~Enemy()
-{
 }
