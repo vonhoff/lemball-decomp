@@ -23,4 +23,7 @@ private:
 	int m_neighbourCount;        // 0x10
 };
 
+// SYNTHETIC: LEMBALL 0x004215e0
+// Node::`vector deleting destructor'
+
 #endif
