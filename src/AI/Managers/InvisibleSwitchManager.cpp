@@ -41,6 +41,13 @@ void InvisibleSwitchManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x1061331c __dt__23CInvisibleSwitchManagerFv
+// FUNCTION: LEMBALL 0x0040a350
+InvisibleSwitchManager::~InvisibleSwitchManager()
+{
+	delete[] m_switches;
+}
+
 // 68K 0x10613398 StepOn__23CInvisibleSwitchManagerFRC7AICOORDP11CGameObject
 // FUNCTION: LEMBALL 0x0040a370
 void InvisibleSwitchManager::StepOn(const AiCoord& p_position, GameObject* p_object)
@@ -75,9 +82,4 @@ void InvisibleSwitchManager::LoadLevel(unsigned char* p_data, int p_dataSize, un
 		m_switches[i].Load(p_data);
 		i = i + 1;
 	}
-}
-
-// 68K 0x1061331c __dt__23CInvisibleSwitchManagerFv
-InvisibleSwitchManager::~InvisibleSwitchManager()
-{
 }

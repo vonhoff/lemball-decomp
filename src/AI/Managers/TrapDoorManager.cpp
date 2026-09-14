@@ -25,6 +25,18 @@ void TrapDoorManager::Restart()
 	}
 }
 
+// 68K 0x1062177e __dt__16CTrapDoorManagerFv
+// FUNCTION: LEMBALL 0x0040c7e0
+TrapDoorManager::~TrapDoorManager()
+{
+	TrapDoor** door = m_doors;
+	int remaining = 8;
+	do {
+		delete *door;
+		door++;
+	} while (--remaining != 0);
+}
+
 // 68K 0x10621816 AddNewDoor__16CTrapDoorManagerFUsR7AICOORDUcUl
 // FUNCTION: LEMBALL 0x0040c810
 void TrapDoorManager::AddNewDoor(unsigned short p_id,
@@ -78,11 +90,6 @@ void TrapDoorManager::Process()
 			}
 		}
 	}
-}
-
-// 68K 0x1062177e __dt__16CTrapDoorManagerFv
-TrapDoorManager::~TrapDoorManager()
-{
 }
 
 // 68K 0x106219d8 LoadLevel__16CTrapDoorManagerFPUciUc
