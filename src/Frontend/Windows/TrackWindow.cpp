@@ -27,6 +27,15 @@ TrackWindow::TrackWindow(const VsRect& p_rect, int p_value, PvGWnd* p_parent) : 
 	m_reserved = 1;
 }
 
+// 68K 0x1080e2e2 __dt__12CTrackWindowFv
+// FUNCTION: LEMBALL 0x0044e8c0
+TrackWindow::~TrackWindow()
+{
+	if (m_parent->m_lifecycleRefs == 1) {
+		m_parent->m_hotAreaList->RemoveFromList(this);
+	}
+}
+
 // 68K 0x1080e3d6 OnCreate__12CTrackWindowFv
 // FUNCTION: LEMBALL 0x0044e940
 void TrackWindow::OnCreate()
@@ -150,9 +159,4 @@ void TrackWindow::OnDriverChange()
 unsigned int TrackWindow::GetStyle()
 {
 	return 2147485697;
-}
-
-// 68K 0x1080e2e2 __dt__12CTrackWindowFv
-TrackWindow::~TrackWindow()
-{
 }
