@@ -24,7 +24,9 @@ def bounded_switch_edges(image, address, start, limit):
     Accept CMP EAX,maximum; JA default; XOR ECX,ECX;
     MOV CL,[EAX+byte_table]; JMP [ECX*4+target_table], or the verified
     EDX-to-EAX variant of that sequence. Also accept CMP EAX,maximum;
-    JA default; JMP [EAX*4+target_table]. All tables must
+    JA default; JMP [EAX*4+target_table]. A single word-sized register store
+    to [ESP+disp8] may separate CMP and JA: it changes neither flags nor the
+    dispatch index. All tables must
     reside inside the known function bound. The caller treats this sequence
     atomically, so another edge into its interior invalidates the proof.
     """
@@ -48,6 +50,11 @@ def bounded_switch_edges(image, address, start, limit):
             return None
         if maximum > 255:
             return None
+        # Verified MSVC scheduling in C2D::DrawObjects: MOV [ESP+disp8],r16
+        # between the range comparison and JA. Do not skip arbitrary code.
+        if (len(raw) >= cursor + 5 and raw[cursor:cursor + 2] == b"\x66\x89"
+                and raw[cursor + 2] & 0xc7 == 0x44 and raw[cursor + 3] == 0x24):
+            cursor += 5
         if raw[cursor:cursor + 1] == b"\x77" and len(raw) >= cursor + 2:
             displacement = struct.unpack_from("<b", raw, cursor + 1)[0]
             cursor += 2

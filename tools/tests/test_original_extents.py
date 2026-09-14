@@ -129,6 +129,46 @@ class OriginalExtentTests(unittest.TestCase):
             with self.subTest(near=near):
                 self.assertEqual(self.extent(self.direct_switch(near)), 0x88)
 
+    def switch_with_guard_store(self, near=False):
+        data = self.direct_switch(near)
+        compare_size, guard_size = (5, 11) if near else (3, 5)
+        dispatch = bytes(data[compare_size:guard_size + 7])
+        data[compare_size:guard_size + 12] = bytes.fromhex("66 89 5c 24 30") + dispatch
+        # Moving JA five bytes forward reduces its displacement by five.
+        if near:
+            struct.pack_into("<i", data, compare_size + 7, 0x40 - guard_size - 5)
+        else:
+            data[guard_size + 4] -= 5
+        return data
+
+    def test_guard_stack_store_preserves_range_check(self):
+        for near in (False, True):
+            with self.subTest(near=near):
+                self.assertEqual(self.extent(self.switch_with_guard_store(near)), 0x88)
+
+    def test_guard_store_rejects_flag_or_index_changes(self):
+        for replacement in ("66 01 5c 24 30", "66 8b 44 24 30", "66 89 c0 90 90",
+                            "66 89 5c 85 30", "66 89 1d 24 30"):
+            with self.subTest(replacement=replacement):
+                data = self.switch_with_guard_store()
+                data[3:8] = bytes.fromhex(replacement)
+                self.assertIsNone(self.extent(data))
+
+    def test_guard_store_cannot_be_entered_without_comparison(self):
+        for offset in (3, 8, 10):
+            with self.subTest(offset=offset):
+                data = self.switch_with_guard_store()
+                data[0x40:0x42] = bytes((0xeb, (offset - 0x42) & 0xff))
+                self.assertIsNone(self.extent(data))
+
+    def test_guard_store_keeps_table_bounds_and_target_checks(self):
+        self.assertIsNone(self.extent(self.switch_with_guard_store(), limit=0x87))
+        for target in (0x0fff, 0x10a0, 0x1080, 0x1004):
+            with self.subTest(target=target):
+                data = self.switch_with_guard_store()
+                struct.pack_into("<I", data, 0x84, target)
+                self.assertIsNone(self.extent(data))
+
     def test_direct_switch_requires_matching_guard_and_index(self):
         for offset, value in ((1, 0xfa), (2, 0xff), (3, 0x7f), (7, 0x8d), (7, 0x45)):
             with self.subTest(offset=offset, value=value):
@@ -235,6 +275,27 @@ class OriginalExtentTests(unittest.TestCase):
     "requires the reference executable and a local build",
 )
 class OriginalExtentBinaryTests(unittest.TestCase):
+    def test_c2d_draw_lemming_includes_byte_table_after_guard_store(self):
+        _, engine = load_engine()
+        extent = complete_original_extent(
+            engine.orig_bin, 0x0043c200, 0x0043c610, Cs(CS_ARCH_X86, CS_MODE_32)
+        )
+        # CMP EDX,0x23 proves 36 index bytes at 0x43c5e4.
+        self.assertEqual(extent, 0x408)
+        self.assertEqual(bytes(engine.orig_bin.read(0x0043c241, 8)),
+                         bytes.fromhex("83 fa 23 66 89 44 24 12"))
+
+    def test_c2d_draw_objects_includes_tail_after_guard_store(self):
+        _, engine = load_engine()
+        extent = complete_original_extent(
+            engine.orig_bin, 0x0043f620, 0x0043fce0, Cs(CS_ARCH_X86, CS_MODE_32)
+        )
+        self.assertEqual(extent, 0x6c0)
+        self.assertEqual(bytes(engine.orig_bin.read(0x0043f706, 8)),
+                         bytes.fromhex("83 f8 03 66 89 5c 24 30"))
+        self.assertEqual(bytes(engine.orig_bin.read(0x0043fcd0, 16)),
+                         struct.pack("<4I", 0x43f71b, 0x43f7f3, 0x43f984, 0x43fa5f))
+
     def test_gun_draw_includes_return_and_direct_switch_table(self):
         _, engine = load_engine()
         extent = complete_original_extent(
