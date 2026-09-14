@@ -19,7 +19,7 @@ public:
 	void LoadLevel(unsigned char*& p_data);
 	void Set(AiCoord p_start, AiCoord p_destination, int p_speed);
 	void SetHeightCorrect();
-	void StartMovement(unsigned char p_direction);
+	void StartMovement(unsigned int p_direction);
 
 private:
 	AiCoord m_destination;    // 0x124

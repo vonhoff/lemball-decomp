@@ -54,7 +54,7 @@ void Ball::Set(AiCoord p_start, AiCoord p_destination, int p_speed)
 
 // 68K 0x106037c0 StartMovement__5CBallFUc
 // FUNCTION: LEMBALL 0x00421770
-void Ball::StartMovement(unsigned char p_direction)
+void Ball::StartMovement(unsigned int p_direction)
 {
 	m_direction = p_direction;
 
