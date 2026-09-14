@@ -1,7 +1,8 @@
-"""Run reccmp via the Python API; reuse JSON when binary mtimes are unchanged."""
+"""Run reccmp via the Python API; cache binary and source-mapping inputs."""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from pathlib import Path
@@ -25,16 +26,27 @@ from .paths import (
     RECOMP_PDB,
     ROADMAP_CSV,
     ROOT,
+    SRC,
     file_id,
 )
 
 
 def _stamp() -> dict:
     return {
-        "version": 17,
+        "version": 18,
         "original": file_id(ORIGINAL_EXE),
         "recomp": file_id(RECOMP_EXE),
         "pdb": file_id(RECOMP_PDB),
+        "sources": {
+            path.relative_to(SRC).as_posix(): file_id(path)
+            for path in sorted(SRC.rglob("*")) if path.is_file()
+        },
+        "configuration": {
+            str(path): hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+            for path in (ROOT / "reccmp-project.yml", ROOT / "reccmp-user.yml",
+                         ROOT / "reccmp-build.yml",
+                         BUILD / "reccmp-build.yml")
+        },
     }
 
 
