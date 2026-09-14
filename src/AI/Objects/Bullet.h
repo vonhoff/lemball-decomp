@@ -50,6 +50,9 @@ private:
 // SYNTHETIC: LEMBALL 0x00418330
 // Bullet::`vector deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x004183d0
+// Bullet::~Bullet
+
 // SYNTHETIC: LEMBALL 0x0041af50
 // ??_EBullet@@WBDI@AEPAXI@Z
 

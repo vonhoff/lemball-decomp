@@ -29,6 +29,12 @@ void Collectable::Restart()
 	m_action = (eAction) 0x18;
 }
 
+// 68K 0x10605c14 __dt__12CCollectableFv
+// FUNCTION: LEMBALL 0x004228f0
+Collectable::~Collectable()
+{
+}
+
 // 68K 0x10605c74 Process__12CCollectableFv
 // FUNCTION: LEMBALL 0x00422900
 bool Collectable::Process()
@@ -127,9 +133,4 @@ void Collectable::SetSfx()
 int Collectable::Collected()
 {
 	return 1;
-}
-
-// 68K 0x10605c14 __dt__12CCollectableFv
-Collectable::~Collectable()
-{
 }
