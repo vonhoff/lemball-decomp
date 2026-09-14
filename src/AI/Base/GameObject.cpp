@@ -463,6 +463,20 @@ void GameObject::Restart()
 	}
 }
 
+// 68K 0x106092da __dt__11CGameObjectFv
+// FUNCTION: LEMBALL 0x00415160
+GameObject::~GameObject()
+{
+	ReSetId();
+	g_pObjects[m_objectId] = 0;
+	AiDestinationList* destinationList = m_destinationList;
+	if (destinationList != 0) {
+		operator delete(destinationList->m_entries);
+		operator delete(destinationList);
+	}
+	m_objectId = 0xffff;
+}
+
 // 68K 0x1060936a Initialise__11CGameObjectFv
 // FUNCTION: LEMBALL 0x004151b0
 void GameObject::Initialise()
@@ -1383,11 +1397,6 @@ void GameObject::StartLand()
 bool GameObject::Process()
 {
 	return 0;
-}
-
-// 68K 0x106092da __dt__11CGameObjectFv
-GameObject::~GameObject()
-{
 }
 
 // GLOBAL: LEMBALL 0x0049cf4c
