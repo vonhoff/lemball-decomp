@@ -6,15 +6,15 @@
 // FUNCTION: LEMBALL 0x004668d0
 void PvScrollableSurface::SetWorldWidth(int p_width)
 {
-	VsSize size;
+	short size[2];
 	VsRect* rect;
 
 	if (m_reserved40 != p_width) {
 		m_reserved40 = p_width;
 		rect = &m_rect0c;
-		size.m_width = rect->m_width;
-		size.m_height = rect->m_height;
-		Resize(size);
+		size[0] = rect->m_width;
+		size[1] = rect->m_height;
+		Resize(*(VsSize*) size);
 	}
 }
 
