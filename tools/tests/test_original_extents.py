@@ -1,4 +1,4 @@
-"""An original function must not be truncated to a shorter rebuilt length."""
+"""Original extents include all code and exclude only proven alignment."""
 
 import unittest
 import struct
@@ -11,7 +11,7 @@ from reccmp.types import ImageId
 
 from lib.paths import ORIGINAL_EXE, RECOMP_EXE, RECOMP_PDB
 from lib.reccmp import load_engine
-from lib.reccmp_compat import complete_original_extent, extend_original_match
+from lib.reccmp_compat import complete_original_extent, size_original_match
 from lib.reccmp_compat import BoundedInstructGen
 from reccmp.compare.asm.instgen import SectionType
 
@@ -40,7 +40,7 @@ class OriginalExtentTests(unittest.TestCase):
     def test_original_tail_is_included_without_changing_inventory(self):
         image = BytesImage(bytes.fromhex("b8 01000000 40 c3 cc cc"))
         match = ReccmpMatch(0x1000, 0x2000, {"recomp_size": 6, "orig_max_size": 9})
-        extended = extend_original_match(match, image, self.decoder)
+        extended = size_original_match(match, image, self.decoder)
         self.assertEqual(extended.size(ImageId.ORIG), 7)
         self.assertEqual(extended.size(ImageId.RECOMP), 6)
         self.assertIsNone(match.size(ImageId.ORIG))
@@ -58,10 +58,32 @@ class OriginalExtentTests(unittest.TestCase):
         match = ReccmpMatch(0x1000, 0x2000, {"recomp_size": 5, "orig_max_size": 7})
         self.assertEqual(comparator.compare_function(match).match_ratio, 1.0)
         fixed = comparator.compare_function(
-            extend_original_match(match, comparator.orig_bin, self.decoder)
+            size_original_match(match, comparator.orig_bin, self.decoder)
         )
         self.assertLess(fixed.match_ratio, 1.0)
         self.assertFalse(fixed.is_effective_match)
+
+    def test_only_complete_alignment_nops_are_trimmed(self):
+        body = bytes.fromhex("b8 01000000 c3")
+        for suffix in ("90 " * 10, "8b ff 8d 64 24 00 90 90 90 90"):
+            image = BytesImage(body + bytes.fromhex(suffix))
+            match = ReccmpMatch(0x1000, 0x2000, {"recomp_size": 8, "orig_max_size": 16})
+            sized = size_original_match(match, image, self.decoder)
+            self.assertEqual(sized.size(ImageId.ORIG), len(body))
+            self.assertIsNone(match.size(ImageId.ORIG))
+            self.assertEqual(sized.any_size(), match.any_size())
+
+    def test_trailing_code_and_uncertain_boundaries_are_not_trimmed(self):
+        for data, maximum in (
+            ("c3 40 " + "90 " * 14, 16),   # Real instruction after the return.
+            ("c3 " + "90 " * 14, 15),      # Not a complete alignment boundary.
+            ("c3 " + "90 " * 31, 32),      # More than one alignment gap.
+            ("c3 " + "90 " * 13 + "8b", 16),  # Truncated instruction/read.
+            ("eb fe " + "90 " * 14, 16),   # No closed return path.
+        ):
+            image = BytesImage(bytes.fromhex(data))
+            match = ReccmpMatch(0x1000, 0x2000, {"recomp_size": 8, "orig_max_size": maximum})
+            self.assertIs(size_original_match(match, image, self.decoder), match)
 
     def test_all_conditional_paths_are_followed(self):
         # The second return is beyond the first return and two padding bytes.
@@ -93,7 +115,7 @@ class OriginalExtentTests(unittest.TestCase):
         ):
             with self.subTest(metadata=metadata):
                 match = ReccmpMatch(0x1000, 0x2000, metadata)
-                self.assertIs(extend_original_match(match, image, self.decoder), match)
+                self.assertIs(size_original_match(match, image, self.decoder), match)
 
     def switch(self, near=False):
         data = bytearray(b"\xcc" * 0xa0)
@@ -115,7 +137,7 @@ class OriginalExtentTests(unittest.TestCase):
                 self.assertEqual(self.extent(self.switch(near)), 0x92)
         image = BytesImage(self.switch())
         match = ReccmpMatch(0x1000, 0x2000, {"recomp_size": 0x20, "orig_max_size": 0xa0})
-        extended = extend_original_match(match, image, self.decoder)
+        extended = size_original_match(match, image, self.decoder)
         self.assertEqual(extended.size(ImageId.ORIG), 0x92)
         self.assertEqual(extended.any_size(), match.any_size())
 
@@ -402,7 +424,7 @@ class OriginalExtentBinaryTests(unittest.TestCase):
     def test_bullet_getdata_includes_original_epilogue(self):
         _, engine = load_engine()
         match = next(m for m in engine.get_all() if m.orig_addr == 0x0041AB80)
-        extended = extend_original_match(
+        extended = size_original_match(
             match, engine.orig_bin, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         # Verified in the original image and Ghidra: final store, POP ESI,
@@ -412,3 +434,14 @@ class OriginalExtentBinaryTests(unittest.TestCase):
                          bytes.fromhex("89 46 dc 5e 83 c4 18 c3"))
         result = engine.function_comparator.compare_function(match)
         self.assertEqual(result.diff.orig_inst[-1], ("0x41ac64", "ret "))
+
+
+    def test_game_object_init_excludes_only_its_alignment_nop(self):
+        _, engine = load_engine()
+        match = next(m for m in engine.get_all() if m.orig_addr == 0x004165e0)
+        sized = size_original_match(match, engine.orig_bin, Cs(CS_ARCH_X86, CS_MODE_32))
+        self.assertEqual(sized.size(ImageId.ORIG), 47)
+        self.assertEqual(sized.any_size(), match.any_size())
+        self.assertEqual(bytes(engine.orig_bin.read(0x0041660e, 2)), bytes.fromhex("c3 90"))
+        result = engine.function_comparator.compare_function(match)
+        self.assertEqual(result.diff.orig_inst[-1], ("0x41660e", "ret "))

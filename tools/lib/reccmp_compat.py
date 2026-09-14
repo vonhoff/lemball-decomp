@@ -161,27 +161,36 @@ def complete_original_extent(image, start, limit, decoder, *, table_bounds=None)
     return max(occupied | data_bytes) + 1 - start if saw_return else None
 
 
-def extend_original_match(match, image, decoder):
-    """Extend a guessed original read length only with complete CFG evidence.
-
-    Explicit original sizes, unknown boundaries, and undecodable functions keep
-    upstream behavior. This never shortens a read or mutates database/report
-    sizes; scoring and instruction normalization are unchanged.
-    """
+def size_original_match(match, image, decoder):
+    """Use a closed original extent; trim only verified alignment NOPs."""
     if match.size(ImageId.ORIG) is not None:
         return match
     maximum = match.max_size(ImageId.ORIG)
     rebuilt = match.size(ImageId.RECOMP)
-    if maximum is None or rebuilt is None or maximum <= rebuilt:
+    if maximum is None or rebuilt is None:
         return match
     extent = complete_original_extent(
         image, match.orig_addr, match.orig_addr + min(maximum, 65536), decoder
     )
-    if extent is None or extent <= rebuilt:
+    if extent is None or extent == min(maximum, rebuilt):
         return match
-    extended = copy(match)
-    extended._kvstore = dict(match._kvstore, orig_size=extent)
-    return extended
+    if extent < min(maximum, rebuilt):
+        # A guessed rebuilt length can include alignment before the next entity.
+        end = match.orig_addr + maximum
+        if not 0 < maximum - extent < 16 or end % 16:
+            return match
+        try:
+            padding = image.read(match.orig_addr + extent, maximum - extent)
+        except (ValueError, IndexError, InvalidVirtualAddressError, InvalidVirtualReadError):
+            return match
+        instructions = list(decoder.disasm_lite(padding, match.orig_addr + extent))
+        nops = {("nop", ""), ("mov", "edi, edi"), ("lea", "esp, [esp]")}
+        if (sum(i[1] for i in instructions) != maximum - extent
+                or any((i[2], i[3]) not in nops for i in instructions)):
+            return match
+    sized = copy(match)
+    sized._kvstore = dict(match._kvstore, orig_size=extent)
+    return sized
 
 
 def configure_original_extents(engine):
@@ -190,7 +199,7 @@ def configure_original_extents(engine):
     decoder = Cs(CS_ARCH_X86, CS_MODE_32)
 
     def compare_function(match):
-        return upstream(extend_original_match(match, comparator.orig_bin, decoder))
+        return upstream(size_original_match(match, comparator.orig_bin, decoder))
 
     comparator.compare_function = compare_function
 
