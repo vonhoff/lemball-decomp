@@ -41,6 +41,13 @@ void LaserManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x106141f0 __dt__13CLaserManagerFv
+// FUNCTION: LEMBALL 0x00429450
+LaserManager::~LaserManager()
+{
+	delete[] m_lasers;
+}
+
 // 68K 0x10614266 StepOn__13CLaserManagerFRC7AICOORDP11CGameObject
 // FUNCTION: LEMBALL 0x004297f0
 bool LaserManager::StepOn(const AiCoord& p_position, GameObject* p_object)
@@ -129,9 +136,4 @@ void LaserManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 			remaining--;
 		} while (remaining != 0);
 	}
-}
-
-// 68K 0x106141f0 __dt__13CLaserManagerFv
-LaserManager::~LaserManager()
-{
 }
