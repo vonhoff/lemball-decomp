@@ -42,4 +42,7 @@ extern PortsMessage* g_pFileBroadcast;
 // SYNTHETIC: LEMBALL 0x0047bb60
 // FileBroadcast::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0047bc50 SYMBOL
+// ??_EFileBroadcast@@$4PPPPPPPM@KI@AEPAXI@Z
+
 #endif

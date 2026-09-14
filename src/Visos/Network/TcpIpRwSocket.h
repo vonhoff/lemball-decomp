@@ -37,6 +37,9 @@ public:
 // SYNTHETIC: LEMBALL 0x00471cd0
 // TcpIpRwSocket::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x00471d90 SYMBOL
+// ??_ETcpIpRwSocket@@$4PPPPPPPM@KI@AEPAXI@Z
+
 // GLOBAL: LEMBALL 0x0049a3f0
 // TcpIpRwSocket::`vbtable'{for `TcpIpWriteSocket'}
 

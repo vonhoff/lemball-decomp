@@ -33,6 +33,9 @@ public:
 // SYNTHETIC: LEMBALL 0x0047bf40
 // FileConnect::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0047c000 SYMBOL
+// ??_EFileConnect@@$4PPPPPPPM@KI@AEPAXI@Z
+
 // LIBRARY: LEMBALL 0x0047fe00 SYMBOL
 // _strchr
 
