@@ -1,23 +1,17 @@
 #!/usr/bin/env python3
-"""Rank next decomp targets from report.json and original x86 sizes.
-
-  python tools/next.py
-  python tools/next.py --kind tiny|near|gain|unit|clone
-  python tools/next.py --kind gain --addrs
-  python tools/next.py --refresh
-"""
+"""Rank reconstruction targets from report.json and original x86 extents."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-from lib.paths import ORIGINAL_EXE, REPORT_JSON, ROOT, SRC, TARGETS_CACHE, file_id
+from lib.paths import ORIGINAL_EXE, REPORT_JSON, SRC, TARGETS_CACHE, file_id
+from lib.reccmp_compat import complete_original_extent
 from lib.source import ANNOT_WITH_ADDR
 from report import make_report
 
@@ -33,177 +27,49 @@ class Func:
     unit: str
     annot: str | None
     original_size: int | None = None
-    readiness: float = 0.0
-
-    @property
-    def expected_gain(self) -> float:
-        return (self.original_size or 0) * (1.0 - self.ratio / 100.0) * self.readiness
 
     @property
     def method(self) -> str:
         return self.name.split("(")[0].split("::")[-1]
 
 
-@dataclass(frozen=True)
-class OriginalEvidence:
-    size: int | None
-    callees: tuple[int, ...] = ()
-    indirect_calls: int = 0
-
-
-def resolve_original_target(image, address: int, decoder, max_depth: int = 32) -> int | None:
-    """Follow Capstone-decoded absolute jmp targets."""
-    seen: set[int] = set()
-    while address not in seen and len(seen) < max_depth:
-        seen.add(address)
-        try:
-            ins = next(decoder.disasm_lite(image.read(address, 15), address), None)
-        except (ValueError, IndexError):
-            return None
-        if ins is None:
-            return None
-        if ins[2] != "jmp" or not re.fullmatch(r"0x[0-9a-f]+", ins[3]):
-            return address
-        address = int(ins[3], 16)
-    return None
-
-
-def inspect_original(image, address: int, entries: set[int], decoder) -> OriginalEvidence:
-    limit = min((a for a in entries if a > address), default=address + 65536)
-    limit = min(limit, address + 65536)
-    pending = [address]
-    instructions = set()
-    occupied = set()
-    callees = set()
-    indirect = 0
-
-    def unknown():
-        return OriginalEvidence(None, tuple(sorted(callees)), indirect)
-
-    while pending:
-        current = pending.pop()
-        if current in instructions:
-            continue
-        if not address <= current < limit:
-            return unknown()
-        if current in occupied:
-            return unknown()
-        try:
-            raw = image.read(current, min(15, limit - current))
-        except (ValueError, IndexError):
-            return unknown()
-        ins = next(decoder.disasm_lite(raw, current), None)
-        if ins is None:
-            return unknown()
-        _, size, mnemonic, operand = ins
-        if any(a in occupied for a in range(current, current + size)):
-            return unknown()
-        instructions.add(current)
-        occupied.update(range(current, current + size))
-        following = current + size
-        if mnemonic.startswith('ret'):
-            continue
-        if mnemonic in ('int3', 'hlt', 'ud2', 'int', 'iret', 'iretd'):
-            return unknown()
-        if mnemonic == 'call':
-            if re.fullmatch(r'0x[0-9a-f]+', operand):
-                callees.add(int(operand, 16))
-            else:
-                indirect += 1
-        if mnemonic.startswith('j') or mnemonic.startswith('loop'):
-            if not re.fullmatch(r'0x[0-9a-f]+', operand):
-                return unknown()
-            target = int(operand, 16)
-            if not address <= target < limit:
-                if mnemonic == 'jmp' and target in entries:
-                    callees.add(target)
-                    continue
-                return unknown()
-            pending.append(target)
-            if mnemonic == 'jmp':
-                continue
-        pending.append(following)
-    return OriginalEvidence(max(occupied) + 1 - address, tuple(sorted(callees)), indirect)
-
-
-def _load_targets_cache(report_path: Path) -> dict[int, tuple[int | None, float]] | None:
-    if not TARGETS_CACHE.exists():
-        return None
-    try:
-        data = json.loads(TARGETS_CACHE.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return None
-    if (
-        data.get("version") != 2
-        or data.get("original") != file_id(ORIGINAL_EXE)
-        or data.get("report") != file_id(report_path)
-    ):
-        return None
-    functions = data.get("functions")
-    if not isinstance(functions, dict):
-        return None
-    result: dict[int, tuple[int | None, float]] = {}
-    for key, entry in functions.items():
-        try:
-            addr = int(key, 16)
-            result[addr] = (entry.get("original_size"), float(entry["readiness"]))
-        except (AttributeError, KeyError, TypeError, ValueError):
-            return None
-    return result
-
-
-def _write_targets_cache(report_path: Path, funcs: list[Func]) -> None:
-    payload = {
-        "version": 2,
+def add_original_evidence(funcs: list[Func], entries: set[int], report_path: Path) -> list[Func]:
+    inputs = {
         "original": file_id(ORIGINAL_EXE),
         "report": file_id(report_path),
-        "functions": {
-            f"0x{func.addr:08x}": {
-                "original_size": func.original_size,
-                "readiness": func.readiness,
-            }
-            for func in funcs
-        },
+        "ranking": file_id(Path(__file__)),
+        "extent_reader": file_id(Path(__file__).parent / "lib/reccmp_compat.py"),
+        "entries": sorted(entries),
     }
-    TARGETS_CACHE.parent.mkdir(parents=True, exist_ok=True)
-    TARGETS_CACHE.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+    try:
+        cache = json.loads(TARGETS_CACHE.read_text(encoding="utf-8"))
+        sizes = cache["sizes"] if cache["inputs"] == inputs else {}
+    except (OSError, ValueError, KeyError, TypeError):
+        sizes = {}
+    if not all(str(f.addr) in sizes for f in funcs):
+        from capstone import Cs, CS_ARCH_X86, CS_MODE_32
+        from reccmp.formats import detect_image
 
-
-def add_original_evidence(funcs: list[Func], entries: set[int], report_path: Path) -> list[Func]:
-    cached = _load_targets_cache(report_path)
-    if cached is not None and all(func.addr in cached for func in funcs):
-        return [
-            replace(func, original_size=cached[func.addr][0], readiness=cached[func.addr][1])
-            for func in funcs
-        ]
-
-    from capstone import Cs, CS_ARCH_X86, CS_MODE_32
-    from reccmp.formats import detect_image
-
-    image = detect_image(ORIGINAL_EXE)
-    if image is None:
-        raise ValueError('original executable is unavailable')
-    decoder = Cs(CS_ARCH_X86, CS_MODE_32)
-    entries = entries | {f.addr for f in funcs}
-    by_address = {f.addr: f for f in funcs}
-    result = []
-    for func in funcs:
-        evidence = inspect_original(image, func.addr, entries, decoder)
-        resolved = [resolve_original_target(image, a, decoder) for a in evidence.callees]
-        unresolved = sum(a is None for a in resolved)
-        dependencies = {a for a in resolved if a is not None}
-        dependencies.discard(func.addr)  # recursion is not a separate dependency
-        ready = sum(a in by_address and by_address[a].annot != 'STUB' and by_address[a].ratio > 0 for a in dependencies)
-        total = len(dependencies) + unresolved + evidence.indirect_calls
-        readiness = ready / total if total else 1.0
-        result.append(replace(func, original_size=evidence.size, readiness=readiness))
-    _write_targets_cache(report_path, result)
-    return result
+        image = detect_image(ORIGINAL_EXE)
+        if image is None:
+            raise ValueError("original executable is unavailable")
+        decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+        entries = sorted(entries | {f.addr for f in funcs})
+        limits = dict(zip(entries, entries[1:]))
+        sizes = {
+            str(f.addr): complete_original_extent(
+                image, f.addr, min(limits.get(f.addr, f.addr + 65536), f.addr + 65536), decoder
+            )
+            for f in funcs
+        }
+        TARGETS_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        TARGETS_CACHE.write_text(json.dumps({"inputs": inputs, "sizes": sizes}) + "\n", encoding="utf-8")
+    return [replace(f, original_size=sizes[str(f.addr)]) for f in funcs]
 
 
 def ranked_gain(funcs: list[Func]) -> list[Func]:
-    return sorted((f for f in funcs if f.ratio < 100 and f.original_size is not None),
-                  key=lambda f: (-f.expected_gain, -f.readiness, f.original_size, f.addr))
+    return sorted((f for f in funcs if f.ratio < 100),
+                  key=lambda f: (-f.size * f.ratio, -f.size, f.addr))
 
 
 def scan_annotations() -> tuple[dict[int, str], set[int]]:
@@ -239,29 +105,11 @@ def load_report(path: Path) -> list[Func]:
     return add_original_evidence(funcs, entries, path)
 
 
-def ratio_bucket(ratio: float) -> str:
-    if ratio == 100.0:
-        return "100"
-    if ratio == 0.0:
-        return "0"
-    if ratio >= 99.0:
-        return "99-99.99"
-    if ratio >= 95.0:
-        return "95-98.99"
-    if ratio >= 90.0:
-        return "90-94.99"
-    if ratio >= 80.0:
-        return "80-89.99"
-    if ratio >= 50.0:
-        return "50-79.99"
-    return "0.01-49.99"
-
-
 def fmt_func(func: Func) -> str:
     kind = func.annot or "UNANN"
     original = str(func.original_size) if func.original_size is not None else '?'
     return (f"  0x{func.addr:08x}  {func.ratio:6.2f}%  orig={original:>5s} rebuilt={func.size:4d} "
-            f"ready={func.readiness:4.0%} gain~{func.expected_gain:7.1f}  {kind:5s}  {func.unit}  {func.name}")
+            f"{kind:5s}  {func.unit}  {func.name}")
 
 
 def limited(items: list, limit: int) -> list:
@@ -338,41 +186,12 @@ def print_snapshot(funcs: list[Func]) -> None:
     print(f"  source FUNCTION:  {n_fn}  (not 100%: {n_grind})")
     print(f"  source STUB:      {n_stub}")
     print(f"  unannotated:      {n_unann}")
-    print()
-    print("=== FUNCTION ratio buckets ===")
-    buckets = Counter(ratio_bucket(f.ratio) for f in funcs if f.annot == "FUNCTION")
-    for key in ("100", "99-99.99", "95-98.99", "90-94.99", "80-89.99", "50-79.99", "0.01-49.99", "0"):
-        print(f"  {key:12s}  {buckets[key]}")
-    print()
-    print("=== STUB orig-size histogram ===")
-    for lo, hi, label in (
-        (1, 1, "1"),
-        (2, 3, "2-3"),
-        (4, 5, "4-5"),
-        (6, 8, "6-8"),
-        (9, 16, "9-16"),
-        (17, 32, "17-32"),
-        (33, 64, "33-64"),
-        (65, 10**9, ">64"),
-    ):
-        group = [f for f in stubs(funcs) if f.original_size is not None and lo <= f.original_size <= hi]
-        print(f"  {label:6s}  n={len(group):4d}  bytes={sum(f.original_size for f in group):6d}")
-    print(f"  unknown n={sum(f.original_size is None for f in stubs(funcs)):4d}")
 
 
 def print_tiny(funcs: list[Func], max_size: int, limit: int) -> None:
     items = tiny_stubs(funcs, max_size)
     print(f"=== tiny STUBs (size <= {max_size}) ===")
     print(f"  count={len(items)}  original_bytes={sum(f.original_size for f in items)}")
-    by_unit = Counter(f.unit for f in items)
-    print("  by unit:")
-    unit_rows = by_unit.most_common()
-    for unit, count in limited(unit_rows, limit):
-        bytes_ = sum(f.original_size for f in items if f.unit == unit)
-        print(f"    n={count:3d}  bytes={bytes_:4d}  {unit}")
-    if limit > 0 and len(unit_rows) > limit:
-        print(f"    ... {len(unit_rows) - limit} more units (raise --limit)")
-    print("  functions (by unit, then address):")
     print_funcs(items, limit)
 
 
@@ -380,11 +199,6 @@ def print_near(funcs: list[Func], limit: int) -> None:
     items = near_funcs(funcs)
     print("=== FUNCTION not 100% (high ratio first) ===")
     print(f"  count={len(items)}  known_original_bytes={sum(f.original_size or 0 for f in items)}")
-    by_unit = Counter(f.unit for f in items)
-    print("  by unit:")
-    for unit, count in by_unit.most_common(limit if limit else None):
-        print(f"    n={count:3d}  {unit}")
-    print("  functions:")
     print_funcs(items, limit)
 
 
@@ -459,7 +273,7 @@ def main() -> int:
 
     if args.kind == "all":
         print_snapshot(funcs)
-        print("\n=== expected matched-byte gain (heuristic) ===")
+        print("\n=== largest near matches (rebuilt size x similarity) ===")
         print_funcs(ranked_gain(funcs), args.limit)
         print()
         print_tiny(funcs, args.max_size, args.limit)
@@ -480,7 +294,7 @@ def main() -> int:
     elif args.kind == "clone":
         print_clones(funcs, args.min_clone, args.limit)
     else:
-        print("=== expected matched-byte gain (heuristic) ===")
+        print("=== largest near matches (rebuilt size x similarity) ===")
         print_funcs(ranked_gain(funcs), args.limit)
     return 0
 
