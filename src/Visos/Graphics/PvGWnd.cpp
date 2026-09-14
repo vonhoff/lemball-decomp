@@ -17,7 +17,8 @@ void PvGWnd::OnVisibilityChange()
 void PvGWnd::SetDontUpdateRect(const VsRect& p_rect)
 {
 	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
-		m_gdi->m_renderTarget->SetDontUpdateRect(p_rect);
+		PvSurface& target = *m_gdi->m_renderTarget;
+		target.SetDontUpdateRect(p_rect);
 	}
 }
 
