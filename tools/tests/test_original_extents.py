@@ -117,6 +117,48 @@ class OriginalExtentTests(unittest.TestCase):
         self.assertEqual(extended.size(ImageId.ORIG), 0x92)
         self.assertEqual(extended.any_size(), match.any_size())
 
+    def direct_switch(self, near=False):
+        data = self.switch(near)
+        cursor = 11 if near else 5
+        data[cursor:cursor + 15] = b"\xcc" * 15
+        data[cursor:cursor + 7] = bytes.fromhex("ff2485") + struct.pack("<I", 0x1080)
+        return data
+
+    def test_direct_switch_includes_all_targets_and_table(self):
+        for near in (False, True):
+            with self.subTest(near=near):
+                self.assertEqual(self.extent(self.direct_switch(near)), 0x88)
+
+    def test_direct_switch_requires_matching_guard_and_index(self):
+        for offset, value in ((1, 0xfa), (2, 0xff), (3, 0x7f), (7, 0x8d), (7, 0x45)):
+            with self.subTest(offset=offset, value=value):
+                data = self.direct_switch()
+                data[offset] = value
+                self.assertIsNone(self.extent(data))
+
+    def test_direct_switch_requires_complete_table_inside_bound(self):
+        self.assertIsNone(self.extent(self.direct_switch(), limit=0x87))
+        for pointer in (0x0ffc, 0x109c, 0x1000):
+            with self.subTest(pointer=pointer):
+                data = self.direct_switch()
+                struct.pack_into("<I", data, 8, pointer)
+                self.assertIsNone(self.extent(data))
+
+    def test_direct_switch_checks_every_target_and_case_path(self):
+        for target in (0x0fff, 0x10a0, 0x1080, 0x1005, 0x1043, 0x1060):
+            with self.subTest(target=target):
+                data = self.direct_switch()
+                data[0x42:0x48] = bytes.fromhex("b8 01000000 c3")
+                data[0x60:0x62] = bytes.fromhex("ff e0")
+                struct.pack_into("<I", data, 0x84, target)
+                self.assertIsNone(self.extent(data))
+
+    def test_direct_switch_external_edge_cannot_bypass_guard(self):
+        data = self.direct_switch()
+        # Default returns to the indirect jump, bypassing the proven range check.
+        data[0x40:0x42] = bytes.fromhex("eb c3")
+        self.assertIsNone(self.extent(data))
+
     def test_switch_requires_unsigned_guard_and_zero_extended_index(self):
         for offset, value in ((3, 0x7f), (2, 0xff), (5, 0x90), (8, 0x89), (16, 0x85)):
             with self.subTest(offset=offset):
@@ -193,6 +235,15 @@ class OriginalExtentTests(unittest.TestCase):
     "requires the reference executable and a local build",
 )
 class OriginalExtentBinaryTests(unittest.TestCase):
+    def test_gun_draw_includes_return_and_direct_switch_table(self):
+        _, engine = load_engine()
+        extent = complete_original_extent(
+            engine.orig_bin, 0x0044d2d0, 0x0044d830, Cs(CS_ARCH_X86, CS_MODE_32)
+        )
+        self.assertEqual(extent, 0x0044d82c - 0x0044d2d0)
+        self.assertEqual(bytes(engine.orig_bin.read(0x0044d817, 5)),
+                         bytes.fromhex("83 c4 14 c3 90"))
+
     def test_network_messages_includes_final_switch_data(self):
         _, engine = load_engine()
         extent = complete_original_extent(

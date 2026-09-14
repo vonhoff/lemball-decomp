@@ -19,11 +19,12 @@ from reccmp.types import ImageId
 
 
 def bounded_switch_edges(image, address, start, limit):
-    """Recognize the complete range guard and two-level MSVC switch dispatch.
+    """Recognize a complete range guard and bounded MSVC switch dispatch.
 
     Accept CMP EAX,maximum; JA default; XOR ECX,ECX;
     MOV CL,[EAX+byte_table]; JMP [ECX*4+target_table], or the verified
-    EDX-to-EAX variant of that sequence. Both tables must
+    EDX-to-EAX variant of that sequence. Also accept CMP EAX,maximum;
+    JA default; JMP [EAX*4+target_table]. All tables must
     reside inside the known function bound. The caller treats this sequence
     atomically, so another edge into its interior invalidates the proof.
     """
@@ -56,6 +57,14 @@ def bounded_switch_edges(image, address, start, limit):
         else:
             return None
         default = address + cursor + displacement
+        if source == "eax" and raw[cursor:cursor + 3] == b"\xff\x24\x85":
+            target_table = struct.unpack_from("<I", raw, cursor + 3)[0]
+            targets = read(target_table, (maximum + 1) * 4)
+            edges = {default}
+            edges.update(target[0] for target in struct.iter_unpack("<I", targets))
+            if any(not start <= edge < limit for edge in edges):
+                return None
+            return cursor + 7, edges, ((target_table, len(targets)),)
         zero, load, jump = (
             ((b"\x33\xc0", b"\x31\xc0"), b"\x8a\x82", b"\xff\x24\x85")
             if source == "edx" else
@@ -106,12 +115,14 @@ def complete_original_extent(image, start, limit, decoder):
             span = set(range(address, address + size))
             table_spans = [set(range(at, at + count)) for at, count in tables]
             if (span.intersection(occupied | data_bytes)
-                    or table_spans[0].intersection(table_spans[1])
+                    or any(table.intersection(other)
+                           for index, table in enumerate(table_spans)
+                           for other in table_spans[index + 1:])
                     or any(table.intersection(occupied | span | data_bytes) for table in table_spans)):
                 return None
             instructions.add(address)
             occupied.update(span)
-            data_bytes.update(table_spans[0] | table_spans[1])
+            data_bytes.update(set().union(*table_spans))
             pending.extend(edges)
             continue
         try:
