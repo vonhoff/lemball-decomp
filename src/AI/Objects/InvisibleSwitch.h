@@ -19,6 +19,7 @@ public:
 	void Initialise();
 	void Load(unsigned char*& p_data);
 	void Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB);
+	void SetPointFromIntegers(short p_x, short p_y, short p_z);
 	void StepOn(const AiCoord& p_position, GameObject* p_object);
 	void VerifyObjects();
 

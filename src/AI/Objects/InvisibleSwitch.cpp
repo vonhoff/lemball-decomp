@@ -36,6 +36,23 @@ InvisibleSwitch::~InvisibleSwitch()
 {
 }
 
+// FUNCTION: LEMBALL 0x00409d20
+void InvisibleSwitch::SetPointFromIntegers(short p_x, short p_y, short p_z)
+{
+	short y = p_y;
+	short z = p_z;
+	short x = p_x;
+	Coord3d first;
+	first.m_x = x;
+	first.m_y = y;
+	first.m_z = z;
+	Coord3d second;
+	second.m_x = x;
+	second.m_y = y;
+	second.m_z = z;
+	Set(first, second);
+}
+
 // 68K 0x10612b24 Set__16CInvisibleSwitchFRC8tCoord3dRC8tCoord3d
 // FUNCTION: LEMBALL 0x00409d70
 void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
