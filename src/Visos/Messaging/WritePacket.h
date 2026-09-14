@@ -22,4 +22,7 @@ private:
 	friend class WriteCBuff;
 };
 
+// SYNTHETIC: LEMBALL 0x00462a20
+// WritePacket::`scalar deleting destructor'
+
 #endif
