@@ -8,7 +8,11 @@
 // SIZE 0x08
 class VsRect : public VsSize, public VsPoint {
 public:
+#ifdef LEMBALL_VSRECT_OUT_OF_LINE
+	VsRect();
+#else
 	VsRect() {}
+#endif
 
 	VsRect(short p_x, short p_y, short p_width, short p_height)
 	{

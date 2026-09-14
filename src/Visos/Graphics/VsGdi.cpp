@@ -1,3 +1,4 @@
+#define LEMBALL_VSRECT_OUT_OF_LINE
 #include "VsGdi.h"
 
 #include "../Foundation/ChangeList.h"
@@ -1457,7 +1458,10 @@ void Surface::Blit(FilledCircle* p_circle)
 // FUNCTION: LEMBALL 0x004756e0
 void Surface::BlitRect(VsRect p_rect, int p_colour)
 {
-	VsRect clipped;
+	short storage[4];
+	VsRect& clipped = *(VsRect*) storage;
+	clipped.m_width = clipped.m_height = 0;
+	clipped.m_x = clipped.m_y = 0;
 	if (ClipRect(p_rect, &clipped)) {
 		if (clipped.m_width <= 0 || clipped.m_height <= 0) {
 			return;
