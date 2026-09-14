@@ -75,7 +75,8 @@ class FramePrimitiveTests(unittest.TestCase):
     def test_primitive_destructors_restore_base_vtable(self):
         _, engine = load_engine()
         primitive = next(m for m in engine.get_all() if m.orig_addr == 0x00496ca8)
-        for original in (0x00439710, 0x00439720, 0x00439740, 0x00439750, 0x00467ba0):
+        for original in (0x00439710, 0x00439720, 0x00439740, 0x00439750,
+                         0x00447260, 0x0044b630, 0x00467ba0):
             for (address, instructions), vtable in zip(
                 self.instructions(original, 7),
                 (primitive.orig_addr, primitive.recomp_addr),

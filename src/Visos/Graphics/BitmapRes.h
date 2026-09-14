@@ -16,7 +16,8 @@ public:
 	}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~BitmapRes() {}          // vtable+0x00
+	// FUNCTION: LEMBALL 0x00447260
+	virtual ~BitmapRes() {} // vtable+0x00
 
 	friend class BaseFrontendDrawer;
 	friend class MainOptions1Drawer;
