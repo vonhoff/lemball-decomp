@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_BASEPROCESS
 #include "Ai.h"
 
 #include "../../Control/Game/Demo.h"
@@ -1145,7 +1146,6 @@ void Ai::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 // FUNCTION: LEMBALL 0x00412fb0
 void Ai::FixUpLevel()
 {
-	Ai* self = this;
 	int count = (unsigned int) g_wObjectCount;
 	for (int i = 0; i < count; i++) {
 		GameObject* object = g_pObjects[(unsigned short) i];
@@ -1153,7 +1153,7 @@ void Ai::FixUpLevel()
 			object->SetId(GameObject::NextId());
 		}
 	}
-	self->m_objectManager->ConvertVer0ToVer1();
+	m_objectManager->ConvertVer0ToVer1();
 }
 
 // 68K 0x10602894 DoorId__3CAIFi
