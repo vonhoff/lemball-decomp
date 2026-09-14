@@ -311,9 +311,30 @@ void GenericGroup::AddNewWaypoint(AiCoord p_coordinate, FormationManager* p_form
 }
 
 // 68K 0x1060cb96 SendNewWaypoint__13CGenericGroupF7AICOORD
-// STUB: LEMBALL 0x0041e2e0
+// FUNCTION: LEMBALL 0x0041e2e0
 void GenericGroup::SendNewWaypoint(AiCoord p_coordinate)
 {
+	AiCoord destination;
+	GameObject* object = GetFirstElementInGroup();
+	if (object != 0) {
+		unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> 12,
+													   object->m_position.m_yFixed >> 12,
+													   p_coordinate.m_xFixed >> 12,
+													   p_coordinate.m_yFixed >> 12);
+		int index = 0;
+		g_pUnknown0x4a7820->TransformFormation(m_formationIndex, (direction - 2) * 0x40);
+		int count = GetElementsInGroup();
+		int height = p_coordinate.m_zFixed;
+		while (index < count) {
+			Vector* vector = g_pUnknown0x4a7820->GetAVector(index);
+			destination.m_xFixed = vector->m_xFixed + p_coordinate.m_xFixed;
+			destination.m_yFixed = vector->m_yFixed + p_coordinate.m_yFixed;
+			destination.m_zFixed = height;
+			object->AddDestination(destination);
+			object = GetNextElementInGroup();
+			index++;
+		}
+	}
 }
 
 // 68K 0x1060cd04 OverideExistingWaypoints__13CGenericGroupF7AICOORD
