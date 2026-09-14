@@ -247,3 +247,14 @@ bool TargetGraphicsSystemState::IsFullscreenDriver()
 		return 0;
 	}
 }
+
+// FUNCTION: LEMBALL 0x004581d0
+void TargetGraphicsSystemState::UpdateDriverSize(const VsSize& p_size)
+{
+	if (g_pTargetGraphicsDriver != 0) {
+		TargetGraphicsDriver* driver = g_pTargetGraphicsDriver;
+		driver->m_screenSize.m_width = p_size.m_width;
+		driver->m_screenSize.m_height = p_size.m_height;
+		NotifyWindowsOfGraphicsDriverChange();
+	}
+}

@@ -287,6 +287,15 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
+	if (p_message == WM_DISPLAYCHANGE) {
+		if (g_pTargetGraphicsSystem != 0) {
+			VsSize size;
+			size.m_width = (short) p_lParam;
+			size.m_height = (short) (p_lParam >> 16);
+			g_pTargetGraphicsSystem->UpdateDriverSize(size);
+		}
+		return 0;
+	}
 	if (p_message == WM_KEYDOWN || p_message == WM_KEYUP) {
 		posted.type = (unsigned short) ((p_message == WM_KEYDOWN) + 1);
 		posted.time = sequence;

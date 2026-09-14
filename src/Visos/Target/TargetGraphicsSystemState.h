@@ -9,6 +9,7 @@ struct TargetGraphicsSystemState {
 	void NotifyWindowsOfGraphicsDriverChange();
 	bool ChangeDriver(int p_driverMode);
 	bool IsFullscreenDriver();
+	void UpdateDriverSize(const struct VsSize& p_size);
 
 	int m_driverMode;                    // 0x00
 	unsigned int m_reserved04;           // 0x04
