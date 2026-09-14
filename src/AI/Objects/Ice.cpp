@@ -33,6 +33,12 @@ void Ice::Initialise()
 	m_lastMovementTick = g_dwGameTick;
 }
 
+// 68K 0x1061181a __dt__4CIceFv
+// FUNCTION: LEMBALL 0x0042caf0
+Ice::~Ice()
+{
+}
+
 // 68K 0x10611870 Set__4CIceFUsRC8tCoord3dRC8tCoord3diiUc
 // FUNCTION: LEMBALL 0x0042cb00
 void Ice::Set(unsigned short p_id,
@@ -440,9 +446,4 @@ void Ice::Switched()
 			}
 		}
 	}
-}
-
-// 68K 0x1061181a __dt__4CIceFv
-Ice::~Ice()
-{
 }
