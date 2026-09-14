@@ -9,7 +9,6 @@
 class EnemyGroup : public GenericGroup {
 public:
 	EnemyGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager);
-	virtual ~EnemyGroup(); // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x00420b20

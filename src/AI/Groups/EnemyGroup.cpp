@@ -6,8 +6,3 @@ EnemyGroup::EnemyGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManage
 	: GenericGroup(p_ai, p_objectManager, p_formationManager)
 {
 }
-
-// 68K 0x10118722 __dt__11CEnemyGroupFv
-EnemyGroup::~EnemyGroup()
-{
-}

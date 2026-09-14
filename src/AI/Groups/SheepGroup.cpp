@@ -121,8 +121,3 @@ bool SheepGroup::CheckAgainstCatapults()
 {
 	return 0;
 }
-
-// 68K 0x1011b3b6 __dt__11CSheepGroupFv
-SheepGroup::~SheepGroup()
-{
-}

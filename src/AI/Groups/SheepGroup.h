@@ -14,7 +14,6 @@ public:
 	void CheckAgainstLemmings();
 	void RunAway(AiCoord p_threatPosition);
 	virtual bool Process(); // vtable+0x14
-	virtual ~SheepGroup();  // vtable+0x00
 
 private:
 	int m_runAwayActive; // 0x168
