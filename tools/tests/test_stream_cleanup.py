@@ -4,6 +4,7 @@ import struct
 import unittest
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
+from capstone.x86 import X86_OP_IMM, X86_OP_MEM
 from reccmp.types import ImageId
 
 from lib.paths import ORIGINAL_EXE, RECOMP_EXE, RECOMP_PDB
@@ -15,6 +16,47 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class StreamCleanupTests(unittest.TestCase):
+    def test_game_title_stream_survives_until_constructor_completion(self):
+        _, engine = load_engine()
+        matches = {match.orig_addr: match for match in engine.get_all()}
+        constructor = matches[0x00406df0]
+        decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+        decoder.detail = True
+        cleanup = (0x0045adc0, 0x004584a0, 0x00458440)
+        for image, address, size, targets, vtable in (
+            (engine.orig_bin, constructor.orig_addr, 985, cleanup, 0x00493020),
+            (engine.recomp_bin, constructor.recomp_addr,
+             constructor.size(ImageId.RECOMP),
+             tuple(matches[a].recomp_addr for a in cleanup),
+             matches[0x00493020].recomp_addr),
+        ):
+            with self.subTest(address=hex(address)):
+                instructions = list(decoder.disasm(image.read(address, size), address))
+                calls = [i for i in instructions if i.mnemonic == "call"]
+                # Buffer, ostream, and ios cleanup must follow all game setup.
+                self.assertEqual([i.operands[0].imm for i in calls[-3:]], list(targets))
+                quit_stores = [
+                    i for i in instructions
+                    if i.mnemonic == "mov" and len(i.operands) == 2
+                    and i.operands[0].type == X86_OP_MEM
+                    and i.operands[0].mem.disp == 0x60
+                    and i.reg_name(i.operands[0].mem.base) == "ebx"
+                    and i.operands[1].type == X86_OP_IMM
+                    and i.operands[1].imm == 0
+                ]
+                self.assertEqual(len(quit_stores), 1)
+                self.assertLess(calls[-4].address, quit_stores[0].address)
+                self.assertLess(quit_stores[0].address, calls[-3].address)
+                restores = [
+                    i for i in instructions
+                    if quit_stores[0].address < i.address < calls[-3].address
+                    and i.mnemonic == "mov" and len(i.operands) == 2
+                    and i.operands[0].type == X86_OP_MEM
+                    and i.operands[1].type == X86_OP_IMM
+                    and i.operands[1].imm == vtable
+                ]
+                self.assertEqual(len(restores), 1)
+
     def test_virtual_base_tables_match_original_offsets(self):
         _, engine = load_engine()
         matches = {match.orig_addr: match for match in engine.get_all()}

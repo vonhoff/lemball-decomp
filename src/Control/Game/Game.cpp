@@ -19,6 +19,7 @@
 #include "../../Visos/Animation/StatManager.h"
 #include "../../Visos/Animation/TimeStat.h"
 #include "../../Visos/Foundation/BaseProcess.h"
+#include "../../Visos/Foundation/LocalDebugOStream.h"
 #include "../../Visos/Foundation/MainOptions1.h"
 #include "../../Visos/Foundation/MainOptions2.h"
 #include "../../Visos/Foundation/VsDebug.h"
@@ -171,13 +172,10 @@ Game::Game(char* p_arg0)
 
 	m_mainDisplay = new Main2DDisplay(this);
 
-	{
-		VsDebugStreambuf streambuf(titleBuf, 80, 0);
-		VsOStream stream(&streambuf);
-		stream << g_szLemmingsPaintballTitle;
+	LocalDebugOStream stream(titleBuf, 80);
+	stream << g_szLemmingsPaintballTitle;
 
-		m_mainDisplay->Create(m_mainDisplay->GetUseRect(-1, -1), 0, titleBuf);
-	}
+	m_mainDisplay->Create(m_mainDisplay->GetUseRect(-1, -1), 0, titleBuf);
 
 	InitSound(g_nMusicVolume, g_nEffectsVolume, 0x32, m_mainDisplay, 0);
 	if (g_nMusicVolume != 0) {
