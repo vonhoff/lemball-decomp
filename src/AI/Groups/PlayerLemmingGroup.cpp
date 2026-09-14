@@ -27,6 +27,12 @@ void PlayerLemmingGroup::Restart()
 	m_useObject = 0;
 }
 
+// 68K 0x1060e8ec __dt__19CPlayerLemmingGroupFv
+// FUNCTION: LEMBALL 0x00414070
+PlayerLemmingGroup::~PlayerLemmingGroup()
+{
+}
+
 // 68K 0x1060e946 GetViewData__19CPlayerLemmingGroupFP9CViewData
 // FUNCTION: LEMBALL 0x00414080
 int PlayerLemmingGroup::GetViewData(ViewData* p_viewData)
@@ -407,9 +413,4 @@ bool PlayerLemmingGroup::HasSfxChanged()
 		lemming = (PlayerLemming*) GenericGroup::GetNextElementInGroup();
 	}
 	return changed;
-}
-
-// 68K 0x1060e8ec __dt__19CPlayerLemmingGroupFv
-PlayerLemmingGroup::~PlayerLemmingGroup()
-{
 }
