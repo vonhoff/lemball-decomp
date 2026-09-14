@@ -1,7 +1,9 @@
 #include "Mover.h"
 
+#include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
+#include "../../Visos/Network/Connect.h"
 #include "../Groups/PlayerLemmingGroup.h"
 #include "../Objects/PlayerLemming.h"
 #include "Ai.h"
@@ -181,10 +183,135 @@ void Mover::MoveObjects(int p_deltaX, int p_deltaY, int p_deltaZ)
 }
 
 // 68K 0x106177d8 Process__6CMoverFv
-// STUB: LEMBALL 0x0042eb00
+// FUNCTION: LEMBALL 0x0042eb00
 bool Mover::Process()
 {
-	return 0;
+	if (m_active == 0) {
+		return true;
+	}
+	if (m_findOccupants != 0) {
+		m_findOccupants = 0;
+		FindObjectsOnTopOfMe();
+	}
+	bool local = g_pActiveConnection == 0 || g_pActiveConnection->m_isHost != 0;
+	eAction action;
+	unsigned int time;
+	if (local) {
+		time = g_dwGameTick;
+		action = m_action;
+	}
+	else {
+		time = g_dwRemoteGameTick;
+		action = m_action;
+		if (m_pendingAction != action) {
+			if (action == 2) {
+				StopObjectsMoving();
+				SetUpNextNode(time);
+			}
+			action = m_action;
+			m_pendingAction = action;
+		}
+		else if (action != 2 && action != 0x24) {
+			action = (eAction) 0x18;
+		}
+	}
+	VerifyObjects();
+	switch (action) {
+	case 0: {
+		int next = m_currentNode + 1;
+		if (m_nodeCount <= next) {
+			next = 0;
+		}
+		int oldZ;
+		int oldY;
+		int oldX;
+		oldX = m_position.m_xFixed;
+		oldY = m_position.m_yFixed;
+		oldZ = m_position.m_zFixed;
+		m_currentNode = next;
+		const Pt3& position = g_pAI->GetNodePosition(m_startNode + next);
+		m_position.m_xFixed = position.m_x;
+		m_position.m_yFixed = position.m_y;
+		m_position.m_zFixed = position.m_z;
+		int x = m_position.m_xFixed >> 12;
+		int y = m_position.m_yFixed >> 12;
+		int groundX = x >> 4;
+		int groundY = y >> 4;
+		Map* map = g_pMap;
+		unsigned short z;
+		if (x < 0 || y < 0 || groundX >= g_pMap->m_ground.m_width || g_pMap->m_ground.m_height <= groundY) {
+			z = 0;
+		}
+		else {
+			z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x & 0xf, y & 0xf);
+		}
+		m_position.m_zFixed = (unsigned int) z << 12;
+		int dx = -((oldX >> 12) - (m_position.m_xFixed >> 12));
+		int dy = -((oldY >> 12) - (m_position.m_yFixed >> 12));
+		int dz = -((oldZ >> 12) - (m_position.m_zFixed >> 12));
+		MoveObjects(dx, dy, dz);
+		if (m_movementMode != 0) {
+			m_lastMovementTick = g_dwGameTick;
+			if (local) {
+				Action((eAction) 0x24);
+			}
+		}
+		else {
+			m_lastMovementTick = g_dwGameTick + 0x14;
+			if (local) {
+				Action((eAction) 1);
+			}
+		}
+		break;
+	}
+	case 1:
+		if (local) {
+			if (g_dwGameTick < m_lastMovementTick) {
+				return true;
+			}
+			StopObjectsMoving();
+			Action((eAction) 2);
+		}
+		SetUpNextNode(time);
+		break;
+	case 2:
+		SetPos();
+		if (local && m_actionDeadline < g_dwGameTick) {
+			Action((eAction) 0);
+		}
+		else if (time <= m_actionDeadline) {
+			Pt3 position;
+			position.m_x = 0;
+			position.m_y = 0;
+			position.m_z = 0;
+			m_motion.Position(position, time);
+			MoveObjects(position.m_x - (m_position.m_xFixed >> 12),
+						position.m_y - (m_position.m_yFixed >> 12),
+						position.m_z - (m_position.m_zFixed >> 12));
+			m_position.m_xFixed = position.m_x << 12;
+			m_position.m_yFixed = position.m_y << 12;
+			m_position.m_zFixed = position.m_z << 12;
+		}
+		break;
+	case 0x14:
+		SetUpNextNode(time);
+		SetPos();
+		if (local) {
+			Action((eAction) 1);
+		}
+		break;
+	case 0x18:
+		if (local) {
+			Action((eAction) 0x14);
+		}
+		break;
+	case 0x24:
+		if (m_switchRequested != 0) {
+			Action((eAction) 1);
+			m_switchRequested = 0;
+		}
+	}
+	return true;
 }
 
 // 68K 0x10617b8e Switch__6CMoverFv

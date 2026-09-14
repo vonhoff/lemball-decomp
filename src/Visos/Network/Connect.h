@@ -38,6 +38,7 @@ public:
 	friend class Ai;
 	friend class Laser;
 	friend class Lift;
+	friend class Mover;
 	friend class PaintGun;
 	friend class FileConnect;
 	friend class TcpIpConnect;
