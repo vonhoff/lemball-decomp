@@ -68,6 +68,8 @@ char FontTable::GetChar(ResZrle* p_glyph)
 }
 
 // 68K 0x10210c9e __dt__10CFontTableFv
+// FUNCTION: LEMBALL 0x00473730
 FontTable::~FontTable()
 {
+	::operator delete(m_glyphs);
 }
