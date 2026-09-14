@@ -2,6 +2,7 @@
 
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/Fixed.h"
 #include "../../Visos/Foundation/VsPoint.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/Manifest.h"
@@ -94,6 +95,44 @@ void WindowsCursorMotionState::SetCursorMotionPoint(const VsPoint& p_position)
 VsPoint WindowsCursorMotionState::GetCursorMotionPoint()
 {
 	return VsPoint((short) (m_fixedX >> 12), (short) (m_fixedY >> 12));
+}
+
+// FUNCTION: LEMBALL 0x00432860
+void WindowsCursorMotionState::StopVerticalMotion()
+{
+	m_accelerationY = 0;
+	m_velocityY = 0;
+	m_verticalActive = 0;
+}
+
+// FUNCTION: LEMBALL 0x00432870
+void WindowsCursorMotionState::StopHorizontalMotion()
+{
+	m_accelerationX = 0;
+	m_velocityX = 0;
+	m_horizontalActive = 0;
+}
+
+// FUNCTION: LEMBALL 0x00432880
+void WindowsCursorMotionState::StartHorizontalMotion(undefined4 p_positive)
+{
+	if (!m_horizontalActive) {
+		unsigned int now = CurrentMilliTimer();
+		m_accelerationX = (p_positive ? Fixed(0xcc) : Fixed(-0xcc)).m_value;
+		m_lastTickX = now;
+		m_horizontalActive = 1;
+	}
+}
+
+// FUNCTION: LEMBALL 0x004328d0
+void WindowsCursorMotionState::StartVerticalMotion(undefined4 p_positive)
+{
+	if (!m_verticalActive) {
+		unsigned int now = CurrentMilliTimer();
+		m_accelerationY = (p_positive ? Fixed(0xcc) : Fixed(-0xcc)).m_value;
+		m_lastTickY = now;
+		m_verticalActive = 1;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00432920
