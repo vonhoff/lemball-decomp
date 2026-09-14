@@ -43,6 +43,13 @@ void IceManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x106125fe __dt__11CIceManagerFv
+// FUNCTION: LEMBALL 0x0042d8e0
+IceManager::~IceManager()
+{
+	delete[] m_ice;
+}
+
 // 68K 0x10612672 Process__11CIceManagerFv
 // FUNCTION: LEMBALL 0x0042dd00
 void IceManager::Process()
@@ -143,9 +150,4 @@ void IceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char 
 			remaining--;
 		} while (remaining != 0);
 	}
-}
-
-// 68K 0x106125fe __dt__11CIceManagerFv
-IceManager::~IceManager()
-{
 }

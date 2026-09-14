@@ -43,6 +43,13 @@ void HandManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x106113ac __dt__12CHandManagerFv
+// FUNCTION: LEMBALL 0x00427fa0
+HandManager::~HandManager()
+{
+	delete[] m_hands;
+}
+
 // 68K 0x10611422 StepOn__12CHandManagerFRC7AICOORDP11CGameObject
 // FUNCTION: LEMBALL 0x00428360
 bool HandManager::StepOn(const AiCoord& p_position, GameObject* p_object)
@@ -124,9 +131,4 @@ void HandManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 			remaining--;
 		} while (remaining != 0);
 	}
-}
-
-// 68K 0x106113ac __dt__12CHandManagerFv
-HandManager::~HandManager()
-{
 }
