@@ -11,6 +11,7 @@ class BulletManager : public BaseObjectManager {
 public:
 	Bullet* GetFirstBullet();
 	Bullet* GetNextBullet();
+	int GetBulletCount();
 	Bullet* NextFreeBullet();
 	bool RequestBullet(unsigned short p_id,
 					   eBulletType p_bulletType,

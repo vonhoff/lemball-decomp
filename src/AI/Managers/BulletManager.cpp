@@ -58,6 +58,12 @@ Bullet* BulletManager::NextFreeBullet()
 	return m_bullets + m_poolStart + i;
 }
 
+// FUNCTION: LEMBALL 0x00417f30
+int BulletManager::GetBulletCount()
+{
+	return m_activeCount;
+}
+
 // 68K 0x10605114 GetFirstBullet__14CBulletManagerFv
 // FUNCTION: LEMBALL 0x00417f40
 Bullet* BulletManager::GetFirstBullet()
