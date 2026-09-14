@@ -20,6 +20,7 @@ public:
 
 	friend class GameObject;
 	friend class Switch;
+	friend class Rocket;
 	friend class PlayerLemming;
 	friend class TrapDoor;
 	friend class Laser;
