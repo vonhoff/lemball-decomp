@@ -30,6 +30,12 @@ void InvisibleSwitch::Initialise()
 	m_scoreAwarded = 0;
 }
 
+// 68K 0x10612ac0 __dt__16CInvisibleSwitchFv
+// FUNCTION: LEMBALL 0x00409d10
+InvisibleSwitch::~InvisibleSwitch()
+{
+}
+
 // 68K 0x10612b24 Set__16CInvisibleSwitchFRC8tCoord3dRC8tCoord3d
 // FUNCTION: LEMBALL 0x00409d70
 void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
@@ -227,9 +233,4 @@ void InvisibleSwitch::Load(unsigned char*& p_data)
 			index++;
 		} while (index < m_targetCount);
 	}
-}
-
-// 68K 0x10612ac0 __dt__16CInvisibleSwitchFv
-InvisibleSwitch::~InvisibleSwitch()
-{
 }
