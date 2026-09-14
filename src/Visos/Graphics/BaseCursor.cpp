@@ -29,6 +29,17 @@ BaseCursor::BaseCursor()
 	Initialise();
 }
 
+// 68K 0x10205b80 __dt__11CBaseCursorFv
+// FUNCTION: LEMBALL 0x0046af30
+BaseCursor::~BaseCursor()
+{
+	g_pMasterInputQueue->Detach(this, -0x19);
+	if (m_resource != 0) {
+		m_resource->UnLoad();
+	}
+	delete[] m_renderState;
+}
+
 // 68K 0x10205c5c Initialise__11CBaseCursorFv
 // FUNCTION: LEMBALL 0x0046afd0
 void BaseCursor::Initialise()
@@ -516,10 +527,5 @@ void BaseCursor::Process()
 // 68K 0x10106076 RefreshPos__11CBaseCursorFv
 // FUNCTION: LEMBALL 0x0046ba20
 void BaseCursor::RefreshPos()
-{
-}
-
-// 68K 0x10205b80 __dt__11CBaseCursorFv
-BaseCursor::~BaseCursor()
 {
 }

@@ -60,11 +60,6 @@ void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 	}
 }
 
-// 68K 0x10106028 __dt__7CCursorFv
-Cursor::~Cursor()
-{
-}
-
 // FUNCTION: LEMBALL 0x00474b50
 void Cursor::InitialiseSystemCursor()
 {
@@ -86,6 +81,14 @@ void Cursor::RefreshPos()
 	GetCursorPos(&point);
 	m_position.m_x = (short) point.m_x;
 	m_position.m_y = (short) point.m_y;
+}
+
+// 68K 0x10106028 __dt__7CCursorFv
+// FUNCTION: LEMBALL 0x00474bb0
+Cursor::~Cursor()
+{
+	SetCursor(m_systemCursor);
+	RestoreSystemCursor();
 }
 
 // 68K 0x10105e2a KillSystemCursor__7CCursorFv

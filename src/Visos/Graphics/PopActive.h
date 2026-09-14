@@ -10,7 +10,6 @@ class PopActive : public Primitive {
 public:
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~PopActive();            // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x004395c0
