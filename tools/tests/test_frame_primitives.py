@@ -15,6 +15,35 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class FramePrimitiveTests(unittest.TestCase):
+    def test_frame_destructor_deletes_both_owned_arrays(self):
+        for address, instructions in self.instructions(0x00468c10, 57):
+            with self.subTest(address=hex(address)):
+                flags = [i.operands[0].imm for i in instructions
+                         if i.mnemonic == "push" and i.operands[0].type == X86_OP_IMM]
+                self.assertEqual(flags, [3, 3])
+                loads = [i.operands[1].mem.disp for i in instructions
+                         if i.mnemonic == "mov" and len(i.operands) == 2
+                         and i.operands[1].type == X86_OP_MEM]
+                # ECX is the hot-area subobject at owner+0x90.
+                self.assertEqual(loads[:1], [0x80])
+                self.assertIn(0x7c, loads)
+
+    def test_frame_vtables_use_reconstructed_overrides(self):
+        _, engine = load_engine()
+        matches = {m.orig_addr: m for m in engine.get_all()}
+        for table, slot, target in (
+            (0x00499838, 0xa8, 0x00468dd0),
+            (0x00499838, 0xbc, 0x00468c50),
+            (0x00499818, 0, 0x00469900),
+        ):
+            for image, table_address, target_address in (
+                (engine.orig_bin, table, target),
+                (engine.recomp_bin, matches[table].recomp_addr, matches[target].recomp_addr),
+            ):
+                with self.subTest(table=hex(table_address), slot=hex(slot)):
+                    entry = int.from_bytes(image.read(table_address + slot, 4), "little")
+                    self.assertEqual(entry, target_address)
+
     def instructions(self, original_address, original_size):
         _, engine = load_engine()
         match = next(m for m in engine.get_all() if m.orig_addr == original_address)

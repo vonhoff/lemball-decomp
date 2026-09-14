@@ -85,6 +85,7 @@ public:
 	friend class PasswordDrawer;
 	friend class SuccFailDrawer;
 	friend class CdLoadAnim;
+	friend class TargetFramedButton;
 
 	friend class C2D;
 	friend class PanelButton;

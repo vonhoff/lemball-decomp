@@ -29,6 +29,7 @@ public:
 	friend class GraphicButton;
 	friend class PvButton;
 	friend class DepressedButton;
+	friend class TargetFramedButton;
 	friend class PanelPauseButton;
 	friend class C2D;
 	friend class TrackWindow;

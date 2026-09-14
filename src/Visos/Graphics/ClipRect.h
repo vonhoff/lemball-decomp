@@ -17,6 +17,7 @@ public:
 	friend class TrackWindow;
 	friend class Surface;
 	friend class CdLoadAnim;
+	friend class TargetFramedButton;
 
 private:
 	short m_left;            // 0x04

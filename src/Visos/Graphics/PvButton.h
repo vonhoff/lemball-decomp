@@ -44,6 +44,7 @@ public:
 	friend class GraphicButton;
 	friend class GunButton;
 	friend class DepressedButton;
+	friend class TargetFramedButton;
 	friend class GunButtons;
 	friend class HiliteButtons;
 	friend class GunController;
