@@ -12,6 +12,7 @@ import re
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 from reccmp.compare.asm import fixes, parse
+from reccmp.compare import functions
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtualReadError
 from reccmp.types import ImageId
@@ -192,6 +193,30 @@ def table_end_expressions(data, start, relocation_sites):
     return expressions
 
 
+def normalize_assert_arguments(assembly):
+    """Normalize verified CRT assertion locations independently of PE debug flags.
+
+    Keep the existing file/line exclusion, but require the actual CRT callee
+    and three consecutive argument pushes. Never rewrite an expression or use
+    Python's negative indices when the call appears near the start of a body.
+    """
+    for index, (_, instruction) in enumerate(assembly):
+        if index < 3 or not re.fullmatch(
+            r"call __?assert \((?:FUNCTION|IMPORT|IMPORT_THUNK)\)", instruction
+        ):
+            continue
+        line, filename, expression = (assembly[index - i][1] for i in (3, 2, 1))
+        if not re.fullmatch(r"push (?:0x[0-9a-f]+|[0-9]+|__LINE__)", line):
+            continue
+        string_push = r'push (?:".*" \(STRING\)|<OFFSET[0-9]*>)'
+        if filename != "push __FILE__" and not re.fullmatch(string_push, filename):
+            continue
+        if not re.fullmatch(string_push, expression):
+            continue
+        assembly[index - 3] = (assembly[index - 3][0], "push __LINE__")
+        assembly[index - 2] = (assembly[index - 2][0], "push __FILE__")
+
+
 class RelocationAwareParseAsm(parse.ParseAsm):
     """Recognize CMP pointer immediates at verified PE relocation sites."""
 
@@ -205,7 +230,9 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         self._data = bytes(data)
         self._start = start_addr
         self._table_ends = table_end_expressions(self._data, start_addr, self.relocation_sites)
-        return super().parse_asm(data, start_addr)
+        assembly = super().parse_asm(data, start_addr)
+        normalize_assert_arguments(assembly)
+        return assembly
 
     def sanitize(self, inst):
         address, size, mnemonic, operands = inst
@@ -274,3 +301,5 @@ def install_parser_fix() -> None:
         raise RuntimeError("Review the parser compatibility fix before changing reccmp==0.1.7")
     parse.InstructGen = BoundedInstructGen
     fixes.relocate_instructions = relocate_instructions
+    fixes.assert_fixup = normalize_assert_arguments
+    functions.assert_fixup = normalize_assert_arguments

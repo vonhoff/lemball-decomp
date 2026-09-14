@@ -82,3 +82,16 @@ class CrtPointerRelocationTests(unittest.TestCase):
             loops.append(loop)
         self.assertEqual(*tables)
         self.assertEqual(*loops)
+
+    def test_release_marked_original_still_calls_crt_assert(self):
+        self.assertFalse(self.engine.orig_bin.is_debug)
+        assertion = self.matches[0x00484B00]
+        for (image, address), target in zip(
+            self.sides(0x00483F80), (assertion.orig_addr, assertion.recomp_addr)
+        ):
+            code = bytes(image.read(address + 7, 0x11))
+            self.assertEqual(code[:3], b"\x6a\x72\x68")
+            self.assertEqual(code[7], 0x68)
+            self.assertEqual(code[12], 0xE8)
+            displacement = struct.unpack_from("<i", code, 13)[0]
+            self.assertEqual(address + 0x18 + displacement, target)
