@@ -439,11 +439,26 @@
 // LIBRARY: LEMBALL 0x004867c0 SYMBOL
 // __fptrap
 
+// GLOBAL: LEMBALL 0x0049c208 SYMBOL
+// ___xi_a
+
+// GLOBAL: LEMBALL 0x0049c418 SYMBOL
+// ___xi_z
+
+// GLOBAL: LEMBALL 0x0049c51c SYMBOL
+// ___xp_a
+
+// GLOBAL: LEMBALL 0x0049c724 SYMBOL
+// ___xp_z
+
 // STRING: LEMBALL 0x004a45bc
 // "\0"
 
 // STRING: LEMBALL 0x004a45c0
 // L"\0"
+
+// GLOBAL: LEMBALL 0x004a4604 SYMBOL
+// __exitflag
 
 // GLOBAL: LEMBALL 0x004a4620 SYMBOL
 // __XcptActTab
@@ -456,5 +471,11 @@
 
 // GLOBAL: LEMBALL 0x004a4c48 SYMBOL
 // __iob
+
+// GLOBAL: LEMBALL 0x004aa498 SYMBOL
+// __nstream
+
+// GLOBAL: LEMBALL 0x004aa7d8 SYMBOL
+// ___piob
 
 #endif
