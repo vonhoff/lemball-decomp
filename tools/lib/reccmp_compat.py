@@ -18,23 +18,94 @@ from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtual
 from reccmp.types import ImageId
 
 
-def complete_original_extent(image, start, limit, decoder):
-    """Find a closed direct-control-flow extent, or decline uncertain code.
+def bounded_switch_edges(image, address, start, limit):
+    """Recognize the complete range guard and two-level MSVC switch dispatch.
 
-    Never cross the next known entity or infer through an indirect jump. Calls
+    Accept only CMP EAX,maximum; JA default; XOR ECX,ECX;
+    MOV CL,[EAX+byte_table]; JMP [ECX*4+target_table]. Both tables must
+    reside inside the known function bound. The caller treats this sequence
+    atomically, so another edge into its interior invalidates the proof.
+    """
+    def read(at, count):
+        if count <= 0 or not start <= at < at + count <= limit:
+            raise ValueError("Switch data is outside the function bound")
+        data = bytes(image.read(at, count))
+        if len(data) != count:
+            raise ValueError("Switch data is truncated")
+        return data
+
+    try:
+        raw = bytes(image.read(address, min(32, limit - address)))
+        if raw[:2] == b"\x83\xf8" and len(raw) >= 3 and raw[2] < 0x80:
+            maximum, cursor = raw[2], 3
+        elif raw[:1] == b"\x3d" and len(raw) >= 5:
+            maximum, cursor = struct.unpack_from("<I", raw, 1)[0], 5
+        else:
+            return None
+        if maximum > 255:
+            return None
+        if raw[cursor:cursor + 1] == b"\x77" and len(raw) >= cursor + 2:
+            displacement = struct.unpack_from("<b", raw, cursor + 1)[0]
+            cursor += 2
+        elif raw[cursor:cursor + 2] == b"\x0f\x87" and len(raw) >= cursor + 6:
+            displacement = struct.unpack_from("<i", raw, cursor + 2)[0]
+            cursor += 6
+        else:
+            return None
+        default = address + cursor + displacement
+        if (len(raw) < cursor + 15
+                or raw[cursor:cursor + 2] not in (b"\x33\xc9", b"\x31\xc9")
+                or raw[cursor + 2:cursor + 4] != b"\x8a\x88"
+                or raw[cursor + 8:cursor + 11] != b"\xff\x24\x8d"):
+            return None
+        byte_table = struct.unpack_from("<I", raw, cursor + 4)[0]
+        target_table = struct.unpack_from("<I", raw, cursor + 11)[0]
+        indices = read(byte_table, maximum + 1)
+        targets = read(target_table, (max(indices) + 1) * 4)
+        edges = {default}
+        edges.update(struct.unpack_from("<I", targets, index * 4)[0] for index in indices)
+        if any(not start <= edge < limit for edge in edges):
+            return None
+        return cursor + 15, edges, (
+            (byte_table, len(indices)), (target_table, len(targets))
+        )
+    except (ValueError, IndexError, struct.error, InvalidVirtualAddressError, InvalidVirtualReadError):
+        return None
+
+
+def complete_original_extent(image, start, limit, decoder):
+    """Find a closed control-flow extent, or decline uncertain code.
+
+    Never cross the next known entity. Indirect jumps require a fully verified
+    bounded switch dispatch; all other indirect jumps are declined. Calls
     retain their fallthrough edge. All reachable instructions must decode and
     all branch targets must be instruction boundaries inside the bounded span.
     """
     pending = [start]
     instructions = set()
     occupied = set()
+    data_bytes = set()
     saw_return = False
     while pending:
         address = pending.pop()
         if address in instructions:
             continue
-        if not start <= address < limit or address in occupied:
+        if not start <= address < limit or address in occupied or address in data_bytes:
             return None
+        switch = bounded_switch_edges(image, address, start, limit)
+        if switch is not None:
+            size, edges, tables = switch
+            span = set(range(address, address + size))
+            table_spans = [set(range(at, at + count)) for at, count in tables]
+            if (span.intersection(occupied | data_bytes)
+                    or table_spans[0].intersection(table_spans[1])
+                    or any(table.intersection(occupied | span | data_bytes) for table in table_spans)):
+                return None
+            instructions.add(address)
+            occupied.update(span)
+            data_bytes.update(table_spans[0] | table_spans[1])
+            pending.extend(edges)
+            continue
         try:
             raw = image.read(address, min(15, limit - address))
         except (ValueError, IndexError, InvalidVirtualAddressError, InvalidVirtualReadError):
@@ -44,7 +115,7 @@ def complete_original_extent(image, start, limit, decoder):
             return None
         _, size, mnemonic, operand = instruction
         span = set(range(address, address + size))
-        if occupied.intersection(span):
+        if (occupied | data_bytes).intersection(span):
             return None
         instructions.add(address)
         occupied.update(span)
@@ -63,7 +134,7 @@ def complete_original_extent(image, start, limit, decoder):
             if mnemonic == "jmp":
                 continue
         pending.append(address + size)
-    return max(occupied) + 1 - start if saw_return else None
+    return max(occupied | data_bytes) + 1 - start if saw_return else None
 
 
 def extend_original_match(match, image, decoder):

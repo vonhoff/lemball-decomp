@@ -1,6 +1,7 @@
 """An original function must not be truncated to a shorter rebuilt length."""
 
 import unittest
+import struct
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 from reccmp.compare.db import ReccmpMatch
@@ -92,12 +93,90 @@ class OriginalExtentTests(unittest.TestCase):
                 match = ReccmpMatch(0x1000, 0x2000, metadata)
                 self.assertIs(extend_original_match(match, image, self.decoder), match)
 
+    def switch(self, near=False):
+        data = bytearray(b"\xcc" * 0xa0)
+        guard = (bytes.fromhex("3d 01000000 0f87") + struct.pack("<i", 0x40 - 11)
+                 if near else bytes.fromhex("83f801 773b"))
+        dispatch = (bytes.fromhex("33c9 8a88") + struct.pack("<I", 0x1090)
+                    + bytes.fromhex("ff248d") + struct.pack("<I", 0x1080))
+        data[:len(guard + dispatch)] = guard + dispatch
+        data[0x40] = 0xc3
+        data[0x42:0x44] = bytes.fromhex("40 c3")
+        data[0x44:0x46] = bytes.fromhex("41 c3")
+        struct.pack_into("<II", data, 0x80, 0x1042, 0x1044)
+        data[0x90:0x92] = bytes((0, 1))
+        return data
+
+    def test_bounded_switch_includes_every_case_and_both_tables(self):
+        for near in (False, True):
+            with self.subTest(near=near):
+                self.assertEqual(self.extent(self.switch(near)), 0x92)
+        image = BytesImage(self.switch())
+        match = ReccmpMatch(0x1000, 0x2000, {"recomp_size": 0x20, "orig_max_size": 0xa0})
+        extended = extend_original_match(match, image, self.decoder)
+        self.assertEqual(extended.size(ImageId.ORIG), 0x92)
+        self.assertEqual(extended.any_size(), match.any_size())
+
+    def test_switch_requires_unsigned_guard_and_zero_extended_index(self):
+        for offset, value in ((3, 0x7f), (2, 0xff), (5, 0x90), (8, 0x89), (16, 0x85)):
+            with self.subTest(offset=offset):
+                data = self.switch()
+                data[offset] = value
+                self.assertIsNone(self.extent(data))
+
+    def test_switch_tables_must_be_complete_disjoint_and_within_bound(self):
+        for location, pointer in ((9, 0x0ff0), (9, 0x10a0), (16, 0x109c),
+                                  (9, 0x1080), (16, 0x1000)):
+            with self.subTest(location=location, pointer=pointer):
+                data = self.switch()
+                struct.pack_into("<I", data, location, pointer)
+                self.assertIsNone(self.extent(data))
+        self.assertIsNone(self.extent(self.switch(), limit=0x91))
+
+    def test_switch_rejects_targets_outside_code_or_into_dispatch(self):
+        for target in (0x0fff, 0x10a0, 0x1080, 0x1090, 0x1005, 0x1043):
+            with self.subTest(target=target):
+                data = self.switch()
+                # Second case overlaps the interior of a multibyte first case.
+                data[0x42:0x48] = bytes.fromhex("b8 01000000 c3")
+                struct.pack_into("<I", data, 0x84, target)
+                self.assertIsNone(self.extent(data))
+
+    def test_switch_requires_closed_case_paths(self):
+        data = self.switch()
+        data[0x44:0x46] = bytes.fromhex("ff e0")
+        self.assertIsNone(self.extent(data))
+
+    def test_external_edge_cannot_bypass_switch_guard(self):
+        data = self.switch()
+        dispatch = bytes(data[:20])
+        data[:0x24] = b"\xcc" * 0x24
+        data[:5] = b"\xe9" + struct.pack("<i", 0xa0 - 5)
+        data[0x10:0x24] = dispatch
+        data[0x14] = 0x2b  # Moved guard still branches to the default at 0x1040.
+        # One successor enters the dispatch directly; the other reaches its guard.
+        data.extend(b"\x0f\x84" + struct.pack("<i", 0x15 - 0xa6)
+                    + b"\xe9" + struct.pack("<i", 0x10 - 0xab))
+        self.assertIsNone(complete_original_extent(
+            BytesImage(data), 0x1000, 0x10ab, self.decoder
+        ))
+
 
 @unittest.skipUnless(
     all(path.exists() for path in (ORIGINAL_EXE, RECOMP_EXE, RECOMP_PDB)),
     "requires the reference executable and a local build",
 )
 class OriginalExtentBinaryTests(unittest.TestCase):
+    def test_laser_viewdata_includes_return_and_switch_tables(self):
+        _, engine = load_engine()
+        extent = complete_original_extent(
+            engine.orig_bin, 0x00428f90, 0x00429320, Cs(CS_ARCH_X86, CS_MODE_32)
+        )
+        self.assertEqual(extent, 0x00429314 - 0x00428f90)
+        self.assertEqual(bytes(engine.orig_bin.read(0x004292e9, 3)), bytes.fromhex("c20400"))
+        self.assertEqual(bytes(engine.orig_bin.read(0x00429300, 20)),
+                         bytes([0] + [4] * 16 + [1, 2, 3]))
+
     def test_bullet_getdata_includes_original_epilogue(self):
         _, engine = load_engine()
         match = next(m for m in engine.get_all() if m.orig_addr == 0x0041AB80)
