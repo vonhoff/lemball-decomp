@@ -7,6 +7,9 @@
 // LIBRARY: LEMBALL 0x0047fb10 SYMBOL
 // __toupper_lk
 
+// LIBRARY: LEMBALL 0x0047fdd0 SYMBOL
+// _strncpy
+
 // LIBRARY: LEMBALL 0x004800b0 SYMBOL
 // __tolower_lk
 
@@ -130,6 +133,39 @@
 // LIBRARY: LEMBALL 0x00481aa0 SYMBOL
 // __XcptFilter
 
+// LIBRARY: LEMBALL 0x00481c20 SYMBOL
+// __ismbbkalnum
+
+// LIBRARY: LEMBALL 0x00481c40 SYMBOL
+// __ismbbkprint
+
+// LIBRARY: LEMBALL 0x00481c60 SYMBOL
+// __ismbbkpunct
+
+// LIBRARY: LEMBALL 0x00481c80 SYMBOL
+// __ismbbalnum
+
+// LIBRARY: LEMBALL 0x00481ca0 SYMBOL
+// __ismbbalpha
+
+// LIBRARY: LEMBALL 0x00481cc0 SYMBOL
+// __ismbbgraph
+
+// LIBRARY: LEMBALL 0x00481ce0 SYMBOL
+// __ismbbprint
+
+// LIBRARY: LEMBALL 0x00481d00 SYMBOL
+// __ismbbpunct
+
+// LIBRARY: LEMBALL 0x00481d20 SYMBOL
+// __ismbblead
+
+// LIBRARY: LEMBALL 0x00481d40 SYMBOL
+// __ismbbtrail
+
+// LIBRARY: LEMBALL 0x00481d60 SYMBOL
+// __ismbbkana
+
 // LIBRARY: LEMBALL 0x00481dd0 SYMBOL
 // __setenvp
 
@@ -144,6 +180,9 @@
 
 // LIBRARY: LEMBALL 0x004824d0 SYMBOL
 // __setmbcp
+
+// LIBRARY: LEMBALL 0x004827e0 SYMBOL
+// __getmbcp
 
 // LIBRARY: LEMBALL 0x004827f0 SYMBOL
 // ___initmbctable
@@ -310,6 +349,27 @@
 // LIBRARY: LEMBALL 0x004855b0 SYMBOL
 // _raise
 
+// LIBRARY: LEMBALL 0x004857d0 SYMBOL
+// ___fpecode
+
+// LIBRARY: LEMBALL 0x004857e0 SYMBOL
+// ___pxcptinfoptrs
+
+// LIBRARY: LEMBALL 0x004857f0 SYMBOL
+// _strncat
+
+// LIBRARY: LEMBALL 0x00485830 SYMBOL
+// __itoa
+
+// LIBRARY: LEMBALL 0x004858d0 SYMBOL
+// __ltoa
+
+// LIBRARY: LEMBALL 0x00485900 SYMBOL
+// __ultoa
+
+// LIBRARY: LEMBALL 0x00485920 SYMBOL
+// __setmode
+
 // LIBRARY: LEMBALL 0x00485990 SYMBOL
 // __setmode_lk
 
@@ -324,6 +384,21 @@
 
 // LIBRARY: LEMBALL 0x00485b10 SYMBOL
 // __output
+
+// LIBRARY: LEMBALL 0x00486600 SYMBOL
+// _wctomb
+
+// LIBRARY: LEMBALL 0x00486630 SYMBOL
+// __wctomb_lk
+
+// LIBRARY: LEMBALL 0x004866d0 SYMBOL
+// __aulldiv
+
+// LIBRARY: LEMBALL 0x00486740 SYMBOL
+// __aullrem
+
+// LIBRARY: LEMBALL 0x004867c0 SYMBOL
+// __fptrap
 
 // STRING: LEMBALL 0x004a45bc
 // "\0"
