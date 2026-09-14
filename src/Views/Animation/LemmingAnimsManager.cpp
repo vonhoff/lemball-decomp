@@ -1013,8 +1013,9 @@ void LemmingAnimsManager::LoadAnimation(unsigned long p_firstResourceId, unsigne
 // FUNCTION: LEMBALL 0x00434ec0
 void LemmingAnimsManager::UnLoadAnimation(unsigned long p_resourceId)
 {
-	if (m_animFrames[m_resourceSlots[p_resourceId]] != 0) {
-		delete m_animFrames[m_resourceSlots[p_resourceId]];
+	Frames* frames = m_animFrames[m_resourceSlots[p_resourceId]];
+	if (frames != 0) {
+		delete frames;
 		m_animFrames[m_resourceSlots[p_resourceId]] = 0;
 	}
 	UnLoadAnims(p_resourceId);
