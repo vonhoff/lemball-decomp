@@ -442,7 +442,6 @@ bool TargetWaveSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, u
 unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
 {
 	unsigned int i;
-	TargetWaveEffect* effect;
 	MMRESULT result;
 
 	i = 0;
@@ -450,12 +449,11 @@ unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsign
 		if (m_effectHandles[i] == p_effectId) {
 			result = waveOutReset(m_waveOut);
 			if (result != 0) {
-				*g_pErrorOutput << "waveOutReset errored: " << (unsigned long) result << "\n";
+				*g_pErrorOutput << "waveOutReset errored: " << (unsigned int) result << "\n";
 			}
-			effect = m_effects[i];
-			result = waveOutWrite(m_waveOut, effect->m_waveHeader, 0x20);
+			result = waveOutWrite(m_waveOut, m_effects[i]->m_waveHeader, 0x20);
 			if (result != 0) {
-				*g_pErrorOutput << "waveOutWrite (play effect) errored: " << (unsigned long) result << "\n";
+				*g_pErrorOutput << "waveOutWrite (play effect) errored: " << (unsigned int) result << "\n";
 			}
 		}
 		i = i + 1;
