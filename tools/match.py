@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 
 from build import run_build
 from lib.reccmp import load_engine
@@ -21,7 +22,15 @@ def match_status(match) -> str:
     return "MATCH" if match.effective_accuracy == 1.0 else ""
 
 
+def configure_output(stream) -> None:
+    """Keep the selected encoding; escape characters it cannot represent."""
+    if hasattr(stream, "reconfigure"):
+        stream.reconfigure(errors="backslashreplace")
+
+
 def main() -> int:
+    configure_output(sys.stdout)
+    configure_output(sys.stderr)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("addrs", nargs="+", help="Addresses (e.g. 0x0045ca30)")
     parser.add_argument("--no-diff", action="store_true", help="Hide instruction diff")
