@@ -6,12 +6,97 @@ The installed package is not modified.
 """
 
 from importlib.metadata import version
+from copy import copy
 import struct
 import re
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
+from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtualReadError
+from reccmp.types import ImageId
+
+
+def complete_original_extent(image, start, limit, decoder):
+    """Find a closed direct-control-flow extent, or decline uncertain code.
+
+    Never cross the next known entity or infer through an indirect jump. Calls
+    retain their fallthrough edge. All reachable instructions must decode and
+    all branch targets must be instruction boundaries inside the bounded span.
+    """
+    pending = [start]
+    instructions = set()
+    occupied = set()
+    saw_return = False
+    while pending:
+        address = pending.pop()
+        if address in instructions:
+            continue
+        if not start <= address < limit or address in occupied:
+            return None
+        try:
+            raw = image.read(address, min(15, limit - address))
+        except (ValueError, IndexError, InvalidVirtualAddressError, InvalidVirtualReadError):
+            return None
+        instruction = next(decoder.disasm_lite(raw, address), None)
+        if instruction is None:
+            return None
+        _, size, mnemonic, operand = instruction
+        span = set(range(address, address + size))
+        if occupied.intersection(span):
+            return None
+        instructions.add(address)
+        occupied.update(span)
+        if mnemonic in ("ret", "retf"):
+            saw_return = True
+            continue
+        if mnemonic in ("int3", "hlt", "ud2", "int", "iret", "iretd", "sysenter", "sysexit"):
+            return None
+        if mnemonic.startswith("j") or mnemonic.startswith("loop"):
+            if not re.fullmatch(r"0x[0-9a-f]+", operand):
+                return None
+            target = int(operand, 16)
+            if not start <= target < limit:
+                return None
+            pending.append(target)
+            if mnemonic == "jmp":
+                continue
+        pending.append(address + size)
+    return max(occupied) + 1 - start if saw_return else None
+
+
+def extend_original_match(match, image, decoder):
+    """Extend a guessed original read length only with complete CFG evidence.
+
+    Explicit original sizes, unknown boundaries, and undecodable functions keep
+    upstream behavior. This never shortens a read or mutates database/report
+    sizes; scoring and instruction normalization are unchanged.
+    """
+    if match.size(ImageId.ORIG) is not None:
+        return match
+    maximum = match.max_size(ImageId.ORIG)
+    rebuilt = match.size(ImageId.RECOMP)
+    if maximum is None or rebuilt is None or maximum <= rebuilt:
+        return match
+    extent = complete_original_extent(
+        image, match.orig_addr, match.orig_addr + min(maximum, 65536), decoder
+    )
+    if extent is None or extent <= rebuilt:
+        return match
+    extended = copy(match)
+    extended._kvstore = dict(match._kvstore, orig_size=extent)
+    return extended
+
+
+def configure_original_extents(engine):
+    comparator = engine.function_comparator
+    upstream = comparator.compare_function
+    decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+
+    def compare_function(match):
+        return upstream(extend_original_match(match, comparator.orig_bin, decoder))
+
+    comparator.compare_function = compare_function
 
 _upstream_relocate_instructions = fixes.relocate_instructions
 _register_tokens = re.compile(r"\b(eax|ax|al|ah|ebx|bx|bl|bh|ecx|cx|cl|ch|edx|dx|dl|dh|esi|si|edi|di|ebp|bp|esp|sp)\b")
