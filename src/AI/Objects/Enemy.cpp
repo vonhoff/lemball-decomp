@@ -124,6 +124,22 @@ void Enemy::SetEnemyType(eEnemyStateActions p_action0,
 	m_state2Rule = p_rule2;
 }
 
+// FUNCTION: LEMBALL 0x0041fe70
+void Enemy::GetEnemyType(eEnemyStateActions& p_action0,
+						 eEnemyStateRules& p_rule0,
+						 eEnemyStateActions& p_action1,
+						 eEnemyStateRules& p_rule1,
+						 eEnemyStateActions& p_action2,
+						 eEnemyStateRules& p_rule2)
+{
+	p_action0 = m_state0Action;
+	p_rule0 = m_state0Rule;
+	p_action1 = m_state1Action;
+	p_rule1 = m_state1Rule;
+	p_action2 = m_state2Action;
+	p_rule2 = m_state2Rule;
+}
+
 // 68K 0x10607c1a Process__6CEnemyFv
 // FUNCTION: LEMBALL 0x0041fec0
 bool Enemy::Process()

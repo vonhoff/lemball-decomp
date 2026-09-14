@@ -41,6 +41,12 @@ public:
 	void EnemyActionTurnAndFireSlow(EnemyLemmingUnion* p_data);
 	void ProcessAction(eEnemyStateRules p_rule, eEnemyStateActions p_action, EnemyLemmingUnion* p_data);
 	void RequestFire(int p_interval);
+	void GetEnemyType(eEnemyStateActions& p_action0,
+					  eEnemyStateRules& p_rule0,
+					  eEnemyStateActions& p_action1,
+					  eEnemyStateRules& p_rule1,
+					  eEnemyStateActions& p_action2,
+					  eEnemyStateRules& p_rule2);
 	void SetEnemyType(eEnemyStateActions p_action0,
 					  eEnemyStateRules p_rule0,
 					  eEnemyStateActions p_action1,
