@@ -4,6 +4,9 @@
 // MSVC runtime routines linked from the compiler libraries.
 // These mappings identify the original x86 implementations, not replacement code.
 
+// LIBRARY: LEMBALL 0x0047fab0 SYMBOL
+// __toupper
+
 // LIBRARY: LEMBALL 0x0047fb10 SYMBOL
 // __toupper_lk
 
@@ -18,6 +21,12 @@
 
 // LIBRARY: LEMBALL 0x004800b0 SYMBOL
 // __tolower_lk
+
+// LIBRARY: LEMBALL 0x00480198 SYMBOL
+// __setjmp3
+
+// LIBRARY: LEMBALL 0x00480214 SYMBOL
+// _longjmp
 
 // LIBRARY: LEMBALL 0x004803e0 SYMBOL
 // __fsopen
