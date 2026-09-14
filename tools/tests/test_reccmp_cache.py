@@ -12,6 +12,57 @@ from lib import reccmp
 
 
 class ReccmpCacheTests(unittest.TestCase):
+    def test_input_changes_during_comparison_or_roadmap_are_not_cached(self):
+        for phase in ("comparison", "roadmap"):
+            with self.subTest(phase=phase), tempfile.TemporaryDirectory() as directory, ExitStack() as patches:
+                build = Path(directory)
+                for name, value in {
+                    "BUILD": build,
+                    "RECCMP_JSON": build / "reccmp.json",
+                    "RECCMP_STAMP": build / "stamp.json",
+                    "ROADMAP_CSV": build / "roadmap.csv",
+                }.items():
+                    patches.enter_context(patch.object(reccmp, name, value))
+                generation = [1]
+                patches.enter_context(patch.object(reccmp, "_stamp", side_effect=lambda: {"generation": generation[0]}))
+                target = SimpleNamespace(original_path=build / "original.exe")
+                engine = Mock()
+
+                def compare():
+                    if phase == "comparison":
+                        generation[0] += 1
+                    return []
+
+                def write_roadmap(target, engine, path):
+                    path.write_text("inventory", encoding="utf-8")
+                    if phase == "roadmap":
+                        generation[0] += 1
+
+                engine.compare_all.side_effect = compare
+                loader = patches.enter_context(patch.object(reccmp, "_load_engine", return_value=(target, engine)))
+                patches.enter_context(patch.object(reccmp, "serialize_reccmp_report", return_value="{}"))
+                roadmap = patches.enter_context(patch.object(reccmp, "_write_roadmap", side_effect=write_roadmap))
+                with self.assertRaisesRegex(RuntimeError, "Comparison inputs changed"):
+                    reccmp.run_reccmp(roadmap=True)
+                self.assertFalse(reccmp.RECCMP_STAMP.exists())
+
+                engine.compare_all.side_effect = None
+                engine.compare_all.return_value = []
+                roadmap.side_effect = lambda target, engine, path: path.write_text("current inventory", encoding="utf-8")
+                reccmp.run_reccmp(roadmap=True)
+                reccmp.run_reccmp(roadmap=True)
+                self.assertEqual(loader.call_count, 2)
+                self.assertEqual(roadmap.call_count, 2)
+                self.assertEqual(reccmp.ROADMAP_CSV.read_text(encoding="utf-8"), "current inventory")
+
+                # A comparison-only refresh must invalidate the previous inventory.
+                generation[0] += 1
+                reccmp.run_reccmp(roadmap=False)
+                self.assertFalse(reccmp.ROADMAP_CSV.exists())
+                reccmp.run_reccmp(roadmap=True)
+                self.assertEqual(loader.call_count, 4)
+                self.assertEqual(roadmap.call_count, 3)
+
     def test_source_edits_additions_removals_and_moves_refresh_both_outputs(self):
         with tempfile.TemporaryDirectory() as directory, ExitStack() as patches:
             root = Path(directory)

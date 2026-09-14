@@ -33,7 +33,7 @@ from .paths import (
 
 def _stamp() -> dict:
     return {
-        "version": 18,
+        "version": 19,
         "original": file_id(ORIGINAL_EXE),
         "recomp": file_id(RECOMP_EXE),
         "pdb": file_id(RECOMP_PDB),
@@ -142,10 +142,11 @@ def run_reccmp(
         )
 
     canonical = out == RECCMP_JSON.resolve()
+    input_stamp = _stamp()
     reuse = False
     if canonical and RECCMP_JSON.exists() and RECCMP_STAMP.exists():
         try:
-            reuse = json.loads(RECCMP_STAMP.read_text(encoding="utf-8")) == _stamp()
+            reuse = json.loads(RECCMP_STAMP.read_text(encoding="utf-8")) == input_stamp
         except (OSError, ValueError):
             pass
 
@@ -153,6 +154,11 @@ def run_reccmp(
     if reuse and not need_roadmap:
         return out
 
+    # A failed or interrupted refresh must not leave either output cache-valid.
+    if canonical:
+        RECCMP_STAMP.unlink(missing_ok=True)
+        if not reuse:
+            ROADMAP_CSV.unlink(missing_ok=True)
     target, engine = _load_engine()
 
     if not reuse:
@@ -166,11 +172,14 @@ def run_reccmp(
                 continue
             report.add_match(match)
         out.write_text(serialize_reccmp_report(report, diff_included=True), encoding="utf-8")
-        if canonical:
-            RECCMP_STAMP.write_text(json.dumps(_stamp()) + "\n", encoding="utf-8")
 
     if roadmap:
         _write_roadmap(target, engine, ROADMAP_CSV)
+
+    if _stamp() != input_stamp:
+        raise RuntimeError("Comparison inputs changed during the run. Wait for the build or edits to finish, then rerun.")
+    if canonical:
+        RECCMP_STAMP.write_text(json.dumps(input_stamp) + "\n", encoding="utf-8")
 
     return out
 
