@@ -55,9 +55,10 @@ CdLoadAnim::CdLoadAnim(Gdi* p_arg0, Main2DDisplay* p_arg1) : AnimsManager(p_arg0
 	p_arg1->AttachPalette(RES_FRONTEND_LOADING_LORES_PALETTE);
 	palette->UnLoad();
 	m_progress.m_draw.m_centerY =
-		(short) ((m_progress.m_draw.m_display->m_rect.m_height - m_progress.m_draw.m_backgroundBitmap->m_y) / 2);
+		(short) ((short) (m_progress.m_draw.m_display->m_rect.m_height - m_progress.m_draw.m_backgroundBitmap->m_y) /
+				 2);
 	m_progress.m_draw.m_centerX =
-		(short) ((m_progress.m_draw.m_display->m_rect.m_width - m_progress.m_draw.m_backgroundBitmap->m_x) / 2);
+		(short) ((short) (m_progress.m_draw.m_display->m_rect.m_width - m_progress.m_draw.m_backgroundBitmap->m_x) / 2);
 	offset = 0;
 	do {
 		packed = *points;
