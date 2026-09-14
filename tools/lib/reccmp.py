@@ -14,7 +14,7 @@ from reccmp.compare.report import ReccmpStatusReport, serialize_reccmp_report
 from reccmp.tools.roadmap import ModuleMap, RoadmapRow, export_to_csv, match_type_abbreviation
 from reccmp.types import EntityType
 
-from .reccmp_compat import install_parser_fix
+from .reccmp_compat import configure_pointer_comparisons, install_parser_fix
 
 from .paths import (
     BUILD,
@@ -31,7 +31,7 @@ from .paths import (
 
 def _stamp() -> dict:
     return {
-        "version": 3,
+        "version": 4,
         "original": file_id(ORIGINAL_EXE),
         "recomp": file_id(RECOMP_EXE),
         "pdb": file_id(RECOMP_PDB),
@@ -43,7 +43,9 @@ def load_engine() -> tuple[object, Compare]:
     project = RecCmpProject.from_directory(BUILD)
     target = project.get("LEMBALL")
     logging.getLogger("reccmp").setLevel(logging.WARNING)
-    return target, Compare.from_target(target)
+    engine = Compare.from_target(target)
+    configure_pointer_comparisons(engine)
+    return target, engine
 
 
 _load_engine = load_engine

@@ -4,7 +4,7 @@ import struct
 import unittest
 from unittest.mock import patch
 
-from lib.reccmp_compat import BoundedInstructGen
+from lib.reccmp_compat import BoundedInstructGen, RelocationAwareParseAsm
 from reccmp.compare.asm import parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 
@@ -75,3 +75,47 @@ class JumpTableBoundaryTests(unittest.TestCase):
         for blob in fixtures:
             with self.subTest(blob=blob.hex()):
                 self.assertEqual(BoundedInstructGen(blob, start).sections, InstructGen(blob, start).sections)
+
+
+class PointerComparisonTests(unittest.TestCase):
+    def test_upstream_reproduces_missing_pointer_normalization(self):
+        blob = b"\x3d" + struct.pack("<I", 0x4000)
+        upstream = parse.ParseAsm(addr_test=lambda address: True)
+        self.assertEqual(upstream.parse_asm(blob, 0x1000)[0][1], "cmp eax, 0x4000")
+
+    def render(self, value, sites=(), name_lookup=None, opcode=b"\x3d", start=0x1000):
+        parser = RelocationAwareParseAsm(
+            relocation_sites=sites, name_lookup=name_lookup,
+            addr_test=lambda address: True,
+        )
+        return [text for _, text in parser.parse_asm(opcode + struct.pack("<I", value), start)]
+
+    def test_relocated_pointer_comparisons_match(self):
+        self.assertEqual(self.render(0x4000, (0x1001,)),
+                         self.render(0x8000, (0x2001,), start=0x2000))
+        self.assertEqual(self.render(0x4000, (0x1001,)), ["cmp eax, <OFFSET1>"])
+
+    def test_equal_value_relocated_elsewhere_does_not_hide_constants(self):
+        self.assertNotEqual(self.render(0x4000, (0x9999,)), self.render(0x8000, (0x9999,)))
+        self.assertEqual(self.render(0x4000), ["cmp eax, 0x4000"])
+
+    def test_named_pointer_targets_remain_distinct(self):
+        def names(address, **kwargs):
+            return {0x4000: "first (DATA)", 0x8000: "second (DATA)"}.get(address)
+        self.assertNotEqual(self.render(0x4000, (0x1001,), names),
+                            self.render(0x8000, (0x1001,), names))
+
+    def test_non_immediate_relocation_does_not_hide_constant(self):
+        parser = RelocationAwareParseAsm(relocation_sites=(0x1002,))
+        blob = b"\x81\x3d" + struct.pack("<II", 0x4000, 0x8000)
+        self.assertEqual(parser.parse_asm(blob, 0x1000)[0][1],
+                         "cmp dword ptr [<OFFSET1>], 0x8000")
+
+    def test_named_comparison_counts_toward_later_placeholders(self):
+        def names(address, **kwargs):
+            return "limit (DATA)" if address == 0x4000 else None
+        parser = RelocationAwareParseAsm(relocation_sites=(0x1001,), name_lookup=names,
+                                         addr_test=lambda address: True)
+        blob = b"\x3d" + struct.pack("<I", 0x4000) + b"\xb8" + struct.pack("<I", 0x5000)
+        self.assertEqual([text for _, text in parser.parse_asm(blob, 0x1000)],
+                         ["cmp eax, limit (DATA)", "mov eax, <OFFSET2>"])
