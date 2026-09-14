@@ -48,6 +48,18 @@ void CollectableManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x106056a4 __dt__19CCollectableManagerFv
+// FUNCTION: LEMBALL 0x004224c0
+CollectableManager::~CollectableManager()
+{
+	if (m_collectables != 0) {
+		for (int i = 0; i < m_count; i++) {
+			delete m_collectables[i];
+		}
+		operator delete(m_collectables);
+	}
+}
+
 // 68K 0x10605754 Process__19CCollectableManagerFv
 // FUNCTION: LEMBALL 0x00422550
 void CollectableManager::Process()
@@ -159,9 +171,4 @@ int CollectableManager::GetViewData(ViewData* p_viewData)
 		}
 	}
 	return count;
-}
-
-// 68K 0x106056a4 __dt__19CCollectableManagerFv
-CollectableManager::~CollectableManager()
-{
 }
