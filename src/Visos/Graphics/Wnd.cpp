@@ -16,7 +16,13 @@
 #include "../Target/TargetPlatformServices.h"
 #include "Cursor.h"
 
+#include <conio.h>
 #include <windows.h>
+
+#pragma intrinsic(_outpw)
+
+extern unsigned int g_unk0x4a1cc4;
+extern int(__stdcall* g_pDisplayDib)(void*, void*, unsigned int);
 
 // GLOBAL: LEMBALL 0x004a1f64
 void* g_hFocusWindow = 0;
@@ -26,6 +32,9 @@ Wnd* g_pFocusWindow = 0;
 
 // GLOBAL: LEMBALL 0x004a1f6c
 int g_nMouseCaptureCount = 0;
+
+// GLOBAL: LEMBALL 0x004a1f70
+int g_nDisplayDibActive = 0;
 
 // GLOBAL: LEMBALL 0x004a1f74
 int g_nLastCursorX = 0;
@@ -62,6 +71,12 @@ char g_szQuitting[12] = "Quitting\n";
 
 // GLOBAL: LEMBALL 0x004a1fa0
 char g_szFQuit[8] = "fQuit";
+
+// GLOBAL: LEMBALL 0x004a9bd8
+int g_nSavedScreenSaverActive = 0;
+
+// GLOBAL: LEMBALL 0x004a9be0
+int g_savedMouseParameters[3] = {0, 0, 0};
 
 static bool RegisterBaseWindowClass();
 unsigned int ConvertWindowStyleFlags(unsigned int p_style);
@@ -160,14 +175,16 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	short mouseY;
 	unsigned int style;
 	int menuAction;
-	unsigned long sequence;
 
-	if (g_pTargetGraphicsDriver == 0) {
+	if (g_unk0x4a1cc4 != 0 && (p_message != WM_ACTIVATEAPP || p_wParam != 0)) {
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 
-	sequence = GetMessageTime();
+	posted.time = GetMessageTime();
 	window = (Wnd*) GetWindowLongA((HWND) p_hwnd, GWL_USERDATA);
+	if (g_pTargetGraphicsDriver == 0) {
+		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+	}
 	if (g_pTargetGraphicsDriver->m_window == p_hwnd) {
 		Wnd* reservedWindow = (Wnd*) g_pTargetGraphicsSystem->m_reserved04;
 		window = reservedWindow;
@@ -182,7 +199,8 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	mouseX = (short) p_lParam;
 	mouseY = (short) (p_lParam >> 16);
 
-	if (p_message == WM_CREATE) {
+	switch (p_message) {
+	case WM_CREATE: {
 		POINT position;
 		create = (CREATESTRUCTA*) p_lParam;
 		window = (Wnd*) create->lpCreateParams;
@@ -199,13 +217,14 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		window->m_rect.m_x = mouseX;
 		window->m_rect.m_y = mouseY;
-		window->m_relativeTopLeft.m_x = window->m_rect.m_x;
-		window->m_relativeTopLeft.m_y = window->m_rect.m_y;
+		VsPoint* topLeft = &window->m_rect;
+		window->m_relativeTopLeft.m_x = topLeft->m_x;
+		window->m_relativeTopLeft.m_y = topLeft->m_y;
 		window->InternalOnCreate();
 		window->OnCreate();
 		return 0;
 	}
-	if (p_message == WM_DESTROY) {
+	case WM_DESTROY: {
 		if (p_hwnd == g_hFocusWindow) {
 			g_hFocusWindow = 0;
 			g_pFocusWindow = 0;
@@ -218,21 +237,21 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return 0;
 	}
-	if (p_message == WM_SETCURSOR) {
+	case WM_SETCURSOR: {
 		if ((unsigned short) p_lParam == HTCLIENT) {
 			SetCursor(0);
 			return 1;
 		}
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
-	if (p_message == WM_QUIT) {
+	case WM_QUIT: {
 		if (g_pDebugOutput != 0) {
 			*g_pDebugOutput << g_szQuitting;
 		}
 		ReleaseCapture();
 		return 0;
 	}
-	if (p_message == WM_MOVE) {
+	case WM_MOVE: {
 		if (!g_pTargetGraphicsSystem->IsFullscreenDriver()) {
 			POINT position;
 			position.x = 0;
@@ -243,7 +262,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return 0;
 	}
-	if (p_message == WM_SIZE) {
+	case WM_SIZE: {
 		window->m_rect.m_width = (short) p_lParam;
 		window->m_rect.m_height = (short) (p_lParam >> 16);
 		if (p_wParam == SIZE_RESTORED) {
@@ -268,7 +287,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		window->OnSize();
 		return 0;
 	}
-	if (p_message == WM_SETFOCUS) {
+	case WM_SETFOCUS: {
 		if (g_hFocusWindow != 0 && g_pFocusWindow != 0) {
 			g_pFocusWindow->Dummy94();
 			g_pFocusWindow->Dummy9c();
@@ -277,7 +296,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		window->Dummy98();
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
-	if (p_message == WM_KILLFOCUS) {
+	case WM_KILLFOCUS: {
 		if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
 			if (g_hFocusWindow != 0 && g_pFocusWindow != 0) {
 				g_pFocusWindow->Dummy94();
@@ -287,7 +306,71 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
-	if (p_message == WM_DISPLAYCHANGE) {
+	case WM_ACTIVATEAPP: {
+		int wasDisplayDibActive = g_nDisplayDibActive;
+		int mode = g_pTargetGraphicsSystem->m_driverMode;
+		switch (mode) {
+		case 1:
+			g_dwFullScreenGdi = 1;
+			g_nDisplayDibActive = 0;
+			InvalidateRect((HWND) p_hwnd, 0, 0);
+			break;
+		case 2:
+		case 3:
+			if (p_wParam != 0) {
+				if (window->GetSizeStatus() == 0) {
+					SendMessageA((HWND) p_hwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+				}
+				unsigned short flags = (g_pTargetGraphicsSystem->m_driverMode == 3 ? 5 : 1) | 0x8210;
+				g_pDisplayDib(0, 0, flags);
+				g_dwFullScreenGdi = 0;
+				g_nDisplayDibActive = 1;
+				_outpw(0x3d4, 0xc);
+				_outpw(0x3d4, 0xd);
+				InvalidateRect((HWND) p_hwnd, 0, 0);
+			}
+			else {
+				g_pDisplayDib(0, 0, 0x4000);
+				g_nDisplayDibActive = 0;
+				g_dwFullScreenGdi = 1;
+				SendMessageA((HWND) p_hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+			}
+			break;
+		}
+		if (wasDisplayDibActive != g_nDisplayDibActive) {
+			if (g_nDisplayDibActive == 0) {
+				ClipCursor(0);
+				SystemParametersInfoA(SPI_SETMOUSE, 0, g_savedMouseParameters, 0);
+				if (g_nSavedScreenSaverActive != 0) {
+					SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, (void*) 1, 0);
+				}
+			}
+			else {
+				int mouseParameters[3];
+				RECT clipRect;
+				SystemParametersInfoA(SPI_GETMOUSE, 0, mouseParameters, 0);
+				g_savedMouseParameters[0] = mouseParameters[0];
+				g_savedMouseParameters[1] = mouseParameters[1];
+				g_savedMouseParameters[2] = mouseParameters[2];
+				GetSystemMetrics(SM_CYSCREEN);
+				short screenWidth = (short) GetSystemMetrics(SM_CXSCREEN);
+				TargetGraphicsDriver* driver = g_pTargetGraphicsDriver;
+				mouseParameters[2] = driver->m_screenSize.m_width * mouseParameters[2] / screenWidth;
+				SystemParametersInfoA(SPI_SETMOUSE, 0, mouseParameters, 0);
+				SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &g_nSavedScreenSaverActive, 0);
+				if (g_nSavedScreenSaverActive != 0) {
+					SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, 0, 0);
+				}
+				clipRect.top = 0;
+				clipRect.left = 0;
+				clipRect.right = driver->m_screenSize.m_width;
+				clipRect.bottom = driver->m_screenSize.m_height;
+				ClipCursor(&clipRect);
+			}
+		}
+		return window->ProcessOtherMessages(WM_ACTIVATEAPP, p_wParam, p_lParam);
+	}
+	case WM_DISPLAYCHANGE: {
 		if (g_pTargetGraphicsSystem != 0) {
 			VsSize size;
 			size.m_width = (short) p_lParam;
@@ -296,9 +379,9 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return 0;
 	}
-	if (p_message == WM_KEYDOWN || p_message == WM_KEYUP) {
+	case WM_KEYDOWN:
+	case WM_KEYUP: {
 		posted.type = (unsigned short) ((p_message == WM_KEYDOWN) + 1);
-		posted.time = sequence;
 		posted.code = (int) p_wParam;
 		posted.payload = 0;
 		posted.source = 0;
@@ -307,10 +390,13 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return 0;
 	}
-	if (p_message == WM_LBUTTONDOWN || p_message == WM_LBUTTONDBLCLK || p_message == WM_RBUTTONDOWN ||
-		p_message == WM_RBUTTONDBLCLK || p_message == WM_MBUTTONDOWN || p_message == WM_MBUTTONDBLCLK) {
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONDBLCLK:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONDBLCLK:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONDBLCLK: {
 		posted.type = 6;
-		posted.time = sequence;
 		style = window->GetStyle();
 		if ((style & 0x1000) == 0) {
 			if (p_message == WM_LBUTTONDOWN || p_message == WM_LBUTTONDBLCLK) {
@@ -354,9 +440,10 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return 0;
 	}
-	if (p_message == WM_LBUTTONUP || p_message == WM_RBUTTONUP || p_message == WM_MBUTTONUP) {
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONUP: {
 		posted.type = 5;
-		posted.time = sequence;
 		if (p_message == WM_LBUTTONUP) {
 			posted.payload = (void*) 0x43;
 		}
@@ -377,7 +464,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return 0;
 	}
-	if (p_message == WM_COMMAND) {
+	case WM_COMMAND: {
 		menuAction = window->SelectMenu(p_message, p_wParam, p_lParam);
 		if (menuAction != 0) {
 			posted.type = 0xf;
@@ -393,7 +480,9 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		return window->ProcessOtherMessages(p_message, p_wParam, p_lParam);
 	}
 
-	return window->ProcessOtherMessages(p_message, p_wParam, p_lParam);
+	default:
+		return window->ProcessOtherMessages(p_message, p_wParam, p_lParam);
+	}
 }
 
 // 68K 0x101112b8 MoveAbsolute__4CWndFRC8CVSPoint
