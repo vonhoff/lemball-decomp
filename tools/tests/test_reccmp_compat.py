@@ -78,6 +78,38 @@ class JumpTableBoundaryTests(unittest.TestCase):
 
 
 class TableEndComparisonTests(unittest.TestCase):
+    def edx_loop(self, begin=0x4000, length=61 * 8):
+        return (b"\xba" + struct.pack("<I", begin)
+                + bytes.fromhex("8b4708 3902 741a 83c208 46 81fa")
+                + struct.pack("<I", begin + length) + b"\x72\xf0")
+
+    def test_edx_table_bound_keeps_base_and_length_not_adjacent_symbol(self):
+        rendered = []
+        for begin, adjacent in ((0x4000, "debug (DATA)"), (0x8000, "path (DATA)")):
+            parser = RelocationAwareParseAsm(
+                relocation_sites=(0x1001, 0x1012), addr_test=lambda address: True,
+                name_lookup=lambda address, begin=begin, adjacent=adjacent, **kwargs:
+                    {begin: "inputs (DATA)", begin + 61 * 8: adjacent}.get(address),
+            )
+            rendered.append([line for _, line in parser.parse_asm(self.edx_loop(begin), 0x1000)])
+        self.assertEqual(*rendered)
+        self.assertIn("cmp edx, inputs (DATA) + 0x1e8", rendered[0])
+
+    def test_edx_scan_rejects_missing_relocations_and_changed_flow(self):
+        for sites in ((), (0x1001,), (0x1012,)):
+            self.assertEqual(table_end_expressions(self.edx_loop(), 0x1000, sites), {})
+        for offset, value in ((5, 0x89), (6, 0x57), (8, 0x89), (10, 0x75), (11, 0),
+                              (14, 0), (14, 0xff), (15, 0x42), (17, 0xf8), (23, 0xf1)):
+            with self.subTest(offset=offset):
+                blob = bytearray(self.edx_loop())
+                blob[offset] = value
+                self.assertEqual(table_end_expressions(blob, 0x1000, (0x1001, 0x1012)), {})
+        for length in (0, -8, 7, 0x10008):
+            self.assertEqual(table_end_expressions(self.edx_loop(length=length), 0x1000,
+                                                  (0x1001, 0x1012)), {})
+        self.assertEqual(table_end_expressions(b"\x68" + self.edx_loop(), 0x1000,
+                                              (0x1002, 0x1013)), {})
+
     def loop(self, begin=0x4000, length=0x168):
         return (b"\xb8" + struct.pack("<I", begin)
                 + b"\x39\x08\x74\x22\x83\xc0\x08\x46\x3d"

@@ -232,15 +232,31 @@ def relocate_instructions(codes, orig_asm, recomp_asm):
 def table_end_expressions(data, start, relocation_sites):
     """Recognize a bounded literal-table scan, not an adjacent global access.
 
-    The accepted sequence initializes EAX with a relocated table pointer,
-    compares [EAX] with ECX, exits on equality, advances EAX by a positive
-    stride, increments ESI, and compares EAX with a relocated end pointer.
+    Accepted sequences initialize EAX or EDX with a relocated table pointer,
+    compare its key, exit on equality, advance the pointer by a positive
+    stride, increment ESI, and compare with a relocated end pointer.
     JB must return to that same key comparison. All other code is untouched.
     """
     expressions = {}
     decoder = Cs(CS_ARCH_X86, CS_MODE_32)
     for address, _, _, _ in decoder.disasm_lite(data, start):
         offset = address - start
+        # EDX variant loads a key into EAX before the same bounded scan.
+        loop = data[offset:offset + 24]
+        if (len(loop) == 24 and loop[0] == 0xBA
+                and loop[5] == 0x8B and loop[6] in (0x40, 0x41, 0x42, 0x43, 0x45, 0x46, 0x47)
+                and loop[8:11] == b"\x39\x02\x74"
+                and 12 + loop[11] >= 24 and loop[11] < 0x80
+                and loop[12:14] == b"\x83\xc2" and 0 < loop[14] < 0x80
+                and loop[15:18] == b"\x46\x81\xfa"
+                and loop[22:24] == b"\x72\xf0"
+                and address + 1 in relocation_sites and address + 18 in relocation_sites):
+            begin = struct.unpack_from("<I", loop, 1)[0]
+            end = struct.unpack_from("<I", loop, 18)[0]
+            length = end - begin
+            if 0 < length <= 65536 and length % loop[14] == 0:
+                expressions[address + 16] = (begin, length)
+            continue
         if offset + 20 > len(data):
             continue
         loop = data[offset:offset + 20]

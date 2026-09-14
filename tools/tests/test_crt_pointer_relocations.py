@@ -95,3 +95,16 @@ class CrtPointerRelocationTests(unittest.TestCase):
             self.assertEqual(code[12], 0xE8)
             displacement = struct.unpack_from("<i", code, 13)[0]
             self.assertEqual(address + 0x18 + displacement, target)
+
+    def test_translator_bound_is_one_past_identical_input_tables(self):
+        tables = []
+        for image, address in self.sides(0x00472A60):
+            begin = self.pointer(image, address + 0x24)
+            end = self.pointer(image, address + 0x35)
+            self.assertEqual(end - begin, 61 * 8)
+            tables.append(bytes(image.read(begin, end - begin)))
+            loop = bytes(image.read(address + 0x23, 24))
+            self.assertEqual(loop[0], 0xBA)
+            self.assertEqual(loop[8:18], bytes.fromhex("3902 741a 83c208 46 81fa"))
+            self.assertEqual(loop[22:], b"\x72\xf0")
+        self.assertEqual(*tables)
