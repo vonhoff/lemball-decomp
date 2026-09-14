@@ -4,15 +4,24 @@
 #include "VsDebugStreambuf.h"
 #include "VsOStream.h"
 
-// Original x86 uses the first base address to initialize both virtual stream paths.
+// Original cleanup uses a vbptr at +0 and the buffer member at +4.
 #pragma warning(disable : 4355)
 // SIZE 0x16c
-class LocalDebugOStream : public VsDebugStreambuf, public virtual VsOStream {
+// VTABLE: LEMBALL 0x00493020
+class LocalDebugOStream : public virtual VsOStream {
 public:
-	LocalDebugOStream(char* p_buffer, int p_size) : VsIOs(this), VsDebugStreambuf(p_buffer, p_size, 0), VsOStream(this)
+	LocalDebugOStream(char* p_buffer, int p_size)
+		: VsIOs(&m_buffer), VsOStream(&m_buffer), m_buffer(p_buffer, p_size, 0)
 	{
 	}
+	virtual ~LocalDebugOStream() {}
+
+private:
+	VsDebugStreambuf m_buffer; // 0x04
 };
 #pragma warning(default : 4355)
+
+// SYNTHETIC: LEMBALL 0x00407e80
+// LocalDebugOStream::`scalar deleting destructor'
 
 #endif
