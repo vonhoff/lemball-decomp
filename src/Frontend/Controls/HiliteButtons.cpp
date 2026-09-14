@@ -66,6 +66,14 @@ HiliteButtons::HiliteButtons(GWnd* p_arg0,
 	LoadFaces(p_arg4);
 }
 
+// 68K 0x10804be0 __dt__14CHiliteButtonsFv
+// FUNCTION: LEMBALL 0x0044f130
+HiliteButtons::~HiliteButtons()
+{
+	g_pMasterInputQueue->Detach(this, 0);
+	UnLoadFaces();
+}
+
 // 68K 0x10804c52 ProcessMsg__14CHiliteButtonsFP10tagMESSAGE
 // FUNCTION: LEMBALL 0x0044f160
 int HiliteButtons::ProcessMsg(Message* p_message)
@@ -182,9 +190,4 @@ void HiliteButtons::UpdateAnimId()
 		}
 	}
 	m_button->SetAnimId(m_animIds[m_value - m_minimum]);
-}
-
-// 68K 0x10804be0 __dt__14CHiliteButtonsFv
-HiliteButtons::~HiliteButtons()
-{
 }
