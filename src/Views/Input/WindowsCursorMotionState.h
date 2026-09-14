@@ -8,7 +8,9 @@
 // SIZE 0x78
 class WindowsCursorMotionState {
 public:
+	void SetCursorMotionPoint(const VsPoint& p_position);
 	VsPoint GetCursorMotionPoint();
+	void SetCursorMotionAuxValues(unsigned int p_aux0, unsigned int p_aux1);
 
 private:
 	undefined4 m_unknown00;          // 0x00
