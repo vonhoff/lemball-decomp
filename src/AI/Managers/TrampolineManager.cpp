@@ -43,6 +43,13 @@ void TrampolineManager::Initialise(int p_capacity)
 	}
 }
 
+// 68K 0x10620dc2 __dt__18CTrampolineManagerFv
+// FUNCTION: LEMBALL 0x0042b090
+TrampolineManager::~TrampolineManager()
+{
+	delete[] m_trampolines;
+}
+
 // 68K 0x10620e3e Process__18CTrampolineManagerFv
 // FUNCTION: LEMBALL 0x0042b4a0
 void TrampolineManager::Process()
@@ -122,9 +129,4 @@ void TrampolineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigne
 			remaining--;
 		} while (remaining != 0);
 	}
-}
-
-// 68K 0x10620dc2 __dt__18CTrampolineManagerFv
-TrampolineManager::~TrampolineManager()
-{
 }
