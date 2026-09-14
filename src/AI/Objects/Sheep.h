@@ -13,7 +13,6 @@ public:
 	virtual void HitBall(); // vtable+0x58
 	virtual void HitMine(); // vtable+0x64
 	virtual void Restart(); // vtable+0x104
-	virtual ~Sheep();       // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x0041fb70

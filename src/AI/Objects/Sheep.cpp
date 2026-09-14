@@ -70,8 +70,3 @@ void Sheep::HitMine()
 	velocity.m_zFixed = 0xa000;
 	StartFly(velocity, 0);
 }
-
-// 68K 0x1011b36a __dt__6CSheepFv
-Sheep::~Sheep()
-{
-}
