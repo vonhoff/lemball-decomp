@@ -20,11 +20,10 @@ public:
 			m_payloadCapacity += g_networkPacketSize;
 		}
 	}
-	virtual void GetData();       // vtable+0x08
-	virtual void AddData();       // vtable+0x10
-	virtual ~BaseObjectManager(); // vtable+0x14
-	virtual void Restart();       // vtable+0x18
-	virtual void Process() = 0;   // vtable+0x1c
+	virtual void GetData();     // vtable+0x08
+	virtual void AddData();     // vtable+0x10
+	virtual void Restart();     // vtable+0x18
+	virtual void Process() = 0; // vtable+0x1c
 	virtual bool Receive(unsigned short p_messageId,
 						 GlobalGameObject* p_object,
 						 NetworkMessage* p_message); // vtable+0x20

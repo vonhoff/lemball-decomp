@@ -34,11 +34,6 @@ int BaseObjectManager::GetViewData(ViewData* p_viewData)
 	return 0;
 }
 
-// 68K 0x1011806c __dt__18CBaseObjectManagerFv
-BaseObjectManager::~BaseObjectManager()
-{
-}
-
 // 68K 0x1060420e Add__18CBaseObjectManagerFP15CNetworkMessage
 // FUNCTION: LEMBALL 0x0040ad30
 void BaseObjectManager::Add(NetworkMessage* p_message)
