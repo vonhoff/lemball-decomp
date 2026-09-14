@@ -88,11 +88,11 @@ Panel::Panel(C2D* p_arg0) : BaseQueueHandler()
 // FUNCTION: LEMBALL 0x00443140
 Panel::~Panel()
 {
-	PanelLemming** lemming;
 	int count;
+	PanelLemming** lemming;
 	lemming = m_lemmings;
-	count = 4;
 	g_pMasterInputQueue->Detach(this, 0);
+	count = 4;
 	do {
 		delete *lemming;
 		lemming++;
