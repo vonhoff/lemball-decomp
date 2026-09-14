@@ -190,61 +190,13 @@ def check_decomplint(
     warnfail: bool = True,
     encoding: str = "utf-8",
 ) -> int:
-    """Run reccmp decomplint checks via the Python API."""
-    import argparse
-    from pathlib import PurePath
+    import subprocess
     import sys
-    import colorama
-    from reccmp.parser.error import ParserAlert
-    from reccmp.project.error import RecCmpProjectException
-    from reccmp.tools.decomplint import (
-        check_aliases,
-        decomplint_parse_args,
-        display_errors,
-        lint_all_targets,
-    )
 
-    search_paths = (
-        [Path(p) if not isinstance(p, Path) else p for p in paths]
-        if paths
-        else [ROOT / "src"]
-    )
-    args = argparse.Namespace(
-        paths=search_paths,
-        target=target,
-        warnfail=warnfail,
-        encoding=encoding,
-    )
-    try:
-        lint_targets = decomplint_parse_args(args)
-    except RecCmpProjectException as e:
-        sys.stderr.write(f"decomplint: {e.args[0]}\n")
-        return 1
-
-    all_alerts = lint_all_targets(lint_targets)
-    all_alerts.extend(check_aliases(lint_targets))
-
-    error_count = 0
-    warning_count = 0
-    filtered_alerts_by_path: dict[PurePath, list[ParserAlert]] = {}
-
-    for alert in all_alerts:
-        if args.target is None or args.target == alert.target or alert.target is None:
-            filtered_alerts_by_path.setdefault(alert.path, []).append(alert)
-
-    sorted_paths = sorted(filtered_alerts_by_path.keys(), key=lambda p: str(p).lower())
-    for error_path in sorted_paths:
-        alerts = filtered_alerts_by_path[error_path]
-        if alerts:
-            error_count += sum(1 for alert in alerts if alert.is_error())
-            warning_count += sum(1 for alert in alerts if alert.is_warning())
-
-            sorted_alerts = sorted(alerts, key=lambda a: a.line_number)
-            display_errors(sorted_alerts, error_path)
-            print()
-
-    print(colorama.Style.RESET_ALL, end="")
-
-    if error_count > 0 or (warning_count > 0 and warnfail):
-        return 1
-    return 0
+    command = [sys.executable, "-m", "reccmp.tools.decomplint", "--encoding", encoding]
+    if target is not None:
+        command.extend(["--target", target])
+    if warnfail:
+        command.append("--warnfail")
+    command.extend(str(path) for path in (paths or [SRC]))
+    return subprocess.run(command).returncode
