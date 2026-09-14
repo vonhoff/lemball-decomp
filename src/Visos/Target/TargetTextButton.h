@@ -8,6 +8,9 @@
 // VTABLE: LEMBALL 0x00499a18 primary
 // VTABLE: LEMBALL 0x004999f8 hot-area view at +0x90
 class TargetTextButton : public TargetFramedButton {
+public:
+	void Initialize();
+
 private:
 	char* m_normalText;                 // 0x118
 	char* m_pressedText;                // 0x11c

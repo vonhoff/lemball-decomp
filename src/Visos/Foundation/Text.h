@@ -63,6 +63,6 @@ protected:
 };
 
 // SYNTHETIC: LEMBALL 0x00469b80
-// Text::`scalar deleting destructor'
+// Text::`vector deleting destructor'
 
 #endif

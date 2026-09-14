@@ -51,6 +51,7 @@ public:
 	friend class HiliteButtons;
 	friend class DepressedButton;
 	friend class TargetFramedButton;
+	friend class TargetTextButton;
 	friend class PanelButton;
 	friend class FrontendResourceLoader;
 	friend class CdLoadAnim;

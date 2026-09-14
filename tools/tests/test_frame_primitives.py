@@ -15,6 +15,30 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class FramePrimitiveTests(unittest.TestCase):
+    def test_text_allocation_has_one_element_cookie(self):
+        for address, instructions in self.instructions(0x004693b0, 131):
+            with self.subTest(address=hex(address)):
+                sizes = [i.operands[0].imm for i in instructions
+                         if i.mnemonic == "push" and i.operands[0].type == X86_OP_IMM]
+                self.assertEqual(sizes, [0x48])
+                cookies = [i.operands[1].imm for i in instructions
+                           if i.mnemonic == "mov" and len(i.operands) == 2
+                           and i.operands[0].type == X86_OP_MEM
+                           and i.operands[0].mem.disp == 0
+                           and i.operands[1].type == X86_OP_IMM]
+                self.assertEqual(cookies, [1])
+
+    def test_text_delete_helper_handles_array_stride(self):
+        for address, instructions in self.instructions(0x00469b80, 98):
+            with self.subTest(address=hex(address)):
+                tests = [i for i in instructions if i.mnemonic == "test"]
+                self.assertEqual(tests[0].operands[1].imm, 2)
+                self.assertTrue(any(i.mnemonic == "sub" and len(i.operands) == 2
+                                    and i.operands[1].type == X86_OP_IMM
+                                    and i.operands[1].imm == 0x44 for i in instructions))
+                self.assertEqual([i.operands[0].imm for i in instructions
+                                  if i.mnemonic == "ret"], [4, 4])
+
     def test_resource_destructor_deletes_one_owned_interface(self):
         for address, instructions in self.instructions(0x00468ec0, 54):
             with self.subTest(address=hex(address)):
