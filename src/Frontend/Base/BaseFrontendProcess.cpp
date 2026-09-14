@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_BASEPROCESS
 #include "BaseFrontendProcess.h"
 
 #include "../../Control/Game/GameStatus.h"
