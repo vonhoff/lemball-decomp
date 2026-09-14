@@ -4,6 +4,12 @@
 // MSVC runtime routines linked from the compiler libraries.
 // These mappings identify the original x86 implementations, not replacement code.
 
+// LIBRARY: LEMBALL 0x0047fb10 SYMBOL
+// __toupper_lk
+
+// LIBRARY: LEMBALL 0x004800b0 SYMBOL
+// __tolower_lk
+
 // LIBRARY: LEMBALL 0x004803e0 SYMBOL
 // __fsopen
 
@@ -49,6 +55,12 @@
 // LIBRARY: LEMBALL 0x00480c10 SYMBOL
 // __fseek_lk
 
+// LIBRARY: LEMBALL 0x00480cb0 SYMBOL
+// _atol
+
+// LIBRARY: LEMBALL 0x00480d60 SYMBOL
+// _atoi
+
 // LIBRARY: LEMBALL 0x00480f20 SYMBOL
 // __lock_file
 
@@ -60,6 +72,18 @@
 
 // LIBRARY: LEMBALL 0x00480fd0 SYMBOL
 // __unlock_file2
+
+// LIBRARY: LEMBALL 0x00481020 SYMBOL
+// ___crtLCMapStringW
+
+// LIBRARY: LEMBALL 0x00481270 SYMBOL
+// ___crtLCMapStringA
+
+// LIBRARY: LEMBALL 0x004814d0 SYMBOL
+// ___crtGetStringTypeW
+
+// LIBRARY: LEMBALL 0x00481690 SYMBOL
+// ___crtGetStringTypeA
 
 // LIBRARY: LEMBALL 0x00483030 SYMBOL
 // __openfile
@@ -111,6 +135,12 @@
 
 // LIBRARY: LEMBALL 0x00483f30 SYMBOL
 // ___doserrno
+
+// STRING: LEMBALL 0x004a45bc
+// "\0"
+
+// STRING: LEMBALL 0x004a45c0
+// L"\0"
 
 // GLOBAL: LEMBALL 0x004a4c48 SYMBOL
 // __iob
