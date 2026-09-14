@@ -8,7 +8,12 @@
 // VTABLE: LEMBALL 0x0049a5e8
 class AbstractFile {
 public:
-	~AbstractFile() {}
+	~AbstractFile()
+	{
+		if (m_filename != 0) {
+			operator delete(m_filename);
+		}
+	}
 	AbstractFile() : m_filename(0) { m_closed = 1; }
 	virtual bool Open(const char* p_filename, unsigned char p_mode, int p_create) = 0; // vtable+0x00
 	virtual bool Create(const char* p_filename, unsigned char p_mode) = 0;             // vtable+0x04

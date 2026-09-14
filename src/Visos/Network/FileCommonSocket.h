@@ -20,7 +20,6 @@ public:
 	bool CreateSocket(const char* p_path);
 	virtual int SysCloseSocket();
 	virtual void SocketError();
-	virtual ~FileCommonSocket();
 
 protected:
 	int m_unk0x08; // 0x08: header-slot count used by FileReadSocket

@@ -36,8 +36,3 @@ void FileCommonSocket::SocketError()
 {
 	BaseCommonSocket::SocketError((NetworkErrors) 0);
 }
-
-// 68K 0x101065e2 __dt__17CFileCommonSocketFv
-FileCommonSocket::~FileCommonSocket()
-{
-}

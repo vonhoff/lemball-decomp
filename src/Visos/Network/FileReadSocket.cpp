@@ -120,11 +120,6 @@ void FileReadSocket::Process()
 	}
 }
 
-// 68K 0x1010669c __dt__15CFileReadSocketFv
-FileReadSocket::~FileReadSocket()
-{
-}
-
 // 68K 0x101078ba Closed__15CFileReadSocketFUc
 // FUNCTION: LEMBALL 0x0047be10
 void FileReadSocket::Closed(int p_notifyPeer)

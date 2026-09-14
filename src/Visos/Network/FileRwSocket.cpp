@@ -37,8 +37,3 @@ NetworkMessage* FileRwSocket::ReceiveAcknowledgement()
 {
 	return RwSocket::ReceiveAcknowledgement();
 }
-
-// 68K 0x1010681e __dt__13CFileRWSocketFv
-FileRwSocket::~FileRwSocket()
-{
-}
