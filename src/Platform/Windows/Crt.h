@@ -184,6 +184,54 @@
 // LIBRARY: LEMBALL 0x00483f30 SYMBOL
 // ___doserrno
 
+// LIBRARY: LEMBALL 0x00483ff0 SYMBOL
+// _calloc
+
+// LIBRARY: LEMBALL 0x00484050 SYMBOL
+// _wcslen
+
+// LIBRARY: LEMBALL 0x00484070 SYMBOL
+// ___crtMessageBoxA
+
+// LIBRARY: LEMBALL 0x00484110 SYMBOL
+// __open
+
+// LIBRARY: LEMBALL 0x00484130 SYMBOL
+// __sopen
+
+// LIBRARY: LEMBALL 0x00484590 SYMBOL
+// __alloc_osfhnd
+
+// LIBRARY: LEMBALL 0x004846e0 SYMBOL
+// __set_osfhnd
+
+// LIBRARY: LEMBALL 0x00484790 SYMBOL
+// __free_osfhnd
+
+// LIBRARY: LEMBALL 0x00484830 SYMBOL
+// __get_osfhandle
+
+// LIBRARY: LEMBALL 0x00484940 SYMBOL
+// __lock_fhandle
+
+// LIBRARY: LEMBALL 0x004849b0 SYMBOL
+// __unlock_fhandle
+
+// LIBRARY: LEMBALL 0x004849e0 SYMBOL
+// __getbuf
+
+// LIBRARY: LEMBALL 0x00484a30 SYMBOL
+// __fcloseall
+
+// LIBRARY: LEMBALL 0x00484ad0 SYMBOL
+// __isatty
+
+// LIBRARY: LEMBALL 0x00484b00 SYMBOL
+// __assert
+
+// LIBRARY: LEMBALL 0x004850c0 SYMBOL
+// __chsize_lk
+
 // STRING: LEMBALL 0x004a45bc
 // "\0"
 
