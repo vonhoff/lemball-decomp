@@ -3542,12 +3542,14 @@ void C2D::SetOrigin()
 		m_originPosition.m_zFixed = origin.m_zFixed;
 		m_originPosition.m_yFixed = origin.m_yFixed;
 
-		int screenX = origin.m_xFixed >> 12;
-		int screenY = origin.m_yFixed >> 12;
-		int screenZ = origin.m_zFixed >> 12;
-		m_map->GameToScreen(screenX, screenY);
-		origin.m_xFixed = screenX << 12;
-		origin.m_yFixed = (screenY - screenZ) * 0x1000;
+		{
+			int screenX = origin.m_xFixed >> 12;
+			int screenY = origin.m_yFixed >> 12;
+			int screenZ = origin.m_zFixed >> 12;
+			m_map->GameToScreen(screenX, screenY);
+			origin.m_xFixed = screenX << 12;
+			origin.m_yFixed = (screenY - screenZ) * 0x1000;
+		}
 		int oldViewOriginX = m_viewOriginX;
 		int projectedX = origin.m_xFixed >> 12;
 		int projectedY = origin.m_yFixed >> 12;
