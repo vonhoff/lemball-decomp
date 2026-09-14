@@ -2,6 +2,11 @@
 
 #include "../../Visos/Foundation/VsPoint.h"
 
+// FUNCTION: LEMBALL 0x00432650
+WindowsCursorMotionState::~WindowsCursorMotionState()
+{
+}
+
 // FUNCTION: LEMBALL 0x00432810
 void WindowsCursorMotionState::SetCursorMotionPoint(const VsPoint& p_position)
 {
