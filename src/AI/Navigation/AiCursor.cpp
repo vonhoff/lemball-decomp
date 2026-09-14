@@ -14,6 +14,13 @@ AiCursor::AiCursor(Ai* p_arg0, int p_arg1, int p_arg2)
 	m_queue->Attach(this, 0);
 }
 
+// 68K 0x106060dc __dt__9CAICursorFv
+// FUNCTION: LEMBALL 0x00414de0
+AiCursor::~AiCursor()
+{
+	m_queue->Detach(this, 0);
+}
+
 // 68K 0x1060613e SetCursorXY__9CAICursorFii
 // FUNCTION: LEMBALL 0x00414e00
 void AiCursor::SetCursorXy(int p_x, int p_y)
@@ -70,9 +77,4 @@ int AiCursor::ProcessMsg(Message* p_message)
 		m_processedCount++;
 		return 0;
 	}
-}
-
-// 68K 0x106060dc __dt__9CAICursorFv
-AiCursor::~AiCursor()
-{
 }

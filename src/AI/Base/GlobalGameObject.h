@@ -19,7 +19,7 @@ public:
 	virtual bool Receive(unsigned short p_arg0, NetworkMessage* p_arg1); // vtable+0x108
 	virtual void DoActivate();                                           // vtable+0x10c
 	void CancelRequest();
-	void DeleteMessages();
+	static void DeleteMessages();
 	void RequestAction(eAction p_arg0);
 	static void SetMessages();
 	virtual ~GlobalGameObject();

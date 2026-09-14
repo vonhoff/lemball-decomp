@@ -33,6 +33,19 @@ GodManager::GodManager(int p_arg0)
 	}
 }
 
+// 68K 0x1060df5c __dt__11CGodManagerFv
+// FUNCTION: LEMBALL 0x0040b0d0
+GodManager::~GodManager()
+{
+	if (g_pBaseNetwork != 0) {
+		g_pBaseNetwork->DetachMessageQueue();
+	}
+	delete m_gameStateMessage;
+	GlobalGameObject::DeleteMessages();
+	operator delete(m_transportMap);
+	operator delete(m_managers);
+}
+
 // 68K 0x1060e004 Restart__11CGodManagerFv
 // FUNCTION: LEMBALL 0x0040b120
 void GodManager::Restart()
@@ -128,11 +141,6 @@ void GodManager::Process()
 			m_managers[i]->ProcessNetwork();
 		}
 	}
-}
-
-// 68K 0x1060df5c __dt__11CGodManagerFv
-GodManager::~GodManager()
-{
 }
 
 // GLOBAL: LEMBALL 0x0049cf30
