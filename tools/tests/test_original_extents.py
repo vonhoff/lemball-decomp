@@ -12,6 +12,8 @@ from reccmp.types import ImageId
 from lib.paths import ORIGINAL_EXE, RECOMP_EXE, RECOMP_PDB
 from lib.reccmp import load_engine
 from lib.reccmp_compat import complete_original_extent, extend_original_match
+from lib.reccmp_compat import BoundedInstructGen
+from reccmp.compare.asm.instgen import SectionType
 
 
 class BytesImage:
@@ -128,6 +130,31 @@ class OriginalExtentTests(unittest.TestCase):
         for near in (False, True):
             with self.subTest(near=near):
                 self.assertEqual(self.extent(self.direct_switch(near)), 0x88)
+
+    def test_proven_table_length_preserves_following_bytes_as_data(self):
+        data = self.direct_switch()
+        # The upstream instruction reader stops at INT3; use decodable padding
+        # so this fixture exercises the table reader as well as the CFG proof.
+        data[12:0x40] = b"\x90" * (0x40 - 12)
+        data[0x41] = 0x90
+        data[0x46:0x80] = b"\x90" * (0x80 - 0x46)
+        # Even a following word that looks like a valid code address is not
+        # a third entry: CMP EAX,1 proves the two-entry dispatch.
+        struct.pack_into("<I", data, 0x88, 0x1042)
+        sections = BoundedInstructGen(data, 0x1000).sections
+        tables = [s for s in sections if s.type == SectionType.ADDR_TAB]
+        self.assertEqual([len(s.contents) for s in tables], [2])
+        trailing = [pair for s in sections if s.type == SectionType.DATA_TAB
+                    for pair in s.contents if pair[0] >= 0x1088]
+        self.assertEqual(trailing, list(enumerate(data[0x88:], 0x1088)))
+        data[0x88] ^= 1
+        changed = BoundedInstructGen(data, 0x1000).sections
+        self.assertNotEqual(sections, changed)
+
+    def test_unproven_control_flow_does_not_supply_table_lengths(self):
+        data = self.direct_switch()
+        data[0x40:0x42] = bytes.fromhex("ff e0")
+        self.assertEqual(BoundedInstructGen(data, 0x1000)._table_bounds, {})
 
     def switch_with_guard_store(self, near=False):
         data = self.direct_switch(near)
@@ -275,6 +302,16 @@ class OriginalExtentTests(unittest.TestCase):
     "requires the reference executable and a local build",
 )
 class OriginalExtentBinaryTests(unittest.TestCase):
+    def test_main_display_switch_does_not_consume_following_data(self):
+        _, engine = load_engine()
+        blob = engine.orig_bin.read(0x00431cd0, 0x1dc)
+        tables = [section for section in BoundedInstructGen(blob, 0x00431cd0).sections
+                  if section.type == SectionType.ADDR_TAB]
+        self.assertEqual([len(table.contents) for table in tables], [6])
+        trailing = [pair for section in BoundedInstructGen(blob, 0x00431cd0).sections
+                    if section.type == SectionType.DATA_TAB for pair in section.contents]
+        self.assertEqual(trailing, list(enumerate(blob[-8:], 0x00431ea4)))
+
     def test_c2d_draw_lemming_includes_byte_table_after_guard_store(self):
         _, engine = load_engine()
         extent = complete_original_extent(

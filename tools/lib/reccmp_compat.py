@@ -97,13 +97,15 @@ def bounded_switch_edges(image, address, start, limit):
         return None
 
 
-def complete_original_extent(image, start, limit, decoder):
+def complete_original_extent(image, start, limit, decoder, *, table_bounds=None):
     """Find a closed control-flow extent, or decline uncertain code.
 
     Never cross the next known entity. Indirect jumps require a fully verified
     bounded switch dispatch; all other indirect jumps are declined. Calls
     retain their fallthrough edge. All reachable instructions must decode and
     all branch targets must be instruction boundaries inside the bounded span.
+    Optional table_bounds receives table start/end pairs; use them only when
+    this function returns a proven extent rather than None.
     """
     pending = [start]
     instructions = set()
@@ -130,6 +132,8 @@ def complete_original_extent(image, start, limit, decoder):
             instructions.add(address)
             occupied.update(span)
             data_bytes.update(set().union(*table_spans))
+            if table_bounds is not None:
+                table_bounds.update((at, at + count) for at, count in tables)
             pending.extend(edges)
             continue
         try:
@@ -479,11 +483,43 @@ def configure_pointer_comparisons(engine) -> None:
         )
 
 
+class _InstructionImage:
+    """Read the supplied instruction buffer without extending its bounds."""
+
+    def __init__(self, blob, start):
+        self.blob = blob
+        self.start = start
+
+    def read(self, address, size):
+        offset = address - self.start
+        if not 0 <= offset < offset + size <= len(self.blob):
+            raise ValueError("Instruction read is outside the supplied buffer")
+        return self.blob[offset:offset + size]
+
+
 class BoundedInstructGen(InstructGen):
-    """Stop address tables at code boundaries discovered from their entries."""
+    """Bound tables by proven guards and code boundaries from their entries."""
+
+    def __init__(self, blob, start, is_32bit=True):
+        self._table_bounds = {}
+        if is_32bit and blob:
+            extent = complete_original_extent(
+                _InstructionImage(blob, start), start, start + len(blob),
+                Cs(CS_ARCH_X86, CS_MODE_32), table_bounds=self._table_bounds,
+            )
+            if extent is None:
+                self._table_bounds.clear()
+        super().__init__(blob, start, is_32bit)
 
     def _next_section(self, addr: int) -> SectionType | None:
         section_type = super()._next_section(addr)
+        table_end = self._table_bounds.get(addr)
+        if (section_type in (SectionType.ADDR_TAB, SectionType.DATA_TAB)
+                and table_end is not None and table_end < self.section_end):
+            # A closed CFG proves the table length. Keep following bytes in the
+            # comparison, but do not normalize unrelated data as code addresses.
+            self._insert_confirmed_addr(table_end, SectionType.DATA_TAB)
+            self.section_end = table_end
         if section_type == SectionType.ADDR_TAB:
             # Upstream snapshots read_size before discovering code targets. A
             # target can shorten section_end, leaving instructions in that saved
