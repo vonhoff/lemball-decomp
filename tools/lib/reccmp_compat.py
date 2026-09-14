@@ -449,10 +449,11 @@ def incremental_thunks(image):
 class RelocationAwareParseAsm(parse.ParseAsm):
     """Recognize CMP pointer immediates at verified PE relocation sites."""
 
-    def __init__(self, *, relocation_sites=(), thunk_targets=None, **kwargs):
+    def __init__(self, *, relocation_sites=(), thunk_targets=None, function_aliases=None, **kwargs):
         super().__init__(**kwargs)
         self.relocation_sites = frozenset(relocation_sites)
         self.thunk_targets = thunk_targets or {}
+        self.function_aliases = function_aliases or {}
         self._decoder = Cs(CS_ARCH_X86, CS_MODE_32)
         self._decoder.detail = True
 
@@ -467,7 +468,10 @@ class RelocationAwareParseAsm(parse.ParseAsm):
     def sanitize(self, inst):
         address, size, mnemonic, operands = inst
         if self.is_32bit and mnemonic == "call" and re.fullmatch(r"0x[0-9a-f]+", operands):
-            target = self.thunk_targets.get(int(operands, 16))
+            target_address = int(operands, 16)
+            if target_address in self.function_aliases:
+                return mnemonic, self.replace(self.function_aliases[target_address], exact=True)
+            target = self.thunk_targets.get(target_address)
             if (target is not None and self.lookup(int(operands, 16), exact=True) is None
                     and self.lookup(target, exact=True) is not None):
                 return mnemonic, self.replace(target, exact=True)
@@ -496,8 +500,29 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         return super().sanitize(inst)
 
 
+def identical_folded_aliases(engine):
+    from reccmp.parser.codebase import DecompCodebase
+    from .vtable import collect_folded_aliases
+
+    codebase = DecompCodebase(engine.code_files, engine.target_id, aliases=engine.project_aliases)
+    aliases = {}
+    for original, candidates in collect_folded_aliases(engine, codebase).items():
+        match = engine._db.get_one_match(original)
+        if match is None:
+            continue
+        size = match.size(ImageId.RECOMP)
+        for candidate in candidates:
+            entity = engine._db.get(ImageId.RECOMP, candidate)
+            if (size and entity is not None and entity.size(ImageId.RECOMP) == size
+                    and engine.recomp_bin.read(candidate, size)
+                    == engine.recomp_bin.read(match.recomp_addr, size)):
+                aliases[candidate] = match.recomp_addr
+    return aliases
+
+
 def configure_pointer_comparisons(engine) -> None:
     comparator = engine.function_comparator
+    aliases = identical_folded_aliases(engine)
     for side in ("orig", "recomp"):
         image = getattr(comparator, side + "_bin")
         parser = getattr(comparator, side + "_sanitize")
@@ -507,6 +532,7 @@ def configure_pointer_comparisons(engine) -> None:
             RelocationAwareParseAsm(
                 relocation_sites=image.relocations,
                 thunk_targets=incremental_thunks(image),
+                function_aliases=aliases if side == "recomp" else {},
                 addr_test=parser.addr_test,
                 name_lookup=parser.name_lookup,
                 is_32bit=parser.is_32bit,
