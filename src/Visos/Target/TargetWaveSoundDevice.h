@@ -38,6 +38,13 @@ public:
 	virtual int FreeEffect(unsigned long p_effectId);
 	virtual int Dummy4c();
 	virtual int FreeAllEffects();
+	virtual unsigned char GetMasterVolume();
+	virtual void SetMasterVolume(unsigned char p_volume);
+	virtual unsigned char GetMusicVolume();
+	virtual void SetMusicVolume(unsigned char p_volume);
+	virtual unsigned char GetEffectVolume();
+	virtual void SetEffectVolume(unsigned char p_volume);
+	virtual bool SetVolume(unsigned long p_resourceId, int p_index, unsigned char p_volume);
 	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume);  // vtable+0x90
 	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume); // vtable+0x8c
 	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect);                          // vtable+0x94

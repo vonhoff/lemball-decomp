@@ -399,6 +399,45 @@ int TargetWaveSoundDevice::FreeAllEffects()
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x0047d0f0
+unsigned char TargetWaveSoundDevice::GetMasterVolume()
+{
+	return 0xff;
+}
+
+// FUNCTION: LEMBALL 0x0047d100
+void TargetWaveSoundDevice::SetMasterVolume(unsigned char p_volume)
+{
+}
+
+// FUNCTION: LEMBALL 0x0047d110
+unsigned char TargetWaveSoundDevice::GetMusicVolume()
+{
+	return 0xff;
+}
+
+// FUNCTION: LEMBALL 0x0047d120
+void TargetWaveSoundDevice::SetMusicVolume(unsigned char p_volume)
+{
+}
+
+// FUNCTION: LEMBALL 0x0047d130
+unsigned char TargetWaveSoundDevice::GetEffectVolume()
+{
+	return 0xff;
+}
+
+// FUNCTION: LEMBALL 0x0047d140
+void TargetWaveSoundDevice::SetEffectVolume(unsigned char p_volume)
+{
+}
+
+// FUNCTION: LEMBALL 0x0047d150
+bool TargetWaveSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, unsigned char p_volume)
+{
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047d160
 unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
 {
