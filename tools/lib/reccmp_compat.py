@@ -19,7 +19,7 @@ from reccmp.types import ImageId
 
 
 def bounded_switch_edges(image, address, start, limit):
-    """Recognize guarded EAX/EDX/EDI switch tables within the function bound.
+    """Recognize guarded EAX/ECX/EDX/EDI switch tables within the function bound.
 
     The caller rejects edges into the dispatch interior. Only a flag-preserving
     word store to [ESP+disp8] may separate CMP from JA.
@@ -35,9 +35,9 @@ def bounded_switch_edges(image, address, start, limit):
     try:
         raw = bytes(image.read(address, min(32, limit - address)))
         source = "eax"
-        if raw[:2] in (b"\x83\xf8", b"\x83\xfa", b"\x83\xff") and len(raw) >= 3 and raw[2] < 0x80:
+        if raw[:2] in (b"\x83\xf8", b"\x83\xf9", b"\x83\xfa", b"\x83\xff") and len(raw) >= 3 and raw[2] < 0x80:
             maximum, cursor = raw[2], 3
-            source = {0xf8: "eax", 0xfa: "edx", 0xff: "edi"}[raw[1]]
+            source = {0xf8: "eax", 0xf9: "ecx", 0xfa: "edx", 0xff: "edi"}[raw[1]]
         elif raw[:1] == b"\x3d" and len(raw) >= 5:
             maximum, cursor = struct.unpack_from("<I", raw, 1)[0], 5
         else:
@@ -67,7 +67,7 @@ def bounded_switch_edges(image, address, start, limit):
                 return None
             return cursor + 7, edges, ((target_table, len(targets)),)
         zero, load, jump = (
-            ((b"\x33\xc0", b"\x31\xc0"), b"\x8a\x82" if source == "edx" else b"\x8a\x87", b"\xff\x24\x85")
+            ((b"\x33\xc0", b"\x31\xc0"), bytes((0x8a, {"ecx": 0x81, "edx": 0x82, "edi": 0x87}[source])), b"\xff\x24\x85")
             if source != "eax" else
             ((b"\x33\xc9", b"\x31\xc9"), b"\x8a\x88", b"\xff\x24\x8d")
         )
@@ -80,6 +80,10 @@ def bounded_switch_edges(image, address, start, limit):
         target_table = struct.unpack_from("<I", raw, cursor + 11)[0]
         indices = read(byte_table, maximum + 1)
         targets = read(target_table, (max(indices) + 1) * 4)
+        # MSVC can retain an unused default entry immediately before the index table.
+        end = target_table + len(targets)
+        if end + 4 == byte_table and read(end, 4) == struct.pack("<I", default):
+            targets += read(end, 4)
         edges = {default}
         edges.update(struct.unpack_from("<I", targets, index * 4)[0] for index in indices)
         if any(not start <= edge < limit for edge in edges):

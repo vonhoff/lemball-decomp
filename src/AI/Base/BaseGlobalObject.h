@@ -12,9 +12,13 @@ public:
 	// FUNCTION: LEMBALL 0x0041c380
 	inline BaseGlobalObject(const AiCoord& p_position, eObjectType p_type) : GlobalGameObject(p_type, 0, 0)
 	{
+#ifdef LEMBALL_ASSIGN_BASE_POSITION
+		m_initialPosition = p_position;
+#else
 		m_initialPosition.m_xFixed = p_position.m_xFixed;
 		m_initialPosition.m_yFixed = p_position.m_yFixed;
 		m_initialPosition.m_zFixed = p_position.m_zFixed;
+#endif
 	}
 	virtual void Restart();      // vtable+0x104
 	virtual ~BaseGlobalObject(); // vtable+0x00

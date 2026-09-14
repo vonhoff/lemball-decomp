@@ -255,58 +255,51 @@ class OriginalExtentTests(unittest.TestCase):
                 data[offset] = value
                 self.assertIsNone(self.extent(data))
 
-    def edx_switch(self):
+    def indexed_switch(self, register):
         data = self.switch()
-        data[1] = 0xfa  # CMP EDX,maximum
+        data[1], data[8] = {"ecx": (0xf9, 0x81), "edx": (0xfa, 0x82), "edi": (0xff, 0x87)}[register]
         data[6] = 0xc0  # XOR EAX,EAX
-        data[8] = 0x82  # MOV AL,[EDX+byte_table]
         data[15] = 0x85  # JMP [EAX*4+target_table]
         return data
 
-    def test_edx_switch_includes_complete_tables(self):
-        self.assertEqual(self.extent(self.edx_switch()), 0x92)
-
-    def edi_switch(self):
-        data = self.edx_switch()
-        data[1] = 0xff  # CMP EDI,maximum
-        data[8] = 0x87  # MOV AL,[EDI+byte_table]
-        return data
-
-    def test_edi_switch_includes_complete_tables(self):
-        self.assertEqual(self.extent(self.edi_switch()), 0x92)
-
-    def test_edi_switch_rejects_inconsistent_registers(self):
-        for offset, value in ((1, 0xfa), (6, 0xc9), (8, 0x82), (15, 0x8d)):
-            with self.subTest(offset=offset):
-                data = self.edi_switch()
-                data[offset] = value
-                self.assertIsNone(self.extent(data))
-
-    def test_edi_switch_keeps_bounds_and_control_flow_checks(self):
-        self.assertIsNone(self.extent(self.edi_switch(), limit=0x91))
-        for target in (0x0fff, 0x10a0, 0x1080, 0x1090, 0x1005, 0x1043):
+    def test_only_adjacent_default_entry_extends_the_target_table(self):
+        for target, table_end in ((0x1040, 0x108c), (0x1042, 0x1088), (0x90909090, 0x1088)):
             with self.subTest(target=target):
-                data = self.edi_switch()
-                data[0x42:0x48] = bytes.fromhex("b8 01000000 c3")
-                struct.pack_into("<I", data, 0x84, target)
-                self.assertIsNone(self.extent(data))
-        data = self.edi_switch()
-        data[0x40:0x42] = bytes.fromhex("eb c3")
-        self.assertIsNone(self.extent(data))
+                data = self.indexed_switch("ecx")
+                struct.pack_into("<I", data, 9, 0x108c)
+                struct.pack_into("<I", data, 0x88, target)
+                data[0x8c:0x8e] = bytes((0, 1))
+                bounds = {}
+                extent = complete_original_extent(
+                    BytesImage(data), 0x1000, 0x10a0, self.decoder, table_bounds=bounds
+                )
+                self.assertEqual(extent, 0x8e)
+                self.assertEqual(bounds[0x1080], table_end)
 
-    def test_edx_switch_rejects_inconsistent_registers(self):
-        for offset, value in ((1, 0xf8), (6, 0xc9), (8, 0x80), (15, 0x8d)):
-            with self.subTest(offset=offset):
-                data = self.edx_switch()
-                data[offset] = value
-                self.assertIsNone(self.extent(data))
+    def test_indexed_switch_includes_complete_tables(self):
+        for register in ("ecx", "edx", "edi"):
+            with self.subTest(register=register):
+                self.assertEqual(self.extent(self.indexed_switch(register)), 0x92)
 
-    def test_edx_switch_keeps_bounds_and_control_flow_checks(self):
-        self.assertIsNone(self.extent(self.edx_switch(), limit=0x91))
-        for target in (0x0fff, 0x10a0, 0x1080, 0x1090, 0x1005):
-            with self.subTest(target=target):
-                data = self.edx_switch()
-                struct.pack_into("<I", data, 0x84, target)
+    def test_indexed_switch_rejects_inconsistent_registers(self):
+        for register in ("ecx", "edx", "edi"):
+            for offset, value in ((1, 0xf8), (6, 0xc9), (8, 0x80), (15, 0x8d)):
+                with self.subTest(register=register, offset=offset):
+                    data = self.indexed_switch(register)
+                    data[offset] = value
+                    self.assertIsNone(self.extent(data))
+
+    def test_indexed_switch_keeps_bounds_and_control_flow_checks(self):
+        for register in ("ecx", "edx", "edi"):
+            with self.subTest(register=register):
+                self.assertIsNone(self.extent(self.indexed_switch(register), limit=0x91))
+                for target in (0x0fff, 0x10a0, 0x1080, 0x1090, 0x1005, 0x1043):
+                    data = self.indexed_switch(register)
+                    data[0x42:0x48] = bytes.fromhex("b8 01000000 c3")
+                    struct.pack_into("<I", data, 0x84, target)
+                    self.assertIsNone(self.extent(data))
+                data = self.indexed_switch(register)
+                data[0x40:0x42] = bytes.fromhex("eb c3")
                 self.assertIsNone(self.extent(data))
 
     def test_switch_tables_must_be_complete_disjoint_and_within_bound(self):
@@ -352,6 +345,28 @@ class OriginalExtentTests(unittest.TestCase):
     "requires the reference executable and a local build",
 )
 class OriginalExtentBinaryTests(unittest.TestCase):
+    def test_object_factory_ecx_switch_excludes_alignment(self):
+        _, engine = load_engine()
+        start, end = 0x0041b370, 0x0041b73c
+        extent = complete_original_extent(
+            engine.orig_bin, start, 0x0041b740, Cs(CS_ARCH_X86, CS_MODE_32)
+        )
+        self.assertEqual(extent, end - start)
+        blob = engine.orig_bin.read(start, 0x0041b740 - start)
+        tables = [section for section in BoundedInstructGen(blob, start).sections
+                  if section.type == SectionType.ADDR_TAB]
+        self.assertEqual([len(table.contents) for table in tables], [12, 7])
+        self.assertEqual(bytes(engine.orig_bin.read(0x0041b381, 3)), bytes.fromhex("83f929"))
+
+    def test_password_numeric_table_preserves_unused_default_entry(self):
+        _, engine = load_engine()
+        start = 0x00451d20
+        blob = engine.orig_bin.read(start, 0x11c)
+        tables = [section for section in BoundedInstructGen(blob, start).sections
+                  if section.type == SectionType.ADDR_TAB]
+        self.assertEqual([len(table.contents) for table in tables], [4])
+        self.assertEqual(bytes(engine.orig_bin.read(0x00451e2c, 4)), struct.pack("<I", 0x00451e1c))
+
     def test_mover_process_includes_all_37_action_indices(self):
         _, engine = load_engine()
         extent = complete_original_extent(
