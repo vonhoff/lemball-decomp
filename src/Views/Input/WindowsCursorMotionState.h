@@ -9,6 +9,7 @@
 class WindowsCursorMotionState {
 public:
 	~WindowsCursorMotionState();
+	void SendCursorPositionMessage();
 	void SetCursorMotionPoint(const VsPoint& p_position);
 	VsPoint GetCursorMotionPoint();
 	void SetCursorMotionAuxValues(unsigned int p_aux0, unsigned int p_aux1);

@@ -1,10 +1,30 @@
 #include "WindowsCursorMotionState.h"
 
+#include "../../Map/Base/Map.h"
+#include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/VsPoint.h"
+
+#include <string.h>
 
 // FUNCTION: LEMBALL 0x00432650
 WindowsCursorMotionState::~WindowsCursorMotionState()
 {
+}
+
+// FUNCTION: LEMBALL 0x00432680
+void WindowsCursorMotionState::SendCursorPositionMessage()
+{
+	int x;
+	int y;
+	Message message;
+	message.type = 1;
+	memset(&message.time, 0, 16);
+	int screenX = m_fixedX >> 12;
+	int screenY = m_fixedY >> 12;
+	m_map->ScreenToGame(screenX, screenY, x, y);
+	message.code = x;
+	message.payload = (void*) y;
+	m_aiQueue->Post(message);
 }
 
 // FUNCTION: LEMBALL 0x00432810
