@@ -3,6 +3,7 @@
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/VsPoint.h"
+#include "../../Visos/Foundation/VsTime.h"
 
 #include <string.h>
 
@@ -25,6 +26,42 @@ void WindowsCursorMotionState::SendCursorPositionMessage()
 	message.code = x;
 	message.payload = (void*) y;
 	m_aiQueue->Post(message);
+}
+
+// FUNCTION: LEMBALL 0x004326e0
+void WindowsCursorMotionState::ProcessCursorMotion()
+{
+	unsigned int now = CurrentMilliTimer();
+	if (m_horizontalActive) {
+		int elapsed = now - m_lastTickX;
+		m_lastTickX = now;
+		m_velocityX += m_accelerationX * elapsed / 20;
+		if (m_velocityX > 0x5000) {
+			m_velocityX = 0x5000;
+		}
+		if (m_velocityX < -0x5000) {
+			m_velocityX = -0x5000;
+		}
+	}
+	if (m_verticalActive) {
+		int elapsed = now - m_lastTickY;
+		m_lastTickY = now;
+		m_velocityY += m_accelerationY * elapsed / 20;
+		if (m_velocityY > 0x5000) {
+			m_velocityY = 0x5000;
+		}
+		if (m_velocityY < -0x5000) {
+			m_velocityY = -0x5000;
+		}
+	}
+	if (m_horizontalActive || m_verticalActive || m_positionDirty) {
+		if (m_horizontalActive || m_verticalActive) {
+			m_fixedX += m_velocityX;
+			m_fixedY += m_velocityY;
+		}
+		SendCursorPositionMessage();
+		m_positionDirty = 0;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00432810
