@@ -171,6 +171,32 @@ def configure_original_extents(engine):
     comparator.compare_function = compare_function
 
 _upstream_relocate_instructions = fixes.relocate_instructions
+_upstream_naive_register_replacement = fixes.naive_register_replacement
+
+
+def naive_register_replacement(orig_asm, recomp_asm):
+    """Apply the existing register-width check to tokens, never string contents.
+
+    The upstream substring replacement also rewrites symbol fragments (such
+    as the 'ax' in 'max') and quoted string literals. Those are program data,
+    not registers. No instruction reordering or new equivalence is added.
+    """
+    widths = {register: "~reg4" for register in fixes.DWORD_REGS}
+    widths.update({register: "~reg2" for register in fixes.WORD_REGS})
+    widths.update({register: "~reg1" for register in fixes.BYTE_REGS})
+    token = re.compile(
+        r'"(?:\\.|[^"\\])*"|(?<![\w:@?$])('
+        + "|".join(widths) + r')(?![\w:@?$])'
+        r'(?!\s+\((?:DATA|FUNCTION|IMPORT|IMPORT_THUNK|VTABLE|OFFSET|STRING|UNK)\))'
+    )
+
+    def scrub(line):
+        return token.sub(lambda match: widths[match[1]] if match[1] else match[0], line)
+
+    return {index for index, (original, rebuilt) in enumerate(zip(orig_asm, recomp_asm))
+            if scrub(original) == scrub(rebuilt)}
+
+
 _register_tokens = re.compile(r"\b(eax|ax|al|ah|ebx|bx|bl|bh|ecx|cx|cl|ch|edx|dx|dl|dh|esi|si|edi|di|ebp|bp|esp|sp)\b")
 _register_families = {
     alias: family
@@ -388,5 +414,6 @@ def install_parser_fix() -> None:
         raise RuntimeError("Review the parser compatibility fix before changing reccmp==0.1.7")
     parse.InstructGen = BoundedInstructGen
     fixes.relocate_instructions = relocate_instructions
+    fixes.naive_register_replacement = naive_register_replacement
     fixes.assert_fixup = normalize_assert_arguments
     functions.assert_fixup = normalize_assert_arguments
