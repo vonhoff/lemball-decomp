@@ -28,11 +28,15 @@ def configure_output(stream) -> None:
         stream.reconfigure(errors="backslashreplace")
 
 
+def hexadecimal(value: str) -> int:
+    return int(value, 16)
+
+
 def main() -> int:
     configure_output(sys.stdout)
     configure_output(sys.stderr)
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("addrs", nargs="+", help="Addresses (e.g. 0x0045ca30)")
+    parser.add_argument("addrs", nargs="+", type=hexadecimal, help="Hex addresses (e.g. 0x0045ca30)")
     parser.add_argument("--no-diff", action="store_true", help="Hide instruction diff")
     parser.add_argument("--no-build", action="store_true", help="Skip incremental build")
     parser.add_argument("--clean-first", action="store_true")
@@ -46,8 +50,7 @@ def main() -> int:
 
     target, engine = load_engine()
 
-    for raw in args.addrs:
-        addr = int(raw, 16)
+    for addr in args.addrs:
         match = engine.compare_address(addr)
         if match is None:
             print(f"0x{addr:08x}: NOT_FOUND")
