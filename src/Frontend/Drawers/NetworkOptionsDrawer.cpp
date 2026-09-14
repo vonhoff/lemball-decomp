@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_VSSIZE_COPY
 #include "NetworkOptionsDrawer.h"
 
 #include "../../Control/Game/GameStatus.h"
@@ -325,7 +326,6 @@ void NetworkOptionsDrawer::DrawFrame(int p_position)
 // FUNCTION: LEMBALL 0x004536f0
 void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_remap)
 {
-	VsSize size;
 	char* gameName;
 	char* peerName;
 	char* addressStr;
@@ -358,26 +358,20 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 			len = 0x14;
 			do {
 				trimmedPeerName[len] = 0;
-				VsSize* measuredSize = font->GetSize(&size, trimmedPeerName, 0x20);
+				short measuredWidth = font->GetSize(trimmedPeerName, 0x20).m_width;
 				len--;
-				if (m_layoutTable->m_peerNameWidth >= (int) measuredSize->m_width) {
+				if (m_layoutTable->m_peerNameWidth >= (int) measuredWidth) {
 					break;
 				}
 			} while (1);
 
-			posName.m_x -= font->GetSize(&size, gameName, 0x20)->m_width / 2;
-			posAddress.m_x -= font->GetSize(&size, addressStr, 0x20)->m_width / 2;
-			posPeer.m_x -= font->GetSize(&size, peerName, 0x20)->m_width / 2;
+			posName.m_x -= font->GetSize(gameName, 0x20).m_width / 2;
+			posAddress.m_x -= font->GetSize(addressStr, 0x20).m_width / 2;
+			posPeer.m_x -= font->GetSize(peerName, 0x20).m_width / 2;
 
-			size.m_width = 0;
-			size.m_height = 0;
-			m_textManager->DrawString(m_gdi, posName, size, m_chalkFontId, gameName, 0x20, remap);
-			size.m_width = 0;
-			size.m_height = 0;
-			m_textManager->DrawString(m_gdi, posAddress, size, m_chalkFontId, addressStr, 0x20, remap);
-			size.m_width = 0;
-			size.m_height = 0;
-			m_textManager->DrawString(m_gdi, posPeer, size, m_chalkFontId, peerName, 0x20, remap);
+			m_textManager->DrawString(m_gdi, posName, VsSize(), m_chalkFontId, gameName, 0x20, remap);
+			m_textManager->DrawString(m_gdi, posAddress, VsSize(), m_chalkFontId, addressStr, 0x20, remap);
+			m_textManager->DrawString(m_gdi, posPeer, VsSize(), m_chalkFontId, peerName, 0x20, remap);
 			p_value++;
 		}
 	}
@@ -387,7 +381,6 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 // FUNCTION: LEMBALL 0x00453940
 void NetworkOptionsDrawer::DrawText()
 {
-	VsSize size;
 	VsPoint pos((short) m_layoutTable->m_editPos.m_x, (short) m_layoutTable->m_editPos.m_y);
 
 	if (m_drawingBackBuffer != 0) {
@@ -400,43 +393,37 @@ void NetworkOptionsDrawer::DrawText()
 		VsPoint posLabel((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_headerY);
 		VsPoint posIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_headerY);
 		VsPoint posComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_headerY);
-		posLabel.m_x -= font->GetSize(&size, g_szNetworkOptionsHeaderName, 0x20)->m_width / 2;
-		size.m_width = 0;
-		size.m_height = 0;
-		m_textManager->DrawString(m_gdi, posLabel, size, m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, 0);
+		posLabel.m_x -= font->GetSize(g_szNetworkOptionsHeaderName, 0x20).m_width / 2;
+		m_textManager->DrawString(m_gdi, posLabel, VsSize(), m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, 0);
 
-		posIp.m_x -= font->GetSize(&size, g_szNetworkOptionsHeaderIp, 0x20)->m_width / 2;
-		size.m_width = 0;
-		size.m_height = 0;
-		m_textManager->DrawString(m_gdi, posIp, size, m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, 0);
+		posIp.m_x -= font->GetSize(g_szNetworkOptionsHeaderIp, 0x20).m_width / 2;
+		m_textManager->DrawString(m_gdi, posIp, VsSize(), m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, 0);
 
-		posComputer.m_x -= font->GetSize(&size, g_szNetworkOptionsHeaderComputer, 0x20)->m_width / 2;
-		size.m_width = 0;
-		size.m_height = 0;
-		m_textManager->DrawString(m_gdi, posComputer, size, m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
+		posComputer.m_x -= font->GetSize(g_szNetworkOptionsHeaderComputer, 0x20).m_width / 2;
+		m_textManager
+			->DrawString(m_gdi, posComputer, VsSize(), m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
 
-		posDivider.m_x = (short) (((int) m_width - (int) font->GetSize(&size, divider, 0x20)->m_width) / 2);
-		size.m_width = 0;
-		size.m_height = 0;
-		m_textManager->DrawString(m_gdi, posDivider, size, m_chalkFontId, divider, 0x20, 0);
+		posDivider.m_x = (short) (((int) m_width - (int) font->GetSize(divider, 0x20).m_width) / 2);
+		m_textManager->DrawString(m_gdi, posDivider, VsSize(), m_chalkFontId, divider, 0x20, 0);
 
 		if (g_szNetworkGameName[0] != 0) {
 			VsPoint posMyName((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_localPlayerY);
 			VsPoint posMyIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_localPlayerY);
 			VsPoint posMyComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_localPlayerY);
-			posMyName.m_x -= font->GetSize(&size, g_szNetworkGameName, 0x20)->m_width / 2;
-			size.m_width = 0;
-			size.m_height = 0;
-			m_textManager
-				->DrawString(m_gdi, posMyName, size, m_chalkFontId, g_szNetworkGameName, 0x20, (Remap*) m_remaps[0]);
+			posMyName.m_x -= font->GetSize(g_szNetworkGameName, 0x20).m_width / 2;
+			m_textManager->DrawString(m_gdi,
+									  posMyName,
+									  VsSize(),
+									  m_chalkFontId,
+									  g_szNetworkGameName,
+									  0x20,
+									  (Remap*) m_remaps[0]);
 
 			char* myIp = m_stopPending;
 			if (myIp != 0 && *myIp != 0) {
-				posMyIp.m_x -= font->GetSize(&size, myIp, 0x20)->m_width / 2;
-				size.m_width = 0;
-				size.m_height = 0;
+				posMyIp.m_x -= font->GetSize(myIp, 0x20).m_width / 2;
 				m_textManager
-					->DrawString(m_gdi, posMyIp, size, m_chalkFontId, m_stopPending, 0x20, (Remap*) m_remaps[0]);
+					->DrawString(m_gdi, posMyIp, VsSize(), m_chalkFontId, m_stopPending, 0x20, (Remap*) m_remaps[0]);
 			}
 
 			char* myPeer = m_connectionState;
@@ -447,15 +434,13 @@ void NetworkOptionsDrawer::DrawText()
 				do {
 					trimmed[len] = 0;
 					len--;
-				} while (m_layoutTable->m_peerNameWidth < font->GetSize(&size, trimmed, 0x20)->m_width);
+				} while (m_layoutTable->m_peerNameWidth < font->GetSize(trimmed, 0x20).m_width);
 
 				String lowerPeer(trimmed);
 				lowerPeer.Lower();
-				posMyComputer.m_x -= font->GetSize(&size, trimmed, 0x20)->m_width / 2;
-				size.m_width = 0;
-				size.m_height = 0;
+				posMyComputer.m_x -= font->GetSize(trimmed, 0x20).m_width / 2;
 				m_textManager
-					->DrawString(m_gdi, posMyComputer, size, m_chalkFontId, lowerPeer, 0x20, (Remap*) m_remaps[0]);
+					->DrawString(m_gdi, posMyComputer, VsSize(), m_chalkFontId, lowerPeer, 0x20, (Remap*) m_remaps[0]);
 			}
 		}
 
@@ -493,10 +478,8 @@ void NetworkOptionsDrawer::DrawText()
 			}
 			if (m_redrawPending != 0 || !special) {
 				ResFont* font = m_textManager->GetFont(m_chalkFontId);
-				msgPos.m_x -= font->GetSize(&size, msgText.m_text, 0x20)->m_width / 2;
-				size.m_width = 0;
-				size.m_height = 0;
-				m_textManager->DrawString(m_gdi, msgPos, size, m_chalkFontId, msgText, 0x20, remap);
+				msgPos.m_x -= font->GetSize(msgText.m_text, 0x20).m_width / 2;
+				m_textManager->DrawString(m_gdi, msgPos, VsSize(), m_chalkFontId, msgText, 0x20, remap);
 			}
 		}
 
@@ -558,9 +541,7 @@ void NetworkOptionsDrawer::DrawText()
 			}
 			if (editText.Getlength() > 0) {
 				Remap* remap = (Remap*) m_remaps[1];
-				size.m_width = 0;
-				size.m_height = 0;
-				m_textManager->DrawString(m_gdi, pos, size, m_chalkFontId, editText, 0x20, remap);
+				m_textManager->DrawString(m_gdi, pos, VsSize(), m_chalkFontId, editText, 0x20, remap);
 			}
 		}
 	}
