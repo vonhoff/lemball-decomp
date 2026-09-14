@@ -14,6 +14,13 @@ from lib.reccmp import load_engine
 from reccmp.tools.asmcmp import print_match_verbose
 
 
+def match_status(match) -> str:
+    """A mapped address is not an exact match; stubs remain explicitly marked."""
+    if match.is_stub:
+        return "STUB"
+    return "MATCH" if match.effective_accuracy == 1.0 else ""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("addrs", nargs="+", help="Addresses (e.g. 0x0045ca30)")
@@ -39,7 +46,7 @@ def main() -> int:
 
         pct = match.effective_accuracy * 100.0
         if args.no_diff:
-            status = "MATCH" if match.is_matched or pct == 100.0 else ("STUB" if match.is_stub else "")
+            status = match_status(match)
             suffix = f" {status}" if status else ""
             print(f"0x{addr:08x} {match.name}: {pct:.2f}%{suffix}")
         else:
