@@ -7,6 +7,10 @@
 // SIZE 0x4c
 class ViewData {
 public:
+#ifdef LEMBALL_OUTLINE_VIEW_HELPERS
+	void SetViewActionTuple(eAction p_action, undefined4 p_argument, unsigned int p_stateTimer);
+#endif
+
 	// 68K 0x1011cb4a __ct__9CViewDataFv
 	// FUNCTION: LEMBALL 0x00439340
 	ViewData()
