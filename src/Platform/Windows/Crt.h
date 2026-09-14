@@ -7,8 +7,14 @@
 // LIBRARY: LEMBALL 0x0047fb10 SYMBOL
 // __toupper_lk
 
+// LIBRARY: LEMBALL 0x0047fda0 SYMBOL
+// _strrchr
+
 // LIBRARY: LEMBALL 0x0047fdd0 SYMBOL
 // _strncpy
+
+// LIBRARY: LEMBALL 0x00480050 SYMBOL
+// __tolower
 
 // LIBRARY: LEMBALL 0x004800b0 SYMBOL
 // __tolower_lk
@@ -39,6 +45,9 @@
 
 // LIBRARY: LEMBALL 0x004806f0 SYMBOL
 // __flush
+
+// LIBRARY: LEMBALL 0x00480760 SYMBOL
+// __flushall
 
 // LIBRARY: LEMBALL 0x00480830 SYMBOL
 // _fwrite
@@ -82,6 +91,9 @@
 // LIBRARY: LEMBALL 0x00480fd0 SYMBOL
 // __unlock_file2
 
+// LIBRARY: LEMBALL 0x00481000 SYMBOL
+// __lockerr_exit
+
 // LIBRARY: LEMBALL 0x00481020 SYMBOL
 // ___crtLCMapStringW
 
@@ -102,6 +114,12 @@
 
 // LIBRARY: LEMBALL 0x00481810 SYMBOL
 // __exit
+
+// LIBRARY: LEMBALL 0x00481830 SYMBOL
+// __cexit
+
+// LIBRARY: LEMBALL 0x00481840 SYMBOL
+// __c_exit
 
 // LIBRARY: LEMBALL 0x004818e0 SYMBOL
 // __lockexit
@@ -283,6 +301,15 @@
 // LIBRARY: LEMBALL 0x00483f30 SYMBOL
 // ___doserrno
 
+// LIBRARY: LEMBALL 0x00483f40 SYMBOL
+// ?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z
+
+// LIBRARY: LEMBALL 0x00483f70 SYMBOL
+// ?_query_new_handler@@YAP6AHI@ZXZ
+
+// LIBRARY: LEMBALL 0x00483f80 SYMBOL
+// ?set_new_handler@@YAP6AXXZP6AXXZ@Z
+
 // LIBRARY: LEMBALL 0x00483ff0 SYMBOL
 // _calloc
 
@@ -309,6 +336,9 @@
 
 // LIBRARY: LEMBALL 0x00484830 SYMBOL
 // __get_osfhandle
+
+// LIBRARY: LEMBALL 0x00484880 SYMBOL
+// __open_osfhandle
 
 // LIBRARY: LEMBALL 0x00484940 SYMBOL
 // __lock_fhandle
