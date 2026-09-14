@@ -42,8 +42,3 @@ void GunButton::OnPressed(int p_flags)
 		g_pSoundView->PlayEffect((eSoundEffect) 0x25);
 	}
 }
-
-// 68K 0x1011c1a2 __dt__10CGunButtonFv
-GunButton::~GunButton()
-{
-}

@@ -18,7 +18,6 @@ public:
 	virtual void OnExitButton();          // vtable+0xcc
 	virtual void OnPressed(int p_flags);  // vtable+0xc4
 	virtual void OnReleased(int p_flags); // vtable+0xc0
-	virtual ~ToggleButton();              // vtable+0x00
 	friend class Panel;
 	friend class PanelPauseButton;
 

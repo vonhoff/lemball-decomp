@@ -84,8 +84,3 @@ void PanelPauseButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 		CursorChangeType((eCursorDisplayType) 1, 0);
 	}
 }
-
-// 68K 0x1011cd5e __dt__17CPanelPauseButtonFv
-PanelPauseButton::~PanelPauseButton()
-{
-}

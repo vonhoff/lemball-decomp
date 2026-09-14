@@ -115,6 +115,16 @@ void GraphicButton::SetAnimId(unsigned long p_animId)
 	m_forceDrawCount = 1;
 }
 
+// 68K 0x10210966 __dt__14CGraphicButtonFv
+// FUNCTION: LEMBALL 0x00468920
+GraphicButton::~GraphicButton()
+{
+	if (m_lifecycleRefs == 1) {
+		Destroy();
+	}
+	delete[] m_primitive;
+}
+
 // 68K 0x10210a2a OnDestroy__14CGraphicButtonFv
 // FUNCTION: LEMBALL 0x00468980
 void GraphicButton::OnDestroy()
@@ -151,9 +161,4 @@ void GraphicButton::DrawButton()
 	primitive->m_flags = 0;
 	primitive->m_remap = remap;
 	((Anim*) m_primitive)->Draw(m_gdi);
-}
-
-// 68K 0x10210966 __dt__14CGraphicButtonFv
-GraphicButton::~GraphicButton()
-{
 }

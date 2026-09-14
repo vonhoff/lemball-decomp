@@ -16,7 +16,6 @@ public:
 	virtual void OnInside(const VsPoint& p_point);                        // vtable+0x18
 	virtual void OnPressed(int p_flags);                                  // vtable+0xc4
 	virtual void OnReleased(int p_flags);                                 // vtable+0xc0
-	virtual ~PanelPauseButton();                                          // vtable+0x00
 
 private:
 	Panel* m_panel;               // 0x134

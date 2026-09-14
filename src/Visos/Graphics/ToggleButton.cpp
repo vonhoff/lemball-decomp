@@ -28,8 +28,3 @@ void ToggleButton::OnExitButton()
 {
 	m_enabled = m_pressed ^ m_toggled;
 }
-
-// 68K 0x1011c7f6 __dt__13CToggleButtonFv
-ToggleButton::~ToggleButton()
-{
-}

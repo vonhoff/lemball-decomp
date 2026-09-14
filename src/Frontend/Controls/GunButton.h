@@ -15,7 +15,6 @@ public:
 	}
 	virtual void OnPressed(int p_flags);  // vtable+0xc4
 	virtual void OnReleased(int p_flags); // vtable+0xc0
-	virtual ~GunButton();                 // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x0044e650
