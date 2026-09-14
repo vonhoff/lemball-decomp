@@ -37,6 +37,7 @@ public:
 	friend class GunButtons;
 	friend class DepressedButton;
 	friend class TargetFramedButton;
+	friend class TargetTextButton;
 	friend class PvButton;
 	friend class PanelButton;
 	friend class GunController;

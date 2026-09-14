@@ -30,6 +30,7 @@ public:
 	friend class PvButton;
 	friend class DepressedButton;
 	friend class TargetFramedButton;
+	friend class TargetTextButton;
 	friend class PanelPauseButton;
 	friend class C2D;
 	friend class TrackWindow;

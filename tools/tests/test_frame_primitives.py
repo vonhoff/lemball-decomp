@@ -15,6 +15,27 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class FramePrimitiveTests(unittest.TestCase):
+    def test_text_button_draw_uses_original_virtual_slots(self):
+        for address, instructions in self.instructions(0x00469480, 172):
+            with self.subTest(address=hex(address)):
+                calls = [i.operands[0] for i in instructions if i.mnemonic == "call"]
+                self.assertTrue(all(operand.type == X86_OP_MEM for operand in calls))
+                self.assertEqual([operand.mem.disp for operand in calls], [0x38, 0x14, 4])
+
+    def test_text_button_destructor_releases_font_before_array(self):
+        _, engine = load_engine()
+        unload = next(m for m in engine.get_all() if m.orig_addr == 0x0045d180)
+        for (address, instructions), target in zip(
+            self.instructions(0x00469440, 55), (unload.orig_addr, unload.recomp_addr),
+        ):
+            with self.subTest(address=hex(address)):
+                calls = [i for i in instructions if i.mnemonic == "call"]
+                self.assertEqual(calls[0].operands[0].imm, target)
+                self.assertEqual(calls[1].operands[0].type, X86_OP_MEM)
+                flags = [i.operands[0].imm for i in instructions
+                         if i.mnemonic == "push" and i.operands[0].type == X86_OP_IMM]
+                self.assertEqual(flags, [3])
+
     def test_zrle_destructor_restores_primitive_vtable(self):
         _, engine = load_engine()
         primitive = next(m for m in engine.get_all() if m.orig_addr == 0x00496ca8)
@@ -103,6 +124,9 @@ class FramePrimitiveTests(unittest.TestCase):
             (0x00499928, 0x40, 0x00469990),
             (0x00499928, 0xa8, 0x00468f80),
             (0x00499908, 0, 0x004699a0),
+            (0x00499a18, 0xa8, 0x00469530),
+            (0x00499a18, 0xbc, 0x00469480),
+            (0x004999f8, 0, 0x004699d0),
         ):
             for image, table_address, target_address in (
                 (engine.orig_bin, table, target),

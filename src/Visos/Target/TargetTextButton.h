@@ -5,11 +5,14 @@
 #include "TargetFramedButton.h" // complete type
 
 // SIZE 0x14c
-// VTABLE: LEMBALL 0x00499a18 primary
-// VTABLE: LEMBALL 0x004999f8 hot-area view at +0x90
+// VTABLE: LEMBALL 0x00499a18 GWnd
+// VTABLE: LEMBALL 0x004999f8 HotAreaHandler
 class TargetTextButton : public TargetFramedButton {
 public:
 	void Initialize();
+	virtual ~TargetTextButton();
+	virtual void DrawButton();
+	virtual void OnPaint(const VsRect& p_rect);
 
 private:
 	char* m_normalText;                 // 0x118
@@ -29,5 +32,8 @@ private:
 	Remap* m_remap;                     // 0x144
 	Remap* m_lastDrawnRemap;            // 0x148
 };
+
+// SYNTHETIC: LEMBALL 0x004699d0
+// TargetTextButton::`scalar deleting destructor'
 
 #endif
