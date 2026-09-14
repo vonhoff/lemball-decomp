@@ -17,8 +17,3 @@ int TimeBonus::Collected()
 	g_pAI->AddTime(0x1e);
 	return 1;
 }
-
-// 68K 0x10119a16 __dt__10CTimeBonusFv
-TimeBonus::~TimeBonus()
-{
-}

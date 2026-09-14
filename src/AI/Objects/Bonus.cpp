@@ -16,8 +16,3 @@ void Bonus::SetSfx()
 {
 	SetSndEffect(2);
 }
-
-// 68K 0x101199cc __dt__6CBonusFv
-Bonus::~Bonus()
-{
-}
