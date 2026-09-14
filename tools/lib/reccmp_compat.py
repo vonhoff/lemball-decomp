@@ -21,8 +21,9 @@ from reccmp.types import ImageId
 def bounded_switch_edges(image, address, start, limit):
     """Recognize the complete range guard and two-level MSVC switch dispatch.
 
-    Accept only CMP EAX,maximum; JA default; XOR ECX,ECX;
-    MOV CL,[EAX+byte_table]; JMP [ECX*4+target_table]. Both tables must
+    Accept CMP EAX,maximum; JA default; XOR ECX,ECX;
+    MOV CL,[EAX+byte_table]; JMP [ECX*4+target_table], or the verified
+    EDX-to-EAX variant of that sequence. Both tables must
     reside inside the known function bound. The caller treats this sequence
     atomically, so another edge into its interior invalidates the proof.
     """
@@ -36,8 +37,10 @@ def bounded_switch_edges(image, address, start, limit):
 
     try:
         raw = bytes(image.read(address, min(32, limit - address)))
-        if raw[:2] == b"\x83\xf8" and len(raw) >= 3 and raw[2] < 0x80:
+        source = "eax"
+        if raw[:2] in (b"\x83\xf8", b"\x83\xfa") and len(raw) >= 3 and raw[2] < 0x80:
             maximum, cursor = raw[2], 3
+            source = "edx" if raw[1] == 0xfa else "eax"
         elif raw[:1] == b"\x3d" and len(raw) >= 5:
             maximum, cursor = struct.unpack_from("<I", raw, 1)[0], 5
         else:
@@ -53,10 +56,15 @@ def bounded_switch_edges(image, address, start, limit):
         else:
             return None
         default = address + cursor + displacement
+        zero, load, jump = (
+            ((b"\x33\xc0", b"\x31\xc0"), b"\x8a\x82", b"\xff\x24\x85")
+            if source == "edx" else
+            ((b"\x33\xc9", b"\x31\xc9"), b"\x8a\x88", b"\xff\x24\x8d")
+        )
         if (len(raw) < cursor + 15
-                or raw[cursor:cursor + 2] not in (b"\x33\xc9", b"\x31\xc9")
-                or raw[cursor + 2:cursor + 4] != b"\x8a\x88"
-                or raw[cursor + 8:cursor + 11] != b"\xff\x24\x8d"):
+                or raw[cursor:cursor + 2] not in zero
+                or raw[cursor + 2:cursor + 4] != load
+                or raw[cursor + 8:cursor + 11] != jump):
             return None
         byte_table = struct.unpack_from("<I", raw, cursor + 4)[0]
         target_table = struct.unpack_from("<I", raw, cursor + 11)[0]

@@ -124,6 +124,32 @@ class OriginalExtentTests(unittest.TestCase):
                 data[offset] = value
                 self.assertIsNone(self.extent(data))
 
+    def edx_switch(self):
+        data = self.switch()
+        data[1] = 0xfa  # CMP EDX,maximum
+        data[6] = 0xc0  # XOR EAX,EAX
+        data[8] = 0x82  # MOV AL,[EDX+byte_table]
+        data[15] = 0x85  # JMP [EAX*4+target_table]
+        return data
+
+    def test_edx_switch_includes_complete_tables(self):
+        self.assertEqual(self.extent(self.edx_switch()), 0x92)
+
+    def test_edx_switch_rejects_inconsistent_registers(self):
+        for offset, value in ((1, 0xf8), (6, 0xc9), (8, 0x80), (15, 0x8d)):
+            with self.subTest(offset=offset):
+                data = self.edx_switch()
+                data[offset] = value
+                self.assertIsNone(self.extent(data))
+
+    def test_edx_switch_keeps_bounds_and_control_flow_checks(self):
+        self.assertIsNone(self.extent(self.edx_switch(), limit=0x91))
+        for target in (0x0fff, 0x10a0, 0x1080, 0x1090, 0x1005):
+            with self.subTest(target=target):
+                data = self.edx_switch()
+                struct.pack_into("<I", data, 0x84, target)
+                self.assertIsNone(self.extent(data))
+
     def test_switch_tables_must_be_complete_disjoint_and_within_bound(self):
         for location, pointer in ((9, 0x0ff0), (9, 0x10a0), (16, 0x109c),
                                   (9, 0x1080), (16, 0x1000)):
@@ -167,6 +193,16 @@ class OriginalExtentTests(unittest.TestCase):
     "requires the reference executable and a local build",
 )
 class OriginalExtentBinaryTests(unittest.TestCase):
+    def test_network_messages_includes_final_switch_data(self):
+        _, engine = load_engine()
+        extent = complete_original_extent(
+            engine.orig_bin, 0x00454060, 0x00454520, Cs(CS_ARCH_X86, CS_MODE_32)
+        )
+        # The first switch uses EDX/AL; the two later switches use EAX/CL.
+        # The final CMP EAX,0x4d proves 78 bytes at 0x004544d0.
+        self.assertEqual(extent, 0x0045451e - 0x00454060)
+        self.assertEqual(bytes(engine.orig_bin.read(0x0045451b, 3)), b"\x02" * 3)
+
     def test_laser_viewdata_includes_return_and_switch_tables(self):
         _, engine = load_engine()
         extent = complete_original_extent(
