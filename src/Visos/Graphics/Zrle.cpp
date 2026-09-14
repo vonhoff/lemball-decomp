@@ -29,6 +29,7 @@ void Zrle::Render(Gdi* p_gdi)
 }
 
 // 68K 0x10100a7a __dt__5CZRLEFv
+// FUNCTION: LEMBALL 0x00467ba0
 Zrle::~Zrle()
 {
 }

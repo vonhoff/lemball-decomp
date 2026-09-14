@@ -15,6 +15,23 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class FramePrimitiveTests(unittest.TestCase):
+    def test_zrle_destructor_restores_primitive_vtable(self):
+        _, engine = load_engine()
+        primitive = next(m for m in engine.get_all() if m.orig_addr == 0x00496ca8)
+        for (address, instructions), vtable in zip(
+            self.instructions(0x00467ba0, 7),
+            (primitive.orig_addr, primitive.recomp_addr),
+        ):
+            with self.subTest(address=hex(address)):
+                self.assertEqual([i.mnemonic for i in instructions], ["mov", "ret"])
+                destination, value = instructions[0].operands
+                self.assertEqual(destination.type, X86_OP_MEM)
+                self.assertEqual(instructions[0].reg_name(destination.mem.base), "ecx")
+                self.assertEqual(destination.mem.disp, 0)
+                self.assertEqual(destination.size, 4)
+                self.assertEqual(value.type, X86_OP_IMM)
+                self.assertEqual(value.imm, vtable)
+
     def test_text_constructor_initializes_only_original_fields(self):
         for address, instructions in self.instructions(0x00469a00, 71):
             with self.subTest(address=hex(address)):
