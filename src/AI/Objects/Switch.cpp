@@ -224,9 +224,8 @@ void Switch::GetViewData(ViewData& p_viewData)
 	p_viewData.m_facingDirection = m_facingDirection;
 	unsigned int argument = (unsigned short) m_actionArgument;
 	unsigned int timer = m_stateTimer;
-	eAction action = m_action;
+	p_viewData.m_action = m_action;
 	p_viewData.m_actionArgument = argument;
-	p_viewData.m_action = action;
 	p_viewData.m_statusFlags = 0;
 	p_viewData.m_stateTimer = timer;
 	p_viewData.m_unk0x30 = m_unk0xc0;
