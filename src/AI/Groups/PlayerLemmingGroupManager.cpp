@@ -44,6 +44,20 @@ void PlayerLemmingGroupManager::Restart()
 	m_controlledGroupIndex = 0;
 }
 
+// 68K 0x1060f890 __dt__26CPlayerLemmingGroupManagerFv
+// FUNCTION: LEMBALL 0x00418540
+PlayerLemmingGroupManager::~PlayerLemmingGroupManager()
+{
+	for (int i = 0; i < m_deadCount; i++) {
+		delete m_dead[i];
+	}
+	if (m_networkInitialized != 0) {
+		for (int i = 0; i < 4; i++) {
+			delete m_networkLemmings[i];
+		}
+	}
+}
+
 // 68K 0x1060f9ac GetDead__26CPlayerLemmingGroupManagerFv
 // FUNCTION: LEMBALL 0x004185d0
 PlayerLemming* PlayerLemmingGroupManager::GetDead()
@@ -595,9 +609,4 @@ int PlayerLemmingGroupManager::GetViewData(ViewData* p_viewData)
 		}
 	}
 	return GenericGroupManager::GetViewData(p_viewData) + count;
-}
-
-// 68K 0x1060f890 __dt__26CPlayerLemmingGroupManagerFv
-PlayerLemmingGroupManager::~PlayerLemmingGroupManager()
-{
 }
