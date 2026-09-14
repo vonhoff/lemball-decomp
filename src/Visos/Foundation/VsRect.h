@@ -14,6 +14,9 @@ public:
 	VsRect() {}
 #endif
 
+#ifdef LEMBALL_INLINE_VSSIZE_VALUE
+	VsRect(short p_x, short p_y, short p_width, short p_height) : VsSize(p_width, p_height), VsPoint(p_x, p_y) {}
+#else
 	VsRect(short p_x, short p_y, short p_width, short p_height)
 	{
 		m_width = p_width;
@@ -21,6 +24,7 @@ public:
 		m_x = p_x;
 		m_y = p_y;
 	}
+#endif
 	VsRect(short p_x, short p_y, VsSize* p_size);
 	VsRect(const VsRect& p_source);
 
