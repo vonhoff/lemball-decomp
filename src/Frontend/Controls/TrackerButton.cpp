@@ -30,6 +30,16 @@ TrackerButton::TrackerButton(const VsPoint& p_arg0, PvGWnd* p_arg1, unsigned lon
 	m_trackWindow->Create(createRect, p_arg1, 0);
 }
 
+// 68K 0x1080ea02 __dt__14CTrackerButtonFv
+// FUNCTION: LEMBALL 0x0044ed20
+TrackerButton::~TrackerButton()
+{
+	if (m_trackWindow->m_lifecycleRefs == 1) {
+		m_trackWindow->Destroy();
+	}
+	delete m_trackWindow;
+}
+
 // 68K 0x1080eaac Move__14CTrackerButtonFRC8CVSPoint
 // FUNCTION: LEMBALL 0x0044ed70
 void TrackerButton::Move(const VsPoint& p_point)
@@ -42,9 +52,4 @@ void TrackerButton::Move(const VsPoint& p_point)
 	HotAreaHandler::m_y += m_relativeTopLeft.m_y;
 	m_trackWindow->Move(VsPoint(m_buttonX + m_trackOffsetX, m_buttonY + m_trackOffsetY));
 	m_trackWindow->Move(VsPoint(p_point.m_x + m_trackOffsetX, p_point.m_y + m_trackOffsetY));
-}
-
-// 68K 0x1080ea02 __dt__14CTrackerButtonFv
-TrackerButton::~TrackerButton()
-{
 }
