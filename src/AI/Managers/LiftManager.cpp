@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_VIEW_DATA
 #include "LiftManager.h"
 
 #include "../Base/Coord3d.h"
@@ -75,10 +76,17 @@ void LiftManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 }
 
 // 68K 0x106153be GetViewData__12CLiftManagerFP9CViewData
-// STUB: LEMBALL 0x00425df0
+// FUNCTION: LEMBALL 0x00425df0
 int LiftManager::GetViewData(ViewData* p_viewData)
 {
-	return 0;
+	int count = 0;
+	int i = 0;
+	while (i < m_count) {
+		m_lifts[i].GameObject::GetViewData(*p_viewData++);
+		count++;
+		i++;
+	}
+	return count;
 }
 
 // 68K 0x10615516 Switch__12CLiftManagerF9swMessageiii

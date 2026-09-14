@@ -32,18 +32,23 @@ void GameObject::GetViewData(ViewData& p_viewData)
 	p_viewData.m_positionY = m_position.m_yFixed >> 12;
 	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
 	p_viewData.m_facingDirection = m_facingDirection;
+	unsigned int argument = (unsigned short) m_actionArgument;
+	unsigned int timer = m_stateTimer;
 	p_viewData.m_action = m_action;
-	p_viewData.m_actionArgument = m_actionArgument;
+	p_viewData.m_actionArgument = argument;
+	p_viewData.m_stateTimer = timer;
 	p_viewData.m_statusFlags = 0;
-	p_viewData.m_stateTimer = m_stateTimer;
 	p_viewData.m_unk0x30 = m_unk0xc0;
 	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
 	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
 	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;
 	p_viewData.m_soundEffect = m_soundEffect;
-	unsigned long timestamp = g_dwSimulationTimestamp;
+	unsigned long timestamp;
 	if (m_isRemoteObject != 0) {
 		timestamp = g_dwNetworkSimulationTimestamp;
+	}
+	else {
+		timestamp = g_dwSimulationTimestamp;
 	}
 	p_viewData.m_animationTime = timestamp;
 	SetSndEffect((eSoundEffect) 0);
