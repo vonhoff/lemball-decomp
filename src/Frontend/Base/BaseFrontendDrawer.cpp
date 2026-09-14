@@ -296,30 +296,36 @@ void BaseFrontendDrawer::ReplaceBackground()
 void BaseFrontendDrawer::InternalDrawBackGround()
 {
 	if (m_drawFrame != 0) {
-		short tileWidth = m_tileBitmap->m_x;
-		short tileHeight = m_tileBitmap->m_y;
-		short startRow = 0 / tileHeight;
-		short rowCount = (short) (m_height + tileHeight - 1) / tileHeight - startRow;
-		short startCol = 0 / tileWidth;
-		short colCount = (short) (m_width + tileWidth - 1) / tileWidth - startCol;
+		VsRect tiles(0, 0, m_width, m_height);
+		VsSize& count = tiles;
+		VsPoint& start = tiles;
+		const VsSize& tileSize = *(const VsSize*) &m_tileBitmap->m_x;
+		tiles.m_height = (short) (tiles.m_height + tileSize.m_height - 1) / tileSize.m_height;
+		tiles.m_width = (short) (tiles.m_width + tileSize.m_width - 1) / tileSize.m_width;
+		tiles.m_y /= tileSize.m_height;
+		tiles.m_x /= tileSize.m_width;
+		tiles.m_height -= tiles.m_y;
+		tiles.m_width -= tiles.m_x;
 		unsigned int oddRow = 0;
 		int recordIndex = 0;
-		for (short row = startRow; row < (short) (rowCount + startRow); row++) {
+		for (int row = start.m_y; (short) (count.m_height + start.m_y) > row; row++) {
 			oddRow ^= 1;
-			for (short col = startCol; col < (short) (colCount + startCol + oddRow); col++) {
-				BitmapRes& rec = m_primitiveBundle[0].m_records[recordIndex];
-				rec.m_x = col * tileWidth - (tileWidth / 2) * oddRow;
-				rec.m_y = tileHeight * row;
-				rec.m_resource = m_tileBitmap;
+			for (int col = start.m_x; (int) ((short) (start.m_x + count.m_width) + oddRow) > col; col++) {
+				ResBitmap* bitmap = m_tileBitmap;
+				int y = tileSize.m_height * row;
+				BitmapRes& rec = m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
+				rec.m_x = col * tileSize.m_width - (tileSize.m_width / 2) * oddRow;
+				rec.m_y = y;
+				rec.m_resource = bitmap;
 				rec.m_flags = 0;
 				rec.m_remap = 0;
-				rec.Draw(m_gdi);
+				m_primitiveBundle[m_primitiveBank].m_records[recordIndex].Draw(m_gdi);
 				recordIndex++;
 			}
 		}
 	}
 	if (m_drawSolid != 0) {
-		m_primitiveBundle[0].m_primitive.Draw(m_gdi);
+		m_primitiveBundle[m_primitiveBank].m_primitive.Draw(m_gdi);
 	}
 	if (m_gunController != 0) {
 		m_gunController->DrawButtons(1, 0);
