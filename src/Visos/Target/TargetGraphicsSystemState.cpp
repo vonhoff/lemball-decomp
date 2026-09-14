@@ -248,6 +248,17 @@ bool TargetGraphicsSystemState::IsFullscreenDriver()
 	}
 }
 
+// FUNCTION: LEMBALL 0x004581a0
+bool TargetGraphicsSystemState::IsDirectDrawDriver()
+{
+	switch (m_driverMode) {
+	case 4:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
 // FUNCTION: LEMBALL 0x004581d0
 void TargetGraphicsSystemState::UpdateDriverSize(const VsSize& p_size)
 {
