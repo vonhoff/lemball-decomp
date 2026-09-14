@@ -18,7 +18,7 @@ void PbNetworkGame::AddData()
 {
 	NetworkMessage::Add((unsigned short) 0x2d);
 	NetworkMessage::Add(g_dwSimulationTimestamp);
-	Ai* ai = m_ai;
+	NetworkMessage* ai = (NetworkMessage*) ((unsigned char*) m_ai + sizeof(BaseQueueHandler) + sizeof(BaseProcess));
 	ai->CopyDataStream(m_writeCursor, 0);
 	m_writeCursor += ai->m_writeCursor - ai->m_buffer;
 	NetworkMessage::Add((unsigned short) 0x2f);
