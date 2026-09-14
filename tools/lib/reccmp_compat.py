@@ -7,10 +7,69 @@ The installed package is not modified.
 
 from importlib.metadata import version
 import struct
+import re
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
-from reccmp.compare.asm import parse
+from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
+
+_upstream_relocate_instructions = fixes.relocate_instructions
+_register_tokens = re.compile(r"\b(eax|ax|al|ah|ebx|bx|bl|bh|ecx|cx|cl|ch|edx|dx|dl|dh|esi|si|edi|di|ebp|bp|esp|sp)\b")
+_register_families = {
+    alias: family
+    for family, aliases in (
+        ("eax", ("eax", "ax", "al", "ah")),
+        ("ebx", ("ebx", "bx", "bl", "bh")),
+        ("ecx", ("ecx", "cx", "cl", "ch")),
+        ("edx", ("edx", "dx", "dl", "dh")),
+        ("esi", ("esi", "si")), ("edi", ("edi", "di")),
+        ("ebp", ("ebp", "bp")), ("esp", ("esp", "sp")),
+    ) for alias in aliases
+}
+
+
+def relocate_instructions(codes, orig_asm, recomp_asm):
+    """Fix the forward-move self-dependency, with conservative safety checks."""
+    fixed = _upstream_relocate_instructions(codes, orig_asm, recomp_asm)
+    deletes = [i for code, i1, i2, _, _ in codes if code == "delete" for i in range(i1, i2)]
+    inserts = [(i1, j) for code, i1, _, j1, j2 in codes if code == "insert" for j in range(j1, j2)]
+    transparent = {"mov", "lea", "cmp", "test", "push", "pop", "add", "sub",
+                   "inc", "dec", "and", "or", "xor", "shl", "shr", "sar"}
+    for destination, j in inserts:
+        if j in fixed:
+            continue
+        line = recomp_asm[j]
+        candidates = [i for i in deletes if orig_asm[i] == line]
+        if len(candidates) != 1 or sum(recomp_asm[k] == line for _, k in inserts) != 1:
+            continue
+        i = candidates[0]
+        if destination <= i:
+            continue
+        mnemonic, _, operands = line.partition(" ")
+        target, separator, source = operands.partition(", ")
+        if mnemonic not in ("mov", "lea") or not separator or target not in fixes.DWORD_REGS:
+            continue
+        if mnemonic == "mov" and "[" in source:
+            continue
+        if mnemonic == "mov" and not (
+            source in fixes.DWORD_REGS
+            or re.fullmatch(r"-?(?:0x[0-9a-f]+|[0-9]+)|<OFFSET[0-9]*>", source)
+            or re.search(r" \((?:DATA|VTABLE|UNK|FUNCTION|IMPORT|IMPORT_THUNK|STRING|OFFSET)\)$", source)
+        ):
+            # Segment/control registers have dependencies outside the GPR set.
+            continue
+        registers = {_register_families[reg] for reg in _register_tokens.findall(operands)}
+        if "esp" in registers:
+            continue
+        crossed = orig_asm[i + 1:destination]
+        if any(
+            instruction.partition(" ")[0] not in transparent
+            or registers.intersection(_register_families[reg] for reg in _register_tokens.findall(instruction))
+            for instruction in crossed
+        ):
+            continue
+        fixed.add(j)
+    return fixed
 
 
 class RelocationAwareParseAsm(parse.ParseAsm):
@@ -90,3 +149,4 @@ def install_parser_fix() -> None:
     if version("reccmp") != "0.1.7":
         raise RuntimeError("Review the parser compatibility fix before changing reccmp==0.1.7")
     parse.InstructGen = BoundedInstructGen
+    fixes.relocate_instructions = relocate_instructions

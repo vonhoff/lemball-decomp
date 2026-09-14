@@ -31,7 +31,7 @@ from .paths import (
 
 def _stamp() -> dict:
     return {
-        "version": 4,
+        "version": 5,
         "original": file_id(ORIGINAL_EXE),
         "recomp": file_id(RECOMP_EXE),
         "pdb": file_id(RECOMP_PDB),
