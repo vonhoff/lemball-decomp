@@ -31,6 +31,12 @@ void Laser::Initialise()
 	m_enabled = 0;
 }
 
+// 68K 0x106135c0 __dt__6CLaserFv
+// FUNCTION: LEMBALL 0x004288f0
+Laser::~Laser()
+{
+}
+
 // 68K 0x10613618 Set__6CLaserFUsRC7AICOORD11eObjectType
 // FUNCTION: LEMBALL 0x00428900
 void Laser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_orientation)
@@ -269,10 +275,5 @@ int Laser::GetViewData(ViewData* p_viewData)
 // 68K 0x1011a726 DoActivate__6CLaserFv
 // FUNCTION: LEMBALL 0x00429e40
 void Laser::DoActivate()
-{
-}
-
-// 68K 0x106135c0 __dt__6CLaserFv
-Laser::~Laser()
 {
 }

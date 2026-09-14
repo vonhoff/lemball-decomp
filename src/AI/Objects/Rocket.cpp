@@ -26,6 +26,12 @@ void Rocket::Restart()
 	Initialise();
 }
 
+// 68K 0x1061d972 __dt__7CRocketFv
+// FUNCTION: LEMBALL 0x00426830
+Rocket::~Rocket()
+{
+}
+
 // 68K 0x1061d9cc Set__7CRocketFUsRC7AICOORD
 // FUNCTION: LEMBALL 0x00426840
 void Rocket::Set(unsigned short p_id, const AiCoord& p_position)
@@ -141,10 +147,5 @@ void Rocket::DoActivate()
 // 68K 0x1011b220 GetViewData__7CRocketFR9CViewData
 // STUB: LEMBALL 0x004273f0
 void Rocket::GetViewData(ViewData& p_viewData)
-{
-}
-
-// 68K 0x1061d972 __dt__7CRocketFv
-Rocket::~Rocket()
 {
 }

@@ -22,6 +22,12 @@ void Trampoline::Restart()
 	m_active = 0;
 }
 
+// 68K 0x106205d0 __dt__11CTrampolineFv
+// FUNCTION: LEMBALL 0x0042a9d0
+Trampoline::~Trampoline()
+{
+}
+
 // 68K 0x1062062e Set__11CTrampolineFUsRC7AICOORD
 // FUNCTION: LEMBALL 0x0042a9e0
 void Trampoline::Set(unsigned short p_id, const AiCoord& p_position)
@@ -144,10 +150,5 @@ int Trampoline::Hit(const AiCoord& p_position, GameObject* p_object)
 // 68K 0x1011b5d2 DoActivate__11CTrampolineFv
 // FUNCTION: LEMBALL 0x0042b9b0
 void Trampoline::DoActivate()
-{
-}
-
-// 68K 0x106205d0 __dt__11CTrampolineFv
-Trampoline::~Trampoline()
 {
 }
