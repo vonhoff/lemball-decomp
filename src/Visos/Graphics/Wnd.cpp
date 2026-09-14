@@ -170,10 +170,8 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	window = (Wnd*) GetWindowLongA((HWND) p_hwnd, GWL_USERDATA);
 	if (g_pTargetGraphicsDriver->m_window == p_hwnd) {
 		Wnd* reservedWindow = (Wnd*) g_pTargetGraphicsSystem->m_reserved04;
-		if (reservedWindow != 0) {
-			window = reservedWindow;
-		}
-		else if (window == 0) {
+		window = reservedWindow;
+		if (window == 0) {
 			return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 		}
 	}
@@ -206,9 +204,9 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		}
 		return 0;
 	}
-	if (p_message == WM_CLOSE) {
-		if ((unsigned short) p_lParam == 1) {
-			ReleaseCapture();
+	if (p_message == WM_SETCURSOR) {
+		if ((unsigned short) p_lParam == HTCLIENT) {
+			SetCursor(0);
 			return 1;
 		}
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
@@ -223,6 +221,24 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	if (p_message == WM_SIZE) {
 		window->m_rect.m_width = (short) p_lParam;
 		window->m_rect.m_height = (short) (p_lParam >> 16);
+		if (p_wParam == SIZE_RESTORED) {
+			if (window->GetSizeStatus() != 2) {
+				window->SetSizeStatus(2);
+				window->OnRestore();
+			}
+		}
+		else if (p_wParam == SIZE_MINIMIZED) {
+			if (window->GetSizeStatus() != 0) {
+				window->SetSizeStatus(0);
+				window->OnMinimise();
+			}
+		}
+		else if (p_wParam == SIZE_MAXIMIZED) {
+			if (window->GetSizeStatus() != 1) {
+				window->SetSizeStatus(1);
+				window->OnMaximise();
+			}
+		}
 		window->InternalOnSize();
 		window->OnSize();
 		return 0;
