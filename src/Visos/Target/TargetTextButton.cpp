@@ -6,6 +6,39 @@
 #include "../Graphics/VsGdi.h"
 #include "../Resources/ResFont.h"
 
+// FUNCTION: LEMBALL 0x00469120
+void TargetTextButton::ExpandToFitText(const VsSize& p_textSize)
+{
+	if (m_horizontalMargin * m_verticalMargin != 0) {
+		short width = (short) (p_textSize.m_width + 2 * m_horizontalMargin);
+		short height = (short) (p_textSize.m_height + 2 * m_verticalMargin);
+		if (m_width < width) {
+			m_width = width;
+		}
+		if (m_height < height) {
+			m_height = height;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00469180
+void TargetTextButton::AlignTextPosition(VsPoint& p_position, const VsSize& p_textSize)
+{
+	if ((m_alignmentFlags & 0x10) != 0) {
+		p_position.m_x = (short) (m_width - p_textSize.m_width);
+	}
+	else if ((m_alignmentFlags & 4) != 0) {
+		p_position.m_x = (short) ((m_width - p_textSize.m_width) / 2);
+	}
+	if ((m_alignmentFlags & 0x20) != 0) {
+		p_position.m_y = (short) (m_height - p_textSize.m_height);
+	}
+	else if ((m_alignmentFlags & 8) != 0) {
+		p_position.m_y = (short) ((m_height - p_textSize.m_height) / 2);
+	}
+	m_forceDrawCount = 1;
+}
+
 // FUNCTION: LEMBALL 0x004693b0
 void TargetTextButton::Initialize()
 {

@@ -15,6 +15,27 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class FramePrimitiveTests(unittest.TestCase):
+    def test_text_alignment_uses_signed_centering_and_original_flags(self):
+        for address, instructions in self.instructions(0x00469180, 143):
+            with self.subTest(address=hex(address)):
+                masks = [i.operands[1].imm for i in instructions if i.mnemonic == "test"
+                         and i.operands[1].type == X86_OP_IMM]
+                self.assertEqual(masks, [0x10, 4, 0x20, 8])
+                self.assertEqual(sum(i.mnemonic == "cdq" for i in instructions), 2)
+                shifts = [i for i in instructions if i.mnemonic == "sar"]
+                self.assertEqual(len(shifts), 2)
+                self.assertTrue(all(i.operands[0].size == 4 and i.operands[1].imm == 1
+                                    for i in shifts))
+
+    def test_text_expansion_preserves_product_guard_and_word_bounds(self):
+        for address, instructions in self.instructions(0x00469120, 87):
+            with self.subTest(address=hex(address)):
+                self.assertEqual(sum(i.mnemonic == "imul" for i in instructions), 1)
+                comparisons = [i for i in instructions if i.mnemonic == "cmp"]
+                self.assertEqual([i.operands[0].mem.disp for i in comparisons], [0xc0, 0xc2])
+                self.assertTrue(all(i.operands[0].size == 2 for i in comparisons))
+                self.assertEqual(sum(i.mnemonic == "jge" for i in instructions), 2)
+
     def test_text_button_draw_uses_original_virtual_slots(self):
         for address, instructions in self.instructions(0x00469480, 172):
             with self.subTest(address=hex(address)):

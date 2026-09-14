@@ -9,6 +9,8 @@
 // VTABLE: LEMBALL 0x004999f8 HotAreaHandler
 class TargetTextButton : public TargetFramedButton {
 public:
+	void ExpandToFitText(const VsSize& p_textSize);
+	void AlignTextPosition(VsPoint& p_position, const VsSize& p_textSize);
 	void Initialize();
 	virtual ~TargetTextButton();
 	virtual void DrawButton();
