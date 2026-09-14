@@ -47,7 +47,7 @@ SurfaceListHead* g_pSurfaceList = 0;
 // 68K 0x1010830c __ct__8CSurfaceFRC7CVSRectP8CSurface
 // FUNCTION: LEMBALL 0x0046c050
 Surface::Surface(const VsRect& p_rect, class Surface* p_parentSurface)
-	: m_presentX(0), m_presentY(0), m_childSurfaceHead(0), m_childSurfaceTail(0), m_childSurfaceCount(0)
+	: m_presentX(m_presentY = 0), m_childSurfaceHead(0), m_childSurfaceTail(0), m_childSurfaceCount(0)
 {
 	SurfaceListHead* head;
 	SurfaceListNode* node;
