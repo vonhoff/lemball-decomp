@@ -1275,7 +1275,10 @@ void C2D::OnDriverChange()
 		short clipSizeX = m_clipSize.m_x;
 		if (m_viewSize.m_x != clipSizeX || m_clipSize.m_y != m_viewSize.m_y) {
 			VsRect clipRect((short) m_clipOffsetX, (short) m_clipOffsetY, clipSizeX, m_clipSize.m_y);
-			innerRect = clipRect;
+			memcpy(&innerRect.m_width, &clipRect.m_width, sizeof(short));
+			memcpy(&innerRect.m_height, &clipRect.m_height, sizeof(short));
+			memcpy(&innerRect.m_x, &clipRect.m_x, sizeof(short));
+			memcpy(&innerRect.m_y, &clipRect.m_y, sizeof(short));
 		}
 		m_display->SetRectInnerZoom(useRect, innerRect, m_zoom);
 		if (m_pauseWindow != 0) {
