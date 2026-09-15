@@ -1,3 +1,4 @@
+#define LEMBALL_IMPLICIT_GLOBAL_CLEANUP
 #include "MineManager.h"
 
 #include "../Base/Coord3d.h"
