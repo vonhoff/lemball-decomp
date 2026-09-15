@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_ANIM_CLEANUP
 #include "Anim.h"
 
 #include "../Graphics/Gdi.h"
@@ -7,6 +8,12 @@
 // 68K 0x10115b4e __ct__5CAnimFv
 // FUNCTION: LEMBALL 0x00443990
 Anim::Anim()
+{
+}
+
+// 68K 0x10101896 __dt__5CAnimFv
+// FUNCTION: LEMBALL 0x004439e0
+Anim::~Anim()
 {
 }
 
@@ -36,9 +43,4 @@ void Anim::Render(Gdi* p_gdi)
 	entry = (ResZrle*) ((char*) m_animResource->m_animationEntries + m_animIndex * 0x54);
 	p_gdi->m_renderTarget->Blit(this, entry);
 	m_animResource->m_directUseCount = m_animResource->m_directUseCount - 1;
-}
-
-// 68K 0x10101896 __dt__5CAnimFv
-Anim::~Anim()
-{
 }

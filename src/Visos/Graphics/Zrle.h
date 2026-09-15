@@ -11,7 +11,7 @@ public:
 	inline Zrle() : m_y(0), m_x(0) {}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-#ifdef LEMBALL_INLINE_TEXT_CLEANUP
+#if defined(LEMBALL_INLINE_TEXT_CLEANUP) || defined(LEMBALL_INLINE_ANIM_CLEANUP)
 	virtual ~Zrle() {}
 #else
 	virtual ~Zrle(); // vtable+0x00
