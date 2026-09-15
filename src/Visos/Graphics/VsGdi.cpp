@@ -1187,11 +1187,7 @@ void Surface::Blit(Point* p_point)
 	if (m_clipRect.m_x <= primitive->m_x && primitive->m_x < (short) (m_clipRect.m_width + m_clipRect.m_x)) {
 		if (m_clipRect.m_y <= primitive->m_y && primitive->m_y < (short) (m_clipRect.m_height + m_clipRect.m_y)) {
 			*((unsigned char*) m_lines[primitive->m_y] + primitive->m_x) = (unsigned char) primitive->m_color;
-			VsRect rect;
-			rect.m_x = p_point->m_x;
-			rect.m_y = p_point->m_y;
-			rect.m_width = 1;
-			rect.m_height = 1;
+			VsRect rect(p_point->m_x, p_point->m_y, 1, 1);
 			AddToChangeList(&rect);
 		}
 	}
