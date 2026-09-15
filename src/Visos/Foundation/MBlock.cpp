@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_BLOCK_HELPERS
 #include "MBlock.h"
 
 #include "VsOStream.h"
@@ -18,6 +19,13 @@ MBlock::MBlock(Arena* p_arena, MBlock* p_previous, char* p_description, unsigned
 // FUNCTION: LEMBALL 0x0045a570
 MBlock::~MBlock()
 {
+}
+
+// FUNCTION: LEMBALL 0x0045a580
+bool MBlock::ContainsAddress(void* p_address)
+{
+	return (unsigned int) p_address >= (unsigned int) m_data &&
+		   (unsigned int) p_address < (unsigned int) m_data + m_size;
 }
 
 // 68K 0x102159c8 StreamOut__7CMBlockFR10CVSOStream

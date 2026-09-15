@@ -11,6 +11,9 @@ public:
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
 	virtual ~MBlock();                                 // vtable+0x04
 	void SetDesc(char* p_arg0);
+#ifdef LEMBALL_OUTLINE_BLOCK_HELPERS
+	bool ContainsAddress(void* p_address);
+#endif
 	void* operator new(size_t p_arg0, void* p_arg1);
 	void operator delete(void*) {}
 	MBlock();
