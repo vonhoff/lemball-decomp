@@ -169,6 +169,23 @@ char* ReadSourceDiskRegistryPath()
 	return g_szSourceDiskPath;
 }
 
+// FUNCTION: LEMBALL 0x00472220
+bool __stdcall HandleInputQuitEvent(const Message* p_event)
+{
+	switch ((unsigned int) p_event->type) {
+	case 3:
+		if (p_event->payload == 0 && (p_event->code == 0x22 || p_event->code == 0x2e)) {
+			g_dwInputQuitRequested = 1;
+			return false;
+		}
+		break;
+	case 5:
+		g_dwInputQuitRequested = 1;
+		break;
+	}
+	return false;
+}
+
 // GLOBAL: LEMBALL 0x004a1dcc
 TargetPlatformServices* g_pTargetPlatformServices = 0;
 
