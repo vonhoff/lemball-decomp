@@ -14,6 +14,7 @@ public:
 	void Initialise(int p_x, int p_y, int p_neighbourCapacity);
 	void Restart();
 #ifdef LEMBALL_OUTLINE_NODE_HELPERS
+	void GetFixedPosition(int* p_coordinates);
 	void SetFixedCoordinates(int p_x, int p_y, undefined4 p_unused);
 	void SetIntegerCoordinates(int p_x, int p_y);
 #endif

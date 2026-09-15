@@ -80,3 +80,10 @@ void Node::ExtractIntegerPosition(int* p_x, int* p_y)
 	*p_x = m_xFixed >> 12;
 	*p_y = m_yFixed >> 12;
 }
+
+// FUNCTION: LEMBALL 0x00421410
+void Node::GetFixedPosition(int* p_coordinates)
+{
+	p_coordinates[0] = m_xFixed;
+	p_coordinates[1] = m_yFixed;
+}
