@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_INPUT_HELPERS
 #include "MasterInput.h"
 
 // 68K 0x10201326 __ct__12CMasterInputFP10CBaseQueue
@@ -21,6 +22,30 @@ MasterInput::~MasterInput()
 		operator delete(item);
 		item = next;
 	}
+}
+
+// FUNCTION: LEMBALL 0x004720c0
+bool MasterInput::AddItem(void* p_item)
+{
+	struct Node {
+		void* item;
+		Node* next;
+	};
+	Node* added = new Node;
+	Node* last = (Node*) m_firstItem;
+	if (m_itemCount == 0) {
+		added->item = p_item;
+		m_firstItem = added;
+		m_itemCount++;
+		return true;
+	}
+	for (unsigned int i = 1; i < m_itemCount; i++) {
+		last = last->next;
+	}
+	added->item = p_item;
+	last->next = added;
+	m_itemCount++;
+	return true;
 }
 
 // 68K 0x102013e8 StreamOut__12CMasterInputFR10CVSOStream
