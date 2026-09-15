@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_TRAMPOLINE_MANAGER_HELPERS
 #include "TrampolineManager.h"
 
 #include "../Navigation/Ai.h"
@@ -48,6 +49,13 @@ void TrampolineManager::Initialise(int p_capacity)
 TrampolineManager::~TrampolineManager()
 {
 	delete[] m_trampolines;
+}
+
+// Ownership inferred from the adjacent manager functions and count at 0x34.
+// FUNCTION: LEMBALL 0x0042b0b0
+void TrampolineManager::ResetCount()
+{
+	m_count = 0;
 }
 
 // 68K 0x10620e3e Process__18CTrampolineManagerFv
