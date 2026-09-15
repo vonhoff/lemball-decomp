@@ -2,9 +2,11 @@
 #define LEMBALL_AI_BASE_GAMEOBJECT_H
 
 #include "../../Common.h"
+#include "../../Control/Game/GameTime.h"
 #include "../../Visos/Foundation/VsRect.h" // complete type
-#include "AiCoord.h"                       // complete type
-#include "C3DVector.h"                     // complete type
+#include "../Objects/ViewData.h"
+#include "AiCoord.h"   // complete type
+#include "C3DVector.h" // complete type
 #include "ObjectTypes.h"
 
 // SIZE 0x124
@@ -24,10 +26,10 @@ public:
 	short GetId();
 	void Blocked();
 	unsigned short MapCheck(int p_arg0, int p_arg1);
-	virtual ~GameObject();                           // vtable+0x00
-	virtual void Action(eAction p_arg0);             // vtable+0x08
-	virtual void Action(eAction p_arg0, int p_arg1); // vtable+0x04
-	virtual void GetViewData(ViewData& p_viewData);  // vtable+0x0c
+	virtual ~GameObject();                                                          // vtable+0x00
+	virtual void Action(eAction p_arg0);                                            // vtable+0x08
+	virtual void Action(eAction p_arg0, int p_arg1);                                // vtable+0x04
+	virtual void GetViewData(ViewData& p_viewData);                                 // vtable+0x0c
 	virtual void ForgetObjectLink(unsigned short p_arg0);                           // vtable+0x10
 	virtual bool Process();                                                         // vtable+0x14
 	virtual bool Activate(class GameObject* p_object);                              // vtable+0x18
@@ -238,6 +240,41 @@ extern word g_wNetworkLemmingIndex;
 extern word g_wLocalLemmingIndex;
 extern int g_wLemmingCount;
 extern int g_dwSommersaultDirection;
+
+// 68K 0x10118300 GetViewData__11CGameObjectFR9CViewData
+// FUNCTION: LEMBALL 0x0040a6f0
+inline void GameObject::GetViewData(ViewData& p_viewData)
+{
+	p_viewData.m_objectId = m_objectId;
+	p_viewData.m_objectType = m_objectType;
+	p_viewData.m_playerIndex = 0;
+	p_viewData.m_positionX = m_position.m_xFixed >> 12;
+	p_viewData.m_positionY = m_position.m_yFixed >> 12;
+	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
+	p_viewData.m_facingDirection = m_facingDirection;
+	unsigned int argument = (unsigned short) m_actionArgument;
+	unsigned int timer = m_stateTimer;
+	p_viewData.m_action = m_action;
+	p_viewData.m_actionArgument = argument;
+	p_viewData.m_stateTimer = timer;
+	p_viewData.m_statusFlags = 0;
+	p_viewData.m_unk0x30 = m_unk0xc0;
+	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
+	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
+	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;
+	p_viewData.m_soundEffect = m_soundEffect;
+	unsigned long timestamp;
+	if (m_isRemoteObject != 0) {
+		timestamp = g_dwNetworkSimulationTimestamp;
+	}
+	else {
+		timestamp = g_dwSimulationTimestamp;
+	}
+	p_viewData.m_animationTime = timestamp;
+	SetSndEffect((eSoundEffect) 0);
+	p_viewData.m_transientFlags = m_transientFlags;
+	m_transientFlags = 0;
+}
 
 // SYNTHETIC: LEMBALL 0x00417ad0
 // GameObject::`scalar deleting destructor'
