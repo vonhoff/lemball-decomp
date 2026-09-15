@@ -24,4 +24,7 @@ private:
 // SYNTHETIC: LEMBALL 0x004397a0
 // PushActive::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x004698f0
+// PushActive::~PushActive
+
 #endif
