@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_ROCKET_MANAGER_HELPERS
 #include "RocketManager.h"
 
 #include "../Navigation/Ai.h"
@@ -48,6 +49,12 @@ void RocketManager::Initialise(int p_capacity)
 RocketManager::~RocketManager()
 {
 	delete[] m_rockets;
+}
+
+// FUNCTION: LEMBALL 0x00426c20
+void RocketManager::ResetCount()
+{
+	m_count = 0;
 }
 
 // 68K 0x1061df34 StepOn__14CRocketManagerFRC7AICOORDP11CGameObject
