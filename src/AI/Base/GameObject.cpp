@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_COORD_COPY
 #include "GameObject.h"
 
 #include "../../Control/Game/Game.h"
@@ -87,7 +88,7 @@ int GameObject::Usage()
 // FUNCTION: LEMBALL 0x0040a830 FOLDED
 AiCoord GameObject::Position()
 {
-	return AiCoord(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
+	return m_position;
 }
 
 // 68K 0x1011893a ActivatePosition__11CGameObjectFv
@@ -95,7 +96,7 @@ AiCoord GameObject::Position()
 // the address is annotated on the canonical implementation above.
 AiCoord GameObject::ActivatePosition()
 {
-	return AiCoord(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
+	return m_position;
 }
 
 // 68K 0x10118982 StartStanding__11CGameObjectFv
