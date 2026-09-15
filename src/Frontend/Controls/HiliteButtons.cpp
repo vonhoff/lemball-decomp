@@ -126,6 +126,15 @@ int HiliteButtons::ProcessMsg(Message* p_message)
 	}
 }
 
+// FUNCTION: LEMBALL 0x0044f240
+void HiliteButtons::MoveCurrentButton(int p_x, int p_y)
+{
+	VsPoint point(p_x, p_y);
+	if (m_button != 0) {
+		m_button->Move(point);
+	}
+}
+
 // 68K 0x10804d7a Draw__14CHiliteButtonsFUc
 // FUNCTION: LEMBALL 0x0044f270
 void HiliteButtons::Draw(int p_force)
