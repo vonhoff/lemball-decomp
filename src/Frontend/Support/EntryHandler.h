@@ -25,4 +25,7 @@ private:
 // SYNTHETIC: LEMBALL 0x00455e10
 // EntryHandler::`vector deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x00455e90
+// EntryHandler::~EntryHandler
+
 #endif
