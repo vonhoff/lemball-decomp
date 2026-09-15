@@ -6,3 +6,8 @@ AiCoord AiDestinationEntry::GetCoordinate()
 {
 	return m_coordinate;
 }
+
+// FUNCTION: LEMBALL 0x00417ab0
+AiDestinationEntry::AiDestinationEntry() : m_type(0)
+{
+}
