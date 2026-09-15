@@ -345,40 +345,40 @@ class OriginalExtentTests(unittest.TestCase):
     "requires the reference executable and a local build",
 )
 class OriginalExtentBinaryTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        _, cls.engine = load_engine()
+
     def test_object_factory_ecx_switch_excludes_alignment(self):
-        _, engine = load_engine()
         start, end = 0x0041b370, 0x0041b73c
         extent = complete_original_extent(
-            engine.orig_bin, start, 0x0041b740, Cs(CS_ARCH_X86, CS_MODE_32)
+            self.engine.orig_bin, start, 0x0041b740, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         self.assertEqual(extent, end - start)
-        blob = engine.orig_bin.read(start, 0x0041b740 - start)
+        blob = self.engine.orig_bin.read(start, 0x0041b740 - start)
         tables = [section for section in BoundedInstructGen(blob, start).sections
                   if section.type == SectionType.ADDR_TAB]
         self.assertEqual([len(table.contents) for table in tables], [12, 7])
-        self.assertEqual(bytes(engine.orig_bin.read(0x0041b381, 3)), bytes.fromhex("83f929"))
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0041b381, 3)), bytes.fromhex("83f929"))
 
     def test_password_numeric_table_preserves_unused_default_entry(self):
-        _, engine = load_engine()
         start = 0x00451d20
-        blob = engine.orig_bin.read(start, 0x11c)
+        blob = self.engine.orig_bin.read(start, 0x11c)
         tables = [section for section in BoundedInstructGen(blob, start).sections
                   if section.type == SectionType.ADDR_TAB]
         self.assertEqual([len(table.contents) for table in tables], [4])
-        self.assertEqual(bytes(engine.orig_bin.read(0x00451e2c, 4)), struct.pack("<I", 0x00451e1c))
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x00451e2c, 4)), struct.pack("<I", 0x00451e1c))
 
     def test_mover_process_includes_all_37_action_indices(self):
-        _, engine = load_engine()
         extent = complete_original_extent(
-            engine.orig_bin, 0x0042eb00, 0x0042eeb0, Cs(CS_ARCH_X86, CS_MODE_32)
+            self.engine.orig_bin, 0x0042eb00, 0x0042eeb0, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         self.assertEqual(extent, 0x3a9)
-        self.assertEqual(bytes(engine.orig_bin.read(0x0042ebb5, 3)), bytes.fromhex("83ff24"))
-        self.assertEqual(bytes(engine.orig_bin.read(0x0042eea5, 4)), bytes((6, 6, 6, 5)))
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0042ebb5, 3)), bytes.fromhex("83ff24"))
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0042eea5, 4)), bytes((6, 6, 6, 5)))
 
     def test_main_display_switch_does_not_consume_following_data(self):
-        _, engine = load_engine()
-        blob = engine.orig_bin.read(0x00431cd0, 0x1dc)
+        blob = self.engine.orig_bin.read(0x00431cd0, 0x1dc)
         tables = [section for section in BoundedInstructGen(blob, 0x00431cd0).sections
                   if section.type == SectionType.ADDR_TAB]
         self.assertEqual([len(table.contents) for table in tables], [6])
@@ -387,76 +387,69 @@ class OriginalExtentBinaryTests(unittest.TestCase):
         self.assertEqual(trailing, list(enumerate(blob[-8:], 0x00431ea4)))
 
     def test_c2d_draw_lemming_includes_byte_table_after_guard_store(self):
-        _, engine = load_engine()
         extent = complete_original_extent(
-            engine.orig_bin, 0x0043c200, 0x0043c610, Cs(CS_ARCH_X86, CS_MODE_32)
+            self.engine.orig_bin, 0x0043c200, 0x0043c610, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         # CMP EDX,0x23 proves 36 index bytes at 0x43c5e4.
         self.assertEqual(extent, 0x408)
-        self.assertEqual(bytes(engine.orig_bin.read(0x0043c241, 8)),
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0043c241, 8)),
                          bytes.fromhex("83 fa 23 66 89 44 24 12"))
 
     def test_c2d_draw_objects_includes_tail_after_guard_store(self):
-        _, engine = load_engine()
         extent = complete_original_extent(
-            engine.orig_bin, 0x0043f620, 0x0043fce0, Cs(CS_ARCH_X86, CS_MODE_32)
+            self.engine.orig_bin, 0x0043f620, 0x0043fce0, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         self.assertEqual(extent, 0x6c0)
-        self.assertEqual(bytes(engine.orig_bin.read(0x0043f706, 8)),
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0043f706, 8)),
                          bytes.fromhex("83 f8 03 66 89 5c 24 30"))
-        self.assertEqual(bytes(engine.orig_bin.read(0x0043fcd0, 16)),
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0043fcd0, 16)),
                          struct.pack("<4I", 0x43f71b, 0x43f7f3, 0x43f984, 0x43fa5f))
 
     def test_gun_draw_includes_return_and_direct_switch_table(self):
-        _, engine = load_engine()
         extent = complete_original_extent(
-            engine.orig_bin, 0x0044d2d0, 0x0044d830, Cs(CS_ARCH_X86, CS_MODE_32)
+            self.engine.orig_bin, 0x0044d2d0, 0x0044d830, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         self.assertEqual(extent, 0x0044d82c - 0x0044d2d0)
-        self.assertEqual(bytes(engine.orig_bin.read(0x0044d817, 5)),
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0044d817, 5)),
                          bytes.fromhex("83 c4 14 c3 90"))
 
     def test_network_messages_includes_final_switch_data(self):
-        _, engine = load_engine()
         extent = complete_original_extent(
-            engine.orig_bin, 0x00454060, 0x00454520, Cs(CS_ARCH_X86, CS_MODE_32)
+            self.engine.orig_bin, 0x00454060, 0x00454520, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         # The first switch uses EDX/AL; the two later switches use EAX/CL.
         # The final CMP EAX,0x4d proves 78 bytes at 0x004544d0.
         self.assertEqual(extent, 0x0045451e - 0x00454060)
-        self.assertEqual(bytes(engine.orig_bin.read(0x0045451b, 3)), b"\x02" * 3)
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0045451b, 3)), b"\x02" * 3)
 
     def test_laser_viewdata_includes_return_and_switch_tables(self):
-        _, engine = load_engine()
         extent = complete_original_extent(
-            engine.orig_bin, 0x00428f90, 0x00429320, Cs(CS_ARCH_X86, CS_MODE_32)
+            self.engine.orig_bin, 0x00428f90, 0x00429320, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         self.assertEqual(extent, 0x00429314 - 0x00428f90)
-        self.assertEqual(bytes(engine.orig_bin.read(0x004292e9, 3)), bytes.fromhex("c20400"))
-        self.assertEqual(bytes(engine.orig_bin.read(0x00429300, 20)),
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x004292e9, 3)), bytes.fromhex("c20400"))
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x00429300, 20)),
                          bytes([0] + [4] * 16 + [1, 2, 3]))
 
     def test_bullet_getdata_includes_original_epilogue(self):
-        _, engine = load_engine()
-        match = next(m for m in engine.get_all() if m.orig_addr == 0x0041AB80)
+        match = next(m for m in self.engine.get_all() if m.orig_addr == 0x0041AB80)
         extended = size_original_match(
-            match, engine.orig_bin, Cs(CS_ARCH_X86, CS_MODE_32)
+            match, self.engine.orig_bin, Cs(CS_ARCH_X86, CS_MODE_32)
         )
         # Verified in the original image and Ghidra: final store, POP ESI,
         # ADD ESP,0x18, RET. None may be cut off at the rebuilt PDB size.
         self.assertEqual(extended.size(ImageId.ORIG), 0xE5)
-        self.assertEqual(bytes(engine.orig_bin.read(0x0041AC5D, 8)),
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0041AC5D, 8)),
                          bytes.fromhex("89 46 dc 5e 83 c4 18 c3"))
-        result = engine.function_comparator.compare_function(match)
+        result = self.engine.function_comparator.compare_function(match)
         self.assertEqual(result.diff.orig_inst[-1], ("0x41ac64", "ret "))
 
 
     def test_game_object_init_excludes_only_its_alignment_nop(self):
-        _, engine = load_engine()
-        match = next(m for m in engine.get_all() if m.orig_addr == 0x004165e0)
-        sized = size_original_match(match, engine.orig_bin, Cs(CS_ARCH_X86, CS_MODE_32))
+        match = next(m for m in self.engine.get_all() if m.orig_addr == 0x004165e0)
+        sized = size_original_match(match, self.engine.orig_bin, Cs(CS_ARCH_X86, CS_MODE_32))
         self.assertEqual(sized.size(ImageId.ORIG), 47)
         self.assertEqual(sized.any_size(), match.any_size())
-        self.assertEqual(bytes(engine.orig_bin.read(0x0041660e, 2)), bytes.fromhex("c3 90"))
-        result = engine.function_comparator.compare_function(match)
+        self.assertEqual(bytes(self.engine.orig_bin.read(0x0041660e, 2)), bytes.fromhex("c3 90"))
+        result = self.engine.function_comparator.compare_function(match)
         self.assertEqual(result.diff.orig_inst[-1], ("0x41660e", "ret "))
