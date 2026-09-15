@@ -48,6 +48,26 @@ bool MasterInput::AddItem(void* p_item)
 	return true;
 }
 
+// FUNCTION: LEMBALL 0x004721e0
+bool MasterInput::IsEmpty()
+{
+	unsigned int count = m_itemCount;
+	if (count == 0) {
+		return true;
+	}
+	void** item = (void**) m_firstItem;
+	for (unsigned int i = 0; i < count; i++) {
+		if (item == 0) {
+			return false;
+		}
+		if (*item == 0) {
+			return false;
+		}
+		item = (void**) item[1];
+	}
+	return false;
+}
+
 // 68K 0x102013e8 StreamOut__12CMasterInputFR10CVSOStream
 // FUNCTION: LEMBALL 0x00472210
 VsOStream& MasterInput::StreamOut(VsOStream& p_arg0)
