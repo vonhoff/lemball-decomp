@@ -113,7 +113,7 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 	char lineBuf[16];
 	VsLtoa(p_line, lineBuf, 10);
 	msg += lineBuf;
-	MessageBoxA(NULL, msg.GetText(), "Error", 0);
+	MessageBoxA(NULL, msg, "Error", 0);
 	InternalVsExit(0xaaaa);
 }
 

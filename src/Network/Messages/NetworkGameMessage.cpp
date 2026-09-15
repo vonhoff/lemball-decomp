@@ -28,7 +28,7 @@ void NetworkGameMessage::AddData()
 	peerName[20] = '\0';
 	String peerString(peerName);
 	peerString.Lower();
-	Add(peerString.GetText());
+	Add(peerString);
 }
 
 // 68K 0x10a00184 GetData__19CNetworkGameMessageFv

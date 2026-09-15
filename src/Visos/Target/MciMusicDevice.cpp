@@ -126,7 +126,7 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	String musicName;
 	if (m_usePathPrefix != 0) {
 		musicName = m_path;
-		if (musicName.GetText()[musicName.Getlength() - 1] != '\\') {
+		if (musicName[musicName.Getlength() - 1] != '\\') {
 			musicName += "\\";
 		}
 	}
@@ -135,22 +135,22 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	String fullPath;
 	if (m_useCdDirectory == 0) {
 		fullPath = g_szCurrentDirectory;
-		if (fullPath.GetText()[fullPath.Getlength() - 1] != '\\') {
+		if (fullPath[fullPath.Getlength() - 1] != '\\') {
 			fullPath += "\\";
 		}
 	}
 	else {
-		cdDir = g_pTargetPlatformServices->GetCdDir(musicName.GetText());
+		cdDir = g_pTargetPlatformServices->GetCdDir(musicName);
 		if (cdDir == 0) {
 			cdDir = g_szCurrentDirectory;
 		}
 		fullPath = cdDir;
-		if (fullPath.GetText()[fullPath.Getlength() - 1] != '\\') {
+		if (fullPath[fullPath.Getlength() - 1] != '\\') {
 			fullPath += "\\";
 		}
 	}
 	fullPath += musicName;
-	openParms.lpstrElementName = (char*) fullPath.GetText();
+	openParms.lpstrElementName = fullPath;
 	error = mciSendCommandA(0, 0x803, 0x3200, (DWORD) &openParms);
 	name->m_directUseCount--;
 	name->UnLoad();
