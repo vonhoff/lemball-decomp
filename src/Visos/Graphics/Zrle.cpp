@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_ZRLE_CLEANUP
 #include "Zrle.h"
 
 #include "../Resources/ResBase.h"
@@ -26,10 +27,4 @@ void Zrle::Render(Gdi* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit(this, (ResZrle*) m_resource);
 	m_resource->m_directUseCount--;
-}
-
-// 68K 0x10100a7a __dt__5CZRLEFv
-// FUNCTION: LEMBALL 0x00467ba0
-Zrle::~Zrle()
-{
 }

@@ -11,7 +11,7 @@ public:
 	inline Zrle() : m_y(0), m_x(0) {}
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-#if defined(LEMBALL_INLINE_TEXT_CLEANUP) || defined(LEMBALL_INLINE_ANIM_CLEANUP)
+#if defined(LEMBALL_INLINE_TEXT_CLEANUP) || defined(LEMBALL_INLINE_ANIM_CLEANUP) || defined(LEMBALL_INLINE_ZRLE_CLEANUP)
 	virtual ~Zrle() {}
 #else
 	virtual ~Zrle(); // vtable+0x00
@@ -40,5 +40,9 @@ public:
 
 // SYNTHETIC: LEMBALL 0x00467b40
 // Zrle::`vector deleting destructor'
+
+// 68K 0x10100a7a __dt__5CZRLEFv
+// SYNTHETIC: LEMBALL 0x00467ba0
+// Zrle::~Zrle
 
 #endif
