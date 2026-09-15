@@ -172,6 +172,18 @@ int GunButtons::ProcessMsg(Message* p_message)
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x0044c5b0
+void GunButtons::Move(int p_x, int p_y)
+{
+	VsPoint point((short) p_x, (short) p_y);
+	if (m_graphicButton != 0) {
+		m_graphicButton->Move(point);
+	}
+	if (m_trackerButton != 0) {
+		m_trackerButton->Move(point);
+	}
+}
+
 // 68K 0x10802dfc Draw__11CGunButtonsFUcUc
 // FUNCTION: LEMBALL 0x0044c600
 void GunButtons::Draw(int p_firstState, int p_secondState)

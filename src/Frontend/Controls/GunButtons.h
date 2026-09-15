@@ -28,6 +28,7 @@ public:
 	void LoadFaces(unsigned long* p_animIds);
 	void UnLoadFaces();
 #ifdef LEMBALL_OUTLINE_GUN_BUTTON_HELPERS
+	void Move(int p_x, int p_y);
 	GunButtons(const VsRect& p_rect,
 			   GWnd* p_window,
 			   Gdi* p_gdi,
