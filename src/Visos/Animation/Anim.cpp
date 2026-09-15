@@ -11,12 +11,6 @@ Anim::Anim()
 {
 }
 
-// 68K 0x10101896 __dt__5CAnimFv
-// FUNCTION: LEMBALL 0x004439e0
-Anim::~Anim()
-{
-}
-
 // 68K 0x101017c0 Draw__5CAnimFP4CGDI
 // FUNCTION: LEMBALL 0x00443a20
 void Anim::Draw(Gdi* p_gdi)

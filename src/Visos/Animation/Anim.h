@@ -11,7 +11,13 @@ public:
 	Anim();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~Anim();                 // vtable+0x00
+#ifdef LEMBALL_INLINE_ANIM_CLEANUP
+	// 68K 0x10101896 __dt__5CAnimFv
+	// FUNCTION: LEMBALL 0x004439e0
+	virtual ~Anim() {}
+#else
+	virtual ~Anim(); // vtable+0x00
+#endif
 
 	friend class AnimsManager;
 	friend class GraphicButton;
@@ -21,6 +27,9 @@ public:
 	unsigned int m_animIndex; // 0x18
 	ResAnim* m_animResource;  // 0x1c
 };
+
+// SYNTHETIC: LEMBALL 0x004439b0
+// Anim::`scalar deleting destructor'
 
 // SYNTHETIC: LEMBALL 0x004452e0
 // Anim::`vector deleting destructor'
