@@ -165,12 +165,9 @@ bool Ice::Process()
 	int minY = m_min.m_y - 8;
 	int maxX = m_max.m_x + 7;
 	int maxY = m_max.m_y + 7;
-	AiCoord position;
 	for (int i = 0; i < m_objectCount; i++) {
 		GameObject* object = m_objects[i];
-		position.m_xFixed = object->m_position.m_xFixed;
-		position.m_yFixed = object->m_position.m_yFixed;
-		position.m_zFixed = object->m_position.m_zFixed;
+		AiCoord position(object->m_position);
 		int dx = (m_velocityX * elapsed * 4096) / 8;
 		int dy = (m_velocityY * elapsed * 4096) / 8;
 		int ax = abs(dx >> 12);
@@ -286,9 +283,7 @@ bool Ice::Process()
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		GameObject* object = m_objects[i];
-		position.m_xFixed = object->m_position.m_xFixed;
-		position.m_yFixed = object->m_position.m_yFixed;
-		position.m_zFixed = object->m_position.m_zFixed;
+		AiCoord position(object->m_position);
 		unsigned short groundZ;
 		{
 			Map* map = g_pMap;
