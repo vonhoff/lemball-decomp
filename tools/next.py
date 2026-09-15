@@ -85,20 +85,18 @@ def scan_annotations() -> tuple[dict[int, str], set[int]]:
 def load_report(path: Path) -> list[Func]:
     report = json.loads(path.read_text(encoding="utf-8"))
     annot, entries = scan_annotations()
-    funcs: list[Func] = []
-    for unit in report["units"]:
-        for item in unit["functions"]:
-            addr = int(item["metadata"]["virtual_address"])
-            funcs.append(
-                Func(
-                    addr=addr,
-                    name=item["name"],
-                    size=int(item["size"]),
-                    ratio=float(item["fuzzy_match_percent"]),
-                    unit=unit["name"],
-                    annot=annot.get(addr),
-                )
-            )
+    funcs = [
+        Func(
+            addr=int(item["metadata"]["virtual_address"]),
+            name=item["name"],
+            size=int(item["size"]),
+            ratio=float(item["fuzzy_match_percent"]),
+            unit=unit["name"],
+            annot=annot.get(int(item["metadata"]["virtual_address"])),
+        )
+        for unit in report["units"]
+        for item in unit["functions"]
+    ]
     return add_original_evidence(funcs, entries, path)
 
 
