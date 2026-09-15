@@ -12,6 +12,7 @@ public:
 	~PanelLemming();
 
 	friend class PanelButton;
+	friend class Panel;
 
 private:
 	PvGWnd* m_window;                // 0x00

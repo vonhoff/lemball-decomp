@@ -18,6 +18,9 @@ public:
 	void OnSize();
 	void Process();
 	void SetPause(unsigned int p_paused);
+#ifdef LEMBALL_OUTLINE_PANEL_HELPERS
+	void RefreshLemmings();
+#endif
 	friend class PanelLemming;
 	friend class PanelPauseButton;
 	friend class PanelButton;

@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_PANEL_HELPERS
 #include "Panel.h"
 
 #include "../../AI/Navigation/Ai.h"
@@ -103,6 +104,15 @@ Panel::~Panel()
 	m_resources[0]->UnLoad();
 	if (m_pauseButton != 0) {
 		delete m_pauseButton;
+	}
+}
+
+// Ownership inferred from the panel, AI, and panel-lemming field layouts.
+// FUNCTION: LEMBALL 0x004431c0
+void Panel::RefreshLemmings()
+{
+	for (int i = 0; i < 4; i++) {
+		m_lemmings[i]->m_lemming = m_ai->m_networkLemmings[i];
 	}
 }
 
