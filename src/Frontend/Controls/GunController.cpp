@@ -1,3 +1,5 @@
+#define LEMBALL_OUTLINE_GUN_CONTROLLER_HELPERS
+#define LEMBALL_OUTLINE_GUN_BUTTON_HELPERS
 #include "GunController.h"
 
 #include "../../Views/Sound/SoundView.h"
@@ -11,7 +13,9 @@
 #include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Windows/SpriteWindow.h"
+#include "../Windows/TrackWindow.h"
 #include "GunButtons.h"
+#include "TrackerButton.h"
 
 #include <new.h>
 #include <stdlib.h>
@@ -244,6 +248,36 @@ void GunController::AddButton(int p_x,
 	unsigned int side = 0 < p_maximum;
 	AddJunction(p_x, p_y, side, m_buttons[m_buttonCount]->m_controlMessage);
 	m_buttonCount = m_buttonCount + 1;
+}
+
+// FUNCTION: LEMBALL 0x0044d080
+void GunController::AddButtonWithRect(int p_x,
+									  int p_y,
+									  unsigned long* p_animIds,
+									  unsigned int p_postAction,
+									  undefined4 p_unusedFirst,
+									  undefined4 p_unusedSecond,
+									  int p_value,
+									  int* p_binding,
+									  const VsRect& p_rect,
+									  int p_actionMessage,
+									  int p_context)
+{
+	unsigned int message = ++m_nextMessageId;
+	m_buttons[m_buttonCount] = new GunButtons(p_rect,
+											  m_window,
+											  m_gdi,
+											  p_x,
+											  p_y,
+											  p_animIds,
+											  p_postAction,
+											  p_value,
+											  message,
+											  p_binding,
+											  p_actionMessage);
+	AddJunction(p_x, p_y, 1, m_buttons[m_buttonCount]->m_controlMessage);
+	m_buttons[m_buttonCount]->m_trackerButton->m_trackWindow->m_contextId = p_context;
+	m_buttonCount++;
 }
 
 // 68K 0x10803ab0 AddJunction__14CGunControllerFiiUcUl

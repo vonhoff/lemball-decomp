@@ -38,6 +38,19 @@ public:
 	void SetGun(int p_junction);
 	void SetGunPosition(int p_x, int p_y, int p_side);
 	void SetSpriteWindow();
+#ifdef LEMBALL_OUTLINE_GUN_CONTROLLER_HELPERS
+	void AddButtonWithRect(int p_x,
+						   int p_y,
+						   unsigned long* p_animIds,
+						   unsigned int p_postAction,
+						   undefined4 p_unusedFirst,
+						   undefined4 p_unusedSecond,
+						   int p_value,
+						   int* p_binding,
+						   const VsRect& p_rect,
+						   int p_actionMessage,
+						   int p_context);
+#endif
 
 	friend class BaseFrontendDrawer;
 

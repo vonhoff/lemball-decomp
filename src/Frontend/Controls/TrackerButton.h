@@ -14,6 +14,7 @@ public:
 	virtual ~TrackerButton();                  // vtable+0x00
 
 private:
+	friend class GunController;
 	short m_trackOffsetX;       // 0x130
 	short m_trackOffsetY;       // 0x132
 	TrackWindow* m_trackWindow; // 0x134

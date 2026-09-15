@@ -27,6 +27,7 @@ public:
 	void SetButtonValue(int p_value);
 
 private:
+	friend class GunController;
 	VsRect m_trackRect;         // 0xc8
 	Line m_line;                // 0xd0
 	ClipRect m_clipRects[4];    // 0xe0
