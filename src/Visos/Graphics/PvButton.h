@@ -5,6 +5,7 @@
 #include "ClipRect.h"       // complete type
 #include "GWnd.h"           // complete type
 #include "HotAreaHandler.h" // complete type
+#include "SolidRect.h"
 
 // SIZE 0x104
 // VTABLE: LEMBALL 0x00499658 GWnd
@@ -63,7 +64,7 @@ private:
 	short m_buttonX;                 // 0xdc
 	short m_buttonY;                 // 0xde
 	Primitive* m_primitive;          // 0xe0
-	ClipRect m_clipRect[1];          // 0xe4
+	SolidRect m_clipRect[1];         // 0xe4
 	void* m_messageHandler;          // 0xf4
 	unsigned int m_autoDraw;         // 0xf8
 	unsigned int m_drawCompleted;    // 0xfc

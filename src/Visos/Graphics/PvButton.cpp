@@ -56,7 +56,7 @@ void PvButton::OnVisibilityChange()
 // 68K 0x1020f994 __ct__9CPVButtonFRC7CVSRectP7CPVGWnd
 // FUNCTION: LEMBALL 0x00467c10
 PvButton::PvButton(const VsRect& p_arg0, PvGWnd* p_arg1)
-	: HotAreaHandler(VsRect(0, 0, p_arg0.m_width, p_arg0.m_height)), m_buttonY(0), m_buttonX(0)
+	: HotAreaHandler(VsRect(0, 0, p_arg0.m_width, p_arg0.m_height)), m_buttonX(m_buttonY = 0)
 {
 	m_clickY = 0;
 	m_clickX = 0;
@@ -130,11 +130,11 @@ void PvButton::CheckForceDraw()
 		m_clipRect[0].m_top = m_gdi->m_renderTarget->m_windowRect.m_height;
 		m_clipRect[0].m_right = 0;
 		m_clipRect[0].m_bottom = 0;
-		m_clipRect[0].m_reserved0c = 0x10000;
+		m_clipRect[0].m_color = 0x10000;
 		m_gdi->m_renderTarget->m_flag78 = 1;
 	}
 	else {
-		m_clipRect[0].m_reserved0c = 0;
+		m_clipRect[0].m_color = 0;
 	}
 	m_clipRect[0].Draw(m_gdi);
 }

@@ -28,6 +28,7 @@ public:
 	friend class PasswordDrawer;
 	friend class Surface;
 	friend class C2D;
+	friend class PvButton;
 
 private:
 	short m_left;         // 0x04
