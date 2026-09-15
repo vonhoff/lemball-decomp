@@ -40,6 +40,12 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 	return nDirection;
 }
 
+// FUNCTION: LEMBALL 0x00413f50
+int WithinRect(int p_x, int p_y, int p_minX, int p_minY, int p_maxX, int p_maxY)
+{
+	return p_x > p_minX && p_maxX > p_x && p_minY < p_y && p_y < p_maxY;
+}
+
 // 68K 0x107008e6 Distance__Fiiii
 // FUNCTION: LEMBALL 0x00413f80
 unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
