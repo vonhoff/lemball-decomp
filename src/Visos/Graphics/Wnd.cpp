@@ -891,7 +891,8 @@ void Wnd::InternalOnZoom(int p_oldZoom)
 // FUNCTION: LEMBALL 0x00465820
 void Wnd::InternalSetRect(const VsRect& p_rect)
 {
-	VsRect rect;
+	short geometry[4];
+	VsRect& rect = *(VsRect*) geometry;
 	RECT adjusted;
 	RECT window;
 	POINT client;
@@ -899,8 +900,8 @@ void Wnd::InternalSetRect(const VsRect& p_rect)
 	rect.m_width = p_rect.m_width;
 	rect.m_height = p_rect.m_height;
 	position = (const VsPoint*) &p_rect;
-	rect.m_x = position->m_x;
-	rect.m_y = position->m_y;
+	memcpy(&rect.m_x, &position->m_x, sizeof(short));
+	memcpy(&rect.m_y, &position->m_y, sizeof(short));
 	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
 		if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0) {
 			rect.m_x = 0;
