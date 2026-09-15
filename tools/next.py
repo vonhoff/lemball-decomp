@@ -15,9 +15,6 @@ from lib.reccmp_compat import complete_original_extent
 from lib.source import ANNOT_WITH_ADDR
 from report import make_report
 
-REPORT = REPORT_JSON
-
-
 @dataclass(frozen=True)
 class Func:
     addr: int
@@ -241,7 +238,7 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=40, help="max rows per list; 0 = unlimited")
     parser.add_argument("--addrs", action="store_true", help="print addresses only (requires --kind tiny, near or gain)")
     parser.add_argument("--refresh", action="store_true", help="run tools/report.py before ranking")
-    parser.add_argument("--report", type=Path, default=REPORT, help="path to report.json")
+    parser.add_argument("--report", type=Path, default=REPORT_JSON, help="path to report.json")
     args = parser.parse_args()
 
     if args.addrs and args.kind not in ("tiny", "near", "gain"):
