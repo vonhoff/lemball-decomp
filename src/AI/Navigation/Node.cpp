@@ -1,4 +1,5 @@
 #define LEMBALL_OUTLINE_NODE_HELPERS
+#define LEMBALL_INLINE_PT3_VALUE
 #include "Node.h"
 
 #include "NodeNeighbour.h"
@@ -67,11 +68,7 @@ void Node::AddANeighbour(int p_node, int p_cost)
 // FUNCTION: LEMBALL 0x004213d0
 Pt3 Node::Position()
 {
-	Pt3 result;
-	result.m_x = m_xFixed;
-	result.m_y = m_yFixed;
-	result.m_z = 0xaa55aa55;
-	return result;
+	return Pt3(m_xFixed, m_yFixed, 0xaa55aa55);
 }
 
 // FUNCTION: LEMBALL 0x004213f0
