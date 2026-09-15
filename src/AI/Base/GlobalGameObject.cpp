@@ -199,11 +199,6 @@ void GlobalGameObject::DeleteMessages()
 	delete g_pRequestCancelMessage;
 }
 
-// 68K 0x101180c6 __dt__17CGlobalGameObjectFv
-GlobalGameObject::~GlobalGameObject()
-{
-}
-
 // GLOBAL: LEMBALL 0x0049d110
 TransportObjectMess* g_pTransportObjectMessage;
 

@@ -48,8 +48,3 @@ int Flag::Collected()
 	g_pAI->m_flagCounts[0]--;
 	return 1;
 }
-
-// 68K 0x10119982 __dt__5CFlagFv
-Flag::~Flag()
-{
-}

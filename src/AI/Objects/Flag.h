@@ -15,7 +15,6 @@ public:
 	virtual bool Process();  // vtable+0x14
 	virtual int Collected(); // vtable+0x114
 	virtual void SetSfx();   // vtable+0x110
-	virtual ~Flag();         // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x00422fb0

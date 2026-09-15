@@ -22,7 +22,6 @@ public:
 	static void DeleteMessages();
 	void RequestAction(eAction p_arg0);
 	static void SetMessages();
-	virtual ~GlobalGameObject();
 	GlobalGameObject();
 	void SetActionAndRequest(eAction p_action, int p_argument);
 

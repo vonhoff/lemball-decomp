@@ -14,8 +14,7 @@ public:
 	{
 		m_initialPosition = p_position;
 	}
-	virtual void Restart();      // vtable+0x104
-	virtual ~BaseGlobalObject(); // vtable+0x00
+	virtual void Restart(); // vtable+0x104
 	void OldRestart();
 
 private:

@@ -3,11 +3,6 @@
 #include "../../Visos/Network/Connect.h"
 #include "../Messages/ObjectPosMess.h"
 
-// 68K 0x1011811e __dt__17CBaseGlobalObjectFv
-BaseGlobalObject::~BaseGlobalObject()
-{
-}
-
 // 68K 0x10618974 OldRestart__17CBaseGlobalObjectFv
 // FUNCTION: LEMBALL 0x0041c670
 void BaseGlobalObject::OldRestart()
