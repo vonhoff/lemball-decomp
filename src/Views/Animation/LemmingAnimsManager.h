@@ -22,6 +22,14 @@ class LemmingAnimsManager : public AnimsManager, public LoadUpdate {
 public:
 	LemmingAnimsManager(Gdi* p_arg0, Main2DDisplay* p_arg1, Ai* p_arg2);
 	void Draw();
+#ifdef LEMBALL_OUTLINE_LEMMING_ANIM_HELPERS
+	void DrawAnimOnGDI(Gdi* p_gdi,
+					   short p_x,
+					   short p_y,
+					   unsigned long p_resourceId,
+					   unsigned long p_animIndex,
+					   Remap* p_remap);
+#endif
 	void DrawAnim(short p_x,
 				  short p_y,
 				  unsigned long p_resourceId,

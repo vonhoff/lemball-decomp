@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_LEMMING_ANIM_HELPERS
 #include "LemmingAnimsManager.h"
 
 #include "../../AI/Navigation/Ai.h"
@@ -935,6 +936,93 @@ void LemmingAnimsManager::DrawAnim(short p_x,
 		Frames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
 		AnimsManager::DrawAnim(VsPoint(p_x, p_y), p_resourceId, m_reservedac, frame, p_remap);
+		break;
+	}
+	}
+}
+
+// FUNCTION: LEMBALL 0x004349e0
+void LemmingAnimsManager::DrawAnimOnGDI(Gdi* p_gdi,
+										short p_x,
+										short p_y,
+										unsigned long p_resourceId,
+										unsigned long p_animIndex,
+										Remap* p_remap)
+{
+	switch (p_resourceId) {
+	case RES_GAME_LEGO_SPARKLE:
+	case RES_GAME_LEGO_TRAP_DOOR:
+	case RES_GAME_SNOW_SPARKLE:
+	case RES_GAME_SNOW_TRAP_DOOR:
+	case RES_GAME_SPACE_SPARKLE:
+	case RES_GAME_SPACE_TRAP_DOOR:
+	case RES_GAME_BLOX_1:
+	case RES_GAME_BLOX_2:
+	case RES_GAME_BLOX_3:
+	case RES_GAME_BLOX_4:
+	case RES_GAME_BLOX_5:
+	case RES_GAME_BLOX_6:
+	case RES_GAME_BLOX_7:
+	case RES_GAME_BLOX_8:
+	case RES_GAME_BLOX_14:
+	case RES_GAME_BLOX_15:
+	case RES_GAME_LEGO_1:
+	case RES_GAME_LEGO_2:
+	case RES_GAME_LEGO_3:
+	case RES_GAME_LEGO_4:
+	case RES_GAME_LEGO_5:
+	case RES_GAME_LEGO_6:
+	case RES_GAME_LEGO_7:
+	case RES_GAME_LEGO_8:
+	case RES_GAME_LEGO_14:
+	case RES_GAME_LEGO_15:
+	case RES_GAME_SNOW_1:
+	case RES_GAME_SNOW_2:
+	case RES_GAME_SNOW_3:
+	case RES_GAME_SNOW_4:
+	case RES_GAME_SNOW_5:
+	case RES_GAME_SNOW_6:
+	case RES_GAME_SNOW_7:
+	case RES_GAME_SNOW_8:
+	case RES_GAME_SNOW_14:
+	case RES_GAME_SNOW_15:
+	case RES_GAME_SPACE_1:
+	case RES_GAME_SPACE_2:
+	case RES_GAME_SPACE_3:
+	case RES_GAME_SPACE_4:
+	case RES_GAME_SPACE_5:
+	case RES_GAME_SPACE_6:
+	case RES_GAME_SPACE_7:
+	case RES_GAME_SPACE_8:
+	case RES_GAME_SPACE_14:
+	case RES_GAME_SPACE_15:
+	case RES_GAME_CONVEYOR:
+	case RES_GAME_ANIM:
+	case RES_GAME_FLAME:
+	case RES_GAME_ELECTRIC:
+	case RES_GAME_EMBERS:
+	case RES_GRASS_TREE:
+	case RES_GRASS_PATH:
+	case RES_SNOW_SNOWTREE:
+	case RES_LEGO_LEGOTREE: {
+		Frames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		frame->m_frameState = p_animIndex;
+		VsPoint position(p_x, p_y);
+		Gdi* previous = AnimsManager::m_gdi;
+		AnimsManager::m_gdi = p_gdi;
+		AnimsManager::DrawAnim(position, p_resourceId, 0, frame, p_remap);
+		AnimsManager::m_gdi = previous;
+		break;
+	}
+	case RES_GRASS_TOWER:
+	case RES_SNOW_HUT:
+	case RES_LEGO_HUT: {
+		Frames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		VsPoint position(p_x, p_y);
+		Gdi* previous = AnimsManager::m_gdi;
+		AnimsManager::m_gdi = p_gdi;
+		AnimsManager::DrawAnim(position, p_resourceId, 0, frame, p_remap);
+		AnimsManager::m_gdi = previous;
 		break;
 	}
 	}
