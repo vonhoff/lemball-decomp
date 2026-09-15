@@ -15,6 +15,9 @@ public:
 	virtual void Restart();    // vtable+0x104
 	virtual ~Trampoline();     // vtable+0x00
 	void Set(unsigned short p_id, const AiCoord& p_position);
+#ifdef LEMBALL_OUTLINE_TRAMPOLINE_HELPERS
+	int TryEnableNearPosition(const AiCoord& p_position, GameObject* p_object);
+#endif
 
 	friend class TrampolineManager;
 

@@ -1,9 +1,11 @@
+#define LEMBALL_OUTLINE_TRAMPOLINE_HELPERS
 #include "Trampoline.h"
 
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/Fixed.h"
+#include "../../Visos/Foundation/VsMath.h"
 #include "../Navigation/Ai.h"
 
 // 68K 0x10620548 __ct__11CTrampolineFv
@@ -74,6 +76,27 @@ bool Trampoline::Process()
 		Action((eAction) 0x18);
 	}
 	return 1;
+}
+
+// FUNCTION: LEMBALL 0x0042aaf0
+int Trampoline::TryEnableNearPosition(const AiCoord& p_position, GameObject* p_object)
+{
+	if ((int) Distance(m_position.m_xFixed >> 12,
+					   m_position.m_yFixed >> 12,
+					   p_position.m_xFixed >> 12,
+					   p_position.m_yFixed >> 12) < 0x20) {
+		m_enabled = 1;
+		m_lastMovementTick = g_dwGameTick;
+		m_stateTimer = g_dwSimulationTimestamp;
+		m_position.m_xFixed = p_position.m_xFixed + 0x4000;
+		m_position.m_yFixed = p_position.m_yFixed + 0x4000;
+		int z = p_position.m_zFixed;
+		m_position.m_zFixed = z;
+		m_relocationZ = z >> 12;
+		p_object->m_unk0x2c = 1;
+		return 1;
+	}
+	return 0;
 }
 
 // 68K 0x10620788 Hit__11CTrampolineFRC7AICOORDP11CGameObject
