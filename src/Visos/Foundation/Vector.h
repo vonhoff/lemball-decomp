@@ -12,6 +12,9 @@ public:
 	// FUNCTION: LEMBALL 0x00417b30
 	inline Vector(const Vector& p_other) : m_xFixed(p_other.m_xFixed), m_yFixed(p_other.m_yFixed) {}
 	Vector* SetIntegers(int p_x, int p_y);
+#ifdef LEMBALL_OUTLINE_VIEW_HELPERS
+	Vector& operator=(const Vector& p_other);
+#endif
 
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04

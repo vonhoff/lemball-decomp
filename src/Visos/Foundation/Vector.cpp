@@ -1,6 +1,15 @@
+#define LEMBALL_OUTLINE_VIEW_HELPERS
 #include "Vector.h"
 
 #include "Fixed.h"
+
+// FUNCTION: LEMBALL 0x0040c290
+Vector& Vector::operator=(const Vector& p_other)
+{
+	m_xFixed = p_other.m_xFixed;
+	m_yFixed = p_other.m_yFixed;
+	return *this;
+}
 
 // 68K 0x10119d00 __ct__7CVectorFv
 // FUNCTION: LEMBALL 0x0041a3c0

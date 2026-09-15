@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_HILITE_HELPERS
 #include "HiliteController.h"
 
 #include "../../Views/Sound/SoundView.h"
@@ -290,6 +291,22 @@ void HiliteController::ActivateButtons(int p_active)
 				btn->m_button->SetActive(p_active);
 			}
 			pBtn++;
+			i++;
+		} while (m_buttonCount > i);
+	}
+}
+
+// FUNCTION: LEMBALL 0x0044fc20
+void HiliteController::UpdateAllAnimIDs()
+{
+	int i = 0;
+	if (m_buttonCount > i) {
+		HiliteButtons** button = m_buttons;
+		do {
+			if (*button != 0) {
+				(*button)->UpdateAnimId();
+			}
+			button++;
 			i++;
 		} while (m_buttonCount > i);
 	}
