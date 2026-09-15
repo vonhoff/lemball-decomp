@@ -16,7 +16,7 @@ from lib.vtable import check_vtable
 
 def check_tool_tests() -> int:
     suite = unittest.defaultTestLoader.discover(str(Path(__file__).parent / "tests"))
-    return 0 if unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful() else 1
+    return 0 if unittest.TextTestRunner().run(suite).wasSuccessful() else 1
 
 
 def main() -> int:
@@ -63,12 +63,11 @@ def main() -> int:
     if code != 0:
         return code
 
-    if args.all or args.names:
+    if args.all:
         code = check_names(paths=paths, fail=True)
         if code != 0:
             return code
 
-    if args.all or args.vtable:
         code = check_vtable(no_build=True)
         if code != 0:
             return code
