@@ -13,7 +13,9 @@ public:
 	PushActive() { m_activeMarker = 0; }
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~PushActive() {}         // vtable+0x00
+#ifndef LEMBALL_IMPLICIT_PUSH_ACTIVE_CLEANUP
+	virtual ~PushActive() {} // vtable+0x00
+#endif
 
 	friend class BaseCursor;
 

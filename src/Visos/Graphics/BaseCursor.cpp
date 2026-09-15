@@ -1,3 +1,4 @@
+#define LEMBALL_IMPLICIT_PUSH_ACTIVE_CLEANUP
 #include "BaseCursor.h"
 
 #include "../Foundation/BaseQueue.h"
