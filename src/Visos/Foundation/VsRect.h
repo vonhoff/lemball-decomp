@@ -10,13 +10,7 @@ class VsRect : public VsSize, public VsPoint {
 public:
 	VsRect() {}
 
-	VsRect(short p_x, short p_y, short p_width, short p_height)
-	{
-		m_width = p_width;
-		m_height = p_height;
-		m_x = p_x;
-		m_y = p_y;
-	}
+	VsRect(short p_x, short p_y, short p_width, short p_height) : VsSize(p_width, p_height), VsPoint(p_x, p_y) {}
 	VsRect(short p_x, short p_y, VsSize* p_size);
 	VsRect(const VsRect& p_source);
 
