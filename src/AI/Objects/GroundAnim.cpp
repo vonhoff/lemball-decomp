@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_GROUND_ANIM_HELPERS
 #include "GroundAnim.h"
 
 #include "../../Control/Game/Game.h"
@@ -140,6 +141,19 @@ void GroundAnim::Add(const Coord3d& p_coordinate, unsigned short p_startFrame, u
 	m_count++;
 	for (int i = 0; i < m_count; i++) {
 		m_entries[i].m_currentFrame = m_entries[i].m_startFrame;
+	}
+}
+
+// FUNCTION: LEMBALL 0x0040d230
+void GroundAnim::RemoveAtCoordinate(const Coord3d& p_coordinate)
+{
+	for (int i = 0; i < m_count; i++) {
+		if (p_coordinate.m_x == m_entries[i].m_coordinate.m_x && p_coordinate.m_y == m_entries[i].m_coordinate.m_y) {
+			for (int j = i; j < m_count - 1; j++) {
+				m_entries[j] = m_entries[j + 1];
+			}
+			m_count--;
+		}
 	}
 }
 
