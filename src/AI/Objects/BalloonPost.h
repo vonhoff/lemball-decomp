@@ -15,6 +15,7 @@ public:
 	void Restart();
 	~BalloonPost();
 #ifdef LEMBALL_OUTLINE_BALLOON_POST_HELPERS
+	void ActivatePostAtPosition(int p_x, int p_y, int p_z, eObjectType p_type);
 	void DeactivatePost(TheBalloonPost* p_post);
 #endif
 

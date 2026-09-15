@@ -162,6 +162,42 @@ int BalloonPost::GetViewData(ViewData* p_viewData)
 	return count;
 }
 
+// FUNCTION: LEMBALL 0x0042a3a0
+void BalloonPost::ActivatePostAtPosition(int p_x, int p_y, int p_z, eObjectType p_type)
+{
+	int mask;
+	int index;
+	switch (p_type) {
+	case 0x28:
+		mask = 1;
+		index = 0;
+		break;
+	case 0x2a:
+		mask = 2;
+		index = 1;
+		break;
+	case 0x2c:
+		mask = 4;
+		index = 2;
+		break;
+	case 0x2e:
+		mask = 8;
+		index = 3;
+		break;
+	default:
+		return;
+	}
+	m_activeMask |= mask;
+	m_positions[index].m_xFixed = p_x << 12;
+	m_positions[index].m_yFixed = p_y << 12;
+	m_positions[index].m_zFixed = p_z << 12;
+	TheBalloonPost* post = m_posts[index];
+	post->m_position.m_xFixed = p_x << 12;
+	post->m_position.m_yFixed = p_y << 12;
+	post->m_position.m_zFixed = p_z << 12;
+	m_posts[index]->m_active = 1;
+}
+
 // FUNCTION: LEMBALL 0x0042a460
 void BalloonPost::DeactivatePost(TheBalloonPost* p_post)
 {
