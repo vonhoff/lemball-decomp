@@ -16,6 +16,9 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
+#ifdef LEMBALL_OUTLINE_LIFT_MANAGER_HELPERS
+	int ExportLiftEndpointCoordinates(Coord3d p_records[][2]);
+#endif
 	void StepOn(const AiCoord& p_position, GameObject* p_object);
 	void Switch(swMessage p_message, int p_id, int p_legacyA, int p_legacyB);
 

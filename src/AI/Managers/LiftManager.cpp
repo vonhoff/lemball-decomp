@@ -1,4 +1,5 @@
 #define LEMBALL_INLINE_VIEW_DATA
+#define LEMBALL_OUTLINE_LIFT_MANAGER_HELPERS
 #include "LiftManager.h"
 
 #include "../Base/Coord3d.h"
@@ -53,6 +54,18 @@ void LiftManager::Initialise(int p_capacity)
 LiftManager::~LiftManager()
 {
 	delete[] m_lifts;
+}
+
+// FUNCTION: LEMBALL 0x00425830
+int LiftManager::ExportLiftEndpointCoordinates(Coord3d p_records[][2])
+{
+	for (int i = 0; i < m_count; i++) {
+		Lift* lift = &m_lifts[i];
+		(*p_records)[0] = lift->m_start;
+		(*p_records)[1] = lift->m_end;
+		p_records++;
+	}
+	return m_count;
 }
 
 // 68K 0x106152bc Process__12CLiftManagerFv
