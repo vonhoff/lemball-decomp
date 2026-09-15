@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_GRAPHICS_STATE_HELPERS
 #include "TargetGraphicsSystemState.h"
 
 #include "../Foundation/String.h"
@@ -253,6 +254,19 @@ bool TargetGraphicsSystemState::IsDirectDrawDriver()
 {
 	switch (m_driverMode) {
 	case 4:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
+// FUNCTION: LEMBALL 0x004581b0
+bool TargetGraphicsSystemState::IsDisplayDibDriver()
+{
+	switch (m_driverMode) {
+	case 2:
+	case 3:
+	case 5:
 		return 1;
 	default:
 		return 0;
