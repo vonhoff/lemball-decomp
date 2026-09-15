@@ -71,10 +71,10 @@ void Ice::Set(unsigned short p_id,
 		minY = maxY;
 		maxY = temporary;
 	}
-	m_minX = (short) minX;
-	m_minY = (short) minY;
-	m_maxX = (short) maxX;
-	m_maxY = (short) maxY;
+	m_min.m_x = (short) minX;
+	m_min.m_y = (short) minY;
+	m_max.m_x = (short) maxX;
+	m_max.m_y = (short) maxY;
 
 	int minGroundY = (short) minY;
 	int minGroundX = (short) minX;
@@ -91,10 +91,10 @@ void Ice::Set(unsigned short p_id,
 																							  minGroundY & 0xf);
 		}
 	}
-	m_minZ = (short) minZ;
+	m_min.m_z = (short) minZ;
 
-	int maxGroundY = m_maxY;
-	int maxGroundX = m_maxX;
+	int maxGroundY = m_max.m_y;
+	int maxGroundX = m_max.m_x;
 	unsigned short maxZ;
 	{
 		Map* map = g_pMap;
@@ -108,7 +108,7 @@ void Ice::Set(unsigned short p_id,
 																							  maxGroundY & 0xf);
 		}
 	}
-	m_maxZ = (short) maxZ;
+	m_max.m_z = (short) maxZ;
 
 	m_position.m_xFixed = ((int) p_cornerA.m_x) << 12;
 	m_position.m_yFixed = ((int) p_cornerA.m_y) << 12;
@@ -161,10 +161,10 @@ bool Ice::Process()
 		return true;
 	}
 	m_lastMovementTick = g_dwGameTick;
-	int minX = m_minX - 8;
-	int minY = m_minY - 8;
-	int maxX = m_maxX + 7;
-	int maxY = m_maxY + 7;
+	int minX = m_min.m_x - 8;
+	int minY = m_min.m_y - 8;
+	int maxX = m_max.m_x + 7;
+	int maxY = m_max.m_y + 7;
 	AiCoord position;
 	for (int i = 0; i < m_objectCount; i++) {
 		GameObject* object = m_objects[i];
@@ -329,7 +329,7 @@ bool Ice::StepOn(const AiCoord& p_position, GameObject* p_object)
 	}
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
-	if (m_minX - 8 <= x && x <= m_maxX + 7 && m_minY - 8 <= y && y <= m_maxY + 7) {
+	if (m_min.m_x - 8 <= x && x <= m_max.m_x + 7 && m_min.m_y - 8 <= y && y <= m_max.m_y + 7) {
 		if (m_objectCount < 10) {
 			m_objects[m_objectCount++] = p_object;
 			p_object->ResetInstructions();

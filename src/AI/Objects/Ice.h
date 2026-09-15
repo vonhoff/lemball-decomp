@@ -2,6 +2,7 @@
 #define LEMBALL_AI_OBJECTS_ICE_H
 
 #include "../../Common.h"
+#include "../Base/Coord3d.h"
 #include "../Base/GlobalGameObject.h" // complete type
 
 // SIZE 0x188
@@ -35,12 +36,8 @@ private:
 	unsigned int m_initialSwitched; // 0x14c
 	int m_objectCount;              // 0x150
 	GameObject* m_objects[10];      // 0x154
-	short m_minX;                   // 0x17c
-	short m_minY;                   // 0x17e
-	short m_minZ;                   // 0x180
-	short m_maxX;                   // 0x182
-	short m_maxY;                   // 0x184
-	short m_maxZ;                   // 0x186
+	Coord3d m_min;                  // 0x17c
+	Coord3d m_max;                  // 0x182
 };
 
 // SYNTHETIC: LEMBALL 0x0042e500

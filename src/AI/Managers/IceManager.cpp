@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_ICE_MANAGER_HELPERS
 #include "IceManager.h"
 
 #include "../Base/Coord3d.h"
@@ -112,6 +113,18 @@ void IceManager::Add(unsigned short p_id,
 		m_ice[m_count].Set(p_id, p_cornerA, p_cornerB, p_velocityX, p_velocityY, p_initialSwitched);
 		m_count++;
 	}
+}
+
+// FUNCTION: LEMBALL 0x0042de40
+int IceManager::ExportIceRecords(Coord3d p_records[][2])
+{
+	for (int i = 0; i < m_count; i++) {
+		Ice* ice = &m_ice[i];
+		(*p_records)[0] = ice->m_min;
+		(*p_records)[1] = ice->m_max;
+		p_records++;
+	}
+	return m_count;
 }
 
 // 68K 0x106128a4 LoadLevel__11CIceManagerFPUciUc
