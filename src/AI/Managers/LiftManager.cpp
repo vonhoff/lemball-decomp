@@ -68,14 +68,25 @@ int LiftManager::ExportLiftEndpointCoordinates(Coord3d p_records[][2])
 	return m_count;
 }
 
+// FUNCTION: LEMBALL 0x00425ce0
+void LiftManager::AddLiftFromEndpoints(unsigned short p_id, const Coord3d& p_start, const Coord3d& p_end)
+{
+	if (m_count < m_capacity) {
+		m_lifts[m_count].SetId(p_id);
+		m_lifts[m_count].Set(p_start, p_end, 1, -1, 0x30, (eLiftActivateType) 2, 1);
+		m_count++;
+	}
+}
+
 // 68K 0x106152bc Process__12CLiftManagerFv
 // FUNCTION: LEMBALL 0x00425d30
 void LiftManager::Process()
 {
-	for (int i = 0; i < m_count; i++) {
-		m_lifts[i].m_requestEnabled = 1;
-		m_lifts[i].Process();
-		m_lifts[i].CheckObjects();
+	LiftManager* self = this;
+	for (int i = 0; i < self->m_count; i++) {
+		self->m_lifts[i].m_requestEnabled = 1;
+		self->m_lifts[i].Process();
+		self->m_lifts[i].CheckObjects();
 	}
 }
 
