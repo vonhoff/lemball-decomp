@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_NODE_HELPERS
 #include "Node.h"
 
 #include "NodeNeighbour.h"
@@ -35,6 +36,20 @@ void Node::Initialise(int p_x, int p_y, int p_neighbourCapacity)
 		m_neighbours = (NodeNeighbour*) operator new(p_neighbourCapacity * sizeof(NodeNeighbour));
 	}
 	m_neighbourCapacity = p_neighbourCapacity;
+	m_xFixed = p_x << 12;
+	m_yFixed = p_y << 12;
+}
+
+// FUNCTION: LEMBALL 0x00421370
+void Node::SetFixedCoordinates(int p_x, int p_y, undefined4 p_unused)
+{
+	m_xFixed = p_x;
+	m_yFixed = p_y;
+}
+
+// FUNCTION: LEMBALL 0x00421380
+void Node::SetIntegerCoordinates(int p_x, int p_y)
+{
 	m_xFixed = p_x << 12;
 	m_yFixed = p_y << 12;
 }
