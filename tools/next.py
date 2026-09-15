@@ -118,28 +118,21 @@ def print_funcs(funcs: list[Func], limit: int) -> None:
         print(f"  ... {len(funcs) - limit} more (raise --limit)")
 
 
-def stubs(funcs: list[Func]) -> list[Func]:
-    return [f for f in funcs if f.annot == "STUB"]
-
-
-def grind(funcs: list[Func]) -> list[Func]:
-    return [f for f in funcs if f.annot == "FUNCTION" and f.ratio < 100.0]
-
-
 def tiny_stubs(funcs: list[Func], max_size: int) -> list[Func]:
-    items = [f for f in stubs(funcs) if f.original_size is not None and f.original_size <= max_size]
+    items = [f for f in funcs if f.annot == "STUB" and f.original_size is not None and f.original_size <= max_size]
     by_unit = Counter(f.unit for f in items)
     return sorted(items, key=lambda f: (-by_unit[f.unit], f.unit, f.addr))
 
 
 def near_funcs(funcs: list[Func]) -> list[Func]:
-    return sorted(grind(funcs), key=lambda f: (-f.ratio, f.original_size or float('inf'), f.addr))
+    return sorted((f for f in funcs if f.annot == "FUNCTION" and f.ratio < 100),
+                  key=lambda f: (-f.ratio, f.original_size or float('inf'), f.addr))
 
 
 def clone_groups(funcs: list[Func], min_clone: int) -> list[tuple[str, int, list[Func]]]:
     groups: dict[tuple[str, int], list[Func]] = defaultdict(list)
-    for func in stubs(funcs):
-        if func.original_size is not None:
+    for func in funcs:
+        if func.annot == "STUB" and func.original_size is not None:
             groups[(func.method, func.original_size)].append(func)
     return sorted(((name, size, items) for (name, size), items in groups.items() if len(items) >= min_clone),
                   key=lambda item: (-len(item[2]), item[0], item[1]))
@@ -163,19 +156,17 @@ def leftover_units(funcs: list[Func]) -> list[tuple[str, int, int, int, int]]:
 def print_snapshot(funcs: list[Func]) -> None:
     n = len(funcs)
     n100 = sum(1 for f in funcs if f.ratio == 100.0)
-    n_fn = sum(1 for f in funcs if f.annot == "FUNCTION")
-    n_stub = sum(1 for f in funcs if f.annot == "STUB")
-    n_unann = sum(1 for f in funcs if f.annot is None)
-    n_grind = len(grind(funcs))
+    annotations = Counter(f.annot for f in funcs)
+    n_grind = sum(f.annot == "FUNCTION" and f.ratio < 100 for f in funcs)
     code = sum(f.size for f in funcs)
     matched_code = sum(f.size for f in funcs if f.ratio == 100.0)
     print("=== snapshot ===")
     print(f"  report functions: {n100}/{n} at 100%  ({100.0 * n100 / n:.2f}%)")
     print(f"  rebuilt weights:  {matched_code}/{code} bytes  ({100.0 * matched_code / code:.2f}%)")
     print(f"  original sizing:  {sum(f.original_size is not None for f in funcs)}/{n} proven reachable spans")
-    print(f"  source FUNCTION:  {n_fn}  (not 100%: {n_grind})")
-    print(f"  source STUB:      {n_stub}")
-    print(f"  unannotated:      {n_unann}")
+    print(f"  source FUNCTION:  {annotations['FUNCTION']}  (not 100%: {n_grind})")
+    print(f"  source STUB:      {annotations['STUB']}")
+    print(f"  unannotated:      {annotations[None]}")
 
 
 def print_tiny(funcs: list[Func], max_size: int, limit: int) -> None:
