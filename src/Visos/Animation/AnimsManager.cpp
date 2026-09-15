@@ -26,6 +26,26 @@ void AnimsManager::FreeVram()
 {
 }
 
+// FUNCTION: LEMBALL 0x0044e700
+VsRect* AnimsManager::DrawAnimOnGdi(VsRect* p_bounds,
+									Gdi* p_gdi,
+									const VsPoint& p_position,
+									unsigned long p_resourceId,
+									unsigned long p_animIndex,
+									Frames* p_frame,
+									Remap* p_remap)
+{
+	Gdi* previous = m_gdi;
+	m_gdi = p_gdi;
+	VsRect bounds = DrawAnim(p_position, p_resourceId, p_animIndex, p_frame, p_remap);
+	m_gdi = previous;
+	p_bounds->m_width = bounds.m_width;
+	p_bounds->m_height = bounds.m_height;
+	p_bounds->m_x = bounds.m_x;
+	p_bounds->m_y = bounds.m_y;
+	return p_bounds;
+}
+
 // 68K 0x1020019c __ct__13CAnimsManagerFP4CGDIUliiiUc
 // FUNCTION: LEMBALL 0x00467260
 AnimsManager::AnimsManager(Gdi* p_gdi,

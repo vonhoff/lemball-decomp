@@ -26,6 +26,13 @@ public:
 	void LoadAnims(unsigned long p_resourceId);
 	void ResetPrimitives();
 #ifdef LEMBALL_OUTLINE_ANIM_MANAGER_HELPERS
+	VsRect* DrawAnimOnGdi(VsRect* p_bounds,
+						  Gdi* p_gdi,
+						  const VsPoint& p_position,
+						  unsigned long p_resourceId,
+						  unsigned long p_animIndex,
+						  Frames* p_frame,
+						  Remap* p_remap);
 	ResZrle* ResolveAnimFrameData(unsigned long p_resourceId, Frames* p_frame);
 	void DetachGdi(Gdi* p_gdi);
 #endif
