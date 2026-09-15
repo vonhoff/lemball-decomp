@@ -254,6 +254,11 @@ bool TargetAboutScreen::QuitYet()
 	return m_complete;
 }
 
+// FUNCTION: LEMBALL 0x0044bec0
+void TargetAboutScreen::OnDriverChange()
+{
+}
+
 // FUNCTION: LEMBALL 0x0044c0b0
 int TargetAboutScreen::GetReturnState()
 {

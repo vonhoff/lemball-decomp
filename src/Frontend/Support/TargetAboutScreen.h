@@ -23,6 +23,7 @@ public:
 	virtual void ResetPrimitives();             // vtable+0x20
 	virtual int GetReturnState();               // vtable+0x28
 	virtual bool QuitYet();                     // vtable+0x2c
+	virtual void OnDriverChange();              // vtable+0x30
 	virtual int ProcessMsg(Message* p_message); // BaseQueueHandler vtable+0x08
 	void DrawChangedRegion();
 	void DrawRegistrationText();
