@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_VIEW_HELPERS
 #include "Pt3.h"
 
 #include "AiCoord.h"

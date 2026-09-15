@@ -1,4 +1,3 @@
-#define LEMBALL_IMPLICIT_GLOBAL_CLEANUP
 #include "TrapDoor.h"
 
 #include "../../Control/Game/Game.h"

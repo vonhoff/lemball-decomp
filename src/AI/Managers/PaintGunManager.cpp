@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_PAINT_GUN_MANAGER_HELPERS
 #include "PaintGunManager.h"
 
 #include "../Navigation/Ai.h"

@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_STRING_HELPERS
 #include "String.h"
 
 #include "VsOStream.h"

@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_STREAM_HELPERS
 #include "MainOptions2Drawer.h"
 
 #include "../../Frontend/Base/BaseFrontendProcess.h"

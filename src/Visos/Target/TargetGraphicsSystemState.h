@@ -10,9 +10,7 @@ struct TargetGraphicsSystemState {
 	bool ChangeDriver(int p_driverMode);
 	bool IsFullscreenDriver();
 	bool IsDirectDrawDriver();
-#ifdef LEMBALL_OUTLINE_GRAPHICS_STATE_HELPERS
 	bool IsDisplayDibDriver();
-#endif
 	void UpdateDriverSize(const struct VsSize& p_size);
 
 	int m_driverMode;                    // 0x00

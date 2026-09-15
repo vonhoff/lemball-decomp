@@ -12,9 +12,7 @@ public:
 	VsOStream& operator<<(Hex p_arg0);
 	VsOStream& operator<<(Hex8 p_arg0);
 	VsOStream& operator<<(char p_arg0);
-#ifdef LEMBALL_OUTLINE_STREAM_HELPERS
 	VsOStream& operator<<(unsigned char p_value);
-#endif
 	VsOStream& operator<<(const char* p_arg0);
 	VsOStream& operator<<(const void* p_arg0);
 	VsOStream& operator<<(int p_arg0);

@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_INVISIBLE_SWITCH_MANAGER_HELPERS
 #include "InvisibleSwitchManager.h"
 
 #include "../Objects/InvisibleSwitch.h"

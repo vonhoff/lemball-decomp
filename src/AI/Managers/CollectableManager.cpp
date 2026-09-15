@@ -1,5 +1,3 @@
-#define LEMBALL_IMPLICIT_FLAG_CLEANUP
-#define LEMBALL_OUTLINE_COLLECTABLE_MANAGER_HELPERS
 #include "CollectableManager.h"
 
 #include "../Navigation/Ai.h"

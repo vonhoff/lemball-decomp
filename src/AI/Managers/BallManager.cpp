@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_BALL_MANAGER_HELPERS
 #include "BallManager.h"
 
 #include "../Objects/Ball.h"

@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_GRAPHICS_STATE_HELPERS
 #include "TargetGraphicsSystemState.h"
 
 #include "../Foundation/String.h"

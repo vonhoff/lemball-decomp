@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_FORMATION_HELPERS
 #include "FormationManager.h"
 
 #include "../../Visos/Foundation/VsTrig.h"

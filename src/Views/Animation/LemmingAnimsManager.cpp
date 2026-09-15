@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_LEMMING_ANIM_HELPERS
 #include "LemmingAnimsManager.h"
 
 #include "../../AI/Navigation/Ai.h"

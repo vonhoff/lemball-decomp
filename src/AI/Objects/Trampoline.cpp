@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_TRAMPOLINE_HELPERS
 #include "Trampoline.h"
 
 #include "../../Control/Game/Game.h"

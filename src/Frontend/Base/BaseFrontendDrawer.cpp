@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_VSSIZE_VALUE
 #include "BaseFrontendDrawer.h"
 
 #include "../../Control/Game/GameMain.h"

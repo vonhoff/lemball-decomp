@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_PLAYER_STATE_HELPERS
 #include "PlayerLemming.h"
 
 #include "../../Control/Game/Demo.h"

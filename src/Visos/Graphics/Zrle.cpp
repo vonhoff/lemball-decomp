@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_ZRLE_CLEANUP
 #include "Zrle.h"
 
 #include "../Resources/ResBase.h"

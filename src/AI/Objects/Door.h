@@ -16,9 +16,6 @@ public:
 	virtual void Delete();                   // vtable+0xc8
 	virtual void DoActivate();               // vtable+0x10c
 	virtual void Restart();                  // vtable+0x104
-#ifndef LEMBALL_IMPLICIT_DOOR_CLEANUP
-	virtual ~Door(); // vtable+0x00
-#endif
 	void ResetCollision();
 	void Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, int p_y, int p_z);
 	void SetCollision();

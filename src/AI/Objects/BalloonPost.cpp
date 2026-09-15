@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_BALLOON_POST_HELPERS
 #include "BalloonPost.h"
 
 #include "../../Map/Base/Map.h"

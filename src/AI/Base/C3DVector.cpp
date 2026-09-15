@@ -1,5 +1,3 @@
-#define LEMBALL_OUTLINE_VIEW_HELPERS
-#define LEMBALL_OUTLINE_VECTOR_CONSTRUCTOR
 #include "C3DVector.h"
 
 #include "../../Visos/Foundation/Fixed.h"

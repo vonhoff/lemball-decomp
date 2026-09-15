@@ -1,5 +1,3 @@
-#define LEMBALL_OUTLINE_ANIM_MANAGER_HELPERS
-#define LEMBALL_INLINE_ZRLE_CLEANUP
 #include "AnimsManager.h"
 
 #include "../Foundation/VsPoint.h"

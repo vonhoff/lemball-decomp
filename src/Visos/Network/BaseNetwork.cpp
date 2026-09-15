@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_NETWORK_HELPERS
 #include "BaseNetwork.h"
 
 #include "../../Network/Game/NetworkManager.h"

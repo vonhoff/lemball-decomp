@@ -1,5 +1,3 @@
-#define LEMBALL_IMPLICIT_DOOR_CLEANUP
-#define LEMBALL_IMPLICIT_GLOBAL_CLEANUP
 #include "DoorManager.h"
 
 #include "../Base/GameObject.h"

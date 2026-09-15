@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_ANIM_CLEANUP
 #include "Anim.h"
 
 #include "../Graphics/Gdi.h"

@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_GUN_BUTTON_HELPERS
 #include "GunButtons.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"

@@ -14,9 +14,7 @@ public:
 	virtual void Process();                        // vtable+0x1c
 	virtual ~HandManager();                        // vtable+0x14
 	void Restart();
-#ifdef LEMBALL_OUTLINE_HAND_MANAGER_HELPERS
 	void ResetCount();
-#endif
 	void Add(unsigned short p_id, int p_x, int p_y, int p_z);
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);

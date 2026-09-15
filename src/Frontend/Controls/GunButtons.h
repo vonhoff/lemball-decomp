@@ -27,7 +27,6 @@ public:
 	void Draw(int p_firstState, int p_secondState);
 	void LoadFaces(unsigned long* p_animIds);
 	void UnLoadFaces();
-#ifdef LEMBALL_OUTLINE_GUN_BUTTON_HELPERS
 	void Move(int p_x, int p_y);
 	GunButtons(const VsRect& p_rect,
 			   GWnd* p_window,
@@ -40,7 +39,6 @@ public:
 			   unsigned int p_controlMessage,
 			   int* p_binding,
 			   int p_actionMessage);
-#endif
 
 	friend class GunController;
 

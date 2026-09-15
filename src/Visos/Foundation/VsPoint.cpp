@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_POINT_HELPERS
 #include "VsPoint.h"
 
 #include "VsRect.h"

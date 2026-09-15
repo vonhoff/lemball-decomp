@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_CLIPRECT_CLEANUP
 #include "ClipRect.h"
 
 #include "Gdi.h"

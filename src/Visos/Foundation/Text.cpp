@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_TEXT_CLEANUP
 #include "Text.h"
 
 #include "../Graphics/Gdi.h"

@@ -14,14 +14,12 @@ public:
 	ResFont(unsigned long p_arg0);
 	ResZrle* AsciItoZrle(unsigned int p_ascii);
 	VsSize* GetSize(VsSize* p_result, const char* p_text, unsigned int p_flags);
-
-#ifdef LEMBALL_INLINE_VSSIZE_COPY
 	VsSize GetSize(const char* p_text, unsigned int p_flags)
 	{
 		short storage[2];
 		return *GetSize((VsSize*) storage, p_text, p_flags);
 	}
-#endif
+
 	static ResFont* Load(unsigned int p_resourceId);
 	virtual void OnLoad();                                                        // vtable+0x2c
 	virtual bool ForceLoadVram(unsigned int p_index);                             // vtable+0x3c

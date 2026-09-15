@@ -1,5 +1,3 @@
-#define LEMBALL_IMPLICIT_GLOBAL_CLEANUP
-#define LEMBALL_OUTLINE_BULLET_MANAGER_HELPERS
 #include "BulletManager.h"
 
 #include "../../Visos/Network/Connect.h"

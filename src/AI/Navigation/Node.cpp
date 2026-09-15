@@ -1,5 +1,3 @@
-#define LEMBALL_OUTLINE_NODE_HELPERS
-#define LEMBALL_INLINE_PT3_VALUE
 #include "Node.h"
 
 #include "NodeNeighbour.h"

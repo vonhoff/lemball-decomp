@@ -13,11 +13,7 @@ public:
 		m_returnState = 0;
 	}
 	// 68K 0x1011802a __dt__8CProcessFv
-#ifdef LEMBALL_INLINE_BASEPROCESS
-	virtual ~BaseProcess() {} // vtable+0x00
-#else
-	virtual ~BaseProcess(); // vtable+0x00
-#endif
+	virtual ~BaseProcess();     // vtable+0x00
 	virtual void Process() = 0; // vtable+0x04
 
 	friend class Game;

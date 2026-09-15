@@ -8,11 +8,9 @@
 class MasterInput {
 public:
 	MasterInput(BaseQueue* p_arg0);
-#ifdef LEMBALL_OUTLINE_INPUT_HELPERS
 	bool AddItem(void* p_item);
 	bool IsEmpty();
 	bool ProcessItems();
-#endif
 	virtual VsOStream& StreamOut(VsOStream& p_arg0); // vtable+0x00
 	virtual ~MasterInput();                          // vtable+0x04
 

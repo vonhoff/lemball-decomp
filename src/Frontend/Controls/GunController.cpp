@@ -1,5 +1,3 @@
-#define LEMBALL_OUTLINE_GUN_CONTROLLER_HELPERS
-#define LEMBALL_OUTLINE_GUN_BUTTON_HELPERS
 #include "GunController.h"
 
 #include "../../Views/Sound/SoundView.h"

@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_VSSIZE_COPY
 #include "NetworkOptionsDrawer.h"
 
 #include "../../Control/Game/GameStatus.h"

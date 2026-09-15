@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_ROCKET_MANAGER_HELPERS
 #include "RocketManager.h"
 
 #include "../Navigation/Ai.h"

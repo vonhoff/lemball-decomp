@@ -20,9 +20,7 @@ public:
 	virtual ~PlayerLemming();
 	PlayerLemmingGroup* GetGroup();
 	bool CheckSfx();
-#ifdef LEMBALL_OUTLINE_PLAYER_STATE_HELPERS
 	unsigned int CheckNetworkStateChanged();
-#endif
 	int GetLastBalloon();
 	int GetObject(int p_index);
 	virtual void Action(eAction p_arg0);                                            // vtable+0x08

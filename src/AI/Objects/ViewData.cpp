@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_VIEW_HELPERS
 #include "ViewData.h"
 
 // FUNCTION: LEMBALL 0x00429e80

@@ -25,7 +25,6 @@ public:
 	virtual void FreeVram(); // vtable+0x00
 	void LoadAnims(unsigned long p_resourceId);
 	void ResetPrimitives();
-#ifdef LEMBALL_OUTLINE_ANIM_MANAGER_HELPERS
 	VsRect* DrawAnimOnGdi(VsRect* p_bounds,
 						  Gdi* p_gdi,
 						  const VsPoint& p_position,
@@ -35,7 +34,6 @@ public:
 						  Remap* p_remap);
 	ResZrle* ResolveAnimFrameData(unsigned long p_resourceId, Frames* p_frame);
 	void DetachGdi(Gdi* p_gdi);
-#endif
 	void UnLoadAnims(unsigned long p_resourceId);
 	~AnimsManager();
 	AnimsManager();

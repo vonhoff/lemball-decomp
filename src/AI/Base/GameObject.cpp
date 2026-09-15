@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_COORD_COPY
 #include "GameObject.h"
 
 #include "../../Control/Game/Game.h"

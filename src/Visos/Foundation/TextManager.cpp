@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_TEXT_CLEANUP
 #include "TextManager.h"
 
 #include "../Resources/ResFont.h"

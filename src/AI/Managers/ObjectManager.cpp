@@ -1,5 +1,3 @@
-#define LEMBALL_IMPLICIT_GLOBAL_CLEANUP
-#define LEMBALL_ASSIGN_BASE_POSITION
 #include "ObjectManager.h"
 
 #include "../../Visos/Network/Connect.h"

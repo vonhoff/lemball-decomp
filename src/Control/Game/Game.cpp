@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_BASEPROCESS
 #include "Game.h"
 
 #include "../../AI/Navigation/Ai.h"

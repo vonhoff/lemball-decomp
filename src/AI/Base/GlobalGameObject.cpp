@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_GLOBAL_OBJECT_HELPERS
 #include "GlobalGameObject.h"
 
 #include "../../Visos/Messaging/TransportObjectMess.h"

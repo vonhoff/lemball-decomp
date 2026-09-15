@@ -23,9 +23,7 @@ public:
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Switch(int p_message, int p_id);
-#ifdef LEMBALL_OUTLINE_ICE_MANAGER_HELPERS
 	int ExportIceRecords(Coord3d p_records[][2]);
-#endif
 
 private:
 	int m_capacity; // 0x30

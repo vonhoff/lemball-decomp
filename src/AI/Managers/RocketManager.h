@@ -17,9 +17,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
-#ifdef LEMBALL_OUTLINE_ROCKET_MANAGER_HELPERS
 	void ResetCount();
-#endif
 
 	friend class Ai;
 

@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_HAND_MANAGER_HELPERS
 #include "HandManager.h"
 
 #include "../Navigation/Ai.h"

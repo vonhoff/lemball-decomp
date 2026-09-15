@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_ICE_MANAGER_HELPERS
 #include "IceManager.h"
 
 #include "../Base/Coord3d.h"

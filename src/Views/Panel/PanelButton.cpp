@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_ANIM_CLEANUP
 #include "PanelButton.h"
 
 #include "../../AI/Groups/PlayerLemmingGroup.h"

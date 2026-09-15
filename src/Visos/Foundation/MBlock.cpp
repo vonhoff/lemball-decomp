@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_BLOCK_HELPERS
 #include "MBlock.h"
 
 #include "VsOStream.h"

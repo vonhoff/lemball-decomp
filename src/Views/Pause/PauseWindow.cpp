@@ -1,5 +1,3 @@
-#define LEMBALL_IMPLICIT_ANIM_CLEANUP
-#define LEMBALL_INLINE_ANIM_CLEANUP
 #include "PauseWindow.h"
 
 #include "../../Control/Game/GameMain.h"

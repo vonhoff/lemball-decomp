@@ -9,10 +9,8 @@ class FormationManager {
 public:
 	FormationManager();
 	Vector* GetAVector(int p_index);
-#ifdef LEMBALL_OUTLINE_FORMATION_HELPERS
 	Vector* GetFirstVector();
 	Vector* GetNextVector();
-#endif
 	void Restart();
 	void TransformFormation(int p_formationIndex, int p_angle);
 	~FormationManager();

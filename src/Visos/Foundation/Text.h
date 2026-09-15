@@ -13,9 +13,6 @@ public:
 	inline Text() : m_x(m_y = 0), m_offsetX(m_offsetY = 0), m_startX(m_startY = 0), m_advanceX(m_advanceY = 0) {}
 
 	void NextPos();
-#ifndef LEMBALL_INLINE_TEXT_CLEANUP
-	virtual ~Text(); // vtable+0x00
-#endif
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
 	virtual void Set(int p_x,

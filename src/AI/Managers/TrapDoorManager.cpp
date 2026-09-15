@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_TRAPDOOR_HELPERS
 #include "TrapDoorManager.h"
 
 #include "../../Map/Base/Map.h"

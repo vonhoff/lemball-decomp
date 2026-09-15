@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_PANEL_HELPERS
 #include "Panel.h"
 
 #include "../../AI/Navigation/Ai.h"

@@ -78,6 +78,8 @@ when the compact `get_function_memory` result is truncated.
 
 ## Source rules
 
+Keep each class definition identical in every translation unit. Do not use preprocessor guards to vary method declarations, signatures, or inline bodies for match scores. Resolve these choices from the original x86 evidence.
+
 No inline asm. One primary class per `.h`/`.cpp` (stem = class), unless `tools/lib/layout.py` `OVERRIDE_STEMS`. Functions in ascending original x86 address order. Use `RES_*` from `Manifest.h`. Prefer named members over offset pokes. Keep `undefined`/`undefined2`/`undefined4` until Win32 evidence justifies a tighter type. Preserve original loop shape, 32-bit size math, post-virtual pointer re-fetches, and message `switch` widening. Stop at compiler noise (reg alloc, alignment NOPs).
 
 ## MSVC 4.00 Codegen Quirks

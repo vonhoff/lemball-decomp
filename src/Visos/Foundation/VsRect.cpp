@@ -1,4 +1,3 @@
-#define LEMBALL_INLINE_VSSIZE_COPY
 #include "VsRect.h"
 
 #include "VsPoint.h"

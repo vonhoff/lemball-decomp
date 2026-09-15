@@ -1,10 +1,9 @@
-#define LEMBALL_INLINE_VIEW_DATA
-#define LEMBALL_OUTLINE_LIFT_MANAGER_HELPERS
 #include "LiftManager.h"
 
 #include "../Base/Coord3d.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/Lift.h"
+#include "../Objects/ViewData.h"
 
 // GLOBAL: LEMBALL 0x0049e1c0
 unsigned short g_wMovingLiftCount = 0;

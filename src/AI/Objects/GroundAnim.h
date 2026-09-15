@@ -15,9 +15,7 @@ public:
 	void Process();
 	void Restart();
 	~GroundAnim();
-#ifdef LEMBALL_OUTLINE_GROUND_ANIM_HELPERS
 	void RemoveAtCoordinate(const Coord3d& p_coordinate);
-#endif
 
 private:
 	unsigned int m_nextProcessTick; // 0x0000

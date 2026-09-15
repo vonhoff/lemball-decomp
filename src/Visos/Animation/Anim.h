@@ -11,15 +11,9 @@ public:
 	Anim();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-#ifndef LEMBALL_IMPLICIT_ANIM_CLEANUP
-#ifdef LEMBALL_INLINE_ANIM_CLEANUP
 	// 68K 0x10101896 __dt__5CAnimFv
 	// FUNCTION: LEMBALL 0x004439e0
 	virtual ~Anim() {}
-#else
-	virtual ~Anim(); // vtable+0x00
-#endif
-#endif
 
 	friend class AnimsManager;
 	friend class GraphicButton;

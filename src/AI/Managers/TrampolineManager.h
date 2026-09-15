@@ -17,10 +17,8 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
-#ifdef LEMBALL_OUTLINE_TRAMPOLINE_MANAGER_HELPERS
 	void ResetCount();
 	int TryEnableTrampolineNearPosition(const AiCoord& p_position, GameObject* p_object);
-#endif
 
 private:
 	int m_capacity;            // 0x30

@@ -40,11 +40,9 @@ public:
 	void ShutDown();
 	void StoCfailedConnect(NetworkAddress* p_arg0);
 	void StoCokConnect(NetworkAddress* p_arg0);
-#ifdef LEMBALL_OUTLINE_NETWORK_HELPERS
 	void HandleNewConnectionEvent(const char* p_localName, const char* p_remoteName);
 	Connect* FindEventConnection(NetworkAddress* p_address);
 	void HandleConnectionMessage(NetworkAddress* p_address);
-#endif
 
 	friend bool VsFNetQuit();
 	friend bool VsNetQuit();

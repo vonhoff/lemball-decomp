@@ -1,5 +1,3 @@
-#define LEMBALL_OUTLINE_TRAMPOLINE_MANAGER_HELPERS
-#define LEMBALL_OUTLINE_TRAMPOLINE_HELPERS
 #include "TrampolineManager.h"
 
 #include "../Navigation/Ai.h"

@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_GROUND_ANIM_HELPERS
 #include "GroundAnim.h"
 
 #include "../../Control/Game/Game.h"

@@ -1,4 +1,3 @@
-#define LEMBALL_VSRECT_OUT_OF_LINE
 #include "VsGdi.h"
 
 #include "../Foundation/ChangeList.h"

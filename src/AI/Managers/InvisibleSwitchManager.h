@@ -15,9 +15,7 @@ public:
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void StepOn(const AiCoord& p_position, GameObject* p_object);
-#ifdef LEMBALL_OUTLINE_INVISIBLE_SWITCH_MANAGER_HELPERS
 	void AddSwitch(unsigned short p_id, const Coord3d& p_min, const Coord3d& p_max);
-#endif
 
 private:
 	int m_capacity;              // 0x30

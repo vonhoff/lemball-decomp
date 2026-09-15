@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_HILITE_HELPERS
 #include "HiliteController.h"
 
 #include "../../Views/Sound/SoundView.h"

@@ -35,10 +35,8 @@ public:
 	void SetHilite(int p_buttonIndex);
 	void SetHiliteWindow();
 	void UpdateAnimIDs(unsigned long p_actionMessage);
-#ifdef LEMBALL_OUTLINE_HILITE_HELPERS
 	void PostSelectionMessage();
 	void UpdateAllAnimIDs();
-#endif
 
 	friend class NetworkOptionsDrawer;
 	friend class BaseFrontendDrawer;

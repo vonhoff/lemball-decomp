@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_PAD_HELPERS
 #include "PadToButton.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"

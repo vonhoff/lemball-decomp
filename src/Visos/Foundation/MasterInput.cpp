@@ -1,4 +1,3 @@
-#define LEMBALL_OUTLINE_INPUT_HELPERS
 #include "MasterInput.h"
 
 #include "../Target/TargetMasterInputItem.h"
