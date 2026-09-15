@@ -186,15 +186,16 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 	if (g_pTargetGraphicsDriver == 0) {
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
-	if (g_pTargetGraphicsDriver->m_window == p_hwnd) {
-		Wnd* reservedWindow = (Wnd*) g_pTargetGraphicsSystem->m_reserved04;
-		window = reservedWindow;
-		if (window == 0) {
+	if (g_pTargetGraphicsDriver->m_window != p_hwnd) {
+		if (window == 0 && p_message != WM_CREATE) {
 			return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 		}
 	}
-	else if (window == 0 && p_message != WM_CREATE) {
-		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+	else {
+		window = (Wnd*) g_pTargetGraphicsSystem->m_reserved04;
+		if (window == 0) {
+			return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+		}
 	}
 
 	switch (p_message) {
