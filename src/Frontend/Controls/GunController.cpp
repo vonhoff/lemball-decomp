@@ -531,6 +531,19 @@ void GunController::MoveRight()
 	}
 }
 
+// Descriptive name; the original Windows helper has no recovered symbol.
+// FUNCTION: LEMBALL 0x0044da30
+void GunController::SetGunPosition(int p_x, int p_y, int p_side)
+{
+	m_gunX = p_x;
+	m_gunY = p_y;
+	m_moveStartY = p_y;
+	m_currentSide = p_side;
+	m_selectionStartX = p_x;
+	m_targetY = p_y;
+	m_targetSide = p_side;
+}
+
 // 68K 0x10804570 SetGun__14CGunControllerFi
 // FUNCTION: LEMBALL 0x0044da70
 void GunController::SetGun(int p_junction)

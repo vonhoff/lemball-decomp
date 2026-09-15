@@ -36,6 +36,7 @@ public:
 	void Process();
 	void SelectOption();
 	void SetGun(int p_junction);
+	void SetGunPosition(int p_x, int p_y, int p_side);
 	void SetSpriteWindow();
 
 	friend class BaseFrontendDrawer;
