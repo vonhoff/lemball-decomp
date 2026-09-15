@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_NETWORK_HELPERS
 #include "BaseNetwork.h"
 
 #include "../../Network/Game/NetworkManager.h"
@@ -273,12 +274,12 @@ void BaseNetwork::Delete(Connect* p_arg0)
 // FUNCTION: LEMBALL 0x00462040
 Connect* BaseNetwork::NewConnect()
 {
+	bool removed;
 	Connect* peer;
 	Connect* next;
-	bool removed;
 
-	removed = false;
 	peer = m_firstConnect;
+	removed = false;
 	while (1) {
 		if (peer == 0) {
 			break;
@@ -566,6 +567,36 @@ void BaseNetwork::Process()
 
 	if (m_pendingAttachQueue != 0) {
 		((NetworkManager*) m_pendingAttachQueue)->Process();
+	}
+}
+
+// FUNCTION: LEMBALL 0x00462690
+void BaseNetwork::HandleNewConnectionEvent(const char* p_localName, const char* p_remoteName)
+{
+	NewConnect()->Start(p_localName, p_remoteName);
+}
+
+// FUNCTION: LEMBALL 0x004626b0
+Connect* BaseNetwork::FindEventConnection(NetworkAddress* p_address)
+{
+	Connect* peer = m_firstConnect;
+	while (peer != 0) {
+		if ((*p_address == *peer->m_destinationAddress) == 0) {
+			break;
+		}
+		peer = peer->m_nextConnect;
+	}
+	return peer;
+}
+
+// FUNCTION: LEMBALL 0x004626f0
+void BaseNetwork::HandleConnectionMessage(NetworkAddress* p_address)
+{
+	Connect* peer = FindEventConnection(p_address);
+	if (peer != 0) {
+		BeforeDestroyConnections();
+		Delete(peer);
+		AfterDestroyConnections();
 	}
 }
 
