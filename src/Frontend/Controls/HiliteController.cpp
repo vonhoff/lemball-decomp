@@ -197,8 +197,8 @@ void HiliteController::AddHJunction(int p_x, int p_y, unsigned long p_controlMes
 // FUNCTION: LEMBALL 0x0044f9d0
 void HiliteController::DrawButtons(int p_force)
 {
-	int count;
 	HiliteButtons** buttonPtr;
+	int count;
 
 	buttonPtr = m_buttons;
 	count = 4;
@@ -268,6 +268,16 @@ void HiliteController::SetHilite(int p_buttonIndex)
 	m_targetY = m_currentY;
 	m_transitionStart = m_transitionEnd = CurrentMilliTimer();
 	m_currentButton = p_buttonIndex;
+}
+
+// FUNCTION: LEMBALL 0x0044fb70
+void HiliteController::PostSelectionMessage()
+{
+	m_navigationState.type = 0xc;
+	m_navigationState.time = CurrentQueueTimer();
+	m_navigationState.code = m_junctions[m_currentButton].m_controlMessage;
+	g_pMasterInputQueue->Post(m_navigationState);
+	g_pSoundView->PlayEffect((eSoundEffect) 0xe);
 }
 
 // 68K 0x10805a72 Process__17CHiliteControllerFv

@@ -36,6 +36,7 @@ public:
 	void SetHiliteWindow();
 	void UpdateAnimIDs(unsigned long p_actionMessage);
 #ifdef LEMBALL_OUTLINE_HILITE_HELPERS
+	void PostSelectionMessage();
 	void UpdateAllAnimIDs();
 #endif
 
@@ -44,7 +45,7 @@ public:
 
 private:
 	int m_buttonCount;                       // 0x80
-	undefined m_navigationState[0x14];       // 0x84
+	Message m_navigationState;               // 0x84
 	int m_currentX;                          // 0x98
 	int m_currentY;                          // 0x9c
 	int m_targetX;                           // 0xa0
