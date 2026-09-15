@@ -67,4 +67,8 @@ protected:
 // SYNTHETIC: LEMBALL 0x00469b80
 // Text::`vector deleting destructor'
 
+// 68K 0x10100b0a __dt__5CTextFv
+// SYNTHETIC: LEMBALL 0x00469bf0
+// Text::~Text
+
 #endif

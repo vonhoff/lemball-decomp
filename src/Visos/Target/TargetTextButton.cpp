@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_TEXT_CLEANUP
 #include "TargetTextButton.h"
 
 #include "../Foundation/ChangeList.h"

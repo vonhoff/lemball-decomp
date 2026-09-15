@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_TEXT_CLEANUP
 #include "Text.h"
 
 #include "../Graphics/Gdi.h"
@@ -62,11 +63,6 @@ void Text::Draw(Gdi* p_gdi)
 {
 	m_useAdvance = 0;
 	p_gdi->AddToList(this);
-}
-
-// 68K 0x10100b0a __dt__5CTextFv
-Text::~Text()
-{
 }
 
 // 68K 0x102119ee NextPos__5CTextFv
