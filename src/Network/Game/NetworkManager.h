@@ -12,6 +12,7 @@ public:
 	NetworkManager(const char* p_arg0);
 	bool Start();
 	int GetnGame(Connect* p_connection);
+	int CountActiveGames();
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual void Process();                     // vtable+0x0c
 	virtual ~NetworkManager();                  // vtable+0x04

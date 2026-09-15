@@ -197,6 +197,22 @@ NetworkGameMessage* NetworkManager::GetGameMessage(Connect* p_connection)
 	return m_gameMessages + index;
 }
 
+// FUNCTION: LEMBALL 0x00452bc0
+int NetworkManager::CountActiveGames()
+{
+	int count = 0;
+	int index = 0;
+	Connect** connection = m_connections;
+	do {
+		if (*connection != 0 && m_gameMessages[index].m_valid != 0) {
+			count++;
+		}
+		connection++;
+		index++;
+	} while (index < 10);
+	return count;
+}
+
 // 68K 0x10a00bfa GetnGame__15CNetworkManagerFP8CConnect
 // FUNCTION: LEMBALL 0x00452bf0
 int NetworkManager::GetnGame(Connect* p_connection)

@@ -13,6 +13,7 @@ public:
 	virtual void GetData(); // vtable+0x08
 
 	friend class NetworkOptionsDrawer;
+	friend class NetworkManager;
 	friend class SuccFailDrawer;
 
 private:
