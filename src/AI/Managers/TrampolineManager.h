@@ -19,6 +19,7 @@ public:
 	void Restart();
 #ifdef LEMBALL_OUTLINE_TRAMPOLINE_MANAGER_HELPERS
 	void ResetCount();
+	int TryEnableTrampolineNearPosition(const AiCoord& p_position, GameObject* p_object);
 #endif
 
 private:

@@ -1,4 +1,5 @@
 #define LEMBALL_OUTLINE_TRAMPOLINE_MANAGER_HELPERS
+#define LEMBALL_OUTLINE_TRAMPOLINE_HELPERS
 #include "TrampolineManager.h"
 
 #include "../Navigation/Ai.h"
@@ -56,6 +57,21 @@ TrampolineManager::~TrampolineManager()
 void TrampolineManager::ResetCount()
 {
 	m_count = 0;
+}
+
+// FUNCTION: LEMBALL 0x0042b440
+int TrampolineManager::TryEnableTrampolineNearPosition(const AiCoord& p_position, GameObject* p_object)
+{
+	for (int i = 0;; i++) {
+		if (m_count <= i) {
+			return 0;
+		}
+		Trampoline* trampoline = &m_trampolines[i];
+		if (trampoline->m_active != 0 && trampoline->m_enabled == 0 &&
+			trampoline->TryEnableNearPosition(p_position, p_object) != 0) {
+			return 1;
+		}
+	}
 }
 
 // 68K 0x10620e3e Process__18CTrampolineManagerFv
