@@ -27,6 +27,9 @@ public:
 	void RemoveBullet(Bullet* p_bullet);
 	void RequestRemoteBullet(Bullet* p_bullet);
 	void Restart();
+#ifdef LEMBALL_OUTLINE_BULLET_MANAGER_HELPERS
+	Bullet* GetCurrentBullet();
+#endif
 
 private:
 	Bullet* m_bullets;           // 0x30

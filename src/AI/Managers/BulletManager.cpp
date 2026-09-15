@@ -1,4 +1,5 @@
 #define LEMBALL_IMPLICIT_GLOBAL_CLEANUP
+#define LEMBALL_OUTLINE_BULLET_MANAGER_HELPERS
 #include "BulletManager.h"
 
 #include "../../Visos/Network/Connect.h"
@@ -83,6 +84,12 @@ Bullet* BulletManager::GetNextBullet()
 		return 0;
 	}
 	return m_activeBullets[iterator];
+}
+
+// FUNCTION: LEMBALL 0x00417f70
+Bullet* BulletManager::GetCurrentBullet()
+{
+	return m_activeBullets[m_iterator];
 }
 
 // 68K 0x1060519a RequestRemoteBullet__14CBulletManagerFP7CBullet
