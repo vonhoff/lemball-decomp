@@ -449,13 +449,23 @@ def incremental_thunks(image):
 class RelocationAwareParseAsm(parse.ParseAsm):
     """Recognize CMP pointer immediates at verified PE relocation sites."""
 
-    def __init__(self, *, relocation_sites=(), thunk_targets=None, function_aliases=None, **kwargs):
+    def __init__(self, *, relocation_sites=(), thunk_targets=None, function_aliases=None,
+                 indirect_thunk_targets=None, **kwargs):
         super().__init__(**kwargs)
         self.relocation_sites = frozenset(relocation_sites)
         self.thunk_targets = thunk_targets or {}
         self.function_aliases = function_aliases or {}
+        self.indirect_thunk_targets = indirect_thunk_targets or {}
         self._decoder = Cs(CS_ARCH_X86, CS_MODE_32)
         self._decoder.detail = True
+
+    def indirect_replace(self, addr):
+        target = self.indirect_thunk_targets.get(addr)
+        if target is not None and self.lookup(addr, exact=True, indirect=True) is None:
+            name = self.lookup(target, exact=True)
+            if name is not None:
+                return "->" + name
+        return super().indirect_replace(addr)
 
     def parse_asm(self, data, start_addr):
         self._data = bytes(data)
@@ -526,12 +536,19 @@ def configure_pointer_comparisons(engine) -> None:
     for side in ("orig", "recomp"):
         image = getattr(comparator, side + "_bin")
         parser = getattr(comparator, side + "_sanitize")
+        thunks = incremental_thunks(image)
+        indirect_thunks = {
+            address: thunks[value]
+            for address in image.relocations
+            if (value := int.from_bytes(image.read(address, 4), "little")) in thunks
+        }
         setattr(
             comparator,
             side + "_sanitize",
             RelocationAwareParseAsm(
                 relocation_sites=image.relocations,
-                thunk_targets=incremental_thunks(image),
+                thunk_targets=thunks,
+                indirect_thunk_targets=indirect_thunks,
                 function_aliases=aliases if side == "recomp" else {},
                 addr_test=parser.addr_test,
                 name_lookup=parser.name_lookup,

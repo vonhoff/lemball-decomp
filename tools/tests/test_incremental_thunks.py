@@ -35,6 +35,17 @@ class IncrementalThunkTests(unittest.TestCase):
         self.assertEqual(parser.sanitize((0x2000, 5, "call", "0x1000")),
                          ("call", "Existing (FUNCTION)"))
 
+    def test_indirect_thunk_requires_known_target_and_preserves_existing_identity(self):
+        for names, expected in (({0x1020: "Target (FUNCTION)"}, "->Target (FUNCTION)"),
+                                ({0x3000: "Existing", 0x1020: "Target (FUNCTION)"}, "Existing"),
+                                ({}, "<OFFSET1>")):
+            parser = RelocationAwareParseAsm(
+                indirect_thunk_targets={0x3000: 0x1020},
+                name_lookup=lambda address, **kwargs: names.get(address),
+            )
+            self.assertEqual(parser.indirect_replace(0x3000), expected)
+            self.assertTrue(parser.indirect_replace(0x4000).startswith("<OFFSET"))
+
     def test_unknown_destination_and_indirect_calls_are_unchanged(self):
         for names, operand in (({}, "0x1000"), ({0x1020: "Target (FUNCTION)"}, "eax")):
             parser = self.parser(names)
@@ -49,6 +60,11 @@ class IncrementalThunkTests(unittest.TestCase):
         self.assertFalse(image.is_debug)
         thunks = incremental_thunks(image)
         parser = engine.function_comparator.orig_sanitize
+        self.assertIn(0x4997bc, image.relocations)
+        self.assertEqual(int.from_bytes(image.read(0x4997bc, 4), "little"), 0x4028fb)
+        self.assertEqual(thunks[0x4028fb], 0x43a540)
+        self.assertEqual(parser.sanitize((0x468944, 6, "call", "dword ptr [0x4997bc]")),
+                         ("call", "dword ptr [->PvButton::Destroy (FUNCTION)]"))
         for thunk, target, name in (
             (0x4013ca, 0x429e50, "Pt3::InitializeFromAiCoord"),
             (0x4018a7, 0x40c270, "C3DVector::operator="),
