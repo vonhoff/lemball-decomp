@@ -16,6 +16,9 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
+#ifdef LEMBALL_OUTLINE_PAINT_GUN_MANAGER_HELPERS
+	void ResetCount();
+#endif
 
 private:
 	int m_capacity;        // 0x30

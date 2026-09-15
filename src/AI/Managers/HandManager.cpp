@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_HAND_MANAGER_HELPERS
 #include "HandManager.h"
 
 #include "../Navigation/Ai.h"
@@ -48,6 +49,12 @@ void HandManager::Initialise(int p_capacity)
 HandManager::~HandManager()
 {
 	delete[] m_hands;
+}
+
+// FUNCTION: LEMBALL 0x00427fc0
+void HandManager::ResetCount()
+{
+	m_count = 0;
 }
 
 // 68K 0x10611422 StepOn__12CHandManagerFRC7AICOORDP11CGameObject

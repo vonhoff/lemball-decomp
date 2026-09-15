@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_PAINT_GUN_MANAGER_HELPERS
 #include "PaintGunManager.h"
 
 #include "../Navigation/Ai.h"
@@ -48,6 +49,12 @@ void PaintGunManager::Initialise(int p_capacity)
 PaintGunManager::~PaintGunManager()
 {
 	delete[] m_paintGuns;
+}
+
+// FUNCTION: LEMBALL 0x0042c140
+void PaintGunManager::ResetCount()
+{
+	m_count = 0;
 }
 
 // 68K 0x1061bae6 Process__16CPaintGunManagerFv
