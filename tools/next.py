@@ -108,14 +108,11 @@ def fmt_func(func: Func) -> str:
 
 
 def limited(items: list, limit: int) -> list:
-    if limit <= 0:
-        return items
-    return items[:limit]
+    return items[:limit] if limit > 0 else items
 
 
 def print_funcs(funcs: list[Func], limit: int) -> None:
-    shown = limited(funcs, limit)
-    for func in shown:
+    for func in limited(funcs, limit):
         print(fmt_func(func))
     if limit > 0 and len(funcs) > limit:
         print(f"  ... {len(funcs) - limit} more (raise --limit)")
@@ -200,8 +197,7 @@ def print_near(funcs: list[Func], limit: int) -> None:
 def print_units(funcs: list[Func], limit: int) -> None:
     rows = leftover_units(funcs)
     print("=== units with some 100% and leftovers ===")
-    shown = limited(rows, limit)
-    for name, n100, total, leftover, unmatched_code in shown:
+    for name, n100, total, leftover, unmatched_code in limited(rows, limit):
         pct = 100.0 * n100 / total
         print(
             f"  {pct:5.1f}%  {n100}/{total}  leftover={leftover:3d}  "
@@ -215,8 +211,7 @@ def print_clones(funcs: list[Func], min_clone: int, limit: int) -> None:
     groups = clone_groups(funcs, min_clone)
     print(f"=== STUB clone groups (same method+size, n>={min_clone}) ===")
     print(f"  groups={len(groups)}")
-    shown = limited(groups, limit)
-    for name, size, items in shown:
+    for name, size, items in limited(groups, limit):
         units = sorted({f.unit for f in items})
         print(f"  n={len(items):3d}  size={size:3d}  {name}  units={len(units)}  e.g. {units[0]}")
     if limit > 0 and len(groups) > limit:
