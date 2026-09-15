@@ -6,7 +6,7 @@
 // VTABLE: LEMBALL 0x0049a458
 class TargetMasterInputItem {
 public:
-	// No functions mapped yet.
+	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
 };
 
 #endif
