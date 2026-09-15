@@ -495,8 +495,8 @@ VsRect Main2DDisplay::GetUseRect(int p_x, int p_y)
 		width = m_highWidth;
 		height = m_highHeight;
 	}
-	y = (short) ((g_pTargetGraphicsDriver->m_screenSize.m_height - height) / 2);
-	x = (short) ((g_pTargetGraphicsDriver->m_screenSize.m_width - width) / 2);
+	y = (short) (g_pTargetGraphicsDriver->m_screenSize.m_height - height) / 2;
+	x = (short) (g_pTargetGraphicsDriver->m_screenSize.m_width - width) / 2;
 	if (p_x != -1) {
 		x = (short) p_x;
 	}
