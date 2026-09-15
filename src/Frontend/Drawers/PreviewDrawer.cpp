@@ -577,12 +577,10 @@ void PreviewDrawer::Processing()
 // FUNCTION: LEMBALL 0x00449f60
 void PreviewDrawer::LoadLevelInformation()
 {
-	VsSize size;
-	VsSize lineSize;
 	PreviewData preview;
 	char* source;
 	ResFont* font;
-	VsSize* measuredSize;
+	short measuredWidth;
 	char candidateLine[32];
 	int sourcePos;
 	int linePos;
@@ -646,8 +644,9 @@ void PreviewDrawer::LoadLevelInformation()
 		memset(candidateLine, '0', sizeof(candidateLine));
 		while (1) {
 			endOfSource = (int) AddWord(source, candidateLine, sourcePos, linePos);
-			measuredSize = font->GetSize(&lineSize, candidateLine, 0x20);
-			if (measuredSize->m_width > layoutWidth || endOfSource == 1) {
+			short textSize[2];
+			measuredWidth = font->GetSize((VsSize*) textSize, candidateLine, 0x20)->m_width;
+			if (measuredWidth > layoutWidth || endOfSource == 1) {
 				break;
 			}
 			char* candidateEnd = candidateLine + strlen(candidateLine);
@@ -655,15 +654,17 @@ void PreviewDrawer::LoadLevelInformation()
 			candidateEnd[1] = 0;
 			linePos = linePos + 1;
 		}
-		if (measuredSize->m_width > layoutWidth) {
+		if (measuredWidth > layoutWidth) {
 			endOfSource = 0;
 			SubWord(source, candidateLine, sourcePos, linePos);
 		}
-		measuredSize = font->GetSize(&size, candidateLine, 0x20);
-		targetPos[0] = (layoutWidth / 2 - (int) (measuredSize->m_width / 2)) + layoutX;
+		short textSize[2];
+		VsSize* size = font->GetSize((VsSize*) textSize, candidateLine, 0x20);
+		short measuredHeight = size->m_height;
+		targetPos[0] = (layoutWidth / 2 - (int) (size->m_width / 2)) + layoutX;
 		targetPos[1] = layoutY;
 		strcpy(targetLine, candidateLine);
-		layoutY = layoutY + size.m_height;
+		layoutY = layoutY + measuredHeight;
 		lineIndex = lineIndex + 1;
 		targetLine = targetLine + 0x20;
 		targetPos = targetPos + 2;
