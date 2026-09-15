@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_POINT_HELPERS
 #include "VsPoint.h"
 
 #include "VsRect.h"
@@ -25,4 +26,10 @@ VsPoint* VsPoint::SubtractInPlace(VsPoint* p_delta)
 	m_x = (short) (m_x - p_delta->m_x);
 	m_y = (short) (m_y - p_delta->m_y);
 	return this;
+}
+
+// FUNCTION: LEMBALL 0x0046ba50
+int VsPoint::Equals(const VsPoint& p_other)
+{
+	return m_x == p_other.m_x && m_y == p_other.m_y;
 }
