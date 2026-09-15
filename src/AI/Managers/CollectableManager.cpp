@@ -1,3 +1,4 @@
+#define LEMBALL_IMPLICIT_FLAG_CLEANUP
 #define LEMBALL_OUTLINE_COLLECTABLE_MANAGER_HELPERS
 #include "CollectableManager.h"
 
@@ -24,8 +25,9 @@ void CollectableManager::Restart()
 {
 	if (m_collectables != 0) {
 		for (int i = 0; i < m_capacity; i++) {
-			if (m_collectables[i] != 0) {
-				m_collectables[i]->Restart();
+			Collectable* collectable = m_collectables[i];
+			if (collectable != 0) {
+				collectable->Restart();
 			}
 		}
 	}
