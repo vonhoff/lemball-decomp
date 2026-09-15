@@ -16,6 +16,9 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip);
 	void Process();
 	void Restart();
+#ifdef LEMBALL_OUTLINE_COLLECTABLE_MANAGER_HELPERS
+	void RemoveCollectable(GameObject* p_object);
+#endif
 
 private:
 	Ai* m_ai;                     // 0x30

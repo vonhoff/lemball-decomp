@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_COLLECTABLE_MANAGER_HELPERS
 #include "CollectableManager.h"
 
 #include "../Navigation/Ai.h"
@@ -95,6 +96,23 @@ void CollectableManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eOb
 		collectable->SetId(p_id);
 		m_collectables[m_count] = collectable;
 		m_count++;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00422710
+void CollectableManager::RemoveCollectable(GameObject* p_object)
+{
+	for (int i = 0; i < m_count; i++) {
+		if (m_collectables[i] == p_object) {
+			p_object->Delete();
+			p_object->SetId(0xffff);
+			delete p_object;
+			m_count--;
+			for (; i < m_count; i++) {
+				m_collectables[i] = m_collectables[i + 1];
+			}
+			return;
+		}
 	}
 }
 
