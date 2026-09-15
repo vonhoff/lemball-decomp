@@ -39,7 +39,7 @@ class ReccmpCacheTests(unittest.TestCase):
                         generation[0] += 1
 
                 engine.compare_all.side_effect = compare
-                loader = patches.enter_context(patch.object(reccmp, "_load_engine", return_value=(target, engine)))
+                loader = patches.enter_context(patch.object(reccmp, "load_engine", return_value=(target, engine)))
                 patches.enter_context(patch.object(reccmp, "serialize_reccmp_report", return_value="{}"))
                 roadmap = patches.enter_context(patch.object(reccmp, "_write_roadmap", side_effect=write_roadmap))
                 with self.assertRaisesRegex(RuntimeError, "Comparison inputs changed"):
@@ -94,7 +94,7 @@ class ReccmpCacheTests(unittest.TestCase):
             target = SimpleNamespace(original_path=reccmp.ORIGINAL_EXE)
             engine = Mock()
             engine.compare_all.return_value = []
-            loader = patches.enter_context(patch.object(reccmp, "_load_engine",
+            loader = patches.enter_context(patch.object(reccmp, "load_engine",
                                                         return_value=(target, engine)))
             patches.enter_context(patch.object(reccmp, "serialize_reccmp_report", return_value="{}"))
             roadmap = patches.enter_context(patch.object(

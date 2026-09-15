@@ -61,9 +61,6 @@ def load_engine() -> tuple[object, Compare]:
     return target, engine
 
 
-_load_engine = load_engine
-
-
 def _write_roadmap(target, engine: Compare, csv_path: Path) -> None:
     orig_bin = engine.orig_bin
     recomp_bin = engine.recomp_bin
@@ -159,7 +156,7 @@ def run_reccmp(
         RECCMP_STAMP.unlink(missing_ok=True)
         if not reuse:
             ROADMAP_CSV.unlink(missing_ok=True)
-    target, engine = _load_engine()
+    target, engine = load_engine()
 
     if not reuse:
         report = ReccmpStatusReport(filename=target.original_path.name)
