@@ -31,6 +31,14 @@ EditString& EditString::operator+=(char p_character)
 	return *this;
 }
 
+// FUNCTION: LEMBALL 0x004531b0
+EditString& EditString::operator=(const EditString& p_other)
+{
+	strcpy(m_text, p_other.m_text);
+	m_length = strlen(m_text);
+	return *this;
+}
+
 // 68K 0x10806384 __as__11CEditStringFPCc
 // FUNCTION: LEMBALL 0x00453200
 EditString& EditString::operator=(const char* p_text)

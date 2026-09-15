@@ -7,6 +7,7 @@
 class EditString {
 public:
 	EditString& operator+=(char p_character);
+	EditString& operator=(const EditString& p_other);
 	EditString& operator=(const char* p_text);
 	EditString(int p_arg0);
 
