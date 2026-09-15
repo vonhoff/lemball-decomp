@@ -24,6 +24,12 @@ extern "C" __declspec(dllimport) long __stdcall RegSetValueExA(void* p_key,
 															   const unsigned char* p_data,
 															   unsigned int p_size);
 extern "C" __declspec(dllimport) long __stdcall RegCloseKey(void* p_key);
+extern "C" __declspec(dllimport) long __stdcall RegQueryValueExA(void* p_key,
+																 const char* p_name,
+																 unsigned int* p_reserved,
+																 unsigned int* p_type,
+																 unsigned char* p_data,
+																 unsigned int* p_size);
 
 // FUNCTION: LEMBALL 0x00456660
 bool TargetInputInit()
@@ -139,6 +145,28 @@ char* TargetPlatformServices::GetCdDir(const char* p_requiredFile)
 		i = i + 1;
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0046dcd0
+char* ReadSourceDiskRegistryPath()
+{
+	void* key;
+	unsigned int size;
+	unsigned int type;
+
+	g_szSourceDiskPath[0] = 0;
+	key = 0;
+	if (RegOpenKeyExA((void*) 0x80000002, "SOFTWARE\\Visual Sciences\\Lemmings Paintball", 0, 0xf003f, &key) != 0) {
+		return g_szSourceDiskPath;
+	}
+	type = 0xffffffff;
+	size = 0x100;
+	if (RegQueryValueExA(key, "SrcDisk", 0, &type, (unsigned char*) g_szSourceDiskPath, &size) != 0) {
+		g_szSourceDiskPath[0] = 0;
+		return g_szSourceDiskPath;
+	}
+	RegCloseKey(key);
+	return g_szSourceDiskPath;
 }
 
 // GLOBAL: LEMBALL 0x004a1dcc
