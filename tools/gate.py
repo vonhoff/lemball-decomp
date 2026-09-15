@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Run source and compare gates.
-
-  python tools/gate.py                 # smell + annot + layout + decomplint + tests
-  python tools/gate.py --path src/Foo  # scoped smell
-  python tools/gate.py --names         # // 68K comments in src
-  python tools/gate.py --vtable        # vtable comparison
-  python tools/gate.py --tools         # comparison-tool regression tests
-  python tools/gate.py --all           # default + vtable + names
-"""
+"""Run smell, annotation, layout, decomplint and tool tests by default."""
 
 from __future__ import annotations
 
@@ -28,9 +20,7 @@ def check_tool_tests() -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--path", action="append", default=[], dest="paths", help="scoped check paths"
     )

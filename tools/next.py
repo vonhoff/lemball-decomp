@@ -248,8 +248,7 @@ def main() -> int:
         parser.error("--addrs requires --kind tiny, --kind near or --kind gain")
 
     if args.refresh:
-        make_report()
-        TARGETS_CACHE.unlink(missing_ok=True)
+        make_report(args.report)
 
     if not args.report.exists():
         sys.stderr.write(
@@ -273,29 +272,17 @@ def main() -> int:
 
     if args.kind == "all":
         print_snapshot(funcs)
-        print("\n=== largest near matches (rebuilt size x similarity) ===")
-        print_funcs(ranked_gain(funcs), args.limit)
-        print()
-        print_tiny(funcs, args.max_size, args.limit)
-        print()
-        print_clones(funcs, args.min_clone, args.limit)
-        print()
-        print_near(funcs, args.limit)
-        print()
-        print_units(funcs, args.limit)
-        return 0
-
-    if args.kind == "tiny":
-        print_tiny(funcs, args.max_size, args.limit)
-    elif args.kind == "near":
-        print_near(funcs, args.limit)
-    elif args.kind == "unit":
-        print_units(funcs, args.limit)
-    elif args.kind == "clone":
-        print_clones(funcs, args.min_clone, args.limit)
-    else:
+    if args.kind in ("all", "gain"):
         print("=== largest near matches (rebuilt size x similarity) ===")
         print_funcs(ranked_gain(funcs), args.limit)
+    if args.kind in ("all", "tiny"):
+        print_tiny(funcs, args.max_size, args.limit)
+    if args.kind in ("all", "clone"):
+        print_clones(funcs, args.min_clone, args.limit)
+    if args.kind in ("all", "near"):
+        print_near(funcs, args.limit)
+    if args.kind in ("all", "unit"):
+        print_units(funcs, args.limit)
     return 0
 
 
