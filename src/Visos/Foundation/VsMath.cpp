@@ -6,6 +6,26 @@
 
 #pragma intrinsic(abs)
 
+// FUNCTION: LEMBALL 0x00406bc0
+unsigned int __stdcall CalculatePowerOfTwo(unsigned int p_exponent)
+{
+	unsigned int result = 1;
+	while (p_exponent != 0) {
+		result *= 2;
+		p_exponent--;
+	}
+	return result;
+}
+
+// FUNCTION: LEMBALL 0x00406be0
+unsigned int __stdcall ExtractBitField(unsigned int p_value, unsigned int p_shift, unsigned int p_width)
+{
+	register unsigned int mask = CalculatePowerOfTwo(p_width);
+	mask--;
+	mask &= p_value >> p_shift;
+	return mask;
+}
+
 // 68K 0x107007a0 ReturnFacingDirection__Fiiii
 // FUNCTION: LEMBALL 0x00413e80
 unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY)
