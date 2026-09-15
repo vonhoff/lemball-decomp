@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_BALL_MANAGER_HELPERS
 #include "BallManager.h"
 
 #include "../Objects/Ball.h"
@@ -89,6 +90,13 @@ void BallManager::Delete(Ball* p_ball)
 			return;
 		}
 	}
+}
+
+// Ownership inferred from adjacent manager functions and the count at 0x08.
+// FUNCTION: LEMBALL 0x00422050
+void BallManager::Clear()
+{
+	m_activeCount = 0;
 }
 
 // 68K 0x10604190 LoadLevel__12CBallManagerFPUciUc

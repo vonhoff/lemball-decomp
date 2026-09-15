@@ -13,6 +13,9 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Restart();
 	~BallManager();
+#ifdef LEMBALL_OUTLINE_BALL_MANAGER_HELPERS
+	void Clear();
+#endif
 
 	friend class Ai;
 
