@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_GUN_BUTTON_HELPERS
 #include "GunButtons.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"
@@ -62,6 +63,43 @@ GunButtons::GunButtons(GWnd* p_arg0,
 	m_postAction = p_arg5;
 	g_pMasterInputQueue->Attach(this, 0);
 	LoadFaces(p_arg4);
+}
+
+// FUNCTION: LEMBALL 0x0044c330
+GunButtons::GunButtons(const VsRect& p_rect,
+					   GWnd* p_window,
+					   Gdi* p_gdi,
+					   int p_x,
+					   int p_y,
+					   unsigned long* p_animIds,
+					   unsigned int p_postAction,
+					   int p_value,
+					   unsigned int p_controlMessage,
+					   int* p_binding,
+					   int p_actionMessage)
+{
+	m_mode = 1;
+	m_trackRect.m_width = p_rect.m_width;
+	m_trackRect.m_height = p_rect.m_height;
+	const VsPoint& position = p_rect;
+	m_trackRect.m_x = position.m_x;
+	m_trackRect.m_y = position.m_y;
+	m_window = p_window;
+	m_gdi = p_gdi;
+	m_controlMessage = p_controlMessage;
+	m_x = p_x;
+	m_y = p_y;
+	m_value = p_value;
+	m_valueCount = 1;
+	m_minimum = 0;
+	m_maximum = 100;
+	if (p_actionMessage != -1) {
+		m_actionMessage = p_actionMessage;
+	}
+	m_binding = p_binding;
+	m_postAction = p_postAction;
+	g_pMasterInputQueue->Attach(this, 0);
+	LoadFaces(p_animIds);
 }
 
 // 68K 0x10802b54 __dt__11CGunButtonsFv
