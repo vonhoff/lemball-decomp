@@ -173,9 +173,8 @@ bool PlayerLemmingGroup::Process()
 					while (member != 0) {
 						member->AddDestination(position);
 						{
-							int z;
 							int y = member->m_position.m_yFixed;
-							z = member->m_position.m_zFixed;
+							int z = member->m_position.m_zFixed;
 							int x = member->m_position.m_xFixed;
 							position.m_xFixed = x;
 							position.m_yFixed = y;

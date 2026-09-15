@@ -19,7 +19,6 @@ public:
 		m_yFixed = p_y;
 		m_zFixed = p_z;
 	}
-	AiCoord(const AiCoord& p_other);
 	// FUNCTION: LEMBALL 0x0040c2b0
 	AiCoord& operator=(const AiCoord& p_other)
 	{
@@ -27,6 +26,13 @@ public:
 		m_yFixed = p_other.m_yFixed;
 		m_zFixed = p_other.m_zFixed;
 		return *this;
+	}
+	// FUNCTION: LEMBALL 0x00410b50
+	AiCoord(const AiCoord& p_other)
+	{
+		m_xFixed = p_other.m_xFixed;
+		m_yFixed = p_other.m_yFixed;
+		m_zFixed = p_other.m_zFixed;
 	}
 
 	int m_xFixed; // 0x00

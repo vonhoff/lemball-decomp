@@ -13,7 +13,7 @@ public:
 		m_returnState = 0;
 	}
 	// 68K 0x1011802a __dt__8CProcessFv
-	virtual ~BaseProcess();     // vtable+0x00
+	virtual ~BaseProcess() {}   // vtable+0x00
 	virtual void Process() = 0; // vtable+0x04
 
 	friend class Game;
