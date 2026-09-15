@@ -37,6 +37,21 @@ void Slinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 	Action(0x18);
 }
 
+// FUNCTION: LEMBALL 0x0040b5b0
+void Slinky::GetBounds(int* p_minX, int* p_maxX, int* p_minY, int* p_maxY)
+{
+	*p_minX = m_minX;
+	*p_minY = m_minY;
+	*p_maxX = m_maxX;
+	*p_maxY = m_maxY;
+}
+
+// FUNCTION: LEMBALL 0x0040b5f0
+bool Slinky::ContainsIntegerPoint(const int* p_xy)
+{
+	return m_minX <= p_xy[0] && m_minY <= p_xy[1] && p_xy[0] <= m_maxX && p_xy[1] <= m_maxY;
+}
+
 // 68K 0x1061eda0 GoodEndPt__7CSlinkyFRC7AICOORD
 // FUNCTION: LEMBALL 0x0040b630
 bool Slinky::GoodEndPt(const AiCoord& p_coordinate)
@@ -95,7 +110,6 @@ bool Slinky::Move()
 // FUNCTION: LEMBALL 0x0040b760
 bool Slinky::Process()
 {
-	Ai* ai;
 	switch (m_action) {
 	case 0x18:
 		if (g_dwGameTick >= m_actionDeadline) {
@@ -129,7 +143,7 @@ bool Slinky::Process()
 	rect.m_x2 = x + 7;
 	rect.m_y2 = y + 7;
 	rect.m_z2 = z + 7;
-	ai = g_pAI;
+	Ai* ai = g_pAI;
 	ai->m_collisionExclude = this;
 	ai->m_collisionRect = rect;
 	ai->m_rectCollisionIndex = 0;
