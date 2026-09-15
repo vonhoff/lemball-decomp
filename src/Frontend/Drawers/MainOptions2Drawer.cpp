@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_STREAM_HELPERS
 #include "MainOptions2Drawer.h"
 
 #include "../../Frontend/Base/BaseFrontendProcess.h"
@@ -225,7 +226,7 @@ bool MainOptions2Drawer::ProcessMessages(Message* p_message)
 		g_nPendingMusicVolume = (int) p_message->payload;
 		unsigned char volume = (unsigned char) (((unsigned int) p_message->payload * RES_MAPEDIT_FONT4X8) /
 												(unsigned int) p_message->source);
-		*g_pSysOutput << "Setting music volume " << (char) volume << "\n";
+		*g_pSysOutput << "Setting music volume " << volume << "\n";
 		g_pSoundView->SetMusicVolume(volume);
 		return 1;
 	}

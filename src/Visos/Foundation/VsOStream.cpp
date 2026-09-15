@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_STREAM_HELPERS
 #include "VsOStream.h"
 
 #include "String.h"
@@ -110,6 +111,12 @@ VsOStream& VsOStream::operator<<(const void* p_arg0)
 	VsULtoa((unsigned long) p_arg0, (char*) m_numberBuffer, 16);
 	InternalFormatNum();
 	return *this << "0x" << m_formattedText;
+}
+
+// FUNCTION: LEMBALL 0x004586d0
+VsOStream& VsOStream::operator<<(unsigned char p_value)
+{
+	return *this << (char) p_value;
 }
 
 // 68K 0x102140ba __ls__10CVSOStreamFUl
