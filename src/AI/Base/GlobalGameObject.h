@@ -26,6 +26,9 @@ public:
 	virtual ~GlobalGameObject();
 #endif
 	GlobalGameObject();
+#ifdef LEMBALL_OUTLINE_GLOBAL_OBJECT_HELPERS
+	void SetActionAndRequest(eAction p_action, int p_argument);
+#endif
 
 	friend class GameObjectMess;
 	friend class ObjectChangeStateMess;

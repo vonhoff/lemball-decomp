@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_GLOBAL_OBJECT_HELPERS
 #include "GlobalGameObject.h"
 
 #include "../../Visos/Messaging/TransportObjectMess.h"
@@ -70,6 +71,14 @@ void GlobalGameObject::Action(eAction p_arg0, int p_arg1)
 {
 	m_actionArgument = p_arg1;
 	Action(p_arg0);
+}
+
+// Ownership inferred from the adjacent methods and call to RequestAction.
+// FUNCTION: LEMBALL 0x00416e00
+void GlobalGameObject::SetActionAndRequest(eAction p_action, int p_argument)
+{
+	m_actionArgument = p_argument;
+	RequestAction(p_action);
 }
 
 // 68K 0x1060bd38 RequestAction__17CGlobalGameObjectF7eAction
