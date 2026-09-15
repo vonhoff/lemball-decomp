@@ -17,6 +17,7 @@ public:
 	void Process();
 	void Restart();
 #ifdef LEMBALL_OUTLINE_LIFT_MANAGER_HELPERS
+	void AddLiftFromXYZ(unsigned short p_id, int p_x, int p_y, int p_z);
 	void AddLiftFromEndpoints(unsigned short p_id, const Coord3d& p_start, const Coord3d& p_end);
 	int ExportLiftEndpointCoordinates(Coord3d p_records[][2]);
 #endif
