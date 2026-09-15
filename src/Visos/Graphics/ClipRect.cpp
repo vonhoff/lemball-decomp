@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_CLIPRECT_CLEANUP
 #include "ClipRect.h"
 
 #include "Gdi.h"
@@ -10,12 +11,6 @@ ClipRect::ClipRect() : m_top(0)
 	m_left = 0;
 	m_bottom = 0;
 	m_right = 0;
-}
-
-// 68K 0x10101afa __dt__9CClipRectFv
-// FUNCTION: LEMBALL 0x00432ac0
-ClipRect::~ClipRect()
-{
 }
 
 // 68K 0x10101a8c Draw__9CClipRectFP4CGDI

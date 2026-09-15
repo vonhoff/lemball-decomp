@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_CLIPRECT_CLEANUP
 #include "TargetFramedButton.h"
 
 #include "../Foundation/ChangeList.h"

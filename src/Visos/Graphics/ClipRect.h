@@ -11,7 +11,13 @@ public:
 	ClipRect();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
-	virtual ~ClipRect();             // vtable+0x00
+#ifdef LEMBALL_INLINE_CLIPRECT_CLEANUP
+	// 68K 0x10101afa __dt__9CClipRectFv
+	// FUNCTION: LEMBALL 0x00432ac0
+	virtual ~ClipRect() {} // vtable+0x00
+#else
+	virtual ~ClipRect(); // vtable+0x00
+#endif
 
 	friend class PvButton;
 	friend class TrackWindow;
