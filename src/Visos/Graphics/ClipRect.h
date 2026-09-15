@@ -33,6 +33,9 @@ private:
 	undefined4 m_reserved0c; // 0x0c
 };
 
+// SYNTHETIC: LEMBALL 0x00432a60
+// ClipRect::`scalar deleting destructor'
+
 // SYNTHETIC: LEMBALL 0x00467bb0
 // ClipRect::`vector deleting destructor'
 
