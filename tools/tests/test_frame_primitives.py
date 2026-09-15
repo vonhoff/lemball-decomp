@@ -15,6 +15,10 @@ from lib.reccmp import load_engine
     "requires the reference executable and a local build",
 )
 class FramePrimitiveTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        _, cls.engine = load_engine()
+
     def test_input_text_destructor_guards_owned_buffer_delete(self):
         for address, instructions in self.instructions(0x0043a190, 47):
             with self.subTest(address=hex(address)):
@@ -59,8 +63,7 @@ class FramePrimitiveTests(unittest.TestCase):
                 self.assertEqual([operand.mem.disp for operand in calls], [0x38, 0x14, 4])
 
     def test_text_button_destructor_releases_font_before_array(self):
-        _, engine = load_engine()
-        unload = next(m for m in engine.get_all() if m.orig_addr == 0x0045d180)
+        unload = next(m for m in self.engine.get_all() if m.orig_addr == 0x0045d180)
         for (address, instructions), target in zip(
             self.instructions(0x00469440, 55), (unload.orig_addr, unload.recomp_addr),
         ):
@@ -73,8 +76,7 @@ class FramePrimitiveTests(unittest.TestCase):
                 self.assertEqual(flags, [3])
 
     def test_primitive_destructors_restore_base_vtable(self):
-        _, engine = load_engine()
-        primitive = next(m for m in engine.get_all() if m.orig_addr == 0x00496ca8)
+        primitive = next(m for m in self.engine.get_all() if m.orig_addr == 0x00496ca8)
         for original in (0x00439710, 0x00439720, 0x00439740, 0x00439750,
                          0x00447260, 0x0044b630, 0x00467ba0):
             for (address, instructions), vtable in zip(
@@ -153,8 +155,7 @@ class FramePrimitiveTests(unittest.TestCase):
                 self.assertIn(0x7c, loads)
 
     def test_frame_vtables_use_reconstructed_overrides(self):
-        _, engine = load_engine()
-        matches = {m.orig_addr: m for m in engine.get_all()}
+        matches = {m.orig_addr: m for m in self.engine.get_all()}
         for table, slot, target in (
             (0x00499838, 0xa8, 0x00468dd0),
             (0x00499838, 0xbc, 0x00468c50),
@@ -167,21 +168,20 @@ class FramePrimitiveTests(unittest.TestCase):
             (0x004999f8, 0, 0x004699d0),
         ):
             for image, table_address, target_address in (
-                (engine.orig_bin, table, target),
-                (engine.recomp_bin, matches[table].recomp_addr, matches[target].recomp_addr),
+                (self.engine.orig_bin, table, target),
+                (self.engine.recomp_bin, matches[table].recomp_addr, matches[target].recomp_addr),
             ):
                 with self.subTest(table=hex(table_address), slot=hex(slot)):
                     entry = int.from_bytes(image.read(table_address + slot, 4), "little")
                     self.assertEqual(entry, target_address)
 
     def instructions(self, original_address, original_size):
-        _, engine = load_engine()
-        match = next(m for m in engine.get_all() if m.orig_addr == original_address)
+        match = next(m for m in self.engine.get_all() if m.orig_addr == original_address)
         decoder = Cs(CS_ARCH_X86, CS_MODE_32)
         decoder.detail = True
         for image, address, size in (
-            (engine.orig_bin, original_address, original_size),
-            (engine.recomp_bin, match.recomp_addr, match.size(ImageId.RECOMP)),
+            (self.engine.orig_bin, original_address, original_size),
+            (self.engine.recomp_bin, match.recomp_addr, match.size(ImageId.RECOMP)),
         ):
             yield address, list(decoder.disasm(image.read(address, size), address))
 
