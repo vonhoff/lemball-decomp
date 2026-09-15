@@ -1,6 +1,8 @@
 #define LEMBALL_OUTLINE_INPUT_HELPERS
 #include "MasterInput.h"
 
+#include "../Target/TargetMasterInputItem.h"
+
 // 68K 0x10201326 __ct__12CMasterInputFP10CBaseQueue
 // FUNCTION: LEMBALL 0x00472070
 MasterInput::MasterInput(BaseQueue* p_arg0)
@@ -48,15 +50,38 @@ bool MasterInput::AddItem(void* p_item)
 	return true;
 }
 
+// FUNCTION: LEMBALL 0x00472190
+bool MasterInput::ProcessItems()
+{
+	if (m_itemCount == 0) {
+		return false;
+	}
+	struct Node {
+		TargetMasterInputItem* item;
+		Node* next;
+	};
+	Node* node = (Node*) m_firstItem;
+	for (unsigned int i = 0; i < m_itemCount; i++) {
+		if (node->item->IsReady() == 1) {
+			if (node->item->ProcessQueue(m_queue) == 0) {
+				return false;
+			}
+		}
+		node = node->next;
+	}
+	return true;
+}
+
 // FUNCTION: LEMBALL 0x004721e0
 bool MasterInput::IsEmpty()
 {
+	unsigned int i;
 	unsigned int count = m_itemCount;
 	if (count == 0) {
 		return true;
 	}
 	void** item = (void**) m_firstItem;
-	for (unsigned int i = 0; i < count; i++) {
+	for (i = 0; i < count; i++) {
 		if (item == 0) {
 			return false;
 		}
