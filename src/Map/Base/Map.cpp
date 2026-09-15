@@ -434,6 +434,94 @@ void Map::LoadDefaultBlox(class LoadDefaultBlox* p_data, unsigned long p_dataSiz
 	m_defaultBloxData = defaultBloxData;
 }
 
+// FUNCTION: LEMBALL 0x00430eb0
+bool ValidateDefaultBloxData(eObjectType p_type, unsigned short* p_data)
+{
+	unsigned short data = *p_data;
+	switch (p_type) {
+	case 0x202:
+		if (*p_data >= g_wDefaultBloxLimit0202) {
+			data = 0;
+		}
+		break;
+	case 0x206:
+		if (g_wDefaultBloxLimit0206 <= *p_data) {
+			data = 0;
+		}
+		break;
+	case 0x207:
+		if (g_wDefaultBloxLimit0207 <= *p_data) {
+			data = 0;
+		}
+		break;
+	case 0x208:
+		if (*p_data >= g_wDefaultBloxLimit0208) {
+			data = 0;
+		}
+		break;
+	case 0x209:
+		if (*p_data >= g_wDefaultBloxLimit0209) {
+			data = 0;
+		}
+		break;
+	case 0x20a:
+		if (*p_data >= g_wDefaultBloxLimit020A) {
+			data = 0;
+		}
+		break;
+	case 0x20b:
+		if (*p_data >= g_wDefaultBloxLimit020B) {
+			data = 0;
+		}
+		break;
+	case 0x20c:
+		if (g_wDefaultBloxLimit020C <= *p_data) {
+			data = 0;
+		}
+		break;
+	case 0x20d:
+		if (g_wDefaultBloxLimit020D <= *p_data) {
+			data = 0;
+		}
+		break;
+	case 0x20e:
+		if (g_wDefaultBloxLimit020E <= *p_data) {
+			data = 0;
+		}
+		break;
+	case 0x20f:
+		if (g_wDefaultBloxLimit020F <= *p_data) {
+			data = 0;
+		}
+		break;
+	case 0x210:
+		if (*p_data >= g_wDefaultBloxLimit0210) {
+			data = 0;
+		}
+		break;
+	case 0x214:
+		if (g_wDefaultBloxLimit0214 <= *p_data) {
+			data = 0;
+		}
+		break;
+	case 0x215:
+		return true;
+	case 0x216:
+	case 0x219:
+	case 0x21a:
+		return true;
+	case 0x217:
+		if (g_wDefaultBloxLimit0217 <= *p_data) {
+			data = 0;
+		}
+	}
+	if (data != *p_data) {
+		*p_data = data;
+		return false;
+	}
+	return true;
+}
+
 // 68K 0x10900f30 SetLevelName__4CMapFPc
 // FUNCTION: LEMBALL 0x00431010
 void Map::SetLevelName(char* p_name)
