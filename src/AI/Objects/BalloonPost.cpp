@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_BALLOON_POST_HELPERS
 #include "BalloonPost.h"
 
 #include "../../Map/Base/Map.h"
@@ -159,6 +160,35 @@ int BalloonPost::GetViewData(ViewData* p_viewData)
 		count++;
 	}
 	return count;
+}
+
+// FUNCTION: LEMBALL 0x0042a460
+void BalloonPost::DeactivatePost(TheBalloonPost* p_post)
+{
+	int mask;
+	int index;
+	switch (p_post->m_objectType) {
+	case 0x28:
+		mask = ~1;
+		index = 0;
+		break;
+	case 0x2a:
+		mask = ~2;
+		index = 1;
+		break;
+	case 0x2c:
+		mask = ~4;
+		index = 2;
+		break;
+	case 0x2e:
+		mask = ~8;
+		index = 3;
+		break;
+	default:
+		return;
+	}
+	m_activeMask &= mask;
+	m_posts[index]->m_active = 0;
 }
 
 // 68K 0x10603486 LoadLevel__12CBalloonPostFPUciUc

@@ -14,6 +14,9 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Restart();
 	~BalloonPost();
+#ifdef LEMBALL_OUTLINE_BALLOON_POST_HELPERS
+	void DeactivatePost(TheBalloonPost* p_post);
+#endif
 
 private:
 	unsigned short m_activeMask; // 0x00
