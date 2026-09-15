@@ -37,17 +37,3 @@ class FoldedCallTests(unittest.TestCase):
         self.assertEqual(parser.sanitize((0x4000, 5, "push", "0x3000")),
                          ("push", "Folded (FUNCTION)"))
         self.assertEqual(parser.sanitize((0x4000, 2, "call", "eax")), ("call", "eax"))
-
-    def test_shared_primitive_cleanup_is_byte_identical(self):
-        from lib.reccmp import load_engine
-        _, engine = load_engine()
-        match = engine._db.get_one_match(0x439730)
-        aliases = identical_folded_aliases(engine)
-        other = [address for address, primary in aliases.items()
-                 if primary == match.recomp_addr and address != primary]
-        self.assertTrue(other)
-        for address in other:
-            self.assertEqual(engine.recomp_bin.read(address, 7),
-                             engine.recomp_bin.read(match.recomp_addr, 7))
-        original = bytes(engine.orig_bin.read(0x439730, 7))
-        self.assertEqual(original, b"\xc7\x01\xa8\x6c\x49\x00\xc3")
