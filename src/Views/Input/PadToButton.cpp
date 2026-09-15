@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_PAD_HELPERS
 #include "PadToButton.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"
@@ -53,4 +54,12 @@ int PadToButton::ProcessMsg(Message* p_message)
 		result = 1;
 	}
 	return result;
+}
+
+// FUNCTION: LEMBALL 0x0043a380
+void PadToButton::AddBinding(PvButton* p_button, unsigned int p_padCode)
+{
+	m_entries[m_entryCount].m_button = p_button;
+	m_entries[m_entryCount].m_padCode = p_padCode;
+	m_entryCount++;
 }

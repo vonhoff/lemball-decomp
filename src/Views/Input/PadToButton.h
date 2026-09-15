@@ -11,6 +11,9 @@ public:
 	PadToButton(int p_arg0);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~PadToButton();                     // vtable+0x04
+#ifdef LEMBALL_OUTLINE_PAD_HELPERS
+	void AddBinding(PvButton* p_button, unsigned int p_padCode);
+#endif
 
 private:
 	PadToButtonEntry* m_entries; // 0x10
