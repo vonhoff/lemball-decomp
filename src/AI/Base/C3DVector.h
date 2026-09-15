@@ -6,6 +6,9 @@
 // SIZE 0x0c
 class C3DVector {
 public:
+#ifdef LEMBALL_OUTLINE_VECTOR_CONSTRUCTOR
+	C3DVector(const Fixed& p_x, const Fixed& p_y, const Fixed& p_z);
+#endif
 #ifdef LEMBALL_OUTLINE_VIEW_HELPERS
 	C3DVector& operator=(const C3DVector& p_other);
 #endif
