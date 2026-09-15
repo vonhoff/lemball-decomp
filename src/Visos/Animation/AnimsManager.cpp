@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_ANIM_MANAGER_HELPERS
 #include "AnimsManager.h"
 
 #include "../Foundation/VsPoint.h"
@@ -182,6 +183,35 @@ VsSize AnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_ani
 		size.m_height = entry->m_height;
 	}
 	return size;
+}
+
+// FUNCTION: LEMBALL 0x004676a0
+ResZrle* AnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, Frames* p_frame)
+{
+	ResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
+	unsigned int frame;
+	if (p_frame != 0) {
+		frame = p_frame->GetFrameNo();
+	}
+	else {
+		frame = 0;
+	}
+	if (resource->m_chunkType == 0x5a524c45) {
+		return (ResZrle*) resource;
+	}
+	return ((ResAnim*) resource)->m_animationEntries + frame;
+}
+
+// FUNCTION: LEMBALL 0x00467700
+void AnimsManager::DetachGdi(Gdi* p_gdi)
+{
+	if (m_previousGdi == p_gdi) {
+		m_previousGdi = 0;
+	}
+	if (m_gdi == p_gdi) {
+		m_previousGdi = 0;
+		m_gdi = 0;
+	}
 }
 
 // 68K 0x1020064e DrawAnim__13CAnimsManagerFRC8CVSPointUlUlP14CAnimFrameBASEP6CRemap
