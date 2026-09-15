@@ -141,9 +141,8 @@ def clone_groups(funcs: list[Func], min_clone: int) -> list[tuple[str, int, list
     for func in stubs(funcs):
         if func.original_size is not None:
             groups[(func.method, func.original_size)].append(func)
-    ranked = [(name, size, items) for (name, size), items in groups.items() if len(items) >= min_clone]
-    ranked.sort(key=lambda item: (-len(item[2]), item[0], item[1]))
-    return ranked
+    return sorted(((name, size, items) for (name, size), items in groups.items() if len(items) >= min_clone),
+                  key=lambda item: (-len(item[2]), item[0], item[1]))
 
 
 def leftover_units(funcs: list[Func]) -> list[tuple[str, int, int, int, int]]:
@@ -156,8 +155,7 @@ def leftover_units(funcs: list[Func]) -> list[tuple[str, int, int, int, int]]:
         leftover = [f for f in items if f.ratio < 100.0]
         if not leftover or n100 == 0:
             continue
-        unmatched_code = sum(f.original_size or 0 for f in leftover)
-        rows.append((name, n100, len(items), len(leftover), unmatched_code))
+        rows.append((name, n100, len(items), len(leftover), sum(f.original_size or 0 for f in leftover)))
     rows.sort(key=lambda r: (-r[1] / r[2], r[3], r[4], r[0]))
     return rows
 
