@@ -427,8 +427,9 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 				break;
 			}
 		}
-		posted.code = PackParam((short) (window->m_rect.m_x + (short) p_lParam),
-								(short) (window->m_rect.m_y + (short) (p_lParam >> 16)));
+		mouseX = window->m_rect.m_x + (short) p_lParam;
+		mouseY = window->m_rect.m_y + (short) (p_lParam >> 16);
+		posted.code = PackParam(mouseX, mouseY);
 		posted.source = 0;
 		g_pMasterInputQueue->Post(posted);
 		if (g_nMouseCaptureCount++ == 0) {
@@ -449,8 +450,9 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 		else {
 			posted.payload = (void*) 0x45;
 		}
-		posted.code = PackParam((short) (window->m_rect.m_x + (short) p_lParam),
-								(short) (window->m_rect.m_y + (short) (p_lParam >> 16)));
+		mouseX = window->m_rect.m_x + (short) p_lParam;
+		mouseY = window->m_rect.m_y + (short) (p_lParam >> 16);
+		posted.code = PackParam(mouseX, mouseY);
 		posted.source = 0;
 		g_pMasterInputQueue->Post(posted);
 		g_nMouseCaptureCount = g_nMouseCaptureCount - 1;
