@@ -1,3 +1,4 @@
+#define LEMBALL_INLINE_VSSIZE_COPY
 #include "C2D.h"
 
 #include "../../AI/Base/ObjectActions.h"
@@ -1292,7 +1293,6 @@ void C2D::SetClipSize()
 	int count;
 	TargetSpriteGroundLookup* lookup;
 	ResFont* font;
-	VsSize size;
 	short clipSizeX;
 	short translatedX;
 
@@ -1355,7 +1355,7 @@ void C2D::SetClipSize()
 	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
 		font = m_textManager->GetFont(0xf8);
 		short remainingWidth = m_clipSize.m_x;
-		remainingWidth -= font->GetSize(&size, "Demo", 0x20)->m_width;
+		remainingWidth -= font->GetSize("Demo", 0x20).m_width;
 		m_demoTextRect.m_y = 0;
 		m_demoTextRect.m_x = remainingWidth / 2;
 	}
