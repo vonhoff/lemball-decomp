@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_INVISIBLE_SWITCH_MANAGER_HELPERS
 #include "InvisibleSwitchManager.h"
 
 #include "../Objects/InvisibleSwitch.h"
@@ -63,6 +64,16 @@ void InvisibleSwitchManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
 		m_switches[i].Process();
+	}
+}
+
+// FUNCTION: LEMBALL 0x0040a3e0
+void InvisibleSwitchManager::AddSwitch(unsigned short p_id, const Coord3d& p_min, const Coord3d& p_max)
+{
+	if (m_count < m_capacity) {
+		m_switches[m_count].SetId(p_id);
+		m_switches[m_count].Set(p_min, p_max);
+		m_count++;
 	}
 }
 
