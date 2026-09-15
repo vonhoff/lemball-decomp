@@ -37,6 +37,9 @@ private:
 // SYNTHETIC: LEMBALL 0x0047bd10 SYMBOL
 // ?SocketError@FileCommonSocket@@WPPPPPPCI@AEXXZ
 
+// SYNTHETIC: LEMBALL 0x0047bd60 SYMBOL
+// ?SetDestAddr@FileWriteSocket@@$4PPPPPPPM@A@AEXPAVNetworkAddress@@@Z
+
 // GLOBAL: LEMBALL 0x0049a668
 // FileWriteSocket::`vbtable'{for `FileCommonSocket'}
 
