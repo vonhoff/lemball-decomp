@@ -1862,8 +1862,8 @@ int C2D::DrawClippedRectangle(const VsRect& p_rect)
 	SolidRect& clipRect = m_solidRects[m_primitiveCount++];
 	clipRect.m_left = clippedRect.m_width;
 	clipRect.m_top = clippedRect.m_height;
-	clipRect.m_right = clippedRect.m_x;
-	clipRect.m_bottom = clippedRect.m_y;
+	memcpy(&clipRect.m_right, &clippedRect.m_x, sizeof(short));
+	memcpy(&clipRect.m_bottom, &clippedRect.m_y, sizeof(short));
 	clipRect.m_color = 0;
 	clipRect.Draw(m_gdi);
 
