@@ -363,8 +363,3 @@ void Door::DoActivate()
 		g_pAI->Score(score);
 	}
 }
-
-// 68K 0x10119b74 __dt__5CDoorFv
-Door::~Door()
-{
-}
