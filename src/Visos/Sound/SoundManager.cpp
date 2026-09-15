@@ -309,6 +309,14 @@ void SoundManager::StopMusic(unsigned long p_handle)
 	}
 }
 
+// FUNCTION: LEMBALL 0x0045b390
+void SoundManager::ResumeMusicCD(unsigned long p_handle)
+{
+	if (m_musicAvailable == 1 && m_useMusicCD == 1) {
+		m_musicDevice->Resume(p_handle);
+	}
+}
+
 // 68K 0x102187b4 FreeMusic__13CSoundManagerFUl
 // FUNCTION: LEMBALL 0x0045b3b0
 void SoundManager::FreeMusic(unsigned long p_handle)
@@ -317,6 +325,14 @@ void SoundManager::FreeMusic(unsigned long p_handle)
 		if (m_useMusicCD == 1) {
 			((MusicDeviceDispatch*) m_musicDevice)->Stop(p_handle);
 		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0045b3d0
+void SoundManager::StopMusicCD(unsigned long p_handle)
+{
+	if (m_musicAvailable == 1 && p_handle != 0 && m_useMusicCD == 1) {
+		m_musicDevice->Free(p_handle);
 	}
 }
 
