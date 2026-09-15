@@ -1,5 +1,7 @@
 #include "ResImage.h"
 
+#include "MogRes.h"
+
 // SIZE 0x10
 struct ImageResourceHeader {
 	unsigned int m_width;
@@ -10,6 +12,21 @@ struct ImageResourceHeader {
 	undefined2 m_unknown0x0a;
 	unsigned int m_imageState;
 };
+
+// FUNCTION: LEMBALL 0x0045e160
+ResImage* ResImage::Load(unsigned int p_resourceId)
+{
+	register unsigned int id = p_resourceId;
+	ResImage* res = (ResImage*) g_pActiveMogRes->Find(id);
+	if (res == 0) {
+		return (ResImage*) (new ResImage(id))->CheckError();
+	}
+	if (res->m_chunkType != 0x494d4147) {
+		res->UnLoad();
+		return 0;
+	}
+	return res;
+}
 
 // FUNCTION: LEMBALL 0x0045e1e0
 void ResImage::SetHeader()

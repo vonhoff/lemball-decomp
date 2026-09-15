@@ -8,6 +8,8 @@
 // VTABLE: LEMBALL 0x00498ce0
 class ResImage : public ResRaster {
 public:
+	ResImage(unsigned int p_resourceId) { DoLoad(p_resourceId); }
+	static ResImage* Load(unsigned int p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
 
@@ -17,5 +19,8 @@ private:
 	undefined m_unknown0x4e[2]; // 0x4e
 	unsigned int m_imageState;  // 0x50
 };
+
+// SYNTHETIC: LEMBALL 0x0045eb50
+// ResImage::`scalar deleting destructor'
 
 #endif
