@@ -18,6 +18,11 @@ public:
 
 	int Getlength();
 	String Lower();
+#ifdef LEMBALL_OUTLINE_STRING_HELPERS
+	void SetCapacity(int p_capacity);
+	char* GetText();
+	void SetTextPointer(char* p_text);
+#endif
 
 	const char* GetText() const { return m_text; }
 	operator const char*() const { return m_text; }

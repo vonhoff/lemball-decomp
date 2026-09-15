@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_STRING_HELPERS
 #include "String.h"
 
 #include "VsOStream.h"
@@ -117,6 +118,35 @@ VsOStream& operator<<(VsOStream& p_arg0, String& p_arg1)
 	return p_arg0;
 }
 
+// FUNCTION: LEMBALL 0x0046e810
+String operator+(String& p_left, String& p_right)
+{
+	String result;
+	delete[] result.GetText();
+	int length = p_right.Getlength();
+	length = length + p_left.Getlength() + 1;
+	result.SetTextPointer(new char[length]);
+	result.SetCapacity(length);
+	strcpy(result.GetText(), p_left.GetText());
+	strcat(result.GetText(), p_right.GetText());
+	return result;
+}
+
+// FUNCTION: LEMBALL 0x0046e900
+String operator+(String& p_left, const char* p_right)
+{
+	int capacity;
+	String result;
+	delete[] result.GetText();
+	int length = p_left.Getlength();
+	capacity = length + strlen(p_right) + 1;
+	result.SetTextPointer(new char[capacity]);
+	result.m_capacity = capacity;
+	strcpy(result.m_text, p_left.m_text);
+	strcat(result.m_text, p_right);
+	return result;
+}
+
 // 68K 0x1020127a getlength__7CStringFv
 // FUNCTION: LEMBALL 0x0046ef00
 int String::Getlength()
@@ -140,4 +170,22 @@ String String::Lower()
 		} while (len != 0);
 	}
 	return *this;
+}
+
+// FUNCTION: LEMBALL 0x0046f030
+void String::SetCapacity(int p_capacity)
+{
+	m_capacity = p_capacity;
+}
+
+// FUNCTION: LEMBALL 0x0046f040
+char* String::GetText()
+{
+	return m_text;
+}
+
+// FUNCTION: LEMBALL 0x0046f050
+void String::SetTextPointer(char* p_text)
+{
+	m_text = p_text;
 }
