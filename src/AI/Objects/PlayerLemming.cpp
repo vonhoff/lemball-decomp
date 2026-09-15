@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_PLAYER_STATE_HELPERS
 #include "PlayerLemming.h"
 
 #include "../../Control/Game/Demo.h"
@@ -429,6 +430,42 @@ bool PlayerLemming::CheckSfx()
 	m_cachedSoundEffect = sfx;
 	*pSfx = 1;
 	return *pSfx;
+}
+
+// FUNCTION: LEMBALL 0x0040f7e0
+unsigned int PlayerLemming::CheckNetworkStateChanged()
+{
+	int x = m_position.m_xFixed;
+	m_sfxChanged = ((m_networkPositionCache.m_xFixed ^ x) & 0xfffff000) != 0 || m_sfxChanged;
+	int y = m_position.m_yFixed;
+	m_sfxChanged = ((m_networkPositionCache.m_yFixed ^ y) & 0xfffff000) != 0 || m_sfxChanged;
+	int z = m_position.m_zFixed;
+	m_sfxChanged = ((m_networkPositionCache.m_zFixed ^ z) & 0xfffff000) != 0 || m_sfxChanged;
+	eAction action = m_action;
+	switch (action) {
+	case 0:
+		m_sfxChanged = m_cachedAction != action || m_sfxChanged;
+		m_cachedAction = action;
+		break;
+	case 1:
+		break;
+	default:
+		m_sfxChanged = m_cachedAction != action || m_sfxChanged;
+		m_sfxChanged = m_cachedActionArgument != m_actionArgument || m_sfxChanged;
+		m_sfxChanged = m_cachedStateTimer != m_stateTimer || m_sfxChanged;
+		m_cachedAction = action;
+		break;
+	}
+	eSoundEffect sound = m_soundEffect;
+	m_sfxChanged = m_cachedSoundEffect != sound || m_sfxChanged;
+	m_cachedFacingDirection = m_facingDirection;
+	m_networkPositionCache.m_xFixed = x;
+	m_networkPositionCache.m_yFixed = y;
+	m_networkPositionCache.m_zFixed = z;
+	m_cachedSoundEffect = sound;
+	m_cachedActionArgument = m_actionArgument;
+	m_cachedStateTimer = m_stateTimer;
+	return m_sfxChanged;
 }
 
 // 68K 0x1061ccb2 HasObject__14CPlayerLemmingF11eObjectType
