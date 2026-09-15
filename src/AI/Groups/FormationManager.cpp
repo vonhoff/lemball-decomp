@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_FORMATION_HELPERS
 #include "FormationManager.h"
 
 #include "../../Visos/Foundation/VsTrig.h"
@@ -66,6 +67,23 @@ void FormationManager::TransformFormation(int p_formationIndex, int p_angle)
 		transformed++;
 		remaining--;
 	} while (remaining != 0);
+}
+
+// FUNCTION: LEMBALL 0x0041a2e0
+Vector* FormationManager::GetFirstVector()
+{
+	m_restartState = 0;
+	return m_transformedVectors;
+}
+
+// FUNCTION: LEMBALL 0x0041a300
+Vector* FormationManager::GetNextVector()
+{
+	int index = ++m_restartState;
+	if (index >= 8) {
+		return 0;
+	}
+	return &m_transformedVectors[index];
 }
 
 // 68K 0x10608fa4 GetAVector__17CFormationManagerFi

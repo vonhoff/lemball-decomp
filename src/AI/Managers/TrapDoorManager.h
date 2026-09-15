@@ -13,6 +13,9 @@ public:
 	virtual void Process();                        // vtable+0x1c
 	virtual ~TrapDoorManager();                    // vtable+0x14
 	void Restart();
+#ifdef LEMBALL_OUTLINE_TRAPDOOR_HELPERS
+	void ClearAllTrapDoors();
+#endif
 	void AddNewDoor(unsigned short p_id, const AiCoord& p_position, unsigned int p_mode, unsigned long p_deadline);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip);
 

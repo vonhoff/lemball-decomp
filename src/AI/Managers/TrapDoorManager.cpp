@@ -1,3 +1,4 @@
+#define LEMBALL_OUTLINE_TRAPDOOR_HELPERS
 #include "TrapDoorManager.h"
 
 #include "../../Map/Base/Map.h"
@@ -139,4 +140,19 @@ void TrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned 
 		} while (i < count);
 	}
 	g_pAI->SetNetworkTrapDoors(count, selections[0], selections[1], selections[2], selections[3]);
+}
+
+// FUNCTION: LEMBALL 0x0040cbc0
+void TrapDoorManager::ClearAllTrapDoors()
+{
+	m_count = 0;
+	TrapDoor** door = m_doors;
+	int remaining = 8;
+	do {
+		if (*door != 0) {
+			delete *door;
+			*door = 0;
+		}
+		door++;
+	} while (--remaining != 0);
 }
