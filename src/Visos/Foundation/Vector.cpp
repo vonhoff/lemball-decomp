@@ -1,4 +1,5 @@
 #define LEMBALL_OUTLINE_VIEW_HELPERS
+#define LEMBALL_REFERENCE_VECTOR_COMPONENTS
 #include "Vector.h"
 
 #include "Fixed.h"
