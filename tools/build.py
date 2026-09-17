@@ -93,6 +93,7 @@ def handle_link(args: list[str]) -> int:
         stderr=subprocess.STDOUT,
         text=True,
         errors="replace",
+        check=False,
     )
     output = res.stdout or ""
     sys.stdout.write(output)
@@ -123,7 +124,7 @@ def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) ->
     def invoke():
         return subprocess.run(
             cmake_args, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-            text=True, errors="replace",
+            text=True, errors="replace", check=False,
         )
 
     proc = invoke()
@@ -163,7 +164,7 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
         or (toolchain.exists() and toolchain.stat().st_mtime > makefile.stat().st_mtime)
     )
     if need_configure:
-        res = subprocess.run([cmake, "--preset", "msvc400"], cwd=ROOT)
+        res = subprocess.run([cmake, "--preset", "msvc400"], cwd=ROOT, check=False)
         if res.returncode != 0:
             return res.returncode
 

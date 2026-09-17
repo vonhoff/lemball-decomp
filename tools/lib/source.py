@@ -10,9 +10,9 @@ from .paths import ROOT
 CPP_SUFFIXES = {".cpp", ".h", ".c"}
 _TYPES = "FUNCTION|STUB|TEMPLATE|SYNTHETIC|LIBRARY|GLOBAL|VTABLE"
 
-RECCMP_MARK = re.compile(rf"^\s*//\s*(?:{_TYPES})\s*:", re.M)
+RECCMP_MARK = re.compile(rf"^\s*//\s*(?:{_TYPES})\s*:", re.MULTILINE)
 ANNOT_WITH_ADDR = re.compile(rf"//\s*({_TYPES}):\s*LEMBALL\s+(0x[0-9A-Fa-f]+)")
-VTABLE_MARK = re.compile(r"^\s*//\s*VTABLE:\s+LEMBALL\b", re.M)
+VTABLE_MARK = re.compile(r"^\s*//\s*VTABLE:\s+LEMBALL\b", re.MULTILINE)
 SYNTHETIC_MARK = re.compile(r"^\s*//\s*SYNTHETIC\s*:")
 
 

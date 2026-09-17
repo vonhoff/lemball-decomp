@@ -4,21 +4,23 @@
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 import json
-from pathlib import Path
 import re
 import sys
+from collections import Counter
+from pathlib import Path
 
 from .paths import ROOT
 from .source import (
     RECCMP_MARK,
-    VTABLE_MARK as VTABLE,
     brace_ends,
     collect_sources,
     drop_type_prefix,
     mask_comments_and_strings,
     rel_posix,
+)
+from .source import (
+    VTABLE_MARK as VTABLE,
 )
 
 TYPE_DEF = re.compile(
@@ -30,7 +32,7 @@ METHOD_DEF = re.compile(
     r"[A-Za-z_][\w:]*(?:\s*<[^;{}<>]*>)?(?:\s*\*|\s*&)?)\s+)?"
     r"(?P<owner>[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*)::"
     r"(?P<method>~?[A-Za-z_]\w*|operator\s*[^\s(]+)\s*\(",
-    re.M,
+    re.MULTILINE,
 )
 
 # File stem -> note. Stem is allowed even when it differs from the primary class.

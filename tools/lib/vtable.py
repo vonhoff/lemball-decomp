@@ -257,7 +257,7 @@ def is_generated_adjuster(entity: object | None) -> bool:
         return False
 
     _, separator, encoding = symbol.partition("@@")
-    return bool(separator) and (encoding.startswith("W") or encoding.startswith("$4"))
+    return bool(separator) and encoding.startswith(("W", "$4"))
 
 
 def deleting_destructor_identity(entity: object | None) -> tuple[str, str] | None:

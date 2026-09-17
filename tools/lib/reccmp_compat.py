@@ -5,16 +5,19 @@ The existing name replacement and matching criteria remain in use.
 The installed package is not modified.
 """
 
-from importlib.metadata import version
-from copy import copy
-import struct
 import re
+import struct
+from copy import copy
+from importlib.metadata import version
 
-from capstone import Cs, CS_ARCH_X86, CS_MODE_32
-from reccmp.compare.asm import fixes, parse
+from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from reccmp.compare import functions
+from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
-from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtualReadError
+from reccmp.formats.exceptions import (
+    InvalidVirtualAddressError,
+    InvalidVirtualReadError,
+)
 from reccmp.types import ImageId
 
 
@@ -152,7 +155,7 @@ def complete_original_extent(image, start, limit, decoder, *, table_bounds=None)
             continue
         if mnemonic in ("int3", "hlt", "ud2", "int", "iret", "iretd", "sysenter", "sysexit"):
             return None
-        if mnemonic.startswith("j") or mnemonic.startswith("loop"):
+        if mnemonic.startswith(("j", "loop")):
             if not re.fullmatch(r"0x[0-9a-f]+", operand):
                 return None
             target = int(operand, 16)
@@ -512,6 +515,7 @@ class RelocationAwareParseAsm(parse.ParseAsm):
 
 def identical_folded_aliases(engine):
     from reccmp.parser.codebase import DecompCodebase
+
     from .vtable import collect_folded_aliases
 
     codebase = DecompCodebase(engine.code_files, engine.target_id, aliases=engine.project_aliases)

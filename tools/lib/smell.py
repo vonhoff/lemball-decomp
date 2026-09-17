@@ -102,7 +102,7 @@ def strip_line_comment(line: str) -> str:
 def is_func_def(stripped: str) -> bool:
     if not stripped or stripped.startswith(("#", "//", ":", "*", "}")):
         return False
-    if stripped.endswith(";") or stripped.endswith(","):
+    if stripped.endswith((";", ",")):
         return False
     lead = stripped.split(None, 1)
     if lead and lead[0] in SKIP_LEAD:
@@ -209,8 +209,8 @@ def raw_cast_reason(code: str, audit: bool = False) -> str | None:
 def format_hit(hit: Hit) -> str:
     rel, lineno, rule, code = hit
     if code:
-        return "%s:%d: %s %s" % (rel, lineno, rule, code)
-    return "%s:%d: %s" % (rel, lineno, rule)
+        return f"{rel}:{lineno}: {rule} {code}"
+    return f"{rel}:{lineno}: {rule}"
 
 
 def load_baseline() -> Counter[tuple[str, str, str]]:
@@ -238,7 +238,7 @@ def apply_baseline(hits: list[Hit], files: list[Path]) -> tuple[list[Hit], list[
     stale = []
     for (path, rule, code), count in sorted(remaining.items()):
         if count != 0 and path in scanned:
-            stale.append("%s: baseline-stale %s %s (count %d)" % (path, rule, code, count))
+            stale.append(f"{path}: baseline-stale {rule} {code} (count {count})")
     return unbaselined, stale
 
 
@@ -311,7 +311,7 @@ def scan_file(
         else:
             disposition = "hit"
         kind = "incomplete-annotation" if has_68k else "no-annotation"
-        record = "%s:%d: %s %s" % (rel, i + 1, kind, stripped[:90])
+        record = f"{rel}:{i + 1}: {kind} {stripped[:90]}"
         if disposition.startswith("review-"):
             reviews.append((disposition, record))
         else:
@@ -355,19 +355,18 @@ def check_smell(
     try:
         hits, stale = apply_baseline(hits, files)
     except ValueError as error:
-        sys.stderr.write("smell: %s\n" % error)
+        sys.stderr.write(f"smell: {error}\n")
         return 2
     if reviews:
         empty_reviews = sum(reason == "review-empty" for reason, _ in reviews)
         synthetic_reviews = sum(reason == "review-synthetic" for reason, _ in reviews)
         sys.stderr.write(
-            "smell: review empty=%d synthetic=%d (use --annot-strict)\n"
-            % (empty_reviews, synthetic_reviews)
+            f"smell: review empty={empty_reviews} synthetic={synthetic_reviews} (use --annot-strict)\n"
         )
     messages = [format_hit(hit) for hit in hits]
     messages.extend(stale)
     if messages:
-        sys.stderr.write("smell: %d hit(s)\n" % len(messages))
+        sys.stderr.write(f"smell: {len(messages)} hit(s)\n")
         for message in messages:
             sys.stderr.write(message + "\n")
         return 1

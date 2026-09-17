@@ -48,7 +48,7 @@ def main() -> int:
             print(f"BUILD_FAILED exit={exit_code} (see build-msvc400/last_build.log)")
             return exit_code
 
-    target, engine = load_engine()
+    _, engine = load_engine()
 
     for addr in args.addrs:
         match = engine.compare_address(addr)

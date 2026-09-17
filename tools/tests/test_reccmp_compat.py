@@ -6,7 +6,7 @@ from difflib import SequenceMatcher
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from capstone import Cs, CS_ARCH_X86, CS_MODE_32
+from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from lib.reccmp_compat import (
     BoundedInstructGen,
     RelocationAwareParseAsm,
@@ -28,8 +28,8 @@ from lib.reccmp_compat import (
     table_end_expressions,
 )
 from reccmp.compare.asm import fixes, parse
-from reccmp.compare.asm.parse import ParseAsm
 from reccmp.compare.asm.instgen import InstructGen, SectionType
+from reccmp.compare.asm.parse import ParseAsm
 from reccmp.compare.db import ReccmpMatch
 from reccmp.compare.functions import FunctionComparator
 from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
@@ -522,7 +522,7 @@ class IncrementalThunkTests(unittest.TestCase):
                                 ({}, "<OFFSET1>")):
             parser = RelocationAwareParseAsm(
                 indirect_thunk_targets={0x3000: 0x1020},
-                name_lookup=lambda address, **kwargs: names.get(address),
+                name_lookup=lambda address, n=names, **kwargs: n.get(address),
             )
             self.assertEqual(parser.indirect_replace(0x3000), expected)
             self.assertTrue(parser.indirect_replace(0x4000).startswith("<OFFSET"))
@@ -530,7 +530,7 @@ class IncrementalThunkTests(unittest.TestCase):
     def test_unknown_destination_and_indirect_calls_are_unchanged(self):
         for names, operand in (({}, "0x1000"), ({0x1020: "Target (FUNCTION)"}, "eax")):
             parser = self.parser(names)
-            expected = RelocationAwareParseAsm(name_lookup=lambda address, **kwargs: names.get(address))
+            expected = RelocationAwareParseAsm(name_lookup=lambda address, n=names, **kwargs: n.get(address))
             instruction = (0x2000, 5, "call", operand)
             self.assertEqual(parser.sanitize(instruction), expected.sanitize(instruction))
 

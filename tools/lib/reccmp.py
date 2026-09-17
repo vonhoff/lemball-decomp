@@ -5,23 +5,26 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 from reccmp.compare import Compare
 from reccmp.compare.report import ReccmpStatusReport, serialize_reccmp_report
 from reccmp.formats import PEImage
 from reccmp.formats.exceptions import InvalidVirtualAddressError
 from reccmp.project.detect import DetectWhat, RecCmpProject, detect_project
-from reccmp.tools.roadmap import ModuleMap, RoadmapRow, export_to_csv, match_type_abbreviation
+from reccmp.tools.roadmap import (
+    ModuleMap,
+    RoadmapRow,
+    export_to_csv,
+    match_type_abbreviation,
+)
 from reccmp.types import EntityType
 
-from .reccmp_compat import configure_original_extents, configure_pointer_comparisons, install_parser_fix
 from .paths import (
     BUILD,
     ORIGINAL_EXE,
-
     RECCMP_JSON,
     RECCMP_STAMP,
     RECOMP_EXE,
@@ -30,6 +33,11 @@ from .paths import (
     ROOT,
     SRC,
     file_id,
+)
+from .reccmp_compat import (
+    configure_original_extents,
+    configure_pointer_comparisons,
+    install_parser_fix,
 )
 
 
@@ -67,7 +75,7 @@ def _write_roadmap(target, engine: Compare, csv_path: Path) -> None:
     orig_bin = engine.orig_bin
     recomp_bin = engine.recomp_bin
     if not isinstance(orig_bin, PEImage) or not isinstance(recomp_bin, PEImage):
-        raise ValueError("roadmap requires 32-bit PE images")
+        raise TypeError("roadmap requires 32-bit PE images")
 
     module_map = ModuleMap(target.recompiled_pdb, recomp_bin)
 
@@ -197,4 +205,4 @@ def check_decomplint(
     if warnfail:
         command.append("--warnfail")
     command.extend(str(path) for path in (paths or [SRC]))
-    return subprocess.run(command).returncode
+    return subprocess.run(command, check=False).returncode

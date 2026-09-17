@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import unittest
+from pathlib import Path
 
 from lib.layout import check_layout
 from lib.names import check_names

@@ -60,9 +60,7 @@ def is_unresolved_branch(orig_text: str, recomp_text: str) -> bool:
         return bool(CALL_TARGET_RE.match(recomp))
     if JMP_OFFSET_RE.match(orig):
         return bool(JMP_TARGET_RE.match(recomp))
-    if recomp.startswith("call <OFFSET") and CALL_FUNC_RE.match(orig):
-        return True
-    return False
+    return recomp.startswith("call <OFFSET") and bool(CALL_FUNC_RE.match(orig))
 
 
 def split_vtable_reference(instruction: str) -> tuple[str, str, bool] | None:

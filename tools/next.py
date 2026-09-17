@@ -8,12 +8,14 @@ import json
 import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass, replace
+from itertools import pairwise
 from pathlib import Path
 
 from lib.paths import ORIGINAL_EXE, REPORT_JSON, TARGETS_CACHE, file_id
 from lib.reccmp_compat import complete_original_extent
 from lib.source import ANNOT_WITH_ADDR, collect_sources
 from report import make_report
+
 
 @dataclass(frozen=True)
 class Func:
@@ -44,7 +46,7 @@ def add_original_evidence(funcs: list[Func], entries: set[int], report_path: Pat
     except (OSError, ValueError, KeyError, TypeError):
         sizes = {}
     if not all(str(f.addr) in sizes for f in funcs):
-        from capstone import Cs, CS_ARCH_X86, CS_MODE_32
+        from capstone import CS_ARCH_X86, CS_MODE_32, Cs
         from reccmp.formats import detect_image
 
         image = detect_image(ORIGINAL_EXE)
@@ -52,7 +54,7 @@ def add_original_evidence(funcs: list[Func], entries: set[int], report_path: Pat
             raise ValueError("original executable is unavailable")
         decoder = Cs(CS_ARCH_X86, CS_MODE_32)
         entries = sorted(entries | {f.addr for f in funcs})
-        limits = dict(zip(entries, entries[1:]))
+        limits = dict(pairwise(entries))
         sizes = {
             str(f.addr): complete_original_extent(
                 image, f.addr, limits.get(f.addr, f.addr + 65536), decoder

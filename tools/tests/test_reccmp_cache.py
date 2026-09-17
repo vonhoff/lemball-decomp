@@ -24,19 +24,19 @@ class ReccmpCacheTests(unittest.TestCase):
                 }.items():
                     patches.enter_context(patch.object(reccmp, name, value))
                 generation = [1]
-                patches.enter_context(patch.object(reccmp, "_stamp", side_effect=lambda: {"generation": generation[0]}))
+                patches.enter_context(patch.object(reccmp, "_stamp", side_effect=lambda gen=generation: {"generation": gen[0]}))
                 target = SimpleNamespace(original_path=build / "original.exe")
                 engine = Mock()
 
-                def compare():
-                    if phase == "comparison":
-                        generation[0] += 1
+                def compare(p=phase, gen=generation):
+                    if p == "comparison":
+                        gen[0] += 1
                     return []
 
-                def write_roadmap(target, engine, path):
+                def write_roadmap(target, engine, path, p=phase, gen=generation):
                     path.write_text("inventory", encoding="utf-8")
-                    if phase == "roadmap":
-                        generation[0] += 1
+                    if p == "roadmap":
+                        gen[0] += 1
 
                 engine.compare_all.side_effect = compare
                 loader = patches.enter_context(patch.object(reccmp, "load_engine", return_value=(target, engine)))

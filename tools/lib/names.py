@@ -2,14 +2,19 @@
 """Compare source names with adjacent // 68K symbols (via tools/gate.py --names)."""
 
 import argparse
-from collections import Counter
 import json
-from pathlib import Path
 import re
 import sys
+from collections import Counter
+from pathlib import Path
 
 from .paths import ROOT
-from .source import brace_ends, collect_sources, drop_type_prefix, mask_comments_and_strings
+from .source import (
+    brace_ends,
+    collect_sources,
+    drop_type_prefix,
+    mask_comments_and_strings,
+)
 
 MARK = re.compile(r"//\s*68K\s+(0x[0-9a-fA-F]+)\s+(\S+)")
 FUNCTION = re.compile(
@@ -105,7 +110,7 @@ def class_name(name):
 
 
 def method_name(name):
-    if name.startswith("<") or name.startswith("operator"):
+    if name.startswith(("<", "operator")):
         return name
     internal = name.startswith("_")
     body = "".join(
@@ -117,7 +122,7 @@ def method_name(name):
 
 
 def method_fold(name):
-    if name.startswith("<") or name.startswith("operator"):
+    if name.startswith(("<", "operator")):
         return name
     internal = name.startswith("_")
     body = "".join(part for part in name.split("_") if part)
@@ -207,7 +212,7 @@ def scan(path):
             synthetic = (
                 reason == "no adjacent function declaration"
                 and symbol.startswith(("__ct__", "__dt__"))
-                and re.search(r"SYNTHETIC:|^\s*(?:class|struct)\s+\w+", after, re.M)
+                and re.search(r"SYNTHETIC:|^\s*(?:class|struct)\s+\w+", after, re.MULTILINE)
             )
             row.update(status="synthetic" if synthetic else "unresolved", reason=reason)
         rows.append(row)
