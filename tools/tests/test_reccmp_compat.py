@@ -139,6 +139,17 @@ class PointerComparisonTests(unittest.TestCase):
         self.assertEqual(parser.parse_asm(blob, 0x1000)[0][1],
                          "cmp dword ptr [<OFFSET1>], 0x8000")
 
+    def test_table_end_comparison_normalizes_to_base_plus_length(self):
+        def names(address, **kwargs):
+            return {0x4000: "table (DATA)", 0x41e8: "other (DATA)"}.get(address)
+        blob = b"\xba" + struct.pack("<I", 0x4000) + b"\x81\xfa" + struct.pack("<I", 0x41e8)
+        parser = RelocationAwareParseAsm(
+            relocation_sites=(0x1001, 0x1007), name_lookup=names,
+            addr_test=lambda address: True,
+        )
+        lines = [text for _, text in parser.parse_asm(blob, 0x1000)]
+        self.assertEqual(lines, ["mov edx, table (DATA)", "cmp edx, table (DATA) + 0x1e8"])
+
     def test_named_comparison_counts_toward_later_placeholders(self):
         def names(address, **kwargs):
             return "limit (DATA)" if address == 0x4000 else None

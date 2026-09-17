@@ -283,6 +283,7 @@ class RelocationAwareParseAsm(parse.ParseAsm):
     def parse_asm(self, data, start_addr):
         self._data = bytes(data)
         self._start = start_addr
+        self._table_bases = {}
         assembly = super().parse_asm(data, start_addr)
         normalize_assert_arguments(assembly)
         return assembly
@@ -297,7 +298,14 @@ class RelocationAwareParseAsm(parse.ParseAsm):
             if (target is not None and self.lookup(int(operands, 16), exact=True) is None
                     and self.lookup(target, exact=True) is not None):
                 return mnemonic, self.replace(target, exact=True)
-        if (
+        if self.is_32bit and mnemonic == "mov":
+            reg, _, val = operands.partition(", ")
+            if reg in fixes.DWORD_REGS and address + size - 4 in self.relocation_sites:
+                try:
+                    self._table_bases[reg] = int(val, 16)
+                except ValueError:
+                    pass
+        elif (
             self.is_32bit
             and mnemonic == "cmp"
             and address + size - 4 in self.relocation_sites
@@ -315,6 +323,11 @@ class RelocationAwareParseAsm(parse.ParseAsm):
                 value = int(operands.rpartition(", ")[2], 16)
                 mnemonic, sanitized = super().sanitize(inst)
                 head, separator, _ = sanitized.rpartition(", ")
+                reg = operands.partition(", ")[0]
+                if reg in self._table_bases:
+                    base = self._table_bases[reg]
+                    if 0 < value - base <= 65536:
+                        return mnemonic, head + separator + f"{self.replace(base)} + {value - base:#x}"
                 return mnemonic, head + separator + self.replace(value)
         return super().sanitize(inst)
 
