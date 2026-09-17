@@ -11,8 +11,8 @@
 class PvZBuffSurface : public virtual PvSurface {
 public:
 	PvZBuffSurface();
-	virtual void Blit(ZBuffClear* p_arg0) = 0;  // vtable+0x00
 	virtual void Blit(ZBuffScroll* p_arg0) = 0; // vtable+0x04
+	virtual void Blit(ZBuffClear* p_arg0) = 0;  // vtable+0x00
 	virtual bool HasZBuff();                    // vtable+0x40
 	void AllocateZBuff();
 	void EnableZBuff(int p_enabled);

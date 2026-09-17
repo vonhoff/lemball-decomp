@@ -10,6 +10,11 @@ import sys
 from collections import Counter
 from dataclasses import dataclass
 from itertools import zip_longest
+from pathlib import Path
+
+if __name__ == "__main__" and not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    __package__ = "lib"
 
 from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
@@ -313,6 +318,44 @@ def generated_function_codegen_matches(
     )
 
 
+def decode_this_adjuster(image, address: int | None) -> tuple[int, int] | None:
+    """Decode a `this`-adjuster thunk (`sub/add ecx, <offset>; jmp <target>`)."""
+    if address is None or not image.is_valid_vaddr(address):
+        return None
+    try:
+        data = image.read(address, 16)
+    except (IndexError, ValueError):
+        try:
+            data = image.read(address, 11)
+        except (IndexError, ValueError):
+            return None
+
+    adj = None
+    jmp_offset = 0
+
+    if len(data) >= 11 and data[0] == 0x81:
+        if data[1] == 0xE9:  # sub ecx, imm32
+            adj = struct.unpack("<i", data[2:6])[0]
+            jmp_offset = 6
+        elif data[1] == 0xC1:  # add ecx, imm32
+            adj = -struct.unpack("<i", data[2:6])[0]
+            jmp_offset = 6
+    elif len(data) >= 8 and data[0] == 0x83:
+        if data[1] == 0xE9:  # sub ecx, imm8
+            adj = struct.unpack("<b", data[2:3])[0]
+            jmp_offset = 3
+        elif data[1] == 0xC1:  # add ecx, imm8
+            adj = -struct.unpack("<b", data[2:3])[0]
+            jmp_offset = 3
+
+    if adj is not None and len(data) >= jmp_offset + 5 and data[jmp_offset] == 0xE9:
+        disp = struct.unpack("<i", data[jmp_offset + 1 : jmp_offset + 5])[0]
+        target = address + jmp_offset + 5 + disp
+        return adj, target
+
+    return None
+
+
 def is_same_generated_adjuster(
     engine: Compare,
     orig: int | None,
@@ -322,14 +365,48 @@ def is_same_generated_adjuster(
 ) -> bool:
     orig_name = entity_name(orig_entity)
     recomp_name = entity_name(recomp_entity)
-    return "`vtordisp" in orig_name and orig_name == recomp_name and generated_function_codegen_matches(
+    if "`vtordisp" in orig_name and orig_name == recomp_name and generated_function_codegen_matches(
         engine,
         orig,
         recomp,
         orig_entity,
         recomp_entity,
         f"{orig_name} duplicate adjuster",
-    )
+    ):
+        return True
+
+    orig_thunk = decode_this_adjuster(engine.orig_bin, orig)
+    recomp_thunk = decode_this_adjuster(engine.recomp_bin, recomp)
+    if orig_thunk is not None and recomp_thunk is not None:
+        orig_adj, orig_target = orig_thunk
+        recomp_adj, recomp_target = recomp_thunk
+        if orig_adj == recomp_adj:
+            def is_function_body(image_id: ImageId, address: int) -> bool:
+                entity = engine._db.get(image_id, address)
+                return entity is not None and not entity_name(entity).startswith("Thunk of '")
+
+            resolved_orig_target = resolve_jump(
+                engine.orig_bin, orig_target, lambda a: is_function_body(ImageId.ORIG, a)
+            )
+            resolved_recomp_target = resolve_jump(
+                engine.recomp_bin, recomp_target, lambda a: is_function_body(ImageId.RECOMP, a)
+            )
+            target_orig_entity = (
+                None if resolved_orig_target is None else engine._db.get(ImageId.ORIG, resolved_orig_target)
+            )
+            target_recomp_entity = (
+                None if resolved_recomp_target is None else engine._db.get(ImageId.RECOMP, resolved_recomp_target)
+            )
+            if target_orig_entity is not None and target_orig_entity.recomp_addr is not None:
+                if (
+                    target_recomp_entity is not None
+                    and target_orig_entity.recomp_addr == target_recomp_entity.recomp_addr
+                ):
+                    return True
+                if target_orig_entity.recomp_addr == resolved_recomp_target:
+                    return True
+
+    return False
 
 
 def is_same_deleting_destructor_alias(

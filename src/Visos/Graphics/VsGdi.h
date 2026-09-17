@@ -55,8 +55,8 @@ public:
 	virtual void Blit(Point* p_point);
 	virtual void Blit(CopyToBackBuff* p_copy);
 	virtual void Blit(CopyColourToBackBuff* p_fill);
-	virtual void Blit(ZBuffClear* p_clear);
 	virtual void Blit(ZBuffScroll* p_scroll);
+	virtual void Blit(ZBuffClear* p_clear);
 	void BlitRect(VsRect p_rect, int p_colour);
 	void BlitZrle(int p_x, int p_y, ResZrle* p_zrle, unsigned int p_flags, Remap* p_remap, unsigned short p_depth);
 	void BlitZrleClip(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned int p_reverse);
