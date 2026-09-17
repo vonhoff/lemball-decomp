@@ -9,8 +9,19 @@ from collections import defaultdict
 from pathlib import Path
 
 from lib.compare import compute_ratio, load_matches
-from lib.paths import REPORT_JSON, ROADMAP_CSV
-from lib.reccmp import run_reccmp
+from lib.paths import BUILD, RECCMP_JSON, REPORT_JSON, ROADMAP_CSV, ROOT
+from lib.reccmp_compat import load_engine
+from reccmp.compare.report import ReccmpStatusReport, serialize_reccmp_report
+from reccmp.formats import PEImage
+from reccmp.formats.exceptions import InvalidVirtualAddressError
+from reccmp.project.detect import DetectWhat, detect_project
+from reccmp.tools.roadmap import (
+    ModuleMap,
+    RoadmapRow,
+    export_to_csv,
+    match_type_abbreviation,
+)
+from reccmp.types import EntityType
 
 
 def f32(value):
@@ -98,6 +109,96 @@ def build_report(roadmap_path, reccmp_path):
         "units": units,
         "version": 2,
     }
+
+
+def _write_roadmap(target, engine, csv_path: Path) -> None:
+    orig_bin = engine.orig_bin
+    recomp_bin = engine.recomp_bin
+    if not isinstance(orig_bin, PEImage) or not isinstance(recomp_bin, PEImage):
+        raise TypeError("roadmap requires 32-bit PE images")
+
+    module_map = ModuleMap(target.recompiled_pdb, recomp_bin)
+
+    def same_section(orig: int, recomp: int) -> bool:
+        try:
+            return orig_bin.sections[orig - 1].name == recomp_bin.sections[recomp - 1].name
+        except IndexError:
+            return False
+
+    rows: list[RoadmapRow] = []
+    for match in engine.get_all():
+        try:
+            module_name = None
+            if match.recomp_addr is not None and recomp_bin.is_valid_vaddr(match.recomp_addr):
+                ref = module_map.get_module(match.recomp_addr)
+                if ref is not None:
+                    _, module_name = ref
+
+            orig_sect_ofs = recomp_sect_ofs = None
+            orig_sect = orig_ofs = recomp_sect = recomp_ofs = None
+            displacement = None
+            if match.orig_addr is not None:
+                orig_sect, orig_ofs = orig_bin.get_relative_addr(match.orig_addr)
+                orig_sect_ofs = f"{orig_sect:04}:{orig_ofs:08x}"
+            if match.recomp_addr is not None:
+                recomp_sect, recomp_ofs = recomp_bin.get_relative_addr(match.recomp_addr)
+                recomp_sect_ofs = f"{recomp_sect:04}:{recomp_ofs:08x}"
+            if (
+                orig_sect is not None
+                and recomp_sect is not None
+                and same_section(orig_sect, recomp_sect)
+                and orig_ofs is not None
+                and recomp_ofs is not None
+            ):
+                displacement = recomp_ofs - orig_ofs
+
+            rows.append(
+                RoadmapRow(
+                    orig_sect_ofs,
+                    recomp_sect_ofs,
+                    match.orig_addr,
+                    match.recomp_addr,
+                    displacement,
+                    match_type_abbreviation(match.entity_type),
+                    match.any_size() or 0,
+                    match.name,
+                    module_name,
+                )
+            )
+        except InvalidVirtualAddressError:
+            continue
+
+    export_to_csv(str(csv_path), rows)
+
+
+def run_reccmp(json_path: Path = RECCMP_JSON, *, detect: bool = False, roadmap: bool = False) -> Path:
+    out = json_path.resolve()
+    BUILD.mkdir(parents=True, exist_ok=True)
+
+    if detect:
+        detect_project(
+            project_directory=ROOT,
+            search_path=[ROOT / "data"],
+            detect_what=DetectWhat.ORIGINAL,
+            build_directory=BUILD,
+        )
+
+    target, engine = load_engine()
+    report = ReccmpStatusReport(filename=target.original_path.name)
+    for match in engine.compare_all():
+        match_type = getattr(match, "type", None)
+        if (
+            match_type == EntityType.FUNCTION
+            and match.name in target.report_config.ignore_functions
+        ):
+            continue
+        report.add_match(match)
+    out.write_text(serialize_reccmp_report(report, diff_included=True), encoding="utf-8")
+
+    if roadmap:
+        _write_roadmap(target, engine, ROADMAP_CSV)
+
+    return out
 
 
 def make_report(output_path: Path = REPORT_JSON) -> dict:

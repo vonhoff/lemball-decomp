@@ -11,7 +11,7 @@ import argparse
 import sys
 
 from build import run_build
-from lib.reccmp import load_engine
+from lib.reccmp_compat import load_engine
 from reccmp.tools.asmcmp import print_match_verbose
 
 
