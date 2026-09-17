@@ -77,7 +77,6 @@ def handle_link(args: list[str]) -> int:
                 parts = [win_short_path(p) for p in val.split(";") if p]
                 new_val = ";".join(parts)
                 os.environ[env_var] = new_val
-                ctypes.windll.kernel32.SetEnvironmentVariableW(env_var, new_val)
 
     for arg in link_args:
         if arg.startswith("@"):
@@ -157,14 +156,12 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
     cached = cache_cmake_command()
     makefile = BUILD / "Makefile"
     toolchain = ROOT / "cmake" / "msvc400-toolchain.cmake"
-    need_configure = cached is None or " " in cached or not makefile.exists()
-    if (
-        not need_configure
-        and toolchain.exists()
-        and makefile.exists()
-        and toolchain.stat().st_mtime > makefile.stat().st_mtime
-    ):
-        need_configure = True
+    need_configure = (
+        cached is None
+        or " " in cached
+        or not makefile.exists()
+        or (toolchain.exists() and toolchain.stat().st_mtime > makefile.stat().st_mtime)
+    )
     if need_configure:
         res = subprocess.run([cmake, "--preset", "msvc400"], cwd=ROOT)
         if res.returncode != 0:
@@ -172,12 +169,7 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
 
     if clean_first:
         for fname in ("LEMBALL.pdb", "LEMBALL.ilk", "LEMBALL.EXE"):
-            p = BUILD / fname
-            if p.exists():
-                try:
-                    p.unlink()
-                except OSError:
-                    pass
+            (BUILD / fname).unlink(missing_ok=True)
 
     cmake_args = [cmake, "--build", "--preset", "msvc400"]
     if clean_first:

@@ -3,11 +3,9 @@
 
 from __future__ import annotations
 
-import argparse
 import hashlib
 import re
 import struct
-import sys
 from pathlib import Path
 
 from .paths import ROOT
@@ -157,44 +155,13 @@ def write_header(resources: list[dict], vsr_path: Path, out_path: Path, digest: 
     out_path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate Manifest.h from pbaimog.vsr")
-    parser.add_argument(
-        "vsr",
-        nargs="?",
-        type=Path,
-        default=DEFAULT_VSR,
-        help=f"MOG archive path (default: {DEFAULT_VSR.relative_to(ROOT)})",
-    )
-    parser.add_argument(
-        "--header",
-        type=Path,
-        default=DEFAULT_HEADER,
-        help=f"Output header path (default: {DEFAULT_HEADER.relative_to(ROOT)})",
-    )
-    return parser.parse_args()
-
-
-def main() -> int:
-    args = parse_args()
-    vsr_path = args.vsr
+def generate_manifest(vsr_path: Path = DEFAULT_VSR, out_path: Path = DEFAULT_HEADER) -> int:
     if not vsr_path.is_file():
-        print(f"VSR not found: {vsr_path}", file=sys.stderr)
-        print("Place pbaimog.vsr in data/ or pass an explicit path.", file=sys.stderr)
         return 1
-
     archive = MogArchive(vsr_path)
     resources = archive.collect_resources()
-
     if not resources:
-        print(f"{vsr_path}: no resources found", file=sys.stderr)
         return 1
-
     digest = hashlib.sha256(archive.data).hexdigest()
-    write_header(resources, vsr_path, args.header, digest)
-    print(f"Wrote {args.header} ({len(resources)} entries)")
+    write_header(resources, vsr_path, out_path, digest)
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

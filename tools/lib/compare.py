@@ -21,9 +21,6 @@ CALL_FUNC_RE = re.compile(r"^call .+ \(FUNCTION\)$")
 VTABLE_RE = re.compile(r"(.+?)::`vftable'(?:\{for `.+?'\})?")
 
 
-def norm_addr(value: str | int) -> int:
-    return int(value, 16) if isinstance(value, str) else int(value)
-
 
 def insn_text(entry) -> str:
     if isinstance(entry, (list, tuple)) and len(entry) > 1:

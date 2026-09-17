@@ -35,17 +35,14 @@ def main() -> int:
     args = parser.parse_args()
     paths = args.paths or None
 
-    if args.tools and not args.all:
-        return check_tool_tests()
-
-    if paths and not (args.names or args.vtable or args.all):
-        return check_smell(paths=paths)
-
     if args.names and not args.all:
         return check_names(paths=paths, fail=True)
 
     if args.vtable and not args.all:
         return check_vtable(no_build=True)
+
+    if args.tools and not args.all:
+        return check_tool_tests()
 
     code = check_smell(paths=paths, annot=True)
     if code != 0:
@@ -59,9 +56,10 @@ def main() -> int:
     if code != 0:
         return code
 
-    code = check_tool_tests()
-    if code != 0:
-        return code
+    if not paths:
+        code = check_tool_tests()
+        if code != 0:
+            return code
 
     if args.all:
         code = check_names(paths=paths, fail=True)

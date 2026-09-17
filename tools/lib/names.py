@@ -9,7 +9,7 @@ import re
 import sys
 
 from .paths import ROOT
-from .source import brace_ends, collect_sources, mask_comments_and_strings
+from .source import brace_ends, collect_sources, drop_type_prefix, mask_comments_and_strings
 
 MARK = re.compile(r"//\s*68K\s+(0x[0-9a-fA-F]+)\s+(\S+)")
 FUNCTION = re.compile(
@@ -96,11 +96,7 @@ def normalize_word(word):
 
 
 def normalize_segment(segment):
-    for prefix in ("tag", "t", "C"):
-        if (len(segment) > len(prefix) and segment.startswith(prefix)
-                and segment[len(prefix)].isupper()):
-            segment = segment[len(prefix):]
-            break
+    segment = drop_type_prefix(segment)
     return "".join(normalize_word(part) for part in segment.split("_") if part)
 
 
@@ -114,8 +110,8 @@ def method_name(name):
     internal = name.startswith("_")
     body = "".join(
         n[:1].upper() + n[1:]
-        for part in name.split("_") if part
-        for n in [normalize_segment(part)] if n
+        for part in name.split("_")
+        if (n := normalize_segment(part))
     )
     return "Internal" + body if internal else body
 

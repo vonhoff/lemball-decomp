@@ -49,3 +49,10 @@ def collect_sources(paths: list[Path | str] | None = None, root: Path = ROOT) ->
 
 def rel_posix(path: Path, root: Path = ROOT) -> str:
     return path.resolve().relative_to(root).as_posix()
+
+
+def drop_type_prefix(name: str) -> str:
+    for prefix in ("tag", "t", "C"):
+        if len(name) > len(prefix) and name.startswith(prefix) and name[len(prefix)].isupper():
+            return name[len(prefix):]
+    return name

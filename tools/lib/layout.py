@@ -16,6 +16,7 @@ from .source import (
     VTABLE_MARK as VTABLE,
     brace_ends,
     collect_sources,
+    drop_type_prefix,
     mask_comments_and_strings,
     rel_posix,
 )
@@ -43,13 +44,6 @@ OVERRIDE_STEMS = {
 INTENTIONAL = {
     "src/Common.h",  # scaffold forward declarations and tiny POD helpers
 }
-
-
-def drop_type_prefix(name: str) -> str:
-    for prefix in ("tag", "t", "C"):
-        if len(name) > len(prefix) and name.startswith(prefix) and name[len(prefix)].isupper():
-            return name[len(prefix) :]
-    return name
 
 
 def class_stem(name: str) -> str:
@@ -171,20 +165,12 @@ def scan(path: Path) -> dict:
     rel = rel_posix(path)
     class_stems = [class_stem(name) for name in primary]
     note = override_note(stem)
-    expected = None
-    evidence = None
     if note is not None:
-        expected = stem
-        evidence = "override"
+        expected, evidence = stem, "override"
     elif len(class_stems) == 1:
-        expected = class_stems[0]
-        evidence = "class"
-    elif len(class_stems) > 1:
-        expected = None
-        evidence = None
+        expected, evidence = class_stems[0], "class"
     else:
-        expected = None
-        evidence = None
+        expected, evidence = None, None
 
     if rel in INTENTIONAL:
         status = "intentional"

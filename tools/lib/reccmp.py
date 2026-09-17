@@ -6,20 +6,22 @@ import hashlib
 import json
 import logging
 from pathlib import Path
+import subprocess
+import sys
 
 from reccmp.compare import Compare
+from reccmp.compare.report import ReccmpStatusReport, serialize_reccmp_report
 from reccmp.formats import PEImage
 from reccmp.formats.exceptions import InvalidVirtualAddressError
 from reccmp.project.detect import DetectWhat, RecCmpProject, detect_project
-from reccmp.compare.report import ReccmpStatusReport, serialize_reccmp_report
 from reccmp.tools.roadmap import ModuleMap, RoadmapRow, export_to_csv, match_type_abbreviation
 from reccmp.types import EntityType
 
 from .reccmp_compat import configure_original_extents, configure_pointer_comparisons, install_parser_fix
-
 from .paths import (
     BUILD,
     ORIGINAL_EXE,
+
     RECCMP_JSON,
     RECCMP_STAMP,
     RECOMP_EXE,
@@ -161,7 +163,7 @@ def run_reccmp(
     if not reuse:
         report = ReccmpStatusReport(filename=target.original_path.name)
         for match in engine.compare_all():
-            match_type = getattr(match, "type", getattr(match, "match_type", None))
+            match_type = getattr(match, "type", None)
             if (
                 match_type == EntityType.FUNCTION
                 and match.name in target.report_config.ignore_functions
@@ -180,6 +182,8 @@ def run_reccmp(
 
     return out
 
+    return out
+
 
 def check_decomplint(
     paths: list[Path | str] | None = None,
@@ -187,9 +191,6 @@ def check_decomplint(
     warnfail: bool = True,
     encoding: str = "utf-8",
 ) -> int:
-    import subprocess
-    import sys
-
     command = [sys.executable, "-m", "reccmp.tools.decomplint", "--encoding", encoding]
     if target is not None:
         command.extend(["--target", target])

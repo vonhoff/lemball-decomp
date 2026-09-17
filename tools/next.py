@@ -10,9 +10,9 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-from lib.paths import ORIGINAL_EXE, REPORT_JSON, SRC, TARGETS_CACHE, file_id
+from lib.paths import ORIGINAL_EXE, REPORT_JSON, TARGETS_CACHE, file_id
 from lib.reccmp_compat import complete_original_extent
-from lib.source import ANNOT_WITH_ADDR
+from lib.source import ANNOT_WITH_ADDR, collect_sources
 from report import make_report
 
 @dataclass(frozen=True)
@@ -55,7 +55,7 @@ def add_original_evidence(funcs: list[Func], entries: set[int], report_path: Pat
         limits = dict(zip(entries, entries[1:]))
         sizes = {
             str(f.addr): complete_original_extent(
-                image, f.addr, min(limits.get(f.addr, f.addr + 65536), f.addr + 65536), decoder
+                image, f.addr, limits.get(f.addr, f.addr + 65536), decoder
             )
             for f in funcs
         }
@@ -72,7 +72,7 @@ def ranked_gain(funcs: list[Func]) -> list[Func]:
 def scan_annotations() -> tuple[dict[int, str], set[int]]:
     found: dict[int, str] = {}
     entries: set[int] = set()
-    for path in (*SRC.rglob("*.cpp"), *SRC.rglob("*.h")):
+    for path in collect_sources():
         text = path.read_text(encoding="utf-8", errors="replace")
         for match in ANNOT_WITH_ADDR.finditer(text):
             addr = int(match.group(2), 16)

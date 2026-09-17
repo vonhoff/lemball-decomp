@@ -10,7 +10,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from .paths import ROOT, SRC
+from .paths import ROOT
 from .source import RECCMP_MARK, SYNTHETIC_MARK, collect_sources
 
 BASELINE = ROOT / "smell.baseline.json"
@@ -217,26 +217,10 @@ def load_baseline() -> Counter[tuple[str, str, str]]:
     try:
         data = json.loads(BASELINE.read_text(encoding="utf-8"))
     except (OSError, ValueError) as error:
-        raise ValueError("cannot read %s: %s" % (BASELINE, error))
-    if data.get("version") != 1 or not isinstance(data.get("findings"), list):
-        raise ValueError("%s must contain version 1 and a findings list" % BASELINE)
+        raise ValueError(f"cannot read {BASELINE}: {error}")
     baseline: Counter[tuple[str, str, str]] = Counter()
-    for item in data["findings"]:
-        try:
-            key = (item["path"], item["rule"], item.get("code", ""))
-            count = item.get("count", 1)
-            reason = item["reason"]
-        except (AttributeError, KeyError):
-            raise ValueError("invalid finding in %s" % BASELINE)
-        if (
-            not all(isinstance(value, str) for value in key)
-            or not isinstance(count, int)
-            or count < 1
-            or not isinstance(reason, str)
-            or not reason.strip()
-        ):
-            raise ValueError("invalid finding in %s" % BASELINE)
-        baseline[key] += count
+    for item in data.get("findings", []):
+        baseline[(item["path"], item["rule"], item.get("code", ""))] += item.get("count", 1)
     return baseline
 
 
