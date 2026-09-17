@@ -120,7 +120,7 @@ def method_owners(code: str) -> list[str]:
     return sorted(by_stem.values(), key=lambda name: class_stem(name).casefold())
 
 
-def primary_names(path: Path, text: str, code: str, types: list[dict]) -> list[str]:
+def primary_names(path: Path, _text: str, code: str, types: list[dict]) -> list[str]:
     if path.suffix == ".cpp":
         owners = method_owners(code)
         if owners:

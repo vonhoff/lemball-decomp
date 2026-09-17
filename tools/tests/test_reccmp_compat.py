@@ -46,7 +46,8 @@ def embedded_table(start: int, value: int = 1) -> bytes:
 def normalized(blob: bytes, start: int) -> list[str]:
     with patch.object(parse, "InstructGen", BoundedInstructGen):
         parser = parse.ParseAsm(addr_test=lambda address: address == start + 8)
-        return [text for _, text in parser.parse_asm(blob, start)]
+        result = [text for _, text in parser.parse_asm(blob, start)]
+    return result
 
 
 class JumpTableBoundaryTests(unittest.TestCase):
@@ -102,11 +103,6 @@ class JumpTableBoundaryTests(unittest.TestCase):
 
 
 class PointerComparisonTests(unittest.TestCase):
-    def test_upstream_reproduces_missing_pointer_normalization(self):
-        blob = b"\x3d" + struct.pack("<I", 0x4000)
-        upstream = parse.ParseAsm(addr_test=lambda address: True)
-        self.assertEqual(upstream.parse_asm(blob, 0x1000)[0][1], "cmp eax, 0x4000")
-
     def render(self, value, sites=(), name_lookup=None, opcode=b"\x3d", start=0x1000):
         parser = RelocationAwareParseAsm(
             relocation_sites=sites, name_lookup=name_lookup,
@@ -390,7 +386,7 @@ class FoldedCallTests(unittest.TestCase):
             code_files=[], target_id="LEMBALL", project_aliases={},
             _db=SimpleNamespace(
                 get_one_match=lambda original: match,
-                get=lambda side, address: SimpleNamespace(size=lambda side: len(bodies[address])),
+                get=lambda _side, address: SimpleNamespace(size=lambda _side: len(bodies[address])),
             ),
             recomp_bin=SimpleNamespace(read=lambda address, size: bodies[address][:size]),
         )

@@ -21,7 +21,6 @@ CALL_FUNC_RE = re.compile(r"^call .+ \(FUNCTION\)$")
 VTABLE_RE = re.compile(r"(.+?)::`vftable'(?:\{for `.+?'\})?")
 
 
-
 def insn_text(entry) -> str:
     if isinstance(entry, (list, tuple)) and len(entry) > 1:
         return entry[1]

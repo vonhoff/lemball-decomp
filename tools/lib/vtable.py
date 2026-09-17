@@ -14,7 +14,7 @@ from pathlib import Path
 
 if __name__ == "__main__" and not __package__:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    __package__ = "lib"
+    globals()["__package__"] = "lib"
 
 from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
@@ -574,7 +574,8 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
                 f"  {count:4d}x {orig_name} ({format_addr(orig)}) -> "
                 f"{recomp_name} ({format_addr(recomp)})"
             )
-    comparisons_pass = table_count > 0 and matched_tables == table_count and adjuster_problems == 0
+    tables_match = 0 < table_count == matched_tables
+    comparisons_pass = tables_match and adjuster_problems == 0
     coverage_pass = not annot_strict or not unmapped_vtables
     return 0 if comparisons_pass and coverage_pass else 1
 

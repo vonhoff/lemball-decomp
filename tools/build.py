@@ -45,7 +45,7 @@ def resolve_cmake() -> str:
     found = shutil.which("cmake")
     if found:
         return win_short_path(found)
-    sys.exit("cmake not found")
+    raise SystemExit("cmake not found")
 
 
 def cache_cmake_command() -> str | None:

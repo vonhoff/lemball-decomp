@@ -96,7 +96,8 @@ class MogArchive:
 
         return entries
 
-    def _name_from_dir_data(self, dir_data: bytes, offset: int) -> str:
+    @staticmethod
+    def _name_from_dir_data(dir_data: bytes, offset: int) -> str:
         if offset < 0 or offset >= len(dir_data):
             return ""
         return dir_data[offset:].split(b"\0", 1)[0].decode("latin-1", errors="replace")

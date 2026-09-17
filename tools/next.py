@@ -116,7 +116,7 @@ def limited(items: list, limit: int) -> list:
 def print_funcs(funcs: list[Func], limit: int) -> None:
     for func in limited(funcs, limit):
         print(fmt_func(func))
-    if limit > 0 and len(funcs) > limit:
+    if 0 < limit < len(funcs):
         print(f"  ... {len(funcs) - limit} more (raise --limit)")
 
 
@@ -194,7 +194,7 @@ def print_units(funcs: list[Func], limit: int) -> None:
             f"  {pct:5.1f}%  {n100}/{total}  leftover={leftover:3d}  "
             f"known_original_bytes={unmatched_code:5d}  {name}"
         )
-    if limit > 0 and len(rows) > limit:
+    if 0 < limit < len(rows):
         print(f"  ... {len(rows) - limit} more (raise --limit)")
 
 
@@ -205,7 +205,7 @@ def print_clones(funcs: list[Func], min_clone: int, limit: int) -> None:
     for name, size, items in limited(groups, limit):
         units = sorted({f.unit for f in items})
         print(f"  n={len(items):3d}  size={size:3d}  {name}  units={len(units)}  e.g. {units[0]}")
-    if limit > 0 and len(groups) > limit:
+    if 0 < limit < len(groups):
         print(f"  ... {len(groups) - limit} more (raise --limit)")
 
 

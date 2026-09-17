@@ -5,6 +5,8 @@ The existing name replacement and matching criteria remain in use.
 The installed package is not modified.
 """
 
+from __future__ import annotations
+
 import logging
 import re
 import struct
@@ -271,6 +273,9 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         self.indirect_thunk_targets = indirect_thunk_targets or {}
         self._decoder = Cs(CS_ARCH_X86, CS_MODE_32)
         self._decoder.detail = True
+        self._data: bytes = b""
+        self._start: int = 0
+        self._table_bases: dict[str, int] = {}
 
     def indirect_replace(self, addr):
         target = self.indirect_thunk_targets.get(addr)
