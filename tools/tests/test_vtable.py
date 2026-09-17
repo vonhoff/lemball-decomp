@@ -2,6 +2,7 @@
 
 import struct
 import unittest
+
 from lib.vtable import decode_this_adjuster
 
 

@@ -14,14 +14,14 @@ from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from reccmp.compare import Compare, functions
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
-from reccmp.project.detect import RecCmpProject
-
-from .paths import BUILD
 from reccmp.formats.exceptions import (
     InvalidVirtualAddressError,
     InvalidVirtualReadError,
 )
+from reccmp.project.detect import RecCmpProject
 from reccmp.types import ImageId
+
+from .paths import BUILD
 
 
 def complete_original_extent(image, start, limit, decoder):

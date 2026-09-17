@@ -27,11 +27,7 @@ from lib.reccmp_compat import (
 )
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
-from reccmp.compare.asm.parse import ParseAsm
-from reccmp.compare.db import ReccmpMatch
-from reccmp.compare.functions import FunctionComparator
 from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
-from reccmp.types import ImageId
 
 
 def dispatch(table: int, register: int = 0) -> bytes:
