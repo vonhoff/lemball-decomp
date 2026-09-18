@@ -51,7 +51,7 @@ bool Catapult::Process()
 	if (m_isRemoteObject != 0) {
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
-			if (m_action == 27) {
+			if (m_action == ACTION_0x1b) {
 				SetSndEffect(SFX_CATAPULT);
 			}
 			m_pendingAction = m_action;
@@ -60,12 +60,12 @@ bool Catapult::Process()
 	}
 	m_actionArgument = 0;
 	switch (m_action) {
-	case 25:
+	case ACTION_0x19:
 		if (g_dwGameTick > m_unk0xd0) {
-			Action((eAction) 26);
+			Action(ACTION_0x1a);
 		}
 		break;
-	case 26: {
+	case ACTION_0x1a: {
 		if (g_dwGameTick > m_unk0xd4) {
 			C3DVector pos;
 			pos.m_xFixed = m_position.m_xFixed - 0xc000;
@@ -84,17 +84,17 @@ bool Catapult::Process()
 			vel.m_zFixed = ((r3 % 32768) * 4096 / 32768) + 0xc000;
 
 			m_activator->m_unk0xc0 = 0;
-			m_activator->m_action = (eAction) 0;
+			m_activator->m_action = ACTION_NONE;
 			m_activator->StartFly(vel, &pos);
 			m_activator = 0;
-			Action((eAction) 27);
+			Action(ACTION_0x1b);
 			SetSndEffect(SFX_CATAPULT);
 		}
 		break;
 	}
-	case 27:
+	case ACTION_0x1b:
 		if (g_dwGameTick > m_actionDeadline) {
-			Action((eAction) 24);
+			Action(ACTION_0x18);
 		}
 		break;
 	}
@@ -105,13 +105,13 @@ bool Catapult::Process()
 // FUNCTION: LEMBALL 0x0041c9b0
 bool Catapult::Activate(GameObject* p_object)
 {
-	if (m_action == 24) {
+	if (m_action == ACTION_0x18) {
 		m_activator = p_object;
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_unk0xd0 = 32;
 		m_unk0xd4 = 46;
 		m_actionDeadline = 94;
-		RequestAction((eAction) 25);
+		RequestAction(ACTION_0x19);
 		return 1;
 	}
 	return 0;
@@ -128,7 +128,7 @@ void Catapult::DoActivate()
 	GameObject* activator = m_activator;
 	m_unk0x90 = activator->m_objectType;
 	activator->m_unk0xc0 = 1;
-	activator->m_action = (eAction) 5;
+	activator->m_action = ACTION_5;
 	g_pAI->Score(20);
 }
 

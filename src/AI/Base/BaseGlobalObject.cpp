@@ -27,5 +27,5 @@ void BaseGlobalObject::Restart()
 	m_position.m_xFixed = m_initialPosition.m_xFixed;
 	m_position.m_yFixed = m_initialPosition.m_yFixed;
 	m_position.m_zFixed = m_initialPosition.m_zFixed;
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 }

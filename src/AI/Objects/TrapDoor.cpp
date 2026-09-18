@@ -37,7 +37,7 @@ void TrapDoor::Restart()
 	m_position.m_xFixed = m_spawnPosition.m_xFixed;
 	m_position.m_yFixed = m_spawnPosition.m_yFixed;
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_active = 1;
 	m_deadline = 80;
@@ -105,16 +105,16 @@ bool TrapDoor::Process()
 		bool finished = false;
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case 0x1e:
+			case ACTION_0x1e:
 				finished = true;
 				break;
-			case 0x20:
+			case DOOR_ACTION_OPENING:
 				if (g_dwTrapDoorRemoteSfxState == 0) {
 					g_dwTrapDoorRemoteSfxState = 1;
 					SetSndEffect(SFX_TRAPDOOR);
 				}
 				break;
-			case 0x22:
+			case DOOR_ACTION_CLOSING:
 				if (g_dwTrapDoorRemoteSfxState == 1) {
 					g_dwTrapDoorRemoteSfxState = 0;
 					SetSndEffect(SFX_TRAPDOOR);
@@ -131,47 +131,47 @@ bool TrapDoor::Process()
 	if (m_actionDeadline <= g_dwGameTick) {
 		m_stateTimer = g_dwSimulationTimestamp;
 		switch (m_action) {
-		case 0x18:
+		case ACTION_0x18:
 			if (g_dwTrapDoorLocalSfxState == 0) {
 				SetSndEffect(SFX_DOORAPPR);
 				g_dwTrapDoorLocalSfxState = 1;
 			}
 			m_actionDeadline = g_dwGameTick + 0x36;
-			Action((eAction) 0x1f);
+			Action(ACTION_0x1f);
 			break;
-		case 0x1f:
+		case ACTION_0x1f:
 			if (g_dwTrapDoorLocalSfxState == 1) {
 				g_dwTrapDoorLocalSfxState = 0;
 				SetSndEffect(SFX_TRAPDOOR);
 			}
 			m_actionDeadline = g_dwGameTick + 0x14;
-			Action((eAction) 0x20);
+			Action(DOOR_ACTION_OPENING);
 			return true;
-		case 0x20:
+		case DOOR_ACTION_OPENING:
 			if (g_dwTrapDoorLocalSfxState == 0) {
 				g_dwTrapDoorLocalSfxState = 1;
 				SetSndEffect(SFX_LETSGO);
 			}
 			m_actionDeadline = g_dwGameTick + 0x50;
-			Action((eAction) 0x21);
+			Action(DOOR_ACTION_OPEN);
 			return true;
-		case 0x21:
+		case DOOR_ACTION_OPEN:
 			if (g_dwTrapDoorLocalSfxState == 1) {
 				g_dwTrapDoorLocalSfxState = 0;
 				SetSndEffect(SFX_TRAPDOOR);
 			}
 			m_actionDeadline = g_dwGameTick + 0x14;
-			Action((eAction) 0x22);
+			Action(DOOR_ACTION_CLOSING);
 			return true;
-		case 0x22:
+		case DOOR_ACTION_CLOSING:
 			if (g_dwTrapDoorLocalSfxState == 0) {
 				SetSndEffect(SFX_DOORGO);
 			}
 			m_actionDeadline = g_dwGameTick + 0x36;
-			Action((eAction) 0x23);
+			Action(ACTION_0x23);
 			return true;
-		case 0x23:
-			Action((eAction) 0x1e);
+		case ACTION_0x23:
+			Action(ACTION_0x1e);
 			return false;
 		}
 	}

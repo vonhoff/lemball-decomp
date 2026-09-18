@@ -33,7 +33,7 @@ void Collectable::Restart()
 	m_position.m_yFixed = m_spawnPosition.m_yFixed;
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
 	m_enabled = 1;
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 }
 
 // 68K 0x10605c14 __dt__12CCollectableFv
@@ -108,7 +108,7 @@ bool Collectable::Process()
 			found:
 				if (hit != 0 && hit->m_objectType == 2 && hit->HasObject(m_objectType) == 0) {
 					m_activator = hit;
-					RequestAction((eAction) 26);
+					RequestAction(ACTION_0x1a);
 				}
 			}
 			break;
@@ -116,7 +116,7 @@ bool Collectable::Process()
 		case 26:
 			Collected();
 			SetSfx();
-			Action((eAction) 8);
+			Action(ACTION_8);
 			break;
 		}
 	}

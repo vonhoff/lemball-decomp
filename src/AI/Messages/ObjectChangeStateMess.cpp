@@ -41,11 +41,11 @@ void ObjectChangeStateMess::GetData()
 	m_object->m_actionArgument = (short) GetWord();
 	m_object->m_requestEnabled = 0;
 	m_object->m_requestActive = 0;
-	if (!m_object->IsUsable(m_object->m_action) && m_object->m_action != 0x27) {
+	if (!m_object->IsUsable(m_object->m_action) && m_object->m_action != ACTION_0x27) {
 		m_object->m_isRemoteObject = 1;
 		return;
 	}
 	m_object->m_isRemoteObject = 0;
-	m_object->m_pendingAction = (eAction) 0x18;
+	m_object->m_pendingAction = ACTION_0x18;
 	m_object->m_unk0x8c = 0;
 }

@@ -30,7 +30,7 @@ EnemyFacingOffset g_enemyFacingOffsets[8] = {{0, 3}, {-4, 1}, {-5, 0}, {-4, -3},
 // 68K 0x10607884 __ct__6CEnemyFP3CAIiiii
 // FUNCTION: LEMBALL 0x0041fba0
 Enemy::Enemy(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
-	: GameObject((eObjectType) 1, 0x118, 10), m_targetPosition(), m_fireTarget()
+	: GameObject(OBJECT_PLAYER_1, 0x118, 10), m_targetPosition(), m_fireTarget()
 {
 	unsigned short z;
 	int width;
@@ -155,7 +155,7 @@ void Enemy::GetEnemyType(eEnemyStateActions& p_action0,
 // FUNCTION: LEMBALL 0x0041fec0
 bool Enemy::Process()
 {
-	if (m_action != (eAction) 8) {
+	if (m_action != ACTION_8) {
 		switch (m_stateIndex) {
 		case 0:
 			ProcessAction(m_state0Rule, m_state0Action, &m_state0Data);

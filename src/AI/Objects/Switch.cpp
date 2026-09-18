@@ -87,7 +87,7 @@ bool Switch::Process()
 	m_position.m_zFixed = ((int) z) << 12;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
-			if (m_action == (eAction) 7) {
+			if (m_action == ACTION_7) {
 				SetSndEffect(SFX_SWITCH);
 			}
 			m_pendingAction = m_action;
@@ -95,15 +95,15 @@ bool Switch::Process()
 		return true;
 	}
 	switch (m_action) {
-	case (eAction) 7:
+	case ACTION_7:
 		Throw();
-		Action((eAction) 24);
+		Action(ACTION_0x18);
 		break;
-	case (eAction) 25:
+	case ACTION_0x19:
 		break;
-	case (eAction) 26:
+	case ACTION_0x1a:
 		if (m_unk0xd4 < g_dwGameTick) {
-			Action((eAction) 7);
+			Action(ACTION_7);
 		}
 		break;
 	}
@@ -118,12 +118,12 @@ bool Switch::Activate(GameObject* p_object)
 	case 0:
 		m_unk0xd4 = 20;
 		m_actionArgument = 1;
-		RequestAction((eAction) 26);
+		RequestAction(ACTION_0x1a);
 		return 1;
 	case 1:
 		m_unk0xd4 = 20;
 		m_actionArgument = 0;
-		RequestAction((eAction) 26);
+		RequestAction(ACTION_0x1a);
 		return 1;
 	default:
 		return 1;

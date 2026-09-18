@@ -14,7 +14,7 @@
 
 // 68K 0x1061ec2c __ct__7CSlinkyFv
 // FUNCTION: LEMBALL 0x0040b480
-Slinky::Slinky() : GameObject((eObjectType) 0x35, 0, 0), m_unk0x138(0, 0, 0)
+Slinky::Slinky() : GameObject(OBJECT_SLINKY, 0, 0), m_unk0x138(0, 0, 0)
 {
 }
 
@@ -41,7 +41,7 @@ void Slinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 	m_position.m_yFixed = m_minY << 12;
 	m_actionDeadline = g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
-	Action((eAction) 0x18);
+	Action(ACTION_0x18);
 }
 
 // FUNCTION: LEMBALL 0x0040b5b0
@@ -118,15 +118,15 @@ bool Slinky::Move()
 bool Slinky::Process()
 {
 	switch (m_action) {
-	case 0x18:
+	case ACTION_0x18:
 		if (g_dwGameTick >= m_actionDeadline) {
 			Move();
 			m_stateTimer = g_dwSimulationTimestamp;
-			Action((eAction) 0x1b);
+			Action(ACTION_0x1b);
 			m_actionDeadline = g_dwGameTick + 0x10;
 		}
 		break;
-	case 0x1b:
+	case ACTION_0x1b:
 		if (g_dwGameTick >= m_actionDeadline) {
 			int x = m_destination.m_xFixed;
 			int y = m_destination.m_yFixed;
@@ -135,7 +135,7 @@ bool Slinky::Process()
 			m_position.m_yFixed = y;
 			m_position.m_zFixed = z;
 			m_stateTimer = g_dwSimulationTimestamp;
-			Action((eAction) 0x18);
+			Action(ACTION_0x18);
 			m_actionDeadline = g_dwGameTick + 0x14;
 		}
 		break;

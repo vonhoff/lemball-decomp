@@ -42,7 +42,7 @@ void Rocket::Set(unsigned short p_id, const AiCoord& p_position)
 	m_position.m_yFixed = p_position.m_yFixed;
 	int z = p_position.m_zFixed;
 	m_active = 1;
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 	m_position.m_zFixed = z;
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
@@ -74,13 +74,13 @@ bool Rocket::Process()
 		tick = g_dwGameTick;
 	}
 	eAction action = m_action;
-	if (action == (eAction) 4) {
+	if (action == ACTION_4) {
 		m_position.m_zFixed = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << 12;
 	}
 
 	if (remoteObject != 0) {
 		if (m_pendingAction != action) {
-			if (action == (eAction) 27) {
+			if (action == ACTION_0x1b) {
 				m_lastMovementTick = tick + 48;
 				m_launchBaseZ = m_position.m_zFixed >> 12;
 				SetSndEffect(SFX_ROCKET);
@@ -91,15 +91,15 @@ bool Rocket::Process()
 	}
 
 	switch (action) {
-	case (eAction) 4:
+	case ACTION_4:
 		if ((m_position.m_zFixed & -4096) > 0xc8000) {
-			Action((eAction) 24);
+			Action(ACTION_0x18);
 			return 1;
 		}
 		break;
-	case (eAction) 27:
+	case ACTION_0x1b:
 		if (m_lastMovementTick < g_dwGameTick) {
-			Action((eAction) 4);
+			Action(ACTION_4);
 		}
 		break;
 	default:
@@ -122,7 +122,7 @@ int Rocket::StepOn(const AiCoord& p_position, GameObject* p_object)
 		m_launchBaseZ = m_position.m_zFixed >> 12;
 		m_activator = p_object;
 		m_lastMovementTick = 0x30;
-		RequestAction((eAction) 0x1b);
+		RequestAction(ACTION_0x1b);
 		return 1;
 	}
 	return 0;
@@ -137,7 +137,7 @@ void Rocket::DoActivate()
 {
 	m_lastMovementTick += g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
-	m_activator->Action((eAction) 21);
+	m_activator->Action(ACTION_0x15);
 	m_activator->m_actionDeadline = g_dwGameTick + 60;
 	SetSndEffect(SFX_ROCKET);
 	if (g_pActiveConnection != 0) {

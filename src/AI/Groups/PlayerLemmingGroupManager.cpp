@@ -439,7 +439,7 @@ void PlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p
 		lemming->Restart();
 		BaseObjectManager* manager = this;
 		lemming->m_manager = manager;
-		lemming->m_action = (eAction) 8;
+		lemming->m_action = ACTION_8;
 		int& objectCount = g_pGenericGroupAI->m_objectCount;
 		for (int j = 0; j < objectCount; j++) {
 			GameObject**& objects = g_pGenericGroupAI->m_objects;
@@ -529,7 +529,7 @@ void PlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned char
 			lemming = *reuse++;
 		}
 		lemming->Restart();
-		lemming->m_action = (eAction) 8;
+		lemming->m_action = ACTION_8;
 		int& objectCount = g_pGenericGroupAI->m_objectCount;
 		for (int j = 0; j < objectCount; j++) {
 			GameObject**& objects = g_pGenericGroupAI->m_objects;

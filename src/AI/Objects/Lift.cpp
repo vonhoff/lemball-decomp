@@ -63,7 +63,7 @@ void Lift::Edit(int p_height,
 	m_direction = p_direction;
 	m_defaultActive = p_initialActive;
 	m_activateType = p_activateType;
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 	m_activationLatched = 0;
 	for (int i = 0; i < 8; i++) {
 		m_objects[i] = 0;
@@ -159,32 +159,32 @@ bool Lift::Process()
 		time = g_dwGameTick;
 	}
 	switch (m_action) {
-	case 8:
+	case ACTION_8:
 		m_active = 0;
-		m_action = (eAction) 0x18;
+		m_action = ACTION_0x18;
 		break;
-	case 0x19:
+	case ACTION_0x19:
 		m_active = 1;
 		m_activationLatched = 1;
 		SetSndEffect(SFX_LIFT);
 		if (m_active && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
 			m_stateTimer = time;
 			if (m_direction == 1) {
-				Action((eAction) 0x1f);
+				Action(ACTION_0x1f);
 			}
 			else {
-				Action((eAction) 0x23);
+				Action(ACTION_0x23);
 			}
 		}
 		break;
-	case 0x1f:
+	case ACTION_0x1f:
 		m_movementStartHeight = m_start.m_z;
 		m_direction = 1;
 		m_active = 1;
-		m_action = (eAction) 0x20;
+		m_action = ACTION_0x20;
 		m_start.m_z = m_movementStartHeight + time - m_stateTimer;
 		break;
-	case 0x20:
+	case ACTION_0x20:
 		m_start.m_z = (short) m_movementStartHeight - (short) m_stateTimer + (short) time;
 		if (m_start.m_z >= m_highHeight) {
 			m_start.m_z = m_highHeight;
@@ -192,14 +192,14 @@ bool Lift::Process()
 			m_direction = -1;
 			if (m_defaultActive && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
-				Action((eAction) 0x23);
+				Action(ACTION_0x23);
 			}
 			else {
-				m_action = (eAction) 0x18;
+				m_action = ACTION_0x18;
 			}
 		}
 		break;
-	case 0x22:
+	case ACTION_0x22:
 		m_start.m_z = (short) m_movementStartHeight - (short) time + (short) m_stateTimer;
 		if (m_start.m_z <= m_lowHeight) {
 			m_start.m_z = m_lowHeight;
@@ -207,17 +207,17 @@ bool Lift::Process()
 			m_direction = 1;
 			if (m_defaultActive && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
-				Action((eAction) 0x1f);
+				Action(ACTION_0x1f);
 			}
 			else {
-				m_action = (eAction) 0x18;
+				m_action = ACTION_0x18;
 			}
 		}
 		break;
-	case 0x23:
+	case ACTION_0x23:
 		m_movementStartHeight = m_start.m_z;
 		m_direction = -1;
-		m_action = (eAction) 0x22;
+		m_action = ACTION_0x22;
 		m_active = 1;
 		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
 		break;
@@ -311,7 +311,7 @@ int Lift::StepOn(const AiCoord& p_position, GameObject* p_object)
 int Lift::Activate()
 {
 	m_active = 1;
-	Action((eAction) 0x19);
+	Action(ACTION_0x19);
 	return 1;
 }
 
@@ -323,7 +323,7 @@ void Lift::ActivateDeactivate()
 		Activate();
 		return;
 	}
-	Action((eAction) 8);
+	Action(ACTION_8);
 }
 
 // 68K 0x1011a746 DoActivate__5CLiftFv

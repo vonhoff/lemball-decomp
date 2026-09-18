@@ -31,7 +31,7 @@ void Map::Restart()
 {
 	m_orientation = 0;
 	m_levelName[0] = '\0';
-	m_defaultBlox = (eObjectType) 0x209;
+	m_defaultBlox = TERRAIN_BLOX_4;
 	m_defaultBloxData = 0;
 	m_ground.Clear();
 }

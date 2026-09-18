@@ -20,7 +20,7 @@
 
 // 68K 0x106171a6 __ct__6CMoverFv
 // FUNCTION: LEMBALL 0x0042e590
-Mover::Mover() : GlobalGameObject((eObjectType) 0x34, 0, 0)
+Mover::Mover() : GlobalGameObject(OBJECT_MOVER, 0, 0)
 {
 }
 
@@ -43,7 +43,7 @@ void Mover::Initialise()
 	m_switchRequested = 0;
 	m_objectCount = 0;
 	m_findOccupants = 1;
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 }
 
 // 68K 0x1061730e SetPos__6CMoverFv
@@ -168,7 +168,7 @@ void Mover::FindObjectsOnTopOfMe()
 		do {
 			GameObject* object = g_pObjects[(unsigned short) index];
 			if (object != 0 && object->GetId() != (short) 0xffff && GetId() != object->GetId() &&
-				object->m_objectType != (eObjectType) 7) {
+				object->m_objectType != OBJECT_SHEEP) {
 				int objectX = object->m_position.m_xFixed >> 12;
 				int objectY = object->m_position.m_yFixed >> 12;
 				if (objectX >= minX && objectX <= maxX && objectY >= minY && objectY <= maxY) {
@@ -214,20 +214,20 @@ bool Mover::Process()
 		time = g_dwRemoteGameTick;
 		action = m_action;
 		if (m_pendingAction != action) {
-			if (action == 2) {
+			if (action == ACTION_2) {
 				StopObjectsMoving();
 				SetUpNextNode(time);
 			}
 			action = m_action;
 			m_pendingAction = action;
 		}
-		else if (action != 2 && action != 0x24) {
-			action = (eAction) 0x18;
+		else if (action != ACTION_2 && action != ACTION_0x24) {
+			action = ACTION_0x18;
 		}
 	}
 	VerifyObjects();
 	switch (action) {
-	case 0: {
+	case ACTION_NONE: {
 		int next = m_currentNode + 1;
 		if (m_nodeCount <= next) {
 			next = 0;
@@ -263,31 +263,31 @@ bool Mover::Process()
 		if (m_movementMode != 0) {
 			m_lastMovementTick = g_dwGameTick;
 			if (local) {
-				Action((eAction) 0x24);
+				Action(ACTION_0x24);
 			}
 		}
 		else {
 			m_lastMovementTick = g_dwGameTick + 0x14;
 			if (local) {
-				Action((eAction) 1);
+				Action(ACTION_1);
 			}
 		}
 		break;
 	}
-	case 1:
+	case ACTION_1:
 		if (local) {
 			if (g_dwGameTick < m_lastMovementTick) {
 				return true;
 			}
 			StopObjectsMoving();
-			Action((eAction) 2);
+			Action(ACTION_2);
 		}
 		SetUpNextNode(time);
 		break;
-	case 2:
+	case ACTION_2:
 		SetPos();
 		if (local && m_actionDeadline < g_dwGameTick) {
-			Action((eAction) 0);
+			Action(ACTION_NONE);
 		}
 		else if (time <= m_actionDeadline) {
 			Pt3 position;
@@ -303,21 +303,21 @@ bool Mover::Process()
 			m_position.m_zFixed = position.m_z << 12;
 		}
 		break;
-	case 0x14:
+	case ACTION_0x14:
 		SetUpNextNode(time);
 		SetPos();
 		if (local) {
-			Action((eAction) 1);
+			Action(ACTION_1);
 		}
 		break;
-	case 0x18:
+	case ACTION_0x18:
 		if (local) {
-			Action((eAction) 0x14);
+			Action(ACTION_0x14);
 		}
 		break;
-	case 0x24:
+	case ACTION_0x24:
 		if (m_switchRequested != 0) {
-			Action((eAction) 1);
+			Action(ACTION_1);
 			m_switchRequested = 0;
 		}
 	}
@@ -416,7 +416,7 @@ bool Mover::GetOn(GameObject* p_object)
 		p_object->m_unk0x11c = 1;
 		m_objectCount++;
 		StopObjectsMoving();
-		if (m_action != (eAction) 2 && p_object->m_objectType == (eObjectType) 2) {
+		if (m_action != ACTION_2 && p_object->m_objectType == OBJECT_PLAYER_2) {
 			AiCoord destination(m_position.m_xFixed, m_position.m_yFixed, objectPosition.m_zFixed);
 			p_object->AddDestination(destination);
 			p_object->StartMoving();
@@ -440,7 +440,7 @@ void Mover::StopObjectsMoving()
 	if (0 < m_objectCount) {
 		GameObject** object = m_objects;
 		do {
-			if ((*object)->m_objectType == (eObjectType) 2) {
+			if ((*object)->m_objectType == OBJECT_PLAYER_2) {
 				((PlayerLemming*) *object)->GetGroup()->ClearExistingWaypoints();
 			}
 			else {

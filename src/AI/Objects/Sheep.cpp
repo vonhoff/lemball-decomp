@@ -11,7 +11,7 @@
 
 // 68K 0x1061e282 __ct__6CSheepFP3CAIiiii
 // FUNCTION: LEMBALL 0x0041f990
-Sheep::Sheep(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4) : GameObject((eObjectType) 7, 0x108, 0x14)
+Sheep::Sheep(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4) : GameObject(OBJECT_SHEEP, 0x108, 0x14)
 {
 	g_pAI = p_arg0;
 	m_spawnPosition.m_xFixed = p_arg1 << 12;

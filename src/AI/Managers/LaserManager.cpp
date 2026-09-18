@@ -58,7 +58,7 @@ bool LaserManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 			return 0;
 		}
 		Laser& laser = m_lasers[i];
-		if (laser.m_enabled != 0 && laser.m_autoActivate == 0 && laser.m_action == (eAction) 0x18 &&
+		if (laser.m_enabled != 0 && laser.m_autoActivate == 0 && laser.m_action == ACTION_0x18 &&
 			laser.StepOn(p_position, p_object)) {
 			return 1;
 		}

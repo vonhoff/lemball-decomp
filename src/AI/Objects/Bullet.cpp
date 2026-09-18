@@ -37,7 +37,7 @@ void Bullet::Restart()
 {
 	GlobalGameObject::Restart();
 	m_active = 0;
-	m_action = (eAction) 8;
+	m_action = ACTION_8;
 }
 
 // 68K 0x106046a4 Set__7CBulletFUs11eBulletType6eOwneri7AICOORD7AICOORD
@@ -90,7 +90,7 @@ void Bullet::TriggerBullet()
 	end.m_y = m_destination.m_yFixed >> 12;
 	end.m_z = m_destination.m_zFixed >> 12;
 	m_movement.Set(start, end, m_lastMovementTick, 12);
-	m_action = (eAction) 0x1b;
+	m_action = ACTION_0x1b;
 	m_actionDeadline = m_lastMovementTick + 10;
 }
 
@@ -257,7 +257,7 @@ void Bullet::Free()
 {
 	m_active = 0;
 	if (m_action != 8) {
-		Action((eAction) 8);
+		Action(ACTION_8);
 	}
 	m_isRemoteObject = 0;
 }

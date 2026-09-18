@@ -50,7 +50,7 @@ void Hand::Set(unsigned short p_id, const AiCoord& p_position)
 	m_position.m_yFixed = p_position.m_yFixed;
 	m_position.m_zFixed = p_position.m_zFixed;
 	m_enabled = 1;
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 	m_actionArgument = 0;
 	m_activated = 0;
 
@@ -79,7 +79,7 @@ bool Hand::Process()
 	if (m_isRemoteObject != 0) {
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
-			if (m_action == (eAction) 26) {
+			if (m_action == ACTION_0x1a) {
 				SetSndEffect(SFX_EEEEH);
 			}
 			m_pendingAction = m_action;
@@ -90,28 +90,28 @@ bool Hand::Process()
 	m_actionArgument = 0;
 	if (m_activated != 0) {
 		switch (m_action) {
-		case (eAction) 23:
+		case ACTION_0x17:
 			if (m_actionDeadline < g_dwGameTick) {
 				m_enabled = 1;
 				m_activated = 0;
-				Action((eAction) 24);
+				Action(ACTION_0x18);
 				return 1;
 			}
 			break;
-		case (eAction) 25:
+		case ACTION_0x19:
 			if (m_unk0xd0 < g_dwGameTick) {
-				m_target->Action((eAction) 21);
+				m_target->Action(ACTION_0x15);
 				m_target->m_actionDeadline = g_dwGameTick + 40;
-				Action((eAction) 26);
+				Action(ACTION_0x1a);
 				SetSndEffect(SFX_EEEEH);
 				return 1;
 			}
 			break;
-		case (eAction) 26:
+		case ACTION_0x1a:
 			if (m_actionDeadline < g_dwGameTick) {
 				m_enabled = 1;
 				m_actionDeadline = g_dwGameTick + 20;
-				Action((eAction) 23);
+				Action(ACTION_0x17);
 			}
 			break;
 		default:
@@ -133,9 +133,9 @@ bool Hand::StepOn(const AiCoord& p_position, GameObject* p_object)
 			m_actionDeadline = 16;
 			m_activator = p_object;
 			p_object->ResetInstructions();
-			m_activator->Action((eAction) 0);
+			m_activator->Action(ACTION_NONE);
 			m_activator->m_actionDeadline = g_dwGameTick + 1000;
-			RequestAction((eAction) 25);
+			RequestAction(ACTION_0x19);
 			return 1;
 		}
 	}

@@ -326,7 +326,7 @@ Ice* GameObject::Conveyor()
 // FUNCTION: LEMBALL 0x0040ab50
 bool GameObject::IsUsable(eAction p_action)
 {
-	return p_action == (eAction) 0x18;
+	return p_action == ACTION_0x18;
 }
 
 // 68K 0x101187ea Action__11CGameObjectF7eAction
@@ -422,10 +422,10 @@ void GameObject::Restart()
 		m_destinationList->m_count = 0;
 	}
 	switch (m_objectType) {
-	case (eObjectType) 1:
+	case OBJECT_PLAYER_1:
 		m_runtimeFlags = 0x200;
 		break;
-	case (eObjectType) 2:
+	case OBJECT_PLAYER_2:
 		m_runtimeFlags = 0x100;
 		break;
 	}
@@ -451,7 +451,7 @@ void GameObject::Initialise()
 {
 	m_actionArgument = 0;
 	m_unk0x2c = 0;
-	m_action = (eAction) 0;
+	m_action = ACTION_NONE;
 	m_isRemoteObject = 0;
 	m_facingDirection = 0;
 	m_heading = 0;
@@ -1128,7 +1128,7 @@ bool GameObject::Fall()
 // FUNCTION: LEMBALL 0x00416340
 bool GameObject::OnLift(Coord3d& p_arg0)
 {
-	if (m_action == (eAction) 8) {
+	if (m_action == ACTION_8) {
 		return false;
 	}
 
@@ -1166,7 +1166,7 @@ void GameObject::OffLift(Coord3d& p_arg0)
 // FUNCTION: LEMBALL 0x00416420
 bool GameObject::OnLift(Coord3d& p_arg0, Coord3d& p_arg1)
 {
-	if (m_action == (eAction) 8) {
+	if (m_action == ACTION_8) {
 		return false;
 	}
 
@@ -1218,10 +1218,10 @@ void GameObject::StartSommersault()
 // FUNCTION: LEMBALL 0x00416570
 bool GameObject::IsSelectable()
 {
-	if (m_action < (eAction) 7) {
+	if (m_action < ACTION_7) {
 		goto selectable;
 	}
-	if (m_action <= (eAction) 8 || m_action == (eAction) 21) {
+	if (m_action <= ACTION_8 || m_action == ACTION_0x15) {
 		return 0;
 	}
 selectable:

@@ -34,5 +34,5 @@ void RequestReplyMess::GetData()
 	else {
 		m_object->m_usableState = 1;
 	}
-	m_object->m_requestedAction = (eAction) 0x18;
+	m_object->m_requestedAction = ACTION_0x18;
 }

@@ -169,7 +169,7 @@ void Ground::SetCollision()
 // FUNCTION: LEMBALL 0x004314f0
 Ground::Ground()
 {
-	m_objectType = (eObjectType) 0x209;
+	m_objectType = TERRAIN_BLOX_4;
 	m_objectData = 0;
 	m_collision = 0;
 	m_height = 0;

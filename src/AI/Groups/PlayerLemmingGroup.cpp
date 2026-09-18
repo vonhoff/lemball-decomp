@@ -46,7 +46,7 @@ int PlayerLemmingGroup::GetViewData(ViewData* p_viewData)
 	count = 0;
 	if (object != 0) {
 		do {
-			if (object->m_action != (eAction) 0xc) {
+			if (object->m_action != ACTION_12) {
 				object->GetViewData(*p_viewData);
 				p_viewData++;
 				count++;
@@ -196,7 +196,7 @@ bool PlayerLemmingGroup::Process()
 			}
 			break;
 		case 2:
-			if (m_useObject->m_action == (eAction) 0x18 && moving == 0) {
+			if (m_useObject->m_action == ACTION_0x18 && moving == 0) {
 				if (GetElementsInGroup() <= m_currentUseElement) {
 					SetGroupState(GROUP_STATE_IDLE);
 					m_useObject->m_unk0x8c = 0;

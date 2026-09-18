@@ -39,7 +39,7 @@ PlayerLemming::PlayerLemming(int p_x,
 							 int p_facing,
 							 unsigned int p_alternatePlayer,
 							 unsigned long p_spawnDelay)
-	: GlobalGameObject((eObjectType) (p_alternatePlayer ? 1 : 2), 0x17f, 0x14)
+	: GlobalGameObject(p_alternatePlayer ? OBJECT_PLAYER_1 : OBJECT_PLAYER_2, 0x17f, 0x14)
 {
 	m_alternatePlayer = p_alternatePlayer;
 	m_spawnPosition.m_xFixed = p_x << 12;
@@ -65,7 +65,7 @@ void PlayerLemming::Restart()
 		g_wNetworkLemmingIndex++;
 		g_pAI->m_networkLemmings[m_playerIndex] = this;
 		g_wLemmingCount++;
-		m_action = (eAction) 12;
+		m_action = ACTION_12;
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionDeadline = m_spawnDelay + g_dwGameTick;
 		int tileX = m_spawnPosition.m_xFixed >> 12;
@@ -111,7 +111,7 @@ void PlayerLemming::Restart()
 		g_wLocalLemmingIndex++;
 		g_pAI->m_networkLemmings[m_playerIndex + 4] = this;
 		m_isRemoteObject = 1;
-		m_action = (eAction) 8;
+		m_action = ACTION_8;
 	}
 	m_position.m_zFixed += 0x44000;
 	m_facingDirection = m_initialFacingDirection;
@@ -476,7 +476,7 @@ unsigned int PlayerLemming::CheckNetworkStateChanged()
 // FUNCTION: LEMBALL 0x0040f960
 bool PlayerLemming::HasObject(eObjectType p_objectType)
 {
-	if (p_objectType != (eObjectType) OBJECT_AMMO) {
+	if (p_objectType != OBJECT_AMMO) {
 		int count = m_inventoryCount;
 		if (count != PLAYER_INVENTORY_CAPACITY) {
 			for (int i = 0; i < count; i++) {
@@ -540,7 +540,7 @@ void PlayerLemming::Resurrect(const AiCoord& p_position)
 	g_wLemmingCount++;
 	m_facingDirection = 0;
 	m_inventoryCount = 0;
-	m_action = (eAction) 0;
+	m_action = ACTION_NONE;
 	m_isGroupLeader = 0;
 	m_wasHitByBullet = 0;
 	m_ice = 0;
@@ -641,10 +641,10 @@ void PlayerLemming::ExternalControlEnd()
 	case 1:
 	case 2:
 		Die();
-		Action((eAction) 8);
+		Action(ACTION_8);
 		break;
 	default:
-		Action((eAction) 0);
+		Action(ACTION_NONE);
 		break;
 	}
 }
@@ -666,7 +666,7 @@ void PlayerLemming::OnBalloon()
 		m_unk0x108 = 1;
 		m_actionArgument = 0;
 		m_lastMovementTick = g_dwGameTick;
-		m_action = (eAction) 11;
+		m_action = ACTION_11;
 		m_flightZ = m_position.m_zFixed >> 12;
 		ResetInstructions();
 		int posX = m_position.m_xFixed;
@@ -743,24 +743,24 @@ void PlayerLemming::RequestBalloon()
 	case 0xffff:
 		m_balloonPostActive = 0;
 		return;
-	case 0x27:
-		m_balloonObjectType = (eObjectType) 0x28;
-		RemoveObject((eObjectType) 0x27);
+	case OBJECT_BALLOON_0:
+		m_balloonObjectType = OBJECT_BALLOON_1;
+		RemoveObject(OBJECT_BALLOON_0);
 		m_actionArgument = 3;
 		break;
-	case 0x29:
-		m_balloonObjectType = (eObjectType) 0x2a;
-		RemoveObject((eObjectType) 0x29);
+	case OBJECT_BALLOON_2:
+		m_balloonObjectType = OBJECT_BALLOON_3;
+		RemoveObject(OBJECT_BALLOON_2);
 		m_actionArgument = 1;
 		break;
-	case 0x2b:
-		m_balloonObjectType = (eObjectType) 0x2c;
-		RemoveObject((eObjectType) 0x2b);
+	case OBJECT_BALLOON_4:
+		m_balloonObjectType = OBJECT_BALLOON_5;
+		RemoveObject(OBJECT_BALLOON_4);
 		m_actionArgument = 4;
 		break;
-	case 0x2d:
-		m_balloonObjectType = (eObjectType) 0x2e;
-		RemoveObject((eObjectType) 0x2d);
+	case OBJECT_BALLOON_6:
+		m_balloonObjectType = OBJECT_BALLOON_7;
+		RemoveObject(OBJECT_BALLOON_6);
 		m_actionArgument = 0;
 		break;
 	}
@@ -821,7 +821,7 @@ void PlayerLemming::StartStanding()
 void PlayerLemming::Action(eAction p_action)
 {
 	m_stateTimer = g_dwSimulationTimestamp;
-	if (p_action == 8) {
+	if (p_action == ACTION_8) {
 		GlobalGameObject::Action(p_action);
 		return;
 	}

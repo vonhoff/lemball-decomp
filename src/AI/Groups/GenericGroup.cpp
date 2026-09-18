@@ -29,7 +29,7 @@ void GenericGroup::SetGroupState(eGroupState p_state)
 // 68K 0x1060c298 __ct__13CGenericGroupFP3CAIP14CObjectManagerP17CFormationManagerii
 // FUNCTION: LEMBALL 0x0041dda0
 GenericGroup::GenericGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager)
-	: GameObject((eObjectType) 0x10, 0, 0x14)
+	: GameObject(OBJECT_GROUP, 0, 0x14)
 {
 	m_minY = 0;
 	m_minX = 0;

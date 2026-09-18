@@ -33,7 +33,7 @@ void GroundArray::Clear()
 					break;
 				}
 				ground = m_ground + y * m_width + x;
-				ground->m_objectType = (eObjectType) 0x209;
+				ground->m_objectType = TERRAIN_BLOX_4;
 				ground->m_objectData = 0;
 				ground->m_collision = 0;
 				ground->m_height = 0;

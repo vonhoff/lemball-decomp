@@ -643,30 +643,30 @@ void Ai::DecideAnimsRequired()
 			break;
 		}
 		GameObject* object = g_pObjects[(unsigned short) i];
-		if (object != 0 && object->m_objectType != (eObjectType) 0xffff) {
+		if (object != 0 && object->m_objectType != OBJECT_INVALID) {
 			SetObjectRequired(object->m_objectType, 1);
 		}
 		i++;
 	}
 	if (m_ballManager->m_activeCount == 0) {
-		SetObjectRequired((eObjectType) 9, 0);
+		SetObjectRequired(OBJECT_BALL, 0);
 	}
 	if (m_doorManager->m_count == 0) {
-		SetObjectRequired((eObjectType) 0x1a, 0);
-		SetObjectRequired((eObjectType) 0x19, 0);
+		SetObjectRequired(OBJECT_DOOR_2, 0);
+		SetObjectRequired(OBJECT_DOOR_1, 0);
 	}
 	if (m_laserManager->m_count == 0) {
-		SetObjectRequired((eObjectType) 0x2f, 0);
-		SetObjectRequired((eObjectType) 0x1e, 0);
+		SetObjectRequired(OBJECT_LASER_VERTICAL, 0);
+		SetObjectRequired(OBJECT_LASER_HORIZONTAL, 0);
 	}
 	if (m_mineManager->m_count == 0) {
-		SetObjectRequired((eObjectType) 0x13, 0);
+		SetObjectRequired(OBJECT_MINE, 0);
 	}
 	if (m_rocketManager->m_count == 0) {
-		SetObjectRequired((eObjectType) 0x20, 0);
+		SetObjectRequired(OBJECT_ROCKET, 0);
 	}
 	if (m_slinkyManager->m_count == 0) {
-		SetObjectRequired((eObjectType) 0x35, 0);
+		SetObjectRequired(OBJECT_SLINKY, 0);
 	}
 }
 
@@ -939,8 +939,8 @@ void Ai::StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short 
 	if ((collision & 4) != 0 && (p_mask & 0x40) != 0) {
 		eObjectType objectType = m_map->m_ground.m_ground[blockY * m_map->m_ground.m_width + blockX].m_objectType;
 		p_object->m_actionDeadline = g_dwGameTick + 26;
-		p_object->m_action = (eAction) 15;
-		if (objectType != (eObjectType) 0x216) {
+		p_object->m_action = ACTION_15;
+		if (objectType != TERRAIN_ELECTRIC) {
 			p_object->m_actionArgument = 2;
 			p_object->m_stateTimer = g_dwGameTick * 50;
 			p_object->SetSndEffect(SFX_AAAAH1);
@@ -1201,7 +1201,7 @@ bool Ai::GetObjectRequired(eObjectType p_objectType)
 // FUNCTION: LEMBALL 0x004130a0
 void Ai::SetObjectRequired(eObjectType p_objectType, unsigned int p_required)
 {
-	if (p_objectType < (eObjectType) 0x211 || p_objectType > (eObjectType) 0x212) {
+	if (p_objectType < (eObjectType) 0x211 || p_objectType > TERRAIN_LIFT) {
 		m_objectRequired[p_objectType] = p_required;
 	}
 }

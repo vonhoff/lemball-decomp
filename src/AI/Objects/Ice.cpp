@@ -29,7 +29,7 @@ void Ice::Initialise()
 	m_switched = 0;
 	m_enabled = 0;
 	m_objectCount = 0;
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 	m_lastMovementTick = g_dwGameTick;
 }
 
@@ -151,7 +151,7 @@ bool Ice::Process()
 	else if (m_action == 0x1a) {
 		m_switched = !m_switched;
 		Switched();
-		Action((eAction) 0x18);
+		Action(ACTION_0x18);
 	}
 	if (!m_switched) {
 		return true;
@@ -331,12 +331,12 @@ bool Ice::StepOn(const AiCoord& p_position, GameObject* p_object)
 			p_object->m_stateTimer = g_dwGameTick * 50;
 			p_object->m_actionDeadline = g_dwGameTick + 1000;
 			if (p_object->m_objectType == 2) {
-				p_object->Action((eAction) 0x16);
+				p_object->Action(ACTION_0x16);
 				p_object->SetSndEffect(SFX_WHEEE);
 				p_object->OnConveyor(1, this, 0);
 				return true;
 			}
-			p_object->Action((eAction) 0xf, 3);
+			p_object->Action(ACTION_15, 3);
 			p_object->SetSndEffect(SFX_WHEEE);
 		}
 		return true;
@@ -375,7 +375,7 @@ void Ice::Leave(PlayerLemming* p_lemming)
 // FUNCTION: LEMBALL 0x0042d550
 void Ice::Switch()
 {
-	RequestAction((eAction) 0x1a);
+	RequestAction(ACTION_0x1a);
 }
 
 // 68K 0x10612236 Switched__4CIceFv

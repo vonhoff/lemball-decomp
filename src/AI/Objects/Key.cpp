@@ -45,7 +45,7 @@ bool Key::Process()
 		return 1;
 	}
 	if (m_action == 26) {
-		Action((eAction) 24);
+		Action(ACTION_0x18);
 		m_heading = 0;
 	}
 	return 1;
@@ -57,7 +57,7 @@ bool Key::Activate(GameObject* p_object)
 {
 	m_activator = p_object;
 	if (m_activator->HasObject(m_objectType) == 0) {
-		RequestAction((eAction) 26);
+		RequestAction(ACTION_0x1a);
 		return 1;
 	}
 	return 0;

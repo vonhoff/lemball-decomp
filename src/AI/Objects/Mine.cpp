@@ -33,7 +33,7 @@ void Mine::Restart()
 // FUNCTION: LEMBALL 0x00423c50
 void Mine::Initialise()
 {
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 	m_enabled = 0;
 	m_activated = 0;
 	m_terrainSet = 0;
@@ -73,10 +73,10 @@ void Mine::Set(AiCoord p_position)
 // FUNCTION: LEMBALL 0x00423d40
 void Mine::Trigger(int p_delay)
 {
-	if (m_triggerPending == 0 && m_action == (eAction) 0x18) {
+	if (m_triggerPending == 0 && m_action == ACTION_0x18) {
 		m_triggerPending = 1;
 		m_triggerDelay = p_delay;
-		RequestAction((eAction) 0x1a);
+		RequestAction(ACTION_0x1a);
 	}
 }
 
@@ -103,10 +103,7 @@ void Mine::SetTerrain()
 	int blockX = (m_position.m_xFixed >> 12) / 16;
 	int blockY = (m_position.m_yFixed >> 12) / 16;
 	if (m_terrainSet == 0) {
-		g_pMap->SetTerrain(blockX,
-						   blockY,
-						   (eObjectType) 0x20a,
-						   (unsigned short) g_mineTerrainOffsets[g_pMap->m_reserved]);
+		g_pMap->SetTerrain(blockX, blockY, TERRAIN_BLOX_5, (unsigned short) g_mineTerrainOffsets[g_pMap->m_reserved]);
 		m_transientFlags = 1;
 		if (blockX >= 0 && blockY >= 0) {
 			Map* map = g_pMap;
@@ -123,7 +120,7 @@ void Mine::SetTerrain()
 // FUNCTION: LEMBALL 0x00423e70
 void Mine::StepOn(GameObject* p_object)
 {
-	RequestAction((eAction) 0x1b);
+	RequestAction(ACTION_0x1b);
 	p_object->HitMine();
 }
 
@@ -131,7 +128,7 @@ void Mine::StepOn(GameObject* p_object)
 // FUNCTION: LEMBALL 0x00423e90
 bool Mine::IsUsable(eAction p_action)
 {
-	return p_action == (eAction) 8 || p_action == (eAction) 0x18;
+	return p_action == ACTION_8 || p_action == ACTION_0x18;
 }
 
 // 68K 0x106165fa Process__5CMineFv
@@ -142,10 +139,10 @@ bool Mine::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != action) {
 			switch (action) {
-			case (eAction) 8:
+			case ACTION_8:
 				m_enabled = m_activated = 0;
 				break;
-			case (eAction) 27:
+			case ACTION_0x1b:
 				SetTerrain();
 				break;
 			}
@@ -155,24 +152,24 @@ bool Mine::Process()
 	}
 
 	switch (action) {
-	case (eAction) 25:
+	case ACTION_0x19:
 		m_terrainSet = 0;
 		return 0;
-	case (eAction) 26:
+	case ACTION_0x1a:
 		if (m_lastMovementTick < g_dwGameTick) {
 			SetTerrain();
 			m_stateTimer = g_dwSimulationTimestamp;
 			m_actionDeadline = g_dwGameTick + 20;
-			Action((eAction) 27);
+			Action(ACTION_0x1b);
 			return 0;
 		}
 		break;
-	case (eAction) 27:
+	case ACTION_0x1b:
 		if (m_actionDeadline < g_dwGameTick) {
 			m_activated = 0;
 			m_enabled = 0;
 			m_lastMovementTick = g_dwGameTick + 100;
-			Action((eAction) 8);
+			Action(ACTION_8);
 		}
 		break;
 	default:

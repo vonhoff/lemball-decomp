@@ -11,7 +11,7 @@ Crate::Crate(const AiCoord& p_position, GlobalGameObject* p_contents, unsigned s
 	m_contentsId = p_contentsId;
 	m_contents = p_contents;
 	if (p_contents == 0) {
-		m_contentsType = (eObjectType) 0xffff;
+		m_contentsType = OBJECT_INVALID;
 	}
 	else {
 		m_contentsType = p_contents->m_objectType;
@@ -28,7 +28,7 @@ int Crate::Usage()
 // 68K 0x1011aa7e __dt__6CCrateFv
 inline Crate::~Crate()
 {
-	if (m_contents != 0 && m_contentsType != 0xffff) {
+	if (m_contents != 0 && m_contentsType != OBJECT_INVALID) {
 		delete m_contents;
 	}
 }
@@ -38,7 +38,7 @@ inline Crate::~Crate()
 void Crate::Restart()
 {
 	BaseGlobalObject::Restart();
-	m_pendingAction = (eAction) 24;
+	m_pendingAction = ACTION_0x18;
 }
 
 #include "../../Map/Base/Map.h"
@@ -55,13 +55,13 @@ void Crate::Restart()
 // FUNCTION: LEMBALL 0x0041ccc0
 void Crate::TriggerContents()
 {
-	if (m_contentsType != 0xffff) {
+	if (m_contentsType != OBJECT_INVALID) {
 		GlobalGameObject* contents = (GlobalGameObject*) m_contents;
 		m_position.m_xFixed = contents->m_position.m_xFixed;
 		m_position.m_yFixed = contents->m_position.m_yFixed;
 		m_position.m_zFixed = contents->m_position.m_zFixed;
 		g_pObjectManager->AddObject(0xffff, contents, 0);
-		m_contentsType = (eObjectType) 0xffff;
+		m_contentsType = OBJECT_INVALID;
 	}
 }
 
@@ -100,16 +100,16 @@ bool Crate::Process()
 		return 1;
 	}
 	switch (m_action) {
-	case 25:
+	case ACTION_0x19:
 		if (m_unk0xd0 < g_dwGameTick) {
 			TriggerContents();
 			SetSndEffect(SFX_CRATEEXP);
-			Action((eAction) 26);
+			Action(ACTION_0x1a);
 		}
 		break;
-	case 26:
+	case ACTION_0x1a:
 		if (m_unk0xd4 < g_dwGameTick) {
-			Action((eAction) 24);
+			Action(ACTION_0x18);
 			m_heading = 0;
 		}
 		break;
@@ -121,10 +121,10 @@ bool Crate::Process()
 // FUNCTION: LEMBALL 0x0041ce50
 bool Crate::Activate(GameObject* p_object)
 {
-	if (m_action == 24) {
+	if (m_action == ACTION_0x18) {
 		m_unk0xd0 = 16;
 		m_unk0xd4 = 30;
-		RequestAction((eAction) 25);
+		RequestAction(ACTION_0x19);
 		return 1;
 	}
 	return 0;

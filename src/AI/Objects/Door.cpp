@@ -37,25 +37,25 @@ void Door::Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, int
 	m_spawnPosition.m_zFixed = p_z << 12;
 	m_doorType = p_doorType;
 	m_doorIndex = g_wNextDoorIndex++;
-	m_action = (eAction) 0x1e;
+	m_action = ACTION_0x1e;
 	if (m_doorType != 0) {
-		m_action = (eAction) 0x1d;
+		m_action = ACTION_0x1d;
 	}
 	switch ((unsigned short) m_doorType) {
 	case 0:
 		m_actionArgument = -1;
 		break;
 	case 1:
-		m_actionArgument = 0x15;
+		m_actionArgument = OBJECT_KEY_1;
 		break;
 	case 2:
-		m_actionArgument = 0x16;
+		m_actionArgument = OBJECT_KEY_2;
 		break;
 	case 3:
-		m_actionArgument = 0x17;
+		m_actionArgument = OBJECT_KEY_3;
 		break;
 	case 4:
-		m_actionArgument = 0x14;
+		m_actionArgument = OBJECT_SWITCH;
 		break;
 	}
 	m_setTick = g_dwGameTick;
@@ -226,11 +226,11 @@ bool Door::Process()
 	if (m_isRemoteObject) {
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case (eAction) DOOR_ACTION_OPENING:
+			case DOOR_ACTION_OPENING:
 				SetSndEffect(SFX_DOOROPEN);
 				ResetCollision();
 				break;
-			case (eAction) DOOR_ACTION_CLOSING:
+			case DOOR_ACTION_CLOSING:
 				SetCollision();
 				break;
 			default:
@@ -251,30 +251,30 @@ bool Door::Process()
 
 	m_stateTimer = g_dwSimulationTimestamp;
 	switch (m_action) {
-	case (eAction) 0x1c:
-		Action((eAction) 0x1d);
+	case ACTION_0x1c:
+		Action(ACTION_0x1d);
 		m_activationPending = 0;
 		break;
-	case (eAction) DOOR_ACTION_OPENING:
+	case DOOR_ACTION_OPENING:
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionDeadline = g_dwGameTick + 80;
 		ResetCollision();
-		Action((eAction) DOOR_ACTION_OPEN);
+		Action(DOOR_ACTION_OPEN);
 		break;
-	case (eAction) DOOR_ACTION_OPEN:
+	case DOOR_ACTION_OPEN:
 		if (m_doorType == 0) {
 			m_stateTimer = g_dwSimulationTimestamp;
 			m_actionDeadline = g_dwGameTick + 20;
 			SetCollision();
 			SetSndEffect(SFX_DOOROPEN);
-			Action((eAction) DOOR_ACTION_CLOSING);
+			Action(DOOR_ACTION_CLOSING);
 			return 1;
 		}
 		m_activationPending = 0;
 		break;
-	case (eAction) DOOR_ACTION_CLOSING:
+	case DOOR_ACTION_CLOSING:
 		m_activationPending = 0;
-		Action((eAction) 0x1e);
+		Action(ACTION_0x1e);
 		break;
 	default:
 		break;
@@ -287,10 +287,10 @@ bool Door::Process()
 // FUNCTION: LEMBALL 0x0040dd00
 void Door::Unlock()
 {
-	if (m_action >= (eAction) 0x1c && m_action <= (eAction) 0x1d) {
+	if (m_action >= ACTION_0x1c && m_action <= ACTION_0x1d) {
 		m_actionDeadline = 0x14;
 		SetSndEffect(SFX_DOOROPEN);
-		RequestAction((eAction) DOOR_ACTION_OPENING);
+		RequestAction(DOOR_ACTION_OPENING);
 	}
 }
 
@@ -298,7 +298,7 @@ void Door::Unlock()
 // FUNCTION: LEMBALL 0x0040dd30
 bool Door::IsUsable(eAction p_action)
 {
-	return p_action == (eAction) 0x18 || (p_action >= (eAction) 0x1d && p_action <= (eAction) 0x1e);
+	return p_action == ACTION_0x18 || (p_action >= ACTION_0x1d && p_action <= ACTION_0x1e);
 }
 
 // 68K 0x10606a96 Hits__5CDoorFRC7AICOORDP11CGameObject
@@ -315,27 +315,27 @@ int Door::Hits(const AiCoord& p_position, GameObject* p_object)
 	int maxY = doorY + 16;
 	if (doorX <= x && maxX >= x && doorY <= y && maxY >= y) {
 		switch (m_action) {
-		case (eAction) 0x1c:
-		case (eAction) 0x1d:
+		case ACTION_0x1c:
+		case ACTION_0x1d:
 			if (p_object->HasObject((eObjectType) (unsigned short) m_actionArgument)) {
 				m_actionDeadline = 20;
 				SetSndEffect(SFX_DOOROPEN);
-				RequestAction((eAction) 0x20);
+				RequestAction(DOOR_ACTION_OPENING);
 				return 1;
 			}
 			m_actionDeadline = 40;
-			RequestAction((eAction) 0x1c);
+			RequestAction(ACTION_0x1c);
 			return 0;
-		case (eAction) 0x1e:
+		case ACTION_0x1e:
 			m_actionDeadline = 20;
 			SetSndEffect(SFX_DOOROPEN);
-			RequestAction((eAction) 0x20);
+			RequestAction(DOOR_ACTION_OPENING);
 			return 1;
-		case (eAction) 0x20:
+		case DOOR_ACTION_OPENING:
 			return 1;
-		case (eAction) 0x21:
+		case DOOR_ACTION_OPEN:
 			return 0;
-		case (eAction) 0x22:
+		case DOOR_ACTION_CLOSING:
 			return 1;
 		default:
 			return 1;
@@ -351,16 +351,16 @@ void Door::DoActivate()
 	m_activationPending = 1;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_actionDeadline += g_dwGameTick;
-	if (m_action != (eAction) 0x1c) {
+	if (m_action != ACTION_0x1c) {
 		int actionArgument = (unsigned short) m_actionArgument;
 		int score;
 		switch (actionArgument) {
-		case 0x14:
+		case OBJECT_SWITCH:
 			score = 0x19;
 			break;
-		case 0x15:
-		case 0x16:
-		case 0x17:
+		case OBJECT_KEY_1:
+		case OBJECT_KEY_2:
+		case OBJECT_KEY_3:
 			score = 0x4b;
 			break;
 		default:

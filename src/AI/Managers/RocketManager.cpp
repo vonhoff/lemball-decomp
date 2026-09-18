@@ -69,8 +69,8 @@ int RocketManager::StepOn(const AiCoord& p_position, GameObject* p_object)
 			return 0;
 		}
 		Rocket* rocket = &m_rockets[i];
-		if (rocket->m_active != 0 && rocket->m_action == (eAction) 0x18 &&
-			rocket->m_requestedAction == (eAction) 0x18 && rocket->StepOn(p_position, p_object) != 0) {
+		if (rocket->m_active != 0 && rocket->m_action == ACTION_0x18 && rocket->m_requestedAction == ACTION_0x18 &&
+			rocket->StepOn(p_position, p_object) != 0) {
 			return 1;
 		}
 		i++;
@@ -93,7 +93,7 @@ int RocketManager::GetViewData(ViewData* p_viewData)
 {
 	int count = 0;
 	for (int i = 0; i < m_count; i++) {
-		if (m_rockets[i].m_action != (eAction) 0x18) {
+		if (m_rockets[i].m_action != ACTION_0x18) {
 			m_rockets[i].GetViewData(*p_viewData++);
 			count++;
 		}

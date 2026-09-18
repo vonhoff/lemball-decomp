@@ -32,7 +32,7 @@ void Laser::Restart()
 // FUNCTION: LEMBALL 0x004288d0
 void Laser::Initialise()
 {
-	m_action = (eAction) 0x18;
+	m_action = ACTION_0x18;
 	m_stateTimer = 0;
 	m_active = 0;
 	m_enabled = 0;
@@ -60,19 +60,19 @@ void Laser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_or
 	m_objectType = p_orientation;
 
 	switch (p_orientation) {
-	case (eObjectType) 0x1e:
-		m_action = (eAction) 0x18;
+	case OBJECT_LASER_HORIZONTAL:
+		m_action = ACTION_0x18;
 		m_autoActivate = 1;
 		m_active = 1;
 		break;
-	case (eObjectType) 0x2f:
-		m_action = (eAction) 0x18;
+	case OBJECT_LASER_VERTICAL:
+		m_action = ACTION_0x18;
 		m_autoActivate = 1;
 		m_active = 1;
 		break;
-	case (eObjectType) 0x30: {
+	case OBJECT_LASER_EMITTER_H: {
 		m_autoActivate = 0;
-		m_action = (eAction) 0x18;
+		m_action = ACTION_0x18;
 		m_active = 1;
 		for (int i = 1; i < 8; i++) {
 			int collisionX = blockX + i;
@@ -83,9 +83,9 @@ void Laser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_or
 		}
 		break;
 	}
-	case (eObjectType) 0x31: {
+	case OBJECT_LASER_EMITTER_V: {
 		m_autoActivate = 0;
-		m_action = (eAction) 0x18;
+		m_action = ACTION_0x18;
 		m_active = 1;
 		for (int i = 1; i < 8; i++) {
 			int collisionY = blockY + i;
@@ -112,20 +112,20 @@ bool Laser::CheckHits()
 bool Laser::Process()
 {
 	if (m_isRemoteObject != 0) {
-		m_active = m_action != (eAction) 0x18;
-		if (m_action == (eAction) 0x1a && m_target == 0) {
+		m_active = m_action != ACTION_0x18;
+		if (m_action == ACTION_0x1a && m_target == 0) {
 			CheckHits();
 		}
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case 0x17:
+			case ACTION_0x17:
 				if (m_target != 0) {
 					m_target->m_unk0x2c = 1;
 					m_target = 0;
 				}
-				Action((eAction) 0x18);
+				Action(ACTION_0x18);
 				break;
-			case 0x19:
+			case ACTION_0x19:
 				m_target = 0;
 				break;
 			}
@@ -138,28 +138,28 @@ bool Laser::Process()
 	}
 	if (m_active != 0) {
 		switch (m_action) {
-		case 0x17:
+		case ACTION_0x17:
 			if (m_target != 0) {
 				m_target->SetSndEffect(SFX_ELECCY);
 				m_target->m_unk0x2c = 1;
 				m_target = 0;
 			}
-			Action((eAction) 0x18);
+			Action(ACTION_0x18);
 			return 1;
-		case 0x18:
+		case ACTION_0x18:
 			if (m_actionDeadline < g_dwGameTick) {
 				Activate();
 				return 1;
 			}
 			break;
-		case 0x19:
+		case ACTION_0x19:
 			if (m_unk0xd0 < g_dwGameTick) {
 				m_target = 0;
-				Action((eAction) 0x1a);
+				Action(ACTION_0x1a);
 				return 1;
 			}
 			break;
-		case 0x1a:
+		case ACTION_0x1a:
 			if (m_target == 0) {
 				CheckHits();
 			}
@@ -171,7 +171,7 @@ bool Laser::Process()
 					m_target->m_unk0x2c = 1;
 					m_target = 0;
 				}
-				Action((eAction) 0x17);
+				Action(ACTION_0x17);
 			}
 		}
 	}
@@ -191,7 +191,7 @@ bool Laser::Activate()
 	m_actionDeadline = g_dwGameTick + 0x18;
 	m_target = 0;
 	m_stateTimer = g_dwSimulationTimestamp;
-	Action((eAction) 0x19);
+	Action(ACTION_0x19);
 	return 1;
 }
 
@@ -199,7 +199,7 @@ bool Laser::Activate()
 // FUNCTION: LEMBALL 0x00428f30
 bool Laser::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
-	if (p_object->m_objectType == (eObjectType) 2 && (int) Distance(m_position.m_xFixed >> 12,
+	if (p_object->m_objectType == OBJECT_PLAYER_2 && (int) Distance(m_position.m_xFixed >> 12,
 																	m_position.m_yFixed >> 12,
 																	p_position.m_xFixed >> 12,
 																	p_position.m_yFixed >> 12) < 0x30) {
@@ -216,10 +216,10 @@ int Laser::GetViewData(ViewData* p_viewData)
 {
 	GameObject::GetViewData(*p_viewData++);
 	int count = 1;
-	if (m_action == (eAction) 0x1a) {
+	if (m_action == ACTION_0x1a) {
 		switch (m_objectType) {
-		case (eObjectType) 0x1e:
-		case (eObjectType) 0x30: {
+		case OBJECT_LASER_HORIZONTAL:
+		case OBJECT_LASER_EMITTER_H: {
 			int x = (m_position.m_xFixed >> 12) + 0x26;
 			int y = m_position.m_yFixed >> 12;
 			int z = (m_position.m_zFixed >> 12) + 3;
@@ -237,17 +237,17 @@ int Laser::GetViewData(ViewData* p_viewData)
 				p_viewData->m_positionX = x;
 				p_viewData->m_positionY = y;
 				p_viewData->m_positionZ = z;
-				p_viewData->m_objectType = (eObjectType) 0x32;
+				p_viewData->m_objectType = OBJECT_LASER_VERTICAL_BEAM;
 				p_viewData->m_facingDirection = 0;
-				p_viewData->m_action = (eAction) 0x1a;
+				p_viewData->m_action = ACTION_0x1a;
 				p_viewData++;
 				count++;
 				x += 0x10;
 			}
 			break;
 		}
-		case (eObjectType) 0x2f:
-		case (eObjectType) 0x31: {
+		case OBJECT_LASER_VERTICAL:
+		case OBJECT_LASER_EMITTER_V: {
 			int x = m_position.m_xFixed >> 12;
 			int y = (m_position.m_yFixed >> 12) + 0x14;
 			int z = (m_position.m_zFixed >> 12) + 3;
@@ -265,9 +265,9 @@ int Laser::GetViewData(ViewData* p_viewData)
 				p_viewData->m_positionX = x;
 				p_viewData->m_positionY = y;
 				p_viewData->m_positionZ = z;
-				p_viewData->m_objectType = (eObjectType) 0x26;
+				p_viewData->m_objectType = OBJECT_LASER_HORIZONTAL_BEAM;
 				p_viewData->m_facingDirection = 0;
-				p_viewData->m_action = (eAction) 0x1a;
+				p_viewData->m_action = ACTION_0x1a;
 				p_viewData++;
 				count++;
 				y += 0x10;

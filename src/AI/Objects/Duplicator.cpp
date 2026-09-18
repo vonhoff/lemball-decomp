@@ -17,7 +17,7 @@
 
 // 68K 0x106072fe __ct__11CDuplicatorFRC7AICOORD
 // FUNCTION: LEMBALL 0x004275b0
-Duplicator::Duplicator(const AiCoord& p_position) : GlobalGameObject((eObjectType) OBJECT_DUPLICATOR, 0, 0)
+Duplicator::Duplicator(const AiCoord& p_position) : GlobalGameObject(OBJECT_DUPLICATOR, 0, 0)
 {
 	m_spawnPosition.m_xFixed = p_position.m_xFixed;
 	m_spawnPosition.m_yFixed = p_position.m_yFixed;
@@ -33,7 +33,7 @@ void Duplicator::Restart()
 	m_stateTimer = 0;
 	m_terrainCell1Set = 0;
 	m_terrainCell0Set = 0;
-	m_action = (eAction) 24;
+	m_action = ACTION_0x18;
 	Set(m_spawnPosition);
 }
 
@@ -92,7 +92,7 @@ bool Duplicator::Process()
 	if (m_isRemoteObject != 0) {
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
-			if (m_action == 26) {
+			if (m_action == ACTION_0x1a) {
 				SetSndEffect(SFX_DUPLICTR);
 			}
 			m_pendingAction = m_action;
@@ -100,11 +100,11 @@ bool Duplicator::Process()
 		return 1;
 	}
 	m_actionArgument = 0;
-	if (m_action == 26 && m_actionDeadline < g_dwGameTick) {
+	if (m_action == ACTION_0x1a && m_actionDeadline < g_dwGameTick) {
 		GameObject* duplicatedObject = m_duplicatedObject;
 		duplicatedObject->m_unk0xc0 = 0;
-		duplicatedObject->m_action = (eAction) 0;
-		m_duplicatedObject->Action((eAction) 0);
+		duplicatedObject->m_action = ACTION_NONE;
+		m_duplicatedObject->Action(ACTION_NONE);
 		m_duplicatedObject->ResetInstructions();
 		PlayerLemming* dead = g_pAI->GetDead();
 		if (dead != 0) {
@@ -113,7 +113,7 @@ bool Duplicator::Process()
 			PlayerLemmingGroup* group = ((PlayerLemming*) m_duplicatedObject)->GetGroup();
 			group->AddLemmingToGroup(dead);
 		}
-		Action((eAction) 24);
+		Action(ACTION_0x18);
 	}
 	return 1;
 }
@@ -135,10 +135,10 @@ bool Duplicator::Activate(GameObject* p_object)
 	if (!g_pAI->NDead()) {
 		return 0;
 	}
-	if (p_object->m_objectType == (eObjectType) 2 && m_action == 24) {
+	if (p_object->m_objectType == OBJECT_PLAYER_2 && m_action == ACTION_0x18) {
 		m_actionDeadline = 82;
 		m_activator = p_object;
-		RequestAction((eAction) 26);
+		RequestAction(ACTION_0x1a);
 		return 1;
 	}
 	return 0;
@@ -156,7 +156,7 @@ void Duplicator::DoActivate()
 	m_duplicatedObject = activator;
 	int x = m_position.m_xFixed;
 	activator->m_unk0xc0 = 1;
-	activator->m_action = (eAction) 5;
+	activator->m_action = ACTION_5;
 	GameObject* dup = m_duplicatedObject;
 	dup->m_position.m_xFixed = x;
 	dup->m_position.m_yFixed = y;

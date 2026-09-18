@@ -48,7 +48,7 @@ bool Ammo::Process()
 	m_position.m_zFixed = z << 12;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
-			if (m_action == 26) {
+			if (m_action == ACTION_0x1a) {
 				SetSndEffect(SFX_RELOAD);
 			}
 			m_pendingAction = m_action;
@@ -56,20 +56,20 @@ bool Ammo::Process()
 		return 1;
 	}
 	switch (m_action) {
-	case 26:
+	case ACTION_0x1a:
 		if (m_unk0xd4 < g_dwGameTick) {
 			if (m_ammo == 0) {
 				m_heading = 0;
 			}
 			else {
 				m_actionDeadline = g_dwGameTick + (m_ammo * 1000) / GAME_TICK_MILLISECONDS;
-				RequestAction((eAction) 27);
+				RequestAction(ACTION_0x1b);
 			}
 		}
 		break;
-	case 27:
+	case ACTION_0x1b:
 		if (m_actionDeadline < g_dwGameTick) {
-			RequestAction((eAction) 24);
+			RequestAction(ACTION_0x18);
 		}
 		break;
 	}
@@ -80,10 +80,10 @@ bool Ammo::Process()
 // FUNCTION: LEMBALL 0x0041cbe0
 bool Ammo::Activate(GameObject* p_object)
 {
-	if (m_action == 24 && p_object->HasObject(m_objectType) == 0) {
+	if (m_action == ACTION_0x18 && p_object->HasObject(m_objectType) == 0) {
 		m_unk0xd4 = 8;
 		m_activator = p_object;
-		RequestAction((eAction) 26);
+		RequestAction(ACTION_0x1a);
 		return 1;
 	}
 	return 0;
