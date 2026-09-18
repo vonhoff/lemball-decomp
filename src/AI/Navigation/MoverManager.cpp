@@ -87,7 +87,7 @@ int MoverManager::GetViewData(ViewData* p_viewData)
 
 // 68K 0x106182b4 Add__13CMoverManagerFUsiUcii
 // FUNCTION: LEMBALL 0x0042f5e0
-void MoverManager::Add(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount)
+void MoverManager::Add(unsigned short p_id, int p_pathId, unsigned int p_movementMode, int p_startNode, int p_nodeCount)
 {
 	if (m_count < m_capacity) {
 		m_movers[m_count].Set(p_id, p_pathId, p_movementMode, p_startNode, p_nodeCount);

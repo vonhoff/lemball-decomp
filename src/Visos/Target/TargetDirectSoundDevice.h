@@ -1,10 +1,11 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDIRECTSOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_TARGETDIRECTSOUNDDEVICE_H
 
-#include "../../Common.h"
 #include "../Sound/BaseSoundDevice.h" // complete type
 
 class IDirectSound;
+class TargetDirectSoundEffect;
+class Wnd;
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x0049acd8
@@ -24,11 +25,11 @@ public:
 	virtual int IsEffectAvailable();
 	virtual int Dummy2c();
 	virtual int GetBuffersPerEffect();
-	virtual int Dummy34(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3);
-	virtual int Dummy38(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3);
+	virtual int Dummy34(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3);
+	virtual int Dummy38(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3);
 	virtual int PrepareEffect(unsigned char* p_data, unsigned long* p_handle);
-	virtual int Dummy40(undefined4 p_arg0);
-	virtual int Dummy44(undefined4 p_arg0);
+	virtual int Dummy40(unsigned int p_arg0);
+	virtual int Dummy44(unsigned int p_arg0);
 	virtual int FreeEffect(unsigned long p_effectId);
 	virtual int Dummy4c();
 	virtual int FreeAllEffects();
@@ -48,22 +49,22 @@ private:
 	bool PrepareEffect(unsigned char* p_data, unsigned long* p_handle, unsigned int p_effectHandle);
 
 	union {
-		undefined m_platformState[0x50]; // 0x04
+		char m_platformState[0x50]; // 0x04
 		struct {
 			void* m_library;                                                          // 0x04
 			long(__stdcall* m_createDirectSound)(const void*, IDirectSound**, void*); // 0x08
-			undefined4 m_open;                                                        // 0x0c
+			unsigned int m_open;                                                      // 0x0c
 			void* m_nativeWindow;                                                     // 0x10
 			int m_effectCapacity;                                                     // 0x14
 			int m_buffersPerEffect;                                                   // 0x18
-			undefined4 m_musicAvailable;                                              // 0x1c
-			undefined4 m_available;                                                   // 0x20
-			undefined4 m_unk0x24;                                                     // 0x24
-			undefined4 m_unk0x28;                                                     // 0x28
-			undefined4 m_unk0x2c;                                                     // 0x2c
-			undefined4 m_unk0x30;                                                     // 0x30
+			unsigned int m_musicAvailable;                                            // 0x1c
+			unsigned int m_available;                                                 // 0x20
+			unsigned int m_unk0x24;                                                   // 0x24
+			unsigned int m_unk0x28;                                                   // 0x28
+			unsigned int m_unk0x2c;                                                   // 0x2c
+			unsigned int m_unk0x30;                                                   // 0x30
 			unsigned int m_sampleRate;                                                // 0x34
-			undefined4 m_unk0x38;                                                     // 0x38
+			unsigned int m_unk0x38;                                                   // 0x38
 			unsigned short m_formatTag;                                               // 0x3c
 			unsigned short m_channels;                                                // 0x3e
 			unsigned int m_samplesPerSecond;                                          // 0x40
@@ -71,7 +72,7 @@ private:
 			unsigned short m_blockAlign;                                              // 0x48
 			unsigned short m_bitsPerSample;                                           // 0x4a
 			unsigned short m_extraFormatBytes;                                        // 0x4c
-			undefined2 m_pad0x4e;                                                     // 0x4e
+			unsigned short m_pad0x4e;                                                 // 0x4e
 			TargetDirectSoundEffect** m_effects;                                      // 0x50
 		} m_platform;
 	};

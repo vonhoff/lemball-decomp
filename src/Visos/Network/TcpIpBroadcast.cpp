@@ -39,17 +39,17 @@ struct TcpIpSocketAddress {
 };
 
 struct TcpIpAddressResult {
-	undefined4 m_reserved;
+	unsigned int m_reserved;
 	unsigned char m_data[20];
 };
 
 struct TcpIpHostAddressResult {
-	undefined4 m_reserved;
+	unsigned int m_reserved;
 	in_addr m_address;
 };
 
 struct TcpIpStatusResult {
-	undefined4 m_reserved;
+	unsigned int m_reserved;
 	Message m_message;
 };
 

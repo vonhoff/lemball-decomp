@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSTRIG_H
 #define LEMBALL_VISOS_FOUNDATION_VSTRIG_H
 
-#include "../../Common.h"
 #include "Fixed.h"  // complete type
 #include "Vector.h" // complete type
 

@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETMASTERINPUTITEM_H
 #define LEMBALL_VISOS_TARGET_TARGETMASTERINPUTITEM_H
 
-#include "../../Common.h"
-
+class BaseQueue;
+class MasterInput;
+class VsOStream;
 // VTABLE: LEMBALL 0x0049a458
 class TargetMasterInputItem {
 public:

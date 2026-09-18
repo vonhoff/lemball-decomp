@@ -20,7 +20,7 @@ struct TcpIpSocketAddress {
 };
 
 struct TcpIpReceiveFromData {
-	undefined4 m_reserved;
+	unsigned int m_reserved;
 	int m_addressLength;
 	TcpIpSocketAddress m_address;
 };

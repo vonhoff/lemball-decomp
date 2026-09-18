@@ -5,11 +5,11 @@
 #include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
 
-extern word g_wNextDoorIndex;
+extern unsigned short g_wNextDoorIndex;
 
 // 68K 0x106062b0 __ct__5CDoorFv
 // FUNCTION: LEMBALL 0x0040d470
-Door::Door() : GlobalGameObject(0x19, 0, 0)
+Door::Door() : GlobalGameObject(OBJECT_DOOR_1, 0, 0)
 {
 }
 
@@ -220,7 +220,7 @@ bool Door::Process()
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
 			case (eAction) DOOR_ACTION_OPENING:
-				SetSndEffect((eSoundEffect) 0xb);
+				SetSndEffect(SFX_DOOROPEN);
 				ResetCollision();
 				break;
 			case (eAction) DOOR_ACTION_CLOSING:
@@ -259,7 +259,7 @@ bool Door::Process()
 			m_stateTimer = g_dwSimulationTimestamp;
 			m_actionDeadline = g_dwGameTick + 20;
 			SetCollision();
-			SetSndEffect((eSoundEffect) 0xb);
+			SetSndEffect(SFX_DOOROPEN);
 			Action((eAction) DOOR_ACTION_CLOSING);
 			return 1;
 		}
@@ -282,7 +282,7 @@ void Door::Unlock()
 {
 	if (m_action >= (eAction) 0x1c && m_action <= (eAction) 0x1d) {
 		m_actionDeadline = 0x14;
-		SetSndEffect((eSoundEffect) 0xb);
+		SetSndEffect(SFX_DOOROPEN);
 		RequestAction((eAction) DOOR_ACTION_OPENING);
 	}
 }
@@ -312,7 +312,7 @@ int Door::Hits(const AiCoord& p_position, GameObject* p_object)
 		case (eAction) 0x1d:
 			if (p_object->HasObject((eObjectType) (unsigned short) m_actionArgument)) {
 				m_actionDeadline = 20;
-				SetSndEffect((eSoundEffect) 11);
+				SetSndEffect(SFX_DOOROPEN);
 				RequestAction((eAction) 0x20);
 				return 1;
 			}
@@ -321,7 +321,7 @@ int Door::Hits(const AiCoord& p_position, GameObject* p_object)
 			return 0;
 		case (eAction) 0x1e:
 			m_actionDeadline = 20;
-			SetSndEffect((eSoundEffect) 11);
+			SetSndEffect(SFX_DOOROPEN);
 			RequestAction((eAction) 0x20);
 			return 1;
 		case (eAction) 0x20:

@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_MESSAGING_READNCBUFF_H
 #define LEMBALL_VISOS_MESSAGING_READNCBUFF_H
 
-#include "../../Common.h"
 #include "ReadPacketBuff.h" // complete type
+
+class ReadPacket;
 
 // SIZE 0x10
 class ReadNcBuff : public ReadPacketBuff {

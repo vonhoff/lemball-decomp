@@ -1,10 +1,14 @@
 #ifndef LEMBALL_AI_OBJECTS_ICE_H
 #define LEMBALL_AI_OBJECTS_ICE_H
 
-#include "../../Common.h"
 #include "../Base/Coord3d.h"
 #include "../Base/GlobalGameObject.h" // complete type
 
+class AiCoord;
+class GameObject;
+class IceManager;
+class PlayerLemming;
+class Switch;
 // SIZE 0x188
 // VTABLE: LEMBALL 0x004968b8
 class Ice : public GlobalGameObject {
@@ -30,7 +34,7 @@ public:
 private:
 	unsigned int m_switched;        // 0x138
 	unsigned int m_enabled;         // 0x13c
-	undefined4 m_unk0x140;          // 0x140
+	unsigned int m_unk0x140;        // 0x140
 	int m_velocityX;                // 0x144
 	int m_velocityY;                // 0x148
 	unsigned int m_initialSwitched; // 0x14c

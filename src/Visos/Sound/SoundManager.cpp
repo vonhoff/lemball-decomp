@@ -66,7 +66,7 @@ SoundManager::SoundManager(unsigned int p_musicEnabled,
 						   int p_deviceParameter,
 						   Wnd* p_window)
 {
-	undefined4 detectedCd;
+	unsigned int detectedCd;
 	unsigned int i;
 
 	if (p_useMusicCD != 0) {

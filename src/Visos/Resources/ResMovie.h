@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESMOVIE_H
 #define LEMBALL_VISOS_RESOURCES_RESMOVIE_H
 
-#include "../../Common.h"
 #include "ResBaseList.h" // complete type
 #include "ResInt.h"      // complete type
 #include "ResString.h"   // complete type

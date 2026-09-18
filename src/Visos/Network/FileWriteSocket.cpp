@@ -26,7 +26,7 @@ FileWriteSocket::~FileWriteSocket()
 
 // 68K 0x10207a8c Write__16CFileWriteSocketFR15CNetworkMessageUcUc
 // FUNCTION: LEMBALL 0x00479fa0
-int FileWriteSocket::Write(NetworkMessage& p_message, undefined4 p_keepLock, undefined4 p_wait)
+int FileWriteSocket::Write(NetworkMessage& p_message, int p_keepLock, int p_wait)
 {
 	p_message.OpenDataStream();
 	unsigned int offset = Tell();

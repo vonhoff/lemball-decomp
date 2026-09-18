@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_STRING_H
 #define LEMBALL_VISOS_FOUNDATION_STRING_H
 
-#include "../../Common.h"
-
 // SIZE 0x08
 class String {
 public:

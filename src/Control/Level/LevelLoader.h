@@ -1,7 +1,16 @@
 #ifndef LEMBALL_CONTROL_LEVEL_LEVELLOADER_H
 #define LEMBALL_CONTROL_LEVEL_LEVELLOADER_H
 
-#include "../../Common.h"
+class Ai;
+struct LoadBlockHeader;
+struct PreviewData;
+enum eSkill {
+	SKILL_FUN = 0,
+	SKILL_TRICKY = 1,
+	SKILL_TAXING = 2,
+	SKILL_MAYHEM = 3,
+	SKILL_NETWORK = 4
+};
 
 // SIZE 0x08
 class LevelLoader {

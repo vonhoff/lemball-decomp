@@ -5,7 +5,7 @@
 
 // 68K 0x106129ea __ct__16CInvisibleSwitchFv
 // FUNCTION: LEMBALL 0x00409ca0
-InvisibleSwitch::InvisibleSwitch() : GlobalGameObject(0x36, 0, 0)
+InvisibleSwitch::InvisibleSwitch() : GlobalGameObject(OBJECT_INVISIBLE_SWITCH, 0, 0)
 {
 }
 
@@ -101,7 +101,7 @@ void InvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
 // FUNCTION: LEMBALL 0x00409ec0
 void InvisibleSwitch::VerifyObjects()
 {
-	undefined2 invalidObjectId;
+	unsigned short invalidObjectId;
 	int i;
 
 	invalidObjectId = 0xffff;
@@ -194,7 +194,7 @@ bool InvisibleSwitch::Process()
 				i++;
 			} while (i < m_targetCount);
 		}
-		SetSndEffect((eSoundEffect) 0x15);
+		SetSndEffect(SFX_SWITCH);
 		Action((eAction) 0x18);
 	}
 	return 1;

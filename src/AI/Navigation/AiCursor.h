@@ -1,9 +1,11 @@
 #ifndef LEMBALL_AI_NAVIGATION_AICURSOR_H
 #define LEMBALL_AI_NAVIGATION_AICURSOR_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 
+class Ai;
+class BaseQueue;
+struct Message;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00493c08
 class AiCursor : public BaseQueueHandler {

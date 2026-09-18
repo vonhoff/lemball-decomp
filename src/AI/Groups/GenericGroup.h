@@ -1,10 +1,20 @@
 #ifndef LEMBALL_AI_GROUPS_GENERICGROUP_H
 #define LEMBALL_AI_GROUPS_GENERICGROUP_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/VsRect.h" // complete type
 #include "../Base/AiCoord.h"               // complete type
 #include "../Base/GameObject.h"            // complete type
+
+class Ai;
+class FormationManager;
+class ObjectManager;
+class ViewData;
+enum eGroupState {
+	GROUP_STATE_IDLE = 0,
+	GROUP_STATE_MOVING = 1,
+	GROUP_STATE_ATTACKING = 2,
+	GROUP_STATE_USING_OBJECT = 3
+};
 
 // SIZE 0x168
 // VTABLE: LEMBALL 0x00494b60

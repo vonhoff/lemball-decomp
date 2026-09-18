@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_ABSTRACTFILE_H
 #define LEMBALL_VISOS_NETWORK_ABSTRACTFILE_H
 
-#include "../../Common.h"
-
 // Descriptive name for the abstract file interface at 0x0049a5e8.
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x0049a5e8

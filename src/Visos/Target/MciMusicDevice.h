@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_MCIMUSICDEVICE_H
 #define LEMBALL_VISOS_TARGET_MCIMUSICDEVICE_H
 
-#include "../../Common.h"
 #include "../Sound/PvMusicDevice.h" // complete type
 
 #define WIN32_LEAN_AND_MEAN

@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_MAINOPTIONS2_H
 #define LEMBALL_VISOS_FOUNDATION_MAINOPTIONS2_H
 
-#include "../../Common.h"
 #include "../../Frontend/Base/BaseFrontendProcess.h" // complete type
+
+class Game;
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x004930b0 BaseQueueHandler

@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_MESSAGING_WRITEPACKETBUFF_H
 #define LEMBALL_VISOS_MESSAGING_WRITEPACKETBUFF_H
 
-#include "../../Common.h"
 #include "BasePacketBuff.h" // complete type
+
+class NetworkMessage;
 
 // SIZE 0x0c
 class WritePacketBuff : public BasePacketBuff {

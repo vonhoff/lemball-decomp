@@ -153,14 +153,14 @@ bool ReadSocket::ProcessPacket()
 		if (packetHeader->m_critical == 0) {
 			message = m_nonCriticalMultiBuffer->UpdateSubPacket();
 			if (message != 0) {
-				PostRead(9, message);
+				PostRead(NETWORK_EVENT_9, message);
 				return true;
 			}
 		}
 		else {
 			message = m_criticalMultiBuffer->StoreSubPacket();
 			if (message != 0) {
-				PostRead(8, message);
+				PostRead(NETWORK_EVENT_8, message);
 				return true;
 			}
 		}
@@ -168,7 +168,7 @@ bool ReadSocket::ProcessPacket()
 	else if (packetHeader->m_critical == 0) {
 		packet = m_nonCriticalBuffer->UpdatePacket();
 		if (packet != 0) {
-			PostRead(7, packet);
+			PostRead(NETWORK_EVENT_7, packet);
 			return true;
 		}
 	}
@@ -195,7 +195,7 @@ bool ReadSocket::ProcessPacket()
 				unsigned short acknowledgementSubpacketSequence;
 				AckMessage* acknowledgement;
 
-				PostRead(5, packet);
+				PostRead(NETWORK_EVENT_5, packet);
 				packetHeader = m_packetHeader;
 				acknowledgement = g_pAckMessage;
 				acknowledgementSubpacketSequence = packetHeader->m_subpacketSequence;

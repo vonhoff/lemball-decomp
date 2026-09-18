@@ -24,7 +24,7 @@ void StateMachine(StateEntry** p_arg0, Ai* p_arg1, GameObject* p_arg2)
 	typedef bool (*StatePredicate)(Ai*, GameObject*, Info*);
 	typedef void (*StateAction)(Ai*, GameObject*, Info*);
 
-	undefined4 info;
+	unsigned int info;
 	eAction action;
 	eAction nextAction;
 	int actionArgument;

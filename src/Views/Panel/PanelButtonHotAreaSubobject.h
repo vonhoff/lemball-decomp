@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VIEWS_PANEL_PANELBUTTONHOTAREASUBOBJECT_H
 #define LEMBALL_VIEWS_PANEL_PANELBUTTONHOTAREASUBOBJECT_H
 
-#include "../../Common.h"
 #include "../../Visos/Animation/Anim.h"    // complete type
 #include "../../Visos/Foundation/VsRect.h" // complete type
 #include "../../Visos/Graphics/Line.h"     // complete type
 
+class PanelLemming;
 // SIZE 0x128
 class PanelButtonHotAreaSubobject {
 private:

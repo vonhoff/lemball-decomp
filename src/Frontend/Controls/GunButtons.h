@@ -1,10 +1,16 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_GUNBUTTONS_H
 #define LEMBALL_FRONTEND_CONTROLS_GUNBUTTONS_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/VsRect.h"           // complete type
 
+class GWnd;
+class Gdi;
+class GraphicButton;
+class GunController;
+class ResAnim;
+class TrackerButton;
+struct Message;
 // SIZE 0x60
 // VTABLE: LEMBALL 0x00497cf8
 class GunButtons : public BaseQueueHandler {

@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESFONT_H
 #define LEMBALL_VISOS_RESOURCES_RESFONT_H
 
-#include "../../Common.h"
 #include "../Foundation/VsSize.h" // complete type
 #include "ResBaseList.h"          // complete type
 #include "ResInt.h"               // complete type

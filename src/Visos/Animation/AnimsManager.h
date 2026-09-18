@@ -1,9 +1,17 @@
 #ifndef LEMBALL_VISOS_ANIMATION_ANIMSMANAGER_H
 #define LEMBALL_VISOS_ANIMATION_ANIMSMANAGER_H
 
-#include "../../Common.h"
 #include "../Foundation/VsRect.h" // complete type
 #include "../Foundation/VsSize.h" // complete type
+
+class Gdi;
+class Frames;
+class Remap;
+class ResZrle;
+class ResBase;
+class Line;
+class Anim;
+class Zrle;
 
 // SIZE 0x70
 // VTABLE: LEMBALL 0x00499620
@@ -48,10 +56,10 @@ public:
 
 private:
 	Line* m_linePrimitives;             // 0x04
-	undefined m_reserved08[4];          // 0x08
+	char m_reserved08[4];               // 0x08
 	unsigned int m_resetState;          // 0x0c
 	unsigned int m_ownsLinePrimitives;  // 0x10
-	undefined m_reserved14[8];          // 0x14
+	char m_reserved14[8];               // 0x14
 	Gdi* m_gdi;                         // 0x1c
 	Gdi* m_previousGdi;                 // 0x20
 	ResBase** m_resources;              // 0x24
@@ -62,17 +70,17 @@ private:
 	unsigned int m_doubleBuffered;      // 0x38
 	int m_animCapacity;                 // 0x3c
 	int m_animCount;                    // 0x40
-	undefined m_animDrawMark[4];        // 0x44
+	char m_animDrawMark[4];             // 0x44
 	int m_bufferedAnimCount;            // 0x48
 	int m_bufferedZrleCount;            // 0x4c
 	unsigned int m_bufferHalf;          // 0x50
 	Anim* m_animPrimitives;             // 0x54
 	int m_zrleCapacity;                 // 0x58
 	int m_zrleCount;                    // 0x5c
-	undefined m_zrleDrawMark[4];        // 0x60
+	char m_zrleDrawMark[4];             // 0x60
 	Zrle* m_zrlePrimitives;             // 0x64
 	unsigned short m_primitiveSequence; // 0x68
-	undefined2 m_reserved6a;            // 0x6a
+	unsigned short m_reserved6a;        // 0x6a
 	unsigned int m_reserved6c;          // 0x6c
 };
 

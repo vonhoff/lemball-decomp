@@ -253,8 +253,8 @@ void GunController::AddButtonWithRect(int p_x,
 									  int p_y,
 									  unsigned long* p_animIds,
 									  unsigned int p_postAction,
-									  undefined4 p_unusedFirst,
-									  undefined4 p_unusedSecond,
+									  unsigned int p_unusedFirst,
+									  unsigned int p_unusedSecond,
 									  int p_value,
 									  int* p_binding,
 									  const VsRect& p_rect,
@@ -481,7 +481,7 @@ void GunController::MoveUp()
 			}
 			foundY = m_junctions[i].m_y;
 			bestY = foundY;
-			g_pSoundView->PlayEffect(0x11);
+			g_pSoundView->PlayEffect(SFX_RELOAD);
 		}
 		i = i + 1;
 	}
@@ -514,7 +514,7 @@ void GunController::MoveDown()
 			}
 			foundY = m_junctions[i].m_y;
 			bestY = foundY;
-			g_pSoundView->PlayEffect(0x11);
+			g_pSoundView->PlayEffect(SFX_RELOAD);
 		}
 		i = i + 1;
 	}
@@ -649,7 +649,7 @@ void GunController::SelectOption()
 		delta = abs((int) delta);
 		m_selectionState = 2;
 		m_selectEndTime = delta * 2 + m_selectStartTime;
-		g_pSoundView->PlayEffect(7);
+		g_pSoundView->PlayEffect(SFX_BIGGUN);
 	}
 }
 
@@ -684,7 +684,7 @@ void GunController::Process()
 			break;
 		case 2:
 			if (m_selectEndTime <= now) {
-				g_pSoundView->PlayEffect(0xe);
+				g_pSoundView->PlayEffect(SFX_GUNHIT);
 				m_fireStartTime = now;
 				m_fireEndTime = now + 500;
 				m_selectionState = 3;

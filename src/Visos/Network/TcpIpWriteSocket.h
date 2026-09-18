@@ -1,10 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_TCPIPWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_TCPIPWRITESOCKET_H
 
-#include "../../Common.h"
 #include "BaseCommonSocket.h"  // complete type
 #include "TcpIpCommonSocket.h" // complete type
 #include "WriteSocket.h"       // complete type
+
+class NetworkAddress;
 
 // SIZE 0xe0
 // VTABLE: LEMBALL 0x0049a088 TargetNetworkWindow
@@ -27,7 +28,7 @@ private:
 	unsigned short m_addressFamily; // 0x04
 	unsigned short m_networkPort;   // 0x06
 	unsigned int m_destinationIPv4; // 0x08
-	undefined m_sockaddrPadding[8]; // 0x0c
+	char m_sockaddrPadding[8];      // 0x0c
 };
 #pragma warning(default : 4250)
 

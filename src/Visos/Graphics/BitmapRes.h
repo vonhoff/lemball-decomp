@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_BITMAPRES_H
 #define LEMBALL_VISOS_GRAPHICS_BITMAPRES_H
 
-#include "../../Common.h"
 #include "BitmapResBase.h"
+class Gdi;
 
 // SIZE 0x24
 // VTABLE: LEMBALL 0x00497918
@@ -31,8 +31,8 @@ public:
 
 private:
 	unsigned int m_unknown1c; // 0x1c
-	undefined2 m_unknown20;   // 0x20
-	undefined2 m_unknown22;   // 0x22
+	short m_unknown20;        // 0x20
+	short m_unknown22;        // 0x22
 };
 
 // SYNTHETIC: LEMBALL 0x00447170

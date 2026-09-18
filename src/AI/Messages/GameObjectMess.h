@@ -1,10 +1,18 @@
 #ifndef LEMBALL_AI_MESSAGES_GAMEOBJECTMESS_H
 #define LEMBALL_AI_MESSAGES_GAMEOBJECTMESS_H
 
-#include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 #include "GameMessageIds.h"
 
+class GlobalGameObject;
+class ObjectChangeStateMess;
+class ObjectDiesMess;
+class ObjectHitMess;
+class ObjectPosMess;
+class RemoveObjectMess;
+class RequestActionMess;
+class RequestCancelMess;
+class RequestReplyMess;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00493d80
 class GameObjectMess : public NetworkMessage {

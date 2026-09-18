@@ -61,11 +61,11 @@ Main2DDisplay::Main2DDisplay(Game* p_arg0)
 	m_drawer = 0;
 	m_drawerClosing = 1;
 	m_gdiFlags = 0x258;
-	m_currentFlow = 3;
+	m_currentFlow = FLOW_MAIN_OPTIONS_2;
 	m_background = ResZrle::Load(RES_CURSORS_PAW_CURSOR);
 	m_primaryPalette = ResPalette::Load(RES_GAME_GAMEPALETTE);
 	m_secondaryPalette = ResPalette::Load(RES_GAME_TITLEPALETTE);
-	CursorChangeType(2, 0);
+	CursorChangeType(CURSOR_DISPLAY_PAW, 0);
 	g_pMasterInputQueue->Attach(static_cast<BaseQueueHandler*>(this), -0x19);
 	m_lowWidth = 0x140;
 	m_lowHeight = 0xf0;
@@ -117,7 +117,7 @@ void Main2DDisplay::OnCreate()
 // FUNCTION: LEMBALL 0x004317c0
 void Main2DDisplay::OnDestroy()
 {
-	CursorChangeType(0, 0);
+	CursorChangeType(CURSOR_DISPLAY_NONE, 0);
 	if (m_drawer != 0) {
 		m_drawer->ShutDown();
 		m_drawer->DestroyDrawer();

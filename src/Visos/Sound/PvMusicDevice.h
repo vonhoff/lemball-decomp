@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_SOUND_PVMUSICDEVICE_H
 #define LEMBALL_VISOS_SOUND_PVMUSICDEVICE_H
 
-#include "../../Common.h"
 #include "../Foundation/String.h" // complete type
 
 // SIZE 0x18

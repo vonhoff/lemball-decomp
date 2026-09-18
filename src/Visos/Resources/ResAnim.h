@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESANIM_H
 #define LEMBALL_VISOS_RESOURCES_RESANIM_H
 
-#include "../../Common.h"
 #include "ResBaseList.h" // complete type
 #include "ResZrle.h"     // complete type
 #include "ResourceTypeList.h"

@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_OBJECTS_GROUNDANIM_H
 #define LEMBALL_AI_OBJECTS_GROUNDANIM_H
 
-#include "../../Common.h"
 #include "GroundAnimEntry.h" // complete type
 
+struct Coord3d;
 // SIZE 0x12cc
 class GroundAnim {
 public:

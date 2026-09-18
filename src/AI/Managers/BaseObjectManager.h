@@ -1,9 +1,11 @@
 #ifndef LEMBALL_AI_MANAGERS_BASEOBJECTMANAGER_H
 #define LEMBALL_AI_MANAGERS_BASEOBJECTMANAGER_H
 
-#include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
+class GlobalGameObject;
+class GodManager;
+class ViewData;
 class BaseNetwork;
 extern BaseNetwork* g_pBaseNetwork;
 extern unsigned int g_networkPacketSize;

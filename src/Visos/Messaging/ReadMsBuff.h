@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_READMSBUFF_H
 #define LEMBALL_VISOS_MESSAGING_READMSBUFF_H
 
-#include "../../Common.h"
 #include "BasePacket.h"
 
 // SIZE 0x18

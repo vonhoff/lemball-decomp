@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSFILE_H
 #define LEMBALL_VISOS_FOUNDATION_VSFILE_H
 
-#include "../../Common.h"
+struct _Filet;
 int VsClose(_Filet* p_file);
 _Filet* VsOpen(char* p_path, char* p_mode);
 unsigned long VsRead(_Filet* p_file, void* p_buffer, unsigned long p_size);

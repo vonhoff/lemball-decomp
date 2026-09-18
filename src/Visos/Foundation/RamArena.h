@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_RAMARENA_H
 #define LEMBALL_VISOS_FOUNDATION_RAMARENA_H
 
-#include "../../Common.h"
 #include "Arena.h" // complete type
 
 // SIZE 0x50

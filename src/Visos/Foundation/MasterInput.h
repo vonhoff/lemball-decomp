@@ -1,7 +1,8 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_MASTERINPUT_H
 #define LEMBALL_VISOS_FOUNDATION_MASTERINPUT_H
 
-#include "../../Common.h"
+class BaseQueue;
+class VsOStream;
 
 // SIZE 0x18
 // VTABLE: LEMBALL 0x0049a468
@@ -20,7 +21,7 @@ public:
 	friend class BaseCursor;
 
 private:
-	undefined4 m_unk0x04;     // 0x04
+	unsigned int m_unk0x04;   // 0x04
 	unsigned int m_itemCount; // 0x08
 	BaseQueue* m_queue;       // 0x0c
 	void* m_firstItem;        // 0x10

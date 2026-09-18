@@ -1,9 +1,10 @@
 #ifndef LEMBALL_VISOS_ANIMATION_BASESTAT_H
 #define LEMBALL_VISOS_ANIMATION_BASESTAT_H
 
-#include "../../Common.h"
 #include "../Foundation/Arena.h"
 #include "../Foundation/String.h" // complete type
+
+class VsOStream;
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x00498960

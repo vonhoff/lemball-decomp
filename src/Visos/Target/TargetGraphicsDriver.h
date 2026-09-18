@@ -1,12 +1,20 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETGRAPHICSDRIVER_H
 #define LEMBALL_VISOS_TARGET_TARGETGRAPHICSDRIVER_H
 
-#include "../../Common.h"
 #include "../Foundation/VsPoint.h" // complete type
 #include "../Foundation/VsRect.h"  // complete type
 #include "../Foundation/VsSize.h"  // complete type
 #include "TargetDibContext.h"      // complete type
 #include "TargetDrawingContext.h"  // complete type
+
+class GWnd;
+class Main2DDisplay;
+class Surface;
+class TargetGDIDriver;
+class Wnd;
+class PvGdiBitmap;
+class ResPalette;
+struct TargetGraphicsSystemState;
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00498700

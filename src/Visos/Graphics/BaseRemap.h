@@ -1,7 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_BASEREMAP_H
 #define LEMBALL_VISOS_GRAPHICS_BASEREMAP_H
 
-#include "../../Common.h"
+enum ePaletteTypes {
+	PALETTE_DEFAULT = 0,
+	PALETTE_GREYSCALE = 1,
+	PALETTE_MAPPED = 2,
+};
 
 class ResPalette;
 

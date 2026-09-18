@@ -1,9 +1,11 @@
 #ifndef LEMBALL_AI_OBJECTS_TRAPDOOR_H
 #define LEMBALL_AI_OBJECTS_TRAPDOOR_H
 
-#include "../../Common.h"
 #include "../Base/BaseGlobalObject.h" // complete type
 
+class AiCoord;
+class TrapDoorManager;
+class ViewData;
 // SIZE 0x150
 // VTABLE: LEMBALL 0x00493438
 class TrapDoor : public BaseGlobalObject {

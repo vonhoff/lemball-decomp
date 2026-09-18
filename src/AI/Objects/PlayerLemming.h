@@ -1,15 +1,26 @@
 #ifndef LEMBALL_AI_OBJECTS_PLAYERLEMMING_H
 #define LEMBALL_AI_OBJECTS_PLAYERLEMMING_H
 
-#include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 #include "../Base/AiCoord.h"                      // complete type
 #include "../Base/GlobalGameObject.h"             // complete type
 
+class Bullet;
+class GameObject;
+class Ice;
+class PanelButton;
+class PanelLemming;
+class PlayerLemmingGroup;
+class ViewData;
 // Inventory bounds and ammunition limits used by HasObject, AddObject and PickUpAmmo.
 #define PLAYER_INVENTORY_CAPACITY 12
 #define PLAYER_MAX_AMMO 50
 #define PLAYER_START_AMMO 25
+
+enum eFireRequestState {
+	FIRE_REQUEST_NONE = 0,
+	FIRE_REQUEST_PENDING = 1
+};
 
 // SIZE 0x22c
 // VTABLE: LEMBALL 0x00493890 GlobalGameObject

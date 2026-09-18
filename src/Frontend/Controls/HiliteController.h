@@ -1,13 +1,19 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_HILITECONTROLLER_H
 #define LEMBALL_FRONTEND_CONTROLS_HILITECONTROLLER_H
 
-#include "../../Common.h"
 #include "../../Visos/Animation/AnimsManager.h"      // complete type
 #include "../../Visos/Animation/StaticAnim.h"        // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/Message.h"          // complete type
 #include "../../Visos/Graphics/SolidRect.h"          // complete type
 #include "HiliteControllerJunction.h"                // complete type
 
+class BaseFrontendDrawer;
+class GWnd;
+class Gdi;
+class HiliteButtons;
+class HiliteWindow;
+class NetworkOptionsDrawer;
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x00498240 BaseQueueHandler
 // VTABLE: LEMBALL 0x0049823c AnimsManager

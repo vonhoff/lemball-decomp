@@ -311,7 +311,7 @@ bool NetworkMessage::Set(unsigned char* p_data)
 
 // 68K 0x1020abb4 Send__15CNetworkMessageFP8CConnect
 // FUNCTION: LEMBALL 0x0045f2b0
-void NetworkMessage::Send(Connect* p_connection)
+void NetworkMessage::Send(CConnect* p_connection)
 {
 	Message message;
 

@@ -1,9 +1,10 @@
 #ifndef LEMBALL_NETWORK_GAME_PBNETWORKGAME_H
 #define LEMBALL_NETWORK_GAME_PBNETWORKGAME_H
 
-#include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
+class Ai;
+class PlayerLemming;
 // SIZE 0x34
 // VTABLE: LEMBALL 0x00498610
 class PbNetworkGame : public NetworkMessage {

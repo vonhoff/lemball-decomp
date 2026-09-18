@@ -1,9 +1,11 @@
 #ifndef LEMBALL_VISOS_RESOURCES_MOGLOAD_H
 #define LEMBALL_VISOS_RESOURCES_MOGLOAD_H
-
-#include "../../Common.h"
+#include "../Foundation/Chunk.h"     // complete type
+#include "../Foundation/ChunkInfo.h" // complete type
 #include "MogloadArena.h"
 #include "RawRead.h"
+
+#include <stddef.h>
 
 #define kChunkDirc 0x44495243
 #define kAnyChunkType 0xffffffff
@@ -42,7 +44,7 @@ private:
 	int m_chunkCount;                  // 0x28
 	int m_loadedChunkCount;            // 0x2c
 	unsigned char* m_directoryData;    // 0x30
-	undefined4 m_unk0x34;              // 0x34
+	unsigned int m_unk0x34;            // 0x34
 };
 
 extern int g_chunkIndex;

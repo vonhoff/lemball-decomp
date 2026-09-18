@@ -3,9 +3,18 @@
 
 #include "../../Visos/Foundation/VsPoint.h" // complete type
 #include "../Base/BaseFrontendDrawer.h"
+#include "../Support/CoordPair.h"          // complete type
 #include "../Windows/SuccFailAnimWindow.h" // complete type
 #include "SuccFailDrawerPrims.h"           // complete type
 
+class AnimsManager;
+class BaseQueueHandler;
+class Drawer;
+class Gdi;
+class Main2DDisplay;
+class ResBitmap;
+class VsRect;
+struct Message;
 // SIZE 0x68
 struct SuccFailLayout {
 	CoordPair m_returnButton;          // 0x00
@@ -30,7 +39,7 @@ struct SuccFailLayout {
 class SuccFailDrawer : public BaseFrontendDrawer {
 public:
 	SuccFailDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned int p_arg3);
-	bool ConfirmedAction(int p_action);
+	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawBackGround();                    // vtable+0x50
 	virtual void Load();                              // vtable+0x40

@@ -1,12 +1,34 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_VSGDI_H
 #define LEMBALL_VISOS_GRAPHICS_VSGDI_H
 
-#include "../../Common.h"
 #include "../Foundation/VsRect.h" // complete type
 #include "PvBackBuffSurface.h"    // complete type
 #include "PvScrollableSurface.h"  // complete type
 #include "PvSurface.h"            // complete type
 #include "PvZBuffSurface.h"       // complete type
+
+class GrafPort;
+struct VsSize;
+class ChangeList;
+class ResPalette;
+class Zrle;
+class ResZrle;
+class Bitmap;
+class ResBitmap;
+class BigBitmap;
+class Line;
+class FilledCircle;
+class ClipRect;
+class Circle;
+class ScreenScroll;
+class SolidRect;
+class Point;
+class CopyToBackBuff;
+class CopyColourToBackBuff;
+class ZBuffScroll;
+class ZBuffClear;
+class Remap;
+struct VsPoint;
 
 #pragma warning(disable : 4250)
 
@@ -127,16 +149,16 @@ private:
 	short m_presentX;                    // 0xec
 	short m_presentY;                    // 0xee
 	void* m_platformBitmap;              // 0xf0
-	undefined4 m_unk0xf4;                // 0xf4
+	unsigned int m_unk0xf4;              // 0xf4
 	void* m_drawingPort;                 // 0xf8
-	undefined m_bitmapInfo[0x28];        // 0xfc
-	undefined m_colourTable[0x400];      // 0x124
-	undefined4 m_unk0x524;               // 0x524
+	char m_bitmapInfo[0x28];             // 0xfc
+	char m_colourTable[0x400];           // 0x124
+	unsigned int m_unk0x524;             // 0x524
 	SurfaceListNode* m_childSurfaceHead; // 0x528
 	SurfaceListNode* m_childSurfaceTail; // 0x52c
 	unsigned int m_childSurfaceCount;    // 0x530
-	undefined m_lock[0x18];              // 0x534
-	undefined4 m_unk0x54c;               // 0x54c
+	char m_lock[0x18];                   // 0x534
+	unsigned int m_unk0x54c;             // 0x54c
 	ChangeList* m_changeList;            // 0x550
 	void* m_currDb;                      // 0x554
 };

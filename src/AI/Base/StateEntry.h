@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_BASE_STATEENTRY_H
 #define LEMBALL_AI_BASE_STATEENTRY_H
 
-#include "../../Common.h"
+#include "ObjectActions.h"
 
 // SIZE 0x10
 struct StateEntry {

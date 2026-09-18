@@ -1,7 +1,6 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_PREVIEWDRAWERPRIMS_H
 #define LEMBALL_FRONTEND_DRAWERS_PREVIEWDRAWERPRIMS_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/BitmapRes.h" // complete type
 
 // SIZE 0x24

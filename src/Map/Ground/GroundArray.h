@@ -1,9 +1,44 @@
 #ifndef LEMBALL_MAP_GROUND_GROUNDARRAY_H
 #define LEMBALL_MAP_GROUND_GROUNDARRAY_H
 
-#include "../../Common.h"
 #include "Ground.h"
 
+class Ai;
+class Ammo;
+class Ball;
+class Balloon;
+class BalloonPost;
+class Bullet;
+class C2D;
+class Catapult;
+class Collectable;
+class Crate;
+class Door;
+class Duplicator;
+class Enemy;
+class Flag;
+class GameObject;
+class GroundAnim;
+class Hand;
+class Ice;
+class InvisibleSwitch;
+class Key;
+class Laser;
+class Lift;
+class Map;
+class Maze;
+class Mine;
+class Mover;
+class PaintGun;
+class PlayerLemming;
+class PlayerLemmingGroupManager;
+class Rocket;
+class Slinky;
+class Switch;
+class Tower;
+class Trampoline;
+class TrapDoor;
+class TrapDoorManager;
 // SIZE 0x10
 class GroundArray {
 public:

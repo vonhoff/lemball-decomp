@@ -4,6 +4,7 @@
 #include "IDirectDrawSurface.h"
 #include "TargetDibContext.h"
 
+class TargetDirectDrawDriver;
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x00498828
 class TargetDirectDrawSurfaceContext : public TargetDibContext {

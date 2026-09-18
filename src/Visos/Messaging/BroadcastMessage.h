@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_BROADCASTMESSAGE_H
 #define LEMBALL_VISOS_MESSAGING_BROADCASTMESSAGE_H
 
-#include "../../Common.h"
 #include "NetworkMessage.h" // complete type
 
 #include <string.h>

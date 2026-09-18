@@ -37,10 +37,10 @@ char* FileNetworkAddress::GetStr()
 void FileNetworkAddress::operator=(eBroadcastTypes p_type)
 {
 	switch (p_type) {
-	case 0:
+	case BROADCAST_LAN:
 		*this = "LAN";
 		break;
-	case 1:
+	case BROADCAST_WAN:
 		*this = "WAN";
 		break;
 	}

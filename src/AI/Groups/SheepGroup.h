@@ -1,10 +1,12 @@
 #ifndef LEMBALL_AI_GROUPS_SHEEPGROUP_H
 #define LEMBALL_AI_GROUPS_SHEEPGROUP_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h" // complete type
 #include "GenericGroup.h"    // complete type
 
+class Ai;
+class FormationManager;
+class ObjectManager;
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x00494dd8
 class SheepGroup : public GenericGroup {

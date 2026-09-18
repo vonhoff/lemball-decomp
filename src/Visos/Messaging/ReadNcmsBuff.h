@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_READNCMSBUFF_H
 #define LEMBALL_VISOS_MESSAGING_READNCMSBUFF_H
 
-#include "../../Common.h"
 #include "ReadMsBuff.h" // complete type
 
 // SIZE 0x28

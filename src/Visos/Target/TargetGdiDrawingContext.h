@@ -1,9 +1,13 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETGDIDRAWINGCONTEXT_H
 #define LEMBALL_VISOS_TARGET_TARGETGDIDRAWINGCONTEXT_H
 
-#include "../../Common.h"
 #include "TargetDrawingContext.h"
 
+class Surface;
+class TargetDisplayDibDriver;
+class TargetGDIDriver;
+class TargetGraphicsDriver;
+class TargetPlanarDisplayDibDriver;
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x00498770
 class TargetGdiDrawingContext : public TargetDrawingContext {

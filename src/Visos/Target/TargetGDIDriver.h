@@ -3,6 +3,10 @@
 
 #include "TargetGraphicsDriver.h" // complete type
 
+class TargetDibContext;
+class TargetDrawingContext;
+class VsRect;
+struct VsPoint;
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00498738
 class TargetGDIDriver : public TargetGraphicsDriver {

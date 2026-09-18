@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VIEWS_TARGET_TARGETSPRITEGROUNDLOOKUP_H
 #define LEMBALL_VIEWS_TARGET_TARGETSPRITEGROUNDLOOKUP_H
 
-#include "../../Common.h"
-
 // SIZE 0x18
 struct TargetSpriteGroundLookup {
 	unsigned char m_header[8]; // 0x00

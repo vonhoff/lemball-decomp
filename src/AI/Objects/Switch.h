@@ -1,11 +1,12 @@
 #ifndef LEMBALL_AI_OBJECTS_SWITCH_H
 #define LEMBALL_AI_OBJECTS_SWITCH_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
 #include "SwitchEntry.h"              // complete type
 
+class GameObject;
+class ViewData;
 // MINIMUM SIZE 0x260
 // VTABLE: LEMBALL 0x00494a18
 class Switch : public BaseGlobalObject {
@@ -20,7 +21,7 @@ public:
 	virtual void GetViewData(ViewData& p_viewData); // vtable+0x0c
 	virtual void Restart();                         // vtable+0x104
 	virtual ~Switch();                              // vtable+0x00
-	void AddEntry(int p_message, unsigned short p_objectId);
+	void AddEntry(swMessage p_message, unsigned short p_objectId);
 	unsigned char* Load(unsigned char*& p_data);
 	void Throw();
 
@@ -38,6 +39,6 @@ private:
 // SYNTHETIC: LEMBALL 0x0041dd70
 // Switch::`scalar deleting destructor'
 
-extern word g_wNextSwitchIndex;
+extern unsigned short g_wNextSwitchIndex;
 
 #endif

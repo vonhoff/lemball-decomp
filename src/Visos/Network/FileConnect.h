@@ -1,9 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_FILECONNECT_H
 #define LEMBALL_VISOS_NETWORK_FILECONNECT_H
 
-#include "../../Common.h"
 #include "Connect.h"            // complete type
 #include "FileOpenManagement.h" // complete type
+
+class NetworkAddress;
+class NetworkMessage;
 
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x0049ab68 native callback
@@ -14,7 +16,7 @@
 // VTABLE: LEMBALL 0x0049ac18 primary Connect view
 // Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
-class FileConnect : public FileOpenManagement, public Connect {
+class FileConnect : public FileOpenManagement, public CConnect {
 public:
 	FileConnect();
 	virtual bool Start(const char* p_localName, const char* p_remoteName); // vtable+0x00

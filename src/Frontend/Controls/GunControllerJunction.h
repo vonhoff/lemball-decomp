@@ -1,8 +1,6 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_GUNCONTROLLERJUNCTION_H
 #define LEMBALL_FRONTEND_CONTROLS_GUNCONTROLLERJUNCTION_H
 
-#include "../../Common.h"
-
 // SIZE 0x20
 struct GunControllerJunction {
 	int m_leftX;                 // 0x00

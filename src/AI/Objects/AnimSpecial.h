@@ -1,8 +1,10 @@
 #ifndef LEMBALL_AI_OBJECTS_ANIMSPECIAL_H
 #define LEMBALL_AI_OBJECTS_ANIMSPECIAL_H
 
-#include "../../Common.h"
-
+class Ai;
+class C2D;
+class Map;
+struct AnimSpecialEntry;
 // SIZE 0x08
 class AnimSpecial {
 public:

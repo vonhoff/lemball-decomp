@@ -253,7 +253,7 @@ int TargetTextWindow::UpdateClientWidth()
 }
 
 // FUNCTION: LEMBALL 0x00474090
-void TargetTextWindow::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, undefined4 p_arg2)
+void TargetTextWindow::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_arg2)
 {
 	RECT rect;
 	EnterCritical();
@@ -360,7 +360,7 @@ void TargetTextWindow::Scroll(int p_scrollCode, int p_thumbPos)
 }
 
 // FUNCTION: LEMBALL 0x00474340
-void TargetTextWindow::BeginSelection(int p_x, int p_y, undefined4 p_arg2)
+void TargetTextWindow::BeginSelection(int p_x, int p_y, unsigned int p_arg2)
 {
 	EnterCritical();
 	m_dragLine = PointToLine(p_x, p_y);
@@ -379,7 +379,7 @@ void TargetTextWindow::BeginSelection(int p_x, int p_y, undefined4 p_arg2)
 }
 
 // FUNCTION: LEMBALL 0x004743b0
-void TargetTextWindow::EndSelection(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2)
+void TargetTextWindow::EndSelection(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2)
 {
 	EnterCritical();
 	if (m_selecting != 0) {
@@ -420,7 +420,7 @@ void TargetTextWindow::EnsureLineVisible(int p_line)
 }
 
 // FUNCTION: LEMBALL 0x004744a0
-void TargetTextWindow::UpdateSelection(int p_x, int p_y, undefined4 p_arg2)
+void TargetTextWindow::UpdateSelection(int p_x, int p_y, unsigned int p_arg2)
 {
 	EnterCritical();
 	if (m_selecting != 0) {

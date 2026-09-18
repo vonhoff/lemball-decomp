@@ -1,10 +1,12 @@
 #ifndef LEMBALL_VISOS_NETWORK_FILEWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_FILEWRITESOCKET_H
 
-#include "../../Common.h"
 #include "FileBaseSocket.h"   // complete type
 #include "FileCommonSocket.h" // complete type
 #include "WriteSocket.h"      // complete type
+
+class NetworkAddress;
+class NetworkMessage;
 
 // SIZE 0xdc
 // VTABLE: LEMBALL 0x0049a694 FileCommonSocket
@@ -16,7 +18,7 @@
 class FileWriteSocket : public FileBaseSocket, public virtual WriteSocket, public virtual FileCommonSocket {
 public:
 	FileWriteSocket();
-	int Write(NetworkMessage& p_message, undefined4 p_keepLock, undefined4 p_wait);
+	int Write(NetworkMessage& p_message, int p_keepLock, int p_wait);
 	virtual bool SendPacket(const unsigned char* p_data, int p_size); // vtable+0x24
 	virtual void Closed(int p_notifyPeer);                            // vtable+0x0c
 	virtual void SetDestAddr(NetworkAddress* p_address);              // vtable+0x20

@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_READPACKETBUFF_H
 #define LEMBALL_VISOS_MESSAGING_READPACKETBUFF_H
 
-#include "../../Common.h"
 #include "BasePacketBuff.h" // complete type
 
 // SIZE 0x0c

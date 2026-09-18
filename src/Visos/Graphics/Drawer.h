@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_DRAWER_H
 #define LEMBALL_VISOS_GRAPHICS_DRAWER_H
 
-#include "../../Common.h"
+class VsRect;
 
 // SIZE 0x04
 // VTABLE: LEMBALL 0x00496d48

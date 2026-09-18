@@ -1,9 +1,12 @@
 #ifndef LEMBALL_AI_GROUPS_SHEEPGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_SHEEPGROUPMANAGER_H
 
-#include "../../Common.h"
 #include "GenericGroupManager.h" // complete type
 
+class Ai;
+class FormationManager;
+class ObjectManager;
+struct LoadSheepData;
 // SIZE 0xb0
 // VTABLE: LEMBALL 0x00494d70
 class SheepGroupManager : public GenericGroupManager {

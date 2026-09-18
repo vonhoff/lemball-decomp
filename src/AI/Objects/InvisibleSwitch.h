@@ -1,11 +1,13 @@
 #ifndef LEMBALL_AI_OBJECTS_INVISIBLESWITCH_H
 #define LEMBALL_AI_OBJECTS_INVISIBLESWITCH_H
 
-#include "../../Common.h"
 #include "../Base/Coord3d.h"          // complete type
 #include "../Base/GlobalGameObject.h" // complete type
 #include "InvisibleSwitchTarget.h"    // complete type
 
+class AiCoord;
+class GameObject;
+class InvisibleSwitchManager;
 // SIZE 0x2b8
 // VTABLE: LEMBALL 0x00493120
 class InvisibleSwitch : public GlobalGameObject {

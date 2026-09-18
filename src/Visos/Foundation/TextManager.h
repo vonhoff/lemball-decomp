@@ -1,8 +1,14 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_TEXTMANAGER_H
 #define LEMBALL_VISOS_FOUNDATION_TEXTMANAGER_H
 
-#include "../../Common.h"
 #include "String.h" // complete type
+
+class Gdi;
+class Remap;
+class ResFont;
+class Text;
+struct VsPoint;
+struct VsSize;
 
 // SIZE 0x24
 class TextManager {

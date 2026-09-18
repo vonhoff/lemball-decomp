@@ -1,9 +1,10 @@
 #ifndef LEMBALL_VISOS_NETWORK_FILEBROADCAST_H
 #define LEMBALL_VISOS_NETWORK_FILEBROADCAST_H
 
-#include "../../Common.h"
 #include "Broadcast.h"          // complete type
 #include "FileOpenManagement.h" // complete type
+
+class PortsMessage;
 
 // SIZE 0x1b4
 // VTABLE: LEMBALL 0x0049a928 native callback

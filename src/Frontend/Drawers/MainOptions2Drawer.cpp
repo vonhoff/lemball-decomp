@@ -43,7 +43,7 @@ int g_anMainOptions2CompactButtonLayout[12] = {16, 58, 240, 58, 24, 116, 232, 11
 // 68K 0x1080a69e __ct__19CMainOptions2DrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // FUNCTION: LEMBALL 0x00448ab0
 MainOptions2Drawer::MainOptions2Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
-	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, 3, 0, 0, 0, 0, 0)
+	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_2, 0, 0, 0, 0, 0)
 {
 	if (g_nMusicAvailable == 0) {
 		g_nMusicVolume = 0;

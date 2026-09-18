@@ -1,8 +1,7 @@
 #ifndef LEMBALL_CONTROL_GAME_GAMEMAIN_H
 #define LEMBALL_CONTROL_GAME_GAMEMAIN_H
 
-#include "../../Common.h"
-
+struct PreInit;
 PreInit* VsPreInit(PreInit* p_preInit);
 void SetGameDefaults();
 void DisplayHelp();

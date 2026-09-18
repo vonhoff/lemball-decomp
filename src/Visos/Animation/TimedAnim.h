@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_ANIMATION_TIMEDANIM_H
 #define LEMBALL_VISOS_ANIMATION_TIMEDANIM_H
 
-#include "../../Common.h"
 #include "Frames.h" // complete type
 
 // SIZE 0x1c

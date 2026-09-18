@@ -1,7 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSSOUND_H
 #define LEMBALL_VISOS_FOUNDATION_VSSOUND_H
 
-#include "../../Common.h"
+class BaseSoundDevice;
+class PvMusicDevice;
+class Wnd;
 
 bool InitSound(unsigned int p_musicEnabled,
 			   unsigned int p_effectsEnabled,

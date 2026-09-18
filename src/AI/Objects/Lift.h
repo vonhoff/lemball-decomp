@@ -1,9 +1,20 @@
 #ifndef LEMBALL_AI_OBJECTS_LIFT_H
 #define LEMBALL_AI_OBJECTS_LIFT_H
 
-#include "../../Common.h"
 #include "../Base/Coord3d.h"
 #include "../Base/GlobalGameObject.h" // complete type
+
+class AiCoord;
+class GameObject;
+class Ground;
+class LiftManager;
+enum eLiftActivateType {
+	LIFT_ACTIVATE_SWITCH_TOGGLE = 0,
+	LIFT_ACTIVATE_STEP = 1,
+	LIFT_ACTIVATE_CONTINUOUS = 2,
+	LIFT_ACTIVATE_SWITCH_ONCE = 3,
+	LIFT_ACTIVATE_STEP_ONCE = 4
+};
 
 // SIZE 0x190
 // VTABLE: LEMBALL 0x00495d60
@@ -50,7 +61,7 @@ private:
 	int m_highHeight;                 // 0x14c
 	int m_movementStartHeight;        // 0x150
 	short m_direction;                // 0x154
-	undefined4 m_unk0x158;            // 0x158
+	unsigned int m_unk0x158;          // 0x158
 	eLiftActivateType m_activateType; // 0x15c
 	Ground* m_mapCell;                // 0x160
 	unsigned int m_active;            // 0x164

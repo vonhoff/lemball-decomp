@@ -1,9 +1,11 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_PREVIEW_H
 #define LEMBALL_FRONTEND_PROCESSES_PREVIEW_H
 
-#include "../../Common.h"
 #include "../Base/BaseFrontendProcess.h" // complete type
 
+class BaseProcess;
+class BaseQueueHandler;
+class Game;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497c60 BaseQueueHandler
 // VTABLE: LEMBALL 0x00497c70 BaseProcess

@@ -152,7 +152,7 @@ GlobalGameObject* ObjectManager::Add(unsigned short p_id,
 		object = new Crate(p_position, linkedObject, p_linkedObjectId);
 		break;
 	case OBJECT_SWITCH:
-		object = new Switch(p_position, (swMessage) 0, 0, 0, 0);
+		object = new Switch(p_position, SW_NONE, 0, 0, 0);
 		break;
 	case 0x15:
 	case 0x16:
@@ -311,7 +311,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 			case 0x2b:
 			case 0x2d:
 				if (p_append == 0) {
-					Add(id, position, objectType, 0xffff, 0xffff);
+					Add(id, position, objectType, 0xffff, (eObjectType) 0xffff);
 				}
 				break;
 			case OBJECT_AMMO: {
@@ -321,7 +321,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 					p_data += 2;
 				}
 				if (p_append == 0) {
-					Ammo* ammo = (Ammo*) Add(id, position, objectType, 0xffff, 0xffff);
+					Ammo* ammo = (Ammo*) Add(id, position, objectType, 0xffff, (eObjectType) 0xffff);
 					ammo->m_ammo = ammoCount;
 				}
 				break;
@@ -338,7 +338,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 					contentsId = GameObject::NextId();
 				}
 				if (p_append == 0) {
-					Add(id, position, 0x11, contentsId, contentsType);
+					Add(id, position, OBJECT_CRATE, contentsId, contentsType);
 				}
 				break;
 			}
@@ -346,7 +346,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 				if (m_ai->m_levelVersion > 1) {
 					Switch* object;
 					if (p_append == 0) {
-						object = (Switch*) Add(id, position, objectType, 0xffff, 0xffff);
+						object = (Switch*) Add(id, position, objectType, 0xffff, (eObjectType) 0xffff);
 					}
 					else {
 						GlobalGameObject** objects = m_objects + switchIndex;

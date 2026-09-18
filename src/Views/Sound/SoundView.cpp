@@ -108,7 +108,7 @@ SoundView::SoundView()
 			spec++;
 		} while (spec < g_pEffectSpecs + 44);
 	}
-	m_pendingEffect = (eSoundEffect) 0;
+	m_pendingEffect = SFX_NONE;
 }
 
 // 68K 0x10b0fbd4 __dt__10CSoundViewFv
@@ -179,7 +179,7 @@ void SoundView::SoundEffect(ViewData* p_viewData, int p_count, AiCoord& p_listen
 	if (g_nEffectsAvailable != 0 && g_dwEffectsOn != 0) {
 		if (m_pendingEffect != 0) {
 			eSoundEffect pendingEffect = m_pendingEffect;
-			m_pendingEffect = (eSoundEffect) 0;
+			m_pendingEffect = SFX_NONE;
 			g_pSoundManager->PlayEffect(m_effectSlots[pendingEffect].m_handle);
 		}
 		now = timeGetTime();

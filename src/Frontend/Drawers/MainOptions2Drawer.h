@@ -1,9 +1,15 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_MAINOPTIONS2DRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_MAINOPTIONS2DRAWER_H
 
-#include "../../Common.h"
 #include "../Base/BaseFrontendDrawer.h" // complete type
 
+class AnimsManager;
+class BaseQueueHandler;
+class Drawer;
+class Gdi;
+class Main2DDisplay;
+class VsRect;
+struct Message;
 // SIZE 0x3ac
 // VTABLE: LEMBALL 0x00497b70 Drawer
 // VTABLE: LEMBALL 0x00497b60 BaseQueueHandler

@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_NAVIGATION_NODE_H
 #define LEMBALL_AI_NAVIGATION_NODE_H
 
-#include "../../Common.h"
 #include "../Base/Pt3.h" // complete type
 
+struct NodeNeighbour;
 // SIZE 0x14
 class Node {
 public:
@@ -14,7 +14,7 @@ public:
 	void Initialise(int p_x, int p_y, int p_neighbourCapacity);
 	void Restart();
 	void GetFixedPosition(int* p_coordinates);
-	void SetFixedCoordinates(int p_x, int p_y, undefined4 p_unused);
+	void SetFixedCoordinates(int p_x, int p_y, unsigned int p_unused);
 	void SetIntegerCoordinates(int p_x, int p_y);
 	~Node();
 

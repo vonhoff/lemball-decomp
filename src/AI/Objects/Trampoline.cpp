@@ -9,7 +9,7 @@
 
 // 68K 0x10620548 __ct__11CTrampolineFv
 // FUNCTION: LEMBALL 0x0042a990
-Trampoline::Trampoline() : GlobalGameObject(0x22, 0, 0)
+Trampoline::Trampoline() : GlobalGameObject(OBJECT_TRAMPOLINE, 0, 0)
 {
 }
 
@@ -62,7 +62,7 @@ bool Trampoline::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == (eAction) 0x1b) {
-				SetSndEffect((eSoundEffect) 0x17);
+				SetSndEffect(SFX_TRMPLINE);
 			}
 			m_pendingAction = m_action;
 		}
@@ -164,7 +164,7 @@ int Trampoline::Hit(const AiCoord& p_position, GameObject* p_object)
 	m_actionDeadline = g_dwGameTick + 0x10;
 	m_stateTimer = g_dwSimulationTimestamp;
 	Action((eAction) 0x1b);
-	SetSndEffect((eSoundEffect) 0x17);
+	SetSndEffect(SFX_TRMPLINE);
 	g_pAI->Score(0x32);
 	return 1;
 }

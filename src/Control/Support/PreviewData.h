@@ -1,8 +1,6 @@
 #ifndef LEMBALL_CONTROL_SUPPORT_PREVIEWDATA_H
 #define LEMBALL_CONTROL_SUPPORT_PREVIEWDATA_H
 
-#include "../../Common.h"
-
 // SIZE 0x2c
 struct PreviewData {
 	unsigned short m_playerCount;          // 0x00

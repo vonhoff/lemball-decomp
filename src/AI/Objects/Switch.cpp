@@ -7,7 +7,7 @@
 #include "ViewData.h"
 
 // GLOBAL: LEMBALL 0x0049e1b8
-word g_wNextSwitchIndex;
+unsigned short g_wNextSwitchIndex;
 
 // 68K 0x10619660 __ct__7CSwitchFR7AICOORD9swMessageiii
 // FUNCTION: LEMBALL 0x0041d040
@@ -54,7 +54,7 @@ void Switch::Throw()
 			i++;
 		} while (i < m_entryCount);
 	}
-	SetSndEffect((eSoundEffect) 0x15);
+	SetSndEffect(SFX_SWITCH);
 }
 
 // 68K 0x10619852 Process__7CSwitchFv
@@ -79,7 +79,7 @@ bool Switch::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == (eAction) 7) {
-				SetSndEffect((eSoundEffect) 0x15);
+				SetSndEffect(SFX_SWITCH);
 			}
 			m_pendingAction = m_action;
 		}
@@ -145,7 +145,7 @@ AiCoord Switch::ActivatePosition()
 
 // 68K 0x10619a9c AddEntry__7CSwitchF9swMessageUs
 // FUNCTION: LEMBALL 0x0041d350
-void Switch::AddEntry(int p_message, unsigned short p_objectId)
+void Switch::AddEntry(swMessage p_message, unsigned short p_objectId)
 {
 	if (m_entryCount < 0x20) {
 		m_entries[m_entryCount].m_message = p_message;
@@ -161,20 +161,20 @@ void Switch::ConvertVer0ToVer1()
 	switch (m_legacyType) {
 	case 1: {
 		unsigned int liftId = g_pAI->LiftId(m_legacyFirst);
-		AddEntry(1, liftId);
+		AddEntry(SW_LIFT, liftId);
 		break;
 	}
 	case 2: {
 		for (int i = m_legacyFirst; i < m_legacyLast; i++) {
 			unsigned int liftId = g_pAI->LiftId(i);
-			AddEntry(1, liftId);
+			AddEntry(SW_LIFT, liftId);
 		}
 		break;
 	}
 	case 3: {
 		unsigned int doorId = g_pAI->DoorId(m_legacyFirst);
 		if (doorId != 0xffff) {
-			AddEntry(3, doorId);
+			AddEntry(SW_DOOR, doorId);
 		}
 		break;
 	}
@@ -193,7 +193,7 @@ unsigned char* Switch::Load(unsigned char*& p_data)
 		do {
 			unsigned short objectId;
 			unsigned short* cursor = (unsigned short*) p_data;
-			int message = *cursor++;
+			swMessage message = (swMessage) *cursor++;
 			p_data = (unsigned char*) cursor;
 			objectId = *cursor++;
 			p_data = (unsigned char*) cursor;

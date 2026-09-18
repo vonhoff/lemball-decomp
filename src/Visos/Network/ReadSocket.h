@@ -1,9 +1,14 @@
 #ifndef LEMBALL_VISOS_NETWORK_READSOCKET_H
 #define LEMBALL_VISOS_NETWORK_READSOCKET_H
 
-#include "../../Common.h"
 #include "BaseCommonSocket.h" // complete type
 #include "BaseSocket.h"       // complete type
+
+class BasePacket;
+class ReadCBuff;
+class ReadCmsBuff;
+class ReadNcBuff;
+class ReadNcmsBuff;
 
 // SIZE 0x84
 // VTABLE: LEMBALL 0x00498f60 BaseCommonSocket

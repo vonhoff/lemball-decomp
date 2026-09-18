@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSDEBUGSTREAMBUF_H
 #define LEMBALL_VISOS_FOUNDATION_VSDEBUGSTREAMBUF_H
 
-#include "../../Common.h"
 #include "VsStreambuf.h" // complete type
+
+struct FILE;
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00498968

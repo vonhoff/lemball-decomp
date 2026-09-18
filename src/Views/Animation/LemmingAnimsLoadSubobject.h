@@ -1,8 +1,7 @@
 #ifndef LEMBALL_VIEWS_ANIMATION_LEMMINGANIMSLOADSUBOBJECT_H
 #define LEMBALL_VIEWS_ANIMATION_LEMMINGANIMSLOADSUBOBJECT_H
 
-#include "../../Common.h"
-
+class CdLoadAnim;
 // SIZE 0x44
 class LemmingAnimsLoadSubobject {
 private:

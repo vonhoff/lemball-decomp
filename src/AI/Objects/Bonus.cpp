@@ -14,5 +14,5 @@ int Bonus::Collected()
 // FUNCTION: LEMBALL 0x00422c60
 void Bonus::SetSfx()
 {
-	SetSndEffect(2);
+	SetSndEffect(SFX_YIPPEE);
 }

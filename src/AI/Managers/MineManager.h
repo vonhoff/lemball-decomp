@@ -1,10 +1,14 @@
 #ifndef LEMBALL_AI_MANAGERS_MINEMANAGER_H
 #define LEMBALL_AI_MANAGERS_MINEMANAGER_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h"   // complete type
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class GameObject;
+class Mine;
+class ViewData;
+struct Coord3d;
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00495d30
 class MineManager : public BaseObjectManager {

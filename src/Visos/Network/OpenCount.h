@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_OPENCOUNT_H
 #define LEMBALL_VISOS_NETWORK_OPENCOUNT_H
 
-#include "../../Common.h"
 #include "../Messaging/NetworkMessage.h" // complete type
 
 // SIZE 0x30
@@ -20,8 +19,8 @@ public:
 	friend class FileBroadcast;
 
 private:
-	unsigned short m_openCount; // 0x2c
-	undefined2 m_reserved2e;    // 0x2e
+	unsigned short m_openCount;  // 0x2c
+	unsigned short m_reserved2e; // 0x2e
 };
 
 // SYNTHETIC: LEMBALL 0x0047b970

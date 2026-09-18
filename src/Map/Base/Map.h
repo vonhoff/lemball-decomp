@@ -1,9 +1,48 @@
 #ifndef LEMBALL_MAP_BASE_MAP_H
 #define LEMBALL_MAP_BASE_MAP_H
 
-#include "../../Common.h"
+#include "../../AI/Base/ObjectTypes.h"
 #include "../Ground/GroundArray.h" // complete type
 
+class Ai;
+class Ammo;
+class Ball;
+class Balloon;
+class BalloonPost;
+class Bullet;
+class C2D;
+class Catapult;
+class Collectable;
+class Crate;
+class Door;
+class Duplicator;
+class Enemy;
+class Flag;
+class GameObject;
+class Ground;
+class GroundAnim;
+class Hand;
+class Ice;
+class InvisibleSwitch;
+class Key;
+class Laser;
+class Lift;
+class LoadDefaultBlox;
+class Maze;
+class Mine;
+class Mover;
+class PaintGun;
+class PlayerLemming;
+class PlayerLemmingGroupManager;
+class Rocket;
+class Slinky;
+class Switch;
+class Tower;
+class Trampoline;
+class TrapDoor;
+class TrapDoorManager;
+struct LoadGroundName;
+struct LoadGroundSurfaceData;
 // SIZE 0x58
 class Map {
 public:

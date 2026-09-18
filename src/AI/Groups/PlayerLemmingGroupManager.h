@@ -1,10 +1,16 @@
 #ifndef LEMBALL_AI_GROUPS_PLAYERLEMMINGGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_PLAYERLEMMINGGROUPMANAGER_H
 
-#include "../../Common.h"
 #include "../Managers/BaseObjectManager.h" // complete type
 #include "GenericGroupManager.h"           // complete type
 
+class Ai;
+class AiCoord;
+class FormationManager;
+class ObjectManager;
+class PlayerLemming;
+class PlayerLemmingGroup;
+class ViewData;
 // SIZE 0x150
 // VTABLE: LEMBALL 0x00494068 GenericGroupManager
 // VTABLE: LEMBALL 0x00494038 BaseObjectManager

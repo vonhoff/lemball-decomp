@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_HOTAREAELEMENT_H
 #define LEMBALL_VISOS_GRAPHICS_HOTAREAELEMENT_H
 
-#include "../../Common.h"
-
 // SIZE 0x0c
 struct HotAreaElement {
 	HotAreaHandler* m_handler;  // 0x00

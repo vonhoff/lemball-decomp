@@ -1,10 +1,13 @@
 #ifndef LEMBALL_AI_NAVIGATION_MOVER_H
 #define LEMBALL_AI_NAVIGATION_MOVER_H
 
-#include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type
 #include "../Base/Move3d.h"           // complete type
 
+class AiCoord;
+class GameObject;
+class MoverManager;
+class Switch;
 // SIZE 0x1a0
 // VTABLE: LEMBALL 0x00496a30
 class Mover : public GlobalGameObject {
@@ -20,7 +23,7 @@ public:
 	virtual ~Mover();          // vtable+0x00
 	void Initialise();
 	void MoveObjects(int p_deltaX, int p_deltaY, int p_deltaZ);
-	void Set(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount);
+	void Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode, int p_startNode, int p_nodeCount);
 	void SetPos();
 	void SetUpNextNode(unsigned int p_time);
 	void StopObjectsMoving();

@@ -1,7 +1,6 @@
 #ifndef LEMBALL_AI_OBJECTS_LIFTENDPOINTRECORD_H
 #define LEMBALL_AI_OBJECTS_LIFTENDPOINTRECORD_H
 
-#include "../../Common.h"
 #include "../Base/Coord3d.h" // complete type
 
 // SIZE 0x0c

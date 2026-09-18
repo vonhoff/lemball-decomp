@@ -1,9 +1,10 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETINPUTTEXTBUTTON_H
 #define LEMBALL_VISOS_TARGET_TARGETINPUTTEXTBUTTON_H
 
-#include "../../Common.h"
 #include "TargetTextButton.h" // complete type
 
+class GWnd;
+class HotAreaHandler;
 // MINIMUM SIZE 0x150
 // VTABLE: LEMBALL 0x00497108 GWnd
 // VTABLE: LEMBALL 0x004970e0 HotAreaHandler

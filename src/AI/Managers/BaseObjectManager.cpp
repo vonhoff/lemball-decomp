@@ -79,7 +79,7 @@ void BaseObjectManager::ProcessNetwork()
 		return;
 	}
 	NetworkMessage::Add((unsigned short) 0x2f);
-	Connect* connection = g_pActiveConnection;
+	CConnect* connection = g_pActiveConnection;
 	if (connection->m_segmentIndex != -1 ||
 		!connection->WriteSocket::m_criticalBuffer->IsPacketAvailable(connection->WriteSocket::m_criticalSequence)) {
 		unsigned long start = timeGetTime();

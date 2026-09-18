@@ -1,9 +1,13 @@
 #ifndef LEMBALL_AI_MANAGERS_INVISIBLESWITCHMANAGER_H
 #define LEMBALL_AI_MANAGERS_INVISIBLESWITCHMANAGER_H
 
-#include "../../Common.h"
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class AiCoord;
+class GameObject;
+class InvisibleSwitch;
+struct Coord3d;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00493298
 class InvisibleSwitchManager : public BaseObjectManager {

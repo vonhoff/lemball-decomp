@@ -1,8 +1,10 @@
 #ifndef LEMBALL_AI_BASE_STATEMACHINE_H
 #define LEMBALL_AI_BASE_STATEMACHINE_H
 
-#include "../../Common.h"
-
+class Ai;
+class GameObject;
+class Info;
+struct StateEntry;
 void StateMachine(StateEntry** p_arg0, Ai* p_arg1, GameObject* p_arg2);
 void UserLemming(Ai* p_arg0, GameObject* p_arg1);
 void AiPlayerLemming(Ai* p_arg0, GameObject* p_arg1);

@@ -25,7 +25,7 @@ PanelPauseButton::PanelPauseButton(Panel* p_arg0,
 // FUNCTION: LEMBALL 0x00442240
 void PanelPauseButton::OnInside(const VsPoint& p_point)
 {
-	CursorChangeType((eCursorDisplayType) 1, m_pressedInside);
+	CursorChangeType(CURSOR_DISPLAY_HAND, m_pressedInside);
 }
 
 // 68K 0x10b0c604 DrawButton__17CPanelPauseButtonFv
@@ -48,8 +48,8 @@ void PanelPauseButton::OnPressed(int p_flags)
 {
 	if (p_flags == 0) {
 		m_pressedInside = 1;
-		CursorChangeType((eCursorDisplayType) 1, 1);
-		g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+		CursorChangeType(CURSOR_DISPLAY_HAND, 1);
+		g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 	}
 }
 
@@ -70,7 +70,7 @@ void PanelPauseButton::OnReleased(int p_flags)
 		m_toggled = m_panel->m_game->m_paused;
 		m_enabled = m_toggled;
 		m_pressedInside = 0;
-		CursorChangeType((eCursorDisplayType) 1, 0);
+		CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 	}
 }
 
@@ -81,6 +81,6 @@ void PanelPauseButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 	PvButton::OnExternalButtonUp(p_point, p_flags);
 	if (p_flags == 0 && m_pressedInside != 0) {
 		m_pressedInside = 0;
-		CursorChangeType((eCursorDisplayType) 1, 0);
+		CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 	}
 }

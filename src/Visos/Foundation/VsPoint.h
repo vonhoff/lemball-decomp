@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSPOINT_H
 #define LEMBALL_VISOS_FOUNDATION_VSPOINT_H
 
-#include "../../Common.h"
-
 // SIZE 0x04
 struct VsPoint {
 	VsPoint(const VsPoint& p_source) : m_x(p_source.m_x), m_y(p_source.m_y) {}

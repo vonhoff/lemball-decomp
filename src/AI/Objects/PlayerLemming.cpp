@@ -84,7 +84,7 @@ void PlayerLemming::Restart()
 		m_desiredFacingDirection = m_initialFacingDirection;
 		m_wasHitByBullet = 0;
 		m_hasDestination = 0;
-		m_fireRequestState = (eFireRequestState) 0;
+		m_fireRequestState = FIRE_REQUEST_NONE;
 		SetBored(4000);
 		AiCoord dest;
 		dest.m_xFixed = ((4 - m_playerIndex) * 16 + tileX) << 12;
@@ -126,7 +126,7 @@ void PlayerLemming::HitBullet(Bullet* p_bullet)
 	if (g_pGameStatus->m_status0 == 0) {
 		if ((int) m_action < 4 || ((int) m_action > 5 && m_action != 16)) {
 			switch (p_bullet->m_owner) {
-			case 1: {
+			case OWNER_ENEMY: {
 				int randVal = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
 				*g_pSentinel = randVal;
 				if (randVal % 2) {
@@ -134,7 +134,7 @@ void PlayerLemming::HitBullet(Bullet* p_bullet)
 				}
 				break;
 			}
-			case 2:
+			case OWNER_REMOTE_PLAYER:
 				if (g_pActiveConnection != 0) {
 					g_pObjectHitMessage->Send(p_bullet);
 				}
@@ -246,8 +246,8 @@ bool PlayerLemming::IsRequestingFire()
 // FUNCTION: LEMBALL 0x0040f2c0
 void PlayerLemming::RequestFire(int p_x, int p_y)
 {
-	if (m_fireRequestState == 0 && (m_action == 0 || m_action == 2 || m_action == 6)) {
-		m_fireRequestState = (eFireRequestState) 1;
+	if (m_fireRequestState == FIRE_REQUEST_NONE && (m_action == 0 || m_action == 2 || m_action == 6)) {
+		m_fireRequestState = FIRE_REQUEST_PENDING;
 		m_fireTarget.m_xFixed = p_x << 12;
 		m_fireTarget.m_yFixed = p_y << 12;
 	}
@@ -277,14 +277,14 @@ void PlayerLemming::Fire()
 	default:
 		if (g_pGameStatus->m_status1 != 0 || m_ammoCount != 0) {
 			SetBored(4000);
-			g_pAI->FireBullet(m_linkedObjectId, (eBulletType) 0, (eOwner) 0, facing, start, m_fireTarget);
-			m_soundEffect = (eSoundEffect) 13;
+			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_PLAYER, facing, start, m_fireTarget);
+			m_soundEffect = SFX_GUN;
 			if (g_pGameStatus->m_status1 == 0) {
 				m_ammoCount--;
 			}
 		}
 	}
-	m_fireRequestState = (eFireRequestState) 0;
+	m_fireRequestState = FIRE_REQUEST_NONE;
 }
 
 // 68K 0x1061c7c6 StartFiring__14CPlayerLemmingFv
@@ -298,7 +298,7 @@ void PlayerLemming::StartFiring()
 // FUNCTION: LEMBALL 0x0040f420
 void PlayerLemming::EndFiring()
 {
-	m_fireRequestState = (eFireRequestState) 0;
+	m_fireRequestState = FIRE_REQUEST_NONE;
 }
 
 // 68K 0x1061c830 FacingCursor__14CPlayerLemmingFv
@@ -363,7 +363,7 @@ void PlayerLemming::Die()
 	}
 	g_wLemmingCount--;
 	if (g_wLemmingCount == 0) {
-		g_pAI->GameState((eGameStatus) 5);
+		g_pAI->GameState(GAME_STATUS_5);
 	}
 }
 
@@ -542,7 +542,7 @@ void PlayerLemming::Resurrect(const AiCoord& p_position)
 	m_onConveyor = 0;
 	m_hasDestination = 0;
 	m_unk0xc4 = 0;
-	m_fireRequestState = (eFireRequestState) 0;
+	m_fireRequestState = FIRE_REQUEST_NONE;
 	m_isFlying = 0;
 	m_unk0xc0 = 0;
 	m_unk0x8c = 0;
@@ -657,7 +657,7 @@ void PlayerLemming::OnBalloon()
 		Distance(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, postPos.m_xFixed >> 12, postPos.m_yFixed >> 12);
 	if (dist < 16) {
 		m_balloonPostActive = 0;
-		SetSndEffect((eSoundEffect) 0x2b);
+		SetSndEffect(SFX_BALLOON_EXPLODE);
 		m_unk0x108 = 1;
 		m_actionArgument = 0;
 		m_lastMovementTick = g_dwGameTick;
@@ -885,7 +885,7 @@ void PlayerLemming::GetViewData(ViewData& p_viewData)
 	else {
 		p_viewData.m_animationTime = g_dwSimulationTimestamp;
 	}
-	SetSndEffect((eSoundEffect) 0);
+	SetSndEffect(SFX_NONE);
 	p_viewData.m_transientFlags = m_transientFlags;
 	m_transientFlags = 0;
 	int flags = (m_isGroupLeader != 0 ? 1 : 0) | (m_groupIndex != 0 ? 2 : 0);

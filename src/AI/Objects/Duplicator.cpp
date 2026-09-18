@@ -85,7 +85,7 @@ bool Duplicator::Process()
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
 			if (m_action == 26) {
-				SetSndEffect((eSoundEffect) 12);
+				SetSndEffect(SFX_DUPLICTR);
 			}
 			m_pendingAction = m_action;
 		}
@@ -153,7 +153,7 @@ void Duplicator::DoActivate()
 	dup->m_position.m_xFixed = x;
 	dup->m_position.m_yFixed = y;
 	dup->m_position.m_zFixed = z;
-	SetSndEffect((eSoundEffect) 12);
+	SetSndEffect(SFX_DUPLICTR);
 	g_pAI->Score(100);
 }
 

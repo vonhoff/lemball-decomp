@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_NETWORKMESSAGE_H
 #define LEMBALL_VISOS_MESSAGING_NETWORKMESSAGE_H
 
-#include "../../Common.h"
+class CConnect;
 
 // SIZE 0x2c
 // VTABLE: LEMBALL 0x004932c8
@@ -57,7 +57,7 @@ public:
 	void GetCopy(unsigned char* p_buffer, int p_length);
 	void Initialise();
 	void OpenDataStream();
-	void Send(Connect* p_connection);
+	void Send(CConnect* p_connection);
 
 protected:
 	unsigned int m_messageId;        // 0x04

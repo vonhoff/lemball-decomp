@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETWAVESOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_TARGETWAVESOUNDDEVICE_H
 
-#include "../../Common.h"
 #include "../Sound/BaseSoundDevice.h" // complete type
 
 #define WIN32_LEAN_AND_MEAN
@@ -30,11 +29,11 @@ public:
 	virtual int IsEffectAvailable();
 	virtual int Dummy2c();
 	virtual int GetBuffersPerEffect();
-	virtual int Dummy34(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3);
-	virtual int Dummy38(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3);
+	virtual int Dummy34(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3);
+	virtual int Dummy38(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3);
 	virtual int PrepareEffect(unsigned char* p_data, unsigned long* p_handle);
-	virtual int Dummy40(undefined4 p_arg0);
-	virtual int Dummy44(undefined4 p_arg0);
+	virtual int Dummy40(unsigned int p_arg0);
+	virtual int Dummy44(unsigned int p_arg0);
 	virtual int FreeEffect(unsigned long p_effectId);
 	virtual int Dummy4c();
 	virtual int FreeAllEffects();
@@ -55,8 +54,8 @@ private:
 	unsigned int m_available;       // 0x0c
 	unsigned int m_stereo;          // 0x10
 	unsigned int m_use16Bit;        // 0x14
-	undefined4 m_unk0x18;           // 0x18
-	undefined4 m_unk0x1c;           // 0x1c
+	unsigned int m_unk0x18;         // 0x18
+	unsigned int m_unk0x1c;         // 0x1c
 	unsigned int m_channelState[8]; // 0x20
 	unsigned char m_pad0x40[8];     // 0x40
 	unsigned char m_pad0x48[8];     // 0x48

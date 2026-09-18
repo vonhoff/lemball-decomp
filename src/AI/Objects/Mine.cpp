@@ -10,7 +10,7 @@ short g_mineTerrainOffsets[4];
 
 // 68K 0x10616282 __ct__5CMineFv
 // FUNCTION: LEMBALL 0x00423c10
-Mine::Mine() : GlobalGameObject(0x13, 0, 0)
+Mine::Mine() : GlobalGameObject(OBJECT_MINE, 0, 0)
 {
 }
 
@@ -109,14 +109,14 @@ void Mine::SetTerrain()
 			}
 		}
 	}
-	SetSndEffect((eSoundEffect) 16);
+	SetSndEffect(SFX_MINEEXP);
 }
 
 // 68K 0x10616578 StepOn__5CMineFP11CGameObject
 // FUNCTION: LEMBALL 0x00423e70
 void Mine::StepOn(GameObject* p_object)
 {
-	RequestAction(0x1b);
+	RequestAction((eAction) 0x1b);
 	p_object->HitMine();
 }
 

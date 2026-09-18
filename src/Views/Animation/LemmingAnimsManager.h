@@ -1,12 +1,19 @@
 #ifndef LEMBALL_VIEWS_ANIMATION_LEMMINGANIMSMANAGER_H
 #define LEMBALL_VIEWS_ANIMATION_LEMMINGANIMSMANAGER_H
 
-#include "../../Common.h"
 #include "../../Visos/Animation/AnimsManager.h" // complete type
 #include "../../Visos/Graphics/DrawingMark.h"   // complete type
 #include "../../Visos/Graphics/Primitive.h"     // complete type
 #include "../Sound/LoadUpdate.h"                // complete type
 
+class Ai;
+class C2D;
+class CdLoadAnim;
+class Frames;
+class Gdi;
+class Main2DDisplay;
+class Remap;
+class ResFont;
 extern unsigned int g_groundBlox1ResourceId;
 extern unsigned int g_groundBlox2ResourceId;
 extern unsigned int g_groundBlox3ResourceId;

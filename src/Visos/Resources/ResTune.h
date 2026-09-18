@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESTUNE_H
 #define LEMBALL_VISOS_RESOURCES_RESTUNE_H
 
-#include "../../Common.h"
 #include "ResBase.h" // complete type
 
 #define kChunkTune 0x54554e45

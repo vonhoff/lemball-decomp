@@ -1,10 +1,12 @@
 #ifndef LEMBALL_AI_OBJECTS_CRATE_H
 #define LEMBALL_AI_OBJECTS_CRATE_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
 
+class GameObject;
+class GlobalGameObject;
+class ObjectManager;
 // MINIMUM SIZE 0x150
 // VTABLE: LEMBALL 0x004948d0
 class Crate : public BaseGlobalObject {

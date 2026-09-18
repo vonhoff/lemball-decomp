@@ -1,9 +1,14 @@
 #ifndef LEMBALL_VIEWS_PANEL_PANELPAUSEBUTTON_H
 #define LEMBALL_VIEWS_PANEL_PANELPAUSEBUTTON_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/ToggleButton.h" // complete type
 
+class GWnd;
+class HotAreaHandler;
+class Panel;
+class PvGWnd;
+class VsRect;
+struct VsPoint;
 // SIZE 0x13c
 // VTABLE: LEMBALL 0x004972b8 GWnd
 // VTABLE: LEMBALL 0x00497290 HotAreaHandler

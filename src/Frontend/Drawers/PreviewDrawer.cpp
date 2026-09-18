@@ -108,7 +108,7 @@ char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 // 68K 0x1080adda __ct__14CPreviewDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // FUNCTION: LEMBALL 0x004491b0
 PreviewDrawer::PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
-	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 4, 0x32, 200, 0, 0x28, 0x30)
+	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)
 {
 	void* storage;
 
@@ -470,7 +470,7 @@ bool PreviewDrawer::ProcessMessages(Message* p_message)
 		return 0;
 	case 0xacef000c:
 		if (m_networkMode != 0) {
-			Action(2, 0);
+			Action(USER_ACTION_2, USER_ACTION_STAGE_REQUEST);
 			return 1;
 		}
 		m_quitYet = 1;
@@ -478,7 +478,7 @@ bool PreviewDrawer::ProcessMessages(Message* p_message)
 		return 1;
 	case 0xacef000d:
 		if (m_networkMode != 0) {
-			Action(3, 0);
+			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
 			return 1;
 		}
 		m_quitYet = 1;
@@ -490,7 +490,7 @@ bool PreviewDrawer::ProcessMessages(Message* p_message)
 			return 1;
 		}
 		if (m_networkMode != 0) {
-			Action(0, 0);
+			Action(USER_ACTION_0, USER_ACTION_STAGE_REQUEST);
 			return 1;
 		}
 		NextLevel();
@@ -501,7 +501,7 @@ bool PreviewDrawer::ProcessMessages(Message* p_message)
 			return 1;
 		}
 		if (m_networkMode != 0) {
-			Action(1, 0);
+			Action(USER_ACTION_1, USER_ACTION_STAGE_REQUEST);
 			return 1;
 		}
 		PreviousLevel();
@@ -543,19 +543,19 @@ void PreviewDrawer::Return()
 
 // 68K 0x1080bd7c ConfirmedAction__14CPreviewDrawerF12eUserActions
 // FUNCTION: LEMBALL 0x00449ee0
-bool PreviewDrawer::ConfirmedAction(int p_action)
+bool PreviewDrawer::ConfirmedAction(eUserActions p_action)
 {
 	switch (p_action) {
-	case 0:
+	case USER_ACTION_0:
 		NextLevel();
 		return 1;
-	case 1:
+	case USER_ACTION_1:
 		PreviousLevel();
 		return 1;
-	case 2:
+	case USER_ACTION_2:
 		Return();
 		return 1;
-	case 3:
+	case USER_ACTION_3:
 		Go();
 		return 1;
 	default:
@@ -745,7 +745,7 @@ void PreviewDrawer::RegisterRemaps()
 		}
 		i = i + 1;
 	} while (i < 10);
-	m_remap = g_pBasePalManager->RegisterRemap(RES_PALETTES_TITLEPALETTE, m_remapTable, (ePaletteTypes) 0);
+	m_remap = g_pBasePalManager->RegisterRemap(RES_PALETTES_TITLEPALETTE, m_remapTable, PALETTE_DEFAULT);
 	palette->UnLoad();
 }
 

@@ -1,12 +1,12 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_TRACKWINDOWHOTAREASUBOBJECT_H
 #define LEMBALL_FRONTEND_WINDOWS_TRACKWINDOWHOTAREASUBOBJECT_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/VsPoint.h" // complete type
 #include "../../Visos/Foundation/VsRect.h"  // complete type
 #include "../../Visos/Graphics/ClipRect.h"  // complete type
 #include "../../Visos/Graphics/Line.h"      // complete type
 
+class PvGWnd;
 // SIZE 0xa4
 class TrackWindowHotAreaSubobject {
 private:

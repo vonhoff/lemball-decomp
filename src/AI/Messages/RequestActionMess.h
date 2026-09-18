@@ -1,7 +1,6 @@
 #ifndef LEMBALL_AI_MESSAGES_REQUESTACTIONMESS_H
 #define LEMBALL_AI_MESSAGES_REQUESTACTIONMESS_H
 
-#include "../../Common.h"
 #include "GameObjectMess.h" // complete type
 
 class RequestActionMess : public GameObjectMess {

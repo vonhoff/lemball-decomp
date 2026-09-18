@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_FIXED_H
 #define LEMBALL_VISOS_FOUNDATION_FIXED_H
 
-#include "../../Common.h"
-
 // SIZE 0x04
 class Fixed {
 public:

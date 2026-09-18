@@ -1,11 +1,12 @@
 #include "Rocket.h"
 
+#include "../../Control/Game/Game.h"
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
 
 // 68K 0x1061d8ce __ct__7CRocketFv
 // FUNCTION: LEMBALL 0x004267d0
-Rocket::Rocket() : GlobalGameObject(0x20, 0, 0)
+Rocket::Rocket() : GlobalGameObject(OBJECT_ROCKET, 0, 0)
 {
 }
 
@@ -41,7 +42,7 @@ void Rocket::Set(unsigned short p_id, const AiCoord& p_position)
 	m_position.m_yFixed = p_position.m_yFixed;
 	int z = p_position.m_zFixed;
 	m_active = 1;
-	m_action = 0x18;
+	m_action = (eAction) 0x18;
 	m_position.m_zFixed = z;
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
@@ -82,7 +83,7 @@ bool Rocket::Process()
 			if (action == (eAction) 27) {
 				m_lastMovementTick = tick + 48;
 				m_launchBaseZ = m_position.m_zFixed >> 12;
-				SetSndEffect((eSoundEffect) 18);
+				SetSndEffect(SFX_ROCKET);
 			}
 			m_pendingAction = m_action;
 		}
@@ -138,7 +139,7 @@ void Rocket::DoActivate()
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_activator->Action((eAction) 21);
 	m_activator->m_actionDeadline = g_dwGameTick + 60;
-	SetSndEffect((eSoundEffect) 18);
+	SetSndEffect(SFX_ROCKET);
 	if (g_pActiveConnection != 0) {
 		g_pObjectPosMessage->Send(this);
 	}
@@ -177,7 +178,7 @@ void Rocket::GetViewData(ViewData& p_viewData)
 		timestamp = g_dwSimulationTimestamp;
 	}
 	p_viewData.m_animationTime = timestamp;
-	SetSndEffect((eSoundEffect) 0);
+	SetSndEffect(SFX_NONE);
 	p_viewData.m_transientFlags = m_transientFlags;
 	m_transientFlags = 0;
 }

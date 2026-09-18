@@ -1,8 +1,12 @@
 #ifndef LEMBALL_VISOS_NETWORK_BASENETWORK_H
 #define LEMBALL_VISOS_NETWORK_BASENETWORK_H
 
-#include "../../Common.h"
 #include "../Foundation/BaseQueueHandler.h" // complete type
+#include "Connect.h"
+
+class Broadcast;
+class NetworkAddress;
+class NetworkMessage;
 
 // SIZE 0x64
 // VTABLE: LEMBALL 0x004991e0
@@ -21,10 +25,10 @@ public:
 	virtual void* GetNewNetworkAddress() = 0; // vtable+0x2c
 	virtual void WaitProcess();               // vtable+0x30
 	virtual ~BaseNetwork();                   // vtable+0x04
-	Connect* NewConnect();
+	CConnect* NewConnect();
 	bool DoInitialise();
-	bool Exists(Connect* p_arg0);
-	Connect* FindConnection(NetworkAddress* p_arg0);
+	bool Exists(CConnect* p_arg0);
+	CConnect* FindConnection(NetworkAddress* p_arg0);
 	bool Initialise(const char* p_arg0, int p_arg1);
 	void KillUnBornConnection(NetworkAddress* p_arg0);
 	bool SendAll(NetworkMessage& p_arg0);
@@ -32,7 +36,7 @@ public:
 	void CtoSRequestConnect(NetworkAddress* p_arg0);
 	void CtoSRequestNewPort(NetworkAddress* p_arg0);
 	void CtoSgoConnect(NetworkAddress* p_arg0);
-	void Delete(Connect* p_arg0);
+	void Delete(CConnect* p_arg0);
 	void DetachMessageQueue();
 	void Establish(NetworkAddress* p_arg0, unsigned char* p_arg1);
 	void SetCBuffers(int p_arg0, int p_arg1);
@@ -41,7 +45,7 @@ public:
 	void StoCfailedConnect(NetworkAddress* p_arg0);
 	void StoCokConnect(NetworkAddress* p_arg0);
 	void HandleNewConnectionEvent(const char* p_localName, const char* p_remoteName);
-	Connect* FindEventConnection(NetworkAddress* p_address);
+	CConnect* FindEventConnection(NetworkAddress* p_address);
 	void HandleConnectionMessage(NetworkAddress* p_address);
 
 	friend bool VsFNetQuit();
@@ -67,10 +71,10 @@ public:
 
 private:
 	Broadcast* m_broadcast;                   // 0x24
-	Connect* m_firstConnect;                  // 0x28
-	Connect* m_lastConnect;                   // 0x2c
-	undefined4 m_suspendBroadcastOnConnect;   // 0x30
-	undefined4 m_unk0x34;                     // 0x34
+	CConnect* m_firstConnect;                 // 0x28
+	CConnect* m_lastConnect;                  // 0x2c
+	unsigned int m_suspendBroadcastOnConnect; // 0x30
+	unsigned int m_unk0x34;                   // 0x34
 	BaseQueueHandler* m_pendingAttachQueue;   // 0x38
 	void* m_activeStatusItem;                 // 0x3c
 	BaseQueueHandler* m_pendingDetachQueue;   // 0x40
@@ -81,7 +85,7 @@ private:
 	unsigned int m_nonCriticalSubpacketCount; // 0x54
 	unsigned int m_criticalPacketCount;       // 0x58
 	unsigned int m_criticalSubpacketCount;    // 0x5c
-	undefined4 m_criticalRetryLimit;          // 0x60
+	unsigned int m_criticalRetryLimit;        // 0x60
 };
 
 extern BaseNetwork* g_pBaseNetwork;

@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_BASEPACKET_H
 #define LEMBALL_VISOS_MESSAGING_BASEPACKET_H
 
-#include "../../Common.h"
-
 // SIZE 0x08
 // VTABLE: LEMBALL 0x004991cc
 class BasePacket {

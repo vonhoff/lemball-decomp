@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_PRIMS_H
 #define LEMBALL_VISOS_FOUNDATION_PRIMS_H
 
-#include "../../Common.h"
 #include "../Graphics/Bitmap.h"      // complete type
 #include "../Graphics/BitmapRes.h"   // complete type
 #include "../Graphics/DrawingMark.h" // complete type

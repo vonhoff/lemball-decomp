@@ -1,9 +1,13 @@
 #ifndef LEMBALL_AI_MANAGERS_TRAMPOLINEMANAGER_H
 #define LEMBALL_AI_MANAGERS_TRAMPOLINEMANAGER_H
 
-#include "../../Common.h"
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class AiCoord;
+class GameObject;
+class Trampoline;
+class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496710
 class TrampolineManager : public BaseObjectManager {

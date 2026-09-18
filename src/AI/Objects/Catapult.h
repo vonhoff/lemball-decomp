@@ -1,10 +1,10 @@
 #ifndef LEMBALL_AI_OBJECTS_CATAPULT_H
 #define LEMBALL_AI_OBJECTS_CATAPULT_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
 
+class GameObject;
 // MINIMUM SIZE 0x144
 // VTABLE: LEMBALL 0x00494640
 class Catapult : public BaseGlobalObject {

@@ -1,12 +1,11 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESPALETTE_H
 #define LEMBALL_VISOS_RESOURCES_RESPALETTE_H
 
-#include "../../Common.h"
 #include "ResBase.h" // complete type
 
 // SIZE 0x04
 struct PaletteHeader {
-	undefined4 m_paletteState;
+	unsigned int m_paletteState;
 };
 
 // SIZE 0x4c
@@ -26,7 +25,7 @@ public:
 	friend class BaseRemap;
 
 private:
-	undefined4 m_paletteState; // 0x48
+	unsigned int m_paletteState; // 0x48
 };
 
 // 68K 0x10100f5c __dt__11CResPALETTEFv

@@ -1,8 +1,33 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSOSTREAM_H
 #define LEMBALL_VISOS_FOUNDATION_VSOSTREAM_H
 
-#include "../../Common.h"
 #include "VsIOs.h" // complete type
+
+class String;
+
+// SIZE 0x04
+struct Har4 {
+	unsigned int m_value;
+	Har4(unsigned int v = 0) : m_value(v) {}
+};
+
+// SIZE 0x04
+struct Hex {
+	unsigned int m_value;
+	Hex(unsigned int v = 0) : m_value(v) {}
+};
+
+// SIZE 0x04
+struct Hex8 {
+	unsigned int m_value;
+	Hex8(unsigned int v = 0) : m_value(v) {}
+};
+
+// SIZE 0x04
+struct Rname {
+	unsigned int m_value;
+	Rname(unsigned int v = 0) : m_value(v) {}
+};
 
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x00493038

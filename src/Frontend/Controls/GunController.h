@@ -1,13 +1,20 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_GUNCONTROLLER_H
 #define LEMBALL_FRONTEND_CONTROLS_GUNCONTROLLER_H
 
-#include "../../Common.h"
 #include "../../Visos/Animation/AnimsManager.h"      // complete type
 #include "../../Visos/Animation/StaticAnim.h"        // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/Message.h"          // complete type
 #include "../../Visos/Graphics/SolidRect.h"          // complete type
 #include "GunControllerJunction.h"                   // complete type
 
+class BaseFrontendDrawer;
+class GWnd;
+class Gdi;
+class GunButtons;
+class PlayThruAnim;
+class SpriteWindow;
+class VsRect;
 // SIZE 0x27c
 // VTABLE: LEMBALL 0x00497f10 BaseQueueHandler
 // VTABLE: LEMBALL 0x00497f0c AnimsManager
@@ -42,8 +49,8 @@ public:
 						   int p_y,
 						   unsigned long* p_animIds,
 						   unsigned int p_postAction,
-						   undefined4 p_unusedFirst,
-						   undefined4 p_unusedSecond,
+						   unsigned int p_unusedFirst,
+						   unsigned int p_unusedSecond,
 						   int p_value,
 						   int* p_binding,
 						   const VsRect& p_rect,
@@ -85,8 +92,8 @@ private:
 	unsigned int m_sideEndTime;           // 0x228
 	unsigned int m_selectStartTime;       // 0x22c
 	unsigned int m_selectEndTime;         // 0x230
-	undefined4 m_reserved234;             // 0x234
-	undefined4 m_reserved238;             // 0x238
+	unsigned int m_reserved234;           // 0x234
+	unsigned int m_reserved238;           // 0x238
 	unsigned int m_fireStartTime;         // 0x23c
 	unsigned int m_fireEndTime;           // 0x240
 	PlayThruAnim* m_sideAnim;             // 0x244

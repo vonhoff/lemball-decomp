@@ -27,11 +27,11 @@ void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 		return;
 	}
 	switch (p_arg0) {
-	case 0:
+	case CURSOR_DISPLAY_NONE:
 		g_pCursor->SetActive(0);
 		g_pCursor->SetMainId(g_cursorResourceIds[p_arg0]);
 		break;
-	case 1:
+	case CURSOR_DISPLAY_HAND:
 		if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
 			p_arg1 = 0;
 		}
@@ -45,7 +45,7 @@ void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 		g_pCursor->m_hotspot.m_x = 3;
 		cursor->m_hotspot.m_y = 3;
 		break;
-	case 2:
+	case CURSOR_DISPLAY_PAW:
 	case 3:
 		g_pCursor->SetMainId(g_cursorResourceIds[p_arg0]);
 		if (g_cursorDisplayInited == 0) {

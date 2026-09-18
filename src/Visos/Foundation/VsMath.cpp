@@ -1,5 +1,6 @@
 #include "VsMath.h"
 
+#include "../../Control/Game/Game.h"
 #include "Fixed.h"
 
 #include <stdlib.h>

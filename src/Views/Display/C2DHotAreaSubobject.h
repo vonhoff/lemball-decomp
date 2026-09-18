@@ -1,9 +1,10 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_C2DHOTAREASUBOBJECT_H
 #define LEMBALL_VIEWS_DISPLAY_C2DHOTAREASUBOBJECT_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/VsPoint.h" // complete type
 
+class Main2DDisplay;
+class Map;
 // SIZE 0x2414
 class C2DHotAreaSubobject {
 private:

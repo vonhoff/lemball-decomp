@@ -1,9 +1,9 @@
 #ifndef LEMBALL_NETWORK_GAME_NETWORKGAMESTAGE_H
 #define LEMBALL_NETWORK_GAME_NETWORKGAMESTAGE_H
 
-#include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
+class NetworkManager;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498558
 class NetworkGameStage : public NetworkMessage {

@@ -1,7 +1,6 @@
 #ifndef LEMBALL_AI_OBJECTS_FLAG_H
 #define LEMBALL_AI_OBJECTS_FLAG_H
 
-#include "../../Common.h"
 #include "Collectable.h" // complete type
 
 // SIZE 0x13c

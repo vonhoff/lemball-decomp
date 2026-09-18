@@ -1,5 +1,7 @@
 #include "Fixed.h"
 
+#include "VsDebug.h"
+
 // 68K 0x10119ede __pl__FRC6CFixedRC6CFixed
 // FUNCTION: LEMBALL 0x0042b9c0
 Fixed operator+(const Fixed& p_left, const Fixed& p_right)

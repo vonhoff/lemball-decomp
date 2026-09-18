@@ -414,7 +414,8 @@ void PauseWindow::RegisterRemaps()
 	BaseRemap** remaps = window->m_remaps;
 	unsigned char** mappings = g_apPauseRemaps;
 	do {
-		*remaps = g_pBasePalManager->RegisterRemap(window->m_parentWindow->m_paletteResourceId, *mappings, 2);
+		*remaps =
+			g_pBasePalManager->RegisterRemap(window->m_parentWindow->m_paletteResourceId, *mappings, PALETTE_MAPPED);
 		mappings++;
 		remaps++;
 	} while (mappings < (unsigned char**) g_apPauseMenuLabels);
@@ -507,7 +508,7 @@ void PauseWindow::OnInside(const VsPoint& p_point)
 			selection++;
 		} while (selection < m_menuItemCount);
 	}
-	CursorChangeType((eCursorDisplayType) 1, m_cursorState);
+	CursorChangeType(CURSOR_DISPLAY_HAND, m_cursorState);
 }
 
 // 68K 0x10b0f506 OnButtonDown__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS
@@ -531,8 +532,8 @@ void PauseWindow::OnButtonDown(const VsPoint& p_point, int p_flags)
 							m_receiverState->SetOptionSelection(m_selection + 1);
 							m_selection = selection;
 							m_cursorState = 1;
-							CursorChangeType((eCursorDisplayType) 1, 1);
-							g_pSoundView->PlayEffect((eSoundEffect) 3);
+							CursorChangeType(CURSOR_DISPLAY_HAND, 1);
+							g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 							return;
 						}
 					}
@@ -549,7 +550,7 @@ void PauseWindow::OnButtonDown(const VsPoint& p_point, int p_flags)
 void PauseWindow::OnButtonUp(const VsPoint& p_point, int p_flags)
 {
 	m_cursorState = 0;
-	CursorChangeType((eCursorDisplayType) 1, 0);
+	CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 }
 
 // 68K 0x10b0f67c OnExternalButtonUp__12CPauseWindowFRC8CVSPoint12BUTTON_FLAGS
@@ -557,7 +558,7 @@ void PauseWindow::OnButtonUp(const VsPoint& p_point, int p_flags)
 void PauseWindow::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 {
 	m_cursorState = 0;
-	CursorChangeType((eCursorDisplayType) 1, 0);
+	CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 }
 
 // 68K 0x10b0f6e6 ProcessMsg__12CPauseWindowFP10tagMESSAGE
@@ -574,7 +575,7 @@ int PauseWindow::ProcessMsg(Message* p_message)
 			case 3:
 				if (m_selection > m_minimumSelection) {
 					m_selection--;
-					g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+					g_pSoundView->PlayEffect(SFX_CHANGEOP);
 					return 1;
 				}
 				break;
@@ -582,7 +583,7 @@ int PauseWindow::ProcessMsg(Message* p_message)
 			case 4:
 				if (m_selection < m_menuItemCount - 1) {
 					m_selection++;
-					g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+					g_pSoundView->PlayEffect(SFX_CHANGEOP);
 					return 1;
 				}
 				break;
@@ -593,12 +594,12 @@ int PauseWindow::ProcessMsg(Message* p_message)
 			case 0x57:
 			case 0x58:
 				m_receiverState->SetOptionSelection(m_selection + 1);
-				g_pSoundView->PlayEffect((eSoundEffect) 3);
+				g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 				return 1;
 			case 0x23:
 				if (pauseMessage != 0 || m_receiverState->GetPauser()) {
 					m_receiverState->SetOptionSelection(m_initialSelection + 1);
-					g_pSoundView->PlayEffect((eSoundEffect) 3);
+					g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 				}
 				return 1;
 			}

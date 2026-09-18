@@ -1,14 +1,63 @@
 #ifndef LEMBALL_AI_BASE_GAMEOBJECT_H
 #define LEMBALL_AI_BASE_GAMEOBJECT_H
 
-#include "../../Common.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Visos/Foundation/VsRect.h" // complete type
 #include "../Objects/ViewData.h"
 #include "AiCoord.h"   // complete type
 #include "C3DVector.h" // complete type
+#include "ObjectActions.h"
 #include "ObjectTypes.h"
 
+class Ai;
+class AiDestinationList;
+class Ammo;
+class Balloon;
+class BalloonPost;
+class BaseObjectManager;
+class Bullet;
+class BulletManager;
+class C2D;
+class Catapult;
+class Collectable;
+class CollectableManager;
+class Crate;
+class Duplicator;
+class Enemy;
+class Game;
+class GameObjectMess;
+class GenericGroup;
+class GlobalGameObject;
+class Hand;
+class HandManager;
+class Ice;
+class Info;
+class InvisibleSwitch;
+class Key;
+class Laser;
+class Lift;
+class Mover;
+class ObjectChangeStateMess;
+class ObjectDiesMess;
+class ObjectHitMess;
+class ObjectManager;
+class ObjectPosMess;
+class PanelButton;
+class PlayerLemming;
+class PlayerLemmingGroup;
+class PlayerLemmingGroupManager;
+class Rect3;
+class RemoveObjectMess;
+class RequestActionMess;
+class RequestCancelMess;
+class RequestReplyMess;
+class Rocket;
+class SheepGroup;
+class Tower;
+class Trampoline;
+struct Coord3d;
+struct Pt3;
+struct StateEntry;
 // SIZE 0x124
 // VTABLE: LEMBALL 0x00493c40
 class GameObject {
@@ -164,7 +213,7 @@ public:
 
 protected:
 	unsigned short m_runtimeFlags;        // 0x04
-	undefined2 m_unk0x06;                 // 0x06
+	unsigned short m_unk0x06;             // 0x06
 	unsigned int m_routeSearchFailed;     // 0x08
 	unsigned int m_routeSearchActive;     // 0x0c
 	unsigned int m_transientFlags;        // 0x10
@@ -174,14 +223,14 @@ protected:
 	int m_collisionMaxX;                  // 0x20
 	int m_collisionMaxY;                  // 0x24
 	int m_collisionMaxZ;                  // 0x28
-	undefined4 m_unk0x2c;                 // 0x2c
+	unsigned int m_unk0x2c;               // 0x2c
 	unsigned int m_balloonPostActive;     // 0x30
 	unsigned int m_balloonPostId;         // 0x34
 	int m_heading;                        // 0x38
-	undefined4 m_unk0x3c;                 // 0x3c
+	unsigned int m_unk0x3c;               // 0x3c
 	AiCoord m_spawnPosition;              // 0x40
 	AiCoord m_flightVelocity;             // 0x4c
-	undefined4 m_unk0x58;                 // 0x58
+	unsigned int m_unk0x58;               // 0x58
 	GameObject* m_activator;              // 0x5c
 	BaseObjectManager* m_manager;         // 0x60
 	eObjectType m_objectType;             // 0x64
@@ -196,8 +245,8 @@ protected:
 	int m_moveDeltaXFixed;                // 0x80
 	int m_moveDeltaYFixed;                // 0x84
 	int m_moveDurationTicks;              // 0x88
-	undefined4 m_unk0x8c;                 // 0x8c
-	undefined4 m_unk0x90;                 // 0x90
+	unsigned int m_unk0x8c;               // 0x8c
+	unsigned int m_unk0x90;               // 0x90
 	unsigned int m_stateTimer;            // 0x94
 	eSoundEffect m_soundEffect;           // 0x98
 	AiCoord m_position;                   // 0x9c
@@ -206,10 +255,10 @@ protected:
 	short m_initialFacingDirection;       // 0xb6
 	eAction m_action;                     // 0xb8
 	short m_actionArgument;               // 0xbc
-	undefined2 m_unk0xbe;                 // 0xbe
-	undefined4 m_unk0xc0;                 // 0xc0
+	unsigned short m_unk0xbe;             // 0xbe
+	unsigned int m_unk0xc0;               // 0xc0
 	short m_unk0xc4;                      // 0xc4
-	undefined2 m_unk0xc6;                 // 0xc6
+	unsigned short m_unk0xc6;             // 0xc6
 	unsigned int m_lastMovementTick;      // 0xc8
 	unsigned int m_actionDeadline;        // 0xcc
 	unsigned int m_unk0xd0;               // 0xd0
@@ -219,25 +268,25 @@ protected:
 	unsigned int m_isFlying;              // 0xf0
 	AiCoord m_groundPosition;             // 0xf4
 	int m_flightZ;                        // 0x100
-	undefined4 m_unk0x104;                // 0x104
-	undefined4 m_unk0x108;                // 0x108
-	undefined4 m_unk0x10c;                // 0x10c
+	unsigned int m_unk0x104;              // 0x104
+	unsigned int m_unk0x108;              // 0x108
+	unsigned int m_unk0x10c;              // 0x10c
 	unsigned int m_liftId;                // 0x110
 	unsigned int m_isRemoteObject;        // 0x114
-	undefined4 m_unk0x118;                // 0x118
-	undefined4 m_unk0x11c;                // 0x11c
-	undefined2 m_unk0x120;                // 0x120
-	undefined2 m_unk0x122;                // 0x122
+	unsigned int m_unk0x118;              // 0x118
+	unsigned int m_unk0x11c;              // 0x11c
+	unsigned short m_unk0x120;            // 0x120
+	unsigned short m_unk0x122;            // 0x122
 };
 
 extern unsigned char g_abObjectIdBitmap[256];
 extern GameObject* g_pObjects[256];
-extern word g_wObjectCount;
+extern unsigned short g_wObjectCount;
 extern int g_anTurnDelayCursor[16];
 extern int g_anTurnDelayTarget[16];
 extern unsigned char g_abBitMasks[8];
-extern word g_wNetworkLemmingIndex;
-extern word g_wLocalLemmingIndex;
+extern unsigned short g_wNetworkLemmingIndex;
+extern unsigned short g_wLocalLemmingIndex;
 extern int g_wLemmingCount;
 extern int g_dwSommersaultDirection;
 
@@ -271,7 +320,7 @@ inline void GameObject::GetViewData(ViewData& p_viewData)
 		timestamp = g_dwSimulationTimestamp;
 	}
 	p_viewData.m_animationTime = timestamp;
-	SetSndEffect((eSoundEffect) 0);
+	SetSndEffect(SFX_NONE);
 	p_viewData.m_transientFlags = m_transientFlags;
 	m_transientFlags = 0;
 }

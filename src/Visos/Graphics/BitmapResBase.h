@@ -1,8 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_BITMAPRESBASE_H
 #define LEMBALL_VISOS_GRAPHICS_BITMAPRESBASE_H
 
-#include "../../Common.h"
 #include "Primitive.h" // complete type
+
+class ResBitmap;
+class Remap;
+class Gdi;
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00497928

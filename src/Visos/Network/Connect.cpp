@@ -34,7 +34,7 @@ CConnect::~CConnect()
 
 // 68K 0x1020d1c2 InitConnect__8CConnectFPCcP15CNetworkAddresss
 // FUNCTION: LEMBALL 0x00460c60
-void Connect::InitConnect(const char* p_arg0, NetworkAddress* p_arg1, short p_arg2)
+void CConnect::InitConnect(const char* p_arg0, NetworkAddress* p_arg1, short p_arg2)
 {
 	m_name = (char*) operator new(strlen(p_arg0) + 1);
 	strcpy(m_name, p_arg0);
@@ -44,7 +44,7 @@ void Connect::InitConnect(const char* p_arg0, NetworkAddress* p_arg1, short p_ar
 
 // 68K 0x1020d25e CheckConnectTime__8CConnectFv
 // FUNCTION: LEMBALL 0x00460ce0
-bool Connect::CheckConnectTime()
+bool CConnect::CheckConnectTime()
 {
 	unsigned long now;
 
@@ -60,14 +60,14 @@ bool Connect::CheckConnectTime()
 
 // 68K 0x1020d2b6 SetConnectTime__8CConnectFv
 // FUNCTION: LEMBALL 0x00460d10
-void Connect::SetConnectTime()
+void CConnect::SetConnectTime()
 {
 	m_connectTime = timeGetTime();
 }
 
 // 68K 0x1020d2ea Stop__8CConnectFv
 // FUNCTION: LEMBALL 0x00460d20
-void Connect::Stop()
+void CConnect::Stop()
 {
 	if (m_name != 0) {
 		operator delete(m_name);
@@ -82,7 +82,7 @@ void Connect::Stop()
 
 // 68K 0x1020d348 FirstReceive__8CConnectFv
 // FUNCTION: LEMBALL 0x00460d70
-void Connect::FirstReceive()
+void CConnect::FirstReceive()
 {
 	Message message;
 
@@ -106,7 +106,7 @@ void Connect::FirstReceive()
 
 // 68K 0x1020d414 Send__8CConnectFR15CNetworkMessage
 // FUNCTION: LEMBALL 0x00460e40
-bool Connect::Send(NetworkMessage& p_arg0)
+bool CConnect::Send(NetworkMessage& p_arg0)
 {
 	bool opened;
 	bool isOpen;
@@ -141,7 +141,7 @@ bool Connect::Send(NetworkMessage& p_arg0)
 
 // 68K 0x1020d4ea Closed__8CConnectFUc
 // FUNCTION: LEMBALL 0x00460f00
-void Connect::Closed(int p_notifyPeer)
+void CConnect::Closed(int p_notifyPeer)
 {
 	Message message;
 
@@ -157,7 +157,7 @@ void Connect::Closed(int p_notifyPeer)
 
 // 68K 0x1020d556 ReceiveAcknowledgement__8CConnectFv
 // FUNCTION: LEMBALL 0x00460f60
-NetworkMessage* Connect::ReceiveAcknowledgement()
+NetworkMessage* CConnect::ReceiveAcknowledgement()
 {
 	NetworkMessage* acknowledgement;
 	Message message;
@@ -175,7 +175,7 @@ NetworkMessage* Connect::ReceiveAcknowledgement()
 
 // 68K 0x1020d5cc Kill__8CConnectFv
 // FUNCTION: LEMBALL 0x00460fb0
-void Connect::Kill()
+void CConnect::Kill()
 {
 	if (m_isOpen != 0 && m_readReady != 0) {
 		BaseCommonSocket::CloseSocket();
@@ -188,7 +188,7 @@ void Connect::Kill()
 
 // 68K 0x1020d63a PostRead__8CConnectF13NetworkEventsP11CBasePacket
 // FUNCTION: LEMBALL 0x00460ff0
-void Connect::PostRead(NetworkEvents p_arg0, BasePacket* p_arg1)
+void CConnect::PostRead(NetworkEvents p_arg0, BasePacket* p_arg1)
 {
 	Message message;
 
@@ -201,7 +201,7 @@ void Connect::PostRead(NetworkEvents p_arg0, BasePacket* p_arg1)
 
 // 68K 0x1020d6a8 Process__8CConnectFv
 // FUNCTION: LEMBALL 0x00461030
-void Connect::Process()
+void CConnect::Process()
 {
 	if (m_killRequested == 0) {
 		if (m_established == 0 && m_eventPending == 0) {
@@ -219,9 +219,9 @@ void Connect::Process()
 
 // 68K 0x1010e682 ConnectSetup__8CConnectFv
 // FUNCTION: LEMBALL 0x004629d0
-void Connect::ConnectSetup()
+void CConnect::ConnectSetup()
 {
 }
 
 // GLOBAL: LEMBALL 0x004a011c
-Connect* g_pActiveConnection = 0;
+CConnect* g_pActiveConnection = 0;

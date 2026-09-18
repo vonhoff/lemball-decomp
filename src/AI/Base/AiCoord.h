@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_BASE_AICOORD_H
 #define LEMBALL_AI_BASE_AICOORD_H
 
-#include "../../Common.h"
+#include "../../Visos/Foundation/VsDebug.h"
 
 // SIZE 0x0c
 class AiCoord {

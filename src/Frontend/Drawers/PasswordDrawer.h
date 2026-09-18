@@ -1,21 +1,29 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_PASSWORDDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_PASSWORDDRAWER_H
 
-#include "../../Common.h"
 #include "../../Visos/Animation/StaticAnim.h" // complete type
 #include "../../Visos/Graphics/SolidRect.h"   // complete type
 #include "../Base/BaseFrontendDrawer.h"
 
+class AnimsManager;
+class BaseQueueHandler;
+class Drawer;
+class Gdi;
+class Main2DDisplay;
+class PasswordHiliteWindow;
+class PvButton;
+class VsRect;
+struct Message;
 struct PasswordTextPosition {
 	int m_x;
 	int m_y;
 };
 
 struct PasswordTextLayout {
-	undefined4 m_unknown00[6];
+	unsigned int m_unknown00[6];
 	PasswordTextPosition m_labelPositions[4];
 	PasswordTextPosition m_countPositions[4];
-	undefined4 m_unknown58[8];
+	unsigned int m_unknown58[8];
 	PasswordTextPosition m_resultPosition;
 };
 
@@ -43,7 +51,7 @@ public:
 
 private:
 	unsigned int m_animationId;           // 0x398
-	undefined m_unknown39c[8];            // 0x39c
+	char m_unknown39c[8];                 // 0x39c
 	PasswordHiliteWindow* m_hiliteWindow; // 0x3a4
 	int* m_layout;                        // 0x3a8
 	unsigned long* m_buttonAnimIds;       // 0x3ac

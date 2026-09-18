@@ -1,8 +1,7 @@
 #ifndef LEMBALL_AI_BASE_PT3_H
 #define LEMBALL_AI_BASE_PT3_H
 
-#include "../../Common.h"
-
+class AiCoord;
 // SIZE 0x0c
 struct Pt3 {
 	Pt3() {}

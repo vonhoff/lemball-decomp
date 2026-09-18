@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_TIMEDQUEUE_H
 #define LEMBALL_VISOS_FOUNDATION_TIMEDQUEUE_H
 
-#include "../../Common.h"
 #include "BaseQueue.h" // complete type
 
 // SIZE 0x58

@@ -6,7 +6,7 @@
 #include "../Objects/ViewData.h"
 
 // GLOBAL: LEMBALL 0x0049cf48
-word g_wNextDoorIndex = 0;
+unsigned short g_wNextDoorIndex = 0;
 
 // 68K 0x10606c72 __ct__12CDoorManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0040df30

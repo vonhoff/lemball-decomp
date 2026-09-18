@@ -1,9 +1,11 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETRESOURCEBUTTON_H
 #define LEMBALL_VISOS_TARGET_TARGETRESOURCEBUTTON_H
 
-#include "../../Common.h"
 #include "TargetFramedButton.h" // complete type
 
+class GWnd;
+class HotAreaHandler;
+class VsRect;
 // MINIMUM SIZE 0x11c
 // VTABLE: LEMBALL 0x00499928 GWnd
 // VTABLE: LEMBALL 0x00499908 HotAreaHandler

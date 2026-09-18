@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_OBJECTS_THEBALLOONPOST_H
 #define LEMBALL_AI_OBJECTS_THEBALLOONPOST_H
 
-#include "../../Common.h"
 #include "../Base/GameObject.h" // complete type
 
+class BalloonPost;
 // SIZE 0x128
 // VTABLE: LEMBALL 0x00496488
 class TheBalloonPost : public GameObject {

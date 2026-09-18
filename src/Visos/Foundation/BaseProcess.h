@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_BASEPROCESS_H
 #define LEMBALL_VISOS_FOUNDATION_BASEPROCESS_H
 
-#include "../../Common.h"
-
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x004930a0
 class BaseProcess {

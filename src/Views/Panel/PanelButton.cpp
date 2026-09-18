@@ -79,7 +79,7 @@ PanelButton::~PanelButton()
 // FUNCTION: LEMBALL 0x00442670
 void PanelButton::OnInside(const VsPoint& p_point)
 {
-	CursorChangeType((eCursorDisplayType) 1, m_pressedInside);
+	CursorChangeType(CURSOR_DISPLAY_HAND, m_pressedInside);
 }
 
 // 68K 0x10b0ccb6 DrawButton__12CPanelButtonFv
@@ -239,7 +239,7 @@ void PanelButton::OnPaint(const VsRect& p_rect)
 void PanelButton::OnReleased(int p_flags)
 {
 	m_pressedInside = 0;
-	CursorChangeType((eCursorDisplayType) 1, 0);
+	CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 }
 
 // 68K 0x10b0d2b2 OnExternalButtonUp__12CPanelButtonFRC8CVSPoint12BUTTON_FLAGS
@@ -248,7 +248,7 @@ void PanelButton::OnExternalButtonUp(const VsPoint& p_point, int p_flags)
 {
 	if (m_pressedInside != 0) {
 		m_pressedInside = 0;
-		CursorChangeType((eCursorDisplayType) 1, 0);
+		CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 	}
 }
 
@@ -291,7 +291,7 @@ normal:
 				goto pressed;
 			}
 			if (action == 0 || action == 2 || action == 6) {
-				m_lemming->m_lemming->SetSndEffect((eSoundEffect) 0x1f);
+				m_lemming->m_lemming->SetSndEffect(SFX_BALLOON);
 				game->UseBalloon(m_lemming->m_lemming);
 			}
 			goto pressed;
@@ -325,8 +325,8 @@ alternate:
 
 pressed:
 	m_pressedInside = 1;
-	CursorChangeType((eCursorDisplayType) 1, 1);
-	g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+	CursorChangeType(CURSOR_DISPLAY_HAND, 1);
+	g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 }
 
 // 68K 0x1011cde6 OnEnterButton__12CPanelButtonFv

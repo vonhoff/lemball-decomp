@@ -1,8 +1,6 @@
 #ifndef LEMBALL_AI_BASE_LOADSHEEPDATA_H
 #define LEMBALL_AI_BASE_LOADSHEEPDATA_H
 
-#include "../../Common.h"
-
 // SIZE 0x06
 struct LoadSheepData {
 	unsigned char m_sheepCount;     // 0x00

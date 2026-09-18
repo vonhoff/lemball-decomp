@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RAWREAD_H
 #define LEMBALL_VISOS_RESOURCES_RAWREAD_H
 
-#include "../../Common.h"
+struct _Filet;
 
 class RawRead {
 public:

@@ -1,8 +1,21 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_USERACTIONMESSAGE_H
 #define LEMBALL_FRONTEND_SUPPORT_USERACTIONMESSAGE_H
 
-#include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
+
+class BaseFrontendProcess;
+enum eUserActions {
+	USER_ACTION_0 = 0,
+	USER_ACTION_1 = 1,
+	USER_ACTION_2 = 2,
+	USER_ACTION_3 = 3
+};
+
+enum eUserActionStages {
+	USER_ACTION_STAGE_REQUEST = 0,
+	USER_ACTION_STAGE_CONFIRM = 1,
+	USER_ACTION_STAGE_REJECT = 2
+};
 
 // SIZE 0x34
 // VTABLE: LEMBALL 0x00497878

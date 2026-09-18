@@ -6,7 +6,7 @@
 // FUNCTION: LEMBALL 0x00422c70
 void TimeBonus::SetSfx()
 {
-	SetSndEffect(0x16);
+	SetSndEffect(SFX_TIMBONUS);
 }
 
 // 68K 0x10606022 Collected__10CTimeBonusFv

@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CLIPRECT_H
 #define LEMBALL_VISOS_GRAPHICS_CLIPRECT_H
 
-#include "../../Common.h"
 #include "Primitive.h" // complete type
+
+class Gdi;
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496cc8
@@ -22,11 +23,11 @@ public:
 	friend class TargetFramedButton;
 
 private:
-	short m_left;            // 0x04
-	short m_top;             // 0x06
-	short m_right;           // 0x08
-	short m_bottom;          // 0x0a
-	undefined4 m_reserved0c; // 0x0c
+	short m_left;              // 0x04
+	short m_top;               // 0x06
+	short m_right;             // 0x08
+	short m_bottom;            // 0x0a
+	unsigned int m_reserved0c; // 0x0c
 };
 
 // SYNTHETIC: LEMBALL 0x00432a60

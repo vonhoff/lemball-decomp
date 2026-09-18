@@ -1,11 +1,23 @@
 #ifndef LEMBALL_AI_OBJECTS_BULLET_H
 #define LEMBALL_AI_OBJECTS_BULLET_H
 
-#include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 #include "../Base/AiCoord.h"                      // complete type
 #include "../Base/GlobalGameObject.h"             // complete type
 #include "../Base/Move3d.h"                       // complete type
+
+class BulletManager;
+class Enemy;
+class PlayerLemming;
+enum eBulletType {
+	BULLET_TYPE_DEFAULT = 0
+};
+
+enum eOwner {
+	OWNER_PLAYER = 0,
+	OWNER_ENEMY = 1,
+	OWNER_REMOTE_PLAYER = 2
+};
 
 // SIZE 0x1a4
 // VTABLE: LEMBALL 0x004940f0 GlobalGameObject
@@ -38,13 +50,13 @@ private:
 	eBulletType m_bulletType;        // 0x168
 	eOwner m_owner;                  // 0x16c
 	unsigned short m_sourceObjectId; // 0x170
-	undefined2 m_pad0x172;           // 0x172
+	unsigned short m_pad0x172;       // 0x172
 	int m_unk0x174;                  // 0x174
 	int m_unk0x178;                  // 0x178
 	int m_unk0x17c;                  // 0x17c
 	int m_unk0x180;                  // 0x180
 	Move3d m_movement;               // 0x184
-	undefined4 m_unk0x1a0;           // 0x1a0
+	unsigned int m_unk0x1a0;         // 0x1a0
 };
 
 // SYNTHETIC: LEMBALL 0x00418330

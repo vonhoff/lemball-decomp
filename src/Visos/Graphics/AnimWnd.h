@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_ANIMWND_H
 #define LEMBALL_VISOS_GRAPHICS_ANIMWND_H
 
-#include "../../Common.h"
 #include "../Foundation/String.h" // complete type
 #include "PvAnimWnd.h"            // complete type
 

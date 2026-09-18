@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VIEWS_PANEL_PANELPAUSEBUTTONHOTAREASUBOBJECT_H
 #define LEMBALL_VIEWS_PANEL_PANELPAUSEBUTTONHOTAREASUBOBJECT_H
 
-#include "../../Common.h"
-
+class Panel;
+class ResAnim;
 // SIZE 0xac
 class PanelPauseButtonHotAreaSubobject {
 private:

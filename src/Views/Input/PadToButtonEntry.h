@@ -1,8 +1,7 @@
 #ifndef LEMBALL_VIEWS_INPUT_PADTOBUTTONENTRY_H
 #define LEMBALL_VIEWS_INPUT_PADTOBUTTONENTRY_H
 
-#include "../../Common.h"
-
+class PvButton;
 // SIZE 0x08
 struct PadToButtonEntry {
 	PvButton* m_button;     // 0x00

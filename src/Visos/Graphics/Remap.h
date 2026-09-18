@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_REMAP_H
 #define LEMBALL_VISOS_GRAPHICS_REMAP_H
 
-#include "../../Common.h"
 #include "BaseRemap.h" // complete type
 
 // SIZE 0x08

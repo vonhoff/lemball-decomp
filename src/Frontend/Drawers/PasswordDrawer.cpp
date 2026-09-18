@@ -109,7 +109,7 @@ char* g_apPasswordSkillLabels[4] = {
 // 68K 0x1080c452 __ct__15CPasswordDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // FUNCTION: LEMBALL 0x00451210
 PasswordDrawer::PasswordDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
-	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 0x10, 10, 10, 0, 0x28, 0x30)
+	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_PASSWORD, 10, 10, 0, 0x28, 0x30)
 {
 	char* encoded;
 
@@ -263,7 +263,7 @@ void PasswordDrawer::ShiftHilite(int p_delta)
 	}
 	m_hiliteX = m_buttonOffsets[m_selectedButton * 2];
 	m_hiliteY = m_buttonOffsets[m_selectedButton * 2 + 1];
-	g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+	g_pSoundView->PlayEffect(SFX_CHANGEOP);
 }
 
 // 68K 0x1080cab8 ProcessMessages__15CPasswordDrawerFP10tagMESSAGE
@@ -352,7 +352,7 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 		}
 		break;
 	case 0xb:
-		g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+		g_pSoundView->PlayEffect(SFX_DRUM1);
 		break;
 	case 0xc:
 		code = p_message->code;
@@ -462,7 +462,7 @@ void PasswordDrawer::ButtonNumeric(int p_button)
 			m_passwordLength++;
 		}
 		else {
-			g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+			g_pSoundView->PlayEffect(SFX_CHINK);
 		}
 		break;
 	case 10:
@@ -470,7 +470,7 @@ void PasswordDrawer::ButtonNumeric(int p_button)
 			m_passwordLength--;
 		}
 		else {
-			g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+			g_pSoundView->PlayEffect(SFX_CHINK);
 		}
 		if (m_passwordLength >= 0 && m_passwordLength < 10) {
 			m_password[m_passwordLength] = '-';

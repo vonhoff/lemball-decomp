@@ -114,28 +114,28 @@ int HiliteController::ProcessMsg(Message* p_message)
 			return 0;
 		}
 		MoveLeft();
-		g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+		g_pSoundView->PlayEffect(SFX_CHANGEOP);
 		return 1;
 	case 2:
 		if (m_horizontalMode == 0) {
 			return 0;
 		}
 		MoveRight();
-		g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+		g_pSoundView->PlayEffect(SFX_CHANGEOP);
 		return 1;
 	case 3:
 		if (m_horizontalMode != 0) {
 			return 0;
 		}
 		MoveLeft();
-		g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+		g_pSoundView->PlayEffect(SFX_CHANGEOP);
 		return 1;
 	case 4:
 		if (m_horizontalMode != 0) {
 			return 0;
 		}
 		MoveRight();
-		g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+		g_pSoundView->PlayEffect(SFX_CHANGEOP);
 		return 1;
 	case 0x1f:
 	case 0x22:
@@ -276,7 +276,7 @@ void HiliteController::PostSelectionMessage()
 	m_navigationState.time = CurrentQueueTimer();
 	m_navigationState.code = m_junctions[m_currentButton].m_controlMessage;
 	g_pMasterInputQueue->Post(m_navigationState);
-	g_pSoundView->PlayEffect((eSoundEffect) 0xe);
+	g_pSoundView->PlayEffect(SFX_GUNHIT);
 }
 
 // 68K 0x10805a72 Process__17CHiliteControllerFv

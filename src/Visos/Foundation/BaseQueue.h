@@ -1,11 +1,13 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_BASEQUEUE_H
 #define LEMBALL_VISOS_FOUNDATION_BASEQUEUE_H
 
-#include "../../Common.h"
 #include "ArenaBase.h"
 #include "Critical.h"
+#include "Message.h"
 
+class BaseQueueHandler;
 class TimedQueue;
+class VsOStream;
 struct QueueHandlerNode;
 
 // SIZE 0x58

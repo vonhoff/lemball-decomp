@@ -42,9 +42,7 @@ OVERRIDE_STEMS = {
 }
 
 # Relative POSIX paths. Skip the default rule entirely for these files.
-INTENTIONAL = {
-    "src/Common.h",  # scaffold forward declarations and tiny POD helpers
-}
+INTENTIONAL: set[str] = set()
 
 
 def class_stem(name: str) -> str:

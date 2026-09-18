@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_NETWORKFILE_H
 #define LEMBALL_VISOS_NETWORK_NETWORKFILE_H
 
-#include "../../Common.h"
 #include "AbstractFile.h"
 
 // SIZE 0x14

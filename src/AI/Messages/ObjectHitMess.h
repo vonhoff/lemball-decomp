@@ -1,7 +1,6 @@
 #ifndef LEMBALL_AI_MESSAGES_OBJECTHITMESS_H
 #define LEMBALL_AI_MESSAGES_OBJECTHITMESS_H
 
-#include "../../Common.h"
 #include "GameObjectMess.h" // complete type
 
 class ObjectHitMess : public GameObjectMess {

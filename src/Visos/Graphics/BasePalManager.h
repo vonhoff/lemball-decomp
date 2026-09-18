@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_BASEPALMANAGER_H
 #define LEMBALL_VISOS_GRAPHICS_BASEPALMANAGER_H
 
-#include "../../Common.h"
+#include "BaseRemap.h"
 
 // SIZE 0x0c
 class BasePalManager {

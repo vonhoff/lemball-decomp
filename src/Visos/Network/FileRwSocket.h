@@ -1,10 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_FILERWSOCKET_H
 #define LEMBALL_VISOS_NETWORK_FILERWSOCKET_H
 
-#include "../../Common.h"
 #include "FileReadSocket.h"  // complete type
 #include "FileWriteSocket.h" // complete type
 #include "RwSocket.h"        // complete type
+
+class NetworkMessage;
 
 // SIZE 0x154
 // VTABLE: LEMBALL 0x0049a79c FileCommonSocket

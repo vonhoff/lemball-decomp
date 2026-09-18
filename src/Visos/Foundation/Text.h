@@ -1,9 +1,15 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_TEXT_H
 #define LEMBALL_VISOS_FOUNDATION_TEXT_H
 
-#include "../../Common.h"
+#include "../Graphics/Primitive.h"
 #include "../Graphics/Zrle.h" // complete type
 #include "String.h"           // complete type
+
+class Gdi;
+class Remap;
+class ResFont;
+class ResZrle;
+struct VsPoint;
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00499ae8

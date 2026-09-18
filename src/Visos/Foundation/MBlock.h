@@ -1,7 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_MBLOCK_H
 #define LEMBALL_VISOS_FOUNDATION_MBLOCK_H
 
-#include "../../Common.h"
+#include <stddef.h>
+
+class VsOStream;
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00498940

@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_MRAMBLOCK_H
 #define LEMBALL_VISOS_FOUNDATION_MRAMBLOCK_H
 
-#include "../../Common.h"
 #include "MBlock.h" // complete type
+
+class Arena;
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00498948

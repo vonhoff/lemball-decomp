@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_COPYTOBACKBUFF_H
 #define LEMBALL_VISOS_GRAPHICS_COPYTOBACKBUFF_H
 
-#include "../../Common.h"
 #include "../Foundation/VsRect.h"
 #include "Primitive.h" // complete type
 

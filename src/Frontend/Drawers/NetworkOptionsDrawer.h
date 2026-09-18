@@ -1,11 +1,20 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_NETWORKOPTIONSDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_NETWORKOPTIONSDRAWER_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/BitmapRes.h"
 #include "../Base/BaseFrontendDrawer.h"
 #include "../Support/EntryHandler.h"
 
+class AnimsManager;
+class BaseQueueHandler;
+class BaseRemap;
+class Drawer;
+class EditString;
+class Gdi;
+class Main2DDisplay;
+class NetworkOptionsProc;
+class VsRect;
+struct Message;
 // SIZE 0xa0
 // SIZE 0x08
 struct NetworkOptionsFramePos {
@@ -19,24 +28,24 @@ struct NetworkOptionsLayout {
 	int m_dividerY;                       // 0x50
 	int m_headerY;                        // 0x54
 	NetworkOptionsFramePos m_editPos;     // 0x58
-	undefined4 m_unknown60;               // 0x60
+	unsigned int m_unknown60;             // 0x60
 	int m_localPlayerY;                   // 0x64
 	int m_headerNameX;                    // 0x68
 	int m_playerListY;                    // 0x6c
 	short m_entryX;                       // 0x70
 	short m_unknown72;                    // 0x72
 	short m_entryY;                       // 0x74
-	undefined2 m_unknown76;               // 0x76
+	unsigned short m_unknown76;           // 0x76
 	int m_headerIpX;                      // 0x78
-	undefined4 m_unknown7c;               // 0x7c
+	unsigned int m_unknown7c;             // 0x7c
 	int m_headerComputerX;                // 0x80
-	undefined m_unknown84[8];             // 0x84
+	char m_unknown84[8];                  // 0x84
 	int m_rowStride;                      // 0x8c
 	int m_entryWidth;                     // 0x90
 	unsigned short m_entryHeight;         // 0x94
-	undefined2 m_unknown96;               // 0x96
+	unsigned short m_unknown96;           // 0x96
 	int m_peerNameWidth;                  // 0x98
-	undefined4 m_unknown9c;               // 0x9c
+	unsigned int m_unknown9c;             // 0x9c
 };
 
 // SIZE 0x438
@@ -103,7 +112,7 @@ private:
 	char* m_stopPending;                 // 0x3e4
 	char* m_connectionState;             // 0x3e8
 	BitmapRes m_bitmap;                  // 0x3ec
-	undefined4 m_unknown410;             // 0x410
+	unsigned int m_unknown410;           // 0x410
 	BaseRemap* m_remaps[6];              // 0x414
 	NetworkOptionsLayout* m_layoutTable; // 0x42c
 	int m_pendingEvent;                  // 0x430

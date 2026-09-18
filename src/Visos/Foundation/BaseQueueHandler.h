@@ -1,7 +1,10 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_BASEQUEUEHANDLER_H
 #define LEMBALL_VISOS_FOUNDATION_BASEQUEUEHANDLER_H
 
-#include "../../Common.h"
+#include "Message.h"
+
+class BaseQueue;
+class VsOStream;
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493110

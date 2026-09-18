@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PVGDIBITMAP_H
 #define LEMBALL_VISOS_GRAPHICS_PVGDIBITMAP_H
 
-#include "../../Common.h"
 #include "../Foundation/VsPoint.h" // complete type
 #include "../Foundation/VsRect.h"  // complete type
 #include "../Foundation/VsSize.h"  // complete type

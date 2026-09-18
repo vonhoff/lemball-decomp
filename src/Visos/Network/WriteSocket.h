@@ -1,10 +1,14 @@
 #ifndef LEMBALL_VISOS_NETWORK_WRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_WRITESOCKET_H
 
-#include "../../Common.h"
 #include "../Messaging/BasePacketHeader.h" // complete type
 #include "BaseCommonSocket.h"              // complete type
 #include "BaseSocket.h"                    // complete type
+
+class NetworkAddress;
+class WriteCBuff;
+class WriteNcBuff;
+class WritePacket;
 
 // SIZE 0xa4
 // VTABLE: LEMBALL 0x00498fa0 BaseCommonSocket

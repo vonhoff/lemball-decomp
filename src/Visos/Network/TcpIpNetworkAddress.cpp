@@ -16,11 +16,11 @@ extern "C" char* __stdcall inet_ntoa(in_addr p_address);
 void TcpIpNetworkAddress::operator=(eBroadcastTypes p_type)
 {
 	switch (p_type) {
-	case 0:
+	case BROADCAST_LAN:
 		*this = *g_pBroadcastAddress;
 		((unsigned char*) &m_ipv4Address)[3] = 0xff;
 		break;
-	case 1:
+	case BROADCAST_WAN:
 		m_ipv4Address = 0xffffffff;
 		break;
 	}

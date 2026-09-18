@@ -1,9 +1,13 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_GRAPHICBUTTON_H
 #define LEMBALL_VISOS_GRAPHICS_GRAPHICBUTTON_H
 
-#include "../../Common.h"
 #include "DepressedButton.h" // complete type
 #include "PushActive.h"      // complete type
+
+struct VsPoint;
+class PvGWnd;
+class ResAnim;
+class Primitive;
 
 // SIZE 0x130
 // VTABLE: LEMBALL 0x00499748 GWnd

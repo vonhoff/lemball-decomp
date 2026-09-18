@@ -81,7 +81,7 @@ void BaseFrontendProcess::Process()
 
 // 68K 0x10801b1a Action__20CBaseFrontendProcessF12eUserActions17eUserActionStages
 // FUNCTION: LEMBALL 0x00446860
-void BaseFrontendProcess::Action(int p_action, int p_stage)
+void BaseFrontendProcess::Action(eUserActions p_action, eUserActionStages p_stage)
 {
 	unsigned long started;
 	unsigned long now;
@@ -96,8 +96,8 @@ void BaseFrontendProcess::Action(int p_action, int p_stage)
 			g_pBaseNetwork->WaitProcess();
 		}
 	}
-	((UserActionMessage*) m_userActionMessage)->m_action = (eUserActions) p_action;
-	((UserActionMessage*) m_userActionMessage)->m_stage = (eUserActionStages) p_stage;
+	((UserActionMessage*) m_userActionMessage)->m_action = p_action;
+	((UserActionMessage*) m_userActionMessage)->m_stage = p_stage;
 	((UserActionMessage*) m_userActionMessage)->Send(g_pActiveConnection);
 }
 
@@ -107,7 +107,7 @@ int BaseFrontendProcess::ProcessMsg(Message* p_message)
 {
 	int code = p_message->code;
 	ReadPacket* packet;
-	Connect* connection;
+	CConnect* connection;
 	unsigned int id;
 
 	if (g_pBaseFrontendDrawer == 0) {
@@ -116,7 +116,7 @@ int BaseFrontendProcess::ProcessMsg(Message* p_message)
 	if (ProcessMessages(p_message) == 0) {
 		switch ((unsigned int) p_message->type) {
 		case 5:
-			connection = (Connect*) p_message->payload;
+			connection = (CConnect*) p_message->payload;
 			packet = (ReadPacket*) p_message->source;
 			if (code != 0) {
 				return 1;
@@ -139,7 +139,7 @@ int BaseFrontendProcess::ProcessMsg(Message* p_message)
 
 // 68K 0x10801cdc ReceiveCritical__20CBaseFrontendProcessFUlP11CReadPacketP8CConnect
 // FUNCTION: LEMBALL 0x00446990
-bool BaseFrontendProcess::ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, Connect* p_connection)
+bool BaseFrontendProcess::ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, CConnect* p_connection)
 {
 	return 0;
 }

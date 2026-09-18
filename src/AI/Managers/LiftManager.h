@@ -1,9 +1,16 @@
 #ifndef LEMBALL_AI_MANAGERS_LIFTMANAGER_H
 #define LEMBALL_AI_MANAGERS_LIFTMANAGER_H
 
-#include "../../Common.h"
+#include "../Objects/SwitchEntry.h"
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class AiCoord;
+class GameObject;
+class Lift;
+class Switch;
+class ViewData;
+struct Coord3d;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00495ea8
 class LiftManager : public BaseObjectManager {

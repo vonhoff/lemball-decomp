@@ -1,7 +1,6 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_SPRITEWINDOW_H
 #define LEMBALL_FRONTEND_WINDOWS_SPRITEWINDOW_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/GWnd.h" // complete type
 
 // SIZE 0x90

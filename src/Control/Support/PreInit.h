@@ -1,7 +1,6 @@
 #ifndef LEMBALL_CONTROL_SUPPORT_PREINIT_H
 #define LEMBALL_CONTROL_SUPPORT_PREINIT_H
 
-#include "../../Common.h"
 #include "PreInit.h" // complete type
 
 // SIZE 0x1c

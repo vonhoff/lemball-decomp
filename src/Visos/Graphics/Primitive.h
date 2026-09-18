@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PRIMITIVE_H
 #define LEMBALL_VISOS_GRAPHICS_PRIMITIVE_H
 
-#include "../../Common.h"
+class Gdi;
 
 // SIZE 0x04
 // VTABLE: LEMBALL 0x00496ca8

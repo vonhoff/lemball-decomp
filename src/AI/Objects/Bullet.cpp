@@ -178,7 +178,7 @@ bool Bullet::Process()
 			hitFound:
 				GameObject* hitObject = candidate;
 				if (hitObject != 0 && (unsigned short) hitObject->GetId() != m_sourceObjectId) {
-					if (m_owner != 2 || hitObject->m_objectType == 2) {
+					if (m_owner != OWNER_REMOTE_PLAYER || hitObject->m_objectType == 2) {
 						hitObject->HitBullet(this);
 					}
 					return 0;
@@ -232,8 +232,8 @@ void Bullet::GetData()
 	m_lastMovementTick = GetDword();
 	m_bulletType = (eBulletType) GetDword();
 	m_owner = (eOwner) GetDword();
-	if (m_owner == 0) {
-		m_owner = (eOwner) 2;
+	if (m_owner == OWNER_PLAYER) {
+		m_owner = OWNER_REMOTE_PLAYER;
 	}
 	m_sourceObjectId = GetWord();
 	m_active = 1;

@@ -1,10 +1,14 @@
 #ifndef LEMBALL_VIEWS_INPUT_WINDOWSCURSORMOTIONSTATE_H
 #define LEMBALL_VIEWS_INPUT_WINDOWSCURSORMOTIONSTATE_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/ClipRect.h"  // complete type
 #include "../../Visos/Graphics/SolidRect.h" // complete type
 
+class Ai;
+class BaseQueue;
+class LemmingAnimsManager;
+class Map;
+struct VsPoint;
 // SIZE 0x78
 class WindowsCursorMotionState {
 public:
@@ -12,18 +16,18 @@ public:
 	~WindowsCursorMotionState();
 	void SendCursorPositionMessage();
 	void ProcessCursorMotion();
-	void DrawCursorMotionAtCurrentPosition(undefined4 p_unused);
-	void DrawCursorMotionAtPoint(undefined4 p_unused, const VsPoint& p_position);
+	void DrawCursorMotionAtCurrentPosition(unsigned int p_unused);
+	void DrawCursorMotionAtPoint(unsigned int p_unused, const VsPoint& p_position);
 	void SetCursorMotionPoint(const VsPoint& p_position);
 	VsPoint GetCursorMotionPoint();
 	void StopVerticalMotion();
 	void StopHorizontalMotion();
-	void StartHorizontalMotion(undefined4 p_positive);
-	void StartVerticalMotion(undefined4 p_positive);
+	void StartHorizontalMotion(unsigned int p_positive);
+	void StartVerticalMotion(unsigned int p_positive);
 	void SetCursorMotionAuxValues(unsigned int p_aux0, unsigned int p_aux1);
 
 private:
-	undefined4 m_unknown00;          // 0x00
+	unsigned int m_unknown00;        // 0x00
 	Map* m_map;                      // 0x04
 	Ai* m_ai;                        // 0x08
 	BaseQueue* m_aiQueue;            // 0x0c

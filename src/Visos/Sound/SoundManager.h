@@ -1,7 +1,10 @@
 #ifndef LEMBALL_VISOS_SOUND_SOUNDMANAGER_H
 #define LEMBALL_VISOS_SOUND_SOUNDMANAGER_H
 
-#include "../../Common.h"
+class Wnd;
+class VsOStream;
+class BaseSoundDevice;
+class PvMusicDevice;
 
 // SIZE 0xc90
 // VTABLE: LEMBALL 0x00498978
@@ -43,12 +46,12 @@ private:
 	unsigned int m_deviceCount;        // 0x20
 	BaseSoundDevice* m_devices[4];     // 0x24
 	PvMusicDevice* m_musicDevice;      // 0x34
-	undefined m_reserved38[0x34];      // 0x38
+	char m_reserved38[0x34];           // 0x38
 	unsigned int m_nextMusicHandle;    // 0x6c
 	unsigned int m_resourceId;         // 0x70
 	BaseSoundDevice* m_musicOutput;    // 0x74
 	BaseSoundDevice* m_effectOutput;   // 0x78
-	undefined m_runtimeState[0xc00];   // 0x7c
+	char m_runtimeState[0xc00];        // 0x7c
 	unsigned char m_musicRequested;    // 0xc7c
 	unsigned char m_effectsRequested;  // 0xc7d
 	unsigned char m_musicCapability;   // 0xc7e

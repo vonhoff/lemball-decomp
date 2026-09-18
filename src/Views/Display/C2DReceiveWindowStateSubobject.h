@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_C2DRECEIVEWINDOWSTATESUBOBJECT_H
 #define LEMBALL_VIEWS_DISPLAY_C2DRECEIVEWINDOWSTATESUBOBJECT_H
 
-#include "../../Common.h"
-
 // SIZE 0x23dc
 class C2DReceiveWindowStateSubobject {
 private:

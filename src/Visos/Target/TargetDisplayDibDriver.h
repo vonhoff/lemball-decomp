@@ -1,9 +1,13 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDISPLAYDIBDRIVER_H
 #define LEMBALL_VISOS_TARGET_TARGETDISPLAYDIBDRIVER_H
 
-#include "../../Common.h"
 #include "TargetGDIDriver.h" // complete type
 
+class TargetDrawingContext;
+class TargetPlanarDisplayDibDriver;
+class VsRect;
+struct VsPoint;
+struct VsSize;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x004987b0
 class TargetDisplayDibDriver : public TargetGDIDriver {

@@ -72,7 +72,7 @@ void LiftManager::AddLiftFromXYZ(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
 		m_lifts[m_count].SetId(p_id);
-		m_lifts[m_count].Set(p_x, p_y, p_z, 1, -1, 0x30, (eLiftActivateType) 2, 1);
+		m_lifts[m_count].Set(p_x, p_y, p_z, 1, -1, 0x30, LIFT_ACTIVATE_CONTINUOUS, 1);
 		m_count++;
 	}
 }
@@ -82,7 +82,7 @@ void LiftManager::AddLiftFromEndpoints(unsigned short p_id, const Coord3d& p_sta
 {
 	if (m_count < m_capacity) {
 		m_lifts[m_count].SetId(p_id);
-		m_lifts[m_count].Set(p_start, p_end, 1, -1, 0x30, (eLiftActivateType) 2, 1);
+		m_lifts[m_count].Set(p_start, p_end, 1, -1, 0x30, LIFT_ACTIVATE_CONTINUOUS, 1);
 		m_count++;
 	}
 }
@@ -139,8 +139,8 @@ void LiftManager::Switch(swMessage p_message, int p_id, int p_legacyA, int p_leg
 		}
 		if (p_message == 1) {
 			Lift* lift = &m_lifts[i];
-			if (lift->m_activateType != (eLiftActivateType) 3) {
-				if (lift->m_activateType == (eLiftActivateType) 0) {
+			if (lift->m_activateType != LIFT_ACTIVATE_SWITCH_ONCE) {
+				if (lift->m_activateType == LIFT_ACTIVATE_SWITCH_TOGGLE) {
 					lift->ActivateDeactivate();
 				}
 				return;

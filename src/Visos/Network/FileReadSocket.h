@@ -1,10 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_FILEREADSOCKET_H
 #define LEMBALL_VISOS_NETWORK_FILEREADSOCKET_H
 
-#include "../../Common.h"
 #include "FileBaseSocket.h"   // complete type
 #include "FileCommonSocket.h" // complete type
 #include "ReadSocket.h"       // complete type
+
+class NetworkMessage;
 
 // SIZE 0xbc
 // VTABLE: LEMBALL 0x0049a56c FileCommonSocket
@@ -22,7 +23,7 @@ public:
 	void Process();
 
 private:
-	undefined4 m_unk0x10; // 0x10
+	unsigned int m_unk0x10; // 0x10
 };
 #pragma warning(default : 4250)
 

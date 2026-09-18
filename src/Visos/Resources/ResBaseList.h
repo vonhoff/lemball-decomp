@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESBASELIST_H
 #define LEMBALL_VISOS_RESOURCES_RESBASELIST_H
 
-#include "../../Common.h"
 #include "ResBase.h" // complete type
 
 // SIZE 0x0c
@@ -53,7 +52,7 @@ public:
 private:
 	ResListHeader* m_listHeader;    // 0x48
 	unsigned char* m_headerData;    // 0x4c
-	undefined4 m_unk0x50;           // 0x50
+	unsigned int m_unk0x50;         // 0x50
 	unsigned int m_vramReady;       // 0x54
 	unsigned int m_headerLoaded;    // 0x58
 	unsigned int m_bodyLoaded;      // 0x5c

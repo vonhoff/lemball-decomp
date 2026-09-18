@@ -1,9 +1,15 @@
 #ifndef LEMBALL_AI_MANAGERS_ICEMANAGER_H
 #define LEMBALL_AI_MANAGERS_ICEMANAGER_H
 
-#include "../../Common.h"
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class AiCoord;
+class GameObject;
+class Ice;
+class Switch;
+class ViewData;
+struct Coord3d;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496a00
 class IceManager : public BaseObjectManager {

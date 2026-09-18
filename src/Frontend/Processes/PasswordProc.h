@@ -1,9 +1,11 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_PASSWORDPROC_H
 #define LEMBALL_FRONTEND_PROCESSES_PASSWORDPROC_H
 
-#include "../../Common.h"
 #include "../Base/BaseFrontendProcess.h" // complete type
 
+class BaseProcess;
+class BaseQueueHandler;
+class Game;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x004930d8 BaseQueueHandler
 // VTABLE: LEMBALL 0x004930e8 BaseProcess

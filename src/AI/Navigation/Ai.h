@@ -1,12 +1,81 @@
 #ifndef LEMBALL_AI_NAVIGATION_AI_H
 #define LEMBALL_AI_NAVIGATION_AI_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/BaseProcess.h"      // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Messaging/NetworkMessage.h"    // complete type
 #include "../Base/AiCoord.h"                         // complete type
 #include "../Base/Pt3.h"                             // complete type
+#include "../Base/Rect3.h"                           // complete type
+#include "../Messages/GameStateMessage.h"
+#include "../Objects/Bullet.h"
+#include "../Objects/SwitchEntry.h"
+
+class AiCursor;
+class AnimSpecial;
+class Ball;
+class BallManager;
+class BalloonPost;
+class BaseQueue;
+class BulletManager;
+class C2D;
+class Collectable;
+class CollectableManager;
+class DoorManager;
+class Enemy;
+class EnemyGroupManager;
+class Flag;
+class FormationManager;
+class Game;
+class GameObject;
+class GodManager;
+class GroundAnim;
+class HandManager;
+class IceManager;
+class Info;
+class InvisibleSwitch;
+class InvisibleSwitchManager;
+class LaserManager;
+class LevelLoader;
+class LiftManager;
+class Main2DDisplay;
+class Map;
+class Maze;
+class MineManager;
+class Mover;
+class MoverManager;
+class NodeManager;
+class ObjectManager;
+class PaintGunManager;
+class Panel;
+class PanelButton;
+class PanelLemming;
+class PanelPauseButton;
+class PbNetworkGame;
+class PlayerLemming;
+class PlayerLemmingGroupManager;
+class RocketManager;
+class Sheep;
+class SheepGroupManager;
+class Slinky;
+class SlinkyManager;
+class TrampolineManager;
+class TrapDoorManager;
+class ViewData;
+class VsRect;
+class WindowsCursorMotionState;
+struct Message;
+enum eGameStatus {
+	GAME_STATUS_0 = 0,
+	GAME_STATUS_1 = 1,
+	GAME_STATUS_2 = 2,
+	GAME_STATUS_3 = 3,
+	GAME_STATUS_4 = 4,
+	GAME_STATUS_5 = 5,
+	GAME_STATUS_6 = 6,
+	GAME_STATUS_7 = 7,
+	GAME_STATUS_8 = 8
+};
 
 // SIZE 0x1f0
 // VTABLE: LEMBALL 0x00493a50 BaseQueueHandler
@@ -111,25 +180,25 @@ public:
 	friend bool GameOver(Ai* p_arg0, GameObject* p_arg1, Info* p_arg2);
 
 private:
-	undefined4 m_unk0x48;           // 0x48
+	unsigned int m_unk0x48;         // 0x48
 	int m_initialised;              // 0x4c
 	unsigned int* m_objectRequired; // 0x50
 	unsigned short m_levelVersion;  // 0x54
-	undefined2 m_pad0x56;           // 0x56
+	unsigned short m_pad0x56;       // 0x56
 	unsigned int m_playerGroups;    // 0x58: gameplay enable flag, set to 1 at 0x004123bb
-	undefined4 m_unk0x5c;           // 0x5c
-	undefined4 m_mapType;           // 0x60: level map type (LoadLevel 0x00412f4c)
+	unsigned int m_unk0x5c;         // 0x5c
+	unsigned int m_mapType;         // 0x60: level map type (LoadLevel 0x00412f4c)
 	// Restart (0x00410d98): 32-bit result of skill == 4 (0 or 1).
-	undefined4 m_networkMode;             // 0x64
-	undefined4 m_unk0x68;                 // 0x68
-	undefined4 m_unk0x6c;                 // 0x6c
-	undefined4 m_unk0x70;                 // 0x70
+	unsigned int m_networkMode;           // 0x64
+	unsigned int m_unk0x68;               // 0x68
+	unsigned int m_unk0x6c;               // 0x6c
+	unsigned int m_unk0x70;               // 0x70
 	GameStateMessage* m_gameStateMessage; // 0x74: constructor result at 0x00410dec
 	PbNetworkGame* m_networkGame;         // 0x78: constructor result at 0x00410dba
 	// Restart (0x00410d82, 0x00410dd2): zero, then the connection's host flag.
-	undefined4 m_isHost;                              // 0x7c
-	undefined4 m_unk0x80[2];                          // 0x80
-	undefined4 m_unk0x88;                             // 0x88
+	unsigned int m_isHost;                            // 0x7c
+	unsigned int m_unk0x80[2];                        // 0x80
+	unsigned int m_unk0x88;                           // 0x88
 	AnimSpecial* m_animSpecial;                       // 0x8c: allocation/Initialise at 0x0041171a
 	int m_networkStartsX[4];                          // 0x90
 	int m_networkStartsY[4];                          // 0xa0
@@ -144,11 +213,11 @@ private:
 	int m_gameTime;                                   // 0xe8
 	int m_timeLimit;                                  // 0xec
 	int m_score;                                      // 0xf0
-	undefined4 m_unk0xf4;                             // 0xf4
+	unsigned int m_unk0xf4;                           // 0xf4
 	int m_lemmingCount;                               // 0xf8
 	int m_flagCounts[2];                              // 0xfc
-	undefined4 m_unk0x104;                            // 0x104
-	int m_gameStatus;                                 // 0x108
+	unsigned int m_unk0x104;                          // 0x104
+	eGameStatus m_gameStatus;                         // 0x108
 	int m_isSinglePlayer;                             // 0x10c
 	Map* m_map;                                       // 0x110
 	Maze* m_maze;                                     // 0x114
@@ -178,14 +247,14 @@ private:
 	DoorManager* m_doorManager;                       // 0x190
 	GroundAnim* m_groundAnim;                         // 0x194
 	RocketManager* m_rocketManager;                   // 0x198
-	undefined4 m_pad0x19c;                            // 0x19c
+	unsigned int m_pad0x19c;                          // 0x19c
 	LaserManager* m_laserManager;                     // 0x1a0
 	HandManager* m_handManager;                       // 0x1a4
 	BalloonPost* m_balloonPost;                       // 0x1a8
 	IceManager* m_iceManager;                         // 0x1ac
 	PaintGunManager* m_paintGunManager;               // 0x1b0
 	TrampolineManager* m_trampolineManager;           // 0x1b4
-	undefined4 m_unk0x1b8[2];                         // 0x1b8
+	unsigned int m_unk0x1b8[2];                       // 0x1b8
 	MoverManager* m_moverManager;                     // 0x1c0
 	TrapDoorManager* m_trapDoorManager;               // 0x1c4
 	SlinkyManager* m_slinkyManager;                   // 0x1c8

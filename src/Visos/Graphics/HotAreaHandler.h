@@ -1,8 +1,10 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_HOTAREAHANDLER_H
 #define LEMBALL_VISOS_GRAPHICS_HOTAREAHANDLER_H
 
-#include "../../Common.h"
 #include "../Foundation/VsRect.h"
+
+struct Message;
+class HotAreaList;
 
 // SIZE 0x38
 // VTABLE: LEMBALL 0x00496ea0

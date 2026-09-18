@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PALETTEMANAGER_H
 #define LEMBALL_VISOS_GRAPHICS_PALETTEMANAGER_H
 
-#include "../../Common.h"
 #include "BasePalManager.h" // complete type
 
 // SIZE 0x0c

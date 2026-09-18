@@ -1,9 +1,11 @@
 #ifndef LEMBALL_AI_OBJECTS_HAND_H
 #define LEMBALL_AI_OBJECTS_HAND_H
 
-#include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type
 
+class AiCoord;
+class GameObject;
+class HandManager;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x00496198
 class Hand : public GlobalGameObject {

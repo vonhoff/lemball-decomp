@@ -1,5 +1,6 @@
 #include "SheepGroup.h"
 
+#include "../../Control/Game/Game.h"
 #include "../../Visos/Foundation/VsMath.h"
 #include "../../Visos/Foundation/VsRect.h"
 #include "../../Visos/Foundation/VsTrig.h"
@@ -31,7 +32,7 @@ void SheepGroup::RunAway(AiCoord p_threatPosition)
 	if (count == 0) {
 		GameObject* first = GetFirstElementInGroup();
 		if (first != 0) {
-			first->SetSndEffect((eSoundEffect) 4);
+			first->SetSndEffect(SFX_SHEEP);
 			int positionY = first->m_position.m_yFixed;
 			int positionZ = first->m_position.m_zFixed;
 			destination.m_xFixed = first->m_position.m_xFixed;

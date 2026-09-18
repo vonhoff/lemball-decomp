@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_NAVIGATION_NODEMANAGER_H
 #define LEMBALL_AI_NAVIGATION_NODEMANAGER_H
 
-#include "../../Common.h"
 #include "../Base/Pt3.h" // complete type
 
+class Node;
 // SIZE 0x0c
 class NodeManager {
 public:

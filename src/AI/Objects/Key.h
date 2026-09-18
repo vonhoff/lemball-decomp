@@ -1,10 +1,10 @@
 #ifndef LEMBALL_AI_OBJECTS_KEY_H
 #define LEMBALL_AI_OBJECTS_KEY_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
 
+class GameObject;
 // SIZE 0x150
 // VTABLE: LEMBALL 0x004943b0
 class Key : public BaseGlobalObject {

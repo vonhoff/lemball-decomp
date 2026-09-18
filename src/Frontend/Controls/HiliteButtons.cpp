@@ -93,7 +93,7 @@ int HiliteButtons::ProcessMsg(Message* p_message)
 	default:
 		return 0;
 	case 0xb:
-		g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+		g_pSoundView->PlayEffect(SFX_DRUM1);
 		return 0;
 	case 0xc:
 		if (m_mode == 1) {

@@ -1,8 +1,14 @@
 #ifndef LEMBALL_VIEWS_SOUND_SOUNDVIEW_H
 #define LEMBALL_VIEWS_SOUND_SOUNDVIEW_H
 
-#include "../../Common.h"
+#include "SoundEffects.h"
 
+class AiCoord;
+class C2D;
+class Panel;
+class PanelButton;
+class PanelPauseButton;
+class ViewData;
 struct EffectSpec {
 	int m_soundId;              // 0x00
 	unsigned long m_resourceId; // 0x04
@@ -44,9 +50,9 @@ private:
 	LoadUpdate* m_loadUpdate;        // 0x04
 	unsigned int m_flags;            // 0x08
 	unsigned short m_currentState;   // 0x0c
-	undefined2 m_reserved0e;         // 0x0e
+	unsigned short m_reserved0e;     // 0x0e
 	eSoundEffect m_pendingEffect;    // 0x10
-	undefined m_headerState[0x50];   // 0x14
+	char m_headerState[0x50];        // 0x14
 	unsigned int m_unk0x64;          // 0x64
 	EffectSlot m_effectSlots[50];    // 0x68
 	unsigned int m_musicResourceId;  // 0x2c0

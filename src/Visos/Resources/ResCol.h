@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESCOL_H
 #define LEMBALL_VISOS_RESOURCES_RESCOL_H
 
-#include "../../Common.h"
 #include "ResBase.h" // complete type
 
 #define kChunkCol 0x434f4c20

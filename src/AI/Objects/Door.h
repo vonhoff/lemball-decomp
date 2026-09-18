@@ -1,10 +1,12 @@
 #ifndef LEMBALL_AI_OBJECTS_DOOR_H
 #define LEMBALL_AI_OBJECTS_DOOR_H
 
-#include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type
 #include "../Base/ObjectActions.h"
 
+class AiCoord;
+class DoorManager;
+class GameObject;
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x004936f8
 class Door : public GlobalGameObject {
@@ -28,7 +30,7 @@ private:
 	unsigned int m_setTick;           // 0x13c
 	short m_doorType;                 // 0x140
 	unsigned int m_activationPending; // 0x144
-	undefined4 m_unk0x148;            // 0x148
+	unsigned int m_unk0x148;          // 0x148
 };
 
 // SYNTHETIC: LEMBALL 0x0040ec10

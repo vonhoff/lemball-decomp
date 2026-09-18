@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_MESSAGING_WRITEPACKET_H
 #define LEMBALL_VISOS_MESSAGING_WRITEPACKET_H
 
-#include "../../Common.h"
 #include "BasePacket.h" // complete type
+
+class NetworkMessage;
 
 // SIZE 0x18
 class WritePacket : public BasePacket {

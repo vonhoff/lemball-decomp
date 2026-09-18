@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_ANIMATION_FRAMES_H
 #define LEMBALL_VISOS_ANIMATION_FRAMES_H
 
-#include "../../Common.h"
-
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496d04
 class Frames {
@@ -20,7 +18,7 @@ public:
 
 protected:
 	unsigned int m_frames;     // 0x04
-	undefined4 m_reserved08;   // 0x08
+	unsigned int m_reserved08; // 0x08
 	unsigned int m_frameState; // 0x0c
 };
 

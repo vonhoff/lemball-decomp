@@ -1,10 +1,12 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PVWND_H
 #define LEMBALL_VISOS_GRAPHICS_PVWND_H
 
-#include "../../Common.h"
 #include "../Foundation/VsPoint.h" // complete type
 #include "../Foundation/VsRect.h"  // complete type
 #include "../Foundation/VsSize.h"  // complete type
+#include "MenuList.h"
+
+class HotAreaList;
 
 // SIZE 0x0c
 struct WindowOwnerNode {

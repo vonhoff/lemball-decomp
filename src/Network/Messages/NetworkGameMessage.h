@@ -1,9 +1,11 @@
 #ifndef LEMBALL_NETWORK_MESSAGES_NETWORKGAMEMESSAGE_H
 #define LEMBALL_NETWORK_MESSAGES_NETWORKGAMEMESSAGE_H
 
-#include "../../Common.h"
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
+class NetworkManager;
+class NetworkOptionsDrawer;
+class SuccFailDrawer;
 // SIZE 0x50
 // VTABLE: LEMBALL 0x00498578
 class NetworkGameMessage : public NetworkMessage {
@@ -17,10 +19,10 @@ public:
 	friend class SuccFailDrawer;
 
 private:
-	char m_gameName[9];   // 0x2c
-	char m_peerName[21];  // 0x35
-	undefined2 m_padding; // 0x4a
-	unsigned int m_valid; // 0x4c
+	char m_gameName[9];       // 0x2c
+	char m_peerName[21];      // 0x35
+	unsigned short m_padding; // 0x4a
+	unsigned int m_valid;     // 0x4c
 };
 
 // SYNTHETIC: LEMBALL 0x00452f50

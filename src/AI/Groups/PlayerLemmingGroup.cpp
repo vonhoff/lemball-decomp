@@ -105,7 +105,7 @@ bool PlayerLemmingGroup::Process()
 							if (list->m_capacity > list->m_count) {
 								list->PrependSlot();
 								AiDestinationEntry* dest = list->m_entries;
-								dest->m_type = (eDestinationType) 2;
+								dest->m_type = DESTINATION_OBJECT;
 								dest->m_coordinate.m_xFixed = position.m_xFixed;
 								dest->m_coordinate.m_yFixed = position.m_yFixed;
 								dest->m_coordinate.m_zFixed = position.m_zFixed;
@@ -132,7 +132,7 @@ bool PlayerLemmingGroup::Process()
 									object->m_unk0x8c = 1;
 									m_currentUseElement = 0;
 									if (m_useObject->Activate(member)) {
-										SetGroupState((eGroupState) 3);
+										SetGroupState(GROUP_STATE_USING_OBJECT);
 									}
 									else {
 										m_useObject->m_unk0x8c = 0;
@@ -153,7 +153,7 @@ bool PlayerLemmingGroup::Process()
 		case 1:
 			member = GenericGroup::GetNthElementInGroup(m_currentUseElement);
 			if (member == 0) {
-				SetGroupState((eGroupState) 0);
+				SetGroupState(GROUP_STATE_IDLE);
 				m_useObject->m_unk0x8c = 0;
 				m_useObject = 0;
 			}
@@ -182,10 +182,10 @@ bool PlayerLemmingGroup::Process()
 						}
 						member = GenericGroup::GetNextElementInGroup();
 					}
-					SetGroupState((eGroupState) 2);
+					SetGroupState(GROUP_STATE_ATTACKING);
 					break;
 				case 2:
-					SetGroupState((eGroupState) 0);
+					SetGroupState(GROUP_STATE_IDLE);
 					m_useObject->m_unk0x8c = 0;
 					m_useObject = 0;
 					break;
@@ -195,14 +195,14 @@ bool PlayerLemmingGroup::Process()
 		case 2:
 			if (m_useObject->m_action == (eAction) 0x18 && moving == 0) {
 				if (GetElementsInGroup() <= m_currentUseElement) {
-					SetGroupState((eGroupState) 0);
+					SetGroupState(GROUP_STATE_IDLE);
 					m_useObject->m_unk0x8c = 0;
 					m_useObject = 0;
 				}
 				else {
 					member = GenericGroup::GetNthElementInGroup(m_currentUseElement);
 					m_useObject->Activate(member);
-					SetGroupState((eGroupState) 3);
+					SetGroupState(GROUP_STATE_USING_OBJECT);
 				}
 			}
 			break;
@@ -220,17 +220,17 @@ bool PlayerLemmingGroup::Process()
 					if (list->m_capacity > list->m_count) {
 						list->PrependSlot();
 						AiDestinationEntry* dest = list->m_entries;
-						dest->m_type = (eDestinationType) 2;
+						dest->m_type = DESTINATION_OBJECT;
 						dest->m_coordinate.m_xFixed = position.m_xFixed;
 						dest->m_coordinate.m_yFixed = position.m_yFixed;
 						dest->m_coordinate.m_zFixed = position.m_zFixed;
 						dest->m_metadata = id;
 					}
-					SetGroupState((eGroupState) 0);
+					SetGroupState(GROUP_STATE_IDLE);
 				}
 				break;
 			case 2:
-				SetGroupState((eGroupState) 1);
+				SetGroupState(GROUP_STATE_MOVING);
 				break;
 			}
 			break;
@@ -275,7 +275,7 @@ void PlayerLemmingGroup::AddUseObject(int p_objectId)
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
 		AiDestinationEntry* entry = &list->m_entries[count];
-		entry->m_type = (eDestinationType) 1;
+		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = position.m_xFixed;
 		entry->m_coordinate.m_yFixed = position.m_yFixed;
 		entry->m_coordinate.m_zFixed = position.m_zFixed;
@@ -285,7 +285,7 @@ void PlayerLemmingGroup::AddUseObject(int p_objectId)
 	if (useCount < useList->m_capacity) {
 		useList->m_count = useCount + 1;
 		AiDestinationEntry* entry = &useList->m_entries[useCount];
-		entry->m_type = (eDestinationType) 2;
+		entry->m_type = DESTINATION_OBJECT;
 		entry->m_coordinate.m_xFixed = position.m_xFixed;
 		entry->m_coordinate.m_yFixed = position.m_yFixed;
 		entry->m_coordinate.m_zFixed = position.m_zFixed;
@@ -305,7 +305,7 @@ void PlayerLemmingGroup::AddUseObject(GameObject* p_object, int p_objectId)
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
 		AiDestinationEntry* entry = &list->m_entries[count];
-		entry->m_type = (eDestinationType) 1;
+		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = position.m_xFixed;
 		entry->m_coordinate.m_yFixed = position.m_yFixed;
 		entry->m_coordinate.m_zFixed = position.m_zFixed;
@@ -315,7 +315,7 @@ void PlayerLemmingGroup::AddUseObject(GameObject* p_object, int p_objectId)
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
 		AiDestinationEntry* entry = &list->m_entries[count];
-		entry->m_type = (eDestinationType) 2;
+		entry->m_type = DESTINATION_OBJECT;
 		entry->m_coordinate.m_xFixed = position.m_xFixed;
 		entry->m_coordinate.m_yFixed = position.m_yFixed;
 		entry->m_coordinate.m_zFixed = position.m_zFixed;
@@ -338,7 +338,7 @@ bool PlayerLemmingGroup::RemoveLemmingFromGroup(PlayerLemming* p_lemming)
 
 // 68K 0x1060f420 SetPlayerControlled__19CPlayerLemmingGroupFUcP14CPlayerLemming
 // FUNCTION: LEMBALL 0x00414810
-void PlayerLemmingGroup::SetPlayerControlled(undefined4 p_playerControlled, PlayerLemming* p_leader)
+void PlayerLemmingGroup::SetPlayerControlled(unsigned int p_playerControlled, PlayerLemming* p_leader)
 {
 	PlayerLemming* first = (PlayerLemming*) GenericGroup::GetFirstElementInGroup();
 	PlayerLemming* lemming = first;
@@ -391,7 +391,7 @@ void PlayerLemmingGroup::ClearExistingWaypoints()
 {
 	GenericGroup::ClearExistingWaypoints();
 	if (m_useObject != 0) {
-		if (GetGroupState() == (eGroupState) 3 && m_useObject->m_heading != 0 && m_useObject->m_unk0x8c != 0) {
+		if (GetGroupState() == GROUP_STATE_USING_OBJECT && m_useObject->m_heading != 0 && m_useObject->m_unk0x8c != 0) {
 			if (g_pActiveConnection != 0) {
 				m_useObject->SendCancel();
 			}

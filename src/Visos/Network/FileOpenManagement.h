@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_FILEOPENMANAGEMENT_H
 #define LEMBALL_VISOS_NETWORK_FILEOPENMANAGEMENT_H
 
-#include "../../Common.h"
 #include "FileRwSocket.h" // complete type
 #include "OpenCount.h"    // complete type
 

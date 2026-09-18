@@ -2,8 +2,19 @@
 #define LEMBALL_FRONTEND_DRAWERS_PREVIEWDRAWER_H
 
 #include "../Base/BaseFrontendDrawer.h"
-#include "PreviewDrawerPrims.h" // complete type
+#include "../Support/CoordPair.h" // complete type
+#include "PreviewDrawerPrims.h"   // complete type
 
+class AnimsManager;
+class BaseQueueHandler;
+class BaseRemap;
+class Drawer;
+class Gdi;
+class Main2DDisplay;
+class RepeatAnim;
+class ResBitmap;
+class VsRect;
+struct Message;
 enum PreviewLayoutIndex {
 	PreviewReturnButton = 0,
 	PreviewGoButton = 1,
@@ -46,7 +57,7 @@ class PreviewDrawer : public BaseFrontendDrawer {
 public:
 	PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2);
 	bool AddWord(char* p_source, char* p_line, int& p_sourcePos, int& p_linePos);
-	bool ConfirmedAction(int p_action);
+	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawAnims();                         // vtable+0x48
 	virtual void DrawBackGround();                    // vtable+0x50

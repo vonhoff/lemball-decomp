@@ -1,10 +1,13 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_HOTAREALIST_H
 #define LEMBALL_VISOS_GRAPHICS_HOTAREALIST_H
 
-#include "../../Common.h"
 #include "../Foundation/BaseQueueHandler.h" // complete type
 #include "../Foundation/VsPoint.h"          // complete type
 #include "HotAreaHandler.h"                 // complete type
+
+class VsRect;
+struct Message;
+struct HotAreaElement;
 
 // SIZE 0x60
 // VTABLE: LEMBALL 0x00499d18 HotAreaHandler

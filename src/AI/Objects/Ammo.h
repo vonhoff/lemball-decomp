@@ -1,10 +1,11 @@
 #ifndef LEMBALL_AI_OBJECTS_AMMO_H
 #define LEMBALL_AI_OBJECTS_AMMO_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
 
+class GameObject;
+class ObjectManager;
 // MINIMUM SIZE 0x146
 // VTABLE: LEMBALL 0x00494268
 class Ammo : public BaseGlobalObject {

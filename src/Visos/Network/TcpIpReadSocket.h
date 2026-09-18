@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_TCPIPREADSOCKET_H
 #define LEMBALL_VISOS_NETWORK_TCPIPREADSOCKET_H
 
-#include "../../Common.h"
 #include "BaseCommonSocket.h"  // complete type
 #include "ReadSocket.h"        // complete type
 #include "TcpIpCommonSocket.h" // complete type

@@ -1,8 +1,9 @@
 #ifndef LEMBALL_AI_NAVIGATION_MAZE_H
 #define LEMBALL_AI_NAVIGATION_MAZE_H
 
-#include "../../Common.h"
-
+class GameObject;
+class Map;
+struct Solution;
 // SIZE 0x103c
 class Maze {
 public:
@@ -34,7 +35,7 @@ private:
 	int m_startY;                   // 0x101c
 	int m_endX;                     // 0x1020
 	int m_endY;                     // 0x1024
-	undefined4 m_unk0x1028;         // 0x1028: gap before BInitialise's 0x102c timestamp
+	unsigned int m_unk0x1028;       // 0x1028: gap before BInitialise's 0x102c timestamp
 	unsigned int m_startTime;       // 0x102c
 	unsigned int m_totalTime;       // 0x1030
 	int m_solutionCount;            // 0x1034

@@ -1,13 +1,23 @@
 #ifndef LEMBALL_AI_OBJECTS_VIEWDATA_H
 #define LEMBALL_AI_OBJECTS_VIEWDATA_H
 
-#include "../../Common.h"
+#include "../../Views/Sound/SoundEffects.h"
 #include "../Base/AiCoord.h" // complete type
+#include "../Base/ObjectActions.h"
+#include "../Base/ObjectTypes.h"
 
+class C2D;
+class GameObject;
+class Laser;
+class PlayerLemming;
+class Rocket;
+class SoundView;
+class Switch;
+class TrapDoor;
 // SIZE 0x4c
 class ViewData {
 public:
-	void SetViewActionTuple(eAction p_action, undefined4 p_argument, unsigned int p_stateTimer);
+	void SetViewActionTuple(eAction p_action, unsigned int p_argument, unsigned int p_stateTimer);
 
 	// 68K 0x1011cb4a __ct__9CViewDataFv
 	// FUNCTION: LEMBALL 0x00439340
@@ -16,7 +26,7 @@ public:
 		m_objectId = 0xffff;
 		m_transientFlags = 0;
 		m_unk0x30 = 0;
-		m_action = 0;
+		m_action = ACTION_NONE;
 		m_stateTimer = 0;
 	}
 
@@ -45,7 +55,7 @@ private:
 	eObjectType m_objectType;      // 0x28
 	unsigned short m_objectId;     // 0x2c
 	unsigned short m_playerIndex;  // 0x2e
-	undefined4 m_unk0x30;          // 0x30
+	unsigned int m_unk0x30;        // 0x30
 	unsigned int m_transientFlags; // 0x34
 	AiCoord m_auxiliaryPosition;   // 0x38
 	eSoundEffect m_soundEffect;    // 0x44

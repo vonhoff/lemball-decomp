@@ -1,11 +1,17 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_INTROANIMDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_INTROANIMDRAWER_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/SolidRect.h" // complete type
 #include "../Base/BaseFrontendDrawer.h"     // complete type
 #include "../Windows/IntroAnimAnimWindow.h" // complete type
 
+class AnimsManager;
+class BaseQueueHandler;
+class Drawer;
+class Gdi;
+class Main2DDisplay;
+class VsRect;
+struct Message;
 // SIZE 0x484
 // VTABLE: LEMBALL 0x00497a68 Drawer
 // VTABLE: LEMBALL 0x00497a58 BaseQueueHandler
@@ -25,7 +31,7 @@ private:
 	unsigned int m_variant;           // 0x398
 	int m_nextFlow;                   // 0x39c
 	SolidRect m_backgroundRect;       // 0x3a0
-	undefined4 m_unk0x3b0;            // 0x3b0
+	unsigned int m_unk0x3b0;          // 0x3b0
 	int m_startCountdown;             // 0x3b4
 	unsigned int m_started;           // 0x3b8
 	IntroAnimAnimWindow m_animWindow; // 0x3bc

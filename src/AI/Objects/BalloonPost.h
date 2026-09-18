@@ -1,9 +1,13 @@
 #ifndef LEMBALL_AI_OBJECTS_BALLOONPOST_H
 #define LEMBALL_AI_OBJECTS_BALLOONPOST_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h" // complete type
+#include "../Base/ObjectTypes.h"
 
+class Ai;
+class Map;
+class TheBalloonPost;
+class ViewData;
 // SIZE 0x4c
 class BalloonPost {
 public:

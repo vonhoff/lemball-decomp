@@ -43,6 +43,6 @@ void ObjectChangeStateMess::GetData()
 		return;
 	}
 	m_object->m_isRemoteObject = 0;
-	m_object->m_pendingAction = 0x18;
+	m_object->m_pendingAction = (eAction) 0x18;
 	m_object->m_unk0x8c = 0;
 }

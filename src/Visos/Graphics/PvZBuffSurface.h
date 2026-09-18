@@ -1,9 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PVZBUFFSURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_PVZBUFFSURFACE_H
 
-#include "../../Common.h"
 #include "PvGdiBitmap.h" // complete type
 #include "PvSurface.h"   // complete type
+
+class ZBuffScroll;
+class ZBuffClear;
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00499618 PvZBuffSurface

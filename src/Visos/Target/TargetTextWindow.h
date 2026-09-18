@@ -1,10 +1,10 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETTEXTWINDOW_H
 #define LEMBALL_VISOS_TARGET_TARGETTEXTWINDOW_H
 
-#include "../../Common.h"
 #include "../Foundation/Critical.h"
 
 struct tagPAINTSTRUCT;
+struct TargetTextLineBuffer;
 
 // SIZE 0x58
 // VTABLE: LEMBALL 0x0049a4a0
@@ -19,14 +19,14 @@ public:
 	void RedrawLines(int p_firstLine, int p_lineCount);
 	int UpdateVisibleRows();
 	int UpdateClientWidth();
-	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, undefined4 p_arg2);
+	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_arg2);
 	void Paint(void* p_dc, const tagPAINTSTRUCT* p_paint);
 	void Scroll(int p_scrollCode, int p_thumbPos);
-	void BeginSelection(int p_x, int p_y, undefined4 p_arg2);
-	void EndSelection(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2);
+	void BeginSelection(int p_x, int p_y, unsigned int p_arg2);
+	void EndSelection(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2);
 	void SetSelectionHighlight(int p_selected);
 	void EnsureLineVisible(int p_line);
-	void UpdateSelection(int p_x, int p_y, undefined4 p_arg2);
+	void UpdateSelection(int p_x, int p_y, unsigned int p_arg2);
 	char* GetSelectionText();
 	void CopySelection();
 	static long __stdcall WindowProc(void* p_window, unsigned int p_message, unsigned int p_wParam, long p_lParam);

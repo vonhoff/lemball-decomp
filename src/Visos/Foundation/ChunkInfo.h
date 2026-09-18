@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CHUNKINFO_H
 #define LEMBALL_VISOS_FOUNDATION_CHUNKINFO_H
 
-#include "../../Common.h"
+class MogDir;
 
 // SIZE 0x38
 struct ChunkInfo {

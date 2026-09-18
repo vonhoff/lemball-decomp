@@ -40,7 +40,7 @@ void Node::Initialise(int p_x, int p_y, int p_neighbourCapacity)
 }
 
 // FUNCTION: LEMBALL 0x00421370
-void Node::SetFixedCoordinates(int p_x, int p_y, undefined4 p_unused)
+void Node::SetFixedCoordinates(int p_x, int p_y, unsigned int p_unused)
 {
 	m_xFixed = p_x;
 	m_yFixed = p_y;

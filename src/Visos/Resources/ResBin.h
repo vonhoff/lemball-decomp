@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESBIN_H
 #define LEMBALL_VISOS_RESOURCES_RESBIN_H
 
-#include "../../Common.h"
 #include "ResBase.h" // complete type
 
 // SIZE 0x48

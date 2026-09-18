@@ -328,7 +328,7 @@ void AnimsManager::ResetPrimitives()
 		m_zrleCount = 0;
 		struct PrimitiveState {
 			int count;
-			undefined drawMark[4];
+			char drawMark[4];
 		};
 		PrimitiveState* animState = (PrimitiveState*) &m_animCount;
 		PrimitiveState* zrleState = (PrimitiveState*) &m_zrleCount;

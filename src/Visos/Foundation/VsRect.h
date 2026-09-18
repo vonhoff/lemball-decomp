@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSRECT_H
 #define LEMBALL_VISOS_FOUNDATION_VSRECT_H
 
-#include "../../Common.h"
 #include "VsPoint.h" // complete type
 #include "VsSize.h"  // complete type
 

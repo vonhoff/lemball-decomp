@@ -1,9 +1,10 @@
 #ifndef LEMBALL_VISOS_NETWORK_TCPIPNETWORK_H
 #define LEMBALL_VISOS_NETWORK_TCPIPNETWORK_H
 
-#include "../../Common.h"
 #include "../Target/TargetNetworkWindow.h" // complete type
 #include "BaseNetwork.h"                   // complete type
+
+struct BasePacketHeader;
 
 // SIZE 0x78
 // VTABLE: LEMBALL 0x0049a2dc TargetNetworkWindow

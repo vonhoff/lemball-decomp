@@ -876,7 +876,7 @@ bool InternalMemQuit()
 unsigned int FileNetworkMessageThread()
 {
 	// Win32 MSG storage: seven 32-bit words.
-	undefined4 message[7];
+	unsigned int message[7];
 	unsigned int count;
 
 	g_pBaseNetwork = new FileNetwork();
@@ -976,7 +976,7 @@ bool VsFNetQuit()
 unsigned int TcpIpNetworkMessageThread()
 {
 	// Win32 MSG storage: seven 32-bit words.
-	undefined4 message[7];
+	unsigned int message[7];
 	unsigned int count;
 
 	g_pBaseNetwork = new TcpIpNetwork();

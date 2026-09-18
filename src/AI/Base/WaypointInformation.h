@@ -1,8 +1,6 @@
 #ifndef LEMBALL_AI_BASE_WAYPOINTINFORMATION_H
 #define LEMBALL_AI_BASE_WAYPOINTINFORMATION_H
 
-#include "../../Common.h"
-
 // SIZE 0x14
 struct WaypointInformation {
 	unsigned int m_action;        // 0x00

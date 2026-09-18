@@ -1,17 +1,26 @@
 #ifndef LEMBALL_NETWORK_GAME_NETWORKMANAGER_H
 #define LEMBALL_NETWORK_GAME_NETWORKMANAGER_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
+#include "../../Visos/Network/Connect.h"
 
+class Ai;
+class BaseFrontendDrawer;
+class Broadcast;
+class GameRejectMessage;
+class NetworkGameMessage;
+class NetworkGameStage;
+class NetworkOptionsDrawer;
+class NetworkOptionsProc;
+struct Message;
 // SIZE 0x6c
 // VTABLE: LEMBALL 0x004985f8
 class NetworkManager : public BaseQueueHandler {
 public:
-	NetworkGameMessage* GetGameMessage(Connect* p_connection);
+	NetworkGameMessage* GetGameMessage(CConnect* p_connection);
 	NetworkManager(const char* p_arg0);
 	bool Start();
-	int GetnGame(Connect* p_connection);
+	int GetnGame(CConnect* p_connection);
 	int CountActiveGames();
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual void Process();                     // vtable+0x0c
@@ -32,7 +41,7 @@ private:
 	NetworkGameMessage* m_gameMessages;   // 0x14
 	NetworkGameStage* m_gameStage;        // 0x18
 	GameRejectMessage* m_rejectMessage;   // 0x1c
-	Connect* m_connections[10];           // 0x20
+	CConnect* m_connections[10];          // 0x20
 	unsigned int m_desiredGameState;      // 0x48
 	unsigned int m_observedGameState;     // 0x4c
 	unsigned int m_lastGameStateSendTime; // 0x50

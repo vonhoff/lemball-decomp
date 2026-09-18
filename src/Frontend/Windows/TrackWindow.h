@@ -1,7 +1,6 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_TRACKWINDOW_H
 #define LEMBALL_FRONTEND_WINDOWS_TRACKWINDOW_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/VsPoint.h"      // complete type
 #include "../../Visos/Foundation/VsRect.h"       // complete type
 #include "../../Visos/Graphics/ClipRect.h"       // complete type
@@ -9,6 +8,9 @@
 #include "../../Visos/Graphics/HotAreaHandler.h" // complete type
 #include "../../Visos/Graphics/Line.h"           // complete type
 
+class GunController;
+class PvGWnd;
+class PvWnd;
 // SIZE 0x134
 // VTABLE: LEMBALL 0x00497f48 GWnd
 // VTABLE: LEMBALL 0x00497f20 HotAreaHandler

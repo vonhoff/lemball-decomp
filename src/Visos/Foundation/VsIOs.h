@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSIOS_H
 #define LEMBALL_VISOS_FOUNDATION_VSIOS_H
 
-#include "../../Common.h"
+class VsStreambuf;
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x00493034

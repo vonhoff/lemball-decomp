@@ -6,10 +6,10 @@
 struct ImageResourceHeader {
 	unsigned int m_width;
 	unsigned short m_height;
-	undefined2 m_unknown0x06;
+	unsigned short m_unknown0x06;
 	unsigned char m_depth;
 	unsigned char m_flags;
-	undefined2 m_unknown0x0a;
+	unsigned short m_unknown0x0a;
 	unsigned int m_imageState;
 };
 

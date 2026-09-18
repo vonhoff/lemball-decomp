@@ -32,7 +32,7 @@ bool Key::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == 26) {
-				SetSndEffect((eSoundEffect) 41);
+				SetSndEffect(SFX_KEYS);
 			}
 			m_pendingAction = m_action;
 		}
@@ -62,7 +62,7 @@ bool Key::Activate(GameObject* p_object)
 void Key::DoActivate()
 {
 	m_activator->AddObject(m_objectType, this);
-	SetSndEffect((eSoundEffect) 41);
+	SetSndEffect(SFX_KEYS);
 	g_pAI->Score(10);
 }
 

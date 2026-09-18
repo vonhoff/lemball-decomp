@@ -1,7 +1,6 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_SUCCFAILANIMWINDOW_H
 #define LEMBALL_FRONTEND_WINDOWS_SUCCFAILANIMWINDOW_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/AnimWnd.h" // complete type
 
 class SuccFailDrawer;

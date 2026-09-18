@@ -1,10 +1,10 @@
 #ifndef LEMBALL_AI_OBJECTS_BALL_H
 #define LEMBALL_AI_OBJECTS_BALL_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h"    // complete type
 #include "../Base/GameObject.h" // complete type
 
+class Bullet;
 // SIZE 0x13c
 // VTABLE: LEMBALL 0x00495460
 class Ball : public GameObject {

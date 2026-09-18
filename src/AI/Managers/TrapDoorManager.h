@@ -1,9 +1,11 @@
 #ifndef LEMBALL_AI_MANAGERS_TRAPDOORMANAGER_H
 #define LEMBALL_AI_MANAGERS_TRAPDOORMANAGER_H
 
-#include "../../Common.h"
 #include "BaseObjectManager.h" // complete type
 
+class AiCoord;
+class TrapDoor;
+class ViewData;
 // SIZE 0x54
 // VTABLE: LEMBALL 0x004936c8
 class TrapDoorManager : public BaseObjectManager {

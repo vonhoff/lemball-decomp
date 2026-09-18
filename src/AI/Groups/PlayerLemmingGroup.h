@@ -1,9 +1,14 @@
 #ifndef LEMBALL_AI_GROUPS_PLAYERLEMMINGGROUP_H
 #define LEMBALL_AI_GROUPS_PLAYERLEMMINGGROUP_H
 
-#include "../../Common.h"
 #include "GenericGroup.h" // complete type
 
+class Ai;
+class FormationManager;
+class GameObject;
+class ObjectManager;
+class PlayerLemming;
+class ViewData;
 // SIZE 0x174
 // VTABLE: LEMBALL 0x00493a60
 class PlayerLemmingGroup : public GenericGroup {
@@ -22,7 +27,7 @@ public:
 	virtual ~PlayerLemmingGroup();                 // vtable+0x00
 	void AddUseObject(GameObject* p_object, int p_objectId);
 	void AddUseObject(int p_objectId);
-	void SetPlayerControlled(undefined4 p_playerControlled, PlayerLemming* p_leader);
+	void SetPlayerControlled(unsigned int p_playerControlled, PlayerLemming* p_leader);
 
 private:
 	int m_playerControlled;  // 0x168

@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSINIT_H
 #define LEMBALL_VISOS_FOUNDATION_VSINIT_H
 
-#include "../../Common.h"
-
 #include <setjmp.h>
 
 extern jmp_buf g_vsExitJumpBuffer;

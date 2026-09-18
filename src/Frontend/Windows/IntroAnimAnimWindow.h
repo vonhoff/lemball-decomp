@@ -1,9 +1,10 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_INTROANIMANIMWINDOW_H
 #define LEMBALL_FRONTEND_WINDOWS_INTROANIMANIMWINDOW_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/AnimWnd.h" // complete type
 
+class IntroAnimDrawer;
+class Main2DDisplay;
 // SIZE 0xc8
 // VTABLE: LEMBALL 0x00497960
 class IntroAnimAnimWindow : public AnimWnd {

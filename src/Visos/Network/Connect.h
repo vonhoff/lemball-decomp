@@ -1,8 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_CONNECT_H
 #define LEMBALL_VISOS_NETWORK_CONNECT_H
 
-#include "../../Common.h"
 #include "RwSocket.h" // complete type
+
+class BasePacket;
+class NetworkAddress;
+class NetworkMessage;
 
 // SIZE 0x15c
 // VTABLE: LEMBALL 0x00499140 BaseSocket's `ReadSocket
@@ -55,9 +58,7 @@ private:
 	unsigned int m_connectTime;   // 0x28
 };
 
-typedef CConnect Connect;
-
-extern Connect* g_pActiveConnection;
+extern CConnect* g_pActiveConnection;
 
 // SYNTHETIC: LEMBALL 0x00462da0 SYMBOL
 // ??_ECConnect@@$4PPPPPPPM@A@AEPAXI@Z

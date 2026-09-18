@@ -1,12 +1,22 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_BASECURSOR_H
 #define LEMBALL_VISOS_GRAPHICS_BASECURSOR_H
 
-#include "../../Common.h"
 #include "../Foundation/BaseQueueHandler.h" // complete type
 #include "../Foundation/VsPoint.h"          // complete type
 #include "../Foundation/VsRect.h"           // complete type
 #include "PopActive.h"                      // complete type
 #include "PushActive.h"                     // complete type
+
+class GWnd;
+struct Message;
+class Zrle;
+class ResBase;
+
+enum eCursorDisplayType {
+	CURSOR_DISPLAY_NONE = 0,
+	CURSOR_DISPLAY_HAND = 1,
+	CURSOR_DISPLAY_PAW = 2
+};
 
 // SIZE 0x9c
 // VTABLE: LEMBALL 0x00499d38
@@ -58,7 +68,7 @@ private:
 	unsigned int m_lastInputY;          // 0x70
 	VsRect m_bounds;                    // 0x74
 	int m_keys[7];                      // 0x7c
-	undefined4 m_reserved98;            // 0x98
+	unsigned int m_reserved98;          // 0x98
 };
 
 // SYNTHETIC: LEMBALL 0x0046ba30

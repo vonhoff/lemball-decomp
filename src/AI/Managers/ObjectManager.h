@@ -1,10 +1,11 @@
 #ifndef LEMBALL_AI_MANAGERS_OBJECTMANAGER_H
 #define LEMBALL_AI_MANAGERS_OBJECTMANAGER_H
 
-#include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type
 #include "BaseObjectManager.h"        // complete type
 
+class AiCoord;
+class NetworkMessage;
 class Ai;
 class Switch;
 class ViewData;
@@ -45,7 +46,7 @@ private:
 	Ai* m_ai;                     // 0x30
 	unsigned short m_capacity;    // 0x34
 	unsigned short m_count;       // 0x36
-	undefined2 m_unk0x38;         // 0x38
+	unsigned short m_unk0x38;     // 0x38
 	GlobalGameObject** m_objects; // 0x3c
 };
 

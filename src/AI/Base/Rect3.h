@@ -1,8 +1,6 @@
 #ifndef LEMBALL_AI_BASE_RECT3_H
 #define LEMBALL_AI_BASE_RECT3_H
 
-#include "../../Common.h"
-
 // SIZE 0x18
 class Rect3 {
 public:

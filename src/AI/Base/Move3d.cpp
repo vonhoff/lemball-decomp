@@ -1,5 +1,6 @@
 #include "Move3d.h"
 
+#include "../../Control/Game/Game.h"
 #include "../../Visos/Foundation/VsMath.h"
 
 // 68K 0x10616f8c Set__7CMove3dFR4CPt3R4CPt3ii

@@ -1,8 +1,7 @@
 #ifndef LEMBALL_AI_BASE_C3DVECTOR_H
 #define LEMBALL_AI_BASE_C3DVECTOR_H
 
-#include "../../Common.h"
-
+class Fixed;
 // SIZE 0x0c
 class C3DVector {
 public:

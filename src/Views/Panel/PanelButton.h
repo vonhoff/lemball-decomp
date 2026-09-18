@@ -1,12 +1,17 @@
 #ifndef LEMBALL_VIEWS_PANEL_PANELBUTTON_H
 #define LEMBALL_VIEWS_PANEL_PANELBUTTON_H
 
-#include "../../Common.h"
+#include "../../AI/Base/ObjectTypes.h"
 #include "../../Visos/Animation/Anim.h"           // complete type
 #include "../../Visos/Foundation/VsRect.h"        // complete type
 #include "../../Visos/Graphics/DepressedButton.h" // complete type
 #include "../../Visos/Graphics/Line.h"            // complete type
 
+class GWnd;
+class HotAreaHandler;
+class PanelLemming;
+class PvGWnd;
+struct VsPoint;
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x00497508 GWnd
 // VTABLE: LEMBALL 0x004974e0 HotAreaHandler

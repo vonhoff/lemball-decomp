@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_BASE_MOVE3D_H
 #define LEMBALL_AI_BASE_MOVE3D_H
 
-#include "../../Common.h"
+#include "../../Visos/Foundation/VsDebug.h"
 #include "Pt3.h" // complete type
 
 // SIZE 0x1c

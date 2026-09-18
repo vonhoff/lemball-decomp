@@ -1,9 +1,12 @@
 #ifndef LEMBALL_AI_OBJECTS_ROCKET_H
 #define LEMBALL_AI_OBJECTS_ROCKET_H
 
-#include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type
 
+class AiCoord;
+class GameObject;
+class RocketManager;
+class ViewData;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x00495ed8
 class Rocket : public GlobalGameObject {

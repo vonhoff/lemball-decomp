@@ -1,9 +1,24 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PVSURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_PVSURFACE_H
 
-#include "../../Common.h"
 #include "../Foundation/VsRect.h" // complete type
 #include "../Foundation/VsSize.h" // complete type
+
+class Zrle;
+class ResZrle;
+class Bitmap;
+class ResBitmap;
+class BigBitmap;
+class SolidRect;
+class Point;
+class Line;
+class Circle;
+class FilledCircle;
+class ClipRect;
+class ScreenScroll;
+class ResPalette;
+class Surface;
+struct VsPoint;
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00499508

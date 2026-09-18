@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESBITMAP_H
 #define LEMBALL_VISOS_RESOURCES_RESBITMAP_H
 
-#include "../../Common.h"
 #include "ResRaster.h"
 
 // SIZE 0x0c

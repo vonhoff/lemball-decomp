@@ -34,7 +34,7 @@ void Slinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 	m_position.m_yFixed = m_minY << 12;
 	m_actionDeadline = g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
-	Action(0x18);
+	Action((eAction) 0x18);
 }
 
 // FUNCTION: LEMBALL 0x0040b5b0
@@ -115,7 +115,7 @@ bool Slinky::Process()
 		if (g_dwGameTick >= m_actionDeadline) {
 			Move();
 			m_stateTimer = g_dwSimulationTimestamp;
-			Action(0x1b);
+			Action((eAction) 0x1b);
 			m_actionDeadline = g_dwGameTick + 0x10;
 		}
 		break;
@@ -128,7 +128,7 @@ bool Slinky::Process()
 			m_position.m_yFixed = y;
 			m_position.m_zFixed = z;
 			m_stateTimer = g_dwSimulationTimestamp;
-			Action(0x18);
+			Action((eAction) 0x18);
 			m_actionDeadline = g_dwGameTick + 0x14;
 		}
 		break;

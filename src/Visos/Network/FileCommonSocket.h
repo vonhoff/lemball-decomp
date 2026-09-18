@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_FILECOMMONSOCKET_H
 #define LEMBALL_VISOS_NETWORK_FILECOMMONSOCKET_H
 
-#include "../../Common.h"
 #include "BaseCommonSocket.h" // complete type
 #include "NetworkFile.h"      // complete type
 

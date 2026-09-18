@@ -9,7 +9,7 @@
 
 // 68K 0x10613518 __ct__6CLaserFv
 // FUNCTION: LEMBALL 0x00428890
-Laser::Laser() : GlobalGameObject(0x2f, 0, 0)
+Laser::Laser() : GlobalGameObject(OBJECT_LASER_VERTICAL, 0, 0)
 {
 }
 
@@ -133,7 +133,7 @@ bool Laser::Process()
 		switch (m_action) {
 		case 0x17:
 			if (m_target != 0) {
-				m_target->SetSndEffect((eSoundEffect) 0x22);
+				m_target->SetSndEffect(SFX_ELECCY);
 				m_target->m_unk0x2c = 1;
 				m_target = 0;
 			}

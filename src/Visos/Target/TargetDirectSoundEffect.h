@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDIRECTSOUNDEFFECT_H
 #define LEMBALL_VISOS_TARGET_TARGETDIRECTSOUNDEFFECT_H
 
-#include "../../Common.h"
 #include "IDirectSoundBuffer.h"
 
 const char* TargetDescribeDirectSoundError(unsigned int p_error);
@@ -28,11 +27,11 @@ private:
 	void PlayBuffer(int p_index);
 
 	unsigned int m_prepared;        // 0x00
-	undefined4 m_unknown04;         // 0x04
+	unsigned int m_unknown04;       // 0x04
 	IDirectSoundBuffer** m_buffers; // 0x08
-	undefined4 m_looping;           // 0x0c
+	unsigned int m_looping;         // 0x0c
 	int m_bufferCount;              // 0x10
-	undefined4 m_unknown14;         // 0x14
+	unsigned int m_unknown14;       // 0x14
 	unsigned int m_controlFlags;    // 0x18
 };
 

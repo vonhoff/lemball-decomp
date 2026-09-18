@@ -1,17 +1,22 @@
 #ifndef LEMBALL_FRONTEND_RESOURCES_CDLOADANIM_H
 #define LEMBALL_FRONTEND_RESOURCES_CDLOADANIM_H
 
-#include "../../Common.h"
 #include "../../Visos/Animation/AnimsManager.h" // complete type
 #include "../../Visos/Animation/RepeatAnim.h"   // complete type
 #include "../../Visos/Graphics/Bitmap.h"        // complete type
 #include "../../Visos/Graphics/BitmapRes.h"     // complete type
+#include "../../Visos/Graphics/BitmapResBase.h" // complete type
 #include "../../Visos/Graphics/ClipRect.h"
 #include "../../Visos/Graphics/DrawingMark.h" // complete type
 #include "../../Visos/Graphics/Line.h"        // complete type
 #include "CdLoadAnimDraw.h"
 #include "CdLoadAnimProgress.h"
 
+class FrontendResourceLoader;
+class Gdi;
+class Main2DDisplay;
+class ResBitmap;
+struct VsPoint;
 // SIZE 0x134
 // VTABLE: LEMBALL 0x00497c90 AnimsManager
 // VTABLE: LEMBALL 0x00497c8c CdLoadAnimProgress

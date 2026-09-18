@@ -13,13 +13,13 @@
 #include "../Sound/SoundView.h"
 
 // GLOBAL: LEMBALL 0x00496f78
-const undefined4 g_style0ObjectClip[4] = {31, 90, 64, 96};
+const unsigned int g_style0ObjectClip[4] = {31, 90, 64, 96};
 // GLOBAL: LEMBALL 0x00496f88
-const undefined4 g_style1ObjectClip[4] = {34, 96, 68, 96};
+const unsigned int g_style1ObjectClip[4] = {34, 96, 68, 96};
 // GLOBAL: LEMBALL 0x00496f98
-const undefined4 g_style2ObjectClip[4] = {34, 96, 68, 96};
+const unsigned int g_style2ObjectClip[4] = {34, 96, 68, 96};
 // GLOBAL: LEMBALL 0x0049e8b4
-const undefined4* g_styleObjectClip = 0;
+const unsigned int* g_styleObjectClip = 0;
 
 // Style-sensitive resource IDs written by SetupStyleSensitive (0x00432c80).
 // GLOBAL: LEMBALL 0x004a7850
@@ -216,7 +216,7 @@ void LemmingAnimsManager::LoadVrammed()
 		LoadAnimation(g_anGroundStyleResourceIds[3], 2);
 	}
 	LoadAnimation(RES_GAME_CONVEYOR, 2);
-	if (m_ai->GetObjectRequired(4)) {
+	if (m_ai->GetObjectRequired(OBJECT_CATAPULT)) {
 		LoadAnimation(g_anGroundStyleResourceIds[8], 0);
 	}
 	LoadAnimation(RES_CURSORS_HAND, 0);
@@ -229,8 +229,8 @@ void LemmingAnimsManager::LoadVrammed()
 	LoadAnimation(RES_GAME_STARS, 0);
 	LoadAnimation(RES_GAME_FILLED_STARS, 0);
 	LoadAnimation(RES_GAME_CIRCLES, 0);
-	if (m_ai->GetObjectRequired(0x27) || m_ai->GetObjectRequired(0x29) || m_ai->GetObjectRequired(0x2b) ||
-		m_ai->GetObjectRequired(0x2d)) {
+	if (m_ai->GetObjectRequired(OBJECT_BALLOON_0) || m_ai->GetObjectRequired(OBJECT_BALLOON_2) ||
+		m_ai->GetObjectRequired(OBJECT_BALLOON_4) || m_ai->GetObjectRequired(OBJECT_BALLOON_6)) {
 		LoadAnimation(RES_GAME_BALLOON, 0);
 		LoadAnimation(RES_GAME_BALLOON_POST, 0);
 	}
@@ -247,23 +247,24 @@ void LemmingAnimsManager::LoadVrammed()
 	LoadAnimation(RES_GAME_ONFIRE, 2);
 	LoadAnimation(RES_GAME_FLAG_GREEN, 1);
 	LoadAnimation(RES_GAME_BONUS, 1);
-	if (m_ai->GetObjectRequired(0x14)) {
+	if (m_ai->GetObjectRequired(OBJECT_SWITCH)) {
 		LoadAnimation(RES_GAME_SWITCH, 0);
 	}
-	if (m_ai->GetObjectRequired(7)) {
+	if (m_ai->GetObjectRequired(OBJECT_SHEEP)) {
 		LoadAnimation(RES_GAME_SHEEP_WALK_N, RES_GAME_SHEEP_WALK_NW, 1);
 		LoadAnimation(RES_GAME_SHEEP_MUNCH_NE, RES_GAME_SHEEP_MUNCH_NW, 1);
 	}
-	if (m_ai->GetObjectRequired(0x11)) {
+	if (m_ai->GetObjectRequired(OBJECT_CRATE)) {
 		LoadAnimation(RES_GAME_CRATE, 0);
 	}
 	LoadAnimation(RES_GAME_FLAME, 2);
 	LoadAnimation(RES_GAME_ELECTRIC, 2);
 	LoadAnimation(RES_GAME_EMBERS, 2);
-	if (m_groundStyle != 3 && m_ai->GetObjectRequired(0x0d)) {
+	if (m_groundStyle != 3 && m_ai->GetObjectRequired(OBJECT_TOWER)) {
 		LoadAnimation(g_anGroundStyleResourceIds[6], 0);
 	}
-	if (m_ai->GetObjectRequired(0x15) || m_ai->GetObjectRequired(0x16) || m_ai->GetObjectRequired(0x17)) {
+	if (m_ai->GetObjectRequired(OBJECT_KEY_1) || m_ai->GetObjectRequired(OBJECT_KEY_2) ||
+		m_ai->GetObjectRequired(OBJECT_KEY_3)) {
 		LoadAnimation(RES_GAME_KEYS, 0);
 	}
 	LoadAnimation(RES_GAME_ANIM, 2);
@@ -289,7 +290,7 @@ void LemmingAnimsManager::LoadVrammed()
 	LoadAnimation(RES_GAME_HIT_NORTH_EAST, 1);
 	LoadAnimation(RES_GAME_HIT_EAST, 1);
 	LoadAnimation(RES_GAME_HIT_SOUTH_EAST, 1);
-	if (m_ai->GetObjectRequired(0x2f) || m_ai->GetObjectRequired(0x1e)) {
+	if (m_ai->GetObjectRequired(OBJECT_LASER_VERTICAL) || m_ai->GetObjectRequired(OBJECT_LASER_HORIZONTAL)) {
 		LoadAnimation(RES_GAME_LEM_LASER_N, 2);
 		LoadAnimation(RES_GAME_LEM_LASER_E, 2);
 		LoadAnimation(RES_GAME_LEM_LASER_S, 2);
@@ -308,17 +309,17 @@ void LemmingAnimsManager::LoadMainRammed()
 	if (g_dwGroundStyleResourceId != 0) {
 		LoadAnimation(g_dwGroundStyleResourceId, 2);
 	}
-	if (g_anGroundStyleResourceIds[2] != 0 && m_ai->GetObjectRequired(0x1f)) {
+	if (g_anGroundStyleResourceIds[2] != 0 && m_ai->GetObjectRequired(OBJECT_HAND)) {
 		LoadAnimation(g_anGroundStyleResourceIds[2], 2);
 	}
 	LoadAnimation(RES_GAME_MINE, 3);
-	if (m_ai->GetObjectRequired(0x11)) {
+	if (m_ai->GetObjectRequired(OBJECT_CRATE)) {
 		LoadAnimation(RES_GAME_CRATE_EXPLODE, 3);
 	}
-	if (m_ai->GetObjectRequired(0x14)) {
+	if (m_ai->GetObjectRequired(OBJECT_SWITCH)) {
 		LoadAnimation(RES_GAME_SWITCH_ANIM, 3);
 	}
-	if (m_ai->GetObjectRequired(4)) {
+	if (m_ai->GetObjectRequired(OBJECT_CATAPULT)) {
 		LoadAnimation(g_anGroundStyleResourceIds[9], 3);
 		LoadAnimation(RES_GAME_CATMOUNT_SE, 3);
 	}
@@ -326,28 +327,28 @@ void LemmingAnimsManager::LoadMainRammed()
 	LoadAnimation(RES_GAME_HIT_SOUTH_WEST, 1);
 	LoadAnimation(RES_GAME_HIT_WEST, 1);
 	LoadAnimation(RES_GAME_HIT_NORTH_WEST, 1);
-	if (m_ai->GetObjectRequired(0x20)) {
+	if (m_ai->GetObjectRequired(OBJECT_ROCKET)) {
 		LoadAnimation(RES_GAME_ROCKET, 2);
 	}
-	if (m_ai->GetObjectRequired(0x1c)) {
+	if (m_ai->GetObjectRequired(OBJECT_DUPLICATOR)) {
 		LoadAnimation(RES_GAME_DUPLICATOR, 2);
 	}
-	if (m_ai->GetObjectRequired(0x1e)) {
+	if (m_ai->GetObjectRequired(OBJECT_LASER_HORIZONTAL)) {
 		LoadAnimation(RES_GAME_LASER_EAST, 2);
 		LoadAnimation(RES_GAME_LASER_FIRE_EAST, 2);
 	}
-	if (m_ai->GetObjectRequired(0x2f)) {
+	if (m_ai->GetObjectRequired(OBJECT_LASER_VERTICAL)) {
 		LoadAnimation(RES_GAME_LASER_NORTH, 2);
 		LoadAnimation(RES_GAME_LASER_FIRE_NORTH, 2);
 	}
-	if (m_ai->GetObjectRequired(0x22)) {
+	if (m_ai->GetObjectRequired(OBJECT_TRAMPOLINE)) {
 		LoadAnimation(RES_GAME_TRAMPOLINE, 2);
 	}
-	if (m_ai->GetObjectRequired(0x21)) {
+	if (m_ai->GetObjectRequired(OBJECT_PAINT_GUN)) {
 		LoadAnimation(g_anGroundStyleResourceIds[1], 2);
 		LoadAnimation(RES_GAME_PAINTGUNSHOT, 2);
 	}
-	if (m_ai->GetObjectRequired(0x35)) {
+	if (m_ai->GetObjectRequired(OBJECT_SLINKY)) {
 		LoadAnimation(RES_GAME_SLINKY_SOUTH, 2);
 		LoadAnimation(RES_GAME_SLINKY_NORTH, 2);
 		LoadAnimation(RES_GAME_SLINKY_EAST, 2);
@@ -358,17 +359,17 @@ void LemmingAnimsManager::LoadMainRammed()
 	LoadAnimation(RES_GAME_WAIT_JIG, 1);
 	LoadAnimation(RES_GAME_SOMMERSAULT, 1);
 	LoadAnimation(RES_GAME_SOMMERSAULT_REV, 1);
-	if (m_ai->GetObjectRequired(0x1a)) {
+	if (m_ai->GetObjectRequired(OBJECT_DOOR_2)) {
 		LoadAnimation(RES_GAME_DOOR, 2);
 	}
-	if (m_ai->GetObjectRequired(0x19)) {
+	if (m_ai->GetObjectRequired(OBJECT_DOOR_1)) {
 		LoadAnimation(RES_GAME_DOOR_2, 2);
 	}
-	if (m_ai->GetObjectRequired(9)) {
+	if (m_ai->GetObjectRequired(OBJECT_BALL)) {
 		LoadAnimation(RES_GAME_BALL, 1);
 		LoadAnimation(RES_GAME_BALL_EXPLODE, 2);
 	}
-	if (m_ai->GetObjectRequired(0x1b)) {
+	if (m_ai->GetObjectRequired(OBJECT_TIME_BONUS)) {
 		LoadAnimation(RES_GAME_TIME_BONUS, 1);
 	}
 	LoadAnimation(RES_GAME_SHADOW, 2);
@@ -420,7 +421,7 @@ void LemmingAnimsManager::Unload()
 		UnLoadAnimation(RES_GAME_LEMMINGSTANDN, RES_GAME_LEMMINGSTANDNW);
 		UnLoadAnimation(RES_GAME_LEMMINGFIREN, RES_GAME_LEMMINGFIRENW);
 		UnLoadAnimation(RES_GAME_LEMMINGPELLETN, RES_GAME_LEMMINGPELLETNW);
-		if (m_ai->GetObjectRequired(0x2f) || m_ai->GetObjectRequired(0x1e)) {
+		if (m_ai->GetObjectRequired(OBJECT_LASER_VERTICAL) || m_ai->GetObjectRequired(OBJECT_LASER_HORIZONTAL)) {
 			UnLoadAnimation(RES_GAME_LEM_LASER_N);
 			UnLoadAnimation(RES_GAME_LEM_LASER_E);
 			UnLoadAnimation(RES_GAME_LEM_LASER_S);
@@ -431,7 +432,7 @@ void LemmingAnimsManager::Unload()
 		UnLoadAnimation(RES_GAME_CIRCLES);
 		UnLoadAnimation(RES_GAME_SOMMERSAULT);
 		UnLoadAnimation(RES_GAME_SOMMERSAULT_REV);
-		if (m_ai->GetObjectRequired(7)) {
+		if (m_ai->GetObjectRequired(OBJECT_SHEEP)) {
 			UnLoadAnimation(RES_GAME_SHEEP_WALK_N, RES_GAME_SHEEP_WALK_NW);
 			UnLoadAnimation(RES_GAME_SHEEP_MUNCH_NE, RES_GAME_SHEEP_MUNCH_NW);
 		}
@@ -440,7 +441,7 @@ void LemmingAnimsManager::Unload()
 		UnLoadAnimation(RES_GAME_WAIT_JIG);
 		UnLoadAnimation(RES_GAME_LEMMINGLEADER);
 		UnLoadAnimation(RES_GAME_LEMMINGSELECTED);
-		if (m_ai->GetObjectRequired(4)) {
+		if (m_ai->GetObjectRequired(OBJECT_CATAPULT)) {
 			UnLoadAnimation(g_anGroundStyleResourceIds[8]);
 			UnLoadAnimation(g_anGroundStyleResourceIds[9]);
 			UnLoadAnimation(RES_GAME_CATMOUNT_SE);
@@ -465,24 +466,24 @@ void LemmingAnimsManager::Unload()
 		UnLoadAnimation(RES_GAME_HIT_NORTH_WEST);
 		UnLoadAnimation(RES_GAME_FLAG_GREEN);
 		UnLoadAnimation(RES_GAME_BONUS);
-		if (m_ai->GetObjectRequired(0x1a)) {
+		if (m_ai->GetObjectRequired(OBJECT_DOOR_2)) {
 			UnLoadAnimation(RES_GAME_DOOR);
 		}
-		if (m_ai->GetObjectRequired(0x19)) {
+		if (m_ai->GetObjectRequired(OBJECT_DOOR_1)) {
 			UnLoadAnimation(RES_GAME_DOOR_2);
 		}
-		if (m_ai->GetObjectRequired(9)) {
+		if (m_ai->GetObjectRequired(OBJECT_BALL)) {
 			UnLoadAnimation(RES_GAME_BALL);
 			UnLoadAnimation(RES_GAME_BALL_EXPLODE);
 		}
-		if (m_ai->GetObjectRequired(0x1b)) {
+		if (m_ai->GetObjectRequired(OBJECT_TIME_BONUS)) {
 			UnLoadAnimation(RES_GAME_TIME_BONUS);
 		}
-		if (m_ai->GetObjectRequired(0x11)) {
+		if (m_ai->GetObjectRequired(OBJECT_CRATE)) {
 			UnLoadAnimation(RES_GAME_CRATE_EXPLODE);
 			UnLoadAnimation(RES_GAME_CRATE);
 		}
-		if (m_groundStyle != 3 && m_ai->GetObjectRequired(0x0d)) {
+		if (m_groundStyle != 3 && m_ai->GetObjectRequired(OBJECT_TOWER)) {
 			UnLoadAnimation(g_anGroundStyleResourceIds[6]);
 		}
 		UnLoadAnimation(RES_GAME_FLAME);
@@ -528,46 +529,47 @@ void LemmingAnimsManager::Unload()
 		if (g_dwGroundStyleResourceId != 0) {
 			UnLoadAnimation(g_dwGroundStyleResourceId);
 		}
-		if (g_anGroundStyleResourceIds[2] != 0 && m_ai->GetObjectRequired(0x1f)) {
+		if (g_anGroundStyleResourceIds[2] != 0 && m_ai->GetObjectRequired(OBJECT_HAND)) {
 			UnLoadAnimation(g_anGroundStyleResourceIds[2]);
 		}
 		UnLoadAnimation(RES_GAME_SHADOW);
-		if (m_ai->GetObjectRequired(0x15) || m_ai->GetObjectRequired(0x16) || m_ai->GetObjectRequired(0x17)) {
+		if (m_ai->GetObjectRequired(OBJECT_KEY_1) || m_ai->GetObjectRequired(OBJECT_KEY_2) ||
+			m_ai->GetObjectRequired(OBJECT_KEY_3)) {
 			UnLoadAnimation(RES_GAME_KEYS);
 		}
 		UnLoadAnimation(RES_GAME_ANIM);
 		UnLoadAnimation(RES_GAME_MINE);
 		UnLoadAnimation(RES_GAME_MINE_STILL);
 		UnLoadAnimation(RES_GAME_STAR);
-		if (m_ai->GetObjectRequired(0x20)) {
+		if (m_ai->GetObjectRequired(OBJECT_ROCKET)) {
 			UnLoadAnimation(RES_GAME_ROCKET);
 		}
-		if (m_ai->GetObjectRequired(0x1c)) {
+		if (m_ai->GetObjectRequired(OBJECT_DUPLICATOR)) {
 			UnLoadAnimation(RES_GAME_DUPLICATOR);
 		}
-		if (m_ai->GetObjectRequired(0x1e)) {
+		if (m_ai->GetObjectRequired(OBJECT_LASER_HORIZONTAL)) {
 			UnLoadAnimation(RES_GAME_LASER_EAST);
 			UnLoadAnimation(RES_GAME_LASER_FIRE_EAST);
 		}
-		if (m_ai->GetObjectRequired(0x2f)) {
+		if (m_ai->GetObjectRequired(OBJECT_LASER_VERTICAL)) {
 			UnLoadAnimation(RES_GAME_LASER_NORTH);
 			UnLoadAnimation(RES_GAME_LASER_FIRE_NORTH);
 		}
-		if (m_ai->GetObjectRequired(0x22)) {
+		if (m_ai->GetObjectRequired(OBJECT_TRAMPOLINE)) {
 			UnLoadAnimation(RES_GAME_TRAMPOLINE);
 		}
-		if (m_ai->GetObjectRequired(0x21)) {
+		if (m_ai->GetObjectRequired(OBJECT_PAINT_GUN)) {
 			UnLoadAnimation(g_anGroundStyleResourceIds[1]);
 			UnLoadAnimation(RES_GAME_PAINTGUNSHOT);
 		}
-		if (m_ai->GetObjectRequired(0x35)) {
+		if (m_ai->GetObjectRequired(OBJECT_SLINKY)) {
 			UnLoadAnimation(RES_GAME_SLINKY_SOUTH);
 			UnLoadAnimation(RES_GAME_SLINKY_NORTH);
 			UnLoadAnimation(RES_GAME_SLINKY_EAST);
 			UnLoadAnimation(RES_GAME_SLINKY_WEST);
 		}
-		if (m_ai->GetObjectRequired(0x27) || m_ai->GetObjectRequired(0x29) || m_ai->GetObjectRequired(0x2b) ||
-			m_ai->GetObjectRequired(0x2d)) {
+		if (m_ai->GetObjectRequired(OBJECT_BALLOON_0) || m_ai->GetObjectRequired(OBJECT_BALLOON_2) ||
+			m_ai->GetObjectRequired(OBJECT_BALLOON_4) || m_ai->GetObjectRequired(OBJECT_BALLOON_6)) {
 			UnLoadAnimation(RES_GAME_BALLOON);
 			UnLoadAnimation(RES_GAME_BALLOON_POST);
 		}
@@ -576,7 +578,7 @@ void LemmingAnimsManager::Unload()
 		UnLoadAnimation(RES_GAME_BUTLEMMING);
 		UnLoadAnimation(RES_GAME_BUTBALLOON);
 		UnLoadAnimation(RES_GAME_BUTPAWS);
-		if (m_ai->GetObjectRequired(0x14)) {
+		if (m_ai->GetObjectRequired(OBJECT_SWITCH)) {
 			UnLoadAnimation(RES_GAME_SWITCH);
 			UnLoadAnimation(RES_GAME_SWITCH_ANIM);
 		}

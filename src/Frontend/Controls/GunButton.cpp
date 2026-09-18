@@ -39,6 +39,6 @@ void GunButton::OnPressed(int p_flags)
 		m_enabled = 1;
 	}
 	if (p_flags == 0) {
-		g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+		g_pSoundView->PlayEffect(SFX_DRUM1);
 	}
 }

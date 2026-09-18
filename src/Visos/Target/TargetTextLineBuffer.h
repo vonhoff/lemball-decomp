@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETTEXTLINEBUFFER_H
 #define LEMBALL_VISOS_TARGET_TARGETTEXTLINEBUFFER_H
 
-#include "../../Common.h"
 #include "TargetTextLine.h"
 
 // SIZE 0x0c

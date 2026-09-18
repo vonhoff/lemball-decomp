@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_DDSURFACEDESC_H
 #define LEMBALL_VISOS_TARGET_DDSURFACEDESC_H
 
-#include "../../Common.h"
-
 // DirectDraw 1 descriptor ABI, also preserved in the Windows SDK ddraw.h.
 // Only fields used by the reconstructed surface operations are named here.
 struct DDSURFACEDESC {
@@ -11,9 +9,9 @@ struct DDSURFACEDESC {
 	unsigned long dwHeight;
 	unsigned long dwWidth;
 	long lPitch;
-	undefined m_unused14[0x10];
+	char m_unused14[0x10];
 	void* lpSurface;
-	undefined m_unused28[0x40];
+	char m_unused28[0x40];
 	unsigned long ddsCaps;
 };
 

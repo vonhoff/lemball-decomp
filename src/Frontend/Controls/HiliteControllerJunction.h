@@ -1,8 +1,6 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_HILITECONTROLLERJUNCTION_H
 #define LEMBALL_FRONTEND_CONTROLS_HILITECONTROLLERJUNCTION_H
 
-#include "../../Common.h"
-
 // SIZE 0x10
 struct HiliteControllerJunction {
 	unsigned int m_present;        // 0x00

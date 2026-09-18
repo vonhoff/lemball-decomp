@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PUSHACTIVE_H
 #define LEMBALL_VISOS_GRAPHICS_PUSHACTIVE_H
 
-#include "../../Common.h"
 #include "Primitive.h" // complete type
 
 // SIZE 0x08

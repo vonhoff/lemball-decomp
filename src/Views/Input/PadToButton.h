@@ -1,9 +1,11 @@
 #ifndef LEMBALL_VIEWS_INPUT_PADTOBUTTON_H
 #define LEMBALL_VIEWS_INPUT_PADTOBUTTON_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 
+class PvButton;
+struct Message;
+struct PadToButtonEntry;
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00497208
 class PadToButton : public BaseQueueHandler {

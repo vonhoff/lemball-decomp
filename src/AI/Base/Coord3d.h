@@ -1,8 +1,6 @@
 #ifndef LEMBALL_AI_BASE_COORD3D_H
 #define LEMBALL_AI_BASE_COORD3D_H
 
-#include "../../Common.h"
-
 // SIZE 0x06
 struct Coord3d {
 	short m_x; // 0x00

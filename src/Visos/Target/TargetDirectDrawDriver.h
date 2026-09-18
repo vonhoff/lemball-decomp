@@ -1,9 +1,13 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDIRECTDRAWDRIVER_H
 #define LEMBALL_VISOS_TARGET_TARGETDIRECTDRAWDRIVER_H
 
-#include "../../Common.h"
 #include "TargetGraphicsDriver.h" // complete type
 
+struct VsSize;
+class TargetDrawingContext;
+class TargetDibContext;
+class VsRect;
+struct VsPoint;
 struct IDirectDrawPalette;
 struct IDirectDraw;
 struct IDirectDrawSurface;
@@ -43,7 +47,7 @@ private:
 	void* m_surface28;                      // 0x28
 	void* m_surface2c;                      // 0x2c
 	IDirectDrawPalette* m_paletteInterface; // 0x30
-	undefined m_driverState[0x6c];          // 0x34
+	char m_driverState[0x6c];               // 0x34
 	void* m_contextSurfaces[257];           // 0xa0
 	int m_nextContextIndex;                 // 0x4a4
 };

@@ -1,7 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_GDIDEVICE_H
 #define LEMBALL_VISOS_GRAPHICS_GDIDEVICE_H
 
-#include "../../Common.h"
+class Surface;
+class TimeStat;
+class VsRect;
 
 // SIZE 0x1c
 struct GdiSurfaceSlot {

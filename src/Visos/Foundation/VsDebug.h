@@ -1,7 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSDEBUG_H
 #define LEMBALL_VISOS_FOUNDATION_VSDEBUG_H
 
-#include "../../Common.h"
+#define DEBUG_SENTINEL ((int) 0xaa55aa55)
+#define DEBUG_SENTINEL_WORD ((short) 0xaa55)
+#define VS_UNINITIALISED DEBUG_SENTINEL
 
 void InternalVsExit(int p_exitCode);
 void InternalVsRelAssert(const char* p_reason, const char* p_file, unsigned int p_line);

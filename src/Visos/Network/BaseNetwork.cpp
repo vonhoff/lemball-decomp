@@ -157,8 +157,8 @@ BaseNetwork::~BaseNetwork()
 // FUNCTION: LEMBALL 0x00461e10
 void BaseNetwork::ShutDown()
 {
-	Connect* peer;
-	Connect* next;
+	CConnect* peer;
+	CConnect* next;
 	NetworkMessage* message;
 	short port;
 
@@ -237,11 +237,11 @@ void BaseNetwork::ShutDown()
 
 // 68K 0x1020eda0 Delete__12CBaseNetworkFP8CConnect
 // FUNCTION: LEMBALL 0x00461fc0
-void BaseNetwork::Delete(Connect* p_arg0)
+void BaseNetwork::Delete(CConnect* p_arg0)
 {
-	Connect* peer = m_firstConnect;
-	Connect* next;
-	Connect* previous;
+	CConnect* peer = m_firstConnect;
+	CConnect* next;
+	CConnect* previous;
 	if (peer != 0) {
 		while (peer != p_arg0) {
 			peer = peer->m_nextConnect;
@@ -271,11 +271,11 @@ void BaseNetwork::Delete(Connect* p_arg0)
 
 // 68K 0x1020ee72 NewConnect__12CBaseNetworkFv
 // FUNCTION: LEMBALL 0x00462040
-Connect* BaseNetwork::NewConnect()
+CConnect* BaseNetwork::NewConnect()
 {
 	bool removed;
-	Connect* peer;
-	Connect* next;
+	CConnect* peer;
+	CConnect* next;
 
 	peer = m_firstConnect;
 	removed = false;
@@ -297,7 +297,7 @@ Connect* BaseNetwork::NewConnect()
 		AfterDestroyConnections();
 	}
 
-	peer = (Connect*) GetNewConnect();
+	peer = (CConnect*) GetNewConnect();
 	if (m_firstConnect == 0) {
 		m_firstConnect = peer;
 	}
@@ -313,9 +313,9 @@ Connect* BaseNetwork::NewConnect()
 
 // 68K 0x1020ef72 Exists__12CBaseNetworkFP8CConnect
 // FUNCTION: LEMBALL 0x00462130
-bool BaseNetwork::Exists(Connect* p_arg0)
+bool BaseNetwork::Exists(CConnect* p_arg0)
 {
-	Connect* peer;
+	CConnect* peer;
 
 	peer = m_firstConnect;
 	while (peer != 0) {
@@ -336,9 +336,9 @@ bool BaseNetwork::Exists(Connect* p_arg0)
 
 // 68K 0x1020efec FindConnection__12CBaseNetworkFP15CNetworkAddress
 // FUNCTION: LEMBALL 0x00462180
-Connect* BaseNetwork::FindConnection(NetworkAddress* p_arg0)
+CConnect* BaseNetwork::FindConnection(NetworkAddress* p_arg0)
 {
-	Connect* peer = m_firstConnect;
+	CConnect* peer = m_firstConnect;
 	while (peer != 0) {
 		if (peer->m_killRequested == 0 && *peer->m_destinationAddress == *p_arg0) {
 			break;
@@ -352,7 +352,7 @@ Connect* BaseNetwork::FindConnection(NetworkAddress* p_arg0)
 // FUNCTION: LEMBALL 0x004621c0
 void BaseNetwork::KillUnBornConnection(NetworkAddress* p_arg0)
 {
-	Connect* peer = FindConnection(p_arg0);
+	CConnect* peer = FindConnection(p_arg0);
 	if (peer != 0) {
 		peer->Kill();
 	}
@@ -362,7 +362,7 @@ void BaseNetwork::KillUnBornConnection(NetworkAddress* p_arg0)
 // FUNCTION: LEMBALL 0x004621e0
 void BaseNetwork::CtoSRequestConnect(NetworkAddress* p_arg0)
 {
-	Connect* peer;
+	CConnect* peer;
 	short port;
 
 	peer = FindConnection(p_arg0);
@@ -387,10 +387,10 @@ void BaseNetwork::CtoSRequestConnect(NetworkAddress* p_arg0)
 // FUNCTION: LEMBALL 0x00462280
 void BaseNetwork::CtoSRequestNewPort(NetworkAddress* p_arg0)
 {
-	Connect* peer;
+	CConnect* peer;
 	short port;
 
-	peer = (Connect*) g_pMessReqNewPort->m_connectionId;
+	peer = (CConnect*) g_pMessReqNewPort->m_connectionId;
 	if (Exists(peer) != 0) {
 		m_broadcast->ResetPort(peer->m_port);
 		peer->m_newPortRequestCount++;
@@ -414,7 +414,7 @@ void BaseNetwork::CtoSRequestNewPort(NetworkAddress* p_arg0)
 // FUNCTION: LEMBALL 0x00462340
 void BaseNetwork::StoCokConnect(NetworkAddress* p_arg0)
 {
-	Connect* peer;
+	CConnect* peer;
 	short port;
 
 	peer = FindConnection(p_arg0);
@@ -459,7 +459,7 @@ void BaseNetwork::StoCfailedConnect(NetworkAddress* p_arg0)
 // FUNCTION: LEMBALL 0x00462480
 void BaseNetwork::CtoSgoConnect(NetworkAddress* p_arg0)
 {
-	Connect* peer = (Connect*) g_pMessGOConnect->m_connectionId;
+	CConnect* peer = (CConnect*) g_pMessGOConnect->m_connectionId;
 	if (Exists(peer) != 0) {
 		peer->Connect();
 	}
@@ -558,7 +558,7 @@ void BaseNetwork::Process()
 		m_broadcast->Process();
 	}
 
-	Connect* peer = m_firstConnect;
+	CConnect* peer = m_firstConnect;
 	while (peer != 0) {
 		peer->Process();
 		peer = peer->m_nextConnect;
@@ -576,9 +576,9 @@ void BaseNetwork::HandleNewConnectionEvent(const char* p_localName, const char* 
 }
 
 // FUNCTION: LEMBALL 0x004626b0
-Connect* BaseNetwork::FindEventConnection(NetworkAddress* p_address)
+CConnect* BaseNetwork::FindEventConnection(NetworkAddress* p_address)
 {
-	Connect* peer = m_firstConnect;
+	CConnect* peer = m_firstConnect;
 	while (peer != 0) {
 		if ((*p_address == *peer->m_destinationAddress) == 0) {
 			break;
@@ -591,7 +591,7 @@ Connect* BaseNetwork::FindEventConnection(NetworkAddress* p_address)
 // FUNCTION: LEMBALL 0x004626f0
 void BaseNetwork::HandleConnectionMessage(NetworkAddress* p_address)
 {
-	Connect* peer = FindEventConnection(p_address);
+	CConnect* peer = FindEventConnection(p_address);
 	if (peer != 0) {
 		BeforeDestroyConnections();
 		Delete(peer);
@@ -603,7 +603,7 @@ void BaseNetwork::HandleConnectionMessage(NetworkAddress* p_address)
 // FUNCTION: LEMBALL 0x00462720
 bool BaseNetwork::SendAll(NetworkMessage& p_arg0)
 {
-	Connect* peer;
+	CConnect* peer;
 	int activeCount;
 	bool sendBlocked;
 
@@ -642,7 +642,7 @@ int BaseNetwork::ProcessMsg(Message* p_arg0)
 	unsigned int type;
 	Message* message;
 	NetworkMessage* stream;
-	Connect* peer;
+	CConnect* peer;
 
 	type = 0;
 	message = p_arg0;
@@ -651,7 +651,7 @@ int BaseNetwork::ProcessMsg(Message* p_arg0)
 	case 0xb:
 		if (message->code == 1) {
 			stream = (NetworkMessage*) message->payload;
-			peer = (Connect*) message->source;
+			peer = (CConnect*) message->source;
 			peer->Send(*stream);
 			stream->CloseDataStream();
 		}

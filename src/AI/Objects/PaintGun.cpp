@@ -8,7 +8,7 @@
 
 // 68K 0x1061b270 __ct__9CPaintGunFv
 // FUNCTION: LEMBALL 0x0042bad0
-PaintGun::PaintGun() : GlobalGameObject(0x21, 0, 0)
+PaintGun::PaintGun() : GlobalGameObject(OBJECT_PAINT_GUN, 0, 0)
 {
 }
 
@@ -62,7 +62,7 @@ bool PaintGun::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == 3) {
-				SetSndEffect((eSoundEffect) 7);
+				SetSndEffect(SFX_BIGGUN);
 			}
 			m_pendingAction = m_action;
 		}
@@ -112,7 +112,7 @@ bool PaintGun::Process()
 				coordinate = 1023;
 			}
 			target.m_xFixed = coordinate << 12;
-			g_pAI->FireBullet(m_linkedObjectId, (eBulletType) 0, (eOwner) 1, 2, start, target);
+			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 2, start, target);
 
 			start.m_xFixed = x - 0x10000;
 			start.m_yFixed = y;
@@ -124,7 +124,7 @@ bool PaintGun::Process()
 				coordinate = 0;
 			}
 			target.m_xFixed = coordinate << 12;
-			g_pAI->FireBullet(m_linkedObjectId, (eBulletType) 0, (eOwner) 1, 6, start, target);
+			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 6, start, target);
 
 			start.m_xFixed = x;
 			start.m_yFixed = y + 0x10000;
@@ -136,7 +136,7 @@ bool PaintGun::Process()
 				coordinate = 1023;
 			}
 			target.m_yFixed = coordinate << 12;
-			g_pAI->FireBullet(m_linkedObjectId, (eBulletType) 0, (eOwner) 1, 8, start, target);
+			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 8, start, target);
 
 			start.m_xFixed = x;
 			start.m_yFixed = y - 0x10000;
@@ -148,8 +148,8 @@ bool PaintGun::Process()
 				coordinate = 0;
 			}
 			target.m_yFixed = coordinate << 12;
-			g_pAI->FireBullet(m_linkedObjectId, (eBulletType) 0, (eOwner) 1, 4, start, target);
-			SetSndEffect((eSoundEffect) 7);
+			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 4, start, target);
+			SetSndEffect(SFX_BIGGUN);
 			m_lastMovementTick = m_actionDeadline;
 			Action((eAction) 3);
 		}

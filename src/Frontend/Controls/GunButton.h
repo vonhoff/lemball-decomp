@@ -1,9 +1,12 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_GUNBUTTON_H
 #define LEMBALL_FRONTEND_CONTROLS_GUNBUTTON_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/GraphicButton.h" // complete type
 
+class GWnd;
+class HotAreaHandler;
+class PvGWnd;
+struct VsPoint;
 // SIZE 0x130
 // VTABLE: LEMBALL 0x00497d30 GWnd
 // VTABLE: LEMBALL 0x00497d08 HotAreaHandler

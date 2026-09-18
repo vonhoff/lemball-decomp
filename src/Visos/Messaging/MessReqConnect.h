@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_MESSREQCONNECT_H
 #define LEMBALL_VISOS_MESSAGING_MESSREQCONNECT_H
 
-#include "../../Common.h"
 #include "BroadcastMessage.h" // complete type
 
 // SIZE 0x3c

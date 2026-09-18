@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_BASEPACKETBUFF_H
 #define LEMBALL_VISOS_MESSAGING_BASEPACKETBUFF_H
 
-#include "../../Common.h"
+class BasePacket;
 
 // SIZE 0x0c
 class BasePacketBuff {

@@ -1,9 +1,17 @@
 #ifndef LEMBALL_FRONTEND_RESOURCES_FRONTENDRESOURCELOADER_H
 #define LEMBALL_FRONTEND_RESOURCES_FRONTENDRESOURCELOADER_H
 
-#include "../../Common.h"
-#include "../../Views/Sound/SoundView.h" // complete type for LoadUpdate
+#include "../../Views/Sound/LoadUpdate.h" // complete type
+#include "../../Views/Sound/SoundView.h"  // complete type for LoadUpdate
 
+class CdLoadAnim;
+class Main2DDisplay;
+class ResAnim;
+class ResBitmap;
+class ResFont;
+class ResMovie;
+class ResPalette;
+class ResString;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00497ad4
 class FrontendResourceLoader : public LoadUpdate {

@@ -1,8 +1,15 @@
 #ifndef LEMBALL_AI_GROUPS_GENERICGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_GENERICGROUPMANAGER_H
 
-#include "../../Common.h"
-
+class Ai;
+class AiCoord;
+class FormationManager;
+class GameObject;
+class GenericGroup;
+class ObjectManager;
+class ViewData;
+class VsRect;
+struct Rect;
 // SIZE 0xb0
 // VTABLE: LEMBALL 0x00494d08
 class GenericGroupManager {

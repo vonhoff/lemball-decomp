@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_ANIMATION_TIMESTAT_H
 #define LEMBALL_VISOS_ANIMATION_TIMESTAT_H
 
-#include "../../Common.h"
 #include "BaseStat.h" // complete type
 
 // SIZE 0x28

@@ -172,7 +172,7 @@ int g_nNetworkOptionsCapsOrShift = 0;
 // 68K 0x10806468 __ct__21CNetworkOptionsDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // FUNCTION: LEMBALL 0x00453280
 NetworkOptionsDrawer::NetworkOptionsDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
-	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 0xc, 0x32, 200, 0, 100, 0x28)
+	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_NETWORK_OPTIONS, 0x32, 200, 0, 100, 0x28)
 {
 	int i;
 
@@ -334,7 +334,7 @@ void NetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_
 	int len;
 
 	if (g_pNetworkManager != 0) {
-		Connect** connections = g_pNetworkManager->m_connections;
+		CConnect** connections = g_pNetworkManager->m_connections;
 		if (g_pNetworkManager->m_gameMessages[p_index].m_valid != 0) {
 			font = m_textManager->GetFont(m_chalkFontId);
 			NetworkOptionsLayout* layout = m_layoutTable;
@@ -583,7 +583,7 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 					handled = true;
 				}
 				else {
-					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+					g_pSoundView->PlayEffect(SFX_CHINK);
 				}
 			}
 			else if (code >= 0x39 && code <= 0x42) {
@@ -592,7 +592,7 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 					handled = true;
 				}
 				else {
-					g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+					g_pSoundView->PlayEffect(SFX_CHINK);
 				}
 			}
 			else {
@@ -603,7 +603,7 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 						handled = true;
 					}
 					else {
-						g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+						g_pSoundView->PlayEffect(SFX_CHINK);
 					}
 					break;
 				case 0x20:
@@ -612,7 +612,7 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 						handled = true;
 					}
 					else {
-						g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+						g_pSoundView->PlayEffect(SFX_CHINK);
 					}
 					break;
 				case 0x23:
@@ -637,7 +637,7 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 						handled = true;
 					}
 					else {
-						g_pSoundView->PlayEffect((eSoundEffect) 0x19);
+						g_pSoundView->PlayEffect(SFX_CHINK);
 					}
 					break;
 				}
@@ -647,7 +647,7 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			if (handled) {
 				m_lastDrawTime = CurrentMilliTimer();
 				m_redrawPending = 0;
-				g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+				g_pSoundView->PlayEffect(SFX_DRUM1);
 				return 1;
 			}
 		}
@@ -655,13 +655,13 @@ bool NetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		switch (p_message->code) {
 		case 1:
 			if (HighlightPreviousEntry()) {
-				g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+				g_pSoundView->PlayEffect(SFX_CHANGEOP);
 				return 1;
 			}
 			break;
 		case 2:
 			if (HighlightNextEntry()) {
-				g_pSoundView->PlayEffect((eSoundEffect) 0x1b);
+				g_pSoundView->PlayEffect(SFX_CHANGEOP);
 				return 1;
 			}
 			break;
@@ -900,9 +900,9 @@ void NetworkOptionsDrawer::Processing()
 	unsigned long duration;
 	char* ident;
 	char* peer;
-	Connect* connection;
-	Connect** current;
-	Connect** connections;
+	CConnect* connection;
+	CConnect** current;
+	CConnect** connections;
 	int index;
 	int activation;
 	int acceptedPlayer;
@@ -956,7 +956,7 @@ void NetworkOptionsDrawer::Processing()
 		index = 0;
 		do {
 			if (m_playerEntries[index].m_pressed != 0 && m_acceptedPlayer != index) {
-				g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+				g_pSoundView->PlayEffect(SFX_DRUM1);
 				acceptedPlayer = m_acceptedPlayer;
 				if (acceptedPlayer != -1) {
 					connection = connections[acceptedPlayer];
@@ -1003,7 +1003,8 @@ void NetworkOptionsDrawer::RegisterRemaps()
 	do {
 		mappings++;
 		remaps++;
-		*(remaps - 1) = g_pBasePalManager->RegisterRemap(m_display->m_paletteResourceId, *(mappings - 1), 2);
+		*(remaps - 1) =
+			g_pBasePalManager->RegisterRemap(m_display->m_paletteResourceId, *(mappings - 1), PALETTE_MAPPED);
 	} while (mappings < g_apNetworkOptionsRemaps + 6);
 }
 
@@ -1155,7 +1156,7 @@ bool NetworkOptionsDrawer::HighlightNextEntry()
 void NetworkOptionsDrawer::InitialiseHandlers()
 {
 	short rect[4];
-	Connect** connections;
+	CConnect** connections;
 	NetworkGameMessage* messages;
 	int index;
 
@@ -1194,7 +1195,7 @@ void NetworkOptionsDrawer::InitialiseHandlers()
 // FUNCTION: LEMBALL 0x00454f00
 void NetworkOptionsDrawer::ResetHandlers()
 {
-	Connect** connections;
+	CConnect** connections;
 	unsigned int* valid;
 	int index;
 
@@ -1245,7 +1246,7 @@ bool NetworkOptionsDrawer::AcceptingLock()
 {
 	int unlocked;
 	int skill;
-	Connect** connections;
+	CConnect** connections;
 	GameStatus* status;
 
 	unlocked = m_locked == 0;

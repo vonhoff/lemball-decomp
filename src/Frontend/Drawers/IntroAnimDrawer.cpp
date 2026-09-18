@@ -13,7 +13,7 @@ extern char g_szMoviePrefix[];
 // 68K 0x10805c12 __ct__16CIntroAnimDrawerFP14CMain2DDisplayP4CGDIRC7CVSRectUc
 // FUNCTION: LEMBALL 0x00447410
 IntroAnimDrawer::IntroAnimDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned int p_arg3)
-	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, 1, 0, 0, 0, 0, 0)
+	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_INTRO_ANIM, 0, 0, 0, 0, 0)
 {
 	m_variant = p_arg3;
 	m_nextFlow = 0xe;

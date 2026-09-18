@@ -1,12 +1,22 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_MAIN2DDISPLAY_H
 #define LEMBALL_VIEWS_DISPLAY_MAIN2DDISPLAY_H
 
-#include "../../Common.h"
+#include "../../Frontend/Base/FlowProcesses.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/VsRect.h"           // complete type
 #include "../../Visos/Graphics/DrawingMark.h"
 #include "../../Visos/Graphics/GWnd.h" // complete type
 
+class BaseFrontendDrawer;
+class BaseFrontendProcess;
+class CdLoadAnim;
+class Drawer;
+class FrontendResourceLoader;
+class Game;
+class MainOptions1Drawer;
+class NetworkOptionsDrawer;
+struct MenuList;
+struct Message;
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8 GWnd
 // VTABLE: LEMBALL 0x00496ba8 BaseQueueHandler

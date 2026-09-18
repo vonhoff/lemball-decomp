@@ -1,7 +1,6 @@
 #ifndef LEMBALL_AI_NAVIGATION_AIDESTINATIONLIST_H
 #define LEMBALL_AI_NAVIGATION_AIDESTINATIONLIST_H
 
-#include "../../Common.h"
 #include "AiDestinationEntry.h"
 
 // SIZE 0x08

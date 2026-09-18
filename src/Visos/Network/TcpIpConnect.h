@@ -1,9 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_TCPIPCONNECT_H
 #define LEMBALL_VISOS_NETWORK_TCPIPCONNECT_H
 
-#include "../../Common.h"
 #include "Connect.h"       // complete type
 #include "TcpIpRwSocket.h" // complete type
+
+class NetworkAddress;
+class NetworkMessage;
 
 // SIZE 0x170
 // VTABLE: LEMBALL 0x0049a368 TargetNetworkWindow
@@ -15,7 +17,7 @@
 // x86 emits only the synthetic deleting destructor.
 // Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
-class TcpIpConnect : public Connect, public TcpIpRwSocket {
+class TcpIpConnect : public CConnect, public TcpIpRwSocket {
 public:
 	bool Start(const char* p_localName, const char* p_remoteName);
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam);

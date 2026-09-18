@@ -1,9 +1,8 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESBASE_H
 #define LEMBALL_VISOS_RESOURCES_RESBASE_H
 
-#include "../../Common.h"
-
 class MciMusicDevice;
+class ResBaseList;
 
 // SIZE 0x48
 // VTABLE: LEMBALL 0x00498980
@@ -64,7 +63,7 @@ protected:
 	unsigned int m_vramLoaded;     // 0x14
 	unsigned int m_initialized;    // 0x18
 	unsigned int m_vramSwappable;  // 0x1c
-	undefined4 m_unk0x20;          // 0x20
+	unsigned int m_unk0x20;        // 0x20
 	unsigned int m_age;            // 0x24
 	unsigned int m_dataSize;       // 0x28
 	unsigned int m_fileOffset;     // 0x2c

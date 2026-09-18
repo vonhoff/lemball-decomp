@@ -1,9 +1,12 @@
 #ifndef LEMBALL_AI_OBJECTS_LASER_H
 #define LEMBALL_AI_OBJECTS_LASER_H
 
-#include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type
 
+class AiCoord;
+class GameObject;
+class LaserManager;
+class ViewData;
 // SIZE 0x148
 // VTABLE: LEMBALL 0x00496310
 class Laser : public GlobalGameObject {

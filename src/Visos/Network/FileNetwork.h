@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_FILENETWORK_H
 #define LEMBALL_VISOS_NETWORK_FILENETWORK_H
 
-#include "../../Common.h"
 #include "../Target/TargetNetworkWindow.h" // complete type
 #include "BaseNetwork.h"                   // complete type
 

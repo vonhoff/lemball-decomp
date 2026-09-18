@@ -1,8 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETWAVEEFFECT_H
 #define LEMBALL_VISOS_TARGET_TARGETWAVEEFFECT_H
 
-#include "../../Common.h"
-
+class TargetWaveSoundDevice;
 #define WIN32_LEAN_AND_MEAN
 // clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
 #include <windows.h>

@@ -41,7 +41,7 @@ GenericGroup::GenericGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationMa
 	g_pUnknown0x4a781c = p_objectManager;
 	m_currentElement = 0;
 	m_elementCount = 0;
-	m_groupState = 0;
+	m_groupState = GROUP_STATE_IDLE;
 	memset(m_elements, 0, sizeof(m_elements));
 	m_minY = 9999;
 	m_minX = 9999;
@@ -303,7 +303,7 @@ void GenericGroup::AddNewWaypoint(AiCoord p_coordinate, FormationManager* p_form
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
 		AiDestinationEntry* entry = &list->m_entries[count];
-		entry->m_type = (eDestinationType) 1;
+		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = p_coordinate.m_xFixed;
 		entry->m_coordinate.m_yFixed = p_coordinate.m_yFixed;
 		entry->m_coordinate.m_zFixed = p_coordinate.m_zFixed;

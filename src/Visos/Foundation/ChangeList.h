@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CHANGELIST_H
 #define LEMBALL_VISOS_FOUNDATION_CHANGELIST_H
 
-#include "../../Common.h"
+#include "ChangeListItem.h"
 #include "VsRect.h" // complete type
 #include "VsSize.h" // complete type
 

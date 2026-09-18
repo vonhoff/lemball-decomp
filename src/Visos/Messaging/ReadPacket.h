@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_READPACKET_H
 #define LEMBALL_VISOS_MESSAGING_READPACKET_H
 
-#include "../../Common.h"
 #include "../Foundation/Critical.h"
 #include "BasePacket.h" // complete type
 

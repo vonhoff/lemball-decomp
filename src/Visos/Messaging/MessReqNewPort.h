@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_MESSREQNEWPORT_H
 #define LEMBALL_VISOS_MESSAGING_MESSREQNEWPORT_H
 
-#include "../../Common.h"
 #include "MessReqConnect.h" // complete type
 
 // SIZE 0x40

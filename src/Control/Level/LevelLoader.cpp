@@ -408,13 +408,13 @@ void LevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* 
 unsigned int LevelLoader::CalcLevelId(eSkill p_skill, int p_level)
 {
 	switch (p_skill) {
-	case 0:
+	case SKILL_FUN:
 		return p_level + RES_FUN_LEVEL_00;
-	case 1:
+	case SKILL_TRICKY:
 		return p_level + RES_TRICKY_LEVEL_00;
-	case 2:
+	case SKILL_TAXING:
 		return p_level + RES_TAXING_LEVEL_00;
-	case 3:
+	case SKILL_MAYHEM:
 		return p_level + RES_MAYHEM_LEVEL_00;
 	default:
 		return p_level + RES_NETWORK_LEVEL_00;

@@ -49,7 +49,7 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 // 68K 0x10809e8e __ct__19CMainOptions1DrawerFP14CMain2DDisplayP4CGDIRC7CVSRect
 // FUNCTION: LEMBALL 0x00448200
 MainOptions1Drawer::MainOptions1Drawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
-	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, 2, 0, 0, 0, 0, 0)
+	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_1, 0, 0, 0, 0, 0)
 {
 	m_idleDeadline = timeGetTime() + 20000;
 	m_toggleResolutionButton = 0;

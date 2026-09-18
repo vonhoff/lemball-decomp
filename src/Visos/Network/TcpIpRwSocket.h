@@ -1,10 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_TCPIPRWSOCKET_H
 #define LEMBALL_VISOS_NETWORK_TCPIPRWSOCKET_H
 
-#include "../../Common.h"
 #include "RwSocket.h"         // complete type
 #include "TcpIpReadSocket.h"  // complete type
 #include "TcpIpWriteSocket.h" // complete type
+
+class NetworkMessage;
 
 // SIZE 0x144
 // VTABLE: LEMBALL 0x0049a220 TargetNetworkWindow

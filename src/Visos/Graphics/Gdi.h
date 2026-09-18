@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_GDI_H
 #define LEMBALL_VISOS_GRAPHICS_GDI_H
 
-#include "../../Common.h"
-
+class VsRect;
+class Surface;
+class Primitive;
 struct TargetWinGDrawCodecState;
 
 // SIZE 0x10

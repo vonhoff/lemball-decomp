@@ -1,9 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PVBACKBUFFSURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_PVBACKBUFFSURFACE_H
 
-#include "../../Common.h"
 #include "PvGdiBitmap.h" // complete type
 #include "PvSurface.h"   // complete type
+
+class CopyToBackBuff;
+class CopyColourToBackBuff;
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x004995b0 PvBackBuffSurface

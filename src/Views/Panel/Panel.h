@@ -1,10 +1,17 @@
 #ifndef LEMBALL_VIEWS_PANEL_PANEL_H
 #define LEMBALL_VIEWS_PANEL_PANEL_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/VsPoint.h"          // complete type
 
+class Ai;
+class C2D;
+class PanelButton;
+class PanelLemming;
+class PanelPauseButton;
+class PvGWnd;
+class ResAnim;
+struct Message;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00497740
 class Panel : public BaseQueueHandler {

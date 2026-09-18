@@ -1,7 +1,6 @@
 #ifndef LEMBALL_NETWORK_MESSAGES_GAMEACCEPTMESSAGE_H
 #define LEMBALL_NETWORK_MESSAGES_GAMEACCEPTMESSAGE_H
 
-#include "../../Common.h"
 #include "GameFlaggedMessage.h" // complete type
 
 // SIZE 0x30

@@ -1,23 +1,28 @@
 #ifndef LEMBALL_FRONTEND_BASE_BASEFRONTENDPROCESS_H
 #define LEMBALL_FRONTEND_BASE_BASEFRONTENDPROCESS_H
 
-#include "../../Common.h"
 #include "../../Visos/Foundation/BaseProcess.h"      // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
+#include "../../Visos/Network/Connect.h"
+#include "../Support/UserActionMessage.h"
 
+class Game;
+class NetworkOptionsProc;
+class ReadPacket;
+struct Message;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497938 BaseQueueHandler
 // VTABLE: LEMBALL 0x00497948 BaseProcess
 class BaseFrontendProcess : public BaseProcess, public BaseQueueHandler {
 public:
 	BaseFrontendProcess(Game* p_arg0);
-	virtual ~BaseFrontendProcess();                                                                // vtable+0x00
-	virtual void Process();                                                                        // vtable+0x04
-	virtual bool ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, Connect* p_connection); // vtable+0x08
-	virtual void Processing();                                                                     // vtable+0x0c
-	virtual bool ProcessMessages(Message* p_message);                                              // vtable+0x10
+	virtual ~BaseFrontendProcess();                                                                 // vtable+0x00
+	virtual void Process();                                                                         // vtable+0x04
+	virtual bool ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, CConnect* p_connection); // vtable+0x08
+	virtual void Processing();                                                                      // vtable+0x0c
+	virtual bool ProcessMessages(Message* p_message);                                               // vtable+0x10
 	int ProcessMsg(Message* p_message);
-	void Action(int p_action, int p_stage);
+	void Action(eUserActions p_action, eUserActionStages p_stage);
 	BaseFrontendProcess();
 
 	friend class NetworkOptionsProc;

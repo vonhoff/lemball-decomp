@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESOURCETYPELIST_H
 #define LEMBALL_VISOS_RESOURCES_RESOURCETYPELIST_H
 
-#include "../../Common.h"
-
 // SIZE 0x10
 struct ResourceTypeList {
 	int m_currentIndex;        // 0x00

@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_COPYTEXT_H
 #define LEMBALL_VISOS_FOUNDATION_COPYTEXT_H
 
-#include "../../Common.h"
 #include "String.h" // complete type
 #include "Text.h"   // complete type
 

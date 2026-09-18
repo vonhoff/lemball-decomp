@@ -1,37 +1,76 @@
 #ifndef LEMBALL_AI_BASE_OBJECTTYPES_H
 #define LEMBALL_AI_BASE_OBJECTTYPES_H
 
-// Values established by x86-backed constructors and ObjectManager::Add.
-// Keep eObjectType as int (Common.h); these names do not change its ABI.
-#define OBJECT_BULLET 3
-#define OBJECT_CATAPULT 4
-#define OBJECT_AMMO 5
-#define OBJECT_TOWER 0xd
-#define OBJECT_CRATE 0x11
-#define OBJECT_SWITCH 0x14
-#define OBJECT_TRAP_DOOR 0x18
-#define OBJECT_DUPLICATOR 0x1c
+enum eObjectType {
+	OBJECT_NONE = 0,
+	OBJECT_PLAYER_1 = 1,
+	OBJECT_PLAYER_2 = 2,
+	OBJECT_BULLET = 3,
+	OBJECT_CATAPULT = 4,
+	OBJECT_AMMO = 5,
+	OBJECT_SHEEP = 7,
+	OBJECT_BALL = 9,
+	OBJECT_FLAG_1 = 0xb,
+	OBJECT_FLAG_2 = 0xc,
+	OBJECT_TOWER = 0xd,
+	OBJECT_CRATE = 0x11,
+	OBJECT_BONUS = 0x12,
+	OBJECT_MINE = 0x13,
+	OBJECT_SWITCH = 0x14,
+	OBJECT_KEY_1 = 0x15,
+	OBJECT_KEY_2 = 0x16,
+	OBJECT_KEY_3 = 0x17,
+	OBJECT_TRAP_DOOR = 0x18,
+	OBJECT_DOOR_1 = 0x19,
+	OBJECT_DOOR_2 = 0x1a,
+	OBJECT_TIME_BONUS = 0x1b,
+	OBJECT_DUPLICATOR = 0x1c,
+	OBJECT_BALLOON_POST = 0x1d,
+	OBJECT_LASER_HORIZONTAL = 0x1e,
+	OBJECT_HAND = 0x1f,
+	OBJECT_ROCKET = 0x20,
+	OBJECT_PAINT_GUN = 0x21,
+	OBJECT_TRAMPOLINE = 0x22,
+	OBJECT_LASER_HORIZONTAL_BEAM = 0x26,
+	OBJECT_BALLOON_0 = 0x27,
+	OBJECT_BALLOON_1 = 0x28,
+	OBJECT_BALLOON_2 = 0x29,
+	OBJECT_BALLOON_3 = 0x2a,
+	OBJECT_BALLOON_4 = 0x2b,
+	OBJECT_BALLOON_5 = 0x2c,
+	OBJECT_BALLOON_6 = 0x2d,
+	OBJECT_BALLOON_7 = 0x2e,
+	OBJECT_LASER_VERTICAL = 0x2f,
+	OBJECT_LASER_EMITTER_H = 0x30,
+	OBJECT_LASER_EMITTER_V = 0x31,
+	OBJECT_LASER_VERTICAL_BEAM = 0x32,
+	OBJECT_ICE = 0x33,
+	OBJECT_MOVER = 0x34,
+	OBJECT_SLINKY = 0x35,
+	OBJECT_INVISIBLE_SWITCH = 0x36,
 
-// Reconstructed labels for terrain object types. These combine the verified
-// x86-backed renderer resources with the collision silhouettes and height
-// profiles; they are not recovered original symbols.
-// Direction suffixes use the map convention: +X is SE and +Y is SW.
-#define TERRAIN_TREE 0x202
-#define TERRAIN_BLOX_1 0x206
-#define TERRAIN_BLOX_2 0x207
-#define TERRAIN_BLOX_3_SLOPE_SW_STEEP 0x208
-#define TERRAIN_BLOX_4 0x209
-#define TERRAIN_BLOX_5 0x20a
-#define TERRAIN_BLOX_6 0x20b
-#define TERRAIN_BLOX_7 0x20c
-#define TERRAIN_BLOX_8_SLOPE_SE_STEEP 0x20d
-#define TERRAIN_BLOX_14_SLOPE_SW_SHALLOW 0x20e
-#define TERRAIN_BLOX_15_SLOPE_SE_SHALLOW 0x20f
-#define TERRAIN_ANIM 0x210
-#define TERRAIN_FLAME 0x215
-#define TERRAIN_ELECTRIC 0x216
-#define TERRAIN_EMBERS 0x217
-#define TERRAIN_CONVEYOR_VARIANT_A 0x219
-#define TERRAIN_CONVEYOR_VARIANT_B 0x21a
+	// Reconstructed labels for terrain object types. These combine the verified
+	// x86-backed renderer resources with the collision silhouettes and height
+	// profiles; they are not recovered original symbols.
+	// Direction suffixes use the map convention: +X is SE and +Y is SW.
+	TERRAIN_TREE = 0x202,
+	TERRAIN_BLOX_1 = 0x206,
+	TERRAIN_BLOX_2 = 0x207,
+	TERRAIN_BLOX_3_SLOPE_SW_STEEP = 0x208,
+	TERRAIN_BLOX_4 = 0x209,
+	TERRAIN_BLOX_5 = 0x20a,
+	TERRAIN_BLOX_6 = 0x20b,
+	TERRAIN_BLOX_7 = 0x20c,
+	TERRAIN_BLOX_8_SLOPE_SE_STEEP = 0x20d,
+	TERRAIN_BLOX_14_SLOPE_SW_SHALLOW = 0x20e,
+	TERRAIN_BLOX_15_SLOPE_SE_SHALLOW = 0x20f,
+	TERRAIN_ANIM = 0x210,
+	TERRAIN_LIFT = 0x212,
+	TERRAIN_FLAME = 0x215,
+	TERRAIN_ELECTRIC = 0x216,
+	TERRAIN_EMBERS = 0x217,
+	TERRAIN_CONVEYOR_VARIANT_A = 0x219,
+	TERRAIN_CONVEYOR_VARIANT_B = 0x21a
+};
 
 #endif

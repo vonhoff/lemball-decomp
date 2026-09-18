@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_ANIMATION_INTROANIM_H
 #define LEMBALL_VISOS_ANIMATION_INTROANIM_H
 
-#include "../../Common.h"
 #include "../../Frontend/Base/BaseFrontendProcess.h" // complete type
+
+class Game;
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00493040 BaseQueueHandler

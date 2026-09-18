@@ -1,7 +1,10 @@
 #ifndef LEMBALL_VISOS_NETWORK_NETWORKADDRESS_H
 #define LEMBALL_VISOS_NETWORK_NETWORKADDRESS_H
 
-#include "../../Common.h"
+enum eBroadcastTypes {
+	BROADCAST_LAN = 0,
+	BROADCAST_WAN = 1,
+};
 
 // SIZE 0x04
 class NetworkAddress {

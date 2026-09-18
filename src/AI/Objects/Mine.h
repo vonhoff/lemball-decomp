@@ -1,10 +1,11 @@
 #ifndef LEMBALL_AI_OBJECTS_MINE_H
 #define LEMBALL_AI_OBJECTS_MINE_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/GlobalGameObject.h" // complete type
 
+class GameObject;
+class MineManager;
 // SIZE 0x150
 // VTABLE: LEMBALL 0x00495be8
 class Mine : public GlobalGameObject {

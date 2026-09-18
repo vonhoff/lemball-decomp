@@ -135,7 +135,7 @@ void Ai::Restart()
 	m_unk0xdc = 1;
 	m_mapType = 0;
 	m_unk0xe4 = 0;
-	m_gameStatus = 0;
+	m_gameStatus = GAME_STATUS_0;
 	m_processState = 0;
 	m_timeLimit = 180;
 	if (m_initialised == 0) {
@@ -384,7 +384,7 @@ void Ai::Start()
 		demo->m_duration = 0;
 	}
 
-	GameState((eGameStatus) 2);
+	GameState(GAME_STATUS_2);
 	m_unk0x68 = 1;
 }
 
@@ -423,109 +423,109 @@ void Ai::RemoteGameState(GameStateMessage* p_message)
 	stage = p_message->m_stage;
 	*g_pSysOutput << "Received Game State " << (int) state << ", stage " << (int) stage << "\n";
 	switch (stage) {
-	case 0:
+	case GAME_STATE_STAGE_REQUEST:
 		if (m_unk0x6c != 0) {
 			if (m_isHost != 0) {
-				SendGameState(state, (eGameStateStages) 2);
+				SendGameState(state, GAME_STATE_STAGE_REJECT);
 				return;
 			}
 			m_unk0x6c = 0;
 		}
 		switch (state) {
-		case 0:
-			if (m_gameStatus == 1) {
-				SendGameState(state, (eGameStateStages) 2);
+		case GAME_STATE_0:
+			if (m_gameStatus == GAME_STATUS_1) {
+				SendGameState(state, GAME_STATE_STAGE_REJECT);
 				m_unk0x6c = 0;
 				return;
 			}
 			apply = 1;
 			m_isSinglePlayer = 1;
 			break;
-		case 2:
+		case GAME_STATE_2:
 			g_pGameStatus->m_skillState = 2;
-			m_gameStatus = 5;
+			m_gameStatus = GAME_STATUS_5;
 			break;
-		case 3:
-			if (m_gameStatus == 4 || m_gameStatus == 3) {
-				SendGameState(state, (eGameStateStages) 2);
+		case GAME_STATE_3:
+			if (m_gameStatus == GAME_STATUS_4 || m_gameStatus == GAME_STATUS_3) {
+				SendGameState(state, GAME_STATE_STAGE_REJECT);
 				m_unk0x6c = 0;
 				return;
 			}
-			m_gameStatus = 6;
+			m_gameStatus = GAME_STATUS_6;
 			g_nGameOver = 1;
 			break;
-		case 4:
+		case GAME_STATE_4:
 			g_pGameStatus->m_skillState = 3;
-			m_gameStatus = 3;
+			m_gameStatus = GAME_STATUS_3;
 			break;
-		case 6:
+		case GAME_STATE_6:
 			g_pGameStatus->m_skillState = 5;
-			m_gameStatus = 3;
+			m_gameStatus = GAME_STATUS_3;
 			break;
 		default:
 			apply = 1;
 			break;
 		}
-		SendGameState(state, (eGameStateStages) 1);
+		SendGameState(state, GAME_STATE_STAGE_CONFIRM);
 		m_unk0x6c = 0;
 		if (apply == 0) {
 			return;
 		}
-	case 1:
+	case GAME_STATE_STAGE_CONFIRM:
 		switch (state) {
-		case 0:
-			m_gameStatus = 1;
+		case GAME_STATE_0:
+			m_gameStatus = GAME_STATUS_1;
 			break;
-		case 1:
-			if (m_gameStatus != 8) {
+		case GAME_STATE_1:
+			if (m_gameStatus != GAME_STATUS_8) {
 				m_unk0x68 = 1;
-				m_gameStatus = 2;
+				m_gameStatus = GAME_STATUS_2;
 			}
 			break;
-		case 2:
+		case GAME_STATE_2:
 			g_pGameStatus->m_skillState = 2;
-			m_gameStatus = 3;
+			m_gameStatus = GAME_STATUS_3;
 			break;
-		case 3:
-			m_gameStatus = 4;
+		case GAME_STATE_3:
+			m_gameStatus = GAME_STATUS_4;
 			break;
-		case 4:
+		case GAME_STATE_4:
 			g_pGameStatus->m_skillState = 3;
-			m_gameStatus = 5;
+			m_gameStatus = GAME_STATUS_5;
 			break;
-		case 6:
+		case GAME_STATE_6:
 			g_pGameStatus->m_skillState = 5;
-			m_gameStatus = 5;
+			m_gameStatus = GAME_STATUS_5;
 			break;
-		case 7:
+		case GAME_STATE_7:
 			if ((unsigned int) m_gameTime > p_message->m_levelTime) {
 				g_pGameStatus->m_skillState = 4;
-				m_gameStatus = 3;
+				m_gameStatus = GAME_STATUS_3;
 			}
 			else if ((unsigned int) m_gameTime != p_message->m_levelTime) {
 				g_pGameStatus->m_skillState = 4;
-				m_gameStatus = 5;
+				m_gameStatus = GAME_STATUS_5;
 			}
 			else if ((unsigned int) m_score > p_message->m_score) {
 				g_pGameStatus->m_skillState = 1;
-				m_gameStatus = 3;
+				m_gameStatus = GAME_STATUS_3;
 			}
 			else if ((unsigned int) m_score < p_message->m_score) {
 				g_pGameStatus->m_skillState = 1;
-				m_gameStatus = 5;
+				m_gameStatus = GAME_STATUS_5;
 			}
 			else {
 				g_pGameStatus->m_skillState = 4;
-				m_gameStatus = 5;
+				m_gameStatus = GAME_STATUS_5;
 			}
 			break;
-		case 8:
-			m_gameStatus = 8;
+		case GAME_STATE_8:
+			m_gameStatus = GAME_STATUS_8;
 			return;
 		}
 		m_unk0x6c = 0;
 		break;
-	case 2:
+	case GAME_STATE_STAGE_REJECT:
 		m_unk0x6c = 0;
 		return;
 	}
@@ -537,19 +537,19 @@ void Ai::GameState(eGameStatus p_status)
 {
 	if (m_networkMode == 0) {
 		switch (p_status) {
-		case (eGameStatus) 3:
+		case GAME_STATUS_3:
 			g_pGameStatus->m_skillState = 2;
-			m_gameStatus = 3;
+			m_gameStatus = GAME_STATUS_3;
 			return;
-		case (eGameStatus) 5:
+		case GAME_STATUS_5:
 			if (g_pGameStatus->m_skillState == 0) {
 				g_pGameStatus->m_skillState = 3;
 			}
-			m_gameStatus = 5;
+			m_gameStatus = GAME_STATUS_5;
 			return;
-		case (eGameStatus) 7:
+		case GAME_STATUS_7:
 			g_pGameStatus->m_skillState = 4;
-			m_gameStatus = 5;
+			m_gameStatus = GAME_STATUS_5;
 			return;
 		default:
 			m_gameStatus = p_status;
@@ -558,35 +558,35 @@ void Ai::GameState(eGameStatus p_status)
 	}
 	if (m_unk0x6c == 0) {
 		switch (p_status) {
-		case (eGameStatus) 1:
+		case GAME_STATUS_1:
 			m_isSinglePlayer = 0;
-			SendGameState((eGameStates) 0, (eGameStateStages) 0);
+			SendGameState(GAME_STATE_0, GAME_STATE_STAGE_REQUEST);
 			return;
-		case (eGameStatus) 2:
-			SendGameState((eGameStates) 1, (eGameStateStages) 1);
-			if (m_gameStatus == 2) {
+		case GAME_STATUS_2:
+			SendGameState(GAME_STATE_1, GAME_STATE_STAGE_CONFIRM);
+			if (m_gameStatus == GAME_STATUS_2) {
 				m_unk0x6c = 0;
 				return;
 			}
 			break;
-		case (eGameStatus) 3:
-			SendGameState((eGameStates) 2, (eGameStateStages) 0);
+		case GAME_STATUS_3:
+			SendGameState(GAME_STATE_2, GAME_STATE_STAGE_REQUEST);
 			return;
-		case (eGameStatus) 4:
-			SendGameState((eGameStates) 3, (eGameStateStages) 0);
+		case GAME_STATUS_4:
+			SendGameState(GAME_STATE_3, GAME_STATE_STAGE_REQUEST);
 			return;
-		case (eGameStatus) 5:
+		case GAME_STATUS_5:
 			if (g_pGameStatus->m_skillState == 5) {
-				SendGameState((eGameStates) 6, (eGameStateStages) 0);
+				SendGameState(GAME_STATE_6, GAME_STATE_STAGE_REQUEST);
 				return;
 			}
-			SendGameState((eGameStates) 4, (eGameStateStages) 0);
+			SendGameState(GAME_STATE_4, GAME_STATE_STAGE_REQUEST);
 			return;
-		case (eGameStatus) 7:
-			SendGameState((eGameStates) 7, (eGameStateStages) 0);
+		case GAME_STATUS_7:
+			SendGameState(GAME_STATE_7, GAME_STATE_STAGE_REQUEST);
 			return;
-		case (eGameStatus) 8:
-			SendGameState((eGameStates) 8, (eGameStateStages) 0);
+		case GAME_STATUS_8:
+			SendGameState(GAME_STATE_8, GAME_STATE_STAGE_REQUEST);
 		}
 	}
 }
@@ -675,7 +675,7 @@ void Ai::Process(int p_paused)
 		g_pNetworkManager->m_desiredGameState == g_pNetworkManager->m_observedGameState) {
 		m_unk0x6c = 0;
 		m_unk0x70 = 1;
-		GameState((eGameStatus) 2);
+		GameState(GAME_STATUS_2);
 	}
 	if (p_paused == 0 && m_paused != 0) {
 		SetGameTime();
@@ -723,7 +723,7 @@ void Ai::Process(int p_paused)
 		int remaining = m_unk0xe4;
 		remaining += m_gameTime;
 		if (remaining < 0) {
-			GameState((eGameStatus) 7);
+			GameState(GAME_STATUS_7);
 			m_unk0xe4 = -1 - m_gameTime;
 		}
 		if (m_playerGroups == 0 && m_unk0x5c < time - m_unk0xe0) {
@@ -739,16 +739,16 @@ void Ai::Process(int p_paused)
 	g_pGodManager->Process();
 	if (m_flagCounts[0] <= 0) {
 		if (g_nGameOver == 0) {
-			GameState((eGameStatus) 4);
+			GameState(GAME_STATUS_4);
 			g_nGameOver = 1;
 			m_unk0x104 = g_dwGameTick + 0x3c;
 		}
 		if (m_gameStatus == 4 && m_unk0x104 < g_dwGameTick) {
-			GameState((eGameStatus) 3);
+			GameState(GAME_STATUS_3);
 		}
 	}
 	if (g_pActiveConnection != 0 && (LemmingsSfxChanged() || g_dwSimulationTimestamp - m_unk0x80[1] > 0x42)) {
-		Connect* connection = g_pActiveConnection;
+		CConnect* connection = g_pActiveConnection;
 		if (m_networkGame->m_pendingSendCount == 0) {
 			m_networkGame->Send(connection);
 		}
@@ -929,13 +929,13 @@ void Ai::StepOn(const AiCoord& p_position, GameObject* p_object, unsigned short 
 		if (objectType != (eObjectType) 0x216) {
 			p_object->m_actionArgument = 2;
 			p_object->m_stateTimer = g_dwGameTick * 50;
-			p_object->SetSndEffect((eSoundEffect) 28);
+			p_object->SetSndEffect(SFX_AAAAH1);
 			return;
 		}
 
 		p_object->m_actionArgument = 1;
 		p_object->m_stateTimer = g_dwGameTick * 50;
-		p_object->SetSndEffect((eSoundEffect) 29);
+		p_object->SetSndEffect(SFX_AAAAH2);
 		return;
 	}
 
@@ -1035,7 +1035,7 @@ void Ai::QuitGame()
 {
 	m_paused = 0;
 	g_pGameStatus->m_skillState = 5;
-	GameState((eGameStatus) 5);
+	GameState(GAME_STATUS_5);
 }
 
 // 68K 0x106024e8 SwitchMessage__3CAIF9swMessageiii
@@ -1043,28 +1043,28 @@ void Ai::QuitGame()
 void Ai::SwitchMessage(swMessage p_message, int p_first, int p_last, int p_arg3)
 {
 	switch (p_message) {
-	case 1:
+	case SW_LIFT:
 		m_liftManager->Switch(p_message, p_first, p_last, p_arg3);
 		return;
-	case 2: {
+	case SW_LIFTS: {
 		int index = p_first;
 		if (index < p_last) {
 			do {
-				m_liftManager->Switch((swMessage) 1, index, 0, 0);
+				m_liftManager->Switch(SW_LIFT, index, 0, 0);
 				index++;
 			} while (index < p_last);
 			return;
 		}
 		break;
 	}
-	case 3:
-		m_doorManager->Switch((swMessage) 3, p_first);
+	case SW_DOOR:
+		m_doorManager->Switch(SW_DOOR, p_first);
 		return;
-	case 4:
-		m_moverManager->Switch((swMessage) 4, p_first);
+	case SW_MOVER:
+		m_moverManager->Switch(SW_MOVER, p_first);
 		return;
-	case 5:
-		m_iceManager->Switch((swMessage) 5, p_first);
+	case SW_ICE:
+		m_iceManager->Switch(SW_ICE, p_first);
 	}
 }
 

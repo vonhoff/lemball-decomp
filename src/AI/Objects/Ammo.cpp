@@ -42,7 +42,7 @@ bool Ammo::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == 26) {
-				SetSndEffect((eSoundEffect) 17);
+				SetSndEffect(SFX_RELOAD);
 			}
 			m_pendingAction = m_action;
 		}
@@ -88,7 +88,7 @@ void Ammo::DoActivate()
 {
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_unk0xd4 += g_dwGameTick;
-	SetSndEffect((eSoundEffect) 0x11);
+	SetSndEffect(SFX_RELOAD);
 	m_activator->PickUpAmmo(25);
 	g_pAI->Score(50);
 }

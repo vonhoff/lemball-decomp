@@ -6,7 +6,7 @@
 // FUNCTION: LEMBALL 0x00422b30
 void Flag::SetSfx()
 {
-	SetSndEffect(2);
+	SetSndEffect(SFX_YIPPEE);
 }
 
 #include "../../Map/Base/Map.h"

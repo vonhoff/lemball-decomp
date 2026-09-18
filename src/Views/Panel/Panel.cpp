@@ -181,7 +181,7 @@ int Panel::ProcessMsg(Message* p_message)
 		switch (type) {
 		case 4:
 			if (TranslateKey(p_message->code) == 8) {
-				g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+				g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 				unsigned int pause = m_game->m_paused == 0;
 				m_game->TriggerPause((unsigned char) pause);
 				PanelPauseButton* pauseButton = m_pauseButton;

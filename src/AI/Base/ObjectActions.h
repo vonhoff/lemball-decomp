@@ -1,9 +1,35 @@
 #ifndef LEMBALL_AI_BASE_OBJECTACTIONS_H
 #define LEMBALL_AI_BASE_OBJECTACTIONS_H
 
-// Door::Process advances opening to open, then closing; C2D::DrawDoor selects the frames.
-#define DOOR_ACTION_OPENING 0x20
-#define DOOR_ACTION_OPEN 0x21
-#define DOOR_ACTION_CLOSING 0x22
+enum eAction {
+	ACTION_NONE = 0,
+	ACTION_1 = 1,
+	ACTION_2 = 2,
+	ACTION_3 = 3,
+	ACTION_4 = 4,
+	ACTION_5 = 5,
+	ACTION_6 = 6,
+	ACTION_7 = 7,
+	ACTION_8 = 8,
+	ACTION_9 = 9,
+	ACTION_10 = 10,
+	ACTION_0x17 = 0x17,
+	ACTION_0x18 = 0x18,
+	ACTION_0x19 = 0x19,
+	ACTION_0x1a = 0x1a,
+	ACTION_0x1b = 0x1b,
+	ACTION_0x1c = 0x1c,
+	ACTION_0x1d = 0x1d,
+	ACTION_0x1e = 0x1e,
+	ACTION_0x1f = 0x1f,
+	DOOR_ACTION_OPENING = 0x20,
+	DOOR_ACTION_OPEN = 0x21,
+	DOOR_ACTION_CLOSING = 0x22,
+	ACTION_0x23 = 0x23,
+	ACTION_24 = 24,
+	ACTION_25 = 25,
+	ACTION_26 = 26,
+	ACTION_27 = 27
+};
 
 #endif

@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_BASEPACKETHEADER_H
 #define LEMBALL_VISOS_MESSAGING_BASEPACKETHEADER_H
 
-#include "../../Common.h"
-
 // SIZE 0x10
 struct BasePacketHeader {
 	unsigned int m_magic;               // 0x00

@@ -1,8 +1,13 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_BUCKET_H
 #define LEMBALL_VISOS_FOUNDATION_BUCKET_H
 
-#include "../../Common.h"
 #include "Critical.h" // complete type
+
+// SIZE 0x04
+struct Boffset {
+	unsigned short wWord;
+	unsigned short wBit;
+};
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x0049a478

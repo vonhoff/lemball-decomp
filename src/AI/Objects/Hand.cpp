@@ -6,7 +6,7 @@
 
 // 68K 0x10610d62 __ct__5CHandFv
 // FUNCTION: LEMBALL 0x00427ad0
-Hand::Hand() : GlobalGameObject(0x1f, 0, 0)
+Hand::Hand() : GlobalGameObject(OBJECT_HAND, 0, 0)
 {
 }
 
@@ -72,7 +72,7 @@ bool Hand::Process()
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
 			if (m_action == (eAction) 26) {
-				SetSndEffect((eSoundEffect) 30);
+				SetSndEffect(SFX_EEEEH);
 			}
 			m_pendingAction = m_action;
 		}
@@ -95,7 +95,7 @@ bool Hand::Process()
 				m_target->Action((eAction) 21);
 				m_target->m_actionDeadline = g_dwGameTick + 40;
 				Action((eAction) 26);
-				SetSndEffect((eSoundEffect) 30);
+				SetSndEffect(SFX_EEEEH);
 				return 1;
 			}
 			break;

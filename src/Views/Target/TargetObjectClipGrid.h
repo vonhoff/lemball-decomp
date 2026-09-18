@@ -1,8 +1,7 @@
 #ifndef LEMBALL_VIEWS_TARGET_TARGETOBJECTCLIPGRID_H
 #define LEMBALL_VIEWS_TARGET_TARGETOBJECTCLIPGRID_H
 
-#include "../../Common.h"
-
+class ObjSq;
 // SIZE 0x1a4
 struct TargetObjectClipGrid {
 	unsigned int m_cellCount;    // 0x00

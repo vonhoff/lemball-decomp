@@ -11,7 +11,7 @@
 
 // 68K 0x1060364a __ct__5CBallFv
 // FUNCTION: LEMBALL 0x00421660
-Ball::Ball() : GameObject(9, 0, 0)
+Ball::Ball() : GameObject(OBJECT_BALL, 0, 0)
 {
 }
 

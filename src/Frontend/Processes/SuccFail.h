@@ -1,9 +1,11 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_SUCCFAIL_H
 #define LEMBALL_FRONTEND_PROCESSES_SUCCFAIL_H
 
-#include "../../Common.h"
 #include "../Base/BaseFrontendProcess.h" // complete type
 
+class BaseProcess;
+class BaseQueueHandler;
+class Game;
 // SIZE 0x2c
 // VTABLE: LEMBALL 0x004983c8 BaseQueueHandler
 // VTABLE: LEMBALL 0x004983d8 BaseProcess

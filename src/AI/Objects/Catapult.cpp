@@ -44,7 +44,7 @@ bool Catapult::Process()
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
 			if (m_action == 27) {
-				SetSndEffect((eSoundEffect) 9);
+				SetSndEffect(SFX_CATAPULT);
 			}
 			m_pendingAction = m_action;
 		}
@@ -80,7 +80,7 @@ bool Catapult::Process()
 			m_activator->StartFly(vel, &pos);
 			m_activator = 0;
 			Action((eAction) 27);
-			SetSndEffect((eSoundEffect) 9);
+			SetSndEffect(SFX_CATAPULT);
 		}
 		break;
 	}

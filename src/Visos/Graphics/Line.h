@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_LINE_H
 #define LEMBALL_VISOS_GRAPHICS_LINE_H
 
-#include "../../Common.h"
 #include "Primitive.h" // complete type
 
 // SIZE 0x10

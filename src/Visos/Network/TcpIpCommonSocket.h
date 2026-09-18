@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_TCPIPCOMMONSOCKET_H
 #define LEMBALL_VISOS_NETWORK_TCPIPCOMMONSOCKET_H
 
-#include "../../Common.h"
 #include "../Target/TargetNetworkWindow.h" // complete type
 #include "BaseCommonSocket.h"              // complete type
 

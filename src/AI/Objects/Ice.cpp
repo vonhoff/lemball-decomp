@@ -9,7 +9,7 @@
 
 // 68K 0x1061176c __ct__4CIceFv
 // FUNCTION: LEMBALL 0x0042ca70
-Ice::Ice() : GlobalGameObject(0x33, 0, 0)
+Ice::Ice() : GlobalGameObject(OBJECT_ICE, 0, 0)
 {
 }
 
@@ -151,7 +151,7 @@ bool Ice::Process()
 	else if (m_action == 0x1a) {
 		m_switched = !m_switched;
 		Switched();
-		Action(0x18);
+		Action((eAction) 0x18);
 	}
 	if (!m_switched) {
 		return true;
@@ -231,7 +231,7 @@ bool Ice::Process()
 		if ((current.m_xFixed >> 12) < minX || maxX < (current.m_xFixed >> 12) || (current.m_yFixed >> 12) < minY ||
 			maxY < (current.m_yFixed >> 12)) {
 			object->m_unk0xc0 = 0;
-			object->m_action = 0;
+			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
 			unsigned short groundZ;
 			if (object->m_objectType == 2) {
@@ -331,13 +331,13 @@ bool Ice::StepOn(const AiCoord& p_position, GameObject* p_object)
 			p_object->m_stateTimer = g_dwGameTick * 50;
 			p_object->m_actionDeadline = g_dwGameTick + 1000;
 			if (p_object->m_objectType == 2) {
-				p_object->Action(0x16);
-				p_object->SetSndEffect(0x2d);
+				p_object->Action((eAction) 0x16);
+				p_object->SetSndEffect(SFX_WHEEE);
 				p_object->OnConveyor(1, this, 0);
 				return true;
 			}
-			p_object->Action(0xf, 3);
-			p_object->SetSndEffect(0x2d);
+			p_object->Action((eAction) 0xf, 3);
+			p_object->SetSndEffect(SFX_WHEEE);
 		}
 		return true;
 	}
@@ -375,7 +375,7 @@ void Ice::Leave(PlayerLemming* p_lemming)
 // FUNCTION: LEMBALL 0x0042d550
 void Ice::Switch()
 {
-	RequestAction(0x1a);
+	RequestAction((eAction) 0x1a);
 }
 
 // 68K 0x10612236 Switched__4CIceFv
@@ -391,7 +391,7 @@ void Ice::Switched()
 			GameObject* object = m_objects[i];
 			AiCoord current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
 			object->m_unk0xc0 = 0;
-			object->m_action = 0;
+			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
 			unsigned short groundZ;
 			if (object->m_objectType == 2) {

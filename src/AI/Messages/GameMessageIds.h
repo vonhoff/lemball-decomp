@@ -1,6 +1,9 @@
 #ifndef LEMBALL_AI_MESSAGES_GAMEMESSAGEIDS_H
 #define LEMBALL_AI_MESSAGES_GAMEMESSAGEIDS_H
 
+class Bullet;
+class NetworkMessage;
+class PlayerLemming;
 #define MESSAGE_OBJECT_CHANGE_STATE 0x23
 #define MESSAGE_OBJECT_POS 0x24
 #define MESSAGE_OBJECT_HIT 0x25

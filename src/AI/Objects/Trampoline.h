@@ -1,9 +1,11 @@
 #ifndef LEMBALL_AI_OBJECTS_TRAMPOLINE_H
 #define LEMBALL_AI_OBJECTS_TRAMPOLINE_H
 
-#include "../../Common.h"
 #include "../Base/GlobalGameObject.h" // complete type
 
+class AiCoord;
+class GameObject;
+class TrampolineManager;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x004965c8
 class Trampoline : public GlobalGameObject {

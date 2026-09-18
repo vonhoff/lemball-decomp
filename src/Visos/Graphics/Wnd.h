@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_WND_H
 #define LEMBALL_VISOS_GRAPHICS_WND_H
 
-#include "../../Common.h"
 #include "PvWnd.h" // complete type
 
 // SIZE 0x4c

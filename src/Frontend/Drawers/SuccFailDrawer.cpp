@@ -148,7 +148,7 @@ unsigned long g_dwSuccFailSingleLoseBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES
 // 68K 0x10809058 __ct__15CSuccFailDrawerFP14CMain2DDisplayP4CGDIRC7CVSRectUc
 // FUNCTION: LEMBALL 0x00450020
 SuccFailDrawer::SuccFailDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2, unsigned int p_arg3)
-	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, (eFlowProcesses) 0xe, 0x32, 200, 0, 0x28, 0x30)
+	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_SUCCESS, 0x32, 200, 0, 0x28, 0x30)
 {
 	m_variant = p_arg3;
 	m_animationsEnabled = (unsigned int) (g_nAnimationsDisabled == 0);
@@ -460,7 +460,7 @@ bool SuccFailDrawer::ProcessMessages(Message* p_message)
 	switch ((unsigned int) p_message->code) {
 	case 0xacef0010:
 		if (m_networkMode != 0) {
-			Action(3, 0);
+			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
 			return 1;
 		}
 		Go();
@@ -468,7 +468,7 @@ bool SuccFailDrawer::ProcessMessages(Message* p_message)
 
 	case 0xacef0011:
 		if (m_networkMode != 0) {
-			Action(2, 0);
+			Action(USER_ACTION_2, USER_ACTION_STAGE_REQUEST);
 			return 1;
 		}
 		Return();
@@ -503,13 +503,13 @@ void SuccFailDrawer::Go()
 
 // 68K 0x10809c48 ConfirmedAction__15CSuccFailDrawerF12eUserActions
 // FUNCTION: LEMBALL 0x00450a60
-bool SuccFailDrawer::ConfirmedAction(int p_action)
+bool SuccFailDrawer::ConfirmedAction(eUserActions p_action)
 {
 	switch (p_action) {
-	case 2:
+	case USER_ACTION_2:
 		Go();
 		return 1;
-	case 3:
+	case USER_ACTION_3:
 		Return();
 		return 1;
 	default:
@@ -551,10 +551,10 @@ void SuccFailDrawer::Processing()
 sound:
 	if (m_soundStarted == 0) {
 		if (m_variant != 0) {
-			g_pSoundView->PlayEffect((eSoundEffect) 0x27);
+			g_pSoundView->PlayEffect(SFX_SUCCESS);
 		}
 		else {
-			g_pSoundView->PlayEffect((eSoundEffect) 0x28);
+			g_pSoundView->PlayEffect(SFX_FAILURE);
 		}
 		m_soundStarted = 1;
 		m_soundStartTime = timeGetTime();

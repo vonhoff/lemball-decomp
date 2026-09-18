@@ -1,5 +1,7 @@
 #include "VsFile.h"
 
+#include <stddef.h>
+
 extern "C"
 {
 	_Filet* fopen(const char* p_path, const char* p_mode);

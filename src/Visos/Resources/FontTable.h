@@ -1,8 +1,10 @@
 #ifndef LEMBALL_VISOS_RESOURCES_FONTTABLE_H
 #define LEMBALL_VISOS_RESOURCES_FONTTABLE_H
 
-#include "../../Common.h"
 #include "PvFontTable.h" // complete type
+
+class ResFont;
+class ResZrle;
 
 // SIZE 0x08
 // VTABLE: LEMBALL 0x0049a480

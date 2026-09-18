@@ -1,9 +1,14 @@
 #ifndef LEMBALL_AI_GROUPS_ENEMYGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_ENEMYGROUPMANAGER_H
 
-#include "../../Common.h"
 #include "GenericGroupManager.h" // complete type
 
+class Ai;
+class FormationManager;
+class ObjectManager;
+struct LoadEnemyData;
+struct LoadEnemyDataAdditionalAction;
+struct WaypointInformation;
 // SIZE 0xb0
 // VTABLE: LEMBALL 0x004953f8
 class EnemyGroupManager : public GenericGroupManager {

@@ -3,6 +3,7 @@
 
 #include "TargetDibContext.h"
 
+class TargetGDIDriver;
 // SIZE 0x14
 // VTABLE: LEMBALL 0x00498798
 class TargetGdiDibContext : public TargetDibContext {

@@ -54,7 +54,7 @@ void Crate::TriggerContents()
 		m_position.m_yFixed = contents->m_position.m_yFixed;
 		m_position.m_zFixed = contents->m_position.m_zFixed;
 		g_pObjectManager->AddObject(0xffff, contents, 0);
-		m_contentsType = 0xffff;
+		m_contentsType = (eObjectType) 0xffff;
 	}
 }
 
@@ -81,11 +81,11 @@ bool Crate::Process()
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
 			case 25:
-				SetSndEffect((eSoundEffect) 20);
+				SetSndEffect(SFX_SNATCH);
 				break;
 			case 26:
 				TriggerContents();
-				SetSndEffect((eSoundEffect) 10);
+				SetSndEffect(SFX_CRATEEXP);
 				break;
 			}
 			m_pendingAction = m_action;
@@ -96,7 +96,7 @@ bool Crate::Process()
 	case 25:
 		if (m_unk0xd0 < g_dwGameTick) {
 			TriggerContents();
-			SetSndEffect((eSoundEffect) 10);
+			SetSndEffect(SFX_CRATEEXP);
 			Action((eAction) 26);
 		}
 		break;
@@ -130,7 +130,7 @@ void Crate::DoActivate()
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_unk0xd0 += g_dwGameTick;
 	m_unk0xd4 += g_dwGameTick;
-	SetSndEffect((eSoundEffect) 20);
+	SetSndEffect(SFX_SNATCH);
 	int score;
 	switch (m_contentsType) {
 	case 4:

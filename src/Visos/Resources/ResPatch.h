@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESPATCH_H
 #define LEMBALL_VISOS_RESOURCES_RESPATCH_H
 
-#include "../../Common.h"
 #include "ResBase.h" // complete type
 
 #define kChunkPtch 0x50544348

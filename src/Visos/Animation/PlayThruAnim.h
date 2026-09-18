@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_ANIMATION_PLAYTHRUANIM_H
 #define LEMBALL_VISOS_ANIMATION_PLAYTHRUANIM_H
 
-#include "../../Common.h"
 #include "TimedAnim.h" // complete type
 
 // SIZE 0x1c

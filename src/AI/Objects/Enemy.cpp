@@ -44,12 +44,12 @@ Enemy::Enemy(Ai* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
 	m_initialFacingDirection = (short) p_arg4;
 	m_spawnPosition.m_zFixed = (int) z << 12;
 	SetId((unsigned short) NextLoadingId());
-	m_state2Action = (eEnemyStateActions) 0;
-	m_state1Action = (eEnemyStateActions) 0;
-	m_state0Action = (eEnemyStateActions) 0;
-	m_state2Rule = (eEnemyStateRules) 0;
-	m_state1Rule = (eEnemyStateRules) 0;
-	m_state0Rule = (eEnemyStateRules) 0;
+	m_state2Action = ENEMY_ACTION_STOP;
+	m_state1Action = ENEMY_ACTION_STOP;
+	m_state0Action = ENEMY_ACTION_STOP;
+	m_state2Rule = ENEMY_RULE_NONE;
+	m_state1Rule = ENEMY_RULE_NONE;
+	m_state0Rule = ENEMY_RULE_NONE;
 	m_state0Data.m_waypointInformation = 0;
 	m_state1Data.m_waypointInformation = 0;
 	m_state2Data.m_waypointInformation = 0;
@@ -175,16 +175,16 @@ void Enemy::ProcessAction(eEnemyStateRules p_rule, eEnemyStateActions p_action, 
 	}
 	else {
 		switch (p_action) {
-		case 1:
+		case ENEMY_ACTION_PATROL:
 			EnemyActionPatrol(p_data);
 			break;
-		case 2:
+		case ENEMY_ACTION_TURN_AND_FIRE_RAPID:
 			EnemyActionTurnAndFireRapid(p_data);
 			break;
-		case 3:
+		case ENEMY_ACTION_TURN_AND_FIRE_SLOW:
 			EnemyActionTurnAndFireSlow(p_data);
 			break;
-		case 4:
+		case ENEMY_ACTION_TURN_AND_FIRE_RANDOM:
 			EnemyActionTurnAndFireRandom(p_data);
 			break;
 		default:
@@ -199,15 +199,15 @@ void Enemy::ProcessAction(eEnemyStateRules p_rule, eEnemyStateActions p_action, 
 bool Enemy::ProcessRule(eEnemyStateRules p_rule)
 {
 	switch (p_rule) {
-	case 0:
+	case ENEMY_RULE_NONE:
 		return 1;
-	case 2:
+	case ENEMY_RULE_RADIUS50:
 		return EnemyRuleRadius50();
-	case 3:
+	case ENEMY_RULE_NOT_RADIUS50:
 		return EnemyRuleRadius50() == 0;
-	case 4:
+	case ENEMY_RULE_RADIUS50_AND_LOS:
 		return EnemyRuleRadius50AndLineOfSight();
-	case 5:
+	case ENEMY_RULE_NOT_RADIUS50_AND_LOS:
 		return EnemyRuleRadius50AndLineOfSight() == 0;
 	default:
 		return 0;
@@ -378,7 +378,7 @@ void Enemy::Fire()
 	start.m_yFixed = m_position.m_yFixed;
 	start.m_zFixed = m_position.m_zFixed + 0xc000;
 
-	g_pAI->FireBullet(m_linkedObjectId, (eBulletType) 0, (eOwner) 1, facing, start, m_fireTarget);
+	g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, facing, start, m_fireTarget);
 	m_fireState = 2;
 	m_actionDeadline = g_dwGameTick + m_fireInterval / 50;
 }
@@ -413,7 +413,7 @@ void Enemy::EndFiring()
 // FUNCTION: LEMBALL 0x00420600
 void Enemy::HitBullet(Bullet* p_bullet)
 {
-	if (p_bullet->m_owner != 1) {
+	if (p_bullet->m_owner != OWNER_ENEMY) {
 		m_hit = 1;
 		m_actionDeadline = g_dwGameTick + 60;
 		m_facingDirection = (p_bullet->m_facingDirection + 4) & 7;

@@ -1,9 +1,16 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETTEXTBUTTON_H
 #define LEMBALL_VISOS_TARGET_TARGETTEXTBUTTON_H
 
-#include "../../Common.h"
 #include "TargetFramedButton.h" // complete type
 
+class GWnd;
+class HotAreaHandler;
+class Remap;
+class ResFont;
+class Text;
+class VsRect;
+struct VsPoint;
+struct VsSize;
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x00499a18 GWnd
 // VTABLE: LEMBALL 0x004999f8 HotAreaHandler

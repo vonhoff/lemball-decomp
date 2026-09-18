@@ -1,10 +1,14 @@
 #ifndef LEMBALL_VISOS_RESOURCES_MOGRES_H
 #define LEMBALL_VISOS_RESOURCES_MOGRES_H
 
-#include "../../Common.h"
 #include "../Foundation/Chunk.h"     // complete type
 #include "../Foundation/ChunkInfo.h" // complete type
 #include "RawRead.h"
+
+class ResBase;
+class MogDir;
+class BaseStat;
+struct VsRange;
 
 #define kResourceHandleCount 0x400
 #define kResourceHandleBytes 0x1000
@@ -39,7 +43,7 @@ private:
 	unsigned int m_resourceCount; // 0x14
 	unsigned int m_arenaSize;     // 0x18
 	unsigned int m_skipCleanup;   // 0x1c
-	undefined4 m_unk0x20;         // 0x20
+	unsigned int m_unk0x20;       // 0x20
 	unsigned int m_externalArena; // 0x24
 };
 

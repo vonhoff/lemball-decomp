@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESPRES_H
 #define LEMBALL_VISOS_RESOURCES_RESPRES_H
 
-#include "../../Common.h"
 #include "ResBase.h" // complete type
 
 #define kChunkPres 0x50524553

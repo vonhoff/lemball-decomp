@@ -1,7 +1,6 @@
 #ifndef LEMBALL_FRONTEND_BASE_BASEFRONTENDDRAWER_H
 #define LEMBALL_FRONTEND_BASE_BASEFRONTENDDRAWER_H
 
-#include "../../Common.h"
 #include "../../Visos/Animation/AnimsManager.h"      // complete type
 #include "../../Visos/Animation/StaticAnim.h"        // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
@@ -9,7 +8,25 @@
 #include "../../Visos/Foundation/VsPoint.h"          // complete type
 #include "../../Visos/Graphics/Drawer.h"             // complete type
 #include "../Support/CoordPair.h"                    // complete type
+#include "../Support/UserActionMessage.h"
+#include "FlowProcesses.h"
 
+class Gdi;
+class GunController;
+class HiliteController;
+class IntroAnimDrawer;
+class Main2DDisplay;
+class MainOptions1Drawer;
+class MainOptions2Drawer;
+class NetworkOptionsDrawer;
+class PasswordDrawer;
+class PlayThruAnim;
+class PreviewDrawer;
+class ResBitmap;
+class SuccFailDrawer;
+class TextManager;
+class VsRect;
+struct Message;
 // SIZE 0x398
 // VTABLE: LEMBALL 0x004978a8 Drawer
 // VTABLE: LEMBALL 0x00497898 BaseQueueHandler
@@ -25,24 +42,24 @@ public:
 					   int p_zrleCapacity,
 					   int p_textPrimitiveCapacity,
 					   int p_maxStringLen);
-	virtual int ProcessMsg(Message* p_message);       // vtable+0x08
-	virtual ~BaseFrontendDrawer();                    // vtable+0x00
-	virtual void Draw(const VsRect& p_rect);          // vtable+0x08
-	virtual void OnSize(const VsRect& p_rect);        // vtable+0x10
-	virtual void Process();                           // vtable+0x1c
-	virtual void ResetPrimitives();                   // vtable+0x20
-	virtual int GetReturnState();                     // vtable+0x28
-	virtual bool QuitYet();                           // vtable+0x2c
-	virtual void OnDriverChange();                    // vtable+0x30
-	virtual void Processing();                        // vtable+0x38
-	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
-	virtual void Load() = 0;                          // vtable+0x40
-	virtual void UnLoad() = 0;                        // vtable+0x44
-	virtual void DrawAnims();                         // vtable+0x48
-	virtual void DrawText();                          // vtable+0x4c
-	virtual void DrawBackGround();                    // vtable+0x50
-	virtual bool ConfirmedAction(int p_action);       // vtable+0x54
-	void Action(int p_action, int p_stage);
+	virtual int ProcessMsg(Message* p_message);          // vtable+0x08
+	virtual ~BaseFrontendDrawer();                       // vtable+0x00
+	virtual void Draw(const VsRect& p_rect);             // vtable+0x08
+	virtual void OnSize(const VsRect& p_rect);           // vtable+0x10
+	virtual void Process();                              // vtable+0x1c
+	virtual void ResetPrimitives();                      // vtable+0x20
+	virtual int GetReturnState();                        // vtable+0x28
+	virtual bool QuitYet();                              // vtable+0x2c
+	virtual void OnDriverChange();                       // vtable+0x30
+	virtual void Processing();                           // vtable+0x38
+	virtual bool ProcessMessages(Message* p_message);    // vtable+0x3c
+	virtual void Load() = 0;                             // vtable+0x40
+	virtual void UnLoad() = 0;                           // vtable+0x44
+	virtual void DrawAnims();                            // vtable+0x48
+	virtual void DrawText();                             // vtable+0x4c
+	virtual void DrawBackGround();                       // vtable+0x50
+	virtual bool ConfirmedAction(eUserActions p_action); // vtable+0x54
+	void Action(eUserActions p_action, eUserActionStages p_stage);
 	void InternalDrawAnims();
 	void InternalDrawBackGround();
 	void InternalLoad();
@@ -51,7 +68,7 @@ public:
 	void DrawFrame(VsRect p_rect);
 	void InitialiseBackBuffer();
 	void LostConnection();
-	void RemoteAction(int p_action, int p_stage);
+	void RemoteAction(eUserActions p_action, eUserActionStages p_stage);
 	void ReplaceBackground();
 	void Restart();
 	void Setup();
@@ -91,7 +108,7 @@ protected:
 	HiliteController* m_hiliteController; // 0x338
 	unsigned int m_ambientDelay;          // 0x33c
 	unsigned int m_ambientUpdatedAt;      // 0x340
-	undefined m_unknown344[8];            // 0x344
+	char m_unknown344[8];                 // 0x344
 	PlayThruAnim* m_ambientAnim;          // 0x34c
 	StaticAnim m_staticAnim;              // 0x350
 	unsigned int m_backBufferNeeded;      // 0x360
@@ -104,7 +121,7 @@ protected:
 	short m_width;                        // 0x37c
 	short m_height;                       // 0x37e
 	VsPoint m_animPosition;               // 0x380
-	undefined4 m_chalkFontId;             // 0x384
+	unsigned int m_chalkFontId;           // 0x384
 	unsigned int m_topFrameAnimId;        // 0x388
 	unsigned int m_sideFrameAnimId;       // 0x38c
 	unsigned int m_bottomFrameAnimId;     // 0x390

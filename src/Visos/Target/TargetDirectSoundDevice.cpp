@@ -270,13 +270,13 @@ int TargetDirectSoundDevice::IsEffectAvailable()
 }
 
 // FUNCTION: LEMBALL 0x0047e500
-int TargetDirectSoundDevice::Dummy34(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3)
+int TargetDirectSoundDevice::Dummy34(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e510
-int TargetDirectSoundDevice::Dummy38(undefined4 p_arg0, undefined4 p_arg1, undefined4 p_arg2, undefined4 p_arg3)
+int TargetDirectSoundDevice::Dummy38(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3)
 {
 	return 0;
 }
@@ -303,13 +303,13 @@ bool TargetDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long
 }
 
 // FUNCTION: LEMBALL 0x0047e5b0
-int TargetDirectSoundDevice::Dummy40(undefined4 p_arg0)
+int TargetDirectSoundDevice::Dummy40(unsigned int p_arg0)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e5c0
-int TargetDirectSoundDevice::Dummy44(undefined4 p_arg0)
+int TargetDirectSoundDevice::Dummy44(unsigned int p_arg0)
 {
 	return 0;
 }

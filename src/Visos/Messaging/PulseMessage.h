@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_PULSEMESSAGE_H
 #define LEMBALL_VISOS_MESSAGING_PULSEMESSAGE_H
 
-#include "../../Common.h"
 #include "NetworkMessage.h" // complete type
 
 // SIZE 0x2c

@@ -1,6 +1,7 @@
 #include "TargetPlatformServices.h"
 
 #include "../Foundation/MasterInput.h"
+#include "../Foundation/Message.h"
 #include "../Foundation/VsFile.h"
 #include "../Foundation/VsIOs.h"
 

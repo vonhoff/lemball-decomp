@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_MESSAGING_HEADERMESSAGE_H
 #define LEMBALL_VISOS_MESSAGING_HEADERMESSAGE_H
 
-#include "../../Common.h"
 #include "NetworkMessage.h" // complete type
 
 // SIZE 0x60
@@ -21,7 +20,7 @@ private:
 	unsigned long m_headerValue;       // 0x30
 	char m_text0[21];                  // 0x34
 	char m_text1[21];                  // 0x49
-	undefined2 m_padding;              // 0x5e
+	unsigned short m_padding;          // 0x5e
 };
 
 // SYNTHETIC: LEMBALL 0x0047b7f0

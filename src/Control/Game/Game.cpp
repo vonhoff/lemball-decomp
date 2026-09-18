@@ -186,8 +186,8 @@ Game::Game(char* p_arg0)
 	g_pSoundView = new SoundView();
 
 	m_process = 0;
-	m_currentFlow = 1;
-	NextProcess(1);
+	m_currentFlow = FLOW_INTRO_ANIM;
+	NextProcess(FLOW_INTRO_ANIM);
 
 	strcpy(m_runtimeName, g_szDefaultRuntimeDir);
 	if (p_arg0 == 0) {
@@ -336,11 +336,11 @@ void Game::NextProcess(eFlowProcesses p_flow)
 		m_process = 0;
 	}
 
-	if (p_flow == 1 && g_nAnimationsDisabled == 1) {
-		p_flow = 2;
+	if (p_flow == FLOW_INTRO_ANIM && g_nAnimationsDisabled == 1) {
+		p_flow = FLOW_MAIN_OPTIONS_1;
 	}
-	if (p_flow == 0x12 && g_nAnimationsDisabled == 1) {
-		p_flow = 4;
+	if (p_flow == FLOW_LEVEL_INTRO && g_nAnimationsDisabled == 1) {
+		p_flow = FLOW_PREVIEW;
 	}
 
 	switch (p_flow) {
@@ -460,7 +460,7 @@ void Game::Process()
 		}
 		switch (m_process->m_processState) {
 		case 1:
-			NextProcess(m_process->m_returnState);
+			NextProcess((eFlowProcesses) m_process->m_returnState);
 			break;
 		case 2:
 			m_quit = 1;
@@ -471,7 +471,7 @@ void Game::Process()
 	quitState = m_mainDisplay->QuitYet();
 	switch (quitState) {
 	case 1:
-		NextProcess(m_mainDisplay->GetReturnState());
+		NextProcess((eFlowProcesses) m_mainDisplay->GetReturnState());
 		break;
 	case 2:
 		m_quit = 1;
@@ -486,7 +486,7 @@ void Game::Process()
 			delete m_process;
 			m_process = 0;
 		}
-		m_mainDisplay->KillDrawer(0);
+		m_mainDisplay->KillDrawer(FLOW_NONE);
 	}
 }
 

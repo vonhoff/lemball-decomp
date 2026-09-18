@@ -1,14 +1,12 @@
-#include "../../Common.h"
-
 // Descriptive name: the original class name and inheritance are unknown.
 // Member offsets come from 0x0044aa20 and 0x0044aa70.
 class FixedTimeAnim {
 public:
 	unsigned int GetFrameNo();
-	void StartAnim(undefined4 p_unused);
+	void StartAnim(unsigned int p_unused);
 
 private:
-	undefined4 m_unknown00;
+	unsigned int m_unknown00;
 	unsigned int m_frames;      // 0x04
 	unsigned int m_lastFrame;   // 0x08
 	unsigned int m_startTime;   // 0x0c
@@ -39,7 +37,7 @@ unsigned int FixedTimeAnim::GetFrameNo()
 }
 
 // FUNCTION: LEMBALL 0x0044aa70
-void FixedTimeAnim::StartAnim(undefined4 p_unused)
+void FixedTimeAnim::StartAnim(unsigned int p_unused)
 {
 	m_finished = 0;
 	m_startTime = m_currentTime;

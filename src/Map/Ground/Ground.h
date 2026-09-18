@@ -1,8 +1,30 @@
 #ifndef LEMBALL_MAP_GROUND_GROUND_H
 #define LEMBALL_MAP_GROUND_GROUND_H
 
-#include "../../Common.h"
+#include "../../AI/Base/ObjectTypes.h"
 
+class Ai;
+class Bullet;
+class C2D;
+class Door;
+class Duplicator;
+class Flag;
+class GameObject;
+class GroundAnim;
+class GroundArray;
+class Hand;
+class Ice;
+class InvisibleSwitch;
+class Laser;
+class Lift;
+class Map;
+class Maze;
+class Mine;
+class Mover;
+class PaintGun;
+class PlayerLemming;
+class Rocket;
+class Trampoline;
 // SIZE 0x0c
 class Ground {
 public:

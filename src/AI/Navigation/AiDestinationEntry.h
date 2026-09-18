@@ -1,8 +1,14 @@
 #ifndef LEMBALL_AI_NAVIGATION_AIDESTINATIONENTRY_H
 #define LEMBALL_AI_NAVIGATION_AIDESTINATIONENTRY_H
 
-#include "../../Common.h"
 #include "../Base/AiCoord.h" // complete type
+
+class GameObject;
+enum eDestinationType {
+	DESTINATION_NONE = 0,
+	DESTINATION_COORD = 1,
+	DESTINATION_OBJECT = 2
+};
 
 // SIZE 0x14
 class AiDestinationEntry {

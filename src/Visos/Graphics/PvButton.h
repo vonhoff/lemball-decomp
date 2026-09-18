@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PVBUTTON_H
 #define LEMBALL_VISOS_GRAPHICS_PVBUTTON_H
 
-#include "../../Common.h"
 #include "ClipRect.h"       // complete type
 #include "GWnd.h"           // complete type
 #include "HotAreaHandler.h" // complete type

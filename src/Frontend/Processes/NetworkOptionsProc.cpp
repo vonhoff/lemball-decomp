@@ -89,7 +89,7 @@ void NetworkOptionsProc::Start()
 void NetworkOptionsProc::StopBroadcast()
 {
 	int index;
-	Connect** connections;
+	CConnect** connections;
 	unsigned long startTime;
 
 	if (g_pBaseNetwork != 0) {
@@ -145,7 +145,7 @@ void NetworkOptionsProc::Stop()
 
 // 68K 0x10808dc8 NetworkEvent__19CNetworkOptionsProcF13NetworkEvents
 // FUNCTION: LEMBALL 0x00455320
-void NetworkOptionsProc::NetworkEvent(int p_event)
+void NetworkOptionsProc::NetworkEvent(NetworkEvents p_event)
 {
 	if (g_pNetworkOptionsDrawer != 0) {
 		switch (p_event) {
@@ -161,10 +161,10 @@ void NetworkOptionsProc::NetworkEvent(int p_event)
 
 // 68K 0x10808e40 ReceiveCritical__19CNetworkOptionsProcFUlP11CReadPacketP8CConnect
 // FUNCTION: LEMBALL 0x00455360
-bool NetworkOptionsProc::ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, Connect* p_connection)
+bool NetworkOptionsProc::ReceiveCritical(unsigned long p_id, ReadPacket* p_packet, CConnect* p_connection)
 {
 	NetworkOptionsDrawer* drawer = g_pNetworkOptionsDrawer;
-	Connect* connection = p_connection;
+	CConnect* connection = p_connection;
 	ReadPacket* packet = p_packet;
 
 	switch (p_id) {
@@ -205,7 +205,7 @@ bool NetworkOptionsProc::ReceiveCritical(unsigned long p_id, ReadPacket* p_packe
 
 // 68K 0x10808fa6 Accept__19CNetworkOptionsProcFP8CConnectUc
 // FUNCTION: LEMBALL 0x00455480
-void NetworkOptionsProc::Accept(Connect* p_connection, unsigned int p_ready)
+void NetworkOptionsProc::Accept(CConnect* p_connection, unsigned int p_ready)
 {
 	m_acceptMessage->m_flag = p_ready;
 	m_acceptMessage->Send(p_connection);
@@ -213,7 +213,7 @@ void NetworkOptionsProc::Accept(Connect* p_connection, unsigned int p_ready)
 
 // 68K 0x10809004 Reject__19CNetworkOptionsProcFP8CConnect
 // FUNCTION: LEMBALL 0x004554a0
-void NetworkOptionsProc::Reject(Connect* p_connection)
+void NetworkOptionsProc::Reject(CConnect* p_connection)
 {
 	m_rejectMessage->m_flag = 0;
 	m_rejectMessage->Send(p_connection);

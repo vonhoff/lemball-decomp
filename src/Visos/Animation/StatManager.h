@@ -1,7 +1,8 @@
 #ifndef LEMBALL_VISOS_ANIMATION_STATMANAGER_H
 #define LEMBALL_VISOS_ANIMATION_STATMANAGER_H
 
-#include "../../Common.h"
+class VsOStream;
+class BaseStat;
 
 // SIZE 0x14
 // VTABLE: LEMBALL 0x00498958
@@ -13,10 +14,10 @@ public:
 	~StatManager();
 
 private:
-	undefined4 m_unk0x04; // 0x04
-	BaseStat** m_stats;   // 0x08
-	int m_capacity;       // 0x0c
-	int m_statCount;      // 0x10
+	unsigned int m_unk0x04; // 0x04
+	BaseStat** m_stats;     // 0x08
+	int m_capacity;         // 0x0c
+	int m_statCount;        // 0x10
 };
 
 extern StatManager* g_pStatManager;

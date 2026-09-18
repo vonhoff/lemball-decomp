@@ -1,7 +1,6 @@
 #ifndef LEMBALL_AI_BASE_BASEGLOBALOBJECT_H
 #define LEMBALL_AI_BASE_BASEGLOBALOBJECT_H
 
-#include "../../Common.h"
 #include "AiCoord.h"          // complete type
 #include "GlobalGameObject.h" // complete type
 

@@ -1,7 +1,6 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_PASSWORDHILITEWINDOW_H
 #define LEMBALL_FRONTEND_WINDOWS_PASSWORDHILITEWINDOW_H
 
-#include "../../Common.h"
 #include "../../Visos/Graphics/GWnd.h" // complete type
 
 // SIZE 0x90

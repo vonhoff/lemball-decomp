@@ -1,9 +1,13 @@
 #ifndef LEMBALL_AI_MANAGERS_COLLECTABLEMANAGER_H
 #define LEMBALL_AI_MANAGERS_COLLECTABLEMANAGER_H
 
-#include "../../Common.h"
+#include "../Base/ObjectTypes.h"
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class Collectable;
+class GameObject;
+class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x004955a0
 class CollectableManager : public BaseObjectManager {

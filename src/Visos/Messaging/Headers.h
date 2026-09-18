@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_MESSAGING_HEADERS_H
 #define LEMBALL_VISOS_MESSAGING_HEADERS_H
 
-#include "../../Common.h"
 #include "NetworkMessage.h" // complete type
+
+class HeaderMessage;
 
 // SIZE 0x3c
 // VTABLE: LEMBALL 0x0049a4c0

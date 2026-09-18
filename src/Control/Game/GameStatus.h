@@ -1,8 +1,17 @@
 #ifndef LEMBALL_CONTROL_GAME_GAMESTATUS_H
 #define LEMBALL_CONTROL_GAME_GAMESTATUS_H
 
-#include "../../Common.h"
-
+class Ai;
+class BaseFrontendDrawer;
+class BaseFrontendProcess;
+class C2D;
+class IntroAnimAnimWindow;
+class MainOptions1Drawer;
+class NetworkOptionsDrawer;
+class PasswordDrawer;
+class PlayerLemming;
+class PreviewDrawer;
+class SuccFailDrawer;
 // SIZE 0x50
 class GameStatus {
 public:
@@ -42,8 +51,8 @@ private:
 	int m_skill;               // 0x08
 	unsigned int m_skillState; // 0x0c
 	char m_password[10];       // 0x10
-	undefined2 m_pad0x1a;      // 0x1a
-	undefined4 m_pad0x1c;      // 0x1c
+	unsigned short m_pad0x1a;  // 0x1a
+	unsigned int m_pad0x1c;    // 0x1c
 	unsigned int m_status0;    // 0x20
 	unsigned int m_status1;    // 0x24
 	int m_maxLevels[5];        // 0x28

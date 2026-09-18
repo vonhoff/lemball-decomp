@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETTEXTLINE_H
 #define LEMBALL_VISOS_TARGET_TARGETTEXTLINE_H
 
-#include "../../Common.h"
-
 #include <stdlib.h>
 #include <string.h>
 

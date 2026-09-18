@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_TOGGLEBUTTON_H
 #define LEMBALL_VISOS_GRAPHICS_TOGGLEBUTTON_H
 
-#include "../../Common.h"
 #include "GraphicButton.h" // complete type
 
 // SIZE 0x134

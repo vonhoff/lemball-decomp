@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_PVGWND_H
 #define LEMBALL_VISOS_GRAPHICS_PVGWND_H
 
-#include "../../Common.h"
 #include "Bitmap.h"         // complete type
 #include "CopyToBackBuff.h" // complete type
 #include "Line.h"           // complete type

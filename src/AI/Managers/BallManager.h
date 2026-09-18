@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_MANAGERS_BALLMANAGER_H
 #define LEMBALL_AI_MANAGERS_BALLMANAGER_H
 
-#include "../../Common.h"
-
+class Ai;
+class Ball;
 // SIZE 0x10
 class BallManager {
 public:

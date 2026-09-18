@@ -1,9 +1,13 @@
 #ifndef LEMBALL_AI_MANAGERS_HANDMANAGER_H
 #define LEMBALL_AI_MANAGERS_HANDMANAGER_H
 
-#include "../../Common.h"
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class AiCoord;
+class GameObject;
+class Hand;
+class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x004962e0
 class HandManager : public BaseObjectManager {

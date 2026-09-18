@@ -1,5 +1,6 @@
 #include "Mover.h"
 
+#include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
@@ -76,7 +77,7 @@ bool Mover::IsAt(int p_x, int p_y, int& p_height)
 
 // 68K 0x10617410 Set__6CMoverFUsiUcii
 // FUNCTION: LEMBALL 0x0042e760
-void Mover::Set(unsigned short p_id, int p_pathId, undefined4 p_movementMode, int p_startNode, int p_nodeCount)
+void Mover::Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode, int p_startNode, int p_nodeCount)
 {
 	SetId(p_id);
 	const Pt3& position = g_pAI->GetNodePosition(p_startNode);

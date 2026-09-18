@@ -311,12 +311,12 @@ void C2D::RegisterRemaps()
 		} while (sources < g_anC2DRemapTargetIndices[0]);
 
 		BaseRemap* remap =
-			g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, m_remapTables[remapIndex], (ePaletteTypes) 0);
+			g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, m_remapTables[remapIndex], PALETTE_DEFAULT);
 		m_remaps[remapIndex] = remap;
 		remapIndex = remapIndex + 1;
 	} while (remapIndex < 4);
 
-	m_remaps[4] = g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, g_abC2DType2Remap, (ePaletteTypes) 2);
+	m_remaps[4] = g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, g_abC2DType2Remap, PALETTE_MAPPED);
 	palette->UnLoad();
 }
 
@@ -462,7 +462,7 @@ void C2D::SetUpRemapPalettes()
 		mapping[i] = value;
 		i++;
 	} while (i < 0x100);
-	m_paletteRemap = g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, mapping, (ePaletteTypes) 0);
+	m_paletteRemap = g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, mapping, PALETTE_DEFAULT);
 }
 
 // 68K 0x10b079c8 KillRemapPalettes__3C2DFv
@@ -661,7 +661,7 @@ void C2D::FormGroup()
 		m_lemmingManager->Post(message);
 		m_groupCount = 0;
 		m_groupingActive = 0;
-		g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+		g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 	}
 }
 
@@ -677,7 +677,7 @@ void C2D::MoveGroup(const VsPoint& p_point)
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
-	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x25;
+	g_pSoundView->m_pendingEffect = SFX_DRUM1;
 }
 
 // 68K 0x10b083d6 CancelMoves__3C2DFv
@@ -690,7 +690,7 @@ void C2D::CancelMoves()
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
-	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x25;
+	g_pSoundView->m_pendingEffect = SFX_DRUM1;
 }
 
 // 68K 0x10b0843a NextGroup__3C2DFv
@@ -703,7 +703,7 @@ void C2D::NextGroup()
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
-	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x1b;
+	g_pSoundView->m_pendingEffect = SFX_CHANGEOP;
 }
 
 // 68K 0x10b0849c PrevGroup__3C2DFv
@@ -716,7 +716,7 @@ void C2D::PrevGroup()
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
-	g_pSoundView->m_pendingEffect = (eSoundEffect) 0x1b;
+	g_pSoundView->m_pendingEffect = SFX_CHANGEOP;
 }
 
 // 68K 0x10b084fe SelectLemming__3C2DFi
@@ -731,7 +731,7 @@ void C2D::SelectLemming(int p_playerIndex)
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
-	g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+	g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 }
 
 // 68K 0x10b08588 SelectObject__3C2DFi
@@ -746,7 +746,7 @@ void C2D::SelectObject(int p_viewIndex)
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
 	m_groupingActive = 0;
-	g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+	g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 }
 
 // 68K 0x10b0860e InGroupByObjectNo__3C2DFi
@@ -815,14 +815,14 @@ bool C2D::IsInGrouping(GameObject* p_object)
 // STUB: LEMBALL 0x00437520
 void C2D::NoStateLeftClick(const VsPoint& p_screenPoint,
 						   const VsPoint& p_gamePoint,
-						   undefined4 p_commitMoves,
-						   undefined4 p_alternate)
+						   unsigned int p_commitMoves,
+						   unsigned int p_alternate)
 {
 }
 
 // 68K 0x10b088fa GroupingLeftClick__3C2DFRC8CVSPointRC8CVSPointUc
 // FUNCTION: LEMBALL 0x004376b0
-void C2D::GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint, undefined4 p_alternate)
+void C2D::GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gamePoint, unsigned int p_alternate)
 {
 	int index;
 	if (FindGameObject(p_screenPoint, index, 0)) {
@@ -835,7 +835,7 @@ void C2D::GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gameP
 				else {
 					AddObjectToGroup(m_viewData[index].m_objectId, 0);
 				}
-				g_pSoundView->m_pendingEffect = (eSoundEffect) 3;
+				g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 				return;
 			}
 			break;
@@ -876,8 +876,8 @@ void C2D::GroupingLeftClick(const VsPoint& p_screenPoint, const VsPoint& p_gameP
 // FUNCTION: LEMBALL 0x00437840
 void C2D::LeftClick(const VsPoint& p_screenPoint,
 					const VsPoint& p_gamePoint,
-					undefined4 p_commitMoves,
-					undefined4 p_alternate)
+					unsigned int p_commitMoves,
+					unsigned int p_alternate)
 {
 	switch (m_groupingActive) {
 	case 0:
@@ -992,7 +992,7 @@ int C2D::ProcessMsg(Message* p_message)
 
 // 68K 0x10b09008 NewPauseWindow__3C2DF20ePauseWindowMessages
 // FUNCTION: LEMBALL 0x00437d00
-void C2D::NewPauseWindow(int p_message)
+void C2D::NewPauseWindow(ePauseWindowMessages p_message)
 {
 	m_previousPauseMessage = m_pauseMessage;
 	m_pauseMessage = p_message;
@@ -1000,10 +1000,10 @@ void C2D::NewPauseWindow(int p_message)
 		delete m_pauseWindow;
 		m_pauseWindow = 0;
 	}
-	if (m_pauseMessage != 5) {
-		m_pauseWindow = new PauseWindow(this, m_display, (ePauseWindowMessages) m_pauseMessage);
+	if (m_pauseMessage != PAUSE_MSG_NONE) {
+		m_pauseWindow = new PauseWindow(this, m_display, m_pauseMessage);
 	}
-	if (m_pauseMessage == 3) {
+	if (m_pauseMessage == PAUSE_MSG_ARE_YOU_SURE) {
 		m_pauseSelection = m_optionSelection;
 	}
 }
@@ -1014,7 +1014,7 @@ void C2D::TriggerPause(unsigned char p_paused)
 {
 	if (p_paused != 0) {
 		if (m_ai->m_gameStatus >= 1 && m_ai->m_gameStatus <= 2) {
-			m_ai->GameState(1);
+			m_ai->GameState(GAME_STATUS_1);
 		}
 	}
 	else {
@@ -1036,17 +1036,17 @@ void C2D::SetPause(unsigned int p_paused)
 	ClockEditMode(p_paused);
 	m_ai->m_paused = m_paused;
 	if (p_paused != 0) {
-		m_ai->GameState(1);
+		m_ai->GameState(GAME_STATUS_1);
 	}
 	else {
-		m_ai->GameState(2);
+		m_ai->GameState(GAME_STATUS_2);
 		m_pauser = 0;
 	}
 	if (m_paused != 0) {
-		NewPauseWindow(0);
+		NewPauseWindow(PAUSE_MSG_PAUSED);
 	}
 	else {
-		NewPauseWindow(5);
+		NewPauseWindow(PAUSE_MSG_NONE);
 	}
 }
 
@@ -1234,7 +1234,7 @@ void C2D::UseBalloon(int p_playerIndex)
 {
 	PlayerLemming** pLemming = &m_ai->m_networkLemmings[p_playerIndex];
 	if ((*pLemming)->GetLastBalloon() != 0xffff && (*pLemming)->m_action != 8) {
-		(*pLemming)->SetSndEffect((eSoundEffect) 31);
+		(*pLemming)->SetSndEffect(SFX_BALLOON);
 		UseBalloon(*pLemming);
 	}
 }
@@ -2055,7 +2055,7 @@ void C2D::DrawLemmingFlyShadow(ViewData& p_viewData)
 
 // 68K 0x10b023d4 DrawLemmingJump__3C2DFR9CViewDataUc
 // FUNCTION: LEMBALL 0x0043bee0
-void C2D::DrawLemmingJump(ViewData& p_viewData, undefined4 p_remapped)
+void C2D::DrawLemmingJump(ViewData& p_viewData, unsigned int p_remapped)
 {
 	unsigned int direction;
 	int frame;
@@ -2095,7 +2095,7 @@ void C2D::DrawLemmingJump(ViewData& p_viewData, undefined4 p_remapped)
 
 // 68K 0x10b024ea DrawLemmingLanding__3C2DFR9CViewDataUc
 // FUNCTION: LEMBALL 0x0043bfc0
-void C2D::DrawLemmingLanding(ViewData& p_viewData, undefined4 p_remapped)
+void C2D::DrawLemmingLanding(ViewData& p_viewData, unsigned int p_remapped)
 {
 	int x;
 	int y;
@@ -2124,14 +2124,14 @@ void C2D::DrawLemmingLanding(ViewData& p_viewData, undefined4 p_remapped)
 
 // 68K 0x10b025d2 DrawLemmingFall__3C2DFR9CViewDataUc
 // FUNCTION: LEMBALL 0x0043c070
-void C2D::DrawLemmingFall(ViewData& p_viewData, undefined4 p_remapped)
+void C2D::DrawLemmingFall(ViewData& p_viewData, unsigned int p_remapped)
 {
 	DrawLemmingJump(p_viewData, p_remapped);
 }
 
 // 68K 0x10b02612 DrawLemmingExternal__3C2DFR9CViewDataUc
 // FUNCTION: LEMBALL 0x0043c090
-void C2D::DrawLemmingExternal(ViewData& p_viewData, undefined4 p_remapped)
+void C2D::DrawLemmingExternal(ViewData& p_viewData, unsigned int p_remapped)
 {
 	int x = p_viewData.m_positionX;
 	int y = p_viewData.m_positionY;
@@ -2252,7 +2252,7 @@ static unsigned long g_lemmingWaitResources[] = {RES_GAME_WAIT_JIG,
 
 // 68K 0x10b027f2 DrawLemming__3C2DFR9CViewDataiUc
 // FUNCTION: LEMBALL 0x0043c200
-void C2D::DrawLemming(ViewData& p_viewData, int p_objectNo, undefined4 p_remapped)
+void C2D::DrawLemming(ViewData& p_viewData, int p_objectNo, unsigned int p_remapped)
 {
 	int x;
 	int y;
@@ -3430,7 +3430,7 @@ void C2D::DrawTrapDoor(ViewData& p_viewData)
 	}
 }
 
-extern const undefined4* g_styleObjectClip;
+extern const unsigned int* g_styleObjectClip;
 
 // 68K 0x10b0487c DrawObject__3C2DFR9CViewData
 // FUNCTION: LEMBALL 0x0043dc70
@@ -3460,10 +3460,10 @@ void C2D::DrawObject(ViewData& p_viewData)
 		DrawBall(p_viewData);
 		return;
 	case 0xb:
-		DrawFlag(p_viewData, 0xb);
+		DrawFlag(p_viewData, OBJECT_FLAG_1);
 		return;
 	case 0xc:
-		DrawFlag(p_viewData, 0xc);
+		DrawFlag(p_viewData, OBJECT_FLAG_2);
 		return;
 	case 0xd:
 		if (m_ai->m_mapType != 3) {

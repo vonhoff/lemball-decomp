@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_OBJECTS_SHEEP_H
 #define LEMBALL_AI_OBJECTS_SHEEP_H
 
-#include "../../Common.h"
 #include "../Base/GameObject.h" // complete type
 
+class Ai;
 // SIZE 0x124
 // VTABLE: LEMBALL 0x00494f80
 class Sheep : public GameObject {

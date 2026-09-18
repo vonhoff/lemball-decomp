@@ -81,7 +81,7 @@ void TrapDoor::GetViewData(ViewData& p_viewData)
 	else {
 		p_viewData.m_animationTime = g_dwSimulationTimestamp;
 	}
-	SetSndEffect((eSoundEffect) 0);
+	SetSndEffect(SFX_NONE);
 	p_viewData.m_transientFlags = m_transientFlags;
 	m_transientFlags = 0;
 }
@@ -103,13 +103,13 @@ bool TrapDoor::Process()
 			case 0x20:
 				if (g_dwTrapDoorRemoteSfxState == 0) {
 					g_dwTrapDoorRemoteSfxState = 1;
-					SetSndEffect((eSoundEffect) 0x18);
+					SetSndEffect(SFX_TRAPDOOR);
 				}
 				break;
 			case 0x22:
 				if (g_dwTrapDoorRemoteSfxState == 1) {
 					g_dwTrapDoorRemoteSfxState = 0;
-					SetSndEffect((eSoundEffect) 0x18);
+					SetSndEffect(SFX_TRAPDOOR);
 				}
 				break;
 			}
@@ -125,7 +125,7 @@ bool TrapDoor::Process()
 		switch (m_action) {
 		case 0x18:
 			if (g_dwTrapDoorLocalSfxState == 0) {
-				SetSndEffect((eSoundEffect) 0x20);
+				SetSndEffect(SFX_DOORAPPR);
 				g_dwTrapDoorLocalSfxState = 1;
 			}
 			m_actionDeadline = g_dwGameTick + 0x36;
@@ -134,7 +134,7 @@ bool TrapDoor::Process()
 		case 0x1f:
 			if (g_dwTrapDoorLocalSfxState == 1) {
 				g_dwTrapDoorLocalSfxState = 0;
-				SetSndEffect((eSoundEffect) 0x18);
+				SetSndEffect(SFX_TRAPDOOR);
 			}
 			m_actionDeadline = g_dwGameTick + 0x14;
 			Action((eAction) 0x20);
@@ -142,7 +142,7 @@ bool TrapDoor::Process()
 		case 0x20:
 			if (g_dwTrapDoorLocalSfxState == 0) {
 				g_dwTrapDoorLocalSfxState = 1;
-				SetSndEffect((eSoundEffect) 1);
+				SetSndEffect(SFX_LETSGO);
 			}
 			m_actionDeadline = g_dwGameTick + 0x50;
 			Action((eAction) 0x21);
@@ -150,14 +150,14 @@ bool TrapDoor::Process()
 		case 0x21:
 			if (g_dwTrapDoorLocalSfxState == 1) {
 				g_dwTrapDoorLocalSfxState = 0;
-				SetSndEffect((eSoundEffect) 0x18);
+				SetSndEffect(SFX_TRAPDOOR);
 			}
 			m_actionDeadline = g_dwGameTick + 0x14;
 			Action((eAction) 0x22);
 			return true;
 		case 0x22:
 			if (g_dwTrapDoorLocalSfxState == 0) {
-				SetSndEffect((eSoundEffect) 0x21);
+				SetSndEffect(SFX_DOORGO);
 			}
 			m_actionDeadline = g_dwGameTick + 0x36;
 			Action((eAction) 0x23);

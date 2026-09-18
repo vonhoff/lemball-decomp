@@ -89,7 +89,7 @@ void WindowsCursorMotionState::ProcessCursorMotion()
 }
 
 // FUNCTION: LEMBALL 0x004327b0
-void WindowsCursorMotionState::DrawCursorMotionAtCurrentPosition(undefined4 p_unused)
+void WindowsCursorMotionState::DrawCursorMotionAtCurrentPosition(unsigned int p_unused)
 {
 	int x = (m_fixedX >> 12) - m_aux0;
 	int y = (m_fixedY >> 12) - m_aux1;
@@ -97,7 +97,7 @@ void WindowsCursorMotionState::DrawCursorMotionAtCurrentPosition(undefined4 p_un
 }
 
 // FUNCTION: LEMBALL 0x004327e0
-void WindowsCursorMotionState::DrawCursorMotionAtPoint(undefined4 p_unused, const VsPoint& p_position)
+void WindowsCursorMotionState::DrawCursorMotionAtPoint(unsigned int p_unused, const VsPoint& p_position)
 {
 	m_anims->DrawAnim(p_position.m_x, p_position.m_y, RES_CURSORS_HAND, 0, 0, 0);
 }
@@ -135,7 +135,7 @@ void WindowsCursorMotionState::StopHorizontalMotion()
 }
 
 // FUNCTION: LEMBALL 0x00432880
-void WindowsCursorMotionState::StartHorizontalMotion(undefined4 p_positive)
+void WindowsCursorMotionState::StartHorizontalMotion(unsigned int p_positive)
 {
 	if (!m_horizontalActive) {
 		unsigned int now = CurrentMilliTimer();
@@ -146,7 +146,7 @@ void WindowsCursorMotionState::StartHorizontalMotion(undefined4 p_positive)
 }
 
 // FUNCTION: LEMBALL 0x004328d0
-void WindowsCursorMotionState::StartVerticalMotion(undefined4 p_positive)
+void WindowsCursorMotionState::StartVerticalMotion(unsigned int p_positive)
 {
 	if (!m_verticalActive) {
 		unsigned int now = CurrentMilliTimer();

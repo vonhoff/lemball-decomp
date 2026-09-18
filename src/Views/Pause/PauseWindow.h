@@ -1,16 +1,32 @@
 #ifndef LEMBALL_VIEWS_PAUSE_PAUSEWINDOW_H
 #define LEMBALL_VIEWS_PAUSE_PAUSEWINDOW_H
 
-#include "../../Common.h"
 #include "../../Visos/Animation/Anim.h"              // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/TextManager.h"      // complete type
 #include "../../Visos/Foundation/VsPoint.h"          // complete type
 #include "../../Visos/Foundation/VsRect.h"           // complete type
+#include "../../Visos/Foundation/VsSize.h"           // complete type
 #include "../../Visos/Graphics/GWnd.h"               // complete type
 #include "../../Visos/Graphics/HotAreaHandler.h"     // complete type
 #include "../../Visos/Graphics/Line.h"               // complete type
 #include "PauseWindowFreeVramInterface.h"            // complete type
+
+class BaseRemap;
+class PvGWnd;
+class ReceiveWindowState;
+class Remap;
+class ResAnim;
+class ResFont;
+struct Message;
+enum ePauseWindowMessages {
+	PAUSE_MSG_PAUSED = 0,
+	PAUSE_MSG_PLEASE_WAIT = 1,
+	PAUSE_MSG_LOADING = 2,
+	PAUSE_MSG_ARE_YOU_SURE = 3,
+	PAUSE_MSG_CONNECTION_LOST = 4,
+	PAUSE_MSG_NONE = 5
+};
 
 // SIZE 0x20c
 // VTABLE: LEMBALL 0x00497798 GWnd
@@ -45,7 +61,7 @@ public:
 
 private:
 	char** m_menuLabels;                         // 0x100
-	int m_pauseMessage;                          // 0x104
+	ePauseWindowMessages m_pauseMessage;         // 0x104
 	unsigned int m_cursorState;                  // 0x108
 	unsigned int m_lowResolution;                // 0x10c
 	ReceiveWindowState* m_receiverState;         // 0x110

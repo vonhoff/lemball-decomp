@@ -22,10 +22,10 @@
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // GLOBAL: LEMBALL 0x004a1e08
-undefined4 g_unk0x4a1e08 = 0;
+int g_unk0x4a1e08 = 0;
 
 // GLOBAL: LEMBALL 0x004a1e0c
-undefined4 g_unk0x4a1e0c = 9;
+int g_unk0x4a1e0c = 9;
 
 // 68K 0x1020c60e __ct__10CBroadcastFv
 // FUNCTION: LEMBALL 0x00460350

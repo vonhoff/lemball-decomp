@@ -1,10 +1,16 @@
 #ifndef LEMBALL_AI_MANAGERS_DOORMANAGER_H
 #define LEMBALL_AI_MANAGERS_DOORMANAGER_H
 
-#include "../../Common.h"
-#include "../Base/AiCoord.h"   // complete type
+#include "../Base/AiCoord.h" // complete type
+#include "../Base/ObjectTypes.h"
+#include "../Objects/SwitchEntry.h"
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class Door;
+class GameObject;
+class Switch;
+class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00493840
 class DoorManager : public BaseObjectManager {

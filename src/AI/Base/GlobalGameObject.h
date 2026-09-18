@@ -1,9 +1,29 @@
 #ifndef LEMBALL_AI_BASE_GLOBALGAMEOBJECT_H
 #define LEMBALL_AI_BASE_GLOBALGAMEOBJECT_H
 
-#include "../../Common.h"
 #include "GameObject.h" // complete type
 
+class CollectableManager;
+class DoorManager;
+class GameObjectMess;
+class HandManager;
+class LaserManager;
+class LiftManager;
+class MineManager;
+class NetworkMessage;
+class ObjectChangeStateMess;
+class ObjectDiesMess;
+class ObjectHitMess;
+class ObjectManager;
+class ObjectPosMess;
+class RemoveObjectMess;
+class RequestActionMess;
+class RequestCancelMess;
+class RequestReplyMess;
+class RocketManager;
+class TrampolineManager;
+class TransportObjectMess;
+class TrapDoorManager;
 // SIZE 0x138
 // VTABLE: LEMBALL 0x00493ea0
 class GlobalGameObject : public GameObject {

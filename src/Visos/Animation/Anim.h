@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_ANIMATION_ANIM_H
 #define LEMBALL_VISOS_ANIMATION_ANIM_H
 
-#include "../../Common.h"
 #include "../Graphics/Zrle.h" // complete type
+
+class ResAnim;
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x00497730

@@ -44,7 +44,7 @@ bool Balloon::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == 26) {
-				SetSndEffect((eSoundEffect) 42);
+				SetSndEffect(SFX_COLLECT_BALLOON);
 			}
 			m_pendingAction = m_action;
 		}
@@ -75,7 +75,7 @@ bool Balloon::Activate(GameObject* p_object)
 void Balloon::DoActivate()
 {
 	m_activator->AddObject(m_objectType, this);
-	SetSndEffect((eSoundEffect) 42);
+	SetSndEffect(SFX_COLLECT_BALLOON);
 	g_pAI->Score(50);
 }
 

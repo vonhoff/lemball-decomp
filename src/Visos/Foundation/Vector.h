@@ -1,9 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VECTOR_H
 #define LEMBALL_VISOS_FOUNDATION_VECTOR_H
 
-#include "../../Common.h"
-#include "Vector.h" // complete type
-
 // SIZE 0x08
 class Vector {
 public:

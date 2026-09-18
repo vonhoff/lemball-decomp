@@ -415,7 +415,7 @@ void GameObject::Restart()
 	m_auxiliaryPosition.m_zFixed = 0;
 	Initialise();
 	m_position.m_zFixed = 0;
-	m_unk0x120 = (undefined2) 0xffff;
+	m_unk0x120 = (unsigned short) 0xffff;
 	m_liftId = 0xffff;
 	m_position.m_yFixed = 0;
 	m_position.m_xFixed = 0;
@@ -476,7 +476,7 @@ void GameObject::Initialise()
 	m_unk0x11c = 0;
 	m_hasDestination = 0;
 	m_actionDeadline = g_dwGameTick;
-	m_soundEffect = (eSoundEffect) 0;
+	m_soundEffect = SFX_NONE;
 	m_transientFlags = 0;
 }
 
@@ -741,7 +741,7 @@ bool GameObject::SearchRoute()
 						if (count < list->m_capacity) {
 							list->m_count = count + 1;
 							AiDestinationEntry* entry = &list->m_entries[count];
-							entry->m_type = (eDestinationType) 1;
+							entry->m_type = DESTINATION_COORD;
 							entry->m_coordinate.m_xFixed = coordinate.m_xFixed;
 							entry->m_coordinate.m_yFixed = coordinate.m_yFixed;
 							entry->m_coordinate.m_zFixed = coordinate.m_zFixed;
@@ -940,7 +940,7 @@ void GameObject::AddDestination(const AiCoord& p_arg0)
 		unsigned short count = list->m_count;
 		list->m_count = count + 1;
 		AiDestinationEntry* entry = &list->m_entries[count];
-		entry->m_type = (eDestinationType) 1;
+		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = p_arg0.m_xFixed;
 		entry->m_coordinate.m_yFixed = p_arg0.m_yFixed;
 		entry->m_coordinate.m_zFixed = p_arg0.m_zFixed;
@@ -980,7 +980,7 @@ void GameObject::AlterDestination(const AiCoord& p_arg0)
 		}
 		destinationList->m_count++;
 		AiDestinationEntry* entry = destinationList->m_entries;
-		entry->m_type = (eDestinationType) 1;
+		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = p_arg0.m_xFixed;
 		entry->m_coordinate.m_yFixed = p_arg0.m_yFixed;
 		entry->m_coordinate.m_zFixed = p_arg0.m_zFixed;
@@ -1395,10 +1395,10 @@ bool GameObject::Process()
 }
 
 // GLOBAL: LEMBALL 0x0049cf4c
-word g_wNetworkLemmingIndex = 0;
+unsigned short g_wNetworkLemmingIndex = 0;
 
 // GLOBAL: LEMBALL 0x0049cf50
-word g_wLocalLemmingIndex = 0;
+unsigned short g_wLocalLemmingIndex = 0;
 
 // GLOBAL: LEMBALL 0x0049d070
 int g_anTurnDelayCursor[16] = {0, 30, 20, 12, 0, 0, 0, 15, 32, 0, 0, 0, 0, 0, 0, 0};
@@ -1419,4 +1419,4 @@ unsigned char g_abObjectIdBitmap[256];
 GameObject* g_pObjects[256];
 
 // GLOBAL: LEMBALL 0x004a74bc
-word g_wObjectCount;
+unsigned short g_wObjectCount;

@@ -95,10 +95,10 @@ void BaseFrontendDrawer::Setup()
 	void* storage;
 
 	if (m_drawBackground != 0) {
-		CursorChangeType(2, 0);
+		CursorChangeType(CURSOR_DISPLAY_PAW, 0);
 	}
 	else {
-		CursorChangeType(0, 0);
+		CursorChangeType(CURSOR_DISPLAY_NONE, 0);
 	}
 
 	if (m_textPrimitiveCapacity > 0) {
@@ -575,7 +575,7 @@ void BaseFrontendDrawer::LostConnection()
 
 // 68K 0x10801736 Action__19CBaseFrontendDrawerF12eUserActions17eUserActionStages
 // FUNCTION: LEMBALL 0x004465e0
-void BaseFrontendDrawer::Action(int p_action, int p_stage)
+void BaseFrontendDrawer::Action(eUserActions p_action, eUserActionStages p_stage)
 {
 	m_actionPending = 1;
 	g_pCurrentFrontendProcess->Action(p_action, p_stage);
@@ -583,33 +583,33 @@ void BaseFrontendDrawer::Action(int p_action, int p_stage)
 
 // 68K 0x108017a0 RemoteAction__19CBaseFrontendDrawerF12eUserActions17eUserActionStages
 // FUNCTION: LEMBALL 0x00446610
-void BaseFrontendDrawer::RemoteAction(int p_action, int p_stage)
+void BaseFrontendDrawer::RemoteAction(eUserActions p_action, eUserActionStages p_stage)
 {
 	int confirmed;
 
 	switch (p_stage) {
-	case 0:
+	case USER_ACTION_STAGE_REQUEST:
 		if (m_actionPending != 0) {
-			Action(p_action, 2);
+			Action(p_action, USER_ACTION_STAGE_REJECT);
 			return;
 		}
 		m_actionPending = 1;
-		Action(p_action, 1);
-		g_pSoundView->PlayEffect((eSoundEffect) 0x25);
+		Action(p_action, USER_ACTION_STAGE_CONFIRM);
+		g_pSoundView->PlayEffect(SFX_DRUM1);
 		confirmed = ConfirmedAction(p_action);
 		if (confirmed == 0) {
 			*g_pErrorOutput << g_szUnknownUserActionSpecified;
 		}
 		m_actionPending = 0;
 		return;
-	case 1:
+	case USER_ACTION_STAGE_CONFIRM:
 		confirmed = ConfirmedAction(p_action);
 		if (confirmed == 0) {
 			*g_pErrorOutput << g_szUnknownUserActionReceived;
 		}
 		m_actionPending = 0;
 		return;
-	case 2:
+	case USER_ACTION_STAGE_REJECT:
 		m_actionPending = 0;
 	}
 }
@@ -657,7 +657,7 @@ void BaseFrontendDrawer::DrawBackGround()
 
 // 68K 0x1011bf1a ConfirmedAction__19CBaseFrontendDrawerF12eUserActions
 // FUNCTION: LEMBALL 0x00446fa0
-bool BaseFrontendDrawer::ConfirmedAction(int p_action)
+bool BaseFrontendDrawer::ConfirmedAction(eUserActions p_action)
 {
 	return 0;
 }

@@ -1,8 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_BROADCAST_H
 #define LEMBALL_VISOS_NETWORK_BROADCAST_H
 
-#include "../../Common.h"
 #include "RwSocket.h" // complete type
+
+class BasePacket;
+class BroadcastMessage;
+class NetworkAddress;
 
 // SIZE 0x128
 // VTABLE: LEMBALL 0x00499080 BaseSocket's `ReadSocket
@@ -39,7 +42,7 @@ protected:
 	unsigned int m_runEnabled;         // 0x08
 	unsigned int m_addressMode;        // 0x0c
 	unsigned char* m_connectionData;   // 0x10
-	undefined4 m_listenEnabled;        // 0x14
+	unsigned int m_listenEnabled;      // 0x14
 	unsigned int m_lastBroadcastTime;  // 0x18
 	NetworkAddress* m_specificAddress; // 0x1c
 };

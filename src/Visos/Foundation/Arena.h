@@ -1,10 +1,13 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_ARENA_H
 #define LEMBALL_VISOS_FOUNDATION_ARENA_H
 
-#include "../../Common.h"
 #include "ArenaBase.h"
 #include "Critical.h"
 #include "MBlock.h"
+
+#include <stddef.h>
+
+class VsOStream;
 
 void InitSubSystems();
 

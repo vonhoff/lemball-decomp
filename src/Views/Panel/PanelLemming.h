@@ -1,8 +1,13 @@
 #ifndef LEMBALL_VIEWS_PANEL_PANELLEMMING_H
 #define LEMBALL_VIEWS_PANEL_PANELLEMMING_H
 
-#include "../../Common.h"
+#include "../../AI/Base/ObjectTypes.h"
 
+class Panel;
+class PanelButton;
+class PlayerLemming;
+class PvGWnd;
+struct VsPoint;
 // SIZE 0x2c
 class PanelLemming {
 public:

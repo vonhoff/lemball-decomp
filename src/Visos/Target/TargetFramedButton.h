@@ -1,9 +1,14 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETFRAMEDBUTTON_H
 #define LEMBALL_VISOS_TARGET_TARGETFRAMEDBUTTON_H
 
-#include "../../Common.h"
 #include "../Graphics/DepressedButton.h" // complete type
 
+class ClipRect;
+class GWnd;
+class HotAreaHandler;
+class Line;
+class PvGWnd;
+class VsRect;
 // SIZE 0x118
 // VTABLE: LEMBALL 0x00499838 GWnd
 // VTABLE: LEMBALL 0x00499818 HotAreaHandler

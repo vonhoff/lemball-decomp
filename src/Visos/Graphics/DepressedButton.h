@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_DEPRESSEDBUTTON_H
 #define LEMBALL_VISOS_GRAPHICS_DEPRESSEDBUTTON_H
 
-#include "../../Common.h"
 #include "PvButton.h" // complete type
 
 // SIZE 0x10c

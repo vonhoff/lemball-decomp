@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_SMALLMEMORY_H
 #define LEMBALL_VISOS_FOUNDATION_SMALLMEMORY_H
 
-#include "../../Common.h"
+class Bucket;
 
 // SIZE 0x3c
 class SmallMemory {

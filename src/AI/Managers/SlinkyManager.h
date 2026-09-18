@@ -1,8 +1,9 @@
 #ifndef LEMBALL_AI_MANAGERS_SLINKYMANAGER_H
 #define LEMBALL_AI_MANAGERS_SLINKYMANAGER_H
 
-#include "../../Common.h"
-
+class Ai;
+class Slinky;
+class ViewData;
 // SIZE 0x10
 class SlinkyManager {
 public:

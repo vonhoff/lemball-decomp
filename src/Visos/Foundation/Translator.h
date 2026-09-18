@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_TRANSLATOR_H
 #define LEMBALL_VISOS_FOUNDATION_TRANSLATOR_H
 
-#include "../../Common.h"
 #include "BaseQueueHandler.h" // complete type
 
 // SIZE 0x10

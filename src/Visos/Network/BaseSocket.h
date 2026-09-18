@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_BASESOCKET_H
 #define LEMBALL_VISOS_NETWORK_BASESOCKET_H
 
-#include "../../Common.h"
 #include "../Messaging/NetworkMessage.h" // complete type
+
+struct BasePacketHeader;
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00498f40
@@ -20,12 +21,12 @@ protected:
 	unsigned short m_nonCriticalSequence;  // 0x32
 	unsigned short m_receiveSequence;      // 0x34
 	unsigned short m_multiMessageSequence; // 0x36
-	undefined4 m_unknown38;                // 0x38
+	unsigned int m_unknown38;              // 0x38
 	union {
 		unsigned int m_lastReceiveTime; // 0x3c
 		unsigned int m_lastSendTime;    // 0x3c
 	};
-	undefined4 m_unknown40; // 0x40
+	unsigned int m_unknown40; // 0x40
 };
 
 // SYNTHETIC: LEMBALL 0x00462900

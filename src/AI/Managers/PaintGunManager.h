@@ -1,9 +1,11 @@
 #ifndef LEMBALL_AI_MANAGERS_PAINTGUNMANAGER_H
 #define LEMBALL_AI_MANAGERS_PAINTGUNMANAGER_H
 
-#include "../../Common.h"
 #include "BaseObjectManager.h" // complete type
 
+class Ai;
+class PaintGun;
+class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496888
 class PaintGunManager : public BaseObjectManager {

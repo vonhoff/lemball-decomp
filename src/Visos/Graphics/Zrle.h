@@ -1,8 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_ZRLE_H
 #define LEMBALL_VISOS_GRAPHICS_ZRLE_H
 
-#include "../../Common.h"
 #include "Primitive.h" // complete type
+
+class ResBase;
+class Remap;
+class Gdi;
 
 // SIZE 0x18
 // VTABLE: LEMBALL 0x00499628

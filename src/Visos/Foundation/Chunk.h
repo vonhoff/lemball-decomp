@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CHUNK_H
 #define LEMBALL_VISOS_FOUNDATION_CHUNK_H
 
-#include "../../Common.h"
+struct ChunkInfo;
 
 // SIZE 0x08
 struct Chunk {

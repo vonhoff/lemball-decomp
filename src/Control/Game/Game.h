@@ -1,8 +1,11 @@
 #ifndef LEMBALL_CONTROL_GAME_GAME_H
 #define LEMBALL_CONTROL_GAME_GAME_H
 
-#include "../../Common.h"
+#include "../../Frontend/Base/FlowProcesses.h"
 
+class BaseProcess;
+class Main2DDisplay;
+class TimeStat;
 // SIZE 0x70
 class Game {
 public:

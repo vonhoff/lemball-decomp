@@ -188,7 +188,7 @@ void NetworkManager::Process()
 
 // 68K 0x10a00b92 GetGameMessage__15CNetworkManagerFP8CConnect
 // FUNCTION: LEMBALL 0x00452b90
-NetworkGameMessage* NetworkManager::GetGameMessage(Connect* p_connection)
+NetworkGameMessage* NetworkManager::GetGameMessage(CConnect* p_connection)
 {
 	int index = GetnGame(p_connection);
 	if (index == -1) {
@@ -202,7 +202,7 @@ int NetworkManager::CountActiveGames()
 {
 	int count = 0;
 	int index = 0;
-	Connect** connection = m_connections;
+	CConnect** connection = m_connections;
 	do {
 		if (*connection != 0 && m_gameMessages[index].m_valid != 0) {
 			count++;
@@ -215,10 +215,10 @@ int NetworkManager::CountActiveGames()
 
 // 68K 0x10a00bfa GetnGame__15CNetworkManagerFP8CConnect
 // FUNCTION: LEMBALL 0x00452bf0
-int NetworkManager::GetnGame(Connect* p_connection)
+int NetworkManager::GetnGame(CConnect* p_connection)
 {
 	int index;
-	Connect** connection;
+	CConnect** connection;
 
 	index = 0;
 	connection = m_connections;

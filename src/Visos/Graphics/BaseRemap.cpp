@@ -15,10 +15,10 @@ BaseRemap::BaseRemap(unsigned long p_arg0, unsigned char* p_arg1, ePaletteTypes 
 {
 	m_paletteResource = ResPalette::Load(p_arg0);
 	switch (p_arg2) {
-	case 1:
+	case PALETTE_GREYSCALE:
 		CalculateGreyScale();
 		break;
-	case 2:
+	case PALETTE_MAPPED:
 		MapRemap(p_arg1);
 		break;
 	default:
