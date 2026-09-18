@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Compare source names with adjacent // 68K symbols (via tools/gate.py --names)."""
 
-import argparse
 import json
 import re
 import sys
@@ -265,24 +264,3 @@ def check_names(
         if selected:
             return 1
     return 0
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    parser.add_argument("paths", type=Path, nargs="*", default=[ROOT / "src"])
-    parser.add_argument("--strict", action="store_true")
-    parser.add_argument("--json", action="store_true")
-    parser.add_argument("--fail", action="store_true")
-    args = parser.parse_args()
-    return check_names(
-        paths=args.paths,
-        strict=args.strict,
-        as_json=args.json,
-        fail=args.fail,
-    )
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

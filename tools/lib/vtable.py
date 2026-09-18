@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import argparse
 import re
 import struct
 import sys
@@ -11,10 +10,6 @@ from collections import Counter
 from dataclasses import dataclass
 from itertools import zip_longest
 from pathlib import Path
-
-if __name__ == "__main__" and not __package__:
-    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    globals()["__package__"] = "lib"
 
 from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
@@ -582,7 +577,6 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
 
 def check_vtable(
     no_build: bool = True,
-    clean_first: bool = False,
     verbose: bool = False,
     top: int = 0,
     annot_strict: bool = False,
@@ -590,33 +584,8 @@ def check_vtable(
     if not no_build or not RECOMP_EXE.is_file():
         from build import run_build
 
-        result = run_build(clean_first=clean_first)
+        result = run_build()
         if result != 0:
             return result
 
     return run_comparison(verbose, max(top, 0), annot_strict)
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Thunk-aware LEMBALL vtable comparison")
-    parser.add_argument("--no-build", action="store_true", help="skip incremental build")
-    parser.add_argument("--clean-first", action="store_true", help="clean before building")
-    parser.add_argument("--verbose", "-v", action="store_true", help="show every mismatching slot")
-    parser.add_argument("--top", type=int, default=0, help="show the N most frequent unresolved targets and pairs")
-    parser.add_argument(
-        "--annot-strict",
-        action="store_true",
-        help="also fail when a source VTABLE annotation cannot be paired",
-    )
-    args = parser.parse_args()
-    return check_vtable(
-        no_build=args.no_build,
-        clean_first=args.clean_first,
-        verbose=args.verbose,
-        top=args.top,
-        annot_strict=args.annot_strict,
-    )
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

@@ -10,11 +10,6 @@ from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from lib.reccmp_compat import (
     BoundedInstructGen,
     RelocationAwareParseAsm,
-    _upstream_is_operand_swap,
-    _upstream_naive_register_replacement,
-    _upstream_patch_compare_jmp,
-    _upstream_patch_mov_compare_jmp,
-    _upstream_relocate_instructions,
     complete_original_extent,
     identical_folded_aliases,
     incremental_thunks,
@@ -156,22 +151,16 @@ class OperandSwapTests(unittest.TestCase):
     def test_test_operand_swap_cannot_reverse_branch(self):
         left = ["test eax, ebx", "ja 0x10", "ret "]
         right = ["test ebx, eax", "jb 0x10", "ret "]
-        self.assertEqual(_upstream_patch_compare_jmp(left, right, "test"), {0, 1})
         self.assertEqual(patch_compare_jmp(left, right, "test"), set())
         codes = SequenceMatcher(None, left, right).get_opcodes()
-        with patch.object(fixes, "patch_compare_jmp", _upstream_patch_compare_jmp):
-            self.assertTrue(fixes.find_effective_match(codes, left, right))
         with patch.object(fixes, "patch_compare_jmp", patch_compare_jmp):
             self.assertFalse(fixes.find_effective_match(codes, left, right))
 
     def test_mov_test_operand_swap_cannot_reverse_branch(self):
         left = ["mov eax, dword ptr [ebp + 4]", "test eax, ecx", "ja 0x10", "ret "]
         right = ["mov eax, ecx", "test eax, dword ptr [ebp + 4]", "jb 0x10", "ret "]
-        self.assertEqual(_upstream_patch_mov_compare_jmp(left, right, "test"), {0, 1, 2})
         self.assertEqual(patch_mov_compare_jmp(left, right, "test"), set())
         codes = SequenceMatcher(None, left, right).get_opcodes()
-        with patch.object(fixes, "patch_mov_compare_jmp", _upstream_patch_mov_compare_jmp):
-            self.assertTrue(fixes.find_effective_match(codes, left, right))
         with patch.object(fixes, "patch_mov_compare_jmp", patch_mov_compare_jmp):
             self.assertFalse(fixes.find_effective_match(codes, left, right))
 
@@ -183,10 +172,9 @@ class OperandSwapTests(unittest.TestCase):
                 ["mov eax, dword ptr [ebp + 4]", "test eax, ecx", jump],
                 ["mov eax, ecx", "test eax, dword ptr [ebp + 4]", jump], "test"), {0, 1, 2})
 
-    def test_upstream_accepts_changed_offsets(self):
+    def test_changed_offsets_are_rejected(self):
         left = "cmp eax, dword ptr [ebx + 0x12]"
         right = "cmp dword ptr [ebx + 0x21], eax"
-        self.assertTrue(_upstream_is_operand_swap(left, right))
         self.assertFalse(is_operand_swap(left, right))
 
     def test_exact_swaps_preserve_embedded_commas(self):
@@ -205,7 +193,6 @@ class OperandSwapTests(unittest.TestCase):
     def test_mov_compare_checks_exact_sources(self):
         left = ["mov eax, dword ptr [ebp + 0x12]", "cmp eax, ecx", "ja 0x10"]
         right = ["mov eax, ecx", "cmp eax, dword ptr [ebp + 0x21]", "jb 0x10"]
-        self.assertEqual(_upstream_patch_mov_compare_jmp(left, right, "cmp"), {0, 1, 2})
         self.assertEqual(patch_mov_compare_jmp(left, right, "cmp"), set())
         right[1] = "cmp eax, dword ptr [ebp + 0x12]"
         self.assertEqual(patch_mov_compare_jmp(left, right, "cmp"), {0, 1, 2})
@@ -216,8 +203,6 @@ class OperandSwapTests(unittest.TestCase):
         left = ["cmp eax, dword ptr [ebx + 0x12]", "ja 0x10", "ret "]
         right = ["cmp dword ptr [ebx + 0x21], eax", "jb 0x10", "ret "]
         codes = SequenceMatcher(None, left, right).get_opcodes()
-        with patch.object(fixes, "is_operand_swap", _upstream_is_operand_swap):
-            self.assertTrue(fixes.find_effective_match(codes, left, right))
         with patch.object(fixes, "is_operand_swap", is_operand_swap):
             self.assertFalse(fixes.find_effective_match(codes, left, right))
 
@@ -232,8 +217,6 @@ class OperandSwapTests(unittest.TestCase):
         left = ["mov eax, dword ptr [ebp + 0x12]", "cmp eax, ecx", "ja 0x10", "ret "]
         right = ["mov eax, ecx", "cmp eax, dword ptr [ebp + 0x21]", "jb 0x10", "ret "]
         codes = SequenceMatcher(None, left, right).get_opcodes()
-        with patch.object(fixes, "patch_mov_compare_jmp", _upstream_patch_mov_compare_jmp):
-            self.assertTrue(fixes.find_effective_match(codes, left, right))
         with patch.object(fixes, "patch_mov_compare_jmp", patch_mov_compare_jmp):
             self.assertFalse(fixes.find_effective_match(codes, left, right))
 
@@ -245,23 +228,19 @@ class ForwardRelocationTests(unittest.TestCase):
         codes = SequenceMatcherWithPins(original, rebuilt, []).get_opcodes()
         return original, rebuilt, codes
 
-    def test_upstream_counts_moved_instruction_as_its_own_dependency(self):
+    def test_moved_instruction_counts_dependency(self):
         original, rebuilt, codes = self.compare("mov eax, 1", ["xor ecx, ecx", "inc ecx"])
-        self.assertEqual(_upstream_relocate_instructions(codes, original, rebuilt), set())
         self.assertEqual(relocate_instructions(codes, original, rebuilt), {2})
 
     def test_effective_match_uses_the_corrected_dependency_check(self):
         original, rebuilt, codes = self.compare("mov eax, 1", ["xor ecx, ecx", "inc ecx"])
-        with patch.object(fixes, "relocate_instructions", _upstream_relocate_instructions):
-            self.assertFalse(fixes.find_effective_match(codes, original, rebuilt))
         with patch.object(fixes, "relocate_instructions", relocate_instructions):
             self.assertTrue(fixes.find_effective_match(codes, original, rebuilt))
 
     def test_backward_move_behavior_is_unchanged(self):
         rebuilt, original, _ = self.compare("mov eax, 1", ["xor ecx, ecx", "inc ecx"])
         codes = SequenceMatcherWithPins(original, rebuilt, []).get_opcodes()
-        self.assertEqual(relocate_instructions(codes, original, rebuilt),
-                         _upstream_relocate_instructions(codes, original, rebuilt))
+        self.assertEqual(relocate_instructions(codes, original, rebuilt), {0})
 
     def test_rejects_destination_reads_and_source_changes(self):
         for first, crossed in (
@@ -281,10 +260,9 @@ class ForwardRelocationTests(unittest.TestCase):
 
 
 class RegisterTokenTests(unittest.TestCase):
-    def test_upstream_erases_different_string_literals(self):
+    def test_different_string_literals_are_not_erased(self):
         original = ['push "eax" (STRING)']
         rebuilt = ['push "ebx" (STRING)']
-        self.assertEqual(_upstream_naive_register_replacement(original, rebuilt), {0})
         self.assertEqual(naive_register_replacement(original, rebuilt), set())
 
     def test_symbol_fragments_are_not_register_operands(self):
@@ -306,8 +284,6 @@ class RegisterTokenTests(unittest.TestCase):
         ):
             left, right = [original, "ret "], [rebuilt, "ret "]
             codes = SequenceMatcher(None, left, right).get_opcodes()
-            with patch.object(fixes, "naive_register_replacement", _upstream_naive_register_replacement):
-                self.assertTrue(fixes.find_effective_match(codes, left, right))
             with patch.object(fixes, "naive_register_replacement", naive_register_replacement):
                 self.assertFalse(fixes.find_effective_match(codes, left, right))
 

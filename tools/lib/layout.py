@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 import re
 import sys
@@ -238,22 +237,3 @@ def check_layout(
     if fail and selected:
         return 1
     return 0
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    parser.add_argument("paths", type=Path, nargs="*", default=[ROOT / "src"])
-    parser.add_argument("--json", action="store_true")
-    parser.add_argument("--fail", action="store_true")
-    args = parser.parse_args()
-    return check_layout(
-        paths=args.paths,
-        fail=args.fail,
-        as_json=args.json,
-    )
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

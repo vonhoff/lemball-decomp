@@ -74,8 +74,6 @@ def complete_original_extent(image, start, limit, decoder):
 
 
 _upstream_relocate_instructions = fixes.relocate_instructions
-_upstream_naive_register_replacement = fixes.naive_register_replacement
-_upstream_is_operand_swap = fixes.is_operand_swap
 _upstream_patch_mov_compare_jmp = fixes.patch_mov_compare_jmp
 _upstream_patch_compare_jmp = fixes.patch_compare_jmp
 

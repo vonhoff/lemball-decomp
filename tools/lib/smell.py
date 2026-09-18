@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 import re
 import sys
@@ -372,37 +371,3 @@ def check_smell(
         return 1
     sys.stdout.write("smell: ok\n")
     return 0
-
-
-def main(argv: list[str] | None = None) -> int:
-    if argv is None:
-        argv = sys.argv
-    parser = argparse.ArgumentParser(description="Decomp smell gate")
-    annot_group = parser.add_mutually_exclusive_group()
-    annot_group.add_argument(
-        "--annot",
-        action="store_true",
-        help="fail actionable unannotated defs; summarize empty/synthetic for review",
-    )
-    annot_group.add_argument(
-        "--annot-strict",
-        action="store_true",
-        help="fail every definition lacking a reccmp annotation",
-    )
-    parser.add_argument(
-        "--raw-casts",
-        action="store_true",
-        help="fail on every direct scalar/pointer dereference cast (audit mode)",
-    )
-    parser.add_argument("paths", nargs="*", help="files or dirs (default src)")
-    args = parser.parse_args(argv[1:])
-    return check_smell(
-        args.paths,
-        annot=args.annot,
-        annot_strict=args.annot_strict,
-        raw_cast_audit=args.raw_casts,
-    )
-
-
-if __name__ == "__main__":
-    sys.exit(main())
