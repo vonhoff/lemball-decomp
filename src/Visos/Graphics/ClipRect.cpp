@@ -2,6 +2,7 @@
 
 #include "Gdi.h"
 #include "VsGdi.h"
+class Line;
 
 // 68K 0x10117384 __ct__9CClipRectFv
 // FUNCTION: LEMBALL 0x00432a30

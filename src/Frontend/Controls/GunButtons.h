@@ -7,10 +7,8 @@
 class GWnd;
 class Gdi;
 class GraphicButton;
-class GunController;
 class ResAnim;
 class TrackerButton;
-struct Message;
 // SIZE 0x60
 // VTABLE: LEMBALL 0x00497cf8
 class GunButtons : public BaseQueueHandler {

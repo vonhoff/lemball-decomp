@@ -1,16 +1,14 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_NETWORKOPTIONSPROC_H
 #define LEMBALL_FRONTEND_PROCESSES_NETWORKOPTIONSPROC_H
 
-#include "../../Visos/Network/Connect.h"
 #include "../Base/BaseFrontendProcess.h" // complete type
+#include "Visos/Network/BaseCommonSocket.h"
 
-class BaseProcess;
-class BaseQueueHandler;
+class CConnect;
+
 class Game;
 class GameAcceptMessage;
 class GameRejectMessage;
-class NetworkOptionsDrawer;
-class ReadPacket;
 // SIZE 0x38
 // VTABLE: LEMBALL 0x004986d8 BaseQueueHandler
 // VTABLE: LEMBALL 0x004986e8 BaseProcess

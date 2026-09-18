@@ -4,9 +4,6 @@
 #include "Connect.h"            // complete type
 #include "FileOpenManagement.h" // complete type
 
-class NetworkAddress;
-class NetworkMessage;
-
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x0049ab68 native callback
 // VTABLE: LEMBALL 0x0049ab70 NetworkFile view

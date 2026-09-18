@@ -2,7 +2,6 @@
 
 #include "../../Control/Game/GameMain.h"
 #include "../../Control/Support/PreInit.h"
-#include "../Animation/BaseStat.h"
 #include "../Animation/StatManager.h"
 #include "../Graphics/BasePalManager.h"
 #include "../Graphics/Cursor.h"
@@ -26,15 +25,23 @@
 #include "VsFile.h"
 #include "VsOStream.h"
 #include "VsString.h"
-#include "VsTime.h"
 
 #include <ctype.h>
 
 extern "C" unsigned long __stdcall timeGetTime(void);
+#include "Visos/Animation/MogloadStat.h"
+#include "Visos/Foundation/BaseQueue.h"
+#include "Visos/Foundation/BaseQueueHandler.h"
+#include "Visos/Network/BaseNetwork.h"
+
 #include <memory.h>
 #include <new.h>
 #include <stdlib.h>
 #include <string.h>
+
+class BaseStat;
+class GrafPort;
+struct _Filet;
 
 #pragma intrinsic(memcpy, memset)
 

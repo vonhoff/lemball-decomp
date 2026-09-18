@@ -7,7 +7,6 @@
 #include "../../Visos/Animation/AnimsManager.h"
 #include "../../Visos/Animation/RepeatAnim.h"
 #include "../../Visos/Foundation/TextManager.h"
-#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/BasePalManager.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBitmap.h"
@@ -15,9 +14,22 @@
 #include "../../Visos/Resources/ResPalette.h"
 #include "../Base/BaseFrontendProcess.h"
 #include "../Controls/HiliteController.h"
+#include "Frontend/Base/BaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Drawers/PreviewDrawerPrims.h"
+#include "Frontend/Support/CoordPair.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BaseRemap.h"
+#include "Visos/Graphics/BitmapRes.h"
 
 #include <new.h>
 #include <string.h>
+
+class GWnd;
+class Remap;
 
 #pragma intrinsic(strcpy, strlen)
 

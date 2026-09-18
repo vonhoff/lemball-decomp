@@ -1,8 +1,6 @@
 #include "BaseFrontendProcess.h"
 
 #include "../../Control/Game/GameStatus.h"
-#include "../../Frontend/Drawers/NetworkOptionsDrawer.h"
-#include "../../Frontend/Processes/NetworkOptionsProc.h"
 #include "../../Frontend/Support/UserActionMessage.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Messaging/BasePacketHeader.h"
@@ -10,6 +8,7 @@
 #include "../../Visos/Network/BaseNetwork.h"
 #include "../../Visos/Network/Connect.h"
 #include "BaseFrontendDrawer.h"
+#include "Visos/Foundation/Message.h"
 
 #include <new.h>
 

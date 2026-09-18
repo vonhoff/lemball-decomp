@@ -2,8 +2,7 @@
 
 #include "../Network/TcpIpNetwork.h"
 #include "ReadPacket.h"
-
-#include <new.h>
+#include "Visos/Messaging/BasePacketBuff.h"
 
 ReadPacketBuff::ReadPacketBuff()
 {

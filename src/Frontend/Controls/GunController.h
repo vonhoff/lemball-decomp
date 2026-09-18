@@ -8,7 +8,6 @@
 #include "../../Visos/Graphics/SolidRect.h"          // complete type
 #include "GunControllerJunction.h"                   // complete type
 
-class BaseFrontendDrawer;
 class GWnd;
 class Gdi;
 class GunButtons;

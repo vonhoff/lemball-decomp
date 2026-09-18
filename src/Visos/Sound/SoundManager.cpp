@@ -452,6 +452,7 @@ void SoundManager::UseMusicCd(unsigned int p_enabled)
 }
 
 #include "../Foundation/LocalDebugOStream.h"
+#include "Visos/Foundation/VsOStream.h"
 
 // GLOBAL: LEMBALL 0x004a1ca8
 char g_szEffectsDriverPrefix[12] = "Effects : ";

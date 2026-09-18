@@ -5,7 +5,6 @@
 
 class Ai;
 class PaintGun;
-class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496888
 class PaintGunManager : public BaseObjectManager {

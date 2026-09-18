@@ -1,4 +1,5 @@
 #include "BaseQueueHandler.h"
+struct Message;
 
 // 68K 0x102048e0 __ct__17CBaseQueueHandlerFv
 // FUNCTION: LEMBALL 0x00462ea0

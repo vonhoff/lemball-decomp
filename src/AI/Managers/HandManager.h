@@ -7,7 +7,6 @@ class Ai;
 class AiCoord;
 class GameObject;
 class Hand;
-class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x004962e0
 class HandManager : public BaseObjectManager {

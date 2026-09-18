@@ -145,7 +145,15 @@ void Rocket::DoActivate()
 	}
 }
 
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 #include "ViewData.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x1011b220 GetViewData__7CRocketFR9CViewData
 // FUNCTION: LEMBALL 0x004273f0

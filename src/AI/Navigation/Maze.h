@@ -1,7 +1,6 @@
 #ifndef LEMBALL_AI_NAVIGATION_MAZE_H
 #define LEMBALL_AI_NAVIGATION_MAZE_H
 
-class GameObject;
 class Map;
 struct Solution;
 // SIZE 0x103c

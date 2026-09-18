@@ -5,7 +5,6 @@
 
 class ResBase;
 class Remap;
-class Gdi;
 
 // SIZE 0x18
 // VTABLE: LEMBALL 0x00499628

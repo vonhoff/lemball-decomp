@@ -1,6 +1,7 @@
 #include "MoverManager.h"
 
-#include "../Objects/ViewData.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Managers/BaseObjectManager.h"
 #include "Ai.h"
 #include "Mover.h"
 

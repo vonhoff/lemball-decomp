@@ -4,6 +4,13 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Base/Rect3.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 // 68K 0x1061ec2c __ct__7CSlinkyFv
 // FUNCTION: LEMBALL 0x0040b480

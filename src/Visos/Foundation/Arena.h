@@ -3,11 +3,9 @@
 
 #include "ArenaBase.h"
 #include "Critical.h"
-#include "MBlock.h"
 
 #include <stddef.h>
-
-class VsOStream;
+class MBlock;
 
 void InitSubSystems();
 

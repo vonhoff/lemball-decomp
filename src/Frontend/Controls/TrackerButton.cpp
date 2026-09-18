@@ -1,6 +1,12 @@
 #include "TrackerButton.h"
 
 #include "../Windows/TrackWindow.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Graphics/GraphicButton.h"
+#include "Visos/Graphics/HotAreaHandler.h"
+#include "Visos/Graphics/PvGWnd.h"
 
 #include <new.h>
 

@@ -8,8 +8,8 @@ BigBitmap::~BigBitmap()
 {
 }
 
-#include "CopyColourToBackBuff.h"
 #include "VsGdi.h"
+class CopyColourToBackBuff;
 
 // 68K 0x1010164c Draw__10CBigBitmapFP4CGDI
 // FUNCTION: LEMBALL 0x004398d0

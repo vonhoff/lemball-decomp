@@ -5,7 +5,6 @@
 
 class AiCoord;
 class TrapDoor;
-class ViewData;
 // SIZE 0x54
 // VTABLE: LEMBALL 0x004936c8
 class TrapDoorManager : public BaseObjectManager {

@@ -4,7 +4,6 @@
 #include "Primitive.h" // complete type
 
 class VsRect;
-class Gdi;
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496cb8

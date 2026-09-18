@@ -10,6 +10,17 @@
 #include "../Managers/BulletManager.h"
 #include "../Messages/GameMessageIds.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/Move3d.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Base/Pt3.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/VsDebug.h"
+#include "Visos/Messaging/NetworkMessage.h"
 
 // 68K 0x10604572 __ct__7CBulletFv
 // FUNCTION: LEMBALL 0x0041a510

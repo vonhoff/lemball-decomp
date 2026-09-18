@@ -2,6 +2,7 @@
 
 #include "../Foundation/VsOStream.h"
 #include "TargetDirectDrawError.h"
+#include "Visos/Target/IDirectDrawSurface.h"
 
 // FUNCTION: LEMBALL 0x00457310
 DDSURFACEDESC* TargetDirectDrawSurfaceContext::RefreshDescription()

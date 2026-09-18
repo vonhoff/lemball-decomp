@@ -20,6 +20,7 @@
 #include "../../Visos/Graphics/ScreenScroll.h"         // complete type
 #include "../../Visos/Graphics/SolidRect.h"            // complete type
 #include "../Pause/PauseWindow.h"
+#include "AI/Base/ObjectTypes.h"
 
 class Ai;
 class BaseQueue;
@@ -31,13 +32,9 @@ class Main2DDisplay;
 class Map;
 class PadToButton;
 class Panel;
-class PanelButton;
-class PanelLemming;
-class PanelPauseButton;
 class PlayerLemming;
 class TextManager;
 struct AnimSpecialEntry;
-struct Message;
 struct TargetObjectClipGrid;
 struct TargetSpriteGroundLookup;
 // SIZE 0x2428

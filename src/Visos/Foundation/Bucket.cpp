@@ -2,8 +2,7 @@
 
 #include "Arena.h"
 #include "SmallMemory.h"
-#include "VsDebug.h"
-#include "VsMem.h"
+#include "Visos/Foundation/Critical.h"
 #include "VsOStream.h"
 
 #include <string.h>

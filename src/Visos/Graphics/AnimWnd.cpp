@@ -10,6 +10,9 @@
 #include "GWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include "Visos/Foundation/String.h"
+#include "Visos/Resources/ResString.h"
+
 #include <windows.h>
 
 extern "C" void* __cdecl MCIWndCreateA(void* p_hwndParent, void* p_instance, unsigned int p_style, const char* p_file);

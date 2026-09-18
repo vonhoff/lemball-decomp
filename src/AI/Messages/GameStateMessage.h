@@ -3,7 +3,6 @@
 
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
-class Ai;
 enum eGameStates {
 	GAME_STATE_0 = 0,
 	GAME_STATE_1 = 1,

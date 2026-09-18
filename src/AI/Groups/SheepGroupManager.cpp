@@ -4,6 +4,8 @@
 #include "../Managers/ObjectManager.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/Sheep.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Groups/GenericGroupManager.h"
 #include "FormationManager.h"
 #include "GenericGroup.h"
 #include "SheepGroup.h"

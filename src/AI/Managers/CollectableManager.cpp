@@ -5,7 +5,9 @@
 #include "../Objects/Collectable.h"
 #include "../Objects/Flag.h"
 #include "../Objects/TimeBonus.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x10605528 __ct__19CCollectableManagerFP3CAIi
 // FUNCTION: LEMBALL 0x004223c0

@@ -8,12 +8,10 @@
 #include "../../Visos/Graphics/SolidRect.h"          // complete type
 #include "HiliteControllerJunction.h"                // complete type
 
-class BaseFrontendDrawer;
 class GWnd;
 class Gdi;
 class HiliteButtons;
 class HiliteWindow;
-class NetworkOptionsDrawer;
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x00498240 BaseQueueHandler
 // VTABLE: LEMBALL 0x0049823c AnimsManager

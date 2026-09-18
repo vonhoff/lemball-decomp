@@ -12,7 +12,11 @@
 #include "../Objects/Key.h"
 #include "../Objects/Switch.h"
 #include "../Objects/Tower.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/BaseGlobalObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Managers/BaseObjectManager.h"
+#include "AI/Objects/SwitchEntry.h"
 
 // 68K 0x1061a098 __ct__14CObjectManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0041af60

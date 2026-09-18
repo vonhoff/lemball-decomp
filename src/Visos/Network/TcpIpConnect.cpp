@@ -3,9 +3,11 @@
 #include "../Foundation/VsOStream.h"
 #include "TcpIpNetwork.h"
 #include "TcpIpNetworkAddress.h"
+#include "Visos/Network/Connect.h"
+#include "Visos/Network/NetworkAddress.h"
+#include "Visos/Network/TcpIpRwSocket.h"
 
 #include <memory.h>
-#include <new.h>
 #include <stdlib.h>
 #include <string.h>
 

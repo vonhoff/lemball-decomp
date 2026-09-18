@@ -5,6 +5,9 @@
 #include "FileBroadcast.h"
 #include "FileConnect.h"
 #include "FileNetworkAddress.h"
+#include "Visos/Foundation/BaseQueueHandler.h"
+#include "Visos/Network/BaseNetwork.h"
+#include "Visos/Target/TargetNetworkWindow.h"
 
 #include <new.h>
 

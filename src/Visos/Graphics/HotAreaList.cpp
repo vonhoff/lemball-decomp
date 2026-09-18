@@ -3,8 +3,11 @@
 #include "../Foundation/BaseQueue.h"
 #include "../Foundation/VsRect.h"
 #include "HotAreaElement.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Graphics/HotAreaHandler.h"
 
-#include <new.h>
+class BaseQueueHandler;
 
 // GLOBAL: LEMBALL 0x004a1ff8
 VsPoint* g_pHotAreaCursor = 0;

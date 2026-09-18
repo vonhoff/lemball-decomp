@@ -9,8 +9,6 @@
 class Ai;
 class Door;
 class GameObject;
-class Switch;
-class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00493840
 class DoorManager : public BaseObjectManager {

@@ -4,7 +4,16 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/BaseGlobalObject.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Objects/SwitchEntry.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 #include "ViewData.h"
+#include "Views/Sound/SoundEffects.h"
 
 // GLOBAL: LEMBALL 0x0049e1b8
 unsigned short g_wNextSwitchIndex;

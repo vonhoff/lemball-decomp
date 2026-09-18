@@ -1,5 +1,7 @@
 #include "MramBlock.h"
 
+#include "Visos/Foundation/MBlock.h"
+
 // 68K 0x10215ab2 __ct__10CMRAMBlockFP6CArenaP7CMBlockPcUl
 // FUNCTION: LEMBALL 0x0045a640
 MramBlock::MramBlock(Arena* p_arena, MBlock* p_previous, char* p_description, unsigned long p_totalSize)

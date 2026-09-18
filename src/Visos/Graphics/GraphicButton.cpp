@@ -1,12 +1,20 @@
 #include "GraphicButton.h"
 
 #include "../Animation/Anim.h"
-#include "../Foundation/ChangeList.h"
 #include "../Resources/ResAnim.h"
 #include "Gdi.h"
 #include "HotAreaList.h"
-#include "PushActive.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/DepressedButton.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Graphics/HotAreaHandler.h"
+#include "Visos/Graphics/Primitive.h"
+#include "Visos/Graphics/PvGWnd.h"
+#include "Visos/Resources/ResZrle.h"
 #include "VsGdi.h"
+
+class Remap;
 
 // GLOBAL: LEMBALL 0x0049f02c
 char g_szButton[] = "Button";

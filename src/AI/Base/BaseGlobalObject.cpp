@@ -2,6 +2,9 @@
 
 #include "../../Visos/Network/Connect.h"
 #include "../Messages/ObjectPosMess.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
 
 // 68K 0x10618974 OldRestart__17CBaseGlobalObjectFv
 // FUNCTION: LEMBALL 0x0041c670

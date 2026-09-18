@@ -12,7 +12,6 @@
 #include "../../Frontend/Drawers/PasswordDrawer.h"
 #include "../../Frontend/Drawers/PreviewDrawer.h"
 #include "../../Frontend/Drawers/SuccFailDrawer.h"
-#include "../../Frontend/Resources/CdLoadAnim.h"
 #include "../../Frontend/Support/AboutDialog.h"
 #include "../../Frontend/Support/TargetAboutScreen.h"
 #include "../../Platform/Windows/Entry.h"
@@ -35,7 +34,18 @@
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
+#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Resources/CdLoadAnimDraw.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BaseCursor.h"
+#include "Visos/Graphics/Drawer.h"
+
 #include <windows.h>
+
+class BaseQueueHandler;
+class Map;
 
 #pragma intrinsic(strcpy, strcat)
 

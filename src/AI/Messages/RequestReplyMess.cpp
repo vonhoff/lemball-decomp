@@ -1,6 +1,9 @@
 #include "RequestReplyMess.h"
 
 #include "../Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Messages/GameMessageIds.h"
+#include "AI/Messages/GameObjectMess.h"
 
 // 68K 0x1060b69a __ct__17CRequestReplyMessFv
 // FUNCTION: LEMBALL 0x00416ac0

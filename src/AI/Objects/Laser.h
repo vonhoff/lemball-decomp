@@ -2,10 +2,10 @@
 #define LEMBALL_AI_OBJECTS_LASER_H
 
 #include "../Base/GlobalGameObject.h" // complete type
+#include "AI/Base/ObjectTypes.h"
 
 class AiCoord;
 class GameObject;
-class LaserManager;
 class ViewData;
 // SIZE 0x148
 // VTABLE: LEMBALL 0x00496310

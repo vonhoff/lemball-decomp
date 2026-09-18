@@ -2,8 +2,10 @@
 
 #include "../../Control/Game/Game.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/ObjectActions.h"
 #include "GameObject.h"
 #include "StateEntry.h"
+#include "Views/Sound/SoundEffects.h"
 
 // GLOBAL: LEMBALL 0x0049dcc8
 StateEntry* g_pUserLemmingStateTables[24];

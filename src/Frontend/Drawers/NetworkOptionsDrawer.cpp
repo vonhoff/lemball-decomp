@@ -18,9 +18,20 @@
 #include "../Controls/HiliteController.h"
 #include "../Processes/NetworkOptionsProc.h"
 #include "../Support/EditString.h"
+#include "Frontend/Base/BaseFrontendDrawer.h"
+#include "Frontend/Base/BaseFrontendProcess.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Support/EntryHandler.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BaseRemap.h"
 
-#include <new.h>
 #include <string.h>
+
+class Remap;
 
 #pragma intrinsic(strcpy)
 

@@ -1,6 +1,7 @@
 #include "ResAnim.h"
 
 #include "MogRes.h"
+#include "Visos/Resources/ResZrle.h"
 
 // 68K 0x1020374e Load__8CResANIMFUl
 // FUNCTION: LEMBALL 0x0045d610

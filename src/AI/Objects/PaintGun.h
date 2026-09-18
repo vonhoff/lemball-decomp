@@ -4,7 +4,6 @@
 #include "../Base/GlobalGameObject.h" // complete type
 
 class AiCoord;
-class PaintGunManager;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x00496740
 class PaintGun : public GlobalGameObject {

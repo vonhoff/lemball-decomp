@@ -2,7 +2,10 @@
 
 #include "../Navigation/Ai.h"
 #include "../Objects/Rocket.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x1061dcfe __ct__14CRocketManagerFP3CAIi
 // FUNCTION: LEMBALL 0x00426ac0

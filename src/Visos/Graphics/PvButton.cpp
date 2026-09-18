@@ -1,16 +1,20 @@
 #include "PvButton.h"
 
 #include "../Foundation/BaseQueue.h"
-#include "../Foundation/VsTime.h"
-#include "ClipRect.h"
 #include "DrawingMark.h"
 #include "Gdi.h"
 #include "HotAreaList.h"
 #include "SolidRect.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Graphics/HotAreaHandler.h"
+#include "Visos/Graphics/Primitive.h"
+#include "Visos/Graphics/PvGWnd.h"
+#include "Visos/Graphics/PvWnd.h"
 #include "VsGdi.h"
 #include "Wnd.h"
-
-#include <new.h>
 
 extern int g_nGunButtonsRedrawPending;
 extern "C" unsigned long __stdcall timeGetTime(void);

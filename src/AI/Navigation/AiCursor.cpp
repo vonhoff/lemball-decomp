@@ -2,6 +2,7 @@
 
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "Ai.h"
+#include "Visos/Foundation/Message.h"
 
 // 68K 0x10606068 __ct__9CAICursorFP3CAIii
 // FUNCTION: LEMBALL 0x00414da0

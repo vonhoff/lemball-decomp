@@ -1,7 +1,9 @@
 #include "ObjectPosMess.h"
 
-#include "../Base/C3DVector.h"
 #include "../Base/GlobalGameObject.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Messages/GameMessageIds.h"
+#include "AI/Messages/GameObjectMess.h"
 
 // 68K 0x1060b864 __ct__14CObjectPosMessFv
 // FUNCTION: LEMBALL 0x00416bb0

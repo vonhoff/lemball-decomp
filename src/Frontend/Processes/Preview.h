@@ -3,8 +3,6 @@
 
 #include "../Base/BaseFrontendProcess.h" // complete type
 
-class BaseProcess;
-class BaseQueueHandler;
 class Game;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497c60 BaseQueueHandler

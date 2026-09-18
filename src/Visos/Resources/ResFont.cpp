@@ -134,6 +134,11 @@ ResZrle* ResFont::AsciItoZrle(unsigned int p_ascii)
 	return m_fontTable->GetZrle(p_ascii);
 }
 
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Resources/ResBaseList.h"
+#include "Visos/Resources/ResInt.h"
+#include "Visos/Resources/ResZrle.h"
+
 #include <string.h>
 
 // 68K 0x10203ef2 GetSize__8CResFONTCFPCcUl

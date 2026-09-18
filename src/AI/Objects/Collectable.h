@@ -2,8 +2,8 @@
 #define LEMBALL_AI_OBJECTS_COLLECTABLE_H
 
 #include "../Base/GlobalGameObject.h" // complete type
+#include "AI/Base/ObjectTypes.h"
 
-class CollectableManager;
 // SIZE 0x13c
 // VTABLE: LEMBALL 0x004959c0
 class Collectable : public GlobalGameObject {

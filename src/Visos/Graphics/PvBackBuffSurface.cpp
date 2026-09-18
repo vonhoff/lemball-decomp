@@ -1,11 +1,10 @@
 #include "PvBackBuffSurface.h"
 
-#include "../Foundation/VsMem.h"
 #include "../Foundation/VsSize.h"
 #include "GdiDevice.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/PvGdiBitmap.h"
 #include "VsGdi.h"
-
-#include <new.h>
 
 // 68K 0x10215ebc __ct__18CPVBackBuffSurfaceFv
 // FUNCTION: LEMBALL 0x00466440

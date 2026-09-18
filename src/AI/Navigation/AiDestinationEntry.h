@@ -3,7 +3,6 @@
 
 #include "../Base/AiCoord.h" // complete type
 
-class GameObject;
 enum eDestinationType {
 	DESTINATION_NONE = 0,
 	DESTINATION_COORD = 1,

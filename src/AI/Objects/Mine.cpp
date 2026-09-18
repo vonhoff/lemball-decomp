@@ -4,6 +4,13 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
 #include "../Managers/MineManager.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 // GLOBAL: LEMBALL 0x004a7840
 short g_mineTerrainOffsets[4];

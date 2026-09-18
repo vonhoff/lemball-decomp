@@ -4,6 +4,13 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/BaseGlobalObject.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x1011ad98 Usage__8CBalloonFv
 // FUNCTION: LEMBALL 0x0041c630

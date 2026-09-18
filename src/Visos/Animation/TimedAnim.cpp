@@ -1,7 +1,5 @@
 #include "TimedAnim.h"
 
-#include "../Foundation/VsTime.h"
-
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x10115d96 SetAnimTime__10CTimedAnimFUl

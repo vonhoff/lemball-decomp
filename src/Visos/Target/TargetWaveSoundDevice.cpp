@@ -2,6 +2,7 @@
 
 #include "../Foundation/VsOStream.h"
 #include "TargetWaveEffect.h"
+#include "Visos/Sound/BaseSoundDevice.h"
 
 #include <new.h>
 

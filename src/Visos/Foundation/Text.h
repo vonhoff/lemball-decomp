@@ -5,7 +5,6 @@
 #include "../Graphics/Zrle.h" // complete type
 #include "String.h"           // complete type
 
-class Gdi;
 class Remap;
 class ResFont;
 class ResZrle;

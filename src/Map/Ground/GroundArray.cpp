@@ -1,5 +1,6 @@
 #include "GroundArray.h"
 
+#include "AI/Base/ObjectTypes.h"
 #include "Ground.h"
 
 // FUNCTION: LEMBALL 0x0040eb70

@@ -3,7 +3,11 @@
 #include "../../Views/Display/Main2DDisplay.h"
 #include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Foundation/String.h"
-#include "../../Visos/Graphics/PvGWnd.h"
+#include "Frontend/Base/BaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Windows/IntroAnimAnimWindow.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsRect.h"
 
 // GLOBAL: LEMBALL 0x0049f19c
 char g_szPaintBallIntroSequence[] = "PaintBall Intro Sequence";

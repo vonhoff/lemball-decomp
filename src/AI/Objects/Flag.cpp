@@ -10,6 +10,13 @@ void Flag::SetSfx()
 }
 
 #include "../../Map/Base/Map.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Objects/Collectable.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x10605e84 Process__5CFlagFv
 // FUNCTION: LEMBALL 0x00422b40

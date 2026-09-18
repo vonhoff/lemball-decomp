@@ -4,6 +4,7 @@
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Views/Sound/SoundView.h"
 #include "../../Visos/Resources/Manifest.h"
+#include "Visos/Graphics/AnimWnd.h"
 
 // FUNCTION: LEMBALL 0x00450c40
 void SuccFailAnimWindow::Initialise(SuccFailDrawer* p_owner, Main2DDisplay* p_display, int p_variant)

@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_FOUNDATION_VSOSTREAM_H
 
 #include "VsIOs.h" // complete type
+class VsStreambuf;
 
 class String;
 

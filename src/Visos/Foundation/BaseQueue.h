@@ -3,11 +3,9 @@
 
 #include "ArenaBase.h"
 #include "Critical.h"
-#include "Message.h"
+struct Message;
 
 class BaseQueueHandler;
-class TimedQueue;
-class VsOStream;
 struct QueueHandlerNode;
 
 // SIZE 0x58

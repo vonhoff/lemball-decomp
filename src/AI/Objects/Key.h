@@ -3,8 +3,8 @@
 
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
+#include "AI/Base/ObjectTypes.h"
 
-class GameObject;
 // SIZE 0x150
 // VTABLE: LEMBALL 0x004943b0
 class Key : public BaseGlobalObject {

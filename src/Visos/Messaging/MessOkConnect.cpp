@@ -1,5 +1,7 @@
 #include "MessOkConnect.h"
 
+#include "Visos/Messaging/BroadcastMessage.h"
+
 #include <string.h>
 
 #pragma intrinsic(strlen)

@@ -10,6 +10,9 @@
 #include "../Messages/RequestActionMess.h"
 #include "../Messages/RequestCancelMess.h"
 #include "../Messages/RequestReplyMess.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Messages/GameObjectMess.h"
+#include "Visos/Messaging/NetworkMessage.h"
 
 GlobalGameObject::GlobalGameObject()
 {

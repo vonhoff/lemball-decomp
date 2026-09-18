@@ -1,5 +1,7 @@
 #include "AiDestinationEntry.h"
 
+#include "AI/Base/AiCoord.h"
+
 // FUNCTION: LEMBALL 0x00414cb0
 AiCoord AiDestinationEntry::GetCoordinate()
 {

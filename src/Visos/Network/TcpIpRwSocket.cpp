@@ -1,5 +1,9 @@
 #include "TcpIpRwSocket.h"
 
+#include "Visos/Network/RwSocket.h"
+#include "Visos/Network/TcpIpReadSocket.h"
+#include "Visos/Network/TcpIpWriteSocket.h"
+
 // FUNCTION: LEMBALL 0x00470220
 int TcpIpRwSocket::Process(unsigned int p_message, unsigned int p_wParam, long p_lParam)
 {

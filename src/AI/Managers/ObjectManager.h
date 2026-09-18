@@ -2,13 +2,12 @@
 #define LEMBALL_AI_MANAGERS_OBJECTMANAGER_H
 
 #include "../Base/GlobalGameObject.h" // complete type
-#include "BaseObjectManager.h"        // complete type
+#include "AI/Base/ObjectTypes.h"
+#include "BaseObjectManager.h" // complete type
 
 class AiCoord;
-class NetworkMessage;
 class Ai;
 class Switch;
-class ViewData;
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00494238

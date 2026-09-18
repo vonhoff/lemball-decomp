@@ -2,6 +2,7 @@
 
 #include "../Animation/BaseStat.h"
 #include "MBlock.h"
+#include "Visos/Foundation/Critical.h"
 #include "VsOStream.h"
 
 #include <string.h>

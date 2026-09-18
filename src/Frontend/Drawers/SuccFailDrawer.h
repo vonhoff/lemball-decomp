@@ -5,16 +5,13 @@
 #include "../Base/BaseFrontendDrawer.h"
 #include "../Support/CoordPair.h"          // complete type
 #include "../Windows/SuccFailAnimWindow.h" // complete type
-#include "SuccFailDrawerPrims.h"           // complete type
+#include "Frontend/Support/UserActionMessage.h"
+#include "SuccFailDrawerPrims.h" // complete type
 
-class AnimsManager;
-class BaseQueueHandler;
-class Drawer;
 class Gdi;
 class Main2DDisplay;
 class ResBitmap;
 class VsRect;
-struct Message;
 // SIZE 0x68
 struct SuccFailLayout {
 	CoordPair m_returnButton;          // 0x00

@@ -2,8 +2,6 @@
 
 #include "BasePacket.h"
 
-#include <new.h>
-
 BasePacketBuff::BasePacketBuff()
 {
 }

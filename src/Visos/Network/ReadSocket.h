@@ -3,6 +3,7 @@
 
 #include "BaseCommonSocket.h" // complete type
 #include "BaseSocket.h"       // complete type
+class NetworkMessage;
 
 class BasePacket;
 class ReadCBuff;

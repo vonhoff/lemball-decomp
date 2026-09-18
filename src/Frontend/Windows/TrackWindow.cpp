@@ -5,6 +5,14 @@
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/HotAreaList.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/ClipRect.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Graphics/HotAreaHandler.h"
+#include "Visos/Graphics/Line.h"
+#include "Visos/Graphics/PvGWnd.h"
 
 // 68K 0x1080e1a2 __ct__12CTrackWindowFRC7CVSRectiP7CPVGWnd
 // FUNCTION: LEMBALL 0x0044e790

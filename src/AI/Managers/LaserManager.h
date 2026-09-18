@@ -8,7 +8,6 @@ class Ai;
 class AiCoord;
 class GameObject;
 class Laser;
-class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496458
 class LaserManager : public BaseObjectManager {

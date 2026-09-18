@@ -1,6 +1,9 @@
 #include "Map.h"
 
 #include "../../AI/Navigation/Ai.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 // GLOBAL: LEMBALL 0x0049e4e0
 Map* g_pActiveMap = 0;

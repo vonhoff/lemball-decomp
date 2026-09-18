@@ -106,6 +106,11 @@ void LaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectTy
 }
 
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x10614500 LoadLevel__13CLaserManagerFPUciUc
 // FUNCTION: LEMBALL 0x00429950

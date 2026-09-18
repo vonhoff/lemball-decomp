@@ -7,7 +7,6 @@ class BaseObjectManager;
 class GameStateMessage;
 class ReadPacket;
 class ViewData;
-struct Message;
 // SIZE 0x24
 // VTABLE: LEMBALL 0x004932e8
 class GodManager : public BaseQueueHandler {

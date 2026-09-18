@@ -6,15 +6,14 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/MogRes.h"
 #include "../../Visos/Resources/ResAnim.h"
-#include "../../Visos/Resources/ResBase.h"
 #include "../../Visos/Resources/ResBitmap.h"
 #include "../../Visos/Resources/ResFont.h"
 #include "../../Visos/Resources/ResMovie.h"
 #include "../../Visos/Resources/ResPalette.h"
 #include "../../Visos/Resources/ResString.h"
 #include "CdLoadAnim.h"
-
-#include <new.h>
+class CdLoadAnimDraw;
+class LoadUpdate;
 
 // 68K 0x1080d5a8 __ct__23CFrontendResourceLoaderFP14CMain2DDisplayi
 // FUNCTION: LEMBALL 0x004479e0

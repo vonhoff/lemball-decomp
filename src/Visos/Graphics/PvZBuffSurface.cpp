@@ -1,5 +1,9 @@
 #include "PvZBuffSurface.h"
 
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/PvGdiBitmap.h"
+
 // 68K 0x1021623a __ct__15CPVZBuffSurfaceFv
 // FUNCTION: LEMBALL 0x00466670
 PvZBuffSurface::PvZBuffSurface()

@@ -6,9 +6,6 @@
 #include "../Base/GlobalGameObject.h"             // complete type
 #include "../Base/Move3d.h"                       // complete type
 
-class BulletManager;
-class Enemy;
-class PlayerLemming;
 enum eBulletType {
 	BULLET_TYPE_DEFAULT = 0
 };

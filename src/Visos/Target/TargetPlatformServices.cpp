@@ -4,9 +4,12 @@
 #include "../Foundation/Message.h"
 #include "../Foundation/VsFile.h"
 #include "../Foundation/VsIOs.h"
+#include "Visos/Target/TargetInputTranslationEntry.h"
 
 #include <new.h>
 #include <string.h>
+
+struct _Filet;
 
 #pragma intrinsic(strlen, strcpy, strcat)
 

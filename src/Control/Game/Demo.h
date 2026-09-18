@@ -4,13 +4,8 @@
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../../Visos/Graphics/BaseCursor.h"
 
-class Ai;
-class C2D;
-class Game;
-class PlayerLemming;
 class PvWnd;
 class ResBin;
-struct Message;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00493100
 class Demo : public BaseQueueHandler {

@@ -7,7 +7,6 @@
 #include "../Sound/LoadUpdate.h"                // complete type
 
 class Ai;
-class C2D;
 class CdLoadAnim;
 class Frames;
 class Gdi;

@@ -4,8 +4,6 @@
 #include "../Base/BaseGlobalObject.h" // complete type
 
 class AiCoord;
-class TrapDoorManager;
-class ViewData;
 // SIZE 0x150
 // VTABLE: LEMBALL 0x00493438
 class TrapDoor : public BaseGlobalObject {

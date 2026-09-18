@@ -4,6 +4,12 @@
 #include "TargetGdiDrawingContext.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Target/TargetDibContext.h"
+#include "Visos/Target/TargetGraphicsDriver.h"
+
 #include <conio.h>
 #include <windows.h>
 

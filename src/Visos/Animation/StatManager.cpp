@@ -1,6 +1,5 @@
 #include "StatManager.h"
 
-#include "../Foundation/VsMem.h"
 #include "../Foundation/VsOStream.h"
 #include "BaseStat.h"
 

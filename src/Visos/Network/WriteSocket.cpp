@@ -1,6 +1,5 @@
 #include "WriteSocket.h"
 
-#include "../Foundation/VsTime.h"
 #include "../Messaging/AckMessage.h"
 #include "../Messaging/PulseMessage.h"
 #include "../Messaging/WriteCBuff.h"
@@ -9,6 +8,9 @@
 #include "BaseNetwork.h"
 #include "NetworkAddress.h"
 #include "TcpIpNetwork.h"
+#include "Visos/Messaging/BasePacketBuff.h"
+#include "Visos/Messaging/BasePacketHeader.h"
+#include "Visos/Messaging/NetworkMessage.h"
 
 #include <new.h>
 

@@ -2,6 +2,8 @@
 
 #include "../../Map/Base/Map.h"
 #include "../Base/Solution.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 #include <string.h>
 

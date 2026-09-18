@@ -2,7 +2,6 @@
 
 #include "BasePacketHeader.h"
 
-#include <new.h>
 #include <string.h>
 
 // 68K 0x1020d71a __ct__11CReadPacketFUs

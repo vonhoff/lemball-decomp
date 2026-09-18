@@ -15,10 +15,8 @@
 class BaseRemap;
 class PvGWnd;
 class ReceiveWindowState;
-class Remap;
 class ResAnim;
 class ResFont;
-struct Message;
 enum ePauseWindowMessages {
 	PAUSE_MSG_PAUSED = 0,
 	PAUSE_MSG_PLEASE_WAIT = 1,

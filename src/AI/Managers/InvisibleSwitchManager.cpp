@@ -1,6 +1,7 @@
 #include "InvisibleSwitchManager.h"
 
 #include "../Objects/InvisibleSwitch.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x10613140 __ct__23CInvisibleSwitchManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0040a210

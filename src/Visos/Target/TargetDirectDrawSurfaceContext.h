@@ -1,10 +1,11 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDIRECTDRAWSURFACECONTEXT_H
 #define LEMBALL_VISOS_TARGET_TARGETDIRECTDRAWSURFACECONTEXT_H
 
-#include "IDirectDrawSurface.h"
 #include "TargetDibContext.h"
+#include "Visos/Target/DDSURFACEDESC.h"
 
-class TargetDirectDrawDriver;
+struct IDirectDrawSurface;
+
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x00498828
 class TargetDirectDrawSurfaceContext : public TargetDibContext {

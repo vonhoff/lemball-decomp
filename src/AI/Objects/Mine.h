@@ -3,9 +3,9 @@
 
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/GlobalGameObject.h" // complete type
+#include "AI/Base/ObjectActions.h"
 
 class GameObject;
-class MineManager;
 // SIZE 0x150
 // VTABLE: LEMBALL 0x00495be8
 class Mine : public GlobalGameObject {

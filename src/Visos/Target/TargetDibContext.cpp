@@ -1,17 +1,5 @@
 #include "TargetDibContext.h"
 
-#include "../Foundation/VsInit.h"
-#include "../Foundation/VsOStream.h"
-#include "../Graphics/GWnd.h"
-#include "../Graphics/Gdi.h"
-#include "../Graphics/PvGdiBitmap.h"
-#include "../Graphics/PvWnd.h"
-#include "../Graphics/VsGdi.h"
-#include "TargetGDIDriver.h"
-#include "TargetGraphicsSystemState.h"
-#include "TargetWinGDrawCodecState.h"
-
-#include <new.h>
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN

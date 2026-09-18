@@ -3,9 +3,6 @@
 
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
-class NetworkManager;
-class NetworkOptionsDrawer;
-class SuccFailDrawer;
 // SIZE 0x50
 // VTABLE: LEMBALL 0x00498578
 class NetworkGameMessage : public NetworkMessage {

@@ -2,6 +2,8 @@
 #define LEMBALL_VISOS_GRAPHICS_TOGGLEBUTTON_H
 
 #include "GraphicButton.h" // complete type
+class PvGWnd;
+struct VsPoint;
 
 // SIZE 0x134
 // VTABLE: LEMBALL 0x004973e0 GWnd

@@ -6,8 +6,6 @@
 
 class AiCoord;
 class GameObject;
-class MoverManager;
-class Switch;
 // SIZE 0x1a0
 // VTABLE: LEMBALL 0x00496a30
 class Mover : public GlobalGameObject {

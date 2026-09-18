@@ -7,16 +7,25 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/GraphicButton.h"
-#include "../../Visos/Graphics/HotAreaHandler.h"
 #include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Windows/SpriteWindow.h"
 #include "../Windows/TrackWindow.h"
+#include "Frontend/Controls/GunControllerJunction.h"
 #include "GunButtons.h"
 #include "TrackerButton.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Animation/AnimsManager.h"
+#include "Visos/Animation/StaticAnim.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Graphics/SolidRect.h"
 
-#include <new.h>
 #include <stdlib.h>
+
+class Frames;
 
 int Sgn(int p_value);
 

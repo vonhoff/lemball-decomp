@@ -2,17 +2,11 @@
 #define LEMBALL_NETWORK_GAME_NETWORKMANAGER_H
 
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Network/Connect.h"
+class CConnect;
 
-class Ai;
-class BaseFrontendDrawer;
-class Broadcast;
 class GameRejectMessage;
 class NetworkGameMessage;
 class NetworkGameStage;
-class NetworkOptionsDrawer;
-class NetworkOptionsProc;
-struct Message;
 // SIZE 0x6c
 // VTABLE: LEMBALL 0x004985f8
 class NetworkManager : public BaseQueueHandler {

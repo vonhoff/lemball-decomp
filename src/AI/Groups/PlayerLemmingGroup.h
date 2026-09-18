@@ -8,7 +8,6 @@ class FormationManager;
 class GameObject;
 class ObjectManager;
 class PlayerLemming;
-class ViewData;
 // SIZE 0x174
 // VTABLE: LEMBALL 0x00493a60
 class PlayerLemmingGroup : public GenericGroup {

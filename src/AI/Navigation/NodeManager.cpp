@@ -1,8 +1,7 @@
 #include "NodeManager.h"
 
+#include "AI/Base/Pt3.h"
 #include "Node.h"
-
-#include <new.h>
 
 // 68K 0x106184ca __ct__12CNodeManagerFi
 // FUNCTION: LEMBALL 0x00421180

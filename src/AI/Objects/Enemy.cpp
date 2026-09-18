@@ -6,7 +6,18 @@
 #include "../Base/StateMachine.h"
 #include "../Base/WaypointInformation.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/C3DVector.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Base/Pt3.h"
 #include "Bullet.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
 
 struct EnemyFacingOffset {
 	int m_dx;

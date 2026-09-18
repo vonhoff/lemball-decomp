@@ -4,17 +4,20 @@
 #include "../../Control/Support/PreInit.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../Foundation/BaseQueue.h"
-#include "../Foundation/BaseQueueHandler.h"
 #include "../Foundation/VsDebug.h"
 #include "../Foundation/VsOStream.h"
 #include "../Foundation/VsTime.h"
 #include "../Messaging/PackParam.h"
-#include "../Network/BaseNetwork.h"
-#include "../Resources/MogRes.h"
 #include "../Target/TargetGraphicsDriver.h"
 #include "../Target/TargetGraphicsSystemState.h"
 #include "../Target/TargetPlatformServices.h"
 #include "Cursor.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/MenuList.h"
+#include "Visos/Graphics/PvWnd.h"
 
 #include <conio.h>
 #include <string.h>

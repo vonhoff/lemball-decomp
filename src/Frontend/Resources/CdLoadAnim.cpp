@@ -10,15 +10,21 @@
 #include "../../Visos/Foundation/VsRect.h"
 #include "../../Visos/Foundation/VsTrig.h"
 #include "../../Visos/Graphics/Cursor.h"
-#include "../../Visos/Graphics/GWnd.h"
 #include "../../Visos/Graphics/Gdi.h"
-#include "../../Visos/Graphics/PvGWnd.h"
 #include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBitmap.h"
 #include "../../Visos/Resources/ResPalette.h"
+#include "Visos/Animation/AnimsManager.h"
+#include "Visos/Animation/RepeatAnim.h"
+#include "Visos/Graphics/Bitmap.h"
+#include "Visos/Graphics/BitmapRes.h"
+#include "Visos/Graphics/BitmapResBase.h"
+#include "Visos/Graphics/ClipRect.h"
+#include "Visos/Graphics/DrawingMark.h"
+#include "Visos/Graphics/Line.h"
 
-#include <new.h>
+class Frames;
 
 // 68K 0x10801d2c __ct__11CCDLoadAnimFP4CGDIP14CMain2DDisplay
 // FUNCTION: LEMBALL 0x0044aa80

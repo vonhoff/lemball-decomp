@@ -2,7 +2,9 @@
 
 #include "../Navigation/Ai.h"
 #include "../Objects/Trampoline.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x10620bf6 __ct__18CTrampolineManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0042af60

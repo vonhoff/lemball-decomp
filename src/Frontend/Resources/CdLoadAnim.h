@@ -12,7 +12,6 @@
 #include "CdLoadAnimDraw.h"
 #include "CdLoadAnimProgress.h"
 
-class FrontendResourceLoader;
 class Gdi;
 class Main2DDisplay;
 class ResBitmap;

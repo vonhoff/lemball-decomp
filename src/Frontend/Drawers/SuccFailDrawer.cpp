@@ -21,8 +21,22 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "../../Visos/Graphics/BitmapRes.h"
 #include "../../Visos/Network/Connect.h"
 #include "../../Visos/Resources/ResFont.h"
+#include "Frontend/Base/BaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Drawers/SuccFailDrawerPrims.h"
+#include "Frontend/Support/CoordPair.h"
+#include "Frontend/Windows/SuccFailAnimWindow.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/PvGWnd.h"
 
 #include <string.h>
+
+class GWnd;
 
 #pragma intrinsic(strcpy, strlen)
 

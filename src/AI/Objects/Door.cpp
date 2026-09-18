@@ -4,6 +4,13 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 extern unsigned short g_wNextDoorIndex;
 

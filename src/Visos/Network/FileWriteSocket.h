@@ -5,7 +5,6 @@
 #include "FileCommonSocket.h" // complete type
 #include "WriteSocket.h"      // complete type
 
-class NetworkAddress;
 class NetworkMessage;
 
 // SIZE 0xdc

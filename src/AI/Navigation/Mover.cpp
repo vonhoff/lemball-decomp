@@ -7,7 +7,16 @@
 #include "../../Visos/Network/Connect.h"
 #include "../Groups/PlayerLemmingGroup.h"
 #include "../Objects/PlayerLemming.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/Move3d.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Base/Pt3.h"
 #include "Ai.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 // 68K 0x106171a6 __ct__6CMoverFv
 // FUNCTION: LEMBALL 0x0042e590

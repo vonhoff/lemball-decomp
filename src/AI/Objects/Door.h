@@ -3,9 +3,9 @@
 
 #include "../Base/GlobalGameObject.h" // complete type
 #include "../Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
 
 class AiCoord;
-class DoorManager;
 class GameObject;
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x004936f8

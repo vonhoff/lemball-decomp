@@ -1,5 +1,6 @@
 #include "WriteCBuff.h"
 
+#include "Visos/Messaging/WritePacketBuff.h"
 #include "WritePacket.h"
 
 // 68K 0x1020e50a __ct__11CWriteCBuffFiUs

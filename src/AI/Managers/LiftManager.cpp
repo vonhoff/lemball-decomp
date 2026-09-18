@@ -3,7 +3,9 @@
 #include "../Base/Coord3d.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/Lift.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Managers/BaseObjectManager.h"
+#include "AI/Objects/SwitchEntry.h"
 
 // GLOBAL: LEMBALL 0x0049e1c0
 unsigned short g_wMovingLiftCount = 0;

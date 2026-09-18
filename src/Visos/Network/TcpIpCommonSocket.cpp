@@ -1,6 +1,7 @@
 #include "TcpIpCommonSocket.h"
 
-#include <new.h>
+#include "Visos/Network/BaseCommonSocket.h"
+#include "Visos/Target/TargetNetworkWindow.h"
 
 extern int g_unk0x4a23b8;
 extern "C" int __stdcall closesocket(int p_socket);

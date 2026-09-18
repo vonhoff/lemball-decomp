@@ -4,9 +4,17 @@
 #include "../Messaging/Headers.h"
 #include "FileNetwork.h"
 #include "TcpIpNetwork.h"
+#include "Visos/Network/Connect.h"
+#include "Visos/Network/FileCommonSocket.h"
+#include "Visos/Network/FileOpenManagement.h"
+#include "Visos/Network/FileReadSocket.h"
+#include "Visos/Network/FileWriteSocket.h"
+#include "Visos/Network/NetworkFile.h"
+#include "Visos/Network/OpenCount.h"
+#include "Visos/Network/ReadSocket.h"
+#include "Visos/Network/WriteSocket.h"
 
 #include <memory.h>
-#include <new.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy, strlen)

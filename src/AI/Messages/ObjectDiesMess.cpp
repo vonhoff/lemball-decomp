@@ -1,5 +1,8 @@
 #include "ObjectDiesMess.h"
 
+#include "AI/Messages/GameMessageIds.h"
+#include "AI/Messages/GameObjectMess.h"
+
 // 68K 0x1060baf0 __ct__15CObjectDiesMessFv
 // FUNCTION: LEMBALL 0x00416ce0
 ObjectDiesMess::ObjectDiesMess() : GameObjectMess(MESSAGE_OBJECT_DIES)

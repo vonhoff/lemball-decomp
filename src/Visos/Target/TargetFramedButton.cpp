@@ -6,6 +6,12 @@
 #include "../Graphics/HotAreaList.h"
 #include "../Graphics/Line.h"
 #include "../Graphics/VsGdi.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/DepressedButton.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Graphics/HotAreaHandler.h"
+#include "Visos/Graphics/PvGWnd.h"
 
 extern char g_szButton[];
 

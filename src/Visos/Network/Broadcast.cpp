@@ -1,9 +1,7 @@
 #include "Broadcast.h"
 
 #include "../Foundation/BaseQueue.h"
-#include "../Foundation/VsMem.h"
 #include "../Foundation/VsString.h"
-#include "../Foundation/VsTime.h"
 #include "../Messaging/BasePacket.h"
 #include "../Messaging/BasePacketHeader.h"
 #include "../Messaging/BroadcastMessage.h"
@@ -12,9 +10,12 @@
 #include "BaseNetwork.h"
 #include "NetworkAddress.h"
 #include "TcpIpNetwork.h"
+#include "Visos/Foundation/BaseQueueHandler.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Network/RwSocket.h"
+#include "Visos/Network/WriteSocket.h"
 
 #include <memory.h>
-#include <new.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcat, strcpy, strlen)

@@ -1,6 +1,7 @@
 #include "FileCommonSocket.h"
 
 #include "../Foundation/VsTime.h"
+#include "Visos/Network/BaseCommonSocket.h"
 
 // 68K 0x10207070 CreateSocket__17CFileCommonSocketFPCc
 // FUNCTION: LEMBALL 0x00479880

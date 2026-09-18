@@ -4,7 +4,8 @@
 #include "../Graphics/VsGdi.h"
 #include "../Resources/ResFont.h"
 #include "../Resources/ResZrle.h"
-#include "VsDebugStreambuf.h"
+#include "Visos/Foundation/String.h"
+#include "Visos/Graphics/Zrle.h"
 #include "VsOStream.h"
 #include "VsPoint.h"
 

@@ -1,7 +1,6 @@
 #ifndef LEMBALL_CONTROL_GAME_GAMETIME_H
 #define LEMBALL_CONTROL_GAME_GAMETIME_H
 
-class Game;
 // Game and remote clocks use 50-millisecond ticks.
 #define GAME_TICK_MILLISECONDS 50
 

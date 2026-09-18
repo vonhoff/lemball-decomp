@@ -4,6 +4,11 @@
 #include "../Navigation/Ai.h"
 #include "../Objects/Door.h"
 #include "../Objects/ViewData.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Managers/BaseObjectManager.h"
+#include "AI/Objects/SwitchEntry.h"
+
+class AiCoord;
 
 // GLOBAL: LEMBALL 0x0049cf48
 unsigned short g_wNextDoorIndex = 0;

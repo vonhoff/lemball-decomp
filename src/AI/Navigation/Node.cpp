@@ -1,5 +1,6 @@
 #include "Node.h"
 
+#include "AI/Base/Pt3.h"
 #include "NodeNeighbour.h"
 
 // 68K 0x106186ac __ct__5CNodeFv

@@ -4,6 +4,9 @@
 #include "TcpIpBroadcast.h"
 #include "TcpIpConnect.h"
 #include "TcpIpNetworkAddress.h"
+#include "Visos/Foundation/BaseQueueHandler.h"
+#include "Visos/Network/BaseNetwork.h"
+#include "Visos/Target/TargetNetworkWindow.h"
 
 #include <new.h>
 

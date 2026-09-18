@@ -6,6 +6,11 @@
 #include "../Display/C2D.h"
 #include "../Sound/SoundView.h"
 #include "Panel.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Graphics/BaseCursor.h"
+#include "Visos/Graphics/GraphicButton.h"
+#include "Visos/Graphics/PvButton.h"
+#include "Visos/Graphics/ToggleButton.h"
 
 // 68K 0x10b0c502 __ct__17CPanelPauseButtonFP6CPanelRC8CVSPointP7CPVGWndUlUl
 // FUNCTION: LEMBALL 0x004421d0

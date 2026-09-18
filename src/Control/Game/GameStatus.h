@@ -1,17 +1,6 @@
 #ifndef LEMBALL_CONTROL_GAME_GAMESTATUS_H
 #define LEMBALL_CONTROL_GAME_GAMESTATUS_H
 
-class Ai;
-class BaseFrontendDrawer;
-class BaseFrontendProcess;
-class C2D;
-class IntroAnimAnimWindow;
-class MainOptions1Drawer;
-class NetworkOptionsDrawer;
-class PasswordDrawer;
-class PlayerLemming;
-class PreviewDrawer;
-class SuccFailDrawer;
 // SIZE 0x50
 class GameStatus {
 public:

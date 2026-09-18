@@ -4,8 +4,10 @@
 #include "RwSocket.h"         // complete type
 #include "TcpIpReadSocket.h"  // complete type
 #include "TcpIpWriteSocket.h" // complete type
-
-class NetworkMessage;
+#include "Visos/Network/BaseCommonSocket.h"
+#include "Visos/Network/ReadSocket.h"
+#include "Visos/Network/TcpIpCommonSocket.h"
+#include "Visos/Network/WriteSocket.h"
 
 // SIZE 0x144
 // VTABLE: LEMBALL 0x0049a220 TargetNetworkWindow

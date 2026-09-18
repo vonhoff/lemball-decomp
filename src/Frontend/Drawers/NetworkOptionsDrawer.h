@@ -3,18 +3,13 @@
 
 #include "../../Visos/Graphics/BitmapRes.h"
 #include "../Base/BaseFrontendDrawer.h"
-#include "../Support/EntryHandler.h"
+class EntryHandler;
 
-class AnimsManager;
-class BaseQueueHandler;
 class BaseRemap;
-class Drawer;
 class EditString;
 class Gdi;
 class Main2DDisplay;
-class NetworkOptionsProc;
 class VsRect;
-struct Message;
 // SIZE 0xa0
 // SIZE 0x08
 struct NetworkOptionsFramePos {

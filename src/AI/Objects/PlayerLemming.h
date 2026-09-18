@@ -4,14 +4,13 @@
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 #include "../Base/AiCoord.h"                      // complete type
 #include "../Base/GlobalGameObject.h"             // complete type
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Views/Sound/SoundEffects.h"
 
-class Bullet;
 class GameObject;
 class Ice;
-class PanelButton;
-class PanelLemming;
 class PlayerLemmingGroup;
-class ViewData;
 // Inventory bounds and ammunition limits used by HasObject, AddObject and PickUpAmmo.
 #define PLAYER_INVENTORY_CAPACITY 12
 #define PLAYER_MAX_AMMO 50

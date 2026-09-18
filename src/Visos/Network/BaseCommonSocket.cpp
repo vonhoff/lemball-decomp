@@ -1,6 +1,5 @@
 #include "BaseCommonSocket.h"
 
-#include "../Foundation/VsMem.h"
 #include "TcpIpNetwork.h"
 
 // 68K 0x1020b1ec __ct__17CBaseCommonSocketFv

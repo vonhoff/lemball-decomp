@@ -8,6 +8,8 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Animation/LemmingAnimsManager.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsDebug.h"
 
 #include <string.h>
 

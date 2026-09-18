@@ -2,6 +2,7 @@
 
 #include "Gdi.h"
 #include "VsGdi.h"
+class ZBuffClear;
 
 // 68K 0x10101f7c Draw__21CCopyColourToBackBuffFP4CGDI
 // FUNCTION: LEMBALL 0x00439930

@@ -7,12 +7,13 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/GraphicButton.h"
-#include "../../Visos/Graphics/PvButton.h"
-#include "../../Visos/Graphics/PvGWnd.h"
 #include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/ResAnim.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Graphics/GWnd.h"
 
-#include <new.h>
+class PvGWnd;
 
 // 68K 0x10804ab2 __ct__14CHiliteButtonsFP5CGWndP4CGDIiiPUlUciiiUlPvUl
 // FUNCTION: LEMBALL 0x0044f070

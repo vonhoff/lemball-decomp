@@ -1,6 +1,7 @@
 #include "Bonus.h"
 
 #include "../Navigation/Ai.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x10605f8a Collected__6CBonusFv
 // FUNCTION: LEMBALL 0x00422c40

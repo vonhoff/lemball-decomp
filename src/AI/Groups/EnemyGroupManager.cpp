@@ -2,6 +2,9 @@
 
 #include "../Base/WaypointInformation.h"
 #include "../Objects/Enemy.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Groups/GenericGroup.h"
+#include "AI/Groups/GenericGroupManager.h"
 #include "EnemyGroup.h"
 
 extern Ai* g_pGenericGroupAI;

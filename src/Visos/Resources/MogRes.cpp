@@ -1,24 +1,22 @@
 #include "MogRes.h"
 
-#include <new.h>
 #include <string.h>
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 #pragma intrinsic(strcpy, strlen)
 
-#include "../Animation/BaseStat.h"
 #include "../Animation/StatManager.h"
 #include "../Foundation/Arena.h"
 #include "../Foundation/Chunk.h"
 #include "../Foundation/ChunkInfo.h"
 #include "../Foundation/VsFile.h"
 #include "../Foundation/VsRange.h"
-#include "../Foundation/VsTime.h"
 #include "MogLoad.h"
 #include "MogloadArena.h"
 #include "RawRead.h"
 #include "ResBase.h"
+#include "Visos/Animation/MogloadStat.h"
 
 #define kPathSeparator '/'
 

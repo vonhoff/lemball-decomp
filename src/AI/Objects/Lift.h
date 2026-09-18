@@ -7,7 +7,6 @@
 class AiCoord;
 class GameObject;
 class Ground;
-class LiftManager;
 enum eLiftActivateType {
 	LIFT_ACTIVATE_SWITCH_TOGGLE = 0,
 	LIFT_ACTIVATE_STEP = 1,

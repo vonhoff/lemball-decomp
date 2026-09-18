@@ -4,8 +4,6 @@
 #include "Demo.h"
 #include "Game.h"
 
-#include <new.h>
-
 // 68K 0x10701228 ClockEditMode__FUc
 // FUNCTION: LEMBALL 0x00408080
 void ClockEditMode(unsigned int p_enabled)

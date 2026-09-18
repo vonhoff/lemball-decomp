@@ -1,5 +1,7 @@
 #include "VsDebugStreambuf.h"
 
+#include "Visos/Foundation/VsStreambuf.h"
+
 #include <string.h>
 
 // 68K 0x102143c6 __ct__17CVSDebugStreambufFPciPFPc_Uc

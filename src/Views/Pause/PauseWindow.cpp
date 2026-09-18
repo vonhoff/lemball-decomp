@@ -13,6 +13,21 @@
 #include "../../Visos/Resources/ResAnim.h"
 #include "../../Visos/Resources/ResFont.h"
 #include "../Sound/SoundView.h"
+#include "Views/Pause/PauseWindowFreeVramInterface.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Animation/Anim.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/TextManager.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BaseCursor.h"
+#include "Visos/Graphics/BaseRemap.h"
+#include "Visos/Graphics/HotAreaHandler.h"
+#include "Visos/Graphics/Line.h"
+#include "Visos/Graphics/PvGWnd.h"
+#include "Visos/Graphics/PvWnd.h"
+#include "Visos/Resources/ResZrle.h"
 
 extern unsigned char* g_apPauseRemaps[4];
 extern char* g_apPauseMenuLabels[15];

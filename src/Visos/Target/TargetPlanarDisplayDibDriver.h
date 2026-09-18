@@ -3,9 +3,6 @@
 
 #include "TargetDisplayDibDriver.h" // complete type
 
-class TargetDrawingContext;
-class VsRect;
-struct VsPoint;
 struct VsSize;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498840

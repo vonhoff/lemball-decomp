@@ -1,6 +1,9 @@
 #include "PvGWnd.h"
 
 #include "Gdi.h"
+#include "Visos/Graphics/PvSurface.h"
+#include "Visos/Graphics/PvWnd.h"
+#include "Visos/Graphics/Wnd.h"
 #include "VsGdi.h"
 
 // 68K 0x1010b56c OnVisibilityChange__7CPVGWndFv

@@ -1,5 +1,7 @@
 #include "TheBalloonPost.h"
 
+#include "AI/Base/GameObject.h"
+
 // 68K 0x106035ea __ct__15CTheBalloonPostF11eObjectTypeUc
 // FUNCTION: LEMBALL 0x0042a5c0
 TheBalloonPost::TheBalloonPost(eObjectType p_arg0, unsigned int p_arg1) : GameObject(p_arg0, 0, 10)

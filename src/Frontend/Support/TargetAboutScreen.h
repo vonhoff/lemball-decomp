@@ -8,15 +8,13 @@
 #include "../../Visos/Graphics/Drawer.h"             // complete type
 #include "../../Visos/Graphics/DrawingMark.h"        // complete type
 #include "../../Visos/Graphics/Line.h"               // complete type
-#include "../../Visos/Graphics/PvGWnd.h"
-#include "../../Visos/Graphics/SolidRect.h" // complete type
+#include "../../Visos/Graphics/SolidRect.h"          // complete type
 
 class Gdi;
 class Main2DDisplay;
 class ResBitmap;
 class ResString;
 class TextManager;
-struct Message;
 // SIZE 0x9c
 // VTABLE: LEMBALL 0x00497cb0 Drawer
 // VTABLE: LEMBALL 0x00497ca0 BaseQueueHandler

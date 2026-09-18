@@ -8,6 +8,12 @@
 #include "../Base/Pt3.h"
 #include "../Managers/BallManager.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 // 68K 0x1060364a __ct__5CBallFv
 // FUNCTION: LEMBALL 0x00421660

@@ -4,7 +4,7 @@
 #include "../Foundation/VsPoint.h" // complete type
 #include "../Foundation/VsRect.h"  // complete type
 #include "../Foundation/VsSize.h"  // complete type
-#include "MenuList.h"
+struct MenuList;
 
 class HotAreaList;
 

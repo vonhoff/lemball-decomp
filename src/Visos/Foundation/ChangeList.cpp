@@ -1,6 +1,9 @@
 #include "ChangeList.h"
 
-#include <new.h>
+#include "Visos/Foundation/ChangeListItem.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+
 #include <string.h>
 
 // 68K 0x10210cf8 __ct__11CChangeListFi7CVSSize7CVSSize

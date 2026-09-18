@@ -1,8 +1,8 @@
 #include "Bitmap.h"
 
-#include "CopyToBackBuff.h"
 #include "Gdi.h"
 #include "VsGdi.h"
+class CopyToBackBuff;
 
 // 68K 0x10101598 Draw__7CBitmapFP4CGDI
 // FUNCTION: LEMBALL 0x004398a0

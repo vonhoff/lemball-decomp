@@ -7,8 +7,6 @@ class Ai;
 class AiCoord;
 class GameObject;
 class Ice;
-class Switch;
-class ViewData;
 struct Coord3d;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496a00

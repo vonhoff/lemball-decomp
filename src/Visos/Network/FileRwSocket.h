@@ -5,8 +5,6 @@
 #include "FileWriteSocket.h" // complete type
 #include "RwSocket.h"        // complete type
 
-class NetworkMessage;
-
 // SIZE 0x154
 // VTABLE: LEMBALL 0x0049a79c FileCommonSocket
 // VTABLE: LEMBALL 0x0049a7a0 NetworkFile

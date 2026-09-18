@@ -1,5 +1,7 @@
 #include "TimedQueue.h"
 
+#include "Visos/Foundation/Message.h"
+
 // 68K 0x10212ec6 Post__11CTimedQueueFR10tagMESSAGE
 // FUNCTION: LEMBALL 0x00458e80
 bool TimedQueue::Post(Message& p_message)

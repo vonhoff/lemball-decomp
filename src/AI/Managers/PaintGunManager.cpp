@@ -2,7 +2,9 @@
 
 #include "../Navigation/Ai.h"
 #include "../Objects/PaintGun.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x1061b8a8 __ct__16CPaintGunManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0042bfe0

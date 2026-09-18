@@ -1,10 +1,10 @@
 #include "HotAreaHandler.h"
 
-#include "../Foundation/BaseQueue.h"
 #include "../Foundation/MasterInput.h"
 #include "../Foundation/VsPoint.h"
 #include "../Foundation/VsRect.h"
 #include "HotAreaList.h"
+#include "Visos/Foundation/Message.h"
 
 // 68K 0x1010219a OnButtonDown__15CHotAreaHandlerFRC8CVSPoint12BUTTON_FLAGS
 // FUNCTION: LEMBALL 0x00439960

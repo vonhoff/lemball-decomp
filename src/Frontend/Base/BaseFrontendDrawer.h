@@ -14,16 +14,9 @@
 class Gdi;
 class GunController;
 class HiliteController;
-class IntroAnimDrawer;
 class Main2DDisplay;
-class MainOptions1Drawer;
-class MainOptions2Drawer;
-class NetworkOptionsDrawer;
-class PasswordDrawer;
 class PlayThruAnim;
-class PreviewDrawer;
 class ResBitmap;
-class SuccFailDrawer;
 class TextManager;
 class VsRect;
 struct Message;

@@ -5,7 +5,6 @@
 
 class AiCoord;
 class GameObject;
-class TrampolineManager;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x004965c8
 class Trampoline : public GlobalGameObject {

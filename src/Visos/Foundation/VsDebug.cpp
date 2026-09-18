@@ -3,6 +3,7 @@
 #include "../Target/TargetTextWindow.h"
 #include "LocalDebugOStream.h"
 #include "String.h"
+#include "Visos/Foundation/VsOStream.h"
 #include "VsDebugStreambuf.h"
 #include "VsFile.h"
 #include "VsInit.h"
@@ -10,6 +11,9 @@
 
 #include <setjmp.h>
 #include <string.h>
+
+struct FILE;
+struct _Filet;
 
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd,
 														   const char* lpText,

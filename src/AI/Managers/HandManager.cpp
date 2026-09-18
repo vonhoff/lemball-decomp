@@ -2,7 +2,9 @@
 
 #include "../Navigation/Ai.h"
 #include "../Objects/Hand.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x106111f4 __ct__12CHandManagerFP3CAIi
 // FUNCTION: LEMBALL 0x00427e60

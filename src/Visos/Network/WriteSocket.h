@@ -4,6 +4,7 @@
 #include "../Messaging/BasePacketHeader.h" // complete type
 #include "BaseCommonSocket.h"              // complete type
 #include "BaseSocket.h"                    // complete type
+class NetworkMessage;
 
 class NetworkAddress;
 class WriteCBuff;

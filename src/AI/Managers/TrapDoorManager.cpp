@@ -4,7 +4,10 @@
 #include "../Base/GameObject.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/TrapDoor.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Managers/BaseObjectManager.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 // 68K 0x1062169e __ct__16CTrapDoorManagerFv
 // FUNCTION: LEMBALL 0x0040c750

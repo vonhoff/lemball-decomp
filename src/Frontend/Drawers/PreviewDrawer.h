@@ -3,18 +3,15 @@
 
 #include "../Base/BaseFrontendDrawer.h"
 #include "../Support/CoordPair.h" // complete type
-#include "PreviewDrawerPrims.h"   // complete type
+#include "Frontend/Support/UserActionMessage.h"
+#include "PreviewDrawerPrims.h" // complete type
 
-class AnimsManager;
-class BaseQueueHandler;
 class BaseRemap;
-class Drawer;
 class Gdi;
 class Main2DDisplay;
 class RepeatAnim;
 class ResBitmap;
 class VsRect;
-struct Message;
 enum PreviewLayoutIndex {
 	PreviewReturnButton = 0,
 	PreviewGoButton = 1,

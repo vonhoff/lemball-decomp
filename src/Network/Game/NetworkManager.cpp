@@ -10,8 +10,8 @@
 #include "../Messages/GameRejectMessage.h"
 #include "../Messages/NetworkGameMessage.h"
 #include "NetworkGameStage.h"
-
-#include <new.h>
+#include "Visos/Foundation/BaseQueueHandler.h"
+#include "Visos/Network/ReadSocket.h"
 
 // 68K 0x10a00346 __ct__15CNetworkManagerFPCc
 // FUNCTION: LEMBALL 0x00452550

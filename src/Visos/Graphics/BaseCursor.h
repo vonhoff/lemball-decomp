@@ -8,7 +8,6 @@
 #include "PushActive.h"                     // complete type
 
 class GWnd;
-struct Message;
 class Zrle;
 class ResBase;
 

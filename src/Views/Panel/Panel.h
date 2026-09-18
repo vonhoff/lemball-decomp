@@ -6,12 +6,10 @@
 
 class Ai;
 class C2D;
-class PanelButton;
 class PanelLemming;
 class PanelPauseButton;
 class PvGWnd;
 class ResAnim;
-struct Message;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00497740
 class Panel : public BaseQueueHandler {

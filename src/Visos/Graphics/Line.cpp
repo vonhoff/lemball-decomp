@@ -2,6 +2,7 @@
 
 #include "Gdi.h"
 #include "VsGdi.h"
+class SolidRect;
 
 // 68K 0x101018e8 Draw__5CLineFP4CGDI
 // FUNCTION: LEMBALL 0x00439800

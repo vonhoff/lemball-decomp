@@ -1,6 +1,8 @@
 #include "FontTable.h"
 
 #include "ResFont.h"
+#include "Visos/Resources/ResBaseList.h"
+#include "Visos/Resources/ResInt.h"
 
 #define kGlyphTableBytes 0x400
 #define kGlyphTableCount 0x100

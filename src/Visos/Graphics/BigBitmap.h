@@ -3,8 +3,6 @@
 
 #include "Primitive.h" // complete type
 
-class Gdi;
-
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496e80
 class BigBitmap : public Primitive {

@@ -4,6 +4,12 @@
 #include "../Messaging/Headers.h"
 #include "NetworkAddress.h"
 #include "TcpIpNetwork.h"
+#include "Visos/Messaging/BasePacketHeader.h"
+#include "Visos/Messaging/NetworkMessage.h"
+#include "Visos/Network/FileBaseSocket.h"
+#include "Visos/Network/FileCommonSocket.h"
+#include "Visos/Network/NetworkFile.h"
+#include "Visos/Network/WriteSocket.h"
 
 #include <string.h>
 

@@ -2,6 +2,10 @@
 
 #include "../Base/StateMachine.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/C3DVector.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectTypes.h"
 
 #include <string.h>
 

@@ -3,6 +3,13 @@
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/Pt3.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 Collectable::Collectable()
 {

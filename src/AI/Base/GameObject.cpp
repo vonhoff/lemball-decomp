@@ -9,7 +9,6 @@
 #include "../Navigation/AiDestinationList.h"
 #include "../Navigation/Maze.h"
 #include "../Navigation/Mover.h"
-#include "../Objects/ViewData.h"
 #include "Pt3.h"
 #include "Solution.h"
 
@@ -1114,7 +1113,16 @@ bool GameObject::Fall()
 }
 
 // Keeping type completion local preserves the original MSVC 4.00 register allocation in preceding functions.
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/C3DVector.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Base/Rect3.h"
 #include "Coord3d.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Visos/Foundation/VsDebug.h"
+#include "Visos/Foundation/VsRect.h"
 
 // 68K 0x1060aaac OnLift__11CGameObjectFR8tCoord3d
 // FUNCTION: LEMBALL 0x00416340

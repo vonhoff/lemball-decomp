@@ -4,8 +4,6 @@
 #include "../Graphics/DepressedButton.h" // complete type
 
 class ClipRect;
-class GWnd;
-class HotAreaHandler;
 class Line;
 class PvGWnd;
 class VsRect;

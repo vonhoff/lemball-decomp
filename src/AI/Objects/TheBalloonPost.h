@@ -2,8 +2,8 @@
 #define LEMBALL_AI_OBJECTS_THEBALLOONPOST_H
 
 #include "../Base/GameObject.h" // complete type
+#include "AI/Base/ObjectTypes.h"
 
-class BalloonPost;
 // SIZE 0x128
 // VTABLE: LEMBALL 0x00496488
 class TheBalloonPost : public GameObject {

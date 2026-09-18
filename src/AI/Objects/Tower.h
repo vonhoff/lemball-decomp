@@ -3,8 +3,8 @@
 
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
+#include "AI/Base/ObjectTypes.h"
 
-class GameObject;
 // MINIMUM SIZE 0x144
 // VTABLE: LEMBALL 0x00494788
 class Tower : public BaseGlobalObject {

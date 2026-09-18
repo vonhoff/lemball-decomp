@@ -5,6 +5,12 @@
 #include "../../Visos/Foundation/VsRect.h"
 #include "../../Visos/Foundation/VsTrig.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Groups/GenericGroup.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/Fixed.h"
+#include "Visos/Foundation/Vector.h"
 
 // 68K 0x1061e4d6 __ct__11CSheepGroupFP3CAIP14CObjectManagerP17CFormationManager
 // FUNCTION: LEMBALL 0x0041f500

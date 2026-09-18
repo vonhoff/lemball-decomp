@@ -5,8 +5,6 @@
 #include "TcpIpCommonSocket.h" // complete type
 #include "WriteSocket.h"       // complete type
 
-class NetworkAddress;
-
 // SIZE 0xe0
 // VTABLE: LEMBALL 0x0049a088 TargetNetworkWindow
 // VTABLE: LEMBALL 0x0049a090 BaseSocket

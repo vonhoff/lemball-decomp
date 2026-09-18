@@ -9,6 +9,16 @@
 #include "TargetDirectDrawSurfaceContext.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Target/DDBLTFX.h"
+#include "Visos/Target/DDSURFACEDESC.h"
+#include "Visos/Target/IDirectDrawPalette.h"
+#include "Visos/Target/IDirectDrawSurface.h"
+#include "Visos/Target/TargetDibContext.h"
+#include "Visos/Target/TargetDrawingContext.h"
+
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x00457410

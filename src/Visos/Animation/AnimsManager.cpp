@@ -11,8 +11,9 @@
 #include "../Resources/ResZrle.h"
 #include "Anim.h"
 #include "Frames.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
 
-#include <new.h>
 #include <string.h>
 
 AnimsManager::AnimsManager()

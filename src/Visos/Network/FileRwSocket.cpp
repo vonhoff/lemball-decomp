@@ -1,5 +1,10 @@
 #include "FileRwSocket.h"
 
+#include "Visos/Network/FileCommonSocket.h"
+#include "Visos/Network/FileReadSocket.h"
+#include "Visos/Network/FileWriteSocket.h"
+#include "Visos/Network/RwSocket.h"
+
 // 68K 0x10207d98 __ct__13CFileRWSocketFv
 // FUNCTION: LEMBALL 0x0047a220
 FileRwSocket::FileRwSocket() : RwSocket(), FileReadSocket(), FileWriteSocket()

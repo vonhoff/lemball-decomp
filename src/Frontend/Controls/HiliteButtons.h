@@ -7,9 +7,7 @@
 class GWnd;
 class Gdi;
 class GraphicButton;
-class HiliteController;
 class ResAnim;
-struct Message;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00498150
 class HiliteButtons : public BaseQueueHandler {

@@ -2,8 +2,8 @@
 #define LEMBALL_VISOS_NETWORK_CONNECT_H
 
 #include "RwSocket.h" // complete type
+#include "Visos/Network/BaseCommonSocket.h"
 
-class BasePacket;
 class NetworkAddress;
 class NetworkMessage;
 

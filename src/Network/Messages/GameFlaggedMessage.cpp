@@ -1,5 +1,7 @@
 #include "GameFlaggedMessage.h"
 
+#include "Visos/Messaging/NetworkMessage.h"
+
 GameFlaggedMessage::GameFlaggedMessage()
 {
 }

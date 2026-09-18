@@ -5,8 +5,6 @@
 
 class Ai;
 class Mover;
-class Switch;
-class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496b78
 class MoverManager : public BaseObjectManager {

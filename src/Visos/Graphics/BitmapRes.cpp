@@ -1,9 +1,9 @@
 #include "BitmapRes.h"
 
 #include "../Resources/ResBitmap.h"
-#include "Bitmap.h"
 #include "Gdi.h"
 #include "VsGdi.h"
+class BigBitmap;
 
 // FUNCTION: LEMBALL 0x00447380
 void BitmapRes::Draw(Gdi* p_gdi)

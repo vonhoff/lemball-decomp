@@ -7,9 +7,10 @@
 #include "../../Frontend/Base/BaseFrontendDrawer.h"
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Visos/Foundation/VsMath.h"
-#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Sound/SoundManager.h"
+#include "Views/Sound/LoadUpdate.h"
+#include "Views/Sound/SoundEffects.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

@@ -4,7 +4,8 @@
 #include "../Base/GameObject.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/Mine.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x10616764 __ct__12CMineManagerFP3CAIi
 // FUNCTION: LEMBALL 0x00424020

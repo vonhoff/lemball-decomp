@@ -1,7 +1,6 @@
 #include "WritePacket.h"
 
 #include <memory.h>
-#include <new.h>
 
 #pragma intrinsic(memcpy)
 

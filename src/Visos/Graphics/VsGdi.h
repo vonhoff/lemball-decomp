@@ -8,25 +8,8 @@
 #include "PvZBuffSurface.h"       // complete type
 
 class GrafPort;
-struct VsSize;
 class ChangeList;
-class ResPalette;
-class Zrle;
 class ResZrle;
-class Bitmap;
-class ResBitmap;
-class BigBitmap;
-class Line;
-class FilledCircle;
-class ClipRect;
-class Circle;
-class ScreenScroll;
-class SolidRect;
-class Point;
-class CopyToBackBuff;
-class CopyColourToBackBuff;
-class ZBuffScroll;
-class ZBuffClear;
 class Remap;
 struct VsPoint;
 

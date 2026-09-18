@@ -8,6 +8,12 @@
 #include "../Sound/SoundView.h"
 #include "PanelLemming.h"
 #include "PanelPauseButton.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/BaseQueueHandler.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Resources/ResZrle.h"
 
 #include <new.h>
 

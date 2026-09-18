@@ -13,6 +13,4 @@ struct Pt3 {
 	int m_z; // 0x08
 };
 
-#include "Rect3.h"
-
 #endif

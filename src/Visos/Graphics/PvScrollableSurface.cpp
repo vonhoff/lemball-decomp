@@ -1,6 +1,8 @@
 #include "PvScrollableSurface.h"
 
-#include "../Foundation/VsSize.h"
+#include "Visos/Foundation/VsRect.h"
+
+struct VsSize;
 
 // 68K 0x102165a8 SetWorldWidth__20CPVScrollableSurfaceFi
 // FUNCTION: LEMBALL 0x004668d0

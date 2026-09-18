@@ -1,9 +1,9 @@
 #include "BitmapResBase.h"
 
 #include "../Resources/ResBitmap.h"
-#include "Bitmap.h"
 #include "Gdi.h"
 #include "VsGdi.h"
+class Bitmap;
 
 // FUNCTION: LEMBALL 0x00447300
 void BitmapResBase::Draw(Gdi* p_gdi)

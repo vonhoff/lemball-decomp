@@ -4,7 +4,6 @@
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 
 class PvButton;
-struct Message;
 struct PadToButtonEntry;
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00497208

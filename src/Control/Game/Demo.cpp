@@ -1,6 +1,7 @@
 #include "Demo.h"
 
 #include "../../Visos/Foundation/BaseQueue.h"
+#include "../../Visos/Foundation/Message.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/PvWnd.h"
 #include "../../Visos/Messaging/PackParam.h"
@@ -143,7 +144,13 @@ bool Demo::LoadBuffer()
 	return 1;
 }
 
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+
 #include <string.h>
+
+struct _Filet;
 
 // 68K 0x10700f82 GetUserPacket__5CDemoFPUcRUl
 // FUNCTION: LEMBALL 0x00409560

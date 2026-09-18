@@ -1,9 +1,6 @@
 #include "BaseRemap.h"
 
-#include "../Resources/ResBase.h"
 #include "../Resources/ResPalette.h"
-
-#include <new.h>
 
 BaseRemap::BaseRemap()
 {

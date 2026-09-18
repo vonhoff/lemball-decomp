@@ -3,7 +3,6 @@
 
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
-class BaseFrontendProcess;
 enum eUserActions {
 	USER_ACTION_0 = 0,
 	USER_ACTION_1 = 1,

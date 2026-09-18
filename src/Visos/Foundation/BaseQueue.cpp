@@ -1,8 +1,7 @@
 #include "BaseQueue.h"
 
 #include "BaseQueueHandler.h"
-
-#include <new.h>
+#include "Visos/Foundation/Message.h"
 
 struct QueueHandlerNode {
 	BaseQueueHandler* handler;

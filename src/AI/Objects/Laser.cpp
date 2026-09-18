@@ -5,7 +5,14 @@
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Foundation/VsMath.h"
 #include "../../Visos/Network/Connect.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 #include "ViewData.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x10613518 __ct__6CLaserFv
 // FUNCTION: LEMBALL 0x00428890

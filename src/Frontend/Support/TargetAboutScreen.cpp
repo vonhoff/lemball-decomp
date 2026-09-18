@@ -16,9 +16,20 @@
 #include "../../Visos/Resources/ResBitmap.h"
 #include "../../Visos/Resources/ResFont.h"
 #include "../../Visos/Resources/ResString.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BitmapRes.h"
+#include "Visos/Graphics/DrawingMark.h"
+#include "Visos/Graphics/Line.h"
+#include "Visos/Graphics/PvGWnd.h"
+#include "Visos/Graphics/SolidRect.h"
 
 #include <new.h>
 #include <string.h>
+
+class ChangeListItem;
 
 // GLOBAL: LEMBALL 0x0049f9e4
 char g_szRegisteredTo[] = "Registered to";

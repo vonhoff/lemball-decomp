@@ -7,7 +7,6 @@ class Ai;
 class AiCoord;
 class GameObject;
 class Rocket;
-class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496020
 class RocketManager : public BaseObjectManager {

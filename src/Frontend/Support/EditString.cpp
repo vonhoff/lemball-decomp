@@ -1,6 +1,5 @@
 #include "EditString.h"
 
-#include <new.h>
 #include <string.h>
 
 #pragma intrinsic(strcpy, strlen)

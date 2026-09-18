@@ -1,6 +1,9 @@
 #include "PvGdiBitmap.h"
 
-#include <new.h>
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+
 #include <stdlib.h>
 #include <string.h>
 

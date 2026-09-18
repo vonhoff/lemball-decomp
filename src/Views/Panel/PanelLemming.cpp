@@ -5,8 +5,13 @@
 #include "../../AI/Objects/PlayerLemming.h"
 #include "../Display/C2D.h"
 #include "../Display/Main2DDisplay.h"
+#include "AI/Base/ObjectTypes.h"
 #include "Panel.h"
 #include "PanelButton.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+
+class PlayerLemmingGroup;
 
 // 68K 0x10b0d5c6 Move__13CPanelLemmingFRC8CVSPoint
 // FUNCTION: LEMBALL 0x00442ca0

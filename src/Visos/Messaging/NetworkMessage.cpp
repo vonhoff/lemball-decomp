@@ -2,10 +2,10 @@
 
 #include "../Foundation/BaseQueue.h"
 #include "../Foundation/BaseQueueHandler.h"
-#include "../Foundation/VsMem.h"
 #include "../Foundation/VsTime.h"
 #include "../Network/BaseNetwork.h"
 #include "BasePacketHeader.h"
+#include "Visos/Foundation/Message.h"
 
 #include <string.h>
 

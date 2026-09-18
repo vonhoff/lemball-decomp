@@ -1,6 +1,7 @@
 #include "BaseStat.h"
 
 #include "../Foundation/VsOStream.h"
+#include "Visos/Foundation/String.h"
 
 BaseStat::BaseStat()
 {

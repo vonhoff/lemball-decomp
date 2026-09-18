@@ -1,8 +1,11 @@
 #include "PbNetworkGame.h"
 
 #include "../../AI/Navigation/Ai.h"
-#include "../../AI/Objects/PlayerLemming.h"
 #include "../../Control/Game/GameTime.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "Visos/Foundation/BaseProcess.h"
+#include "Visos/Foundation/BaseQueueHandler.h"
+#include "Visos/Messaging/NetworkMessage.h"
 
 // 68K 0x10a00c52 __ct__14CPBNetworkGameFP3CAI
 // FUNCTION: LEMBALL 0x00452fe0

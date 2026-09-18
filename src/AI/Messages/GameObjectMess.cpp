@@ -2,6 +2,7 @@
 
 #include "../Base/GlobalGameObject.h"
 #include "../Managers/BaseObjectManager.h"
+#include "Visos/Messaging/NetworkMessage.h"
 
 GameObjectMess::GameObjectMess()
 {

@@ -3,7 +3,9 @@
 #include "../../Visos/Network/Connect.h"
 #include "../Base/GameObject.h"
 #include "../Objects/Bullet.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Managers/BaseObjectManager.h"
+#include "Visos/Foundation/VsRect.h"
 
 // 68K 0x10604eb2 __ct__14CBulletManagerFv
 // FUNCTION: LEMBALL 0x00417d80

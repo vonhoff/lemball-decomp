@@ -14,6 +14,9 @@
 #include "Broadcast.h"
 #include "Connect.h"
 #include "NetworkAddress.h"
+#include "Visos/Foundation/Message.h"
+
+struct BasePacketHeader;
 
 extern int g_lastNetworkError;
 extern unsigned int g_networkPacketSize;

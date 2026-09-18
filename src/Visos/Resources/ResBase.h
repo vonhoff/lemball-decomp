@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESBASE_H
 #define LEMBALL_VISOS_RESOURCES_RESBASE_H
 
-class MciMusicDevice;
 class ResBaseList;
 
 // SIZE 0x48

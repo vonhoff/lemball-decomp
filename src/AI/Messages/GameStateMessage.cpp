@@ -1,5 +1,7 @@
 #include "GameStateMessage.h"
 
+#include "Visos/Messaging/NetworkMessage.h"
+
 #define MESSAGE_GAME_STATE 10
 
 // 68K 0x1060000c __ct__17CGameStateMessageFv

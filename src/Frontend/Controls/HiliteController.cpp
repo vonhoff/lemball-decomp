@@ -10,9 +10,19 @@
 #include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Windows/HiliteWindow.h"
+#include "Frontend/Controls/HiliteControllerJunction.h"
 #include "HiliteButtons.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Animation/AnimsManager.h"
+#include "Visos/Animation/StaticAnim.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Graphics/PvGWnd.h"
+#include "Visos/Graphics/SolidRect.h"
 
 #include <new.h>
+
+class Frames;
 
 // 68K 0x1080503a __ct__17CHiliteControllerFP5CGWndP4CGDIiUcUc
 // FUNCTION: LEMBALL 0x0044f440

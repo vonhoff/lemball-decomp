@@ -2,8 +2,7 @@
 
 #include "../Network/TcpIpNetwork.h"
 #include "BasePacketHeader.h"
-
-#include <new.h>
+#include "Visos/Messaging/ReadMsBuff.h"
 
 // 68K 0x1020e358 __ct__12CReadCMSBuffFiiUs
 // FUNCTION: LEMBALL 0x00461840

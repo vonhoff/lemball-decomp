@@ -3,6 +3,7 @@
 #include "../Foundation/VsOStream.h"
 #include "../Graphics/Wnd.h"
 #include "IDirectSound.h"
+#include "IDirectSoundBuffer.h"
 #include "TargetDirectSoundEffect.h"
 
 #include <memory.h>

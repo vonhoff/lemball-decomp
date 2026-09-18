@@ -2,6 +2,9 @@
 
 #include "../../Control/Game/GameTime.h"
 #include "../Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Messages/GameMessageIds.h"
+#include "AI/Messages/GameObjectMess.h"
 
 // 68K 0x1060b366 __ct__22CObjectChangeStateMessFv
 // FUNCTION: LEMBALL 0x004168d0

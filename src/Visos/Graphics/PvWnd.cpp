@@ -1,8 +1,11 @@
 #include "PvWnd.h"
 
 #include "HotAreaList.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
 
-#include <new.h>
+struct MenuList;
 
 extern int g_cursorState;
 extern int g_nNativeWindowCount;

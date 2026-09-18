@@ -4,8 +4,10 @@
 #include "../Managers/ObjectManager.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/ViewData.h"
+#include "AI/Base/GameObject.h"
 #include "FormationManager.h"
 #include "GenericGroup.h"
+#include "Visos/Foundation/VsRect.h"
 
 #include <string.h>
 

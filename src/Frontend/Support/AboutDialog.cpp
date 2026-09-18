@@ -1,7 +1,6 @@
 #include "AboutDialog.h"
 
 #include "../../Platform/Windows/Entry.h"
-#include "../../Visos/Foundation/VsMem.h"
 #include "../../Visos/Sound/SoundManager.h"
 
 // GLOBAL: LEMBALL 0x004a05ec

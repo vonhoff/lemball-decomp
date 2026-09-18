@@ -7,7 +7,6 @@
 
 class AiCoord;
 class GameObject;
-class InvisibleSwitchManager;
 // SIZE 0x2b8
 // VTABLE: LEMBALL 0x00493120
 class InvisibleSwitch : public GlobalGameObject {

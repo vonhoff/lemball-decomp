@@ -3,6 +3,8 @@
 #include "../Base/Coord3d.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/Ice.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Managers/BaseObjectManager.h"
 
 // 68K 0x10612448 __ct__11CIceManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0042d7a0

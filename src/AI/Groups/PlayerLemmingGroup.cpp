@@ -7,7 +7,10 @@
 #include "../Navigation/AiDestinationEntry.h"
 #include "../Navigation/AiDestinationList.h"
 #include "../Objects/PlayerLemming.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Groups/GenericGroup.h"
 
 // 68K 0x1060e81a __ct__19CPlayerLemmingGroupFP3CAIP14CObjectManagerP17CFormationManager
 // FUNCTION: LEMBALL 0x00414010

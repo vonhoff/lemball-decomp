@@ -3,6 +3,7 @@
 
 #include "PvGdiBitmap.h" // complete type
 #include "PvSurface.h"   // complete type
+class VsRect;
 
 class CopyToBackBuff;
 class CopyColourToBackBuff;

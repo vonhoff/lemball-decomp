@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDIRECTSOUNDEFFECT_H
 #define LEMBALL_VISOS_TARGET_TARGETDIRECTSOUNDEFFECT_H
-
-#include "IDirectSoundBuffer.h"
+class IDirectSoundBuffer;
 
 const char* TargetDescribeDirectSoundError(unsigned int p_error);
 

@@ -10,35 +10,28 @@
 #include "../Messages/GameStateMessage.h"
 #include "../Objects/Bullet.h"
 #include "../Objects/SwitchEntry.h"
+#include "AI/Base/ObjectTypes.h"
 
 class AiCursor;
 class AnimSpecial;
-class Ball;
 class BallManager;
 class BalloonPost;
 class BaseQueue;
 class BulletManager;
-class C2D;
-class Collectable;
 class CollectableManager;
 class DoorManager;
-class Enemy;
 class EnemyGroupManager;
-class Flag;
 class FormationManager;
 class Game;
 class GameObject;
-class GodManager;
 class GroundAnim;
 class HandManager;
 class IceManager;
 class Info;
-class InvisibleSwitch;
 class InvisibleSwitchManager;
 class LaserManager;
 class LevelLoader;
 class LiftManager;
-class Main2DDisplay;
 class Map;
 class Maze;
 class MineManager;
@@ -47,24 +40,16 @@ class MoverManager;
 class NodeManager;
 class ObjectManager;
 class PaintGunManager;
-class Panel;
-class PanelButton;
-class PanelLemming;
-class PanelPauseButton;
 class PbNetworkGame;
 class PlayerLemming;
 class PlayerLemmingGroupManager;
 class RocketManager;
-class Sheep;
 class SheepGroupManager;
-class Slinky;
 class SlinkyManager;
 class TrampolineManager;
 class TrapDoorManager;
 class ViewData;
 class VsRect;
-class WindowsCursorMotionState;
-struct Message;
 enum eGameStatus {
 	GAME_STATUS_0 = 0,
 	GAME_STATUS_1 = 1,

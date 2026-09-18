@@ -1,9 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDIBCONTEXT_H
 #define LEMBALL_VISOS_TARGET_TARGETDIBCONTEXT_H
 
-class Surface;
-class TargetGDIDriver;
-class TargetGraphicsDriver;
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x00498780
 class TargetDibContext {

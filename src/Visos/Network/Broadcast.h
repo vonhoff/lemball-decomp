@@ -2,8 +2,8 @@
 #define LEMBALL_VISOS_NETWORK_BROADCAST_H
 
 #include "RwSocket.h" // complete type
+#include "Visos/Network/BaseCommonSocket.h"
 
-class BasePacket;
 class BroadcastMessage;
 class NetworkAddress;
 

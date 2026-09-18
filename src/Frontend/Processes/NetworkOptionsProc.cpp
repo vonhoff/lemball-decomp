@@ -4,7 +4,6 @@
 #include "../../Network/Game/NetworkManager.h"
 #include "../../Network/Messages/GameAcceptMessage.h"
 #include "../../Network/Messages/GameRejectMessage.h"
-#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Messaging/BasePacketHeader.h"
 #include "../../Visos/Messaging/ReadPacket.h"
 #include "../../Visos/Network/BaseNetwork.h"
@@ -14,6 +13,9 @@
 #include "../Drawers/NetworkOptionsDrawer.h"
 
 #define g_pNetworkOptionsDrawer ((NetworkOptionsDrawer*) g_pBaseFrontendDrawer)
+
+#include "Frontend/Base/BaseFrontendProcess.h"
+#include "Visos/Messaging/NetworkMessage.h"
 
 #include <new.h>
 

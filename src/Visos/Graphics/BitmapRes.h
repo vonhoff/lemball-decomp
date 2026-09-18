@@ -2,7 +2,6 @@
 #define LEMBALL_VISOS_GRAPHICS_BITMAPRES_H
 
 #include "BitmapResBase.h"
-class Gdi;
 
 // SIZE 0x24
 // VTABLE: LEMBALL 0x00497918

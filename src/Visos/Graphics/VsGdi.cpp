@@ -27,10 +27,17 @@
 #include "ZBuffClear.h"
 #include "Zrle.h"
 
-#include <new.h>
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
+#include "Visos/Foundation/ChangeListItem.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/PvBackBuffSurface.h"
+#include "Visos/Graphics/PvGdiBitmap.h"
+#include "Visos/Graphics/PvScrollableSurface.h"
+#include "Visos/Graphics/PvZBuffSurface.h"
+
 #include <windows.h>
 
 extern "C" __declspec(dllimport) int __stdcall GdiFlush();

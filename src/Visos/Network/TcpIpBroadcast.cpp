@@ -5,6 +5,12 @@
 #include "../Foundation/VsOStream.h"
 #include "TcpIpNetwork.h"
 #include "TcpIpNetworkAddress.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Network/BaseCommonSocket.h"
+#include "Visos/Network/Broadcast.h"
+#include "Visos/Network/NetworkAddress.h"
+#include "Visos/Network/TcpIpReadSocket.h"
+#include "Visos/Network/TcpIpRwSocket.h"
 
 #include <memory.h>
 #include <new.h>

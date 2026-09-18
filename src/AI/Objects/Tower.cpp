@@ -1,6 +1,9 @@
 #include "Tower.h"
 
 #include "../../Map/Base/Map.h"
+#include "AI/Base/AiCoord.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 // 68K 0x1011ab2c DoActivate__6CTowerFv
 // FUNCTION: LEMBALL 0x0041c5a0

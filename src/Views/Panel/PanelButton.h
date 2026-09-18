@@ -7,11 +7,8 @@
 #include "../../Visos/Graphics/DepressedButton.h" // complete type
 #include "../../Visos/Graphics/Line.h"            // complete type
 
-class GWnd;
-class HotAreaHandler;
 class PanelLemming;
 class PvGWnd;
-struct VsPoint;
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x00497508 GWnd
 // VTABLE: LEMBALL 0x004974e0 HotAreaHandler

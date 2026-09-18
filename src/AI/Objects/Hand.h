@@ -5,7 +5,6 @@
 
 class AiCoord;
 class GameObject;
-class HandManager;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x00496198
 class Hand : public GlobalGameObject {

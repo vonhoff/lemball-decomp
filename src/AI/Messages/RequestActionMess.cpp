@@ -1,6 +1,8 @@
 #include "RequestActionMess.h"
 
 #include "../Base/GlobalGameObject.h"
+#include "AI/Messages/GameMessageIds.h"
+#include "AI/Messages/GameObjectMess.h"
 #include "RequestReplyMess.h"
 
 // 68K 0x1060b54c __ct__18CRequestActionMessFv

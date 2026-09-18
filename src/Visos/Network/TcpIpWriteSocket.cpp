@@ -2,6 +2,8 @@
 
 #include "TcpIpNetwork.h"
 #include "TcpIpNetworkAddress.h"
+#include "Visos/Network/BaseCommonSocket.h"
+#include "Visos/Network/WriteSocket.h"
 
 struct TcpIpDestinationAddress {
 	unsigned short m_family;

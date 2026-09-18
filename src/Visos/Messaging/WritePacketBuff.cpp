@@ -1,8 +1,7 @@
 #include "WritePacketBuff.h"
 
+#include "Visos/Messaging/BasePacketBuff.h"
 #include "WritePacket.h"
-
-#include <new.h>
 
 WritePacketBuff::WritePacketBuff()
 {

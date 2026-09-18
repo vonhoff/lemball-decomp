@@ -2,7 +2,6 @@
 #define LEMBALL_VISOS_TARGET_TARGETMASTERINPUTITEM_H
 
 class BaseQueue;
-class MasterInput;
 class VsOStream;
 // VTABLE: LEMBALL 0x0049a458
 class TargetMasterInputItem {

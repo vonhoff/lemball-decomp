@@ -12,6 +12,7 @@
 // clang-format off: mmsystem.h requires Win32 types.
 #include <windows.h>
 #include <mmsystem.h>
+#include "Visos/Target/IDirectSoundBuffer.h"
 // clang-format on
 
 unsigned short TargetByteSwap16(unsigned short p_value);

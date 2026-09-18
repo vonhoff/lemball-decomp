@@ -3,9 +3,6 @@
 
 #include "../../Visos/Graphics/GraphicButton.h" // complete type
 
-class GWnd;
-class GunController;
-class HotAreaHandler;
 class PvGWnd;
 class TrackWindow;
 class VsRect;

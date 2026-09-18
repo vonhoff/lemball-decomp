@@ -2,6 +2,10 @@
 
 #include "../../Control/Game/Game.h"
 #include "../../Map/Base/Map.h"
+#include "AI/Base/Coord3d.h"
+#include "AI/Objects/GroundAnimEntry.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 
 // 68K 0x1060e30e __ct__11CGroundAnimFv
 // FUNCTION: LEMBALL 0x0040cf00

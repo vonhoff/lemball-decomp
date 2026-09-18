@@ -7,6 +7,12 @@
 #include "../../Visos/Foundation/VsOStream.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBitmap.h"
+#include "Frontend/Base/BaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/BitmapRes.h"
 
 #include <new.h>
 

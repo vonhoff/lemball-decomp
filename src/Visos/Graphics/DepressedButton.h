@@ -2,6 +2,8 @@
 #define LEMBALL_VISOS_GRAPHICS_DEPRESSEDBUTTON_H
 
 #include "PvButton.h" // complete type
+class PvGWnd;
+class VsRect;
 
 // SIZE 0x10c
 // VTABLE: LEMBALL 0x00497630 GWnd

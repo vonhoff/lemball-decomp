@@ -4,6 +4,9 @@
 #include "BaseQueue.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include "Visos/Foundation/Message.h"
+#include "Visos/Target/TargetInputTranslationEntry.h"
+
 #include <windows.h>
 
 // 68K 0x10100692 ProcessMsg__11CTranslatorFP10tagMESSAGE

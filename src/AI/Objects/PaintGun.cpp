@@ -5,6 +5,14 @@
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Navigation/Ai.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Objects/Bullet.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x1061b270 __ct__9CPaintGunFv
 // FUNCTION: LEMBALL 0x0042bad0

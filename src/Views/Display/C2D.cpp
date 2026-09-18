@@ -3894,6 +3894,28 @@ void C2D::Draw(const VsRect& p_rect)
 }
 
 #include "../../Visos/Foundation/ChangeList.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/C3DVector.h"
+#include "AI/Base/GameObject.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BaseCursor.h"
+#include "Visos/Graphics/BaseRemap.h"
+#include "Visos/Graphics/Bitmap.h"
+#include "Visos/Graphics/DrawingMark.h"
+#include "Visos/Graphics/HotAreaHandler.h"
+#include "Visos/Graphics/Line.h"
+#include "Visos/Graphics/PopActive.h"
+#include "Visos/Graphics/PushActive.h"
+#include "Visos/Graphics/SolidRect.h"
+
+class BaseQueueHandler;
+class Remap;
 
 // 68K 0x10b05fa8 ReplaceBackground__3C2DFv
 // FUNCTION: LEMBALL 0x00440400

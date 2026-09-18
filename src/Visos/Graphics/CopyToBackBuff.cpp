@@ -2,6 +2,7 @@
 
 #include "Gdi.h"
 #include "VsGdi.h"
+class ZBuffScroll;
 
 // 68K 0x10101efe Draw__15CCopyToBackBuffFP4CGDI
 // FUNCTION: LEMBALL 0x00439900

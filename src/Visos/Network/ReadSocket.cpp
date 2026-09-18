@@ -10,6 +10,10 @@
 #include "../Messaging/ReadPacket.h"
 #include "NetworkAddress.h"
 #include "TcpIpNetwork.h"
+#include "Visos/Messaging/BasePacketBuff.h"
+#include "Visos/Messaging/NetworkMessage.h"
+#include "Visos/Network/BaseCommonSocket.h"
+#include "Visos/Network/BaseNetwork.h"
 
 #include <new.h>
 

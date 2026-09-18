@@ -1,5 +1,9 @@
 #include "PvSurface.h"
 
+#include "Visos/Foundation/VsRect.h"
+
+struct VsSize;
+
 // 68K 0x10215dd2 __ct__10CPVSurfaceFv
 // FUNCTION: LEMBALL 0x004663d0
 PvSurface::PvSurface()

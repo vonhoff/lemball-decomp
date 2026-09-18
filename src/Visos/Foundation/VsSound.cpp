@@ -5,8 +5,7 @@
 #include "../Target/MciMusicDevice.h"
 #include "../Target/TargetDirectSoundDevice.h"
 #include "../Target/TargetWaveSoundDevice.h"
-
-#include <new.h>
+#include "Visos/Sound/BaseSoundDevice.h"
 
 // 68K 0x101038e8 InitSound__FUcUciP4CWndUc
 // FUNCTION: LEMBALL 0x0045b770

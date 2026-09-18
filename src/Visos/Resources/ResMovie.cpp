@@ -2,6 +2,9 @@
 
 #include "MogRes.h"
 #include "ResourceTypeList.h"
+#include "Visos/Resources/ResBaseList.h"
+#include "Visos/Resources/ResInt.h"
+#include "Visos/Resources/ResString.h"
 
 // 68K 0x10204158 Load__9CResMOVIEFUl
 // FUNCTION: LEMBALL 0x0045de70

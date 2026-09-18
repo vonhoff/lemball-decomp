@@ -2,6 +2,8 @@
 
 #include "../../Control/Game/Demo.h"
 #include "../Resources/Manifest.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Graphics/BaseCursor.h"
 
 extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void* p_instance, const char* p_name);
 extern "C" __declspec(dllimport) int __stdcall GetCursorPos(void* p_point);

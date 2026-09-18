@@ -1,5 +1,7 @@
 #include "NetworkGameStage.h"
 
+#include "Visos/Messaging/NetworkMessage.h"
+
 // 68K 0x10a0000c __ct__17CNetworkGameStageFv
 // FUNCTION: LEMBALL 0x004523b0
 NetworkGameStage::NetworkGameStage() : NetworkMessage(4)

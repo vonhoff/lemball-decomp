@@ -2,8 +2,6 @@
 
 #include "HeaderMessage.h"
 
-#include <new.h>
-
 // 68K 0x10206dc4 __ct__8CHeadersFi
 // FUNCTION: LEMBALL 0x00479620
 Headers::Headers(int p_arg0)

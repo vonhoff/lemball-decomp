@@ -22,7 +22,12 @@
 #include "../Objects/BalloonPost.h"
 #include "../Objects/Bullet.h"
 #include "../Objects/Ice.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/C3DVector.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Messages/GameMessageIds.h"
 #include "ViewData.h"
+#include "Visos/Foundation/VsDebug.h"
 
 #include <string.h>
 

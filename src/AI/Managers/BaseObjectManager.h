@@ -4,7 +4,6 @@
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
 class GlobalGameObject;
-class GodManager;
 class ViewData;
 class BaseNetwork;
 extern BaseNetwork* g_pBaseNetwork;

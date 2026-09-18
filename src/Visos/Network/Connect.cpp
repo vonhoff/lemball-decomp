@@ -1,12 +1,16 @@
 #include "Connect.h"
 
 #include "../Foundation/BaseQueue.h"
-#include "../Foundation/VsMem.h"
 #include "../Foundation/VsTime.h"
 #include "BaseNetwork.h"
 #include "Broadcast.h"
+#include "Visos/Foundation/BaseQueueHandler.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Messaging/NetworkMessage.h"
+#include "Visos/Network/ReadSocket.h"
+#include "Visos/Network/RwSocket.h"
+#include "Visos/Network/WriteSocket.h"
 
-#include <new.h>
 #include <string.h>
 
 extern "C" unsigned long __stdcall timeGetTime(void);

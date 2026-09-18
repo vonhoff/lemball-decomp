@@ -8,8 +8,15 @@
 #include "../../Visos/Resources/ResAnim.h"
 #include "GunButton.h"
 #include "TrackerButton.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Resources/ResBase.h"
 
 #include <new.h>
+
+class PvGWnd;
 
 // 68K 0x10802a2e __ct__11CGunButtonsFP5CGWndP4CGDIiiPUlUciiiUlPvUl
 // FUNCTION: LEMBALL 0x0044c270

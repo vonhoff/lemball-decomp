@@ -6,14 +6,6 @@
 #include "../Base/ObjectActions.h"
 #include "../Base/ObjectTypes.h"
 
-class C2D;
-class GameObject;
-class Laser;
-class PlayerLemming;
-class Rocket;
-class SoundView;
-class Switch;
-class TrapDoor;
 // SIZE 0x4c
 class ViewData {
 public:

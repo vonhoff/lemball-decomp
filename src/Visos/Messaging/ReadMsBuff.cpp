@@ -1,6 +1,5 @@
 #include "ReadMsBuff.h"
 
-#include "../Foundation/VsMem.h"
 #include "../Network/TcpIpNetwork.h"
 #include "BasePacketHeader.h"
 

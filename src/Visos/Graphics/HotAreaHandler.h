@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_HOTAREAHANDLER_H
 
 #include "../Foundation/VsRect.h"
+struct VsPoint;
 
 struct Message;
 class HotAreaList;

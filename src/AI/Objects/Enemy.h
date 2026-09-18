@@ -5,8 +5,6 @@
 #include "../Base/GameObject.h" // complete type
 
 class Ai;
-class Bullet;
-class EnemyGroupManager;
 struct WaypointInformation;
 enum eEnemyStateActions {
 	ENEMY_ACTION_STOP = 0,

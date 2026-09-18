@@ -2,7 +2,6 @@
 
 #include "../../Visos/Foundation/VsMath.h"
 #include "../Navigation/AiDestinationList.h"
-#include "../Objects/ViewData.h"
 #include "FormationManager.h"
 
 #include <string.h>
@@ -291,6 +290,11 @@ void GenericGroup::CalculateBoundingBox(int p_radius)
 }
 
 #include "../Navigation/AiDestinationEntry.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Visos/Foundation/Vector.h"
+#include "Visos/Foundation/VsRect.h"
 
 // 68K 0x1060cb04 AddNewWaypoint__13CGenericGroupF7AICOORDP17CFormationManager
 // FUNCTION: LEMBALL 0x0041e290

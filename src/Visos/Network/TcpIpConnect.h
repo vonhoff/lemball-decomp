@@ -3,9 +3,13 @@
 
 #include "Connect.h"       // complete type
 #include "TcpIpRwSocket.h" // complete type
-
-class NetworkAddress;
-class NetworkMessage;
+#include "Visos/Network/BaseCommonSocket.h"
+#include "Visos/Network/ReadSocket.h"
+#include "Visos/Network/RwSocket.h"
+#include "Visos/Network/TcpIpCommonSocket.h"
+#include "Visos/Network/TcpIpReadSocket.h"
+#include "Visos/Network/TcpIpWriteSocket.h"
+#include "Visos/Network/WriteSocket.h"
 
 // SIZE 0x170
 // VTABLE: LEMBALL 0x0049a368 TargetNetworkWindow

@@ -3,6 +3,7 @@
 
 #include "../Foundation/VsRect.h" // complete type
 #include "../Foundation/VsSize.h" // complete type
+struct VsPoint;
 
 class Gdi;
 class Frames;

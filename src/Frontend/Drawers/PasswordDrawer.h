@@ -5,15 +5,11 @@
 #include "../../Visos/Graphics/SolidRect.h"   // complete type
 #include "../Base/BaseFrontendDrawer.h"
 
-class AnimsManager;
-class BaseQueueHandler;
-class Drawer;
 class Gdi;
 class Main2DDisplay;
 class PasswordHiliteWindow;
 class PvButton;
 class VsRect;
-struct Message;
 struct PasswordTextPosition {
 	int m_x;
 	int m_y;

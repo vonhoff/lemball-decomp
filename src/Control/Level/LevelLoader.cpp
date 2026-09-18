@@ -34,8 +34,12 @@
 #include "../Support/PreviewData.h"
 #include "LoadBlockHeader.h"
 
-#include <new.h>
 #include <string.h>
+struct LoadEnemyData;
+struct LoadGroundName;
+struct LoadGroundSurfaceData;
+struct LoadSheepData;
+struct _Filet;
 
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
 														   char* p_text,

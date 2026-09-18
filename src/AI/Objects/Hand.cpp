@@ -3,6 +3,14 @@
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x10610d62 __ct__5CHandFv
 // FUNCTION: LEMBALL 0x00427ad0

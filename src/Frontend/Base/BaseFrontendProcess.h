@@ -3,11 +3,10 @@
 
 #include "../../Visos/Foundation/BaseProcess.h"      // complete type
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Network/Connect.h"
 #include "../Support/UserActionMessage.h"
+class CConnect;
 
 class Game;
-class NetworkOptionsProc;
 class ReadPacket;
 struct Message;
 // SIZE 0x28

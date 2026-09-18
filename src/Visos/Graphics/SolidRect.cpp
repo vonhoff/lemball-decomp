@@ -2,6 +2,7 @@
 
 #include "Gdi.h"
 #include "VsGdi.h"
+class ClipRect;
 
 // 68K 0x1010194e Draw__10CSolidRectFP4CGDI
 // FUNCTION: LEMBALL 0x00432b10

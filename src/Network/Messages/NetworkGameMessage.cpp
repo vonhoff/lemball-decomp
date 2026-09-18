@@ -11,6 +11,7 @@ NetworkGameMessage::NetworkGameMessage() : NetworkMessage(5)
 }
 
 #include "../../Visos/Foundation/String.h"
+#include "Visos/Messaging/NetworkMessage.h"
 
 #include <string.h>
 

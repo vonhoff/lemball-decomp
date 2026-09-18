@@ -14,7 +14,6 @@
 #include "Game.h"
 #include "GameTime.h"
 
-#include <new.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy)

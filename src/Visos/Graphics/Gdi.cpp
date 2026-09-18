@@ -6,8 +6,6 @@
 #include "Primitive.h"
 #include "VsGdi.h"
 
-#include <new.h>
-
 // GLOBAL: LEMBALL 0x004a1ff4
 Primitive* g_pCurrentPrimitive = 0;
 

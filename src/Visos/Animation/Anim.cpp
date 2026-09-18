@@ -3,6 +3,7 @@
 #include "../Graphics/Gdi.h"
 #include "../Graphics/VsGdi.h"
 #include "../Resources/ResAnim.h"
+class ResZrle;
 
 // 68K 0x10115b4e __ct__5CAnimFv
 // FUNCTION: LEMBALL 0x00443990

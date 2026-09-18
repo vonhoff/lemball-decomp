@@ -1,8 +1,5 @@
 #include "VsPoint.h"
 
-#include "VsRect.h"
-#include "VsSize.h"
-
 // FUNCTION: LEMBALL 0x00442130
 VsPoint& VsPoint::operator=(const VsPoint& p_source)
 {

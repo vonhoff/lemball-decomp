@@ -10,6 +10,10 @@
 #include "../Resources/ResZrle.h"
 #include "GWnd.h"
 #include "Gdi.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/PushActive.h"
 #include "VsGdi.h"
 #include "Zrle.h"
 

@@ -1,7 +1,7 @@
 #include "VsMath.h"
 
 #include "../../Control/Game/Game.h"
-#include "Fixed.h"
+#include "AI/Base/AiCoord.h"
 
 #include <stdlib.h>
 

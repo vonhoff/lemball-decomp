@@ -2,12 +2,9 @@
 #define LEMBALL_VIEWS_SOUND_SOUNDVIEW_H
 
 #include "SoundEffects.h"
+class LoadUpdate;
 
 class AiCoord;
-class C2D;
-class Panel;
-class PanelButton;
-class PanelPauseButton;
 class ViewData;
 struct EffectSpec {
 	int m_soundId;              // 0x00
@@ -21,8 +18,6 @@ struct EffectSlot {
 	unsigned int m_handle;      // 0x04
 	unsigned long m_lastPlayed; // 0x08
 };
-
-#include "LoadUpdate.h"
 
 // SIZE 0x2cc
 class SoundView {

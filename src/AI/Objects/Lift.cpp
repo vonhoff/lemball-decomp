@@ -5,6 +5,14 @@
 #include "../../Map/Base/Map.h"
 #include "../../Visos/Network/Connect.h"
 #include "../Base/Coord3d.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 extern unsigned short g_wMovingLiftCount;
 

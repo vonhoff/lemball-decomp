@@ -3,10 +3,9 @@
 
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
+#include "AI/Base/ObjectTypes.h"
 
-class GameObject;
 class GlobalGameObject;
-class ObjectManager;
 // MINIMUM SIZE 0x150
 // VTABLE: LEMBALL 0x004948d0
 class Crate : public BaseGlobalObject {

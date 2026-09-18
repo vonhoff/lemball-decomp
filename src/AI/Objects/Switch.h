@@ -5,8 +5,6 @@
 #include "../Base/BaseGlobalObject.h" // complete type
 #include "SwitchEntry.h"              // complete type
 
-class GameObject;
-class ViewData;
 // MINIMUM SIZE 0x260
 // VTABLE: LEMBALL 0x00494a18
 class Switch : public BaseGlobalObject {

@@ -3,6 +3,8 @@
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Graphics/PvButton.h"
 #include "PadToButtonEntry.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/VsPoint.h"
 
 // 68K 0x10b0f952 __ct__12CPadToButtonFi
 // FUNCTION: LEMBALL 0x0043a250

@@ -1,7 +1,7 @@
 #include "GunButton.h"
 
 #include "../../Views/Sound/SoundView.h"
-#include "GunButtons.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x10802938 sgn__Fi
 // FUNCTION: LEMBALL 0x0044c1e0

@@ -1,7 +1,5 @@
 #include "RepeatAnim.h"
 
-#include "../Foundation/VsTime.h"
-
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // 68K 0x10200082 StartAnim__11CRepeatAnimFUl

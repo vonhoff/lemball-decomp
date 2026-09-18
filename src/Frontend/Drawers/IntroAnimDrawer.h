@@ -5,13 +5,9 @@
 #include "../Base/BaseFrontendDrawer.h"     // complete type
 #include "../Windows/IntroAnimAnimWindow.h" // complete type
 
-class AnimsManager;
-class BaseQueueHandler;
-class Drawer;
 class Gdi;
 class Main2DDisplay;
 class VsRect;
-struct Message;
 // SIZE 0x484
 // VTABLE: LEMBALL 0x00497a68 Drawer
 // VTABLE: LEMBALL 0x00497a58 BaseQueueHandler

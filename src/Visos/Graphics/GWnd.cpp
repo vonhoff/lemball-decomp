@@ -28,6 +28,12 @@ void GWnd::OnSize()
 }
 
 #include "PvGWnd.inl"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/PvSurface.h"
+#include "Visos/Graphics/PvWnd.h"
+#include "Visos/Graphics/Wnd.h"
 
 // FUNCTION: LEMBALL 0x00463b50
 GWnd::GWnd()

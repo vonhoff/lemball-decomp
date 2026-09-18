@@ -5,7 +5,6 @@
 #include "../../Visos/Foundation/BaseQueue.h"
 #include "../../Visos/Foundation/TextManager.h"
 #include "../../Visos/Foundation/VsString.h"
-#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/GraphicButton.h"
 #include "../../Visos/Graphics/PvButton.h"
@@ -13,9 +12,24 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResFont.h"
 #include "../Windows/PasswordHiliteWindow.h"
+#include "Frontend/Base/BaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Animation/AnimsManager.h"
+#include "Visos/Animation/StaticAnim.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BitmapRes.h"
+#include "Visos/Graphics/PvGWnd.h"
+#include "Visos/Graphics/SolidRect.h"
 
-#include <new.h>
 #include <string.h>
+
+class Frames;
+class ResBitmap;
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 extern char g_abPasswordLevelText[24];

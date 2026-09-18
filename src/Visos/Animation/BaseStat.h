@@ -1,10 +1,8 @@
 #ifndef LEMBALL_VISOS_ANIMATION_BASESTAT_H
 #define LEMBALL_VISOS_ANIMATION_BASESTAT_H
 
-#include "../Foundation/Arena.h"
 #include "../Foundation/String.h" // complete type
-
-class VsOStream;
+#include "Visos/Foundation/ArenaBase.h"
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x00498960
@@ -25,7 +23,5 @@ private:
 	unsigned int m_sampleCount; // 0x14
 	String m_description;       // 0x18
 };
-
-#include "MogloadStat.h"
 
 #endif

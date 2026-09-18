@@ -1,6 +1,7 @@
 #include "FileNetworkAddress.h"
 
 #include "../Foundation/VsOStream.h"
+#include "Visos/Network/NetworkAddress.h"
 
 #include <string.h>
 

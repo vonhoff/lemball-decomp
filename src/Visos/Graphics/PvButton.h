@@ -5,6 +5,9 @@
 #include "GWnd.h"           // complete type
 #include "HotAreaHandler.h" // complete type
 #include "SolidRect.h"
+class Primitive;
+class PvGWnd;
+class VsRect;
 
 // SIZE 0x104
 // VTABLE: LEMBALL 0x00499658 GWnd

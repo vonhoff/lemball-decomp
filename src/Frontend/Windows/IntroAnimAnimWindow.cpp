@@ -3,6 +3,7 @@
 #include "../../Control/Game/GameStatus.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Drawers/IntroAnimDrawer.h"
+#include "Visos/Graphics/AnimWnd.h"
 
 // GLOBAL: LEMBALL 0x0049f194
 char g_szMoviePrefix[] = "lemball";

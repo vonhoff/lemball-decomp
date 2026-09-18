@@ -3,10 +3,6 @@
 
 #include "TargetGDIDriver.h" // complete type
 
-class TargetDrawingContext;
-class TargetPlanarDisplayDibDriver;
-class VsRect;
-struct VsPoint;
 struct VsSize;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x004987b0

@@ -7,16 +7,7 @@
 #include "../../Visos/Graphics/DrawingMark.h"
 #include "../../Visos/Graphics/GWnd.h" // complete type
 
-class BaseFrontendDrawer;
-class BaseFrontendProcess;
-class CdLoadAnim;
-class Drawer;
-class FrontendResourceLoader;
 class Game;
-class MainOptions1Drawer;
-class NetworkOptionsDrawer;
-struct MenuList;
-struct Message;
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8 GWnd
 // VTABLE: LEMBALL 0x00496ba8 BaseQueueHandler

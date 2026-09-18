@@ -43,6 +43,13 @@ void Crate::Restart()
 
 #include "../../Map/Base/Map.h"
 #include "../Managers/ObjectManager.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/BaseGlobalObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x106191bc TriggerContents__6CCrateFv
 // FUNCTION: LEMBALL 0x0041ccc0

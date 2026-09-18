@@ -3,8 +3,6 @@
 
 #include "../../Visos/Messaging/NetworkMessage.h" // complete type
 
-class NetworkManager;
-class NetworkOptionsProc;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498598
 class GameFlaggedMessage : public NetworkMessage {

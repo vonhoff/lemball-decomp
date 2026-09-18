@@ -3,8 +3,6 @@
 
 #include "../../Visos/Graphics/HotAreaHandler.h" // complete type
 
-class NetworkOptionsDrawer;
-struct VsPoint;
 // SIZE 0x44
 // VTABLE: LEMBALL 0x004986b0
 class EntryHandler : public HotAreaHandler {

@@ -1,6 +1,8 @@
 #include "RamArena.h"
 
 #include "MramBlock.h"
+#include "Visos/Foundation/Arena.h"
+#include "Visos/Foundation/MBlock.h"
 
 // 68K 0x102156bc __ct__9CRAMArenaFUlPcP6CArenaP6CArena
 // FUNCTION: LEMBALL 0x0045a3f0

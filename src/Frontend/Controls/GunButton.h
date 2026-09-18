@@ -3,8 +3,6 @@
 
 #include "../../Visos/Graphics/GraphicButton.h" // complete type
 
-class GWnd;
-class HotAreaHandler;
 class PvGWnd;
 struct VsPoint;
 // SIZE 0x130

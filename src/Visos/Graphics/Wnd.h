@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_WND_H
 
 #include "PvWnd.h" // complete type
+struct VsPoint;
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x004993d0

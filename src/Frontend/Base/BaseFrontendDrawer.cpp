@@ -31,8 +31,27 @@ extern int* g_pSentinel;
 extern char g_szUnknownUserActionSpecified[];
 extern char g_szUnknownUserActionReceived[];
 
+#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Support/CoordPair.h"
+#include "Frontend/Support/UserActionMessage.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Animation/AnimsManager.h"
+#include "Visos/Animation/StaticAnim.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BaseCursor.h"
+#include "Visos/Graphics/BitmapRes.h"
+#include "Visos/Graphics/DrawingMark.h"
+#include "Visos/Graphics/Line.h"
+#include "Visos/Graphics/Primitive.h"
+
 #include <new.h>
 #include <string.h>
+
+class Frames;
 
 // 68K 0x10800108 __ct__19CBaseFrontendDrawerFP14CMain2DDisplayP4CGDIRC7CVSRect14eFlowProcessesiiiii
 // FUNCTION: LEMBALL 0x00445420

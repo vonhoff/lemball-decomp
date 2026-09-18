@@ -7,7 +7,6 @@
 class Ai;
 class Collectable;
 class GameObject;
-class ViewData;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x004955a0
 class CollectableManager : public BaseObjectManager {

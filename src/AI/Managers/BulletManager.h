@@ -5,7 +5,6 @@
 #include "../Objects/Bullet.h"
 #include "BaseObjectManager.h" // complete type
 
-class ViewData;
 class VsRect;
 // SIZE 0xe0
 // VTABLE: LEMBALL 0x00494008

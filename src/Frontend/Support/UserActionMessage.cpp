@@ -1,5 +1,7 @@
 #include "UserActionMessage.h"
 
+#include "Visos/Messaging/NetworkMessage.h"
+
 // 68K 0x1080000c __ct__18CUserActionMessageFv
 // FUNCTION: LEMBALL 0x004453b0
 UserActionMessage::UserActionMessage() : NetworkMessage(8)

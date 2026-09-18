@@ -3,7 +3,15 @@
 #include "../../Control/Game/Game.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/Map.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/BaseGlobalObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 #include "ViewData.h"
+#include "Views/Sound/SoundEffects.h"
 
 // GLOBAL: LEMBALL 0x0049cf3c
 unsigned int g_dwTrapDoorLocalSfxState = 0;

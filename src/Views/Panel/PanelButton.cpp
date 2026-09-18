@@ -8,14 +8,28 @@
 #include "../../Visos/Graphics/Cursor.h"
 #include "../../Visos/Graphics/Gdi.h"
 #include "../../Visos/Graphics/HotAreaList.h"
-#include "../../Visos/Graphics/PvSurface.h"
 #include "../../Visos/Graphics/VsGdi.h"
 #include "../Display/C2D.h"
 #include "../Sound/SoundView.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
 #include "Panel.h"
 #include "PanelLemming.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Animation/Anim.h"
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Foundation/VsSize.h"
+#include "Visos/Graphics/BaseCursor.h"
+#include "Visos/Graphics/DepressedButton.h"
+#include "Visos/Graphics/GWnd.h"
+#include "Visos/Graphics/Line.h"
+#include "Visos/Graphics/PvGWnd.h"
 
 #include <memory.h>
+
+class Remap;
+class ResAnim;
 
 extern char g_szButton[];
 

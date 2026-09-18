@@ -1,22 +1,23 @@
 #include "TargetGraphicsDriver.h"
 
-#include "../Foundation/VsInit.h"
-#include "../Foundation/VsOStream.h"
 #include "../Graphics/GWnd.h"
 #include "../Graphics/Gdi.h"
 #include "../Graphics/PvGdiBitmap.h"
 #include "../Graphics/PvWnd.h"
 #include "../Graphics/VsGdi.h"
-#include "TargetGDIDriver.h"
 #include "TargetGdiDrawingContext.h"
-#include "TargetGraphicsSystemState.h"
 #include "TargetWinGDrawCodecState.h"
 
-#include <new.h>
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
+#include "Visos/Foundation/VsPoint.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/PvGWnd.h"
+
 #include <windows.h>
+
+class TargetDrawingContext;
 
 struct IcOpen {
 	unsigned int dwSize;

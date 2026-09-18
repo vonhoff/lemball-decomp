@@ -6,6 +6,14 @@
 #include "../Groups/PlayerLemmingGroup.h"
 #include "../Navigation/Ai.h"
 #include "../Objects/PlayerLemming.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/GameObject.h"
+#include "AI/Base/GlobalGameObject.h"
+#include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
+#include "Views/Sound/SoundEffects.h"
 
 // 68K 0x106072fe __ct__11CDuplicatorFRC7AICOORD
 // FUNCTION: LEMBALL 0x004275b0

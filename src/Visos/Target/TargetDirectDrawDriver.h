@@ -4,10 +4,6 @@
 #include "TargetGraphicsDriver.h" // complete type
 
 struct VsSize;
-class TargetDrawingContext;
-class TargetDibContext;
-class VsRect;
-struct VsPoint;
 struct IDirectDrawPalette;
 struct IDirectDraw;
 struct IDirectDrawSurface;

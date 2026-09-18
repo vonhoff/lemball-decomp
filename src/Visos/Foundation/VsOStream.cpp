@@ -1,6 +1,7 @@
 #include "VsOStream.h"
 
-#include "String.h"
+#include "Visos/Foundation/VsIOs.h"
+#include "Visos/Foundation/VsStreambuf.h"
 #include "VsDebugStreambuf.h"
 #include "VsString.h"
 

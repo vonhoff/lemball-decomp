@@ -7,7 +7,6 @@
 class Ai;
 class GameObject;
 class Mine;
-class ViewData;
 struct Coord3d;
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00495d30

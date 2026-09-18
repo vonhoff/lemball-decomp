@@ -5,12 +5,9 @@
 #include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
 #include "../Base/BaseFrontendDrawer.h"              // complete type
 
-class AnimsManager;
-class Drawer;
 class Gdi;
 class Main2DDisplay;
 class VsRect;
-struct Message;
 // SIZE 0x3bc
 // VTABLE: LEMBALL 0x00497af0 Drawer
 // VTABLE: LEMBALL 0x00497ae0 BaseQueueHandler

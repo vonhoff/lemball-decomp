@@ -3,9 +3,8 @@
 
 #include "../Base/AiCoord.h"          // complete type
 #include "../Base/BaseGlobalObject.h" // complete type
+#include "AI/Base/ObjectTypes.h"
 
-class GameObject;
-class ObjectManager;
 // MINIMUM SIZE 0x146
 // VTABLE: LEMBALL 0x00494268
 class Ammo : public BaseGlobalObject {

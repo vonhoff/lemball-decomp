@@ -1,7 +1,6 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_EDITSTRING_H
 #define LEMBALL_FRONTEND_SUPPORT_EDITSTRING_H
 
-class NetworkOptionsDrawer;
 // SIZE 0x10
 class EditString {
 public:

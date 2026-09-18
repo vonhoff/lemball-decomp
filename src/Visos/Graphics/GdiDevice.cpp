@@ -2,11 +2,9 @@
 
 #include "../Animation/TimeStat.h"
 #include "../Foundation/LocalDebugOStream.h"
-#include "../Foundation/VsMem.h"
 #include "../Foundation/VsTime.h"
+#include "Visos/Foundation/VsOStream.h"
 #include "VsGdi.h"
-
-#include <new.h>
 
 // GLOBAL: LEMBALL 0x004a2008
 GdiDevice* g_pGdiDevice = 0;

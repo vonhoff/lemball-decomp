@@ -2,6 +2,8 @@
 
 #include "../Base/GlobalGameObject.h"
 #include "../Navigation/Ai.h"
+#include "AI/Messages/GameMessageIds.h"
+#include "AI/Messages/GameObjectMess.h"
 
 // 68K 0x1060ba1e __ct__14CObjectHitMessFv
 // FUNCTION: LEMBALL 0x00416c80

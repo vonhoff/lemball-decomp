@@ -4,11 +4,16 @@
 #include "../../Frontend/Base/BaseFrontendProcess.h"
 #include "../../Frontend/Controls/GunController.h"
 #include "../../Views/Display/Main2DDisplay.h"
-#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Resources/ResBitmap.h"
+#include "Frontend/Base/BaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/VsRect.h"
+#include "Visos/Graphics/BitmapRes.h"
 
-#include <new.h>
+class GWnd;
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

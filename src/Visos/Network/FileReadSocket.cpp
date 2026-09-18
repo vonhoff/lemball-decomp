@@ -6,6 +6,12 @@
 #include "FileNetwork.h"
 #include "NetworkAddress.h"
 #include "TcpIpNetwork.h"
+#include "Visos/Messaging/NetworkMessage.h"
+#include "Visos/Network/BaseNetwork.h"
+#include "Visos/Network/FileBaseSocket.h"
+#include "Visos/Network/FileCommonSocket.h"
+#include "Visos/Network/NetworkFile.h"
+#include "Visos/Network/ReadSocket.h"
 
 // 68K 0x102071b6 __ct__15CFileReadSocketFv
 // FUNCTION: LEMBALL 0x00479930

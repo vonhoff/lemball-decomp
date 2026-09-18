@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_RESOURCES_RESZRLE_H
 
 #include "ResBitmap.h" // for ResRaster
+#include "Visos/Resources/ResRaster.h"
 
 // SIZE 0x0c
 struct ZrleHeader {

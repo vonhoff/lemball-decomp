@@ -2,7 +2,7 @@
 
 #include "../Navigation/Ai.h"
 #include "../Objects/Slinky.h"
-#include "../Objects/ViewData.h"
+#include "AI/Base/GameObject.h"
 
 // 68K 0x1061f090 __ct__14CSlinkyManagerFP3CAIi
 // FUNCTION: LEMBALL 0x0040b8e0

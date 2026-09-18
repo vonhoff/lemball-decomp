@@ -3,6 +3,7 @@
 #include "../Resources/ResFont.h"
 #include "CopyText.h"
 #include "Text.h"
+#include "Visos/Foundation/String.h"
 #include "VsSize.h"
 
 // 68K 0x102054aa __ct__12CTextManagerFUliiUi

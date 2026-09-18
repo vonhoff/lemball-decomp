@@ -1,5 +1,8 @@
 #include "VsTrig.h"
 
+#include "Visos/Foundation/Fixed.h"
+#include "Visos/Foundation/Vector.h"
+
 // 68K 0x10119dcc Rotate__6VSTrigCF7CVectorR6CFixedR6CFixed
 // FUNCTION: LEMBALL 0x0041a3e0
 Vector VsTrig::Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos)

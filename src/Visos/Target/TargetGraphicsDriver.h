@@ -7,11 +7,6 @@
 #include "TargetDibContext.h"      // complete type
 #include "TargetDrawingContext.h"  // complete type
 
-class GWnd;
-class Main2DDisplay;
-class Surface;
-class TargetGDIDriver;
-class Wnd;
 class PvGdiBitmap;
 class ResPalette;
 struct TargetGraphicsSystemState;

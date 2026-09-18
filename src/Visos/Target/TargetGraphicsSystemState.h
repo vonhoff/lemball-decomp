@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETGRAPHICSSYSTEMSTATE_H
 #define LEMBALL_VISOS_TARGET_TARGETGRAPHICSSYSTEMSTATE_H
 
-struct VsSize;
 // SIZE 0x0c
 struct TargetGraphicsSystemState {
 	bool SelectDriver(int p_driverMode);

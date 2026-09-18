@@ -5,6 +5,9 @@
 #include "CopyToBackBuff.h" // complete type
 #include "Line.h"           // complete type
 #include "Wnd.h"            // complete type
+class Gdi;
+class PvWnd;
+class VsRect;
 
 struct TargetWinGDrawCodecState;
 

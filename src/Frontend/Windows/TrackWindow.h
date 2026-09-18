@@ -8,9 +8,7 @@
 #include "../../Visos/Graphics/HotAreaHandler.h" // complete type
 #include "../../Visos/Graphics/Line.h"           // complete type
 
-class GunController;
 class PvGWnd;
-class PvWnd;
 // SIZE 0x134
 // VTABLE: LEMBALL 0x00497f48 GWnd
 // VTABLE: LEMBALL 0x00497f20 HotAreaHandler

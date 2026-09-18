@@ -11,6 +11,13 @@
 #include "../../Visos/Resources/ResFont.h"
 #include "../Display/Main2DDisplay.h"
 #include "../Sound/SoundView.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Visos/Animation/AnimsManager.h"
+#include "Visos/Animation/Frames.h"
+#include "Visos/Animation/TimedAnim.h"
+#include "Visos/Foundation/VsPoint.h"
+
+class LoadUpdate;
 
 // GLOBAL: LEMBALL 0x00496f78
 const unsigned int g_style0ObjectClip[4] = {31, 90, 64, 96};

@@ -1,5 +1,10 @@
 #include "FileOpenManagement.h"
 
+#include "Visos/Network/FileCommonSocket.h"
+#include "Visos/Network/FileReadSocket.h"
+#include "Visos/Network/FileWriteSocket.h"
+#include "Visos/Network/OpenCount.h"
+
 // 68K 0x10208096 IncOpenCount__19CFileOpenManagementFv
 // FUNCTION: LEMBALL 0x0047a470
 bool FileOpenManagement::IncOpenCount()

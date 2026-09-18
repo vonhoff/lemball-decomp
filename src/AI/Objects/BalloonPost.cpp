@@ -1,6 +1,10 @@
 #include "BalloonPost.h"
 
 #include "../../Map/Base/Map.h"
+#include "AI/Base/AiCoord.h"
+#include "AI/Base/ObjectTypes.h"
+#include "Map/Ground/Ground.h"
+#include "Map/Ground/GroundArray.h"
 #include "TheBalloonPost.h"
 #include "ViewData.h"
 
