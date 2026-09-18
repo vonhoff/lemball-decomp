@@ -123,7 +123,7 @@ void Door::Delete()
 	int blockY = (m_position.m_yFixed >> 12) / 16;
 
 	switch (m_objectType) {
-	case (eObjectType) 0x19:
+	case OBJECT_DOOR_1:
 		if (blockX >= 0 && blockY + 1 >= 0 && blockX < g_pMap->m_ground.m_width &&
 			g_pMap->m_ground.m_height > blockY + 1) {
 			g_pMap->m_ground.m_ground[(blockY + 1) * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
@@ -135,7 +135,7 @@ void Door::Delete()
 			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
 		}
 		break;
-	case (eObjectType) 0x1a:
+	case OBJECT_DOOR_2:
 		if (blockX + 1 >= 0 && blockY >= 0 && g_pMap->m_ground.m_width > blockX + 1 &&
 			g_pMap->m_ground.m_height > blockY) {
 			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX + 1].m_collision &= ~1;
@@ -159,7 +159,7 @@ void Door::SetCollision()
 	int blockY = (m_position.m_yFixed >> 12) / 16;
 
 	switch (m_objectType) {
-	case (eObjectType) 0x19:
+	case OBJECT_DOOR_1:
 		if (blockX >= 0) {
 			if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
@@ -173,7 +173,7 @@ void Door::SetCollision()
 			}
 		}
 		break;
-	case (eObjectType) 0x1a:
+	case OBJECT_DOOR_2:
 		if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
 		}
@@ -193,7 +193,7 @@ void Door::ResetCollision()
 	int blockY = (m_position.m_yFixed >> 12) / 16;
 
 	switch (m_objectType) {
-	case (eObjectType) 0x19:
+	case OBJECT_DOOR_1:
 		if (blockX >= 0) {
 			if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 				g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
@@ -207,7 +207,7 @@ void Door::ResetCollision()
 			}
 		}
 		break;
-	case (eObjectType) 0x1a:
+	case OBJECT_DOOR_2:
 		if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision &= ~1;
 		}

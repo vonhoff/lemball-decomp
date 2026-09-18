@@ -125,7 +125,7 @@ bool Hand::Process()
 // FUNCTION: LEMBALL 0x00427d70
 bool Hand::StepOn(const AiCoord& p_position, GameObject* p_object)
 {
-	if (p_object->m_objectType == (eObjectType) 2) {
+	if (p_object->m_objectType == OBJECT_PLAYER_2) {
 		int distanceY = (p_position.m_yFixed >> 12) - (m_position.m_yFixed >> 12);
 		int distanceX = (p_position.m_xFixed >> 12) - (m_position.m_xFixed >> 12);
 		if ((distanceX < 0 ? -distanceX : distanceX) < 16 && distanceY >= 0 && distanceY < 48) {
