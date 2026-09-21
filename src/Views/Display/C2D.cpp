@@ -2456,8 +2456,8 @@ static const short pelletOffset[] = {16, 16};
 void C2D::DrawAmmo(ViewData& p_viewData, int p_objectNo)
 {
 	switch (p_viewData.m_action) {
-	case (eAction) 0x18:
-	case (eAction) 0x19:
+	case ACTION_0x18:
+	case ACTION_0x19:
 		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - ammoOffset[0],
 								 p_viewData.m_positionY - ammoOffset[1],
 								 RES_GAME_YELLOW_AMMO,
@@ -2465,7 +2465,7 @@ void C2D::DrawAmmo(ViewData& p_viewData, int p_objectNo)
 								 p_viewData.m_animationTime,
 								 0);
 		break;
-	case (eAction) 0x1a:
+	case ACTION_0x1a:
 		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - pelletOffset[0],
 								 p_viewData.m_positionY - pelletOffset[1],
 								 RES_GAME_EX_PELLET,
@@ -2537,12 +2537,12 @@ void C2D::DrawHand(ViewData& p_viewData)
 	}
 
 	switch (action) {
-	case (eAction) 0x17:
-	case (eAction) 0x18:
+	case ACTION_0x17:
+	case ACTION_0x18:
 		m_lemmingAnims->DrawAnim(drawX, drawY, g_anGroundStyleResourceIds[2], 0, 0, 0);
 		break;
-	case (eAction) 0x19:
-	case (eAction) 0x1a:
+	case ACTION_0x19:
+	case ACTION_0x1a:
 		frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15 / 1000;
 		if (frame > 11) {
 			frame = 11;
@@ -2669,11 +2669,11 @@ void C2D::DrawTrampoline(ViewData& p_viewData)
 	y = p_viewData.m_positionY - trampolineOffset[1];
 
 	switch (p_viewData.m_action) {
-	case (eAction) 0x18:
+	case ACTION_0x18:
 		m_lemmingAnims->DrawAnim(x, y, RES_GAME_TRAMPOLINE, 0, 0, 0);
 		break;
 
-	case (eAction) 0x1b:
+	case ACTION_0x1b:
 		frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15 / 1000;
 		if (frame > 11) {
 			frame = 11;
@@ -2808,12 +2808,12 @@ void C2D::DrawLaserFire(ViewData& p_viewData)
 	int y;
 
 	switch (p_viewData.m_objectType) {
-	case (eObjectType) 0x26:
+	case OBJECT_LASER_HORIZONTAL_BEAM:
 		x = p_viewData.m_positionX - 0xd;
 		y = p_viewData.m_positionY - 9;
 		m_lemmingAnims->DrawAnim(x, y, RES_GAME_LASER_FIRE_NORTH, 0, 0, 0);
 		break;
-	case (eObjectType) 0x32:
+	case OBJECT_LASER_VERTICAL_BEAM:
 		x = p_viewData.m_positionX - 0x16;
 		y = p_viewData.m_positionY - 0xf;
 		m_lemmingAnims->DrawAnim(x, y, RES_GAME_LASER_FIRE_EAST, 0, 0, 0);
@@ -2834,14 +2834,14 @@ void C2D::DrawLaser(ViewData& p_viewData)
 	action = p_viewData.m_action;
 
 	switch (p_viewData.m_objectType) {
-	case (eObjectType) 0x1e:
-	case (eObjectType) 0x30:
+	case OBJECT_LASER_HORIZONTAL:
+	case OBJECT_LASER_EMITTER_H:
 		resourceId = RES_GAME_LASER_EAST;
 		x = p_viewData.m_positionX - 0x14;
 		y = p_viewData.m_positionY - 0xa;
 		break;
-	case (eObjectType) 0x2f:
-	case (eObjectType) 0x31:
+	case OBJECT_LASER_VERTICAL:
+	case OBJECT_LASER_EMITTER_V:
 		resourceId = RES_GAME_LASER_NORTH;
 		x = p_viewData.m_positionX - 0x2e;
 		y = p_viewData.m_positionY - 0xa;
@@ -2849,12 +2849,12 @@ void C2D::DrawLaser(ViewData& p_viewData)
 	}
 
 	switch (action) {
-	case (eAction) 0x17:
-	case (eAction) 0x18:
+	case ACTION_0x17:
+	case ACTION_0x18:
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
 		break;
-	case (eAction) 0x19:
-	case (eAction) 0x1a:
+	case ACTION_0x19:
+	case ACTION_0x1a:
 		frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15 / 1000;
 		if (frame > 17) {
 			frame = 17;
@@ -2887,10 +2887,10 @@ void C2D::DrawDuplicator(ViewData& p_viewData)
 	m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, 0, 0, (Remap*) remap);
 
 	switch (action) {
-	case (eAction) 0x18:
+	case ACTION_0x18:
 		m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, 0x3f, 0, (Remap*) remap);
 		break;
-	case (eAction) 0x1a:
+	case ACTION_0x1a:
 		frame = elapsed * 15 / 1000;
 		if (frame > 0x3e) {
 			frame = 0x3e;
@@ -2917,7 +2917,7 @@ void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 	stateTimer = p_viewData.m_stateTimer;
 
 	switch (action) {
-	case (eAction) 0x18:
+	case ACTION_0x18:
 		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - crateOffset[0],
 								 p_viewData.m_positionY - crateOffset[1],
 								 RES_GAME_CRATE,
@@ -2925,8 +2925,8 @@ void C2D::DrawCrate(ViewData& p_viewData, int p_objectNo)
 								 p_viewData.m_animationTime,
 								 0);
 		break;
-	case (eAction) 0x19:
-	case (eAction) 0x1a:
+	case ACTION_0x19:
+	case ACTION_0x1a:
 		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - crateExplosionOffset[0],
 								 p_viewData.m_positionY - crateExplosionOffset[1],
 								 RES_GAME_CRATE_EXPLODE,
@@ -2979,12 +2979,12 @@ void C2D::DrawCatapult(ViewData& p_viewData, int p_objectNo)
 	}
 
 	switch (action) {
-	case (eAction) 0x18:
+	case ACTION_0x18:
 		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
 		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
 		break;
 
-	case (eAction) 0x19:
+	case ACTION_0x19:
 		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
 		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
 		m_lemmingAnims->DrawAnim(x - animOffset[0] - 8,
@@ -2995,7 +2995,7 @@ void C2D::DrawCatapult(ViewData& p_viewData, int p_objectNo)
 								 (Remap*) remap);
 		break;
 
-	case (eAction) 0x1a:
+	case ACTION_0x1a:
 		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
 		m_lemmingAnims->DrawAnim(x - animOffset[0],
 								 y - animOffset[1],
@@ -3011,7 +3011,7 @@ void C2D::DrawCatapult(ViewData& p_viewData, int p_objectNo)
 								 (Remap*) remap);
 		break;
 
-	case (eAction) 0x1b:
+	case ACTION_0x1b:
 		m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
 		m_lemmingAnims->DrawAnim(x - animOffset[0],
 								 y - animOffset[1],
@@ -3064,9 +3064,9 @@ void C2D::DrawSheep(ViewData& p_viewData, int p_objectNo)
 	y = p_viewData.m_positionY;
 
 	switch (p_viewData.m_action) {
-	case (eAction) 0:
-	case (eAction) 1:
-	case (eAction) 4:
+	case ACTION_NONE:
+	case ACTION_1:
+	case ACTION_4:
 		m_lemmingAnims->DrawAnim(x - sheepOffset[0],
 								 y - sheepOffset[1],
 								 sheepMunchResources[direction],
@@ -3075,7 +3075,7 @@ void C2D::DrawSheep(ViewData& p_viewData, int p_objectNo)
 								 0);
 		break;
 
-	case (eAction) 2:
+	case ACTION_2:
 		m_lemmingAnims->DrawAnim(x - sheepOffset[0],
 								 y - sheepOffset[1],
 								 sheepWalkResources[direction],
@@ -3105,10 +3105,10 @@ void C2D::DrawBall(ViewData& p_viewData)
 	y = p_viewData.m_positionY;
 
 	switch (p_viewData.m_action) {
-	case (eAction) 0x25:
+	case ACTION_0x25:
 		m_lemmingAnims->DrawAnim(x - ballOffset[0], y - ballOffset[1], RES_GAME_BALL, 0, p_viewData.m_animationTime, 0);
 		break;
-	case (eAction) 0x26:
+	case ACTION_0x26:
 		elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 		frame = elapsed / 64;
 		if (frame > 8) {
@@ -3164,14 +3164,14 @@ void C2D::DrawMine(ViewData& p_viewData)
 	action = p_viewData.m_action;
 
 	switch (action) {
-	case (eAction) 8:
+	case ACTION_8:
 		break;
-	case (eAction) 0x18:
-	case (eAction) 0x19:
-	case (eAction) 0x1a:
+	case ACTION_0x18:
+	case ACTION_0x19:
+	case ACTION_0x1a:
 		m_lemmingAnims->DrawAnim(x - mineStillOffset[0], y - mineStillOffset[1], RES_GAME_MINE_STILL, 0, 0, 0);
 		break;
-	case (eAction) 0x1b:
+	case ACTION_0x1b:
 		m_lemmingAnims
 			->DrawAnim(x - mineOffset[0], y - mineOffset[1], RES_GAME_MINE, stateTimer, p_viewData.m_animationTime, 0);
 		break;
@@ -3202,16 +3202,16 @@ void C2D::DrawDoor(ViewData& p_viewData)
 	elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 
 	switch (objectType) {
-	case (eObjectType) 0x19:
+	case OBJECT_DOOR_1:
 		resourceId = RES_GAME_DOOR_2;
 		break;
-	case (eObjectType) 0x1a:
+	case OBJECT_DOOR_2:
 		resourceId = RES_GAME_DOOR;
 		break;
 	}
 
 	switch (action) {
-	case (eAction) 0x1c:
+	case ACTION_0x1c:
 		switch ((unsigned short) p_viewData.m_actionArgument) {
 		case 0x14:
 			playerIndex = -1;
@@ -3241,8 +3241,8 @@ void C2D::DrawDoor(ViewData& p_viewData)
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 1, 0, 0);
 		break;
 
-	case (eAction) 0x1d:
-	case (eAction) 0x1e:
+	case ACTION_0x1d:
+	case ACTION_0x1e:
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 1, 0, 0);
 		break;
@@ -3292,8 +3292,8 @@ void C2D::DrawSwitch(ViewData& p_viewData)
 	actionArgument = (unsigned short) p_viewData.m_actionArgument;
 
 	switch (action) {
-	case (eAction) 7:
-	case (eAction) 0x18:
+	case ACTION_7:
+	case ACTION_0x18:
 		switch (actionArgument) {
 		case 0:
 			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SWITCH, 0, 0, 0);
@@ -3304,7 +3304,7 @@ void C2D::DrawSwitch(ViewData& p_viewData)
 		}
 		break;
 
-	case (eAction) 0x1a:
+	case ACTION_0x1a:
 		switch (actionArgument) {
 		case 0:
 			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SWITCH_ANIM, stateTimer, p_viewData.m_animationTime, 0);
@@ -3331,11 +3331,11 @@ void C2D::DrawFlag(ViewData& p_viewData, eObjectType p_objectType)
 	y = p_viewData.m_positionY - flagOffset[1];
 
 	switch (p_objectType) {
-	case (eObjectType) 0xb:
+	case OBJECT_FLAG_1:
 		m_lemmingAnims->DrawAnim(x, y, RES_GAME_FLAG_GREEN, 0, p_viewData.m_animationTime, (Remap*) m_remaps[3]);
 		break;
 
-	case (eObjectType) 0xc:
+	case OBJECT_FLAG_2:
 		m_lemmingAnims->DrawAnim(x, y, RES_GAME_FLAG_GREEN, 0, p_viewData.m_animationTime, (Remap*) m_remaps[1]);
 		break;
 	}

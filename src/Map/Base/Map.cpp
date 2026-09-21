@@ -442,78 +442,78 @@ bool ValidateDefaultBloxData(eObjectType p_type, unsigned short* p_data)
 {
 	unsigned short data = *p_data;
 	switch (p_type) {
-	case 0x202:
+	case TERRAIN_TREE:
 		if (*p_data >= g_wDefaultBloxLimit0202) {
 			data = 0;
 		}
 		break;
-	case 0x206:
+	case TERRAIN_BLOX_1:
 		if (g_wDefaultBloxLimit0206 <= *p_data) {
 			data = 0;
 		}
 		break;
-	case 0x207:
+	case TERRAIN_BLOX_2:
 		if (g_wDefaultBloxLimit0207 <= *p_data) {
 			data = 0;
 		}
 		break;
-	case 0x208:
+	case TERRAIN_BLOX_3_SLOPE_SW_STEEP:
 		if (*p_data >= g_wDefaultBloxLimit0208) {
 			data = 0;
 		}
 		break;
-	case 0x209:
+	case TERRAIN_BLOX_4:
 		if (*p_data >= g_wDefaultBloxLimit0209) {
 			data = 0;
 		}
 		break;
-	case 0x20a:
+	case TERRAIN_BLOX_5:
 		if (*p_data >= g_wDefaultBloxLimit020A) {
 			data = 0;
 		}
 		break;
-	case 0x20b:
+	case TERRAIN_BLOX_6:
 		if (*p_data >= g_wDefaultBloxLimit020B) {
 			data = 0;
 		}
 		break;
-	case 0x20c:
+	case TERRAIN_BLOX_7:
 		if (g_wDefaultBloxLimit020C <= *p_data) {
 			data = 0;
 		}
 		break;
-	case 0x20d:
+	case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
 		if (g_wDefaultBloxLimit020D <= *p_data) {
 			data = 0;
 		}
 		break;
-	case 0x20e:
+	case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
 		if (g_wDefaultBloxLimit020E <= *p_data) {
 			data = 0;
 		}
 		break;
-	case 0x20f:
+	case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
 		if (g_wDefaultBloxLimit020F <= *p_data) {
 			data = 0;
 		}
 		break;
-	case 0x210:
+	case TERRAIN_ANIM:
 		if (*p_data >= g_wDefaultBloxLimit0210) {
 			data = 0;
 		}
 		break;
-	case 0x214:
+	case TERRAIN_0x214:
 		if (g_wDefaultBloxLimit0214 <= *p_data) {
 			data = 0;
 		}
 		break;
-	case 0x215:
+	case TERRAIN_FLAME:
 		return true;
-	case 0x216:
-	case 0x219:
-	case 0x21a:
+	case TERRAIN_ELECTRIC:
+	case TERRAIN_CONVEYOR_VARIANT_A:
+	case TERRAIN_CONVEYOR_VARIANT_B:
 		return true;
-	case 0x217:
+	case TERRAIN_EMBERS:
 		if (g_wDefaultBloxLimit0217 <= *p_data) {
 			data = 0;
 		}

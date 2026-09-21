@@ -44,7 +44,7 @@ void ObjectManager::Restart()
 				if (object->m_objectType == OBJECT_CRATE) {
 					Crate* crate = (Crate*) object;
 					GlobalGameObject* contents = crate->m_contents;
-					if (contents != 0 && crate->m_contentsType == 0xffff) {
+					if (contents != 0 && crate->m_contentsType == OBJECT_INVALID) {
 						for (int j = 0; j < m_count; j++) {
 							if (m_objects[j] == contents) {
 								crate->m_contentsType = contents->m_objectType;
@@ -135,18 +135,18 @@ GlobalGameObject* ObjectManager::Add(unsigned short p_id,
 		case OBJECT_CATAPULT:
 			linkedObject = new Catapult(p_position);
 			break;
-		case 0x15:
-		case 0x16:
-		case 0x17:
+		case OBJECT_KEY_1:
+		case OBJECT_KEY_2:
+		case OBJECT_KEY_3:
 			linkedObject = new Key(p_position, p_linkedObjectType);
 			break;
-		case 0x27:
-		case 0x29:
-		case 0x2b:
-		case 0x2d:
+		case OBJECT_BALLOON_0:
+		case OBJECT_BALLOON_2:
+		case OBJECT_BALLOON_4:
+		case OBJECT_BALLOON_6:
 			object = new Balloon(p_position, p_linkedObjectType);
 			break;
-		case 0xffff:
+		case OBJECT_INVALID:
 			linkedObject = 0;
 			break;
 		}
@@ -158,18 +158,18 @@ GlobalGameObject* ObjectManager::Add(unsigned short p_id,
 	case OBJECT_SWITCH:
 		object = new Switch(p_position, SW_NONE, 0, 0, 0);
 		break;
-	case 0x15:
-	case 0x16:
-	case 0x17:
+	case OBJECT_KEY_1:
+	case OBJECT_KEY_2:
+	case OBJECT_KEY_3:
 		object = new Key(p_position, p_objectType);
 		break;
 	case OBJECT_DUPLICATOR:
 		object = new Duplicator(p_position);
 		break;
-	case 0x27:
-	case 0x29:
-	case 0x2b:
-	case 0x2d:
+	case OBJECT_BALLOON_0:
+	case OBJECT_BALLOON_2:
+	case OBJECT_BALLOON_4:
+	case OBJECT_BALLOON_6:
 		object = new Balloon(p_position, p_objectType);
 		break;
 	}
@@ -230,7 +230,7 @@ int ObjectManager::GetViewData(ViewData* p_viewData)
 		GlobalGameObject* object = m_objects[i];
 		if (object->m_heading != 0 || object->GetSndEffect() != 0) {
 			object = m_objects[i];
-			if (object->m_objectType != 5 || object->m_action != 0x1b) {
+			if (object->m_objectType != OBJECT_AMMO || object->m_action != ACTION_0x1b) {
 				count++;
 				object->GetViewData(*p_viewData++);
 			}
@@ -305,17 +305,17 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 			switch (objectType) {
 			case OBJECT_CATAPULT:
 			case OBJECT_TOWER:
-			case 0x15:
-			case 0x16:
-			case 0x17:
+			case OBJECT_KEY_1:
+			case OBJECT_KEY_2:
+			case OBJECT_KEY_3:
 			case OBJECT_TRAP_DOOR:
 			case OBJECT_DUPLICATOR:
-			case 0x27:
-			case 0x29:
-			case 0x2b:
-			case 0x2d:
+			case OBJECT_BALLOON_0:
+			case OBJECT_BALLOON_2:
+			case OBJECT_BALLOON_4:
+			case OBJECT_BALLOON_6:
 				if (p_append == 0) {
-					Add(id, position, objectType, 0xffff, (eObjectType) 0xffff);
+					Add(id, position, objectType, 0xffff, OBJECT_INVALID);
 				}
 				break;
 			case OBJECT_AMMO: {
@@ -325,7 +325,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 					p_data += 2;
 				}
 				if (p_append == 0) {
-					Ammo* ammo = (Ammo*) Add(id, position, objectType, 0xffff, (eObjectType) 0xffff);
+					Ammo* ammo = (Ammo*) Add(id, position, objectType, 0xffff, OBJECT_INVALID);
 					ammo->m_ammo = ammoCount;
 				}
 				break;
@@ -350,7 +350,7 @@ void ObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, uns
 				if (m_ai->m_levelVersion > 1) {
 					Switch* object;
 					if (p_append == 0) {
-						object = (Switch*) Add(id, position, objectType, 0xffff, (eObjectType) 0xffff);
+						object = (Switch*) Add(id, position, objectType, 0xffff, OBJECT_INVALID);
 					}
 					else {
 						GlobalGameObject** objects = m_objects + switchIndex;

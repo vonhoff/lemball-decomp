@@ -80,17 +80,17 @@ void CollectableManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eOb
 	if (m_count < m_capacity) {
 		Collectable* collectable;
 		switch (p_type) {
-		case 0xb:
-			collectable = new Flag(p_x, p_y, p_z, (eObjectType) 0xb);
+		case OBJECT_FLAG_1:
+			collectable = new Flag(p_x, p_y, p_z, OBJECT_FLAG_1);
 			break;
-		case 0xc:
-			collectable = new Flag(p_x, p_y, p_z, (eObjectType) 0xc);
+		case OBJECT_FLAG_2:
+			collectable = new Flag(p_x, p_y, p_z, OBJECT_FLAG_2);
 			break;
-		case 0x12:
-			collectable = new Bonus(p_x, p_y, p_z, (eObjectType) 0x12);
+		case OBJECT_BONUS:
+			collectable = new Bonus(p_x, p_y, p_z, OBJECT_BONUS);
 			break;
-		case 0x1b:
-			collectable = new TimeBonus(p_x, p_y, p_z, (eObjectType) 0x1b);
+		case OBJECT_TIME_BONUS:
+			collectable = new TimeBonus(p_x, p_y, p_z, OBJECT_TIME_BONUS);
 			break;
 		}
 		collectable->Restart();
@@ -148,7 +148,7 @@ void CollectableManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsign
 			int z = *(unsigned short*) p_data;
 			p_data += 2;
 			if (p_skip == 0) {
-				if (type != (eObjectType) 0xc && type != (eObjectType) 0xb) {
+				if (type != OBJECT_FLAG_2 && type != OBJECT_FLAG_1) {
 					Add(id, x, y, z, type);
 				}
 				else {
@@ -158,18 +158,18 @@ void CollectableManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsign
 					}
 					else {
 						if (ai->m_isHost == 1) {
-							if (type != (eObjectType) 0xc) {
-								Add(id, x, y, z, (eObjectType) 0xb);
+							if (type != OBJECT_FLAG_2) {
+								Add(id, x, y, z, OBJECT_FLAG_1);
 							}
 							else {
-								Add(id, x, y, z, (eObjectType) 0xc);
+								Add(id, x, y, z, OBJECT_FLAG_2);
 							}
 						}
-						else if (type == (eObjectType) 0xc) {
-							Add(id, x, y, z, (eObjectType) 0xb);
+						else if (type == OBJECT_FLAG_2) {
+							Add(id, x, y, z, OBJECT_FLAG_1);
 						}
 						else {
-							Add(id, x, y, z, (eObjectType) 0xc);
+							Add(id, x, y, z, OBJECT_FLAG_2);
 						}
 					}
 				}

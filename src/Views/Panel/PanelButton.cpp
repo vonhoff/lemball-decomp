@@ -47,10 +47,10 @@ PanelButton::PanelButton(PanelLemming* p_arg0, const VsRect& p_arg1, PvGWnd* p_a
 		m_statusRect.m_x = 0;
 		m_statusRect.m_y = 0;
 	}
-	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == 8);
-	m_alternatePlayer = m_lemming->m_lemming->HasObject((eObjectType) 0xc);
+	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == ACTION_8);
+	m_alternatePlayer = m_lemming->m_lemming->HasObject(OBJECT_FLAG_2);
 	m_lastAmmo = 0xffffffff;
-	m_lastBalloon = (eObjectType) 0xffffffff;
+	m_lastBalloon = OBJECT_BALLOON_NONE;
 	m_inventoryCount = 0;
 	{
 		VsPoint point;
@@ -233,11 +233,11 @@ void PanelButton::OnPaint(const VsRect& p_rect)
 		m_forceDrawCount = 1;
 		m_inventoryCount = panelLemming->m_inventoryCount;
 	}
-	if ((unsigned int) (panelLemming->m_lemming->m_action == 8) != m_unavailable) {
+	if ((unsigned int) (panelLemming->m_lemming->m_action == ACTION_8) != m_unavailable) {
 		m_forceDrawCount = 1;
 		m_unavailable = !m_unavailable;
 	}
-	if ((unsigned int) panelLemming->m_lemming->HasObject((eObjectType) 0xc) != m_alternatePlayer) {
+	if ((unsigned int) panelLemming->m_lemming->HasObject(OBJECT_FLAG_2) != m_alternatePlayer) {
 		m_forceDrawCount = 1;
 		m_alternatePlayer = !m_alternatePlayer;
 	}
@@ -280,7 +280,7 @@ void PanelButton::OnPressed(int p_flags)
 	eAction action = lemming->m_action;
 	PlayerLemmingGroupManager* groupManager;
 	PlayerLemmingGroup* group;
-	if (action == 8) {
+	if (action == ACTION_8) {
 		return;
 	}
 
@@ -293,7 +293,7 @@ void PanelButton::OnPressed(int p_flags)
 	goto pressed;
 
 normal:
-	if (panelLemming->m_balloonType != -1) {
+	if (panelLemming->m_balloonType != OBJECT_BALLOON_NONE) {
 		if ((short) m_inventoryRect.m_x <= (short) m_clickX &&
 			(short) m_clickX < (short) (m_inventoryRect.m_width + m_inventoryRect.m_x)) {
 			short inventoryY = m_inventoryRect.m_y;
@@ -304,7 +304,7 @@ normal:
 			if (clickY >= (short) (m_inventoryRect.m_height + inventoryY)) {
 				goto pressed;
 			}
-			if (action == 0 || action == 2 || action == 6) {
+			if (action == ACTION_NONE || action == ACTION_2 || action == ACTION_6) {
 				m_lemming->m_lemming->SetSndEffect(SFX_BALLOON);
 				game->UseBalloon(m_lemming->m_lemming);
 			}

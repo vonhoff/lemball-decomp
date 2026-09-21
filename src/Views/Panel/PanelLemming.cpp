@@ -31,7 +31,7 @@ PanelLemming::PanelLemming(PlayerLemming* p_arg0, const VsPoint& p_arg1, Panel* 
 	m_lemming = p_arg0;
 	VsRect rect;
 	m_playerIndex = p_arg0->m_playerIndex;
-	m_balloonType = (eObjectType) 0xffffffff;
+	m_balloonType = OBJECT_BALLOON_NONE;
 	m_inventoryCount = 0;
 
 	rect.m_x = p_arg1.m_x;
@@ -56,7 +56,7 @@ void PanelLemming::UpdateStatus()
 	unsigned int selected;
 	PlayerLemming* lemming = m_lemming;
 
-	if (lemming->m_action == 8) {
+	if (lemming->m_action == ACTION_8) {
 		selected = 0;
 	}
 	else {
@@ -71,36 +71,36 @@ void PanelLemming::UpdateStatus()
 	}
 
 	switch (m_lemming->GetLastBalloon()) {
-	case 0x27:
-		m_balloonType = (eObjectType) 3;
+	case OBJECT_BALLOON_0:
+		m_balloonType = OBJECT_BULLET;
 		break;
-	case 0x29:
-		m_balloonType = (eObjectType) 1;
+	case OBJECT_BALLOON_2:
+		m_balloonType = OBJECT_PLAYER_1;
 		break;
-	case 0x2b:
-		m_balloonType = (eObjectType) 4;
+	case OBJECT_BALLOON_4:
+		m_balloonType = OBJECT_CATAPULT;
 		break;
-	case 0x2d:
-		m_balloonType = (eObjectType) 0;
+	case OBJECT_BALLOON_6:
+		m_balloonType = OBJECT_NONE;
 		break;
 	default:
-		m_balloonType = (eObjectType) 0xffffffff;
+		m_balloonType = OBJECT_BALLOON_NONE;
 		break;
 	}
 
 	m_inventoryCount = 0;
 	for (int i = 0; i < (int) m_lemming->m_inventoryCount; i++) {
 		switch (m_lemming->GetObject(i)) {
-		case 0x15:
-			m_inventoryTypes[m_inventoryCount] = (eObjectType) 3;
+		case OBJECT_KEY_1:
+			m_inventoryTypes[m_inventoryCount] = OBJECT_BULLET;
 			m_inventoryCount++;
 			break;
-		case 0x16:
-			m_inventoryTypes[m_inventoryCount] = (eObjectType) 1;
+		case OBJECT_KEY_2:
+			m_inventoryTypes[m_inventoryCount] = OBJECT_PLAYER_1;
 			m_inventoryCount++;
 			break;
-		case 0x17:
-			m_inventoryTypes[m_inventoryCount] = (eObjectType) 4;
+		case OBJECT_KEY_3:
+			m_inventoryTypes[m_inventoryCount] = OBJECT_CATAPULT;
 			m_inventoryCount++;
 			break;
 		}
