@@ -284,11 +284,12 @@ void PasswordDrawer::ShiftHilite(int p_delta)
 // FUNCTION: LEMBALL 0x004516f0
 bool PasswordDrawer::ProcessMessages(Message* p_message)
 {
+	Message* message = p_message;
 	unsigned int code;
 
-	switch (p_message->type) {
+	switch (message->type) {
 	case 3:
-		code = p_message->code;
+		code = message->code;
 		switch (code) {
 		case 0x1f:
 		case 0x22: {
@@ -321,7 +322,7 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 		}
 		break;
 	case 4:
-		code = p_message->code;
+		code = message->code;
 		switch (code) {
 		case 1:
 			ShiftHilite(-3);
@@ -369,7 +370,7 @@ bool PasswordDrawer::ProcessMessages(Message* p_message)
 		g_pSoundView->PlayEffect(SFX_DRUM1);
 		break;
 	case 0xc:
-		code = p_message->code;
+		code = message->code;
 		if (code >= 0xabcd00b0 && code <= 0xabcd00bb) {
 			ButtonNumeric(code + 0x5432ff50);
 			return 1;
