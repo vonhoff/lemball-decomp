@@ -17,6 +17,8 @@ compile_commands.json
 *.res
 *.vsr
 report-*.json
+tmp-*/
+scratch/
 
 # Local tools and settings
 .idea/
