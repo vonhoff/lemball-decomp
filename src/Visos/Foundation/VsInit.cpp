@@ -468,12 +468,13 @@ bool InitCheckOptions(char* p_arg0)
 {
 	InitCmdOption* option;
 	char* colon;
+	char* optionText = p_arg0;
 	unsigned int maxCount;
 	int index;
 	char* end;
 
-	if (*p_arg0 == '-' || *p_arg0 == '/') {
-		p_arg0++;
+	if (*optionText == '-' || *optionText == '/') {
+		optionText++;
 		option = g_aInitCmdOptions;
 		index = 0;
 		do {
@@ -484,9 +485,9 @@ bool InitCheckOptions(char* p_arg0)
 			else {
 				maxCount = strlen((char*) (*option)[kInitCmdOptionName]);
 			}
-			if (strncmp(p_arg0, (char*) (*option)[kInitCmdOptionName], maxCount) == 0) {
+			if (strncmp(optionText, (char*) (*option)[kInitCmdOptionName], maxCount) == 0) {
 				if (strlen((char*) g_aInitCmdOptions[index][kInitCmdOptionName]) != maxCount) {
-					*(int*) g_aInitCmdOptions[index][kInitCmdOptionValue] = Strtol(p_arg0 + maxCount + 1, &end, 10);
+					*(int*) g_aInitCmdOptions[index][kInitCmdOptionValue] = Strtol(optionText + maxCount + 1, &end, 10);
 				}
 				else {
 					int* value = (int*) g_aInitCmdOptions[index][kInitCmdOptionValue];
@@ -814,7 +815,6 @@ bool InternalGdiQuit()
 bool InternalMemInit()
 {
 	void* locked;
-	void* storage;
 	int smallEnabled;
 	SmallMemory* smallMemory;
 
@@ -835,11 +835,7 @@ bool InternalMemInit()
 	g_pSmallMemory = smallMemory;
 	if (smallEnabled != 0) {
 		g_nSmallMemoryEnabled = 0;
-		storage = operator new(0x3c);
-		smallMemory = 0;
-		if (storage != 0) {
-			smallMemory = new (storage) SmallMemory();
-		}
+		smallMemory = new SmallMemory();
 	}
 	g_pSmallMemory = smallMemory;
 	g_nSmallMemoryEnabled = smallEnabled;

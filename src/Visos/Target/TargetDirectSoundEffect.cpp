@@ -60,17 +60,20 @@ static char g_directSoundErrorText[sizeof("UNKNOWN DIRECT SOUND ERROR: ") + 11];
 // FUNCTION: LEMBALL 0x0047d290
 const char* TargetDescribeDirectSoundError(unsigned int p_error)
 {
-	strcpy(g_directSoundErrorText, g_unknownDirectSoundError);
+	const char* prefix = g_unknownDirectSoundError;
+	strcpy(g_directSoundErrorText, prefix);
 	int i = 0;
 	unsigned int code;
+	const unsigned int* codes = &g_directSoundErrors[0].code;
 	do {
-		code = g_directSoundErrors[i].code;
+		code = *codes;
 		if (code == p_error) {
 			return g_directSoundErrors[i].name;
 		}
+		codes += 2;
 		i++;
 	} while (code != 0);
-	VsLtoa(p_error, g_directSoundErrorText + strlen(g_unknownDirectSoundError), 10);
+	VsLtoa(p_error, g_directSoundErrorText + strlen(prefix), 10);
 	return g_directSoundErrorText;
 }
 

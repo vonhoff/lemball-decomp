@@ -727,9 +727,23 @@ void Wnd::Create(const VsRect& p_rect, PvWnd* p_parent, char* p_title)
 // FUNCTION: LEMBALL 0x004654f0
 unsigned int ConvertWindowStyleFlags(unsigned int p_style)
 {
-	return ((p_style & 8) == 0) - 1 & 0xcb0000 | (-(unsigned int) ((p_style & 2) == 0) & 0x7f400000) + 0xc00000 |
-		   (p_style & 0x400) << 8 | (p_style & 0x40) << 10 | (p_style & 0x20) << 15 | (p_style & 0x10) << 17 |
-		   (p_style & 0x80) << 10 | (p_style & 0x100) << 11;
+	unsigned int style = 0;
+	if (p_style & 8) {
+		style = 0xcb0000;
+	}
+	if (p_style & 2) {
+		style |= 0xc00000;
+	}
+	else {
+		style |= 0x80000000;
+	}
+	style |= (p_style & 0x400) << 8;
+	style |= (p_style & 0x40) << 10;
+	style |= (p_style & 0x20) << 15;
+	style |= (p_style & 0x10) << 17;
+	style |= (p_style & 0x80) << 10;
+	style |= (p_style & 0x100) << 11;
+	return style;
 }
 #pragma warning(default : 4146)
 
