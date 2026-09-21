@@ -206,8 +206,8 @@ void HiliteController::AddHJunction(int p_x, int p_y, unsigned long p_controlMes
 // FUNCTION: LEMBALL 0x0044f9d0
 void HiliteController::DrawButtons(int p_force)
 {
-	HiliteButtons** buttonPtr;
 	int count;
+	HiliteButtons** buttonPtr;
 
 	buttonPtr = m_buttons;
 	count = 4;
