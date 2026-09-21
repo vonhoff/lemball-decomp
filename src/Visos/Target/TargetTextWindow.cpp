@@ -557,6 +557,9 @@ long __stdcall TargetTextWindow::WindowProc(void* p_window,
 		break;
 	}
 	case WM_KILLFOCUS:
+		if (p_message != WM_KILLFOCUS) {
+			break;
+		}
 		break;
 	case WM_PAINT: {
 		PAINTSTRUCT paint;
