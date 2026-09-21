@@ -3,6 +3,8 @@
 #include "BaseQueueHandler.h"
 #include "Visos/Foundation/Message.h"
 
+#include <new.h>
+
 struct QueueHandlerNode {
 	BaseQueueHandler* handler;
 	int priority;
