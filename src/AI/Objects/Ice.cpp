@@ -182,16 +182,15 @@ bool Ice::Process()
 		position.m_yFixed += dy;
 		unsigned short groundZ;
 		{
-			Map* map = g_pMap;
 			int y = (position.m_yFixed >> 12);
 			int x = (position.m_xFixed >> 12);
 			int by = y >> 4;
 			int bx = x >> 4;
-			if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+			if (x < 0 || y < 0 || bx >= g_pMap->m_ground.m_width || by >= g_pMap->m_ground.m_height) {
 				groundZ = 0;
 			}
 			else {
-				groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+				groundZ = g_pMap->m_ground.m_ground[by * g_pMap->m_ground.m_width + bx].GetZ(x & 15, y & 15);
 			}
 		}
 		int z = position.m_zFixed >> 12;
