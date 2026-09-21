@@ -136,7 +136,8 @@ Surface::Surface(const VsRect& p_rect, class Surface* p_parentSurface)
 									  0,
 									  0,
 									  g_pTargetGraphicsDriver->HasPalette() ? g_dwWinGDrawColourTable : 0);
-		m_drawingPort = g_pTargetGraphicsDriver->CreateDrawingContext();
+		TargetGraphicsDriver* driver = g_pTargetGraphicsDriver;
+		m_drawingPort = driver->CreateDrawingContext();
 	}
 	VsRect& rect = m_rect0c;
 	rect.m_width = p_rect.m_width;
