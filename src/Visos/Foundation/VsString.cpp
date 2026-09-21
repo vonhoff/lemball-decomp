@@ -70,11 +70,11 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 	static unsigned int s_maxPowers[17];
 
 	if (s_powersInitialized == 0) {
-		unsigned int r = 2;
+		int r = 2;
 		do {
 			unsigned int pow = r;
 			unsigned int lim = 0xFFFFFFFF / r;
-			if (lim >= r) {
+			if (lim >= (unsigned int) r) {
 				do {
 					pow *= r;
 				} while (pow <= lim);
@@ -85,19 +85,20 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 		s_powersInitialized = 1;
 	}
 
+	unsigned int value = (unsigned int) p_value;
 	unsigned int power = s_maxPowers[p_radix];
 	int hasWritten = 0;
 	int written = 0;
 	int i = 0;
 
 	do {
-		unsigned int digit = p_value / power;
+		unsigned int digit = value / power;
 		if (digit != 0 || hasWritten != 0) {
 			p_buffer[written] = "0123456789abcdef"[digit];
 			written++;
 			hasWritten = 1;
 		}
-		p_value -= power * digit;
+		value -= power * digit;
 		power /= p_radix;
 		if (power == 1) {
 			break;
@@ -105,7 +106,7 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 		i++;
 	} while (i < 33);
 
-	p_buffer[written] = "0123456789abcdef"[p_value];
+	p_buffer[written] = "0123456789abcdef"[value];
 	p_buffer[written + 1] = '\0';
 	return p_buffer;
 }
