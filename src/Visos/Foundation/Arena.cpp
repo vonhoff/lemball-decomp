@@ -272,7 +272,10 @@ bool Arena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_descr
 		block->SetDesc(p_description);
 		m_freeSize -= block->m_size;
 	}
-	*p_data = block->m_data;
+	{
+		unsigned char* blockData = block->m_data;
+		*p_data = blockData;
+	}
 	if (m_parentArena != 0) {
 		data = *p_data + aligned;
 		if (g_pArenaHighWater < data) {
