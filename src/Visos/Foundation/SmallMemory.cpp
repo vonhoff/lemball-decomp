@@ -63,16 +63,24 @@ SmallMemory::~SmallMemory()
 // FUNCTION: LEMBALL 0x004732d0
 unsigned char* SmallMemory::Allocate(int p_size, char* p_description)
 {
-	register int prevLimit = 0;
-	for (int i = g_preInitActive.m_startBucket; i < (int) m_bucketLimit; i++) {
-		if (prevLimit < p_size && p_size <= m_sizeLimits[i] && m_buckets[i] != 0) {
-			unsigned char* result;
-			if (m_buckets[i] == 0 || !m_buckets[i]->Allocate(&result)) {
-				break;
+	int prevLimit = 0;
+	int i = g_preInitActive.m_startBucket;
+	int bucketLimit = m_bucketLimit;
+	int* sizeLimit;
+	Bucket* emptyBucket = 0;
+	if (i < bucketLimit) {
+		sizeLimit = &m_sizeLimits[i];
+		do {
+			if (prevLimit < p_size && p_size <= *sizeLimit && *(Bucket**) (sizeLimit - 7) != emptyBucket) {
+				unsigned char* result;
+				if (m_buckets[i] == emptyBucket || !m_buckets[i]->Allocate(&result)) {
+					break;
+				}
+				return result;
 			}
-			return result;
-		}
-		prevLimit = m_sizeLimits[i];
+			prevLimit = *sizeLimit++;
+			i++;
+		} while (i < bucketLimit);
 	}
 	return 0;
 }
