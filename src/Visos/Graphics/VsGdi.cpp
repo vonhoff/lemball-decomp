@@ -27,6 +27,7 @@
 #include "ZBuffClear.h"
 #include "Zrle.h"
 
+#include <new.h>
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
