@@ -3301,6 +3301,7 @@ char g_szWarningZrleIs[] = "Warning: ZRLE is ";
 
 // 68K 0x1011534a Blit__8CSurfaceFP5CZRLEP8CResZRLE
 // FUNCTION: LEMBALL 0x004783c0
+#pragma inline_depth(0)
 void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 {
 	unsigned int flags = p_primitive->m_flags;
@@ -3410,6 +3411,7 @@ void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 		}
 	}
 }
+#pragma inline_depth(255)
 
 // 68K 0x10115868 Blit__8CSurfaceFP7CBitmapP10CResBITMAP
 // FUNCTION: LEMBALL 0x004787f0
