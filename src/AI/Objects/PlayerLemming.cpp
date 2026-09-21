@@ -86,10 +86,10 @@ void PlayerLemming::Restart()
 		m_flightVelocity.m_yFixed = 0;
 		m_flightVelocity.m_zFixed = 0xa000;
 		m_isGroupLeader = 0;
-		m_desiredFacingDirection = m_initialFacingDirection;
 		m_wasHitByBullet = 0;
 		m_hasDestination = 0;
 		m_fireRequestState = FIRE_REQUEST_NONE;
+		m_desiredFacingDirection = m_initialFacingDirection;
 		SetBored(4000);
 		AiCoord dest;
 		dest.m_xFixed = ((4 - m_playerIndex) * 16 + tileX) << 12;
