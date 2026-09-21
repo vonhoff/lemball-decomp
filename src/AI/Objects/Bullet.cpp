@@ -119,7 +119,10 @@ bool Bullet::Process()
 	else {
 		currentTick = g_dwGameTick;
 	}
-	if (m_action != 8) {
+	if (m_action == 8) {
+		goto inactive;
+	}
+	{
 		Pt3 pos;
 		pos.m_x = 0;
 		pos.m_y = 0;
@@ -203,6 +206,7 @@ bool Bullet::Process()
 		m_lastMovementTick = currentTick;
 		return 1;
 	}
+inactive:
 	return 0;
 }
 
