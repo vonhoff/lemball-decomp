@@ -3300,9 +3300,9 @@ char g_szClippingWideAnd[] = " wide and ";
 // GLOBAL: LEMBALL 0x004a2d90
 char g_szWarningZrleIs[] = "Warning: ZRLE is ";
 
+#pragma inline_depth(0)
 // 68K 0x1011534a Blit__8CSurfaceFP5CZRLEP8CResZRLE
 // FUNCTION: LEMBALL 0x004783c0
-#pragma inline_depth(0)
 void Surface::Blit(Zrle* p_primitive, ResZrle* p_zrle)
 {
 	unsigned int flags = p_primitive->m_flags;
