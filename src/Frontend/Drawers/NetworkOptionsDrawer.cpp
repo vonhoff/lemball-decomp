@@ -455,8 +455,9 @@ void NetworkOptionsDrawer::DrawText()
 		}
 
 		if (g_pNetworkManager != 0) {
+			int i;
 			int row = 0;
-			for (int i = 0; i < 10; i++) {
+			for (i = 0; i < 10; i++) {
 				DrawEntry(i, row, 1);
 				if (row == 4) {
 					break;
@@ -517,8 +518,8 @@ void NetworkOptionsDrawer::DrawText()
 			valid = &messages->m_valid;
 			for (; idx < 10; valid += sizeof(NetworkGameMessage) / sizeof(*valid), idx++) {
 				if (*valid != 0) {
-					int isAccepted = 0;
 					int state = 1;
+					int isAccepted = 0;
 					if (m_playerEntries[idx].m_hoverState != 0 || fallbackHighlighted == idx) {
 						isAccepted = 1;
 					}
