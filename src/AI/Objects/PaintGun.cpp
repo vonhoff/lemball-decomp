@@ -102,9 +102,12 @@ bool PaintGun::Process()
 			Action(ACTION_0x1b);
 		}
 		else if (m_lastMovementTick < g_dwGameTick) {
-			int x = m_position.m_xFixed;
-			int y = m_position.m_yFixed;
-			int z = m_position.m_zFixed + 0x8000;
+			int x;
+			int z;
+			int y;
+			x = m_position.m_xFixed;
+			y = m_position.m_yFixed;
+			z = m_position.m_zFixed + 0x8000;
 			AiCoord start;
 			AiCoord target;
 			int coordinate;
