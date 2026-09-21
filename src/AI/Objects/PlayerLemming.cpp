@@ -335,8 +335,11 @@ bool PlayerLemming::FacingTarget()
 // FUNCTION: LEMBALL 0x0040f500
 void PlayerLemming::Die()
 {
-	for (int i = 0; i < (int) m_inventoryCount; i++) {
-		switch (m_inventoryObjects[i]->m_objectType) {
+	int i = 0;
+	if ((int) m_inventoryCount > 0) {
+		GameObject** inventoryObject = m_inventoryObjects;
+		do {
+			switch ((*inventoryObject)->m_objectType) {
 		case 0x15:
 		case 0x16:
 		case 0x17:
@@ -344,18 +347,20 @@ void PlayerLemming::Die()
 		case 0x29:
 		case 0x2b:
 		case 0x2d:
-			((BaseGlobalObject*) m_inventoryObjects[i])->OldRestart();
+			((BaseGlobalObject*) *inventoryObject)->OldRestart();
 			break;
+			}
+			inventoryObject++;
+			i++;
+		} while (i < (int) m_inventoryCount);
 		}
-	}
 	int index = 0;
 	int& count = g_pAI->m_objectCount;
-	int objectCount = count;
-	if (index < objectCount) {
+	if (index < count) {
 		GameObject**& objects = g_pAI->m_objects;
 		do {
 			if (objects[index] == this) {
-				count = objectCount - 1;
+				count--;
 				while (index < count) {
 					objects[index] = objects[index + 1];
 					index++;
@@ -364,7 +369,7 @@ void PlayerLemming::Die()
 				break;
 			}
 			index++;
-		} while (index < objectCount);
+		} while (index < count);
 	}
 	g_wLemmingCount--;
 	if (g_wLemmingCount == 0) {
@@ -872,11 +877,10 @@ void PlayerLemming::GetViewData(ViewData& p_viewData)
 	p_viewData.m_positionY = m_position.m_yFixed >> 12;
 	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
 	p_viewData.m_facingDirection = m_facingDirection;
-	unsigned int actionArg = (unsigned short) m_actionArgument;
 	unsigned int timer = m_stateTimer;
 	eAction action = m_action;
+	p_viewData.m_actionArgument = (unsigned short) m_actionArgument;
 	p_viewData.m_action = action;
-	p_viewData.m_actionArgument = actionArg;
 	p_viewData.m_statusFlags = 0;
 	p_viewData.m_stateTimer = timer;
 	p_viewData.m_unk0x30 = m_unk0xc0;
