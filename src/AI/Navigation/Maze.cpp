@@ -44,8 +44,8 @@ Maze::~Maze()
 // FUNCTION: LEMBALL 0x00423110
 void Maze::ReInitialise()
 {
-	Map* map;
 	int width;
+	Map* map;
 	unsigned short collision;
 	int y = 0;
 	int x;
