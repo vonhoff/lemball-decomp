@@ -59,6 +59,15 @@ CCollectableManager::~CCollectableManager()
 	}
 }
 
+// FUNCTION: LEMBALL 0x00422510
+void CCollectableManager::Clear()
+{
+	for (int index = 0; index < m_count; index++) {
+		delete m_collectables[index];
+	}
+	m_count = 0;
+}
+
 // FUNCTION: LEMBALL 0x00422550
 void CCollectableManager::Process()
 {
