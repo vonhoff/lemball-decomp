@@ -6,21 +6,19 @@ See evidence/68k/PROVENANCE.md for provenance and the limits of this check.
 
 from __future__ import annotations
 
-import gzip
-import hashlib
+import csv
 import io
-import json
 import re
 import sys
-import zlib
 from collections import Counter
 from pathlib import Path
 
 from .paths import ROOT
 from .source import collect_sources, mask_comments_and_strings
 
-CATALOG = ROOT / "evidence/68k/catalog.json.gz"
-CATALOG_ERRORS = (OSError, UnicodeError, ValueError, EOFError, zlib.error)
+CATALOG = ROOT / "evidence/68k/catalog.csv"
+CATALOG_COLUMNS = ("mac_address", "symbol", "windows_address")
+CATALOG_ERRORS = (OSError, UnicodeError, ValueError, csv.Error)
 TOKENS = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'')
 MAC_MARK = re.compile(r"//\s*68K\s+(0x[0-9a-fA-F]+)\s+(\S+)(?:\s+.*)?$")
 WINDOWS_MARK = re.compile(
@@ -111,103 +109,60 @@ def read_symbols(fork: bytes) -> dict[int, str]:
 
 
 def catalog_entries(catalog: object) -> tuple[dict[int, str], set[tuple[int, int]]]:
-    """Validate the data schema, including duplicate rows and duplicate pairs."""
-    if not isinstance(catalog, dict) or set(catalog) != {"format", "resource_sha256", "symbols"}:
-        raise ValueError("catalog requires format, resource_sha256, and symbols")
-    if type(catalog["format"]) is not int or catalog["format"] != 1:
-        raise ValueError("unsupported catalog format")
-    digest = catalog["resource_sha256"]
-    if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
-        raise ValueError("catalog requires the original resource SHA256")
-    if not isinstance(catalog["symbols"], list) or not catalog["symbols"]:
+    """Validate flat rows of integer addresses, allowing reviewed compiler variants."""
+    if not isinstance(catalog, list) or not catalog:
         raise ValueError("catalog contains no symbols")
-
-    def address(value):
-        if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{8}", value) or int(value, 16) == 0:
-            raise ValueError(f"invalid catalog address: {value!r}")
-        return int(value, 16)
-
-    symbols, mappings = {}, set()
-    for index, row in enumerate(catalog["symbols"], 1):
-        if not isinstance(row, list) or len(row) != 3:
-            raise ValueError(f"catalog row {index}: expected [Mac address, symbol, Windows addresses]")
-        mac, name, windows = row
-        mac = address(mac)
-        if mac in symbols:
-            raise ValueError(f"catalog row {index}: duplicate Mac address {mac:#010x}")
+    symbols, mappings, unmapped = {}, set(), set()
+    for index, row in enumerate(catalog, 2):
+        if not isinstance(row, (tuple, list)) or len(row) != 3:
+            raise ValueError(f"catalog row {index}: expected Mac address, symbol, Windows address")
+        mac, name, win = row
+        for address in (mac,) if win is None else (mac, win):
+            if type(address) is not int or not 0 < address <= 0xffffffff:
+                raise ValueError(f"catalog row {index}: invalid address {address!r}")
         if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.$?@]*", name):
             raise ValueError(f"catalog row {index}: invalid symbol")
-        if not isinstance(windows, list):
-            raise ValueError(f"catalog row {index}: Windows addresses must be a list")
+        if mac in symbols and symbols[mac] != name:
+            raise ValueError(f"catalog row {index}: conflicting symbols at {mac:#010x}")
+        if mac in unmapped or (win is None and mac in symbols):
+            raise ValueError(f"catalog row {index}: duplicate or redundant unmapped symbol")
+        if win is None:
+            unmapped.add(mac)
+        elif (mac, win) in mappings:
+            raise ValueError(f"catalog row {index}: duplicate Windows pair")
+        else:
+            mappings.add((mac, win))
         symbols[mac] = name
-        for win in windows:
-            pair = mac, address(win)
-            if pair in mappings:
-                raise ValueError(f"catalog row {index}: duplicate Windows pair")
-            mappings.add(pair)
     if not mappings:
         raise ValueError("catalog contains no reviewed Windows pairs")
     return symbols, mappings
 
 
-def read_catalog(path: Path = CATALOG) -> dict:
-    catalog = json.loads(gzip.decompress(path.read_bytes()))
+def parse_catalog(text: str) -> list[tuple[int, str, int | None]]:
+    rows = csv.reader(io.StringIO(text, newline=""), strict=True)
+    if next(rows, None) != list(CATALOG_COLUMNS):
+        raise ValueError("catalog requires CSV columns: " + ", ".join(CATALOG_COLUMNS))
+    catalog = []
+    for row in rows:
+        if len(row) != 3:
+            raise ValueError(f"catalog line {rows.line_num}: expected three columns")
+        mac, name, win = row
+        for address in (mac,) if not win else (mac, win):
+            if not re.fullmatch(r"[0-9a-f]{1,8}", address):
+                raise ValueError(f"catalog line {rows.line_num}: invalid hexadecimal address {address!r}")
+        catalog.append((int(mac, 16), name, int(win, 16) if win else None))
     catalog_entries(catalog)
     return catalog
 
 
-def canonical_catalog(catalog: dict) -> dict:
-    symbols, mappings = catalog_entries(catalog)
-    windows = {mac: [] for mac in symbols}
-    for mac, win in sorted(mappings):
-        windows[mac].append(f"{win:08x}")
-    return {"format": 1, "resource_sha256": catalog["resource_sha256"], "symbols": [
-        [f"{mac:08x}", name, windows[mac]] for mac, name in sorted(symbols.items())
-    ]}
+def read_catalog(path: Path = CATALOG) -> list[tuple[int, str, int | None]]:
+    return parse_catalog(path.read_text(encoding="utf-8-sig"))
 
 
-def write_catalog(path: Path, catalog: dict) -> None:
-    payload = json.dumps(canonical_catalog(catalog), separators=(",", ":")).encode("ascii")
-    packed = io.BytesIO()
-    # No timestamp or filename; the same reviewed input produces identical bytes.
-    with gzip.GzipFile(filename="", mode="wb", fileobj=packed, compresslevel=9, mtime=0) as stream:
-        stream.write(payload)
-    path.write_bytes(packed.getvalue())
-
-
-def verify_resource(catalog: dict, path: Path) -> None:
-    fork = path.read_bytes()
-    if hashlib.sha256(fork).hexdigest() != catalog["resource_sha256"]:
-        raise ValueError("private resource SHA256 differs from the catalog source")
+def verify_resource(catalog: list, path: Path) -> None:
     symbols, _ = catalog_entries(catalog)
-    if read_symbols(fork) != symbols:
+    if read_symbols(path.read_bytes()) != symbols:
         raise ValueError("catalog symbols differ from the private resource extraction")
-
-
-def catalog_command(export: Path | None = None, pack: Path | None = None,
-                    catalog_path: Path = CATALOG, resource: Path | None = None) -> int:
-    """Export readable rows or pack reviewed rows; never derive mappings from annotations."""
-    try:
-        catalog = (json.loads(pack.read_text(encoding="utf-8")) if pack is not None
-                   else read_catalog(catalog_path))
-        catalog = canonical_catalog(catalog)
-        if resource is not None:
-            verify_resource(catalog, resource)
-        if pack is not None:
-            write_catalog(catalog_path, catalog)
-            print(f"68k: packed reviewed catalog into {catalog_path}")
-        elif export is not None:
-            header = json.dumps({key: catalog[key] for key in ("format", "resource_sha256")}, indent=2)
-            rows = ",\n".join("    " + json.dumps(row) for row in catalog["symbols"])
-            export.write_text(header[:-2] + ',\n  "symbols": [\n' + rows + "\n  ]\n}\n",
-                              encoding="utf-8", newline="\n")
-            print(f"68k: exported readable catalog to {export}")
-        else:
-            raise ValueError("catalog command requires export or pack")
-    except CATALOG_ERRORS as error:
-        print(f"68k: {error}", file=sys.stderr)
-        return 2
-    return 0
 
 
 def scan_annotations(path: Path) -> list[dict]:
@@ -289,7 +244,7 @@ def check_provenance(catalog_path: Path = CATALOG, paths=None, strict=False, ver
             print(f'{row["path"]}:{row["line"]}: {row["status"]}: {row["detail"]}')
     print(f"68k: {len(symbols)} catalog symbols; {len(rows)} annotations: {dict(counts)}")
     if resource is not None:
-        print("68k: private resource SHA256 and complete symbol extraction verified.")
+        print("68k: complete symbol extraction from private resource verified.")
     if counts["review"]:
         print("68k: unlisted Windows pairs need semantic review; destructor variants may be valid.")
     if counts["symbol-only"]:

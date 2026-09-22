@@ -1,11 +1,7 @@
 """Independent resource-fork fixtures and annotation provenance failure cases."""
 
 import contextlib
-import copy
-import gzip
-import hashlib
 import io
-import json
 import struct
 import tempfile
 import unittest
@@ -13,14 +9,13 @@ from pathlib import Path
 
 from lib.provenance import (
     audit_annotations,
-    catalog_command,
     catalog_entries,
     check_provenance,
+    parse_catalog,
     read_catalog,
     read_symbols,
     scan_annotations,
     verify_resource,
-    write_catalog,
 )
 
 
@@ -114,6 +109,16 @@ class AnnotationProvenanceTests(unittest.TestCase):
         rows = self.scan("// 68K 0x1060000c Real__Fv\n// FUNCTION: LEMBALL 0x00401000\nvoid Real() {}")
         self.assertEqual(rows[0]["status"], "confirmed")
 
+    def test_real_addresses_and_names_must_belong_to_the_same_mapping(self):
+        self.symbols[0x10600020] = "Other__Fv"
+        self.mappings.add((0x10600020, 0x402000))
+        rows = self.scan("// 68K 0x1060000c Other__Fv\n// FUNCTION: LEMBALL 0x00401000\nvoid F() {}")
+        self.assertEqual(rows[0]["status"], "invalid")
+        rows = self.scan("// 68K 0x10600020 Real__Fv\n// FUNCTION: LEMBALL 0x00401000\nvoid F() {}")
+        self.assertEqual(rows[0]["status"], "invalid")
+        rows = self.scan("// 68K 0x1060000c Real__Fv\n// FUNCTION: LEMBALL 0x00402000\nvoid F() {}")
+        self.assertEqual(rows[0]["status"], "review")
+
     def test_unknown_address_and_wrong_symbol_fail_independently(self):
         for annotation in ("0x1060000e Real__Fv", "0x1060000c Invented__Fv"):
             with self.subTest(annotation=annotation):
@@ -155,99 +160,88 @@ class CatalogTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        self.path = self.root / "catalog.json.gz"
+        self.path = self.root / "catalog.csv"
         self.fork = resource_fork([(6, code_resource(6, procedure("Real__Fv")))])
-        self.catalog = {
-            "format": 1,
-            "resource_sha256": hashlib.sha256(self.fork).hexdigest(),
-            "symbols": [["1060000c", "Real__Fv", ["00401000"]]],
-        }
+        self.catalog = [(0x1060000c, "Real__Fv", 0x401000)]
+        self.header = "mac_address,symbol,windows_address\n"
+        self.text = self.header + "1060000c,Real__Fv,401000\n"
+        self.path.write_text(self.text, encoding="utf-8")
 
-    def test_invalid_schema_fails(self):
-        for key, value in (("format", 2), ("format", True), ("resource_sha256", "bad"),
-                           ("symbols", []), ("symbols", {}), ("unexpected", "field")):
-            catalog = dict(self.catalog, **{key: value})
-            with self.subTest(key=key, value=value), self.assertRaises(ValueError):
-                catalog_entries(catalog)
-        for row in ([], ["bad", "Real__Fv", []], ["1060000c", "Made up", []],
-                    ["1060000c", "Real__Fv", "00401000"], ["1060000c", "Real__Fv", ["00000000"]],
-                    ["1060000c", "Real__Fv", []]):
+    def test_plain_csv_reads_addresses_as_integers(self):
+        self.assertEqual(read_catalog(self.path), self.catalog)
+        self.path.write_text(self.text, encoding="utf-8-sig")
+        self.assertEqual(read_catalog(self.path), self.catalog)
+        self.assertEqual(catalog_entries(self.catalog),
+                         ({0x1060000c: "Real__Fv"}, {(0x1060000c, 0x401000)}))
+
+    def test_invalid_schema_and_addresses_fail(self):
+        for text in ("", "mac_address,symbol\n1060000c,Real__Fv\n", self.header,
+                     self.header + "1060000c,Real__Fv\n",
+                     self.header + "1060000c,Real__Fv,401000,extra\n",
+                     self.header + "not-hex,Real__Fv,401000\n",
+                     self.header + "1060000c,Real__Fv,0\n",
+                     self.header + "1060000c,Real__Fv,100000000\n",
+                     self.header + "1060000c,Made up,401000\n"):
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                parse_catalog(text)
+        for row in ([], [0, "Real__Fv", 0x401000], [True, "Real__Fv", 0x401000],
+                    [0x1060000c, "Real__Fv", -1], [0x1060000c, "Real__Fv", []]):
             with self.subTest(row=row), self.assertRaises(ValueError):
-                catalog_entries(dict(self.catalog, symbols=[row]))
+                catalog_entries([row])
 
-    def test_duplicates_rejected_but_folded_windows_functions_allowed(self):
-        catalog = copy.deepcopy(self.catalog)
-        catalog["symbols"].append(catalog["symbols"][0])
-        with self.assertRaisesRegex(ValueError, "duplicate Mac"):
-            catalog_entries(catalog)
-        catalog = copy.deepcopy(self.catalog)
-        catalog["symbols"][0][2].append("00401000")
-        with self.assertRaisesRegex(ValueError, "duplicate Windows"):
-            catalog_entries(catalog)
-        catalog = copy.deepcopy(self.catalog)
-        catalog["symbols"].extend([["10600020", "Folded__Fv", ["00401000"]],
-                                   ["10600040", "MacOnly__Fv", []]])
-        symbols, pairs = catalog_entries(catalog)
+    def test_conflicting_names_and_duplicate_pairs_are_rejected(self):
+        for extra in ("1060000c,Real__Fv,401000\n",
+                      "1060000c,Wrong__Fv,402000\n",
+                      "1060000c,Real__Fv,\n"):
+            with self.subTest(extra=extra), self.assertRaises(ValueError):
+                parse_catalog(self.text + extra)
+        empty = "10600020,MacOnly__Fv,\n"
+        with self.assertRaises(ValueError):
+            parse_catalog(self.text + empty + empty)
+
+    def test_wrapper_variants_folded_functions_and_mac_only_symbols_are_valid(self):
+        rows = parse_catalog(self.text + "1060000c,Real__Fv,402000\n"
+                             "10600020,Folded__Fv,401000\n10600040,MacOnly__Fv,\n")
+        symbols, pairs = catalog_entries(rows)
         self.assertEqual(len(symbols), 3)
-        self.assertEqual(pairs, {(0x1060000c, 0x401000), (0x10600020, 0x401000)})
+        self.assertEqual(pairs, {(0x1060000c, 0x401000), (0x1060000c, 0x402000),
+                                 (0x10600020, 0x401000)})
 
-    def test_export_pack_is_readable_lossless_and_deterministic(self):
-        self.catalog["symbols"][0][2].insert(0, "00402000")
-        write_catalog(self.path, self.catalog)
-        packed = self.path.read_bytes()
-        exported = self.root / "review.json"
-        with contextlib.redirect_stdout(io.StringIO()):
-            self.assertEqual(catalog_command(export=exported, catalog_path=self.path), 0)
-            self.assertEqual(catalog_command(pack=exported, catalog_path=self.path), 0)
-        self.assertEqual(self.path.read_bytes(), packed)
-        self.assertEqual(read_catalog(self.path), json.loads(exported.read_text()))
-        self.assertIn('    ["1060000c", "Real__Fv", ["00401000", "00402000"]]', exported.read_text())
-        second = self.root / "different-filename.gz"
-        write_catalog(second, self.catalog)
-        self.assertEqual(second.read_bytes(), packed)
-        self.assertEqual(packed[3:8], bytes(5))  # No filename flag or timestamp.
-
-    def test_pack_rejects_bad_input_without_replacing_catalog(self):
-        write_catalog(self.path, self.catalog)
-        original = self.path.read_bytes()
-        bad = self.root / "bad.json"
-        bad.write_text('{"format": 2}')
-        with contextlib.redirect_stderr(io.StringIO()):
-            self.assertEqual(catalog_command(pack=bad, catalog_path=self.path), 2)
-        self.assertEqual(self.path.read_bytes(), original)
-
-    def test_private_verification_checks_both_hash_and_extracted_symbols(self):
+    def test_private_verification_checks_complete_name_address_dictionary(self):
         private = self.root / "original.rsrc"
         private.write_bytes(self.fork)
         verify_resource(self.catalog, private)
-        altered = copy.deepcopy(self.catalog)
-        altered["symbols"][0][1] = "Invented__Fv"
+        for altered in ([(0x1060000c, "Invented__Fv", 0x401000)],
+                        [(0x1060000e, "Real__Fv", 0x401000)],
+                        self.catalog + [(0x10600020, "Extra__Fv", None)]):
+            with self.subTest(altered=altered), self.assertRaisesRegex(ValueError, "symbols differ"):
+                verify_resource(altered, private)
+        # Unrelated container bytes do not change symbol provenance; no whole-file hash needed.
+        private.write_bytes(self.fork + b"unrelated container data")
+        verify_resource(self.catalog, private)
+        private.write_bytes(self.fork.replace(b"Real__Fv", b"Fake__Fv"))
         with self.assertRaisesRegex(ValueError, "symbols differ"):
-            verify_resource(altered, private)
-        private.write_bytes(self.fork + b"tampered")
-        with self.assertRaisesRegex(ValueError, "SHA256 differs"):
             verify_resource(self.catalog, private)
 
-    def test_cli_check_without_original_and_strict_review(self):
-        write_catalog(self.path, self.catalog)
+    def test_cli_without_original_checks_name_address_and_windows_pair(self):
         source = self.root / "Fixture.cpp"
         source.write_text("// 68K 0x1060000c Real__Fv\n// FUNCTION: LEMBALL 0x00401000\nvoid F() {}")
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(check_provenance(self.path, [source], strict=True), 0)
-            source.write_text("// 68K 0x1060000c Real__Fv\n// FUNCTION: LEMBALL 0x00402000\nvoid F() {}")
-            self.assertEqual(check_provenance(self.path, [source]), 0)
-            self.assertEqual(check_provenance(self.path, [source], strict=True), 1)
-            source.write_text("// 68K 0x1060000c Invented__Fv\nvoid F() {}")
-            self.assertEqual(check_provenance(self.path, [source]), 1)
+            for mac, name, win, status in (("1060000c", "Real__Fv", "00402000", 1),
+                                           ("1060000c", "Invented__Fv", "00401000", 1),
+                                           ("1060000e", "Real__Fv", "00401000", 1)):
+                source.write_text(f"// 68K 0x{mac} {name}\n// FUNCTION: LEMBALL 0x{win}\nvoid F() {{}}")
+                self.assertEqual(check_provenance(self.path, [source], strict=True), status)
             source.write_text("void WindowsOnlyFunction() {}")
             self.assertEqual(check_provenance(self.path, [source], strict=True), 0)
             self.path.unlink()
             self.assertEqual(check_provenance(self.path, [source]), 2)
 
     def test_corrupt_catalog_returns_input_error(self):
-        for packed in (b"not gzip", gzip.compress(b"not json"), gzip.compress(b"{}")[:-1]):
-            self.path.write_bytes(packed)
-            with self.subTest(packed=packed), contextlib.redirect_stderr(io.StringIO()):
+        for data in (b"not CSV", b"\xff", b"mac_address,symbol,windows_address\ntruncated"):
+            self.path.write_bytes(data)
+            with self.subTest(data=data), contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(check_provenance(self.path), 2)
 
 

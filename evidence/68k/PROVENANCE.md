@@ -1,8 +1,8 @@
 # 68K annotation evidence
 
-`catalog.json.gz` contains derived metadata only: 2,848 Mac symbols, 2,685
-reviewed Windows pairs, and the original resource fork's SHA256. No game code
-or resource payload. Deterministic gzip keeps the catalog at about 38 KB.
+`catalog.csv` contains derived metadata only: 2,848 Mac symbols and 2,685
+reviewed Windows pairs. Plain CSV, about 136 KB; no game payload, archive, JSON,
+or whole-file SHA256. Review and edit directly with ordinary text tools.
 Normal checks need neither a Mac original nor an external checkout.
 
 ```powershell
@@ -10,10 +10,39 @@ python tools/gate.py --68k --annot-strict
 ```
 
 The normal gate includes this check; `--all` adds naming and vtable checks.
-`invalid` means a malformed comment or a name/address absent from the catalog.
+
+## Three linked values
+
+```csv
+mac_address,symbol,windows_address
+10b0f952,__ct__12CPadToButtonFi,43a250
+```
+
+Addresses are hexadecimal integers without a prefix or redundant leading zeros.
+The verifier checks all three values together:
+
+1. The Mac address identifies an extracted procedure entry.
+2. The symbol matches the MacsBug name at that exact address.
+3. The adjacent Windows annotation belongs to a reviewed pair for that entry.
+
+A real name at another Mac address fails. A real Windows address paired with
+another Mac function requires review. Two columns suffice for Mac name/address
+lookup; the third preserves Windows correspondence.
+
+`invalid` means a malformed comment or a wrong Mac name/address combination.
 `review` means an unlisted Windows pair; strict mode fails these entries.
 `symbol-only` means no adjacent Windows address, as with an inline declaration.
-A listed pair records reviewed research, not proof of cross-platform equivalence.
+A blank Windows cell records a Mac symbol without a reviewed Windows pairing.
+Multiple compiler variants repeat the Mac address/name with distinct Windows
+addresses. Folded functions may share a Windows address. Conflicting names and
+duplicate pairs fail validation. Rows are sorted by Mac address, then Windows
+address.
+
+Do not generate accepted pairs from the annotations under test. Record new
+mapping rationale in the reviewed commit, citing original addresses and behavior.
+Shared names, source order, or similar instruction counts alone are insufficient.
+A listed pair records reviewed research; lookup alone does not prove semantic
+equivalence between architectures.
 
 ## Independent symbol verification
 
@@ -30,31 +59,21 @@ Optional verification against a privately supplied resource fork:
 python tools/gate.py --68k --annot-strict --68k-resource data/paintball-68k.rsrc
 ```
 
-This checks the recorded SHA256 and re-extracts the complete symbol dictionary.
+This re-extracts and compares the complete address/name dictionary. Missing,
+extra, renamed, or relocated symbols fail. A whole-file hash is unnecessary for
+this comparison; unrelated container bytes do not affect symbol provenance.
 Original files stay in ignored `data/`; `*.rsrc` is also ignored. Without a private
-original, verification trusts the reviewed catalog. Its digest identifies the
-extraction input; it does not independently authenticate the catalog or prove
-Windows equivalence.
+original, verification trusts the reviewed catalog. The Mac parser does not
+establish Windows correspondence; that requires separate disassembly review.
 
-## Reviewing catalog changes
+## PadToButton example
 
-```powershell
-python tools/gate.py --68k-export build-msvc400/68k-review.json
-# Review or edit the exported rows using independent disassembly evidence.
-python tools/gate.py --68k-pack build-msvc400/68k-review.json
-python tools/gate.py --68k --annot-strict
-```
-
-Format 1 stores each row as `[Mac address, original symbol, [Windows addresses]]`.
-Addresses are eight lowercase hex digits; an empty Windows list is valid.
-Export gives one readable row per line. Pack validates and sorts the rows,
-then omits filenames and timestamps from gzip. Adding `--68k-resource` to pack
-also checks the symbol dictionary before replacing the catalog.
-
-Do not generate accepted pairs from the annotations under test. Record new
-mapping rationale in the reviewed commit, citing original addresses and behavior.
-Shared names, source order, or similar instruction counts alone are insufficient.
-Compare exported catalogs when reviewing changes to the compressed file.
+Private resource extraction confirms `__ct__12CPadToButtonFi` at `0x10b0f952`.
+The Mac constructor and Windows `0x0043a250` both construct a queue handler,
+allocate capacity entries, store capacity at `+0x18`, clear count at `+0x14`,
+clear each button pointer, and attach the handler at priority -25. Entry sizes
+are 6 bytes on Mac and 8 bytes on Windows. Windows table `0x00497208`, allocator
+call `0x0043a26b`, and Attach call `0x0043a29c` support this reviewed mapping.
 
 ## Corrections retained from the original mapping audit
 
