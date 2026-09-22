@@ -87,6 +87,15 @@ unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x004305a0
+int CMap::TestWalkBit(int p_x, int p_y, unsigned char p_mask)
+{
+	if (p_x >= 0 && p_y >= 0 && m_walkWidth > p_x && m_walkHeight > p_y) {
+		return (m_walkBits[m_walkWidth * p_y + p_x] & p_mask) == p_mask;
+	}
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x004305f0
 unsigned char CMap::GetWalk(int p_x, int p_y)
 {
@@ -325,6 +334,30 @@ void CMap::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY
 	case 3:
 		p_gameX = p_screenX / 2 - p_screenY + 8;
 		p_gameY = p_screenX / 2 + p_screenY - 8;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00430b30
+void CMap::ScreenToGame(int& p_x, int& p_y)
+{
+	int x = p_x;
+	int y = p_y;
+	switch (m_orientation) {
+	case 0:
+		p_x = x / 2 + y - 8;
+		p_y = y - x / 2 + 8;
+		break;
+	case 1:
+		p_x = y - x / 2 + 8;
+		p_y = 0x18 - x / 2 - y;
+		break;
+	case 2:
+		p_x = 0x18 - x / 2 - y;
+		p_y = x / 2 - y + 8;
+		break;
+	case 3:
+		p_x = x / 2 - y + 8;
+		p_y = x / 2 + y - 8;
 	}
 }
 

@@ -13,6 +13,7 @@ class CMap {
 public:
 	CMap();
 	unsigned char GetWalk(int p_x, int p_y);
+	int TestWalkBit(int p_x, int p_y, unsigned char p_mask);
 	unsigned short GetZ(int p_x, int p_y, CMover** p_mover);
 	void CalculateCliff();
 	void CreateWalkBits();
@@ -24,6 +25,7 @@ public:
 	void ReSize(int p_width, int p_height);
 	void Restart();
 	void ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY);
+	void ScreenToGame(int& p_x, int& p_y);
 	void SetLevelName(char* p_name);
 	void SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data);
 	~CMap();
