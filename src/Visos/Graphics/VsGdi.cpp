@@ -715,51 +715,77 @@ void Surface::AttachPalette(ResPalette* p_palette)
 void Surface::NewBitmap(const VsRect& p_rect)
 {
 	EnterCriticalSection((CRITICAL_SECTION*) m_lock);
-	m_clipRect = p_rect;
-	m_windowRect = p_rect;
+	{
+		VsRect& bounds = m_rect0c;
+		bounds.m_width = p_rect.m_width;
+		bounds.m_height = p_rect.m_height;
+		const VsPoint* position = &p_rect;
+		bounds.m_x = position->m_x;
+		bounds.m_y = position->m_y;
+	}
+	{
+		VsRect& bounds = m_windowRect;
+		bounds.m_width = p_rect.m_width;
+		bounds.m_height = p_rect.m_height;
+		const VsPoint* position = &p_rect;
+		bounds.m_x = position->m_x;
+		bounds.m_y = position->m_y;
+	}
 	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
-		short parentWidth = m_parentSurface->m_windowRect.m_width;
-		short parentHeight = m_parentSurface->m_windowRect.m_height;
-		if (m_windowRect.m_x < 0) {
-			m_windowRect.m_width += m_windowRect.m_x;
-			m_windowRect.m_x = 0;
+		const VsSize& parentSize = m_parentSurface->m_windowRect;
+		short parentWidth = parentSize.m_width;
+		short parentHeight = parentSize.m_height;
+		VsRect& clipped = m_windowRect;
+		if (clipped.m_x < 0) {
+			clipped.m_width += clipped.m_x;
+			clipped.m_x = 0;
 		}
-		if (m_windowRect.m_x + m_windowRect.m_width > parentWidth) {
-			m_windowRect.m_width = parentWidth - m_windowRect.m_x;
+		if (parentWidth < (short) (clipped.m_x + clipped.m_width)) {
+			clipped.m_width = parentWidth - clipped.m_x;
 		}
-		if (m_windowRect.m_y < 0) {
-			m_windowRect.m_height += m_windowRect.m_y;
-			m_windowRect.m_y = 0;
+		if (clipped.m_y < 0) {
+			clipped.m_height += clipped.m_y;
+			clipped.m_y = 0;
 		}
-		if (m_windowRect.m_y + m_windowRect.m_height > parentHeight) {
-			m_windowRect.m_height = parentHeight - m_windowRect.m_y;
+		if (parentHeight < (short) (clipped.m_y + clipped.m_height)) {
+			clipped.m_height = parentHeight - clipped.m_y;
 		}
-		if (m_windowRect.m_width <= 0 || m_windowRect.m_height <= 0) {
-			m_windowRect.m_height = 0;
-			m_windowRect.m_width = 0;
-			m_windowRect.m_y = 0;
-			m_windowRect.m_x = 0;
+		if (clipped.m_width <= 0 || clipped.m_height <= 0) {
+			clipped.m_height = 0;
+			clipped.m_width = 0;
+			clipped.m_y = 0;
+			clipped.m_x = 0;
 		}
-		m_clipRect.m_width = m_windowRect.m_width;
-		m_clipRect.m_height = m_windowRect.m_height;
-		VsSize size;
-		size.m_width = m_windowRect.m_width;
-		size.m_height = m_windowRect.m_height;
-		SetSize(size, (int) m_windowRect.m_width);
+		{
+			const VsSize& windowSize = m_windowRect;
+			VsSize& clipSize = m_clipRect;
+			short height = windowSize.m_height;
+			clipSize.m_width = windowSize.m_width;
+			clipSize.m_height = height;
+		}
+		SetSize(m_windowRect, (int) m_windowRect.m_width);
 		m_unk0x524 = 0;
 		CreateLinePtrs();
 		return;
 	}
 	m_windowRect.m_width = (m_windowRect.m_width + 3) & ~3;
-	m_clipRect.m_width = m_windowRect.m_width;
-	m_clipRect.m_height = m_windowRect.m_height;
-	VsSize size;
-	size.m_width = m_windowRect.m_width;
-	size.m_height = m_windowRect.m_height;
-	size = SetSize(size, m_width);
-	TargetDrawingContext* context = (TargetDrawingContext*) m_drawingPort;
+	{
+		const VsSize& windowSize = m_windowRect;
+		VsSize& clipSize = m_clipRect;
+		short height = windowSize.m_height;
+		clipSize.m_width = windowSize.m_width;
+		clipSize.m_height = height;
+	}
+	short width;
+	short height;
+	{
+		const VsSize& size = SetSize(m_windowRect, m_reserved40);
+		width = size.m_width;
+		height = size.m_height;
+	}
 	if (m_platformBitmap != 0) {
-		g_pTargetGraphicsDriver->RestoreDIBContext(context, (TargetDibContext*) m_platformBitmap);
+		g_pTargetGraphicsDriver->RestoreDIBContext((TargetDrawingContext*) m_drawingPort,
+												   (TargetDibContext*) m_platformBitmap);
 		g_pTargetGraphicsDriver->DestroyDIBContext((TargetDibContext*) m_platformBitmap);
 		m_platformBitmap = 0;
 	}
@@ -768,16 +794,24 @@ void Surface::NewBitmap(const VsRect& p_rect)
 	}
 	else {
 		if (m_platformBitmap == 0) {
-			BITMAPINFO* info = (BITMAPINFO*) m_bitmapInfo;
-			g_pTargetGraphicsDriver->InitializeBitmapInfo(info);
-			info->bmiHeader.biWidth = size.m_width;
-			info->bmiHeader.biHeight = (int) size.m_height * (int) info->bmiHeader.biHeight;
-			info->bmiHeader.biPlanes = 1;
-			info->bmiHeader.biBitCount = 8;
-			info->bmiHeader.biSize = 0x28;
-			m_platformBitmap = g_pTargetGraphicsDriver->CreateDIBContext(context, info);
+			g_pTargetGraphicsDriver->InitializeBitmapInfo((BITMAPINFO*) m_bitmapInfo);
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biWidth = width;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biHeight =
+				(int) height * (int) ((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biHeight;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biPlanes = 1;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biCompression = 0;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biSizeImage = 0;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biXPelsPerMeter = 0;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biYPelsPerMeter = 0;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biClrUsed = 0;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biClrImportant = 0;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biSize = 0x28;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biBitCount = 8;
+			m_platformBitmap = g_pTargetGraphicsDriver->CreateDIBContext((TargetDrawingContext*) m_drawingPort,
+																		 (BITMAPINFO*) m_bitmapInfo);
 			if (m_platformBitmap != 0) {
-				g_pTargetGraphicsDriver->SelectDIBContext(context, (TargetDibContext*) m_platformBitmap);
+				g_pTargetGraphicsDriver->SelectDIBContext((TargetDrawingContext*) m_drawingPort,
+														  (TargetDibContext*) m_platformBitmap);
 				m_unk0x524 = (int) m_windowRect.m_width * (int) m_windowRect.m_height;
 			}
 		}
@@ -786,12 +820,12 @@ void Surface::NewBitmap(const VsRect& p_rect)
 		}
 		TargetDibContext* dib = (TargetDibContext*) m_platformBitmap;
 		SetBitsBase(dib->GetBits(), dib->GetStride());
-		m_changeList->Reset();
+		m_changeList->SetDrawMark();
 		VsRect clip;
-		clip.m_x = 0;
-		clip.m_y = 0;
-		clip.m_width = m_clipRect.m_width;
-		clip.m_height = m_clipRect.m_height;
+		const VsSize& drawSize = m_rect0c;
+		short drawHeight = drawSize.m_height;
+		clip.m_width = drawSize.m_width;
+		clip.m_height = drawHeight;
 		AddToChangeList(&clip);
 	}
 	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
