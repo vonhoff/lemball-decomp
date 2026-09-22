@@ -6,6 +6,7 @@
 #include "../../Visos/Graphics/GraphicButton.h"
 #include "../../Visos/Graphics/VsGdi.h"
 #include "../../Visos/Resources/ResAnim.h"
+#include "../Windows/TrackWindow.h"
 #include "GunButton.h"
 #include "TrackerButton.h"
 #include "Visos/Foundation/Message.h"
@@ -131,14 +132,25 @@ bool GunButtons::DrawBackBuffer()
 // FUNCTION: LEMBALL 0x0044c460
 int GunButtons::ProcessMsg(Message* p_message)
 {
-	Message posted = {0xc};
+	Message posted;
 	int nextValue;
 	unsigned long animId;
 
+	posted.type = 0xc;
 	posted.time = CurrentQueueTimer();
-	if (p_message->code == (int) m_controlMessage && p_message->type == 0xc) {
-		if (m_mode == 0) {
-			if (m_postAction != 1) {
+	posted.code = 0;
+	posted.payload = 0;
+	posted.source = 0;
+	if (p_message->code == (int) m_controlMessage) {
+		switch ((unsigned int) p_message->type) {
+		case 0xc:
+			switch (m_mode) {
+			case 0:
+				if (m_postAction == 1) {
+					posted.code = (int) m_actionMessage;
+					g_pMasterInputQueue->Post(posted);
+					return 0;
+				}
 				nextValue = m_value + 1;
 				m_value = nextValue;
 				if (m_maximum < nextValue) {
@@ -157,23 +169,34 @@ int GunButtons::ProcessMsg(Message* p_message)
 						*m_binding = m_value;
 					}
 				}
-				if (m_graphicButton == 0) {
-					animId = *m_animIds;
-				}
-				else {
+				if (m_graphicButton != 0) {
 					animId = m_animIds[m_value - m_minimum];
 					m_graphicButton->SetAnimId(animId);
 				}
+				else {
+					animId = *m_animIds;
+					m_trackerButton->SetAnimId(animId);
+				}
 				g_nGunButtonsRedrawPending = 1;
 				return 0;
+			case 1: {
+				int value = m_trackerButton->m_trackWindow->m_value;
+				int maximum = m_maximum;
+				if (value == maximum) {
+					value = 0;
+				}
+				else {
+					value += maximum / 4;
+					if (value > maximum) {
+						value = maximum;
+					}
+				}
+				*m_binding = value;
+				m_trackerButton->m_trackWindow->SetButtonValue(value);
+				break;
 			}
-			posted.code = (int) m_actionMessage;
-			if (g_pMasterInputQueue != 0) {
-				g_pMasterInputQueue->Post(posted);
 			}
-			return 0;
 		}
-		return 0;
 	}
 	return 0;
 }

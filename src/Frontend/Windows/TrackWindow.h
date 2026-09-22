@@ -28,6 +28,7 @@ public:
 
 private:
 	friend class GunController;
+	friend class GunButtons;
 	VsRect m_trackRect;         // 0xc8
 	Line m_line;                // 0xd0
 	ClipRect m_clipRects[4];    // 0xe0

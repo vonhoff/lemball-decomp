@@ -18,6 +18,7 @@ public:
 
 private:
 	friend class GunController;
+	friend class GunButtons;
 	short m_trackOffsetX;       // 0x130
 	short m_trackOffsetY;       // 0x132
 	TrackWindow* m_trackWindow; // 0x134
