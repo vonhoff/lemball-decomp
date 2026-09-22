@@ -4,10 +4,10 @@
 #include "../Objects/CViewData.h"
 
 // FUNCTION: LEMBALL 0x00429320
-CLaserManager::CLaserManager(CAi* p_arg0, int p_arg1) : CBaseObjectManager(0x15, 0xa)
+CLaserManager::CLaserManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x15, 0xa)
 {
-	m_ai = p_arg0;
-	m_capacity = p_arg1;
+	m_ai = p_ai;
+	m_capacity = p_capacity;
 	m_lasers = 0;
 }
 

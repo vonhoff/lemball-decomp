@@ -11,11 +11,11 @@
 #include "CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0040b020
-CGodManager::CGodManager(int p_arg0)
+CGodManager::CGodManager(int p_capacity)
 {
-	m_capacity = p_arg0;
+	m_capacity = p_capacity;
 	m_count = 0;
-	m_managers = new CBaseObjectManager*[p_arg0];
+	m_managers = new CBaseObjectManager*[p_capacity];
 	m_transportMap = new int[24];
 	for (int i = 0; i < 24; i++) {
 		m_transportMap[i] = -1;

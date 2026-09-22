@@ -14,10 +14,10 @@ class AiCoord;
 unsigned short g_wNextDoorIndex = 0;
 
 // FUNCTION: LEMBALL 0x0040df30
-CDoorManager::CDoorManager(CAi* p_arg0, int p_arg1) : CBaseObjectManager(0x13, 0x8)
+CDoorManager::CDoorManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x13, 0x8)
 {
-	m_ai = p_arg0;
-	m_capacity = p_arg1;
+	m_ai = p_ai;
+	m_capacity = p_capacity;
 	m_doors = 0;
 }
 

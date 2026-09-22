@@ -7,10 +7,10 @@
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x00427e60
-CHandManager::CHandManager(CAi* p_arg0, int p_arg1) : CBaseObjectManager(0x16, 0xb)
+CHandManager::CHandManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x16, 0xb)
 {
-	m_ai = p_arg0;
-	m_capacity = p_arg1;
+	m_ai = p_ai;
+	m_capacity = p_capacity;
 	m_hands = 0;
 }
 

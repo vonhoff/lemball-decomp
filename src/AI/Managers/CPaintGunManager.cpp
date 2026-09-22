@@ -7,10 +7,10 @@
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0042bfe0
-CPaintGunManager::CPaintGunManager(CAi* p_arg0, int p_arg1) : CBaseObjectManager(0x1f, 0x14)
+CPaintGunManager::CPaintGunManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x1f, 0x14)
 {
-	m_ai = p_arg0;
-	m_capacity = p_arg1;
+	m_ai = p_ai;
+	m_capacity = p_capacity;
 	m_paintGuns = 0;
 }
 

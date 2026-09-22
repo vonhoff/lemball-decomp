@@ -7,7 +7,7 @@ class CViewData;
 // SIZE 0x10
 class CSlinkyManager {
 public:
-	CSlinkyManager(CAi* p_arg0, int p_arg1);
+	CSlinkyManager(CAi* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	void Add(int p_id, int p_minX, int p_minY, int p_maxX, int p_maxY);
 	void Initialise(int p_capacity);

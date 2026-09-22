@@ -11,7 +11,7 @@ class CViewData;
 // VTABLE: LEMBALL 0x004932e8
 class CGodManager : public CBaseQueueHandler {
 public:
-	CGodManager(int p_arg0);
+	CGodManager(int p_capacity);
 	bool TransportReceive(CReadPacket* p_packet);
 	int GetViewData(CViewData* p_viewData);
 	CBaseObjectManager* GetManagerForTransport(int p_transportId);

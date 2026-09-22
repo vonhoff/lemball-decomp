@@ -6,7 +6,7 @@ class CBall;
 // SIZE 0x10
 class CBallManager {
 public:
-	CBallManager(CAi* p_arg0, int p_arg1);
+	CBallManager(CAi* p_ai, int p_capacity);
 	int Process();
 	void Delete(CBall* p_ball);
 	void Initialise(int p_capacity);

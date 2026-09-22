@@ -13,7 +13,7 @@ struct Coord3d;
 // VTABLE: LEMBALL 0x00495ea8
 class CLiftManager : public CBaseObjectManager {
 public:
-	CLiftManager(CAi* p_arg0, int p_arg1);
+	CLiftManager(CAi* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	unsigned short Id(int p_index);
 	virtual ~CLiftManager(); // vtable+0x14

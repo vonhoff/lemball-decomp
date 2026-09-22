@@ -12,7 +12,7 @@ struct Coord3d;
 // VTABLE: LEMBALL 0x00495d30
 class CMineManager : public CBaseObjectManager {
 public:
-	CMineManager(CAi* p_arg0, int p_arg1);
+	CMineManager(CAi* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	virtual ~CMineManager(); // vtable+0x14
 	void Add(unsigned short p_id, AiCoord p_position);

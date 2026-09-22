@@ -12,7 +12,7 @@ struct Coord3d;
 // VTABLE: LEMBALL 0x00493298
 class CInvisibleSwitchManager : public CBaseObjectManager {
 public:
-	CInvisibleSwitchManager(CAi* p_arg0, int p_arg1);
+	CInvisibleSwitchManager(CAi* p_ai, int p_capacity);
 	virtual void Process();             // vtable+0x1c
 	virtual ~CInvisibleSwitchManager(); // vtable+0x14
 	void Restart();

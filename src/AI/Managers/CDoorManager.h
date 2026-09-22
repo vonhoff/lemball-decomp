@@ -13,7 +13,7 @@ class CGameObject;
 // VTABLE: LEMBALL 0x00493840
 class CDoorManager : public CBaseObjectManager {
 public:
-	CDoorManager(CAi* p_arg0, int p_arg1);
+	CDoorManager(CAi* p_ai, int p_capacity);
 	int Add(unsigned short p_id, eObjectType p_objectType, unsigned short p_doorType, int p_x, int p_y, int p_z);
 	int GetViewData(CViewData* p_viewData);
 	int Open(const AiCoord& p_position, CGameObject* p_object);

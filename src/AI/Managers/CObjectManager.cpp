@@ -19,10 +19,10 @@
 #include "AI/Objects/SwitchEntry.h"
 
 // FUNCTION: LEMBALL 0x0041af60
-CObjectManager::CObjectManager(CAi* p_arg0, int p_arg1) : CBaseObjectManager(0xc, 1)
+CObjectManager::CObjectManager(CAi* p_ai, int p_arg1) : CBaseObjectManager(0xc, 1)
 {
 	g_pObjectManager = this;
-	m_ai = p_arg0;
+	m_ai = p_ai;
 	m_count = 0;
 	m_objects = 0;
 	m_unk0x38 = 0;

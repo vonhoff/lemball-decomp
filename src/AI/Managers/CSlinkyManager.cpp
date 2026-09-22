@@ -5,10 +5,10 @@
 #include "AI/Base/CGameObject.h"
 
 // FUNCTION: LEMBALL 0x0040b8e0
-CSlinkyManager::CSlinkyManager(CAi* p_arg0, int p_arg1)
+CSlinkyManager::CSlinkyManager(CAi* p_ai, int p_capacity)
 {
-	m_ai = p_arg0;
-	m_capacity = p_arg1;
+	m_ai = p_ai;
+	m_capacity = p_capacity;
 	m_slinkies = 0;
 }
 

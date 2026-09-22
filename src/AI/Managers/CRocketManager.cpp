@@ -8,10 +8,10 @@
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x00426ac0
-CRocketManager::CRocketManager(CAi* p_arg0, int p_arg1) : CBaseObjectManager(0x14, 9)
+CRocketManager::CRocketManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x14, 9)
 {
-	m_ai = p_arg0;
-	m_capacity = p_arg1;
+	m_ai = p_ai;
+	m_capacity = p_capacity;
 	m_rockets = 0;
 }
 

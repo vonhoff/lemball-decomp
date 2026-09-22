@@ -11,7 +11,7 @@ class CTrampoline;
 // VTABLE: LEMBALL 0x00496710
 class CTrampolineManager : public CBaseObjectManager {
 public:
-	CTrampolineManager(CAi* p_arg0, int p_arg1);
+	CTrampolineManager(CAi* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	int Hit(const AiCoord& p_position, CGameObject* p_object);
 	virtual ~CTrampolineManager(); // vtable+0x14

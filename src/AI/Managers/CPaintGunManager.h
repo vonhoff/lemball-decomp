@@ -9,7 +9,7 @@ class CPaintGun;
 // VTABLE: LEMBALL 0x00496888
 class CPaintGunManager : public CBaseObjectManager {
 public:
-	CPaintGunManager(CAi* p_arg0, int p_arg1);
+	CPaintGunManager(CAi* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	virtual ~CPaintGunManager(); // vtable+0x14
 	void Add(unsigned short p_id, int p_x, int p_y, int p_z, int p_direction);

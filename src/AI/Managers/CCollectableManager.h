@@ -11,7 +11,7 @@ class CGameObject;
 // VTABLE: LEMBALL 0x004955a0
 class CCollectableManager : public CBaseObjectManager {
 public:
-	CCollectableManager(CAi* p_arg0, int p_arg1);
+	CCollectableManager(CAi* p_ai, int p_capacity);
 	virtual int GetViewData(CViewData* p_viewData); // vtable+0x24
 	virtual ~CCollectableManager();                 // vtable+0x14
 	void Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectType p_type);

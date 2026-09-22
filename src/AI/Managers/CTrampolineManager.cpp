@@ -7,10 +7,10 @@
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0042af60
-CTrampolineManager::CTrampolineManager(CAi* p_arg0, int p_arg1) : CBaseObjectManager(0x18, 0xd)
+CTrampolineManager::CTrampolineManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x18, 0xd)
 {
-	m_ai = p_arg0;
-	m_capacity = p_arg1;
+	m_ai = p_ai;
+	m_capacity = p_capacity;
 	m_trampolines = 0;
 }
 

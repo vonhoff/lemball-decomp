@@ -11,7 +11,7 @@ class CRocket;
 // VTABLE: LEMBALL 0x00496020
 class CRocketManager : public CBaseObjectManager {
 public:
-	CRocketManager(CAi* p_arg0, int p_arg1);
+	CRocketManager(CAi* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	int StepOn(const AiCoord& p_position, CGameObject* p_object);
 	virtual ~CRocketManager(); // vtable+0x14

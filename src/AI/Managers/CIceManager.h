@@ -12,7 +12,7 @@ struct Coord3d;
 // VTABLE: LEMBALL 0x00496a00
 class CIceManager : public CBaseObjectManager {
 public:
-	CIceManager(CAi* p_arg0, int p_arg1);
+	CIceManager(CAi* p_ai, int p_capacity);
 	bool StepOn(const AiCoord& p_position, CGameObject* p_object);
 	virtual int GetViewData(CViewData* p_viewData); // vtable+0x24
 	virtual void Process();                         // vtable+0x1c

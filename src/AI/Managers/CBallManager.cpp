@@ -6,12 +6,12 @@
 CBallManager* g_pBallManager = 0;
 
 // FUNCTION: LEMBALL 0x00421ea0
-CBallManager::CBallManager(CAi* p_arg0, int p_arg1)
+CBallManager::CBallManager(CAi* p_ai, int p_capacity)
 {
-	m_ai = p_arg0;
+	m_ai = p_ai;
 	g_pBallManager = this;
 	m_balls = 0;
-	m_capacity = p_arg1;
+	m_capacity = p_capacity;
 }
 
 // FUNCTION: LEMBALL 0x00421ec0

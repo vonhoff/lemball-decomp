@@ -10,11 +10,11 @@
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x004223c0
-CCollectableManager::CCollectableManager(CAi* p_arg0, int p_arg1) : CBaseObjectManager(0x11, 6)
+CCollectableManager::CCollectableManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x11, 6)
 {
-	m_ai = p_arg0;
+	m_ai = p_ai;
 	m_count = 0;
-	m_capacity = p_arg1;
+	m_capacity = p_capacity;
 	m_collectables = 0;
 }
 
