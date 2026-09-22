@@ -15,7 +15,7 @@ public:
 			operator delete(m_entries);
 		}
 	}
-	unsigned int Initialise(CMap* p_map);
+	void Initialise(CMap* p_map);
 	friend class C2D;
 
 private:

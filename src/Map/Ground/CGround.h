@@ -34,7 +34,7 @@ public:
 	friend class CPaintGun;
 	friend class C2D;
 
-private:
+public:
 	eObjectType m_objectType;    // 0x00
 	unsigned short m_objectData; // 0x04
 	unsigned short m_collision;  // 0x06
