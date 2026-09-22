@@ -484,11 +484,11 @@ void GameObject::StartFly(C3DVector& p_arg0, C3DVector* p_arg1)
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
 	if (p_arg1 != 0) {
-		int y = p_arg1->m_yFixed;
 		int x = p_arg1->m_xFixed;
-		int z = p_arg1->m_zFixed;
 		m_flightOrigin.m_xFixed = x;
+		int y = p_arg1->m_yFixed;
 		m_flightOrigin.m_yFixed = y;
+		int z = p_arg1->m_zFixed;
 		m_flightOrigin.m_zFixed = z;
 		m_position.m_xFixed = x;
 		m_position.m_yFixed = y;
