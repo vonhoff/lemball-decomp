@@ -29,16 +29,8 @@ bool BaseFrontendProcess::ProcessMessages(Message* p_message)
 // FUNCTION: LEMBALL 0x00446720
 BaseFrontendProcess::BaseFrontendProcess(Game* p_arg0)
 {
-	void* storage;
-
 	m_game = p_arg0;
-	storage = operator new(0x34);
-	if (storage == 0) {
-		m_userActionMessage = 0;
-	}
-	else {
-		m_userActionMessage = new (storage) UserActionMessage();
-	}
+	m_userActionMessage = new UserActionMessage();
 	if (g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
 		m_networkWasActive = 1;
 	}
