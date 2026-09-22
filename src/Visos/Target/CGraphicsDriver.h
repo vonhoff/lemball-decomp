@@ -85,11 +85,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 							 CResPalette* p_palette,
 							 void* p_unused,
 							 unsigned int* p_fallbackEntries);
-long __stdcall WinGDrawDriverProc(unsigned int p_driverId,
-								  void* p_driverHandle,
-								  unsigned int p_message,
-								  long p_param1,
-								  long p_param2);
+#include "WinGDraw.h"
 // SYNTHETIC: LEMBALL 0x00458210
 // CGraphicsDriver::`scalar deleting destructor'
 

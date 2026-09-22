@@ -4,9 +4,8 @@
 #include "../Foundation/CVsIOs.h"
 #include "../Foundation/VsDebug.h"
 #include "../Resources/CResMovie.h"
-#include "../Target/CGraphicsDriver.h"
 #include "../Target/CPlatformServices.h"
-#include "../Target/WinGDrawState.h"
+#include "../Target/WinGDraw.h"
 #include "CGWnd.h"
 
 #define WIN32_LEAN_AND_MEAN

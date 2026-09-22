@@ -3,7 +3,6 @@
 
 class CSurface;
 class CGWnd;
-class CAnimWnd;
 
 // SIZE 0x474
 struct WinGDrawState {
@@ -27,16 +26,5 @@ struct WinGDrawState {
 	char m_reserved44[0x42c];  // 0x44
 	CGWnd* m_window;           // 0x470
 };
-
-extern CAnimWnd* g_pAnimWnd;
-WinGDrawState* __stdcall WinGDrawOpen(void* p_openInfo);
-int __stdcall WinGDrawClose(WinGDrawState* p_state);
-int __stdcall WinGDrawFrame(WinGDrawState* p_state, void* p_request, long p_param2);
-int __stdcall WinGDrawBegin(WinGDrawState* p_state, void* p_request, long p_param2);
-int __stdcall WinGDrawEnd(WinGDrawState* p_state);
-int __stdcall WinGDrawQueryFormat(WinGDrawState* p_state, void* p_format);
-int __stdcall WinGDrawSuggestFormat(WinGDrawState* p_state, void* p_request, long p_param2);
-int __stdcall WinGDrawChangePalette(WinGDrawState* p_state, void* p_request);
-unsigned int __stdcall WinGDrawGetInfo(void* p_info, unsigned int p_size);
 
 #endif
