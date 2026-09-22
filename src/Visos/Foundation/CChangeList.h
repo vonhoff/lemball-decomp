@@ -8,7 +8,7 @@ class ChangeListItem;
 // SIZE 0x4c
 class CChangeList {
 public:
-	CChangeList(int p_arg0, CVsSize p_arg1, CVsSize p_arg2);
+	CChangeList(int p_capacity, CVsSize p_viewSize, CVsSize p_cellSize);
 	ChangeListItem* GetNItem(int p_index);
 	bool GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark);
 	int GetDrawMark();

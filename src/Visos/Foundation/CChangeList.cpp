@@ -7,21 +7,21 @@
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x004669a0
-CChangeList::CChangeList(int p_arg0, CVsSize p_arg1, CVsSize p_arg2)
+CChangeList::CChangeList(int p_capacity, CVsSize p_viewSize, CVsSize p_cellSize)
 {
-	if (p_arg0 != 0) {
-		m_items = new ChangeListItem[p_arg0];
+	if (p_capacity != 0) {
+		m_items = new ChangeListItem[p_capacity];
 	}
 	else {
 		m_items = 0;
 	}
-	m_capacity = p_arg0;
-	m_cellSize.m_width = p_arg2.m_width;
-	m_cellSize.m_height = p_arg2.m_height;
-	m_viewSize.m_width = p_arg1.m_width;
-	m_viewSize.m_height = p_arg1.m_height;
-	m_mapSize.m_width = (short) (p_arg1.m_width + p_arg2.m_width - 1) / p_arg2.m_width;
-	m_mapSize.m_height = (short) (p_arg1.m_height + p_arg2.m_height - 1) / p_arg2.m_height;
+	m_capacity = p_capacity;
+	m_cellSize.m_width = p_cellSize.m_width;
+	m_cellSize.m_height = p_cellSize.m_height;
+	m_viewSize.m_width = p_viewSize.m_width;
+	m_viewSize.m_height = p_viewSize.m_height;
+	m_mapSize.m_width = (short) (p_viewSize.m_width + p_cellSize.m_width - 1) / p_cellSize.m_width;
+	m_mapSize.m_height = (short) (p_viewSize.m_height + p_cellSize.m_height - 1) / p_cellSize.m_height;
 	m_activeDepth = 0;
 	m_map = 0;
 	AllocMap();

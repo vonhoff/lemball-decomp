@@ -6,7 +6,7 @@
 // SIZE 0x08
 class CRemap : public CBaseRemap {
 public:
-	CRemap(unsigned long p_arg0, unsigned char* p_arg1, ePaletteTypes p_arg2);
+	CRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type);
 };
 
 #endif

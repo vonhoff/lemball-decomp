@@ -20,7 +20,7 @@ struct GdiSurfaceSlot {
 // VTABLE: LEMBALL 0x00499d78
 class CGdiDevice {
 public:
-	CGdiDevice(int p_arg0);
+	CGdiDevice(int p_surfaceCapacity);
 	int FindFreeSurface();
 	int FindSurface(CSurface* p_surface);
 	virtual CSurface* AllocateSurface(const CVsRect& p_rect, CSurface* p_parentSurface); // vtable+0x00

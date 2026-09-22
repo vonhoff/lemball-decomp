@@ -6,7 +6,7 @@
 // SIZE 0x0c
 class CPaletteManager : public CBasePalManager {
 public:
-	CPaletteManager(int p_arg0);
+	CPaletteManager(int p_capacity);
 };
 
 #endif

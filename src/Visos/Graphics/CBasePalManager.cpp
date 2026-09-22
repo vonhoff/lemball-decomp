@@ -6,13 +6,13 @@
 #include <new.h>
 
 // FUNCTION: LEMBALL 0x0046acd0
-CBasePalManager::CBasePalManager(int p_arg0)
+CBasePalManager::CBasePalManager(int p_capacity)
 {
 	int i;
 
-	m_capacity = p_arg0;
+	m_capacity = p_capacity;
 	m_remapCount = 0;
-	m_remaps = (CBaseRemap**) operator new(p_arg0 * sizeof(CBaseRemap*));
+	m_remaps = (CBaseRemap**) operator new(p_capacity * sizeof(CBaseRemap*));
 	i = 0;
 	if (0 < m_capacity) {
 		do {

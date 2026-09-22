@@ -9,7 +9,7 @@ struct WinGDrawState;
 // SIZE 0x10
 class CGdi {
 public:
-	CGdi(const CVsRect& p_arg0, int p_arg1, CSurface* p_arg2);
+	CGdi(const CVsRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSurface);
 	void AddToList(CPrimitive* p_primitive);
 	void Render();
 	~CGdi();

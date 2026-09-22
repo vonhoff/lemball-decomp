@@ -6,7 +6,7 @@
 // SIZE 0x0c
 class CBasePalManager {
 public:
-	CBasePalManager(int p_arg0);
+	CBasePalManager(int p_capacity);
 	CBaseRemap* RegisterRemap(unsigned int p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type);
 	void UnRegisterRemap(CBaseRemap* p_remap);
 	~CBasePalManager();

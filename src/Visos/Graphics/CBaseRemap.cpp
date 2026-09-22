@@ -3,18 +3,18 @@
 #include "../Resources/CResPalette.h"
 
 // FUNCTION: LEMBALL 0x0046aa80
-CBaseRemap::CBaseRemap(unsigned long p_arg0, unsigned char* p_arg1, ePaletteTypes p_arg2)
+CBaseRemap::CBaseRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)
 {
-	m_paletteResource = CResPalette::Load(p_arg0);
-	switch (p_arg2) {
+	m_paletteResource = CResPalette::Load(p_resourceId);
+	switch (p_type) {
 	case PALETTE_GREYSCALE:
 		CalculateGreyScale();
 		break;
 	case PALETTE_MAPPED:
-		MapRemap(p_arg1);
+		MapRemap(p_mapping);
 		break;
 	default:
-		m_remap = p_arg1;
+		m_remap = p_mapping;
 		break;
 	}
 }

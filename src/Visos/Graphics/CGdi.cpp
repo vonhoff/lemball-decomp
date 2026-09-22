@@ -10,15 +10,15 @@
 CPrimitive* g_pCurrentPrimitive = 0;
 
 // FUNCTION: LEMBALL 0x00467060
-CGdi::CGdi(const CVsRect& p_arg0, int p_arg1, CSurface* p_arg2)
+CGdi::CGdi(const CVsRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSurface)
 {
 	int i;
 	CSurface* target;
 
-	if ((int) p_arg0.m_height * (int) p_arg0.m_width > 1) {
-		m_primitiveCapacity = p_arg1 + 3;
+	if ((int) p_rect.m_height * (int) p_rect.m_width > 1) {
+		m_primitiveCapacity = p_primitiveCapacity + 3;
 		m_primitives = (CPrimitive**) operator new(m_primitiveCapacity * 4);
-		target = g_pGdiDevice->AllocateSurface(p_arg0, p_arg2);
+		target = g_pGdiDevice->AllocateSurface(p_rect, p_parentSurface);
 		i = 0;
 		m_renderTarget = target;
 		m_primitiveCount = i;

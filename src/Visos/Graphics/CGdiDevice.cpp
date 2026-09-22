@@ -13,15 +13,15 @@ CGdiDevice* g_pGdiDevice = 0;
 void* g_pGdiHelperTarget = 0;
 
 // FUNCTION: LEMBALL 0x0046bc00
-CGdiDevice::CGdiDevice(int p_arg0)
+CGdiDevice::CGdiDevice(int p_surfaceCapacity)
 {
 	int i;
 
-	m_surfaceSlots = (GdiSurfaceSlot*) operator new((unsigned int) (p_arg0 * sizeof(GdiSurfaceSlot)));
-	m_surfaceCapacity = p_arg0;
+	m_surfaceSlots = (GdiSurfaceSlot*) operator new((unsigned int) (p_surfaceCapacity * sizeof(GdiSurfaceSlot)));
+	m_surfaceCapacity = p_surfaceCapacity;
 	m_reserved08 = 0;
 	m_primarySurfaceCount = 0;
-	if (0 < p_arg0) {
+	if (0 < p_surfaceCapacity) {
 		i = 0;
 		do {
 			m_surfaceSlots[i].m_surface = 0;
@@ -32,8 +32,8 @@ CGdiDevice::CGdiDevice(int p_arg0)
 			m_surfaceSlots[i].m_available = 1;
 			m_surfaceSlots[i].m_reserved18 = 0;
 			++i;
-			--p_arg0;
-		} while (p_arg0 != 0);
+			--p_surfaceCapacity;
+		} while (p_surfaceCapacity != 0);
 	}
 	g_pGdiHelperTarget = 0;
 }
