@@ -3530,11 +3530,6 @@ void C2D::SetOrigin()
 	}
 }
 
-// STUB: LEMBALL 0x0043f620
-void C2D::DrawObjects()
-{
-}
-
 // FUNCTION: LEMBALL 0x0043fce0
 void C2D::DrawDemo()
 {

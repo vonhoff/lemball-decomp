@@ -15,7 +15,7 @@ public:
 
 	friend class CSurface;
 
-private:
+public:
 	CVsPoint m_destination; // 0x04
 	CVsRect m_rect;         // 0x08
 };
