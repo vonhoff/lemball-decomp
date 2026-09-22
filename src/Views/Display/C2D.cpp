@@ -2131,7 +2131,7 @@ void C2D::DrawLemmingOnConveyor(CViewData& p_viewData, int p_remapped)
 
 // Shared with DrawLemming; the original source name is unavailable.
 // GLOBAL: LEMBALL 0x00496fd8
-static const short g_unk0x496fd8[] = {8, 18};
+static const short g_lemmingStandOffset[] = {8, 18};
 
 // GLOBAL: LEMBALL 0x00496fdc
 static const short g_lemmingWalkOffset[] = {8, 18};
@@ -2217,8 +2217,8 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 	case 0xd:
 	case 0x23:
 		resource = g_lemmingStandResources[direction];
-		offsetX = g_unk0x496fd8[0];
-		offsetY = g_unk0x496fd8[1];
+		offsetX = g_lemmingStandOffset[0];
+		offsetY = g_lemmingStandOffset[1];
 		break;
 	case 2:
 		resource = g_lemmingWalkResources[direction];
@@ -2227,8 +2227,8 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 		break;
 	case 3:
 		resource = g_lemmingFireResources[direction];
-		offsetY = g_lemmingFireOffsets[direction][1] + g_unk0x496fd8[1];
-		offsetX = g_lemmingFireOffsets[direction][0] + g_unk0x496fd8[0];
+		offsetY = g_lemmingFireOffsets[direction][1] + g_lemmingStandOffset[1];
+		offsetX = g_lemmingFireOffsets[direction][0] + g_lemmingStandOffset[0];
 		drawEquipment = 0;
 		break;
 	case 4:
@@ -2300,24 +2300,24 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 	}
 	if (drawEquipment && p_remapped == 0) {
 		if (((unsigned short) p_viewData.m_statusFlags & 1) == 0) {
-			m_lemmingAnims->DrawAnim((short) x - g_unk0x496fd8[0] - 1,
-									 (short) y - g_unk0x496fd8[1] + 14,
+			m_lemmingAnims->DrawAnim((short) x - g_lemmingStandOffset[0] - 1,
+									 (short) y - g_lemmingStandOffset[1] + 14,
 									 RES_GAME_CIRCLES,
 									 0,
 									 0,
 									 (CRemap*) m_remaps[player]);
 		}
 		else if ((unsigned short) p_viewData.m_statusFlags & 2) {
-			m_lemmingAnims->DrawAnim((short) x - g_unk0x496fd8[0] - 5,
-									 (short) y - g_unk0x496fd8[1] + 11,
+			m_lemmingAnims->DrawAnim((short) x - g_lemmingStandOffset[0] - 5,
+									 (short) y - g_lemmingStandOffset[1] + 11,
 									 RES_GAME_FILLED_STARS,
 									 0,
 									 0,
 									 (CRemap*) m_remaps[player]);
 		}
 		else {
-			m_lemmingAnims->DrawAnim((short) x - g_unk0x496fd8[0] - 5,
-									 (short) y - g_unk0x496fd8[1] + 11,
+			m_lemmingAnims->DrawAnim((short) x - g_lemmingStandOffset[0] - 5,
+									 (short) y - g_lemmingStandOffset[1] + 11,
 									 RES_GAME_STARS,
 									 0,
 									 0,
@@ -2343,8 +2343,8 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 		}
 	}
 	if (drawEquipment && p_remapped == 0 && InGroupByObjectNo(p_objectNo)) {
-		m_lemmingAnims->DrawAnim((short) x - g_unk0x496fd8[0] + 2,
-								 (short) y - g_unk0x496fd8[1] - 16,
+		m_lemmingAnims->DrawAnim((short) x - g_lemmingStandOffset[0] + 2,
+								 (short) y - g_lemmingStandOffset[1] - 16,
 								 RES_GAME_SPINARROW,
 								 0,
 								 p_viewData.m_animationTime,
@@ -2529,8 +2529,12 @@ void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_r
 	}
 
 	m_lemmingAnims->DrawAnim(x - 16, y - 64, RES_GAME_BALLOON, 0, 0, (CRemap*) balloonRemap);
-	m_lemmingAnims
-		->DrawAnim(x - g_unk0x496fd8[0] - 14, y - g_unk0x496fd8[1] - 12, RES_GAME_ONBALLOON, 0, 0, (CRemap*) remap);
+	m_lemmingAnims->DrawAnim(x - g_lemmingStandOffset[0] - 14,
+							 y - g_lemmingStandOffset[1] - 12,
+							 RES_GAME_ONBALLOON,
+							 0,
+							 0,
+							 (CRemap*) remap);
 }
 
 // FUNCTION: LEMBALL 0x0043c940
