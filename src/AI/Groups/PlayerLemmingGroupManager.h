@@ -55,6 +55,11 @@ private:
 	PlayerLemming* m_dead[4];            // 0x12c
 	PlayerLemming* m_networkLemmings[4]; // 0x13c
 	int m_networkInitialized;            // 0x14c
+
+public:
+	void GetPlayerStartPosition(AiCoord& p_position, int p_index);
+	void ConfigurePlayerLemmingCounts(int p_playerCount, int p_count0, int p_count1, int p_count2, int p_count3);
+	int GetLemmingCountForPlayer(int p_playerIndex);
 };
 
 // SYNTHETIC: LEMBALL 0x00419930

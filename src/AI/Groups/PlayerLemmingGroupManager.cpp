@@ -9,6 +9,9 @@
 #include "FormationManager.h"
 #include "PlayerLemmingGroup.h"
 
+// GLOBAL: LEMBALL 0x0049d138
+int g_anDefaultPlayerLemmingCounts[5][4] = {{0, 0, 0, 0}, {4, 0, 0, 0}, {3, 1, 0, 0}, {2, 1, 1, 0}, {1, 1, 1, 1}};
+
 // 68K 0x1060f6e4 __ct__26CPlayerLemmingGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
 // FUNCTION: LEMBALL 0x00418400
 PlayerLemmingGroupManager::PlayerLemmingGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
@@ -144,8 +147,8 @@ void PlayerLemmingGroupManager::DeleteGroup(PlayerLemmingGroup* p_group)
 void PlayerLemmingGroupManager::CreateNewGroup(unsigned short p_count, unsigned short* p_objectIds)
 {
 	PlayerLemmingGroup* group = 0;
-	int index = 0;
 	GenericGroup** groups;
+	int index = 0;
 	MakeNoGroupsPlayerControlled();
 	if (m_groupCount > 0) {
 		groups = m_groups;
@@ -371,6 +374,50 @@ void PlayerLemmingGroupManager::PlayerGroupRequestFire(int p_x, int p_y)
 			lemming = (PlayerLemming*) group->GenericGroup::GetNextElementInGroup();
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x00418ba0
+void PlayerLemmingGroupManager::GetPlayerStartPosition(AiCoord& p_position, int p_index)
+{
+	p_position.m_xFixed = m_startX[p_index] << 12;
+	p_position.m_yFixed = m_startY[p_index] << 12;
+	p_position.m_zFixed = m_startZ[p_index] << 12;
+}
+
+// FUNCTION: LEMBALL 0x00418be0
+void PlayerLemmingGroupManager::ConfigurePlayerLemmingCounts(int p_playerCount,
+															 int p_count0,
+															 int p_count1,
+															 int p_count2,
+															 int p_count3)
+{
+	m_startPositionCount = p_playerCount;
+	if (p_count0 == -1) {
+		m_lemmingCounts[0] = g_anDefaultPlayerLemmingCounts[p_playerCount][0];
+		m_lemmingCounts[1] = g_anDefaultPlayerLemmingCounts[p_playerCount][1];
+		m_lemmingCounts[2] = g_anDefaultPlayerLemmingCounts[p_playerCount][2];
+		m_lemmingCounts[3] = g_anDefaultPlayerLemmingCounts[p_playerCount][3];
+	}
+	else {
+		m_lemmingCounts[0] = p_count0;
+		m_lemmingCounts[2] = p_count2;
+		m_lemmingCounts[1] = p_count1;
+		m_lemmingCounts[3] = p_count3;
+	}
+	for (int i = 0; i < p_playerCount; i++) {
+		if (m_startX[i] > 1024 || m_startX[i] < 0) {
+			m_startX[i] = i * 16;
+		}
+		if (m_startY[i] > 1024 || m_startY[i] < 0) {
+			m_startY[i] = i * 16;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00418c90
+int PlayerLemmingGroupManager::GetLemmingCountForPlayer(int p_playerIndex)
+{
+	return m_lemmingCounts[p_playerIndex];
 }
 
 // 68K 0x106104be InitialiseNetwork__26CPlayerLemmingGroupManagerFv
