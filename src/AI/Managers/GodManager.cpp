@@ -9,8 +9,6 @@
 #include "../Navigation/Ai.h"
 #include "../Objects/ViewData.h"
 #include "BaseObjectManager.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Messaging/NetworkMessage.h"
 
 // 68K 0x1060de8a __ct__11CGodManagerFi
 // FUNCTION: LEMBALL 0x0040b020
