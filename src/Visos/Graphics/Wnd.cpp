@@ -338,14 +338,7 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 			break;
 		}
 		if (wasDisplayDibActive != g_nDisplayDibActive) {
-			if (g_nDisplayDibActive == 0) {
-				ClipCursor(0);
-				SystemParametersInfoA(SPI_SETMOUSE, 0, g_savedMouseParameters, 0);
-				if (g_nSavedScreenSaverActive != 0) {
-					SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, (void*) 1, 0);
-				}
-			}
-			else {
+			if (g_nDisplayDibActive != 0) {
 				int mouseParameters[3];
 				RECT clipRect;
 				SystemParametersInfoA(SPI_GETMOUSE, 0, mouseParameters, 0);
@@ -364,6 +357,13 @@ long __stdcall Wnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigne
 				clipRect.right = screenSize->m_width;
 				clipRect.bottom = screenSize->m_height;
 				ClipCursor(&clipRect);
+			}
+			else {
+				ClipCursor(0);
+				SystemParametersInfoA(SPI_SETMOUSE, 0, g_savedMouseParameters, 0);
+				if (g_nSavedScreenSaverActive != 0) {
+					SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, (void*) 1, 0);
+				}
 			}
 		}
 		return window->ProcessOtherMessages(WM_ACTIVATEAPP, p_wParam, p_lParam);
