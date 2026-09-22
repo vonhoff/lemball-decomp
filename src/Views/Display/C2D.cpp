@@ -490,12 +490,6 @@ void C2D::CheckValidFormGroup()
 	}
 }
 
-// STUB: LEMBALL 0x00436a10
-void C2D::Process()
-{
-	SetMouseShape();
-}
-
 // FUNCTION: LEMBALL 0x00436e40
 bool C2D::FindGameObject(const CVsPoint& p_point, int& p_index, int p_preferLemming)
 {
@@ -946,12 +940,6 @@ bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 		} while (searchY >= p_screenY);
 	}
 	return false;
-}
-
-// STUB: LEMBALL 0x00437b60
-int C2D::ProcessMsg(Message* p_message)
-{
-	return 0;
 }
 
 // FUNCTION: LEMBALL 0x00437d00
