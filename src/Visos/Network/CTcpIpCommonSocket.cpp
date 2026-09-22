@@ -1,7 +1,7 @@
 #include "CTcpIpCommonSocket.h"
 
 #include "Visos/Network/CBaseCommonSocket.h"
-#include "Visos/Target/CNetworkWnd.h"
+#include "Visos/Target/Network/CNetworkWnd.h"
 
 extern int g_unk0x4a23b8;
 #include "Platform/WinSock/WinSock.h"

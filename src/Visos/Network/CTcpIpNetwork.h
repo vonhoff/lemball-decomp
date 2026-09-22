@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPNETWORK_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPNETWORK_H
 
-#include "../Target/CNetworkWnd.h" // complete type
-#include "CBaseNetwork.h"          // complete type
+#include "../Target/Network/CNetworkWnd.h" // complete type
+#include "CBaseNetwork.h"                  // complete type
 
 struct BasePacketHeader;
 

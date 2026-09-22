@@ -7,8 +7,8 @@
 #include "../../Visos/Graphics/CWnd.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Resources/CMogRes.h"
-#include "../../Visos/Target/CGraphicsDriver.h"
-#include "../../Visos/Target/CPlatformServices.h"
+#include "../../Visos/Target/Graphics/CGraphicsDriver.h"
+#include "../../Visos/Target/System/CPlatformServices.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

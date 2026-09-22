@@ -49,7 +49,9 @@ Keep each class definition identical in every translation unit. Do not use prepr
 No inline asm. One primary class per `.h`/`.cpp` (stem = class); no filename exceptions. Functions in ascending original x86 address order. Use `RES_*` from `Manifest.h`. Prefer named members over offset pokes. Keep `undefined`/`undefined2`/`undefined4` until Win32 evidence justifies a tighter type. Preserve original loop shape, 32-bit size math, post-virtual pointer re-fetches, and message `switch` widening. Stop at compiler noise (reg alloc, alignment NOPs).
 
 DirectX SDK ABI declarations live in `src/Platform/DirectX/`, with SDK type names.
-Game wrappers and state remain in `src/Visos/Target/`. Preserve original filename
+Shared WinSock declarations live in `src/Platform/WinSock/`.
+Game wrappers and state live in `src/Visos/Target/`, grouped into `Graphics/`,
+`Sound/`, `Input/`, `Network/`, `UI/`, and `System/`. Preserve original filename
 strings in reconstructed assertions even when the source file is renamed.
 
 ## MSVC 4.00 Codegen Quirks

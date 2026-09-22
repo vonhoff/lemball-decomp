@@ -30,7 +30,7 @@
 #include "../../Visos/Resources/CResString.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Sound/CSoundManager.h"
-#include "../../Visos/Target/CPlatformServices.h"
+#include "../../Visos/Target/System/CPlatformServices.h"
 #include "../Level/CLevelLoader.h"
 #include "CDemo.h"
 #include "CGameStatus.h"

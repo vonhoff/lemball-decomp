@@ -1,11 +1,11 @@
 #include "CTranslator.h"
 
-#include "../Target/CPlatformServices.h"
+#include "../Target/System/CPlatformServices.h"
 #include "CBaseQueue.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include "Visos/Foundation/Message.h"
-#include "Visos/Target/InputTranslationEntry.h"
+#include "Visos/Target/Input/InputTranslationEntry.h"
 
 #include <windows.h>
 

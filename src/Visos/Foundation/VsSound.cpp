@@ -2,9 +2,9 @@
 
 #include "../Sound/CPvMusicDevice.h"
 #include "../Sound/CSoundManager.h"
-#include "../Target/CDirectSoundDevice.h"
-#include "../Target/CMciMusicDevice.h"
-#include "../Target/CWaveSoundDevice.h"
+#include "../Target/Sound/CDirectSoundDevice.h"
+#include "../Target/Sound/CMciMusicDevice.h"
+#include "../Target/Sound/CWaveSoundDevice.h"
 #include "Visos/Sound/CBaseSoundDevice.h"
 
 // FUNCTION: LEMBALL 0x0045b770

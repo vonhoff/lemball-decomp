@@ -2,8 +2,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include "../Resources/CResPalette.h"
-#include "../Target/CGraphicsDriver.h"
-#include "../Target/CGraphicsState.h"
+#include "../Target/Graphics/CGraphicsDriver.h"
+#include "../Target/Graphics/CGraphicsState.h"
 #include "CCursor.h"
 #include "CGdi.h"
 #include "CGdiDevice.h"

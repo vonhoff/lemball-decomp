@@ -25,9 +25,9 @@
 #include "../../Visos/Resources/CResPalette.h"
 #include "../../Visos/Resources/CResZrle.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "../../Visos/Target/CGraphicsDriver.h"
-#include "../../Visos/Target/CGraphicsState.h"
-#include "../../Visos/Target/CPlatformServices.h"
+#include "../../Visos/Target/Graphics/CGraphicsDriver.h"
+#include "../../Visos/Target/Graphics/CGraphicsState.h"
+#include "../../Visos/Target/System/CPlatformServices.h"
 #include "C2D.h"
 
 #include <new.h>

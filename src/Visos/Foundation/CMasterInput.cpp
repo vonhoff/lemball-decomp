@@ -1,6 +1,6 @@
 #include "CMasterInput.h"
 
-#include "../Target/CMasterInputItem.h"
+#include "../Target/Input/CMasterInputItem.h"
 
 // FUNCTION: LEMBALL 0x00472070
 CMasterInput::CMasterInput(CBaseQueue* p_arg0)

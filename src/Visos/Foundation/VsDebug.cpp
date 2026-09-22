@@ -1,6 +1,6 @@
 #include "VsDebug.h"
 
-#include "../Target/CTextWnd.h"
+#include "../Target/UI/CTextWnd.h"
 #include "CDebugOStream.h"
 #include "CString.h"
 #include "CVsDebugStreambuf.h"
