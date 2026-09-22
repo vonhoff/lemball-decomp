@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare source names with adjacent // 68K symbols (via tools/gate.py --names)."""
+"""Audit C++ names and signatures against independent, reviewed CSV evidence."""
 
 import json
 import re
@@ -7,24 +7,18 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from .paths import ROOT
+from .cpp_signatures import adjacent_signature, canonical_type, class_ranges
+from .mac_symbols import Signature, decode_signature
+from .provenance import (
+    CATALOG, CATALOG_ERRORS, MAC_MARK, TOKENS, WINDOWS_MARK,
+    audit_annotations, catalog_entries, read_catalog, scan_annotations,
+)
 from .source import (
-    brace_ends,
     collect_sources,
     drop_type_prefix,
     mask_comments_and_strings,
 )
 
-MARK = re.compile(r"//\s*68K\s+(0x[0-9a-fA-F]+)\s+(\S+)")
-FUNCTION = re.compile(
-    r"(?:(?P<owner>[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*)\s*::\s*)?"
-    r"(?P<method>operator\s*(?:new\b|delete\b|[^\w\s(]+)|~?[A-Za-z_]\w*)\s*\("
-)
-OPERATORS = {
-    "__as": "operator=", "__ls": "operator<<", "__nw": "operatornew",
-    "__dl": "operatordelete", "__apl": "operator+=", "__pl": "operator+",
-    "__eq": "operator==", "__gt": "operator>", "__ml": "operator*",
-}
 ACRONYMS = (
     ("TCPIP", "TcpIp"), ("MRAM", "Mram"), ("GDI", "Gdi"), ("RAM", "Ram"),
     ("CD", "Cd"), ("PV", "Pv"), ("VS", "Vs"), ("AI", "Ai"),
@@ -44,40 +38,8 @@ INTENTIONAL = {
 
 
 def decode_symbol(symbol):
-    split = re.search(r"__(?=\d|Q\d|F)", symbol)
-    if split is None:
-        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", symbol):
-            return "", symbol
-        raise ValueError("unsupported symbol form")
-    method, rest = symbol[:split.start()], symbol[split.end():]
-    owners, count = [], 1
-    if rest.startswith("Q"):
-        if len(rest) < 2 or not rest[1].isdigit():
-            raise ValueError("unsupported qualified owner")
-        count, rest = int(rest[1]), rest[2:]
-    if rest.startswith("F"):
-        count = 0
-    for _ in range(count):
-        length = re.match(r"\d+", rest)
-        if not length:
-            raise ValueError("missing owner length")
-        size = int(length[0])
-        rest = rest[len(length[0]):]
-        if size == 0 or len(rest) < size:
-            raise ValueError("invalid owner length")
-        owners.append(rest[:size])
-        rest = rest[size:]
-    if not re.match(r"[CS]*F", rest):
-        raise ValueError("unsupported function suffix after owner")
-    if method == "__ct":
-        method = "<constructor>"
-    elif method == "__dt":
-        method = "<destructor>"
-    elif method.startswith("__"):
-        if method not in OPERATORS:
-            raise ValueError("unsupported operator " + method)
-        method = OPERATORS[method]
-    return "::".join(owners), method
+    signature = decode_signature(symbol)
+    return signature.owner, signature.method
 
 
 def normalize_word(word):
@@ -128,139 +90,168 @@ def method_fold(name):
     return ("Internal" + body if internal else body).lower()
 
 
-def class_ranges(code):
-    ends = brace_ends(code)
-    result = []
-    for match in re.finditer(r"\b(?:class|struct)\s+(\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{", code):
-        opening = match.end() - 1
-        if opening in ends:
-            result.append((opening, ends[opening], match[1]))
-    return result
+def comment_blocks(text):
+    """Adjacent real line comments; code and blank lines end an annotation block."""
+    code = mask_comments_and_strings(text)
+    block = []
+    for token in TOKENS.finditer(text):
+        if not token[0].startswith("//"):
+            continue
+        if block:
+            gap = text[block[-1].end():token.start()]
+            if code[block[-1].end():token.start()].strip() or re.search(r"\n[ \t\r]*\n", gap):
+                yield block
+                block = []
+        block.append(token)
+    if block:
+        yield block
 
 
-def adjacent_name(code, offset, ranges):
-    start = offset
-    while start < len(code) and code[start].isspace():
-        start += 1
-    end = re.search(r"[;{}#]", code[start:])
-    declaration = code[start:start + end.start()] if end else code[start:]
-    match = FUNCTION.search(declaration)
-    if not match:
-        raise ValueError("no adjacent function declaration")
-    owner = match["owner"]
-    if not owner:
-        owner = "::".join(r[2] for r in ranges if r[0] < start < r[1])
-    method = re.sub(r"\s+", "", match["method"])
-    leaf = owner.split("::")[-1] if owner else ""
-    if owner and method == leaf:
-        method = "<constructor>"
-    elif owner and method == "~" + leaf:
-        method = "<destructor>"
-    return owner, method
+def normalized_type(value, original=False):
+    if not original:
+        value = re.sub(r"[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*", lambda m: class_name(m[0]), value)
+    return canonical_type(value)
 
 
-def scan(path):
+def compare_signature(expected, actual, original=False, parameter_error=None):
+    wanted_class = expected.owner if original or expected.owner == actual.owner else class_name(expected.owner)
+    wanted_method = expected.method if original else method_name(expected.method)
+    diffs = []
+    if wanted_class != actual.owner:
+        diffs.append("class-case" if wanted_class.lower() == actual.owner.lower() else "class-name")
+    if wanted_method != actual.method:
+        if method_fold(expected.method) != method_fold(actual.method) or "_" in actual.method:
+            diffs.append("method-name")
+        else:
+            diffs.append("method-case")
+    key = (class_name(expected.owner), method_name(expected.method), actual.owner, actual.method)
+    status = "match"
+    if diffs and key in INTENTIONAL and not original:
+        status = "intentional"
+    elif any(d.endswith("-name") for d in diffs):
+        status = "mismatch"
+    elif diffs:
+        status = "case"
+    signature_status, detail = "match", None
+    if expected.parameters is None:
+        signature_status, detail = "unencoded", "MacsBug name contains no parameter-type encoding"
+    elif actual.parameters is None:
+        signature_status, detail = "unresolved", parameter_error
+    else:
+        try:
+            wanted = tuple(normalized_type(p, original) for p in expected.parameters)
+            actual_types = tuple(normalized_type(p, original) for p in actual.parameters)
+            if wanted != actual_types or expected.const != actual.const:
+                signature_status = "review"
+                detail = f"Mac {expected.display()} -> source {actual.display()}"
+        except ValueError as error:
+            signature_status, detail = "unresolved", str(error)
+    return dict(status=status, wanted_class=wanted_class, wanted_method=wanted_method,
+                actual_class=actual.owner, actual_method=actual.method, differences=diffs,
+                signature_status=signature_status, signature_detail=detail,
+                original_signature=expected.display(), actual_signature=actual.display())
+
+
+def scan(path, symbols=None, mappings=None, original=False):
+    if symbols is None or mappings is None:
+        symbols, mappings = catalog_entries(read_catalog())
+    by_windows = {}
+    for mac, win in sorted(mappings):
+        by_windows.setdefault(win, []).append(mac)
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
     ranges = class_ranges(code)
     rows = []
-    for mark in MARK.finditer(text):
-        row = {
-            "path": str(path),
-            "line": text.count("\n", 0, mark.start()) + 1,
-            "address_68k": mark[1],
-            "symbol": mark[2],
-        }
-        try:
-            expected_symbol = mark[2].rstrip(";")
-            expected = decode_symbol(expected_symbol)
-            line_end = text.find("\n", mark.end())
-            actual = adjacent_name(code, len(text) if line_end < 0 else line_end, ranges)
-            wanted_class = expected[0] if expected[0] == actual[0] else class_name(expected[0])
-            wanted_method = method_name(expected[1])
-            diffs = []
-            if wanted_class != actual[0]:
-                diffs.append("class-case" if wanted_class.lower() == actual[0].lower() else "class-name")
-            if wanted_method != actual[1]:
-                if method_fold(expected[1]) != method_fold(actual[1]) or "_" in actual[1]:
-                    diffs.append("method-name")
-                else:
-                    diffs.append("method-case")
-            key = (wanted_class, wanted_method, actual[0], actual[1])
-            if diffs and key in INTENTIONAL:
-                status = "intentional"
-            elif any(d.endswith("-name") for d in diffs):
-                status = "mismatch"
-            elif diffs:
-                status = "case"
-            else:
-                status = "match"
-            row.update(
-                wanted_class=wanted_class,
-                wanted_method=wanted_method,
-                actual_class=actual[0],
-                actual_method=actual[1],
-                differences=diffs,
-                status=status,
-                expected_symbol=expected_symbol,
-            )
-        except ValueError as error:
-            reason = str(error)
-            symbol = row["symbol"].rstrip(";")
-            after = text[mark.end():mark.end() + 500]
-            synthetic = (
-                reason == "no adjacent function declaration"
-                and symbol.startswith(("__ct__", "__dt__"))
-                and re.search(r"SYNTHETIC:|^\s*(?:class|struct)\s+\w+", after, re.MULTILINE)
-            )
-            row.update(status="synthetic" if synthetic else "unresolved", reason=reason)
-        rows.append(row)
+    # Incorrect annotations cannot override the independent expected name.
+    for row in audit_annotations(scan_annotations(path), symbols, mappings):
+        if row["status"] in ("invalid", "review"):
+            rows.append(dict(row, status="invalid", reason=row["detail"]))
+    blocks = list(comment_blocks(text))
+    for block_index, block in enumerate(blocks):
+        limit = blocks[block_index + 1][0].start() if block_index + 1 < len(blocks) else len(code)
+        windows = [(token, int(mark[1], 16)) for token in block
+                   if (mark := WINDOWS_MARK.match(token[0]))]
+        macs = [(token, int(mark[1], 16)) for token in block
+                if (mark := MAC_MARK.fullmatch(token[0]))]
+        # Windows entry is the primary lookup, even when no // 68K comment exists.
+        entries = [(token, win, by_windows.get(win, [])) for token, win in windows]
+        if not windows:
+            entries = [(token, None, [mac]) for token, mac in macs if mac in symbols]
+        for token, win, candidates in entries:
+            row = dict(path=str(path), line=text.count("\n", 0, token.start()) + 1,
+                       windows_address=f"0x{win:08x}" if win else None)
+            if not candidates:
+                rows.append(dict(row, status="unmapped"))
+                continue
+            if "SYNTHETIC:" in token[0]:
+                rows.append(dict(row, status="synthetic", reason="compiler-emitted function; no C++ signature"))
+                continue
+            try:
+                actual, parameter_error = adjacent_signature(code[:limit], block[-1].end(), ranges)
+            except ValueError as error:
+                # Compiler-emitted functions have no source declaration to compare.
+                synthetic = "SYNTHETIC:" in token[0] or (
+                    not windows and all(symbols[mac].startswith(("__ct__", "__dt__")) for mac in candidates)
+                    and re.match(r"(?:\s*#pragma[^\n]*\n)*\s*(?:class|struct)\b", code[block[-1].end():])
+                )
+                rows.append(dict(row, status="synthetic" if synthetic else "unresolved", reason=str(error)))
+                continue
+            comparisons = []
+            for mac in candidates:
+                symbol = symbols[mac]
+                try:
+                    comparison = compare_signature(decode_signature(symbol), actual, original, parameter_error)
+                except ValueError as error:
+                    comparison = dict(status="unresolved", reason=str(error))
+                comparisons.append(dict(comparison, address_68k=f"0x{mac:08x}", symbol=symbol))
+            # Folded code can have several legitimate source identities. Preserve all
+            # candidates in JSON and accept a compatible one, never an arbitrary row.
+            order = {"match": 0, "intentional": 1, "case": 2, "mismatch": 3, "unresolved": 4}
+            best = min(comparisons, key=lambda r: (order[r["status"]], r.get("signature_status") != "match"))
+            row.update(best)
+            row["catalog_candidates"] = comparisons
+            rows.append(row)
     return rows
 
 
-def check_names(
-    paths: list[Path | str] | None = None,
-    strict: bool = False,
-    as_json: bool = False,
-    fail: bool = True,
-) -> int:
-    files = collect_sources(paths)
-    if not files:
-        sys.stderr.write("names: no C++ source files found\n")
+def check_names(paths: list[Path | str] | None = None, strict=False, as_json=False,
+                fail=True, original=False, verbose=False, catalog_path=CATALOG):
+    try:
+        symbols, mappings = catalog_entries(read_catalog(catalog_path))
+        files = collect_sources(paths)
+        if not files:
+            raise ValueError("no C++ source files found")
+        rows = [row for path in files for row in scan(path, symbols, mappings, original)]
+    except CATALOG_ERRORS as error:
+        print(f"names: {error}", file=sys.stderr)
         return 2
-
-    rows = [row for path in files for row in scan(path)]
     counts = dict(Counter(row["status"] for row in rows))
-    selected = [
-        r
-        for r in rows
-        if r["status"] in ("mismatch", "unresolved")
-        or (strict and r["status"] == "case")
-    ]
+    signatures = dict(Counter(row["signature_status"] for row in rows if "signature_status" in row))
+    failures = [r for r in rows if r["status"] in ("mismatch", "invalid", "unresolved")
+                or ((strict or original) and r["status"] == "case")
+                or (strict and r.get("signature_status") in ("review", "unresolved"))]
     if as_json:
-        print(
-            json.dumps(
-                {
-                    "files": len(files),
-                    "annotations": len(rows),
-                    "counts": counts,
-                    "comparisons": rows,
-                },
-                indent=2,
-            )
-        )
+        print(json.dumps(dict(files=len(files), entries=len(rows), counts=counts,
+                              signatures=signatures, comparisons=rows), indent=2))
     else:
-        for row in selected:
+        for row in rows:
+            if row not in failures and not (verbose and row.get("signature_status") in ("review", "unresolved")):
+                continue
             detail = row.get("reason") or (
-                f'{row["wanted_class"]}::{row["wanted_method"]} -> '
-                f'{row["actual_class"]}::{row["actual_method"]} '
-                f'({", ".join(row["differences"])})'
+                f'{row["original_signature"]} -> {row["actual_signature"]}'
+                f' ({", ".join(row["differences"]) or row.get("signature_status", "")})'
             )
-            print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{row["symbol"]}]')
-        print(f"{len(files)} files, {len(rows)} annotations: {counts}")
+            address = row.get("windows_address") or row.get("address_68k", "")
+            print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{address}]')
+        print(f"names: {len(files)} files, {len(rows)} entries from CSV: {counts}")
+        print(f"names: parameter/const comparisons: {signatures}")
+        if signatures.get("review") or signatures.get("unresolved"):
+            print("names: signature review requires Windows evidence; --verbose lists items, --names-strict fails them.")
     if fail:
-        if counts.get("unresolved") or not rows:
+        if counts.get("unresolved") or (not rows and not paths):
             return 2
-        if selected:
+        if failures:
             return 1
     return 0
+
+

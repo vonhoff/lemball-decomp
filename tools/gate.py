@@ -43,8 +43,11 @@ def main() -> int:
         "--path", action="append", default=[], dest="paths", help="scoped check paths"
     )
     parser.add_argument(
-        "--names", action="store_true", help="68K naming vs source comments"
+        "--names", action="store_true", help="source names and signatures vs reviewed CSV evidence"
     )
+    parser.add_argument("--names-original", action="store_true", help="audit exact original Mac spelling, including prefixes")
+    parser.add_argument("--names-strict", action="store_true", help="fail naming case and signature review items")
+    parser.add_argument("--names-json", action="store_true", help="emit catalog naming comparisons as JSON")
     parser.add_argument(
         "--68k", dest="provenance", action="store_true",
         help="verify 68K comments using the bundled metadata catalog"
@@ -70,8 +73,9 @@ def main() -> int:
         return check_provenance(paths=paths, strict=args.annot_strict, verbose=args.verbose,
                                 resource=args.resource)
 
-    if args.names and not args.all:
-        return check_names(paths=paths, fail=True)
+    if (args.names or args.names_original or args.names_strict or args.names_json) and not args.all:
+        return check_names(paths=paths, fail=True, strict=args.names_strict, original=args.names_original,
+                           verbose=args.verbose, as_json=args.names_json)
 
     if args.vtable and not args.all:
         return check_vtable(no_build=True, verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
@@ -102,7 +106,8 @@ def main() -> int:
             return code
 
     if args.all:
-        code = check_names(paths=paths, fail=True)
+        code = check_names(paths=paths, fail=True, strict=args.names_strict, original=args.names_original,
+                           verbose=args.verbose, as_json=args.names_json)
         if code != 0:
             return code
 

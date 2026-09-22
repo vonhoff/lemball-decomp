@@ -79,6 +79,11 @@ PascalCase; leading `_` → `Internal`; drop `_` separators. Intentional Mac/Win
 python tools/gate.py --names
 ```
 
-Compares reconstructed names to adjacent `// 68K` comments in `src/` (no external Mapping tree).
+Compares reconstructed names to `evidence/68k/catalog.csv`, primarily by original
+Windows address. `// 68K` comments are checked against that evidence, never used
+as the naming authority. Parameter names are ignored; encoded parameter types
+and method constness are compared. Signature differences require Windows review
+(`--names --verbose`; `--names-strict` fails review items). `--names-original`
+audits exact Mac spelling, independently of project naming normalization.
 
 clang-format touched C/C++.

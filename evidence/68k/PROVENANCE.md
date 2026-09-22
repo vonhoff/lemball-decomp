@@ -11,6 +11,29 @@ python tools/gate.py --68k --annot-strict
 
 The normal gate includes this check; `--all` adds naming and vtable checks.
 
+## Naming authority
+
+`python tools/gate.py --names` looks up the original Windows annotation in this
+CSV, then decodes the catalog symbol. Removing or changing a `// 68K` comment
+cannot supply a different expected name. A symbol-only inline declaration uses
+its checked Mac address for lookup. Folded entries retain all catalog candidates.
+Compiler-emitted functions without C++ declarations are reported as synthetic;
+Windows entries without a reviewed pairing are reported as unmapped.
+
+The decoder checks class, method, parameter types, and method constness. Argument
+names and defaults are ignored. Ordinary return types are not encoded and are
+not inferred. Unmangled names provide no parameter evidence. Unsupported C++
+declarators and typedef differences remain explicit review items, not matches.
+The CodeWarrior grammar was cross-checked against
+[cwdemangle](https://github.com/encounter/cwdemangle), a CC0 implementation.
+Normal operation uses only the bundled Python implementation and CSV.
+
+`--names --verbose` lists signature differences. `--names-strict` fails those
+reviews and naming case differences. Mac types must not override stronger
+Windows evidence: ABI changes, platform APIs, and typedefs can explain a review.
+`--names-original` audits exact original spelling, including prefixes and case;
+normal naming checks apply the project's documented spelling policy.
+
 ## Three linked values
 
 ```csv
@@ -53,6 +76,13 @@ constant pools, and relocation records. Template punctuation receives the same
 symbol sanitization as the Ghidra import. The parser remains in
 `tools/lib/provenance.py`; regression fixtures contain synthetic procedures.
 
+The original research Ghidra export was checked again: all 2,848 catalog
+address/name entries agree with that export and with fresh resource extraction.
+Two extra Ghidra-generated `FUN_...` labels are excluded because they are not
+MacsBug symbols. The reviewed pairing ledger supplies the starting Windows
+correspondence; subsequent corrections below are retained separately from raw
+symbol provenance. Research origin does not make every proposed pairing correct.
+
 Optional verification against a privately supplied resource fork:
 
 ```powershell
@@ -69,6 +99,10 @@ establish Windows correspondence; that requires separate disassembly review.
 ## PadToButton example
 
 Private resource extraction confirms `__ct__12CPadToButtonFi` at `0x10b0f952`.
+It decodes to `CPadToButton::CPadToButton(int)`: `__ct__` is a constructor,
+`12CPadToButton` supplies its owner, and `Fi` encodes one `int` parameter.
+The constructor repeats the complete class name, including `C`. The trailer
+does not encode a parameter identifier such as `p_arg0`.
 The Mac constructor and Windows `0x0043a250` both construct a queue handler,
 allocate capacity entries, store capacity at `+0x18`, clear count at `+0x14`,
 clear each button pointer, and attach the handler at priority -25. Entry sizes
