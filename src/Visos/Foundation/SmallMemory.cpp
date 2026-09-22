@@ -46,8 +46,8 @@ SmallMemory::~SmallMemory()
 	g_nSmallMemoryEnabled = 0;
 	int i = g_preInitActive.m_startBucket;
 	if (i < (int) m_bucketLimit) {
-		Bucket* bucket;
 		Bucket** slot = &m_buckets[i];
+		Bucket* bucket;
 		do {
 			bucket = *slot;
 			if (bucket != 0) {

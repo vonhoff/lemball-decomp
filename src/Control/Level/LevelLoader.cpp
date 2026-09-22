@@ -249,7 +249,6 @@ bool LevelLoader::LocateStartOfLevelFile()
 LoadBlockHeader* LevelLoader::GetNextBlockHeader(LoadBlockHeader* p_header)
 {
 	unsigned int size;
-	unsigned char* raw;
 
 	if (p_header == 0) {
 		return (LoadBlockHeader*) g_pLevelFileData;
@@ -258,8 +257,8 @@ LoadBlockHeader* LevelLoader::GetNextBlockHeader(LoadBlockHeader* p_header)
 	if ((size & 3) != 0) {
 		size = (size - (size & 3)) + 4;
 	}
-	raw = (unsigned char*) p_header;
-	return (LoadBlockHeader*) (raw + size);
+	p_header = (LoadBlockHeader*) ((unsigned char*) p_header + size);
+	return p_header;
 }
 
 // 68K 0x10702e0a RetrievePreviewData__12CLevelLoaderF6eSkilliP12tPreviewData
