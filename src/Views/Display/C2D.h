@@ -258,7 +258,7 @@ private:
 	unsigned short m_groundHitMode;                 // 0x218c
 	char m_pad0x218e[2];                            // 0x218e
 	SolidRect m_solidRect[1];                       // 0x2190
-	ScreenScroll m_drawingMarkForObjects;           // 0x21a0
+	ScreenScroll m_screenScroll;                    // 0x21a0
 	CopyColourToBackBuff m_copyColourToBackBuff;    // 0x21b0
 	CopyToBackBuff m_copyToBackBuff;                // 0x21c0
 	CopyToBackBuff m_scrollCopyToBackBuffs[2];      // 0x21d0
