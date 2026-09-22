@@ -22,8 +22,8 @@ extern unsigned int g_groundBlox6ResourceId;
 extern unsigned int g_groundBlox7ResourceId;
 
 // SIZE 0xb4
-// VTABLE: LEMBALL 0x00496ce0
 // VTABLE: LEMBALL 0x00496cdc LoadUpdate
+// VTABLE: LEMBALL 0x00496ce0 AnimsManager
 class LemmingAnimsManager : public AnimsManager, public LoadUpdate {
 public:
 	LemmingAnimsManager(Gdi* p_arg0, Main2DDisplay* p_arg1, Ai* p_arg2);

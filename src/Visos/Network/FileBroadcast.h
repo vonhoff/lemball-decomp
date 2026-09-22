@@ -7,12 +7,12 @@
 class PortsMessage;
 
 // SIZE 0x1b4
-// VTABLE: LEMBALL 0x0049a928 native callback
-// VTABLE: LEMBALL 0x0049a930 NetworkFile view
-// VTABLE: LEMBALL 0x0049a970 ReadSocket view
-// VTABLE: LEMBALL 0x0049a998 WriteSocket view
-// VTABLE: LEMBALL 0x0049a9c8 BaseCommonSocket view
-// VTABLE: LEMBALL 0x0049a9d8 primary Broadcast view
+// VTABLE: LEMBALL 0x0049a928 FileCommonSocket
+// VTABLE: LEMBALL 0x0049a930 NetworkFile
+// VTABLE: LEMBALL 0x0049a970 BaseSocket's `ReadSocket
+// VTABLE: LEMBALL 0x0049a998 BaseSocket's `WriteSocket
+// VTABLE: LEMBALL 0x0049a9c8 FileBroadcast
+// VTABLE: LEMBALL 0x0049a9d8 Broadcast
 // Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class FileBroadcast : public FileOpenManagement, public Broadcast {

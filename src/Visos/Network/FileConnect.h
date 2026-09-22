@@ -5,12 +5,12 @@
 #include "FileOpenManagement.h" // complete type
 
 // SIZE 0x1b8
-// VTABLE: LEMBALL 0x0049ab68 native callback
-// VTABLE: LEMBALL 0x0049ab70 NetworkFile view
-// VTABLE: LEMBALL 0x0049abb0 ReadSocket view
-// VTABLE: LEMBALL 0x0049abd8 WriteSocket view
-// VTABLE: LEMBALL 0x0049ac08 BaseCommonSocket view
-// VTABLE: LEMBALL 0x0049ac18 primary Connect view
+// VTABLE: LEMBALL 0x0049ab68 FileCommonSocket
+// VTABLE: LEMBALL 0x0049ab70 NetworkFile
+// VTABLE: LEMBALL 0x0049abb0 BaseSocket's `ReadSocket
+// VTABLE: LEMBALL 0x0049abd8 BaseSocket's `WriteSocket
+// VTABLE: LEMBALL 0x0049ac08 FileConnect
+// VTABLE: LEMBALL 0x0049ac18 CConnect
 // Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class FileConnect : public FileOpenManagement, public CConnect {

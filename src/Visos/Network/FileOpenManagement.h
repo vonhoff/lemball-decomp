@@ -5,6 +5,11 @@
 #include "OpenCount.h"    // complete type
 
 // SIZE 0x34
+// VTABLE: LEMBALL 0x0049a9f4 FileCommonSocket
+// VTABLE: LEMBALL 0x0049a9f8 NetworkFile
+// VTABLE: LEMBALL 0x0049aa38 BaseSocket's `ReadSocket
+// VTABLE: LEMBALL 0x0049aa60 BaseSocket's `WriteSocket
+// VTABLE: LEMBALL 0x0049aa90 FileOpenManagement
 // Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class FileOpenManagement : public virtual FileRwSocket {
