@@ -160,12 +160,12 @@ unsigned long g_dwSuccFailSingleLoseBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_SU
 unsigned long g_dwSuccFailSingleLoseBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_LEMMING;
 
 // FUNCTION: LEMBALL 0x00450020
-CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2, unsigned int p_arg3)
-	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_SUCCESS, 0x32, 200, 0, 0x28, 0x30)
+CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect, unsigned int p_success)
+	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_SUCCESS, 0x32, 200, 0, 0x28, 0x30)
 {
-	m_variant = p_arg3;
+	m_success = p_success;
 	m_animationsEnabled = (unsigned int) (g_nAnimationsDisabled == 0);
-	m_animWindow.Initialise(this, m_display, p_arg3);
+	m_animWindow.Initialise(this, m_display, p_success);
 	m_animWindow.m_resolveMoviePath = 1;
 	m_animWindow.m_moviePrefix = g_szSuccFailMoviePrefix;
 	m_animWindow.m_useMoviePrefix = 1;
@@ -191,13 +191,13 @@ void CSuccFailDrawer::CalculateText()
 	char** messages;
 	if (m_networkMode != 0) {
 		messages = g_apSuccFailNetWin;
-		if (m_variant == 0) {
+		if (m_success == 0) {
 			messages = g_apSuccFailNetLose;
 		}
 	}
 	else {
 		messages = g_apSuccFailSingleWin;
-		if (m_variant == 0) {
+		if (m_success == 0) {
 			messages = g_apSuccFailSingleLose;
 		}
 	}
@@ -293,7 +293,7 @@ void CSuccFailDrawer::Load()
 		m_layout = (SuccFailLayout*) g_abSuccFailLayoutCompact;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsCompact;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsCompact;
-		if (m_variant != 0) {
+		if (m_success != 0) {
 			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_SUCCESS_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdCompact;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_BOARD;
@@ -308,7 +308,7 @@ void CSuccFailDrawer::Load()
 		m_layout = (SuccFailLayout*) g_abSuccFailLayoutFull;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
-		if (m_variant != 0) {
+		if (m_success != 0) {
 			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_SUCCESS_EYES;
 			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdFull;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_BOARD;
@@ -379,7 +379,7 @@ void CSuccFailDrawer::Load()
 								  0xacef0011);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
-	if (m_variant != 0) {
+	if (m_success != 0) {
 		m_animPosition.m_x = (short) m_layout->m_primaryPosition.m_x + (short) m_layout->m_successAnimOffset.m_x;
 		m_animPosition.m_y = (short) m_layout->m_primaryPosition.m_y + (short) m_layout->m_successAnimOffset.m_y;
 	}
@@ -554,7 +554,7 @@ void CSuccFailDrawer::Processing()
 	}
 sound:
 	if (m_soundStarted == 0) {
-		if (m_variant != 0) {
+		if (m_success != 0) {
 			g_pSoundView->PlayEffect(SFX_SUCCESS);
 		}
 		else {

@@ -14,7 +14,7 @@ class CVsRect;
 // VTABLE: LEMBALL 0x00497a50 CAnimsManager
 class CIntroAnimDrawer : public CBaseFrontendDrawer {
 public:
-	CIntroAnimDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2, unsigned int p_arg3);
+	CIntroAnimDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect, unsigned int p_completionSequence);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void Load();                              // vtable+0x40
 	virtual void Processing();                        // vtable+0x38
@@ -24,7 +24,7 @@ public:
 	void EndPhase();
 
 private:
-	unsigned int m_variant;            // 0x398
+	unsigned int m_completionSequence; // 0x398
 	int m_nextFlow;                    // 0x39c
 	CSolidRect m_backgroundRect;       // 0x3a0
 	unsigned int m_unk0x3b0;           // 0x3b0

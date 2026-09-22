@@ -15,18 +15,21 @@ char g_szPaintBallIntroSequence[] = "PaintBall Intro Sequence";
 extern char g_szMoviePrefix[];
 
 // FUNCTION: LEMBALL 0x00447410
-CIntroAnimDrawer::CIntroAnimDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2, unsigned int p_arg3)
-	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_INTRO_ANIM, 0, 0, 0, 0, 0)
+CIntroAnimDrawer::CIntroAnimDrawer(CMain2DDisplay* p_display,
+								   CGdi* p_gdi,
+								   const CVsRect& p_rect,
+								   unsigned int p_completionSequence)
+	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_INTRO_ANIM, 0, 0, 0, 0, 0)
 {
-	m_variant = p_arg3;
+	m_completionSequence = p_completionSequence;
 	m_nextFlow = 0xe;
-	if (p_arg3 == 0) {
+	if (p_completionSequence == 0) {
 		m_nextFlow = 2;
 	}
 	m_started = 0;
 	m_startCountdown = 10;
 	m_display->Clear(-1);
-	m_animWindow.Initialise(this, m_display, m_variant);
+	m_animWindow.Initialise(this, m_display, m_completionSequence);
 	m_animWindow.m_resolveMoviePath = 1;
 	m_animWindow.m_moviePrefix = g_szMoviePrefix;
 	m_animWindow.m_useMoviePrefix = 1;

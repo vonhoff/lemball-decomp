@@ -7,40 +7,40 @@
 #include "Visos/Graphics/CAnimWnd.h"
 
 // FUNCTION: LEMBALL 0x00450c40
-void CSuccFailAnimWnd::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_display, int p_variant)
+void CSuccFailAnimWnd::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_display, int p_success)
 {
 	int sample;
 
 	m_owner = p_owner;
 	m_display = p_display;
-	m_variant = p_variant;
-	m_state = 0;
+	m_success = p_success;
+	m_musicStarted = 0;
 	m_variantIndex = 0;
-	if (p_variant != 0) {
-		m_primaryAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1;
-		m_secondaryAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_SUCCESS_SUCCESS1;
+	if (p_success != 0) {
+		m_lowResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1;
+		m_highResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_SUCCESS_SUCCESS1;
 		sample = *g_pSentinel * 0x29 + 0x1f & 0x7fffff;
 		*g_pSentinel = sample;
 		m_variantIndex = sample % 3;
 		return;
 	}
-	m_primaryAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1;
-	m_secondaryAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_FAIL_FAIL1;
+	m_lowResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1;
+	m_highResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_FAIL_FAIL1;
 	sample = *g_pSentinel * 0x29 + 0x1f & 0x7fffff;
 	*g_pSentinel = sample;
 	m_variantIndex = sample % 3;
 }
 
 // FUNCTION: LEMBALL 0x00450d00
-void CSuccFailAnimWnd::SetVariant(int p_variant)
+void CSuccFailAnimWnd::SetVariant(int p_lowResolution)
 {
 	unsigned int animBase;
 
-	if (p_variant != 0) {
-		animBase = m_primaryAnimBase;
+	if (p_lowResolution != 0) {
+		animBase = m_lowResAnimBase;
 	}
 	else {
-		animBase = m_secondaryAnimBase;
+		animBase = m_highResAnimBase;
 	}
 	CAnimWnd::SetAnim(m_variantIndex + animBase);
 }
@@ -51,9 +51,9 @@ void CSuccFailAnimWnd::OnStop()
 	if (g_nAnimationsDisabled == 0) {
 		Play();
 	}
-	if (m_state == 0) {
+	if (m_musicStarted == 0) {
 		g_pSoundView->SetMusicOn(1);
-		m_state = 1;
+		m_musicStarted = 1;
 	}
 }
 

@@ -9,9 +9,11 @@
 char g_szMoviePrefix[] = "lemball";
 
 // FUNCTION: LEMBALL 0x004477b0
-void CIntroAnimAnimWindow::Initialise(CIntroAnimDrawer* p_owner, CMain2DDisplay* p_display, unsigned int p_variant)
+void CIntroAnimAnimWindow::Initialise(CIntroAnimDrawer* p_owner,
+									  CMain2DDisplay* p_display,
+									  unsigned int p_completionSequence)
 {
-	m_variant = p_variant;
+	m_completionSequence = p_completionSequence;
 	m_owner = p_owner;
 	m_display = p_display;
 }
@@ -19,7 +21,7 @@ void CIntroAnimAnimWindow::Initialise(CIntroAnimDrawer* p_owner, CMain2DDisplay*
 // FUNCTION: LEMBALL 0x004477e0
 void CIntroAnimAnimWindow::SetAnim()
 {
-	if (m_variant == 0) {
+	if (m_completionSequence == 0) {
 		CAnimWnd::SetAnim(RES_NEWFRONT_STRINGS_INTRONAME);
 		return;
 	}

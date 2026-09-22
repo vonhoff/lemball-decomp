@@ -36,7 +36,7 @@ struct SuccFailLayout {
 // VTABLE: LEMBALL 0x00498340 CAnimsManager
 class CSuccFailDrawer : public CBaseFrontendDrawer {
 public:
-	CSuccFailDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2, unsigned int p_arg3);
+	CSuccFailDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect, unsigned int p_success);
 	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawBackGround();                    // vtable+0x50
@@ -67,7 +67,7 @@ private:
 	unsigned int m_secondaryBitmapId;     // 0x50c
 	SuccFailLayout* m_layout;             // 0x510
 	unsigned int m_buttonBinding;         // 0x514
-	unsigned int m_variant;               // 0x518
+	unsigned int m_success;               // 0x518
 	unsigned int m_soundStarted;          // 0x51c
 	CSuccFailAnimWnd m_animWindow;        // 0x520
 	unsigned int m_animStartDeadline;     // 0x5f8
