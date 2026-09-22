@@ -139,9 +139,12 @@ void CLift::Set(const Coord3d& p_start,
 				eLiftActivateType p_activateType,
 				unsigned int p_initialActive)
 {
-	m_position.m_xFixed = p_start.m_x << 12;
-	m_position.m_yFixed = p_start.m_y << 12;
-	m_position.m_zFixed = p_start.m_z << 12;
+	int startY = p_start.m_y;
+	int startZ = p_start.m_z;
+	int startX = p_start.m_x;
+	m_position.m_yFixed = startY << 12;
+	m_position.m_zFixed = startZ << 12;
+	m_position.m_xFixed = startX << 12;
 	m_liftId = g_wMovingLiftCount++;
 	m_start = p_start;
 	m_end = p_end;
