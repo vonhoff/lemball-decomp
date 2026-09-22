@@ -32,9 +32,9 @@ bool CCatapult::Process()
 {
 	int y = m_position.m_yFixed >> 12;
 	int x = m_position.m_xFixed >> 12;
+	CMap* map = g_pMap;
 	int blockX = x >> 4;
 	int blockY = y >> 4;
-	CMap* map = g_pMap;
 	unsigned short z;
 	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && map->m_ground.m_height > blockY) {
 		int cellX = x & 0xf;

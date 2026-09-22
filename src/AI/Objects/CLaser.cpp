@@ -95,10 +95,86 @@ void CLaser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_o
 	m_actionDeadline = g_dwGameTick + 0x3c;
 }
 
-// STUB: LEMBALL 0x00428ab0
+#include "../Navigation/CAi.h"
+
+// FUNCTION: LEMBALL 0x00428ab0
 bool CLaser::CheckHits()
 {
-	return 0;
+	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> 12;
+	int z = m_position.m_zFixed >> 12;
+	CGameObject* hit = 0;
+	int stepX;
+	int stepY;
+	switch (m_objectType) {
+	case OBJECT_LASER_HORIZONTAL:
+	case OBJECT_LASER_EMITTER_H:
+		stepX = 16;
+		stepY = 0;
+		x += 8;
+		break;
+	case OBJECT_LASER_VERTICAL:
+	case OBJECT_LASER_EMITTER_V:
+		stepX = 0;
+		stepY = 16;
+		y += 8;
+		break;
+	default:
+		return false;
+	}
+	for (int step = 0; step < 8; step++) {
+		x += stepX;
+		y += stepY;
+		CMap* map = g_pMap;
+		int blockX = x >> 4;
+		int blockY = y >> 4;
+		unsigned short groundZ;
+		int width;
+		if (x < 0 || y < 0 || blockX >= (width = map->m_ground.m_width) || blockY >= map->m_ground.m_height) {
+			groundZ = 0;
+		}
+		else {
+			int cellX = x & 15;
+			int cellY = y & 15;
+			groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(cellX, cellY);
+		}
+		if (groundZ > z) {
+			break;
+		}
+		CPt3 point;
+		point.m_x = x;
+		point.m_y = y;
+		CAi* ai = g_pAI;
+		point.m_z = z;
+		ai->m_collisionExclude = 0;
+		ai->m_collisionPoint = point;
+		ai->m_collisionIndex = 0;
+		if (ai->m_objectCount > 0) {
+			do {
+				CGameObject* object = ai->m_objects[ai->m_collisionIndex];
+				if (ai->m_collisionExclude != object && object->Collision(ai->m_collisionPoint)) {
+					hit = ai->m_objects[ai->m_collisionIndex];
+					ai->m_collisionIndex++;
+					goto found;
+				}
+				ai->m_collisionIndex++;
+			} while (ai->m_collisionIndex < ai->m_objectCount);
+		}
+		hit = 0;
+	found:
+		if (hit != 0 && hit->m_objectType == OBJECT_PLAYER_2) {
+			break;
+		}
+	}
+	if (hit != 0) {
+		m_target = hit;
+		hit->m_action = ACTION_15;
+		hit->m_actionArgument = 1;
+		m_target->m_actionDeadline = g_dwGameTick + 26;
+		SetSndEffect(SFX_ELECCY);
+		return true;
+	}
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00428cf0

@@ -138,6 +138,7 @@ public:
 	friend class CRocketManager;
 	friend class CPaintGunManager;
 	friend class CMineManager;
+	friend class CLaser;
 	friend class CLaserManager;
 	friend class CLiftManager;
 	friend class CHandManager;
