@@ -35,12 +35,12 @@ CConnect::~CConnect()
 }
 
 // FUNCTION: LEMBALL 0x00460c60
-void CConnect::InitConnect(const char* p_arg0, CNetworkAddress* p_arg1, short p_arg2)
+void CConnect::InitConnect(const char* p_peerName, CNetworkAddress* p_address, short p_port)
 {
-	m_name = (char*) operator new(strlen(p_arg0) + 1);
-	strcpy(m_name, p_arg0);
-	SetPort(p_arg2);
-	SetDestAddr(p_arg1);
+	m_name = (char*) operator new(strlen(p_peerName) + 1);
+	strcpy(m_name, p_peerName);
+	SetPort(p_port);
+	SetDestAddr(p_address);
 }
 
 // FUNCTION: LEMBALL 0x00460ce0
@@ -102,7 +102,7 @@ void CConnect::FirstReceive()
 }
 
 // FUNCTION: LEMBALL 0x00460e40
-bool CConnect::Send(CNetworkMessage& p_arg0)
+bool CConnect::Send(CNetworkMessage& p_message)
 {
 	bool opened;
 	bool isOpen;
@@ -110,28 +110,28 @@ bool CConnect::Send(CNetworkMessage& p_arg0)
 	Message message;
 
 	if (m_readReady != 0 && m_killRequested == 0) {
-		isOpen = (int) p_arg0.m_openDepth > 0;
+		isOpen = (int) p_message.m_openDepth > 0;
 		opened = !isOpen;
 		if (opened) {
-			p_arg0.OpenDataStream();
+			p_message.OpenDataStream();
 		}
-		sent = CWriteSocket::Send(p_arg0);
+		sent = CWriteSocket::Send(p_message);
 		if (!sent) {
 			message.type = 1;
 			message.code = 0xc;
-			if (p_arg0.m_headerEnabled == 0) {
+			if (p_message.m_headerEnabled == 0) {
 				message.code = 0xb;
 			}
-			message.payload = &p_arg0;
+			message.payload = &p_message;
 			message.source = this;
 			g_pNetworkStatusQueue->Post(message);
 		}
 		if (opened) {
-			p_arg0.CloseDataStream();
+			p_message.CloseDataStream();
 		}
 		return sent;
 	}
-	p_arg0.m_pendingSendCount = 0;
+	p_message.m_pendingSendCount = 0;
 	return 0;
 }
 
@@ -180,14 +180,14 @@ void CConnect::Kill()
 }
 
 // FUNCTION: LEMBALL 0x00460ff0
-void CConnect::PostRead(NetworkEvents p_arg0, CBasePacket* p_arg1)
+void CConnect::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 {
 	Message message;
 
-	message.type = p_arg0;
+	message.type = p_event;
 	message.code = 0;
 	message.payload = this;
-	message.source = p_arg1;
+	message.source = p_packet;
 	g_pNetworkPacketQueue->Post(message);
 }
 

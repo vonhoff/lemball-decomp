@@ -59,8 +59,8 @@ private:
 			int m_buffersPerEffect;                                                   // 0x18
 			unsigned int m_musicAvailable;                                            // 0x1c
 			unsigned int m_available;                                                 // 0x20
-			unsigned int m_unk0x24;                                                   // 0x24
-			unsigned int m_unk0x28;                                                   // 0x28
+			unsigned int m_stereo;                                                    // 0x24
+			unsigned int m_use16Bit;                                                  // 0x28
 			unsigned int m_unk0x2c;                                                   // 0x2c
 			unsigned int m_unk0x30;                                                   // 0x30
 			unsigned int m_sampleRate;                                                // 0x34

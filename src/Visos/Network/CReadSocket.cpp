@@ -74,7 +74,7 @@ void CReadSocket::DeleteCBuffers()
 }
 
 // FUNCTION: LEMBALL 0x0045f930
-void CReadSocket::SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2)
+void CReadSocket::SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount)
 {
 	void* storage;
 
@@ -84,19 +84,19 @@ void CReadSocket::SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p
 		m_nonCriticalBuffer = 0;
 	}
 	else {
-		m_nonCriticalBuffer = new (storage) CReadNcBuff(p_arg0, (unsigned short) g_networkPacketSize);
+		m_nonCriticalBuffer = new (storage) CReadNcBuff(p_packetCount, (unsigned short) g_networkPacketSize);
 	}
 	storage = operator new(sizeof(CReadNcmsBuff));
 	if (storage != 0) {
-		m_nonCriticalMultiBuffer =
-			new (storage) CReadNcmsBuff(p_arg0 + 1, p_arg1, p_arg2, (unsigned short) g_networkPacketSize);
+		m_nonCriticalMultiBuffer = new (storage)
+			CReadNcmsBuff(p_packetCount + 1, p_sequenceWindow, p_subpacketCount, (unsigned short) g_networkPacketSize);
 		return;
 	}
 	m_nonCriticalMultiBuffer = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045f9b0
-void CReadSocket::SetCBuffers(int p_arg0, int p_arg1)
+void CReadSocket::SetCBuffers(int p_packetCount, int p_subpacketCount)
 {
 	void* storage;
 
@@ -106,14 +106,15 @@ void CReadSocket::SetCBuffers(int p_arg0, int p_arg1)
 		m_criticalBuffer = 0;
 	}
 	else {
-		m_criticalBuffer = new (storage) CReadCBuff(p_arg0, (unsigned short) g_networkPacketSize);
+		m_criticalBuffer = new (storage) CReadCBuff(p_packetCount, (unsigned short) g_networkPacketSize);
 	}
 	storage = operator new(sizeof(CReadCmsBuff));
 	if (storage == 0) {
 		m_criticalMultiBuffer = 0;
 	}
 	else {
-		m_criticalMultiBuffer = new (storage) CReadCmsBuff(p_arg0, p_arg1, (unsigned short) g_networkPacketSize);
+		m_criticalMultiBuffer =
+			new (storage) CReadCmsBuff(p_packetCount, p_subpacketCount, (unsigned short) g_networkPacketSize);
 	}
 	if (g_pNetworkPacketScratch == 0) {
 		g_pNetworkPacketScratch = (BasePacketHeader*) operator new(g_networkPacketSize);
@@ -225,18 +226,18 @@ void CReadSocket::Process()
 }
 
 // FUNCTION: LEMBALL 0x0045fc30
-bool CReadSocket::IsChanged(CNetworkMessage& p_arg0)
+bool CReadSocket::IsChanged(CNetworkMessage& p_message)
 {
-	return m_nonCriticalBuffer->GetPacket(p_arg0.m_messageId)->m_used;
+	return m_nonCriticalBuffer->GetPacket(p_message.m_messageId)->m_used;
 }
 
 // FUNCTION: LEMBALL 0x0045fc50
-void CReadSocket::GetLatest(CNetworkMessage& p_arg0)
+void CReadSocket::GetLatest(CNetworkMessage& p_message)
 {
-	CReadPacket* packet = m_nonCriticalBuffer->GetPacket(p_arg0.m_messageId);
+	CReadPacket* packet = m_nonCriticalBuffer->GetPacket(p_message.m_messageId);
 
 	packet->EnterCritical();
-	p_arg0.Set(packet->m_data + sizeof(BasePacketHeader));
+	p_message.Set(packet->m_data + sizeof(BasePacketHeader));
 	packet->LeaveCritical();
 	packet->m_used = 0;
 }
@@ -259,6 +260,6 @@ void CReadSocket::FirstReceive()
 }
 
 // FUNCTION: LEMBALL 0x00462930
-void CReadSocket::PostRead(NetworkEvents p_arg0, CBasePacket* p_arg1)
+void CReadSocket::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 {
 }

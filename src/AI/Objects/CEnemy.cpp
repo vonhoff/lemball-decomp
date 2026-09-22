@@ -28,7 +28,7 @@ struct EnemyFacingOffset {
 EnemyFacingOffset g_enemyFacingOffsets[8] = {{0, 3}, {-4, 1}, {-5, 0}, {-4, -3}, {0, -4}, {6, -3}, {5, 0}, {4, 1}};
 
 // FUNCTION: LEMBALL 0x0041fba0
-CEnemy::CEnemy(CAi* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
+CEnemy::CEnemy(CAi* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
 	: CGameObject(OBJECT_PLAYER_1, 0x118, 10), m_targetPosition(), m_fireTarget()
 {
 	unsigned short z;
@@ -37,21 +37,21 @@ CEnemy::CEnemy(CAi* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4)
 	int blockY;
 	CMap* map;
 
-	g_pAI = p_arg0;
-	m_spawnPosition.m_xFixed = p_arg1 << 12;
-	m_spawnPosition.m_yFixed = p_arg2 << 12;
-	m_spawnPosition.m_zFixed = p_arg3 << 12;
+	g_pAI = p_ai;
+	m_spawnPosition.m_xFixed = p_x << 12;
+	m_spawnPosition.m_yFixed = p_y << 12;
+	m_spawnPosition.m_zFixed = p_z << 12;
 	map = g_pMap;
-	blockX = p_arg1 >> 4;
-	blockY = p_arg2 >> 4;
-	if (p_arg1 < 0 || p_arg2 < 0 || g_pMap->m_ground.m_width <= blockX || g_pMap->m_ground.m_height <= blockY) {
+	blockX = p_x >> 4;
+	blockY = p_y >> 4;
+	if (p_x < 0 || p_y < 0 || g_pMap->m_ground.m_width <= blockX || g_pMap->m_ground.m_height <= blockY) {
 		z = 0;
 	}
 	else {
 		width = map->m_ground.m_width;
-		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(p_arg1 & 0xf, p_arg2 & 0xf);
+		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(p_x & 0xf, p_y & 0xf);
 	}
-	m_initialFacingDirection = (short) p_arg4;
+	m_initialFacingDirection = (short) p_facingDirection;
 	m_spawnPosition.m_zFixed = (int) z << 12;
 	SetId((unsigned short) NextLoadingId());
 	m_state2Action = ENEMY_ACTION_STOP;
@@ -76,7 +76,7 @@ void CEnemy::Restart()
 	m_stateIndex = 0;
 	m_fireState = 0;
 	m_hit = 0;
-	m_unk0x2c = 0;
+	m_deathRequested = 0;
 
 	int* objectCount = &g_pAI->m_objectCount;
 	g_pAI->m_objects[*objectCount] = this;
@@ -406,7 +406,7 @@ void CEnemy::HitBullet(CBullet* p_bullet)
 		m_hit = 1;
 		m_actionDeadline = g_dwGameTick + 60;
 		m_facingDirection = (p_bullet->m_facingDirection + 4) & 7;
-		m_unk0x2c = 1;
+		m_deathRequested = 1;
 	}
 }
 
@@ -430,7 +430,7 @@ void CEnemy::HitMine()
 	velocity.m_yFixed = 0;
 	velocity.m_zFixed = 0xa000;
 	StartFly(velocity, 0);
-	m_unk0x2c = 1;
+	m_deathRequested = 1;
 }
 
 // FUNCTION: LEMBALL 0x004206f0

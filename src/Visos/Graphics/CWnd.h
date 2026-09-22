@@ -23,8 +23,8 @@ public:
 	virtual void MoveAbsolute(const CVsPoint& p_point);                          // vtable+0x8c
 	virtual void SetFocusWindow();                                               // vtable+0x90
 	virtual void Dummy94();                                                      // vtable+0x94
-	virtual void Dummy98();                                                      // vtable+0x98
-	virtual void Dummy9c();                                                      // vtable+0x9c
+	virtual void OnFocusGained();                                                // vtable+0x98
+	virtual void OnFocusLost();                                                  // vtable+0x9c
 	virtual int ProcessOtherMessages(unsigned int p_message,
 									 unsigned int p_wParam,
 									 unsigned int p_lParam);             // vtable+0xa0

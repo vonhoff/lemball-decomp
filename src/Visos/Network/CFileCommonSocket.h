@@ -21,7 +21,7 @@ public:
 	virtual void SocketError();
 
 protected:
-	int m_unk0x08; // 0x08: header-slot count used by CFileReadSocket
+	int m_headerSlotCount; // 0x08: header-slot count used by CFileReadSocket
 };
 #pragma vtordisp(on)
 

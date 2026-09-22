@@ -13,7 +13,7 @@ class CNetworkMessage;
 class CBaseNetwork : public CBaseQueueHandler {
 public:
 	CBaseNetwork();
-	virtual int ProcessMsg(Message* p_arg0);  // vtable+0x08
+	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual void Initialise() = 0;            // vtable+0x0c
 	virtual void UnInitialise() = 0;          // vtable+0x10
 	virtual void Process();                   // vtable+0x14
@@ -27,23 +27,23 @@ public:
 	virtual ~CBaseNetwork();                  // vtable+0x04
 	CConnect* NewConnect();
 	bool DoInitialise();
-	bool Exists(CConnect* p_arg0);
-	CConnect* FindConnection(CNetworkAddress* p_arg0);
-	bool Initialise(const char* p_arg0, int p_arg1);
-	void KillUnBornConnection(CNetworkAddress* p_arg0);
-	bool SendAll(CNetworkMessage& p_arg0);
-	void AttachMessageQueue(CBaseQueueHandler* p_arg0);
-	void CtoSRequestConnect(CNetworkAddress* p_arg0);
-	void CtoSRequestNewPort(CNetworkAddress* p_arg0);
-	void CtoSgoConnect(CNetworkAddress* p_arg0);
-	void Delete(CConnect* p_arg0);
+	bool Exists(CConnect* p_connection);
+	CConnect* FindConnection(CNetworkAddress* p_address);
+	bool Initialise(const char* p_networkName, int p_packetSize);
+	void KillUnBornConnection(CNetworkAddress* p_address);
+	bool SendAll(CNetworkMessage& p_message);
+	void AttachMessageQueue(CBaseQueueHandler* p_queueHandler);
+	void CtoSRequestConnect(CNetworkAddress* p_address);
+	void CtoSRequestNewPort(CNetworkAddress* p_address);
+	void CtoSgoConnect(CNetworkAddress* p_address);
+	void Delete(CConnect* p_connection);
 	void DetachMessageQueue();
-	void Establish(CNetworkAddress* p_arg0, unsigned char* p_arg1);
-	void SetCBuffers(int p_arg0, int p_arg1);
-	void SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2);
+	void Establish(CNetworkAddress* p_address, unsigned char* p_data);
+	void SetCBuffers(int p_packetCount, int p_subpacketCount);
+	void SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount);
 	void ShutDown();
-	void StoCfailedConnect(CNetworkAddress* p_arg0);
-	void StoCokConnect(CNetworkAddress* p_arg0);
+	void StoCfailedConnect(CNetworkAddress* p_address);
+	void StoCokConnect(CNetworkAddress* p_address);
 	void HandleNewConnectionEvent(const char* p_localName, const char* p_remoteName);
 	CConnect* FindEventConnection(CNetworkAddress* p_address);
 	void HandleConnectionMessage(CNetworkAddress* p_address);

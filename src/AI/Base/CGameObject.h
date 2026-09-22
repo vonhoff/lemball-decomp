@@ -38,26 +38,26 @@ public:
 	void Blocked();
 	unsigned short MapCheck(int p_arg0, int p_arg1);
 	virtual ~CGameObject();                                                          // vtable+0x00
-	virtual void Action(eAction p_arg0);                                             // vtable+0x08
-	virtual void Action(eAction p_arg0, int p_arg1);                                 // vtable+0x04
+	virtual void Action(eAction p_action);                                           // vtable+0x08
+	virtual void Action(eAction p_action, int p_actionArgument);                     // vtable+0x04
 	virtual void GetViewData(CViewData& p_viewData);                                 // vtable+0x0c
 	virtual void ForgetObjectLink(unsigned short p_arg0);                            // vtable+0x10
 	virtual bool Process();                                                          // vtable+0x14
 	virtual bool Activate(class CGameObject* p_object);                              // vtable+0x18
 	virtual bool IsFlying();                                                         // vtable+0x1c
-	virtual void StartFly(C3DVector& p_arg0, C3DVector* p_arg1);                     // vtable+0x20
+	virtual void StartFly(C3DVector& p_velocity, C3DVector* p_origin);               // vtable+0x20
 	virtual void Fly();                                                              // vtable+0x24
 	virtual int Usage();                                                             // vtable+0x28
 	virtual AiCoord ActivatePosition();                                              // vtable+0x2c
 	virtual void StartStanding();                                                    // vtable+0x30
-	virtual void SetSndEffect(eSoundEffect p_arg0);                                  // vtable+0x34
+	virtual void SetSndEffect(eSoundEffect p_soundEffect);                           // vtable+0x34
 	virtual eSoundEffect GetSndEffect();                                             // vtable+0x38
 	virtual bool StartRoute();                                                       // vtable+0x3c
 	virtual bool SearchRoute();                                                      // vtable+0x40
 	virtual bool Move();                                                             // vtable+0x44
 	virtual void GetBoundingBox(CVsRect& p_rect);                                    // vtable+0x48
-	virtual bool Collision(const CPt3& p_arg0);                                      // vtable+0x4c
-	virtual bool Collision(const CRect3& p_arg0);                                    // vtable+0x50
+	virtual bool Collision(const CPt3& p_point);                                     // vtable+0x4c
+	virtual bool Collision(const CRect3& p_bounds);                                  // vtable+0x50
 	virtual void HitBullet(CBullet* p_bullet);                                       // vtable+0x54
 	virtual void HitBall();                                                          // vtable+0x58
 	virtual int IsHit();                                                             // vtable+0x5c
@@ -77,10 +77,10 @@ public:
 	virtual void RandomAction();                                                     // vtable+0x94
 	virtual bool FacingTarget();                                                     // vtable+0x98
 	virtual void TurnToFaceTarget();                                                 // vtable+0x9c
-	virtual bool OnLift(Coord3d& p_arg0);                                            // vtable+0xa0
-	virtual bool OnLift(Coord3d& p_arg0, Coord3d& p_arg1);                           // vtable+0xa4
-	virtual void OffLift(Coord3d& p_arg0);                                           // vtable+0xa8
-	virtual void OffLift(Coord3d& p_arg0, Coord3d& p_arg1);                          // vtable+0xac
+	virtual bool OnLift(Coord3d& p_liftPosition);                                    // vtable+0xa0
+	virtual bool OnLift(Coord3d& p_liftMin, Coord3d& p_liftMax);                     // vtable+0xa4
+	virtual void OffLift(Coord3d& p_liftPosition);                                   // vtable+0xa8
+	virtual void OffLift(Coord3d& p_liftMin, Coord3d& p_liftMax);                    // vtable+0xac
 	virtual bool PossiblyOnLift();                                                   // vtable+0xb0
 	virtual bool HasObject(eObjectType p_objectType);                                // vtable+0xb4
 	virtual bool AddObject(eObjectType p_objectType, class CGameObject* p_object);   // vtable+0xb8
@@ -88,7 +88,7 @@ public:
 	virtual bool NeedsNode(int p_arg0);                                              // vtable+0xc0
 	virtual void ConvertVer0ToVer1();                                                // vtable+0xc4
 	virtual void Delete();                                                           // vtable+0xc8
-	virtual void PickUpAmmo(unsigned short p_arg0);                                  // vtable+0xcc
+	virtual void PickUpAmmo(unsigned short p_amount);                                // vtable+0xcc
 	virtual void ExternalControlEnd();                                               // vtable+0xd0
 	virtual void RequestBalloon();                                                   // vtable+0xd4
 	virtual void StartBalloon();                                                     // vtable+0xd8
@@ -103,17 +103,17 @@ public:
 	virtual int UsableState();                                                       // vtable+0xfc
 	virtual bool IsUsable(eAction p_action);                                         // vtable+0x100
 	virtual void Restart();                                                          // vtable+0x104
-	void AddDestination(const AiCoord& p_arg0);
-	void AlterDestination(const AiCoord& p_arg0);
+	void AddDestination(const AiCoord& p_destination);
+	void AlterDestination(const AiCoord& p_destination);
 	void DeleteFirstEntryFromDestinationList();
 	void EmptyDestinationList();
-	static void Init(CAi* p_arg0);
+	static void Init(CAi* p_ai);
 	void Initialise();
 	void ReSetId();
 	void RegisterId();
 	void RotateAnticlockwise();
 	void RotateClockwise();
-	void SetId(unsigned short p_arg0);
+	void SetId(unsigned short p_id);
 	void StartMoving();
 	void StartSommersault();
 	void StopMoving();
@@ -141,16 +141,16 @@ public:
 	friend class CGenericGroup;
 	friend class CSheepGroup;
 	friend class CPlayerLemmingGroup;
-	friend void StateMachine(StateEntry** p_arg0, CAi* p_arg1, CGameObject* p_arg2);
+	friend void StateMachine(StateEntry** p_stateTables, CAi* p_ai, CGameObject* p_object);
 
-	friend bool AtDestination(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
-	friend bool IsStuck(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
-	friend bool RequestDeath(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
-	friend bool IsJumping(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
-	friend bool IsFalling(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
-	friend bool NotTimeUp(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
-	friend bool PlayerWaitingToFire(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
-	friend bool EnemyWaitingToFire(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
+	friend bool AtDestination(CAi* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool IsStuck(CAi* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool RequestDeath(CAi* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool IsJumping(CAi* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool IsFalling(CAi* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool NotTimeUp(CAi* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool PlayerWaitingToFire(CAi* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool EnemyWaitingToFire(CAi* p_ai, CGameObject* p_object, Info* p_info);
 	friend class C2D;
 	friend class CPanelButton;
 	friend class CTower;
@@ -185,7 +185,7 @@ protected:
 	int m_collisionMaxX;                   // 0x20
 	int m_collisionMaxY;                   // 0x24
 	int m_collisionMaxZ;                   // 0x28
-	unsigned int m_unk0x2c;                // 0x2c
+	unsigned int m_deathRequested;         // 0x2c
 	unsigned int m_balloonPostActive;      // 0x30
 	unsigned int m_balloonPostId;          // 0x34
 	int m_heading;                         // 0x38
@@ -230,14 +230,14 @@ protected:
 	unsigned int m_isFlying;               // 0xf0
 	AiCoord m_groundPosition;              // 0xf4
 	int m_flightZ;                         // 0x100
-	unsigned int m_unk0x104;               // 0x104
-	unsigned int m_unk0x108;               // 0x108
+	unsigned int m_isJumping;              // 0x104
+	unsigned int m_isFalling;              // 0x108
 	unsigned int m_unk0x10c;               // 0x10c
 	unsigned int m_liftId;                 // 0x110
 	unsigned int m_isRemoteObject;         // 0x114
 	unsigned int m_unk0x118;               // 0x118
-	unsigned int m_unk0x11c;               // 0x11c
-	unsigned short m_unk0x120;             // 0x120
+	unsigned int m_onMover;                // 0x11c
+	unsigned short m_invisibleSwitchId;    // 0x120
 	unsigned short m_unk0x122;             // 0x122
 };
 

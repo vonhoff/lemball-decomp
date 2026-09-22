@@ -118,7 +118,7 @@ void CInvisibleSwitch::VerifyObjects()
 			int y = object->m_position.m_yFixed >> 12;
 			if (x < m_minCorner.m_x - 8 || x > m_maxCorner.m_x + 7 || y < m_minCorner.m_y - 8 ||
 				y > m_maxCorner.m_y + 7) {
-				object->m_unk0x120 = invalidObjectId;
+				object->m_invisibleSwitchId = invalidObjectId;
 				int next = i + 1;
 				if (next < m_objectCount) {
 					do {
@@ -140,14 +140,14 @@ void CInvisibleSwitch::AddObject(CGameObject* p_object)
 	if (m_objectCount < 24) {
 		m_objects[m_objectCount] = p_object;
 		m_objectCount++;
-		p_object->m_unk0x120 = GetId();
+		p_object->m_invisibleSwitchId = GetId();
 	}
 }
 
 // FUNCTION: LEMBALL 0x00409fa0
 void CInvisibleSwitch::StepOn(const AiCoord& p_position, CGameObject* p_object)
 {
-	if (m_triggered == 0 && m_requestedAction == ACTION_0x18 && GetId() != (short) p_object->m_unk0x120) {
+	if (m_triggered == 0 && m_requestedAction == ACTION_0x18 && GetId() != (short) p_object->m_invisibleSwitchId) {
 		int x = p_position.m_xFixed >> 12;
 		int y = p_position.m_yFixed >> 12;
 		if (x >= m_minCorner.m_x - 8 && x <= m_maxCorner.m_x + 7 && y >= m_minCorner.m_y - 8 &&

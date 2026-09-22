@@ -57,7 +57,7 @@ public:
 	virtual void TurnToFaceTarget();                                                 // vtable+0x9c
 	virtual bool HasObject(eObjectType p_objectType);                                // vtable+0xb4
 	virtual bool AddObject(eObjectType p_objectType, CGameObject* p_object);         // vtable+0xb8
-	virtual void PickUpAmmo(unsigned short p_arg0);                                  // vtable+0xcc
+	virtual void PickUpAmmo(unsigned short p_amount);                                // vtable+0xcc
 	virtual void ExternalControlEnd();                                               // vtable+0xd0
 	virtual void RequestBalloon();                                                   // vtable+0xd4
 	virtual void StartBalloon();                                                     // vtable+0xd8
@@ -72,9 +72,9 @@ public:
 	void RemoveObject(eObjectType p_objectType);
 	void RequestFire(int p_arg0, int p_arg1);
 	void Resurrect(const AiCoord& p_position);
-	void SetGroup(CPlayerLemmingGroup* p_arg0);
-	void SetGroup(unsigned int p_arg0);
-	void SetGroupLeader(unsigned int p_arg0);
+	void SetGroup(CPlayerLemmingGroup* p_group);
+	void SetGroup(unsigned int p_groupIndex);
+	void SetGroupLeader(unsigned int p_isLeader);
 	friend class CPanelButton;
 	friend class CPanelLemming;
 

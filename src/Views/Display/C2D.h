@@ -44,7 +44,7 @@ struct SpriteGroundLookup;
 // VTABLE: LEMBALL 0x00496db0 CReceiveWindowState
 class C2D : public CDrawer, public CBaseQueueHandler, public CHotAreaHandler, public CReceiveWindowState {
 public:
-	C2D(CMain2DDisplay* p_arg0, CAi* p_arg1, CGdi* p_arg2, CMap* p_arg3, const CVsRect& p_arg4);
+	C2D(CMain2DDisplay* p_display, CAi* p_ai, CGdi* p_gdi, CMap* p_map, const CVsRect& p_rect);
 	bool FindGameObject(const CVsPoint& p_point, int& p_index, int p_preferLemming);
 	bool InGroupByObjectNo(int p_objectNo);
 	bool IsInGrouping(CGameObject* p_object);
@@ -201,7 +201,7 @@ private:
 	int m_returnState;                            // 0x8fc
 	CPushActive m_pushActive;                     // 0x900
 	CPopActive m_popActive;                       // 0x908
-	unsigned int m_unk0x90c;                      // 0x90c
+	unsigned int m_viewOrientation;               // 0x90c
 	unsigned int m_pad0x910;                      // 0x910
 	CMap* m_map;                                  // 0x914
 	int m_viewOriginX;                            // 0x918

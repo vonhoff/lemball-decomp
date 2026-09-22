@@ -26,7 +26,7 @@ extern unsigned int g_groundBlox7ResourceId;
 // VTABLE: LEMBALL 0x00496ce0 CAnimsManager
 class CLemmingAnimsManager : public CAnimsManager, public CLoadUpdate {
 public:
-	CLemmingAnimsManager(CGdi* p_arg0, CMain2DDisplay* p_arg1, CAi* p_arg2);
+	CLemmingAnimsManager(CGdi* p_gdi, CMain2DDisplay* p_display, CAi* p_ai);
 	void Draw();
 	void DrawAnimOnGdi(CGdi* p_gdi,
 					   short p_x,
@@ -65,7 +65,7 @@ private:
 	unsigned int m_countingLoads; // 0x94
 	CAi* m_ai;                    // 0x98
 	// LoadVrammed stores three CResFont::Load results (0x00433425/4a/5d).
-	CResFont* m_unk0x9c[3];     // 0x9c: low/high-resolution border fonts and score/time font
+	CResFont* m_interfaceFonts[3]; // 0x9c: low/high-resolution border fonts and score/time font
 	unsigned int m_groundStyle; // 0xa8
 	unsigned int m_reservedac;  // 0xac
 	short m_drawOffsetX;        // 0xb0

@@ -59,7 +59,7 @@ bool CCollectable::Process()
 			break;
 		case 24: {
 			if (g_pActiveConnection == 0 || m_requestedAction == 24) {
-				if (m_unk0x11c == 0) {
+				if (m_onMover == 0) {
 					int y = m_position.m_yFixed >> 12;
 					int x = m_position.m_xFixed >> 12;
 					CMap* map = g_pMap;

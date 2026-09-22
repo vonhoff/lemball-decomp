@@ -68,7 +68,7 @@ enum eGameStatus {
 // VTABLE: LEMBALL 0x00493a20 CNetworkMessage
 class CAi : public CBaseQueueHandler, public CBaseProcess, public CNetworkMessage {
 public:
-	CAi(CGame* p_arg0);
+	CAi(CGame* p_game);
 	CGame* LevelName();
 	CMover* FindMoverHeight(int p_x, int p_y, int& p_height);
 	CPlayerLemming* GetDead();
@@ -162,7 +162,7 @@ public:
 	friend class CPanelLemming;
 	friend class CPanelPauseButton;
 	friend class CPanelButton;
-	friend bool GameOver(CAi* p_arg0, CGameObject* p_arg1, Info* p_arg2);
+	friend bool GameOver(CAi* p_ai, CGameObject* p_object, Info* p_info);
 
 private:
 	unsigned int m_unk0x48;         // 0x48
@@ -192,16 +192,16 @@ private:
 	int m_networkTrapDoorCount;                        // 0xd0
 	int m_unk0xd4;                                     // 0xd4
 	int m_paused;                                      // 0xd8
-	int m_unk0xdc;                                     // 0xdc
-	int m_unk0xe0;                                     // 0xe0
-	int m_unk0xe4;                                     // 0xe4
+	int m_clockStartPending;                           // 0xdc
+	int m_levelStartTick;                              // 0xe0
+	int m_levelTimeRemaining;                          // 0xe4
 	int m_gameTime;                                    // 0xe8
 	int m_timeLimit;                                   // 0xec
 	int m_score;                                       // 0xf0
 	unsigned int m_unk0xf4;                            // 0xf4
 	int m_lemmingCount;                                // 0xf8
 	int m_flagCounts[2];                               // 0xfc
-	unsigned int m_unk0x104;                           // 0x104
+	unsigned int m_gameOverDeadline;                   // 0x104
 	eGameStatus m_gameStatus;                          // 0x108
 	int m_isSinglePlayer;                              // 0x10c
 	CMap* m_map;                                       // 0x110

@@ -97,7 +97,7 @@ void CPlayerLemming::Restart()
 		m_position.m_xFixed = m_spawnPosition.m_xFixed;
 		m_position.m_yFixed = m_spawnPosition.m_yFixed;
 		m_position.m_zFixed = m_spawnPosition.m_zFixed;
-		m_unk0x2c = 0;
+		m_deathRequested = 0;
 		m_sfxChanged = 1;
 		m_group = 0;
 		m_ice = 0;
@@ -152,9 +152,9 @@ void CPlayerLemming::HitBullet(CBullet* p_bullet)
 }
 
 // FUNCTION: LEMBALL 0x0040f0d0
-void CPlayerLemming::SetGroup(CPlayerLemmingGroup* p_arg0)
+void CPlayerLemming::SetGroup(CPlayerLemmingGroup* p_group)
 {
-	m_group = p_arg0;
+	m_group = p_group;
 }
 
 // FUNCTION: LEMBALL 0x0040f0e0
@@ -164,15 +164,15 @@ CPlayerLemmingGroup* CPlayerLemming::GetGroup()
 }
 
 // FUNCTION: LEMBALL 0x0040f0f0
-void CPlayerLemming::SetGroupLeader(unsigned int p_arg0)
+void CPlayerLemming::SetGroupLeader(unsigned int p_isLeader)
 {
-	m_isGroupLeader = p_arg0;
+	m_isGroupLeader = p_isLeader;
 }
 
 // FUNCTION: LEMBALL 0x0040f100
-void CPlayerLemming::SetGroup(unsigned int p_arg0)
+void CPlayerLemming::SetGroup(unsigned int p_groupIndex)
 {
-	m_groupIndex = p_arg0;
+	m_groupIndex = p_groupIndex;
 }
 
 // FUNCTION: LEMBALL 0x0040f120
@@ -367,7 +367,7 @@ void CPlayerLemming::HitMine()
 	m_unk0x10c = 1;
 	vel.m_zFixed = 0xa000;
 	StartFly(vel, 0);
-	m_unk0x2c = 1;
+	m_deathRequested = 1;
 }
 
 // FUNCTION: LEMBALL 0x0040f640
@@ -514,7 +514,7 @@ void CPlayerLemming::Resurrect(const AiCoord& p_position)
 	m_position.m_xFixed = p_position.m_xFixed;
 	m_position.m_yFixed = p_position.m_yFixed;
 	m_position.m_zFixed = p_position.m_zFixed;
-	m_unk0x2c = 0;
+	m_deathRequested = 0;
 	g_wLemmingCount++;
 	m_facingDirection = 0;
 	m_inventoryCount = 0;
@@ -531,19 +531,19 @@ void CPlayerLemming::Resurrect(const AiCoord& p_position)
 	m_unk0x8c = 0;
 	m_routeSearchFailed = 0;
 	m_routeSearchActive = 0;
-	m_unk0x104 = 0;
-	m_unk0x108 = 0;
+	m_isJumping = 0;
+	m_isFalling = 0;
 	m_unk0x10c = 0;
 	m_liftId = 0xffff;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
 	m_flightVelocity.m_xFixed = 0;
 	m_flightVelocity.m_yFixed = 0;
-	m_unk0x120 = 0xffff;
+	m_invisibleSwitchId = 0xffff;
 	m_flightVelocity.m_zFixed = 0;
 	m_desiredFacingDirection = 0;
 	m_unk0x58 = 0;
-	m_unk0x11c = 0;
+	m_onMover = 0;
 	m_ammoCount = PLAYER_START_AMMO;
 	SetBored(4000);
 	int tileX = m_position.m_xFixed >> 12;
@@ -636,7 +636,7 @@ void CPlayerLemming::OnBalloon()
 	if (dist < 16) {
 		m_balloonPostActive = 0;
 		SetSndEffect(SFX_BALLOON_EXPLODE);
-		m_unk0x108 = 1;
+		m_isFalling = 1;
 		m_actionArgument = 0;
 		m_lastMovementTick = g_dwGameTick;
 		m_action = ACTION_11;
@@ -757,7 +757,7 @@ void CPlayerLemming::StartStanding()
 	CMover* mover = 0;
 	unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
 	int tileZ = m_position.m_zFixed >> 12;
-	if (m_unk0x11c == 0 && mover != 0) {
+	if (m_onMover == 0 && mover != 0) {
 		mover->GetOn(this);
 	}
 	if (tileZ <= (int) groundZ + 2) {
@@ -770,7 +770,7 @@ void CPlayerLemming::StartStanding()
 	m_actionDeadline = g_dwGameTick;
 	if ((m_collisionFlags & 4) != 0) {
 		m_flightVelocity.m_yFixed = 0;
-		m_unk0x108 = 1;
+		m_isFalling = 1;
 		m_flightVelocity.m_xFixed = 0x3000;
 		m_flightVelocity.m_zFixed = (((tileZ - (int) groundZ) / 8) + 1) * 0x1000;
 		unsigned int now = g_dwGameTick;
@@ -905,9 +905,9 @@ void CPlayerLemming::HitBall()
 }
 
 // FUNCTION: LEMBALL 0x00410ac0
-void CPlayerLemming::PickUpAmmo(unsigned short p_arg0)
+void CPlayerLemming::PickUpAmmo(unsigned short p_amount)
 {
-	m_ammoCount += p_arg0;
+	m_ammoCount += p_amount;
 	if (m_ammoCount > PLAYER_MAX_AMMO) {
 		m_ammoCount = PLAYER_MAX_AMMO;
 	}

@@ -356,7 +356,7 @@ void CMover::VerifyObjects()
 			x = object->m_position.m_xFixed >> 12;
 			y = object->m_position.m_yFixed >> 12;
 			if (minX > x || maxX < x || minY > y || maxY < y) {
-				object->m_unk0x11c = 0;
+				object->m_onMover = 0;
 				int next = i + 1;
 				if (next < m_objectCount) {
 					do {
@@ -405,7 +405,7 @@ bool CMover::GetOn(CGameObject* p_object)
 		}
 
 		m_objects[count] = p_object;
-		p_object->m_unk0x11c = 1;
+		p_object->m_onMover = 1;
 		m_objectCount++;
 		StopObjectsMoving();
 		if (m_action != ACTION_2 && p_object->m_objectType == OBJECT_PLAYER_2) {

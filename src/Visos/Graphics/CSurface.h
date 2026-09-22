@@ -132,12 +132,12 @@ private:
 	void* m_drawingPort;                 // 0xf8
 	char m_bitmapInfo[0x28];             // 0xfc
 	char m_colourTable[0x400];           // 0x124
-	unsigned int m_unk0x524;             // 0x524
+	unsigned int m_bitmapPixelCount;     // 0x524
 	SurfaceListNode* m_childSurfaceHead; // 0x528
 	SurfaceListNode* m_childSurfaceTail; // 0x52c
 	unsigned int m_childSurfaceCount;    // 0x530
 	char m_lock[0x18];                   // 0x534
-	unsigned int m_unk0x54c;             // 0x54c
+	unsigned int m_lockInitialized;      // 0x54c
 	CChangeList* m_changeList;           // 0x550
 	void* m_currDb;                      // 0x554
 };

@@ -59,11 +59,11 @@ CFileBroadcast::CFileBroadcast()
 		g_pFileBroadcast = new CPortsMessage();
 	}
 
-	CFileCommonSocket::m_unk0x08 = 0x14;
-	CFileWriteSocket::m_file = new CHeaders(CFileCommonSocket::m_unk0x08);
+	CFileCommonSocket::m_headerSlotCount = 0x14;
+	CFileWriteSocket::m_file = new CHeaders(CFileCommonSocket::m_headerSlotCount);
 	CFileReadSocket::m_file = CFileWriteSocket::m_file;
-	CFileWriteSocket::m_unk0x04 = g_pFileBroadcast->m_payloadCapacity + m_message.m_payloadCapacity;
-	CFileReadSocket::m_unk0x04 = CFileWriteSocket::m_unk0x04;
+	CFileWriteSocket::m_headersOffset = g_pFileBroadcast->m_payloadCapacity + m_message.m_payloadCapacity;
+	CFileReadSocket::m_headersOffset = CFileWriteSocket::m_headersOffset;
 	m_portInfoLocked = 0;
 }
 
@@ -91,7 +91,7 @@ void CFileBroadcast::InitialiseFile()
 
 	unsigned char* data = (unsigned char*) operator new(g_networkPacketSize);
 	memset(data, 0, g_networkPacketSize);
-	for (int i = 0; i < CFileCommonSocket::m_unk0x08; i++) {
+	for (int i = 0; i < CFileCommonSocket::m_headerSlotCount; i++) {
 		CNetworkFile::Write(data, g_networkPacketSize);
 	}
 	operator delete(data);
@@ -117,7 +117,7 @@ bool CFileBroadcast::Start(const char* p_name)
 
 	bool created = CFileCommonSocket::CreateSocket(g_pFileBroadcastData);
 	CFileOpenManagement::IncOpenCount();
-	CFileWriteSocket::m_dataOffset = CFileReadSocket::m_file->m_payloadCapacity + CFileReadSocket::m_unk0x04;
+	CFileWriteSocket::m_dataOffset = CFileReadSocket::m_file->m_payloadCapacity + CFileReadSocket::m_headersOffset;
 	CFileReadSocket::m_dataOffset = CFileWriteSocket::m_dataOffset;
 
 	if (created) {

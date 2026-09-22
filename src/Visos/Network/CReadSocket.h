@@ -17,18 +17,18 @@ class CReadNcmsBuff;
 class CReadSocket : public CBaseSocket, public virtual CBaseCommonSocket {
 public:
 	CReadSocket();
-	bool IsChanged(CNetworkMessage& p_arg0);
+	bool IsChanged(CNetworkMessage& p_message);
 	bool ProcessPacket();
 	void DeleteCBuffers();
 	void DeleteNcBuffers();
 	virtual void FirstReceive();                           // vtable+0x18
 	virtual void SendAcknowledgement() = 0;                // vtable+0x1c
 	virtual CNetworkMessage* ReceiveAcknowledgement() = 0; // vtable+0x20
-	void GetLatest(CNetworkMessage& p_arg0);
-	virtual void PostRead(NetworkEvents p_arg0, CBasePacket* p_arg1); // vtable+0x24
+	void GetLatest(CNetworkMessage& p_message);
+	virtual void PostRead(NetworkEvents p_event, CBasePacket* p_packet); // vtable+0x24
 	void Process();
-	void SetCBuffers(int p_arg0, int p_arg1);
-	void SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2);
+	void SetCBuffers(int p_packetCount, int p_subpacketCount);
+	void SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount);
 	void UnUseAllC();
 	void UnUseAllNc();
 	virtual ~CReadSocket(); // vtable+0x14

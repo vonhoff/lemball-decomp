@@ -64,7 +64,7 @@
 extern int g_anDefaultTrapDoorLemmings[4][4];
 
 // FUNCTION: LEMBALL 0x00410c10
-CAi::CAi(CGame* p_arg0)
+CAi::CAi(CGame* p_game)
 {
 	m_collisionPoint.m_x = 0;
 	m_collisionPoint.m_y = 0;
@@ -81,7 +81,7 @@ CAi::CAi(CGame* p_arg0)
 	for (int i = 0; i < m_objectCapacity; i++) {
 		m_objects[i] = 0;
 	}
-	m_game = p_arg0;
+	m_game = p_game;
 	m_initialised = 0;
 	g_wObjectCount = 0;
 	Restart();
@@ -144,9 +144,9 @@ void CAi::Restart()
 	m_unk0xf4 = m_score;
 	m_paused = 0;
 	g_wLemmingCount = 0;
-	m_unk0xdc = 1;
+	m_clockStartPending = 1;
 	m_mapType = 0;
-	m_unk0xe4 = 0;
+	m_levelTimeRemaining = 0;
 	m_gameStatus = GAME_STATUS_0;
 	m_processState = 0;
 	m_timeLimit = 180;
@@ -712,24 +712,24 @@ void CAi::Process(int p_paused)
 		time = g_dwGameTick;
 		m_unk0x88 = 1;
 	}
-	if (m_unk0xdc != 0) {
+	if (m_clockStartPending != 0) {
 		if (m_unk0x88 != 0) {
-			m_unk0xe0 = time;
-			m_unk0xdc = 0;
-			m_unk0xe4 = m_timeLimit;
+			m_levelStartTick = time;
+			m_clockStartPending = 0;
+			m_levelTimeRemaining = m_timeLimit;
 		}
 	}
 	else {
-		if (g_nGameOver == 0 && m_unk0xe4 < 600) {
-			m_unk0xe4 = m_timeLimit - (time - m_unk0xe0) / 20;
+		if (g_nGameOver == 0 && m_levelTimeRemaining < 600) {
+			m_levelTimeRemaining = m_timeLimit - (time - m_levelStartTick) / 20;
 		}
-		int remaining = m_unk0xe4;
+		int remaining = m_levelTimeRemaining;
 		remaining += m_gameTime;
 		if (remaining < 0) {
 			GameState(GAME_STATUS_7);
-			m_unk0xe4 = -1 - m_gameTime;
+			m_levelTimeRemaining = -1 - m_gameTime;
 		}
-		if (m_playerGroups == 0 && m_unk0x5c < time - m_unk0xe0) {
+		if (m_playerGroups == 0 && m_unk0x5c < time - m_levelStartTick) {
 			m_playerGroups = 1;
 		}
 	}
@@ -744,9 +744,9 @@ void CAi::Process(int p_paused)
 		if (g_nGameOver == 0) {
 			GameState(GAME_STATUS_4);
 			g_nGameOver = 1;
-			m_unk0x104 = g_dwGameTick + 0x3c;
+			m_gameOverDeadline = g_dwGameTick + 0x3c;
 		}
-		if (m_gameStatus == 4 && m_unk0x104 < g_dwGameTick) {
+		if (m_gameStatus == 4 && m_gameOverDeadline < g_dwGameTick) {
 			GameState(GAME_STATUS_3);
 		}
 	}
@@ -874,7 +874,7 @@ void CAi::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned shor
 	int blockX = x / 16;
 	int blockY = y / 16;
 
-	if (p_object->m_unk0x11c != 0) {
+	if (p_object->m_onMover != 0) {
 		return;
 	}
 
@@ -1119,7 +1119,7 @@ void CAi::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 		m_lemmingCount = 4;
 		m_flagCounts[0] = 1;
 	}
-	m_unk0xe4 = m_timeLimit;
+	m_levelTimeRemaining = m_timeLimit;
 }
 
 // FUNCTION: LEMBALL 0x00412fb0

@@ -45,12 +45,12 @@ unsigned int g_groundBlox6ResourceId;
 unsigned int g_groundBlox7ResourceId;
 
 // FUNCTION: LEMBALL 0x00432b50
-CLemmingAnimsManager::CLemmingAnimsManager(CGdi* p_arg0, CMain2DDisplay* p_arg1, CAi* p_arg2)
-	: CAnimsManager(p_arg0, 0x2b6, 0xc8, 0x28, 0x14, 1)
+CLemmingAnimsManager::CLemmingAnimsManager(CGdi* p_gdi, CMain2DDisplay* p_display, CAi* p_ai)
+	: CAnimsManager(p_gdi, 0x2b6, 0xc8, 0x28, 0x14, 1)
 {
-	m_display = p_arg1;
-	m_gdi = p_arg0;
-	m_ai = p_arg2;
+	m_display = p_display;
+	m_gdi = p_gdi;
+	m_ai = p_ai;
 	m_animFrames = (CFrames**) operator new(0xad8);
 	m_reservedac = 0;
 	for (int i = 0; i < 0x2b6; i++) {
@@ -277,7 +277,7 @@ void CLemmingAnimsManager::LoadVrammed()
 	LoadAnimation(RES_GAME_BUTBALLOON, 2);
 	LoadAnimation(RES_GAME_BUTPAWS, 2);
 	if (m_countingLoads == 0) {
-		CResFont** fontResources = m_unk0x9c;
+		CResFont** fontResources = m_interfaceFonts;
 		fontResources[0] = 0;
 		fontResources[1] = 0;
 		fontResources[2] = 0;
@@ -286,8 +286,8 @@ void CLemmingAnimsManager::LoadVrammed()
 		fontResources[0] = CResFont::Load(RES_BORDERS_LORES_CUTFONT);
 		LoadAnims(RES_BORDERS_HIRES_BORDERCORNERS);
 		LoadAnims(RES_BORDERS_HIRES_BORDEREDGES);
-		m_unk0x9c[1] = CResFont::Load(RES_BORDERS_HIRES_CUTFONT);
-		m_unk0x9c[2] = CResFont::Load(RES_NEWFRONT_FONTS_GAME_SCORETIME);
+		m_interfaceFonts[1] = CResFont::Load(RES_BORDERS_HIRES_CUTFONT);
+		m_interfaceFonts[2] = CResFont::Load(RES_NEWFRONT_FONTS_GAME_SCORETIME);
 	}
 	LoadAnimation(RES_GAME_HIT_NORTH, 1);
 	LoadAnimation(RES_GAME_HIT_NORTH_EAST, 1);
@@ -410,7 +410,7 @@ void CLemmingAnimsManager::Unload()
 		UnLoadAnims(RES_BORDERS_LORES_BORDERCORNERS);
 		UnLoadAnims(RES_BORDERS_HIRES_BORDEREDGES);
 		UnLoadAnims(RES_BORDERS_HIRES_BORDERCORNERS);
-		CResFont** font = m_unk0x9c;
+		CResFont** font = m_interfaceFonts;
 		for (int count = 3; count != 0; font++, count--) {
 			if (*font != 0) {
 				(*font)->UnLoad();

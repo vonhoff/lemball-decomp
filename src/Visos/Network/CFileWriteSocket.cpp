@@ -20,7 +20,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 // FUNCTION: LEMBALL 0x00479e20
 CFileWriteSocket::CFileWriteSocket() : CFileBaseSocket(), CWriteSocket(), CFileCommonSocket()
 {
-	m_unk0x10 = 0;
+	m_nextWriteSlot = 0;
 }
 
 // FUNCTION: LEMBALL 0x00479f40
@@ -78,16 +78,16 @@ bool CFileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 		return false;
 	}
 
-	headerOffset = m_file->m_headers->m_payloadCapacity * m_unk0x10 + m_unk0x04;
+	headerOffset = m_file->m_headers->m_payloadCapacity * m_nextWriteSlot + m_headersOffset;
 	Seek(headerOffset);
-	header = &m_file->m_headers[m_unk0x10];
+	header = &m_file->m_headers[m_nextWriteSlot];
 	strcpy(header->m_text0, g_pBroadcastAddress->GetStr());
 	strcpy(header->m_text1, m_destinationAddress->GetStr());
 	header->m_headerValue = (unsigned long) p_size;
 
-	lockLength = Write(m_file->m_headers[m_unk0x10], 1, 0);
+	lockLength = Write(m_file->m_headers[m_nextWriteSlot], 1, 0);
 	if (lockLength != 0) {
-		Seek(m_dataOffset + m_unk0x10 * g_networkPacketSize);
+		Seek(m_dataOffset + m_nextWriteSlot * g_networkPacketSize);
 		if (!CNetworkFile::Write(p_data, p_size)) {
 			error = 1;
 		}
@@ -97,7 +97,7 @@ bool CFileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 	}
 
 	if (error == 0) {
-		m_unk0x10++;
+		m_nextWriteSlot++;
 		CWriteSocket::m_lastSendTime = timeGetTime();
 	}
 	if (lockLength != 0) {

@@ -80,41 +80,41 @@ void CWriteSocket::DeleteCBuffers()
 }
 
 // FUNCTION: LEMBALL 0x0045fe50
-void CWriteSocket::SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2)
+void CWriteSocket::SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount)
 {
-	(void) p_arg0;
-	(void) p_arg1;
-	(void) p_arg2;
+	(void) p_packetCount;
+	(void) p_sequenceWindow;
+	(void) p_subpacketCount;
 	DeleteNcBuffers();
 }
 
 // FUNCTION: LEMBALL 0x0045fe60
-void CWriteSocket::SetCBuffers(int p_arg0, int p_arg1)
+void CWriteSocket::SetCBuffers(int p_packetCount, int p_subpacketCount)
 {
 	void* storage;
 
-	(void) p_arg1;
+	(void) p_subpacketCount;
 	DeleteCBuffers();
 	storage = operator new(sizeof(CWriteCBuff));
 	if (storage != 0) {
-		m_criticalBuffer = new (storage) CWriteCBuff(p_arg0, (unsigned short) g_networkPacketSize);
+		m_criticalBuffer = new (storage) CWriteCBuff(p_packetCount, (unsigned short) g_networkPacketSize);
 		return;
 	}
 	m_criticalBuffer = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045fea0
-bool CWriteSocket::SendCritical(CNetworkMessage& p_arg0)
+bool CWriteSocket::SendCritical(CNetworkMessage& p_message)
 {
 	unsigned char* data;
 	int size;
 	CWritePacket* packet;
 
 	m_packetHeader->m_critical = 1;
-	data = p_arg0.m_buffer;
-	size = p_arg0.m_writeCursor - data;
+	data = p_message.m_buffer;
+	size = p_message.m_writeCursor - data;
 	CopyDataStream(data, 0);
-	packet = m_criticalBuffer->StorePacket(m_packetHeader->m_packetSequence, data, size, &p_arg0);
+	packet = m_criticalBuffer->StorePacket(m_packetHeader->m_packetSequence, data, size, &p_message);
 	if (packet == 0) {
 		return false;
 	}
@@ -151,7 +151,7 @@ bool CWriteSocket::ResendCritical(CWritePacket* p_packet)
 }
 
 // FUNCTION: LEMBALL 0x0045ff70
-bool CWriteSocket::SendNcms(CNetworkMessage& p_arg0)
+bool CWriteSocket::SendNcms(CNetworkMessage& p_message)
 {
 	unsigned char* data;
 	int remaining;
@@ -162,11 +162,11 @@ bool CWriteSocket::SendNcms(CNetworkMessage& p_arg0)
 	if (m_segmentIndex == -1) {
 		m_segmentIndex = 0;
 		m_segmentSequence = (short) ++m_multiMessageSequence;
-		m_segmentedMessage = &p_arg0;
+		m_segmentedMessage = &p_message;
 	}
 	dataSize = g_networkPacketSize - 0x10;
-	data = p_arg0.m_buffer;
-	remaining = p_arg0.m_writeCursor - data;
+	data = p_message.m_buffer;
+	remaining = p_message.m_writeCursor - data;
 	sendCount = 0;
 	segmentCount = (dataSize + remaining - 0x11) / dataSize;
 	if (m_segmentIndex != 0) {
@@ -217,7 +217,7 @@ bool CWriteSocket::SendNcms(CNetworkMessage& p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x004600d0
-bool CWriteSocket::Send(CNetworkMessage& p_arg0)
+bool CWriteSocket::Send(CNetworkMessage& p_message)
 {
 	unsigned char* data;
 	bool sent;
@@ -225,24 +225,24 @@ bool CWriteSocket::Send(CNetworkMessage& p_arg0)
 	if (m_socketFlags == 0) {
 		return false;
 	}
-	if (p_arg0.m_pendingSendCount == 0) {
-		p_arg0.m_pendingSendCount = 1;
+	if (p_message.m_pendingSendCount == 0) {
+		p_message.m_pendingSendCount = 1;
 	}
-	m_packetHeader->m_packetSize = p_arg0.m_writeCursor - p_arg0.m_buffer;
-	data = p_arg0.m_buffer;
-	m_packetHeader->m_messageId = (unsigned short) p_arg0.m_messageId;
+	m_packetHeader->m_packetSize = p_message.m_writeCursor - p_message.m_buffer;
+	data = p_message.m_buffer;
+	m_packetHeader->m_messageId = (unsigned short) p_message.m_messageId;
 	if (g_networkPacketSize < m_packetHeader->m_packetSize) {
 		if (m_segmentIndex != -1) {
-			p_arg0.m_pendingSendCount = 0;
+			p_message.m_pendingSendCount = 0;
 			sent = false;
 		}
 		else {
-			sent = SendNcms(p_arg0);
+			sent = SendNcms(p_message);
 		}
 	}
 	else {
 		m_packetHeader->m_subpacketSequence = 0x100;
-		if (p_arg0.m_headerEnabled == 0) {
+		if (p_message.m_headerEnabled == 0) {
 			m_packetHeader->m_packetSequence = ++m_nonCriticalSequence;
 			m_packetHeader->m_critical = 0;
 			CopyDataStream(data, 0);
@@ -250,10 +250,10 @@ bool CWriteSocket::Send(CNetworkMessage& p_arg0)
 		}
 		else {
 			m_packetHeader->m_packetSequence = ++m_criticalSequence;
-			sent = SendCritical(p_arg0);
+			sent = SendCritical(p_message);
 		}
 	}
-	p_arg0.m_pendingSendCount = 0;
+	p_message.m_pendingSendCount = 0;
 	return sent;
 }
 

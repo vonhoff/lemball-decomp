@@ -23,12 +23,12 @@ public:
 	virtual void ConnectSetup();                                               // vtable+0x14
 	CNetworkMessage* ReceiveAcknowledgement();
 	bool CheckConnectTime();
-	bool Send(CNetworkMessage& p_arg0);
+	bool Send(CNetworkMessage& p_message);
 	void Closed(int p_notifyPeer);
 	void FirstReceive();
-	void InitConnect(const char* p_arg0, CNetworkAddress* p_arg1, short p_arg2);
+	void InitConnect(const char* p_peerName, CNetworkAddress* p_address, short p_port);
 	void Kill();
-	void PostRead(NetworkEvents p_arg0, CBasePacket* p_arg1);
+	void PostRead(NetworkEvents p_event, CBasePacket* p_packet);
 	void SetConnectTime();
 	void Stop();
 	~CConnect();

@@ -114,12 +114,12 @@ void CWnd::OnMaximise()
 }
 
 // FUNCTION: LEMBALL 0x00432510
-void CWnd::Dummy98()
+void CWnd::OnFocusGained()
 {
 }
 
 // FUNCTION: LEMBALL 0x00432520
-void CWnd::Dummy9c()
+void CWnd::OnFocusLost()
 {
 }
 
@@ -279,17 +279,17 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	case WM_SETFOCUS: {
 		if (g_hFocusWindow != 0) {
 			g_pFocusWindow->Dummy94();
-			g_pFocusWindow->Dummy9c();
+			g_pFocusWindow->OnFocusLost();
 		}
 		window->SetFocusWindow();
-		window->Dummy98();
+		window->OnFocusGained();
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 	case WM_KILLFOCUS: {
 		if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
 			if (g_hFocusWindow != 0) {
 				g_pFocusWindow->Dummy94();
-				g_pFocusWindow->Dummy9c();
+				g_pFocusWindow->OnFocusLost();
 			}
 			g_hFocusWindow = 0;
 		}
@@ -700,7 +700,7 @@ void CWnd::Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_title)
 	g_pTargetGraphicsSystem->m_reserved04 = (unsigned int) this;
 	m_nativeWindow = g_pTargetGraphicsDriver->m_window;
 	SetFocusWindow();
-	Dummy98();
+	OnFocusGained();
 	InternalOnCreate();
 	OnCreate();
 	InternalOnSize();

@@ -51,14 +51,14 @@ CBaseNetwork::CBaseNetwork()
 }
 
 // FUNCTION: LEMBALL 0x00461aa0
-bool CBaseNetwork::Initialise(const char* p_arg0, int p_arg1)
+bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 {
 	unsigned long start;
 	unsigned long waitStart;
 
 	m_initialisePending = 1;
-	m_networkName = (char*) p_arg0;
-	g_networkPacketSize = p_arg1;
+	m_networkName = (char*) p_networkName;
+	g_networkPacketSize = p_packetSize;
 	ForceProcess();
 	start = timeGetTime();
 	if (m_initialized == 0) {
@@ -234,13 +234,13 @@ void CBaseNetwork::ShutDown()
 }
 
 // FUNCTION: LEMBALL 0x00461fc0
-void CBaseNetwork::Delete(CConnect* p_arg0)
+void CBaseNetwork::Delete(CConnect* p_connection)
 {
 	CConnect* peer = m_firstConnect;
 	CConnect* next;
 	CConnect* previous;
 	if (peer != 0) {
-		while (peer != p_arg0) {
+		while (peer != p_connection) {
 			peer = peer->m_nextConnect;
 			if (peer == 0) {
 				return;
@@ -308,13 +308,13 @@ CConnect* CBaseNetwork::NewConnect()
 }
 
 // FUNCTION: LEMBALL 0x00462130
-bool CBaseNetwork::Exists(CConnect* p_arg0)
+bool CBaseNetwork::Exists(CConnect* p_connection)
 {
 	CConnect* peer;
 
 	peer = m_firstConnect;
 	while (peer != 0) {
-		if (p_arg0 == peer) {
+		if (p_connection == peer) {
 			if (peer->CheckConnectTime() == 0) {
 				return 0;
 			}
@@ -330,11 +330,11 @@ bool CBaseNetwork::Exists(CConnect* p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x00462180
-CConnect* CBaseNetwork::FindConnection(CNetworkAddress* p_arg0)
+CConnect* CBaseNetwork::FindConnection(CNetworkAddress* p_address)
 {
 	CConnect* peer = m_firstConnect;
 	while (peer != 0) {
-		if (peer->m_killRequested == 0 && *peer->m_destinationAddress == *p_arg0) {
+		if (peer->m_killRequested == 0 && *peer->m_destinationAddress == *p_address) {
 			break;
 		}
 		peer = peer->m_nextConnect;
@@ -343,21 +343,21 @@ CConnect* CBaseNetwork::FindConnection(CNetworkAddress* p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x004621c0
-void CBaseNetwork::KillUnBornConnection(CNetworkAddress* p_arg0)
+void CBaseNetwork::KillUnBornConnection(CNetworkAddress* p_address)
 {
-	CConnect* peer = FindConnection(p_arg0);
+	CConnect* peer = FindConnection(p_address);
 	if (peer != 0) {
 		peer->Kill();
 	}
 }
 
 // FUNCTION: LEMBALL 0x004621e0
-void CBaseNetwork::CtoSRequestConnect(CNetworkAddress* p_arg0)
+void CBaseNetwork::CtoSRequestConnect(CNetworkAddress* p_address)
 {
 	CConnect* peer;
 	short port;
 
-	peer = FindConnection(p_arg0);
+	peer = FindConnection(p_address);
 	if (peer != 0 && peer->m_killRequested == 0 && peer->CheckConnectTime() != 0) {
 		return;
 	}
@@ -369,14 +369,14 @@ void CBaseNetwork::CtoSRequestConnect(CNetworkAddress* p_arg0)
 		return;
 	}
 
-	peer->InitConnect(g_pMessReqConnect->m_peerName, p_arg0, port);
+	peer->InitConnect(g_pMessReqConnect->m_peerName, p_address, port);
 	g_pMessOKConnect->m_assignedPort = peer->m_port;
 	g_pMessOKConnect->m_connectionId = (unsigned int) peer;
-	m_broadcast->Send(p_arg0, *g_pMessOKConnect);
+	m_broadcast->Send(p_address, *g_pMessOKConnect);
 }
 
 // FUNCTION: LEMBALL 0x00462280
-void CBaseNetwork::CtoSRequestNewPort(CNetworkAddress* p_arg0)
+void CBaseNetwork::CtoSRequestNewPort(CNetworkAddress* p_address)
 {
 	CConnect* peer;
 	short port;
@@ -387,7 +387,7 @@ void CBaseNetwork::CtoSRequestNewPort(CNetworkAddress* p_arg0)
 		peer->m_newPortRequestCount++;
 		if (peer->m_newPortRequestCount > 5) {
 			g_pMessFAILEDConnect->m_failureReason = "To many new-port requests";
-			m_broadcast->Send(p_arg0, *g_pMessReqNewPort);
+			m_broadcast->Send(p_address, *g_pMessReqNewPort);
 			return;
 		}
 
@@ -396,20 +396,20 @@ void CBaseNetwork::CtoSRequestNewPort(CNetworkAddress* p_arg0)
 			peer->SetPort(port);
 			g_pMessOKConnect->m_assignedPort = peer->m_port;
 			g_pMessOKConnect->m_connectionId = (unsigned int) peer;
-			m_broadcast->Send(p_arg0, *g_pMessOKConnect);
+			m_broadcast->Send(p_address, *g_pMessOKConnect);
 		}
 	}
 }
 
 // FUNCTION: LEMBALL 0x00462340
-void CBaseNetwork::StoCokConnect(CNetworkAddress* p_arg0)
+void CBaseNetwork::StoCokConnect(CNetworkAddress* p_address)
 {
 	CConnect* peer;
 	short port;
 
-	peer = FindConnection(p_arg0);
+	peer = FindConnection(p_address);
 	if (peer != 0 && peer->m_killRequested == 0 && peer->CheckConnectTime() != 0) {
-		if (*g_pBroadcastAddress > *p_arg0) {
+		if (*g_pBroadcastAddress > *p_address) {
 			return;
 		}
 		peer->Kill();
@@ -424,10 +424,10 @@ void CBaseNetwork::StoCokConnect(CNetworkAddress* p_arg0)
 		m_broadcast->m_connectionData[port] = 1;
 		peer = NewConnect();
 		peer->SetPort(port);
-		peer->Listen(p_arg0);
+		peer->Listen(p_address);
 		g_pMessGOConnect->m_assignedPort = port;
 		g_pMessGOConnect->m_connectionId = g_pMessOKConnect->m_connectionId;
-		m_broadcast->Send(p_arg0, *g_pMessGOConnect);
+		m_broadcast->Send(p_address, *g_pMessGOConnect);
 		return;
 	}
 
@@ -435,17 +435,17 @@ void CBaseNetwork::StoCokConnect(CNetworkAddress* p_arg0)
 	g_pMessReqNewPort->m_requestedPort = g_broadcastPort;
 	g_pMessReqNewPort->m_connectionData = m_broadcast->m_connectionData;
 	g_pMessReqNewPort->m_peerName = g_szBroadcastPeerName;
-	m_broadcast->Send(p_arg0, *g_pMessReqNewPort);
+	m_broadcast->Send(p_address, *g_pMessReqNewPort);
 }
 
 // FUNCTION: LEMBALL 0x00462460
-void CBaseNetwork::StoCfailedConnect(CNetworkAddress* p_arg0)
+void CBaseNetwork::StoCfailedConnect(CNetworkAddress* p_address)
 {
-	m_broadcast->Send(p_arg0, *g_pMessFAILEDConnect);
+	m_broadcast->Send(p_address, *g_pMessFAILEDConnect);
 }
 
 // FUNCTION: LEMBALL 0x00462480
-void CBaseNetwork::CtoSgoConnect(CNetworkAddress* p_arg0)
+void CBaseNetwork::CtoSgoConnect(CNetworkAddress* p_address)
 {
 	CConnect* peer = (CConnect*) g_pMessGOConnect->m_connectionId;
 	if (Exists(peer) != 0) {
@@ -454,50 +454,50 @@ void CBaseNetwork::CtoSgoConnect(CNetworkAddress* p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x004624a0
-void CBaseNetwork::Establish(CNetworkAddress* p_arg0, unsigned char* p_arg1)
+void CBaseNetwork::Establish(CNetworkAddress* p_address, unsigned char* p_data)
 {
-	p_arg0->GetStr();
-	if (g_pMessReqConnect->Set(p_arg1) != 0) {
-		CtoSRequestConnect(p_arg0);
+	p_address->GetStr();
+	if (g_pMessReqConnect->Set(p_data) != 0) {
+		CtoSRequestConnect(p_address);
 		return;
 	}
-	if (g_pMessReqNewPort->Set(p_arg1) != 0) {
-		CtoSRequestNewPort(p_arg0);
+	if (g_pMessReqNewPort->Set(p_data) != 0) {
+		CtoSRequestNewPort(p_address);
 		return;
 	}
-	if (g_pMessOKConnect->Set(p_arg1) != 0) {
-		StoCokConnect(p_arg0);
+	if (g_pMessOKConnect->Set(p_data) != 0) {
+		StoCokConnect(p_address);
 		return;
 	}
-	if (g_pMessGOConnect->Set(p_arg1) != 0) {
-		CtoSgoConnect(p_arg0);
+	if (g_pMessGOConnect->Set(p_data) != 0) {
+		CtoSgoConnect(p_address);
 		return;
 	}
-	if (g_pMessFAILEDConnect->Set(p_arg1) != 0) {
-		StoCfailedConnect(p_arg0);
+	if (g_pMessFAILEDConnect->Set(p_data) != 0) {
+		StoCfailedConnect(p_address);
 	}
 }
 
 // FUNCTION: LEMBALL 0x00462550
-void CBaseNetwork::SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2)
+void CBaseNetwork::SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount)
 {
-	m_nonCriticalPacketCount = p_arg0;
-	m_nonCriticalSequenceWindow = p_arg1;
-	m_nonCriticalSubpacketCount = p_arg2;
+	m_nonCriticalPacketCount = p_packetCount;
+	m_nonCriticalSequenceWindow = p_sequenceWindow;
+	m_nonCriticalSubpacketCount = p_subpacketCount;
 }
 
 // FUNCTION: LEMBALL 0x00462570
-void CBaseNetwork::SetCBuffers(int p_arg0, int p_arg1)
+void CBaseNetwork::SetCBuffers(int p_packetCount, int p_subpacketCount)
 {
-	m_criticalPacketCount = p_arg0;
-	m_criticalSubpacketCount = p_arg1;
+	m_criticalPacketCount = p_packetCount;
+	m_criticalSubpacketCount = p_subpacketCount;
 }
 
 // FUNCTION: LEMBALL 0x00462590
-void CBaseNetwork::AttachMessageQueue(CBaseQueueHandler* p_arg0)
+void CBaseNetwork::AttachMessageQueue(CBaseQueueHandler* p_queueHandler)
 {
-	m_messageQueue = p_arg0;
-	g_pNetworkPacketQueue->Attach(p_arg0, 0);
+	m_messageQueue = p_queueHandler;
+	g_pNetworkPacketQueue->Attach(p_queueHandler, 0);
 }
 
 // FUNCTION: LEMBALL 0x004625b0
@@ -582,7 +582,7 @@ void CBaseNetwork::HandleConnectionMessage(CNetworkAddress* p_address)
 }
 
 // FUNCTION: LEMBALL 0x00462720
-bool CBaseNetwork::SendAll(CNetworkMessage& p_arg0)
+bool CBaseNetwork::SendAll(CNetworkMessage& p_message)
 {
 	CConnect* peer;
 	int activeCount;
@@ -603,7 +603,7 @@ bool CBaseNetwork::SendAll(CNetworkMessage& p_arg0)
 		if (peer->m_killRequested == 0) {
 			activeCount = activeCount + 1;
 			if (sendBlocked == 0) {
-				if (peer->Send(p_arg0) != 0) {
+				if (peer->Send(p_message) != 0) {
 					sendBlocked = 0;
 					peer = peer->m_nextConnect;
 					continue;
@@ -617,7 +617,7 @@ bool CBaseNetwork::SendAll(CNetworkMessage& p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x004627b0
-int CBaseNetwork::ProcessMsg(Message* p_arg0)
+int CBaseNetwork::ProcessMsg(Message* p_message)
 {
 	unsigned int type;
 	Message* message;
@@ -625,7 +625,7 @@ int CBaseNetwork::ProcessMsg(Message* p_arg0)
 	CConnect* peer;
 
 	type = 0;
-	message = p_arg0;
+	message = p_message;
 	type = message->type;
 	switch (type) {
 	case 0xb:

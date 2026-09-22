@@ -124,7 +124,7 @@ CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
 	m_drawingPort = 0;
 	m_reserved40 = 0;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
-	m_unk0x54c = 1;
+	m_lockInitialized = 1;
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
 		m_changeList = new CChangeList(0x1000, p_rect, CVsSize(8, 8));
 	}
@@ -314,7 +314,7 @@ CSurface::CSurface(GrafPort* p_port)
 	m_changeList = 0;
 	m_parentSurface = 0;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
-	m_unk0x54c = 1;
+	m_lockInitialized = 1;
 	m_flag70 = 0;
 }
 
@@ -328,7 +328,7 @@ CSurface::~CSurface()
 	int locked;
 
 	locked = 0;
-	if (m_unk0x54c != 0) {
+	if (m_lockInitialized != 0) {
 		EnterCriticalSection((CRITICAL_SECTION*) m_lock);
 		locked = 1;
 	}
@@ -381,7 +381,7 @@ CSurface::~CSurface()
 	if (locked != 0) {
 		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 		DeleteCriticalSection((CRITICAL_SECTION*) m_lock);
-		m_unk0x54c = 0;
+		m_lockInitialized = 0;
 		if (g_pSurfaceList != 0) {
 			node = (SurfaceListNode*) g_pSurfaceList->m_first;
 			while (node != 0) {
@@ -752,7 +752,7 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 			clipSize.m_height = height;
 		}
 		SetSize(m_windowRect, (int) m_windowRect.m_width);
-		m_unk0x524 = 0;
+		m_bitmapPixelCount = 0;
 		CreateLinePtrs();
 		return;
 	}
@@ -777,7 +777,7 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 		m_platformBitmap = 0;
 	}
 	if (m_windowRect.m_width == 0 || m_windowRect.m_height == 0) {
-		m_unk0x524 = 0;
+		m_bitmapPixelCount = 0;
 	}
 	else {
 		if (m_platformBitmap == 0) {
@@ -799,7 +799,7 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 			if (m_platformBitmap != 0) {
 				g_pTargetGraphicsDriver->SelectDibContext((CDrawingContext*) m_drawingPort,
 														  (CDibContext*) m_platformBitmap);
-				m_unk0x524 = (int) m_windowRect.m_width * (int) m_windowRect.m_height;
+				m_bitmapPixelCount = (int) m_windowRect.m_width * (int) m_windowRect.m_height;
 			}
 		}
 		if (m_platformBitmap == 0) {
@@ -905,7 +905,7 @@ void CSurface::Move(const CVsPoint& p_position)
 			g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
 			m_platformBitmap = 0;
 		}
-		m_unk0x524 = 0;
+		m_bitmapPixelCount = 0;
 		CreateLinePtrs();
 		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 		for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {

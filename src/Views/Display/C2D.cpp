@@ -49,8 +49,8 @@ extern unsigned char g_abC2DType2Remap[5];
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x004358d0
-C2D::C2D(CMain2DDisplay* p_arg0, CAi* p_arg1, CGdi* p_arg2, CMap* p_arg3, const CVsRect& p_arg4)
-	: CHotAreaHandler(p_arg4)
+C2D::C2D(CMain2DDisplay* p_display, CAi* p_ai, CGdi* p_gdi, CMap* p_map, const CVsRect& p_rect)
+	: CHotAreaHandler(p_rect)
 {
 	void* storage;
 	CBaseQueueHandler* queueHandler;
@@ -78,14 +78,14 @@ C2D::C2D(CMain2DDisplay* p_arg0, CAi* p_arg1, CGdi* p_arg2, CMap* p_arg3, const 
 	if (g_nTestAllLevels != 0) {
 		m_testLevel = 0;
 	}
-	m_ai = p_arg1;
-	m_gdi = p_arg2;
-	m_display = p_arg0;
-	m_map = p_arg3;
+	m_ai = p_ai;
+	m_gdi = p_gdi;
+	m_display = p_display;
+	m_map = p_map;
 	m_viewOriginX = 0;
 	m_viewOriginY = 0;
-	m_unk0x90c = 0;
-	p_arg3->m_orientation = 0;
+	m_viewOrientation = 0;
+	p_map->m_orientation = 0;
 	m_groupCount = 0;
 	m_quitRequested = 0;
 	m_groupSelectionCount = 0;
@@ -171,8 +171,8 @@ C2D::C2D(CMain2DDisplay* p_arg0, CAi* p_arg1, CGdi* p_arg2, CMap* p_arg3, const 
 	m_pad0x8cc = 0;
 	m_groundWidth = (unsigned short) m_map->m_ground.m_width;
 	m_groundHeight = (unsigned short) m_map->m_ground.m_height;
-	m_viewSize.m_x = p_arg4.m_width;
-	m_viewSize.m_y = p_arg4.m_height;
+	m_viewSize.m_x = p_rect.m_width;
+	m_viewSize.m_y = p_rect.m_height;
 	m_zoom = (unsigned short) m_display->m_zoom;
 	m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) (unsigned int) m_zoom);
 	m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) (unsigned int) m_zoom);
@@ -1782,7 +1782,7 @@ int C2D::DrawClippedRectangle(const CVsRect& p_rect)
 	int rowStepX;
 	int rowStepY;
 
-	orientationOffset = m_unk0x90c;
+	orientationOffset = m_viewOrientation;
 	m_clipMapStepX = g_clipMapStepXByOrientation[orientationOffset];
 	m_clipMapStepY = g_clipMapStepYByOrientation[orientationOffset];
 	neighborStepX = g_clipNeighborStepXByOrientation[orientationOffset];
@@ -1928,7 +1928,7 @@ static unsigned long g_lemmingExternalResources[] = {
 // FUNCTION: LEMBALL 0x0043bce0
 unsigned long C2D::LemmingFly(CViewData& p_viewData, int& p_frame)
 {
-	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & 7;
 	int frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 
 	p_frame = 0;
@@ -2008,7 +2008,7 @@ void C2D::DrawLemmingJump(CViewData& p_viewData, unsigned int p_remapped)
 	int x;
 	unsigned int actionArgument;
 
-	direction = ((unsigned short) viewData->m_facingDirection + m_unk0x90c * 2) & 7;
+	direction = ((unsigned short) viewData->m_facingDirection + m_viewOrientation * 2) & 7;
 	resource = g_lemmingFlyResources[direction];
 	x = viewData->m_positionX - g_lemmingFlyOffsets[direction][0];
 	y = viewData->m_positionY - g_lemmingFlyOffsets[direction][1];
@@ -2045,7 +2045,7 @@ void C2D::DrawLemmingLanding(CViewData& p_viewData, unsigned int p_remapped)
 	int frame;
 	int frameDelta;
 
-	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & 7;
 	resource = g_lemmingFlyResources[direction];
 	x = p_viewData.m_positionX - g_lemmingFlyOffsets[direction][0];
 	y = p_viewData.m_positionY - g_lemmingFlyOffsets[direction][1];
@@ -2076,7 +2076,7 @@ void C2D::DrawLemmingExternal(CViewData& p_viewData, unsigned int p_remapped)
 	int y = p_viewData.m_positionY;
 	int frameDelta = (int) p_viewData.m_animationTime - (int) p_viewData.m_stateTimer;
 	unsigned int frame = frameDelta * 15 / 1000;
-	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	unsigned int direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & 7;
 	CRemap* remap;
 
 	if ((int) frame < 0) {
@@ -2203,7 +2203,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 	int offsetY;
 
 	frame = p_viewData.m_stateTimer;
-	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & 7;
 	y = p_viewData.m_positionY;
 	drawEquipment = 1;
 	drawBody = 1;
@@ -2372,7 +2372,7 @@ void C2D::DrawBullet(CViewData& p_viewData, int p_objectNo)
 
 	unsigned int direction;
 
-	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & 7;
 	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - bulletOffset[0],
 							 p_viewData.m_positionY - bulletOffset[1],
 							 bulletResources[direction],
@@ -2977,7 +2977,7 @@ void C2D::DrawSheep(CViewData& p_viewData, int p_objectNo)
 	int y;
 	int x;
 
-	direction = ((unsigned short) p_viewData.m_facingDirection + m_unk0x90c * 2) & 7;
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & 7;
 	stateTimer = p_viewData.m_stateTimer;
 	x = p_viewData.m_positionX;
 	y = p_viewData.m_positionY;
@@ -3579,7 +3579,7 @@ void C2D::DrawDemo()
 // FUNCTION: LEMBALL 0x0043fd80
 void C2D::DrawTime()
 {
-	unsigned short baseTime = (unsigned short) m_ai->m_unk0xe4;
+	unsigned short baseTime = (unsigned short) m_ai->m_levelTimeRemaining;
 	short time = (short) m_ai->m_gameTime;
 	time = (short) (time + baseTime);
 	if (time < 0) {

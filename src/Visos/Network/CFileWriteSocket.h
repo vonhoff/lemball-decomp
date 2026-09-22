@@ -25,7 +25,7 @@ public:
 	friend class CFileRwSocket;
 
 private:
-	int m_unk0x10; // 0x10: current file packet slot
+	int m_nextWriteSlot; // 0x10: current file packet slot
 };
 #pragma warning(default : 4250)
 

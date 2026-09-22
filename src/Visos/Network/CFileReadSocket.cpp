@@ -16,7 +16,7 @@
 // FUNCTION: LEMBALL 0x00479930
 CFileReadSocket::CFileReadSocket() : CFileBaseSocket(), CReadSocket(), CFileCommonSocket()
 {
-	m_unk0x10 = 0xffffffffUL;
+	m_pendingReadSlot = 0xffffffffUL;
 }
 
 // FUNCTION: LEMBALL 0x00479a40
@@ -73,42 +73,42 @@ bool CFileReadSocket::ReadBuff(int p_index)
 void CFileReadSocket::Process()
 {
 	if ((m_readReady != 0 || m_eventPending != 0) && m_isOpen != 0) {
-		if (!CNetworkFile::Lock(m_unk0x04, m_file->m_payloadCapacity)) {
+		if (!CNetworkFile::Lock(m_headersOffset, m_file->m_payloadCapacity)) {
 			static_cast<CFileNetwork*>(g_pBaseNetwork)->ResetTimer(0x32);
 			return;
 		}
-		if (m_unk0x10 != -1) {
-			Seek(m_file->m_headers->m_payloadCapacity * m_unk0x10 + m_unk0x04);
+		if (m_pendingReadSlot != -1) {
+			Seek(m_file->m_headers->m_payloadCapacity * m_pendingReadSlot + m_headersOffset);
 			CNetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, m_file->m_payloadCapacity);
-			if (CNetworkFile::UnLock(m_unk0x04, m_file->m_payloadCapacity)) {
-				m_file->m_headers[m_unk0x10].Set((unsigned char*) g_pNetworkPacketScratch);
-				ReadBuff(m_unk0x10);
-				CHeaderMessage* header = &m_file->m_headers[m_unk0x10];
+			if (CNetworkFile::UnLock(m_headersOffset, m_file->m_payloadCapacity)) {
+				m_file->m_headers[m_pendingReadSlot].Set((unsigned char*) g_pNetworkPacketScratch);
+				ReadBuff(m_pendingReadSlot);
+				CHeaderMessage* header = &m_file->m_headers[m_pendingReadSlot];
 				header->m_mirroredSequence = header->m_sequence;
 				int index;
-				for (index = m_unk0x10; index < CFileCommonSocket::m_unk0x08; index++) {
+				for (index = m_pendingReadSlot; index < CFileCommonSocket::m_headerSlotCount; index++) {
 					header = &m_file->m_headers[index];
 					if (header->m_sequence > header->m_mirroredSequence) {
-						m_unk0x10 = index;
+						m_pendingReadSlot = index;
 						break;
 					}
 				}
-				if (index == CFileCommonSocket::m_unk0x08) {
-					m_unk0x10 = 0xffffffffUL;
+				if (index == CFileCommonSocket::m_headerSlotCount) {
+					m_pendingReadSlot = 0xffffffffUL;
 				}
 			}
 		}
 		else {
-			Seek(m_unk0x04);
+			Seek(m_headersOffset);
 			CNetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, m_file->m_payloadCapacity);
-			if (CNetworkFile::UnLock(m_unk0x04, m_file->m_payloadCapacity)) {
+			if (CNetworkFile::UnLock(m_headersOffset, m_file->m_payloadCapacity)) {
 				m_file->Set((unsigned char*) g_pNetworkPacketScratch);
 				bool found = false;
-				for (int index = 0; index < CFileCommonSocket::m_unk0x08; index++) {
+				for (int index = 0; index < CFileCommonSocket::m_headerSlotCount; index++) {
 					CHeaderMessage* header = &m_file->m_headers[index];
 					if (header->m_mirroredSequence < header->m_sequence) {
 						if (found) {
-							m_unk0x10 = index;
+							m_pendingReadSlot = index;
 							return;
 						}
 						ReadBuff(index);

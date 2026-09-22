@@ -23,7 +23,7 @@ public:
 	void Process();
 
 private:
-	unsigned int m_unk0x10; // 0x10
+	unsigned int m_pendingReadSlot; // 0x10
 };
 #pragma warning(default : 4250)
 

@@ -113,7 +113,7 @@ bool CLaser::Process()
 			switch (m_action) {
 			case ACTION_0x17:
 				if (m_target != 0) {
-					m_target->m_unk0x2c = 1;
+					m_target->m_deathRequested = 1;
 					m_target = 0;
 				}
 				Action(ACTION_0x18);
@@ -134,7 +134,7 @@ bool CLaser::Process()
 		case ACTION_0x17:
 			if (m_target != 0) {
 				m_target->SetSndEffect(SFX_ELECCY);
-				m_target->m_unk0x2c = 1;
+				m_target->m_deathRequested = 1;
 				m_target = 0;
 			}
 			Action(ACTION_0x18);
@@ -161,7 +161,7 @@ bool CLaser::Process()
 				m_active = m_autoActivate;
 				m_actionDeadline = g_dwGameTick + 0x3c;
 				if (m_target != 0) {
-					m_target->m_unk0x2c = 1;
+					m_target->m_deathRequested = 1;
 					m_target = 0;
 				}
 				Action(ACTION_0x17);

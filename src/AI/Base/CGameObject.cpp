@@ -57,9 +57,9 @@ void CGameObject::StartStanding()
 }
 
 // FUNCTION: LEMBALL 0x0040a870
-void CGameObject::SetSndEffect(eSoundEffect p_arg0)
+void CGameObject::SetSndEffect(eSoundEffect p_soundEffect)
 {
-	m_soundEffect = p_arg0;
+	m_soundEffect = p_soundEffect;
 }
 
 // FUNCTION: LEMBALL 0x0040a880
@@ -69,20 +69,20 @@ eSoundEffect CGameObject::GetSndEffect()
 }
 
 // FUNCTION: LEMBALL 0x0040a890
-bool CGameObject::Collision(const CPt3& p_arg0)
+bool CGameObject::Collision(const CPt3& p_point)
 {
-	if (m_collisionMinX <= p_arg0.m_x && p_arg0.m_x <= m_collisionMaxX && m_collisionMinY <= p_arg0.m_y &&
-		p_arg0.m_y <= m_collisionMaxY && m_collisionMinZ <= p_arg0.m_z && p_arg0.m_z <= m_collisionMaxZ) {
+	if (m_collisionMinX <= p_point.m_x && p_point.m_x <= m_collisionMaxX && m_collisionMinY <= p_point.m_y &&
+		p_point.m_y <= m_collisionMaxY && m_collisionMinZ <= p_point.m_z && p_point.m_z <= m_collisionMaxZ) {
 		return 1;
 	}
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0040a8e0
-bool CGameObject::Collision(const CRect3& p_arg0)
+bool CGameObject::Collision(const CRect3& p_bounds)
 {
-	if (m_collisionMinX <= p_arg0.m_x2 && p_arg0.m_x1 <= m_collisionMaxX && m_collisionMinY <= p_arg0.m_y2 &&
-		p_arg0.m_y1 <= m_collisionMaxY && m_collisionMinZ <= p_arg0.m_z2 && p_arg0.m_z1 <= m_collisionMaxZ) {
+	if (m_collisionMinX <= p_bounds.m_x2 && p_bounds.m_x1 <= m_collisionMaxX && m_collisionMinY <= p_bounds.m_y2 &&
+		p_bounds.m_y1 <= m_collisionMaxY && m_collisionMinZ <= p_bounds.m_z2 && p_bounds.m_z1 <= m_collisionMaxZ) {
 		return 1;
 	}
 	return 0;
@@ -223,7 +223,7 @@ void CGameObject::Delete()
 }
 
 // FUNCTION: LEMBALL 0x0040aac0
-void CGameObject::PickUpAmmo(unsigned short p_arg0)
+void CGameObject::PickUpAmmo(unsigned short p_amount)
 {
 }
 
@@ -280,16 +280,16 @@ bool CGameObject::IsUsable(eAction p_action)
 }
 
 // FUNCTION: LEMBALL 0x0040c170
-void CGameObject::Action(eAction p_arg0)
+void CGameObject::Action(eAction p_action)
 {
-	m_action = p_arg0;
+	m_action = p_action;
 }
 
 // FUNCTION: LEMBALL 0x0040c180
-void CGameObject::Action(eAction p_arg0, int p_arg1)
+void CGameObject::Action(eAction p_action, int p_actionArgument)
 {
-	m_action = p_arg0;
-	m_actionArgument = (short) p_arg1;
+	m_action = p_action;
+	m_actionArgument = (short) p_actionArgument;
 }
 
 // FUNCTION: LEMBALL 0x0040c1a0
@@ -359,7 +359,7 @@ void CGameObject::Restart()
 	m_auxiliaryPosition.m_zFixed = 0;
 	Initialise();
 	m_position.m_zFixed = 0;
-	m_unk0x120 = (unsigned short) 0xffff;
+	m_invisibleSwitchId = (unsigned short) 0xffff;
 	m_liftId = 0xffff;
 	m_position.m_yFixed = 0;
 	m_position.m_xFixed = 0;
@@ -393,7 +393,7 @@ CGameObject::~CGameObject()
 void CGameObject::Initialise()
 {
 	m_actionArgument = 0;
-	m_unk0x2c = 0;
+	m_deathRequested = 0;
 	m_action = ACTION_NONE;
 	m_isRemoteObject = 0;
 	m_facingDirection = 0;
@@ -405,8 +405,8 @@ void CGameObject::Initialise()
 	m_unk0x8c = 0;
 	m_routeSearchFailed = 0;
 	m_routeSearchActive = 0;
-	m_unk0x104 = 0;
-	m_unk0x108 = 0;
+	m_isJumping = 0;
+	m_isFalling = 0;
 	m_unk0x10c = 0;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
@@ -415,7 +415,7 @@ void CGameObject::Initialise()
 	m_desiredFacingDirection = 0;
 	m_flightVelocity.m_zFixed = 0;
 	m_unk0x58 = 0;
-	m_unk0x11c = 0;
+	m_onMover = 0;
 	m_hasDestination = 0;
 	m_actionDeadline = g_dwGameTick;
 	m_soundEffect = SFX_NONE;
@@ -423,18 +423,18 @@ void CGameObject::Initialise()
 }
 
 // FUNCTION: LEMBALL 0x00415240
-void CGameObject::StartFly(C3DVector& p_arg0, C3DVector* p_arg1)
+void CGameObject::StartFly(C3DVector& p_velocity, C3DVector* p_origin)
 {
-	m_unk0x104 = 0;
-	m_unk0x108 = 0;
+	m_isJumping = 0;
+	m_isFalling = 0;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
-	if (p_arg1 != 0) {
-		int x = p_arg1->m_xFixed;
+	if (p_origin != 0) {
+		int x = p_origin->m_xFixed;
 		m_flightOrigin.m_xFixed = x;
-		int y = p_arg1->m_yFixed;
+		int y = p_origin->m_yFixed;
 		m_flightOrigin.m_yFixed = y;
-		int z = p_arg1->m_zFixed;
+		int z = p_origin->m_zFixed;
 		m_flightOrigin.m_zFixed = z;
 		m_position.m_xFixed = x;
 		m_position.m_yFixed = y;
@@ -446,9 +446,9 @@ void CGameObject::StartFly(C3DVector& p_arg0, C3DVector* p_arg1)
 		m_flightOrigin.m_zFixed = m_position.m_zFixed;
 	}
 	m_isFlying = 1;
-	m_flightVelocity.m_xFixed = p_arg0.m_xFixed;
-	m_flightVelocity.m_yFixed = p_arg0.m_yFixed;
-	m_flightVelocity.m_zFixed = p_arg0.m_zFixed;
+	m_flightVelocity.m_xFixed = p_velocity.m_xFixed;
+	m_flightVelocity.m_yFixed = p_velocity.m_yFixed;
+	m_flightVelocity.m_zFixed = p_velocity.m_zFixed;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_lastMovementTick = g_dwGameTick;
 	m_actionDeadline = g_dwGameTick + 10;
@@ -494,14 +494,14 @@ void CGameObject::Fly()
 				else {
 					m_isFlying = 1;
 				}
-				if (m_unk0x11c == 0 && mover != 0) {
+				if (m_onMover == 0 && mover != 0) {
 					mover->GetOn(this);
 				}
 			}
 			else {
 				m_actionDeadline = g_dwGameTick;
 				if ((m_collisionFlags & 4) != 0) {
-					m_unk0x108 = 1;
+					m_isFalling = 1;
 					m_flightVelocity.m_xFixed = 0x3000;
 					m_flightVelocity.m_yFixed = 0;
 					int objectZ = m_position.m_zFixed >> 12;
@@ -551,7 +551,7 @@ void CGameObject::StartMoving()
 		CMover* mover = 0;
 		int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
 		int objectZ = m_position.m_zFixed >> 12;
-		if (m_unk0x11c == 0 && mover != 0) {
+		if (m_onMover == 0 && mover != 0) {
 			mover->GetOn(this);
 		}
 		if (objectZ == groundZ) {
@@ -578,7 +578,7 @@ void CGameObject::StartMoving()
 			m_actionDeadline = g_dwGameTick;
 			if ((m_collisionFlags & 4) != 0) {
 				m_flightVelocity.m_yFixed = 0;
-				m_unk0x108 = 1;
+				m_isFalling = 1;
 				m_flightVelocity.m_xFixed = 0x3000;
 				int deltaZ = objectZ - groundZ;
 				deltaZ += (deltaZ >> 31) & 7;
@@ -728,7 +728,7 @@ bool CGameObject::Move()
 
 	CMover* mover = 0;
 	unsigned short groundZ = g_pMap->GetZ(x, y, &mover);
-	if (m_unk0x11c == 0 && mover != 0) {
+	if (m_onMover == 0 && mover != 0) {
 		mover->GetOn(this);
 	}
 	if ((MapCheck(x, y) & 1) != 0) {
@@ -752,7 +752,7 @@ bool CGameObject::Move()
 			return false;
 		}
 		if ((m_collisionFlags & 2) != 0) {
-			m_unk0x104 = 1;
+			m_isJumping = 1;
 			m_lastMovementTick = g_dwGameTick;
 			m_flightZ = currentGroundZ;
 			m_groundPosition.m_xFixed = position.m_xFixed;
@@ -768,7 +768,7 @@ bool CGameObject::Move()
 	if ((int) groundZ <= (int) currentGroundZ - 7) {
 		m_actionDeadline = g_dwGameTick;
 		if ((m_collisionFlags & 4) != 0) {
-			m_unk0x108 = 1;
+			m_isFalling = 1;
 			m_actionArgument = 0;
 			m_lastMovementTick = g_dwGameTick;
 			m_flightZ = currentGroundZ;
@@ -860,7 +860,7 @@ void CGameObject::DeleteFirstEntryFromDestinationList()
 	m_hasDestination = (unsigned short) 0 < m_destinationList->m_count;
 }
 // FUNCTION: LEMBALL 0x00415ef0
-void CGameObject::AddDestination(const AiCoord& p_arg0)
+void CGameObject::AddDestination(const AiCoord& p_destination)
 {
 	CAiDestinationList* list = m_destinationList;
 	if (list != 0 && list->m_count < list->m_capacity) {
@@ -868,14 +868,14 @@ void CGameObject::AddDestination(const AiCoord& p_arg0)
 		list->m_count = count + 1;
 		CAiDestinationEntry* entry = &list->m_entries[count];
 		entry->m_type = DESTINATION_COORD;
-		entry->m_coordinate.m_xFixed = p_arg0.m_xFixed;
-		entry->m_coordinate.m_yFixed = p_arg0.m_yFixed;
-		entry->m_coordinate.m_zFixed = p_arg0.m_zFixed;
+		entry->m_coordinate.m_xFixed = p_destination.m_xFixed;
+		entry->m_coordinate.m_yFixed = p_destination.m_yFixed;
+		entry->m_coordinate.m_zFixed = p_destination.m_zFixed;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00415f30
-void CGameObject::AlterDestination(const AiCoord& p_arg0)
+void CGameObject::AlterDestination(const AiCoord& p_destination)
 {
 	int i;
 	CAiDestinationList* list = m_destinationList;
@@ -907,9 +907,9 @@ void CGameObject::AlterDestination(const AiCoord& p_arg0)
 		destinationList->m_count++;
 		CAiDestinationEntry* entry = destinationList->m_entries;
 		entry->m_type = DESTINATION_COORD;
-		entry->m_coordinate.m_xFixed = p_arg0.m_xFixed;
-		entry->m_coordinate.m_yFixed = p_arg0.m_yFixed;
-		entry->m_coordinate.m_zFixed = p_arg0.m_zFixed;
+		entry->m_coordinate.m_xFixed = p_destination.m_xFixed;
+		entry->m_coordinate.m_yFixed = p_destination.m_yFixed;
+		entry->m_coordinate.m_zFixed = p_destination.m_zFixed;
 	}
 	StartMoving();
 }
@@ -964,8 +964,8 @@ bool CGameObject::Jump()
 		m_position.m_yFixed = m_groundPosition.m_yFixed;
 		m_position.m_zFixed = m_groundPosition.m_zFixed;
 		position->m_zFixed = groundZ;
-		m_unk0x104 = 0;
-		if (m_unk0x11c == 0 && mover != 0) {
+		m_isJumping = 0;
+		if (m_onMover == 0 && mover != 0) {
 			if (mover->GetOn(this)) {
 				return true;
 			}
@@ -1017,8 +1017,8 @@ bool CGameObject::Fall()
 			m_flightVelocity.m_xFixed = 0;
 			m_flightVelocity.m_yFixed = 0;
 			m_flightVelocity.m_zFixed = 0;
-			m_unk0x108 = 0;
-			if (m_unk0x11c == 0 && mover != 0 && mover->GetOn(this)) {
+			m_isFalling = 0;
+			if (m_onMover == 0 && mover != 0 && mover->GetOn(this)) {
 				ResetInstructions();
 			}
 		}
@@ -1046,17 +1046,17 @@ bool CGameObject::Fall()
 #include "Visos/Foundation/VsDebug.h"
 
 // FUNCTION: LEMBALL 0x00416340
-bool CGameObject::OnLift(Coord3d& p_arg0)
+bool CGameObject::OnLift(Coord3d& p_liftPosition)
 {
 	if (m_action == ACTION_8) {
 		return false;
 	}
 
 	int x = m_position.m_xFixed >> 12;
-	int left = (int) p_arg0.m_x - 8;
-	int top = (int) p_arg0.m_y - 8;
-	int right = (int) p_arg0.m_x + 7;
-	int bottom = (int) p_arg0.m_y + 7;
+	int left = (int) p_liftPosition.m_x - 8;
+	int top = (int) p_liftPosition.m_y - 8;
+	int right = (int) p_liftPosition.m_x + 7;
+	int bottom = (int) p_liftPosition.m_y + 7;
 	int y = m_position.m_yFixed >> 12;
 	if (left <= x && right >= x && y >= top && y <= bottom) {
 		CMap* map = g_pMap;
@@ -1076,22 +1076,22 @@ bool CGameObject::OnLift(Coord3d& p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x00416410
-void CGameObject::OffLift(Coord3d& p_arg0)
+void CGameObject::OffLift(Coord3d& p_liftPosition)
 {
-	OnLift(p_arg0);
+	OnLift(p_liftPosition);
 }
 
 // FUNCTION: LEMBALL 0x00416420
-bool CGameObject::OnLift(Coord3d& p_arg0, Coord3d& p_arg1)
+bool CGameObject::OnLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
 {
 	if (m_action == ACTION_8) {
 		return false;
 	}
 
-	int left = (int) p_arg0.m_x - 8;
-	int right = (int) p_arg1.m_x + 7;
-	int top = (int) p_arg0.m_y - 8;
-	int bottom = (int) p_arg1.m_y + 7;
+	int left = (int) p_liftMin.m_x - 8;
+	int right = (int) p_liftMax.m_x + 7;
+	int top = (int) p_liftMin.m_y - 8;
+	int bottom = (int) p_liftMax.m_y + 7;
 	int x = m_position.m_xFixed >> 12;
 	int y = m_position.m_yFixed >> 12;
 	if (x >= left && x <= right && y >= top && y <= bottom) {
@@ -1115,9 +1115,9 @@ bool CGameObject::OnLift(Coord3d& p_arg0, Coord3d& p_arg1)
 }
 
 // FUNCTION: LEMBALL 0x004164f0
-void CGameObject::OffLift(Coord3d& p_arg0, Coord3d& p_arg1)
+void CGameObject::OffLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
 {
-	OnLift(p_arg0, p_arg1);
+	OnLift(p_liftMin, p_liftMax);
 }
 
 // FUNCTION: LEMBALL 0x00416510
@@ -1159,9 +1159,9 @@ void CGameObject::ResetInstructions()
 }
 
 // FUNCTION: LEMBALL 0x004165e0
-void CGameObject::Init(CAi* p_arg0)
+void CGameObject::Init(CAi* p_ai)
 {
-	g_pAI = p_arg0;
+	g_pAI = p_ai;
 	g_nGameOver = 0;
 	memset(g_abObjectIdBitmap, 0, sizeof(g_abObjectIdBitmap));
 	g_abObjectIdBitmap[0] |= g_abBitMasks[0];
@@ -1174,9 +1174,9 @@ short CGameObject::GetId()
 }
 
 // FUNCTION: LEMBALL 0x00416620
-void CGameObject::SetId(unsigned short p_arg0)
+void CGameObject::SetId(unsigned short p_id)
 {
-	m_linkedObjectId = p_arg0;
+	m_linkedObjectId = p_id;
 	RegisterId();
 }
 

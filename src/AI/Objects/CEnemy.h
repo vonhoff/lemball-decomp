@@ -32,7 +32,7 @@ class CEnemy : public CGameObject {
 public:
 	friend class CEnemyGroupManager;
 
-	CEnemy(CAi* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4);
+	CEnemy(CAi* p_ai, int p_x, int p_y, int p_z, int p_facingDirection);
 	bool CheckRadius(int p_radius);
 	bool EnemyRuleRadius50();
 	bool EnemyRuleRadius50AndLineOfSight();

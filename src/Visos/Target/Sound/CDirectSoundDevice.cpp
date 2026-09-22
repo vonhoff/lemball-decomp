@@ -40,8 +40,8 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_open = 0;
 	m_platform.m_musicAvailable = 0;
 	m_platform.m_available = 0;
-	m_platform.m_unk0x24 = 0;
-	m_platform.m_unk0x28 = 0;
+	m_platform.m_stereo = 0;
+	m_platform.m_use16Bit = 0;
 	m_platform.m_unk0x2c = 0;
 	m_platform.m_sampleRate = 0;
 	m_platform.m_unk0x38 = 0xffffffff;
@@ -55,7 +55,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_bitsPerSample = 16;
 	m_platform.m_blockAlign = 2;
 	m_platform.m_formatTag = 1;
-	m_platform.m_unk0x28 = 1;
+	m_platform.m_use16Bit = 1;
 	m_platform.m_channels = 1;
 	m_platform.m_averageBytesPerSecond = 1;
 	m_platform.m_averageBytesPerSecond *= m_platform.m_samplesPerSecond * m_platform.m_blockAlign;
@@ -289,8 +289,8 @@ bool CDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_h
 			m_platform.m_effects[index] = new CDirectSoundEffect(m_platform.m_buffersPerEffect,
 																 p_data,
 																 m_platform.m_sampleRate,
-																 m_platform.m_unk0x28,
-																 m_platform.m_unk0x24,
+																 m_platform.m_use16Bit,
+																 m_platform.m_stereo,
 																 p_effectHandle);
 			if (m_platform.m_effects[index]->IsPrepared()) {
 				*p_handle = index;

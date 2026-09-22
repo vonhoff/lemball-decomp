@@ -20,23 +20,23 @@ public:
 	virtual ~CWriteSocket();                                              // vtable+0x14
 	virtual void SendAcknowledgement();                                   // vtable+0x18
 	virtual CNetworkMessage* ReceiveAcknowledgement();                    // vtable+0x1c
-	virtual void SetDestAddr(CNetworkAddress* p_arg0) = 0;                // vtable+0x20
+	virtual void SetDestAddr(CNetworkAddress* p_address) = 0;             // vtable+0x20
 	virtual bool SendPacket(const unsigned char* p_data, int p_size) = 0; // vtable+0x24
 	// FUNCTION: LEMBALL 0x00462970
-	virtual void SetPort(short p_arg0) // vtable+0x28
+	virtual void SetPort(short p_port) // vtable+0x28
 	{
-		m_port = p_arg0;
+		m_port = p_port;
 	}
-	bool Send(CNetworkMessage& p_arg0);
-	bool SendCritical(CNetworkMessage& p_arg0);
-	bool SendNcms(CNetworkMessage& p_arg0);
+	bool Send(CNetworkMessage& p_message);
+	bool SendCritical(CNetworkMessage& p_message);
+	bool SendNcms(CNetworkMessage& p_message);
 	bool ResendCritical(CWritePacket* p_packet);
 	void Closed(int p_notifyPeer);
 	void DeleteCBuffers();
 	void DeleteNcBuffers();
 	void Process();
-	void SetCBuffers(int p_arg0, int p_arg1);
-	void SetNcBuffers(unsigned long p_arg0, unsigned long p_arg1, int p_arg2);
+	void SetCBuffers(int p_packetCount, int p_subpacketCount);
+	void SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount);
 
 	friend class CBaseObjectManager;
 	friend class CBaseNetwork;

@@ -71,7 +71,7 @@ void CBroadcast::Closed(int p_notifyPeer)
 }
 
 // FUNCTION: LEMBALL 0x004605d0
-short CBroadcast::FindPort(const unsigned char* p_arg0)
+short CBroadcast::FindPort(const unsigned char* p_peerPortUsage)
 {
 	short result;
 	int index;
@@ -79,7 +79,7 @@ short CBroadcast::FindPort(const unsigned char* p_arg0)
 	result = -1;
 	index = 0;
 	while (index < 0x200) {
-		if (p_arg0[index] == 0 && m_connectionData[index] == 0) {
+		if (p_peerPortUsage[index] == 0 && m_connectionData[index] == 0) {
 			result = (short) index;
 			m_connectionData[result] = 1;
 			break;
@@ -90,7 +90,7 @@ short CBroadcast::FindPort(const unsigned char* p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x00460610
-void CBroadcast::SetSpecificAddr(const char* p_arg0)
+void CBroadcast::SetSpecificAddr(const char* p_address)
 {
 	if (m_specificAddress != 0) {
 		CNetworkAddress* address;
@@ -100,11 +100,11 @@ void CBroadcast::SetSpecificAddr(const char* p_arg0)
 		operator delete(address);
 	}
 	m_addressMode = 2;
-	GetSpecificAddr(p_arg0);
+	GetSpecificAddr(p_address);
 }
 
 // FUNCTION: LEMBALL 0x00460650
-void CBroadcast::Initialise(const char* p_arg0)
+void CBroadcast::Initialise(const char* p_networkName)
 {
 	CRwSocket::SetNcBuffers(3, 3, 0);
 	CRwSocket::SetCBuffers(1, 0);
@@ -118,7 +118,7 @@ void CBroadcast::Initialise(const char* p_arg0)
 		memcpy(payload + strlen(payload), ".", 2);
 		VsLtoa((long) g_unk0x4a1e0c, payload + strlen(payload), 10);
 		memcpy(payload + strlen(payload), " ", 2);
-		strcat(payload, p_arg0);
+		strcat(payload, p_networkName);
 		memcpy(payload + strlen(payload), ") is Broadcasting:", 19);
 		g_broadcastPayloadLength = strlen(payload);
 	}
@@ -135,7 +135,7 @@ void CBroadcast::Stop()
 }
 
 // FUNCTION: LEMBALL 0x00460830
-void CBroadcast::PostRead(NetworkEvents p_arg0, CBasePacket* p_arg1)
+void CBroadcast::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 {
 	BasePacketHeader* packetHeader;
 	unsigned char* payload;
@@ -147,21 +147,21 @@ void CBroadcast::PostRead(NetworkEvents p_arg0, CBasePacket* p_arg1)
 		unsigned int length;
 
 		length = g_broadcastPayloadLength;
-		packetHeader = (BasePacketHeader*) p_arg1->m_data;
+		packetHeader = (BasePacketHeader*) p_packet->m_data;
 		payload = (unsigned char*) (packetHeader + 1);
 		if (strncmp((char*) (packetHeader + 1), (char*) (g_pBroadcastPacketTemplate + 1), length + 1) == 0) {
 			g_pBaseNetwork->Establish(g_pBroadcastReceiveAddress, payload + length + 1);
 		}
 	}
-	if (p_arg0 == 7) {
-		((CReadPacket*) p_arg1)->m_used = 0;
+	if (p_event == 7) {
+		((CReadPacket*) p_packet)->m_used = 0;
 	}
 }
 
 // FUNCTION: LEMBALL 0x004608f0
-void CBroadcast::AddToMessage(CBroadcastMessage& p_arg0)
+void CBroadcast::AddToMessage(CBroadcastMessage& p_message)
 {
-	p_arg0.CopyDataStream((unsigned char*) g_pBroadcastPacketTemplate, g_broadcastPayloadLength + 0x11);
+	p_message.CopyDataStream((unsigned char*) g_pBroadcastPacketTemplate, g_broadcastPayloadLength + 0x11);
 }
 
 // FUNCTION: LEMBALL 0x00460910
@@ -204,12 +204,12 @@ void CBroadcast::Process()
 }
 
 // FUNCTION: LEMBALL 0x004609f0
-void CBroadcast::SendFailedInit(NetworkErrors p_arg0)
+void CBroadcast::SendFailedInit(NetworkErrors p_error)
 {
 	Message message;
 
 	message.type = 2;
-	message.code = p_arg0;
+	message.code = p_error;
 	g_pNetworkStatusQueue->Post(message);
 }
 
@@ -228,15 +228,15 @@ void CBroadcast::Suspend()
 }
 
 // FUNCTION: LEMBALL 0x00460a50
-void CBroadcast::Send(CNetworkAddress* p_arg0, CBroadcastMessage& p_arg1)
+void CBroadcast::Send(CNetworkAddress* p_address, CBroadcastMessage& p_message)
 {
-	AddToMessage(p_arg1);
-	SetDestAddr(p_arg0);
-	CWriteSocket::Send(p_arg1);
+	AddToMessage(p_message);
+	SetDestAddr(p_address);
+	CWriteSocket::Send(p_message);
 }
 
 // FUNCTION: LEMBALL 0x004629c0
-void CBroadcast::ResetPort(short p_arg0)
+void CBroadcast::ResetPort(short p_port)
 {
-	m_connectionData[p_arg0] = 0;
+	m_connectionData[p_port] = 0;
 }

@@ -15,21 +15,21 @@ class CNetworkAddress;
 class CBroadcast : public virtual CRwSocket {
 public:
 	CBroadcast();
-	virtual short FindPort(const unsigned char* p_arg0);  // vtable+0x00
-	virtual void ResetPort(short p_arg0);                 // vtable+0x04
-	virtual void GetSpecificAddr(const char* p_arg0) = 0; // vtable+0x08
-	virtual bool Start(const char* p_arg0) = 0;           // vtable+0x0c
+	virtual short FindPort(const unsigned char* p_peerPortUsage); // vtable+0x00
+	virtual void ResetPort(short p_port);                         // vtable+0x04
+	virtual void GetSpecificAddr(const char* p_address) = 0;      // vtable+0x08
+	virtual bool Start(const char* p_networkName) = 0;            // vtable+0x0c
 	virtual void Process();                               // vtable+0x10
 	virtual void StartListen() = 0;                       // vtable+0x14
 	virtual void StopListen() = 0;                        // vtable+0x18
-	void AddToMessage(CBroadcastMessage& p_arg0);
+	void AddToMessage(CBroadcastMessage& p_message);
 	void Closed(int p_notifyPeer);
-	void Initialise(const char* p_arg0);
-	void PostRead(NetworkEvents p_arg0, CBasePacket* p_arg1);
+	void Initialise(const char* p_networkName);
+	void PostRead(NetworkEvents p_event, CBasePacket* p_packet);
 	void Run();
-	void Send(CNetworkAddress* p_arg0, CBroadcastMessage& p_arg1);
-	void SendFailedInit(NetworkErrors p_arg0);
-	void SetSpecificAddr(const char* p_arg0);
+	void Send(CNetworkAddress* p_address, CBroadcastMessage& p_message);
+	void SendFailedInit(NetworkErrors p_error);
+	void SetSpecificAddr(const char* p_address);
 	void Stop();
 	void Suspend();
 	~CBroadcast();
