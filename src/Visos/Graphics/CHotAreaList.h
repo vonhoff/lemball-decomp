@@ -14,8 +14,8 @@ struct CHotAreaElement;
 // VTABLE: LEMBALL 0x00499d08 CBaseQueueHandler
 class CHotAreaList : public CHotAreaHandler, public CBaseQueueHandler {
 public:
-	CHotAreaList(const CVsRect& p_arg0, const CVsPoint& p_arg1, const CVsPoint& p_arg2);
-	void Set(const CVsRect& p_rect, CVsPoint p_point0, const CVsPoint& p_point1);
+	CHotAreaList(const CVsRect& p_rect, const CVsPoint& p_relativeTopLeft, const CVsPoint& p_innerOrigin);
+	void Set(const CVsRect& p_rect, CVsPoint p_relativeTopLeft, const CVsPoint& p_innerOrigin);
 	void RemoveFromList(CHotAreaHandler* p_handler);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual void OnExit();                      // vtable+0x14
@@ -31,8 +31,8 @@ private:
 	CHotAreaElement* m_head;           // 0x48
 	CHotAreaElement* m_tail;           // 0x4c
 	unsigned int m_scale;              // 0x50
-	CVsPoint m_point0;                 // 0x54
-	CVsPoint m_point1;                 // 0x58
+	CVsPoint m_relativeTopLeft;        // 0x54
+	CVsPoint m_innerOrigin;            // 0x58
 	CHotAreaHandler* m_currentHandler; // 0x5c
 };
 

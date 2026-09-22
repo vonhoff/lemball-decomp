@@ -16,7 +16,7 @@ CVsPoint* g_pHotAreaCursor = 0;
 int g_nHotAreaListCount = 0;
 
 // FUNCTION: LEMBALL 0x00466370
-void CHotAreaList::Set(const CVsRect& p_rect, CVsPoint p_point0, const CVsPoint& p_point1)
+void CHotAreaList::Set(const CVsRect& p_rect, CVsPoint p_relativeTopLeft, const CVsPoint& p_innerOrigin)
 {
 	const short* coords;
 
@@ -30,15 +30,15 @@ void CHotAreaList::Set(const CVsRect& p_rect, CVsPoint p_point0, const CVsPoint&
 	}
 	m_bounds.m_x = coords[0];
 	m_bounds.m_y = coords[1];
-	m_point0.m_x = p_point0.m_x;
-	m_point0.m_y = p_point0.m_y;
-	m_point1.m_x = p_point1.m_x;
-	m_point1.m_y = p_point1.m_y;
+	m_relativeTopLeft.m_x = p_relativeTopLeft.m_x;
+	m_relativeTopLeft.m_y = p_relativeTopLeft.m_y;
+	m_innerOrigin.m_x = p_innerOrigin.m_x;
+	m_innerOrigin.m_y = p_innerOrigin.m_y;
 }
 
 // FUNCTION: LEMBALL 0x0046a580
-CHotAreaList::CHotAreaList(const CVsRect& p_arg0, const CVsPoint& p_arg1, const CVsPoint& p_arg2)
-	: CHotAreaHandler(p_arg0)
+CHotAreaList::CHotAreaList(const CVsRect& p_rect, const CVsPoint& p_relativeTopLeft, const CVsPoint& p_innerOrigin)
+	: CHotAreaHandler(p_rect)
 {
 	int previous;
 
@@ -47,10 +47,10 @@ CHotAreaList::CHotAreaList(const CVsRect& p_arg0, const CVsPoint& p_arg1, const 
 	if (previous == 0) {
 		g_pHotAreaCursor = new CVsPoint;
 	}
-	m_point0.m_x = p_arg1.m_x;
-	m_point0.m_y = p_arg1.m_y;
-	m_point1.m_x = p_arg2.m_x;
-	m_point1.m_y = p_arg2.m_y;
+	m_relativeTopLeft.m_x = p_relativeTopLeft.m_x;
+	m_relativeTopLeft.m_y = p_relativeTopLeft.m_y;
+	m_innerOrigin.m_x = p_innerOrigin.m_x;
+	m_innerOrigin.m_y = p_innerOrigin.m_y;
 	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), -0x19);
 	m_tail = 0;
 	m_head = 0;
@@ -170,8 +170,8 @@ void CHotAreaList::ProcessHandlers(const CVsPoint& p_point, Message* p_message)
 		}
 	}
 	CVsRect scaledBounds(m_bounds);
-	scaledBounds.m_x = (short) (m_point0.m_x * ((short) m_scale - 1) + scaledBounds.m_x);
-	scaledBounds.m_y = (short) (m_point0.m_y * ((short) m_scale - 1) + scaledBounds.m_y);
+	scaledBounds.m_x = (short) (m_relativeTopLeft.m_x * ((short) m_scale - 1) + scaledBounds.m_x);
+	scaledBounds.m_y = (short) (m_relativeTopLeft.m_y * ((short) m_scale - 1) + scaledBounds.m_y);
 	scaledBounds.m_width = (short) (scaledBounds.m_width * (short) m_scale);
 	scaledBounds.m_height = (short) (scaledBounds.m_height * (short) m_scale);
 	if (p_point.m_x < scaledBounds.m_x || (short) (scaledBounds.m_x + scaledBounds.m_width) <= p_point.m_x ||
