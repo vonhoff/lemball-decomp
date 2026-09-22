@@ -308,14 +308,14 @@ int GenericGroupManager::GetAllBoundingBoxes(Rect* p_rects)
 	GenericGroup* group = GetFirstGroup();
 	if (group != 0) {
 		do {
-			count++;
 			group->GetBoundingBox(bounds);
 			p_rects->m_left = bounds.m_x;
 			p_rects->m_top = bounds.m_y;
 			p_rects->m_right = bounds.m_x + bounds.m_width;
 			p_rects->m_bottom = bounds.m_y + bounds.m_height;
-			group = GetNextGroup();
 			p_rects++;
+			count++;
+			group = GetNextGroup();
 		} while (group != 0);
 	}
 	return count;
