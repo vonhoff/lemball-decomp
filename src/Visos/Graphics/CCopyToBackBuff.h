@@ -17,7 +17,7 @@ public:
 
 	friend class CSurface;
 
-private:
+public:
 	short m_sourceX;       // 0x04
 	short m_sourceY;       // 0x06
 	CVsRect m_destination; // 0x08

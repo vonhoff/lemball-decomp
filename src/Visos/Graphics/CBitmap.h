@@ -19,7 +19,7 @@ public:
 	friend class CCDLoadAnim;
 	friend class C2D;
 
-private:
+public:
 	short m_x;       // 0x04
 	short m_y;       // 0x06
 	short m_width;   // 0x08
