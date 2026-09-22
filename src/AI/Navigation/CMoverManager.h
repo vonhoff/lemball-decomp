@@ -10,7 +10,7 @@ class CMover;
 class CMoverManager : public CBaseObjectManager {
 public:
 	CMover* Find(int p_x, int p_y, int& p_height);
-	CMoverManager(CAi* p_arg0, int p_arg1);
+	CMoverManager(CAi* p_ai, int p_capacity);
 	virtual int GetViewData(CViewData* p_viewData); // vtable+0x24
 	virtual void Process();                         // vtable+0x1c
 	virtual void Restart();                         // vtable+0x18

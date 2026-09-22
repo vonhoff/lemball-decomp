@@ -9,7 +9,7 @@ class CBaseQueue;
 // VTABLE: LEMBALL 0x00493c08
 class CAiCursor : public CBaseQueueHandler {
 public:
-	CAiCursor(CAi* p_arg0, int p_arg1, int p_arg2);
+	CAiCursor(CAi* p_ai, int p_maximumX, int p_maximumY);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~CAiCursor();                       // vtable+0x04
 	void CheckAndClipCursorBounds();

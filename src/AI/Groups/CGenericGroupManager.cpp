@@ -14,11 +14,13 @@
 #pragma intrinsic(memset)
 
 // FUNCTION: LEMBALL 0x0041e8f0
-CGenericGroupManager::CGenericGroupManager(CAi* p_arg0, CObjectManager* p_arg1, CFormationManager* p_arg2)
+CGenericGroupManager::CGenericGroupManager(CAi* p_ai,
+										   CObjectManager* p_objectManager,
+										   CFormationManager* p_formationManager)
 {
-	g_pGenericGroupAI = p_arg0;
-	g_pGenericGroupObjectManager = p_arg1;
-	g_pGenericGroupFormationManager = p_arg2;
+	g_pGenericGroupAI = p_ai;
+	g_pGenericGroupObjectManager = p_objectManager;
+	g_pGenericGroupFormationManager = p_formationManager;
 	m_groupCount = 0;
 	m_currentGroup = 0;
 	m_state = 1;

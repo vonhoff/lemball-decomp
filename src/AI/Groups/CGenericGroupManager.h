@@ -14,7 +14,7 @@ struct Rect;
 // VTABLE: LEMBALL 0x00494d08
 class CGenericGroupManager {
 public:
-	CGenericGroupManager(CAi* p_arg0, CObjectManager* p_arg1, CFormationManager* p_arg2);
+	CGenericGroupManager(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	int Process();
 	virtual int GetNumberOfGroups();                                                    // vtable+0x00
 	virtual CGenericGroup* GetFirstGroup();                                             // vtable+0x04

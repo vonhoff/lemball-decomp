@@ -4,10 +4,10 @@
 #include "CNode.h"
 
 // FUNCTION: LEMBALL 0x00421180
-CNodeManager::CNodeManager(int p_arg0)
+CNodeManager::CNodeManager(int p_capacity)
 {
 	m_nodes = 0;
-	m_capacity = p_arg0;
+	m_capacity = p_capacity;
 }
 
 // FUNCTION: LEMBALL 0x004211a0

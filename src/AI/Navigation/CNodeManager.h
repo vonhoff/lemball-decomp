@@ -7,7 +7,7 @@ class CNode;
 // SIZE 0x0c
 class CNodeManager {
 public:
-	CNodeManager(int p_arg0);
+	CNodeManager(int p_capacity);
 	CPt3 GetNodePosition(int p_node);
 	void Initialise(int p_count);
 	void LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsigned int p_skip);

@@ -5,12 +5,12 @@
 #include "Visos/Foundation/Message.h"
 
 // FUNCTION: LEMBALL 0x00414da0
-CAiCursor::CAiCursor(CAi* p_arg0, int p_arg1, int p_arg2)
+CAiCursor::CAiCursor(CAi* p_ai, int p_maximumX, int p_maximumY)
 {
-	m_ai = p_arg0;
-	m_maximumX = p_arg1;
-	m_maximumY = p_arg2;
-	m_queue = p_arg0->m_aiQueue;
+	m_ai = p_ai;
+	m_maximumX = p_maximumX;
+	m_maximumY = p_maximumY;
+	m_queue = p_ai->m_aiQueue;
 	m_queue->Attach(this, 0);
 }
 

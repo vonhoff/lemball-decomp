@@ -22,8 +22,10 @@ unsigned long EnemyGetLong(unsigned long* p_data)
 }
 
 // FUNCTION: LEMBALL 0x00420b80
-CEnemyGroupManager::CEnemyGroupManager(CAi* p_arg0, CObjectManager* p_arg1, CFormationManager* p_arg2)
-	: CGenericGroupManager(p_arg0, p_arg1, p_arg2)
+CEnemyGroupManager::CEnemyGroupManager(CAi* p_ai,
+									   CObjectManager* p_objectManager,
+									   CFormationManager* p_formationManager)
+	: CGenericGroupManager(p_ai, p_objectManager, p_formationManager)
 {
 }
 

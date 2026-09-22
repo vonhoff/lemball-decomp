@@ -11,8 +11,10 @@
 #include "CSheepGroup.h"
 
 // FUNCTION: LEMBALL 0x0041f0b0
-CSheepGroupManager::CSheepGroupManager(CAi* p_arg0, CObjectManager* p_arg1, CFormationManager* p_arg2)
-	: CGenericGroupManager(p_arg0, p_arg1, p_arg2)
+CSheepGroupManager::CSheepGroupManager(CAi* p_ai,
+									   CObjectManager* p_objectManager,
+									   CFormationManager* p_formationManager)
+	: CGenericGroupManager(p_ai, p_objectManager, p_formationManager)
 {
 }
 
