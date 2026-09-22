@@ -1846,10 +1846,10 @@ int C2D::DrawClippedRectangle(const VsRect& p_rect)
 	rowStepY = g_clipRowStepYByOrientation[orientationOffset];
 	m_unk0x1464 = 0;
 
-	x = p_rect.m_x;
-	y = p_rect.m_y;
 	width = p_rect.m_width;
 	height = p_rect.m_height;
+	x = p_rect.m_x;
+	y = p_rect.m_y;
 	if (x + width > m_clipSize.m_x) {
 		width = m_clipSize.m_x - x;
 	}
