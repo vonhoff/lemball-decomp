@@ -34,18 +34,18 @@ struct Rname {
 // VTABLE: LEMBALL 0x00493038
 class CVsOStream : public virtual CVsIOs {
 public:
-	CVsOStream& operator<<(CHAR4 p_arg0);
-	CVsOStream& operator<<(Hex p_arg0);
-	CVsOStream& operator<<(Hex8 p_arg0);
-	CVsOStream& operator<<(char p_arg0);
+	CVsOStream& operator<<(CHAR4 p_value);
+	CVsOStream& operator<<(Hex p_value);
+	CVsOStream& operator<<(Hex8 p_value);
+	CVsOStream& operator<<(char p_character);
 	CVsOStream& operator<<(unsigned char p_value);
-	CVsOStream& operator<<(const char* p_arg0);
-	CVsOStream& operator<<(const void* p_arg0);
-	CVsOStream& operator<<(int p_arg0);
-	CVsOStream& operator<<(long p_arg0);
-	CVsOStream& operator<<(unsigned long p_arg0);
-	CVsOStream& operator<<(unsigned int p_arg0);
-	CVsOStream(CVsStreambuf* p_arg0);
+	CVsOStream& operator<<(const char* p_text);
+	CVsOStream& operator<<(const void* p_pointer);
+	CVsOStream& operator<<(int p_value);
+	CVsOStream& operator<<(long p_value);
+	CVsOStream& operator<<(unsigned long p_value);
+	CVsOStream& operator<<(unsigned int p_value);
+	CVsOStream(CVsStreambuf* p_streamBuffer);
 	void InternalFormatNum();
 	~CVsOStream();
 
@@ -54,8 +54,8 @@ public:
 	char* m_formattedText;               // 0x128
 };
 
-CVsOStream& operator<<(CVsOStream& p_arg0, Rname p_arg1);
-CVsOStream& operator<<(CVsOStream& p_arg0, CString& p_arg1);
+CVsOStream& operator<<(CVsOStream& p_stream, Rname p_resourceName);
+CVsOStream& operator<<(CVsOStream& p_stream, CString& p_string);
 
 extern CVsOStream* g_pErrorOutput;
 extern CVsOStream* g_pSysOutput;

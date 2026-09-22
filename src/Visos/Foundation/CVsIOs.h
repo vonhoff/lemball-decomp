@@ -7,7 +7,7 @@ class CVsStreambuf;
 // VTABLE: LEMBALL 0x00493034
 class CVsIOs {
 public:
-	CVsIOs(CVsStreambuf* p_arg0);
+	CVsIOs(CVsStreambuf* p_streamBuffer);
 	virtual ~CVsIOs(); // vtable+0x00
 	CVsIOs();
 

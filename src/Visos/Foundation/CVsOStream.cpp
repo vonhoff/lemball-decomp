@@ -10,7 +10,7 @@
 #pragma intrinsic(memset, memcpy, strlen)
 
 // FUNCTION: LEMBALL 0x00458450
-CVsOStream::CVsOStream(CVsStreambuf* p_arg0) : CVsIOs(p_arg0)
+CVsOStream::CVsOStream(CVsStreambuf* p_streamBuffer) : CVsIOs(p_streamBuffer)
 {
 }
 
@@ -71,42 +71,42 @@ void CVsOStream::InternalFormatNum()
 }
 
 // FUNCTION: LEMBALL 0x004585b0
-CVsOStream& CVsOStream::operator<<(const char* p_arg0)
+CVsOStream& CVsOStream::operator<<(const char* p_text)
 {
-	((CVsDebugStreambuf*) m_streamBuffer)->Sputs((char*) p_arg0);
+	((CVsDebugStreambuf*) m_streamBuffer)->Sputs((char*) p_text);
 	return *this;
 }
 
 // FUNCTION: LEMBALL 0x004585d0
-CVsOStream& CVsOStream::operator<<(char p_arg0)
+CVsOStream& CVsOStream::operator<<(char p_character)
 {
-	((CVsDebugStreambuf*) m_streamBuffer)->Sputc(p_arg0);
+	((CVsDebugStreambuf*) m_streamBuffer)->Sputc(p_character);
 	return *this;
 }
 
 // FUNCTION: LEMBALL 0x004585f0
-CVsOStream& CVsOStream::operator<<(long p_arg0)
+CVsOStream& CVsOStream::operator<<(long p_value)
 {
-	VsLtoa(p_arg0, (char*) m_numberBuffer, m_radix);
+	VsLtoa(p_value, (char*) m_numberBuffer, m_radix);
 	InternalFormatNum();
 	return *this << m_formattedText;
 }
 
 // FUNCTION: LEMBALL 0x00458630
-CVsOStream& CVsOStream::operator<<(int p_arg0)
+CVsOStream& CVsOStream::operator<<(int p_value)
 {
-	VsLtoa(p_arg0, (char*) m_numberBuffer, m_radix);
+	VsLtoa(p_value, (char*) m_numberBuffer, m_radix);
 	InternalFormatNum();
 	return *this << m_formattedText;
 }
 
 // FUNCTION: LEMBALL 0x00458670
-CVsOStream& CVsOStream::operator<<(const void* p_arg0)
+CVsOStream& CVsOStream::operator<<(const void* p_pointer)
 {
-	if (p_arg0 == NULL) {
+	if (p_pointer == NULL) {
 		return *this << "(null)";
 	}
-	VsULtoa((unsigned long) p_arg0, (char*) m_numberBuffer, 16);
+	VsULtoa((unsigned long) p_pointer, (char*) m_numberBuffer, 16);
 	InternalFormatNum();
 	return *this << "0x" << m_formattedText;
 }
@@ -118,29 +118,29 @@ CVsOStream& CVsOStream::operator<<(unsigned char p_value)
 }
 
 // FUNCTION: LEMBALL 0x004586e0
-CVsOStream& CVsOStream::operator<<(unsigned long p_arg0)
+CVsOStream& CVsOStream::operator<<(unsigned long p_value)
 {
-	VsULtoa(p_arg0, (char*) m_numberBuffer, m_radix);
+	VsULtoa(p_value, (char*) m_numberBuffer, m_radix);
 	InternalFormatNum();
 	return *this << m_formattedText;
 }
 
 // FUNCTION: LEMBALL 0x00458720
-CVsOStream& CVsOStream::operator<<(unsigned int p_arg0)
+CVsOStream& CVsOStream::operator<<(unsigned int p_value)
 {
-	VsULtoa(p_arg0, (char*) m_numberBuffer, m_radix);
+	VsULtoa(p_value, (char*) m_numberBuffer, m_radix);
 	InternalFormatNum();
 	return *this << m_formattedText;
 }
 
 // FUNCTION: LEMBALL 0x00458780
-CVsOStream& CVsOStream::operator<<(Hex p_arg0)
+CVsOStream& CVsOStream::operator<<(Hex p_value)
 {
 	unsigned int oldFlags = m_flags;
 	m_flags = (oldFlags & ~0x8030) | 0x40;
 	unsigned int oldRadix = m_radix;
 	m_radix = 16;
-	*this << (unsigned long) p_arg0.m_value;
+	*this << (unsigned long) p_value.m_value;
 
 	m_radix = oldRadix;
 	m_flags = oldFlags;
@@ -148,7 +148,7 @@ CVsOStream& CVsOStream::operator<<(Hex p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x004589c0
-CVsOStream& CVsOStream::operator<<(Hex8 p_arg0)
+CVsOStream& CVsOStream::operator<<(Hex8 p_value)
 {
 	char oldFill = m_fill;
 	m_fill = '0';
@@ -158,7 +158,7 @@ CVsOStream& CVsOStream::operator<<(Hex8 p_arg0)
 	m_flags = (oldFlags & ~0x8030) | 0x40;
 	unsigned int oldRadix = m_radix;
 	m_radix = 16;
-	*this << (unsigned long) p_arg0.m_value;
+	*this << (unsigned long) p_value.m_value;
 
 	m_width = oldWidth;
 	m_radix = oldRadix;
@@ -168,9 +168,9 @@ CVsOStream& CVsOStream::operator<<(Hex8 p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x00458d40
-CVsOStream& CVsOStream::operator<<(CHAR4 p_arg0)
+CVsOStream& CVsOStream::operator<<(CHAR4 p_value)
 {
-	unsigned long value = p_arg0.m_value;
+	unsigned long value = p_value.m_value;
 	for (int i = 3; i >= 0; --i) {
 		m_streamBuffer->Sputc((char) (value >> (char) (i * 8)));
 	}
@@ -178,10 +178,10 @@ CVsOStream& CVsOStream::operator<<(CHAR4 p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x0045bad0
-CVsOStream& operator<<(CVsOStream& p_arg0, Rname p_arg1)
+CVsOStream& operator<<(CVsOStream& p_stream, Rname p_resourceName)
 {
-	p_arg0 << (int) p_arg1.m_value;
-	return p_arg0;
+	p_stream << (int) p_resourceName.m_value;
+	return p_stream;
 }
 
 // GLOBAL: LEMBALL 0x004a93a8

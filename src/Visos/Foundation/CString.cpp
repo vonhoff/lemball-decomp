@@ -102,10 +102,10 @@ CString CString::operator+=(const char* p_text)
 }
 
 // FUNCTION: LEMBALL 0x0046e7f0
-CVsOStream& operator<<(CVsOStream& p_arg0, CString& p_arg1)
+CVsOStream& operator<<(CVsOStream& p_stream, CString& p_string)
 {
-	p_arg0 << p_arg1.m_text;
-	return p_arg0;
+	p_stream << p_string.m_text;
+	return p_stream;
 }
 
 // FUNCTION: LEMBALL 0x0046e810
