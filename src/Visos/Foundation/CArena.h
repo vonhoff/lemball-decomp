@@ -61,13 +61,13 @@ protected:
 	unsigned char* m_arenaBase; // 0x24
 	unsigned int m_arenaSize;   // 0x28
 	unsigned int m_freeSize;    // 0x2c
-	CArena* m_parentArena;      // 0x30
-	CMBlock* m_lastBlock;       // 0x34
-	CMBlock* m_firstBlock;      // 0x38
+	void* m_usageStat;          // 0x30
+	CMBlock* m_firstBlock;      // 0x34
+	CMBlock* m_lastBlock;       // 0x38
 	CMBlock* m_lastFreeBlock;   // 0x3c
 	CMBlock* m_firstFreeBlock;  // 0x40
 	CArena* m_arenaLinkB;       // 0x44
-	CArena* m_arenaLinkA;       // 0x48
+	CArena* m_parentArena;      // 0x48
 	CArena* m_nextArena;        // 0x4c
 };
 

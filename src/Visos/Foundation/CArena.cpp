@@ -13,22 +13,22 @@
 // FUNCTION: LEMBALL 0x004599f0
 CArena::CArena(unsigned long p_arg0, char* p_arg1, class CArena* p_arg2, class CArena* p_arg3) : CCritical()
 {
-	m_arenaLinkA = p_arg2;
+	m_parentArena = p_arg2;
 	m_arenaLinkB = p_arg3;
-	m_lastBlock = 0;
 	m_firstBlock = 0;
+	m_lastBlock = 0;
 	m_lastFreeBlock = 0;
 	m_firstFreeBlock = 0;
 	m_nextArena = 0;
-	m_parentArena = 0;
+	m_usageStat = 0;
 }
 
 // FUNCTION: LEMBALL 0x00459a40
 void CArena::DeleteLists()
 {
 	EnterCritical();
-	CMBlock* block = m_lastBlock;
-	m_lastBlock = 0;
+	CMBlock* block = m_firstBlock;
+	m_firstBlock = 0;
 	for (;;) {
 		if (block == 0) {
 			break;
@@ -88,7 +88,7 @@ bool CArena::AddToBlockList(CMBlock* p_block, CMBlock* p_previous)
 {
 	CMBlock* next;
 	if (p_previous == 0) {
-		m_lastBlock = p_block;
+		m_firstBlock = p_block;
 		next = 0;
 	}
 	else {
@@ -98,7 +98,7 @@ bool CArena::AddToBlockList(CMBlock* p_block, CMBlock* p_previous)
 	p_block->m_previousBlock = p_previous;
 	p_block->m_nextBlock = next;
 	if (next == 0) {
-		m_firstBlock = p_block;
+		m_lastBlock = p_block;
 	}
 	else {
 		next->m_previousBlock = p_block;
@@ -154,13 +154,13 @@ bool CArena::RemoveFromBlockList(CMBlock* p_block)
 		next->m_previousBlock = prev;
 	}
 	else {
-		m_firstBlock = prev;
+		m_lastBlock = prev;
 	}
 	if (prev != 0) {
 		prev->m_nextBlock = next;
 	}
 	else {
-		m_lastBlock = next;
+		m_firstBlock = next;
 	}
 	return 1;
 }
@@ -244,8 +244,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		block->SetDesc(p_description);
 		block->m_flags &= ~1;
 		RemoveFromFreeList(block);
-		leftover =
-			CreateNewBlock(block->m_data + aligned, (CArena*) block->m_description, 0, "Free", oldSize - aligned);
+		leftover = CreateNewBlock(block->m_data + aligned, block->m_ownerArena, 0, "Free", oldSize - aligned);
 		leftover->m_flags |= 1;
 		AddToFreeList(leftover);
 		AddToBlockList(leftover, block);
@@ -261,12 +260,12 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		unsigned char* blockData = block->m_data;
 		*p_data = blockData;
 	}
-	if (m_parentArena != 0) {
+	if (m_usageStat != 0) {
 		data = *p_data + aligned;
 		if (g_pArenaHighWater < data) {
 			g_pArenaHighWater = data;
 		}
-		((CBaseStat*) m_parentArena)->Update(data - m_arenaBase);
+		((CBaseStat*) m_usageStat)->Update(data - m_arenaBase);
 	}
 	LeaveCritical();
 	return 1;
@@ -365,7 +364,7 @@ CVsOStream& CArena::StreamOut(CVsOStream& p_stream)
 	p_stream << "--------------------\n";
 	p_stream << "Addr\t\tSize\t\tDesc\n";
 	p_stream << "------------------------------------------------\n";
-	for (CMBlock* block = m_lastBlock; block != 0; block = block->m_nextBlock) {
+	for (CMBlock* block = m_firstBlock; block != 0; block = block->m_nextBlock) {
 		block->StreamOut(p_stream);
 	}
 	if (m_nextArena != 0) {
@@ -396,7 +395,7 @@ unsigned long CArena::GetFreeSize()
 unsigned long CArena::GetAllocSize()
 {
 	int blockCount = 0;
-	CMBlock* current = m_lastBlock;
+	CMBlock* current = m_firstBlock;
 	if (current != 0) {
 		do {
 			blockCount++;

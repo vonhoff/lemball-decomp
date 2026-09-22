@@ -224,7 +224,7 @@ void InitSubSystems()
 		stat = 0;
 	}
 	g_pStatManager->Register(stat);
-	g_pMasterArena->m_parentArena = (CArena*) stat;
+	g_pMasterArena->m_usageStat = (void*) stat;
 }
 
 // FUNCTION: LEMBALL 0x00459520

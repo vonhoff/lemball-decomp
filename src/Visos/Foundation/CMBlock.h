@@ -25,7 +25,7 @@ protected:
 	unsigned int m_signature;       // 0x04
 	unsigned char* m_data;          // 0x08
 	unsigned int m_size;            // 0x0c
-	char* m_description;            // 0x10
+	class CArena* m_ownerArena;     // 0x10
 	class CMBlock* m_nextBlock;     // 0x14
 	class CMBlock* m_previousBlock; // 0x18
 	class CMBlock* m_previousFree;  // 0x1c

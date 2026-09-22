@@ -5,7 +5,7 @@
 // FUNCTION: LEMBALL 0x0045a540
 CMBlock::CMBlock(CArena* p_arena, CMBlock* p_previous, char* p_description, unsigned long p_size)
 {
-	m_description = (char*) p_arena;
+	m_ownerArena = p_arena;
 	m_nextBlock = p_previous;
 	m_previousBlock = 0;
 	m_previousFree = 0;
