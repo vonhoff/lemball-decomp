@@ -1015,12 +1015,13 @@ bool Surface::BeginRender()
 void Surface::EndRender()
 {
 	Surface* current = this;
-	while (current != 0 && current->m_parentSurface != (Surface*) g_pGdiHelperTarget && current->m_parentSurface != 0) {
+	for (;;) {
+		if (current->m_parentSurface == (Surface*) g_pGdiHelperTarget) {
+			TargetDibContext* dib = (TargetDibContext*) current->m_platformBitmap;
+			dib->Unlock();
+			return;
+		}
 		current = current->m_parentSurface;
-	}
-	if (current != 0 && current->m_platformBitmap != 0) {
-		TargetDibContext* dib = (TargetDibContext*) current->m_platformBitmap;
-		dib->Unlock();
 	}
 }
 
