@@ -122,37 +122,17 @@ char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 PreviewDrawer::PreviewDrawer(Main2DDisplay* p_arg0, Gdi* p_arg1, const VsRect& p_arg2)
 	: BaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)
 {
-	void* storage;
-
 	m_drawBackground = 1;
 	m_drawFrame = 1;
 	m_drawSolid = 1;
 	Setup();
-	storage = operator new(0x1c);
-	if (storage == 0) {
-		m_lemmingAnim = 0;
-	}
-	else {
-		m_lemmingAnim = new (storage) RepeatAnim(AnimsManager::GetnAnims(m_lemmingAnimId), 1);
-	}
+	m_lemmingAnim = new RepeatAnim(AnimsManager::GetnAnims(m_lemmingAnimId), 1);
 	m_lemmingAnim->StartAnim(500);
 	m_lemmingAnim->m_fixedTime = 0xffffffff;
-	storage = operator new(0x1c);
-	if (storage == 0) {
-		m_teamAnim = 0;
-	}
-	else {
-		m_teamAnim = new (storage) RepeatAnim(AnimsManager::GetnAnims(m_teamAnimId), 1);
-	}
+	m_teamAnim = new RepeatAnim(AnimsManager::GetnAnims(m_teamAnimId), 1);
 	m_teamAnim->StartAnim(500);
 	m_teamAnim->m_fixedTime = 0xffffffff;
-	storage = operator new(0x1c);
-	if (storage == 0) {
-		m_opponentAnim = 0;
-	}
-	else {
-		m_opponentAnim = new (storage) RepeatAnim(AnimsManager::GetnAnims(m_opponentAnimId), 1);
-	}
+	m_opponentAnim = new RepeatAnim(AnimsManager::GetnAnims(m_opponentAnimId), 1);
 	m_opponentAnim->StartAnim(500);
 	m_opponentAnim->m_fixedTime = 0xffffffff;
 	RegisterRemaps();
