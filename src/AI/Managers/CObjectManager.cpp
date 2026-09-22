@@ -15,6 +15,7 @@
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGlobalGameObject.h"
+#include "AI/Base/Rect.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "AI/Objects/SwitchEntry.h"
 
@@ -260,6 +261,88 @@ void CObjectManager::Remove(CGlobalGameObject* p_object)
 			break;
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x0041b9f0
+CGlobalGameObject* CObjectManager::FindNearbyObject(AiCoord p_position)
+{
+	int x = p_position.m_xFixed >> 12;
+	int y = p_position.m_yFixed >> 12;
+	int index = 0;
+	Rect bounds;
+	if (m_count != 0) {
+		CGlobalGameObject** objects = m_objects;
+		do {
+			bounds.m_left = ((*objects)->m_position.m_xFixed >> 12) - 8;
+			bounds.m_top = ((*objects)->m_position.m_yFixed >> 12) - 8;
+			bounds.m_right = bounds.m_left + 8;
+			bounds.m_bottom = bounds.m_top + 8;
+			if (x > bounds.m_left && x < bounds.m_right && y > bounds.m_top && y < bounds.m_bottom) {
+				return m_objects[index];
+			}
+			objects++;
+			index++;
+		} while (index < m_count);
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041ba80
+CGlobalGameObject* CObjectManager::FindNearbyObject(AiCoord p_position, eObjectType p_objectType)
+{
+	int x = p_position.m_xFixed >> 12;
+	int y = p_position.m_yFixed >> 12;
+	int index = 0;
+	int count = m_count;
+	Rect bounds;
+	while (1) {
+		if (index >= count) {
+			return 0;
+		}
+		CGlobalGameObject* object = m_objects[index];
+		if (object->m_objectType == p_objectType) {
+			bounds.m_left = (object->m_position.m_xFixed >> 12) - 8;
+			bounds.m_top = (object->m_position.m_yFixed >> 12) - 8;
+			bounds.m_right = bounds.m_left + 8;
+			bounds.m_bottom = bounds.m_top + 8;
+			if (bounds.m_left < x && x < bounds.m_right && y > bounds.m_top && y < bounds.m_bottom) {
+				break;
+			}
+		}
+		index++;
+	}
+	return m_objects[index];
+}
+
+// FUNCTION: LEMBALL 0x0041bb10
+CGlobalGameObject* CObjectManager::FindObjectInBounds(CVsRect* p_bounds, eObjectType p_objectType)
+{
+	Rect query;
+	query.m_left = p_bounds->m_x;
+	query.m_top = p_bounds->m_y;
+	query.m_right = query.m_left + p_bounds->m_width;
+	query.m_bottom = query.m_top + p_bounds->m_height;
+	int index = 0;
+	int count = m_count;
+	Rect bounds;
+	while (1) {
+		if (index >= count) {
+			return 0;
+		}
+		CGlobalGameObject* object = m_objects[index];
+		if (object->m_objectType == p_objectType) {
+			bounds.m_left = (object->m_position.m_xFixed >> 12) - 8;
+			bounds.m_top = (object->m_position.m_yFixed >> 12) - 8;
+			bounds.m_right = bounds.m_left + 8;
+			bounds.m_bottom = bounds.m_top + 8;
+			if (bounds.m_left < query.m_right && query.m_left < bounds.m_right && bounds.m_top < query.m_bottom &&
+				query.m_top < bounds.m_bottom) {
+				break;
+			}
+		}
+		index++;
+	}
+	return m_objects[index];
 }
 
 // FUNCTION: LEMBALL 0x0041bbc0

@@ -20,6 +20,9 @@ public:
 						   eObjectType p_linkedObjectType);
 	CGlobalGameObject* AddObject(unsigned short p_id, CGlobalGameObject* p_object, unsigned int p_active);
 	CGlobalGameObject* FindObject(int p_id);
+	CGlobalGameObject* FindNearbyObject(AiCoord p_position);
+	CGlobalGameObject* FindNearbyObject(AiCoord p_position, eObjectType p_objectType);
+	CGlobalGameObject* FindObjectInBounds(CVsRect* p_bounds, eObjectType p_objectType);
 	CObjectManager(CAI* p_ai, int p_arg1);
 	CSwitch* AddSwitch(unsigned short p_id,
 					   int p_x,

@@ -24,6 +24,7 @@ class CEnemyGroupManager;
 class CFormationManager;
 class CGame;
 class CGameObject;
+class CGlobalGameObject;
 class CGroundAnim;
 class CHandManager;
 class CIceManager;
@@ -72,6 +73,9 @@ class CAI : public CBaseQueueHandler, public CBaseProcess, public CNetworkMessag
 public:
 	CAI(CGame* p_game);
 	CGame* LevelName();
+	CGlobalGameObject* FindNearbyObject(AiCoord p_position);
+	CGlobalGameObject* FindNearbyObject(AiCoord p_position, eObjectType p_objectType);
+	CGlobalGameObject* FindObjectInBounds(CVsRect* p_bounds, eObjectType p_objectType);
 	CMover* FindMoverHeight(int p_x, int p_y, int& p_height);
 	CPlayerLemming* GetDead();
 	CPt3 GetNodePosition(int p_node);

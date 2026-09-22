@@ -866,6 +866,24 @@ bool CAI::BulletCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
 	return m_bulletManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
+// FUNCTION: LEMBALL 0x00412800
+CGlobalGameObject* CAI::FindNearbyObject(AiCoord p_position)
+{
+	return m_objectManager->FindNearbyObject(p_position);
+}
+
+// FUNCTION: LEMBALL 0x00412830
+CGlobalGameObject* CAI::FindNearbyObject(AiCoord p_position, eObjectType p_objectType)
+{
+	return m_objectManager->FindNearbyObject(p_position, p_objectType);
+}
+
+// FUNCTION: LEMBALL 0x00412870
+CGlobalGameObject* CAI::FindObjectInBounds(CVsRect* p_bounds, eObjectType p_objectType)
+{
+	return m_objectManager->FindObjectInBounds(p_bounds, p_objectType);
+}
+
 // FUNCTION: LEMBALL 0x00412890
 void CAI::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned short p_mask)
 {
