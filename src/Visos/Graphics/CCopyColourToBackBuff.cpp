@@ -1,7 +1,7 @@
 #include "CCopyColourToBackBuff.h"
 
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 class CZBuffScroll;
 
 // FUNCTION: LEMBALL 0x00439930

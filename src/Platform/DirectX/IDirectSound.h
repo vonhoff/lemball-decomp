@@ -1,8 +1,9 @@
-#ifndef LEMBALL_VISOS_TARGET_IDIRECTSOUND_H
-#define LEMBALL_VISOS_TARGET_IDIRECTSOUND_H
+#ifndef LEMBALL_PLATFORM_DIRECTX_IDIRECTSOUND_H
+#define LEMBALL_PLATFORM_DIRECTX_IDIRECTSOUND_H
 
 class IDirectSoundBuffer;
 
+// DirectSound COM ABI declarations for the slots used by this project.
 class IDirectSound {
 public:
 	virtual long __stdcall QueryInterface(const void* p_interfaceId, void** p_object) = 0;
@@ -15,7 +16,5 @@ public:
 	virtual long __stdcall DuplicateSoundBuffer(IDirectSoundBuffer* p_original, IDirectSoundBuffer** p_duplicate) = 0;
 	virtual long __stdcall SetCooperativeLevel(void* p_window, unsigned long p_level) = 0;
 };
-
-extern IDirectSound* g_directSound;
 
 #endif

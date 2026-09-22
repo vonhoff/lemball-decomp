@@ -7,7 +7,7 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CGdi.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Windows/CHiliteWindow.h"
 #include "CHiliteButtons.h"

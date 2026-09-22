@@ -8,7 +8,7 @@
 #include "../../Visos/Graphics/CCursor.h"
 #include "../../Visos/Graphics/CGdi.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../Display/C2D.h"
 #include "../Sound/CSoundView.h"
 #include "AI/Base/ObjectActions.h"

@@ -1,7 +1,7 @@
 #include "CAnim.h"
 
 #include "../Graphics/CGdi.h"
-#include "../Graphics/VsGdi.h"
+#include "../Graphics/CSurface.h"
 #include "../Resources/CResAnim.h"
 class CResZrle;
 

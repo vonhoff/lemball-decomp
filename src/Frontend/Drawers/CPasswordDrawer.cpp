@@ -8,7 +8,7 @@
 #include "../../Visos/Graphics/CGdi.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
 #include "../../Visos/Graphics/CPvButton.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/CResFont.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Windows/CPasswordHiliteWindow.h"

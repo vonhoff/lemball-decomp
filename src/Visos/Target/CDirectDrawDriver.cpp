@@ -6,18 +6,18 @@
 #include "CDirectDrawContext.h"
 #include "CDirectDrawSurface.h"
 #include "DirectDrawError.h"
-#include "IDirectDraw.h"
+#include "Platform/DirectX/IDirectDraw.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include "Platform/DirectX/DDBLTFX.h"
+#include "Platform/DirectX/DDSURFACEDESC.h"
+#include "Platform/DirectX/IDirectDrawPalette.h"
+#include "Platform/DirectX/IDirectDrawSurface.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Target/CDibContext.h"
 #include "Visos/Target/CDrawingContext.h"
-#include "Visos/Target/DDBLTFX.h"
-#include "Visos/Target/DDSURFACEDESC.h"
-#include "Visos/Target/IDirectDrawPalette.h"
-#include "Visos/Target/IDirectDrawSurface.h"
 
 #include <windows.h>
 

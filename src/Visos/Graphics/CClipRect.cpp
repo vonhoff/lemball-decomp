@@ -1,7 +1,7 @@
 #include "CClipRect.h"
 
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 class CLine;
 
 // FUNCTION: LEMBALL 0x00432a30

@@ -10,7 +10,7 @@
 #include "../../Visos/Graphics/CGWnd.h"
 #include "../../Visos/Graphics/CGdi.h"
 #include "../../Visos/Graphics/CHotAreaHandler.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/CMogRes.h"
 #include "../../Visos/Resources/CResBitmap.h"
 #include "../../Visos/Resources/CResFont.h"

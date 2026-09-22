@@ -2,7 +2,7 @@
 
 #include "../Foundation/CChangeList.h"
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 
 // FUNCTION: LEMBALL 0x004397d0
 void CPopActive::Draw(CGdi* p_gdi)

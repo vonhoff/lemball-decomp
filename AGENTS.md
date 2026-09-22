@@ -46,7 +46,11 @@ When `reconstruction-memory` MCP is available (keyed by canonical address, e.g. 
 
 Keep each class definition identical in every translation unit. Do not use preprocessor guards to vary method declarations, signatures, or inline bodies for match scores. Resolve these choices from the original x86 evidence.
 
-No inline asm. One primary class per `.h`/`.cpp` (stem = class), unless `tools/lib/layout.py` `OVERRIDE_STEMS`. Functions in ascending original x86 address order. Use `RES_*` from `Manifest.h`. Prefer named members over offset pokes. Keep `undefined`/`undefined2`/`undefined4` until Win32 evidence justifies a tighter type. Preserve original loop shape, 32-bit size math, post-virtual pointer re-fetches, and message `switch` widening. Stop at compiler noise (reg alloc, alignment NOPs).
+No inline asm. One primary class per `.h`/`.cpp` (stem = class); no filename exceptions. Functions in ascending original x86 address order. Use `RES_*` from `Manifest.h`. Prefer named members over offset pokes. Keep `undefined`/`undefined2`/`undefined4` until Win32 evidence justifies a tighter type. Preserve original loop shape, 32-bit size math, post-virtual pointer re-fetches, and message `switch` widening. Stop at compiler noise (reg alloc, alignment NOPs).
+
+DirectX SDK ABI declarations live in `src/Platform/DirectX/`, with SDK type names.
+Game wrappers and state remain in `src/Visos/Target/`. Preserve original filename
+strings in reconstructed assertions even when the source file is renamed.
 
 ## MSVC 4.00 Codegen Quirks
 
@@ -81,8 +85,8 @@ symbols. Use concise, behavior-based method names and class context. Keep platfo
 API names and passive record structs in their established spelling.
 Catalog-backed unprefixed types (`AiCoord`, `Prims`, `VsTrig`) keep their names.
 `CHAR4` is the complete original type name.
-Intentional Mac/Win divergences: `tools/lib/names.py` `INTENTIONAL`. Layout stem
-overrides: `tools/lib/layout.py` `OVERRIDE_STEMS` / `INTENTIONAL`.
+Intentional Mac/Win divergences: `tools/lib/names.py` `INTENTIONAL`. Class/filename
+consistency is checked by `tools/lib/layout.py`, without overrides.
 
 ```powershell
 python tools/gate.py --names

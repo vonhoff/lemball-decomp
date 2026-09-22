@@ -8,7 +8,7 @@
 #include "../../Visos/Graphics/CGdi.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
 #include "../../Visos/Graphics/CReceiveWindowState.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/CResAnim.h"
 #include "../../Visos/Resources/CResFont.h"
 #include "../../Visos/Resources/Manifest.h"

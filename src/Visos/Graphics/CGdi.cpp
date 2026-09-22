@@ -4,7 +4,7 @@
 #include "../Foundation/VsMem.h"
 #include "CGdiDevice.h"
 #include "CPrimitive.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 
 // GLOBAL: LEMBALL 0x004a1ff4
 CPrimitive* g_pCurrentPrimitive = 0;

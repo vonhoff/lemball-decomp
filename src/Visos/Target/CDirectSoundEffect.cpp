@@ -2,9 +2,10 @@
 
 #include "../Foundation/CVsOStream.h"
 #include "../Foundation/VsString.h"
+#include "DirectSound.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
-#include "IDirectSound.h"
+#include "Platform/DirectX/IDirectSound.h"
 
 #include <string.h>
 
@@ -12,7 +13,7 @@
 // clang-format off: mmsystem.h requires Win32 types.
 #include <windows.h>
 #include <mmsystem.h>
-#include "Visos/Target/IDirectSoundBuffer.h"
+#include "Platform/DirectX/IDirectSoundBuffer.h"
 // clang-format on
 
 unsigned short SwapBytes16(unsigned short p_value);

@@ -1,7 +1,7 @@
 #include "CLine.h"
 
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 class CSolidRect;
 
 // FUNCTION: LEMBALL 0x00439800

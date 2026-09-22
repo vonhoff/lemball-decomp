@@ -1,5 +1,5 @@
-#ifndef LEMBALL_VISOS_GRAPHICS_VSGDI_H
-#define LEMBALL_VISOS_GRAPHICS_VSGDI_H
+#ifndef LEMBALL_VISOS_GRAPHICS_CSURFACE_H
+#define LEMBALL_VISOS_GRAPHICS_CSURFACE_H
 
 #include "../Foundation/CVsRect.h" // complete type
 #include "CPvBackBuffSurface.h"    // complete type

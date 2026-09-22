@@ -4,7 +4,7 @@
 #include "../Graphics/CGdi.h"
 #include "../Graphics/CPvGdiBitmap.h"
 #include "../Graphics/CPvWnd.h"
-#include "../Graphics/VsGdi.h"
+#include "../Graphics/CSurface.h"
 #include "CGdiContext.h"
 #include "WinGDrawState.h"
 

@@ -1,7 +1,7 @@
 #include "CBitmap.h"
 
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 class CCopyToBackBuff;
 
 // FUNCTION: LEMBALL 0x004398a0

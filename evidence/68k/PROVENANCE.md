@@ -41,8 +41,9 @@ method names based on Windows behavior. Those names are reconstruction choices;
 they do not establish original spellings or add catalog pairs. Platform API names
 and passive record structs retain their established spelling. `CHAR4` retains its
 complete original spelling; the old `Har4` spelling resulted from stripping its
-first letter. Original-filename exceptions `VsGdi` and `MogLoad` remain documented
-in the layout gate. Method names that coincide with class names remain methods.
+first letter. Filenames follow their primary class (`CSurface`, `CMogDir`), even
+when original assertion strings identify `VSGDI.CPP` or `MOGLOAD.CPP`. Those
+strings remain unchanged. Method names that coincide with class names remain methods.
 
 ## Three linked values
 

@@ -1,4 +1,4 @@
-#include "VsGdi.h"
+#include "CSurface.h"
 
 #include "../Foundation/CChangeList.h"
 #include "../Foundation/CVsOStream.h"

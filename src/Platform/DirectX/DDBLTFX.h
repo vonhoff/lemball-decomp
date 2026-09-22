@@ -1,5 +1,5 @@
-#ifndef LEMBALL_VISOS_TARGET_DDBLTFX_H
-#define LEMBALL_VISOS_TARGET_DDBLTFX_H
+#ifndef LEMBALL_PLATFORM_DIRECTX_DDBLTFX_H
+#define LEMBALL_PLATFORM_DIRECTX_DDBLTFX_H
 
 // DirectDraw 1 blit-effects ABI from the Windows SDK ddraw.h.
 struct DDBLTFX {

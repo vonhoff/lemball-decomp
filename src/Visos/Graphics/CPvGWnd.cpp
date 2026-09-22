@@ -1,10 +1,10 @@
 #include "CPvGWnd.h"
 
 #include "CGdi.h"
+#include "CSurface.h"
 #include "Visos/Graphics/CPvSurface.h"
 #include "Visos/Graphics/CPvWnd.h"
 #include "Visos/Graphics/CWnd.h"
-#include "VsGdi.h"
 
 // FUNCTION: LEMBALL 0x00432530
 void CPvGWnd::OnVisibilityChange()

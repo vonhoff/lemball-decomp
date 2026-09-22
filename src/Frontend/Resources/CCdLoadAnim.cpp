@@ -11,7 +11,7 @@
 #include "../../Visos/Foundation/VsTrig.h"
 #include "../../Visos/Graphics/CCursor.h"
 #include "../../Visos/Graphics/CGdi.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/CResBitmap.h"
 #include "../../Visos/Resources/CResPalette.h"
 #include "../../Visos/Resources/Manifest.h"

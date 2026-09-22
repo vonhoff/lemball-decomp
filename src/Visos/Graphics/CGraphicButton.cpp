@@ -4,6 +4,7 @@
 #include "../Resources/CResAnim.h"
 #include "CGdi.h"
 #include "CHotAreaList.h"
+#include "CSurface.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Graphics/CDepressedButton.h"
@@ -12,7 +13,6 @@
 #include "Visos/Graphics/CPrimitive.h"
 #include "Visos/Graphics/CPvGWnd.h"
 #include "Visos/Resources/CResZrle.h"
-#include "VsGdi.h"
 
 class CRemap;
 

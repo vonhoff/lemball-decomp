@@ -1,8 +1,9 @@
-#ifndef LEMBALL_VISOS_TARGET_IDIRECTSOUNDBUFFER_H
-#define LEMBALL_VISOS_TARGET_IDIRECTSOUNDBUFFER_H
+#ifndef LEMBALL_PLATFORM_DIRECTX_IDIRECTSOUNDBUFFER_H
+#define LEMBALL_PLATFORM_DIRECTX_IDIRECTSOUNDBUFFER_H
 
 class IDirectSound;
 
+// DirectSound buffer COM ABI declarations for the slots used by this project.
 class IDirectSoundBuffer {
 public:
 	virtual long __stdcall QueryInterface(const void* p_interfaceId, void** p_object) = 0;

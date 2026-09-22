@@ -1,4 +1,4 @@
-#include "MogLoad.h"
+#include "CMogDir.h"
 
 #include "../Foundation/Chunk.h"
 #include "../Foundation/ChunkInfo.h"

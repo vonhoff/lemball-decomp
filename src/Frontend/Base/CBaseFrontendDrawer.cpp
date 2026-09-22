@@ -11,7 +11,7 @@
 #include "../../Visos/Graphics/CBitmap.h"
 #include "../../Visos/Graphics/CCursor.h"
 #include "../../Visos/Graphics/CGdi.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../../Visos/Resources/CMogRes.h"

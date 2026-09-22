@@ -10,12 +10,12 @@
 #include "../Resources/CResZrle.h"
 #include "CGWnd.h"
 #include "CGdi.h"
+#include "CSurface.h"
 #include "CZrle.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CPushActive.h"
-#include "VsGdi.h"
 
 // GLOBAL: LEMBALL 0x004a9bec
 CGWnd* g_pCursorLastWindow = 0;

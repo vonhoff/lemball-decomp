@@ -4,7 +4,7 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CGdi.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/Message.h"

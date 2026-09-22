@@ -5,6 +5,7 @@
 #include "CGdi.h"
 #include "CHotAreaList.h"
 #include "CSolidRect.h"
+#include "CSurface.h"
 #include "CWnd.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
@@ -14,7 +15,6 @@
 #include "Visos/Graphics/CPrimitive.h"
 #include "Visos/Graphics/CPvGWnd.h"
 #include "Visos/Graphics/CPvWnd.h"
-#include "VsGdi.h"
 
 extern int g_nGunButtonsRedrawPending;
 extern "C" unsigned long __stdcall timeGetTime(void);

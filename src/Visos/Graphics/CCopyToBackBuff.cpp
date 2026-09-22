@@ -1,7 +1,7 @@
 #include "CCopyToBackBuff.h"
 
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 class CZBuffClear;
 
 // FUNCTION: LEMBALL 0x00439900

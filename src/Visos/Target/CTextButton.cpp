@@ -5,7 +5,7 @@
 #include "../Graphics/CGdi.h"
 #include "../Graphics/CHotAreaList.h"
 #include "../Graphics/CPvGWnd.h"
-#include "../Graphics/VsGdi.h"
+#include "../Graphics/CSurface.h"
 #include "../Resources/CResFont.h"
 
 extern char g_szButton[];

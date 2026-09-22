@@ -20,7 +20,7 @@
 #include "../../Visos/Foundation/CVsOStream.h"
 #include "../../Visos/Graphics/CCursor.h"
 #include "../../Visos/Graphics/CGdi.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/CResBase.h"
 #include "../../Visos/Resources/CResPalette.h"
 #include "../../Visos/Resources/CResZrle.h"

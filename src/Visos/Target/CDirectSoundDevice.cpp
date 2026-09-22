@@ -3,8 +3,9 @@
 #include "../Foundation/CVsOStream.h"
 #include "../Graphics/CWnd.h"
 #include "CDirectSoundEffect.h"
-#include "IDirectSound.h"
-#include "IDirectSoundBuffer.h"
+#include "DirectSound.h"
+#include "Platform/DirectX/IDirectSound.h"
+#include "Platform/DirectX/IDirectSoundBuffer.h"
 
 #include <memory.h>
 #include <new.h>

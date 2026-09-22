@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check translation-unit layout (via tools/gate.py; OVERRIDE_STEMS / INTENTIONAL)."""
+"""Check one primary class per file and matching class/filename spelling."""
 
 from __future__ import annotations
 
@@ -32,16 +32,6 @@ METHOD_DEF = re.compile(
     r"(?P<method>~?[A-Za-z_]\w*|operator\s*[^\s(]+)\s*\(",
     re.MULTILINE,
 )
-
-# File stem -> note. Stem is allowed even when it differs from the primary class.
-# Evidence: original _VSRELassert __FILE__ strings.
-OVERRIDE_STEMS = {
-    "VsGdi": "original VSGDI.CPP; primary Surface",
-    "MogLoad": "original MOGLOAD.CPP; primary MogDir",
-}
-
-# Relative POSIX paths. Skip the default rule entirely for these files.
-INTENTIONAL: set[str] = set()
 
 
 def class_stem(name: str) -> str:
@@ -144,13 +134,6 @@ def primary_names(path: Path, _text: str, code: str, types: list[dict]) -> list[
     return []
 
 
-def override_note(stem: str) -> str | None:
-    for key, note in OVERRIDE_STEMS.items():
-        if stems_equal(stem, key):
-            return note
-    return None
-
-
 def scan(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
@@ -162,18 +145,12 @@ def scan(path: Path) -> dict:
     stem = path.stem
     rel = rel_posix(path)
     class_stems = [class_stem(name) for name in primary]
-    note = override_note(stem)
-    if note is not None:
-        expected, evidence = stem, "override"
-    elif len(class_stems) == 1:
+    if len(class_stems) == 1:
         expected, evidence = class_stems[0], "class"
     else:
         expected, evidence = None, None
 
-    if rel in INTENTIONAL:
-        status = "intentional"
-        detail = "listed in INTENTIONAL"
-    elif len(primary) > 1:
+    if len(primary) > 1:
         status = "multi-class"
         detail = "primary classes: " + ", ".join(primary)
     elif expected is not None and not stems_equal(stem, expected):
@@ -187,10 +164,6 @@ def scan(path: Path) -> dict:
     else:
         status = "match"
         detail = None
-        if evidence == "override" and primary and not any(
-            stems_equal(stem, class_stem(name)) for name in primary
-        ):
-            detail = note
 
     return {
         "path": str(path),

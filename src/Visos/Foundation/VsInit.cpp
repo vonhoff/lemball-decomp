@@ -7,7 +7,7 @@
 #include "../Graphics/CCursor.h"
 #include "../Graphics/CGdiDevice.h"
 #include "../Graphics/CPaletteManager.h"
-#include "../Graphics/VsGdi.h"
+#include "../Graphics/CSurface.h"
 #include "../Network/CFileNetwork.h"
 #include "../Network/CTcpIpNetwork.h"
 #include "../Resources/ResourceTypeList.h"

@@ -6,7 +6,7 @@
 #include "../Foundation/VsInit.h"
 #include "../Graphics/CGdi.h"
 #include "../Graphics/CPvWnd.h"
-#include "../Graphics/VsGdi.h"
+#include "../Graphics/CSurface.h"
 #include "CDirectDrawDriver.h"
 #include "CDisplayDibDriver.h"
 #include "CGdiDriver.h"

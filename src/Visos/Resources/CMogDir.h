@@ -1,5 +1,5 @@
-#ifndef LEMBALL_VISOS_RESOURCES_MOGLOAD_H
-#define LEMBALL_VISOS_RESOURCES_MOGLOAD_H
+#ifndef LEMBALL_VISOS_RESOURCES_CMOGDIR_H
+#define LEMBALL_VISOS_RESOURCES_CMOGDIR_H
 #include "../Foundation/Chunk.h"     // complete type
 #include "../Foundation/ChunkInfo.h" // complete type
 #include "CMogloadArena.h"

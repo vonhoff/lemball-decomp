@@ -1,7 +1,7 @@
 #include "CSolidRect.h"
 
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 class CClipRect;
 
 // FUNCTION: LEMBALL 0x00432b10

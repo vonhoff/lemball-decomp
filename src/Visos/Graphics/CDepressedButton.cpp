@@ -2,7 +2,7 @@
 
 #include "../Foundation/CChangeList.h"
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 
 // FUNCTION: LEMBALL 0x0043a620 FOLDED
 void CDepressedButton::OnReleased(int p_flags)

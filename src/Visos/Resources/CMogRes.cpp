@@ -12,10 +12,10 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "../Foundation/Chunk.h"
 #include "../Foundation/ChunkInfo.h"
 #include "../Foundation/VsFile.h"
+#include "CMogDir.h"
 #include "CMogloadArena.h"
 #include "CRawRead.h"
 #include "CResBase.h"
-#include "MogLoad.h"
 #include "Visos/Animation/CMogloadStat.h"
 
 #define kPathSeparator '/'

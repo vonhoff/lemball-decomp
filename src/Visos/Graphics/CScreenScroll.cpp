@@ -1,7 +1,7 @@
 #include "CScreenScroll.h"
 
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 
 // FUNCTION: LEMBALL 0x00439860
 void CScreenScroll::Draw(CGdi* p_gdi)

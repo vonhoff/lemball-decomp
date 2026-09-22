@@ -7,7 +7,7 @@
 #include "CCursor.h"
 #include "CGdi.h"
 #include "CGdiDevice.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 
 #include <new.h>
 #include <windows.h>

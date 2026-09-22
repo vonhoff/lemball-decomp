@@ -2,9 +2,9 @@
 
 #include "../Foundation/CVsSize.h"
 #include "CGdiDevice.h"
+#include "CSurface.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Graphics/CPvGdiBitmap.h"
-#include "VsGdi.h"
 
 // FUNCTION: LEMBALL 0x00466440
 CPvBackBuffSurface::CPvBackBuffSurface()

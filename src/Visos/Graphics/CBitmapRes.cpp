@@ -2,7 +2,7 @@
 
 #include "../Resources/CResBitmap.h"
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 class CBigBitmap;
 
 // FUNCTION: LEMBALL 0x00447380

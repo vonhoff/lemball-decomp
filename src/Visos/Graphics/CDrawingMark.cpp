@@ -2,7 +2,7 @@
 
 #include "../Foundation/CChangeList.h"
 #include "CGdi.h"
-#include "VsGdi.h"
+#include "CSurface.h"
 
 // FUNCTION: LEMBALL 0x00432380
 void CDrawingMark::Draw(CGdi* p_gdi)

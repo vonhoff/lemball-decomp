@@ -24,7 +24,7 @@
 #include "../../Visos/Graphics/CCursor.h"
 #include "../../Visos/Graphics/CGdi.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
-#include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Resources/CResFont.h"
 #include "../../Visos/Resources/CResPalette.h"

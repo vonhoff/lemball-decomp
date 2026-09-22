@@ -7,7 +7,7 @@ CBigBitmap::~CBigBitmap()
 {
 }
 
-#include "VsGdi.h"
+#include "CSurface.h"
 class CCopyColourToBackBuff;
 
 // FUNCTION: LEMBALL 0x004398d0

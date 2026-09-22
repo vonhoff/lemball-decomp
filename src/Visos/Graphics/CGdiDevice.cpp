@@ -3,8 +3,8 @@
 #include "../Animation/CTimeStat.h"
 #include "../Foundation/CDebugOStream.h"
 #include "../Foundation/VsTime.h"
+#include "CSurface.h"
 #include "Visos/Foundation/CVsOStream.h"
-#include "VsGdi.h"
 
 // GLOBAL: LEMBALL 0x004a2008
 CGdiDevice* g_pGdiDevice = 0;

@@ -1,7 +1,7 @@
 #include "CText.h"
 
 #include "../Graphics/CGdi.h"
-#include "../Graphics/VsGdi.h"
+#include "../Graphics/CSurface.h"
 #include "../Resources/CResFont.h"
 #include "../Resources/CResZrle.h"
 #include "CVsOStream.h"

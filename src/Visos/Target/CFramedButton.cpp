@@ -5,7 +5,7 @@
 #include "../Graphics/CGdi.h"
 #include "../Graphics/CHotAreaList.h"
 #include "../Graphics/CLine.h"
-#include "../Graphics/VsGdi.h"
+#include "../Graphics/CSurface.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Graphics/CDepressedButton.h"
