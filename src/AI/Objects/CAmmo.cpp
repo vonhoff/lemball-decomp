@@ -54,7 +54,7 @@ bool CAmmo::Process()
 	}
 	switch (m_action) {
 	case ACTION_0x1a:
-		if (m_unk0xd4 < g_dwGameTick) {
+		if (m_actionPhase2Deadline < g_dwGameTick) {
 			if (m_ammo == 0) {
 				m_heading = 0;
 			}
@@ -77,7 +77,7 @@ bool CAmmo::Process()
 bool CAmmo::Activate(CGameObject* p_object)
 {
 	if (m_action == ACTION_0x18 && p_object->HasObject(m_objectType) == 0) {
-		m_unk0xd4 = 8;
+		m_actionPhase2Deadline = 8;
 		m_activator = p_object;
 		RequestAction(ACTION_0x1a);
 		return 1;
@@ -89,7 +89,7 @@ bool CAmmo::Activate(CGameObject* p_object)
 void CAmmo::DoActivate()
 {
 	m_stateTimer = g_dwSimulationTimestamp;
-	m_unk0xd4 += g_dwGameTick;
+	m_actionPhase2Deadline += g_dwGameTick;
 	SetSndEffect(SFX_RELOAD);
 	m_activator->PickUpAmmo(25);
 	g_pAI->Score(50);

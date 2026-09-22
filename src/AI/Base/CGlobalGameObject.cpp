@@ -50,19 +50,19 @@ int CGlobalGameObject::UsableState()
 }
 
 // FUNCTION: LEMBALL 0x00416db0
-void CGlobalGameObject::Action(eAction p_arg0)
+void CGlobalGameObject::Action(eAction p_action)
 {
-	m_action = p_arg0;
+	m_action = p_action;
 	if (g_pActiveConnection != 0) {
 		g_pObjectChangeStateMessage->Send(this);
 	}
 }
 
 // FUNCTION: LEMBALL 0x00416de0
-void CGlobalGameObject::Action(eAction p_arg0, int p_arg1)
+void CGlobalGameObject::Action(eAction p_action, int p_argument)
 {
-	m_actionArgument = p_arg1;
-	Action(p_arg0);
+	m_actionArgument = p_argument;
+	Action(p_action);
 }
 
 // Ownership inferred from the adjacent methods and call to RequestAction.
@@ -74,14 +74,14 @@ void CGlobalGameObject::SetActionAndRequest(eAction p_action, int p_argument)
 }
 
 // FUNCTION: LEMBALL 0x00416e20
-void CGlobalGameObject::RequestAction(eAction p_arg0)
+void CGlobalGameObject::RequestAction(eAction p_action)
 {
 	if (g_pActiveConnection != 0) {
-		m_requestedAction = p_arg0;
+		m_requestedAction = p_action;
 		g_pRequestActionMessage->Send(this);
 		return;
 	}
-	m_action = p_arg0;
+	m_action = p_action;
 	DoActivate();
 	m_usableState = 2;
 }
@@ -92,49 +92,49 @@ void CGlobalGameObject::CancelRequest()
 	if (m_requestActive != 0) {
 		m_isRemoteObject = 0;
 		m_requestActive = 0;
-		m_unk0x8c = 0;
+		m_activationReserved = 0;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00416e90
-bool CGlobalGameObject::Receive(unsigned short p_arg0, CNetworkMessage* p_arg1)
+bool CGlobalGameObject::Receive(unsigned short p_messageId, CNetworkMessage* p_message)
 {
 	CGameObjectMess* msg;
 
-	switch (p_arg0) {
+	switch (p_messageId) {
 	case 0x23:
 		msg = g_pObjectChangeStateMessage;
 		msg->m_object = this;
-		if (msg->Set(p_arg1->m_readCursor)) {
-			p_arg1->m_readCursor = msg->m_readCursor;
+		if (msg->Set(p_message->m_readCursor)) {
+			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
 	case 0x24:
 		msg = g_pObjectPosMessage;
 		msg->m_object = this;
-		if (msg->Set(p_arg1->m_readCursor)) {
-			p_arg1->m_readCursor = msg->m_readCursor;
+		if (msg->Set(p_message->m_readCursor)) {
+			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
 	case 0x25:
 		msg = g_pObjectHitMessage;
 		msg->m_object = this;
-		if (msg->Set(p_arg1->m_readCursor)) {
-			p_arg1->m_readCursor = msg->m_readCursor;
+		if (msg->Set(p_message->m_readCursor)) {
+			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
 	case 0x27:
 		msg = g_pRequestActionMessage;
 		msg->m_object = this;
-		if (msg->Set(p_arg1->m_readCursor)) {
-			p_arg1->m_readCursor = msg->m_readCursor;
+		if (msg->Set(p_message->m_readCursor)) {
+			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
 	case 0x28:
 		msg = g_pRequestReplyMessage;
 		msg->m_object = this;
-		if (msg->Set(p_arg1->m_readCursor)) {
-			p_arg1->m_readCursor = msg->m_readCursor;
+		if (msg->Set(p_message->m_readCursor)) {
+			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
 	case 0x29:

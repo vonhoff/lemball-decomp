@@ -7,15 +7,15 @@
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-extern const int g_unk0x00495b30[10];
-extern const int g_unk0x00495b58[10];
-extern const int g_unk0x00495b80[10];
-extern const unsigned char g_unk0x00495ba8[32];
+extern const int g_mazeNeighborOffsetsX[10];
+extern const int g_mazeNeighborOffsetsY[10];
+extern const int g_mazeCardinalNeighbors[10];
+extern const unsigned char g_mazeWalkMasks[32];
 
 // FUNCTION: LEMBALL 0x00423090
-CMaze::CMaze(CMap* p_arg0)
+CMaze::CMaze(CMap* p_map)
 {
-	m_map = p_arg0;
+	m_map = p_map;
 	m_distances = 0;
 	m_changeSelect = 0;
 	m_reserved = 0;
@@ -108,8 +108,9 @@ bool CMaze::CalcNewDistance(int p_x, int p_y)
 	unsigned char walk = m_map->GetWalk(p_x, p_y);
 	bool changed = false;
 	for (int i = 0; i < 9; i++) {
-		if (g_unk0x00495b80[i] != 0 && (g_unk0x00495ba8[i] & walk) != 0 && (g_unk0x00495ba8[i + 16] & walk) != 0) {
-			unsigned short newDistance = m_distances[p_y + g_unk0x00495b58[i]][p_x + g_unk0x00495b30[i]];
+		if (g_mazeCardinalNeighbors[i] != 0 && (g_mazeWalkMasks[i] & walk) != 0 &&
+			(g_mazeWalkMasks[i + 16] & walk) != 0) {
+			unsigned short newDistance = m_distances[p_y + g_mazeNeighborOffsetsY[i]][p_x + g_mazeNeighborOffsetsX[i]];
 			if (newDistance < distance) {
 				changed = true;
 				distance = newDistance;
@@ -130,9 +131,9 @@ bool CMaze::FindSquare(unsigned short p_distance, int& p_x, int& p_y)
 	unsigned char walk = m_map->GetWalk(x, y);
 	bool found = false;
 	for (int i = 0; i < 9; i++) {
-		if (g_unk0x00495b80[i] != 0 && (g_unk0x00495ba8[i] & walk) != 0) {
-			int nextX = x + g_unk0x00495b30[i];
-			int nextY = y + g_unk0x00495b58[i];
+		if (g_mazeCardinalNeighbors[i] != 0 && (g_mazeWalkMasks[i] & walk) != 0) {
+			int nextX = x + g_mazeNeighborOffsetsX[i];
+			int nextY = y + g_mazeNeighborOffsetsY[i];
 			if (m_distances[nextY][nextX] == p_distance) {
 				p_x = nextX;
 				p_y = nextY;
@@ -155,16 +156,16 @@ static const unsigned char g_aChangeBitMasks[8][4] = {{0x80, 0, 0, 0},
 													  {0x01, 0, 0, 0}};
 
 // GLOBAL: LEMBALL 0x00495b30
-const int g_unk0x00495b30[10] = {-1, 0, 1, -1, 0, 1, -1, 0, 1, 0};
+const int g_mazeNeighborOffsetsX[10] = {-1, 0, 1, -1, 0, 1, -1, 0, 1, 0};
 
 // GLOBAL: LEMBALL 0x00495b58
-const int g_unk0x00495b58[10] = {-1, -1, -1, 0, 0, 0, 1, 1, 1, 0};
+const int g_mazeNeighborOffsetsY[10] = {-1, -1, -1, 0, 0, 0, 1, 1, 1, 0};
 
 // GLOBAL: LEMBALL 0x00495b80
-const int g_unk0x00495b80[10] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 0};
+const int g_mazeCardinalNeighbors[10] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 0};
 
 // GLOBAL: LEMBALL 0x00495ba8
-const unsigned char g_unk0x00495ba8[32] = {0, 1,  0, 8,   0, 4,  0, 2,  0, 0, 0, 0, 0, 0, 0, 0,
+const unsigned char g_mazeWalkMasks[32] = {0, 1,  0, 8,   0, 4,  0, 2,  0, 0, 0, 0, 0, 0, 0, 0,
 										   0, 16, 0, 128, 0, 64, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // FUNCTION: LEMBALL 0x00423380

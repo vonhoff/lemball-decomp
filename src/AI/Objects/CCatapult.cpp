@@ -58,12 +58,12 @@ bool CCatapult::Process()
 	m_actionArgument = 0;
 	switch (m_action) {
 	case ACTION_0x19:
-		if (g_dwGameTick > m_unk0xd0) {
+		if (g_dwGameTick > m_actionPhase1Deadline) {
 			Action(ACTION_0x1a);
 		}
 		break;
 	case ACTION_0x1a: {
-		if (g_dwGameTick > m_unk0xd4) {
+		if (g_dwGameTick > m_actionPhase2Deadline) {
 			C3DVector pos;
 			pos.m_xFixed = m_position.m_xFixed - 0xc000;
 			pos.m_yFixed = m_position.m_yFixed - 0xc000;
@@ -104,8 +104,8 @@ bool CCatapult::Activate(CGameObject* p_object)
 	if (m_action == ACTION_0x18) {
 		m_activator = p_object;
 		m_stateTimer = g_dwSimulationTimestamp;
-		m_unk0xd0 = 32;
-		m_unk0xd4 = 46;
+		m_actionPhase1Deadline = 32;
+		m_actionPhase2Deadline = 46;
 		m_actionDeadline = 94;
 		RequestAction(ACTION_0x19);
 		return 1;
@@ -117,8 +117,8 @@ bool CCatapult::Activate(CGameObject* p_object)
 void CCatapult::DoActivate()
 {
 	m_stateTimer = g_dwSimulationTimestamp;
-	m_unk0xd0 += g_dwGameTick;
-	m_unk0xd4 += g_dwGameTick;
+	m_actionPhase1Deadline += g_dwGameTick;
+	m_actionPhase2Deadline += g_dwGameTick;
 	m_actionDeadline += g_dwGameTick;
 	CGameObject* activator = m_activator;
 	m_unk0x90 = activator->m_objectType;

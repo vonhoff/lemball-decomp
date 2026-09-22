@@ -97,7 +97,7 @@ bool CSwitch::Process()
 	case ACTION_0x19:
 		break;
 	case ACTION_0x1a:
-		if (m_unk0xd4 < g_dwGameTick) {
+		if (m_actionPhase2Deadline < g_dwGameTick) {
 			Action(ACTION_7);
 		}
 		break;
@@ -110,12 +110,12 @@ bool CSwitch::Activate(CGameObject* p_object)
 {
 	switch ((unsigned short) m_actionArgument) {
 	case 0:
-		m_unk0xd4 = 20;
+		m_actionPhase2Deadline = 20;
 		m_actionArgument = 1;
 		RequestAction(ACTION_0x1a);
 		return 1;
 	case 1:
-		m_unk0xd4 = 20;
+		m_actionPhase2Deadline = 20;
 		m_actionArgument = 0;
 		RequestAction(ACTION_0x1a);
 		return 1;
@@ -128,7 +128,7 @@ bool CSwitch::Activate(CGameObject* p_object)
 void CSwitch::DoActivate()
 {
 	m_stateTimer = g_dwSimulationTimestamp;
-	m_unk0xd4 += g_dwGameTick;
+	m_actionPhase2Deadline += g_dwGameTick;
 	if (m_scoreAwarded == 0) {
 		g_pAI->Score(25);
 		m_scoreAwarded = 1;

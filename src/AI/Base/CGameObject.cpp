@@ -402,7 +402,7 @@ void CGameObject::Initialise()
 	m_unk0x3c = 0;
 	m_isFlying = 0;
 	m_unk0xc0 = 0;
-	m_unk0x8c = 0;
+	m_activationReserved = 0;
 	m_routeSearchFailed = 0;
 	m_routeSearchActive = 0;
 	m_isJumping = 0;

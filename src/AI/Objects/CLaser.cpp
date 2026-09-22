@@ -222,7 +222,7 @@ bool CLaser::Process()
 			}
 			break;
 		case ACTION_0x19:
-			if (m_unk0xd0 < g_dwGameTick) {
+			if (m_actionPhase1Deadline < g_dwGameTick) {
 				m_target = 0;
 				Action(ACTION_0x1a);
 				return 1;
@@ -255,7 +255,7 @@ bool CLaser::Activate()
 		return 0;
 	}
 	m_lastMovementTick = g_dwGameTick;
-	m_unk0xd0 = g_dwGameTick + 6;
+	m_actionPhase1Deadline = g_dwGameTick + 6;
 	m_actionDeadline = g_dwGameTick + 0x18;
 	m_target = 0;
 	m_stateTimer = g_dwSimulationTimestamp;

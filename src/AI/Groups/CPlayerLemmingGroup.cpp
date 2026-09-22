@@ -59,7 +59,7 @@ int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 void CPlayerLemmingGroup::Delete()
 {
 	if (m_useObject != 0) {
-		m_useObject->m_unk0x8c = 0;
+		m_useObject->m_activationReserved = 0;
 	}
 	m_useObject = 0;
 }
@@ -93,9 +93,9 @@ bool CPlayerLemmingGroup::Process()
 					break;
 				case 2: {
 					int id = entry.m_metadata;
-					CGameObject* object = g_pUnknown0x4a781c->FindObject(id);
+					CGameObject* object = g_pGroupObjectManager->FindObject(id);
 					if (object != 0) {
-						if (object->m_unk0x8c != 0) {
+						if (object->m_activationReserved != 0) {
 							const AiCoord& activation = object->ActivatePosition();
 							position.m_xFixed = activation.m_xFixed;
 							position.m_yFixed = activation.m_yFixed;
@@ -128,13 +128,13 @@ bool CPlayerLemmingGroup::Process()
 								}
 								if (CloseTo(memberPosition, position)) {
 									m_useObject = object;
-									object->m_unk0x8c = 1;
+									object->m_activationReserved = 1;
 									m_currentUseElement = 0;
 									if (m_useObject->Activate(member)) {
 										SetGroupState(GROUP_STATE_USING_OBJECT);
 									}
 									else {
-										m_useObject->m_unk0x8c = 0;
+										m_useObject->m_activationReserved = 0;
 									}
 								}
 								else {
@@ -153,7 +153,7 @@ bool CPlayerLemmingGroup::Process()
 			member = CGenericGroup::GetNthElementInGroup(m_currentUseElement);
 			if (member == 0) {
 				SetGroupState(GROUP_STATE_IDLE);
-				m_useObject->m_unk0x8c = 0;
+				m_useObject->m_activationReserved = 0;
 				m_useObject = 0;
 			}
 			else {
@@ -185,7 +185,7 @@ bool CPlayerLemmingGroup::Process()
 					break;
 				case 2:
 					SetGroupState(GROUP_STATE_IDLE);
-					m_useObject->m_unk0x8c = 0;
+					m_useObject->m_activationReserved = 0;
 					m_useObject = 0;
 					break;
 				}
@@ -195,7 +195,7 @@ bool CPlayerLemmingGroup::Process()
 			if (m_useObject->m_action == ACTION_0x18 && moving == 0) {
 				if (GetElementsInGroup() <= m_currentUseElement) {
 					SetGroupState(GROUP_STATE_IDLE);
-					m_useObject->m_unk0x8c = 0;
+					m_useObject->m_activationReserved = 0;
 					m_useObject = 0;
 				}
 				else {
@@ -208,7 +208,7 @@ bool CPlayerLemmingGroup::Process()
 		case 3:
 			switch (m_useObject->UsableState()) {
 			case 1:
-				m_useObject->m_unk0x8c = 0;
+				m_useObject->m_activationReserved = 0;
 				if (m_useObject->m_heading != 0) {
 					const AiCoord& activation = m_useObject->ActivatePosition();
 					position.m_xFixed = activation.m_xFixed;
@@ -382,11 +382,12 @@ void CPlayerLemmingGroup::ClearExistingWaypoints()
 {
 	CGenericGroup::ClearExistingWaypoints();
 	if (m_useObject != 0) {
-		if (GetGroupState() == GROUP_STATE_USING_OBJECT && m_useObject->m_heading != 0 && m_useObject->m_unk0x8c != 0) {
+		if (GetGroupState() == GROUP_STATE_USING_OBJECT && m_useObject->m_heading != 0 &&
+			m_useObject->m_activationReserved != 0) {
 			if (g_pActiveConnection != 0) {
 				m_useObject->SendCancel();
 			}
-			m_useObject->m_unk0x8c = 0;
+			m_useObject->m_activationReserved = 0;
 		}
 		m_currentUseElement = GetElementsInGroup();
 	}

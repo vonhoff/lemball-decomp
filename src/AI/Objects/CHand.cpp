@@ -105,7 +105,7 @@ bool CHand::Process()
 			}
 			break;
 		case ACTION_0x19:
-			if (m_unk0xd0 < g_dwGameTick) {
+			if (m_actionPhase1Deadline < g_dwGameTick) {
 				m_target->Action(ACTION_0x15);
 				m_target->m_actionDeadline = g_dwGameTick + 40;
 				Action(ACTION_0x1a);
@@ -134,7 +134,7 @@ bool CHand::StepOn(const AiCoord& p_position, CGameObject* p_object)
 		int distanceY = (p_position.m_yFixed >> 12) - (m_position.m_yFixed >> 12);
 		int distanceX = (p_position.m_xFixed >> 12) - (m_position.m_xFixed >> 12);
 		if ((distanceX < 0 ? -distanceX : distanceX) < 16 && distanceY >= 0 && distanceY < 48) {
-			m_unk0xd0 = 6;
+			m_actionPhase1Deadline = 6;
 			m_actionDeadline = 16;
 			m_activator = p_object;
 			p_object->ResetInstructions();
@@ -153,7 +153,7 @@ void CHand::DoActivate()
 	m_activated = 1;
 	m_target = m_activator;
 	m_lastMovementTick = g_dwGameTick;
-	m_unk0xd0 += g_dwGameTick;
+	m_actionPhase1Deadline += g_dwGameTick;
 	m_actionDeadline += g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
 }

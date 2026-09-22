@@ -207,7 +207,7 @@ protected:
 	int m_moveDeltaXFixed;                 // 0x80
 	int m_moveDeltaYFixed;                 // 0x84
 	int m_moveDurationTicks;               // 0x88
-	unsigned int m_unk0x8c;                // 0x8c
+	unsigned int m_activationReserved;     // 0x8c
 	unsigned int m_unk0x90;                // 0x90
 	unsigned int m_stateTimer;             // 0x94
 	eSoundEffect m_soundEffect;            // 0x98
@@ -223,8 +223,8 @@ protected:
 	unsigned short m_unk0xc6;              // 0xc6
 	unsigned int m_lastMovementTick;       // 0xc8
 	unsigned int m_actionDeadline;         // 0xcc
-	unsigned int m_unk0xd0;                // 0xd0
-	unsigned int m_unk0xd4;                // 0xd4
+	unsigned int m_actionPhase1Deadline;   // 0xd0
+	unsigned int m_actionPhase2Deadline;   // 0xd4
 	AiCoord m_flightOrigin;                // 0xd8
 	AiCoord m_auxiliaryPosition;           // 0xe4
 	unsigned int m_isFlying;               // 0xf0

@@ -91,15 +91,15 @@ void CSheepGroup::CheckAgainstLemmings()
 	AiCoord coordinate;
 	CVsRect bounds;
 	GetBoundingBox(bounds);
-	if (g_pUnknown0x4a7824->PlayerCheckGroupIntersection(&bounds, &coordinate) == 1) {
+	if (g_pGroupAI->PlayerCheckGroupIntersection(&bounds, &coordinate) == 1) {
 		RunAway(coordinate);
 		return;
 	}
-	if (g_pUnknown0x4a7824->EnemyCheckGroupIntersection(&bounds, &coordinate) == 1) {
+	if (g_pGroupAI->EnemyCheckGroupIntersection(&bounds, &coordinate) == 1) {
 		RunAway(coordinate);
 		return;
 	}
-	bool result = g_pUnknown0x4a7824->BulletCheckGroupIntersection(&bounds, &coordinate);
+	bool result = g_pGroupAI->BulletCheckGroupIntersection(&bounds, &coordinate);
 	if (result == 1) {
 		RunAway(coordinate);
 		return;

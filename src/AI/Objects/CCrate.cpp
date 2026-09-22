@@ -96,14 +96,14 @@ bool CCrate::Process()
 	}
 	switch (m_action) {
 	case ACTION_0x19:
-		if (m_unk0xd0 < g_dwGameTick) {
+		if (m_actionPhase1Deadline < g_dwGameTick) {
 			TriggerContents();
 			SetSndEffect(SFX_CRATEEXP);
 			Action(ACTION_0x1a);
 		}
 		break;
 	case ACTION_0x1a:
-		if (m_unk0xd4 < g_dwGameTick) {
+		if (m_actionPhase2Deadline < g_dwGameTick) {
 			Action(ACTION_0x18);
 			m_heading = 0;
 		}
@@ -116,8 +116,8 @@ bool CCrate::Process()
 bool CCrate::Activate(CGameObject* p_object)
 {
 	if (m_action == ACTION_0x18) {
-		m_unk0xd0 = 16;
-		m_unk0xd4 = 30;
+		m_actionPhase1Deadline = 16;
+		m_actionPhase2Deadline = 30;
 		RequestAction(ACTION_0x19);
 		return 1;
 	}
@@ -128,8 +128,8 @@ bool CCrate::Activate(CGameObject* p_object)
 void CCrate::DoActivate()
 {
 	m_stateTimer = g_dwSimulationTimestamp;
-	m_unk0xd0 += g_dwGameTick;
-	m_unk0xd4 += g_dwGameTick;
+	m_actionPhase1Deadline += g_dwGameTick;
+	m_actionPhase2Deadline += g_dwGameTick;
 	SetSndEffect(SFX_SNATCH);
 	int score;
 	switch (m_contentsType) {

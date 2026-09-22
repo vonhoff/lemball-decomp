@@ -44,5 +44,5 @@ void CObjectChangeStateMess::GetData()
 	}
 	m_object->m_isRemoteObject = 0;
 	m_object->m_pendingAction = ACTION_0x18;
-	m_object->m_unk0x8c = 0;
+	m_object->m_activationReserved = 0;
 }

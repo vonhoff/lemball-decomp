@@ -24,9 +24,9 @@ void CGenericGroup::SetGroupState(eGroupState p_state)
 CGenericGroup::CGenericGroup(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager)
 	: CGameObject(OBJECT_GROUP, 0, 0x14)
 {
-	g_pUnknown0x4a7824 = p_ai;
-	g_pUnknown0x4a7820 = p_formationManager;
-	g_pUnknown0x4a781c = p_objectManager;
+	g_pGroupAI = p_ai;
+	g_pGroupFormationManager = p_formationManager;
+	g_pGroupObjectManager = p_objectManager;
 	m_currentElement = 0;
 	m_elementCount = 0;
 	m_groupState = GROUP_STATE_IDLE;
@@ -260,7 +260,7 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 // FUNCTION: LEMBALL 0x0041e290
 void CGenericGroup::AddNewWaypoint(AiCoord p_coordinate, CFormationManager* p_formationManager)
 {
-	g_pUnknown0x4a7820 = p_formationManager;
+	g_pGroupFormationManager = p_formationManager;
 	unsigned short count;
 	CAiDestinationList* list = m_destinationList;
 	count = list->m_count;
@@ -285,11 +285,11 @@ void CGenericGroup::SendNewWaypoint(AiCoord p_coordinate)
 													   p_coordinate.m_xFixed >> 12,
 													   p_coordinate.m_yFixed >> 12);
 		int index = 0;
-		g_pUnknown0x4a7820->TransformFormation(m_formationIndex, (direction - 2) * 0x40);
+		g_pGroupFormationManager->TransformFormation(m_formationIndex, (direction - 2) * 0x40);
 		int count = GetElementsInGroup();
 		int height = p_coordinate.m_zFixed;
 		while (index < count) {
-			CVector* vector = g_pUnknown0x4a7820->GetAVector(index);
+			CVector* vector = g_pGroupFormationManager->GetAVector(index);
 			destination.m_xFixed = vector->m_xFixed + p_coordinate.m_xFixed;
 			destination.m_yFixed = vector->m_yFixed + p_coordinate.m_yFixed;
 			destination.m_zFixed = height;
@@ -413,10 +413,10 @@ int CGenericGroup::GetViewData(CViewData* p_viewData)
 }
 
 // GLOBAL: LEMBALL 0x004a781c
-CObjectManager* g_pUnknown0x4a781c;
+CObjectManager* g_pGroupObjectManager;
 
 // GLOBAL: LEMBALL 0x004a7820
-CFormationManager* g_pUnknown0x4a7820;
+CFormationManager* g_pGroupFormationManager;
 
 // GLOBAL: LEMBALL 0x004a7824
-CAi* g_pUnknown0x4a7824;
+CAi* g_pGroupAI;

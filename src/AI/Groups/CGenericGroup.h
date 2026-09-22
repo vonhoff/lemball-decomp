@@ -60,9 +60,9 @@ protected:
 	int m_altered;               // 0x164
 };
 
-extern CObjectManager* g_pUnknown0x4a781c;
-extern CFormationManager* g_pUnknown0x4a7820;
-extern CAi* g_pUnknown0x4a7824;
+extern CObjectManager* g_pGroupObjectManager;
+extern CFormationManager* g_pGroupFormationManager;
+extern CAi* g_pGroupAI;
 
 // SYNTHETIC: LEMBALL 0x0041e8c0
 // CGenericGroup::`scalar deleting destructor'

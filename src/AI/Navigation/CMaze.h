@@ -6,7 +6,7 @@ struct Solution;
 // SIZE 0x103c
 class CMaze {
 public:
-	CMaze(CMap* p_arg0);
+	CMaze(CMap* p_map);
 	bool BIteration(unsigned int& p_reached, unsigned int& p_noChanges);
 	bool CalcNewDistance(int p_x, int p_y);
 	bool FindSquare(unsigned short p_distance, int& p_x, int& p_y);

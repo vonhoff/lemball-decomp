@@ -20,18 +20,18 @@ class CTransportObjectMess;
 class CGlobalGameObject : public CGameObject {
 public:
 	CGlobalGameObject(eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity);
-	virtual void Action(eAction p_arg0);                                  // vtable+0x08
-	virtual void Action(eAction p_arg0, int p_arg1);                      // vtable+0x04
+	virtual void Action(eAction p_action);                                // vtable+0x08
+	virtual void Action(eAction p_action, int p_argument);                // vtable+0x04
 	virtual void SendRemove();                                            // vtable+0xf4
 	virtual void SendCancel();                                            // vtable+0xf8
 	virtual int UsableState();                                            // vtable+0xfc
 	virtual void Restart();                                               // vtable+0x104
 	virtual bool Process() = 0;                                           // vtable+0x14
-	virtual bool Receive(unsigned short p_arg0, CNetworkMessage* p_arg1); // vtable+0x108
+	virtual bool Receive(unsigned short p_messageId, CNetworkMessage* p_message); // vtable+0x108
 	virtual void DoActivate();                                            // vtable+0x10c
 	void CancelRequest();
 	static void DeleteMessages();
-	void RequestAction(eAction p_arg0);
+	void RequestAction(eAction p_action);
 	static void SetMessages();
 	CGlobalGameObject();
 	void SetActionAndRequest(eAction p_action, int p_argument);

@@ -23,7 +23,8 @@ void CRequestActionMess::GetData()
 {
 	GetDword();
 	int active;
-	if (m_object->m_isRemoteObject == 0 && m_object->m_unk0x8c == 0 && m_object->IsUsable(m_object->m_action)) {
+	if (m_object->m_isRemoteObject == 0 && m_object->m_activationReserved == 0 &&
+		m_object->IsUsable(m_object->m_action)) {
 		active = 1;
 	}
 	else {
@@ -32,7 +33,7 @@ void CRequestActionMess::GetData()
 	m_object->m_requestActive = active;
 	m_object->m_isRemoteObject = active;
 	if (active != 0) {
-		m_object->m_unk0x8c = 1;
+		m_object->m_activationReserved = 1;
 	}
 	g_pRequestReplyMessage->Send(m_object);
 }
