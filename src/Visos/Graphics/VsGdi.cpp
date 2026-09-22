@@ -1164,19 +1164,20 @@ void Surface::CopyBackBuffToScreen(const VsRect& p_rect)
 	short width = p_rect.m_width;
 
 	if ((int) height * (int) width != 0) {
-		const short* coords = &p_rect.m_x;
-		short x = coords[0];
-		short y = coords[1];
-		if ((int) (short) (x + width) > (int) PvBackBuffSurface::m_allocatedWidth) {
-			width = (short) (PvBackBuffSurface::m_allocatedWidth - x);
+		VsRect rect(p_rect);
+		if ((int) (short) (rect.m_x + rect.m_width) > (int) PvBackBuffSurface::m_allocatedWidth) {
+			rect.m_width = (short) (PvBackBuffSurface::m_allocatedWidth - rect.m_x);
 		}
-		if ((int) (short) (height + y) > (int) PvBackBuffSurface::m_allocatedHeight) {
-			height = (short) (PvBackBuffSurface::m_allocatedHeight - y);
+		if ((int) (short) (rect.m_height + rect.m_y) > (int) PvBackBuffSurface::m_allocatedHeight) {
+			rect.m_height = (short) (PvBackBuffSurface::m_allocatedHeight - rect.m_y);
 		}
-		for (int i = 0; i < height; i++) {
+		const VsPoint* origin = &rect;
+		int x = origin->m_x;
+		int y = origin->m_y;
+		for (int i = 0; i < rect.m_height; i++) {
 			memcpy((unsigned char*) m_lines[y + i] + x,
 				   (unsigned char*) PvBackBuffSurface::m_bitmap.m_lines[y + i] + x,
-				   width);
+				   rect.m_width);
 		}
 	}
 }
