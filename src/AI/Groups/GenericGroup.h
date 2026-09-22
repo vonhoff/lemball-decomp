@@ -55,10 +55,7 @@ protected:
 	GameObject* m_elements[10]; // 0x128
 	int m_currentElement;       // 0x150
 	eGroupState m_groupState;   // 0x154
-	short m_minX;               // 0x158
-	short m_minY;               // 0x15a
-	short m_maxX;               // 0x15c
-	short m_maxY;               // 0x15e
+	VsRect m_bounds;            // 0x158
 	int m_formationIndex;       // 0x160
 	int m_altered;              // 0x164
 };

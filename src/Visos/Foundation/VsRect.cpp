@@ -42,11 +42,6 @@ void VsRect::ExpandToInclude(const VsRect& p_rect)
 	}
 }
 
-// FUNCTION: LEMBALL 0x0044e6c0
-VsRect::VsRect(const VsRect& p_source) : VsSize(p_source), VsPoint(p_source)
-{
-}
-
 // FUNCTION: LEMBALL 0x00478b80
 VsRect::VsRect(short p_x, short p_y, VsSize* p_size) : VsSize(*p_size), VsPoint(p_x, p_y)
 {

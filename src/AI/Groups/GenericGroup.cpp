@@ -31,10 +31,6 @@ void GenericGroup::SetGroupState(eGroupState p_state)
 GenericGroup::GenericGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationManager* p_formationManager)
 	: GameObject(OBJECT_GROUP, 0, 0x14)
 {
-	m_minY = 0;
-	m_minX = 0;
-	m_maxY = 0;
-	m_maxX = 0;
 	g_pUnknown0x4a7824 = p_ai;
 	g_pUnknown0x4a7820 = p_formationManager;
 	g_pUnknown0x4a781c = p_objectManager;
@@ -42,10 +38,10 @@ GenericGroup::GenericGroup(Ai* p_ai, ObjectManager* p_objectManager, FormationMa
 	m_elementCount = 0;
 	m_groupState = GROUP_STATE_IDLE;
 	memset(m_elements, 0, sizeof(m_elements));
-	m_minY = 9999;
-	m_minX = 9999;
-	m_maxY = 9999;
-	m_maxX = 9999;
+	m_bounds.m_height = 9999;
+	m_bounds.m_width = 9999;
+	m_bounds.m_y = 9999;
+	m_bounds.m_x = 9999;
 }
 
 // 68K 0x1060c3aa __dt__13CGenericGroupFv
@@ -217,30 +213,18 @@ bool GenericGroup::ConfirmElementIsInGroup(unsigned short p_objectId)
 // FUNCTION: LEMBALL 0x0041e140
 VsRect GenericGroup::GetBoundingBox()
 {
-	VsRect result;
-	result.m_width = m_minX;
-	result.m_height = m_minY;
-	result.m_x = m_maxX;
-	result.m_y = m_maxY;
-	return result;
+	return m_bounds;
 }
 
 // 68K 0x1060c974 GetBoundingBox__13CGenericGroupFR7CVSRect
 // FUNCTION: LEMBALL 0x0041e180
 void GenericGroup::GetBoundingBox(VsRect& p_rect)
 {
-	const short* coords;
-
-	p_rect.m_width = m_minX;
-	p_rect.m_height = m_minY;
-	if (&m_minX != 0) {
-		coords = &m_maxX;
-	}
-	else {
-		coords = 0;
-	}
-	p_rect.m_x = *coords;
-	p_rect.m_y = coords[1];
+	p_rect.m_width = m_bounds.m_width;
+	p_rect.m_height = m_bounds.m_height;
+	const VsPoint* position = &m_bounds;
+	p_rect.m_x = position->m_x;
+	p_rect.m_y = position->m_y;
 }
 
 // 68K 0x1060c9dc CalculateBoundingBox__13CGenericGroupFi
@@ -283,10 +267,10 @@ void GenericGroup::CalculateBoundingBox(int p_radius)
 	}
 	maxX -= minX;
 	maxY -= minY;
-	m_maxX = (short) minX;
-	m_maxY = (short) minY;
-	m_minX = (short) maxX;
-	m_minY = (short) maxY;
+	m_bounds.m_x = (short) minX;
+	m_bounds.m_y = (short) minY;
+	m_bounds.m_width = (short) maxX;
+	m_bounds.m_height = (short) maxY;
 }
 
 #include "../Navigation/AiDestinationEntry.h"
@@ -417,14 +401,14 @@ void GenericGroup::ReformAlteredGroup(FormationManager* p_formationManager)
 // FUNCTION: LEMBALL 0x0041e530
 bool GenericGroup::CheckGroupIntersection(VsRect* p_rect, AiCoord* p_coordinate)
 {
-	int groupRight = m_minX + m_maxX;
-	int groupBottom = m_minY + m_maxY;
+	int groupRight = m_bounds.m_width + m_bounds.m_x;
+	int groupBottom = m_bounds.m_height + m_bounds.m_y;
 	int rectX = p_rect->m_x;
 	int rectRight = p_rect->m_width + rectX;
 	int rectY = p_rect->m_y;
 	int rectBottom = p_rect->m_height + rectY;
 
-	if (m_maxX < rectRight && rectX < groupRight && m_maxY < rectBottom && rectY < groupBottom) {
+	if (m_bounds.m_x < rectRight && rectX < groupRight && m_bounds.m_y < rectBottom && rectY < groupBottom) {
 		GameObject* object = GetFirstElementInGroup();
 		while (object != 0) {
 			int x = object->m_position.m_xFixed >> 12;

@@ -34,4 +34,9 @@ public:
 // FUNCTION: LEMBALL 0x00447270
 // ??0VsRect@@QAE@FFFF@Z
 
+// FUNCTION: LEMBALL 0x0044e6c0
+inline VsRect::VsRect(const VsRect& p_source) : VsSize(p_source), VsPoint(p_source)
+{
+}
+
 #endif
