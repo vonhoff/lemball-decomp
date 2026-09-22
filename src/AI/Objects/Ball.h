@@ -14,7 +14,6 @@ public:
 	virtual void HitBullet(Bullet* p_bullet); // vtable+0x54
 	virtual void Delete();                    // vtable+0xc8
 	virtual void Restart();                   // vtable+0x104
-	virtual ~Ball();                          // vtable+0x00
 	void LoadLevel(unsigned char*& p_data);
 	void Set(AiCoord p_start, AiCoord p_destination, int p_speed);
 	void SetHeightCorrect();

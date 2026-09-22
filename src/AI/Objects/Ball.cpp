@@ -324,8 +324,3 @@ void Ball::LoadLevel(unsigned char*& p_data)
 
 	Set(start, destination, speed);
 }
-
-// 68K 0x101196dc __dt__5CBallFv
-Ball::~Ball()
-{
-}
