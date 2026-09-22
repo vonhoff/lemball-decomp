@@ -7,7 +7,7 @@
 class Ground {
 public:
 	Ground();
-	bool IsHit(int p_x, int p_y, unsigned char p_includeSpecial);
+	bool IsHit(int p_x, int p_y, unsigned int p_includeSpecial);
 	unsigned short GetZ(int p_x, int p_y);
 	void SetCollision();
 

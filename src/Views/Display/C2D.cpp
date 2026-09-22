@@ -966,7 +966,7 @@ bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 							int hitY = p_screenY - top;
 							if (hitX >= 0 && hitY >= 0 && hitX <= 0x1f && hitY <= 0x1f) {
 								unsigned int includeSpecial = m_groundHitMode >= 1;
-								if (ground->IsHit(hitX, hitY, (unsigned char) includeSpecial)) {
+								if (ground->IsHit(hitX, hitY, includeSpecial)) {
 									p_gameX = gameX * 0x10 + 8;
 									p_gameY = gameY * 0x10 + 8;
 									return true;
