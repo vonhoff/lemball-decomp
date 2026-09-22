@@ -1,7 +1,7 @@
 """Check reviewed symbol evidence and report catalog coverage of Windows entries.
 
 No game payload is bundled. A private original can verify the symbol extraction.
-See evidence/68k/PROVENANCE.md for provenance and the limits of this check.
+See tools/resources/PROVENANCE.md for provenance and the limits of this check.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from pathlib import Path
 from .paths import ROOT
 from .source import collect_sources, mask_comments_and_strings
 
-CATALOG = ROOT / "evidence/68k/catalog.csv"
+CATALOG = ROOT / "tools/resources/catalog.csv"
 CATALOG_COLUMNS = ("mac_address", "symbol", "windows_address")
 CATALOG_ERRORS = (OSError, UnicodeError, ValueError, csv.Error)
 TOKENS = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'')

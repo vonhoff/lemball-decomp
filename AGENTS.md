@@ -98,7 +98,7 @@ consistency is checked by `tools/lib/layout.py`, without overrides.
 python tools/gate.py --names
 ```
 
-Compares reconstructed names to `evidence/68k/catalog.csv` by original Windows
+Compares reconstructed names to `tools/resources/catalog.csv` by original Windows
 address. Use ordinary reccmp annotations; do not duplicate the catalog with
 `// 68K` comments. Parameter names are ignored; encoded parameter types
 and method constness are compared. Signature differences require Windows review
