@@ -5,10 +5,6 @@
 
 #include <new.h>
 
-BasePalManager::BasePalManager()
-{
-}
-
 // 68K 0x10200c72 __ct__15CBasePalManagerFi
 // FUNCTION: LEMBALL 0x0046acd0
 BasePalManager::BasePalManager(int p_arg0)

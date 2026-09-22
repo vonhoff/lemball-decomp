@@ -2,10 +2,6 @@
 
 #include "../Resources/ResPalette.h"
 
-BaseRemap::BaseRemap()
-{
-}
-
 // 68K 0x10200920 __ct__10CBaseRemapFUlPUc13ePaletteTypes
 // FUNCTION: LEMBALL 0x0046aa80
 BaseRemap::BaseRemap(unsigned long p_arg0, unsigned char* p_arg1, ePaletteTypes p_arg2)

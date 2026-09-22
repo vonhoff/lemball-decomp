@@ -1,9 +1,5 @@
 #include "VsIOs.h"
 
-VsIOs::VsIOs()
-{
-}
-
 // 68K 0x10213cca __ct__6CVSIOsFP12CVSStreambuf
 // FUNCTION: LEMBALL 0x00458410
 VsIOs::VsIOs(VsStreambuf* p_arg0) : m_streamBuffer(p_arg0), m_flags(0x14), m_fill(' '), m_width(0), m_radix(10)
