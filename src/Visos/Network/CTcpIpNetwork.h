@@ -27,8 +27,8 @@ private:
 
 extern unsigned int g_dwTCPIPNetworkThreadId;
 extern void* g_hTCPIPNetworkThread;
-extern int g_unk0x4a23b8;
-extern int g_unk0x4a23bc;
+extern int g_socketWindowClassRegistered;
+extern int g_tcpIpNetworkWindowClassRegistered;
 extern unsigned int g_networkPacketSize;
 extern BasePacketHeader* g_pNetworkPacketScratch;
 extern unsigned int g_receivedPacketSize;

@@ -23,7 +23,7 @@ struct TcpIpReceiveFromData {
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-extern unsigned int g_unk0x4a23c4;
+extern unsigned int g_tcpIpBytesReceived;
 
 // FUNCTION: LEMBALL 0x0046fe10
 bool CTcpIpReadSocket::ReadBuffFrom()
@@ -65,7 +65,7 @@ bool CTcpIpReadSocket::ReadBuff()
 	if (m_readReady == 0) {
 		FirstReceive();
 	}
-	g_unk0x4a23c4 += g_receivedPacketSize;
+	g_tcpIpBytesReceived += g_receivedPacketSize;
 	return ProcessPacket();
 }
 

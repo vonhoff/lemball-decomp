@@ -22,7 +22,8 @@ extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
 																 void* p_callback);
 
 // FUNCTION: LEMBALL 0x0046f6b0
-CFileNetwork::CFileNetwork() : CNetworkWnd("File-based Network", &g_unk0x4a2268), m_alternateTimer(0)
+CFileNetwork::CFileNetwork()
+	: CNetworkWnd("File-based Network", &g_fileNetworkWindowClassRegistered), m_alternateTimer(0)
 {
 }
 
@@ -143,7 +144,7 @@ unsigned int g_dwFileNetworkThreadId = 0x12345678;
 void* g_hFileNetworkThread = 0;
 
 // GLOBAL: LEMBALL 0x004a2268
-int g_unk0x4a2268 = 0;
+int g_fileNetworkWindowClassRegistered = 0;
 
 // GLOBAL: LEMBALL 0x004a2de4
 char* g_pFileBroadcastData = 0;

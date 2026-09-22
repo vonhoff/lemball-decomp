@@ -22,7 +22,7 @@ extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
 extern "C" __declspec(dllimport) int __stdcall KillTimer(void* p_window, unsigned int p_id);
 
 // FUNCTION: LEMBALL 0x004713c0
-CTcpIpNetwork::CTcpIpNetwork() : CNetworkWnd("TCPIP Network", &g_unk0x4a23bc)
+CTcpIpNetwork::CTcpIpNetwork() : CNetworkWnd("TCPIP Network", &g_tcpIpNetworkWindowClassRegistered)
 {
 }
 
@@ -125,13 +125,13 @@ unsigned int g_dwTCPIPNetworkThreadId = 0x12345678;
 void* g_hTCPIPNetworkThread = 0;
 
 // GLOBAL: LEMBALL 0x004a23b8
-int g_unk0x4a23b8 = 0;
+int g_socketWindowClassRegistered = 0;
 
 // GLOBAL: LEMBALL 0x004a23bc
-int g_unk0x4a23bc = 0;
+int g_tcpIpNetworkWindowClassRegistered = 0;
 
 // GLOBAL: LEMBALL 0x004a23c4
-unsigned int g_unk0x4a23c4 = 0;
+unsigned int g_tcpIpBytesReceived = 0;
 
 // GLOBAL: LEMBALL 0x004a1e24
 unsigned int g_networkPacketSize = 0;

@@ -25,7 +25,7 @@
 
 #pragma intrinsic(_outpw)
 
-extern unsigned int g_unk0x4a1cc4;
+extern unsigned int g_windowDispatchDisabled;
 extern int(__stdcall* g_pDisplayDib)(void*, void*, unsigned int);
 
 // GLOBAL: LEMBALL 0x004a1f64
@@ -169,7 +169,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	unsigned int style;
 	int menuAction;
 
-	if (g_unk0x4a1cc4 != 0 && (p_message != WM_ACTIVATEAPP || p_wParam != 0)) {
+	if (g_windowDispatchDisabled != 0 && (p_message != WM_ACTIVATEAPP || p_wParam != 0)) {
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 

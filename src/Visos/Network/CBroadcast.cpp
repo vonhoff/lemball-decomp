@@ -23,10 +23,10 @@
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // GLOBAL: LEMBALL 0x004a1e08
-int g_unk0x4a1e08 = 0;
+int g_vsNetMajorVersion = 0;
 
 // GLOBAL: LEMBALL 0x004a1e0c
-int g_unk0x4a1e0c = 9;
+int g_vsNetMinorVersion = 9;
 
 // FUNCTION: LEMBALL 0x00460350
 CBroadcast::CBroadcast()
@@ -114,9 +114,9 @@ void CBroadcast::Initialise(const char* p_networkName)
 		g_pBroadcastPacketTemplate = (BasePacketHeader*) new unsigned char[0x410];
 		payload = (char*) (g_pBroadcastPacketTemplate + 1);
 		strcpy(payload, "ViSOS (VSNET v");
-		VsLtoa((long) g_unk0x4a1e08, payload + strlen(payload), 10);
+		VsLtoa((long) g_vsNetMajorVersion, payload + strlen(payload), 10);
 		memcpy(payload + strlen(payload), ".", 2);
-		VsLtoa((long) g_unk0x4a1e0c, payload + strlen(payload), 10);
+		VsLtoa((long) g_vsNetMinorVersion, payload + strlen(payload), 10);
 		memcpy(payload + strlen(payload), " ", 2);
 		strcat(payload, p_networkName);
 		memcpy(payload + strlen(payload), ") is Broadcasting:", 19);

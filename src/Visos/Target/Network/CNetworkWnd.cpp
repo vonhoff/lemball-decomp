@@ -7,7 +7,7 @@
 
 #include <windows.h>
 
-extern unsigned int g_unk0x4a1cc4;
+extern unsigned int g_windowDispatchDisabled;
 
 static LRESULT CALLBACK NetworkWndProc(HWND p_window, UINT p_message, WPARAM p_wParam, LPARAM p_lParam);
 
@@ -62,7 +62,7 @@ static LRESULT CALLBACK NetworkWndProc(HWND p_window, UINT p_message, WPARAM p_w
 	CNetworkWnd* window;
 	long result;
 
-	if (g_unk0x4a1cc4 != 0) {
+	if (g_windowDispatchDisabled != 0) {
 		return DefWindowProcA(p_window, p_message, p_wParam, p_lParam);
 	}
 
@@ -82,4 +82,4 @@ static LRESULT CALLBACK NetworkWndProc(HWND p_window, UINT p_message, WPARAM p_w
 }
 
 // GLOBAL: LEMBALL 0x004a1cc4
-unsigned int g_unk0x4a1cc4 = 0;
+unsigned int g_windowDispatchDisabled = 0;

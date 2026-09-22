@@ -3,11 +3,11 @@
 #include "Visos/Network/CBaseCommonSocket.h"
 #include "Visos/Target/Network/CNetworkWnd.h"
 
-extern int g_unk0x4a23b8;
+extern int g_socketWindowClassRegistered;
 #include "Platform/WinSock/WinSock.h"
 
 // FUNCTION: LEMBALL 0x0046fcf0
-CTcpIpCommonSocket::CTcpIpCommonSocket() : CNetworkWnd("Socket Window", &g_unk0x4a23b8)
+CTcpIpCommonSocket::CTcpIpCommonSocket() : CNetworkWnd("Socket Window", &g_socketWindowClassRegistered)
 {
 	m_asyncBuffer = 0;
 	m_asyncRequest = 0;
