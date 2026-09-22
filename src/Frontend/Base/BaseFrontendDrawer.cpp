@@ -217,28 +217,30 @@ void BaseFrontendDrawer::InitialiseBackBuffer()
 	unsigned int hiliteActive;
 	unsigned int gunActive;
 
-	hiliteActive = 0;
-	gunActive = 0;
 	m_backBufferNeeded = 0;
 	m_drawingBackBuffer = 1;
-	if (m_hiliteController != 0 && m_hiliteController->m_buttonsActive != 0) {
-		hiliteActive = m_hiliteController->m_buttonsActive;
+	if (m_hiliteController != 0 && (hiliteActive = m_hiliteController->m_buttonsActive) != 0) {
 		m_hiliteController->ActivateButtons(0);
 	}
-	if (m_gunController != 0 && m_gunController->m_buttonsActive != 0) {
-		gunActive = m_gunController->m_buttonsActive;
+	if (m_gunController != 0 && (gunActive = m_gunController->m_buttonsActive) != 0) {
 		m_gunController->ActivateButtons(0);
 	}
-	m_backBufferReady = 1;
+	if (m_backBufferReady == 0) {
+		m_backBufferReady = 1;
+	}
 	g_pCursor->SetActive(0);
 	m_display->Render();
-	m_primitiveBundle[0].m_bitmap.m_x = 0;
-	m_primitiveBundle[0].m_bitmap.m_y = 0;
-	m_primitiveBundle[0].m_bitmap.m_width = m_width;
-	m_primitiveBundle[0].m_bitmap.m_height = m_height;
-	m_primitiveBundle[0].m_bitmap.m_sourceX = 0;
-	m_primitiveBundle[0].m_bitmap.m_sourceY = 0;
-	m_primitiveBundle[0].m_bitmap.Draw(m_gdi);
+	VsRect source(0, 0, m_width, m_height);
+	const VsSize* size = &source;
+	const VsPoint* origin = &source;
+	Bitmap* bitmap = &m_primitiveBundle[m_primitiveBank].m_bitmap;
+	bitmap->m_x = 0;
+	bitmap->m_y = 0;
+	bitmap->m_width = size->m_width;
+	bitmap->m_height = size->m_height;
+	bitmap->m_sourceX = origin->m_x;
+	bitmap->m_sourceY = origin->m_y;
+	m_primitiveBundle[m_primitiveBank].m_bitmap.Draw(m_gdi);
 	m_drawingBackBuffer = 0;
 	if (m_hiliteController != 0 && hiliteActive != 0) {
 		m_hiliteController->ActivateButtons(1);
