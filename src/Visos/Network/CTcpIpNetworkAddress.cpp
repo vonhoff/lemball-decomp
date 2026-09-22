@@ -1,15 +1,10 @@
 #include "CTcpIpNetworkAddress.h"
 
 #include "CNetworkAddress.h"
+#include "Platform/WinSock/WinSock.h"
+#include "Platform/WinSock/in_addr.h"
 
 #include <string.h>
-
-struct in_addr {
-	unsigned long s_addr;
-};
-
-extern "C" unsigned int __stdcall inet_addr(const char* p_text);
-extern "C" char* __stdcall inet_ntoa(in_addr p_address);
 
 // FUNCTION: LEMBALL 0x0046f9b0
 void CTcpIpNetworkAddress::operator=(eBroadcastTypes p_type)

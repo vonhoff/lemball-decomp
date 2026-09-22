@@ -4,8 +4,7 @@
 #include "Visos/Target/CNetworkWnd.h"
 
 extern int g_unk0x4a23b8;
-extern "C" int __stdcall closesocket(int p_socket);
-extern "C" int __stdcall WSAGetLastError();
+#include "Platform/WinSock/WinSock.h"
 
 // FUNCTION: LEMBALL 0x0046fcf0
 CTcpIpCommonSocket::CTcpIpCommonSocket() : CNetworkWnd("Socket Window", &g_unk0x4a23b8)

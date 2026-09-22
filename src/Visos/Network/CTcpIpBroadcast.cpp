@@ -18,31 +18,10 @@
 
 #pragma intrinsic(memcpy, strcpy, strlen)
 
-struct in_addr {
-	unsigned long s_addr;
-};
-
-struct TcpIpHostEntry {
-	char* m_name;
-	char** m_aliases;
-	short m_addressType;
-	short m_addressLength;
-	char** m_addressList;
-};
-
-struct TcpIpServiceEntry {
-	char* m_name;
-	char** m_aliases;
-	short m_port;
-	char* m_protocol;
-};
-
-struct TcpIpSocketAddress {
-	unsigned short m_family;
-	unsigned short m_port;
-	in_addr m_address;
-	unsigned char m_padding[8];
-};
+#include "Platform/WinSock/TcpIpHostEntry.h"
+#include "Platform/WinSock/TcpIpServiceEntry.h"
+#include "Platform/WinSock/TcpIpSocketAddress.h"
+#include "Platform/WinSock/in_addr.h"
 
 struct TcpIpAddressResult {
 	unsigned int m_reserved;
@@ -64,29 +43,9 @@ union TcpIpLookupResult {
 	TcpIpStatusResult m_status;
 };
 
-extern "C" unsigned long __stdcall inet_addr(const char* p_text);
-extern "C" char* __stdcall inet_ntoa(in_addr p_address);
-extern "C" int __stdcall gethostname(char* p_name, int p_nameSize);
-extern "C" int __stdcall socket(int p_addressFamily, int p_type, int p_protocol);
-extern "C" int __stdcall bind(int p_socket, const TcpIpSocketAddress* p_address, int p_addressLength);
-extern "C" unsigned short __stdcall htons(unsigned short p_value);
-extern "C" unsigned short __stdcall ntohs(unsigned short p_value);
-extern "C" int __stdcall setsockopt(int p_socket, int p_level, int p_option, const char* p_value, int p_valueSize);
-extern "C" unsigned long __stdcall timeGetTime(void);
-extern "C" int __stdcall WSACancelAsyncRequest(unsigned int p_request);
-extern "C" unsigned int __stdcall WSAAsyncGetHostByName(void* p_window,
-														unsigned int p_message,
-														const char* p_name,
-														char* p_buffer,
-														int p_bufferSize);
-extern "C" unsigned int __stdcall WSAAsyncGetServByName(void* p_window,
-														unsigned int p_message,
-														const char* p_service,
-														const char* p_protocol,
-														char* p_buffer,
-														int p_bufferSize);
+#include "Platform/WinSock/WinSock.h"
 
-extern "C" int __stdcall WSAAsyncSelect(int p_socket, void* p_window, unsigned int p_message, long p_events);
+extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00470270
 CTcpIpBroadcast::CTcpIpBroadcast()

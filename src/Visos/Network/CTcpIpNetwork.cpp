@@ -4,15 +4,13 @@
 #include "CTcpIpBroadcast.h"
 #include "CTcpIpConnect.h"
 #include "CTcpIpNetworkAddress.h"
+#include "Platform/WinSock/WinSock.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Network/CBaseNetwork.h"
 #include "Visos/Target/CNetworkWnd.h"
 
 #include <new.h>
 
-extern "C" int __stdcall WSAStartup(unsigned short p_version, void* p_data);
-extern "C" int __stdcall WSAGetLastError();
-extern "C" int __stdcall WSACleanup();
 extern "C" __declspec(dllimport) int __stdcall PostMessageA(void* p_window,
 															unsigned int p_message,
 															unsigned int p_wParam,

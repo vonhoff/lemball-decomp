@@ -10,16 +10,8 @@
 
 #pragma intrinsic(strcpy)
 
-struct in_addr {
-	unsigned long s_addr;
-};
-
-struct TcpIpSocketAddress {
-	unsigned short m_family;
-	unsigned short m_port;
-	in_addr m_address;
-	unsigned char m_padding[8];
-};
+#include "Platform/WinSock/TcpIpSocketAddress.h"
+#include "Platform/WinSock/in_addr.h"
 
 struct TcpIpReceiveFromData {
 	unsigned int m_reserved;
@@ -27,15 +19,8 @@ struct TcpIpReceiveFromData {
 	TcpIpSocketAddress m_address;
 };
 
-extern "C" int __stdcall recv(int p_socket, char* p_buffer, int p_length, int p_flags);
-extern "C" int __stdcall recvfrom(int p_socket,
-								  char* p_buffer,
-								  int p_length,
-								  int p_flags,
-								  TcpIpSocketAddress* p_address,
-								  int* p_addressLength);
-extern "C" int __stdcall WSAGetLastError();
-extern "C" char* __stdcall inet_ntoa(in_addr p_address);
+#include "Platform/WinSock/WinSock.h"
+
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 extern unsigned int g_unk0x4a23c4;

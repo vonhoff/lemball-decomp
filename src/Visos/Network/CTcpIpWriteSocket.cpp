@@ -12,14 +12,8 @@ struct TcpIpDestinationAddress {
 	unsigned char m_padding[8];
 };
 
-extern "C" int __stdcall sendto(int p_socket,
-								const char* p_buffer,
-								int p_length,
-								int p_flags,
-								const TcpIpDestinationAddress* p_address,
-								int p_addressLength);
-extern "C" int __stdcall WSAGetLastError();
-extern "C" unsigned short __stdcall htons(unsigned short p_value);
+#include "Platform/WinSock/WinSock.h"
+
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00470030
