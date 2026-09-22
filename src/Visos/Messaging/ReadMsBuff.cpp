@@ -7,10 +7,6 @@
 
 #pragma intrinsic(memcpy)
 
-ReadMsBuff::ReadMsBuff()
-{
-}
-
 // 68K 0x1020dc92 __ct__11CReadMSBuffFiiUs
 // FUNCTION: LEMBALL 0x004613d0
 ReadMsBuff::ReadMsBuff(int p_arg0, int p_arg1, unsigned short p_arg2)

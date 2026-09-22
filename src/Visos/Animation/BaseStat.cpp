@@ -3,10 +3,6 @@
 #include "../Foundation/VsOStream.h"
 #include "Visos/Foundation/String.h"
 
-BaseStat::BaseStat()
-{
-}
-
 // 68K 0x10218df8 __ct__9CBaseStatFPc
 // FUNCTION: LEMBALL 0x0045ac10
 BaseStat::BaseStat(char* p_arg0)

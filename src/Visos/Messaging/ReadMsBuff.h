@@ -10,7 +10,6 @@ public:
 	ReadMsBuff(int p_arg0, int p_arg1, unsigned short p_arg2);
 	void FillPacket();
 	virtual ~ReadMsBuff();
-	ReadMsBuff();
 
 	friend class ReadNcmsBuff;
 	friend class ReadCmsBuff;
