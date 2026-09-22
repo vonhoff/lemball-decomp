@@ -4,10 +4,6 @@
 #include "ReadPacket.h"
 #include "Visos/Messaging/BasePacketBuff.h"
 
-ReadPacketBuff::ReadPacketBuff()
-{
-}
-
 // 68K 0x1020da8a __ct__15CReadPacketBuffFiUs
 // FUNCTION: LEMBALL 0x00461290
 ReadPacketBuff::ReadPacketBuff(int p_arg0, unsigned short p_arg1) : BasePacketBuff(p_arg0, p_arg1)

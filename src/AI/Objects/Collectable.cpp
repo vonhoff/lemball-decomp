@@ -11,10 +11,6 @@
 #include "Map/Ground/Ground.h"
 #include "Map/Ground/GroundArray.h"
 
-Collectable::Collectable()
-{
-}
-
 // 68K 0x10605b0e __ct__12CCollectableFiii11eObjectType
 // FUNCTION: LEMBALL 0x00422870
 Collectable::Collectable(int p_x, int p_y, int p_z, eObjectType p_objectType) : GlobalGameObject(p_objectType, 0, 0)

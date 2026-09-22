@@ -4,10 +4,6 @@
 #include "../Managers/BaseObjectManager.h"
 #include "Visos/Messaging/NetworkMessage.h"
 
-GameObjectMess::GameObjectMess()
-{
-}
-
 // 68K 0x1060b23a __ct__15CGameObjectMessFUl
 // FUNCTION: LEMBALL 0x00416850
 GameObjectMess::GameObjectMess(unsigned long p_messageId) : NetworkMessage(p_messageId)

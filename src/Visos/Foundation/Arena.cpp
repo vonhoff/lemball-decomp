@@ -10,10 +10,6 @@
 #pragma intrinsic(memset)
 #pragma intrinsic(memcpy)
 
-Arena::Arena()
-{
-}
-
 // 68K 0x102147c2 __ct__6CArenaFUlPcP6CArenaP6CArena
 // FUNCTION: LEMBALL 0x004599f0
 Arena::Arena(unsigned long p_arg0, char* p_arg1, class Arena* p_arg2, class Arena* p_arg3) : Critical()

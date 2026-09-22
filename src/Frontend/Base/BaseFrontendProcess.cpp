@@ -12,10 +12,6 @@
 
 #include <new.h>
 
-BaseFrontendProcess::BaseFrontendProcess()
-{
-}
-
 // 68K 0x1011bac4 Processing__20CBaseFrontendProcessFv
 // FUNCTION: LEMBALL 0x00407f20
 void BaseFrontendProcess::Processing()

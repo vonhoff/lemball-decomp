@@ -2,10 +2,6 @@
 
 #include "BasePacket.h"
 
-BasePacketBuff::BasePacketBuff()
-{
-}
-
 // 68K 0x1020d9a0 __ct__15CBasePacketBuffFiUs
 // FUNCTION: LEMBALL 0x00461210
 BasePacketBuff::BasePacketBuff(int p_arg0, unsigned short p_arg1)

@@ -14,10 +14,6 @@
 #include "AI/Messages/GameObjectMess.h"
 #include "Visos/Messaging/NetworkMessage.h"
 
-GlobalGameObject::GlobalGameObject()
-{
-}
-
 // 68K 0x1011a15e DoActivate__17CGlobalGameObjectFv
 // FUNCTION: LEMBALL 0x0040ce40
 void GlobalGameObject::DoActivate()

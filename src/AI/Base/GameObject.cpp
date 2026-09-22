@@ -16,10 +16,6 @@
 
 #pragma intrinsic(memcpy, memset)
 
-GameObject::GameObject()
-{
-}
-
 // 68K 0x10118858 ForgetObjectLink__11CGameObjectFUs
 // FUNCTION: LEMBALL 0x0040a7f0
 void GameObject::ForgetObjectLink(unsigned short p_arg0)

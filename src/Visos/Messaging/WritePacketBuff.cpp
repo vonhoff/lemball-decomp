@@ -3,10 +3,6 @@
 #include "Visos/Messaging/BasePacketBuff.h"
 #include "WritePacket.h"
 
-WritePacketBuff::WritePacketBuff()
-{
-}
-
 // 68K 0x1020dbb0 __ct__16CWritePacketBuffFiUs
 // FUNCTION: LEMBALL 0x00461340
 WritePacketBuff::WritePacketBuff(int p_arg0, unsigned short p_arg1) : BasePacketBuff(p_arg0, p_arg1)

@@ -8,10 +8,6 @@
 
 #pragma intrinsic(memset)
 
-GenericGroup::GenericGroup()
-{
-}
-
 // 68K 0x10118774 GetGroupState__13CGenericGroupFv
 // FUNCTION: LEMBALL 0x00414c60
 eGroupState GenericGroup::GetGroupState()
