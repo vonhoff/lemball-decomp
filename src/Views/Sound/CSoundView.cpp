@@ -185,8 +185,8 @@ void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AiCoord& p_list
 			for (i = 0; i < p_count; i++) {
 				effectId = p_viewData[i].m_soundEffect;
 				if (effectId != 0) {
-					int effectX = (unsigned short) p_viewData[i].m_viewX;
-					int effectY = (unsigned short) p_viewData[i].m_viewY;
+					int effectX = (unsigned short) p_viewData[i].m_gameX;
+					int effectY = (unsigned short) p_viewData[i].m_gameY;
 					dist = Distance(x, y, effectX, effectY);
 					attenuatedVol = volume;
 					dist -= 200;

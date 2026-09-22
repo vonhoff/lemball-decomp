@@ -1917,8 +1917,8 @@ unsigned long C2D::LemmingFly(CViewData& p_viewData, int& p_frame)
 	}
 
 	CMap* map = m_map;
-	int viewX = (unsigned short) p_viewData.m_viewX;
-	int viewY = (unsigned short) p_viewData.m_viewY;
+	int viewX = (unsigned short) p_viewData.m_gameX;
+	int viewY = (unsigned short) p_viewData.m_gameY;
 	int blockX = viewX >> 4;
 	int blockY = viewY >> 4;
 	int groundZ;
@@ -1954,9 +1954,9 @@ void C2D::DrawLemmingFlyShadow(CViewData& p_viewData)
 	CMap* map;
 	unsigned short groundZ;
 
-	viewX = (unsigned short) p_viewData.m_viewX;
+	viewX = (unsigned short) p_viewData.m_gameX;
 	map = m_map;
-	viewY = (unsigned short) p_viewData.m_viewY;
+	viewY = (unsigned short) p_viewData.m_gameY;
 	int blockX = viewX >> 4;
 	int blockY = viewY >> 4;
 	if (viewX >= 0 && viewY >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
@@ -3860,8 +3860,8 @@ void C2D::DrawObjectsZBuff()
 	int viewIndex = 0;
 	if ((int) m_viewDataCount > 0) {
 		do {
-			m_viewData[viewIndex].m_viewX = (short) m_viewData[viewIndex].m_positionX;
-			m_viewData[viewIndex].m_viewY = (short) m_viewData[viewIndex].m_positionY;
+			m_viewData[viewIndex].m_gameX = (short) m_viewData[viewIndex].m_positionX;
+			m_viewData[viewIndex].m_gameY = (short) m_viewData[viewIndex].m_positionY;
 
 			C3DVector position;
 			position.m_xFixed = m_viewData[viewIndex].m_positionX;
@@ -3939,7 +3939,7 @@ unsigned short C2D::CalcZValue_Sprite(int p_index)
 
 	CViewData* viewData = m_viewData + p_index;
 	unsigned short z = (unsigned short) viewData->m_positionZ;
-	return CalcGroundCode(objectType, (unsigned short) viewData->m_viewX, (unsigned short) viewData->m_viewY, z) + z +
+	return CalcGroundCode(objectType, (unsigned short) viewData->m_gameX, (unsigned short) viewData->m_gameY, z) + z +
 		   1;
 }
 

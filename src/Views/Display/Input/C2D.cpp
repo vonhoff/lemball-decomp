@@ -45,8 +45,8 @@ void C2D::NoStateLeftClick(const CVsPoint& p_screenPoint,
 			SelectObject(index);
 			return;
 		case OBJECT_MOVER:
-			destination.m_x = view.m_viewX;
-			destination.m_y = view.m_viewY;
+			destination.m_x = view.m_gameX;
+			destination.m_y = view.m_gameY;
 			break;
 		default:
 			return;

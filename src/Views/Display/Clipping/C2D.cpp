@@ -137,8 +137,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 	int screenX = p_viewData.m_positionX;
 	int screenY = p_viewData.m_positionY;
 	if (screenX > -40 && screenY > -40 && screenX < m_clipSize.m_x + 40 && screenY < m_clipSize.m_y + 40) {
-		int gameX = (unsigned short) p_viewData.m_viewX;
-		int gameY = (unsigned short) p_viewData.m_viewY;
+		int gameX = (unsigned short) p_viewData.m_gameX;
+		int gameY = (unsigned short) p_viewData.m_gameY;
 		switch (objectType) {
 		default:
 			AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
@@ -237,8 +237,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 					}
 				}
 			}
-			int shadowGameX = (unsigned short) p_viewData.m_viewX;
-			gameY = (unsigned short) p_viewData.m_viewY;
+			int shadowGameX = (unsigned short) p_viewData.m_gameX;
+			gameY = (unsigned short) p_viewData.m_gameY;
 			CMap* map = m_map;
 			int blockX = shadowGameX >> 4;
 			int blockY = gameY >> 4;
