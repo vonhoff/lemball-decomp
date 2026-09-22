@@ -264,6 +264,7 @@ void Maze::SwapChange()
 // FUNCTION: LEMBALL 0x00423530
 void Maze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY)
 {
+	int width;
 	Map* map;
 	if (p_resetStats != 0) {
 		m_totalTime = 0;
@@ -288,7 +289,7 @@ void Maze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, in
 					}
 					else {
 						map = m_map;
-						int width = map->m_ground.m_width;
+						width = map->m_ground.m_width;
 						if (width <= x || map->m_ground.m_height <= y) {
 							collision = 3;
 						}
