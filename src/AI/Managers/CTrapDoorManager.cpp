@@ -89,6 +89,41 @@ void CTrapDoorManager::Process()
 	}
 }
 
+// FUNCTION: LEMBALL 0x0040c950
+int CTrapDoorManager::GetTrapDoorPosition(AiCoord& p_position, int p_index)
+{
+	if (m_count == 0) {
+		return 0;
+	}
+	p_position = m_doors[p_index]->m_position;
+	int y;
+	int x;
+	x = p_position.m_xFixed >> 12;
+	y = p_position.m_yFixed >> 12;
+	int blockX = x >> 4;
+	int blockY = y >> 4;
+	CMap* map = g_pMap;
+	unsigned short z;
+	if (x < 0 || y < 0 || blockX >= map->m_ground.m_width || g_pMap->m_ground.m_height <= blockY) {
+		z = 0;
+	}
+	else {
+		x &= 0xf;
+		y &= 0xf;
+		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
+	}
+	p_position.m_zFixed = (unsigned int) z << 12;
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040ca10
+void CTrapDoorManager::SetTrapDoorPosition(int p_x, int p_y, int p_z, int p_index)
+{
+	if (p_index < m_count) {
+		m_doors[p_index]->SetPositionFromIntegers(p_x, p_y, p_z);
+	}
+}
+
 // FUNCTION: LEMBALL 0x0040ca40
 void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip)
 {

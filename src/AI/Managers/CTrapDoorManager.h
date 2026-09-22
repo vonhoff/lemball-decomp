@@ -16,6 +16,8 @@ public:
 	void Restart();
 	void ClearAllTrapDoors();
 	void AddNewDoor(unsigned short p_id, const AiCoord& p_position, unsigned int p_mode, unsigned long p_deadline);
+	int GetTrapDoorPosition(AiCoord& p_position, int p_index);
+	void SetTrapDoorPosition(int p_x, int p_y, int p_z, int p_index);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip);
 
 private:
