@@ -13,10 +13,6 @@
 
 #pragma intrinsic(memset)
 
-GenericGroupManager::GenericGroupManager()
-{
-}
-
 // 68K 0x1060d1da __ct__20CGenericGroupManagerFP3CAIP14CObjectManagerP17CFormationManager
 // FUNCTION: LEMBALL 0x0041e8f0
 GenericGroupManager::GenericGroupManager(Ai* p_arg0, ObjectManager* p_arg1, FormationManager* p_arg2)
