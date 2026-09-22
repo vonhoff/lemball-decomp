@@ -37,7 +37,7 @@ void CSheep::Restart()
 	collision[3] = tileX + 7;
 	collision[4] = tileY + 7;
 	collision[5] = tileZ + 15;
-	memcpy(&m_collisionMinX, collision, sizeof(collision));
+	memcpy(&m_collisionBounds, collision, sizeof(collision));
 	m_facingDirection = m_initialFacingDirection;
 	CAI* objectAi = g_pAI;
 	CAI* countAi = g_pAI;

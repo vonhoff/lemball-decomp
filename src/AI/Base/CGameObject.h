@@ -6,6 +6,7 @@
 #include "../Objects/CViewData.h"
 #include "AiCoord.h"   // complete type
 #include "C3DVector.h" // complete type
+#include "CRect3.h"    // complete type
 #include "ObjectActions.h"
 #include "ObjectTypes.h"
 #include "Views/Sound/SoundEffects.h"
@@ -16,7 +17,6 @@ class CBaseObjectManager;
 class CBullet;
 class CIce;
 class Info;
-class CRect3;
 struct Coord3d;
 struct CPt3;
 struct StateEntry;
@@ -175,16 +175,10 @@ public:
 
 protected:
 	unsigned short m_runtimeFlags;         // 0x04
-	unsigned short m_unk0x06;              // 0x06
 	unsigned int m_routeSearchFailed;      // 0x08
 	unsigned int m_routeSearchActive;      // 0x0c
 	unsigned int m_transientFlags;         // 0x10
-	int m_collisionMinX;                   // 0x14
-	int m_collisionMinY;                   // 0x18
-	int m_collisionMinZ;                   // 0x1c
-	int m_collisionMaxX;                   // 0x20
-	int m_collisionMaxY;                   // 0x24
-	int m_collisionMaxZ;                   // 0x28
+	CRect3 m_collisionBounds;              // 0x14
 	unsigned int m_deathRequested;         // 0x2c
 	unsigned int m_balloonPostActive;      // 0x30
 	unsigned int m_balloonPostId;          // 0x34
@@ -217,10 +211,8 @@ protected:
 	short m_initialFacingDirection;        // 0xb6
 	eAction m_action;                      // 0xb8
 	short m_actionArgument;                // 0xbc
-	unsigned short m_unk0xbe;              // 0xbe
 	unsigned int m_unk0xc0;                // 0xc0
 	short m_unk0xc4;                       // 0xc4
-	unsigned short m_unk0xc6;              // 0xc6
 	unsigned int m_lastMovementTick;       // 0xc8
 	unsigned int m_actionDeadline;         // 0xcc
 	unsigned int m_actionPhase1Deadline;   // 0xd0
@@ -238,7 +230,6 @@ protected:
 	unsigned int m_unk0x118;               // 0x118
 	unsigned int m_onMover;                // 0x11c
 	unsigned short m_invisibleSwitchId;    // 0x120
-	unsigned short m_unk0x122;             // 0x122
 };
 
 extern unsigned char g_abObjectIdBitmap[256];
@@ -288,5 +279,8 @@ inline void CGameObject::GetViewData(CViewData& p_viewData)
 
 // SYNTHETIC: LEMBALL 0x00417ad0
 // CGameObject::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x0042fc60
+// CGameObject::operator=
 
 #endif

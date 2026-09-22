@@ -71,8 +71,9 @@ eSoundEffect CGameObject::GetSndEffect()
 // FUNCTION: LEMBALL 0x0040a890
 bool CGameObject::Collision(const CPt3& p_point)
 {
-	if (m_collisionMinX <= p_point.m_x && p_point.m_x <= m_collisionMaxX && m_collisionMinY <= p_point.m_y &&
-		p_point.m_y <= m_collisionMaxY && m_collisionMinZ <= p_point.m_z && p_point.m_z <= m_collisionMaxZ) {
+	if (m_collisionBounds.m_x1 <= p_point.m_x && p_point.m_x <= m_collisionBounds.m_x2 &&
+		m_collisionBounds.m_y1 <= p_point.m_y && p_point.m_y <= m_collisionBounds.m_y2 &&
+		m_collisionBounds.m_z1 <= p_point.m_z && p_point.m_z <= m_collisionBounds.m_z2) {
 		return 1;
 	}
 	return 0;
@@ -81,8 +82,9 @@ bool CGameObject::Collision(const CPt3& p_point)
 // FUNCTION: LEMBALL 0x0040a8e0
 bool CGameObject::Collision(const CRect3& p_bounds)
 {
-	if (m_collisionMinX <= p_bounds.m_x2 && p_bounds.m_x1 <= m_collisionMaxX && m_collisionMinY <= p_bounds.m_y2 &&
-		p_bounds.m_y1 <= m_collisionMaxY && m_collisionMinZ <= p_bounds.m_z2 && p_bounds.m_z1 <= m_collisionMaxZ) {
+	if (m_collisionBounds.m_x1 <= p_bounds.m_x2 && p_bounds.m_x1 <= m_collisionBounds.m_x2 &&
+		m_collisionBounds.m_y1 <= p_bounds.m_y2 && p_bounds.m_y1 <= m_collisionBounds.m_y2 &&
+		m_collisionBounds.m_z1 <= p_bounds.m_z2 && p_bounds.m_z1 <= m_collisionBounds.m_z2) {
 		return 1;
 	}
 	return 0;
@@ -312,9 +314,8 @@ int CGameObject::UsableState()
 CGameObject::CGameObject(eObjectType p_objectType,
 						 unsigned short p_collisionFlags,
 						 unsigned short p_destinationCapacity)
-	: m_collisionMaxX(-1), m_collisionMaxY(-1), m_collisionMinX(0), m_collisionMinY(0), m_collisionMinZ(0),
-	  m_collisionMaxZ(-1), m_moveStartXFixed(DEBUG_SENTINEL), m_moveStartYFixed(DEBUG_SENTINEL),
-	  m_moveDeltaXFixed(DEBUG_SENTINEL), m_moveDeltaYFixed(DEBUG_SENTINEL)
+	: m_moveStartXFixed(DEBUG_SENTINEL), m_moveStartYFixed(DEBUG_SENTINEL), m_moveDeltaXFixed(DEBUG_SENTINEL),
+	  m_moveDeltaYFixed(DEBUG_SENTINEL)
 {
 	m_objectType = p_objectType;
 	m_collisionFlags = p_collisionFlags;
@@ -1290,7 +1291,7 @@ void CGameObject::UpdateCollision()
 	collision[3] = x + 15;
 	collision[4] = y + 15;
 	collision[5] = z + 15;
-	memcpy(&m_collisionMinX, collision, sizeof(collision));
+	memcpy(&m_collisionBounds, collision, sizeof(collision));
 }
 
 // FUNCTION: LEMBALL 0x00416820

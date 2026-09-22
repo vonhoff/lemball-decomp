@@ -23,31 +23,31 @@ void CMove3d::Set(CPt3& p_start, CPt3& p_end, int p_startTime, int p_speed)
 	distance += dy * dy;
 	distance += dx * dx;
 	if (distance == 0) {
-		m_velocity.m_x = 0;
-		m_velocity.m_y = 0;
-		m_velocity.m_z = 0;
+		m_velocity.m_xFixed = 0;
+		m_velocity.m_yFixed = 0;
+		m_velocity.m_zFixed = 0;
 		return;
 	}
 
 	int root = ((CVSMath*) g_pSentinel)->SqRoot(distance);
-	m_velocity.m_x = dx * 0x1000;
-	m_velocity.m_y = dy * 0x1000;
-	m_velocity.m_z = dz * 0x1000;
-	m_velocity.m_x = p_speed * m_velocity.m_x;
-	m_velocity.m_y = p_speed * m_velocity.m_y;
-	m_velocity.m_z = p_speed * m_velocity.m_z;
-	m_velocity.m_x /= root;
-	m_velocity.m_y /= root;
-	m_velocity.m_z /= root;
+	m_velocity.m_xFixed = dx * 0x1000;
+	m_velocity.m_yFixed = dy * 0x1000;
+	m_velocity.m_zFixed = dz * 0x1000;
+	m_velocity.m_xFixed = p_speed * m_velocity.m_xFixed;
+	m_velocity.m_yFixed = p_speed * m_velocity.m_yFixed;
+	m_velocity.m_zFixed = p_speed * m_velocity.m_zFixed;
+	m_velocity.m_xFixed /= root;
+	m_velocity.m_yFixed /= root;
+	m_velocity.m_zFixed /= root;
 }
 
 // FUNCTION: LEMBALL 0x0042a8f0
 void CMove3d::Position(CPt3& p_position, int p_time)
 {
 	int time = p_time - m_startTime;
-	int z = (m_velocity.m_z * time >> 12) + m_start.m_z;
-	int y = (m_velocity.m_y * time >> 12) + m_start.m_y;
-	int x = (m_velocity.m_x * time >> 12) + m_start.m_x;
+	int z = (m_velocity.m_zFixed * time >> 12) + m_start.m_z;
+	int y = (m_velocity.m_yFixed * time >> 12) + m_start.m_y;
+	int x = (m_velocity.m_xFixed * time >> 12) + m_start.m_x;
 	p_position.m_x = x;
 	p_position.m_y = y;
 	p_position.m_z = z;

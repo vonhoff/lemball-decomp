@@ -58,6 +58,25 @@ CMover* CMoverManager::Find(int p_x, int p_y, int& p_height)
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x0042f350
+void CMoverManager::RemoveMover(CMover* p_mover)
+{
+	int index = 0;
+	if (index < m_count) {
+		while (p_mover != &m_movers[index]) {
+			index++;
+			if (m_count <= index) {
+				return;
+			}
+		}
+		m_movers[index].SetId(0xffff);
+		for (index++; index < m_count; index++) {
+			m_movers[index - 1] = m_movers[index];
+		}
+		m_count--;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0042f500
 void CMoverManager::Process()
 {

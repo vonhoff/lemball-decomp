@@ -76,7 +76,7 @@ void CPlayerLemming::Restart()
 		collision[3] = tileX + 7;
 		collision[4] = tileY + 7;
 		collision[5] = tileZ + 15;
-		memcpy(&m_collisionMinX, collision, sizeof(collision));
+		memcpy(&m_collisionBounds, collision, sizeof(collision));
 		int& objectCount = g_pAI->m_objectCount;
 		g_pAI->m_objects[objectCount] = this;
 		objectCount++;
@@ -556,7 +556,7 @@ void CPlayerLemming::Resurrect(const AiCoord& p_position)
 	collision[3] = tileX + 7;
 	collision[4] = tileY + 7;
 	collision[5] = tileZ + 15;
-	memcpy(&m_collisionMinX, collision, sizeof(collision));
+	memcpy(&m_collisionBounds, collision, sizeof(collision));
 	int& objectCount = g_pAI->m_objectCount;
 	g_pAI->m_objects[objectCount] = this;
 	objectCount++;
