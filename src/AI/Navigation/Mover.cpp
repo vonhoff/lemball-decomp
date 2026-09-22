@@ -46,6 +46,12 @@ void Mover::Initialise()
 	m_action = ACTION_0x18;
 }
 
+// 68K 0x106172b6 __dt__6CMoverFv
+// FUNCTION: LEMBALL 0x0042e640
+Mover::~Mover()
+{
+}
+
 // 68K 0x1061730e SetPos__6CMoverFv
 // FUNCTION: LEMBALL 0x0042e650
 void Mover::SetPos()
@@ -397,10 +403,11 @@ bool Mover::GetOn(GameObject* p_object)
 	if (IsOn(objectPosition) == 0) {
 		return false;
 	}
+	int i;
 	GameObject** object;
 	int count = m_objectCount;
 	if (count < 10) {
-		int i = 0;
+		i = 0;
 		if (count > 0) {
 			object = m_objects;
 			do {
@@ -455,10 +462,5 @@ void Mover::StopObjectsMoving()
 // 68K 0x1011a914 DoActivate__6CMoverFv
 // FUNCTION: LEMBALL 0x0042fb90
 void Mover::DoActivate()
-{
-}
-
-// 68K 0x106172b6 __dt__6CMoverFv
-Mover::~Mover()
 {
 }
