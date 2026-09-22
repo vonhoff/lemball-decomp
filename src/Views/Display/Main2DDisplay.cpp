@@ -489,11 +489,12 @@ int Main2DDisplay::GetReturnState()
 VsRect Main2DDisplay::GetUseRect(int p_x, int p_y)
 {
 	VsRect result;
-	short width;
-	short height;
-	short x;
-	short y;
+	short& width = result.m_width;
+	short& height = result.m_height;
+	short& x = result.m_x;
+	short& y = result.m_y;
 	int compact;
+	const VsSize& screenSize = g_pTargetGraphicsDriver->m_screenSize;
 
 	compact = g_pTargetGraphicsSystem->m_driverMode == 3;
 	g_nCompactPrimaryContextLayout = compact;
@@ -505,18 +506,14 @@ VsRect Main2DDisplay::GetUseRect(int p_x, int p_y)
 		width = m_highWidth;
 		height = m_highHeight;
 	}
-	y = (short) (g_pTargetGraphicsDriver->m_screenSize.m_height - height) / 2;
-	x = (short) (g_pTargetGraphicsDriver->m_screenSize.m_width - width) / 2;
+	y = (short) (screenSize.m_height - height) / 2;
+	x = (short) (screenSize.m_width - width) / 2;
 	if (p_x != -1) {
 		x = (short) p_x;
 	}
 	if (p_y != -1) {
 		y = (short) p_y;
 	}
-	result.m_width = width;
-	result.m_height = height;
-	result.m_x = x;
-	result.m_y = y;
 	return result;
 }
 
