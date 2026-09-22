@@ -273,37 +273,25 @@ void BaseCursor::SetMainId(unsigned int p_resourceId, int p_frame)
 // FUNCTION: LEMBALL 0x0046b460
 bool BaseCursor::InWindow(GWnd* p_window)
 {
-	short width;
-	short height;
-	short x;
-	short y;
+	VsRect bounds(p_window->m_rect);
+	short& width = bounds.m_width;
+	short& height = bounds.m_height;
+	short& x = bounds.m_x;
+	short& y = bounds.m_y;
 	short innerWidth;
 	short innerHeight;
 	short clipX;
 	short clipY;
 	VsPoint* innerXY;
 
-	width = p_window->m_rect.m_width;
-	height = p_window->m_rect.m_height;
-	if (p_window != (GWnd*) -8) {
-		x = p_window->m_rect.m_x;
-		y = p_window->m_rect.m_y;
-	}
-	else {
-		x = ((VsPoint*) 0)->m_x;
-		y = ((VsPoint*) 0)->m_y;
-	}
-	innerWidth = p_window->m_innerRect.m_width;
 	innerHeight = p_window->m_innerRect.m_height;
-	if (p_window != (GWnd*) -16) {
-		innerXY = (VsPoint*) &p_window->m_innerRect.m_x;
-	}
-	else {
-		innerXY = 0;
-	}
+	innerWidth = p_window->m_innerRect.m_width;
+	innerXY = &p_window->m_innerRect;
+	clipX = innerXY->m_x;
+	clipY = innerXY->m_y;
 	if ((int) innerHeight * (int) innerWidth != 0) {
-		clipX = (short) (innerXY->m_x + x);
-		clipY = (short) (innerXY->m_y + y);
+		clipX = (short) (clipX + x);
+		clipY = (short) (clipY + y);
 		if (x < clipX) {
 			width = (short) (width + (x - clipX));
 			x = clipX;
@@ -318,7 +306,7 @@ bool BaseCursor::InWindow(GWnd* p_window)
 		if ((short) (clipY + innerHeight) < (short) (height + y)) {
 			height = (short) ((innerHeight - y) + clipY);
 		}
-		if (width < 1 || height < 1) {
+		if (width <= 0 || height <= 0) {
 			height = 0;
 			width = 0;
 			y = 0;
