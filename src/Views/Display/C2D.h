@@ -131,6 +131,7 @@ public:
 				   unsigned int p_cancelMoves,
 				   unsigned int p_alternate);
 	void MoveGroup(const CVsPoint& p_point);
+	void MarkGroundAnimAndLiftBounds();
 	void NewPauseWindow(ePauseWindowMessages p_message);
 	void NextGroup();
 	void NoStateLeftClick(const CVsPoint& p_screenPoint,
@@ -191,7 +192,7 @@ private:
 	unsigned int m_cursorState;                   // 0x1a4
 	unsigned int m_cursorTimestamp;               // 0x1a8
 	unsigned short m_cursorBlinkPhase;            // 0x1ac
-	char m_pad0x1ae[0x71a];                       // 0x1ae
+	char m_groundClipScratch[0x71a];              // 0x1ae
 	unsigned int m_pad0x8c8;                      // 0x8c8
 	unsigned int m_pad0x8cc;                      // 0x8cc
 	unsigned short m_clipSearchHeight;            // 0x8d0
