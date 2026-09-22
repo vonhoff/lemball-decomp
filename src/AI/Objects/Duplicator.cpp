@@ -24,6 +24,12 @@ Duplicator::Duplicator(const AiCoord& p_position) : GlobalGameObject(OBJECT_DUPL
 	m_spawnPosition.m_zFixed = p_position.m_zFixed;
 }
 
+// 68K 0x10607368 __dt__11CDuplicatorFv
+// FUNCTION: LEMBALL 0x004275e0
+Duplicator::~Duplicator()
+{
+}
+
 // 68K 0x106073c6 Restart__11CDuplicatorFv
 // FUNCTION: LEMBALL 0x004275f0
 void Duplicator::Restart()
@@ -170,9 +176,4 @@ void Duplicator::DoActivate()
 int Duplicator::Usage()
 {
 	return 2;
-}
-
-// 68K 0x10607368 __dt__11CDuplicatorFv
-Duplicator::~Duplicator()
-{
 }

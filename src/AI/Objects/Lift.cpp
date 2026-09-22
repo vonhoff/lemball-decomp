@@ -22,6 +22,12 @@ Lift::Lift() : GlobalGameObject(TERRAIN_LIFT, 0, 0)
 {
 }
 
+// 68K 0x1061462a __dt__5CLiftFv
+// FUNCTION: LEMBALL 0x00424d20
+Lift::~Lift()
+{
+}
+
 // 68K 0x10614682 CalculateCliff__5CLiftFv
 // FUNCTION: LEMBALL 0x00424d30
 void Lift::CalculateCliff()
@@ -329,10 +335,5 @@ void Lift::ActivateDeactivate()
 // 68K 0x1011a746 DoActivate__5CLiftFv
 // FUNCTION: LEMBALL 0x004266d0
 void Lift::DoActivate()
-{
-}
-
-// 68K 0x1061462a __dt__5CLiftFv
-Lift::~Lift()
 {
 }

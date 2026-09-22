@@ -38,6 +38,12 @@ void Hand::Restart()
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
 }
 
+// 68K 0x10610e1c __dt__5CHandFv
+// FUNCTION: LEMBALL 0x00427b40
+Hand::~Hand()
+{
+}
+
 // 68K 0x10610e74 Set__5CHandFUsRC7AICOORD
 // FUNCTION: LEMBALL 0x00427b50
 void Hand::Set(unsigned short p_id, const AiCoord& p_position)
@@ -158,9 +164,4 @@ void Hand::DoActivate()
 	m_unk0xd0 += g_dwGameTick;
 	m_actionDeadline += g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
-}
-
-// 68K 0x10610e1c __dt__5CHandFv
-Hand::~Hand()
-{
 }
