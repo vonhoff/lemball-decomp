@@ -10,6 +10,29 @@
 
 extern char g_szButton[];
 
+// FUNCTION: LEMBALL 0x00468f90
+CTextButton::CTextButton(const CVsRect& p_rect,
+						 CPVGWnd* p_parent,
+						 unsigned int p_fontResourceId,
+						 unsigned int p_alignmentFlags)
+	: CFramedButton(p_parent, 0xf7)
+{
+	const CVsPoint* position = &p_rect;
+	m_buttonX = position->m_x;
+	m_buttonY = position->m_y;
+	CVsRect bounds(p_rect);
+	bounds.m_x = 0;
+	bounds.m_y = 0;
+	m_bounds.m_width = bounds.m_width;
+	m_bounds.m_height = bounds.m_height;
+	m_bounds.m_x = bounds.m_x;
+	m_bounds.m_y = bounds.m_y;
+	SetActive(1);
+	m_fontResourceId = p_fontResourceId;
+	m_alignmentFlags = p_alignmentFlags;
+	Initialize();
+}
+
 // FUNCTION: LEMBALL 0x00469120
 void CTextButton::ExpandToFitText(const CVsSize& p_textSize)
 {

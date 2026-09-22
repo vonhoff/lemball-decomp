@@ -10,6 +10,7 @@ class CHotAreaHandler;
 // VTABLE: LEMBALL 0x004970e0 CHotAreaHandler
 class CInputTextButton : public CTextButton {
 public:
+	CInputTextButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_controlMessage, char* p_text);
 	virtual ~CInputTextButton();
 	void SetOwnedText(char* p_text);
 

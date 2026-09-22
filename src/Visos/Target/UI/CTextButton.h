@@ -16,6 +16,7 @@ struct CVsSize;
 // VTABLE: LEMBALL 0x004999f8 CHotAreaHandler
 class CTextButton : public CFramedButton {
 public:
+	CTextButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_fontResourceId, unsigned int p_alignmentFlags);
 	void ExpandToFitText(const CVsSize& p_textSize);
 	void AlignTextPosition(CVsPoint& p_position, const CVsSize& p_textSize);
 	void SetText(char* p_normalText, char* p_pressedText);

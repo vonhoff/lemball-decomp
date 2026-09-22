@@ -49,6 +49,7 @@ public:
 	friend class CDepressedButton;
 	friend class CFramedButton;
 	friend class CTextButton;
+	friend class CInputTextButton;
 	friend class CGunButtons;
 	friend class CHiliteButtons;
 	friend class CGunController;
