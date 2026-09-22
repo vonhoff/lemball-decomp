@@ -394,7 +394,7 @@ void CAI::Start()
 		demo->m_duration = 0;
 	}
 
-	GameState(GAME_STATUS_2);
+	GameState(GAME_STATUS_RUNNING);
 	m_started = 1;
 }
 
@@ -441,7 +441,7 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 		}
 		switch (state) {
 		case GAME_STATE_0:
-			if (m_gameStatus == GAME_STATUS_1) {
+			if (m_gameStatus == GAME_STATUS_PAUSED) {
 				SendGameState(state, GAME_STATE_STAGE_REJECT);
 				m_gameStatePending = 0;
 				return;
@@ -451,10 +451,10 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 			break;
 		case GAME_STATE_2:
 			g_pGameStatus->m_skillState = 2;
-			m_gameStatus = GAME_STATUS_5;
+			m_gameStatus = GAME_STATUS_FAILURE;
 			break;
 		case GAME_STATE_3:
-			if (m_gameStatus == GAME_STATUS_4 || m_gameStatus == GAME_STATUS_3) {
+			if (m_gameStatus == GAME_STATUS_4 || m_gameStatus == GAME_STATUS_SUCCESS) {
 				SendGameState(state, GAME_STATE_STAGE_REJECT);
 				m_gameStatePending = 0;
 				return;
@@ -464,11 +464,11 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 			break;
 		case GAME_STATE_4:
 			g_pGameStatus->m_skillState = 3;
-			m_gameStatus = GAME_STATUS_3;
+			m_gameStatus = GAME_STATUS_SUCCESS;
 			break;
 		case GAME_STATE_6:
 			g_pGameStatus->m_skillState = 5;
-			m_gameStatus = GAME_STATUS_3;
+			m_gameStatus = GAME_STATUS_SUCCESS;
 			break;
 		default:
 			apply = 1;
@@ -482,53 +482,53 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 	case GAME_STATE_STAGE_CONFIRM:
 		switch (state) {
 		case GAME_STATE_0:
-			m_gameStatus = GAME_STATUS_1;
+			m_gameStatus = GAME_STATUS_PAUSED;
 			break;
 		case GAME_STATE_1:
-			if (m_gameStatus != GAME_STATUS_8) {
+			if (m_gameStatus != GAME_STATUS_RESTART) {
 				m_started = 1;
-				m_gameStatus = GAME_STATUS_2;
+				m_gameStatus = GAME_STATUS_RUNNING;
 			}
 			break;
 		case GAME_STATE_2:
 			g_pGameStatus->m_skillState = 2;
-			m_gameStatus = GAME_STATUS_3;
+			m_gameStatus = GAME_STATUS_SUCCESS;
 			break;
 		case GAME_STATE_3:
 			m_gameStatus = GAME_STATUS_4;
 			break;
 		case GAME_STATE_4:
 			g_pGameStatus->m_skillState = 3;
-			m_gameStatus = GAME_STATUS_5;
+			m_gameStatus = GAME_STATUS_FAILURE;
 			break;
 		case GAME_STATE_6:
 			g_pGameStatus->m_skillState = 5;
-			m_gameStatus = GAME_STATUS_5;
+			m_gameStatus = GAME_STATUS_FAILURE;
 			break;
 		case GAME_STATE_7:
 			if ((unsigned int) m_gameTime > p_message->m_levelTime) {
 				g_pGameStatus->m_skillState = 4;
-				m_gameStatus = GAME_STATUS_3;
+				m_gameStatus = GAME_STATUS_SUCCESS;
 			}
 			else if ((unsigned int) m_gameTime != p_message->m_levelTime) {
 				g_pGameStatus->m_skillState = 4;
-				m_gameStatus = GAME_STATUS_5;
+				m_gameStatus = GAME_STATUS_FAILURE;
 			}
 			else if ((unsigned int) m_score > p_message->m_score) {
 				g_pGameStatus->m_skillState = 1;
-				m_gameStatus = GAME_STATUS_3;
+				m_gameStatus = GAME_STATUS_SUCCESS;
 			}
 			else if ((unsigned int) m_score < p_message->m_score) {
 				g_pGameStatus->m_skillState = 1;
-				m_gameStatus = GAME_STATUS_5;
+				m_gameStatus = GAME_STATUS_FAILURE;
 			}
 			else {
 				g_pGameStatus->m_skillState = 4;
-				m_gameStatus = GAME_STATUS_5;
+				m_gameStatus = GAME_STATUS_FAILURE;
 			}
 			break;
 		case GAME_STATE_8:
-			m_gameStatus = GAME_STATUS_8;
+			m_gameStatus = GAME_STATUS_RESTART;
 			return;
 		}
 		m_gameStatePending = 0;
@@ -544,19 +544,19 @@ void CAI::GameState(eGameStatus p_status)
 {
 	if (m_networkMode == 0) {
 		switch (p_status) {
-		case GAME_STATUS_3:
+		case GAME_STATUS_SUCCESS:
 			g_pGameStatus->m_skillState = 2;
-			m_gameStatus = GAME_STATUS_3;
+			m_gameStatus = GAME_STATUS_SUCCESS;
 			return;
-		case GAME_STATUS_5:
+		case GAME_STATUS_FAILURE:
 			if (g_pGameStatus->m_skillState == 0) {
 				g_pGameStatus->m_skillState = 3;
 			}
-			m_gameStatus = GAME_STATUS_5;
+			m_gameStatus = GAME_STATUS_FAILURE;
 			return;
 		case GAME_STATUS_7:
 			g_pGameStatus->m_skillState = 4;
-			m_gameStatus = GAME_STATUS_5;
+			m_gameStatus = GAME_STATUS_FAILURE;
 			return;
 		default:
 			m_gameStatus = p_status;
@@ -565,24 +565,24 @@ void CAI::GameState(eGameStatus p_status)
 	}
 	if (m_gameStatePending == 0) {
 		switch (p_status) {
-		case GAME_STATUS_1:
+		case GAME_STATUS_PAUSED:
 			m_isSinglePlayer = 0;
 			SendGameState(GAME_STATE_0, GAME_STATE_STAGE_REQUEST);
 			return;
-		case GAME_STATUS_2:
+		case GAME_STATUS_RUNNING:
 			SendGameState(GAME_STATE_1, GAME_STATE_STAGE_CONFIRM);
-			if (m_gameStatus == GAME_STATUS_2) {
+			if (m_gameStatus == GAME_STATUS_RUNNING) {
 				m_gameStatePending = 0;
 				return;
 			}
 			break;
-		case GAME_STATUS_3:
+		case GAME_STATUS_SUCCESS:
 			SendGameState(GAME_STATE_2, GAME_STATE_STAGE_REQUEST);
 			return;
 		case GAME_STATUS_4:
 			SendGameState(GAME_STATE_3, GAME_STATE_STAGE_REQUEST);
 			return;
-		case GAME_STATUS_5:
+		case GAME_STATUS_FAILURE:
 			if (g_pGameStatus->m_skillState == 5) {
 				SendGameState(GAME_STATE_6, GAME_STATE_STAGE_REQUEST);
 				return;
@@ -592,7 +592,7 @@ void CAI::GameState(eGameStatus p_status)
 		case GAME_STATUS_7:
 			SendGameState(GAME_STATE_7, GAME_STATE_STAGE_REQUEST);
 			return;
-		case GAME_STATUS_8:
+		case GAME_STATUS_RESTART:
 			SendGameState(GAME_STATE_8, GAME_STATE_STAGE_REQUEST);
 		}
 	}
@@ -678,7 +678,7 @@ void CAI::Process(int p_paused)
 		g_pNetworkManager->m_desiredGameState == g_pNetworkManager->m_observedGameState) {
 		m_gameStatePending = 0;
 		m_networkStartReady = 1;
-		GameState(GAME_STATUS_2);
+		GameState(GAME_STATUS_RUNNING);
 	}
 	if (p_paused == 0 && m_paused != 0) {
 		SetGameTime();
@@ -747,7 +747,7 @@ void CAI::Process(int p_paused)
 			m_gameOverDeadline = g_dwGameTick + 0x3c;
 		}
 		if (m_gameStatus == 4 && m_gameOverDeadline < g_dwGameTick) {
-			GameState(GAME_STATUS_3);
+			GameState(GAME_STATUS_SUCCESS);
 		}
 	}
 	if (g_pActiveConnection != 0 &&
@@ -1023,7 +1023,7 @@ void CAI::QuitGame()
 {
 	m_paused = 0;
 	g_pGameStatus->m_skillState = 5;
-	GameState(GAME_STATUS_5);
+	GameState(GAME_STATUS_FAILURE);
 }
 
 // FUNCTION: LEMBALL 0x00412c80

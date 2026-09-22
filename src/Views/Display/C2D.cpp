@@ -76,7 +76,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	m_returnState = 2;
 	m_cursorTimestamp = g_dwSimulationTimestamp;
 	if (g_nTestAllLevels != 0) {
-		m_testLevel = 0;
+		m_levelTestFrame = 0;
 	}
 	m_ai = p_ai;
 	m_gdi = p_gdi;
@@ -964,7 +964,7 @@ void C2D::TriggerPause(unsigned char p_paused)
 {
 	if (p_paused != 0) {
 		if (m_ai->m_gameStatus >= 1 && m_ai->m_gameStatus <= 2) {
-			m_ai->GameState(GAME_STATUS_1);
+			m_ai->GameState(GAME_STATUS_PAUSED);
 		}
 	}
 	else {
@@ -985,10 +985,10 @@ void C2D::SetPause(unsigned int p_paused)
 	ClockEditMode(p_paused);
 	m_ai->m_paused = m_paused;
 	if (p_paused != 0) {
-		m_ai->GameState(GAME_STATUS_1);
+		m_ai->GameState(GAME_STATUS_PAUSED);
 	}
 	else {
-		m_ai->GameState(GAME_STATUS_2);
+		m_ai->GameState(GAME_STATUS_RUNNING);
 		m_pauser = 0;
 	}
 	if (m_paused != 0) {

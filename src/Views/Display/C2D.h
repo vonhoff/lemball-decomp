@@ -181,7 +181,7 @@ private:
 	unsigned int m_mouseButtonDown;               // 0x18c
 	unsigned int m_frameCount;                    // 0x190
 	unsigned int m_frameTime;                     // 0x194
-	unsigned int m_testLevel;                     // 0x198
+	unsigned int m_levelTestFrame;                // 0x198
 	char m_pad0x19c[8];                           // 0x19c
 	unsigned int m_cursorState;                   // 0x1a4
 	unsigned int m_cursorTimestamp;               // 0x1a8

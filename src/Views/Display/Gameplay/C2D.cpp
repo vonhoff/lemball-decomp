@@ -16,7 +16,7 @@ void C2D::Process()
 {
 	CheckValidFormGroup();
 	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0 && g_pDemo->m_gameOver != 0) {
-		m_ai->GameState(GAME_STATUS_3);
+		m_ai->GameState(GAME_STATUS_SUCCESS);
 	}
 	if (m_connectionTimeoutActive != 0) {
 		if (CurrentMilliTimer() - m_connectionTimeoutStart >= 2000) {
@@ -71,7 +71,7 @@ void C2D::Process()
 					switch (m_pauseSelection) {
 					case 3:
 						*g_pErrorOutput << "Confirmed Yes Pause Restart\n";
-						m_ai->GameState(GAME_STATUS_8);
+						m_ai->GameState(GAME_STATUS_RESTART);
 						break;
 					case 4:
 						*g_pErrorOutput << "Confirmed Yes Pause Quit\n";
@@ -92,17 +92,17 @@ void C2D::Process()
 	}
 
 	switch (m_ai->m_gameStatus) {
-	case GAME_STATUS_1:
+	case GAME_STATUS_PAUSED:
 		if (m_paused == 0 && m_ai->m_gameStatePending == 0) {
 			m_panel->SetPause(1);
 		}
 		break;
-	case GAME_STATUS_2:
+	case GAME_STATUS_RUNNING:
 		if (m_paused != 0 && m_ai->m_gameStatePending == 0) {
 			m_panel->SetPause(0);
 		}
 		break;
-	case GAME_STATUS_3:
+	case GAME_STATUS_SUCCESS:
 		if (g_nDemoMode != 0) {
 			m_returnState = FLOW_MAIN_OPTIONS_1;
 		}
@@ -126,7 +126,7 @@ void C2D::Process()
 		NewPauseWindow(PAUSE_MSG_LOADING);
 		m_display->RefreshView();
 		break;
-	case GAME_STATUS_5:
+	case GAME_STATUS_FAILURE:
 		m_quitRequested = 1;
 		if (g_nDemoMode != 0) {
 			m_returnState = FLOW_MAIN_OPTIONS_1;
@@ -141,7 +141,7 @@ void C2D::Process()
 		m_ai->m_score = m_levelScore;
 		m_score = m_levelScore;
 		break;
-	case GAME_STATUS_8:
+	case GAME_STATUS_RESTART:
 		Restart();
 		break;
 	}
@@ -152,16 +152,16 @@ void C2D::Process()
 		m_connectionTimeoutStart = CurrentMilliTimer();
 	}
 	if (g_nTestAllLevels != 0) {
-		switch ((int) m_testLevel) {
+		switch ((int) m_levelTestFrame) {
 		case 50:
 		case 51:
 		case 52:
 			m_display->ToggleResolution();
 			break;
 		case 53:
-			m_ai->GameState(GAME_STATUS_3);
+			m_ai->GameState(GAME_STATUS_SUCCESS);
 			break;
 		}
-		m_testLevel++;
+		m_levelTestFrame++;
 	}
 }

@@ -354,7 +354,7 @@ void CPlayerLemming::Die()
 	}
 	g_wLemmingCount--;
 	if (g_wLemmingCount == 0) {
-		g_pAI->GameState(GAME_STATUS_5);
+		g_pAI->GameState(GAME_STATUS_FAILURE);
 	}
 }
 
