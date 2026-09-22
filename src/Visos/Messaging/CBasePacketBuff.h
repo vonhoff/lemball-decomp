@@ -6,7 +6,7 @@ class CBasePacket;
 // SIZE 0x0c
 class CBasePacketBuff {
 public:
-	CBasePacketBuff(int p_arg0, unsigned short p_arg1);
+	CBasePacketBuff(int p_packetCount, unsigned short p_packetSize);
 	~CBasePacketBuff();
 	CBasePacketBuff();
 

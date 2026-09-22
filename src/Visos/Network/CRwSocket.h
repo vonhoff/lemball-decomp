@@ -32,16 +32,16 @@ public:
 		CReadSocket::Process();
 	}
 
-	void SetCBuffers(int p_packetCount, int p_subpacketCount)
+	void SetCBuffers(int p_packetCount, int p_messageCapacity)
 	{
-		CReadSocket::SetCBuffers(p_packetCount, p_subpacketCount);
-		CWriteSocket::SetCBuffers(p_packetCount, p_subpacketCount);
+		CReadSocket::SetCBuffers(p_packetCount, p_messageCapacity);
+		CWriteSocket::SetCBuffers(p_packetCount, p_messageCapacity);
 	}
 
-	void SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount)
+	void SetNcBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity)
 	{
-		CReadSocket::SetNcBuffers(p_packetCount, p_sequenceWindow, p_subpacketCount);
-		CWriteSocket::SetNcBuffers(p_packetCount, p_sequenceWindow, p_subpacketCount);
+		CReadSocket::SetNcBuffers(p_lastSinglePacketMessageId, p_lastMessageId, p_messageCapacity);
+		CWriteSocket::SetNcBuffers(p_lastSinglePacketMessageId, p_lastMessageId, p_messageCapacity);
 	}
 };
 

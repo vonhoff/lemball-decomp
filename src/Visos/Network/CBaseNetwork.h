@@ -39,8 +39,8 @@ public:
 	void Delete(CConnect* p_connection);
 	void DetachMessageQueue();
 	void Establish(CNetworkAddress* p_address, unsigned char* p_data);
-	void SetCBuffers(int p_packetCount, int p_subpacketCount);
-	void SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount);
+	void SetCBuffers(int p_packetCount, int p_messageCapacity);
+	void SetNcBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity);
 	void ShutDown();
 	void StoCfailedConnect(CNetworkAddress* p_address);
 	void StoCokConnect(CNetworkAddress* p_address);
@@ -80,11 +80,11 @@ private:
 	CBaseQueueHandler* m_pendingDetachQueue;  // 0x40
 	CBaseQueueHandler* m_messageQueue;        // 0x44
 	unsigned int m_queueTransitionPending;    // 0x48
-	unsigned int m_nonCriticalPacketCount;    // 0x4c
-	unsigned int m_nonCriticalSequenceWindow; // 0x50
-	unsigned int m_nonCriticalSubpacketCount; // 0x54
+	unsigned int m_lastSinglePacketMessageId; // 0x4c
+	unsigned int m_lastNonCriticalMessageId;  // 0x50
+	unsigned int m_nonCriticalMessageCapacity; // 0x54
 	unsigned int m_criticalPacketCount;       // 0x58
-	unsigned int m_criticalSubpacketCount;    // 0x5c
+	unsigned int m_criticalMessageCapacity;   // 0x5c
 	unsigned int m_criticalRetryLimit;        // 0x60
 };
 

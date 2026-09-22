@@ -3,12 +3,12 @@
 #include "CBasePacket.h"
 
 // FUNCTION: LEMBALL 0x00461210
-CBasePacketBuff::CBasePacketBuff(int p_arg0, unsigned short p_arg1)
+CBasePacketBuff::CBasePacketBuff(int p_packetCount, unsigned short p_packetSize)
 {
-	m_packetSize = p_arg1;
-	m_packetCount = p_arg0;
-	if (p_arg0 > 0) {
-		m_packets = (CBasePacket**) operator new(p_arg0 * sizeof(CBasePacket*));
+	m_packetSize = p_packetSize;
+	m_packetCount = p_packetCount;
+	if (p_packetCount > 0) {
+		m_packets = (CBasePacket**) operator new(p_packetCount * sizeof(CBasePacket*));
 	}
 	else {
 		m_packets = 0;

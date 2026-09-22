@@ -302,8 +302,8 @@ CConnect* CBaseNetwork::NewConnect()
 	}
 	peer->m_previousConnect = m_lastConnect;
 	m_lastConnect = peer;
-	peer->SetNcBuffers(m_nonCriticalPacketCount, m_nonCriticalSequenceWindow, m_nonCriticalSubpacketCount);
-	peer->SetCBuffers(m_criticalPacketCount, m_nonCriticalSubpacketCount);
+	peer->SetNcBuffers(m_lastSinglePacketMessageId, m_lastNonCriticalMessageId, m_nonCriticalMessageCapacity);
+	peer->SetCBuffers(m_criticalPacketCount, m_nonCriticalMessageCapacity);
 	return peer;
 }
 
@@ -479,18 +479,20 @@ void CBaseNetwork::Establish(CNetworkAddress* p_address, unsigned char* p_data)
 }
 
 // FUNCTION: LEMBALL 0x00462550
-void CBaseNetwork::SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount)
+void CBaseNetwork::SetNcBuffers(unsigned long p_lastSinglePacketMessageId,
+								unsigned long p_lastMessageId,
+								int p_messageCapacity)
 {
-	m_nonCriticalPacketCount = p_packetCount;
-	m_nonCriticalSequenceWindow = p_sequenceWindow;
-	m_nonCriticalSubpacketCount = p_subpacketCount;
+	m_lastSinglePacketMessageId = p_lastSinglePacketMessageId;
+	m_lastNonCriticalMessageId = p_lastMessageId;
+	m_nonCriticalMessageCapacity = p_messageCapacity;
 }
 
 // FUNCTION: LEMBALL 0x00462570
-void CBaseNetwork::SetCBuffers(int p_packetCount, int p_subpacketCount)
+void CBaseNetwork::SetCBuffers(int p_packetCount, int p_messageCapacity)
 {
 	m_criticalPacketCount = p_packetCount;
-	m_criticalSubpacketCount = p_subpacketCount;
+	m_criticalMessageCapacity = p_messageCapacity;
 }
 
 // FUNCTION: LEMBALL 0x00462590

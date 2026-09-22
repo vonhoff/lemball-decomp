@@ -80,20 +80,22 @@ void CWriteSocket::DeleteCBuffers()
 }
 
 // FUNCTION: LEMBALL 0x0045fe50
-void CWriteSocket::SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount)
+void CWriteSocket::SetNcBuffers(unsigned long p_lastSinglePacketMessageId,
+								unsigned long p_lastMessageId,
+								int p_messageCapacity)
 {
-	(void) p_packetCount;
-	(void) p_sequenceWindow;
-	(void) p_subpacketCount;
+	(void) p_lastSinglePacketMessageId;
+	(void) p_lastMessageId;
+	(void) p_messageCapacity;
 	DeleteNcBuffers();
 }
 
 // FUNCTION: LEMBALL 0x0045fe60
-void CWriteSocket::SetCBuffers(int p_packetCount, int p_subpacketCount)
+void CWriteSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 {
 	void* storage;
 
-	(void) p_subpacketCount;
+	(void) p_messageCapacity;
 	DeleteCBuffers();
 	storage = operator new(sizeof(CWriteCBuff));
 	if (storage != 0) {

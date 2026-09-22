@@ -8,17 +8,17 @@
 #pragma intrinsic(memcpy)
 
 // FUNCTION: LEMBALL 0x004613d0
-CReadMsBuff::CReadMsBuff(int p_arg0, int p_arg1, unsigned short p_arg2)
+CReadMsBuff::CReadMsBuff(int p_messageSlots, int p_messageCapacity, unsigned short p_packetSize)
 {
 	unsigned int payloadSize;
 
-	m_expectedSubpacketCount = p_arg0;
+	m_messageSlotCount = p_messageSlots;
 	m_assembledSize = 0;
 	m_receivedSubpacketCount = 0;
-	payloadSize = (p_arg2 & 0xffff) - sizeof(BasePacketHeader);
+	payloadSize = (p_packetSize & 0xffff) - sizeof(BasePacketHeader);
 	m_subpacketPayloadSize = payloadSize;
-	if (p_arg0 != 0 && payloadSize != 0) {
-		m_data = (unsigned char*) operator new(p_arg1 + sizeof(BasePacketHeader));
+	if (p_messageSlots != 0 && payloadSize != 0) {
+		m_data = (unsigned char*) operator new(p_messageCapacity + sizeof(BasePacketHeader));
 		((BasePacketHeader*) m_data)->m_packetSequence = 0;
 	}
 	else {

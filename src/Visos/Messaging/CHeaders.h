@@ -9,7 +9,7 @@ class CHeaderMessage;
 // VTABLE: LEMBALL 0x0049a4c0
 class CHeaders : public CNetworkMessage {
 public:
-	CHeaders(int p_arg0);
+	CHeaders(int p_headerCount);
 	CHeaderMessage* GetNextHeaderBySequence();
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08

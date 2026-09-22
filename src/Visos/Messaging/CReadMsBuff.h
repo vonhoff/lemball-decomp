@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x004991d4
 class CReadMsBuff : public CBasePacket {
 public:
-	CReadMsBuff(int p_arg0, int p_arg1, unsigned short p_arg2);
+	CReadMsBuff(int p_messageSlots, int p_messageCapacity, unsigned short p_packetSize);
 	void FillPacket();
 	virtual ~CReadMsBuff();
 
@@ -16,7 +16,7 @@ public:
 
 protected:
 	unsigned int m_subpacketPayloadSize;   // 0x08
-	unsigned int m_expectedSubpacketCount; // 0x0c
+	unsigned int m_messageSlotCount;       // 0x0c
 	unsigned int m_receivedSubpacketCount; // 0x10
 	unsigned int m_assembledSize;          // 0x14
 };

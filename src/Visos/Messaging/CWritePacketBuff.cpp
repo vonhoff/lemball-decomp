@@ -4,7 +4,8 @@
 #include "Visos/Messaging/CBasePacketBuff.h"
 
 // FUNCTION: LEMBALL 0x00461340
-CWritePacketBuff::CWritePacketBuff(int p_arg0, unsigned short p_arg1) : CBasePacketBuff(p_arg0, p_arg1)
+CWritePacketBuff::CWritePacketBuff(int p_packetCount, unsigned short p_packetSize)
+	: CBasePacketBuff(p_packetCount, p_packetSize)
 {
 	if (m_packets != 0) {
 		int index;
@@ -16,10 +17,10 @@ CWritePacketBuff::CWritePacketBuff(int p_arg0, unsigned short p_arg1) : CBasePac
 }
 
 // FUNCTION: LEMBALL 0x004613a0
-void CWritePacketBuff::FillPacket(int p_arg0,
-								  const unsigned char* p_arg1,
-								  unsigned short p_arg2,
-								  CNetworkMessage* p_arg3)
+void CWritePacketBuff::FillPacket(int p_index,
+								  const unsigned char* p_data,
+								  unsigned short p_size,
+								  CNetworkMessage* p_message)
 {
-	((CWritePacket*) m_packets[p_arg0])->Fill(p_arg1, p_arg2, p_arg3);
+	((CWritePacket*) m_packets[p_index])->Fill(p_data, p_size, p_message);
 }

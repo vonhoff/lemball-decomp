@@ -5,7 +5,8 @@
 #include "Visos/Messaging/CBasePacketBuff.h"
 
 // FUNCTION: LEMBALL 0x00461290
-CReadPacketBuff::CReadPacketBuff(int p_arg0, unsigned short p_arg1) : CBasePacketBuff(p_arg0, p_arg1)
+CReadPacketBuff::CReadPacketBuff(int p_packetCount, unsigned short p_packetSize)
+	: CBasePacketBuff(p_packetCount, p_packetSize)
 {
 	if (m_packets != 0) {
 		int index;
@@ -17,9 +18,9 @@ CReadPacketBuff::CReadPacketBuff(int p_arg0, unsigned short p_arg1) : CBasePacke
 }
 
 // FUNCTION: LEMBALL 0x004612f0
-void CReadPacketBuff::FillPacket(int p_arg0)
+void CReadPacketBuff::FillPacket(int p_index)
 {
-	((CReadPacket*) m_packets[p_arg0])->Fill((unsigned char*) g_pNetworkPacketScratch, g_receivedPacketSize);
+	((CReadPacket*) m_packets[p_index])->Fill((unsigned char*) g_pNetworkPacketScratch, g_receivedPacketSize);
 }
 
 // FUNCTION: LEMBALL 0x00461310

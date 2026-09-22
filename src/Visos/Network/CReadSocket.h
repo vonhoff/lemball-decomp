@@ -27,8 +27,8 @@ public:
 	void GetLatest(CNetworkMessage& p_message);
 	virtual void PostRead(NetworkEvents p_event, CBasePacket* p_packet); // vtable+0x24
 	void Process();
-	void SetCBuffers(int p_packetCount, int p_subpacketCount);
-	void SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount);
+	void SetCBuffers(int p_packetCount, int p_messageCapacity);
+	void SetNcBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity);
 	void UnUseAllC();
 	void UnUseAllNc();
 	virtual ~CReadSocket(); // vtable+0x14

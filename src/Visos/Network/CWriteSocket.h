@@ -35,8 +35,8 @@ public:
 	void DeleteCBuffers();
 	void DeleteNcBuffers();
 	void Process();
-	void SetCBuffers(int p_packetCount, int p_subpacketCount);
-	void SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount);
+	void SetCBuffers(int p_packetCount, int p_messageCapacity);
+	void SetNcBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity);
 
 	friend class CBaseObjectManager;
 	friend class CBaseNetwork;

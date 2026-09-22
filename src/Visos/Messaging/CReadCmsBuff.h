@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x004991dc
 class CReadCmsBuff : public CReadMsBuff {
 public:
-	CReadCmsBuff(int p_arg0, int p_arg1, unsigned short p_arg2);
+	CReadCmsBuff(int p_messageCount, int p_messageCapacity, unsigned short p_packetSize);
 	CReadMsBuff* StoreSubPacket();
 	~CReadCmsBuff();
 

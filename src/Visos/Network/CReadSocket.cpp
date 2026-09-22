@@ -74,7 +74,9 @@ void CReadSocket::DeleteCBuffers()
 }
 
 // FUNCTION: LEMBALL 0x0045f930
-void CReadSocket::SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequenceWindow, int p_subpacketCount)
+void CReadSocket::SetNcBuffers(unsigned long p_lastSinglePacketMessageId,
+							   unsigned long p_lastMessageId,
+							   int p_messageCapacity)
 {
 	void* storage;
 
@@ -84,19 +86,22 @@ void CReadSocket::SetNcBuffers(unsigned long p_packetCount, unsigned long p_sequ
 		m_nonCriticalBuffer = 0;
 	}
 	else {
-		m_nonCriticalBuffer = new (storage) CReadNcBuff(p_packetCount, (unsigned short) g_networkPacketSize);
+		m_nonCriticalBuffer =
+			new (storage) CReadNcBuff(p_lastSinglePacketMessageId, (unsigned short) g_networkPacketSize);
 	}
 	storage = operator new(sizeof(CReadNcmsBuff));
 	if (storage != 0) {
-		m_nonCriticalMultiBuffer = new (storage)
-			CReadNcmsBuff(p_packetCount + 1, p_sequenceWindow, p_subpacketCount, (unsigned short) g_networkPacketSize);
+		m_nonCriticalMultiBuffer = new (storage) CReadNcmsBuff(p_lastSinglePacketMessageId + 1,
+															   p_lastMessageId,
+															   p_messageCapacity,
+															   (unsigned short) g_networkPacketSize);
 		return;
 	}
 	m_nonCriticalMultiBuffer = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045f9b0
-void CReadSocket::SetCBuffers(int p_packetCount, int p_subpacketCount)
+void CReadSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 {
 	void* storage;
 
@@ -114,7 +119,7 @@ void CReadSocket::SetCBuffers(int p_packetCount, int p_subpacketCount)
 	}
 	else {
 		m_criticalMultiBuffer =
-			new (storage) CReadCmsBuff(p_packetCount, p_subpacketCount, (unsigned short) g_networkPacketSize);
+			new (storage) CReadCmsBuff(p_packetCount, p_messageCapacity, (unsigned short) g_networkPacketSize);
 	}
 	if (g_pNetworkPacketScratch == 0) {
 		g_pNetworkPacketScratch = (BasePacketHeader*) operator new(g_networkPacketSize);

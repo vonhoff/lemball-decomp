@@ -5,18 +5,21 @@
 #include "Visos/Messaging/CReadMsBuff.h"
 
 // FUNCTION: LEMBALL 0x00461610
-CReadNcmsBuff::CReadNcmsBuff(unsigned long p_arg0, unsigned long p_arg1, int p_arg2, unsigned short p_arg3)
-	: CReadMsBuff(p_arg1 - p_arg0 + 1, p_arg2, p_arg3)
+CReadNcmsBuff::CReadNcmsBuff(unsigned long p_firstMessageId,
+							 unsigned long p_lastMessageId,
+							 int p_messageCapacity,
+							 unsigned short p_packetSize)
+	: CReadMsBuff(p_lastMessageId - p_firstMessageId + 1, p_messageCapacity, p_packetSize)
 {
 	int index;
 
-	m_firstMessageId = p_arg0;
-	m_messageCount = p_arg1 - p_arg0 + 1;
+	m_firstMessageId = p_firstMessageId;
+	m_messageCount = p_lastMessageId - p_firstMessageId + 1;
 	m_nextExpectedSequence = 0;
-	if (p_arg2 > 0) {
+	if (p_messageCapacity > 0) {
 		m_messages = (CReadMsBuff**) operator new(m_messageCount * sizeof(CReadMsBuff*));
 		for (index = 0; index < m_messageCount; index++) {
-			m_messages[index] = new CReadMsBuff(m_messageCount, p_arg2, p_arg3);
+			m_messages[index] = new CReadMsBuff(m_messageCount, p_messageCapacity, p_packetSize);
 		}
 	}
 	else {

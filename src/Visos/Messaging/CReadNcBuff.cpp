@@ -6,9 +6,10 @@
 #include "Visos/Messaging/CReadPacketBuff.h"
 
 // FUNCTION: LEMBALL 0x00461560
-CReadNcBuff::CReadNcBuff(unsigned long p_arg0, unsigned short p_arg1) : CReadPacketBuff(p_arg0 - 2, p_arg1)
+CReadNcBuff::CReadNcBuff(unsigned long p_lastMessageId, unsigned short p_packetSize)
+	: CReadPacketBuff(p_lastMessageId - 2, p_packetSize)
 {
-	m_messageSlots = p_arg0 - 2;
+	m_messageSlots = p_lastMessageId - 2;
 }
 
 // FUNCTION: LEMBALL 0x00461580
@@ -38,10 +39,10 @@ CReadPacket* CReadNcBuff::UpdatePacket()
 }
 
 // FUNCTION: LEMBALL 0x004615f0
-CReadPacket* CReadNcBuff::GetPacket(unsigned long p_arg0)
+CReadPacket* CReadNcBuff::GetPacket(unsigned long p_messageId)
 {
-	if ((int) p_arg0 >= 3) {
-		p_arg0 -= 3;
+	if ((int) p_messageId >= 3) {
+		p_messageId -= 3;
 	}
-	return (CReadPacket*) m_packets[p_arg0];
+	return (CReadPacket*) m_packets[p_messageId];
 }

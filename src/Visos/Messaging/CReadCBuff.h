@@ -8,7 +8,7 @@ class CReadPacket;
 // SIZE 0x14
 class CReadCBuff : public CReadPacketBuff {
 public:
-	CReadCBuff(int p_arg0, unsigned short p_arg1);
+	CReadCBuff(int p_packetCount, unsigned short p_packetSize);
 	CReadPacket* NextPacketReady();
 	CReadPacket* StorePacket();
 

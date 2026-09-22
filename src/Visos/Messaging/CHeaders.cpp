@@ -3,15 +3,15 @@
 #include "CHeaderMessage.h"
 
 // FUNCTION: LEMBALL 0x00479620
-CHeaders::CHeaders(int p_arg0)
+CHeaders::CHeaders(int p_headerCount)
 {
-	m_count = p_arg0;
-	m_headers = new CHeaderMessage[p_arg0];
+	m_count = p_headerCount;
+	m_headers = new CHeaderMessage[p_headerCount];
 	m_sequences = new unsigned short[m_count];
 	for (int index = 0; index < m_count; index++) {
 		m_sequences[index] = 0;
 	}
-	m_payloadCapacity += m_headers->m_payloadCapacity * p_arg0;
+	m_payloadCapacity += m_headers->m_payloadCapacity * p_headerCount;
 }
 
 // FUNCTION: LEMBALL 0x004796e0

@@ -9,9 +9,12 @@ class CWritePacket;
 // SIZE 0x0c
 class CWriteCBuff : public CWritePacketBuff {
 public:
-	CWriteCBuff(int p_arg0, unsigned short p_arg1);
-	bool IsPacketAvailable(unsigned short p_arg0);
-	CWritePacket* StorePacket(unsigned short p_arg0, const unsigned char* p_arg1, int p_arg2, CNetworkMessage* p_arg3);
+	CWriteCBuff(int p_packetCount, unsigned short p_packetSize);
+	bool IsPacketAvailable(unsigned short p_sequence);
+	CWritePacket* StorePacket(unsigned short p_sequence,
+							  const unsigned char* p_data,
+							  int p_size,
+							  CNetworkMessage* p_message);
 };
 
 #endif

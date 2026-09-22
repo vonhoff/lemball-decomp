@@ -8,8 +8,8 @@ class CReadPacket;
 // SIZE 0x10
 class CReadNcBuff : public CReadPacketBuff {
 public:
-	CReadNcBuff(unsigned long p_arg0, unsigned short p_arg1);
-	CReadPacket* GetPacket(unsigned long p_arg0);
+	CReadNcBuff(unsigned long p_lastMessageId, unsigned short p_packetSize);
+	CReadPacket* GetPacket(unsigned long p_messageId);
 	CReadPacket* UpdatePacket();
 
 private:

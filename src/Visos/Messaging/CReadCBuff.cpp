@@ -6,7 +6,7 @@
 #include "Visos/Messaging/CReadPacketBuff.h"
 
 // FUNCTION: LEMBALL 0x00461780
-CReadCBuff::CReadCBuff(int p_arg0, unsigned short p_arg1) : CReadPacketBuff(p_arg0, p_arg1)
+CReadCBuff::CReadCBuff(int p_packetCount, unsigned short p_packetSize) : CReadPacketBuff(p_packetCount, p_packetSize)
 {
 	m_nextSequence = 0;
 	m_outOfOrder = 0;

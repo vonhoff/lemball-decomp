@@ -8,7 +8,10 @@
 class CReadNcmsBuff : public CReadMsBuff {
 public:
 	CReadMsBuff* UpdateSubPacket();
-	CReadNcmsBuff(unsigned long p_arg0, unsigned long p_arg1, int p_arg2, unsigned short p_arg3);
+	CReadNcmsBuff(unsigned long p_firstMessageId,
+				  unsigned long p_lastMessageId,
+				  int p_messageCapacity,
+				  unsigned short p_packetSize);
 	~CReadNcmsBuff();
 
 private:
