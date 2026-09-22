@@ -226,22 +226,25 @@ void HiliteController::DrawButtons(int p_force)
 // FUNCTION: LEMBALL 0x0044fa00
 void HiliteController::DrawHiliteWindow()
 {
-	if (m_active != 0 && m_hiliteSurface != 0) {
+	if (m_active != 0) {
+		int offset = m_layoutMode == 1 ? -1 : -2;
 		Gdi* hiliteGdi = (Gdi*) m_hiliteSurface;
 		Surface* surface = hiliteGdi->m_renderTarget;
+		VsSize dimensions(surface->m_windowRect);
 		m_hiliteRect.m_color = 0x10000;
-		m_hiliteRect.m_left = surface->m_windowRect.m_width;
-		m_hiliteRect.m_top = surface->m_windowRect.m_height;
+		m_hiliteRect.m_left = dimensions.m_width;
+		m_hiliteRect.m_top = dimensions.m_height;
 		m_hiliteRect.m_right = 0;
 		m_hiliteRect.m_bottom = 0;
 		m_hiliteRect.Draw(hiliteGdi);
 		m_hiliteAnim.m_frameState = 0;
-		Gdi* savedGdi = AnimsManager::m_gdi;
-		AnimsManager::m_gdi = hiliteGdi;
 		VsPoint position;
-		position.m_x = 0;
-		position.m_y = 0;
-		AnimsManager::DrawAnim(position, g_dwHiliteAnimationId, 0, (Frames*) &m_hiliteAnim, 0);
+		position.m_x = (short) m_currentX + (short) offset;
+		position.m_y = (short) m_currentY + (short) offset;
+		unsigned long animationId = g_dwHiliteAnimationId;
+		Gdi* savedGdi = AnimsManager::m_gdi;
+		AnimsManager::m_gdi = (Gdi*) m_hiliteSurface;
+		AnimsManager::DrawAnim(position, animationId, 0, (Frames*) &m_hiliteAnim, 0);
 		AnimsManager::m_gdi = savedGdi;
 		AnimsManager::ResetPrimitives();
 	}
