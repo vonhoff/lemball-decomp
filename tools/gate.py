@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run smell, annotation, layout, decomplint and tool tests by default."""
+"""Run smell, annotation, 68K provenance, layout, decomplint and tool tests by default."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from pathlib import Path
 from lib.layout import check_layout
 from lib.names import check_names
 from lib.paths import SRC
+from lib.provenance import catalog_command, check_provenance
 from lib.smell import check_smell
 from lib.vtable import check_vtable
 
@@ -44,6 +45,23 @@ def main() -> int:
     parser.add_argument(
         "--names", action="store_true", help="68K naming vs source comments"
     )
+    parser.add_argument(
+        "--68k", dest="provenance", action="store_true",
+        help="verify 68K comments using the bundled metadata catalog"
+    )
+    parser.add_argument(
+        "--68k-resource", type=Path, dest="resource",
+        help="also verify the catalog against a private original resource fork"
+    )
+    catalog = parser.add_mutually_exclusive_group()
+    catalog.add_argument(
+        "--68k-export", type=Path, dest="catalog_export", metavar="JSON",
+        help="export the catalog as readable JSON for review"
+    )
+    catalog.add_argument(
+        "--68k-pack", type=Path, dest="catalog_pack", metavar="JSON",
+        help="validate reviewed JSON and repack the bundled catalog deterministically"
+    )
     parser.add_argument("--vtable", action="store_true", help="vtable slot comparison")
     parser.add_argument("--verbose", "-v", action="store_true", help="show verbose output (e.g. for vtable)")
     parser.add_argument("--top", type=int, default=0, help="show the N most frequent unresolved targets and pairs")
@@ -57,6 +75,13 @@ def main() -> int:
     args = parser.parse_args()
     paths = args.paths or None
 
+    if args.catalog_export is not None or args.catalog_pack is not None:
+        return catalog_command(export=args.catalog_export, pack=args.catalog_pack, resource=args.resource)
+
+    if (args.provenance or args.resource is not None) and not args.all:
+        return check_provenance(paths=paths, strict=args.annot_strict, verbose=args.verbose,
+                                resource=args.resource)
+
     if args.names and not args.all:
         return check_names(paths=paths, fail=True)
 
@@ -67,6 +92,11 @@ def main() -> int:
         return check_tool_tests()
 
     code = check_smell(paths=paths, annot=True, annot_strict=args.annot_strict)
+    if code != 0:
+        return code
+
+    code = check_provenance(paths=paths, strict=args.annot_strict, verbose=args.verbose,
+                            resource=args.resource)
     if code != 0:
         return code
 

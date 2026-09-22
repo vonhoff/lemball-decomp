@@ -37,4 +37,5 @@ reccmp-build.yml
 reccmp-user.yml
 objdiff.json
 data/*
+*.rsrc
 .gnupg-local/
