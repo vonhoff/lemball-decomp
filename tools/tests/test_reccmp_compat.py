@@ -147,6 +147,62 @@ class PointerComparisonTests(unittest.TestCase):
                          ["cmp eax, limit (DATA)", "mov eax, <OFFSET2>"])
 
 
+class StringDestinationTests(unittest.TestCase):
+    def render(self, destination=0x4000, *, bias=-1, adjacent=False,
+               relocation=True, referenced=True, scan=b"\xf2\xae\xf7\xd1",
+               target_name="buffer (DATA)", parser=None):
+        def names(address, *, exact=False, **kwargs):
+            if address == destination:
+                return target_name
+            if adjacent and not exact and address == destination - 1:
+                return "neighbor[255]+3 (OFFSET)"
+            return None
+
+        parser = parser or RelocationAwareParseAsm(
+            relocation_sites=(0x1001, 0x1012) if relocation else (0x1001, 0x9999),
+            name_lookup=names, addr_test=lambda address: True,
+        )
+        prefix = b"\xbf" + struct.pack("<I", destination) if referenced else b"\x90" * 5
+        blob = (prefix + b"\xb9\xff\xff\xff\xff\x2b\xc0" + scan
+                + b"\x81\xc1" + struct.pack("<I", destination + bias) + b"\xc3")
+        return [text for _, text in parser.parse_asm(blob, 0x1000)]
+
+    def test_strlen_destination_ignores_unrelated_adjacent_storage(self):
+        original = self.render()
+        rebuilt = self.render(0x8000, adjacent=True)
+        self.assertEqual(original, rebuilt)
+        self.assertEqual(original[-2], "add ecx, buffer (DATA) - 0x1")
+
+    def test_changed_bias_and_target_remain_different(self):
+        baseline = self.render()
+        self.assertNotEqual(baseline, self.render(bias=-2))
+        self.assertNotEqual(baseline, self.render(target_name="other (DATA)"))
+
+    def test_normalization_requires_relocation_and_prior_data_reference(self):
+        for options in ({"relocation": False}, {"referenced": False},
+                        {"target_name": "callee (FUNCTION)"}):
+            with self.subTest(options=options):
+                self.assertEqual(self.render(adjacent=True, **options)[-2],
+                                 "add ecx, neighbor[255]+3 (OFFSET)")
+
+    def test_changed_scan_registers_and_instructions_remain_visible(self):
+        for scan in (b"\xf2\xae\xf7\xd2", b"\xf3\xae\xf7\xd1",
+                     b"\xf2\xae\x90\x90"):
+            with self.subTest(scan=scan):
+                self.assertEqual(self.render(adjacent=True, scan=scan)[-2],
+                                 "add ecx, neighbor[255]+3 (OFFSET)")
+
+    def test_prior_data_references_do_not_leak_between_functions(self):
+        def names(address, **kwargs):
+            return "buffer (DATA)" if address == 0x4000 else None
+
+        parser = RelocationAwareParseAsm(relocation_sites=(0x1001, 0x1012),
+                                         name_lookup=names, addr_test=lambda address: True)
+        self.assertEqual(self.render(parser=parser)[-2], "add ecx, buffer (DATA) - 0x1")
+        self.assertNotEqual(self.render(parser=parser, referenced=False)[-2],
+                            "add ecx, buffer (DATA) - 0x1")
+
+
 class OperandSwapTests(unittest.TestCase):
     def test_test_operand_swap_cannot_reverse_branch(self):
         left = ["test eax, ebx", "ja 0x10", "ret "]

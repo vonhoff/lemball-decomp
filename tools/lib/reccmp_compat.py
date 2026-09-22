@@ -260,7 +260,7 @@ def incremental_thunks(image):
 
 
 class RelocationAwareParseAsm(parse.ParseAsm):
-    """Recognize CMP pointer immediates at verified PE relocation sites."""
+    """Recognize pointer operands and arithmetic at verified PE relocation sites."""
 
     def __init__(self, *, relocation_sites=(), thunk_targets=None, function_aliases=None,
                  indirect_thunk_targets=None, **kwargs):
@@ -274,6 +274,8 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         self._data: bytes = b""
         self._start: int = 0
         self._table_bases: dict[str, int] = {}
+        self._data_targets: set[int] = set()
+        self._strlen_addends: set[int] = set()
 
     def indirect_replace(self, addr):
         target = self.indirect_thunk_targets.get(addr)
@@ -287,6 +289,26 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         self._data = bytes(data)
         self._start = start_addr
         self._table_bases = {}
+        self._data_targets = set()
+        self._strlen_addends = set()
+        if self.is_32bit:
+            # The upstream parser skips sanitize() for instructions without
+            # pointer operands. Inspect decoded code sections for this idiom.
+            for section in parse.InstructGen(self._data, start_addr, True).sections:
+                if section.type != SectionType.CODE:
+                    continue
+                for index in range(4, len(section.contents)):
+                    window = section.contents[index - 4:index + 1]
+                    if (window[-1][2] == "add"
+                            and [(item[2], item[3]) for item in window[:-1]] == [
+                                ("mov", "ecx, 0xffffffff"),
+                                ("sub", "eax, eax"),
+                                ("repne scasb", "al, byte ptr es:[edi]"),
+                                ("not", "ecx"),
+                            ]
+                            and all(left[0] + left[1] == right[0]
+                                    for left, right in zip(window, window[1:]))):
+                        self._strlen_addends.add(window[-1][0])
         assembly = super().parse_asm(data, start_addr)
         normalize_assert_arguments(assembly)
         return assembly
@@ -305,9 +327,29 @@ class RelocationAwareParseAsm(parse.ParseAsm):
             reg, _, val = operands.partition(", ")
             if reg in fixes.DWORD_REGS and address + size - 4 in self.relocation_sites:
                 try:
-                    self._table_bases[reg] = int(val, 16)
+                    base = int(val, 16)
+                    self._table_bases[reg] = base
+                    name = self.lookup(base, exact=True)
+                    if name is not None and name.endswith(" (DATA)"):
+                        self._data_targets.add(base)
                 except ValueError:
                     pass
+        elif (self.is_32bit and mnemonic == "add"
+              and re.fullmatch(r"ecx, 0x[0-9a-f]+", operands)
+              and address + size - 4 in self.relocation_sites
+              and address in self._strlen_addends):
+            value = int(operands.partition(", ")[2], 16)
+            base = value + 1
+            if base in self._data_targets:
+                offset = address - self._start
+                decoded = next(self._decoder.disasm(self._data[offset:offset + size], address))
+                if (decoded.imm_size == 4
+                        and address + decoded.imm_offset in self.relocation_sites):
+                    # NOT ECX includes the scanned terminator. MSVC folds its
+                    # subtraction into buffer - 1, which may land in a neighbor.
+                    # Retain the exact data target and bias, not that neighbor's name.
+                    super().sanitize(inst)
+                    return mnemonic, f"ecx, {self.replace(base, exact=True)} - 0x1"
         elif (
             self.is_32bit
             and mnemonic == "cmp"
@@ -418,4 +460,3 @@ def load_engine() -> tuple[object, Compare]:
     engine = Compare.from_target(target)
     configure_pointer_comparisons(engine)
     return target, engine
-
