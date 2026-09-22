@@ -22,19 +22,19 @@ void CPanelLemming::Move(const CVsPoint& p_position)
 }
 
 // FUNCTION: LEMBALL 0x00442ce0
-CPanelLemming::CPanelLemming(CPlayerLemming* p_arg0, const CVsPoint& p_arg1, CPanel* p_arg2)
+CPanelLemming::CPanelLemming(CPlayerLemming* p_lemming, const CVsPoint& p_position, CPanel* p_panel)
 {
-	m_panel = p_arg2;
-	m_window = p_arg2->m_game->m_display;
-	m_lemming = p_arg0;
+	m_panel = p_panel;
+	m_window = p_panel->m_game->m_display;
+	m_lemming = p_lemming;
 	CVsRect rect;
-	m_playerIndex = p_arg0->m_playerIndex;
+	m_playerIndex = p_lemming->m_playerIndex;
 	m_balloonType = OBJECT_BALLOON_NONE;
 	m_inventoryCount = 0;
 
-	rect.m_x = p_arg1.m_x;
-	rect.m_y = p_arg1.m_y;
-	rect.m_x += (p_arg2->m_balloonSize.m_x + p_arg2->m_buttonSize.m_x) * m_playerIndex;
+	rect.m_x = p_position.m_x;
+	rect.m_y = p_position.m_y;
+	rect.m_x += (p_panel->m_balloonSize.m_x + p_panel->m_buttonSize.m_x) * m_playerIndex;
 	rect.m_width = m_panel->m_balloonSize.m_x + m_panel->m_buttonSize.m_x;
 	rect.m_height = m_panel->m_balloonSize.m_y;
 	m_button = new CPanelButton(this, rect, m_window);

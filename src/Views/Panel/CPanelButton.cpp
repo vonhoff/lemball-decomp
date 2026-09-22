@@ -34,14 +34,14 @@ class CResAnim;
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00442390
-CPanelButton::CPanelButton(CPanelLemming* p_arg0, const CVsRect& p_arg1, CPvGWnd* p_arg2)
-	: CDepressedButton(p_arg1, p_arg2)
+CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPvGWnd* p_parent)
+	: CDepressedButton(p_rect, p_parent)
 {
-	m_lemming = p_arg0;
+	m_lemming = p_lemming;
 	{
 		CVsPoint point;
 
-		point = p_arg0->m_panel->m_buttonSize;
+		point = p_lemming->m_panel->m_buttonSize;
 		m_statusRect.m_width = point.m_x;
 		m_statusRect.m_height = point.m_y;
 		m_statusRect.m_x = 0;

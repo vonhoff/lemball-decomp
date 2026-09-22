@@ -14,7 +14,7 @@ class CPvGWnd;
 // VTABLE: LEMBALL 0x004974e0 CHotAreaHandler
 class CPanelButton : public CDepressedButton {
 public:
-	CPanelButton(CPanelLemming* p_arg0, const CVsRect& p_arg1, CPvGWnd* p_arg2);
+	CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPvGWnd* p_parent);
 	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8
 	virtual void DrawButton();                                             // vtable+0xbc
 	virtual void OnEnterButton();                                          // vtable+0xc8

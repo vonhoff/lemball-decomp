@@ -12,18 +12,18 @@ class CResAnim;
 // VTABLE: LEMBALL 0x00498150
 class CHiliteButtons : public CBaseQueueHandler {
 public:
-	CHiliteButtons(CGWnd* p_arg0,
-				   CGdi* p_arg1,
-				   int p_arg2,
-				   int p_arg3,
-				   unsigned long* p_arg4,
-				   unsigned int p_arg5,
-				   int p_arg6,
-				   int p_arg7,
+	CHiliteButtons(CGWnd* p_window,
+				   CGdi* p_gdi,
+				   int p_x,
+				   int p_y,
+				   unsigned long* p_animIds,
+				   unsigned int p_mode,
+				   int p_minimum,
+				   int p_maximum,
 				   int p_arg8,
-				   unsigned long p_arg9,
-				   void* p_arg10,
-				   unsigned long p_arg11);
+				   unsigned long p_controlMessage,
+				   void* p_binding,
+				   unsigned long p_actionMessage);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~CHiliteButtons();                  // vtable+0x04
 	void Draw(int p_force);

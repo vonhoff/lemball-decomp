@@ -32,7 +32,7 @@ CVsPoint* CPanel::GetPausePos(CVsPoint* p_result)
 }
 
 // FUNCTION: LEMBALL 0x00442f80
-CPanel::CPanel(C2D* p_arg0) : CBaseQueueHandler()
+CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 {
 	m_buttonSize.m_x = 0;
 	m_buttonSize.m_y = 0;
@@ -44,9 +44,9 @@ CPanel::CPanel(C2D* p_arg0) : CBaseQueueHandler()
 	m_panelSize.m_y = 0;
 	m_panelPosition.m_x = 0;
 	m_panelPosition.m_y = 0;
-	m_game = p_arg0;
-	m_window = (CPvGWnd*) p_arg0->m_display;
-	m_ai = p_arg0->m_ai;
+	m_game = p_gameView;
+	m_window = (CPvGWnd*) p_gameView->m_display;
+	m_ai = p_gameView->m_ai;
 	m_resources[0] = CResAnim::Load(0x2d);
 	m_resources[1] = CResAnim::Load(0x2a);
 	m_resources[2] = CResAnim::Load(0x2c);

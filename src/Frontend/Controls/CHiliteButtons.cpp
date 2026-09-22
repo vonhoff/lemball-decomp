@@ -16,35 +16,35 @@
 class CPvGWnd;
 
 // FUNCTION: LEMBALL 0x0044f070
-CHiliteButtons::CHiliteButtons(CGWnd* p_arg0,
-							   CGdi* p_arg1,
-							   int p_arg2,
-							   int p_arg3,
-							   unsigned long* p_arg4,
-							   unsigned int p_arg5,
-							   int p_arg6,
-							   int p_arg7,
+CHiliteButtons::CHiliteButtons(CGWnd* p_window,
+							   CGdi* p_gdi,
+							   int p_x,
+							   int p_y,
+							   unsigned long* p_animIds,
+							   unsigned int p_mode,
+							   int p_minimum,
+							   int p_maximum,
 							   int p_arg8,
-							   unsigned long p_arg9,
-							   void* p_arg10,
-							   unsigned long p_arg11)
+							   unsigned long p_controlMessage,
+							   void* p_binding,
+							   unsigned long p_actionMessage)
 {
 	int count;
 
-	m_window = p_arg0;
+	m_window = p_window;
 	m_active = 1;
-	m_gdi = p_arg1;
-	count = (p_arg7 - p_arg6) + 1;
+	m_gdi = p_gdi;
+	count = (p_maximum - p_minimum) + 1;
 	m_valueCount = count;
 	if (count <= 1) {
 		m_valueCount = 1;
 	}
-	m_minimum = p_arg6;
-	m_controlMessage = p_arg9;
-	m_maximum = p_arg7;
-	m_x = p_arg2;
-	m_y = p_arg3;
-	int* binding = (int*) p_arg10;
+	m_minimum = p_minimum;
+	m_controlMessage = p_controlMessage;
+	m_maximum = p_maximum;
+	m_x = p_x;
+	m_y = p_y;
+	int* binding = (int*) p_binding;
 	if (binding != 0) {
 		// The original retains this comparison before the identical binding reads.
 		if (m_valueCount == 1) {
@@ -57,13 +57,13 @@ CHiliteButtons::CHiliteButtons(CGWnd* p_arg0,
 	else {
 		m_value = 0;
 	}
-	if (p_arg11 != 0xffffffff) {
-		m_actionMessage = p_arg11;
+	if (p_actionMessage != 0xffffffff) {
+		m_actionMessage = p_actionMessage;
 	}
 	m_binding = binding;
-	m_mode = p_arg5;
+	m_mode = p_mode;
 	g_pMasterInputQueue->Attach(this, 0);
-	LoadFaces(p_arg4);
+	LoadFaces(p_animIds);
 }
 
 // FUNCTION: LEMBALL 0x0044f130

@@ -14,7 +14,7 @@ class CResAnim;
 // VTABLE: LEMBALL 0x00497740
 class CPanel : public CBaseQueueHandler {
 public:
-	CPanel(C2D* p_arg0);
+	CPanel(C2D* p_gameView);
 	CVsPoint* GetPausePos(CVsPoint* p_result);
 	bool MouseInPanel(const CVsPoint& p_point);
 	unsigned long TranslateKey(unsigned long p_key);

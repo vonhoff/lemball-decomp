@@ -11,7 +11,7 @@ struct CVsPoint;
 // SIZE 0x2c
 class CPanelLemming {
 public:
-	CPanelLemming(CPlayerLemming* p_arg0, const CVsPoint& p_arg1, CPanel* p_arg2);
+	CPanelLemming(CPlayerLemming* p_lemming, const CVsPoint& p_position, CPanel* p_panel);
 	void Move(const CVsPoint& p_position);
 	void UpdateStatus();
 	~CPanelLemming();
