@@ -71,7 +71,7 @@ unsigned char* SmallMemory::Allocate(int p_size, char* p_description)
 	if (i < bucketLimit) {
 		sizeLimit = &m_sizeLimits[i];
 		do {
-			if (prevLimit < p_size && p_size <= *sizeLimit && *(Bucket**) (sizeLimit - 7) != emptyBucket) {
+			if (prevLimit < p_size && p_size <= *sizeLimit && m_buckets[i] != emptyBucket) {
 				unsigned char* result;
 				if (m_buckets[i] == emptyBucket || !m_buckets[i]->Allocate(&result)) {
 					break;
