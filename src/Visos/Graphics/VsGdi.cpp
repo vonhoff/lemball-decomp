@@ -2356,102 +2356,131 @@ void Surface::BlitZrleClipQzBuff(const VsRect& p_rect, const VsRect& p_clip, Res
 // FUNCTION: LEMBALL 0x00476ee0
 void Surface::BlitZrleClipR(const VsRect& p_rect, const VsRect& p_clip, ResZrle* p_zrle, unsigned int p_reverse)
 {
-	int step = 1;
-	int y = p_rect.m_y;
 	unsigned char* src = p_zrle->GetData();
-	if (p_reverse == 0) {
-		if (p_clip.m_y > 0) {
-			int skipRows = p_clip.m_y;
-			do {
-				unsigned char run;
-				do {
-					run = *src++;
-					if (run > 0x80) {
-						src += run & 0x7f;
-					}
-				} while (run != 0x80);
-				skipRows--;
-			} while (skipRows != 0);
-		}
-	}
-	else {
+	short sourceWidth = p_zrle->m_width;
+	short sourceHeight = p_zrle->m_height;
+	int step = 1;
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
-		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
+		int skipRows = sourceHeight - p_clip.m_y - p_rect.m_height;
 		if (skipRows > 0) {
 			do {
 				unsigned char run;
 				do {
 					run = *src++;
 					if (run > 0x80) {
-						src += run & 0x7f;
+						run &= 0x7f;
+						src += run;
 					}
 				} while (run != 0x80);
 				skipRows--;
 			} while (skipRows != 0);
 		}
 	}
-	int row = 0;
-	if (p_rect.m_height > 0) {
-		int rowIndex = y << 2;
+	else if (p_clip.m_y > 0) {
+		int skipRows = p_clip.m_y;
 		do {
-			int width = p_rect.m_width;
-			int skipX = (p_zrle->m_width - p_clip.m_x) - width;
-			unsigned char* dst = (unsigned char*) *(int*) ((int) m_lines + rowIndex) + p_rect.m_x;
 			unsigned char run;
 			do {
 				run = *src++;
-				if (skipX < 1) {
-					if (width < 1) {
-						if (run > 0x80) {
-							src += run & 0x7f;
+				if (run > 0x80) {
+					run &= 0x7f;
+					src += run;
+				}
+			} while (run != 0x80);
+			skipRows--;
+		} while (skipRows != 0);
+	}
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			int width = p_rect.m_width;
+			int skipX = sourceWidth - p_clip.m_x - width;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (skipX > 0) {
+					if (run < 0x80) {
+						skipX -= run;
+						if (skipX < 0) {
+							width += skipX;
+							dst += skipX;
 						}
 					}
-					else if (run < 0x80) {
+					else if (run > 0x80) {
+						run &= 0x7f;
+						int count = run;
+						skipX -= count;
+						if (skipX < 0) {
+							int copyLength = -skipX;
+							if (copyLength < width) {
+								int remaining = copyLength;
+								unsigned char* copySrc = src + count + skipX;
+								unsigned char* copyDst = dst;
+								while (remaining > 0) {
+									*copyDst-- = *copySrc++;
+									remaining--;
+								}
+							}
+							else {
+								int remaining = width;
+								unsigned char* copySrc = src + count + skipX;
+								unsigned char* copyDst = dst;
+								while (remaining > 0) {
+									*copyDst-- = *copySrc++;
+									remaining--;
+								}
+							}
+							width -= copyLength;
+							dst -= copyLength;
+						}
+						src += count;
+					}
+				}
+				else if (width > 0) {
+					if (run < 0x80) {
 						width -= run;
 						dst -= run;
 					}
 					else if (run > 0x80) {
-						int count = run & 0x7f;
+						run &= 0x7f;
+						int count = run;
 						if (count < width) {
-							for (int i = 0; i < count; i++) {
-								*dst-- = *src++;
+							int remaining = count;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							while (remaining > 0) {
+								*copyDst-- = *copySrc++;
+								remaining--;
 							}
+							src += count;
 							width -= count;
+							dst -= count;
 						}
 						else {
-							for (int i = 0; i < width; i++) {
-								*dst-- = *src++;
+							int remaining = width;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							while (remaining > 0) {
+								*copyDst-- = *copySrc++;
+								remaining--;
 							}
-							src += count - width;
+							src += count;
+							dst -= width;
 							width = 0;
 						}
 					}
 				}
-				else if (run < 0x80) {
-					skipX -= run;
-					if (skipX < 0) {
-						width += skipX;
-						dst += skipX;
-					}
-				}
 				else if (run > 0x80) {
-					int count = run & 0x7f;
-					skipX -= count;
-					if (skipX < 0) {
-						int copyLen = -skipX;
-						int actualLen = (copyLen < width) ? copyLen : width;
-						unsigned char* copySrc = src + count + skipX;
-						for (int i = 0; i < actualLen; i++) {
-							*dst-- = *copySrc++;
-						}
-						width += skipX;
-						dst += skipX;
-					}
-					src += count;
+					run &= 0x7f;
+					src += run;
 				}
 			} while (run != 0x80);
-			rowIndex += step * 4;
+			y += step;
 			row++;
 		} while (row < p_rect.m_height);
 	}
