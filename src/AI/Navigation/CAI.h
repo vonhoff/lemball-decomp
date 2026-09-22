@@ -99,7 +99,9 @@ public:
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	void AddANetworkStart(int p_x, int p_y, int p_z, int p_index);
 	void AddData();
+	void AddNewTrapDoor(const AiCoord& p_position, unsigned long p_time);
 	void AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time);
+	void ClearAllTrapDoors();
 	void AddTime(int p_time);
 	void DecideAnimsRequired();
 	void FireBullet(unsigned short p_id,
@@ -129,7 +131,11 @@ public:
 	void Restart();
 	void Score(int p_score);
 	void SendGameState(eGameStates p_state, eGameStateStages p_stage);
+	void SetNetworkTrapDoorCount(int p_count);
 	void SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_third, int p_fourth);
+	int GetNetworkTrapDoor(int p_index);
+	void SetNetworkTrapDoor(int p_value, int p_index);
+	void GetNetworkStartPosition(AiCoord& p_position, int p_index);
 	void SetPlayerIDs();
 	void Start();
 	void SwitchMessage(swMessage p_message, int p_first, int p_last = 0, int p_arg3 = 0);

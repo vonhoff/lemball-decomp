@@ -1128,6 +1128,13 @@ int CAI::ExportLiftEndpointRecords(LiftEndpointRecord* p_records)
 	return m_liftManager->ExportEndpoints(p_records);
 }
 
+// FUNCTION: LEMBALL 0x00412e80
+void CAI::AddNewTrapDoor(const AiCoord& p_position, unsigned long p_time)
+{
+	short id = CGameObject::NextLoadingId();
+	m_trapDoorManager->AddNewDoor(id, p_position, 0, p_time);
+}
+
 // FUNCTION: LEMBALL 0x00412eb0
 void CAI::AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time)
 {
@@ -1260,6 +1267,17 @@ void CAI::AddANetworkStart(int p_x, int p_y, int p_z, int p_index)
 	m_networkStartsZ[p_index] = p_z;
 }
 
+// FUNCTION: LEMBALL 0x004131b0
+void CAI::SetNetworkTrapDoorCount(int p_count)
+{
+	m_networkTrapDoorCount = p_count;
+	SetNetworkTrapDoors(p_count,
+						m_networkTrapDoors[0],
+						m_networkTrapDoors[1],
+						m_networkTrapDoors[2],
+						m_networkTrapDoors[3]);
+}
+
 // FUNCTION: LEMBALL 0x004131e0
 void CAI::SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_third, int p_fourth)
 {
@@ -1284,6 +1302,26 @@ void CAI::SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_thir
 			m_networkStartsY[i] = i * 16;
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x00413290
+int CAI::GetNetworkTrapDoor(int p_index)
+{
+	return m_networkTrapDoors[p_index];
+}
+
+// FUNCTION: LEMBALL 0x004132a0
+void CAI::SetNetworkTrapDoor(int p_value, int p_index)
+{
+	m_networkTrapDoors[p_index] = p_value;
+}
+
+// FUNCTION: LEMBALL 0x004132c0
+void CAI::GetNetworkStartPosition(AiCoord& p_position, int p_index)
+{
+	p_position.m_xFixed = m_networkStartsX[p_index] << 12;
+	p_position.m_yFixed = m_networkStartsY[p_index] << 12;
+	p_position.m_zFixed = m_networkStartsZ[p_index] << 12;
 }
 
 // FUNCTION: LEMBALL 0x00413300
@@ -1319,6 +1357,12 @@ void CAI::Score(int p_score)
 	if (m_score > 9999999) {
 		m_score = 9999999;
 	}
+}
+
+// FUNCTION: LEMBALL 0x004133c0
+void CAI::ClearAllTrapDoors()
+{
+	m_trapDoorManager->ClearAllTrapDoors();
 }
 
 // FUNCTION: LEMBALL 0x00413e20
