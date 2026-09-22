@@ -10,6 +10,15 @@
 // LIBRARY: LEMBALL 0x0047fb10 SYMBOL
 // __toupper_lk
 
+// LIBRARY: LEMBALL 0x0047fcb0 SYMBOL
+// __onexit
+
+// LIBRARY: LEMBALL 0x0047fd40 SYMBOL
+// _atexit
+
+// LIBRARY: LEMBALL 0x0047fd60 SYMBOL
+// ___onexitinit
+
 // LIBRARY: LEMBALL 0x0047fda0 SYMBOL
 // _strrchr
 
@@ -138,6 +147,12 @@
 
 // LIBRARY: LEMBALL 0x004818f0 SYMBOL
 // __unlockexit
+
+// LIBRARY: LEMBALL 0x00481920 SYMBOL
+// _realloc
+
+// LIBRARY: LEMBALL 0x00481990 SYMBOL
+// __msize
 
 // LIBRARY: LEMBALL 0x004819a8 SYMBOL
 // __global_unwind2
@@ -480,5 +495,11 @@
 
 // GLOBAL: LEMBALL 0x004aa7d8 SYMBOL
 // ___piob
+
+// GLOBAL: LEMBALL 0x004ab930 SYMBOL
+// ___onexitend
+
+// GLOBAL: LEMBALL 0x004ab944 SYMBOL
+// ___onexitbegin
 
 #endif

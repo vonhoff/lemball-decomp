@@ -156,6 +156,7 @@ public:
 	void TriggerPause(unsigned char p_paused);
 	void UnRegisterRemaps();
 	void UseBalloon(CPlayerLemming* p_lemming);
+	CVsRect* GetClipRectangle();
 	friend class CPanel;
 	friend class CPanelLemming;
 	friend class CPanelPauseButton;
@@ -273,6 +274,9 @@ private:
 	char m_pad0x2228[0x200];                      // 0x2228
 };
 
+// SYNTHETIC: LEMBALL 0x004369a0
+// $E2
+
 // SYNTHETIC: LEMBALL 0x00439490
 // ??_EC2D@@UAEPAXI@Z
 
@@ -281,5 +285,11 @@ private:
 
 // SYNTHETIC: LEMBALL 0x00439850
 // ??_EC2D@@WBE@AEPAXI@Z
+
+// GLOBAL: LEMBALL 0x004a78a8
+// ?$S1@?1??GetClipRectangle@C2D@@QAEPAVCVsRect@@XZ@4EA
+
+// GLOBAL: LEMBALL 0x004a78b0
+// clipRectangle
 
 #endif
