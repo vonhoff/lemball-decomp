@@ -16,10 +16,6 @@
 
 #include <string.h>
 
-AnimsManager::AnimsManager()
-{
-}
-
 // 68K 0x10115d70 FreeVram__13CAnimsManagerFv
 // FUNCTION: LEMBALL 0x004358c0
 void AnimsManager::FreeVram()
@@ -154,8 +150,9 @@ void AnimsManager::LoadAnims(unsigned long p_resourceId)
 		}
 	}
 	m_resources[slot] = ResAnim::Load(p_resourceId);
-	if (m_resources[slot] == 0) {
-		m_resources[slot] = ResZrle::Load(p_resourceId);
+	ResBase*& resource = m_resources[slot];
+	if (resource == 0) {
+		resource = ResZrle::Load(p_resourceId);
 	}
 	if ((int) m_resourceSlots[p_resourceId] == m_resourceCapacity) {
 		m_resourceSlots[p_resourceId] = (short) slot;

@@ -11,10 +11,6 @@ struct QueueHandlerNode {
 	QueueHandlerNode* next;
 };
 
-BaseQueue::BaseQueue()
-{
-}
-
 // 68K 0x102049f4 __ct__10CBaseQueueFUi
 // FUNCTION: LEMBALL 0x00463020
 BaseQueue::BaseQueue(unsigned int p_capacity)
@@ -253,14 +249,14 @@ bool BaseQueue::GetNth(Message* p_message, unsigned int p_index)
 // FUNCTION: LEMBALL 0x004635b0
 bool BaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 {
-	unsigned char* slot;
+	Message* slot;
 
 	EnterCritical();
-	slot = m_readCursor + p_index * sizeof(Message);
-	if (m_messageBufferEnd <= slot) {
-		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / (int) sizeof(Message)) * sizeof(Message);
+	slot = (Message*) m_readCursor + p_index;
+	if ((Message*) m_messageBufferEnd <= slot) {
+		slot = (Message*) m_messageBuffer + (slot - (Message*) m_messageBufferEnd);
 	}
-	*p_message = *(Message*) slot;
+	*p_message = *slot;
 	LeaveCritical();
 	return 1;
 }
@@ -270,8 +266,8 @@ bool BaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 bool BaseQueue::PutNth(Message* p_message, unsigned int p_index)
 {
 	unsigned char* slot;
-	Message* src;
 	Message* dest;
+	Message* src;
 	unsigned int shifted;
 
 	EnterCritical();
