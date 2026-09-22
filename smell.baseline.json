@@ -6,13 +6,6 @@
     {
       "path": "src/Visos/Graphics/VsGdi.cpp",
       "rule": "addr-cast-punning",
-      "code": "Move(*(VsPoint*) &m_rect0c.m_x);",
-      "count": 1,
-      "reason": "Intentional pass-by-reference of the (m_x, m_y) VsPoint coordinates within the surface rectangle."
-    },
-    {
-      "path": "src/Visos/Graphics/VsGdi.cpp",
-      "rule": "addr-cast-punning",
       "code": "*(unsigned int*) &p_colour,",
       "count": 1,
       "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
