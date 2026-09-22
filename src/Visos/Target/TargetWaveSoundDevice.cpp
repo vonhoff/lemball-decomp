@@ -22,7 +22,6 @@ TargetWaveSoundDevice::TargetWaveSoundDevice(int p_channelCount)
 	m_available = 0;
 	m_stereo = 0;
 	m_use16Bit = 0;
-	m_unk0x18 = 0;
 	m_deviceId = 0xffffffff;
 	m_sampleRate = 0;
 	i = 0;
