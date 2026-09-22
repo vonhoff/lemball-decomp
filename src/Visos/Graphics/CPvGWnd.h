@@ -67,9 +67,9 @@ private:
 	CGdi* m_gdi;                       // 0x4c
 	unsigned int m_gdiFlags;           // 0x50
 	unsigned int m_paletteResourceId;  // 0x54
-	CLine m_renderState0[1];           // 0x58
-	CBitmap m_renderState1[1];         // 0x68
-	CCopyToBackBuff m_renderState2[1]; // 0x78
+	CLine m_clearRectangle[1];         // 0x58
+	CBitmap m_backBufferCopy[1];       // 0x68
+	CCopyToBackBuff m_zBufferClear[1]; // 0x78
 	unsigned short m_refreshWidth;     // 0x88
 	unsigned short m_refreshHeight;    // 0x8a
 	unsigned short m_refreshX;         // 0x8c
