@@ -3,9 +3,34 @@
 #include "../../../Visos/Graphics/CGDI.h"
 #include "../../../Visos/Graphics/CSurface.h"
 #include "../../Animation/CLemmingAnimsManager.h"
+#include "AI/Base/C3DVector.h"
+#include "Map/Base/CMap.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+// FUNCTION: LEMBALL 0x0043ef90
+void C2D::TransformAndSortViewData()
+{
+	int viewIndex = 0;
+	if ((int) m_viewDataCount > 0) {
+		do {
+			CViewData* viewData = m_viewData + viewIndex;
+			viewData->m_gameX = (short) viewData->m_positionX;
+			viewData->m_gameY = (short) viewData->m_positionY;
+
+			C3DVector position;
+			memcpy(&position, &m_viewData[viewIndex].m_positionX, sizeof(position));
+			m_map->GameToScreen(position.m_xFixed, position.m_yFixed);
+			position.m_yFixed -= position.m_zFixed;
+			position.m_xFixed -= m_viewOriginX;
+			position.m_yFixed -= m_viewOriginY;
+			memcpy(&m_viewData[viewIndex].m_positionX, &position, sizeof(position));
+			viewIndex++;
+		} while ((int) m_viewDataCount > viewIndex);
+	}
+	SortViewData();
+}
 
 // FUNCTION: LEMBALL 0x0043f620
 void C2D::DrawObjects()

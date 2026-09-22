@@ -155,6 +155,7 @@ public:
 	void SetPause(unsigned int p_paused);
 	void SetUpRemapPalettes();
 	void SortViewData();
+	void TransformAndSortViewData();
 	void TriggerPause(unsigned char p_paused);
 	void UnRegisterRemaps();
 	void UpdateSpriteGroundLookupRegions();
