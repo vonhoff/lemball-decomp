@@ -6,6 +6,8 @@
 extern jmp_buf g_vsExitJumpBuffer;
 extern jmp_buf g_vsDebugJumpBuffer;
 
+// Startup orchestration lives in VsInit.cpp; subsystem lifecycle implementations
+// live in the corresponding *Init.cpp files beside their owning subsystems.
 bool InternalStrmInit();
 bool InternalStrmQuit();
 bool InternalInpInit();

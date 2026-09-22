@@ -54,6 +54,10 @@ Game wrappers and state live in `src/Visos/Target/`, grouped into `Graphics/`,
 `Sound/`, `Input/`, `Network/`, `UI/`, and `System/`. Preserve original filename
 strings in reconstructed assertions even when the source file is renamed.
 
+`src/Visos/Foundation/VsInit.cpp` owns startup orchestration and command-line
+options. Subsystem lifecycle code lives in the corresponding `*Init.cpp` files;
+network workers and network startup/shutdown live in `Visos/Network/NetworkInit.cpp`.
+
 ## MSVC 4.00 Codegen Quirks
 
 - **Register Allocation Order**: Callee-saved registers (`ESI`, `EDI`, `EBX`) are allocated by live-interval priority, but ties fall back to declaration and first-use order. If `esi` and `edi` are swapped across an entire function, reorder local variable declarations.
