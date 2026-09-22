@@ -221,7 +221,7 @@ bool CEnemy::ProcessRule(eEnemyStateRules p_rule)
 // FUNCTION: LEMBALL 0x00420070
 bool CEnemy::EnemyRuleRadius50()
 {
-	if (g_pAI->m_playerGroups == 0) {
+	if (g_pAI->m_gameplayEnabled == 0) {
 		return 0;
 	}
 	return CheckRadius(50);
@@ -230,7 +230,7 @@ bool CEnemy::EnemyRuleRadius50()
 // FUNCTION: LEMBALL 0x00420090
 bool CEnemy::EnemyRuleRadius50AndLineOfSight()
 {
-	if (g_pAI->m_playerGroups == 0) {
+	if (g_pAI->m_gameplayEnabled == 0) {
 		return 0;
 	}
 	int inRadius = CheckRadius(50);
@@ -352,7 +352,7 @@ bool CEnemy::IsRequestingFire()
 // FUNCTION: LEMBALL 0x004203e0
 void CEnemy::RequestFire(int p_interval)
 {
-	if (g_pAI->m_playerGroups != 0 && m_fireState == 0) {
+	if (g_pAI->m_gameplayEnabled != 0 && m_fireState == 0) {
 		m_fireTarget.m_xFixed = m_targetPosition.m_xFixed;
 		m_fireTarget.m_yFixed = m_targetPosition.m_yFixed;
 		m_fireTarget.m_zFixed = m_targetPosition.m_zFixed;

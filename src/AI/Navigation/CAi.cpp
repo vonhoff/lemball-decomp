@@ -102,14 +102,14 @@ void CAi::Restart()
 	g_pGameStatus->m_skillState = 0;
 	m_isSinglePlayer = 0;
 	ResetGameTimes();
-	m_unk0x88 = 0;
+	m_clockSourceReady = 0;
 	unsigned int network = g_pGameStatus->m_skill == 4;
-	m_unk0x68 = 0;
-	m_unk0x6c = 0;
+	m_started = 0;
+	m_gameStatePending = 0;
 	m_isHost = 0;
-	m_unk0x5c = 0;
-	m_playerGroups = 0;
-	m_unk0x70 = 1;
+	m_gameplayStartDelay = 0;
+	m_gameplayEnabled = 0;
+	m_networkStartReady = 1;
 	m_payloadCapacity += 0x60;
 	m_networkMode = network;
 	if (m_networkMode != 0) {
@@ -380,8 +380,8 @@ void CAi::Start()
 	CNetworkManager* networkManager;
 
 	if (m_networkMode != 0) {
-		m_unk0x6c = 1;
-		m_unk0x70 = 0;
+		m_gameStatePending = 1;
+		m_networkStartReady = 0;
 		networkManager = g_pNetworkManager;
 		networkManager->m_desiredGameState = 3;
 		networkManager->m_observedGameState = 0;
@@ -395,7 +395,7 @@ void CAi::Start()
 	}
 
 	GameState(GAME_STATUS_2);
-	m_unk0x68 = 1;
+	m_started = 1;
 }
 
 // FUNCTION: LEMBALL 0x00411b70
@@ -409,7 +409,7 @@ void CAi::SendGameState(eGameStates p_state, eGameStateStages p_stage)
 			}
 		}
 		if (m_gameStateMessage->m_pendingSendCount == 0) {
-			m_unk0x6c = 1;
+			m_gameStatePending = 1;
 			m_gameStateMessage->m_state = p_state;
 			m_gameStateMessage->m_stage = p_stage;
 			m_gameStateMessage->m_levelTime = m_gameTime;
@@ -432,18 +432,18 @@ void CAi::RemoteGameState(CGameStateMessage* p_message)
 	*g_pSysOutput << "Received Game State " << (int) state << ", stage " << (int) stage << "\n";
 	switch (stage) {
 	case GAME_STATE_STAGE_REQUEST:
-		if (m_unk0x6c != 0) {
+		if (m_gameStatePending != 0) {
 			if (m_isHost != 0) {
 				SendGameState(state, GAME_STATE_STAGE_REJECT);
 				return;
 			}
-			m_unk0x6c = 0;
+			m_gameStatePending = 0;
 		}
 		switch (state) {
 		case GAME_STATE_0:
 			if (m_gameStatus == GAME_STATUS_1) {
 				SendGameState(state, GAME_STATE_STAGE_REJECT);
-				m_unk0x6c = 0;
+				m_gameStatePending = 0;
 				return;
 			}
 			apply = 1;
@@ -456,7 +456,7 @@ void CAi::RemoteGameState(CGameStateMessage* p_message)
 		case GAME_STATE_3:
 			if (m_gameStatus == GAME_STATUS_4 || m_gameStatus == GAME_STATUS_3) {
 				SendGameState(state, GAME_STATE_STAGE_REJECT);
-				m_unk0x6c = 0;
+				m_gameStatePending = 0;
 				return;
 			}
 			m_gameStatus = GAME_STATUS_6;
@@ -475,7 +475,7 @@ void CAi::RemoteGameState(CGameStateMessage* p_message)
 			break;
 		}
 		SendGameState(state, GAME_STATE_STAGE_CONFIRM);
-		m_unk0x6c = 0;
+		m_gameStatePending = 0;
 		if (apply == 0) {
 			return;
 		}
@@ -486,7 +486,7 @@ void CAi::RemoteGameState(CGameStateMessage* p_message)
 			break;
 		case GAME_STATE_1:
 			if (m_gameStatus != GAME_STATUS_8) {
-				m_unk0x68 = 1;
+				m_started = 1;
 				m_gameStatus = GAME_STATUS_2;
 			}
 			break;
@@ -531,10 +531,10 @@ void CAi::RemoteGameState(CGameStateMessage* p_message)
 			m_gameStatus = GAME_STATUS_8;
 			return;
 		}
-		m_unk0x6c = 0;
+		m_gameStatePending = 0;
 		break;
 	case GAME_STATE_STAGE_REJECT:
-		m_unk0x6c = 0;
+		m_gameStatePending = 0;
 		return;
 	}
 }
@@ -563,7 +563,7 @@ void CAi::GameState(eGameStatus p_status)
 			return;
 		}
 	}
-	if (m_unk0x6c == 0) {
+	if (m_gameStatePending == 0) {
 		switch (p_status) {
 		case GAME_STATUS_1:
 			m_isSinglePlayer = 0;
@@ -572,7 +572,7 @@ void CAi::GameState(eGameStatus p_status)
 		case GAME_STATUS_2:
 			SendGameState(GAME_STATE_1, GAME_STATE_STAGE_CONFIRM);
 			if (m_gameStatus == GAME_STATUS_2) {
-				m_unk0x6c = 0;
+				m_gameStatePending = 0;
 				return;
 			}
 			break;
@@ -674,10 +674,10 @@ void CAi::Process(int p_paused)
 		return;
 	}
 	m_aiQueue->ProcessNMsgs(m_aiQueue->GetMessageCount());
-	if (m_networkMode != 0 && m_unk0x70 == 0 &&
+	if (m_networkMode != 0 && m_networkStartReady == 0 &&
 		g_pNetworkManager->m_desiredGameState == g_pNetworkManager->m_observedGameState) {
-		m_unk0x6c = 0;
-		m_unk0x70 = 1;
+		m_gameStatePending = 0;
+		m_networkStartReady = 1;
 		GameState(GAME_STATUS_2);
 	}
 	if (p_paused == 0 && m_paused != 0) {
@@ -694,14 +694,14 @@ void CAi::Process(int p_paused)
 		SetGameTime();
 		return;
 	}
-	if (m_unk0x68 == 0 || m_unk0x6c != 0) {
+	if (m_started == 0 || m_gameStatePending != 0) {
 		return;
 	}
 	SetGameTime();
 	if (m_networkMode != 0) {
 		if (g_pActiveConnection != 0 && g_pActiveConnection->IsChanged(*m_networkGame)) {
 			g_pActiveConnection->GetLatest(*m_networkGame);
-			m_unk0x88 = 1;
+			m_clockSourceReady = 1;
 		}
 	}
 	unsigned int time;
@@ -710,10 +710,10 @@ void CAi::Process(int p_paused)
 	}
 	else {
 		time = g_dwGameTick;
-		m_unk0x88 = 1;
+		m_clockSourceReady = 1;
 	}
 	if (m_clockStartPending != 0) {
-		if (m_unk0x88 != 0) {
+		if (m_clockSourceReady != 0) {
 			m_levelStartTick = time;
 			m_clockStartPending = 0;
 			m_levelTimeRemaining = m_timeLimit;
@@ -729,8 +729,8 @@ void CAi::Process(int p_paused)
 			GameState(GAME_STATUS_7);
 			m_levelTimeRemaining = -1 - m_gameTime;
 		}
-		if (m_playerGroups == 0 && m_unk0x5c < time - m_levelStartTick) {
-			m_playerGroups = 1;
+		if (m_gameplayEnabled == 0 && m_gameplayStartDelay < time - m_levelStartTick) {
+			m_gameplayEnabled = 1;
 		}
 	}
 	m_enemyGroupManager->Process();
@@ -750,12 +750,13 @@ void CAi::Process(int p_paused)
 			GameState(GAME_STATUS_3);
 		}
 	}
-	if (g_pActiveConnection != 0 && (LemmingsSfxChanged() || g_dwSimulationTimestamp - m_unk0x80[1] > 0x42)) {
+	if (g_pActiveConnection != 0 &&
+		(LemmingsSfxChanged() || g_dwSimulationTimestamp - m_lastNetworkSendCheckTick > 0x42)) {
 		CConnect* connection = g_pActiveConnection;
 		if (m_networkGame->m_pendingSendCount == 0) {
 			m_networkGame->Send(connection);
 		}
-		m_unk0x80[1] = g_dwSimulationTimestamp;
+		m_lastNetworkSendCheckTick = g_dwSimulationTimestamp;
 	}
 }
 
@@ -809,7 +810,7 @@ int CAi::ProcessMsg(Message* p_message)
 {
 	unsigned int messageType = p_message->type;
 	if (messageType != 4) {
-		if (m_playerGroups == 0) {
+		if (m_gameplayEnabled == 0) {
 			return 1;
 		}
 		switch (messageType) {

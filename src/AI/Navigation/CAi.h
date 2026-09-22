@@ -171,20 +171,21 @@ private:
 	unsigned int* m_objectRequired; // 0x50
 	unsigned short m_levelVersion;  // 0x54
 	unsigned short m_pad0x56;       // 0x56
-	unsigned int m_playerGroups;    // 0x58: gameplay enable flag, set to 1 at 0x004123bb
-	unsigned int m_unk0x5c;         // 0x5c
+	unsigned int m_gameplayEnabled; // 0x58: gameplay enable flag, set to 1 at 0x004123bb
+	unsigned int m_gameplayStartDelay; // 0x5c
 	unsigned int m_mapType;         // 0x60: level map type (LoadLevel 0x00412f4c)
 	// Restart (0x00410d98): 32-bit result of skill == 4 (0 or 1).
 	unsigned int m_networkMode;            // 0x64
-	unsigned int m_unk0x68;                // 0x68
-	unsigned int m_unk0x6c;                // 0x6c
-	unsigned int m_unk0x70;                // 0x70
+	unsigned int m_started;                // 0x68
+	unsigned int m_gameStatePending;       // 0x6c
+	unsigned int m_networkStartReady;      // 0x70
 	CGameStateMessage* m_gameStateMessage; // 0x74: constructor result at 0x00410dec
 	CPbNetworkGame* m_networkGame;         // 0x78: constructor result at 0x00410dba
 	// Restart (0x00410d82, 0x00410dd2): zero, then the connection's host flag.
 	unsigned int m_isHost;                             // 0x7c
-	unsigned int m_unk0x80[2];                         // 0x80
-	unsigned int m_unk0x88;                            // 0x88
+	unsigned int m_unk0x80;                            // 0x80
+	unsigned int m_lastNetworkSendCheckTick;           // 0x84
+	unsigned int m_clockSourceReady;                   // 0x88
 	CAnimSpecial* m_animSpecial;                       // 0x8c: allocation/Initialise at 0x0041171a
 	int m_networkStartsX[4];                           // 0x90
 	int m_networkStartsY[4];                           // 0xa0

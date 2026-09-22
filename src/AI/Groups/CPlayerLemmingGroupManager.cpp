@@ -13,8 +13,10 @@
 int g_anDefaultPlayerLemmingCounts[5][4] = {{0, 0, 0, 0}, {4, 0, 0, 0}, {3, 1, 0, 0}, {2, 1, 1, 0}, {1, 1, 1, 1}};
 
 // FUNCTION: LEMBALL 0x00418400
-CPlayerLemmingGroupManager::CPlayerLemmingGroupManager(CAi* p_arg0, CObjectManager* p_arg1, CFormationManager* p_arg2)
-	: CGenericGroupManager(p_arg0, p_arg1, p_arg2), CBaseObjectManager(0x22, 0x17)
+CPlayerLemmingGroupManager::CPlayerLemmingGroupManager(CAi* p_ai,
+													   CObjectManager* p_objectManager,
+													   CFormationManager* p_formationManager)
+	: CGenericGroupManager(p_ai, p_objectManager, p_formationManager), CBaseObjectManager(0x22, 0x17)
 {
 	m_deadCount = 0;
 	m_startX[0] = 0x112;
@@ -495,8 +497,8 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 		AddPlayerLemmingToGroup(lemming, group);
 	}
 	unsigned int doorTime = (count * 800 + 3900) / 50;
-	if (g_pGenericGroupAI->m_unk0x5c < doorTime) {
-		g_pGenericGroupAI->m_unk0x5c = doorTime;
+	if (g_pGenericGroupAI->m_gameplayStartDelay < doorTime) {
+		g_pGenericGroupAI->m_gameplayStartDelay = doorTime;
 	}
 	m_lemmingCounts[0] = count;
 	m_lemmingCounts[3] = 0;
@@ -587,8 +589,8 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 			AddPlayerLemmingToGroup(lemming, group);
 		}
 		unsigned int doorTime = (m_lemmingCounts[i] * 800 + 3900) / 50;
-		if (g_pGenericGroupAI->m_unk0x5c < doorTime) {
-			g_pGenericGroupAI->m_unk0x5c = doorTime;
+		if (g_pGenericGroupAI->m_gameplayStartDelay < doorTime) {
+			g_pGenericGroupAI->m_gameplayStartDelay = doorTime;
 		}
 		doorTime = (m_lemmingCounts[i] * 800 + 4100) / 50;
 		if (p_skip == 0) {

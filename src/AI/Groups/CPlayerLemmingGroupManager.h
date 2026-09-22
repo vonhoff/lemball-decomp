@@ -18,7 +18,7 @@ class CPlayerLemmingGroupManager : public CGenericGroupManager, public CBaseObje
 public:
 	CPlayerLemming* GetDead();
 	CPlayerLemmingGroup* GetPlayerControlledGroup();
-	CPlayerLemmingGroupManager(CAi* p_arg0, CObjectManager* p_arg1, CFormationManager* p_arg2);
+	CPlayerLemmingGroupManager(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	bool GetLeaderPos(AiCoord& p_position);
 	bool HasSfxChanged();
 	bool IsLemmingPlayerControlled(CPlayerLemming* p_lemming);
