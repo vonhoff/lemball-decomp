@@ -156,7 +156,6 @@ void GWnd::InternalOnSize()
 	Surface* target;
 	VsPoint* innerOrigin;
 	VsPoint* parentOrigin;
-	VsSize size;
 	short relX;
 	short relY;
 
@@ -164,8 +163,7 @@ void GWnd::InternalOnSize()
 	if (m_gdi == 0) {
 		return;
 	}
-	size.m_width = m_rect.m_width;
-	size.m_height = m_rect.m_height;
+	VsSize size(m_rect);
 	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
 		size.m_width = m_innerRect.m_width;
 		size.m_height = m_innerRect.m_height;
