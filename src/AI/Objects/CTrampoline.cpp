@@ -111,37 +111,70 @@ int CTrampoline::Hit(const AiCoord& p_position, CGameObject* p_object)
 	int trampolineX = m_position.m_xFixed >> 12;
 	int trampolineY = m_position.m_yFixed >> 12;
 	int trampolineZ = m_position.m_zFixed >> 12;
+	int maximumX = trampolineX + 0xc;
+	int minimumX = trampolineX - 0xc;
+	int minimumY = trampolineY - 0xc;
+	int maximumY = trampolineY + 0xc;
+	int maximumZ = trampolineZ + 8;
+	int minimumZ = trampolineZ - 4;
 
-	if (positionX < trampolineX - 0xc || positionX > trampolineX + 0xc || positionY < trampolineY - 0xc ||
-		positionY > trampolineY + 0xc || positionZ < trampolineZ - 4 || positionZ > trampolineZ + 8) {
+	if (minimumX > positionX || maximumX < positionX || minimumY > positionY || maximumY < positionY ||
+		minimumZ > positionZ || maximumZ < positionZ) {
 		return 0;
 	}
 
-	CFixed verticalVelocity(p_object->m_flightVelocity.m_zFixed);
-	if (verticalVelocity.m_value < 0) {
-		verticalVelocity.m_value = -verticalVelocity.m_value;
+	C3DVector velocity;
+	CFixed incoming[3] = {CFixed(p_object->m_flightVelocity.m_xFixed),
+						  CFixed(p_object->m_flightVelocity.m_yFixed),
+						  CFixed(p_object->m_flightVelocity.m_zFixed)};
+	if (incoming[2].m_value < 0) {
+		incoming[2].m_value = -incoming[2].m_value;
 	}
 
-	C3DVector velocity;
-	if (p_object->m_flightVelocity.m_yFixed == 0) {
-		if (p_object->m_flightVelocity.m_xFixed < 1) {
-			velocity.m_xFixed = p_object->m_flightVelocity.m_xFixed - 0x2000;
+	if (incoming[1].m_value != 0) {
+		if (incoming[1].m_value > 0) {
+			CFixed impulse[3] = {CFixed(0), CFixed(0x2000), CFixed(0x4000)};
+			CFixed bouncedX(incoming[0].m_value + impulse[0].m_value);
+			CFixed bouncedY = impulse[1] + incoming[1];
+			CFixed bouncedZ = impulse[2] + incoming[2];
+			C3DVector bounced(bouncedX, bouncedY, bouncedZ);
+			velocity.m_xFixed = bounced.m_xFixed;
+			velocity.m_yFixed = bounced.m_yFixed;
+			velocity.m_zFixed = bounced.m_zFixed;
 		}
 		else {
-			velocity.m_xFixed = p_object->m_flightVelocity.m_xFixed + 0x2000;
+			CFixed impulse[3] = {CFixed(0), CFixed(-0x2000), CFixed(0x4000)};
+			CFixed bouncedX(incoming[0].m_value + impulse[0].m_value);
+			CFixed bouncedY = impulse[1] + incoming[1];
+			CFixed bouncedZ = impulse[2] + incoming[2];
+			C3DVector bounced(bouncedX, bouncedY, bouncedZ);
+			velocity.m_xFixed = bounced.m_xFixed;
+			velocity.m_yFixed = bounced.m_yFixed;
+			velocity.m_zFixed = bounced.m_zFixed;
 		}
-		velocity.m_yFixed = (CFixed(0) + CFixed(p_object->m_flightVelocity.m_yFixed)).m_value;
 	}
 	else {
-		velocity.m_xFixed = p_object->m_flightVelocity.m_xFixed;
-		if (p_object->m_flightVelocity.m_yFixed < 1) {
-			velocity.m_yFixed = (CFixed(-0x2000) + CFixed(p_object->m_flightVelocity.m_yFixed)).m_value;
+		if (incoming[0].m_value > 0) {
+			CFixed impulse[3] = {CFixed(0x2000), CFixed(0), CFixed(0x4000)};
+			CFixed bouncedX(incoming[0].m_value + impulse[0].m_value);
+			CFixed bouncedY = impulse[1] + incoming[1];
+			CFixed bouncedZ = impulse[2] + incoming[2];
+			C3DVector bounced(bouncedX, bouncedY, bouncedZ);
+			velocity.m_xFixed = bounced.m_xFixed;
+			velocity.m_yFixed = bounced.m_yFixed;
+			velocity.m_zFixed = bounced.m_zFixed;
 		}
 		else {
-			velocity.m_yFixed = (CFixed(0x2000) + CFixed(p_object->m_flightVelocity.m_yFixed)).m_value;
+			CFixed impulse[3] = {CFixed(-0x2000), CFixed(0), CFixed(0x4000)};
+			CFixed bouncedX(incoming[0].m_value + impulse[0].m_value);
+			CFixed bouncedY = impulse[1] + incoming[1];
+			CFixed bouncedZ = impulse[2] + incoming[2];
+			C3DVector bounced(bouncedX, bouncedY, bouncedZ);
+			velocity.m_xFixed = bounced.m_xFixed;
+			velocity.m_yFixed = bounced.m_yFixed;
+			velocity.m_zFixed = bounced.m_zFixed;
 		}
 	}
-	velocity.m_zFixed = (CFixed(0x4000) + verticalVelocity).m_value;
 
 	if (velocity.m_xFixed > 0x14000) {
 		velocity.m_xFixed = 0x14000;
