@@ -805,7 +805,7 @@ void CWnd::ReSetMenu()
 				else {
 					enableMenuItem(menu, item->m_commandId, MF_GRAYED);
 				}
-				if (item->m_unk10 != 0) {
+				if (item->m_checked != 0) {
 					checkMenuItem(menu, item->m_commandId, MF_CHECKED);
 				}
 				else {
