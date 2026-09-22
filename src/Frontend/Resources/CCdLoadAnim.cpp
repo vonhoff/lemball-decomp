@@ -27,8 +27,8 @@
 class CFrames;
 
 // FUNCTION: LEMBALL 0x0044aa80
-CCdLoadAnim::CCdLoadAnim(CGdi* p_arg0, CMain2DDisplay* p_arg1)
-	: CAnimsManager(p_arg0, 0x2b6, 1, 1, 0, 0), m_centerX(m_centerY = 0)
+CCdLoadAnim::CCdLoadAnim(CGdi* p_gdi, CMain2DDisplay* p_display)
+	: CAnimsManager(p_gdi, 0x2b6, 1, 1, 0, 0), m_centerX(m_centerY = 0)
 {
 	unsigned int* points;
 	unsigned int packed;
@@ -37,28 +37,28 @@ CCdLoadAnim::CCdLoadAnim(CGdi* p_arg0, CMain2DDisplay* p_arg1)
 	CResPalette* palette;
 	unsigned long animCount;
 
-	m_display = p_arg1;
-	m_gdi = p_arg0;
+	m_display = p_display;
+	m_gdi = p_gdi;
 	m_points = new CVsPoint[5];
 	g_pCursor->SetActive(0);
 	if (g_nCompactPrimaryContextLayout != 0) {
 		m_backgroundBitmap = CResBitmap::Load(RES_FRONTEND_LOADING_LORES_PICTURE);
 		points = g_dwCdLoadAnimCompactPoints;
 		m_foregroundBitmap = CResBitmap::Load(RES_FRONTEND_LOADING_LORES_REPLACE);
-		m_animResourceId = 0xf0;
+		m_animResourceId = RES_FRONTEND_LOADING_LORES_PAINTDRIP;
 	}
 	else {
 		m_backgroundBitmap = CResBitmap::Load(RES_FRONTEND_LOADING_HIRES_PICTURE);
 		points = g_dwCdLoadAnimFullPoints;
 		m_foregroundBitmap = CResBitmap::Load(RES_FRONTEND_LOADING_HIRES_REPLACE);
-		m_animResourceId = 0xf3;
+		m_animResourceId = RES_FRONTEND_LOADING_HIRES_PAINTDRIP;
 	}
 	LoadAnims(m_animResourceId);
 	palette = CResPalette::Load(RES_FRONTEND_LOADING_LORES_PALETTE);
 	if (m_display->m_lifecycleRefs == 1) {
 		m_display->Clear(-1);
 	}
-	p_arg1->AttachPalette(RES_FRONTEND_LOADING_LORES_PALETTE);
+	p_display->AttachPalette(RES_FRONTEND_LOADING_LORES_PALETTE);
 	palette->UnLoad();
 	m_centerY = (short) ((short) (m_display->m_rect.m_height - m_backgroundBitmap->m_y) / 2);
 	m_centerX = (short) ((short) (m_display->m_rect.m_width - m_backgroundBitmap->m_x) / 2);

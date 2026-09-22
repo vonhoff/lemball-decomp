@@ -22,7 +22,7 @@ struct CVsPoint;
 // VTABLE: LEMBALL 0x00497c88 CCdLoadAnimDraw
 class CCdLoadAnim : public CAnimsManager, public CCdLoadAnimProgress, public CCdLoadAnimDraw {
 public:
-	CCdLoadAnim(CGdi* p_arg0, CMain2DDisplay* p_arg1);
+	CCdLoadAnim(CGdi* p_gdi, CMain2DDisplay* p_display);
 	void InitialiseScreen();
 	virtual void Draw();
 	virtual void Draw(short p_progress);

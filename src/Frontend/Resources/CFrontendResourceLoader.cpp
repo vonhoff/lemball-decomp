@@ -16,7 +16,7 @@ class CCdLoadAnimDraw;
 class CLoadUpdate;
 
 // FUNCTION: LEMBALL 0x004479e0
-CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_arg0, int p_arg1)
+CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int p_soundState)
 {
 	unsigned int i;
 	unsigned int* id;
@@ -54,17 +54,12 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_arg0, int p_a
 	m_palettes = (CResPalette**) operator new(8);
 	m_strings = (CResString**) operator new(4);
 	m_movies = (CResMovie**) operator new(0x18);
-	m_loadAnim = new CCdLoadAnim(p_arg0->m_gdi, p_arg0);
-	if (m_loadAnim != 0) {
-		p_arg0->m_drawPrimitive = &static_cast<CCdLoadAnimDraw&>(*m_loadAnim);
-	}
-	else {
-		p_arg0->m_drawPrimitive = 0;
-	}
-	m_totalResources += g_pSoundView->GetnEffects((unsigned short) p_arg1);
+	m_loadAnim = new CCdLoadAnim(p_display->m_gdi, p_display);
+	p_display->m_drawPrimitive = static_cast<CCdLoadAnimDraw*>(m_loadAnim);
+	m_totalResources += g_pSoundView->GetnEffects((unsigned short) p_soundState);
 	m_loadAnim->InitialiseScreen();
 	m_loadedResources = 0;
-	g_pSoundView->ChangeState((unsigned short) p_arg1, (CLoadUpdate*) this);
+	g_pSoundView->ChangeState((unsigned short) p_soundState, (CLoadUpdate*) this);
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
 		LoadAnim(m_animResourceIds[i]);
 	}
@@ -76,11 +71,13 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_arg0, int p_a
 	}
 	id = g_dwFrontendPaletteIds;
 	do {
-		LoadPalette(*id++);
+		LoadPalette(*id);
+		++id;
 	} while (id < g_dwFrontendPaletteIds + 2);
 	id = g_dwFrontendStringIds;
 	do {
-		LoadString(*id++);
+		LoadString(*id);
+		++id;
 	} while (id < g_dwFrontendStringIds + 1);
 	for (i = 0; i < 3; i++) {
 		LoadMovie(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1);
@@ -88,7 +85,7 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_arg0, int p_a
 	for (i = 0; i < 3; i++) {
 		LoadMovie(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1);
 	}
-	p_arg0->m_drawPrimitive = 0;
+	p_display->m_drawPrimitive = 0;
 	if (m_loadAnim != 0) {
 		delete m_loadAnim;
 	}

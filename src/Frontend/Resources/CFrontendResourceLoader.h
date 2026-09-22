@@ -16,7 +16,7 @@ class CResString;
 // VTABLE: LEMBALL 0x00497ad4
 class CFrontendResourceLoader : public CLoadUpdate {
 public:
-	CFrontendResourceLoader(CMain2DDisplay* p_arg0, int p_arg1);
+	CFrontendResourceLoader(CMain2DDisplay* p_display, int p_soundState);
 	virtual void UpdateNonCacheLoad(); // vtable+0x00
 	void LoadAnim(unsigned long p_resourceId);
 	void LoadBitmap(unsigned long p_resourceId);
