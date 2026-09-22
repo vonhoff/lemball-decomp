@@ -6,6 +6,7 @@
 #include "../Support/CoordPair.h"          // complete type
 #include "../Windows/SuccFailAnimWindow.h" // complete type
 #include "Frontend/Support/UserActionMessage.h"
+#include "SuccFailDrawerFieldViews.h"
 #include "SuccFailDrawerPrims.h" // complete type
 
 class Gdi;

@@ -285,10 +285,10 @@ void SuccFailDrawer::Load()
 {
 	unsigned long* returnAnim;
 	unsigned long* goAnim;
-	Prims* primitiveBundle;
-	BitmapRes* primitive;
-	SuccFailDrawerPrims* primitives;
-	BitmapRes* primary;
+	SuccFailDrawerFieldViews::Primitive* primitive;
+	SuccFailDrawerFieldViews::DrawerPrims* primary;
+	ResBitmap* resource;
+	unsigned int position;
 	int bitmapX;
 	int i;
 
@@ -330,31 +330,33 @@ void SuccFailDrawer::Load()
 		m_secondaryBitmap = 0;
 	}
 	bitmapX = (int) m_width - (int) (short) m_primaryBitmap->m_x;
-	primitiveBundle = m_primitiveBundle;
-	primitives = m_primitives;
+	primitive = reinterpret_cast<SuccFailDrawerFieldViews::Primitive*>(&m_primitiveBundle->m_primitive.m_x);
+	primary = reinterpret_cast<SuccFailDrawerFieldViews::DrawerPrims*>(&m_primitives->m_primary.m_x);
 	i = 1;
 	do {
-		primitive = &primitiveBundle->m_primitive;
-		primary = &primitives->m_primary;
-		primitive->m_x = m_width - m_backgroundBitmap->m_x;
-		primitive->m_y = (short) m_layout->m_backgroundPosition.m_y;
-		primitive->m_resource = m_backgroundBitmap;
-		primitive->m_flags = 0x800;
-		primitive->m_remap = 0;
-		primary->m_x = (short) bitmapX;
-		primary->m_y = (short) m_layout->m_primaryPosition.m_y;
-		primary->m_resource = m_primaryBitmap;
-		primary->m_flags = 0x800;
-		primary->m_remap = 0;
+		resource = m_backgroundBitmap;
+		primitive->m_primitive.m_x = m_width - resource->m_x;
+		primitive->m_primitive.m_y = (short) m_layout->m_backgroundPosition.m_y;
+		primitive->m_primitive.m_resource = resource;
+		primitive->m_primitive.m_flags = 0x800;
+		primitive->m_primitive.m_remap = 0;
+		position = m_layout->m_primaryPosition.m_y;
+		primary->m_primary.m_x = (short) bitmapX;
+		primary->m_primary.m_y = position;
+		resource = m_primaryBitmap;
+		primary->m_primary.m_resource = resource;
+		primary->m_primary.m_flags = 0x800;
+		primary->m_primary.m_remap = 0;
 		if (m_secondaryBitmap != 0) {
-			primitives->m_secondary.m_x = (short) m_layout->m_secondaryPosition.m_x;
-			primitives->m_secondary.m_y = (short) m_layout->m_secondaryPosition.m_y;
-			primitives->m_secondary.m_resource = m_secondaryBitmap;
-			primitives->m_secondary.m_flags = 0x800;
-			primitives->m_secondary.m_remap = 0;
+			position = m_layout->m_secondaryPosition.m_y;
+			primary->m_secondary.m_x = (short) m_layout->m_secondaryPosition.m_x;
+			primary->m_secondary.m_y = position;
+			primary->m_secondary.m_resource = m_secondaryBitmap;
+			primary->m_secondary.m_flags = 0x800;
+			primary->m_secondary.m_remap = 0;
 		}
-		primitives++;
-		primitiveBundle++;
+		primary++;
+		primitive++;
 	} while (--i != 0);
 	m_layout->m_primaryPosition.m_x = bitmapX;
 	m_layout->m_failurePosition.m_x = bitmapX;
