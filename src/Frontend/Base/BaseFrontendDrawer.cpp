@@ -282,13 +282,14 @@ void BaseFrontendDrawer::ReplaceBackground()
 	m_gdi->AddToList(&m_primitiveBundle[m_primitiveBank].m_drawingMark);
 	if (m_drawingBackBuffer != 0) {
 		if (m_drawFrame == 0) {
-			short height = m_height;
-			short width = m_width;
+			VsRect frame(0, 0, m_width, m_height);
+			const VsSize* size = &frame;
+			const VsPoint* origin = &frame;
 			Line& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
-			line.m_x1 = width;
-			line.m_y1 = height;
-			line.m_x2 = 0;
-			line.m_y2 = 0;
+			line.m_x1 = size->m_width;
+			line.m_y1 = size->m_height;
+			line.m_x2 = origin->m_x;
+			line.m_y2 = origin->m_y;
 			line.m_color = 0;
 			Primitive* primitive = &m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
 			primitive->Draw(m_gdi);
