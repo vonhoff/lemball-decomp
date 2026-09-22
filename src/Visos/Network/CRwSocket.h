@@ -12,10 +12,8 @@
 // view, but their COFF symbols retain the CReadSocket/CWriteSocket path. Eight
 // original socket constructors install all three tables, and the shared
 // deleting destructor at 0x00462cb0 destroys CReadSocket at +0xa8, CWriteSocket
-// at +0x30, then CBaseCommonSocket. The forwarding bodies below are intentionally
-// inline: the original executable has their effects in annotated derived
-// callers, not separate CRwSocket functions to which FUNCTION annotations could
-// be attached.
+// at +0x30, then CBaseCommonSocket. The forwarding bodies remain inline; their
+// emitted versions are mapped below by their COFF symbols.
 class CRwSocket : public virtual CBaseCommonSocket, public virtual CWriteSocket, public virtual CReadSocket {
 public:
 	CRwSocket() {}
@@ -60,8 +58,11 @@ public:
 // SYNTHETIC: LEMBALL 0x00462cb0
 // CRwSocket::`scalar deleting destructor'
 
-// SYNTHETIC: LEMBALL 0x00462cf0
-// CRwSocket::Closed`vtordisp{-4, 0}'
+// SYNTHETIC: LEMBALL 0x00462cf0 SYMBOL
+// ?Closed@CRwSocket@@$4PPPPPPPM@A@AEXH@Z
+
+// FUNCTION: LEMBALL 0x00462d00 SYMBOL
+// ?Closed@CRwSocket@@UAEXH@Z
 
 // SYNTHETIC: LEMBALL 0x00462d20 SYMBOL
 // ??_ECRwSocket@@$4PPPPPPPM@DA@AEPAXI@Z
