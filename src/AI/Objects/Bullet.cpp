@@ -131,7 +131,7 @@ bool Bullet::Process()
 		if ((int) currentTick >= (int) tick) {
 			do {
 				if (m_actionDeadline < tick) {
-					return 0;
+					goto inactive;
 				}
 				m_movement.Position(pos, tick);
 				if (pos.m_x < 0 || pos.m_x > 0x3ff || pos.m_y < 0 || pos.m_y > 0x3ff) {
