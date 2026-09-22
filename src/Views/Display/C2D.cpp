@@ -1312,8 +1312,9 @@ void C2D::SetClipSize()
 	}
 	if (g_pDemo != 0) {
 		short demoOffsetY = (short) m_clipOffsetY;
-		g_pDemo->m_offsetX = (short) m_clipOffsetX;
-		g_pDemo->m_offsetY = demoOffsetY;
+		Demo* demo = g_pDemo;
+		demo->m_offsetX = (short) m_clipOffsetX;
+		demo->m_offsetY = demoOffsetY;
 	}
 	lookup = m_spriteGroundLookup;
 	if (lookup != 0) {
