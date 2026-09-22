@@ -31,6 +31,8 @@ public:
 	void SetEffectsVolume(unsigned char p_volume);
 	void SetMusicOn(unsigned int p_enabled);
 	void SetMusicVolume(unsigned char p_volume);
+	void StopMusicIfEnabled();
+	void ResumeMusicIfEnabled();
 	void SoundEffect(CViewData* p_viewData, int p_count, AiCoord& p_listener);
 	void UnprepareEffects();
 	~CSoundView();
@@ -41,7 +43,7 @@ public:
 	friend class CPanelButton;
 
 private:
-	void* m_effectSpecTable;         // 0x00
+	unsigned int m_initialGameTick;  // 0x00
 	CLoadUpdate* m_loadUpdate;       // 0x04
 	unsigned int m_flags;            // 0x08
 	unsigned short m_currentState;   // 0x0c

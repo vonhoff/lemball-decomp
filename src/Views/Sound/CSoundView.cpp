@@ -78,7 +78,7 @@ CSoundView::CSoundView()
 	EffectSpec* spec;
 
 	m_unk0x64 = 0;
-	m_effectSpecTable = (void*) g_dwGameTick;
+	m_initialGameTick = g_dwGameTick;
 	m_flags = 0;
 	m_currentState = 0;
 	m_musicHandle = 0;
@@ -325,4 +325,20 @@ void CSoundView::SetEffectsVolume(unsigned char p_volume)
 void CSoundView::SetMusicVolume(unsigned char p_volume)
 {
 	g_pSoundManager->SetVolumes(-1, p_volume);
+}
+
+// FUNCTION: LEMBALL 0x00439f90
+void CSoundView::StopMusicIfEnabled()
+{
+	if (g_dwMusicOn != 0) {
+		g_pSoundManager->StopMusic(m_musicHandle);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439fb0
+void CSoundView::ResumeMusicIfEnabled()
+{
+	if (g_dwMusicOn != 0) {
+		g_pSoundManager->ResumeMusicCd(m_musicHandle);
+	}
 }
