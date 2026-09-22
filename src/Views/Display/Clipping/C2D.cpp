@@ -495,3 +495,51 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x0043f480
+void C2D::UpdateSpriteGroundLookupRegions()
+{
+	short translatedX = m_spriteGroundTranslationPoint.m_x - (short) m_clipOffsetX - 3;
+	short translatedY = m_spriteGroundTranslationPoint.m_y - (short) m_clipOffsetY - 3;
+	SpriteGroundLookup* lookup = m_spriteGroundLookup;
+	m_spriteGroundTranslatedPointRect.m_width = 16;
+	m_spriteGroundTranslatedPointRect.m_height = 16;
+	m_spriteGroundTranslatedPointRect.m_x = translatedX;
+	m_spriteGroundTranslatedPointRect.m_y = translatedY;
+
+	short pixelX = m_spriteGroundLookupRectA.m_x;
+	int cellX = (short) (pixelX / 16);
+	int cellY = (short) (m_spriteGroundLookupRectA.m_y / 16);
+	int columns = (pixelX + m_spriteGroundLookupRectA.m_width - 1) / 16 - cellX + 1;
+	int rows = (m_spriteGroundLookupRectA.m_y + m_spriteGroundLookupRectA.m_height - 1) / 16 - cellY + 1;
+	int width = lookup->m_width;
+	int height;
+	if (cellX < width && (height = lookup->m_height, cellY < height)) {
+		if (cellX < 0) {
+			columns += cellX;
+			cellX = 0;
+		}
+		if (cellY < 0) {
+			rows += cellY;
+			cellY = 0;
+		}
+		if (cellX + columns >= width) {
+			columns = width - cellX;
+		}
+		if (cellY + rows >= height) {
+			rows = height - cellY;
+		}
+		if (columns > 0 && rows > 0) {
+			int offset = cellX + cellY * width;
+			unsigned char* maskA = lookup->m_maskA + offset;
+			unsigned char* maskB = lookup->m_maskB + offset;
+			for (; rows != 0; rows--) {
+				memset(maskA, 1, columns);
+				memset(maskB, 1, columns);
+				maskA += lookup->m_width;
+				maskB += lookup->m_width;
+			}
+		}
+	}
+	m_spriteGroundLookup->MarkRect(m_spriteGroundLookupRectB);
+}

@@ -157,6 +157,7 @@ public:
 	void SortViewData();
 	void TriggerPause(unsigned char p_paused);
 	void UnRegisterRemaps();
+	void UpdateSpriteGroundLookupRegions();
 	void UseBalloon(CPlayerLemming* p_lemming);
 	CVsRect* GetClipRectangle();
 	friend class CPanel;
