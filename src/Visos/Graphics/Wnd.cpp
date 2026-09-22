@@ -910,32 +910,28 @@ void Wnd::InternalOnZoom(int p_oldZoom)
 // FUNCTION: LEMBALL 0x00465820
 void Wnd::InternalSetRect(const VsRect& p_rect)
 {
-	short geometry[4];
-	VsRect& rect = *(VsRect*) geometry;
+	VsRect rect(p_rect);
+	VsPoint* origin = &rect;
+	const VsSize* size = &rect;
 	RECT adjusted;
 	RECT window;
 	POINT client;
 	const VsPoint* position;
-	rect.m_width = p_rect.m_width;
-	rect.m_height = p_rect.m_height;
-	position = (const VsPoint*) &p_rect;
-	memcpy(&rect.m_x, &position->m_x, sizeof(short));
-	memcpy(&rect.m_y, &position->m_y, sizeof(short));
 	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
 		if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0) {
-			rect.m_x = 0;
-			rect.m_y = 0;
+			origin->m_x = 0;
+			origin->m_y = 0;
 		}
-		adjusted.left = rect.m_x;
-		adjusted.top = rect.m_y;
-		adjusted.right = (short) (rect.m_x + rect.m_width);
-		adjusted.bottom = (short) (rect.m_height + rect.m_y);
+		adjusted.left = origin->m_x;
+		adjusted.top = origin->m_y;
+		adjusted.right = (short) (origin->m_x + size->m_width);
+		adjusted.bottom = (short) (size->m_height + origin->m_y);
 		GetWindowRect((HWND) m_nativeWindow, &window);
 		client.x = 0;
 		client.y = 0;
 		ClientToScreen((HWND) m_nativeWindow, &client);
-		window.left += rect.m_x - client.x;
-		window.top += rect.m_y - client.y;
+		window.left += origin->m_x - client.x;
+		window.top += origin->m_y - client.y;
 		unsigned int style = ConvertWindowStyleFlags(GetStyle());
 		AdjustWindowRect(&adjusted, style, m_menuLists != 0);
 		adjusted.right -= adjusted.left;
@@ -944,15 +940,15 @@ void Wnd::InternalSetRect(const VsRect& p_rect)
 		return;
 	}
 	position = (const VsPoint*) &m_parent->m_rect;
-	window.top = (short) (position->m_y + rect.m_y);
-	window.left = (short) (position->m_x + rect.m_x);
+	window.top = (short) (position->m_y + origin->m_y);
+	window.left = (short) (position->m_x + origin->m_x);
 	ClientToScreen((HWND) ((Wnd*) m_parent)->m_nativeWindow, (POINT*) &window);
 	m_rect.m_x = (short) window.left;
 	m_rect.m_y = (short) window.top;
-	m_rect.m_width = rect.m_width;
-	m_rect.m_height = rect.m_height;
-	m_relativeTopLeft.m_x = rect.m_x;
-	m_relativeTopLeft.m_y = rect.m_y;
+	m_rect.m_width = size->m_width;
+	m_rect.m_height = size->m_height;
+	m_relativeTopLeft.m_x = origin->m_x;
+	m_relativeTopLeft.m_y = origin->m_y;
 	InternalOnMove();
 	OnMove();
 	InternalOnSize();
