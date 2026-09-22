@@ -24,9 +24,9 @@ bool CBaseFrontendProcess::ProcessMessages(Message* p_message)
 }
 
 // FUNCTION: LEMBALL 0x00446720
-CBaseFrontendProcess::CBaseFrontendProcess(CGame* p_arg0)
+CBaseFrontendProcess::CBaseFrontendProcess(CGame* p_game)
 {
-	m_game = p_arg0;
+	m_game = p_game;
 	m_userActionMessage = new CUserActionMessage();
 	if (g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
 		m_networkWasActive = 1;

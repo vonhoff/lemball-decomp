@@ -14,7 +14,7 @@
 #include "Visos/Network/CReadSocket.h"
 
 // FUNCTION: LEMBALL 0x00452550
-CNetworkManager::CNetworkManager(const char* p_arg0) : CBaseQueueHandler()
+CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler()
 {
 	int networkLoaded = 0;
 
@@ -32,19 +32,19 @@ CNetworkManager::CNetworkManager(const char* p_arg0) : CBaseQueueHandler()
 		m_connections[i] = 0;
 	}
 
-	if (p_arg0 != 0) {
+	if (p_filePeerName != 0) {
 		networkLoaded = VsFNetInit();
 		if (networkLoaded != 0) {
 			m_externalDriverLoaded = 1;
 		}
 	}
-	if (p_arg0 == 0) {
+	if (p_filePeerName == 0) {
 		networkLoaded = VsNetInit();
 		m_localDriverLoaded = 1;
 	}
 	if (networkLoaded != 0) {
-		if (p_arg0 != 0) {
-			((CFileNetwork*) g_pBaseNetwork)->Setup(p_arg0, "t:\\network");
+		if (p_filePeerName != 0) {
+			((CFileNetwork*) g_pBaseNetwork)->Setup(p_filePeerName, "t:\\network");
 		}
 		if (g_pBaseNetwork->Initialise("Paintball v0.1", 0x400)) {
 			g_pBaseNetwork->SetCBuffers(100, 0x10);

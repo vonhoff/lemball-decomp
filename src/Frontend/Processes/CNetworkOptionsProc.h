@@ -14,7 +14,7 @@ class CGameRejectMessage;
 // VTABLE: LEMBALL 0x004986e8 CBaseProcess
 class CNetworkOptionsProc : public CBaseFrontendProcess {
 public:
-	CNetworkOptionsProc(CGame* p_arg0);
+	CNetworkOptionsProc(CGame* p_game);
 	virtual bool ReceiveCritical(unsigned long p_id, CReadPacket* p_packet, CConnect* p_connection); // vtable+0x08
 	virtual void Processing();                                                                       // vtable+0x0c
 	virtual ~CNetworkOptionsProc();                                                                  // vtable+0x00

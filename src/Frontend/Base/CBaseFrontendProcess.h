@@ -14,7 +14,7 @@ struct Message;
 // VTABLE: LEMBALL 0x00497948 CBaseProcess
 class CBaseFrontendProcess : public CBaseProcess, public CBaseQueueHandler {
 public:
-	CBaseFrontendProcess(CGame* p_arg0);
+	CBaseFrontendProcess(CGame* p_game);
 	virtual ~CBaseFrontendProcess();                                                                 // vtable+0x00
 	virtual void Process();                                                                          // vtable+0x04
 	virtual bool ReceiveCritical(unsigned long p_id, CReadPacket* p_packet, CConnect* p_connection); // vtable+0x08

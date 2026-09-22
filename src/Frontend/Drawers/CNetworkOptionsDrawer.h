@@ -49,7 +49,7 @@ struct NetworkOptionsLayout {
 // VTABLE: LEMBALL 0x0049862c CAnimsManager
 class CNetworkOptionsDrawer : public CBaseFrontendDrawer {
 public:
-	CNetworkOptionsDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2);
+	CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect);
 	bool AcceptingLock();
 	bool HighlightNextEntry();
 	bool HighlightPreviousEntry();

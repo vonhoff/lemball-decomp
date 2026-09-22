@@ -12,7 +12,7 @@ class CNetworkGameStage;
 class CNetworkManager : public CBaseQueueHandler {
 public:
 	CNetworkGameMessage* GetGameMessage(CConnect* p_connection);
-	CNetworkManager(const char* p_arg0);
+	CNetworkManager(const char* p_filePeerName);
 	bool Start();
 	int GetnGame(CConnect* p_connection);
 	int CountActiveGames();

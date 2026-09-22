@@ -181,8 +181,8 @@ int g_nNetworkOptionsShiftHeld = 0;
 int g_nNetworkOptionsCapsOrShift = 0;
 
 // FUNCTION: LEMBALL 0x00453280
-CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2)
-	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_NETWORK_OPTIONS, 0x32, 200, 0, 100, 0x28)
+CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect)
+	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_NETWORK_OPTIONS, 0x32, 200, 0, 100, 0x28)
 {
 	int i;
 

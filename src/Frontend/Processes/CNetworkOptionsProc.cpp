@@ -22,7 +22,7 @@
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00455050
-CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_arg0) : CBaseFrontendProcess(p_arg0)
+CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p_game)
 {
 	void* storage;
 
