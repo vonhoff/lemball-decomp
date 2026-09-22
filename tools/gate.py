@@ -49,6 +49,9 @@ def main() -> int:
     parser.add_argument("--top", type=int, default=0, help="show the N most frequent unresolved targets and pairs")
     parser.add_argument("--tools", action="store_true", help="comparison-tool regression tests")
     parser.add_argument(
+        "--annot-strict", action="store_true", help="strict annotation checks (fail on review items and unmapped vtables)"
+    )
+    parser.add_argument(
         "--all", action="store_true", help="run all gates (default + vtable + names)"
     )
     args = parser.parse_args()
@@ -58,12 +61,12 @@ def main() -> int:
         return check_names(paths=paths, fail=True)
 
     if args.vtable and not args.all:
-        return check_vtable(no_build=True, verbose=args.verbose, top=args.top)
+        return check_vtable(no_build=True, verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
 
     if args.tools and not args.all:
         return check_tool_tests()
 
-    code = check_smell(paths=paths, annot=True)
+    code = check_smell(paths=paths, annot=True, annot_strict=args.annot_strict)
     if code != 0:
         return code
 
@@ -85,7 +88,7 @@ def main() -> int:
         if code != 0:
             return code
 
-        code = check_vtable(no_build=True, verbose=args.verbose, top=args.top)
+        code = check_vtable(no_build=True, verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
         if code != 0:
             return code
 
