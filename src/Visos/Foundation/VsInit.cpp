@@ -249,11 +249,11 @@ void InitQuitSubSystems()
 }
 
 // FUNCTION: LEMBALL 0x004595d0
-bool InitCheckOptions(char* p_arg0)
+bool InitCheckOptions(char* p_option)
 {
 	InitCmdOption* option;
 	char* colon;
-	char* optionText = p_arg0;
+	char* optionText = p_option;
 	unsigned int maxCount;
 	int index;
 	char* end;
@@ -289,7 +289,7 @@ bool InitCheckOptions(char* p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x004596b0
-void InitCmdLine(char* p_arg0)
+void InitCmdLine(char* p_commandLine)
 {
 	int i;
 	int remaining;
@@ -298,30 +298,30 @@ void InitCmdLine(char* p_arg0)
 	int count;
 
 	g_cParsedArgs = 0;
-	g_apszParsedArgs[0] = p_arg0;
+	g_apszParsedArgs[0] = p_commandLine;
 	memset(g_afInitOptionSelected, 0, sizeof(g_afInitOptionSelected));
-	if (p_arg0 != 0) {
-		while (*p_arg0 != '\0' && isspace(*p_arg0)) {
-			p_arg0 = p_arg0 + 1;
+	if (p_commandLine != 0) {
+		while (*p_commandLine != '\0' && isspace(*p_commandLine)) {
+			p_commandLine = p_commandLine + 1;
 		}
-		if (*p_arg0 != '\0') {
+		if (*p_commandLine != '\0') {
 			g_cParsedArgs = 0;
-			while (*p_arg0 != '\0') {
-				if (isupper(*p_arg0)) {
-					*p_arg0 = (char) tolower(*p_arg0);
+			while (*p_commandLine != '\0') {
+				if (isupper(*p_commandLine)) {
+					*p_commandLine = (char) tolower(*p_commandLine);
 				}
-				if (isspace(*p_arg0)) {
+				if (isspace(*p_commandLine)) {
 					do {
-						*p_arg0 = '\0';
-						p_arg0 = p_arg0 + 1;
-					} while (isspace(*p_arg0));
-					if (*p_arg0 != '\0') {
+						*p_commandLine = '\0';
+						p_commandLine = p_commandLine + 1;
+					} while (isspace(*p_commandLine));
+					if (*p_commandLine != '\0') {
 						g_cParsedArgs = g_cParsedArgs + 1;
-						g_apszParsedArgs[g_cParsedArgs] = p_arg0;
+						g_apszParsedArgs[g_cParsedArgs] = p_commandLine;
 					}
-					p_arg0 = p_arg0 - 1;
+					p_commandLine = p_commandLine - 1;
 				}
-				p_arg0 = p_arg0 + 1;
+				p_commandLine = p_commandLine + 1;
 			}
 			i = 0;
 			g_cParsedArgs = g_cParsedArgs + 1;
@@ -355,13 +355,13 @@ void InitCmdLine(char* p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x00459860
-int InitMain(char* p_arg0)
+int InitMain(char* p_commandLine)
 {
 	unsigned int i;
 	int result;
 	int mainResult;
 
-	InitCmdLine(p_arg0);
+	InitCmdLine(p_commandLine);
 	InitPreInit();
 	InitSubSystems();
 	*g_pDebugOutput << g_szCommandLineOptions;
