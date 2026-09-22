@@ -126,14 +126,14 @@ public:
 	void KillRemapPalettes();
 	void LeftClick(const CVsPoint& p_screenPoint,
 				   const CVsPoint& p_gamePoint,
-				   unsigned int p_commitMoves,
+				   unsigned int p_cancelMoves,
 				   unsigned int p_alternate);
 	void MoveGroup(const CVsPoint& p_point);
 	void NewPauseWindow(ePauseWindowMessages p_message);
 	void NextGroup();
 	void NoStateLeftClick(const CVsPoint& p_screenPoint,
 						  const CVsPoint& p_gamePoint,
-						  unsigned int p_commitMoves,
+						  unsigned int p_cancelMoves,
 						  unsigned int p_alternate);
 	void NoStateRightClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gamePoint);
 	void OnLoaded();

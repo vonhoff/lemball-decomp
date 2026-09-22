@@ -785,7 +785,7 @@ bool C2D::IsInGrouping(CGameObject* p_object)
 // STUB: LEMBALL 0x00437520
 void C2D::NoStateLeftClick(const CVsPoint& p_screenPoint,
 						   const CVsPoint& p_gamePoint,
-						   unsigned int p_commitMoves,
+						   unsigned int p_cancelMoves,
 						   unsigned int p_alternate)
 {
 }
@@ -844,12 +844,12 @@ void C2D::GroupingLeftClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gam
 // FUNCTION: LEMBALL 0x00437840
 void C2D::LeftClick(const CVsPoint& p_screenPoint,
 					const CVsPoint& p_gamePoint,
-					unsigned int p_commitMoves,
+					unsigned int p_cancelMoves,
 					unsigned int p_alternate)
 {
 	switch (m_groupingActive) {
 	case 0:
-		NoStateLeftClick(p_screenPoint, p_gamePoint, p_commitMoves, p_alternate);
+		NoStateLeftClick(p_screenPoint, p_gamePoint, p_cancelMoves, p_alternate);
 		break;
 	case 1:
 		GroupingLeftClick(p_screenPoint, p_gamePoint, p_alternate);
