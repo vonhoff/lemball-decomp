@@ -36,7 +36,7 @@ extern BasePacketHeader* g_pBroadcastPacketTemplate;
 extern char* g_szBroadcastPeerName;
 extern unsigned int g_broadcastPayloadLength;
 extern unsigned short g_broadcastPort;
-extern unsigned int g_unk0x4a1e44;
+extern unsigned int g_localHostLookupComplete;
 extern int g_lastNetworkError;
 
 // SYNTHETIC: LEMBALL 0x00471a10

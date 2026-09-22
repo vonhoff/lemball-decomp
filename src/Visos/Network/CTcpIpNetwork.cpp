@@ -152,7 +152,7 @@ char* g_szBroadcastPeerName = 0;
 unsigned int g_broadcastPayloadLength = 0;
 
 // GLOBAL: LEMBALL 0x004a1e44
-unsigned int g_unk0x4a1e44 = 0;
+unsigned int g_localHostLookupComplete = 0;
 
 // GLOBAL: LEMBALL 0x004a1e48
 unsigned short g_broadcastPort = 0;

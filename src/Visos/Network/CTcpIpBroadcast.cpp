@@ -176,7 +176,7 @@ void CTcpIpBroadcast::GotHost(int p_failed)
 		strcpy(address->m_text, inet_ntoa(*(in_addr*) &(address->m_ipv4Address = result.m_address.s_addr)));
 		g_pBroadcastAddress->GetStr();
 	}
-	g_unk0x4a1e44 = 1;
+	g_localHostLookupComplete = 1;
 	operator delete(m_asyncBuffer);
 	m_asyncBuffer = 0;
 	m_socketHandle = socket(2, 2, 0);

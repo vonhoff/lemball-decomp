@@ -34,7 +34,7 @@ void CFileBroadcast::Setup(const char* p_peerName, const char* p_path)
 	g_szBroadcastPeerName = (char*) operator new(strlen(p_peerName) + 1);
 	strcpy(g_szBroadcastPeerName, p_peerName);
 	*g_pDebugOutput << "Found Local host OK: " << g_szBroadcastPeerName << "\n";
-	g_unk0x4a1e44 = 1;
+	g_localHostLookupComplete = 1;
 
 	g_pFileBroadcastData = (char*) operator new(strlen(p_path) + 0xf);
 	length = strlen(p_path);
