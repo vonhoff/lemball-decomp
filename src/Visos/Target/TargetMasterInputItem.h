@@ -6,10 +6,15 @@ class VsOStream;
 // VTABLE: LEMBALL 0x0049a458
 class TargetMasterInputItem {
 public:
+	TargetMasterInputItem();
 	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
 	// Slot roles inferred from MasterInput::ProcessItems at 0x00472190.
 	virtual int ProcessQueue(BaseQueue* p_queue) = 0; // vtable+0x04
 	virtual int IsReady() = 0;                        // vtable+0x08
+
+private:
+	unsigned char m_unknown0x04[4]; // 0x04
+	unsigned int m_unk0x08;         // 0x08; original constructor clears this word.
 };
 
 #endif
