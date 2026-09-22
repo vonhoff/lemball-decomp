@@ -242,13 +242,11 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 							  Frames* p_frame,
 							  Remap* p_remap)
 {
-	VsRect result;
 	ResBase* resource;
 	ResZrle* sizeSource;
 	Zrle* zrle;
 	Anim* anim;
 	unsigned int frameIndex;
-	int index;
 	Gdi* current;
 
 	if (m_doubleBuffered != 0) {
@@ -262,18 +260,17 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 	m_previousGdi = m_gdi;
 	resource = m_resources[m_resourceSlots[p_resourceId]];
 	if (resource->m_chunkType == 0x5a524c45) {
-		if (m_doubleBuffered == 0) {
-			index = m_zrleCount;
-			m_zrleCount = index + 1;
-			zrle = m_zrlePrimitives + index;
-		}
-		else {
+		sizeSource = (ResZrle*) resource;
+		if (m_doubleBuffered != 0) {
 			if (m_zrleCapacity == m_bufferedZrleCount) {
 				ResetPrimitives();
 			}
-			index = m_bufferedZrleCount;
-			m_bufferedZrleCount = index + 2;
-			zrle = m_zrlePrimitives + m_bufferHalf + index;
+			zrle = m_zrlePrimitives + m_bufferHalf + m_bufferedZrleCount;
+			m_bufferedZrleCount += 2;
+		}
+		else {
+			m_zrleCount++;
+			zrle = m_zrlePrimitives + (m_zrleCount - 1);
 		}
 		zrle->m_state = m_primitiveSequence;
 		zrle->m_x = p_position.m_x;
@@ -282,7 +279,6 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 		zrle->m_flags = p_animIndex;
 		zrle->m_remap = p_remap;
 		zrle->Draw(m_gdi);
-		sizeSource = (ResZrle*) resource;
 	}
 	else {
 		frameIndex = 0;
@@ -290,19 +286,16 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 			frameIndex = ((Frames*) p_frame)->GetFrameNo();
 			((Frames*) p_frame)->m_reserved08 = frameIndex;
 		}
-		sizeSource = (ResZrle*) ((char*) ((ResAnim*) resource)->m_animationEntries + frameIndex * 0x54);
-		if (m_doubleBuffered == 0) {
-			index = m_animCount;
-			m_animCount = index + 1;
-			anim = m_animPrimitives + index;
-		}
-		else {
+		sizeSource = ((ResAnim*) resource)->m_animationEntries + frameIndex;
+		if (m_doubleBuffered != 0) {
 			if (m_animCapacity == m_bufferedAnimCount) {
 				ResetPrimitives();
 			}
-			index = m_bufferedAnimCount;
-			m_bufferedAnimCount = index + 2;
-			anim = m_animPrimitives + m_bufferHalf + index;
+			anim = m_animPrimitives + m_bufferHalf + m_bufferedAnimCount;
+			m_bufferedAnimCount += 2;
+		}
+		else {
+			anim = m_animPrimitives + m_animCount++;
 		}
 		anim->m_state = m_primitiveSequence;
 		anim->m_x = p_position.m_x;
@@ -313,11 +306,7 @@ VsRect AnimsManager::DrawAnim(const VsPoint& p_position,
 		anim->m_remap = p_remap;
 		anim->Draw(m_gdi);
 	}
-	result.m_width = sizeSource->m_width;
-	result.m_height = sizeSource->m_height;
-	result.m_x = sizeSource->m_x;
-	result.m_y = sizeSource->m_y;
-	return result;
+	return VsRect(sizeSource->m_x, sizeSource->m_y, sizeSource->m_width, sizeSource->m_height);
 }
 
 // 68K 0x1020087c ResetPrimitives__13CAnimsManagerFv
