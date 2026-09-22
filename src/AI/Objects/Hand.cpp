@@ -59,14 +59,20 @@ void Hand::Set(unsigned short p_id, const AiCoord& p_position)
 
 	if (blockX >= 0) {
 		int collisionY = blockY + 1;
-		if (collisionY >= 0 && g_pMap->m_ground.m_width > blockX && g_pMap->m_ground.m_height > collisionY) {
-			g_pMap->m_ground.m_ground[g_pMap->m_ground.m_width * collisionY + blockX].m_collision |= 0x8000;
+		if (collisionY >= 0) {
+			int width = g_pMap->m_ground.m_width;
+			if (width > blockX && g_pMap->m_ground.m_height > collisionY) {
+				g_pMap->m_ground.m_ground[width * collisionY + blockX].m_collision |= 0x8000;
+			}
 		}
 
 		if (blockX >= 0) {
 			collisionY = blockY + 2;
-			if (collisionY >= 0 && g_pMap->m_ground.m_width > blockX && g_pMap->m_ground.m_height > collisionY) {
-				g_pMap->m_ground.m_ground[g_pMap->m_ground.m_width * collisionY + blockX].m_collision |= 0x8000;
+			if (collisionY >= 0) {
+				int width = g_pMap->m_ground.m_width;
+				if (width > blockX && g_pMap->m_ground.m_height > collisionY) {
+					g_pMap->m_ground.m_ground[width * collisionY + blockX].m_collision |= 0x8000;
+				}
 			}
 		}
 	}
