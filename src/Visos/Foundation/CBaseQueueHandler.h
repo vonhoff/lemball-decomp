@@ -4,14 +4,14 @@
 #include "Message.h"
 
 class CBaseQueue;
-class CVsOStream;
+class CVSOStream;
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493110
 class CBaseQueueHandler {
 public:
 	CBaseQueueHandler();
-	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	virtual ~CBaseQueueHandler() {}                      // vtable+0x04
 	virtual int ProcessMsg(Message* p_message);          // vtable+0x08
 
@@ -29,8 +29,8 @@ public:
 	friend class CHotAreaList;
 	friend class CBaseFrontendDrawer;
 	friend class CAboutScreen;
-	friend class CAi;
-	friend class CAiCursor;
+	friend class CAI;
+	friend class CAICursor;
 
 private:
 	unsigned int m_signature;     // 0x04

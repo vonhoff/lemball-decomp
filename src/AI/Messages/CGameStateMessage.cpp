@@ -23,8 +23,8 @@ void CGameStateMessage::AddData()
 // FUNCTION: LEMBALL 0x00410be0
 void CGameStateMessage::GetData()
 {
-	m_state = (eGameStates) GetDword();
-	m_stage = (eGameStateStages) GetDword();
+	m_state = (eGameStates) GetDWORD();
+	m_stage = (eGameStateStages) GetDWORD();
 	Get(m_levelTime);
 	Get(m_score);
 }

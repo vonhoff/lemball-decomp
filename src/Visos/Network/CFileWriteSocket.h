@@ -22,7 +22,7 @@ public:
 	virtual void Closed(int p_notifyPeer);                            // vtable+0x0c
 	virtual void SetDestAddr(CNetworkAddress* p_address);             // vtable+0x20
 	virtual ~CFileWriteSocket();                                      // vtable+0x14
-	friend class CFileRwSocket;
+	friend class CFileRWSocket;
 
 private:
 	int m_nextWriteSlot; // 0x10: current file packet slot

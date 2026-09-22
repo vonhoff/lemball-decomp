@@ -6,7 +6,7 @@
 class CGWnd;
 class CHotAreaHandler;
 class CRemap;
-class CResFont;
+class CResFONT;
 class CText;
 class CVsRect;
 struct CVsPoint;
@@ -32,7 +32,7 @@ private:
 	CVsPoint m_pressedTextPosition;     // 0x128
 	CVsPoint m_normalTextPosition;      // 0x12c
 	unsigned int m_fontResourceId;      // 0x130
-	CResFont* m_font;                   // 0x134
+	CResFONT* m_font;                   // 0x134
 	unsigned int m_alignmentFlags;      // 0x138
 	unsigned int m_nativeButtonCreated; // 0x13c
 	CVsSize m_textMargins;              // 0x140

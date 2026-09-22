@@ -1,11 +1,11 @@
 #include "CSlinkyManager.h"
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CSlinky.h"
 #include "AI/Base/CGameObject.h"
 
 // FUNCTION: LEMBALL 0x0040b8e0
-CSlinkyManager::CSlinkyManager(CAi* p_ai, int p_capacity)
+CSlinkyManager::CSlinkyManager(CAI* p_ai, int p_capacity)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;

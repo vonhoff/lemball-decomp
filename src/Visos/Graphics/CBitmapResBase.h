@@ -3,7 +3,7 @@
 
 #include "CPrimitive.h" // complete type
 
-class CResBitmap;
+class CResBITMAP;
 class CRemap;
 
 // SIZE 0x1c
@@ -18,8 +18,8 @@ public:
 		m_sourceY = 0;
 		m_sourceX = 0;
 	}
-	virtual void Draw(CGdi* p_gdi);   // vtable+0x04
-	virtual void Render(CGdi* p_gdi); // vtable+0x08
+	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
+	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	// FUNCTION: LEMBALL 0x0044b630
 	virtual ~CBitmapResBase() {} // vtable+0x00
 
@@ -30,7 +30,7 @@ public:
 	friend class CPreviewDrawer;
 	friend class CSuccFailDrawer;
 	friend class CSurface;
-	friend class CCdLoadAnim;
+	friend class CCDLoadAnim;
 	friend class CAboutScreen;
 
 protected:
@@ -40,7 +40,7 @@ protected:
 	short m_height;         // 0x0a
 	short m_sourceX;        // 0x0c
 	short m_sourceY;        // 0x0e
-	CResBitmap* m_resource; // 0x10
+	CResBITMAP* m_resource; // 0x10
 	unsigned int m_flags;   // 0x14
 	CRemap* m_remap;        // 0x18
 };

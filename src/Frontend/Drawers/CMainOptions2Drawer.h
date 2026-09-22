@@ -3,7 +3,7 @@
 
 #include "../Base/CBaseFrontendDrawer.h" // complete type
 
-class CGdi;
+class CGDI;
 class CMain2DDisplay;
 class CVsRect;
 // SIZE 0x3ac
@@ -12,7 +12,7 @@ class CVsRect;
 // VTABLE: LEMBALL 0x00497b5c CAnimsManager
 class CMainOptions2Drawer : public CBaseFrontendDrawer {
 public:
-	CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2);
+	CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawBackGround();                    // vtable+0x50
 	virtual void Load();                              // vtable+0x40

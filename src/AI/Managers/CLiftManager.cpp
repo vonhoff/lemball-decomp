@@ -1,7 +1,7 @@
 #include "CLiftManager.h"
 
 #include "../Base/Coord3d.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CLift.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
@@ -11,7 +11,7 @@
 unsigned short g_wMovingLiftCount = 0;
 
 // FUNCTION: LEMBALL 0x00425680
-CLiftManager::CLiftManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x12, 7)
+CLiftManager::CLiftManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x12, 7)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;

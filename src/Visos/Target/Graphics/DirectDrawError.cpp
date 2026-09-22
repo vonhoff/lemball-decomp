@@ -20,7 +20,7 @@ static char g_directDrawErrorText[0x100] = {0};
 char* FormatUnknownDirectDrawError(long p_result)
 {
 	strcpy(g_directDrawErrorText, g_directDrawErrorPrefix);
-	VsLtoa(p_result, g_directDrawErrorText + strlen(g_directDrawErrorPrefix), 10);
+	vsLtoa(p_result, g_directDrawErrorText + strlen(g_directDrawErrorPrefix), 10);
 	return g_directDrawErrorText;
 }
 

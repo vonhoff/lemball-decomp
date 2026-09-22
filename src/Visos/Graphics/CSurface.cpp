@@ -1,12 +1,12 @@
 #include "CSurface.h"
 
 #include "../Foundation/CChangeList.h"
-#include "../Foundation/CVsOStream.h"
+#include "../Foundation/CVSOStream.h"
 #include "../Foundation/CVsPoint.h"
 #include "../Foundation/VsDebug.h"
-#include "../Resources/CResBitmap.h"
-#include "../Resources/CResPalette.h"
-#include "../Resources/CResZrle.h"
+#include "../Resources/CResBITMAP.h"
+#include "../Resources/CResPALETTE.h"
+#include "../Resources/CResZRLE.h"
 #include "../Target/Graphics/CDibContext.h"
 #include "../Target/Graphics/CDrawingContext.h"
 #include "../Target/Graphics/CGdiContext.h"
@@ -18,14 +18,14 @@
 #include "CCopyColourToBackBuff.h"
 #include "CCopyToBackBuff.h"
 #include "CFilledCircle.h"
-#include "CGdiDevice.h"
+#include "CGDIDevice.h"
 #include "CLine.h"
 #include "CPoint.h"
 #include "CRemap.h"
 #include "CScreenScroll.h"
 #include "CSolidRect.h"
 #include "CZBuffClear.h"
-#include "CZrle.h"
+#include "CZRLE.h"
 
 #include <new.h>
 #include <string.h>
@@ -34,10 +34,10 @@
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/ChangeListItem.h"
-#include "Visos/Graphics/CPvBackBuffSurface.h"
-#include "Visos/Graphics/CPvGdiBitmap.h"
-#include "Visos/Graphics/CPvScrollableSurface.h"
-#include "Visos/Graphics/CPvZBuffSurface.h"
+#include "Visos/Graphics/CPVBackBuffSurface.h"
+#include "Visos/Graphics/CPVGDIBitmap.h"
+#include "Visos/Graphics/CPVScrollableSurface.h"
+#include "Visos/Graphics/CPVZBuffSurface.h"
 
 #include <windows.h>
 
@@ -163,7 +163,7 @@ static const unsigned char g_anReservedOutputColors[2][3] = {{0xff, 0xff, 0xff},
 
 // FUNCTION: LEMBALL 0x0046c380
 void BuildSurfaceColourTable(unsigned int* p_entries,
-							 CResPalette* p_palette,
+							 CResPALETTE* p_palette,
 							 void* p_unused,
 							 unsigned int* p_fallbackEntries)
 {
@@ -433,15 +433,15 @@ void CSurface::ResetScroll()
 {
 	SurfaceListNode* node;
 
-	CPvGdiBitmap::ResetScroll();
+	CPVGDIBitmap::ResetScroll();
 	if (HasBackBuff() != 0) {
-		CPvBackBuffSurface::m_bitmap.ResetScroll();
+		CPVBackBuffSurface::m_bitmap.ResetScroll();
 	}
 	if (HasZBuff() != 0) {
-		CPvZBuffSurface::m_bitmap.ResetScroll();
+		CPVZBuffSurface::m_bitmap.ResetScroll();
 	}
 	for (node = m_childSurfaceHead; node != 0; node = node->m_next) {
-		node->m_surface->CPvGdiBitmap::ResetLinePtrs();
+		node->m_surface->CPVGDIBitmap::ResetLinePtrs();
 	}
 }
 
@@ -453,49 +453,49 @@ void CSurface::SetLinePtrs()
 	int parentStride;
 	unsigned char* bits;
 
-	if (CPvScrollableSurface::m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
-		parentStride = CPvScrollableSurface::m_parentSurface->m_stride;
+	if (CPVScrollableSurface::m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
+		parentStride = CPVScrollableSurface::m_parentSurface->m_stride;
 		m_stride = parentStride;
 		bits = (unsigned char*)
-				   CPvScrollableSurface::m_parentSurface->m_lines[(int) CPvScrollableSurface::m_windowRect.m_y] +
-			   (int) CPvScrollableSurface::m_windowRect.m_x;
+				   CPVScrollableSurface::m_parentSurface->m_lines[(int) CPVScrollableSurface::m_windowRect.m_y] +
+			   (int) CPVScrollableSurface::m_windowRect.m_x;
 		m_bitsBase = bits;
 		m_bits = bits;
 		m_xOffset = 0;
 		m_firstLine = 0;
-		if (CPvScrollableSurface::m_parentSurface->CPvBackBuffSurface::m_enabled != 0) {
-			CPvBackBuffSurface::m_enabled = CPvScrollableSurface::m_parentSurface->CPvBackBuffSurface::m_enabled;
-			CPvBackBuffSurface::m_buffer = CPvScrollableSurface::m_parentSurface->CPvBackBuffSurface::m_buffer +
-										   (int) CPvScrollableSurface::m_windowRect.m_y * parentStride +
-										   (int) CPvScrollableSurface::m_windowRect.m_x;
+		if (CPVScrollableSurface::m_parentSurface->CPVBackBuffSurface::m_enabled != 0) {
+			CPVBackBuffSurface::m_enabled = CPVScrollableSurface::m_parentSurface->CPVBackBuffSurface::m_enabled;
+			CPVBackBuffSurface::m_buffer = CPVScrollableSurface::m_parentSurface->CPVBackBuffSurface::m_buffer +
+										   (int) CPVScrollableSurface::m_windowRect.m_y * parentStride +
+										   (int) CPVScrollableSurface::m_windowRect.m_x;
 		}
 		else {
-			CPvBackBuffSurface::m_enabled = 0;
+			CPVBackBuffSurface::m_enabled = 0;
 		}
-		if (CPvScrollableSurface::m_parentSurface->CPvZBuffSurface::m_enabled != 0) {
-			CPvZBuffSurface::m_enabled = CPvScrollableSurface::m_parentSurface->CPvZBuffSurface::m_enabled;
-			CPvZBuffSurface::m_buffer =
-				(unsigned short*) ((int) CPvScrollableSurface::m_parentSurface->CPvZBuffSurface::m_buffer +
-								   ((int) CPvScrollableSurface::m_windowRect.m_y * parentStride +
-									(int) CPvScrollableSurface::m_windowRect.m_x) *
+		if (CPVScrollableSurface::m_parentSurface->CPVZBuffSurface::m_enabled != 0) {
+			CPVZBuffSurface::m_enabled = CPVScrollableSurface::m_parentSurface->CPVZBuffSurface::m_enabled;
+			CPVZBuffSurface::m_buffer =
+				(unsigned short*) ((int) CPVScrollableSurface::m_parentSurface->CPVZBuffSurface::m_buffer +
+								   ((int) CPVScrollableSurface::m_windowRect.m_y * parentStride +
+									(int) CPVScrollableSurface::m_windowRect.m_x) *
 									   2);
 		}
 		else {
-			CPvZBuffSurface::m_enabled = 0;
+			CPVZBuffSurface::m_enabled = 0;
 		}
-		parentY = (int) CPvScrollableSurface::m_windowRect.m_y;
+		parentY = (int) CPVScrollableSurface::m_windowRect.m_y;
 		y = 0;
 		if (0 < (short) m_height) {
 			do {
-				m_lines[y] = (void*) ((int) CPvScrollableSurface::m_parentSurface->m_lines[parentY] +
-									  (int) CPvScrollableSurface::m_windowRect.m_x);
+				m_lines[y] = (void*) ((int) CPVScrollableSurface::m_parentSurface->m_lines[parentY] +
+									  (int) CPVScrollableSurface::m_windowRect.m_x);
 				y = y + 1;
 				parentY = parentY + 1;
 			} while (y < (int) (short) m_height);
 		}
 	}
 	else {
-		CPvGdiBitmap::SetLinePtrs();
+		CPVGDIBitmap::SetLinePtrs();
 	}
 }
 
@@ -507,16 +507,16 @@ void CSurface::AddToChangeList(const CVsRect* p_rect)
 	short originX;
 	short originY;
 
-	parent = (CSurface*) CPvScrollableSurface::m_parentSurface;
-	if (parent != (CSurface*) g_pGdiHelperTarget && CPvScrollableSurface::m_flag74 != 0 &&
-		CPvScrollableSurface::m_flag70 != 0) {
-		origin = &this->CPvScrollableSurface::m_rect0c;
+	parent = (CSurface*) CPVScrollableSurface::m_parentSurface;
+	if (parent != (CSurface*) g_pGdiHelperTarget && CPVScrollableSurface::m_flag74 != 0 &&
+		CPVScrollableSurface::m_flag70 != 0) {
+		origin = &this->CPVScrollableSurface::m_rect0c;
 		originX = origin->m_x;
 		originY = origin->m_y;
 		CVsRect translated(*p_rect);
 		translated.m_x += originX;
 		translated.m_y += originY;
-		((CSurface*) CPvScrollableSurface::m_parentSurface)->AddToChangeList(&translated);
+		((CSurface*) CPVScrollableSurface::m_parentSurface)->AddToChangeList(&translated);
 		return;
 	}
 	m_changeList->Add(*p_rect);
@@ -685,7 +685,7 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 }
 
 // FUNCTION: LEMBALL 0x0046d040
-void CSurface::AttachPalette(CResPalette* p_palette)
+void CSurface::AttachPalette(CResPALETTE* p_palette)
 {
 	unsigned int* fallbackEntries;
 
@@ -803,7 +803,7 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 			}
 		}
 		if (m_platformBitmap == 0) {
-			InternalVsRelAssert("AllocatedBitmap", "VSGDI.CPP", 736);
+			_VSRELassert("AllocatedBitmap", "VSGDI.CPP", 736);
 		}
 		CDibContext* dib = (CDibContext*) m_platformBitmap;
 		SetBitsBase(dib->GetBits(), dib->GetStride());
@@ -1042,7 +1042,7 @@ void CSurface::EndRender()
 }
 
 // FUNCTION: LEMBALL 0x0046dbc0
-void CSurface::Blit(CBigBitmap* p_primitive, CResBitmap* p_bitmap)
+void CSurface::Blit(CBigBitmap* p_primitive, CResBITMAP* p_bitmap)
 {
 	Blit((CBitmap*) p_primitive, p_bitmap);
 }
@@ -1054,7 +1054,7 @@ void CSurface::Flush()
 }
 
 // FUNCTION: LEMBALL 0x0046dc80
-void* CSurface::GetCurrDb()
+void* CSurface::GetCurrDB()
 {
 	return &m_currDb;
 }
@@ -1066,16 +1066,16 @@ void CSurface::Blit(CScreenScroll* p_scroll)
 	CVsPoint dst = p_scroll->m_destination;
 
 	if (HasBackBuff()) {
-		CPvBackBuffSurface::m_bitmap.Scroll(&rect, &dst);
+		CPVBackBuffSurface::m_bitmap.Scroll(&rect, &dst);
 	}
 	if (HasZBuff()) {
 		CVsRect zrect(rect.m_x * 2, rect.m_y, rect.m_width * 2, rect.m_height);
 		CVsPoint zdst;
 		zdst.m_x = dst.m_x * 2;
 		zdst.m_y = dst.m_y;
-		CPvZBuffSurface::m_bitmap.Scroll(&zrect, &zdst);
+		CPVZBuffSurface::m_bitmap.Scroll(&zrect, &zdst);
 	}
-	CPvGdiBitmap::Scroll(&rect, &dst);
+	CPVGDIBitmap::Scroll(&rect, &dst);
 	AddToChangeList(&rect);
 }
 
@@ -1098,7 +1098,7 @@ void CSurface::Blit(CZBuffClear* p_clear)
 	}
 	do {
 		unsigned short* dest =
-			(unsigned short*) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines[startY] + startX * 2);
+			(unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[startY] + startX * 2);
 		for (int i = 0; i < width; i++) {
 			dest[i] = depth;
 		}
@@ -1129,7 +1129,7 @@ void CSurface::Blit(CCopyToBackBuff* p_copy)
 			int dstRow = dstY * 4;
 			do {
 				unsigned char* dst =
-					(unsigned char*) *(int*) ((int) CPvBackBuffSurface::m_bitmap.m_lines + dstRow) + dstX;
+					(unsigned char*) *(int*) ((int) CPVBackBuffSurface::m_bitmap.m_lines + dstRow) + dstX;
 				unsigned char* src = (unsigned char*) *(int*) ((int) m_lines + srcRow) + srcX;
 				memcpy(dst, src, width);
 				srcRow += 4;
@@ -1158,7 +1158,7 @@ void CSurface::Blit(CCopyColourToBackBuff* p_fill)
 		return;
 	}
 	do {
-		unsigned char* dest = (unsigned char*) CPvBackBuffSurface::m_bitmap.m_lines[startY] + startX;
+		unsigned char* dest = (unsigned char*) CPVBackBuffSurface::m_bitmap.m_lines[startY] + startX;
 		memset(dest, color, width);
 		startY++;
 		height--;
@@ -1173,18 +1173,18 @@ void CSurface::CopyBackBuffToScreen(const CVsRect& p_rect)
 
 	if ((int) height * (int) width != 0) {
 		CVsRect rect(p_rect);
-		if ((int) (short) (rect.m_x + rect.m_width) > (int) CPvBackBuffSurface::m_allocatedWidth) {
-			rect.m_width = (short) (CPvBackBuffSurface::m_allocatedWidth - rect.m_x);
+		if ((int) (short) (rect.m_x + rect.m_width) > (int) CPVBackBuffSurface::m_allocatedWidth) {
+			rect.m_width = (short) (CPVBackBuffSurface::m_allocatedWidth - rect.m_x);
 		}
-		if ((int) (short) (rect.m_height + rect.m_y) > (int) CPvBackBuffSurface::m_allocatedHeight) {
-			rect.m_height = (short) (CPvBackBuffSurface::m_allocatedHeight - rect.m_y);
+		if ((int) (short) (rect.m_height + rect.m_y) > (int) CPVBackBuffSurface::m_allocatedHeight) {
+			rect.m_height = (short) (CPVBackBuffSurface::m_allocatedHeight - rect.m_y);
 		}
 		const CVsPoint* origin = &rect;
 		int x = origin->m_x;
 		int y = origin->m_y;
 		for (int i = 0; i < rect.m_height; i++) {
 			memcpy((unsigned char*) m_lines[y + i] + x,
-				   (unsigned char*) CPvBackBuffSurface::m_bitmap.m_lines[y + i] + x,
+				   (unsigned char*) CPVBackBuffSurface::m_bitmap.m_lines[y + i] + x,
 				   rect.m_width);
 		}
 	}
@@ -1722,13 +1722,13 @@ int CSurface::ClipCirclePoint(int p_x, int p_y)
 	int clipY;
 	int clipBottom;
 
-	clipX = CPvScrollableSurface::m_clipRect.m_x;
+	clipX = CPVScrollableSurface::m_clipRect.m_x;
 	if (clipX <= p_x) {
-		clipRight = CPvScrollableSurface::m_clipRect.m_width + clipX - 1;
+		clipRight = CPVScrollableSurface::m_clipRect.m_width + clipX - 1;
 		if (p_x <= clipRight) {
-			clipY = CPvScrollableSurface::m_clipRect.m_y;
+			clipY = CPVScrollableSurface::m_clipRect.m_y;
 			if (clipY <= p_y) {
-				clipBottom = CPvScrollableSurface::m_clipRect.m_height + clipY - 1;
+				clipBottom = CPVScrollableSurface::m_clipRect.m_height + clipY - 1;
 				if (p_y <= clipBottom) {
 					return 1;
 				}
@@ -1936,7 +1936,7 @@ bool CSurface::ClipRect(CVsRect& p_rect, CVsRect* p_clipped)
 }
 
 // FUNCTION: LEMBALL 0x004766f0
-void CSurface::BlitZrleClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZrle* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	int x = p_rect.m_x;
 	int step = 1;
@@ -2052,7 +2052,7 @@ void CSurface::BlitZrleClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZr
 }
 
 // FUNCTION: LEMBALL 0x00476910
-void CSurface::BlitZrleClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, CResZrle* p_zrle, unsigned short p_depth)
+void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth)
 {
 	unsigned char* src = p_zrle->GetData();
 	if (p_clip.m_y > 0) {
@@ -2075,7 +2075,7 @@ void CSurface::BlitZrleClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2167,9 +2167,9 @@ void CSurface::BlitZrleClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 }
 
 // FUNCTION: LEMBALL 0x00476bf0
-void CSurface::BlitZrleClipQzBuff(const CVsRect& p_rect,
+void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 								  const CVsRect& p_clip,
-								  CResZrle* p_zrle,
+								  CResZRLE* p_zrle,
 								  unsigned short p_depth)
 {
 	unsigned char* src = p_zrle->GetData();
@@ -2194,7 +2194,7 @@ void CSurface::BlitZrleClipQzBuff(const CVsRect& p_rect,
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2315,7 +2315,7 @@ void CSurface::BlitZrleClipQzBuff(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00476ee0
-void CSurface::BlitZrleClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZrle* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	unsigned char* src = p_zrle->GetData();
 	short sourceWidth = p_zrle->m_width;
@@ -2448,7 +2448,7 @@ void CSurface::BlitZrleClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZ
 }
 
 // FUNCTION: LEMBALL 0x00477130
-void CSurface::BlitZrleNoClip(const CVsRect& p_rect, CResZrle* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLENoClip(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	int x = p_rect.m_x;
 	int step = 1;
@@ -2482,7 +2482,7 @@ void CSurface::BlitZrleNoClip(const CVsRect& p_rect, CResZrle* p_zrle, unsigned 
 }
 
 // FUNCTION: LEMBALL 0x00477200
-void CSurface::BlitZrleNoClipZBuff(const CVsRect& p_rect, CResZrle* p_zrle, unsigned short p_depth)
+void CSurface::BlitZRLENoClipZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
 {
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
@@ -2491,7 +2491,7 @@ void CSurface::BlitZrleNoClipZBuff(const CVsRect& p_rect, CResZrle* p_zrle, unsi
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2517,8 +2517,8 @@ void CSurface::BlitZrleNoClipZBuff(const CVsRect& p_rect, CResZrle* p_zrle, unsi
 }
 
 // FUNCTION: LEMBALL 0x00477310
-void CSurface::BlitZrleNoClipZBuffRemap(const CVsRect& p_rect,
-										CResZrle* p_zrle,
+void CSurface::BlitZRLENoClipZBuffRemap(const CVsRect& p_rect,
+										CResZRLE* p_zrle,
 										unsigned short p_depth,
 										unsigned char* p_remap)
 {
@@ -2529,7 +2529,7 @@ void CSurface::BlitZrleNoClipZBuffRemap(const CVsRect& p_rect,
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2559,7 +2559,7 @@ void CSurface::BlitZrleNoClipZBuffRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00477440
-void CSurface::BlitZrleNoClipQzBuff(const CVsRect& p_rect, CResZrle* p_zrle, unsigned short p_depth)
+void CSurface::BlitZRLENoClipQZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
 {
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
@@ -2568,7 +2568,7 @@ void CSurface::BlitZrleNoClipQzBuff(const CVsRect& p_rect, CResZrle* p_zrle, uns
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2603,8 +2603,8 @@ void CSurface::BlitZrleNoClipQzBuff(const CVsRect& p_rect, CResZrle* p_zrle, uns
 }
 
 // FUNCTION: LEMBALL 0x00477540
-void CSurface::BlitZrleNoClipQzBuffRemap(const CVsRect& p_rect,
-										 CResZrle* p_zrle,
+void CSurface::BlitZRLENoClipQZBuffRemap(const CVsRect& p_rect,
+										 CResZRLE* p_zrle,
 										 unsigned short p_depth,
 										 unsigned char* p_remap)
 {
@@ -2615,7 +2615,7 @@ void CSurface::BlitZrleNoClipQzBuffRemap(const CVsRect& p_rect,
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2644,7 +2644,7 @@ void CSurface::BlitZrleNoClipQzBuffRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00477660
-void CSurface::BlitZrleNoClipR(const CVsRect& p_rect, CResZrle* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
 	int step = 1;
@@ -2682,9 +2682,9 @@ void CSurface::BlitZrleNoClipR(const CVsRect& p_rect, CResZrle* p_zrle, unsigned
 }
 
 // FUNCTION: LEMBALL 0x00477740
-void CSurface::BlitZrleClipRemap(const CVsRect& p_rect,
+void CSurface::BlitZRLEClipRemap(const CVsRect& p_rect,
 								 const CVsRect& p_clip,
-								 CResZrle* p_zrle,
+								 CResZRLE* p_zrle,
 								 unsigned int p_reverse,
 								 unsigned char* p_remap)
 {
@@ -2815,9 +2815,9 @@ void CSurface::BlitZrleClipRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x004779d0
-void CSurface::BlitZrleClipZBuffRemap(const CVsRect& p_rect,
+void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 									  const CVsRect& p_clip,
-									  CResZrle* p_zrle,
+									  CResZRLE* p_zrle,
 									  unsigned short p_depth,
 									  unsigned char* p_remap)
 {
@@ -2843,7 +2843,7 @@ void CSurface::BlitZrleClipZBuffRemap(const CVsRect& p_rect,
 		int lineOffset = y * 4;
 		do {
 			unsigned short* zlines =
-				*(unsigned short**) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
+				*(unsigned short**) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
 			unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + x;
@@ -2933,9 +2933,9 @@ void CSurface::BlitZrleClipZBuffRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00477c60
-void CSurface::BlitZrleClipQzBuffRemap(const CVsRect& p_rect,
+void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 									   const CVsRect& p_clip,
-									   CResZrle* p_zrle,
+									   CResZRLE* p_zrle,
 									   unsigned short p_depth,
 									   unsigned char* p_remap)
 {
@@ -2961,7 +2961,7 @@ void CSurface::BlitZrleClipQzBuffRemap(const CVsRect& p_rect,
 		int lineOffset = y * 4;
 		do {
 			unsigned short* zlines =
-				*(unsigned short**) ((unsigned char*) CPvZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
+				*(unsigned short**) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
 			unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + x;
@@ -3075,9 +3075,9 @@ void CSurface::BlitZrleClipQzBuffRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00477f50
-void CSurface::BlitZrleClipRemapR(const CVsRect& p_rect,
+void CSurface::BlitZRLEClipRemapR(const CVsRect& p_rect,
 								  const CVsRect& p_clip,
-								  CResZrle* p_zrle,
+								  CResZRLE* p_zrle,
 								  unsigned int p_reverse,
 								  unsigned char* p_remap)
 {
@@ -3209,8 +3209,8 @@ void CSurface::BlitZrleClipRemapR(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x004781e0
-void CSurface::BlitZrleNoClipRemap(const CVsRect& p_rect,
-								   CResZrle* p_zrle,
+void CSurface::BlitZRLENoClipRemap(const CVsRect& p_rect,
+								   CResZRLE* p_zrle,
 								   unsigned int p_reverse,
 								   unsigned char* p_remap)
 {
@@ -3252,8 +3252,8 @@ void CSurface::BlitZrleNoClipRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x004782d0
-void CSurface::BlitZrleNoClipRemapR(const CVsRect& p_rect,
-									CResZrle* p_zrle,
+void CSurface::BlitZRLENoClipRemapR(const CVsRect& p_rect,
+									CResZRLE* p_zrle,
 									unsigned int p_reverse,
 									unsigned char* p_remap)
 {
@@ -3314,11 +3314,11 @@ char g_szWarningZrleIs[] = "Warning: ZRLE is ";
 
 #pragma inline_depth(0)
 // FUNCTION: LEMBALL 0x004783c0
-void CSurface::Blit(CZrle* p_primitive, CResZrle* p_zrle)
+void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 {
 	unsigned int flags = p_primitive->m_flags;
 	if ((flags & 0xc0000) == 0) {
-		BlitZrle((int) p_primitive->m_x, (int) p_primitive->m_y, p_zrle, flags, p_primitive->m_remap, 0);
+		BlitZRLE((int) p_primitive->m_x, (int) p_primitive->m_y, p_zrle, flags, p_primitive->m_remap, 0);
 		return;
 	}
 	{
@@ -3340,9 +3340,9 @@ void CSurface::Blit(CZrle* p_primitive, CResZrle* p_zrle)
 
 				if ((short) dest.m_width > 0xff || (short) dest.m_height > 0xff) {
 					short warningWidth = dest.m_width;
-					CVsOStream& warningStream = *g_pDebugOutput << g_szWarningZrleIs;
+					CVSOStream& warningStream = *g_pDebugOutput << g_szWarningZrleIs;
 					short warningHeight = dest.m_height;
-					CVsOStream& widthStream = warningStream << (int) warningWidth << g_szClippingWideAnd;
+					CVSOStream& widthStream = warningStream << (int) warningWidth << g_szClippingWideAnd;
 					widthStream << (int) warningHeight << g_szClippingHighNewline;
 					if ((short) dest.m_width > 0xff) {
 						*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
@@ -3357,33 +3357,33 @@ void CSurface::Blit(CZrle* p_primitive, CResZrle* p_zrle)
 					AddToChangeList(&dest);
 					if ((flags & 0x40000) != 0) {
 						if (remap == 0) {
-							BlitZrleNoClipZBuff(dest, p_zrle, stateDepth);
+							BlitZRLENoClipZBuff(dest, p_zrle, stateDepth);
 							return;
 						}
-						BlitZrleNoClipZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
+						BlitZRLENoClipZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
 						return;
 					}
 					if ((flags & 0x80000) != 0) {
 						if (remap == 0) {
-							BlitZrleNoClipQzBuff(dest, p_zrle, stateDepth);
+							BlitZRLENoClipQZBuff(dest, p_zrle, stateDepth);
 							return;
 						}
-						BlitZrleNoClipQzBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
+						BlitZRLENoClipQZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
 						return;
 					}
 					if (remap == 0) {
 						if ((flags & 1) != 0) {
-							BlitZrleNoClipR(dest, p_zrle, (flags & 2) >> 1);
+							BlitZRLENoClipR(dest, p_zrle, (flags & 2) >> 1);
 							return;
 						}
-						BlitZrleNoClip(dest, p_zrle, (flags & 2) >> 1);
+						BlitZRLENoClip(dest, p_zrle, (flags & 2) >> 1);
 						return;
 					}
 					if ((flags & 1) != 0) {
-						BlitZrleNoClipRemapR(dest, p_zrle, (flags & 2) >> 1, remap->m_remap);
+						BlitZRLENoClipRemapR(dest, p_zrle, (flags & 2) >> 1, remap->m_remap);
 						return;
 					}
-					BlitZrleNoClipRemap(dest, p_zrle, (flags & 2) >> 1, remap->m_remap);
+					BlitZRLENoClipRemap(dest, p_zrle, (flags & 2) >> 1, remap->m_remap);
 					return;
 				}
 				if (clipped.m_width <= 0 || clipped.m_height <= 0) {
@@ -3392,33 +3392,33 @@ void CSurface::Blit(CZrle* p_primitive, CResZrle* p_zrle)
 				AddToChangeList(&dest);
 				if ((flags & 0x40000) != 0) {
 					if (remap == 0) {
-						BlitZrleClipZBuff(dest, clipped, p_zrle, stateDepth);
+						BlitZRLEClipZBuff(dest, clipped, p_zrle, stateDepth);
 						return;
 					}
-					BlitZrleClipZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
+					BlitZRLEClipZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
 					return;
 				}
 				if ((flags & 0x80000) != 0) {
 					if (remap == 0) {
-						BlitZrleClipQzBuff(dest, clipped, p_zrle, stateDepth);
+						BlitZRLEClipQZBuff(dest, clipped, p_zrle, stateDepth);
 						return;
 					}
-					BlitZrleClipQzBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
+					BlitZRLEClipQZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
 					return;
 				}
 				if (remap == 0) {
 					if ((flags & 1) != 0) {
-						BlitZrleClipR(dest, clipped, p_zrle, (flags & 2) >> 1);
+						BlitZRLEClipR(dest, clipped, p_zrle, (flags & 2) >> 1);
 						return;
 					}
-					BlitZrleClip(dest, clipped, p_zrle, (flags & 2) >> 1);
+					BlitZRLEClip(dest, clipped, p_zrle, (flags & 2) >> 1);
 					return;
 				}
 				if ((flags & 1) != 0) {
-					BlitZrleClipRemapR(dest, clipped, p_zrle, (flags & 2) >> 1, remap->m_remap);
+					BlitZRLEClipRemapR(dest, clipped, p_zrle, (flags & 2) >> 1, remap->m_remap);
 					return;
 				}
-				BlitZrleClipRemap(dest, clipped, p_zrle, (flags & 2) >> 1, remap->m_remap);
+				BlitZRLEClipRemap(dest, clipped, p_zrle, (flags & 2) >> 1, remap->m_remap);
 			}
 		}
 	}
@@ -3426,7 +3426,7 @@ void CSurface::Blit(CZrle* p_primitive, CResZrle* p_zrle)
 #pragma inline_depth(255)
 
 // FUNCTION: LEMBALL 0x004787f0
-void CSurface::Blit(CBitmap* p_primitive, CResBitmap* p_bitmap)
+void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 {
 	CVsRect dest;
 	short width;
@@ -3497,9 +3497,9 @@ void CSurface::Blit(CBitmap* p_primitive, CResBitmap* p_bitmap)
 }
 
 // FUNCTION: LEMBALL 0x00478bb0
-void CSurface::BlitZrle(int p_x,
+void CSurface::BlitZRLE(int p_x,
 						int p_y,
-						CResZrle* p_zrle,
+						CResZRLE* p_zrle,
 						unsigned int p_flags,
 						CRemap* p_remap,
 						unsigned short p_depth)
@@ -3510,7 +3510,7 @@ void CSurface::BlitZrle(int p_x,
 		short destination[4];
 		short clip[4];
 	} frame;
-	CResZrle* resource;
+	CResZRLE* resource;
 	short zHeight;
 	short zWidth;
 	unsigned int flags;
@@ -3541,9 +3541,9 @@ void CSurface::BlitZrle(int p_x,
 	clipped->m_y = 0;
 	clipped->m_x = 0;
 	if ((short) dest->m_width > 0xff || (short) dest->m_height > 0xff) {
-		CVsOStream& warning = *g_pDebugOutput << g_szWarningZrleIs;
+		CVSOStream& warning = *g_pDebugOutput << g_szWarningZrleIs;
 		frame.warningHeight = dest->m_height;
-		CVsOStream& heightOutput = warning << width << g_szClippingWideAnd;
+		CVSOStream& heightOutput = warning << width << g_szClippingWideAnd;
 		heightOutput << (int) frame.warningHeight << g_szClippingHighNewline;
 		if ((short) dest->m_width > 0xff) {
 			*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
@@ -3562,33 +3562,33 @@ void CSurface::BlitZrle(int p_x,
 			AddToChangeList(dest);
 			if ((flags & 0x40000) != 0) {
 				if (remap == 0) {
-					BlitZrleNoClipZBuff(*dest, resource, p_depth);
+					BlitZRLENoClipZBuff(*dest, resource, p_depth);
 					return;
 				}
-				BlitZrleNoClipZBuffRemap(*dest, resource, p_depth, remap->m_remap);
+				BlitZRLENoClipZBuffRemap(*dest, resource, p_depth, remap->m_remap);
 				return;
 			}
 			if ((flags & 0x80000) != 0) {
 				if (remap == 0) {
-					BlitZrleNoClipQzBuff(*dest, resource, p_depth);
+					BlitZRLENoClipQZBuff(*dest, resource, p_depth);
 					return;
 				}
-				BlitZrleNoClipQzBuffRemap(*dest, resource, p_depth, remap->m_remap);
+				BlitZRLENoClipQZBuffRemap(*dest, resource, p_depth, remap->m_remap);
 				return;
 			}
 			if (remap == 0) {
 				if ((flags & 1) != 0) {
-					BlitZrleNoClipR(*dest, resource, (flags & 2) >> 1);
+					BlitZRLENoClipR(*dest, resource, (flags & 2) >> 1);
 					return;
 				}
-				BlitZrleNoClip(*dest, resource, (flags & 2) >> 1);
+				BlitZRLENoClip(*dest, resource, (flags & 2) >> 1);
 				return;
 			}
 			if ((flags & 1) != 0) {
-				BlitZrleNoClipRemapR(*dest, resource, (flags & 2) >> 1, remap->m_remap);
+				BlitZRLENoClipRemapR(*dest, resource, (flags & 2) >> 1, remap->m_remap);
 				return;
 			}
-			BlitZrleNoClipRemap(*dest, resource, (flags & 2) >> 1, remap->m_remap);
+			BlitZRLENoClipRemap(*dest, resource, (flags & 2) >> 1, remap->m_remap);
 			return;
 		}
 		if (clipped->m_width <= 0 || clipped->m_height <= 0) {
@@ -3597,32 +3597,32 @@ void CSurface::BlitZrle(int p_x,
 		AddToChangeList(dest);
 		if ((flags & 0x40000) != 0) {
 			if (remap == 0) {
-				BlitZrleClipZBuff(*dest, *clipped, resource, p_depth);
+				BlitZRLEClipZBuff(*dest, *clipped, resource, p_depth);
 				return;
 			}
-			BlitZrleClipZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
+			BlitZRLEClipZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
 			return;
 		}
 		if ((flags & 0x80000) != 0) {
 			if (remap == 0) {
-				BlitZrleClipQzBuff(*dest, *clipped, resource, p_depth);
+				BlitZRLEClipQZBuff(*dest, *clipped, resource, p_depth);
 				return;
 			}
-			BlitZrleClipQzBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
+			BlitZRLEClipQZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
 			return;
 		}
 		if (remap == 0) {
 			if ((flags & 1) != 0) {
-				BlitZrleClipR(*dest, *clipped, resource, (flags & 2) >> 1);
+				BlitZRLEClipR(*dest, *clipped, resource, (flags & 2) >> 1);
 				return;
 			}
-			BlitZrleClip(*dest, *clipped, resource, (flags & 2) >> 1);
+			BlitZRLEClip(*dest, *clipped, resource, (flags & 2) >> 1);
 			return;
 		}
 		if ((flags & 1) != 0) {
-			BlitZrleClipRemapR(*dest, *clipped, resource, (flags & 2) >> 1, remap->m_remap);
+			BlitZRLEClipRemapR(*dest, *clipped, resource, (flags & 2) >> 1, remap->m_remap);
 			return;
 		}
-		BlitZrleClipRemap(*dest, *clipped, resource, (flags & 2) >> 1, remap->m_remap);
+		BlitZRLEClipRemap(*dest, *clipped, resource, (flags & 2) >> 1, remap->m_remap);
 	}
 }

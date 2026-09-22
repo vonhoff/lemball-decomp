@@ -5,7 +5,7 @@
 #include "../Base/AiCoord.h"                // complete type
 #include "../Base/CGameObject.h"            // complete type
 
-class CAi;
+class CAI;
 class CFormationManager;
 class CObjectManager;
 class CViewData;
@@ -20,7 +20,7 @@ enum eGroupState {
 // VTABLE: LEMBALL 0x00494b60
 class CGenericGroup : public CGameObject {
 public:
-	CGenericGroup(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
+	CGenericGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	virtual ~CGenericGroup();                                                                 // vtable+0x00
 	virtual bool Process();                                                                   // vtable+0x14
 	virtual void Restart();                                                                   // vtable+0x104
@@ -62,7 +62,7 @@ protected:
 
 extern CObjectManager* g_pGroupObjectManager;
 extern CFormationManager* g_pGroupFormationManager;
-extern CAi* g_pGroupAI;
+extern CAI* g_pGroupAI;
 
 // SYNTHETIC: LEMBALL 0x0041e8c0
 // CGenericGroup::`scalar deleting destructor'

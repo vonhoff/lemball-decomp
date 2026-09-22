@@ -6,9 +6,9 @@ struct AnimSpecialEntry;
 // SIZE 0x08
 class CAnimSpecial {
 public:
-	// Inlined in CAi::Restart at 0x0041170d.
+	// Inlined in CAI::Restart at 0x0041170d.
 	CAnimSpecial() : m_entries(0), m_entryCount(0) {}
-	// Inlined in CAi::~CAi at 0x00411a3e.
+	// Inlined in CAI::~CAI at 0x00411a3e.
 	~CAnimSpecial()
 	{
 		if (m_entries != 0) {

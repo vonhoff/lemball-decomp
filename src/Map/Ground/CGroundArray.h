@@ -12,7 +12,7 @@ public:
 	void SetCollision(int p_x, int p_y, int p_collision);
 
 	friend class CBullet;
-	friend class CAi;
+	friend class CAI;
 	friend class CTrapDoor;
 	friend class CTrapDoorManager;
 	friend class CPlayerLemmingGroupManager;

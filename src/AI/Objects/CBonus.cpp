@@ -1,6 +1,6 @@
 #include "CBonus.h"
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "Views/Sound/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x00422c40
@@ -11,7 +11,7 @@ int CBonus::Collected()
 }
 
 // FUNCTION: LEMBALL 0x00422c60
-void CBonus::SetSfx()
+void CBonus::SetSFX()
 {
 	SetSndEffect(SFX_YIPPEE);
 }

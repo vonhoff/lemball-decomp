@@ -1,16 +1,16 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CPREVIEWDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CPREVIEWDRAWER_H
 
+#include "../../Visos/Graphics/CBitmapRes.h" // complete type
 #include "../Base/CBaseFrontendDrawer.h"
 #include "../Support/CoordPair.h" // complete type
-#include "CPreviewDrawerPrims.h"  // complete type
 #include "Frontend/Support/CUserActionMessage.h"
 
 class CBaseRemap;
-class CGdi;
+class CGDI;
 class CMain2DDisplay;
 class CRepeatAnim;
-class CResBitmap;
+class CResBITMAP;
 class CVsRect;
 enum PreviewLayoutIndex {
 	PreviewReturnButton = 0,
@@ -52,7 +52,7 @@ struct PreviewLayout {
 // VTABLE: LEMBALL 0x00497bdc CAnimsManager
 class CPreviewDrawer : public CBaseFrontendDrawer {
 public:
-	CPreviewDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2);
+	CPreviewDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2);
 	bool AddWord(char* p_source, char* p_line, int& p_sourcePos, int& p_linePos);
 	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
@@ -74,8 +74,16 @@ public:
 	void UnRegisterRemaps();
 
 private:
-	CPreviewDrawerPrims m_primitive[1];     // 0x398
-	CResBitmap* m_backgroundBitmap;         // 0x3bc
+	// SIZE 0x24
+	struct tagPRIMS {
+		tagPRIMS();
+		~tagPRIMS();
+
+		CBitmapRes m_bitmap; // 0x00
+	};
+
+	tagPRIMS m_primitive[1];                // 0x398
+	CResBITMAP* m_backgroundBitmap;         // 0x3bc
 	CRepeatAnim* m_teamAnim;                // 0x3c0
 	CRepeatAnim* m_lemmingAnim;             // 0x3c4
 	CRepeatAnim* m_opponentAnim;            // 0x3c8

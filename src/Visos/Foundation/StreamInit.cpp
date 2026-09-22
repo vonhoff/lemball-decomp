@@ -1,5 +1,5 @@
-#include "Visos/Foundation/CVsDebugStreambuf.h"
-#include "Visos/Foundation/CVsOStream.h"
+#include "Visos/Foundation/CVSDebugStreambuf.h"
+#include "Visos/Foundation/CVSOStream.h"
 #include "Visos/Foundation/VsDebug.h"
 #include "Visos/Foundation/VsInit.h"
 
@@ -9,14 +9,14 @@
 char g_szStreamFixedBuffer[0x400];
 
 // FUNCTION: LEMBALL 0x00458f70
-bool InternalStrmInit()
+bool _STRM_Init()
 {
 	void* storage;
 
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pDebugStreambuf =
-			new (storage) CVsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutDebugString);
+			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) _RAWOUT_DebugString);
 	}
 	else {
 		g_pDebugStreambuf = 0;
@@ -25,7 +25,7 @@ bool InternalStrmInit()
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pSysStreambuf =
-			new (storage) CVsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutSysString);
+			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) _RAWOUT_SysString);
 	}
 	else {
 		g_pSysStreambuf = 0;
@@ -34,7 +34,7 @@ bool InternalStrmInit()
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pErrorStreambuf =
-			new (storage) CVsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutErrorString);
+			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) _RAWOUT_ErrorString);
 	}
 	else {
 		g_pErrorStreambuf = 0;
@@ -42,7 +42,7 @@ bool InternalStrmInit()
 
 	storage = operator new(0x14c);
 	if (storage != 0) {
-		g_pDebugOutput = new (storage) CVsOStream(g_pDebugStreambuf);
+		g_pDebugOutput = new (storage) CVSOStream(g_pDebugStreambuf);
 	}
 	else {
 		g_pDebugOutput = 0;
@@ -50,7 +50,7 @@ bool InternalStrmInit()
 
 	storage = operator new(0x14c);
 	if (storage != 0) {
-		g_pSysOutput = new (storage) CVsOStream(g_pSysStreambuf);
+		g_pSysOutput = new (storage) CVSOStream(g_pSysStreambuf);
 	}
 	else {
 		g_pSysOutput = 0;
@@ -58,7 +58,7 @@ bool InternalStrmInit()
 
 	storage = operator new(0x14c);
 	if (storage != 0) {
-		g_pErrorOutput = new (storage) CVsOStream(g_pErrorStreambuf);
+		g_pErrorOutput = new (storage) CVSOStream(g_pErrorStreambuf);
 	}
 	else {
 		g_pErrorOutput = 0;
@@ -68,7 +68,7 @@ bool InternalStrmInit()
 }
 
 // FUNCTION: LEMBALL 0x004590b0
-bool InternalStrmQuit()
+bool _STRM_Quit()
 {
 	delete g_pErrorOutput;
 	delete g_pSysOutput;

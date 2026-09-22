@@ -5,13 +5,13 @@
 #include "../Foundation/CVector.h"
 #include "../Foundation/VsTime.h"
 #include "../Messaging/PackParam.h"
-#include "../Resources/CResAnim.h"
+#include "../Resources/CResANIM.h"
 #include "../Resources/CResBase.h"
-#include "../Resources/CResZrle.h"
+#include "../Resources/CResZRLE.h"
+#include "CGDI.h"
 #include "CGWnd.h"
-#include "CGdi.h"
 #include "CSurface.h"
-#include "CZrle.h"
+#include "CZRLE.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/Message.h"
@@ -46,9 +46,9 @@ CBaseCursor::~CBaseCursor()
 void CBaseCursor::Initialise()
 {
 	m_resourceId = 0;
-	m_renderState = new CZrle[1];
+	m_renderState = new CZRLE[1];
 	for (int i = 0; i < 1; i++) {
-		CZrle* state = &m_renderState[i];
+		CZRLE* state = &m_renderState[i];
 		state->m_x = 0;
 		state->m_y = 0;
 		state->m_resource = 0;
@@ -199,7 +199,7 @@ void CBaseCursor::SetPos(const CVsPoint& p_position)
 }
 
 // FUNCTION: LEMBALL 0x0046b310
-void CBaseCursor::SetMainId(unsigned int p_resourceId)
+void CBaseCursor::SetMainID(unsigned int p_resourceId)
 {
 	if (p_resourceId == m_resourceId) {
 		return;
@@ -209,7 +209,7 @@ void CBaseCursor::SetMainId(unsigned int p_resourceId)
 	}
 	m_resourceId = p_resourceId;
 	if (p_resourceId != 0) {
-		m_resource = CResZrle::Load(p_resourceId);
+		m_resource = CResZRLE::Load(p_resourceId);
 		for (int i = 0; i < 1; i++) {
 			m_renderState[i].m_resource = m_resource;
 		}
@@ -238,7 +238,7 @@ void CBaseCursor::SetActive(unsigned int p_active)
 }
 
 // FUNCTION: LEMBALL 0x0046b3b0
-void CBaseCursor::SetMainId(unsigned int p_resourceId, int p_frame)
+void CBaseCursor::SetMainID(unsigned int p_resourceId, int p_frame)
 {
 	if (p_resourceId != m_resourceId) {
 		if (m_resourceId != 0) {
@@ -247,7 +247,7 @@ void CBaseCursor::SetMainId(unsigned int p_resourceId, int p_frame)
 		m_resourceId = p_resourceId;
 		m_frame = -1;
 		if (p_resourceId != 0) {
-			m_resource = CResAnim::Load(p_resourceId);
+			m_resource = CResANIM::Load(p_resourceId);
 		}
 		else {
 			m_resource = 0;
@@ -256,7 +256,7 @@ void CBaseCursor::SetMainId(unsigned int p_resourceId, int p_frame)
 	if (m_frame != p_frame && m_resource != 0) {
 		m_frame = p_frame;
 		for (int i = 0; i < 1; i++) {
-			m_renderState[i].m_resource = &((CResAnim*) m_resource)->m_animationEntries[m_frame];
+			m_renderState[i].m_resource = &((CResANIM*) m_resource)->m_animationEntries[m_frame];
 		}
 	}
 }
@@ -320,7 +320,7 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	short clipX;
 	short clipY;
 	int zoom;
-	CGdi* gdi;
+	CGDI* gdi;
 	CSurface* surface;
 
 	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & 1) == 0) &&
@@ -394,11 +394,11 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	destination.m_y = (short) ((int) (short) (m_position.m_y - y) / zoom) - m_hotspot.m_y;
 	surface = gdi->m_renderTarget;
 	surface->GetChangeList();
-	surface->GetCurrDb();
-	CZrle* state = m_renderState;
+	surface->GetCurrDB();
+	CZRLE* state = m_renderState;
 	state->m_x = destination.m_x;
 	state->m_y = destination.m_y;
-	surface->GetCurrDb();
+	surface->GetCurrDB();
 	m_renderState->Draw(gdi);
 }
 

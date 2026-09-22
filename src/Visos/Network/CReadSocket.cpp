@@ -3,13 +3,13 @@
 #include "../Messaging/BasePacketHeader.h"
 #include "../Messaging/CAckMessage.h"
 #include "../Messaging/CReadCBuff.h"
-#include "../Messaging/CReadCmsBuff.h"
-#include "../Messaging/CReadMsBuff.h"
-#include "../Messaging/CReadNcBuff.h"
-#include "../Messaging/CReadNcmsBuff.h"
+#include "../Messaging/CReadCMSBuff.h"
+#include "../Messaging/CReadMSBuff.h"
+#include "../Messaging/CReadNCBuff.h"
+#include "../Messaging/CReadNCMSBuff.h"
 #include "../Messaging/CReadPacket.h"
 #include "CNetworkAddress.h"
-#include "CTcpIpNetwork.h"
+#include "CTCPIPNetwork.h"
 #include "Visos/Messaging/CBasePacketBuff.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 #include "Visos/Network/CBaseCommonSocket.h"
@@ -35,15 +35,15 @@ CReadSocket::CReadSocket()
 // FUNCTION: LEMBALL 0x0045f8a0
 CReadSocket::~CReadSocket()
 {
-	DeleteNcBuffers();
+	DeleteNCBuffers();
 	DeleteCBuffers();
 }
 
 // FUNCTION: LEMBALL 0x0045f8d0
-void CReadSocket::DeleteNcBuffers()
+void CReadSocket::DeleteNCBuffers()
 {
-	CReadNcBuff* nc;
-	CReadNcmsBuff* ncms;
+	CReadNCBuff* nc;
+	CReadNCMSBuff* ncms;
 
 	nc = m_nonCriticalBuffer;
 	if (nc != 0) {
@@ -60,7 +60,7 @@ void CReadSocket::DeleteNcBuffers()
 void CReadSocket::DeleteCBuffers()
 {
 	CReadCBuff* critical;
-	CReadCmsBuff* criticalMulti;
+	CReadCMSBuff* criticalMulti;
 
 	critical = m_criticalBuffer;
 	if (critical != 0) {
@@ -74,24 +74,24 @@ void CReadSocket::DeleteCBuffers()
 }
 
 // FUNCTION: LEMBALL 0x0045f930
-void CReadSocket::SetNcBuffers(unsigned long p_lastSinglePacketMessageId,
+void CReadSocket::SetNCBuffers(unsigned long p_lastSinglePacketMessageId,
 							   unsigned long p_lastMessageId,
 							   int p_messageCapacity)
 {
 	void* storage;
 
-	DeleteNcBuffers();
-	storage = operator new(sizeof(CReadNcBuff));
+	DeleteNCBuffers();
+	storage = operator new(sizeof(CReadNCBuff));
 	if (storage == 0) {
 		m_nonCriticalBuffer = 0;
 	}
 	else {
 		m_nonCriticalBuffer =
-			new (storage) CReadNcBuff(p_lastSinglePacketMessageId, (unsigned short) g_networkPacketSize);
+			new (storage) CReadNCBuff(p_lastSinglePacketMessageId, (unsigned short) g_networkPacketSize);
 	}
-	storage = operator new(sizeof(CReadNcmsBuff));
+	storage = operator new(sizeof(CReadNCMSBuff));
 	if (storage != 0) {
-		m_nonCriticalMultiBuffer = new (storage) CReadNcmsBuff(p_lastSinglePacketMessageId + 1,
+		m_nonCriticalMultiBuffer = new (storage) CReadNCMSBuff(p_lastSinglePacketMessageId + 1,
 															   p_lastMessageId,
 															   p_messageCapacity,
 															   (unsigned short) g_networkPacketSize);
@@ -113,13 +113,13 @@ void CReadSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 	else {
 		m_criticalBuffer = new (storage) CReadCBuff(p_packetCount, (unsigned short) g_networkPacketSize);
 	}
-	storage = operator new(sizeof(CReadCmsBuff));
+	storage = operator new(sizeof(CReadCMSBuff));
 	if (storage == 0) {
 		m_criticalMultiBuffer = 0;
 	}
 	else {
 		m_criticalMultiBuffer =
-			new (storage) CReadCmsBuff(p_packetCount, p_messageCapacity, (unsigned short) g_networkPacketSize);
+			new (storage) CReadCMSBuff(p_packetCount, p_messageCapacity, (unsigned short) g_networkPacketSize);
 	}
 	if (g_pNetworkPacketScratch == 0) {
 		g_pNetworkPacketScratch = (BasePacketHeader*) operator new(g_networkPacketSize);
@@ -130,7 +130,7 @@ void CReadSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 bool CReadSocket::ProcessPacket()
 {
 	CReadPacket* packet;
-	CReadMsBuff* message;
+	CReadMSBuff* message;
 	BasePacketHeader* packetHeader;
 	unsigned int messageId;
 	unsigned short subpacketSequence;
@@ -248,7 +248,7 @@ void CReadSocket::GetLatest(CNetworkMessage& p_message)
 }
 
 // FUNCTION: LEMBALL 0x0045fcc0
-void CReadSocket::UnUseAllNc()
+void CReadSocket::UnUseAllNC()
 {
 	m_nonCriticalBuffer->UnUseAll();
 }

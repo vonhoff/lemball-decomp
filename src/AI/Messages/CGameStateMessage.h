@@ -29,7 +29,7 @@ public:
 	virtual void GetData(); // vtable+0x08
 
 private:
-	friend class CAi;
+	friend class CAI;
 
 	eGameStates m_state;       // 0x2c
 	eGameStateStages m_stage;  // 0x30

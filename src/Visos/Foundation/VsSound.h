@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_FOUNDATION_VSSOUND_H
 
 class CBaseSoundDevice;
-class CPvMusicDevice;
+class CPVMusicDevice;
 class CWnd;
 
 bool InitSound(unsigned int p_musicEnabled,
@@ -16,6 +16,6 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 					   unsigned int p_effectsEnabled,
 					   unsigned int p_useMusicCD,
 					   unsigned int* p_musicAvailable,
-					   CPvMusicDevice** p_musicDevice,
+					   CPVMusicDevice** p_musicDevice,
 					   int p_deviceParameter);
 #endif

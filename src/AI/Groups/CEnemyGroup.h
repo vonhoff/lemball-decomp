@@ -3,14 +3,14 @@
 
 #include "CGenericGroup.h" // complete type
 
-class CAi;
+class CAI;
 class CFormationManager;
 class CObjectManager;
 // SIZE 0x168
 // VTABLE: LEMBALL 0x00495250
 class CEnemyGroup : public CGenericGroup {
 public:
-	CEnemyGroup(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
+	CEnemyGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 };
 
 // SYNTHETIC: LEMBALL 0x00420b20

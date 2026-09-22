@@ -7,7 +7,7 @@ CMasterInputItem::CMasterInputItem()
 }
 
 // FUNCTION: LEMBALL 0x00472060
-CVsOStream& CMasterInputItem::StreamOut(CVsOStream& p_stream)
+CVSOStream& CMasterInputItem::StreamOut(CVSOStream& p_stream)
 {
 	return p_stream;
 }

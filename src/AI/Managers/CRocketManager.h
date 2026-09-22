@@ -3,7 +3,7 @@
 
 #include "CBaseObjectManager.h" // complete type
 
-class CAi;
+class CAI;
 class AiCoord;
 class CGameObject;
 class CRocket;
@@ -11,7 +11,7 @@ class CRocket;
 // VTABLE: LEMBALL 0x00496020
 class CRocketManager : public CBaseObjectManager {
 public:
-	CRocketManager(CAi* p_ai, int p_capacity);
+	CRocketManager(CAI* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	int StepOn(const AiCoord& p_position, CGameObject* p_object);
 	virtual ~CRocketManager(); // vtable+0x14
@@ -22,13 +22,13 @@ public:
 	void Restart();
 	void ResetCount();
 
-	friend class CAi;
+	friend class CAI;
 
 private:
 	int m_capacity;     // 0x30
 	int m_count;        // 0x34
 	CRocket* m_rockets; // 0x38
-	CAi* m_ai;          // 0x3c
+	CAI* m_ai;          // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x004274f0

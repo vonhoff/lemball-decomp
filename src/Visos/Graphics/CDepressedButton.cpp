@@ -1,7 +1,7 @@
 #include "CDepressedButton.h"
 
 #include "../Foundation/CChangeList.h"
-#include "CGdi.h"
+#include "CGDI.h"
 #include "CSurface.h"
 
 // FUNCTION: LEMBALL 0x0043a620 FOLDED
@@ -45,7 +45,7 @@ void CDepressedButton::OnExitButton()
 }
 
 // FUNCTION: LEMBALL 0x00468300 FOLDED
-void CDepressedButton::InternalDrawButton()
+void CDepressedButton::_DrawButton()
 {
 	if (m_enabled != m_state || m_gdi->m_renderTarget->HasBackBuff() != 0) {
 		m_gdi->m_renderTarget->m_flag78 = 1;
@@ -65,7 +65,7 @@ void CDepressedButton::OnPaint(const CVsRect& p_rect)
 		(m_gdi->m_primitiveCount == 0 &&
 		 (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed))) {
 		if (GetSizeStatus() != 0) {
-			InternalDrawButton();
+			_DrawButton();
 			DrawButton();
 		}
 		changeList = m_gdi->m_renderTarget->GetChangeList();

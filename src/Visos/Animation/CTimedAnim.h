@@ -15,7 +15,7 @@ public:
 	virtual void SetAnimDirection(int p_direction);       // vtable+0x10
 
 	friend class CBaseFrontendDrawer;
-	friend class CCdLoadAnim;
+	friend class CCDLoadAnim;
 	friend class CGunController;
 	friend class CPlayThruAnim;
 	friend class CRepeatAnim;

@@ -19,7 +19,7 @@ void* InternalNew(unsigned long p_size)
 		}
 	}
 	if (!g_pMasterArena->Allocate(&result, p_size, g_pCurrentAllocDescription)) {
-		InternalVsRelAssert("EnoughMemory", "VSMEM.CPP", 1677);
+		_VSRELassert("EnoughMemory", "VSMEM.CPP", 1677);
 	}
 	return result;
 }
@@ -33,7 +33,7 @@ void InternalDelete(void* p_ptr)
 	if (g_pMasterArena->Free((unsigned char*) p_ptr)) {
 		return;
 	}
-	InternalVsRelAssert("EnoughMemory", "VSMEM.CPP", 1738);
+	_VSRELassert("EnoughMemory", "VSMEM.CPP", 1738);
 }
 
 // FUNCTION: LEMBALL 0x0045a780

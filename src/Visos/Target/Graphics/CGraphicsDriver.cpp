@@ -1,6 +1,6 @@
 #include "CGraphicsDriver.h"
 
-#include "../../Graphics/CPvGdiBitmap.h"
+#include "../../Graphics/CPVGDIBitmap.h"
 #include "CGdiContext.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -46,7 +46,7 @@ bool CGraphicsDriver::BlitWrappedBitmap(CDrawingContext* p_destination,
 										CVsRect* p_destinationRect,
 										CDrawingContext* p_source,
 										CVsRect* p_sourceRect,
-										CPvGdiBitmap* p_bitmap)
+										CPVGDIBitmap* p_bitmap)
 {
 	int scale;
 	CVsRect* rect0;

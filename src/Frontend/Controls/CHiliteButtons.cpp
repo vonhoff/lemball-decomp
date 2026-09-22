@@ -5,19 +5,19 @@
 #include "../../Visos/Foundation/CMasterInput.h"
 #include "../../Visos/Foundation/CVsPoint.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
 #include "../../Visos/Graphics/CSurface.h"
-#include "../../Visos/Resources/CResAnim.h"
+#include "../../Visos/Resources/CResANIM.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CGWnd.h"
 
-class CPvGWnd;
+class CPVGWnd;
 
 // FUNCTION: LEMBALL 0x0044f070
 CHiliteButtons::CHiliteButtons(CGWnd* p_window,
-							   CGdi* p_gdi,
+							   CGDI* p_gdi,
 							   int p_x,
 							   int p_y,
 							   unsigned long* p_animIds,
@@ -118,7 +118,7 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 					*m_binding = m_value;
 				}
 			}
-			m_button->SetAnimId(m_animIds[m_value - m_minimum]);
+			m_button->SetAnimID(m_animIds[m_value - m_minimum]);
 			return 0;
 		}
 	}
@@ -147,14 +147,14 @@ void CHiliteButtons::LoadFaces(unsigned long* p_animIds)
 	int index;
 
 	m_animIds = p_animIds;
-	m_resources = (CResAnim**) operator new(m_valueCount << 2);
+	m_resources = (CResANIM**) operator new(m_valueCount << 2);
 	index = 0;
 	while (index < m_valueCount) {
-		m_resources[index] = CResAnim::Load(m_animIds[index]);
+		m_resources[index] = CResANIM::Load(m_animIds[index]);
 		index = index + 1;
 	}
 	m_button =
-		new CGraphicButton(CVsPoint((short) m_x, (short) m_y), (CPvGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
+		new CGraphicButton(CVsPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
 	CSurface* surface = m_button->m_gdi->m_renderTarget;
 	m_button->SetAutoDraw(0);
 	surface->m_flag70 = 0;
@@ -182,7 +182,7 @@ void CHiliteButtons::UnLoadFaces()
 }
 
 // FUNCTION: LEMBALL 0x0044f3d0
-void CHiliteButtons::UpdateAnimId()
+void CHiliteButtons::UpdateAnimID()
 {
 	if (m_binding != 0) {
 		if (m_valueCount == 1) {
@@ -192,5 +192,5 @@ void CHiliteButtons::UpdateAnimId()
 			m_value = *m_binding;
 		}
 	}
-	m_button->SetAnimId(m_animIds[m_value - m_minimum]);
+	m_button->SetAnimID(m_animIds[m_value - m_minimum]);
 }

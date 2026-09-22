@@ -8,13 +8,13 @@
 #include "../../Visos/Graphics/CLine.h"            // complete type
 
 class CPanelLemming;
-class CPvGWnd;
+class CPVGWnd;
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x00497508 CGWnd
 // VTABLE: LEMBALL 0x004974e0 CHotAreaHandler
 class CPanelButton : public CDepressedButton {
 public:
-	CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPvGWnd* p_parent);
+	CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPVGWnd* p_parent);
 	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8
 	virtual void DrawButton();                                             // vtable+0xbc
 	virtual void OnEnterButton();                                          // vtable+0xc8

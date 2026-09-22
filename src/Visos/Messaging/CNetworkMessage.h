@@ -14,13 +14,13 @@ public:
 	}
 	friend class CGameObjectMess;
 	friend class CGlobalGameObject;
-	friend class CAi;
+	friend class CAI;
 	friend class CBullet;
 	friend class CHeaders;
 	friend class CBaseFrontendProcess;
 	friend class CBaseObjectManager;
 	friend class CConnect;
-	friend class CPbNetworkGame;
+	friend class CPBNetworkGame;
 	friend class CWriteSocket;
 	friend class CReadSocket;
 	friend class CFileReadSocket;
@@ -29,9 +29,9 @@ public:
 	friend class CFileBroadcast;
 	friend class CNetworkManager;
 	bool Set(unsigned char* p_data);
-	int GetDword();
-	unsigned char GetByte();
-	unsigned short GetWord();
+	int GetDWORD();
+	unsigned char GetBYTE();
+	unsigned short GetWORD();
 	virtual bool CheckMessage(const unsigned char* p_arg0); // vtable+0x00
 	virtual bool GetHeader();                               // vtable+0x04
 	virtual void GetData() = 0;                             // vtable+0x08
@@ -44,9 +44,9 @@ public:
 	void Add(unsigned long p_value);
 	void Add(unsigned short p_value);
 	void CloseDataStream();
-	void ConvertByte();
-	void ConvertDword();
-	void ConvertWord();
+	void ConvertBYTE();
+	void ConvertDWORD();
+	void ConvertWORD();
 	void CopyDataStream(unsigned char* p_buffer, int p_offset);
 	void Get(const char*& p_text);
 	void Get(const unsigned char*& p_data, int p_length);

@@ -9,7 +9,7 @@
 class CBaseStat : public CArenaBase {
 public:
 	CBaseStat(char* p_arg0);
-	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	virtual void Update(unsigned int p_value);           // vtable+0x04
 	~CBaseStat();
 

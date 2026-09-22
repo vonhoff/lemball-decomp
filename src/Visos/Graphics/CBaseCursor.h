@@ -8,7 +8,7 @@
 #include "CPushActive.h"                     // complete type
 
 class CGWnd;
-class CZrle;
+class CZRLE;
 class CResBase;
 
 enum eCursorDisplayType {
@@ -32,8 +32,8 @@ public:
 	void Initialise();
 	void Process();
 	void SetActive(unsigned int p_active);
-	void SetMainId(unsigned int p_resourceId);
-	void SetMainId(unsigned int p_resourceId, int p_frame);
+	void SetMainID(unsigned int p_resourceId);
+	void SetMainID(unsigned int p_resourceId, int p_frame);
 	void SetPos(const CVsPoint& p_position);
 
 	friend class CCursor;
@@ -44,7 +44,7 @@ private:
 	CVsPoint m_position;                // 0x10
 	CVsPoint m_hotspot;                 // 0x14
 	unsigned int m_active;              // 0x18
-	CZrle* m_renderState;               // 0x1c
+	CZRLE* m_renderState;               // 0x1c
 	CResBase* m_resource;               // 0x20
 	int m_frame;                        // 0x24
 	unsigned int m_resourceId;          // 0x28

@@ -7,12 +7,12 @@
 #include "AI/Groups/CGenericGroupManager.h"
 #include "CEnemyGroup.h"
 
-extern CAi* g_pGenericGroupAI;
+extern CAI* g_pGenericGroupAI;
 extern CObjectManager* g_pGenericGroupObjectManager;
 extern CFormationManager* g_pGenericGroupFormationManager;
 
 // FUNCTION: LEMBALL 0x00420b50
-unsigned long EnemyGetLong(unsigned long* p_data)
+unsigned long ENEMY_GetLONG(unsigned long* p_data)
 {
 	unsigned char* data;
 
@@ -22,7 +22,7 @@ unsigned long EnemyGetLong(unsigned long* p_data)
 }
 
 // FUNCTION: LEMBALL 0x00420b80
-CEnemyGroupManager::CEnemyGroupManager(CAi* p_ai,
+CEnemyGroupManager::CEnemyGroupManager(CAI* p_ai,
 									   CObjectManager* p_objectManager,
 									   CFormationManager* p_formationManager)
 	: CGenericGroupManager(p_ai, p_objectManager, p_formationManager)
@@ -104,15 +104,15 @@ void CEnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSi
 		enemy->SetEnemyType(action0, rule0, action1, rule1, action2, rule2);
 
 		if (action0 == 1) {
-			data = (unsigned char*) LoadLevelAdditionalWaypoint((LoadEnemyDataAdditionalAction*) data, waypoint0);
+			data = (unsigned char*) LoadLevelAdditional_Waypoint((LoadEnemyDataAdditionalAction*) data, waypoint0);
 			enemy->m_state0Data.m_waypointInformation = waypoint0;
 		}
 		if (action1 == 1) {
-			data = (unsigned char*) LoadLevelAdditionalWaypoint((LoadEnemyDataAdditionalAction*) data, waypoint1);
+			data = (unsigned char*) LoadLevelAdditional_Waypoint((LoadEnemyDataAdditionalAction*) data, waypoint1);
 			enemy->m_state1Data.m_waypointInformation = waypoint1;
 		}
 		if (action2 == 1) {
-			data = (unsigned char*) LoadLevelAdditionalWaypoint((LoadEnemyDataAdditionalAction*) data, waypoint2);
+			data = (unsigned char*) LoadLevelAdditional_Waypoint((LoadEnemyDataAdditionalAction*) data, waypoint2);
 			enemy->m_state2Data.m_waypointInformation = waypoint2;
 		}
 
@@ -124,11 +124,11 @@ void CEnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSi
 // clang-format off
 // clang-format on
 // FUNCTION: LEMBALL 0x00420f90
-LoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditionalWaypoint(LoadEnemyDataAdditionalAction* p_data,
-																			   WaypointInformation*& p_waypointInfo)
+LoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoint(LoadEnemyDataAdditionalAction* p_data,
+																				WaypointInformation*& p_waypointInfo)
 {
 	unsigned char* data = (unsigned char*) p_data;
-	EnemyGetLong((unsigned long*) data);
+	ENEMY_GetLONG((unsigned long*) data);
 	data += 4;
 
 	p_waypointInfo = new WaypointInformation;

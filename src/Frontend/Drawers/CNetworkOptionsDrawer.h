@@ -7,7 +7,7 @@ class CEntryHandler;
 
 class CBaseRemap;
 class CEditString;
-class CGdi;
+class CGDI;
 class CMain2DDisplay;
 class CVsRect;
 // SIZE 0xa0
@@ -49,7 +49,7 @@ struct NetworkOptionsLayout {
 // VTABLE: LEMBALL 0x0049862c CAnimsManager
 class CNetworkOptionsDrawer : public CBaseFrontendDrawer {
 public:
-	CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect);
+	CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect);
 	bool AcceptingLock();
 	bool HighlightNextEntry();
 	bool HighlightPreviousEntry();

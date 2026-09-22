@@ -1,9 +1,9 @@
 #include "CAnim.h"
 
-#include "../Graphics/CGdi.h"
+#include "../Graphics/CGDI.h"
 #include "../Graphics/CSurface.h"
-#include "../Resources/CResAnim.h"
-class CResZrle;
+#include "../Resources/CResANIM.h"
+class CResZRLE;
 
 // FUNCTION: LEMBALL 0x00443990
 CAnim::CAnim()
@@ -11,9 +11,9 @@ CAnim::CAnim()
 }
 
 // FUNCTION: LEMBALL 0x00443a20
-void CAnim::Draw(CGdi* p_gdi)
+void CAnim::Draw(CGDI* p_gdi)
 {
-	CResAnim* resource;
+	CResANIM* resource;
 
 	resource = m_animResource;
 	if (resource->m_loaded != 0) {
@@ -27,11 +27,11 @@ void CAnim::Draw(CGdi* p_gdi)
 }
 
 // FUNCTION: LEMBALL 0x00443a60
-void CAnim::Render(CGdi* p_gdi)
+void CAnim::Render(CGDI* p_gdi)
 {
-	CResZrle* entry;
+	CResZRLE* entry;
 
-	entry = (CResZrle*) ((char*) m_animResource->m_animationEntries + m_animIndex * 0x54);
+	entry = (CResZRLE*) ((char*) m_animResource->m_animationEntries + m_animIndex * 0x54);
 	p_gdi->m_renderTarget->Blit(this, entry);
 	m_animResource->m_directUseCount = m_animResource->m_directUseCount - 1;
 }

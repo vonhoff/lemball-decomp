@@ -1,6 +1,6 @@
 #include "CPanelPauseButton.h"
 
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../Visos/Graphics/CCursor.h"
 #include "../../Visos/Graphics/CDepressedButton.h"
 #include "../Display/C2D.h"
@@ -9,13 +9,13 @@
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CGraphicButton.h"
-#include "Visos/Graphics/CPvButton.h"
+#include "Visos/Graphics/CPVButton.h"
 #include "Visos/Graphics/CToggleButton.h"
 
 // FUNCTION: LEMBALL 0x004421d0
 CPanelPauseButton::CPanelPauseButton(CPanel* p_arg0,
 									 const CVsPoint& p_arg1,
-									 CPvGWnd* p_arg2,
+									 CPVGWnd* p_arg2,
 									 unsigned long p_arg3,
 									 unsigned long p_arg4)
 	: CToggleButton(p_arg1, p_arg2, p_arg3, p_arg4)
@@ -76,7 +76,7 @@ void CPanelPauseButton::OnReleased(int p_flags)
 // FUNCTION: LEMBALL 0x00442350
 void CPanelPauseButton::OnExternalButtonUp(const CVsPoint& p_point, int p_flags)
 {
-	CPvButton::OnExternalButtonUp(p_point, p_flags);
+	CPVButton::OnExternalButtonUp(p_point, p_flags);
 	if (p_flags == 0 && m_pressedInside != 0) {
 		m_pressedInside = 0;
 		CursorChangeType(CURSOR_DISPLAY_HAND, 0);

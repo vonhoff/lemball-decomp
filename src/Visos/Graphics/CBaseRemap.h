@@ -7,7 +7,7 @@ enum ePaletteTypes {
 	PALETTE_MAPPED = 2,
 };
 
-class CResPalette;
+class CResPALETTE;
 
 // SIZE 0x08
 class CBaseRemap {
@@ -22,7 +22,7 @@ public:
 
 public:
 	unsigned char* m_remap;         // 0x00
-	CResPalette* m_paletteResource; // 0x04
+	CResPALETTE* m_paletteResource; // 0x04
 };
 
 #endif

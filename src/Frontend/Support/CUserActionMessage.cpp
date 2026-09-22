@@ -19,6 +19,6 @@ void CUserActionMessage::AddData()
 // FUNCTION: LEMBALL 0x00445400
 void CUserActionMessage::GetData()
 {
-	m_action = (eUserActions) GetDword();
-	m_stage = (eUserActionStages) GetDword();
+	m_action = (eUserActions) GetDWORD();
+	m_stage = (eUserActionStages) GetDWORD();
 }

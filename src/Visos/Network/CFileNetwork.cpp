@@ -1,7 +1,7 @@
 #include "CFileNetwork.h"
 
 #include "../Foundation/CBaseQueue.h"
-#include "../Foundation/CVsOStream.h"
+#include "../Foundation/CVSOStream.h"
 #include "CFileBroadcast.h"
 #include "CFileConnect.h"
 #include "CFileNetworkAddress.h"

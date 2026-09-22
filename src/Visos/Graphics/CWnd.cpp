@@ -4,7 +4,7 @@
 #include "../../Control/Support/PreInit.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../Foundation/CBaseQueue.h"
-#include "../Foundation/CVsOStream.h"
+#include "../Foundation/CVSOStream.h"
 #include "../Foundation/VsDebug.h"
 #include "../Foundation/VsTime.h"
 #include "../Messaging/PackParam.h"
@@ -16,7 +16,7 @@
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Graphics/CPvWnd.h"
+#include "Visos/Graphics/CPVWnd.h"
 #include "Visos/Graphics/MenuList.h"
 
 #include <conio.h>
@@ -211,7 +211,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		CVsPoint* topLeft = &window->m_rect;
 		window->m_relativeTopLeft.m_x = topLeft->m_x;
 		window->m_relativeTopLeft.m_y = topLeft->m_y;
-		window->InternalOnCreate();
+		window->_OnCreate();
 		window->OnCreate();
 		return 0;
 	}
@@ -272,7 +272,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				window->OnMaximise();
 			}
 		}
-		window->InternalOnSize();
+		window->_OnSize();
 		window->OnSize();
 		return 0;
 	}
@@ -487,14 +487,14 @@ void CWnd::MoveAbsolute(const CVsPoint& p_point)
 		if (node == 0) {
 			break;
 		}
-		((CPvWnd*) node[0])->InternalOnMove(delta);
+		((CPVWnd*) node[0])->_OnMove(delta);
 		node = (void**) node[1];
 	}
 	m_rect.m_x = p_point.m_x;
 	m_rect.m_y = p_point.m_y;
 	m_relativeTopLeft.m_x = p_point.m_x;
 	m_relativeTopLeft.m_y = p_point.m_y;
-	InternalOnMove();
+	_OnMove();
 }
 
 // FUNCTION: LEMBALL 0x00464fa0
@@ -506,8 +506,8 @@ void CWnd::Move(const CVsPoint& p_point)
 		if (node == 0) {
 			break;
 		}
-		CPvWnd* child = (CPvWnd*) node[0];
-		child->InternalOnMove(delta);
+		CPVWnd* child = (CPVWnd*) node[0];
+		child->_OnMove(delta);
 		child->OnMove();
 		node = (void**) node[1];
 	}
@@ -515,7 +515,7 @@ void CWnd::Move(const CVsPoint& p_point)
 	m_rect.m_y = (short) (m_rect.m_y + delta.m_y);
 	m_relativeTopLeft.m_x = p_point.m_x;
 	m_relativeTopLeft.m_y = p_point.m_y;
-	InternalOnMove();
+	_OnMove();
 	OnMove();
 	if (m_nativeWindow != 0) {
 		SetWindowPos((HWND) m_nativeWindow, 0, p_point.m_x, p_point.m_y, 0, 0, 5);
@@ -587,7 +587,7 @@ CWnd::CWnd()
 }
 
 // FUNCTION: LEMBALL 0x00465200
-void CWnd::Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_title)
+void CWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 {
 	unsigned int styleFlags;
 	unsigned int style;
@@ -621,9 +621,9 @@ void CWnd::Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_title)
 			m_relativeTopLeft.m_x = p_rect.m_x;
 			m_relativeTopLeft.m_y = p_rect.m_y;
 			m_zoom = p_parent->m_zoom;
-			InternalOnCreate();
+			_OnCreate();
 			OnCreate();
-			InternalOnSize();
+			_OnSize();
 			OnSize();
 			return;
 		}
@@ -701,9 +701,9 @@ void CWnd::Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_title)
 	m_nativeWindow = g_pTargetGraphicsDriver->m_window;
 	SetFocusWindow();
 	OnFocusGained();
-	InternalOnCreate();
+	_OnCreate();
 	OnCreate();
-	InternalOnSize();
+	_OnSize();
 	OnSize();
 }
 
@@ -742,7 +742,7 @@ CWnd::~CWnd()
 // FUNCTION: LEMBALL 0x004655a0
 void CWnd::Destroy()
 {
-	CPvWnd* child;
+	CPVWnd* child;
 	void** childNode;
 
 	if (m_lifecycleRefs != 0) {
@@ -751,12 +751,12 @@ void CWnd::Destroy()
 			if (childNode == 0) {
 				break;
 			}
-			child = (CPvWnd*) childNode[0];
+			child = (CPVWnd*) childNode[0];
 			childNode = (void**) childNode[1];
 			child->Destroy();
 		}
 		OnDestroy();
-		InternalOnDestroy();
+		_OnDestroy();
 		if ((g_pTargetGraphicsSystem->m_driverMode < 4 || g_pTargetGraphicsSystem->m_driverMode > 5) &&
 			m_nativeWindow != 0) {
 			DestroyWindow((HWND) m_nativeWindow);
@@ -863,12 +863,12 @@ int CWnd::SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int
 }
 
 // FUNCTION: LEMBALL 0x00465790
-void CWnd::InternalOnZoom(int p_oldZoom)
+void CWnd::_OnZoom(int p_oldZoom)
 {
 	RECT windowRect;
 	RECT clientRect;
 
-	CPvWnd::InternalOnZoom(p_oldZoom);
+	CPVWnd::_OnZoom(p_oldZoom);
 	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
 		GetWindowRect((HWND) m_nativeWindow, &windowRect);
 		GetClientRect((HWND) m_nativeWindow, &clientRect);
@@ -883,7 +883,7 @@ void CWnd::InternalOnZoom(int p_oldZoom)
 }
 
 // FUNCTION: LEMBALL 0x00465820
-void CWnd::InternalSetRect(const CVsRect& p_rect)
+void CWnd::_SetRect(const CVsRect& p_rect)
 {
 	CVsRect rect(p_rect);
 	CVsPoint* origin = &rect;
@@ -924,17 +924,17 @@ void CWnd::InternalSetRect(const CVsRect& p_rect)
 	m_rect.m_height = size->m_height;
 	m_relativeTopLeft.m_x = origin->m_x;
 	m_relativeTopLeft.m_y = origin->m_y;
-	InternalOnMove();
+	_OnMove();
 	OnMove();
-	InternalOnSize();
+	_OnSize();
 	OnSize();
 }
 
 // FUNCTION: LEMBALL 0x00465a00
-void CWnd::InternalSetRelTL(const CVsPoint& p_point)
+void CWnd::_SetRelTL(const CVsPoint& p_point)
 {
 	CVsRect rect(p_point.m_x, p_point.m_y, m_rect.m_width, m_rect.m_height);
-	InternalSetRect(rect);
+	_SetRect(rect);
 }
 
 // FUNCTION: LEMBALL 0x00465a90

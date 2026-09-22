@@ -26,7 +26,7 @@ int ViewDataCmp(const void* p_left, const void* p_right)
 }
 
 // FUNCTION: LEMBALL 0x00463960
-void VsQSort(void* p_base, unsigned int p_count, unsigned int p_width, int (*p_compare)(const void*, const void*))
+void VSQSort(void* p_base, unsigned int p_count, unsigned int p_width, int (*p_compare)(const void*, const void*))
 {
 	unsigned char* low;
 	unsigned char* high;
@@ -46,10 +46,10 @@ void VsQSort(void* p_base, unsigned int p_count, unsigned int p_width, int (*p_c
 nextPartition:
 	size = (unsigned int) (high - low) / p_width + 1;
 	if (size <= 8) {
-		ShortSort(low, high, p_width, p_compare);
+		shortsort(low, high, p_width, p_compare);
 	}
 	else {
-		Swap(low + (size / 2) * p_width, low, p_width);
+		swap(low + (size / 2) * p_width, low, p_width);
 		first = low;
 		second = high + p_width;
 		for (;;) {
@@ -62,9 +62,9 @@ nextPartition:
 			if (first > second) {
 				break;
 			}
-			Swap(first, second, p_width);
+			swap(first, second, p_width);
 		}
-		Swap(low, second, p_width);
+		swap(low, second, p_width);
 		if (second - low - 1 >= high - first) {
 			if (low + p_width < second) {
 				lowStack[stackIndex] = low;
@@ -96,7 +96,7 @@ nextPartition:
 }
 
 // FUNCTION: LEMBALL 0x00463ac0
-void ShortSort(unsigned char* p_low,
+void shortsort(unsigned char* p_low,
 			   unsigned char* p_high,
 			   unsigned int p_width,
 			   int (*p_compare)(const void*, const void*))
@@ -115,7 +115,7 @@ void ShortSort(unsigned char* p_low,
 				current += p_width;
 			} while (p_high >= current);
 		}
-		Swap(selected, p_high, p_width);
+		swap(selected, p_high, p_width);
 		p_high -= p_width;
 	}
 }

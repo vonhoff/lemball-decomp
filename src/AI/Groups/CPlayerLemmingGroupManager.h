@@ -4,7 +4,7 @@
 #include "../Managers/CBaseObjectManager.h" // complete type
 #include "CGenericGroupManager.h"           // complete type
 
-class CAi;
+class CAI;
 class AiCoord;
 class CFormationManager;
 class CObjectManager;
@@ -18,9 +18,9 @@ class CPlayerLemmingGroupManager : public CGenericGroupManager, public CBaseObje
 public:
 	CPlayerLemming* GetDead();
 	CPlayerLemmingGroup* GetPlayerControlledGroup();
-	CPlayerLemmingGroupManager(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
+	CPlayerLemmingGroupManager(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	bool GetLeaderPos(AiCoord& p_position);
-	bool HasSfxChanged();
+	bool HasSFXChanged();
 	bool IsLemmingPlayerControlled(CPlayerLemming* p_lemming);
 	bool MakeNextGroupPlayerControlled();
 	bool MakeNoGroupsPlayerControlled();
@@ -44,7 +44,7 @@ public:
 	void UseObject(int p_objectId);
 
 private:
-	friend class CAi;
+	friend class CAI;
 	int m_startX[4];                      // 0x0e0
 	int m_startY[4];                      // 0x0f0
 	int m_startZ[4];                      // 0x100

@@ -15,7 +15,7 @@ public:
 	virtual void Update(unsigned int p_value); // vtable+0x04
 
 	friend class CGame;
-	friend class CGdiDevice;
+	friend class CGDIDevice;
 
 private:
 	unsigned int m_timingStart;  // 0x20

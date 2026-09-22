@@ -5,12 +5,12 @@
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Graphics/CBasePalManager.h"
 #include "../../Visos/Graphics/CCursor.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
 #include "../../Visos/Graphics/CReceiveWindowState.h"
 #include "../../Visos/Graphics/CSurface.h"
-#include "../../Visos/Resources/CResAnim.h"
-#include "../../Visos/Resources/CResFont.h"
+#include "../../Visos/Resources/CResANIM.h"
+#include "../../Visos/Resources/CResFONT.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Sound/CSoundView.h"
 #include "Views/Pause/CPauseVramHandler.h"
@@ -25,9 +25,9 @@
 #include "Visos/Graphics/CBaseRemap.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
 #include "Visos/Graphics/CLine.h"
-#include "Visos/Graphics/CPvGWnd.h"
-#include "Visos/Graphics/CPvWnd.h"
-#include "Visos/Resources/CResZrle.h"
+#include "Visos/Graphics/CPVGWnd.h"
+#include "Visos/Graphics/CPVWnd.h"
+#include "Visos/Resources/CResZRLE.h"
 
 extern unsigned char* g_apPauseRemaps[4];
 extern char* g_apPauseMenuLabels[15];
@@ -94,8 +94,8 @@ void CPauseWindow::Load()
 		m_verticalBorderAnimId = RES_BORDERS_LORES_BORDEREDGES;
 		m_fontId = RES_BORDERS_LORES_CUTFONT;
 	}
-	m_horizontalBorderAnim = CResAnim::Load(m_horizontalBorderAnimId);
-	m_verticalBorderAnim = CResAnim::Load(m_verticalBorderAnimId);
+	m_horizontalBorderAnim = CResANIM::Load(m_horizontalBorderAnimId);
+	m_verticalBorderAnim = CResANIM::Load(m_verticalBorderAnimId);
 	CTextManager::LoadFont(m_fontId);
 	m_font = CTextManager::GetFont(m_fontId);
 	m_loaded = 1;
@@ -160,7 +160,7 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 	m_externalEnabled = 1;
 
 	if (m_lifecycleRefs == 1) {
-		CPvWnd::SetRect(p_rect);
+		CPVWnd::SetRect(p_rect);
 	}
 	else {
 		m_gdiFlags = m_borderAnimCount * 2 + 0x3ed;
@@ -246,7 +246,7 @@ CVsRect CPauseWindow::CalculateWindow()
 	maxTextSize.m_height -= m_textSpacing.m_y;
 	maxTextSize.m_width += m_windowPadding.m_x;
 
-	CPvGWnd* parent = m_parentWindow;
+	CPVGWnd* parent = m_parentWindow;
 	int zoom;
 	if ((int) parent->m_innerRect.m_width * (int) parent->m_innerRect.m_height == 0) {
 		zoom = parent->m_zoom;
@@ -385,7 +385,7 @@ CVsRect CPauseWindow::CalculateWindow()
 }
 
 // FUNCTION: LEMBALL 0x00444680
-CPauseWindow::CPauseWindow(CReceiveWindowState* p_arg0, CPvGWnd* p_arg1, ePauseWindowMessages p_arg2)
+CPauseWindow::CPauseWindow(CReceiveWindowState* p_arg0, CPVGWnd* p_arg1, ePauseWindowMessages p_arg2)
 	: CTextManager(0x2b6, 1, 15, 0)
 {
 	m_receiverState = p_arg0;
@@ -459,7 +459,7 @@ CBaseRemap* CPauseWindow::Remap(int p_item)
 // FUNCTION: LEMBALL 0x00444980
 void CPauseWindow::OnPaint(const CVsRect& p_rect)
 {
-	m_gdi->m_renderTarget->GetCurrDb();
+	m_gdi->m_renderTarget->GetCurrDB();
 	m_borderLine[0].Draw(m_gdi);
 	int i;
 	for (i = 0; i < m_borderAnimCount * 2; i++) {

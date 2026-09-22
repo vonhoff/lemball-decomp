@@ -4,7 +4,7 @@
 #include "Views/Sound/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x0044c1e0
-int Sgn(int p_value)
+int sgn(int p_value)
 {
 	int res = p_value;
 	if (res == 0) {

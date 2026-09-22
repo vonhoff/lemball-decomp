@@ -5,7 +5,7 @@
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/CVsPoint.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/Manifest.h"
@@ -27,7 +27,7 @@
 
 class CFrames;
 
-int Sgn(int p_value);
+int sgn(int p_value);
 
 // GLOBAL: LEMBALL 0x004a7b38
 unsigned long g_dwGunAnimLeftShot = 0;
@@ -54,7 +54,7 @@ int g_anGunSpriteOffset[18] = {0, 12, -8, -2, 52, -2, -13, 28, 116, 0, 0, -13, 1
 int g_anGunSpriteOffsetCompact[20] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0, 10, 14, -8, 0, -12, -2, 0, 0};
 
 // FUNCTION: LEMBALL 0x0044c870
-CGunController::CGunController(CGWnd* p_arg0, CGdi* p_arg1, int p_arg2, unsigned int p_arg3)
+CGunController::CGunController(CGWnd* p_arg0, CGDI* p_arg1, int p_arg2, unsigned int p_arg3)
 	: CAnimsManager(p_arg1, 0x2b6, 10, 5, 0, 0)
 {
 	int i;
@@ -351,12 +351,12 @@ void CGunController::DrawButtons(int p_firstState, int p_secondState)
 // FUNCTION: LEMBALL 0x0044d2d0
 void CGunController::DrawSpriteWindow()
 {
-	CGdi* previousGdi;
+	CGDI* previousGdi;
 	int* offsets;
 	CVsPoint position;
 	unsigned long frame;
 
-	m_spriteSurface->m_renderTarget->GetCurrDb();
+	m_spriteSurface->m_renderTarget->GetCurrDB();
 	m_cursorRect[0].m_bounds.m_width = m_spriteSurface->m_renderTarget->m_windowRect.m_width;
 	m_cursorRect[0].m_bounds.m_height = m_spriteSurface->m_renderTarget->m_windowRect.m_height;
 	m_cursorRect[0].m_bounds.m_x = 0;
@@ -688,7 +688,7 @@ void CGunController::Process()
 			else {
 				elapsed = (now - m_selectStartTime) >> 1;
 				step = m_projectileX;
-				int direction = Sgn(m_projectileTargetX - step);
+				int direction = sgn(m_projectileTargetX - step);
 				m_selectStartTime = now;
 				m_projectileX = direction * elapsed + step;
 			}

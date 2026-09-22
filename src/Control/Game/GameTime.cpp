@@ -63,13 +63,13 @@ void SetRemoteGameTimeReal(unsigned long p_timestamp)
 }
 
 // FUNCTION: LEMBALL 0x00409150
-void InternalDemoInit(int p_arg0)
+void _DEMO_Init(int p_arg0)
 {
 	g_pDemo = new CDemo(p_arg0);
 }
 
 // FUNCTION: LEMBALL 0x00409180
-void InternalDemoQuit()
+void _DEMO_Quit()
 {
 	if (g_pDemo != 0) {
 		delete g_pDemo;

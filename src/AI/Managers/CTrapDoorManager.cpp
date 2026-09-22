@@ -2,7 +2,7 @@
 
 #include "../../Map/Base/CMap.h"
 #include "../Base/CGameObject.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CTrapDoor.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Managers/CBaseObjectManager.h"

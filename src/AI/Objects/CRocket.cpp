@@ -2,7 +2,7 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 
 // FUNCTION: LEMBALL 0x004267d0
 CRocket::CRocket() : CGlobalGameObject(OBJECT_ROCKET, 0, 0)

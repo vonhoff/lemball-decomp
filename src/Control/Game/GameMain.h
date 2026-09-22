@@ -2,10 +2,10 @@
 #define LEMBALL_CONTROL_GAME_GAMEMAIN_H
 
 struct PreInit;
-PreInit* VsPreInit(PreInit* p_preInit);
+PreInit* VSPreInit(PreInit* p_preInit);
 void SetGameDefaults();
 void DisplayHelp();
-int VsMain(int p_argc, char** p_argv);
+int VSmain(int p_argc, char** p_argv);
 int DoCommandLine(int p_argc, char** p_argv);
 
 extern int g_nSoundDebugRequested;

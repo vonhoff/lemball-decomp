@@ -39,11 +39,11 @@ public:
 	friend class CFileWriteSocket;
 	friend class CFileBroadcast;
 	friend class CFileConnect;
-	friend class CTcpIpReadSocket;
-	friend class CTcpIpWriteSocket;
-	friend class CTcpIpBroadcast;
-	friend class CTcpIpConnect;
-	friend class CTcpIpCommonSocket;
+	friend class CTCPIPReadSocket;
+	friend class CTCPIPWriteSocket;
+	friend class CTCPIPBroadcast;
+	friend class CTCPIPConnect;
+	friend class CTCPIPCommonSocket;
 	friend class CBaseNetwork;
 
 private:

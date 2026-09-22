@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESBASE_H
 #define LEMBALL_VISOS_RESOURCES_CRESBASE_H
 
-class CResBaseList;
+class CResBaseLIST;
 
 // SIZE 0x48
 // VTABLE: LEMBALL 0x00498980
@@ -9,8 +9,8 @@ class CResBase {
 public:
 	CResBase() { m_initialized = 0; }
 	CResBase* CheckError();
-	bool Direct(unsigned char*& p_cursor, CResBaseList* p_list);
-	bool Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, CResBaseList* p_list);
+	bool Direct(unsigned char*& p_cursor, CResBaseLIST* p_list);
+	bool Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, CResBaseLIST* p_list);
 	virtual ~CResBase();                                                                       // vtable+0x00
 	virtual void OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size); // vtable+0x04
 	virtual void SetHeader();                                                                  // vtable+0x08
@@ -31,12 +31,12 @@ public:
 	void UnLoad();
 	void UnLoadExtData(unsigned int p_force);
 
-	friend class CResAnim;
-	friend class CResFont;
+	friend class CResANIM;
+	friend class CResFONT;
 	friend class CMogRes;
 	friend class CSoundManager;
 	friend class CText;
-	friend class CZrle;
+	friend class CZRLE;
 	friend class CGame;
 	friend class CBaseFrontendDrawer;
 	friend class CGWnd;
@@ -55,7 +55,7 @@ public:
 	friend class CBaseRemap;
 
 protected:
-	CResBaseList* m_externalList;  // 0x04
+	CResBaseLIST* m_externalList;  // 0x04
 	unsigned int m_directUseCount; // 0x08
 	unsigned int m_referenceCount; // 0x0c
 	unsigned int m_loaded;         // 0x10

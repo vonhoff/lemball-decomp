@@ -4,14 +4,14 @@
 #include "../../Frontend/Controls/CGunController.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"
-#include "../../Visos/Foundation/CVsOStream.h"
-#include "../../Visos/Resources/CResBitmap.h"
+#include "../../Visos/Foundation/CVSOStream.h"
+#include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBitmapRes.h"
 
 #include <new.h>
@@ -47,7 +47,7 @@ int g_anMainOptions2ButtonLayout[12] = {32, 116, 480, 116, 48, 232, 464, 232, 64
 int g_anMainOptions2CompactButtonLayout[12] = {16, 58, 240, 58, 24, 116, 232, 116, 32, 174, 208, 174};
 
 // FUNCTION: LEMBALL 0x00448ab0
-CMainOptions2Drawer::CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2)
+CMainOptions2Drawer::CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_2, 0, 0, 0, 0, 0)
 {
 	if (g_nMusicAvailable == 0) {
@@ -103,7 +103,7 @@ void CMainOptions2Drawer::Load()
 	}
 
 	for (i = 0; i < 1; i++) {
-		CResBitmap* background = m_backgroundBitmap;
+		CResBITMAP* background = m_backgroundBitmap;
 		m_primitiveBundle[i].m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) background->m_x) / 2);
 		m_primitiveBundle[i].m_primitive.m_y = 0;
 		m_primitiveBundle[i].m_primitive.m_resource = background;

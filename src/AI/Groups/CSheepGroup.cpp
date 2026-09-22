@@ -1,10 +1,10 @@
 #include "CSheepGroup.h"
 
 #include "../../Control/Game/CGame.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Foundation/CVsRect.h"
-#include "../../Visos/Foundation/VsTrig.h"
-#include "../Navigation/CAi.h"
+#include "../../Visos/Foundation/VSTrig.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Groups/CGenericGroup.h"
@@ -13,7 +13,7 @@
 #include "Visos/Foundation/CVector.h"
 
 // FUNCTION: LEMBALL 0x0041f500
-CSheepGroup::CSheepGroup(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager)
+CSheepGroup::CSheepGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager)
 	: CGenericGroup(p_ai, p_objectManager, p_formationManager)
 {
 }
@@ -49,7 +49,7 @@ void CSheepGroup::RunAway(AiCoord p_threatPosition)
 						  1) &
 						 7) *
 						64;
-			VsTrig* trig = g_pVSTrig;
+			VSTrig* trig = g_pVSTrig;
 			int sineValue;
 			int cosineValue;
 			if (angle < 0) {

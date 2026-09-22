@@ -3,7 +3,7 @@
 
 #include "../../Visos/Graphics/CGraphicButton.h" // complete type
 
-class CPvGWnd;
+class CPVGWnd;
 class CTrackWindow;
 class CVsRect;
 struct CVsPoint;
@@ -13,7 +13,7 @@ struct CVsPoint;
 class CTrackerButton : public CGraphicButton {
 public:
 	CTrackerButton(const CVsPoint& p_position,
-				   CPvGWnd* p_parent,
+				   CPVGWnd* p_parent,
 				   unsigned long p_animId,
 				   CVsRect& p_trackRect,
 				   int p_value);

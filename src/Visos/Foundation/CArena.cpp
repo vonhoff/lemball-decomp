@@ -2,7 +2,7 @@
 
 #include "../Animation/CBaseStat.h"
 #include "CMBlock.h"
-#include "CVsOStream.h"
+#include "CVSOStream.h"
 #include "Visos/Foundation/CCritical.h"
 
 #include <string.h>
@@ -356,7 +356,7 @@ bool CArena::CheckFreeMemoryBlock(CMBlock* p_block)
 }
 
 // FUNCTION: LEMBALL 0x0045a260
-CVsOStream& CArena::StreamOut(CVsOStream& p_stream)
+CVSOStream& CArena::StreamOut(CVSOStream& p_stream)
 {
 	EnterCritical();
 	p_stream << "************************************************\n";

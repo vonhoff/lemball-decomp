@@ -1,6 +1,6 @@
 #include "CBaseStat.h"
 
-#include "../Foundation/CVsOStream.h"
+#include "../Foundation/CVSOStream.h"
 #include "Visos/Foundation/CString.h"
 
 // FUNCTION: LEMBALL 0x0045ac10
@@ -43,7 +43,7 @@ void CBaseStat::Update(unsigned int p_value)
 }
 
 // FUNCTION: LEMBALL 0x0045ac90
-CVsOStream& CBaseStat::StreamOut(CVsOStream& p_stream)
+CVSOStream& CBaseStat::StreamOut(CVSOStream& p_stream)
 {
 	if (m_sampleCount != 0) {
 		p_stream << Hex8(m_total / m_sampleCount) << " " << Hex8(m_total) << " " << Hex8(m_maximum) << " "

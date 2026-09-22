@@ -1,8 +1,8 @@
 #include "CGraphicButton.h"
 
 #include "../Animation/CAnim.h"
-#include "../Resources/CResAnim.h"
-#include "CGdi.h"
+#include "../Resources/CResANIM.h"
+#include "CGDI.h"
 #include "CHotAreaList.h"
 #include "CSurface.h"
 #include "Visos/Foundation/CVsPoint.h"
@@ -10,9 +10,9 @@
 #include "Visos/Graphics/CDepressedButton.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
+#include "Visos/Graphics/CPVGWnd.h"
 #include "Visos/Graphics/CPrimitive.h"
-#include "Visos/Graphics/CPvGWnd.h"
-#include "Visos/Resources/CResZrle.h"
+#include "Visos/Resources/CResZRLE.h"
 
 class CRemap;
 
@@ -21,7 +21,7 @@ char g_szButton[] = "Button";
 
 // FUNCTION: LEMBALL 0x00468530
 CGraphicButton::CGraphicButton(const CVsPoint& p_position,
-							   CPvGWnd* p_parent,
+							   CPVGWnd* p_parent,
 							   unsigned long p_animId,
 							   unsigned long p_alignmentFlags)
 	: CDepressedButton(p_parent), m_graphicWidth(m_graphicHeight = 0), m_graphicOffsetX(m_graphicOffsetY = 0)
@@ -47,15 +47,15 @@ CGraphicButton::CGraphicButton(const CVsPoint& p_position,
 // FUNCTION: LEMBALL 0x004686e0
 void CGraphicButton::Initialise()
 {
-	CResZrle* entries;
-	CResAnim* animation;
+	CResZRLE* entries;
+	CResANIM* animation;
 	short boxWidth;
 	short boxHeight;
 
 	m_frame = 0;
 	m_primitive = new CAnim[1];
 	m_gdiFlags = m_gdiFlags + 1;
-	m_animation = CResAnim::Load(m_animationId);
+	m_animation = CResANIM::Load(m_animationId);
 	animation = m_animation;
 	if (animation->m_loaded != 0) {
 		animation->m_age = 0;
@@ -67,7 +67,7 @@ void CGraphicButton::Initialise()
 	entries = m_animation->m_animationEntries;
 	m_graphicWidth = (unsigned short) entries->m_width;
 	m_graphicHeight = (unsigned short) entries->m_height;
-	CResZrle* second = entries + 1;
+	CResZRLE* second = entries + 1;
 	short width = second->m_width;
 	short height = second->m_height;
 	if ((short) m_graphicWidth < width) {
@@ -113,13 +113,13 @@ void CGraphicButton::Initialise()
 }
 
 // FUNCTION: LEMBALL 0x004688e0
-void CGraphicButton::SetAnimId(unsigned long p_animId)
+void CGraphicButton::SetAnimID(unsigned long p_animId)
 {
 	if (m_animation != 0) {
 		m_animation->UnLoad();
 	}
 	m_animationId = p_animId;
-	m_animation = CResAnim::Load(p_animId);
+	m_animation = CResANIM::Load(p_animId);
 	m_forceDrawCount = 1;
 }
 
@@ -155,9 +155,9 @@ void CGraphicButton::DrawButton()
 		x++;
 		y++;
 	}
-	m_gdi->m_renderTarget->GetCurrDb();
+	m_gdi->m_renderTarget->GetCurrDB();
 	CRemap* remap = (CRemap*) m_frame;
-	CResAnim* animation = m_animation;
+	CResANIM* animation = m_animation;
 	CAnim* primitive = (CAnim*) m_primitive;
 	primitive->m_x = x;
 	primitive->m_y = y;

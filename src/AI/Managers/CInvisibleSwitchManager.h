@@ -3,7 +3,7 @@
 
 #include "CBaseObjectManager.h" // complete type
 
-class CAi;
+class CAI;
 class AiCoord;
 class CGameObject;
 class CInvisibleSwitch;
@@ -12,7 +12,7 @@ struct Coord3d;
 // VTABLE: LEMBALL 0x00493298
 class CInvisibleSwitchManager : public CBaseObjectManager {
 public:
-	CInvisibleSwitchManager(CAi* p_ai, int p_capacity);
+	CInvisibleSwitchManager(CAI* p_ai, int p_capacity);
 	virtual void Process();             // vtable+0x1c
 	virtual ~CInvisibleSwitchManager(); // vtable+0x14
 	void Restart();
@@ -24,7 +24,7 @@ public:
 private:
 	int m_capacity;               // 0x30
 	int m_count;                  // 0x34
-	CAi* m_ai;                    // 0x38
+	CAI* m_ai;                    // 0x38
 	CInvisibleSwitch* m_switches; // 0x3c
 };
 

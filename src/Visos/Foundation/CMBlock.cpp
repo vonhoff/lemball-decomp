@@ -1,6 +1,6 @@
 #include "CMBlock.h"
 
-#include "CVsOStream.h"
+#include "CVSOStream.h"
 
 // FUNCTION: LEMBALL 0x0045a540
 CMBlock::CMBlock(CArena* p_arena, CMBlock* p_previous, char* p_description, unsigned long p_size)
@@ -26,7 +26,7 @@ bool CMBlock::ContainsAddress(void* p_address)
 }
 
 // FUNCTION: LEMBALL 0x0045a5b0
-CVsOStream& CMBlock::StreamOut(CVsOStream& p_stream)
+CVSOStream& CMBlock::StreamOut(CVSOStream& p_stream)
 {
 	p_stream << (const void*) m_data << "\t0x" << Hex8(m_size);
 	if ((m_flags & 1) != 0) {

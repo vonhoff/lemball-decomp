@@ -1,6 +1,6 @@
 #include "CDirectSoundDevice.h"
 
-#include "../../Foundation/CVsOStream.h"
+#include "../../Foundation/CVSOStream.h"
 #include "../../Graphics/CWnd.h"
 #include "CDirectSoundEffect.h"
 #include "DirectSound.h"

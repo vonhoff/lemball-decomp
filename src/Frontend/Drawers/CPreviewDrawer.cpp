@@ -8,20 +8,19 @@
 #include "../../Visos/Animation/CRepeatAnim.h"
 #include "../../Visos/Foundation/CTextManager.h"
 #include "../../Visos/Graphics/CBasePalManager.h"
-#include "../../Visos/Resources/CResBitmap.h"
-#include "../../Visos/Resources/CResFont.h"
-#include "../../Visos/Resources/CResPalette.h"
+#include "../../Visos/Resources/CResBITMAP.h"
+#include "../../Visos/Resources/CResFONT.h"
+#include "../../Visos/Resources/CResPALETTE.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Base/CBaseFrontendProcess.h"
 #include "../Controls/CHiliteController.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
-#include "Frontend/Drawers/CPreviewDrawerPrims.h"
 #include "Frontend/Support/CoordPair.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBaseRemap.h"
 #include "Visos/Graphics/CBitmapRes.h"
 
@@ -118,7 +117,7 @@ char g_szPreviewNone[] = "None";
 char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 
 // FUNCTION: LEMBALL 0x004491b0
-CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2)
+CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)
 {
 	m_drawBackground = 1;
@@ -146,7 +145,7 @@ void CPreviewDrawer::Load()
 	PreviewLayout* layout;
 
 	if (m_mode == 1) {
-		m_backgroundBitmap = CResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_GUNLEMM);
+		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_GUNLEMM);
 		m_layout = (PreviewLayout*) g_abPreviewLayoutCompact;
 		goAnim = &g_dwPreviewGoAnimIdsCompact;
 		returnAnim = &g_dwPreviewReturnAnimIdsCompact;
@@ -158,7 +157,7 @@ void CPreviewDrawer::Load()
 		m_previousButtonAnimIds = g_dwPreviewPreviousAnimIdsCompact;
 	}
 	else {
-		m_backgroundBitmap = CResBitmap::Load(RES_NEWFRONT_BITMAPS_HIRES_GUNLEMM);
+		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_HIRES_GUNLEMM);
 		m_layout = (PreviewLayout*) g_abPreviewLayoutFull;
 		goAnim = &g_dwPreviewGoAnimIdsFull;
 		returnAnim = &g_dwPreviewReturnAnimIdsFull;
@@ -559,7 +558,7 @@ void CPreviewDrawer::LoadLevelInformation()
 {
 	PreviewData preview;
 	char* source;
-	CResFont* font;
+	CResFONT* font;
 	short measuredWidth;
 	char candidateLine[32];
 	int sourcePos;
@@ -703,10 +702,10 @@ bool CPreviewDrawer::AddWord(char* p_source, char* p_line, int& p_sourcePos, int
 // FUNCTION: LEMBALL 0x0044a330
 void CPreviewDrawer::RegisterRemaps()
 {
-	CResPalette* palette;
+	CResPALETTE* palette;
 	int i;
 
-	palette = CResPalette::Load(RES_PALETTES_TITLEPALETTE);
+	palette = CResPALETTE::Load(RES_PALETTES_TITLEPALETTE);
 	m_remapTable = (unsigned char*) operator new(0x100);
 	i = 0;
 	do {
@@ -750,4 +749,14 @@ void CPreviewDrawer::DisableNextLastButtons()
 
 	m_hiliteController->UpdateAnimIDs(0xacef000e);
 	m_hiliteController->UpdateAnimIDs(0xacef000f);
+}
+
+// FUNCTION: LEMBALL 0x0044a970
+CPreviewDrawer::tagPRIMS::tagPRIMS()
+{
+}
+
+// FUNCTION: LEMBALL 0x0044a9c0
+CPreviewDrawer::tagPRIMS::~tagPRIMS()
+{
 }

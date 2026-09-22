@@ -4,7 +4,7 @@
 #include "../../AI/Base/ObjectTypes.h"
 #include "../Ground/CGroundArray.h" // complete type
 
-class CAi;
+class CAI;
 class CMover;
 struct LoadGroundName;
 struct LoadGroundSurfaceData;
@@ -28,7 +28,7 @@ public:
 	void SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data);
 	~CMap();
 
-	friend class CAi;
+	friend class CAI;
 	friend class CTrapDoor;
 	friend class CTrapDoorManager;
 	friend class CPlayerLemmingGroupManager;
@@ -68,14 +68,14 @@ private:
 	unsigned int m_reserved;   // 0x00
 	int m_orientation;         // 0x04
 	CGroundArray m_ground;     // 0x08
-	CAi* m_unk0x18;            // 0x18: CAi::Restart stores this at 0x00410ee9
+	CAI* m_unk0x18;            // 0x18: CAI::Restart stores this at 0x00410ee9
 	int m_walkWidth;           // 0x1c
 	int m_walkHeight;          // 0x20
 	char m_levelName[33];      // 0x24
 	unsigned char* m_walkBits; // 0x48
 	eObjectType m_defaultBlox; // 0x4c
 	int m_defaultBloxData;     // 0x50
-	CAi* m_ai;                 // 0x54
+	CAI* m_ai;                 // 0x54
 };
 
 extern CMap* g_pMap;

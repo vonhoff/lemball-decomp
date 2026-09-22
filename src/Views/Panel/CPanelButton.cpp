@@ -2,11 +2,11 @@
 
 #include "../../AI/Groups/CPlayerLemmingGroup.h"
 #include "../../AI/Groups/CPlayerLemmingGroupManager.h"
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../AI/Objects/CPlayerLemming.h"
 #include "../../Visos/Graphics/CBaseRemap.h"
 #include "../../Visos/Graphics/CCursor.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "../Display/C2D.h"
@@ -24,17 +24,17 @@
 #include "Visos/Graphics/CDepressedButton.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CLine.h"
-#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CPVGWnd.h"
 
 #include <memory.h>
 
 class CRemap;
-class CResAnim;
+class CResANIM;
 
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00442390
-CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPvGWnd* p_parent)
+CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPVGWnd* p_parent)
 	: CDepressedButton(p_rect, p_parent)
 {
 	m_lemming = p_lemming;
@@ -121,9 +121,9 @@ void CPanelButton::DrawButton()
 	else {
 		frame = 1;
 	}
-	m_gdi->m_renderTarget->GetCurrDb();
+	m_gdi->m_renderTarget->GetCurrDB();
 	const CVsPoint* position = (const CVsPoint*) &m_statusRect;
-	CResAnim* resource = m_lemming->m_panel->m_resources[1];
+	CResANIM* resource = m_lemming->m_panel->m_resources[1];
 	m_statusAnim[0].m_x = position->m_x;
 	m_statusAnim[0].m_y = position->m_y;
 	m_statusAnim[0].m_animResource = resource;

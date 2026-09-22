@@ -1,6 +1,6 @@
 #include "CCollectableManager.h"
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CBonus.h"
 #include "../Objects/CCollectable.h"
 #include "../Objects/CFlag.h"
@@ -10,7 +10,7 @@
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x004223c0
-CCollectableManager::CCollectableManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x11, 6)
+CCollectableManager::CCollectableManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x11, 6)
 {
 	m_ai = p_ai;
 	m_count = 0;
@@ -137,7 +137,7 @@ void CCollectableManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsig
 			p_data += 2;
 			int y = *(unsigned short*) p_data;
 			p_data += 2;
-			CAi* ai;
+			CAI* ai;
 			int z = *(unsigned short*) p_data;
 			p_data += 2;
 			if (p_skip == 0) {

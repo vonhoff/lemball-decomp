@@ -1,6 +1,6 @@
 #include "CPlayerLemmingGroup.h"
 
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGlobalGameObject.h"
 #include "../Managers/CObjectManager.h"
@@ -13,7 +13,7 @@
 #include "AI/Groups/CGenericGroup.h"
 
 // FUNCTION: LEMBALL 0x00414010
-CPlayerLemmingGroup::CPlayerLemmingGroup(CAi* p_ai,
+CPlayerLemmingGroup::CPlayerLemmingGroup(CAI* p_ai,
 										 CObjectManager* p_objectManager,
 										 CFormationManager* p_formationManager)
 	: CGenericGroup(p_ai, p_objectManager, p_formationManager)
@@ -394,12 +394,12 @@ void CPlayerLemmingGroup::ClearExistingWaypoints()
 }
 
 // FUNCTION: LEMBALL 0x004149a0
-bool CPlayerLemmingGroup::HasSfxChanged()
+bool CPlayerLemmingGroup::HasSFXChanged()
 {
 	bool changed = false;
 	CPlayerLemming* lemming = (CPlayerLemming*) CGenericGroup::GetFirstElementInGroup();
 	while (lemming != 0) {
-		changed = lemming->CheckSfx() || changed;
+		changed = lemming->CheckSFX() || changed;
 		lemming = (CPlayerLemming*) CGenericGroup::GetNextElementInGroup();
 	}
 	return changed;

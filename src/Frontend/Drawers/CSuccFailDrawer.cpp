@@ -7,9 +7,9 @@
 #include "../../Visos/Animation/CStatManager.h"
 #include "../../Visos/Foundation/CArena.h"
 #include "../../Visos/Foundation/CTextManager.h"
-#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/CVSOStream.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Resources/CResBitmap.h"
+#include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Base/CBaseFrontendProcess.h"
 #include "../Controls/CHiliteController.h"
@@ -20,10 +20,9 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "../../Network/Messages/CNetworkGameMessage.h"
 #include "../../Visos/Graphics/CBitmapRes.h"
 #include "../../Visos/Network/CConnect.h"
-#include "../../Visos/Resources/CResFont.h"
+#include "../../Visos/Resources/CResFONT.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
-#include "Frontend/Drawers/CSuccFailDrawerPrims.h"
 #include "Frontend/Support/CoordPair.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
 #include "Views/Sound/SoundEffects.h"
@@ -31,8 +30,8 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/Prims.h"
-#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Foundation/tagPRIMS.h"
+#include "Visos/Graphics/CPVGWnd.h"
 
 #include <string.h>
 
@@ -160,7 +159,7 @@ unsigned long g_dwSuccFailSingleLoseBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_SU
 unsigned long g_dwSuccFailSingleLoseBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_LEMMING;
 
 // FUNCTION: LEMBALL 0x00450020
-CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect, unsigned int p_success)
+CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect, unsigned int p_success)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_SUCCESS, 0x32, 200, 0, 0x28, 0x30)
 {
 	m_success = p_success;
@@ -183,7 +182,7 @@ CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const C
 // FUNCTION: LEMBALL 0x00450160
 void CSuccFailDrawer::CalculateText()
 {
-	CResFont* font;
+	CResFONT* font;
 	char* format;
 	char* hash;
 
@@ -284,7 +283,7 @@ void CSuccFailDrawer::Load()
 	unsigned long* goAnim;
 	SuccFailDrawerFieldViews::CPrimitive* primitive;
 	SuccFailDrawerFieldViews::DrawerPrims* primary;
-	CResBitmap* resource;
+	CResBITMAP* resource;
 	unsigned int position;
 	int bitmapX;
 	int i;
@@ -319,9 +318,9 @@ void CSuccFailDrawer::Load()
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_BOARD;
 		}
 	}
-	m_primaryBitmap = CResBitmap::Load(m_primaryBitmapId);
+	m_primaryBitmap = CResBITMAP::Load(m_primaryBitmapId);
 	if (m_animationsEnabled == 0) {
-		m_secondaryBitmap = CResBitmap::Load(m_secondaryBitmapId);
+		m_secondaryBitmap = CResBITMAP::Load(m_secondaryBitmapId);
 	}
 	else {
 		m_secondaryBitmap = 0;
@@ -537,7 +536,7 @@ void CSuccFailDrawer::Processing()
 							 (short) layout->m_secondaryPosition.m_y,
 							 (short) layout->m_animWindowEnd.m_x,
 							 (short) layout->m_animWindowEnd.m_y);
-				m_animWindow.Create(rect, (CPvGWnd*) m_display, g_szPaintballSequence);
+				m_animWindow.Create(rect, (CPVGWnd*) m_display, g_szPaintballSequence);
 				m_animWindow.Play();
 				m_animStarted = 1;
 			}
@@ -574,4 +573,14 @@ void CSuccFailDrawer::DrawBackGround()
 	if (m_secondaryBitmap != 0) {
 		m_primitives[m_primitiveBank].m_secondary.Draw(m_gdi);
 	}
+}
+
+// FUNCTION: LEMBALL 0x00451110
+CSuccFailDrawer::tagPRIMS::tagPRIMS()
+{
+}
+
+// FUNCTION: LEMBALL 0x004511a0
+CSuccFailDrawer::tagPRIMS::~tagPRIMS()
+{
 }

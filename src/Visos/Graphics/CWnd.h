@@ -1,12 +1,12 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CWND_H
 #define LEMBALL_VISOS_GRAPHICS_CWND_H
 
-#include "CPvWnd.h" // complete type
+#include "CPVWnd.h" // complete type
 struct CVsPoint;
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x004993d0
-class CWnd : public CPvWnd {
+class CWnd : public CPVWnd {
 public:
 	CWnd();
 	int SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam);
@@ -17,7 +17,7 @@ public:
 	static void ProcessMouseMoves();
 	virtual bool IsFocusWindow();                                                // vtable+0x60
 	virtual unsigned int GetStyle();                                             // vtable+0x64
-	virtual void Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_title); // vtable+0x04
+	virtual void Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title); // vtable+0x04
 	virtual void Destroy();                                                      // vtable+0x74
 	virtual void Move(const CVsPoint& p_point);                                  // vtable+0x38
 	virtual void MoveAbsolute(const CVsPoint& p_point);                          // vtable+0x8c
@@ -35,14 +35,14 @@ public:
 	virtual void OnMove();                                               // vtable+0x48
 	virtual void OnRestore();                                            // vtable+0x54
 	virtual void OnSize();                                               // vtable+0x44
-	virtual void InternalOnZoom(int p_oldZoom);                          // vtable+0x2c
+	virtual void _OnZoom(int p_oldZoom);                                 // vtable+0x2c
 	virtual void OnZoom(int p_oldZoom);                                  // vtable+0x58
 	virtual void OnDriverChange();                                       // vtable+0x5c
 	virtual void ReSetMenu();                                            // vtable+0x00
 	virtual void Refresh(CVsRect* p_rect);                               // vtable+0x70
 	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists); // vtable+0x10
-	virtual void InternalSetRect(const CVsRect& p_rect);                 // vtable+0x30
-	virtual void InternalSetRelTL(const CVsPoint& p_point);              // vtable+0x34
+	virtual void _SetRect(const CVsRect& p_rect);                        // vtable+0x30
+	virtual void _SetRelTL(const CVsPoint& p_point);                     // vtable+0x34
 	~CWnd();
 
 	friend struct CGraphicsState;
@@ -55,7 +55,7 @@ private:
 	void* m_menuLists;             // 0x3c
 	unsigned int m_menuResourceId; // 0x40
 	void* m_nativeWindow;          // 0x44
-	CPvWnd* m_createRect;          // 0x48
+	CPVWnd* m_createRect;          // 0x48
 };
 
 extern CWnd* g_pFocusWindow;

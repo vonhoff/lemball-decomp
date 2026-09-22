@@ -22,11 +22,11 @@
 #include "../Pause/CPauseWindow.h"
 #include "AI/Base/ObjectTypes.h"
 
-class CAi;
+class CAI;
 class CBaseQueue;
 class CBaseRemap;
 class CGameObject;
-class CGdi;
+class CGDI;
 class CLemmingAnimsManager;
 class CMain2DDisplay;
 class CMap;
@@ -44,12 +44,12 @@ struct SpriteGroundLookup;
 // VTABLE: LEMBALL 0x00496db0 CReceiveWindowState
 class C2D : public CDrawer, public CBaseQueueHandler, public CHotAreaHandler, public CReceiveWindowState {
 public:
-	C2D(CMain2DDisplay* p_display, CAi* p_ai, CGdi* p_gdi, CMap* p_map, const CVsRect& p_rect);
+	C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const CVsRect& p_rect);
 	bool FindGameObject(const CVsPoint& p_point, int& p_index, int p_preferLemming);
 	bool InGroupByObjectNo(int p_objectNo);
 	bool IsInGrouping(CGameObject* p_object);
 	bool ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY);
-	unsigned short CalcZValueSprite(int p_index);
+	unsigned short CalcZValue_Sprite(int p_index);
 	unsigned long LemmingFly(CViewData& p_viewData, int& p_frame);
 	unsigned short CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, unsigned short p_z);
 	void UseBalloon(int p_playerIndex);
@@ -118,11 +118,11 @@ public:
 	void DrawTimeBonus(CViewData& p_viewData);
 	void DrawTrampoline(CViewData& p_viewData);
 	void DrawTrapDoor(CViewData& p_viewData);
-	void DrawZBuffAnim(int p_index, unsigned short p_z);
-	void DrawZBuffSprite(int p_index, unsigned short p_z);
+	void DrawZBuff_Anim(int p_index, unsigned short p_z);
+	void DrawZBuff_Sprite(int p_index, unsigned short p_z);
 	void FormGroup();
 	void GroupingLeftClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gamePoint, unsigned int p_alternate);
-	void InitSpriteGroundLu();
+	void InitSpriteGroundLU();
 	void KillRemapPalettes();
 	void LeftClick(const CVsPoint& p_screenPoint,
 				   const CVsPoint& p_gamePoint,
@@ -222,8 +222,8 @@ private:
 	unsigned char* m_zBuffer;                     // 0x960
 	unsigned short m_viewDataCount;               // 0x964
 	CBaseRemap* m_paletteRemap;                   // 0x968
-	CAi* m_ai;                                    // 0x96c
-	CGdi* m_gdi;                                  // 0x970
+	CAI* m_ai;                                    // 0x96c
+	CGDI* m_gdi;                                  // 0x970
 	CBaseQueue* m_lemmingManager;                 // 0x974
 	CMain2DDisplay* m_display;                    // 0x978
 	CPanel* m_panel;                              // 0x97c

@@ -3,14 +3,14 @@
 
 #include "../Managers/CBaseObjectManager.h" // complete type
 
-class CAi;
+class CAI;
 class CMover;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00496b78
 class CMoverManager : public CBaseObjectManager {
 public:
 	CMover* Find(int p_x, int p_y, int& p_height);
-	CMoverManager(CAi* p_ai, int p_capacity);
+	CMoverManager(CAI* p_ai, int p_capacity);
 	virtual int GetViewData(CViewData* p_viewData); // vtable+0x24
 	virtual void Process();                         // vtable+0x1c
 	virtual void Restart();                         // vtable+0x18
@@ -24,7 +24,7 @@ private:
 	int m_capacity;   // 0x30
 	int m_count;      // 0x34
 	CMover* m_movers; // 0x38
-	CAi* m_ai;        // 0x3c
+	CAI* m_ai;        // 0x3c
 };
 
 // SYNTHETIC: LEMBALL 0x0042fba0

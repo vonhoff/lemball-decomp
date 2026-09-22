@@ -54,7 +54,7 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 	m_rootDirectory = new CMogDir(0);
 	timeGetTime();
 	m_workingDirectory = m_rootDirectory;
-	SetWd(g_mogRootPath);
+	SetWD(g_mogRootPath);
 	m_resources = (CResBase**) CMogloadArena::operator new(kResourceHandleBytes);
 	for (offset = 0; offset < 1024; offset++) {
 		m_resources[offset] = 0;
@@ -68,7 +68,7 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 CMogRes::~CMogRes()
 {
 	if (g_pMogFile != 0) {
-		VsClose(g_pMogFile);
+		vsClose(g_pMogFile);
 	}
 	CheckAllUnloaded();
 	if (m_skipCleanup == 0) {
@@ -93,7 +93,7 @@ CMogRes::~CMogRes()
 }
 
 // FUNCTION: LEMBALL 0x0045c810
-bool CMogRes::SetWd(char* p_path)
+bool CMogRes::SetWD(char* p_path)
 {
 	register char* path = p_path;
 	register char* copy;
@@ -148,7 +148,7 @@ done:
 		m_workingPath = copy;
 		return 1;
 	}
-	SetWd(m_workingPath);
+	SetWD(m_workingPath);
 	if (copy != 0) {
 		CMogloadArena::operator delete(copy);
 	}
@@ -385,8 +385,8 @@ void CMogRes::AgeResources()
 bool CMogRes::Load(const CVsRange& p_range, unsigned char*& p_data, CResBase* p_resource)
 {
 	p_data = AllocateMainMem(p_range.m_size);
-	VsSeek(g_pMogFile, p_range.m_offset + 8, 0);
-	VsRead(g_pMogFile, p_data, p_range.m_size);
+	vsSeek(g_pMogFile, p_range.m_offset + 8, 0);
+	vsRead(g_pMogFile, p_data, p_range.m_size);
 	return 1;
 }
 

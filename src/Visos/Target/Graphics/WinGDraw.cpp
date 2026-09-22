@@ -1,9 +1,9 @@
 #include "WinGDraw.h"
 
+#include "../../Graphics/CGDI.h"
 #include "../../Graphics/CGWnd.h"
-#include "../../Graphics/CGdi.h"
-#include "../../Graphics/CPvGWnd.h"
-#include "../../Graphics/CPvWnd.h"
+#include "../../Graphics/CPVGWnd.h"
+#include "../../Graphics/CPVWnd.h"
 #include "../../Graphics/CSurface.h"
 #include "WinGDrawState.h"
 
@@ -304,11 +304,11 @@ int __stdcall WinGDrawBegin(WinGDrawState* p_state, void* p_request, long p_para
 int __stdcall WinGDrawFrame(WinGDrawState* p_state, void* p_request, long p_param2)
 {
 	IcDraw* request;
-	CPvWnd* window;
+	CPVWnd* window;
 	(void) p_param2;
 
 	request = (IcDraw*) p_request;
-	window = (CPvWnd*) p_state->m_window;
+	window = (CPVWnd*) p_state->m_window;
 	if (window->m_lifecycleRefs == 1) {
 		p_state->m_surface->CopyDibBits(request->lpFormat, (unsigned char*) request->lpData);
 		p_state->m_window->CGWnd::Refresh(0);

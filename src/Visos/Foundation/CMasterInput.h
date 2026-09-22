@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_FOUNDATION_CMASTERINPUT_H
 
 class CBaseQueue;
-class CVsOStream;
+class CVSOStream;
 
 // SIZE 0x18
 // VTABLE: LEMBALL 0x0049a468
@@ -12,7 +12,7 @@ public:
 	bool AddItem(void* p_item);
 	bool IsEmpty();
 	bool ProcessItems();
-	virtual CVsOStream& StreamOut(CVsOStream& p_arg0); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_arg0); // vtable+0x00
 	virtual ~CMasterInput();                           // vtable+0x04
 
 	friend bool InitInput();

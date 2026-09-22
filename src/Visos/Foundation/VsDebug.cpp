@@ -3,8 +3,8 @@
 #include "../Target/UI/CTextWnd.h"
 #include "CDebugOStream.h"
 #include "CString.h"
-#include "CVsDebugStreambuf.h"
-#include "Visos/Foundation/CVsOStream.h"
+#include "CVSDebugStreambuf.h"
+#include "Visos/Foundation/CVSOStream.h"
 #include "VsFile.h"
 #include "VsInit.h"
 #include "VsString.h"
@@ -25,13 +25,13 @@ extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code)
 #pragma intrinsic(strlen)
 
 // FUNCTION: LEMBALL 0x00459970
-void InternalVsExit(int p_exitCode)
+void _VSExit(int p_exitCode)
 {
 	longjmp(g_vsExitJumpBuffer, p_exitCode);
 }
 
 // FUNCTION: LEMBALL 0x0045b8e0
-void InternalVsRelAssert(const char* p_reason, const char* p_file, unsigned int p_line)
+void _VSRELassert(const char* p_reason, const char* p_file, unsigned int p_line)
 {
 	DisplayRelAssert((void*) p_reason, (void*) p_file, p_line);
 }
@@ -41,15 +41,15 @@ void WriteDebugString2File(char* p_text)
 {
 	if (g_pDebugOutputPath != NULL) {
 		if (strlen(p_text) != 0) {
-			g_pDebugOutputFile = (FILE*) VsOpen(g_pDebugOutputPath, "a");
-			VsWrite((_Filet*) g_pDebugOutputFile, (void*) p_text, strlen(p_text));
-			VsClose((_Filet*) g_pDebugOutputFile);
+			g_pDebugOutputFile = (FILE*) vsOpen(g_pDebugOutputPath, "a");
+			vsWrite((_Filet*) g_pDebugOutputFile, (void*) p_text, strlen(p_text));
+			vsClose((_Filet*) g_pDebugOutputFile);
 		}
 	}
 }
 
 // FUNCTION: LEMBALL 0x00472910
-int InternalRawOutDebugString(char* p_text)
+int _RAWOUT_DebugString(char* p_text)
 {
 	if (g_nDebugInitialized == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_DebugString", 0);
@@ -65,7 +65,7 @@ int InternalRawOutDebugString(char* p_text)
 }
 
 // FUNCTION: LEMBALL 0x00472980
-int InternalRawOutErrorString(char* p_text)
+int _RAWOUT_ErrorString(char* p_text)
 {
 	if (g_nDebugInitialized == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_ErrorString", 0);
@@ -81,7 +81,7 @@ int InternalRawOutErrorString(char* p_text)
 }
 
 // FUNCTION: LEMBALL 0x004729f0
-int InternalRawOutSysString(char* p_text)
+int _RAWOUT_SysString(char* p_text)
 {
 	if (g_nDebugInitialized == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_SysString", 0);
@@ -108,10 +108,10 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 	msg += (char*) p_file;
 	msg += "At Line No.: ";
 	char lineBuf[16];
-	VsLtoa(p_line, lineBuf, 10);
+	vsLtoa(p_line, lineBuf, 10);
 	msg += lineBuf;
 	MessageBoxA(NULL, msg, "Error", 0);
-	InternalVsExit(0xaaaa);
+	_VSExit(0xaaaa);
 }
 
 // FUNCTION: LEMBALL 0x00473790

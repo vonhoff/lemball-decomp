@@ -1,13 +1,13 @@
 #include "CIceManager.h"
 
 #include "../Base/Coord3d.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CIce.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0042d7a0
-CIceManager::CIceManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x19, 0xe)
+CIceManager::CIceManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x19, 0xe)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;

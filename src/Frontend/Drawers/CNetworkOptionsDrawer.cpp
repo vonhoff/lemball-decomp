@@ -13,7 +13,7 @@
 #include "../../Visos/Graphics/CHotAreaList.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../../Visos/Network/CNetworkAddress.h"
-#include "../../Visos/Resources/CResFont.h"
+#include "../../Visos/Resources/CResFONT.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Controls/CHiliteController.h"
 #include "../Processes/CNetworkOptionsProc.h"
@@ -181,7 +181,7 @@ int g_nNetworkOptionsShiftHeld = 0;
 int g_nNetworkOptionsCapsOrShift = 0;
 
 // FUNCTION: LEMBALL 0x00453280
-CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect)
+CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_NETWORK_OPTIONS, 0x32, 200, 0, 100, 0x28)
 {
 	int i;
@@ -333,7 +333,7 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 	char* peerName;
 	char* addressStr;
 	char trimmedPeerName[24];
-	CResFont* font;
+	CResFONT* font;
 	CRemap* remap;
 	int len;
 
@@ -390,7 +390,7 @@ void CNetworkOptionsDrawer::DrawText()
 		if (m_mode == 0) {
 			divider = g_szNetworkOptionsDividerLocal;
 		}
-		CResFont* font = m_textManager->GetFont(m_chalkFontId);
+		CResFONT* font = m_textManager->GetFont(m_chalkFontId);
 		CVsPoint posDivider(0, (short) m_layoutTable->m_dividerY);
 		CVsPoint posLabel((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_headerY);
 		CVsPoint posIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_headerY);
@@ -439,7 +439,7 @@ void CNetworkOptionsDrawer::DrawText()
 				} while (m_layoutTable->m_peerNameWidth < font->GetSize(trimmed, 0x20).m_width);
 
 				CString lowerPeer(trimmed);
-				lowerPeer.Lower();
+				lowerPeer.lower();
 				posMyComputer.m_x -= font->GetSize(trimmed, 0x20).m_width / 2;
 				m_textManager->DrawString(m_gdi,
 										  posMyComputer,
@@ -485,7 +485,7 @@ void CNetworkOptionsDrawer::DrawText()
 				remap = (CRemap*) m_remaps[5];
 			}
 			if (m_redrawPending != 0 || !special) {
-				CResFont* font = m_textManager->GetFont(m_chalkFontId);
+				CResFONT* font = m_textManager->GetFont(m_chalkFontId);
 				msgPos.m_x -= font->GetSize(msgText.m_text, 0x20).m_width / 2;
 				m_textManager->DrawString(m_gdi, msgPos, CVsSize(), m_chalkFontId, msgText, 0x20, remap);
 			}
@@ -547,7 +547,7 @@ void CNetworkOptionsDrawer::DrawText()
 			if (m_redrawPending == 0) {
 				editText += g_szNetworkOptionsCursor;
 			}
-			if (editText.Getlength() > 0) {
+			if (editText.getlength() > 0) {
 				CRemap* remap = (CRemap*) m_remaps[1];
 				m_textManager->DrawString(m_gdi, pos, CVsSize(), m_chalkFontId, editText, 0x20, remap);
 			}

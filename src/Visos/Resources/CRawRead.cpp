@@ -12,7 +12,7 @@ _Filet* g_pMogFile = 0;
 // FUNCTION: LEMBALL 0x0045bbc0
 bool CRawRead::Open(char* p_path, char* p_mode)
 {
-	g_pMogFile = VsOpen(p_path, p_mode);
+	g_pMogFile = vsOpen(p_path, p_mode);
 	return g_pMogFile != 0;
 }
 
@@ -20,7 +20,7 @@ bool CRawRead::Open(char* p_path, char* p_mode)
 unsigned char CRawRead::InputByte()
 {
 	unsigned char value;
-	VsRead(g_pMogFile, &value, sizeof(value));
+	vsRead(g_pMogFile, &value, sizeof(value));
 	return value;
 }
 
@@ -28,7 +28,7 @@ unsigned char CRawRead::InputByte()
 unsigned int CRawRead::InputDword()
 {
 	unsigned int value;
-	VsRead(g_pMogFile, &value, sizeof(value));
+	vsRead(g_pMogFile, &value, sizeof(value));
 	return value;
 }
 

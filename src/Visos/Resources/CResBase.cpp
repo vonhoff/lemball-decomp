@@ -2,7 +2,7 @@
 
 #include "../Foundation/CVsRange.h"
 #include "CMogRes.h"
-#include "CResBaseList.h"
+#include "CResBaseLIST.h"
 
 #include <string.h>
 
@@ -21,7 +21,7 @@ void CResBase::DoLoad(unsigned int p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x0045cf70
-bool CResBase::Direct(unsigned char*& p_cursor, CResBaseList* p_list)
+bool CResBase::Direct(unsigned char*& p_cursor, CResBaseLIST* p_list)
 {
 	m_externalList = p_list;
 	m_data = p_cursor;
@@ -36,7 +36,7 @@ bool CResBase::Direct(unsigned char*& p_cursor, CResBaseList* p_list)
 }
 
 // FUNCTION: LEMBALL 0x0045cfb0
-bool CResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, CResBaseList* p_list)
+bool CResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, CResBaseLIST* p_list)
 {
 	unsigned int* entry;
 

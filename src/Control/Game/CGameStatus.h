@@ -31,7 +31,7 @@ public:
 	friend class CIntroAnimAnimWindow;
 	friend class CBaseFrontendProcess;
 	friend class CBaseFrontendDrawer;
-	friend class CAi;
+	friend class CAI;
 	friend class C2D;
 
 private:

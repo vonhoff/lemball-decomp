@@ -1,6 +1,6 @@
 #include "CBaseCommonSocket.h"
 
-#include "CTcpIpNetwork.h"
+#include "CTCPIPNetwork.h"
 
 // FUNCTION: LEMBALL 0x0045f680
 CBaseCommonSocket::CBaseCommonSocket()

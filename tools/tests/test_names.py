@@ -134,15 +134,45 @@ class CatalogNamingTests(unittest.TestCase):
         self.assertEqual(rows[0]["status"], "synthetic")
         self.assertEqual(rows[1]["status"], "unmapped")
 
-    def test_original_mode_preserves_c_prefix(self):
-        row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nPadToButton::PadToButton(int n) {}", original=True)
-        self.assertEqual(row["status"], "mismatch")
-        self.assertEqual(row["wanted_class"], "CPadToButton")
+    def test_original_symbol_casing_and_underscores_preserved(self):
+        self.symbols[0x10b0f952] = "_Draw__12CPVFontTableFi"
+        row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nvoid CPVFontTable::_Draw(int n) {}")
+        self.assertEqual(row["status"], "match")
+        self.assertEqual(row["wanted_class"], "CPVFontTable")
+        self.assertEqual(row["wanted_method"], "_Draw")
 
-    def test_normal_mode_also_requires_catalog_class_prefix(self):
+    def test_catalog_class_and_method_mismatches_are_detected(self):
         row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nPadToButton::PadToButton(int n) {}")
         self.assertEqual(row["status"], "mismatch")
         self.assertEqual(row["wanted_class"], "CPadToButton")
+
+    def test_windows_member_review_keeps_original_catalog_identity(self):
+        self.symbols = {0x1010c30e: "GetCDDir__FPCc"}
+        self.pairs = {(0x1010c30e, 0x45eda0)}
+        row, = self.scan("// FUNCTION: LEMBALL 0x0045eda0\n"
+                         "char* CPlatformServices::GetCDDir(const char* file) {}")
+        self.assertEqual((row["status"], row["signature_status"]), ("windows", "review"))
+        self.assertEqual(row["original_signature"], "GetCDDir(const char*)")
+        self.assertIn("RET 4", row["windows_evidence"])
+
+    def test_windows_review_does_not_allow_other_names_signatures_or_addresses(self):
+        self.symbols = {0x1010c30e: "GetCDDir__FPCc"}
+        for address, declaration in (
+                (0x45eda0, "char* CPlatformServices::GetCdDir(const char* file)"),
+                (0x45eda0, "char* CPlatformServices::GetCDDir(char* file)"),
+                (0x45eda1, "char* CPlatformServices::GetCDDir(const char* file)")):
+            with self.subTest(address=address, declaration=declaration):
+                self.pairs = {(0x1010c30e, address)}
+                row, = self.scan(f"// FUNCTION: LEMBALL 0x{address:08x}\n{declaration} {{}}")
+                self.assertEqual(row["status"], "mismatch")
+
+    def test_windows_callback_review_requires_zero_arguments(self):
+        self.symbols = {0x10b0f952: "OnZoomBox__4CWndFUc"}
+        self.pairs = {(0x10b0f952, 0x43a500)}
+        row, = self.scan("// FUNCTION: LEMBALL 0x0043a500\nvoid CWnd::OnDriverChange() {}")
+        self.assertEqual((row["status"], row["signature_status"]), ("windows", "review"))
+        row, = self.scan("// FUNCTION: LEMBALL 0x0043a500\nvoid CWnd::OnDriverChange(int value) {}")
+        self.assertEqual(row["status"], "mismatch")
 
     def test_strict_signature_review_exit_status(self):
         self.path.write_text("// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(short n) {}", encoding="utf-8")

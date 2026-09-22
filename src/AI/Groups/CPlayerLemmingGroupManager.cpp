@@ -3,7 +3,7 @@
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Managers/CObjectManager.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CPlayerLemming.h"
 #include "../Objects/CViewData.h"
 #include "CFormationManager.h"
@@ -13,7 +13,7 @@
 int g_anDefaultPlayerLemmingCounts[5][4] = {{0, 0, 0, 0}, {4, 0, 0, 0}, {3, 1, 0, 0}, {2, 1, 1, 0}, {1, 1, 1, 1}};
 
 // FUNCTION: LEMBALL 0x00418400
-CPlayerLemmingGroupManager::CPlayerLemmingGroupManager(CAi* p_ai,
+CPlayerLemmingGroupManager::CPlayerLemmingGroupManager(CAI* p_ai,
 													   CObjectManager* p_objectManager,
 													   CFormationManager* p_formationManager)
 	: CGenericGroupManager(p_ai, p_objectManager, p_formationManager), CBaseObjectManager(0x22, 0x17)
@@ -601,14 +601,14 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 }
 
 // FUNCTION: LEMBALL 0x00419440
-bool CPlayerLemmingGroupManager::HasSfxChanged()
+bool CPlayerLemmingGroupManager::HasSFXChanged()
 {
 	int changed = 0;
 	int i = 0;
 	if (m_groupCount > 0) {
 		CGenericGroup** group = m_groups;
 		do {
-			if (((CPlayerLemmingGroup*) *group)->HasSfxChanged() != 0 || changed != 0) {
+			if (((CPlayerLemmingGroup*) *group)->HasSFXChanged() != 0 || changed != 0) {
 				changed = 1;
 			}
 			else {

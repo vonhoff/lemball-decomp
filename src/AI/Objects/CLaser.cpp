@@ -3,7 +3,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Network/CConnect.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
@@ -95,7 +95,7 @@ void CLaser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_o
 	m_actionDeadline = g_dwGameTick + 0x3c;
 }
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 
 // FUNCTION: LEMBALL 0x00428ab0
 bool CLaser::CheckHits()
@@ -144,7 +144,7 @@ bool CLaser::CheckHits()
 		CPt3 point;
 		point.m_x = x;
 		point.m_y = y;
-		CAi* ai = g_pAI;
+		CAI* ai = g_pAI;
 		point.m_z = z;
 		ai->m_collisionExclude = 0;
 		ai->m_collisionPoint = point;

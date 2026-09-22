@@ -7,7 +7,7 @@
 #include "../../Map/Base/CMap.h"
 #include "../../Map/Ground/CGround.h"
 #include "../../Map/Ground/CGroundArray.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CBaseGlobalObject.h"
 #include "../Base/CGlobalGameObject.h"
@@ -15,8 +15,8 @@
 #include "../Groups/CPlayerLemmingGroup.h"
 #include "../Groups/CPlayerLemmingGroupManager.h"
 #include "../Messages/CObjectHitMess.h"
-#include "../Navigation/CAi.h"
-#include "../Navigation/CAiCursor.h"
+#include "../Navigation/CAI.h"
+#include "../Navigation/CAICursor.h"
 #include "../Navigation/CAiDestinationList.h"
 #include "../Navigation/CMover.h"
 #include "../Objects/CBalloonPost.h"
@@ -183,7 +183,7 @@ bool CPlayerLemming::Process()
 			UserLemming(g_pAI, this);
 			return false;
 		}
-		AiPlayerLemming(g_pAI, this);
+		AIPlayerLemming(g_pAI, this);
 	}
 	return false;
 }
@@ -374,16 +374,16 @@ void CPlayerLemming::HitMine()
 void CPlayerLemming::GetData()
 {
 	unsigned short packedState[8];
-	m_position.m_xFixed = (int) (unsigned int) GetWord() << 12;
-	m_position.m_yFixed = (int) (unsigned int) GetWord() << 12;
-	m_position.m_zFixed = (int) (unsigned int) GetWord() << 12;
+	m_position.m_xFixed = (int) (unsigned int) GetWORD() << 12;
+	m_position.m_yFixed = (int) (unsigned int) GetWORD() << 12;
+	m_position.m_zFixed = (int) (unsigned int) GetWORD() << 12;
 	Get(packedState[1]);
 	m_facingDirection = packedState[1] & 7;
 	m_actionArgument = (packedState[1] & 0x38) >> 3;
 	Get(packedState[1]);
 	m_action = (eAction) (packedState[1] & 0xff);
 	m_soundEffect = (eSoundEffect) (packedState[1] >> 8);
-	m_stateTimer = GetDword();
+	m_stateTimer = GetDWORD();
 }
 
 // FUNCTION: LEMBALL 0x0040f6f0
@@ -404,7 +404,7 @@ void CPlayerLemming::AddData()
 }
 
 // FUNCTION: LEMBALL 0x0040f7a0
-bool CPlayerLemming::CheckSfx()
+bool CPlayerLemming::CheckSFX()
 {
 	unsigned int* pSfx = &m_sfxChanged;
 	eSoundEffect sfx = m_soundEffect;

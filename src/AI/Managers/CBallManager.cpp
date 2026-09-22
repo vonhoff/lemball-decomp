@@ -6,7 +6,7 @@
 CBallManager* g_pBallManager = 0;
 
 // FUNCTION: LEMBALL 0x00421ea0
-CBallManager::CBallManager(CAi* p_ai, int p_capacity)
+CBallManager::CBallManager(CAI* p_ai, int p_capacity)
 {
 	m_ai = p_ai;
 	g_pBallManager = this;

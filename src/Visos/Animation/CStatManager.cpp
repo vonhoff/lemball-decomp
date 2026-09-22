@@ -1,6 +1,6 @@
 #include "CStatManager.h"
 
-#include "../Foundation/CVsOStream.h"
+#include "../Foundation/CVSOStream.h"
 #include "CBaseStat.h"
 
 // FUNCTION: LEMBALL 0x0045aaf0
@@ -37,7 +37,7 @@ void CStatManager::Register(CBaseStat* p_stat)
 }
 
 // FUNCTION: LEMBALL 0x0045abb0
-CVsOStream& CStatManager::StreamOut(CVsOStream& p_stream)
+CVSOStream& CStatManager::StreamOut(CVSOStream& p_stream)
 {
 	int i;
 

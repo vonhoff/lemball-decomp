@@ -10,8 +10,8 @@ class CCopyToBackBuff : public CPrimitive {
 public:
 	// FUNCTION: LEMBALL 0x00439550
 	CCopyToBackBuff() {}
-	virtual void Draw(CGdi* p_gdi);   // vtable+0x04
-	virtual void Render(CGdi* p_gdi); // vtable+0x08
+	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
+	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	// FUNCTION: LEMBALL 0x00439740
 	virtual ~CCopyToBackBuff() {} // vtable+0x00
 

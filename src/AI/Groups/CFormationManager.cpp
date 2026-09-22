@@ -1,6 +1,6 @@
 #include "CFormationManager.h"
 
-#include "../../Visos/Foundation/VsTrig.h"
+#include "../../Visos/Foundation/VSTrig.h"
 #include "Visos/Foundation/CFixed.h"
 #include "Visos/Foundation/CVector.h"
 

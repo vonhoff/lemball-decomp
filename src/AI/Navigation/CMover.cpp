@@ -3,7 +3,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Groups/CPlayerLemmingGroup.h"
 #include "../Objects/CPlayerLemming.h"
@@ -14,7 +14,7 @@
 #include "AI/Base/CPt3.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
-#include "CAi.h"
+#include "CAI.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 

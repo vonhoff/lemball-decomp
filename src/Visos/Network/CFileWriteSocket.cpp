@@ -3,7 +3,7 @@
 #include "../Messaging/CHeaderMessage.h"
 #include "../Messaging/CHeaders.h"
 #include "CNetworkAddress.h"
-#include "CTcpIpNetwork.h"
+#include "CTCPIPNetwork.h"
 #include "Visos/Messaging/BasePacketHeader.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 #include "Visos/Network/CFileBaseSocket.h"
@@ -63,7 +63,7 @@ int CFileWriteSocket::Write(CNetworkMessage& p_message, int p_keepLock, int p_wa
 // FUNCTION: LEMBALL 0x0047a090
 void CFileWriteSocket::SetDestAddr(CNetworkAddress* p_address)
 {
-	InternalSetDestAddr(p_address);
+	_SetDestAddr(p_address);
 }
 
 // FUNCTION: LEMBALL 0x0047a0b0

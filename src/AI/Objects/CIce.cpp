@@ -3,7 +3,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Map/Base/CMap.h"
 #include "../Base/Coord3d.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 
 #include <stdlib.h>
 

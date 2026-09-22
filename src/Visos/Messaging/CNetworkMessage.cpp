@@ -114,7 +114,7 @@ void CNetworkMessage::Add(const unsigned char* p_data, int p_length)
 }
 
 // FUNCTION: LEMBALL 0x0045eff0
-int CNetworkMessage::GetDword()
+int CNetworkMessage::GetDWORD()
 {
 	unsigned long value;
 
@@ -136,7 +136,7 @@ void CNetworkMessage::Get(unsigned long& p_value)
 }
 
 // FUNCTION: LEMBALL 0x0045f040
-void CNetworkMessage::ConvertDword()
+void CNetworkMessage::ConvertDWORD()
 {
 	unsigned char byte0;
 	unsigned char byte1;
@@ -151,7 +151,7 @@ void CNetworkMessage::ConvertDword()
 }
 
 // FUNCTION: LEMBALL 0x0045f070
-unsigned short CNetworkMessage::GetWord()
+unsigned short CNetworkMessage::GetWORD()
 {
 	unsigned short value;
 
@@ -171,7 +171,7 @@ void CNetworkMessage::Get(unsigned short& p_value)
 }
 
 // FUNCTION: LEMBALL 0x0045f0b0
-void CNetworkMessage::ConvertWord()
+void CNetworkMessage::ConvertWORD()
 {
 	unsigned char byte0;
 	unsigned char byte1;
@@ -184,7 +184,7 @@ void CNetworkMessage::ConvertWord()
 }
 
 // FUNCTION: LEMBALL 0x0045f0d0
-unsigned char CNetworkMessage::GetByte()
+unsigned char CNetworkMessage::GetBYTE()
 {
 	unsigned char value;
 
@@ -200,7 +200,7 @@ void CNetworkMessage::Get(unsigned char& p_value)
 }
 
 // FUNCTION: LEMBALL 0x0045f110
-void CNetworkMessage::ConvertByte()
+void CNetworkMessage::ConvertBYTE()
 {
 	++m_readCursor;
 }

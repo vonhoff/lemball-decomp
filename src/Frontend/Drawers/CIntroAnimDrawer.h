@@ -5,7 +5,7 @@
 #include "../Base/CBaseFrontendDrawer.h"     // complete type
 #include "../Windows/CIntroAnimAnimWindow.h" // complete type
 
-class CGdi;
+class CGDI;
 class CMain2DDisplay;
 class CVsRect;
 // SIZE 0x484
@@ -14,7 +14,7 @@ class CVsRect;
 // VTABLE: LEMBALL 0x00497a50 CAnimsManager
 class CIntroAnimDrawer : public CBaseFrontendDrawer {
 public:
-	CIntroAnimDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect, unsigned int p_completionSequence);
+	CIntroAnimDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect, unsigned int p_completionSequence);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void Load();                              // vtable+0x40
 	virtual void Processing();                        // vtable+0x38

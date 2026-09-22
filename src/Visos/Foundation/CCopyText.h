@@ -17,23 +17,23 @@ public:
 	inline virtual ~CCopyText() { delete[] m_buffer; }
 	virtual void Set(int p_x,
 					 int p_y,
-					 CResFont* p_font,
+					 CResFONT* p_font,
 					 char* p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x18
 	virtual void Set(CVsPoint& p_position,
-					 CResFont* p_font,
+					 CResFONT* p_font,
 					 char* p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x14
 	virtual void Set(int p_x,
 					 int p_y,
-					 CResFont* p_font,
+					 CResFONT* p_font,
 					 CString p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x10
 	virtual void Set(CVsPoint& p_position,
-					 CResFont* p_font,
+					 CResFONT* p_font,
 					 CString p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x0c

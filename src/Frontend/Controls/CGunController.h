@@ -9,7 +9,7 @@
 #include "GunControllerJunction.h"                    // complete type
 
 class CGWnd;
-class CGdi;
+class CGDI;
 class CGunButtons;
 class CPlayThruAnim;
 class CSpriteWindow;
@@ -19,7 +19,7 @@ class CVsRect;
 // VTABLE: LEMBALL 0x00497f0c CAnimsManager
 class CGunController : public CBaseQueueHandler, public CAnimsManager {
 public:
-	CGunController(CGWnd* p_arg0, CGdi* p_arg1, int p_arg2, unsigned int p_arg3);
+	CGunController(CGWnd* p_arg0, CGDI* p_arg1, int p_arg2, unsigned int p_arg3);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~CGunController();                  // vtable+0x04
 	void ActivateButtons(int p_active);
@@ -82,7 +82,7 @@ private:
 	GunControllerJunction m_junctions[8]; // 0xe0
 	CGunButtons* m_buttons[8];            // 0x1e0
 	CSolidRect m_cursorRect[1];           // 0x200
-	CGdi* m_gdi;                          // 0x210
+	CGDI* m_gdi;                          // 0x210
 	CGWnd* m_window;                      // 0x214
 	unsigned int m_nextMessageId;         // 0x218
 	unsigned int m_moveStartTime;         // 0x21c
@@ -102,7 +102,7 @@ private:
 	CPlayThruAnim* m_hitAnim;             // 0x254
 	CStaticAnim m_staticAnim;             // 0x258
 	CSpriteWindow* m_spriteWindow;        // 0x268
-	CGdi* m_spriteSurface;                // 0x26c
+	CGDI* m_spriteSurface;                // 0x26c
 	unsigned int m_mode;                  // 0x270
 	unsigned int m_alternateAssets;       // 0x274
 	unsigned int m_buttonsActive;         // 0x278

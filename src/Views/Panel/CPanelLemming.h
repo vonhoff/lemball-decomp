@@ -6,7 +6,7 @@
 class CPanel;
 class CPanelButton;
 class CPlayerLemming;
-class CPvGWnd;
+class CPVGWnd;
 struct CVsPoint;
 // SIZE 0x2c
 class CPanelLemming {
@@ -20,7 +20,7 @@ public:
 	friend class CPanel;
 
 private:
-	CPvGWnd* m_window;               // 0x00
+	CPVGWnd* m_window;               // 0x00
 	CPanelButton* m_button;          // 0x04
 	CPlayerLemming* m_lemming;       // 0x08
 	CPanel* m_panel;                 // 0x0c

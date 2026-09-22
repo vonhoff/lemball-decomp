@@ -4,7 +4,7 @@
 #include "../../Visos/Graphics/CToggleButton.h" // complete type
 
 class CPanel;
-class CPvGWnd;
+class CPVGWnd;
 struct CVsPoint;
 // SIZE 0x13c
 // VTABLE: LEMBALL 0x004972b8 CGWnd
@@ -13,7 +13,7 @@ class CPanelPauseButton : public CToggleButton {
 public:
 	CPanelPauseButton(CPanel* p_arg0,
 					  const CVsPoint& p_arg1,
-					  CPvGWnd* p_arg2,
+					  CPVGWnd* p_arg2,
 					  unsigned long p_arg3,
 					  unsigned long p_arg4);
 	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8

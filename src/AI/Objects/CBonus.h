@@ -10,7 +10,7 @@ class CBonus : public CCollectable {
 public:
 	CBonus(int p_x, int p_y, int p_z, eObjectType p_objectType) : CCollectable(p_x, p_y, p_z, p_objectType) {}
 	virtual int Collected(); // vtable+0x114
-	virtual void SetSfx();   // vtable+0x110
+	virtual void SetSFX();   // vtable+0x110
 };
 
 // SYNTHETIC: LEMBALL 0x00422fe0

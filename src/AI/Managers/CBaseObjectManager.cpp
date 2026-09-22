@@ -104,9 +104,9 @@ void CBaseObjectManager::ProcessNetwork()
 // FUNCTION: LEMBALL 0x0040aed0
 void CBaseObjectManager::GetData()
 {
-	unsigned short type = GetWord();
+	unsigned short type = GetWORD();
 	while (type != 0x2f) {
-		unsigned short id = GetWord();
+		unsigned short id = GetWORD();
 		CGlobalGameObject* found = 0;
 		for (unsigned int i = 0; (int) i < (int) (unsigned int) g_wObjectCount; i++) {
 			CGameObject* obj = g_pObjects[(unsigned short) i];
@@ -118,6 +118,6 @@ void CBaseObjectManager::GetData()
 		if (found->Receive(type, this) == 0) {
 			Receive(type, found, this);
 		}
-		type = GetWord();
+		type = GetWORD();
 	}
 }

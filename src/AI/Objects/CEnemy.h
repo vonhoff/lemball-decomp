@@ -4,7 +4,7 @@
 #include "../Base/AiCoord.h"     // complete type
 #include "../Base/CGameObject.h" // complete type
 
-class CAi;
+class CAI;
 struct WaypointInformation;
 enum eEnemyStateActions {
 	ENEMY_ACTION_STOP = 0,
@@ -32,10 +32,10 @@ class CEnemy : public CGameObject {
 public:
 	friend class CEnemyGroupManager;
 
-	CEnemy(CAi* p_ai, int p_x, int p_y, int p_z, int p_facingDirection);
+	CEnemy(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection);
 	bool CheckRadius(int p_radius);
-	bool EnemyRuleRadius50();
-	bool EnemyRuleRadius50AndLineOfSight();
+	bool EnemyRule_RADIUS50();
+	bool EnemyRule_RADIUS50ANDLINEOFSIGHT();
 	bool LineOfSight(AiCoord p_target);
 	bool ProcessRule(eEnemyStateRules p_rule);
 	virtual bool FacingTarget();               // vtable+0x98
@@ -52,10 +52,10 @@ public:
 	virtual void StartFiring();                // vtable+0x8c
 	virtual void TurnToFaceTarget();           // vtable+0x9c
 	virtual ~CEnemy();                         // vtable+0x00
-	void EnemyActionPatrol(EnemyLemmingUnion* p_data);
-	void EnemyActionTurnAndFireRandom(EnemyLemmingUnion* p_data);
-	void EnemyActionTurnAndFireRapid(EnemyLemmingUnion* p_data);
-	void EnemyActionTurnAndFireSlow(EnemyLemmingUnion* p_data);
+	void EnemyAction_PATROL(EnemyLemmingUnion* p_data);
+	void EnemyAction_TURNANDFIRERANDOM(EnemyLemmingUnion* p_data);
+	void EnemyAction_TURNANDFIRERAPID(EnemyLemmingUnion* p_data);
+	void EnemyAction_TURNANDFIRESLOW(EnemyLemmingUnion* p_data);
 	void ProcessAction(eEnemyStateRules p_rule, eEnemyStateActions p_action, EnemyLemmingUnion* p_data);
 	void RequestFire(int p_interval);
 	void GetEnemyType(eEnemyStateActions& p_action0,

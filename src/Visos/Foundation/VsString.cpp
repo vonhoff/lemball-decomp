@@ -49,17 +49,17 @@ int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 }
 
 // FUNCTION: LEMBALL 0x00458d80
-void VsLtoa(long p_value, char* p_buffer, int p_radix)
+void vsLtoa(long p_value, char* p_buffer, int p_radix)
 {
 	if (p_value < 0) {
 		*p_buffer++ = '-';
 		p_value = -p_value;
 	}
-	VsULtoa(p_value, p_buffer, p_radix);
+	vsULtoa(p_value, p_buffer, p_radix);
 }
 
 // FUNCTION: LEMBALL 0x00458db0
-char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
+char* vsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 {
 	// GLOBAL: LEMBALL 0x004a0e54
 	static int s_powersInitialized = 0;
@@ -115,7 +115,7 @@ char* OkFailed(int p_success)
 }
 
 // FUNCTION: LEMBALL 0x00458f30
-int Strtol(char* p_text, char** p_end, int p_base)
+int strtol(char* p_text, char** p_end, int p_base)
 {
 	if (p_base == 10) {
 		int result = 0;

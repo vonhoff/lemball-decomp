@@ -25,7 +25,7 @@ void CObjectChangeStateMess::AddData()
 // FUNCTION: LEMBALL 0x00416940
 void CObjectChangeStateMess::GetData()
 {
-	unsigned long time = GetDword();
+	unsigned long time = GetDWORD();
 	SetRemoteGameTimeReal(time);
 	if (m_object->m_requestEnabled == 0) {
 		m_object->m_requestEnabled = 1;
@@ -33,9 +33,9 @@ void CObjectChangeStateMess::GetData()
 		obj->Process();
 		m_object = obj;
 	}
-	m_object->m_action = (eAction) GetDword();
-	m_object->m_stateTimer = GetDword();
-	m_object->m_actionArgument = (short) GetWord();
+	m_object->m_action = (eAction) GetDWORD();
+	m_object->m_stateTimer = GetDWORD();
+	m_object->m_actionArgument = (short) GetWORD();
 	m_object->m_requestEnabled = 0;
 	m_object->m_requestActive = 0;
 	if (!m_object->IsUsable(m_object->m_action) && m_object->m_action != ACTION_0x27) {

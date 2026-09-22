@@ -9,8 +9,8 @@
 // VTABLE: LEMBALL 0x00496e40
 class CScreenScroll : public CPrimitive {
 public:
-	virtual void Draw(CGdi* p_gdi);   // vtable+0x04
-	virtual void Render(CGdi* p_gdi); // vtable+0x08
+	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
+	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	virtual ~CScreenScroll() {}       // vtable+0x00
 
 	friend class CSurface;

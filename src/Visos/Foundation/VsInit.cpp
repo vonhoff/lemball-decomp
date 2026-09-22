@@ -6,8 +6,8 @@
 #include "Visos/Animation/CStatManager.h"
 #include "Visos/Foundation/CArena.h"
 #include "Visos/Foundation/CSmallMemory.h"
-#include "Visos/Foundation/CVsDebugStreambuf.h"
-#include "Visos/Foundation/CVsOStream.h"
+#include "Visos/Foundation/CVSDebugStreambuf.h"
+#include "Visos/Foundation/CVSOStream.h"
 #include "Visos/Foundation/VsDebug.h"
 #include "Visos/Foundation/VsString.h"
 #include "Visos/Target/System/CPlatformServices.h"
@@ -168,7 +168,7 @@ char* g_apszParsedArgs[16];
 int g_afInitOptionSelected[14];
 
 // FUNCTION: LEMBALL 0x00459250
-void InitSubSystems()
+void INIT_SubSystems()
 {
 	int memOk;
 	int strmOk;
@@ -181,13 +181,13 @@ void InitSubSystems()
 	CBaseStat* stat;
 	void* storage;
 
-	memOk = InternalMemInit();
+	memOk = _MEM_Init();
 	if (memOk == 0) {
-		InternalVsRelAssert("EnoughMemory", "VSINIT.CPP", 0x19e);
+		_VSRELassert("EnoughMemory", "VSINIT.CPP", 0x19e);
 	}
 
-	strmOk = InternalStrmInit();
-	dbgOk = InternalDbgInit();
+	strmOk = _STRM_Init();
+	dbgOk = _DBG_Init();
 	g_nDebugInitialized = dbgOk;
 	InitPlatformServices();
 
@@ -200,19 +200,19 @@ void InitSubSystems()
 
 	g_nInitAllocBaseline = g_pMasterArena->GetAllocSize();
 
-	inpOk = InternalInpInit();
+	inpOk = _INP_Init();
 	*g_pSysOutput << "_INP_Init   : " << OkFailed(inpOk) << "...\n";
 
-	timeOk = InternalTimeInit();
+	timeOk = _TIME_Init();
 	*g_pSysOutput << "_TIME_Init  : " << OkFailed(timeOk) << "...\n";
 
-	gdiOk = InternalGdiInit();
+	gdiOk = _GDI_Init();
 	*g_pSysOutput << "_GDI_Init   : " << OkFailed(gdiOk) << "...\t(" << (int) g_preInitActive.m_flags << ")\n";
 
-	statOk = InternalStatInit();
+	statOk = _STAT_Init();
 	*g_pSysOutput << "_STAT_Init  : " << OkFailed(statOk) << "...\n";
 
-	resOk = InternalResInit();
+	resOk = _RES_Init();
 	*g_pSysOutput << "_RES_Init   : " << OkFailed(resOk) << "...\n";
 
 	storage = operator new(0x20);
@@ -228,28 +228,28 @@ void InitSubSystems()
 }
 
 // FUNCTION: LEMBALL 0x00459520
-void InitQuitSubSystems()
+void INIT_QuitSubSystems()
 {
 	*g_pSysOutput << g_szQuitNewlineSys;
 	*g_pDebugOutput << g_szQuitNewlineDebug;
 	*g_pErrorOutput << g_szQuitNewlineError;
-	InternalResQuit();
-	InternalStatQuit();
-	InternalTimeQuit();
-	InternalGdiQuit();
-	InternalInpQuit();
+	_RES_Quit();
+	_STAT_Quit();
+	_TIME_Quit();
+	_GDI_Quit();
+	_INP_Quit();
 	if (g_pMasterArena->GetAllocSize() != (unsigned long) g_nInitAllocBaseline) {
 		*g_pErrorOutput << g_szMemoryLeakDump;
 		g_pMasterArena->StreamOut(*g_pErrorOutput) << g_szMemoryLeakNewline;
 	}
 	QuitPlatformServices();
-	InternalDbgQuit(g_nStartupNoWait);
-	InternalStrmQuit();
-	InternalMemQuit();
+	_DBG_Quit(g_nStartupNoWait);
+	_STRM_Quit();
+	_MEM_Quit();
 }
 
 // FUNCTION: LEMBALL 0x004595d0
-bool InitCheckOptions(char* p_option)
+bool INIT_CheckOptions(char* p_option)
 {
 	InitCmdOption* option;
 	char* colon;
@@ -272,7 +272,7 @@ bool InitCheckOptions(char* p_option)
 			}
 			if (strncmp(optionText, (char*) (*option)[kInitCmdOptionName], maxCount) == 0) {
 				if (strlen((char*) g_aInitCmdOptions[index][kInitCmdOptionName]) != maxCount) {
-					*(int*) g_aInitCmdOptions[index][kInitCmdOptionValue] = Strtol(optionText + maxCount + 1, &end, 10);
+					*(int*) g_aInitCmdOptions[index][kInitCmdOptionValue] = strtol(optionText + maxCount + 1, &end, 10);
 				}
 				else {
 					int* value = (int*) g_aInitCmdOptions[index][kInitCmdOptionValue];
@@ -289,7 +289,7 @@ bool InitCheckOptions(char* p_option)
 }
 
 // FUNCTION: LEMBALL 0x004596b0
-void InitCmdLine(char* p_commandLine)
+void INIT_CmdLine(char* p_commandLine)
 {
 	int i;
 	int remaining;
@@ -328,7 +328,7 @@ void InitCmdLine(char* p_commandLine)
 			if (0 < g_cParsedArgs) {
 				remaining = g_cParsedArgs;
 				do {
-					if (InitCheckOptions(g_apszParsedArgs[i]) != 0) {
+					if (INIT_CheckOptions(g_apszParsedArgs[i]) != 0) {
 						count = g_cParsedArgs;
 						count = count - 1;
 						if (i < count) {
@@ -355,15 +355,15 @@ void InitCmdLine(char* p_commandLine)
 }
 
 // FUNCTION: LEMBALL 0x00459860
-int InitMain(char* p_commandLine)
+int INIT_Main(char* p_commandLine)
 {
 	unsigned int i;
 	int result;
 	int mainResult;
 
-	InitCmdLine(p_commandLine);
-	InitPreInit();
-	InitSubSystems();
+	INIT_CmdLine(p_commandLine);
+	INIT_PreInit();
+	INIT_SubSystems();
 	*g_pDebugOutput << g_szCommandLineOptions;
 	i = 0;
 	do {
@@ -376,21 +376,21 @@ int InitMain(char* p_commandLine)
 	} while (i < 0xe);
 	result = setjmp(g_vsExitJumpBuffer);
 	if (result != 0) {
-		InitQuitSubSystems();
+		INIT_QuitSubSystems();
 		return result;
 	}
 	result = setjmp(g_vsDebugJumpBuffer);
 	if (result != 0) {
-		InternalDbgQuit(g_nStartupNoWait);
+		_DBG_Quit(g_nStartupNoWait);
 		return result;
 	}
-	mainResult = VsMain(g_cParsedArgs, g_apszParsedArgs);
-	InitQuitSubSystems();
+	mainResult = VSmain(g_cParsedArgs, g_apszParsedArgs);
+	INIT_QuitSubSystems();
 	return mainResult;
 }
 
 // FUNCTION: LEMBALL 0x004727b0
-void InitPreInit()
+void INIT_PreInit()
 {
 	unsigned int* capability;
 	int i;
@@ -404,7 +404,7 @@ void InitPreInit()
 		capability = capability + 1;
 	}
 	g_preInitActive.m_memoryBudget = g_preInitActive.m_memoryBudget << 0x13;
-	result = VsPreInit(&g_preInitActive);
+	result = VSPreInit(&g_preInitActive);
 	if (result != 0) {
 		g_preInitActive = *result;
 	}

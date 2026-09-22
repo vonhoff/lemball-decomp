@@ -1,12 +1,12 @@
 #include "CWaveEffect.h"
 
-#include "../../Foundation/CVsOStream.h"
+#include "../../Foundation/CVSOStream.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
 
 #include <memory.h>
 
-inline CVsOStream& operator<<(CVsOStream& p_stream, unsigned short p_value)
+inline CVSOStream& operator<<(CVSOStream& p_stream, unsigned short p_value)
 {
 	return p_stream << (unsigned int) p_value;
 }

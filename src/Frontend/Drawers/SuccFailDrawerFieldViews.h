@@ -1,11 +1,11 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_SUCCFAILDRAWERFIELDVIEWS_H
 #define LEMBALL_FRONTEND_DRAWERS_SUCCFAILDRAWERFIELDVIEWS_H
 
-#include "../../Visos/Foundation/Prims.h"
+#include "../../Visos/Foundation/tagPRIMS.h"
 #include "../../Visos/Graphics/CBitmapRes.h"
 
 // Views begin at CBitmapRes::m_x; vtable pointer omitted. Sizes retain original
-// CBitmapRes/Prims element strides while keeping reconstructed field names.
+// CBitmapRes/tagPRIMS element strides while keeping reconstructed field names.
 struct SuccFailDrawerFieldViews {
 	struct CBitmap {
 		short m_x;
@@ -14,7 +14,7 @@ struct SuccFailDrawerFieldViews {
 		short m_height;
 		short m_sourceX;
 		short m_sourceY;
-		CResBitmap* m_resource;
+		CResBITMAP* m_resource;
 		unsigned int m_flags;
 		CRemap* m_remap;
 		unsigned int m_unknown1c;
@@ -25,7 +25,7 @@ struct SuccFailDrawerFieldViews {
 
 	struct CPrimitive {
 		CBitmap m_primitive;
-		unsigned char m_remaining[sizeof(Prims) - sizeof(CBitmap)];
+		unsigned char m_remaining[sizeof(tagPRIMS) - sizeof(CBitmap)];
 	};
 
 	struct DrawerPrims {

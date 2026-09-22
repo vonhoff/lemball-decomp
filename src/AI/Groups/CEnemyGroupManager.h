@@ -3,7 +3,7 @@
 
 #include "CGenericGroupManager.h" // complete type
 
-class CAi;
+class CAI;
 class CFormationManager;
 class CObjectManager;
 struct LoadEnemyData;
@@ -13,12 +13,12 @@ struct WaypointInformation;
 // VTABLE: LEMBALL 0x004953f8
 class CEnemyGroupManager : public CGenericGroupManager {
 public:
-	CEnemyGroupManager(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
-	LoadEnemyDataAdditionalAction* LoadLevelAdditionalWaypoint(LoadEnemyDataAdditionalAction* p_data,
-															   WaypointInformation*& p_waypointInfo);
+	CEnemyGroupManager(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
+	LoadEnemyDataAdditionalAction* LoadLevelAdditional_Waypoint(LoadEnemyDataAdditionalAction* p_data,
+																WaypointInformation*& p_waypointInfo);
 	void LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip);
 	void Restart();
 };
 
-unsigned long EnemyGetLong(unsigned long* p_data);
+unsigned long ENEMY_GetLONG(unsigned long* p_data);
 #endif

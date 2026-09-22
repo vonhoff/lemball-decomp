@@ -9,7 +9,7 @@
 #include "../Messaging/CReadPacket.h"
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
-#include "CTcpIpNetwork.h"
+#include "CTCPIPNetwork.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Network/CRwSocket.h"
@@ -106,7 +106,7 @@ void CBroadcast::SetSpecificAddr(const char* p_address)
 // FUNCTION: LEMBALL 0x00460650
 void CBroadcast::Initialise(const char* p_networkName)
 {
-	CRwSocket::SetNcBuffers(3, 3, 0);
+	CRwSocket::SetNCBuffers(3, 3, 0);
 	CRwSocket::SetCBuffers(1, 0);
 	if (g_pBroadcastPacketTemplate == 0) {
 		char* payload;
@@ -114,9 +114,9 @@ void CBroadcast::Initialise(const char* p_networkName)
 		g_pBroadcastPacketTemplate = (BasePacketHeader*) new unsigned char[0x410];
 		payload = (char*) (g_pBroadcastPacketTemplate + 1);
 		strcpy(payload, "ViSOS (VSNET v");
-		VsLtoa((long) g_vsNetMajorVersion, payload + strlen(payload), 10);
+		vsLtoa((long) g_vsNetMajorVersion, payload + strlen(payload), 10);
 		memcpy(payload + strlen(payload), ".", 2);
-		VsLtoa((long) g_vsNetMinorVersion, payload + strlen(payload), 10);
+		vsLtoa((long) g_vsNetMinorVersion, payload + strlen(payload), 10);
 		memcpy(payload + strlen(payload), " ", 2);
 		strcat(payload, p_networkName);
 		memcpy(payload + strlen(payload), ") is Broadcasting:", 19);

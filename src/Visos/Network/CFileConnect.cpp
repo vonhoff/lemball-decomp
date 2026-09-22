@@ -3,7 +3,7 @@
 #include "../Foundation/VsTime.h"
 #include "../Messaging/CHeaders.h"
 #include "CFileNetwork.h"
-#include "CTcpIpNetwork.h"
+#include "CTCPIPNetwork.h"
 #include "Visos/Network/CConnect.h"
 #include "Visos/Network/CFileCommonSocket.h"
 #include "Visos/Network/CFileOpenManagement.h"

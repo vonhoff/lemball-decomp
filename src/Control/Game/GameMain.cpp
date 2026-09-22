@@ -3,9 +3,9 @@
 #include "../../Frontend/Base/CBaseFrontendDrawer.h"
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Platform/Windows/Entry.h"
-#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/CVSOStream.h"
+#include "../../Visos/Foundation/VSTrig.h"
 #include "../../Visos/Foundation/VsString.h"
-#include "../../Visos/Foundation/VsTrig.h"
 #include "../../Visos/Target/Graphics/CGraphicsDriver.h"
 #include "../../Visos/Target/Graphics/CGraphicsState.h"
 #include "../Level/CLevelLoader.h"
@@ -21,7 +21,7 @@
 extern "C" __declspec(dllimport) void* __stdcall LoadIconA(void* p_instance, const char* p_name);
 
 // FUNCTION: LEMBALL 0x00406160
-PreInit* VsPreInit(PreInit* p_preInit)
+PreInit* VSPreInit(PreInit* p_preInit)
 {
 	memcpy(&g_preInit, p_preInit, sizeof(g_preInit));
 	g_preInit.m_flags = 0x50;
@@ -79,12 +79,12 @@ void DisplayHelp()
 }
 
 // FUNCTION: LEMBALL 0x00406310
-int VsMain(int p_argc, char** p_argv)
+int VSmain(int p_argc, char** p_argv)
 {
 	int* sentinel;
 	CGame* game;
 
-	g_pVSTrig = new VsTrig();
+	g_pVSTrig = new VSTrig();
 
 	sentinel = (int*) operator new(4);
 	if (sentinel != 0) {
@@ -95,7 +95,7 @@ int VsMain(int p_argc, char** p_argv)
 		g_pSentinel = 0;
 	}
 
-	InternalDemoInit(0x19000);
+	_DEMO_Init(0x19000);
 	SetGameDefaults();
 	if (DoCommandLine(p_argc, p_argv) == 1) {
 		game = 0;
@@ -112,7 +112,7 @@ int VsMain(int p_argc, char** p_argv)
 		}
 	}
 
-	InternalDemoQuit();
+	_DEMO_Quit();
 	operator delete(g_pSentinel);
 	operator delete(g_pVSTrig);
 	*g_pDebugOutput << g_szGameClosedDown;

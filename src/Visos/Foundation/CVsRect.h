@@ -13,9 +13,9 @@ public:
 	CVsRect(short p_x, short p_y, CVsSize* p_size);
 	CVsRect(const CVsRect& p_source);
 
-	friend class CGdi;
+	friend class CGDI;
 	friend class CGWnd;
-	friend class CPvWnd;
+	friend class CPVWnd;
 	friend class CWnd;
 	friend class CMain2DDisplay;
 	friend class CIntroAnimDrawer;

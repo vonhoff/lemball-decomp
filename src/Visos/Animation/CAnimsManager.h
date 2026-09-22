@@ -5,20 +5,20 @@
 #include "../Foundation/CVsSize.h" // complete type
 struct CVsPoint;
 
-class CGdi;
+class CGDI;
 class CFrames;
 class CRemap;
-class CResZrle;
+class CResZRLE;
 class CResBase;
 class CLine;
 class CAnim;
-class CZrle;
+class CZRLE;
 
 // SIZE 0x70
 // VTABLE: LEMBALL 0x00499620
 class CAnimsManager {
 public:
-	CAnimsManager(CGdi* p_gdi,
+	CAnimsManager(CGDI* p_gdi,
 				  unsigned long p_resourceIdCount,
 				  int p_resourceCapacity,
 				  int p_animCapacity,
@@ -35,14 +35,14 @@ public:
 	void LoadAnims(unsigned long p_resourceId);
 	void ResetPrimitives();
 	CVsRect* DrawAnimOnGdi(CVsRect* p_bounds,
-						   CGdi* p_gdi,
+						   CGDI* p_gdi,
 						   const CVsPoint& p_position,
 						   unsigned long p_resourceId,
 						   unsigned long p_drawFlags,
 						   CFrames* p_frame,
 						   CRemap* p_remap);
-	CResZrle* ResolveAnimFrameData(unsigned long p_resourceId, CFrames* p_frame);
-	void DetachGdi(CGdi* p_gdi);
+	CResZRLE* ResolveAnimFrameData(unsigned long p_resourceId, CFrames* p_frame);
+	void DetachGdi(CGDI* p_gdi);
 	void UnLoadAnims(unsigned long p_resourceId);
 	~CAnimsManager();
 	CAnimsManager();
@@ -61,8 +61,8 @@ private:
 	unsigned int m_resetState;          // 0x0c
 	unsigned int m_ownsLinePrimitives;  // 0x10
 	char m_reserved14[8];               // 0x14
-	CGdi* m_gdi;                        // 0x1c
-	CGdi* m_previousGdi;                // 0x20
+	CGDI* m_gdi;                        // 0x1c
+	CGDI* m_previousGdi;                // 0x20
 	CResBase** m_resources;             // 0x24
 	short* m_resourceSlots;             // 0x28
 	int m_resourceCapacity;             // 0x2c
@@ -79,7 +79,7 @@ private:
 	int m_zrleCapacity;                 // 0x58
 	int m_zrleCount;                    // 0x5c
 	char m_zrleDrawMark[4];             // 0x60
-	CZrle* m_zrlePrimitives;            // 0x64
+	CZRLE* m_zrlePrimitives;            // 0x64
 	unsigned short m_primitiveSequence; // 0x68
 	unsigned short m_reserved6a;        // 0x6a
 	unsigned int m_reserved6c;          // 0x6c

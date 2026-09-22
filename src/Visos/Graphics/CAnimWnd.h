@@ -2,15 +2,15 @@
 #define LEMBALL_VISOS_GRAPHICS_CANIMWND_H
 
 #include "../Foundation/CString.h" // complete type
-#include "CPvAnimWnd.h"            // complete type
+#include "CPVAnimWnd.h"            // complete type
 
 // SIZE 0xbc
 // VTABLE: LEMBALL 0x00499f30
-class CAnimWnd : public CPvAnimWnd {
+class CAnimWnd : public CPVAnimWnd {
 public:
 	CAnimWnd();
-	virtual void InternalOnCreate();     // vtable+0x18
-	virtual void InternalOnDestroy();    // vtable+0x1c
+	virtual void _OnCreate();            // vtable+0x18
+	virtual void _OnDestroy();           // vtable+0x1c
 	virtual void OnSkip(int p_position); // vtable+0xb8
 	virtual void OnFrame(int p_frame);   // vtable+0xbc
 	virtual void OnStart();              // vtable+0xc0

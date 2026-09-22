@@ -5,8 +5,8 @@
 #include "CPushActive.h"      // complete type
 
 struct CVsPoint;
-class CPvGWnd;
-class CResAnim;
+class CPVGWnd;
+class CResANIM;
 class CPrimitive;
 
 // SIZE 0x130
@@ -15,14 +15,14 @@ class CPrimitive;
 class CGraphicButton : public CDepressedButton {
 public:
 	CGraphicButton(const CVsPoint& p_position,
-				   CPvGWnd* p_parent,
+				   CPVGWnd* p_parent,
 				   unsigned long p_animId,
 				   unsigned long p_alignmentFlags);
 	virtual void DrawButton(); // vtable+0xbc
 	virtual void OnDestroy();  // vtable+0x40
 	virtual ~CGraphicButton(); // vtable+0x00
 	void Initialise();
-	void SetAnimId(unsigned long p_animId);
+	void SetAnimID(unsigned long p_animId);
 
 	friend class CToggleButton;
 	friend class CGunButton;
@@ -38,7 +38,7 @@ private:
 	unsigned short m_graphicHeight; // 0x116
 	short m_graphicOffsetX;         // 0x118
 	short m_graphicOffsetY;         // 0x11a
-	CResAnim* m_animation;          // 0x11c
+	CResANIM* m_animation;          // 0x11c
 	unsigned int m_frame;           // 0x120
 	CPrimitive* m_primitive;        // 0x124
 	CPushActive m_statRegion[1];    // 0x128

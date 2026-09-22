@@ -6,7 +6,7 @@
 #include <new.h>
 
 // FUNCTION: LEMBALL 0x0045b900
-bool InternalResInit()
+bool _RES_Init()
 {
 	ResourceTypeList* list;
 
@@ -61,7 +61,7 @@ bool InternalResInit()
 }
 
 // FUNCTION: LEMBALL 0x0045ba50
-bool InternalResQuit()
+bool _RES_Quit()
 {
 	ResourceTypeList* list;
 

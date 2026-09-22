@@ -19,7 +19,7 @@ public:
 	friend class CBroadcast;
 	friend class CGodManager;
 	friend class CReadPacketBuff;
-	friend class CReadNcBuff;
+	friend class CReadNCBuff;
 	friend class CReadCBuff;
 	friend class CReadSocket;
 

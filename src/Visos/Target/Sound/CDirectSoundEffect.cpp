@@ -1,6 +1,6 @@
 #include "CDirectSoundEffect.h"
 
-#include "../../Foundation/CVsOStream.h"
+#include "../../Foundation/CVSOStream.h"
 #include "../../Foundation/VsString.h"
 #include "DirectSound.h"
 #include "EffPatchHeader.h"
@@ -74,7 +74,7 @@ const char* DescribeDirectSoundError(unsigned int p_error)
 		codes += 2;
 		i++;
 	} while (code != 0);
-	VsLtoa(p_error, g_directSoundErrorText + strlen(prefix), 10);
+	vsLtoa(p_error, g_directSoundErrorText + strlen(prefix), 10);
 	return g_directSoundErrorText;
 }
 

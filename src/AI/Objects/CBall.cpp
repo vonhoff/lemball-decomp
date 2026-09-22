@@ -3,11 +3,11 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Foundation/CVector.h"
-#include "../../Visos/Foundation/CVsMath.h"
 #include "../Base/CPt3.h"
 #include "../Managers/CBallManager.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -120,7 +120,7 @@ bool CBall::Move()
 	CPt3 point;
 	point.m_x = x;
 	point.m_y = y;
-	CAi* ai = g_pAI;
+	CAI* ai = g_pAI;
 	point.m_z = z;
 	ai->m_collisionExclude = this;
 	ai->m_collisionPoint = point;

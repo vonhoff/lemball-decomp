@@ -1,6 +1,6 @@
 #include "CPlanarDibDriver.h"
 
-#include "../../Graphics/CPvGdiBitmap.h"
+#include "../../Graphics/CPVGDIBitmap.h"
 #include "CGdiContext.h"
 
 #define WIN32_LEAN_AND_MEAN

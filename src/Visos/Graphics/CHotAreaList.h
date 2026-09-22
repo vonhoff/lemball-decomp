@@ -25,7 +25,7 @@ public:
 	void ProcessHandlers(const CVsPoint& p_point, Message* p_message);
 	void UpdateHandlers();
 
-	friend class CPvWnd;
+	friend class CPVWnd;
 
 private:
 	CHotAreaElement* m_head;           // 0x48

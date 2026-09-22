@@ -13,8 +13,8 @@ public:
 	friend class CBroadcast;
 	friend class CGodManager;
 	friend class CWriteSocket;
-	friend class CReadNcmsBuff;
-	friend class CReadCmsBuff;
+	friend class CReadNCMSBuff;
+	friend class CReadCMSBuff;
 
 protected:
 	unsigned char* m_data; // 0x04

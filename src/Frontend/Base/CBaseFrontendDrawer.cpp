@@ -10,12 +10,12 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CBitmap.h"
 #include "../../Visos/Graphics/CCursor.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../../Visos/Resources/CMogRes.h"
-#include "../../Visos/Resources/CResBitmap.h"
+#include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Base/CBaseFrontendProcess.h"
 #include "../Controls/CGunButtons.h"
@@ -25,7 +25,7 @@
 extern "C" unsigned long __stdcall timeGetTime(void);
 #include "../../Network/Game/CNetworkManager.h"
 #include "../../Views/Sound/CSoundView.h"
-#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/CVSOStream.h"
 
 extern int* g_pSentinel;
 extern char g_szUnknownUserActionSpecified[];
@@ -41,7 +41,7 @@ extern char g_szUnknownUserActionReceived[];
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CBitmapRes.h"
 #include "Visos/Graphics/CDrawingMark.h"
@@ -55,7 +55,7 @@ class CFrames;
 
 // FUNCTION: LEMBALL 0x00445420
 CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
-										 CGdi* p_gdi,
+										 CGDI* p_gdi,
 										 const CVsRect& p_rect,
 										 eFlowProcesses p_flowProcess,
 										 int p_resourceCapacity,
@@ -199,7 +199,7 @@ CBaseFrontendDrawer::~CBaseFrontendDrawer()
 	}
 	g_pMasterInputQueue->Detach(this, 0);
 	if (m_loaded != 0) {
-		InternalUnLoad();
+		_UnLoad();
 	}
 	if (m_textManager != 0) {
 		delete m_textManager;
@@ -251,7 +251,7 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 void CBaseFrontendDrawer::Draw(const CVsRect& p_rect)
 {
 	if (m_gdi != 0) {
-		m_gdi->m_renderTarget->GetCurrDb();
+		m_gdi->m_renderTarget->GetCurrDB();
 		m_primitiveBank = 0;
 		if (m_gunController != 0) {
 			if (CGunButtons::DrawBackBuffer() == 0 && m_backBufferNeeded == 0) {
@@ -289,11 +289,11 @@ void CBaseFrontendDrawer::ReplaceBackground()
 			primitive->Draw(m_gdi);
 			m_framePrimitiveCount++;
 		}
-		InternalDrawBackGround();
+		_DrawBackGround();
 		DrawBackGround();
 	}
 	if (m_drawingBackBuffer == 0) {
-		InternalDrawAnims();
+		_DrawAnims();
 		DrawAnims();
 	}
 	DrawText();
@@ -307,7 +307,7 @@ void CBaseFrontendDrawer::ReplaceBackground()
 	}
 }
 // FUNCTION: LEMBALL 0x00445c10
-void CBaseFrontendDrawer::InternalDrawBackGround()
+void CBaseFrontendDrawer::_DrawBackGround()
 {
 	if (m_drawFrame != 0) {
 		CVsRect tiles(0, 0, m_width, m_height);
@@ -325,7 +325,7 @@ void CBaseFrontendDrawer::InternalDrawBackGround()
 		for (int row = start.m_y; (short) (count.m_height + start.m_y) > row; row++) {
 			oddRow ^= 1;
 			for (int col = start.m_x; (int) ((short) (start.m_x + count.m_width) + oddRow) > col; col++) {
-				CResBitmap* bitmap = m_tileBitmap;
+				CResBITMAP* bitmap = m_tileBitmap;
 				int y = tileSize.m_height * row;
 				CBitmapRes& rec = m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
 				rec.m_x = col * tileSize.m_width - (tileSize.m_width / 2) * oddRow;
@@ -361,31 +361,31 @@ void CBaseFrontendDrawer::Restart()
 	windowValid = m_display->IsWindowValid();
 	if (m_loaded != 0) {
 		UnLoad();
-		InternalUnLoad();
+		_UnLoad();
 	}
 	m_mode = g_nCompactPrimaryContextLayout;
 	if (windowValid != 0) {
-		InternalLoad();
+		_Load();
 		Load();
 		m_backBufferNeeded = 1;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00445ed0
-void CBaseFrontendDrawer::InternalLoad()
+void CBaseFrontendDrawer::_Load()
 {
 	m_loaded = 1;
 	if (m_mode == 0) {
-		m_tileBitmap = CResBitmap::Load(RES_NEWFRONT_BITMAPS_HIRES_PAINTBALL_TILE);
-		m_backgroundBitmap = CResBitmap::Load(RES_NEWFRONT_BITMAPS_HIRES_TITLE_BMP);
+		m_tileBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_HIRES_PAINTBALL_TILE);
+		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_HIRES_TITLE_BMP);
 		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_2;
 		m_chalkFontId = RES_NEWFRONT_FONTS_HIRES_CHALK_FONT;
 		m_topFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_1;
 		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_3;
 	}
 	else {
-		m_tileBitmap = CResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_PAINTBALL_TILE);
-		m_backgroundBitmap = CResBitmap::Load(RES_NEWFRONT_BITMAPS_LORES_TITLE_BMP);
+		m_tileBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_PAINTBALL_TILE);
+		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_TITLE_BMP);
 		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_2;
 		m_chalkFontId = RES_NEWFRONT_FONTS_LORES_CHALK_FONT;
 		m_topFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_1;
@@ -400,7 +400,7 @@ void CBaseFrontendDrawer::InternalLoad()
 }
 
 // FUNCTION: LEMBALL 0x00445fe0
-void CBaseFrontendDrawer::InternalUnLoad()
+void CBaseFrontendDrawer::_UnLoad()
 {
 	if (m_textManager != 0) {
 		m_textManager->UnLoadFont(m_chalkFontId);
@@ -414,7 +414,7 @@ void CBaseFrontendDrawer::InternalUnLoad()
 }
 
 // FUNCTION: LEMBALL 0x00446050
-void CBaseFrontendDrawer::InternalDrawAnims()
+void CBaseFrontendDrawer::_DrawAnims()
 {
 	if (m_ambientAnim != 0) {
 		m_ambientAnim->m_fixedTime = timeGetTime();

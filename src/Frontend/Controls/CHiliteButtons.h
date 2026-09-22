@@ -5,15 +5,15 @@
 #include "../../Visos/Foundation/CVsRect.h"           // complete type
 
 class CGWnd;
-class CGdi;
+class CGDI;
 class CGraphicButton;
-class CResAnim;
+class CResANIM;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00498150
 class CHiliteButtons : public CBaseQueueHandler {
 public:
 	CHiliteButtons(CGWnd* p_window,
-				   CGdi* p_gdi,
+				   CGDI* p_gdi,
 				   int p_x,
 				   int p_y,
 				   unsigned long* p_animIds,
@@ -30,7 +30,7 @@ public:
 	void MoveCurrentButton(int p_x, int p_y);
 	void LoadFaces(unsigned long* p_animIds);
 	void UnLoadFaces();
-	void UpdateAnimId();
+	void UpdateAnimID();
 
 	friend class CHiliteController;
 
@@ -38,7 +38,7 @@ private:
 	CVsRect m_bounds;              // 0x10
 	int m_x;                       // 0x18
 	int m_y;                       // 0x1c
-	CGdi* m_gdi;                   // 0x20
+	CGDI* m_gdi;                   // 0x20
 	CGWnd* m_window;               // 0x24
 	unsigned int m_mode;           // 0x28
 	unsigned int m_controlMessage; // 0x2c
@@ -50,7 +50,7 @@ private:
 	int* m_binding;                // 0x44
 	unsigned long* m_animIds;      // 0x48
 	CGraphicButton* m_button;      // 0x4c
-	CResAnim** m_resources;        // 0x50
+	CResANIM** m_resources;        // 0x50
 	unsigned int m_active;         // 0x54
 };
 

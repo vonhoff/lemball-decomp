@@ -1,6 +1,6 @@
 #include "CFileNetworkAddress.h"
 
-#include "../Foundation/CVsOStream.h"
+#include "../Foundation/CVSOStream.h"
 #include "Visos/Network/CNetworkAddress.h"
 
 #include <string.h>

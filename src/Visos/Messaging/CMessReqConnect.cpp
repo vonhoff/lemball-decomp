@@ -17,7 +17,7 @@ CMessReqConnect::CMessReqConnect(const char* p_arg0) : CBroadcastMessage(p_arg0)
 // FUNCTION: LEMBALL 0x0045f430
 void CMessReqConnect::GetData()
 {
-	m_requestedPort = (unsigned short) GetDword();
+	m_requestedPort = (unsigned short) GetDWORD();
 	Get(*(const unsigned char**) &m_connectionData, 0x200);
 	Get(*(const char**) &m_peerName);
 }

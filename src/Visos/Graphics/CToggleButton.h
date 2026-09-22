@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_CTOGGLEBUTTON_H
 
 #include "CGraphicButton.h" // complete type
-class CPvGWnd;
+class CPVGWnd;
 struct CVsPoint;
 
 // SIZE 0x134
@@ -10,7 +10,7 @@ struct CVsPoint;
 // VTABLE: LEMBALL 0x004973b8 CHotAreaHandler
 class CToggleButton : public CGraphicButton {
 public:
-	CToggleButton(const CVsPoint& p_position, CPvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
+	CToggleButton(const CVsPoint& p_position, CPVGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
 		: CGraphicButton(p_position, p_parent, p_animId, p_flags)
 	{
 		m_toggled = 0;

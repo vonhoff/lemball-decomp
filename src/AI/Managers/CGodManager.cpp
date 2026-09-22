@@ -6,7 +6,7 @@
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGlobalGameObject.h"
 #include "../Messages/CGameStateMessage.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CViewData.h"
 #include "CBaseObjectManager.h"
 

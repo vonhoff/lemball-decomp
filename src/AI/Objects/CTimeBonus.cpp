@@ -1,10 +1,10 @@
 #include "CTimeBonus.h"
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "Views/Sound/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x00422c70
-void CTimeBonus::SetSfx()
+void CTimeBonus::SetSFX()
 {
 	SetSndEffect(SFX_TIMBONUS);
 }

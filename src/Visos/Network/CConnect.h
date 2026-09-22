@@ -38,13 +38,13 @@ public:
 	friend class CNetworkOptionsDrawer;
 	friend class CNetworkOptionsProc;
 	friend class CLevelLoader;
-	friend class CAi;
+	friend class CAI;
 	friend class CLaser;
 	friend class CLift;
 	friend class CMover;
 	friend class CPaintGun;
 	friend class CFileConnect;
-	friend class CTcpIpConnect;
+	friend class CTCPIPConnect;
 
 private:
 	char* m_name;                 // 0x08

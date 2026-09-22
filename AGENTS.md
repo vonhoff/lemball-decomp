@@ -83,16 +83,14 @@ Types: `FUNCTION` `STUB` `TEMPLATE` `SYNTHETIC` `LIBRARY` `VTABLE` `GLOBAL` `STR
 
 ## Naming
 
-PascalCase; leading `_` → `Internal`; drop `_` separators. Preserve catalog-evidenced
-`C` class prefixes in types, constructors, destructors, and filenames. Keep the
-existing acronym normalization (`CPVWnd` → `CPvWnd`). Apply `C` + PascalCase to
-project-owned Windows classes too; these are reconstruction names, not recovered
-symbols. Use concise, behavior-based method names and class context. Keep platform
-API names and passive record structs in their established spelling.
-Catalog-backed unprefixed types (`AiCoord`, `Prims`, `VsTrig`) keep their names.
-`CHAR4` is the complete original type name.
-Intentional Mac/Win divergences: `tools/lib/names.py` `INTENTIONAL`. Class/filename
-consistency is checked by `tools/lib/layout.py`, without overrides.
+The original 68K catalog evidence (`tools/resources/catalog.csv`) is authoritative and leading.
+Preserve exact catalog spelling, casing, acronyms, prefixes, and underscore separators without
+artificial PascalCase or acronym conversions. Do not strip prefixes or convert leading `_`
+to `Internal`.
+
+For project-owned Windows classes without catalog evidence, use concise, behavior-based names.
+Keep platform API names and passive record structs in their established spelling.
+Class/filename consistency is checked by `tools/lib/layout.py`.
 
 ```powershell
 python tools/gate.py --names
@@ -102,7 +100,6 @@ Compares reconstructed names to `tools/resources/catalog.csv` by original Window
 address. Use ordinary reccmp annotations; do not duplicate the catalog with
 `// 68K` comments. Parameter names are ignored; encoded parameter types
 and method constness are compared. Signature differences require Windows review
-(`--names --verbose`; `--names-strict` fails review items). `--names-original`
-audits exact Mac spelling, independently of project naming normalization.
+(`--names --verbose`; `--names-strict` fails review items).
 
 clang-format touched C/C++.

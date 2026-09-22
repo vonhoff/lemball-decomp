@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CSTATMANAGER_H
 #define LEMBALL_VISOS_ANIMATION_CSTATMANAGER_H
 
-class CVsOStream;
+class CVSOStream;
 class CBaseStat;
 
 // SIZE 0x14
@@ -9,7 +9,7 @@ class CBaseStat;
 class CStatManager {
 public:
 	CStatManager(int p_arg0);
-	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	void Register(CBaseStat* p_stat);
 	~CStatManager();
 

@@ -14,8 +14,8 @@ public:
 		m_height = 0;
 		m_width = 0;
 	}
-	virtual void Draw(CGdi* p_gdi);   // vtable+0x04
-	virtual void Render(CGdi* p_gdi); // vtable+0x08
+	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
+	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	virtual ~CBigBitmap();            // vtable+0x00
 
 private:

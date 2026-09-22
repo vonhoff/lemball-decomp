@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPRIMITIVE_H
 #define LEMBALL_VISOS_GRAPHICS_CPRIMITIVE_H
 
-class CGdi;
+class CGDI;
 
 // SIZE 0x04
 // VTABLE: LEMBALL 0x00496ca8
@@ -10,8 +10,8 @@ public:
 	inline CPrimitive() {}
 
 	virtual ~CPrimitive() {}              // vtable+0x00
-	virtual void Draw(CGdi* p_gdi) = 0;   // vtable+0x04
-	virtual void Render(CGdi* p_gdi) = 0; // vtable+0x08
+	virtual void Draw(CGDI* p_gdi) = 0;   // vtable+0x04
+	virtual void Render(CGDI* p_gdi) = 0; // vtable+0x08
 };
 
 // SYNTHETIC: LEMBALL 0x00432350

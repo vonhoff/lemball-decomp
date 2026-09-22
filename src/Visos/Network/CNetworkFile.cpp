@@ -1,6 +1,6 @@
 #include "CNetworkFile.h"
 
-#include "../Foundation/CVsOStream.h"
+#include "../Foundation/CVSOStream.h"
 
 #include <string.h>
 

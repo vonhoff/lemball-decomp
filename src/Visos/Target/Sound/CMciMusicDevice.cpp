@@ -2,9 +2,9 @@
 
 #include "../../../Platform/Windows/Entry.h"
 #include "../../Foundation/CString.h"
-#include "../../Foundation/CVsIOs.h"
-#include "../../Foundation/CVsOStream.h"
-#include "../../Resources/CResString.h"
+#include "../../Foundation/CVSIOs.h"
+#include "../../Foundation/CVSOStream.h"
+#include "../../Resources/CResSTRING.h"
 #include "../System/CPlatformServices.h"
 
 #include <string.h>
@@ -100,7 +100,7 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	MCI_OPEN_PARMS openParms;
 	MCI_SET_PARMS setParms;
 	MCIERROR error;
-	CResString* name;
+	CResSTRING* name;
 	char* cdDir;
 
 	if (p_handle == 0) {
@@ -114,7 +114,7 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	}
 	m_preparedHandle = p_handle;
 	g_nPreparedMciMusicTrackHandle = p_handle;
-	name = CResString::Load(p_resourceId);
+	name = CResSTRING::Load(p_resourceId);
 	if (name->m_loaded != 0) {
 		name->m_age = 0;
 	}
@@ -126,7 +126,7 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	CString musicName;
 	if (m_usePathPrefix != 0) {
 		musicName = m_path;
-		if (musicName[musicName.Getlength() - 1] != '\\') {
+		if (musicName[musicName.getlength() - 1] != '\\') {
 			musicName += "\\";
 		}
 	}
@@ -135,17 +135,17 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	CString fullPath;
 	if (m_useCdDirectory == 0) {
 		fullPath = g_szCurrentDirectory;
-		if (fullPath[fullPath.Getlength() - 1] != '\\') {
+		if (fullPath[fullPath.getlength() - 1] != '\\') {
 			fullPath += "\\";
 		}
 	}
 	else {
-		cdDir = g_pTargetPlatformServices->GetCdDir(musicName);
+		cdDir = g_pTargetPlatformServices->GetCDDir(musicName);
 		if (cdDir == 0) {
 			cdDir = g_szCurrentDirectory;
 		}
 		fullPath = cdDir;
-		if (fullPath[fullPath.Getlength() - 1] != '\\') {
+		if (fullPath[fullPath.getlength() - 1] != '\\') {
 			fullPath += "\\";
 		}
 	}

@@ -4,7 +4,7 @@
 #include "../Objects/SwitchEntry.h"
 #include "CBaseObjectManager.h" // complete type
 
-class CAi;
+class CAI;
 class AiCoord;
 class CGameObject;
 class CLift;
@@ -13,7 +13,7 @@ struct Coord3d;
 // VTABLE: LEMBALL 0x00495ea8
 class CLiftManager : public CBaseObjectManager {
 public:
-	CLiftManager(CAi* p_ai, int p_capacity);
+	CLiftManager(CAI* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	unsigned short Id(int p_index);
 	virtual ~CLiftManager(); // vtable+0x14
@@ -28,7 +28,7 @@ public:
 	void Switch(swMessage p_message, int p_id, int p_legacyA, int p_legacyB);
 
 private:
-	CAi* m_ai;      // 0x30
+	CAI* m_ai;      // 0x30
 	int m_count;    // 0x34
 	int m_capacity; // 0x38
 	CLift* m_lifts; // 0x3c

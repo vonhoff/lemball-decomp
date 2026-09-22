@@ -1,7 +1,7 @@
 #include "CMove3d.h"
 
 #include "../../Control/Game/CGame.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "AI/Base/CPt3.h"
 
 // FUNCTION: LEMBALL 0x0042a7d0
@@ -29,7 +29,7 @@ void CMove3d::Set(CPt3& p_start, CPt3& p_end, int p_startTime, int p_speed)
 		return;
 	}
 
-	int root = ((CVsMath*) g_pSentinel)->SqRoot(distance);
+	int root = ((CVSMath*) g_pSentinel)->SqRoot(distance);
 	m_velocity.m_x = dx * 0x1000;
 	m_velocity.m_y = dy * 0x1000;
 	m_velocity.m_z = dz * 0x1000;

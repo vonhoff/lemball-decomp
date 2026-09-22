@@ -2,7 +2,7 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 
 // FUNCTION: LEMBALL 0x0041c3f0
 int CCatapult::Usage()

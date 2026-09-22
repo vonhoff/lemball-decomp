@@ -4,51 +4,51 @@
 #include "../../Views/Sound/CLoadUpdate.h" // complete type
 #include "../../Views/Sound/CSoundView.h"  // complete type for CLoadUpdate
 
-class CCdLoadAnim;
+class CCDLoadAnim;
 class CMain2DDisplay;
-class CResAnim;
-class CResBitmap;
-class CResFont;
-class CResMovie;
-class CResPalette;
-class CResString;
+class CResANIM;
+class CResBITMAP;
+class CResFONT;
+class CResMOVIE;
+class CResPALETTE;
+class CResSTRING;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00497ad4
 class CFrontendResourceLoader : public CLoadUpdate {
 public:
 	CFrontendResourceLoader(CMain2DDisplay* p_display, int p_soundState);
 	virtual void UpdateNonCacheLoad(); // vtable+0x00
-	void LoadAnim(unsigned long p_resourceId);
-	void LoadBitmap(unsigned long p_resourceId);
-	void LoadFont(unsigned long p_resourceId);
-	void LoadMovie(unsigned long p_resourceId);
-	void LoadPalette(unsigned long p_resourceId);
-	void LoadString(unsigned long p_resourceId);
-	void UnLoadAnim(unsigned long p_resourceId);
-	void UnLoadBitmap(unsigned long p_resourceId);
-	void UnLoadFont(unsigned long p_resourceId);
-	void UnLoadPalette(unsigned long p_resourceId);
-	void UnLoadString(unsigned long p_resourceId);
+	void LoadANIM(unsigned long p_resourceId);
+	void LoadBITMAP(unsigned long p_resourceId);
+	void LoadFONT(unsigned long p_resourceId);
+	void LoadMOVIE(unsigned long p_resourceId);
+	void LoadPALETTE(unsigned long p_resourceId);
+	void LoadSTRING(unsigned long p_resourceId);
+	void UnLoadANIM(unsigned long p_resourceId);
+	void UnLoadBITMAP(unsigned long p_resourceId);
+	void UnLoadFONT(unsigned long p_resourceId);
+	void UnLoadPALETTE(unsigned long p_resourceId);
+	void UnLoadSTRING(unsigned long p_resourceId);
 	~CFrontendResourceLoader();
 
 private:
-	CCdLoadAnim* m_loadAnim;           // 0x04
+	CCDLoadAnim* m_loadAnim;           // 0x04
 	int m_loadedResources;             // 0x08
 	int m_totalResources;              // 0x0c
-	CResAnim** m_anims;                // 0x10
+	CResANIM** m_anims;                // 0x10
 	int m_loadedAnims;                 // 0x14
 	int m_animCapacity;                // 0x18
-	CResFont** m_fonts;                // 0x1c
+	CResFONT** m_fonts;                // 0x1c
 	int m_loadedFonts;                 // 0x20
 	int m_fontCapacity;                // 0x24
-	CResBitmap** m_bitmaps;            // 0x28
+	CResBITMAP** m_bitmaps;            // 0x28
 	int m_loadedBitmaps;               // 0x2c
 	int m_bitmapCapacity;              // 0x30
-	CResPalette** m_palettes;          // 0x34
+	CResPALETTE** m_palettes;          // 0x34
 	unsigned int m_loadedPalettes;     // 0x38
-	CResString** m_strings;            // 0x3c
+	CResSTRING** m_strings;            // 0x3c
 	int m_loadedStrings;               // 0x40
-	CResMovie** m_movies;              // 0x44
+	CResMOVIE** m_movies;              // 0x44
 	int m_loadedMovies;                // 0x48
 	unsigned int* m_animResourceIds;   // 0x4c
 	unsigned int* m_fontResourceIds;   // 0x50

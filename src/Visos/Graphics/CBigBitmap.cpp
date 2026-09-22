@@ -1,6 +1,6 @@
 #include "CBigBitmap.h"
 
-#include "CGdi.h"
+#include "CGDI.h"
 
 // FUNCTION: LEMBALL 0x00439720
 CBigBitmap::~CBigBitmap()
@@ -11,13 +11,13 @@ CBigBitmap::~CBigBitmap()
 class CCopyColourToBackBuff;
 
 // FUNCTION: LEMBALL 0x004398d0
-void CBigBitmap::Draw(CGdi* p_gdi)
+void CBigBitmap::Draw(CGDI* p_gdi)
 {
 	p_gdi->AddToList(this);
 }
 
 // FUNCTION: LEMBALL 0x004398e0
-void CBigBitmap::Render(CGdi* p_gdi)
+void CBigBitmap::Render(CGDI* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit((CCopyColourToBackBuff*) this);
 }

@@ -16,7 +16,7 @@ extern char g_szMoviePrefix[];
 
 // FUNCTION: LEMBALL 0x00447410
 CIntroAnimDrawer::CIntroAnimDrawer(CMain2DDisplay* p_display,
-								   CGdi* p_gdi,
+								   CGDI* p_gdi,
 								   const CVsRect& p_rect,
 								   unsigned int p_completionSequence)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_INTRO_ANIM, 0, 0, 0, 0, 0)

@@ -1,6 +1,6 @@
 #include "CReadCBuff.h"
 
-#include "../Network/CTcpIpNetwork.h"
+#include "../Network/CTCPIPNetwork.h"
 #include "BasePacketHeader.h"
 #include "CReadPacket.h"
 #include "Visos/Messaging/CReadPacketBuff.h"

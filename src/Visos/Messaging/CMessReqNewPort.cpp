@@ -13,7 +13,7 @@ CMessReqNewPort::CMessReqNewPort(const char* p_arg0) : CMessReqConnect(p_arg0)
 void CMessReqNewPort::GetData()
 {
 	CMessReqConnect::GetData();
-	m_connectionId = (unsigned int) GetDword();
+	m_connectionId = (unsigned int) GetDWORD();
 }
 
 // FUNCTION: LEMBALL 0x0045f4d0

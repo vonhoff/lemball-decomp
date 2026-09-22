@@ -2,11 +2,11 @@
 
 #include "../../Foundation/CChangeList.h"
 #include "../../Foundation/CText.h"
-#include "../../Graphics/CGdi.h"
+#include "../../Graphics/CGDI.h"
 #include "../../Graphics/CHotAreaList.h"
-#include "../../Graphics/CPvGWnd.h"
+#include "../../Graphics/CPVGWnd.h"
 #include "../../Graphics/CSurface.h"
-#include "../../Resources/CResFont.h"
+#include "../../Resources/CResFONT.h"
 
 extern char g_szButton[];
 
@@ -94,7 +94,7 @@ void CTextButton::Initialize()
 	m_reserved120 = 0;
 	m_lastDrawnRemap = 0;
 	m_remap = 0;
-	m_font = CResFont::Load(m_fontResourceId);
+	m_font = CResFONT::Load(m_fontResourceId);
 	m_nativeButtonCreated = 0;
 }
 
@@ -122,7 +122,7 @@ void CTextButton::DrawButton()
 		position.m_y = m_pressedTextPosition.m_y;
 	}
 	if (text != 0) {
-		m_gdi->m_renderTarget->GetCurrDb();
+		m_gdi->m_renderTarget->GetCurrDB();
 		m_textPrimitive->Set(position, m_font, text, 0x20, m_remap);
 		m_textPrimitive->Draw(m_gdi);
 	}
@@ -136,7 +136,7 @@ void CTextButton::OnPaint(const CVsRect& p_rect)
 	}
 	if (m_gdi->m_primitiveCount == 0 && (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed)) {
 		if (GetSizeStatus() != 0) {
-			InternalDrawButton();
+			_DrawButton();
 			CFramedButton::DrawButton();
 			DrawButton();
 		}

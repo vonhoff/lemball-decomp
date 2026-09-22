@@ -9,7 +9,7 @@
 #include "HiliteControllerJunction.h"                 // complete type
 
 class CGWnd;
-class CGdi;
+class CGDI;
 class CHiliteButtons;
 class CHiliteWindow;
 // SIZE 0x14c
@@ -17,7 +17,7 @@ class CHiliteWindow;
 // VTABLE: LEMBALL 0x0049823c CAnimsManager
 class CHiliteController : public CBaseQueueHandler, public CAnimsManager {
 public:
-	CHiliteController(CGWnd* p_arg0, CGdi* p_arg1, int p_arg2, unsigned int p_arg3, unsigned int p_arg4);
+	CHiliteController(CGWnd* p_arg0, CGDI* p_arg1, int p_arg2, unsigned int p_arg3, unsigned int p_arg4);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~CHiliteController();               // vtable+0x04
 	void ActivateButtons(int p_active);
@@ -56,7 +56,7 @@ private:
 	CHiliteButtons* m_buttons[4];            // 0xac
 	HiliteControllerJunction m_junctions[4]; // 0xbc
 	CSolidRect m_hiliteRect;                 // 0xfc
-	CGdi* m_gdi;                             // 0x10c
+	CGDI* m_gdi;                             // 0x10c
 	CGWnd* m_window;                         // 0x110
 	unsigned int m_nextControlMessage;       // 0x114
 	CStaticAnim m_hiliteAnim;                // 0x118

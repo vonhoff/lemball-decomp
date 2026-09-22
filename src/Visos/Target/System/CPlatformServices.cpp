@@ -1,7 +1,7 @@
 #include "CPlatformServices.h"
 
 #include "../../Foundation/CMasterInput.h"
-#include "../../Foundation/CVsIOs.h"
+#include "../../Foundation/CVSIOs.h"
 #include "../../Foundation/Message.h"
 #include "../../Foundation/VsFile.h"
 #include "Visos/Target/Input/InputTranslationEntry.h"
@@ -118,7 +118,7 @@ bool CPlatformServices::WriteRegistryFlag(const char* p_subkey, int p_enabled)
 }
 
 // FUNCTION: LEMBALL 0x0045eda0
-char* CPlatformServices::GetCdDir(const char* p_requiredFile)
+char* CPlatformServices::GetCDDir(const char* p_requiredFile)
 {
 	char candidate[256];
 	unsigned int drives;
@@ -136,9 +136,9 @@ char* CPlatformServices::GetCdDir(const char* p_requiredFile)
 			candidate[0] = letter;
 			g_szCDRootPath[0] = letter;
 			if (GetDriveTypeA(g_szCDRootPath) == 5) {
-				file = VsOpen(candidate, g_szFileModeRead);
+				file = vsOpen(candidate, g_szFileModeRead);
 				if (file != 0) {
-					VsClose(file);
+					vsClose(file);
 					return g_szCDRootPath;
 				}
 			}

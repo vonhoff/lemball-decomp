@@ -40,22 +40,22 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	currentDir = &m_currentDirIndex;
 	*currentDir = g_chunkIndex;
 	m_currentDirChunk = g_pChunkInfo;
-	VsSeek(g_pMogFile, p_fileOffset, kSeekSet);
+	vsSeek(g_pMogFile, p_fileOffset, kSeekSet);
 	if (p_fileOffset == 0) {
 		((CRawRead*) this)->InputByte();
-		VsSeek(g_pMogFile, 0, kSeekSet);
+		vsSeek(g_pMogFile, 0, kSeekSet);
 	}
 	((CRawRead*) this)->InputDword();
 	((CRawRead*) this)->InputDword();
 	m_chunkCount = ((CRawRead*) this)->InputDword();
 	if (((CRawRead*) this)->InputDword() != kMogFormatVersion) {
-		InternalVsRelAssert("IsValidResourceFile", "MOGLOAD.CPP", 0x1a2);
+		_VSRELassert("IsValidResourceFile", "MOGLOAD.CPP", 0x1a2);
 	}
 	m_directoryEndOffset = ((CRawRead*) this)->InputDword();
-	m_payloadStartOffset = VsTell(g_pMogFile);
+	m_payloadStartOffset = vsTell(g_pMogFile);
 	size = m_directoryEndOffset - m_payloadStartOffset;
 	m_directoryData = (unsigned char*) CMogloadArena::operator new(size);
-	VsRead(g_pMogFile, m_directoryData, size);
+	vsRead(g_pMogFile, m_directoryData, size);
 	if (m_chunkCount != 0) {
 		m_firstChunk = (ChunkInfo*) CMogloadArena::operator new(kChunkInfoSize);
 		*firstIndex = 0;
@@ -113,7 +113,7 @@ CMogDir::~CMogDir()
 // FUNCTION: LEMBALL 0x0045bfa0
 void CMogDir::GetChunkInfo(ChunkInfo* p_info)
 {
-	VsSeek(g_pMogFile, (m_iteratorIndex * 4 + 4) * kDirectoryEntryStride + m_directoryEndOffset, 0);
+	vsSeek(g_pMogFile, (m_iteratorIndex * 4 + 4) * kDirectoryEntryStride + m_directoryEndOffset, 0);
 	p_info->m_next = 0;
 	p_info->m_child = 0;
 	p_info->m_directory = 0;
@@ -122,7 +122,7 @@ void CMogDir::GetChunkInfo(ChunkInfo* p_info)
 	p_info->m_type = ((CRawRead*) this)->InputDword();
 	p_info->m_fileOffset = ((CRawRead*) this)->InputDword();
 	p_info->m_size = ((CRawRead*) this)->InputDword();
-	VsRead(g_pMogFile, p_info->m_name, sizeof(p_info->m_name));
+	vsRead(g_pMogFile, p_info->m_name, sizeof(p_info->m_name));
 }
 
 // FUNCTION: LEMBALL 0x0045c030

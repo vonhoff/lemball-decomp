@@ -4,7 +4,7 @@
 #include "../Objects/CViewData.h"
 
 // FUNCTION: LEMBALL 0x00429320
-CLaserManager::CLaserManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x15, 0xa)
+CLaserManager::CLaserManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x15, 0xa)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -97,7 +97,7 @@ void CLaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectT
 	}
 }
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"

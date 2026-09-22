@@ -1,7 +1,7 @@
 #include "CDoorManager.h"
 
 #include "../Base/CGameObject.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CDoor.h"
 #include "../Objects/CViewData.h"
 #include "AI/Base/ObjectTypes.h"
@@ -14,7 +14,7 @@ class AiCoord;
 unsigned short g_wNextDoorIndex = 0;
 
 // FUNCTION: LEMBALL 0x0040df30
-CDoorManager::CDoorManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x13, 0x8)
+CDoorManager::CDoorManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x13, 0x8)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;

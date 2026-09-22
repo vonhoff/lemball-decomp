@@ -3,14 +3,14 @@
 
 #include <stddef.h>
 
-class CVsOStream;
+class CVSOStream;
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00498940
 class CMBlock {
 public:
 	CMBlock(class CArena* p_arena, class CMBlock* p_previous, char* p_description, unsigned long p_size);
-	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	virtual ~CMBlock();                                  // vtable+0x04
 	void SetDesc(char* p_arg0);
 	bool ContainsAddress(void* p_address);
@@ -19,7 +19,7 @@ public:
 	CMBlock();
 
 	friend class CArena;
-	friend class CRamArena;
+	friend class CRAMArena;
 
 protected:
 	unsigned int m_signature;       // 0x04

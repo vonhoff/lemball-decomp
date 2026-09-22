@@ -1,14 +1,14 @@
 #include "CAnimsManager.h"
 
 #include "../Foundation/CVsPoint.h"
-#include "../Graphics/CGdi.h"
+#include "../Graphics/CGDI.h"
 #include "../Graphics/CLine.h"
 #include "../Graphics/CSurface.h"
-#include "../Graphics/CZrle.h"
-#include "../Resources/CResAnim.h"
+#include "../Graphics/CZRLE.h"
+#include "../Resources/CResANIM.h"
 #include "../Resources/CResBase.h"
-#include "../Resources/CResBaseList.h"
-#include "../Resources/CResZrle.h"
+#include "../Resources/CResBaseLIST.h"
+#include "../Resources/CResZRLE.h"
 #include "CAnim.h"
 #include "CFrames.h"
 #include "Visos/Foundation/CVsRect.h"
@@ -23,14 +23,14 @@ void CAnimsManager::FreeVram()
 
 // FUNCTION: LEMBALL 0x0044e700
 CVsRect* CAnimsManager::DrawAnimOnGdi(CVsRect* p_bounds,
-									  CGdi* p_gdi,
+									  CGDI* p_gdi,
 									  const CVsPoint& p_position,
 									  unsigned long p_resourceId,
 									  unsigned long p_drawFlags,
 									  CFrames* p_frame,
 									  CRemap* p_remap)
 {
-	CGdi* previous = m_gdi;
+	CGDI* previous = m_gdi;
 	m_gdi = p_gdi;
 	CVsRect bounds = DrawAnim(p_position, p_resourceId, p_drawFlags, p_frame, p_remap);
 	m_gdi = previous;
@@ -42,7 +42,7 @@ CVsRect* CAnimsManager::DrawAnimOnGdi(CVsRect* p_bounds,
 }
 
 // FUNCTION: LEMBALL 0x00467260
-CAnimsManager::CAnimsManager(CGdi* p_gdi,
+CAnimsManager::CAnimsManager(CGDI* p_gdi,
 							 unsigned long p_resourceIdCount,
 							 int p_resourceCapacity,
 							 int p_animCapacity,
@@ -82,7 +82,7 @@ CAnimsManager::CAnimsManager(CGdi* p_gdi,
 		m_animCapacity = p_animCapacity;
 	}
 	if (m_zrleCapacity != 0) {
-		m_zrlePrimitives = new CZrle[m_zrleCapacity];
+		m_zrlePrimitives = new CZRLE[m_zrleCapacity];
 	}
 	if (m_animCapacity != 0) {
 		m_animPrimitives = new CAnim[m_animCapacity];
@@ -145,10 +145,10 @@ void CAnimsManager::LoadAnims(unsigned long p_resourceId)
 			slot = slot + 1;
 		}
 	}
-	m_resources[slot] = CResAnim::Load(p_resourceId);
+	m_resources[slot] = CResANIM::Load(p_resourceId);
 	CResBase*& resource = m_resources[slot];
 	if (resource == 0) {
-		resource = CResZrle::Load(p_resourceId);
+		resource = CResZRLE::Load(p_resourceId);
 	}
 	if ((int) m_resourceSlots[p_resourceId] == m_resourceCapacity) {
 		m_resourceSlots[p_resourceId] = (short) slot;
@@ -174,7 +174,7 @@ unsigned long CAnimsManager::GetnAnims(unsigned long p_resourceId)
 	if (resource->m_chunkType == 0x5a524c45) {
 		return 1;
 	}
-	return ((CResBaseList*) resource)->m_totalSize;
+	return ((CResBaseLIST*) resource)->m_totalSize;
 }
 
 // FUNCTION: LEMBALL 0x00467570
@@ -183,12 +183,12 @@ CVsSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_a
 	CVsSize size;
 	CResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
 	if (resource->m_chunkType != 0x5a524c45) {
-		CResZrle* entry = ((CResAnim*) resource)->m_animationEntries + p_animIndex;
+		CResZRLE* entry = ((CResANIM*) resource)->m_animationEntries + p_animIndex;
 		size.m_width = entry->m_width;
 		size.m_height = entry->m_height;
 	}
 	else {
-		CResZrle* entry = (CResZrle*) resource;
+		CResZRLE* entry = (CResZRLE*) resource;
 		size.m_width = entry->m_width;
 		size.m_height = entry->m_height;
 	}
@@ -196,7 +196,7 @@ CVsSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_a
 }
 
 // FUNCTION: LEMBALL 0x004676a0
-CResZrle* CAnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, CFrames* p_frame)
+CResZRLE* CAnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, CFrames* p_frame)
 {
 	CResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
 	unsigned int frame;
@@ -207,13 +207,13 @@ CResZrle* CAnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, CFrame
 		frame = 0;
 	}
 	if (resource->m_chunkType == 0x5a524c45) {
-		return (CResZrle*) resource;
+		return (CResZRLE*) resource;
 	}
-	return ((CResAnim*) resource)->m_animationEntries + frame;
+	return ((CResANIM*) resource)->m_animationEntries + frame;
 }
 
 // FUNCTION: LEMBALL 0x00467700
-void CAnimsManager::DetachGdi(CGdi* p_gdi)
+void CAnimsManager::DetachGdi(CGDI* p_gdi)
 {
 	if (m_previousGdi == p_gdi) {
 		m_previousGdi = 0;
@@ -232,11 +232,11 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 								CRemap* p_remap)
 {
 	CResBase* resource;
-	CResZrle* sizeSource;
-	CZrle* zrle;
+	CResZRLE* sizeSource;
+	CZRLE* zrle;
 	CAnim* anim;
 	unsigned int frameIndex;
-	CGdi* current;
+	CGDI* current;
 
 	if (m_doubleBuffered != 0) {
 		current = m_gdi;
@@ -249,7 +249,7 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 	m_previousGdi = m_gdi;
 	resource = m_resources[m_resourceSlots[p_resourceId]];
 	if (resource->m_chunkType == 0x5a524c45) {
-		sizeSource = (CResZrle*) resource;
+		sizeSource = (CResZRLE*) resource;
 		if (m_doubleBuffered != 0) {
 			if (m_zrleCapacity == m_bufferedZrleCount) {
 				ResetPrimitives();
@@ -275,7 +275,7 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 			frameIndex = ((CFrames*) p_frame)->GetFrameNo();
 			((CFrames*) p_frame)->m_reserved08 = frameIndex;
 		}
-		sizeSource = ((CResAnim*) resource)->m_animationEntries + frameIndex;
+		sizeSource = ((CResANIM*) resource)->m_animationEntries + frameIndex;
 		if (m_doubleBuffered != 0) {
 			if (m_animCapacity == m_bufferedAnimCount) {
 				ResetPrimitives();
@@ -289,7 +289,7 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 		anim->m_state = m_primitiveSequence;
 		anim->m_x = p_position.m_x;
 		anim->m_y = p_position.m_y;
-		anim->m_animResource = (CResAnim*) resource;
+		anim->m_animResource = (CResANIM*) resource;
 		anim->m_animIndex = frameIndex;
 		anim->m_flags = p_drawFlags;
 		anim->m_remap = p_remap;
@@ -311,7 +311,7 @@ void CAnimsManager::ResetPrimitives()
 		PrimitiveState* animState = (PrimitiveState*) &m_animCount;
 		PrimitiveState* zrleState = (PrimitiveState*) &m_zrleCount;
 		*animState = *zrleState;
-		unsigned char* drawMark = (unsigned char*) m_gdi->m_renderTarget->GetCurrDb();
+		unsigned char* drawMark = (unsigned char*) m_gdi->m_renderTarget->GetCurrDB();
 		m_animDrawMark[0] = *drawMark;
 		m_zrleDrawMark[0] = *drawMark;
 		return;

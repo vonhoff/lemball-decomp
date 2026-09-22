@@ -29,7 +29,7 @@ public:
 	CPlayerLemming(int p_x, int p_y, int p_z, int p_facing, unsigned int p_alternatePlayer, unsigned long p_spawnDelay);
 	virtual ~CPlayerLemming();
 	CPlayerLemmingGroup* GetGroup();
-	bool CheckSfx();
+	bool CheckSFX();
 	unsigned int CheckNetworkStateChanged();
 	int GetLastBalloon();
 	int GetObject(int p_index);

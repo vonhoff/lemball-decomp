@@ -1,11 +1,11 @@
 #include "Platform/Windows/Thread.h"
 #include "Visos/Foundation/CBaseQueue.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
-#include "Visos/Foundation/CVsOStream.h"
+#include "Visos/Foundation/CVSOStream.h"
 #include "Visos/Foundation/VsInit.h"
 #include "Visos/Network/CBaseNetwork.h"
 #include "Visos/Network/CFileNetwork.h"
-#include "Visos/Network/CTcpIpNetwork.h"
+#include "Visos/Network/CTCPIPNetwork.h"
 
 #include <new.h>
 
@@ -79,7 +79,7 @@ unsigned int FileNetworkMessageThread()
 }
 
 // FUNCTION: LEMBALL 0x0046f3b0
-bool VsFNetInit()
+bool VSFNET_Init()
 {
 	unsigned long startTime;
 
@@ -112,7 +112,7 @@ bool VsFNetInit()
 }
 
 // FUNCTION: LEMBALL 0x0046f480
-bool VsFNetQuit()
+bool VSFNET_Quit()
 {
 	unsigned long startTime;
 
@@ -138,7 +138,7 @@ unsigned int TcpIpNetworkMessageThread()
 	unsigned int message[7];
 	unsigned int count;
 
-	g_pBaseNetwork = new CTcpIpNetwork();
+	g_pBaseNetwork = new CTCPIPNetwork();
 	while (g_pBaseNetwork->m_initialisePending == 0 && g_pBaseNetwork->m_serverMode == 0 &&
 		   g_pBaseNetwork->m_shutdownRequested == 0) {
 		WaitMessage();
@@ -179,7 +179,7 @@ unsigned int TcpIpNetworkMessageThread()
 }
 
 // FUNCTION: LEMBALL 0x0046fbb0
-bool VsNetInit()
+bool VSNET_Init()
 {
 	unsigned long startTime;
 
@@ -216,7 +216,7 @@ bool VsNetInit()
 }
 
 // FUNCTION: LEMBALL 0x0046fc80
-bool VsNetQuit()
+bool VSNET_Quit()
 {
 	unsigned long startTime;
 

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CMCIMUSICDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CMCIMUSICDEVICE_H
 
-#include "../../Sound/CPvMusicDevice.h" // complete type
+#include "../../Sound/CPVMusicDevice.h" // complete type
 
 #define WIN32_LEAN_AND_MEAN
 // clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
@@ -11,7 +11,7 @@
 
 // SIZE 0x34
 // VTABLE: LEMBALL 0x0049ad78
-class CMciMusicDevice : public CPvMusicDevice {
+class CMciMusicDevice : public CPVMusicDevice {
 public:
 	CMciMusicDevice();
 	virtual ~CMciMusicDevice();

@@ -30,7 +30,7 @@ public:
 	friend class CNetworkOptionsDrawer;
 	friend class CHotAreaList;
 	friend class CGraphicButton;
-	friend class CPvButton;
+	friend class CPVButton;
 	friend class CDepressedButton;
 	friend class CFramedButton;
 	friend class CTextButton;

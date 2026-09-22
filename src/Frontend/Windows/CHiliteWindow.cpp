@@ -1,6 +1,6 @@
 #include "CHiliteWindow.h"
 
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x0044f400

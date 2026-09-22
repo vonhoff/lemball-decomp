@@ -2,7 +2,7 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 
 // FUNCTION: LEMBALL 0x0041c470
 CCrate::CCrate(const AiCoord& p_position, CGlobalGameObject* p_contents, unsigned short p_contentsId)

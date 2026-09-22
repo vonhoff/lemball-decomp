@@ -42,7 +42,7 @@ public:
 	friend class CMainOptions1Drawer;
 	friend class CBaseFrontendDrawer;
 	friend class CFrontendResourceLoader;
-	friend class CCdLoadAnim;
+	friend class CCDLoadAnim;
 
 private:
 	unsigned int m_windowReady;    // 0xa0

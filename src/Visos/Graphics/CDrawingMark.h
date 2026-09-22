@@ -7,8 +7,8 @@
 // VTABLE: LEMBALL 0x00496c98
 class CDrawingMark : public CPrimitive {
 public:
-	virtual void Draw(CGdi* p_gdi);   // vtable+0x04
-	virtual void Render(CGdi* p_gdi); // vtable+0x08
+	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
+	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	virtual ~CDrawingMark() {}        // vtable+0x00
 };
 

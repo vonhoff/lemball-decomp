@@ -4,14 +4,14 @@
 #include "../Base/AiCoord.h" // complete type
 #include "CGenericGroup.h"   // complete type
 
-class CAi;
+class CAI;
 class CFormationManager;
 class CObjectManager;
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x00494dd8
 class CSheepGroup : public CGenericGroup {
 public:
-	CSheepGroup(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
+	CSheepGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	bool CheckAgainstCatapults();
 	void CheckAgainstLemmings();
 	void RunAway(AiCoord p_threatPosition);

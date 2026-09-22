@@ -1,6 +1,6 @@
 #include "CWaveSoundDevice.h"
 
-#include "../../Foundation/CVsOStream.h"
+#include "../../Foundation/CVSOStream.h"
 #include "CWaveEffect.h"
 #include "Visos/Sound/CBaseSoundDevice.h"
 

@@ -4,14 +4,14 @@
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Resources/CMogRes.h"
-#include "../../Visos/Resources/CResAnim.h"
-#include "../../Visos/Resources/CResBitmap.h"
-#include "../../Visos/Resources/CResFont.h"
-#include "../../Visos/Resources/CResMovie.h"
-#include "../../Visos/Resources/CResPalette.h"
-#include "../../Visos/Resources/CResString.h"
+#include "../../Visos/Resources/CResANIM.h"
+#include "../../Visos/Resources/CResBITMAP.h"
+#include "../../Visos/Resources/CResFONT.h"
+#include "../../Visos/Resources/CResMOVIE.h"
+#include "../../Visos/Resources/CResPALETTE.h"
+#include "../../Visos/Resources/CResSTRING.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "CCdLoadAnim.h"
+#include "CCDLoadAnim.h"
 class CCdLoadAnimDraw;
 class CLoadUpdate;
 
@@ -48,42 +48,42 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	m_totalResources += 3;
 	m_totalResources += 3;
 	m_totalResources += 3;
-	m_anims = (CResAnim**) operator new(m_animCapacity << 2);
-	m_fonts = (CResFont**) operator new(m_fontCapacity << 2);
-	m_bitmaps = (CResBitmap**) operator new(m_bitmapCapacity << 2);
-	m_palettes = (CResPalette**) operator new(8);
-	m_strings = (CResString**) operator new(4);
-	m_movies = (CResMovie**) operator new(0x18);
-	m_loadAnim = new CCdLoadAnim(p_display->m_gdi, p_display);
+	m_anims = (CResANIM**) operator new(m_animCapacity << 2);
+	m_fonts = (CResFONT**) operator new(m_fontCapacity << 2);
+	m_bitmaps = (CResBITMAP**) operator new(m_bitmapCapacity << 2);
+	m_palettes = (CResPALETTE**) operator new(8);
+	m_strings = (CResSTRING**) operator new(4);
+	m_movies = (CResMOVIE**) operator new(0x18);
+	m_loadAnim = new CCDLoadAnim(p_display->m_gdi, p_display);
 	p_display->m_loadingDraw = static_cast<CCdLoadAnimDraw*>(m_loadAnim);
 	m_totalResources += g_pSoundView->GetnEffects((unsigned short) p_soundState);
 	m_loadAnim->InitialiseScreen();
 	m_loadedResources = 0;
 	g_pSoundView->ChangeState((unsigned short) p_soundState, (CLoadUpdate*) this);
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
-		LoadAnim(m_animResourceIds[i]);
+		LoadANIM(m_animResourceIds[i]);
 	}
 	for (i = 0; i < (unsigned int) m_fontCapacity; i++) {
-		LoadFont(m_fontResourceIds[i]);
+		LoadFONT(m_fontResourceIds[i]);
 	}
 	for (i = 0; i < (unsigned int) m_bitmapCapacity; i++) {
-		LoadBitmap(m_bitmapResourceIds[i]);
+		LoadBITMAP(m_bitmapResourceIds[i]);
 	}
 	id = g_dwFrontendPaletteIds;
 	do {
-		LoadPalette(*id);
+		LoadPALETTE(*id);
 		++id;
 	} while (id < g_dwFrontendPaletteIds + 2);
 	id = g_dwFrontendStringIds;
 	do {
-		LoadString(*id);
+		LoadSTRING(*id);
 		++id;
 	} while (id < g_dwFrontendStringIds + 1);
 	for (i = 0; i < 3; i++) {
-		LoadMovie(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1);
+		LoadMOVIE(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1);
 	}
 	for (i = 0; i < 3; i++) {
-		LoadMovie(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1);
+		LoadMOVIE(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1);
 	}
 	p_display->m_loadingDraw = 0;
 	if (m_loadAnim != 0) {
@@ -99,22 +99,22 @@ CFrontendResourceLoader::~CFrontendResourceLoader()
 
 	g_pSoundView->ChangeState(0, 0);
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
-		UnLoadAnim(m_animResourceIds[i]);
+		UnLoadANIM(m_animResourceIds[i]);
 	}
 	for (i = 0; i < (unsigned int) m_fontCapacity; i++) {
-		UnLoadFont(m_fontResourceIds[i]);
+		UnLoadFONT(m_fontResourceIds[i]);
 	}
 	for (i = 0; i < (unsigned int) m_bitmapCapacity; i++) {
-		UnLoadBitmap(m_bitmapResourceIds[i]);
+		UnLoadBITMAP(m_bitmapResourceIds[i]);
 	}
 	id = g_dwFrontendPaletteIds;
 	do {
-		UnLoadPalette(*id);
+		UnLoadPALETTE(*id);
 		++id;
 	} while (id < g_dwFrontendPaletteIds + 2);
 	id = g_dwFrontendStringIds;
 	do {
-		UnLoadString(*id);
+		UnLoadSTRING(*id);
 		++id;
 	} while (id < g_dwFrontendStringIds + 1);
 	for (i = 0; i < 6; i++) {
@@ -141,17 +141,17 @@ void CFrontendResourceLoader::UpdateNonCacheLoad()
 }
 
 // FUNCTION: LEMBALL 0x00447db0
-void CFrontendResourceLoader::LoadAnim(unsigned long p_resourceId)
+void CFrontendResourceLoader::LoadANIM(unsigned long p_resourceId)
 {
 	UpdateNonCacheLoad();
-	m_anims[m_loadedAnims] = CResAnim::Load(p_resourceId);
+	m_anims[m_loadedAnims] = CResANIM::Load(p_resourceId);
 	m_loadedAnims = m_loadedAnims + 1;
 }
 
 // FUNCTION: LEMBALL 0x00447de0
-void CFrontendResourceLoader::UnLoadAnim(unsigned long p_resourceId)
+void CFrontendResourceLoader::UnLoadANIM(unsigned long p_resourceId)
 {
-	CResAnim** slot;
+	CResANIM** slot;
 	unsigned int i;
 
 	for (i = 0; i < (unsigned int) m_loadedAnims; i++) {
@@ -165,15 +165,15 @@ void CFrontendResourceLoader::UnLoadAnim(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x00447e30
-void CFrontendResourceLoader::LoadFont(unsigned long p_resourceId)
+void CFrontendResourceLoader::LoadFONT(unsigned long p_resourceId)
 {
 	UpdateNonCacheLoad();
-	m_fonts[m_loadedFonts] = CResFont::Load(p_resourceId);
+	m_fonts[m_loadedFonts] = CResFONT::Load(p_resourceId);
 	m_loadedFonts = m_loadedFonts + 1;
 }
 
 // FUNCTION: LEMBALL 0x00447e60
-void CFrontendResourceLoader::UnLoadFont(unsigned long p_resourceId)
+void CFrontendResourceLoader::UnLoadFONT(unsigned long p_resourceId)
 {
 	unsigned int i;
 
@@ -187,15 +187,15 @@ void CFrontendResourceLoader::UnLoadFont(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x00447eb0
-void CFrontendResourceLoader::LoadBitmap(unsigned long p_resourceId)
+void CFrontendResourceLoader::LoadBITMAP(unsigned long p_resourceId)
 {
 	UpdateNonCacheLoad();
-	m_bitmaps[m_loadedBitmaps] = CResBitmap::Load(p_resourceId);
+	m_bitmaps[m_loadedBitmaps] = CResBITMAP::Load(p_resourceId);
 	m_loadedBitmaps = m_loadedBitmaps + 1;
 }
 
 // FUNCTION: LEMBALL 0x00447ee0
-void CFrontendResourceLoader::UnLoadBitmap(unsigned long p_resourceId)
+void CFrontendResourceLoader::UnLoadBITMAP(unsigned long p_resourceId)
 {
 	unsigned int i;
 
@@ -209,15 +209,15 @@ void CFrontendResourceLoader::UnLoadBitmap(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x00447f30
-void CFrontendResourceLoader::LoadPalette(unsigned long p_resourceId)
+void CFrontendResourceLoader::LoadPALETTE(unsigned long p_resourceId)
 {
 	UpdateNonCacheLoad();
-	m_palettes[m_loadedPalettes] = CResPalette::Load(p_resourceId);
+	m_palettes[m_loadedPalettes] = CResPALETTE::Load(p_resourceId);
 	m_loadedPalettes = m_loadedPalettes + 1;
 }
 
 // FUNCTION: LEMBALL 0x00447f60
-void CFrontendResourceLoader::UnLoadPalette(unsigned long p_resourceId)
+void CFrontendResourceLoader::UnLoadPALETTE(unsigned long p_resourceId)
 {
 	unsigned int i;
 
@@ -231,17 +231,17 @@ void CFrontendResourceLoader::UnLoadPalette(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x00447fb0
-void CFrontendResourceLoader::LoadString(unsigned long p_resourceId)
+void CFrontendResourceLoader::LoadSTRING(unsigned long p_resourceId)
 {
 	UpdateNonCacheLoad();
-	m_strings[m_loadedStrings] = CResString::Load(p_resourceId);
+	m_strings[m_loadedStrings] = CResSTRING::Load(p_resourceId);
 	m_loadedStrings = m_loadedStrings + 1;
 }
 
 // FUNCTION: LEMBALL 0x00447fe0
-void CFrontendResourceLoader::UnLoadString(unsigned long p_resourceId)
+void CFrontendResourceLoader::UnLoadSTRING(unsigned long p_resourceId)
 {
-	CResString** slot;
+	CResSTRING** slot;
 	unsigned int i;
 
 	for (i = 0; i < (unsigned int) m_loadedStrings; i++) {
@@ -255,10 +255,10 @@ void CFrontendResourceLoader::UnLoadString(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x00448030
-void CFrontendResourceLoader::LoadMovie(unsigned long p_resourceId)
+void CFrontendResourceLoader::LoadMOVIE(unsigned long p_resourceId)
 {
 	UpdateNonCacheLoad();
-	m_movies[m_loadedMovies] = CResMovie::Load(p_resourceId);
+	m_movies[m_loadedMovies] = CResMOVIE::Load(p_resourceId);
 	m_loadedMovies = m_loadedMovies + 1;
 }
 

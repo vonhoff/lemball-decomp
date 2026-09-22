@@ -1,6 +1,6 @@
 #include "CString.h"
 
-#include "CVsOStream.h"
+#include "CVSOStream.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -102,7 +102,7 @@ CString CString::operator+=(const char* p_text)
 }
 
 // FUNCTION: LEMBALL 0x0046e7f0
-CVsOStream& operator<<(CVsOStream& p_stream, CString& p_string)
+CVSOStream& operator<<(CVSOStream& p_stream, CString& p_string)
 {
 	p_stream << p_string.m_text;
 	return p_stream;
@@ -113,8 +113,8 @@ CString operator+(CString& p_left, CString& p_right)
 {
 	CString result;
 	delete[] result.GetText();
-	int length = p_right.Getlength();
-	length = length + p_left.Getlength() + 1;
+	int length = p_right.getlength();
+	length = length + p_left.getlength() + 1;
 	result.SetTextPointer(new char[length]);
 	result.SetCapacity(length);
 	strcpy(result.GetText(), p_left.GetText());
@@ -128,7 +128,7 @@ CString operator+(CString& p_left, const char* p_right)
 	int capacity;
 	CString result;
 	delete[] result.GetText();
-	int length = p_left.Getlength();
+	int length = p_left.getlength();
 	capacity = length + strlen(p_right) + 1;
 	result.SetTextPointer(new char[capacity]);
 	result.m_capacity = capacity;
@@ -138,13 +138,13 @@ CString operator+(CString& p_left, const char* p_right)
 }
 
 // FUNCTION: LEMBALL 0x0046ef00
-int CString::Getlength()
+int CString::getlength()
 {
 	return strlen(m_text);
 }
 
 // FUNCTION: LEMBALL 0x0046efa0
-CString CString::Lower()
+CString CString::lower()
 {
 	char* p = m_text;
 	int len = strlen(p);

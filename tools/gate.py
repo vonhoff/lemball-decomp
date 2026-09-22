@@ -45,7 +45,6 @@ def main() -> int:
     parser.add_argument(
         "--names", action="store_true", help="source names and signatures vs reviewed CSV evidence"
     )
-    parser.add_argument("--names-original", action="store_true", help="audit exact original Mac spelling, including prefixes")
     parser.add_argument("--names-strict", action="store_true", help="fail naming case and signature review items")
     parser.add_argument("--names-json", action="store_true", help="emit catalog naming comparisons as JSON")
     parser.add_argument(
@@ -73,8 +72,8 @@ def main() -> int:
         return check_provenance(paths=paths, strict=args.annot_strict, verbose=args.verbose,
                                 resource=args.resource)
 
-    if (args.names or args.names_original or args.names_strict or args.names_json) and not args.all:
-        return check_names(paths=paths, fail=True, strict=args.names_strict, original=args.names_original,
+    if (args.names or args.names_strict or args.names_json) and not args.all:
+        return check_names(paths=paths, fail=True, strict=args.names_strict,
                            verbose=args.verbose, as_json=args.names_json)
 
     if args.vtable and not args.all:
@@ -106,7 +105,7 @@ def main() -> int:
             return code
 
     if args.all:
-        code = check_names(paths=paths, fail=True, strict=args.names_strict, original=args.names_original,
+        code = check_names(paths=paths, fail=True, strict=args.names_strict,
                            verbose=args.verbose, as_json=args.names_json)
         if code != 0:
             return code

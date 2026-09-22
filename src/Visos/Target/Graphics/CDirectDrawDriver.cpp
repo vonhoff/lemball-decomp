@@ -1,7 +1,7 @@
 #include "CDirectDrawDriver.h"
 
 #include "../../../Platform/Windows/Entry.h"
-#include "../../Foundation/CVsOStream.h"
+#include "../../Foundation/CVSOStream.h"
 #include "../../Graphics/CWnd.h"
 #include "CDirectDrawContext.h"
 #include "CDirectDrawSurface.h"

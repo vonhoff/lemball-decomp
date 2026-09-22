@@ -19,7 +19,7 @@ public:
 	friend class CSuccFailDrawer;
 	friend class CSurface;
 	friend class CAnimsManager;
-	friend class CCdLoadAnim;
+	friend class CCDLoadAnim;
 	friend class CAboutScreen;
 
 protected:

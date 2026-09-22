@@ -1,14 +1,14 @@
 #include "CBitmapRes.h"
 
-#include "../Resources/CResBitmap.h"
-#include "CGdi.h"
+#include "../Resources/CResBITMAP.h"
+#include "CGDI.h"
 #include "CSurface.h"
 class CBigBitmap;
 
 // FUNCTION: LEMBALL 0x00447380
-void CBitmapRes::Draw(CGdi* p_gdi)
+void CBitmapRes::Draw(CGDI* p_gdi)
 {
-	CResBitmap* resource = m_resource;
+	CResBITMAP* resource = m_resource;
 
 	if (resource->m_loaded != 0) {
 		resource->m_age = 0;
@@ -22,7 +22,7 @@ void CBitmapRes::Draw(CGdi* p_gdi)
 }
 
 // FUNCTION: LEMBALL 0x004473d0
-void CBitmapRes::Render(CGdi* p_gdi)
+void CBitmapRes::Render(CGDI* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit((CBigBitmap*) this, m_resource);
 	m_resource->m_rendered = 0;

@@ -5,16 +5,16 @@
 #include "../../Visos/Foundation/CVsRect.h"           // complete type
 
 class CGWnd;
-class CGdi;
+class CGDI;
 class CGraphicButton;
-class CResAnim;
+class CResANIM;
 class CTrackerButton;
 // SIZE 0x60
 // VTABLE: LEMBALL 0x00497cf8
 class CGunButtons : public CBaseQueueHandler {
 public:
 	CGunButtons(CGWnd* p_window,
-				CGdi* p_gdi,
+				CGDI* p_gdi,
 				int p_x,
 				int p_y,
 				unsigned long* p_animIds,
@@ -34,7 +34,7 @@ public:
 	void Move(int p_x, int p_y);
 	CGunButtons(const CVsRect& p_rect,
 				CGWnd* p_window,
-				CGdi* p_gdi,
+				CGDI* p_gdi,
 				int p_x,
 				int p_y,
 				unsigned long* p_animIds,
@@ -51,7 +51,7 @@ private:
 	CVsRect m_trackRect;             // 0x14
 	int m_x;                         // 0x1c
 	int m_y;                         // 0x20
-	CGdi* m_gdi;                     // 0x24
+	CGDI* m_gdi;                     // 0x24
 	CGWnd* m_window;                 // 0x28
 	unsigned int m_postAction;       // 0x2c
 	unsigned int m_controlMessage;   // 0x30
@@ -64,7 +64,7 @@ private:
 	unsigned long* m_animIds;        // 0x4c
 	CGraphicButton* m_graphicButton; // 0x50
 	CTrackerButton* m_trackerButton; // 0x54
-	CResAnim** m_resources;          // 0x58
+	CResANIM** m_resources;          // 0x58
 	unsigned int m_active;           // 0x5c
 };
 

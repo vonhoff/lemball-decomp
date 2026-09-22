@@ -24,7 +24,7 @@ public:
 	bool ProcessNMsgs(unsigned int p_count);
 	bool PutNth(Message* p_message, unsigned int p_index);
 	unsigned int GetMessageCount() { return m_messageCount; }
-	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	virtual ~CBaseQueue();                               // vtable+0x04
 	virtual bool Post(Message& p_message);               // vtable+0x08
 	virtual bool Send(Message& p_message);               // vtable+0x0c

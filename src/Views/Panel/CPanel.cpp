@@ -1,9 +1,9 @@
 #include "CPanel.h"
 
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Graphics/CPvGWnd.h"
-#include "../../Visos/Resources/CResAnim.h"
+#include "../../Visos/Graphics/CPVGWnd.h"
+#include "../../Visos/Resources/CResANIM.h"
 #include "../Display/C2D.h"
 #include "../Sound/CSoundView.h"
 #include "CPanelLemming.h"
@@ -13,7 +13,7 @@
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Resources/CResZrle.h"
+#include "Visos/Resources/CResZRLE.h"
 
 #include <new.h>
 
@@ -45,12 +45,12 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_panelPosition.m_x = 0;
 	m_panelPosition.m_y = 0;
 	m_game = p_gameView;
-	m_window = (CPvGWnd*) p_gameView->m_display;
+	m_window = (CPVGWnd*) p_gameView->m_display;
 	m_ai = p_gameView->m_ai;
-	m_resources[0] = CResAnim::Load(0x2d);
-	m_resources[1] = CResAnim::Load(0x2a);
-	m_resources[2] = CResAnim::Load(0x2c);
-	m_resources[3] = CResAnim::Load(0x2b);
+	m_resources[0] = CResANIM::Load(0x2d);
+	m_resources[1] = CResANIM::Load(0x2a);
+	m_resources[2] = CResANIM::Load(0x2c);
+	m_resources[3] = CResANIM::Load(0x2b);
 
 	m_buttonSize.m_x = m_resources[1]->m_animationEntries[0].m_width;
 	m_buttonSize.m_y = m_resources[1]->m_animationEntries[0].m_height;

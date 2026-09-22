@@ -91,7 +91,7 @@ bool CMasterInput::IsEmpty()
 }
 
 // FUNCTION: LEMBALL 0x00472210
-CVsOStream& CMasterInput::StreamOut(CVsOStream& p_arg0)
+CVSOStream& CMasterInput::StreamOut(CVSOStream& p_arg0)
 {
 	return p_arg0;
 }

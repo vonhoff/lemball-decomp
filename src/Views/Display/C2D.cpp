@@ -1,7 +1,7 @@
 #include "C2D.h"
 
 #include "../../AI/Base/ObjectActions.h"
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../AI/Objects/AnimSpecialEntry.h"
 #include "../../AI/Objects/CAnimSpecial.h"
 #include "../../AI/Objects/CPlayerLemming.h"
@@ -22,12 +22,12 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CBasePalManager.h"
 #include "../../Visos/Graphics/CCursor.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Network/CBaseNetwork.h"
-#include "../../Visos/Resources/CResFont.h"
-#include "../../Visos/Resources/CResPalette.h"
+#include "../../Visos/Resources/CResFONT.h"
+#include "../../Visos/Resources/CResPALETTE.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Animation/CLemmingAnimsManager.h"
 #include "../Input/CPadToButton.h"
@@ -37,7 +37,7 @@
 #include "../Target/ObjectClipGrid.h"
 #include "../Target/SpriteGroundLookup.h"
 #include "CMain2DDisplay.h"
-#include "CPbButton.h"
+#include "CPBButton.h"
 
 #include <new.h>
 #include <string.h>
@@ -49,7 +49,7 @@ extern unsigned char g_abC2DType2Remap[5];
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x004358d0
-C2D::C2D(CMain2DDisplay* p_display, CAi* p_ai, CGdi* p_gdi, CMap* p_map, const CVsRect& p_rect)
+C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const CVsRect& p_rect)
 	: CHotAreaHandler(p_rect)
 {
 	void* storage;
@@ -68,7 +68,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAi* p_ai, CGdi* p_gdi, CMap* p_map, const C
 	m_pad0x920 = 0;
 	m_mouseButtonDown = 0;
 	m_zBufferEnabled = 1;
-	InitSpriteGroundLu();
+	InitSpriteGroundLU();
 	m_groundHitMode = 0;
 	m_pauseWindow = 0;
 	m_optionSelection = 0;
@@ -243,7 +243,7 @@ void C2D::ShutDown()
 		operator delete(lemmingAnims);
 	}
 	UnRegisterRemaps();
-	CPbButton::DumpStrs();
+	CPBButton::DumpStrs();
 	if (m_ai->m_networkMode != 0 && m_returnState == 2) {
 		if (g_pNetworkManager != 0) {
 			g_pNetworkManager->Stop();
@@ -274,13 +274,13 @@ void C2D::ShutDown()
 // FUNCTION: LEMBALL 0x004363c0
 void C2D::RegisterRemaps()
 {
-	CResPalette* palette;
+	CResPALETTE* palette;
 	int paletteSize;
 	int* targets;
 	int remapIndex;
 
 	targets = g_anC2DRemapTargetIndices[0];
-	palette = CResPalette::Load(RES_GAME_GAMEPALETTE);
+	palette = CResPALETTE::Load(RES_GAME_GAMEPALETTE);
 	paletteSize = (int) palette->m_paletteState;
 	remapIndex = 0;
 	do {
@@ -1246,7 +1246,7 @@ void C2D::SetClipSize()
 	int height;
 	int count;
 	SpriteGroundLookup* lookup;
-	CResFont* font;
+	CResFONT* font;
 	short clipSizeX;
 	short translatedX;
 
@@ -3676,12 +3676,12 @@ void C2D::SortViewData()
 				m_redrawPending = 1;
 			}
 
-			m_viewData[index].m_sortZKey = CalcZValueSprite(index);
+			m_viewData[index].m_sortZKey = CalcZValue_Sprite(index);
 			index++;
 		} while (index < (int) m_viewDataCount);
 	}
 
-	VsQSort(m_viewData, m_viewDataCount, sizeof(CViewData), ViewDataCmp);
+	VSQSort(m_viewData, m_viewDataCount, sizeof(CViewData), ViewDataCmp);
 }
 
 // FUNCTION: LEMBALL 0x00440000
@@ -3839,14 +3839,14 @@ void C2D::ResetPrimitives()
 }
 
 // FUNCTION: LEMBALL 0x00440460
-void C2D::DrawZBuffSprite(int p_index, unsigned short p_z)
+void C2D::DrawZBuff_Sprite(int p_index, unsigned short p_z)
 {
 	m_lemmingAnims->m_primitiveSequence = p_z;
 	DrawObject(m_viewData[p_index]);
 }
 
 // FUNCTION: LEMBALL 0x00440490
-void C2D::DrawZBuffAnim(int p_index, unsigned short p_z)
+void C2D::DrawZBuff_Anim(int p_index, unsigned short p_z)
 {
 	AnimSpecialEntry* animation = m_zBufferAnimations + p_index;
 	int gameX = (unsigned short) animation->m_x << 4;
@@ -3919,7 +3919,7 @@ void C2D::DrawObjectsZBuff()
 
 	while (spriteIndex < (int) m_viewDataCount && animationIndex < m_zBufferAnimationCount) {
 		if (!spriteZValid) {
-			spriteZ = (unsigned short) CalcZValueSprite(spriteIndex);
+			spriteZ = (unsigned short) CalcZValue_Sprite(spriteIndex);
 			spriteZValid = true;
 		}
 		if (!animationZValid) {
@@ -3928,34 +3928,34 @@ void C2D::DrawObjectsZBuff()
 			animationZValid = true;
 		}
 		if (animationZ < spriteZ) {
-			DrawZBuffAnim(animationIndex, animationZ);
+			DrawZBuff_Anim(animationIndex, animationZ);
 			animationOffset += sizeof(AnimSpecialEntry);
 			animationIndex++;
 			animationZValid = false;
 		}
 		else {
-			DrawZBuffSprite(spriteIndex, spriteZ);
+			DrawZBuff_Sprite(spriteIndex, spriteZ);
 			spriteIndex++;
 			spriteZValid = false;
 		}
 	}
 
 	while (spriteIndex < (int) m_viewDataCount) {
-		unsigned short z = (unsigned short) CalcZValueSprite(spriteIndex);
-		DrawZBuffSprite(spriteIndex, z);
+		unsigned short z = (unsigned short) CalcZValue_Sprite(spriteIndex);
+		DrawZBuff_Sprite(spriteIndex, z);
 		spriteIndex++;
 	}
 
 	while (animationIndex < m_zBufferAnimationCount) {
 		AnimSpecialEntry* animation = m_zBufferAnimations + animationIndex;
 		unsigned short z = animation->m_groundEntry->m_height + animation->m_sortKey;
-		DrawZBuffAnim(animationIndex, z);
+		DrawZBuff_Anim(animationIndex, z);
 		animationIndex++;
 	}
 }
 
 // FUNCTION: LEMBALL 0x004407e0
-unsigned short C2D::CalcZValueSprite(int p_index)
+unsigned short C2D::CalcZValue_Sprite(int p_index)
 {
 	eObjectType objectType = m_viewData[p_index].m_objectType;
 	if (objectType == 0x18) {
@@ -4074,6 +4074,6 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 }
 
 // FUNCTION: LEMBALL 0x00440c00
-void C2D::InitSpriteGroundLu()
+void C2D::InitSpriteGroundLU()
 {
 }

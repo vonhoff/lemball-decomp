@@ -3,7 +3,7 @@
 
 #include "CGenericGroupManager.h" // complete type
 
-class CAi;
+class CAI;
 class CFormationManager;
 class CObjectManager;
 struct LoadSheepData;
@@ -11,7 +11,7 @@ struct LoadSheepData;
 // VTABLE: LEMBALL 0x00494d70
 class CSheepGroupManager : public CGenericGroupManager {
 public:
-	CSheepGroupManager(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
+	CSheepGroupManager(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	int Process();
 	void LoadLevel(LoadSheepData* p_data, unsigned long p_dataSize, unsigned int p_skip);
 	void Restart();

@@ -9,8 +9,8 @@ class CPushActive : public CPrimitive {
 public:
 	// FUNCTION: LEMBALL 0x004698b0
 	CPushActive() { m_activeMarker = 0; }
-	virtual void Draw(CGdi* p_gdi);   // vtable+0x04
-	virtual void Render(CGdi* p_gdi); // vtable+0x08
+	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
+	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	virtual ~CPushActive() {}         // vtable+0x00
 
 	friend class CBaseCursor;

@@ -3,7 +3,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CRect3.h"
@@ -145,7 +145,7 @@ bool CSlinky::Process()
 	rect.m_x2 = x + 7;
 	rect.m_y2 = y + 7;
 	rect.m_z2 = z + 7;
-	CAi* ai = g_pAI;
+	CAI* ai = g_pAI;
 	ai->m_collisionExclude = this;
 	ai->m_collisionRect = rect;
 	ai->m_rectCollisionIndex = 0;

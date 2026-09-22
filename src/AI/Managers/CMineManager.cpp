@@ -2,13 +2,13 @@
 
 #include "../Base/CGameObject.h"
 #include "../Base/Coord3d.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CMine.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x00424020
-CMineManager::CMineManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0xd, 2)
+CMineManager::CMineManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0xd, 2)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;

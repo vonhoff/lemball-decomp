@@ -2,16 +2,16 @@
 #define LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 
 #include "../../Visos/Foundation/CVsPoint.h" // complete type
+#include "../../Visos/Graphics/CBitmapRes.h" // complete type
 #include "../Base/CBaseFrontendDrawer.h"
 #include "../Support/CoordPair.h"        // complete type
 #include "../Windows/CSuccFailAnimWnd.h" // complete type
-#include "CSuccFailDrawerPrims.h"        // complete type
 #include "Frontend/Support/CUserActionMessage.h"
 #include "SuccFailDrawerFieldViews.h"
 
-class CGdi;
+class CGDI;
 class CMain2DDisplay;
-class CResBitmap;
+class CResBITMAP;
 class CVsRect;
 // SIZE 0x68
 struct SuccFailLayout {
@@ -36,7 +36,7 @@ struct SuccFailLayout {
 // VTABLE: LEMBALL 0x00498340 CAnimsManager
 class CSuccFailDrawer : public CBaseFrontendDrawer {
 public:
-	CSuccFailDrawer(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect, unsigned int p_success);
+	CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect, unsigned int p_success);
 	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawBackGround();                    // vtable+0x50
@@ -51,30 +51,39 @@ public:
 	void Return();
 
 private:
-	CSuccFailDrawerPrims m_primitives[1]; // 0x398
-	char m_message[256];                  // 0x3e0
-	char* m_firstLine;                    // 0x4e0
-	char* m_secondLine;                   // 0x4e4
-	CVsPoint m_firstLinePos;              // 0x4e8
-	CVsPoint m_secondLinePos;             // 0x4ec
-	CVsPoint m_passwordLabelPos;          // 0x4f0
-	CVsPoint m_passwordPos;               // 0x4f4
-	char* m_password;                     // 0x4f8
-	CResBitmap* m_primaryBitmap;          // 0x4fc
-	CResBitmap* m_secondaryBitmap;        // 0x500
-	unsigned int m_primaryBitmapId;       // 0x504
-	unsigned int m_backgroundId;          // 0x508
-	unsigned int m_secondaryBitmapId;     // 0x50c
-	SuccFailLayout* m_layout;             // 0x510
-	unsigned int m_buttonBinding;         // 0x514
-	unsigned int m_success;               // 0x518
-	unsigned int m_soundStarted;          // 0x51c
-	CSuccFailAnimWnd m_animWindow;        // 0x520
-	unsigned int m_animStartDeadline;     // 0x5f8
-	unsigned int m_animStarted;           // 0x5fc
-	unsigned int m_soundStartTime;        // 0x600
-	unsigned int m_animationsEnabled;     // 0x604
-	unsigned int m_soundStopped;          // 0x608
+	// SIZE 0x48
+	struct tagPRIMS {
+		tagPRIMS();
+		~tagPRIMS();
+
+		CBitmapRes m_primary;   // 0x00
+		CBitmapRes m_secondary; // 0x24
+	};
+
+	tagPRIMS m_primitives[1];         // 0x398
+	char m_message[256];              // 0x3e0
+	char* m_firstLine;                // 0x4e0
+	char* m_secondLine;               // 0x4e4
+	CVsPoint m_firstLinePos;          // 0x4e8
+	CVsPoint m_secondLinePos;         // 0x4ec
+	CVsPoint m_passwordLabelPos;      // 0x4f0
+	CVsPoint m_passwordPos;           // 0x4f4
+	char* m_password;                 // 0x4f8
+	CResBITMAP* m_primaryBitmap;      // 0x4fc
+	CResBITMAP* m_secondaryBitmap;    // 0x500
+	unsigned int m_primaryBitmapId;   // 0x504
+	unsigned int m_backgroundId;      // 0x508
+	unsigned int m_secondaryBitmapId; // 0x50c
+	SuccFailLayout* m_layout;         // 0x510
+	unsigned int m_buttonBinding;     // 0x514
+	unsigned int m_success;           // 0x518
+	unsigned int m_soundStarted;      // 0x51c
+	CSuccFailAnimWnd m_animWindow;    // 0x520
+	unsigned int m_animStartDeadline; // 0x5f8
+	unsigned int m_animStarted;       // 0x5fc
+	unsigned int m_soundStartTime;    // 0x600
+	unsigned int m_animationsEnabled; // 0x604
+	unsigned int m_soundStopped;      // 0x608
 };
 
 // SYNTHETIC: LEMBALL 0x004510e0

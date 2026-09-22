@@ -1,6 +1,6 @@
 #include "CGame.h"
 
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../Frontend/Base/CBaseFrontendDrawer.h"
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Frontend/Processes/CAbout.h"
@@ -27,7 +27,7 @@
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Resources/CMogRes.h"
 #include "../../Visos/Resources/CMogloadArena.h"
-#include "../../Visos/Resources/CResString.h"
+#include "../../Visos/Resources/CResSTRING.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Sound/CSoundManager.h"
 #include "../../Visos/Target/System/CPlatformServices.h"
@@ -131,7 +131,7 @@ CGame::CGame(char* p_arg0)
 
 	int cdResult = 0;
 	do {
-		if (g_pTargetPlatformServices->GetCdDir(g_szVsMemDll) != 0) {
+		if (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) != 0) {
 			break;
 		}
 		if (0) {
@@ -162,7 +162,7 @@ CGame::CGame(char* p_arg0)
 	}
 
 	if (IsValidResource() == 0) {
-		InternalVsRelAssert(g_szIsValidResourceFile, g_szGameCpp, 0x16e);
+		_VSRELassert(g_szIsValidResourceFile, g_szGameCpp, 0x16e);
 	}
 
 	m_mainDisplay = new CMain2DDisplay(this);
@@ -174,7 +174,7 @@ CGame::CGame(char* p_arg0)
 
 	InitSound(g_nMusicVolume, g_nEffectsVolume, 0x32, m_mainDisplay, 0);
 	if (g_nMusicVolume != 0) {
-		g_pSoundManager->UseMusicCd(1);
+		g_pSoundManager->UseMusicCD(1);
 		g_pSoundManager->SetMusicCdPath(g_szMusicCdPath);
 	}
 
@@ -257,13 +257,13 @@ CGame::~CGame()
 bool CGame::IsValidResource()
 {
 	const char* key;
-	CResString* resource;
+	CResSTRING* resource;
 	unsigned char* data;
 	int i;
 	char c;
 
 	key = g_szWeatherManKey;
-	resource = CResString::Load(RES_REGISTRATION_FINGERPRINT);
+	resource = CResSTRING::Load(RES_REGISTRATION_FINGERPRINT);
 	if (resource == 0) {
 		return 0;
 	}
@@ -372,7 +372,7 @@ void CGame::NextProcess(eFlowProcesses p_flow)
 		UnLoadFrontendResources();
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		m_process = new CAi(this);
+		m_process = new CAI(this);
 		goto done;
 	case 10:
 		m_currentFlow = p_flow;

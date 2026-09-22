@@ -2,7 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include "../../../Platform/Windows/Entry.h"
-#include "../../Foundation/CVsOStream.h"
+#include "../../Foundation/CVSOStream.h"
 #include "../../Foundation/VsDebug.h"
 
 #include <windows.h>

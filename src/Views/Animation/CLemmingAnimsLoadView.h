@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VIEWS_ANIMATION_CLEMMINGANIMSLOADVIEW_H
 #define LEMBALL_VIEWS_ANIMATION_CLEMMINGANIMSLOADVIEW_H
 
-class CCdLoadAnim;
+class CCDLoadAnim;
 // SIZE 0x44
 class CLemmingAnimsLoadView {
 private:
-	CCdLoadAnim* m_loadAnim; // 0x08
+	CCDLoadAnim* m_loadAnim; // 0x08
 	int m_nonCacheState;     // 0x1c
 	int m_loadProgress;      // 0x20
 };

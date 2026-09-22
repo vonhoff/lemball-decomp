@@ -1,6 +1,6 @@
 #include "CCursorMotion.h"
 
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/CFixed.h"
@@ -14,7 +14,7 @@
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x00432590
-CCursorMotion::CCursorMotion(CLemmingAnimsManager* p_anims, CAi* p_ai, CMap* p_map)
+CCursorMotion::CCursorMotion(CLemmingAnimsManager* p_anims, CAI* p_ai, CMap* p_map)
 	: m_fixedX(DEBUG_SENTINEL), m_fixedY(DEBUG_SENTINEL), m_velocityX(DEBUG_SENTINEL), m_velocityY(DEBUG_SENTINEL),
 	  m_accelerationX(DEBUG_SENTINEL), m_accelerationY(DEBUG_SENTINEL)
 {

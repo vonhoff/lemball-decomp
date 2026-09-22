@@ -1,7 +1,7 @@
 #include "CSheep.h"
 
 #include "../Base/StateMachine.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CGameObject.h"
@@ -10,7 +10,7 @@
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x0041f990
-CSheep::CSheep(CAi* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4) : CGameObject(OBJECT_SHEEP, 0x108, 0x14)
+CSheep::CSheep(CAI* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4) : CGameObject(OBJECT_SHEEP, 0x108, 0x14)
 {
 	g_pAI = p_arg0;
 	m_spawnPosition.m_xFixed = p_arg1 << 12;
@@ -39,8 +39,8 @@ void CSheep::Restart()
 	collision[5] = tileZ + 15;
 	memcpy(&m_collisionMinX, collision, sizeof(collision));
 	m_facingDirection = m_initialFacingDirection;
-	CAi* objectAi = g_pAI;
-	CAi* countAi = g_pAI;
+	CAI* objectAi = g_pAI;
+	CAI* countAi = g_pAI;
 	int* objectCount = &countAi->m_objectCount;
 	objectAi->m_objects[*objectCount] = this;
 	(*objectCount)++;

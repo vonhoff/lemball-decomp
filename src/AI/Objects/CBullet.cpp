@@ -4,12 +4,12 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../../Map/Ground/CGround.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Managers/CBaseObjectManager.h"
 #include "../Managers/CBulletManager.h"
 #include "../Messages/GameMessageIds.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
@@ -103,7 +103,7 @@ void CBullet::FireBullet()
 // FUNCTION: LEMBALL 0x0041a7a0
 bool CBullet::Process()
 {
-	CAi* ai;
+	CAI* ai;
 	CMap* map;
 	CGameObject* candidate;
 	unsigned int currentTick;
@@ -227,22 +227,22 @@ void CBullet::AddData()
 // FUNCTION: LEMBALL 0x0041ab80
 void CBullet::GetData()
 {
-	SetRemoteGameTimeReal(GetDword());
-	m_position.m_xFixed = (int) (short) GetWord() << 12;
-	m_position.m_yFixed = (int) (short) GetWord() << 12;
-	m_position.m_zFixed = (int) (short) GetWord() << 12;
-	m_destination.m_xFixed = (int) (short) GetWord() << 12;
-	m_destination.m_yFixed = (int) (short) GetWord() << 12;
-	m_destination.m_zFixed = (int) (short) GetWord() << 12;
-	m_facingDirection = (short) GetWord();
-	m_soundEffect = (eSoundEffect) GetDword();
-	m_lastMovementTick = GetDword();
-	m_bulletType = (eBulletType) GetDword();
-	m_owner = (eOwner) GetDword();
+	SetRemoteGameTimeReal(GetDWORD());
+	m_position.m_xFixed = (int) (short) GetWORD() << 12;
+	m_position.m_yFixed = (int) (short) GetWORD() << 12;
+	m_position.m_zFixed = (int) (short) GetWORD() << 12;
+	m_destination.m_xFixed = (int) (short) GetWORD() << 12;
+	m_destination.m_yFixed = (int) (short) GetWORD() << 12;
+	m_destination.m_zFixed = (int) (short) GetWORD() << 12;
+	m_facingDirection = (short) GetWORD();
+	m_soundEffect = (eSoundEffect) GetDWORD();
+	m_lastMovementTick = GetDWORD();
+	m_bulletType = (eBulletType) GetDWORD();
+	m_owner = (eOwner) GetDWORD();
 	if (m_owner == OWNER_PLAYER) {
 		m_owner = OWNER_REMOTE_PLAYER;
 	}
-	m_sourceObjectId = GetWord();
+	m_sourceObjectId = GetWORD();
 	m_active = 1;
 	m_isRemoteObject = 1;
 }

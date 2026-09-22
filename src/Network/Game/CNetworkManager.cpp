@@ -33,13 +33,13 @@ CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler
 	}
 
 	if (p_filePeerName != 0) {
-		networkLoaded = VsFNetInit();
+		networkLoaded = VSFNET_Init();
 		if (networkLoaded != 0) {
 			m_externalDriverLoaded = 1;
 		}
 	}
 	if (p_filePeerName == 0) {
-		networkLoaded = VsNetInit();
+		networkLoaded = VSNET_Init();
 		m_localDriverLoaded = 1;
 	}
 	if (networkLoaded != 0) {
@@ -48,7 +48,7 @@ CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler
 		}
 		if (g_pBaseNetwork->Initialise("Paintball v0.1", 0x400)) {
 			g_pBaseNetwork->SetCBuffers(100, 0x10);
-			g_pBaseNetwork->SetNcBuffers(4, 4, 0);
+			g_pBaseNetwork->SetNCBuffers(4, 4, 0);
 			m_networkInitialised = 0;
 			g_pActiveConnection = 0;
 			m_killRequested = 0;
@@ -60,10 +60,10 @@ CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler
 CNetworkManager::~CNetworkManager()
 {
 	if (m_externalDriverLoaded != 0) {
-		VsFNetQuit();
+		VSFNET_Quit();
 	}
 	if (m_localDriverLoaded != 0) {
-		VsNetQuit();
+		VSNET_Quit();
 	}
 	delete m_rejectMessage;
 	delete m_gameStage;
@@ -116,7 +116,7 @@ void CNetworkManager::Stop()
 
 #include "../../Frontend/Base/CBaseFrontendDrawer.h"
 #include "../../Frontend/Processes/CNetworkOptionsProc.h"
-#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/CVSOStream.h"
 #include "../../Visos/Foundation/Message.h"
 #include "../../Visos/Messaging/BasePacketHeader.h"
 #include "../../Visos/Messaging/CReadPacket.h"

@@ -10,7 +10,7 @@
 #include "ObjectTypes.h"
 #include "Views/Sound/SoundEffects.h"
 
-class CAi;
+class CAI;
 class CAiDestinationList;
 class CBaseObjectManager;
 class CBullet;
@@ -107,7 +107,7 @@ public:
 	void AlterDestination(const AiCoord& p_destination);
 	void DeleteFirstEntryFromDestinationList();
 	void EmptyDestinationList();
-	static void Init(CAi* p_ai);
+	static void Init(CAI* p_ai);
 	void Initialise();
 	void ReSetId();
 	void RegisterId();
@@ -141,16 +141,16 @@ public:
 	friend class CGenericGroup;
 	friend class CSheepGroup;
 	friend class CPlayerLemmingGroup;
-	friend void StateMachine(StateEntry** p_stateTables, CAi* p_ai, CGameObject* p_object);
+	friend void StateMachine(StateEntry** p_stateTables, CAI* p_ai, CGameObject* p_object);
 
-	friend bool AtDestination(CAi* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool IsStuck(CAi* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool RequestDeath(CAi* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool IsJumping(CAi* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool IsFalling(CAi* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool NotTimeUp(CAi* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool PlayerWaitingToFire(CAi* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool EnemyWaitingToFire(CAi* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool AtDestination(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool IsStuck(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool RequestDeath(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool IsJumping(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool IsFalling(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool NotTimeUp(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool PlayerWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool EnemyWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info);
 	friend class C2D;
 	friend class CPanelButton;
 	friend class CTower;
@@ -165,7 +165,7 @@ public:
 	friend class CCollectable;
 	friend class CCollectableManager;
 	friend class CCrate;
-	friend class CAi;
+	friend class CAI;
 	friend class CInvisibleSwitch;
 	friend class CLaser;
 	friend class CMover;

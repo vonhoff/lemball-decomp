@@ -2,7 +2,7 @@
 
 #include "../Base/Rect.h"
 #include "../Managers/CObjectManager.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CViewData.h"
 #include "AI/Base/CGameObject.h"
 #include "CFormationManager.h"
@@ -14,7 +14,7 @@
 #pragma intrinsic(memset)
 
 // FUNCTION: LEMBALL 0x0041e8f0
-CGenericGroupManager::CGenericGroupManager(CAi* p_ai,
+CGenericGroupManager::CGenericGroupManager(CAI* p_ai,
 										   CObjectManager* p_objectManager,
 										   CFormationManager* p_formationManager)
 {

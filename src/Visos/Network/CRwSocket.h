@@ -38,10 +38,10 @@ public:
 		CWriteSocket::SetCBuffers(p_packetCount, p_messageCapacity);
 	}
 
-	void SetNcBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity)
+	void SetNCBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity)
 	{
-		CReadSocket::SetNcBuffers(p_lastSinglePacketMessageId, p_lastMessageId, p_messageCapacity);
-		CWriteSocket::SetNcBuffers(p_lastSinglePacketMessageId, p_lastMessageId, p_messageCapacity);
+		CReadSocket::SetNCBuffers(p_lastSinglePacketMessageId, p_lastMessageId, p_messageCapacity);
+		CWriteSocket::SetNCBuffers(p_lastSinglePacketMessageId, p_lastMessageId, p_messageCapacity);
 	}
 };
 

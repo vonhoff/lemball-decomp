@@ -4,7 +4,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../Groups/CPlayerLemmingGroup.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CPlayerLemming.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
@@ -130,7 +130,7 @@ AiCoord CDuplicator::ActivatePosition()
 // FUNCTION: LEMBALL 0x004278c0
 bool CDuplicator::Activate(CGameObject* p_object)
 {
-	if (!g_pAI->NDead()) {
+	if (!g_pAI->nDead()) {
 		return 0;
 	}
 	if (p_object->m_objectType == OBJECT_PLAYER_2 && m_action == ACTION_0x18) {

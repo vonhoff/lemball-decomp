@@ -26,7 +26,7 @@ void CNetworkGameMessage::AddData()
 	strncpy(peerName, broadcastPeerName, 20);
 	peerName[20] = '\0';
 	CString peerString(peerName);
-	peerString.Lower();
+	peerString.lower();
 	Add(peerString);
 }
 

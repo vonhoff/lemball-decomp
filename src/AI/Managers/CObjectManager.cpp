@@ -3,7 +3,7 @@
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGameObject.h"
 #include "../Messages/GameMessageIds.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CAmmo.h"
 #include "../Objects/CBalloon.h"
 #include "../Objects/CCatapult.h"
@@ -19,7 +19,7 @@
 #include "AI/Objects/SwitchEntry.h"
 
 // FUNCTION: LEMBALL 0x0041af60
-CObjectManager::CObjectManager(CAi* p_ai, int p_arg1) : CBaseObjectManager(0xc, 1)
+CObjectManager::CObjectManager(CAI* p_ai, int p_arg1) : CBaseObjectManager(0xc, 1)
 {
 	g_pObjectManager = this;
 	m_ai = p_ai;

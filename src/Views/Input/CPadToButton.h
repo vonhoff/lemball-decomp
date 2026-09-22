@@ -3,7 +3,7 @@
 
 #include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
 
-class CPvButton;
+class CPVButton;
 struct PadToButtonEntry;
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00497208
@@ -12,7 +12,7 @@ public:
 	CPadToButton(int p_arg0);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~CPadToButton();                    // vtable+0x04
-	void AddBinding(CPvButton* p_button, unsigned int p_padCode);
+	void AddBinding(CPVButton* p_button, unsigned int p_padCode);
 
 private:
 	PadToButtonEntry* m_entries; // 0x10

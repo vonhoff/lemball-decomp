@@ -1,13 +1,13 @@
 #include "CHandManager.h"
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CHand.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x00427e60
-CHandManager::CHandManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x16, 0xb)
+CHandManager::CHandManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x16, 0xb)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;

@@ -7,14 +7,14 @@
 #include "../../Visos/Foundation/VsString.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CCursor.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGWnd.h"
-#include "../../Visos/Graphics/CGdi.h"
 #include "../../Visos/Graphics/CHotAreaHandler.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/CMogRes.h"
-#include "../../Visos/Resources/CResBitmap.h"
-#include "../../Visos/Resources/CResFont.h"
-#include "../../Visos/Resources/CResString.h"
+#include "../../Visos/Resources/CResBITMAP.h"
+#include "../../Visos/Resources/CResFONT.h"
+#include "../../Visos/Resources/CResSTRING.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
@@ -23,7 +23,7 @@
 #include "Visos/Graphics/CBitmapRes.h"
 #include "Visos/Graphics/CDrawingMark.h"
 #include "Visos/Graphics/CLine.h"
-#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CPVGWnd.h"
 #include "Visos/Graphics/CSolidRect.h"
 
 #include <new.h>
@@ -49,7 +49,7 @@ struct AboutTextWindowBase : public CGWnd, public CHotAreaHandler {};
 char g_szVisosBuildBuffer[80];
 
 // FUNCTION: LEMBALL 0x0044b750
-CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect)
+CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect)
 {
 	void* storage;
 
@@ -62,7 +62,7 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect
 	m_size.m_width = p_rect.m_width;
 	m_size.m_height = p_rect.m_height;
 	p_display->AttachPalette(RES_REGISTRATION_VISOS_PALETTE);
-	m_backgroundBitmap = CResBitmap::Load(RES_REGISTRATION_VISOS_LOGO);
+	m_backgroundBitmap = CResBITMAP::Load(RES_REGISTRATION_VISOS_LOGO);
 	m_textWindow = 0;
 	storage = operator new(0x24);
 	if (storage != 0) {
@@ -72,8 +72,8 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect
 		m_textManager = 0;
 	}
 	m_textManager->LoadFont(RES_GAME_FONT3);
-	m_aboutString = CResString::Load(RES_REGISTRATION_FINGERPRINT);
-	CResString* aboutString = m_aboutString;
+	m_aboutString = CResSTRING::Load(RES_REGISTRATION_FINGERPRINT);
+	CResSTRING* aboutString = m_aboutString;
 	if (aboutString->m_loaded != 0) {
 		aboutString->m_age = 0;
 	}
@@ -116,7 +116,7 @@ void CAboutScreen::Draw(const CVsRect& p_rect)
 void CAboutScreen::DrawRegistrationText()
 {
 	unsigned char* key = (unsigned char*) g_szAboutWeatherManKey;
-	CResFont* font;
+	CResFONT* font;
 	CVsSize size;
 	int labelY;
 	int index;
@@ -132,7 +132,7 @@ void CAboutScreen::DrawRegistrationText()
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, 0);
 	}
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
-	VsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
+	vsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
 	{
 		CVsSize* measuredSize = font->GetSize(&size, g_szVisosBuildBuffer, 0x20);
 		size.m_width = measuredSize->m_width;
@@ -194,7 +194,7 @@ void CAboutScreen::DrawChangedRegion()
 	int itemCount;
 	int index;
 	CVsRect area;
-	CResBitmap* bitmap;
+	CResBITMAP* bitmap;
 
 	changes = m_gdi->m_renderTarget->GetChangeList();
 	itemCount = changes->GetNumItems();

@@ -21,7 +21,7 @@ void CRequestActionMess::AddData()
 // FUNCTION: LEMBALL 0x00416a50
 void CRequestActionMess::GetData()
 {
-	GetDword();
+	GetDWORD();
 	int active;
 	if (m_object->m_isRemoteObject == 0 && m_object->m_activationReserved == 0 &&
 		m_object->IsUsable(m_object->m_action)) {

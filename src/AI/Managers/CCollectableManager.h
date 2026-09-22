@@ -4,14 +4,14 @@
 #include "../Base/ObjectTypes.h"
 #include "CBaseObjectManager.h" // complete type
 
-class CAi;
+class CAI;
 class CCollectable;
 class CGameObject;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x004955a0
 class CCollectableManager : public CBaseObjectManager {
 public:
-	CCollectableManager(CAi* p_ai, int p_capacity);
+	CCollectableManager(CAI* p_ai, int p_capacity);
 	virtual int GetViewData(CViewData* p_viewData); // vtable+0x24
 	virtual ~CCollectableManager();                 // vtable+0x14
 	void Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectType p_type);
@@ -22,7 +22,7 @@ public:
 	void RemoveCollectable(CGameObject* p_object);
 
 private:
-	CAi* m_ai;                     // 0x30
+	CAI* m_ai;                     // 0x30
 	CCollectable** m_collectables; // 0x34
 	int m_capacity;                // 0x38
 	int m_count;                   // 0x3c

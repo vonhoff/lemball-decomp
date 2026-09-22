@@ -2,10 +2,10 @@
 #include "CGraphicsState.h"
 
 #include "../../Foundation/CString.h"
-#include "../../Foundation/CVsOStream.h"
+#include "../../Foundation/CVSOStream.h"
 #include "../../Foundation/VsInit.h"
-#include "../../Graphics/CGdi.h"
-#include "../../Graphics/CPvWnd.h"
+#include "../../Graphics/CGDI.h"
+#include "../../Graphics/CPVWnd.h"
 #include "../../Graphics/CSurface.h"
 #include "CDirectDrawDriver.h"
 #include "CDisplayDibDriver.h"
@@ -17,7 +17,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include "Visos/Foundation/CVsSize.h"
-#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CPVGWnd.h"
 #include "Visos/Graphics/CWnd.h"
 #include "Visos/Target/Graphics/CGraphicsDriver.h"
 
@@ -155,7 +155,7 @@ void CGraphicsState::NotifyDriverChange()
 					if (m_driverMode == 3) {
 						directScroll = 0;
 					}
-					((CPvGWnd*) window)->m_gdi->m_renderTarget->m_directScroll = directScroll;
+					((CPVGWnd*) window)->m_gdi->m_renderTarget->m_directScroll = directScroll;
 				}
 				SendMessageA(nativeWindow, 0x1c, 1, 0);
 				window->OnDriverChange();

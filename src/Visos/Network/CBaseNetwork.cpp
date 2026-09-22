@@ -4,9 +4,9 @@
 #include "../Foundation/CBaseQueue.h"
 #include "../Foundation/CBaseQueueHandler.h"
 #include "../Messaging/CAckMessage.h"
-#include "../Messaging/CMessFailedConnect.h"
-#include "../Messaging/CMessGoConnect.h"
-#include "../Messaging/CMessOkConnect.h"
+#include "../Messaging/CMessFAILEDConnect.h"
+#include "../Messaging/CMessGOConnect.h"
+#include "../Messaging/CMessOKConnect.h"
 #include "../Messaging/CMessReqConnect.h"
 #include "../Messaging/CMessReqNewPort.h"
 #include "../Messaging/CNetworkMessage.h"
@@ -113,9 +113,9 @@ bool CBaseNetwork::DoInitialise()
 
 	g_pMessReqConnect = new CMessReqConnect("Request Connect");
 	g_pMessReqNewPort = new CMessReqNewPort("Request New Port");
-	g_pMessOKConnect = new CMessOkConnect("Authorise Connect");
-	g_pMessGOConnect = new CMessGoConnect("Go Ahead Connect");
-	g_pMessFAILEDConnect = new CMessFailedConnect("Failed Connect");
+	g_pMessOKConnect = new CMessOKConnect("Authorise Connect");
+	g_pMessGOConnect = new CMessGOConnect("Go Ahead Connect");
+	g_pMessFAILEDConnect = new CMessFAILEDConnect("Failed Connect");
 	g_pPulseMessage = new CPulseMessage;
 	g_pAckMessage = new CAckMessage;
 	m_broadcast = (CBroadcast*) GetNewBroadcast();
@@ -302,7 +302,7 @@ CConnect* CBaseNetwork::NewConnect()
 	}
 	peer->m_previousConnect = m_lastConnect;
 	m_lastConnect = peer;
-	peer->SetNcBuffers(m_lastSinglePacketMessageId, m_lastNonCriticalMessageId, m_nonCriticalMessageCapacity);
+	peer->SetNCBuffers(m_lastSinglePacketMessageId, m_lastNonCriticalMessageId, m_nonCriticalMessageCapacity);
 	peer->SetCBuffers(m_criticalPacketCount, m_nonCriticalMessageCapacity);
 	return peer;
 }
@@ -402,7 +402,7 @@ void CBaseNetwork::CtoSRequestNewPort(CNetworkAddress* p_address)
 }
 
 // FUNCTION: LEMBALL 0x00462340
-void CBaseNetwork::StoCokConnect(CNetworkAddress* p_address)
+void CBaseNetwork::StoCOKConnect(CNetworkAddress* p_address)
 {
 	CConnect* peer;
 	short port;
@@ -439,13 +439,13 @@ void CBaseNetwork::StoCokConnect(CNetworkAddress* p_address)
 }
 
 // FUNCTION: LEMBALL 0x00462460
-void CBaseNetwork::StoCfailedConnect(CNetworkAddress* p_address)
+void CBaseNetwork::StoCFAILEDConnect(CNetworkAddress* p_address)
 {
 	m_broadcast->Send(p_address, *g_pMessFAILEDConnect);
 }
 
 // FUNCTION: LEMBALL 0x00462480
-void CBaseNetwork::CtoSgoConnect(CNetworkAddress* p_address)
+void CBaseNetwork::CtoSGOConnect(CNetworkAddress* p_address)
 {
 	CConnect* peer = (CConnect*) g_pMessGOConnect->m_connectionId;
 	if (Exists(peer) != 0) {
@@ -466,20 +466,20 @@ void CBaseNetwork::Establish(CNetworkAddress* p_address, unsigned char* p_data)
 		return;
 	}
 	if (g_pMessOKConnect->Set(p_data) != 0) {
-		StoCokConnect(p_address);
+		StoCOKConnect(p_address);
 		return;
 	}
 	if (g_pMessGOConnect->Set(p_data) != 0) {
-		CtoSgoConnect(p_address);
+		CtoSGOConnect(p_address);
 		return;
 	}
 	if (g_pMessFAILEDConnect->Set(p_data) != 0) {
-		StoCfailedConnect(p_address);
+		StoCFAILEDConnect(p_address);
 	}
 }
 
 // FUNCTION: LEMBALL 0x00462550
-void CBaseNetwork::SetNcBuffers(unsigned long p_lastSinglePacketMessageId,
+void CBaseNetwork::SetNCBuffers(unsigned long p_lastSinglePacketMessageId,
 								unsigned long p_lastMessageId,
 								int p_messageCapacity)
 {

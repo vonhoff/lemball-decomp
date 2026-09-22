@@ -14,7 +14,7 @@ public:
 	virtual void Process() = 0; // vtable+0x04
 
 	friend class CGame;
-	friend class CAi;
+	friend class CAI;
 	friend class CBaseFrontendProcess;
 	friend class CAbout;
 

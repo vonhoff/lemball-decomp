@@ -3,12 +3,12 @@
 
 #include "../Base/CGameObject.h" // complete type
 
-class CAi;
+class CAI;
 // SIZE 0x124
 // VTABLE: LEMBALL 0x00494f80
 class CSheep : public CGameObject {
 public:
-	CSheep(CAi* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4);
+	CSheep(CAI* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4);
 	virtual bool Process(); // vtable+0x14
 	virtual void HitBall(); // vtable+0x58
 	virtual void HitMine(); // vtable+0x64

@@ -4,12 +4,12 @@
 #include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/CVsPoint.h"          // complete type
 
-class CAi;
+class CAI;
 class C2D;
 class CPanelLemming;
 class CPanelPauseButton;
-class CPvGWnd;
-class CResAnim;
+class CPVGWnd;
+class CResANIM;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00497740
 class CPanel : public CBaseQueueHandler {
@@ -30,11 +30,11 @@ public:
 
 private:
 	C2D* m_game;                      // 0x10
-	CPvGWnd* m_window;                // 0x14
-	CAi* m_ai;                        // 0x18
+	CPVGWnd* m_window;                // 0x14
+	CAI* m_ai;                        // 0x18
 	CPanelLemming* m_lemmings[4];     // 0x1c
 	CPanelPauseButton* m_pauseButton; // 0x2c
-	CResAnim* m_resources[4];         // 0x30
+	CResANIM* m_resources[4];         // 0x30
 	unsigned int m_reserved;          // 0x40
 	CVsPoint m_buttonSize;            // 0x44
 	CVsPoint m_balloonSize;           // 0x48

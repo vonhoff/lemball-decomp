@@ -5,10 +5,10 @@
 #include "../../Visos/Graphics/CSolidRect.h"   // complete type
 #include "../Base/CBaseFrontendDrawer.h"
 
-class CGdi;
+class CGDI;
 class CMain2DDisplay;
 class CPasswordHiliteWindow;
-class CPvButton;
+class CPVButton;
 class CVsRect;
 struct PasswordTextPosition {
 	int m_x;
@@ -29,7 +29,7 @@ struct PasswordTextLayout {
 // VTABLE: LEMBALL 0x004983f0 CAnimsManager
 class CPasswordDrawer : public CBaseFrontendDrawer {
 public:
-	CPasswordDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2);
+	CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2);
 	void ButtonNumeric(int p_button);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawAnims();                         // vtable+0x48
@@ -54,7 +54,7 @@ private:
 	char m_password[16];                   // 0x3b0
 	int m_buttonOffsets[24];               // 0x3c0
 	int m_passwordLength;                  // 0x420
-	CPvButton* m_buttons[12];              // 0x424
+	CPVButton* m_buttons[12];              // 0x424
 	CSolidRect m_hiliteRect;               // 0x454
 	CStaticAnim m_hiliteAnim;              // 0x464
 	void* m_hiliteSurface;                 // 0x474

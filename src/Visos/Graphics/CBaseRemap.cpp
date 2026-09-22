@@ -1,11 +1,11 @@
 #include "CBaseRemap.h"
 
-#include "../Resources/CResPalette.h"
+#include "../Resources/CResPALETTE.h"
 
 // FUNCTION: LEMBALL 0x0046aa80
 CBaseRemap::CBaseRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)
 {
-	m_paletteResource = CResPalette::Load(p_resourceId);
+	m_paletteResource = CResPALETTE::Load(p_resourceId);
 	switch (p_type) {
 	case PALETTE_GREYSCALE:
 		CalculateGreyScale();
@@ -33,7 +33,7 @@ CBaseRemap::~CBaseRemap()
 // FUNCTION: LEMBALL 0x0046aaf0
 void CBaseRemap::MapRemap(const unsigned char* p_mapping)
 {
-	CResPalette* palette = m_paletteResource;
+	CResPALETTE* palette = m_paletteResource;
 	if (palette->m_loaded != 0) {
 		palette->m_age = 0;
 	}
@@ -65,7 +65,7 @@ void CBaseRemap::MapRemap(const unsigned char* p_mapping)
 void CBaseRemap::CalculateGreyScale()
 {
 	volatile short grey;
-	CResPalette* palette = m_paletteResource;
+	CResPALETTE* palette = m_paletteResource;
 	if (palette->m_loaded != 0) {
 		palette->m_age = 0;
 	}

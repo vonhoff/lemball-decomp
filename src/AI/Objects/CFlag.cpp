@@ -1,9 +1,9 @@
 #include "CFlag.h"
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 
 // FUNCTION: LEMBALL 0x00422b30
-void CFlag::SetSfx()
+void CFlag::SetSFX()
 {
 	SetSndEffect(SFX_YIPPEE);
 }

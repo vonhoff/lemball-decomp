@@ -5,15 +5,15 @@
 
 class CClipRect;
 class CLine;
-class CPvGWnd;
+class CPVGWnd;
 class CVsRect;
 // SIZE 0x118
 // VTABLE: LEMBALL 0x00499838 CGWnd
 // VTABLE: LEMBALL 0x00499818 CHotAreaHandler
 class CFramedButton : public CDepressedButton {
 public:
-	CFramedButton(const CVsRect& p_rect, CPvGWnd* p_parent, unsigned int p_frameColor);
-	CFramedButton(CPvGWnd* p_parent, unsigned int p_frameColor);
+	CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColor);
+	CFramedButton(CPVGWnd* p_parent, unsigned int p_frameColor);
 	void InitializeFramePrimitives();
 	virtual ~CFramedButton();
 	virtual void DrawButton();

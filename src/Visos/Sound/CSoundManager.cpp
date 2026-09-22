@@ -1,9 +1,9 @@
 #include "CSoundManager.h"
 
 #include "../Foundation/VsSound.h"
-#include "../Resources/CResEffect.h"
+#include "../Resources/CResEFFECT.h"
 #include "CBaseSoundDevice.h"
-#include "CPvMusicDevice.h"
+#include "CPVMusicDevice.h"
 
 #include <string.h>
 
@@ -272,7 +272,7 @@ unsigned long CSoundManager::PlayMusic(unsigned long p_handle, unsigned long p_u
 }
 
 // FUNCTION: LEMBALL 0x0045b320
-CVsOStream& CSoundManager::StreamOut(CVsOStream& p_stream)
+CVSOStream& CSoundManager::StreamOut(CVSOStream& p_stream)
 {
 	return p_stream;
 }
@@ -329,11 +329,11 @@ void CSoundManager::StopMusicCd(unsigned long p_handle)
 unsigned long CSoundManager::PrepareEffect(unsigned long p_resourceId)
 {
 	unsigned long handle;
-	CResEffect* effect;
+	CResEFFECT* effect;
 	unsigned char* data;
 
 	if (m_effectsAvailable == 1) {
-		effect = CResEffect::Load(p_resourceId);
+		effect = CResEFFECT::Load(p_resourceId);
 		if (effect->m_loaded != 0) {
 			effect->m_age = 0;
 		}
@@ -420,19 +420,19 @@ void CSoundManager::SetMusicWnd(CWnd* p_window)
 // FUNCTION: LEMBALL 0x0045b5c0
 void CSoundManager::SetMusicCdPath(char* p_path)
 {
-	CPvMusicDevice* musicDevice = m_musicDevice;
+	CPVMusicDevice* musicDevice = m_musicDevice;
 	musicDevice->m_path = p_path;
 	musicDevice->m_usePathPrefix = 1;
 }
 
 // FUNCTION: LEMBALL 0x0045b5f0
-void CSoundManager::UseMusicCd(unsigned int p_enabled)
+void CSoundManager::UseMusicCD(unsigned int p_enabled)
 {
 	m_musicDevice->m_useCdDirectory = p_enabled;
 }
 
 #include "../Foundation/CDebugOStream.h"
-#include "Visos/Foundation/CVsOStream.h"
+#include "Visos/Foundation/CVSOStream.h"
 
 // GLOBAL: LEMBALL 0x004a1ca8
 char g_szEffectsDriverPrefix[12] = "Effects : ";

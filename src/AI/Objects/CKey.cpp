@@ -1,7 +1,7 @@
 #include "CKey.h"
 
 #include "../../Map/Base/CMap.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"

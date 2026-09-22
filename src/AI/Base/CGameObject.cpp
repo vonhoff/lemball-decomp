@@ -3,8 +3,8 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/CVsMath.h"
-#include "../Navigation/CAi.h"
+#include "../../Visos/Foundation/CVSMath.h"
+#include "../Navigation/CAI.h"
 #include "../Navigation/CAiDestinationEntry.h"
 #include "../Navigation/CAiDestinationList.h"
 #include "../Navigation/CMaze.h"
@@ -1159,7 +1159,7 @@ void CGameObject::ResetInstructions()
 }
 
 // FUNCTION: LEMBALL 0x004165e0
-void CGameObject::Init(CAi* p_ai)
+void CGameObject::Init(CAI* p_ai)
 {
 	g_pAI = p_ai;
 	g_nGameOver = 0;

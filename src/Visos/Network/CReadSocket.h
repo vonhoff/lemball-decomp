@@ -7,9 +7,9 @@ class CNetworkMessage;
 
 class CBasePacket;
 class CReadCBuff;
-class CReadCmsBuff;
-class CReadNcBuff;
-class CReadNcmsBuff;
+class CReadCMSBuff;
+class CReadNCBuff;
+class CReadNCMSBuff;
 
 // SIZE 0x84
 // VTABLE: LEMBALL 0x00498f60 CBaseCommonSocket
@@ -20,7 +20,7 @@ public:
 	bool IsChanged(CNetworkMessage& p_message);
 	bool ProcessPacket();
 	void DeleteCBuffers();
-	void DeleteNcBuffers();
+	void DeleteNCBuffers();
 	virtual void FirstReceive();                           // vtable+0x18
 	virtual void SendAcknowledgement() = 0;                // vtable+0x1c
 	virtual CNetworkMessage* ReceiveAcknowledgement() = 0; // vtable+0x20
@@ -28,16 +28,16 @@ public:
 	virtual void PostRead(NetworkEvents p_event, CBasePacket* p_packet); // vtable+0x24
 	void Process();
 	void SetCBuffers(int p_packetCount, int p_messageCapacity);
-	void SetNcBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity);
+	void SetNCBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity);
 	void UnUseAllC();
-	void UnUseAllNc();
+	void UnUseAllNC();
 	virtual ~CReadSocket(); // vtable+0x14
 
 private:
-	CReadNcBuff* m_nonCriticalBuffer;        // 0x48
-	CReadNcmsBuff* m_nonCriticalMultiBuffer; // 0x4c
+	CReadNCBuff* m_nonCriticalBuffer;        // 0x48
+	CReadNCMSBuff* m_nonCriticalMultiBuffer; // 0x4c
 	CReadCBuff* m_criticalBuffer;            // 0x50
-	CReadCmsBuff* m_criticalMultiBuffer;     // 0x54
+	CReadCMSBuff* m_criticalMultiBuffer;     // 0x54
 };
 
 // SYNTHETIC: LEMBALL 0x00462940

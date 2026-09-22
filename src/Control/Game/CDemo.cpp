@@ -3,9 +3,9 @@
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/Message.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CPvWnd.h"
+#include "../../Visos/Graphics/CPVWnd.h"
 #include "../../Visos/Messaging/PackParam.h"
-#include "../../Visos/Resources/CResBin.h"
+#include "../../Visos/Resources/CResBIN.h"
 
 // FUNCTION: LEMBALL 0x004091b0
 CDemo::CDemo(int p_arg0)
@@ -102,19 +102,19 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 bool CDemo::LoadBuffer()
 {
 	if (m_filePath != 0) {
-		_Filet* file = VsOpen(m_filePath, "rb");
+		_Filet* file = vsOpen(m_filePath, "rb");
 		if (file == 0) {
 			return 0;
 		}
-		unsigned long size = VsGetFileSize(file);
+		unsigned long size = vsGetFileSize(file);
 		m_buffer = new unsigned char[size];
-		unsigned long bytesRead = VsRead(file, m_buffer, size);
-		VsClose(file);
+		unsigned long bytesRead = vsRead(file, m_buffer, size);
+		vsClose(file);
 		m_bytesRemaining = bytesRead;
 	}
 	else {
-		m_resource = CResBin::Load(m_currentResourceId);
-		CResBin* resource = m_resource;
+		m_resource = CResBIN::Load(m_currentResourceId);
+		CResBIN* resource = m_resource;
 		if (resource->m_loaded != 0) {
 			resource->m_age = 0;
 		}

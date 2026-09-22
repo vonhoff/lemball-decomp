@@ -1,6 +1,6 @@
 #include "CGenericGroup.h"
 
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../Navigation/CAiDestinationList.h"
 #include "CFormationManager.h"
 
@@ -21,7 +21,7 @@ void CGenericGroup::SetGroupState(eGroupState p_state)
 }
 
 // FUNCTION: LEMBALL 0x0041dda0
-CGenericGroup::CGenericGroup(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager)
+CGenericGroup::CGenericGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager)
 	: CGameObject(OBJECT_GROUP, 0, 0x14)
 {
 	g_pGroupAI = p_ai;
@@ -419,4 +419,4 @@ CObjectManager* g_pGroupObjectManager;
 CFormationManager* g_pGroupFormationManager;
 
 // GLOBAL: LEMBALL 0x004a7824
-CAi* g_pGroupAI;
+CAI* g_pGroupAI;

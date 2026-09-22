@@ -1,6 +1,6 @@
 #include "CGameStatus.h"
 
-#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/CVSOStream.h"
 #include "../../Visos/Foundation/VsString.h"
 
 #include <string.h>
@@ -118,7 +118,7 @@ char* CGameStatus::EncodePassword()
 	char buffer[12];
 	unsigned int levelData = JiggleLevelData();
 	unsigned int checksum = CalcCheckSum(levelData);
-	VsLtoa((checksum << 24) | levelData, buffer, 10);
+	vsLtoa((checksum << 24) | levelData, buffer, 10);
 	strcpy(m_password, g_szPasswordZeroes);
 	strcpy(m_password + 10 - strlen(buffer), buffer);
 	return m_password;

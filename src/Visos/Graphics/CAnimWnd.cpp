@@ -1,16 +1,16 @@
 #include "CAnimWnd.h"
 
 #include "../../Platform/Windows/Entry.h"
-#include "../Foundation/CVsIOs.h"
+#include "../Foundation/CVSIOs.h"
 #include "../Foundation/VsDebug.h"
-#include "../Resources/CResMovie.h"
+#include "../Resources/CResMOVIE.h"
 #include "../Target/Graphics/WinGDraw.h"
 #include "../Target/System/CPlatformServices.h"
 #include "CGWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include "Visos/Foundation/CString.h"
-#include "Visos/Resources/CResString.h"
+#include "Visos/Resources/CResSTRING.h"
 
 #include <windows.h>
 
@@ -66,7 +66,7 @@ void CAnimWnd::Initialise()
 	m_movieWindow = 0;
 	if (g_pAnimWnd != 0) {
 		MessageBoxA(0, g_szUnableToSupportMoreThanOneAnimWindow, g_szAnimWndError, 0x1000);
-		InternalVsExit(0xaaaa);
+		_VSExit(0xaaaa);
 	}
 	g_pAnimWnd = this;
 }
@@ -91,9 +91,9 @@ CAnimWnd::~CAnimWnd()
 }
 
 // FUNCTION: LEMBALL 0x0046ded0
-void CAnimWnd::InternalOnCreate()
+void CAnimWnd::_OnCreate()
 {
-	CGWnd::InternalOnCreate();
+	CGWnd::_OnCreate();
 	if (m_movieWindow != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
 		m_movieWindow = 0;
@@ -103,14 +103,14 @@ void CAnimWnd::InternalOnCreate()
 }
 
 // FUNCTION: LEMBALL 0x0046df40
-void CAnimWnd::InternalOnDestroy()
+void CAnimWnd::_OnDestroy()
 {
 	Stop();
 	if (m_movieWindow != 0) {
 		SendMessageA((HWND) m_movieWindow, 0x10, 0, 0);
 		m_movieWindow = 0;
 	}
-	CGWnd::InternalOnDestroy();
+	CGWnd::_OnDestroy();
 	m_paused = 0;
 	m_playing = 0;
 }
@@ -205,7 +205,7 @@ void CAnimWnd::Refresh(CVsRect* p_rect)
 // FUNCTION: LEMBALL 0x0046e130
 void CAnimWnd::SetAnim(unsigned int p_resourceId)
 {
-	CResMovie* movie;
+	CResMOVIE* movie;
 	char* fileName;
 	char* cdDir;
 
@@ -213,7 +213,7 @@ void CAnimWnd::SetAnim(unsigned int p_resourceId)
 	fileName = "test";
 	if (p_resourceId != 0) {
 		m_animResourceId = p_resourceId;
-		movie = CResMovie::Load(p_resourceId);
+		movie = CResMOVIE::Load(p_resourceId);
 		if (movie->m_loaded != 0) {
 			movie->m_age = 0;
 		}
@@ -226,7 +226,7 @@ void CAnimWnd::SetAnim(unsigned int p_resourceId)
 	CString relative;
 	if (m_useMoviePrefix != 0) {
 		relative = m_moviePrefix;
-		if (relative.m_text[relative.Getlength() - 1] != '\\') {
+		if (relative.m_text[relative.getlength() - 1] != '\\') {
 			relative += g_szPathSeparator;
 		}
 	}
@@ -234,19 +234,19 @@ void CAnimWnd::SetAnim(unsigned int p_resourceId)
 	relative += g_szAviSuffix;
 	if (m_resolveMoviePath == 0) {
 		m_moviePath = g_szCurrentDirectory;
-		if (m_moviePath.m_text[m_moviePath.Getlength() - 1] != '\\') {
+		if (m_moviePath.m_text[m_moviePath.getlength() - 1] != '\\') {
 			m_moviePath += "\\";
 		}
 	}
 	else {
-		cdDir = g_pTargetPlatformServices->GetCdDir(relative.m_text);
+		cdDir = g_pTargetPlatformServices->GetCDDir(relative.m_text);
 		if (cdDir != 0) {
 			m_moviePath = cdDir;
 		}
 		else {
 			m_moviePath = g_szCurrentDirectory;
 		}
-		if (m_moviePath.m_text[m_moviePath.Getlength() - 1] != '\\') {
+		if (m_moviePath.m_text[m_moviePath.getlength() - 1] != '\\') {
 			m_moviePath += "\\";
 		}
 	}

@@ -29,14 +29,14 @@ public:
 	}
 	bool Send(CNetworkMessage& p_message);
 	bool SendCritical(CNetworkMessage& p_message);
-	bool SendNcms(CNetworkMessage& p_message);
+	bool SendNCMS(CNetworkMessage& p_message);
 	bool ResendCritical(CWritePacket* p_packet);
 	void Closed(int p_notifyPeer);
 	void DeleteCBuffers();
-	void DeleteNcBuffers();
+	void DeleteNCBuffers();
 	void Process();
 	void SetCBuffers(int p_packetCount, int p_messageCapacity);
-	void SetNcBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity);
+	void SetNCBuffers(unsigned long p_lastSinglePacketMessageId, unsigned long p_lastMessageId, int p_messageCapacity);
 
 	friend class CBaseObjectManager;
 	friend class CBaseNetwork;
@@ -45,7 +45,7 @@ public:
 	friend class CNetworkOptionsDrawer;
 
 protected:
-	void InternalSetDestAddr(CNetworkAddress* p_address);
+	void _SetDestAddr(CNetworkAddress* p_address);
 
 private:
 	CWriteNcBuff* m_nonCriticalBuffer;     // 0x48

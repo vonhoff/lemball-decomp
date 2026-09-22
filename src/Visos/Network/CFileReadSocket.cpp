@@ -5,7 +5,7 @@
 #include "../Messaging/CHeaders.h"
 #include "CFileNetwork.h"
 #include "CNetworkAddress.h"
-#include "CTcpIpNetwork.h"
+#include "CTCPIPNetwork.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 #include "Visos/Network/CBaseNetwork.h"
 #include "Visos/Network/CFileBaseSocket.h"

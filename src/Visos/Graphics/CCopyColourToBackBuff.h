@@ -15,8 +15,8 @@ public:
 		m_y = 0;
 		m_x = 0;
 	}
-	virtual void Draw(CGdi* p_gdi);     // vtable+0x04
-	virtual void Render(CGdi* p_gdi);   // vtable+0x08
+	virtual void Draw(CGDI* p_gdi);     // vtable+0x04
+	virtual void Render(CGDI* p_gdi);   // vtable+0x08
 	virtual ~CCopyColourToBackBuff() {} // vtable+0x00
 
 	friend class CSurface;

@@ -2,7 +2,7 @@
 
 #include "../Base/LoadSheepData.h"
 #include "../Managers/CObjectManager.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CSheep.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Groups/CGenericGroupManager.h"
@@ -11,7 +11,7 @@
 #include "CSheepGroup.h"
 
 // FUNCTION: LEMBALL 0x0041f0b0
-CSheepGroupManager::CSheepGroupManager(CAi* p_ai,
+CSheepGroupManager::CSheepGroupManager(CAI* p_ai,
 									   CObjectManager* p_objectManager,
 									   CFormationManager* p_formationManager)
 	: CGenericGroupManager(p_ai, p_objectManager, p_formationManager)

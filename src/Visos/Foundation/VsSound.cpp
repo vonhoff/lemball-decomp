@@ -1,6 +1,6 @@
 #include "VsSound.h"
 
-#include "../Sound/CPvMusicDevice.h"
+#include "../Sound/CPVMusicDevice.h"
 #include "../Sound/CSoundManager.h"
 #include "../Target/Sound/CDirectSoundDevice.h"
 #include "../Target/Sound/CMciMusicDevice.h"
@@ -35,14 +35,14 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 					   unsigned int p_effectsEnabled,
 					   unsigned int p_useMusicCD,
 					   unsigned int* p_musicAvailable,
-					   CPvMusicDevice** p_musicDevice,
+					   CPVMusicDevice** p_musicDevice,
 					   int p_deviceParameter)
 {
 	int count = 0;
 	*p_musicAvailable = 0;
 	*p_musicDevice = 0;
 	if (p_useMusicCD == 1) {
-		CPvMusicDevice* music = new CMciMusicDevice();
+		CPVMusicDevice* music = new CMciMusicDevice();
 		if (music->IsAvailable() == 1) {
 			*p_musicAvailable = 1;
 			*p_musicDevice = music;

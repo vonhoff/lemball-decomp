@@ -124,7 +124,7 @@ bool CBaseQueue::Send(Message& p_message)
 }
 
 // FUNCTION: LEMBALL 0x00463280
-CVsOStream& CBaseQueue::StreamOut(CVsOStream& p_stream)
+CVSOStream& CBaseQueue::StreamOut(CVSOStream& p_stream)
 {
 	return p_stream;
 }

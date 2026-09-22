@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x0049a4f0 CBaseCommonSocket
 // VTABLE: LEMBALL 0x0049a500 CNetworkFile
 // VTABLE: LEMBALL 0x0049a53c CFileCommonSocket
-// CFileReadSocket/CFileWriteSocket/CFileRwSocket place the next virtual base four
+// CFileReadSocket/CFileWriteSocket/CFileRWSocket place the next virtual base four
 // bytes after this class's vbptr, while their generated CFileCommonSocket
 // adjustors retain the original 0x20 CBaseCommonSocket displacement. Together,
 // those x86 constraints require one unknown word and no hidden vtordisp here.

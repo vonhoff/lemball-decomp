@@ -4,7 +4,7 @@
 #include "../../Visos/Graphics/CClipRect.h"  // complete type
 #include "../../Visos/Graphics/CSolidRect.h" // complete type
 
-class CAi;
+class CAI;
 class CBaseQueue;
 class CLemmingAnimsManager;
 class CMap;
@@ -12,7 +12,7 @@ struct CVsPoint;
 // SIZE 0x78
 class CCursorMotion {
 public:
-	CCursorMotion(CLemmingAnimsManager* p_anims, CAi* p_ai, CMap* p_map);
+	CCursorMotion(CLemmingAnimsManager* p_anims, CAI* p_ai, CMap* p_map);
 	~CCursorMotion();
 	void PostPosition();
 	void Process();
@@ -29,7 +29,7 @@ public:
 private:
 	unsigned int m_unknown00;        // 0x00
 	CMap* m_map;                     // 0x04
-	CAi* m_ai;                       // 0x08
+	CAI* m_ai;                       // 0x08
 	CBaseQueue* m_aiQueue;           // 0x0c
 	CLemmingAnimsManager* m_anims;   // 0x10
 	CClipRect m_clipRects[2];        // 0x14

@@ -3,14 +3,14 @@
 
 #include "../../Visos/Graphics/CGraphicButton.h" // complete type
 
-class CPvGWnd;
+class CPVGWnd;
 struct CVsPoint;
 // SIZE 0x130
 // VTABLE: LEMBALL 0x00497d30 CGWnd
 // VTABLE: LEMBALL 0x00497d08 CHotAreaHandler
 class CGunButton : public CGraphicButton {
 public:
-	CGunButton(const CVsPoint& p_position, CPvGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
+	CGunButton(const CVsPoint& p_position, CPVGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
 		: CGraphicButton(p_position, p_parent, p_animId, p_flags)
 	{
 	}

@@ -2,11 +2,11 @@
 
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
-#include "CAi.h"
+#include "CAI.h"
 #include "CMover.h"
 
 // FUNCTION: LEMBALL 0x0042f190
-CMoverManager::CMoverManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x1a, 0xf)
+CMoverManager::CMoverManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x1a, 0xf)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;

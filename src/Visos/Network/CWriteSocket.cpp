@@ -7,7 +7,7 @@
 #include "../Messaging/CWritePacket.h"
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
-#include "CTcpIpNetwork.h"
+#include "CTCPIPNetwork.h"
 #include "Visos/Messaging/BasePacketHeader.h"
 #include "Visos/Messaging/CBasePacketBuff.h"
 #include "Visos/Messaging/CNetworkMessage.h"
@@ -39,18 +39,18 @@ CWriteSocket::~CWriteSocket()
 	operator delete(m_destinationAddress);
 	m_destinationAddress = 0;
 	operator delete(m_packetHeader);
-	DeleteNcBuffers();
+	DeleteNCBuffers();
 	DeleteCBuffers();
 }
 
 // FUNCTION: LEMBALL 0x0045fde0
-void CWriteSocket::InternalSetDestAddr(CNetworkAddress* p_address)
+void CWriteSocket::_SetDestAddr(CNetworkAddress* p_address)
 {
 	*m_destinationAddress = *p_address;
 }
 
 // FUNCTION: LEMBALL 0x0045fdf0
-void CWriteSocket::DeleteNcBuffers()
+void CWriteSocket::DeleteNCBuffers()
 {
 	CWriteNcBuff* buffer;
 
@@ -80,14 +80,14 @@ void CWriteSocket::DeleteCBuffers()
 }
 
 // FUNCTION: LEMBALL 0x0045fe50
-void CWriteSocket::SetNcBuffers(unsigned long p_lastSinglePacketMessageId,
+void CWriteSocket::SetNCBuffers(unsigned long p_lastSinglePacketMessageId,
 								unsigned long p_lastMessageId,
 								int p_messageCapacity)
 {
 	(void) p_lastSinglePacketMessageId;
 	(void) p_lastMessageId;
 	(void) p_messageCapacity;
-	DeleteNcBuffers();
+	DeleteNCBuffers();
 }
 
 // FUNCTION: LEMBALL 0x0045fe60
@@ -153,7 +153,7 @@ bool CWriteSocket::ResendCritical(CWritePacket* p_packet)
 }
 
 // FUNCTION: LEMBALL 0x0045ff70
-bool CWriteSocket::SendNcms(CNetworkMessage& p_message)
+bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 {
 	unsigned char* data;
 	int remaining;
@@ -239,7 +239,7 @@ bool CWriteSocket::Send(CNetworkMessage& p_message)
 			sent = false;
 		}
 		else {
-			sent = SendNcms(p_message);
+			sent = SendNCMS(p_message);
 		}
 	}
 	else {
@@ -309,7 +309,7 @@ void CWriteSocket::Process()
 	if (m_socketFlags == 0 || m_isOpen == 0) {
 		return;
 	}
-	if (m_segmentIndex != -1 && SendNcms(*m_segmentedMessage) != 0) {
+	if (m_segmentIndex != -1 && SendNCMS(*m_segmentedMessage) != 0) {
 		m_segmentedMessage->m_pendingSendCount = 0;
 	}
 	index = 0;

@@ -2,7 +2,7 @@
 
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Network/CConnect.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
@@ -45,7 +45,7 @@ bool CCollectable::Process()
 				m_enabled = 0;
 				break;
 			case 26:
-				SetSfx();
+				SetSFX();
 				break;
 			}
 			m_pendingAction = m_action;
@@ -80,7 +80,7 @@ bool CCollectable::Process()
 				pt.m_x = m_position.m_xFixed >> 12;
 				pt.m_y = m_position.m_yFixed >> 12;
 				pt.m_z = m_position.m_zFixed >> 12;
-				CAi* ai = g_pAI;
+				CAI* ai = g_pAI;
 				ai->m_collisionExclude = 0;
 				ai->m_collisionPoint = pt;
 				ai->m_collisionIndex = 0;
@@ -107,7 +107,7 @@ bool CCollectable::Process()
 		}
 		case 26:
 			Collected();
-			SetSfx();
+			SetSFX();
 			Action(ACTION_8);
 			break;
 		}
@@ -121,7 +121,7 @@ void CCollectable::DoActivate()
 }
 
 // FUNCTION: LEMBALL 0x00423040
-void CCollectable::SetSfx()
+void CCollectable::SetSFX()
 {
 }
 

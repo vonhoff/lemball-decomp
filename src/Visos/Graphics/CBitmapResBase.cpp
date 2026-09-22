@@ -1,14 +1,14 @@
 #include "CBitmapResBase.h"
 
-#include "../Resources/CResBitmap.h"
-#include "CGdi.h"
+#include "../Resources/CResBITMAP.h"
+#include "CGDI.h"
 #include "CSurface.h"
 class CBitmap;
 
 // FUNCTION: LEMBALL 0x00447300
-void CBitmapResBase::Draw(CGdi* p_gdi)
+void CBitmapResBase::Draw(CGDI* p_gdi)
 {
-	register CResBitmap* resource = m_resource;
+	register CResBITMAP* resource = m_resource;
 	register CBitmapResBase* self = this;
 
 	if (resource->m_loaded != 0) {
@@ -22,7 +22,7 @@ void CBitmapResBase::Draw(CGdi* p_gdi)
 }
 
 // FUNCTION: LEMBALL 0x00447340
-void CBitmapResBase::Render(CGdi* p_gdi)
+void CBitmapResBase::Render(CGDI* p_gdi)
 {
 	p_gdi->m_renderTarget->Blit((CBitmap*) this, m_resource);
 	m_resource->m_directUseCount--;

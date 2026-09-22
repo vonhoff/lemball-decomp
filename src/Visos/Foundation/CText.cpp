@@ -1,16 +1,16 @@
 #include "CText.h"
 
-#include "../Graphics/CGdi.h"
+#include "../Graphics/CGDI.h"
 #include "../Graphics/CSurface.h"
-#include "../Resources/CResFont.h"
-#include "../Resources/CResZrle.h"
-#include "CVsOStream.h"
+#include "../Resources/CResFONT.h"
+#include "../Resources/CResZRLE.h"
+#include "CVSOStream.h"
 #include "CVsPoint.h"
 #include "Visos/Foundation/CString.h"
-#include "Visos/Graphics/CZrle.h"
+#include "Visos/Graphics/CZRLE.h"
 
 // FUNCTION: LEMBALL 0x00469a50
-void CText::Set(int p_x, int p_y, CResFont* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
+void CText::Set(int p_x, int p_y, CResFONT* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	m_startX = (short) p_x;
 	m_startY = (short) p_y;
@@ -21,7 +21,7 @@ void CText::Set(int p_x, int p_y, CResFont* p_font, char* p_text, unsigned long 
 }
 
 // FUNCTION: LEMBALL 0x00469a80
-void CText::Set(CVsPoint& p_position, CResFont* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
+void CText::Set(CVsPoint& p_position, CResFONT* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	m_startX = p_position.m_x;
 	m_startY = p_position.m_y;
@@ -32,7 +32,7 @@ void CText::Set(CVsPoint& p_position, CResFont* p_font, char* p_text, unsigned l
 }
 
 // FUNCTION: LEMBALL 0x00469ac0
-void CText::Set(int p_x, int p_y, CResFont* p_font, CString p_text, unsigned long p_flags, CRemap* p_remap)
+void CText::Set(int p_x, int p_y, CResFONT* p_font, CString p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	m_startX = (short) p_x;
 	m_startY = (short) p_y;
@@ -43,7 +43,7 @@ void CText::Set(int p_x, int p_y, CResFont* p_font, CString p_text, unsigned lon
 }
 
 // FUNCTION: LEMBALL 0x00469b00
-void CText::Set(CVsPoint& p_position, CResFont* p_font, CString p_text, unsigned long p_flags, CRemap* p_remap)
+void CText::Set(CVsPoint& p_position, CResFONT* p_font, CString p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	m_startX = p_position.m_x;
 	m_startY = p_position.m_y;
@@ -54,7 +54,7 @@ void CText::Set(CVsPoint& p_position, CResFont* p_font, CString p_text, unsigned
 }
 
 // FUNCTION: LEMBALL 0x00469b40
-void CText::Draw(CGdi* p_gdi)
+void CText::Draw(CGDI* p_gdi)
 {
 	m_useAdvance = 0;
 	p_gdi->AddToList(this);
@@ -95,9 +95,9 @@ void CText::NextPos()
 }
 
 // FUNCTION: LEMBALL 0x00474a20
-void CText::Render(CGdi* p_gdi)
+void CText::Render(CGDI* p_gdi)
 {
-	CResFont* font = m_font;
+	CResFONT* font = m_font;
 	if (font->m_loaded != 0) {
 		font->m_age = 0;
 	}
@@ -112,9 +112,9 @@ void CText::Render(CGdi* p_gdi)
 	const char* text = m_text;
 	if (*text != '\0') {
 		do {
-			m_glyph = m_font->AsciItoZrle((unsigned char) *text);
+			m_glyph = m_font->ASCIItoZRLE((unsigned char) *text);
 			if (m_glyph == 0) {
-				m_glyph = m_font->AsciItoZrle('I');
+				m_glyph = m_font->ASCIItoZRLE('I');
 				if (m_glyph == 0) {
 					m_glyph = m_font->m_animationEntries;
 				}

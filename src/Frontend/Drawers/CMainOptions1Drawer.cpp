@@ -4,13 +4,13 @@
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Frontend/Controls/CGunController.h"
 #include "../../Views/Display/CMain2DDisplay.h"
-#include "../../Visos/Resources/CResBitmap.h"
+#include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBitmapRes.h"
 
 class CGWnd;
@@ -52,7 +52,7 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 													RES_NEWFRONT_ICONS_LORES_FULLSCREEN};
 
 // FUNCTION: LEMBALL 0x00448200
-CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2)
+CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_1, 0, 0, 0, 0, 0)
 {
 	m_idleDeadline = timeGetTime() + 20000;
@@ -95,7 +95,7 @@ void CMainOptions1Drawer::Load()
 	unsigned long* toggleAnim;
 	unsigned long* modeAnim;
 	unsigned long* quitAnim;
-	Prims* primitiveBundle;
+	tagPRIMS* primitiveBundle;
 	int i;
 
 	if (m_mode != 0) {
@@ -119,7 +119,7 @@ void CMainOptions1Drawer::Load()
 	i = 1;
 	primitiveBundle = m_primitiveBundle;
 	do {
-		CResBitmap* bitmap = m_backgroundBitmap;
+		CResBITMAP* bitmap = m_backgroundBitmap;
 		primitiveBundle->m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) bitmap->m_x) / 2);
 		primitiveBundle->m_primitive.m_y = 0;
 		primitiveBundle->m_primitive.m_resource = bitmap;

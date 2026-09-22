@@ -1,5 +1,5 @@
 #include "Platform/Windows/Thread.h"
-#include "Visos/Foundation/CVsDebugStreambuf.h"
+#include "Visos/Foundation/CVSDebugStreambuf.h"
 #include "Visos/Foundation/VsFile.h"
 #include "Visos/Foundation/VsInit.h"
 
@@ -15,7 +15,7 @@ unsigned int __cdecl DebugMessageThreadMain();
 jmp_buf g_vsDebugJumpBuffer;
 
 // FUNCTION: LEMBALL 0x00472be0
-bool InternalDbgInit()
+bool _DBG_Init()
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		g_pDebugSyncEvent = CreateEventA(0, 0, 0, "Sync_Debug");
@@ -38,7 +38,7 @@ bool InternalDbgInit()
 }
 
 // FUNCTION: LEMBALL 0x00472c70
-bool InternalDbgQuit(unsigned int p_force)
+bool _DBG_Quit(unsigned int p_force)
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		if (p_force == 0) {
@@ -51,7 +51,7 @@ bool InternalDbgQuit(unsigned int p_force)
 		return 1;
 	}
 	if (g_pDebugOutputFile != 0) {
-		VsClose((_Filet*) g_pDebugOutputFile);
+		vsClose((_Filet*) g_pDebugOutputFile);
 		g_pDebugOutputFile = 0;
 	}
 	return 1;

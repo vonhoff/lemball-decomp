@@ -1,6 +1,6 @@
 #include "CTextManager.h"
 
-#include "../Resources/CResFont.h"
+#include "../Resources/CResFONT.h"
 #include "CCopyText.h"
 #include "CText.h"
 #include "CVsSize.h"
@@ -16,7 +16,7 @@ CTextManager::CTextManager(unsigned long p_fontIdCount,
 	m_fontIdCount = p_fontIdCount;
 	m_loadedFontCount = 0;
 	m_fontCapacity = p_fontCapacity;
-	m_fonts = new CResFont*[m_fontCapacity];
+	m_fonts = new CResFONT*[m_fontCapacity];
 	m_fontIndices = new short[m_fontIdCount];
 	for (int i = 0; i < (int) m_fontCapacity; i++) {
 		m_fonts[i] = 0;
@@ -69,7 +69,7 @@ CTextManager::~CTextManager()
 // FUNCTION: LEMBALL 0x00469eb0
 void CTextManager::LoadFont(unsigned long p_fontId)
 {
-	CResFont** fonts;
+	CResFONT** fonts;
 	int slot = 0;
 	fonts = m_fonts;
 	if (fonts[0] != 0) {
@@ -77,13 +77,13 @@ void CTextManager::LoadFont(unsigned long p_fontId)
 			slot++;
 		} while (fonts[slot] != 0);
 	}
-	fonts[slot] = CResFont::Load(p_fontId);
+	fonts[slot] = CResFONT::Load(p_fontId);
 	m_fontIndices[p_fontId] = (short) slot;
 	m_loadedFontCount++;
 }
 
 // FUNCTION: LEMBALL 0x00469ef0
-CResFont* CTextManager::GetFont(unsigned long p_fontId)
+CResFONT* CTextManager::GetFont(unsigned long p_fontId)
 {
 	return m_fonts[m_fontIndices[p_fontId]];
 }
@@ -97,7 +97,7 @@ void CTextManager::UnLoadFont(unsigned long p_fontId)
 }
 
 // FUNCTION: LEMBALL 0x00469f50
-void CTextManager::DrawString(CGdi* p_gdi,
+void CTextManager::DrawString(CGDI* p_gdi,
 							  CVsPoint& p_position,
 							  const CVsSize& p_advance,
 							  unsigned long p_fontId,
@@ -116,7 +116,7 @@ void CTextManager::DrawString(CGdi* p_gdi,
 }
 
 // FUNCTION: LEMBALL 0x00469fd0
-void CTextManager::DrawString(CGdi* p_gdi,
+void CTextManager::DrawString(CGDI* p_gdi,
 							  CVsPoint& p_position,
 							  const CVsSize& p_advance,
 							  unsigned long p_fontId,

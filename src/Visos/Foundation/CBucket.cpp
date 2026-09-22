@@ -2,7 +2,7 @@
 
 #include "CArena.h"
 #include "CSmallMemory.h"
-#include "CVsOStream.h"
+#include "CVSOStream.h"
 #include "Visos/Foundation/CCritical.h"
 
 #include <string.h>

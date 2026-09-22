@@ -11,7 +11,7 @@ public:
 	friend class CBaseFrontendDrawer;
 	friend class CGunController;
 	friend class CAnimsManager;
-	friend class CCdLoadAnim;
+	friend class CCDLoadAnim;
 	friend class CHiliteController;
 	friend class CPasswordDrawer;
 	friend class CLemmingAnimsManager;

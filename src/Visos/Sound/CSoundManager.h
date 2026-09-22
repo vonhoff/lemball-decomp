@@ -2,9 +2,9 @@
 #define LEMBALL_VISOS_SOUND_CSOUNDMANAGER_H
 
 class CWnd;
-class CVsOStream;
+class CVSOStream;
 class CBaseSoundDevice;
-class CPvMusicDevice;
+class CPVMusicDevice;
 
 // SIZE 0xc90
 // VTABLE: LEMBALL 0x00498978
@@ -14,7 +14,7 @@ public:
 	unsigned char GetEffectVolume();
 	unsigned long PrepareEffect(unsigned long p_resourceId);
 	unsigned long PrepareMusic(unsigned long p_resourceId, unsigned int p_flags);
-	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	void Background();
 	void Foreground();
 	void FreeEffect(unsigned long p_effectId);
@@ -30,7 +30,7 @@ public:
 	void StopMusic(unsigned long p_handle);
 	void ResumeMusicCd(unsigned long p_handle);
 	void StopMusicCd(unsigned long p_handle);
-	void UseMusicCd(unsigned int p_enabled);
+	void UseMusicCD(unsigned int p_enabled);
 	void SetMusicCdPath(char* p_path);
 	char* BuildDriverInfo();
 	~CSoundManager();
@@ -45,7 +45,7 @@ private:
 	unsigned int m_useMusicCD;         // 0x1c
 	unsigned int m_deviceCount;        // 0x20
 	CBaseSoundDevice* m_devices[4];    // 0x24
-	CPvMusicDevice* m_musicDevice;     // 0x34
+	CPVMusicDevice* m_musicDevice;     // 0x34
 	char m_reserved38[0x34];           // 0x38
 	unsigned int m_nextMusicHandle;    // 0x6c
 	unsigned int m_resourceId;         // 0x70

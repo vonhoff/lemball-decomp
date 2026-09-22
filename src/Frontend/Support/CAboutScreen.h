@@ -10,17 +10,17 @@
 #include "../../Visos/Graphics/CLine.h"               // complete type
 #include "../../Visos/Graphics/CSolidRect.h"          // complete type
 
-class CGdi;
+class CGDI;
 class CMain2DDisplay;
-class CResBitmap;
-class CResString;
+class CResBITMAP;
+class CResSTRING;
 class CTextManager;
 // SIZE 0x9c
 // VTABLE: LEMBALL 0x00497cb0 CDrawer
 // VTABLE: LEMBALL 0x00497ca0 CBaseQueueHandler
 class CAboutScreen : public CDrawer, public CBaseQueueHandler {
 public:
-	CAboutScreen(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect);
+	CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect);
 	virtual ~CAboutScreen();                    // vtable+0x00
 	virtual void Draw(const CVsRect& p_rect);   // vtable+0x08
 	virtual void OnSize(const CVsRect& p_rect); // vtable+0x10
@@ -38,16 +38,16 @@ private:
 	unsigned int m_returnState;     // 0x14
 	CVsSize m_size;                 // 0x18
 	CMain2DDisplay* m_display;      // 0x1c
-	CGdi* m_gdi;                    // 0x20
+	CGDI* m_gdi;                    // 0x20
 	CLine m_line;                   // 0x24
 	CDrawingMark m_drawingMark;     // 0x34
 	unsigned int m_complete;        // 0x38
 	CBitmapRes m_bitmap;            // 0x3c
-	CResBitmap* m_backgroundBitmap; // 0x60
+	CResBITMAP* m_backgroundBitmap; // 0x60
 	CSolidRect m_rects[2];          // 0x64
-	CResString* m_aboutString;      // 0x84
+	CResSTRING* m_aboutString;      // 0x84
 	char* m_aboutText;              // 0x88
-	class CPvGWnd* m_textWindow;    // 0x8c
+	class CPVGWnd* m_textWindow;    // 0x8c
 	CTextManager* m_textManager;    // 0x90
 	unsigned int m_startTime;       // 0x94
 	unsigned int m_endTime;         // 0x98

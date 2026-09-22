@@ -2,10 +2,10 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../Base/StateMachine.h"
 #include "../Base/WaypointInformation.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CGameObject.h"
@@ -28,7 +28,7 @@ struct EnemyFacingOffset {
 EnemyFacingOffset g_enemyFacingOffsets[8] = {{0, 3}, {-4, 1}, {-5, 0}, {-4, -3}, {0, -4}, {6, -3}, {5, 0}, {4, 1}};
 
 // FUNCTION: LEMBALL 0x0041fba0
-CEnemy::CEnemy(CAi* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
+CEnemy::CEnemy(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
 	: CGameObject(OBJECT_PLAYER_1, 0x118, 10), m_targetPosition(), m_fireTarget()
 {
 	unsigned short z;
@@ -181,16 +181,16 @@ void CEnemy::ProcessAction(eEnemyStateRules p_rule, eEnemyStateActions p_action,
 	else {
 		switch (p_action) {
 		case ENEMY_ACTION_PATROL:
-			EnemyActionPatrol(p_data);
+			EnemyAction_PATROL(p_data);
 			break;
 		case ENEMY_ACTION_TURN_AND_FIRE_RAPID:
-			EnemyActionTurnAndFireRapid(p_data);
+			EnemyAction_TURNANDFIRERAPID(p_data);
 			break;
 		case ENEMY_ACTION_TURN_AND_FIRE_SLOW:
-			EnemyActionTurnAndFireSlow(p_data);
+			EnemyAction_TURNANDFIRESLOW(p_data);
 			break;
 		case ENEMY_ACTION_TURN_AND_FIRE_RANDOM:
-			EnemyActionTurnAndFireRandom(p_data);
+			EnemyAction_TURNANDFIRERANDOM(p_data);
 			break;
 		default:
 			StopMoving();
@@ -206,20 +206,20 @@ bool CEnemy::ProcessRule(eEnemyStateRules p_rule)
 	case ENEMY_RULE_NONE:
 		return 1;
 	case ENEMY_RULE_RADIUS50:
-		return EnemyRuleRadius50();
+		return EnemyRule_RADIUS50();
 	case ENEMY_RULE_NOT_RADIUS50:
-		return EnemyRuleRadius50() == 0;
+		return EnemyRule_RADIUS50() == 0;
 	case ENEMY_RULE_RADIUS50_AND_LOS:
-		return EnemyRuleRadius50AndLineOfSight();
+		return EnemyRule_RADIUS50ANDLINEOFSIGHT();
 	case ENEMY_RULE_NOT_RADIUS50_AND_LOS:
-		return EnemyRuleRadius50AndLineOfSight() == 0;
+		return EnemyRule_RADIUS50ANDLINEOFSIGHT() == 0;
 	default:
 		return 0;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00420070
-bool CEnemy::EnemyRuleRadius50()
+bool CEnemy::EnemyRule_RADIUS50()
 {
 	if (g_pAI->m_gameplayEnabled == 0) {
 		return 0;
@@ -228,7 +228,7 @@ bool CEnemy::EnemyRuleRadius50()
 }
 
 // FUNCTION: LEMBALL 0x00420090
-bool CEnemy::EnemyRuleRadius50AndLineOfSight()
+bool CEnemy::EnemyRule_RADIUS50ANDLINEOFSIGHT()
 {
 	if (g_pAI->m_gameplayEnabled == 0) {
 		return 0;
@@ -242,7 +242,7 @@ bool CEnemy::EnemyRuleRadius50AndLineOfSight()
 }
 
 // FUNCTION: LEMBALL 0x004200f0
-void CEnemy::EnemyActionPatrol(EnemyLemmingUnion* p_data)
+void CEnemy::EnemyAction_PATROL(EnemyLemmingUnion* p_data)
 {
 	AiCoord destination;
 	if (DestinationExists() != 1) {
@@ -270,19 +270,19 @@ void CEnemy::EnemyActionPatrol(EnemyLemmingUnion* p_data)
 }
 
 // FUNCTION: LEMBALL 0x004201a0
-void CEnemy::EnemyActionTurnAndFireRapid(EnemyLemmingUnion* p_data)
+void CEnemy::EnemyAction_TURNANDFIRERAPID(EnemyLemmingUnion* p_data)
 {
 	RequestFire(0x64);
 }
 
 // FUNCTION: LEMBALL 0x004201b0
-void CEnemy::EnemyActionTurnAndFireSlow(EnemyLemmingUnion* p_data)
+void CEnemy::EnemyAction_TURNANDFIRESLOW(EnemyLemmingUnion* p_data)
 {
 	RequestFire(0x320);
 }
 
 // FUNCTION: LEMBALL 0x004201c0
-void CEnemy::EnemyActionTurnAndFireRandom(EnemyLemmingUnion* p_data)
+void CEnemy::EnemyAction_TURNANDFIRERANDOM(EnemyLemmingUnion* p_data)
 {
 	int seed = *g_pSentinel;
 	seed = seed * 41 + 0x1f;

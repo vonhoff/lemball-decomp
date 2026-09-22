@@ -20,16 +20,16 @@
 #include "../../AI/Managers/CSlinkyManager.h"
 #include "../../AI/Managers/CTrampolineManager.h"
 #include "../../AI/Managers/CTrapDoorManager.h"
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../AI/Navigation/CMoverManager.h"
 #include "../../AI/Navigation/CNodeManager.h"
 #include "../../AI/Objects/CBalloonPost.h"
 #include "../../AI/Objects/CGroundAnim.h"
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/CVSOStream.h"
 #include "../../Visos/Foundation/VsFile.h"
 #include "../../Visos/Network/CConnect.h"
-#include "../../Visos/Resources/CResBin.h"
+#include "../../Visos/Resources/CResBIN.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Support/PreviewData.h"
 #include "LoadBlockHeader.h"
@@ -52,7 +52,7 @@ extern char g_szNameBracketFormat[];
 extern char g_szCloseBracketNewline[];
 
 // FUNCTION: LEMBALL 0x00408210
-CLevelLoader::CLevelLoader(CAi* p_ai)
+CLevelLoader::CLevelLoader(CAI* p_ai)
 {
 	m_ai = p_ai;
 	m_fallbackLevel = 0;
@@ -65,7 +65,7 @@ CLevelLoader::CLevelLoader(CAi* p_ai)
 void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 {
 	bool endFound = false;
-	CResBin* binResource = 0;
+	CResBIN* binResource = 0;
 	LoadBlockHeader* header;
 	unsigned int dataSize;
 	unsigned int blockType;
@@ -74,8 +74,8 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 		p_level = m_fallbackLevel;
 	}
 	if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
-		unsigned int resourceId = CalcLevelId(p_skill, p_level);
-		binResource = CResBin::Load(resourceId);
+		unsigned int resourceId = CalcLevelID(p_skill, p_level);
+		binResource = CResBIN::Load(resourceId);
 		if (binResource->m_loaded != 0) {
 			binResource->m_age = 0;
 		}
@@ -228,13 +228,13 @@ bool CLevelLoader::LocateStartOfLevelFile()
 	_Filet* file;
 	unsigned int size;
 
-	file = VsOpen(g_pActiveLevelFile, g_szReadBinaryMode);
+	file = vsOpen(g_pActiveLevelFile, g_szReadBinaryMode);
 	if (file != 0) {
-		size = VsSeek(file, 0, 2);
-		VsSeek(file, 0, 0);
+		size = vsSeek(file, 0, 2);
+		vsSeek(file, 0, 0);
 		g_pLevelFileData = operator new(size);
-		VsRead(file, g_pLevelFileData, size);
-		VsClose(file);
+		vsRead(file, g_pLevelFileData, size);
+		vsClose(file);
 		return 1;
 	}
 	MessageBoxA(0, g_szOkSmartarse, g_szYouStupidStupidMan, 0);
@@ -261,7 +261,7 @@ LoadBlockHeader* CLevelLoader::GetNextBlockHeader(LoadBlockHeader* p_header)
 void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* p_preview)
 {
 	bool endFound = false;
-	CResBin* binResource = 0;
+	CResBIN* binResource = 0;
 	LoadBlockHeader* header;
 	unsigned short* data16;
 	unsigned int dataSize;
@@ -270,8 +270,8 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData*
 	unsigned int total;
 
 	if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
-		unsigned int resourceId = CalcLevelId(p_skill, p_level);
-		binResource = CResBin::Load(resourceId);
+		unsigned int resourceId = CalcLevelID(p_skill, p_level);
+		binResource = CResBIN::Load(resourceId);
 		if (binResource->m_loaded != 0) {
 			binResource->m_age = 0;
 		}
@@ -402,7 +402,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData*
 }
 
 // FUNCTION: LEMBALL 0x00408b00
-unsigned int CLevelLoader::CalcLevelId(eSkill p_skill, int p_level)
+unsigned int CLevelLoader::CalcLevelID(eSkill p_skill, int p_level)
 {
 	switch (p_skill) {
 	case SKILL_FUN:

@@ -26,10 +26,10 @@ void CBaseSocket::AddData()
 // FUNCTION: LEMBALL 0x0045f7f0
 void CBaseSocket::GetData()
 {
-	ConvertDword();
-	ConvertDword();
-	ConvertWord();
-	ConvertWord();
-	ConvertWord();
-	ConvertByte();
+	ConvertDWORD();
+	ConvertDWORD();
+	ConvertWORD();
+	ConvertWORD();
+	ConvertWORD();
+	ConvertBYTE();
 }

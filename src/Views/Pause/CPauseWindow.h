@@ -13,10 +13,10 @@
 #include "CPauseVramHandler.h"                        // complete type
 
 class CBaseRemap;
-class CPvGWnd;
+class CPVGWnd;
 class CReceiveWindowState;
-class CResAnim;
-class CResFont;
+class CResANIM;
+class CResFONT;
 enum ePauseWindowMessages {
 	PAUSE_MSG_PAUSED = 0,
 	PAUSE_MSG_PLEASE_WAIT = 1,
@@ -38,7 +38,7 @@ class CPauseWindow : public CGWnd,
 					 public CHotAreaHandler {
 public:
 	CBaseRemap* Remap(int p_item);
-	CPauseWindow(CReceiveWindowState* p_arg0, CPvGWnd* p_arg1, ePauseWindowMessages p_arg2);
+	CPauseWindow(CReceiveWindowState* p_arg0, CPVGWnd* p_arg1, ePauseWindowMessages p_arg2);
 	CVsRect CalculateWindow();
 	virtual int ProcessMsg(Message* p_message);                            // vtable+0x08
 	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);       // vtable+0x04
@@ -63,7 +63,7 @@ private:
 	unsigned int m_cursorState;            // 0x108
 	unsigned int m_lowResolution;          // 0x10c
 	CReceiveWindowState* m_receiverState;  // 0x110
-	CPvGWnd* m_parentWindow;               // 0x114
+	CPVGWnd* m_parentWindow;               // 0x114
 	int m_selection;                       // 0x118
 	int m_unavailableItems;                // 0x11c
 	int m_menuItemCount;                   // 0x120
@@ -76,12 +76,12 @@ private:
 	CVsPoint m_windowPadding;              // 0x148
 	CVsPoint m_textSpacing;                // 0x14c
 	CVsPoint m_borderPadding;              // 0x150
-	CResAnim* m_horizontalBorderAnim;      // 0x154
-	CResAnim* m_verticalBorderAnim;        // 0x158
+	CResANIM* m_horizontalBorderAnim;      // 0x154
+	CResANIM* m_verticalBorderAnim;        // 0x158
 	CAnim m_cornerAnims[4];                // 0x15c
 	CAnim* m_borderAnims;                  // 0x1dc
 	CBaseRemap* m_remaps[4];               // 0x1e0
-	CResFont* m_font;                      // 0x1f0
+	CResFONT* m_font;                      // 0x1f0
 	CPauseVramHandler* m_vramSurface;      // 0x1f4
 	CVsPoint* m_textSizes;                 // 0x1f8
 	unsigned int m_horizontalBorderAnimId; // 0x1fc

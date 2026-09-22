@@ -1,12 +1,12 @@
 #include "CGWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "../Resources/CResPalette.h"
+#include "../Resources/CResPALETTE.h"
 #include "../Target/Graphics/CGraphicsDriver.h"
 #include "../Target/Graphics/CGraphicsState.h"
 #include "CCursor.h"
-#include "CGdi.h"
-#include "CGdiDevice.h"
+#include "CGDI.h"
+#include "CGDIDevice.h"
 #include "CSurface.h"
 
 #include <new.h>
@@ -27,12 +27,12 @@ void CGWnd::OnSize()
 {
 }
 
-#include "CPvGWnd.inl"
+#include "CPVGWnd.inl"
 #include "Visos/Foundation/CVsPoint.h"
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/CVsSize.h"
-#include "Visos/Graphics/CPvSurface.h"
-#include "Visos/Graphics/CPvWnd.h"
+#include "Visos/Graphics/CPVSurface.h"
+#include "Visos/Graphics/CPVWnd.h"
 #include "Visos/Graphics/CWnd.h"
 
 // FUNCTION: LEMBALL 0x00463b50
@@ -58,7 +58,7 @@ void CGWnd::Move(const CVsPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x00463c30
-void CGWnd::InternalOnCreate()
+void CGWnd::_OnCreate()
 {
 	CVsRect localRect;
 	CSurface* parentSurface;
@@ -68,7 +68,7 @@ void CGWnd::InternalOnCreate()
 	short originY;
 	unsigned int style;
 
-	CPvWnd::OnCreate();
+	CPVWnd::OnCreate();
 	parentSurface = (CSurface*) g_pGdiHelperTarget;
 	if (m_parent != 0) {
 		parentSurface = ((CGWnd*) m_parent)->m_gdi->m_renderTarget;
@@ -94,7 +94,7 @@ void CGWnd::InternalOnCreate()
 		m_gdi = 0;
 	}
 	else {
-		m_gdi = new (storage) CGdi(localRect, m_gdiFlags, parentSurface);
+		m_gdi = new (storage) CGDI(localRect, m_gdiFlags, parentSurface);
 	}
 
 	target = m_gdi->m_renderTarget;
@@ -124,14 +124,14 @@ void CGWnd::InternalOnCreate()
 }
 
 // FUNCTION: LEMBALL 0x00463df0
-void CGWnd::InternalOnDestroy()
+void CGWnd::_OnDestroy()
 {
-	CGdi* gdi;
+	CGDI* gdi;
 	unsigned int style;
 
 	gdi = m_gdi;
 	if (gdi != 0) {
-		gdi->~CGdi();
+		gdi->~CGDI();
 		operator delete(gdi);
 		m_gdi = 0;
 	}
@@ -142,11 +142,11 @@ void CGWnd::InternalOnDestroy()
 			m_createRect->SetDontUpdateRect(emptyRect);
 		}
 	}
-	CPvWnd::InternalOnDestroy();
+	CPVWnd::_OnDestroy();
 }
 
 // FUNCTION: LEMBALL 0x00463e70
-void CGWnd::InternalOnSize()
+void CGWnd::_OnSize()
 {
 	CSurface* target;
 	CVsPoint* innerOrigin;
@@ -154,7 +154,7 @@ void CGWnd::InternalOnSize()
 	short relX;
 	short relY;
 
-	CPvWnd::InternalOnSize();
+	CPVWnd::_OnSize();
 	if (m_gdi == 0) {
 		return;
 	}
@@ -182,15 +182,15 @@ void CGWnd::InternalOnSize()
 		relX = (short) (relX - parentOrigin->m_x);
 		relY = (short) (relY - parentOrigin->m_y);
 	}
-	CPvSurface& surface = *target;
+	CPVSurface& surface = *target;
 	surface.m_relOriginX = relX;
 	surface.m_relOriginY = relY;
 }
 
 // FUNCTION: LEMBALL 0x00463f30
-void CGWnd::InternalOnMove()
+void CGWnd::_OnMove()
 {
-	CPvWnd::InternalOnMove();
+	CPVWnd::_OnMove();
 	m_gdi->m_renderTarget->Move(m_relativeTopLeft);
 }
 
@@ -385,14 +385,14 @@ void CGWnd::Refresh(CVsRect* p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00464440
-void CGWnd::Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_title, unsigned long p_paletteId)
+void CGWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title, unsigned long p_paletteId)
 {
 	CWnd::Create(p_rect, p_parent, p_title);
 	AttachPalette(p_paletteId);
 }
 
 // FUNCTION: LEMBALL 0x00464470
-void CGWnd::Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_title)
+void CGWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 {
 	Create(p_rect, p_parent, p_title, 0);
 }
@@ -400,12 +400,12 @@ void CGWnd::Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_title)
 // FUNCTION: LEMBALL 0x00464490
 void CGWnd::AttachPalette(unsigned long p_paletteId)
 {
-	CResPalette* palette;
+	CResPALETTE* palette;
 
 	if (p_paletteId == 0) {
 		return;
 	}
-	palette = CResPalette::Load(p_paletteId);
+	palette = CResPALETTE::Load(p_paletteId);
 	if (palette->m_loaded != 0) {
 		palette->m_age = 0;
 	}

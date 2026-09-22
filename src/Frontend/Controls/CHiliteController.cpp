@@ -5,7 +5,7 @@
 #include "../../Visos/Foundation/CVsPoint.h"
 #include "../../Visos/Foundation/CVsRect.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/Manifest.h"
@@ -17,7 +17,7 @@
 #include "Visos/Animation/CStaticAnim.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CGWnd.h"
-#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CPVGWnd.h"
 #include "Visos/Graphics/CSolidRect.h"
 
 #include <new.h>
@@ -25,7 +25,7 @@
 class CFrames;
 
 // FUNCTION: LEMBALL 0x0044f440
-CHiliteController::CHiliteController(CGWnd* p_arg0, CGdi* p_arg1, int p_arg2, unsigned int p_arg3, unsigned int p_arg4)
+CHiliteController::CHiliteController(CGWnd* p_arg0, CGDI* p_arg1, int p_arg2, unsigned int p_arg3, unsigned int p_arg4)
 	: CAnimsManager(p_arg1, 0x2b6, 1, 1, 0, 0)
 {
 	int index;
@@ -69,7 +69,7 @@ void CHiliteController::SetHiliteWindow()
 	CVsRect rect(m_window->m_rect);
 	rect.m_x = 0;
 	rect.m_y = 0;
-	m_hiliteWindow->Create(rect, (CPvGWnd*) m_window, 0);
+	m_hiliteWindow->Create(rect, (CPVGWnd*) m_window, 0);
 	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
 }
 
@@ -212,7 +212,7 @@ void CHiliteController::DrawHiliteWindow()
 {
 	if (m_active != 0) {
 		int offset = m_layoutMode == 1 ? -1 : -2;
-		CGdi* hiliteGdi = (CGdi*) m_hiliteSurface;
+		CGDI* hiliteGdi = (CGDI*) m_hiliteSurface;
 		CSurface* surface = hiliteGdi->m_renderTarget;
 		CVsSize dimensions(surface->m_windowRect);
 		m_hiliteRect.m_color = 0x10000;
@@ -226,8 +226,8 @@ void CHiliteController::DrawHiliteWindow()
 		position.m_x = (short) m_currentX + (short) offset;
 		position.m_y = (short) m_currentY + (short) offset;
 		unsigned long animationId = g_dwHiliteAnimationId;
-		CGdi* savedGdi = CAnimsManager::m_gdi;
-		CAnimsManager::m_gdi = (CGdi*) m_hiliteSurface;
+		CGDI* savedGdi = CAnimsManager::m_gdi;
+		CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
 		CAnimsManager::DrawAnim(position, animationId, 0, (CFrames*) &m_hiliteAnim, 0);
 		CAnimsManager::m_gdi = savedGdi;
 		CAnimsManager::ResetPrimitives();
@@ -307,7 +307,7 @@ void CHiliteController::UpdateAllAnimIDs()
 		CHiliteButtons** button = m_buttons;
 		do {
 			if (*button != 0) {
-				(*button)->UpdateAnimId();
+				(*button)->UpdateAnimID();
 			}
 			button++;
 			i++;
@@ -323,7 +323,7 @@ void CHiliteController::UpdateAnimIDs(unsigned long p_actionMessage)
 		CHiliteButtons** pBtn = m_buttons;
 		do {
 			if (*pBtn != 0 && (*pBtn)->m_actionMessage == p_actionMessage) {
-				m_buttons[i]->UpdateAnimId();
+				m_buttons[i]->UpdateAnimID();
 				break;
 			}
 			pBtn++;

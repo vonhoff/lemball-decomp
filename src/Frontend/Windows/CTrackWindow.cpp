@@ -2,7 +2,7 @@
 
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "Visos/Foundation/CVsPoint.h"
@@ -12,10 +12,10 @@
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
 #include "Visos/Graphics/CLine.h"
-#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CPVGWnd.h"
 
 // FUNCTION: LEMBALL 0x0044e790
-CTrackWindow::CTrackWindow(const CVsRect& p_rect, int p_value, CPvGWnd* p_parent) : CHotAreaHandler(p_rect)
+CTrackWindow::CTrackWindow(const CVsRect& p_rect, int p_value, CPVGWnd* p_parent) : CHotAreaHandler(p_rect)
 {
 	m_reserved128 = 0;
 	m_trackWidth = p_rect.m_width;
@@ -49,7 +49,7 @@ void CTrackWindow::OnCreate()
 }
 
 // FUNCTION: LEMBALL 0x0044e960
-void CTrackWindow::Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_name)
+void CTrackWindow::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_name)
 {
 	CHotAreaHandler* handler;
 	const CVsPoint* position;

@@ -2,10 +2,10 @@
 
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
 #include "../../Visos/Graphics/CSurface.h"
-#include "../../Visos/Resources/CResAnim.h"
+#include "../../Visos/Resources/CResANIM.h"
 #include "../Windows/CTrackWindow.h"
 #include "CGunButton.h"
 #include "CTrackerButton.h"
@@ -17,11 +17,11 @@
 
 #include <new.h>
 
-class CPvGWnd;
+class CPVGWnd;
 
 // FUNCTION: LEMBALL 0x0044c270
 CGunButtons::CGunButtons(CGWnd* p_window,
-						 CGdi* p_gdi,
+						 CGDI* p_gdi,
 						 int p_x,
 						 int p_y,
 						 unsigned long* p_animIds,
@@ -74,7 +74,7 @@ CGunButtons::CGunButtons(CGWnd* p_window,
 // FUNCTION: LEMBALL 0x0044c330
 CGunButtons::CGunButtons(const CVsRect& p_rect,
 						 CGWnd* p_window,
-						 CGdi* p_gdi,
+						 CGDI* p_gdi,
 						 int p_x,
 						 int p_y,
 						 unsigned long* p_animIds,
@@ -167,11 +167,11 @@ int CGunButtons::ProcessMsg(Message* p_message)
 				}
 				if (m_graphicButton != 0) {
 					animId = m_animIds[m_value - m_minimum];
-					m_graphicButton->SetAnimId(animId);
+					m_graphicButton->SetAnimID(animId);
 				}
 				else {
 					animId = *m_animIds;
-					m_trackerButton->SetAnimId(animId);
+					m_trackerButton->SetAnimID(animId);
 				}
 				g_nGunButtonsRedrawPending = 1;
 				return 0;
@@ -227,11 +227,11 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 	void* storage;
 
 	m_animIds = p_animIds;
-	m_resources = (CResAnim**) operator new(m_valueCount * 4);
+	m_resources = (CResANIM**) operator new(m_valueCount * 4);
 	i = 0;
 	if (m_valueCount > i) {
 		do {
-			m_resources[i] = CResAnim::Load(m_animIds[i]);
+			m_resources[i] = CResANIM::Load(m_animIds[i]);
 			i = i + 1;
 		} while (i < m_valueCount);
 	}
@@ -240,7 +240,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 		if (storage != 0) {
 			CVsPoint position((short) m_x, (short) m_y);
 			m_graphicButton =
-				new (storage) CGunButton(position, (CPvGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
+				new (storage) CGunButton(position, (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
 		}
 		else {
 			m_graphicButton = 0;
@@ -256,7 +256,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 	storage = operator new(0x138);
 	if (storage != 0) {
 		CVsPoint position((short) m_x, (short) m_y);
-		m_trackerButton = new (storage) CTrackerButton(position, (CPvGWnd*) m_window, *m_animIds, m_trackRect, m_value);
+		m_trackerButton = new (storage) CTrackerButton(position, (CPVGWnd*) m_window, *m_animIds, m_trackRect, m_value);
 	}
 	else {
 		m_trackerButton = 0;

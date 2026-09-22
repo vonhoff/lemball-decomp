@@ -7,7 +7,7 @@
 #include <stddef.h>
 class CMBlock;
 
-void InitSubSystems();
+void INIT_SubSystems();
 
 // SIZE 0x50
 // VTABLE: LEMBALL 0x004988e0 CArenaBase
@@ -31,7 +31,7 @@ public:
 	bool RemoveFromFreeList(CMBlock* p_arg0);
 	unsigned long GetAllocSize();
 	unsigned long GetFreeSize();
-	virtual CVsOStream& StreamOut(CVsOStream& p_stream);                                               // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_stream);                                               // vtable+0x00
 	virtual ~CArena();                                                                                 // vtable+0x04
 	virtual bool Allocate(unsigned char** p_data, unsigned long p_size, char* p_description);          // vtable+0x08
 	virtual bool Free(unsigned char* p_memory);                                                        // vtable+0x0c
@@ -55,7 +55,7 @@ public:
 	CArena();
 
 	friend class CMogRes;
-	friend void InitSubSystems();
+	friend void INIT_SubSystems();
 
 protected:
 	unsigned char* m_arenaBase; // 0x24

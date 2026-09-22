@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_GROUPS_CGENERICGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_CGENERICGROUPMANAGER_H
 
-class CAi;
+class CAI;
 class AiCoord;
 class CFormationManager;
 class CGameObject;
@@ -14,7 +14,7 @@ struct Rect;
 // VTABLE: LEMBALL 0x00494d08
 class CGenericGroupManager {
 public:
-	CGenericGroupManager(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
+	CGenericGroupManager(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	int Process();
 	virtual int GetNumberOfGroups();                                                    // vtable+0x00
 	virtual CGenericGroup* GetFirstGroup();                                             // vtable+0x04

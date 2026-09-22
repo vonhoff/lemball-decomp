@@ -1,0 +1,11 @@
+#include "tagPRIMS.h"
+
+// FUNCTION: LEMBALL 0x00447030
+tagPRIMS::tagPRIMS()
+{
+}
+
+// FUNCTION: LEMBALL 0x004471d0
+tagPRIMS::~tagPRIMS()
+{
+}

@@ -1,12 +1,12 @@
 #ifndef LEMBALL_AI_MANAGERS_CBALLMANAGER_H
 #define LEMBALL_AI_MANAGERS_CBALLMANAGER_H
 
-class CAi;
+class CAI;
 class CBall;
 // SIZE 0x10
 class CBallManager {
 public:
-	CBallManager(CAi* p_ai, int p_capacity);
+	CBallManager(CAI* p_ai, int p_capacity);
 	int Process();
 	void Delete(CBall* p_ball);
 	void Initialise(int p_capacity);
@@ -15,10 +15,10 @@ public:
 	~CBallManager();
 	void Clear();
 
-	friend class CAi;
+	friend class CAI;
 
 private:
-	CAi* m_ai;         // 0x00
+	CAI* m_ai;         // 0x00
 	CBall** m_balls;   // 0x04
 	int m_activeCount; // 0x08
 	int m_capacity;    // 0x0c

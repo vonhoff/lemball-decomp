@@ -2,14 +2,14 @@
 #define LEMBALL_VISOS_GRAPHICS_CSURFACE_H
 
 #include "../Foundation/CVsRect.h" // complete type
-#include "CPvBackBuffSurface.h"    // complete type
-#include "CPvScrollableSurface.h"  // complete type
-#include "CPvSurface.h"            // complete type
-#include "CPvZBuffSurface.h"       // complete type
+#include "CPVBackBuffSurface.h"    // complete type
+#include "CPVScrollableSurface.h"  // complete type
+#include "CPVSurface.h"            // complete type
+#include "CPVZBuffSurface.h"       // complete type
 
 class GrafPort;
 class CChangeList;
-class CResZrle;
+class CResZRLE;
 class CRemap;
 struct CVsPoint;
 
@@ -22,14 +22,14 @@ struct SurfaceListNode {
 };
 
 // SIZE 0x5a0
-// CPvScrollableSurface at 0. Shared CPvSurface virtual base.
-// VTABLE: LEMBALL 0x00499df0 CPvSurface
-// VTABLE: LEMBALL 0x00499e40 CPvBackBuffSurface
-// VTABLE: LEMBALL 0x00499e50 CPvZBuffSurface
-// VTABLE: LEMBALL 0x00499e58 CPvGdiBitmap
-class CSurface : public CPvScrollableSurface, public CPvZBuffSurface, public CPvBackBuffSurface {
+// CPVScrollableSurface at 0. Shared CPVSurface virtual base.
+// VTABLE: LEMBALL 0x00499df0 CPVSurface
+// VTABLE: LEMBALL 0x00499e40 CPVBackBuffSurface
+// VTABLE: LEMBALL 0x00499e50 CPVZBuffSurface
+// VTABLE: LEMBALL 0x00499e58 CPVGDIBitmap
+class CSurface : public CPVScrollableSurface, public CPVZBuffSurface, public CPVBackBuffSurface {
 public:
-	friend class CPvButton;
+	friend class CPVButton;
 	friend class CGraphicButton;
 	friend class CGunButtons;
 	friend class CHiliteController;
@@ -44,13 +44,13 @@ public:
 	virtual void SetLinePtrs();                          // vtable+0x00
 	virtual void AddToChangeList(const CVsRect* p_rect); // vtable+0x04
 	virtual CChangeList* GetChangeList();                // vtable+0x08
-	virtual void* GetCurrDb();                           // vtable+0x38
-	virtual void AttachPalette(CResPalette* p_palette);  // vtable+0x30
+	virtual void* GetCurrDB();                           // vtable+0x38
+	virtual void AttachPalette(CResPALETTE* p_palette);  // vtable+0x30
 	bool BeginRender();
 	void EndRender();
-	virtual void Blit(CZrle* p_primitive, CResZrle* p_zrle);
-	virtual void Blit(CBitmap* p_primitive, CResBitmap* p_bitmap);
-	virtual void Blit(CBigBitmap* p_primitive, CResBitmap* p_bitmap);
+	virtual void Blit(CZRLE* p_primitive, CResZRLE* p_zrle);
+	virtual void Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap);
+	virtual void Blit(CBigBitmap* p_primitive, CResBITMAP* p_bitmap);
 	virtual void Blit(CLine* p_line);
 	virtual void Blit(CFilledCircle* p_circle);
 	virtual void Blit(class CClipRect* p_clipRect);
@@ -63,43 +63,43 @@ public:
 	virtual void Blit(CZBuffScroll* p_scroll);
 	virtual void Blit(CZBuffClear* p_clear);
 	void BlitRect(CVsRect p_rect, int p_colour);
-	void BlitZrle(int p_x, int p_y, CResZrle* p_zrle, unsigned int p_flags, CRemap* p_remap, unsigned short p_depth);
-	void BlitZrleClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZrle* p_zrle, unsigned int p_reverse);
-	void BlitZrleClipQzBuff(const CVsRect& p_rect, const CVsRect& p_clip, CResZrle* p_zrle, unsigned short p_depth);
-	void BlitZrleClipQzBuffRemap(const CVsRect& p_rect,
+	void BlitZRLE(int p_x, int p_y, CResZRLE* p_zrle, unsigned int p_flags, CRemap* p_remap, unsigned short p_depth);
+	void BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse);
+	void BlitZRLEClipQZBuff(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth);
+	void BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 								 const CVsRect& p_clip,
-								 CResZrle* p_zrle,
+								 CResZRLE* p_zrle,
 								 unsigned short p_depth,
 								 unsigned char* p_remap);
-	void BlitZrleClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZrle* p_zrle, unsigned int p_reverse);
-	void BlitZrleClipRemap(const CVsRect& p_rect,
+	void BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse);
+	void BlitZRLEClipRemap(const CVsRect& p_rect,
 						   const CVsRect& p_clip,
-						   CResZrle* p_zrle,
+						   CResZRLE* p_zrle,
 						   unsigned int p_reverse,
 						   unsigned char* p_remap);
-	void BlitZrleClipRemapR(const CVsRect& p_rect,
+	void BlitZRLEClipRemapR(const CVsRect& p_rect,
 							const CVsRect& p_clip,
-							CResZrle* p_zrle,
+							CResZRLE* p_zrle,
 							unsigned int p_reverse,
 							unsigned char* p_remap);
-	void BlitZrleClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, CResZrle* p_zrle, unsigned short p_depth);
-	void BlitZrleClipZBuffRemap(const CVsRect& p_rect,
+	void BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth);
+	void BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 								const CVsRect& p_clip,
-								CResZrle* p_zrle,
+								CResZRLE* p_zrle,
 								unsigned short p_depth,
 								unsigned char* p_remap);
-	void BlitZrleNoClip(const CVsRect& p_rect, CResZrle* p_zrle, unsigned int p_reverse);
-	void BlitZrleNoClipQzBuff(const CVsRect& p_rect, CResZrle* p_zrle, unsigned short p_depth);
-	void BlitZrleNoClipQzBuffRemap(const CVsRect& p_rect,
-								   CResZrle* p_zrle,
+	void BlitZRLENoClip(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse);
+	void BlitZRLENoClipQZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth);
+	void BlitZRLENoClipQZBuffRemap(const CVsRect& p_rect,
+								   CResZRLE* p_zrle,
 								   unsigned short p_depth,
 								   unsigned char* p_remap);
-	void BlitZrleNoClipR(const CVsRect& p_rect, CResZrle* p_zrle, unsigned int p_reverse);
-	void BlitZrleNoClipRemap(const CVsRect& p_rect, CResZrle* p_zrle, unsigned int p_reverse, unsigned char* p_remap);
-	void BlitZrleNoClipRemapR(const CVsRect& p_rect, CResZrle* p_zrle, unsigned int p_reverse, unsigned char* p_remap);
-	void BlitZrleNoClipZBuff(const CVsRect& p_rect, CResZrle* p_zrle, unsigned short p_depth);
-	void BlitZrleNoClipZBuffRemap(const CVsRect& p_rect,
-								  CResZrle* p_zrle,
+	void BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse);
+	void BlitZRLENoClipRemap(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse, unsigned char* p_remap);
+	void BlitZRLENoClipRemapR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse, unsigned char* p_remap);
+	void BlitZRLENoClipZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth);
+	void BlitZRLENoClipZBuffRemap(const CVsRect& p_rect,
+								  CResZRLE* p_zrle,
 								  unsigned short p_depth,
 								  unsigned char* p_remap);
 	virtual void CopyBackBuffToScreen(const CVsRect& p_rect);
@@ -122,7 +122,7 @@ public:
 
 	friend class CBaseFrontendDrawer;
 	friend class CGWnd;
-	friend class CPvBackBuffSurface;
+	friend class CPVBackBuffSurface;
 
 private:
 	short m_presentX;                    // 0xec
@@ -143,12 +143,12 @@ private:
 };
 
 // GLOBAL: LEMBALL 0x00499dd8
-// CSurface::`vbtable'{for `CPvBackBuffSurface'}
+// CSurface::`vbtable'{for `CPVBackBuffSurface'}
 
 // GLOBAL: LEMBALL 0x00499de0
-// CSurface::`vbtable'{for `CPvZBuffSurface'}
+// CSurface::`vbtable'{for `CPVZBuffSurface'}
 
 // GLOBAL: LEMBALL 0x00499de8
-// CSurface::`vbtable'{for `CPvScrollableSurface'}
+// CSurface::`vbtable'{for `CPVScrollableSurface'}
 
 #endif

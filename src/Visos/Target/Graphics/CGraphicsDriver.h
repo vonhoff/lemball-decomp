@@ -7,8 +7,8 @@
 #include "CDibContext.h"               // complete type
 #include "CDrawingContext.h"           // complete type
 
-class CPvGdiBitmap;
-class CResPalette;
+class CPVGDIBitmap;
+class CResPALETTE;
 struct CGraphicsState;
 
 // SIZE 0x1c
@@ -58,7 +58,7 @@ public:
 						   CVsRect* p_destinationRect,
 						   CDrawingContext* p_source,
 						   CVsRect* p_sourceRect,
-						   CPvGdiBitmap* p_bitmap);
+						   CPVGDIBitmap* p_bitmap);
 
 	friend class CWnd;
 	friend class CMain2DDisplay;
@@ -73,7 +73,7 @@ protected:
 	unsigned int m_ready;          // 0x0c
 	void* m_window;                // 0x10
 	CVsSize m_screenSize;          // 0x14
-	CPvGdiBitmap* m_currentBitmap; // 0x18
+	CPVGDIBitmap* m_currentBitmap; // 0x18
 };
 
 extern CGraphicsDriver* g_pTargetGraphicsDriver;
@@ -82,7 +82,7 @@ extern void* g_apCResRasterConstructionVtable[15];
 extern CGraphicsState* g_pTargetGraphicsSystem;
 extern unsigned int g_dwWinGDrawColourTable[256];
 void BuildSurfaceColourTable(unsigned int* p_entries,
-							 CResPalette* p_palette,
+							 CResPALETTE* p_palette,
 							 void* p_unused,
 							 unsigned int* p_fallbackEntries);
 #include "WinGDraw.h"

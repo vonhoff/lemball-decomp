@@ -19,7 +19,7 @@ public:
 	void UnLoadFrontendResources();
 	~CGame();
 
-	friend int VsMain(int p_argc, char** p_argv);
+	friend int VSmain(int p_argc, char** p_argv);
 	friend class CMain2DDisplay;
 
 private:

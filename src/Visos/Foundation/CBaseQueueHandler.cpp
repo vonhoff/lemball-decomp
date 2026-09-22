@@ -17,7 +17,7 @@ int CBaseQueueHandler::ProcessMsg(Message* p_message)
 }
 
 // FUNCTION: LEMBALL 0x00462ed0
-CVsOStream& CBaseQueueHandler::StreamOut(CVsOStream& p_stream)
+CVSOStream& CBaseQueueHandler::StreamOut(CVSOStream& p_stream)
 {
 	return p_stream;
 }

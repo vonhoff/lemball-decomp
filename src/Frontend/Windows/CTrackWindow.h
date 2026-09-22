@@ -8,16 +8,16 @@
 #include "../../Visos/Graphics/CHotAreaHandler.h" // complete type
 #include "../../Visos/Graphics/CLine.h"           // complete type
 
-class CPvGWnd;
+class CPVGWnd;
 // SIZE 0x134
 // VTABLE: LEMBALL 0x00497f48 CGWnd
 // VTABLE: LEMBALL 0x00497f20 CHotAreaHandler
 class CTrackWindow : public CGWnd, public CHotAreaHandler {
 public:
-	CTrackWindow(const CVsRect& p_rect, int p_value, CPvGWnd* p_parent);
+	CTrackWindow(const CVsRect& p_rect, int p_value, CPVGWnd* p_parent);
 	virtual unsigned int GetStyle();                                            // vtable+0x64
 	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);            // vtable+0x04
-	virtual void Create(const CVsRect& p_rect, CPvWnd* p_parent, char* p_name); // vtable+0x04
+	virtual void Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_name); // vtable+0x04
 	virtual void Move(const CVsPoint& p_position);                              // vtable+0x38
 	virtual void OnCreate();                                                    // vtable+0x3c
 	virtual void OnDriverChange();                                              // vtable+0x5c
@@ -35,7 +35,7 @@ private:
 	int m_value;                // 0x120
 	int m_trackWidth;           // 0x124
 	unsigned int m_reserved128; // 0x128
-	CPvGWnd* m_parent;          // 0x12c
+	CPVGWnd* m_parent;          // 0x12c
 	int m_contextId;            // 0x130
 };
 

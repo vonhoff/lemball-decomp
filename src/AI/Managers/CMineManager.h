@@ -4,7 +4,7 @@
 #include "../Base/AiCoord.h"    // complete type
 #include "CBaseObjectManager.h" // complete type
 
-class CAi;
+class CAI;
 class CGameObject;
 class CMine;
 struct Coord3d;
@@ -12,7 +12,7 @@ struct Coord3d;
 // VTABLE: LEMBALL 0x00495d30
 class CMineManager : public CBaseObjectManager {
 public:
-	CMineManager(CAi* p_ai, int p_capacity);
+	CMineManager(CAI* p_ai, int p_capacity);
 	int GetViewData(CViewData* p_viewData);
 	virtual ~CMineManager(); // vtable+0x14
 	void Add(unsigned short p_id, AiCoord p_position);
@@ -24,10 +24,10 @@ public:
 	void Trigger(int p_index, int p_delay);
 	void Triggered(CMine* p_mine);
 
-	friend class CAi;
+	friend class CAI;
 
 private:
-	CAi* m_ai;            // 0x30
+	CAI* m_ai;            // 0x30
 	CMine* m_mines;       // 0x34
 	Coord3d* m_positions; // 0x38
 	int m_count;          // 0x3c

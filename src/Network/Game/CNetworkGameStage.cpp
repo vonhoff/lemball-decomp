@@ -17,5 +17,5 @@ void CNetworkGameStage::AddData()
 // FUNCTION: LEMBALL 0x00452e50
 void CNetworkGameStage::GetData()
 {
-	m_stage = (unsigned int) GetDword();
+	m_stage = (unsigned int) GetDWORD();
 }

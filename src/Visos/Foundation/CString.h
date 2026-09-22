@@ -14,8 +14,8 @@ public:
 	CString operator+=(CString& p_other);
 	CString operator+=(const char* p_text);
 
-	int Getlength();
-	CString Lower();
+	int getlength();
+	CString lower();
 	void SetCapacity(int p_capacity);
 	char* GetText();
 	void SetTextPointer(char* p_text);

@@ -21,7 +21,7 @@ void CRequestReplyMess::AddData()
 // FUNCTION: LEMBALL 0x00416b00
 void CRequestReplyMess::GetData()
 {
-	m_object->m_requestActive = GetDword();
+	m_object->m_requestActive = GetDWORD();
 	if (m_object->m_requestActive != 0) {
 		m_object->m_action = m_object->m_requestedAction;
 		m_object->DoActivate();

@@ -1,6 +1,6 @@
 #include "CRocketManager.h"
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CRocket.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
@@ -8,7 +8,7 @@
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x00426ac0
-CRocketManager::CRocketManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x14, 9)
+CRocketManager::CRocketManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x14, 9)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;

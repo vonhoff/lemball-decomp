@@ -3,7 +3,7 @@
 
 #include "CGenericGroup.h" // complete type
 
-class CAi;
+class CAI;
 class CFormationManager;
 class CGameObject;
 class CObjectManager;
@@ -13,10 +13,10 @@ class CPlayerLemming;
 class CPlayerLemmingGroup : public CGenericGroup {
 public:
 	CPlayerLemming* GetFirstDeadLemming();
-	CPlayerLemmingGroup(CAi* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
+	CPlayerLemmingGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	bool AddLemmingToGroup(CPlayerLemming* p_lemming);
 	bool CheckPlayerControlled();
-	bool HasSfxChanged();
+	bool HasSFXChanged();
 	bool RemoveLemmingFromGroup(CPlayerLemming* p_lemming);
 	virtual bool Process();                         // vtable+0x14
 	virtual void ClearExistingWaypoints();          // vtable+0x150

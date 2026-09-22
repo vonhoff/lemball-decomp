@@ -1,7 +1,7 @@
 #include "CPanelLemming.h"
 
 #include "../../AI/Groups/CPlayerLemmingGroupManager.h"
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../AI/Objects/CPlayerLemming.h"
 #include "../Display/C2D.h"
 #include "../Display/CMain2DDisplay.h"

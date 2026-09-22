@@ -8,7 +8,7 @@ class CPlatformServices {
 public:
 	CPlatformServices();
 	~CPlatformServices();
-	char* GetCdDir(const char* p_requiredFile);
+	char* GetCDDir(const char* p_requiredFile);
 	bool WriteRegistryFlag(const char* p_subkey, int p_enabled);
 };
 

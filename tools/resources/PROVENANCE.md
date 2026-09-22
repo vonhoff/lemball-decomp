@@ -31,4 +31,4 @@
 
 1. **Naming Authority**: Reconstructed code uses ordinary `// FUNCTION: LEMBALL 0x...` annotations; `tools/gate.py --names` resolves catalog symbols (class, method, parameter types, constness).
 2. **Windows Precedence**: Windows x86 disassembly takes precedence over Mac symbols when ABI, platform types, or architecture differ.
-3. **Intentional Overrides**: Class/method renames documented in `AGENTS.md` and `tools/lib/names.py` (`INTENTIONAL`) supersede catalog names.
+3. **Windows ABI Reviews**: `tools/lib/names.py` records two exact address/symbol/signature reviews: the zero-argument `CWnd::OnDriverChange` vtable slot and the `CPlatformServices::GetCDDir` member. The naming gate prints their x86 evidence; strict mode still fails these review items. These entries do not permit other spelling changes.

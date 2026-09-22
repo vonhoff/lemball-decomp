@@ -10,7 +10,7 @@
 char g_szMasterInputQueue[20] = "Master Input Queue.";
 
 // FUNCTION: LEMBALL 0x00459130
-bool InternalInpInit()
+bool _INP_Init()
 {
 	void* storage;
 
@@ -43,7 +43,7 @@ bool InternalInpInit()
 }
 
 // FUNCTION: LEMBALL 0x004591f0
-bool InternalInpQuit()
+bool _INP_Quit()
 {
 	int result;
 

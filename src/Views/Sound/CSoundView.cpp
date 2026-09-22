@@ -6,7 +6,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Frontend/Base/CBaseFrontendDrawer.h"
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
-#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Sound/CSoundManager.h"
 #include "Views/Sound/CLoadUpdate.h"

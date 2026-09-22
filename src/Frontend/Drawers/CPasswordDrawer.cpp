@@ -5,11 +5,11 @@
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/CTextManager.h"
 #include "../../Visos/Foundation/VsString.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
-#include "../../Visos/Graphics/CPvButton.h"
+#include "../../Visos/Graphics/CPVButton.h"
 #include "../../Visos/Graphics/CSurface.h"
-#include "../../Visos/Resources/CResFont.h"
+#include "../../Visos/Resources/CResFONT.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Windows/CPasswordHiliteWindow.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
@@ -21,15 +21,15 @@
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/Prims.h"
+#include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBitmapRes.h"
-#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CPVGWnd.h"
 #include "Visos/Graphics/CSolidRect.h"
 
 #include <string.h>
 
 class CFrames;
-class CResBitmap;
+class CResBITMAP;
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 extern char g_abPasswordLevelText[24];
@@ -121,7 +121,7 @@ char* g_apPasswordSkillLabels[4] = {
 };
 
 // FUNCTION: LEMBALL 0x00451210
-CPasswordDrawer::CPasswordDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2)
+CPasswordDrawer::CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_PASSWORD, 10, 10, 0, 0x28, 0x30)
 {
 	char* encoded;
@@ -163,7 +163,7 @@ void CPasswordDrawer::Load()
 	primitiveIndex = 0;
 	primitiveCount = 1;
 	do {
-		CResBitmap* background = m_backgroundBitmap;
+		CResBITMAP* background = m_backgroundBitmap;
 		int* layout = (int*) m_layout;
 		int layoutY = layout[1];
 		m_primitiveBundle[primitiveIndex].m_primitive.m_x = (short) layout[0];
@@ -185,14 +185,14 @@ void CPasswordDrawer::Load()
 		col = 3;
 		do {
 			m_buttons[*keyMap] = new CGraphicButton(CVsPoint((short) gridX, (short) buttonY),
-													(CPvGWnd*) m_display,
+													(CPVGWnd*) m_display,
 													m_buttonAnimIds[*keyMap],
 													3);
 			m_buttons[*keyMap]->m_controlMessage = 0xabcd00b0 + *keyMap;
 			m_buttons[*keyMap]->m_messageHandler = g_pMasterInputQueue;
 			offsetPtr[0] = gridX - m_layout[2];
 			offsetPtr[1] = buttonY - m_layout[3];
-			CGdi* buttonGdi = m_buttons[*keyMap]->m_gdi;
+			CGDI* buttonGdi = m_buttons[*keyMap]->m_gdi;
 			CSurface* target = buttonGdi->m_renderTarget;
 			m_buttons[*keyMap]->SetAutoDraw(0);
 			target->m_flag70 = 0;
@@ -285,20 +285,20 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		switch (code) {
 		case 0x1f:
 		case 0x22: {
-			CPvButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
+			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
 			CVsPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
 		}
 		case 0x4c: {
-			CPvButton* button = m_buttons[11];
+			CPVButton* button = m_buttons[11];
 			CVsPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
 		}
 		case 0x4d:
 		case 0x4e: {
-			CPvButton* button = m_buttons[10];
+			CPVButton* button = m_buttons[10];
 			CVsPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
@@ -306,7 +306,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		}
 		if (code >= 0x39 && code <= 0x42) {
 			{
-				CPvButton* button = m_buttons[code - 0x39];
+				CPVButton* button = m_buttons[code - 0x39];
 				CVsPoint pt(0, 0);
 				button->OnButtonUp(pt, 0);
 				return 1;
@@ -330,20 +330,20 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 			return 1;
 		case 0x1f:
 		case 0x22: {
-			CPvButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
+			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
 			CVsPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
 		}
 		case 0x4c: {
-			CPvButton* button = m_buttons[11];
+			CPVButton* button = m_buttons[11];
 			CVsPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
 		}
 		case 0x4d:
 		case 0x4e: {
-			CPvButton* button = m_buttons[10];
+			CPVButton* button = m_buttons[10];
 			CVsPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
@@ -351,7 +351,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		}
 		if (code >= 0x39 && code <= 0x42) {
 			{
-				CPvButton* button = m_buttons[code - 0x39];
+				CPVButton* button = m_buttons[code - 0x39];
 				CVsPoint pt(0, 0);
 				button->OnButtonDown(pt, 0);
 				return 1;
@@ -403,7 +403,7 @@ void CPasswordDrawer::DrawText()
 		m_textManager
 			->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillIndex], 0x20, 0);
 		strcpy(textPtr, g_szPasswordLevelFormat);
-		VsLtoa(g_pGameStatus->m_maxLevels[skillIndex] + 1, textPtr + 2, 10);
+		vsLtoa(g_pGameStatus->m_maxLevels[skillIndex] + 1, textPtr + 2, 10);
 		CVsSize countAdvance;
 		CVsPoint countPosition((short) countPos[-1], (short) countPos[0]);
 		m_textManager->DrawString(m_gdi, countPosition, countAdvance, m_chalkFontId, textPtr, 0x20, 0);
@@ -505,10 +505,10 @@ void CPasswordDrawer::DrawButtons()
 // FUNCTION: LEMBALL 0x00451e60
 void CPasswordDrawer::DrawHilite()
 {
-	CGdi* savedGdi;
+	CGDI* savedGdi;
 	CSurface* surface;
 
-	surface = ((CGdi*) m_hiliteSurface)->m_renderTarget;
+	surface = ((CGDI*) m_hiliteSurface)->m_renderTarget;
 	short width = surface->m_windowRect.m_width;
 	short height = surface->m_windowRect.m_height;
 	m_hiliteRect.m_color = 0x10000;
@@ -516,11 +516,11 @@ void CPasswordDrawer::DrawHilite()
 	m_hiliteRect.m_bounds.m_height = height;
 	m_hiliteRect.m_bounds.m_x = 0;
 	m_hiliteRect.m_bounds.m_y = 0;
-	m_hiliteRect.Draw((CGdi*) m_hiliteSurface);
+	m_hiliteRect.Draw((CGDI*) m_hiliteSurface);
 	CVsPoint position((short) m_hiliteX, (short) m_hiliteY);
 	savedGdi = CAnimsManager::m_gdi;
 	m_hiliteAnim.m_frameState = 0;
-	CAnimsManager::m_gdi = (CGdi*) m_hiliteSurface;
+	CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
 	CAnimsManager::DrawAnim(position, m_animationId, 0, (CFrames*) &m_hiliteAnim, 0);
 	CAnimsManager::m_gdi = savedGdi;
 }
@@ -536,6 +536,6 @@ void CPasswordDrawer::SetHiliteWindow()
 	m_hiliteWindow = new CPasswordHiliteWindow();
 	layout = (int*) m_layout;
 	CVsRect rect((short) (layout[2] - 1), (short) (layout[3] - 1), (short) (pitch * 3), (short) (pitch * 4));
-	m_hiliteWindow->Create(rect, (CPvGWnd*) m_display, 0);
+	m_hiliteWindow->Create(rect, (CPVGWnd*) m_display, 0);
 	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
 }

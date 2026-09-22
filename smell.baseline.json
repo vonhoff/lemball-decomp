@@ -25,42 +25,42 @@
       "reason": "MSVC 4.00 MI adjustment required for the original virtual CBaseNetwork::Process dispatch; both functions were verified as effective 100% matches."
     },
     {
-      "path": "src/Visos/Network/CTcpIpBroadcast.cpp",
+      "path": "src/Visos/Network/CTCPIPBroadcast.cpp",
       "rule": "addr-cast-punning",
-      "code": "inet_ntoa(*(in_addr*) &(((CTcpIpNetworkAddress*) address)->m_ipv4Address =",
+      "code": "inet_ntoa(*(in_addr*) &(((CTCPIPNetworkAddress*) address)->m_ipv4Address =",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/CTcpIpBroadcast.cpp",
+      "path": "src/Visos/Network/CTCPIPBroadcast.cpp",
       "rule": "addr-cast-punning",
       "code": "strcpy(address->m_text, inet_ntoa(*(in_addr*) &(address->m_ipv4Address = result.m_address.s_addr)));",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/CTcpIpConnect.cpp",
+      "path": "src/Visos/Network/CTCPIPConnect.cpp",
       "rule": "addr-cast-punning",
       "code": "strcpy(address.m_text, inet_ntoa(*(in_addr*) &(address.m_ipv4Address = hostAddress.s_addr)));",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/CTcpIpNetwork.cpp",
+      "path": "src/Visos/Network/CTCPIPNetwork.cpp",
       "rule": "cast-deref-offset",
       "code": "CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(CNetworkWnd));",
       "count": 1,
       "reason": "MSVC 4.00 MI adjustment required for the original virtual CBaseNetwork::Process dispatch; both functions were verified as effective 100% matches."
     },
     {
-      "path": "src/Visos/Network/CTcpIpNetworkAddress.cpp",
+      "path": "src/Visos/Network/CTCPIPNetworkAddress.cpp",
       "rule": "addr-cast-punning",
-      "code": "in_addr in = *(in_addr*) &((CTcpIpNetworkAddress*) &p_address)->m_ipv4Address;",
+      "code": "in_addr in = *(in_addr*) &((CTCPIPNetworkAddress*) &p_address)->m_ipv4Address;",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/CTcpIpReadSocket.cpp",
+      "path": "src/Visos/Network/CTCPIPReadSocket.cpp",
       "rule": "addr-cast-punning",
       "code": "inet_ntoa(*(in_addr*) &(address->m_ipv4Address = receiveData.m_address.m_address.s_addr)));",
       "count": 1,

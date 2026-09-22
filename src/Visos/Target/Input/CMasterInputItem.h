@@ -2,12 +2,12 @@
 #define LEMBALL_VISOS_TARGET_INPUT_CMASTERINPUTITEM_H
 
 class CBaseQueue;
-class CVsOStream;
+class CVSOStream;
 // VTABLE: LEMBALL 0x0049a458
 class CMasterInputItem {
 public:
 	CMasterInputItem();
-	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	// Slot roles inferred from CMasterInput::ProcessItems at 0x00472190.
 	virtual int ProcessQueue(CBaseQueue* p_queue) = 0; // vtable+0x04
 	virtual int IsReady() = 0;                         // vtable+0x08

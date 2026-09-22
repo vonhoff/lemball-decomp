@@ -1,14 +1,14 @@
 #include "CFileBroadcast.h"
 
 #include "../Foundation/CBaseQueue.h"
-#include "../Foundation/CVsOStream.h"
+#include "../Foundation/CVSOStream.h"
 #include "../Foundation/VsString.h"
 #include "../Messaging/BasePacketHeader.h"
 #include "../Messaging/CHeaders.h"
 #include "../Messaging/CPortsMessage.h"
 #include "CFileNetwork.h"
 #include "CNetworkAddress.h"
-#include "CTcpIpNetwork.h"
+#include "CTCPIPNetwork.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Network/CBroadcast.h"
@@ -44,9 +44,9 @@ void CFileBroadcast::Setup(const char* p_peerName, const char* p_path)
 	}
 	char port[2] = "0";
 	memcpy(g_pFileBroadcastData + strlen(g_pFileBroadcastData), "VSNETv", 7);
-	VsLtoa(0, port, 10);
+	vsLtoa(0, port, 10);
 	strcat(g_pFileBroadcastData, port);
-	VsLtoa(9, port, 10);
+	vsLtoa(9, port, 10);
 	strcat(g_pFileBroadcastData, port);
 }
 

@@ -4,8 +4,8 @@
 #include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
 #include "../../Visos/Graphics/CBaseCursor.h"
 
-class CPvWnd;
-class CResBin;
+class CPVWnd;
+class CResBIN;
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00493100
 class CDemo : public CBaseQueueHandler {
@@ -24,7 +24,7 @@ public:
 
 	friend void SetGameTime();
 	friend class CPlayerLemming;
-	friend class CAi;
+	friend class CAI;
 	friend class CGame;
 	friend class C2D;
 	friend void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
@@ -35,11 +35,11 @@ private:
 	int m_bytesRemaining;        // 0x18
 	unsigned char* m_readCursor; // 0x1c
 	char* m_filePath;            // 0x20
-	CResBin* m_resource;         // 0x24
+	CResBIN* m_resource;         // 0x24
 	int m_currentResourceId;     // 0x28
 	int m_firstResourceId;       // 0x2c
 	int m_resourceCount;         // 0x30
-	CPvWnd* m_window;            // 0x34
+	CPVWnd* m_window;            // 0x34
 	unsigned int m_startTime;    // 0x38
 	unsigned int m_duration;     // 0x3c
 	short m_offsetX;             // 0x40

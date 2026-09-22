@@ -1,8 +1,8 @@
 #include "Control/Support/PreInit.h"
 #include "Visos/Foundation/CArena.h"
-#include "Visos/Foundation/CRamArena.h"
+#include "Visos/Foundation/CRAMArena.h"
 #include "Visos/Foundation/CSmallMemory.h"
-#include "Visos/Foundation/CVsOStream.h"
+#include "Visos/Foundation/CVSOStream.h"
 #include "Visos/Foundation/VsInit.h"
 
 #include <new.h>
@@ -35,7 +35,7 @@ char g_szColonHexPrefix[8] = ": 0x";
 char g_szGetLastErrorNewline[4] = "\n";
 
 // FUNCTION: LEMBALL 0x0046f060
-bool InternalMemInit()
+bool _MEM_Init()
 {
 	void* locked;
 	int smallEnabled;
@@ -51,7 +51,7 @@ bool InternalMemInit()
 		return 0;
 	}
 
-	g_pMasterArena = new (locked) CRamArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
+	g_pMasterArena = new (locked) CRAMArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
 
 	smallMemory = 0;
 	smallEnabled = g_nSmallMemoryEnabled;
@@ -69,7 +69,7 @@ bool InternalMemInit()
 }
 
 // FUNCTION: LEMBALL 0x0046f120
-bool InternalMemQuit()
+bool _MEM_Quit()
 {
 	CSmallMemory* smallMemory;
 	unsigned int lastError;

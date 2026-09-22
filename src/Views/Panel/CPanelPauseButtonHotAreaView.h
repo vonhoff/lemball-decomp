@@ -2,7 +2,7 @@
 #define LEMBALL_VIEWS_PANEL_CPANELPAUSEBUTTONHOTAREAVIEW_H
 
 class CPanel;
-class CResAnim;
+class CResANIM;
 // SIZE 0xac
 class CPanelPauseButtonHotAreaView {
 private:
@@ -14,7 +14,7 @@ private:
 	unsigned short m_graphicHeight; // 0x86
 	short m_graphicOffsetX;         // 0x88
 	short m_graphicOffsetY;         // 0x8a
-	CResAnim* m_animation;          // 0x8c
+	CResANIM* m_animation;          // 0x8c
 	unsigned int m_frame;           // 0x90
 	void* m_primitive;              // 0x94
 	unsigned int m_paused;          // 0xa0

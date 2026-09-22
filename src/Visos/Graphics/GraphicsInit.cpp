@@ -1,7 +1,7 @@
 #include "Control/Support/PreInit.h"
 #include "Visos/Foundation/VsInit.h"
 #include "Visos/Graphics/CCursor.h"
-#include "Visos/Graphics/CGdiDevice.h"
+#include "Visos/Graphics/CGDIDevice.h"
 #include "Visos/Graphics/CSurface.h"
 #include "Visos/Target/Graphics/CGraphicsDriver.h"
 #include "Visos/Target/Graphics/CGraphicsState.h"
@@ -9,7 +9,7 @@
 #include <new.h>
 
 // FUNCTION: LEMBALL 0x0046ba80
-bool InternalGdiInit()
+bool _GDI_Init()
 {
 	void* storage;
 	CCursor* cursor;
@@ -27,9 +27,9 @@ bool InternalGdiInit()
 	}
 	g_pTargetGraphicsSystem->SelectDriver(8);
 
-	storage = operator new(sizeof(CGdiDevice));
+	storage = operator new(sizeof(CGDIDevice));
 	if (storage != 0) {
-		g_pGdiDevice = new (storage) CGdiDevice(g_preInitActive.m_flags);
+		g_pGdiDevice = new (storage) CGDIDevice(g_preInitActive.m_flags);
 	}
 	else {
 		g_pGdiDevice = 0;
@@ -59,10 +59,10 @@ bool InternalGdiInit()
 }
 
 // FUNCTION: LEMBALL 0x0046bb70
-bool InternalGdiQuit()
+bool _GDI_Quit()
 {
 	CSurface* surface;
-	CGdiDevice* device;
+	CGDIDevice* device;
 	CGraphicsState* system;
 
 	delete g_pCursor;
@@ -73,7 +73,7 @@ bool InternalGdiQuit()
 	}
 	device = g_pGdiDevice;
 	if (device != 0) {
-		device->~CGdiDevice();
+		device->~CGDIDevice();
 		operator delete(device);
 	}
 	system = g_pTargetGraphicsSystem;

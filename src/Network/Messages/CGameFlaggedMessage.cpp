@@ -19,5 +19,5 @@ void CGameFlaggedMessage::AddData()
 // FUNCTION: LEMBALL 0x00452500
 void CGameFlaggedMessage::GetData()
 {
-	m_flag = GetDword();
+	m_flag = GetDWORD();
 }

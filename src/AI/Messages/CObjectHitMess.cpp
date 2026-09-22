@@ -1,7 +1,7 @@
 #include "CObjectHitMess.h"
 
 #include "../Base/CGlobalGameObject.h"
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "AI/Messages/CGameObjectMess.h"
 #include "AI/Messages/GameMessageIds.h"
 
@@ -21,6 +21,6 @@ void CObjectHitMess::AddData()
 // FUNCTION: LEMBALL 0x00416cc0
 void CObjectHitMess::GetData()
 {
-	GetDword();
+	GetDWORD();
 	g_pAI->Score(0x9c4);
 }

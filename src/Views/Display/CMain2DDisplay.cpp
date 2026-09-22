@@ -1,6 +1,6 @@
 #include "CMain2DDisplay.h"
 
-#include "../../AI/Navigation/CAi.h"
+#include "../../AI/Navigation/CAI.h"
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameMain.h"
 #include "../../Control/Level/CLevelLoader.h"
@@ -17,13 +17,13 @@
 #include "../../Platform/Windows/Entry.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/CChangeList.h"
-#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/CVSOStream.h"
 #include "../../Visos/Graphics/CCursor.h"
-#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/CResBase.h"
-#include "../../Visos/Resources/CResPalette.h"
-#include "../../Visos/Resources/CResZrle.h"
+#include "../../Visos/Resources/CResPALETTE.h"
+#include "../../Visos/Resources/CResZRLE.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Target/Graphics/CGraphicsDriver.h"
 #include "../../Visos/Target/Graphics/CGraphicsState.h"
@@ -71,9 +71,9 @@ CMain2DDisplay::CMain2DDisplay(CGame* p_game)
 	m_drawerClosing = 1;
 	m_gdiFlags = 0x258;
 	m_currentFlow = FLOW_MAIN_OPTIONS_2;
-	m_cursorResource = CResZrle::Load(RES_CURSORS_PAW_CURSOR);
-	m_gamePalette = CResPalette::Load(RES_GAME_GAMEPALETTE);
-	m_titlePalette = CResPalette::Load(RES_GAME_TITLEPALETTE);
+	m_cursorResource = CResZRLE::Load(RES_CURSORS_PAW_CURSOR);
+	m_gamePalette = CResPALETTE::Load(RES_GAME_GAMEPALETTE);
+	m_titlePalette = CResPALETTE::Load(RES_GAME_TITLEPALETTE);
 	CursorChangeType(CURSOR_DISPLAY_PAW, 0);
 	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), -0x19);
 	m_lowWidth = 0x140;
@@ -283,17 +283,17 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		break;
 	case 5:
 	case 0x13: {
-		CAi* ai;
+		CAI* ai;
 
-		m_ai = (CAi*) m_game->m_process;
-		ai = (CAi*) m_game->m_process;
+		m_ai = (CAI*) m_game->m_process;
+		ai = (CAI*) m_game->m_process;
 		m_map = ai->m_map;
 		storage = operator new(0x2428);
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
-		m_drawer = new (storage) C2D(this, (CAi*) m_ai, m_gdi, (CMap*) m_map, localRect);
+		m_drawer = new (storage) C2D(this, (CAI*) m_ai, m_gdi, (CMap*) m_map, localRect);
 		break;
 	}
 	case 10:
@@ -392,7 +392,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 			break;
 		case 2:
 			helpPath[0] = 0;
-			cdDir = g_pTargetPlatformServices->GetCdDir(g_szLemballHelpFile);
+			cdDir = g_pTargetPlatformServices->GetCDDir(g_szLemballHelpFile);
 			strcpy(helpPath, cdDir);
 			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
 			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x101, (unsigned long) g_szHelpContentsKey);
@@ -402,7 +402,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 			break;
 		case 3:
 			helpPath[0] = 0;
-			cdDir = g_pTargetPlatformServices->GetCdDir("lemball\\lemball.hlp");
+			cdDir = g_pTargetPlatformServices->GetCDDir("lemball\\lemball.hlp");
 			strcpy(helpPath, cdDir);
 			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
 			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x105, (unsigned long) "");

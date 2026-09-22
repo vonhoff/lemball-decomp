@@ -19,9 +19,9 @@ public:
 	virtual void ResetPort(short p_port);                         // vtable+0x04
 	virtual void GetSpecificAddr(const char* p_address) = 0;      // vtable+0x08
 	virtual bool Start(const char* p_networkName) = 0;            // vtable+0x0c
-	virtual void Process();                               // vtable+0x10
-	virtual void StartListen() = 0;                       // vtable+0x14
-	virtual void StopListen() = 0;                        // vtable+0x18
+	virtual void Process();                                       // vtable+0x10
+	virtual void StartListen() = 0;                               // vtable+0x14
+	virtual void StopListen() = 0;                                // vtable+0x18
 	void AddToMessage(CBroadcastMessage& p_message);
 	void Closed(int p_notifyPeer);
 	void Initialise(const char* p_networkName);
@@ -36,7 +36,7 @@ public:
 
 	friend class CBaseNetwork;
 	friend class CNetworkManager;
-	friend class CTcpIpBroadcast;
+	friend class CTCPIPBroadcast;
 
 protected:
 	unsigned int m_runEnabled;          // 0x08

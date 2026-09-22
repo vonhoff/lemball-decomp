@@ -22,7 +22,7 @@ public:
 	bool Load(const CVsRange& p_range, unsigned char*& p_data, CResBase* p_resource);
 	bool Load(unsigned int p_resourceId, CResBase* p_resource, unsigned int p_recurse);
 	bool Load(CResBase* p_resource, Chunk p_chunk);
-	bool SetWd(char* p_path);
+	bool SetWD(char* p_path);
 	int GetFreeHandle();
 	int KillLeastResource(unsigned int p_requiredSize);
 	void DeallocateMem(unsigned char* p_data, unsigned char p_owned);

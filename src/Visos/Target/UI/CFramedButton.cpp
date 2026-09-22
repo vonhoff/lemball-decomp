@@ -2,7 +2,7 @@
 
 #include "../../Foundation/CChangeList.h"
 #include "../../Graphics/CClipRect.h"
-#include "../../Graphics/CGdi.h"
+#include "../../Graphics/CGDI.h"
 #include "../../Graphics/CHotAreaList.h"
 #include "../../Graphics/CLine.h"
 #include "../../Graphics/CSurface.h"
@@ -11,12 +11,12 @@
 #include "Visos/Graphics/CDepressedButton.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
-#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CPVGWnd.h"
 
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00468a40
-CFramedButton::CFramedButton(const CVsRect& p_rect, CPvGWnd* p_parent, unsigned int p_frameColor)
+CFramedButton::CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColor)
 	: CDepressedButton(p_rect, p_parent)
 {
 	m_frameColor = p_frameColor;
@@ -35,7 +35,7 @@ CFramedButton::CFramedButton(const CVsRect& p_rect, CPvGWnd* p_parent, unsigned 
 }
 
 // FUNCTION: LEMBALL 0x00468b20
-CFramedButton::CFramedButton(CPvGWnd* p_parent, unsigned int p_frameColor) : CDepressedButton(p_parent)
+CFramedButton::CFramedButton(CPVGWnd* p_parent, unsigned int p_frameColor) : CDepressedButton(p_parent)
 {
 	m_frameColor = p_frameColor;
 	InitializeFramePrimitives();
@@ -63,7 +63,7 @@ void CFramedButton::DrawButton()
 	unsigned int light;
 	unsigned int dark;
 	unsigned int i;
-	m_gdi->m_renderTarget->GetCurrDb();
+	m_gdi->m_renderTarget->GetCurrDB();
 	CVsRect bounds;
 	bounds.m_width = m_bounds.m_width;
 	bounds.m_height = m_bounds.m_height;
@@ -121,7 +121,7 @@ void CFramedButton::OnPaint(const CVsRect& p_rect)
 {
 	if (m_gdi->m_primitiveCount == 0 && (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed)) {
 		if (GetSizeStatus() != 0) {
-			InternalDrawButton();
+			_DrawButton();
 			DrawButton();
 		}
 		CChangeList* changeList = m_gdi->m_renderTarget->GetChangeList();

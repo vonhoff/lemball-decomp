@@ -1,8 +1,8 @@
 #include "CFontTable.h"
 
-#include "CResFont.h"
-#include "Visos/Resources/CResBaseList.h"
-#include "Visos/Resources/CResInt.h"
+#include "CResFONT.h"
+#include "Visos/Resources/CResBaseLIST.h"
+#include "Visos/Resources/CResINT.h"
 
 #define kGlyphTableBytes 0x400
 #define kGlyphTableCount 0x100
@@ -10,7 +10,7 @@
 #define kResZrleSize 0x54
 
 // FUNCTION: LEMBALL 0x00473650
-CFontTable::CFontTable(CResFont* p_font)
+CFontTable::CFontTable(CResFONT* p_font)
 {
 	unsigned int offset;
 	unsigned int index;
@@ -18,7 +18,7 @@ CFontTable::CFontTable(CResFont* p_font)
 	int zrleOffset;
 	int intOffset;
 
-	m_glyphs = (CResZrle**) ::operator new(kGlyphTableBytes);
+	m_glyphs = (CResZRLE**) ::operator new(kGlyphTableBytes);
 	offset = 0;
 	do {
 		m_glyphs[offset] = 0;
@@ -32,12 +32,12 @@ CFontTable::CFontTable(CResFont* p_font)
 		do {
 			if (p_font->m_fontEntries == 0) {
 				glyphIndex = p_font->m_fontTable->GetChar(
-					(CResZrle*) ((unsigned char*) p_font->m_animationEntries + zrleOffset));
+					(CResZRLE*) ((unsigned char*) p_font->m_animationEntries + zrleOffset));
 			}
 			else {
-				glyphIndex = ((CResInt*) ((unsigned char*) p_font->m_fontEntries + intOffset))->m_value;
+				glyphIndex = ((CResINT*) ((unsigned char*) p_font->m_fontEntries + intOffset))->m_value;
 			}
-			m_glyphs[glyphIndex] = (CResZrle*) ((unsigned char*) p_font->m_animationEntries + zrleOffset);
+			m_glyphs[glyphIndex] = (CResZRLE*) ((unsigned char*) p_font->m_animationEntries + zrleOffset);
 			intOffset += kResIntSize;
 			zrleOffset += kResZrleSize;
 			index++;
@@ -46,16 +46,16 @@ CFontTable::CFontTable(CResFont* p_font)
 }
 
 // FUNCTION: LEMBALL 0x00473700
-CResZrle* CFontTable::GetZrle(int p_character)
+CResZRLE* CFontTable::GetZRLE(int p_character)
 {
 	return m_glyphs[p_character];
 }
 
 // FUNCTION: LEMBALL 0x00473710
-char CFontTable::GetChar(CResZrle* p_glyph)
+char CFontTable::GetChar(CResZRLE* p_glyph)
 {
 	int i = 0;
-	CResZrle** glyphs = m_glyphs;
+	CResZRLE** glyphs = m_glyphs;
 	do {
 		if (*glyphs == p_glyph) {
 			return (char) i;

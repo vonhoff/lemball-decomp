@@ -28,7 +28,7 @@ public:
 	friend class CNetworkOptionsDrawer;
 	friend class CNetworkOptionsProc;
 	friend class CBaseFrontendDrawer;
-	friend class CAi;
+	friend class CAI;
 
 private:
 	CNetworkGameMessage* m_gameMessage;   // 0x10

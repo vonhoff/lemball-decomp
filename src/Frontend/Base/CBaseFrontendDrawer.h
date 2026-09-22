@@ -5,18 +5,18 @@
 #include "../../Visos/Animation/CStaticAnim.h"        // complete type
 #include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
 #include "../../Visos/Foundation/CVsPoint.h"          // complete type
-#include "../../Visos/Foundation/Prims.h"             // complete type
+#include "../../Visos/Foundation/tagPRIMS.h"          // complete type
 #include "../../Visos/Graphics/CDrawer.h"             // complete type
 #include "../Support/CUserActionMessage.h"
 #include "../Support/CoordPair.h" // complete type
 #include "FlowProcesses.h"
 
-class CGdi;
+class CGDI;
 class CGunController;
 class CHiliteController;
 class CMain2DDisplay;
 class CPlayThruAnim;
-class CResBitmap;
+class CResBITMAP;
 class CTextManager;
 class CVsRect;
 struct Message;
@@ -27,7 +27,7 @@ struct Message;
 class CBaseFrontendDrawer : public CDrawer, public CBaseQueueHandler, public CAnimsManager {
 public:
 	CBaseFrontendDrawer(CMain2DDisplay* p_display,
-						CGdi* p_gdi,
+						CGDI* p_gdi,
 						const CVsRect& p_rect,
 						eFlowProcesses p_flowProcess,
 						int p_resourceCapacity,
@@ -53,10 +53,10 @@ public:
 	virtual void DrawBackGround();                       // vtable+0x50
 	virtual bool ConfirmedAction(eUserActions p_action); // vtable+0x54
 	void Action(eUserActions p_action, eUserActionStages p_stage);
-	void InternalDrawAnims();
-	void InternalDrawBackGround();
-	void InternalLoad();
-	void InternalUnLoad();
+	void _DrawAnims();
+	void _DrawBackGround();
+	void _Load();
+	void _UnLoad();
 	void DrawFrame(CoordPair p_start, CoordPair p_end);
 	void DrawFrame(CVsRect p_rect);
 	void InitialiseBackBuffer();
@@ -77,7 +77,7 @@ public:
 
 protected:
 	CMain2DDisplay* m_display;             // 0x84
-	CGdi* m_gdi;                           // 0x88
+	CGDI* m_gdi;                           // 0x88
 	unsigned int m_networkMode;            // 0x8c
 	unsigned int m_actionPending;          // 0x90
 	unsigned int m_startupPending;         // 0x94
@@ -91,9 +91,9 @@ protected:
 	unsigned int m_desiredPalette;         // 0xb4
 	unsigned int m_activePalette;          // 0xb8
 	unsigned int m_createdAt;              // 0xbc
-	CResBitmap* m_backgroundBitmap;        // 0xc0
-	CResBitmap* m_tileBitmap;              // 0xc4
-	Prims m_primitiveBundle[1];            // 0xc8
+	CResBITMAP* m_backgroundBitmap;        // 0xc0
+	CResBITMAP* m_tileBitmap;              // 0xc4
+	tagPRIMS m_primitiveBundle[1];         // 0xc8
 	int m_primitiveBank;                   // 0x328
 	int m_mode;                            // 0x32c
 	unsigned int m_ready;                  // 0x330

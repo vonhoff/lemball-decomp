@@ -1,13 +1,13 @@
 #include "CTrampolineManager.h"
 
-#include "../Navigation/CAi.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CTrampoline.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0042af60
-CTrampolineManager::CTrampolineManager(CAi* p_ai, int p_capacity) : CBaseObjectManager(0x18, 0xd)
+CTrampolineManager::CTrampolineManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x18, 0xd)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
