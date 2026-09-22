@@ -47,12 +47,18 @@ void VsOStream::InternalFormatNum()
 			src = (char*) m_numberBuffer + signLen;
 		}
 		else {
-			int srcOffset = signLen;
-			if (len >= width) {
+			int srcOffset;
+			if (len < width) {
+				srcOffset = signLen;
+			}
+			else {
 				srcOffset = len - width;
 			}
-			int dstOffset = signLen;
-			if (len < width) {
+			int dstOffset;
+			if (len >= width) {
+				dstOffset = signLen;
+			}
+			else {
 				dstOffset = signLen - len + width;
 			}
 			src = (char*) m_numberBuffer + srcOffset;
