@@ -27,7 +27,7 @@ VsPoint* Panel::GetPausePos(VsPoint* p_result)
 		width = m_window->m_rect.m_width;
 		height = m_window->m_rect.m_height;
 	}
-	p_result->m_x = (short) (((int) width / (int) m_window->m_zoom - (int) m_panelSize.m_x) / 2);
+	p_result->m_x = (short) (((int) (short) ((int) width / (int) m_window->m_zoom) - (int) m_panelSize.m_x) / 2);
 	p_result->m_y = (short) ((int) height / (int) m_window->m_zoom - (int) m_pauseSize.m_y);
 	return p_result;
 }
