@@ -143,10 +143,7 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 	HotAreaElement* previous;
 	Message fallback;
 	unsigned int type;
-	short scaledX;
-	short scaledY;
-	short scaledWidth;
-	short scaledHeight;
+	const VsPoint* origin;
 
 	fallback.type = 7;
 	fallback.time = 0;
@@ -157,8 +154,9 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 		p_message = &fallback;
 	}
 	type = p_message->type;
-	VsPoint localPoint((short) ((int) (short) (p_point.m_x - m_bounds.m_x) / (int) m_scale),
-					   (short) ((int) (short) (p_point.m_y - m_bounds.m_y) / (int) m_scale));
+	origin = &m_bounds;
+	VsPoint localPoint((short) ((int) (short) (p_point.m_x - origin->m_x) / (int) m_scale),
+					   (short) ((int) (short) (p_point.m_y - origin->m_y) / (int) m_scale));
 	entry = m_tail;
 	for (;;) {
 		if (entry == 0) {
@@ -176,12 +174,13 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 			}
 		}
 	}
-	scaledX = (short) (m_point0.m_x * ((short) m_scale - 1) + m_bounds.m_x);
-	scaledY = (short) (m_point0.m_y * ((short) m_scale - 1) + m_bounds.m_y);
-	scaledWidth = (short) (m_bounds.m_width * (short) m_scale);
-	scaledHeight = (short) (m_bounds.m_height * (short) m_scale);
-	if (p_point.m_x < scaledX || (short) (scaledX + scaledWidth) <= p_point.m_x || p_point.m_y < scaledY ||
-		(short) (scaledHeight + scaledY) <= p_point.m_y) {
+	VsRect scaledBounds(m_bounds);
+	scaledBounds.m_x = (short) (m_point0.m_x * ((short) m_scale - 1) + scaledBounds.m_x);
+	scaledBounds.m_y = (short) (m_point0.m_y * ((short) m_scale - 1) + scaledBounds.m_y);
+	scaledBounds.m_width = (short) (scaledBounds.m_width * (short) m_scale);
+	scaledBounds.m_height = (short) (scaledBounds.m_height * (short) m_scale);
+	if (p_point.m_x < scaledBounds.m_x || (short) (scaledBounds.m_x + scaledBounds.m_width) <= p_point.m_x ||
+		p_point.m_y < scaledBounds.m_y || (short) (scaledBounds.m_height + scaledBounds.m_y) <= p_point.m_y) {
 		if (m_entered != 0) {
 			m_entered = 0;
 			OnExit();
@@ -201,12 +200,11 @@ void HotAreaList::ProcessHandlers(const VsPoint& p_point, Message* p_message)
 			if (handler->m_active != 0 && handler->InArea(localPoint) != 0) {
 				handler->ProcessArea(p_message, localPoint, m_currentHandler);
 				m_currentHandler = handler;
-				previous = entry;
 				break;
 			}
 			entry = previous;
 		} while (previous != 0);
-		if (previous != 0) {
+		if (entry != 0) {
 			return;
 		}
 	}
