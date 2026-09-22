@@ -3,7 +3,7 @@
 
 class PbButton {
 public:
-	void DumpStrs();
+	static void DumpStrs();
 };
 
 #endif

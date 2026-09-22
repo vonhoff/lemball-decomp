@@ -37,6 +37,7 @@
 #include "../Target/TargetObjectClipGrid.h"
 #include "../Target/TargetSpriteGroundLookup.h"
 #include "Main2DDisplay.h"
+#include "PbButton.h"
 
 #include <new.h>
 #include <string.h>
@@ -198,7 +199,6 @@ C2D::~C2D()
 // FUNCTION: LEMBALL 0x00436190
 void C2D::ShutDown()
 {
-	TextManager* textManager;
 	TargetObjectClipGrid* objectClipGrid;
 	TargetSpriteGroundLookup* spriteGroundLookup;
 	LemmingAnimsManager* lemmingAnims;
@@ -206,12 +206,8 @@ void C2D::ShutDown()
 	unsigned long now;
 
 	m_gdi->m_renderTarget->EnableZBuff(0);
-	textManager = m_textManager;
 	m_textManager->UnLoadFont(0x115);
-	if (textManager != 0) {
-		textManager->~TextManager();
-		operator delete(textManager);
-	}
+	delete m_textManager;
 	if (m_panel != 0) {
 		delete m_panel;
 		m_panel = 0;
@@ -249,6 +245,7 @@ void C2D::ShutDown()
 		operator delete(lemmingAnims);
 	}
 	UnRegisterRemaps();
+	PbButton::DumpStrs();
 	if (m_ai->m_networkMode != 0 && m_returnState == 2) {
 		if (g_pNetworkManager != 0) {
 			g_pNetworkManager->Stop();
