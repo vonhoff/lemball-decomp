@@ -26,13 +26,13 @@ CVsRect* CAnimsManager::DrawAnimOnGdi(CVsRect* p_bounds,
 									  CGdi* p_gdi,
 									  const CVsPoint& p_position,
 									  unsigned long p_resourceId,
-									  unsigned long p_animIndex,
+									  unsigned long p_drawFlags,
 									  CFrames* p_frame,
 									  CRemap* p_remap)
 {
 	CGdi* previous = m_gdi;
 	m_gdi = p_gdi;
-	CVsRect bounds = DrawAnim(p_position, p_resourceId, p_animIndex, p_frame, p_remap);
+	CVsRect bounds = DrawAnim(p_position, p_resourceId, p_drawFlags, p_frame, p_remap);
 	m_gdi = previous;
 	p_bounds->m_width = bounds.m_width;
 	p_bounds->m_height = bounds.m_height;
@@ -227,7 +227,7 @@ void CAnimsManager::DetachGdi(CGdi* p_gdi)
 // FUNCTION: LEMBALL 0x00467730
 CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 								unsigned long p_resourceId,
-								unsigned long p_animIndex,
+								unsigned long p_drawFlags,
 								CFrames* p_frame,
 								CRemap* p_remap)
 {
@@ -265,7 +265,7 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 		zrle->m_x = p_position.m_x;
 		zrle->m_y = p_position.m_y;
 		zrle->m_resource = resource;
-		zrle->m_flags = p_animIndex;
+		zrle->m_flags = p_drawFlags;
 		zrle->m_remap = p_remap;
 		zrle->Draw(m_gdi);
 	}
@@ -291,7 +291,7 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 		anim->m_y = p_position.m_y;
 		anim->m_animResource = (CResAnim*) resource;
 		anim->m_animIndex = frameIndex;
-		anim->m_flags = p_animIndex;
+		anim->m_flags = p_drawFlags;
 		anim->m_remap = p_remap;
 		anim->Draw(m_gdi);
 	}

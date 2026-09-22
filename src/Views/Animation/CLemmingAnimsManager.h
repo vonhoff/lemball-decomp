@@ -67,7 +67,7 @@ private:
 	// LoadVrammed stores three CResFont::Load results (0x00433425/4a/5d).
 	CResFont* m_interfaceFonts[3]; // 0x9c: low/high-resolution border fonts and score/time font
 	unsigned int m_groundStyle; // 0xa8
-	unsigned int m_reservedac;  // 0xac
+	unsigned int m_drawFlags;   // 0xac
 	short m_drawOffsetX;        // 0xb0
 	short m_drawOffsetY;        // 0xb2
 };

@@ -26,7 +26,7 @@ public:
 				  unsigned int p_doubleBuffered);
 	CVsRect DrawAnim(const CVsPoint& p_position,
 					 unsigned long p_resourceId,
-					 unsigned long p_animIndex,
+					 unsigned long p_drawFlags,
 					 CFrames* p_frame,
 					 CRemap* p_remap);
 	CVsSize GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex);
@@ -38,7 +38,7 @@ public:
 						   CGdi* p_gdi,
 						   const CVsPoint& p_position,
 						   unsigned long p_resourceId,
-						   unsigned long p_animIndex,
+						   unsigned long p_drawFlags,
 						   CFrames* p_frame,
 						   CRemap* p_remap);
 	CResZrle* ResolveAnimFrameData(unsigned long p_resourceId, CFrames* p_frame);

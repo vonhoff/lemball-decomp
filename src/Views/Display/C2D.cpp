@@ -3904,7 +3904,7 @@ void C2D::DrawObjectsZBuff()
 	}
 
 	SortViewData();
-	m_lemmingAnims->m_reservedac = 0x80000;
+	m_lemmingAnims->m_drawFlags = 0x80000;
 
 	int spriteIndex = 0;
 	int animationIndex = 0;

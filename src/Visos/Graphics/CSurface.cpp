@@ -1120,9 +1120,9 @@ void CSurface::Blit(CCopyToBackBuff* p_copy)
 	int height = primitive->m_destination.m_height;
 	if (width != 0 && height != 0) {
 		int dstX = primitive->m_destination.m_x;
-		int srcX = primitive->m_field04;
+		int srcX = primitive->m_sourceX;
 		int dstY = primitive->m_destination.m_y;
-		int srcY = primitive->m_field06;
+		int srcY = primitive->m_sourceY;
 		if (height > 0) {
 			int srcRow = srcY * 4;
 			int count = height;

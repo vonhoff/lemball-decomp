@@ -18,8 +18,8 @@ public:
 	friend class CSurface;
 
 private:
-	short m_field04;       // 0x04
-	short m_field06;       // 0x06
+	short m_sourceX;       // 0x04
+	short m_sourceY;       // 0x06
 	CVsRect m_destination; // 0x08
 };
 
