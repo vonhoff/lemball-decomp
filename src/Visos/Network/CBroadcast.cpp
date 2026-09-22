@@ -137,20 +137,18 @@ void CBroadcast::Stop()
 // FUNCTION: LEMBALL 0x00460830
 void CBroadcast::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 {
-	BasePacketHeader* packetHeader;
-	unsigned char* payload;
-
 	g_pBroadcastReceiveAddress->GetStr();
 	if (!(*g_pBroadcastReceiveAddress == *g_pBroadcastAddress) &&
 		(m_addressMode != 2 ||
-		 (m_specificAddress != 0 && m_addressMode == 2 && *g_pBroadcastReceiveAddress == *m_specificAddress))) {
+		 (m_specificAddress != 0 && (m_addressMode != 2 || *g_pBroadcastReceiveAddress == *m_specificAddress)))) {
 		unsigned int length;
 
 		length = g_broadcastPayloadLength;
-		packetHeader = (BasePacketHeader*) p_packet->m_data;
-		payload = (unsigned char*) (packetHeader + 1);
-		if (strncmp((char*) (packetHeader + 1), (char*) (g_pBroadcastPacketTemplate + 1), length + 1) == 0) {
-			g_pBaseNetwork->Establish(g_pBroadcastReceiveAddress, payload + length + 1);
+		if (strncmp((char*) p_packet->m_data + sizeof(BasePacketHeader),
+					(char*) (g_pBroadcastPacketTemplate + 1),
+					length + 1) == 0) {
+			g_pBaseNetwork->Establish(g_pBroadcastReceiveAddress,
+									  p_packet->m_data + sizeof(BasePacketHeader) + length + 1);
 		}
 	}
 	if (p_event == 7) {
