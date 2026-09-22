@@ -17,7 +17,7 @@ public:
 	friend class CTrackWindow;
 	friend class CSurface;
 	friend class CCdLoadAnim;
-	friend class TargetFramedButton;
+	friend class CFramedButton;
 
 private:
 	short m_left;              // 0x04

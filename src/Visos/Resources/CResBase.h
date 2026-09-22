@@ -44,14 +44,14 @@ public:
 	friend class CAnim;
 	friend class CAnimWnd;
 	friend class CGraphicButton;
-	friend class BitmapRes;
-	friend class BitmapResBase;
+	friend class CBitmapRes;
+	friend class CBitmapResBase;
 	friend class CFrontendResourceLoader;
 	friend class CBaseCursor;
 	friend class CDemo;
-	friend class TargetAboutScreen;
+	friend class CAboutScreen;
 	friend class CLevelLoader;
-	friend class MciMusicDevice;
+	friend class CMciMusicDevice;
 	friend class CBaseRemap;
 
 protected:

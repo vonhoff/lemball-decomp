@@ -22,8 +22,8 @@
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/Prims.h"
-#include "Visos/Graphics/BitmapRes.h"
 #include "Visos/Graphics/CBaseRemap.h"
+#include "Visos/Graphics/CBitmapRes.h"
 
 #include <new.h>
 #include <string.h>

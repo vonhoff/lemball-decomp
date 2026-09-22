@@ -1,7 +1,7 @@
 #include "CGenericGroup.h"
 
 #include "../../Visos/Foundation/CVsMath.h"
-#include "../Navigation/AiDestinationList.h"
+#include "../Navigation/CAiDestinationList.h"
 #include "CFormationManager.h"
 
 #include <string.h>
@@ -250,7 +250,7 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 	m_bounds.m_height = (short) maxY;
 }
 
-#include "../Navigation/AiDestinationEntry.h"
+#include "../Navigation/CAiDestinationEntry.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectTypes.h"
@@ -262,11 +262,11 @@ void CGenericGroup::AddNewWaypoint(AiCoord p_coordinate, CFormationManager* p_fo
 {
 	g_pUnknown0x4a7820 = p_formationManager;
 	unsigned short count;
-	AiDestinationList* list = m_destinationList;
+	CAiDestinationList* list = m_destinationList;
 	count = list->m_count;
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
-		AiDestinationEntry* entry = &list->m_entries[count];
+		CAiDestinationEntry* entry = &list->m_entries[count];
 		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = p_coordinate.m_xFixed;
 		entry->m_coordinate.m_yFixed = p_coordinate.m_yFixed;

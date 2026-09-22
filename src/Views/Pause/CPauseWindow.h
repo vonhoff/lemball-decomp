@@ -10,7 +10,7 @@
 #include "../../Visos/Graphics/CGWnd.h"               // complete type
 #include "../../Visos/Graphics/CHotAreaHandler.h"     // complete type
 #include "../../Visos/Graphics/CLine.h"               // complete type
-#include "PauseWindowFreeVramInterface.h"             // complete type
+#include "CPauseVramHandler.h"                        // complete type
 
 class CBaseRemap;
 class CPvGWnd;
@@ -29,12 +29,12 @@ enum ePauseWindowMessages {
 // SIZE 0x20c
 // VTABLE: LEMBALL 0x00497798 CGWnd
 // VTABLE: LEMBALL 0x00497788 CBaseQueueHandler
-// VTABLE: LEMBALL 0x00497780 PauseWindowFreeVramInterface
+// VTABLE: LEMBALL 0x00497780 CPauseVramHandler
 // VTABLE: LEMBALL 0x00497758 CHotAreaHandler
 class CPauseWindow : public CGWnd,
 					 public CTextManager,
 					 public CBaseQueueHandler,
-					 public PauseWindowFreeVramInterface,
+					 public CPauseVramHandler,
 					 public CHotAreaHandler {
 public:
 	CBaseRemap* Remap(int p_item);
@@ -58,36 +58,36 @@ public:
 	~CPauseWindow();
 
 private:
-	char** m_menuLabels;                         // 0x100
-	ePauseWindowMessages m_pauseMessage;         // 0x104
-	unsigned int m_cursorState;                  // 0x108
-	unsigned int m_lowResolution;                // 0x10c
-	CReceiveWindowState* m_receiverState;        // 0x110
-	CPvGWnd* m_parentWindow;                     // 0x114
-	int m_selection;                             // 0x118
-	int m_unavailableItems;                      // 0x11c
-	int m_menuItemCount;                         // 0x120
-	int m_minimumSelection;                      // 0x124
-	int m_initialSelection;                      // 0x128
-	int m_verticalTextOffset;                    // 0x12c
-	CVsSize m_borderTiles;                       // 0x130
-	int m_borderAnimCount;                       // 0x134
-	CLine m_borderLine[1];                       // 0x138
-	CVsPoint m_windowPadding;                    // 0x148
-	CVsPoint m_textSpacing;                      // 0x14c
-	CVsPoint m_borderPadding;                    // 0x150
-	CResAnim* m_horizontalBorderAnim;            // 0x154
-	CResAnim* m_verticalBorderAnim;              // 0x158
-	CAnim m_cornerAnims[4];                      // 0x15c
-	CAnim* m_borderAnims;                        // 0x1dc
-	CBaseRemap* m_remaps[4];                     // 0x1e0
-	CResFont* m_font;                            // 0x1f0
-	PauseWindowFreeVramInterface* m_vramSurface; // 0x1f4
-	CVsPoint* m_textSizes;                       // 0x1f8
-	unsigned int m_horizontalBorderAnimId;       // 0x1fc
-	unsigned int m_verticalBorderAnimId;         // 0x200
-	unsigned int m_fontId;                       // 0x204
-	unsigned int m_loaded;                       // 0x208
+	char** m_menuLabels;                   // 0x100
+	ePauseWindowMessages m_pauseMessage;   // 0x104
+	unsigned int m_cursorState;            // 0x108
+	unsigned int m_lowResolution;          // 0x10c
+	CReceiveWindowState* m_receiverState;  // 0x110
+	CPvGWnd* m_parentWindow;               // 0x114
+	int m_selection;                       // 0x118
+	int m_unavailableItems;                // 0x11c
+	int m_menuItemCount;                   // 0x120
+	int m_minimumSelection;                // 0x124
+	int m_initialSelection;                // 0x128
+	int m_verticalTextOffset;              // 0x12c
+	CVsSize m_borderTiles;                 // 0x130
+	int m_borderAnimCount;                 // 0x134
+	CLine m_borderLine[1];                 // 0x138
+	CVsPoint m_windowPadding;              // 0x148
+	CVsPoint m_textSpacing;                // 0x14c
+	CVsPoint m_borderPadding;              // 0x150
+	CResAnim* m_horizontalBorderAnim;      // 0x154
+	CResAnim* m_verticalBorderAnim;        // 0x158
+	CAnim m_cornerAnims[4];                // 0x15c
+	CAnim* m_borderAnims;                  // 0x1dc
+	CBaseRemap* m_remaps[4];               // 0x1e0
+	CResFont* m_font;                      // 0x1f0
+	CPauseVramHandler* m_vramSurface;      // 0x1f4
+	CVsPoint* m_textSizes;                 // 0x1f8
+	unsigned int m_horizontalBorderAnimId; // 0x1fc
+	unsigned int m_verticalBorderAnimId;   // 0x200
+	unsigned int m_fontId;                 // 0x204
+	unsigned int m_loaded;                 // 0x208
 };
 
 // SYNTHETIC: LEMBALL 0x00445350

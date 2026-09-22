@@ -2,9 +2,9 @@
 
 #include "../Sound/CPvMusicDevice.h"
 #include "../Sound/CSoundManager.h"
-#include "../Target/MciMusicDevice.h"
-#include "../Target/TargetDirectSoundDevice.h"
-#include "../Target/TargetWaveSoundDevice.h"
+#include "../Target/CDirectSoundDevice.h"
+#include "../Target/CMciMusicDevice.h"
+#include "../Target/CWaveSoundDevice.h"
 #include "Visos/Sound/CBaseSoundDevice.h"
 
 // FUNCTION: LEMBALL 0x0045b770
@@ -42,7 +42,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 	*p_musicAvailable = 0;
 	*p_musicDevice = 0;
 	if (p_useMusicCD == 1) {
-		CPvMusicDevice* music = new MciMusicDevice();
+		CPvMusicDevice* music = new CMciMusicDevice();
 		if (music->IsAvailable() == 1) {
 			*p_musicAvailable = 1;
 			*p_musicDevice = music;
@@ -51,7 +51,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 			delete music;
 		}
 		if (p_effectsEnabled == 1) {
-			CBaseSoundDevice* device = new TargetDirectSoundDevice(p_deviceParameter, 5);
+			CBaseSoundDevice* device = new CDirectSoundDevice(p_deviceParameter, 5);
 			if (device->IsEffectAvailable() == 1) {
 				*p_devices = device;
 				return 1;
@@ -59,7 +59,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 			if (device != 0) {
 				delete device;
 			}
-			CBaseSoundDevice* wave = new TargetWaveSoundDevice(p_deviceParameter);
+			CBaseSoundDevice* wave = new CWaveSoundDevice(p_deviceParameter);
 			if (wave->IsEffectAvailable() == 1) {
 				*p_devices = wave;
 				return 1;
@@ -69,7 +69,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 		return 0;
 	}
 	if (p_effectsEnabled == 1) {
-		CBaseSoundDevice* wave = new TargetWaveSoundDevice(p_deviceParameter);
+		CBaseSoundDevice* wave = new CWaveSoundDevice(p_deviceParameter);
 		if (wave->IsEffectAvailable() == 1) {
 			count = 1;
 			*p_devices = wave;

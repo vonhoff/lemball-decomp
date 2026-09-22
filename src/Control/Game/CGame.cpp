@@ -3,11 +3,11 @@
 #include "../../AI/Navigation/CAi.h"
 #include "../../Frontend/Base/CBaseFrontendDrawer.h"
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
+#include "../../Frontend/Processes/CAbout.h"
 #include "../../Frontend/Processes/CNetworkOptionsProc.h"
 #include "../../Frontend/Processes/CPasswordProc.h"
 #include "../../Frontend/Processes/CPreview.h"
 #include "../../Frontend/Processes/CSuccFail.h"
-#include "../../Frontend/Processes/TargetAbout.h"
 #include "../../Frontend/Resources/CFrontendResourceLoader.h"
 #include "../../Network/Game/CNetworkManager.h"
 #include "../../Platform/Windows/Entry.h"
@@ -17,9 +17,9 @@
 #include "../../Visos/Animation/CStatManager.h"
 #include "../../Visos/Animation/CTimeStat.h"
 #include "../../Visos/Foundation/CBaseProcess.h"
+#include "../../Visos/Foundation/CDebugOStream.h"
 #include "../../Visos/Foundation/CMainOptions1.h"
 #include "../../Visos/Foundation/CMainOptions2.h"
-#include "../../Visos/Foundation/LocalDebugOStream.h"
 #include "../../Visos/Foundation/VsDebug.h"
 #include "../../Visos/Foundation/VsSound.h"
 #include "../../Visos/Foundation/VsTime.h"
@@ -30,7 +30,7 @@
 #include "../../Visos/Resources/CResString.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Sound/CSoundManager.h"
-#include "../../Visos/Target/TargetPlatformServices.h"
+#include "../../Visos/Target/CPlatformServices.h"
 #include "../Level/CLevelLoader.h"
 #include "CDemo.h"
 #include "CGameStatus.h"
@@ -167,7 +167,7 @@ CGame::CGame(char* p_arg0)
 
 	m_mainDisplay = new CMain2DDisplay(this);
 
-	LocalDebugOStream stream(titleBuf, 80);
+	CDebugOStream stream(titleBuf, 80);
 	stream << g_szLemmingsPaintballTitle;
 
 	m_mainDisplay->Create(m_mainDisplay->GetUseRect(-1, -1), 0, titleBuf);
@@ -377,7 +377,7 @@ void CGame::NextProcess(eFlowProcesses p_flow)
 	case 10:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		m_process = new TargetAbout(this);
+		m_process = new CAbout(this);
 		goto done;
 	case 0xc:
 		m_currentFlow = p_flow;
@@ -522,7 +522,7 @@ void CGame::Run()
 		if (g_pDemo != 0) {
 			g_pDemo->Process();
 		}
-		switch (TargetPumpEvents()) {
+		switch (PumpEvents()) {
 		case 0:
 			Process();
 			if (m_quit != 0) {

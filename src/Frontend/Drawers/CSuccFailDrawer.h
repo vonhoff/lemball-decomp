@@ -3,9 +3,9 @@
 
 #include "../../Visos/Foundation/CVsPoint.h" // complete type
 #include "../Base/CBaseFrontendDrawer.h"
-#include "../Support/CoordPair.h"          // complete type
-#include "../Windows/SuccFailAnimWindow.h" // complete type
-#include "CSuccFailDrawerPrims.h"          // complete type
+#include "../Support/CoordPair.h"        // complete type
+#include "../Windows/CSuccFailAnimWnd.h" // complete type
+#include "CSuccFailDrawerPrims.h"        // complete type
 #include "Frontend/Support/CUserActionMessage.h"
 #include "SuccFailDrawerFieldViews.h"
 
@@ -69,7 +69,7 @@ private:
 	unsigned int m_buttonBinding;         // 0x514
 	unsigned int m_variant;               // 0x518
 	unsigned int m_soundStarted;          // 0x51c
-	SuccFailAnimWindow m_animWindow;      // 0x520
+	CSuccFailAnimWnd m_animWindow;        // 0x520
 	unsigned int m_animStartDeadline;     // 0x5f8
 	unsigned int m_animStarted;           // 0x5fc
 	unsigned int m_soundStartTime;        // 0x600

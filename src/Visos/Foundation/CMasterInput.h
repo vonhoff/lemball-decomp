@@ -15,8 +15,8 @@ public:
 	virtual CVsOStream& StreamOut(CVsOStream& p_arg0); // vtable+0x00
 	virtual ~CMasterInput();                           // vtable+0x04
 
-	friend bool TargetInputInit();
-	friend bool TargetInputQuit();
+	friend bool InitInput();
+	friend bool QuitInput();
 	friend class CHotAreaHandler;
 	friend class CBaseCursor;
 

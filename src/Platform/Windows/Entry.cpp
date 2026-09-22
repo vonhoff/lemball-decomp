@@ -7,8 +7,8 @@
 #include "../../Visos/Graphics/CWnd.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Resources/CMogRes.h"
-#include "../../Visos/Target/TargetGraphicsDriver.h"
-#include "../../Visos/Target/TargetPlatformServices.h"
+#include "../../Visos/Target/CGraphicsDriver.h"
+#include "../../Visos/Target/CPlatformServices.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -23,7 +23,7 @@ extern "C" int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpC
 }
 
 // FUNCTION: LEMBALL 0x00456500
-bool TargetPumpEvents()
+bool PumpEvents()
 {
 	MSG message;
 	unsigned int count;
@@ -63,6 +63,6 @@ bool TargetPumpEvents()
 }
 
 // FUNCTION: LEMBALL 0x00456600
-void TargetSynchronizeLoadProgress()
+void SyncLoadProgress()
 {
 }

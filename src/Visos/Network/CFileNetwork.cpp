@@ -7,7 +7,7 @@
 #include "CFileNetworkAddress.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Network/CBaseNetwork.h"
-#include "Visos/Target/TargetNetworkWindow.h"
+#include "Visos/Target/CNetworkWnd.h"
 
 #include <new.h>
 
@@ -22,7 +22,7 @@ extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
 																 void* p_callback);
 
 // FUNCTION: LEMBALL 0x0046f6b0
-CFileNetwork::CFileNetwork() : TargetNetworkWindow("File-based Network", &g_unk0x4a2268), m_alternateTimer(0)
+CFileNetwork::CFileNetwork() : CNetworkWnd("File-based Network", &g_unk0x4a2268), m_alternateTimer(0)
 {
 }
 
@@ -86,7 +86,7 @@ int CFileNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p_
 				->ProcessNMsgs(((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount());
 		}
 	}
-	CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(TargetNetworkWindow));
+	CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(CNetworkWnd));
 	network.Process();
 	return 0;
 }

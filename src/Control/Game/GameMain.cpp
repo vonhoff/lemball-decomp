@@ -6,8 +6,8 @@
 #include "../../Visos/Foundation/CVsOStream.h"
 #include "../../Visos/Foundation/VsString.h"
 #include "../../Visos/Foundation/VsTrig.h"
-#include "../../Visos/Target/TargetGraphicsDriver.h"
-#include "../../Visos/Target/TargetGraphicsSystemState.h"
+#include "../../Visos/Target/CGraphicsDriver.h"
+#include "../../Visos/Target/CGraphicsState.h"
 #include "../Level/CLevelLoader.h"
 #include "../Support/PreInit.h"
 #include "CDemo.h"
@@ -40,7 +40,7 @@ PreInit* VsPreInit(PreInit* p_preInit)
 // FUNCTION: LEMBALL 0x00406230
 void SetGameDefaults()
 {
-	TargetGraphicsSystemState* graphicsSystem;
+	CGraphicsState* graphicsSystem;
 
 	g_nAnimationsAvailable = 1;
 	g_nAnimationsDisabled = 0;

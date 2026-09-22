@@ -1,11 +1,11 @@
 #include "CTranslator.h"
 
-#include "../Target/TargetPlatformServices.h"
+#include "../Target/CPlatformServices.h"
 #include "CBaseQueue.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include "Visos/Foundation/Message.h"
-#include "Visos/Target/TargetInputTranslationEntry.h"
+#include "Visos/Target/InputTranslationEntry.h"
 
 #include <windows.h>
 
@@ -13,7 +13,7 @@
 int CTranslator::ProcessMsg(Message* p_message)
 {
 	Message translated;
-	TargetInputTranslationEntry* entry;
+	InputTranslationEntry* entry;
 	int index;
 	short keyState;
 	unsigned short type = p_message->type;

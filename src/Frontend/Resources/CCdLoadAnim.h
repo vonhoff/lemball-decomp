@@ -3,9 +3,9 @@
 
 #include "../../Visos/Animation/CAnimsManager.h" // complete type
 #include "../../Visos/Animation/CRepeatAnim.h"   // complete type
-#include "../../Visos/Graphics/BitmapRes.h"      // complete type
-#include "../../Visos/Graphics/BitmapResBase.h"  // complete type
 #include "../../Visos/Graphics/CBitmap.h"        // complete type
+#include "../../Visos/Graphics/CBitmapRes.h"     // complete type
+#include "../../Visos/Graphics/CBitmapResBase.h" // complete type
 #include "../../Visos/Graphics/CClipRect.h"
 #include "../../Visos/Graphics/CDrawingMark.h" // complete type
 #include "../../Visos/Graphics/CLine.h"        // complete type
@@ -40,8 +40,8 @@ public:
 	short m_progress;               // 0x90
 	CResBitmap* m_backgroundBitmap; // 0x94
 	CResBitmap* m_foregroundBitmap; // 0x98
-	BitmapRes m_bitmapRes[1];       // 0x9c
-	BitmapResBase m_fgBlit[1];      // 0xc0
+	CBitmapRes m_bitmapRes[1];      // 0x9c
+	CBitmapResBase m_fgBlit[1];     // 0xc0
 	CRepeatAnim* m_repeatAnim;      // 0xdc
 	CLine m_line[1];                // 0xe0
 	CClipRect m_needle0[1];         // 0xf0

@@ -27,7 +27,7 @@ public:
 	virtual char* GetInfo();                                                      // vtable+0x30
 
 	friend class CSoundManager;
-	friend class MciMusicDevice;
+	friend class CMciMusicDevice;
 
 private:
 	unsigned char m_volume;        // 0x04

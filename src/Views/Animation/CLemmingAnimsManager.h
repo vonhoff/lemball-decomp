@@ -28,7 +28,7 @@ class CLemmingAnimsManager : public CAnimsManager, public CLoadUpdate {
 public:
 	CLemmingAnimsManager(CGdi* p_arg0, CMain2DDisplay* p_arg1, CAi* p_arg2);
 	void Draw();
-	void DrawAnimOnGDI(CGdi* p_gdi,
+	void DrawAnimOnGdi(CGdi* p_gdi,
 					   short p_x,
 					   short p_y,
 					   unsigned long p_resourceId,

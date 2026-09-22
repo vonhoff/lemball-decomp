@@ -364,11 +364,11 @@ void CPlayerLemmingGroupManager::GetPlayerStartPosition(AiCoord& p_position, int
 }
 
 // FUNCTION: LEMBALL 0x00418be0
-void CPlayerLemmingGroupManager::ConfigurePlayerLemmingCounts(int p_playerCount,
-															  int p_count0,
-															  int p_count1,
-															  int p_count2,
-															  int p_count3)
+void CPlayerLemmingGroupManager::SetLemmingCounts(int p_playerCount,
+												  int p_count0,
+												  int p_count1,
+												  int p_count2,
+												  int p_count3)
 {
 	m_startPositionCount = p_playerCount;
 	if (p_count0 == -1) {

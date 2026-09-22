@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CNETWORKOPTIONSDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CNETWORKOPTIONSDRAWER_H
 
-#include "../../Visos/Graphics/BitmapRes.h"
+#include "../../Visos/Graphics/CBitmapRes.h"
 #include "../Base/CBaseFrontendDrawer.h"
 class CEntryHandler;
 
@@ -105,7 +105,7 @@ private:
 	unsigned int m_startPending;         // 0x3e0
 	char* m_stopPending;                 // 0x3e4
 	char* m_connectionState;             // 0x3e8
-	BitmapRes m_bitmap;                  // 0x3ec
+	CBitmapRes m_bitmap;                 // 0x3ec
 	unsigned int m_unknown410;           // 0x410
 	CBaseRemap* m_remaps[6];             // 0x414
 	NetworkOptionsLayout* m_layoutTable; // 0x42c

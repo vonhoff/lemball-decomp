@@ -42,8 +42,8 @@ extern char g_szUnknownUserActionReceived[];
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/Prims.h"
-#include "Visos/Graphics/BitmapRes.h"
 #include "Visos/Graphics/CBaseCursor.h"
+#include "Visos/Graphics/CBitmapRes.h"
 #include "Visos/Graphics/CDrawingMark.h"
 #include "Visos/Graphics/CLine.h"
 #include "Visos/Graphics/CPrimitive.h"
@@ -327,7 +327,7 @@ void CBaseFrontendDrawer::InternalDrawBackGround()
 			for (int col = start.m_x; (int) ((short) (start.m_x + count.m_width) + oddRow) > col; col++) {
 				CResBitmap* bitmap = m_tileBitmap;
 				int y = tileSize.m_height * row;
-				BitmapRes& rec = m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
+				CBitmapRes& rec = m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
 				rec.m_x = col * tileSize.m_width - (tileSize.m_width / 2) * oddRow;
 				rec.m_y = y;
 				rec.m_resource = bitmap;

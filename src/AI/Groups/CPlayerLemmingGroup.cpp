@@ -4,8 +4,8 @@
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGlobalGameObject.h"
 #include "../Managers/CObjectManager.h"
-#include "../Navigation/AiDestinationEntry.h"
-#include "../Navigation/AiDestinationList.h"
+#include "../Navigation/CAiDestinationEntry.h"
+#include "../Navigation/CAiDestinationList.h"
 #include "../Objects/CPlayerLemming.h"
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
@@ -84,9 +84,9 @@ bool CPlayerLemmingGroup::Process()
 	if (count > 0 && moving == 0) {
 		switch (GetGroupState()) {
 		case 0: {
-			AiDestinationList* list = m_destinationList;
+			CAiDestinationList* list = m_destinationList;
 			if (list->m_count > 0) {
-				AiDestinationEntry entry = list->PopFirst();
+				CAiDestinationEntry entry = list->PopFirst();
 				switch (entry.m_type) {
 				case 1:
 					SendNewWaypoint(entry.GetCoordinate());
@@ -103,7 +103,7 @@ bool CPlayerLemmingGroup::Process()
 							list = m_destinationList;
 							if (list->m_capacity > list->m_count) {
 								list->PrependSlot();
-								AiDestinationEntry* dest = list->m_entries;
+								CAiDestinationEntry* dest = list->m_entries;
 								dest->m_type = DESTINATION_OBJECT;
 								dest->m_coordinate.m_xFixed = position.m_xFixed;
 								dest->m_coordinate.m_yFixed = position.m_yFixed;
@@ -215,10 +215,10 @@ bool CPlayerLemmingGroup::Process()
 					position.m_yFixed = activation.m_yFixed;
 					position.m_zFixed = activation.m_zFixed;
 					int id = m_useObject->m_objectId;
-					AiDestinationList* list = m_destinationList;
+					CAiDestinationList* list = m_destinationList;
 					if (list->m_capacity > list->m_count) {
 						list->PrependSlot();
-						AiDestinationEntry* dest = list->m_entries;
+						CAiDestinationEntry* dest = list->m_entries;
 						dest->m_type = DESTINATION_OBJECT;
 						dest->m_coordinate.m_xFixed = position.m_xFixed;
 						dest->m_coordinate.m_yFixed = position.m_yFixed;
@@ -257,7 +257,7 @@ bool CPlayerLemmingGroup::AddLemmingToGroup(CPlayerLemming* p_lemming)
 void CPlayerLemmingGroup::AddUseObject(int p_objectId)
 {
 	unsigned short count;
-	AiDestinationList* list;
+	CAiDestinationList* list;
 	CGameObject* p_object = 0;
 	int objectCount = g_wObjectCount;
 	for (unsigned int i = 0; (int) i < objectCount; i++) {
@@ -271,17 +271,17 @@ void CPlayerLemmingGroup::AddUseObject(int p_objectId)
 	count = list->m_count;
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
-		AiDestinationEntry* entry = &list->m_entries[count];
+		CAiDestinationEntry* entry = &list->m_entries[count];
 		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = position.m_xFixed;
 		entry->m_coordinate.m_yFixed = position.m_yFixed;
 		entry->m_coordinate.m_zFixed = position.m_zFixed;
 	}
-	AiDestinationList* useList = m_destinationList;
+	CAiDestinationList* useList = m_destinationList;
 	unsigned short useCount = useList->m_count;
 	if (useCount < useList->m_capacity) {
 		useList->m_count = useCount + 1;
-		AiDestinationEntry* entry = &useList->m_entries[useCount];
+		CAiDestinationEntry* entry = &useList->m_entries[useCount];
 		entry->m_type = DESTINATION_OBJECT;
 		entry->m_coordinate.m_xFixed = position.m_xFixed;
 		entry->m_coordinate.m_yFixed = position.m_yFixed;
@@ -294,13 +294,13 @@ void CPlayerLemmingGroup::AddUseObject(int p_objectId)
 void CPlayerLemmingGroup::AddUseObject(CGameObject* p_object, int p_objectId)
 {
 	unsigned short count;
-	AiDestinationList* list;
+	CAiDestinationList* list;
 	AiCoord position = p_object->ActivatePosition();
 	list = m_destinationList;
 	count = list->m_count;
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
-		AiDestinationEntry* entry = &list->m_entries[count];
+		CAiDestinationEntry* entry = &list->m_entries[count];
 		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = position.m_xFixed;
 		entry->m_coordinate.m_yFixed = position.m_yFixed;
@@ -310,7 +310,7 @@ void CPlayerLemmingGroup::AddUseObject(CGameObject* p_object, int p_objectId)
 	count = list->m_count;
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
-		AiDestinationEntry* entry = &list->m_entries[count];
+		CAiDestinationEntry* entry = &list->m_entries[count];
 		entry->m_type = DESTINATION_OBJECT;
 		entry->m_coordinate.m_xFixed = position.m_xFixed;
 		entry->m_coordinate.m_yFixed = position.m_yFixed;

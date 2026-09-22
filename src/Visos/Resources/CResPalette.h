@@ -17,10 +17,10 @@ public:
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
 
-	friend void TargetBuildSurfaceColourTable(unsigned int* p_entries,
-											  CResPalette* p_palette,
-											  void* p_unused,
-											  unsigned int* p_fallbackEntries);
+	friend void BuildSurfaceColourTable(unsigned int* p_entries,
+										CResPalette* p_palette,
+										void* p_unused,
+										unsigned int* p_fallbackEntries);
 	friend class C2D;
 	friend class CBaseRemap;
 

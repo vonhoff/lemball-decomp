@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_NETWORK_CNETWORKFILE_H
 #define LEMBALL_VISOS_NETWORK_CNETWORKFILE_H
 
-#include "AbstractFile.h"
+#include "CAbstractFile.h"
 
 // SIZE 0x14
 // VTABLE: LEMBALL 0x0049a628
-class CNetworkFile : public AbstractFile {
+class CNetworkFile : public CAbstractFile {
 public:
 	CNetworkFile() {}
 	virtual bool Open(const char* p_filename, unsigned char p_mode, int p_create); // vtable+0x00

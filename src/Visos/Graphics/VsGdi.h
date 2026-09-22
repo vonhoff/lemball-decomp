@@ -106,11 +106,7 @@ public:
 	void DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius, int p_colour);
 	void FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour);
 	void DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radius, unsigned char p_colour);
-	void DrawFilledCircleSymmetricSpans(int p_centerX,
-										int p_centerY,
-										int p_xOffset,
-										int p_yOffset,
-										unsigned char p_colour);
+	void DrawCircleSpans(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
 	int ClipCirclePoint(int p_x, int p_y);
 	void DrawClippedCirclePoint(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
 	void Flush();
@@ -121,7 +117,7 @@ public:
 	void SetDefaultCtable();
 	void SetWindowPtr(void* p_platformPort);
 	void ToScreen(class CSurface* p_destinationSurface);
-	void CopyDIBBits(void* p_header, unsigned char* p_bits);
+	void CopyDibBits(void* p_header, unsigned char* p_bits);
 	~CSurface();
 
 	friend class CBaseFrontendDrawer;

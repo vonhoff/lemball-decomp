@@ -28,7 +28,7 @@ public:
 	friend class CGunButtons;
 	friend class CHotAreaList;
 	friend class CBaseFrontendDrawer;
-	friend class TargetAboutScreen;
+	friend class CAboutScreen;
 	friend class CAi;
 	friend class CAiCursor;
 

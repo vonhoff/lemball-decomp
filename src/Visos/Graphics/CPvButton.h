@@ -47,8 +47,8 @@ public:
 	friend class CGraphicButton;
 	friend class CGunButton;
 	friend class CDepressedButton;
-	friend class TargetFramedButton;
-	friend class TargetTextButton;
+	friend class CFramedButton;
+	friend class CTextButton;
 	friend class CGunButtons;
 	friend class CHiliteButtons;
 	friend class CGunController;

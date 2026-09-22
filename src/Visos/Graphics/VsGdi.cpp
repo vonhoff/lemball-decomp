@@ -7,12 +7,12 @@
 #include "../Resources/CResBitmap.h"
 #include "../Resources/CResPalette.h"
 #include "../Resources/CResZrle.h"
-#include "../Target/TargetDibContext.h"
-#include "../Target/TargetDrawingContext.h"
-#include "../Target/TargetGdiDrawingContext.h"
-#include "../Target/TargetGraphicsDriver.h"
-#include "BitmapRes.h"
+#include "../Target/CDibContext.h"
+#include "../Target/CDrawingContext.h"
+#include "../Target/CGdiContext.h"
+#include "../Target/CGraphicsDriver.h"
 #include "CBitmap.h"
+#include "CBitmapRes.h"
 #include "CCircle.h"
 #include "CClipRect.h"
 #include "CCopyColourToBackBuff.h"
@@ -132,11 +132,11 @@ CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
 		m_changeList = new CChangeList(0, p_rect, CVsSize(8, 8));
 	}
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
-		TargetBuildSurfaceColourTable((unsigned int*) m_colourTable,
-									  0,
-									  0,
-									  g_pTargetGraphicsDriver->HasPalette() ? g_dwWinGDrawColourTable : 0);
-		TargetGraphicsDriver* driver = g_pTargetGraphicsDriver;
+		BuildSurfaceColourTable((unsigned int*) m_colourTable,
+								0,
+								0,
+								g_pTargetGraphicsDriver->HasPalette() ? g_dwWinGDrawColourTable : 0);
+		CGraphicsDriver* driver = g_pTargetGraphicsDriver;
 		m_drawingPort = driver->CreateDrawingContext();
 	}
 	CVsRect& rect = m_rect0c;
@@ -162,10 +162,10 @@ static const unsigned char g_anFallbackSystemColors[20][3] = {
 static const unsigned char g_anReservedOutputColors[2][3] = {{0xff, 0xff, 0xff}, {0x00, 0x00, 0x00}};
 
 // FUNCTION: LEMBALL 0x0046c380
-void TargetBuildSurfaceColourTable(unsigned int* p_entries,
-								   CResPalette* p_palette,
-								   void* p_unused,
-								   unsigned int* p_fallbackEntries)
+void BuildSurfaceColourTable(unsigned int* p_entries,
+							 CResPalette* p_palette,
+							 void* p_unused,
+							 unsigned int* p_fallbackEntries)
 {
 	unsigned char paletteStorage[0x404];
 	PALETTEENTRY* systemEntries = (PALETTEENTRY*) (paletteStorage + 4);
@@ -309,7 +309,7 @@ CSurface::CSurface(GrafPort* p_port)
 	m_presentX = 0;
 	m_childSurfaceTail = 0;
 	m_childSurfaceCount = 0;
-	m_drawingPort = new TargetGdiDrawingContext(p_port);
+	m_drawingPort = new CGdiContext(p_port);
 	m_platformBitmap = 0;
 	m_changeList = 0;
 	m_parentSurface = 0;
@@ -333,9 +333,8 @@ CSurface::~CSurface()
 		locked = 1;
 	}
 	if (m_platformBitmap != 0) {
-		g_pTargetGraphicsDriver->RestoreDIBContext((TargetDrawingContext*) m_drawingPort,
-												   (TargetDibContext*) m_platformBitmap);
-		g_pTargetGraphicsDriver->DestroyDIBContext((TargetDibContext*) m_platformBitmap);
+		g_pTargetGraphicsDriver->RestoreDibContext((CDrawingContext*) m_drawingPort, (CDibContext*) m_platformBitmap);
+		g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
 		m_platformBitmap = 0;
 	}
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
@@ -343,7 +342,7 @@ CSurface::~CSurface()
 		FreeZBuff();
 	}
 	if (m_drawingPort != 0) {
-		g_pTargetGraphicsDriver->DestroyDrawingContext((TargetDrawingContext*) m_drawingPort);
+		g_pTargetGraphicsDriver->DestroyDrawingContext((CDrawingContext*) m_drawingPort);
 		m_drawingPort = 0;
 	}
 	if (m_changeList != 0) {
@@ -625,7 +624,7 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 
 	EnterCriticalSection((CRITICAL_SECTION*) m_lock);
 	EnterCriticalSection((CRITICAL_SECTION*) p_destinationSurface->m_lock);
-	TargetDrawingContext* destContext = (TargetDrawingContext*) p_destinationSurface->m_drawingPort;
+	CDrawingContext* destContext = (CDrawingContext*) p_destinationSurface->m_drawingPort;
 	g_pTargetGraphicsDriver->RealizePalette(destContext);
 	if ((int) m_dontUpdateRect.m_height * (int) m_dontUpdateRect.m_width > 0) {
 		m_changeList->AddWithActiveMark(m_dontUpdateRect, 0);
@@ -651,7 +650,7 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 				destRect.m_y = y;
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
 														   &destRect,
-														   (TargetDrawingContext*) m_drawingPort,
+														   (CDrawingContext*) m_drawingPort,
 														   (CVsRect*) item,
 														   this);
 			}
@@ -663,7 +662,7 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 				destRect.m_width = item->width * zoom;
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
 														   &destRect,
-														   (TargetDrawingContext*) m_drawingPort,
+														   (CDrawingContext*) m_drawingPort,
 														   (CVsRect*) item,
 														   this);
 			}
@@ -696,7 +695,7 @@ void CSurface::AttachPalette(CResPalette* p_palette)
 	else {
 		fallbackEntries = 0;
 	}
-	TargetBuildSurfaceColourTable(g_dwWinGDrawColourTable, p_palette, 0, fallbackEntries);
+	BuildSurfaceColourTable(g_dwWinGDrawColourTable, p_palette, 0, fallbackEntries);
 	SetDefaultCtable();
 }
 
@@ -773,9 +772,8 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 		height = size.m_height;
 	}
 	if (m_platformBitmap != 0) {
-		g_pTargetGraphicsDriver->RestoreDIBContext((TargetDrawingContext*) m_drawingPort,
-												   (TargetDibContext*) m_platformBitmap);
-		g_pTargetGraphicsDriver->DestroyDIBContext((TargetDibContext*) m_platformBitmap);
+		g_pTargetGraphicsDriver->RestoreDibContext((CDrawingContext*) m_drawingPort, (CDibContext*) m_platformBitmap);
+		g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
 		m_platformBitmap = 0;
 	}
 	if (m_windowRect.m_width == 0 || m_windowRect.m_height == 0) {
@@ -796,18 +794,18 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biClrImportant = 0;
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biSize = 0x28;
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biBitCount = 8;
-			m_platformBitmap = g_pTargetGraphicsDriver->CreateDIBContext((TargetDrawingContext*) m_drawingPort,
-																		 (BITMAPINFO*) m_bitmapInfo);
+			m_platformBitmap =
+				g_pTargetGraphicsDriver->CreateDibContext((CDrawingContext*) m_drawingPort, (BITMAPINFO*) m_bitmapInfo);
 			if (m_platformBitmap != 0) {
-				g_pTargetGraphicsDriver->SelectDIBContext((TargetDrawingContext*) m_drawingPort,
-														  (TargetDibContext*) m_platformBitmap);
+				g_pTargetGraphicsDriver->SelectDibContext((CDrawingContext*) m_drawingPort,
+														  (CDibContext*) m_platformBitmap);
 				m_unk0x524 = (int) m_windowRect.m_width * (int) m_windowRect.m_height;
 			}
 		}
 		if (m_platformBitmap == 0) {
 			InternalVsRelAssert("AllocatedBitmap", "VSGDI.CPP", 736);
 		}
-		TargetDibContext* dib = (TargetDibContext*) m_platformBitmap;
+		CDibContext* dib = (CDibContext*) m_platformBitmap;
 		SetBitsBase(dib->GetBits(), dib->GetStride());
 		m_changeList->SetDrawMark();
 		CVsRect clip;
@@ -904,7 +902,7 @@ void CSurface::Move(const CVsPoint& p_position)
 			Resize((CVsSize&) m_windowRect);
 		}
 		if (m_platformBitmap != 0) {
-			g_pTargetGraphicsDriver->DestroyDIBContext((TargetDibContext*) m_platformBitmap);
+			g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
 			m_platformBitmap = 0;
 		}
 		m_unk0x524 = 0;
@@ -919,11 +917,11 @@ void CSurface::Move(const CVsPoint& p_position)
 // FUNCTION: LEMBALL 0x0046d7e0
 void CSurface::SetWindowPtr(void* p_platformPort)
 {
-	((TargetDrawingContext*) m_drawingPort)->SetDC(p_platformPort);
+	((CDrawingContext*) m_drawingPort)->SetDc(p_platformPort);
 }
 
 // FUNCTION: LEMBALL 0x0046d800
-void CSurface::CopyDIBBits(void* p_header, unsigned char* p_bits)
+void CSurface::CopyDibBits(void* p_header, unsigned char* p_bits)
 {
 	if (m_changeList == 0) {
 		return;
@@ -983,7 +981,7 @@ void CSurface::SetDefaultCtable()
 		surface = node->m_surface;
 		memcpy(m_colourTable, g_dwWinGDrawColourTable, 0x400);
 		if (surface->m_drawingPort != 0) {
-			g_pTargetGraphicsDriver->UpdateDIBColourTable((TargetDrawingContext*) surface->m_drawingPort,
+			g_pTargetGraphicsDriver->UpdateDibColourTable((CDrawingContext*) surface->m_drawingPort,
 														  0,
 														  0x100,
 														  g_dwWinGDrawColourTable);
@@ -999,14 +997,14 @@ bool CSurface::BeginRender()
 		return 0;
 	}
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
-		TargetDibContext* dib = (TargetDibContext*) m_platformBitmap;
+		CDibContext* dib = (CDibContext*) m_platformBitmap;
 		if (dib == 0) {
 			return 0;
 		}
 		if (!dib->Lock()) {
 			return 0;
 		}
-		unsigned char* bits = ((TargetDibContext*) m_platformBitmap)->GetBits();
+		unsigned char* bits = ((CDibContext*) m_platformBitmap)->GetBits();
 		if (bits != 0 && m_bitsBase != bits) {
 			m_bitsBase = bits;
 			CreateLinePtrs();
@@ -1035,7 +1033,7 @@ void CSurface::EndRender()
 	CSurface* current = this;
 	for (;;) {
 		if (current->m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
-			TargetDibContext* dib = (TargetDibContext*) current->m_platformBitmap;
+			CDibContext* dib = (CDibContext*) current->m_platformBitmap;
 			dib->Unlock();
 			return;
 		}
@@ -1418,10 +1416,10 @@ void CSurface::Blit(CFilledCircle* p_circle)
 					step = stepNext;
 					if (curX <= curRadius) {
 						if (oldErrLimit < doubleErr) {
-							DrawFilledCircleSymmetricSpans(x, y, curX, curRadius, colByte);
+							DrawCircleSpans(x, y, curX, curRadius, colByte);
 						}
 						if (curX < curRadius) {
-							DrawFilledCircleSymmetricSpans(x, y, curRadius, curX, colByte);
+							DrawCircleSpans(x, y, curRadius, curX, colByte);
 						}
 					}
 				} while (curX < curRadius);
@@ -1778,11 +1776,7 @@ void CSurface::DrawClippedCirclePoint(int p_centerX,
 }
 
 // FUNCTION: LEMBALL 0x00476100
-void CSurface::DrawFilledCircleSymmetricSpans(int p_centerX,
-											  int p_centerY,
-											  int p_halfWidth,
-											  int p_yOffset,
-											  unsigned char p_colour)
+void CSurface::DrawCircleSpans(int p_centerX, int p_centerY, int p_halfWidth, int p_yOffset, unsigned char p_colour)
 {
 	int spanWidth = p_halfWidth * 2 + 1;
 	unsigned char* negativeSpan = (unsigned char*) m_lines[p_centerY - p_yOffset] + p_centerX - p_halfWidth;
@@ -3451,7 +3445,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBitmap* p_bitmap)
 		width = p_bitmap->m_x;
 		height = p_bitmap->m_y;
 	}
-	unsigned int flags = ((BitmapRes*) p_primitive)->m_flags;
+	unsigned int flags = ((CBitmapRes*) p_primitive)->m_flags;
 	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x != 0) {
 		dest.m_width = width;
 		dest.m_height = height;

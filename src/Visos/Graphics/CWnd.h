@@ -45,11 +45,11 @@ public:
 	virtual void InternalSetRelTL(const CVsPoint& p_point);              // vtable+0x34
 	~CWnd();
 
-	friend struct TargetGraphicsSystemState;
+	friend struct CGraphicsState;
 	friend class CGWnd;
 	friend class CAnimWnd;
 	friend class CMain2DDisplay;
-	friend class TargetDirectSoundDevice;
+	friend class CDirectSoundDevice;
 
 private:
 	void* m_menuLists;             // 0x3c

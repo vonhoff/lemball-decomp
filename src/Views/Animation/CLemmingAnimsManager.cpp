@@ -941,7 +941,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 }
 
 // FUNCTION: LEMBALL 0x004349e0
-void CLemmingAnimsManager::DrawAnimOnGDI(CGdi* p_gdi,
+void CLemmingAnimsManager::DrawAnimOnGdi(CGdi* p_gdi,
 										 short p_x,
 										 short p_y,
 										 unsigned long p_resourceId,

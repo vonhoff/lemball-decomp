@@ -21,7 +21,7 @@ public:
 
 	friend class CBaseFrontendDrawer;
 	friend class CCdLoadAnimDraw;
-	friend class TargetAboutScreen;
+	friend class CAboutScreen;
 	friend class CSurface;
 	friend class CPauseWindow;
 	friend class C2D;

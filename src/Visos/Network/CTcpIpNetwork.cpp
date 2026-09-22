@@ -6,7 +6,7 @@
 #include "CTcpIpNetworkAddress.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Network/CBaseNetwork.h"
-#include "Visos/Target/TargetNetworkWindow.h"
+#include "Visos/Target/CNetworkWnd.h"
 
 #include <new.h>
 
@@ -24,7 +24,7 @@ extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
 extern "C" __declspec(dllimport) int __stdcall KillTimer(void* p_window, unsigned int p_id);
 
 // FUNCTION: LEMBALL 0x004713c0
-CTcpIpNetwork::CTcpIpNetwork() : TargetNetworkWindow("TCPIP Network", &g_unk0x4a23bc)
+CTcpIpNetwork::CTcpIpNetwork() : CNetworkWnd("TCPIP Network", &g_unk0x4a23bc)
 {
 }
 
@@ -82,7 +82,7 @@ int CTcpIpNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p
 				->ProcessNMsgs(((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount());
 		}
 	}
-	CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(TargetNetworkWindow));
+	CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(CNetworkWnd));
 	network.Process();
 	return 0;
 }

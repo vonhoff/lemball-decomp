@@ -6,7 +6,7 @@
 #include "CWriteSocket.h"       // complete type
 
 // SIZE 0xe0
-// VTABLE: LEMBALL 0x0049a088 TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a088 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a090 CBaseSocket
 // VTABLE: LEMBALL 0x0049a0c0 CTcpIpWriteSocket
 // x86 emits only the synthetic deleting destructor.

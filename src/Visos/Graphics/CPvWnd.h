@@ -88,17 +88,15 @@ public:
 	friend class CPasswordDrawer;
 	friend class CSuccFailDrawer;
 	friend class CCdLoadAnim;
-	friend class TargetFramedButton;
-	friend class TargetTextButton;
+	friend class CFramedButton;
+	friend class CTextButton;
 
 	friend class C2D;
 	friend class CPanelButton;
 	friend class CBaseCursor;
 	friend class CTrackWindow;
 	friend class CTrackerButton;
-	friend int __stdcall TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state,
-												  void* p_request,
-												  long p_param2);
+	friend int __stdcall WinGDrawFrame(struct WinGDrawState* p_state, void* p_request, long p_param2);
 
 private:
 	unsigned int m_lifecycleRefs; // 0x04

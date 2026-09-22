@@ -1,6 +1,6 @@
 #include "CMasterInput.h"
 
-#include "../Target/TargetMasterInputItem.h"
+#include "../Target/CMasterInputItem.h"
 
 // FUNCTION: LEMBALL 0x00472070
 CMasterInput::CMasterInput(CBaseQueue* p_arg0)
@@ -54,7 +54,7 @@ bool CMasterInput::ProcessItems()
 		return false;
 	}
 	struct CNode {
-		TargetMasterInputItem* item;
+		CMasterInputItem* item;
 		CNode* next;
 	};
 	CNode* node = (CNode*) m_firstItem;

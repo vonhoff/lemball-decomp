@@ -56,7 +56,7 @@ void CTrampolineManager::ResetCount()
 }
 
 // FUNCTION: LEMBALL 0x0042b440
-int CTrampolineManager::TryEnableTrampolineNearPosition(const AiCoord& p_position, CGameObject* p_object)
+int CTrampolineManager::TryEnableNear(const AiCoord& p_position, CGameObject* p_object)
 {
 	for (int i = 0;; i++) {
 		if (m_count <= i) {

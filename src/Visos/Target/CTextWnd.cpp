@@ -1,0 +1,625 @@
+#include "CTextWnd.h"
+
+#include "../../Platform/Windows/Entry.h"
+#include "../Foundation/VsDebug.h"
+#include "CTextLine.h"
+#include "CTextLineBuffer.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+extern void* g_pDebugAcceleratorTable;
+extern void* g_pDebugSyncEvent;
+
+// FUNCTION: LEMBALL 0x00472b10
+unsigned int __cdecl DebugMessageThreadMain()
+{
+	// STRING: LEMBALL 0x004a2a20
+	g_pDebugWindow = new CTextWnd("Debug Window", 0x2800);
+	SetEvent(g_pDebugSyncEvent);
+	MSG message;
+	while (GetMessageA(&message, 0, 0, 0) != 0) {
+		if (g_pDebugAcceleratorTable == 0 ||
+			TranslateAcceleratorA(message.hwnd, (HACCEL) g_pDebugAcceleratorTable, &message) == 0) {
+			TranslateMessage(&message);
+			DispatchMessageA(&message);
+		}
+	}
+	SetEvent(g_pDebugSyncEvent);
+	return 1;
+}
+
+// GLOBAL: LEMBALL 0x004a2c40
+static char g_unableToAllocateTextCopy[] = "Unable to allocate memory for string copy";
+
+// GLOBAL: LEMBALL 0x004a2c6c
+static char g_textWindowInfo[] = "INFO";
+
+// GLOBAL: LEMBALL 0x004a2c74
+static char g_unableToInvalidateTextLines[] = "RedrawLines : InvalidateRect==FALSE";
+
+// GLOBAL: LEMBALL 0x004a2b70
+static char g_textWindowClassName[] = "CTextWindow";
+
+// FUNCTION: LEMBALL 0x00473a60
+CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
+{
+	m_lineBuffer = new CTextLineBuffer(p_lineCapacity);
+	if (m_lineBuffer == 0) {
+		// STRING: LEMBALL 0x004a2bb4
+		FatalWin32Error("Unable to allocate TextLineBuffer");
+	}
+	if (g_nTargetTextWindowClassRegistered == 0) {
+		WNDCLASSA windowClass;
+		windowClass.style = 3;
+		windowClass.lpfnWndProc = (WNDPROC) WindowProc;
+		windowClass.cbClsExtra = 0;
+		windowClass.cbWndExtra = 4;
+		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
+		windowClass.hIcon = LoadIconA(0, IDI_APPLICATION);
+		windowClass.hCursor = LoadCursorA(0, IDC_ARROW);
+		windowClass.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
+		windowClass.lpszMenuName = 0;
+		windowClass.lpszClassName = g_textWindowClassName;
+		if (RegisterClassA(&windowClass) == 0) {
+			// STRING: LEMBALL 0x004a2bd8
+			FatalWin32Error("Unable to register text window class");
+		}
+		g_nTargetTextWindowClassRegistered = 1;
+		g_nTargetTextWindowActive = 1;
+	}
+	m_selecting = 0;
+	m_windowHandle = CreateWindowExA(0,
+									 g_textWindowClassName,
+									 p_title,
+									 0xcf0000,
+									 CW_USEDEFAULT,
+									 CW_USEDEFAULT,
+									 GetSystemMetrics(0) / 2,
+									 GetSystemMetrics(1) / 2,
+									 0,
+									 0,
+									 (HINSTANCE) g_pApplicationInstance,
+									 this);
+	if (m_windowHandle == 0) {
+		// STRING: LEMBALL 0x004a2c00
+		FatalWin32Error("Unable to create text window");
+	}
+	// STRING: LEMBALL 0x004a2c20
+	m_fontHandle = CreateFontA(8, 6, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0x30, "Courier");
+	if (m_fontHandle == 0) {
+		// STRING: LEMBALL 0x004a2c28
+		FatalWin32Error("Unable to create font");
+	}
+	HDC dc = GetDC((HWND) m_windowHandle);
+	SelectObject(dc, (HFONT) m_fontHandle);
+	TEXTMETRICA metrics;
+	GetTextMetricsA(dc, &metrics);
+	m_lineHeight = metrics.tmExternalLeading + metrics.tmHeight;
+	ReleaseDC((HWND) m_windowHandle, dc);
+	UpdateClientWidth();
+	UpdateVisibleRows();
+	m_lineCapacity = p_lineCapacity;
+	m_lineCount = m_lineBuffer->m_count;
+	m_selectionStart = -1;
+	m_selectionEnd = -1;
+	m_topLine = 0;
+	SetScrollPos((HWND) m_windowHandle, 1, 0, 1);
+	ShowWindow((HWND) m_windowHandle, 5);
+	UpdateWindow((HWND) m_windowHandle);
+}
+
+// FUNCTION: LEMBALL 0x00473cf0
+CTextWnd::~CTextWnd()
+{
+	if (m_selecting != 0) {
+		ReleaseCapture();
+		m_selecting = 0;
+	}
+	delete m_lineBuffer;
+	g_nTargetTextWindowActive = 0;
+	m_windowHandle = 0;
+	DeleteObject((HFONT) m_fontHandle);
+}
+
+// FUNCTION: LEMBALL 0x00473d90
+void CTextWnd::PostText(const char* p_text, unsigned int p_color)
+{
+	EnterCritical();
+	if (g_nTargetTextWindowActive != 0) {
+		char* copy = (char*) malloc(strlen(p_text) + 1);
+		if (copy == 0) {
+			FatalWin32Error(g_unableToAllocateTextCopy);
+		}
+		strcpy(copy, p_text);
+		if (m_windowHandle != 0) {
+			PostMessageA((HWND) m_windowHandle, 0x420, (unsigned int) copy, p_color);
+		}
+		LeaveCritical();
+	}
+}
+
+// FUNCTION: LEMBALL 0x00473e20
+void CTextWnd::AppendPostedText(char* p_text, unsigned int p_color)
+{
+	EnterCritical();
+	m_lineBuffer->AddText(p_text, p_color);
+	int first = m_lineCount;
+	int count = m_lineBuffer->m_count;
+	m_lineCount = count;
+	if (count == first) {
+		RedrawAll();
+	}
+	else {
+		RedrawLines(first, count - first);
+	}
+	SetScrollRange((HWND) m_windowHandle, 1, 0, count - 1, 1);
+	if (m_selectionStart == -1 || m_selectionEnd == -1) {
+		EnsureLineVisible(first);
+	}
+	free(p_text);
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00473eb0
+static void GetWindowClientScreenRect(HWND p_window, RECT* p_rect)
+{
+	POINT origin;
+	origin.x = 0;
+	origin.y = 0;
+	ClientToScreen(p_window, &origin);
+	GetClientRect(p_window, p_rect);
+	p_rect->top += origin.y;
+	p_rect->bottom += origin.y;
+	p_rect->left += origin.x;
+	p_rect->right += origin.x;
+}
+
+// FUNCTION: LEMBALL 0x00473f00
+int CTextWnd::PointToLine(int p_x, int p_y)
+{
+	RECT rect;
+	EnterCritical();
+	GetWindowClientScreenRect((HWND) m_windowHandle, &rect);
+	int height = rect.bottom - rect.top;
+	int row = p_y - rect.top;
+	if (row < 0) {
+		row = -1;
+	}
+	else if (height < row) {
+		row = m_visibleRowsCeiling + 1;
+	}
+	else {
+		row /= m_lineHeight;
+	}
+	int line = m_topLine + row;
+	LeaveCritical();
+	return line;
+}
+
+// FUNCTION: LEMBALL 0x00473f60
+void CTextWnd::RedrawAll()
+{
+	EnterCritical();
+	InvalidateRect((HWND) m_windowHandle, 0, 0);
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00473f80
+void CTextWnd::RedrawLines(int p_firstLine, int p_lineCount)
+{
+	RECT rect;
+	EnterCritical();
+	int row = p_firstLine - m_topLine;
+	if (row >= 0 && row < m_visibleRowsCeiling) {
+		rect.left = 0;
+		rect.right = m_clientWidth;
+		rect.top = row * m_lineHeight;
+		rect.bottom = m_lineHeight * p_lineCount + rect.top;
+		if (InvalidateRect((HWND) m_windowHandle, &rect, 0) == 0) {
+			MessageBoxA(0, g_unableToInvalidateTextLines, g_textWindowInfo, 0);
+		}
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00474000
+int CTextWnd::UpdateVisibleRows()
+{
+	RECT rect;
+	EnterCritical();
+	GetClientRect((HWND) m_windowHandle, &rect);
+	int lineHeight;
+	int height = rect.bottom - rect.top;
+	lineHeight = m_lineHeight;
+	m_visibleRows = height / lineHeight;
+	m_visibleRowsCeiling = (lineHeight + height - 1) / lineHeight;
+	LeaveCritical();
+	return m_visibleRowsCeiling;
+}
+
+// FUNCTION: LEMBALL 0x00474050
+int CTextWnd::UpdateClientWidth()
+{
+	RECT rect;
+	EnterCritical();
+	GetClientRect((HWND) m_windowHandle, &rect);
+	m_clientWidth = rect.right - rect.left;
+	LeaveCritical();
+	return m_clientWidth;
+}
+
+// FUNCTION: LEMBALL 0x00474090
+void CTextWnd::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_arg2)
+{
+	RECT rect;
+	EnterCritical();
+	int lineHeight = m_lineHeight;
+	int remainder = p_clientHeight % lineHeight;
+	if (remainder != 0) {
+		p_clientHeight -= remainder;
+		p_clientHeight += lineHeight;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = GetSystemMetrics(2) + p_clientWidth;
+		rect.bottom = p_clientHeight;
+		AdjustWindowRect(&rect, GetWindowLongA((HWND) m_windowHandle, -16), 0);
+		SetWindowPos((HWND) m_windowHandle, 0, 0, 0, rect.right - rect.left, rect.bottom - rect.top, 6);
+	}
+	else {
+		UpdateVisibleRows();
+		UpdateClientWidth();
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00474130
+void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
+{
+	EnterCritical();
+	RECT paintRect;
+	if (p_paint == 0) {
+		GetClientRect((HWND) m_windowHandle, &paintRect);
+	}
+	else {
+		paintRect = p_paint->rcPaint;
+	}
+	SelectObject((HDC) p_dc, (HFONT) m_fontHandle);
+	int lineHeight = m_lineHeight;
+	int count = (paintRect.bottom - paintRect.top + lineHeight - 1) / lineHeight;
+	int first = m_topLine + paintRect.top / lineHeight;
+	for (int line = first; line < first + count; line++) {
+		unsigned int foreground = 0;
+		unsigned int background = 0xffffff;
+		const char* text;
+		if (line < m_lineCount) {
+			CTextLine* entry = &m_lineBuffer->m_lines[line];
+			text = entry->m_text;
+			foreground = entry->m_textColor;
+			if (entry->m_selected != 0) {
+				background = 0;
+				foreground = 0xffffff;
+			}
+		}
+		else {
+			// STRING: LEMBALL 0x004a2c98
+			text = "";
+		}
+		RECT row;
+		row.top = (line - m_topLine) * m_lineHeight;
+		row.left = 0;
+		row.right = m_clientWidth;
+		row.bottom = row.top + m_lineHeight;
+		SetTextColor((HDC) p_dc, foreground);
+		SetBkColor((HDC) p_dc, background);
+		ExtTextOutA((HDC) p_dc, row.left, row.top, 2, &row, text, strlen(text), 0);
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00474290
+void CTextWnd::Scroll(int p_scrollCode, int p_thumbPos)
+{
+	EnterCritical();
+	switch (p_scrollCode) {
+	case 0:
+		m_topLine--;
+		break;
+	case 1:
+		m_topLine++;
+		break;
+	case 2:
+		m_topLine -= m_visibleRowsCeiling;
+		break;
+	case 3:
+		m_topLine += m_visibleRowsCeiling;
+		break;
+	case 4:
+	case 5:
+		m_topLine = p_thumbPos;
+		break;
+	case 6:
+		m_topLine = 0;
+		break;
+	case 7:
+		m_topLine = m_lineCount;
+		break;
+	}
+	if (m_topLine >= m_lineCount) {
+		m_topLine = m_lineCount - 1;
+	}
+	if (m_topLine < 0) {
+		m_topLine = 0;
+	}
+	SetScrollPos((HWND) m_windowHandle, 1, m_topLine, 1);
+	RedrawAll();
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00474340
+void CTextWnd::BeginSelection(int p_x, int p_y, unsigned int p_arg2)
+{
+	EnterCritical();
+	m_dragLine = PointToLine(p_x, p_y);
+	if (m_lineCount <= m_dragLine) {
+		LeaveCritical();
+		return;
+	}
+	SetCapture((HWND) m_windowHandle);
+	m_selecting = 1;
+	SetSelectionHighlight(0);
+	m_selectionEnd = m_dragLine;
+	m_selectionStart = m_dragLine;
+	m_selectionAnchor = m_dragLine;
+	SetSelectionHighlight(1);
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x004743b0
+void CTextWnd::EndSelection(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2)
+{
+	EnterCritical();
+	if (m_selecting != 0) {
+		ReleaseCapture();
+		m_selecting = 0;
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x004743e0
+void CTextWnd::SetSelectionHighlight(int p_selected)
+{
+	EnterCritical();
+	for (int line = m_selectionStart; line <= m_selectionEnd; line++) {
+		m_lineBuffer->m_lines[line].m_selected = p_selected;
+		RedrawLines(line, 1);
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x00474430
+void CTextWnd::EnsureLineVisible(int p_line)
+{
+	EnterCritical();
+	if (p_line < m_topLine) {
+		m_topLine = p_line;
+		SetScrollPos((HWND) m_windowHandle, 1, p_line, 1);
+		RedrawAll();
+		LeaveCritical();
+		return;
+	}
+	if (p_line >= m_topLine + m_visibleRows) {
+		m_topLine = p_line - m_visibleRows + 1;
+		SetScrollPos((HWND) m_windowHandle, 1, m_topLine, 1);
+		RedrawAll();
+	}
+	LeaveCritical();
+}
+
+// FUNCTION: LEMBALL 0x004744a0
+void CTextWnd::UpdateSelection(int p_x, int p_y, unsigned int p_arg2)
+{
+	EnterCritical();
+	if (m_selecting != 0) {
+		m_dragLine = PointToLine(p_x, p_y);
+		if (m_dragLine >= m_lineCount) {
+			m_dragLine = m_lineCount - 1;
+		}
+		if (m_dragLine < 0) {
+			LeaveCritical();
+			return;
+		}
+		SetSelectionHighlight(0);
+		if (m_dragLine <= m_selectionAnchor) {
+			m_selectionStart = m_dragLine;
+		}
+		if (m_dragLine >= m_selectionAnchor) {
+			m_selectionEnd = m_dragLine;
+		}
+		SetSelectionHighlight(1);
+		EnsureLineVisible(m_dragLine);
+	}
+	LeaveCritical();
+}
+
+// GLOBAL: LEMBALL 0x004a2c9c
+static char g_unableToAllocateSelectionText[] = "GetSelectionAsString: Unable to allocate string memory";
+
+// GLOBAL: LEMBALL 0x004a2cd8
+static char g_copyBufferInfo[] = "INFO";
+
+// GLOBAL: LEMBALL 0x004a2ce0
+static char g_unableToAllocateCopyBuffer[] = "Unable to allocate copy buffer";
+
+// GLOBAL: LEMBALL 0x004a2d00
+static char g_clipboardInfo[] = "INFO";
+
+// GLOBAL: LEMBALL 0x004a2d08
+static char g_unableToAllocateClipboard[] = "Unable to allocate clipboard";
+
+// FUNCTION: LEMBALL 0x00474520
+char* CTextWnd::GetSelectionText()
+{
+	EnterCritical();
+	unsigned int length = 0;
+	int line;
+	for (line = m_selectionStart; line <= m_selectionEnd; line++) {
+		length += strlen(m_lineBuffer->m_lines[line].m_text) + 2;
+	}
+	char* text = (char*) malloc(length + 1);
+	if (text == 0) {
+		FatalWin32Error(g_unableToAllocateSelectionText);
+	}
+	text[0] = 0;
+	for (line = m_selectionStart; line <= m_selectionEnd; line++) {
+		strcat(text, m_lineBuffer->m_lines[line].m_text);
+		// STRING: LEMBALL 0x004a2cd4
+		memcpy(text + strlen(text), "\r\n", 3);
+	}
+	LeaveCritical();
+	return text;
+}
+
+// FUNCTION: LEMBALL 0x00474620
+void CTextWnd::CopySelection()
+{
+	EnterCritical();
+	if (m_selectionStart == -1 || m_selectionEnd == -1) {
+		LeaveCritical();
+		return;
+	}
+	char* text = GetSelectionText();
+	HGLOBAL memory = GlobalAlloc(0x2002, strlen(text) + 1);
+	if (memory == 0) {
+		free(text);
+		MessageBoxA(0, g_unableToAllocateCopyBuffer, g_copyBufferInfo, 0);
+		LeaveCritical();
+		return;
+	}
+	char* copy = (char*) GlobalLock(memory);
+	strcpy(copy, text);
+	GlobalUnlock(memory);
+	free(text);
+	if (OpenClipboard((HWND) m_windowHandle) != 0) {
+		EmptyClipboard();
+		SetClipboardData(1, memory);
+		CloseClipboard();
+	}
+	else {
+		MessageBoxA(0, g_unableToAllocateClipboard, g_clipboardInfo, 0);
+		GlobalFree(memory);
+	}
+	SetSelectionHighlight(0);
+	m_selectionEnd = -1;
+	m_selectionStart = -1;
+	LeaveCritical();
+}
+
+// GLOBAL: LEMBALL 0x004a2b80
+static ACCEL g_textWindowAccelerators[2] = {{9, 0x2d, 0x421}, {9, 0x43, 0x421}};
+
+// FUNCTION: LEMBALL 0x00474750
+long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsigned int p_wParam, long p_lParam)
+{
+	POINT origin;
+	origin.x = 0;
+	origin.y = 0;
+	ClientToScreen((HWND) p_window, &origin);
+	CTextWnd* window;
+	if (p_message == WM_CREATE) {
+		window = (CTextWnd*) ((CREATESTRUCTA*) p_lParam)->lpCreateParams;
+		g_nTargetTextWindowCreated = 1;
+		SetWindowLongA((HWND) p_window, 0, (LONG) window);
+	}
+	else if (g_nTargetTextWindowCreated != 0) {
+		window = (CTextWnd*) GetWindowLongA((HWND) p_window, 0);
+	}
+	switch (p_message) {
+	case WM_DESTROY:
+		delete window;
+		g_pDebugWindow = 0;
+		PostQuitMessage(0);
+		break;
+	case WM_SIZE:
+		window->ResizeToWholeRows(LOWORD(p_lParam), HIWORD(p_lParam), p_wParam);
+		break;
+	case WM_SETFOCUS: {
+		HACCEL accelerators = CreateAcceleratorTableA(g_textWindowAccelerators, 2);
+		if (accelerators != 0) {
+			g_pDebugAcceleratorTable = accelerators;
+		}
+		break;
+	}
+	case WM_KILLFOCUS:
+		if (p_message != WM_KILLFOCUS) {
+			break;
+		}
+		break;
+	case WM_PAINT: {
+		PAINTSTRUCT paint;
+		HDC dc = BeginPaint((HWND) p_window, &paint);
+		window->Paint(dc, &paint);
+		EndPaint((HWND) p_window, &paint);
+		break;
+	}
+	case WM_COMMAND:
+		switch (p_wParam & 0xffff) {
+		case 0x421:
+			window->CopySelection();
+			break;
+		}
+		break;
+	case WM_VSCROLL:
+		window->Scroll(LOWORD(p_wParam), HIWORD(p_wParam));
+		break;
+	case WM_MOUSEMOVE: {
+		int x = (short) LOWORD(p_lParam) + origin.x;
+		int y = (short) HIWORD(p_lParam) + origin.y;
+		window->UpdateSelection(x, y, p_wParam);
+		break;
+	}
+	case WM_LBUTTONDOWN: {
+		int x = (short) LOWORD(p_lParam) + origin.x;
+		int y = (short) HIWORD(p_lParam) + origin.y;
+		window->BeginSelection(x, y, p_wParam);
+		break;
+	}
+	case WM_LBUTTONUP: {
+		int x = (short) LOWORD(p_lParam) + origin.x;
+		int y = (short) HIWORD(p_lParam) + origin.y;
+		window->EndSelection(x, y, p_wParam);
+		break;
+	}
+	case 0x420:
+		window->AppendPostedText((char*) p_wParam, p_lParam);
+		break;
+	}
+	return DefWindowProcA((HWND) p_window, p_message, p_wParam, p_lParam);
+}
+
+// GLOBAL: LEMBALL 0x004a44d8 SYMBOL
+// __locktable
+
+// GLOBAL: LEMBALL 0x004a5038 SYMBOL
+// __newmode
+
+// GLOBAL: LEMBALL 0x004aa494 SYMBOL
+// ?_pnhHeap@@3P6AHI@ZA
+
+// GLOBAL: LEMBALL 0x004ab7e0 SYMBOL
+// __crtheap
+
+// GLOBAL: LEMBALL 0x004a29f0
+CTextWnd* g_pDebugWindow = 0;
+
+// GLOBAL: LEMBALL 0x004a2b68
+int g_nTargetTextWindowClassRegistered = 0;
+
+// GLOBAL: LEMBALL 0x004a2b7c
+int g_nTargetTextWindowActive = 0;
+
+// GLOBAL: LEMBALL 0x004a2b8c
+int g_nTargetTextWindowCreated = 0;

@@ -11,7 +11,7 @@
 #include "Views/Sound/SoundEffects.h"
 
 class CAi;
-class AiDestinationList;
+class CAiDestinationList;
 class CBaseObjectManager;
 class CBullet;
 class CIce;
@@ -174,71 +174,71 @@ public:
 	friend class CIce;
 
 protected:
-	unsigned short m_runtimeFlags;        // 0x04
-	unsigned short m_unk0x06;             // 0x06
-	unsigned int m_routeSearchFailed;     // 0x08
-	unsigned int m_routeSearchActive;     // 0x0c
-	unsigned int m_transientFlags;        // 0x10
-	int m_collisionMinX;                  // 0x14
-	int m_collisionMinY;                  // 0x18
-	int m_collisionMinZ;                  // 0x1c
-	int m_collisionMaxX;                  // 0x20
-	int m_collisionMaxY;                  // 0x24
-	int m_collisionMaxZ;                  // 0x28
-	unsigned int m_unk0x2c;               // 0x2c
-	unsigned int m_balloonPostActive;     // 0x30
-	unsigned int m_balloonPostId;         // 0x34
-	int m_heading;                        // 0x38
-	unsigned int m_unk0x3c;               // 0x3c
-	AiCoord m_spawnPosition;              // 0x40
-	AiCoord m_flightVelocity;             // 0x4c
-	unsigned int m_unk0x58;               // 0x58
-	CGameObject* m_activator;             // 0x5c
-	CBaseObjectManager* m_manager;        // 0x60
-	eObjectType m_objectType;             // 0x64
-	unsigned short m_collisionFlags;      // 0x68
-	unsigned short m_objectId;            // 0x6a
-	unsigned short m_linkedObjectId;      // 0x6c
-	short m_desiredFacingDirection;       // 0x6e
-	AiDestinationList* m_destinationList; // 0x70
-	unsigned int m_hasDestination;        // 0x74
-	int m_moveStartXFixed;                // 0x78
-	int m_moveStartYFixed;                // 0x7c
-	int m_moveDeltaXFixed;                // 0x80
-	int m_moveDeltaYFixed;                // 0x84
-	int m_moveDurationTicks;              // 0x88
-	unsigned int m_unk0x8c;               // 0x8c
-	unsigned int m_unk0x90;               // 0x90
-	unsigned int m_stateTimer;            // 0x94
-	eSoundEffect m_soundEffect;           // 0x98
-	AiCoord m_position;                   // 0x9c
-	AiCoord m_destination;                // 0xa8
-	short m_facingDirection;              // 0xb4
-	short m_initialFacingDirection;       // 0xb6
-	eAction m_action;                     // 0xb8
-	short m_actionArgument;               // 0xbc
-	unsigned short m_unk0xbe;             // 0xbe
-	unsigned int m_unk0xc0;               // 0xc0
-	short m_unk0xc4;                      // 0xc4
-	unsigned short m_unk0xc6;             // 0xc6
-	unsigned int m_lastMovementTick;      // 0xc8
-	unsigned int m_actionDeadline;        // 0xcc
-	unsigned int m_unk0xd0;               // 0xd0
-	unsigned int m_unk0xd4;               // 0xd4
-	AiCoord m_flightOrigin;               // 0xd8
-	AiCoord m_auxiliaryPosition;          // 0xe4
-	unsigned int m_isFlying;              // 0xf0
-	AiCoord m_groundPosition;             // 0xf4
-	int m_flightZ;                        // 0x100
-	unsigned int m_unk0x104;              // 0x104
-	unsigned int m_unk0x108;              // 0x108
-	unsigned int m_unk0x10c;              // 0x10c
-	unsigned int m_liftId;                // 0x110
-	unsigned int m_isRemoteObject;        // 0x114
-	unsigned int m_unk0x118;              // 0x118
-	unsigned int m_unk0x11c;              // 0x11c
-	unsigned short m_unk0x120;            // 0x120
-	unsigned short m_unk0x122;            // 0x122
+	unsigned short m_runtimeFlags;         // 0x04
+	unsigned short m_unk0x06;              // 0x06
+	unsigned int m_routeSearchFailed;      // 0x08
+	unsigned int m_routeSearchActive;      // 0x0c
+	unsigned int m_transientFlags;         // 0x10
+	int m_collisionMinX;                   // 0x14
+	int m_collisionMinY;                   // 0x18
+	int m_collisionMinZ;                   // 0x1c
+	int m_collisionMaxX;                   // 0x20
+	int m_collisionMaxY;                   // 0x24
+	int m_collisionMaxZ;                   // 0x28
+	unsigned int m_unk0x2c;                // 0x2c
+	unsigned int m_balloonPostActive;      // 0x30
+	unsigned int m_balloonPostId;          // 0x34
+	int m_heading;                         // 0x38
+	unsigned int m_unk0x3c;                // 0x3c
+	AiCoord m_spawnPosition;               // 0x40
+	AiCoord m_flightVelocity;              // 0x4c
+	unsigned int m_unk0x58;                // 0x58
+	CGameObject* m_activator;              // 0x5c
+	CBaseObjectManager* m_manager;         // 0x60
+	eObjectType m_objectType;              // 0x64
+	unsigned short m_collisionFlags;       // 0x68
+	unsigned short m_objectId;             // 0x6a
+	unsigned short m_linkedObjectId;       // 0x6c
+	short m_desiredFacingDirection;        // 0x6e
+	CAiDestinationList* m_destinationList; // 0x70
+	unsigned int m_hasDestination;         // 0x74
+	int m_moveStartXFixed;                 // 0x78
+	int m_moveStartYFixed;                 // 0x7c
+	int m_moveDeltaXFixed;                 // 0x80
+	int m_moveDeltaYFixed;                 // 0x84
+	int m_moveDurationTicks;               // 0x88
+	unsigned int m_unk0x8c;                // 0x8c
+	unsigned int m_unk0x90;                // 0x90
+	unsigned int m_stateTimer;             // 0x94
+	eSoundEffect m_soundEffect;            // 0x98
+	AiCoord m_position;                    // 0x9c
+	AiCoord m_destination;                 // 0xa8
+	short m_facingDirection;               // 0xb4
+	short m_initialFacingDirection;        // 0xb6
+	eAction m_action;                      // 0xb8
+	short m_actionArgument;                // 0xbc
+	unsigned short m_unk0xbe;              // 0xbe
+	unsigned int m_unk0xc0;                // 0xc0
+	short m_unk0xc4;                       // 0xc4
+	unsigned short m_unk0xc6;              // 0xc6
+	unsigned int m_lastMovementTick;       // 0xc8
+	unsigned int m_actionDeadline;         // 0xcc
+	unsigned int m_unk0xd0;                // 0xd0
+	unsigned int m_unk0xd4;                // 0xd4
+	AiCoord m_flightOrigin;                // 0xd8
+	AiCoord m_auxiliaryPosition;           // 0xe4
+	unsigned int m_isFlying;               // 0xf0
+	AiCoord m_groundPosition;              // 0xf4
+	int m_flightZ;                         // 0x100
+	unsigned int m_unk0x104;               // 0x104
+	unsigned int m_unk0x108;               // 0x108
+	unsigned int m_unk0x10c;               // 0x10c
+	unsigned int m_liftId;                 // 0x110
+	unsigned int m_isRemoteObject;         // 0x114
+	unsigned int m_unk0x118;               // 0x118
+	unsigned int m_unk0x11c;               // 0x11c
+	unsigned short m_unk0x120;             // 0x120
+	unsigned short m_unk0x122;             // 0x122
 };
 
 extern unsigned char g_abObjectIdBitmap[256];

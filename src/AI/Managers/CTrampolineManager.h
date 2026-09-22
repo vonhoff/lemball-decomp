@@ -21,7 +21,7 @@ public:
 	void Process();
 	void Restart();
 	void ResetCount();
-	int TryEnableTrampolineNearPosition(const AiCoord& p_position, CGameObject* p_object);
+	int TryEnableNear(const AiCoord& p_position, CGameObject* p_object);
 
 private:
 	int m_capacity;             // 0x30

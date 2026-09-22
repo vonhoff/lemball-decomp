@@ -5,7 +5,7 @@
 #include "CTcpIpRwSocket.h" // complete type
 
 // SIZE 0x16c
-// VTABLE: LEMBALL 0x0049a158 TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a158 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a160 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x0049a188 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a1b8 CRwSocket

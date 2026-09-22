@@ -6,10 +6,10 @@
 #include "CTcpIpCommonSocket.h" // complete type
 
 // SIZE 0xac
-// VTABLE: LEMBALL 0x0049a1e4 TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a1e4 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a1e8 CBaseSocket
 // VTABLE: LEMBALL 0x0049a210 CTcpIpReadSocket
-// The original TargetNetworkWindow subobject starts at +0x8c and its table
+// The original CNetworkWnd subobject starts at +0x8c and its table
 // points straight to Process. MSVC 4's default vtordisp mode inserts a four-
 // byte field and a dynamic thunk instead.
 // x86 emits only the synthetic deleting destructor.

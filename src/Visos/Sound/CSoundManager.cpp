@@ -300,7 +300,7 @@ void CSoundManager::StopMusic(unsigned long p_handle)
 }
 
 // FUNCTION: LEMBALL 0x0045b390
-void CSoundManager::ResumeMusicCD(unsigned long p_handle)
+void CSoundManager::ResumeMusicCd(unsigned long p_handle)
 {
 	if (m_musicAvailable == 1 && m_useMusicCD == 1) {
 		m_musicDevice->Resume(p_handle);
@@ -318,7 +318,7 @@ void CSoundManager::FreeMusic(unsigned long p_handle)
 }
 
 // FUNCTION: LEMBALL 0x0045b3d0
-void CSoundManager::StopMusicCD(unsigned long p_handle)
+void CSoundManager::StopMusicCd(unsigned long p_handle)
 {
 	if (m_musicAvailable == 1 && p_handle != 0 && m_useMusicCD == 1) {
 		m_musicDevice->Free(p_handle);
@@ -431,7 +431,7 @@ void CSoundManager::UseMusicCd(unsigned int p_enabled)
 	m_musicDevice->m_useCdDirectory = p_enabled;
 }
 
-#include "../Foundation/LocalDebugOStream.h"
+#include "../Foundation/CDebugOStream.h"
 #include "Visos/Foundation/CVsOStream.h"
 
 // GLOBAL: LEMBALL 0x004a1ca8
@@ -446,7 +446,7 @@ char g_szMusicDriverPrefix[12] = "Music : ";
 // FUNCTION: LEMBALL 0x0045b600
 char* CSoundManager::BuildDriverInfo()
 {
-	LocalDebugOStream stream(g_szSoundDriverInfo, sizeof(g_szSoundDriverInfo));
+	CDebugOStream stream(g_szSoundDriverInfo, sizeof(g_szSoundDriverInfo));
 	g_szSoundDriverInfo[0] = 0;
 	if (m_effectOutput != 0 && m_requestedEffects != 0) {
 		stream << g_szEffectsDriverPrefix << m_effectOutput->GetInfo();

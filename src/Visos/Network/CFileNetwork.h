@@ -1,13 +1,13 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILENETWORK_H
 #define LEMBALL_VISOS_NETWORK_CFILENETWORK_H
 
-#include "../Target/TargetNetworkWindow.h" // complete type
-#include "CBaseNetwork.h"                  // complete type
+#include "../Target/CNetworkWnd.h" // complete type
+#include "CBaseNetwork.h"          // complete type
 
 // SIZE 0x7c
-// VTABLE: LEMBALL 0x0049a02c TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a02c CNetworkWnd
 // VTABLE: LEMBALL 0x00499ff8 CBaseNetwork
-class CFileNetwork : public TargetNetworkWindow, public CBaseNetwork {
+class CFileNetwork : public CNetworkWnd, public CBaseNetwork {
 public:
 	CFileNetwork();
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00

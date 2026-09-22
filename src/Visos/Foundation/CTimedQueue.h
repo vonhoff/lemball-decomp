@@ -5,7 +5,7 @@
 
 // SIZE 0x58
 // VTABLE: LEMBALL 0x004988b0 CCritical
-// VTABLE: LEMBALL 0x004988b8 ArenaBase
+// VTABLE: LEMBALL 0x004988b8 CArenaBase
 class CTimedQueue : public CBaseQueue {
 public:
 	CTimedQueue(unsigned int p_capacity, char* p_name) : CBaseQueue(p_capacity, p_name) {}

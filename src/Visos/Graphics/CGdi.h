@@ -4,7 +4,7 @@
 class CVsRect;
 class CSurface;
 class CPrimitive;
-struct TargetWinGDrawCodecState;
+struct WinGDrawState;
 
 // SIZE 0x10
 class CGdi {
@@ -29,7 +29,7 @@ public:
 	friend class CZrle;
 	friend class CMain2DDisplay;
 	friend class C2D;
-	friend struct TargetGraphicsSystemState;
+	friend struct CGraphicsState;
 	friend class CGWnd;
 	friend class CPvGWnd;
 	friend class CBaseFrontendDrawer;
@@ -37,27 +37,27 @@ public:
 	friend class CGraphicButton;
 	friend class CGunButtons;
 	friend class CDepressedButton;
-	friend class TargetFramedButton;
-	friend class TargetTextButton;
+	friend class CFramedButton;
+	friend class CTextButton;
 	friend class CPvButton;
 	friend class CPanelButton;
 	friend class CGunController;
-	friend class BitmapRes;
-	friend class BitmapResBase;
+	friend class CBitmapRes;
+	friend class CBitmapResBase;
 	friend class CCdLoadAnim;
 	friend class CBaseCursor;
 	friend class CAnim;
 	friend class CSpriteWindow;
 	friend class CTrackWindow;
 	friend class CHiliteWindow;
-	friend class TargetAboutScreen;
+	friend class CAboutScreen;
 	friend class CHiliteButtons;
 	friend class CPasswordHiliteWindow;
 	friend class CHiliteController;
 	friend class CPasswordDrawer;
 	friend class CPauseWindow;
-	friend struct TargetWinGDrawCodecState;
-	friend TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
+	friend struct WinGDrawState;
+	friend WinGDrawState* __stdcall WinGDrawOpen(void* p_openInfo);
 
 private:
 	CPrimitive** m_primitives; // 0x00

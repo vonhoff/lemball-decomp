@@ -17,9 +17,9 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CRepeatAnim.h"
-#include "Visos/Graphics/BitmapRes.h"
-#include "Visos/Graphics/BitmapResBase.h"
 #include "Visos/Graphics/CBitmap.h"
+#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBitmapResBase.h"
 #include "Visos/Graphics/CClipRect.h"
 #include "Visos/Graphics/CDrawingMark.h"
 #include "Visos/Graphics/CLine.h"
@@ -223,7 +223,7 @@ void CCdLoadAnim::Draw()
 // FUNCTION: LEMBALL 0x0044b340
 void CCdLoadAnim::Draw(short p_progress)
 {
-	TargetSynchronizeLoadProgress();
+	SyncLoadProgress();
 	m_progress = p_progress;
 	m_display->RefreshView();
 }

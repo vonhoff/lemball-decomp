@@ -58,7 +58,7 @@ private:
 
 public:
 	void GetPlayerStartPosition(AiCoord& p_position, int p_index);
-	void ConfigurePlayerLemmingCounts(int p_playerCount, int p_count0, int p_count1, int p_count2, int p_count3);
+	void SetLemmingCounts(int p_playerCount, int p_count0, int p_count1, int p_count2, int p_count3);
 	int GetLemmingCountForPlayer(int p_playerIndex);
 };
 

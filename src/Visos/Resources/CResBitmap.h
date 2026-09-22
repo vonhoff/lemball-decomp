@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESBITMAP_H
 #define LEMBALL_VISOS_RESOURCES_CRESBITMAP_H
 
-#include "ResRaster.h"
+#include "CResRaster.h"
 
 // SIZE 0x0c
 struct BitmapHeader {
@@ -14,7 +14,7 @@ struct BitmapHeader {
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00498d20
-class CResBitmap : public ResRaster {
+class CResBitmap : public CResRaster {
 public:
 	inline CResBitmap(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	inline CResBitmap() {}
@@ -23,7 +23,7 @@ public:
 	virtual void SetType();   // vtable+0x34
 
 	friend class CBaseFrontendDrawer;
-	friend class BitmapRes;
+	friend class CBitmapRes;
 	friend class CSurface;
 
 private:

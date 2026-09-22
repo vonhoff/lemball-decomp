@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CBASEQUEUE_H
 #define LEMBALL_VISOS_FOUNDATION_CBASEQUEUE_H
 
-#include "ArenaBase.h"
+#include "CArenaBase.h"
 #include "CCritical.h"
 struct Message;
 
@@ -10,8 +10,8 @@ struct QueueHandlerNode;
 
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00499248 CCritical
-// VTABLE: LEMBALL 0x00499250 ArenaBase
-class CBaseQueue : public ArenaBase, public CCritical {
+// VTABLE: LEMBALL 0x00499250 CArenaBase
+class CBaseQueue : public CArenaBase, public CCritical {
 public:
 	CBaseQueue(unsigned int p_capacity);
 	CBaseQueue(unsigned int p_capacity, char* p_name);

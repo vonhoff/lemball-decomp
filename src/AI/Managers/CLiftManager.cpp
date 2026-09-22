@@ -54,7 +54,7 @@ CLiftManager::~CLiftManager()
 }
 
 // FUNCTION: LEMBALL 0x00425830
-int CLiftManager::ExportLiftEndpointCoordinates(Coord3d p_records[][2])
+int CLiftManager::ExportEndpoints(Coord3d p_records[][2])
 {
 	for (int i = 0; i < m_count; i++) {
 		CLift* lift = &m_lifts[i];
@@ -66,7 +66,7 @@ int CLiftManager::ExportLiftEndpointCoordinates(Coord3d p_records[][2])
 }
 
 // FUNCTION: LEMBALL 0x00425c80
-void CLiftManager::AddLiftFromXYZ(unsigned short p_id, int p_x, int p_y, int p_z)
+void CLiftManager::AddLiftFromXyz(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
 		m_lifts[m_count].SetId(p_id);

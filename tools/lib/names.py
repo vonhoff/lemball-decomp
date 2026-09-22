@@ -25,7 +25,7 @@ ACRONYMS = (
 )
 # Do not rename source to match 68K for these; see AGENTS.md Naming.
 INTENTIONAL = {
-    ('', 'GetCdDir', 'TargetPlatformServices', 'GetCdDir'),
+    ('', 'GetCdDir', 'CPlatformServices', 'GetCdDir'),
     ('CCdLoadAnim', 'Draw', 'CCdLoadAnimDraw', 'Draw'),
     ('CCdLoadAnim', 'Draw', 'CCdLoadAnimProgress', 'Draw'),
     ('CPreviewDrawer::Prims', '<constructor>', 'CPreviewDrawerPrims', '<constructor>'),

@@ -10,7 +10,7 @@
 #include "Visos/Network/CWriteSocket.h"
 
 // SIZE 0x144
-// VTABLE: LEMBALL 0x0049a220 TargetNetworkWindow
+// VTABLE: LEMBALL 0x0049a220 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a228 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x0049a250 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a280 CTcpIpRwSocket

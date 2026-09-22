@@ -16,7 +16,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "CRawRead.h"
 #include "CResBase.h"
 #include "MogLoad.h"
-#include "Visos/Animation/MogloadStat.h"
+#include "Visos/Animation/CMogloadStat.h"
 
 #define kPathSeparator '/'
 
@@ -59,7 +59,7 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 	for (offset = 0; offset < 1024; offset++) {
 		m_resources[offset] = 0;
 	}
-	g_pMogloadStat = new MogloadStat("Mogload memory");
+	g_pMogloadStat = new CMogloadStat("Mogload memory");
 	g_pStatManager->Register(g_pMogloadStat);
 	g_pMogloadArena->m_parentArena = (CArena*) g_pMogloadStat;
 }

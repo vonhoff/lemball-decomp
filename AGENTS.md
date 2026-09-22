@@ -75,8 +75,12 @@ Types: `FUNCTION` `STUB` `TEMPLATE` `SYNTHETIC` `LIBRARY` `VTABLE` `GLOBAL` `STR
 
 PascalCase; leading `_` → `Internal`; drop `_` separators. Preserve catalog-evidenced
 `C` class prefixes in types, constructors, destructors, and filenames. Keep the
-existing acronym normalization (`CPVWnd` → `CPvWnd`); do not add prefixes to
-Windows-only types without evidence. `CHAR4` is the complete original type name.
+existing acronym normalization (`CPVWnd` → `CPvWnd`). Apply `C` + PascalCase to
+project-owned Windows classes too; these are reconstruction names, not recovered
+symbols. Use concise, behavior-based method names and class context. Keep platform
+API names and passive record structs in their established spelling.
+Catalog-backed unprefixed types (`AiCoord`, `Prims`, `VsTrig`) keep their names.
+`CHAR4` is the complete original type name.
 Intentional Mac/Win divergences: `tools/lib/names.py` `INTENTIONAL`. Layout stem
 overrides: `tools/lib/layout.py` `OVERRIDE_STEMS` / `INTENTIONAL`.
 

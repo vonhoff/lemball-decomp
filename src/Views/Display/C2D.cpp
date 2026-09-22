@@ -34,8 +34,8 @@
 #include "../Panel/CPanel.h"
 #include "../Pause/CPauseWindow.h"
 #include "../Sound/CSoundView.h"
-#include "../Target/TargetObjectClipGrid.h"
-#include "../Target/TargetSpriteGroundLookup.h"
+#include "../Target/ObjectClipGrid.h"
+#include "../Target/SpriteGroundLookup.h"
 #include "CMain2DDisplay.h"
 #include "CPbButton.h"
 
@@ -54,7 +54,7 @@ C2D::C2D(CMain2DDisplay* p_arg0, CAi* p_arg1, CGdi* p_arg2, CMap* p_arg3, const 
 {
 	void* storage;
 	CBaseQueueHandler* queueHandler;
-	TargetObjectClipGrid* objectClipGrid;
+	ObjectClipGrid* objectClipGrid;
 	unsigned int cellCount;
 	int groundWidth;
 	int groundHeight;
@@ -141,7 +141,7 @@ C2D::C2D(CMain2DDisplay* p_arg0, CAi* p_arg1, CGdi* p_arg2, CMap* p_arg3, const 
 	}
 
 	m_spriteGroundLookup = 0;
-	objectClipGrid = (TargetObjectClipGrid*) operator new(0x1a4);
+	objectClipGrid = (ObjectClipGrid*) operator new(0x1a4);
 	if (objectClipGrid != 0) {
 		groundHeight = m_map->m_ground.m_height << 4;
 		groundWidth = m_map->m_ground.m_width << 4;
@@ -197,8 +197,8 @@ C2D::~C2D()
 // FUNCTION: LEMBALL 0x00436190
 void C2D::ShutDown()
 {
-	TargetObjectClipGrid* objectClipGrid;
-	TargetSpriteGroundLookup* spriteGroundLookup;
+	ObjectClipGrid* objectClipGrid;
+	SpriteGroundLookup* spriteGroundLookup;
 	CLemmingAnimsManager* lemmingAnims;
 	unsigned long started;
 	unsigned long now;
@@ -1245,7 +1245,7 @@ void C2D::SetClipSize()
 	int width;
 	int height;
 	int count;
-	TargetSpriteGroundLookup* lookup;
+	SpriteGroundLookup* lookup;
 	CResFont* font;
 	short clipSizeX;
 	short translatedX;

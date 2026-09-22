@@ -9,7 +9,7 @@ class CGdi;
 class CPvWnd;
 class CVsRect;
 
-struct TargetWinGDrawCodecState;
+struct WinGDrawState;
 
 // SIZE 0x90
 // VTABLE: LEMBALL 0x00499260
@@ -35,7 +35,7 @@ public:
 	virtual void InternalOnSize() = 0;                         // vtable+0x20
 	void Clear(int p_color);
 
-	friend struct TargetGraphicsSystemState;
+	friend struct CGraphicsState;
 	friend class CGWnd;
 	friend class CMain2DDisplay;
 	friend class CNetworkOptionsDrawer;
@@ -52,18 +52,16 @@ public:
 	friend class CGunButtons;
 	friend class CHiliteButtons;
 	friend class CDepressedButton;
-	friend class TargetFramedButton;
-	friend class TargetTextButton;
+	friend class CFramedButton;
+	friend class CTextButton;
 	friend class CPanelButton;
 	friend class CFrontendResourceLoader;
 	friend class CCdLoadAnim;
 	friend class CBaseCursor;
 	friend class C2D;
 	friend class CPauseWindow;
-	friend TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
-	friend int __stdcall TargetWinGDrawCodec_Draw(struct TargetWinGDrawCodecState* p_state,
-												  void* p_request,
-												  long p_param2);
+	friend WinGDrawState* __stdcall WinGDrawOpen(void* p_openInfo);
+	friend int __stdcall WinGDrawFrame(struct WinGDrawState* p_state, void* p_request, long p_param2);
 
 private:
 	CGdi* m_gdi;                       // 0x4c

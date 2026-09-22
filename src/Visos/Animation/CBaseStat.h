@@ -2,11 +2,11 @@
 #define LEMBALL_VISOS_ANIMATION_CBASESTAT_H
 
 #include "../Foundation/CString.h" // complete type
-#include "Visos/Foundation/ArenaBase.h"
+#include "Visos/Foundation/CArenaBase.h"
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x00498960
-class CBaseStat : public ArenaBase {
+class CBaseStat : public CArenaBase {
 public:
 	CBaseStat(char* p_arg0);
 	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00

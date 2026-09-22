@@ -36,7 +36,10 @@ normal naming checks apply the project's documented spelling policy.
 
 Catalog-backed class prefixes are preserved, including constructors, destructors,
 filenames, includes, and guards. Acronyms retain project style (`CPVWnd` becomes
-`CPvWnd`). Windows-only types receive no inferred prefix. `CHAR4` retains its
+`CPvWnd`). Project-owned Windows classes also use `C` + PascalCase, with concise
+method names based on Windows behavior. Those names are reconstruction choices;
+they do not establish original spellings or add catalog pairs. Platform API names
+and passive record structs retain their established spelling. `CHAR4` retains its
 complete original spelling; the old `Har4` spelling resulted from stripping its
 first letter. Original-filename exceptions `VsGdi` and `MogLoad` remain documented
 in the layout gate. Method names that coincide with class names remain methods.

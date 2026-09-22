@@ -2,10 +2,10 @@
 #define LEMBALL_FRONTEND_DRAWERS_SUCCFAILDRAWERFIELDVIEWS_H
 
 #include "../../Visos/Foundation/Prims.h"
-#include "../../Visos/Graphics/BitmapRes.h"
+#include "../../Visos/Graphics/CBitmapRes.h"
 
-// Views begin at BitmapRes::m_x; vtable pointer omitted. Sizes retain original
-// BitmapRes/Prims element strides while keeping reconstructed field names.
+// Views begin at CBitmapRes::m_x; vtable pointer omitted. Sizes retain original
+// CBitmapRes/Prims element strides while keeping reconstructed field names.
 struct SuccFailDrawerFieldViews {
 	struct CBitmap {
 		short m_x;

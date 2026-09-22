@@ -22,7 +22,7 @@
 #include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/Prims.h"
-#include "Visos/Graphics/BitmapRes.h"
+#include "Visos/Graphics/CBitmapRes.h"
 #include "Visos/Graphics/CPvGWnd.h"
 #include "Visos/Graphics/CSolidRect.h"
 

@@ -1,0 +1,10 @@
+#ifndef LEMBALL_FRONTEND_CONTROLS_CTRACKERBUTTONHOTAREAVIEW_H
+#define LEMBALL_FRONTEND_CONTROLS_CTRACKERBUTTONHOTAREAVIEW_H
+
+// SIZE 0xa8
+class CTrackerButtonHotAreaView {
+public:
+	// No functions mapped yet.
+};
+
+#endif

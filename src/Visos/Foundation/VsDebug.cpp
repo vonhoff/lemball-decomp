@@ -1,9 +1,9 @@
 #include "VsDebug.h"
 
-#include "../Target/TargetTextWindow.h"
+#include "../Target/CTextWnd.h"
+#include "CDebugOStream.h"
 #include "CString.h"
 #include "CVsDebugStreambuf.h"
-#include "LocalDebugOStream.h"
 #include "Visos/Foundation/CVsOStream.h"
 #include "VsFile.h"
 #include "VsInit.h"
@@ -56,7 +56,7 @@ int InternalRawOutDebugString(char* p_text)
 		return 1;
 	}
 	if (g_pDebugWindow != NULL) {
-		g_pDebugWindow->PostAllocatedTextControlString(p_text, 0x8000);
+		g_pDebugWindow->PostText(p_text, 0x8000);
 	}
 	else if (g_nDebugFileOutputEnabled != 0) {
 		WriteDebugString2File(p_text);
@@ -72,7 +72,7 @@ int InternalRawOutErrorString(char* p_text)
 		return 1;
 	}
 	if (g_pDebugWindow != NULL) {
-		g_pDebugWindow->PostAllocatedTextControlString(p_text, 0xff);
+		g_pDebugWindow->PostText(p_text, 0xff);
 	}
 	else if (g_nDebugFileOutputEnabled != 0) {
 		WriteDebugString2File(p_text);
@@ -88,7 +88,7 @@ int InternalRawOutSysString(char* p_text)
 		return 1;
 	}
 	if (g_pDebugWindow != NULL) {
-		g_pDebugWindow->PostAllocatedTextControlString(p_text, 0xff0000);
+		g_pDebugWindow->PostText(p_text, 0xff0000);
 	}
 	else if (g_nDebugFileOutputEnabled != 0) {
 		WriteDebugString2File(p_text);
@@ -120,7 +120,7 @@ void FatalWin32Error(char* p_context)
 	unsigned long error = GetLastError();
 	char buffer[0x80];
 	{
-		LocalDebugOStream stream(buffer, sizeof(buffer));
+		CDebugOStream stream(buffer, sizeof(buffer));
 		stream << p_context << '\n' << " GetLastError()=" << (long) error << ", " << Hex8(error);
 	}
 	MessageBoxA(0, buffer, "FATAL ERROR", 0);

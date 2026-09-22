@@ -4,9 +4,9 @@
 #include "../Foundation/CVsIOs.h"
 #include "../Foundation/VsDebug.h"
 #include "../Resources/CResMovie.h"
-#include "../Target/TargetGraphicsDriver.h"
-#include "../Target/TargetPlatformServices.h"
-#include "../Target/TargetWinGDrawCodecState.h"
+#include "../Target/CGraphicsDriver.h"
+#include "../Target/CPlatformServices.h"
+#include "../Target/WinGDrawState.h"
 #include "CGWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -145,7 +145,7 @@ void CAnimWnd::SetMovieWindow(unsigned int p_lParam)
 
 	(void) p_lParam;
 	params[1] = 0x8000;
-	params[2] = (unsigned int) TargetWinGDrawCodec_DriverProc;
+	params[2] = (unsigned int) WinGDrawDriverProc;
 	mciId = (unsigned int) SendMessageA((HWND) m_movieWindow, 0x464, 0, 0);
 	if (mciId != 0) {
 		error = mciSendCommandA(mciId, 0x876, 0x1100000, params);

@@ -1,7 +1,7 @@
 #include "CGdiDevice.h"
 
 #include "../Animation/CTimeStat.h"
-#include "../Foundation/LocalDebugOStream.h"
+#include "../Foundation/CDebugOStream.h"
 #include "../Foundation/VsTime.h"
 #include "Visos/Foundation/CVsOStream.h"
 #include "VsGdi.h"
@@ -77,7 +77,7 @@ CSurface* CGdiDevice::AllocateSurface(const CVsRect& p_rect, CSurface* p_parentS
 	}
 
 	char buffer[0x20];
-	LocalDebugOStream stream(buffer, sizeof(buffer));
+	CDebugOStream stream(buffer, sizeof(buffer));
 	stream << "Surface" << i;
 
 	m_surfaceSlots[i].m_surface = new CSurface(p_rect, p_parentSurface);

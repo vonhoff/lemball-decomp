@@ -1,0 +1,10 @@
+#ifndef LEMBALL_VIEWS_PAUSE_CPAUSEHOTAREAVIEW_H
+#define LEMBALL_VIEWS_PAUSE_CPAUSEHOTAREAVIEW_H
+
+// SIZE 0x168
+class CPauseHotAreaView {
+public:
+	// No functions mapped yet.
+};
+
+#endif

@@ -132,7 +132,7 @@ public:
 	friend class CMain2DDisplay;
 	friend class CSlinkyManager;
 	friend class CSlinky;
-	friend class WindowsCursorMotionState;
+	friend class CCursorMotion;
 	friend class CTrampolineManager;
 	friend class CTrapDoorManager;
 	friend class CRocketManager;

@@ -11,7 +11,7 @@
 #include "Visos/Foundation/CVsRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/Prims.h"
-#include "Visos/Graphics/BitmapRes.h"
+#include "Visos/Graphics/CBitmapRes.h"
 
 class CGWnd;
 

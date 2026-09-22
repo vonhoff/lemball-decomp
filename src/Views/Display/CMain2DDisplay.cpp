@@ -13,7 +13,7 @@
 #include "../../Frontend/Drawers/CPreviewDrawer.h"
 #include "../../Frontend/Drawers/CSuccFailDrawer.h"
 #include "../../Frontend/Support/AboutDialog.h"
-#include "../../Frontend/Support/TargetAboutScreen.h"
+#include "../../Frontend/Support/CAboutScreen.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/CChangeList.h"
@@ -25,9 +25,9 @@
 #include "../../Visos/Resources/CResPalette.h"
 #include "../../Visos/Resources/CResZrle.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "../../Visos/Target/TargetGraphicsDriver.h"
-#include "../../Visos/Target/TargetGraphicsSystemState.h"
-#include "../../Visos/Target/TargetPlatformServices.h"
+#include "../../Visos/Target/CGraphicsDriver.h"
+#include "../../Visos/Target/CGraphicsState.h"
+#include "../../Visos/Target/CPlatformServices.h"
 #include "C2D.h"
 
 #include <new.h>
@@ -302,7 +302,7 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 			m_drawer = 0;
 			break;
 		}
-		m_drawer = new (storage) TargetAboutScreen(this, m_gdi, localRect);
+		m_drawer = new (storage) CAboutScreen(this, m_gdi, localRect);
 		break;
 	case 0xc:
 		storage = operator new(0x438);

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CARENA_H
 #define LEMBALL_VISOS_FOUNDATION_CARENA_H
 
-#include "ArenaBase.h"
+#include "CArenaBase.h"
 #include "CCritical.h"
 
 #include <stddef.h>
@@ -10,9 +10,9 @@ class CMBlock;
 void InitSubSystems();
 
 // SIZE 0x50
-// VTABLE: LEMBALL 0x004988e0 ArenaBase
+// VTABLE: LEMBALL 0x004988e0 CArenaBase
 // VTABLE: LEMBALL 0x004988d8 CCritical
-class CArena : public ArenaBase, public CCritical {
+class CArena : public CArenaBase, public CCritical {
 public:
 	CArena(unsigned long p_arg0, char* p_arg1, CArena* p_arg2, CArena* p_arg3);
 	CMBlock* FindSmallestBlock(unsigned long p_arg0, char* p_arg1);

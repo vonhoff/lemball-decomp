@@ -8,7 +8,7 @@ class CNetworkMessage;
 
 class CNetworkAddress;
 class CWriteCBuff;
-class WriteNcBuff;
+class CWriteNcBuff;
 class CWritePacket;
 
 // SIZE 0xa4
@@ -48,7 +48,7 @@ protected:
 	void InternalSetDestAddr(CNetworkAddress* p_address);
 
 private:
-	WriteNcBuff* m_nonCriticalBuffer;      // 0x48
+	CWriteNcBuff* m_nonCriticalBuffer;     // 0x48
 	CWriteCBuff* m_criticalBuffer;         // 0x4c
 	CWriteCBuff* m_unknown50;              // 0x50
 	CNetworkMessage* m_segmentedMessage;   // 0x54

@@ -17,7 +17,7 @@ public:
 	virtual ~CSolidRect() {} // vtable+0x00
 
 	friend class CGunController;
-	friend class TargetAboutScreen;
+	friend class CAboutScreen;
 	friend class CHiliteController;
 	friend class CPasswordDrawer;
 	friend class CSurface;

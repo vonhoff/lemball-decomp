@@ -154,7 +154,7 @@ void CSoundView::SetMusicOn(unsigned int p_enabled)
 			return;
 		}
 		g_pSoundManager->FreeMusic(m_musicHandle);
-		g_pSoundManager->StopMusicCD(m_musicHandle);
+		g_pSoundManager->StopMusicCd(m_musicHandle);
 		g_dwMusicOn = p_enabled;
 	}
 }

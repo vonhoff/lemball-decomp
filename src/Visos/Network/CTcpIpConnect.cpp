@@ -200,13 +200,13 @@ int CTcpIpConnect::Process(unsigned int p_message, unsigned int p_wParam, long p
 	if (m_killRequested == 0) {
 		switch (p_message) {
 		case 0x440:
-			result = HandleAsyncNameResolutionResult(p_wParam, p_lParam, &m_asyncBuffer);
+			result = OnNameResolved(p_wParam, p_lParam, &m_asyncBuffer);
 			if (result != 0xe) {
 				GotHost(result == 2);
 			}
 			return 0;
 		case 0x442:
-			result = HandleAsyncNameResolutionResult(p_wParam, p_lParam, &m_asyncBuffer);
+			result = OnNameResolved(p_wParam, p_lParam, &m_asyncBuffer);
 			if (result != 0xe) {
 				HandleServiceLookupResult(result == 2);
 			}

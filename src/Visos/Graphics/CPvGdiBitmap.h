@@ -27,9 +27,9 @@ public:
 	friend class CBaseFrontendDrawer;
 	friend class CPvBackBuffSurface;
 	friend class CPvZBuffSurface;
-	friend class TargetGraphicsDriver;
-	friend class TargetPlanarDisplayDibDriver;
-	friend struct TargetGraphicsSystemState;
+	friend class CGraphicsDriver;
+	friend class CPlanarDibDriver;
+	friend struct CGraphicsState;
 	friend class CGWnd;
 
 private:

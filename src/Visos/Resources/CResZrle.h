@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESZRLE_H
 #define LEMBALL_VISOS_RESOURCES_CRESZRLE_H
 
-#include "CResBitmap.h" // for ResRaster
-#include "Visos/Resources/ResRaster.h"
+#include "CResBitmap.h" // for CResRaster
+#include "Visos/Resources/CResRaster.h"
 
 // SIZE 0x0c
 struct ZrleHeader {
@@ -16,7 +16,7 @@ struct ZrleHeader {
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00498a70
-class CResZrle : public ResRaster {
+class CResZrle : public CResRaster {
 public:
 	inline CResZrle(unsigned int p_resourceId) : m_height(0), m_width(0), m_originY(0), m_originX(0)
 	{

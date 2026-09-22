@@ -4,9 +4,9 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Foundation/CVsMath.h"
-#include "../Navigation/AiDestinationEntry.h"
-#include "../Navigation/AiDestinationList.h"
 #include "../Navigation/CAi.h"
+#include "../Navigation/CAiDestinationEntry.h"
+#include "../Navigation/CAiDestinationList.h"
 #include "../Navigation/CMaze.h"
 #include "../Navigation/CMover.h"
 #include "CPt3.h"
@@ -318,11 +318,11 @@ CGameObject::CGameObject(eObjectType p_objectType,
 {
 	m_objectType = p_objectType;
 	m_collisionFlags = p_collisionFlags;
-	AiDestinationList* list;
-	if (p_destinationCapacity != 0 && (list = new AiDestinationList) != 0) {
+	CAiDestinationList* list;
+	if (p_destinationCapacity != 0 && (list = new CAiDestinationList) != 0) {
 		list->m_count = 0;
 		list->m_capacity = p_destinationCapacity;
-		list->m_entries = new AiDestinationEntry[p_destinationCapacity];
+		list->m_entries = new CAiDestinationEntry[p_destinationCapacity];
 		m_destinationList = list;
 	}
 	else {
@@ -381,7 +381,7 @@ CGameObject::~CGameObject()
 {
 	ReSetId();
 	g_pObjects[m_objectId] = 0;
-	AiDestinationList* destinationList = m_destinationList;
+	CAiDestinationList* destinationList = m_destinationList;
 	if (destinationList != 0) {
 		operator delete(destinationList->m_entries);
 		operator delete(destinationList);
@@ -669,11 +669,11 @@ bool CGameObject::SearchRoute()
 						coordinate.m_xFixed = ((unsigned int) (unsigned short) solution->m_x << 16) + 0x8000;
 						coordinate.m_yFixed = ((unsigned int) (unsigned short) solution->m_y << 16) + 0x8000;
 						coordinate.m_zFixed = 0;
-						AiDestinationList* list = m_destinationList;
+						CAiDestinationList* list = m_destinationList;
 						unsigned short count = list->m_count;
 						if (count < list->m_capacity) {
 							list->m_count = count + 1;
-							AiDestinationEntry* entry = &list->m_entries[count];
+							CAiDestinationEntry* entry = &list->m_entries[count];
 							entry->m_type = DESTINATION_COORD;
 							entry->m_coordinate.m_xFixed = coordinate.m_xFixed;
 							entry->m_coordinate.m_yFixed = coordinate.m_yFixed;
@@ -844,11 +844,11 @@ bool CGameObject::FacingDestination()
 void CGameObject::DeleteFirstEntryFromDestinationList()
 {
 	int i;
-	AiDestinationList* list = m_destinationList;
+	CAiDestinationList* list = m_destinationList;
 	if (list->m_count != 0) {
 		for (i = 0; i < list->m_count - 1; i++) {
-			AiDestinationEntry* entry = &list->m_entries[i];
-			AiDestinationEntry* next = entry + 1;
+			CAiDestinationEntry* entry = &list->m_entries[i];
+			CAiDestinationEntry* next = entry + 1;
 			entry->m_type = next->m_type;
 			entry->m_coordinate.m_xFixed = next->m_coordinate.m_xFixed;
 			entry->m_coordinate.m_yFixed = next->m_coordinate.m_yFixed;
@@ -862,11 +862,11 @@ void CGameObject::DeleteFirstEntryFromDestinationList()
 // FUNCTION: LEMBALL 0x00415ef0
 void CGameObject::AddDestination(const AiCoord& p_arg0)
 {
-	AiDestinationList* list = m_destinationList;
+	CAiDestinationList* list = m_destinationList;
 	if (list != 0 && list->m_count < list->m_capacity) {
 		unsigned short count = list->m_count;
 		list->m_count = count + 1;
-		AiDestinationEntry* entry = &list->m_entries[count];
+		CAiDestinationEntry* entry = &list->m_entries[count];
 		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = p_arg0.m_xFixed;
 		entry->m_coordinate.m_yFixed = p_arg0.m_yFixed;
@@ -878,11 +878,11 @@ void CGameObject::AddDestination(const AiCoord& p_arg0)
 void CGameObject::AlterDestination(const AiCoord& p_arg0)
 {
 	int i;
-	AiDestinationList* list = m_destinationList;
+	CAiDestinationList* list = m_destinationList;
 	if (list->m_count != 0) {
 		for (i = 0; i < list->m_count - 1; i++) {
-			AiDestinationEntry* entry = &list->m_entries[i];
-			AiDestinationEntry* next = entry + 1;
+			CAiDestinationEntry* entry = &list->m_entries[i];
+			CAiDestinationEntry* next = entry + 1;
 			entry->m_type = next->m_type;
 			entry->m_coordinate.m_xFixed = next->m_coordinate.m_xFixed;
 			entry->m_coordinate.m_yFixed = next->m_coordinate.m_yFixed;
@@ -892,12 +892,12 @@ void CGameObject::AlterDestination(const AiCoord& p_arg0)
 		list->m_count--;
 	}
 
-	AiDestinationList* destinationList = m_destinationList;
+	CAiDestinationList* destinationList = m_destinationList;
 	unsigned short count = destinationList->m_count;
 	if (count < destinationList->m_capacity) {
 		for (int i = count; i > 0; i--) {
-			AiDestinationEntry* entry = &destinationList->m_entries[i];
-			AiDestinationEntry* previous = entry - 1;
+			CAiDestinationEntry* entry = &destinationList->m_entries[i];
+			CAiDestinationEntry* previous = entry - 1;
 			entry->m_type = previous->m_type;
 			entry->m_coordinate.m_xFixed = previous->m_coordinate.m_xFixed;
 			entry->m_coordinate.m_yFixed = previous->m_coordinate.m_yFixed;
@@ -905,7 +905,7 @@ void CGameObject::AlterDestination(const AiCoord& p_arg0)
 			entry->m_metadata = previous->m_metadata;
 		}
 		destinationList->m_count++;
-		AiDestinationEntry* entry = destinationList->m_entries;
+		CAiDestinationEntry* entry = destinationList->m_entries;
 		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = p_arg0.m_xFixed;
 		entry->m_coordinate.m_yFixed = p_arg0.m_yFixed;

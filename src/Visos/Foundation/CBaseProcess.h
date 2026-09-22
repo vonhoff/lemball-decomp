@@ -16,7 +16,7 @@ public:
 	friend class CGame;
 	friend class CAi;
 	friend class CBaseFrontendProcess;
-	friend class TargetAbout;
+	friend class CAbout;
 
 private:
 	int m_returnState;  // 0x04

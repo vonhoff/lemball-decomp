@@ -11,9 +11,9 @@
 #include "../Network/CFileNetwork.h"
 #include "../Network/CTcpIpNetwork.h"
 #include "../Resources/ResourceTypeList.h"
-#include "../Target/TargetGraphicsDriver.h"
-#include "../Target/TargetGraphicsSystemState.h"
-#include "../Target/TargetPlatformServices.h"
+#include "../Target/CGraphicsDriver.h"
+#include "../Target/CGraphicsState.h"
+#include "../Target/CPlatformServices.h"
 #include "CArena.h"
 #include "CMasterInput.h"
 #include "CRamArena.h"
@@ -29,7 +29,7 @@
 #include <ctype.h>
 
 extern "C" unsigned long __stdcall timeGetTime(void);
-#include "Visos/Animation/MogloadStat.h"
+#include "Visos/Animation/CMogloadStat.h"
 #include "Visos/Foundation/CBaseQueue.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Network/CBaseNetwork.h"
@@ -359,7 +359,7 @@ bool InternalInpInit()
 	}
 
 	g_pMasterInputQueue->Attach(g_pInputTranslator, -0x32);
-	return TargetInputInit();
+	return InitInput();
 }
 
 // FUNCTION: LEMBALL 0x004591f0
@@ -367,7 +367,7 @@ bool InternalInpQuit()
 {
 	int result;
 
-	result = TargetInputQuit();
+	result = QuitInput();
 	g_pMasterInputQueue->Detach(g_pInputTranslator, -0x32);
 	delete g_pInputTranslator;
 	delete g_pMasterInput;
@@ -397,7 +397,7 @@ void InitSubSystems()
 	strmOk = InternalStrmInit();
 	dbgOk = InternalDbgInit();
 	g_nDebugInitialized = dbgOk;
-	TargetPlatformServicesInit();
+	InitPlatformServices();
 
 	*g_pSysOutput << "ViSOS v" << g_nVisosVersionMajor << "." << g_nVisosVersionMinor << "(" << 201 << ")"
 				  << "\n";
@@ -426,7 +426,7 @@ void InitSubSystems()
 	storage = operator new(0x20);
 	if (storage != 0) {
 		stat = (CBaseStat*) storage;
-		new (storage) MogloadStat("Main memory arena");
+		new (storage) CMogloadStat("Main memory arena");
 	}
 	else {
 		stat = 0;
@@ -450,7 +450,7 @@ void InitQuitSubSystems()
 		*g_pErrorOutput << g_szMemoryLeakDump;
 		g_pMasterArena->StreamOut(*g_pErrorOutput) << g_szMemoryLeakNewline;
 	}
-	TargetPlatformServicesQuit();
+	QuitPlatformServices();
 	InternalDbgQuit(g_nStartupNoWait);
 	InternalStrmQuit();
 	InternalMemQuit();
@@ -718,10 +718,10 @@ bool InternalGdiInit()
 {
 	void* storage;
 	CCursor* cursor;
-	TargetGraphicsSystemState* system;
+	CGraphicsState* system;
 
 	storage = operator new(0xc);
-	system = (TargetGraphicsSystemState*) storage;
+	system = (CGraphicsState*) storage;
 	if (system != 0) {
 		system->m_reserved04 = 0;
 		system->m_fallbackWarningShown = 0;
@@ -768,7 +768,7 @@ bool InternalGdiQuit()
 {
 	CSurface* surface;
 	CGdiDevice* device;
-	TargetGraphicsSystemState* system;
+	CGraphicsState* system;
 
 	delete g_pCursor;
 	surface = (CSurface*) g_pGdiHelperTarget;

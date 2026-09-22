@@ -3,8 +3,8 @@
 #include "../Messaging/CAckMessage.h"
 #include "../Messaging/CPulseMessage.h"
 #include "../Messaging/CWriteCBuff.h"
+#include "../Messaging/CWriteNcBuff.h"
 #include "../Messaging/CWritePacket.h"
-#include "../Messaging/WriteNcBuff.h"
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
 #include "CTcpIpNetwork.h"
@@ -52,7 +52,7 @@ void CWriteSocket::InternalSetDestAddr(CNetworkAddress* p_address)
 // FUNCTION: LEMBALL 0x0045fdf0
 void CWriteSocket::DeleteNcBuffers()
 {
-	WriteNcBuff* buffer;
+	CWriteNcBuff* buffer;
 
 	buffer = m_nonCriticalBuffer;
 	if (buffer != 0) {

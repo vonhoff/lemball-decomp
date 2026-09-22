@@ -13,7 +13,7 @@
 #include "../../Visos/Resources/CResFont.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Sound/CSoundView.h"
-#include "Views/Pause/PauseWindowFreeVramInterface.h"
+#include "Views/Pause/CPauseVramHandler.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnim.h"
 #include "Visos/Foundation/CTextManager.h"

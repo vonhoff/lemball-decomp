@@ -28,8 +28,8 @@ public:
 	void SetResId(unsigned long p_resourceId);
 	void SetVolumes(int p_effectVolume, int p_musicVolume);
 	void StopMusic(unsigned long p_handle);
-	void ResumeMusicCD(unsigned long p_handle);
-	void StopMusicCD(unsigned long p_handle);
+	void ResumeMusicCd(unsigned long p_handle);
+	void StopMusicCd(unsigned long p_handle);
 	void UseMusicCd(unsigned int p_enabled);
 	void SetMusicCdPath(char* p_path);
 	char* BuildDriverInfo();

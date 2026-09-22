@@ -4,7 +4,7 @@
 #include "CArena.h" // complete type
 
 // SIZE 0x50
-// VTABLE: LEMBALL 0x00498918 ArenaBase
+// VTABLE: LEMBALL 0x00498918 CArenaBase
 // VTABLE: LEMBALL 0x00498910 CCritical
 class CRamArena : public CArena {
 public:
