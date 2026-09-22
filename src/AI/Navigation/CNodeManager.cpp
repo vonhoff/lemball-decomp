@@ -57,6 +57,20 @@ CPt3 CNodeManager::GetNodePosition(int p_node)
 	return m_nodes[p_node].Position();
 }
 
+// FUNCTION: LEMBALL 0x004212c0
+void CNodeManager::GetNodeIntegerPosition(int p_node, int* p_x, int* p_y)
+{
+	m_nodes[p_node].ExtractIntegerPosition(p_x, p_y);
+}
+
+// FUNCTION: LEMBALL 0x00421440
+int CNodeManager::AddNode(int p_x, int p_y)
+{
+	int index = m_count++;
+	m_nodes[index].Initialise(p_x, p_y, 0);
+	return index;
+}
+
 // FUNCTION: LEMBALL 0x00421470
 void CNodeManager::LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsigned int p_skip)
 {
