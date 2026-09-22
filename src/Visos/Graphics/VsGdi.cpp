@@ -510,26 +510,19 @@ void Surface::SetLinePtrs()
 void Surface::AddToChangeList(const VsRect* p_rect)
 {
 	Surface* parent;
-	const short* origin;
-	const short* xy;
-	VsRect translated;
+	const VsPoint* origin;
+	short originX;
+	short originY;
 
 	parent = (Surface*) PvScrollableSurface::m_parentSurface;
 	if (parent != (Surface*) g_pGdiHelperTarget && PvScrollableSurface::m_flag74 != 0 &&
 		PvScrollableSurface::m_flag70 != 0) {
-		translated.m_width = p_rect->m_width;
-		translated.m_height = p_rect->m_height;
-		origin = &PvScrollableSurface::m_rect0c.m_x;
-		if (p_rect != 0) {
-			xy = &p_rect->m_x;
-		}
-		else {
-			xy = 0;
-		}
-		translated.m_x = xy[0];
-		translated.m_y = xy[1];
-		translated.m_x += origin[0];
-		translated.m_y += origin[1];
+		origin = &this->PvScrollableSurface::m_rect0c;
+		originX = origin->m_x;
+		originY = origin->m_y;
+		VsRect translated(*p_rect);
+		translated.m_x += originX;
+		translated.m_y += originY;
 		((Surface*) PvScrollableSurface::m_parentSurface)->AddToChangeList(&translated);
 		return;
 	}
