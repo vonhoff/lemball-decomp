@@ -148,7 +148,9 @@ void GunController::ActivateButtons(int p_active)
 void GunController::SetSpriteWindow()
 {
 	m_spriteWindow = new SpriteWindow();
-	VsRect createRect(0, 0, m_window->m_rect.m_width, m_window->m_rect.m_height);
+	VsRect createRect(m_window->m_rect);
+	createRect.m_x = 0;
+	createRect.m_y = 0;
 	m_spriteWindow->Create(createRect, m_window, 0);
 	m_spriteSurface = m_spriteWindow->m_gdi;
 }

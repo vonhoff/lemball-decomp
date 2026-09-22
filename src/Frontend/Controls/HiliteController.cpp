@@ -68,7 +68,9 @@ void HiliteController::SetHiliteWindow()
 	else {
 		m_hiliteWindow = new (storage) HiliteWindow();
 	}
-	VsRect rect(0, 0, m_window->m_rect.m_width, m_window->m_rect.m_height);
+	VsRect rect(m_window->m_rect);
+	rect.m_x = 0;
+	rect.m_y = 0;
 	m_hiliteWindow->Create(rect, (PvGWnd*) m_window, 0);
 	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
 }
