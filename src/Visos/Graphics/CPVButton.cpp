@@ -93,7 +93,7 @@ void CPVButton::Initialise()
 	m_drawCompleted = 0;
 	m_primitive = new CDrawingMark();
 	m_gdiFlags = 2;
-	m_messageHandler = 0;
+	m_messageQueue = 0;
 	m_controlMessage = 0;
 }
 
@@ -260,14 +260,14 @@ void CPVButton::_OnReleased(int p_flags)
 	if (m_autoDraw == 0) {
 		m_forceDrawCount = 1;
 	}
-	if (m_messageHandler != 0) {
+	if (m_messageQueue != 0) {
 		converted = ConvertDoubleClick(p_flags);
 		posted.time = timeGetTime();
 		posted.code = (int) m_controlMessage;
 		posted.payload = this;
 		posted.type = 0xc;
 		posted.source = (void*) converted;
-		((CBaseQueue*) m_messageHandler)->Post(posted);
+		m_messageQueue->Post(posted);
 	}
 }
 
@@ -280,14 +280,14 @@ void CPVButton::_OnPressed(int p_flags)
 	if (m_autoDraw == 0) {
 		m_forceDrawCount = 1;
 	}
-	if (m_messageHandler != 0) {
+	if (m_messageQueue != 0) {
 		converted = ConvertDoubleClick(p_flags);
 		posted.time = timeGetTime();
 		posted.code = (int) m_controlMessage;
 		posted.payload = this;
 		posted.type = 0xb;
 		posted.source = (void*) converted;
-		((CBaseQueue*) m_messageHandler)->Post(posted);
+		m_messageQueue->Post(posted);
 	}
 }
 
@@ -296,12 +296,12 @@ void CPVButton::_OnEnterButton()
 {
 	Message posted;
 
-	if (m_messageHandler != 0) {
+	if (m_messageQueue != 0) {
 		posted.time = timeGetTime();
 		posted.code = (int) m_controlMessage;
 		posted.type = 0xd;
 		posted.payload = this;
-		((CBaseQueue*) m_messageHandler)->Post(posted);
+		m_messageQueue->Post(posted);
 	}
 }
 
@@ -310,12 +310,12 @@ void CPVButton::_OnExitButton()
 {
 	Message posted;
 
-	if (m_messageHandler != 0) {
+	if (m_messageQueue != 0) {
 		posted.time = timeGetTime();
 		posted.code = (int) m_controlMessage;
 		posted.type = 0xe;
 		posted.payload = this;
-		((CBaseQueue*) m_messageHandler)->Post(posted);
+		m_messageQueue->Post(posted);
 	}
 }
 

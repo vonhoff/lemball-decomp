@@ -189,7 +189,7 @@ void CPasswordDrawer::Load()
 													m_buttonAnimIds[*keyMap],
 													3);
 			m_buttons[*keyMap]->m_controlMessage = 0xabcd00b0 + *keyMap;
-			m_buttons[*keyMap]->m_messageHandler = g_pMasterInputQueue;
+			m_buttons[*keyMap]->m_messageQueue = g_pMasterInputQueue;
 			offsetPtr[0] = gridX - m_layout[2];
 			offsetPtr[1] = buttonY - m_layout[3];
 			CGDI* buttonGdi = m_buttons[*keyMap]->m_gdi;

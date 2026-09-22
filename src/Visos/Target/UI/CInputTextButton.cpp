@@ -14,7 +14,7 @@ CInputTextButton::CInputTextButton(const CVsRect& p_rect,
 {
 	m_ownedText = 0;
 	SetOwnedText(p_text);
-	m_messageHandler = g_pMasterInputQueue;
+	m_messageQueue = g_pMasterInputQueue;
 	m_controlMessage = p_controlMessage;
 }
 

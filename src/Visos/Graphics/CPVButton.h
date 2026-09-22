@@ -5,6 +5,7 @@
 #include "CGWnd.h"           // complete type
 #include "CHotAreaHandler.h" // complete type
 #include "CSolidRect.h"
+class CBaseQueue;
 class CPrimitive;
 class CPVGWnd;
 class CVsRect;
@@ -68,7 +69,7 @@ private:
 	short m_buttonY;                 // 0xde
 	CPrimitive* m_primitive;         // 0xe0
 	CSolidRect m_clipRect[1];        // 0xe4
-	void* m_messageHandler;          // 0xf4
+	CBaseQueue* m_messageQueue;      // 0xf4
 	unsigned int m_autoDraw;         // 0xf8
 	unsigned int m_drawCompleted;    // 0xfc
 	short m_clickX;                  // 0x100

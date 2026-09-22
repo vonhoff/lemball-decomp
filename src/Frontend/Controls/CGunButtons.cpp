@@ -248,7 +248,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 		CSurface* surface = m_graphicButton->m_gdi->m_renderTarget;
 		m_graphicButton->SetAutoDraw(0);
 		surface->m_flag70 = 0;
-		m_graphicButton->m_messageHandler = g_pMasterInputQueue;
+		m_graphicButton->m_messageQueue = g_pMasterInputQueue;
 		m_graphicButton->m_controlMessage = m_controlMessage;
 		m_trackerButton = 0;
 		return;
@@ -264,7 +264,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 	CSurface* surface = m_trackerButton->m_gdi->m_renderTarget;
 	m_trackerButton->SetAutoDraw(0);
 	surface->m_flag70 = 0;
-	m_trackerButton->m_messageHandler = g_pMasterInputQueue;
+	m_trackerButton->m_messageQueue = g_pMasterInputQueue;
 	m_trackerButton->m_controlMessage = m_controlMessage;
 	m_graphicButton = 0;
 }

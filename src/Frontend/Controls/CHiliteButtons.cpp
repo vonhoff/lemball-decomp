@@ -158,7 +158,7 @@ void CHiliteButtons::LoadFaces(unsigned long* p_animIds)
 	CSurface* surface = m_button->m_gdi->m_renderTarget;
 	m_button->SetAutoDraw(0);
 	surface->m_flag70 = 0;
-	m_button->m_messageHandler = g_pMasterInputQueue;
+	m_button->m_messageQueue = g_pMasterInputQueue;
 	m_button->m_controlMessage = m_controlMessage;
 }
 
