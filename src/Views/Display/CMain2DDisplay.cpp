@@ -54,26 +54,26 @@ extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int p_index);
 extern MenuList* g_apMainDisplayMenus[4];
 
 // FUNCTION: LEMBALL 0x00431590
-CMain2DDisplay::CMain2DDisplay(CGame* p_arg0)
+CMain2DDisplay::CMain2DDisplay(CGame* p_game)
 {
 	m_lowHeight = 0;
 	m_lowWidth = 0;
 	m_highHeight = 0;
-	m_pauseWindow = 0;
+	m_quitRequested = 0;
 	m_highWidth = 0;
-	m_drawPrimitive = 0;
+	m_loadingDraw = 0;
 	m_frameCount = 0;
-	m_game = p_arg0;
-	m_activeProcess = 0;
+	m_game = p_game;
+	m_ai = 0;
 	m_windowReady = 1;
-	m_activePalette = 0;
+	m_map = 0;
 	m_drawer = 0;
 	m_drawerClosing = 1;
 	m_gdiFlags = 0x258;
 	m_currentFlow = FLOW_MAIN_OPTIONS_2;
-	m_background = CResZrle::Load(RES_CURSORS_PAW_CURSOR);
-	m_primaryPalette = CResPalette::Load(RES_GAME_GAMEPALETTE);
-	m_secondaryPalette = CResPalette::Load(RES_GAME_TITLEPALETTE);
+	m_cursorResource = CResZrle::Load(RES_CURSORS_PAW_CURSOR);
+	m_gamePalette = CResPalette::Load(RES_GAME_GAMEPALETTE);
+	m_titlePalette = CResPalette::Load(RES_GAME_TITLEPALETTE);
 	CursorChangeType(CURSOR_DISPLAY_PAW, 0);
 	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), -0x19);
 	m_lowWidth = 0x140;
@@ -88,11 +88,11 @@ CMain2DDisplay::~CMain2DDisplay()
 {
 	CResBase* resource;
 
-	resource = (CResBase*) m_secondaryPalette;
+	resource = (CResBase*) m_titlePalette;
 	resource->UnLoad();
-	resource = (CResBase*) m_primaryPalette;
+	resource = (CResBase*) m_gamePalette;
 	resource->UnLoad();
-	resource = (CResBase*) m_background;
+	resource = (CResBase*) m_cursorResource;
 	resource->UnLoad();
 	g_pMasterInputQueue->Detach(static_cast<CBaseQueueHandler*>(this), -0x19);
 }
@@ -136,8 +136,8 @@ void CMain2DDisplay::OnPaint(const CVsRect& p_rect)
 {
 	if (m_gdi != 0) {
 		if (IsWindowValid() != 0) {
-			if (m_drawPrimitive != 0) {
-				((CCdLoadAnimDraw*) m_drawPrimitive)->Draw();
+			if (m_loadingDraw != 0) {
+				((CCdLoadAnimDraw*) m_loadingDraw)->Draw();
 			}
 			if (m_drawer != 0) {
 				((CBaseFrontendDrawer*) m_drawer)->Draw(p_rect);
@@ -285,15 +285,15 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 	case 0x13: {
 		CAi* ai;
 
-		m_activeProcess = (CAi*) m_game->m_process;
+		m_ai = (CAi*) m_game->m_process;
 		ai = (CAi*) m_game->m_process;
-		m_activePalette = ai->m_map;
+		m_map = ai->m_map;
 		storage = operator new(0x2428);
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
-		m_drawer = new (storage) C2D(this, (CAi*) m_activeProcess, m_gdi, (CMap*) m_activePalette, localRect);
+		m_drawer = new (storage) C2D(this, (CAi*) m_ai, m_gdi, (CMap*) m_map, localRect);
 		break;
 	}
 	case 10:
@@ -388,7 +388,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 		default:
 			return 1;
 		case 1:
-			m_pauseWindow = (void*) 1;
+			m_quitRequested = 1;
 			break;
 		case 2:
 			helpPath[0] = 0;
@@ -446,7 +446,7 @@ void CMain2DDisplay::OnDriverChange()
 // FUNCTION: LEMBALL 0x00431ee0
 int CMain2DDisplay::QuitYet()
 {
-	if (m_pauseWindow != 0) {
+	if (m_quitRequested != 0) {
 		return 2;
 	}
 	if (m_drawer != 0) {
@@ -458,7 +458,7 @@ int CMain2DDisplay::QuitYet()
 // FUNCTION: LEMBALL 0x00431f10
 int CMain2DDisplay::GetReturnState()
 {
-	if (m_pauseWindow == 0 && m_drawer != 0) {
+	if (m_quitRequested == 0 && m_drawer != 0) {
 		return m_drawer->GetReturnState();
 	}
 	return 0;

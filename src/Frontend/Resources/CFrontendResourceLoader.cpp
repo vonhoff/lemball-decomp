@@ -55,7 +55,7 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	m_strings = (CResString**) operator new(4);
 	m_movies = (CResMovie**) operator new(0x18);
 	m_loadAnim = new CCdLoadAnim(p_display->m_gdi, p_display);
-	p_display->m_drawPrimitive = static_cast<CCdLoadAnimDraw*>(m_loadAnim);
+	p_display->m_loadingDraw = static_cast<CCdLoadAnimDraw*>(m_loadAnim);
 	m_totalResources += g_pSoundView->GetnEffects((unsigned short) p_soundState);
 	m_loadAnim->InitialiseScreen();
 	m_loadedResources = 0;
@@ -85,7 +85,7 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	for (i = 0; i < 3; i++) {
 		LoadMovie(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1);
 	}
-	p_display->m_drawPrimitive = 0;
+	p_display->m_loadingDraw = 0;
 	if (m_loadAnim != 0) {
 		delete m_loadAnim;
 	}

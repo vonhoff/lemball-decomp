@@ -13,7 +13,7 @@ class CGame;
 // VTABLE: LEMBALL 0x00496ba8 CBaseQueueHandler
 class CMain2DDisplay : public CGWnd, public CBaseQueueHandler {
 public:
-	CMain2DDisplay(CGame* p_arg0);
+	CMain2DDisplay(CGame* p_game);
 	CVsRect GetUseRect(int p_x, int p_y);
 	virtual bool GetMenu(int& p_count, MenuList*** p_menu); // vtable+0x0c
 	bool IsWindowValid();
@@ -46,16 +46,16 @@ public:
 
 private:
 	unsigned int m_windowReady;    // 0xa0
-	void* m_drawPrimitive;         // 0xa4
-	void* m_background;            // 0xa8
-	void* m_primaryPalette;        // 0xac
-	void* m_secondaryPalette;      // 0xb0
-	void* m_activePalette;         // 0xb4
+	void* m_loadingDraw;           // 0xa4
+	void* m_cursorResource;        // 0xa8
+	void* m_gamePalette;           // 0xac
+	void* m_titlePalette;          // 0xb0
+	void* m_map;                   // 0xb4
 	unsigned int m_frameCount;     // 0xb8
 	unsigned int m_drawerClosing;  // 0xbc
 	CGame* m_game;                 // 0xc0
-	void* m_activeProcess;         // 0xc4
-	void* m_pauseWindow;           // 0xc8
+	void* m_ai;                    // 0xc4
+	unsigned int m_quitRequested;  // 0xc8
 	eFlowProcesses m_currentFlow;  // 0xcc
 	CDrawingMark m_drawingMark;    // 0xd0
 	class CDrawer* m_drawer;       // 0xd4
