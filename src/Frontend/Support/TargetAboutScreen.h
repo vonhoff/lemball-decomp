@@ -1,56 +1,56 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_TARGETABOUTSCREEN_H
 #define LEMBALL_FRONTEND_SUPPORT_TARGETABOUTSCREEN_H
 
-#include "../../Visos/Foundation/BaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/VsRect.h"           // complete type
-#include "../../Visos/Foundation/VsSize.h"           // complete type
-#include "../../Visos/Graphics/BitmapRes.h"          // complete type
-#include "../../Visos/Graphics/Drawer.h"             // complete type
-#include "../../Visos/Graphics/DrawingMark.h"        // complete type
-#include "../../Visos/Graphics/Line.h"               // complete type
-#include "../../Visos/Graphics/SolidRect.h"          // complete type
+#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/CVsRect.h"           // complete type
+#include "../../Visos/Foundation/CVsSize.h"           // complete type
+#include "../../Visos/Graphics/BitmapRes.h"           // complete type
+#include "../../Visos/Graphics/CDrawer.h"             // complete type
+#include "../../Visos/Graphics/CDrawingMark.h"        // complete type
+#include "../../Visos/Graphics/CLine.h"               // complete type
+#include "../../Visos/Graphics/CSolidRect.h"          // complete type
 
-class Gdi;
-class Main2DDisplay;
-class ResBitmap;
-class ResString;
-class TextManager;
+class CGdi;
+class CMain2DDisplay;
+class CResBitmap;
+class CResString;
+class CTextManager;
 // SIZE 0x9c
-// VTABLE: LEMBALL 0x00497cb0 Drawer
-// VTABLE: LEMBALL 0x00497ca0 BaseQueueHandler
-class TargetAboutScreen : public Drawer, public BaseQueueHandler {
+// VTABLE: LEMBALL 0x00497cb0 CDrawer
+// VTABLE: LEMBALL 0x00497ca0 CBaseQueueHandler
+class TargetAboutScreen : public CDrawer, public CBaseQueueHandler {
 public:
-	TargetAboutScreen(Main2DDisplay* p_display, Gdi* p_gdi, const VsRect& p_rect);
+	TargetAboutScreen(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect);
 	virtual ~TargetAboutScreen();               // vtable+0x00
-	virtual void Draw(const VsRect& p_rect);    // vtable+0x08
-	virtual void OnSize(const VsRect& p_rect);  // vtable+0x10
+	virtual void Draw(const CVsRect& p_rect);   // vtable+0x08
+	virtual void OnSize(const CVsRect& p_rect); // vtable+0x10
 	virtual void ResetPrimitives();             // vtable+0x20
 	virtual int GetReturnState();               // vtable+0x28
 	virtual bool QuitYet();                     // vtable+0x2c
 	virtual void OnDriverChange();              // vtable+0x30
-	virtual int ProcessMsg(Message* p_message); // BaseQueueHandler vtable+0x08
+	virtual int ProcessMsg(Message* p_message); // CBaseQueueHandler vtable+0x08
 	void DrawChangedRegion();
 	void DrawRegistrationText();
 
-	friend class Main2DDisplay;
+	friend class CMain2DDisplay;
 
 private:
-	unsigned int m_returnState;    // 0x14
-	VsSize m_size;                 // 0x18
-	Main2DDisplay* m_display;      // 0x1c
-	Gdi* m_gdi;                    // 0x20
-	Line m_line;                   // 0x24
-	DrawingMark m_drawingMark;     // 0x34
-	unsigned int m_complete;       // 0x38
-	BitmapRes m_bitmap;            // 0x3c
-	ResBitmap* m_backgroundBitmap; // 0x60
-	SolidRect m_rects[2];          // 0x64
-	ResString* m_aboutString;      // 0x84
-	char* m_aboutText;             // 0x88
-	class PvGWnd* m_textWindow;    // 0x8c
-	TextManager* m_textManager;    // 0x90
-	unsigned int m_startTime;      // 0x94
-	unsigned int m_endTime;        // 0x98
+	unsigned int m_returnState;     // 0x14
+	CVsSize m_size;                 // 0x18
+	CMain2DDisplay* m_display;      // 0x1c
+	CGdi* m_gdi;                    // 0x20
+	CLine m_line;                   // 0x24
+	CDrawingMark m_drawingMark;     // 0x34
+	unsigned int m_complete;        // 0x38
+	BitmapRes m_bitmap;             // 0x3c
+	CResBitmap* m_backgroundBitmap; // 0x60
+	CSolidRect m_rects[2];          // 0x64
+	CResString* m_aboutString;      // 0x84
+	char* m_aboutText;              // 0x88
+	class CPvGWnd* m_textWindow;    // 0x8c
+	CTextManager* m_textManager;    // 0x90
+	unsigned int m_startTime;       // 0x94
+	unsigned int m_endTime;         // 0x98
 };
 
 // SYNTHETIC: LEMBALL 0x0044c0d0

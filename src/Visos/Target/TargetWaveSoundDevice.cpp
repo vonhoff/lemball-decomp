@@ -1,8 +1,8 @@
 #include "TargetWaveSoundDevice.h"
 
-#include "../Foundation/VsOStream.h"
+#include "../Foundation/CVsOStream.h"
 #include "TargetWaveEffect.h"
-#include "Visos/Sound/BaseSoundDevice.h"
+#include "Visos/Sound/CBaseSoundDevice.h"
 
 #include <new.h>
 
@@ -464,7 +464,7 @@ unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsign
 // FUNCTION: LEMBALL 0x0047d220
 unsigned char TargetWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume)
 {
-	BaseSoundDevice* device;
+	CBaseSoundDevice* device;
 
 	device = this;
 	return device->EffectPlay(p_effectId, (unsigned short) 0xff00, p_volume);

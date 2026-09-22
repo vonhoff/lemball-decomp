@@ -1,0 +1,22 @@
+#ifndef LEMBALL_VISOS_RESOURCES_CRAWREAD_H
+#define LEMBALL_VISOS_RESOURCES_CRAWREAD_H
+
+struct _Filet;
+
+class CRawRead {
+public:
+	bool NameCmp(char* p_path, char* p_name);
+	bool Open(char* p_path, char* p_mode);
+	unsigned char InputByte();
+	unsigned int InputDword();
+};
+
+extern _Filet* g_pMogFile;
+
+// LIBRARY: LEMBALL 0x0047fac0
+// _toupper
+
+// LIBRARY: LEMBALL 0x0047fca0 SYMBOL
+// __purecall
+
+#endif

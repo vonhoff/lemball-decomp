@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETWAVESOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_TARGETWAVESOUNDDEVICE_H
 
-#include "../Sound/BaseSoundDevice.h" // complete type
+#include "../Sound/CBaseSoundDevice.h" // complete type
 
 #define WIN32_LEAN_AND_MEAN
 // clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
@@ -13,7 +13,7 @@ class TargetWaveEffect;
 
 // SIZE 0xb8
 // VTABLE: LEMBALL 0x0049ac38
-class TargetWaveSoundDevice : public BaseSoundDevice {
+class TargetWaveSoundDevice : public CBaseSoundDevice {
 public:
 	TargetWaveSoundDevice(int p_channelCount);
 	virtual ~TargetWaveSoundDevice();

@@ -1,0 +1,210 @@
+#include "CPanel.h"
+
+#include "../../AI/Navigation/CAi.h"
+#include "../../Visos/Foundation/CBaseQueue.h"
+#include "../../Visos/Graphics/CPvGWnd.h"
+#include "../../Visos/Resources/CResAnim.h"
+#include "../Display/C2D.h"
+#include "../Sound/CSoundView.h"
+#include "CPanelLemming.h"
+#include "CPanelPauseButton.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/CBaseQueueHandler.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Resources/CResZrle.h"
+
+#include <new.h>
+
+// FUNCTION: LEMBALL 0x00442f00
+CVsPoint* CPanel::GetPausePos(CVsPoint* p_result)
+{
+	short width = m_window->m_innerRect.m_width;
+	short height = m_window->m_innerRect.m_height;
+	if (width * height == 0) {
+		width = m_window->m_rect.m_width;
+		height = m_window->m_rect.m_height;
+	}
+	p_result->m_x = (short) (((int) (short) ((int) width / (int) m_window->m_zoom) - (int) m_panelSize.m_x) / 2);
+	p_result->m_y = (short) ((int) height / (int) m_window->m_zoom - (int) m_pauseSize.m_y);
+	return p_result;
+}
+
+// FUNCTION: LEMBALL 0x00442f80
+CPanel::CPanel(C2D* p_arg0) : CBaseQueueHandler()
+{
+	m_buttonSize.m_x = 0;
+	m_buttonSize.m_y = 0;
+	m_balloonSize.m_x = 0;
+	m_balloonSize.m_y = 0;
+	m_pauseSize.m_x = 0;
+	m_pauseSize.m_y = 0;
+	m_panelSize.m_x = 0;
+	m_panelSize.m_y = 0;
+	m_panelPosition.m_x = 0;
+	m_panelPosition.m_y = 0;
+	m_game = p_arg0;
+	m_window = (CPvGWnd*) p_arg0->m_display;
+	m_ai = p_arg0->m_ai;
+	m_resources[0] = CResAnim::Load(0x2d);
+	m_resources[1] = CResAnim::Load(0x2a);
+	m_resources[2] = CResAnim::Load(0x2c);
+	m_resources[3] = CResAnim::Load(0x2b);
+
+	m_buttonSize.m_x = m_resources[1]->m_animationEntries[0].m_width;
+	m_buttonSize.m_y = m_resources[1]->m_animationEntries[0].m_height;
+	m_balloonSize.m_x = m_resources[2]->m_animationEntries[0].m_width;
+	m_balloonSize.m_y = m_resources[2]->m_animationEntries[0].m_height;
+	m_pauseSize.m_x = m_resources[0]->m_animationEntries[0].m_width;
+	m_pauseSize.m_y = m_resources[0]->m_animationEntries[0].m_height;
+	m_panelSize.m_x = m_pauseSize.m_x;
+	m_panelSize.m_y = m_pauseSize.m_y;
+	m_panelSize.m_x = (short) (m_panelSize.m_x + (m_balloonSize.m_x + m_buttonSize.m_x) * 4);
+	CVsPoint position;
+	GetPausePos(&position);
+	m_panelPosition.m_x = position.m_x;
+	m_panelPosition.m_y = position.m_y;
+	void* storage = operator new(0x13c);
+	if (storage != 0) {
+		m_pauseButton = new (storage) CPanelPauseButton(this, position, m_window, 0x2d, 3);
+	}
+	else {
+		m_pauseButton = 0;
+	}
+
+	position.m_x = position.m_x + m_pauseSize.m_x;
+	CPanelLemming** lemming = m_lemmings;
+	for (int i = 0; i < 4; i++) {
+		storage = operator new(0x2c);
+		if (storage != 0) {
+			*lemming = new (storage) CPanelLemming(m_ai->m_networkLemmings[i], position, this);
+		}
+		else {
+			*lemming = 0;
+		}
+		lemming++;
+	}
+	g_pMasterInputQueue->Attach(this, 0);
+}
+
+// FUNCTION: LEMBALL 0x00443140
+CPanel::~CPanel()
+{
+	int count;
+	CPanelLemming** lemming;
+	lemming = m_lemmings;
+	g_pMasterInputQueue->Detach(this, 0);
+	count = 4;
+	do {
+		delete *lemming;
+		lemming++;
+	} while (--count != 0);
+	m_resources[3]->UnLoad();
+	m_resources[2]->UnLoad();
+	m_resources[1]->UnLoad();
+	m_resources[0]->UnLoad();
+	if (m_pauseButton != 0) {
+		delete m_pauseButton;
+	}
+}
+
+// Ownership inferred from the panel, AI, and panel-lemming field layouts.
+// FUNCTION: LEMBALL 0x004431c0
+void CPanel::RefreshLemmings()
+{
+	for (int i = 0; i < 4; i++) {
+		m_lemmings[i]->m_lemming = m_ai->m_networkLemmings[i];
+	}
+}
+
+// FUNCTION: LEMBALL 0x004431f0
+void CPanel::OnSize()
+{
+	CVsPoint calculatedPosition;
+	CVsPoint position;
+	CVsPoint* calculated = GetPausePos(&calculatedPosition);
+	position.m_x = m_panelPosition.m_x = calculated->m_x;
+	position.m_y = m_panelPosition.m_y = calculated->m_y;
+	m_pauseButton->Move(position);
+	position.m_x += m_pauseSize.m_x;
+	CPanelLemming** lemming = m_lemmings;
+	int count = 4;
+	do {
+		(*lemming)->Move(position);
+		lemming++;
+		count--;
+	} while (count != 0);
+}
+
+// FUNCTION: LEMBALL 0x00443250
+void CPanel::Process()
+{
+	CPanelLemming** lemming = m_lemmings;
+	int count = 4;
+
+	do {
+		(*lemming)->UpdateStatus();
+		lemming++;
+		count--;
+	} while (count != 0);
+}
+
+// FUNCTION: LEMBALL 0x00443270
+void CPanel::SetPause(unsigned int p_paused)
+{
+	m_game->SetPause(p_paused);
+	CPanelPauseButton* pauseButton = m_pauseButton;
+	unsigned int paused = m_game->m_paused;
+	pauseButton->m_toggled = paused;
+	pauseButton->m_enabled = paused;
+}
+
+// FUNCTION: LEMBALL 0x004432a0
+unsigned long CPanel::TranslateKey(unsigned long p_key)
+{
+	switch (p_key) {
+	case 0x14:
+		return 8;
+	default:
+		return 0;
+	}
+}
+
+// FUNCTION: LEMBALL 0x004432c0
+int CPanel::ProcessMsg(Message* p_message)
+{
+	if (m_game->m_paused == 0 && m_game->m_ai->m_gameStatus != 1) {
+		unsigned int type = p_message->type;
+		switch (type) {
+		case 4:
+			if (TranslateKey(p_message->code) == 8) {
+				g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
+				unsigned int pause = m_game->m_paused == 0;
+				m_game->TriggerPause((unsigned char) pause);
+				CPanelPauseButton* pauseButton = m_pauseButton;
+				unsigned int paused = m_game->m_paused;
+				pauseButton->m_toggled = paused;
+				pauseButton->m_enabled = paused;
+				return 1;
+			}
+			break;
+		}
+		return 0;
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00443360
+bool CPanel::MouseInPanel(const CVsPoint& p_point)
+{
+	short panelWidth = m_panelSize.m_x;
+	short panelX = m_panelPosition.m_x;
+	short panelHeight = m_panelSize.m_y;
+	short panelY = m_panelPosition.m_y;
+	if (panelX <= p_point.m_x && (short) (panelWidth + panelX) > p_point.m_x && panelY <= p_point.m_y &&
+		(short) (panelHeight + panelY) > p_point.m_y) {
+		return true;
+	}
+	return false;
+}

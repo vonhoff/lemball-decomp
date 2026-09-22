@@ -1,30 +1,30 @@
 #include "TargetAboutScreen.h"
 
-#include "../../Views/Display/Main2DDisplay.h"
-#include "../../Visos/Foundation/BaseQueue.h"
-#include "../../Visos/Foundation/ChangeList.h"
-#include "../../Visos/Foundation/TextManager.h"
+#include "../../Views/Display/CMain2DDisplay.h"
+#include "../../Visos/Foundation/CBaseQueue.h"
+#include "../../Visos/Foundation/CChangeList.h"
+#include "../../Visos/Foundation/CTextManager.h"
 #include "../../Visos/Foundation/VsString.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/Cursor.h"
-#include "../../Visos/Graphics/GWnd.h"
-#include "../../Visos/Graphics/Gdi.h"
-#include "../../Visos/Graphics/HotAreaHandler.h"
+#include "../../Visos/Graphics/CCursor.h"
+#include "../../Visos/Graphics/CGWnd.h"
+#include "../../Visos/Graphics/CGdi.h"
+#include "../../Visos/Graphics/CHotAreaHandler.h"
 #include "../../Visos/Graphics/VsGdi.h"
+#include "../../Visos/Resources/CMogRes.h"
+#include "../../Visos/Resources/CResBitmap.h"
+#include "../../Visos/Resources/CResFont.h"
+#include "../../Visos/Resources/CResString.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "../../Visos/Resources/MogRes.h"
-#include "../../Visos/Resources/ResBitmap.h"
-#include "../../Visos/Resources/ResFont.h"
-#include "../../Visos/Resources/ResString.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVsSize.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/VsPoint.h"
-#include "Visos/Foundation/VsRect.h"
-#include "Visos/Foundation/VsSize.h"
 #include "Visos/Graphics/BitmapRes.h"
-#include "Visos/Graphics/DrawingMark.h"
-#include "Visos/Graphics/Line.h"
-#include "Visos/Graphics/PvGWnd.h"
-#include "Visos/Graphics/SolidRect.h"
+#include "Visos/Graphics/CDrawingMark.h"
+#include "Visos/Graphics/CLine.h"
+#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CSolidRect.h"
 
 #include <new.h>
 #include <string.h>
@@ -43,13 +43,13 @@ char g_szAboutWeatherManKey[] = "John Ketley is a Weatherman, and so is Michael 
 // GLOBAL: LEMBALL 0x0049fa40
 char g_szVisosBuild[] = "ViSOS Build ";
 
-struct AboutTextWindowBase : public GWnd, public HotAreaHandler {};
+struct AboutTextWindowBase : public CGWnd, public CHotAreaHandler {};
 
 // GLOBAL: LEMBALL 0x004a78d0
 char g_szVisosBuildBuffer[80];
 
 // FUNCTION: LEMBALL 0x0044b750
-TargetAboutScreen::TargetAboutScreen(Main2DDisplay* p_display, Gdi* p_gdi, const VsRect& p_rect)
+TargetAboutScreen::TargetAboutScreen(CMain2DDisplay* p_display, CGdi* p_gdi, const CVsRect& p_rect)
 {
 	void* storage;
 
@@ -62,18 +62,18 @@ TargetAboutScreen::TargetAboutScreen(Main2DDisplay* p_display, Gdi* p_gdi, const
 	m_size.m_width = p_rect.m_width;
 	m_size.m_height = p_rect.m_height;
 	p_display->AttachPalette(RES_REGISTRATION_VISOS_PALETTE);
-	m_backgroundBitmap = ResBitmap::Load(RES_REGISTRATION_VISOS_LOGO);
+	m_backgroundBitmap = CResBitmap::Load(RES_REGISTRATION_VISOS_LOGO);
 	m_textWindow = 0;
 	storage = operator new(0x24);
 	if (storage != 0) {
-		m_textManager = new (storage) TextManager(0x2b6, 1, 10, 0);
+		m_textManager = new (storage) CTextManager(0x2b6, 1, 10, 0);
 	}
 	else {
 		m_textManager = 0;
 	}
 	m_textManager->LoadFont(RES_GAME_FONT3);
-	m_aboutString = ResString::Load(RES_REGISTRATION_FINGERPRINT);
-	ResString* aboutString = m_aboutString;
+	m_aboutString = CResString::Load(RES_REGISTRATION_FINGERPRINT);
+	CResString* aboutString = m_aboutString;
 	if (aboutString->m_loaded != 0) {
 		aboutString->m_age = 0;
 	}
@@ -105,7 +105,7 @@ TargetAboutScreen::~TargetAboutScreen()
 }
 
 // FUNCTION: LEMBALL 0x0044b9e0
-void TargetAboutScreen::Draw(const VsRect& p_rect)
+void TargetAboutScreen::Draw(const CVsRect& p_rect)
 {
 	if (m_gdi != 0) {
 		DrawChangedRegion();
@@ -116,8 +116,8 @@ void TargetAboutScreen::Draw(const VsRect& p_rect)
 void TargetAboutScreen::DrawRegistrationText()
 {
 	unsigned char* key = (unsigned char*) g_szAboutWeatherManKey;
-	ResFont* font;
-	VsSize size;
+	CResFont* font;
+	CVsSize size;
 	int labelY;
 	int index;
 
@@ -125,24 +125,24 @@ void TargetAboutScreen::DrawRegistrationText()
 	font->GetSize(&size, g_szRegisteredTo, 0x20);
 	labelY = (int) (m_size.m_height / 2) - (int) (size.m_height / 2);
 	{
-		VsSize advance;
+		CVsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		VsPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY);
+		CVsPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY);
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, 0);
 	}
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	VsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
 	{
-		VsSize* measuredSize = font->GetSize(&size, g_szVisosBuildBuffer, 0x20);
+		CVsSize* measuredSize = font->GetSize(&size, g_szVisosBuildBuffer, 0x20);
 		size.m_width = measuredSize->m_width;
 		size.m_height = measuredSize->m_height;
 	}
 	{
-		VsSize advance;
+		CVsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		VsPoint position((short) (m_size.m_width - size.m_width) / 2, (short) (m_size.m_height - size.m_height) / 2);
+		CVsPoint position((short) (m_size.m_width - size.m_width) / 2, (short) (m_size.m_height - size.m_height) / 2);
 		position.m_y += size.m_height * 4;
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, 0x20, 0);
 	}
@@ -154,24 +154,24 @@ void TargetAboutScreen::DrawRegistrationText()
 	}
 	g_szAboutDecodeBuffer[index] = '\0';
 	{
-		VsSize* measuredSize = font->GetSize(&size, g_szAboutDecodeBuffer, 0x20);
+		CVsSize* measuredSize = font->GetSize(&size, g_szAboutDecodeBuffer, 0x20);
 		size.m_width = measuredSize->m_width;
 		size.m_height = measuredSize->m_height;
 	}
 	{
-		VsSize advance;
+		CVsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		VsPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY + 0x23);
+		CVsPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY + 0x23);
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szAboutDecodeBuffer, 0x20, 0);
 	}
 	m_textManager->ResetPrimitives();
 }
 
 // FUNCTION: LEMBALL 0x0044bc50
-void TargetAboutScreen::OnSize(const VsRect& p_rect)
+void TargetAboutScreen::OnSize(const CVsRect& p_rect)
 {
-	VsPoint position;
+	CVsPoint position;
 	int textY;
 	int textX;
 
@@ -189,23 +189,23 @@ void TargetAboutScreen::OnSize(const VsRect& p_rect)
 // FUNCTION: LEMBALL 0x0044bca0
 void TargetAboutScreen::DrawChangedRegion()
 {
-	ChangeList* changes;
+	CChangeList* changes;
 	ChangeListItem* item;
 	int itemCount;
 	int index;
-	VsRect area;
-	ResBitmap* bitmap;
+	CVsRect area;
+	CResBitmap* bitmap;
 
 	changes = m_gdi->m_renderTarget->GetChangeList();
 	itemCount = changes->GetNumItems();
 	index = changes->GetDrawMark();
 	if (index < itemCount) {
 		item = changes->GetNItem(index);
-		area = *(VsRect*) item;
+		area = *(CVsRect*) item;
 		index = index + 1;
 		while (index < itemCount) {
 			item = changes->GetNItem(index);
-			area.ExpandToInclude(*(VsRect*) item);
+			area.ExpandToInclude(*(CVsRect*) item);
 			index = index + 1;
 		}
 		if (0 < (int) area.m_height * (int) area.m_width) {

@@ -1,0 +1,349 @@
+#include "CGameStatus.h"
+
+#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/VsString.h"
+
+#include <string.h>
+
+#pragma intrinsic(strlen, strcpy, strcmp, memcpy)
+
+extern char g_szPasswordZeroes[9];
+extern char g_szUnlockPassword[11];
+extern char g_szPasswordCheatMessage[31];
+
+// FUNCTION: LEMBALL 0x00406a90
+CGameStatus::CGameStatus()
+{
+	int zero = 0;
+	int* p;
+
+	m_level = zero;
+	m_levelState = zero;
+	m_skill = zero;
+	m_skillState = zero;
+	p = (int*) &m_status0;
+	p[0] = zero;
+	p[1] = zero;
+	p = m_maxLevels;
+	p[0] = zero;
+	p[1] = zero;
+	p[2] = zero;
+	p[3] = zero;
+	p[4] = zero;
+	p = m_lastLevels;
+	p[0] = zero;
+	p[1] = zero;
+	p[2] = zero;
+	p[3] = zero;
+	p[4] = zero;
+}
+
+// FUNCTION: LEMBALL 0x00406ad0
+unsigned int CGameStatus::JiggleLevelData()
+{
+	unsigned int chunks[8];
+	unsigned int mixed[8];
+	unsigned int result = 0;
+	int* levels = m_maxLevels;
+	unsigned int* dest = chunks;
+
+	while (1) {
+		unsigned int* end = chunks + 8;
+		unsigned int value;
+		unsigned int high;
+
+		if (dest >= end) {
+			break;
+		}
+		value = *levels;
+		dest = dest + 2;
+		high = value;
+		high = high & 0x38;
+		levels = levels + 1;
+		value = value & 7;
+		high = high >> 3;
+		dest[-2] = high;
+		dest[-1] = value;
+	}
+
+	for (int i = 0; i < 8; i++) {
+		unsigned int value;
+		unsigned int perm;
+
+		result = result << 3;
+		perm = (unsigned int) g_anPasswordPermutation[i];
+		value = chunks[perm] ^ perm;
+		result = result | value;
+		mixed[i] = value;
+	}
+	return result;
+}
+
+// FUNCTION: LEMBALL 0x00406b30
+void CGameStatus::UnJiggleLevelData(unsigned int p_value)
+{
+	unsigned int mixed[8];
+	unsigned int chunks[8];
+	int i;
+
+	unsigned int value;
+	int remaining = 8;
+	unsigned int* dest = &mixed[7];
+	do {
+		value = p_value;
+		*dest-- = value & 7;
+		p_value >>= 3;
+		remaining--;
+	} while (remaining != 0);
+
+	for (i = 0; i < 8; i++) {
+		unsigned int perm = g_anPasswordPermutation[i];
+		chunks[perm] = mixed[i] ^ perm;
+	}
+
+	for (i = 0; i < 4; i++) {
+		SetMaxLevel(i, (chunks[i * 2] << 3) | chunks[i * 2 + 1]);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00406ba0
+unsigned int CGameStatus::CalcCheckSum(unsigned int p_value)
+{
+	return ((p_value >> 16) + (p_value >> 8) + p_value) & 0x1f;
+}
+
+// FUNCTION: LEMBALL 0x00406c00
+char* CGameStatus::EncodePassword()
+{
+	char buffer[12];
+	unsigned int levelData = JiggleLevelData();
+	unsigned int checksum = CalcCheckSum(levelData);
+	VsLtoa((checksum << 24) | levelData, buffer, 10);
+	strcpy(m_password, g_szPasswordZeroes);
+	strcpy(m_password + 10 - strlen(buffer), buffer);
+	return m_password;
+}
+
+// FUNCTION: LEMBALL 0x00406ca0
+bool CGameStatus::DecodePassword(char* p_password)
+{
+	strcpy(m_password, p_password);
+	if (strcmp(m_password, g_szUnlockPassword) == 0) {
+		*g_pDebugOutput << g_szPasswordCheatMessage;
+		int i = 0;
+		do {
+			g_pGameStatus->SetMaxLevel(i, 0x40);
+			i++;
+		} while (i < 4);
+		return 1;
+	}
+
+	unsigned int value = StringToDWord();
+	if (value == 0) {
+		return 0;
+	}
+	unsigned int checksum = CalcCheckSum(value);
+	if (((value & 0x1f000000) >> 24) != checksum) {
+		return 0;
+	}
+	value &= 0xffffff;
+	UnJiggleLevelData(value);
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x00406d80
+int CGameStatus::StringToDWord()
+{
+	int result = 0;
+	char* p = m_password;
+	for (unsigned int i = 0; i < strlen(p); i++) {
+		result = result * 10 + (m_password[i] - '0');
+	}
+	return result;
+}
+
+// FUNCTION: LEMBALL 0x00406dd0
+void CGameStatus::GotoLastLevels()
+{
+	int remaining = 4;
+	int* last = m_lastLevels;
+	do {
+		last[0] = last[-5];
+		last = last + 1;
+		remaining = remaining - 1;
+	} while (remaining != 0);
+}
+
+// FUNCTION: LEMBALL 0x00408dc0
+void CGameStatus::IncLevel()
+{
+	int skill = m_skill;
+	int maxLevel;
+
+	switch (skill) {
+	case 0:
+		maxLevel = 0x18;
+		break;
+	case 1:
+		maxLevel = 0x19;
+		break;
+	case 2:
+		maxLevel = 0x1c;
+		break;
+	case 3:
+		maxLevel = 0x15;
+		break;
+	case 4:
+		maxLevel = 0xb;
+		break;
+	}
+	if (m_level < maxLevel) {
+		m_level = m_level + 1;
+	}
+	if (skill != 4) {
+		if (m_maxLevels[skill] < m_level) {
+			m_maxLevels[skill] = m_level;
+		}
+	}
+	m_lastLevels[m_skill] = m_level;
+	NextLevelAvailable();
+}
+
+// FUNCTION: LEMBALL 0x00408e40
+bool CGameStatus::DecLevel()
+{
+	if (m_level > 0) {
+		m_level = m_level - 1;
+	}
+	m_lastLevels[m_skill] = m_level;
+	return (unsigned int) m_level >= 1;
+}
+
+// FUNCTION: LEMBALL 0x00408e60
+void CGameStatus::IncSkill(unsigned int p_wrap)
+{
+	switch (m_skill) {
+	case 0:
+		m_skill = 1;
+		break;
+	case 1:
+		m_skill = 2;
+		break;
+	case 2:
+		m_skill = 3;
+		break;
+	case 3:
+		if (p_wrap != 0) {
+			m_skill = 0;
+		}
+		break;
+	}
+	m_level = 0;
+	m_lastLevels[m_skill] = 0;
+}
+
+// FUNCTION: LEMBALL 0x00408f30
+int CGameStatus::NoOfLevelsInSkill(int p_skill)
+{
+	int count;
+
+	switch (p_skill) {
+	case 0:
+		count = 0x18;
+		break;
+	case 1:
+		count = 0x19;
+		break;
+	case 2:
+		count = 0x1c;
+		break;
+	case 3:
+		count = 0x15;
+		break;
+	case 4:
+		count = 0xb;
+		break;
+	}
+	return count;
+}
+
+// FUNCTION: LEMBALL 0x00408fa0
+bool CGameStatus::NextLevelAvailable()
+{
+	if (m_skill == 4) {
+		if (m_level < 11) {
+			return 1;
+		}
+		return 0;
+	}
+	return m_maxLevels[m_skill] != m_level;
+}
+
+// FUNCTION: LEMBALL 0x00408fd0
+bool CGameStatus::LastLevelAvailable()
+{
+	return (unsigned int) m_level >= 1;
+}
+
+// FUNCTION: LEMBALL 0x00408fe0
+void CGameStatus::SetMaxLevel(int p_skill, int p_level)
+{
+	int maxLevel;
+
+	switch (p_skill) {
+	case 0:
+		maxLevel = 0x18;
+		break;
+	case 1:
+		maxLevel = 0x19;
+		break;
+	case 2:
+		maxLevel = 0x1c;
+		break;
+	case 3:
+		maxLevel = 0x15;
+		break;
+	case 4:
+		maxLevel = 0xb;
+		break;
+	}
+	if (m_skill == p_skill) {
+		if (m_level > p_level) {
+			p_level = m_level;
+		}
+	}
+	if (maxLevel >= p_level) {
+		m_maxLevels[p_skill] = p_level;
+	}
+	else {
+		m_maxLevels[p_skill] = maxLevel;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00409070
+void CGameStatus::Level(int p_level)
+{
+	m_level = p_level;
+	m_lastLevels[m_skill] = p_level;
+}
+
+// FUNCTION: LEMBALL 0x00409080
+int CGameStatus::Level()
+{
+	return m_lastLevels[m_skill];
+}
+
+// GLOBAL: LEMBALL 0x0049cb68
+CGameStatus* g_pGameStatus = 0;
+
+// GLOBAL: LEMBALL 0x0049cb70
+int g_anPasswordPermutation[8] = {2, 0, 7, 4, 6, 1, 5, 3};
+
+// GLOBAL: LEMBALL 0x0049cb90
+char g_szPasswordZeroes[9] = "00000000";
+
+// GLOBAL: LEMBALL 0x0049cb9c
+char g_szUnlockPassword[11] = "9913454278";
+
+// GLOBAL: LEMBALL 0x0049cba8
+char g_szPasswordCheatMessage[31] = "Oh, oh, someones cheating !!!\n";

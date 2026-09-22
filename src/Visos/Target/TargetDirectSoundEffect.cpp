@@ -1,6 +1,6 @@
 #include "TargetDirectSoundEffect.h"
 
-#include "../Foundation/VsOStream.h"
+#include "../Foundation/CVsOStream.h"
 #include "../Foundation/VsString.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"

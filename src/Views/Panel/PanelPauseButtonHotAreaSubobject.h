@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VIEWS_PANEL_PANELPAUSEBUTTONHOTAREASUBOBJECT_H
 #define LEMBALL_VIEWS_PANEL_PANELPAUSEBUTTONHOTAREASUBOBJECT_H
 
-class Panel;
-class ResAnim;
+class CPanel;
+class CResAnim;
 // SIZE 0xac
 class PanelPauseButtonHotAreaSubobject {
 private:
@@ -14,11 +14,11 @@ private:
 	unsigned short m_graphicHeight; // 0x86
 	short m_graphicOffsetX;         // 0x88
 	short m_graphicOffsetY;         // 0x8a
-	ResAnim* m_animation;           // 0x8c
+	CResAnim* m_animation;          // 0x8c
 	unsigned int m_frame;           // 0x90
 	void* m_primitive;              // 0x94
 	unsigned int m_paused;          // 0xa0
-	Panel* m_panel;                 // 0xa4
+	CPanel* m_panel;                // 0xa4
 	unsigned int m_pressedInside;   // 0xa8
 };
 

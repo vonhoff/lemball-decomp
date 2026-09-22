@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESBOOL_H
 #define LEMBALL_VISOS_RESOURCES_RESBOOL_H
 
-#include "ResBase.h" // complete type
+#include "CResBase.h" // complete type
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00498b88
-class ResBool : public ResBase {
+class ResBool : public CResBase {
 public:
 	ResBool(unsigned int p_resourceId);
 	static ResBool* Load(unsigned int p_resourceId);

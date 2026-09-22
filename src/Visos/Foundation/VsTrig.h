@@ -1,20 +1,20 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSTRIG_H
 #define LEMBALL_VISOS_FOUNDATION_VSTRIG_H
 
-#include "Fixed.h"  // complete type
-#include "Vector.h" // complete type
+#include "CFixed.h"  // complete type
+#include "CVector.h" // complete type
 
 // SIZE 0x800
 class VsTrig {
 public:
-	Fixed Cos(int p_angle);
-	Fixed Sin(int p_angle);
-	Vector Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos);
+	CFixed Cos(int p_angle);
+	CFixed Sin(int p_angle);
+	CVector Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos);
 	VsTrig();
 
 private:
-	friend class SheepGroup;
-	Fixed m_sine[512]; // 0x00
+	friend class CSheepGroup;
+	CFixed m_sine[512]; // 0x00
 };
 
 extern VsTrig* g_pVSTrig;

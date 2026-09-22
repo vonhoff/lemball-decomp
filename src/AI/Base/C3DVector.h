@@ -1,12 +1,12 @@
 #ifndef LEMBALL_AI_BASE_C3DVECTOR_H
 #define LEMBALL_AI_BASE_C3DVECTOR_H
 
-class Fixed;
+class CFixed;
 // SIZE 0x0c
 class C3DVector {
 public:
 	C3DVector() {}
-	C3DVector(const Fixed& p_x, const Fixed& p_y, const Fixed& p_z);
+	C3DVector(const CFixed& p_x, const CFixed& p_y, const CFixed& p_z);
 	C3DVector& operator=(const C3DVector& p_other);
 
 	int m_xFixed; // 0x00

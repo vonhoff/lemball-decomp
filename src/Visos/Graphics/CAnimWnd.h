@@ -1,0 +1,47 @@
+#ifndef LEMBALL_VISOS_GRAPHICS_CANIMWND_H
+#define LEMBALL_VISOS_GRAPHICS_CANIMWND_H
+
+#include "../Foundation/CString.h" // complete type
+#include "CPvAnimWnd.h"            // complete type
+
+// SIZE 0xbc
+// VTABLE: LEMBALL 0x00499f30
+class CAnimWnd : public CPvAnimWnd {
+public:
+	CAnimWnd();
+	virtual void InternalOnCreate();     // vtable+0x18
+	virtual void InternalOnDestroy();    // vtable+0x1c
+	virtual void OnSkip(int p_position); // vtable+0xb8
+	virtual void OnFrame(int p_frame);   // vtable+0xbc
+	virtual void OnStart();              // vtable+0xc0
+	virtual void OnStop();               // vtable+0xc4
+	virtual int ProcessOtherMessages(unsigned int p_message,
+									 unsigned int p_wParam,
+									 unsigned int p_lParam); // vtable+0xa0
+	virtual void Refresh(CVsRect* p_rect);                   // vtable+0x70
+	void Initialise();
+	void OnNotifyError(int p_error);
+	void OnNotifyMode(int p_mode);
+	void OnNotifyPos(int p_position, int p_flags);
+	void OnNotifySize(int p_width, int p_height);
+	void Play();
+	void Resume();
+	void SetAnim(unsigned int p_resourceId);
+	void SetMovieWindow(unsigned int p_lParam);
+	void Stop();
+	~CAnimWnd();
+
+	friend class CIntroAnimDrawer;
+	friend class CIntroAnimAnimWindow;
+	friend class CSuccFailDrawer;
+
+private:
+	unsigned int m_animSet;        // 0xa0
+	unsigned int m_playing;        // 0xa4
+	unsigned int m_paused;         // 0xa8
+	unsigned int m_animResourceId; // 0xac
+	CString m_moviePath;           // 0xb0
+	void* m_movieWindow;           // 0xb8
+};
+
+#endif

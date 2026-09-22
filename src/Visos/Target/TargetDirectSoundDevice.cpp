@@ -1,7 +1,7 @@
 #include "TargetDirectSoundDevice.h"
 
-#include "../Foundation/VsOStream.h"
-#include "../Graphics/Wnd.h"
+#include "../Foundation/CVsOStream.h"
+#include "../Graphics/CWnd.h"
 #include "IDirectSound.h"
 #include "IDirectSoundBuffer.h"
 #include "TargetDirectSoundEffect.h"
@@ -410,7 +410,7 @@ bool TargetDirectSoundDevice::EffectStop(unsigned char p_channel, unsigned char 
 }
 
 // FUNCTION: LEMBALL 0x0047e8b0
-void TargetDirectSoundDevice::SetWnd(Wnd* p_wnd)
+void TargetDirectSoundDevice::SetWnd(CWnd* p_wnd)
 {
 	m_platform.m_nativeWindow = p_wnd->m_nativeWindow;
 }

@@ -18,7 +18,7 @@ public:
 
 	friend class TargetGraphicsDriver;
 	friend class TargetGDIDriver;
-	friend class Surface;
+	friend class CSurface;
 
 protected:
 	unsigned char* m_bits; // 0x04

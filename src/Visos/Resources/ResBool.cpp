@@ -1,6 +1,6 @@
 #include "ResBool.h"
 
-#include "MogRes.h"
+#include "CMogRes.h"
 
 // FUNCTION: LEMBALL 0x0045dc40
 ResBool* ResBool::Load(unsigned int p_resourceId)

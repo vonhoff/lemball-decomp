@@ -1,7 +1,7 @@
 #include "AboutDialog.h"
 
 #include "../../Platform/Windows/Entry.h"
-#include "../../Visos/Sound/SoundManager.h"
+#include "../../Visos/Sound/CSoundManager.h"
 
 // GLOBAL: LEMBALL 0x004a05ec
 int g_nVisosBuildNumber = 201;

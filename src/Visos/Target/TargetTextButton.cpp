@@ -1,17 +1,17 @@
 #include "TargetTextButton.h"
 
-#include "../Foundation/ChangeList.h"
-#include "../Foundation/Text.h"
-#include "../Graphics/Gdi.h"
-#include "../Graphics/HotAreaList.h"
-#include "../Graphics/PvGWnd.h"
+#include "../Foundation/CChangeList.h"
+#include "../Foundation/CText.h"
+#include "../Graphics/CGdi.h"
+#include "../Graphics/CHotAreaList.h"
+#include "../Graphics/CPvGWnd.h"
 #include "../Graphics/VsGdi.h"
-#include "../Resources/ResFont.h"
+#include "../Resources/CResFont.h"
 
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00469120
-void TargetTextButton::ExpandToFitText(const VsSize& p_textSize)
+void TargetTextButton::ExpandToFitText(const CVsSize& p_textSize)
 {
 	if (m_textMargins.m_width * m_textMargins.m_height != 0) {
 		short width = (short) (p_textSize.m_width + 2 * m_textMargins.m_width);
@@ -26,7 +26,7 @@ void TargetTextButton::ExpandToFitText(const VsSize& p_textSize)
 }
 
 // FUNCTION: LEMBALL 0x00469180
-void TargetTextButton::AlignTextPosition(VsPoint& p_position, const VsSize& p_textSize)
+void TargetTextButton::AlignTextPosition(CVsPoint& p_position, const CVsSize& p_textSize)
 {
 	if ((m_alignmentFlags & 0x10) != 0) {
 		p_position.m_x = (short) (m_bounds.m_width - p_textSize.m_width);
@@ -49,13 +49,13 @@ void TargetTextButton::SetText(char* p_normalText, char* p_pressedText)
 	m_pressedText = p_pressedText;
 	m_normalText = p_normalText;
 	short normalSizeStorage[2];
-	VsSize* normalSize = (VsSize*) normalSizeStorage;
+	CVsSize* normalSize = (CVsSize*) normalSizeStorage;
 	m_font->GetSize(normalSize, p_normalText, 0x20);
 	ExpandToFitText(*normalSize);
-	VsSize pressedSize(*normalSize);
+	CVsSize pressedSize(*normalSize);
 	if (m_pressedText != 0) {
 		short sizeStorage[2];
-		VsSize* size = m_font->GetSize((VsSize*) sizeStorage, m_pressedText, 0x20);
+		CVsSize* size = m_font->GetSize((CVsSize*) sizeStorage, m_pressedText, 0x20);
 		pressedSize.m_width = size->m_width;
 		pressedSize.m_height = size->m_height;
 		ExpandToFitText(pressedSize);
@@ -72,11 +72,11 @@ void TargetTextButton::SetText(char* p_normalText, char* p_pressedText)
 	m_pressedTextPosition.m_x++;
 	m_pressedTextPosition.m_y++;
 	if (m_nativeButtonCreated == 0) {
-		VsRect rect(m_buttonX, m_buttonY, m_bounds.m_width, m_bounds.m_height);
+		CVsRect rect(m_buttonX, m_buttonY, m_bounds.m_width, m_bounds.m_height);
 		Create(rect, m_ownerWindow, g_szButton);
 		m_bounds.m_x += m_relativeTopLeft.m_x;
 		m_bounds.m_y += m_relativeTopLeft.m_y;
-		HotAreaHandler* area = this;
+		CHotAreaHandler* area = this;
 		m_ownerWindow->m_hotAreaList->AddToList(area);
 		SetActive(1);
 		m_nativeButtonCreated = 1;
@@ -87,14 +87,14 @@ void TargetTextButton::SetText(char* p_normalText, char* p_pressedText)
 // FUNCTION: LEMBALL 0x004693b0
 void TargetTextButton::Initialize()
 {
-	m_textPrimitive = new Text[1];
+	m_textPrimitive = new CText[1];
 	m_gdiFlags++;
 	m_pressedText = 0;
 	m_normalText = 0;
 	m_reserved120 = 0;
 	m_lastDrawnRemap = 0;
 	m_remap = 0;
-	m_font = ResFont::Load(m_fontResourceId);
+	m_font = CResFont::Load(m_fontResourceId);
 	m_nativeButtonCreated = 0;
 }
 
@@ -108,9 +108,9 @@ TargetTextButton::~TargetTextButton()
 // FUNCTION: LEMBALL 0x00469480
 void TargetTextButton::DrawButton()
 {
-	VsPoint position;
+	CVsPoint position;
 	char* text;
-	bool depressed = m_pressed != 0 && HotAreaHandler::m_active != 0;
+	bool depressed = m_pressed != 0 && CHotAreaHandler::m_active != 0;
 	if (!depressed) {
 		position.m_x = m_normalTextPosition.m_x;
 		text = m_normalText;
@@ -129,7 +129,7 @@ void TargetTextButton::DrawButton()
 }
 
 // FUNCTION: LEMBALL 0x00469530
-void TargetTextButton::OnPaint(const VsRect& p_rect)
+void TargetTextButton::OnPaint(const CVsRect& p_rect)
 {
 	if (m_lastDrawnRemap != m_remap) {
 		m_forceDrawCount = 1;
@@ -140,7 +140,7 @@ void TargetTextButton::OnPaint(const VsRect& p_rect)
 			TargetFramedButton::DrawButton();
 			DrawButton();
 		}
-		ChangeList* changeList = m_gdi->m_renderTarget->GetChangeList();
+		CChangeList* changeList = m_gdi->m_renderTarget->GetChangeList();
 		m_gdi->AddToList(m_primitive);
 		changeList->Reset();
 		m_drawCompleted = 1;

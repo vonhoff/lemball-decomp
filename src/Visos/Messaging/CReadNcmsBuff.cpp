@@ -1,0 +1,65 @@
+#include "CReadNcmsBuff.h"
+
+#include "../Network/CTcpIpNetwork.h"
+#include "BasePacketHeader.h"
+#include "Visos/Messaging/CReadMsBuff.h"
+
+// FUNCTION: LEMBALL 0x00461610
+CReadNcmsBuff::CReadNcmsBuff(unsigned long p_arg0, unsigned long p_arg1, int p_arg2, unsigned short p_arg3)
+	: CReadMsBuff(p_arg1 - p_arg0 + 1, p_arg2, p_arg3)
+{
+	int index;
+
+	m_firstMessageId = p_arg0;
+	m_messageCount = p_arg1 - p_arg0 + 1;
+	m_nextExpectedSequence = 0;
+	if (p_arg2 > 0) {
+		m_messages = (CReadMsBuff**) operator new(m_messageCount * sizeof(CReadMsBuff*));
+		for (index = 0; index < m_messageCount; index++) {
+			m_messages[index] = new CReadMsBuff(m_messageCount, p_arg2, p_arg3);
+		}
+	}
+	else {
+		m_messages = 0;
+	}
+}
+
+// FUNCTION: LEMBALL 0x004616b0
+CReadNcmsBuff::~CReadNcmsBuff()
+{
+	if (m_messages != 0) {
+		int index;
+
+		for (index = 0; index < m_messageCount; index++) {
+			delete m_messages[index];
+		}
+		operator delete(m_messages);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00461700
+CReadMsBuff* CReadNcmsBuff::UpdateSubPacket()
+{
+	unsigned short messageId = g_pNetworkPacketScratch->m_messageId;
+	unsigned int index = messageId - m_firstMessageId;
+	CReadMsBuff* message = m_messages[index];
+	BasePacketHeader* header = (BasePacketHeader*) message->m_data;
+	unsigned short packetSequence;
+
+	if (messageId >= 3 && (int) g_pNetworkPacketScratch->m_packetSequence - (int) header->m_packetSequence < 0) {
+		return 0;
+	}
+
+	packetSequence = g_pNetworkPacketScratch->m_packetSequence;
+	if ((int) m_nextExpectedSequence > (int) (unsigned int) packetSequence) {
+		return 0;
+	}
+
+	if (header->m_packetSequence != packetSequence && (int) message->m_receivedSubpacketCount > 0) {
+		m_nextExpectedSequence = (unsigned int) packetSequence + 1;
+		return 0;
+	}
+
+	message->FillPacket();
+	return m_messages[index];
+}

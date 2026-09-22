@@ -3,11 +3,11 @@
 
 #include "TargetTextButton.h" // complete type
 
-class GWnd;
-class HotAreaHandler;
+class CGWnd;
+class CHotAreaHandler;
 // MINIMUM SIZE 0x150
-// VTABLE: LEMBALL 0x00497108 GWnd
-// VTABLE: LEMBALL 0x004970e0 HotAreaHandler
+// VTABLE: LEMBALL 0x00497108 CGWnd
+// VTABLE: LEMBALL 0x004970e0 CHotAreaHandler
 class TargetInputTextButton : public TargetTextButton {
 public:
 	virtual ~TargetInputTextButton();

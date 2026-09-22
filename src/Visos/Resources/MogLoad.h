@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_RESOURCES_MOGLOAD_H
 #include "../Foundation/Chunk.h"     // complete type
 #include "../Foundation/ChunkInfo.h" // complete type
-#include "MogloadArena.h"
+#include "CMogloadArena.h"
 
 #include <stddef.h>
 
@@ -12,22 +12,22 @@
 #define kChunkInfoSize 0x38
 #define kMogDirAllocSize 0x38
 
-class MogDir {
+class CMogDir {
 public:
-	void* operator new(size_t p_size) { return MogloadArena::operator new(p_size); }
+	void* operator new(size_t p_size) { return CMogloadArena::operator new(p_size); }
 	void* operator new(size_t, void* p_ptr) { return p_ptr; }
-	void operator delete(void* p_data) { MogloadArena::operator delete(p_data); }
+	void operator delete(void* p_data) { CMogloadArena::operator delete(p_data); }
 
 	ChunkInfo* NewChunkInfo();
-	MogDir(unsigned long p_fileOffset);
-	MogDir* GetNextDir();
+	CMogDir(unsigned long p_fileOffset);
+	CMogDir* GetNextDir();
 	void Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse);
 	void FindFirst(Chunk& p_chunk, unsigned int p_type);
 	void FindNext(Chunk& p_chunk, unsigned int p_type);
 	void GetChunkInfo(ChunkInfo* p_info);
-	~MogDir();
+	~CMogDir();
 
-	friend class MogRes;
+	friend class CMogRes;
 
 private:
 	int m_rootIndex;                   // 0x00

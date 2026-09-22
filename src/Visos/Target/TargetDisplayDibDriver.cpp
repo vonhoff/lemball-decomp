@@ -3,9 +3,9 @@
 #include "TargetGdiDrawingContext.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Foundation/VsPoint.h"
-#include "Visos/Foundation/VsRect.h"
-#include "Visos/Foundation/VsSize.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVsSize.h"
 #include "Visos/Target/TargetDibContext.h"
 #include "Visos/Target/TargetGraphicsDriver.h"
 
@@ -21,7 +21,7 @@ typedef int(__stdcall* DisplayDibProc)(void*, void*, unsigned int);
 DisplayDibProc g_pDisplayDib = 0;
 
 // FUNCTION: LEMBALL 0x00456d70
-TargetDisplayDibDriver::TargetDisplayDibDriver(const VsSize& p_size)
+TargetDisplayDibDriver::TargetDisplayDibDriver(const CVsSize& p_size)
 {
 	m_ready = 0;
 	m_screenSize.m_width = p_size.m_width;
@@ -74,9 +74,9 @@ unsigned int TargetDisplayDibDriver::UpdateDIBColourTable(TargetDrawingContext* 
 
 // FUNCTION: LEMBALL 0x00456eb0
 int TargetDisplayDibDriver::BitBltContexts(TargetDrawingContext* p_destination,
-										   VsRect* p_rect,
+										   CVsRect* p_rect,
 										   TargetDrawingContext* p_source,
-										   VsPoint* p_position)
+										   CVsPoint* p_position)
 {
 	if (g_dwFullScreenGdi != 0) {
 		return BitBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
@@ -89,13 +89,13 @@ int TargetDisplayDibDriver::BitBltContexts(TargetDrawingContext* p_destination,
 					  p_position->m_y,
 					  SRCCOPY);
 	}
-	VsRect clipped;
+	CVsRect clipped;
 	clipped.m_width = p_rect->m_width;
 	clipped.m_height = p_rect->m_height;
-	VsPoint* point = p_rect;
+	CVsPoint* point = p_rect;
 	clipped.m_x = point->m_x;
 	clipped.m_y = point->m_y;
-	VsSize limits;
+	CVsSize limits;
 	limits.m_width = m_screenSize.m_width;
 	limits.m_height = m_screenSize.m_height;
 	if (clipped.m_x < 0) {
@@ -143,11 +143,11 @@ int TargetDisplayDibDriver::BitBltContexts(TargetDrawingContext* p_destination,
 
 // FUNCTION: LEMBALL 0x00457020
 int TargetDisplayDibDriver::StretchBltContexts(TargetDrawingContext* p_destination,
-											   VsRect* p_rect,
+											   CVsRect* p_rect,
 											   TargetDrawingContext* p_source,
-											   VsRect* p_sourceRect)
+											   CVsRect* p_sourceRect)
 {
-	VsPoint* point = p_sourceRect;
-	VsPoint position(*point);
+	CVsPoint* point = p_sourceRect;
+	CVsPoint position(*point);
 	return BitBltContexts(p_destination, p_rect, p_source, &position);
 }

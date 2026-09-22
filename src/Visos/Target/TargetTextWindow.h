@@ -1,14 +1,14 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETTEXTWINDOW_H
 #define LEMBALL_VISOS_TARGET_TARGETTEXTWINDOW_H
 
-#include "../Foundation/Critical.h"
+#include "../Foundation/CCritical.h"
 
 struct tagPAINTSTRUCT;
 struct TargetTextLineBuffer;
 
 // SIZE 0x58
 // VTABLE: LEMBALL 0x0049a4a0
-class TargetTextWindow : public Critical {
+class TargetTextWindow : public CCritical {
 public:
 	TargetTextWindow(const char* p_title, int p_lineCapacity);
 	~TargetTextWindow();

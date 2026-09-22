@@ -1,13 +1,13 @@
 #include "SuccFailAnimWindow.h"
 
-#include "../../Control/Game/Game.h"
-#include "../../Frontend/Base/BaseFrontendProcess.h"
-#include "../../Views/Sound/SoundView.h"
+#include "../../Control/Game/CGame.h"
+#include "../../Frontend/Base/CBaseFrontendProcess.h"
+#include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "Visos/Graphics/AnimWnd.h"
+#include "Visos/Graphics/CAnimWnd.h"
 
 // FUNCTION: LEMBALL 0x00450c40
-void SuccFailAnimWindow::Initialise(SuccFailDrawer* p_owner, Main2DDisplay* p_display, int p_variant)
+void SuccFailAnimWindow::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_display, int p_variant)
 {
 	int sample;
 
@@ -42,7 +42,7 @@ void SuccFailAnimWindow::SetVariant(int p_variant)
 	else {
 		animBase = m_secondaryAnimBase;
 	}
-	AnimWnd::SetAnim(m_variantIndex + animBase);
+	CAnimWnd::SetAnim(m_variantIndex + animBase);
 }
 
 // FUNCTION: LEMBALL 0x00450d30

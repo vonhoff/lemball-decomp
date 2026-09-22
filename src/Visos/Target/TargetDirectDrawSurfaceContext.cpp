@@ -1,6 +1,6 @@
 #include "TargetDirectDrawSurfaceContext.h"
 
-#include "../Foundation/VsOStream.h"
+#include "../Foundation/CVsOStream.h"
 #include "TargetDirectDrawError.h"
 #include "Visos/Target/IDirectDrawSurface.h"
 

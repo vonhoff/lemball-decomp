@@ -2,44 +2,44 @@
 
 #include "../../Control/Game/GameMain.h"
 #include "../../Control/Support/PreInit.h"
-#include "../Animation/StatManager.h"
-#include "../Graphics/BasePalManager.h"
-#include "../Graphics/Cursor.h"
-#include "../Graphics/GdiDevice.h"
-#include "../Graphics/PaletteManager.h"
+#include "../Animation/CStatManager.h"
+#include "../Graphics/CBasePalManager.h"
+#include "../Graphics/CCursor.h"
+#include "../Graphics/CGdiDevice.h"
+#include "../Graphics/CPaletteManager.h"
 #include "../Graphics/VsGdi.h"
-#include "../Network/FileNetwork.h"
-#include "../Network/TcpIpNetwork.h"
+#include "../Network/CFileNetwork.h"
+#include "../Network/CTcpIpNetwork.h"
 #include "../Resources/ResourceTypeList.h"
 #include "../Target/TargetGraphicsDriver.h"
 #include "../Target/TargetGraphicsSystemState.h"
 #include "../Target/TargetPlatformServices.h"
-#include "Arena.h"
-#include "MasterInput.h"
-#include "RamArena.h"
-#include "SmallMemory.h"
-#include "TimedQueue.h"
-#include "Translator.h"
+#include "CArena.h"
+#include "CMasterInput.h"
+#include "CRamArena.h"
+#include "CSmallMemory.h"
+#include "CTimedQueue.h"
+#include "CTranslator.h"
+#include "CVsDebugStreambuf.h"
+#include "CVsOStream.h"
 #include "VsDebug.h"
-#include "VsDebugStreambuf.h"
 #include "VsFile.h"
-#include "VsOStream.h"
 #include "VsString.h"
 
 #include <ctype.h>
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Visos/Animation/MogloadStat.h"
-#include "Visos/Foundation/BaseQueue.h"
-#include "Visos/Foundation/BaseQueueHandler.h"
-#include "Visos/Network/BaseNetwork.h"
+#include "Visos/Foundation/CBaseQueue.h"
+#include "Visos/Foundation/CBaseQueueHandler.h"
+#include "Visos/Network/CBaseNetwork.h"
 
 #include <memory.h>
 #include <new.h>
 #include <stdlib.h>
 #include <string.h>
 
-class BaseStat;
+class CBaseStat;
 class GrafPort;
 struct _Filet;
 
@@ -258,7 +258,6 @@ char* g_apszParsedArgs[16];
 // GLOBAL: LEMBALL 0x004a9328
 int g_afInitOptionSelected[14];
 
-// 68K 0x10213030 _STRM_Init__Fv
 // FUNCTION: LEMBALL 0x00458f70
 bool InternalStrmInit()
 {
@@ -267,7 +266,7 @@ bool InternalStrmInit()
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pDebugStreambuf =
-			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutDebugString);
+			new (storage) CVsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutDebugString);
 	}
 	else {
 		g_pDebugStreambuf = 0;
@@ -276,7 +275,7 @@ bool InternalStrmInit()
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pSysStreambuf =
-			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutSysString);
+			new (storage) CVsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutSysString);
 	}
 	else {
 		g_pSysStreambuf = 0;
@@ -285,7 +284,7 @@ bool InternalStrmInit()
 	storage = operator new(0x1c);
 	if (storage != 0) {
 		g_pErrorStreambuf =
-			new (storage) VsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutErrorString);
+			new (storage) CVsDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) InternalRawOutErrorString);
 	}
 	else {
 		g_pErrorStreambuf = 0;
@@ -293,7 +292,7 @@ bool InternalStrmInit()
 
 	storage = operator new(0x14c);
 	if (storage != 0) {
-		g_pDebugOutput = new (storage) VsOStream(g_pDebugStreambuf);
+		g_pDebugOutput = new (storage) CVsOStream(g_pDebugStreambuf);
 	}
 	else {
 		g_pDebugOutput = 0;
@@ -301,7 +300,7 @@ bool InternalStrmInit()
 
 	storage = operator new(0x14c);
 	if (storage != 0) {
-		g_pSysOutput = new (storage) VsOStream(g_pSysStreambuf);
+		g_pSysOutput = new (storage) CVsOStream(g_pSysStreambuf);
 	}
 	else {
 		g_pSysOutput = 0;
@@ -309,7 +308,7 @@ bool InternalStrmInit()
 
 	storage = operator new(0x14c);
 	if (storage != 0) {
-		g_pErrorOutput = new (storage) VsOStream(g_pErrorStreambuf);
+		g_pErrorOutput = new (storage) CVsOStream(g_pErrorStreambuf);
 	}
 	else {
 		g_pErrorOutput = 0;
@@ -318,7 +317,6 @@ bool InternalStrmInit()
 	return 1;
 }
 
-// 68K 0x10213176 _STRM_Quit__Fv
 // FUNCTION: LEMBALL 0x004590b0
 bool InternalStrmQuit()
 {
@@ -331,7 +329,6 @@ bool InternalStrmQuit()
 	return 1;
 }
 
-// 68K 0x10213258 _INP_Init__Fv
 // FUNCTION: LEMBALL 0x00459130
 bool InternalInpInit()
 {
@@ -342,7 +339,7 @@ bool InternalInpInit()
 		g_pMasterInputQueue = 0;
 	}
 	else {
-		g_pMasterInputQueue = new (storage) TimedQueue(10, g_szMasterInputQueue);
+		g_pMasterInputQueue = new (storage) CTimedQueue(10, g_szMasterInputQueue);
 	}
 
 	storage = operator new(0x18);
@@ -350,7 +347,7 @@ bool InternalInpInit()
 		g_pMasterInput = 0;
 	}
 	else {
-		g_pMasterInput = new (storage) MasterInput(g_pMasterInputQueue);
+		g_pMasterInput = new (storage) CMasterInput(g_pMasterInputQueue);
 	}
 
 	storage = operator new(0x10);
@@ -358,14 +355,13 @@ bool InternalInpInit()
 		g_pInputTranslator = 0;
 	}
 	else {
-		g_pInputTranslator = new (storage) Translator();
+		g_pInputTranslator = new (storage) CTranslator();
 	}
 
 	g_pMasterInputQueue->Attach(g_pInputTranslator, -0x32);
 	return TargetInputInit();
 }
 
-// 68K 0x1021332e _INP_Quit__Fv
 // FUNCTION: LEMBALL 0x004591f0
 bool InternalInpQuit()
 {
@@ -379,7 +375,6 @@ bool InternalInpQuit()
 	return result;
 }
 
-// 68K 0x102133dc INIT_SubSystems__Fv
 // FUNCTION: LEMBALL 0x00459250
 void InitSubSystems()
 {
@@ -391,7 +386,7 @@ void InitSubSystems()
 	int gdiOk;
 	int statOk;
 	int resOk;
-	BaseStat* stat;
+	CBaseStat* stat;
 	void* storage;
 
 	memOk = InternalMemInit();
@@ -430,17 +425,16 @@ void InitSubSystems()
 
 	storage = operator new(0x20);
 	if (storage != 0) {
-		stat = (BaseStat*) storage;
+		stat = (CBaseStat*) storage;
 		new (storage) MogloadStat("Main memory arena");
 	}
 	else {
 		stat = 0;
 	}
 	g_pStatManager->Register(stat);
-	g_pMasterArena->m_parentArena = (Arena*) stat;
+	g_pMasterArena->m_parentArena = (CArena*) stat;
 }
 
-// 68K 0x102137a8 INIT_QuitSubSystems__Fv
 // FUNCTION: LEMBALL 0x00459520
 void InitQuitSubSystems()
 {
@@ -462,7 +456,6 @@ void InitQuitSubSystems()
 	InternalMemQuit();
 }
 
-// 68K 0x102138be INIT_CheckOptions__FPc
 // FUNCTION: LEMBALL 0x004595d0
 bool InitCheckOptions(char* p_arg0)
 {
@@ -503,7 +496,6 @@ bool InitCheckOptions(char* p_arg0)
 	return 0;
 }
 
-// 68K 0x102139c8 INIT_CmdLine__FPc
 // FUNCTION: LEMBALL 0x004596b0
 void InitCmdLine(char* p_arg0)
 {
@@ -570,7 +562,6 @@ void InitCmdLine(char* p_arg0)
 	}
 }
 
-// 68K 0x10213b1e INIT_Main__FPc
 // FUNCTION: LEMBALL 0x00459860
 int InitMain(char* p_arg0)
 {
@@ -606,7 +597,6 @@ int InitMain(char* p_arg0)
 	return mainResult;
 }
 
-// 68K 0x10218b78 _STAT_Init__Fv
 // FUNCTION: LEMBALL 0x0045aa80
 bool InternalStatInit()
 {
@@ -614,17 +604,16 @@ bool InternalStatInit()
 
 	storage = operator new(0x14);
 	if (storage != 0) {
-		storage = new (storage) StatManager(0x20);
+		storage = new (storage) CStatManager(0x20);
 	}
 	else {
 		storage = 0;
 	}
-	g_pStatManager = (StatManager*) storage;
+	g_pStatManager = (CStatManager*) storage;
 
 	return g_pStatManager != 0;
 }
 
-// 68K 0x10218bc6 _STAT_Quit__Fv
 // FUNCTION: LEMBALL 0x0045aab0
 bool InternalStatQuit()
 {
@@ -633,7 +622,6 @@ bool InternalStatQuit()
 	return 1;
 }
 
-// 68K 0x10201420 _RES_Init__Fv
 // FUNCTION: LEMBALL 0x0045b900
 bool InternalResInit()
 {
@@ -685,11 +673,10 @@ bool InternalResInit()
 	list->m_count = list->m_count + 1;
 	g_pPreloadedResourceTypes = list;
 
-	g_pBasePalManager = new PaletteManager(0x20);
+	g_pBasePalManager = new CPaletteManager(0x20);
 	return 1;
 }
 
-// 68K 0x10201580 _RES_Quit__Fv
 // FUNCTION: LEMBALL 0x0045ba50
 bool InternalResQuit()
 {
@@ -714,26 +701,23 @@ bool InternalResQuit()
 	return 1;
 }
 
-// 68K 0x10110112 _TIME_Init__Fv
 // FUNCTION: LEMBALL 0x00462e60
 bool InternalTimeInit()
 {
 	return 1;
 }
 
-// 68K 0x1011012e _TIME_Quit__Fv
 // FUNCTION: LEMBALL 0x00462e70
 bool InternalTimeQuit()
 {
 	return 1;
 }
 
-// 68K 0x10107ab6 _GDI_Init__Fv
 // FUNCTION: LEMBALL 0x0046ba80
 bool InternalGdiInit()
 {
 	void* storage;
-	Cursor* cursor;
+	CCursor* cursor;
 	TargetGraphicsSystemState* system;
 
 	storage = operator new(0xc);
@@ -748,9 +732,9 @@ bool InternalGdiInit()
 	}
 	g_pTargetGraphicsSystem->SelectDriver(8);
 
-	storage = operator new(sizeof(GdiDevice));
+	storage = operator new(sizeof(CGdiDevice));
 	if (storage != 0) {
-		g_pGdiDevice = new (storage) GdiDevice(g_preInitActive.m_flags);
+		g_pGdiDevice = new (storage) CGdiDevice(g_preInitActive.m_flags);
 	}
 	else {
 		g_pGdiDevice = 0;
@@ -758,15 +742,15 @@ bool InternalGdiInit()
 
 	storage = operator new(0x5a0);
 	if (storage != 0) {
-		g_pGdiHelperTarget = new (storage) Surface((GrafPort*) 0);
+		g_pGdiHelperTarget = new (storage) CSurface((GrafPort*) 0);
 	}
 	else {
 		g_pGdiHelperTarget = 0;
 	}
 
-	cursor = (Cursor*) operator new(sizeof(Cursor));
+	cursor = (CCursor*) operator new(sizeof(CCursor));
 	if (cursor != 0) {
-		new (cursor) Cursor();
+		new (cursor) CCursor();
 		g_pCursor = cursor;
 	}
 	else {
@@ -779,23 +763,22 @@ bool InternalGdiInit()
 	return 0;
 }
 
-// 68K 0x10107ca0 _GDI_Quit__Fv
 // FUNCTION: LEMBALL 0x0046bb70
 bool InternalGdiQuit()
 {
-	Surface* surface;
-	GdiDevice* device;
+	CSurface* surface;
+	CGdiDevice* device;
 	TargetGraphicsSystemState* system;
 
 	delete g_pCursor;
-	surface = (Surface*) g_pGdiHelperTarget;
+	surface = (CSurface*) g_pGdiHelperTarget;
 	if (surface != 0) {
-		surface->~Surface();
+		surface->~CSurface();
 		operator delete(surface);
 	}
 	device = g_pGdiDevice;
 	if (device != 0) {
-		device->~GdiDevice();
+		device->~CGdiDevice();
 		operator delete(device);
 	}
 	system = g_pTargetGraphicsSystem;
@@ -810,13 +793,12 @@ bool InternalGdiQuit()
 	return 1;
 }
 
-// 68K 0x1010fd50 _MEM_Init__Fv
 // FUNCTION: LEMBALL 0x0046f060
 bool InternalMemInit()
 {
 	void* locked;
 	int smallEnabled;
-	SmallMemory* smallMemory;
+	CSmallMemory* smallMemory;
 
 	g_pMasterArenaMemory = GlobalAlloc(2, g_preInitActive.m_memoryBudget);
 	if (g_pMasterArenaMemory == 0) {
@@ -828,14 +810,14 @@ bool InternalMemInit()
 		return 0;
 	}
 
-	g_pMasterArena = new (locked) RamArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
+	g_pMasterArena = new (locked) CRamArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
 
 	smallMemory = 0;
 	smallEnabled = g_nSmallMemoryEnabled;
 	g_pSmallMemory = smallMemory;
 	if (smallEnabled != 0) {
 		g_nSmallMemoryEnabled = 0;
-		smallMemory = new SmallMemory();
+		smallMemory = new CSmallMemory();
 	}
 	g_pSmallMemory = smallMemory;
 	g_nSmallMemoryEnabled = smallEnabled;
@@ -845,17 +827,16 @@ bool InternalMemInit()
 	return 0;
 }
 
-// 68K 0x1010ff2e _MEM_Quit__Fv
 // FUNCTION: LEMBALL 0x0046f120
 bool InternalMemQuit()
 {
-	SmallMemory* smallMemory;
+	CSmallMemory* smallMemory;
 	unsigned int lastError;
 
 	g_nSmallMemoryEnabled = 0;
 	smallMemory = g_pSmallMemory;
 	if (smallMemory != 0) {
-		smallMemory->~SmallMemory();
+		smallMemory->~CSmallMemory();
 		operator delete(smallMemory);
 	}
 	delete g_pMasterArena;
@@ -882,7 +863,7 @@ unsigned int FileNetworkMessageThread()
 	unsigned int message[7];
 	unsigned int count;
 
-	g_pBaseNetwork = new FileNetwork();
+	g_pBaseNetwork = new CFileNetwork();
 	while (g_pBaseNetwork->m_initialisePending == 0 && g_pBaseNetwork->m_serverMode == 0 &&
 		   g_pBaseNetwork->m_shutdownRequested == 0) {
 		WaitMessage();
@@ -907,9 +888,9 @@ unsigned int FileNetworkMessageThread()
 			}
 			if (g_pNetworkStatusQueue != 0) {
 				do {
-					count = ((BaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
+					count = ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
 					if (count != 0) {
-						((BaseQueue*) g_pNetworkStatusQueue)->ProcessNMsgs(count);
+						((CBaseQueue*) g_pNetworkStatusQueue)->ProcessNMsgs(count);
 					}
 				} while (count != 0);
 			}
@@ -920,7 +901,6 @@ unsigned int FileNetworkMessageThread()
 	return 1;
 }
 
-// 68K 0x10106d86 VSFNET_Init__Fv
 // FUNCTION: LEMBALL 0x0046f3b0
 bool VsFNetInit()
 {
@@ -954,7 +934,6 @@ bool VsFNetInit()
 	return 1;
 }
 
-// 68K 0x10106dc8 VSFNET_Quit__Fv
 // FUNCTION: LEMBALL 0x0046f480
 bool VsFNetQuit()
 {
@@ -982,7 +961,7 @@ unsigned int TcpIpNetworkMessageThread()
 	unsigned int message[7];
 	unsigned int count;
 
-	g_pBaseNetwork = new TcpIpNetwork();
+	g_pBaseNetwork = new CTcpIpNetwork();
 	while (g_pBaseNetwork->m_initialisePending == 0 && g_pBaseNetwork->m_serverMode == 0 &&
 		   g_pBaseNetwork->m_shutdownRequested == 0) {
 		WaitMessage();
@@ -1007,9 +986,9 @@ unsigned int TcpIpNetworkMessageThread()
 			}
 			if (g_pNetworkStatusQueue != 0) {
 				do {
-					count = ((BaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
+					count = ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
 					if (count != 0) {
-						((BaseQueue*) g_pNetworkStatusQueue)->ProcessNMsgs(count);
+						((CBaseQueue*) g_pNetworkStatusQueue)->ProcessNMsgs(count);
 					}
 				} while (count != 0);
 			}
@@ -1020,7 +999,6 @@ unsigned int TcpIpNetworkMessageThread()
 	return 1;
 }
 
-// 68K 0x1010c64e VSNET_Init__Fv
 // FUNCTION: LEMBALL 0x0046fbb0
 bool VsNetInit()
 {
@@ -1058,7 +1036,6 @@ bool VsNetInit()
 	return 1;
 }
 
-// 68K 0x1010c6d8 VSNET_Quit__Fv
 // FUNCTION: LEMBALL 0x0046fc80
 bool VsNetQuit()
 {
@@ -1079,7 +1056,6 @@ bool VsNetQuit()
 	return 0;
 }
 
-// 68K 0x10215cfc INIT_PreInit__Fv
 // FUNCTION: LEMBALL 0x004727b0
 void InitPreInit()
 {
@@ -1135,7 +1111,6 @@ void InitPreInit()
 
 unsigned int __cdecl DebugMessageThreadMain();
 
-// 68K 0x1010fd1a _DBG_Init__Fv
 // FUNCTION: LEMBALL 0x00472be0
 bool InternalDbgInit()
 {
@@ -1159,7 +1134,6 @@ bool InternalDbgInit()
 	return 1;
 }
 
-// 68K 0x1010fd34 _DBG_Quit__FUc
 // FUNCTION: LEMBALL 0x00472c70
 bool InternalDbgQuit(unsigned int p_force)
 {

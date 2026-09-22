@@ -10,7 +10,7 @@ from collections import Counter
 from pathlib import Path
 
 from .paths import ROOT
-from .source import RECCMP_MARK, SYNTHETIC_MARK, collect_sources
+from .source import RECCMP_MARK, SYNTHETIC_MARK, collect_sources, mask_comments_and_strings
 
 BASELINE = ROOT / "smell.baseline.json"
 
@@ -111,6 +111,20 @@ def is_func_def(stripped: str) -> bool:
     if "::" in stripped.split("(", 1)[0]:
         return False
     return bool(FREE_DEF.match(stripped))
+
+
+def declaration_has_body(code: str) -> bool:
+    """A wrapped local constructor call or prototype ends in ';', not a body."""
+    opening = code.find("(")
+    if opening < 0:
+        return False
+    depth, end = 1, opening + 1
+    while end < len(code) and depth:
+        depth += (code[end] == "(") - (code[end] == ")")
+        end += 1
+    if depth:
+        return False
+    return bool(re.match(r"\s*(?:(?:const|volatile)\s*)*(?:\{|:(?!:))", code[end:]))
 
 
 def body_is_empty(lines: list[str], index: int) -> bool:
@@ -285,9 +299,10 @@ def scan_file(
                 hits.append((rel, lineno, "offset-poke", match.group(0).strip()))
     if path.suffix.lower() != ".cpp":
         return hits, reviews
+    masked_lines = mask_comments_and_strings("\n".join(lines)).splitlines()
     for i, raw in enumerate(lines):
         stripped = raw.strip()
-        if not is_func_def(stripped):
+        if not is_func_def(stripped) or not declaration_has_body("\n".join(masked_lines[i:])):
             continue
         prev = preceding_block(lines, i)
         has_reccmp = any(RECCMP_MARK.match(line) for line in prev)

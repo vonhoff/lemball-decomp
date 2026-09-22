@@ -1,14 +1,14 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETGRAPHICSDRIVER_H
 #define LEMBALL_VISOS_TARGET_TARGETGRAPHICSDRIVER_H
 
-#include "../Foundation/VsPoint.h" // complete type
-#include "../Foundation/VsRect.h"  // complete type
-#include "../Foundation/VsSize.h"  // complete type
-#include "TargetDibContext.h"      // complete type
-#include "TargetDrawingContext.h"  // complete type
+#include "../Foundation/CVsPoint.h" // complete type
+#include "../Foundation/CVsRect.h"  // complete type
+#include "../Foundation/CVsSize.h"  // complete type
+#include "TargetDibContext.h"       // complete type
+#include "TargetDrawingContext.h"   // complete type
 
-class PvGdiBitmap;
-class ResPalette;
+class CPvGdiBitmap;
+class CResPalette;
 struct TargetGraphicsSystemState;
 
 // SIZE 0x1c
@@ -40,13 +40,13 @@ public:
 											  unsigned int p_entryCount,
 											  void* p_colours) = 0; // vtable+0x18
 	virtual int StretchBltContexts(TargetDrawingContext* p_destination,
-								   VsRect* p_destinationRect,
+								   CVsRect* p_destinationRect,
 								   TargetDrawingContext* p_source,
-								   VsRect* p_sourceRect) = 0; // vtable+0x1c
+								   CVsRect* p_sourceRect) = 0; // vtable+0x1c
 	virtual int BitBltContexts(TargetDrawingContext* p_destination,
-							   VsRect* p_destinationRect,
+							   CVsRect* p_destinationRect,
 							   TargetDrawingContext* p_source,
-							   VsPoint* p_sourcePosition) = 0; // vtable+0x20
+							   CVsPoint* p_sourcePosition) = 0; // vtable+0x20
 	virtual TargetDibContext* SelectDIBContext(TargetDrawingContext* p_drawingContext,
 											   TargetDibContext* p_dibContext) = 0; // vtable+0x24
 	virtual TargetDibContext* RestoreDIBContext(TargetDrawingContext* p_drawingContext,
@@ -55,25 +55,25 @@ public:
 	virtual bool RealizePalette(TargetDrawingContext* p_drawingContext);             // vtable+0x30
 	virtual bool HasPalette();                                                       // vtable+0x34
 	bool BlitWrappedBitmap(TargetDrawingContext* p_destination,
-						   VsRect* p_destinationRect,
+						   CVsRect* p_destinationRect,
 						   TargetDrawingContext* p_source,
-						   VsRect* p_sourceRect,
-						   PvGdiBitmap* p_bitmap);
+						   CVsRect* p_sourceRect,
+						   CPvGdiBitmap* p_bitmap);
 
-	friend class Wnd;
-	friend class Main2DDisplay;
+	friend class CWnd;
+	friend class CMain2DDisplay;
 	friend struct TargetGraphicsSystemState;
-	friend class GWnd;
-	friend class Surface;
+	friend class CGWnd;
+	friend class CSurface;
 	friend bool TargetPumpEvents();
 
 protected:
-	void* m_driverModule;         // 0x04
-	void* m_palette;              // 0x08
-	unsigned int m_ready;         // 0x0c
-	void* m_window;               // 0x10
-	VsSize m_screenSize;          // 0x14
-	PvGdiBitmap* m_currentBitmap; // 0x18
+	void* m_driverModule;          // 0x04
+	void* m_palette;               // 0x08
+	unsigned int m_ready;          // 0x0c
+	void* m_window;                // 0x10
+	CVsSize m_screenSize;          // 0x14
+	CPvGdiBitmap* m_currentBitmap; // 0x18
 };
 
 extern TargetGraphicsDriver* g_pTargetGraphicsDriver;
@@ -82,7 +82,7 @@ extern void* g_apCResRasterConstructionVtable[15];
 extern TargetGraphicsSystemState* g_pTargetGraphicsSystem;
 extern unsigned int g_dwWinGDrawColourTable[256];
 void TargetBuildSurfaceColourTable(unsigned int* p_entries,
-								   ResPalette* p_palette,
+								   CResPalette* p_palette,
 								   void* p_unused,
 								   unsigned int* p_fallbackEntries);
 long __stdcall TargetWinGDrawCodec_DriverProc(unsigned int p_driverId,

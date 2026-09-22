@@ -19,7 +19,7 @@ public:
 	AiCoord m_coordinate;      // 0x04
 	unsigned short m_metadata; // 0x10
 
-	friend class GameObject;
+	friend class CGameObject;
 };
 
 #endif

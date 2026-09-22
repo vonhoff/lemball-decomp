@@ -1,8 +1,8 @@
 #ifndef LEMBALL_CONTROL_LEVEL_LOADBLOCKHEADER_H
 #define LEMBALL_CONTROL_LEVEL_LOADBLOCKHEADER_H
 
-class LevelLoader;
-// Level-file tags, identified by LevelLoader::LoadLevel's dispatch targets.
+class CLevelLoader;
+// Level-file tags, identified by CLevelLoader::LoadLevel's dispatch targets.
 #define LEVEL_BLOCK_AI 0x41492020                 // AI
 #define LEVEL_BLOCK_GROUND_ANIMS 0x414e494d       // ANIM
 #define LEVEL_BLOCK_BALLS 0x42414c4c              // BALL

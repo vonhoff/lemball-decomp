@@ -1,6 +1,6 @@
 #include "ResPres.h"
 
-#include "MogRes.h"
+#include "CMogRes.h"
 
 #include <new.h>
 

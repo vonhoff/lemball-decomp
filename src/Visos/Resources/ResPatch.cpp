@@ -1,6 +1,6 @@
 #include "ResPatch.h"
 
-#include "MogRes.h"
+#include "CMogRes.h"
 
 // FUNCTION: LEMBALL 0x0045e3f0
 ResPatch* ResPatch::Load(unsigned int p_resourceId)

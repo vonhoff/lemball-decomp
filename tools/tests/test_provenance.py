@@ -15,6 +15,7 @@ from lib.provenance import (
     read_catalog,
     read_symbols,
     scan_annotations,
+    scan_windows_annotations,
     verify_resource,
 )
 
@@ -237,6 +238,17 @@ class CatalogTests(unittest.TestCase):
             self.assertEqual(check_provenance(self.path, [source], strict=True), 0)
             self.path.unlink()
             self.assertEqual(check_provenance(self.path, [source]), 2)
+
+    def test_windows_annotation_alone_resolves_catalog_coverage(self):
+        source = self.root / "Fixture.cpp"
+        source.write_text('// FUNCTION: LEMBALL 0x00401000\nvoid Real() {}\n'
+                          'const char* text = "// FUNCTION: LEMBALL 0x00402000";\n'
+                          '/* // FUNCTION: LEMBALL 0x00403000 */\n')
+        self.assertEqual(scan_windows_annotations(source), [0x401000])
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(check_provenance(self.path, [source], strict=True), 0)
+        self.assertIn("1/1 Windows entries", output.getvalue())
 
     def test_corrupt_catalog_returns_input_error(self):
         for data in (b"not CSV", b"\xff", b"mac_address,symbol,windows_address\ntruncated"):

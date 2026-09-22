@@ -3,16 +3,16 @@
 
 #include "TargetFramedButton.h" // complete type
 
-class GWnd;
-class HotAreaHandler;
-class VsRect;
+class CGWnd;
+class CHotAreaHandler;
+class CVsRect;
 // MINIMUM SIZE 0x11c
-// VTABLE: LEMBALL 0x00499928 GWnd
-// VTABLE: LEMBALL 0x00499908 HotAreaHandler
+// VTABLE: LEMBALL 0x00499928 CGWnd
+// VTABLE: LEMBALL 0x00499908 CHotAreaHandler
 class TargetResourceButton : public TargetFramedButton {
 public:
 	virtual ~TargetResourceButton();
-	virtual void OnPaint(const VsRect& p_rect);
+	virtual void OnPaint(const CVsRect& p_rect);
 	virtual void OnDestroy();
 
 private:

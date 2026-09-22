@@ -5,7 +5,6 @@
 
 #pragma intrinsic(strlen)
 
-// 68K 0x107001ea StrCmpI__FPCcPCci
 // FUNCTION: LEMBALL 0x00406790
 int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 {
@@ -49,7 +48,6 @@ int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 	return (int) *p_left - (int) *p_right;
 }
 
-// 68K 0x1021429c vsLtoa__FlPci
 // FUNCTION: LEMBALL 0x00458d80
 void VsLtoa(long p_value, char* p_buffer, int p_radix)
 {
@@ -60,7 +58,6 @@ void VsLtoa(long p_value, char* p_buffer, int p_radix)
 	VsULtoa(p_value, p_buffer, p_radix);
 }
 
-// 68K 0x102142e8 vsULtoa__FUlPci
 // FUNCTION: LEMBALL 0x00458db0
 char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 {
@@ -111,14 +108,12 @@ char* VsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 	return p_buffer;
 }
 
-// 68K 0x10212fae OkFailed__FUc
 // FUNCTION: LEMBALL 0x00458f10
 char* OkFailed(int p_success)
 {
 	return p_success ? "OK" : "Failed";
 }
 
-// 68K 0x10212fda strtol__FPcPPci
 // FUNCTION: LEMBALL 0x00458f30
 int Strtol(char* p_text, char** p_end, int p_base)
 {

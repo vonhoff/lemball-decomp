@@ -1,51 +1,48 @@
 #include "VsSound.h"
 
-#include "../Sound/PvMusicDevice.h"
-#include "../Sound/SoundManager.h"
+#include "../Sound/CPvMusicDevice.h"
+#include "../Sound/CSoundManager.h"
 #include "../Target/MciMusicDevice.h"
 #include "../Target/TargetDirectSoundDevice.h"
 #include "../Target/TargetWaveSoundDevice.h"
-#include "Visos/Sound/BaseSoundDevice.h"
+#include "Visos/Sound/CBaseSoundDevice.h"
 
-// 68K 0x101038e8 InitSound__FUcUciP4CWndUc
 // FUNCTION: LEMBALL 0x0045b770
 bool InitSound(unsigned int p_musicEnabled,
 			   unsigned int p_effectsEnabled,
 			   int p_channelCount,
-			   Wnd* p_window,
+			   CWnd* p_window,
 			   unsigned int p_platformFlag)
 {
-	g_pSoundManager = new SoundManager(p_musicEnabled, p_effectsEnabled, 1, p_channelCount, p_window);
+	g_pSoundManager = new CSoundManager(p_musicEnabled, p_effectsEnabled, 1, p_channelCount, p_window);
 	return 1;
 }
 
-// 68K 0x10103a48 EndSound__Fv
 // FUNCTION: LEMBALL 0x0045b7c0
 void EndSound()
 {
-	SoundManager* manager = g_pSoundManager;
+	CSoundManager* manager = g_pSoundManager;
 	if (manager != 0) {
-		manager->~SoundManager();
+		manager->~CSoundManager();
 		operator delete(manager);
 	}
 	g_pSoundManager = 0;
 }
 
-// 68K 0x101037a0 MachineSoundDetect__FPP16CBaseSoundDeviceUcUcUcPUcPP14CPVMusicDevicei
 // FUNCTION: LEMBALL 0x00473390
-int MachineSoundDetect(BaseSoundDevice** p_devices,
+int MachineSoundDetect(CBaseSoundDevice** p_devices,
 					   unsigned char p_musicEnabled,
 					   unsigned int p_effectsEnabled,
 					   unsigned int p_useMusicCD,
 					   unsigned int* p_musicAvailable,
-					   PvMusicDevice** p_musicDevice,
+					   CPvMusicDevice** p_musicDevice,
 					   int p_deviceParameter)
 {
 	int count = 0;
 	*p_musicAvailable = 0;
 	*p_musicDevice = 0;
 	if (p_useMusicCD == 1) {
-		PvMusicDevice* music = new MciMusicDevice();
+		CPvMusicDevice* music = new MciMusicDevice();
 		if (music->IsAvailable() == 1) {
 			*p_musicAvailable = 1;
 			*p_musicDevice = music;
@@ -54,7 +51,7 @@ int MachineSoundDetect(BaseSoundDevice** p_devices,
 			delete music;
 		}
 		if (p_effectsEnabled == 1) {
-			BaseSoundDevice* device = new TargetDirectSoundDevice(p_deviceParameter, 5);
+			CBaseSoundDevice* device = new TargetDirectSoundDevice(p_deviceParameter, 5);
 			if (device->IsEffectAvailable() == 1) {
 				*p_devices = device;
 				return 1;
@@ -62,7 +59,7 @@ int MachineSoundDetect(BaseSoundDevice** p_devices,
 			if (device != 0) {
 				delete device;
 			}
-			BaseSoundDevice* wave = new TargetWaveSoundDevice(p_deviceParameter);
+			CBaseSoundDevice* wave = new TargetWaveSoundDevice(p_deviceParameter);
 			if (wave->IsEffectAvailable() == 1) {
 				*p_devices = wave;
 				return 1;
@@ -72,7 +69,7 @@ int MachineSoundDetect(BaseSoundDevice** p_devices,
 		return 0;
 	}
 	if (p_effectsEnabled == 1) {
-		BaseSoundDevice* wave = new TargetWaveSoundDevice(p_deviceParameter);
+		CBaseSoundDevice* wave = new TargetWaveSoundDevice(p_deviceParameter);
 		if (wave->IsEffectAvailable() == 1) {
 			count = 1;
 			*p_devices = wave;

@@ -1,10 +1,10 @@
 #include "MciMusicDevice.h"
 
 #include "../../Platform/Windows/Entry.h"
-#include "../Foundation/String.h"
-#include "../Foundation/VsIOs.h"
-#include "../Foundation/VsOStream.h"
-#include "../Resources/ResString.h"
+#include "../Foundation/CString.h"
+#include "../Foundation/CVsIOs.h"
+#include "../Foundation/CVsOStream.h"
+#include "../Resources/CResString.h"
 #include "TargetPlatformServices.h"
 
 #include <string.h>
@@ -100,7 +100,7 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	MCI_OPEN_PARMS openParms;
 	MCI_SET_PARMS setParms;
 	MCIERROR error;
-	ResString* name;
+	CResString* name;
 	char* cdDir;
 
 	if (p_handle == 0) {
@@ -114,7 +114,7 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	}
 	m_preparedHandle = p_handle;
 	g_nPreparedMciMusicTrackHandle = p_handle;
-	name = ResString::Load(p_resourceId);
+	name = CResString::Load(p_resourceId);
 	if (name->m_loaded != 0) {
 		name->m_age = 0;
 	}
@@ -123,7 +123,7 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	}
 	name->m_directUseCount++;
 	openParms.lpstrDeviceType = (LPCSTR) 0x20b;
-	String musicName;
+	CString musicName;
 	if (m_usePathPrefix != 0) {
 		musicName = m_path;
 		if (musicName[musicName.Getlength() - 1] != '\\') {
@@ -132,7 +132,7 @@ void MciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId)
 	}
 	musicName += (const char*) name->m_data;
 	musicName += ".mid";
-	String fullPath;
+	CString fullPath;
 	if (m_useCdDirectory == 0) {
 		fullPath = g_szCurrentDirectory;
 		if (fullPath[fullPath.Getlength() - 1] != '\\') {

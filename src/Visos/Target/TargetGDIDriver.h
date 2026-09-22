@@ -19,13 +19,13 @@ public:
 											  unsigned int p_entryCount,
 											  void* p_colours); // vtable+0x18
 	virtual int StretchBltContexts(TargetDrawingContext* p_destination,
-								   VsRect* p_destinationRect,
+								   CVsRect* p_destinationRect,
 								   TargetDrawingContext* p_source,
-								   VsRect* p_sourceRect); // vtable+0x1c
+								   CVsRect* p_sourceRect); // vtable+0x1c
 	virtual int BitBltContexts(TargetDrawingContext* p_destination,
-							   VsRect* p_destinationRect,
+							   CVsRect* p_destinationRect,
 							   TargetDrawingContext* p_source,
-							   VsPoint* p_sourcePosition); // vtable+0x20
+							   CVsPoint* p_sourcePosition); // vtable+0x20
 	virtual TargetDibContext* SelectDIBContext(TargetDrawingContext* p_drawingContext,
 											   TargetDibContext* p_dibContext); // vtable+0x24
 	virtual TargetDibContext* RestoreDIBContext(TargetDrawingContext* p_drawingContext,

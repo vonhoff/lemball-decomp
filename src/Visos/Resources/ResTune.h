@@ -1,13 +1,13 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESTUNE_H
 #define LEMBALL_VISOS_RESOURCES_RESTUNE_H
 
-#include "ResBase.h" // complete type
+#include "CResBase.h" // complete type
 
 #define kChunkTune 0x54554e45
 
 // SIZE 0x48
 // VTABLE: LEMBALL 0x00498de0
-class ResTune : public ResBase {
+class ResTune : public CResBase {
 public:
 	inline ResTune(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	static ResTune* Load(unsigned int p_resourceId);

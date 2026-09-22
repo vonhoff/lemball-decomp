@@ -1,41 +1,41 @@
 #include "TargetFramedButton.h"
 
-#include "../Foundation/ChangeList.h"
-#include "../Graphics/ClipRect.h"
-#include "../Graphics/Gdi.h"
-#include "../Graphics/HotAreaList.h"
-#include "../Graphics/Line.h"
+#include "../Foundation/CChangeList.h"
+#include "../Graphics/CClipRect.h"
+#include "../Graphics/CGdi.h"
+#include "../Graphics/CHotAreaList.h"
+#include "../Graphics/CLine.h"
 #include "../Graphics/VsGdi.h"
-#include "Visos/Foundation/VsPoint.h"
-#include "Visos/Foundation/VsRect.h"
-#include "Visos/Graphics/DepressedButton.h"
-#include "Visos/Graphics/GWnd.h"
-#include "Visos/Graphics/HotAreaHandler.h"
-#include "Visos/Graphics/PvGWnd.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Graphics/CDepressedButton.h"
+#include "Visos/Graphics/CGWnd.h"
+#include "Visos/Graphics/CHotAreaHandler.h"
+#include "Visos/Graphics/CPvGWnd.h"
 
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00468a40
-TargetFramedButton::TargetFramedButton(const VsRect& p_rect, PvGWnd* p_parent, unsigned int p_frameColor)
-	: DepressedButton(p_rect, p_parent)
+TargetFramedButton::TargetFramedButton(const CVsRect& p_rect, CPvGWnd* p_parent, unsigned int p_frameColor)
+	: CDepressedButton(p_rect, p_parent)
 {
 	m_frameColor = p_frameColor;
 	InitializeFramePrimitives();
-	VsRect createRect;
+	CVsRect createRect;
 	createRect.m_width = m_bounds.m_width;
 	createRect.m_height = m_bounds.m_height;
 	createRect.m_x = m_buttonX;
 	createRect.m_y = m_buttonY;
-	GWnd* window = this;
+	CGWnd* window = this;
 	window->Create(createRect, m_ownerWindow, g_szButton);
-	HotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;
-	HotAreaHandler::m_bounds.m_y += m_relativeTopLeft.m_y;
-	HotAreaHandler* area = this;
+	CHotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;
+	CHotAreaHandler::m_bounds.m_y += m_relativeTopLeft.m_y;
+	CHotAreaHandler* area = this;
 	m_ownerWindow->m_hotAreaList->AddToList(area);
 }
 
 // FUNCTION: LEMBALL 0x00468b20
-TargetFramedButton::TargetFramedButton(PvGWnd* p_parent, unsigned int p_frameColor) : DepressedButton(p_parent)
+TargetFramedButton::TargetFramedButton(CPvGWnd* p_parent, unsigned int p_frameColor) : CDepressedButton(p_parent)
 {
 	m_frameColor = p_frameColor;
 	InitializeFramePrimitives();
@@ -44,9 +44,9 @@ TargetFramedButton::TargetFramedButton(PvGWnd* p_parent, unsigned int p_frameCol
 // FUNCTION: LEMBALL 0x00468b80
 void TargetFramedButton::InitializeFramePrimitives()
 {
-	m_frameLine = new Line[1];
+	m_frameLine = new CLine[1];
 	m_gdiFlags++;
-	m_frameRects = new ClipRect[4];
+	m_frameRects = new CClipRect[4];
 	m_gdiFlags += 4;
 }
 
@@ -64,19 +64,19 @@ void TargetFramedButton::DrawButton()
 	unsigned int dark;
 	unsigned int i;
 	m_gdi->m_renderTarget->GetCurrDb();
-	VsRect bounds;
+	CVsRect bounds;
 	bounds.m_width = m_bounds.m_width;
 	bounds.m_height = m_bounds.m_height;
 	bounds.m_x = 0;
 	bounds.m_y = 0;
-	Line* line = m_frameLine;
+	CLine* line = m_frameLine;
 	line->m_x1 = bounds.m_width;
 	line->m_y1 = bounds.m_height;
 	line->m_x2 = bounds.m_x;
 	line->m_y2 = bounds.m_y;
 	line->m_color = m_frameColor;
 	m_frameLine->Draw(m_gdi);
-	bool depressed = m_pressed != 0 && HotAreaHandler::m_active != 0;
+	bool depressed = m_pressed != 0 && CHotAreaHandler::m_active != 0;
 	if (depressed) {
 		light = 0xf8;
 		dark = 0xff;
@@ -85,7 +85,7 @@ void TargetFramedButton::DrawButton()
 		light = 0xff;
 		dark = 0xf8;
 	}
-	ClipRect* edge = &m_frameRects[0];
+	CClipRect* edge = &m_frameRects[0];
 	edge->m_left = 0;
 	edge->m_top = 0;
 	edge->m_right = (short) (m_bounds.m_width - 1);
@@ -117,14 +117,14 @@ void TargetFramedButton::DrawButton()
 }
 
 // FUNCTION: LEMBALL 0x00468dd0
-void TargetFramedButton::OnPaint(const VsRect& p_rect)
+void TargetFramedButton::OnPaint(const CVsRect& p_rect)
 {
 	if (m_gdi->m_primitiveCount == 0 && (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed)) {
 		if (GetSizeStatus() != 0) {
 			InternalDrawButton();
 			DrawButton();
 		}
-		ChangeList* changeList = m_gdi->m_renderTarget->GetChangeList();
+		CChangeList* changeList = m_gdi->m_renderTarget->GetChangeList();
 		m_gdi->AddToList(m_primitive);
 		changeList->Reset();
 		m_drawCompleted = 1;

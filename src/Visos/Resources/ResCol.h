@@ -1,13 +1,13 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESCOL_H
 #define LEMBALL_VISOS_RESOURCES_RESCOL_H
 
-#include "ResBase.h" // complete type
+#include "CResBase.h" // complete type
 
 #define kChunkCol 0x434f4c20
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00498bc8
-class ResCol : public ResBase {
+class ResCol : public CResBase {
 public:
 	inline ResCol(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	static ResCol* Load(unsigned int p_resourceId);

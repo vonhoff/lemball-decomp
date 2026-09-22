@@ -1,12 +1,12 @@
 #include "TargetWaveEffect.h"
 
-#include "../Foundation/VsOStream.h"
+#include "../Foundation/CVsOStream.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
 
 #include <memory.h>
 
-inline VsOStream& operator<<(VsOStream& p_stream, unsigned short p_value)
+inline CVsOStream& operator<<(CVsOStream& p_stream, unsigned short p_value)
 {
 	return p_stream << (unsigned int) p_value;
 }

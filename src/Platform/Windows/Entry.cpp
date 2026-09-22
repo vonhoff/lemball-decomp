@@ -1,12 +1,12 @@
 #include "Entry.h"
 
-#include "../../Visos/Foundation/BaseQueue.h"
-#include "../../Visos/Foundation/BaseQueueHandler.h"
+#include "../../Visos/Foundation/CBaseQueue.h"
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
 #include "../../Visos/Foundation/VsInit.h"
-#include "../../Visos/Graphics/Cursor.h"
-#include "../../Visos/Graphics/Wnd.h"
-#include "../../Visos/Network/BaseNetwork.h"
-#include "../../Visos/Resources/MogRes.h"
+#include "../../Visos/Graphics/CCursor.h"
+#include "../../Visos/Graphics/CWnd.h"
+#include "../../Visos/Network/CBaseNetwork.h"
+#include "../../Visos/Resources/CMogRes.h"
 #include "../../Visos/Target/TargetGraphicsDriver.h"
 #include "../../Visos/Target/TargetPlatformServices.h"
 
@@ -28,13 +28,13 @@ bool TargetPumpEvents()
 	MSG message;
 	unsigned int count;
 
-	Wnd::ProcessMouseMoves();
+	CWnd::ProcessMouseMoves();
 	g_dwWindowQuitRequested = 0;
 	if (g_pBaseNetwork != 0 && g_pNetworkPacketQueue != 0) {
 		do {
-			count = ((BaseQueue*) g_pNetworkPacketQueue)->GetMessageCount();
+			count = ((CBaseQueue*) g_pNetworkPacketQueue)->GetMessageCount();
 			if (count != 0) {
-				((BaseQueue*) g_pNetworkPacketQueue)->ProcessNMsgs(count);
+				((CBaseQueue*) g_pNetworkPacketQueue)->ProcessNMsgs(count);
 			}
 		} while (count != 0);
 	}

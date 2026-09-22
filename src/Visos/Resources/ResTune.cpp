@@ -1,6 +1,6 @@
 #include "ResTune.h"
 
-#include "MogRes.h"
+#include "CMogRes.h"
 
 // FUNCTION: LEMBALL 0x0045e460
 ResTune* ResTune::Load(unsigned int p_resourceId)

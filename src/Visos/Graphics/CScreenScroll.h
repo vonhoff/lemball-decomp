@@ -1,0 +1,26 @@
+#ifndef LEMBALL_VISOS_GRAPHICS_CSCREENSCROLL_H
+#define LEMBALL_VISOS_GRAPHICS_CSCREENSCROLL_H
+
+#include "../Foundation/CVsPoint.h" // complete type
+#include "../Foundation/CVsRect.h"  // complete type
+#include "CPrimitive.h"             // complete type
+
+// SIZE 0x10
+// VTABLE: LEMBALL 0x00496e40
+class CScreenScroll : public CPrimitive {
+public:
+	virtual void Draw(CGdi* p_gdi);   // vtable+0x04
+	virtual void Render(CGdi* p_gdi); // vtable+0x08
+	virtual ~CScreenScroll() {}       // vtable+0x00
+
+	friend class CSurface;
+
+private:
+	CVsPoint m_destination; // 0x04
+	CVsRect m_rect;         // 0x08
+};
+
+// SYNTHETIC: LEMBALL 0x00439650
+// CScreenScroll::`scalar deleting destructor'
+
+#endif

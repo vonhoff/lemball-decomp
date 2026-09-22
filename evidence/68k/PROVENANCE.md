@@ -1,4 +1,4 @@
-# 68K annotation evidence
+# Derived 68K symbol evidence
 
 `catalog.csv` contains derived metadata only: 2,848 Mac symbols and 2,685
 reviewed Windows pairs. Plain CSV, about 136 KB; no game payload, archive, JSON,
@@ -14,9 +14,9 @@ The normal gate includes this check; `--all` adds naming and vtable checks.
 ## Naming authority
 
 `python tools/gate.py --names` looks up the original Windows annotation in this
-CSV, then decodes the catalog symbol. Removing or changing a `// 68K` comment
-cannot supply a different expected name. A symbol-only inline declaration uses
-its checked Mac address for lookup. Folded entries retain all catalog candidates.
+CSV, then decodes the catalog symbol. Source files need only the ordinary
+`// FUNCTION: LEMBALL 0x0043a250` annotation; duplicate `// 68K` comments have been
+removed. Folded entries retain all catalog candidates.
 Compiler-emitted functions without C++ declarations are reported as synthetic;
 Windows entries without a reviewed pairing are reported as unmapped.
 
@@ -34,6 +34,13 @@ Windows evidence: ABI changes, platform APIs, and typedefs can explain a review.
 `--names-original` audits exact original spelling, including prefixes and case;
 normal naming checks apply the project's documented spelling policy.
 
+Catalog-backed class prefixes are preserved, including constructors, destructors,
+filenames, includes, and guards. Acronyms retain project style (`CPVWnd` becomes
+`CPvWnd`). Windows-only types receive no inferred prefix. `CHAR4` retains its
+complete original spelling; the old `Har4` spelling resulted from stripping its
+first letter. Original-filename exceptions `VsGdi` and `MogLoad` remain documented
+in the layout gate. Method names that coincide with class names remain methods.
+
 ## Three linked values
 
 ```csv
@@ -42,19 +49,17 @@ mac_address,symbol,windows_address
 ```
 
 Addresses are hexadecimal integers without a prefix or redundant leading zeros.
-The verifier checks all three values together:
+The catalog retains three linked facts:
 
 1. The Mac address identifies an extracted procedure entry.
 2. The symbol matches the MacsBug name at that exact address.
-3. The adjacent Windows annotation belongs to a reviewed pair for that entry.
+3. The Windows address identifies the separately reviewed counterpart.
 
-A real name at another Mac address fails. A real Windows address paired with
-another Mac function requires review. Two columns suffice for Mac name/address
-lookup; the third preserves Windows correspondence.
+Two columns (`windows_address,symbol`) would suffice for naming lookup alone.
+The Mac address remains an extraction anchor: private verification checks that
+each name belongs to that exact CODE procedure, including repeated symbols.
+Removing duplicate source comments saves space without removing this evidence.
 
-`invalid` means a malformed comment or a wrong Mac name/address combination.
-`review` means an unlisted Windows pair; strict mode fails these entries.
-`symbol-only` means no adjacent Windows address, as with an inline declaration.
 A blank Windows cell records a Mac symbol without a reviewed Windows pairing.
 Multiple compiler variants repeat the Mac address/name with distinct Windows
 addresses. Folded functions may share a Windows address. Conflicting names and
@@ -75,6 +80,7 @@ resources, independently of reconstructed source annotations. Addresses use
 constant pools, and relocation records. Template punctuation receives the same
 symbol sanitization as the Ghidra import. The parser remains in
 `tools/lib/provenance.py`; regression fixtures contain synthetic procedures.
+These are deterministic Ghidra import addresses, not Mac runtime load addresses.
 
 The original research Ghidra export was checked again: all 2,848 catalog
 address/name entries agree with that export and with fresh resource extraction.

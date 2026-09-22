@@ -1,9 +1,9 @@
 #include "TargetPlatformServices.h"
 
-#include "../Foundation/MasterInput.h"
+#include "../Foundation/CMasterInput.h"
+#include "../Foundation/CVsIOs.h"
 #include "../Foundation/Message.h"
 #include "../Foundation/VsFile.h"
-#include "../Foundation/VsIOs.h"
 #include "Visos/Target/TargetInputTranslationEntry.h"
 
 #include <new.h>
@@ -117,7 +117,6 @@ bool TargetPlatformServices::WriteRegistryFlag(const char* p_subkey, int p_enabl
 	return status == 0;
 }
 
-// 68K 0x1010c30e GetCDDir__FPCc
 // FUNCTION: LEMBALL 0x0045eda0
 char* TargetPlatformServices::GetCdDir(const char* p_requiredFile)
 {

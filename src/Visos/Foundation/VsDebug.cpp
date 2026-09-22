@@ -1,10 +1,10 @@
 #include "VsDebug.h"
 
 #include "../Target/TargetTextWindow.h"
+#include "CString.h"
+#include "CVsDebugStreambuf.h"
 #include "LocalDebugOStream.h"
-#include "String.h"
-#include "Visos/Foundation/VsOStream.h"
-#include "VsDebugStreambuf.h"
+#include "Visos/Foundation/CVsOStream.h"
 #include "VsFile.h"
 #include "VsInit.h"
 #include "VsString.h"
@@ -24,21 +24,18 @@ extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code)
 
 #pragma intrinsic(strlen)
 
-// 68K 0x10213c3a _VSExit__Fi
 // FUNCTION: LEMBALL 0x00459970
 void InternalVsExit(int p_exitCode)
 {
 	longjmp(g_vsExitJumpBuffer, p_exitCode);
 }
 
-// 68K 0x10205a70 _VSRELassert
 // FUNCTION: LEMBALL 0x0045b8e0
 void InternalVsRelAssert(const char* p_reason, const char* p_file, unsigned int p_line)
 {
 	DisplayRelAssert((void*) p_reason, (void*) p_file, p_line);
 }
 
-// 68K 0x1010ff88 WriteDebugString2File__FPc
 // FUNCTION: LEMBALL 0x004728b0
 void WriteDebugString2File(char* p_text)
 {
@@ -51,7 +48,6 @@ void WriteDebugString2File(char* p_text)
 	}
 }
 
-// 68K 0x1011006c _RAWOUT_DebugString__FPc
 // FUNCTION: LEMBALL 0x00472910
 int InternalRawOutDebugString(char* p_text)
 {
@@ -68,7 +64,6 @@ int InternalRawOutDebugString(char* p_text)
 	return g_pDebugWindow != NULL;
 }
 
-// 68K 0x101100a4 _RAWOUT_ErrorString__FPc
 // FUNCTION: LEMBALL 0x00472980
 int InternalRawOutErrorString(char* p_text)
 {
@@ -85,7 +80,6 @@ int InternalRawOutErrorString(char* p_text)
 	return g_pDebugWindow != NULL;
 }
 
-// 68K 0x101100dc _RAWOUT_SysString__FPc
 // FUNCTION: LEMBALL 0x004729f0
 int InternalRawOutSysString(char* p_text)
 {
@@ -102,11 +96,10 @@ int InternalRawOutSysString(char* p_text)
 	return g_pDebugWindow != NULL;
 }
 
-// 68K 0x10100d4a DisplayRelAssert__FPvPvUi
 // FUNCTION: LEMBALL 0x004734f0
 void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 {
-	String msg;
+	CString msg;
 	msg = "Release Version Assertion Failure\n";
 	msg += "Reason: ";
 	msg += (char*) p_reason;

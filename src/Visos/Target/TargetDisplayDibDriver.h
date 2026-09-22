@@ -3,25 +3,25 @@
 
 #include "TargetGDIDriver.h" // complete type
 
-struct VsSize;
+struct CVsSize;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x004987b0
 class TargetDisplayDibDriver : public TargetGDIDriver {
 public:
-	TargetDisplayDibDriver(const VsSize& p_size);
+	TargetDisplayDibDriver(const CVsSize& p_size);
 	virtual ~TargetDisplayDibDriver();
 	virtual unsigned int UpdateDIBColourTable(TargetDrawingContext* p_context,
 											  unsigned int p_start,
 											  unsigned int p_count,
 											  void* p_colours);
 	virtual int BitBltContexts(TargetDrawingContext* p_destination,
-							   VsRect* p_rect,
+							   CVsRect* p_rect,
 							   TargetDrawingContext* p_source,
-							   VsPoint* p_position);
+							   CVsPoint* p_position);
 	virtual int StretchBltContexts(TargetDrawingContext* p_destination,
-								   VsRect* p_rect,
+								   CVsRect* p_rect,
 								   TargetDrawingContext* p_source,
-								   VsRect* p_sourceRect);
+								   CVsRect* p_sourceRect);
 
 private:
 	friend class TargetPlanarDisplayDibDriver;

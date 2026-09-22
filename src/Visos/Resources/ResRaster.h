@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_RESOURCES_RESRASTER_H
 #define LEMBALL_VISOS_RESOURCES_RESRASTER_H
 
-#include "ResBase.h" // complete type
+#include "CResBase.h" // complete type
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00498ab0
-class ResRaster : public ResBase {
+class ResRaster : public CResBase {
 public:
 	inline ResRaster()
 	{
@@ -13,13 +13,13 @@ public:
 		m_x = 0;
 	}
 
-	friend class BaseFrontendDrawer;
-	friend class MainOptions1Drawer;
-	friend class MainOptions2Drawer;
-	friend class SuccFailDrawer;
-	friend class Surface;
-	friend class AnimsManager;
-	friend class CdLoadAnim;
+	friend class CBaseFrontendDrawer;
+	friend class CMainOptions1Drawer;
+	friend class CMainOptions2Drawer;
+	friend class CSuccFailDrawer;
+	friend class CSurface;
+	friend class CAnimsManager;
+	friend class CCdLoadAnim;
 	friend class TargetAboutScreen;
 
 protected:

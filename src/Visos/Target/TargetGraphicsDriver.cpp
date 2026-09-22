@@ -1,9 +1,9 @@
 #include "TargetGraphicsDriver.h"
 
-#include "../Graphics/GWnd.h"
-#include "../Graphics/Gdi.h"
-#include "../Graphics/PvGdiBitmap.h"
-#include "../Graphics/PvWnd.h"
+#include "../Graphics/CGWnd.h"
+#include "../Graphics/CGdi.h"
+#include "../Graphics/CPvGdiBitmap.h"
+#include "../Graphics/CPvWnd.h"
 #include "../Graphics/VsGdi.h"
 #include "TargetGdiDrawingContext.h"
 #include "TargetWinGDrawCodecState.h"
@@ -11,9 +11,9 @@
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Foundation/VsPoint.h"
-#include "Visos/Foundation/VsRect.h"
-#include "Visos/Graphics/PvGWnd.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Graphics/CPvGWnd.h"
 
 #include <windows.h>
 
@@ -113,14 +113,14 @@ bool TargetGraphicsDriver::RealizePalette(TargetDrawingContext* p_drawingContext
 
 // FUNCTION: LEMBALL 0x00456970
 bool TargetGraphicsDriver::BlitWrappedBitmap(TargetDrawingContext* p_destination,
-											 VsRect* p_destinationRect,
+											 CVsRect* p_destinationRect,
 											 TargetDrawingContext* p_source,
-											 VsRect* p_sourceRect,
-											 PvGdiBitmap* p_bitmap)
+											 CVsRect* p_sourceRect,
+											 CPvGdiBitmap* p_bitmap)
 {
 	int scale;
-	VsRect* rect0;
-	VsRect* rect1;
+	CVsRect* rect0;
+	CVsRect* rect1;
 	bool copied;
 
 	copied = 0;
@@ -131,17 +131,17 @@ bool TargetGraphicsDriver::BlitWrappedBitmap(TargetDrawingContext* p_destination
 	p_bitmap->GetRects(*p_sourceRect, rect0, rect1);
 	bool copiedSecond = 0;
 	if (rect0 != 0) {
-		VsPoint* point = p_destinationRect;
+		CVsPoint* point = p_destinationRect;
 		short height = (short) (rect0->m_height * scale);
 		short width = (short) (rect0->m_width * scale);
-		VsRect destRect(point->m_x, point->m_y, width, height);
+		CVsRect destRect(point->m_x, point->m_y, width, height);
 		copied = StretchBltContexts(p_destination, &destRect, p_source, rect0);
 	}
 	if (rect1 != 0) {
 		short height = (short) (rect1->m_height * scale);
 		short y = (short) (rect0->m_height * scale + p_destinationRect->m_y);
 		short width = (short) (rect1->m_width * scale);
-		VsRect destRect(p_destinationRect->m_x, y, width, height);
+		CVsRect destRect(p_destinationRect->m_x, y, width, height);
 		copiedSecond = StretchBltContexts(p_destination, &destRect, p_source, rect1);
 	}
 	return copied | copiedSecond;
@@ -235,8 +235,8 @@ TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo)
 		openInfo->dwError = 0xfffffffd;
 		return 0;
 	}
-	state->m_window = (GWnd*) g_pAnimWnd;
-	state->m_surface = ((GWnd*) g_pAnimWnd)->m_gdi->m_renderTarget;
+	state->m_window = (CGWnd*) g_pAnimWnd;
+	state->m_surface = ((CGWnd*) g_pAnimWnd)->m_gdi->m_renderTarget;
 	openInfo->dwError = 0;
 	return state;
 }
@@ -377,14 +377,14 @@ int __stdcall TargetWinGDrawCodec_Begin(TargetWinGDrawCodecState* p_state, void*
 int __stdcall TargetWinGDrawCodec_Draw(TargetWinGDrawCodecState* p_state, void* p_request, long p_param2)
 {
 	IcDraw* request;
-	PvWnd* window;
+	CPvWnd* window;
 	(void) p_param2;
 
 	request = (IcDraw*) p_request;
-	window = (PvWnd*) p_state->m_window;
+	window = (CPvWnd*) p_state->m_window;
 	if (window->m_lifecycleRefs == 1) {
 		p_state->m_surface->CopyDIBBits(request->lpFormat, (unsigned char*) request->lpData);
-		p_state->m_window->GWnd::Refresh(0);
+		p_state->m_window->CGWnd::Refresh(0);
 	}
 	return 0;
 }

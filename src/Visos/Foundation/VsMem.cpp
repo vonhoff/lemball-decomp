@@ -1,11 +1,10 @@
 #include "VsMem.h"
 
-#include "Arena.h"
-#include "Bucket.h"
-#include "SmallMemory.h"
+#include "CArena.h"
+#include "CBucket.h"
+#include "CSmallMemory.h"
 #include "VsDebug.h"
 
-// 68K 0x10215b2e InternalNew__FUl
 // FUNCTION: LEMBALL 0x0045a6b0
 void* InternalNew(unsigned long p_size)
 {
@@ -25,7 +24,6 @@ void* InternalNew(unsigned long p_size)
 	return result;
 }
 
-// 68K 0x10215be0 InternalDelete__FPv
 // FUNCTION: LEMBALL 0x0045a730
 void InternalDelete(void* p_ptr)
 {
@@ -38,28 +36,25 @@ void InternalDelete(void* p_ptr)
 	InternalVsRelAssert("EnoughMemory", "VSMEM.CPP", 1738);
 }
 
-// 68K 0x10215c5e __nw__FUl
 // FUNCTION: LEMBALL 0x0045a780
 void* operator new(size_t p_arg0)
 {
 	return InternalNew(p_arg0);
 }
 
-// 68K 0x10215c7a __dl__FPv
 // FUNCTION: LEMBALL 0x0045a790
 void operator delete(void* p_arg0)
 {
 	InternalDelete(p_arg0);
 }
 
-// 68K 0x10215c96 CheckValidPointer__FPv
 // FUNCTION: LEMBALL 0x0045a800
 bool CheckValidPointer(void* p_arg0)
 {
 	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory != 0) {
 		int i = 0;
 		register unsigned char* ptr = (unsigned char*) p_arg0;
-		register Bucket** buckets = (Bucket**) g_pSmallMemory;
+		register CBucket** buckets = (CBucket**) g_pSmallMemory;
 		do {
 			if (*buckets != 0 && (*buckets)->CheckValidPointer(ptr)) {
 				return 1;

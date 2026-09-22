@@ -1,19 +1,19 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_TARGETABOUT_H
 #define LEMBALL_FRONTEND_PROCESSES_TARGETABOUT_H
 
-#include "../../Visos/Foundation/BaseProcess.h" // complete type
+#include "../../Visos/Foundation/CBaseProcess.h" // complete type
 
-class Game;
+class CGame;
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493090
-class TargetAbout : public BaseProcess {
+class TargetAbout : public CBaseProcess {
 public:
-	TargetAbout(Game* p_game) { m_game = p_game; }
+	TargetAbout(CGame* p_game) { m_game = p_game; }
 	virtual ~TargetAbout() {} // vtable+0x00
 	virtual void Process();   // vtable+0x04
 
 private:
-	Game* m_game; // 0x0c
+	CGame* m_game; // 0x0c
 };
 
 // SYNTHETIC: LEMBALL 0x00408010

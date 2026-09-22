@@ -3,20 +3,20 @@
 
 #include "TargetDisplayDibDriver.h" // complete type
 
-struct VsSize;
+struct CVsSize;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498840
 class TargetPlanarDisplayDibDriver : public TargetDisplayDibDriver {
 public:
-	TargetPlanarDisplayDibDriver(const VsSize& p_size) : TargetDisplayDibDriver(p_size) {}
+	TargetPlanarDisplayDibDriver(const CVsSize& p_size) : TargetDisplayDibDriver(p_size) {}
 	virtual int BitBltContexts(TargetDrawingContext* p_destination,
-							   VsRect* p_rect,
+							   CVsRect* p_rect,
 							   TargetDrawingContext* p_source,
-							   VsPoint* p_position);
+							   CVsPoint* p_position);
 	virtual int StretchBltContexts(TargetDrawingContext* p_destination,
-								   VsRect* p_rect,
+								   CVsRect* p_rect,
 								   TargetDrawingContext* p_source,
-								   VsRect* p_sourceRect);
+								   CVsRect* p_sourceRect);
 	void SetPlaneWriteMask(unsigned char p_mask);
 	void ExtractPlaneBytes(unsigned char* p_destination, unsigned char* p_source, int p_count);
 };

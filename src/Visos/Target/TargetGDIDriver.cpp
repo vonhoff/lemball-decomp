@@ -8,9 +8,9 @@
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Foundation/VsPoint.h"
-#include "Visos/Foundation/VsRect.h"
-#include "Visos/Foundation/VsSize.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVsSize.h"
 #include "Visos/Target/TargetDibContext.h"
 #include "Visos/Target/TargetDrawingContext.h"
 
@@ -179,9 +179,9 @@ unsigned int TargetGDIDriver::UpdateDIBColourTable(TargetDrawingContext* p_drawi
 
 // FUNCTION: LEMBALL 0x00456c70
 int TargetGDIDriver::BitBltContexts(TargetDrawingContext* p_destination,
-									VsRect* p_destinationRect,
+									CVsRect* p_destinationRect,
 									TargetDrawingContext* p_source,
-									VsPoint* p_sourcePosition)
+									CVsPoint* p_sourcePosition)
 {
 	return BitBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
 				  (int) p_destinationRect->m_x,
@@ -196,9 +196,9 @@ int TargetGDIDriver::BitBltContexts(TargetDrawingContext* p_destination,
 
 // FUNCTION: LEMBALL 0x00456cc0
 int TargetGDIDriver::StretchBltContexts(TargetDrawingContext* p_destination,
-										VsRect* p_destinationRect,
+										CVsRect* p_destinationRect,
 										TargetDrawingContext* p_source,
-										VsRect* p_sourceRect)
+										CVsRect* p_sourceRect)
 {
 	return StretchBlt((HDC) ((TargetGdiDrawingContext*) p_destination)->m_hDC,
 					  (int) p_destinationRect->m_x,

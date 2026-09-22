@@ -1,15 +1,15 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETDIRECTSOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_TARGETDIRECTSOUNDDEVICE_H
 
-#include "../Sound/BaseSoundDevice.h" // complete type
+#include "../Sound/CBaseSoundDevice.h" // complete type
 
 class IDirectSound;
 class TargetDirectSoundEffect;
-class Wnd;
+class CWnd;
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x0049acd8
-class TargetDirectSoundDevice : public BaseSoundDevice {
+class TargetDirectSoundDevice : public CBaseSoundDevice {
 public:
 	TargetDirectSoundDevice(int p_effectCapacity, int p_buffersPerEffect);
 	virtual ~TargetDirectSoundDevice();
@@ -43,7 +43,7 @@ public:
 	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume);
 	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume);
 	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect);
-	virtual void SetWnd(Wnd* p_wnd);
+	virtual void SetWnd(CWnd* p_wnd);
 
 private:
 	bool PrepareEffect(unsigned char* p_data, unsigned long* p_handle, unsigned int p_effectHandle);

@@ -1,25 +1,25 @@
 #ifndef LEMBALL_VIEWS_INPUT_WINDOWSCURSORMOTIONSTATE_H
 #define LEMBALL_VIEWS_INPUT_WINDOWSCURSORMOTIONSTATE_H
 
-#include "../../Visos/Graphics/ClipRect.h"  // complete type
-#include "../../Visos/Graphics/SolidRect.h" // complete type
+#include "../../Visos/Graphics/CClipRect.h"  // complete type
+#include "../../Visos/Graphics/CSolidRect.h" // complete type
 
-class Ai;
-class BaseQueue;
-class LemmingAnimsManager;
-class Map;
-struct VsPoint;
+class CAi;
+class CBaseQueue;
+class CLemmingAnimsManager;
+class CMap;
+struct CVsPoint;
 // SIZE 0x78
 class WindowsCursorMotionState {
 public:
-	WindowsCursorMotionState(LemmingAnimsManager* p_anims, Ai* p_ai, Map* p_map);
+	WindowsCursorMotionState(CLemmingAnimsManager* p_anims, CAi* p_ai, CMap* p_map);
 	~WindowsCursorMotionState();
 	void SendCursorPositionMessage();
 	void ProcessCursorMotion();
 	void DrawCursorMotionAtCurrentPosition(unsigned int p_unused);
-	void DrawCursorMotionAtPoint(unsigned int p_unused, const VsPoint& p_position);
-	void SetCursorMotionPoint(const VsPoint& p_position);
-	VsPoint GetCursorMotionPoint();
+	void DrawCursorMotionAtPoint(unsigned int p_unused, const CVsPoint& p_position);
+	void SetCursorMotionPoint(const CVsPoint& p_position);
+	CVsPoint GetCursorMotionPoint();
 	void StopVerticalMotion();
 	void StopHorizontalMotion();
 	void StartHorizontalMotion(unsigned int p_positive);
@@ -28,11 +28,11 @@ public:
 
 private:
 	unsigned int m_unknown00;        // 0x00
-	Map* m_map;                      // 0x04
-	Ai* m_ai;                        // 0x08
-	BaseQueue* m_aiQueue;            // 0x0c
-	LemmingAnimsManager* m_anims;    // 0x10
-	ClipRect m_clipRects[2];         // 0x14
+	CMap* m_map;                     // 0x04
+	CAi* m_ai;                       // 0x08
+	CBaseQueue* m_aiQueue;           // 0x0c
+	CLemmingAnimsManager* m_anims;   // 0x10
+	CClipRect m_clipRects[2];        // 0x14
 	int m_fixedX;                    // 0x34
 	int m_fixedY;                    // 0x38
 	int m_velocityX;                 // 0x3c
@@ -44,7 +44,7 @@ private:
 	unsigned int m_horizontalActive; // 0x54
 	unsigned int m_verticalActive;   // 0x58
 	unsigned int m_positionDirty;    // 0x5c
-	SolidRect m_marker;              // 0x60
+	CSolidRect m_marker;             // 0x60
 	unsigned int m_aux0;             // 0x70
 	unsigned int m_aux1;             // 0x74
 };

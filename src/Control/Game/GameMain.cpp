@@ -1,17 +1,17 @@
 #include "GameMain.h"
 
-#include "../../Frontend/Base/BaseFrontendDrawer.h"
-#include "../../Frontend/Base/BaseFrontendProcess.h"
+#include "../../Frontend/Base/CBaseFrontendDrawer.h"
+#include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Platform/Windows/Entry.h"
-#include "../../Visos/Foundation/VsOStream.h"
+#include "../../Visos/Foundation/CVsOStream.h"
 #include "../../Visos/Foundation/VsString.h"
 #include "../../Visos/Foundation/VsTrig.h"
 #include "../../Visos/Target/TargetGraphicsDriver.h"
 #include "../../Visos/Target/TargetGraphicsSystemState.h"
-#include "../Level/LevelLoader.h"
+#include "../Level/CLevelLoader.h"
 #include "../Support/PreInit.h"
-#include "Demo.h"
-#include "Game.h"
+#include "CDemo.h"
+#include "CGame.h"
 #include "GameTime.h"
 
 #include <string.h>
@@ -20,7 +20,6 @@
 
 extern "C" __declspec(dllimport) void* __stdcall LoadIconA(void* p_instance, const char* p_name);
 
-// 68K 0x1070000c VSPreInit__FP11tagPRE_INIT
 // FUNCTION: LEMBALL 0x00406160
 PreInit* VsPreInit(PreInit* p_preInit)
 {
@@ -38,7 +37,6 @@ PreInit* VsPreInit(PreInit* p_preInit)
 	return &g_preInit;
 }
 
-// 68K 0x107000f6 SetGameDefaults__Fv
 // FUNCTION: LEMBALL 0x00406230
 void SetGameDefaults()
 {
@@ -75,18 +73,16 @@ void SetGameDefaults()
 	strcpy(g_szCommandLineLevelFile, g_szDefaultOverrideLevelPath);
 }
 
-// 68K 0x107001d0 DisplayHelp__Fv
 // FUNCTION: LEMBALL 0x00406300
 void DisplayHelp()
 {
 }
 
-// 68K 0x1070067e VSmain__FiPPc
 // FUNCTION: LEMBALL 0x00406310
 int VsMain(int p_argc, char** p_argv)
 {
 	int* sentinel;
-	Game* game;
+	CGame* game;
 
 	g_pVSTrig = new VsTrig();
 
@@ -103,7 +99,7 @@ int VsMain(int p_argc, char** p_argv)
 	SetGameDefaults();
 	if (DoCommandLine(p_argc, p_argv) == 1) {
 		game = 0;
-		game = new Game(0);
+		game = new CGame(0);
 		if (g_nEditLevelMode != 0) {
 			strcpy(game->m_runtimeName, g_szCommandLineLevelFile);
 		}
@@ -123,7 +119,6 @@ int VsMain(int p_argc, char** p_argv)
 	return 0;
 }
 
-// 68K 0x107002da DoCommandLine__FiPPc
 // FUNCTION: LEMBALL 0x00406460
 int DoCommandLine(int p_argc, char** p_argv)
 {

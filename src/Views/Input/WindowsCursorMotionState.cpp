@@ -1,20 +1,20 @@
 #include "WindowsCursorMotionState.h"
 
-#include "../../AI/Navigation/Ai.h"
-#include "../../Map/Base/Map.h"
-#include "../../Visos/Foundation/BaseQueue.h"
-#include "../../Visos/Foundation/Fixed.h"
-#include "../../Visos/Foundation/VsPoint.h"
+#include "../../AI/Navigation/CAi.h"
+#include "../../Map/Base/CMap.h"
+#include "../../Visos/Foundation/CBaseQueue.h"
+#include "../../Visos/Foundation/CFixed.h"
+#include "../../Visos/Foundation/CVsPoint.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "../Animation/LemmingAnimsManager.h"
+#include "../Animation/CLemmingAnimsManager.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/VsDebug.h"
 
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x00432590
-WindowsCursorMotionState::WindowsCursorMotionState(LemmingAnimsManager* p_anims, Ai* p_ai, Map* p_map)
+WindowsCursorMotionState::WindowsCursorMotionState(CLemmingAnimsManager* p_anims, CAi* p_ai, CMap* p_map)
 	: m_fixedX(DEBUG_SENTINEL), m_fixedY(DEBUG_SENTINEL), m_velocityX(DEBUG_SENTINEL), m_velocityY(DEBUG_SENTINEL),
 	  m_accelerationX(DEBUG_SENTINEL), m_accelerationY(DEBUG_SENTINEL)
 {
@@ -99,13 +99,13 @@ void WindowsCursorMotionState::DrawCursorMotionAtCurrentPosition(unsigned int p_
 }
 
 // FUNCTION: LEMBALL 0x004327e0
-void WindowsCursorMotionState::DrawCursorMotionAtPoint(unsigned int p_unused, const VsPoint& p_position)
+void WindowsCursorMotionState::DrawCursorMotionAtPoint(unsigned int p_unused, const CVsPoint& p_position)
 {
 	m_anims->DrawAnim(p_position.m_x, p_position.m_y, RES_CURSORS_HAND, 0, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x00432810
-void WindowsCursorMotionState::SetCursorMotionPoint(const VsPoint& p_position)
+void WindowsCursorMotionState::SetCursorMotionPoint(const CVsPoint& p_position)
 {
 	m_positionDirty = 1;
 	m_horizontalActive = 0;
@@ -115,9 +115,9 @@ void WindowsCursorMotionState::SetCursorMotionPoint(const VsPoint& p_position)
 }
 
 // FUNCTION: LEMBALL 0x00432840
-VsPoint WindowsCursorMotionState::GetCursorMotionPoint()
+CVsPoint WindowsCursorMotionState::GetCursorMotionPoint()
 {
-	return VsPoint((short) (m_fixedX >> 12), (short) (m_fixedY >> 12));
+	return CVsPoint((short) (m_fixedX >> 12), (short) (m_fixedY >> 12));
 }
 
 // FUNCTION: LEMBALL 0x00432860
@@ -141,7 +141,7 @@ void WindowsCursorMotionState::StartHorizontalMotion(unsigned int p_positive)
 {
 	if (!m_horizontalActive) {
 		unsigned int now = CurrentMilliTimer();
-		m_accelerationX = (p_positive ? Fixed(0xcc) : Fixed(-0xcc)).m_value;
+		m_accelerationX = (p_positive ? CFixed(0xcc) : CFixed(-0xcc)).m_value;
 		m_lastTickX = now;
 		m_horizontalActive = 1;
 	}
@@ -152,7 +152,7 @@ void WindowsCursorMotionState::StartVerticalMotion(unsigned int p_positive)
 {
 	if (!m_verticalActive) {
 		unsigned int now = CurrentMilliTimer();
-		m_accelerationY = (p_positive ? Fixed(0xcc) : Fixed(-0xcc)).m_value;
+		m_accelerationY = (p_positive ? CFixed(0xcc) : CFixed(-0xcc)).m_value;
 		m_lastTickY = now;
 		m_verticalActive = 1;
 	}

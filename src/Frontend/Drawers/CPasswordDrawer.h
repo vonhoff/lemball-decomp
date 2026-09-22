@@ -1,0 +1,78 @@
+#ifndef LEMBALL_FRONTEND_DRAWERS_CPASSWORDDRAWER_H
+#define LEMBALL_FRONTEND_DRAWERS_CPASSWORDDRAWER_H
+
+#include "../../Visos/Animation/CStaticAnim.h" // complete type
+#include "../../Visos/Graphics/CSolidRect.h"   // complete type
+#include "../Base/CBaseFrontendDrawer.h"
+
+class CGdi;
+class CMain2DDisplay;
+class CPasswordHiliteWindow;
+class CPvButton;
+class CVsRect;
+struct PasswordTextPosition {
+	int m_x;
+	int m_y;
+};
+
+struct PasswordTextLayout {
+	unsigned int m_unknown00[6];
+	PasswordTextPosition m_labelPositions[4];
+	PasswordTextPosition m_countPositions[4];
+	unsigned int m_unknown58[8];
+	PasswordTextPosition m_resultPosition;
+};
+
+// SIZE 0x494
+// VTABLE: LEMBALL 0x00498408 CDrawer
+// VTABLE: LEMBALL 0x004983f8 CBaseQueueHandler
+// VTABLE: LEMBALL 0x004983f0 CAnimsManager
+class CPasswordDrawer : public CBaseFrontendDrawer {
+public:
+	CPasswordDrawer(CMain2DDisplay* p_arg0, CGdi* p_arg1, const CVsRect& p_arg2);
+	void ButtonNumeric(int p_button);
+	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
+	virtual void DrawAnims();                         // vtable+0x48
+	virtual void DrawBackGround();                    // vtable+0x50
+	virtual void DrawText();                          // vtable+0x4c
+	virtual void Load();                              // vtable+0x40
+	virtual void Processing();                        // vtable+0x38
+	virtual void UnLoad();                            // vtable+0x44
+	virtual ~CPasswordDrawer();                       // vtable+0x00
+	void DrawButtons();
+	void DrawHilite();
+	void DrawPassword();
+	void SetHiliteWindow();
+	void ShiftHilite(int p_delta);
+
+private:
+	unsigned int m_animationId;            // 0x398
+	char m_unknown39c[8];                  // 0x39c
+	CPasswordHiliteWindow* m_hiliteWindow; // 0x3a4
+	int* m_layout;                         // 0x3a8
+	unsigned long* m_buttonAnimIds;        // 0x3ac
+	char m_password[16];                   // 0x3b0
+	int m_buttonOffsets[24];               // 0x3c0
+	int m_passwordLength;                  // 0x420
+	CPvButton* m_buttons[12];              // 0x424
+	CSolidRect m_hiliteRect;               // 0x454
+	CStaticAnim m_hiliteAnim;              // 0x464
+	void* m_hiliteSurface;                 // 0x474
+	int m_hiliteX;                         // 0x478
+	int m_hiliteY;                         // 0x47c
+	int m_selectedButton;                  // 0x480
+	unsigned int m_passwordValid;          // 0x484
+	unsigned int m_passwordSubmitted;      // 0x488
+	unsigned int m_submitTime;             // 0x48c
+	unsigned int m_returnDeadline;         // 0x490
+};
+
+// SYNTHETIC: LEMBALL 0x00452370
+// CPasswordDrawer::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x004523a0
+// CPasswordDrawer::`vector deleting destructor'
+
+extern int g_passwordKeyMap[12];
+
+#endif

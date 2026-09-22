@@ -14,7 +14,6 @@ from .source import (
     RECCMP_MARK,
     brace_ends,
     collect_sources,
-    drop_type_prefix,
     mask_comments_and_strings,
     rel_posix,
 )
@@ -46,7 +45,7 @@ INTENTIONAL: set[str] = set()
 
 
 def class_stem(name: str) -> str:
-    return drop_type_prefix(name.split("::")[0])
+    return name.split("::")[0]
 
 
 def stems_equal(left: str, right: str) -> bool:
@@ -110,7 +109,7 @@ def method_owners(code: str) -> list[str]:
         owner = match["owner"].split("::")[0]
         if owner:
             owners.append(owner)
-    # CConnect / Connect typedef aliases collapse to one primary.
+    # Repeated definitions of methods belong to one primary class.
     by_stem = {}
     for owner in owners:
         by_stem.setdefault(class_stem(owner).casefold(), owner)

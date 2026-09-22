@@ -50,7 +50,7 @@ def main() -> int:
     parser.add_argument("--names-json", action="store_true", help="emit catalog naming comparisons as JSON")
     parser.add_argument(
         "--68k", dest="provenance", action="store_true",
-        help="verify 68K comments using the bundled metadata catalog"
+        help="validate the symbol catalog and report Windows annotation coverage"
     )
     parser.add_argument(
         "--68k-resource", type=Path, dest="resource",

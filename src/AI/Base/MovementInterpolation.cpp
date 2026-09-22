@@ -1,10 +1,10 @@
-#include "../../Visos/Foundation/Vector.h"
+#include "../../Visos/Foundation/CVector.h"
 
 // Descriptive name; the original class name is unknown. The endpoint setter
-// is called with GameObject + 0x78 by StartMoving and Ball::StartMovement.
+// is called with CGameObject + 0x78 by StartMoving and CBall::StartMovement.
 class MovementInterpolation {
 public:
-	void SetEndpoints(Vector p_start, Vector p_end);
+	void SetEndpoints(CVector p_start, CVector p_end);
 	MovementInterpolation& operator=(const MovementInterpolation& p_other);
 
 private:
@@ -15,7 +15,7 @@ private:
 };
 
 // FUNCTION: LEMBALL 0x00417b00
-void MovementInterpolation::SetEndpoints(Vector p_start, Vector p_end)
+void MovementInterpolation::SetEndpoints(CVector p_start, CVector p_end)
 {
 	m_deltaX = p_end.m_xFixed - p_start.m_xFixed;
 	m_deltaY = p_end.m_yFixed - p_start.m_yFixed;

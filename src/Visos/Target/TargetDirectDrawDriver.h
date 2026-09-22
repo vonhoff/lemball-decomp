@@ -3,7 +3,7 @@
 
 #include "TargetGraphicsDriver.h" // complete type
 
-struct VsSize;
+struct CVsSize;
 struct IDirectDrawPalette;
 struct IDirectDraw;
 struct IDirectDrawSurface;
@@ -12,7 +12,7 @@ struct IDirectDrawSurface;
 // VTABLE: LEMBALL 0x004987e8
 class TargetDirectDrawDriver : public TargetGraphicsDriver {
 public:
-	TargetDirectDrawDriver(VsSize* p_size, int p_fullScreen);
+	TargetDirectDrawDriver(CVsSize* p_size, int p_fullScreen);
 	virtual ~TargetDirectDrawDriver();
 	virtual TargetDrawingContext* CreateDrawingContext();
 	virtual int DestroyDrawingContext(TargetDrawingContext* p_drawingContext);
@@ -28,13 +28,13 @@ public:
 	virtual bool CreatePalette(void* p_paletteDescription);
 	virtual bool HasPalette();
 	virtual int BitBltContexts(TargetDrawingContext* p_destination,
-							   VsRect* p_destinationRect,
+							   CVsRect* p_destinationRect,
 							   TargetDrawingContext* p_source,
-							   VsPoint* p_sourcePosition);
+							   CVsPoint* p_sourcePosition);
 	virtual int StretchBltContexts(TargetDrawingContext* p_destination,
-								   VsRect* p_destinationRect,
+								   CVsRect* p_destinationRect,
 								   TargetDrawingContext* p_source,
-								   VsRect* p_sourceRect);
+								   CVsRect* p_sourceRect);
 
 private:
 	IDirectDraw* m_directDraw;              // 0x1c

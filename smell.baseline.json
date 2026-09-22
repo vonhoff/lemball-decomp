@@ -18,102 +18,102 @@
       "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
     },
     {
-      "path": "src/Visos/Network/FileNetwork.cpp",
+      "path": "src/Visos/Network/CFileNetwork.cpp",
       "rule": "cast-deref-offset",
-      "code": "BaseNetwork& network = *(BaseNetwork*) ((unsigned char*) this + sizeof(TargetNetworkWindow));",
+      "code": "CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(TargetNetworkWindow));",
       "count": 1,
-      "reason": "MSVC 4.00 MI adjustment required for the original virtual BaseNetwork::Process dispatch; both functions were verified as effective 100% matches."
+      "reason": "MSVC 4.00 MI adjustment required for the original virtual CBaseNetwork::Process dispatch; both functions were verified as effective 100% matches."
     },
     {
-      "path": "src/Visos/Network/TcpIpBroadcast.cpp",
+      "path": "src/Visos/Network/CTcpIpBroadcast.cpp",
       "rule": "addr-cast-punning",
-      "code": "inet_ntoa(*(in_addr*) &(((TcpIpNetworkAddress*) address)->m_ipv4Address =",
+      "code": "inet_ntoa(*(in_addr*) &(((CTcpIpNetworkAddress*) address)->m_ipv4Address =",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/TcpIpBroadcast.cpp",
+      "path": "src/Visos/Network/CTcpIpBroadcast.cpp",
       "rule": "addr-cast-punning",
       "code": "strcpy(address->m_text, inet_ntoa(*(in_addr*) &(address->m_ipv4Address = result.m_address.s_addr)));",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/TcpIpConnect.cpp",
+      "path": "src/Visos/Network/CTcpIpConnect.cpp",
       "rule": "addr-cast-punning",
       "code": "strcpy(address.m_text, inet_ntoa(*(in_addr*) &(address.m_ipv4Address = hostAddress.s_addr)));",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/TcpIpNetwork.cpp",
+      "path": "src/Visos/Network/CTcpIpNetwork.cpp",
       "rule": "cast-deref-offset",
-      "code": "BaseNetwork& network = *(BaseNetwork*) ((unsigned char*) this + sizeof(TargetNetworkWindow));",
+      "code": "CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(TargetNetworkWindow));",
       "count": 1,
-      "reason": "MSVC 4.00 MI adjustment required for the original virtual BaseNetwork::Process dispatch; both functions were verified as effective 100% matches."
+      "reason": "MSVC 4.00 MI adjustment required for the original virtual CBaseNetwork::Process dispatch; both functions were verified as effective 100% matches."
     },
     {
-      "path": "src/Visos/Network/TcpIpNetworkAddress.cpp",
+      "path": "src/Visos/Network/CTcpIpNetworkAddress.cpp",
       "rule": "addr-cast-punning",
-      "code": "in_addr in = *(in_addr*) &((TcpIpNetworkAddress*) &p_address)->m_ipv4Address;",
+      "code": "in_addr in = *(in_addr*) &((CTcpIpNetworkAddress*) &p_address)->m_ipv4Address;",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/TcpIpReadSocket.cpp",
+      "path": "src/Visos/Network/CTcpIpReadSocket.cpp",
       "rule": "addr-cast-punning",
       "code": "inet_ntoa(*(in_addr*) &(address->m_ipv4Address = receiveData.m_address.m_address.s_addr)));",
       "count": 1,
       "reason": "Intentional conversion between the packet address representation and WinSock in_addr."
     },
     {
-      "path": "src/Visos/Network/WriteSocket.cpp",
+      "path": "src/Visos/Network/CWriteSocket.cpp",
       "rule": "addr-cast-punning",
       "code": "*(unsigned int*) &m_savedHeader.m_messageId = *(unsigned int*) &((BasePacketHeader*) data)->m_messag",
       "count": 1,
       "reason": "Intentional packet-header transfer using the on-wire header layout."
     },
     {
-      "path": "src/Visos/Network/WriteSocket.cpp",
+      "path": "src/Visos/Network/CWriteSocket.cpp",
       "rule": "addr-cast-punning",
       "code": "*(unsigned int*) &m_savedHeader.m_subpacketSequence =",
       "count": 1,
       "reason": "Intentional packet-header transfer using the on-wire header layout."
     },
     {
-      "path": "src/Visos/Network/WriteSocket.cpp",
+      "path": "src/Visos/Network/CWriteSocket.cpp",
       "rule": "addr-cast-punning",
       "code": "*(unsigned int*) &((BasePacketHeader*) data)->m_subpacketSequence;",
       "count": 1,
       "reason": "Intentional packet-header transfer using the on-wire header layout."
     },
     {
-      "path": "src/Views/Panel/PanelButton.cpp",
+      "path": "src/Views/Panel/CPanelButton.cpp",
       "rule": "addr-cast-punning",
-      "code": "*(VsSize*) &m_statusLine[0].m_x1 = ammoSize;",
+      "code": "*(CVsSize*) &m_statusLine[0].m_x1 = ammoSize;",
       "count": 1,
-      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at Line+4; 0x004428e0/0x0044296b calls point assignment at Line+8. Named field pairs preserve the existing Line layout."
+      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at CLine+4; 0x004428e0/0x0044296b calls point assignment at CLine+8. Named field pairs preserve the existing CLine layout."
     },
     {
-      "path": "src/Views/Panel/PanelButton.cpp",
+      "path": "src/Views/Panel/CPanelButton.cpp",
       "rule": "addr-cast-punning",
-      "code": "*(VsPoint*) &m_statusLine[0].m_x2 = ammoPosition;",
+      "code": "*(CVsPoint*) &m_statusLine[0].m_x2 = ammoPosition;",
       "count": 1,
-      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at Line+4; 0x004428e0/0x0044296b calls point assignment at Line+8. Named field pairs preserve the existing Line layout."
+      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at CLine+4; 0x004428e0/0x0044296b calls point assignment at CLine+8. Named field pairs preserve the existing CLine layout."
     },
     {
-      "path": "src/Views/Panel/PanelButton.cpp",
+      "path": "src/Views/Panel/CPanelButton.cpp",
       "rule": "addr-cast-punning",
-      "code": "*(VsSize*) &line->m_x1 = inventorySize;",
+      "code": "*(CVsSize*) &line->m_x1 = inventorySize;",
       "count": 1,
-      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at Line+4; 0x004428e0/0x0044296b calls point assignment at Line+8. Named field pairs preserve the existing Line layout."
+      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at CLine+4; 0x004428e0/0x0044296b calls point assignment at CLine+8. Named field pairs preserve the existing CLine layout."
     },
     {
-      "path": "src/Views/Panel/PanelButton.cpp",
+      "path": "src/Views/Panel/CPanelButton.cpp",
       "rule": "addr-cast-punning",
-      "code": "*(VsPoint*) &line->m_x2 = inventoryPosition;",
+      "code": "*(CVsPoint*) &line->m_x2 = inventoryPosition;",
       "count": 1,
-      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at Line+4; 0x004428e0/0x0044296b calls point assignment at Line+8. Named field pairs preserve the existing Line layout."
+      "reason": "Verified paired 16-bit primitive fields: original 0x004428d0/0x0044295e calls size assignment at CLine+4; 0x004428e0/0x0044296b calls point assignment at CLine+8. Named field pairs preserve the existing CLine layout."
     }
   ]
 }

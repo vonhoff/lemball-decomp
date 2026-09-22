@@ -19,7 +19,7 @@ public:
 	friend class TargetGDIDriver;
 	friend class TargetDisplayDibDriver;
 	friend class TargetPlanarDisplayDibDriver;
-	friend class Surface;
+	friend class CSurface;
 
 private:
 	void* m_hDC;     // 0x04

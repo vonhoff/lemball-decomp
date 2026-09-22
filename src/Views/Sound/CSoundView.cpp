@@ -1,0 +1,328 @@
+#include "CSoundView.h"
+
+#include "../../AI/Base/AiCoord.h"
+#include "../../AI/Objects/CViewData.h"
+#include "../../Control/Game/CDemo.h"
+#include "../../Control/Game/CGame.h"
+#include "../../Frontend/Base/CBaseFrontendDrawer.h"
+#include "../../Frontend/Base/CBaseFrontendProcess.h"
+#include "../../Visos/Foundation/CVsMath.h"
+#include "../../Visos/Resources/Manifest.h"
+#include "../../Visos/Sound/CSoundManager.h"
+#include "Views/Sound/CLoadUpdate.h"
+#include "Views/Sound/SoundEffects.h"
+
+extern "C" unsigned long __stdcall timeGetTime(void);
+
+// GLOBAL: LEMBALL 0x0049eb80
+CSoundView* g_pSoundView = 0;
+
+// GLOBAL: LEMBALL 0x0049eb88
+EffectSpec g_pEffectSpecs[44] = {
+	{1, RES_SFX_LETSGO, 9, 4},
+	{2, RES_SFX_YIPPEE, 9, 4},
+	{3, RES_SFX_MOUSE_CLICK, 0x63, 4},
+	{4, RES_SFX_SHEEP, 9, 4},
+	{5, RES_SFX_AIRLOCK, 9, 0},
+	{6, RES_SFX_AIRPIPE, 9, 0},
+	{7, RES_SFX_BIGGUN, 9, 7},
+	{8, RES_SFX_BIRDS, 9, 0},
+	{9, RES_SFX_CATAPULT, 9, 4},
+	{10, RES_SFX_CRATEEXP, 9, 4},
+	{11, RES_SFX_DOOROPEN, 9, 4},
+	{12, RES_SFX_DUPLICTR, 9, 4},
+	{13, RES_SFX_GUN, 9, 4},
+	{14, RES_SFX_GUNHIT, 0xf, 7},
+	{15, RES_SFX_LASER, 7, 4},
+	{16, RES_SFX_MINEEXP, 9, 4},
+	{17, RES_SFX_RELOAD, 9, 7},
+	{18, RES_SFX_ROCKET, 9, 4},
+	{19, RES_SFX_ROPESLID, 9, 7},
+	{20, RES_SFX_SNATCH, 9, 4},
+	{21, RES_SFX_SWITCH, 9, 4},
+	{22, RES_SFX_TIMBONUS, 9, 4},
+	{23, RES_SFX_TRMPLINE, 9, 4},
+	{24, RES_SFX_TRAPDOOR, 9, 4},
+	{26, RES_SFX_FIRE, 9, 4},
+	{27, RES_SFX_CHANGEOP, 9, 7},
+	{25, RES_SFX_CHINK, 9, 7},
+	{28, RES_SFX_AAAAH1, 0xf, 4},
+	{29, RES_SFX_AAAAH2, 0xf, 4},
+	{30, RES_SFX_EEEEH, 0xf, 4},
+	{31, RES_SFX_BALLOON, 9, 4},
+	{32, RES_SFX_DOORAPPR, 9, 4},
+	{33, RES_SFX_DOORGO, 9, 4},
+	{34, RES_SFX_ELECCY, 9, 7},
+	{35, RES_SFX_LEMSPLAT, 9, 4},
+	{37, RES_SFX_DRUM1, 9, 7},
+	{38, RES_SFX_DRUM2, 9, 4},
+	{39, RES_SFX_SUCCESS, 9, 3},
+	{40, RES_SFX_FAILURE, 9, 3},
+	{41, RES_SFX_KEYS, 9, 4},
+	{42, RES_SFX_COLLECT_BALLOON, 9, 4},
+	{43, RES_SFX_BALLOON_EXPLODE, 9, 4},
+	{44, RES_SFX_LIFT, 9, 4},
+	{45, RES_SFX_WHEEE, 9, 4},
+};
+
+// GLOBAL: LEMBALL 0x0049ed98
+unsigned int g_dwEffectsOn = 0;
+
+// GLOBAL: LEMBALL 0x0049ed9c
+unsigned int g_dwMusicOn = 0;
+
+// FUNCTION: LEMBALL 0x00439a70
+CSoundView::CSoundView()
+{
+	int i;
+	EffectSpec* spec;
+
+	m_unk0x64 = 0;
+	m_effectSpecTable = (void*) g_dwGameTick;
+	m_flags = 0;
+	m_currentState = 0;
+	m_musicHandle = 0;
+	m_musicResourceId = 0;
+	m_randomMusicIndex = 0;
+	m_loadUpdate = 0;
+	if (g_nMusicVolume != 0) {
+		g_pSoundManager->PrepareMusic(0x2220, 0xb482);
+		g_dwMusicOn = 0;
+	}
+	SetEffectsOn(1);
+	{
+		i = 0;
+		while (i < 50) {
+			m_effectSlots[i].m_handle = 0xffffffff;
+			m_effectSlots[i].m_spec = 0;
+			i = i + 1;
+		}
+	}
+	if (g_nEffectsAvailable != 0) {
+		spec = g_pEffectSpecs;
+		do {
+			if (g_nEffectsAvailable != 0) {
+				m_effectSlots[spec->m_soundId].m_spec = spec;
+				m_effectSlots[spec->m_soundId].m_handle = 0xffffffff;
+			}
+			spec++;
+		} while (spec < g_pEffectSpecs + 44);
+	}
+	m_pendingEffect = SFX_NONE;
+}
+
+// FUNCTION: LEMBALL 0x00439b30
+CSoundView::~CSoundView()
+{
+	if (g_nMusicVolume != 0) {
+		SetMusicOn(0);
+	}
+	UnprepareEffects();
+}
+
+// FUNCTION: LEMBALL 0x00439b50
+void CSoundView::SetEffectsOn(unsigned int p_enabled)
+{
+	if (g_nEffectsAvailable != 0) {
+		g_dwEffectsOn = p_enabled;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439b70
+void CSoundView::PlayEffect(eSoundEffect p_soundId)
+{
+	if (g_dwEffectsOn != 0) {
+		g_pSoundManager->PlayEffect(m_effectSlots[p_soundId].m_handle);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439ba0
+void CSoundView::SetMusicOn(unsigned int p_enabled)
+{
+	unsigned long handle;
+
+	if ((p_enabled != 0 && g_dwMusicOn != 0) || (p_enabled == 0 && g_dwMusicOn == 0)) {
+		return;
+	}
+
+	if (g_nMusicVolume != 0 && m_musicResourceId != 0) {
+		if (p_enabled != 0) {
+			handle = g_pSoundManager->PlayMusic(m_musicResourceId, 1);
+			m_musicHandle = handle;
+			g_pSoundManager->ProcessMusic(handle);
+			g_dwMusicOn = p_enabled;
+			return;
+		}
+		g_pSoundManager->FreeMusic(m_musicHandle);
+		g_pSoundManager->StopMusicCD(m_musicHandle);
+		g_dwMusicOn = p_enabled;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439c40
+void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AiCoord& p_listener)
+{
+	int dist;
+	int volume;
+	int attenuatedVol;
+	unsigned long now;
+	int x;
+	int y;
+	eSoundEffect effectId;
+	int i;
+
+	if (g_nEffectsAvailable != 0 && g_dwEffectsOn != 0) {
+		if (m_pendingEffect != 0) {
+			eSoundEffect pendingEffect = m_pendingEffect;
+			m_pendingEffect = SFX_NONE;
+			g_pSoundManager->PlayEffect(m_effectSlots[pendingEffect].m_handle);
+		}
+		now = timeGetTime();
+		x = p_listener.m_xFixed >> 12;
+		y = p_listener.m_yFixed >> 12;
+		volume = g_pSoundManager->GetEffectVolume();
+		if (p_count > 0) {
+			for (i = 0; i < p_count; i++) {
+				effectId = p_viewData[i].m_soundEffect;
+				if (effectId != 0) {
+					int effectX = (unsigned short) p_viewData[i].m_viewX;
+					int effectY = (unsigned short) p_viewData[i].m_viewY;
+					dist = Distance(x, y, effectX, effectY);
+					attenuatedVol = volume;
+					dist -= 200;
+					if (dist > 0) {
+						attenuatedVol = volume + (int) (dist * volume * -40) / 124800;
+						if (attenuatedVol > volume) {
+							attenuatedVol = volume;
+						}
+					}
+					if (now - m_effectSlots[effectId].m_lastPlayed > 100) {
+						g_pSoundManager->PlayEffect(m_effectSlots[effectId].m_handle, attenuatedVol);
+						m_effectSlots[effectId].m_lastPlayed = now;
+					}
+				}
+			}
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439d60
+void CSoundView::UnprepareEffects()
+{
+	for (int i = 0; i < 50; i++) {
+		if (m_effectSlots[i].m_handle != 0xffffffff) {
+			g_pSoundManager->FreeEffect(m_effectSlots[i].m_handle);
+			m_effectSlots[i].m_handle = 0xffffffff;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439d90
+void CSoundView::PrepareEffects(unsigned short p_stateMask)
+{
+	EffectSpec* spec;
+	int i;
+	unsigned long timestamp;
+	EffectSlot* slot;
+
+	if (g_nEffectsAvailable != 0) {
+		timestamp = timeGetTime() - 100;
+		for (i = 0; i < 50; i++) {
+			slot = &m_effectSlots[i];
+			spec = slot->m_spec;
+			if (spec != 0 && (spec->m_groupMask & p_stateMask) != 0) {
+				slot->m_handle = g_pSoundManager->PrepareEffect(spec->m_resourceId);
+			}
+			slot->m_lastPlayed = timestamp;
+			if (m_loadUpdate != 0) {
+				m_loadUpdate->UpdateNonCacheLoad();
+			}
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439df0
+int CSoundView::GetnEffects(unsigned short p_stateMask)
+{
+	int count;
+	EffectSlot* slot;
+	int i;
+
+	count = 0;
+	if (g_nEffectsAvailable != 0) {
+		slot = m_effectSlots;
+		i = 50;
+		do {
+			if (slot->m_spec != 0 && (slot->m_spec->m_groupMask & p_stateMask) != 0) {
+				count++;
+			}
+			slot++;
+			i--;
+		} while (i != 0);
+	}
+	return count;
+}
+
+// FUNCTION: LEMBALL 0x00439e30
+void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
+{
+	int restartMusic;
+	int musicId;
+	int sentinel;
+
+	if (m_currentState != p_state) {
+		restartMusic = 1;
+		if (g_nDemoMode != 0) {
+			UnprepareEffects();
+			restartMusic = 0;
+		}
+		else {
+			SetMusicOn(0);
+			UnprepareEffects();
+			g_pSoundManager->Background();
+		}
+		m_currentState = p_state;
+		musicId = 0;
+		switch (p_state) {
+		case 0:
+		case 1:
+			return;
+		case 2:
+			p_state = 3;
+			restartMusic = 0;
+		case 3:
+			musicId = RES_MUSIC_FRONTEND_MUSIC3;
+			g_pSoundManager->SetResId(RES_MUSIC_EFFECTS_BASEEFFECTS);
+			break;
+		case 4:
+			g_pSoundManager->SetResId(RES_MUSIC_EFFECTS_BASEEFFECTS);
+			musicId = m_randomMusicIndex + RES_MUSIC_GAME_MUSIC;
+			sentinel = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
+			*g_pSentinel = sentinel;
+			m_randomMusicIndex = sentinel % 9;
+			break;
+		}
+		m_loadUpdate = p_loadUpdate;
+		if (g_nDemoMode == 0) {
+			g_pSoundManager->Foreground();
+			m_musicResourceId = musicId;
+		}
+		PrepareEffects(p_state);
+		if (restartMusic != 0) {
+			SetMusicOn(1);
+		}
+		m_loadUpdate = 0;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439f50
+void CSoundView::SetEffectsVolume(unsigned char p_volume)
+{
+	g_pSoundManager->SetVolumes(p_volume, -1);
+}
+
+// FUNCTION: LEMBALL 0x00439f70
+void CSoundView::SetMusicVolume(unsigned char p_volume)
+{
+	g_pSoundManager->SetVolumes(-1, p_volume);
+}

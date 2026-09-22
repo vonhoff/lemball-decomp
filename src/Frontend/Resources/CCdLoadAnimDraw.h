@@ -1,0 +1,11 @@
+#ifndef LEMBALL_FRONTEND_RESOURCES_CCDLOADANIMDRAW_H
+#define LEMBALL_FRONTEND_RESOURCES_CCDLOADANIMDRAW_H
+
+// SIZE 0x04
+// VTABLE: LEMBALL 0x00497c94
+class CCdLoadAnimDraw {
+public:
+	virtual void Draw() = 0;
+};
+
+#endif

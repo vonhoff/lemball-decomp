@@ -8,7 +8,7 @@ from collections import Counter
 from pathlib import Path
 
 from .cpp_signatures import adjacent_signature, canonical_type, class_ranges
-from .mac_symbols import Signature, decode_signature
+from .mac_symbols import decode_signature
 from .provenance import (
     CATALOG, CATALOG_ERRORS, MAC_MARK, TOKENS, WINDOWS_MARK,
     audit_annotations, catalog_entries, read_catalog, scan_annotations,
@@ -25,15 +25,15 @@ ACRONYMS = (
 )
 # Do not rename source to match 68K for these; see AGENTS.md Naming.
 INTENTIONAL = {
-    ("Wnd", "OnZoomBox", "Wnd", "OnDriverChange"),
-    ("PreviewDrawer::Prims", "<constructor>", "PreviewDrawerPrims", "<constructor>"),
-    ("PreviewDrawer::Prims", "<destructor>", "PreviewDrawerPrims", "<destructor>"),
-    ("SuccFailDrawer::Prims", "<constructor>", "SuccFailDrawerPrims", "<constructor>"),
-    ("SuccFailDrawer::Prims", "<destructor>", "SuccFailDrawerPrims", "<destructor>"),
-    ("CdLoadAnim", "Draw", "CdLoadAnimDraw", "Draw"),
-    ("CdLoadAnim", "Draw", "CdLoadAnimProgress", "Draw"),
-    ("Process", "<destructor>", "BaseProcess", "<destructor>"),
-    ("", "GetCdDir", "TargetPlatformServices", "GetCdDir"),
+    ('', 'GetCdDir', 'TargetPlatformServices', 'GetCdDir'),
+    ('CCdLoadAnim', 'Draw', 'CCdLoadAnimDraw', 'Draw'),
+    ('CCdLoadAnim', 'Draw', 'CCdLoadAnimProgress', 'Draw'),
+    ('CPreviewDrawer::Prims', '<constructor>', 'CPreviewDrawerPrims', '<constructor>'),
+    ('CPreviewDrawer::Prims', '<destructor>', 'CPreviewDrawerPrims', '<destructor>'),
+    ('CProcess', '<destructor>', 'CBaseProcess', '<destructor>'),
+    ('CSuccFailDrawer::Prims', '<constructor>', 'CSuccFailDrawerPrims', '<constructor>'),
+    ('CSuccFailDrawer::Prims', '<destructor>', 'CSuccFailDrawerPrims', '<destructor>'),
+    ('CWnd', 'OnZoomBox', 'CWnd', 'OnDriverChange'),
 }
 
 
@@ -67,7 +67,13 @@ def normalize_segment(segment):
 
 
 def class_name(name):
-    return "::".join(normalize_segment(part) for part in name.split("::"))
+    def segment(part):
+        if part == "CHAR4":
+            return part  # Complete original stream-helper type, not a C prefix.
+        if part.startswith("C") and part[1:2].isupper():
+            return "C" + "".join(normalize_word(word) for word in part[1:].split("_") if word)
+        return normalize_segment(part)
+    return "::".join(segment(part) for part in name.split("::"))
 
 
 def method_name(name):
@@ -253,5 +259,3 @@ def check_names(paths: list[Path | str] | None = None, strict=False, as_json=Fal
         if failures:
             return 1
     return 0
-
-

@@ -1,11 +1,11 @@
 
 #include "TargetGraphicsSystemState.h"
 
-#include "../Foundation/String.h"
+#include "../Foundation/CString.h"
+#include "../Foundation/CVsOStream.h"
 #include "../Foundation/VsInit.h"
-#include "../Foundation/VsOStream.h"
-#include "../Graphics/Gdi.h"
-#include "../Graphics/PvWnd.h"
+#include "../Graphics/CGdi.h"
+#include "../Graphics/CPvWnd.h"
 #include "../Graphics/VsGdi.h"
 #include "TargetDirectDrawDriver.h"
 #include "TargetDisplayDibDriver.h"
@@ -16,9 +16,9 @@
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Foundation/VsSize.h"
-#include "Visos/Graphics/PvGWnd.h"
-#include "Visos/Graphics/Wnd.h"
+#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Graphics/CPvGWnd.h"
+#include "Visos/Graphics/CWnd.h"
 #include "Visos/Target/TargetGraphicsDriver.h"
 
 #include <windows.h>
@@ -126,7 +126,7 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 	case 2:
 		storage = operator new(sizeof(TargetDisplayDibDriver));
 		if (storage != 0) {
-			VsSize size;
+			CVsSize size;
 			size.m_width = 320;
 			size.m_height = 200;
 			g_pTargetGraphicsDriver = new (storage) TargetDisplayDibDriver(size);
@@ -138,7 +138,7 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 	case 3:
 		storage = operator new(sizeof(TargetPlanarDisplayDibDriver));
 		if (storage != 0) {
-			VsSize size;
+			CVsSize size;
 			size.m_width = 320;
 			size.m_height = 240;
 			g_pTargetGraphicsDriver = new (storage) TargetPlanarDisplayDibDriver(size);
@@ -150,7 +150,7 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 	case 4:
 		storage = operator new(sizeof(TargetDirectDrawDriver));
 		if (storage != 0) {
-			VsSize size;
+			CVsSize size;
 			size.m_width = 640;
 			size.m_height = 480;
 			g_pTargetGraphicsDriver = new (storage) TargetDirectDrawDriver(&size, 1);
@@ -163,7 +163,7 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 		mode = 4;
 		storage = operator new(sizeof(TargetDirectDrawDriver));
 		if (storage != 0) {
-			VsSize size;
+			CVsSize size;
 			size.m_width = 640;
 			size.m_height = 480;
 			g_pTargetGraphicsDriver = new (storage) TargetDirectDrawDriver(&size, 1);
@@ -184,7 +184,7 @@ bool TargetGraphicsSystemState::SelectDriver(int p_driverMode)
 			return 0;
 		}
 		if (m_fallbackWarningShown == 0) {
-			String warning(g_graphicsDriverErrors[mode]);
+			CString warning(g_graphicsDriverErrors[mode]);
 			warning += ". Defaulting to normal window mode (using CreateDIBSection)";
 			MessageBoxA(0, warning, "WARNING", 0x12000);
 			m_fallbackWarningShown = 1;
@@ -204,7 +204,7 @@ void TargetGraphicsSystemState::NotifyWindowsOfGraphicsDriverChange()
 	if (g_pWindowOwnerList != 0) {
 		WindowOwnerNode* node = g_pWindowOwnerList->m_head;
 		while (node != 0) {
-			Wnd* window = (Wnd*) node->m_window;
+			CWnd* window = (CWnd*) node->m_window;
 			HWND nativeWindow = (HWND) window->m_nativeWindow;
 			if (nativeWindow != 0) {
 				if ((window->GetStyle() & 0x80000000) != 0) {
@@ -212,7 +212,7 @@ void TargetGraphicsSystemState::NotifyWindowsOfGraphicsDriverChange()
 					if (m_driverMode == 3) {
 						directScroll = 0;
 					}
-					((PvGWnd*) window)->m_gdi->m_renderTarget->m_directScroll = directScroll;
+					((CPvGWnd*) window)->m_gdi->m_renderTarget->m_directScroll = directScroll;
 				}
 				SendMessageA(nativeWindow, 0x1c, 1, 0);
 				window->OnDriverChange();
@@ -275,7 +275,7 @@ bool TargetGraphicsSystemState::IsDisplayDibDriver()
 }
 
 // FUNCTION: LEMBALL 0x004581d0
-void TargetGraphicsSystemState::UpdateDriverSize(const VsSize& p_size)
+void TargetGraphicsSystemState::UpdateDriverSize(const CVsSize& p_size)
 {
 	if (g_pTargetGraphicsDriver != 0) {
 		TargetGraphicsDriver* driver = g_pTargetGraphicsDriver;

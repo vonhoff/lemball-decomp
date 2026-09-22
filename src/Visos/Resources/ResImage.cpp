@@ -1,6 +1,6 @@
 #include "ResImage.h"
 
-#include "MogRes.h"
+#include "CMogRes.h"
 
 // SIZE 0x10
 struct ImageResourceHeader {

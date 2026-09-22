@@ -139,6 +139,11 @@ class CatalogNamingTests(unittest.TestCase):
         self.assertEqual(row["status"], "mismatch")
         self.assertEqual(row["wanted_class"], "CPadToButton")
 
+    def test_normal_mode_also_requires_catalog_class_prefix(self):
+        row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nPadToButton::PadToButton(int n) {}")
+        self.assertEqual(row["status"], "mismatch")
+        self.assertEqual(row["wanted_class"], "CPadToButton")
+
     def test_strict_signature_review_exit_status(self):
         self.path.write_text("// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(short n) {}", encoding="utf-8")
         with contextlib.redirect_stdout(io.StringIO()):

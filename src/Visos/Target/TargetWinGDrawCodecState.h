@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETWINGDRAWCODECSTATE_H
 #define LEMBALL_VISOS_TARGET_TARGETWINGDRAWCODECSTATE_H
 
-class Surface;
-class GWnd;
-class AnimWnd;
+class CSurface;
+class CGWnd;
+class CAnimWnd;
 
 // SIZE 0x474
 struct TargetWinGDrawCodecState {
@@ -18,17 +18,17 @@ struct TargetWinGDrawCodecState {
 	int m_sourceWidth;         // 0x20
 	int m_sourceHeight;        // 0x24
 	unsigned int m_reserved28; // 0x28
-	Surface* m_surface;        // 0x2c
+	CSurface* m_surface;       // 0x2c
 	void* m_memoryDC;          // 0x30
 	void* m_dibBitmap;         // 0x34
 	void* m_previousDibBitmap; // 0x38
 	void* m_auxBitmap;         // 0x3c
 	void* m_previousAuxBitmap; // 0x40
 	char m_reserved44[0x42c];  // 0x44
-	GWnd* m_window;            // 0x470
+	CGWnd* m_window;           // 0x470
 };
 
-extern AnimWnd* g_pAnimWnd;
+extern CAnimWnd* g_pAnimWnd;
 TargetWinGDrawCodecState* __stdcall TargetWinGDrawCodec_Open(void* p_openInfo);
 int __stdcall TargetWinGDrawCodec_Close(TargetWinGDrawCodecState* p_state);
 int __stdcall TargetWinGDrawCodec_Draw(TargetWinGDrawCodecState* p_state, void* p_request, long p_param2);

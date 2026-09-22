@@ -1,0 +1,28 @@
+#ifndef LEMBALL_VISOS_FOUNDATION_CCRITICAL_H
+#define LEMBALL_VISOS_FOUNDATION_CCRITICAL_H
+
+struct _RTL_CRITICAL_SECTION;
+typedef struct _RTL_CRITICAL_SECTION CRITICAL_SECTION;
+
+extern "C"
+{
+	__declspec(dllimport) void __stdcall InitializeCriticalSection(_RTL_CRITICAL_SECTION*);
+	__declspec(dllimport) void __stdcall DeleteCriticalSection(_RTL_CRITICAL_SECTION*);
+	__declspec(dllimport) void __stdcall EnterCriticalSection(_RTL_CRITICAL_SECTION*);
+	__declspec(dllimport) void __stdcall LeaveCriticalSection(_RTL_CRITICAL_SECTION*);
+}
+
+// SIZE 0x1c
+// VTABLE: LEMBALL 0x004988d0
+class CCritical {
+public:
+	inline CCritical() { InitializeCriticalSection((_RTL_CRITICAL_SECTION*) m_criticalSection); }
+	inline ~CCritical() { DeleteCriticalSection((_RTL_CRITICAL_SECTION*) m_criticalSection); }
+	virtual void EnterCritical(); // vtable+0x00
+	virtual void LeaveCritical(); // vtable+0x04
+
+protected:
+	unsigned char m_criticalSection[0x18]; // 0x04
+};
+
+#endif

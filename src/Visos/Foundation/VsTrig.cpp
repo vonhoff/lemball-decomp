@@ -1,11 +1,10 @@
 #include "VsTrig.h"
 
-#include "Visos/Foundation/Fixed.h"
-#include "Visos/Foundation/Vector.h"
+#include "Visos/Foundation/CFixed.h"
+#include "Visos/Foundation/CVector.h"
 
-// 68K 0x10119dcc Rotate__6VSTrigCF7CVectorR6CFixedR6CFixed
 // FUNCTION: LEMBALL 0x0041a3e0
-Vector VsTrig::Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos)
+CVector VsTrig::Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos)
 {
 	int sin = p_sin.m_value;
 	int cosLo = p_cos.m_value & 0xfff;
@@ -27,37 +26,34 @@ Vector VsTrig::Rotate(Vector p_vector, Fixed& p_sin, Fixed& p_cos)
 	int resX = ((negSinLo * yLo) >> 12) + (negSinHi * yLo) + ((cosLo * xLo) >> 12) + (negSin * yHi) + (xLo * cosHi) +
 			   (xHi * p_cos.m_value);
 
-	return Vector(resX, resY);
+	return CVector(resX, resY);
 }
 
-// 68K 0x10119f6e Sin__6VSTrigCFi
 // FUNCTION: LEMBALL 0x0044b6a0
-Fixed VsTrig::Sin(int p_angle)
+CFixed VsTrig::Sin(int p_angle)
 {
 	if (p_angle < 0) {
-		return Fixed(-m_sine[(-p_angle) % 512].m_value);
+		return CFixed(-m_sine[(-p_angle) % 512].m_value);
 	}
-	return Fixed(m_sine[p_angle % 512].m_value);
+	return CFixed(m_sine[p_angle % 512].m_value);
 }
 
-// 68K 0x10119f28 Cos__6VSTrigCFi
 // FUNCTION: LEMBALL 0x0044b6f0
-Fixed VsTrig::Cos(int p_angle)
+CFixed VsTrig::Cos(int p_angle)
 {
 	int angle = p_angle + 128;
 	if (angle < 0) {
-		return Fixed(-m_sine[(-128 - p_angle) % 512].m_value);
+		return CFixed(-m_sine[(-128 - p_angle) % 512].m_value);
 	}
-	return Fixed(m_sine[angle % 512].m_value);
+	return CFixed(m_sine[angle % 512].m_value);
 }
 
-// 68K 0x10219096 __ct__6VSTrigFv
 // FUNCTION: LEMBALL 0x0045a940
 VsTrig::VsTrig()
 {
 	if (g_dwVSTrigInitialised == 0) {
 		const int* pSource = g_nVSTrigSource;
-		Fixed* pTable = m_sine;
+		CFixed* pTable = m_sine;
 		do {
 			int val = *pSource++;
 			int fixedVal = val << 12;

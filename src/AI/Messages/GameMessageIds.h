@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_MESSAGES_GAMEMESSAGEIDS_H
 #define LEMBALL_AI_MESSAGES_GAMEMESSAGEIDS_H
 
-class Bullet;
-class NetworkMessage;
-class PlayerLemming;
+class CBullet;
+class CNetworkMessage;
+class CPlayerLemming;
 #define MESSAGE_OBJECT_CHANGE_STATE 0x23
 #define MESSAGE_OBJECT_POS 0x24
 #define MESSAGE_OBJECT_HIT 0x25
@@ -12,7 +12,7 @@ class PlayerLemming;
 #define MESSAGE_REQUEST_REPLY 0x28
 #define MESSAGE_REQUEST_CANCEL 0x29
 #define MESSAGE_REMOVE_OBJECT 0x2a
-// Bullet and PlayerLemming serialize their state directly through NetworkMessage.
+// CBullet and CPlayerLemming serialize their state directly through CNetworkMessage.
 #define MESSAGE_BULLET_STATE 0x2b
 #define MESSAGE_PLAYER_LEMMING_STATE 0x2c
 

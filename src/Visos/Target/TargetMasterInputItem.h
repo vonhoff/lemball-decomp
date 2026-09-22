@@ -1,16 +1,16 @@
 #ifndef LEMBALL_VISOS_TARGET_TARGETMASTERINPUTITEM_H
 #define LEMBALL_VISOS_TARGET_TARGETMASTERINPUTITEM_H
 
-class BaseQueue;
-class VsOStream;
+class CBaseQueue;
+class CVsOStream;
 // VTABLE: LEMBALL 0x0049a458
 class TargetMasterInputItem {
 public:
 	TargetMasterInputItem();
-	virtual VsOStream& StreamOut(VsOStream& p_stream); // vtable+0x00
-	// Slot roles inferred from MasterInput::ProcessItems at 0x00472190.
-	virtual int ProcessQueue(BaseQueue* p_queue) = 0; // vtable+0x04
-	virtual int IsReady() = 0;                        // vtable+0x08
+	virtual CVsOStream& StreamOut(CVsOStream& p_stream); // vtable+0x00
+	// Slot roles inferred from CMasterInput::ProcessItems at 0x00472190.
+	virtual int ProcessQueue(CBaseQueue* p_queue) = 0; // vtable+0x04
+	virtual int IsReady() = 0;                         // vtable+0x08
 
 private:
 	unsigned char m_unknown0x04[4]; // 0x04

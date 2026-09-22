@@ -1,17 +1,17 @@
 #include "TargetDirectDrawDriver.h"
 
 #include "../../Platform/Windows/Entry.h"
-#include "../Foundation/VsOStream.h"
-#include "../Graphics/Wnd.h"
+#include "../Foundation/CVsOStream.h"
+#include "../Graphics/CWnd.h"
 #include "IDirectDraw.h"
 #include "TargetDirectDrawContext.h"
 #include "TargetDirectDrawError.h"
 #include "TargetDirectDrawSurfaceContext.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Foundation/VsPoint.h"
-#include "Visos/Foundation/VsRect.h"
-#include "Visos/Foundation/VsSize.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVsSize.h"
 #include "Visos/Target/DDBLTFX.h"
 #include "Visos/Target/DDSURFACEDESC.h"
 #include "Visos/Target/IDirectDrawPalette.h"
@@ -22,7 +22,7 @@
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x00457410
-TargetDirectDrawDriver::TargetDirectDrawDriver(VsSize* p_size, int p_fullScreen)
+TargetDirectDrawDriver::TargetDirectDrawDriver(CVsSize* p_size, int p_fullScreen)
 {
 	WNDCLASSA windowClass;
 	DDSURFACEDESC description;
@@ -54,7 +54,7 @@ TargetDirectDrawDriver::TargetDirectDrawDriver(VsSize* p_size, int p_fullScreen)
 	}
 	if (p_fullScreen != 0) {
 		windowClass.style = 0xb;
-		windowClass.lpfnWndProc = (WNDPROC) Wnd::ProcessMessage;
+		windowClass.lpfnWndProc = (WNDPROC) CWnd::ProcessMessage;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
 		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
@@ -227,18 +227,18 @@ unsigned int TargetDirectDrawDriver::UpdateDIBColourTable(TargetDrawingContext* 
 
 // FUNCTION: LEMBALL 0x004578d0
 int TargetDirectDrawDriver::BitBltContexts(TargetDrawingContext* p_destination,
-										   VsRect* p_destinationRect,
+										   CVsRect* p_destinationRect,
 										   TargetDrawingContext* p_source,
-										   VsPoint* p_sourcePosition)
+										   CVsPoint* p_sourcePosition)
 {
 	RECT source;
-	VsRect clipped;
+	CVsRect clipped;
 	clipped.m_height = p_destinationRect->m_height;
 	clipped.m_width = p_destinationRect->m_width;
-	VsPoint* point = p_destinationRect;
+	CVsPoint* point = p_destinationRect;
 	clipped.m_x = point->m_x;
 	clipped.m_y = point->m_y;
-	VsSize limits;
+	CVsSize limits;
 	limits.m_width = m_screenSize.m_width;
 	limits.m_height = m_screenSize.m_height;
 	if (clipped.m_x < 0) {
@@ -290,17 +290,17 @@ int TargetDirectDrawDriver::BitBltContexts(TargetDrawingContext* p_destination,
 
 // FUNCTION: LEMBALL 0x00457a60
 int TargetDirectDrawDriver::StretchBltContexts(TargetDrawingContext* p_destination,
-											   VsRect* p_destinationRect,
+											   CVsRect* p_destinationRect,
 											   TargetDrawingContext* p_source,
-											   VsRect* p_sourceRect)
+											   CVsRect* p_sourceRect)
 {
-	VsRect clipped;
+	CVsRect clipped;
 	clipped.m_width = p_destinationRect->m_width;
 	clipped.m_height = p_destinationRect->m_height;
-	VsPoint* point = p_destinationRect;
+	CVsPoint* point = p_destinationRect;
 	clipped.m_x = point->m_x;
 	clipped.m_y = point->m_y;
-	VsSize limits;
+	CVsSize limits;
 	limits.m_width = m_screenSize.m_width;
 	limits.m_height = m_screenSize.m_height;
 	if (clipped.m_x < 0) {

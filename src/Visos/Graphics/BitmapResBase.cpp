@@ -1,14 +1,14 @@
 #include "BitmapResBase.h"
 
-#include "../Resources/ResBitmap.h"
-#include "Gdi.h"
+#include "../Resources/CResBitmap.h"
+#include "CGdi.h"
 #include "VsGdi.h"
-class Bitmap;
+class CBitmap;
 
 // FUNCTION: LEMBALL 0x00447300
-void BitmapResBase::Draw(Gdi* p_gdi)
+void BitmapResBase::Draw(CGdi* p_gdi)
 {
-	register ResBitmap* resource = m_resource;
+	register CResBitmap* resource = m_resource;
 	register BitmapResBase* self = this;
 
 	if (resource->m_loaded != 0) {
@@ -22,8 +22,8 @@ void BitmapResBase::Draw(Gdi* p_gdi)
 }
 
 // FUNCTION: LEMBALL 0x00447340
-void BitmapResBase::Render(Gdi* p_gdi)
+void BitmapResBase::Render(CGdi* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit((Bitmap*) this, m_resource);
+	p_gdi->m_renderTarget->Blit((CBitmap*) this, m_resource);
 	m_resource->m_directUseCount--;
 }

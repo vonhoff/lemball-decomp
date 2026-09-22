@@ -1,4 +1,4 @@
-"""Check 68K comments against a derived symbol catalog and reviewed Windows pairs.
+"""Check reviewed symbol evidence and report catalog coverage of Windows entries.
 
 No game payload is bundled. A private original can verify the symbol extraction.
 See evidence/68k/PROVENANCE.md for provenance and the limits of this check.
@@ -200,6 +200,13 @@ def scan_annotations(path: Path) -> list[dict]:
     return rows
 
 
+def scan_windows_annotations(path: Path) -> list[int]:
+    """Read actual reccmp line comments; source needs no duplicate Mac annotation."""
+    text = path.read_text(encoding="utf-8")
+    return [int(mark[1], 16) for token in TOKENS.finditer(text)
+            if token[0].startswith("//") and (mark := WINDOWS_MARK.match(token[0]))]
+
+
 def audit_annotations(rows: list[dict], symbols: dict[int, str], mappings: set[tuple[int, int]]) -> list[dict]:
     for row in rows:
         if row.get("status") == "invalid":
@@ -233,8 +240,9 @@ def check_provenance(catalog_path: Path = CATALOG, paths=None, strict=False, ver
         if not files:
             raise ValueError("no C++ source files found")
         rows = audit_annotations([row for path in files for row in scan_annotations(path)], symbols, mappings)
-        if not rows and not paths:
-            raise ValueError("no 68K annotations found")
+        windows = [address for path in files for address in scan_windows_annotations(path)]
+        if not windows and not rows and not paths:
+            raise ValueError("no function annotations found")
     except CATALOG_ERRORS as error:
         print(f"68k: {error}", file=sys.stderr)
         return 2
@@ -242,7 +250,11 @@ def check_provenance(catalog_path: Path = CATALOG, paths=None, strict=False, ver
     for row in rows:
         if row["status"] == "invalid" or (row["status"] == "review" and (strict or verbose)):
             print(f'{row["path"]}:{row["line"]}: {row["status"]}: {row["detail"]}')
-    print(f"68k: {len(symbols)} catalog symbols; {len(rows)} annotations: {dict(counts)}")
+    mapped = {win for _, win in mappings}
+    covered = sum(address in mapped for address in windows)
+    print(f"68k: {len(symbols)} catalog symbols; {covered}/{len(windows)} Windows entries have reviewed pairs.")
+    if rows:
+        print(f"68k: {len(rows)} legacy Mac comments checked: {dict(counts)}")
     if resource is not None:
         print("68k: complete symbol extraction from private resource verified.")
     if counts["review"]:

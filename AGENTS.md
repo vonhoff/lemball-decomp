@@ -73,15 +73,20 @@ Types: `FUNCTION` `STUB` `TEMPLATE` `SYNTHETIC` `LIBRARY` `VTABLE` `GLOBAL` `STR
 
 ## Naming
 
-PascalCase; leading `_` → `Internal`; drop `_` separators. Intentional Mac/Win divergences: `tools/lib/names.py` `INTENTIONAL`. Layout stem overrides: `tools/lib/layout.py` `OVERRIDE_STEMS` / `INTENTIONAL`.
+PascalCase; leading `_` → `Internal`; drop `_` separators. Preserve catalog-evidenced
+`C` class prefixes in types, constructors, destructors, and filenames. Keep the
+existing acronym normalization (`CPVWnd` → `CPvWnd`); do not add prefixes to
+Windows-only types without evidence. `CHAR4` is the complete original type name.
+Intentional Mac/Win divergences: `tools/lib/names.py` `INTENTIONAL`. Layout stem
+overrides: `tools/lib/layout.py` `OVERRIDE_STEMS` / `INTENTIONAL`.
 
 ```powershell
 python tools/gate.py --names
 ```
 
-Compares reconstructed names to `evidence/68k/catalog.csv`, primarily by original
-Windows address. `// 68K` comments are checked against that evidence, never used
-as the naming authority. Parameter names are ignored; encoded parameter types
+Compares reconstructed names to `evidence/68k/catalog.csv` by original Windows
+address. Use ordinary reccmp annotations; do not duplicate the catalog with
+`// 68K` comments. Parameter names are ignored; encoded parameter types
 and method constness are compared. Signature differences require Windows review
 (`--names --verbose`; `--names-strict` fails review items). `--names-original`
 audits exact Mac spelling, independently of project naming normalization.

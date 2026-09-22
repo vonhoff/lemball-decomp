@@ -1,14 +1,14 @@
 #include "BitmapRes.h"
 
-#include "../Resources/ResBitmap.h"
-#include "Gdi.h"
+#include "../Resources/CResBitmap.h"
+#include "CGdi.h"
 #include "VsGdi.h"
-class BigBitmap;
+class CBigBitmap;
 
 // FUNCTION: LEMBALL 0x00447380
-void BitmapRes::Draw(Gdi* p_gdi)
+void BitmapRes::Draw(CGdi* p_gdi)
 {
-	ResBitmap* resource = m_resource;
+	CResBitmap* resource = m_resource;
 
 	if (resource->m_loaded != 0) {
 		resource->m_age = 0;
@@ -22,9 +22,9 @@ void BitmapRes::Draw(Gdi* p_gdi)
 }
 
 // FUNCTION: LEMBALL 0x004473d0
-void BitmapRes::Render(Gdi* p_gdi)
+void BitmapRes::Render(CGdi* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit((BigBitmap*) this, m_resource);
+	p_gdi->m_renderTarget->Blit((CBigBitmap*) this, m_resource);
 	m_resource->m_rendered = 0;
 	m_resource->m_directUseCount--;
 }
