@@ -144,8 +144,8 @@ void PlayerLemmingGroupManager::DeleteGroup(PlayerLemmingGroup* p_group)
 void PlayerLemmingGroupManager::CreateNewGroup(unsigned short p_count, unsigned short* p_objectIds)
 {
 	PlayerLemmingGroup* group = 0;
-	GenericGroup** groups;
 	int index = 0;
+	GenericGroup** groups;
 	MakeNoGroupsPlayerControlled();
 	if (m_groupCount > 0) {
 		groups = m_groups;
