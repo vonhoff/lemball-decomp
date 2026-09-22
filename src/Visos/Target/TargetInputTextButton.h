@@ -11,6 +11,7 @@ class HotAreaHandler;
 class TargetInputTextButton : public TargetTextButton {
 public:
 	virtual ~TargetInputTextButton();
+	void SetOwnedText(char* p_text);
 
 private:
 	char* m_ownedText; // 0x14c

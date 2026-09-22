@@ -3,15 +3,19 @@
 #include "../Foundation/ChangeList.h"
 #include "../Foundation/Text.h"
 #include "../Graphics/Gdi.h"
+#include "../Graphics/HotAreaList.h"
+#include "../Graphics/PvGWnd.h"
 #include "../Graphics/VsGdi.h"
 #include "../Resources/ResFont.h"
+
+extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00469120
 void TargetTextButton::ExpandToFitText(const VsSize& p_textSize)
 {
-	if (m_horizontalMargin * m_verticalMargin != 0) {
-		short width = (short) (p_textSize.m_width + 2 * m_horizontalMargin);
-		short height = (short) (p_textSize.m_height + 2 * m_verticalMargin);
+	if (m_textMargins.m_width * m_textMargins.m_height != 0) {
+		short width = (short) (p_textSize.m_width + 2 * m_textMargins.m_width);
+		short height = (short) (p_textSize.m_height + 2 * m_textMargins.m_height);
 		if (m_bounds.m_width < width) {
 			m_bounds.m_width = width;
 		}
@@ -35,6 +39,47 @@ void TargetTextButton::AlignTextPosition(VsPoint& p_position, const VsSize& p_te
 	}
 	else if ((m_alignmentFlags & 8) != 0) {
 		p_position.m_y = (short) ((m_bounds.m_height - p_textSize.m_height) / 2);
+	}
+	m_forceDrawCount = 1;
+}
+
+// FUNCTION: LEMBALL 0x00469210
+void TargetTextButton::SetText(char* p_normalText, char* p_pressedText)
+{
+	m_pressedText = p_pressedText;
+	m_normalText = p_normalText;
+	short normalSizeStorage[2];
+	VsSize* normalSize = (VsSize*) normalSizeStorage;
+	m_font->GetSize(normalSize, p_normalText, 0x20);
+	ExpandToFitText(*normalSize);
+	VsSize pressedSize(*normalSize);
+	if (m_pressedText != 0) {
+		short sizeStorage[2];
+		VsSize* size = m_font->GetSize((VsSize*) sizeStorage, m_pressedText, 0x20);
+		pressedSize.m_width = size->m_width;
+		pressedSize.m_height = size->m_height;
+		ExpandToFitText(pressedSize);
+	}
+	AlignTextPosition(m_normalTextPosition, *normalSize);
+	if (m_pressedText != 0) {
+		AlignTextPosition(m_pressedTextPosition, pressedSize);
+	}
+	else {
+		m_pressedText = m_normalText;
+		m_pressedTextPosition.m_x = m_normalTextPosition.m_x;
+		m_pressedTextPosition.m_y = m_normalTextPosition.m_y;
+	}
+	m_pressedTextPosition.m_x++;
+	m_pressedTextPosition.m_y++;
+	if (m_nativeButtonCreated == 0) {
+		VsRect rect(m_buttonX, m_buttonY, m_bounds.m_width, m_bounds.m_height);
+		Create(rect, m_ownerWindow, g_szButton);
+		m_bounds.m_x += m_relativeTopLeft.m_x;
+		m_bounds.m_y += m_relativeTopLeft.m_y;
+		HotAreaHandler* area = this;
+		m_ownerWindow->m_hotAreaList->AddToList(area);
+		SetActive(1);
+		m_nativeButtonCreated = 1;
 	}
 	m_forceDrawCount = 1;
 }
@@ -67,14 +112,14 @@ void TargetTextButton::DrawButton()
 	char* text;
 	bool depressed = m_pressed != 0 && HotAreaHandler::m_active != 0;
 	if (!depressed) {
-		position.m_x = m_normalTextX;
+		position.m_x = m_normalTextPosition.m_x;
 		text = m_normalText;
-		position.m_y = m_normalTextY;
+		position.m_y = m_normalTextPosition.m_y;
 	}
 	else {
-		position.m_x = m_pressedTextX;
+		position.m_x = m_pressedTextPosition.m_x;
 		text = m_pressedText;
-		position.m_y = m_pressedTextY;
+		position.m_y = m_pressedTextPosition.m_y;
 	}
 	if (text != 0) {
 		m_gdi->m_renderTarget->GetCurrDb();

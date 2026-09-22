@@ -18,6 +18,7 @@ class TargetTextButton : public TargetFramedButton {
 public:
 	void ExpandToFitText(const VsSize& p_textSize);
 	void AlignTextPosition(VsPoint& p_position, const VsSize& p_textSize);
+	void SetText(char* p_normalText, char* p_pressedText);
 	void Initialize();
 	virtual ~TargetTextButton();
 	virtual void DrawButton();
@@ -28,16 +29,13 @@ private:
 	char* m_pressedText;                // 0x11c
 	unsigned int m_reserved120;         // 0x120
 	Text* m_textPrimitive;              // 0x124
-	short m_pressedTextX;               // 0x128
-	short m_pressedTextY;               // 0x12a
-	short m_normalTextX;                // 0x12c
-	short m_normalTextY;                // 0x12e
+	VsPoint m_pressedTextPosition;      // 0x128
+	VsPoint m_normalTextPosition;       // 0x12c
 	unsigned int m_fontResourceId;      // 0x130
 	ResFont* m_font;                    // 0x134
 	unsigned int m_alignmentFlags;      // 0x138
 	unsigned int m_nativeButtonCreated; // 0x13c
-	short m_horizontalMargin;           // 0x140
-	short m_verticalMargin;             // 0x142
+	VsSize m_textMargins;               // 0x140
 	Remap* m_remap;                     // 0x144
 	Remap* m_lastDrawnRemap;            // 0x148
 };
