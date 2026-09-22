@@ -324,17 +324,11 @@ bool BaseCursor::InWindow(GWnd* p_window)
 // FUNCTION: LEMBALL 0x0046b5c0
 void BaseCursor::Draw(GWnd* p_window)
 {
-	short width;
-	short height;
-	short x;
-	short y;
 	short innerWidth;
 	short innerHeight;
 	VsPoint* innerXY;
 	short clipX;
 	short clipY;
-	short destX;
-	short destY;
 	int zoom;
 	Gdi* gdi;
 	Surface* surface;
@@ -359,27 +353,19 @@ void BaseCursor::Draw(GWnd* p_window)
 	if (m_active == 0) {
 		return;
 	}
-	width = p_window->m_rect.m_width;
-	height = p_window->m_rect.m_height;
-	if (p_window != (GWnd*) -8) {
-		x = p_window->m_rect.m_x;
-		y = p_window->m_rect.m_y;
-	}
-	else {
-		x = ((VsPoint*) 0)->m_x;
-		y = ((VsPoint*) 0)->m_y;
-	}
+	VsRect bounds(p_window->m_rect);
+	short& width = bounds.m_width;
+	short& height = bounds.m_height;
+	short& x = bounds.m_x;
+	short& y = bounds.m_y;
 	innerWidth = p_window->m_innerRect.m_width;
 	innerHeight = p_window->m_innerRect.m_height;
-	if (p_window != (GWnd*) -16) {
-		innerXY = (VsPoint*) &p_window->m_innerRect.m_x;
-	}
-	else {
-		innerXY = 0;
-	}
+	innerXY = &p_window->m_innerRect;
+	clipX = innerXY->m_x;
+	clipY = innerXY->m_y;
 	if ((int) innerHeight * (int) innerWidth != 0) {
-		clipX = (short) (innerXY->m_x + x);
-		clipY = (short) (innerXY->m_y + y);
+		clipX = (short) (clipX + x);
+		clipY = (short) (clipY + y);
 		if (x < clipX) {
 			width = (short) (width + (x - clipX));
 			x = clipX;
@@ -394,7 +380,7 @@ void BaseCursor::Draw(GWnd* p_window)
 		if ((short) (clipY + innerHeight) < (short) (height + y)) {
 			height = (short) ((innerHeight - y) + clipY);
 		}
-		if (width < 1 || height < 1) {
+		if (width <= 0 || height <= 0) {
 			height = 0;
 			width = 0;
 			y = 0;
@@ -412,14 +398,16 @@ void BaseCursor::Draw(GWnd* p_window)
 		return;
 	}
 	zoom = (int) p_window->m_zoom;
-	destX = (short) ((int) (short) (m_position.m_x - x) / zoom) - m_hotspot.m_x;
+	VsPoint destination;
+	destination.m_x = (short) ((int) (short) (m_position.m_x - x) / zoom) - m_hotspot.m_x;
 	gdi = p_window->m_gdi;
-	destY = (short) ((int) (short) (m_position.m_y - y) / zoom) - m_hotspot.m_y;
+	destination.m_y = (short) ((int) (short) (m_position.m_y - y) / zoom) - m_hotspot.m_y;
 	surface = gdi->m_renderTarget;
 	surface->GetChangeList();
 	surface->GetCurrDb();
-	m_renderState->m_x = destX;
-	m_renderState->m_y = destY;
+	Zrle* state = m_renderState;
+	state->m_x = destination.m_x;
+	state->m_y = destination.m_y;
 	surface->GetCurrDb();
 	m_renderState->Draw(gdi);
 }
