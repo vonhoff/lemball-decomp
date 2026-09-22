@@ -21,5 +21,5 @@ void SolidRect::Render(Gdi* p_gdi)
 // FUNCTION: LEMBALL 0x004756d0
 VsRect* SolidRect::GetBounds()
 {
-	return (VsRect*) &m_left;
+	return &m_bounds;
 }

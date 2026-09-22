@@ -525,10 +525,10 @@ void PasswordDrawer::DrawHilite()
 	short width = surface->m_windowRect.m_width;
 	short height = surface->m_windowRect.m_height;
 	m_hiliteRect.m_color = 0x10000;
-	m_hiliteRect.m_left = width;
-	m_hiliteRect.m_top = height;
-	m_hiliteRect.m_right = 0;
-	m_hiliteRect.m_bottom = 0;
+	m_hiliteRect.m_bounds.m_width = width;
+	m_hiliteRect.m_bounds.m_height = height;
+	m_hiliteRect.m_bounds.m_x = 0;
+	m_hiliteRect.m_bounds.m_y = 0;
 	m_hiliteRect.Draw((Gdi*) m_hiliteSurface);
 	VsPoint position((short) m_hiliteX, (short) m_hiliteY);
 	savedGdi = AnimsManager::m_gdi;

@@ -366,10 +366,10 @@ void GunController::DrawSpriteWindow()
 	unsigned long frame;
 
 	m_spriteSurface->m_renderTarget->GetCurrDb();
-	m_cursorRect[0].m_left = m_spriteSurface->m_renderTarget->m_windowRect.m_width;
-	m_cursorRect[0].m_top = m_spriteSurface->m_renderTarget->m_windowRect.m_height;
-	m_cursorRect[0].m_right = 0;
-	m_cursorRect[0].m_bottom = 0;
+	m_cursorRect[0].m_bounds.m_width = m_spriteSurface->m_renderTarget->m_windowRect.m_width;
+	m_cursorRect[0].m_bounds.m_height = m_spriteSurface->m_renderTarget->m_windowRect.m_height;
+	m_cursorRect[0].m_bounds.m_x = 0;
+	m_cursorRect[0].m_bounds.m_y = 0;
 	m_cursorRect[0].m_color = 0x10000;
 	m_cursorRect[0].Draw(m_spriteSurface);
 	offsets = g_anGunSpriteOffsetCompact;

@@ -130,10 +130,10 @@ void PvButton::CheckForceDraw()
 	m_gdi->m_renderTarget->GetCurrDb();
 	if (m_forceDrawCount != 0) {
 		m_forceDrawCount--;
-		m_clipRect[0].m_left = m_gdi->m_renderTarget->m_windowRect.m_width;
-		m_clipRect[0].m_top = m_gdi->m_renderTarget->m_windowRect.m_height;
-		m_clipRect[0].m_right = 0;
-		m_clipRect[0].m_bottom = 0;
+		m_clipRect[0].m_bounds.m_width = m_gdi->m_renderTarget->m_windowRect.m_width;
+		m_clipRect[0].m_bounds.m_height = m_gdi->m_renderTarget->m_windowRect.m_height;
+		m_clipRect[0].m_bounds.m_x = 0;
+		m_clipRect[0].m_bounds.m_y = 0;
 		m_clipRect[0].m_color = 0x10000;
 		m_gdi->m_renderTarget->m_flag78 = 1;
 	}

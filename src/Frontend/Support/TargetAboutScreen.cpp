@@ -215,10 +215,10 @@ void TargetAboutScreen::DrawChangedRegion()
 			if (m_size.m_height < area.m_height) {
 				area.m_height = m_size.m_height;
 			}
-			m_rects[0].m_left = area.m_width;
-			m_rects[0].m_top = area.m_height;
-			m_rects[0].m_right = area.m_x;
-			m_rects[0].m_bottom = area.m_y;
+			m_rects[0].m_bounds.m_width = area.m_width;
+			m_rects[0].m_bounds.m_height = area.m_height;
+			m_rects[0].m_bounds.m_x = area.m_x;
+			m_rects[0].m_bounds.m_y = area.m_y;
 			m_rects[0].m_color = 0;
 			m_rects[0].Draw(m_gdi);
 			bitmap = m_backgroundBitmap;

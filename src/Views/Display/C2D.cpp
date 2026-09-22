@@ -1864,10 +1864,10 @@ int C2D::DrawClippedRectangle(const VsRect& p_rect)
 	clippedRect.m_x = (short) x;
 	clippedRect.m_y = (short) y;
 	SolidRect& clipRect = m_solidRects[m_primitiveCount++];
-	clipRect.m_left = clippedRect.m_width;
-	clipRect.m_top = clippedRect.m_height;
-	memcpy(&clipRect.m_right, &clippedRect.m_x, sizeof(short));
-	memcpy(&clipRect.m_bottom, &clippedRect.m_y, sizeof(short));
+	clipRect.m_bounds.m_width = clippedRect.m_width;
+	clipRect.m_bounds.m_height = clippedRect.m_height;
+	memcpy(&clipRect.m_bounds.m_x, &clippedRect.m_x, sizeof(short));
+	memcpy(&clipRect.m_bounds.m_y, &clippedRect.m_y, sizeof(short));
 	clipRect.m_color = 0;
 	clipRect.Draw(m_gdi);
 
@@ -3843,10 +3843,8 @@ void C2D::Draw(const VsRect& p_rect)
 			backgroundBounds.m_x = 0;
 			backgroundBounds.m_y = 0;
 		}
-		background.m_left = backgroundBounds.m_width;
-		background.m_top = backgroundBounds.m_height;
-		background.m_right = backgroundBounds.m_x;
-		background.m_bottom = backgroundBounds.m_y;
+		static_cast<VsSize&>(background.m_bounds) = backgroundBounds;
+		static_cast<VsPoint&>(background.m_bounds) = backgroundBounds;
 		background.m_color = 0;
 		background.Draw(m_gdi);
 	}
@@ -3885,10 +3883,10 @@ void C2D::Draw(const VsRect& p_rect)
 	translatedBounds.m_x = 0;
 	translatedBounds.m_y = 0;
 	SolidRect& surfaceBackground = m_solidRects[m_primitiveCount++];
-	surfaceBackground.m_left = translatedBounds.m_width;
-	surfaceBackground.m_top = translatedBounds.m_height;
-	surfaceBackground.m_right = translatedBounds.m_x;
-	surfaceBackground.m_bottom = translatedBounds.m_y;
+	surfaceBackground.m_bounds.m_width = translatedBounds.m_width;
+	surfaceBackground.m_bounds.m_height = translatedBounds.m_height;
+	surfaceBackground.m_bounds.m_x = translatedBounds.m_x;
+	surfaceBackground.m_bounds.m_y = translatedBounds.m_y;
 	surfaceBackground.m_color = 0;
 	surfaceBackground.Draw(m_gdi);
 
@@ -3978,10 +3976,10 @@ void C2D::DrawObjectsZBuff()
 {
 	VsRect backgroundBounds(0, 0, m_clipSize.m_x, m_clipSize.m_y);
 	SolidRect& background = m_solidRects[m_primitiveCount++];
-	background.m_left = backgroundBounds.m_width;
-	background.m_top = backgroundBounds.m_height;
-	background.m_right = backgroundBounds.m_x;
-	background.m_bottom = backgroundBounds.m_y;
+	background.m_bounds.m_width = backgroundBounds.m_width;
+	background.m_bounds.m_height = backgroundBounds.m_height;
+	background.m_bounds.m_x = backgroundBounds.m_x;
+	background.m_bounds.m_y = backgroundBounds.m_y;
 	background.m_color = 0;
 	background.Draw(m_gdi);
 

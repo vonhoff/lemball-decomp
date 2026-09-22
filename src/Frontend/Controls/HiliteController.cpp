@@ -224,10 +224,10 @@ void HiliteController::DrawHiliteWindow()
 		Surface* surface = hiliteGdi->m_renderTarget;
 		VsSize dimensions(surface->m_windowRect);
 		m_hiliteRect.m_color = 0x10000;
-		m_hiliteRect.m_left = dimensions.m_width;
-		m_hiliteRect.m_top = dimensions.m_height;
-		m_hiliteRect.m_right = 0;
-		m_hiliteRect.m_bottom = 0;
+		m_hiliteRect.m_bounds.m_width = dimensions.m_width;
+		m_hiliteRect.m_bounds.m_height = dimensions.m_height;
+		m_hiliteRect.m_bounds.m_x = 0;
+		m_hiliteRect.m_bounds.m_y = 0;
 		m_hiliteRect.Draw(hiliteGdi);
 		m_hiliteAnim.m_frameState = 0;
 		VsPoint position;

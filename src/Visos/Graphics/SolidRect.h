@@ -1,9 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_SOLIDRECT_H
 #define LEMBALL_VISOS_GRAPHICS_SOLIDRECT_H
 
+#include "../Foundation/VsRect.h"
 #include "Primitive.h" // complete type
-
-class VsRect;
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496cb8
@@ -11,12 +10,7 @@ class SolidRect : public Primitive {
 public:
 	// 68K 0x1010a6c2 __ct__10CSolidRectFv
 	// FUNCTION: LEMBALL 0x00439520
-	SolidRect() : m_top(0)
-	{
-		m_left = 0;
-		m_bottom = 0;
-		m_right = 0;
-	}
+	SolidRect() {}
 	VsRect* GetBounds();
 	virtual void Draw(Gdi* p_gdi);   // vtable+0x04
 	virtual void Render(Gdi* p_gdi); // vtable+0x08
@@ -32,10 +26,7 @@ public:
 	friend class PvButton;
 
 private:
-	short m_left;         // 0x04
-	short m_top;          // 0x06
-	short m_right;        // 0x08
-	short m_bottom;       // 0x0a
+	VsRect m_bounds;      // 0x04
 	unsigned int m_color; // 0x0c
 };
 
