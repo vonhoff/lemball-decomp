@@ -114,10 +114,104 @@ void CNetworkManager::Stop()
 	}
 }
 
-// STUB: LEMBALL 0x00452850
+#include "../../Frontend/Base/CBaseFrontendDrawer.h"
+#include "../../Frontend/Processes/CNetworkOptionsProc.h"
+#include "../../Visos/Foundation/CVsOStream.h"
+#include "../../Visos/Foundation/Message.h"
+#include "../../Visos/Messaging/BasePacketHeader.h"
+#include "../../Visos/Messaging/CReadPacket.h"
+
+extern char* g_szGameName;
+extern char g_szNetworkGameName[16];
+
+// FUNCTION: LEMBALL 0x00452850
 int CNetworkManager::ProcessMsg(Message* p_message)
 {
-	return 0;
+	int status = p_message->code;
+	int slot;
+	CConnect* request;
+
+	switch ((unsigned int) p_message->type) {
+	case 1:
+		return 1;
+	case 3:
+		if (status == 0) {
+			request = (CConnect*) p_message->payload;
+			if (g_pActiveConnection != 0) {
+				*g_pDebugOutput << "Game connection request during game\n";
+				request->Kill();
+				return 1;
+			}
+			slot = 0;
+			CConnect** connections = m_connections;
+			do {
+				if (*connections == 0) {
+					m_connections[slot] = request;
+					g_szGameName = g_pBaseFrontendDrawer != 0 ? g_szNetworkGameName : 0;
+					m_gameMessages[slot].Send(m_connections[slot]);
+					m_connectionsChanged = 1;
+					break;
+				}
+				connections++;
+				slot++;
+			} while (slot < 10);
+			if (slot == 10) {
+				request->Kill();
+			}
+		}
+		return 1;
+	case 5: {
+		CConnect* connection = (CConnect*) p_message->payload;
+		CReadPacket* packet = (CReadPacket*) p_message->source;
+		if (status != 0) {
+			return 1;
+		}
+		switch ((unsigned int) ((BasePacketHeader*) packet->m_data)->m_messageId) {
+		case 6:
+			m_rejectMessage->Set(packet->m_data + sizeof(BasePacketHeader));
+			packet->m_used = 0;
+			if (m_rejectMessage->m_flag != 0) {
+				connection->Kill();
+			}
+			break;
+		default:
+			packet->m_used = 0;
+			break;
+		}
+		return 1;
+	}
+	case 10: {
+		CConnect* connection = (CConnect*) p_message->payload;
+		int index = 0;
+		CConnect** connections = m_connections;
+		do {
+			if (*connections == connection) {
+				break;
+			}
+			connections++;
+			index++;
+		} while (index < 10);
+		if (index != 10) {
+			m_gameMessages[index].m_valid = 0;
+			m_connections[index] = 0;
+			if (g_pNetworkOptionsProc != 0) {
+				g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) p_message->type);
+			}
+			if (g_pActiveConnection == connection) {
+				Kill();
+			}
+			m_connectionsChanged = 1;
+		}
+		return 1;
+	}
+	case 13:
+		if (g_pNetworkOptionsProc != 0) {
+			g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) p_message->type);
+		}
+		return 1;
+	default:
+		return 0;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00452a40

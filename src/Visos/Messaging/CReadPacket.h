@@ -14,6 +14,7 @@ public:
 	void Fill(const unsigned char* p_data, unsigned short p_size);
 
 	friend class CNetworkOptionsProc;
+	friend class CNetworkManager;
 	friend class CBaseFrontendProcess;
 	friend class CBroadcast;
 	friend class CGodManager;

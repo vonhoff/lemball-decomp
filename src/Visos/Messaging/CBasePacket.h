@@ -8,6 +8,7 @@ public:
 	virtual ~CBasePacket() {} // vtable+0x00
 
 	friend class CNetworkOptionsProc;
+	friend class CNetworkManager;
 	friend class CBaseFrontendProcess;
 	friend class CBroadcast;
 	friend class CGodManager;
