@@ -1073,6 +1073,24 @@ void CAI::SwitchMessage(swMessage p_message, int p_first, int p_last, int p_arg3
 	}
 }
 
+// FUNCTION: LEMBALL 0x00412d50
+void CAI::GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z)
+{
+	CPlayerLemmingGroupManager* manager = m_playerGroupManager;
+	p_x = manager->m_startX[0];
+	p_y = manager->m_startY[0];
+	p_z = manager->m_startZ[0];
+}
+
+// FUNCTION: LEMBALL 0x00412d80
+void CAI::GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z, int p_index)
+{
+	CPlayerLemmingGroupManager* manager = m_playerGroupManager;
+	p_x = manager->m_startX[p_index];
+	p_y = manager->m_startY[p_index];
+	p_z = manager->m_startZ[p_index];
+}
+
 // FUNCTION: LEMBALL 0x00412dc0
 void CAI::GetPlayerPos(int p_id, AiCoord& p_position)
 {
@@ -1208,6 +1226,30 @@ CMover* CAI::FindMoverHeight(int p_x, int p_y, int& p_height)
 void CAI::NLemmings(int p_count)
 {
 	m_lemmingCount = p_count;
+}
+
+// FUNCTION: LEMBALL 0x00413100
+void CAI::GetPlayerStartPosition(AiCoord& p_position, int p_index)
+{
+	m_playerGroupManager->GetPlayerStartPosition(p_position, p_index);
+}
+
+// FUNCTION: LEMBALL 0x00413120
+int CAI::GetStartPositionCount()
+{
+	return m_playerGroupManager->m_startPositionCount;
+}
+
+// FUNCTION: LEMBALL 0x00413130
+void CAI::ConfigurePlayerLemmingCounts(int p_playerCount, int p_count0, int p_count1, int p_count2, int p_count3)
+{
+	m_playerGroupManager->SetLemmingCounts(p_playerCount, p_count0, p_count1, p_count2, p_count3);
+}
+
+// FUNCTION: LEMBALL 0x00413160
+int CAI::GetLemmingCountForPlayer(int p_playerIndex)
+{
+	return m_playerGroupManager->GetLemmingCountForPlayer(p_playerIndex);
 }
 
 // FUNCTION: LEMBALL 0x00413180

@@ -112,6 +112,12 @@ public:
 	void GameState(eGameStatus p_status);
 	void GetData();
 	bool GetOrigin(AiCoord& p_origin, unsigned int& p_player);
+	void GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z);
+	void GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z, int p_index);
+	void GetPlayerStartPosition(AiCoord& p_position, int p_index);
+	int GetStartPositionCount();
+	void ConfigurePlayerLemmingCounts(int p_playerCount, int p_count0, int p_count1, int p_count2, int p_count3);
+	int GetLemmingCountForPlayer(int p_playerIndex);
 	void GetPlayerPos(int p_id, AiCoord& p_position);
 	int HitTrampoline(const AiCoord& p_position, CGameObject* p_object);
 	void LoadFlagInfo(unsigned char* p_data, int p_size);
