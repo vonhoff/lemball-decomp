@@ -1,8 +1,16 @@
 #include "../C2D.h"
 
 #include "../../Target/ObjectClipGrid.h"
+#include "../../Target/SpriteGroundLookup.h"
+#include "Control/Game/GameMain.h"
 #include "Map/Base/CMap.h"
 #include "Visos/Foundation/CObjSq.h"
+
+#include <string.h>
+
+extern const short slinkyOffsets[4][2];
+extern const short sheepOffset[2];
+extern const unsigned int* g_styleObjectClip;
 
 // FUNCTION: LEMBALL 0x004368f0
 CVsRect* C2D::GetClipRectangle()
@@ -117,6 +125,373 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 		if ((int) grid->m_touchedCount < 100) {
 			grid->m_touchedCells[grid->m_touchedCount] = cell;
 			grid->m_touchedCount++;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0043e220
+void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
+{
+	CVsRect bounds;
+	eObjectType objectType = p_viewData.m_objectType;
+	int screenX = p_viewData.m_positionX;
+	int screenY = p_viewData.m_positionY;
+	if (screenX > -40 && screenY > -40 && screenX < m_clipSize.m_x + 40 && screenY < m_clipSize.m_y + 40) {
+		int gameX = (unsigned short) p_viewData.m_viewX;
+		int gameY = (unsigned short) p_viewData.m_viewY;
+		switch (objectType) {
+		default:
+			AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
+			break;
+		case OBJECT_PLAYER_1:
+		case OBJECT_PLAYER_2:
+			if (p_viewData.m_action < ACTION_10 || p_viewData.m_action > ACTION_11) {
+				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
+			}
+			else {
+				AddViewIndexToObjectClipGrid(gameX - 1, gameY - 1, p_viewIndex, p_viewData.m_positionZ, 0);
+			}
+			break;
+		case OBJECT_CRATE:
+			if (p_viewData.m_action == ACTION_24) {
+				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
+			}
+			else if (p_viewData.m_action >= ACTION_25 && p_viewData.m_action <= ACTION_26) {
+				AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_positionZ, 1);
+			}
+			break;
+		case OBJECT_TRAP_DOOR:
+			AddViewIndexToObjectClipGrid(gameX + 32, gameY + 32, p_viewIndex, p_viewData.m_positionZ, 1);
+			break;
+		case OBJECT_DOOR_1:
+		case OBJECT_DOOR_2:
+			AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_positionZ, 1);
+			break;
+		case OBJECT_PAINT_GUN:
+		case OBJECT_TRAMPOLINE:
+			AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 0);
+			break;
+		case OBJECT_MOVER:
+			AddViewIndexToObjectClipGrid(gameX - 8, gameY - 8, p_viewIndex, p_viewData.m_positionZ + 8, 1);
+			break;
+		}
+		if (g_nStartupGraphicsDialogRequested != 0) {
+			return;
+		}
+
+		switch (objectType) {
+		case OBJECT_PLAYER_1:
+		case OBJECT_PLAYER_2: {
+			bounds.m_x = (short) screenX - 24;
+			bounds.m_y = (short) screenY - 24;
+			bounds.m_width = 48;
+			bounds.m_height = 40;
+			if (InGroupByObjectNo(p_viewData.m_objectId)) {
+				bounds.m_y -= 20;
+				bounds.m_height += 20;
+			}
+			if (p_viewData.m_action != ACTION_4) {
+				if (p_viewData.m_action != ACTION_16) {
+					break;
+				}
+				bounds.m_y -= 40;
+				bounds.m_height += 40;
+				m_clipSearchHeight = 160;
+			}
+			{
+				SpriteGroundLookup* lookup = m_spriteGroundLookup;
+				const CVsRect& markedRect = bounds;
+				short pixelX = markedRect.m_x;
+				short pixelY = markedRect.m_y;
+				int cellX = (short) (pixelX / 16);
+				int cellY = (short) (pixelY / 16);
+				int columns = (pixelX + markedRect.m_width - 1) / 16 - cellX + 1;
+				int rows = (pixelY + markedRect.m_height - 1) / 16 - cellY + 1;
+				int width = lookup->m_width;
+				int height;
+				if (cellX < width && (height = lookup->m_height, cellY < height)) {
+					if (cellX < 0) {
+						columns += cellX;
+						cellX = 0;
+					}
+					if (cellY < 0) {
+						rows += cellY;
+						cellY = 0;
+					}
+					if (cellX + columns >= width) {
+						columns = width - cellX;
+					}
+					if (cellY + rows >= height) {
+						rows = height - cellY;
+					}
+					if (columns > 0 && rows > 0) {
+						int offset = cellX + cellY * width;
+						unsigned char* maskA = lookup->m_maskA + offset;
+						unsigned char* maskB = lookup->m_maskB + offset;
+						for (; rows != 0; rows--) {
+							memset(maskA, 1, columns);
+							memset(maskB, 1, columns);
+							maskA += lookup->m_width;
+							maskB += lookup->m_width;
+						}
+					}
+				}
+			}
+			int shadowGameX = (unsigned short) p_viewData.m_viewX;
+			gameY = (unsigned short) p_viewData.m_viewY;
+			CMap* map = m_map;
+			int blockX = shadowGameX >> 4;
+			int blockY = gameY >> 4;
+			unsigned short groundHeight;
+			if (shadowGameX < 0 || gameY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+				groundHeight = 0;
+			}
+			else {
+				int localX = shadowGameX & 15;
+				int localY = gameY & 15;
+				groundHeight = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(localX, localY);
+			}
+			gameX = (shadowGameX << 12) >> 12;
+			gameY = (gameY << 12) >> 12;
+			m_map->GameToScreen(gameX, gameY);
+			bounds.m_x = (short) (((gameX - m_viewOriginX) << 12) >> 12) - 10;
+			bounds.m_y = (short) (((gameY - ((groundHeight << 12) >> 12) - m_viewOriginY) << 12) >> 12) - 5;
+			bounds.m_width = 20;
+			bounds.m_height = 10;
+			m_clipSearchHeight = 160;
+			break;
+		}
+		case OBJECT_BULLET:
+			bounds.m_x = (short) screenX - 8;
+			bounds.m_y = (short) screenY - 8;
+			bounds.m_width = 16;
+			bounds.m_height = 16;
+			break;
+		case OBJECT_CATAPULT:
+			bounds.m_x = (short) screenX - 48;
+			bounds.m_y = (short) screenY - 60;
+			bounds.m_width = 64;
+			bounds.m_height = 56;
+			break;
+		case OBJECT_AMMO:
+			bounds.m_x = (short) screenX - 8;
+			bounds.m_y = (short) screenY - 16;
+			bounds.m_width = 16;
+			bounds.m_height = 24;
+			break;
+		case OBJECT_SHEEP:
+			bounds.m_x = (short) screenX - sheepOffset[0];
+			bounds.m_y = (short) screenY - sheepOffset[1];
+			bounds.m_width = sheepOffset[0] * 2;
+			bounds.m_height = sheepOffset[1] * 2;
+			break;
+		case OBJECT_BALL:
+			bounds.m_x = (short) screenX - 10;
+			bounds.m_y = (short) screenY - 15;
+			bounds.m_width = 24;
+			bounds.m_height = 24;
+			break;
+		case OBJECT_FLAG_1:
+		case OBJECT_FLAG_2:
+			bounds.m_x = (short) screenX - 16;
+			bounds.m_y = (short) screenY - 28;
+			bounds.m_width = 32;
+			bounds.m_height = 32;
+			break;
+		case OBJECT_TOWER:
+			bounds.m_x = (short) screenX - (short) g_styleObjectClip[0];
+			bounds.m_y = (short) screenY - (short) g_styleObjectClip[1];
+			bounds.m_width = (short) g_styleObjectClip[2];
+			bounds.m_height = (short) g_styleObjectClip[3];
+			break;
+		case OBJECT_CRATE:
+			if (p_viewData.m_action == ACTION_24) {
+				bounds.m_x = (short) screenX - 12;
+				bounds.m_y = (short) screenY - 12;
+				bounds.m_width = 24;
+				bounds.m_height = 24;
+			}
+			else {
+				bounds.m_x = (short) screenX - 32;
+				bounds.m_y = (short) screenY - 64;
+				bounds.m_width = 64;
+				bounds.m_height = 64;
+			}
+			break;
+		case OBJECT_BONUS:
+			bounds.m_x = (short) screenX - 16;
+			bounds.m_y = (short) screenY - 16;
+			bounds.m_width = 32;
+			bounds.m_height = 20;
+			break;
+		case OBJECT_MINE:
+			bounds.m_x = (short) screenX - 28;
+			bounds.m_y = (short) screenY - 35;
+			bounds.m_width = 56;
+			bounds.m_height = 44;
+			break;
+		case OBJECT_SWITCH:
+			bounds.m_x = (short) screenX - 16;
+			bounds.m_y = (short) screenY - 16;
+			bounds.m_width = 32;
+			bounds.m_height = 32;
+			break;
+		case OBJECT_KEY_1:
+		case OBJECT_KEY_2:
+		case OBJECT_KEY_3:
+			bounds.m_x = (short) screenX - 12;
+			bounds.m_y = (short) screenY - 32;
+			bounds.m_width = 24;
+			bounds.m_height = 32;
+			break;
+		case OBJECT_TRAP_DOOR:
+			bounds.m_x = (short) screenX - 48;
+			bounds.m_y = (short) screenY - 40;
+			bounds.m_width = 96;
+			bounds.m_height = 168;
+			m_clipSearchHeight = 160;
+			break;
+		case OBJECT_DOOR_1:
+		case OBJECT_DOOR_2:
+			bounds.m_x = (short) screenX - 26;
+			bounds.m_y = (short) screenY - 24;
+			bounds.m_width = 48;
+			bounds.m_height = 40;
+			if (p_viewData.m_action == ACTION_0x1c) {
+				bounds.m_y -= 12;
+				bounds.m_height += 12;
+			}
+			break;
+		case OBJECT_TIME_BONUS:
+			bounds.m_x = (short) screenX - 16;
+			bounds.m_y = (short) screenY - 12;
+			bounds.m_width = 32;
+			bounds.m_height = 24;
+			break;
+		case OBJECT_DUPLICATOR:
+			bounds.m_x = (short) screenX - 13;
+			bounds.m_y = (short) screenY - 54;
+			bounds.m_width = 100;
+			bounds.m_height = 60;
+			break;
+		case OBJECT_LASER_HORIZONTAL:
+		case OBJECT_LASER_VERTICAL:
+		case OBJECT_LASER_EMITTER_H:
+		case OBJECT_LASER_EMITTER_V:
+			bounds.m_x = (short) screenX - 20;
+			bounds.m_y = (short) screenY - 10;
+			bounds.m_width = 40;
+			bounds.m_height = 30;
+			break;
+		case OBJECT_HAND:
+			bounds.m_x = (short) screenX - 48;
+			bounds.m_y = (short) screenY - 20;
+			bounds.m_width = 48;
+			bounds.m_height = 48;
+			break;
+		case OBJECT_ROCKET:
+			bounds.m_x = (short) screenX - 13;
+			bounds.m_y = (short) screenY - 80;
+			bounds.m_width = 26;
+			bounds.m_height = 80;
+			break;
+		case OBJECT_PAINT_GUN:
+			bounds.m_x = (short) screenX - 22;
+			bounds.m_y = (short) screenY - 35;
+			bounds.m_width = 48;
+			bounds.m_height = 48;
+			break;
+		case OBJECT_TRAMPOLINE:
+			bounds.m_x = (short) screenX - 22;
+			bounds.m_y = (short) screenY - 22;
+			bounds.m_width = 48;
+			bounds.m_height = 32;
+			break;
+		case OBJECT_LASER_HORIZONTAL_BEAM:
+			bounds.m_x = (short) screenX - 21;
+			bounds.m_y = (short) screenY - 14;
+			bounds.m_width = 22;
+			bounds.m_height = 15;
+			break;
+		case OBJECT_BALLOON_0:
+		case OBJECT_BALLOON_2:
+		case OBJECT_BALLOON_4:
+		case OBJECT_BALLOON_6:
+			bounds.m_x = (short) screenX - 20;
+			bounds.m_y = (short) screenY - 68;
+			bounds.m_width = 40;
+			bounds.m_height = 72;
+			break;
+		case OBJECT_BALLOON_1:
+		case OBJECT_BALLOON_3:
+		case OBJECT_BALLOON_5:
+		case OBJECT_BALLOON_7:
+			bounds.m_x = (short) screenX - 16;
+			bounds.m_y = (short) screenY - 48;
+			bounds.m_width = 32;
+			bounds.m_height = 48;
+			break;
+		case OBJECT_LASER_VERTICAL_BEAM:
+			bounds.m_x = (short) screenX - 21;
+			bounds.m_y = (short) screenY - 14;
+			bounds.m_width = 22;
+			bounds.m_height = 15;
+			break;
+		case OBJECT_MOVER:
+			bounds.m_x = (short) screenX - 24;
+			bounds.m_y = (short) screenY - 24;
+			bounds.m_width = 48;
+			bounds.m_height = 56;
+			break;
+		case OBJECT_SLINKY: {
+			unsigned int direction = (unsigned short) p_viewData.m_actionArgument;
+			bounds.m_x = (short) screenX - slinkyOffsets[direction][0];
+			bounds.m_y = (short) screenY - slinkyOffsets[direction][1];
+			bounds.m_width = 40;
+			bounds.m_height = 42;
+			break;
+		}
+		default:
+			return;
+		}
+	}
+	{
+		SpriteGroundLookup* lookup = m_spriteGroundLookup;
+		const CVsRect& markedRect = bounds;
+		short pixelX = markedRect.m_x;
+		short pixelY = markedRect.m_y;
+		int cellX = (short) (pixelX / 16);
+		int cellY = (short) (pixelY / 16);
+		int columns = (pixelX + markedRect.m_width - 1) / 16 - cellX + 1;
+		int rows = (pixelY + markedRect.m_height - 1) / 16 - cellY + 1;
+		int width = lookup->m_width;
+		int height;
+		if (cellX < width && (height = lookup->m_height, cellY < height)) {
+			if (cellX < 0) {
+				columns += cellX;
+				cellX = 0;
+			}
+			if (cellY < 0) {
+				rows += cellY;
+				cellY = 0;
+			}
+			if (cellX + columns >= width) {
+				columns = width - cellX;
+			}
+			if (cellY + rows >= height) {
+				rows = height - cellY;
+			}
+			if (columns > 0 && rows > 0) {
+				int offset = cellX + cellY * width;
+				unsigned char* maskA = lookup->m_maskA + offset;
+				unsigned char* maskB = lookup->m_maskB + offset;
+				for (; rows != 0; rows--) {
+					memset(maskA, 1, columns);
+					memset(maskB, 1, columns);
+					maskA += lookup->m_width;
+					maskB += lookup->m_width;
+				}
+			}
 		}
 	}
 }

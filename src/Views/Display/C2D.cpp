@@ -2634,7 +2634,7 @@ void C2D::DrawMover(CViewData& p_viewData)
 }
 
 // GLOBAL: LEMBALL 0x004970a0
-static const short slinkyOffsets[][2] = {{13, 25}, {30, 32}, {29, 26}, {14, 34}};
+extern const short slinkyOffsets[][2] = {{13, 25}, {30, 32}, {29, 26}, {14, 34}};
 
 // FUNCTION: LEMBALL 0x0043cbb0
 void C2D::DrawSlinky(CViewData& p_viewData)
@@ -2928,7 +2928,7 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 }
 
 // GLOBAL: LEMBALL 0x0049706c
-static const short sheepOffset[] = {9, 8};
+extern const short sheepOffset[] = {9, 8};
 
 // FUNCTION: LEMBALL 0x0043d370
 void C2D::DrawSheep(CViewData& p_viewData, int p_objectNo)

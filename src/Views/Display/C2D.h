@@ -68,6 +68,7 @@ public:
 	virtual ~C2D();                                                  // vtable+0x00
 	void AddObjectToGroup(int p_objectNo, int p_markSelection);
 	void AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_groundHeight, int p_adjustForGround);
+	void BuildObjectClipData(CViewData& p_viewData, int p_viewIndex);
 	void CancelMoves();
 	void CheckValidFormGroup();
 	void CursorChangeType(int p_cursorType, int p_value);
