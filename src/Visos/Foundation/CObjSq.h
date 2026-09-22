@@ -5,10 +5,11 @@
 class CObjSq {
 public:
 	CObjSq();
+	friend class C2D;
 
 private:
-	unsigned short m_objectCount; // 0x00
-	char m_unknown02[8];          // 0x02
+	short m_objectCount;    // 0x00
+	short m_viewIndices[4]; // 0x02
 };
 
 #endif
