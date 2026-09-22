@@ -9,6 +9,7 @@ class AiCoord;
 class CGameObject;
 class CLift;
 struct Coord3d;
+struct LiftEndpointRecord;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00495ea8
 class CLiftManager : public CBaseObjectManager {
@@ -23,7 +24,7 @@ public:
 	void Restart();
 	void AddLiftFromXyz(unsigned short p_id, int p_x, int p_y, int p_z);
 	void AddLiftFromEndpoints(unsigned short p_id, const Coord3d& p_start, const Coord3d& p_end);
-	int ExportEndpoints(Coord3d p_records[][2]);
+	int ExportEndpoints(LiftEndpointRecord* p_records);
 	void StepOn(const AiCoord& p_position, CGameObject* p_object);
 	void Switch(swMessage p_message, int p_id, int p_legacyA, int p_legacyB);
 

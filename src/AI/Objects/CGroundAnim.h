@@ -10,6 +10,7 @@ public:
 	CGroundAnim();
 	bool Check(const Coord3d& p_coordinate);
 	bool CheckAllAnims();
+	int ExportCoordinates(Coord3d* p_records);
 	void Add(const Coord3d& p_coordinate, unsigned short p_startFrame, unsigned short p_endFrame);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();

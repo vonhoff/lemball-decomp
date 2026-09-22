@@ -1080,6 +1080,18 @@ bool CAI::GetOrigin(AiCoord& p_origin, unsigned int& p_player)
 	return m_playerGroupManager->GetLeaderPos(p_origin);
 }
 
+// FUNCTION: LEMBALL 0x00412e40
+int CAI::ExportGroundAnimRecords(Coord3d* p_records)
+{
+	return m_groundAnim->ExportCoordinates(p_records);
+}
+
+// FUNCTION: LEMBALL 0x00412e60
+int CAI::ExportLiftEndpointRecords(LiftEndpointRecord* p_records)
+{
+	return m_liftManager->ExportEndpoints(p_records);
+}
+
 // FUNCTION: LEMBALL 0x00412eb0
 void CAI::AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time)
 {

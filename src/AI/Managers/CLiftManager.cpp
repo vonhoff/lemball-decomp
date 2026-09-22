@@ -3,6 +3,7 @@
 #include "../Base/Coord3d.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CLift.h"
+#include "../Objects/LiftEndpointRecord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "AI/Objects/SwitchEntry.h"
@@ -54,12 +55,12 @@ CLiftManager::~CLiftManager()
 }
 
 // FUNCTION: LEMBALL 0x00425830
-int CLiftManager::ExportEndpoints(Coord3d p_records[][2])
+int CLiftManager::ExportEndpoints(LiftEndpointRecord* p_records)
 {
 	for (int i = 0; i < m_count; i++) {
 		CLift* lift = &m_lifts[i];
-		(*p_records)[0] = lift->m_start;
-		(*p_records)[1] = lift->m_end;
+		p_records->m_start = lift->m_start;
+		p_records->m_end = lift->m_end;
 		p_records++;
 	}
 	return m_count;

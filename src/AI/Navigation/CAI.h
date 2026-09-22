@@ -50,6 +50,8 @@ class CTrampolineManager;
 class CTrapDoorManager;
 class CViewData;
 class CVsRect;
+struct Coord3d;
+struct LiftEndpointRecord;
 enum eGameStatus {
 	GAME_STATUS_0 = 0,
 	GAME_STATUS_PAUSED = 1,
@@ -82,6 +84,8 @@ public:
 	bool PlayerCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);
 	bool SheepCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);
 	int GetData(CViewData* p_viewData);
+	int ExportGroundAnimRecords(Coord3d* p_records);
+	int ExportLiftEndpointRecords(LiftEndpointRecord* p_records);
 	int nDead();
 	void RemoteGameState(CGameStateMessage* p_message);
 	void SetObjectRequired(eObjectType p_objectType, unsigned int p_required);
