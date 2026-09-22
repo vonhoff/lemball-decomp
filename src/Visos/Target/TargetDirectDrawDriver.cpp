@@ -268,10 +268,12 @@ int TargetDirectDrawDriver::BitBltContexts(TargetDrawingContext* p_destination,
 	}
 	long left = p_sourcePosition->m_x;
 	long top = p_sourcePosition->m_y;
+	width += left;
+	height += top;
 	source.left = left;
 	source.top = top;
-	source.right = width + left;
-	source.bottom = height + top;
+	source.right = width;
+	source.bottom = height;
 	long result = m_primarySurface->BltFast(
 		clipped.m_x,
 		clipped.m_y,
