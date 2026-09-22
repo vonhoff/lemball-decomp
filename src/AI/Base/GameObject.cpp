@@ -991,8 +991,8 @@ void GameObject::AlterDestination(const AiCoord& p_arg0)
 // FUNCTION: LEMBALL 0x00416000
 AiCoord GameObject::GetDestination()
 {
-	if (m_destinationList->m_count != 0) {
-		return m_destinationList->m_entries[0].m_coordinate;
+	if (m_destinationList->m_count > 0) {
+		return m_destinationList->m_entries[0].GetCoordinate();
 	}
 	return m_position;
 }
