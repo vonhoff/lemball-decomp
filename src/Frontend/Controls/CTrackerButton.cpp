@@ -11,32 +11,23 @@
 #include <new.h>
 
 // FUNCTION: LEMBALL 0x0044ec30
-CTrackerButton::CTrackerButton(const CVsPoint& p_arg0,
-							   CPvGWnd* p_arg1,
-							   unsigned long p_arg2,
-							   CVsRect& p_arg3,
-							   int p_arg4)
-	: CGraphicButton(p_arg0, p_arg1, p_arg2, 3)
+CTrackerButton::CTrackerButton(const CVsPoint& p_position,
+							   CPvGWnd* p_parent,
+							   unsigned long p_animId,
+							   CVsRect& p_trackRect,
+							   int p_value)
+	: CGraphicButton(p_position, p_parent, p_animId, 3)
 {
-	CVsRect createRect;
-	void* storage;
-
 	m_trackOffsetY = 0;
 	m_trackOffsetX = 0;
-	createRect.m_width = p_arg3.m_width;
-	createRect.m_height = p_arg3.m_height;
-	createRect.m_x = (short) (p_arg3.m_x + p_arg0.m_x);
-	createRect.m_y = (short) (p_arg3.m_y + p_arg0.m_y);
-	m_trackOffsetX = p_arg3.m_x;
-	m_trackOffsetY = p_arg3.m_y;
-	storage = operator new(0x134);
-	if (storage == 0) {
-		m_trackWindow = 0;
-	}
-	else {
-		m_trackWindow = new (storage) CTrackWindow(p_arg3, p_arg4, p_arg1);
-	}
-	m_trackWindow->Create(createRect, p_arg1, 0);
+	CVsRect createRect(p_trackRect);
+	createRect.m_x += p_position.m_x;
+	createRect.m_y += p_position.m_y;
+	const CVsPoint* trackPosition = &p_trackRect;
+	m_trackOffsetX = trackPosition->m_x;
+	m_trackOffsetY = trackPosition->m_y;
+	m_trackWindow = new CTrackWindow(p_trackRect, p_value, p_parent);
+	m_trackWindow->Create(createRect, p_parent, 0);
 }
 
 // FUNCTION: LEMBALL 0x0044ed20

@@ -12,7 +12,11 @@ struct CVsPoint;
 // VTABLE: LEMBALL 0x00498028 CHotAreaHandler
 class CTrackerButton : public CGraphicButton {
 public:
-	CTrackerButton(const CVsPoint& p_arg0, CPvGWnd* p_arg1, unsigned long p_arg2, CVsRect& p_arg3, int p_arg4);
+	CTrackerButton(const CVsPoint& p_position,
+				   CPvGWnd* p_parent,
+				   unsigned long p_animId,
+				   CVsRect& p_trackRect,
+				   int p_value);
 	virtual void Move(const CVsPoint& p_point); // vtable+0x38
 	virtual ~CTrackerButton();                  // vtable+0x00
 

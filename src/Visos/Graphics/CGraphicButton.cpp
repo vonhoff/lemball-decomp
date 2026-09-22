@@ -20,17 +20,20 @@ class CRemap;
 char g_szButton[] = "Button";
 
 // FUNCTION: LEMBALL 0x00468530
-CGraphicButton::CGraphicButton(const CVsPoint& p_arg0, CPvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3)
-	: CDepressedButton(p_arg1), m_graphicWidth(m_graphicHeight = 0), m_graphicOffsetX(m_graphicOffsetY = 0)
+CGraphicButton::CGraphicButton(const CVsPoint& p_position,
+							   CPvGWnd* p_parent,
+							   unsigned long p_animId,
+							   unsigned long p_alignmentFlags)
+	: CDepressedButton(p_parent), m_graphicWidth(m_graphicHeight = 0), m_graphicOffsetX(m_graphicOffsetY = 0)
 {
 	CHotAreaHandler* area;
 
-	m_alignmentFlags = p_arg3;
-	m_animationId = p_arg2;
+	m_alignmentFlags = p_alignmentFlags;
+	m_animationId = p_animId;
 	Initialise();
-	short x = p_arg0.m_x;
+	short x = p_position.m_x;
 	m_buttonX = x;
-	short y = p_arg0.m_y;
+	short y = p_position.m_y;
 	m_buttonY = y;
 	CVsRect createRect(x, y, CHotAreaHandler::m_bounds.m_width, CHotAreaHandler::m_bounds.m_height);
 	CGWnd* window = this;

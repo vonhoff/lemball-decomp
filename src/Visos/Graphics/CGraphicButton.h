@@ -14,7 +14,10 @@ class CPrimitive;
 // VTABLE: LEMBALL 0x00499728 CHotAreaHandler
 class CGraphicButton : public CDepressedButton {
 public:
-	CGraphicButton(const CVsPoint& p_arg0, CPvGWnd* p_arg1, unsigned long p_arg2, unsigned long p_arg3);
+	CGraphicButton(const CVsPoint& p_position,
+				   CPvGWnd* p_parent,
+				   unsigned long p_animId,
+				   unsigned long p_alignmentFlags);
 	virtual void DrawButton(); // vtable+0xbc
 	virtual void OnDestroy();  // vtable+0x40
 	virtual ~CGraphicButton(); // vtable+0x00
