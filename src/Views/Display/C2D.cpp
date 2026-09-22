@@ -1696,8 +1696,8 @@ void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 		ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * p_mapY + p_mapX;
 		groundStep = 1 - groundWidth;
 
-		for (; processed < p_count && p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight;
-			 p_mapY += m_clipMapStepY) {
+		for (;
+			 processed < p_count && p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight;) {
 			if ((ground->m_collision & 0x20) == 0) {
 				groundData = ground->m_objectData;
 				height = ground->m_height;
@@ -1774,6 +1774,7 @@ void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 
 			screenX += 0x20;
 			p_mapX += m_clipMapStepX;
+			p_mapY += m_clipMapStepY;
 			processed++;
 			ground += groundStep;
 		}
