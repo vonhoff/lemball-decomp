@@ -98,67 +98,59 @@ HiliteController::~HiliteController()
 // FUNCTION: LEMBALL 0x0044f6c0
 int HiliteController::ProcessMsg(Message* p_message)
 {
-	HiliteButtons* currentBtn;
-	VsPoint point;
-
 	if (m_active == 0) {
 		return 0;
 	}
-	if (p_message->type == 3) {
-		if (p_message->code == 0x1f || p_message->code == 0x22 || p_message->code == 0x4c) {
-			if (m_currentButton < m_buttonCount) {
-				currentBtn = m_buttons[m_currentButton];
-				if (currentBtn != 0 && currentBtn->m_button != 0) {
-					point.m_x = 0;
-					point.m_y = 0;
-					currentBtn->m_button->OnButtonDown(point, 0);
-				}
-			}
-		}
+	switch ((unsigned int) p_message->type) {
+	default:
+		m_processedCount++;
 		return 0;
-	}
-	if (p_message->type != 4) {
-		return 0;
-	}
-	switch (p_message->code) {
-	case 1:
-		if (m_horizontalMode == 0) {
-			return 0;
-		}
-		MoveLeft();
-		g_pSoundView->PlayEffect(SFX_CHANGEOP);
-		return 1;
-	case 2:
-		if (m_horizontalMode == 0) {
-			return 0;
-		}
-		MoveRight();
-		g_pSoundView->PlayEffect(SFX_CHANGEOP);
-		return 1;
 	case 3:
-		if (m_horizontalMode != 0) {
+		if (p_message->code == 0x1f || p_message->code == 0x22 || p_message->code == 0x4c) {
+			HiliteButtons* currentBtn = m_buttons[m_currentButton];
+			VsPoint point;
+			currentBtn->m_button->OnButtonUp(point, 0);
 			return 0;
 		}
-		MoveLeft();
-		g_pSoundView->PlayEffect(SFX_CHANGEOP);
-		return 1;
+		break;
 	case 4:
-		if (m_horizontalMode != 0) {
-			return 0;
-		}
-		MoveRight();
-		g_pSoundView->PlayEffect(SFX_CHANGEOP);
-		return 1;
-	case 0x1f:
-	case 0x22:
-	case 0x4c:
-		if (m_currentButton < m_buttonCount) {
-			currentBtn = m_buttons[m_currentButton];
-			if (currentBtn != 0 && currentBtn->m_button != 0) {
-				point.m_x = 0;
-				point.m_y = 0;
-				currentBtn->m_button->OnButtonUp(point, 0);
+		switch (p_message->code) {
+		case 1:
+			if (m_horizontalMode == 0) {
+				return 0;
 			}
+			MoveLeft();
+			g_pSoundView->PlayEffect(SFX_CHANGEOP);
+			return 1;
+		case 2:
+			if (m_horizontalMode == 0) {
+				return 0;
+			}
+			MoveRight();
+			g_pSoundView->PlayEffect(SFX_CHANGEOP);
+			return 1;
+		case 3:
+			if (m_horizontalMode == 1) {
+				return 0;
+			}
+			MoveLeft();
+			g_pSoundView->PlayEffect(SFX_CHANGEOP);
+			return 1;
+		case 4:
+			if (m_horizontalMode == 1) {
+				return 0;
+			}
+			MoveRight();
+			g_pSoundView->PlayEffect(SFX_CHANGEOP);
+			return 1;
+		case 0x1f:
+		case 0x22:
+		case 0x4c: {
+			HiliteButtons* currentBtn = m_buttons[m_currentButton];
+			VsPoint point;
+			currentBtn->m_button->OnButtonDown(point, 0);
+			break;
+		}
 		}
 		break;
 	}

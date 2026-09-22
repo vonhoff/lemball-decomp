@@ -33,8 +33,10 @@ public:
 	friend class AiCursor;
 
 private:
-	unsigned int m_signature;      // 0x04
-	unsigned int m_dispatchState;  // 0x08
+	unsigned int m_signature;     // 0x04
+	unsigned int m_dispatchState; // 0x08
+
+protected:
 	unsigned int m_processedCount; // 0x0c
 };
 
