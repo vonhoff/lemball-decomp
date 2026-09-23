@@ -184,7 +184,7 @@ int g_nNetworkOptionsCapsOrShift = 0;
 CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_NETWORK_OPTIONS, 0x32, 200, 0, 100, 0x28)
 {
-	int i;
+	int playerEntryIndex;
 
 	m_editingActive = 0;
 	m_message = 1;
@@ -206,11 +206,11 @@ CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_
 	m_acceptedPlayer = -1;
 	m_highlightedPlayer = -1;
 	RegisterRemaps();
-	i = 0;
+	playerEntryIndex = 0;
 	do {
-		((CGWnd*) m_display)->m_hotAreaList->AddToList(&m_playerEntries[i]);
-		i = i + 1;
-	} while (i < 10);
+		((CGWnd*) m_display)->m_hotAreaList->AddToList(&m_playerEntries[playerEntryIndex]);
+		playerEntryIndex = playerEntryIndex + 1;
+	} while (playerEntryIndex < 10);
 	m_drawBackground = 1;
 	m_drawFrame = 1;
 	m_drawSolid = 0;
