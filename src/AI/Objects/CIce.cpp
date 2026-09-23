@@ -57,14 +57,14 @@ void CIce::Set(unsigned short p_id,
 	int minY = p_cornerA.m_y;
 	int maxY = p_cornerB.m_y;
 	if (maxX < minX) {
-		int temporary = minX;
+		int originalMinX = minX;
 		minX = maxX;
-		maxX = temporary;
+		maxX = originalMinX;
 	}
 	if (maxY < minY) {
-		int temporary = minY;
+		int originalMinY = minY;
 		minY = maxY;
-		maxY = temporary;
+		maxY = originalMinY;
 	}
 	m_min.m_x = (short) minX;
 	m_min.m_y = (short) minY;
