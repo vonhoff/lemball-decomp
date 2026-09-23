@@ -24,10 +24,14 @@ void CPlanarDibDriver::SetPlaneWriteMask(unsigned char p_mask)
 // FUNCTION: LEMBALL 0x00457080
 void CPlanarDibDriver::ExtractPlaneBytes(unsigned char* p_destination, unsigned char* p_source, int p_count)
 {
-	while (p_count > 0) {
-		*p_destination++ = *p_source;
-		p_source += 4;
-		p_count--;
+	int remaining = p_count;
+	if (remaining > 0) {
+		unsigned char* source = p_source;
+		unsigned char* destination = p_destination;
+		do {
+			*destination++ = *source;
+			source += 4;
+		} while (--remaining != 0);
 	}
 }
 
