@@ -242,6 +242,32 @@ void CGameStatus::IncSkill(unsigned int p_wrap)
 	m_lastLevels[m_skill] = 0;
 }
 
+// FUNCTION: LEMBALL 0x00408ec0
+void CGameStatus::DecSkill(unsigned int p_wrap)
+{
+	switch (m_skill) {
+	case 0:
+		if (p_wrap != 0) {
+			m_skill = 3;
+			m_level = 0;
+			return;
+		}
+		break;
+	case 1:
+		m_skill = 0;
+		m_level = 0;
+		return;
+	case 2:
+		m_skill = 1;
+		m_level = 0;
+		return;
+	case 3:
+		m_skill = 2;
+		break;
+	}
+	m_level = 0;
+}
+
 // FUNCTION: LEMBALL 0x00408f30
 int CGameStatus::NoOfLevelsInSkill(int p_skill)
 {
