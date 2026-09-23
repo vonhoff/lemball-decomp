@@ -261,9 +261,8 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 void CGenericGroup::AddNewWaypoint(AiCoord p_coordinate, CFormationManager* p_formationManager)
 {
 	g_pGroupFormationManager = p_formationManager;
-	unsigned short count;
 	CAiDestinationList* list = m_destinationList;
-	count = list->m_count;
+	unsigned short count = list->m_count;
 	if (count < list->m_capacity) {
 		list->m_count = count + 1;
 		CAiDestinationEntry* entry = &list->m_entries[count];
