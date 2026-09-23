@@ -3722,7 +3722,7 @@ void C2D::Draw(const CVsRect& p_rect)
 			backgroundBounds.m_y = 0;
 		}
 		static_cast<CVsSize&>(background.m_bounds) = backgroundBounds;
-		static_cast<CVsPoint&>(background.m_bounds) = backgroundBounds;
+		background.m_bounds.CVsPoint::operator=(backgroundBounds);
 		background.m_color = 0;
 		background.Draw(m_gdi);
 	}
