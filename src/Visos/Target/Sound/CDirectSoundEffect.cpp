@@ -299,12 +299,18 @@ void CDirectSoundEffect::PlayBuffer(int p_index)
 // FUNCTION: LEMBALL 0x0047dad0
 void CDirectSoundEffect::Stop()
 {
-	for (int i = 0; i < m_bufferCount; i++) {
-		unsigned int result = m_buffers[i]->Stop();
+	int i = 0;
+	unsigned int byteIndex = 0;
+	while (i < m_bufferCount) {
+		char* bufferBytes = (char*) m_buffers;
+		IDirectSoundBuffer** slot = (IDirectSoundBuffer**) (bufferBytes + byteIndex);
+		unsigned int result = (*slot)->Stop();
 		if (result != 0) {
 			*g_pErrorOutput << "Effect Stop failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 			return;
 		}
+		byteIndex += sizeof(IDirectSoundBuffer*);
+		++i;
 	}
 }
 
