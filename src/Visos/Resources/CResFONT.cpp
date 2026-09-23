@@ -145,22 +145,22 @@ CVsSize* CResFONT::GetSize(CVsSize* p_result, const char* p_text, unsigned int p
 					glyph = m_animationEntries;
 				}
 			}
-			short* psVar = &glyph->m_width;
-			short* position = &glyph->m_x;
+			short* glyphDimensions = &glyph->m_width;
+			short* glyphOrigin = &glyph->m_x;
 			if ((p_flags & 0x60) != 0) {
-				size.m_width += *psVar + 1;
+				size.m_width += *glyphDimensions + 1;
 			}
 			else {
-				if (position[0] + *psVar > size.m_width) {
-					size.m_width = position[0] + *psVar;
+				if (glyphOrigin[0] + *glyphDimensions > size.m_width) {
+					size.m_width = glyphOrigin[0] + *glyphDimensions;
 				}
 			}
 			if ((p_flags & 0x180) != 0) {
-				size.m_height += psVar[1] + 1;
+				size.m_height += glyphDimensions[1] + 1;
 			}
 			else {
-				if (position[1] + psVar[1] > size.m_height) {
-					size.m_height = psVar[1] + position[1];
+				if (glyphOrigin[1] + glyphDimensions[1] > size.m_height) {
+					size.m_height = glyphDimensions[1] + glyphOrigin[1];
 				}
 			}
 			i++;
