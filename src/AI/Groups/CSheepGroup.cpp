@@ -21,65 +21,65 @@ CSheepGroup::CSheepGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationM
 // FUNCTION: LEMBALL 0x0041f530
 void CSheepGroup::RunAway(AiCoord p_threatPosition)
 {
-	int count;
-	CGameObject* object;
-	AiCoord destination;
-	count = 0;
-	CVector escape(0x32000, 0);
-	object = GetFirstElementInGroup();
-	while (object != 0) {
-		if (object->DestinationExists() == 1) {
-			count++;
+	int membersWithDestination;
+	CGameObject* groupMember;
+	AiCoord escapeDestination;
+	membersWithDestination = 0;
+	CVector escapeVector(0x32000, 0);
+	groupMember = GetFirstElementInGroup();
+	while (groupMember != 0) {
+		if (groupMember->DestinationExists() == 1) {
+			membersWithDestination++;
 		}
-		object = GetNextElementInGroup();
+		groupMember = GetNextElementInGroup();
 	}
-	if (count == 0) {
-		CGameObject* first = GetFirstElementInGroup();
-		if (first != 0) {
-			first->SetSndEffect(SFX_SHEEP);
-			int positionY = first->m_position.m_yFixed;
-			int positionZ = first->m_position.m_zFixed;
-			destination.m_xFixed = first->m_position.m_xFixed;
-			destination.m_yFixed = positionY;
-			destination.m_zFixed = positionZ;
-			int angle = ((ReturnFacingDirection(destination.m_xFixed >> 12,
-												destination.m_yFixed >> 12,
-												p_threatPosition.m_xFixed >> 12,
-												p_threatPosition.m_yFixed >> 12) +
-						  1) &
-						 7) *
-						64;
-			VSTrig* trig = g_pVSTrig;
+	if (membersWithDestination == 0) {
+		CGameObject* firstMember = GetFirstElementInGroup();
+		if (firstMember != 0) {
+			firstMember->SetSndEffect(SFX_SHEEP);
+			int positionY = firstMember->m_position.m_yFixed;
+			int positionZ = firstMember->m_position.m_zFixed;
+			escapeDestination.m_xFixed = firstMember->m_position.m_xFixed;
+			escapeDestination.m_yFixed = positionY;
+			escapeDestination.m_zFixed = positionZ;
+			int escapeAngle = ((ReturnFacingDirection(escapeDestination.m_xFixed >> 12,
+													  escapeDestination.m_yFixed >> 12,
+													  p_threatPosition.m_xFixed >> 12,
+													  p_threatPosition.m_yFixed >> 12) +
+								1) &
+							   7) *
+							  64;
+			VSTrig* trigTable = g_pVSTrig;
 			int sineValue;
 			int cosineValue;
-			if (angle < 0) {
-				sineValue = -trig->m_sine[(-angle) % 512].m_value;
+			if (escapeAngle < 0) {
+				sineValue = -trigTable->m_sine[(-escapeAngle) % 512].m_value;
 			}
 			else {
-				sineValue = g_pVSTrig->m_sine[angle % 512].m_value;
+				sineValue = g_pVSTrig->m_sine[escapeAngle % 512].m_value;
 			}
 			CFixed sine(sineValue);
-			int cosineAngle = angle + 128;
+			int cosineAngle = escapeAngle + 128;
 			if (cosineAngle < 0) {
-				cosineValue = -g_pVSTrig->m_sine[(-128 - angle) % 512].m_value;
+				cosineValue = -g_pVSTrig->m_sine[(-128 - escapeAngle) % 512].m_value;
 			}
 			else {
 				cosineValue = g_pVSTrig->m_sine[cosineAngle % 512].m_value;
 			}
 			CFixed cosine(cosineValue);
-			CVector rotated = trig->Rotate(escape, sine, cosine);
-			destination.m_xFixed += rotated.m_xFixed;
-			destination.m_yFixed += rotated.m_yFixed;
-			if ((destination.m_xFixed >> 12) < 0) {
-				destination.m_xFixed = 0;
+			CVector rotatedEscapeVector = trigTable->Rotate(escapeVector, sine, cosine);
+			escapeDestination.m_xFixed += rotatedEscapeVector.m_xFixed;
+			escapeDestination.m_yFixed += rotatedEscapeVector.m_yFixed;
+			if ((escapeDestination.m_xFixed >> 12) < 0) {
+				escapeDestination.m_xFixed = 0;
 			}
-			if ((destination.m_yFixed >> 12) < 0) {
-				destination.m_yFixed = 0;
+			if ((escapeDestination.m_yFixed >> 12) < 0) {
+				escapeDestination.m_yFixed = 0;
 			}
-			int random = (*g_pSentinel * 41 + 31) & 0x7fffff;
-			*g_pSentinel = random;
-			SetFormationIndex(random % 3);
-			SendNewWaypoint(destination);
+			int formationRandomValue = (*g_pSentinel * 41 + 31) & 0x7fffff;
+			*g_pSentinel = formationRandomValue;
+			SetFormationIndex(formationRandomValue % 3);
+			SendNewWaypoint(escapeDestination);
 			m_runAwayActive = 1;
 		}
 	}
