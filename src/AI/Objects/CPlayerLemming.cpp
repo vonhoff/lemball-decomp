@@ -175,6 +175,12 @@ void CPlayerLemming::SetGroup(unsigned int p_groupIndex)
 	m_groupIndex = p_groupIndex;
 }
 
+// FUNCTION: LEMBALL 0x0040f110
+unsigned int CPlayerLemming::IsGroupLeader()
+{
+	return m_isGroupLeader;
+}
+
 // FUNCTION: LEMBALL 0x0040f120
 bool CPlayerLemming::Process()
 {

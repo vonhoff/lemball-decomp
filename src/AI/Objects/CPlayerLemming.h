@@ -75,6 +75,7 @@ public:
 	void SetGroup(CPlayerLemmingGroup* p_group);
 	void SetGroup(unsigned int p_groupIndex);
 	void SetGroupLeader(unsigned int p_isLeader);
+	unsigned int IsGroupLeader();
 	friend class CPanelButton;
 	friend class CPanelLemming;
 
