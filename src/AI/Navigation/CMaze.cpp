@@ -18,7 +18,7 @@ CMaze::CMaze(CMap* p_map)
 	m_map = p_map;
 	m_distances = 0;
 	m_changeSelect = 0;
-	m_reserved = 0;
+	m_routeSearchBusy = 0;
 	m_width = 0;
 	m_height = 0;
 }

@@ -633,9 +633,9 @@ unsigned short CGameObject::MapCheck(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x00415830
 bool CGameObject::StartRoute()
 {
-	unsigned int* reserved = &g_pMaze->m_reserved;
-	m_routeSearchActive = *reserved == 0;
-	*reserved = 1;
+	unsigned int* routeSearchBusy = &g_pMaze->m_routeSearchBusy;
+	m_routeSearchActive = *routeSearchBusy == 0;
+	*routeSearchBusy = 1;
 	if (m_routeSearchActive != 0) {
 		g_pMaze->BInitialise(0,
 							 (m_position.m_xFixed >> 12) / 16,
@@ -686,14 +686,14 @@ bool CGameObject::SearchRoute()
 			}
 		}
 		if (complete != 0) {
-			g_pMaze->m_reserved = 0;
+			g_pMaze->m_routeSearchBusy = 0;
 			m_routeSearchActive = 0;
 		}
 	}
 	else {
-		unsigned int* reserved = &g_pMaze->m_reserved;
-		m_routeSearchActive = *reserved == 0;
-		*reserved = 1;
+		unsigned int* routeSearchBusy = &g_pMaze->m_routeSearchBusy;
+		m_routeSearchActive = *routeSearchBusy == 0;
+		*routeSearchBusy = 1;
 		if (m_routeSearchActive != 0) {
 			g_pMaze->BInitialise(0,
 								 (m_position.m_xFixed >> 12) / 16,
@@ -1153,7 +1153,7 @@ void CGameObject::ResetInstructions()
 		}
 		m_destinationList->m_count = 0;
 		if (m_routeSearchActive != 0) {
-			g_pMaze->m_reserved = 0;
+			g_pMaze->m_routeSearchBusy = 0;
 		}
 		m_routeSearchFailed = 0;
 	}
