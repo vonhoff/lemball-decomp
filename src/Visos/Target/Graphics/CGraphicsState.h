@@ -12,7 +12,7 @@ struct CGraphicsState {
 	void UpdateDriverSize(const struct CVsSize& p_size);
 
 	int m_driverMode;                    // 0x00
-	unsigned int m_reserved04;           // 0x04
+	unsigned int m_targetWindow;         // 0x04
 	unsigned int m_fallbackWarningShown; // 0x08
 };
 

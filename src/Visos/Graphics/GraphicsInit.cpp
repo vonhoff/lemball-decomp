@@ -18,7 +18,7 @@ bool _GDI_Init()
 	storage = operator new(0xc);
 	system = (CGraphicsState*) storage;
 	if (system != 0) {
-		system->m_reserved04 = 0;
+		system->m_targetWindow = 0;
 		system->m_fallbackWarningShown = 0;
 		g_pTargetGraphicsSystem = system;
 	}
