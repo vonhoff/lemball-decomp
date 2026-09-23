@@ -337,15 +337,14 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 // FUNCTION: LEMBALL 0x0044d290
 void CGunController::DrawButtons(int p_firstState, int p_secondState)
 {
-	int i;
-
-	i = 0;
-	while (i < 8) {
-		if (m_buttons[i] != 0) {
-			m_buttons[i]->Draw(p_firstState, p_secondState);
+	CGunButtons** button = m_buttons;
+	int remaining = 8;
+	do {
+		if (*button != 0) {
+			(*button)->Draw(p_firstState, p_secondState);
 		}
-		i = i + 1;
-	}
+		++button;
+	} while (--remaining != 0);
 }
 
 // FUNCTION: LEMBALL 0x0044d2d0
