@@ -15,20 +15,20 @@ void INIT_SubSystems();
 class CArena : public CArenaBase, public CCritical {
 public:
 	CArena(unsigned long p_arg0, char* p_arg1, CArena* p_arg2, CArena* p_arg3);
-	CMBlock* FindSmallestBlock(unsigned long p_arg0, char* p_arg1);
-	bool AddToArenaList(CArena* p_arg0);
-	bool AddToBlockList(CMBlock* p_arg0, CMBlock* p_arg1);
-	bool AddToFreeList(CMBlock* p_arg0);
+	CMBlock* FindSmallestBlock(unsigned long p_size, char* p_description);
+	bool AddToArenaList(CArena* p_arena);
+	bool AddToBlockList(CMBlock* p_block, CMBlock* p_previous);
+	bool AddToFreeList(CMBlock* p_block);
 	bool AllocateArena(CArena** p_arena, unsigned long p_size, char* p_description);
 	bool CheckAndAmalgamate(CMBlock* p_block1, CMBlock* p_block2);
-	bool CheckFreeMemoryBlock(CMBlock* p_arg0);
+	bool CheckFreeMemoryBlock(CMBlock* p_block);
 	bool CheckIntegrity();
-	bool CheckMemoryBlock(CMBlock* p_arg0);
-	bool CheckValidPointer(void* p_arg0);
-	bool FreeArena(CArena* p_arg0);
-	bool RemoveFromArenaList(CArena* p_arg0);
-	bool RemoveFromBlockList(CMBlock* p_arg0);
-	bool RemoveFromFreeList(CMBlock* p_arg0);
+	bool CheckMemoryBlock(CMBlock* p_block);
+	bool CheckValidPointer(void* p_pointer);
+	bool FreeArena(CArena* p_arena);
+	bool RemoveFromArenaList(CArena* p_arena);
+	bool RemoveFromBlockList(CMBlock* p_block);
+	bool RemoveFromFreeList(CMBlock* p_block);
 	unsigned long GetAllocSize();
 	unsigned long GetFreeSize();
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream);                                               // vtable+0x00
