@@ -124,6 +124,9 @@ int CTrampoline::Hit(const AiCoord& p_position, CGameObject* p_object)
 	}
 
 	C3DVector velocity;
+	velocity.m_xFixed = DEBUG_SENTINEL;
+	velocity.m_yFixed = DEBUG_SENTINEL;
+	velocity.m_zFixed = DEBUG_SENTINEL;
 	CFixed incoming[3] = {CFixed(p_object->m_flightVelocity.m_xFixed),
 						  CFixed(p_object->m_flightVelocity.m_yFixed),
 						  CFixed(p_object->m_flightVelocity.m_zFixed)};
