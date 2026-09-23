@@ -292,6 +292,20 @@ bool CDoor::IsUsable(eAction p_action)
 	return p_action == ACTION_0x18 || (p_action >= ACTION_0x1d && p_action <= ACTION_0x1e);
 }
 
+// FUNCTION: LEMBALL 0x0040dd50
+bool CDoor::TryBeginActivation()
+{
+	unsigned int tick;
+
+	if (m_activationPending != 0) {
+		return 0;
+	}
+	tick = g_dwGameTick;
+	m_activationPending = 1;
+	m_setTick = tick;
+	return 1;
+}
+
 // FUNCTION: LEMBALL 0x0040dd80
 int CDoor::Hits(const AiCoord& p_position, CGameObject* p_object)
 {
