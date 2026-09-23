@@ -67,7 +67,7 @@ public:
 	friend class CGameObject;
 
 private:
-	unsigned int m_reserved; // 0x00
+	unsigned int m_mapType;  // 0x00
 	int m_orientation;       // 0x04
 
 public:

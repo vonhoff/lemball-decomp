@@ -1165,7 +1165,7 @@ void CAI::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 	m_mapType = mapType;
 	m_timeLimit = *data++;
 	CMap* map = m_map;
-	map->m_reserved = mapType;
+	map->m_mapType = mapType;
 	map->m_ground.Clear();
 	if (m_levelVersion >= 4) {
 		m_lemmingCount = data[0];

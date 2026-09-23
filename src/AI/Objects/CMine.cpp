@@ -96,7 +96,7 @@ void CMine::SetTerrain()
 	int blockX = (m_position.m_xFixed >> 12) / 16;
 	int blockY = (m_position.m_yFixed >> 12) / 16;
 	if (m_terrainSet == 0) {
-		g_pMap->SetTerrain(blockX, blockY, TERRAIN_BLOX_5, (unsigned short) g_mineTerrainOffsets[g_pMap->m_reserved]);
+		g_pMap->SetTerrain(blockX, blockY, TERRAIN_BLOX_5, (unsigned short) g_mineTerrainOffsets[g_pMap->m_mapType]);
 		m_transientFlags = 1;
 		if (blockX >= 0 && blockY >= 0) {
 			CMap* map = g_pMap;
