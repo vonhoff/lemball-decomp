@@ -121,7 +121,7 @@ void CCatapult::DoActivate()
 	m_actionPhase2Deadline += g_dwGameTick;
 	m_actionDeadline += g_dwGameTick;
 	CGameObject* activator = m_activator;
-	m_unk0x90 = activator->m_objectType;
+	m_activatorObjectType = activator->m_objectType;
 	activator->m_unk0xc0 = 1;
 	activator->m_action = ACTION_5;
 	g_pAI->Score(20);

@@ -202,7 +202,7 @@ protected:
 	int m_moveDeltaYFixed;                 // 0x84
 	int m_moveDurationTicks;               // 0x88
 	unsigned int m_activationReserved;     // 0x8c
-	unsigned int m_unk0x90;                // 0x90
+	unsigned int m_activatorObjectType;    // 0x90
 	unsigned int m_stateTimer;             // 0x94
 	eSoundEffect m_soundEffect;            // 0x98
 	AiCoord m_position;                    // 0x9c
