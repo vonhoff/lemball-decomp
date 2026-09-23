@@ -322,7 +322,7 @@ bool CPlayerLemming::FacingTarget()
 // FUNCTION: LEMBALL 0x0040f500
 void CPlayerLemming::Die()
 {
-	int i = 0;
+	int inventoryIndex = 0;
 	if ((int) m_inventoryCount > 0) {
 		CGameObject** inventoryObject = m_inventoryObjects;
 		do {
@@ -338,25 +338,25 @@ void CPlayerLemming::Die()
 				break;
 			}
 			inventoryObject++;
-			i++;
-		} while (i < (int) m_inventoryCount);
+			inventoryIndex++;
+		} while (inventoryIndex < (int) m_inventoryCount);
 	}
-	int index = 0;
-	int& count = g_pAI->m_objectCount;
-	if (index < count) {
-		CGameObject**& objects = g_pAI->m_objects;
+	int objectIndex = 0;
+	int& objectCount = g_pAI->m_objectCount;
+	if (objectIndex < objectCount) {
+		CGameObject**& objectArray = g_pAI->m_objects;
 		do {
-			if (objects[index] == this) {
-				count--;
-				while (index < count) {
-					objects[index] = objects[index + 1];
-					index++;
+			if (objectArray[objectIndex] == this) {
+				objectCount--;
+				while (objectIndex < objectCount) {
+					objectArray[objectIndex] = objectArray[objectIndex + 1];
+					objectIndex++;
 				}
-				objects[count] = 0;
+				objectArray[objectCount] = 0;
 				break;
 			}
-			index++;
-		} while (index < count);
+			objectIndex++;
+		} while (objectIndex < objectCount);
 	}
 	g_wLemmingCount--;
 	if (g_wLemmingCount == 0) {
