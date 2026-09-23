@@ -14,12 +14,16 @@ CStatManager::CStatManager(int p_capacity)
 // FUNCTION: LEMBALL 0x0045ab30
 CStatManager::~CStatManager()
 {
-	int i;
+	unsigned int byteIndex = 0;
 
 	if (m_stats != 0) {
-		i = 0;
+		int i = 0;
 		while (i < m_statCount) {
-			delete m_stats[i];
+			char* statBytes = (char*) m_stats;
+			CBaseStat** slot = (CBaseStat**) (statBytes + byteIndex);
+			CBaseStat* stat = *slot;
+			delete stat;
+			byteIndex += sizeof(CBaseStat*);
 			++i;
 		}
 		operator delete(m_stats);
