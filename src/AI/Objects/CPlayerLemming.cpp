@@ -761,7 +761,7 @@ void CPlayerLemming::SetBored(unsigned long p_minimumDelay)
 void CPlayerLemming::StartStanding()
 {
 	CMover* mover = 0;
-	unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
+	volatile unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
 	int tileZ = m_position.m_zFixed >> 12;
 	if (m_onMover == 0 && mover != 0) {
 		mover->GetOn(this);
