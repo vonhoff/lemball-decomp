@@ -182,9 +182,9 @@ void CGWnd::_OnSize()
 		relX = (short) (relX - parentOrigin->m_x);
 		relY = (short) (relY - parentOrigin->m_y);
 	}
-	CPVSurface& surface = *target;
-	surface.m_relOriginX = relX;
-	surface.m_relOriginY = relY;
+	CPVSurface* surface = (CPVSurface*) ((char*) &target->m_relOriginX - FIELD_OFFSET(CPVSurface, m_relOriginX));
+	surface->m_relOriginX = relX;
+	surface->m_relOriginY = relY;
 }
 
 // FUNCTION: LEMBALL 0x00463f30
@@ -395,26 +395,4 @@ void CGWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title, unsig
 void CGWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 {
 	Create(p_rect, p_parent, p_title, 0);
-}
-
-// FUNCTION: LEMBALL 0x00464490
-void CGWnd::AttachPalette(unsigned long p_paletteId)
-{
-	CResPALETTE* palette;
-
-	if (p_paletteId == 0) {
-		return;
-	}
-	palette = CResPALETTE::Load(p_paletteId);
-	if (palette->m_loaded != 0) {
-		palette->m_age = 0;
-	}
-	else {
-		palette->LoadData();
-	}
-	palette->m_directUseCount = palette->m_directUseCount + 1;
-	m_gdi->m_renderTarget->AttachPalette(palette);
-	palette->m_directUseCount = palette->m_directUseCount - 1;
-	palette->UnLoad();
-	m_paletteResourceId = p_paletteId;
 }
