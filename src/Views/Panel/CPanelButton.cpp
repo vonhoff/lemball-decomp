@@ -185,8 +185,8 @@ void CPanelButton::DrawButton()
 		// Original fallback reads the packed ammunition size at 0x004428c1.
 		memcpy(&mappedColor, &ammoSize, sizeof(mappedColor));
 	}
-	*(CVsSize*) &m_statusLine[0].m_x1 = ammoSize;
-	*(CVsPoint*) &m_statusLine[0].m_x2 = ammoPosition;
+	static_cast<CVsSize&>(m_statusLine[0].m_bounds) = ammoSize;
+	static_cast<CVsPoint&>(m_statusLine[0].m_bounds) = ammoPosition;
 	m_statusLine[0].m_color = mappedColor;
 	m_statusLine[0].Draw(m_gdi);
 	if (m_unavailable == 0) {
@@ -206,8 +206,8 @@ void CPanelButton::DrawButton()
 			else {
 				mappedColor = remap->m_remap[color];
 			}
-			*(CVsSize*) &line->m_x1 = inventorySize;
-			*(CVsPoint*) &line->m_x2 = inventoryPosition;
+			static_cast<CVsSize&>(line->m_bounds) = inventorySize;
+			static_cast<CVsPoint&>(line->m_bounds) = inventoryPosition;
 			line->m_color = mappedColor;
 			line->Draw(m_gdi);
 			line++;

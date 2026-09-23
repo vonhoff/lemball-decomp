@@ -222,11 +222,11 @@ void CAboutScreen::DrawChangedRegion()
 			m_rects[0].m_color = 0;
 			m_rects[0].Draw(m_gdi);
 			bitmap = m_backgroundBitmap;
-			m_line.m_x1 = m_size.m_width;
+			m_line.m_bounds.m_width = m_size.m_width;
 			m_line.m_color = 0;
-			m_line.m_y1 = m_size.m_height;
-			m_line.m_x2 = 0;
-			m_line.m_y2 = 0;
+			m_line.m_bounds.m_height = m_size.m_height;
+			m_line.m_bounds.m_x = 0;
+			m_line.m_bounds.m_y = 0;
 			m_line.Draw(m_gdi);
 			m_bitmap.m_y = (short) (((int) m_size.m_height - (int) (short) bitmap->m_y) / 2);
 			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) (short) bitmap->m_x) / 2);

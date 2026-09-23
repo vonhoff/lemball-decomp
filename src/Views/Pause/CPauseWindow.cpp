@@ -185,10 +185,10 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 	point.m_x = (short) (m_borderPadding.m_x * 2);
 	point.m_y = (short) (m_borderPadding.m_y * 2);
 	((CVsPoint*) &borderRect.m_width)->SubtractInPlace(&point);
-	m_borderLine[0].m_x1 = borderRect.m_width;
-	m_borderLine[0].m_y1 = borderRect.m_height;
-	m_borderLine[0].m_x2 = borderRect.m_x;
-	m_borderLine[0].m_y2 = borderRect.m_y;
+	m_borderLine[0].m_bounds.m_width = borderRect.m_width;
+	m_borderLine[0].m_bounds.m_height = borderRect.m_height;
+	m_borderLine[0].m_bounds.m_x = borderRect.m_x;
+	m_borderLine[0].m_bounds.m_y = borderRect.m_y;
 	m_borderLine[0].m_color = 0xc;
 }
 

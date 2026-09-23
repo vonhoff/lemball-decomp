@@ -1226,10 +1226,10 @@ void CSurface::Blit(CLine* p_line)
 	int remaining;
 	unsigned char color;
 
-	x1 = p_line->m_x1;
-	y1 = p_line->m_y1;
-	x2 = p_line->m_x2;
-	y2 = p_line->m_y2;
+	x1 = p_line->m_bounds.m_width;
+	y1 = p_line->m_bounds.m_height;
+	x2 = p_line->m_bounds.m_x;
+	y2 = p_line->m_bounds.m_y;
 	color = (unsigned char) p_line->m_color;
 	if (x2 < x1) {
 		x = x1;

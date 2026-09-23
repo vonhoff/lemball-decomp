@@ -53,10 +53,10 @@ void CPVGWnd::Clear(int p_color)
 	m_gdi->m_renderTarget->GetChangeList()->Reset();
 	drawingMark->Draw(m_gdi);
 
-	memcpy(&m_clearRectangle[0].m_x1, &clearRect.m_width, sizeof(clearRect.m_width));
-	memcpy(&m_clearRectangle[0].m_y1, &clearRect.m_height, sizeof(clearRect.m_height));
-	memcpy(&m_clearRectangle[0].m_x2, &clearRect.m_x, sizeof(clearRect.m_x));
-	memcpy(&m_clearRectangle[0].m_y2, &clearRect.m_y, sizeof(clearRect.m_y));
+	memcpy(&m_clearRectangle[0].m_bounds.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
+	memcpy(&m_clearRectangle[0].m_bounds.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
+	memcpy(&m_clearRectangle[0].m_bounds.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
+	memcpy(&m_clearRectangle[0].m_bounds.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
 	m_clearRectangle[0].m_color = p_color;
 	m_clearRectangle[0].Draw(m_gdi);
 

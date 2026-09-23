@@ -3696,10 +3696,9 @@ void C2D::Draw(const CVsRect& p_rect)
 			translatedBounds.m_y = (short) top;
 			translatedBounds.m_width = m_spriteGroundTranslatedPointRect.m_width;
 			translatedBounds.m_height = m_spriteGroundTranslatedPointRect.m_height;
-			m_lineAt9a8.m_x1 = translatedBounds.m_width;
-			m_lineAt9a8.m_y1 = translatedBounds.m_height;
-			m_lineAt9a8.m_x2 = translatedBounds.m_x;
-			m_lineAt9a8.m_y2 = translatedBounds.m_y;
+			m_lineAt9a8.m_bounds.m_width = translatedBounds.m_width;
+			m_lineAt9a8.m_bounds.m_height = translatedBounds.m_height;
+			static_cast<CVsPoint&>(m_lineAt9a8.m_bounds) = translatedBounds;
 			m_lineAt9a8.m_color = 0;
 			m_lineAt9a8.Draw(m_gdi);
 		}
@@ -3734,10 +3733,7 @@ void C2D::Draw(const CVsRect& p_rect)
 		translatedBounds.m_height = m_clipSize.m_y;
 		translatedBounds.m_x = 0;
 		translatedBounds.m_y = 0;
-		m_lineAt998.m_x1 = translatedBounds.m_width;
-		m_lineAt998.m_y1 = translatedBounds.m_height;
-		m_lineAt998.m_x2 = translatedBounds.m_x;
-		m_lineAt998.m_y2 = translatedBounds.m_y;
+		m_lineAt998.m_bounds = translatedBounds;
 		m_lineAt998.m_color = 0;
 		m_lineAt998.Draw(m_gdi);
 	}

@@ -70,10 +70,10 @@ void CFramedButton::DrawButton()
 	bounds.m_x = 0;
 	bounds.m_y = 0;
 	CLine* line = m_frameLine;
-	line->m_x1 = bounds.m_width;
-	line->m_y1 = bounds.m_height;
-	line->m_x2 = bounds.m_x;
-	line->m_y2 = bounds.m_y;
+	line->m_bounds.m_width = bounds.m_width;
+	line->m_bounds.m_height = bounds.m_height;
+	line->m_bounds.m_x = bounds.m_x;
+	line->m_bounds.m_y = bounds.m_y;
 	line->m_color = m_frameColor;
 	m_frameLine->Draw(m_gdi);
 	bool depressed = m_pressed != 0 && CHotAreaHandler::m_active != 0;

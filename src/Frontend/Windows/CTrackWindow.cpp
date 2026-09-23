@@ -79,10 +79,10 @@ void CTrackWindow::OnPaint(const CVsRect& p_rect)
 	int width = (int) m_trackRect.m_width * m_value / 100;
 	if (m_value != 0) {
 		m_line.m_color = 0xac;
-		m_line.m_x1 = width;
-		m_line.m_y1 = height;
-		m_line.m_x2 = 0;
-		m_line.m_y2 = 0;
+		m_line.m_bounds.m_width = width;
+		m_line.m_bounds.m_height = height;
+		m_line.m_bounds.m_x = 0;
+		m_line.m_bounds.m_y = 0;
 		m_line.Draw(m_gdi);
 		m_clipRects[0].m_left = 0;
 		m_clipRects[0].m_top = 0;

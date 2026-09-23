@@ -127,10 +127,10 @@ void CCDLoadAnim::Draw()
 		rect.m_height = m_display->m_rect.m_height;
 		rect.m_x = 0;
 		rect.m_y = 0;
-		m_line[0].m_x1 = rect.m_width;
-		m_line[0].m_y1 = rect.m_height;
-		m_line[0].m_x2 = rect.m_x;
-		m_line[0].m_y2 = rect.m_y;
+		m_line[0].m_bounds.m_width = rect.m_width;
+		m_line[0].m_bounds.m_height = rect.m_height;
+		m_line[0].m_bounds.m_x = rect.m_x;
+		m_line[0].m_bounds.m_y = rect.m_y;
 		m_line[0].m_color = 0;
 		m_line[0].Draw(m_gdi);
 		m_bitmapRes[0].m_x = m_centerX;

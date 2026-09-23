@@ -1,19 +1,15 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CLINE_H
 #define LEMBALL_VISOS_GRAPHICS_CLINE_H
 
-#include "CPrimitive.h" // complete type
+#include "../Foundation/CVsRect.h" // complete type
+#include "CPrimitive.h"            // complete type
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496d38
 class CLine : public CPrimitive {
 public:
 	// FUNCTION: LEMBALL 0x004394c0
-	CLine() : m_y1(0)
-	{
-		m_x1 = 0;
-		m_y2 = 0;
-		m_x2 = 0;
-	}
+	CLine() : m_bounds() {}
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
 	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	// FUNCTION: LEMBALL 0x00439710
@@ -28,10 +24,7 @@ public:
 	friend class CTrackWindow;
 
 public:
-	short m_x1;           // 0x04
-	short m_y1;           // 0x06
-	short m_x2;           // 0x08
-	short m_y2;           // 0x0a
+	CVsRect m_bounds;     // 0x04
 	unsigned int m_color; // 0x0c
 };
 
