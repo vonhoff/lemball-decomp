@@ -105,7 +105,7 @@ bool CPaintGun::Process()
 			z = m_position.m_zFixed + 0x8000;
 			AiCoord start;
 			AiCoord target;
-			int coordinate;
+			volatile int coordinate;
 
 			start.m_xFixed = x + 0x10000;
 			start.m_yFixed = y;
