@@ -132,13 +132,13 @@ CResZRLE* CResFONT::ASCIItoZRLE(unsigned int p_ascii)
 // FUNCTION: LEMBALL 0x0045db30
 CVsSize* CResFONT::GetSize(CVsSize* p_result, const char* p_text, unsigned int p_flags)
 {
-	int i = 0;
+	int textIndex = 0;
 	CVsSize size;
 	size.m_height = 0;
 	size.m_width = 0;
 	if (p_text[0] != '\0') {
 		do {
-			CResZRLE* glyph = ASCIItoZRLE(p_text[i]);
+			CResZRLE* glyph = ASCIItoZRLE(p_text[textIndex]);
 			if (glyph == 0) {
 				glyph = ASCIItoZRLE('I');
 				if (glyph == 0) {
@@ -163,8 +163,8 @@ CVsSize* CResFONT::GetSize(CVsSize* p_result, const char* p_text, unsigned int p
 					size.m_height = glyphDimensions[1] + glyphOrigin[1];
 				}
 			}
-			i++;
-		} while (p_text[i] != '\0');
+			textIndex++;
+		} while (p_text[textIndex] != '\0');
 	}
 	if ((p_flags & 0x60) != 0) {
 		size.m_width--;
