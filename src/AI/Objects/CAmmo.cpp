@@ -98,8 +98,8 @@ void CAmmo::DoActivate()
 // FUNCTION: LEMBALL 0x0041cc70
 AiCoord CAmmo::ActivatePosition()
 {
-	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
+	int y = m_position.m_yFixed;
 	int x = m_position.m_xFixed;
 	return AiCoord(x, y, z);
 }
