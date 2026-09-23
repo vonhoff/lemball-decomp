@@ -11,8 +11,8 @@ void CAnimSpecial::Initialise(CMap* p_map)
 	int entryCount = 0;
 	int width = map->m_ground.m_width;
 	int height = map->m_ground.m_height;
-	int column;
 	int row;
+	int column;
 
 	for (row = 0; row < height; row++) {
 		column = 0;
