@@ -49,67 +49,67 @@ static const char* g_graphicsDriverErrors[] = {
 // FUNCTION: LEMBALL 0x00457e10
 bool CGraphicsState::SelectDriver(int p_driverMode)
 {
-	int mode = p_driverMode;
-	void* storage;
+	int resolvedDriverMode = p_driverMode;
+	void* driverStorage;
 	if (p_driverMode < 9) {
 		*g_pDebugOutput << "Initialising graphics device driver: " << g_graphicsDriverNames[p_driverMode] << "...\n";
 	}
 	if (p_driverMode == 8) {
 		if (g_nGraphicsDriverGdk != 0) {
-			mode = g_nFullscreen != 0 ? 4 : 6;
+			resolvedDriverMode = g_nFullscreen != 0 ? 4 : 6;
 		}
 		else {
-			mode = g_nFullscreen != 0 ? 3 : 1;
+			resolvedDriverMode = g_nFullscreen != 0 ? 3 : 1;
 		}
 	}
-	switch (mode) {
+	switch (resolvedDriverMode) {
 	case 1:
 		g_pTargetGraphicsDriver = new CGdiDriver();
 		break;
 	case 2:
-		storage = operator new(sizeof(CDisplayDibDriver));
-		if (storage != 0) {
+		driverStorage = operator new(sizeof(CDisplayDibDriver));
+		if (driverStorage != 0) {
 			CVsSize size;
 			size.m_width = 320;
 			size.m_height = 200;
-			g_pTargetGraphicsDriver = new (storage) CDisplayDibDriver(size);
+			g_pTargetGraphicsDriver = new (driverStorage) CDisplayDibDriver(size);
 		}
 		else {
 			g_pTargetGraphicsDriver = 0;
 		}
 		break;
 	case 3:
-		storage = operator new(sizeof(CPlanarDibDriver));
-		if (storage != 0) {
+		driverStorage = operator new(sizeof(CPlanarDibDriver));
+		if (driverStorage != 0) {
 			CVsSize size;
 			size.m_width = 320;
 			size.m_height = 240;
-			g_pTargetGraphicsDriver = new (storage) CPlanarDibDriver(size);
+			g_pTargetGraphicsDriver = new (driverStorage) CPlanarDibDriver(size);
 		}
 		else {
 			g_pTargetGraphicsDriver = 0;
 		}
 		break;
 	case 4:
-		storage = operator new(sizeof(CDirectDrawDriver));
-		if (storage != 0) {
+		driverStorage = operator new(sizeof(CDirectDrawDriver));
+		if (driverStorage != 0) {
 			CVsSize size;
 			size.m_width = 640;
 			size.m_height = 480;
-			g_pTargetGraphicsDriver = new (storage) CDirectDrawDriver(&size, 1);
+			g_pTargetGraphicsDriver = new (driverStorage) CDirectDrawDriver(&size, 1);
 		}
 		else {
 			g_pTargetGraphicsDriver = 0;
 		}
 		break;
 	case 6:
-		mode = 4;
-		storage = operator new(sizeof(CDirectDrawDriver));
-		if (storage != 0) {
+		resolvedDriverMode = 4;
+		driverStorage = operator new(sizeof(CDirectDrawDriver));
+		if (driverStorage != 0) {
 			CVsSize size;
 			size.m_width = 640;
 			size.m_height = 480;
-			g_pTargetGraphicsDriver = new (storage) CDirectDrawDriver(&size, 1);
+			g_pTargetGraphicsDriver = new (driverStorage) CDirectDrawDriver(&size, 1);
 		}
 		else {
 			g_pTargetGraphicsDriver = 0;
@@ -127,17 +127,17 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 			return 0;
 		}
 		if (m_fallbackWarningShown == 0) {
-			CString warning(g_graphicsDriverErrors[mode]);
+			CString warning(g_graphicsDriverErrors[resolvedDriverMode]);
 			warning += ". Defaulting to normal window mode (using CreateDIBSection)";
 			MessageBoxA(0, warning, "WARNING", 0x12000);
 			m_fallbackWarningShown = 1;
 		}
-		mode = 1;
+		resolvedDriverMode = 1;
 	}
-	if (mode != p_driverMode) {
-		*g_pDebugOutput << "[ Auto selected: " << g_graphicsDriverNames[mode] << " ]\n";
+	if (resolvedDriverMode != p_driverMode) {
+		*g_pDebugOutput << "[ Auto selected: " << g_graphicsDriverNames[resolvedDriverMode] << " ]\n";
 	}
-	m_driverMode = mode;
+	m_driverMode = resolvedDriverMode;
 	return 1;
 }
 
