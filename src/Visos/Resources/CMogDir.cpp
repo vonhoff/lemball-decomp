@@ -23,23 +23,27 @@ ChunkInfo* g_pChunkInfo = 0;
 CMogDir::CMogDir(unsigned long p_fileOffset)
 {
 	Chunk chunk;
-	unsigned int size;
+	unsigned int directoryDataSize;
 	int* firstIndex;
 	int* iteratorIndex;
-	int* currentDir;
+	int* currentDirIndex;
 
+	int chunkIndex = g_chunkIndex;
+	ChunkInfo* chunkInfo = g_pChunkInfo;
 	firstIndex = &m_firstIndex;
 	iteratorIndex = &m_iteratorIndex;
 	m_loadedChunkCount = 0;
-	*firstIndex = g_chunkIndex;
-	*iteratorIndex = g_chunkIndex;
-	m_firstChunk = g_pChunkInfo;
-	m_iteratorChunk = g_pChunkInfo;
-	m_rootIndex = g_chunkIndex;
-	m_rootChunk = g_pChunkInfo;
-	currentDir = &m_currentDirIndex;
-	*currentDir = g_chunkIndex;
-	m_currentDirChunk = g_pChunkInfo;
+	*firstIndex = chunkIndex;
+	*iteratorIndex = chunkIndex;
+	m_firstChunk = chunkInfo;
+	m_iteratorChunk = chunkInfo;
+	chunkIndex = g_chunkIndex;
+	chunkInfo = g_pChunkInfo;
+	m_rootIndex = chunkIndex;
+	m_rootChunk = chunkInfo;
+	currentDirIndex = &m_currentDirIndex;
+	*currentDirIndex = chunkIndex;
+	m_currentDirChunk = chunkInfo;
 	vsSeek(g_pMogFile, p_fileOffset, kSeekSet);
 	if (p_fileOffset == 0) {
 		((CRawRead*) this)->InputByte();
@@ -53,9 +57,9 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	}
 	m_directoryEndOffset = ((CRawRead*) this)->InputDword();
 	m_payloadStartOffset = vsTell(g_pMogFile);
-	size = m_directoryEndOffset - m_payloadStartOffset;
-	m_directoryData = (unsigned char*) CMogloadArena::operator new(size);
-	vsRead(g_pMogFile, m_directoryData, size);
+	directoryDataSize = m_directoryEndOffset - m_payloadStartOffset;
+	m_directoryData = (unsigned char*) CMogloadArena::operator new(directoryDataSize);
+	vsRead(g_pMogFile, m_directoryData, directoryDataSize);
 	if (m_chunkCount != 0) {
 		m_firstChunk = (ChunkInfo*) CMogloadArena::operator new(kChunkInfoSize);
 		*firstIndex = 0;
