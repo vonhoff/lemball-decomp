@@ -120,26 +120,27 @@ void CTrampolineManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 // FUNCTION: LEMBALL 0x0042b600
 void CTrampolineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	unsigned short count = *(unsigned short*) p_data;
-	p_data += 2;
+	unsigned char* cursor = p_data;
+	unsigned short count = *(unsigned short*) cursor;
+	cursor += 2;
 	unsigned int remaining = count;
 	Initialise(remaining);
 	if (count != 0) {
 		do {
 			unsigned short id;
 			if (m_ai->m_levelVersion > 1) {
-				id = *(unsigned short*) p_data;
-				p_data += 2;
+				id = *(unsigned short*) cursor;
+				cursor += 2;
 			}
 			else {
 				id = (unsigned short) CGameObject::NextId();
 			}
-			unsigned short x = *(unsigned short*) p_data;
-			p_data += 2;
-			unsigned short y = *(unsigned short*) p_data;
-			p_data += 2;
-			unsigned short z = *(unsigned short*) p_data;
-			p_data += 2;
+			unsigned short x = *(unsigned short*) cursor;
+			cursor += 2;
+			unsigned short y = *(unsigned short*) cursor;
+			cursor += 2;
+			unsigned short z = *(unsigned short*) cursor;
+			cursor += 2;
 			Add(id, x, y, z);
 			remaining--;
 		} while (remaining != 0);
