@@ -50,8 +50,9 @@ CBallManager::~CBallManager()
 	int i = 0;
 	if (m_balls != 0) {
 		while (i < m_capacity) {
-			if (m_balls[i] != 0) {
-				delete m_balls[i];
+			CBall* ball = m_balls[i];
+			if (ball != 0) {
+				delete ball;
 			}
 			i++;
 		}
