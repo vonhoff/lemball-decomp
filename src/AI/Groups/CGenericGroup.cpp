@@ -40,9 +40,12 @@ CGenericGroup::CGenericGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormat
 // FUNCTION: LEMBALL 0x0041de40
 CGenericGroup::~CGenericGroup()
 {
-	for (int i = 0; i < 10; i++) {
-		delete m_elements[i];
-	}
+	int remaining = 10;
+	CGameObject** element = m_elements;
+	do {
+		delete *element;
+		element++;
+	} while (--remaining != 0);
 }
 
 // FUNCTION: LEMBALL 0x0041de80
