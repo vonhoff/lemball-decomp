@@ -29,8 +29,8 @@ void CTrapDoorManager::Restart()
 // FUNCTION: LEMBALL 0x0040c7e0
 CTrapDoorManager::~CTrapDoorManager()
 {
-	CTrapDoor** door = m_doors;
 	int remaining = 8;
+	CTrapDoor** door = m_doors;
 	do {
 		delete *door;
 		door++;
