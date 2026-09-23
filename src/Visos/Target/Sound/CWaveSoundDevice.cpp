@@ -381,20 +381,33 @@ int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 int CWaveSoundDevice::FreeAllEffects()
 {
 	unsigned int i;
+	unsigned int byteIndex;
 	CWaveEffect* effect;
 
 	i = 0;
-	while (i < m_channelCount) {
-		if (m_effectUsed[i] == 1) {
-			effect = m_effects[i];
-			if (effect != 0) {
-				effect->~CWaveEffect();
-				operator delete(effect);
+	if (i < m_channelCount) {
+		byteIndex = 0;
+		do {
+			char* usedBytes = (char*) m_effectUsed;
+			unsigned int* usedSlot = (unsigned int*) (usedBytes + byteIndex);
+			if (*usedSlot == 1) {
+				char* effectBytes = (char*) m_effects;
+				CWaveEffect** effectSlot = (CWaveEffect**) (effectBytes + byteIndex);
+				effect = *effectSlot;
+				if (effect != 0) {
+					effect->~CWaveEffect();
+					operator delete(effect);
+				}
+				char* usedBytesAfter = (char*) m_effectUsed;
+				unsigned int* usedSlotAfter = (unsigned int*) (usedBytesAfter + byteIndex);
+				*usedSlotAfter = 0;
+				char* handleBytes = (char*) m_effectHandles;
+				unsigned int* handleSlot = (unsigned int*) (handleBytes + byteIndex);
+				*handleSlot = 0;
 			}
-			m_effectUsed[i] = 0;
-			m_effectHandles[i] = 0;
-		}
-		i = i + 1;
+			byteIndex += sizeof(unsigned int);
+			i = i + 1;
+		} while (i < m_channelCount);
 	}
 	return 0;
 }
