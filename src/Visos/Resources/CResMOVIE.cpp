@@ -80,6 +80,9 @@ bool CResMOVIE::DirectResources(unsigned int p_index, unsigned char** p_cursor)
 // FUNCTION: LEMBALL 0x0045e120
 void CResMOVIE::UnLoadResources(unsigned int p_index, unsigned int p_force)
 {
-	m_movieEntries[p_index].UnLoadExtData(p_force);
+	char* movieBytes = (char*) m_movieEntries;
+	unsigned int movieOffset = p_index * sizeof(CResSTRING);
+	CResSTRING* movieEntry = (CResSTRING*) (movieBytes + movieOffset);
+	movieEntry->UnLoadExtData(p_force);
 	m_fontEntries[p_index].UnLoadExtData(p_force);
 }
