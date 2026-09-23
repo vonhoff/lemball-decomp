@@ -56,7 +56,7 @@ bool CBalloon::Process()
 	}
 	if (m_action == 26) {
 		Action(ACTION_0x18);
-		m_heading = 0;
+		m_objectActive = 0;
 		return 1;
 	}
 	return 1;

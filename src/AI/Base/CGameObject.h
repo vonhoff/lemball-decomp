@@ -182,7 +182,7 @@ protected:
 	unsigned int m_deathRequested;         // 0x2c
 	unsigned int m_balloonPostActive;      // 0x30
 	unsigned int m_balloonPostId;          // 0x34
-	int m_heading;                         // 0x38
+	int m_objectActive;                    // 0x38
 	unsigned int m_unk0x3c;                // 0x3c
 	AiCoord m_spawnPosition;               // 0x40
 	AiCoord m_flightVelocity;              // 0x4c

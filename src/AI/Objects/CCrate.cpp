@@ -105,7 +105,7 @@ bool CCrate::Process()
 	case ACTION_0x1a:
 		if (m_actionPhase2Deadline < g_dwGameTick) {
 			Action(ACTION_0x18);
-			m_heading = 0;
+			m_objectActive = 0;
 		}
 		break;
 	}

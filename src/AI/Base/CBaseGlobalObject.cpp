@@ -11,7 +11,7 @@ void CBaseGlobalObject::OldRestart()
 {
 	m_position.m_xFixed = m_initialPosition.m_xFixed;
 	m_position.m_yFixed = m_initialPosition.m_yFixed;
-	m_heading = 1;
+	m_objectActive = 1;
 	m_position.m_zFixed = m_initialPosition.m_zFixed;
 	if (g_pActiveConnection != 0) {
 		g_pObjectPosMessage->Send(this);

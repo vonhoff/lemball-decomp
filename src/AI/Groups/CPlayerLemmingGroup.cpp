@@ -209,7 +209,7 @@ bool CPlayerLemmingGroup::Process()
 			switch (m_useObject->UsableState()) {
 			case 1:
 				m_useObject->m_activationReserved = 0;
-				if (m_useObject->m_heading != 0) {
+				if (m_useObject->m_objectActive != 0) {
 					const AiCoord& activation = m_useObject->ActivatePosition();
 					position.m_xFixed = activation.m_xFixed;
 					position.m_yFixed = activation.m_yFixed;
@@ -382,7 +382,7 @@ void CPlayerLemmingGroup::ClearExistingWaypoints()
 {
 	CGenericGroup::ClearExistingWaypoints();
 	if (m_useObject != 0) {
-		if (GetGroupState() == GROUP_STATE_USING_OBJECT && m_useObject->m_heading != 0 &&
+		if (GetGroupState() == GROUP_STATE_USING_OBJECT && m_useObject->m_objectActive != 0 &&
 			m_useObject->m_activationReserved != 0) {
 			if (g_pActiveConnection != 0) {
 				m_useObject->SendCancel();

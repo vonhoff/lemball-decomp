@@ -398,7 +398,7 @@ void CGameObject::Initialise()
 	m_action = ACTION_NONE;
 	m_isRemoteObject = 0;
 	m_facingDirection = 0;
-	m_heading = 0;
+	m_objectActive = 0;
 	m_unk0xc4 = 0;
 	m_unk0x3c = 0;
 	m_isFlying = 0;
