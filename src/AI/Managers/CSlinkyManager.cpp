@@ -15,9 +15,19 @@ CSlinkyManager::CSlinkyManager(CAI* p_ai, int p_capacity)
 // FUNCTION: LEMBALL 0x0040b900
 void CSlinkyManager::Restart()
 {
+	int i;
+	unsigned int byteIndex;
 	if (m_slinkies != 0) {
-		for (int i = 0; i < m_capacity; i++) {
-			m_slinkies[i].Restart();
+		i = 0;
+		if (i < m_capacity) {
+			byteIndex = 0;
+			do {
+				char* slinkyBytes = (char*) m_slinkies;
+				CSlinky* slinky = (CSlinky*) (slinkyBytes + byteIndex);
+				++i;
+				byteIndex += sizeof(CSlinky);
+				slinky->Restart();
+			} while (i < m_capacity);
 		}
 	}
 }
