@@ -70,8 +70,8 @@ void CText::NextPos()
 		stepY = m_advanceY;
 	}
 	else {
-		stepX = m_glyph->m_width + 1;
 		stepY = m_glyph->m_height + 1;
+		stepX = m_glyph->m_width + 1;
 	}
 	unsigned int flags = m_flags;
 	if ((flags & 0x200) != 0) {
