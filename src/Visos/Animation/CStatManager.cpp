@@ -4,10 +4,10 @@
 #include "CBaseStat.h"
 
 // FUNCTION: LEMBALL 0x0045aaf0
-CStatManager::CStatManager(int p_arg0)
+CStatManager::CStatManager(int p_capacity)
 {
-	m_stats = (CBaseStat**) operator new((unsigned int) (p_arg0 * sizeof(CBaseStat*)));
-	m_capacity = p_arg0;
+	m_stats = (CBaseStat**) operator new((unsigned int) (p_capacity * sizeof(CBaseStat*)));
+	m_capacity = p_capacity;
 	m_statCount = 0;
 }
 

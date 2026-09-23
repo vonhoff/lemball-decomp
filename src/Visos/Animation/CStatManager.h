@@ -8,7 +8,7 @@ class CBaseStat;
 // VTABLE: LEMBALL 0x00498958
 class CStatManager {
 public:
-	CStatManager(int p_arg0);
+	CStatManager(int p_capacity);
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	void Register(CBaseStat* p_stat);
 	~CStatManager();
