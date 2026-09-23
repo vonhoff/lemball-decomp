@@ -258,8 +258,7 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 			m_bufferedZrleCount += 2;
 		}
 		else {
-			m_zrleCount++;
-			zrle = m_zrlePrimitives + (m_zrleCount - 1);
+			zrle = m_zrlePrimitives + m_zrleCount++;
 		}
 		zrle->m_state = m_primitiveSequence;
 		zrle->m_x = p_position.m_x;
