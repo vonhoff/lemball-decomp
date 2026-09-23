@@ -9,7 +9,7 @@ struct PadToButtonEntry;
 // VTABLE: LEMBALL 0x00497208
 class CPadToButton : public CBaseQueueHandler {
 public:
-	CPadToButton(int p_arg0);
+	CPadToButton(int p_entryCapacity);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~CPadToButton();                    // vtable+0x04
 	void AddBinding(CPVButton* p_button, unsigned int p_padCode);

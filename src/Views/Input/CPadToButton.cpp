@@ -7,12 +7,12 @@
 #include "Visos/Foundation/Message.h"
 
 // FUNCTION: LEMBALL 0x0043a250
-CPadToButton::CPadToButton(int p_arg0)
+CPadToButton::CPadToButton(int p_entryCapacity)
 {
-	m_entries = new PadToButtonEntry[p_arg0];
-	m_entryCapacity = p_arg0;
+	m_entries = new PadToButtonEntry[p_entryCapacity];
+	m_entryCapacity = p_entryCapacity;
 	m_entryCount = 0;
-	for (int i = 0; i < p_arg0; i++) {
+	for (int i = 0; i < p_entryCapacity; i++) {
 		m_entries[i].m_button = 0;
 	}
 	g_pMasterInputQueue->Attach(this, -25);
