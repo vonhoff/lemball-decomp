@@ -1110,8 +1110,9 @@ void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_resourceId)
 void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId)
 {
 	for (; (int) p_lastResourceId >= (int) p_firstResourceId; p_firstResourceId++) {
-		if (m_animFrames[m_resourceSlots[p_firstResourceId]] != 0) {
-			delete m_animFrames[m_resourceSlots[p_firstResourceId]];
+		CFrames* frame = m_animFrames[m_resourceSlots[p_firstResourceId]];
+		if (frame != 0) {
+			delete frame;
 			m_animFrames[m_resourceSlots[p_firstResourceId]] = 0;
 		}
 		UnLoadAnims(p_firstResourceId);
