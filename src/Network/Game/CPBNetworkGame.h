@@ -9,7 +9,7 @@ class CPlayerLemming;
 // VTABLE: LEMBALL 0x00498610
 class CPBNetworkGame : public CNetworkMessage {
 public:
-	CPBNetworkGame(CAI* p_arg0);
+	CPBNetworkGame(CAI* p_ai);
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
 

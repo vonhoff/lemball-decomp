@@ -8,10 +8,9 @@
 #include "Visos/Messaging/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00452fe0
-CPBNetworkGame::CPBNetworkGame(CAI* p_arg0)
-	: CNetworkMessage(3), m_ai(p_arg0), m_networkLemmings(p_arg0->m_networkLemmings)
+CPBNetworkGame::CPBNetworkGame(CAI* p_ai) : CNetworkMessage(3), m_ai(p_ai), m_networkLemmings(p_ai->m_networkLemmings)
 {
-	m_payloadCapacity += p_arg0->m_payloadCapacity + 8;
+	m_payloadCapacity += p_ai->m_payloadCapacity + 8;
 	m_headerEnabled = 0;
 }
 
