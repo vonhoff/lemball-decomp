@@ -408,7 +408,7 @@ void CGameObject::Initialise()
 	m_routeSearchActive = 0;
 	m_isJumping = 0;
 	m_isFalling = 0;
-	m_unk0x10c = 0;
+	m_wasHitByMine = 0;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
 	m_flightVelocity.m_xFixed = 0;

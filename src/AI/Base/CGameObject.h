@@ -224,7 +224,7 @@ protected:
 	int m_flightZ;                         // 0x100
 	unsigned int m_isJumping;              // 0x104
 	unsigned int m_isFalling;              // 0x108
-	unsigned int m_unk0x10c;               // 0x10c
+	unsigned int m_wasHitByMine;           // 0x10c
 	unsigned int m_liftId;                 // 0x110
 	unsigned int m_isRemoteObject;         // 0x114
 	unsigned int m_unk0x118;               // 0x118

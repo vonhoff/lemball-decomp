@@ -423,7 +423,7 @@ bool CEnemy::FacingTarget()
 // FUNCTION: LEMBALL 0x004206a0
 void CEnemy::HitMine()
 {
-	m_unk0x10c = 1;
+	m_wasHitByMine = 1;
 	g_pAI->Score(300);
 	C3DVector velocity;
 	velocity.m_xFixed = 0;

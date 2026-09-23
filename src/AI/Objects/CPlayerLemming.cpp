@@ -370,7 +370,7 @@ void CPlayerLemming::HitMine()
 	C3DVector vel;
 	vel.m_xFixed = 0;
 	vel.m_yFixed = 0;
-	m_unk0x10c = 1;
+	m_wasHitByMine = 1;
 	vel.m_zFixed = 0xa000;
 	StartFly(vel, 0);
 	m_deathRequested = 1;
@@ -539,7 +539,7 @@ void CPlayerLemming::Resurrect(const AiCoord& p_position)
 	m_routeSearchActive = 0;
 	m_isJumping = 0;
 	m_isFalling = 0;
-	m_unk0x10c = 0;
+	m_wasHitByMine = 0;
 	m_liftId = 0xffff;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
