@@ -123,81 +123,81 @@ int CTrampoline::Hit(const AiCoord& p_position, CGameObject* p_object)
 		return 0;
 	}
 
-	C3DVector velocity;
-	velocity.m_xFixed = DEBUG_SENTINEL;
-	velocity.m_yFixed = DEBUG_SENTINEL;
-	velocity.m_zFixed = DEBUG_SENTINEL;
-	CFixed incoming[3] = {CFixed(p_object->m_flightVelocity.m_xFixed),
-						  CFixed(p_object->m_flightVelocity.m_yFixed),
-						  CFixed(p_object->m_flightVelocity.m_zFixed)};
-	if (incoming[2].m_value < 0) {
-		incoming[2].m_value = -incoming[2].m_value;
+	C3DVector flightVelocity;
+	flightVelocity.m_xFixed = DEBUG_SENTINEL;
+	flightVelocity.m_yFixed = DEBUG_SENTINEL;
+	flightVelocity.m_zFixed = DEBUG_SENTINEL;
+	CFixed incomingVelocity[3] = {CFixed(p_object->m_flightVelocity.m_xFixed),
+								  CFixed(p_object->m_flightVelocity.m_yFixed),
+								  CFixed(p_object->m_flightVelocity.m_zFixed)};
+	if (incomingVelocity[2].m_value < 0) {
+		incomingVelocity[2].m_value = -incomingVelocity[2].m_value;
 	}
 
-	if (incoming[1].m_value != 0) {
-		if (incoming[1].m_value > 0) {
+	if (incomingVelocity[1].m_value != 0) {
+		if (incomingVelocity[1].m_value > 0) {
 			CFixed impulse[3] = {CFixed(0), CFixed(0x2000), CFixed(0x4000)};
-			CFixed bouncedX(incoming[0].m_value + impulse[0].m_value);
-			CFixed bouncedY = impulse[1] + incoming[1];
-			CFixed bouncedZ = impulse[2] + incoming[2];
-			C3DVector bounced(bouncedX, bouncedY, bouncedZ);
-			velocity.m_xFixed = bounced.m_xFixed;
-			velocity.m_yFixed = bounced.m_yFixed;
-			velocity.m_zFixed = bounced.m_zFixed;
+			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
+			CFixed bouncedY = impulse[1] + incomingVelocity[1];
+			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
+			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
+			flightVelocity.m_xFixed = bouncedVelocity.m_xFixed;
+			flightVelocity.m_yFixed = bouncedVelocity.m_yFixed;
+			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
 		}
 		else {
 			CFixed impulse[3] = {CFixed(0), CFixed(-0x2000), CFixed(0x4000)};
-			CFixed bouncedX(incoming[0].m_value + impulse[0].m_value);
-			CFixed bouncedY = impulse[1] + incoming[1];
-			CFixed bouncedZ = impulse[2] + incoming[2];
-			C3DVector bounced(bouncedX, bouncedY, bouncedZ);
-			velocity.m_xFixed = bounced.m_xFixed;
-			velocity.m_yFixed = bounced.m_yFixed;
-			velocity.m_zFixed = bounced.m_zFixed;
+			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
+			CFixed bouncedY = impulse[1] + incomingVelocity[1];
+			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
+			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
+			flightVelocity.m_xFixed = bouncedVelocity.m_xFixed;
+			flightVelocity.m_yFixed = bouncedVelocity.m_yFixed;
+			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
 		}
 	}
 	else {
-		if (incoming[0].m_value > 0) {
+		if (incomingVelocity[0].m_value > 0) {
 			CFixed impulse[3] = {CFixed(0x2000), CFixed(0), CFixed(0x4000)};
-			CFixed bouncedX(incoming[0].m_value + impulse[0].m_value);
-			CFixed bouncedY = impulse[1] + incoming[1];
-			CFixed bouncedZ = impulse[2] + incoming[2];
-			C3DVector bounced(bouncedX, bouncedY, bouncedZ);
-			velocity.m_xFixed = bounced.m_xFixed;
-			velocity.m_yFixed = bounced.m_yFixed;
-			velocity.m_zFixed = bounced.m_zFixed;
+			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
+			CFixed bouncedY = impulse[1] + incomingVelocity[1];
+			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
+			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
+			flightVelocity.m_xFixed = bouncedVelocity.m_xFixed;
+			flightVelocity.m_yFixed = bouncedVelocity.m_yFixed;
+			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
 		}
 		else {
 			CFixed impulse[3] = {CFixed(-0x2000), CFixed(0), CFixed(0x4000)};
-			CFixed bouncedX(incoming[0].m_value + impulse[0].m_value);
-			CFixed bouncedY = impulse[1] + incoming[1];
-			CFixed bouncedZ = impulse[2] + incoming[2];
-			C3DVector bounced(bouncedX, bouncedY, bouncedZ);
-			velocity.m_xFixed = bounced.m_xFixed;
-			velocity.m_yFixed = bounced.m_yFixed;
-			velocity.m_zFixed = bounced.m_zFixed;
+			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
+			CFixed bouncedY = impulse[1] + incomingVelocity[1];
+			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
+			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
+			flightVelocity.m_xFixed = bouncedVelocity.m_xFixed;
+			flightVelocity.m_yFixed = bouncedVelocity.m_yFixed;
+			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
 		}
 	}
 
-	if (velocity.m_xFixed > 0x14000) {
-		velocity.m_xFixed = 0x14000;
+	if (flightVelocity.m_xFixed > 0x14000) {
+		flightVelocity.m_xFixed = 0x14000;
 	}
-	if (velocity.m_xFixed < -0x14000) {
-		velocity.m_xFixed = -0x14000;
+	if (flightVelocity.m_xFixed < -0x14000) {
+		flightVelocity.m_xFixed = -0x14000;
 	}
-	if (velocity.m_yFixed > 0x14000) {
-		velocity.m_yFixed = 0x14000;
+	if (flightVelocity.m_yFixed > 0x14000) {
+		flightVelocity.m_yFixed = 0x14000;
 	}
-	if (velocity.m_yFixed < -0x14000) {
-		velocity.m_yFixed = -0x14000;
+	if (flightVelocity.m_yFixed < -0x14000) {
+		flightVelocity.m_yFixed = -0x14000;
 	}
-	if (velocity.m_zFixed > 0x14000) {
-		velocity.m_zFixed = 0x14000;
+	if (flightVelocity.m_zFixed > 0x14000) {
+		flightVelocity.m_zFixed = 0x14000;
 	}
 
 	AiCoord position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
 	p_object->m_position = position;
-	p_object->StartFly(velocity, 0);
+	p_object->StartFly(flightVelocity, 0);
 	p_object->m_balloonPostId = 1;
 	p_object->ResetInstructions();
 	m_actionDeadline = g_dwGameTick + 0x10;
