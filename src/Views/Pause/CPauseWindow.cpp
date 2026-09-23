@@ -385,12 +385,14 @@ CVsRect CPauseWindow::CalculateWindow()
 }
 
 // FUNCTION: LEMBALL 0x00444680
-CPauseWindow::CPauseWindow(CReceiveWindowState* p_arg0, CPVGWnd* p_arg1, ePauseWindowMessages p_arg2)
+CPauseWindow::CPauseWindow(CReceiveWindowState* p_receiverState,
+						   CPVGWnd* p_parentWindow,
+						   ePauseWindowMessages p_pauseMessage)
 	: CTextManager(0x2b6, 1, 15, 0)
 {
-	m_receiverState = p_arg0;
-	m_pauseMessage = p_arg2;
-	m_parentWindow = p_arg1;
+	m_receiverState = p_receiverState;
+	m_pauseMessage = p_pauseMessage;
+	m_parentWindow = p_parentWindow;
 	m_cursorState = 0;
 	m_borderAnimCount = 0;
 	Initialise();

@@ -38,7 +38,7 @@ class CPauseWindow : public CGWnd,
 					 public CHotAreaHandler {
 public:
 	CBaseRemap* Remap(int p_item);
-	CPauseWindow(CReceiveWindowState* p_arg0, CPVGWnd* p_arg1, ePauseWindowMessages p_arg2);
+	CPauseWindow(CReceiveWindowState* p_receiverState, CPVGWnd* p_parentWindow, ePauseWindowMessages p_pauseMessage);
 	CVsRect CalculateWindow();
 	virtual int ProcessMsg(Message* p_message);                            // vtable+0x08
 	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);       // vtable+0x04
