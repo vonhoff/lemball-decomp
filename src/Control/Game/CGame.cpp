@@ -154,11 +154,11 @@ CGame::CGame(char* p_arg0)
 	g_pStatManager->Register(m_refreshingStat);
 
 	storage = CMogloadArena::operator new(0x28);
-	if (storage == 0) {
-		g_pMogRes = 0;
+	if (storage != 0) {
+		g_pMogRes = new (storage) CMogRes(g_szPbaimogVsr, 0x177000);
 	}
 	else {
-		g_pMogRes = new (storage) CMogRes(g_szPbaimogVsr, 0x177000);
+		g_pMogRes = 0;
 	}
 
 	if (IsValidResource() == 0) {
