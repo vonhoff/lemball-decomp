@@ -25,12 +25,11 @@ unsigned int CPlayThruAnim::GetFrameNo()
 	else {
 		elapsed = m_fixedTime - m_frameState;
 	}
-	frame = m_frames;
-	if (m_animTime <= elapsed) {
-		frame--;
+	if (elapsed < m_animTime) {
+		frame = (m_frames * elapsed) / m_animTime;
 	}
 	else {
-		frame = (frame * elapsed) / m_animTime;
+		frame = m_frames - 1;
 	}
 	if (m_direction != 1) {
 		frame = (m_frames - frame) - 1;
