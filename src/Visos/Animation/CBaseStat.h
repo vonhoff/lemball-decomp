@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x00498960
 class CBaseStat : public CArenaBase {
 public:
-	CBaseStat(char* p_arg0);
+	CBaseStat(char* p_description);
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	virtual void Update(unsigned int p_value);           // vtable+0x04
 	~CBaseStat();

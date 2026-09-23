@@ -4,9 +4,9 @@
 #include "Visos/Foundation/CString.h"
 
 // FUNCTION: LEMBALL 0x0045ac10
-CBaseStat::CBaseStat(char* p_arg0)
+CBaseStat::CBaseStat(char* p_description)
 {
-	m_description = p_arg0;
+	m_description = p_description;
 	m_minimum = 0xffffffff;
 	m_maximum = 0;
 	m_total = 0;
