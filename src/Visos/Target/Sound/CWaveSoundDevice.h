@@ -49,26 +49,26 @@ public:
 	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect);                          // vtable+0x94
 
 private:
-	unsigned int m_channelCount;    // 0x04
-	unsigned int m_musicDevice;     // 0x08
-	unsigned int m_available;       // 0x0c
-	unsigned int m_stereo;          // 0x10
-	unsigned int m_use16Bit;        // 0x14
-	unsigned int m_unk0x18;         // 0x18
-	unsigned int m_unk0x1c;         // 0x1c
-	unsigned int m_channelState[8]; // 0x20
-	unsigned char m_pad0x40[8];     // 0x40
-	unsigned char m_pad0x48[8];     // 0x48
-	WAVEOUTCAPSA m_caps;            // 0x50
-	DWORD m_sampleRate;             // 0x84
-	UINT m_deviceId;                // 0x88
-	HWAVEOUT m_waveOut;             // 0x8c
-	WAVEFORMATEX m_waveFormat;      // 0x90; next DWORD aligned at 0xa4
-	unsigned int m_nextHandle;      // 0xa4
-	CWaveEffect** m_effects;        // 0xa8
-	unsigned int* m_effectUsed;     // 0xac
-	unsigned int* m_effectHandles;  // 0xb0
-	DWORD m_savedVolume;            // 0xb4
+	unsigned int m_channelCount;      // 0x04
+	unsigned int m_musicDevice;       // 0x08
+	unsigned int m_available;         // 0x0c
+	unsigned int m_stereo;            // 0x10
+	unsigned int m_use16Bit;          // 0x14
+	unsigned int m_unk0x18;           // 0x18
+	unsigned int m_unk0x1c;           // 0x1c
+	unsigned int m_channelState[8];   // 0x20
+	unsigned char m_pad0x40[8];       // 0x40
+	unsigned char m_effectPlaying[8]; // 0x48
+	WAVEOUTCAPSA m_caps;              // 0x50
+	DWORD m_sampleRate;               // 0x84
+	UINT m_deviceId;                  // 0x88
+	HWAVEOUT m_waveOut;               // 0x8c
+	WAVEFORMATEX m_waveFormat;        // 0x90; next DWORD aligned at 0xa4
+	unsigned int m_nextHandle;        // 0xa4
+	CWaveEffect** m_effects;          // 0xa8
+	unsigned int* m_effectUsed;       // 0xac
+	unsigned int* m_effectHandles;    // 0xb0
+	DWORD m_savedVolume;              // 0xb4
 };
 
 // SYNTHETIC: LEMBALL 0x0047d270

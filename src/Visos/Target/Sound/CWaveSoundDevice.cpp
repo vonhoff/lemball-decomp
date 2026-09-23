@@ -28,7 +28,7 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	while (i < 8) {
 		m_channelState[i] = 0xffffffff;
 		m_pad0x40[i] = 0;
-		m_pad0x48[i] = 0;
+		m_effectPlaying[i] = 0;
 		i = i + 1;
 	}
 	m_nextHandle = 1;
@@ -238,7 +238,7 @@ int CWaveSoundDevice::IsAnyEffectPlaying()
 	playing = 0;
 	i = 0;
 	while (i < 8) {
-		if (m_pad0x48[i] == 1) {
+		if (m_effectPlaying[i] == 1) {
 			playing = 1;
 		}
 		i = i + 1;
