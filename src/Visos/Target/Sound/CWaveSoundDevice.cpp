@@ -357,8 +357,8 @@ int CWaveSoundDevice::Dummy4c()
 int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 {
 	CWaveEffect* effect;
-	unsigned int i;
 	CWaveSoundDevice* device;
+	unsigned int i;
 
 	i = 0;
 	while (i < m_channelCount) {
