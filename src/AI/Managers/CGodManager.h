@@ -19,6 +19,7 @@ public:
 	virtual ~CGodManager();                     // vtable+0x04
 	void Process();
 	void Register(CBaseObjectManager* p_manager);
+	void Unregister(CBaseObjectManager* p_manager);
 	void Restart();
 
 private:

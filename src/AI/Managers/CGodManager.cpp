@@ -64,6 +64,40 @@ void CGodManager::Register(CBaseObjectManager* p_manager)
 	p_manager->Restart();
 }
 
+// FUNCTION: LEMBALL 0x0040b180
+void CGodManager::Unregister(CBaseObjectManager* p_manager)
+{
+	CBaseObjectManager** managers;
+	CBaseObjectManager** item;
+	int index;
+	int count;
+
+	index = 0;
+	count = m_count;
+	if (count > index) {
+		managers = m_managers;
+		do {
+			if (*managers == p_manager) {
+				goto managerFound;
+			}
+			managers++;
+			index++;
+		} while (count > index);
+		return;
+	managerFound:
+		if (index < count - 1) {
+			do {
+				item = m_managers + index;
+				index++;
+				*item = item[1];
+			} while (index < m_count - 1);
+		}
+		m_transportMap[p_manager->m_messageType] = -1;
+		m_managers[index] = 0;
+		m_count--;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0040b1f0
 CBaseObjectManager* CGodManager::GetManagerForTransport(int p_transportId)
 {
