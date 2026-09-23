@@ -109,7 +109,7 @@ char g_szMasterVersion[12] = "Master v1.3";
 extern CStatManager* g_pStatManager;
 
 // FUNCTION: LEMBALL 0x00406df0
-CGame::CGame(char* p_arg0)
+CGame::CGame(char* p_runtimeFileName)
 {
 	void* storage;
 	char titleBuf[80];
@@ -185,11 +185,11 @@ CGame::CGame(char* p_arg0)
 	NextProcess(FLOW_INTRO_ANIM);
 
 	strcpy(m_runtimeName, g_szDefaultRuntimeDir);
-	if (p_arg0 == 0) {
+	if (p_runtimeFileName == 0) {
 		strcat(m_runtimeName, g_szDefaultRuntimeFile);
 	}
 	else {
-		strcat(m_runtimeName, p_arg0);
+		strcat(m_runtimeName, p_runtimeFileName);
 	}
 
 	m_quit = 0;

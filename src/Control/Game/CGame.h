@@ -9,7 +9,7 @@ class CTimeStat;
 // SIZE 0x70
 class CGame {
 public:
-	CGame(char* p_arg0);
+	CGame(char* p_runtimeFileName);
 	bool IsValidResource();
 	void LoadFrontendResources(int p_mode);
 	void NextProcess(eFlowProcesses p_flow);
