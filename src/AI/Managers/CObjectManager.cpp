@@ -92,6 +92,49 @@ CObjectManager::~CObjectManager()
 	delete[] m_objects;
 }
 
+// FUNCTION: LEMBALL 0x0041b160
+void CObjectManager::ClearAllObjects()
+{
+	for (int index = 0; index < m_count; index++) {
+		m_objects[index]->SetId(0xffff);
+		delete m_objects[index];
+	}
+	m_count = 0;
+	m_unk0x38 = 0;
+}
+
+// FUNCTION: LEMBALL 0x0041b1b0
+void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
+{
+	for (int index = 0; index < m_count; index++) {
+		if (m_objects[index] == p_object) {
+			p_object->Delete();
+			p_object->SetId(0xffff);
+			delete p_object;
+			index++;
+			while (index < m_count) {
+				m_objects[index - 1] = m_objects[index];
+				index++;
+			}
+			m_count--;
+			return;
+		}
+		int linkedIndex = 0;
+		while (1) {
+			if (linkedIndex >= m_count) {
+				break;
+			}
+			if (m_objects[linkedIndex]->m_objectType == OBJECT_CRATE) {
+				unsigned short contentsId = ((CCrate*) m_objects[linkedIndex])->m_contentsId;
+				if ((unsigned short) p_object->GetId() == contentsId) {
+					DeleteObjectAndLinkedTargets(m_objects[linkedIndex]);
+				}
+			}
+			linkedIndex++;
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0041b2a0
 CGlobalGameObject* CObjectManager::AddObject(unsigned short p_id, CGlobalGameObject* p_object, unsigned int p_active)
 {
@@ -105,6 +148,19 @@ CGlobalGameObject* CObjectManager::AddObject(unsigned short p_id, CGlobalGameObj
 		return m_objects[m_count++];
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041b310
+CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
+									   int p_x,
+									   int p_y,
+									   int p_z,
+									   eObjectType p_objectType,
+									   unsigned short p_linkedObjectId,
+									   eObjectType p_linkedObjectType)
+{
+	AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+	return Add(p_id, position, p_objectType, p_linkedObjectId, p_linkedObjectType);
 }
 
 // FUNCTION: LEMBALL 0x0041b370
@@ -233,6 +289,16 @@ int CObjectManager::GetViewData(CViewData* p_viewData)
 	return count;
 }
 
+// FUNCTION: LEMBALL 0x0041b8a0
+void CObjectManager::ActivateObjectsById(int p_id, CGameObject* p_activator)
+{
+	for (int index = 0; index < m_count; index++) {
+		if (m_objects[index]->m_objectId == p_id) {
+			m_objects[index]->Activate(p_activator);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0041b8f0
 CGlobalGameObject* CObjectManager::FindObject(int p_id)
 {
@@ -250,6 +316,24 @@ CGlobalGameObject* CObjectManager::FindObject(int p_id)
 		return 0;
 	}
 	return m_objects[i];
+}
+
+// FUNCTION: LEMBALL 0x0041b940
+void CObjectManager::RemoveById(short p_id)
+{
+	for (int index = 0; index < m_count; index++) {
+		CGlobalGameObject* object = m_objects[index];
+		if (object != 0 && object->GetId() == p_id) {
+			DeactivateObjectAtIndex(index);
+			return;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0041b990
+void CObjectManager::DeactivateObjectAtIndex(int p_index)
+{
+	m_objects[p_index]->m_heading = 0;
 }
 
 // FUNCTION: LEMBALL 0x0041b9b0

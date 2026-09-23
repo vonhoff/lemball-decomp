@@ -13,6 +13,18 @@ class CSwitch;
 // VTABLE: LEMBALL 0x00494238
 class CObjectManager : public CBaseObjectManager {
 public:
+	void ClearAllObjects();
+	void DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object);
+	CGlobalGameObject* Add(unsigned short p_id,
+						   int p_x,
+						   int p_y,
+						   int p_z,
+						   eObjectType p_objectType,
+						   unsigned short p_linkedObjectId,
+						   eObjectType p_linkedObjectType);
+	void ActivateObjectsById(int p_id, CGameObject* p_activator);
+	void RemoveById(short p_id);
+	void DeactivateObjectAtIndex(int p_index);
 	CGlobalGameObject* Add(unsigned short p_id,
 						   AiCoord p_position,
 						   eObjectType p_objectType,
