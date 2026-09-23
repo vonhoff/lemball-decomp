@@ -22,12 +22,14 @@ bool CFlag::Process()
 {
 	if (m_isRemoteObject == 0 && m_objectType == OBJECT_FLAG_1) {
 		if (m_action == ACTION_0x18 && m_onMover == 0) {
-			int x = m_position.m_xFixed >> 12;
 			int y = m_position.m_yFixed >> 12;
+			int x = m_position.m_xFixed >> 12;
 			unsigned short z;
-			int blockX = x >> 4;
-			int blockY = y >> 4;
+			int blockX;
+			int blockY;
 			CMap* map = g_pMap;
+			blockX = x >> 4;
+			blockY = y >> 4;
 
 			if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 				int cellX = x & 0xf;
