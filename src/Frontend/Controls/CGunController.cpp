@@ -643,8 +643,8 @@ void CGunController::SelectOption()
 		m_selectStartTime = CurrentMilliTimer();
 		delta = m_projectileTargetX - m_projectileX;
 		delta = abs((int) delta);
-		m_selectionState = 2;
 		m_selectEndTime = delta * 2 + m_selectStartTime;
+		m_selectionState = 2;
 		g_pSoundView->PlayEffect(SFX_BIGGUN);
 	}
 }
