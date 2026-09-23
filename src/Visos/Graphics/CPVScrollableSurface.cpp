@@ -12,7 +12,7 @@ void CPVScrollableSurface::SetWorldWidth(int p_width)
 
 	if (m_reserved40 != p_width) {
 		m_reserved40 = p_width;
-		rect = &m_rect0c;
+		rect = &m_surfaceRect;
 		size[0] = rect->m_width;
 		size[1] = rect->m_height;
 		Resize(*(CVsSize*) size);

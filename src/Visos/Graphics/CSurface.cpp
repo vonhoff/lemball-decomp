@@ -139,7 +139,7 @@ CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
 		CGraphicsDriver* driver = g_pTargetGraphicsDriver;
 		m_drawingPort = driver->CreateDrawingContext();
 	}
-	CVsRect& rect = m_rect0c;
+	CVsRect& rect = m_surfaceRect;
 	rect.m_width = p_rect.m_width;
 	rect.m_height = p_rect.m_height;
 	const short* coords;
@@ -510,7 +510,7 @@ void CSurface::AddToChangeList(const CVsRect* p_rect)
 	parent = (CSurface*) CPVScrollableSurface::m_parentSurface;
 	if (parent != (CSurface*) g_pGdiHelperTarget && CPVScrollableSurface::m_flag74 != 0 &&
 		CPVScrollableSurface::m_flag70 != 0) {
-		origin = &this->CPVScrollableSurface::m_rect0c;
+		origin = &this->CPVScrollableSurface::m_surfaceRect;
 		originX = origin->m_x;
 		originY = origin->m_y;
 		CVsRect translated(*p_rect);
@@ -704,7 +704,7 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 {
 	EnterCriticalSection((CRITICAL_SECTION*) m_lock);
 	{
-		CVsRect& bounds = m_rect0c;
+		CVsRect& bounds = m_surfaceRect;
 		bounds.m_width = p_rect.m_width;
 		bounds.m_height = p_rect.m_height;
 		const CVsPoint* position = &p_rect;
@@ -809,7 +809,7 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 		SetBitsBase(dib->GetBits(), dib->GetStride());
 		m_changeList->SetDrawMark();
 		CVsRect clip;
-		const CVsSize& drawSize = m_rect0c;
+		const CVsSize& drawSize = m_surfaceRect;
 		short drawHeight = drawSize.m_height;
 		clip.m_width = drawSize.m_width;
 		clip.m_height = drawHeight;
@@ -821,7 +821,7 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 // FUNCTION: LEMBALL 0x0046d420
 void CSurface::Resize(const CVsSize& p_size)
 {
-	CVsRect rect(m_rect0c);
+	CVsRect rect(m_surfaceRect);
 	rect.m_width = p_size.m_width;
 	rect.m_height = p_size.m_height;
 	if (m_changeList != 0) {
@@ -840,7 +840,7 @@ void CSurface::Resize(const CVsSize& p_size)
 	}
 	for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {
 		CSurface* child = node->m_surface;
-		CVsSize childSize(child->m_rect0c);
+		CVsSize childSize(child->m_surfaceRect);
 		child->Resize(childSize);
 	}
 }
@@ -848,7 +848,7 @@ void CSurface::Resize(const CVsSize& p_size)
 // FUNCTION: LEMBALL 0x0046d560
 void CSurface::MoveRel(const CVsPoint& p_delta)
 {
-	CVsRect* rect = &m_rect0c;
+	CVsRect* rect = &m_surfaceRect;
 	rect->m_x += p_delta.m_x;
 	rect->m_y += p_delta.m_y;
 	Move(*rect);
@@ -858,19 +858,19 @@ void CSurface::MoveRel(const CVsPoint& p_delta)
 void CSurface::Move(const CVsPoint& p_position)
 {
 	CVsPoint delta;
-	delta.m_x = p_position.m_x - m_rect0c.m_x;
-	delta.m_y = p_position.m_y - m_rect0c.m_y;
+	delta.m_x = p_position.m_x - m_surfaceRect.m_x;
+	delta.m_y = p_position.m_y - m_surfaceRect.m_y;
 
 	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
 		EnterCriticalSection((CRITICAL_SECTION*) m_lock);
-		m_rect0c.m_x = p_position.m_x;
-		m_rect0c.m_y = p_position.m_y;
+		m_surfaceRect.m_x = p_position.m_x;
+		m_surfaceRect.m_y = p_position.m_y;
 		short oldWidth = m_windowRect.m_width;
 		short oldHeight = m_windowRect.m_height;
-		m_windowRect.m_width = m_rect0c.m_width;
-		m_windowRect.m_height = m_rect0c.m_height;
-		m_windowRect.m_x = m_rect0c.m_x;
-		m_windowRect.m_y = m_rect0c.m_y;
+		m_windowRect.m_width = m_surfaceRect.m_width;
+		m_windowRect.m_height = m_surfaceRect.m_height;
+		m_windowRect.m_x = m_surfaceRect.m_x;
+		m_windowRect.m_y = m_surfaceRect.m_y;
 
 		CVsRect& clipped = m_windowRect;
 		short parentWidth = m_parentSurface->m_windowRect.m_width;

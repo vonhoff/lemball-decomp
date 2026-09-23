@@ -11,10 +11,10 @@ CPVSurface::CPVSurface()
 	m_dontUpdateRect.m_width = 0;
 	m_dontUpdateRect.m_y = 0;
 	m_dontUpdateRect.m_x = 0;
-	m_rect0c.m_height = 0;
-	m_rect0c.m_width = 0;
-	m_rect0c.m_y = 0;
-	m_rect0c.m_x = 0;
+	m_surfaceRect.m_height = 0;
+	m_surfaceRect.m_width = 0;
+	m_surfaceRect.m_y = 0;
+	m_surfaceRect.m_x = 0;
 	m_windowRect.m_height = 0;
 	m_windowRect.m_width = 0;
 	m_windowRect.m_y = 0;

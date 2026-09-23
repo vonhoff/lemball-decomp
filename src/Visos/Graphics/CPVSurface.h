@@ -70,7 +70,7 @@ public:
 
 private:
 	CVsRect m_dontUpdateRect;     // 0x04
-	CVsRect m_rect0c;             // 0x0c
+	CVsRect m_surfaceRect;        // 0x0c
 	CVsRect m_windowRect;         // 0x14
 	short m_relOriginX;           // 0x1c
 	short m_relOriginY;           // 0x1e
