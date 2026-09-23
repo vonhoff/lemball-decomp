@@ -53,7 +53,7 @@ struct PreviewLayout {
 // VTABLE: LEMBALL 0x00497bdc CAnimsManager
 class CPreviewDrawer : public CBaseFrontendDrawer {
 public:
-	CPreviewDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2);
+	CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect);
 	bool AddWord(char* p_source, char* p_line, int& p_sourcePos, int& p_linePos);
 	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c

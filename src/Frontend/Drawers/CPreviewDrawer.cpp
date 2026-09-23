@@ -117,8 +117,8 @@ char g_szPreviewNone[] = "None";
 char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 
 // FUNCTION: LEMBALL 0x004491b0
-CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2)
-	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)
+CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect)
+	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)
 {
 	m_drawBackground = 1;
 	m_drawFrame = 1;
