@@ -537,6 +537,13 @@ void CGame::Run()
 	}
 }
 
+// FUNCTION: LEMBALL 0x004079e0
+void CGame::StreamRuntimeStats()
+{
+	m_processingStat->StreamOut(*g_pDebugOutput) << '\n';
+	m_refreshingStat->StreamOut(*g_pDebugOutput) << '\n';
+}
+
 // GLOBAL: LEMBALL 0x004a1bcc
 int* g_pSentinel = 0;
 

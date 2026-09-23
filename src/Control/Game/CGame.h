@@ -16,6 +16,7 @@ public:
 	void Process();
 	void RefreshViews();
 	void Run();
+	void StreamRuntimeStats();
 	void UnLoadFrontendResources();
 	~CGame();
 
