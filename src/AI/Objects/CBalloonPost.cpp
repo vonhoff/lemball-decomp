@@ -9,10 +9,10 @@
 #include "Map/Ground/CGroundArray.h"
 
 // FUNCTION: LEMBALL 0x00429f50
-CBalloonPost::CBalloonPost(CAI* p_arg0, CMap* p_arg1)
+CBalloonPost::CBalloonPost(CAI* p_ai, CMap* p_map)
 {
-	m_ai = p_arg0;
-	m_map = p_arg1;
+	m_ai = p_ai;
+	m_map = p_map;
 	m_posts[0] = new CTheBalloonPost(OBJECT_BALLOON_1, 0);
 	m_posts[1] = new CTheBalloonPost(OBJECT_BALLOON_3, 0);
 	m_posts[2] = new CTheBalloonPost(OBJECT_BALLOON_5, 0);

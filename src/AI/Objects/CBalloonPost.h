@@ -11,7 +11,7 @@ class CViewData;
 // SIZE 0x4c
 class CBalloonPost {
 public:
-	CBalloonPost(CAI* p_arg0, CMap* p_arg1);
+	CBalloonPost(CAI* p_ai, CMap* p_map);
 	bool FindPost(eObjectType p_objectType, AiCoord& p_position);
 	int GetViewData(CViewData* p_viewData);
 	void Process();
