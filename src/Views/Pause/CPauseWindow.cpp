@@ -73,7 +73,7 @@ void CPauseWindow::Initialise()
 	m_initialSelection = m_selection;
 	g_pMasterInputQueue->Attach(this, 0);
 	m_vramSurface = 0;
-	m_textSizes = (CVsPoint*) (void*) new CVsRect[m_menuItemCount];
+	m_menuItemRects = (CVsPoint*) (void*) new CVsRect[m_menuItemCount];
 	RegisterRemaps();
 	m_loaded = 0;
 	m_borderAnims = 0;
@@ -129,19 +129,19 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 	CVsRect borderRect;
 
 	if (m_pauseMessage == 3) {
-		short x = (short) ((p_rect.m_width - m_textSizes[0].m_x) / 2);
-		m_textSizes[1].m_x = x;
-		m_textSizes[1].m_y = verticalOffset;
-		verticalOffset = (short) (verticalOffset + m_textSizes[0].m_y + m_textSpacing.m_y);
-		m_textSizes[3].m_x = x;
-		m_textSizes[3].m_y = verticalOffset;
-		m_textSizes[5].m_x = (short) (x + m_textSizes[0].m_x - m_textSizes[4].m_x);
-		m_textSizes[5].m_y = verticalOffset;
+		short x = (short) ((p_rect.m_width - m_menuItemRects[0].m_x) / 2);
+		m_menuItemRects[1].m_x = x;
+		m_menuItemRects[1].m_y = verticalOffset;
+		verticalOffset = (short) (verticalOffset + m_menuItemRects[0].m_y + m_textSpacing.m_y);
+		m_menuItemRects[3].m_x = x;
+		m_menuItemRects[3].m_y = verticalOffset;
+		m_menuItemRects[5].m_x = (short) (x + m_menuItemRects[0].m_x - m_menuItemRects[4].m_x);
+		m_menuItemRects[5].m_y = verticalOffset;
 	}
 	else if (m_menuItemCount > 0) {
 		int item = 0;
-		CVsPoint* textSize = m_textSizes;
-		CVsPoint* textPosition = m_textSizes + 1;
+		CVsPoint* textSize = m_menuItemRects;
+		CVsPoint* textPosition = m_menuItemRects + 1;
 		do {
 			item++;
 			textPosition->m_x = (short) ((p_rect.m_width - textSize->m_x) / 2);
@@ -233,7 +233,7 @@ CVsRect CPauseWindow::CalculateWindow()
 	}
 	for (i = 0; i < m_menuItemCount; i++) {
 		measuredTextSize = m_font->GetSize(&textSize, m_menuLabels[i], 0x20);
-		CVsPoint* storedTextSize = m_textSizes + i * 2;
+		CVsPoint* storedTextSize = m_menuItemRects + i * 2;
 		storedTextSize->m_x = measuredTextSize->m_width;
 		storedTextSize->m_y = measuredTextSize->m_height;
 		if (itemCount > i) {
@@ -406,7 +406,7 @@ CPauseWindow::~CPauseWindow()
 	if (m_lifecycleRefs == 1) {
 		Destroy();
 	}
-	delete[] m_textSizes;
+	delete[] m_menuItemRects;
 	UnRegisterRemaps();
 	if (m_borderAnims != 0) {
 		delete[] m_borderAnims;
@@ -474,7 +474,7 @@ void CPauseWindow::OnPaint(const CVsRect& p_rect)
 		corner++;
 	} while (--count != 0);
 	for (i = 0; i < m_menuItemCount; i++) {
-		CVsPoint* position = (CVsRect*) (void*) m_textSizes + i;
+		CVsPoint* position = (CVsRect*) (void*) m_menuItemRects + i;
 		CVsSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
@@ -491,7 +491,7 @@ void CPauseWindow::OnInside(const CVsPoint& p_point)
 	if (selection < m_menuItemCount) {
 		short relX = p_point.m_x - m_relativeTopLeft.m_x;
 		short relY = p_point.m_y - m_relativeTopLeft.m_y;
-		CVsPoint* textSizes = m_textSizes + selection * 2 + 1;
+		CVsPoint* textSizes = m_menuItemRects + selection * 2 + 1;
 		do {
 			short textX = textSizes->m_x;
 			if (textX <= relX) {
@@ -522,7 +522,7 @@ void CPauseWindow::OnButtonDown(const CVsPoint& p_point, int p_flags)
 	if (selection < m_menuItemCount) {
 		short relX = p_point.m_x - m_relativeTopLeft.m_x;
 		short relY = p_point.m_y - m_relativeTopLeft.m_y;
-		CVsPoint* textSizes = m_textSizes + selection * 2 + 1;
+		CVsPoint* textSizes = m_menuItemRects + selection * 2 + 1;
 		do {
 			short textX = textSizes->m_x;
 			if (textX <= relX) {
