@@ -58,14 +58,15 @@ void CAnimSpecial::Initialise(CMap* p_map)
 	}
 
 	int entryIndex = 0;
+	int entryColumn;
 	int entryRow;
 	for (entryRow = 0; entryRow < height; entryRow++) {
-		column = 0;
+		entryColumn = 0;
 		for (;;) {
-			if (column >= width) {
+			if (entryColumn >= width) {
 				break;
 			}
-			CGround* ground = map->m_ground.m_ground + entryRow * map->m_ground.m_width + column;
+			CGround* ground = map->m_ground.m_ground + entryRow * map->m_ground.m_width + entryColumn;
 			eObjectType objectType = ground->m_objectType;
 			switch (objectType) {
 			case TERRAIN_ANIM:
@@ -73,16 +74,16 @@ void CAnimSpecial::Initialise(CMap* p_map)
 			case TERRAIN_ELECTRIC:
 			case TERRAIN_CONVEYOR_VARIANT_A:
 			case TERRAIN_CONVEYOR_VARIANT_B:
-				m_entries[entryIndex].m_x = (short) column;
+				m_entries[entryIndex].m_x = (short) entryColumn;
 				m_entries[entryIndex].m_y = (short) entryRow;
-				m_entries[entryIndex].m_sortKey = (unsigned short) ((entryRow + column) * 64);
+				m_entries[entryIndex].m_sortKey = (unsigned short) ((entryRow + entryColumn) * 64);
 				m_entries[entryIndex].m_groundEntry =
-					map->m_ground.m_ground + map->m_ground.m_width * entryRow + column;
+					map->m_ground.m_ground + map->m_ground.m_width * entryRow + entryColumn;
 				entryIndex++;
 				break;
 			default: {
 				unsigned short collision;
-				if (column >= 0 && entryRow >= 0 && column < map->m_ground.m_width &&
+				if (entryColumn >= 0 && entryRow >= 0 && entryColumn < map->m_ground.m_width &&
 					map->m_ground.m_height > entryRow) {
 					collision = ground->m_collision;
 				}
@@ -103,19 +104,19 @@ void CAnimSpecial::Initialise(CMap* p_map)
 						sortOffset = 8;
 						break;
 					}
-					m_entries[entryIndex].m_x = (short) column;
+					m_entries[entryIndex].m_x = (short) entryColumn;
 					m_entries[entryIndex].m_y = (short) entryRow;
-					m_entries[entryIndex].m_sortKey = (unsigned short) ((entryRow + column) * 64 + sortOffset);
+					m_entries[entryIndex].m_sortKey = (unsigned short) ((entryRow + entryColumn) * 64 + sortOffset);
 					m_entries[entryIndex].m_groundEntry =
-						map->m_ground.m_ground + map->m_ground.m_width * entryRow + column;
+						map->m_ground.m_ground + map->m_ground.m_width * entryRow + entryColumn;
 					entryIndex++;
-					column++;
+					entryColumn++;
 					continue;
 				}
 				break;
 			}
 			}
-			column++;
+			entryColumn++;
 		}
 	}
 	VSQSort(m_entries, m_entryCount, sizeof(AnimSpecialEntry), AnimSpCmp);
