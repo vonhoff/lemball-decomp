@@ -2173,22 +2173,22 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 {
 	int x;
 	int y;
-	int frame;
+	int animationFrame;
 	unsigned int direction;
-	unsigned short player;
+	unsigned short playerIndex;
 	int drawEquipment;
 	int drawBody;
-	unsigned long resource;
+	unsigned long animationResourceId;
 	int offsetX;
 	int offsetY;
 
-	frame = p_viewData.m_stateTimer;
+	animationFrame = p_viewData.m_stateTimer;
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & 7;
 	y = p_viewData.m_positionY;
 	drawEquipment = 1;
 	drawBody = 1;
 	x = p_viewData.m_positionX;
-	player = p_viewData.m_playerIndex;
+	playerIndex = p_viewData.m_playerIndex;
 
 	switch (p_viewData.m_action) {
 	case 0:
@@ -2196,17 +2196,17 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 	case 9:
 	case 0xd:
 	case 0x23:
-		resource = g_lemmingStandResources[direction];
+		animationResourceId = g_lemmingStandResources[direction];
 		offsetX = g_lemmingStandOffset[0];
 		offsetY = g_lemmingStandOffset[1];
 		break;
 	case 2:
-		resource = g_lemmingWalkResources[direction];
+		animationResourceId = g_lemmingWalkResources[direction];
 		offsetX = g_lemmingWalkOffset[0];
 		offsetY = g_lemmingWalkOffset[1];
 		break;
 	case 3:
-		resource = g_lemmingFireResources[direction];
+		animationResourceId = g_lemmingFireResources[direction];
 		offsetY = g_lemmingFireOffsets[direction][1] + g_lemmingStandOffset[1];
 		offsetX = g_lemmingFireOffsets[direction][0] + g_lemmingStandOffset[0];
 		drawEquipment = 0;
@@ -2214,7 +2214,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 	case 4:
 		DrawLemmingFlyShadow(p_viewData);
 		drawEquipment = 0;
-		resource = LemmingFly(p_viewData, frame);
+		animationResourceId = LemmingFly(p_viewData, animationFrame);
 		offsetX = g_lemmingAirOffset[0];
 		offsetY = g_lemmingAirOffset[1];
 		break;
@@ -2223,21 +2223,21 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 		drawEquipment = 0;
 		break;
 	case 6: {
-		unsigned int index;
+		unsigned int waitAnimationIndex;
 		if (p_remapped == 0) {
-			index = (unsigned short) p_viewData.m_actionArgument;
+			waitAnimationIndex = (unsigned short) p_viewData.m_actionArgument;
 		}
 		else {
-			index = 0;
+			waitAnimationIndex = 0;
 		}
-		offsetX = g_lemmingWaitOffsets[index][0];
-		offsetY = g_lemmingWaitOffsets[index][1];
-		resource = g_lemmingWaitResources[index];
+		offsetX = g_lemmingWaitOffsets[waitAnimationIndex][0];
+		offsetY = g_lemmingWaitOffsets[waitAnimationIndex][1];
+		animationResourceId = g_lemmingWaitResources[waitAnimationIndex];
 		break;
 	}
 	case 7:
 		drawEquipment = 0;
-		resource = g_lemmingHitResources[direction];
+		animationResourceId = g_lemmingHitResources[direction];
 		offsetX = g_lemmingHitOffsets[direction][0];
 		offsetY = g_lemmingHitOffsets[direction][1];
 		break;
@@ -2259,7 +2259,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 		offsetX = g_lemmingSommersaultOffset[0];
 		offsetY = g_lemmingSommersaultOffset[1];
 		drawEquipment = 0;
-		resource = p_viewData.m_actionArgument == 0 ? RES_GAME_SOMMERSAULT : RES_GAME_SOMMERSAULT_REV;
+		animationResourceId = p_viewData.m_actionArgument == 0 ? RES_GAME_SOMMERSAULT : RES_GAME_SOMMERSAULT_REV;
 		break;
 	case 0xf:
 		DrawLemmingExternal(p_viewData, p_remapped);
@@ -2285,7 +2285,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 									 RES_GAME_CIRCLES,
 									 0,
 									 0,
-									 (CRemap*) m_remaps[player]);
+									 (CRemap*) m_remaps[playerIndex]);
 		}
 		else if ((unsigned short) p_viewData.m_statusFlags & 2) {
 			m_lemmingAnims->DrawAnim((short) x - g_lemmingStandOffset[0] - 5,
@@ -2293,7 +2293,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 									 RES_GAME_FILLED_STARS,
 									 0,
 									 0,
-									 (CRemap*) m_remaps[player]);
+									 (CRemap*) m_remaps[playerIndex]);
 		}
 		else {
 			m_lemmingAnims->DrawAnim((short) x - g_lemmingStandOffset[0] - 5,
@@ -2301,23 +2301,23 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 									 RES_GAME_STARS,
 									 0,
 									 0,
-									 (CRemap*) m_remaps[player]);
+									 (CRemap*) m_remaps[playerIndex]);
 		}
 	}
 	if (drawBody) {
 		if (p_remapped == 0) {
 			m_lemmingAnims->DrawAnim((short) x - (short) offsetX,
 									 (short) y - (short) offsetY,
-									 resource,
-									 frame,
+									 animationResourceId,
+									 animationFrame,
 									 p_viewData.m_animationTime,
 									 0);
 		}
 		else {
 			m_lemmingAnims->DrawAnim((short) x - (short) offsetX,
 									 (short) y - (short) offsetY,
-									 resource,
-									 frame,
+									 animationResourceId,
+									 animationFrame,
 									 p_viewData.m_animationTime,
 									 (CRemap*) m_paletteRemap);
 		}
