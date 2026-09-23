@@ -963,7 +963,6 @@ bool CGameObject::Jump()
 		AiCoord* position = &m_position;
 		m_position.m_xFixed = m_groundPosition.m_xFixed;
 		m_position.m_yFixed = m_groundPosition.m_yFixed;
-		m_position.m_zFixed = m_groundPosition.m_zFixed;
 		position->m_zFixed = groundZ;
 		m_isJumping = 0;
 		if (m_onMover == 0 && mover != 0) {
