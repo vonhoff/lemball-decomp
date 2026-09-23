@@ -37,6 +37,7 @@ enum PreviewLayoutIndex {
 	PreviewNetworkLemmingAnim = 21,
 	PreviewNetworkLemmingText = 22,
 	PreviewNetworkLemmingRow = 23,
+	PreviewNetworkFrameEndpoint = 24,
 	PreviewTeamOffset = 25,
 	PreviewNoneText = 26,
 };

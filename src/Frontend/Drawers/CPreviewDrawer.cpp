@@ -268,7 +268,7 @@ void CPreviewDrawer::DrawBackGround()
 {
 	m_primitive[m_primitiveBank].m_bitmap.Draw(m_gdi);
 	DrawFrame(m_layout->m_positions[PreviewFormationAnchor],
-			  m_layout->m_positions[m_networkMode != 0 ? 24 : PreviewFormationOffset]);
+			  m_layout->m_positions[m_networkMode != 0 ? PreviewNetworkFrameEndpoint : PreviewFormationOffset]);
 }
 
 // FUNCTION: LEMBALL 0x004497b0
