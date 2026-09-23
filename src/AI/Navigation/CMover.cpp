@@ -329,8 +329,8 @@ void CMover::Switch()
 bool CMover::IsOn(const AiCoord& p_position)
 {
 	int minX = (m_position.m_xFixed >> 12) - 8;
-	int minY = (m_position.m_yFixed >> 12) - 8;
 	int maxX = minX + 15;
+	int minY = (m_position.m_yFixed >> 12) - 8;
 	int maxY = minY + 15;
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
