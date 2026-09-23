@@ -50,13 +50,13 @@ void CInvisibleSwitch::SetPointFromIntegers(short p_x, short p_y, short p_z)
 	short z = p_z;
 	short x = p_x;
 	Coord3d first;
-	first.m_x = x;
 	first.m_y = y;
 	first.m_z = z;
+	first.m_x = x;
 	Coord3d second;
-	second.m_x = x;
 	second.m_y = y;
 	second.m_z = z;
+	second.m_x = x;
 	Set(first, second);
 }
 
