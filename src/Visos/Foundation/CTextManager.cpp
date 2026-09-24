@@ -106,9 +106,12 @@ void CTextManager::DrawString(CGDI* p_gdi,
 							  CRemap* p_remap)
 {
 	CText* text = m_textPrimitives[m_nextPrimitive++];
-	if (p_advance.m_width != 0 || p_advance.m_height != 0) {
-		text->m_offsetX = p_advance.m_width;
-		text->m_offsetY = p_advance.m_height;
+	short width = p_advance.m_width;
+	short height;
+	if (width != 0 || p_advance.m_height != 0) {
+		height = p_advance.m_height;
+		text->m_offsetX = width;
+		text->m_offsetY = height;
 		p_flags |= 0x200;
 	}
 	text->Set(p_position, m_fonts[m_fontIndices[p_fontId]], p_text, p_flags, p_remap);
