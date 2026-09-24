@@ -1259,22 +1259,22 @@ void CGameObject::RegisterId()
 {
 	unsigned short id = m_linkedObjectId;
 	if (id != (unsigned short) 0xffff) {
-		unsigned short index = id >> 3;
-		unsigned short bit = id & 7;
-		unsigned char mask = g_abBitMasks[bit];
-		unsigned char* pBitmap = &g_abObjectIdBitmap[index];
-		unsigned char b = *pBitmap;
-		if ((mask & b) != 0) {
-			unsigned int count = g_wObjectCount;
-			for (unsigned int i = 0; (int) i < (int) count; i++) {
-				if (g_pObjects[(unsigned short) i] != 0) {
-					g_pObjects[(unsigned short) i]->GetId();
+		unsigned short byteIndex = id >> 3;
+		unsigned short bitIndex = id & 7;
+		unsigned char mask = g_abBitMasks[bitIndex];
+		unsigned char* bitmapBytePtr = &g_abObjectIdBitmap[byteIndex];
+		unsigned char bitmapByte = *bitmapBytePtr;
+		if ((mask & bitmapByte) != 0) {
+			unsigned int objectCount = g_wObjectCount;
+			for (unsigned int objectIndex = 0; (int) objectIndex < (int) objectCount; objectIndex++) {
+				if (g_pObjects[(unsigned short) objectIndex] != 0) {
+					g_pObjects[(unsigned short) objectIndex]->GetId();
 				}
 			}
 			m_linkedObjectId = 0xffff;
 			return;
 		}
-		*pBitmap = mask | b;
+		*bitmapBytePtr = mask | bitmapByte;
 	}
 }
 
