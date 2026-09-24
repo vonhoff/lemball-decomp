@@ -1952,7 +1952,8 @@ void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZR
 				do {
 					run = *src++;
 					if (run > 0x80) {
-						src += run & 0x7f;
+						run &= 0x7f;
+						src += run;
 					}
 				} while (run != 0x80);
 				skipRows--;
@@ -1967,7 +1968,8 @@ void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZR
 				do {
 					run = *src++;
 					if (run > 0x80) {
-						src += run & 0x7f;
+						run &= 0x7f;
+						src += run;
 					}
 				} while (run != 0x80);
 				skipRows--;
@@ -2041,7 +2043,8 @@ void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZR
 				while (run != 0x80) {
 					run = *src++;
 					if (run > 0x80) {
-						src += run & 0x7f;
+						run &= 0x7f;
+						src += run;
 					}
 				}
 			}
