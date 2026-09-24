@@ -378,7 +378,7 @@ void CIce::Switched()
 	{
 		for (int i = 0; i < m_objectCount; i++) {
 			CGameObject* object = m_objects[i];
-			AiCoord current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
+			AiCoord current = object->m_position;
 			object->m_unk0xc0 = 0;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
@@ -387,9 +387,9 @@ void CIce::Switched()
 				object->SetBored(4000);
 				object->OnConveyor(0, 0, 0);
 				{
-					CMap* map = g_pMap;
 					int y = (current.m_yFixed >> 12);
 					int x = (current.m_xFixed >> 12);
+					CMap* map = g_pMap;
 					int by = y >> 4;
 					int bx = x >> 4;
 					if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
