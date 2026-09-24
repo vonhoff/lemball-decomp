@@ -21,16 +21,19 @@ CResMOVIE* CResMOVIE::Load(unsigned int p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x0045ded0
-CResMOVIE::CResMOVIE() : CResBaseLIST((ResListHeader*) g_pPreloadedResourceTypes), m_movieEntries(0), m_fontEntries(0)
+CResMOVIE::CResMOVIE() : CResBaseLIST((ResListHeader*) g_pPreloadedResourceTypes)
 {
+	m_movieEntries = 0;
+	m_fontEntries = 0;
 	Initialise();
 	m_initialized = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045df20
-CResMOVIE::CResMOVIE(unsigned long p_resourceId)
-	: CResBaseLIST((ResListHeader*) g_pPreloadedResourceTypes), m_movieEntries(0), m_fontEntries(0)
+CResMOVIE::CResMOVIE(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g_pPreloadedResourceTypes)
 {
+	m_movieEntries = 0;
+	m_fontEntries = 0;
 	DoLoad(p_resourceId);
 	m_initialized = 0;
 }
