@@ -39,7 +39,7 @@ extern "C" __declspec(dllimport) int __stdcall UnlockFile(void* p_handle,
 														  unsigned int p_lengthLow,
 														  unsigned int p_lengthHigh);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
-extern "C" __declspec(dllimport) int __stdcall WSAGetLastError();
+extern "C" int __stdcall WSAGetLastError();
 
 // FUNCTION: LEMBALL 0x0047b8d0
 int CNetworkFile::GetLastError()
