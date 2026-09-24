@@ -47,6 +47,7 @@ extern int g_anC2DHitBounds[11][4];
 extern int g_anC2DRemapTargetIndices[4][17];
 extern unsigned char g_abC2DType2Remap[5];
 extern "C" unsigned long __stdcall timeGetTime(void);
+extern char* demoText;
 
 // FUNCTION: LEMBALL 0x004358d0
 C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const CVsRect& p_rect)
@@ -1294,7 +1295,7 @@ void C2D::SetClipSize()
 	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
 		font = m_textManager->GetFont(0xf8);
 		short remainingWidth = m_clipSize.m_x;
-		remainingWidth -= font->GetSize("Demo", 0x20).m_width;
+		remainingWidth -= font->GetSize(demoText, 0x20).m_width;
 		m_demoTextRect.m_y = 0;
 		m_demoTextRect.m_x = remainingWidth / 2;
 	}
@@ -3543,8 +3544,6 @@ void C2D::DrawDemo()
 	// ?$S2@?1??DrawDemo@C2D@@QAEXXZ@4EA
 	// GLOBAL: LEMBALL 0x0049efc8
 	static int visible = 0;
-	// GLOBAL: LEMBALL 0x0049ee70
-	static char* demoText = "Demo";
 	if (CurrentMilliTimer() - lastBlink > 500) {
 		visible = !visible;
 		lastBlink = CurrentMilliTimer();
@@ -4052,3 +4051,6 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 void C2D::InitSpriteGroundLU()
 {
 }
+
+// GLOBAL: LEMBALL 0x0049ee70
+char* demoText = "Demo";
