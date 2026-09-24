@@ -265,8 +265,10 @@ int CLift::StepOn(const AiCoord& p_position, CGameObject* p_object)
 	int startY = m_start.m_y - 8;
 	int endY = m_end.m_y + 7;
 	const AiCoord* position = &p_position;
-	int x = position->m_xFixed >> 12;
-	int y = position->m_yFixed >> 12;
+	int y;
+	int x;
+	x = position->m_xFixed >> 12;
+	y = position->m_yFixed >> 12;
 	if (x >= startX && x <= endX && y >= startY && y <= endY) {
 		int z = position->m_zFixed >> 12;
 		CMap* map = g_pActiveMap;
@@ -280,7 +282,8 @@ int CLift::StepOn(const AiCoord& p_position, CGameObject* p_object)
 			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(startX & 0xf, startY & 0xf);
 		}
 		int minZ = groundZ - 2;
-		if (minZ <= z && z <= minZ + 6) {
+		int maxZ = groundZ + 4;
+		if (minZ <= z && z <= maxZ) {
 			int i = 0;
 			CGameObject** object = m_objects;
 			do {
