@@ -381,8 +381,8 @@ void CPlayerLemmingGroupManager::SetLemmingCounts(int p_playerCount,
 	}
 	else {
 		m_lemmingCounts[0] = p_count0;
-		m_lemmingCounts[2] = p_count2;
 		m_lemmingCounts[1] = p_count1;
+		m_lemmingCounts[2] = p_count2;
 		m_lemmingCounts[3] = p_count3;
 	}
 	for (int i = 0; i < p_playerCount; i++) {
