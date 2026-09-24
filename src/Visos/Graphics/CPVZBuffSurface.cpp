@@ -33,13 +33,11 @@ void CPVZBuffSurface::FreeZBuff()
 // FUNCTION: LEMBALL 0x00466740
 void CPVZBuffSurface::AllocateZBuff()
 {
-	CVsSize size;
 	unsigned int allocatedArea;
 	unsigned int neededArea;
 
-	size.m_width = (short) (m_windowRect.m_width * 2);
-	size.m_height = m_windowRect.m_height;
-	size = m_bitmap.SetSize(size, m_reserved40 * 2);
+	CVsSize size =
+		m_bitmap.SetSize(CVsRect(0, 0, (short) (m_windowRect.m_width * 2), m_windowRect.m_height), m_reserved40 * 2);
 	allocatedArea = (unsigned int) m_allocatedWidth * (unsigned int) m_allocatedHeight * 2;
 	neededArea = (unsigned int) ((int) size.m_height * (int) size.m_width);
 	if (allocatedArea < neededArea) {
