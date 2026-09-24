@@ -231,9 +231,9 @@ found:
 		if (*pixel != p_findMark) {
 			break;
 		}
-		scanX = scanX + 1;
 		widthPixels = widthPixels + (int) m_cellSize.m_width;
 		*pixel = p_replacementMark;
+		scanX = scanX + 1;
 	}
 
 	heightCells = 1;
