@@ -1107,7 +1107,7 @@ void C2D::SendCursorMsg()
 		   0,
 		   sizeof(message.time) + sizeof(message.code) + sizeof(message.payload) + sizeof(message.source));
 	screenPoint.m_x = (short) m_viewOriginX + m_cursorGamePoint.m_x;
-	screenPoint.m_y = m_cursorGamePoint.m_y + (short) m_viewOriginY;
+	screenPoint.m_y = m_cursorGamePoint.m_y - (short) m_viewOriginY;
 	if (!ScreenToGame(screenPoint.m_x, screenPoint.m_y, gameX, gameY)) {
 		m_map->ScreenToGame(screenPoint.m_x, screenPoint.m_y, gameX, gameY);
 	}
