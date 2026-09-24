@@ -544,8 +544,8 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 // FUNCTION: LEMBALL 0x0041bec0
 void CObjectManager::ConvertVer0ToVer1()
 {
-	for (int i = 0; i < m_count; i++) {
-		CGlobalGameObject* object = m_objects[i];
+	for (int objectIndex = 0; objectIndex < m_count; objectIndex++) {
+		CGlobalGameObject* object = m_objects[objectIndex];
 		if (object->m_objectType == OBJECT_SWITCH) {
 			object->ConvertVer0ToVer1();
 		}
