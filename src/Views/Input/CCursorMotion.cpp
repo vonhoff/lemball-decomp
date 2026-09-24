@@ -93,8 +93,8 @@ void CCursorMotion::Process()
 // FUNCTION: LEMBALL 0x004327b0
 void CCursorMotion::Draw(unsigned int p_unused)
 {
-	int x = (m_fixedX >> 12) - m_aux0;
-	int y = (m_fixedY >> 12) - m_aux1;
+	int x = (m_fixedX >> 12) - m_drawOffsetX;
+	int y = (m_fixedY >> 12) - m_drawOffsetY;
 	m_anims->DrawAnim((short) x, (short) y, RES_CURSORS_HAND, 0, 0, 0);
 }
 
@@ -159,8 +159,8 @@ void CCursorMotion::StartVertical(unsigned int p_positive)
 }
 
 // FUNCTION: LEMBALL 0x00432920
-void CCursorMotion::SetDrawOffset(unsigned int p_aux0, unsigned int p_aux1)
+void CCursorMotion::SetDrawOffset(unsigned int p_drawOffsetX, unsigned int p_drawOffsetY)
 {
-	m_aux0 = p_aux0;
-	m_aux1 = p_aux1;
+	m_drawOffsetX = p_drawOffsetX;
+	m_drawOffsetY = p_drawOffsetY;
 }

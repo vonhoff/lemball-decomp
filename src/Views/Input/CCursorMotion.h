@@ -24,7 +24,7 @@ public:
 	void StopHorizontal();
 	void StartHorizontal(unsigned int p_positive);
 	void StartVertical(unsigned int p_positive);
-	void SetDrawOffset(unsigned int p_aux0, unsigned int p_aux1);
+	void SetDrawOffset(unsigned int p_drawOffsetX, unsigned int p_drawOffsetY);
 
 private:
 	unsigned int m_unknown00;        // 0x00
@@ -45,8 +45,8 @@ private:
 	unsigned int m_verticalActive;   // 0x58
 	unsigned int m_positionDirty;    // 0x5c
 	CSolidRect m_marker;             // 0x60
-	unsigned int m_aux0;             // 0x70
-	unsigned int m_aux1;             // 0x74
+	unsigned int m_drawOffsetX;      // 0x70
+	unsigned int m_drawOffsetY;      // 0x74
 };
 
 #endif
