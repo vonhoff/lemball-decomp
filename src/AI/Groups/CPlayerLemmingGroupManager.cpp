@@ -426,11 +426,11 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 {
 	unsigned short* data = (unsigned short*) p_data;
 	m_startPositionCount = 1;
-	m_startX[0] = *data++;
-	m_startY[0] = *data++;
+	int x = *data++;
+	m_startX[0] = x;
+	int y = *data++;
+	m_startY[0] = y;
 	m_startZ[0] = *data++;
-	int x = m_startX[0];
-	int y = m_startY[0];
 	CMap* map = g_pMap;
 	int blockX = x >> 4;
 	int blockY = y >> 4;
@@ -442,11 +442,14 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 		z = 0;
 	}
 	m_startZ[0] = z;
-	for (int i = 1; i < 4; i++) {
-		m_startX[i] = m_startX[0];
-		m_startY[i] = m_startY[0];
-		m_startZ[i] = m_startZ[0];
-	}
+	int* start = &m_startX[1];
+	int remaining = 3;
+	do {
+		int* current = start++;
+		current[0] = m_startX[0];
+		current[4] = m_startY[0];
+		current[8] = m_startZ[0];
+	} while (--remaining != 0);
 	CPlayerLemming** reuse = 0;
 	int count = g_pGenericGroupAI->m_lemmingCount;
 	int dead = 4 - count;
@@ -454,6 +457,7 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 		reuse = g_pGenericGroupAI->m_networkLemmings;
 	}
 	m_deadCount = 0;
+	int i;
 	for (i = 0; i < dead; i++) {
 		CPlayerLemming* lemming;
 		if (reuse == 0) {
