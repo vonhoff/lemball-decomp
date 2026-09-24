@@ -1852,7 +1852,7 @@ int C2D::DrawClippedRectangle(const CVsRect& p_rect)
 			DoClipWidthSearch(gameX, gameY, width);
 			m_clipScreenX -= 0x10;
 			m_clipScreenY += 8;
-			DoClipWidthSearch(gameX + neighborStepX, gameY + neighborStepY, width + 1);
+			DoClipWidthSearch(gameX + neighborStepX, gameY - neighborStepY, width + 1);
 			gameX += rowStepX;
 			gameY += rowStepY;
 			m_clipScreenX += 0x10;
