@@ -318,17 +318,17 @@ void CHiliteController::UpdateAllAnimIDs()
 // FUNCTION: LEMBALL 0x0044fc50
 void CHiliteController::UpdateAnimIDs(unsigned long p_actionMessage)
 {
-	CHiliteButtons** pBtn;
-	int i = 0;
-	if (m_buttonCount > i) {
-		pBtn = m_buttons;
+	CHiliteButtons** buttonCursor;
+	int buttonIndex = 0;
+	if (m_buttonCount > buttonIndex) {
+		buttonCursor = m_buttons;
 		do {
-			if (*pBtn != 0 && (*pBtn)->m_actionMessage == p_actionMessage) {
-				m_buttons[i]->UpdateAnimID();
+			if (*buttonCursor != 0 && (*buttonCursor)->m_actionMessage == p_actionMessage) {
+				m_buttons[buttonIndex]->UpdateAnimID();
 				break;
 			}
-			pBtn++;
-			i++;
-		} while (i < m_buttonCount);
+			buttonCursor++;
+			buttonIndex++;
+		} while (buttonIndex < m_buttonCount);
 	}
 }
