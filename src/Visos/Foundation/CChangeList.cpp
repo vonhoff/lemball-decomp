@@ -191,6 +191,7 @@ unsigned int CChangeList::GetArea()
 bool CChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark)
 {
 	int scanY;
+	int mapWidth;
 	int scanX;
 	unsigned char* row;
 	int startX;
@@ -203,8 +204,9 @@ bool CChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark,
 	ChangeListItem* item;
 
 	scanY = m_scanY;
+	mapWidth = (int) m_mapSize.m_width;
 	scanX = m_scanX;
-	row = scanY * (int) m_mapSize.m_width + m_map;
+	row = scanY * mapWidth + m_map;
 	while (scanY < (int) m_mapSize.m_height) {
 		if (scanX < (int) m_mapSize.m_width) {
 			do {
