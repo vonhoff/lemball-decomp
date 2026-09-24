@@ -106,7 +106,9 @@ void CObjectManager::ClearAllObjects()
 // FUNCTION: LEMBALL 0x0041b1b0
 void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
 {
-	for (int index = 0; index < m_count; index++) {
+	int index = 0;
+	int linkedIndex;
+	for (; index < m_count; index++) {
 		if (m_objects[index] == p_object) {
 			p_object->Delete();
 			p_object->SetId(0xffff);
@@ -119,13 +121,13 @@ void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
 			m_count--;
 			return;
 		}
-		int linkedIndex = 0;
+		linkedIndex = 0;
 		while (1) {
 			if (linkedIndex >= m_count) {
 				break;
 			}
 			if (m_objects[linkedIndex]->m_objectType == OBJECT_CRATE) {
-				unsigned short contentsId = ((CCrate*) m_objects[linkedIndex])->m_contentsId;
+				volatile unsigned short contentsId = ((CCrate*) m_objects[linkedIndex])->m_contentsId;
 				if ((unsigned short) p_object->GetId() == contentsId) {
 					DeleteObjectAndLinkedTargets(m_objects[linkedIndex]);
 				}
