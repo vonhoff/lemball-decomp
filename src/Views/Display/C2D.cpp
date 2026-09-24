@@ -908,9 +908,9 @@ bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 						m_map->GameToScreen(gameX << 4, gameY << 4, groundScreenX, groundScreenY);
 						groundScreenY -= m_map->m_ground.m_ground[m_map->m_ground.m_width * gameY + gameX].m_height;
 
+						int top = groundScreenY - 0x10;
 						int left = groundScreenX - 0x10;
 						int right = groundScreenX + 0xf;
-						int top = groundScreenY - 0x10;
 						int bottom = groundScreenY + 0xf;
 						if (left <= p_screenX && right >= p_screenX && top <= p_screenY && bottom >= p_screenY) {
 							CGround* ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * gameY + gameX;
