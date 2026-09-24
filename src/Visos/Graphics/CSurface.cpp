@@ -2062,7 +2062,8 @@ void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 			do {
 				run = *src++;
 				if (run > 0x80) {
-					src += run & 0x7f;
+					run &= 0x7f;
+					src += run;
 				}
 			} while (run != 0x80);
 			skipRows--;
@@ -2156,7 +2157,8 @@ void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 				while (run != 0x80) {
 					run = *src++;
 					if (run > 0x80) {
-						src += run & 0x7f;
+						run &= 0x7f;
+						src += run;
 					}
 				}
 			}
