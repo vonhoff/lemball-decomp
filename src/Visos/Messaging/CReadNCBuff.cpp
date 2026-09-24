@@ -25,9 +25,8 @@ CReadPacket* CReadNCBuff::UpdatePacket()
 	}
 
 	packet = (CReadPacket*) m_packets[index];
-	if (messageId < 3 ||
-		(int) g_pNetworkPacketScratch->m_packetSequence - (int) ((BasePacketHeader*) packet->m_data)->m_packetSequence >
-			0) {
+	BasePacketHeader* packetHeader = (BasePacketHeader*) packet->m_data;
+	if (messageId < 3 || (int) g_pNetworkPacketScratch->m_packetSequence - (int) packetHeader->m_packetSequence > 0) {
 		isNew = packet->m_used == 0;
 		FillPacket(index);
 	}
