@@ -1163,8 +1163,8 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 	index = 0;
 	m_visibleEntryCount = 0;
 	do {
-		CEntryHandler* entry = &m_playerEntries[index];
 		if (m_visibleEntryCount < 4 && connections != 0 && connections[index] != 0 && messages[index].m_valid != 0) {
+			CEntryHandler* entry = &m_playerEntries[index];
 			entry->m_bounds.m_width = rect[0];
 			entry->m_bounds.m_height = rect[1];
 			entry->m_bounds.m_x = rect[2];
@@ -1174,6 +1174,7 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 			m_visibleEntryCount++;
 		}
 		else {
+			CEntryHandler* entry = &m_playerEntries[index];
 			entry->SetActive(0);
 		}
 		index++;
