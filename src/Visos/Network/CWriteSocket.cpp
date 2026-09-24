@@ -170,7 +170,7 @@ bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 	data = p_message.m_buffer;
 	remaining = p_message.m_writeCursor - data;
 	sendCount = 0;
-	segmentCount = (dataSize + remaining - 0x11) / dataSize;
+	segmentCount = (remaining + dataSize - 0x11) / dataSize;
 	if (m_segmentIndex != 0) {
 		dataSize *= m_segmentIndex;
 		data += dataSize;
