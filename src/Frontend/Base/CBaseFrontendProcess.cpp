@@ -86,6 +86,7 @@ void CBaseFrontendProcess::Action(eUserActions p_action, eUserActionStages p_sta
 int CBaseFrontendProcess::ProcessMsg(Message* p_message)
 {
 	int code = p_message->code;
+	Message* message = p_message;
 	CReadPacket* packet;
 	CConnect* connection;
 	unsigned int id;
@@ -93,11 +94,11 @@ int CBaseFrontendProcess::ProcessMsg(Message* p_message)
 	if (g_pBaseFrontendDrawer == 0) {
 		return 0;
 	}
-	if (ProcessMessages(p_message) == 0) {
-		switch ((unsigned int) p_message->type) {
+	if (ProcessMessages(message) == 0) {
+		switch ((unsigned int) message->type) {
 		case 5:
-			connection = (CConnect*) p_message->payload;
-			packet = (CReadPacket*) p_message->source;
+			connection = (CConnect*) message->payload;
+			packet = (CReadPacket*) message->source;
 			if (code != 0) {
 				return 1;
 			}
