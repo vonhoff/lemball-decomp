@@ -17,7 +17,11 @@ class CHiliteWindow;
 // VTABLE: LEMBALL 0x0049823c CAnimsManager
 class CHiliteController : public CBaseQueueHandler, public CAnimsManager {
 public:
-	CHiliteController(CGWnd* p_arg0, CGDI* p_arg1, int p_arg2, unsigned int p_arg3, unsigned int p_arg4);
+	CHiliteController(CGWnd* p_window,
+					  CGDI* p_gdi,
+					  int p_arg2,
+					  unsigned int p_layoutMode,
+					  unsigned int p_horizontalMode);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~CHiliteController();               // vtable+0x04
 	void ActivateButtons(int p_active);

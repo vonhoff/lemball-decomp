@@ -25,15 +25,19 @@
 class CFrames;
 
 // FUNCTION: LEMBALL 0x0044f440
-CHiliteController::CHiliteController(CGWnd* p_arg0, CGDI* p_arg1, int p_arg2, unsigned int p_arg3, unsigned int p_arg4)
-	: CAnimsManager(p_arg1, 0x2b6, 1, 1, 0, 0)
+CHiliteController::CHiliteController(CGWnd* p_window,
+									 CGDI* p_gdi,
+									 int p_arg2,
+									 unsigned int p_layoutMode,
+									 unsigned int p_horizontalMode)
+	: CAnimsManager(p_gdi, 0x2b6, 1, 1, 0, 0)
 {
 	int index;
 
-	m_layoutMode = p_arg3;
-	m_horizontalMode = p_arg4;
-	m_window = p_arg0;
-	m_gdi = p_arg1;
+	m_layoutMode = p_layoutMode;
+	m_horizontalMode = p_horizontalMode;
+	m_window = p_window;
+	m_gdi = p_gdi;
 	m_active = 1;
 	m_nextControlMessage = 0xabcd0000;
 	index = 0;
