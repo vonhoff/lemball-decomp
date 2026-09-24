@@ -295,10 +295,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData*
 
 		switch (blockType) {
 		case LEVEL_BLOCK_AI: {
-			unsigned short version = 0;
-			if (dataSize > 4) {
-				version = *data16++;
-			}
+			unsigned short version = dataSize > 4 ? *data16++ : 0;
 			data16++;
 			p_preview->m_timeLimit = *data16;
 			data16++;
@@ -347,11 +344,14 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData*
 				total += (unsigned int) *data16++;
 				count--;
 			}
-			if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 1) {
-				p_preview->m_lemmingCount = total;
+			if (g_pActiveConnection == 0) {
+				p_preview->m_opponentLemmingCount = total;
+			}
+			else if (g_pActiveConnection->m_isHost == 1) {
+				p_preview->m_opponentLemmingCount = total;
 			}
 			else {
-				p_preview->m_opponentLemmingCount = total;
+				p_preview->m_lemmingCount = total;
 			}
 			break;
 		}
