@@ -88,7 +88,8 @@ void CFileReadSocket::Process()
 				int index;
 				for (index = m_pendingReadSlot; index < CFileCommonSocket::m_headerSlotCount; index++) {
 					header = &m_file->m_headers[index];
-					if (header->m_sequence > header->m_mirroredSequence) {
+					unsigned short* sequence = &header->m_sequence;
+					if (sequence[1] < sequence[0]) {
 						m_pendingReadSlot = index;
 						break;
 					}
@@ -103,8 +104,10 @@ void CFileReadSocket::Process()
 			CNetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, m_file->m_payloadCapacity);
 			if (CNetworkFile::UnLock(m_headersOffset, m_file->m_payloadCapacity)) {
 				m_file->Set((unsigned char*) g_pNetworkPacketScratch);
-				int index = 0;
-				int headerOffset = 0;
+				int index;
+				int headerOffset;
+				headerOffset = 0;
+				index = 0;
 				bool found = false;
 				for (; index < CFileCommonSocket::m_headerSlotCount; index++) {
 					CHeaderMessage* header = (CHeaderMessage*) ((unsigned char*) m_file->m_headers + headerOffset);
