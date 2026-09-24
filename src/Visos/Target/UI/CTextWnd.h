@@ -22,11 +22,11 @@ public:
 	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_arg2);
 	void Paint(void* p_dc, const tagPAINTSTRUCT* p_paint);
 	void Scroll(int p_scrollCode, int p_thumbPos);
-	void BeginSelection(int p_x, int p_y, unsigned int p_arg2);
-	void EndSelection(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2);
+	void BeginSelection(int p_x, int p_y, unsigned int p_mouseFlags);
+	void EndSelection(unsigned int p_x, unsigned int p_y, unsigned int p_mouseFlags);
 	void SetSelectionHighlight(int p_selected);
 	void EnsureLineVisible(int p_line);
-	void UpdateSelection(int p_x, int p_y, unsigned int p_arg2);
+	void UpdateSelection(int p_x, int p_y, unsigned int p_mouseFlags);
 	char* GetSelectionText();
 	void CopySelection();
 	static long __stdcall WindowProc(void* p_window, unsigned int p_message, unsigned int p_wParam, long p_lParam);

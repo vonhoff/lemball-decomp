@@ -360,7 +360,7 @@ void CTextWnd::Scroll(int p_scrollCode, int p_thumbPos)
 }
 
 // FUNCTION: LEMBALL 0x00474340
-void CTextWnd::BeginSelection(int p_x, int p_y, unsigned int p_arg2)
+void CTextWnd::BeginSelection(int p_x, int p_y, unsigned int p_mouseFlags)
 {
 	EnterCritical();
 	m_dragLine = PointToLine(p_x, p_y);
@@ -379,7 +379,7 @@ void CTextWnd::BeginSelection(int p_x, int p_y, unsigned int p_arg2)
 }
 
 // FUNCTION: LEMBALL 0x004743b0
-void CTextWnd::EndSelection(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2)
+void CTextWnd::EndSelection(unsigned int p_x, unsigned int p_y, unsigned int p_mouseFlags)
 {
 	EnterCritical();
 	if (m_selecting != 0) {
@@ -420,7 +420,7 @@ void CTextWnd::EnsureLineVisible(int p_line)
 }
 
 // FUNCTION: LEMBALL 0x004744a0
-void CTextWnd::UpdateSelection(int p_x, int p_y, unsigned int p_arg2)
+void CTextWnd::UpdateSelection(int p_x, int p_y, unsigned int p_mouseFlags)
 {
 	EnterCritical();
 	if (m_selecting != 0) {
