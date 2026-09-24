@@ -20,21 +20,22 @@ static unsigned int s_bitMasks[32] = {
 CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsigned long* p_map) : CCritical()
 {
 	m_child = 0;
-	m_flags = 0;
 	m_parent = 0;
 	m_blockSize = p_blockSize;
 	m_blockCount = p_blockCount;
+	m_flags = 0;
 	m_activeAllocations = 0;
 	m_totalAllocations = 0;
 	m_totalBytes = m_blockSize * m_blockCount;
 	m_freeBytes = m_totalBytes;
 	m_peakAllocations = 0;
 	m_mapWordCount = (p_blockCount + 31) / 32;
+	unsigned char* memory = p_memory;
 
-	if (p_memory == 0) {
+	if (memory == 0) {
 		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
-		p_memory = (unsigned char*) operator new(m_totalBytes);
+		memory = (unsigned char*) operator new(m_totalBytes);
 		g_nSmallMemoryEnabled = smallMemEnabled;
 		m_flags |= 2;
 	}
@@ -48,7 +49,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 	}
 
 	m_map = (unsigned int*) p_map;
-	m_memory = p_memory;
+	m_memory = memory;
 	memset(p_map, 0, m_mapWordCount * sizeof(unsigned long));
 	m_freeOffset.wWord = 0;
 	m_freeOffset.wBit = 0;
