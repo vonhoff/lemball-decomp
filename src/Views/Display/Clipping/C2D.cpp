@@ -34,8 +34,8 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 	if (p_adjustForGround != 0) {
 		CMap* map = m_map;
 		p_groundHeight += 4;
-		int nextY = p_y + 0x10;
 		int blockX = p_x >> 4;
+		int nextY = p_y + 0x10;
 		int nextBlockY = nextY >> 4;
 		int yHeight;
 		int xHeight;
