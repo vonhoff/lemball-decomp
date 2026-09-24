@@ -92,23 +92,28 @@ void CMineManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
 {
 	int x = p_position.m_xFixed >> 0xc;
 	int y = p_position.m_yFixed >> 0xc;
-	int yMax = y + 7;
-	if (m_count < 1) {
+	int xMin = x - 8;
+	int yMin = y - 8;
+	int zMin = (p_position.m_zFixed >> 0xc) - 8;
+	int xMax = xMin + 15;
+	int yMax = yMin + 15;
+	int i = 0;
+	if (m_count <= 0) {
 		return;
 	}
-	for (int i = 0; i < m_count; i++) {
+	do {
 		if (m_mines[i].m_enabled != 0 && m_mines[i].m_activated == 0) {
 			int py = m_positions[i].m_y;
 			int px = m_positions[i].m_x;
 			int pz = m_positions[i].m_z;
-			if (x - 8 < px && px < x + 7 && y - 8 < py && py < yMax && (p_position.m_zFixed >> 0xc) - 8 < pz &&
-				pz < yMax) {
+			if (xMin < px && px < xMax && yMin < py && py < yMax && zMin < pz && pz < yMax) {
 				m_mines[i].StepOn(p_object);
 				Trigger(i, 0);
 				return;
 			}
 		}
-	}
+		i++;
+	} while (i < m_count);
 }
 
 // FUNCTION: LEMBALL 0x00424710
