@@ -47,12 +47,12 @@ void CLaser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_o
 	int x = p_position.m_xFixed;
 	m_position.m_xFixed = x;
 	int y = p_position.m_yFixed;
-	int blockX = (x >> 12) / 16;
 	m_position.m_yFixed = y;
 	m_position.m_zFixed = p_position.m_zFixed;
-	int blockY = (y >> 12) / 16;
-	m_enabled = 1;
+	int blockX = (x >> 12) / 16;
 	m_objectType = p_orientation;
+	m_enabled = 1;
+	int blockY = (y >> 12) / 16;
 
 	switch (p_orientation) {
 	case OBJECT_LASER_HORIZONTAL:
