@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x00496488
 class CTheBalloonPost : public CGameObject {
 public:
-	CTheBalloonPost(eObjectType p_arg0, unsigned int p_arg1);
+	CTheBalloonPost(eObjectType p_objectType, unsigned int p_active);
 
 	friend class CBalloonPost;
 

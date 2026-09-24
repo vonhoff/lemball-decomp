@@ -20,12 +20,12 @@ unsigned int g_dwTrapDoorLocalSfxState = 0;
 unsigned int g_dwTrapDoorRemoteSfxState = 0;
 
 // FUNCTION: LEMBALL 0x0040c2d0
-CTrapDoor::CTrapDoor(AiCoord& p_arg0, unsigned int p_arg1) : CBaseGlobalObject(p_arg0, OBJECT_TRAP_DOOR)
+CTrapDoor::CTrapDoor(AiCoord& p_position, unsigned int p_mode) : CBaseGlobalObject(p_position, OBJECT_TRAP_DOOR)
 {
-	m_spawnPosition.m_xFixed = p_arg0.m_xFixed;
-	m_spawnPosition.m_yFixed = p_arg0.m_yFixed;
-	m_spawnPosition.m_zFixed = p_arg0.m_zFixed;
-	m_mode = p_arg1;
+	m_spawnPosition.m_xFixed = p_position.m_xFixed;
+	m_spawnPosition.m_yFixed = p_position.m_yFixed;
+	m_spawnPosition.m_zFixed = p_position.m_zFixed;
+	m_mode = p_mode;
 }
 
 // FUNCTION: LEMBALL 0x0040c350

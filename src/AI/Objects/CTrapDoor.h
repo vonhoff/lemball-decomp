@@ -8,7 +8,7 @@ class AiCoord;
 // VTABLE: LEMBALL 0x00493438
 class CTrapDoor : public CBaseGlobalObject {
 public:
-	CTrapDoor(AiCoord& p_arg0, unsigned int p_arg1);
+	CTrapDoor(AiCoord& p_position, unsigned int p_mode);
 	void SetPositionFromIntegers(int p_x, int p_y, int p_z);
 	virtual bool Process();                          // vtable+0x14
 	virtual int Usage();                             // vtable+0x28
