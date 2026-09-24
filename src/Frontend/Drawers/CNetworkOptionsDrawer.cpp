@@ -1145,7 +1145,8 @@ bool CNetworkOptionsDrawer::HighlightNextEntry()
 // FUNCTION: LEMBALL 0x00454df0
 void CNetworkOptionsDrawer::InitialiseHandlers()
 {
-	short rect[4];
+	short rect[3];
+	volatile short rowY;
 	CConnect** connections;
 	CNetworkGameMessage* messages;
 	int index;
@@ -1157,7 +1158,7 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 		messages = g_pNetworkManager->m_gameMessages;
 	}
 	rect[1] = m_layoutTable->m_entryHeight;
-	rect[3] = (short) m_layoutTable->m_entryY;
+	rowY = (short) m_layoutTable->m_entryY;
 	rect[2] = (short) m_layoutTable->m_entryX;
 	rect[0] = (short) m_layoutTable->m_entryWidth;
 	index = 0;
@@ -1168,9 +1169,9 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 			entry->m_bounds.m_width = rect[0];
 			entry->m_bounds.m_height = rect[1];
 			entry->m_bounds.m_x = rect[2];
-			entry->m_bounds.m_y = rect[3];
+			entry->m_bounds.m_y = rowY;
 			entry->SetActive(1);
-			rect[3] += (short) m_layoutTable->m_rowStride;
+			rowY += (short) m_layoutTable->m_rowStride;
 			m_visibleEntryCount++;
 		}
 		else {
