@@ -74,7 +74,7 @@ private:
 	CConnect* m_firstConnect;                  // 0x28
 	CConnect* m_lastConnect;                   // 0x2c
 	unsigned int m_suspendBroadcastOnConnect;  // 0x30
-	unsigned int m_unk0x34;                    // 0x34
+	unsigned int m_broadcastMode;              // 0x34
 	CBaseQueueHandler* m_pendingAttachQueue;   // 0x38
 	void* m_activeStatusItem;                  // 0x3c
 	CBaseQueueHandler* m_pendingDetachQueue;   // 0x40

@@ -90,7 +90,7 @@ void CNetworkManager::StartBroadcast(const char* p_address)
 	g_pBaseNetwork->m_broadcast->StopListen();
 	Broadcast(p_address);
 	CBaseNetwork* network = g_pBaseNetwork;
-	network->m_unk0x34 = 1;
+	network->m_broadcastMode = 1;
 	network->m_broadcast->StartListen();
 }
 

@@ -31,7 +31,7 @@ CBaseNetwork::CBaseNetwork()
 	g_lastNetworkError = 0;
 	m_lastConnect = 0;
 	m_firstConnect = 0;
-	m_unk0x34 = 0;
+	m_broadcastMode = 0;
 	m_suspendBroadcastOnConnect = 0;
 	m_initialized = 0;
 	m_initialisePending = 0;
