@@ -899,9 +899,9 @@ void CNetworkOptionsDrawer::Processing()
 	char* ident;
 	char* peer;
 	CConnect* connection;
+	int index;
 	CConnect** current;
 	CConnect** connections;
-	int index;
 	int activation;
 	int acceptedPlayer;
 
