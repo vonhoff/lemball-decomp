@@ -27,11 +27,11 @@ CBaseCommonSocket::~CBaseCommonSocket()
 }
 
 // FUNCTION: LEMBALL 0x0045f6e0
-void CBaseCommonSocket::SocketError(NetworkErrors p_arg0)
+void CBaseCommonSocket::SocketError(NetworkErrors p_error)
 {
-	m_lastError = p_arg0;
-	g_lastNetworkError = p_arg0;
-	if (p_arg0 != 0 && m_isOpen != 0) {
+	m_lastError = p_error;
+	g_lastNetworkError = p_error;
+	if (p_error != 0 && m_isOpen != 0) {
 		SysCloseSocket();
 		m_readReady = 0;
 		m_isOpen = 0;

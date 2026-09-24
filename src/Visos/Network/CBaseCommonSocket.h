@@ -29,7 +29,7 @@ public:
 	virtual void SocketError() = 0;        // vtable+0x08
 	virtual void Closed(int p_notifyPeer); // vtable+0x0c
 	void CloseSocket();
-	void SocketError(NetworkErrors p_arg0);
+	void SocketError(NetworkErrors p_error);
 
 	friend class CWriteSocket;
 	friend class CConnect;
