@@ -240,21 +240,21 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 					}
 				}
 			}
-			int shadowGameX = (unsigned short) p_viewData.m_gameX;
+			gameX = (unsigned short) p_viewData.m_gameX;
 			gameY = (unsigned short) p_viewData.m_gameY;
 			CMap* map = m_map;
-			int blockX = shadowGameX >> 4;
+			int blockX = gameX >> 4;
 			int blockY = gameY >> 4;
 			unsigned short groundHeight;
-			if (shadowGameX < 0 || gameY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+			if (gameX < 0 || gameY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
 				groundHeight = 0;
 			}
 			else {
-				int localX = shadowGameX & 15;
+				int localX = gameX & 15;
 				int localY = gameY & 15;
 				groundHeight = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(localX, localY);
 			}
-			gameX = (shadowGameX << 12) >> 12;
+			gameX = (gameX << 12) >> 12;
 			gameY = (gameY << 12) >> 12;
 			m_map->GameToScreen(gameX, gameY);
 			bounds.m_x = (short) (((gameX - m_viewOriginX) << 12) >> 12) - 10;
