@@ -277,13 +277,14 @@ void CPanelButton::OnPressed(int p_flags)
 		return;
 	}
 
-	if (p_flags == 0) {
+	switch (p_flags) {
+	case 0:
 		goto normal;
-	}
-	if (p_flags == 1) {
+	case 1:
 		goto alternate;
+	default:
+		goto pressed;
 	}
-	goto pressed;
 
 normal:
 	if (panelLemming->m_balloonType != OBJECT_BALLOON_NONE) {
@@ -292,10 +293,10 @@ normal:
 			short inventoryY = m_inventoryRect.m_y;
 			short clickY = m_clickY;
 			if (inventoryY > clickY) {
-				goto pressed;
+				goto groupSelection;
 			}
 			if (clickY >= (short) (m_inventoryRect.m_height + inventoryY)) {
-				goto pressed;
+				goto groupSelection;
 			}
 			if (action == ACTION_NONE || action == ACTION_2 || action == ACTION_6) {
 				m_lemming->m_lemming->SetSndEffect(SFX_BALLOON);
@@ -304,12 +305,13 @@ normal:
 			goto pressed;
 		}
 	}
+groupSelection:
 	if (game->m_groupingActive == 1) {
-		if (game->InGroupByObjectNo(m_lemming->m_lemming->m_objectId) == 0) {
-			game->AddObjectToGroup(m_lemming->m_lemming->m_objectId, 1);
+		if (game->InGroupByObjectNo(m_lemming->m_lemming->m_objectId) != 0) {
+			game->RemoveFromGroupByObjectNo(m_lemming->m_lemming->m_objectId);
 		}
 		else {
-			game->RemoveFromGroupByObjectNo(m_lemming->m_lemming->m_objectId);
+			game->AddObjectToGroup(m_lemming->m_lemming->m_objectId, 1);
 		}
 	}
 	else {
