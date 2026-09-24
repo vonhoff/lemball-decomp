@@ -1,13 +1,86 @@
 #include "../C2D.h"
 
+#include "../../../Frontend/Resources/CFrontendResourceLoader.h"
 #include "../../../Visos/Graphics/CGDI.h"
 #include "../../../Visos/Graphics/CSurface.h"
+#include "../../../Visos/Resources/Manifest.h"
 #include "../../Animation/CLemmingAnimsManager.h"
 #include "AI/Base/C3DVector.h"
 #include "Map/Base/CMap.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+// GLOBAL: LEMBALL 0x00497044
+static const short baseOffset[] = {40, 60};
+
+// GLOBAL: LEMBALL 0x00497048
+static const short animOffset[] = {40, 60};
+
+// FUNCTION: LEMBALL 0x0043d130
+void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
+{
+	int x;
+	int y;
+	CBaseRemap* remap;
+	eAction action;
+	unsigned int stateTimer;
+	C2D& owner = *this;
+
+	action = p_viewData.m_action;
+	stateTimer = p_viewData.m_stateTimer;
+	x = p_viewData.m_positionX;
+	y = p_viewData.m_positionY;
+	remap = 0;
+
+	if (p_viewData.m_actionArgument != 0) {
+		remap = m_paletteRemap;
+	}
+
+	switch (action) {
+	case ACTION_0x18:
+		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
+		break;
+
+	case ACTION_0x19:
+		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
+		owner.m_lemmingAnims->DrawAnim(x - animOffset[0] - 8,
+									   y - animOffset[1],
+									   RES_GAME_CATMOUNT_SE,
+									   stateTimer,
+									   p_viewData.m_animationTime,
+									   (CRemap*) remap);
+		break;
+
+	case ACTION_0x1a:
+		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		owner.m_lemmingAnims->DrawAnim(x - animOffset[0],
+									   y - animOffset[1],
+									   g_anGroundStyleResourceIds[9],
+									   stateTimer + 0x640,
+									   p_viewData.m_animationTime,
+									   0);
+		owner.m_lemmingAnims->DrawAnim(x - animOffset[0] - 8,
+									   y - animOffset[1],
+									   RES_GAME_CATMOUNT_SE,
+									   stateTimer,
+									   p_viewData.m_animationTime,
+									   (CRemap*) remap);
+		break;
+
+	case ACTION_0x1b:
+		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		owner.m_lemmingAnims->DrawAnim(x - animOffset[0],
+									   y - animOffset[1],
+									   g_anGroundStyleResourceIds[9],
+									   stateTimer + 0x640,
+									   p_viewData.m_animationTime,
+									   0);
+		break;
+	}
+}
 
 // FUNCTION: LEMBALL 0x0043ef90
 void C2D::TransformAndSortViewData()
