@@ -11,11 +11,11 @@ struct CVsPoint;
 // VTABLE: LEMBALL 0x00497290 CHotAreaHandler
 class CPanelPauseButton : public CToggleButton {
 public:
-	CPanelPauseButton(CPanel* p_arg0,
-					  const CVsPoint& p_arg1,
-					  CPVGWnd* p_arg2,
-					  unsigned long p_arg3,
-					  unsigned long p_arg4);
+	CPanelPauseButton(CPanel* p_panel,
+					  const CVsPoint& p_position,
+					  CPVGWnd* p_parent,
+					  unsigned long p_animId,
+					  unsigned long p_flags);
 	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8
 	virtual void DrawButton();                                             // vtable+0xbc
 	virtual void OnExternalButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x0c

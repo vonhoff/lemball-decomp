@@ -13,14 +13,14 @@
 #include "Visos/Graphics/CToggleButton.h"
 
 // FUNCTION: LEMBALL 0x004421d0
-CPanelPauseButton::CPanelPauseButton(CPanel* p_arg0,
-									 const CVsPoint& p_arg1,
-									 CPVGWnd* p_arg2,
-									 unsigned long p_arg3,
-									 unsigned long p_arg4)
-	: CToggleButton(p_arg1, p_arg2, p_arg3, p_arg4)
+CPanelPauseButton::CPanelPauseButton(CPanel* p_panel,
+									 const CVsPoint& p_position,
+									 CPVGWnd* p_parent,
+									 unsigned long p_animId,
+									 unsigned long p_flags)
+	: CToggleButton(p_position, p_parent, p_animId, p_flags)
 {
-	m_panel = p_arg0;
+	m_panel = p_panel;
 	m_pressedInside = 0;
 	m_externalEnabled = 1;
 }
