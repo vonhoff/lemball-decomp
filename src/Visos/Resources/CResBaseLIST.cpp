@@ -16,8 +16,8 @@ void CResBaseLIST::SetHeader()
 	ResListHeader* header = (ResListHeader*) m_name;
 	m_totalSize = header->m_totalSize;
 	m_headerSize = header->m_headerSize;
-	m_vramEntryCount = -1;
 	m_bodySize = header->m_bodySize;
+	m_vramEntryCount = -1;
 }
 
 // FUNCTION: LEMBALL 0x0045d2b0
