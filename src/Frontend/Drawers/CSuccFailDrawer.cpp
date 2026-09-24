@@ -532,10 +532,10 @@ void CSuccFailDrawer::Processing()
 		if (now > m_animStartDeadline && m_animationsEnabled != 0) {
 			if (m_display->IsWindowValid() != 0) {
 				layout = m_layout;
-				CVsRect rect((short) layout->m_secondaryPosition.m_x,
-							 (short) layout->m_secondaryPosition.m_y,
-							 (short) layout->m_animWindowEnd.m_x,
-							 (short) layout->m_animWindowEnd.m_y);
+				short rectHeight = (short) layout->m_animWindowEnd.m_y;
+				short rectY = (short) layout->m_secondaryPosition.m_y;
+				short rectX = (short) layout->m_secondaryPosition.m_x;
+				CVsRect rect(rectX, rectY, (short) layout->m_animWindowEnd.m_x, rectHeight);
 				m_animWindow.Create(rect, (CPVGWnd*) m_display, g_szPaintballSequence);
 				m_animWindow.Play();
 				m_animStarted = 1;
