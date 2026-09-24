@@ -103,19 +103,22 @@ void CFileReadSocket::Process()
 			CNetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, m_file->m_payloadCapacity);
 			if (CNetworkFile::UnLock(m_headersOffset, m_file->m_payloadCapacity)) {
 				m_file->Set((unsigned char*) g_pNetworkPacketScratch);
+				int index = 0;
+				int headerOffset = 0;
 				bool found = false;
-				for (int index = 0; index < CFileCommonSocket::m_headerSlotCount; index++) {
-					CHeaderMessage* header = &m_file->m_headers[index];
+				for (; index < CFileCommonSocket::m_headerSlotCount; index++) {
+					CHeaderMessage* header = (CHeaderMessage*) ((unsigned char*) m_file->m_headers + headerOffset);
 					if (header->m_mirroredSequence < header->m_sequence) {
 						if (found) {
 							m_pendingReadSlot = index;
 							return;
 						}
 						ReadBuff(index);
-						header = &m_file->m_headers[index];
+						header = (CHeaderMessage*) ((unsigned char*) m_file->m_headers + headerOffset);
 						header->m_mirroredSequence = header->m_sequence;
 						found = true;
 					}
+					headerOffset += sizeof(CHeaderMessage);
 				}
 			}
 		}
