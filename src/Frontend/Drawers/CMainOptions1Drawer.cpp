@@ -95,8 +95,8 @@ void CMainOptions1Drawer::Load()
 	unsigned long* toggleAnim;
 	unsigned long* modeAnim;
 	unsigned long* quitAnim;
-	tagPRIMS* primitiveBundle;
 	int i;
+	tagPRIMS* primitiveBundle;
 
 	if (m_mode != 0) {
 		m_buttonLayout = g_anMainOptions1CompactButtonLayout;
@@ -116,8 +116,8 @@ void CMainOptions1Drawer::Load()
 		modeAnim = &g_dwMainOptions1AnimIds[5];
 		quitAnim = &g_dwMainOptions1AnimIds[4];
 	}
-	i = 1;
 	primitiveBundle = m_primitiveBundle;
+	i = 1;
 	do {
 		CResBITMAP* bitmap = m_backgroundBitmap;
 		primitiveBundle->m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) bitmap->m_x) / 2);
