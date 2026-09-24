@@ -2652,8 +2652,8 @@ void CSurface::BlitZRLENoClipQZBuffRemap(const CVsRect& p_rect,
 void CSurface::BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
-	int step = 1;
 	int y = p_rect.m_y;
+	int step = 1;
 	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
@@ -2669,11 +2669,12 @@ void CSurface::BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned
 				if (run < 0x80) {
 					dst -= run;
 				}
-				else if (run > 0x80) {
+				if (run > 0x80) {
 					run &= 0x7f;
+					int i = run;
 					unsigned char* copySrc = src;
 					unsigned char* copyDst = dst;
-					for (int i = run; i != 0; i--) {
+					for (; i > 0; i--) {
 						*copyDst-- = *copySrc++;
 					}
 					src += run;
