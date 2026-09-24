@@ -954,13 +954,17 @@ void C2D::NewPauseWindow(ePauseWindowMessages p_message)
 // FUNCTION: LEMBALL 0x00437da0
 void C2D::TriggerPause(unsigned char p_paused)
 {
-	if (p_paused != 0) {
-		if (m_ai->m_gameStatus >= 1 && m_ai->m_gameStatus <= 2) {
-			m_ai->GameState(GAME_STATUS_PAUSED);
+	// Original x86 reads the full stack slot despite the unsigned-char signature.
+	unsigned int paused = *(volatile unsigned int*) &p_paused;
+	if (paused != 0) {
+		int gameStatus = m_ai->m_gameStatus;
+		if (gameStatus >= 1 && gameStatus <= 2) {
+			// Original x86 reloads m_ai after reading the status.
+			(*(CAI* volatile*) &m_ai)->GameState(GAME_STATUS_PAUSED);
 		}
 	}
 	else {
-		SetPause(p_paused);
+		SetPause(paused);
 	}
 }
 
@@ -3180,8 +3184,8 @@ void C2D::DrawSwitch(CViewData& p_viewData)
 	int x;
 	int y;
 	unsigned int stateTimer;
-	eAction action;
 	unsigned short actionArgument;
+	eAction action;
 
 	x = p_viewData.m_positionX - switchOffset[0];
 	y = p_viewData.m_positionY - switchOffset[1];
