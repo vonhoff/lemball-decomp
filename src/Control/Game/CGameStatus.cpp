@@ -155,9 +155,9 @@ bool CGameStatus::DecodePassword(char* p_password)
 int CGameStatus::StringToDWord()
 {
 	int result = 0;
-	char* p = m_password;
-	for (unsigned int i = 0; i < strlen(p); i++) {
-		result = result * 10 + (m_password[i] - '0');
+	char* password = m_password;
+	for (unsigned int digitIndex = 0; digitIndex < strlen(password); digitIndex++) {
+		result = result * 10 + (m_password[digitIndex] - '0');
 	}
 	return result;
 }
