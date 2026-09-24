@@ -68,8 +68,9 @@ char* vsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 
 	if (s_powersInitialized == 0) {
 		int r = 2;
+		unsigned int pow;
 		do {
-			unsigned int pow = r;
+			pow = r;
 			unsigned int lim = 0xFFFFFFFF / r;
 			if (lim >= (unsigned int) r) {
 				do {
