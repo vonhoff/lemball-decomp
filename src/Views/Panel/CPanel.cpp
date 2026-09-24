@@ -121,17 +121,17 @@ void CPanel::RefreshLemmings()
 // FUNCTION: LEMBALL 0x004431f0
 void CPanel::OnSize()
 {
-	CVsPoint calculatedPosition;
-	CVsPoint position;
-	CVsPoint* calculated = GetPausePos(&calculatedPosition);
-	position.m_x = m_panelPosition.m_x = calculated->m_x;
-	position.m_y = m_panelPosition.m_y = calculated->m_y;
-	m_pauseButton->Move(position);
-	position.m_x += m_pauseSize.m_x;
+	short calculatedPositionStorage[2];
+	short positionStorage[2];
+	CVsPoint* calculated = GetPausePos((CVsPoint*) calculatedPositionStorage);
+	positionStorage[0] = m_panelPosition.m_x = calculated->m_x;
+	positionStorage[1] = m_panelPosition.m_y = calculated->m_y;
+	m_pauseButton->Move(*(CVsPoint*) positionStorage);
+	positionStorage[0] += m_pauseSize.m_x;
 	CPanelLemming** lemming = m_lemmings;
 	int count = 4;
 	do {
-		(*lemming)->Move(position);
+		(*lemming)->Move(*(CVsPoint*) positionStorage);
 		lemming++;
 		count--;
 	} while (count != 0);
