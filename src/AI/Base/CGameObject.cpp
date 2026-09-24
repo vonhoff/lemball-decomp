@@ -844,8 +844,8 @@ bool CGameObject::FacingDestination()
 // FUNCTION: LEMBALL 0x00415e80
 void CGameObject::DeleteFirstEntryFromDestinationList()
 {
-	int i;
 	CAiDestinationList* list = m_destinationList;
+	int i;
 	if (list->m_count != 0) {
 		for (i = 0; i < list->m_count - 1; i++) {
 			CAiDestinationEntry* entry = &list->m_entries[i];
