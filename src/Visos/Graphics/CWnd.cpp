@@ -419,8 +419,8 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				break;
 			}
 		}
-		mouseX = window->m_rect.m_x + (short) p_lParam;
-		mouseY = window->m_rect.m_y + (short) (p_lParam >> 16);
+		mouseX = window->m_rect.m_x - (short) p_lParam;
+		mouseY = window->m_rect.m_y - (short) (p_lParam >> 16);
 		posted.code = PackParam(mouseX, mouseY);
 		posted.source = 0;
 		g_pMasterInputQueue->Post(posted);
@@ -442,8 +442,8 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		else {
 			posted.payload = (void*) 0x45;
 		}
-		mouseX = window->m_rect.m_x + (short) p_lParam;
-		mouseY = window->m_rect.m_y + (short) (p_lParam >> 16);
+		mouseX = window->m_rect.m_x - (short) p_lParam;
+		mouseY = window->m_rect.m_y - (short) (p_lParam >> 16);
 		posted.code = PackParam(mouseX, mouseY);
 		posted.source = 0;
 		g_pMasterInputQueue->Post(posted);
