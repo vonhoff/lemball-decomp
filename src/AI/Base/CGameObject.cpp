@@ -1093,8 +1093,8 @@ bool CGameObject::OnLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
 	int top = (int) p_liftMin.m_y - 8;
 	int y;
 	int bottom = (int) p_liftMax.m_y + 7;
-	y = m_position.m_yFixed >> 12;
 	int x = m_position.m_xFixed >> 12;
+	y = m_position.m_yFixed >> 12;
 	if (x >= left && x <= right && y >= top && y <= bottom) {
 		CMap* map = g_pMap;
 		int blockX = left >> 4;
