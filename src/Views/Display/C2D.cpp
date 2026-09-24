@@ -2607,9 +2607,9 @@ static const short moverOffset[] = {17, 30};
 void C2D::DrawMover(CViewData& p_viewData)
 {
 	unsigned short frame;
-	unsigned short state = p_viewData.m_actionArgument;
 	int x = p_viewData.m_positionX;
 	int y = p_viewData.m_positionY;
+	unsigned short state = p_viewData.m_actionArgument;
 	switch (m_ai->m_mapType) {
 	case 0:
 		frame = 0x50;
