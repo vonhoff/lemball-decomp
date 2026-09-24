@@ -8,7 +8,7 @@ class CAI;
 // VTABLE: LEMBALL 0x00494f80
 class CSheep : public CGameObject {
 public:
-	CSheep(CAI* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4);
+	CSheep(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection);
 	virtual bool Process(); // vtable+0x14
 	virtual void HitBall(); // vtable+0x58
 	virtual void HitMine(); // vtable+0x64

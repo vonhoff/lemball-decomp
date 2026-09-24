@@ -10,13 +10,13 @@
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x0041f990
-CSheep::CSheep(CAI* p_arg0, int p_arg1, int p_arg2, int p_arg3, int p_arg4) : CGameObject(OBJECT_SHEEP, 0x108, 0x14)
+CSheep::CSheep(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection) : CGameObject(OBJECT_SHEEP, 0x108, 0x14)
 {
-	g_pAI = p_arg0;
-	m_spawnPosition.m_xFixed = p_arg1 << 12;
-	m_initialFacingDirection = (short) p_arg4;
-	m_spawnPosition.m_yFixed = p_arg2 << 12;
-	m_spawnPosition.m_zFixed = p_arg3 << 12;
+	g_pAI = p_ai;
+	m_spawnPosition.m_xFixed = p_x << 12;
+	m_spawnPosition.m_yFixed = p_y << 12;
+	m_spawnPosition.m_zFixed = p_z << 12;
+	m_initialFacingDirection = (short) p_facingDirection;
 	SetId(NextLoadingId());
 }
 
