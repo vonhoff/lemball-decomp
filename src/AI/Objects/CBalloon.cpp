@@ -27,41 +27,6 @@ void CBalloon::Restart()
 	m_stateTimer = g_dwSimulationTimestamp - (randVal % 4096);
 }
 
-// FUNCTION: LEMBALL 0x0041d650
-bool CBalloon::Process()
-{
-	int y = m_position.m_yFixed >> 12;
-	int x = m_position.m_xFixed >> 12;
-	CMap* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
-	unsigned short z;
-	if (x >= 0 && y >= 0 && map->m_ground.m_width > blockX && g_pMap->m_ground.m_height > blockY) {
-		int cellX = x & 0xf;
-		int cellY = y & 0xf;
-		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
-	}
-	else {
-		z = 0;
-	}
-	m_position.m_zFixed = z << 12;
-	if (m_isRemoteObject != 0) {
-		if (m_pendingAction != m_action) {
-			if (m_action == 26) {
-				SetSndEffect(SFX_COLLECT_BALLOON);
-			}
-			m_pendingAction = m_action;
-		}
-		return 1;
-	}
-	if (m_action == 26) {
-		Action(ACTION_0x18);
-		m_objectActive = 0;
-		return 1;
-	}
-	return 1;
-}
-
 // FUNCTION: LEMBALL 0x0041d740
 bool CBalloon::Activate(CGameObject* p_object)
 {
