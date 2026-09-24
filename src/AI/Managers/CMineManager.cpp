@@ -70,15 +70,18 @@ void CMineManager::Trigger(int p_index, int p_delay)
 	int z = m_positions[p_index].m_z;
 	int i = 0;
 	if (0 < m_count) {
+		int positionOffset = 0;
 		do {
 			if (p_index != i && m_mines[i].m_action == 0x18) {
-				int dx = m_positions[i].m_x - x;
-				int dy = m_positions[i].m_y - y;
-				int dz = m_positions[i].m_z - z;
+				Coord3d* position = &m_positions[positionOffset];
+				int dx = position->m_x - x;
+				int dy = position->m_y - y;
+				int dz = position->m_z - z;
 				if (dz * dz + dy * dy + dx * dx <= 0x800) {
 					m_mines[i].Trigger(p_delay + 6);
 				}
 			}
+			positionOffset++;
 			i++;
 		} while (i < m_count);
 	}
