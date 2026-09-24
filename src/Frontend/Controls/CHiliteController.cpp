@@ -108,7 +108,7 @@ int CHiliteController::ProcessMsg(Message* p_message)
 	case 3:
 		if (p_message->code == 0x1f || p_message->code == 0x22 || p_message->code == 0x4c) {
 			CHiliteButtons* currentBtn = m_buttons[m_currentButton];
-			CVsPoint point;
+			CVsPoint point(0, 0);
 			currentBtn->m_button->OnButtonUp(point, 0);
 			return 0;
 		}
@@ -147,7 +147,7 @@ int CHiliteController::ProcessMsg(Message* p_message)
 		case 0x22:
 		case 0x4c: {
 			CHiliteButtons* currentBtn = m_buttons[m_currentButton];
-			CVsPoint point;
+			CVsPoint point(0, 0);
 			currentBtn->m_button->OnButtonDown(point, 0);
 			break;
 		}
