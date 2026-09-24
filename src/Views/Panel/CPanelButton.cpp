@@ -300,7 +300,7 @@ normal:
 			}
 			if (action == ACTION_NONE || action == ACTION_2 || action == ACTION_6) {
 				m_lemming->m_lemming->SetSndEffect(SFX_BALLOON);
-				game->UseBalloon(m_lemming->m_lemming);
+				m_lemming->m_panel->m_game->UseBalloon(m_lemming->m_lemming);
 			}
 			goto pressed;
 		}
