@@ -234,8 +234,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 						for (; rows != 0; rows--) {
 							memset(maskA, 1, columns);
 							memset(maskB, 1, columns);
-							maskA += lookup->m_width;
-							maskB += lookup->m_width;
+							maskA -= lookup->m_width;
+							maskB -= lookup->m_width;
 						}
 					}
 				}
