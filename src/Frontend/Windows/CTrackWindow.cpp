@@ -34,14 +34,6 @@ CTrackWindow::CTrackWindow(const CVsRect& p_rect, int p_value, CPVGWnd* p_parent
 	m_reserved = 1;
 }
 
-// FUNCTION: LEMBALL 0x0044e8c0
-CTrackWindow::~CTrackWindow()
-{
-	if (m_parent->m_lifecycleRefs == 1) {
-		m_parent->m_hotAreaList->RemoveFromList(this);
-	}
-}
-
 // FUNCTION: LEMBALL 0x0044e940
 void CTrackWindow::OnCreate()
 {
