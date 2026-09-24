@@ -3,7 +3,7 @@
 #include "Visos/Messaging/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x004524b0
-CGameFlaggedMessage::CGameFlaggedMessage(unsigned long p_arg0) : CNetworkMessage(p_arg0)
+CGameFlaggedMessage::CGameFlaggedMessage(unsigned long p_messageId) : CNetworkMessage(p_messageId)
 {
 	m_payloadCapacity += 4;
 	m_headerEnabled = 1;

@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498598
 class CGameFlaggedMessage : public CNetworkMessage {
 public:
-	CGameFlaggedMessage(unsigned long p_arg0);
+	CGameFlaggedMessage(unsigned long p_messageId);
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
 	CGameFlaggedMessage();

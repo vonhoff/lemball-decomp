@@ -63,9 +63,9 @@ void SetRemoteGameTimeReal(unsigned long p_timestamp)
 }
 
 // FUNCTION: LEMBALL 0x00409150
-void _DEMO_Init(int p_arg0)
+void _DEMO_Init(int p_sourceId)
 {
-	g_pDemo = new CDemo(p_arg0);
+	g_pDemo = new CDemo(p_sourceId);
 }
 
 // FUNCTION: LEMBALL 0x00409180

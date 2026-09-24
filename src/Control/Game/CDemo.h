@@ -10,7 +10,7 @@ class CResBIN;
 // VTABLE: LEMBALL 0x00493100
 class CDemo : public CBaseQueueHandler {
 public:
-	CDemo(int p_arg0);
+	CDemo(int p_sourceId);
 	bool LoadBuffer();
 	bool SendNextPacket(int p_packetIndex);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08

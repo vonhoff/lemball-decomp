@@ -8,11 +8,11 @@
 #include "../../Visos/Resources/CResBIN.h"
 
 // FUNCTION: LEMBALL 0x004091b0
-CDemo::CDemo(int p_arg0)
+CDemo::CDemo(int p_sourceId)
 {
 	m_offsetY = 0;
 	m_offsetX = 0;
-	m_sourceId = p_arg0;
+	m_sourceId = p_sourceId;
 	m_buffer = 0;
 	m_window = 0;
 	m_currentResourceId = 0;
