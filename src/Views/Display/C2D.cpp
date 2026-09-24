@@ -734,13 +734,12 @@ bool C2D::InGroupByObjectNo(int p_objectNo)
 // FUNCTION: LEMBALL 0x00437460
 void C2D::RemoveFromGroupByObjectNo(int p_objectNo)
 {
+	unsigned int i = 0;
 	int objectNo = p_objectNo;
 	unsigned short id;
 	unsigned short* write;
-	unsigned int i;
 	unsigned short* read;
 
-	i = 0;
 	if (m_groupCount <= i) {
 	}
 	else {
