@@ -358,21 +358,21 @@ int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 {
 	CWaveEffect* effect;
 	CWaveSoundDevice* device;
-	unsigned int i;
+	unsigned int channelIndex;
 
-	i = 0;
-	while (i < m_channelCount) {
+	channelIndex = 0;
+	while (channelIndex < m_channelCount) {
 		device = this;
-		if (device->m_effectHandles[i] == p_effectId) {
-			effect = device->m_effects[i];
+		if (device->m_effectHandles[channelIndex] == p_effectId) {
+			effect = device->m_effects[channelIndex];
 			if (effect != 0) {
 				effect->~CWaveEffect();
 				operator delete(effect);
 			}
-			device->m_effectUsed[i] = 0;
-			device->m_effectHandles[i] = 0;
+			device->m_effectUsed[channelIndex] = 0;
+			device->m_effectHandles[channelIndex] = 0;
 		}
-		i = i + 1;
+		channelIndex = channelIndex + 1;
 	}
 	return 0;
 }
