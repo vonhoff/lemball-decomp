@@ -1047,12 +1047,13 @@ void CAI::QuitGame()
 // FUNCTION: LEMBALL 0x00412c80
 void CAI::SwitchMessage(swMessage p_message, int p_first, int p_last, int p_arg3)
 {
+	int index;
 	switch (p_message) {
 	case SW_LIFT:
 		m_liftManager->Switch(p_message, p_first, p_last, p_arg3);
 		return;
 	case SW_LIFTS: {
-		int index = p_first;
+		index = p_first;
 		if (index < p_last) {
 			do {
 				m_liftManager->Switch(SW_LIFT, index, 0, 0);
