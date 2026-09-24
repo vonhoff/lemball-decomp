@@ -38,7 +38,7 @@ public:
 
 	friend class CCursor;
 	friend class C2D;
-	friend void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
+	friend void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame);
 
 private:
 	CVsPoint m_position;                // 0x10

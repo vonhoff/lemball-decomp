@@ -20,23 +20,23 @@ unsigned int g_cursorResourceIds[4] = {0, RES_CURSORS_HAND, RES_CURSORS_PAW_CURS
 unsigned int g_cursorDisplayInited = 0;
 
 // FUNCTION: LEMBALL 0x0043a720
-void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
+void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 {
 	CCursor* cursor;
 
-	if ((unsigned int) p_arg0 > 3) {
+	if ((unsigned int) p_cursorType > 3) {
 		return;
 	}
-	switch (p_arg0) {
+	switch (p_cursorType) {
 	case CURSOR_DISPLAY_NONE:
 		g_pCursor->SetActive(0);
-		g_pCursor->SetMainID(g_cursorResourceIds[p_arg0]);
+		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType]);
 		break;
 	case CURSOR_DISPLAY_HAND:
 		if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
-			p_arg1 = 0;
+			p_frame = 0;
 		}
-		g_pCursor->SetMainID(g_cursorResourceIds[p_arg0], p_arg1);
+		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType], p_frame);
 		if (g_cursorDisplayInited == 0) {
 			g_pCursor->m_mouseInput = 1;
 			g_cursorDisplayInited = 1;
@@ -48,7 +48,7 @@ void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1)
 		break;
 	case CURSOR_DISPLAY_PAW:
 	case 3:
-		g_pCursor->SetMainID(g_cursorResourceIds[p_arg0]);
+		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType]);
 		if (g_cursorDisplayInited == 0) {
 			g_pCursor->m_mouseInput = 1;
 			cursor = g_pCursor;

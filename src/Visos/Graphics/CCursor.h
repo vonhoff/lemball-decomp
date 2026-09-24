@@ -26,7 +26,7 @@ inline CCursor::CCursor()
 
 extern CCursor* g_pCursor;
 
-void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
+void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame);
 
 // SYNTHETIC: LEMBALL 0x0046dad0
 // CCursor::`scalar deleting destructor'

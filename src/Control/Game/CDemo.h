@@ -27,7 +27,7 @@ public:
 	friend class CAI;
 	friend class CGame;
 	friend class C2D;
-	friend void CursorChangeType(eCursorDisplayType p_arg0, int p_arg1);
+	friend void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame);
 
 private:
 	unsigned char* m_buffer;     // 0x10
