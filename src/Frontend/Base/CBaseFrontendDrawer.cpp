@@ -375,21 +375,21 @@ void CBaseFrontendDrawer::Restart()
 void CBaseFrontendDrawer::_Load()
 {
 	m_loaded = 1;
-	if (m_mode == 0) {
-		m_tileBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_HIRES_PAINTBALL_TILE);
-		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_HIRES_TITLE_BMP);
-		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_2;
-		m_chalkFontId = RES_NEWFRONT_FONTS_HIRES_CHALK_FONT;
-		m_topFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_1;
-		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_3;
-	}
-	else {
+	if (m_mode != 0) {
 		m_tileBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_PAINTBALL_TILE);
 		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_TITLE_BMP);
 		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_2;
 		m_chalkFontId = RES_NEWFRONT_FONTS_LORES_CHALK_FONT;
 		m_topFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_1;
 		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_3;
+	}
+	else {
+		m_tileBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_HIRES_PAINTBALL_TILE);
+		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_HIRES_TITLE_BMP);
+		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_2;
+		m_chalkFontId = RES_NEWFRONT_FONTS_HIRES_CHALK_FONT;
+		m_topFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_1;
+		m_bottomFrameAnimId = RES_NEWFRONT_ANIMS_HIRES_FRAME_3;
 	}
 	CAnimsManager::LoadAnims(m_topFrameAnimId);
 	CAnimsManager::LoadAnims(m_sideFrameAnimId);
