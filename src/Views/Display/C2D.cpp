@@ -303,7 +303,7 @@ void C2D::RegisterRemaps()
 			}
 			sources = sources + 1;
 			targets = targets + 1;
-		} while (sources < g_anC2DRemapTargetIndices[0]);
+		} while (sources < g_anC2DRemapSourceIndices + 17);
 
 		CBaseRemap* remap =
 			g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, m_remapTables[remapIndex], PALETTE_DEFAULT);
