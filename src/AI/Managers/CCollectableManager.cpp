@@ -187,8 +187,8 @@ int CCollectableManager::GetViewData(CViewData* p_viewData)
 	int count = 0;
 	for (int i = 0; i < m_count; i++) {
 		if (m_collectables[i]->m_enabled != 0 || m_collectables[i]->m_soundEffect != 0) {
-			m_collectables[i]->GetViewData(*p_viewData++);
 			count++;
+			m_collectables[i]->GetViewData(*p_viewData++);
 		}
 	}
 	return count;
