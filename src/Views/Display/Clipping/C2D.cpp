@@ -20,7 +20,11 @@ CVsRect* C2D::GetClipRectangle()
 {
 	static CVsRect clipRectangle;
 	CVsRect rectangle((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
-	clipRectangle = rectangle;
+	volatile CVsRect* source = &rectangle;
+	clipRectangle.m_width = source->m_width;
+	clipRectangle.m_height = source->m_height;
+	clipRectangle.m_x = source->m_x;
+	clipRectangle.m_y = source->m_y;
 	return &clipRectangle;
 }
 
