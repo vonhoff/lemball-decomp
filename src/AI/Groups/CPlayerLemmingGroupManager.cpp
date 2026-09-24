@@ -626,10 +626,15 @@ int CPlayerLemmingGroupManager::GetViewData(CViewData* p_viewData)
 {
 	int count = 0;
 	if (g_pActiveConnection != 0) {
+		CPlayerLemming** lemmingCursor = m_networkLemmings;
+		int remaining = 4;
+		CViewData* viewCursor = p_viewData;
 		count = 4;
-		for (int i = 0; i < 4; i++) {
-			m_networkLemmings[i]->GetViewData(*p_viewData++);
-		}
+		do {
+			CPlayerLemming* lemming = *lemmingCursor++;
+			lemming->GetViewData(*viewCursor++);
+		} while (--remaining != 0);
+		p_viewData = viewCursor;
 	}
 	return CGenericGroupManager::GetViewData(p_viewData) + count;
 }
