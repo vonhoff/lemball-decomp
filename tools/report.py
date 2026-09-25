@@ -206,7 +206,14 @@ def make_report(output_path: Path = REPORT_JSON) -> dict:
     report = build_report(ROADMAP_CSV, reccmp_path)
     output_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
-    print(f"{values['matched_functions']}/{values['total_functions']} functions matched")
+    matches = load_matches(reccmp_path)
+    exact = [item for item in load_inventory(ROADMAP_CSV)
+             if (match := matches.get(item["address"]))
+             and not match.get("stub") and match.get("matching") == 1.0]
+    print(f"exact: {len(exact)}/{values['total_functions']} functions, "
+          f"{sum(item['size'] for item in exact)}/{values['total_code']} code bytes")
+    print(f"effective: {values['matched_functions']}/{values['total_functions']} functions, "
+          f"{values['matched_code']}/{values['total_code']} code bytes")
     print(f"wrote {output_path}")
     return report
 

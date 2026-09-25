@@ -190,9 +190,11 @@ def compute_ratio(match: dict | None) -> tuple[float, str]:
     if match is None or match.get("stub"):
         return 0.0, "STUB"
     ratio = float(match.get("matching", 0.0)) * 100.0
-    if match.get("effective") or ratio == 100.0:
-        return 100.0, "MATCH"
-    return ratio, ""
+    if ratio == 100.0:
+        return 100.0, "EXACT"
+    if match.get("effective"):
+        return 100.0, "EFFECTIVE"
+    return ratio, "PARTIAL"
 
 
 def load_matches(json_path: Path) -> dict[int, dict]:

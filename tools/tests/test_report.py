@@ -22,7 +22,7 @@ class ReportMatchTests(unittest.TestCase):
             with self.subTest(diff=diff):
                 self.assertEqual(
                     compute_ratio({"matching": 0.75, "diff": diff}),
-                    (75.0, ""),
+                    (75.0, "PARTIAL"),
                 )
 
     def test_report_counts_only_reccmp_effective_matches(self):
@@ -44,6 +44,17 @@ class ReportMatchTests(unittest.TestCase):
 
         self.assertEqual(result["measures"]["matched_functions"], 1)
         self.assertEqual(result["measures"]["matched_code"], "20")
+        self.assertEqual(set(result["measures"]), {
+            "total_units", "total_code", "matched_code", "fuzzy_match_percent",
+            "matched_code_percent", "total_functions", "matched_functions",
+            "matched_functions_percent",
+        })
+        self.assertEqual(
+            {f["name"]: f["metadata"]
+             for unit in result["units"] for f in unit["functions"]},
+            {"Partial": {"virtual_address": "1"},
+             "Effective": {"virtual_address": "2"}},
+        )
         scores = {f["name"]: f["fuzzy_match_percent"]
                   for unit in result["units"] for f in unit["functions"]}
         self.assertEqual(scores, {"Partial": 75.0, "Effective": 100.0})

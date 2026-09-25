@@ -17,10 +17,14 @@ from build import run_build
 
 
 def match_status(match) -> str:
-    """A mapped address is not an exact match; stubs remain explicitly marked."""
+    """Distinguish identical assembly from reccmp's effective match."""
     if match.is_stub:
         return "STUB"
-    return "MATCH" if match.effective_accuracy == 1.0 else ""
+    if match.accuracy == 1.0:
+        return "EXACT"
+    if match.effective_accuracy == 1.0:
+        return "EFFECTIVE"
+    return "PARTIAL"
 
 
 def configure_output(stream) -> None:
