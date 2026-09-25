@@ -78,8 +78,9 @@ CAI::CAI(CGame* p_game)
 	m_objectCount = 0;
 	m_objectCapacity = 100;
 	m_objects = new CGameObject*[100];
+	CGameObject** objects = m_objects;
 	for (int i = 0; i < m_objectCapacity; i++) {
-		m_objects[i] = 0;
+		objects[i] = 0;
 	}
 	m_game = p_game;
 	m_initialised = 0;
@@ -913,7 +914,8 @@ void CAI::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned shor
 		}
 	}
 
-	if ((int) groundZ + 4 < (p_object->m_position.m_zFixed >> 12)) {
+	int groundThreshold = (int) groundZ + 4;
+	if (groundThreshold < (p_object->m_position.m_zFixed >> 12)) {
 		return;
 	}
 
