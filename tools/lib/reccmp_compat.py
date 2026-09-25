@@ -7,6 +7,7 @@ Raw diffs and ratios stay upstream-owned. The installed package is not modified.
 from __future__ import annotations
 
 import logging
+import json
 import re
 import struct
 from importlib.metadata import version
@@ -340,12 +341,16 @@ class RelocationAwareParseAsm(parse.ParseAsm):
     """Recognize pointer operands and arithmetic at verified PE relocation sites."""
 
     def __init__(self, *, image=None, relocation_sites=(), thunk_targets=None,
-                 indirect_thunk_targets=None, **kwargs):
+                 indirect_thunk_targets=None, string_db=None, string_image_id=None,
+                 **kwargs):
         super().__init__(**kwargs)
         self.image = image
         self.relocation_sites = frozenset(relocation_sites)
         self.thunk_targets = thunk_targets or {}
         self.indirect_thunk_targets = indirect_thunk_targets or {}
+        self.string_db = string_db
+        self.string_image_id = string_image_id
+        self._string_suffix_cache = {}
         self._decoder = Cs(CS_ARCH_X86, CS_MODE_32)
         self._decoder.detail = True
         self._data: bytes = b""
@@ -359,6 +364,35 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         name = super().lookup(addr, exact=exact, indirect=indirect)
         if name is not None:
             return name
+        if not exact and not indirect and self.string_db is not None:
+            if addr in self._string_suffix_cache:
+                return self._string_suffix_cache[addr]
+            # reccmp names only the start of a STRING. A relocation may point
+            # into the same literal; require a matched parent and identical
+            # bytes before naming its NUL-terminated suffix.
+            for displacement in range(1, 257):
+                base = addr - displacement
+                entity = self.string_db.get(self.string_image_id, base, exact=True)
+                if entity is None or entity.entity_type != EntityType.STRING:
+                    continue
+                other = ImageId.RECOMP if self.string_image_id == ImageId.ORIG else ImageId.ORIG
+                if entity.addr(other) is None:
+                    continue
+                match = re.fullmatch(r'("(?:\\.|[^"\\])*") \(STRING\)', entity.match_name() or "")
+                if match is None:
+                    continue
+                try:
+                    literal = json.loads(match[1]).encode("ascii")
+                    if (displacement >= len(literal)
+                            or self.image.read(base, len(literal) + 1) != literal + b"\0"):
+                        continue
+                except (UnicodeEncodeError, ValueError, IndexError,
+                        InvalidVirtualAddressError, InvalidVirtualReadError):
+                    continue
+                name = f'{json.dumps(literal[displacement:].decode("ascii"))} (STRING)'
+                self._string_suffix_cache[addr] = name
+                return name
+            self._string_suffix_cache[addr] = None
         target = (self.indirect_thunk_targets if indirect else self.thunk_targets).get(addr)
         if target is not None:
             name = super().lookup(target, exact=True)
@@ -483,6 +517,8 @@ def configure_pointer_comparisons(engine) -> None:
                 relocation_sites=image.relocations,
                 thunk_targets=thunks,
                 indirect_thunk_targets=indirect_thunks,
+                string_db=engine._db,
+                string_image_id=image_id,
                 addr_test=parser.addr_test,
                 name_lookup=parser.name_lookup,
                 is_32bit=parser.is_32bit,

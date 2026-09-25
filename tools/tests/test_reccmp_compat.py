@@ -22,6 +22,7 @@ from lib.reccmp_compat import (
     patch_mov_compare_jmp,
 )
 from reccmp.compare.asm import fixes, parse
+from reccmp.compare.asm.replacement import create_name_lookup
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.compare.db import EntityDb
 from reccmp.types import EntityType, ImageId
@@ -587,6 +588,35 @@ class IncrementalThunkTests(unittest.TestCase):
             expected = RelocationAwareParseAsm(name_lookup=lambda address, n=names, **kwargs: n.get(address))
             instruction = (0x2000, 5, "call", operand)
             self.assertEqual(parser.sanitize(instruction), expected.sanitize(instruction))
+
+
+class InteriorStringTests(unittest.TestCase):
+    def parser(self, data, matched=True):
+        db = EntityDb()
+        with db.batch() as batch:
+            batch.set(ImageId.ORIG, 0x1000, type=EntityType.STRING,
+                      name='"Assertion failed!"', orig_size=18)
+            batch.set(ImageId.RECOMP, 0x2000, type=EntityType.STRING,
+                      name='"Assertion failed!"', recomp_size=18)
+            if matched:
+                batch.match(0x1000, 0x2000)
+        image = SimpleNamespace(read=lambda address, size: data[address - 0x2000:address - 0x2000 + size])
+        return RelocationAwareParseAsm(
+            image=image, string_db=db, string_image_id=ImageId.RECOMP,
+            name_lookup=create_name_lookup(db, ImageId.RECOMP, lambda _: None,
+                                           lambda *_: ""),
+        )
+
+    def test_matched_parent_names_proven_suffix(self):
+        parser = self.parser(b"Assertion failed!\0")
+        self.assertEqual(parser.lookup(0x2004), '"rtion failed!" (STRING)')
+        self.assertEqual(parser.lookup(0x2004), '"rtion failed!" (STRING)')
+
+    def test_changed_bytes_or_unmatched_parent_are_not_named(self):
+        for data, matched in ((b"Assertion changed!\0", True),
+                              (b"Assertion failed!\0", False)):
+            with self.subTest(data=data, matched=matched):
+                self.assertIsNone(self.parser(data, matched).lookup(0x2004))
 
 
 class BytesImage:
