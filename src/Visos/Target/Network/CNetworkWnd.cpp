@@ -46,7 +46,8 @@ CNetworkWnd::CNetworkWnd(const char* p_className, int* p_registered) : m_firstMe
 									 (HINSTANCE) g_pApplicationInstance,
 									 this);
 	if (m_windowHandle == 0) {
-		*g_pErrorOutput << "Failed to create invisible window - Error code: " << (unsigned long) GetLastError() << "\n";
+		unsigned long error = GetLastError();
+		*g_pErrorOutput << "Failed to create invisible window - Error code: " << error << "\n";
 	}
 }
 
