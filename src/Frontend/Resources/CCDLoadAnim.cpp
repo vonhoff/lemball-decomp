@@ -24,7 +24,7 @@
 #include "Visos/Graphics/CDrawingMark.h"
 #include "Visos/Graphics/CLine.h"
 
-class CFrames;
+class CAnimFrameBASE;
 
 // FUNCTION: LEMBALL 0x0044aa80
 CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display)
@@ -161,7 +161,7 @@ void CCDLoadAnim::Draw()
 	m_fgBlit[0].Draw(m_gdi);
 	point.m_x = (short) (m_points[1].m_x + m_centerX);
 	point.m_y = (short) (m_points[1].m_y + m_centerY);
-	DrawAnim(point, m_animResourceId, 0, (CFrames*) m_repeatAnim, 0);
+	DrawAnim(point, m_animResourceId, 0, (CAnimFrameBASE*) m_repeatAnim, 0);
 	CVsPoint origin((short) (m_points[2].m_x + m_centerX), (short) (m_points[2].m_y + m_centerY));
 	CVector radius(0, 0);
 	radius.SetIntegers((short) -m_points[3].m_x, 0);

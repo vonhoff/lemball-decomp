@@ -22,7 +22,7 @@
 
 #include <new.h>
 
-class CFrames;
+class CAnimFrameBASE;
 
 // FUNCTION: LEMBALL 0x0044f440
 CHiliteController::CHiliteController(CGWnd* p_window,
@@ -232,7 +232,7 @@ void CHiliteController::DrawHiliteWindow()
 		unsigned long animationId = g_dwHiliteAnimationId;
 		CGDI* savedGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
-		CAnimsManager::DrawAnim(position, animationId, 0, (CFrames*) &m_hiliteAnim, 0);
+		CAnimsManager::DrawAnim(position, animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, 0);
 		CAnimsManager::m_gdi = savedGdi;
 		CAnimsManager::ResetPrimitives();
 	}

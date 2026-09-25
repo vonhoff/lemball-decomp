@@ -28,7 +28,7 @@
 
 #include <string.h>
 
-class CFrames;
+class CAnimFrameBASE;
 class CResBITMAP;
 
 extern "C" unsigned long __stdcall timeGetTime(void);
@@ -521,7 +521,7 @@ void CPasswordDrawer::DrawHilite()
 	savedGdi = CAnimsManager::m_gdi;
 	m_hiliteAnim.m_frameState = 0;
 	CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
-	CAnimsManager::DrawAnim(position, m_animationId, 0, (CFrames*) &m_hiliteAnim, 0);
+	CAnimsManager::DrawAnim(position, m_animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, 0);
 	CAnimsManager::m_gdi = savedGdi;
 }
 

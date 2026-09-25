@@ -25,7 +25,7 @@
 
 #include <stdlib.h>
 
-class CFrames;
+class CAnimFrameBASE;
 
 int sgn(int p_value);
 
@@ -379,7 +379,7 @@ void CGunController::DrawSpriteWindow()
 		position.m_y = (short) (offsets[1] + m_gunY);
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
-		CAnimsManager::DrawAnim(position, g_dwGunAnim14c, 0, (CFrames*) &m_staticAnim, 0);
+		CAnimsManager::DrawAnim(position, g_dwGunAnim14c, 0, (CAnimFrameBASE*) &m_staticAnim, 0);
 		CAnimsManager::m_gdi = previousGdi;
 		break;
 	case 1:
@@ -387,7 +387,7 @@ void CGunController::DrawSpriteWindow()
 		position.m_y = (short) (offsets[1] + m_gunY);
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
-		CAnimsManager::DrawAnim(position, g_dwGunAnim14c, 0, (CFrames*) m_sideAnim, 0);
+		CAnimsManager::DrawAnim(position, g_dwGunAnim14c, 0, (CAnimFrameBASE*) m_sideAnim, 0);
 		CAnimsManager::m_gdi = previousGdi;
 		break;
 	case 2:
@@ -396,37 +396,37 @@ void CGunController::DrawSpriteWindow()
 		if (m_targetSide == 0) {
 			position.m_x = (short) m_projectileX;
 			position.m_y = (short) m_projectileY;
-			CAnimsManager::DrawAnim(position, g_dwGunAnimCursor, 0, (CFrames*) m_cursorAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnimCursor, 0, (CAnimFrameBASE*) m_cursorAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[0]);
 			position.m_y = (short) (m_gunY + offsets[1]);
-			CAnimsManager::DrawAnim(position, g_dwGunAnim148, 0, (CFrames*) m_hitAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnim148, 0, (CAnimFrameBASE*) m_hitAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[2]);
 			position.m_y = (short) (m_gunY + offsets[3]);
-			CAnimsManager::DrawAnim(position, g_dwGunAnimLeftShot, 0, (CFrames*) m_leftShotAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnimLeftShot, 0, (CAnimFrameBASE*) m_leftShotAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		else {
 			position.m_x = (short) m_projectileX;
 			position.m_y = (short) m_projectileY;
-			CAnimsManager::DrawAnim(position, g_dwGunAnim147, 0, (CFrames*) m_cursorAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnim147, 0, (CAnimFrameBASE*) m_cursorAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[0]);
 			position.m_y = (short) (m_gunY + offsets[1]);
-			CAnimsManager::DrawAnim(position, g_dwGunAnim149, 0, (CFrames*) m_hitAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnim149, 0, (CAnimFrameBASE*) m_hitAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[4]);
 			position.m_y = (short) (m_gunY + offsets[5]);
-			CAnimsManager::DrawAnim(position, g_dwGunAnim14b, 0, (CFrames*) m_leftShotAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnim14b, 0, (CAnimFrameBASE*) m_leftShotAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		break;
@@ -436,25 +436,25 @@ void CGunController::DrawSpriteWindow()
 		if (m_targetSide == 0) {
 			position.m_x = (short) m_projectileEndX;
 			position.m_y = (short) m_projectileEndY;
-			CAnimsManager::DrawAnim(position, g_dwGunAnim14d, 0, (CFrames*) m_rightShotAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnim14d, 0, (CAnimFrameBASE*) m_rightShotAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[0]);
 			position.m_y = (short) (m_gunY + offsets[1]);
-			CAnimsManager::DrawAnim(position, g_dwGunAnim148, 0, (CFrames*) m_hitAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnim148, 0, (CAnimFrameBASE*) m_hitAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		else {
 			position.m_x = (short) m_projectileEndX;
 			position.m_y = (short) m_projectileEndY;
-			CAnimsManager::DrawAnim(position, g_dwGunAnim14e, 0, (CFrames*) m_rightShotAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnim14e, 0, (CAnimFrameBASE*) m_rightShotAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
 			position.m_x = (short) (m_gunX + offsets[0]);
 			position.m_y = (short) (m_gunY + offsets[1]);
-			CAnimsManager::DrawAnim(position, g_dwGunAnim149, 0, (CFrames*) m_hitAnim, 0);
+			CAnimsManager::DrawAnim(position, g_dwGunAnim149, 0, (CAnimFrameBASE*) m_hitAnim, 0);
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		break;

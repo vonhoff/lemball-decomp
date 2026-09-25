@@ -1,13 +1,13 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CTIMEDANIM_H
 #define LEMBALL_VISOS_ANIMATION_CTIMEDANIM_H
 
-#include "CFrames.h"
+#include "CAnimFrameBASE.h"
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00496d08
-class CTimedAnim : public CFrames {
+class CTimedAnim : public CAnimFrameBASE {
 public:
-	CTimedAnim(unsigned int p_frames = 0, int p_direction = 0) : CFrames(p_frames) { m_direction = p_direction; }
+	CTimedAnim(unsigned int p_frames = 0, int p_direction = 0) : CAnimFrameBASE(p_frames) { m_direction = p_direction; }
 	virtual unsigned int GetFrameNo();                    // vtable+0x00
 	virtual void StartAnim(unsigned long p_animTime) = 0; // vtable+0x04
 	virtual void SetAnimTime(unsigned long p_animTime);   // vtable+0x08

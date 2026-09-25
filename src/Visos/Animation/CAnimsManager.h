@@ -6,7 +6,7 @@
 struct CVsPoint;
 
 class CGDI;
-class CFrames;
+class CAnimFrameBASE;
 class CRemap;
 class CResZRLE;
 class CResBase;
@@ -27,7 +27,7 @@ public:
 	CVsRect DrawAnim(const CVsPoint& p_position,
 					 unsigned long p_resourceId,
 					 unsigned long p_drawFlags,
-					 CFrames* p_frame,
+					 CAnimFrameBASE* p_frame,
 					 CRemap* p_remap);
 	CVsSize GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex);
 	unsigned long GetnAnims(unsigned long p_resourceId);
@@ -39,9 +39,9 @@ public:
 						   const CVsPoint& p_position,
 						   unsigned long p_resourceId,
 						   unsigned long p_drawFlags,
-						   CFrames* p_frame,
+						   CAnimFrameBASE* p_frame,
 						   CRemap* p_remap);
-	CResZRLE* ResolveAnimFrameData(unsigned long p_resourceId, CFrames* p_frame);
+	CResZRLE* ResolveAnimFrameData(unsigned long p_resourceId, CAnimFrameBASE* p_frame);
 	void DetachGdi(CGDI* p_gdi);
 	void UnLoadAnims(unsigned long p_resourceId);
 	~CAnimsManager();

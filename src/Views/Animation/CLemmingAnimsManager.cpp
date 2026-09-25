@@ -50,7 +50,7 @@ CLemmingAnimsManager::CLemmingAnimsManager(CGDI* p_gdi, CMain2DDisplay* p_displa
 	m_display = p_display;
 	m_gdi = p_gdi;
 	m_ai = p_ai;
-	m_animFrames = (CFrames**) operator new(0xad8);
+	m_animFrames = (CAnimFrameBASE**) operator new(0xad8);
 	m_drawFlags = 0;
 	for (int i = 0; i < 0x2b6; i++) {
 		m_animFrames[i] = 0;
@@ -607,7 +607,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	switch (p_resourceId) {
 	case RES_GAME_NUMERALS:
 	case RES_GAME_COLON: {
-		CFrames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
 		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, 0, frame, p_remap);
 		break;
@@ -630,7 +630,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_CURSORS_HAND:
 	case RES_SNOW_HUT:
 	case RES_LEGO_HUT: {
-		CFrames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -681,7 +681,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_GAME_OUTLINE:
 	case RES_GAME_ANIM:
 	case RES_LEGO_LEGOTREE: {
-		CFrames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
 		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
@@ -922,7 +922,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_GRASS_PATH:
 	case RES_GRASS_ROCK:
 	case RES_SNOW_SNOWTREE: {
-		CFrames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
 		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
@@ -931,7 +931,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_GAME_FLAME:
 	case RES_GAME_ELECTRIC:
 	case RES_GAME_EMBERS: {
-		CFrames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
 		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
@@ -1003,7 +1003,7 @@ void CLemmingAnimsManager::DrawAnimOnGdi(CGDI* p_gdi,
 	case RES_GRASS_PATH:
 	case RES_SNOW_SNOWTREE:
 	case RES_LEGO_LEGOTREE: {
-		CFrames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
 		CVsPoint position(p_x, p_y);
 		CGDI* previous = CAnimsManager::m_gdi;
@@ -1015,7 +1015,7 @@ void CLemmingAnimsManager::DrawAnimOnGdi(CGDI* p_gdi,
 	case RES_GRASS_TOWER:
 	case RES_SNOW_HUT:
 	case RES_LEGO_HUT: {
-		CFrames* frame = m_animFrames[m_resourceSlots[p_resourceId]];
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		CVsPoint position(p_x, p_y);
 		CGDI* previous = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = p_gdi;
@@ -1034,20 +1034,22 @@ void CLemmingAnimsManager::LoadAnimation(unsigned long p_resourceId, int p_animT
 		return;
 	}
 	LoadAnims(p_resourceId);
-	CFrames* frame = 0;
+	CAnimFrameBASE* frame;
 	switch (p_animType) {
 	case 0:
 		frame = new CStaticAnim();
 		break;
-	case 1:
-		frame = new CRepeatAnim(GetnAnims(p_resourceId), 1);
-		break;
+	case 1: {
+		unsigned int count = GetnAnims(p_resourceId);
+		frame = new CRepeatAnim(count, 1);
+	} break;
 	case 2:
 		frame = new CFrames(1);
 		break;
-	case 3:
-		frame = new CPlayThruAnim(GetnAnims(p_resourceId), 1);
-		break;
+	case 3: {
+		unsigned int count = GetnAnims(p_resourceId);
+		frame = new CPlayThruAnim(count, 1);
+	} break;
 	}
 	m_animFrames[m_resourceSlots[p_resourceId]] = frame;
 	UpdateNonCacheLoad();
@@ -1072,22 +1074,24 @@ void CLemmingAnimsManager::LoadAnimation(unsigned long p_firstResourceId,
 		m_loadProgress += p_lastResourceId - p_firstResourceId;
 		return;
 	}
+	CAnimFrameBASE* frame;
 	for (; (int) p_lastResourceId >= (int) p_firstResourceId; p_firstResourceId++) {
 		LoadAnims(p_firstResourceId);
-		CFrames* frame = 0;
 		switch (p_animType) {
 		case 0:
 			frame = new CStaticAnim();
 			break;
-		case 1:
-			frame = new CRepeatAnim(GetnAnims(p_firstResourceId), 1);
-			break;
+		case 1: {
+			unsigned int count = GetnAnims(p_firstResourceId);
+			frame = new CRepeatAnim(count, 1);
+		} break;
 		case 2:
 			frame = new CFrames(1);
 			break;
-		case 3:
-			frame = new CPlayThruAnim(GetnAnims(p_firstResourceId), 1);
-			break;
+		case 3: {
+			unsigned int count = GetnAnims(p_firstResourceId);
+			frame = new CPlayThruAnim(count, 1);
+		} break;
 		}
 		m_animFrames[m_resourceSlots[p_firstResourceId]] = frame;
 		UpdateNonCacheLoad();
@@ -1097,7 +1101,7 @@ void CLemmingAnimsManager::LoadAnimation(unsigned long p_firstResourceId,
 // FUNCTION: LEMBALL 0x00434ec0
 void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_resourceId)
 {
-	CFrames* frames = m_animFrames[m_resourceSlots[p_resourceId]];
+	CAnimFrameBASE* frames = m_animFrames[m_resourceSlots[p_resourceId]];
 	if (frames != 0) {
 		delete frames;
 		m_animFrames[m_resourceSlots[p_resourceId]] = 0;
@@ -1109,7 +1113,7 @@ void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_resourceId)
 void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId)
 {
 	for (; (int) p_lastResourceId >= (int) p_firstResourceId; p_firstResourceId++) {
-		CFrames* frame = m_animFrames[m_resourceSlots[p_firstResourceId]];
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_firstResourceId]];
 		if (frame != 0) {
 			delete frame;
 			m_animFrames[m_resourceSlots[p_firstResourceId]] = 0;

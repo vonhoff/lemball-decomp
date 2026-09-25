@@ -27,7 +27,7 @@ CVsRect* CAnimsManager::DrawAnimOnGdi(CVsRect* p_bounds,
 									  const CVsPoint& p_position,
 									  unsigned long p_resourceId,
 									  unsigned long p_drawFlags,
-									  CFrames* p_frame,
+									  CAnimFrameBASE* p_frame,
 									  CRemap* p_remap)
 {
 	CGDI* previous = m_gdi;
@@ -136,23 +136,25 @@ CAnimsManager::~CAnimsManager()
 // FUNCTION: LEMBALL 0x00467490
 void CAnimsManager::LoadAnims(unsigned long p_resourceId)
 {
+	CAnimsManager* owner = this;
+	unsigned long resourceId = p_resourceId;
 	int slot = 0;
-	if (m_resourceCapacity != m_resourceSlots[p_resourceId]) {
-		slot = m_resourceSlots[p_resourceId];
+	if (owner->m_resourceCapacity != owner->m_resourceSlots[resourceId]) {
+		slot = owner->m_resourceSlots[resourceId];
 	}
 	else {
-		while (m_resources[slot] != 0) {
+		while (owner->m_resources[slot] != 0) {
 			slot = slot + 1;
 		}
 	}
-	m_resources[slot] = CResANIM::Load(p_resourceId);
-	CResBase*& resource = m_resources[slot];
+	owner->m_resources[slot] = CResANIM::Load(resourceId);
+	CResBase*& resource = owner->m_resources[slot];
 	if (resource == 0) {
-		resource = CResZRLE::Load(p_resourceId);
+		resource = CResZRLE::Load(resourceId);
 	}
-	if ((int) m_resourceSlots[p_resourceId] == m_resourceCapacity) {
-		m_resourceSlots[p_resourceId] = (short) slot;
-		m_loadedResourceCount = m_loadedResourceCount + 1;
+	if ((int) owner->m_resourceSlots[resourceId] == owner->m_resourceCapacity) {
+		owner->m_resourceSlots[resourceId] = (short) slot;
+		owner->m_loadedResourceCount = owner->m_loadedResourceCount + 1;
 	}
 }
 
@@ -196,7 +198,7 @@ CVsSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_a
 }
 
 // FUNCTION: LEMBALL 0x004676a0
-CResZRLE* CAnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, CFrames* p_frame)
+CResZRLE* CAnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, CAnimFrameBASE* p_frame)
 {
 	CResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
 	unsigned int frame;
@@ -228,7 +230,7 @@ void CAnimsManager::DetachGdi(CGDI* p_gdi)
 CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 								unsigned long p_resourceId,
 								unsigned long p_drawFlags,
-								CFrames* p_frame,
+								CAnimFrameBASE* p_frame,
 								CRemap* p_remap)
 {
 	CResBase* resource;
@@ -271,8 +273,8 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 	else {
 		frameIndex = 0;
 		if (p_frame != 0) {
-			frameIndex = ((CFrames*) p_frame)->GetFrameNo();
-			((CFrames*) p_frame)->m_reserved08 = frameIndex;
+			frameIndex = ((CAnimFrameBASE*) p_frame)->GetFrameNo();
+			((CAnimFrameBASE*) p_frame)->m_reserved08 = frameIndex;
 		}
 		sizeSource = ((CResANIM*) resource)->m_animationEntries + frameIndex;
 		if (m_doubleBuffered != 0) {

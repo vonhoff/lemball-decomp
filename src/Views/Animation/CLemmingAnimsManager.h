@@ -8,7 +8,7 @@
 
 class CAI;
 class CCDLoadAnim;
-class CFrames;
+class CAnimFrameBASE;
 class CGDI;
 class CMain2DDisplay;
 class CRemap;
@@ -54,16 +54,16 @@ public:
 	friend class C2D;
 
 private:
-	CFrames** m_animFrames;       // 0x74
-	CCDLoadAnim* m_loadAnim;      // 0x78
-	CMain2DDisplay* m_display;    // 0x7c
-	CGDI* m_gdi;                  // 0x80
-	unsigned int m_loaded;        // 0x84
-	CDrawingMark m_primitive;     // 0x88
-	int m_nonCacheState;          // 0x8c
-	int m_loadProgress;           // 0x90
-	unsigned int m_countingLoads; // 0x94
-	CAI* m_ai;                    // 0x98
+	CAnimFrameBASE** m_animFrames; // 0x74
+	CCDLoadAnim* m_loadAnim;       // 0x78
+	CMain2DDisplay* m_display;     // 0x7c
+	CGDI* m_gdi;                   // 0x80
+	unsigned int m_loaded;         // 0x84
+	CDrawingMark m_primitive;      // 0x88
+	int m_nonCacheState;           // 0x8c
+	int m_loadProgress;            // 0x90
+	unsigned int m_countingLoads;  // 0x94
+	CAI* m_ai;                     // 0x98
 	CResFONT* m_interfaceFonts[3]; // 0x9c
 	unsigned int m_groundStyle;    // 0xa8
 	unsigned int m_drawFlags;      // 0xac
