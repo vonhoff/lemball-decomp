@@ -63,9 +63,7 @@ def main() -> int:
 
         pct = match.effective_accuracy * 100.0
         if args.no_diff:
-            status = match_status(match)
-            suffix = f" {status}" if status else ""
-            print(f"0x{addr:08x} {match.name}: {pct:.2f}%{suffix}")
+            print(f"0x{addr:08x} {match.name}: {pct:.2f}% {match_status(match)}")
         else:
             print(f"0x{addr:08x} {match.name}: {pct:.2f}% {match_status(match)} "
                   "(reccmp normalized assembly)")

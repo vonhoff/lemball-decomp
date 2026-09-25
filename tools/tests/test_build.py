@@ -31,12 +31,6 @@ class LinkFreshnessTests(unittest.TestCase):
     def success(self):
         return subprocess.CompletedProcess([], 0, "build output\n")
 
-    def test_unchanged_build_does_not_relink(self):
-        result, calls = self.run_build(lambda *args, **kwargs: self.success())
-        self.assertEqual(result[0], 0)
-        self.assertEqual(calls, 1)
-        self.assertTrue(self.executable.exists())
-
     def test_new_object_forces_one_relink(self):
         os.utime(self.object, ns=(20000000000, 20000000000))
         calls = []

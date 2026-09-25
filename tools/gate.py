@@ -68,52 +68,35 @@ def main() -> int:
     args = parser.parse_args()
     paths = args.paths or None
 
-    if (args.provenance or args.resource is not None) and not args.all:
-        return check_provenance(paths=paths, strict=args.annot_strict, verbose=args.verbose,
-                                resource=args.resource)
+    provenance = lambda: check_provenance(paths=paths, strict=args.annot_strict,
+                                          verbose=args.verbose, resource=args.resource)
+    names = lambda: check_names(paths=paths, fail=True, strict=args.names_strict,
+                                verbose=args.verbose, as_json=args.names_json)
+    vtable = lambda: check_vtable(verbose=args.verbose, top=args.top,
+                                  annot_strict=args.annot_strict)
+    if not args.all:
+        if args.provenance or args.resource is not None:
+            return provenance()
+        if args.names or args.names_strict or args.names_json:
+            return names()
+        if args.vtable:
+            return vtable()
+        if args.tools:
+            return check_tool_tests()
 
-    if (args.names or args.names_strict or args.names_json) and not args.all:
-        return check_names(paths=paths, fail=True, strict=args.names_strict,
-                           verbose=args.verbose, as_json=args.names_json)
-
-    if args.vtable and not args.all:
-        return check_vtable(verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
-
-    if args.tools and not args.all:
-        return check_tool_tests()
-
-    code = check_smell(paths=paths, annot=True, annot_strict=args.annot_strict)
-    if code != 0:
-        return code
-
-    code = check_provenance(paths=paths, strict=args.annot_strict, verbose=args.verbose,
-                            resource=args.resource)
-    if code != 0:
-        return code
-
-    code = check_layout(paths=paths, fail=True)
-    if code != 0:
-        return code
-
-    code = check_decomplint(paths=paths)
-    if code != 0:
-        return code
-
+    checks = [
+        lambda: check_smell(paths=paths, annot=True, annot_strict=args.annot_strict),
+        provenance,
+        lambda: check_layout(paths=paths, fail=True),
+        lambda: check_decomplint(paths=paths),
+    ]
     if not paths:
-        code = check_tool_tests()
-        if code != 0:
-            return code
-
+        checks.append(check_tool_tests)
     if args.all:
-        code = check_names(paths=paths, fail=True, strict=args.names_strict,
-                           verbose=args.verbose, as_json=args.names_json)
-        if code != 0:
+        checks.extend((names, vtable))
+    for check in checks:
+        if code := check():
             return code
-
-        code = check_vtable(verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
-        if code != 0:
-            return code
-
     return 0
 
 

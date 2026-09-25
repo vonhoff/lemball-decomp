@@ -106,7 +106,7 @@ def method_owners(code: str) -> list[str]:
     return sorted(by_stem.values(), key=lambda name: class_stem(name).casefold())
 
 
-def primary_names(path: Path, _text: str, code: str, types: list[dict]) -> list[str]:
+def primary_names(path: Path, code: str, types: list[dict]) -> list[str]:
     if path.suffix == ".cpp":
         owners = method_owners(code)
         if owners:
@@ -117,45 +117,32 @@ def primary_names(path: Path, _text: str, code: str, types: list[dict]) -> list[
     if vtable:
         return sorted(set(vtable))
     classes = [entry for entry in types if entry["kind"] == "class"]
-    matched = [
-        entry
-        for entry in types
-        if stems_equal(entry["name"], path.stem)
-        or stems_equal(class_stem(entry["name"]), path.stem)
-    ]
+    matched = [entry for entry in types if stems_equal(class_stem(entry["name"]), path.stem)]
     if matched:
-        names = {entry["name"] for entry in matched}
-        names.update(entry["name"] for entry in classes)
-        return sorted(names)
+        return sorted({entry["name"] for entry in matched + classes})
     if classes:
         return sorted({entry["name"] for entry in classes})
-    if types:
-        return sorted({entry["name"] for entry in types})
-    return []
+    return sorted({entry["name"] for entry in types})
 
 
 def scan(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
     types = top_level_types(text, code)
-    primary = primary_names(path, text, code, types)
+    primary = primary_names(path, code, types)
     helpers = sorted(
         {entry["name"] for entry in types if entry["name"] not in primary}
     )
     stem = path.stem
     rel = rel_posix(path)
-    class_stems = [class_stem(name) for name in primary]
-    if len(class_stems) == 1:
-        expected, evidence = class_stems[0], "class"
-    else:
-        expected, evidence = None, None
+    expected = class_stem(primary[0]) if len(primary) == 1 else None
 
     if len(primary) > 1:
         status = "multi-class"
         detail = "primary classes: " + ", ".join(primary)
     elif expected is not None and not stems_equal(stem, expected):
         status = "stem-name"
-        detail = f"stem {stem} != expected {expected} ({evidence})"
+        detail = f"stem {stem} != expected {expected} (class)"
     elif not primary:
         status = "free"
         detail = "no primary class"
@@ -173,7 +160,7 @@ def scan(path: Path) -> dict:
         "primary": primary,
         "helpers": helpers,
         "expected_stem": expected,
-        "name_evidence": evidence,
+        "name_evidence": "class" if expected else None,
         "status": status,
         "detail": detail,
     }

@@ -53,35 +53,22 @@ class MogArchive:
         self.path = path
         self.data = path.read_bytes()
 
-    def u32(self, offset: int) -> tuple[int, int]:
-        if offset + 4 > len(self.data):
-            raise ValueError(f"{self.path}: unexpected EOF at 0x{offset:x}")
-        return struct.unpack_from("<I", self.data, offset)[0], offset + 4
-
     def read_directory(self, file_offset: int) -> list[dict]:
-        # Root dir reads one byte then seeks back to 0 before the header dwords.
-        offset = file_offset
-
-        _, offset = self.u32(offset)  # unknown
-        _, offset = self.u32(offset)  # unknown
-        chunk_count, offset = self.u32(offset)
-        version, offset = self.u32(offset)
+        _, _, chunk_count, version, directory_end = struct.unpack_from(
+            "<5I", self.data, file_offset
+        )
         if version != MOG_VERSION:
             raise ValueError(f"{self.path}: expected MOG version {MOG_VERSION}, got {version}")
-        directory_end, offset = self.u32(offset)
-        payload_start = offset
+        payload_start = file_offset + 20
 
         dir_data = self.data[payload_start:directory_end]
 
         entries: list[dict] = []
         for index in range(chunk_count):
             # Index rows are 36 bytes each, starting at directory_end.
-            entry_offset = directory_end + index * 36
-            data_rel, entry_offset = self.u32(entry_offset)
-            res_id, entry_offset = self.u32(entry_offset)
-            res_type, entry_offset = self.u32(entry_offset)
-            file_off, entry_offset = self.u32(entry_offset)
-            size, entry_offset = self.u32(entry_offset)
+            data_rel, res_id, res_type, file_off, size = struct.unpack_from(
+                "<5I", self.data, directory_end + index * 36
+            )
 
             name = self._name_from_dir_data(dir_data, data_rel - payload_start)
 

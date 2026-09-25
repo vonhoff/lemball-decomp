@@ -65,16 +65,8 @@ def build_report(roadmap_path, reccmp_path):
     matches = load_matches(reccmp_path)
     groups = defaultdict(list)
     for item in load_inventory(roadmap_path):
-        match = matches.get(item["address"])
-        ratio, _ = compute_ratio(match)
-        groups[unit_name(item["module"])].append(
-            {
-                "name": item["name"],
-                "size": item["size"],
-                "address": item["address"],
-                "ratio": ratio,
-            }
-        )
+        item["ratio"], _ = compute_ratio(matches.get(item["address"]))
+        groups[unit_name(item["module"])].append(item)
 
     units = []
     for name, functions in sorted(groups.items()):

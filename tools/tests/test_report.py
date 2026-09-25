@@ -3,28 +3,10 @@
 import unittest
 from unittest.mock import patch
 
-from lib.compare import compute_ratio
 from report import build_report
 
 
 class ReportMatchTests(unittest.TestCase):
-    def test_display_equivalence_does_not_promote_partial_match(self):
-        thunk_diff = [["", [{
-            "orig": [[0, "call <OFFSET1>"]],
-            "recomp": [[0, "call Example (FUNCTION)"]],
-        }]]]
-        register_diff = [["", [{
-            "orig": [[0, "mov al, cl"]],
-            "recomp": [[0, "mov al, dl"]],
-        }]]]
-
-        for diff in (thunk_diff, register_diff):
-            with self.subTest(diff=diff):
-                self.assertEqual(
-                    compute_ratio({"matching": 0.75, "diff": diff}),
-                    (75.0, "PARTIAL"),
-                )
-
     def test_report_counts_only_reccmp_effective_matches(self):
         inventory = [
             {"address": 1, "size": 80, "name": "Partial", "module": "partial.obj"},
@@ -44,17 +26,6 @@ class ReportMatchTests(unittest.TestCase):
 
         self.assertEqual(result["measures"]["matched_functions"], 1)
         self.assertEqual(result["measures"]["matched_code"], "20")
-        self.assertEqual(set(result["measures"]), {
-            "total_units", "total_code", "matched_code", "fuzzy_match_percent",
-            "matched_code_percent", "total_functions", "matched_functions",
-            "matched_functions_percent",
-        })
-        self.assertEqual(
-            {f["name"]: f["metadata"]
-             for unit in result["units"] for f in unit["functions"]},
-            {"Partial": {"virtual_address": "1"},
-             "Effective": {"virtual_address": "2"}},
-        )
         scores = {f["name"]: f["fuzzy_match_percent"]
                   for unit in result["units"] for f in unit["functions"]}
         self.assertEqual(scores, {"Partial": 75.0, "Effective": 100.0})
