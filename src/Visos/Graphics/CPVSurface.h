@@ -67,6 +67,7 @@ public:
 	friend class CHiliteButtons;
 	friend class CGunController;
 	friend class CPanelButton;
+	friend class CAboutScreen;
 
 private:
 	CVsRect m_dontUpdateRect;     // 0x04

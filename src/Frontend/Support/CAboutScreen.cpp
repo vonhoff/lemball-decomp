@@ -193,7 +193,6 @@ void CAboutScreen::DrawChangedRegion()
 	ChangeListItem* item;
 	int itemCount;
 	int index;
-	CVsRect area;
 	CResBITMAP* bitmap;
 
 	changes = m_gdi->m_renderTarget->GetChangeList();
@@ -201,7 +200,7 @@ void CAboutScreen::DrawChangedRegion()
 	index = changes->GetDrawMark();
 	if (index < itemCount) {
 		item = changes->GetNItem(index);
-		area = *(CVsRect*) item;
+		CVsRect area = *(CVsRect*) item;
 		index = index + 1;
 		while (index < itemCount) {
 			item = changes->GetNItem(index);
@@ -222,19 +221,26 @@ void CAboutScreen::DrawChangedRegion()
 			m_rects[0].m_color = 0;
 			m_rects[0].Draw(m_gdi);
 			bitmap = m_backgroundBitmap;
+			const CVsSize& bitmapSize = *reinterpret_cast<const CVsSize*>(&bitmap->m_x);
 			m_line.m_bounds.m_width = m_size.m_width;
 			m_line.m_color = 0;
 			m_line.m_bounds.m_height = m_size.m_height;
 			m_line.m_bounds.m_x = 0;
 			m_line.m_bounds.m_y = 0;
 			m_line.Draw(m_gdi);
-			m_bitmap.m_y = (short) (((int) m_size.m_height - (int) (short) bitmap->m_y) / 2);
-			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) (short) bitmap->m_x) / 2);
+			int centeredY = ((int) m_size.m_height - (int) bitmapSize.m_height) / 2;
+			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) bitmapSize.m_width) / 2);
+			m_bitmap.m_y = (short) centeredY;
 			m_bitmap.m_resource = m_backgroundBitmap;
 			m_bitmap.m_remap = 0;
 			m_bitmap.m_flags = 0x800;
 			m_bitmap.Draw(m_gdi);
 			DrawRegistrationText();
+			CVsSize surfaceSize;
+			surfaceSize = static_cast<CVsSize&>(m_gdi->m_renderTarget->m_windowRect);
+			CVsPoint origin;
+			m_rects[1].m_bounds.CVsSize::operator=(surfaceSize);
+			m_rects[1].m_bounds.CVsPoint::operator=(origin);
 			m_rects[1].m_color = 0;
 			m_rects[1].Draw(m_gdi);
 		}
