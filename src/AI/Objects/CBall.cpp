@@ -176,15 +176,17 @@ void CBall::HitBullet(CBullet* p_bullet)
 // FUNCTION: LEMBALL 0x00421ab0
 void CBall::Delete()
 {
-	int& objectCount = g_pAI->m_objectCount;
-	for (int i = 0; i < objectCount; i++) {
+	int* objectCount;
+	int i = 0;
+	objectCount = &g_pAI->m_objectCount;
+	for (; i < *objectCount; i++) {
 		CGameObject**& objects = g_pAI->m_objects;
 		if (objects[i] == this) {
-			objectCount--;
-			for (; i < objectCount; i++) {
+			(*objectCount)--;
+			for (; i < *objectCount; i++) {
 				objects[i] = objects[i + 1];
 			}
-			objects[objectCount] = 0;
+			objects[*objectCount] = 0;
 			break;
 		}
 	}
