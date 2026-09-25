@@ -500,26 +500,30 @@ void CGunController::MoveUp()
 // FUNCTION: LEMBALL 0x0044d8e0
 void CGunController::MoveDown()
 {
-	int i;
-	int bestY;
+	int remaining;
 	int foundY;
+	int* directionField;
+	int bestY;
 	int direction;
+	int y;
 
 	bestY = 999999;
 	foundY = -1;
-	i = 0;
-	while (i < 8) {
-		direction = m_junctions[i].m_direction;
-		if (direction != 3 && m_targetY < m_junctions[i].m_y && m_junctions[i].m_y < bestY) {
+	directionField = &m_junctions[0].m_direction;
+	remaining = 8;
+	do {
+		direction = *directionField;
+		// m_y is two ints before m_direction in each junction.
+		if (direction != 3 && m_targetY < (y = directionField[-2]) && y < bestY) {
 			if (direction != 2) {
 				m_targetSide = direction;
 			}
-			foundY = m_junctions[i].m_y;
+			foundY = directionField[-2];
 			bestY = foundY;
 			g_pSoundView->PlayEffect(SFX_RELOAD);
 		}
-		i = i + 1;
-	}
+		directionField += 8;
+	} while (--remaining != 0);
 	if (foundY != -1) {
 		m_targetY = foundY;
 	}
