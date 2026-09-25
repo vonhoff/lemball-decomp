@@ -59,6 +59,8 @@ This project is developed with assistance from AI agents. Every change is verifi
 
 ## Legal
 
-This is an unofficial software preservation and research project. It is not affiliated with or endorsed by DMA Design, Psygnosis, or current rights holders.
+This is an unofficial reverse-engineering and preservation project. It is not affiliated with or endorsed by DMA Design, Psygnosis, or any current rights holder.
 
-All trademarks and game assets belong to their respective owners. The [GPLv3 License](LICENSE) covers only code written for this repository.
+*Lemmings Paintball*, its original program, assets, trademarks, and other copyrighted material remain the property of their respective rights holders. The original executable and game assets are not distributed by this repository.
+
+No license is granted for the reconstructed game code. No leaked or original source code is knowingly used as reconstruction material.
