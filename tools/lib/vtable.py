@@ -585,12 +585,11 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
 
 
 def check_vtable(
-    no_build: bool = True,
     verbose: bool = False,
     top: int = 0,
     annot_strict: bool = False,
 ) -> int:
-    if not no_build or not RECOMP_EXE.is_file():
+    if not RECOMP_EXE.is_file():
         from build import run_build
 
         result = run_build()

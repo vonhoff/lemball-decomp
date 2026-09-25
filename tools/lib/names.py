@@ -34,11 +34,6 @@ WINDOWS_NAME_REVIEWS = {
 }
 
 
-def decode_symbol(symbol):
-    signature = decode_signature(symbol)
-    return signature.owner, signature.method
-
-
 def comment_blocks(text):
     """Adjacent real line comments; code and blank lines end an annotation block."""
     code = mask_comments_and_strings(text)

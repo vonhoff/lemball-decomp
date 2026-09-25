@@ -77,7 +77,7 @@ def main() -> int:
                            verbose=args.verbose, as_json=args.names_json)
 
     if args.vtable and not args.all:
-        return check_vtable(no_build=True, verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
+        return check_vtable(verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
 
     if args.tools and not args.all:
         return check_tool_tests()
@@ -110,7 +110,7 @@ def main() -> int:
         if code != 0:
             return code
 
-        code = check_vtable(no_build=True, verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
+        code = check_vtable(verbose=args.verbose, top=args.top, annot_strict=args.annot_strict)
         if code != 0:
             return code
 
