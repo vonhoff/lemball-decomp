@@ -465,26 +465,29 @@ void CGunController::DrawSpriteWindow()
 // FUNCTION: LEMBALL 0x0044d830
 void CGunController::MoveUp()
 {
-	int i;
+	int* directionField;
+	int remaining;
 	int bestY;
 	int foundY;
 	int direction;
 
 	bestY = -1;
 	foundY = -1;
-	i = 0;
-	while (i < 8) {
-		direction = m_junctions[i].m_direction;
-		if (direction != 3 && m_junctions[i].m_y < m_targetY && bestY < m_junctions[i].m_y) {
+	directionField = &m_junctions[0].m_direction;
+	remaining = 8;
+	do {
+		direction = *directionField;
+		// m_y is two ints before m_direction in each junction.
+		if (direction != 3 && directionField[-2] < m_targetY && bestY < directionField[-2]) {
 			if (direction != 2) {
 				m_targetSide = direction;
 			}
-			foundY = m_junctions[i].m_y;
+			foundY = directionField[-2];
 			bestY = foundY;
 			g_pSoundView->PlayEffect(SFX_RELOAD);
 		}
-		i = i + 1;
-	}
+		directionField += 8;
+	} while (--remaining != 0);
 	if (foundY != -1) {
 		m_targetY = foundY;
 	}
