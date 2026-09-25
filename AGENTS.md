@@ -32,7 +32,7 @@ Use only these project scripts:
 
 ## Focused workflow
 
-One function at a time. Select from the current report or `tools/next.py`. Read reconstruction memory only for the selected target before editing; inspect related functions only when a concrete caller, callee, type, or regression demands it. Prior dead ends are tree-specific, not permanent bans.
+One function at a time. Use reconstruction-memory `triage_report` against the current canonical report to screen targets by byte size and prior work; `tools/next.py` ranks by report data alone. Read full reconstruction memory only for the selected target before editing; inspect related functions only when a concrete caller, callee, type, or regression demands it. Prior dead ends are tree-specific, not permanent bans. Do not log a read-only review as an attempt.
 
 Use focused `match.py` before and after each trial. Check original x86 when a normalized diff suggests changed semantics: normalized operands can mislead. Log a failed trial, then revert it before switching targets. Do not run a full report for each speculative edit.
 
@@ -42,9 +42,9 @@ Use `build-msvc400/report.json` as the canonical full report. At a promising bat
 
 If available, key by canonical address (for example `0x00408240`); symbol secondary.
 
-- Before target edit: `get_function_memory(addr, symbol)`. Review state, attempts, dead ends. Repeat a failed trial under the same tree only with new evidence.
-- Durable fact/dead end: `record_observation` with x86/reccmp/PDB citation. Testable idea: `record_hypothesis`; close via `resolve_hypothesis`. Score change: `set_function_state` (0-100).
-- Before revert or target switch: `record_attempt` (`retained`, `reverted`, `partial`, `failed`, `dead_end`).
+- Before target edit: `get_function_memory(addr)`. Review prior source trials and original-x86 facts. Repeat a failed trial under the same tree only with new evidence.
+- Durable original-x86 fact: `record_observation` with x86/reccmp/PDB citation. The canonical report supplies current scores.
+- After each actual source trial, before reverting or switching targets: `record_attempt` (`retained`, `reverted`, `failed`). Do not record target selection or review-only work.
 - MCP absent/offline: continue reconstruction.
 
 ## Source rules
