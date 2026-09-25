@@ -107,9 +107,8 @@ int CHiliteController::ProcessMsg(Message* p_message)
 		return 0;
 	case 3:
 		if (p_message->code == 0x1f || p_message->code == 0x22 || p_message->code == 0x4c) {
-			CHiliteButtons* currentBtn = m_buttons[m_currentButton];
-			CVsPoint point(0, 0);
-			currentBtn->m_button->OnButtonUp(point, 0);
+			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
+			button->OnButtonUp(CVsPoint(0, 0), 0);
 			return 0;
 		}
 		break;
@@ -146,9 +145,8 @@ int CHiliteController::ProcessMsg(Message* p_message)
 		case 0x1f:
 		case 0x22:
 		case 0x4c: {
-			CHiliteButtons* currentBtn = m_buttons[m_currentButton];
-			CVsPoint point(0, 0);
-			currentBtn->m_button->OnButtonDown(point, 0);
+			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
+			button->OnButtonDown(CVsPoint(0, 0), 0);
 			break;
 		}
 		}
