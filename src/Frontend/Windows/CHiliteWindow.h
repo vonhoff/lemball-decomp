@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_CHILITEWINDOW_H
 #define LEMBALL_FRONTEND_WINDOWS_CHILITEWINDOW_H
 
-#include "../../Visos/Graphics/CGWnd.h" // complete type
+#include "../../Visos/Graphics/CGWnd.h"
 
 // SIZE 0x90
 // VTABLE: LEMBALL 0x00498160

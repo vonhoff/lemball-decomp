@@ -4,7 +4,6 @@
 // SIZE 0x168
 class CPauseHotAreaView {
 public:
-	// No functions mapped yet.
 };
 
 #endif

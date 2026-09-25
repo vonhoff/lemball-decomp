@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CDIRECTSOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CDIRECTSOUNDDEVICE_H
 
-#include "../../Sound/CBaseSoundDevice.h" // complete type
+#include "../../Sound/CBaseSoundDevice.h"
 
 class IDirectSound;
 class CDirectSoundEffect;

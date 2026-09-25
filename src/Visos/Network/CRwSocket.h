@@ -8,12 +8,6 @@
 // VTABLE: LEMBALL 0x00498fe0 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x00499008 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x00499038 CRwSocket
-// MSVC's PDB display names collapse the first two tables to the same CBaseSocket
-// view, but their COFF symbols retain the CReadSocket/CWriteSocket path. Eight
-// original socket constructors install all three tables, and the shared
-// deleting destructor at 0x00462cb0 destroys CReadSocket at +0xa8, CWriteSocket
-// at +0x30, then CBaseCommonSocket. The forwarding bodies remain inline; their
-// emitted versions are mapped below by their COFF symbols.
 class CRwSocket : public virtual CBaseCommonSocket, public virtual CWriteSocket, public virtual CReadSocket {
 public:
 	CRwSocket() {}

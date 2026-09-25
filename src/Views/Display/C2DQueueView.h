@@ -4,7 +4,6 @@
 // SIZE 0x2424
 class C2DQueueView {
 public:
-	// No functions mapped yet.
 };
 
 #endif

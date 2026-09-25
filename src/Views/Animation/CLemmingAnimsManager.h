@@ -1,10 +1,10 @@
 #ifndef LEMBALL_VIEWS_ANIMATION_CLEMMINGANIMSMANAGER_H
 #define LEMBALL_VIEWS_ANIMATION_CLEMMINGANIMSMANAGER_H
 
-#include "../../Visos/Animation/CAnimsManager.h" // complete type
-#include "../../Visos/Graphics/CDrawingMark.h"   // complete type
-#include "../../Visos/Graphics/CPrimitive.h"     // complete type
-#include "../Sound/CLoadUpdate.h"                // complete type
+#include "../../Visos/Animation/CAnimsManager.h"
+#include "../../Visos/Graphics/CDrawingMark.h"
+#include "../../Visos/Graphics/CPrimitive.h"
+#include "../Sound/CLoadUpdate.h"
 
 class CAI;
 class CCDLoadAnim;
@@ -64,8 +64,7 @@ private:
 	int m_loadProgress;           // 0x90
 	unsigned int m_countingLoads; // 0x94
 	CAI* m_ai;                    // 0x98
-	// LoadVrammed stores three CResFONT::Load results (0x00433425/4a/5d).
-	CResFONT* m_interfaceFonts[3]; // 0x9c: low/high-resolution border fonts and score/time font
+	CResFONT* m_interfaceFonts[3]; // 0x9c
 	unsigned int m_groundStyle;    // 0xa8
 	unsigned int m_drawFlags;      // 0xac
 	short m_drawOffsetX;           // 0xb0

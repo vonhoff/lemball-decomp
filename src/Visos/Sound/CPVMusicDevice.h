@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_SOUND_CPVMUSICDEVICE_H
 #define LEMBALL_VISOS_SOUND_CPVMUSICDEVICE_H
 
-#include "../Foundation/CString.h" // complete type
+#include "../Foundation/CString.h"
 
 // SIZE 0x18
 // VTABLE: LEMBALL 0x0049adb0

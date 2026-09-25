@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESCOL_H
 #define LEMBALL_VISOS_RESOURCES_CRESCOL_H
 
-#include "CResBase.h" // complete type
+#include "CResBase.h"
 
 #define kChunkCol 0x434f4c20
 

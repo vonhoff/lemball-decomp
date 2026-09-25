@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_OBJECTS_CINVISIBLESWITCH_H
 #define LEMBALL_AI_OBJECTS_CINVISIBLESWITCH_H
 
-#include "../Base/CGlobalGameObject.h" // complete type
-#include "../Base/Coord3d.h"           // complete type
-#include "InvisibleSwitchTarget.h"     // complete type
+#include "../Base/CGlobalGameObject.h"
+#include "../Base/Coord3d.h"
+#include "InvisibleSwitchTarget.h"
 
 class AiCoord;
 class CGameObject;

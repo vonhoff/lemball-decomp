@@ -1,9 +1,9 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CPREVIEWDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CPREVIEWDRAWER_H
 
-#include "../../Visos/Graphics/CBitmapRes.h" // complete type
+#include "../../Visos/Graphics/CBitmapRes.h"
 #include "../Base/CBaseFrontendDrawer.h"
-#include "../Support/CoordPair.h" // complete type
+#include "../Support/CoordPair.h"
 #include "Frontend/Support/CUserActionMessage.h"
 
 class CBaseRemap;

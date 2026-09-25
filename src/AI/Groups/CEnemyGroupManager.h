@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_GROUPS_CENEMYGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_CENEMYGROUPMANAGER_H
 
-#include "CGenericGroupManager.h" // complete type
+#include "CGenericGroupManager.h"
 
 class CAI;
 class CFormationManager;

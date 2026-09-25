@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CPASSWORDDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CPASSWORDDRAWER_H
 
-#include "../../Visos/Animation/CStaticAnim.h" // complete type
-#include "../../Visos/Graphics/CSolidRect.h"   // complete type
+#include "../../Visos/Animation/CStaticAnim.h"
+#include "../../Visos/Graphics/CSolidRect.h"
 #include "../Base/CBaseFrontendDrawer.h"
 
 class CGDI;

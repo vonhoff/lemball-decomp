@@ -2,7 +2,7 @@
 #define LEMBALL_MAP_BASE_CMAP_H
 
 #include "../../AI/Base/ObjectTypes.h"
-#include "../Ground/CGroundArray.h" // complete type
+#include "../Ground/CGroundArray.h"
 
 class CAI;
 class CMover;
@@ -74,7 +74,7 @@ public:
 	CGroundArray m_ground; // 0x08
 
 private:
-	CAI* m_unk0x18;            // 0x18: CAI::Restart stores this at 0x00410ee9
+	CAI* m_unk0x18;            // 0x18
 	int m_walkWidth;           // 0x1c
 	int m_walkHeight;          // 0x20
 	char m_levelName[33];      // 0x24

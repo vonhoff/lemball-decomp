@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CREMAP_H
 #define LEMBALL_VISOS_GRAPHICS_CREMAP_H
 
-#include "CBaseRemap.h" // complete type
+#include "CBaseRemap.h"
 
 // SIZE 0x08
 class CRemap : public CBaseRemap {

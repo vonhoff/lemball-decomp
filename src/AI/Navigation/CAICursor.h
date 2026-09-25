@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_NAVIGATION_CAICURSOR_H
 #define LEMBALL_AI_NAVIGATION_CAICURSOR_H
 
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
 
 class CAI;
 class CBaseQueue;

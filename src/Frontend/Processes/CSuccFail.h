@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_CSUCCFAIL_H
 #define LEMBALL_FRONTEND_PROCESSES_CSUCCFAIL_H
 
-#include "../Base/CBaseFrontendProcess.h" // complete type
+#include "../Base/CBaseFrontendProcess.h"
 
 class CGame;
 // SIZE 0x2c

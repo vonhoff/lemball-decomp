@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESTUNE_H
 #define LEMBALL_VISOS_RESOURCES_CRESTUNE_H
 
-#include "CResBase.h" // complete type
+#include "CResBase.h"
 
 #define kChunkTune 0x54554e45
 

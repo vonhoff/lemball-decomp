@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_LIFTENDPOINTRECORD_H
 #define LEMBALL_AI_OBJECTS_LIFTENDPOINTRECORD_H
 
-#include "../Base/Coord3d.h" // complete type
+#include "../Base/Coord3d.h"
 
 // SIZE 0x0c
 struct LiftEndpointRecord {

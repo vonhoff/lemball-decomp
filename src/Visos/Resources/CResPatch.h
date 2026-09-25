@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESPATCH_H
 #define LEMBALL_VISOS_RESOURCES_CRESPATCH_H
 
-#include "CResBase.h" // complete type
+#include "CResBase.h"
 
 #define kChunkPtch 0x50544348
 

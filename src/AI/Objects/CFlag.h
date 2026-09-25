@@ -2,7 +2,7 @@
 #define LEMBALL_AI_OBJECTS_CFLAG_H
 
 #include "AI/Base/ObjectTypes.h"
-#include "CCollectable.h" // complete type
+#include "CCollectable.h"
 
 // SIZE 0x13c
 // VTABLE: LEMBALL 0x00495720

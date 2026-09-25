@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILECONNECT_H
 #define LEMBALL_VISOS_NETWORK_CFILECONNECT_H
 
-#include "CConnect.h"            // complete type
-#include "CFileOpenManagement.h" // complete type
+#include "CConnect.h"
+#include "CFileOpenManagement.h"
 
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x0049ab68 CFileCommonSocket
@@ -11,7 +11,6 @@
 // VTABLE: LEMBALL 0x0049abd8 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049ac08 CFileConnect
 // VTABLE: LEMBALL 0x0049ac18 CConnect
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CFileConnect : public CFileOpenManagement, public CConnect {
 public:

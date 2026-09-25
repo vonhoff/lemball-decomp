@@ -6,15 +6,11 @@ import json
 from pathlib import Path
 
 
-def compute_ratio(match: dict | None) -> tuple[float, str]:
+def compute_ratio(match: dict | None) -> float:
     if match is None or match.get("stub"):
-        return 0.0, "STUB"
+        return 0.0
     ratio = float(match.get("matching", 0.0)) * 100.0
-    if ratio == 100.0:
-        return 100.0, "ASM_EXACT"
-    if match.get("effective"):
-        return 100.0, "EFFECTIVE"
-    return ratio, "PARTIAL"
+    return 100.0 if match.get("effective") else ratio
 
 
 def load_matches(json_path: Path) -> dict[int, dict]:

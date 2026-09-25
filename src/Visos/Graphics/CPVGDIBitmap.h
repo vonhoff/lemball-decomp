@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVGDIBITMAP_H
 #define LEMBALL_VISOS_GRAPHICS_CPVGDIBITMAP_H
 
-#include "../Foundation/CVsPoint.h" // complete type
-#include "../Foundation/CVsRect.h"  // complete type
-#include "../Foundation/CVsSize.h"  // complete type
+#include "../Foundation/CVsPoint.h"
+#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVsSize.h"
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x0049a470

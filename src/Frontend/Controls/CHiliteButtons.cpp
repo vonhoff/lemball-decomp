@@ -46,7 +46,6 @@ CHiliteButtons::CHiliteButtons(CGWnd* p_window,
 	m_y = p_y;
 	int* binding = (int*) p_binding;
 	if (binding != 0) {
-		// The original retains this comparison before the identical binding reads.
 		if (m_valueCount == 1) {
 			m_value = *binding;
 		}

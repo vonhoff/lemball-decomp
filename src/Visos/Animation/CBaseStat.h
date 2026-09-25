@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CBASESTAT_H
 #define LEMBALL_VISOS_ANIMATION_CBASESTAT_H
 
-#include "../Foundation/CString.h" // complete type
+#include "../Foundation/CString.h"
 #include "Visos/Foundation/CArenaBase.h"
 
 // SIZE 0x20

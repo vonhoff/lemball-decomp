@@ -28,13 +28,10 @@ extern "C" __declspec(dllimport) int __stdcall PeekMessageA(void* p_message,
 															unsigned int p_remove);
 extern "C" __declspec(dllimport) long __stdcall DispatchMessageA(const void* p_message);
 
-// Both original workers cache TranslateMessage and PeekMessageA across messages;
-// DispatchMessageA remains an import-indirect call.
 
 // FUNCTION: LEMBALL 0x0046f210
 unsigned int FileNetworkMessageThread()
 {
-	// Win32 MSG storage: seven 32-bit words.
 	unsigned int message[7];
 	unsigned int count;
 
@@ -134,7 +131,6 @@ bool VSFNET_Quit()
 // FUNCTION: LEMBALL 0x0046fa10
 unsigned int TcpIpNetworkMessageThread()
 {
-	// Win32 MSG storage: seven 32-bit words.
 	unsigned int message[7];
 	unsigned int count;
 

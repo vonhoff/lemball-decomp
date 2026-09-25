@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CTIMEDQUEUE_H
 #define LEMBALL_VISOS_FOUNDATION_CTIMEDQUEUE_H
 
-#include "CBaseQueue.h" // complete type
+#include "CBaseQueue.h"
 
 // SIZE 0x58
 // VTABLE: LEMBALL 0x004988b0 CCritical

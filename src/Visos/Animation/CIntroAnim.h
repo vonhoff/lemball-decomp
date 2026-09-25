@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CINTROANIM_H
 #define LEMBALL_VISOS_ANIMATION_CINTROANIM_H
 
-#include "../../Frontend/Base/CBaseFrontendProcess.h" // complete type
+#include "../../Frontend/Base/CBaseFrontendProcess.h"
 
 class CGame;
 

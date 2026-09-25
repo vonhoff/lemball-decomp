@@ -3,7 +3,6 @@
 
 struct IDirectDraw;
 
-// DirectDraw 1 COM ABI from the Windows SDK ddraw.h.
 struct IDirectDrawPalette {
 	virtual long __stdcall QueryInterface(const void*, void**) = 0;
 	virtual unsigned long __stdcall AddRef() = 0;

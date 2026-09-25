@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_BASE_CMOVE3D_H
 #define LEMBALL_AI_BASE_CMOVE3D_H
 
-#include "AiCoord.h" // complete type
-#include "CPt3.h"    // complete type
+#include "AiCoord.h"
+#include "CPt3.h"
 
 // SIZE 0x1c
 class CMove3d {

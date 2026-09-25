@@ -1033,7 +1033,6 @@ bool CGameObject::Fall()
 	return false;
 }
 
-// Keeping type completion local preserves the original MSVC 4.00 register allocation in preceding functions.
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CRect3.h"

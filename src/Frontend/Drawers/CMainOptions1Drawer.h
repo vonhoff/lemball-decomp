@@ -1,9 +1,9 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS1DRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS1DRAWER_H
 
-#include "../../Visos/Foundation/CBaseProcess.h"      // complete type
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
-#include "../Base/CBaseFrontendDrawer.h"              // complete type
+#include "../../Visos/Foundation/CBaseProcess.h"
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../Base/CBaseFrontendDrawer.h"
 
 class CGDI;
 class CMain2DDisplay;

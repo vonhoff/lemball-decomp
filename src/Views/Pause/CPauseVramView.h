@@ -4,7 +4,6 @@
 // SIZE 0x16c
 class CPauseVramView {
 public:
-	// No functions mapped yet.
 };
 
 #endif

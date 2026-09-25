@@ -48,7 +48,6 @@ CTrampolineManager::~CTrampolineManager()
 	delete[] m_trampolines;
 }
 
-// Ownership inferred from the adjacent manager functions and count at 0x34.
 // FUNCTION: LEMBALL 0x0042b0b0
 void CTrampolineManager::ResetCount()
 {

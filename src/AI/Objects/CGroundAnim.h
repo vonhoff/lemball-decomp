@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CGROUNDANIM_H
 #define LEMBALL_AI_OBJECTS_CGROUNDANIM_H
 
-#include "GroundAnimEntry.h" // complete type
+#include "GroundAnimEntry.h"
 
 struct Coord3d;
 // SIZE 0x12cc

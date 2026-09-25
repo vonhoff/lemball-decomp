@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CDEPRESSEDBUTTON_H
 #define LEMBALL_VISOS_GRAPHICS_CDEPRESSEDBUTTON_H
 
-#include "CPVButton.h" // complete type
+#include "CPVButton.h"
 class CPVGWnd;
 class CVsRect;
 

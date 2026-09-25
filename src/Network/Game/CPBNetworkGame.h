@@ -1,7 +1,7 @@
 #ifndef LEMBALL_NETWORK_GAME_CPBNETWORKGAME_H
 #define LEMBALL_NETWORK_GAME_CPBNETWORKGAME_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h" // complete type
+#include "../../Visos/Messaging/CNetworkMessage.h"
 
 class CAI;
 class CPlayerLemming;

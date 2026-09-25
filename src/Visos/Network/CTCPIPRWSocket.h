@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPRWSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPRWSOCKET_H
 
-#include "CRwSocket.h"         // complete type
-#include "CTCPIPReadSocket.h"  // complete type
-#include "CTCPIPWriteSocket.h" // complete type
+#include "CRwSocket.h"
+#include "CTCPIPReadSocket.h"
+#include "CTCPIPWriteSocket.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 #include "Visos/Network/CReadSocket.h"
 #include "Visos/Network/CTCPIPCommonSocket.h"
@@ -14,12 +14,9 @@
 // VTABLE: LEMBALL 0x0049a228 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x0049a250 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a280 CTCPIPRWSocket
-// x86 emits only the synthetic deleting destructor.
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CTCPIPRWSocket : public virtual CRwSocket, public virtual CTCPIPReadSocket, public virtual CTCPIPWriteSocket {
 public:
-	// The implicit constructor clears inherited vtordisp fields, as in 0x00471830.
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
 	virtual void Closed(int p_notifyPeer);                                             // vtable+0x0c
 	virtual CNetworkMessage* ReceiveAcknowledgement();                                 // vtable+0x1c

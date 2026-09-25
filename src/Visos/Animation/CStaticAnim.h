@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CSTATICANIM_H
 #define LEMBALL_VISOS_ANIMATION_CSTATICANIM_H
 
-#include "CFrames.h" // complete type
+#include "CFrames.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496ce4

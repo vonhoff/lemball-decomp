@@ -65,7 +65,6 @@ void CGlobalGameObject::Action(eAction p_action, int p_argument)
 	Action(p_action);
 }
 
-// Ownership inferred from the adjacent methods and call to RequestAction.
 // FUNCTION: LEMBALL 0x00416e00
 void CGlobalGameObject::SetActionAndRequest(eAction p_action, int p_argument)
 {

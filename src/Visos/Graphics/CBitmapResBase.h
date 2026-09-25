@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CBITMAPRESBASE_H
 #define LEMBALL_VISOS_GRAPHICS_CBITMAPRESBASE_H
 
-#include "CPrimitive.h" // complete type
+#include "CPrimitive.h"
 
 class CResBITMAP;
 class CRemap;

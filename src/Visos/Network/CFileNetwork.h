@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILENETWORK_H
 #define LEMBALL_VISOS_NETWORK_CFILENETWORK_H
 
-#include "../Target/Network/CNetworkWnd.h" // complete type
-#include "CBaseNetwork.h"                  // complete type
+#include "../Target/Network/CNetworkWnd.h"
+#include "CBaseNetwork.h"
 
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x0049a02c CNetworkWnd

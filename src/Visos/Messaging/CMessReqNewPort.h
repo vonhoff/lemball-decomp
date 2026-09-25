@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CMESSREQNEWPORT_H
 #define LEMBALL_VISOS_MESSAGING_CMESSREQNEWPORT_H
 
-#include "CMessReqConnect.h" // complete type
+#include "CMessReqConnect.h"
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00498ed0

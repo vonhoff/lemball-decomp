@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MESSAGES_COBJECTCHANGESTATEMESS_H
 #define LEMBALL_AI_MESSAGES_COBJECTCHANGESTATEMESS_H
 
-#include "CGameObjectMess.h" // complete type
+#include "CGameObjectMess.h"
 
 // VTABLE: LEMBALL 0x00493da0
 class CObjectChangeStateMess : public CGameObjectMess {

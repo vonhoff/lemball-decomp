@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPBROADCAST_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPBROADCAST_H
 
-#include "CBroadcast.h"     // complete type
-#include "CTCPIPRWSocket.h" // complete type
+#include "CBroadcast.h"
+#include "CTCPIPRWSocket.h"
 
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x0049a158 CNetworkWnd
@@ -10,7 +10,6 @@
 // VTABLE: LEMBALL 0x0049a188 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a1b8 CRwSocket
 // VTABLE: LEMBALL 0x0049a1c8 CBroadcast
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CTCPIPBroadcast : public CBroadcast, public CTCPIPRWSocket {
 public:

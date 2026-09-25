@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSTRIG_H
 #define LEMBALL_VISOS_FOUNDATION_VSTRIG_H
 
-#include "CFixed.h"  // complete type
-#include "CVector.h" // complete type
+#include "CFixed.h"
+#include "CVector.h"
 
 // SIZE 0x800
 class VSTrig {

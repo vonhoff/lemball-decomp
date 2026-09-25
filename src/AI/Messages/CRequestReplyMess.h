@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MESSAGES_CREQUESTREPLYMESS_H
 #define LEMBALL_AI_MESSAGES_CREQUESTREPLYMESS_H
 
-#include "CGameObjectMess.h" // complete type
+#include "CGameObjectMess.h"
 
 // VTABLE: LEMBALL 0x00493de0
 class CRequestReplyMess : public CGameObjectMess {

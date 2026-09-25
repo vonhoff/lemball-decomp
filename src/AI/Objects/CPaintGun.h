@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CPAINTGUN_H
 #define LEMBALL_AI_OBJECTS_CPAINTGUN_H
 
-#include "../Base/CGlobalGameObject.h" // complete type
+#include "../Base/CGlobalGameObject.h"
 
 class AiCoord;
 // SIZE 0x144

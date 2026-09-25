@@ -63,7 +63,6 @@ CDirectDrawDriver::CDirectDrawDriver(CVsSize* p_size, int p_fullScreen)
 		windowClass.hbrBackground = (HBRUSH) GetStockObject(BLACK_BRUSH);
 		windowClass.lpszMenuName = 0;
 		windowClass.lpszClassName = "DirectDrawClass";
-		// Original leaves hCursor null after loading the system cursor.
 		LoadCursorA(0, IDC_ARROW);
 		ATOM registered = RegisterClassA(&windowClass);
 		ShowCursor(0);

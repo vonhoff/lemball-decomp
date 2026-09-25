@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_NAVIGATION_CNODEMANAGER_H
 #define LEMBALL_AI_NAVIGATION_CNODEMANAGER_H
 
-#include "../Base/CPt3.h" // complete type
+#include "../Base/CPt3.h"
 
 class CNode;
 // SIZE 0x0c

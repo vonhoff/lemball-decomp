@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS2DRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS2DRAWER_H
 
-#include "../Base/CBaseFrontendDrawer.h" // complete type
+#include "../Base/CBaseFrontendDrawer.h"
 
 class CGDI;
 class CMain2DDisplay;

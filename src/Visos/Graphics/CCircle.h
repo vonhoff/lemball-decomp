@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CCIRCLE_H
 #define LEMBALL_VISOS_GRAPHICS_CCIRCLE_H
 
-#include "CPrimitive.h" // complete type
+#include "CPrimitive.h"
 
 // SIZE 0x10
 class CCircle : public CPrimitive {

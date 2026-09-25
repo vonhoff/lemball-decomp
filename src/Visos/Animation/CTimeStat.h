@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CTIMESTAT_H
 #define LEMBALL_VISOS_ANIMATION_CTIMESTAT_H
 
-#include "CBaseStat.h" // complete type
+#include "CBaseStat.h"
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00493028

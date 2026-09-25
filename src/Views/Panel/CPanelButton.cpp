@@ -182,7 +182,6 @@ void CPanelButton::DrawButton()
 		mappedColor = playerRemap->m_remap[color];
 	}
 	else {
-		// Original fallback reads the packed ammunition size at 0x004428c1.
 		memcpy(&mappedColor, &ammoSize, sizeof(mappedColor));
 	}
 	static_cast<CVsSize&>(m_statusLine[0].m_bounds) = ammoSize;

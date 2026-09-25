@@ -1,16 +1,14 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPWRITESOCKET_H
 
-#include "CBaseCommonSocket.h"  // complete type
-#include "CTCPIPCommonSocket.h" // complete type
-#include "CWriteSocket.h"       // complete type
+#include "CBaseCommonSocket.h"
+#include "CTCPIPCommonSocket.h"
+#include "CWriteSocket.h"
 
 // SIZE 0xe0
 // VTABLE: LEMBALL 0x0049a088 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a090 CBaseSocket
 // VTABLE: LEMBALL 0x0049a0c0 CTCPIPWriteSocket
-// x86 emits only the synthetic deleting destructor.
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CTCPIPWriteSocket : public virtual CBaseCommonSocket,
 						  public virtual CWriteSocket,

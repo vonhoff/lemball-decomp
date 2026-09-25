@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_GROUPS_CPLAYERLEMMINGGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_CPLAYERLEMMINGGROUPMANAGER_H
 
-#include "../Managers/CBaseObjectManager.h" // complete type
-#include "CGenericGroupManager.h"           // complete type
+#include "../Managers/CBaseObjectManager.h"
+#include "CGenericGroupManager.h"
 
 class CAI;
 class AiCoord;

@@ -1,24 +1,24 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_C2D_H
 #define LEMBALL_VIEWS_DISPLAY_C2D_H
 
-#include "../../AI/Base/AiCoord.h"                      // complete type
-#include "../../AI/Objects/CViewData.h"                 // complete type
-#include "../../Visos/Foundation/CBaseQueueHandler.h"   // complete type
-#include "../../Visos/Foundation/CVsPoint.h"            // complete type
-#include "../../Visos/Foundation/CVsRect.h"             // complete type
-#include "../../Visos/Graphics/CBigBitmap.h"            // complete type
-#include "../../Visos/Graphics/CBitmap.h"               // complete type
-#include "../../Visos/Graphics/CCopyColourToBackBuff.h" // complete type
-#include "../../Visos/Graphics/CCopyToBackBuff.h"       // complete type
-#include "../../Visos/Graphics/CDrawer.h"               // complete type
-#include "../../Visos/Graphics/CDrawingMark.h"          // complete type
-#include "../../Visos/Graphics/CHotAreaHandler.h"       // complete type
-#include "../../Visos/Graphics/CLine.h"                 // complete type
-#include "../../Visos/Graphics/CPopActive.h"            // complete type
-#include "../../Visos/Graphics/CPushActive.h"           // complete type
-#include "../../Visos/Graphics/CReceiveWindowState.h"   // complete type
-#include "../../Visos/Graphics/CScreenScroll.h"         // complete type
-#include "../../Visos/Graphics/CSolidRect.h"            // complete type
+#include "../../AI/Base/AiCoord.h"
+#include "../../AI/Objects/CViewData.h"
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Graphics/CBigBitmap.h"
+#include "../../Visos/Graphics/CBitmap.h"
+#include "../../Visos/Graphics/CCopyColourToBackBuff.h"
+#include "../../Visos/Graphics/CCopyToBackBuff.h"
+#include "../../Visos/Graphics/CDrawer.h"
+#include "../../Visos/Graphics/CDrawingMark.h"
+#include "../../Visos/Graphics/CHotAreaHandler.h"
+#include "../../Visos/Graphics/CLine.h"
+#include "../../Visos/Graphics/CPopActive.h"
+#include "../../Visos/Graphics/CPushActive.h"
+#include "../../Visos/Graphics/CReceiveWindowState.h"
+#include "../../Visos/Graphics/CScreenScroll.h"
+#include "../../Visos/Graphics/CSolidRect.h"
 #include "../Pause/CPauseWindow.h"
 #include "AI/Base/ObjectTypes.h"
 

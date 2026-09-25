@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CGRAPHICBUTTON_H
 #define LEMBALL_VISOS_GRAPHICS_CGRAPHICBUTTON_H
 
-#include "CDepressedButton.h" // complete type
-#include "CPushActive.h"      // complete type
+#include "CDepressedButton.h"
+#include "CPushActive.h"
 
 struct CVsPoint;
 class CPVGWnd;

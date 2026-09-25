@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESINT_H
 #define LEMBALL_VISOS_RESOURCES_CRESINT_H
 
-#include "CResBase.h" // complete type
+#include "CResBase.h"
 
 // SIZE 0x04
 struct IntPayload {

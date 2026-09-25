@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CMOGRES_H
 #define LEMBALL_VISOS_RESOURCES_CMOGRES_H
 
-#include "../Foundation/Chunk.h"     // complete type
-#include "../Foundation/ChunkInfo.h" // complete type
+#include "../Foundation/Chunk.h"
+#include "../Foundation/ChunkInfo.h"
 #include "CRawRead.h"
 
 class CResBase;

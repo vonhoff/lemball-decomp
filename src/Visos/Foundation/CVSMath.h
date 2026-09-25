@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CVSMATH_H
 #define LEMBALL_VISOS_FOUNDATION_CVSMATH_H
 
-#include "../../AI/Base/AiCoord.h" // complete type
+#include "../../AI/Base/AiCoord.h"
 
 class CVSMath {
 public:

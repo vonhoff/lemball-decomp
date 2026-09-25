@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 
-#include "../../Visos/Foundation/CBaseProcess.h"      // complete type
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/CBaseProcess.h"
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
 #include "../Support/CUserActionMessage.h"
 class CConnect;
 

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CREADCBUFF_H
 #define LEMBALL_VISOS_MESSAGING_CREADCBUFF_H
 
-#include "CReadPacketBuff.h" // complete type
+#include "CReadPacketBuff.h"
 
 class CReadPacket;
 

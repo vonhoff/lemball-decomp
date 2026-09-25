@@ -1,7 +1,6 @@
 #ifndef LEMBALL_CONTROL_GAME_GAMETIME_H
 #define LEMBALL_CONTROL_GAME_GAMETIME_H
 
-// CGame and remote clocks use 50-millisecond ticks.
 #define GAME_TICK_MILLISECONDS 50
 
 void ClockEditMode(unsigned int p_enabled);

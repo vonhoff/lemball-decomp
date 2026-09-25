@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_CSUCCFAILANIMWND_H
 #define LEMBALL_FRONTEND_WINDOWS_CSUCCFAILANIMWND_H
 
-#include "../../Visos/Graphics/CAnimWnd.h" // complete type
+#include "../../Visos/Graphics/CAnimWnd.h"
 
 class CSuccFailDrawer;
 class CMain2DDisplay;

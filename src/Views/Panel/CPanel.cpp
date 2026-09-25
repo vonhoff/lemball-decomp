@@ -109,7 +109,6 @@ CPanel::~CPanel()
 	}
 }
 
-// Ownership inferred from the panel, AI, and panel-lemming field layouts.
 // FUNCTION: LEMBALL 0x004431c0
 void CPanel::RefreshLemmings()
 {

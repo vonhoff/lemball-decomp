@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CRAMARENA_H
 #define LEMBALL_VISOS_FOUNDATION_CRAMARENA_H
 
-#include "CArena.h" // complete type
+#include "CArena.h"
 
 // SIZE 0x50
 // VTABLE: LEMBALL 0x00498918 CArenaBase

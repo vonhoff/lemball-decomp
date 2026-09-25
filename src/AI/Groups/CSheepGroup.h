@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_GROUPS_CSHEEPGROUP_H
 #define LEMBALL_AI_GROUPS_CSHEEPGROUP_H
 
-#include "../Base/AiCoord.h" // complete type
-#include "CGenericGroup.h"   // complete type
+#include "../Base/AiCoord.h"
+#include "CGenericGroup.h"
 
 class CAI;
 class CFormationManager;

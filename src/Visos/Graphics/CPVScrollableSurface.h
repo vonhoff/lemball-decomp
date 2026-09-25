@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVSCROLLABLESURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_CPVSCROLLABLESURFACE_H
 
-#include "CPVGDIBitmap.h" // complete type
-#include "CPVSurface.h"   // complete type
+#include "CPVGDIBitmap.h"
+#include "CPVSurface.h"
 
 // VTABLE: LEMBALL 0x00499d88 CPVSurface
 // VTABLE: LEMBALL 0x00499dd4 CPVGDIBitmap

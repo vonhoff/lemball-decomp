@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_SYSTEM_CPLATFORMSERVICES_H
 #define LEMBALL_VISOS_TARGET_SYSTEM_CPLATFORMSERVICES_H
 
-#include "../Input/InputTranslationEntry.h" // complete type
+#include "../Input/InputTranslationEntry.h"
 
 // SIZE 0x01
 class CPlatformServices {

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CCOPYCOLOURTOBACKBUFF_H
 #define LEMBALL_VISOS_GRAPHICS_CCOPYCOLOURTOBACKBUFF_H
 
-#include "CPrimitive.h" // complete type
+#include "CPrimitive.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496d90

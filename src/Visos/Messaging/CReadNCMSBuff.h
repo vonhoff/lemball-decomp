@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CREADNCMSBUFF_H
 #define LEMBALL_VISOS_MESSAGING_CREADNCMSBUFF_H
 
-#include "CReadMSBuff.h" // complete type
+#include "CReadMSBuff.h"
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x004991d8

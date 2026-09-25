@@ -15,7 +15,7 @@ private:
 	friend class CFileWriteSocket;
 	CHeaders* m_file;          // 0x00
 	unsigned int m_headersOffset; // 0x04
-	unsigned int m_dataOffset; // 0x08: packet-data offset after the serialized headers
+	unsigned int m_dataOffset;    // 0x08
 };
 
 #endif

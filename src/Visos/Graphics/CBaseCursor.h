@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CBASECURSOR_H
 #define LEMBALL_VISOS_GRAPHICS_CBASECURSOR_H
 
-#include "../Foundation/CBaseQueueHandler.h" // complete type
-#include "../Foundation/CVsPoint.h"          // complete type
-#include "../Foundation/CVsRect.h"           // complete type
-#include "CPopActive.h"                      // complete type
-#include "CPushActive.h"                     // complete type
+#include "../Foundation/CBaseQueueHandler.h"
+#include "../Foundation/CVsPoint.h"
+#include "../Foundation/CVsRect.h"
+#include "CPopActive.h"
+#include "CPushActive.h"
 
 class CGWnd;
 class CZRLE;

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CTHEBALLOONPOST_H
 #define LEMBALL_AI_OBJECTS_CTHEBALLOONPOST_H
 
-#include "../Base/CGameObject.h" // complete type
+#include "../Base/CGameObject.h"
 #include "AI/Base/ObjectTypes.h"
 
 // SIZE 0x128

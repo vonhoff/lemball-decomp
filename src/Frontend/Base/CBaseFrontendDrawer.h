@@ -1,14 +1,14 @@
 #ifndef LEMBALL_FRONTEND_BASE_CBASEFRONTENDDRAWER_H
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDDRAWER_H
 
-#include "../../Visos/Animation/CAnimsManager.h"      // complete type
-#include "../../Visos/Animation/CStaticAnim.h"        // complete type
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/CVsPoint.h"          // complete type
-#include "../../Visos/Foundation/tagPRIMS.h"          // complete type
-#include "../../Visos/Graphics/CDrawer.h"             // complete type
+#include "../../Visos/Animation/CAnimsManager.h"
+#include "../../Visos/Animation/CStaticAnim.h"
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Foundation/tagPRIMS.h"
+#include "../../Visos/Graphics/CDrawer.h"
 #include "../Support/CUserActionMessage.h"
-#include "../Support/CoordPair.h" // complete type
+#include "../Support/CoordPair.h"
 #include "FlowProcesses.h"
 
 class CGDI;

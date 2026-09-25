@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_NAVIGATION_CMOVERMANAGER_H
 #define LEMBALL_AI_NAVIGATION_CMOVERMANAGER_H
 
-#include "../Managers/CBaseObjectManager.h" // complete type
+#include "../Managers/CBaseObjectManager.h"
 
 class CAI;
 class CMover;

@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CSURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_CSURFACE_H
 
-#include "../Foundation/CVsRect.h" // complete type
-#include "CPVBackBuffSurface.h"    // complete type
-#include "CPVScrollableSurface.h"  // complete type
-#include "CPVSurface.h"            // complete type
-#include "CPVZBuffSurface.h"       // complete type
+#include "../Foundation/CVsRect.h"
+#include "CPVBackBuffSurface.h"
+#include "CPVScrollableSurface.h"
+#include "CPVSurface.h"
+#include "CPVZBuffSurface.h"
 
 class GrafPort;
 class CChangeList;
@@ -22,7 +22,6 @@ struct SurfaceListNode {
 };
 
 // SIZE 0x5a0
-// CPVScrollableSurface at 0. Shared CPVSurface virtual base.
 // VTABLE: LEMBALL 0x00499df0 CPVSurface
 // VTABLE: LEMBALL 0x00499e40 CPVBackBuffSurface
 // VTABLE: LEMBALL 0x00499e50 CPVZBuffSurface

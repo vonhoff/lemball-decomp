@@ -1,7 +1,7 @@
 #ifndef LEMBALL_NETWORK_MESSAGES_CGAMEFLAGGEDMESSAGE_H
 #define LEMBALL_NETWORK_MESSAGES_CGAMEFLAGGEDMESSAGE_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h" // complete type
+#include "../../Visos/Messaging/CNetworkMessage.h"
 
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498598

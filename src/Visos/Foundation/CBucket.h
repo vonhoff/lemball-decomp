@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CBUCKET_H
 #define LEMBALL_VISOS_FOUNDATION_CBUCKET_H
 
-#include "CCritical.h" // complete type
+#include "CCritical.h"
 
 // SIZE 0x04
 struct Boffset {

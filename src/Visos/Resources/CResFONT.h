@@ -1,10 +1,10 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESFONT_H
 #define LEMBALL_VISOS_RESOURCES_CRESFONT_H
 
-#include "../Foundation/CVsSize.h" // complete type
-#include "CResBaseLIST.h"          // complete type
-#include "CResINT.h"               // complete type
-#include "CResZRLE.h"              // complete type
+#include "../Foundation/CVsSize.h"
+#include "CResBaseLIST.h"
+#include "CResINT.h"
+#include "CResZRLE.h"
 
 // SIZE 0x84
 // VTABLE: LEMBALL 0x00498af0

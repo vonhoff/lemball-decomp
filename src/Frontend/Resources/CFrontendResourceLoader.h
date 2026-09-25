@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_RESOURCES_CFRONTENDRESOURCELOADER_H
 #define LEMBALL_FRONTEND_RESOURCES_CFRONTENDRESOURCELOADER_H
 
-#include "../../Views/Sound/CLoadUpdate.h" // complete type
-#include "../../Views/Sound/CSoundView.h"  // complete type for CLoadUpdate
+#include "../../Views/Sound/CLoadUpdate.h"
+#include "../../Views/Sound/CSoundView.h"
 
 class CCDLoadAnim;
 class CMain2DDisplay;

@@ -1,7 +1,5 @@
 #include "../../Visos/Foundation/CVector.h"
 
-// Descriptive name; the original class name is unknown. The endpoint setter
-// is called with CGameObject + 0x78 by StartMoving and CBall::StartMovement.
 class CMovementInterpolation {
 public:
 	void SetEndpoints(CVector p_start, CVector p_end);

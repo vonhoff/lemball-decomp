@@ -1,7 +1,6 @@
 #ifndef LEMBALL_PLATFORM_DIRECTX_DDBLTFX_H
 #define LEMBALL_PLATFORM_DIRECTX_DDBLTFX_H
 
-// DirectDraw 1 blit-effects ABI from the Windows SDK ddraw.h.
 struct DDBLTFX {
 	unsigned long dwSize;
 	char m_unused04[0x4c];

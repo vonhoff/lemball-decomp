@@ -1,14 +1,14 @@
 #ifndef LEMBALL_FRONTEND_RESOURCES_CCDLOADANIM_H
 #define LEMBALL_FRONTEND_RESOURCES_CCDLOADANIM_H
 
-#include "../../Visos/Animation/CAnimsManager.h" // complete type
-#include "../../Visos/Animation/CRepeatAnim.h"   // complete type
-#include "../../Visos/Graphics/CBitmap.h"        // complete type
-#include "../../Visos/Graphics/CBitmapRes.h"     // complete type
-#include "../../Visos/Graphics/CBitmapResBase.h" // complete type
+#include "../../Visos/Animation/CAnimsManager.h"
+#include "../../Visos/Animation/CRepeatAnim.h"
+#include "../../Visos/Graphics/CBitmap.h"
+#include "../../Visos/Graphics/CBitmapRes.h"
+#include "../../Visos/Graphics/CBitmapResBase.h"
 #include "../../Visos/Graphics/CClipRect.h"
-#include "../../Visos/Graphics/CDrawingMark.h" // complete type
-#include "../../Visos/Graphics/CLine.h"        // complete type
+#include "../../Visos/Graphics/CDrawingMark.h"
+#include "../../Visos/Graphics/CLine.h"
 #include "CCdLoadAnimDraw.h"
 #include "CCdLoadAnimProgress.h"
 

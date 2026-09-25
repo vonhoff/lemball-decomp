@@ -3,7 +3,7 @@
 
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
-#include "CGameObject.h" // complete type
+#include "CGameObject.h"
 
 class CNetworkMessage;
 class CObjectChangeStateMess;

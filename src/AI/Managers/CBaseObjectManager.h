@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MANAGERS_CBASEOBJECTMANAGER_H
 #define LEMBALL_AI_MANAGERS_CBASEOBJECTMANAGER_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h" // complete type
+#include "../../Visos/Messaging/CNetworkMessage.h"
 
 class CGlobalGameObject;
 class CViewData;

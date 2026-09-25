@@ -1,8 +1,6 @@
 #ifndef LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 #define LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 
-// Minimal WinSock 1.x declarations used by the reconstructed network layer.
-// Preserve the existing ABI views; original SDK: MSVC400/include/WINSOCK.H.
 
 struct in_addr;
 struct TcpIpSocketAddress;

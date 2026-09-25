@@ -1,5 +1,3 @@
-// Descriptive name: the original class name and inheritance are unknown.
-// Member offsets come from 0x0044aa20 and 0x0044aa70.
 class CFixedTimeAnim {
 public:
 	unsigned int GetFrameNo();

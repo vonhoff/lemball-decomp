@@ -86,7 +86,6 @@ void CBallManager::Delete(CBall* p_ball)
 	}
 }
 
-// Ownership inferred from adjacent manager functions and the count at 0x08.
 // FUNCTION: LEMBALL 0x00422050
 void CBallManager::Clear()
 {

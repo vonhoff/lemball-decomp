@@ -3,7 +3,6 @@
 
 class IDirectSound;
 
-// DirectSound buffer COM ABI declarations for the slots used by this project.
 class IDirectSoundBuffer {
 public:
 	virtual long __stdcall QueryInterface(const void* p_interfaceId, void** p_object) = 0;

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CCOPYTEXT_H
 #define LEMBALL_VISOS_FOUNDATION_CCOPYTEXT_H
 
-#include "CString.h" // complete type
-#include "CText.h"   // complete type
+#include "CString.h"
+#include "CText.h"
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00499ce8

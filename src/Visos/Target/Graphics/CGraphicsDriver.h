@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 
-#include "../../Foundation/CVsPoint.h" // complete type
-#include "../../Foundation/CVsRect.h"  // complete type
-#include "../../Foundation/CVsSize.h"  // complete type
-#include "CDibContext.h"               // complete type
-#include "CDrawingContext.h"           // complete type
+#include "../../Foundation/CVsPoint.h"
+#include "../../Foundation/CVsRect.h"
+#include "../../Foundation/CVsSize.h"
+#include "CDibContext.h"
+#include "CDrawingContext.h"
 
 class CPVGDIBitmap;
 class CResPALETTE;
@@ -13,10 +13,6 @@ struct CGraphicsState;
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00498700
-// The CGdiDriver construction table is at 0x00498738.
-// Subobject VTABLE: 0x004987b0 DisplayDib driver
-// Subobject VTABLE: 0x004987e8 DirectDraw driver
-// Subobject VTABLE: 0x00498840 DirectDraw-derived driver
 class CGraphicsDriver {
 public:
 	CGraphicsDriver()

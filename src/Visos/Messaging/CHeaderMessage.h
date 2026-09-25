@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CHEADERMESSAGE_H
 #define LEMBALL_VISOS_MESSAGING_CHEADERMESSAGE_H
 
-#include "CNetworkMessage.h" // complete type
+#include "CNetworkMessage.h"
 
 // SIZE 0x60
 // VTABLE: LEMBALL 0x0049a4a8

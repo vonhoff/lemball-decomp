@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CSLINKY_H
 #define LEMBALL_AI_OBJECTS_CSLINKY_H
 
-#include "../Base/AiCoord.h"     // complete type
-#include "../Base/CGameObject.h" // complete type
+#include "../Base/AiCoord.h"
+#include "../Base/CGameObject.h"
 // SIZE 0x150
 // VTABLE: LEMBALL 0x004932f8
 class CSlinky : public CGameObject {

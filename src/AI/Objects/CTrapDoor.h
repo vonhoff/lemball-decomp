@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CTRAPDOOR_H
 #define LEMBALL_AI_OBJECTS_CTRAPDOOR_H
 
-#include "../Base/CBaseGlobalObject.h" // complete type
+#include "../Base/CBaseGlobalObject.h"
 
 class AiCoord;
 // SIZE 0x150

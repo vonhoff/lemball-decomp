@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CREADSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CREADSOCKET_H
 
-#include "CBaseCommonSocket.h" // complete type
-#include "CBaseSocket.h"       // complete type
+#include "CBaseCommonSocket.h"
+#include "CBaseSocket.h"
 class CNetworkMessage;
 
 class CBasePacket;

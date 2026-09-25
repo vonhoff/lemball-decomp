@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CTRACKERBUTTON_H
 #define LEMBALL_FRONTEND_CONTROLS_CTRACKERBUTTON_H
 
-#include "../../Visos/Graphics/CGraphicButton.h" // complete type
+#include "../../Visos/Graphics/CGraphicButton.h"
 
 class CPVGWnd;
 class CTrackWindow;

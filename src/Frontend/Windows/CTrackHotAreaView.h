@@ -1,10 +1,10 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_CTRACKHOTAREAVIEW_H
 #define LEMBALL_FRONTEND_WINDOWS_CTRACKHOTAREAVIEW_H
 
-#include "../../Visos/Foundation/CVsPoint.h" // complete type
-#include "../../Visos/Foundation/CVsRect.h"  // complete type
-#include "../../Visos/Graphics/CClipRect.h"  // complete type
-#include "../../Visos/Graphics/CLine.h"      // complete type
+#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Graphics/CClipRect.h"
+#include "../../Visos/Graphics/CLine.h"
 
 class CPVGWnd;
 // SIZE 0xa4

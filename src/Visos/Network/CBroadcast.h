@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CBROADCAST_H
 #define LEMBALL_VISOS_NETWORK_CBROADCAST_H
 
-#include "CRwSocket.h" // complete type
+#include "CRwSocket.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 
 class CBroadcastMessage;

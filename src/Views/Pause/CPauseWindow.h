@@ -1,16 +1,16 @@
 #ifndef LEMBALL_VIEWS_PAUSE_CPAUSEWINDOW_H
 #define LEMBALL_VIEWS_PAUSE_CPAUSEWINDOW_H
 
-#include "../../Visos/Animation/CAnim.h"              // complete type
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/CTextManager.h"      // complete type
-#include "../../Visos/Foundation/CVsPoint.h"          // complete type
-#include "../../Visos/Foundation/CVsRect.h"           // complete type
-#include "../../Visos/Foundation/CVsSize.h"           // complete type
-#include "../../Visos/Graphics/CGWnd.h"               // complete type
-#include "../../Visos/Graphics/CHotAreaHandler.h"     // complete type
-#include "../../Visos/Graphics/CLine.h"               // complete type
-#include "CPauseVramHandler.h"                        // complete type
+#include "../../Visos/Animation/CAnim.h"
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../../Visos/Foundation/CTextManager.h"
+#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Foundation/CVsSize.h"
+#include "../../Visos/Graphics/CGWnd.h"
+#include "../../Visos/Graphics/CHotAreaHandler.h"
+#include "../../Visos/Graphics/CLine.h"
+#include "CPauseVramHandler.h"
 
 class CBaseRemap;
 class CPVGWnd;

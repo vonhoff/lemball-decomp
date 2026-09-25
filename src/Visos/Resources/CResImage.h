@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESIMAGE_H
 #define LEMBALL_VISOS_RESOURCES_CRESIMAGE_H
 
-#include "CResRaster.h" // complete type
+#include "CResRaster.h"
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x00498ce0

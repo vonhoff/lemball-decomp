@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_CUSERACTIONMESSAGE_H
 #define LEMBALL_FRONTEND_SUPPORT_CUSERACTIONMESSAGE_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h" // complete type
+#include "../../Visos/Messaging/CNetworkMessage.h"
 
 enum eUserActions {
 	USER_ACTION_0 = 0,

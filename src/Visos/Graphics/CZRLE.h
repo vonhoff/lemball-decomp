@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CZRLE_H
 #define LEMBALL_VISOS_GRAPHICS_CZRLE_H
 
-#include "CPrimitive.h" // complete type
+#include "CPrimitive.h"
 
 class CResBase;
 class CRemap;

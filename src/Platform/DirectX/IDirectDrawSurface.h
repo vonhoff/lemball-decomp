@@ -5,8 +5,6 @@
 #include "DDSURFACEDESC.h"
 #include "IDirectDrawPalette.h"
 
-// DirectDraw 1 COM ABI from the Windows SDK ddraw.h.
-// SDK-only pointer types not accessed here remain opaque.
 struct IDirectDrawSurface {
 	virtual long __stdcall QueryInterface(const void*, void**) = 0;
 	virtual unsigned long __stdcall AddRef() = 0;

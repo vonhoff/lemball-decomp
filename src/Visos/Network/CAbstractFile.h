@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_NETWORK_CABSTRACTFILE_H
 #define LEMBALL_VISOS_NETWORK_CABSTRACTFILE_H
 
-// Descriptive name for the abstract file interface at 0x0049a5e8.
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x0049a5e8
 class CAbstractFile {

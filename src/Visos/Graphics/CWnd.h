@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CWND_H
 #define LEMBALL_VISOS_GRAPHICS_CWND_H
 
-#include "CPVWnd.h" // complete type
+#include "CPVWnd.h"
 struct CVsPoint;
 
 // SIZE 0x4c

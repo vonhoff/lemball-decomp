@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CDOOR_H
 #define LEMBALL_AI_OBJECTS_CDOOR_H
 
-#include "../Base/CGlobalGameObject.h" // complete type
+#include "../Base/CGlobalGameObject.h"
 #include "../Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
 

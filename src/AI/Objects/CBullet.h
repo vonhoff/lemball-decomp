@@ -1,10 +1,10 @@
 #ifndef LEMBALL_AI_OBJECTS_CBULLET_H
 #define LEMBALL_AI_OBJECTS_CBULLET_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h" // complete type
-#include "../Base/AiCoord.h"                       // complete type
-#include "../Base/CGlobalGameObject.h"             // complete type
-#include "../Base/CMove3d.h"                       // complete type
+#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "../Base/AiCoord.h"
+#include "../Base/CGlobalGameObject.h"
+#include "../Base/CMove3d.h"
 
 enum eBulletType {
 	BULLET_TYPE_DEFAULT = 0

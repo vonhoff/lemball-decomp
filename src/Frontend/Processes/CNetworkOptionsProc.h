@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_CNETWORKOPTIONSPROC_H
 #define LEMBALL_FRONTEND_PROCESSES_CNETWORKOPTIONSPROC_H
 
-#include "../Base/CBaseFrontendProcess.h" // complete type
+#include "../Base/CBaseFrontendProcess.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 
 class CConnect;

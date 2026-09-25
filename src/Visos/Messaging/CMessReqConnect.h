@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CMESSREQCONNECT_H
 #define LEMBALL_VISOS_MESSAGING_CMESSREQCONNECT_H
 
-#include "CBroadcastMessage.h" // complete type
+#include "CBroadcastMessage.h"
 
 // SIZE 0x3c
 // VTABLE: LEMBALL 0x00498eb8

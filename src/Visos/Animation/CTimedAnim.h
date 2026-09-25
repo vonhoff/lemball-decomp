@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CTIMEDANIM_H
 #define LEMBALL_VISOS_ANIMATION_CTIMEDANIM_H
 
-#include "CFrames.h" // complete type
+#include "CFrames.h"
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00496d08

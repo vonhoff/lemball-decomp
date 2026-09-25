@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESPRES_H
 #define LEMBALL_VISOS_RESOURCES_CRESPRES_H
 
-#include "CResBase.h" // complete type
+#include "CResBase.h"
 
 #define kChunkPres 0x50524553
 

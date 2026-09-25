@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CLASER_H
 #define LEMBALL_AI_OBJECTS_CLASER_H
 
-#include "../Base/CGlobalGameObject.h" // complete type
+#include "../Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectTypes.h"
 
 class AiCoord;

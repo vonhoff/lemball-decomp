@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVSURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_CPVSURFACE_H
 
-#include "../Foundation/CVsRect.h" // complete type
-#include "../Foundation/CVsSize.h" // complete type
+#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVsSize.h"
 
 class CZRLE;
 class CResZRLE;

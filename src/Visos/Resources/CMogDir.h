@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CMOGDIR_H
 #define LEMBALL_VISOS_RESOURCES_CMOGDIR_H
-#include "../Foundation/Chunk.h"     // complete type
-#include "../Foundation/ChunkInfo.h" // complete type
+#include "../Foundation/Chunk.h"
+#include "../Foundation/ChunkInfo.h"
 #include "CMogloadArena.h"
 
 #include <stddef.h>

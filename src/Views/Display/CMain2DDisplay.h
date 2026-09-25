@@ -2,10 +2,10 @@
 #define LEMBALL_VIEWS_DISPLAY_CMAIN2DDISPLAY_H
 
 #include "../../Frontend/Base/FlowProcesses.h"
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/CVsRect.h"           // complete type
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../../Visos/Foundation/CVsRect.h"
 #include "../../Visos/Graphics/CDrawingMark.h"
-#include "../../Visos/Graphics/CGWnd.h" // complete type
+#include "../../Visos/Graphics/CGWnd.h"
 
 class CGame;
 // SIZE 0xe4

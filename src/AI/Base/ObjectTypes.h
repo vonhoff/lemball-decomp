@@ -50,10 +50,6 @@ enum eObjectType {
 	OBJECT_SLINKY = 0x35,
 	OBJECT_INVISIBLE_SWITCH = 0x36,
 
-	// Reconstructed labels for terrain object types. These combine the verified
-	// x86-backed renderer resources with the collision silhouettes and height
-	// profiles; they are not recovered original symbols.
-	// Direction suffixes use the map convention: +X is SE and +Y is SW.
 	TERRAIN_TREE = 0x202,
 	TERRAIN_BLOX_1 = 0x206,
 	TERRAIN_BLOX_2 = 0x207,

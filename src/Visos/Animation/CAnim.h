@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CANIM_H
 #define LEMBALL_VISOS_ANIMATION_CANIM_H
 
-#include "../Graphics/CZRLE.h" // complete type
+#include "../Graphics/CZRLE.h"
 
 class CResANIM;
 

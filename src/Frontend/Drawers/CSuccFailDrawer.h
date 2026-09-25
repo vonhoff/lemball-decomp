@@ -1,11 +1,11 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 
-#include "../../Visos/Foundation/CVsPoint.h" // complete type
-#include "../../Visos/Graphics/CBitmapRes.h" // complete type
+#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Graphics/CBitmapRes.h"
 #include "../Base/CBaseFrontendDrawer.h"
-#include "../Support/CoordPair.h"        // complete type
-#include "../Windows/CSuccFailAnimWnd.h" // complete type
+#include "../Support/CoordPair.h"
+#include "../Windows/CSuccFailAnimWnd.h"
 #include "Frontend/Support/CUserActionMessage.h"
 #include "SuccFailDrawerFieldViews.h"
 

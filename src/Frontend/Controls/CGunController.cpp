@@ -477,7 +477,6 @@ void CGunController::MoveUp()
 	remaining = 8;
 	do {
 		direction = *directionField;
-		// m_y is two ints before m_direction in each junction.
 		if (direction != 3 && directionField[-2] < m_targetY && bestY < directionField[-2]) {
 			if (direction != 2) {
 				m_targetSide = direction;
@@ -513,7 +512,6 @@ void CGunController::MoveDown()
 	remaining = 8;
 	do {
 		direction = *directionField;
-		// m_y is two ints before m_direction in each junction.
 		if (direction != 3 && m_targetY < (y = directionField[-2]) && y < bestY) {
 			if (direction != 2) {
 				m_targetSide = direction;
@@ -567,7 +565,6 @@ void CGunController::MoveRight()
 	}
 }
 
-// Descriptive name; the original Windows helper has no recovered symbol.
 // FUNCTION: LEMBALL 0x0044da30
 void CGunController::SetGunPosition(int p_x, int p_y, int p_side)
 {

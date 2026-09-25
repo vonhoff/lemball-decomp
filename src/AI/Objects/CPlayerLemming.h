@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 #define LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h" // complete type
-#include "../Base/AiCoord.h"                       // complete type
-#include "../Base/CGlobalGameObject.h"             // complete type
+#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "../Base/AiCoord.h"
+#include "../Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
 #include "Views/Sound/SoundEffects.h"
@@ -11,7 +11,6 @@
 class CGameObject;
 class CIce;
 class CPlayerLemmingGroup;
-// Inventory bounds and ammunition limits used by HasObject, AddObject and PickUpAmmo.
 #define PLAYER_INVENTORY_CAPACITY 12
 #define PLAYER_MAX_AMMO 50
 #define PLAYER_START_AMMO 25

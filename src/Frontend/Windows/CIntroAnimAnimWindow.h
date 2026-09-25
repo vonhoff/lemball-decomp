@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_CINTROANIMANIMWINDOW_H
 #define LEMBALL_FRONTEND_WINDOWS_CINTROANIMANIMWINDOW_H
 
-#include "../../Visos/Graphics/CAnimWnd.h" // complete type
+#include "../../Visos/Graphics/CAnimWnd.h"
 
 class CIntroAnimDrawer;
 class CMain2DDisplay;

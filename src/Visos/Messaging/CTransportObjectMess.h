@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CTRANSPORTOBJECTMESS_H
 #define LEMBALL_VISOS_MESSAGING_CTRANSPORTOBJECTMESS_H
 
-#include "../../AI/Messages/CGameObjectMess.h" // complete type
+#include "../../AI/Messages/CGameObjectMess.h"
 
 // SIZE 0x34
 // VTABLE: LEMBALL 0x00493fe8

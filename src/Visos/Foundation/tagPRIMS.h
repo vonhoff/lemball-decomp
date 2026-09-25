@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_TAGPRIMS_H
 #define LEMBALL_VISOS_FOUNDATION_TAGPRIMS_H
 
-#include "../Graphics/CBitmap.h"      // complete type
-#include "../Graphics/CBitmapRes.h"   // complete type
-#include "../Graphics/CDrawingMark.h" // complete type
-#include "../Graphics/CLine.h"        // complete type
-#include "../Graphics/CSolidRect.h"   // complete type
+#include "../Graphics/CBitmap.h"
+#include "../Graphics/CBitmapRes.h"
+#include "../Graphics/CDrawingMark.h"
+#include "../Graphics/CLine.h"
+#include "../Graphics/CSolidRect.h"
 
 // SIZE 0x260
 class tagPRIMS {

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILEBROADCAST_H
 #define LEMBALL_VISOS_NETWORK_CFILEBROADCAST_H
 
-#include "CBroadcast.h"          // complete type
-#include "CFileOpenManagement.h" // complete type
+#include "CBroadcast.h"
+#include "CFileOpenManagement.h"
 
 class CPortsMessage;
 
@@ -13,7 +13,6 @@ class CPortsMessage;
 // VTABLE: LEMBALL 0x0049a998 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a9c8 CFileBroadcast
 // VTABLE: LEMBALL 0x0049a9d8 CBroadcast
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CFileBroadcast : public CFileOpenManagement, public CBroadcast {
 public:

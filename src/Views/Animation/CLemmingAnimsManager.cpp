@@ -28,7 +28,6 @@ const unsigned int g_style2ObjectClip[4] = {34, 96, 68, 96};
 // GLOBAL: LEMBALL 0x0049e8b4
 const unsigned int* g_styleObjectClip = 0;
 
-// Style-sensitive resource IDs written by SetupStyleSensitive (0x00432c80).
 // GLOBAL: LEMBALL 0x004a7850
 unsigned int g_groundBlox1ResourceId;
 // GLOBAL: LEMBALL 0x004a7854

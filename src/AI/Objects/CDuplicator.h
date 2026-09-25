@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CDUPLICATOR_H
 #define LEMBALL_AI_OBJECTS_CDUPLICATOR_H
 
-#include "../Base/AiCoord.h"           // complete type
-#include "../Base/CGlobalGameObject.h" // complete type
+#include "../Base/AiCoord.h"
+#include "../Base/CGlobalGameObject.h"
 
 class CGameObject;
 // SIZE 0x144

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CDRAWINGMARK_H
 #define LEMBALL_VISOS_GRAPHICS_CDRAWINGMARK_H
 
-#include "CPrimitive.h" // complete type
+#include "CPrimitive.h"
 
 // SIZE 0x04
 // VTABLE: LEMBALL 0x00496c98

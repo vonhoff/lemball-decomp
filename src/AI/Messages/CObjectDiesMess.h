@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MESSAGES_COBJECTDIESMESS_H
 #define LEMBALL_AI_MESSAGES_COBJECTDIESMESS_H
 
-#include "CGameObjectMess.h" // complete type
+#include "CGameObjectMess.h"
 
 // VTABLE: LEMBALL 0x00493e80
 class CObjectDiesMess : public CGameObjectMess {

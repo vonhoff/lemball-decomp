@@ -1,5 +1,3 @@
-// Keep the manager declarations in this TU: they change MSVC 4.00 register
-// allocation in the otherwise untouched level-file and preview functions.
 #include "CLevelLoader.h"
 
 #include "../../AI/Groups/CEnemyGroupManager.h"
@@ -60,7 +58,6 @@ CLevelLoader::CLevelLoader(CAI* p_ai)
 	g_pActiveLevelFile = (char*) m_ai->LevelName();
 }
 
-// x86 0x004082bb reads and forwards the full 32-bit skip argument slot.
 // FUNCTION: LEMBALL 0x00408240
 void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 {
@@ -95,67 +92,67 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 		blockType = header->m_type;
 		dataSize -= 8;
 		switch (blockType) {
-		case LEVEL_BLOCK_AI: // AI
+		case LEVEL_BLOCK_AI:
 			m_ai->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_GROUND_ANIMS: // ANIM
+		case LEVEL_BLOCK_GROUND_ANIMS:
 			m_ai->m_groundAnim->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_BALLS: // BALL
+		case LEVEL_BLOCK_BALLS:
 			m_ai->m_ballManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_BALLOON_POSTS: // BOON
+		case LEVEL_BLOCK_BALLOON_POSTS:
 			m_ai->m_balloonPost->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_COLLECTABLES: // COLL
+		case LEVEL_BLOCK_COLLECTABLES:
 			m_ai->m_collectableManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_DEFAULT_BLOX: // DEFT
+		case LEVEL_BLOCK_DEFAULT_BLOX:
 			m_ai->m_map->LoadDefaultBlox((class LoadDefaultBlox*) (header + 1), dataSize);
 			break;
-		case LEVEL_BLOCK_DOORS: // DOOR
+		case LEVEL_BLOCK_DOORS:
 			m_ai->m_doorManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_END: // END?
+		case LEVEL_BLOCK_END:
 			endFound = true;
 			break;
-		case LEVEL_BLOCK_ENEMY_GROUPS: // ENMY
+		case LEVEL_BLOCK_ENEMY_GROUPS:
 			m_ai->m_enemyGroupManager->LoadLevel((LoadEnemyData*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_FLAGS: // FLAG
+		case LEVEL_BLOCK_FLAGS:
 			m_ai->LoadFlagInfo((unsigned char*) (header + 1), dataSize);
 			break;
-		case LEVEL_BLOCK_GROUND_SURFACE: // GDSF
+		case LEVEL_BLOCK_GROUND_SURFACE:
 			m_ai->m_map->LoadLevel((LoadGroundSurfaceData*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_OBJECTS: // GMOB
+		case LEVEL_BLOCK_OBJECTS:
 			m_ai->m_objectManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_HANDS: // HAND
+		case LEVEL_BLOCK_HANDS:
 			m_ai->m_handManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_ICE: // ICE
+		case LEVEL_BLOCK_ICE:
 			m_ai->m_iceManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_INVISIBLE_SWITCHES: // INVS
+		case LEVEL_BLOCK_INVISIBLE_SWITCHES:
 			m_ai->m_invisibleSwitchManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_LASERS: // LASR
+		case LEVEL_BLOCK_LASERS:
 			m_ai->m_laserManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_LIFTS: // LIFT
+		case LEVEL_BLOCK_LIFTS:
 			m_ai->m_liftManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_MINES: // MINE
+		case LEVEL_BLOCK_MINES:
 			m_ai->m_mineManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_MOVERS: // MOVE
+		case LEVEL_BLOCK_MOVERS:
 			m_ai->m_moverManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_NAME: // NAME
+		case LEVEL_BLOCK_NAME:
 			m_ai->m_map->LoadLevelName((LoadGroundName*) (header + 1), dataSize);
 			break;
-		case LEVEL_BLOCK_NETWORK_STARTS: // NETW
+		case LEVEL_BLOCK_NETWORK_STARTS:
 			if (m_ai->m_networkMode != 1) {
 				m_ai->m_trapDoorManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			}
@@ -170,16 +167,16 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 				}
 			}
 			break;
-		case LEVEL_BLOCK_NODES: // NODE
+		case LEVEL_BLOCK_NODES:
 			m_ai->m_nodeManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_PAINT_GUNS: // PGUN
+		case LEVEL_BLOCK_PAINT_GUNS:
 			m_ai->m_paintGunManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_PLAYER_GROUPS: // PLAS
+		case LEVEL_BLOCK_PLAYER_GROUPS:
 			m_ai->m_playerGroupManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_PLAYER_STARTS: // PLS1
+		case LEVEL_BLOCK_PLAYER_STARTS:
 			if (m_ai->m_networkMode != 1) {
 				m_ai->m_playerGroupManager->LoadAdditionalPlayerStartPositions((unsigned char*) (header + 1),
 																			   dataSize,
@@ -196,16 +193,16 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 				}
 			}
 			break;
-		case LEVEL_BLOCK_ROCKETS: // ROCK
+		case LEVEL_BLOCK_ROCKETS:
 			m_ai->m_rocketManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_SHEEP_GROUPS: // SHPG
+		case LEVEL_BLOCK_SHEEP_GROUPS:
 			m_ai->m_sheepGroupManager->LoadLevel((LoadSheepData*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_SLINKIES: // SLNK
+		case LEVEL_BLOCK_SLINKIES:
 			m_ai->m_slinkyManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
-		case LEVEL_BLOCK_TRAMPOLINES: // TRAM
+		case LEVEL_BLOCK_TRAMPOLINES:
 			m_ai->m_trampolineManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
 		}

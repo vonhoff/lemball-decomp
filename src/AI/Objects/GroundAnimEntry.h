@@ -2,7 +2,7 @@
 #define LEMBALL_AI_OBJECTS_GROUNDANIMENTRY_H
 
 #include "../../Map/Ground/CGround.h"
-#include "../Base/Coord3d.h" // complete type
+#include "../Base/Coord3d.h"
 
 class CMap;
 // SIZE 0x18

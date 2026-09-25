@@ -95,7 +95,7 @@ def handle_link(args: list[str]) -> int:
         errors="replace",
         check=False,
     )
-    output = res.stdout or ""
+    output = res.stdout
     sys.stdout.write(output)
     warning_count = sum(1 for line in output.splitlines() if MSVC_WARNING.search(line))
     if warning_count:
@@ -128,7 +128,7 @@ def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) ->
         )
 
     proc = invoke()
-    output = proc.stdout or ""
+    output = proc.stdout
     if proc.returncode != 0:
         return proc.returncode, output
 
@@ -139,7 +139,7 @@ def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) ->
         # Removing it makes old NMake invoke the existing CMake link rule.
         (build_dir / "LEMBALL.EXE").unlink()
         proc = invoke()
-        output += proc.stdout or ""
+        output += proc.stdout
         if proc.returncode != 0:
             return proc.returncode, output
 
@@ -161,7 +161,7 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
         cached is None
         or " " in cached
         or not makefile.exists()
-        or (toolchain.exists() and toolchain.stat().st_mtime > makefile.stat().st_mtime)
+        or toolchain.stat().st_mtime > makefile.stat().st_mtime
     )
     if need_configure:
         res = subprocess.run([cmake, "--preset", "msvc400"], cwd=ROOT, check=False)

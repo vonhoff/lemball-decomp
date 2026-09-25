@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_NAVIGATION_CNODE_H
 #define LEMBALL_AI_NAVIGATION_CNODE_H
 
-#include "../Base/CPt3.h" // complete type
+#include "../Base/CPt3.h"
 
 struct NodeNeighbour;
 // SIZE 0x14

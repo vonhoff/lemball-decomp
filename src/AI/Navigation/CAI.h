@@ -1,12 +1,12 @@
 #ifndef LEMBALL_AI_NAVIGATION_CAI_H
 #define LEMBALL_AI_NAVIGATION_CAI_H
 
-#include "../../Visos/Foundation/CBaseProcess.h"      // complete type
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
-#include "../../Visos/Messaging/CNetworkMessage.h"    // complete type
-#include "../Base/AiCoord.h"                          // complete type
-#include "../Base/CPt3.h"                             // complete type
-#include "../Base/CRect3.h"                           // complete type
+#include "../../Visos/Foundation/CBaseProcess.h"
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "../Base/AiCoord.h"
+#include "../Base/CPt3.h"
+#include "../Base/CRect3.h"
 #include "../Messages/CGameStateMessage.h"
 #include "../Objects/CBullet.h"
 #include "../Objects/SwitchEntry.h"
@@ -191,22 +191,20 @@ private:
 	unsigned int* m_objectRequired;    // 0x50
 	unsigned short m_levelVersion;     // 0x54
 	unsigned short m_pad0x56;          // 0x56
-	unsigned int m_gameplayEnabled;    // 0x58: gameplay enable flag, set to 1 at 0x004123bb
+	unsigned int m_gameplayEnabled;    // 0x58
 	unsigned int m_gameplayStartDelay; // 0x5c
-	unsigned int m_mapType;            // 0x60: level map type (LoadLevel 0x00412f4c)
-	// Restart (0x00410d98): 32-bit result of skill == 4 (0 or 1).
-	unsigned int m_networkMode;            // 0x64
-	unsigned int m_started;                // 0x68
-	unsigned int m_gameStatePending;       // 0x6c
-	unsigned int m_networkStartReady;      // 0x70
-	CGameStateMessage* m_gameStateMessage; // 0x74: constructor result at 0x00410dec
-	CPBNetworkGame* m_networkGame;         // 0x78: constructor result at 0x00410dba
-	// Restart (0x00410d82, 0x00410dd2): zero, then the connection's host flag.
+	unsigned int m_mapType;            // 0x60
+	unsigned int m_networkMode;        // 0x64
+	unsigned int m_started;            // 0x68
+	unsigned int m_gameStatePending;   // 0x6c
+	unsigned int m_networkStartReady;  // 0x70
+	CGameStateMessage* m_gameStateMessage;             // 0x74
+	CPBNetworkGame* m_networkGame;                     // 0x78
 	unsigned int m_isHost;                             // 0x7c
 	unsigned int m_unk0x80;                            // 0x80
 	unsigned int m_lastNetworkSendCheckTick;           // 0x84
 	unsigned int m_clockSourceReady;                   // 0x88
-	CAnimSpecial* m_animSpecial;                       // 0x8c: allocation/Initialise at 0x0041171a
+	CAnimSpecial* m_animSpecial;                       // 0x8c
 	int m_networkStartsX[4];                           // 0x90
 	int m_networkStartsY[4];                           // 0xa0
 	int m_networkStartsZ[4];                           // 0xb0

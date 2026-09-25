@@ -2,11 +2,11 @@
 #define LEMBALL_AI_BASE_CGAMEOBJECT_H
 
 #include "../../Control/Game/GameTime.h"
-#include "../../Visos/Foundation/CVsRect.h" // complete type
+#include "../../Visos/Foundation/CVsRect.h"
 #include "../Objects/CViewData.h"
-#include "AiCoord.h"   // complete type
-#include "C3DVector.h" // complete type
-#include "CRect3.h"    // complete type
+#include "AiCoord.h"
+#include "C3DVector.h"
+#include "CRect3.h"
 #include "ObjectActions.h"
 #include "ObjectTypes.h"
 #include "Views/Sound/SoundEffects.h"

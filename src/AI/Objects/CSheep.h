@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CSHEEP_H
 #define LEMBALL_AI_OBJECTS_CSHEEP_H
 
-#include "../Base/CGameObject.h" // complete type
+#include "../Base/CGameObject.h"
 
 class CAI;
 // SIZE 0x124

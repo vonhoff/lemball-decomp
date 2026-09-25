@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CVSDEBUGSTREAMBUF_H
 #define LEMBALL_VISOS_FOUNDATION_CVSDEBUGSTREAMBUF_H
 
-#include "CVSStreambuf.h" // complete type
+#include "CVSStreambuf.h"
 
 struct FILE;
 

@@ -2,10 +2,10 @@
 #define LEMBALL_VIEWS_PANEL_CPANELBUTTON_H
 
 #include "../../AI/Base/ObjectTypes.h"
-#include "../../Visos/Animation/CAnim.h"           // complete type
-#include "../../Visos/Foundation/CVsRect.h"        // complete type
-#include "../../Visos/Graphics/CDepressedButton.h" // complete type
-#include "../../Visos/Graphics/CLine.h"            // complete type
+#include "../../Visos/Animation/CAnim.h"
+#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Graphics/CDepressedButton.h"
+#include "../../Visos/Graphics/CLine.h"
 
 class CPanelLemming;
 class CPVGWnd;

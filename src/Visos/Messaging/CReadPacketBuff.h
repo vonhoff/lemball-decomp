@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CREADPACKETBUFF_H
 #define LEMBALL_VISOS_MESSAGING_CREADPACKETBUFF_H
 
-#include "CBasePacketBuff.h" // complete type
+#include "CBasePacketBuff.h"
 
 // SIZE 0x0c
 class CReadPacketBuff : public CBasePacketBuff {

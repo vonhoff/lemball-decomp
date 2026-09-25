@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CHEADERS_H
 #define LEMBALL_VISOS_MESSAGING_CHEADERS_H
 
-#include "CNetworkMessage.h" // complete type
+#include "CNetworkMessage.h"
 
 class CHeaderMessage;
 

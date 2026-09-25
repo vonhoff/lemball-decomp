@@ -2,7 +2,7 @@
 #define LEMBALL_AI_OBJECTS_CVIEWDATA_H
 
 #include "../../Views/Sound/SoundEffects.h"
-#include "../Base/AiCoord.h" // complete type
+#include "../Base/AiCoord.h"
 #include "../Base/ObjectActions.h"
 #include "../Base/ObjectTypes.h"
 

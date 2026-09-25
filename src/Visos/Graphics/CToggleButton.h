@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CTOGGLEBUTTON_H
 #define LEMBALL_VISOS_GRAPHICS_CTOGGLEBUTTON_H
 
-#include "CGraphicButton.h" // complete type
+#include "CGraphicButton.h"
 class CPVGWnd;
 struct CVsPoint;
 

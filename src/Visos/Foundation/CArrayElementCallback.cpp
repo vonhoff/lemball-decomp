@@ -1,4 +1,3 @@
-// Opaque receiver type for the original single-pointer thiscall callbacks.
 class CArrayElementCallback {};
 
 typedef void (CArrayElementCallback::*ArrayCallback)();

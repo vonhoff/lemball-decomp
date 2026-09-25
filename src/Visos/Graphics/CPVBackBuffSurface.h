@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVBACKBUFFSURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_CPVBACKBUFFSURFACE_H
 
-#include "CPVGDIBitmap.h" // complete type
-#include "CPVSurface.h"   // complete type
+#include "CPVGDIBitmap.h"
+#include "CPVSurface.h"
 class CVsRect;
 
 class CCopyToBackBuff;

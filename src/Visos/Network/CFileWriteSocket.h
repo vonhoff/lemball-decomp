@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILEWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILEWRITESOCKET_H
 
-#include "CFileBaseSocket.h"   // complete type
-#include "CFileCommonSocket.h" // complete type
-#include "CWriteSocket.h"      // complete type
+#include "CFileBaseSocket.h"
+#include "CFileCommonSocket.h"
+#include "CWriteSocket.h"
 
 class CNetworkMessage;
 
@@ -12,7 +12,6 @@ class CNetworkMessage;
 // VTABLE: LEMBALL 0x0049a698 CNetworkFile
 // VTABLE: LEMBALL 0x0049a6d8 CBaseSocket
 // VTABLE: LEMBALL 0x0049a708 CBaseCommonSocket
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CFileWriteSocket : public CFileBaseSocket, public virtual CWriteSocket, public virtual CFileCommonSocket {
 public:
@@ -25,7 +24,7 @@ public:
 	friend class CFileRWSocket;
 
 private:
-	int m_nextWriteSlot; // 0x10: current file packet slot
+	int m_nextWriteSlot; // 0x10
 };
 #pragma warning(default : 4250)
 

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VIEWS_INPUT_CCURSORMOTION_H
 #define LEMBALL_VIEWS_INPUT_CCURSORMOTION_H
 
-#include "../../Visos/Graphics/CClipRect.h"  // complete type
-#include "../../Visos/Graphics/CSolidRect.h" // complete type
+#include "../../Visos/Graphics/CClipRect.h"
+#include "../../Visos/Graphics/CSolidRect.h"
 
 class CAI;
 class CBaseQueue;

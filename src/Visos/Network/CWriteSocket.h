@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_CWRITESOCKET_H
 
-#include "../Messaging/BasePacketHeader.h" // complete type
-#include "CBaseCommonSocket.h"             // complete type
-#include "CBaseSocket.h"                   // complete type
+#include "../Messaging/BasePacketHeader.h"
+#include "CBaseCommonSocket.h"
+#include "CBaseSocket.h"
 class CNetworkMessage;
 
 class CNetworkAddress;

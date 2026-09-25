@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CVSOSTREAM_H
 #define LEMBALL_VISOS_FOUNDATION_CVSOSTREAM_H
 
-#include "CVSIOs.h" // complete type
+#include "CVSIOs.h"
 class CVSStreambuf;
 
 class CString;

@@ -113,7 +113,6 @@ bool CPaintGun::Process()
 			target.m_yFixed = y;
 			target.m_zFixed = z;
 			coordinate = (x >> 12) + 200;
-			// The original admits 1024, but clamps larger values to 1023.
 			if (coordinate > 1024) {
 				coordinate = 1023;
 			}

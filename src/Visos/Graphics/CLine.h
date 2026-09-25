@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CLINE_H
 #define LEMBALL_VISOS_GRAPHICS_CLINE_H
 
-#include "../Foundation/CVsRect.h" // complete type
-#include "CPrimitive.h"            // complete type
+#include "../Foundation/CVsRect.h"
+#include "CPrimitive.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496d38

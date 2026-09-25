@@ -1,10 +1,10 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CMCIMUSICDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CMCIMUSICDEVICE_H
 
-#include "../../Sound/CPVMusicDevice.h" // complete type
+#include "../../Sound/CPVMusicDevice.h"
 
 #define WIN32_LEAN_AND_MEAN
-// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
+// clang-format off
 #include <windows.h>
 #include <mmsystem.h>
 // clang-format on

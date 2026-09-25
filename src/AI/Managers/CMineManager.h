@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_MANAGERS_CMINEMANAGER_H
 #define LEMBALL_AI_MANAGERS_CMINEMANAGER_H
 
-#include "../Base/AiCoord.h"    // complete type
-#include "CBaseObjectManager.h" // complete type
+#include "../Base/AiCoord.h"
+#include "CBaseObjectManager.h"
 
 class CAI;
 class CGameObject;

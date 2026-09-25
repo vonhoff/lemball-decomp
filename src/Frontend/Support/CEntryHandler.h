@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_CENTRYHANDLER_H
 #define LEMBALL_FRONTEND_SUPPORT_CENTRYHANDLER_H
 
-#include "../../Visos/Graphics/CHotAreaHandler.h" // complete type
+#include "../../Visos/Graphics/CHotAreaHandler.h"
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x004986b0

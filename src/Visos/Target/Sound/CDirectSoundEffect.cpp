@@ -10,7 +10,7 @@
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
-// clang-format off: mmsystem.h requires Win32 types.
+// clang-format off
 #include <windows.h>
 #include <mmsystem.h>
 #include "Platform/DirectX/IDirectSoundBuffer.h"
@@ -54,7 +54,6 @@ static DirectSoundError g_directSoundErrors[] = {
 // GLOBAL: LEMBALL 0x004a34b8
 static const char* g_unknownDirectSoundError = "UNKNOWN DIRECT SOUND ERROR: ";
 
-// Storage covers the observed prefix plus a signed 32-bit decimal error code.
 // GLOBAL: LEMBALL 0x004aa128
 static char g_directSoundErrorText[sizeof("UNKNOWN DIRECT SOUND ERROR: ") + 11];
 

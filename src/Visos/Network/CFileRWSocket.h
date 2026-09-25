@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILERWSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILERWSOCKET_H
 
-#include "CFileReadSocket.h"  // complete type
-#include "CFileWriteSocket.h" // complete type
-#include "CRwSocket.h"        // complete type
+#include "CFileReadSocket.h"
+#include "CFileWriteSocket.h"
+#include "CRwSocket.h"
 
 // SIZE 0x154
 // VTABLE: LEMBALL 0x0049a79c CFileCommonSocket
@@ -11,7 +11,6 @@
 // VTABLE: LEMBALL 0x0049a7e0 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x0049a808 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a838 CFileRWSocket
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CFileRWSocket : public virtual CRwSocket, public virtual CFileReadSocket, public virtual CFileWriteSocket {
 public:

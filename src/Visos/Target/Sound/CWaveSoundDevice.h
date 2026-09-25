@@ -1,10 +1,10 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CWAVESOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CWAVESOUNDDEVICE_H
 
-#include "../../Sound/CBaseSoundDevice.h" // complete type
+#include "../../Sound/CBaseSoundDevice.h"
 
 #define WIN32_LEAN_AND_MEAN
-// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
+// clang-format off
 #include <windows.h>
 #include <mmsystem.h>
 // clang-format on
@@ -63,7 +63,7 @@ private:
 	DWORD m_sampleRate;               // 0x84
 	UINT m_deviceId;                  // 0x88
 	HWAVEOUT m_waveOut;               // 0x8c
-	WAVEFORMATEX m_waveFormat;        // 0x90; next DWORD aligned at 0xa4
+	WAVEFORMATEX m_waveFormat;        // 0x90
 	unsigned int m_nextHandle;        // 0xa4
 	CWaveEffect** m_effects;          // 0xa8
 	unsigned int* m_effectUsed;       // 0xac

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CMAINOPTIONS1_H
 #define LEMBALL_VISOS_FOUNDATION_CMAINOPTIONS1_H
 
-#include "../../Frontend/Base/CBaseFrontendProcess.h" // complete type
+#include "../../Frontend/Base/CBaseFrontendProcess.h"
 
 class CGame;
 

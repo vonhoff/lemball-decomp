@@ -10,6 +10,7 @@ import unittest
 from pathlib import Path
 
 from lib.layout import check_layout
+from lib.comments import check_comments
 from lib.names import check_names
 from lib.paths import SRC
 from lib.provenance import check_provenance
@@ -17,17 +18,9 @@ from lib.smell import check_smell
 from lib.vtable import check_vtable
 
 
-def check_decomplint(
-    paths: list[Path | str] | None = None,
-    target: str = "LEMBALL",
-    warnfail: bool = True,
-    encoding: str = "utf-8",
-) -> int:
-    command = [sys.executable, "-m", "reccmp.tools.decomplint", "--encoding", encoding]
-    if target is not None:
-        command.extend(["--target", target])
-    if warnfail:
-        command.append("--warnfail")
+def check_decomplint(paths: list[Path | str] | None = None) -> int:
+    command = [sys.executable, "-m", "reccmp.tools.decomplint",
+               "--encoding", "utf-8", "--target", "LEMBALL", "--warnfail"]
     command.extend(str(path) for path in (paths or [SRC]))
     return subprocess.run(command, check=False).returncode
 
@@ -59,6 +52,7 @@ def main() -> int:
     parser.add_argument("--verbose", "-v", action="store_true", help="show verbose output (e.g. for vtable)")
     parser.add_argument("--top", type=int, default=0, help="show the N most frequent unresolved targets and pairs")
     parser.add_argument("--tools", action="store_true", help="comparison-tool regression tests")
+    parser.add_argument("--comments", action="store_true", help="check functional src comments")
     parser.add_argument(
         "--annot-strict", action="store_true", help="strict annotation checks (fail on review items and unmapped vtables)"
     )
@@ -83,8 +77,11 @@ def main() -> int:
             return vtable()
         if args.tools:
             return check_tool_tests()
+        if args.comments:
+            return check_comments(paths)
 
     checks = [
+        lambda: check_comments(paths),
         lambda: check_smell(paths=paths, annot=True, annot_strict=args.annot_strict),
         provenance,
         lambda: check_layout(paths=paths, fail=True),

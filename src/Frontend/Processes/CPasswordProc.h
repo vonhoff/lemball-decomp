@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_CPASSWORDPROC_H
 #define LEMBALL_FRONTEND_PROCESSES_CPASSWORDPROC_H
 
-#include "../Base/CBaseFrontendProcess.h" // complete type
+#include "../Base/CBaseFrontendProcess.h"
 
 class CGame;
 // SIZE 0x28

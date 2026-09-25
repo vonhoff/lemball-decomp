@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESZRLE_H
 #define LEMBALL_VISOS_RESOURCES_CRESZRLE_H
 
-#include "CResBITMAP.h" // for CResRaster
+#include "CResBITMAP.h"
 #include "Visos/Resources/CResRaster.h"
 
 // SIZE 0x0c

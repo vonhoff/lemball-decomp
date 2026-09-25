@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CPLAYTHRUANIM_H
 #define LEMBALL_VISOS_ANIMATION_CPLAYTHRUANIM_H
 
-#include "CTimedAnim.h" // complete type
+#include "CTimedAnim.h"
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00496d20

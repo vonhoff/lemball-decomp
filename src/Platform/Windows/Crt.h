@@ -1,8 +1,6 @@
 #ifndef LEMBALL_PLATFORM_WINDOWS_CRT_H
 #define LEMBALL_PLATFORM_WINDOWS_CRT_H
 
-// MSVC runtime routines linked from the compiler libraries.
-// These mappings identify the original x86 implementations, not replacement code.
 
 // LIBRARY: LEMBALL 0x0047fab0 SYMBOL
 // __toupper

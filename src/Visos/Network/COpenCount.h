@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_COPENCOUNT_H
 #define LEMBALL_VISOS_NETWORK_COPENCOUNT_H
 
-#include "../Messaging/CNetworkMessage.h" // complete type
+#include "../Messaging/CNetworkMessage.h"
 
 // SIZE 0x30
 // VTABLE: LEMBALL 0x0049a848

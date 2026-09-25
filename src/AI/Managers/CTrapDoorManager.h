@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MANAGERS_CTRAPDOORMANAGER_H
 #define LEMBALL_AI_MANAGERS_CTRAPDOORMANAGER_H
 
-#include "CBaseObjectManager.h" // complete type
+#include "CBaseObjectManager.h"
 
 class AiCoord;
 class CTrapDoor;

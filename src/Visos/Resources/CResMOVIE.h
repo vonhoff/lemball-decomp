@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESMOVIE_H
 #define LEMBALL_VISOS_RESOURCES_CRESMOVIE_H
 
-#include "CResBaseLIST.h" // complete type
-#include "CResINT.h"      // complete type
-#include "CResSTRING.h"   // complete type
+#include "CResBaseLIST.h"
+#include "CResINT.h"
+#include "CResSTRING.h"
 
 // SIZE 0x80
 // VTABLE: LEMBALL 0x00498c88

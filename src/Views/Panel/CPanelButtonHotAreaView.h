@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VIEWS_PANEL_CPANELBUTTONHOTAREAVIEW_H
 #define LEMBALL_VIEWS_PANEL_CPANELBUTTONHOTAREAVIEW_H
 
-#include "../../Visos/Animation/CAnim.h"    // complete type
-#include "../../Visos/Foundation/CVsRect.h" // complete type
-#include "../../Visos/Graphics/CLine.h"     // complete type
+#include "../../Visos/Animation/CAnim.h"
+#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Graphics/CLine.h"
 
 class CPanelLemming;
 // SIZE 0x128

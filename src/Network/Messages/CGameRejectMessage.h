@@ -1,7 +1,7 @@
 #ifndef LEMBALL_NETWORK_MESSAGES_CGAMEREJECTMESSAGE_H
 #define LEMBALL_NETWORK_MESSAGES_CGAMEREJECTMESSAGE_H
 
-#include "CGameFlaggedMessage.h" // complete type
+#include "CGameFlaggedMessage.h"
 
 // SIZE 0x30
 // VTABLE: LEMBALL 0x004985b8

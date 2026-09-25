@@ -2,7 +2,7 @@
 #define LEMBALL_AI_MANAGERS_CLIFTMANAGER_H
 
 #include "../Objects/SwitchEntry.h"
-#include "CBaseObjectManager.h" // complete type
+#include "CBaseObjectManager.h"
 
 class CAI;
 class AiCoord;

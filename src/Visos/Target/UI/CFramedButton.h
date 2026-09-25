@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_UI_CFRAMEDBUTTON_H
 #define LEMBALL_VISOS_TARGET_UI_CFRAMEDBUTTON_H
 
-#include "../../Graphics/CDepressedButton.h" // complete type
+#include "../../Graphics/CDepressedButton.h"
 
 class CClipRect;
 class CLine;

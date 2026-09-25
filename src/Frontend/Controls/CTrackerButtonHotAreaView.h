@@ -4,7 +4,6 @@
 // SIZE 0xa8
 class CTrackerButtonHotAreaView {
 public:
-	// No functions mapped yet.
 };
 
 #endif

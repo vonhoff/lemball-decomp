@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CBALL_H
 #define LEMBALL_AI_OBJECTS_CBALL_H
 
-#include "../Base/AiCoord.h"     // complete type
-#include "../Base/CGameObject.h" // complete type
+#include "../Base/AiCoord.h"
+#include "../Base/CGameObject.h"
 
 // SIZE 0x13c
 // VTABLE: LEMBALL 0x00495460

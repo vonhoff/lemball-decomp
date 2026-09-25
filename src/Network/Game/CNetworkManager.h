@@ -1,7 +1,7 @@
 #ifndef LEMBALL_NETWORK_GAME_CNETWORKMANAGER_H
 #define LEMBALL_NETWORK_GAME_CNETWORKMANAGER_H
 
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
 class CConnect;
 
 class CGameRejectMessage;

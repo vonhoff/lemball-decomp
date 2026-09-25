@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_INPUT_CPADTOBUTTON_H
 #define LEMBALL_VIEWS_INPUT_CPADTOBUTTON_H
 
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
 
 class CPVButton;
 struct PadToButtonEntry;

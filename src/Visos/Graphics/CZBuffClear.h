@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CZBUFFCLEAR_H
 #define LEMBALL_VISOS_GRAPHICS_CZBUFFCLEAR_H
 
-#include "CPrimitive.h" // complete type
+#include "CPrimitive.h"
 
 // SIZE 0x10
 class CZBuffClear : public CPrimitive {

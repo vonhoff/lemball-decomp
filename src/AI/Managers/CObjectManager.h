@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_MANAGERS_COBJECTMANAGER_H
 #define LEMBALL_AI_MANAGERS_COBJECTMANAGER_H
 
-#include "../Base/CGlobalGameObject.h" // complete type
+#include "../Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectTypes.h"
-#include "CBaseObjectManager.h" // complete type
+#include "CBaseObjectManager.h"
 
 class AiCoord;
 class CAI;

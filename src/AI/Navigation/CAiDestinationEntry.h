@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_NAVIGATION_CAIDESTINATIONENTRY_H
 #define LEMBALL_AI_NAVIGATION_CAIDESTINATIONENTRY_H
 
-#include "../Base/AiCoord.h" // complete type
+#include "../Base/AiCoord.h"
 
 enum eDestinationType {
 	DESTINATION_NONE = 0,

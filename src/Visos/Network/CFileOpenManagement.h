@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILEOPENMANAGEMENT_H
 #define LEMBALL_VISOS_NETWORK_CFILEOPENMANAGEMENT_H
 
-#include "CFileRWSocket.h" // complete type
-#include "COpenCount.h"    // complete type
+#include "CFileRWSocket.h"
+#include "COpenCount.h"
 
 // SIZE 0x34
 // VTABLE: LEMBALL 0x0049a9f4 CFileCommonSocket
@@ -10,7 +10,6 @@
 // VTABLE: LEMBALL 0x0049aa38 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x0049aa60 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049aa90 CFileOpenManagement
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CFileOpenManagement : public virtual CFileRWSocket {
 public:

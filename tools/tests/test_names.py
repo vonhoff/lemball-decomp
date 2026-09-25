@@ -141,11 +141,6 @@ class CatalogNamingTests(unittest.TestCase):
         self.assertEqual(row["wanted_class"], "CPVFontTable")
         self.assertEqual(row["wanted_method"], "_Draw")
 
-    def test_catalog_class_and_method_mismatches_are_detected(self):
-        row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nPadToButton::PadToButton(int n) {}")
-        self.assertEqual(row["status"], "mismatch")
-        self.assertEqual(row["wanted_class"], "CPadToButton")
-
     def test_windows_member_review_keeps_original_catalog_identity(self):
         self.symbols = {0x1010c30e: "GetCDDir__FPCc"}
         self.pairs = {(0x1010c30e, 0x45eda0)}

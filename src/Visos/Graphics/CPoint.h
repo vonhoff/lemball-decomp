@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPOINT_H
 #define LEMBALL_VISOS_GRAPHICS_CPOINT_H
 
-#include "CPrimitive.h" // complete type
+#include "CPrimitive.h"
 
 // SIZE 0x0c
 class CPoint : public CPrimitive {

@@ -2,7 +2,7 @@
 #define LEMBALL_AI_MANAGERS_CCOLLECTABLEMANAGER_H
 
 #include "../Base/ObjectTypes.h"
-#include "CBaseObjectManager.h" // complete type
+#include "CBaseObjectManager.h"
 
 class CAI;
 class CCollectable;

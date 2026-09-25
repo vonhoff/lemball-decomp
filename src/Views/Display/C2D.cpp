@@ -954,12 +954,10 @@ void C2D::NewPauseWindow(ePauseWindowMessages p_message)
 // FUNCTION: LEMBALL 0x00437da0
 void C2D::TriggerPause(unsigned char p_paused)
 {
-	// Original x86 reads the full stack slot despite the unsigned-char signature.
 	unsigned int paused = *(volatile unsigned int*) &p_paused;
 	if (paused != 0) {
 		int gameStatus = m_ai->m_gameStatus;
 		if (gameStatus >= 1 && gameStatus <= 2) {
-			// Original x86 reloads m_ai after reading the status.
 			(*(CAI* volatile*) &m_ai)->GameState(GAME_STATUS_PAUSED);
 		}
 	}
@@ -2113,7 +2111,6 @@ void C2D::DrawLemmingOnConveyor(CViewData& p_viewData, int p_remapped)
 	m_lemmingAnims->DrawAnim(x - 15, y - 22, RES_GAME_LEMMING_SPIN, frame, 0, (CRemap*) remap);
 }
 
-// Shared with DrawLemming; the original source name is unavailable.
 // GLOBAL: LEMBALL 0x00496fd8
 static const short g_lemmingStandOffset[] = {8, 18};
 

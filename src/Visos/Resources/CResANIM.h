@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESANIM_H
 #define LEMBALL_VISOS_RESOURCES_CRESANIM_H
 
-#include "CResBaseLIST.h" // complete type
-#include "CResZRLE.h"     // complete type
+#include "CResBaseLIST.h"
+#include "CResZRLE.h"
 #include "ResourceTypeList.h"
 
 // SIZE 0x7c

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CLIFT_H
 #define LEMBALL_AI_OBJECTS_CLIFT_H
 
-#include "../Base/CGlobalGameObject.h" // complete type
+#include "../Base/CGlobalGameObject.h"
 #include "../Base/Coord3d.h"
 
 class AiCoord;

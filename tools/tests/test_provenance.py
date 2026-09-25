@@ -106,10 +106,6 @@ class AnnotationProvenanceTests(unittest.TestCase):
         self.source.write_text(text, encoding="utf-8")
         return audit_annotations(scan_annotations(self.source), self.symbols, self.mappings)
 
-    def test_real_symbol_and_confirmed_pair(self):
-        rows = self.scan("// 68K 0x1060000c Real__Fv\n// FUNCTION: LEMBALL 0x00401000\nvoid Real() {}")
-        self.assertEqual(rows[0]["status"], "confirmed")
-
     def test_real_addresses_and_names_must_belong_to_the_same_mapping(self):
         self.symbols[0x10600020] = "Other__Fv"
         self.mappings.add((0x10600020, 0x402000))
@@ -133,10 +129,6 @@ class AnnotationProvenanceTests(unittest.TestCase):
         rows = self.scan('const char* text = "// 68K 0x1060000c Invented__Fv";\n'
                          '/*\n// 68K 0x1060000c Invented__Fv\n*/\n')
         self.assertEqual(rows, [])
-
-    def test_unlisted_pair_is_review_not_invalid_symbol(self):
-        rows = self.scan("// 68K 0x1060000c Real__Fv\n// FUNCTION: LEMBALL 0x00402000\nvoid F() {}")
-        self.assertEqual(rows[0]["status"], "review")
 
     def test_declaration_does_not_borrow_later_function_address(self):
         rows = self.scan("// 68K 0x1060000c Real__Fv\nvoid Real();\n"

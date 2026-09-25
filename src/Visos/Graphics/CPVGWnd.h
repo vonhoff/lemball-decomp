@@ -1,10 +1,10 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 #define LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 
-#include "CBitmap.h"         // complete type
-#include "CCopyToBackBuff.h" // complete type
-#include "CLine.h"           // complete type
-#include "CWnd.h"            // complete type
+#include "CBitmap.h"
+#include "CCopyToBackBuff.h"
+#include "CLine.h"
+#include "CWnd.h"
 class CGDI;
 class CPVWnd;
 class CVsRect;

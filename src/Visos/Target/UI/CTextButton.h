@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_UI_CTEXTBUTTON_H
 #define LEMBALL_VISOS_TARGET_UI_CTEXTBUTTON_H
 
-#include "CFramedButton.h" // complete type
+#include "CFramedButton.h"
 
 class CGWnd;
 class CHotAreaHandler;

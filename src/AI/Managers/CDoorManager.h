@@ -1,10 +1,10 @@
 #ifndef LEMBALL_AI_MANAGERS_CDOORMANAGER_H
 #define LEMBALL_AI_MANAGERS_CDOORMANAGER_H
 
-#include "../Base/AiCoord.h" // complete type
+#include "../Base/AiCoord.h"
 #include "../Base/ObjectTypes.h"
 #include "../Objects/SwitchEntry.h"
-#include "CBaseObjectManager.h" // complete type
+#include "CBaseObjectManager.h"
 
 class CAI;
 class CDoor;

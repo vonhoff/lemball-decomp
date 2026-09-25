@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CTEXTMANAGER_H
 #define LEMBALL_VISOS_FOUNDATION_CTEXTMANAGER_H
 
-#include "CString.h" // complete type
+#include "CString.h"
 
 class CGDI;
 class CRemap;

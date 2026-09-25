@@ -1,7 +1,7 @@
 #ifndef LEMBALL_CONTROL_SUPPORT_PREINIT_H
 #define LEMBALL_CONTROL_SUPPORT_PREINIT_H
 
-#include "PreInit.h" // complete type
+#include "PreInit.h"
 
 // SIZE 0x1c
 struct PreInit {

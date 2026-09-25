@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CDISPLAYDIBDRIVER_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CDISPLAYDIBDRIVER_H
 
-#include "CGdiDriver.h" // complete type
+#include "CGdiDriver.h"
 
 struct CVsSize;
 // SIZE 0x30

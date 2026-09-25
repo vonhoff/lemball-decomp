@@ -1,14 +1,14 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_CABOUTSCREEN_H
 #define LEMBALL_FRONTEND_SUPPORT_CABOUTSCREEN_H
 
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/CVsRect.h"           // complete type
-#include "../../Visos/Foundation/CVsSize.h"           // complete type
-#include "../../Visos/Graphics/CBitmapRes.h"          // complete type
-#include "../../Visos/Graphics/CDrawer.h"             // complete type
-#include "../../Visos/Graphics/CDrawingMark.h"        // complete type
-#include "../../Visos/Graphics/CLine.h"               // complete type
-#include "../../Visos/Graphics/CSolidRect.h"          // complete type
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Foundation/CVsSize.h"
+#include "../../Visos/Graphics/CBitmapRes.h"
+#include "../../Visos/Graphics/CDrawer.h"
+#include "../../Visos/Graphics/CDrawingMark.h"
+#include "../../Visos/Graphics/CLine.h"
+#include "../../Visos/Graphics/CSolidRect.h"
 
 class CGDI;
 class CMain2DDisplay;
@@ -28,7 +28,7 @@ public:
 	virtual int GetReturnState();               // vtable+0x28
 	virtual bool QuitYet();                     // vtable+0x2c
 	virtual void OnDriverChange();              // vtable+0x30
-	virtual int ProcessMsg(Message* p_message); // CBaseQueueHandler vtable+0x08
+	virtual int ProcessMsg(Message* p_message);
 	void DrawChangedRegion();
 	void DrawRegistrationText();
 

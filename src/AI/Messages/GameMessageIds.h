@@ -12,7 +12,6 @@ class CPlayerLemming;
 #define MESSAGE_REQUEST_REPLY 0x28
 #define MESSAGE_REQUEST_CANCEL 0x29
 #define MESSAGE_REMOVE_OBJECT 0x2a
-// CBullet and CPlayerLemming serialize their state directly through CNetworkMessage.
 #define MESSAGE_BULLET_STATE 0x2b
 #define MESSAGE_PLAYER_LEMMING_STATE 0x2c
 

@@ -1,19 +1,14 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPREADSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPREADSOCKET_H
 
-#include "CBaseCommonSocket.h"  // complete type
-#include "CReadSocket.h"        // complete type
-#include "CTCPIPCommonSocket.h" // complete type
+#include "CBaseCommonSocket.h"
+#include "CReadSocket.h"
+#include "CTCPIPCommonSocket.h"
 
 // SIZE 0xac
 // VTABLE: LEMBALL 0x0049a1e4 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a1e8 CBaseSocket
 // VTABLE: LEMBALL 0x0049a210 CTCPIPReadSocket
-// The original CNetworkWnd subobject starts at +0x8c and its table
-// points straight to Process. MSVC 4's default vtordisp mode inserts a four-
-// byte field and a dynamic thunk instead.
-// x86 emits only the synthetic deleting destructor.
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 #pragma vtordisp(off)
 class CTCPIPReadSocket : public virtual CBaseCommonSocket,

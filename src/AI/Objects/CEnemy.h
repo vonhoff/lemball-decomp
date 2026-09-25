@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CENEMY_H
 #define LEMBALL_AI_OBJECTS_CENEMY_H
 
-#include "../Base/AiCoord.h"     // complete type
-#include "../Base/CGameObject.h" // complete type
+#include "../Base/AiCoord.h"
+#include "../Base/CGameObject.h"
 
 class CAI;
 struct WaypointInformation;

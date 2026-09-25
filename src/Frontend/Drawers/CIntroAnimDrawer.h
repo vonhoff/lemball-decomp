@@ -1,9 +1,9 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CINTROANIMDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CINTROANIMDRAWER_H
 
-#include "../../Visos/Graphics/CSolidRect.h" // complete type
-#include "../Base/CBaseFrontendDrawer.h"     // complete type
-#include "../Windows/CIntroAnimAnimWindow.h" // complete type
+#include "../../Visos/Graphics/CSolidRect.h"
+#include "../Base/CBaseFrontendDrawer.h"
+#include "../Windows/CIntroAnimAnimWindow.h"
 
 class CGDI;
 class CMain2DDisplay;

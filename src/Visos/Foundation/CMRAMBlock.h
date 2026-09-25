@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CMRAMBLOCK_H
 #define LEMBALL_VISOS_FOUNDATION_CMRAMBLOCK_H
 
-#include "CMBlock.h" // complete type
+#include "CMBlock.h"
 
 class CArena;
 

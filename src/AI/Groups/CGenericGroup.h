@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_GROUPS_CGENERICGROUP_H
 #define LEMBALL_AI_GROUPS_CGENERICGROUP_H
 
-#include "../../Visos/Foundation/CVsRect.h" // complete type
-#include "../Base/AiCoord.h"                // complete type
-#include "../Base/CGameObject.h"            // complete type
+#include "../../Visos/Foundation/CVsRect.h"
+#include "../Base/AiCoord.h"
+#include "../Base/CGameObject.h"
 
 class CAI;
 class CFormationManager;

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CVSRECT_H
 #define LEMBALL_VISOS_FOUNDATION_CVSRECT_H
 
-#include "CVsPoint.h" // complete type
-#include "CVsSize.h"  // complete type
+#include "CVsPoint.h"
+#include "CVsSize.h"
 
 // SIZE 0x08
 class CVsRect : public CVsSize, public CVsPoint {

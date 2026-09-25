@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CCHANGELIST_H
 #define LEMBALL_VISOS_FOUNDATION_CCHANGELIST_H
 
-#include "CVsRect.h" // complete type
-#include "CVsSize.h" // complete type
+#include "CVsRect.h"
+#include "CVsSize.h"
 class ChangeListItem;
 
 // SIZE 0x4c

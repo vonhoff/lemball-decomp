@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVBUTTON_H
 #define LEMBALL_VISOS_GRAPHICS_CPVBUTTON_H
 
-#include "CClipRect.h"       // complete type
-#include "CGWnd.h"           // complete type
-#include "CHotAreaHandler.h" // complete type
+#include "CClipRect.h"
+#include "CGWnd.h"
+#include "CHotAreaHandler.h"
 #include "CSolidRect.h"
 class CBaseQueue;
 class CPrimitive;
@@ -29,7 +29,7 @@ public:
 	virtual void OnExitButton() = 0;                                       // vtable+0xcc
 	virtual void Move(const CVsPoint& p_point);                            // vtable+0x38
 	virtual void OnButtonUp(const CVsPoint& p_point, int p_flags);         // vtable+0x04
-	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);       // hot-area vtable+0x08
+	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);
 	virtual void OnEnter();                                                // vtable+0x10
 	virtual void OnExit();                                                 // vtable+0x14
 	virtual void OnExternalButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x0c

@@ -121,8 +121,6 @@ void CEnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSi
 	} while (count != 0);
 }
 
-// clang-format off
-// clang-format on
 // FUNCTION: LEMBALL 0x00420f90
 LoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoint(LoadEnemyDataAdditionalAction* p_data,
 																				WaypointInformation*& p_waypointInfo)

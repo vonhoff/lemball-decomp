@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CWRITEPACKETBUFF_H
 #define LEMBALL_VISOS_MESSAGING_CWRITEPACKETBUFF_H
 
-#include "CBasePacketBuff.h" // complete type
+#include "CBasePacketBuff.h"
 
 class CNetworkMessage;
 

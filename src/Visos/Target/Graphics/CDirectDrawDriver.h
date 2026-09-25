@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CDIRECTDRAWDRIVER_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CDIRECTDRAWDRIVER_H
 
-#include "CGraphicsDriver.h" // complete type
+#include "CGraphicsDriver.h"
 
 struct CVsSize;
 struct IDirectDrawPalette;

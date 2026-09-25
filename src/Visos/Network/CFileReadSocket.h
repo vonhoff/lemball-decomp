@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILEREADSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILEREADSOCKET_H
 
-#include "CFileBaseSocket.h"   // complete type
-#include "CFileCommonSocket.h" // complete type
-#include "CReadSocket.h"       // complete type
+#include "CFileBaseSocket.h"
+#include "CFileCommonSocket.h"
+#include "CReadSocket.h"
 
 class CNetworkMessage;
 
@@ -12,7 +12,6 @@ class CNetworkMessage;
 // VTABLE: LEMBALL 0x0049a570 CNetworkFile
 // VTABLE: LEMBALL 0x0049a5b0 CBaseSocket
 // VTABLE: LEMBALL 0x0049a5d8 CBaseCommonSocket
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CFileReadSocket : public CFileBaseSocket, public virtual CReadSocket, public virtual CFileCommonSocket {
 public:

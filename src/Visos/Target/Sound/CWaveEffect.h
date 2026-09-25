@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_TARGET_SOUND_CWAVEEFFECT_H
 
 #define WIN32_LEAN_AND_MEAN
-// clang-format off: mmsystem.h requires the Win32 types declared by windows.h.
+// clang-format off
 #include <windows.h>
 #include <mmsystem.h>
 // clang-format on

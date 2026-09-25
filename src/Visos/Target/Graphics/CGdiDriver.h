@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CGDIDRIVER_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CGDIDRIVER_H
 
-#include "CGraphicsDriver.h" // complete type
+#include "CGraphicsDriver.h"
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00498738

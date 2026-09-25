@@ -4,7 +4,6 @@
 #include "CVSDebugStreambuf.h"
 #include "CVSOStream.h"
 
-// Original cleanup uses a vbptr at +0 and the buffer member at +4.
 #pragma warning(disable : 4355)
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x00493020

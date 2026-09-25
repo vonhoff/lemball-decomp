@@ -1,12 +1,12 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CGUNCONTROLLER_H
 #define LEMBALL_FRONTEND_CONTROLS_CGUNCONTROLLER_H
 
-#include "../../Visos/Animation/CAnimsManager.h"      // complete type
-#include "../../Visos/Animation/CStaticAnim.h"        // complete type
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
-#include "../../Visos/Foundation/Message.h"           // complete type
-#include "../../Visos/Graphics/CSolidRect.h"          // complete type
-#include "GunControllerJunction.h"                    // complete type
+#include "../../Visos/Animation/CAnimsManager.h"
+#include "../../Visos/Animation/CStaticAnim.h"
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../../Visos/Foundation/Message.h"
+#include "../../Visos/Graphics/CSolidRect.h"
+#include "GunControllerJunction.h"
 
 class CGWnd;
 class CGDI;

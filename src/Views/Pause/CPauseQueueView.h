@@ -4,7 +4,6 @@
 // SIZE 0x17c
 class CPauseQueueView {
 public:
-	// No functions mapped yet.
 };
 
 #endif

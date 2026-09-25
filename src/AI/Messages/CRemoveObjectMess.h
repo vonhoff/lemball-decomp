@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MESSAGES_CREMOVEOBJECTMESS_H
 #define LEMBALL_AI_MESSAGES_CREMOVEOBJECTMESS_H
 
-#include "CGameObjectMess.h" // complete type
+#include "CGameObjectMess.h"
 
 // VTABLE: LEMBALL 0x00493e20
 class CRemoveObjectMess : public CGameObjectMess {

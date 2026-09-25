@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MESSAGES_CREQUESTCANCELMESS_H
 #define LEMBALL_AI_MESSAGES_CREQUESTCANCELMESS_H
 
-#include "CGameObjectMess.h" // complete type
+#include "CGameObjectMess.h"
 
 // VTABLE: LEMBALL 0x00493e00
 class CRequestCancelMess : public CGameObjectMess {

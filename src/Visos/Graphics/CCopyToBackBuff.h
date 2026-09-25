@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_CCOPYTOBACKBUFF_H
 
 #include "../Foundation/CVsRect.h"
-#include "CPrimitive.h" // complete type
+#include "CPrimitive.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496da0

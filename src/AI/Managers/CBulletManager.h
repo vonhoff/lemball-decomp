@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_MANAGERS_CBULLETMANAGER_H
 #define LEMBALL_AI_MANAGERS_CBULLETMANAGER_H
 
-#include "../Base/AiCoord.h" // complete type
+#include "../Base/AiCoord.h"
 #include "../Objects/CBullet.h"
-#include "CBaseObjectManager.h" // complete type
+#include "CBaseObjectManager.h"
 
 class CVsRect;
 // SIZE 0xe0

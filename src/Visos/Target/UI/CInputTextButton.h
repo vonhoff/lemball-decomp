@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_UI_CINPUTTEXTBUTTON_H
 #define LEMBALL_VISOS_TARGET_UI_CINPUTTEXTBUTTON_H
 
-#include "CTextButton.h" // complete type
+#include "CTextButton.h"
 
 class CGWnd;
 class CHotAreaHandler;

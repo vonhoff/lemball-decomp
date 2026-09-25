@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_C2DHOTAREAVIEW_H
 #define LEMBALL_VIEWS_DISPLAY_C2DHOTAREAVIEW_H
 
-#include "../../Visos/Foundation/CVsPoint.h" // complete type
+#include "../../Visos/Foundation/CVsPoint.h"
 
 class CMain2DDisplay;
 class CMap;

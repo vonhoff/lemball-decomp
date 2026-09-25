@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CKEY_H
 #define LEMBALL_AI_OBJECTS_CKEY_H
 
-#include "../Base/AiCoord.h"           // complete type
-#include "../Base/CBaseGlobalObject.h" // complete type
+#include "../Base/AiCoord.h"
+#include "../Base/CBaseGlobalObject.h"
 #include "AI/Base/ObjectTypes.h"
 
 // SIZE 0x150

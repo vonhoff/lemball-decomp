@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPCONNECT_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPCONNECT_H
 
-#include "CConnect.h"       // complete type
-#include "CTCPIPRWSocket.h" // complete type
+#include "CConnect.h"
+#include "CTCPIPRWSocket.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 #include "Visos/Network/CReadSocket.h"
 #include "Visos/Network/CRwSocket.h"
@@ -17,8 +17,6 @@
 // VTABLE: LEMBALL 0x0049a398 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a3c8 CRwSocket
 // VTABLE: LEMBALL 0x0049a3d8 CConnect
-// x86 emits only the synthetic deleting destructor.
-// Original PDB/x86 has these inherited dominance adjustor thunks.
 #pragma warning(disable : 4250)
 class CTCPIPConnect : public CConnect, public CTCPIPRWSocket {
 public:

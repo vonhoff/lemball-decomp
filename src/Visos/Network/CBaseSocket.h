@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CBASESOCKET_H
 #define LEMBALL_VISOS_NETWORK_CBASESOCKET_H
 
-#include "../Messaging/CNetworkMessage.h" // complete type
+#include "../Messaging/CNetworkMessage.h"
 
 struct BasePacketHeader;
 

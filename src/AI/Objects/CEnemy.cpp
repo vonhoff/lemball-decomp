@@ -113,8 +113,6 @@ CEnemy::~CEnemy()
 	}
 }
 
-// clang-format off
-// clang-format on
 // FUNCTION: LEMBALL 0x0041fe30
 void CEnemy::SetEnemyType(eEnemyStateActions p_action0,
 						  eEnemyStateRules p_rule0,

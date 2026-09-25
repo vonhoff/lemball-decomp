@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CCATAPULT_H
 #define LEMBALL_AI_OBJECTS_CCATAPULT_H
 
-#include "../Base/AiCoord.h"           // complete type
-#include "../Base/CBaseGlobalObject.h" // complete type
+#include "../Base/AiCoord.h"
+#include "../Base/CBaseGlobalObject.h"
 #include "AI/Base/ObjectTypes.h"
 
 // MINIMUM SIZE 0x144

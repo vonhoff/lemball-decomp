@@ -7,12 +7,9 @@
 // GLOBAL: LEMBALL 0x004a0aa8
 static const char* g_directDrawErrorPrefix = "UNKNOWN DIRECT DRAW ERROR: ";
 
-// Keep the original adjacency used by the scratch-buffer end calculation.
 // GLOBAL: LEMBALL 0x004a818c
 unsigned int g_dwWindowQuitRequested = 0;
 
-// The next original graphics global is at 0x004a8290; this reserves the
-// intervening scratch region. Its declared array bound is not recovered.
 // GLOBAL: LEMBALL 0x004a8190
 static char g_directDrawErrorText[0x100] = {0};
 

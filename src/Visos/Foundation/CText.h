@@ -2,8 +2,8 @@
 #define LEMBALL_VISOS_FOUNDATION_CTEXT_H
 
 #include "../Graphics/CPrimitive.h"
-#include "../Graphics/CZRLE.h" // complete type
-#include "CString.h"           // complete type
+#include "../Graphics/CZRLE.h"
+#include "CString.h"
 
 class CRemap;
 class CResFONT;
@@ -12,7 +12,6 @@ struct CVsPoint;
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00499ae8
-// Subobject VTABLE: 0x00499628 CZRLE subobject at +0x2c
 class CText : public CPrimitive {
 public:
 	inline CText() : m_x(m_y = 0), m_offsetX(m_offsetY = 0), m_startX(m_startY = 0), m_advanceX(m_advanceY = 0) {}

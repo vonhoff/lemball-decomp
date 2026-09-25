@@ -4,8 +4,6 @@
 #include "../../Visos/Foundation/tagPRIMS.h"
 #include "../../Visos/Graphics/CBitmapRes.h"
 
-// Views begin at CBitmapRes::m_x; vtable pointer omitted. Sizes retain original
-// CBitmapRes/tagPRIMS element strides while keeping reconstructed field names.
 struct SuccFailDrawerFieldViews {
 	struct CBitmap {
 		short m_x;

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CBASENETWORK_H
 #define LEMBALL_VISOS_NETWORK_CBASENETWORK_H
 
-#include "../Foundation/CBaseQueueHandler.h" // complete type
+#include "../Foundation/CBaseQueueHandler.h"
 #include "CConnect.h"
 
 class CBroadcast;
@@ -63,7 +63,6 @@ private:
 	char* m_networkName; // 0x10
 
 public:
-	// Lifecycle state shared with the network worker thread.
 	unsigned int m_shutdownRequested; // 0x14
 	unsigned int m_serverMode;        // 0x18
 	unsigned int m_initialized;       // 0x1c

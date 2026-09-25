@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MANAGERS_CGODMANAGER_H
 #define LEMBALL_AI_MANAGERS_CGODMANAGER_H
 
-#include "../../Visos/Foundation/CBaseQueueHandler.h" // complete type
+#include "../../Visos/Foundation/CBaseQueueHandler.h"
 
 class CBaseObjectManager;
 class CGameStateMessage;

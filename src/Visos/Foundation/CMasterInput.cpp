@@ -16,7 +16,6 @@ CMasterInput::~CMasterInput()
 {
 	void* item = m_firstItem;
 	for (unsigned int i = 0; i < m_itemCount; i++) {
-		// The original list link is at +0x04; the remaining item layout is unknown.
 		void* next = ((void**) item)[1];
 		operator delete(item);
 		item = next;

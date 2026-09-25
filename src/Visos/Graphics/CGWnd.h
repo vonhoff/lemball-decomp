@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CGWND_H
 #define LEMBALL_VISOS_GRAPHICS_CGWND_H
 
-#include "CPVGWnd.h" // complete type
+#include "CPVGWnd.h"
 
 // SIZE 0x90
 // VTABLE: LEMBALL 0x00499318

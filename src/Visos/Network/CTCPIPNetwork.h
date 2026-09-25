@@ -1,15 +1,14 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPNETWORK_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPNETWORK_H
 
-#include "../Target/Network/CNetworkWnd.h" // complete type
-#include "CBaseNetwork.h"                  // complete type
+#include "../Target/Network/CNetworkWnd.h"
+#include "CBaseNetwork.h"
 
 struct BasePacketHeader;
 
 // SIZE 0x78
 // VTABLE: LEMBALL 0x0049a2dc CNetworkWnd
 // VTABLE: LEMBALL 0x0049a2a8 CBaseNetwork
-// x86 emits only the synthetic deleting destructor.
 class CTCPIPNetwork : public CNetworkWnd, public CBaseNetwork {
 public:
 	CTCPIPNetwork();
