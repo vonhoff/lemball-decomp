@@ -80,6 +80,38 @@ class VtableStoreCoverageTests(unittest.TestCase):
         self.assertEqual(set(unannotated_vtable_stores(engine, set())), {0x1100, 0x1110})
         self.assertEqual(set(unannotated_vtable_stores(engine, {0x1100})), {0x1110})
 
+    def test_purecall_construction_store_needs_proven_overwrite(self):
+        data = bytearray(0x300)
+        code = (b"\xc7\x00" + struct.pack("<I", 0x1100)
+                + b"\xc7\x40\x04\x01\x00\x00\x00"
+                + b"\x8d\x4b\x08"
+                + b"\xc7\x00" + struct.pack("<I", 0x1120))
+        data[:len(code)] = code
+        struct.pack_into("<I", data, 0x100, 0x1200)
+        image = FakeImage(bytes(data))
+        image.relocations = (0x1002, 0x1012)
+        image.get_code_regions = lambda: iter((SimpleNamespace(addr=0x1200, data=b"\xc3"),))
+        purecall = SimpleNamespace(best_name=lambda: "__purecall")
+        matches = [SimpleNamespace(
+            type=EntityType.FUNCTION,
+            rdiff=SimpleNamespace(orig_inst=[("0x1000", "mov dword ptr [eax], <OFFSET1>")]),
+            name="Constructor",
+        )]
+        engine = SimpleNamespace(
+            orig_bin=image,
+            _db=SimpleNamespace(get=lambda _, address: purecall if address == 0x1200 else None),
+            compare_all=lambda: iter(matches),
+        )
+        self.assertEqual(unannotated_vtable_stores(engine, {0x1120}), {})
+        self.assertEqual(set(unannotated_vtable_stores(engine, set())), {0x1100})
+        image.data = image.data[:0x0d] + b"\xe8\x00\x00\x00\x00" + image.data[0x12:]
+        self.assertEqual(set(unannotated_vtable_stores(engine, {0x1120})), {0x1100})
+        image.data = bytes(data)
+        engine._db = SimpleNamespace(get=lambda _, address: (
+            SimpleNamespace(best_name=lambda: "Other") if address == 0x1200 else None
+        ))
+        self.assertEqual(set(unannotated_vtable_stores(engine, {0x1120})), {0x1100})
+
 
 if __name__ == "__main__":
     unittest.main()

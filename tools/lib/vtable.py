@@ -12,7 +12,7 @@ from itertools import zip_longest
 from pathlib import Path
 
 from capstone import CS_ARCH_X86, CS_MODE_32, Cs
-from capstone.x86_const import X86_OP_IMM, X86_OP_MEM
+from capstone.x86_const import X86_OP_IMM, X86_OP_MEM, X86_OP_REG
 from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
 from reccmp.parser.codebase import DecompCodebase
@@ -467,8 +467,60 @@ def unannotated_vtable_stores(engine: Compare, mapped: set[int]) -> dict[int, tu
             if not any(region.addr <= first_slot < region.addr + len(region.data)
                        for region in code_regions):
                 continue
+            if transient_purecall_store(image, engine._db, decoder, instruction,
+                                        first_slot, mapped, relocations):
+                continue
             candidates.setdefault(table, (address, match.name))
     return candidates
+
+
+def transient_purecall_store(image, database, decoder, instruction, first_slot,
+                             mapped: set[int], relocations: frozenset[int]) -> bool:
+    """Exclude a pure-virtual construction vptr only when immediately replaced.
+
+    Original examples: 0x496cd8 at 0x432b8a, 0x496d00 at 0x434c0e.
+    """
+    function = database.get(ImageId.ORIG, first_slot)
+    if function is None or function.best_name() != "__purecall":
+        return False
+    original = instruction.operands[0].mem
+    if original.base == 0 or original.index != 0 or original.segment != 0:
+        return False
+    cursor = instruction.address + instruction.size
+    for _ in range(4):
+        try:
+            current = next(decoder.disasm(image.read(cursor, 15), cursor))
+        except (IndexError, StopIteration, ValueError):
+            return False
+        operands = current.operands
+        if (current.mnemonic == "lea" and len(operands) == 2
+                and operands[0].type == X86_OP_REG and operands[1].type == X86_OP_MEM
+                and operands[0].reg not in (original.base, original.index)):
+            cursor += current.size
+            continue
+        if current.mnemonic != "mov" or len(operands) != 2:
+            return False
+        if operands[0].type == X86_OP_REG and operands[1].type == X86_OP_REG:
+            if operands[0].reg in (original.base, original.index):
+                return False
+            cursor += current.size
+            continue
+        if operands[0].type != X86_OP_MEM:
+            return False
+        destination = operands[0].mem
+        if (destination.base != original.base or destination.index != original.index
+                or destination.segment != original.segment
+                or destination.scale != original.scale):
+            return False
+        if destination.disp == original.disp:
+            return (operands[0].size == 4 and operands[1].type == X86_OP_IMM
+                    and current.imm_size == 4
+                    and cursor + current.imm_offset in relocations
+                    and (operands[1].imm & 0xffffffff) in mapped)
+        if operands[1].type not in (X86_OP_IMM, X86_OP_REG):
+            return False
+        cursor += current.size
+    return False
 
 
 def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:

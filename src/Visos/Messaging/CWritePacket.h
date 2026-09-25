@@ -6,6 +6,7 @@
 class CNetworkMessage;
 
 // SIZE 0x18
+// VTABLE: LEMBALL 0x004991d0
 class CWritePacket : public CBasePacket {
 public:
 	CWritePacket(unsigned short p_capacity);
