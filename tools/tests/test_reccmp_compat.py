@@ -345,6 +345,16 @@ class TransientVptrTests(unittest.TestCase):
     def equivalent(original, rebuilt):
         return find_effective_match(SequenceMatcher(None, original, rebuilt).get_opcodes(), original, rebuilt)
 
+    def test_dead_store_proof_composes_with_existing_register_equivalence(self):
+        original = ["mov eax, 1", "mov dword ptr [esi + 4], eax",
+                    "mov dword ptr [esi], <OFFSET1>",
+                    "mov dword ptr [esi], Final::`vftable' (VTABLE)"]
+        rebuilt = ["mov ecx, 1", "mov dword ptr [esi + 4], ecx",
+                   "mov dword ptr [esi], Base::`vftable' (VTABLE)", original[-1]]
+        self.assertTrue(self.equivalent(original, rebuilt))
+        self.assertFalse(self.equivalent(["mov eax, 1", "add eax, 1", "ret "],
+                                         ["add eax, 1", "mov eax, 1", "ret "]))
+
     def test_overwritten_constructor_vptr_is_effective(self):
         original = ["mov dword ptr [edi], <OFFSET6>", "mov dword ptr [edi + 4], eax",
                     "lea eax, [esi + 0x34c]", "mov dword ptr [edi], CTimedAnim::`vftable' (VTABLE)"]

@@ -17,6 +17,7 @@ from reccmp.compare import Compare
 from reccmp.compare import functions as function_compare
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
+from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
 from reccmp.formats.exceptions import (
     InvalidVirtualAddressError,
     InvalidVirtualReadError,
@@ -144,15 +145,15 @@ def _dead_vptr_store(original, rebuilt, index):
 def find_effective_match(codes, original, rebuilt):
     if _upstream_find_effective_match(codes, original, rebuilt):
         return True
-    return len(original) == len(rebuilt) and all(
-        code == "equal" or (
-            code == "replace" and i2 - i1 == j2 - j1
-            and all(i == j and (_zero_cmp_test(original, rebuilt, i)
-                                or _dead_vptr_store(original, rebuilt, i))
-                    for i, j in zip(range(i1, i2), range(j1, j2)))
-        )
-        for code, i1, i2, j1, j2 in codes
-    )
+    if len(original) != len(rebuilt):
+        return False
+    normalized = rebuilt.copy()
+    for index, (left, right) in enumerate(zip(original, rebuilt)):
+        if left != right and (_zero_cmp_test(original, rebuilt, index)
+                              or _dead_vptr_store(original, rebuilt, index)):
+            normalized[index] = left
+    matcher = SequenceMatcherWithPins(original, normalized, [])
+    return _upstream_find_effective_match(matcher.get_opcodes(), original, normalized)
 
 
 def _register_operand_pair(instruction):
