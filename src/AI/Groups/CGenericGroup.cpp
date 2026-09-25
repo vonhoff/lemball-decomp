@@ -286,8 +286,8 @@ void CGenericGroup::SendNewWaypoint(AiCoord p_coordinate)
 													   object->m_position.m_yFixed >> 12,
 													   p_coordinate.m_xFixed >> 12,
 													   p_coordinate.m_yFixed >> 12);
-		int index = 0;
 		g_pGroupFormationManager->TransformFormation(m_formationIndex, (direction - 2) * 0x40);
+		int index = 0;
 		int count = GetElementsInGroup();
 		int height = p_coordinate.m_zFixed;
 		while (index < count) {
