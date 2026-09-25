@@ -18,6 +18,7 @@ struct CVsPoint {
 	short m_y; // 0x02
 };
 
+// FUNCTION: LEMBALL 0x00465a50
 inline CVsPoint::CVsPoint(const CVsPoint& p_source) : m_x(p_source.m_x), m_y(p_source.m_y)
 {
 }
