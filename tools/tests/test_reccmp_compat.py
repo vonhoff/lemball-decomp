@@ -313,6 +313,32 @@ class ZeroCompareTests(unittest.TestCase):
         self.assertFalse(self.equivalent(original, rebuilt))
 
 
+class TransientVptrTests(unittest.TestCase):
+    @staticmethod
+    def equivalent(original, rebuilt):
+        return find_effective_match(SequenceMatcher(None, original, rebuilt).get_opcodes(), original, rebuilt)
+
+    def test_overwritten_constructor_vptr_is_effective(self):
+        original = ["mov dword ptr [edi], <OFFSET6>", "mov dword ptr [edi + 4], eax",
+                    "lea eax, [esi + 0x34c]", "mov dword ptr [edi], CTimedAnim::`vftable' (VTABLE)"]
+        rebuilt = original.copy()
+        rebuilt[0] = "mov dword ptr [edi], CFrames::`vftable' (VTABLE)"
+        self.assertTrue(self.equivalent(original, rebuilt))
+
+    def test_observable_or_different_store_stays_partial(self):
+        first = "mov dword ptr [esi + 0x70], <OFFSET3>"
+        second = "mov dword ptr [esi + 0x70], CLoadUpdate::`vftable' (VTABLE)"
+        final = "mov dword ptr [esi + 0x70], Final::`vftable' (VTABLE)"
+        for middle in ("call Inspect (FUNCTION)", "mov eax, dword ptr [esi + 0x70]",
+                       "mov dword ptr [esi + 0x71], eax", "jmp 0x10"):
+            original = [first, middle, final]
+            rebuilt = [second, middle, final]
+            with self.subTest(middle=middle):
+                self.assertFalse(self.equivalent(original, rebuilt))
+        self.assertFalse(self.equivalent([first, final],
+                                         ["mov dword ptr [esi + 0x74], CLoadUpdate::`vftable' (VTABLE)", final]))
+
+
 class ForwardRelocationTests(unittest.TestCase):
     def compare(self, first, crossed):
         original = [first, *crossed]

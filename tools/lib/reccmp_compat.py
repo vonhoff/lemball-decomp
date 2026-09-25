@@ -80,53 +80,64 @@ _upstream_patch_compare_jmp = fixes.patch_compare_jmp
 _upstream_find_effective_match = fixes.find_effective_match
 
 
-def _known_zero(assembly, index, register):
-    """Prove a zero register in the current straight-line x86 block."""
-    aliases = {
-        "ebx": ("ebx", "bx", "bl", "bh"),
-        "ecx": ("ecx", "cx", "cl", "ch"),
-        "esi": ("esi", "si"),
-        "edi": ("edi", "di"),
-        "ebp": ("ebp", "bp"),
-    }[register]
+def _zero_cmp_test(original, rebuilt, index):
+    """Accept CMP x, 0 / TEST x, x only with a proved zero and same Jcc."""
+    match = re.fullmatch(r"cmp (e(?:ax|bx|cx|dx|si|di|bp)), (e(?:bx|cx|si|di|bp))",
+                         original[index])
+    if match is None or rebuilt[index] != f"test {match[1]}, {match[1]}":
+        return False
+    zero = match[2]
+    aliases = {"ebx": ("ebx", "bx", "bl", "bh"), "ecx": ("ecx", "cx", "cl", "ch"),
+               "esi": ("esi", "si"), "edi": ("edi", "di"), "ebp": ("ebp", "bp")}[zero]
     safe = {"mov", "movsx", "movzx", "lea", "push", "call", "cmp", "test",
             "add", "sub", "and", "or", "xor", "shl", "shr", "sar", "inc",
             "dec", "imul", "cdq", "nop"}
-    for line in reversed(assembly[:index]):
-        mnemonic, _, operands = line.partition(" ")
-        if mnemonic.startswith("j") or mnemonic.startswith("loop") or mnemonic in ("ret", "retf"):
+    for assembly in (original, rebuilt):
+        for line in reversed(assembly[:index]):
+            mnemonic, _, operands = line.partition(" ")
+            if line == f"xor {zero}, {zero}":
+                break
+            if (mnemonic not in safe or (mnemonic == "call" and zero == "ecx")
+                    or (operands.partition(", ")[0] in aliases
+                        and mnemonic not in ("cmp", "test", "push"))):
+                return False
+        else:
             return False
-        if line == f"xor {register}, {register}":
-            return True
-        if mnemonic not in safe:
+    for line, other in zip(original[index + 1:index + 4], rebuilt[index + 1:index + 4]):
+        if line != other:
             return False
-        if mnemonic == "call" and register not in ("ebx", "esi", "edi", "ebp"):
-            return False
-        first = operands.partition(", ")[0]
-        if first in aliases and mnemonic not in ("cmp", "test", "push"):
-            return False
-    return False
-
-
-def _zero_cmp_test(original, rebuilt, index):
-    pair = (original[index], rebuilt[index])
-    cmp_line = next((line for line in pair if line.startswith("cmp ")), None)
-    test_line = next((line for line in pair if line.startswith("test ")), None)
-    if cmp_line is None or test_line is None:
-        return False
-    match = re.fullmatch(r"cmp (e(?:ax|bx|cx|dx|si|di|bp)), (e(?:bx|cx|si|di|bp))", cmp_line)
-    if match is None or test_line != f"test {match[1]}, {match[1]}":
-        return False
-    if not _known_zero(original, index, match[2]) or not _known_zero(rebuilt, index, match[2]):
-        return False
-    for offset in range(1, 4):
-        next_index = index + offset
-        if next_index >= len(original) or original[next_index] != rebuilt[next_index]:
-            return False
-        mnemonic = original[next_index].partition(" ")[0]
+        mnemonic = line.partition(" ")[0]
         if mnemonic in ("mov", "lea", "nop", "push"):
             continue
         return mnemonic in ("je", "jne", "jl", "jle", "jg", "jge", "ja", "jae", "jb", "jbe")
+    return False
+
+
+_vptr_store = re.compile(
+    r"mov dword ptr \[(e(?:bx|si|di|bp))(?: \+ (0x[0-9a-f]+|[0-9]+))?\], (.+)"
+)
+
+
+def _dead_vptr_store(original, rebuilt, index):
+    left = _vptr_store.fullmatch(original[index])
+    right = _vptr_store.fullmatch(rebuilt[index])
+    if (left is None or right is None or left.group(1, 2) != right.group(1, 2)
+            or not re.fullmatch(r"<OFFSET[0-9]+>", left[3])
+            or not right[3].endswith(" (VTABLE)")):
+        return False
+    base, offset = left[1], int(left[2] or "0", 0)
+    for next_index in range(index + 1, min(len(original), index + 4)):
+        line = original[next_index]
+        if line != rebuilt[next_index]:
+            return False
+        store = _vptr_store.fullmatch(line)
+        if store is not None:
+            if store.group(1, 2) == left.group(1, 2):
+                return store[3].endswith(" (VTABLE)")
+            if store[1] != base or abs(int(store[2] or "0", 0) - offset) < 4 or "[" in store[3]:
+                return False
+        elif not re.fullmatch(r"lea (e[a-z]+), \[.*\]", line) or line.split(" ", 2)[1].rstrip(",") == base:
+            return False
     return False
 
 
@@ -136,7 +147,8 @@ def find_effective_match(codes, original, rebuilt):
     return len(original) == len(rebuilt) and all(
         code == "equal" or (
             code == "replace" and i2 - i1 == j2 - j1
-            and all(i == j and _zero_cmp_test(original, rebuilt, i)
+            and all(i == j and (_zero_cmp_test(original, rebuilt, i)
+                                or _dead_vptr_store(original, rebuilt, i))
                     for i, j in zip(range(i1, i2), range(j1, j2)))
         )
         for code, i1, i2, j1, j2 in codes
