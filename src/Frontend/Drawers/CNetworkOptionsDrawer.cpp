@@ -465,7 +465,7 @@ void CNetworkOptionsDrawer::DrawText()
 	else {
 		if (m_message != 0) {
 			CVsPoint msgPos((short) m_layoutTable->m_messagePos.m_x, (short) m_layoutTable->m_messagePos.m_y);
-			CString msgText = g_apNetworkOptionsMessages[m_message];
+			CString msgText = g_apNetworkOptionsMessages[m_message - 1];
 			bool special = false;
 			if (m_message == 4) {
 				if (g_szNetworkBroadcastAddress[0] != 0) {
