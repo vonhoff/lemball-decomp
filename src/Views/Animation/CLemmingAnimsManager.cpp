@@ -1112,12 +1112,13 @@ void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00434f00
 void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId)
 {
-	for (; (int) p_lastResourceId >= (int) p_firstResourceId; p_firstResourceId++) {
-		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_firstResourceId]];
+	unsigned long resourceId = p_firstResourceId;
+	for (; (int) resourceId <= (int) p_lastResourceId; resourceId++) {
+		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[resourceId]];
 		if (frame != 0) {
 			delete frame;
-			m_animFrames[m_resourceSlots[p_firstResourceId]] = 0;
+			m_animFrames[m_resourceSlots[resourceId]] = 0;
 		}
-		UnLoadAnims(p_firstResourceId);
+		UnLoadAnims(resourceId);
 	}
 }
