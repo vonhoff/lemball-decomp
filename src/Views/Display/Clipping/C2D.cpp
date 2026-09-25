@@ -216,7 +216,7 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				int rows = (pixelY + markedRect.m_height - 1) / 16 - cellY + 1;
 				int width = lookup->m_width;
 				int height;
-				if (cellX < width && (height = lookup->m_height, cellY < height)) {
+				if (cellX < width && ((height = lookup->m_height), cellY < height)) {
 					if (cellX < 0) {
 						columns += cellX;
 						cellX = 0;
@@ -473,7 +473,7 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 		int rows = (pixelY + markedRect.m_height - 1) / 16 - cellY + 1;
 		int width = lookup->m_width;
 		int height;
-		if (cellX < width && (height = lookup->m_height, cellY < height)) {
+		if (cellX < width && ((height = lookup->m_height), cellY < height)) {
 			if (cellX < 0) {
 				columns += cellX;
 				cellX = 0;
@@ -529,7 +529,7 @@ void C2D::MarkGroundAnimAndLiftBounds()
 			int rows = (pixelY + rectHeight - 1) / 16 - cellY + 1;
 			int width = lookup->m_width;
 			int height;
-			if (width > cellX && (height = lookup->m_height, height > cellY)) {
+			if (width > cellX && ((height = lookup->m_height), height > cellY)) {
 				if (cellX < 0) {
 					columns += cellX;
 					cellX = 0;
@@ -605,7 +605,7 @@ void C2D::MarkGroundAnimAndLiftBounds()
 			int rows = (pixelY + rectHeight - 1) / 16 - cellY + 1;
 			int width = lookup->m_width;
 			int height;
-			if (width > cellX && (height = lookup->m_height, height > cellY)) {
+			if (width > cellX && ((height = lookup->m_height), height > cellY)) {
 				if (cellX < 0) {
 					columns += cellX;
 					cellX = 0;
@@ -655,7 +655,7 @@ void C2D::UpdateSpriteGroundLookupRegions()
 	int rows = (m_spriteGroundLookupRectA.m_y + m_spriteGroundLookupRectA.m_height - 1) / 16 - cellY + 1;
 	int width = lookup->m_width;
 	int height;
-	if (cellX < width && (height = lookup->m_height, cellY < height)) {
+	if (cellX < width && ((height = lookup->m_height), cellY < height)) {
 		if (cellX < 0) {
 			columns += cellX;
 			cellX = 0;
