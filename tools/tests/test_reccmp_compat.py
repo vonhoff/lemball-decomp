@@ -11,6 +11,7 @@ from lib.reccmp_compat import (
     BoundedInstructGen,
     RelocationAwareParseAsm,
     complete_original_extent,
+    find_effective_match,
     incremental_thunks,
     is_operand_swap,
     naive_register_replacement,
@@ -274,6 +275,41 @@ class OperandSwapTests(unittest.TestCase):
         codes = SequenceMatcher(None, left, right).get_opcodes()
         with patch.object(fixes, "patch_mov_compare_jmp", patch_mov_compare_jmp):
             self.assertFalse(fixes.find_effective_match(codes, left, right))
+
+
+class ZeroCompareTests(unittest.TestCase):
+    @staticmethod
+    def equivalent(original, rebuilt):
+        codes = SequenceMatcher(None, original, rebuilt).get_opcodes()
+        return find_effective_match(codes, original, rebuilt)
+
+    def test_zeroed_register_compare_matches_test(self):
+        original = ["xor ebp, ebp", "call Win32 (IMPORT)", "mov ebx, dword ptr [esp + 4]",
+                    "cmp ebx, ebp", "mov dword ptr [esi], eax", "jne 0x10"]
+        rebuilt = original.copy()
+        rebuilt[3] = "test ebx, ebx"
+        self.assertTrue(self.equivalent(original, rebuilt))
+
+    def test_changed_flags_or_zero_state_stays_partial(self):
+        original = ["xor ebp, ebp", "cmp ebx, ebp", "jne 0x10"]
+        for rebuilt in (
+            ["xor ebp, ebp", "test ebx, ebx", "je 0x10"],
+            ["xor ebp, ebp", "test ecx, ecx", "jne 0x10"],
+            ["mov ebp, 1", "test ebx, ebx", "jne 0x10"],
+            ["xor ebp, ebp", "test ebx, ebx", "lahf "],
+        ):
+            with self.subTest(rebuilt=rebuilt):
+                self.assertFalse(self.equivalent(original, rebuilt))
+
+    def test_intervening_write_and_volatile_call_stay_partial(self):
+        original = ["xor ebp, ebp", "mov ebp, 1", "cmp ebx, ebp", "jne 0x10"]
+        rebuilt = original.copy()
+        rebuilt[2] = "test ebx, ebx"
+        self.assertFalse(self.equivalent(original, rebuilt))
+        original = ["xor ecx, ecx", "call F (FUNCTION)", "cmp ebx, ecx", "jne 0x10"]
+        rebuilt = original.copy()
+        rebuilt[2] = "test ebx, ebx"
+        self.assertFalse(self.equivalent(original, rebuilt))
 
 
 class ForwardRelocationTests(unittest.TestCase):

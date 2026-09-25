@@ -14,6 +14,7 @@ from importlib.metadata import version
 
 from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from reccmp.compare import Compare
+from reccmp.compare import functions as function_compare
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.formats.exceptions import (
@@ -76,6 +77,70 @@ def complete_original_extent(image, start, limit, decoder):
 _upstream_relocate_instructions = fixes.relocate_instructions
 _upstream_patch_mov_compare_jmp = fixes.patch_mov_compare_jmp
 _upstream_patch_compare_jmp = fixes.patch_compare_jmp
+_upstream_find_effective_match = fixes.find_effective_match
+
+
+def _known_zero(assembly, index, register):
+    """Prove a zero register in the current straight-line x86 block."""
+    aliases = {
+        "ebx": ("ebx", "bx", "bl", "bh"),
+        "ecx": ("ecx", "cx", "cl", "ch"),
+        "esi": ("esi", "si"),
+        "edi": ("edi", "di"),
+        "ebp": ("ebp", "bp"),
+    }[register]
+    safe = {"mov", "movsx", "movzx", "lea", "push", "call", "cmp", "test",
+            "add", "sub", "and", "or", "xor", "shl", "shr", "sar", "inc",
+            "dec", "imul", "cdq", "nop"}
+    for line in reversed(assembly[:index]):
+        mnemonic, _, operands = line.partition(" ")
+        if mnemonic.startswith("j") or mnemonic.startswith("loop") or mnemonic in ("ret", "retf"):
+            return False
+        if line == f"xor {register}, {register}":
+            return True
+        if mnemonic not in safe:
+            return False
+        if mnemonic == "call" and register not in ("ebx", "esi", "edi", "ebp"):
+            return False
+        first = operands.partition(", ")[0]
+        if first in aliases and mnemonic not in ("cmp", "test", "push"):
+            return False
+    return False
+
+
+def _zero_cmp_test(original, rebuilt, index):
+    pair = (original[index], rebuilt[index])
+    cmp_line = next((line for line in pair if line.startswith("cmp ")), None)
+    test_line = next((line for line in pair if line.startswith("test ")), None)
+    if cmp_line is None or test_line is None:
+        return False
+    match = re.fullmatch(r"cmp (e(?:ax|bx|cx|dx|si|di|bp)), (e(?:bx|cx|si|di|bp))", cmp_line)
+    if match is None or test_line != f"test {match[1]}, {match[1]}":
+        return False
+    if not _known_zero(original, index, match[2]) or not _known_zero(rebuilt, index, match[2]):
+        return False
+    for offset in range(1, 4):
+        next_index = index + offset
+        if next_index >= len(original) or original[next_index] != rebuilt[next_index]:
+            return False
+        mnemonic = original[next_index].partition(" ")[0]
+        if mnemonic in ("mov", "lea", "nop", "push"):
+            continue
+        return mnemonic in ("je", "jne", "jl", "jle", "jg", "jge", "ja", "jae", "jb", "jbe")
+    return False
+
+
+def find_effective_match(codes, original, rebuilt):
+    if _upstream_find_effective_match(codes, original, rebuilt):
+        return True
+    return len(original) == len(rebuilt) and all(
+        code == "equal" or (
+            code == "replace" and i2 - i1 == j2 - j1
+            and all(i == j and _zero_cmp_test(original, rebuilt, i)
+                    for i, j in zip(range(i1, i2), range(j1, j2)))
+        )
+        for code, i1, i2, j1, j2 in codes
+    )
 
 
 def _register_operand_pair(instruction):
@@ -427,6 +492,7 @@ def install_parser_fix() -> None:
     fixes.is_operand_swap = is_operand_swap
     fixes.patch_compare_jmp = patch_compare_jmp
     fixes.patch_mov_compare_jmp = patch_mov_compare_jmp
+    function_compare.find_effective_match = find_effective_match
 
 
 def load_engine() -> tuple[object, Compare]:
