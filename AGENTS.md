@@ -1,6 +1,8 @@
 # AGENTS.md
 
-Byte-for-byte reconstruction: *Lemmings Paintball* (`LEMBALL.EXE`, MSVC 4.00).
+Matching reconstruction: *Lemmings Paintball* (`LEMBALL.EXE`, MSVC 4.00).
+
+Communication style: Telegraphese.
 
 ## Evidence: static first
 
