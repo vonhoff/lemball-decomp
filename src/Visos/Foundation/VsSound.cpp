@@ -38,13 +38,14 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 					   CPVMusicDevice** p_musicDevice,
 					   int p_deviceParameter)
 {
+	unsigned int* musicAvailable = p_musicAvailable;
 	int count = 0;
-	*p_musicAvailable = 0;
+	*musicAvailable = 0;
 	*p_musicDevice = 0;
 	if (p_useMusicCD == 1) {
 		CPVMusicDevice* music = new CMciMusicDevice();
 		if (music->IsAvailable() == 1) {
-			*p_musicAvailable = 1;
+			*musicAvailable = 1;
 			*p_musicDevice = music;
 		}
 		else if (music != 0) {
