@@ -3,6 +3,7 @@
 
 #include "CGameObjectMess.h" // complete type
 
+// VTABLE: LEMBALL 0x00493e60
 class CObjectHitMess : public CGameObjectMess {
 public:
 	CObjectHitMess();

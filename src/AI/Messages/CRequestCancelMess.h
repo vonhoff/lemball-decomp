@@ -3,6 +3,7 @@
 
 #include "CGameObjectMess.h" // complete type
 
+// VTABLE: LEMBALL 0x00493e00
 class CRequestCancelMess : public CGameObjectMess {
 public:
 	CRequestCancelMess();

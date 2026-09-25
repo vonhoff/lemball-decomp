@@ -550,7 +550,7 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
             continue
         adjuster_count += 1
         result = engine.compare_address(function.orig_addr)
-        ratio = getattr(result, "match_ratio", 0.0)
+        ratio = getattr(result, "accuracy", 0.0)
         effective = getattr(result, "is_effective_match", False)
         if result is None or (not effective and ratio < 1.0):
             adjuster_problems += 1

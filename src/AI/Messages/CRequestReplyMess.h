@@ -3,6 +3,7 @@
 
 #include "CGameObjectMess.h" // complete type
 
+// VTABLE: LEMBALL 0x00493de0
 class CRequestReplyMess : public CGameObjectMess {
 public:
 	CRequestReplyMess();
