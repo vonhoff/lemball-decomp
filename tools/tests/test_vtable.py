@@ -5,7 +5,6 @@ import unittest
 from types import SimpleNamespace
 
 from lib.vtable import decode_this_adjuster, unannotated_vtable_stores
-from reccmp.types import EntityType
 
 
 class FakeImage:
@@ -54,7 +53,7 @@ class ThisAdjusterTests(unittest.TestCase):
 
 
 class VtableStoreCoverageTests(unittest.TestCase):
-    def test_scans_all_code_regions_and_excludes_mapped_tables(self):
+    def test_scans_relocations_without_compared_functions(self):
         data = bytearray(0x300)
         for instruction, table in ((0x1000, 0x1100), (0x1010, 0x1110)):
             data[instruction - 0x1000:instruction - 0x1000 + 6] = (
@@ -64,18 +63,9 @@ class VtableStoreCoverageTests(unittest.TestCase):
         image = FakeImage(bytes(data))
         image.relocations = (0x1002, 0x1012)
         image.get_code_regions = lambda: iter((SimpleNamespace(addr=0x1000, data=image.data),))
-        matches = [SimpleNamespace(
-            type=EntityType.FUNCTION,
-            rdiff=SimpleNamespace(orig_inst=[
-                (hex(address), "mov dword ptr [eax], <OFFSET1>")
-                for address in (0x1000, 0x1010)
-            ]),
-            name="Constructor",
-        )]
         engine = SimpleNamespace(
             orig_bin=image,
             _db=SimpleNamespace(get=lambda *_: None),
-            compare_all=lambda: iter(matches),
         )
         self.assertEqual(set(unannotated_vtable_stores(engine, set())), {0x1100, 0x1110})
         self.assertEqual(set(unannotated_vtable_stores(engine, {0x1100})), {0x1110})
@@ -90,17 +80,14 @@ class VtableStoreCoverageTests(unittest.TestCase):
         struct.pack_into("<I", data, 0x100, 0x1200)
         image = FakeImage(bytes(data))
         image.relocations = (0x1002, 0x1012)
-        image.get_code_regions = lambda: iter((SimpleNamespace(addr=0x1200, data=b"\xc3"),))
+        image.get_code_regions = lambda: iter((
+            SimpleNamespace(addr=0x1000, data=image.data[:0x30]),
+            SimpleNamespace(addr=0x1200, data=b"\xc3"),
+        ))
         purecall = SimpleNamespace(best_name=lambda: "__purecall")
-        matches = [SimpleNamespace(
-            type=EntityType.FUNCTION,
-            rdiff=SimpleNamespace(orig_inst=[("0x1000", "mov dword ptr [eax], <OFFSET1>")]),
-            name="Constructor",
-        )]
         engine = SimpleNamespace(
             orig_bin=image,
             _db=SimpleNamespace(get=lambda _, address: purecall if address == 0x1200 else None),
-            compare_all=lambda: iter(matches),
         )
         self.assertEqual(unannotated_vtable_stores(engine, {0x1120}), {})
         self.assertEqual(set(unannotated_vtable_stores(engine, set())), {0x1100})

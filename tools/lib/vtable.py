@@ -430,20 +430,18 @@ def format_addr(address: int | None) -> str:
 
 
 def unannotated_vtable_stores(engine: Compare, mapped: set[int]) -> dict[int, tuple[int, str]]:
-    """Find object vptr stores that point at an unmapped table of code pointers."""
+    """Find relocation-backed vptr stores throughout original executable code."""
     image = engine.orig_bin
     relocations = frozenset(image.relocations)
     code_regions = tuple(image.get_code_regions())
     decoder = Cs(CS_ARCH_X86, CS_MODE_32)
     decoder.detail = True
     candidates = {}
-    for match in engine.compare_all():
-        if match.type != EntityType.FUNCTION or match.rdiff is None:
+    for relocation in sorted(relocations):
+        if not any(region.addr <= relocation < region.addr + len(region.data)
+                   for region in code_regions):
             continue
-        for address_text, assembly in match.rdiff.orig_inst:
-            if not address_text or not assembly.startswith("mov "):
-                continue
-            address = int(address_text, 16)
+        for address in range(relocation - 7, relocation):
             try:
                 instruction = next(decoder.disasm(image.read(address, 15), address))
             except (IndexError, StopIteration, ValueError):
@@ -452,7 +450,7 @@ def unannotated_vtable_stores(engine: Compare, mapped: set[int]) -> dict[int, tu
             if (instruction.mnemonic != "mov" or len(operands) != 2
                     or operands[0].type != X86_OP_MEM or operands[1].type != X86_OP_IMM
                     or instruction.imm_size != 4
-                    or address + instruction.imm_offset not in relocations):
+                    or address + instruction.imm_offset != relocation):
                 continue
             table = operands[1].imm & 0xffffffff
             if table in mapped or not image.is_valid_vaddr(table):
@@ -470,7 +468,7 @@ def unannotated_vtable_stores(engine: Compare, mapped: set[int]) -> dict[int, tu
             if transient_purecall_store(image, engine._db, decoder, instruction,
                                         first_slot, mapped, relocations):
                 continue
-            candidates.setdefault(table, (address, match.name))
+            candidates.setdefault(table, (address, "original executable code"))
     return candidates
 
 
