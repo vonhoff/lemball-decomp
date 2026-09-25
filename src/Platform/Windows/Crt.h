@@ -457,6 +457,15 @@
 // LIBRARY: LEMBALL 0x004867c0 SYMBOL
 // __fptrap
 
+// GLOBAL: LEMBALL 0x0049aea8
+// ___lookuptable
+
+// GLOBAL: LEMBALL 0x0049c000
+// ___xc_a
+
+// GLOBAL: LEMBALL 0x0049c104
+// ___xc_z
+
 // GLOBAL: LEMBALL 0x0049c208 SYMBOL
 // ___xi_a
 
@@ -469,23 +478,86 @@
 // GLOBAL: LEMBALL 0x0049c724 SYMBOL
 // ___xp_z
 
+// GLOBAL: LEMBALL 0x004a44c0
+// __aenvptr
+
+// GLOBAL: LEMBALL 0x004a44cc
+// ___error_mode
+
+// GLOBAL: LEMBALL 0x004a44d0
+// ___app_type
+
+// GLOBAL: LEMBALL 0x004a45b0
+// ___lc_codepage
+
 // STRING: LEMBALL 0x004a45bc
 // "\0"
 
 // STRING: LEMBALL 0x004a45c0
 // L"\0"
 
+// GLOBAL: LEMBALL 0x004a45cc
+// __umaskval
+
+// GLOBAL: LEMBALL 0x004a45d0
+// __osver
+
+// GLOBAL: LEMBALL 0x004a45d4
+// __winver
+
+// GLOBAL: LEMBALL 0x004a45d8
+// __winmajor
+
+// GLOBAL: LEMBALL 0x004a45dc
+// __winminor
+
+// GLOBAL: LEMBALL 0x004a45e0
+// ___argc
+
+// GLOBAL: LEMBALL 0x004a45e4
+// ___argv
+
+// GLOBAL: LEMBALL 0x004a45ec
+// __environ
+
+// GLOBAL: LEMBALL 0x004a45fc
+// __pgmptr
+
 // GLOBAL: LEMBALL 0x004a4604 SYMBOL
 // __exitflag
+
+// GLOBAL: LEMBALL 0x004a460c
+// __NLG_Destination
 
 // GLOBAL: LEMBALL 0x004a4620 SYMBOL
 // __XcptActTab
 
+// GLOBAL: LEMBALL 0x004a4698
+// __First_FPE_Indx
+
+// GLOBAL: LEMBALL 0x004a469c
+// __Num_FPE
+
 // GLOBAL: LEMBALL 0x004a46a0 SYMBOL
 // __XcptActTabSize
 
+// GLOBAL: LEMBALL 0x004a46b0
+// __mbctype
+
 // GLOBAL: LEMBALL 0x004a47b4 SYMBOL
 // ___mbcodepage
+
+// GLOBAL: LEMBALL 0x004a47b8
+// ___mblcid
+
+// GLOBAL: LEMBALL 0x004a47c0
+// ___mbulinfo
+
+// GLOBAL: LEMBALL 0x004a48c8
+// ___badioinfo
+
+// GLOBAL: LEMBALL 0x004a48ec
+// ___tlsindex
 
 // GLOBAL: LEMBALL 0x004a4be0 SYMBOL
 // __adbgmsg
@@ -493,16 +565,46 @@
 // GLOBAL: LEMBALL 0x004a4c48 SYMBOL
 // __iob
 
+// GLOBAL: LEMBALL 0x004a4ec8
+// __cflush
+
+// GLOBAL: LEMBALL 0x004a509c
+// __commode
+
+// GLOBAL: LEMBALL 0x004a51cc
+// __fmode
+
+// GLOBAL: LEMBALL 0x004a51e8
+// __stdbuf
+
+// GLOBAL: LEMBALL 0x004a5208
+// ___nullstring
+
+// GLOBAL: LEMBALL 0x004a520c
+// ___wnullstring
+
 // GLOBAL: LEMBALL 0x004aa498 SYMBOL
 // __nstream
 
 // GLOBAL: LEMBALL 0x004aa7d8 SYMBOL
 // ___piob
 
+// GLOBAL: LEMBALL 0x004ab7ec
+// __nhandle
+
+// GLOBAL: LEMBALL 0x004ab830
+// ___pioinfo
+
 // GLOBAL: LEMBALL 0x004ab930 SYMBOL
 // ___onexitend
 
+// GLOBAL: LEMBALL 0x004ab940
+// __FPinit
+
 // GLOBAL: LEMBALL 0x004ab944 SYMBOL
 // ___onexitbegin
+
+// GLOBAL: LEMBALL 0x004ab954
+// __acmdln
 
 #endif
