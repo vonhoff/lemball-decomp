@@ -72,4 +72,16 @@ extern CConnect* g_pActiveConnection;
 // SYNTHETIC: LEMBALL 0x00462e20 SYMBOL
 // ??_ECConnect@@$4PPPPPPPM@KI@AEPAXI@Z
 
+// GLOBAL: LEMBALL 0x00499108
+// CConnect::`vbtable'{for `CRwSocket'}
+
+// GLOBAL: LEMBALL 0x00499118
+// CConnect::`vbtable'{for `CReadSocket'}
+
+// GLOBAL: LEMBALL 0x00499120
+// CConnect::`vbtable'{for `CWriteSocket'}
+
+// GLOBAL: LEMBALL 0x00499128
+// CConnect::`vbtable'
+
 #endif

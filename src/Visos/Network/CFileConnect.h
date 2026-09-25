@@ -41,4 +41,31 @@ public:
 // LIBRARY: LEMBALL 0x00480010 SYMBOL
 // _strncmp
 
+// GLOBAL: LEMBALL 0x0049aaa0
+// CFileConnect::`vbtable'{for `CFileRWSocket'}
+
+// GLOBAL: LEMBALL 0x0049aac8
+// CFileConnect::`vbtable'{for `CFileWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049aae0
+// CFileConnect::`vbtable'{for `CFileReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049aaf8
+// CFileConnect::`vbtable'{for `CFileCommonSocket'}
+
+// GLOBAL: LEMBALL 0x0049ab08
+// CFileConnect::`vbtable'{for `CRwSocket'}
+
+// GLOBAL: LEMBALL 0x0049ab18
+// CFileConnect::`vbtable'{for `CReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049ab20
+// CFileConnect::`vbtable'{for `CWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049ab28
+// CFileConnect::`vbtable'
+
+// GLOBAL: LEMBALL 0x0049ab40
+// CFileConnect::`vbtable'{for `CFileOpenManagement'}
+
 #endif

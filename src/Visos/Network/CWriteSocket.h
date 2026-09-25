@@ -64,4 +64,7 @@ private:
 // SYNTHETIC: LEMBALL 0x00462d80
 // CWriteSocket::`scalar deleting destructor'`vtordisp{-4, 120}'
 
+// GLOBAL: LEMBALL 0x00498f98
+// CWriteSocket::`vbtable'
+
 #endif

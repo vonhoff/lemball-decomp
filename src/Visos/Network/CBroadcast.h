@@ -65,4 +65,16 @@ protected:
 // SYNTHETIC: LEMBALL 0x00462c60 SYMBOL
 // ??_ECBroadcast@@$4PPPPPPPM@KI@AEPAXI@Z
 
+// GLOBAL: LEMBALL 0x00499048
+// CBroadcast::`vbtable'{for `CRwSocket'}
+
+// GLOBAL: LEMBALL 0x00499058
+// CBroadcast::`vbtable'{for `CReadSocket'}
+
+// GLOBAL: LEMBALL 0x00499060
+// CBroadcast::`vbtable'{for `CWriteSocket'}
+
+// GLOBAL: LEMBALL 0x00499068
+// CBroadcast::`vbtable'
+
 #endif

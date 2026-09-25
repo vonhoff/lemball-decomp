@@ -40,4 +40,28 @@ public:
 // SYNTHETIC: LEMBALL 0x00471c60 SYMBOL
 // ??_ECTCPIPConnect@@$4PPPPPPPM@KI@AEPAXI@Z
 
+// GLOBAL: LEMBALL 0x0049a2e0
+// CTCPIPConnect::`vbtable'{for `CTCPIPWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a2f0
+// CTCPIPConnect::`vbtable'{for `CTCPIPReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a300
+// CTCPIPConnect::`vbtable'{for `CTCPIPCommonSocket'}
+
+// GLOBAL: LEMBALL 0x0049a308
+// CTCPIPConnect::`vbtable'{for `CRwSocket'}
+
+// GLOBAL: LEMBALL 0x0049a318
+// CTCPIPConnect::`vbtable'{for `CReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a320
+// CTCPIPConnect::`vbtable'{for `CWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a328
+// CTCPIPConnect::`vbtable'{for `CTCPIPRWSocket'}
+
+// GLOBAL: LEMBALL 0x0049a348
+// CTCPIPConnect::`vbtable'{for `CConnect'}
+
 #endif

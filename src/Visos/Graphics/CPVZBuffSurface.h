@@ -32,4 +32,7 @@ private:
 	unsigned short m_allocatedHeight; // 0x52
 };
 
+// GLOBAL: LEMBALL 0x004995c0
+// CPVZBuffSurface::`vbtable'
+
 #endif

@@ -49,4 +49,13 @@ private:
 // SYNTHETIC: LEMBALL 0x00471ec0 SYMBOL
 // ?SocketError@CTCPIPCommonSocket@@WPPPPPPDI@AEXXZ
 
+// GLOBAL: LEMBALL 0x0049a068
+// CTCPIPWriteSocket::`vbtable'{for `CTCPIPCommonSocket'}
+
+// GLOBAL: LEMBALL 0x0049a070
+// CTCPIPWriteSocket::`vbtable'{for `CWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a078
+// CTCPIPWriteSocket::`vbtable'{for `CTCPIPWriteSocket'}
+
 #endif

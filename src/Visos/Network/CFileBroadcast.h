@@ -46,4 +46,31 @@ extern CPortsMessage* g_pFileBroadcast;
 // SYNTHETIC: LEMBALL 0x0047bc50 SYMBOL
 // ??_ECFileBroadcast@@$4PPPPPPPM@KI@AEPAXI@Z
 
+// GLOBAL: LEMBALL 0x0049a860
+// CFileBroadcast::`vbtable'{for `CFileRWSocket'}
+
+// GLOBAL: LEMBALL 0x0049a888
+// CFileBroadcast::`vbtable'{for `CFileWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a8a0
+// CFileBroadcast::`vbtable'{for `CFileReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a8b8
+// CFileBroadcast::`vbtable'{for `CFileCommonSocket'}
+
+// GLOBAL: LEMBALL 0x0049a8c8
+// CFileBroadcast::`vbtable'{for `CRwSocket'}
+
+// GLOBAL: LEMBALL 0x0049a8d8
+// CFileBroadcast::`vbtable'{for `CReadSocket'}
+
+// GLOBAL: LEMBALL 0x0049a8e0
+// CFileBroadcast::`vbtable'{for `CWriteSocket'}
+
+// GLOBAL: LEMBALL 0x0049a8e8
+// CFileBroadcast::`vbtable'
+
+// GLOBAL: LEMBALL 0x0049a900
+// CFileBroadcast::`vbtable'{for `CFileOpenManagement'}
+
 #endif

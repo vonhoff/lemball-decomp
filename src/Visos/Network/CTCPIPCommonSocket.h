@@ -28,4 +28,7 @@ private:
 // SYNTHETIC: LEMBALL 0x00471a90
 // CTCPIPCommonSocket::`scalar deleting destructor'
 
+// GLOBAL: LEMBALL 0x0049a048
+// CTCPIPCommonSocket::`vbtable'
+
 #endif
