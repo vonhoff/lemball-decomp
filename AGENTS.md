@@ -51,8 +51,6 @@ If available, key by canonical address (for example `0x00408240`); symbol second
 
 Identical class definition in every TU. Never vary method declarations, signatures, or inline bodies behind TU-specific guards for score. Resolve from original x86. No inline asm. One primary class per `.h`/`.cpp`; filename stem equals class, no exceptions. Functions in ascending original x86 address order. Use `RES_*` from `Manifest.h`. Prefer named members over offset pokes.
 
-Keep `undefined`/`undefined2`/`undefined4` until Win32 evidence supports tighter types. Preserve original loop shape, 32-bit size math, post-virtual pointer re-fetches, message `switch` widening. Stop at compiler noise: register allocation, alignment NOPs.
-
 DirectX SDK ABI: `src/Platform/DirectX/`, SDK names. Shared WinSock: `src/Platform/WinSock/`. Game wrappers/state: `src/Visos/Target/` under `Graphics/`, `Sound/`, `Input/`, `Network/`, `UI/`, `System/`. Keep original filename strings in reconstructed assertions after source renames.
 
 Startup orchestration and command-line options: `src/Visos/Foundation/VsInit.cpp`. Subsystem lifecycle: matching `*Init.cpp`. Network workers/startup/shutdown: `Visos/Network/NetworkInit.cpp`.
