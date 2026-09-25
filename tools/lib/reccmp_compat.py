@@ -1,8 +1,7 @@
 """Repository-local compatibility fixes for the pinned reccmp 0.1.7 parser.
 
-These fixes correct instruction/data boundaries and relocation recognition.
-The existing name replacement and matching criteria remain in use.
-The installed package is not modified.
+Parser repairs, exact pointer identities, and bounded effective-match proofs.
+Raw diffs and ratios stay upstream-owned. The installed package is not modified.
 """
 
 from __future__ import annotations
@@ -14,10 +13,10 @@ from importlib.metadata import version
 
 from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from reccmp.compare import Compare
-from reccmp.compare import functions as function_compare
+from reccmp.compare import core
+from reccmp.compare.functions import FunctionComparator
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
-from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
 from reccmp.formats.exceptions import (
     InvalidVirtualAddressError,
     InvalidVirtualReadError,
@@ -75,35 +74,18 @@ def complete_original_extent(image, start, limit, decoder):
     return max(occupied) + 1 - start if saw_return else None
 
 
-_upstream_relocate_instructions = fixes.relocate_instructions
 _upstream_patch_mov_compare_jmp = fixes.patch_mov_compare_jmp
 _upstream_patch_compare_jmp = fixes.patch_compare_jmp
-_upstream_find_effective_match = fixes.find_effective_match
 
 
-def _zero_cmp_test(original, rebuilt, index):
+def _zero_cmp_test(original, rebuilt, index, original_zero, rebuilt_zero):
     """Accept CMP x, 0 / TEST x, x only with a proved zero and same Jcc."""
     match = re.fullmatch(r"cmp (e(?:ax|bx|cx|dx|si|di|bp)), (e(?:bx|cx|si|di|bp))",
                          original[index])
     if match is None or rebuilt[index] != f"test {match[1]}, {match[1]}":
         return False
-    zero = match[2]
-    aliases = {"ebx": ("ebx", "bx", "bl", "bh"), "ecx": ("ecx", "cx", "cl", "ch"),
-               "esi": ("esi", "si"), "edi": ("edi", "di"), "ebp": ("ebp", "bp")}[zero]
-    safe = {"mov", "movsx", "movzx", "lea", "push", "call", "cmp", "test",
-            "add", "sub", "and", "or", "xor", "shl", "shr", "sar", "inc",
-            "dec", "imul", "cdq", "nop"}
-    for assembly in (original, rebuilt):
-        for line in reversed(assembly[:index]):
-            mnemonic, _, operands = line.partition(" ")
-            if line == f"xor {zero}, {zero}":
-                break
-            if (mnemonic not in safe or (mnemonic == "call" and zero == "ecx")
-                    or (operands.partition(", ")[0] in aliases
-                        and mnemonic not in ("cmp", "test", "push"))):
-                return False
-        else:
-            return False
+    if match[2] not in original_zero or match[2] not in rebuilt_zero:
+        return False
     for line, other in zip(original[index + 1:index + 4], rebuilt[index + 1:index + 4]):
         if line != other:
             return False
@@ -142,18 +124,25 @@ def _dead_vptr_store(original, rebuilt, index):
     return False
 
 
-def find_effective_match(codes, original, rebuilt):
-    if _upstream_find_effective_match(codes, original, rebuilt):
-        return True
-    if len(original) != len(rebuilt):
-        return False
-    normalized = rebuilt.copy()
-    for index, (left, right) in enumerate(zip(original, rebuilt)):
-        if left != right and (_zero_cmp_test(original, rebuilt, index)
-                              or _dead_vptr_store(original, rebuilt, index)):
-            normalized[index] = left
-    matcher = SequenceMatcherWithPins(original, normalized, [])
-    return _upstream_find_effective_match(matcher.get_opcodes(), original, normalized)
+class CompatibleFunctionComparator(FunctionComparator):
+    def _compare_function_assembly(self, orig, recomp, split_points):
+        result = super()._compare_function_assembly(orig, recomp, split_points)
+        if result.match_ratio == 1 or result.is_effective_match or len(orig) != len(recomp):
+            return result
+        original, rebuilt = [line for _, line in orig], [line for _, line in recomp]
+        normalized = recomp.copy()
+        for index, (left, right) in enumerate(zip(original, rebuilt)):
+            if left != right and (
+                _dead_vptr_store(original, rebuilt, index)
+                or _zero_cmp_test(original, rebuilt, index,
+                                  self.orig_sanitize.zero_registers.get(orig[index][0], ()),
+                                  self.recomp_sanitize.zero_registers.get(recomp[index][0], ()))
+            ):
+                normalized[index] = (recomp[index][0], left)
+        if normalized != recomp:
+            checked = super()._compare_function_assembly(orig, normalized, split_points)
+            result.is_effective_match = checked.match_ratio == 1 or checked.is_effective_match
+        return result
 
 
 def _register_operand_pair(instruction):
@@ -238,7 +227,6 @@ def naive_register_replacement(orig_asm, recomp_asm):
             if scrub(original) == scrub(rebuilt)}
 
 
-_register_tokens = re.compile(r"\b(eax|ax|al|ah|ebx|bx|bl|bh|ecx|cx|cl|ch|edx|dx|dl|dh|esi|si|edi|di|ebp|bp|esp|sp)\b")
 _register_families = {
     alias: family
     for family, aliases in (
@@ -252,48 +240,48 @@ _register_families = {
 }
 
 
-def relocate_instructions(codes, orig_asm, recomp_asm):
-    """Fix the forward-move self-dependency, with conservative safety checks."""
-    fixed = _upstream_relocate_instructions(codes, orig_asm, recomp_asm)
-    deletes = [i for code, i1, i2, _, _ in codes if code == "delete" for i in range(i1, i2)]
-    inserts = [(i1, j) for code, i1, _, j1, j2 in codes if code == "insert" for j in range(j1, j2)]
-    transparent = {"mov", "lea", "cmp", "test", "push", "pop", "add", "sub",
-                   "inc", "dec", "and", "or", "xor", "shl", "shr", "sar"}
-    for destination, j in inserts:
-        if j in fixed:
+def zero_registers(generator, decoder):
+    """Straight-line zero facts; joins invalidate facts, calls follow Win32 ABI."""
+    entries = {addr for addr, kind in generator.confirmed_addrs.items() if kind == SectionType.CODE}
+    tables = {s.contents[0][0] for s in generator.sections if s.type == SectionType.ADDR_TAB and s.contents}
+    instructions = []
+    for section in generator.sections:
+        if section.type != SectionType.CODE or not section.contents:
             continue
-        line = recomp_asm[j]
-        candidates = [i for i in deletes if orig_asm[i] == line]
-        if len(candidates) != 1 or sum(recomp_asm[k] == line for _, k in inserts) != 1:
-            continue
-        i = candidates[0]
-        if destination <= i:
-            continue
-        mnemonic, _, operands = line.partition(" ")
-        target, separator, source = operands.partition(", ")
-        if mnemonic not in ("mov", "lea") or not separator or target not in fixes.DWORD_REGS:
-            continue
-        if mnemonic == "mov" and "[" in source:
-            continue
-        if mnemonic == "mov" and not (
-            source in fixes.DWORD_REGS
-            or re.fullmatch(r"-?(?:0x[0-9a-f]+|[0-9]+)|<OFFSET[0-9]*>", source)
-            or re.search(r" \((?:DATA|VTABLE|UNK|FUNCTION|IMPORT|IMPORT_THUNK|STRING|OFFSET)\)$", source)
-        ):
-            # Segment/control registers have dependencies outside the GPR set.
-            continue
-        registers = {_register_families[reg] for reg in _register_tokens.findall(operands)}
-        if "esp" in registers:
-            continue
-        crossed = orig_asm[i + 1:destination]
-        if any(
-            instruction.partition(" ")[0] not in transparent
-            or registers.intersection(_register_families[reg] for reg in _register_tokens.findall(instruction))
-            for instruction in crossed
-        ):
-            continue
-        fixed.add(j)
-    return fixed
+        entries.add(section.contents[0][0])
+        for address, size, mnemonic, operands in section.contents:
+            offset = address - generator.start
+            inst = next(decoder.disasm(generator.blob[offset:offset + size], address))
+            # CMP/TEST disagree on AF. Reject any potential observer, including
+            # one after the first Jcc. Keep this independent of flag scheduling.
+            if mnemonic in ("lahf", "pushf", "pushfd", "aaa", "aas", "daa", "das"):
+                return {}
+            if mnemonic == "call" and re.fullmatch(r"0x[0-9a-f]+", operands):
+                entries.add(int(operands, 16))
+            if mnemonic.startswith(("j", "loop")):
+                if re.fullmatch(r"0x[0-9a-f]+", operands):
+                    entries.add(int(operands, 16))
+                else:
+                    table = re.fullmatch(r"dword ptr \[e\w+\*4 \+ (0x[0-9a-f]+)\]", operands)
+                    if table is None or int(table[1], 16) not in tables:
+                        return {}  # Unknown indirect control flow.
+            instructions.append(inst)
+    known, result = set(), {}
+    for inst in instructions:
+        if inst.address in entries:
+            known.clear()
+        result[inst.address] = known.copy()
+        _, writes = inst.regs_access()
+        known.difference_update(_register_families.get(inst.reg_name(reg)) for reg in writes)
+        if inst.mnemonic == "call":
+            known.difference_update(("eax", "ecx", "edx"))
+        elif inst.mnemonic.startswith(("j", "loop", "ret", "int")):
+            known.clear()
+        elif inst.mnemonic == "xor":
+            left, _, right = inst.op_str.partition(", ")
+            if left == right and left in fixes.DWORD_REGS:
+                known.add(left)
+    return result
 
 
 def normalize_assert_arguments(assembly):
@@ -338,7 +326,7 @@ def incremental_thunks(image):
 
 
 def direct_jump_target(image, address):
-    """Return the target of an exact five-byte E9 forwarding body."""
+    """Read the destination of an E9 instruction at a direct call/jump target."""
     try:
         raw = image.read(address, 5)
     except (ValueError, IndexError, InvalidVirtualAddressError, InvalidVirtualReadError):
@@ -365,21 +353,18 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         self._table_bases: dict[str, int] = {}
         self._data_targets: set[int] = set()
         self._strlen_addends: set[int] = set()
+        self.zero_registers = {}
 
-    def indirect_replace(self, addr):
-        target = self.indirect_thunk_targets.get(addr)
-        if target is not None and self.lookup(addr, exact=True, indirect=True) is None:
-            name = self.lookup(target, exact=True)
+    def lookup(self, addr, exact=False, indirect=False):
+        name = super().lookup(addr, exact=exact, indirect=indirect)
+        if name is not None:
+            return name
+        target = (self.indirect_thunk_targets if indirect else self.thunk_targets).get(addr)
+        if target is not None:
+            name = super().lookup(target, exact=True)
             if name is not None:
-                return "->" + name
-        return super().indirect_replace(addr)
-
-    def replace(self, addr, exact=False):
-        target = self.thunk_targets.get(addr)
-        if (target is not None and self.lookup(addr, exact=True) is None
-                and self.lookup(target, exact=True) is not None):
-            return super().replace(target, exact=True)
-        return super().replace(addr, exact=exact)
+                return "->" + name if indirect else name
+        return None
 
     def parse_asm(self, data, start_addr):
         self._data = bytes(data)
@@ -387,10 +372,13 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         self._table_bases = {}
         self._data_targets = set()
         self._strlen_addends = set()
+        self.zero_registers = {}
         if self.is_32bit:
             # The upstream parser skips sanitize() for instructions without
             # pointer operands. Inspect decoded code sections for this idiom.
-            for section in parse.InstructGen(self._data, start_addr, True).sections:
+            generator = parse.InstructGen(self._data, start_addr, True)
+            self.zero_registers = zero_registers(generator, self._decoder)
+            for section in generator.sections:
                 if section.type != SectionType.CODE:
                     continue
                 for index in range(4, len(section.contents)):
@@ -411,13 +399,11 @@ class RelocationAwareParseAsm(parse.ParseAsm):
 
     def sanitize(self, inst):
         address, size, mnemonic, operands = inst
-        if self.is_32bit and mnemonic in ("call", "jmp") and re.fullmatch(r"0x[0-9a-f]+", operands):
-            target_address = int(operands, 16)
-            target = self.thunk_targets.get(target_address)
-            if target is None and self.image is not None:
-                target = direct_jump_target(self.image, target_address)
-            if (target is not None and self.lookup(target_address, exact=True) is None
-                    and self.lookup(target, exact=True) is not None):
+        if (self.image is not None and self.is_32bit and mnemonic in ("call", "jmp")
+                and re.fullmatch(r"0x[0-9a-f]+", operands)
+                and self.lookup(int(operands, 16), exact=True) is None):
+            target = direct_jump_target(self.image, int(operands, 16))
+            if target is not None and self.lookup(target, exact=True) is not None:
                 return mnemonic, self.replace(target, exact=True)
         if self.is_32bit and mnemonic == "mov":
             reg, _, val = operands.partition(", ")
@@ -522,12 +508,11 @@ def install_parser_fix() -> None:
     if version("reccmp") != "0.1.7":
         raise RuntimeError("Review the parser compatibility fix before changing reccmp==0.1.7")
     parse.InstructGen = BoundedInstructGen
-    fixes.relocate_instructions = relocate_instructions
     fixes.naive_register_replacement = naive_register_replacement
     fixes.is_operand_swap = is_operand_swap
     fixes.patch_compare_jmp = patch_compare_jmp
     fixes.patch_mov_compare_jmp = patch_mov_compare_jmp
-    function_compare.find_effective_match = find_effective_match
+    core.FunctionComparator = CompatibleFunctionComparator
 
 
 def match_nested_vtables(db):

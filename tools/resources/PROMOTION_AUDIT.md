@@ -1,6 +1,8 @@
 # Removed promotion audit
 
 Baseline: `c24987ba`. Rules: `3820e783^:tools/lib/compare.py`. Date: 2026-09-25.
+
+Follow-up: [compatibility review](RECCMP_COMPAT_REVIEW.md). Tighter zero-state proof; unused movement extension deleted; CLoadUpdate annotation replaces one semantic exception. Cohort/effective coverage unchanged.
 Lens: [Ponytail](https://raw.githubusercontent.com/DietrichGebert/ponytail/refs/heads/main/skills/ponytail/SKILL.md): existing machinery first; remove duplicate paths.
 
 Reproduced on the initial build: **96 partial functions / 27,190 bytes**.

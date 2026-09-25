@@ -18,7 +18,7 @@ from reccmp.project.detect import RecCmpProjectException
 from reccmp.types import EntityType, ImageId
 
 from .paths import RECOMP_EXE
-from .reccmp_compat import load_engine
+from .reccmp_compat import direct_jump_target, load_engine
 
 
 # Original-only, unreferenced constructor fragments. The entries at 0x45a680,
@@ -47,17 +47,8 @@ def resolve_jump(image, address: int | None, stop_at=None, max_depth: int = 16) 
         seen.add(current)
         if stop_at is not None and stop_at(current):
             break
-        if not image.is_valid_vaddr(current):
-            break
-        try:
-            instruction = image.read(current, 5)
-        except (IndexError, ValueError):
-            break
-        if len(instruction) != 5 or instruction[0] != 0xE9:
-            break
-        displacement = struct.unpack("<i", instruction[1:])[0]
-        destination = current + 5 + displacement
-        if not image.is_valid_vaddr(destination):
+        destination = direct_jump_target(image, current)
+        if destination is None or not image.is_valid_vaddr(destination):
             break
         current = destination
     return current

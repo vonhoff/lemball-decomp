@@ -12,7 +12,7 @@ from lib.reccmp_compat import (
     RelocationAwareParseAsm,
     complete_original_extent,
     direct_jump_target,
-    find_effective_match,
+    CompatibleFunctionComparator,
     incremental_thunks,
     match_nested_vtables,
     is_operand_swap,
@@ -20,11 +20,9 @@ from lib.reccmp_compat import (
     normalize_assert_arguments,
     patch_compare_jmp,
     patch_mov_compare_jmp,
-    relocate_instructions,
 )
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
-from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
 from reccmp.compare.db import EntityDb
 from reccmp.types import EntityType, ImageId
 
@@ -305,45 +303,66 @@ class OperandSwapTests(unittest.TestCase):
             self.assertFalse(fixes.find_effective_match(codes, left, right))
 
 
+def compare_assembly(original, rebuilt, original_parser=None, rebuilt_parser=None, pins=()):
+    comparator = CompatibleFunctionComparator.__new__(CompatibleFunctionComparator)
+    comparator.orig_sanitize = original_parser or SimpleNamespace(zero_registers={})
+    comparator.recomp_sanitize = rebuilt_parser or SimpleNamespace(zero_registers={})
+    comparator._source_ref_of_recomp_addr = lambda address: None
+    return comparator._compare_function_assembly(original, rebuilt, list(pins))
+
+
 class ZeroCompareTests(unittest.TestCase):
-    @staticmethod
-    def equivalent(original, rebuilt):
-        codes = SequenceMatcher(None, original, rebuilt).get_opcodes()
-        return find_effective_match(codes, original, rebuilt)
+    def compare(self, original, rebuilt):
+        parsers = [RelocationAwareParseAsm(), RelocationAwareParseAsm()]
+        with patch.object(parse, "InstructGen", BoundedInstructGen):
+            assembly = [p.parse_asm(bytes.fromhex(blob), 0x1000)
+                        for p, blob in zip(parsers, (original, rebuilt))]
+        return compare_assembly(*assembly, *parsers)
 
     def test_zeroed_register_compare_matches_test(self):
-        original = ["xor ebp, ebp", "call Win32 (IMPORT)", "mov ebx, dword ptr [esp + 4]",
-                    "cmp ebx, ebp", "mov dword ptr [esi], eax", "jne 0x10"]
-        rebuilt = original.copy()
-        rebuilt[3] = "test ebx, ebx"
-        self.assertTrue(self.equivalent(original, rebuilt))
+        result = self.compare("31ed e800010000 8b5c2404 3bdd 8906 7501 c3 c3",
+                              "31ed e800010000 8b5c2404 85db 8906 7501 c3 c3")
+        self.assertTrue(result.is_effective_match)
+        self.assertLess(result.match_ratio, 1)
+        self.assertIn("cmp ebx, ebp", [line for _, line in result.diff.orig_inst])
+        self.assertIn("test ebx, ebx", [line for _, line in result.diff.recomp_inst])
 
-    def test_changed_flags_or_zero_state_stays_partial(self):
-        original = ["xor ebp, ebp", "cmp ebx, ebp", "jne 0x10"]
-        for rebuilt in (
-            ["xor ebp, ebp", "test ebx, ebx", "je 0x10"],
-            ["xor ebp, ebp", "test ecx, ecx", "jne 0x10"],
-            ["mov ebp, 1", "test ebx, ebx", "jne 0x10"],
-            ["xor ebp, ebp", "test ebx, ebx", "lahf "],
-        ):
-            with self.subTest(rebuilt=rebuilt):
-                self.assertFalse(self.equivalent(original, rebuilt))
+    def test_branch_bypassing_zero_initialization_is_rejected(self):
+        # EAX=EBP=1: original returns 1, rebuilt returns 2.
+        self.assertFalse(self.compare(
+            "eb02 31ed 3bc5 7506 b801000000 c3 b802000000 c3",
+            "eb02 31ed 85c0 7506 b801000000 c3 b802000000 c3",
+        ).is_effective_match)
 
-    def test_intervening_write_and_volatile_call_stay_partial(self):
-        original = ["xor ebp, ebp", "mov ebp, 1", "cmp ebx, ebp", "jne 0x10"]
-        rebuilt = original.copy()
-        rebuilt[2] = "test ebx, ebx"
-        self.assertFalse(self.equivalent(original, rebuilt))
-        original = ["xor ecx, ecx", "call F (FUNCTION)", "cmp ebx, ecx", "jne 0x10"]
-        rebuilt = original.copy()
-        rebuilt[2] = "test ebx, ebx"
-        self.assertFalse(self.equivalent(original, rebuilt))
+    def test_backward_branch_into_zero_interval_is_rejected(self):
+        self.assertFalse(self.compare("31ed 3bc5 7500 45 ebf9",
+                                      "31ed 85c0 7500 45 ebf9").is_effective_match)
+
+    def test_partial_write_and_volatile_call_invalidate_zero(self):
+        for prefix in ("31ed 66bd0100", "31c9 e800010000"):
+            cmp = "3bdd" if prefix.startswith("31ed") else "3bd9"
+            self.assertFalse(self.compare(prefix + " " + cmp + " 7501 c3 c3",
+                                          prefix + " 85db 7501 c3 c3").is_effective_match)
+
+    def test_af_observer_after_branch_is_rejected(self):
+        for observer in ("9f", "9c", "27", "37"):
+            self.assertFalse(self.compare("31ed 3bc5 7500 " + observer + " c3",
+                                          "31ed 85c0 7500 " + observer + " c3").is_effective_match)
+
+    def test_changed_test_register_or_jump_is_rejected(self):
+        for tail in ("85c9 7501", "85c0 7401"):
+            self.assertFalse(self.compare("31ed 3bc5 7501 c3 c3",
+                                          "31ed " + tail + " c3 c3").is_effective_match)
+
+    def test_unknown_indirect_branch_declines_zero_proof(self):
+        self.assertFalse(self.compare("31ed 3bc5 7500 ffe2",
+                                      "31ed 85c0 7500 ffe2").is_effective_match)
 
 
 class TransientVptrTests(unittest.TestCase):
     @staticmethod
     def equivalent(original, rebuilt):
-        return find_effective_match(SequenceMatcher(None, original, rebuilt).get_opcodes(), original, rebuilt)
+        return compare_assembly(list(enumerate(original)), list(enumerate(rebuilt))).is_effective_match
 
     def test_dead_store_proof_composes_with_existing_register_equivalence(self):
         original = ["mov eax, 1", "mov dword ptr [esi + 4], eax",
@@ -374,44 +393,6 @@ class TransientVptrTests(unittest.TestCase):
                 self.assertFalse(self.equivalent(original, rebuilt))
         self.assertFalse(self.equivalent([first, final],
                                          ["mov dword ptr [esi + 0x74], CLoadUpdate::`vftable' (VTABLE)", final]))
-
-
-class ForwardRelocationTests(unittest.TestCase):
-    def compare(self, first, crossed):
-        original = [first, *crossed]
-        rebuilt = [*crossed, first]
-        codes = SequenceMatcherWithPins(original, rebuilt, []).get_opcodes()
-        return original, rebuilt, codes
-
-    def test_moved_instruction_counts_dependency(self):
-        original, rebuilt, codes = self.compare("mov eax, 1", ["xor ecx, ecx", "inc ecx"])
-        self.assertEqual(relocate_instructions(codes, original, rebuilt), {2})
-
-    def test_effective_match_uses_the_corrected_dependency_check(self):
-        original, rebuilt, codes = self.compare("mov eax, 1", ["xor ecx, ecx", "inc ecx"])
-        with patch.object(fixes, "relocate_instructions", relocate_instructions):
-            self.assertTrue(fixes.find_effective_match(codes, original, rebuilt))
-
-    def test_backward_move_behavior_is_unchanged(self):
-        rebuilt, original, _ = self.compare("mov eax, 1", ["xor ecx, ecx", "inc ecx"])
-        codes = SequenceMatcherWithPins(original, rebuilt, []).get_opcodes()
-        self.assertEqual(relocate_instructions(codes, original, rebuilt), {0})
-
-    def test_rejects_destination_reads_and_source_changes(self):
-        for first, crossed in (
-            ("mov eax, 1", ["mov ecx, eax", "inc ecx"]),
-            ("mov eax, ecx", ["inc ecx", "inc edx"]),
-            ("mov eax, 1", ["inc al", "inc ecx"]),
-            ("mov eax, 1", ["call helper (FUNCTION)", "inc ecx"]),
-            ("mov eax, 1", ["jne 0x10", "inc ecx"]),
-            ("mov eax, dword ptr [esi]", ["mov dword ptr [edi], 2", "inc ecx"]),
-            ("mov eax, esp", ["push ecx", "inc ecx"]),
-            ("mov eax, fs", ["mov fs, cx", "inc ecx"]),
-            ("add eax, 1", ["xor ecx, ecx", "inc ecx"]),
-        ):
-            with self.subTest(first=first, crossed=crossed):
-                original, rebuilt, codes = self.compare(first, crossed)
-                self.assertEqual(relocate_instructions(codes, original, rebuilt), set())
 
 
 class RegisterTokenTests(unittest.TestCase):
@@ -571,6 +552,16 @@ class IncrementalThunkTests(unittest.TestCase):
             )
             self.assertEqual(parser.sanitize((0x2000, 5, "call", "0x1000")),
                              ("call", "<OFFSET1>"))
+
+    def test_e9_bytes_outside_linker_table_do_not_rename_data_pointers(self):
+        jump = b"\xe9" + struct.pack("<i", 0x1020 - 0x1005)
+        parser = RelocationAwareParseAsm(
+            image=SimpleNamespace(read=lambda address, size: jump),
+            addr_test=lambda address: True,
+            name_lookup=lambda address, **kwargs: {0x1020: "Target (FUNCTION)"}.get(address),
+        )
+        self.assertEqual(parser.parse_asm(b"\xb8\x00\x10\x00\x00", 0x2000)[0][1],
+                         "mov eax, <OFFSET1>")
 
     def test_existing_identity_is_preserved(self):
         parser = self.parser({0x1000: "Existing (FUNCTION)", 0x1020: "Target (FUNCTION)"})
