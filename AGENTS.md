@@ -83,7 +83,7 @@ Types: `FUNCTION` `STUB` `TEMPLATE` `SYNTHETIC` `LIBRARY` `VTABLE` `GLOBAL` `STR
 
 ## Naming
 
-The original 68K catalog evidence (`tools/resources/catalog.csv`) is authoritative and leading.
+The original 68K catalog evidence (`tools/data/catalog.csv`) is authoritative and leading.
 Preserve exact catalog spelling, casing, acronyms, prefixes, and underscore separators without
 artificial PascalCase or acronym conversions. Do not strip prefixes or convert leading `_`
 to `Internal`.
@@ -96,7 +96,7 @@ Class/filename consistency is checked by `tools/lib/layout.py`.
 python tools/gate.py --names
 ```
 
-Compares reconstructed names to `tools/resources/catalog.csv` by original Windows
+Compares reconstructed names to `tools/data/catalog.csv` by original Windows
 address. Use ordinary reccmp annotations; do not duplicate the catalog with
 `// 68K` comments. Parameter names are ignored; encoded parameter types
 and method constness are compared. Signature differences require Windows review
