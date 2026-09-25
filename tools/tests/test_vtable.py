@@ -2,8 +2,10 @@
 
 import struct
 import unittest
+from types import SimpleNamespace
 
-from lib.vtable import decode_this_adjuster
+from lib.vtable import decode_this_adjuster, unannotated_vtable_stores
+from reccmp.types import EntityType
 
 
 class FakeImage:
@@ -49,6 +51,34 @@ class ThisAdjusterTests(unittest.TestCase):
         code = b"\x55\x8b\xec\x83\xec\x10\x90\x90\x90\x90\x90\x90"
         image = FakeImage(code, base=addr)
         self.assertIsNone(decode_this_adjuster(image, addr))
+
+
+class VtableStoreCoverageTests(unittest.TestCase):
+    def test_scans_all_code_regions_and_excludes_mapped_tables(self):
+        data = bytearray(0x300)
+        for instruction, table in ((0x1000, 0x1100), (0x1010, 0x1110)):
+            data[instruction - 0x1000:instruction - 0x1000 + 6] = (
+                b"\xc7\x00" + struct.pack("<I", table)
+            )
+            struct.pack_into("<I", data, table - 0x1000, 0x1200)
+        image = FakeImage(bytes(data))
+        image.relocations = (0x1002, 0x1012)
+        image.get_code_regions = lambda: iter((SimpleNamespace(addr=0x1000, data=image.data),))
+        matches = [SimpleNamespace(
+            type=EntityType.FUNCTION,
+            rdiff=SimpleNamespace(orig_inst=[
+                (hex(address), "mov dword ptr [eax], <OFFSET1>")
+                for address in (0x1000, 0x1010)
+            ]),
+            name="Constructor",
+        )]
+        engine = SimpleNamespace(
+            orig_bin=image,
+            _db=SimpleNamespace(get=lambda *_: None),
+            compare_all=lambda: iter(matches),
+        )
+        self.assertEqual(set(unannotated_vtable_stores(engine, set())), {0x1100, 0x1110})
+        self.assertEqual(set(unannotated_vtable_stores(engine, {0x1100})), {0x1110})
 
 
 if __name__ == "__main__":

@@ -1,189 +1,9 @@
-"""Effective-match helpers and PE jump-stub following."""
+"""Read reccmp results without changing their match scores."""
 
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
-
-from reccmp.compare.asm.fixes import find_effective_match
-from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
-
-RELOCATION = re.compile(r"<OFFSET\d+>")
-ANNOTATED_SYMBOL = r".+? \((?:DATA|VTABLE|UNK|FUNCTION|IMPORT|IMPORT_THUNK|STRING)\)"
-BYTE_REGISTER_RE = re.compile(r"\b(?:ah|al|bh|bl|ch|cl|dh|dl)\b")
-THUNK_RE = re.compile(r"Thunk of '(.+)' \(THUNK\)$")
-CALL_OFFSET_RE = re.compile(r"^call <OFFSET\d+>$")
-CALL_TARGET_RE = re.compile(r"^call (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$")
-JMP_OFFSET_RE = re.compile(r"^jmp -?0x[0-9a-f]+\s*$")
-JMP_TARGET_RE = re.compile(r"^jmp (?:Thunk of '.+' \(THUNK\)|.+ \(FUNCTION\))$")
-CALL_FUNC_RE = re.compile(r"^call .+ \(FUNCTION\)$")
-VTABLE_RE = re.compile(r"(.+?)::`vftable'(?:\{for `.+?'\})?")
-
-
-def insn_text(entry) -> str:
-    if isinstance(entry, (list, tuple)) and len(entry) > 1:
-        return entry[1]
-    return str(entry)
-
-
-def asm_head(s: str) -> str:
-    return s.split("\t")[0].strip()
-
-
-def normalize_asm(s: str) -> str:
-    s = asm_head(s)
-    if "(THUNK)" not in s:
-        return s
-    return THUNK_RE.sub(r"\1 (FUNCTION)", s).replace(" (THUNK)", " (FUNCTION)")
-
-
-def is_unresolved_symbol(orig_text: str, recomp_text: str) -> bool:
-    if "<OFFSET" not in orig_text:
-        return False
-    orig_text = normalize_asm(orig_text)
-    recomp_text = normalize_asm(recomp_text)
-    parts = RELOCATION.split(orig_text)
-    if len(parts) == 1:
-        return False
-    pattern = "^" + ANNOTATED_SYMBOL.join(re.escape(part) for part in parts) + "$"
-    return bool(re.match(pattern, recomp_text))
-
-
-def is_unresolved_branch(orig_text: str, recomp_text: str) -> bool:
-    orig = asm_head(orig_text)
-    recomp = asm_head(recomp_text)
-    if not (orig.startswith(("call ", "jmp ")) or recomp.startswith("call ")):
-        return False
-    if CALL_OFFSET_RE.match(orig):
-        return bool(CALL_TARGET_RE.match(recomp))
-    if JMP_OFFSET_RE.match(orig):
-        return bool(JMP_TARGET_RE.match(recomp))
-    return recomp.startswith("call <OFFSET") and bool(CALL_FUNC_RE.match(orig))
-
-
-def split_vtable_reference(instruction: str) -> tuple[str, str, bool] | None:
-    instruction = normalize_asm(instruction)
-    suffix = " (VTABLE)"
-    if not instruction.endswith(suffix):
-        return None
-
-    body = instruction[: -len(suffix)]
-    head, separator, symbol = body.rpartition(", ")
-    if not separator:
-        head, separator, symbol = body.partition(" ")
-    if not separator or not head or not symbol:
-        return None
-
-    decorated = VTABLE_RE.fullmatch(symbol)
-    if decorated:
-        return head, decorated.group(1), True
-    if "`vftable'" in symbol:
-        return None
-    return head, symbol, False
-
-
-def is_vtable_display_alias(orig_text: str, recomp_text: str) -> bool:
-    if "(VTABLE)" not in orig_text or "(VTABLE)" not in recomp_text:
-        return False
-    orig = split_vtable_reference(orig_text)
-    recomp = split_vtable_reference(recomp_text)
-    if orig is None or recomp is None:
-        return False
-    orig_head, orig_class, orig_decorated = orig
-    recomp_head, recomp_class, recomp_decorated = recomp
-    return (
-        orig_head == recomp_head
-        and orig_class == recomp_class
-        and orig_decorated != recomp_decorated
-    )
-
-
-def is_equivalent_insn(orig_text: str, recomp_text: str) -> bool:
-    if orig_text == recomp_text:
-        return True
-    return (
-        normalize_asm(orig_text) == normalize_asm(recomp_text)
-        or is_vtable_display_alias(orig_text, recomp_text)
-        or is_unresolved_symbol(orig_text, recomp_text)
-        or is_unresolved_symbol(recomp_text, orig_text)
-        or is_unresolved_branch(orig_text, recomp_text)
-    )
-
-
-def byte_register_swaps_consistent(orig_asm: list[str], recomp_asm: list[str]) -> bool:
-    forward: dict[str, str] = {}
-    reverse: dict[str, str] = {}
-    for orig_text, recomp_text in zip(orig_asm, recomp_asm):
-        orig_regs = BYTE_REGISTER_RE.findall(orig_text)
-        recomp_regs = BYTE_REGISTER_RE.findall(recomp_text)
-        if not orig_regs and not recomp_regs:
-            continue
-        if len(orig_regs) != len(recomp_regs):
-            continue
-        if BYTE_REGISTER_RE.sub("REG8", orig_text) != BYTE_REGISTER_RE.sub("REG8", recomp_text):
-            continue
-
-        for orig_reg, recomp_reg in zip(orig_regs, recomp_regs):
-            if forward.get(orig_reg, recomp_reg) != recomp_reg:
-                return False
-            if reverse.get(recomp_reg, orig_reg) != orig_reg:
-                return False
-            forward[orig_reg] = recomp_reg
-            reverse[recomp_reg] = orig_reg
-    return True
-
-
-def group_asm(chunks) -> tuple[list[str], list[str]]:
-    orig_asm: list[str] = []
-    recomp_asm: list[str] = []
-
-    for chunk in chunks:
-        both = chunk.get("both", []) or []
-        if both:
-            for entry in both:
-                instruction = normalize_asm(insn_text(entry))
-                orig_asm.append(instruction)
-                recomp_asm.append(instruction)
-            continue
-
-        orig_raw = [insn_text(entry) for entry in chunk.get("orig", []) or []]
-        recomp_raw = [insn_text(entry) for entry in chunk.get("recomp", []) or []]
-        orig_chunk = [normalize_asm(instruction) for instruction in orig_raw]
-        recomp_chunk = [normalize_asm(instruction) for instruction in recomp_raw]
-
-        if len(orig_chunk) == len(recomp_chunk):
-            for index, (orig_text, recomp_text) in enumerate(zip(orig_raw, recomp_raw)):
-                if is_equivalent_insn(orig_text, recomp_text):
-                    recomp_chunk[index] = orig_chunk[index]
-
-        orig_asm.extend(orig_chunk)
-        recomp_asm.extend(recomp_chunk)
-
-    return orig_asm, recomp_asm
-
-
-def is_codegen_equivalent_diff(diff) -> bool:
-    if not diff:
-        return False
-
-    saw_difference = False
-    for _, chunks in diff:
-        orig_asm, recomp_asm = group_asm(chunks)
-        if not orig_asm and not recomp_asm:
-            continue
-
-        saw_difference = True
-        if not byte_register_swaps_consistent(orig_asm, recomp_asm):
-            return False
-        matcher = SequenceMatcherWithPins(orig_asm, recomp_asm, [])
-        if matcher.ratio() == 1.0:
-            continue
-
-        if not find_effective_match(matcher.get_opcodes(), orig_asm, recomp_asm):
-            return False
-
-    return saw_difference
 
 
 def compute_ratio(match: dict | None) -> tuple[float, str]:
@@ -191,15 +11,15 @@ def compute_ratio(match: dict | None) -> tuple[float, str]:
         return 0.0, "STUB"
     ratio = float(match.get("matching", 0.0)) * 100.0
     if ratio == 100.0:
-        return 100.0, "EXACT"
+        return 100.0, "ASM_EXACT"
     if match.get("effective"):
         return 100.0, "EFFECTIVE"
     return ratio, "PARTIAL"
 
 
 def load_matches(json_path: Path) -> dict[int, dict]:
-    with json_path.open(encoding="utf-8") as f:
-        data = json.load(f)["data"]
+    with json_path.open(encoding="utf-8") as stream:
+        data = json.load(stream)["data"]
     return {
         int(match["address"], 16): match
         for match in data if match.get("type") in (None, 1)

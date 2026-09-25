@@ -11,13 +11,14 @@ from dataclasses import dataclass
 from itertools import zip_longest
 from pathlib import Path
 
+from capstone import CS_ARCH_X86, CS_MODE_32, Cs
+from capstone.x86_const import X86_OP_IMM, X86_OP_MEM
 from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
 from reccmp.parser.codebase import DecompCodebase
 from reccmp.project.detect import RecCmpProject, RecCmpProjectException
 from reccmp.types import EntityType, ImageId
 
-from .compare import is_codegen_equivalent_diff, is_equivalent_insn
 from .paths import BUILD, RECOMP_EXE
 
 
@@ -300,17 +301,7 @@ def generated_function_codegen_matches(
         comparison = engine.function_comparator.compare_function(ReccmpMatch(orig, recomp, attributes))
     except (AssertionError, IndexError, ValueError):
         return False
-    orig_inst = comparison.diff.orig_inst
-    recomp_inst = comparison.diff.recomp_inst
-    return (
-        comparison.match_ratio == 1.0
-        or comparison.is_effective_match
-        or (
-            bool(orig_inst)
-            and len(orig_inst) == len(recomp_inst)
-            and is_codegen_equivalent_diff([["", [{"orig": orig_inst, "recomp": recomp_inst}]]])
-        )
-    )
+    return comparison.match_ratio == 1.0 or comparison.is_effective_match
 
 
 def decode_this_adjuster(image, address: int | None) -> tuple[int, int] | None:
@@ -437,16 +428,46 @@ def format_addr(address: int | None) -> str:
     return "none" if address is None else f"0x{address:08x}"
 
 
-def comparison_is_thunk_equivalent(result) -> bool:
-    diff = getattr(result, "rdiff", None)
-    if diff is None:
-        return False
-    orig = [instruction for _, instruction in diff.orig_inst]
-    recomp = [instruction for _, instruction in diff.recomp_inst]
-    return bool(orig) and len(orig) == len(recomp) and all(
-        is_equivalent_insn(orig_text, recomp_text)
-        for orig_text, recomp_text in zip(orig, recomp)
-    )
+def unannotated_vtable_stores(engine: Compare, mapped: set[int]) -> dict[int, tuple[int, str]]:
+    """Find object vptr stores that point at an unmapped table of code pointers."""
+    image = engine.orig_bin
+    relocations = frozenset(image.relocations)
+    code_regions = tuple(image.get_code_regions())
+    decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+    decoder.detail = True
+    candidates = {}
+    for match in engine.compare_all():
+        if match.type != EntityType.FUNCTION or match.rdiff is None:
+            continue
+        for address_text, assembly in match.rdiff.orig_inst:
+            if not address_text or not assembly.startswith("mov "):
+                continue
+            address = int(address_text, 16)
+            try:
+                instruction = next(decoder.disasm(image.read(address, 15), address))
+            except (IndexError, StopIteration, ValueError):
+                continue
+            operands = instruction.operands
+            if (instruction.mnemonic != "mov" or len(operands) != 2
+                    or operands[0].type != X86_OP_MEM or operands[1].type != X86_OP_IMM
+                    or instruction.imm_size != 4
+                    or address + instruction.imm_offset not in relocations):
+                continue
+            table = operands[1].imm & 0xffffffff
+            if table in mapped or not image.is_valid_vaddr(table):
+                continue
+            entity = engine._db.get(ImageId.ORIG, table)
+            if entity is not None and entity.get("type") != EntityType.VTABLE:
+                continue
+            try:
+                first_slot = int.from_bytes(image.read(table, 4), "little")
+            except (IndexError, ValueError):
+                continue
+            if not any(region.addr <= first_slot < region.addr + len(region.data)
+                       for region in code_regions):
+                continue
+            candidates.setdefault(table, (address, match.name))
+    return candidates
 
 
 def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
@@ -474,6 +495,7 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
     )
     table_matches.extend(nested_vtable_matches)
     unmapped_vtables = [table for table in source_vtables if table.offset not in mapped_vtable_addresses]
+    unannotated_stores = unannotated_vtable_stores(engine, mapped_vtable_addresses)
     folded_aliases = collect_folded_aliases(engine, codebase)
 
     for match in table_matches:
@@ -530,11 +552,7 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
         result = engine.compare_address(function.orig_addr)
         ratio = getattr(result, "accuracy", 0.0)
         effective = getattr(result, "is_effective_match", False)
-        if result is None or (
-            not effective
-            and ratio < 1.0
-            and not comparison_is_thunk_equivalent(result)
-        ):
+        if result is None or (not effective and ratio < 1.0):
             adjuster_problems += 1
             if verbose:
                 print(
@@ -545,14 +563,21 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
     percent = 100.0 * matched_slots / slot_count if slot_count else 0.0
     annotated = len(source_vtables) - len(unmapped_vtables)
     print(
-        f"vtables={matched_tables}/{table_count} slots={matched_slots}/{slot_count} ({percent:.2f}%) "
-        f"annot={annotated}/{len(source_vtables)} nested={len(nested_vtable_matches)} "
+        f"annotated_vtables={matched_tables}/{table_count} "
+        f"annotated_slots={matched_slots}/{slot_count} ({percent:.2f}%) "
+        f"source_annotations={annotated}/{len(source_vtables)} "
+        f"nested={len(nested_vtable_matches)} "
         f"equiv folded={equiv['folded']} clone={equiv['clone']} "
         f"adjuster={equiv['adjuster']} dtor={equiv['dtor']} "
         f"remain layout={remain['layout-mismatch']} unannot={remain['unannotated-original']} "
         f"unknown={remain['unknown-recompiled']} mismatch={remain['known-mismatch']} "
-        f"adjusters={adjuster_count - adjuster_problems}/{adjuster_count}"
+        f"adjusters={adjuster_count - adjuster_problems}/{adjuster_count} "
+        f"unannotated_stores={len(unannotated_stores)}"
     )
+    if top > 0 and unannotated_stores:
+        print("Unannotated vtable store candidates:")
+        for table, (address, name) in list(sorted(unannotated_stores.items()))[:top]:
+            print(f"  {format_addr(table)} stored at {format_addr(address)} in {name}")
     if top > 0 and unmapped_vtables:
         print("Unmapped source vtable annotations:")
         for table in unmapped_vtables[:top]:
@@ -571,7 +596,7 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
             )
     tables_match = 0 < table_count == matched_tables
     comparisons_pass = tables_match and adjuster_problems == 0
-    coverage_pass = not annot_strict or not unmapped_vtables
+    coverage_pass = not unannotated_stores and (not annot_strict or not unmapped_vtables)
     return 0 if comparisons_pass and coverage_pass else 1
 
 
