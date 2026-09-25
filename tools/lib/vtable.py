@@ -16,10 +16,11 @@ from capstone.x86_const import X86_OP_IMM, X86_OP_MEM
 from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
 from reccmp.parser.codebase import DecompCodebase
-from reccmp.project.detect import RecCmpProject, RecCmpProjectException
+from reccmp.project.detect import RecCmpProjectException
 from reccmp.types import EntityType, ImageId
 
-from .paths import BUILD, RECOMP_EXE
+from .paths import RECOMP_EXE
+from .reccmp_compat import load_engine
 
 
 def resolve_jump(image, address: int | None, stop_at=None, max_depth: int = 16) -> int | None:
@@ -472,8 +473,7 @@ def unannotated_vtable_stores(engine: Compare, mapped: set[int]) -> dict[int, tu
 
 def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
     try:
-        project = RecCmpProject.from_directory(BUILD)
-        engine = Compare.from_target(project.get("LEMBALL"))
+        _, engine = load_engine()
     except RecCmpProjectException as error:
         sys.stderr.write(f"vtable: {error}\n")
         return 1
@@ -550,7 +550,7 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
             continue
         adjuster_count += 1
         result = engine.compare_address(function.orig_addr)
-        ratio = getattr(result, "accuracy", 0.0)
+        ratio = getattr(result, "match_ratio", 0.0)
         effective = getattr(result, "is_effective_match", False)
         if result is None or (not effective and ratio < 1.0):
             adjuster_problems += 1
