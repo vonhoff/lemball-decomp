@@ -13,7 +13,7 @@ import struct
 from importlib.metadata import version
 
 from capstone import CS_ARCH_X86, CS_MODE_32, Cs
-from reccmp.compare import Compare, functions
+from reccmp.compare import Compare
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.formats.exceptions import (
@@ -427,8 +427,6 @@ def install_parser_fix() -> None:
     fixes.is_operand_swap = is_operand_swap
     fixes.patch_compare_jmp = patch_compare_jmp
     fixes.patch_mov_compare_jmp = patch_mov_compare_jmp
-    fixes.assert_fixup = normalize_assert_arguments
-    functions.assert_fixup = normalize_assert_arguments
 
 
 def load_engine() -> tuple[object, Compare]:
