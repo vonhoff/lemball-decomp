@@ -23,6 +23,20 @@ from .paths import RECOMP_EXE
 from .reccmp_compat import load_engine
 
 
+# Original-only, unreferenced constructor fragments. The entries at 0x45a680,
+# 0x4695d0 and 0x4697c0 have no incoming rel32 call/jump or relocated pointer
+# in LEMBALL.EXE. The two button pairs copy CTextButton's virtual slots, apart
+# from their deleting-destructor copies. Keep their stores visible in the gate;
+# they have no identifiable source owner to annotate.
+ORPHAN_VTABLE_STORES = {
+    0x00498950: 0x0045a69f,
+    0x00499b08: 0x004695f4,
+    0x00499b28: 0x004695ee,
+    0x00499bf8: 0x004697e4,
+    0x00499c18: 0x004697de,
+}
+
+
 def resolve_jump(image, address: int | None, stop_at=None, max_depth: int = 16) -> int | None:
     """Follow E9 rel32 jumps until a non-jump or stop_at predicate."""
     if address is None:
@@ -472,6 +486,15 @@ def unannotated_vtable_stores(engine: Compare, mapped: set[int]) -> dict[int, tu
     return candidates
 
 
+def separate_orphan_stores(stores: dict[int, tuple[int, str]]):
+    orphans = {
+        table: evidence for table, evidence in stores.items()
+        if ORPHAN_VTABLE_STORES.get(table) == evidence[0]
+    }
+    unresolved = {table: evidence for table, evidence in stores.items() if table not in orphans}
+    return unresolved, orphans
+
+
 def transient_purecall_store(image, database, decoder, instruction, first_slot,
                              mapped: set[int], relocations: frozenset[int]) -> bool:
     """Exclude a pure-virtual construction vptr only when immediately replaced.
@@ -545,7 +568,9 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
     )
     table_matches.extend(nested_vtable_matches)
     unmapped_vtables = [table for table in source_vtables if table.offset not in mapped_vtable_addresses]
-    unannotated_stores = unannotated_vtable_stores(engine, mapped_vtable_addresses)
+    unannotated_stores, orphan_stores = separate_orphan_stores(
+        unannotated_vtable_stores(engine, mapped_vtable_addresses)
+    )
     folded_aliases = collect_folded_aliases(engine, codebase)
 
     for match in table_matches:
@@ -622,11 +647,16 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
         f"remain layout={remain['layout-mismatch']} unannot={remain['unannotated-original']} "
         f"unknown={remain['unknown-recompiled']} mismatch={remain['known-mismatch']} "
         f"adjusters={adjuster_count - adjuster_problems}/{adjuster_count} "
-        f"unannotated_stores={len(unannotated_stores)}"
+        f"unannotated_stores={len(unannotated_stores)} "
+        f"orphan_stores={len(orphan_stores)}"
     )
     if top > 0 and unannotated_stores:
         print("Unannotated vtable store candidates:")
         for table, (address, name) in list(sorted(unannotated_stores.items()))[:top]:
+            print(f"  {format_addr(table)} stored at {format_addr(address)} in {name}")
+    if top > 0 and orphan_stores:
+        print("Audited orphan vtable stores (no identifiable source owner):")
+        for table, (address, name) in list(sorted(orphan_stores.items()))[:top]:
             print(f"  {format_addr(table)} stored at {format_addr(address)} in {name}")
     if top > 0 and unmapped_vtables:
         print("Unmapped source vtable annotations:")

@@ -4,7 +4,7 @@ import struct
 import unittest
 from types import SimpleNamespace
 
-from lib.vtable import decode_this_adjuster, unannotated_vtable_stores
+from lib.vtable import decode_this_adjuster, separate_orphan_stores, unannotated_vtable_stores
 
 
 class FakeImage:
@@ -53,6 +53,16 @@ class ThisAdjusterTests(unittest.TestCase):
 
 
 class VtableStoreCoverageTests(unittest.TestCase):
+    def test_orphan_audit_keeps_new_or_moved_stores_unresolved(self):
+        stores = {
+            0x00498950: (0x0045a69f, "original executable code"),
+            0x00499b08: (0x004695f5, "original executable code"),
+            0x0049abcd: (0x00401000, "original executable code"),
+        }
+        unresolved, orphans = separate_orphan_stores(stores)
+        self.assertEqual(set(orphans), {0x00498950})
+        self.assertEqual(set(unresolved), {0x00499b08, 0x0049abcd})
+
     def test_scans_relocations_without_compared_functions(self):
         data = bytearray(0x300)
         for instruction, table in ((0x1000, 0x1100), (0x1010, 0x1110)):
