@@ -9,7 +9,6 @@ import sys
 from collections import Counter
 from dataclasses import dataclass
 from itertools import zip_longest
-from pathlib import Path
 
 from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from capstone.x86_const import X86_OP_IMM, X86_OP_MEM, X86_OP_REG
@@ -64,7 +63,6 @@ def resolve_jump(image, address: int | None, stop_at=None, max_depth: int = 16) 
         current = destination
     return current
 
-DELETING_DESTRUCTOR_RE = re.compile(r"^(?P<class>.+)::`(?P<kind>scalar|vector) deleting destructor'")
 NESTED_VTABLE_BASE_RE = re.compile(
     r"^(?P<base>[A-Za-z_][A-Za-z0-9_]*)'s `(?P<via>[A-Za-z_][A-Za-z0-9_]*)$"
 )
@@ -83,13 +81,12 @@ class SlotResult:
     folded_match: bool = False
     clone_match: bool = False
     adjuster_match: bool = False
-    deleting_dtor_match: bool = False
 
     @property
     def matches(self) -> bool:
         if self.raw_orig == 0 and self.raw_recomp == 0:
             return True
-        if self.folded_match or self.clone_match or self.adjuster_match or self.deleting_dtor_match:
+        if self.folded_match or self.clone_match or self.adjuster_match:
             return True
         if self.orig_entity is None or self.recomp_entity is None:
             return False
@@ -231,12 +228,7 @@ def compare_table(engine: Compare, match, folded_aliases: dict[int, set[int]]) -
         )
         folded_match = not direct_match and recomp is not None and recomp in folded_aliases.get(orig, set())
         clone_match = orig_entity is None and is_original_clone(engine.orig_bin, orig, recomp_entity)
-        adjuster_match = not direct_match and is_same_generated_adjuster(
-            engine, orig, recomp, orig_entity, recomp_entity
-        )
-        deleting_dtor_match = not direct_match and is_same_deleting_destructor_alias(
-            engine, orig, recomp, orig_entity, recomp_entity
-        )
+        adjuster_match = not direct_match and is_same_generated_adjuster(engine, orig, recomp)
         slots.append(
             SlotResult(
                 offset=index * 4,
@@ -249,7 +241,6 @@ def compare_table(engine: Compare, match, folded_aliases: dict[int, set[int]]) -
                 folded_match=folded_match,
                 clone_match=clone_match,
                 adjuster_match=adjuster_match,
-                deleting_dtor_match=deleting_dtor_match,
             )
         )
     return slots
@@ -274,49 +265,6 @@ def is_generated_adjuster(entity: object | None) -> bool:
 
     _, separator, encoding = symbol.partition("@@")
     return bool(separator) and encoding.startswith(("W", "$4"))
-
-
-def deleting_destructor_identity(entity: object | None) -> tuple[str, str] | None:
-    match = DELETING_DESTRUCTOR_RE.match(entity_name(entity))
-    if match is None:
-        return None
-    return match.group("class"), match.group("kind")
-
-
-def generated_function_codegen_matches(
-    engine: Compare,
-    orig: int | None,
-    recomp: int | None,
-    orig_entity: object | None,
-    recomp_entity: object | None,
-    name: str,
-) -> bool:
-    if orig is None or recomp is None or orig_entity is None or recomp_entity is None:
-        return False
-
-    recomp_size = recomp_entity.size(ImageId.RECOMP)
-    orig_size = orig_entity.size(ImageId.ORIG)
-    orig_max_size = orig_entity.max_size(ImageId.ORIG)
-    if recomp_size is None or recomp_size <= 0 or recomp_size > 4096:
-        return False
-    if orig_size is None and orig_max_size is None:
-        return False
-
-    attributes = {
-        "type": EntityType.FUNCTION,
-        "name": name,
-        "recomp_size": recomp_size,
-    }
-    if orig_size is not None:
-        attributes["orig_size"] = orig_size
-    if orig_max_size is not None:
-        attributes["orig_max_size"] = orig_max_size
-
-    try:
-        comparison = engine.function_comparator.compare_function(ReccmpMatch(orig, recomp, attributes))
-    except (AssertionError, IndexError, ValueError):
-        return False
-    return comparison.match_ratio == 1.0 or comparison.is_effective_match
 
 
 def decode_this_adjuster(image, address: int | None) -> tuple[int, int] | None:
@@ -361,21 +309,7 @@ def is_same_generated_adjuster(
     engine: Compare,
     orig: int | None,
     recomp: int | None,
-    orig_entity: object | None,
-    recomp_entity: object | None,
 ) -> bool:
-    orig_name = entity_name(orig_entity)
-    recomp_name = entity_name(recomp_entity)
-    if "`vtordisp" in orig_name and orig_name == recomp_name and generated_function_codegen_matches(
-        engine,
-        orig,
-        recomp,
-        orig_entity,
-        recomp_entity,
-        f"{orig_name} duplicate adjuster",
-    ):
-        return True
-
     orig_thunk = decode_this_adjuster(engine.orig_bin, orig)
     recomp_thunk = decode_this_adjuster(engine.recomp_bin, recomp)
     if orig_thunk is not None and recomp_thunk is not None:
@@ -408,35 +342,6 @@ def is_same_generated_adjuster(
                     return True
 
     return False
-
-
-def is_same_deleting_destructor_alias(
-    engine: Compare,
-    orig: int | None,
-    recomp: int | None,
-    orig_entity: object | None,
-    recomp_entity: object | None,
-) -> bool:
-    orig_identity = deleting_destructor_identity(orig_entity)
-    recomp_identity = deleting_destructor_identity(recomp_entity)
-    if (
-        orig is None
-        or recomp is None
-        or orig_identity is None
-        or recomp_identity is None
-        or orig_identity[0] != recomp_identity[0]
-        or orig_identity[1] == recomp_identity[1]
-    ):
-        return False
-
-    return generated_function_codegen_matches(
-        engine,
-        orig,
-        recomp,
-        orig_entity,
-        recomp_entity,
-        f"{orig_identity[0]} deleting-destructor alias",
-    )
 
 
 def format_addr(address: int | None) -> str:
@@ -582,7 +487,6 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
         equiv["folded"] += sum(slot.folded_match for slot in slots)
         equiv["clone"] += sum(slot.clone_match for slot in slots)
         equiv["adjuster"] += sum(slot.adjuster_match for slot in slots)
-        equiv["dtor"] += sum(slot.deleting_dtor_match for slot in slots)
         if matches == len(slots):
             matched_tables += 1
             continue
@@ -643,7 +547,7 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
         f"source_annotations={annotated}/{len(source_vtables)} "
         f"nested={len(nested_vtable_matches)} "
         f"equiv folded={equiv['folded']} clone={equiv['clone']} "
-        f"adjuster={equiv['adjuster']} dtor={equiv['dtor']} "
+        f"adjuster={equiv['adjuster']} "
         f"remain layout={remain['layout-mismatch']} unannot={remain['unannotated-original']} "
         f"unknown={remain['unknown-recompiled']} mismatch={remain['known-mismatch']} "
         f"adjusters={adjuster_count - adjuster_problems}/{adjuster_count} "
