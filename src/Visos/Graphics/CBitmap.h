@@ -8,7 +8,13 @@
 class CBitmap : public CPrimitive {
 public:
 	// FUNCTION: LEMBALL 0x00439580
-	CBitmap() : m_y(0), m_x(0), m_height(0), m_width(0), m_sourceY(0), m_sourceX(0) {}
+	CBitmap() : m_x(m_y = 0)
+	{
+		m_height = 0;
+		m_width = 0;
+		m_sourceY = 0;
+		m_sourceX = 0;
+	}
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
 	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	// FUNCTION: LEMBALL 0x00439750

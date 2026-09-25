@@ -46,4 +46,7 @@ private:
 // SYNTHETIC: LEMBALL 0x00462ba0
 // CReadSocket::`vector deleting destructor'
 
+// GLOBAL: LEMBALL 0x00498f58
+// CReadSocket::`vbtable'
+
 #endif

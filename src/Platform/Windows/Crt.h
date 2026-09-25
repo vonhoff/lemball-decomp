@@ -484,6 +484,9 @@
 // GLOBAL: LEMBALL 0x004a46a0 SYMBOL
 // __XcptActTabSize
 
+// GLOBAL: LEMBALL 0x004a47b4 SYMBOL
+// ___mbcodepage
+
 // GLOBAL: LEMBALL 0x004a4be0 SYMBOL
 // __adbgmsg
 
