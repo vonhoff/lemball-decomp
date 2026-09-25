@@ -11,6 +11,7 @@ from lib.reccmp_compat import (
     BoundedInstructGen,
     RelocationAwareParseAsm,
     complete_original_extent,
+    direct_jump_target,
     find_effective_match,
     incremental_thunks,
     is_operand_swap,
@@ -471,6 +472,28 @@ class IncrementalThunkTests(unittest.TestCase):
         parser = self.parser({0x1020: "Target (FUNCTION)"})
         self.assertEqual(parser.sanitize((0x2000, 5, "jmp", "0x1000")),
                          parser.sanitize((0x2000, 5, "jmp", "0x1020")))
+
+    def test_direct_jump_uses_matched_destination_identity(self):
+        jump = b"\xe9" + struct.pack("<i", 0x1020 - 0x1005)
+        image = SimpleNamespace(read=lambda address, size: jump if address == 0x1000 else b"\x90" * size)
+        parser = RelocationAwareParseAsm(
+            image=image, name_lookup=lambda address, **kwargs: {0x1020: "Target (FUNCTION)"}.get(address)
+        )
+        self.assertEqual(direct_jump_target(image, 0x1000), 0x1020)
+        self.assertEqual(parser.sanitize((0x2000, 5, "call", "0x1000")),
+                         parser.sanitize((0x2000, 5, "call", "0x1020")))
+        self.assertEqual(parser.sanitize((0x2000, 5, "jmp", "0x1000")),
+                         parser.sanitize((0x2000, 5, "jmp", "0x1020")))
+
+    def test_direct_jump_requires_exact_known_target(self):
+        for raw, names in ((b"\x90" * 5, {0x1020: "Target (FUNCTION)"}),
+                           (b"\xe9" + struct.pack("<i", 0x1020 - 0x1005), {})):
+            image = SimpleNamespace(read=lambda address, size: raw)
+            parser = RelocationAwareParseAsm(
+                image=image, name_lookup=lambda address, **kwargs: names.get(address)
+            )
+            self.assertEqual(parser.sanitize((0x2000, 5, "call", "0x1000")),
+                             ("call", "<OFFSET1>"))
 
     def test_existing_identity_is_preserved(self):
         parser = self.parser({0x1000: "Existing (FUNCTION)", 0x1020: "Target (FUNCTION)"})

@@ -324,12 +324,24 @@ def incremental_thunks(image):
     return result
 
 
+def direct_jump_target(image, address):
+    """Return the target of an exact five-byte E9 forwarding body."""
+    try:
+        raw = image.read(address, 5)
+    except (ValueError, IndexError, InvalidVirtualAddressError, InvalidVirtualReadError):
+        return None
+    if len(raw) != 5 or raw[0] != 0xe9:
+        return None
+    return address + 5 + struct.unpack_from("<i", raw, 1)[0]
+
+
 class RelocationAwareParseAsm(parse.ParseAsm):
     """Recognize pointer operands and arithmetic at verified PE relocation sites."""
 
-    def __init__(self, *, relocation_sites=(), thunk_targets=None,
+    def __init__(self, *, image=None, relocation_sites=(), thunk_targets=None,
                  indirect_thunk_targets=None, **kwargs):
         super().__init__(**kwargs)
+        self.image = image
         self.relocation_sites = frozenset(relocation_sites)
         self.thunk_targets = thunk_targets or {}
         self.indirect_thunk_targets = indirect_thunk_targets or {}
@@ -382,7 +394,9 @@ class RelocationAwareParseAsm(parse.ParseAsm):
         if self.is_32bit and mnemonic in ("call", "jmp") and re.fullmatch(r"0x[0-9a-f]+", operands):
             target_address = int(operands, 16)
             target = self.thunk_targets.get(target_address)
-            if (target is not None and self.lookup(int(operands, 16), exact=True) is None
+            if target is None and self.image is not None:
+                target = direct_jump_target(self.image, target_address)
+            if (target is not None and self.lookup(target_address, exact=True) is None
                     and self.lookup(target, exact=True) is not None):
                 return mnemonic, self.replace(target, exact=True)
         if self.is_32bit and mnemonic == "mov":
@@ -459,6 +473,7 @@ def configure_pointer_comparisons(engine) -> None:
             comparator,
             side + "_sanitize",
             RelocationAwareParseAsm(
+                image=image,
                 relocation_sites=image.relocations,
                 thunk_targets=thunks,
                 indirect_thunk_targets=indirect_thunks,
