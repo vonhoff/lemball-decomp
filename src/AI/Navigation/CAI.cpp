@@ -409,9 +409,10 @@ void CAI::SendGameState(eGameStates p_state, eGameStateStages p_stage)
 			}
 		}
 		if (m_gameStateMessage->m_pendingSendCount == 0) {
+			CGameStateMessage& message = *m_gameStateMessage;
 			m_gameStatePending = 1;
-			m_gameStateMessage->m_state = p_state;
-			m_gameStateMessage->m_stage = p_stage;
+			message.m_state = p_state;
+			message.m_stage = p_stage;
 			m_gameStateMessage->m_levelTime = m_gameTime;
 			m_gameStateMessage->m_score = m_score;
 			m_gameStateMessage->Send(g_pActiveConnection);
