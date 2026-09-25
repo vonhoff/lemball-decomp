@@ -240,7 +240,8 @@ void INIT_QuitSubSystems()
 	_INP_Quit();
 	if (g_pMasterArena->GetAllocSize() != (unsigned long) g_nInitAllocBaseline) {
 		*g_pErrorOutput << g_szMemoryLeakDump;
-		g_pMasterArena->StreamOut(*g_pErrorOutput) << g_szMemoryLeakNewline;
+		CArena* arena = g_pMasterArena;
+		arena->StreamOut(*g_pErrorOutput) << g_szMemoryLeakNewline;
 	}
 	QuitPlatformServices();
 	_DBG_Quit(g_nStartupNoWait);
