@@ -17,11 +17,11 @@ from build import run_build
 
 
 def match_status(match) -> str:
-    """Distinguish identical assembly from reccmp's effective match."""
+    """Distinguish normalized assembly equality from reccmp's effective match."""
     if match.is_stub:
         return "STUB"
     if match.accuracy == 1.0:
-        return "EXACT"
+        return "ASM_EXACT"
     if match.effective_accuracy == 1.0:
         return "EFFECTIVE"
     return "PARTIAL"
@@ -67,6 +67,8 @@ def main() -> int:
             suffix = f" {status}" if status else ""
             print(f"0x{addr:08x} {match.name}: {pct:.2f}%{suffix}")
         else:
+            print(f"0x{addr:08x} {match.name}: {pct:.2f}% {match_status(match)} "
+                  "(reccmp normalized assembly)")
             print_match_verbose(match)
 
     return 0

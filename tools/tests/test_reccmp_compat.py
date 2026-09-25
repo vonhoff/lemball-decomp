@@ -11,7 +11,6 @@ from lib.reccmp_compat import (
     BoundedInstructGen,
     RelocationAwareParseAsm,
     complete_original_extent,
-    identical_folded_aliases,
     incremental_thunks,
     is_operand_swap,
     naive_register_replacement,
@@ -407,40 +406,6 @@ class AssertNormalizationTests(unittest.TestCase):
                          ["push __LINE__", "push __FILE__", "push <OFFSET2>", "call _assert (IMPORT)"])
 
 
-class FoldedCallTests(unittest.TestCase):
-    def test_alias_requires_equal_size_and_identical_bytes(self):
-        bodies = {0x2000: b"\xb8\x01\x00\x00\x00\xc3",
-                  0x3000: b"\xb8\x01\x00\x00\x00\xc3",
-                  0x4000: b"\xb8\x02\x00\x00\x00\xc3",
-                  0x5000: b"\xc3"}
-        match = SimpleNamespace(recomp_addr=0x2000, size=lambda side: 6)
-        engine = SimpleNamespace(
-            code_files=[], target_id="LEMBALL", project_aliases={},
-            _db=SimpleNamespace(
-                get_one_match=lambda original: match,
-                get=lambda _side, address: SimpleNamespace(size=lambda _side: len(bodies[address])),
-            ),
-            recomp_bin=SimpleNamespace(read=lambda address, size: bodies[address][:size]),
-        )
-        with patch("reccmp.parser.codebase.DecompCodebase"), patch(
-            "lib.vtable.collect_folded_aliases", return_value={0x1000: {0x3000, 0x4000, 0x5000}}
-        ):
-            self.assertEqual(identical_folded_aliases(engine), {0x3000: 0x2000})
-
-    def test_only_direct_calls_use_alias_identity(self):
-        names = {0x2000: "Primary (FUNCTION)", 0x3000: "Folded (FUNCTION)"}
-        parser = RelocationAwareParseAsm(
-            function_aliases={0x3000: 0x2000},
-            addr_test=lambda address: address in names,
-            name_lookup=lambda address, **kwargs: names.get(address),
-        )
-        self.assertEqual(parser.sanitize((0x4000, 5, "call", "0x3000")),
-                         ("call", "Primary (FUNCTION)"))
-        self.assertEqual(parser.sanitize((0x4000, 5, "push", "0x3000")),
-                         ("push", "Folded (FUNCTION)"))
-        self.assertEqual(parser.sanitize((0x4000, 2, "call", "eax")), ("call", "eax"))
-
-
 class IncrementalThunkTests(unittest.TestCase):
     def image(self, data):
         return SimpleNamespace(get_code_regions=lambda: [SimpleNamespace(addr=0x1000, data=data)])
@@ -466,10 +431,17 @@ class IncrementalThunkTests(unittest.TestCase):
         self.assertEqual(parser.sanitize((0x2000, 5, "call", "0x1000")),
                          parser.sanitize((0x2000, 5, "call", "0x1020")))
 
+    def test_jump_uses_matched_destination_identity(self):
+        parser = self.parser({0x1020: "Target (FUNCTION)"})
+        self.assertEqual(parser.sanitize((0x2000, 5, "jmp", "0x1000")),
+                         parser.sanitize((0x2000, 5, "jmp", "0x1020")))
+
     def test_existing_identity_is_preserved(self):
         parser = self.parser({0x1000: "Existing (FUNCTION)", 0x1020: "Target (FUNCTION)"})
         self.assertEqual(parser.sanitize((0x2000, 5, "call", "0x1000")),
                          ("call", "Existing (FUNCTION)"))
+        self.assertEqual(parser.sanitize((0x2000, 5, "jmp", "0x1000")),
+                         ("jmp", "Existing (FUNCTION)"))
 
     def test_indirect_thunk_requires_known_target_and_preserves_existing_identity(self):
         for names, expected in (({0x1020: "Target (FUNCTION)"}, "->Target (FUNCTION)"),
