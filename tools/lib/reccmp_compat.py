@@ -22,7 +22,7 @@ from reccmp.formats.exceptions import (
     InvalidVirtualReadError,
 )
 from reccmp.project.detect import RecCmpProject
-from reccmp.types import ImageId
+from reccmp.types import EntityType, ImageId
 
 from .paths import BUILD
 
@@ -522,11 +522,32 @@ def install_parser_fix() -> None:
     function_compare.find_effective_match = find_effective_match
 
 
+def match_nested_vtables(db):
+    """Preserve the inheritance path lost by MSVC's vtable display names."""
+    candidates = {}
+    for entity in db.unmatched(ImageId.RECOMP):
+        if entity.get("type") == EntityType.VTABLE:
+            candidates.setdefault(entity.get("symbol"), []).append(entity.recomp_addr)
+    with db.batch() as batch:
+        for entity in db.unmatched(ImageId.ORIG):
+            if entity.get("type") != EntityType.VTABLE:
+                continue
+            name, base = entity.get("name", ""), entity.get("base_class", "")
+            path = re.fullmatch(r"([A-Za-z_]\w*)'s `([A-Za-z_]\w*)", base or "")
+            if path is None or re.fullmatch(r"[A-Za-z_]\w*", name) is None:
+                continue
+            symbol = f"??_7{name}@@6B{path[1]}@@{path[2]}@@@"
+            addresses = candidates.get(symbol, [])
+            if len(addresses) == 1:
+                batch.match(entity.orig_addr, addresses.pop())
+
+
 def load_engine() -> tuple[object, Compare]:
     install_parser_fix()
     project = RecCmpProject.from_directory(BUILD)
     target = project.get("LEMBALL")
     logging.getLogger("reccmp").setLevel(logging.WARNING)
     engine = Compare.from_target(target)
+    match_nested_vtables(engine._db)
     configure_pointer_comparisons(engine)
     return target, engine

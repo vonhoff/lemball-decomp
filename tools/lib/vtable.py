@@ -13,7 +13,6 @@ from itertools import zip_longest
 from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from capstone.x86_const import X86_OP_IMM, X86_OP_MEM, X86_OP_REG
 from reccmp.compare import Compare
-from reccmp.compare.db import ReccmpMatch
 from reccmp.parser.codebase import DecompCodebase
 from reccmp.project.detect import RecCmpProjectException
 from reccmp.types import EntityType, ImageId
@@ -62,12 +61,6 @@ def resolve_jump(image, address: int | None, stop_at=None, max_depth: int = 16) 
             break
         current = destination
     return current
-
-NESTED_VTABLE_BASE_RE = re.compile(
-    r"^(?P<base>[A-Za-z_][A-Za-z0-9_]*)'s `(?P<via>[A-Za-z_][A-Za-z0-9_]*)$"
-)
-SIMPLE_CLASS_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
-
 
 @dataclass(frozen=True)
 class SlotResult:
@@ -154,57 +147,6 @@ def collect_folded_aliases(engine: Compare, codebase: DecompCodebase) -> dict[in
         if recomp_addr is not None:
             aliases.setdefault(function.offset, set()).add(resolve_jump(engine.recomp_bin, recomp_addr))
     return aliases
-
-
-def nested_vtable_symbol(class_name: str, base_class: str | None) -> str | None:
-    if base_class is None or SIMPLE_CLASS_RE.fullmatch(class_name) is None:
-        return None
-    match = NESTED_VTABLE_BASE_RE.fullmatch(base_class)
-    if match is None:
-        return None
-    return f"??_7{class_name}@@6B{match.group('base')}@@{match.group('via')}@@@"
-
-
-def collect_nested_vtable_matches(engine: Compare, source_vtables, mapped: set[int]) -> list[ReccmpMatch]:
-    candidates: dict[str, list[object]] = {}
-    for entity in engine._db.unmatched(ImageId.RECOMP):
-        if entity.get("type") != EntityType.VTABLE:
-            continue
-        symbol = entity.get("symbol")
-        if symbol is not None:
-            candidates.setdefault(symbol, []).append(entity)
-
-    matches: list[ReccmpMatch] = []
-    for table in source_vtables:
-        if table.offset in mapped:
-            continue
-        symbol = nested_vtable_symbol(table.name, table.base_class)
-        entities = [] if symbol is None else candidates.get(symbol, [])
-        if len(entities) != 1:
-            continue
-
-        recomp_entity = entities.pop()
-        recomp_size = recomp_entity.size(ImageId.RECOMP)
-        if recomp_entity.recomp_addr is None or recomp_size is None or recomp_size <= 0:
-            continue
-
-        attributes = {
-            "type": EntityType.VTABLE,
-            "name": table.name,
-            "base_class": table.base_class,
-            "recomp_size": recomp_size,
-        }
-        orig_entity = engine._db.get(ImageId.ORIG, table.offset)
-        if orig_entity is not None:
-            orig_size = orig_entity.size(ImageId.ORIG)
-            orig_max_size = orig_entity.max_size(ImageId.ORIG)
-            if orig_size is not None:
-                attributes["orig_size"] = orig_size
-            if orig_max_size is not None:
-                attributes["orig_max_size"] = orig_max_size
-        matches.append(ReccmpMatch(table.offset, recomp_entity.recomp_addr, attributes))
-        mapped.add(table.offset)
-    return matches
 
 
 def compare_table(engine: Compare, match, folded_aliases: dict[int, set[int]]) -> list[SlotResult]:
@@ -468,10 +410,6 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
     source_vtables = list(codebase.iter_vtables())
     table_matches = list(engine.get_vtables())
     mapped_vtable_addresses = {match.orig_addr for match in table_matches}
-    nested_vtable_matches = collect_nested_vtable_matches(
-        engine, source_vtables, mapped_vtable_addresses
-    )
-    table_matches.extend(nested_vtable_matches)
     unmapped_vtables = [table for table in source_vtables if table.offset not in mapped_vtable_addresses]
     unannotated_stores, orphan_stores = separate_orphan_stores(
         unannotated_vtable_stores(engine, mapped_vtable_addresses)
@@ -545,7 +483,6 @@ def run_comparison(verbose: bool, top: int, annot_strict: bool) -> int:
         f"annotated_vtables={matched_tables}/{table_count} "
         f"annotated_slots={matched_slots}/{slot_count} ({percent:.2f}%) "
         f"source_annotations={annotated}/{len(source_vtables)} "
-        f"nested={len(nested_vtable_matches)} "
         f"equiv folded={equiv['folded']} clone={equiv['clone']} "
         f"adjuster={equiv['adjuster']} "
         f"remain layout={remain['layout-mismatch']} unannot={remain['unannotated-original']} "

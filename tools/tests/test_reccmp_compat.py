@@ -14,6 +14,7 @@ from lib.reccmp_compat import (
     direct_jump_target,
     find_effective_match,
     incremental_thunks,
+    match_nested_vtables,
     is_operand_swap,
     naive_register_replacement,
     normalize_assert_arguments,
@@ -24,6 +25,32 @@ from lib.reccmp_compat import (
 from reccmp.compare.asm import fixes, parse
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
+from reccmp.compare.db import EntityDb
+from reccmp.types import EntityType, ImageId
+
+
+class NestedVtableTests(unittest.TestCase):
+    def test_full_path_distinguishes_identical_display_names(self):
+        db = EntityDb()
+        with db.batch() as batch:
+            for index, via in enumerate(("Read", "Write")):
+                batch.set(ImageId.ORIG, 0x1000 + index * 16, type=EntityType.VTABLE,
+                          name="Socket", base_class=f"Base's `{via}")
+                batch.set(ImageId.RECOMP, 0x2000 + index * 16, type=EntityType.VTABLE,
+                          name="Socket::`vftable'{for `Base'}",
+                          symbol=f"??_7Socket@@6BBase@@{via}@@@")
+            batch.set(ImageId.ORIG, 0x1100, type=EntityType.VTABLE,
+                      name="Socket", base_class="Base's `Missing")
+            batch.set(ImageId.ORIG, 0x1200, type=EntityType.VTABLE,
+                      name="Socket", base_class="Base's `Ambiguous")
+            for address in (0x2100, 0x2200):
+                batch.set(ImageId.RECOMP, address, type=EntityType.VTABLE,
+                          symbol="??_7Socket@@6BBase@@Ambiguous@@@")
+        match_nested_vtables(db)
+        self.assertEqual(db.get(ImageId.ORIG, 0x1000).recomp_addr, 0x2000)
+        self.assertEqual(db.get(ImageId.ORIG, 0x1010).recomp_addr, 0x2010)
+        self.assertIsNone(db.get(ImageId.ORIG, 0x1100).recomp_addr)
+        self.assertIsNone(db.get(ImageId.ORIG, 0x1200).recomp_addr)
 
 
 def dispatch(table: int, register: int = 0) -> bytes:
