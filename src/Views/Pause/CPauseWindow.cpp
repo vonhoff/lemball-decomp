@@ -125,10 +125,23 @@ void CPauseWindow::Restart()
 void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 {
 	short verticalOffset = (short) m_verticalTextOffset;
-	CVsPoint point;
+	CVsSize size;
 	CVsRect borderRect;
 
-	if (m_pauseMessage == 3) {
+	if (m_pauseMessage != 3) {
+		if (m_menuItemCount > 0) {
+			int item = 0;
+			CVsPoint* textSize = m_menuItemRects;
+			do {
+				item++;
+				textSize[1].m_x = (short) ((p_rect.m_width - textSize->m_x) / 2);
+				textSize[1].m_y = verticalOffset;
+				verticalOffset = (short) (verticalOffset + textSize->m_y + m_textSpacing.m_y);
+				textSize += 2;
+			} while (item < m_menuItemCount);
+		}
+	}
+	else {
 		short x = (short) ((p_rect.m_width - m_menuItemRects[0].m_x) / 2);
 		m_menuItemRects[1].m_x = x;
 		m_menuItemRects[1].m_y = verticalOffset;
@@ -138,19 +151,6 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 		m_menuItemRects[5].m_x = (short) (x + m_menuItemRects[0].m_x - m_menuItemRects[4].m_x);
 		m_menuItemRects[5].m_y = verticalOffset;
 	}
-	else if (m_menuItemCount > 0) {
-		int item = 0;
-		CVsPoint* textSize = m_menuItemRects;
-		CVsPoint* textPosition = m_menuItemRects + 1;
-		do {
-			item++;
-			textPosition->m_x = (short) ((p_rect.m_width - textSize->m_x) / 2);
-			textPosition->m_y = verticalOffset;
-			verticalOffset = (short) (verticalOffset + textSize->m_y + m_textSpacing.m_y);
-			textSize += 2;
-			textPosition += 2;
-		} while (item < m_menuItemCount);
-	}
 
 	m_bounds.m_width = p_rect.m_width;
 	m_bounds.m_height = p_rect.m_height;
@@ -159,18 +159,18 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 	CHotAreaHandler::SetActive(1);
 	m_externalEnabled = 1;
 
-	if (m_lifecycleRefs == 1) {
-		CPVWnd::SetRect(p_rect);
-	}
-	else {
+	if (m_lifecycleRefs != 1) {
 		m_gdiFlags = m_borderAnimCount * 2 + 0x3ed;
 		Create(p_rect, m_parentWindow, "Pause mode");
 		m_parentWindow->m_hotAreaList->AddToList(this);
 	}
+	else {
+		CPVWnd::SetRect(p_rect);
+	}
 
-	point = *(const CVsPoint*) &p_rect;
-	borderRect.m_width = point.m_x;
-	borderRect.m_height = point.m_y;
+	size = *(const CVsSize*) &p_rect;
+	borderRect.m_width = size.m_width;
+	borderRect.m_height = size.m_height;
 	borderRect.m_x = 0;
 	borderRect.m_y = 0;
 	m_borderPadding.m_x = 4;
@@ -179,12 +179,12 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 		m_borderPadding.m_x = 8;
 		m_borderPadding.m_y = 8;
 	}
-	point.m_x = m_borderPadding.m_x;
-	point.m_y = m_borderPadding.m_y;
-	((CVsPoint*) &borderRect.m_x)->AddInPlace(&point);
-	point.m_x = (short) (m_borderPadding.m_x * 2);
-	point.m_y = (short) (m_borderPadding.m_y * 2);
-	((CVsPoint*) &borderRect.m_width)->SubtractInPlace(&point);
+	size.m_width = m_borderPadding.m_x;
+	size.m_height = m_borderPadding.m_y;
+	((CVsPoint*) &borderRect.m_x)->AddInPlace((CVsPoint*) &size);
+	size.m_width = (short) (m_borderPadding.m_x * 2);
+	size.m_height = (short) (m_borderPadding.m_y * 2);
+	((CVsPoint*) &borderRect.m_width)->SubtractInPlace((CVsPoint*) &size);
 	m_borderLine[0].m_bounds.m_width = borderRect.m_width;
 	m_borderLine[0].m_bounds.m_height = borderRect.m_height;
 	m_borderLine[0].m_bounds.m_x = borderRect.m_x;
