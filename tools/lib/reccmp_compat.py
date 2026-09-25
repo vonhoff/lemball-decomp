@@ -373,6 +373,13 @@ class RelocationAwareParseAsm(parse.ParseAsm):
                 return "->" + name
         return super().indirect_replace(addr)
 
+    def replace(self, addr, exact=False):
+        target = self.thunk_targets.get(addr)
+        if (target is not None and self.lookup(addr, exact=True) is None
+                and self.lookup(target, exact=True) is not None):
+            return super().replace(target, exact=True)
+        return super().replace(addr, exact=exact)
+
     def parse_asm(self, data, start_addr):
         self._data = bytes(data)
         self._start = start_addr

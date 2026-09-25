@@ -497,6 +497,20 @@ class AssertNormalizationTests(unittest.TestCase):
 
 
 class IncrementalThunkTests(unittest.TestCase):
+    def test_linker_function_pointer_requires_a_mapped_target(self):
+        for names, expected in (
+            ({0x1020: "Target (FUNCTION)"}, "Target (FUNCTION)"),
+            ({}, "<OFFSET1>"),
+            ({0x1000: "Explicit (FUNCTION)", 0x1020: "Target (FUNCTION)"}, "Explicit (FUNCTION)"),
+        ):
+            parser = RelocationAwareParseAsm(
+                thunk_targets={0x1000: 0x1020},
+                addr_test=lambda address: address == 0x1000,
+                name_lookup=lambda address, **kwargs: names.get(address),
+            )
+            self.assertEqual(parser.parse_asm(b"\x68\x00\x10\x00\x00\xc3", 0x2000)[0][1],
+                             "push " + expected)
+
     def image(self, data):
         return SimpleNamespace(get_code_regions=lambda: [SimpleNamespace(addr=0x1000, data=data)])
 
