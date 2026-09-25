@@ -30,14 +30,14 @@ CDirectDrawDriver::CDirectDrawDriver(CVsSize* p_size, int p_fullScreen)
 	long result;
 	m_screenSize.m_width = p_size->m_width;
 	m_screenSize.m_height = p_size->m_height;
-	IDirectDraw** directDraw = &m_directDraw;
-	*directDraw = 0;
+	m_directDraw = 0;
 	m_primarySurface = 0;
 	m_surface24 = 0;
 	m_surface28 = 0;
 	m_surface2c = 0;
 	m_nextContextIndex = 1;
 	m_paletteInterface = 0;
+	IDirectDraw** directDraw = &m_directDraw;
 	m_driverModule = LoadLibraryA("DDRAW.DLL");
 	if (m_driverModule == 0) {
 		return;
@@ -108,10 +108,11 @@ CDirectDrawDriver::CDirectDrawDriver(CVsSize* p_size, int p_fullScreen)
 			return;
 		}
 	}
+	IDirectDraw* interface = *directDraw;
 	description.dwSize = sizeof(DDSURFACEDESC);
 	description.dwFlags = 0;
 	description.ddsCaps = 0x200;
-	result = (*directDraw)->CreateSurface(&description, &m_primarySurface, 0);
+	result = interface->CreateSurface(&description, &m_primarySurface, 0);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Create Primary Surface failed : "
 						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
