@@ -67,10 +67,10 @@ CMciMusicDevice::CMciMusicDevice()
 	windowClass.hIcon = 0;
 	windowClass.hCursor = 0;
 	windowClass.hbrBackground = 0;
-	windowClass.lpszMenuName = g_szMciMusicWindow;
-	windowClass.lpszClassName = g_szMciMusicWindow;
 	windowClass.style = 3;
 	windowClass.lpfnWndProc = MciMusicWindowProc;
+	windowClass.lpszMenuName = g_szMciMusicWindow;
+	windowClass.lpszClassName = g_szMciMusicWindow;
 	RegisterClassA(&windowClass);
 	m_notifyWindow = CreateWindowExA(0,
 									 g_szMciMusicWindow,
