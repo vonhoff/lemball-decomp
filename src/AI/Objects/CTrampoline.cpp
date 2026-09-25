@@ -46,16 +46,15 @@ void CTrampoline::Set(unsigned short p_id, const AiCoord& p_position)
 	m_active = 1;
 	m_enabled = 1;
 
-	int blockX = p_position.m_xFixed >> 12;
-	blockX += (p_position.m_xFixed >> 31) & 0xf;
-	blockX >>= 4;
-	int blockY = p_position.m_yFixed >> 12;
-	blockY += (p_position.m_yFixed >> 31) & 0xf;
-	blockY >>= 4;
-	if (blockX >= 0 && blockY >= 0) {
-		CGroundArray* ground = &g_pMap->m_ground;
-		if (blockX < ground->m_width && blockY < ground->m_height) {
-			ground->m_ground[ground->m_width * blockY + blockX].m_collision |= 0x8000;
+	int blockX = (p_position.m_xFixed >> 12) / 16;
+	if (blockX >= 0) {
+		int blockY = (p_position.m_yFixed >> 12) / 16;
+		if (blockY >= 0) {
+			CMap* map = g_pMap;
+			int width = map->m_ground.m_width;
+			if (width > blockX && map->m_ground.m_height > blockY) {
+				g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= 0x8000;
+			}
 		}
 	}
 }
