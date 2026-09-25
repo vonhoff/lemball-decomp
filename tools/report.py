@@ -123,7 +123,7 @@ def run_reccmp() -> Path:
     subprocess.run(
         [sys.executable, "-m", "reccmp.tools.roadmap", "--target", "LEMBALL",
          "--csv", str(ROADMAP_CSV)],
-        cwd=ROOT,
+        cwd=BUILD,
         check=True,
     )
 
