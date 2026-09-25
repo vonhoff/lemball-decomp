@@ -111,27 +111,6 @@ def is_equivalent_insn(orig_text: str, recomp_text: str) -> bool:
     )
 
 
-def is_thunk_only_diff(diff) -> bool:
-    if not diff:
-        return False
-    orig_insns: list[str] = []
-    recomp_insns: list[str] = []
-    for _, chunks in diff:
-        for chunk in chunks:
-            orig = chunk.get("orig")
-            if orig:
-                orig_insns.extend(insn_text(e) for e in orig)
-            recomp = chunk.get("recomp")
-            if recomp:
-                recomp_insns.extend(insn_text(e) for e in recomp)
-    if not orig_insns or len(orig_insns) != len(recomp_insns):
-        return False
-    return all(
-        is_equivalent_insn(orig_text, recomp_text)
-        for orig_text, recomp_text in zip(orig_insns, recomp_insns)
-    )
-
-
 def byte_register_swaps_consistent(orig_asm: list[str], recomp_asm: list[str]) -> bool:
     forward: dict[str, str] = {}
     reverse: dict[str, str] = {}
@@ -213,10 +192,6 @@ def compute_ratio(match: dict | None) -> tuple[float, str]:
     ratio = float(match.get("matching", 0.0)) * 100.0
     if match.get("effective") or ratio == 100.0:
         return 100.0, "MATCH"
-    if is_thunk_only_diff(match.get("diff")):
-        return 100.0, "MATCH (thunk)"
-    if is_codegen_equivalent_diff(match.get("diff")):
-        return 100.0, "MATCH (compiler entropy)"
     return ratio, ""
 
 
