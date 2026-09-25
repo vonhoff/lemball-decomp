@@ -105,17 +105,16 @@ def build_report(roadmap_path, reccmp_path):
     }
 
 
-def run_reccmp(json_path: Path = RECCMP_JSON, *, detect: bool = False, roadmap: bool = False) -> Path:
-    out = json_path.resolve()
+def run_reccmp() -> Path:
+    out = RECCMP_JSON.resolve()
     BUILD.mkdir(parents=True, exist_ok=True)
 
-    if detect:
-        detect_project(
-            project_directory=ROOT,
-            search_path=[ROOT / "data"],
-            detect_what=DetectWhat.ORIGINAL,
-            build_directory=BUILD,
-        )
+    detect_project(
+        project_directory=ROOT,
+        search_path=[ROOT / "data"],
+        detect_what=DetectWhat.ORIGINAL,
+        build_directory=BUILD,
+    )
 
     target, engine = load_engine()
     report = ReccmpStatusReport(filename=target.original_path.name)
@@ -129,19 +128,18 @@ def run_reccmp(json_path: Path = RECCMP_JSON, *, detect: bool = False, roadmap: 
         report.add_match(match)
     out.write_text(serialize_reccmp_report(report, diff_included=True), encoding="utf-8")
 
-    if roadmap:
-        subprocess.run(
-            [sys.executable, "-m", "reccmp.tools.roadmap", "--target", "LEMBALL",
-             "--csv", str(ROADMAP_CSV)],
-            cwd=ROOT,
-            check=True,
-        )
+    subprocess.run(
+        [sys.executable, "-m", "reccmp.tools.roadmap", "--target", "LEMBALL",
+         "--csv", str(ROADMAP_CSV)],
+        cwd=ROOT,
+        check=True,
+    )
 
     return out
 
 
 def make_report(output_path: Path = REPORT_JSON) -> dict:
-    reccmp_path = run_reccmp(detect=True, roadmap=True)
+    reccmp_path = run_reccmp()
     report = build_report(ROADMAP_CSV, reccmp_path)
     output_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
