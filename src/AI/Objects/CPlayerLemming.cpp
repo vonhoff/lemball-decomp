@@ -836,41 +836,6 @@ bool CPlayerLemming::IsSelectable()
 	return 1;
 }
 
-// FUNCTION: LEMBALL 0x004108b0
-void CPlayerLemming::GetViewData(CViewData& p_viewData)
-{
-	p_viewData.m_objectId = m_objectId;
-	p_viewData.m_objectType = m_objectType;
-	p_viewData.m_playerIndex = 0;
-	p_viewData.m_positionX = m_position.m_xFixed >> 12;
-	p_viewData.m_positionY = m_position.m_yFixed >> 12;
-	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
-	p_viewData.m_facingDirection = m_facingDirection;
-	unsigned int timer = m_stateTimer;
-	eAction action = m_action;
-	p_viewData.m_actionArgument = (unsigned short) m_actionArgument;
-	p_viewData.m_action = action;
-	p_viewData.m_statusFlags = 0;
-	p_viewData.m_stateTimer = timer;
-	p_viewData.m_unk0x30 = m_unk0xc0;
-	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
-	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
-	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;
-	p_viewData.m_soundEffect = m_soundEffect;
-	if (m_isRemoteObject != 0) {
-		p_viewData.m_animationTime = g_dwNetworkSimulationTimestamp;
-	}
-	else {
-		p_viewData.m_animationTime = g_dwSimulationTimestamp;
-	}
-	SetSndEffect(SFX_NONE);
-	p_viewData.m_transientFlags = m_transientFlags;
-	m_transientFlags = 0;
-	int flags = (m_isGroupLeader != 0 ? 1 : 0) | (m_groupIndex != 0 ? 2 : 0);
-	p_viewData.m_statusFlags = flags;
-	p_viewData.m_playerIndex = m_playerIndex;
-}
-
 // FUNCTION: LEMBALL 0x004109f0
 int CPlayerLemming::Bored()
 {
