@@ -2084,8 +2084,8 @@ void CSurface::BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZ
 	unsigned char* src = p_zrle->GetData();
 	short sourceWidth = p_zrle->m_width;
 	short sourceHeight = p_zrle->m_height;
-	int step = 1;
 	int x = p_rect.m_x;
+	int step = 1;
 	int y = p_rect.m_y;
 	if (p_reverse != 0) {
 		step = -1;
@@ -2132,8 +2132,8 @@ void CSurface::BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZ
 					if (run < 0x80) {
 						skipX -= run;
 						if (skipX < 0) {
-							width += skipX;
 							dst += skipX;
+							width += skipX;
 						}
 					}
 					else if (run > 0x80) {
@@ -2160,8 +2160,8 @@ void CSurface::BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZ
 									remaining--;
 								}
 							}
-							width -= copyLength;
 							dst -= copyLength;
+							width -= copyLength;
 						}
 						src += count;
 					}
@@ -2183,16 +2183,16 @@ void CSurface::BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZ
 								remaining--;
 							}
 							src += count;
-							width -= count;
 							dst -= count;
+							width -= count;
 						}
 						else {
-							int remaining = width;
+							int remaining = 0;
 							unsigned char* copySrc = src;
 							unsigned char* copyDst = dst;
-							while (remaining > 0) {
+							while (remaining < width) {
 								*copyDst-- = *copySrc++;
-								remaining--;
+								remaining++;
 							}
 							src += count;
 							dst -= width;
