@@ -8,9 +8,9 @@
 void CAnimSpecial::Initialise(CMap* p_map)
 {
 	CMap* map = p_map;
-	int entryCount = 0;
 	int width = map->m_ground.m_width;
 	int height = map->m_ground.m_height;
+	int entryCount = 0;
 	int row;
 	int column;
 
