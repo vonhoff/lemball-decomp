@@ -3280,36 +3280,26 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 // FUNCTION: LEMBALL 0x004787f0
 void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 {
-	CVsRect dest;
-	short width;
-	short height;
-	short sourceX;
-	short sourceY;
-	CVsRect clip;
-
-	dest.m_x = p_primitive->m_x;
-	dest.m_y = p_primitive->m_y;
-	width = p_primitive->m_width;
-	height = p_primitive->m_height;
-	sourceX = p_primitive->m_sourceX;
-	sourceY = p_primitive->m_sourceY;
-	if (height == 0 && width == 0) {
-		width = p_bitmap->m_x;
-		height = p_bitmap->m_y;
+	short x = p_primitive->m_x;
+	short y = p_primitive->m_y;
+	CVsRect sourceRect(p_primitive->m_sourceX, p_primitive->m_sourceY, p_primitive->m_width, p_primitive->m_height);
+	if (sourceRect.m_height == 0 && sourceRect.m_width == 0) {
+		sourceRect.m_width = p_bitmap->m_x;
+		sourceRect.m_height = p_bitmap->m_y;
 	}
 	unsigned int flags = ((CBitmapRes*) p_primitive)->m_flags;
 	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x != 0) {
-		dest.m_width = width;
-		dest.m_height = height;
-		clip.m_height = 0;
-		clip.m_width = 0;
-		clip.m_x = 0;
-		clip.m_y = 0;
+		CVsRect dest(sourceRect);
+		dest.m_x = x;
+		dest.m_y = y;
+		CVsRect clip;
 		if (ClipRect(dest, &clip) != 0) {
-			if (clip.m_width < 1 || clip.m_height < 1) {
+			if (clip.m_width <= 0 || clip.m_height <= 0) {
 				return;
 			}
-			dest = clip;
+			CVsSize clippedSize;
+			clippedSize = clip;
+			(CVsSize&) dest = clippedSize;
 		}
 		AddToChangeList(&dest);
 		int destX = dest.m_x;
@@ -3320,29 +3310,41 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 			destY += dest.m_height - 1;
 		}
 		int bitmapWidth = (int) p_bitmap->m_x;
-		unsigned char* source =
-			p_bitmap->GetData() + ((int) sourceY + (int) clip.m_y) * bitmapWidth + (int) sourceX + (int) clip.m_x;
-		if ((flags & 0x800) == 0) {
+		unsigned char* source = p_bitmap->GetData() + ((int) sourceRect.m_y + (int) clip.m_y) * bitmapWidth +
+								(int) sourceRect.m_x + (int) clip.m_x;
+		if ((flags & 0x800) != 0) {
+			int sourceSkip = bitmapWidth - dest.m_width;
+			int i = 0;
 			if (dest.m_height > 0) {
-				for (int i = 0; i < dest.m_height; i++) {
-					memcpy((unsigned char*) m_lines[destY] + destX, source, dest.m_width);
+				do {
+					unsigned char* dst = (unsigned char*) m_lines[destY] + destX;
+					int j = 0;
+					if (dest.m_width > 0) {
+						do {
+							unsigned char pixel = *source;
+							if (pixel != 0) {
+								*dst = pixel;
+							}
+							j++;
+							dst++;
+							source++;
+						} while (j < dest.m_width);
+					}
 					destY += yStep;
-					source += bitmapWidth;
-				}
+					source += sourceSkip;
+					i++;
+				} while (i < dest.m_height);
 			}
 		}
 		else {
+			int i = 0;
 			if (dest.m_height > 0) {
-				for (int i = 0; i < dest.m_height; i++) {
-					unsigned char* dst = (unsigned char*) m_lines[destY] + destX;
-					for (int j = 0; j < dest.m_width; j++) {
-						if (source[j] != 0) {
-							dst[j] = source[j];
-						}
-					}
+				do {
+					memcpy((unsigned char*) m_lines[destY] + destX, source, dest.m_width);
 					destY += yStep;
 					source += bitmapWidth;
-				}
+					i++;
+				} while (i < dest.m_height);
 			}
 		}
 	}
