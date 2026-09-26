@@ -1144,7 +1144,8 @@ void CSurface::Blit(CLine* p_line)
 {
 	int y2 = p_line->m_bounds.m_y;
 	int x2 = p_line->m_bounds.m_x;
-	int color = p_line->m_color;
+	int colorValue = p_line->m_color;
+	const int& color = colorValue;
 	int y1 = p_line->m_bounds.m_height;
 	int x1 = p_line->m_bounds.m_width;
 	if (x2 < x1) {
@@ -1159,21 +1160,24 @@ void CSurface::Blit(CLine* p_line)
 	if (surface->LineClip(x1, y1, x2, y2) != 0) {
 		return;
 	}
-	int x = x1;
-	int y = y1;
 	int endY = y2;
+	int y = y1;
+	int x = x1;
 	int dx = x2 - x;
-	int dy = endY - y;
+	int remaining = endY - y;
 	int stepY = 1;
-	int absDy = dy;
-	if (dy < 0) {
+	int absDy;
+	if (remaining < 0) {
 		stepY = -1;
-		absDy = -dy;
+		absDy = -remaining;
+	}
+	else {
+		absDy = remaining;
 	}
 	if (absDy < dx) {
 		int doubleDx = dx * 2;
 		int doubleDy = absDy * 2;
-		int remaining = dx;
+		remaining = dx;
 		int err = 0;
 		if (0 < dx) {
 			do {
@@ -1191,7 +1195,6 @@ void CSurface::Blit(CLine* p_line)
 	else {
 		int doubleDy = absDy * 2;
 		int doubleDx = dx * 2;
-		int remaining = dy;
 		int err = 0;
 		if (stepY != 1) {
 			remaining = y - endY;
