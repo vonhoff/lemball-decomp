@@ -60,67 +60,73 @@ void CGWnd::Move(const CVsPoint& p_point)
 // FUNCTION: LEMBALL 0x00463c30
 void CGWnd::_OnCreate()
 {
-	CVsRect localRect;
 	CSurface* parentSurface;
 	CSurface* target;
-	void* storage;
 	short originX;
 	short originY;
 	unsigned int style;
 
-	CPVWnd::OnCreate();
-	parentSurface = (CSurface*) g_pGdiHelperTarget;
-	if (m_parent != 0) {
+	CPVWnd::_OnCreate();
+	if (m_parent == 0) {
+		parentSurface = (CSurface*) g_pGdiHelperTarget;
+	}
+	else {
 		parentSurface = ((CGWnd*) m_parent)->m_gdi->m_renderTarget;
 	}
 
+	CVsRect localRect(m_rect);
 	localRect.m_x = m_relativeTopLeft.m_x;
 	localRect.m_y = m_relativeTopLeft.m_y;
-	localRect.m_width = m_rect.m_width;
-	localRect.m_height = m_rect.m_height;
 	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
-		localRect.m_x = (short) (m_innerRect.m_x + m_relativeTopLeft.m_x);
-		localRect.m_y = (short) (m_innerRect.m_y + m_relativeTopLeft.m_y);
 		localRect.m_width = m_innerRect.m_width;
 		localRect.m_height = m_innerRect.m_height;
+		CVsPoint* innerOrigin = &m_innerRect;
+		localRect.m_x = innerOrigin->m_x;
+		localRect.m_y = innerOrigin->m_y;
+		localRect.m_x += m_relativeTopLeft.m_x;
+		localRect.m_y += m_relativeTopLeft.m_y;
 	}
 	if (m_parent == 0) {
 		localRect.m_width = (short) ((int) localRect.m_width / (int) m_zoom);
 		localRect.m_height = (short) ((int) localRect.m_height / (int) m_zoom);
 	}
 
-	storage = operator new(0x10);
-	if (storage == 0) {
-		m_gdi = 0;
-	}
-	else {
-		m_gdi = new (storage) CGDI(localRect, m_gdiFlags, parentSurface);
-	}
+	CGDI** gdi = &m_gdi;
+	*gdi = new CGDI(localRect, m_gdiFlags, parentSurface);
 
-	target = m_gdi->m_renderTarget;
+	target = (*gdi)->m_renderTarget;
 	if (m_parent == 0) {
 		target->m_zoom = (short) m_zoom;
 	}
-	originX = m_innerRect.m_x;
-	originY = m_innerRect.m_y;
+	CVsPoint* innerOrigin = &m_innerRect;
+	originX = innerOrigin->m_x;
+	originY = innerOrigin->m_y;
 	if (m_parent != 0) {
-		originX = (short) (originX - m_parent->m_relativeTopLeft.m_x);
-		originY = (short) (originY - m_parent->m_relativeTopLeft.m_y);
+		CVsPoint* parentOrigin = &m_parent->m_relativeTopLeft;
+		originX = (short) (originX - parentOrigin->m_x);
+		originY = (short) (originY - parentOrigin->m_y);
 	}
-	target->m_relOriginX = originX;
-	target->m_relOriginY = originY;
+	CPVSurface* surface = (CPVSurface*) ((char*) &target->m_relOriginX - FIELD_OFFSET(CPVSurface, m_relOriginX));
+	surface->m_relOriginX = originX;
+	surface->m_relOriginY = originY;
 	style = GetStyle();
 	if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
 		style = GetWindowLongA((HWND) m_nativeWindow, -16);
 		if ((style & 0x40000000) != 0) {
-			localRect.m_x = (short) (localRect.m_x - m_createRect->m_relativeTopLeft.m_x);
-			localRect.m_y = (short) (localRect.m_y - m_createRect->m_relativeTopLeft.m_y);
-			target->m_presentX = localRect.m_x;
-			target->m_presentY = localRect.m_y;
+			CVsPoint* createOrigin = &m_createRect->m_relativeTopLeft;
+			localRect.m_x = (short) (localRect.m_x - createOrigin->m_x);
+			localRect.m_y = (short) (localRect.m_y - createOrigin->m_y);
+			CSurface* presentTarget = (*gdi)->m_renderTarget;
+			presentTarget->m_presentX = localRect.m_x;
+			presentTarget->m_presentY = localRect.m_y;
 			m_createRect->SetDontUpdateRect(localRect);
 		}
 	}
-	target->m_directScroll = (unsigned int) (g_pTargetGraphicsSystem->m_driverMode != 3);
+	unsigned int directScroll = 1;
+	if (g_pTargetGraphicsSystem->m_driverMode == 3) {
+		directScroll = 0;
+	}
+	target->m_directScroll = directScroll;
 }
 
 // FUNCTION: LEMBALL 0x00463df0
@@ -203,9 +209,9 @@ void CGWnd::OnPaint(const CVsRect& p_rect)
 int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
 {
 	PAINTSTRUCT paint;
+	short paintWidth;
 	short paintX;
 	short paintY;
-	short paintWidth;
 	short paintHeight;
 
 	switch (p_message) {
@@ -214,8 +220,9 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 		case 4:
 		case 5:
 			return DefWindowProcA((HWND) g_pTargetGraphicsDriver->m_window, p_message, p_wParam, p_lParam);
-		default:
-			BeginPaint((HWND) m_nativeWindow, &paint);
+		default: {
+			HDC(WINAPI * beginPaint)(HWND, LPPAINTSTRUCT) = BeginPaint;
+			beginPaint((HWND) m_nativeWindow, &paint);
 			paintX = (short) paint.rcPaint.left;
 			paintWidth = (short) ((short) paint.rcPaint.right - (unsigned short) paint.rcPaint.left);
 			paintY = (short) paint.rcPaint.top;
@@ -238,6 +245,7 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 			}
 			EndPaint((HWND) m_nativeWindow, &paint);
 			return 0;
+		}
 		}
 	case WM_ACTIVATEAPP:
 		if (p_wParam != 0 && m_gdi != 0) {

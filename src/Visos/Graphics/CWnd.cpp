@@ -590,20 +590,12 @@ CWnd::CWnd()
 void CWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 {
 	unsigned int styleFlags;
-	unsigned int style;
-	POINT screenPoint;
-	RECT windowRect;
-	HMENU menu;
-	HWND parentWindow;
-	int hasMenu;
-	int menuResourceId;
-	MenuList** menuLists;
-	HWND hwnd;
 
 	m_rect.m_x = 0;
 	m_rect.m_y = 0;
+	short height = p_rect.m_height;
 	m_rect.m_width = p_rect.m_width;
-	m_rect.m_height = p_rect.m_height;
+	m_rect.m_height = height;
 	SetSizeStatus(2);
 	InitHotAreaList();
 	m_parent = p_parent;
@@ -612,15 +604,19 @@ void CWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 	if (p_parent != 0) {
 		styleFlags = GetStyle();
 		if ((styleFlags & 0x40000000) == 0) {
-			p_parent->AddChild(this);
-			screenPoint.x = (LONG) ((int) p_parent->m_rect.m_x + (int) p_rect.m_x);
-			screenPoint.y = (LONG) ((int) p_parent->m_rect.m_y + (int) p_rect.m_y);
-			ClientToScreen((HWND) ((CWnd*) p_parent)->m_nativeWindow, &screenPoint);
+			POINT screenPoint;
+			m_parent->AddChild(this);
+			const CVsRect& parentRect = m_parent->m_rect;
+			screenPoint.x = (LONG) ((int) parentRect.m_x + (int) p_rect.m_x);
+			screenPoint.y = (LONG) ((int) parentRect.m_y + (int) p_rect.m_y);
+			ClientToScreen((HWND) ((CWnd*) m_parent)->m_nativeWindow, &screenPoint);
 			m_rect.m_x = (short) screenPoint.x;
 			m_rect.m_y = (short) screenPoint.y;
-			m_relativeTopLeft.m_x = p_rect.m_x;
-			m_relativeTopLeft.m_y = p_rect.m_y;
-			m_zoom = p_parent->m_zoom;
+			const CVsPoint* relativeOrigin = &p_rect;
+			short relativeY = relativeOrigin->m_y;
+			m_relativeTopLeft.m_x = relativeOrigin->m_x;
+			m_relativeTopLeft.m_y = relativeY;
+			m_zoom = m_parent->m_zoom;
 			_OnCreate();
 			OnCreate();
 			_OnSize();
@@ -629,51 +625,59 @@ void CWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 		}
 	}
 
-	if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
-		style = ConvertWindowStyleFlags(GetStyle());
-		parentWindow = 0;
+	switch (g_pTargetGraphicsSystem->m_driverMode) {
+	default: {
+		unsigned int style = ConvertWindowStyleFlags(GetStyle());
+		RECT windowRect;
+		HMENU menu;
+		HWND parentWindow;
+		int hasMenu;
+		int menuResourceId;
+		MenuList** menuLists;
 		styleFlags = GetStyle();
 		if ((styleFlags & 0x40000000) != 0 && p_parent != 0) {
 			m_parent = 0;
-			style = (style & 0x7fffffff) | 0x40000000;
+			style &= 0x7fffffff;
+			style |= 0x40000000;
 		}
 
-		windowRect.left = p_rect.m_x;
 		windowRect.top = p_rect.m_y;
-		windowRect.right = p_rect.m_x + p_rect.m_width;
-		windowRect.bottom = p_rect.m_y + p_rect.m_height;
+		windowRect.left = p_rect.m_x;
+		windowRect.bottom = p_rect.m_height + windowRect.top;
+		windowRect.right = p_rect.m_width + windowRect.left;
 
 		m_menuLists = 0;
 		m_menuResourceId = 0;
-		menuResourceId = 0;
-		menuLists = 0;
-		hasMenu = GetMenu(menuResourceId, &menuLists);
 		menu = 0;
-		if (hasMenu != 0) {
+		hasMenu = 0;
+		if (GetMenu(menuResourceId, &menuLists) != 0) {
 			m_menuResourceId = (unsigned int) menuResourceId;
 			m_menuLists = menuLists;
-			menu = LoadMenuA((HINSTANCE) g_pApplicationInstance, (LPCSTR) (menuResourceId & 0xffff));
+			menu = LoadMenuA((HINSTANCE) g_pApplicationInstance, (LPCSTR) (unsigned short) m_menuResourceId);
+			hasMenu = 1;
 		}
 
-		AdjustWindowRect(&windowRect, style, hasMenu != 0);
+		AdjustWindowRect(&windowRect, style, hasMenu);
+		windowRect.bottom -= windowRect.top;
+		windowRect.right -= windowRect.left;
 		if ((style & 0x40000000) == 0 || p_parent == 0) {
 			parentWindow = 0;
 		}
 		else {
 			parentWindow = (HWND) ((CWnd*) p_parent)->m_nativeWindow;
 		}
-		hwnd = CreateWindowExA(0,
-							   g_pszVsBaseWindowClass,
-							   p_title,
-							   style,
-							   windowRect.left,
-							   windowRect.top,
-							   windowRect.right - windowRect.left,
-							   windowRect.bottom - windowRect.top,
-							   parentWindow,
-							   menu,
-							   (HINSTANCE) g_pApplicationInstance,
-							   this);
+		HWND hwnd = CreateWindowExA(0,
+									g_pszVsBaseWindowClass,
+									p_title,
+									style,
+									windowRect.left,
+									windowRect.top,
+									windowRect.right,
+									windowRect.bottom,
+									parentWindow,
+									menu,
+									(HINSTANCE) g_pApplicationInstance,
+									this);
 		m_nativeWindow = hwnd;
 		if (menu != 0) {
 			ReSetMenu();
@@ -686,25 +690,32 @@ void CWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 			UpdateWindow((HWND) m_nativeWindow);
 			ShowWindow((HWND) m_nativeWindow, 5);
 			SetForegroundWindow((HWND) m_nativeWindow);
+			return;
 		}
-		return;
+		break;
 	}
-
-	m_parent = 0;
-	m_rect.m_width = p_rect.m_width;
-	m_rect.m_height = p_rect.m_height;
-	m_rect.m_x = p_rect.m_x;
-	m_rect.m_y = p_rect.m_y;
-	m_relativeTopLeft.m_x = p_rect.m_x;
-	m_relativeTopLeft.m_y = p_rect.m_y;
-	g_pTargetGraphicsSystem->m_targetWindow = (unsigned int) this;
-	m_nativeWindow = g_pTargetGraphicsDriver->m_window;
-	SetFocusWindow();
-	OnFocusGained();
-	_OnCreate();
-	OnCreate();
-	_OnSize();
-	OnSize();
+	case 4:
+	case 5: {
+		m_parent = 0;
+		m_rect.m_width = p_rect.m_width;
+		m_rect.m_height = p_rect.m_height;
+		const CVsPoint* rectOrigin = &p_rect;
+		m_rect.m_x = rectOrigin->m_x;
+		m_rect.m_y = rectOrigin->m_y;
+		const CVsPoint* relativeOrigin = &p_rect;
+		short relativeY = relativeOrigin->m_y;
+		m_relativeTopLeft.m_x = relativeOrigin->m_x;
+		m_relativeTopLeft.m_y = relativeY;
+		g_pTargetGraphicsSystem->m_targetWindow = (unsigned int) this;
+		m_nativeWindow = g_pTargetGraphicsDriver->m_window;
+		SetFocusWindow();
+		OnFocusGained();
+		_OnCreate();
+		OnCreate();
+		_OnSize();
+		OnSize();
+	}
+	}
 }
 
 #pragma warning(disable : 4146)
