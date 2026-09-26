@@ -924,12 +924,12 @@ void CAI::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned shor
 		collision = 3;
 	}
 	else {
-		int width = m_map->m_ground.m_width;
-		if (width <= blockX || m_map->m_ground.m_height <= blockY) {
+		CMap* map = m_map;
+		if (blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
 			collision = 3;
 		}
 		else {
-			collision = m_map->m_ground.m_ground[blockY * width + blockX].m_collision;
+			collision = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].m_collision;
 		}
 	}
 
