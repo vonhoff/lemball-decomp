@@ -289,12 +289,19 @@ void CMap::CreateWalkBits()
 							westHeight = collision;
 							nextBlock = (int) (x - 9) >> 4;
 							if (((((int) (x - 9) < 0) || ((int) y < 0)) ||
-								 ((m_ground.m_width <= nextBlock) || m_ground.m_height <= currentBlockY))) {
+								 ((blockCoordinate = m_ground.m_width, blockCoordinate <= nextBlock) ||
+								  m_ground.m_height <= currentBlockY))) {
 								z = 0;
 							}
 							else {
-								z = (m_ground.m_ground + m_ground.m_width * currentBlockY + nextBlock)
-										->GetZ((x - 9) & 0xf, y & 0xf);
+								int sampleX = x - 9;
+								int sampleY = y;
+								int& cellX = sampleX;
+								int& cellY = sampleY;
+								cellX &= 0xf;
+								cellY &= 0xf;
+								z = (m_ground.m_ground + blockCoordinate * currentBlockY + nextBlock)
+										->GetZ(cellX, cellY);
 							}
 							secondHeight = z;
 							if (secondHeight <= westHeight + 0xf) {
