@@ -1422,6 +1422,7 @@ void C2D::DrawCliff(int p_x, int p_y, int p_height, int p_count)
 // FUNCTION: LEMBALL 0x0043ad40
 void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 {
+	int mapX = p_mapX;
 	int screenY;
 	int screenX;
 	eObjectType defaultGroundType;
@@ -1430,7 +1431,6 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 	short baseZ;
 	int delayed;
 	int drawGround;
-	unsigned short groundWidth;
 	CGround* ground;
 	int groundStep;
 	unsigned short groundData;
@@ -1446,7 +1446,7 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 	defaultGroundType = m_map->m_defaultBlox;
 	defaultGroundData = m_map->m_defaultBloxData;
 	processed = 0;
-	baseZ = ((short) p_mapY + (short) p_mapX) * 0x40;
+	baseZ = ((short) p_mapY + (short) mapX) * 0x40;
 	if (baseZ < 0) {
 		baseZ = 0;
 	}
@@ -1454,12 +1454,12 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 
 	if (p_count > 0) {
 		do {
-			if (p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight) {
+			if (mapX >= 0 && p_mapY >= 0 && mapX < m_groundWidth && p_mapY < m_groundHeight) {
 				break;
 			}
 			DrawGround(screenX, screenY, defaultGroundType, defaultGroundData);
 			screenX += 0x20;
-			p_mapX += m_clipMapStepX;
+			mapX += m_clipMapStepX;
 			processed++;
 			p_mapY += m_clipMapStepY;
 		} while (processed < p_count);
@@ -1468,12 +1468,10 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 	if (processed < p_count) {
 		delayed = 0;
 		drawGround = 1;
-		groundWidth = m_groundWidth;
-		ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * p_mapY + p_mapX;
-		groundStep = 1 - groundWidth;
+		ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * p_mapY + mapX;
+		groundStep = 1 - m_groundWidth;
 
-		for (;
-			 p_count > processed && p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight;) {
+		for (; p_count > processed && mapX >= 0 && p_mapY >= 0 && mapX < m_groundWidth && p_mapY < m_groundHeight;) {
 			if ((ground->m_collision & 0x20) == 0) {
 				groundData = ground->m_objectData;
 				height = ground->m_height;
@@ -1555,7 +1553,7 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 				}
 			}
 
-			p_mapX += m_clipMapStepX;
+			mapX += m_clipMapStepX;
 			p_mapY += m_clipMapStepY;
 			screenX += 0x20;
 			processed++;
