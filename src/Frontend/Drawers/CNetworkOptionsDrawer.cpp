@@ -424,11 +424,10 @@ void CNetworkOptionsDrawer::DrawText()
 			char* myPeer = m_connectionState;
 			if (myPeer != 0 && *myPeer != 0) {
 				char trimmed[21];
-				int len = 0x14;
 				strncpy(trimmed, myPeer, 0x14);
+				int len = 0x14;
 				do {
-					trimmed[len] = 0;
-					len--;
+					trimmed[len--] = 0;
 				} while (m_layoutTable->m_peerNameWidth < font->GetSize(trimmed, 0x20).m_width);
 
 				CString lowerPeer(trimmed);
@@ -486,6 +485,7 @@ void CNetworkOptionsDrawer::DrawText()
 
 		m_messageDirty = m_message;
 		if (g_pNetworkManager != 0) {
+			int idx;
 			int searchIndex;
 			int row = 0;
 			int fallbackHighlighted = -1;
@@ -504,7 +504,7 @@ void CNetworkOptionsDrawer::DrawText()
 				}
 			}
 			unsigned int* valid;
-			int idx = 0;
+			idx = 0;
 			valid = &messages->m_valid;
 			for (; idx < 10; valid += sizeof(CNetworkGameMessage) / sizeof(*valid), idx++) {
 				if (*valid != 0) {
