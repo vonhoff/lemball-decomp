@@ -2445,13 +2445,11 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int lineOffset = y * 4;
 		do {
-			unsigned short* zlines =
-				*(unsigned short**) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines + lineOffset) + x;
+			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2471,21 +2469,25 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 						if (clipX < 0) {
 							int copyLen = -clipX;
 							if (copyLen < width) {
+								int i = copyLen;
 								unsigned char* copySrc = src + count + clipX;
 								unsigned char* copyDst = dst;
-								for (int i = copyLen; i > 0; i--) {
-									*copyDst++ = p_remap[*copySrc++];
+								for (; i > 0; i--) {
+									*copyDst++ = p_remap[*copySrc];
+									copySrc++;
 								}
 							}
 							else {
+								int i = copyLen;
 								unsigned char* copySrc = src + count + clipX;
 								unsigned char* copyDst = dst;
-								for (int i = copyLen; i > 0; i--) {
-									*copyDst++ = p_remap[*copySrc++];
+								for (; i > 0; i--) {
+									*copyDst++ = p_remap[*copySrc];
+									copySrc++;
 								}
 							}
 							dst += copyLen;
-							width += clipX;
+							width -= copyLen;
 							zlines += copyLen;
 						}
 						src += count;
@@ -2501,26 +2503,30 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 						run &= 0x7f;
 						int count = run;
 						if (count < width) {
+							int i = count;
 							unsigned char* copySrc = src;
 							unsigned char* copyDst = dst;
-							for (unsigned int i = count; i != 0; i--) {
-								*copyDst++ = p_remap[*copySrc++];
+							for (; i > 0; i--) {
+								*copyDst++ = p_remap[*copySrc];
+								copySrc++;
 							}
-							src += count;
 							dst += count;
+							src += count;
 							zlines += count;
 							width -= count;
 						}
 						else {
+							int i = width;
 							unsigned char* copySrc = src;
 							unsigned char* copyDst = dst;
-							for (int i = width; i > 0; i--) {
-								*copyDst++ = p_remap[*copySrc++];
+							for (; i > 0; i--) {
+								*copyDst++ = p_remap[*copySrc];
+								copySrc++;
 							}
-							src += count;
 							dst += width;
-							width = 0;
+							src += count;
 							zlines += width;
+							width = 0;
 						}
 					}
 				}
@@ -2531,7 +2537,7 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 					}
 				}
 			} while (run != 0x80);
-			lineOffset += 4;
+			y++;
 			row++;
 		} while (row < p_rect.m_height);
 	}
