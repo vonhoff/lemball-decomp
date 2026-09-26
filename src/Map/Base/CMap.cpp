@@ -71,9 +71,9 @@ unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 	if (p_mover != 0) {
 		int blockX = p_x >> 4;
 		int blockY = p_y >> 4;
-		if ((map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].m_collision & 0x10) != 0) {
+		if ((m_ground.m_ground[blockY * m_ground.m_width + blockX].m_collision & 0x10) != 0) {
 			int height;
-			CMover* mover = map->m_ai->FindMoverHeight(p_x, p_y, height);
+			CMover* mover = m_ai->FindMoverHeight(p_x, p_y, height);
 			if (mover != 0) {
 				*p_mover = mover;
 				return (unsigned short) height;
@@ -82,8 +82,8 @@ unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 	}
 	int blockX = p_x >> 4;
 	int blockY = p_y >> 4;
-	if (p_x >= 0 && p_y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-		return map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(p_x & 0xf, p_y & 0xf);
+	if (p_x >= 0 && p_y >= 0 && blockX < m_ground.m_width && blockY < m_ground.m_height) {
+		return m_ground.m_ground[blockY * m_ground.m_width + blockX].GetZ(p_x & 0xf, p_y & 0xf);
 	}
 	return 0;
 }
@@ -109,8 +109,15 @@ unsigned char CMap::GetWalk(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x00430620
 void CMap::CreateWalkBits()
 {
+	int y;
+	int x;
+	int blockY;
+	int blockX;
 	unsigned short collision;
 	unsigned short z;
+	int firstHeight;
+	int secondHeight;
+	int westHeight;
 	int adjacentBlock;
 	CGround* ground;
 	unsigned int low;
@@ -118,13 +125,9 @@ void CMap::CreateWalkBits()
 	int nextBlock;
 	int blockCoordinate;
 	int currentBlockY;
-	unsigned int y;
-	unsigned int x;
 	unsigned int lowCoordinate;
 	int lowBlock;
 	unsigned char* walkBits;
-	int blockX;
-	int blockY;
 
 	blockY = 0;
 	walkBits = m_walkBits;
@@ -149,29 +152,29 @@ void CMap::CreateWalkBits()
 						}
 						if ((collision & 0x25) == 0) {
 							collision = m_ground.GetZ(x, y - 8);
+							firstHeight = collision;
 							coordinate = y - 9;
 							blockCoordinate = (int) x >> 4;
+							adjacentBlock = (int) coordinate >> 4;
 							if (((int) x < 0) || ((int) coordinate < 0) || m_ground.m_width <= blockCoordinate ||
-								m_ground.m_height <= (int) coordinate >> 4) {
+								m_ground.m_height <= adjacentBlock) {
 								z = 0;
 							}
 							else {
-								low = coordinate & 0xf;
 								lowCoordinate = x & 0xf;
-								ground = m_ground.GetGroundCell(blockCoordinate, (int) coordinate >> 4);
-								z = ground->GetZ(lowCoordinate, low);
+								low = coordinate & 0xf;
+								z = m_ground.GetGroundCell(blockCoordinate, adjacentBlock)->GetZ(lowCoordinate, low);
 							}
-							if (z <= collision + 0xf) {
+							secondHeight = z;
+							if (secondHeight <= firstHeight + 0xf) {
 								*walkBits |= 0x10;
 							}
-							if (collision <= z + 0xf) {
+							if (firstHeight <= secondHeight + 0xf) {
 								*walkBits |= 1;
 							}
 						}
 					}
 
-					blockCoordinate = (int) x >> 4;
-					currentBlockY = (int) y >> 4;
 					if (blockX < m_walkWidth - 1) {
 						nextBlock = blockX + 1;
 						if (((nextBlock < 0) || ((int) y < 8)) ||
@@ -184,17 +187,19 @@ void CMap::CreateWalkBits()
 						}
 						if ((collision & 0x25) == 0) {
 							coordinate = x + 7;
-							if (((((int) coordinate < 0) || ((int) y < 0)) ||
-								 m_ground.m_width <= (int) coordinate >> 4) ||
+							currentBlockY = (int) y >> 4;
+							blockCoordinate = (int) coordinate >> 4;
+							if (((((int) coordinate < 0) || ((int) y < 0)) || m_ground.m_width <= blockCoordinate) ||
 								m_ground.m_height <= currentBlockY) {
 								collision = 0;
 							}
 							else {
 								low = coordinate & 0xf;
 								lowCoordinate = y & 0xf;
-								ground = m_ground.GetGroundCell((int) coordinate >> 4, currentBlockY);
-								collision = ground->GetZ(low, lowCoordinate);
+								collision =
+									m_ground.GetGroundCell(blockCoordinate, currentBlockY)->GetZ(low, lowCoordinate);
 							}
+							firstHeight = collision;
 							nextBlock = (int) (x + 8) >> 4;
 							if (((((int) (x + 8) < 0) || ((int) y < 0)) || m_ground.m_width <= nextBlock) ||
 								(m_ground.m_height <= currentBlockY)) {
@@ -203,21 +208,21 @@ void CMap::CreateWalkBits()
 							else {
 								lowCoordinate = y & 0xf;
 								lowBlock = 0;
-								ground = m_ground.GetGroundCell(nextBlock, currentBlockY);
-								z = ground->GetZ(lowBlock, lowCoordinate);
+								z = m_ground.GetGroundCell(nextBlock, currentBlockY)->GetZ(lowBlock, lowCoordinate);
 							}
-							if (z <= collision + 0xf) {
+							secondHeight = z;
+							if (secondHeight <= firstHeight + 0xf) {
 								*walkBits |= 0x40;
 							}
-							if (collision <= z + 0xf) {
+							if (firstHeight <= secondHeight + 0xf) {
 								*walkBits |= 4;
 							}
 						}
 					}
 
 					if (blockY < m_walkHeight - 1) {
-						nextBlock = blockY + 1;
-						if (((((int) x < 8) || (nextBlock < 0)) || m_ground.m_width <= blockX) ||
+						if (((((int) x < 8) || (nextBlock = blockY + 1, nextBlock < 0)) ||
+							 m_ground.m_width <= blockX) ||
 							m_ground.m_height <= nextBlock) {
 							collision = 3;
 						}
@@ -226,6 +231,7 @@ void CMap::CreateWalkBits()
 							collision = ground->m_collision;
 						}
 						if ((collision & 0x25) == 0) {
+							blockCoordinate = (int) x >> 4;
 							nextBlock = (int) (y + 7) >> 4;
 							if (((((int) x < 0) || ((int) (y + 7) < 0)) || m_ground.m_width <= blockCoordinate) ||
 								m_ground.m_height <= nextBlock) {
@@ -234,9 +240,10 @@ void CMap::CreateWalkBits()
 							else {
 								low = x & 0xf;
 								lowCoordinate = (y + 7) & 0xf;
-								ground = m_ground.GetGroundCell(blockCoordinate, nextBlock);
-								collision = ground->GetZ(low, lowCoordinate);
+								collision =
+									m_ground.GetGroundCell(blockCoordinate, nextBlock)->GetZ(low, lowCoordinate);
 							}
+							firstHeight = collision;
 							nextBlock = (int) (y + 8) >> 4;
 							if (((((int) x < 0) || ((int) (y + 8) < 0)) || m_ground.m_width <= blockCoordinate) ||
 								m_ground.m_height <= nextBlock) {
@@ -245,13 +252,13 @@ void CMap::CreateWalkBits()
 							else {
 								lowBlock = 0;
 								low = x & 0xf;
-								ground = m_ground.GetGroundCell(blockCoordinate, nextBlock);
-								z = ground->GetZ(low, lowBlock);
+								z = m_ground.GetGroundCell(blockCoordinate, nextBlock)->GetZ(low, lowBlock);
 							}
-							if (z <= collision + 0xf) {
+							secondHeight = z;
+							if (secondHeight <= firstHeight + 0xf) {
 								*walkBits |= 0x20;
 							}
-							if (collision <= z + 0xf) {
+							if (firstHeight <= secondHeight + 0xf) {
 								*walkBits |= 2;
 							}
 						}
@@ -268,6 +275,7 @@ void CMap::CreateWalkBits()
 						}
 						if ((collision & 0x25) == 0) {
 							nextBlock = (int) (x - 8) >> 4;
+							currentBlockY = (int) y >> 4;
 							if (((((int) (x - 8) < 0) || ((int) y < 0)) || m_ground.m_width <= nextBlock) ||
 								m_ground.m_height <= currentBlockY) {
 								collision = 0;
@@ -275,22 +283,24 @@ void CMap::CreateWalkBits()
 							else {
 								lowCoordinate = y & 0xf;
 								lowBlock = 0;
-								ground = m_ground.GetGroundCell(nextBlock, currentBlockY);
-								collision = ground->GetZ(lowBlock, lowCoordinate);
+								collision =
+									m_ground.GetGroundCell(nextBlock, currentBlockY)->GetZ(lowBlock, lowCoordinate);
 							}
+							westHeight = collision;
 							nextBlock = (int) (x - 9) >> 4;
 							if (((((int) (x - 9) < 0) || ((int) y < 0)) ||
 								 ((m_ground.m_width <= nextBlock) || m_ground.m_height <= currentBlockY))) {
 								z = 0;
 							}
 							else {
-								ground = m_ground.m_ground + m_ground.m_width * currentBlockY + nextBlock;
-								z = ground->GetZ((x - 9) & 0xf, y & 0xf);
+								z = (m_ground.m_ground + m_ground.m_width * currentBlockY + nextBlock)
+										->GetZ((x - 9) & 0xf, y & 0xf);
 							}
-							if (z <= collision + 0xf) {
+							secondHeight = z;
+							if (secondHeight <= westHeight + 0xf) {
 								*walkBits |= 0x80;
 							}
-							if (collision <= z + 0xf) {
+							if (westHeight <= secondHeight + 0xf) {
 								*walkBits |= 8;
 							}
 						}
@@ -381,31 +391,6 @@ void CMap::GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY
 	case 3:
 		p_screenX = p_gameX + p_gameY;
 		p_screenY = p_gameY / 2 - p_gameX / 2 + 8;
-	}
-}
-
-// FUNCTION: LEMBALL 0x00430ce0
-void CMap::GameToScreen(int& p_x, int& p_y)
-{
-	int* outputY = &p_y;
-	int y = *outputY;
-	int x = p_x;
-	switch (m_orientation) {
-	case 0:
-		p_x = x - y + 0x10;
-		*outputY = y / 2 + x / 2;
-		break;
-	case 1:
-		p_x = 0x20 - y - x;
-		*outputY = x / 2 - y / 2 + 8;
-		break;
-	case 2:
-		p_x = y - x + 0x10;
-		*outputY = 0x10 - y / 2 - x / 2;
-		break;
-	case 3:
-		p_x = x + y;
-		*outputY = y / 2 - x / 2 + 8;
 	}
 }
 
@@ -526,29 +511,6 @@ void CMap::SetLevelName(char* p_name)
 		i++;
 	} while (i < 32);
 	m_levelName[32] = '\0';
-}
-
-// FUNCTION: LEMBALL 0x00431030
-void CMap::CalculateCliff()
-{
-	CGround* ground;
-	int x;
-	int y = 0;
-	if (m_walkHeight > 0) {
-		do {
-			for (x = 0; x < m_walkWidth; x++) {
-				ground = &m_ground.m_ground[y * m_ground.m_width + x];
-				int height = ground->m_height;
-				if (x < m_walkWidth - 1 && y < m_walkHeight - 1) {
-					unsigned short rightHeight = ground[1].m_height;
-					unsigned short belowHeight = m_ground.m_ground[(y + 1) * m_ground.m_width + x].m_height;
-					height -= rightHeight <= belowHeight ? rightHeight : belowHeight;
-				}
-				ground->m_cliff = (unsigned short) ((height + 15) / 16);
-			}
-			y++;
-		} while (y < m_walkHeight);
-	}
 }
 
 // GLOBAL: LEMBALL 0x004a74b4
