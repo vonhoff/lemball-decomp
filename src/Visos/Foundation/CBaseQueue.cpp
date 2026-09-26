@@ -294,11 +294,10 @@ bool CBaseQueue::PutNth(Message* p_message, unsigned int p_index)
 bool CBaseQueue::DeleteNth(unsigned int p_index)
 {
 	unsigned char* slot;
-	unsigned char* dest;
 	unsigned char* src;
 	unsigned char* read;
-	unsigned char* end;
 	unsigned int count;
+	unsigned char* end;
 
 	EnterCritical();
 	read = m_readCursor;
@@ -324,21 +323,21 @@ bool CBaseQueue::DeleteNth(unsigned int p_index)
 		return 1;
 	}
 	src = slot;
-	dest = slot + sizeof(Message);
-	if (end <= dest) {
-		dest = m_messageBuffer;
+	slot += sizeof(Message);
+	if (end <= slot) {
+		slot = m_messageBuffer;
 	}
 	if (p_index < count) {
 		do {
-			if (m_messageBufferEnd <= dest) {
-				dest = m_messageBuffer;
+			if (m_messageBufferEnd <= slot) {
+				slot = m_messageBuffer;
 			}
 			if (m_messageBufferEnd <= src) {
 				src = m_messageBuffer;
 			}
-			*(Message*) dest = *(Message*) src;
+			*(Message*) slot = *(Message*) src;
 			src = src + sizeof(Message);
-			dest = dest + sizeof(Message);
+			slot = slot + sizeof(Message);
 			p_index = p_index + 1;
 		} while (p_index < m_messageCount);
 	}
