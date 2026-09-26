@@ -67,14 +67,17 @@ void CFramedButton::DrawButton()
 	CVsRect bounds;
 	bounds.m_width = m_bounds.m_width;
 	bounds.m_height = m_bounds.m_height;
-	bounds.m_x = 0;
 	bounds.m_y = 0;
+	bounds.m_x = 0;
+	const CVsRect* rectangle = &bounds;
+	unsigned int color;
 	CLine* line = m_frameLine;
-	line->m_bounds.m_width = bounds.m_width;
-	line->m_bounds.m_height = bounds.m_height;
-	line->m_bounds.m_x = bounds.m_x;
-	line->m_bounds.m_y = bounds.m_y;
-	line->m_color = m_frameColor;
+	color = m_frameColor;
+	line->m_bounds.m_width = rectangle->m_width;
+	line->m_bounds.m_height = rectangle->m_height;
+	line->m_bounds.m_x = rectangle->m_x;
+	line->m_bounds.m_y = rectangle->m_y;
+	line->m_color = color;
 	m_frameLine->Draw(m_gdi);
 	bool depressed = m_pressed != 0 && CHotAreaHandler::m_active != 0;
 	if (depressed) {
@@ -85,30 +88,52 @@ void CFramedButton::DrawButton()
 		light = 0xff;
 		dark = 0xf8;
 	}
-	CClipRect* edge = &m_frameRects[0];
-	edge->m_left = 0;
-	edge->m_top = 0;
-	edge->m_right = (short) (m_bounds.m_width - 1);
-	edge->m_bottom = 0;
-	edge->m_reserved0c = light;
-	edge = &m_frameRects[1];
-	edge->m_left = 0;
-	edge->m_top = 0;
-	edge->m_right = 0;
-	edge->m_bottom = (short) (m_bounds.m_height - 1);
-	edge->m_reserved0c = light;
-	edge = &m_frameRects[2];
-	edge->m_left = (short) (m_bounds.m_width - 1);
-	edge->m_top = 0;
-	edge->m_right = (short) (m_bounds.m_width - 1);
-	edge->m_bottom = (short) (m_bounds.m_height - 1);
-	edge->m_reserved0c = dark;
-	edge = &m_frameRects[3];
-	edge->m_left = 0;
-	edge->m_top = (short) (m_bounds.m_height - 1);
-	edge->m_right = (short) (m_bounds.m_width - 1);
-	edge->m_bottom = (short) (m_bounds.m_height - 1);
-	edge->m_reserved0c = dark;
+	{
+		int right;
+		CClipRect* edge = &m_frameRects[0];
+		right = m_bounds.m_width - 1;
+		edge->m_left = 0;
+		edge->m_top = 0;
+		edge->m_right = (short) right;
+		edge->m_bottom = 0;
+		edge->m_reserved0c = light;
+	}
+	{
+		int bottom;
+		CClipRect* edge = m_frameRects;
+		bottom = m_bounds.m_height - 1;
+		edge[1].m_left = 0;
+		edge[1].m_top = 0;
+		edge++;
+		edge->m_right = 0;
+		edge->m_bottom = (short) bottom;
+		edge->m_reserved0c = light;
+	}
+	{
+		CClipRect* edge = m_frameRects;
+		short left = (short) (m_bounds.m_width - 1);
+		edge += 2;
+		int right = m_bounds.m_width - 1;
+		int bottom = m_bounds.m_height - 1;
+		edge->m_left = left;
+		edge->m_top = 0;
+		edge->m_right = (short) right;
+		edge->m_bottom = (short) bottom;
+		edge->m_reserved0c = dark;
+	}
+	{
+		int bottom;
+		int right;
+		CClipRect* edge = m_frameRects;
+		bottom = m_bounds.m_height - 1;
+		right = m_bounds.m_width - 1;
+		edge[3].m_left = 0;
+		edge[3].m_top = (short) bottom;
+		edge[3].m_right = (short) right;
+		edge += 3;
+		edge->m_bottom = (short) bottom;
+		edge->m_reserved0c = dark;
+	}
 	i = 0;
 	do {
 		m_frameRects[i].Draw(m_gdi);
