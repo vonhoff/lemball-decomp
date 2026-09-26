@@ -139,48 +139,57 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 // FUNCTION: LEMBALL 0x0043e220
 void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 {
-	CVsRect bounds;
+	CVsRect boundsValue;
+	CVsRect& bounds = boundsValue;
 	eObjectType objectType = p_viewData.m_objectType;
 	int screenX = p_viewData.m_positionX;
 	int screenY = p_viewData.m_positionY;
 	if (screenX > -40 && screenY > -40 && screenX < m_clipSize.m_x + 40 && screenY < m_clipSize.m_y + 40) {
-		int gameX = (unsigned short) p_viewData.m_gameX;
-		int gameY = (unsigned short) p_viewData.m_gameY;
-		switch (objectType) {
-		default:
-			AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
-			break;
-		case OBJECT_PLAYER_1:
-		case OBJECT_PLAYER_2:
-			if (p_viewData.m_action < ACTION_10 || p_viewData.m_action > ACTION_11) {
+		{
+			const int& gameX = (int) (unsigned short) p_viewData.m_gameX;
+			const int& gameY = (int) (unsigned short) p_viewData.m_gameY;
+			switch (objectType) {
+			default:
 				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
-			}
-			else {
-				AddViewIndexToObjectClipGrid(gameX - 1, gameY - 1, p_viewIndex, p_viewData.m_positionZ, 0);
-			}
-			break;
-		case OBJECT_CRATE:
-			if (p_viewData.m_action == ACTION_24) {
-				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
-			}
-			else if (p_viewData.m_action >= ACTION_25 && p_viewData.m_action <= ACTION_26) {
+				break;
+			case OBJECT_PLAYER_1:
+			case OBJECT_PLAYER_2:
+				switch (p_viewData.m_action) {
+				default:
+					AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
+					break;
+				case ACTION_10:
+				case ACTION_11:
+					AddViewIndexToObjectClipGrid(gameX - 1, gameY - 1, p_viewIndex, p_viewData.m_positionZ, 0);
+					break;
+				}
+				break;
+			case OBJECT_CRATE:
+				switch (p_viewData.m_action) {
+				case ACTION_24:
+					AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
+					break;
+				case ACTION_25:
+				case ACTION_26:
+					AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_positionZ, 1);
+					break;
+				}
+				break;
+			case OBJECT_TRAP_DOOR:
+				AddViewIndexToObjectClipGrid(gameX + 32, gameY + 32, p_viewIndex, p_viewData.m_positionZ, 1);
+				break;
+			case OBJECT_DOOR_1:
+			case OBJECT_DOOR_2:
 				AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_positionZ, 1);
+				break;
+			case OBJECT_PAINT_GUN:
+			case OBJECT_TRAMPOLINE:
+				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 0);
+				break;
+			case OBJECT_MOVER:
+				AddViewIndexToObjectClipGrid(gameX - 8, gameY - 8, p_viewIndex, p_viewData.m_positionZ + 8, 1);
+				break;
 			}
-			break;
-		case OBJECT_TRAP_DOOR:
-			AddViewIndexToObjectClipGrid(gameX + 32, gameY + 32, p_viewIndex, p_viewData.m_positionZ, 1);
-			break;
-		case OBJECT_DOOR_1:
-		case OBJECT_DOOR_2:
-			AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_positionZ, 1);
-			break;
-		case OBJECT_PAINT_GUN:
-		case OBJECT_TRAMPOLINE:
-			AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 0);
-			break;
-		case OBJECT_MOVER:
-			AddViewIndexToObjectClipGrid(gameX - 8, gameY - 8, p_viewIndex, p_viewData.m_positionZ + 8, 1);
-			break;
 		}
 		if (g_nStartupGraphicsDialogRequested != 0) {
 			return;
@@ -208,14 +217,15 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			{
 				SpriteGroundLookup* lookup = m_spriteGroundLookup;
 				const CVsRect& markedRect = bounds;
+				int rectangleWidth = markedRect.m_width;
 				short pixelX = markedRect.m_x;
 				short pixelY = markedRect.m_y;
 				int cellX = (short) (pixelX / 16);
 				int cellY = (short) (pixelY / 16);
-				int columns = (pixelX + markedRect.m_width - 1) / 16 - cellX + 1;
+				int columns = (rectangleWidth + pixelX - 1) / 16 - cellX + 1;
 				int rows = (pixelY + markedRect.m_height - 1) / 16 - cellY + 1;
-				int width = lookup->m_width;
-				int height;
+				short width = lookup->m_width;
+				short height;
 				if (cellX < width && ((height = lookup->m_height), cellY < height)) {
 					if (cellX < 0) {
 						columns += cellX;
@@ -244,8 +254,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 					}
 				}
 			}
-			gameX = (unsigned short) p_viewData.m_gameX;
-			gameY = (unsigned short) p_viewData.m_gameY;
+			int gameX = (unsigned short) p_viewData.m_gameX;
+			int gameY = (unsigned short) p_viewData.m_gameY;
 			CMap* map = m_map;
 			int blockX = gameX >> 4;
 			int blockY = gameY >> 4;
@@ -465,14 +475,15 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 	{
 		SpriteGroundLookup* lookup = m_spriteGroundLookup;
 		const CVsRect& markedRect = bounds;
+		int rectangleWidth = markedRect.m_width;
 		short pixelX = markedRect.m_x;
 		short pixelY = markedRect.m_y;
 		int cellX = (short) (pixelX / 16);
 		int cellY = (short) (pixelY / 16);
-		int columns = (pixelX + markedRect.m_width - 1) / 16 - cellX + 1;
+		int columns = (rectangleWidth + pixelX - 1) / 16 - cellX + 1;
 		int rows = (pixelY + markedRect.m_height - 1) / 16 - cellY + 1;
-		int width = lookup->m_width;
-		int height;
+		short width = lookup->m_width;
+		short height;
 		if (cellX < width && ((height = lookup->m_height), cellY < height)) {
 			if (cellX < 0) {
 				columns += cellX;
