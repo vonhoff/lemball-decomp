@@ -154,11 +154,13 @@ CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
 	NewBitmap(p_rect);
 }
 
+// GLOBAL: LEMBALL 0x004a2018
 static const unsigned char g_anFallbackSystemColors[20][3] = {
 	{0x00, 0x00, 0x00}, {0x80, 0x00, 0x00}, {0x00, 0x80, 0x00}, {0x80, 0x80, 0x00}, {0x00, 0x00, 0x80},
 	{0x80, 0x00, 0x80}, {0x00, 0x80, 0x80}, {0xc0, 0xc0, 0xc0}, {0xc0, 0xdc, 0xc0}, {0xa6, 0xca, 0xf0},
 	{0xff, 0xfb, 0xf0}, {0xa0, 0xa0, 0xa4}, {0x80, 0x80, 0x80}, {0xff, 0x00, 0x00}, {0x00, 0xff, 0x00},
 	{0xff, 0xff, 0x00}, {0x00, 0x00, 0xff}, {0xff, 0x00, 0xff}, {0x00, 0xff, 0xff}, {0xff, 0xff, 0xff}};
+// GLOBAL: LEMBALL 0x004a2058
 static const unsigned char g_anReservedOutputColors[2][3] = {{0xff, 0xff, 0xff}, {0x00, 0x00, 0x00}};
 
 // FUNCTION: LEMBALL 0x0046c380
@@ -168,9 +170,10 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 							 unsigned int* p_fallbackEntries)
 {
 	unsigned char paletteStorage[0x404];
+	int count;
 	PALETTEENTRY* systemEntries = (PALETTEENTRY*) (paletteStorage + 4);
-	PALETTEENTRY* entry;
 	unsigned char* output;
+	PALETTEENTRY* entry;
 	const unsigned char* source;
 	HDC hdc = GetDC(0);
 	unsigned int first = GetSystemPaletteEntries(hdc, 0, 10, systemEntries);
@@ -204,35 +207,35 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 	do {
 		output[0] = entry->peRed;
 		output[-1] = entry->peGreen;
-		entry->peFlags = 0;
 		output[-2] = entry->peBlue;
+		entry->peFlags = 0;
 		unsigned char red = entry[0xf6].peRed;
 		output[1] = 0;
 		output[0x3d8] = red;
 		output[0x3d7] = entry[0xf6].peGreen;
-		entry[0xf6].peFlags = 0;
 		output[0x3d6] = entry[0xf6].peBlue;
+		entry[0xf6].peFlags = 0;
 		output[0x3d9] = 0;
-		output += 4;
 		entry++;
+		output += 4;
 	} while (entry < systemEntries + 10);
-	int count = 2;
-	output = &((RGBQUAD*) p_entries)[10].rgbRed;
 	source = &g_anReservedOutputColors[0][0];
+	output = &((RGBQUAD*) p_entries)[10].rgbRed;
+	count = 2;
 	do {
 		output[0] = *source++;
-		count--;
 		output[-1] = *source++;
 		output[-2] = *source++;
 		output[1] = 0;
 		output += 4;
-
+		count--;
 	} while (count != 0);
 	if (p_palette == 0) {
 		if (p_fallbackEntries == 0) {
-			output = &((RGBQUAD*) p_entries)[12].rgbRed;
-			entry = systemEntries + 12;
+			PALETTEENTRY* entry;
 			int index = 12;
+			entry = systemEntries + 12;
+			output = &((RGBQUAD*) p_entries)[12].rgbRed;
 			do {
 				unsigned char color = -index;
 				entry->peRed = color;
@@ -243,15 +246,16 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 				output[-2] = color;
 				output[1] = 0;
 				entry->peFlags = 1;
-				output += 4;
 				entry++;
+				output += 4;
 				index++;
 			} while (entry < systemEntries + 0xf6);
 		}
 		else {
-			unsigned char* fallback = &((RGBQUAD*) p_fallbackEntries)[12].rgbRed;
+			unsigned char* fallback;
+			PALETTEENTRY* entry = systemEntries + 12;
 			output = &((RGBQUAD*) p_entries)[12].rgbRed;
-			entry = systemEntries + 12;
+			fallback = &((RGBQUAD*) p_fallbackEntries)[12].rgbRed;
 			do {
 				unsigned char color = fallback[0];
 				output[0] = color;
@@ -262,23 +266,23 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 				color = fallback[-2];
 				entry->peBlue = color;
 				output[-2] = color;
-				entry->peFlags = 1;
 				output[1] = 0;
-				fallback += 4;
-				output += 4;
+				entry->peFlags = 1;
 				entry++;
+				output += 4;
+				fallback += 4;
 			} while (entry < systemEntries + 0xf6);
 		}
 	}
 	else {
-		count = (int) p_palette->m_paletteState - 10;
-		if (count > 0xf6) {
-			count = 0xec;
+		int paletteCount = (int) p_palette->m_paletteState - 10;
+		if (paletteCount > 0xf6) {
+			paletteCount = 0xec;
 		}
-		if (count > 12) {
-			count -= 12;
-			output = &((RGBQUAD*) p_entries)[12].rgbRed;
+		if (paletteCount > 12) {
 			int i = 12;
+			output = &((RGBQUAD*) p_entries)[12].rgbRed;
+			paletteCount -= 12;
 			do {
 				source = p_palette->m_data + i * 4;
 				unsigned char color = source[0];
@@ -294,8 +298,8 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 				systemEntries[i].peFlags = 1;
 				output += 4;
 				i++;
-				count--;
-			} while (count != 0);
+				paletteCount--;
+			} while (paletteCount != 0);
 		}
 	}
 	g_pTargetGraphicsDriver->CreatePalette((LOGPALETTE*) paletteStorage);
@@ -1619,9 +1623,8 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 // FUNCTION: LEMBALL 0x00475bc0
 int CSurface::ClipCircle(int p_centerX, int p_centerY, int p_radius)
 {
-	int top;
 	int left = p_centerX - p_radius;
-	top = p_centerY - p_radius;
+	int top = p_centerY - p_radius;
 	int right = p_centerX + p_radius;
 	int bottom = p_centerY + p_radius;
 
@@ -1706,30 +1709,6 @@ void CSurface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radi
 			DrawClippedCirclePoint(p_centerX, p_centerY, y, x, p_colour);
 		}
 	} while (y > x);
-}
-
-// FUNCTION: LEMBALL 0x00475f60
-int CSurface::ClipCirclePoint(int p_x, int p_y)
-{
-	int clipX;
-	int clipRight;
-	int clipY;
-	int clipBottom;
-
-	clipX = CPVScrollableSurface::m_clipRect.m_x;
-	if (clipX <= p_x) {
-		clipRight = CPVScrollableSurface::m_clipRect.m_width + clipX - 1;
-		if (p_x <= clipRight) {
-			clipY = CPVScrollableSurface::m_clipRect.m_y;
-			if (clipY <= p_y) {
-				clipBottom = CPVScrollableSurface::m_clipRect.m_height + clipY - 1;
-				if (p_y <= clipBottom) {
-					return 1;
-				}
-			}
-		}
-	}
-	return 0;
 }
 
 // FUNCTION: LEMBALL 0x00475fb0
@@ -3214,10 +3193,9 @@ void CSurface::BlitZRLENoClipRemap(const CVsRect& p_rect,
 								   unsigned int p_reverse,
 								   unsigned char* p_remap)
 {
-	int step;
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
-	step = 1;
+	int step = 1;
 	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
