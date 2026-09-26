@@ -61,7 +61,8 @@ void C2D::Process()
 			}
 			break;
 		case PAUSE_MSG_LOADING:
-			break;
+			m_optionSelection = 0;
+			goto optionHandled;
 		case PAUSE_MSG_ARE_YOU_SURE:
 			*g_pErrorOutput << "Confirmed\n";
 			if (m_optionSelection == 2) {
@@ -91,6 +92,7 @@ void C2D::Process()
 		m_optionSelection = 0;
 	}
 
+optionHandled:
 	switch (m_ai->m_gameStatus) {
 	case GAME_STATUS_PAUSED:
 		if (m_paused == 0 && m_ai->m_gameStatePending == 0) {
