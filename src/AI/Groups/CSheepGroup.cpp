@@ -8,6 +8,7 @@
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Groups/CGenericGroup.h"
+#include "AI/Objects/CViewData.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Foundation/CFixed.h"
 #include "Visos/Foundation/CVector.h"
