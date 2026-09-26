@@ -1783,8 +1783,8 @@ void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 	}
 	int row = 0;
 	int x = p_rect.m_x;
+	int y = p_rect.m_y;
 	if (p_rect.m_height > 0) {
-		int y = p_rect.m_y;
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
@@ -1796,8 +1796,8 @@ void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 				if (run < 0x80) {
 					clipX -= run;
 					if (clipX < 0) {
-						width += clipX;
 						dst -= clipX;
+						width += clipX;
 						zlines -= clipX;
 					}
 				}
@@ -1814,12 +1814,12 @@ void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 						}
 						else {
 							memcpy(dst, clipX + src + run, width);
-							for (unsigned int i = 0; i < (unsigned int) width; i++) {
+							for (int i = 0; i < width; i++) {
 								zlines[i] = p_depth;
 							}
 						}
-						width -= copyLen;
 						dst += copyLen;
+						width -= copyLen;
 						zlines += copyLen;
 					}
 					src += run;
@@ -1847,13 +1847,13 @@ void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 								for (unsigned int i = 0; i < (unsigned int) run; i++) {
 									zlines[i] = p_depth;
 								}
-								width -= run;
 								dst += run;
+								width -= run;
 								zlines += run;
 							}
 							else {
 								memcpy(dst, src, width);
-								for (unsigned int i = 0; i < (unsigned int) width; i++) {
+								for (int i = 0; i < width; i++) {
 									zlines[i] = p_depth;
 								}
 								dst += width;
@@ -2929,9 +2929,8 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 	{
 		unsigned short stateDepth = (unsigned short) p_primitive->m_state;
 		CRemap* remap = p_primitive->m_remap;
-		int primitiveX;
 		int primitiveY = (int) p_primitive->m_y;
-		primitiveX = (int) p_primitive->m_x;
+		int primitiveX = (int) p_primitive->m_x;
 
 		if ((int) p_zrle->m_height * (int) p_zrle->m_width == 0) {
 			return;
