@@ -24,7 +24,7 @@ public:
 	friend class CBaseCursor;
 
 	CVsRect& operator=(const CVsRect& p_source);
-	void ExpandToInclude(const CVsRect& p_rect);
+	CVsRect* ExpandToInclude(const CVsRect& p_rect);
 };
 
 // SYNTHETIC: LEMBALL 0x00442170
