@@ -1713,8 +1713,8 @@ void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZR
 						else {
 							memcpy(dst, src + run + clipX, width);
 						}
-						width -= copyLen;
 						dst += copyLen;
+						width -= copyLen;
 					}
 					src += run;
 				}
