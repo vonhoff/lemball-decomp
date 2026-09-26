@@ -2695,13 +2695,14 @@ void CSurface::BlitZRLEClipRemapR(const CVsRect& p_rect,
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
 	int y = p_rect.m_y;
-	unsigned char* src = p_zrle->GetData();
-	int zrleWidth = p_zrle->m_width;
 	int step = 1;
+	unsigned char* src = p_zrle->GetData();
+	short zrleWidth = p_zrle->m_width;
+	short zrleHeight = p_zrle->m_height;
 	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
-		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
+		int skipRows = (zrleHeight - p_clip.m_y) - p_rect.m_height;
 		if (skipRows > 0) {
 			do {
 				unsigned char run;
@@ -2747,8 +2748,9 @@ void CSurface::BlitZRLEClipRemapR(const CVsRect& p_rect,
 					if (run < 0x80) {
 						skipX -= run;
 						if (skipX < 0) {
-							width += skipX;
-							dst += skipX;
+							int overshoot = skipX;
+							dst += overshoot;
+							width += overshoot;
 						}
 					}
 					else if (run > 0x80) {
@@ -2758,21 +2760,23 @@ void CSurface::BlitZRLEClipRemapR(const CVsRect& p_rect,
 						if (skipX < 0) {
 							int copyLen = -skipX;
 							if (copyLen < width) {
+								int i = copyLen;
 								unsigned char* copySrc = src + count + skipX;
 								unsigned char* copyDst = dst;
-								for (int i = copyLen; i > 0; i--) {
+								for (; i > 0; i--) {
 									*copyDst-- = p_remap[*copySrc++];
 								}
 							}
 							else {
+								int i = width;
 								unsigned char* copySrc = src + count + skipX;
 								unsigned char* copyDst = dst;
-								for (int i = width; i > 0; i--) {
+								for (; i > 0; i--) {
 									*copyDst-- = p_remap[*copySrc++];
 								}
 							}
-							width -= copyLen;
 							dst -= copyLen;
+							width -= copyLen;
 						}
 						src += count;
 					}
@@ -2786,19 +2790,21 @@ void CSurface::BlitZRLEClipRemapR(const CVsRect& p_rect,
 						run &= 0x7f;
 						int count = run;
 						if (count < width) {
+							int i = count;
 							unsigned char* copySrc = src;
 							unsigned char* copyDst = dst;
-							for (unsigned int i = count; i != 0; i--) {
+							for (; i > 0; i--) {
 								*copyDst-- = p_remap[*copySrc++];
 							}
 							src += count;
-							width -= count;
 							dst -= count;
+							width -= count;
 						}
 						else {
+							int i = width;
 							unsigned char* copySrc = src;
 							unsigned char* copyDst = dst;
-							for (int i = width; i > 0; i--) {
+							for (; i > 0; i--) {
 								*copyDst-- = p_remap[*copySrc++];
 							}
 							src += count;
