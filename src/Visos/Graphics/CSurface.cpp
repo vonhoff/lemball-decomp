@@ -1141,99 +1141,75 @@ void CSurface::Blit(CSolidRect* p_rect)
 // FUNCTION: LEMBALL 0x004750c0
 void CSurface::Blit(CLine* p_line)
 {
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	int dx;
-	int dy;
-	int absDy;
-	int stepY;
-	int err;
-	int x;
-	int y;
-	int remaining;
-	unsigned char color;
-
-	x1 = p_line->m_bounds.m_width;
-	y1 = p_line->m_bounds.m_height;
-	x2 = p_line->m_bounds.m_x;
-	y2 = p_line->m_bounds.m_y;
-	color = (unsigned char) p_line->m_color;
+	int y2 = p_line->m_bounds.m_y;
+	int x2 = p_line->m_bounds.m_x;
+	int color = p_line->m_color;
+	int y1 = p_line->m_bounds.m_height;
+	int x1 = p_line->m_bounds.m_width;
 	if (x2 < x1) {
-		x = x1;
+		int x = x1;
 		x1 = x2;
 		x2 = x;
-		y = y1;
+		int y = y1;
 		y1 = y2;
 		y2 = y;
 	}
-	if (LineClip(x1, y1, x2, y2) != 0) {
+	CSurface* surface = this;
+	if (surface->LineClip(x1, y1, x2, y2) != 0) {
 		return;
 	}
-	dx = x2 - x1;
-	dy = y2 - y1;
-	stepY = 1;
-	absDy = dy;
+	int x = x1;
+	int y = y1;
+	int endY = y2;
+	int dx = x2 - x;
+	int dy = endY - y;
+	int stepY = 1;
+	int absDy = dy;
 	if (dy < 0) {
 		stepY = -1;
 		absDy = -dy;
 	}
 	if (absDy < dx) {
-		err = 0;
+		int doubleDx = dx * 2;
+		int doubleDy = absDy * 2;
+		int remaining = dx;
+		int err = 0;
 		if (0 < dx) {
-			x = x1;
-			y = y1;
-			remaining = dx;
 			do {
 				remaining = remaining - 1;
 				x = x + 1;
-				err = err + absDy * 2;
-				*((unsigned char*) m_lines[y] + (x - 1)) = color;
+				err = err + doubleDy;
+				*((unsigned char*) m_lines[y] + (x - 1)) = (unsigned char) color;
 				if (dx < err) {
 					y = y + stepY;
-					err = err + dx * -2;
+					err = err - doubleDx;
 				}
 			} while (remaining != 0);
 		}
 	}
 	else {
-		remaining = dy;
+		int doubleDy = absDy * 2;
+		int doubleDx = dx * 2;
+		int remaining = dy;
+		int err = 0;
 		if (stepY != 1) {
-			remaining = y1 - y2;
+			remaining = y - endY;
 		}
 		if (0 < remaining) {
-			x = x1;
-			y = y1;
-			err = 0;
 			do {
 				remaining = remaining - 1;
-				err = err + dx * 2;
-				*((unsigned char*) m_lines[y] + x) = color;
+				err = err + doubleDx;
+				*((unsigned char*) m_lines[y] + x) = (unsigned char) color;
 				y = y + stepY;
 				if (absDy < err) {
 					x = x + 1;
-					err = err + absDy * -2;
+					err = err - doubleDy;
 				}
 			} while (remaining != 0);
 		}
 	}
-	CVsRect bounds;
-	bounds.m_width = (short) (dx + 1);
-	if (dy < 0) {
-		bounds.m_height = (short) (-dy + 1);
-	}
-	else {
-		bounds.m_height = (short) (dy + 1);
-	}
-	bounds.m_x = (short) x1;
-	if (y2 <= y1) {
-		bounds.m_y = (short) y2;
-	}
-	else {
-		bounds.m_y = (short) y1;
-	}
-	AddToChangeList(bounds);
+	surface->AddToChangeList(
+		CVsRect((short) x1, (short) min(y1, y2), (short) (x2 - x1 + 1), (short) (abs(y2 - y1) + 1)));
 }
 
 // FUNCTION: LEMBALL 0x00475290
@@ -2306,45 +2282,6 @@ void CSurface::BlitZRLENoClipZBuffRemap(const CVsRect& p_rect,
 	}
 }
 
-// FUNCTION: LEMBALL 0x00477660
-void CSurface::BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
-{
-	int startX = p_rect.m_x + p_rect.m_width - 1;
-	int y = p_rect.m_y;
-	int step = 1;
-	if (p_reverse != 0) {
-		step = -1;
-		y += p_rect.m_height - 1;
-	}
-	unsigned char* src = p_zrle->GetData();
-	int row = 0;
-	if (p_rect.m_height > 0) {
-		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
-			unsigned char run;
-			do {
-				run = *src++;
-				if (run < 0x80) {
-					dst -= run;
-				}
-				else if (run > 0x80) {
-					run &= 0x7f;
-					int i = run;
-					unsigned char* copySrc = src;
-					unsigned char* copyDst = dst;
-					for (; i > 0; i--) {
-						*copyDst-- = *copySrc++;
-					}
-					dst -= run;
-					src += run;
-				}
-			} while (run != 0x80);
-			y += step;
-			row++;
-		} while (row < p_rect.m_height);
-	}
-}
-
 // FUNCTION: LEMBALL 0x00477740
 void CSurface::BlitZRLEClipRemap(const CVsRect& p_rect,
 								 const CVsRect& p_clip,
@@ -2992,8 +2929,9 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 	{
 		unsigned short stateDepth = (unsigned short) p_primitive->m_state;
 		CRemap* remap = p_primitive->m_remap;
+		int primitiveX;
 		int primitiveY = (int) p_primitive->m_y;
-		int primitiveX = (int) p_primitive->m_x;
+		primitiveX = (int) p_primitive->m_x;
 
 		if ((int) p_zrle->m_height * (int) p_zrle->m_width == 0) {
 			return;
