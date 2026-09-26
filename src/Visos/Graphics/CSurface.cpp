@@ -868,66 +868,6 @@ void CSurface::MoveRel(const CVsPoint& p_delta)
 	Move(*rect);
 }
 
-// FUNCTION: LEMBALL 0x0046d5b0
-void CSurface::Move(const CVsPoint& p_position)
-{
-	CVsPoint delta;
-	delta.m_x = p_position.m_x - m_surfaceRect.m_x;
-	delta.m_y = p_position.m_y - m_surfaceRect.m_y;
-
-	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
-		EnterCriticalSection((CRITICAL_SECTION*) m_lock);
-		m_surfaceRect.m_x = p_position.m_x;
-		m_surfaceRect.m_y = p_position.m_y;
-		short oldWidth = m_windowRect.m_width;
-		short oldHeight = m_windowRect.m_height;
-		m_windowRect.m_width = m_surfaceRect.m_width;
-		m_windowRect.m_height = m_surfaceRect.m_height;
-		m_windowRect.m_x = m_surfaceRect.m_x;
-		m_windowRect.m_y = m_surfaceRect.m_y;
-
-		CVsRect& clipped = m_windowRect;
-		short parentWidth = m_parentSurface->m_windowRect.m_width;
-		short parentHeight = m_parentSurface->m_windowRect.m_height;
-
-		if (clipped.m_x < 0) {
-			clipped.m_width += clipped.m_x;
-			clipped.m_x = 0;
-		}
-		if (parentWidth < (short) (clipped.m_x + clipped.m_width)) {
-			clipped.m_width = parentWidth - clipped.m_x;
-		}
-		if (clipped.m_y < 0) {
-			clipped.m_height += clipped.m_y;
-			clipped.m_y = 0;
-		}
-		if (parentHeight < (short) (clipped.m_y + clipped.m_height)) {
-			clipped.m_height = parentHeight - clipped.m_y;
-		}
-		if (clipped.m_width < 1 || clipped.m_height < 1) {
-			clipped.m_x = 0;
-			clipped.m_width = 0;
-			clipped.m_y = 0;
-			clipped.m_height = 0;
-		}
-		m_clipRect.m_width = m_windowRect.m_width;
-		m_clipRect.m_height = m_windowRect.m_height;
-		if (m_windowRect.m_width != oldWidth || m_windowRect.m_height != oldHeight) {
-			Resize((CVsSize&) m_windowRect);
-		}
-		if (m_platformBitmap != 0) {
-			g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
-			m_platformBitmap = 0;
-		}
-		m_bitmapPixelCount = 0;
-		CreateLinePtrs();
-		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
-		for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {
-			node->m_surface->MoveRel(delta);
-		}
-	}
-}
-
 // FUNCTION: LEMBALL 0x0046d7e0
 void CSurface::SetWindowPtr(void* p_platformPort)
 {
@@ -1695,32 +1635,6 @@ void CSurface::DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radiu
 				if (x < p_radius) {
 					FilledCircleClipPoints(p_centerX, p_centerY, p_radius, x, p_colour);
 				}
-			}
-		}
-	}
-}
-
-// FUNCTION: LEMBALL 0x00476470
-void CSurface::FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour)
-{
-	int y1 = p_centerY - p_yOffset;
-	int y2 = p_centerY + p_yOffset;
-	if (y1 <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1) && m_clipRect.m_y <= y2) {
-		int x1 = p_centerX - p_xOffset;
-		int x2 = p_centerX + p_xOffset;
-		int clipX = m_clipRect.m_x;
-		if (clipX <= x2 && x1 <= (int) (m_clipRect.m_width + clipX - 1)) {
-			if ((int) (m_clipRect.m_width + clipX - 1) < x2) {
-				x2 = m_clipRect.m_width + clipX - 1;
-			}
-			if (x1 < clipX) {
-				x1 = clipX;
-			}
-			if (m_clipRect.m_y <= y1) {
-				memset((unsigned char*) m_lines[y1] + x1, p_colour, x2 - x1 + 1);
-			}
-			if (y2 <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-				memset((unsigned char*) m_lines[y2] + x1, p_colour, x2 - x1 + 1);
 			}
 		}
 	}
@@ -3074,8 +2988,8 @@ void CSurface::BlitZRLENoClipRemapR(const CVsRect& p_rect,
 									unsigned char* p_remap)
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
-	int step = 1;
 	int y = p_rect.m_y;
+	int step = 1;
 	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
