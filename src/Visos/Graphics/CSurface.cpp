@@ -2510,7 +2510,7 @@ void CSurface::BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned
 				if (run < 0x80) {
 					dst -= run;
 				}
-				if (run > 0x80) {
+				else if (run > 0x80) {
 					run &= 0x7f;
 					int i = run;
 					unsigned char* copySrc = src;
@@ -2518,8 +2518,8 @@ void CSurface::BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned
 					for (; i > 0; i--) {
 						*copyDst-- = *copySrc++;
 					}
-					src += run;
 					dst -= run;
+					src += run;
 				}
 			} while (run != 0x80);
 			y += step;
