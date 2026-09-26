@@ -74,7 +74,8 @@ bool CCollectable::Process()
 					else {
 						z = 0;
 					}
-					m_position.m_zFixed = (int) z << 12;
+					const int& height = (int) z << 12;
+					m_position.m_zFixed = height;
 				}
 				CPt3 pt;
 				pt.m_x = m_position.m_xFixed >> 12;
