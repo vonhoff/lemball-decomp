@@ -2330,12 +2330,10 @@ void CSurface::BlitZRLEClipRemap(const CVsRect& p_rect,
 	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int lineOffset = y * 4;
-		int stepOffset = step * 4;
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2414,7 +2412,7 @@ void CSurface::BlitZRLEClipRemap(const CVsRect& p_rect,
 					}
 				}
 			} while (run != 0x80);
-			lineOffset += stepOffset;
+			y += step;
 			row++;
 		} while (row < p_rect.m_height);
 	}
