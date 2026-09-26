@@ -19,7 +19,6 @@
 #include "AI/Base/ObjectTypes.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CFixed.h"
 #include "Visos/Foundation/VsDebug.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
@@ -229,18 +228,18 @@ void CBullet::AddData()
 void CBullet::GetData()
 {
 	SetRemoteGameTimeReal(GetDWORD());
-	const CFixed& x = CFixed::FromInteger((short) GetWORD());
-	m_position.m_xFixed = x.m_value;
-	const CFixed& y = CFixed::FromInteger((short) GetWORD());
-	m_position.m_yFixed = y.m_value;
-	const CFixed& z = CFixed::FromInteger((short) GetWORD());
-	m_position.m_zFixed = z.m_value;
-	const CFixed& destinationX = CFixed::FromInteger((short) GetWORD());
-	m_destination.m_xFixed = destinationX.m_value;
-	const CFixed& destinationY = CFixed::FromInteger((short) GetWORD());
-	m_destination.m_yFixed = destinationY.m_value;
-	const CFixed& destinationZ = CFixed::FromInteger((short) GetWORD());
-	m_destination.m_zFixed = destinationZ.m_value;
+	const int& x = (int) (short) GetWORD() << 12;
+	m_position.m_xFixed = x;
+	const int& y = (int) (short) GetWORD() << 12;
+	m_position.m_yFixed = y;
+	const int& z = (int) (short) GetWORD() << 12;
+	m_position.m_zFixed = z;
+	const int& destinationX = (int) (short) GetWORD() << 12;
+	m_destination.m_xFixed = destinationX;
+	const int& destinationY = (int) (short) GetWORD() << 12;
+	m_destination.m_yFixed = destinationY;
+	const int& destinationZ = (int) (short) GetWORD() << 12;
+	m_destination.m_zFixed = destinationZ;
 	m_facingDirection = (short) GetWORD();
 	m_soundEffect = (eSoundEffect) GetDWORD();
 	m_lastMovementTick = GetDWORD();
