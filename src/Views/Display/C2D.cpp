@@ -1863,10 +1863,10 @@ int C2D::DrawClippedRectangle(const CVsRect& p_rect)
 	CBitmap& bitmap = m_bitmaps[m_bitmapCount];
 	bitmap.m_x = clippedRect.m_x;
 	bitmap.m_y = clippedRect.m_y;
-	bitmap.m_width = clippedRect.m_width;
-	bitmap.m_height = clippedRect.m_height;
-	bitmap.m_sourceX = clippedRect.m_x;
-	bitmap.m_sourceY = clippedRect.m_y;
+	bitmap.m_sourceRect.m_width = clippedRect.m_width;
+	bitmap.m_sourceRect.m_height = clippedRect.m_height;
+	bitmap.m_sourceRect.m_x = clippedRect.m_x;
+	bitmap.m_sourceRect.m_y = clippedRect.m_y;
 	m_bitmaps[m_bitmapCount].Draw(m_gdi);
 	m_bitmapCount++;
 	return result;

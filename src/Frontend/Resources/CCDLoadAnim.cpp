@@ -146,10 +146,10 @@ void CCDLoadAnim::Draw()
 		rect.m_height = m_display->m_rect.m_height;
 		rect.m_x = 0;
 		rect.m_y = 0;
-		m_clearBitmap[0].m_width = rect.m_width;
-		m_clearBitmap[0].m_height = rect.m_height;
-		m_clearBitmap[0].m_sourceX = rect.m_x;
-		m_clearBitmap[0].m_sourceY = rect.m_y;
+		m_clearBitmap[0].m_sourceRect.m_width = rect.m_width;
+		m_clearBitmap[0].m_sourceRect.m_height = rect.m_height;
+		m_clearBitmap[0].m_sourceRect.m_x = rect.m_x;
+		m_clearBitmap[0].m_sourceRect.m_y = rect.m_y;
 		m_clearBitmap[0].Draw(m_gdi);
 	}
 	CVsPoint point((short) (m_points->m_x + m_centerX), (short) (m_points->m_y + m_centerY));

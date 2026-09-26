@@ -3041,7 +3041,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 {
 	short x = p_primitive->m_x;
 	short y = p_primitive->m_y;
-	CVsRect sourceRect(p_primitive->m_sourceX, p_primitive->m_sourceY, p_primitive->m_width, p_primitive->m_height);
+	CVsRect sourceRect(p_primitive->m_sourceRect);
 	if (sourceRect.m_height == 0 && sourceRect.m_width == 0) {
 		sourceRect.m_width = p_bitmap->m_x;
 		sourceRect.m_height = p_bitmap->m_y;

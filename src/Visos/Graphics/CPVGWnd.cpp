@@ -63,10 +63,10 @@ void CPVGWnd::Clear(int p_color)
 	if (m_gdi->m_renderTarget->HasBackBuff()) {
 		m_backBufferCopy[0].m_x = 0;
 		m_backBufferCopy[0].m_y = 0;
-		memcpy(&m_backBufferCopy[0].m_width, &clearRect.m_width, sizeof(clearRect.m_width));
-		memcpy(&m_backBufferCopy[0].m_height, &clearRect.m_height, sizeof(clearRect.m_height));
-		memcpy(&m_backBufferCopy[0].m_sourceX, &clearRect.m_x, sizeof(clearRect.m_x));
-		memcpy(&m_backBufferCopy[0].m_sourceY, &clearRect.m_y, sizeof(clearRect.m_y));
+		memcpy(&m_backBufferCopy[0].m_sourceRect.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
+		memcpy(&m_backBufferCopy[0].m_sourceRect.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
+		memcpy(&m_backBufferCopy[0].m_sourceRect.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
+		memcpy(&m_backBufferCopy[0].m_sourceRect.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
 		m_backBufferCopy[0].Draw(m_gdi);
 	}
 

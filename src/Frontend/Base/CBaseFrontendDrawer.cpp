@@ -232,10 +232,10 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 	CBitmap* bitmap = &m_primitiveBundle[m_primitiveBank].m_bitmap;
 	bitmap->m_x = 0;
 	bitmap->m_y = 0;
-	bitmap->m_width = size->m_width;
-	bitmap->m_height = size->m_height;
-	bitmap->m_sourceX = origin->m_x;
-	bitmap->m_sourceY = origin->m_y;
+	bitmap->m_sourceRect.m_width = size->m_width;
+	bitmap->m_sourceRect.m_height = size->m_height;
+	bitmap->m_sourceRect.m_x = origin->m_x;
+	bitmap->m_sourceRect.m_y = origin->m_y;
 	m_primitiveBundle[m_primitiveBank].m_bitmap.Draw(m_gdi);
 	m_drawingBackBuffer = 0;
 	if (m_hiliteController != 0 && hiliteActive != 0) {
