@@ -1122,10 +1122,11 @@ void CSurface::CopyBackBuffToScreen(const CVsRect& p_rect)
 // FUNCTION: LEMBALL 0x00474fd0
 void CSurface::Blit(CPoint* p_point)
 {
-	CPoint* primitive = p_point;
-	if (m_clipRect.m_x <= primitive->m_x && primitive->m_x < (short) (m_clipRect.m_width + m_clipRect.m_x)) {
-		if (m_clipRect.m_y <= primitive->m_y && primitive->m_y < (short) (m_clipRect.m_height + m_clipRect.m_y)) {
-			*((unsigned char*) m_lines[primitive->m_y] + primitive->m_x) = (unsigned char) primitive->m_color;
+	short x = p_point->m_x;
+	int color = p_point->m_color;
+	if (m_clipRect.m_x <= x && x < (short) (m_clipRect.m_width + m_clipRect.m_x)) {
+		if (m_clipRect.m_y <= p_point->m_y && p_point->m_y < (short) (m_clipRect.m_height + m_clipRect.m_y)) {
+			*((unsigned char*) m_lines[p_point->m_y] + x) = (unsigned char) color;
 			CVsRect rect(p_point->m_x, p_point->m_y, 1, 1);
 			AddToChangeList(rect);
 		}
