@@ -941,17 +941,19 @@ void CAI::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned shor
 		eObjectType objectType = m_map->m_ground.m_ground[blockY * m_map->m_ground.m_width + blockX].m_objectType;
 		p_object->m_actionDeadline = g_dwGameTick + 26;
 		p_object->m_action = ACTION_15;
-		if (objectType != TERRAIN_ELECTRIC) {
+		switch (objectType) {
+		default:
 			p_object->m_actionArgument = 2;
 			p_object->m_stateTimer = g_dwGameTick * 50;
 			p_object->SetSndEffect(SFX_AAAAH1);
 			return;
-		}
 
-		p_object->m_actionArgument = 1;
-		p_object->m_stateTimer = g_dwGameTick * 50;
-		p_object->SetSndEffect(SFX_AAAAH2);
-		return;
+		case TERRAIN_ELECTRIC:
+			p_object->m_actionArgument = 1;
+			p_object->m_stateTimer = g_dwGameTick * 50;
+			p_object->SetSndEffect(SFX_AAAAH2);
+			return;
+		}
 	}
 
 	if ((collision & 0x8000) == 0) {
@@ -1050,13 +1052,12 @@ void CAI::QuitGame()
 // FUNCTION: LEMBALL 0x00412c80
 void CAI::SwitchMessage(swMessage p_message, int p_first, int p_last, int p_arg3)
 {
-	int index;
 	switch (p_message) {
 	case SW_LIFT:
 		m_liftManager->Switch(p_message, p_first, p_last, p_arg3);
 		return;
 	case SW_LIFTS: {
-		index = p_first;
+		int index = p_first;
 		if (index < p_last) {
 			do {
 				m_liftManager->Switch(SW_LIFT, index, 0, 0);
