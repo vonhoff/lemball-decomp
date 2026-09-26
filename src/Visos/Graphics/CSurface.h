@@ -41,7 +41,7 @@ public:
 	int LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2);
 	virtual void Resize(const CVsSize& p_size);          // vtable+0x28
 	virtual void SetLinePtrs();                          // vtable+0x00
-	virtual void AddToChangeList(const CVsRect* p_rect); // vtable+0x04
+	virtual void AddToChangeList(const CVsRect& p_rect); // vtable+0x04
 	virtual CChangeList* GetChangeList();                // vtable+0x08
 	virtual void* GetCurrDB();                           // vtable+0x38
 	virtual void AttachPalette(CResPALETTE* p_palette);  // vtable+0x30
@@ -105,7 +105,7 @@ public:
 	void DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius, int p_colour);
 	void FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour);
 	void DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radius, unsigned char p_colour);
-	void DrawCircleSpans(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
+	void DrawCircleSpans(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour);
 	int ClipCirclePoint(int p_x, int p_y);
 	void DrawClippedCirclePoint(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
 	void Flush();

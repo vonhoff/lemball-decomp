@@ -28,6 +28,7 @@
 #include "CZRLE.h"
 
 #include <new.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
@@ -504,7 +505,7 @@ void CSurface::SetLinePtrs()
 }
 
 // FUNCTION: LEMBALL 0x0046cb20
-void CSurface::AddToChangeList(const CVsRect* p_rect)
+void CSurface::AddToChangeList(const CVsRect& p_rect)
 {
 	CSurface* parent;
 	const CVsPoint* origin;
@@ -517,13 +518,13 @@ void CSurface::AddToChangeList(const CVsRect* p_rect)
 		origin = &this->CPVScrollableSurface::m_surfaceRect;
 		originX = origin->m_x;
 		originY = origin->m_y;
-		CVsRect translated(*p_rect);
+		CVsRect translated(p_rect);
 		translated.m_x += originX;
 		translated.m_y += originY;
-		((CSurface*) CPVScrollableSurface::m_parentSurface)->AddToChangeList(&translated);
+		((CSurface*) CPVScrollableSurface::m_parentSurface)->AddToChangeList(translated);
 		return;
 	}
-	m_changeList->Add(*p_rect);
+	m_changeList->Add(p_rect);
 }
 
 // FUNCTION: LEMBALL 0x0046cbd0
@@ -624,14 +625,14 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
 		if (m_flag74 == 0) {
 			if (m_flag78 != 0) {
-				m_parentSurface->AddToChangeList(&m_windowRect);
+				m_parentSurface->AddToChangeList(m_windowRect);
 				m_flag78 = 0;
 			}
 			else if (m_flag70 != 0) {
 				CChangeList* list = GetChangeList();
 				int diff = list->GetNumItems() - list->GetDrawMark();
 				if (diff > 0) {
-					m_parentSurface->AddToChangeList(&m_windowRect);
+					m_parentSurface->AddToChangeList(m_windowRect);
 				}
 			}
 		}
@@ -827,7 +828,7 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 		short drawHeight = drawSize.m_height;
 		clip.m_width = drawSize.m_width;
 		clip.m_height = drawHeight;
-		AddToChangeList(&clip);
+		AddToChangeList(clip);
 	}
 	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 }
@@ -899,7 +900,7 @@ void CSurface::CopyDibBits(void* p_header, unsigned char* p_bits)
 	rect.m_width = rectWidth;
 	rect.m_height = rectHeight;
 	m_changeList->Reset();
-	AddToChangeList(&rect);
+	AddToChangeList(rect);
 	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 }
 
@@ -1030,16 +1031,15 @@ void CSurface::Blit(CScreenScroll* p_scroll)
 		CPVZBuffSurface::m_bitmap.Scroll(&zrect, &zdst);
 	}
 	CPVGDIBitmap::Scroll(&rect, &dst);
-	AddToChangeList(&rect);
+	AddToChangeList(rect);
 }
 
 // FUNCTION: LEMBALL 0x00474d40
 void CSurface::Blit(CZBuffClear* p_clear)
 {
-	int startX;
-	int height;
 	int width = p_clear->m_width;
-	height = p_clear->m_height;
+	int startX;
+	int height = p_clear->m_height;
 
 	if (width == 0 || height == 0) {
 		return;
@@ -1127,7 +1127,7 @@ void CSurface::Blit(CPoint* p_point)
 		if (m_clipRect.m_y <= primitive->m_y && primitive->m_y < (short) (m_clipRect.m_height + m_clipRect.m_y)) {
 			*((unsigned char*) m_lines[primitive->m_y] + primitive->m_x) = (unsigned char) primitive->m_color;
 			CVsRect rect(p_point->m_x, p_point->m_y, 1, 1);
-			AddToChangeList(&rect);
+			AddToChangeList(rect);
 		}
 	}
 }
@@ -1233,7 +1233,7 @@ void CSurface::Blit(CLine* p_line)
 	else {
 		bounds.m_y = (short) y1;
 	}
-	AddToChangeList(&bounds);
+	AddToChangeList(bounds);
 }
 
 // FUNCTION: LEMBALL 0x00475290
@@ -1304,7 +1304,7 @@ void CSurface::Blit(CCircle* p_circle)
 		bounds.m_height = (short) boundH;
 		bounds.m_x = (short) boundX;
 		bounds.m_y = (short) boundY;
-		AddToChangeList(&bounds);
+		AddToChangeList(bounds);
 	}
 }
 
@@ -1314,53 +1314,51 @@ void CSurface::Blit(CFilledCircle* p_circle)
 	int colour = p_circle->m_color;
 	int y = p_circle->m_y;
 	int x = p_circle->m_x;
-	int radius = (int) p_circle->m_radius;
-	if (radius < 0) {
-		radius = -radius;
-	}
+	int radius = abs((int) p_circle->m_radius);
 	int clipResult = ClipCircle(x, y, radius);
 	if (clipResult != 1) {
-		if (clipResult == 2) {
+		switch (clipResult) {
+		case 2: {
 			int curX = 0;
+			int curRadius = radius;
 			int err = 0;
-			int errLimit = radius * 2 - 1;
-			unsigned char colByte = (unsigned char) colour;
 			int step = 1;
-			*((unsigned char*) m_lines[y + radius] + x) = colByte;
-			*((unsigned char*) m_lines[y - radius] + x) = colByte;
-			memset((unsigned char*) m_lines[y] + x - radius, colByte, radius * 2 + 1);
+			int errLimit = radius * 2 - 1;
+			*((unsigned char*) m_lines[y + radius] + x) = (unsigned char) colour;
+			*((unsigned char*) m_lines[y - radius] + x) = (unsigned char) colour;
+			memset((unsigned char*) m_lines[y] - radius + x, colour, radius * 2 + 1);
 			if (radius > 1) {
-				int curRadius = radius;
-				do {
-					int oldErrLimit = errLimit;
+				while (curX < curRadius) {
+					int changed = 0;
 					curX++;
-					int stepNext = step + 2;
 					err += step;
-					int doubleErr = err * 2;
-					if (errLimit < doubleErr) {
+					step += 2;
+					if (err * 2 > errLimit) {
+						changed = 1;
 						curRadius--;
 						err -= errLimit;
 						errLimit -= 2;
 					}
-					step = stepNext;
 					if (curX <= curRadius) {
-						if (oldErrLimit < doubleErr) {
-							DrawCircleSpans(x, y, curX, curRadius, colByte);
+						if (changed) {
+							DrawCircleSpans(x, y, curX, curRadius, colour);
 						}
 						if (curX < curRadius) {
-							DrawCircleSpans(x, y, curRadius, curX, colByte);
+							DrawCircleSpans(x, y, curRadius, curX, colour);
 						}
 					}
-				} while (curX < curRadius);
+				}
 			}
+			break;
 		}
-		else if (clipResult == 3) {
+		case 3:
 			DrawClippedFilledCircle(x, y, radius, colour);
+			break;
 		}
 		int minX = x - radius;
 		int minY = y - radius;
-		int diameter = radius * 2 + 1;
-		int width = diameter;
+		int width = radius * 2 + 1;
+		int height = width;
 		if (minX < (int) m_clipRect.m_x) {
 			width += minX - m_clipRect.m_x;
 			minX = m_clipRect.m_x;
@@ -1368,7 +1366,6 @@ void CSurface::Blit(CFilledCircle* p_circle)
 		if (m_clipRect.m_x + m_clipRect.m_width - 1 < minX + width) {
 			width = m_clipRect.m_x + m_clipRect.m_width - minX;
 		}
-		int height = diameter;
 		if (minY < (int) m_clipRect.m_y) {
 			height += minY - m_clipRect.m_y;
 			minY = m_clipRect.m_y;
@@ -1376,12 +1373,7 @@ void CSurface::Blit(CFilledCircle* p_circle)
 		if (m_clipRect.m_y + m_clipRect.m_height - 1 < minY + height) {
 			height = m_clipRect.m_y + m_clipRect.m_height - minY;
 		}
-		CVsRect rect;
-		rect.m_width = (short) width;
-		rect.m_height = (short) height;
-		rect.m_x = (short) minX;
-		rect.m_y = (short) minY;
-		AddToChangeList(&rect);
+		AddToChangeList(CVsRect((short) minX, (short) minY, (short) width, (short) height));
 	}
 }
 
@@ -1402,7 +1394,7 @@ void CSurface::BlitRect(CVsRect p_rect, int p_colour)
 	for (int y = 0; y < p_rect.m_height; y++) {
 		memset((unsigned char*) m_lines[p_rect.m_y + y] + p_rect.m_x, p_colour, p_rect.m_width);
 	}
-	AddToChangeList(&p_rect);
+	AddToChangeList(p_rect);
 }
 
 inline unsigned int CSurface::ClipCode(int p_x, int p_y)
@@ -1552,14 +1544,12 @@ void CSurface::DrawClippedCirclePoint(int p_centerX,
 }
 
 // FUNCTION: LEMBALL 0x00476100
-void CSurface::DrawCircleSpans(int p_centerX, int p_centerY, int p_halfWidth, int p_yOffset, unsigned char p_colour)
+void CSurface::DrawCircleSpans(int p_centerX, int p_centerY, int p_halfWidth, int p_yOffset, int p_colour)
 {
 	int spanWidth = p_halfWidth * 2 + 1;
 	unsigned char* negativeSpan = (unsigned char*) m_lines[p_centerY - p_yOffset] + p_centerX - p_halfWidth;
-	memset((unsigned char*) m_lines[p_centerY + p_yOffset] + p_centerX - p_halfWidth,
-		   *(unsigned int*) &p_colour,
-		   spanWidth);
-	memset(negativeSpan, *(unsigned int*) &p_colour, spanWidth);
+	memset((unsigned char*) m_lines[p_centerY + p_yOffset] + p_centerX - p_halfWidth, p_colour, spanWidth);
+	memset(negativeSpan, p_colour, spanWidth);
 }
 
 // FUNCTION: LEMBALL 0x00476190
@@ -2324,50 +2314,6 @@ void CSurface::BlitZRLENoClipZBuffRemap(const CVsRect& p_rect,
 	}
 }
 
-// FUNCTION: LEMBALL 0x00477440
-void CSurface::BlitZRLENoClipQZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
-{
-	int x = p_rect.m_x;
-	int y = p_rect.m_y;
-	unsigned char* src = p_zrle->GetData();
-	int row = 0;
-	if (p_rect.m_height > 0) {
-		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
-			unsigned char run;
-			do {
-				run = *src++;
-				if (run < 0x80) {
-					dst += run;
-					zlines += run;
-				}
-				else if (run > 0x80) {
-					run &= 0x7f;
-					unsigned short* copyZ = zlines;
-					unsigned char count = run;
-					unsigned char* copySrc = src;
-					unsigned char* copyDst = dst;
-					while (count > 0) {
-						count--;
-						if (*copyZ <= p_depth) {
-							*copyDst = *copySrc;
-						}
-						copyDst++;
-						copyZ++;
-						copySrc++;
-					}
-					src += run;
-					dst += run;
-					zlines += run;
-				}
-			} while (run != 0x80);
-			row++;
-			y++;
-		} while (row < p_rect.m_height);
-	}
-}
-
 // FUNCTION: LEMBALL 0x00477660
 void CSurface::BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
 {
@@ -3084,7 +3030,7 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 					}
 				}
 				if (ClipRect(dest, &clipped) == 0) {
-					AddToChangeList(&dest);
+					AddToChangeList(dest);
 					if ((flags & 0x40000) != 0) {
 						if (remap == 0) {
 							BlitZRLENoClipZBuff(dest, p_zrle, stateDepth);
@@ -3119,7 +3065,7 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 				if (clipped.m_width <= 0 || clipped.m_height <= 0) {
 					return;
 				}
-				AddToChangeList(&dest);
+				AddToChangeList(dest);
 				if ((flags & 0x40000) != 0) {
 					if (remap == 0) {
 						BlitZRLEClipZBuff(dest, clipped, p_zrle, stateDepth);
@@ -3179,7 +3125,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 			clippedSize = clip;
 			(CVsSize&) dest = clippedSize;
 		}
-		AddToChangeList(&dest);
+		AddToChangeList(dest);
 		int destX = dest.m_x;
 		int destY = dest.m_y;
 		int yStep = 1;
@@ -3291,7 +3237,7 @@ void CSurface::BlitZRLE(int p_x,
 
 		remap = p_remap;
 		if (ClipRect(*dest, clipped) == 0) {
-			AddToChangeList(dest);
+			AddToChangeList(*dest);
 			if ((flags & 0x40000) != 0) {
 				if (remap == 0) {
 					BlitZRLENoClipZBuff(*dest, resource, p_depth);
@@ -3326,7 +3272,7 @@ void CSurface::BlitZRLE(int p_x,
 		if (clipped->m_width <= 0 || clipped->m_height <= 0) {
 			return;
 		}
-		AddToChangeList(dest);
+		AddToChangeList(*dest);
 		if ((flags & 0x40000) != 0) {
 			if (remap == 0) {
 				BlitZRLEClipZBuff(*dest, *clipped, resource, p_depth);

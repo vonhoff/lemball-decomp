@@ -4,20 +4,6 @@
   "identity": "path + rule + reported source; line numbers are informational and excluded",
   "findings": [
     {
-      "path": "src/Visos/Graphics/CSurface.cpp",
-      "rule": "addr-cast-punning",
-      "code": "*(unsigned int*) &p_colour,",
-      "count": 1,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
-      "path": "src/Visos/Graphics/CSurface.cpp",
-      "rule": "addr-cast-punning",
-      "code": "memset(negativeSpan, *(unsigned int*) &p_colour, spanWidth);",
-      "count": 1,
-      "reason": "Intentional pixel-buffer row or packed-colour operation in the software renderer."
-    },
-    {
       "path": "src/Visos/Network/CFileNetwork.cpp",
       "rule": "cast-deref-offset",
       "code": "CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(CNetworkWnd));",
