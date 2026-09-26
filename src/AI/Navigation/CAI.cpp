@@ -36,7 +36,6 @@
 #include "../Managers/CTrampolineManager.h"
 #include "../Managers/CTrapDoorManager.h"
 #include "../Messages/CGameStateMessage.h"
-#include "../Messages/CGameStateMessage.inl"
 #include "../Objects/CAnimSpecial.h"
 #include "../Objects/CBall.h"
 #include "../Objects/CBalloonPost.h"
@@ -411,9 +410,10 @@ void CAI::SendGameState(eGameStates p_state, eGameStateStages p_stage)
 			}
 		}
 		if (m_gameStateMessage->m_pendingSendCount == 0) {
+			CGameStateMessage& message = *m_gameStateMessage;
 			m_gameStatePending = 1;
-			SetGameStateField(m_gameStateMessage->m_state, p_state);
-			SetGameStateField(m_gameStateMessage->m_stage, p_stage);
+			message.m_state = p_state;
+			message.m_stage = p_stage;
 			m_gameStateMessage->m_levelTime = m_gameTime;
 			m_gameStateMessage->m_score = m_score;
 			m_gameStateMessage->Send(g_pActiveConnection);
@@ -925,12 +925,11 @@ void CAI::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned shor
 	}
 	else {
 		CMap* map = m_map;
-		int width = map->m_ground.m_width;
 		if (blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
 			collision = 3;
 		}
 		else {
-			collision = map->m_ground.m_ground[blockY * width + blockX].m_collision;
+			collision = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].m_collision;
 		}
 	}
 
@@ -1058,11 +1057,12 @@ void CAI::SwitchMessage(swMessage p_message, int p_first, int p_last, int p_arg3
 		m_liftManager->Switch(p_message, p_first, p_last, p_arg3);
 		return;
 	case SW_LIFTS: {
-		if (p_first < p_last) {
+		int index = p_first;
+		if (index < p_last) {
 			do {
-				m_liftManager->Switch(SW_LIFT, p_first, 0, 0);
-				p_first++;
-			} while (p_first < p_last);
+				m_liftManager->Switch(SW_LIFT, index, 0, 0);
+				index++;
+			} while (index < p_last);
 			return;
 		}
 		break;
