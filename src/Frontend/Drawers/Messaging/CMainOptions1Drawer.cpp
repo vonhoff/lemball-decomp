@@ -56,9 +56,10 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 			g_nFrontendAutoFlowToggle = 1;
 			if (p_message->code == 0xacef00a6) {
 				m_returnState = 4;
-				return true;
 			}
-			m_returnState = 0xc;
+			else {
+				m_returnState = 0xc;
+			}
 			return true;
 		}
 		}
