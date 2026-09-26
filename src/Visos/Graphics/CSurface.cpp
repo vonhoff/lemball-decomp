@@ -2029,12 +2029,14 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 	}
 	int row = 0;
 	int x = p_rect.m_x;
+	int y = p_rect.m_y;
 	if (p_rect.m_height > 0) {
-		int y = p_rect.m_y;
 		do {
+			unsigned short* zlines;
 			int width = p_rect.m_width;
+			int runCount;
 			int clipX = p_clip.m_x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2049,13 +2051,14 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 				}
 				else if (run > 0x80) {
 					run &= 0x7f;
-					clipX -= run;
+					runCount = run;
+					clipX -= runCount;
 					if (clipX < 0) {
 						int copyLen = -clipX;
-						unsigned char* copySrc = src + run + clipX;
 						if (copyLen < width) {
 							unsigned char count = (unsigned char) copyLen;
 							unsigned short* copyZ = zlines;
+							unsigned char* copySrc = src + runCount + clipX;
 							unsigned char* copyDst = dst;
 							while (count != 0) {
 								count--;
@@ -2068,9 +2071,10 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 							}
 						}
 						else {
-							char count = (char) width;
-							unsigned short* copyZ = zlines;
 							unsigned char* copyDst = dst;
+							unsigned short* copyZ = zlines;
+							unsigned char* copySrc = src + runCount + clipX;
+							unsigned char count = (unsigned char) width;
 							while (count != 0) {
 								count--;
 								if (*copyZ <= p_depth) {
@@ -2082,18 +2086,18 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 							}
 						}
 						dst += copyLen;
-						width += clipX;
-						zlines -= clipX;
+						width -= copyLen;
+						zlines += copyLen;
 					}
-					src += run;
+					src += runCount;
 				}
 				if (run == 0x80) {
-					goto row_done_qzbuff;
+					break;
 				}
 			} while (clipX > 0);
 			if (run != 0x80) {
 				do {
-					if (width < 1) {
+					if (width <= 0) {
 						break;
 					}
 					run = *src++;
@@ -2105,25 +2109,32 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 						}
 						else if (run > 0x80) {
 							run &= 0x7f;
-							unsigned char* copySrc = src;
-							unsigned short* copyZ = zlines;
-							unsigned char* copyDst = dst;
-							unsigned char r = run;
-							if (run < width) {
-								while (r != 0) {
-									r--;
+							runCount = run;
+							if (runCount < width) {
+								unsigned char count = (unsigned char) runCount;
+								unsigned short* copyZ = zlines;
+								unsigned char* copySrc = src;
+								unsigned char* copyDst = dst;
+								while (count != 0) {
+									count--;
 									if (*copyZ <= p_depth) {
 										*copyDst = *copySrc;
 									}
-									copySrc++;
-									copyZ++;
 									copyDst++;
+									copyZ++;
+									copySrc++;
 								}
-								width -= run;
+								dst += runCount;
+								width -= runCount;
+								zlines += runCount;
 							}
 							else {
-								while ((char) width != 0) {
-									width--;
+								unsigned char count = (unsigned char) width;
+								unsigned short* copyZ = zlines;
+								unsigned char* copySrc = src;
+								unsigned char* copyDst = dst;
+								while (count != 0) {
+									count--;
 									if (*copyZ <= p_depth) {
 										*copyDst = *copySrc;
 									}
@@ -2131,21 +2142,20 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 									copyZ++;
 									copySrc++;
 								}
+								dst += width;
+								zlines += width;
 								width = 0;
 							}
-							dst += run;
-							zlines += run;
-							src += run;
+							src += runCount;
 						}
 					}
 				} while (run != 0x80);
-			row_done_qzbuff:
-				while (run != 0x80) {
-					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
-						src += run;
-					}
+			}
+			while (run != 0x80) {
+				run = *src++;
+				if (run > 0x80) {
+					run &= 0x7f;
+					src += run;
 				}
 			}
 			y++;
@@ -2436,52 +2446,6 @@ void CSurface::BlitZRLENoClipQZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, uns
 					src += run;
 					dst += run;
 					zlines += run;
-				}
-			} while (run != 0x80);
-			row++;
-			y++;
-		} while (row < p_rect.m_height);
-	}
-}
-
-// FUNCTION: LEMBALL 0x00477540
-void CSurface::BlitZRLENoClipQZBuffRemap(const CVsRect& p_rect,
-										 CResZRLE* p_zrle,
-										 unsigned short p_depth,
-										 unsigned char* p_remap)
-{
-	int x = p_rect.m_x;
-	int y = p_rect.m_y;
-	unsigned char* src = p_zrle->GetData();
-	int row = 0;
-	if (p_rect.m_height > 0) {
-		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
-			unsigned char run;
-			do {
-				run = *src++;
-				if (run < 0x80) {
-					dst += run;
-					zlines += run;
-				}
-				else if (run > 0x80) {
-					run &= 0x7f;
-					unsigned short* copyZ = zlines;
-					int i = run;
-					unsigned char* copySrc = src;
-					unsigned char* copyDst = dst;
-					for (; i > 0; i--) {
-						if (*copyZ <= p_depth) {
-							*copyDst = p_remap[*copySrc];
-						}
-						copyZ++;
-						copyDst++;
-						copySrc++;
-					}
-					dst += run;
-					zlines += run;
-					src += run;
 				}
 			} while (run != 0x80);
 			row++;
@@ -3110,8 +3074,8 @@ void CSurface::BlitZRLENoClipRemapR(const CVsRect& p_rect,
 									unsigned char* p_remap)
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
-	int y = p_rect.m_y;
 	int step = 1;
+	int y = p_rect.m_y;
 	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
