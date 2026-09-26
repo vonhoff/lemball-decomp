@@ -74,7 +74,7 @@ void CBaseRemap::CalculateGreyScale()
 	}
 	++palette->m_directUseCount;
 
-	unsigned int paletteSize = (unsigned int) m_paletteResource->m_paletteState;
+	int paletteSize = (int) m_paletteResource->m_paletteState;
 	m_remap = new unsigned char[paletteSize];
 	unsigned char* greyIndices = new unsigned char[paletteSize];
 	int greyCount = 0;

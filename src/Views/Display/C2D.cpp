@@ -1209,10 +1209,11 @@ void C2D::OnDriverChange()
 		short clipSizeX = m_clipSize.m_x;
 		if (m_viewSize.m_x != clipSizeX || m_clipSize.m_y != m_viewSize.m_y) {
 			CVsRect clipRect((short) m_clipOffsetX, (short) m_clipOffsetY, clipSizeX, m_clipSize.m_y);
+			const CVsRect& source = clipRect;
 			memcpy(&innerRect.m_width, &clipRect.m_width, sizeof(short));
 			memcpy(&innerRect.m_height, &clipRect.m_height, sizeof(short));
-			memcpy(&innerRect.m_x, &clipRect.m_x, sizeof(short));
-			memcpy(&innerRect.m_y, &clipRect.m_y, sizeof(short));
+			innerRect.m_x = source.m_x;
+			innerRect.m_y = source.m_y;
 		}
 		m_display->SetRectInnerZoom(useRect, innerRect, m_zoom);
 		if (m_pauseWindow != 0) {
@@ -2521,6 +2522,7 @@ void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_r
 // FUNCTION: LEMBALL 0x0043c940
 void C2D::DrawBalloon(CViewData& p_viewData, int p_playerIndex)
 {
+	C2D* view = this;
 	CBaseRemap* remap;
 	int x = p_viewData.m_positionX;
 	int y = p_viewData.m_positionY;
@@ -2541,14 +2543,14 @@ void C2D::DrawBalloon(CViewData& p_viewData, int p_playerIndex)
 	}
 
 	if (p_playerIndex < 4) {
-		remap = m_remaps[p_playerIndex];
+		remap = view->m_remaps[p_playerIndex];
 	}
 	else {
 		remap = 0;
 	}
 
-	m_lemmingAnims->DrawAnim(x + xOffset - 16, y + yOffset / 4 - 64, RES_GAME_BALLOON, 0, 0, (CRemap*) remap);
-	m_lemmingAnims->DrawAnim(x + xOffset - 9, y + yOffset / 4 - 9, RES_GAME_BALLOON_SHADOW, 0, 0, 0);
+	view->m_lemmingAnims->DrawAnim(x + xOffset - 16, y + yOffset / 4 - 64, RES_GAME_BALLOON, 0, 0, (CRemap*) remap);
+	view->m_lemmingAnims->DrawAnim(x + xOffset - 9, y + yOffset / 4 - 9, RES_GAME_BALLOON_SHADOW, 0, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0043c9f0
