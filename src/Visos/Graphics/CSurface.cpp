@@ -554,33 +554,49 @@ void CSurface::Blit(class CClipRect* p_clipRect)
 			clip->m_width = (short) (clip->m_width + (clipRight - p_clipRect->m_right));
 			clip->m_x = p_clipRect->m_right;
 		}
-		clipRight = clip->m_x;
-		short clipLeft = p_clipRect->m_left;
-		if ((short) (clip->m_width + clipRight) < (short) (p_clipRect->m_right + clipLeft)) {
-			clip->m_width = (short) ((clipLeft - clipRight) + p_clipRect->m_right);
+		short clipX;
+		short primitiveWidth = p_clipRect->m_left;
+		clipX = clip->m_x;
+		short right = clip->m_width;
+		right += clipX;
+		short primitiveRight = p_clipRect->m_right;
+		primitiveRight += primitiveWidth;
+		if (right < primitiveRight) {
+			primitiveWidth -= clipX;
+			primitiveWidth += p_clipRect->m_right;
+			clip->m_width = primitiveWidth;
 		}
 		if (p_clipRect->m_bottom < clip->m_y) {
 			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bottom));
 			clip->m_y = p_clipRect->m_bottom;
 		}
+		short primitiveY;
+		short primitiveHeight = p_clipRect->m_top;
+		primitiveY = p_clipRect->m_bottom;
 		short clipBottom = (short) (clip->m_height + clip->m_y);
-		short primitiveBottom = (short) (p_clipRect->m_bottom + p_clipRect->m_top);
+		short primitiveBottom = (short) (primitiveY + primitiveHeight);
 		if (clipBottom < primitiveBottom) {
-			clip->m_height = (short) ((p_clipRect->m_top - clip->m_y) + p_clipRect->m_bottom);
+			clip->m_height = (short) ((primitiveHeight - clip->m_y) + primitiveY);
 		}
 	}
 	CSurface* parent = m_parentSurface;
 	if ((CSurface*) g_pGdiHelperTarget != parent && (p_clipRect->m_reserved0c & 0x10000) == 0) {
 		CVsRect* parentClip = &parent->m_clipRect;
+		short parentX = parentClip->m_x;
 		CVsRect* childClip = &m_clipRect;
 		clipRight = childClip->m_x;
-		if (clipRight < parentClip->m_x) {
-			childClip->m_width = (short) (childClip->m_width + (clipRight - parentClip->m_x));
+		if (clipRight < parentX) {
+			childClip->m_width = (short) (childClip->m_width + (clipRight - parentX));
 			childClip->m_x = parentClip->m_x;
 		}
-		clipRight = childClip->m_x;
-		if ((short) (parentClip->m_width + parentClip->m_x) < (short) (childClip->m_width + clipRight)) {
-			childClip->m_width = (short) ((parentClip->m_x - clipRight) + parentClip->m_width);
+		short parentWidth;
+		short childX = childClip->m_x;
+		parentX = parentClip->m_x;
+		parentWidth = parentClip->m_width;
+		if ((short) (parentWidth + parentX) < (short) (childClip->m_width + childX)) {
+			parentX -= childX;
+			parentX += parentWidth;
+			childClip->m_width = parentX;
 		}
 		if (childClip->m_y < parentClip->m_y) {
 			childClip->m_height = (short) (childClip->m_height + (childClip->m_y - parentClip->m_y));
@@ -1140,31 +1156,6 @@ void CSurface::Blit(CCopyToBackBuff* p_copy)
 	}
 }
 
-// FUNCTION: LEMBALL 0x00474e60
-void CSurface::Blit(CCopyColourToBackBuff* p_fill)
-{
-	int startX;
-	int startY;
-	int width = p_fill->m_width;
-	int height = p_fill->m_height;
-
-	if (width == 0 || height == 0) {
-		return;
-	}
-	startX = p_fill->m_x;
-	startY = p_fill->m_y;
-	int color = reinterpret_cast<int&>(p_fill->m_colour);
-	if (height <= 0) {
-		return;
-	}
-	do {
-		unsigned char* dest = (unsigned char*) CPVBackBuffSurface::m_bitmap.m_lines[startY] + startX;
-		memset(dest, color, width);
-		startY++;
-		height--;
-	} while (height != 0);
-}
-
 // FUNCTION: LEMBALL 0x00474ee0
 void CSurface::CopyBackBuffToScreen(const CVsRect& p_rect)
 {
@@ -1628,8 +1619,9 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 // FUNCTION: LEMBALL 0x00475bc0
 int CSurface::ClipCircle(int p_centerX, int p_centerY, int p_radius)
 {
+	int top;
 	int left = p_centerX - p_radius;
-	int top = p_centerY - p_radius;
+	top = p_centerY - p_radius;
 	int right = p_centerX + p_radius;
 	int bottom = p_centerY + p_radius;
 
