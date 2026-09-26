@@ -185,5 +185,6 @@ void CMine::OnGround()
 		int groundY = y & 0xf;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
 	}
-	m_position.m_zFixed = (unsigned int) z << 12;
+	const unsigned int& height = (unsigned int) z << 12;
+	m_position.m_zFixed = height;
 }

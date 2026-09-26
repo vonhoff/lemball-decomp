@@ -24,8 +24,11 @@ void CObjectPosMess::AddData()
 // FUNCTION: LEMBALL 0x00416c30
 void CObjectPosMess::GetData()
 {
-	m_object->m_position.m_xFixed = GetDWORD() << 12;
-	m_object->m_position.m_yFixed = GetDWORD() << 12;
-	m_object->m_position.m_zFixed = GetDWORD() << 12;
+	const unsigned long& x = GetDWORD() << 12;
+	m_object->m_position.m_xFixed = x;
+	const unsigned long& y = GetDWORD() << 12;
+	m_object->m_position.m_yFixed = y;
+	const unsigned long& z = GetDWORD() << 12;
+	m_object->m_position.m_zFixed = z;
 	m_object->m_objectActive = GetDWORD();
 }
