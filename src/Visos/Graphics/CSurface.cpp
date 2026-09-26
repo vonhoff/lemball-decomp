@@ -2465,15 +2465,20 @@ void CSurface::BlitZRLENoClipQZBuffRemap(const CVsRect& p_rect,
 				}
 				else if (run > 0x80) {
 					run &= 0x7f;
+					unsigned short* copyZ = zlines;
+					int i = run;
 					unsigned char* copySrc = src;
-					for (unsigned char i = run; i != 0; i--) {
-						if (*zlines <= p_depth) {
-							*dst = p_remap[*copySrc];
+					unsigned char* copyDst = dst;
+					for (; i > 0; i--) {
+						if (*copyZ <= p_depth) {
+							*copyDst = p_remap[*copySrc];
 						}
-						zlines++;
-						dst++;
+						copyZ++;
+						copyDst++;
 						copySrc++;
 					}
+					dst += run;
+					zlines += run;
 					src += run;
 				}
 			} while (run != 0x80);
