@@ -3,12 +3,6 @@ project(lemball_decomp CXX)
 
 file(GLOB_RECURSE LEMBALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-set(_lemball_maze_source "${CMAKE_CURRENT_SOURCE_DIR}/src/AI/Navigation/CMaze.cpp")
-list(REMOVE_ITEM LEMBALL_SOURCES "${_lemball_maze_source}")
-list(FIND LEMBALL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/AI/Navigation/CAiLoadLevel.cpp" _lemball_ai_data_index)
-math(EXPR _lemball_ai_data_index "${_lemball_ai_data_index} + 1")
-list(INSERT LEMBALL_SOURCES ${_lemball_ai_data_index} "${_lemball_maze_source}")
-
 set(LEMBALL_RC "${CMAKE_CURRENT_SOURCE_DIR}/src/LEMBALL.RC")
 set(LEMBALL_RESOURCE "${CMAKE_BINARY_DIR}/LEMBALL.RES")
 get_filename_component(_lemball_cl_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
