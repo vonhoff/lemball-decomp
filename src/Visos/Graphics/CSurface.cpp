@@ -1736,25 +1736,27 @@ void CSurface::FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffse
 bool CSurface::ClipRect(CVsRect& p_rect, CVsRect* p_clipped)
 {
 	bool clipped = false;
+	short clipX = m_clipRect.m_x;
+	short rectX = p_rect.m_x;
 
-	if ((short) (m_clipRect.m_width + m_clipRect.m_x) < p_rect.m_x ||
-		(short) (m_clipRect.m_height + m_clipRect.m_y) < p_rect.m_y ||
-		(short) (p_rect.m_width + p_rect.m_x) < m_clipRect.m_x ||
-		(short) (p_rect.m_height + p_rect.m_y) < m_clipRect.m_y) {
+	if ((short) (m_clipRect.m_width + clipX) < rectX || (short) (m_clipRect.m_height + m_clipRect.m_y) < p_rect.m_y ||
+		(short) (p_rect.m_width + rectX) < clipX || (short) (p_rect.m_height + p_rect.m_y) < m_clipRect.m_y) {
 		return true;
 	}
 
 	if (m_clipRect.m_x > p_rect.m_x) {
 		p_clipped->m_x = m_clipRect.m_x - p_rect.m_x;
+		short clippedX = m_clipRect.m_x;
+		p_rect.m_x = clippedX;
 		clipped = true;
-		p_rect.m_x = m_clipRect.m_x;
 		p_rect.m_width -= p_clipped->m_x;
 	}
 
 	if (m_clipRect.m_y > p_rect.m_y) {
 		p_clipped->m_y = m_clipRect.m_y - p_rect.m_y;
+		short clippedY = m_clipRect.m_y;
+		p_rect.m_y = clippedY;
 		clipped = true;
-		p_rect.m_y = m_clipRect.m_y;
 		p_rect.m_height -= p_clipped->m_y;
 	}
 
