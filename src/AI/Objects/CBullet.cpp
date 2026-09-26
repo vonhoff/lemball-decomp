@@ -113,10 +113,8 @@ bool CBullet::Process()
 	else {
 		currentTick = g_dwGameTick;
 	}
-	if (m_action == 8) {
-		goto inactive;
-	}
-	{
+	switch (m_action) {
+	default: {
 		CPt3 pos;
 		pos.m_x = 0;
 		pos.m_y = 0;
@@ -125,7 +123,7 @@ bool CBullet::Process()
 		if ((int) currentTick >= (int) tick) {
 			do {
 				if (m_actionDeadline < tick) {
-					goto inactive;
+					return 0;
 				}
 				m_movement.Position(pos, tick);
 				if (pos.m_x < 0 || pos.m_x > 0x3ff || pos.m_y < 0 || pos.m_y > 0x3ff) {
@@ -150,16 +148,17 @@ bool CBullet::Process()
 				if (m_isRemoteObject == 0) {
 					unsigned short groundZ;
 					map = g_pMap;
+					int groundWidth;
 					int blockX = pos.m_x >> 4;
 					int blockY = pos.m_y >> 4;
-					if (pos.m_x < 0 || pos.m_y < 0 || map->m_ground.m_width <= blockX ||
+					if (pos.m_x < 0 || pos.m_y < 0 || (groundWidth = map->m_ground.m_width) <= blockX ||
 						map->m_ground.m_height <= blockY) {
 						groundZ = 0;
 					}
 					else {
 						int x = pos.m_x & 15;
 						int y = pos.m_y & 15;
-						groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(x, y);
+						groundZ = map->m_ground.m_ground[groundWidth * blockY + blockX].GetZ(x, y);
 					}
 					if (pos.m_z <= (int) groundZ) {
 						m_position.m_xFixed = pos.m_x << 12;
@@ -200,8 +199,9 @@ bool CBullet::Process()
 		m_lastMovementTick = currentTick;
 		return 1;
 	}
-inactive:
-	return 0;
+	case ACTION_8:
+		return 0;
+	}
 }
 
 // FUNCTION: LEMBALL 0x0041aaa0
