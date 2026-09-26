@@ -2379,17 +2379,19 @@ void CSurface::BlitZRLENoClipZBuffRemap(const CVsRect& p_rect,
 				}
 				else if (run > 0x80) {
 					run &= 0x7f;
-					for (int i = 0; i < (int) run; i++) {
-						dst[i] = p_remap[src[i]];
+					int count = run;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (; count > 0; count--) {
+						*copyDst++ = p_remap[*copySrc];
+						copySrc++;
 					}
-					if (run) {
-						for (unsigned int i = 0; i < run; i++) {
-							zlines[i] = p_depth;
-						}
+					for (unsigned int i = 0; i < run; i++) {
+						zlines[i] = p_depth;
 					}
 					dst += run;
-					src += run;
 					zlines += run;
+					src += run;
 				}
 			} while (run != 0x80);
 			row++;
