@@ -110,7 +110,6 @@ void CPVGDIBitmap::SetLinePtrs()
 // FUNCTION: LEMBALL 0x00472440
 void CPVGDIBitmap::Scroll(const CVsRect* p_rect, const CVsPoint* p_destination)
 {
-	unsigned char frameSpace[0xc];
 	int width;
 	int height;
 	const short* xy;
@@ -119,7 +118,6 @@ void CPVGDIBitmap::Scroll(const CVsRect* p_rect, const CVsPoint* p_destination)
 	unsigned int* srcPtr;
 	unsigned int* destPtr;
 
-	*(CPVGDIBitmap**) frameSpace = this;
 	width = (int) p_rect->m_width;
 	height = (int) p_rect->m_height;
 	if (height * width == 0) {
@@ -151,9 +149,9 @@ void CPVGDIBitmap::Scroll(const CVsRect* p_rect, const CVsPoint* p_destination)
 			int srcY = p_rect->m_y;
 			int dstY = p_destination->m_y;
 			do {
-				memcpy((unsigned char*) m_lines[srcY] + p_rect->m_x,
-					   (unsigned char*) m_lines[dstY] + p_destination->m_x,
-					   width);
+				memmove((unsigned char*) m_lines[srcY] + p_rect->m_x,
+						(unsigned char*) m_lines[dstY] + p_destination->m_x,
+						width);
 				height = height - 1;
 				srcY = srcY + 1;
 				dstY = dstY + 1;
