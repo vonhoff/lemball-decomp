@@ -1306,12 +1306,6 @@ bool CGameObject::Process()
 	return 0;
 }
 
-// GLOBAL: LEMBALL 0x0049cf4c
-unsigned short g_wNetworkLemmingIndex = 0;
-
-// GLOBAL: LEMBALL 0x0049cf50
-unsigned short g_wLocalLemmingIndex = 0;
-
 // GLOBAL: LEMBALL 0x0049d070
 int g_anTurnDelayCursor[16] = {0, 30, 20, 12, 0, 0, 0, 15, 32, 0, 0, 0, 0, 0, 0, 0};
 
