@@ -207,15 +207,18 @@ bool CMover::Process()
 		}
 		m_currentNode = next;
 		AiCoord oldPosition = m_position;
-		const CPt3& position = g_pAI->GetNodePosition(m_startNode + next);
-		m_position.m_xFixed = position.m_x;
-		m_position.m_yFixed = position.m_y;
-		m_position.m_zFixed = position.m_z;
 		int groundX;
 		int y;
-		int x = m_position.m_xFixed >> 12;
-		y = m_position.m_yFixed >> 12;
-		groundX = x >> 4;
+		int x;
+		{
+			const CPt3& position = g_pAI->GetNodePosition(m_startNode + next);
+			m_position.m_xFixed = position.m_x;
+			x = m_position.m_xFixed >> 12;
+			m_position.m_yFixed = position.m_y;
+			y = m_position.m_yFixed >> 12;
+			groundX = x >> 4;
+			m_position.m_zFixed = position.m_z;
+		}
 		int groundY = y >> 4;
 		CMap* map = g_pMap;
 		unsigned short z;
@@ -227,7 +230,8 @@ bool CMover::Process()
 			y &= 0xf;
 			z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
 		}
-		m_position.m_zFixed = (unsigned int) z << 12;
+		const unsigned int& height = (unsigned int) z;
+		m_position.m_zFixed = height << 12;
 		oldPosition.m_xFixed = (oldPosition.m_xFixed >> 12) - (m_position.m_xFixed >> 12);
 		oldPosition.m_yFixed = (oldPosition.m_yFixed >> 12) - (m_position.m_yFixed >> 12);
 		oldPosition.m_zFixed = (oldPosition.m_zFixed >> 12) - (m_position.m_zFixed >> 12);
