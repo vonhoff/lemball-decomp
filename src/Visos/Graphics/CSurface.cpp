@@ -1234,7 +1234,8 @@ void CSurface::Blit(CCircle* p_circle)
 			int errLimit = radius * 2 - 1;
 			*((unsigned char*) m_lines[centerY + radius] + centerX) = (unsigned char) color;
 			*((unsigned char*) m_lines[centerY - radius] + centerX) = (unsigned char) color;
-			*((unsigned char*) m_lines[centerY] + centerX + radius) = (unsigned char) color;
+			unsigned char* centerPixel = (unsigned char*) m_lines[centerY] + centerX;
+			centerPixel[radius] = (unsigned char) color;
 			*((unsigned char*) m_lines[centerY] - radius + centerX) = (unsigned char) color;
 			while (curX < curY) {
 				curX++;
@@ -1258,16 +1259,16 @@ void CSurface::Blit(CCircle* p_circle)
 			DrawClippedCircleOutline(centerX, centerY, radius, color);
 			break;
 		}
-		int boundX = centerX - radius;
+		centerX -= radius;
 		int boundY = centerY - radius;
 		int boundW = radius * 2 + 1;
 		int boundH = boundW;
-		if (boundX < (int) m_clipRect.m_x) {
-			boundW += boundX - m_clipRect.m_x;
-			boundX = m_clipRect.m_x;
+		if (centerX < (int) m_clipRect.m_x) {
+			boundW += centerX - m_clipRect.m_x;
+			centerX = m_clipRect.m_x;
 		}
-		if ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1 < boundX + boundW) {
-			boundW = (m_clipRect.m_x + m_clipRect.m_width) - boundX;
+		if ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1 < centerX + boundW) {
+			boundW = (m_clipRect.m_x + m_clipRect.m_width) - centerX;
 		}
 		if (boundY < (int) m_clipRect.m_y) {
 			boundH += boundY - m_clipRect.m_y;
@@ -1276,7 +1277,7 @@ void CSurface::Blit(CCircle* p_circle)
 		if ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1 < boundY + boundH) {
 			boundH = (m_clipRect.m_y + m_clipRect.m_height) - boundY;
 		}
-		AddToChangeList(CVsRect((short) boundX, (short) boundY, (short) boundW, (short) boundH));
+		AddToChangeList(CVsRect((short) centerX, (short) boundY, (short) boundW, (short) boundH));
 	}
 }
 
