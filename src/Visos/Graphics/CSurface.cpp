@@ -1839,25 +1839,24 @@ void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZR
 					clipX -= run;
 					if (clipX < 0) {
 						int copyLen = -clipX;
-						unsigned char* copySrc = src + run + clipX;
 						if (copyLen < width) {
-							memcpy(dst, copySrc, copyLen);
+							memcpy(dst, src + run + clipX, copyLen);
 						}
 						else {
-							memcpy(dst, copySrc, width);
+							memcpy(dst, src + run + clipX, width);
 						}
-						width += clipX;
+						width -= copyLen;
 						dst += copyLen;
 					}
 					src += run;
 				}
 				if (run == 0x80) {
-					goto row_done_clip;
+					break;
 				}
 			} while (clipX > 0);
 			if (run != 0x80) {
 				do {
-					if (width < 1) {
+					if (width <= 0) {
 						break;
 					}
 					run = *src++;
@@ -1871,23 +1870,23 @@ void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZR
 							if (run < width) {
 								memcpy(dst, src, run);
 								width -= run;
+								dst += run;
 							}
 							else {
 								memcpy(dst, src, width);
+								dst += width;
 								width = 0;
 							}
-							dst += run;
 							src += run;
 						}
 					}
 				} while (run != 0x80);
-			row_done_clip:
-				while (run != 0x80) {
-					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
-						src += run;
-					}
+			}
+			while (run != 0x80) {
+				run = *src++;
+				if (run > 0x80) {
+					run &= 0x7f;
+					src += run;
 				}
 			}
 			y += step;
