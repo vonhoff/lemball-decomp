@@ -205,20 +205,17 @@ bool CMover::Process()
 		if (m_nodeCount <= next) {
 			next = 0;
 		}
-		int oldZ;
-		int oldY;
-		int oldX;
-		oldX = m_position.m_xFixed;
-		oldY = m_position.m_yFixed;
-		oldZ = m_position.m_zFixed;
 		m_currentNode = next;
+		AiCoord oldPosition = m_position;
 		const CPt3& position = g_pAI->GetNodePosition(m_startNode + next);
 		m_position.m_xFixed = position.m_x;
 		m_position.m_yFixed = position.m_y;
 		m_position.m_zFixed = position.m_z;
+		int groundX;
+		int y;
 		int x = m_position.m_xFixed >> 12;
-		int y = m_position.m_yFixed >> 12;
-		int groundX = x >> 4;
+		y = m_position.m_yFixed >> 12;
+		groundX = x >> 4;
 		int groundY = y >> 4;
 		CMap* map = g_pMap;
 		unsigned short z;
@@ -226,13 +223,15 @@ bool CMover::Process()
 			z = 0;
 		}
 		else {
-			z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x & 0xf, y & 0xf);
+			x &= 0xf;
+			y &= 0xf;
+			z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
 		}
 		m_position.m_zFixed = (unsigned int) z << 12;
-		int dx = -((oldX >> 12) - (m_position.m_xFixed >> 12));
-		int dy = -((oldY >> 12) - (m_position.m_yFixed >> 12));
-		int dz = -((oldZ >> 12) - (m_position.m_zFixed >> 12));
-		MoveObjects(dx, dy, dz);
+		oldPosition.m_xFixed = (oldPosition.m_xFixed >> 12) - (m_position.m_xFixed >> 12);
+		oldPosition.m_yFixed = (oldPosition.m_yFixed >> 12) - (m_position.m_yFixed >> 12);
+		oldPosition.m_zFixed = (oldPosition.m_zFixed >> 12) - (m_position.m_zFixed >> 12);
+		MoveObjects(-oldPosition.m_xFixed, -oldPosition.m_yFixed, -oldPosition.m_zFixed);
 		if (m_movementMode != 0) {
 			m_lastMovementTick = g_dwGameTick;
 			if (local) {
@@ -268,9 +267,11 @@ bool CMover::Process()
 			position.m_y = 0;
 			position.m_z = 0;
 			m_motion.Position(position, time);
-			MoveObjects(position.m_x - (m_position.m_xFixed >> 12),
-						position.m_y - (m_position.m_yFixed >> 12),
-						position.m_z - (m_position.m_zFixed >> 12));
+			int dx = position.m_x - (m_position.m_xFixed >> 12);
+			int dz = m_position.m_zFixed >> 12;
+			int dy = position.m_y - (m_position.m_yFixed >> 12);
+			dz = position.m_z - dz;
+			MoveObjects(dx, dy, dz);
 			m_position.m_xFixed = position.m_x << 12;
 			m_position.m_yFixed = position.m_y << 12;
 			m_position.m_zFixed = position.m_z << 12;
