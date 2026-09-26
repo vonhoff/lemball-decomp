@@ -653,33 +653,27 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 	if (m_changeList->GetNumItems() > 0) {
 		do {
 			ChangeListItem* item = m_changeList->GetNItem(index);
-			short x = item->x;
-			short y = item->y;
+			CVsRect translated(*(CVsRect*) item);
 			if (g_dwFullScreenGdi == 0) {
-				x += m_presentX;
-				y += m_presentY;
+				translated.m_x += m_presentX;
+				translated.m_y += m_presentY;
 			}
-			x += m_relOriginX;
-			y += m_relOriginY;
+			const CVsPoint* origin = (const CVsPoint*) &m_relOriginX;
+			translated.m_x += origin->m_x;
+			translated.m_y += origin->m_y;
 			short zoom = m_zoom;
 			if (zoom == 1) {
-				CVsRect destRect;
-				destRect.m_width = item->width;
-				destRect.m_height = item->height;
-				destRect.m_x = x;
-				destRect.m_y = y;
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
-														   &destRect,
+														   &translated,
 														   (CDrawingContext*) m_drawingPort,
 														   (CVsRect*) item,
 														   this);
 			}
 			else {
-				CVsRect destRect;
-				destRect.m_height = item->height * zoom;
-				destRect.m_x = x * zoom;
-				destRect.m_y = y * zoom;
-				destRect.m_width = item->width * zoom;
+				CVsRect destRect(translated.m_x * zoom,
+								 translated.m_y * zoom,
+								 translated.m_width * zoom,
+								 translated.m_height * zoom);
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
 														   &destRect,
 														   (CDrawingContext*) m_drawingPort,
