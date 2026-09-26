@@ -280,22 +280,10 @@ void CPVGDIBitmap::ResetScroll()
 }
 
 // FUNCTION: LEMBALL 0x00475c80
-void CPVGDIBitmap::DrawCircleSymmetricPoints(int p_centerX,
-											 int p_centerY,
-											 int p_xOffset,
-											 int p_yOffset,
-											 unsigned char p_color)
+void CPVGDIBitmap::DrawCircleSymmetricPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_color)
 {
-	int rowPos;
-	int rowNeg;
-	unsigned char color;
-
-	color = p_color;
-	rowPos = p_yOffset;
-	rowPos = rowPos + p_centerY;
-	rowNeg = p_centerY - p_yOffset;
-	*((unsigned char*) m_lines[rowPos] + p_centerX + p_xOffset) = color;
-	*((unsigned char*) m_lines[rowPos] + p_centerX - p_xOffset) = color;
-	*((unsigned char*) m_lines[rowNeg] + p_centerX - p_xOffset) = color;
-	*((unsigned char*) m_lines[rowNeg] + p_centerX + p_xOffset) = color;
+	*((unsigned char*) m_lines[p_yOffset + p_centerY] + p_centerX + p_xOffset) = (unsigned char) p_color;
+	*((unsigned char*) m_lines[p_yOffset + p_centerY] + p_centerX - p_xOffset) = (unsigned char) p_color;
+	*((unsigned char*) m_lines[p_centerY - p_yOffset] + p_centerX - p_xOffset) = (unsigned char) p_color;
+	*((unsigned char*) m_lines[p_centerY - p_yOffset] + p_centerX + p_xOffset) = (unsigned char) p_color;
 }
