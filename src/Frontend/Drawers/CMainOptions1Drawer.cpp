@@ -96,7 +96,6 @@ void CMainOptions1Drawer::Load()
 	unsigned long* modeAnim;
 	unsigned long* quitAnim;
 	int i;
-	tagPRIMS* primitiveBundle;
 
 	if (m_mode != 0) {
 		m_buttonLayout = g_anMainOptions1CompactButtonLayout;
@@ -116,17 +115,14 @@ void CMainOptions1Drawer::Load()
 		modeAnim = &g_dwMainOptions1AnimIds[5];
 		quitAnim = &g_dwMainOptions1AnimIds[4];
 	}
-	primitiveBundle = m_primitiveBundle;
-	i = 1;
-	do {
+	for (i = 0; i < 1; i++) {
 		CResBITMAP* bitmap = m_backgroundBitmap;
-		primitiveBundle->m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) bitmap->m_x) / 2);
-		primitiveBundle->m_primitive.m_y = 0;
-		primitiveBundle->m_primitive.m_resource = bitmap;
-		primitiveBundle->m_primitive.m_flags = 0x800;
-		primitiveBundle->m_primitive.m_remap = 0;
-		primitiveBundle++;
-	} while (--i != 0);
+		m_primitiveBundle[i].m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) bitmap->m_x) / 2);
+		m_primitiveBundle[i].m_primitive.m_y = 0;
+		m_primitiveBundle[i].m_primitive.m_resource = bitmap;
+		m_primitiveBundle[i].m_primitive.m_flags = 0x800;
+		m_primitiveBundle[i].m_primitive.m_remap = 0;
+	}
 	m_gunController = new CGunController((CGWnd*) m_display, m_gdi, 6, m_mode);
 	m_gunController->AddButton(m_buttonLayout[0],
 							   m_buttonLayout[1],

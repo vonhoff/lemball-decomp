@@ -55,7 +55,8 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	m_strings = (CResSTRING**) operator new(4);
 	m_movies = (CResMOVIE**) operator new(0x18);
 	m_loadAnim = new CCDLoadAnim(p_display->m_gdi, p_display);
-	p_display->m_loadingDraw = static_cast<CCdLoadAnimDraw*>(m_loadAnim);
+	CCdLoadAnimDraw* loadingDraw = static_cast<CCdLoadAnimDraw*>(m_loadAnim);
+	p_display->m_loadingDraw = loadingDraw;
 	m_totalResources += g_pSoundView->GetnEffects((unsigned short) p_soundState);
 	m_loadAnim->InitialiseScreen();
 	m_loadedResources = 0;
