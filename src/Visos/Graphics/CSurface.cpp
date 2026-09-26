@@ -1643,9 +1643,10 @@ int CSurface::ClipCircle(int p_centerX, int p_centerY, int p_radius)
 void CSurface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radius, unsigned char p_colour)
 {
 	int x = 0;
+	int y = p_radius;
 	int err = 0;
 	int step = 1;
-	int errLimit = p_radius * 2 - 1;
+	int errLimit = y * 2 - 1;
 
 	if (m_clipRect.m_x <= p_centerX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX) {
 		if (m_clipRect.m_y <= p_centerY + p_radius &&
@@ -1660,50 +1661,51 @@ void CSurface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radi
 		}
 	}
 	if (m_clipRect.m_x <= p_centerX + p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX + p_radius) {
-		if (p_centerY >= m_clipRect.m_y && m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centerY) {
-			*((unsigned char*) m_lines[p_centerY] + p_centerX + p_radius) = p_colour;
+		int clipY = m_clipRect.m_y;
+		if (clipY <= p_centerY && clipY + m_clipRect.m_height - 1 >= p_centerY) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centerY] + p_centerX;
+			destination[p_radius] = p_colour;
 		}
 	}
 	if (m_clipRect.m_x <= p_centerX - p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX - p_radius) {
-		if (p_centerY >= m_clipRect.m_y && m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centerY) {
+		int clipY = m_clipRect.m_y;
+		if (clipY <= p_centerY && clipY + m_clipRect.m_height - 1 >= p_centerY) {
 			*((unsigned char*) m_lines[p_centerY] + p_centerX - p_radius) = p_colour;
 		}
 	}
 	if (p_radius <= 0) {
 		return;
 	}
-	int lowerRow = p_centerY - p_radius;
-	int upperRow = p_centerY + p_radius;
 	do {
 		x = x + 1;
 		err = err + step;
 		step = step + 2;
 		if (errLimit < err * 2) {
-			p_radius = p_radius - 1;
-			lowerRow = lowerRow + 1;
-			upperRow = upperRow - 1;
+			y = y - 1;
 			err = err - errLimit;
 			errLimit = errLimit - 2;
 		}
-		if (p_radius < x) {
+		if (y < x) {
 			continue;
 		}
-		if (ClipCirclePoint(p_centerX + x, p_centerY + p_radius) != 0) {
-			*((unsigned char*) m_lines[upperRow] + p_centerX + x) = p_colour;
+		if (ClipCirclePoint(p_centerX + x, p_centerY + y) != 0) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centerY + y] + p_centerX;
+			destination[x] = p_colour;
 		}
-		if (ClipCirclePoint(p_centerX - x, p_centerY + p_radius) != 0) {
-			*((unsigned char*) m_lines[upperRow] + p_centerX - x) = p_colour;
+		if (ClipCirclePoint(p_centerX - x, p_centerY + y) != 0) {
+			*((unsigned char*) m_lines[p_centerY + y] + p_centerX - x) = p_colour;
 		}
-		if (ClipCirclePoint(p_centerX + x, p_centerY - p_radius) != 0) {
-			*((unsigned char*) m_lines[lowerRow] + p_centerX + x) = p_colour;
+		if (ClipCirclePoint(p_centerX + x, p_centerY - y) != 0) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centerY - y] + p_centerX;
+			destination[x] = p_colour;
 		}
-		if (ClipCirclePoint(p_centerX - x, p_centerY - p_radius) != 0) {
-			*((unsigned char*) m_lines[lowerRow] + p_centerX - x) = p_colour;
+		if (ClipCirclePoint(p_centerX - x, p_centerY - y) != 0) {
+			*((unsigned char*) m_lines[p_centerY - y] + p_centerX - x) = p_colour;
 		}
-		if (p_radius > x) {
-			DrawClippedCirclePoint(p_centerX, p_centerY, p_radius, x, p_colour);
+		if (y > x) {
+			DrawClippedCirclePoint(p_centerX, p_centerY, y, x, p_colour);
 		}
-	} while (p_radius > x);
+	} while (y > x);
 }
 
 // FUNCTION: LEMBALL 0x00475f60
@@ -3212,9 +3214,10 @@ void CSurface::BlitZRLENoClipRemap(const CVsRect& p_rect,
 								   unsigned int p_reverse,
 								   unsigned char* p_remap)
 {
+	int step;
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
-	int step = 1;
+	step = 1;
 	if (p_reverse != 0) {
 		step = -1;
 		y += p_rect.m_height - 1;
