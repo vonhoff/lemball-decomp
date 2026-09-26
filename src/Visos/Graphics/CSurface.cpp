@@ -779,8 +779,8 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 	m_windowRect.m_width = (m_windowRect.m_width + 3) & ~3;
 	{
 		const CVsSize& windowSize = m_windowRect;
-		CVsSize& clipSize = m_clipRect;
 		short height = windowSize.m_height;
+		CVsSize& clipSize = m_clipRect;
 		clipSize.m_width = windowSize.m_width;
 		clipSize.m_height = height;
 	}
