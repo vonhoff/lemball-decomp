@@ -8,14 +8,14 @@
 void SpriteGroundLookup::MarkRect(const CVsRect& p_rect)
 {
 	short pixelX = p_rect.m_x;
-	short pixelY = p_rect.m_y;
+	const short& pixelY = p_rect.m_y;
 	int cellX = (short) (pixelX / 16);
 	int cellY = (short) (pixelY / 16);
 	int columns = (pixelX + p_rect.m_width - 1) / 16 - cellX + 1;
 	int rows = (pixelY + p_rect.m_height - 1) / 16 - cellY + 1;
-	int width = m_width;
-	int height;
-	if (cellX < width && (height = m_height, cellY < height)) {
+	short width = m_width;
+	short height;
+	if (cellX < width && ((height = m_height), cellY < height)) {
 		if (cellX < 0) {
 			columns += cellX;
 			cellX = 0;
