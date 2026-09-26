@@ -517,8 +517,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 // FUNCTION: LEMBALL 0x0043f480
 void C2D::UpdateSpriteGroundLookupRegions()
 {
-	short translatedX = m_spriteGroundTranslationPoint.m_x - (short) m_clipOffsetX - 3;
-	short translatedY = m_spriteGroundTranslationPoint.m_y - (short) m_clipOffsetY - 3;
+	const short& translatedX = (short) (m_spriteGroundTranslationPoint.m_x - (short) m_clipOffsetX - 3);
+	const short& translatedY = (short) (m_spriteGroundTranslationPoint.m_y - (short) m_clipOffsetY - 3);
 	SpriteGroundLookup* lookup = m_spriteGroundLookup;
 	m_spriteGroundTranslatedPointRect.m_width = 16;
 	m_spriteGroundTranslatedPointRect.m_height = 16;
@@ -530,8 +530,8 @@ void C2D::UpdateSpriteGroundLookupRegions()
 	int cellY = (short) (m_spriteGroundLookupRectA.m_y / 16);
 	int columns = (pixelX + m_spriteGroundLookupRectA.m_width - 1) / 16 - cellX + 1;
 	int rows = (m_spriteGroundLookupRectA.m_y + m_spriteGroundLookupRectA.m_height - 1) / 16 - cellY + 1;
-	int width = lookup->m_width;
-	int height;
+	short width = lookup->m_width;
+	short height;
 	if (cellX < width && ((height = lookup->m_height), cellY < height)) {
 		if (cellX < 0) {
 			columns += cellX;
