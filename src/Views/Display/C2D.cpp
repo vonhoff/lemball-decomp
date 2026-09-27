@@ -1096,22 +1096,29 @@ void C2D::SetMouseShape()
 void C2D::SendCursorMsg()
 {
 	Message message;
-	CVsPoint screenPoint;
-	int gameX;
-	int gameY;
-
+	int screenX;
+	int screenY;
 	message.type = 1;
 	memset(&message.time,
 		   0,
 		   sizeof(message.time) + sizeof(message.code) + sizeof(message.payload) + sizeof(message.source));
-	screenPoint.m_x = (short) m_viewOriginX + m_cursorGamePoint.m_x;
-	screenPoint.m_y = m_cursorGamePoint.m_y - (short) m_viewOriginY;
-	if (!ScreenToGame(screenPoint.m_x, screenPoint.m_y, gameX, gameY)) {
-		m_map->ScreenToGame(screenPoint.m_x, screenPoint.m_y, gameX, gameY);
+	{
+		CVsPoint point =
+			CVsPoint((short) m_viewOriginX + m_cursorGamePoint.m_x, m_cursorGamePoint.m_y + (short) m_viewOriginY);
+		CVsPoint* screenPoint = &point;
+		screenY = screenPoint->m_y;
+		screenX = screenPoint->m_x;
 	}
-	message.code = gameX;
-	message.payload = (void*) gameY;
-	m_lemmingManager->Post(message);
+	{
+		int gameX;
+		int gameY;
+		if (!ScreenToGame(screenX, screenY, gameX, gameY)) {
+			m_map->ScreenToGame(screenX, screenY, gameX, gameY);
+		}
+		message.code = gameX;
+		message.payload = (void*) gameY;
+		m_lemmingManager->Post(message);
+	}
 }
 
 // FUNCTION: LEMBALL 0x00438170
@@ -3017,9 +3024,9 @@ void C2D::DrawDoor(CViewData& p_viewData)
 {
 	int x;
 	int y;
-	int elapsed;
-	eObjectType objectType;
 	eAction action;
+	eObjectType objectType;
+	int elapsed;
 	unsigned long resourceId;
 	int playerIndex;
 	CBaseRemap* remap;
