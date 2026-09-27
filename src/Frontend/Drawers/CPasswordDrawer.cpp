@@ -197,8 +197,8 @@ void CPasswordDrawer::Load()
 			m_buttons[*keyMap]->SetAutoDraw(0);
 			target->m_flag70 = 0;
 			gridX = gridX + m_layout[0x60 / 4] + m_layout[4];
-			keyMap++;
 			offsetPtr = offsetPtr + 2;
+			keyMap++;
 			--col;
 		} while (col != 0);
 		gridX = gridStartX;
