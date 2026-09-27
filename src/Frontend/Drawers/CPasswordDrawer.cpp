@@ -434,10 +434,10 @@ void CPasswordDrawer::DrawPassword()
 	int* layout = (int*) m_layout;
 	int y = layout[0x5c / 4];
 	int x = m_width - layout[0x58 / 4];
-	CVsSize textSize;
-	CVsPoint position(
-		(short) (x - m_textManager->GetFont(m_chalkFontId)->GetSize(&textSize, m_password, 0x20)->m_width),
-		(short) y);
+	short storage[2];
+	CVsSize& textSize = *(CVsSize*) storage;
+	x -= m_textManager->GetFont(m_chalkFontId)->GetSize(&textSize, m_password, 0x20)->m_width;
+	CVsPoint position((short) x, (short) y);
 	textSize.m_height = 0;
 	textSize.m_width = 0;
 	m_textManager->DrawString(m_gdi, position, textSize, m_chalkFontId, m_password, 0x20, 0);
