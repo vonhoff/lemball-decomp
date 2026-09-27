@@ -406,7 +406,9 @@ void CIce::Switched()
 						groundZ = 0;
 					}
 					else {
-						groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+						x &= 15;
+						y &= 15;
+						groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x, y);
 					}
 				}
 				if (groundZ < (current.m_zFixed >> 12)) {
@@ -423,16 +425,18 @@ void CIce::Switched()
 			i--;
 			m_objectCount--;
 			{
-				CMap* map = g_pMap;
 				int y = (current.m_yFixed >> 12);
 				int x = (current.m_xFixed >> 12);
+				CMap* map = g_pMap;
 				int by = y >> 4;
 				int bx = x >> 4;
 				if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
 					groundZ = 0;
 				}
 				else {
-					groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+					x &= 15;
+					y &= 15;
+					groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x, y);
 				}
 			}
 			if ((current.m_zFixed >> 12) <= groundZ) {
