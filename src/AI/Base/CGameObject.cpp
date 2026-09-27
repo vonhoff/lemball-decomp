@@ -460,32 +460,46 @@ void CGameObject::Fly()
 {
 	int timeDelta = (int) (g_dwGameTick - m_lastMovementTick);
 	if (timeDelta > 0) {
-		int x = m_flightVelocity.m_xFixed * 2 + m_flightOrigin.m_xFixed;
-		int y = m_flightVelocity.m_yFixed * 2 + m_flightOrigin.m_yFixed;
 		m_lastMovementTick = g_dwGameTick;
+		int x;
+		int z;
+		int y;
+		x = m_flightVelocity.m_xFixed * 2 + m_flightOrigin.m_xFixed;
+		y = m_flightVelocity.m_yFixed * 2 + m_flightOrigin.m_yFixed;
 		m_flightOrigin.m_xFixed = x;
 		m_flightOrigin.m_yFixed = y;
 		m_flightVelocity.m_zFixed -= 0x2000;
-		m_flightOrigin.m_zFixed = m_flightVelocity.m_zFixed * 2 + 0x4000 + m_flightOrigin.m_zFixed;
+		z = m_flightVelocity.m_zFixed * 2 + 0x4000 + m_flightOrigin.m_zFixed;
+		m_flightOrigin.m_zFixed = z;
 		if (m_flightVelocity.m_zFixed < -0xa000) {
 			m_flightVelocity.m_zFixed = -0xa000;
 		}
-
 		CMover* mover = 0;
 		int groundZ = g_pMap->GetZ(x >> 12, y >> 12, &mover);
-		int flightZ = m_flightOrigin.m_zFixed >> 12;
-		if (flightZ > groundZ) {
-			m_position.m_xFixed = x;
-			m_position.m_yFixed = y;
-			m_position.m_zFixed = m_flightOrigin.m_zFixed;
-		}
-		else {
+		int flightZ = z >> 12;
+		if (flightZ <= groundZ) {
 			m_isFlying = 0;
 			m_balloonPostId = 0;
-			if (flightZ > groundZ - 12) {
+			if (groundZ - 12 >= flightZ) {
+				m_actionDeadline = g_dwGameTick;
+				if ((m_collisionFlags & 4) != 0) {
+					m_isFalling = 1;
+					m_flightVelocity.m_xFixed = 0x3000;
+					m_flightVelocity.m_yFixed = 0;
+					int objectZ = m_position.m_zFixed >> 12;
+					m_flightVelocity.m_zFixed = ((objectZ - groundZ) / 8 + 1) << 12;
+					m_lastMovementTick = g_dwGameTick;
+					m_flightZ = objectZ;
+					m_groundPosition.m_yFixed = m_position.m_yFixed;
+					m_groundPosition.m_xFixed = m_position.m_xFixed;
+					m_actionArgument = 0;
+					m_groundPosition.m_zFixed = groundZ << 12;
+				}
+			}
+			else {
 				m_position.m_xFixed = x;
 				m_position.m_yFixed = y;
-				m_position.m_zFixed = m_flightOrigin.m_zFixed;
+				m_position.m_zFixed = z;
 				m_position.m_zFixed = groundZ << 12;
 				if (g_pAI->HitTrampoline(m_position, this) == 0) {
 					m_flightVelocity.m_xFixed = 0;
@@ -499,24 +513,11 @@ void CGameObject::Fly()
 					mover->GetOn(this);
 				}
 			}
-			else {
-				m_actionDeadline = g_dwGameTick;
-				if ((m_collisionFlags & 4) != 0) {
-					m_isFalling = 1;
-					m_flightVelocity.m_xFixed = 0x3000;
-					m_flightVelocity.m_yFixed = 0;
-					int objectZ = m_position.m_zFixed >> 12;
-					int deltaZ = objectZ - groundZ;
-					deltaZ += (deltaZ >> 31) & 7;
-					m_flightVelocity.m_zFixed = ((deltaZ >> 3) + 1) << 12;
-					m_actionArgument = 0;
-					m_lastMovementTick = g_dwGameTick;
-					m_flightZ = objectZ;
-					m_groundPosition.m_xFixed = m_position.m_xFixed;
-					m_groundPosition.m_yFixed = m_position.m_yFixed;
-					m_groundPosition.m_zFixed = groundZ << 12;
-				}
-			}
+		}
+		else {
+			m_position.m_xFixed = x;
+			m_position.m_yFixed = y;
+			m_position.m_zFixed = z;
 		}
 		if (m_balloonPostId == 0 && m_actionDeadline <= g_dwGameTick) {
 			m_balloonPostId = 0;
