@@ -90,22 +90,22 @@ void CMineManager::Trigger(int p_index, int p_delay)
 // FUNCTION: LEMBALL 0x00424630
 void CMineManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
 {
-	int x = p_position.m_xFixed >> 0xc;
-	int y = p_position.m_yFixed >> 0xc;
-	int xMin = x - 8;
-	int yMin = y - 8;
+	int xMin = (p_position.m_xFixed >> 0xc) - 8;
+	const int& yMin = (p_position.m_yFixed >> 0xc) - 8;
 	int zMin = (p_position.m_zFixed >> 0xc) - 8;
 	int xMax = xMin + 15;
-	int yMax = yMin + 15;
+	const int& yMax = yMin + 15;
 	int i = 0;
 	if (m_count <= 0) {
 		return;
 	}
 	do {
 		if (m_mines[i].m_enabled != 0 && m_mines[i].m_activated == 0) {
+			int pz;
+			int px;
 			int py = m_positions[i].m_y;
-			int px = m_positions[i].m_x;
-			int pz = m_positions[i].m_z;
+			px = m_positions[i].m_x;
+			pz = m_positions[i].m_z;
 			if (xMin < px && px < xMax && yMin < py && py < yMax && zMin < pz && pz < yMax) {
 				m_mines[i].StepOn(p_object);
 				Trigger(i, 0);
