@@ -53,8 +53,8 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 			if ((code1 & code2) != 0) {
 				return 1;
 			}
-			x1 = p_x1;
 			x2 = p_x2;
+			x1 = p_x1;
 			dx = x2 - x1;
 			y2 = p_y2;
 			y1 = p_y1;
