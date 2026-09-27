@@ -16,6 +16,7 @@ void CPlayThruAnim::StartAnim(unsigned long p_animTime)
 // FUNCTION: LEMBALL 0x00467210
 unsigned int CPlayThruAnim::GetFrameNo()
 {
+	unsigned long duration;
 	unsigned int elapsed;
 	unsigned int frame;
 
@@ -25,8 +26,9 @@ unsigned int CPlayThruAnim::GetFrameNo()
 	else {
 		elapsed = m_fixedTime - m_frameState;
 	}
-	if (elapsed < m_animTime) {
-		frame = (m_frames * elapsed) / m_animTime;
+	duration = m_animTime;
+	if (duration > elapsed) {
+		frame = (m_frames * elapsed) / duration;
 	}
 	else {
 		frame = m_frames - 1;
