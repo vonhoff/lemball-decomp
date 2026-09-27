@@ -378,20 +378,19 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AiCoord p_position, eObjectT
 {
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
-	int index = 0;
 	int count = m_count;
-	Rect bounds;
+	int index = 0;
 	while (1) {
 		if (index >= count) {
 			return 0;
 		}
 		CGlobalGameObject* object = m_objects[index];
 		if (object->m_objectType == p_objectType) {
-			bounds.m_left = (object->m_position.m_xFixed >> 12) - 8;
-			bounds.m_top = (object->m_position.m_yFixed >> 12) - 8;
-			bounds.m_right = bounds.m_left + 8;
-			bounds.m_bottom = bounds.m_top + 8;
-			if (bounds.m_left < x && x < bounds.m_right && y > bounds.m_top && y < bounds.m_bottom) {
+			const int& left = (object->m_position.m_xFixed >> 12) - 8;
+			const int& top = (object->m_position.m_yFixed >> 12) - 8;
+			int right = left + 8;
+			int bottom = top + 8;
+			if (left < x && x < right && y > top && y < bottom) {
 				break;
 			}
 		}
