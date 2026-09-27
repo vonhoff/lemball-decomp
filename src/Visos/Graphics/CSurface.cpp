@@ -2561,7 +2561,6 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
 	unsigned char run;
-	int count;
 	if (p_clip.m_y > 0) {
 		int skipRows = p_clip.m_y;
 		do {
@@ -2579,7 +2578,9 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 	if (p_rect.m_height > 0) {
 		int lineIndex = y;
 		do {
+			int count;
 			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[lineIndex] + x;
+			int copyLen;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
 			unsigned char* dst = (unsigned char*) m_lines[lineIndex] + x;
@@ -2590,8 +2591,8 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 						clipX -= run;
 						if (clipX < 0) {
 							dst -= clipX;
-							width += clipX;
 							zlines -= clipX;
+							width += clipX;
 						}
 					}
 					else if (run > 0x80) {
@@ -2599,12 +2600,16 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 						count = run;
 						clipX -= count;
 						if (clipX < 0) {
-							int copyLen = -clipX;
+							copyLen = -clipX;
 							if (copyLen < width) {
-								int i = copyLen;
-								unsigned char* copySrc = src + count + clipX;
-								unsigned char* copyDst = dst;
-								unsigned short* copyZ = zlines;
+								int i;
+								unsigned char* copySrc;
+								unsigned char* copyDst;
+								unsigned short* copyZ;
+								copyZ = zlines;
+								copyDst = dst;
+								i = copyLen;
+								copySrc = src + count + clipX;
 								for (; i > 0; i--) {
 									if (*copyZ <= p_depth) {
 										*copyDst = p_remap[*copySrc];
@@ -2644,7 +2649,7 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 					else if (run > 0x80) {
 						run &= 0x7f;
 						count = run;
-						if (count < width) {
+						if (width > count) {
 							unsigned short* copyZ = zlines;
 							int i = count;
 							unsigned char* copySrc = src;
@@ -2657,9 +2662,9 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 								copyDst++;
 								copySrc++;
 							}
-							src += count;
 							dst += count;
 							zlines += count;
+							src += count;
 							width -= count;
 						}
 						else {
@@ -2675,9 +2680,9 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 								copyDst++;
 								copySrc++;
 							}
-							src += count;
 							dst += width;
 							zlines += width;
+							src += count;
 							width = 0;
 						}
 					}
