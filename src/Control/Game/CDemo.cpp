@@ -45,7 +45,14 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	if (*m_readCursor != (p_packetIndex & 0xff)) {
 		return false;
 	}
-	Message message;
+	struct {
+		unsigned short type;
+		unsigned short reserved;
+		unsigned int time;
+		int code;
+		unsigned int payload;
+		unsigned int source;
+	} message;
 	message.time = CurrentQueueTimer();
 	m_readCursor++;
 	message.type = m_readCursor[0];
@@ -56,15 +63,15 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	message.code |= (unsigned int) m_readCursor[2] << 16;
 	message.code |= (unsigned int) m_readCursor[3] << 24;
 	m_readCursor += 4;
-	message.payload = (void*) m_readCursor[0];
-	message.payload = (void*) ((unsigned int) message.payload | (unsigned int) m_readCursor[1] << 8);
-	message.payload = (void*) ((unsigned int) message.payload | (unsigned int) m_readCursor[2] << 16);
-	message.payload = (void*) ((unsigned int) message.payload | (unsigned int) m_readCursor[3] << 24);
+	message.payload = m_readCursor[0];
+	message.payload |= (unsigned int) m_readCursor[1] << 8;
+	message.payload |= (unsigned int) m_readCursor[2] << 16;
+	message.payload |= (unsigned int) m_readCursor[3] << 24;
 	m_readCursor += 4;
-	message.source = (void*) m_readCursor[0];
-	message.source = (void*) ((unsigned int) message.source | (unsigned int) m_readCursor[1] << 8);
-	message.source = (void*) ((unsigned int) message.source | (unsigned int) m_readCursor[2] << 16);
-	message.source = (void*) ((unsigned int) message.source | (unsigned int) m_readCursor[3] << 24);
+	message.source = m_readCursor[0];
+	message.source |= (unsigned int) m_readCursor[1] << 8;
+	message.source |= (unsigned int) m_readCursor[2] << 16;
+	message.source |= (unsigned int) m_readCursor[3] << 24;
 	m_readCursor += 4;
 	if (m_window == 0) {
 		return false;
@@ -74,17 +81,19 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	case 6:
 	case 8:
 	case 9: {
-		CVsPoint point((short) message.code, (short) ((unsigned int) message.code >> 16));
-		short zoom = (short) m_window->m_zoom;
-		point.m_x *= zoom;
-		point.m_y *= zoom;
+		int zoom;
+		CVsPoint position((short) message.code, (short) ((unsigned int) message.code >> 16));
+		CVsPoint& point = position;
+		zoom = m_window->m_zoom;
+		point.m_x = (short) (zoom * point.m_x);
+		point.m_y = (short) (zoom * point.m_y);
 		point.m_x += m_window->m_rect.m_x;
 		point.m_y += m_window->m_rect.m_y;
-		point.m_x += m_offsetX;
-		point.m_y += m_offsetY;
-		const CVsRect& bounds = m_window->m_rect;
-		if (point.m_x < bounds.m_x || (short) (bounds.m_width + bounds.m_x) <= point.m_x || point.m_y < bounds.m_y ||
-			(short) (bounds.m_height + bounds.m_y) <= point.m_y) {
+		position.m_x += m_offsetX;
+		position.m_y += m_offsetY;
+		const CPVWnd* window = m_window;
+		if (point.m_x < window->m_rect.m_x || (short) (window->m_rect.m_width + window->m_rect.m_x) <= point.m_x ||
+			point.m_y < window->m_rect.m_y || (short) (window->m_rect.m_height + window->m_rect.m_y) <= point.m_y) {
 			return false;
 		}
 		message.code = PackParam(point.m_x, point.m_y);
@@ -92,7 +101,7 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	}
 	}
 	message.type |= 0x8000;
-	g_pMasterInputQueue->Post(message);
+	g_pMasterInputQueue->Post((Message&) message);
 	return true;
 }
 
