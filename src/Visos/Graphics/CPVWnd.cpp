@@ -232,35 +232,36 @@ void CPVWnd::InitHotAreaList()
 	}
 }
 
+inline static void AddWindowOwner(WindowOwnerList* list, CPVWnd* p_window)
+{
+	WindowOwnerNode* node = (WindowOwnerNode*) operator new(sizeof(WindowOwnerNode));
+	if (node != 0) {
+		node->m_window = p_window;
+		node->m_next = 0;
+		node->m_prev = 0;
+	}
+	else {
+		node = 0;
+	}
+	node->m_prev = list->m_tail;
+	if (list->m_tail != 0) {
+		list->m_tail->m_next = node;
+	}
+	list->m_tail = node;
+	if (list->m_head == 0) {
+		list->m_head = node;
+	}
+	list->m_count++;
+}
+
 // FUNCTION: LEMBALL 0x00465f80
 void CPVWnd::_OnCreate()
 {
-	WindowOwnerList* list;
-	WindowOwnerNode* node;
-
-	g_nNativeWindowCount = g_nNativeWindowCount + 1;
+	g_nNativeWindowCount++;
 	if (m_parent == 0) {
-		list = g_pWindowOwnerList;
-		node = (WindowOwnerNode*) operator new(sizeof(WindowOwnerNode));
-		if (node != 0) {
-			node->m_window = this;
-			node->m_next = 0;
-			node->m_prev = 0;
-		}
-		else {
-			node = 0;
-		}
-		node->m_prev = list->m_tail;
-		if (list->m_tail != 0) {
-			list->m_tail->m_next = node;
-		}
-		list->m_tail = node;
-		if (list->m_head == 0) {
-			list->m_head = node;
-		}
-		list->m_count = list->m_count + 1;
+		AddWindowOwner(g_pWindowOwnerList, this);
 	}
-	m_lifecycleRefs = m_lifecycleRefs + 1;
+	m_lifecycleRefs++;
 }
 
 // FUNCTION: LEMBALL 0x00465fe0

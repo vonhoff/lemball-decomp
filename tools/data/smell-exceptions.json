@@ -4,6 +4,14 @@
   "identity": "Exact path + rule + complete reported source line, with a count limit. Line numbers are excluded. Inspect matches and reasons with python tools/gate.py --verbose.",
   "findings": [
     {
+      "path": "src/Visos/Graphics/CPVWnd.cpp",
+      "rule": "no-annotation",
+      "code": "inline static void AddWindowOwner(WindowOwnerList* list, CPVWnd* p_window)",
+      "count": 1,
+      "reason": "CPVWnd::_OnCreate (0x00465f80): this local inline helper reconstructs the allocation and list splice at original 0x00465f90-0x00465fd2. List-first inline parameter priority reproduces ESI=list and EDI=window; the entire caller is assembly-exact. There is no separate original entry point to annotate, and the helper name is inferred. Shared record definitions remain unchanged."
+    },
+
+    {
       "path": "src/Visos/Network/CFileNetwork.cpp",
       "rule": "cast-deref-offset",
       "code": "CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(CNetworkWnd));",
