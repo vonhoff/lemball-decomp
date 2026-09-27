@@ -5,11 +5,8 @@
 class CLine;
 
 // FUNCTION: LEMBALL 0x00432a30
-CClipRect::CClipRect() : m_top(0)
+CClipRect::CClipRect()
 {
-	m_left = 0;
-	m_bottom = 0;
-	m_right = 0;
 }
 
 // FUNCTION: LEMBALL 0x00432ad0

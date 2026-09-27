@@ -415,7 +415,6 @@ void CBaseCursor::Process()
 	short boundRight;
 	short boundBottom;
 	Message posted;
-	CVector clipped;
 
 	if (m_drawn == 0 && m_systemCursorVisible == 0) {
 		RestoreSystemCursor();
@@ -485,7 +484,7 @@ void CBaseCursor::Process()
 			if (boundBottom < m_position.m_y) {
 				m_position.m_y = boundBottom;
 			}
-			clipped.SetIntegers((int) m_position.m_x, (int) m_position.m_y);
+			CVector clipped((long) m_position.m_x, (long) m_position.m_y);
 			m_fixedX = clipped.m_xFixed;
 			m_fixedY = clipped.m_yFixed;
 		}

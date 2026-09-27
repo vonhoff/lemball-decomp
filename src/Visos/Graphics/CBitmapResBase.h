@@ -1,6 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CBITMAPRESBASE_H
 #define LEMBALL_VISOS_GRAPHICS_CBITMAPRESBASE_H
 
+#include "../Foundation/CVsPoint.h"
 #include "CPrimitive.h"
 
 class CResBITMAP;
@@ -8,10 +9,10 @@ class CRemap;
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00497928
-class CBitmapResBase : public CPrimitive {
+class CBitmapResBase : public CPrimitive, public CVsPoint {
 public:
 	// FUNCTION: LEMBALL 0x0044b5f0
-	CBitmapResBase() : m_x(m_y = 0)
+	CBitmapResBase()
 	{
 		m_height = 0;
 		m_width = 0;
@@ -34,8 +35,6 @@ public:
 	friend class CAboutScreen;
 
 protected:
-	short m_x;              // 0x04
-	short m_y;              // 0x06
 	short m_width;          // 0x08
 	short m_height;         // 0x0a
 	short m_sourceX;        // 0x0c

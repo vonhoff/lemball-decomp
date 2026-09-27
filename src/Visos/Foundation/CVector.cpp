@@ -24,11 +24,10 @@ CVector operator*(const CVector& p_vector, int p_scale)
 }
 
 // FUNCTION: LEMBALL 0x0044b640
-CVector* CVector::SetIntegers(int p_x, int p_y)
+CVector::CVector(long p_x, long p_y)
 {
 	m_xFixed = p_x << 12;
 	m_yFixed = p_y << 12;
-	return this;
 }
 
 // FUNCTION: LEMBALL 0x0044b660

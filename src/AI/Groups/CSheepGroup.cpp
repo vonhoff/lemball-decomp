@@ -22,10 +22,11 @@ CSheepGroup::CSheepGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationM
 // FUNCTION: LEMBALL 0x0041f530
 void CSheepGroup::RunAway(AiCoord p_threatPosition)
 {
+	int membersWithDestination;
 	CGameObject* groupMember;
 	AiCoord escapeDestination;
 	CVector escapeVector(0x32000, 0);
-	int membersWithDestination = 0;
+	membersWithDestination = 0;
 	groupMember = GetFirstElementInGroup();
 	while (groupMember != 0) {
 		if (groupMember->DestinationExists() == 1) {

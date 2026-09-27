@@ -27,8 +27,7 @@
 class CAnimFrameBASE;
 
 // FUNCTION: LEMBALL 0x0044aa80
-CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display)
-	: CAnimsManager(p_gdi, 0x2b6, 1, 1, 0, 0), m_centerX(m_centerY = 0)
+CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager(p_gdi, 0x2b6, 1, 1, 0, 0)
 {
 	unsigned int* points;
 	union {
@@ -66,8 +65,8 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display)
 	CVsRect& windowRect = m_display->m_rect;
 	CVsPoint center((short) ((short) (windowRect.m_width - m_backgroundBitmap->m_x) / 2),
 					(short) ((short) (windowRect.m_height - m_backgroundBitmap->m_y) / 2));
-	m_centerX = center.m_x;
-	m_centerY = center.m_y;
+	m_center.m_x = center.m_x;
+	m_center.m_y = center.m_y;
 	offset = 0;
 	do {
 		packed.value = *points;
@@ -119,107 +118,104 @@ void CCDLoadAnim::InitialiseScreen()
 // FUNCTION: LEMBALL 0x0044aec0
 void CCDLoadAnim::Draw()
 {
+	short tipY;
+	short tipX;
 	int angle;
-	short rotX;
-	short rotY;
 	CChangeList* changeList;
 
 	m_gdi->m_renderTarget->GetCurrDB();
 	m_display->SetZoom(1);
 	if (m_initialDraw != 0) {
 		m_initialDraw = m_initialDraw - 1;
-		CVsRect rect;
-		rect.m_width = m_display->m_rect.m_width;
-		rect.m_height = m_display->m_rect.m_height;
-		rect.m_x = 0;
-		rect.m_y = 0;
-		m_line[0].m_bounds.m_width = rect.m_width;
-		m_line[0].m_bounds.m_height = rect.m_height;
-		m_line[0].m_bounds.m_x = rect.m_x;
-		m_line[0].m_bounds.m_y = rect.m_y;
+		const CVsRect& displayRect = m_display->m_rect;
+		m_line[0].m_bounds = CVsRect(0, 0, displayRect.m_width, displayRect.m_height);
 		m_line[0].m_color = 0;
 		m_line[0].Draw(m_gdi);
-		m_bitmapRes[0].m_x = m_centerX;
-		m_bitmapRes[0].m_y = m_centerY;
-		m_bitmapRes[0].m_resource = m_backgroundBitmap;
+		CResBITMAP* background = m_backgroundBitmap;
+		m_bitmapRes[0].CVsPoint::operator=(m_center);
+		m_bitmapRes[0].m_resource = background;
 		m_bitmapRes[0].m_flags = 0;
 		m_bitmapRes[0].m_remap = 0;
 		m_bitmapRes[0].Draw(m_gdi);
-		CVsPoint point(0, 0);
-		m_clearBitmap[0].m_x = point.m_x;
-		m_clearBitmap[0].m_y = point.m_y;
-		rect.m_width = m_display->m_rect.m_width;
-		rect.m_height = m_display->m_rect.m_height;
-		rect.m_x = 0;
-		rect.m_y = 0;
-		m_clearBitmap[0].m_sourceRect.m_width = rect.m_width;
-		m_clearBitmap[0].m_sourceRect.m_height = rect.m_height;
-		m_clearBitmap[0].m_sourceRect.m_x = rect.m_x;
-		m_clearBitmap[0].m_sourceRect.m_y = rect.m_y;
+		const CVsRect& clearRect = m_display->m_rect;
+		CVsRect rect(clearRect);
+		rect.m_x = rect.m_y = 0;
+		m_clearBitmap[0].CVsPoint::operator=(CVsPoint(0, 0));
+		m_clearBitmap[0].m_sourceRect = rect;
 		m_clearBitmap[0].Draw(m_gdi);
 	}
-	CVsPoint point((short) (m_points->m_x + m_centerX), (short) (m_points->m_y + m_centerY));
-	m_fgBlit[0].m_x = point.m_x;
-	m_fgBlit[0].m_y = point.m_y;
-	m_fgBlit[0].m_resource = m_foregroundBitmap;
+	CResBITMAP* foreground = m_foregroundBitmap;
+	m_fgBlit[0].CVsPoint::operator=(
+		CVsPoint((short) (m_points->m_x + m_center.m_x), (short) (m_points->m_y + m_center.m_y)));
+	m_fgBlit[0].m_resource = foreground;
 	m_fgBlit[0].m_flags = 0;
 	m_fgBlit[0].m_remap = 0;
 	m_fgBlit[0].Draw(m_gdi);
-	point.m_x = (short) (m_points[1].m_x + m_centerX);
-	point.m_y = (short) (m_points[1].m_y + m_centerY);
-	DrawAnim(point, m_animResourceId, 0, (CAnimFrameBASE*) m_repeatAnim, 0);
-	CVsPoint origin((short) (m_points[2].m_x + m_centerX), (short) (m_points[2].m_y + m_centerY));
-	CVector radius(0, 0);
-	radius.SetIntegers((short) -m_points[3].m_x, 0);
-	CVector thick(((int) m_points[4].m_x) << 12, ((int) m_points[4].m_y) << 12);
-	CVector left = radius + thick;
-	thick.m_xFixed = ((int) m_points[4].m_x) << 12;
-	thick.m_yFixed = ((int) -m_points[4].m_y) << 12;
-	CVector right = radius + thick;
+	DrawAnim(CVsPoint((short) (m_points[1].m_x + m_center.m_x), (short) (m_points[1].m_y + m_center.m_y)),
+			 m_animResourceId,
+			 0,
+			 (CAnimFrameBASE*) m_repeatAnim,
+			 0);
+	short originStorage[2];
+	originStorage[0] = (short) (m_points[2].m_x + m_center.m_x);
+	originStorage[1] = (short) (m_points[2].m_y + m_center.m_y);
+	const short& originX = originStorage[0];
+	const short& originY = originStorage[1];
+	CVector radius((long) (short) -m_points[3].m_x, 0L);
+	const CVsPoint& thickness = m_points[4];
+	int thicknessY = ((int) thickness.m_y) << 12;
+	int thicknessX = ((int) thickness.m_x) << 12;
+	CVector left = radius + CVector(thicknessX, thicknessY);
+	thicknessY = (-(int) m_points[4].m_y) << 12;
+	thicknessX = ((int) m_points[4].m_x) << 12;
+	CVector right = radius + CVector(thicknessX, thicknessY);
 	angle = m_progress;
 	if (100 < angle) {
 		angle = 100;
 	}
 	angle = (angle << 8) / 100;
 	VSTrig* trig = g_pVSTrig;
-	CFixed sine = trig->Sin(angle);
-	CFixed cosine = trig->Cos(angle);
-	CVector rotatedRadius = trig->Rotate(radius, sine, cosine);
-	rotX = (short) (rotatedRadius.m_xFixed >> 12);
-	rotY = (short) (rotatedRadius.m_yFixed >> 12);
+	short radiusPoint[2];
+	{
+		CFixed sine = trig->Sin(angle);
+		CFixed cosine = trig->Cos(angle);
+		CVector rotated = trig->Rotate(radius, sine, cosine);
+		radiusPoint[0] = (short) (rotated.m_xFixed >> 12);
+		radiusPoint[1] = (short) (rotated.m_yFixed >> 12);
+	}
+	const short& radiusX = radiusPoint[0];
+	const short& radiusY = radiusPoint[1];
 	trig = g_pVSTrig;
-	CFixed leftSine = trig->Sin(angle);
-	CFixed leftCosine = trig->Sin(angle + 0x80);
-	CVector rotatedLeft = trig->Rotate(left, leftSine, leftCosine);
+	CVector rotatedLeft = CVector(trig->Rotate(left, angle));
 	trig = g_pVSTrig;
-	CFixed rightSine = trig->Sin(angle);
-	CFixed rightCosine = trig->Sin(angle + 0x80);
-	CVector rotatedRight = trig->Rotate(right, rightSine, rightCosine);
-	CVsPoint tip(0, 0);
-	tip.m_x = (short) (origin.m_x + rotX);
-	tip.m_y = (short) (origin.m_y + rotY);
-	m_needle0[0].m_left = origin.m_x;
-	m_needle0[0].m_top = origin.m_y;
-	m_needle0[0].m_right = tip.m_x;
-	m_needle0[0].m_bottom = tip.m_y;
+	CVector rotatedRight = CVector(trig->Rotate(right, angle));
+	tipX = (short) (originX + radiusX);
+	tipY = (short) (originY + radiusY);
+	m_needle0[0].m_bounds.m_width = originX;
+	m_needle0[0].m_bounds.m_height = originY;
+	m_needle0[0].m_bounds.CVsPoint::operator=(CVsPoint(tipX, tipY));
 	m_needle0[0].m_reserved0c = 0x66;
 	m_needle0[0].Draw(m_gdi);
-	point.m_x = (short) ((rotatedLeft.m_xFixed >> 12) + origin.m_x);
-	point.m_y = (short) ((rotatedLeft.m_yFixed >> 12) + origin.m_y);
-	m_needle1[0].m_left = tip.m_x;
-	m_needle1[0].m_top = tip.m_y;
-	m_needle1[0].m_right = point.m_x;
-	m_needle1[0].m_bottom = point.m_y;
-	m_needle1[0].m_reserved0c = 0xba;
-	m_needle1[0].Draw(m_gdi);
-	point.m_x = (short) ((rotatedRight.m_xFixed >> 12) + origin.m_x);
-	point.m_y = (short) ((rotatedRight.m_yFixed >> 12) + origin.m_y);
-	m_needle2[0].m_left = tip.m_x;
-	m_needle2[0].m_top = tip.m_y;
-	m_needle2[0].m_right = point.m_x;
-	m_needle2[0].m_bottom = point.m_y;
-	m_needle2[0].m_reserved0c = 0xbf;
-	m_needle2[0].Draw(m_gdi);
+	{
+		short x = (short) ((rotatedLeft.m_xFixed >> 12) + originX);
+		short y = (short) ((rotatedLeft.m_yFixed >> 12) + originY);
+		CVsPoint point(x, y);
+		m_needle1[0].m_bounds.m_width = tipX;
+		m_needle1[0].m_bounds.m_height = tipY;
+		m_needle1[0].m_bounds.CVsPoint::operator=(point);
+		m_needle1[0].m_reserved0c = 0xba;
+		m_needle1[0].Draw(m_gdi);
+	}
+	{
+		short x = (short) ((rotatedRight.m_xFixed >> 12) + originX);
+		short y = (short) ((rotatedRight.m_yFixed >> 12) + originY);
+		CVsPoint point(x, y);
+		m_needle2[0].m_bounds.m_width = tipX;
+		m_needle2[0].m_bounds.m_height = tipY;
+		m_needle2[0].m_bounds.CVsPoint::operator=(point);
+		m_needle2[0].m_reserved0c = 0xbf;
+		m_needle2[0].Draw(m_gdi);
+	}
 	ResetPrimitives();
 	changeList = m_gdi->m_renderTarget->GetChangeList();
 	m_mark.Draw(m_gdi);

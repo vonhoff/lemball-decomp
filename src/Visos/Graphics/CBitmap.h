@@ -6,10 +6,10 @@
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496e90
-class CBitmap : public CPrimitive {
+class CBitmap : public CPrimitive, public CVsPoint {
 public:
 	// FUNCTION: LEMBALL 0x00439580
-	CBitmap() : m_x(m_y = 0) {}
+	CBitmap() {}
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
 	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	// FUNCTION: LEMBALL 0x00439750
@@ -21,8 +21,6 @@ public:
 	friend class C2D;
 
 public:
-	short m_x;            // 0x04
-	short m_y;            // 0x06
 	CVsRect m_sourceRect; // 0x08
 };
 

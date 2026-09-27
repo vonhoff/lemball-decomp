@@ -10,6 +10,7 @@ public:
 	CFixed Cos(int p_angle);
 	CFixed Sin(int p_angle);
 	CVector Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos);
+	CVector Rotate(CVector& p_vector, int p_angle);
 	VSTrig();
 
 private:
@@ -20,4 +21,11 @@ private:
 extern VSTrig* g_pVSTrig;
 extern int g_nVSTrigSource[512];
 extern unsigned int g_dwVSTrigInitialised;
+inline CVector VSTrig::Rotate(CVector& p_vector, int p_angle)
+{
+	CFixed sine = Sin(p_angle);
+	CFixed cosine = Sin(p_angle + 0x80);
+	return Rotate(p_vector, sine, cosine);
+}
+
 #endif

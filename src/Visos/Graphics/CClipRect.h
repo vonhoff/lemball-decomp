@@ -1,6 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CCLIPRECT_H
 #define LEMBALL_VISOS_GRAPHICS_CCLIPRECT_H
 
+#include "../Foundation/CVsRect.h"
 #include "CPrimitive.h"
 
 // SIZE 0x10
@@ -20,10 +21,7 @@ public:
 	friend class CFramedButton;
 
 private:
-	short m_left;              // 0x04
-	short m_top;               // 0x06
-	short m_right;             // 0x08
-	short m_bottom;            // 0x0a
+	CVsRect m_bounds;          // 0x04
 	unsigned int m_reserved0c; // 0x0c
 };
 

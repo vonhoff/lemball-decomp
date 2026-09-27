@@ -542,10 +542,10 @@ void CSurface::Blit(class CClipRect* p_clipRect)
 	if ((p_clipRect->m_reserved0c & 0x1000) == 0) {
 		const short* coords;
 
-		clip->m_width = p_clipRect->m_left;
-		clip->m_height = p_clipRect->m_top;
-		if (&p_clipRect->m_left != 0) {
-			coords = &p_clipRect->m_right;
+		clip->m_width = p_clipRect->m_bounds.m_width;
+		clip->m_height = p_clipRect->m_bounds.m_height;
+		if (&p_clipRect->m_bounds.m_width != 0) {
+			coords = &p_clipRect->m_bounds.m_x;
 		}
 		else {
 			coords = 0;
@@ -553,31 +553,31 @@ void CSurface::Blit(class CClipRect* p_clipRect)
 		clip->m_x = *coords;
 		clip->m_y = coords[1];
 	}
-	else if ((int) p_clipRect->m_left * (int) p_clipRect->m_top != 0) {
+	else if ((int) p_clipRect->m_bounds.m_width * (int) p_clipRect->m_bounds.m_height != 0) {
 		clipRight = clip->m_x;
-		if (p_clipRect->m_right < clipRight) {
-			clip->m_width = (short) (clip->m_width + (clipRight - p_clipRect->m_right));
-			clip->m_x = p_clipRect->m_right;
+		if (p_clipRect->m_bounds.m_x < clipRight) {
+			clip->m_width = (short) (clip->m_width + (clipRight - p_clipRect->m_bounds.m_x));
+			clip->m_x = p_clipRect->m_bounds.m_x;
 		}
 		short clipX;
-		short primitiveWidth = p_clipRect->m_left;
+		short primitiveWidth = p_clipRect->m_bounds.m_width;
 		clipX = clip->m_x;
 		short right = clip->m_width;
 		right += clipX;
-		short primitiveRight = p_clipRect->m_right;
+		short primitiveRight = p_clipRect->m_bounds.m_x;
 		primitiveRight += primitiveWidth;
 		if (right < primitiveRight) {
 			primitiveWidth -= clipX;
-			primitiveWidth += p_clipRect->m_right;
+			primitiveWidth += p_clipRect->m_bounds.m_x;
 			clip->m_width = primitiveWidth;
 		}
-		if (p_clipRect->m_bottom < clip->m_y) {
-			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bottom));
-			clip->m_y = p_clipRect->m_bottom;
+		if (p_clipRect->m_bounds.m_y < clip->m_y) {
+			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bounds.m_y));
+			clip->m_y = p_clipRect->m_bounds.m_y;
 		}
 		short primitiveY;
-		short primitiveHeight = p_clipRect->m_top;
-		primitiveY = p_clipRect->m_bottom;
+		short primitiveHeight = p_clipRect->m_bounds.m_height;
+		primitiveY = p_clipRect->m_bounds.m_y;
 		short clipBottom = (short) (clip->m_height + clip->m_y);
 		short primitiveBottom = (short) (primitiveY + primitiveHeight);
 		if (clipBottom < primitiveBottom) {

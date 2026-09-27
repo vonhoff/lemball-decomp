@@ -92,21 +92,21 @@ void CFramedButton::DrawButton()
 		int right;
 		CClipRect* edge = &m_frameRects[0];
 		right = m_bounds.m_width - 1;
-		edge->m_left = 0;
-		edge->m_top = 0;
-		edge->m_right = (short) right;
-		edge->m_bottom = 0;
+		edge->m_bounds.m_width = 0;
+		edge->m_bounds.m_height = 0;
+		edge->m_bounds.m_x = (short) right;
+		edge->m_bounds.m_y = 0;
 		edge->m_reserved0c = light;
 	}
 	{
 		int bottom;
 		CClipRect* edge = m_frameRects;
 		bottom = m_bounds.m_height - 1;
-		edge[1].m_left = 0;
-		edge[1].m_top = 0;
+		edge[1].m_bounds.m_width = 0;
+		edge[1].m_bounds.m_height = 0;
 		edge++;
-		edge->m_right = 0;
-		edge->m_bottom = (short) bottom;
+		edge->m_bounds.m_x = 0;
+		edge->m_bounds.m_y = (short) bottom;
 		edge->m_reserved0c = light;
 	}
 	{
@@ -115,10 +115,10 @@ void CFramedButton::DrawButton()
 		edge += 2;
 		int right = m_bounds.m_width - 1;
 		int bottom = m_bounds.m_height - 1;
-		edge->m_left = left;
-		edge->m_top = 0;
-		edge->m_right = (short) right;
-		edge->m_bottom = (short) bottom;
+		edge->m_bounds.m_width = left;
+		edge->m_bounds.m_height = 0;
+		edge->m_bounds.m_x = (short) right;
+		edge->m_bounds.m_y = (short) bottom;
 		edge->m_reserved0c = dark;
 	}
 	{
@@ -127,11 +127,11 @@ void CFramedButton::DrawButton()
 		CClipRect* edge = m_frameRects;
 		bottom = m_bounds.m_height - 1;
 		right = m_bounds.m_width - 1;
-		edge[3].m_left = 0;
-		edge[3].m_top = (short) bottom;
-		edge[3].m_right = (short) right;
+		edge[3].m_bounds.m_width = 0;
+		edge[3].m_bounds.m_height = (short) bottom;
+		edge[3].m_bounds.m_x = (short) right;
 		edge += 3;
-		edge->m_bottom = (short) bottom;
+		edge->m_bounds.m_y = (short) bottom;
 		edge->m_reserved0c = dark;
 	}
 	i = 0;
