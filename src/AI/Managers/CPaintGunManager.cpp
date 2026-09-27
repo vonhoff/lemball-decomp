@@ -69,11 +69,23 @@ void CPaintGunManager::Process()
 int CPaintGunManager::GetViewData(CViewData* p_viewData)
 {
 	int count = 0;
-	for (int i = 0; i < m_count; i++) {
-		if (m_paintGuns[i].m_enabled != 0) {
-			m_paintGuns[i].GetViewData(*p_viewData++);
-			count++;
-		}
+	int byteIndex;
+	CViewData* viewData;
+	CPaintGunManager* manager = this;
+	int ordinal = 0;
+	if (manager->m_count > 0) {
+		byteIndex = 0;
+		viewData = p_viewData;
+		do {
+			char* gunBytes = reinterpret_cast<char*>(manager->m_paintGuns);
+			CPaintGun* gun = reinterpret_cast<CPaintGun*>(gunBytes + byteIndex);
+			if (gun->m_enabled != 0) {
+				gun->GetViewData(*viewData++);
+				count++;
+			}
+			byteIndex += sizeof(CPaintGun);
+			ordinal++;
+		} while (manager->m_count > ordinal);
 	}
 	return count;
 }
