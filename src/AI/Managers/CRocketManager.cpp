@@ -84,12 +84,21 @@ void CRocketManager::Process()
 // FUNCTION: LEMBALL 0x00427050
 int CRocketManager::GetViewData(CViewData* p_viewData)
 {
+	int byteIndex = 0;
+	int ordinal = 0;
 	int count = 0;
-	for (int i = 0; i < m_count; i++) {
-		if (m_rockets[i].m_action != ACTION_0x18) {
-			m_rockets[i].GetViewData(*p_viewData++);
-			count++;
-		}
+	if (m_count > byteIndex) {
+		CViewData* viewData = p_viewData;
+		do {
+			char* rocketBytes = reinterpret_cast<char*>(m_rockets);
+			CRocket* rocket = reinterpret_cast<CRocket*>(rocketBytes + byteIndex);
+			if (rocket->m_action != ACTION_0x18) {
+				rocket->GetViewData(*viewData++);
+				count++;
+			}
+			byteIndex += sizeof(CRocket);
+			ordinal++;
+		} while (m_count > ordinal);
 	}
 	return count;
 }
