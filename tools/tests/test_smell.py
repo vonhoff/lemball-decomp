@@ -26,7 +26,8 @@ class ReviewedExceptionTests(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
-        self.root = Path(temp.name)
+        # Match the resolved repository root when Windows TEMP uses an 8.3 alias.
+        self.root = Path(temp.name).resolve()
         self.source = self.root / "src" / "Fixture.h"
         self.source.parent.mkdir()
         self.manifest = self.root / "exceptions.json"
