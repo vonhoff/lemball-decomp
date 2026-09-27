@@ -147,25 +147,26 @@ void CMover::SetUpNextNode(unsigned int p_time)
 // FUNCTION: LEMBALL 0x0042e980
 void CMover::FindObjectsOnTopOfMe()
 {
-	int minX = (m_position.m_xFixed >> 12) - 8;
-	int maxX = minX + 15;
-	int minY = (m_position.m_yFixed >> 12) - 8;
-	int maxY = minY + 15;
 	int objectCount = (unsigned short) g_wObjectCount;
+	const int& minX = (m_position.m_xFixed >> 12) - 8;
+	CMover* const& mover = this;
+	const int& maxX = minX + 15;
+	int minY = (m_position.m_yFixed >> 12) - 8;
+	const int& maxY = minY + 15;
+	int index = 0;
 	if (objectCount > 0) {
-		int index = 0;
 		do {
 			CGameObject* object = g_pObjects[(unsigned short) index];
-			if (object != 0 && object->GetId() != (short) 0xffff && GetId() != object->GetId() &&
+			if (object != 0 && object->GetId() != (short) 0xffff && mover->GetId() != object->GetId() &&
 				object->m_objectType != OBJECT_SHEEP) {
 				int objectX = object->m_position.m_xFixed >> 12;
 				int objectY = object->m_position.m_yFixed >> 12;
-				if (objectX >= minX && objectX <= maxX && objectY >= minY && objectY <= maxY) {
-					GetOn(object);
+				if (objectX >= minX && objectX <= maxX && minY <= objectY && maxY >= objectY) {
+					mover->GetOn(object);
 				}
 			}
 			index++;
-		} while (index < objectCount);
+		} while (objectCount > index);
 	}
 }
 
