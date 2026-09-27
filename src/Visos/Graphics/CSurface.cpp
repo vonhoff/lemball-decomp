@@ -2465,8 +2465,8 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 						clipX -= run;
 						if (clipX < 0) {
 							dst -= clipX;
-							width += clipX;
 							zlines -= clipX;
+							width += clipX;
 						}
 					}
 					else if (run > 0x80) {
@@ -2518,8 +2518,8 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 								copySrc++;
 							}
 							dst += count;
-							src += count;
 							zlines += count;
+							src += count;
 							width -= count;
 						}
 						else {
@@ -2531,8 +2531,8 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 								copySrc++;
 							}
 							dst += width;
-							src += count;
 							zlines += width;
+							src += count;
 							width = 0;
 						}
 					}
