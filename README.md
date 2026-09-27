@@ -30,4 +30,4 @@ This is an unofficial reverse-engineering and preservation project. It is not af
 
 The reconstructed game code was independently produced through analysis of the compiled program. No original or leaked source code was used. No license is granted for the reconstructed game code, and nothing in this repository should be construed as granting rights in any third-party intellectual property.
 
-Code independently developed for this project that is not part of the reconstructed game code is licensed under the [GNU General Public License v3.0](tools/LICENSE).
+Code independently developed for this project that is not part of the reconstructed game code is licensed under the [GNU General Public License v3.0](LICENSE).
