@@ -9,9 +9,8 @@
 // FUNCTION: LEMBALL 0x0047c880
 CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 {
-	unsigned int i;
-	UINT deviceCount;
 	UINT deviceId;
+	UINT deviceCount;
 	int found;
 
 	m_channelCount = (unsigned int) p_channelCount;
@@ -22,22 +21,19 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	m_available = 0;
 	m_stereo = 0;
 	m_use16Bit = 0;
+	m_unk0x18 = 0;
 	m_deviceId = 0xffffffff;
 	m_sampleRate = 0;
-	i = 0;
-	while (i < 8) {
+	for (unsigned int i = 0; i < 8; i++) {
 		m_channelState[i] = 0xffffffff;
 		m_pad0x40[i] = 0;
 		m_effectPlaying[i] = 0;
-		i = i + 1;
 	}
 	m_nextHandle = 1;
-	i = 0;
-	while (i < m_channelCount) {
-		m_effects[i] = 0;
-		m_effectUsed[i] = 0;
-		m_effectHandles[i] = 0;
-		i = i + 1;
+	for (unsigned int channel = 0; channel < m_channelCount; channel++) {
+		m_effects[channel] = 0;
+		m_effectUsed[channel] = 0;
+		m_effectHandles[channel] = 0;
 	}
 	found = 0;
 	deviceCount = waveOutGetNumDevs();
@@ -50,7 +46,7 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 			return;
 		}
 		if (waveOutGetDevCapsA(deviceId, &m_caps, sizeof(WAVEOUTCAPSA)) == 0) {
-			if ((m_caps.dwFormats & 1) != 0) {
+			if ((m_caps.dwFormats & 1) == 1) {
 				m_available = 1;
 				m_deviceId = deviceId;
 				m_use16Bit = 0;
@@ -91,8 +87,8 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 			}
 			m_waveFormat.nSamplesPerSec = m_sampleRate;
 			m_waveFormat.nAvgBytesPerSec = 1;
-			m_waveFormat.nAvgBytesPerSec = (unsigned int) m_waveFormat.nChannels * m_sampleRate;
 			m_waveFormat.nBlockAlign = (unsigned short) ((m_waveFormat.wBitsPerSample * m_waveFormat.nChannels) / 8);
+			m_waveFormat.nAvgBytesPerSec = (unsigned int) m_waveFormat.nChannels * m_sampleRate;
 			if (m_use16Bit == 1) {
 				m_waveFormat.nAvgBytesPerSec = m_waveFormat.nAvgBytesPerSec * 2;
 			}
@@ -380,34 +376,35 @@ int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 // FUNCTION: LEMBALL 0x0047d080
 int CWaveSoundDevice::FreeAllEffects()
 {
-	unsigned int i;
+	CWaveSoundDevice* device = this;
 	unsigned int byteIndex;
+	unsigned int i;
 	CWaveEffect* effect;
 
 	i = 0;
-	if (i < m_channelCount) {
+	if (i < device->m_channelCount) {
 		byteIndex = 0;
 		do {
-			char* usedBytes = (char*) m_effectUsed;
+			char* usedBytes = (char*) device->m_effectUsed;
 			unsigned int* usedSlot = (unsigned int*) (usedBytes + byteIndex);
 			if (*usedSlot == 1) {
-				char* effectBytes = (char*) m_effects;
+				char* effectBytes = (char*) device->m_effects;
 				CWaveEffect** effectSlot = (CWaveEffect**) (effectBytes + byteIndex);
 				effect = *effectSlot;
 				if (effect != 0) {
 					effect->~CWaveEffect();
 					operator delete(effect);
 				}
-				char* usedBytesAfter = (char*) m_effectUsed;
+				char* usedBytesAfter = (char*) device->m_effectUsed;
 				unsigned int* usedSlotAfter = (unsigned int*) (usedBytesAfter + byteIndex);
 				*usedSlotAfter = 0;
-				char* handleBytes = (char*) m_effectHandles;
+				char* handleBytes = (char*) device->m_effectHandles;
 				unsigned int* handleSlot = (unsigned int*) (handleBytes + byteIndex);
 				*handleSlot = 0;
 			}
 			byteIndex += sizeof(unsigned int);
 			i = i + 1;
-		} while (i < m_channelCount);
+		} while (i < device->m_channelCount);
 	}
 	return 0;
 }
@@ -455,21 +452,30 @@ bool CWaveSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, unsign
 unsigned char CWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
 {
 	unsigned int i;
+	unsigned int byteIndex;
 	MMRESULT result;
 
 	i = 0;
-	while (i < m_channelCount) {
-		if (m_effectHandles[i] == p_effectId) {
-			result = waveOutReset(m_waveOut);
-			if (result != 0) {
-				*g_pErrorOutput << "waveOutReset errored: " << (unsigned int) result << "\n";
+	if (i < m_channelCount) {
+		byteIndex = 0;
+		do {
+			char* handleBytes = (char*) m_effectHandles;
+			unsigned int* handleSlot = (unsigned int*) (handleBytes + byteIndex);
+			if (*handleSlot == p_effectId) {
+				result = waveOutReset(m_waveOut);
+				if (result != 0) {
+					*g_pErrorOutput << "waveOutReset errored: " << (unsigned int) result << "\n";
+				}
+				char* effectBytes = (char*) m_effects;
+				CWaveEffect** effectSlot = (CWaveEffect**) (effectBytes + byteIndex);
+				result = waveOutWrite(m_waveOut, (*effectSlot)->m_waveHeader, 0x20);
+				if (result != 0) {
+					*g_pErrorOutput << "waveOutWrite (play effect) errored: " << (unsigned int) result << "\n";
+				}
 			}
-			result = waveOutWrite(m_waveOut, m_effects[i]->m_waveHeader, 0x20);
-			if (result != 0) {
-				*g_pErrorOutput << "waveOutWrite (play effect) errored: " << (unsigned int) result << "\n";
-			}
-		}
-		i = i + 1;
+			byteIndex += sizeof(unsigned int);
+			i = i + 1;
+		} while (i < m_channelCount);
 	}
 	return 0;
 }
