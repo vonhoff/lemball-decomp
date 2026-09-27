@@ -133,7 +133,8 @@ void CPanelButton::DrawButton()
 	m_statusAnim[0].Draw(m_gdi);
 	lemming = m_lemming;
 	if (lemming->m_balloonType != -1 && m_unavailable == 0) {
-		position = (const CVsPoint*) &m_inventoryRect;
+		CResANIM* resource;
+		const CVsPoint* position = (const CVsPoint*) &m_inventoryRect;
 		resource = lemming->m_panel->m_resources[3];
 		m_inventoryAnim[0].m_x = position->m_x;
 		m_inventoryAnim[0].m_y = position->m_y;
@@ -146,7 +147,8 @@ void CPanelButton::DrawButton()
 		if (m_alternatePlayer != 0) {
 			frame += 3;
 		}
-		position = (const CVsPoint*) &m_inventoryRect;
+		CResANIM* resource;
+		const CVsPoint* position = (const CVsPoint*) &m_inventoryRect;
 		resource = lemming->m_panel->m_resources[2];
 		m_inventoryAnim[0].m_x = position->m_x;
 		m_inventoryAnim[0].m_y = position->m_y;
@@ -157,15 +159,14 @@ void CPanelButton::DrawButton()
 	m_inventoryAnim[0].m_remap = (CRemap*) balloonRemap;
 	m_inventoryAnim[0].Draw(m_gdi);
 	int ammo = m_lemming->m_lemming->m_ammoCount;
-	CVsSize ammoSize;
-	ammoSize.m_width = 27;
-	ammoSize.m_height = 9;
-	CVsPoint ammoPosition(7, 11);
+	CVsRect ammoRect(7, 11, 27, 9);
+	CVsSize& ammoSize = ammoRect;
+	CVsPoint& ammoPosition = ammoRect;
 	unsigned int color;
-	CVsSize inventorySize;
-	inventorySize.m_width = 6;
-	inventorySize.m_height = 4;
-	CVsPoint inventoryPosition(7, 4);
+	CVsRect inventoryRect(7, 4, 6, 4);
+	CVsSize& inventorySize = inventoryRect;
+	CVsPoint& inventoryPosition = inventoryRect;
+	unsigned int packedSize;
 	ammoSize.m_width = (short) (ammo * ammoSize.m_width / 50);
 	if (m_enabled != 0 && m_unavailable == 0) {
 		color = 0x76;
@@ -182,15 +183,16 @@ void CPanelButton::DrawButton()
 		mappedColor = playerRemap->m_remap[color];
 	}
 	else {
-		memcpy(&mappedColor, &ammoSize, sizeof(mappedColor));
+		memcpy(&packedSize, &ammoSize, sizeof(packedSize));
+		mappedColor = packedSize;
 	}
 	static_cast<CVsSize&>(m_statusLine[0].m_bounds) = ammoSize;
-	static_cast<CVsPoint&>(m_statusLine[0].m_bounds) = ammoPosition;
+	m_statusLine[0].m_bounds.CVsPoint::operator=(ammoPosition);
 	m_statusLine[0].m_color = mappedColor;
 	m_statusLine[0].Draw(m_gdi);
 	if (m_unavailable == 0) {
-		CLine* line = m_inventoryLines;
 		for (int i = 0; i < (int) m_lemming->m_inventoryCount; i++) {
+			CLine* line = &m_inventoryLines[i];
 			int type = m_lemming->m_inventoryTypes[i];
 			CBaseRemap* remap;
 			if (type < 4) {
@@ -206,10 +208,9 @@ void CPanelButton::DrawButton()
 				mappedColor = remap->m_remap[color];
 			}
 			static_cast<CVsSize&>(line->m_bounds) = inventorySize;
-			static_cast<CVsPoint&>(line->m_bounds) = inventoryPosition;
+			line->m_bounds.CVsPoint::operator=(inventoryPosition);
 			line->m_color = mappedColor;
 			line->Draw(m_gdi);
-			line++;
 			inventoryPosition.m_x += 11;
 		}
 	}
