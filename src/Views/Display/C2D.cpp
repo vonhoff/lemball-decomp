@@ -3607,8 +3607,9 @@ void C2D::Draw(const CVsRect& p_rect)
 		return;
 	}
 
+	unsigned long groundAnimationFrame = g_dwSimulationTimestamp / 100;
 	m_frameCount++;
-	m_groundAnimationFrame = (short) (g_dwSimulationTimestamp / 100);
+	m_groundAnimationFrame = (short) groundAnimationFrame;
 	unsigned long startTime = timeGetTime();
 	m_clipSearchHeight = 0x40;
 
