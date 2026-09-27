@@ -83,8 +83,8 @@ bool CSlinky::GoodEndPt(const AiCoord& p_coordinate)
 // FUNCTION: LEMBALL 0x0040b670
 bool CSlinky::Move()
 {
-	int count = 0;
 	int dx;
+	int count = 0;
 	int dy;
 	do {
 		int random = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
@@ -108,13 +108,19 @@ bool CSlinky::Move()
 			dy = -16;
 			break;
 		}
-		int x = m_position.m_xFixed >> 12;
-		int y = m_position.m_yFixed >> 12;
-		int z = m_position.m_zFixed >> 12;
-		count++;
-		m_destination.m_xFixed = (x + dx) << 12;
-		m_destination.m_yFixed = (y + dy) << 12;
-		m_destination.m_zFixed = z << 12;
+		{
+			const int& x = m_position.m_xFixed >> 12;
+			count++;
+			m_destination.m_xFixed = (x + dx) << 12;
+		}
+		{
+			const int& y = m_position.m_yFixed >> 12;
+			m_destination.m_yFixed = (y + dy) << 12;
+		}
+		{
+			const int& z = m_position.m_zFixed >> 12;
+			m_destination.m_zFixed = z << 12;
+		}
 	} while (count < 8 && !GoodEndPt(m_destination));
 	return true;
 }
