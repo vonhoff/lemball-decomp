@@ -151,14 +151,22 @@ unload_entries:
 	OnUnLoad();
 }
 
+inline static void UnLoadListVram(CResBaseLIST* p_list,
+								  unsigned int p_force,
+								  unsigned int CResBaseLIST::* p_totalSize,
+								  ResListHeader* CResBaseLIST::* p_listHeader)
+{
+	if (p_list->GetfAnyVramLoaded()) {
+		for (unsigned int i = 0; i < (p_list->*p_totalSize) / (p_list->*p_listHeader)->m_headerSize; i++) {
+			p_list->UnLoadVramData(i, p_force);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0045d5c0
 void CResBaseLIST::UnLoadVramData(unsigned int p_force)
 {
-	if (GetfAnyVramLoaded()) {
-		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_headerSize; i++) {
-			UnLoadVramData(i, p_force);
-		}
-	}
+	UnLoadListVram(this, p_force, &CResBaseLIST::m_totalSize, &CResBaseLIST::m_listHeader);
 }
 
 // FUNCTION: LEMBALL 0x0045e680
