@@ -1803,8 +1803,8 @@ void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 					clipX -= run;
 					if (clipX < 0) {
 						dst -= clipX;
-						width += clipX;
 						zlines -= clipX;
+						width += clipX;
 					}
 				}
 				else if (run > 0x80) {
