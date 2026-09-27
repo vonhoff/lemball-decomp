@@ -5,14 +5,11 @@
 
 [<img src="https://decomp.dev/vonhoff/lemball-decomp.svg?w=512&h=256" width="512" height="256" alt="Decomp Progress Chart">](https://decomp.dev/vonhoff/lemball-decomp)
 
-> [!IMPORTANT]
-> The GPL-3.0 license covers non-reconstructed code only. The reconstructed game code is unlicensed. See [Legal](#legal) for details.
-
 A matching decompilation of *Lemmings Paintball* (1996, Windows 95).
 
 The project aims to recover readable, semantic C++ while matching the original executable as closely as possible. Reconstructed code is compiled with Microsoft Visual C++ 4.00 and compared function-by-function using reccmp.
 
-Live progress is tracked on [decomp.dev](https://decomp.dev/vonhoff/lemball-decomp).
+The GPL-3.0 license applies only to code that was independently developed for this project and does not form part of the reconstructed game code. The reconstructed game code itself is provided without a license. See [Legal](#legal) for further details.
 
 ## References
 
@@ -31,8 +28,8 @@ Live progress is tracked on [decomp.dev](https://decomp.dev/vonhoff/lemball-deco
 
 This is an unofficial reverse-engineering and preservation project. It is not affiliated with, authorized by, or endorsed by any rights holder associated with *Lemmings Paintball*.
 
-*Lemmings Paintball*, its name, trademarks, and original copyrighted material remain the property of their respective rights holders. No original executable or game assets are included in or distributed with this repository.
+*Lemmings Paintball*, its name, trademarks, and copyrighted material from the original game remain the property of their respective rights holders. No original executable or game assets are included in or distributed with this repository.
 
-The reconstructed game code was produced through reverse engineering and analysis of the compiled program. No original or leaked source code was used. No license is granted for the reconstructed game code, and nothing in this repository grants any rights in third-party intellectual property.
+The reconstructed game code was produced through reverse engineering and analysis of the compiled program. No original or leaked source code was used. The reconstructed game code is provided without a license, and nothing in this repository grants any rights in third-party intellectual property.
 
-Code independently developed for this project that is not part of the reconstructed game code is licensed under the [GPL-3.0 license](LICENSE).
+Code independently developed for this project that is not part of the reconstructed game code is licensed under the [GNU General Public License v3.0](LICENSE).
