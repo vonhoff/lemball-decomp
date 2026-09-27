@@ -82,7 +82,7 @@ def main() -> int:
 
     checks = [
         lambda: check_comments(paths),
-        lambda: check_smell(paths=paths, annot=True, annot_strict=args.annot_strict),
+        lambda: check_smell(paths=paths, annot=True, annot_strict=args.annot_strict, verbose=args.verbose),
         provenance,
         lambda: check_layout(paths=paths, fail=True),
         lambda: check_decomplint(paths=paths),

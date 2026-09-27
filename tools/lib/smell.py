@@ -12,9 +12,9 @@ from pathlib import Path
 from .paths import ROOT
 from .source import RECCMP_MARK, SYNTHETIC_MARK, collect_sources, mask_comments_and_strings
 
-BASELINE = ROOT / "smell.baseline.json"
+EXCEPTIONS = ROOT / "tools" / "data" / "smell-exceptions.json"
 
-# Hit: relative path, line, rule, optional code snippet
+# Hit: relative path, line number, rule, complete source line without trailing comments.
 Hit = tuple[str, int, str, str]
 
 K68_MARK = re.compile(r"^\s*//\s*68K\s+")
@@ -226,33 +226,57 @@ def format_hit(hit: Hit) -> str:
     return f"{rel}:{lineno}: {rule}"
 
 
-def load_baseline() -> Counter[tuple[str, str, str]]:
+def load_exceptions() -> dict[tuple[str, str, str], tuple[int, str]]:
     try:
-        data = json.loads(BASELINE.read_text(encoding="utf-8"))
+        data = json.loads(EXCEPTIONS.read_text(encoding="utf-8"))
     except (OSError, ValueError) as error:
-        raise ValueError(f"cannot read {BASELINE}: {error}")
-    baseline: Counter[tuple[str, str, str]] = Counter()
-    for item in data.get("findings", []):
-        baseline[(item["path"], item["rule"], item.get("code", ""))] += item.get("count", 1)
-    return baseline
+        raise ValueError(f"cannot read {EXCEPTIONS}: {error}") from error
+    if (
+        not isinstance(data, dict) or type(data.get("version")) is not int
+        or data["version"] != 1 or not isinstance(data.get("findings"), list)
+    ):
+        raise ValueError(f"invalid {EXCEPTIONS}: expected version 1 and a findings list")
+    exceptions = {}
+    for index, item in enumerate(data["findings"], 1):
+        context = f"{EXCEPTIONS}: finding {index}"
+        if not isinstance(item, dict) or any(
+            not isinstance(item.get(field), str) or not item[field].strip()
+            for field in ("path", "rule", "code", "reason")
+        ):
+            raise ValueError(f"{context}: path, rule, code and reason must be nonempty strings")
+        path = item["path"]
+        if not path.startswith("src/") or "\\" in path or any(part in {"", ".", ".."} for part in path.split("/")):
+            raise ValueError(f"{context}: path must be relative to src with forward slashes")
+        count = item.get("count", 1)
+        if type(count) is not int or count < 1:
+            raise ValueError(f"{context}: count must be a positive integer")
+        key = (path, item["rule"], item["code"])
+        if key in exceptions:
+            raise ValueError(f"{context}: duplicate exception; use count for repeated findings")
+        exceptions[key] = (count, item["reason"])
+    return exceptions
 
 
-def apply_baseline(hits: list[Hit], files: list[Path]) -> tuple[list[Hit], list[str]]:
-    baseline = load_baseline()
-    remaining = baseline.copy()
-    unbaselined: list[Hit] = []
+def apply_exceptions(
+    hits: list[Hit], files: list[Path], *, full_scan: bool = False,
+) -> tuple[list[Hit], list[str], list[tuple[Hit, str]]]:
+    exceptions = load_exceptions()
+    remaining = Counter({key: count for key, (count, _) in exceptions.items()})
+    unreviewed: list[Hit] = []
+    reviewed: list[tuple[Hit, str]] = []
     for hit in hits:
         key = (hit[0], hit[2], hit[3])
-        if remaining[key] != 0:
+        if remaining[key] > 0:
             remaining[key] -= 1
+            reviewed.append((hit, exceptions[key][1]))
         else:
-            unbaselined.append(hit)
+            unreviewed.append(hit)
     scanned = {path.resolve().relative_to(ROOT).as_posix() for path in files}
     stale = []
     for (path, rule, code), count in sorted(remaining.items()):
-        if count != 0 and path in scanned:
-            stale.append(f"{path}: baseline-stale {rule} {code} (count {count})")
-    return unbaselined, stale
+        if count > 0 and (full_scan or path in scanned):
+            stale.append(f"{path}: exception-stale {rule} {code} (count {count})")
+    return unreviewed, stale, reviewed
 
 
 def scan_file(
@@ -271,32 +295,32 @@ def scan_file(
             code = strip_line_comment(raw)
             raw_cast = raw_cast_reason(code, audit=raw_cast_audit)
             if raw_cast is not None:
-                hits.append((rel, lineno, raw_cast, code.strip()[:100]))
+                hits.append((rel, lineno, raw_cast, code.strip()))
             if VBPTR_WALK.search(code):
-                hits.append((rel, lineno, "vbptr-walk", ""))
+                hits.append((rel, lineno, "vbptr-walk", code.strip()))
             if THIS_ADJUST.search(code):
-                hits.append((rel, lineno, "this-adjust-poke", ""))
+                hits.append((rel, lineno, "this-adjust-poke", code.strip()))
             poked = False
             type_erase = CAST_BYTE_DIV_INDEX.search(code)
             if type_erase is not None:
-                hits.append((rel, lineno, "type-erase-index", type_erase.group(0).strip()[:100]))
+                hits.append((rel, lineno, "type-erase-index", code.strip()))
                 poked = True
             for match in EXPR_CHAR_OFFSET.finditer(code):
                 if not BUFFER_OK.search(match.group("expr")):
-                    hits.append((rel, lineno, "expr-char-offset", match.group(0).strip()[:100]))
+                    hits.append((rel, lineno, "expr-char-offset", code.strip()))
                     poked = True
                     break
             if MI_DTOR_POKE.search(code):
-                hits.append((rel, lineno, "mi-dtor-poke", code.strip()[:100]))
+                hits.append((rel, lineno, "mi-dtor-poke", code.strip()))
                 poked = True
             if not poked and is_offset_poke(code):
-                hits.append((rel, lineno, "offset-poke", code.strip()[:100]))
+                hits.append((rel, lineno, "offset-poke", code.strip()))
             for match in CHAR_VAR_OFFSET.finditer(code):
                 if BUFFER_OK.search(match.group("expr")):
                     continue
                 if match.group("off") == "sizeof":
                     continue
-                hits.append((rel, lineno, "offset-poke", match.group(0).strip()))
+                hits.append((rel, lineno, "offset-poke", code.strip()))
     if path.suffix.lower() != ".cpp":
         return hits, reviews
     masked_lines = mask_comments_and_strings("\n".join(lines)).splitlines()
@@ -329,7 +353,7 @@ def scan_file(
         if disposition.startswith("review-"):
             reviews.append((disposition, record))
         else:
-            hits.append((rel, i + 1, kind, stripped[:90]))
+            hits.append((rel, i + 1, kind, stripped))
     return hits, reviews
 
 
@@ -351,6 +375,7 @@ def check_smell(
     annot: bool = False,
     annot_strict: bool = False,
     raw_cast_audit: bool = False,
+    verbose: bool = False,
 ) -> int:
     files = collect_sources(paths)
     if not files:
@@ -367,10 +392,15 @@ def check_smell(
         hits.extend(file_hits)
         reviews.extend(file_reviews)
     try:
-        hits, stale = apply_baseline(hits, files)
+        hits, stale, reviewed = apply_exceptions(hits, files, full_scan=not paths)
     except ValueError as error:
         sys.stderr.write(f"smell: {error}\n")
         return 2
+    if reviewed:
+        sys.stdout.write(f"smell: {len(reviewed)} reviewed exception(s) in tools/data/smell-exceptions.json\n")
+        if verbose:
+            for hit, reason in reviewed:
+                sys.stdout.write(f"  {format_hit(hit)}\n    reason: {reason}\n")
     if reviews:
         empty_reviews = sum(reason == "review-empty" for reason, _ in reviews)
         synthetic_reviews = sum(reason == "review-synthetic" for reason, _ in reviews)
