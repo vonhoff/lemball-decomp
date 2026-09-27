@@ -16,16 +16,17 @@ int CTranslator::ProcessMsg(Message* p_message)
 	InputTranslationEntry* entry;
 	int index;
 	short keyState;
-	unsigned short type = p_message->type;
+	Message* message = p_message;
 
-	translated.time = p_message->time;
+	translated.time = message->time;
+	unsigned short type = message->type;
 	switch ((int) type) {
 	case 1:
 	case 2:
 		index = 0;
 		entry = g_dwInputTranslationPairs;
 		do {
-			if (entry->m_platformCode == (unsigned int) p_message->code) {
+			if (entry->m_platformCode == (unsigned int) message->code) {
 				translated.type = 3;
 				if (type != 1) {
 					translated.type = 4;
