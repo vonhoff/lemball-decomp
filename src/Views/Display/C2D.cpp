@@ -3774,49 +3774,51 @@ void C2D::DrawZBuff_Anim(int p_index, unsigned short p_z)
 // FUNCTION: LEMBALL 0x00440560
 void C2D::DrawObjectsZBuff()
 {
-	CVsRect backgroundBounds(0, 0, m_clipSize.m_x, m_clipSize.m_y);
-	CSolidRect& background = m_solidRects[m_primitiveCount++];
-	background.m_bounds.m_width = backgroundBounds.m_width;
-	background.m_bounds.m_height = backgroundBounds.m_height;
-	background.m_bounds.m_x = backgroundBounds.m_x;
-	background.m_bounds.m_y = backgroundBounds.m_y;
+	CVsRect backgroundBounds;
+	backgroundBounds.m_width = m_clipSize.m_x;
+	backgroundBounds.m_height = m_clipSize.m_y;
+	backgroundBounds.m_y = 0;
+	backgroundBounds.m_x = 0;
+	int primitiveIndex = m_primitiveCount++;
+	CSolidRect& background = m_solidRects[primitiveIndex];
+	memcpy(&background.m_bounds.m_width, &backgroundBounds.m_width, sizeof(short));
+	memcpy(&background.m_bounds.m_height, &backgroundBounds.m_height, sizeof(short));
+	memcpy(&background.m_bounds.m_x, &backgroundBounds.m_x, sizeof(short));
+	memcpy(&background.m_bounds.m_y, &backgroundBounds.m_y, sizeof(short));
 	background.m_color = 0;
 	background.Draw(m_gdi);
 
-	int viewIndex = 0;
-	if ((int) m_viewDataCount > 0) {
-		do {
-			m_viewData[viewIndex].m_gameX = (short) m_viewData[viewIndex].m_positionX;
-			m_viewData[viewIndex].m_gameY = (short) m_viewData[viewIndex].m_positionY;
-
-			C3DVector position;
-			position.m_xFixed = m_viewData[viewIndex].m_positionX;
-			position.m_yFixed = m_viewData[viewIndex].m_positionY;
-			position.m_zFixed = m_viewData[viewIndex].m_positionZ;
+	{
+		C3DVector position;
+		int viewIndex = 0;
+		for (;;) {
+			if ((int) m_viewDataCount <= viewIndex) {
+				break;
+			}
+			CViewData* viewData = m_viewData + viewIndex;
+			viewData->m_gameX = (short) viewData->m_positionX;
+			viewData->m_gameY = (short) viewData->m_positionY;
+			memcpy(&position, &m_viewData[viewIndex].m_positionX, sizeof(position));
 			m_map->GameToScreen(position.m_xFixed, position.m_yFixed);
-			position.m_xFixed -= m_viewOriginX;
 			position.m_yFixed -= position.m_zFixed;
+			position.m_xFixed -= m_viewOriginX;
 			position.m_yFixed -= m_viewOriginY;
-			m_viewData[viewIndex].m_positionX = position.m_xFixed;
-			m_viewData[viewIndex].m_positionY = position.m_yFixed;
-			m_viewData[viewIndex].m_positionZ = position.m_zFixed;
+			memcpy(&m_viewData[viewIndex].m_positionX, &position, sizeof(position));
 			viewIndex++;
-		} while ((int) m_viewDataCount > viewIndex);
+		}
 	}
-
 	SortViewData();
 	m_lemmingAnims->m_drawFlags = 0x80000;
 
+	CAnimSpecial* animations = m_ai->m_animSpecial;
+	m_zBufferAnimationCount = animations->m_entryCount;
+	m_zBufferAnimations = animations->m_entries;
 	int spriteIndex = 0;
 	int animationIndex = 0;
 	bool spriteZValid = false;
 	bool animationZValid = false;
 	unsigned short spriteZ;
 	unsigned short animationZ;
-	int animationOffset = 0;
-	CAnimSpecial* animations = m_ai->m_animSpecial;
-	m_zBufferAnimationCount = animations->m_entryCount;
-	m_zBufferAnimations = animations->m_entries;
 
 	while (spriteIndex < (int) m_viewDataCount && animationIndex < m_zBufferAnimationCount) {
 		if (!spriteZValid) {
@@ -3824,13 +3826,12 @@ void C2D::DrawObjectsZBuff()
 			spriteZValid = true;
 		}
 		if (!animationZValid) {
-			AnimSpecialEntry* animation = (AnimSpecialEntry*) ((unsigned char*) m_zBufferAnimations + animationOffset);
+			AnimSpecialEntry* animation = m_zBufferAnimations + animationIndex;
 			animationZ = animation->m_groundEntry->m_height + animation->m_sortKey;
 			animationZValid = true;
 		}
 		if (animationZ < spriteZ) {
 			DrawZBuff_Anim(animationIndex, animationZ);
-			animationOffset += sizeof(AnimSpecialEntry);
 			animationIndex++;
 			animationZValid = false;
 		}
