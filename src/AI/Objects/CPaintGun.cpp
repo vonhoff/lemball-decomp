@@ -97,59 +97,50 @@ bool CPaintGun::Process()
 			Action(ACTION_0x1b);
 		}
 		else if (m_lastMovementTick < g_dwGameTick) {
-			int x;
-			int z;
-			int y;
-			x = m_position.m_xFixed;
-			y = m_position.m_yFixed;
-			z = m_position.m_zFixed + 0x8000;
+			AiCoord position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
 			AiCoord start;
 			AiCoord target;
 			volatile int coordinate;
 
-			start.m_xFixed = x + 0x10000;
-			start.m_yFixed = y;
-			start.m_zFixed = z;
-			target.m_yFixed = y;
-			target.m_zFixed = z;
-			coordinate = (x >> 12) + 200;
-			if (coordinate > 1024) {
+			start.m_yFixed = position.m_yFixed;
+			start.m_zFixed = position.m_zFixed;
+			target.m_yFixed = position.m_yFixed;
+			target.m_zFixed = position.m_zFixed;
+			start.m_xFixed = position.m_xFixed + 0x10000;
+			if ((coordinate = (position.m_xFixed >> 12) + 200) > 1024) {
 				coordinate = 1023;
 			}
 			target.m_xFixed = coordinate << 12;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 2, start, target);
 
-			start.m_xFixed = x - 0x10000;
-			start.m_yFixed = y;
-			start.m_zFixed = z;
-			target.m_yFixed = y;
-			target.m_zFixed = z;
-			coordinate = (x >> 12) - 200;
-			if (coordinate < 0) {
+			start.m_yFixed = position.m_yFixed;
+			start.m_zFixed = position.m_zFixed;
+			target.m_yFixed = position.m_yFixed;
+			target.m_zFixed = position.m_zFixed;
+			start.m_xFixed = position.m_xFixed - 0x10000;
+			if ((coordinate = (position.m_xFixed >> 12) - 200) < 0) {
 				coordinate = 0;
 			}
 			target.m_xFixed = coordinate << 12;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 6, start, target);
 
-			start.m_xFixed = x;
-			start.m_yFixed = y + 0x10000;
-			start.m_zFixed = z;
-			target.m_xFixed = x;
-			target.m_zFixed = z;
-			coordinate = (y >> 12) + 200;
-			if (coordinate > 1024) {
+			start.m_xFixed = position.m_xFixed;
+			start.m_zFixed = position.m_zFixed;
+			target.m_xFixed = position.m_xFixed;
+			target.m_zFixed = position.m_zFixed;
+			start.m_yFixed = position.m_yFixed + 0x10000;
+			if ((coordinate = (position.m_yFixed >> 12) + 200) > 1024) {
 				coordinate = 1023;
 			}
 			target.m_yFixed = coordinate << 12;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 8, start, target);
 
-			start.m_xFixed = x;
-			start.m_yFixed = y - 0x10000;
-			start.m_zFixed = z;
-			target.m_xFixed = x;
-			target.m_zFixed = z;
-			coordinate = (y >> 12) - 200;
-			if (coordinate < 0) {
+			start.m_xFixed = position.m_xFixed;
+			start.m_zFixed = position.m_zFixed;
+			target.m_xFixed = position.m_xFixed;
+			target.m_zFixed = position.m_zFixed;
+			start.m_yFixed = position.m_yFixed - 0x10000;
+			if ((coordinate = (position.m_yFixed >> 12) - 200) < 0) {
 				coordinate = 0;
 			}
 			target.m_yFixed = coordinate << 12;
