@@ -1634,7 +1634,7 @@ void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 			 processed < p_count && p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight;) {
 			if ((ground->m_collision & 0x20) == 0) {
 				groundData = ground->m_objectData;
-				height = ground->m_height;
+				memcpy(&height, &ground->m_height, sizeof(height));
 				cliff = ground->m_cliff;
 				groundType = ground->m_objectType;
 				if (height < 0) {
@@ -1643,9 +1643,9 @@ void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 					groundData = (unsigned short) defaultGroundData;
 				}
 
-				zOffset = 0;
 				heightValue = height;
 				groundY = screenY - heightValue;
+				zOffset = 0;
 				switch (groundType) {
 				case TERRAIN_TREE:
 					zOffset = 0x20;
@@ -1706,9 +1706,9 @@ void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 				}
 			}
 
-			screenX += 0x20;
 			p_mapX += m_clipMapStepX;
 			p_mapY += m_clipMapStepY;
+			screenX += 0x20;
 			processed++;
 			ground += groundStep;
 		}
