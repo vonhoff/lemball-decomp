@@ -62,16 +62,21 @@ CMover* CMoverManager::Find(int p_x, int p_y, int& p_height)
 void CMoverManager::RemoveMover(CMover* p_mover)
 {
 	int index = 0;
-	if (index < m_count) {
+	int count = m_count;
+	if (index < count) {
 		while (p_mover != &m_movers[index]) {
 			index++;
-			if (m_count <= index) {
+			if (index >= count) {
 				return;
 			}
 		}
 		m_movers[index].SetId(0xffff);
 		for (index++; index < m_count; index++) {
-			m_movers[index - 1] = m_movers[index];
+			CMover* destination;
+			CMover* source;
+			source = &m_movers[index];
+			destination = source - 1;
+			*destination = *source;
 		}
 		m_count--;
 	}
@@ -91,9 +96,14 @@ void CMoverManager::Process()
 int CMoverManager::GetViewData(CViewData* p_viewData)
 {
 	int count = 0;
-	for (int i = 0; i < m_count; i++) {
-		m_movers[i].GetViewData(*p_viewData++);
-		count++;
+	int i = 0;
+	if (i < m_count) {
+		CViewData* output = p_viewData;
+		do {
+			m_movers[i].GetViewData(*output++);
+			count++;
+			i++;
+		} while (i < m_count);
 	}
 	return count;
 }
