@@ -299,18 +299,24 @@ void CBall::LoadLevel(unsigned char*& p_data)
 		SetId(id);
 	}
 
-	start.m_xFixed = *(unsigned short*) p_data << 12;
+	const int& startX = *(unsigned short*) p_data << 12;
+	start.m_xFixed = startX;
 	p_data += 2;
-	start.m_yFixed = *(unsigned short*) p_data << 12;
+	const int& startY = *(unsigned short*) p_data << 12;
+	start.m_yFixed = startY;
 	p_data += 2;
-	start.m_zFixed = *(unsigned short*) p_data << 12;
+	const int& startZ = *(unsigned short*) p_data << 12;
+	start.m_zFixed = startZ;
 	p_data += 2;
 
-	destination.m_xFixed = *(unsigned short*) p_data << 12;
+	const int& destinationX = *(unsigned short*) p_data << 12;
+	destination.m_xFixed = destinationX;
 	p_data += 2;
-	destination.m_yFixed = *(unsigned short*) p_data << 12;
+	const int& destinationY = *(unsigned short*) p_data << 12;
+	destination.m_yFixed = destinationY;
 	p_data += 2;
-	destination.m_zFixed = *(unsigned short*) p_data << 12;
+	const int& destinationZ = *(unsigned short*) p_data << 12;
+	destination.m_zFixed = destinationZ;
 	p_data += 2;
 
 	unsigned short speed = *(unsigned short*) p_data;
