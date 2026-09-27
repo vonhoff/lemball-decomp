@@ -1292,8 +1292,9 @@ void CSurface::Blit(CFilledCircle* p_circle)
 	if (clipResult != 1) {
 		switch (clipResult) {
 		case 2: {
+			int curRadius;
 			int curX = 0;
-			int curRadius = radius;
+			curRadius = radius;
 			int err = 0;
 			int step = 1;
 			int errLimit = radius * 2 - 1;
