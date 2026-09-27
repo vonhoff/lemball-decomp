@@ -145,7 +145,7 @@ void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 			cornerB.m_y = (short) *data++;
 			cornerB.m_z = (short) *data++;
 			int velocityX = (short) *data++;
-			int velocityY = (short) *data++;
+			const int& velocityY = (short) *data++;
 			unsigned int initialSwitched = 1;
 			if (m_ai->m_levelVersion >= 10) {
 				initialSwitched = *data++;
