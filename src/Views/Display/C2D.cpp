@@ -1991,28 +1991,29 @@ void C2D::DrawLemmingJump(CViewData& p_viewData, unsigned int p_remapped)
 	int frame;
 	int frameDelta;
 	int y;
-	CViewData* viewData = &p_viewData;
 	unsigned long resource;
 	int x;
 	unsigned int actionArgument;
 
-	direction = ((unsigned short) viewData->m_facingDirection + m_viewOrientation * 2) & 7;
+	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & 7;
+	x = p_viewData.m_positionX - g_lemmingFlyOffsets[direction][0];
+	y = p_viewData.m_positionY - g_lemmingFlyOffsets[direction][1];
 	resource = g_lemmingFlyResources[direction];
-	x = viewData->m_positionX - g_lemmingFlyOffsets[direction][0];
-	y = viewData->m_positionY - g_lemmingFlyOffsets[direction][1];
-	frameDelta = viewData->m_animationTime - viewData->m_stateTimer;
-	actionArgument = (unsigned short) viewData->m_actionArgument;
-	if (actionArgument == 0) {
+	frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
+	actionArgument = (unsigned short) p_viewData.m_actionArgument;
+	switch (actionArgument) {
+	case 0:
 		frame = frameDelta * 15 / 1024;
 		if (frame > 6) {
 			frame = 6;
 		}
-	}
-	else if (actionArgument == 1) {
+		break;
+	case 1:
 		frame = frameDelta * 15 / 1024 + 7;
 		if (frame > 12) {
 			frame = 12;
 		}
+		break;
 	}
 
 	if (p_remapped != 0) {
@@ -3024,9 +3025,9 @@ void C2D::DrawDoor(CViewData& p_viewData)
 {
 	int x;
 	int y;
+	int elapsed;
 	eAction action;
 	eObjectType objectType;
-	int elapsed;
 	unsigned long resourceId;
 	int playerIndex;
 	CBaseRemap* remap;
@@ -3743,13 +3744,6 @@ void C2D::ResetPrimitives()
 	m_textManager->ResetPrimitives();
 	m_unk0xc90 = 0;
 	m_primitiveCount = 0;
-}
-
-// FUNCTION: LEMBALL 0x00440460
-void C2D::DrawZBuff_Sprite(int p_index, unsigned short p_z)
-{
-	m_lemmingAnims->m_primitiveSequence = p_z;
-	DrawObject(m_viewData[p_index]);
 }
 
 // FUNCTION: LEMBALL 0x00440490
