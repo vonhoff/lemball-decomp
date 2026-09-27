@@ -31,7 +31,10 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display)
 	: CAnimsManager(p_gdi, 0x2b6, 1, 1, 0, 0), m_centerX(m_centerY = 0)
 {
 	unsigned int* points;
-	unsigned int packed;
+	union {
+		unsigned int value;
+		short coordinate[2];
+	} packed;
 	int offset;
 	CVsPoint* dest;
 	CResPALETTE* palette;
@@ -60,16 +63,19 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display)
 	}
 	p_display->AttachPalette(RES_FRONTEND_LOADING_LORES_PALETTE);
 	palette->UnLoad();
-	m_centerY = (short) ((short) (m_display->m_rect.m_height - m_backgroundBitmap->m_y) / 2);
-	m_centerX = (short) ((short) (m_display->m_rect.m_width - m_backgroundBitmap->m_x) / 2);
+	CVsRect& windowRect = m_display->m_rect;
+	CVsPoint center((short) ((short) (windowRect.m_width - m_backgroundBitmap->m_x) / 2),
+					(short) ((short) (windowRect.m_height - m_backgroundBitmap->m_y) / 2));
+	m_centerX = center.m_x;
+	m_centerY = center.m_y;
 	offset = 0;
 	do {
-		packed = *points;
-		points = points + 1;
+		packed.value = *points;
 		dest = (CVsPoint*) ((int) &m_points->m_x + offset);
-		dest->m_x = (short) packed;
-		dest->m_y = (short) (packed >> 0x10);
+		dest->m_x = packed.coordinate[0];
+		dest->m_y = packed.coordinate[1];
 		offset = offset + 4;
+		points = points + 1;
 	} while (offset < 0x14);
 	m_progress = 0;
 	m_initialDraw = 1;
