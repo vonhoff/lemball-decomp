@@ -134,9 +134,9 @@ void CAboutScreen::DrawRegistrationText()
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	vsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
 	{
-		CVsSize* measuredSize = font->GetSize(&size, g_szVisosBuildBuffer, 0x20);
-		size.m_width = measuredSize->m_width;
-		size.m_height = measuredSize->m_height;
+		CVsSize measuredSize = font->GetSize(g_szVisosBuildBuffer, 0x20);
+		size.m_width = measuredSize.m_width;
+		size.m_height = measuredSize.m_height;
 	}
 	{
 		CVsSize advance;
@@ -154,9 +154,9 @@ void CAboutScreen::DrawRegistrationText()
 	}
 	g_szAboutDecodeBuffer[index] = '\0';
 	{
-		CVsSize* measuredSize = font->GetSize(&size, g_szAboutDecodeBuffer, 0x20);
-		size.m_width = measuredSize->m_width;
-		size.m_height = measuredSize->m_height;
+		CVsSize measuredSize = font->GetSize(g_szAboutDecodeBuffer, 0x20);
+		size.m_width = measuredSize.m_width;
+		size.m_height = measuredSize.m_height;
 	}
 	{
 		CVsSize advance;
