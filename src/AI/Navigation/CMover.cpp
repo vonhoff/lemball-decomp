@@ -106,25 +106,39 @@ void CMover::SetUpNextNode(unsigned int p_time)
 
 	CPt3 nextPosition = g_pAI->GetNodePosition(m_startNode + nextNode);
 	CMap* map = g_pMap;
-	int x = nextPosition.m_x >> 12;
 	int y = nextPosition.m_y >> 12;
-	unsigned short z = 0;
-	if (x >= 0 && y >= 0 && (x >> 4) < map->m_ground.m_width && map->m_ground.m_height > (y >> 4)) {
-		z = map->m_ground.m_ground[(y >> 4) * map->m_ground.m_width + (x >> 4)].GetZ(x & 0xf, y & 0xf);
+	int x = nextPosition.m_x >> 12;
+	int blockX;
+	int blockY;
+	blockY = y >> 4;
+	blockX = x >> 4;
+	unsigned short z;
+	int width;
+	if (x < 0 || y < 0 || blockX >= (width = g_pMap->m_ground.m_width) || blockY >= g_pMap->m_ground.m_height) {
+		z = 0;
 	}
-	nextPosition.m_z = (unsigned int) z << 12;
+	else {
+		x &= 15;
+		y &= 15;
+		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
+	}
+	const unsigned int& height = (unsigned int) z;
+	nextPosition.m_z = height << 12;
 
-	CPt3 start;
-	start.m_x = m_position.m_xFixed >> 12;
-	start.m_y = m_position.m_yFixed >> 12;
-	start.m_z = m_position.m_zFixed >> 12;
+	int startY;
+	int startX;
+	startX = m_position.m_xFixed >> 12;
+	startY = m_position.m_yFixed >> 12;
+	int startZ = m_position.m_zFixed >> 12;
+	CPt3 start(startX, startY, startZ);
+	int endY;
+	int endX;
+	endX = nextPosition.m_x >> 12;
+	endY = nextPosition.m_y >> 12;
+	int endZ = nextPosition.m_z >> 12;
+	CPt3 end(endX, endY, endZ);
 
-	CPt3 end;
-	end.m_x = nextPosition.m_x >> 12;
-	end.m_y = nextPosition.m_y >> 12;
-	end.m_z = nextPosition.m_z >> 12;
-
-	unsigned int distance = Distance(start.m_x, start.m_y, end.m_x, end.m_y);
+	unsigned int distance = Distance(startX, startY, endX, endY);
 	m_lastMovementTick = p_time;
 	m_actionDeadline = distance + p_time;
 	m_motion.Set(start, end, p_time, 1);
