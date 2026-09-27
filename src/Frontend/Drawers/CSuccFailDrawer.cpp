@@ -197,20 +197,22 @@ void CSuccFailDrawer::CalculateText()
 		strcpy(m_message, format);
 	}
 
+	bool done = false;
 	short layoutMinX = (short) m_layout->m_messagePosition.m_x;
 	short layoutY = (short) m_layout->m_messagePosition.m_y;
 	m_firstLine = m_message;
 	m_secondLine = 0;
-	bool done = false;
 	short lineX;
-	short lineHeight;
-	CVsSize sizeBuffer;
+	CVsSize measuredSize;
+	short sizeBuffer[2];
 	CVsSize* textSize;
 	do {
-		textSize = font->GetSize(&sizeBuffer, m_firstLine, 0x20);
-		lineHeight = textSize->m_height;
-		lineX = (short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - (int) textSize->m_width) / 2);
-		char* prevBreak = (m_secondLine == 0) ? 0 : (m_secondLine - 1);
+		textSize = font->GetSize((CVsSize*) sizeBuffer, m_firstLine, 0x20);
+		measuredSize.m_height = textSize->m_height;
+		measuredSize.m_width = textSize->m_width;
+		lineX =
+			(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - (int) measuredSize.m_width) / 2);
+		char* prevBreak = (m_secondLine != 0) ? (m_secondLine - 1) : 0;
 		if (lineX < layoutMinX) {
 			char* space = strrchr(m_firstLine, ' ');
 			m_secondLine = space;
@@ -228,33 +230,30 @@ void CSuccFailDrawer::CalculateText()
 	m_firstLinePos.m_x = lineX;
 	m_firstLinePos.m_y = layoutY;
 	if (m_secondLine == 0) {
-		m_firstLinePos.m_y = layoutY + lineHeight / 2;
+		m_firstLinePos.m_y = layoutY + measuredSize.m_height / 2;
 	}
 	else {
-		layoutY = layoutY + lineHeight;
-		textSize = font->GetSize(&sizeBuffer, m_secondLine, 0x20);
+		layoutY = layoutY + measuredSize.m_height;
+		textSize = font->GetSize((CVsSize*) sizeBuffer, m_secondLine, 0x20);
 		m_secondLinePos.m_x =
 			(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - (int) textSize->m_width) / 2);
 		m_secondLinePos.m_y = layoutY;
 	}
 
-	textSize = font->GetSize(&sizeBuffer, g_szPasswordLabel, 0x20);
+	textSize = font->GetSize((CVsSize*) sizeBuffer, g_szPasswordLabel, 0x20);
+	short passwordLabelY;
 	short labelHeight = textSize->m_height;
 	int labelWidth = textSize->m_width;
-	short passwordLabelY = (short) m_layout->m_passwordLabelPosition.m_y;
-	int layoutWidth = m_layout->m_frameEnd.m_x;
-	int layoutBaseX = m_layout->m_frameStart.m_x;
+	passwordLabelY = (short) m_layout->m_passwordLabelPosition.m_y;
+	m_passwordLabelPos.m_x = (short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - labelWidth) / 2);
 	m_passwordLabelPos.m_y = passwordLabelY;
-	m_passwordLabelPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
+	passwordLabelY += labelHeight;
 
-	textSize = font->GetSize(&sizeBuffer, m_password, 0x20);
+	textSize = font->GetSize((CVsSize*) sizeBuffer, m_password, 0x20);
 	labelWidth = textSize->m_width;
-	layoutWidth = m_layout->m_frameEnd.m_x;
-	layoutBaseX = m_layout->m_frameStart.m_x;
-	m_passwordPos.m_y = passwordLabelY + labelHeight;
-	m_passwordPos.m_x = (short) layoutBaseX + (short) ((layoutWidth - (int) labelWidth) / 2);
+	m_passwordPos.m_x = (short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - labelWidth) / 2);
+	m_passwordPos.m_y = passwordLabelY;
 }
-
 // FUNCTION: LEMBALL 0x00450460
 void CSuccFailDrawer::Load()
 {
