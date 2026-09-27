@@ -722,30 +722,36 @@ bool CGameObject::Move()
 	position.m_yFixed = m_moveStartYFixed + (m_moveDeltaYFixed * elapsed) / m_moveDurationTicks;
 	int x = position.m_xFixed >> 12;
 	int y = position.m_yFixed >> 12;
-	if (x < 0 || (x >> 4) >= g_pMap->m_ground.m_width || y < 0 || (y >> 4) >= g_pMap->m_ground.m_height) {
+	CMap* map;
+	if (x < 0 || (x >> 4) >= (map = g_pMap)->m_ground.m_width || y < 0 || (y >> 4) >= map->m_ground.m_height) {
 		m_actionDeadline = g_dwGameTick;
 		return false;
 	}
 
-	CMover* mover = 0;
-	unsigned short groundZ = g_pMap->GetZ(x, y, &mover);
-	if (m_onMover == 0 && mover != 0) {
-		mover->GetOn(this);
-	}
-	if ((MapCheck(x, y) & 1) != 0) {
-		position.m_xFixed = x << 12;
-		position.m_yFixed = y << 12;
-		position.m_zFixed = (int) groundZ << 12;
-		if (g_pAI->OpenDoor(position, this, m_collisionFlags)) {
+	int height;
+	unsigned short currentGroundZ;
+	{
+		CMover* mover = 0;
+		height = map->GetZ(x, y, &mover);
+		if (m_onMover == 0 && mover != 0) {
+			mover->GetOn(this);
+		}
+		if ((MapCheck(x, y) & 1) != 0) {
+			position.m_xFixed = x << 12;
+			position.m_yFixed = y << 12;
+			position.m_zFixed = height << 12;
+			if (g_pAI->OpenDoor(position, this, m_collisionFlags)) {
+				m_actionDeadline = g_dwGameTick;
+				return false;
+			}
+			Blocked();
 			m_actionDeadline = g_dwGameTick;
 			return false;
 		}
-		Blocked();
-		m_actionDeadline = g_dwGameTick;
-		return false;
-	}
 
-	unsigned short currentGroundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
+		currentGroundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
+	}
+	const int& groundZ = height;
 	if ((int) currentGroundZ + 7 <= (int) groundZ) {
 		m_actionDeadline = g_dwGameTick;
 		if ((int) currentGroundZ + 15 < (int) groundZ) {
@@ -770,18 +776,19 @@ bool CGameObject::Move()
 		m_actionDeadline = g_dwGameTick;
 		if ((m_collisionFlags & 4) != 0) {
 			m_isFalling = 1;
+			unsigned int movementTick = g_dwGameTick;
+			int velocityY = 0;
 			m_actionArgument = 0;
-			m_lastMovementTick = g_dwGameTick;
+			m_lastMovementTick = movementTick;
 			m_flightZ = currentGroundZ;
+			int deltaZ = (int) currentGroundZ - groundZ;
 			int deltaX = x - (m_position.m_xFixed >> 12);
 			int deltaY = y - (m_position.m_yFixed >> 12);
-			int absDeltaX = deltaX < 0 ? -deltaX : deltaX;
-			int absDeltaY = deltaY < 0 ? -deltaY : deltaY;
 			int velocityX;
-			int velocityY;
-			if (absDeltaX > absDeltaY) {
+			int magnitudeX = deltaX < 0 ? -deltaX : deltaX;
+			int magnitudeY = deltaY < 0 ? -deltaY : deltaY;
+			if (magnitudeX > magnitudeY) {
 				velocityX = deltaX <= 0 ? -1 : 1;
-				velocityY = 0;
 			}
 			else {
 				velocityX = 0;
@@ -796,7 +803,6 @@ bool CGameObject::Move()
 			m_position.m_yFixed = position.m_yFixed;
 			m_flightVelocity.m_xFixed = velocityX << 12;
 			m_flightVelocity.m_yFixed = velocityY << 12;
-			int deltaZ = (int) currentGroundZ - groundZ;
 			m_flightVelocity.m_zFixed = ((deltaZ / 8) + 1) * 0x1000;
 			return false;
 		}
