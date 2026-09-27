@@ -7,6 +7,7 @@
 #include "CViewData.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
+#include "Visos/Foundation/CFixed.h"
 
 // FUNCTION: LEMBALL 0x00429f50
 CBalloonPost::CBalloonPost(CAI* p_ai, CMap* p_map)
@@ -70,6 +71,7 @@ bool CBalloonPost::FindPost(eObjectType p_objectType, AiCoord& p_position)
 // FUNCTION: LEMBALL 0x0042a170
 void CBalloonPost::Process()
 {
+	CFixed height(0);
 	if ((m_activeMask & 1) != 0) {
 		int y = m_positions[0].m_yFixed >> 12;
 		int x = m_positions[0].m_xFixed >> 12;
@@ -78,13 +80,16 @@ void CBalloonPost::Process()
 		CMap* map = m_map;
 		unsigned short z;
 		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+			x &= 0xf;
+			y &= 0xf;
+			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
 		}
-		m_positions[0].m_zFixed = z << 12;
-		m_posts[0]->m_position.m_zFixed = z << 12;
+		height = CFixed(z << 12);
+		m_positions[0].m_zFixed = height.m_value;
+		m_posts[0]->m_position.m_zFixed = height.m_value;
 	}
 	if ((m_activeMask & 2) != 0) {
 		int y = m_positions[1].m_yFixed >> 12;
@@ -94,13 +99,16 @@ void CBalloonPost::Process()
 		CMap* map = m_map;
 		unsigned short z;
 		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+			x &= 0xf;
+			y &= 0xf;
+			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
 		}
-		m_positions[1].m_zFixed = z << 12;
-		m_posts[1]->m_position.m_zFixed = z << 12;
+		height = CFixed(z << 12);
+		m_positions[1].m_zFixed = height.m_value;
+		m_posts[1]->m_position.m_zFixed = height.m_value;
 	}
 	if ((m_activeMask & 4) != 0) {
 		int y = m_positions[2].m_yFixed >> 12;
@@ -110,13 +118,16 @@ void CBalloonPost::Process()
 		CMap* map = m_map;
 		unsigned short z;
 		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+			x &= 0xf;
+			y &= 0xf;
+			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
 		}
-		m_positions[2].m_zFixed = z << 12;
-		m_posts[2]->m_position.m_zFixed = z << 12;
+		height = CFixed(z << 12);
+		m_positions[2].m_zFixed = height.m_value;
+		m_posts[2]->m_position.m_zFixed = height.m_value;
 	}
 	if ((m_activeMask & 8) != 0) {
 		int y = m_positions[3].m_yFixed >> 12;
@@ -126,13 +137,16 @@ void CBalloonPost::Process()
 		CMap* map = m_map;
 		unsigned short z;
 		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+			x &= 0xf;
+			y &= 0xf;
+			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
 		}
-		m_positions[3].m_zFixed = z << 12;
-		m_posts[3]->m_position.m_zFixed = z << 12;
+		height = CFixed(z << 12);
+		m_positions[3].m_zFixed = height.m_value;
+		m_posts[3]->m_position.m_zFixed = height.m_value;
 	}
 }
 
