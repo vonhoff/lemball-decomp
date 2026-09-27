@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Produce an objdiff report v2 from reconstructed LEMBALL binary."""
+"""Produce an objdiff report v2 from reconstructed LEMBALL binary.
+
+Fully linked code counts whole units whose inventoried functions all have
+reccmp effective matches. Stubs and missing comparisons keep a unit incomplete.
+Data matching is not measured by this function-only report.
+"""
 
 import argparse
 import csv
@@ -27,12 +32,21 @@ def unit_name(module):
     return name or "Compiler-generated"
 
 
-def measures(functions, total_units=1):
+def measures(functions, total_units=1, *, complete_code=None, complete_units=None):
     total_code = sum(f["size"] for f in functions)
     matched = [f for f in functions if f["ratio"] == 100.0]
     matched_code = sum(f["size"] for f in matched)
     fuzzy = sum(f["ratio"] * f["size"] for f in functions)
-    res = {"total_units": total_units}
+    if complete_units is None:
+        complete_units = int(bool(functions) and len(matched) == len(functions))
+    if complete_code is None:
+        complete_code = total_code if complete_units else 0
+    res = {
+        "total_units": total_units,
+        "complete_units": complete_units,
+        "complete_code": str(complete_code),
+        "complete_code_percent": f32(complete_code / total_code * 100) if total_code else 0.0,
+    }
     if total_code:
         res.update(
             total_code=str(total_code),
@@ -71,11 +85,22 @@ def build_report(roadmap_path, reccmp_path):
     units = []
     for name, functions in sorted(groups.items()):
         functions.sort(key=lambda f: f["address"])
+        unit_measures = measures(functions)
+        metadata = {"module_name": name, "complete": bool(unit_measures["complete_units"])}
+        source_path = Path("src") / name
+        if (ROOT / source_path).is_file():
+            metadata["source_path"] = source_path.as_posix()
         units.append(
             {
                 "name": name,
-                "measures": measures(functions),
-                "sections": [],
+                "measures": unit_measures,
+                "sections": [
+                    {
+                        "name": ".text",
+                        "size": unit_measures.get("total_code", "0"),
+                        "fuzzy_match_percent": unit_measures.get("fuzzy_match_percent", 0.0),
+                    }
+                ],
                 "functions": [
                     {
                         "name": f["name"],
@@ -85,13 +110,18 @@ def build_report(roadmap_path, reccmp_path):
                     }
                     for f in functions
                 ],
-                "metadata": {"module_name": name},
+                "metadata": metadata,
             }
         )
 
     all_functions = [f for group in groups.values() for f in group]
     return {
-        "measures": measures(all_functions, len(units)),
+        "measures": measures(
+            all_functions,
+            len(units),
+            complete_code=sum(int(unit["measures"]["complete_code"]) for unit in units),
+            complete_units=sum(unit["measures"]["complete_units"] for unit in units),
+        ),
         "units": units,
         "version": 2,
     }
@@ -143,6 +173,9 @@ def make_report(output_path: Path = REPORT_JSON) -> dict:
           f"{sum(item['size'] for item in exact)}/{values['total_code']} code bytes")
     print(f"effective: {values['matched_functions']}/{values['total_functions']} functions, "
           f"{values['matched_code']}/{values['total_code']} code bytes")
+    print(f"fully linked: {values['complete_units']}/{values['total_units']} units, "
+          f"{values['complete_code']}/{values['total_code']} code bytes "
+          f"({values['complete_code_percent']:.2f}%)")
     print(f"wrote {output_path}")
     return report
 
