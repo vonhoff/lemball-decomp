@@ -571,9 +571,9 @@ void CPreviewDrawer::LoadLevelInformation()
 	int* targetPos;
 	int endOfSource;
 
-	m_backBufferNeeded = 1;
 	endOfSource = 0;
 	sourcePos = 0;
+	m_backBufferNeeded = 1;
 	m_ready = 1;
 
 	CLevelLoader::RetrievePreviewData((eSkill) g_pGameStatus->m_skill,
