@@ -4,6 +4,13 @@
   "identity": "Exact path + rule + complete reported source line, with a count limit. Line numbers are excluded. Inspect matches and reasons with python tools/gate.py --verbose.",
   "findings": [
     {
+      "path": "src/AI/Objects/CSwitch.cpp",
+      "rule": "no-annotation",
+      "code": "inline static unsigned char* LoadSwitchEntries(unsigned char*& p_data, CSwitch* p_switch)",
+      "count": 1,
+      "reason": "CSwitch::Load (0x0041d430): local inline reconstruction of the original count and entry loop. Data-first formal restores ESI=data and EDI=switch with an effective match. No separate original entry point exists; helper name is inferred."
+    },
+    {
       "path": "src/AI/Managers/CMineManager.cpp",
       "rule": "no-annotation",
       "code": "inline static int MineDistanceSquared(int dz, int dy, int dx)",

@@ -180,8 +180,7 @@ void CSwitch::ConvertVer0ToVer1()
 	}
 }
 
-// FUNCTION: LEMBALL 0x0041d430
-unsigned char* CSwitch::Load(unsigned char*& p_data)
+inline static unsigned char* LoadSwitchEntries(unsigned char*& p_data, CSwitch* p_switch)
 {
 	unsigned short* data = (unsigned short*) p_data;
 	unsigned short count = *data;
@@ -195,11 +194,17 @@ unsigned char* CSwitch::Load(unsigned char*& p_data)
 			p_data = (unsigned char*) cursor;
 			objectId = *cursor++;
 			p_data = (unsigned char*) cursor;
-			AddEntry(message, objectId);
+			p_switch->AddEntry(message, objectId);
 			remaining--;
 		} while (remaining != 0);
 	}
 	return p_data;
+}
+
+// FUNCTION: LEMBALL 0x0041d430
+unsigned char* CSwitch::Load(unsigned char*& p_data)
+{
+	return LoadSwitchEntries(p_data, this);
 }
 
 // FUNCTION: LEMBALL 0x0041dc40
