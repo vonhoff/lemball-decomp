@@ -261,8 +261,8 @@ int CDirectDrawDriver::BitBltContexts(CDrawingContext* p_destination,
 		clipped.m_y = 0;
 		clipped.m_x = 0;
 	}
-	int height = clipped.m_height;
 	int width = clipped.m_width;
+	int height = clipped.m_height;
 	if (height * width == 0) {
 		return 1;
 	}
