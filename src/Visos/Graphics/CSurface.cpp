@@ -888,17 +888,20 @@ void CSurface::CopyDibBits(void* p_header, unsigned char* p_bits)
 	int stride = (int) ((header->biBitCount * header->biWidth + 31) & ~31) / 8;
 	unsigned char* source = p_bits + (header->biHeight - 1) * stride;
 	int y = 0;
-	while (y < copyHeight) {
+copyRow:
+	if (y >= copyHeight) {
+		goto copiedRows;
+	}
+	{
 		memcpy(m_lines[y], source, copyWidth);
 		copyHeight = m_windowRect.m_height <= header->biHeight ? m_windowRect.m_height : header->biHeight;
 		source -= stride;
 		y++;
+		goto copyRow;
 	}
-	short rectHeight = m_windowRect.m_height;
-	short rectWidth = m_windowRect.m_width;
-	CVsRect rect;
-	rect.m_width = rectWidth;
-	rect.m_height = rectHeight;
+copiedRows:
+	CVsRect rect = CVsRect(0, 0, m_windowRect.m_width, m_windowRect.m_height);
+	rect.m_x = rect.m_y = 0;
 	m_changeList->Reset();
 	AddToChangeList(rect);
 	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
