@@ -36,10 +36,8 @@ private:
 	ChunkInfo* m_currentDirChunk;      // 0x0c
 	unsigned int m_directoryEndOffset; // 0x10
 	unsigned int m_payloadStartOffset; // 0x14
-	int m_firstIndex;                  // 0x18
-	ChunkInfo* m_firstChunk;           // 0x1c
-	int m_iteratorIndex;               // 0x20
-	ChunkInfo* m_iteratorChunk;        // 0x24
+	Chunk m_first;                     // 0x18
+	Chunk m_iterator;                  // 0x20
 	int m_chunkCount;                  // 0x28
 	int m_loadedChunkCount;            // 0x2c
 	unsigned char* m_directoryData;    // 0x30
