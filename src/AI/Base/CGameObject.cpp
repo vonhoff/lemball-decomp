@@ -1063,21 +1063,23 @@ bool CGameObject::OnLift(Coord3d& p_liftPosition)
 	int right = (int) p_liftPosition.m_x + 7;
 	int bottom = (int) p_liftPosition.m_y + 7;
 	int y = m_position.m_yFixed >> 12;
-	if (left <= x && right >= x && y >= top && y <= bottom) {
-		CMap* map = g_pMap;
-		int blockX = left >> 4;
-		int blockY = top >> 4;
-		unsigned short groundZ;
-		if (left < 0 || top < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
-			groundZ = 0;
-		}
-		else {
-			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(left & 0xf, top & 0xf);
-		}
-		m_position.m_zFixed = (unsigned int) groundZ << 12;
-		return true;
+	if (left > x || right < x || y < top || y > bottom) {
+		return false;
 	}
-	return false;
+	CMap* map = g_pMap;
+	int blockX = left >> 4;
+	int blockY = top >> 4;
+	unsigned short groundZ;
+	if (left < 0 || top < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+		groundZ = 0;
+	}
+	else {
+		int offsetX = left & 0xf;
+		int offsetY = top & 0xf;
+		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(offsetX, offsetY);
+	}
+	m_position.m_zFixed = (unsigned int) groundZ << 12;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00416410
@@ -1100,24 +1102,24 @@ bool CGameObject::OnLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
 	int bottom = (int) p_liftMax.m_y + 7;
 	int x = m_position.m_xFixed >> 12;
 	y = m_position.m_yFixed >> 12;
-	if (x >= left && x <= right && y >= top && y <= bottom) {
-		CMap* map = g_pMap;
-		int blockX = left >> 4;
-		int blockY = top >> 4;
-		int width;
-		unsigned short groundZ;
-		if (left < 0 || top < 0 || (width = map->m_ground.m_width) <= blockX || map->m_ground.m_height <= blockY) {
-			groundZ = 0;
-		}
-		else {
-			left &= 0xf;
-			top &= 0xf;
-			groundZ = map->m_ground.m_ground[width * blockY + blockX].GetZ(left, top);
-		}
-		m_position.m_zFixed = (unsigned int) groundZ << 12;
-		return true;
+	if (x < left || x > right || y < top || y > bottom) {
+		return false;
 	}
-	return false;
+	CMap* map = g_pMap;
+	int blockX = left >> 4;
+	int blockY = top >> 4;
+	int width;
+	unsigned short groundZ;
+	if (left < 0 || top < 0 || (width = map->m_ground.m_width) <= blockX || map->m_ground.m_height <= blockY) {
+		groundZ = 0;
+	}
+	else {
+		left &= 0xf;
+		top &= 0xf;
+		groundZ = map->m_ground.m_ground[width * blockY + blockX].GetZ(left, top);
+	}
+	m_position.m_zFixed = (unsigned int) groundZ << 12;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004164f0
@@ -1286,9 +1288,12 @@ void CGameObject::RegisterId()
 // FUNCTION: LEMBALL 0x004167c0
 void CGameObject::UpdateCollision()
 {
-	int x = (m_position.m_xFixed >> 12) - 8;
-	int y = (m_position.m_yFixed >> 12) - 8;
-	int z = m_position.m_zFixed >> 12;
+	int y;
+	int z;
+	int x;
+	x = (m_position.m_xFixed >> 12) - 8;
+	y = (m_position.m_yFixed >> 12) - 8;
+	z = m_position.m_zFixed >> 12;
 	int collision[6];
 	collision[0] = x;
 	collision[1] = y;
