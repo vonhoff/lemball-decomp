@@ -168,12 +168,22 @@ int CBulletManager::GetViewData(CViewData* p_viewData)
 // FUNCTION: LEMBALL 0x00418120
 bool CBulletManager::CheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
 {
+	int rectTop;
+	int rectLeft = p_rect->m_x;
+	int rectRight = p_rect->m_width + rectLeft;
+	rectTop = p_rect->m_y;
+	int rectBottom = p_rect->m_height + rectTop;
 	CBullet* bullet = GetFirstBullet();
 	while (bullet != 0) {
 		int x = bullet->m_position.m_xFixed >> 0xc;
 		int y = bullet->m_position.m_yFixed >> 0xc;
-		if (x - 8 < p_rect->m_width + p_rect->m_x && p_rect->m_x < x + 8 && y - 8 < p_rect->m_height + p_rect->m_y &&
-			p_rect->m_y < y + 8) {
+		int& left = x;
+		int& top = y;
+		int right = x + 8;
+		int bottom = y + 8;
+		left -= 8;
+		top -= 8;
+		if (rectRight > left && right > rectLeft && rectBottom > top && bottom > rectTop) {
 			p_coordinate->m_xFixed = bullet->m_position.m_xFixed;
 			p_coordinate->m_yFixed = bullet->m_position.m_yFixed;
 			p_coordinate->m_zFixed = bullet->m_position.m_zFixed;
