@@ -28,15 +28,25 @@ void CSlinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 	CMap* map = g_pMap;
 	int bx = p_minX >> 4;
 	int by = p_minY >> 4;
-	if (p_minX >= 0 && p_minY >= 0 && bx < map->m_ground.m_width && by < map->m_ground.m_height) {
-		z = map->m_ground.m_ground[map->m_ground.m_width * by + bx].GetZ(p_minX & 15, p_minY & 15);
-	}
-	else {
+	if (p_minX < 0 || p_minY < 0) {
 		z = 0;
 	}
-	m_position.m_zFixed = z << 12;
+	else {
+		CMap* boundsMap = g_pMap;
+		int width = boundsMap->m_ground.m_width;
+		if (bx >= width || boundsMap->m_ground.m_height <= by) {
+			z = 0;
+		}
+		else {
+			p_minX &= 15;
+			p_minY &= 15;
+			z = map->m_ground.m_ground[width * by + bx].GetZ(p_minX, p_minY);
+		}
+	}
+	int positionZ = z << 12;
 	m_position.m_xFixed = m_minX << 12;
 	m_position.m_yFixed = m_minY << 12;
+	m_position.m_zFixed = positionZ;
 	m_actionDeadline = g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
 	Action(ACTION_0x18);
