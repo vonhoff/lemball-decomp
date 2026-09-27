@@ -65,32 +65,32 @@ unsigned char g_abPreviewLayoutCompact[0xd8] = {
 };
 
 // GLOBAL: LEMBALL 0x0049f828
-unsigned long g_dwPreviewGoAnimIdsFull = RES_NEWFRONT_ANIMS_HIRES_HILITE;
+unsigned long g_dwPreviewGoAnimIdsFull = RES_NEWFRONT_ICONS_HIRES_RETURN;
 
 // GLOBAL: LEMBALL 0x0049f82c
-unsigned long g_dwPreviewReturnAnimIdsFull = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
+unsigned long g_dwPreviewReturnAnimIdsFull = RES_NEWFRONT_ICONS_HIRES_OKAY;
 
 // GLOBAL: LEMBALL 0x0049f830
-unsigned long g_dwPreviewPreviousAnimIdsFull[2] = {RES_NEWFRONT_ANIMS_HIRES_SUCCESS_EYES,
-												   RES_NEWFRONT_ANIMS_HIRES_PASSWORD_BUTTON_1};
+unsigned long g_dwPreviewPreviousAnimIdsFull[2] = {RES_NEWFRONT_ICONS_HIRES_LEFT_ARROW,
+												   RES_NEWFRONT_ICONS_HIRES_LEFT_ARROW_DISABLED};
 
 // GLOBAL: LEMBALL 0x0049f838
-unsigned long g_dwPreviewNextAnimIdsFull[2] = {RES_NEWFRONT_ANIMS_HIRES_PASSWORD_BUTTON_0,
-											   RES_NEWFRONT_ANIMS_HIRES_PASSWORD_BUTTON_2};
+unsigned long g_dwPreviewNextAnimIdsFull[2] = {RES_NEWFRONT_ICONS_HIRES_RIGHT_ARROW,
+											   RES_NEWFRONT_ICONS_HIRES_RIGHT_ARROW_DISABLED};
 
 // GLOBAL: LEMBALL 0x0049f840
-unsigned long g_dwPreviewGoAnimIdsCompact = RES_NEWFRONT_ANIMS_LORES_HILITE;
+unsigned long g_dwPreviewGoAnimIdsCompact = RES_NEWFRONT_ICONS_LORES_RETURN;
 
 // GLOBAL: LEMBALL 0x0049f844
-unsigned long g_dwPreviewReturnAnimIdsCompact = RES_NEWFRONT_ANIMS_LORES_FAIL_EYES;
+unsigned long g_dwPreviewReturnAnimIdsCompact = RES_NEWFRONT_ICONS_LORES_OKAY;
 
 // GLOBAL: LEMBALL 0x0049f848
-unsigned long g_dwPreviewPreviousAnimIdsCompact[2] = {RES_NEWFRONT_ANIMS_LORES_SUCCESS_EYES,
-													  RES_NEWFRONT_ANIMS_LORES_PASSWORD_BUTTON_1};
+unsigned long g_dwPreviewPreviousAnimIdsCompact[2] = {RES_NEWFRONT_ICONS_LORES_LEFT_ARROW,
+													  RES_NEWFRONT_ICONS_LORES_LEFT_ARROW_DISABLED};
 
 // GLOBAL: LEMBALL 0x0049f850
-unsigned long g_dwPreviewNextAnimIdsCompact[2] = {RES_NEWFRONT_ANIMS_LORES_PASSWORD_BUTTON_0,
-												  RES_NEWFRONT_ANIMS_LORES_PASSWORD_BUTTON_2};
+unsigned long g_dwPreviewNextAnimIdsCompact[2] = {RES_NEWFRONT_ICONS_LORES_RIGHT_ARROW,
+												  RES_NEWFRONT_ICONS_LORES_RIGHT_ARROW_DISABLED};
 
 // GLOBAL: LEMBALL 0x0049f858
 int g_previewRemapSourceIndices[10] = {0xa4, 0xa2, 0x80, 0x64, 0x4b, 0x5a, 0x34, 0x37, 0x3a, 0x96};
