@@ -456,14 +456,17 @@ void CBaseFrontendDrawer::DrawFrame(CVsRect p_rect)
 	width -= width % tileWidth;
 	height += tileHeight - 1;
 	height -= height % tileHeight;
-	CVsRect frame(p_rect.m_x, p_rect.m_y, (short) width, (short) height);
-	CLine& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
-	line.m_bounds.m_width = frame.m_width;
-	line.m_bounds.m_height = frame.m_height;
-	line.m_bounds.m_x = frame.m_x;
-	line.m_bounds.m_y = frame.m_y;
-	line.m_color = 0x10;
-	m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount].Draw(m_gdi);
+	{
+		CVsRect frame(p_rect.m_x, p_rect.m_y, (short) width, (short) height);
+		const CVsRect& frameBounds = frame;
+		CLine& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
+		line.m_bounds.m_width = frameBounds.m_width;
+		line.m_bounds.m_height = frameBounds.m_height;
+		line.m_bounds.m_x = frameBounds.m_x;
+		line.m_bounds.m_y = frameBounds.m_y;
+		line.m_color = 0x10;
+		m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount].Draw(m_gdi);
+	}
 	m_framePrimitiveCount++;
 	m_staticAnim.m_frameState = 0;
 	CAnimsManager::DrawAnim(CVsPoint((short) startX, (short) startY),
