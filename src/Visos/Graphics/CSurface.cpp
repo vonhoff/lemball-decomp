@@ -179,7 +179,8 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 	HDC hdc = GetDC(0);
 	unsigned int first = GetSystemPaletteEntries(hdc, 0, 10, systemEntries);
 	unsigned int last = GetSystemPaletteEntries(hdc, 0xf6, 10, systemEntries + 0xf6);
-	if ((last | first) == 0) {
+	first |= last;
+	if (first == 0) {
 		source = &g_anFallbackSystemColors[0][0];
 		entry = systemEntries;
 		do {
