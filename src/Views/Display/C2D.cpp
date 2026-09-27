@@ -3615,11 +3615,12 @@ void C2D::Draw(const CVsRect& p_rect)
 	CVsRect* displayRect = &m_display->m_rect;
 	CVsPoint* displayPosition = displayRect;
 	int zoom = m_display->m_zoom;
-	m_spriteGroundTranslationPoint.m_y = (short) ((short) (g_pCursor->m_position.m_y - displayPosition->m_y) / zoom);
-	m_spriteGroundTranslationPoint.m_x = (short) ((short) (g_pCursor->m_position.m_x - displayPosition->m_x) / zoom);
+	CVsPoint cursorPosition;
+	cursorPosition.m_y = (short) ((short) (g_pCursor->m_position.m_y - displayPosition->m_y) / zoom);
+	cursorPosition.m_x = (short) ((short) (g_pCursor->m_position.m_x - displayPosition->m_x) / zoom);
+	m_spriteGroundTranslationPoint.m_x = cursorPosition.m_x;
+	m_spriteGroundTranslationPoint.m_y = cursorPosition.m_y;
 	ReplaceBackground();
-	CVsRect translatedBounds;
-	CVsRect backgroundBounds;
 
 	if (m_clipOffsetX != 0 || m_clipOffsetY != 0) {
 		int left = m_clipOffsetX + m_spriteGroundTranslatedPointRect.m_x;
@@ -3627,15 +3628,17 @@ void C2D::Draw(const CVsRect& p_rect)
 		int top = m_clipOffsetY + m_spriteGroundTranslatedPointRect.m_y;
 		int right = m_spriteGroundTranslatedPointRect.m_width + left;
 		int bottom = height + top;
-		if (left < m_clipOffsetX || top < m_clipOffsetY || m_clipOffsetX + m_clipSize.m_x <= right ||
-			m_clipOffsetY + m_clipSize.m_y <= bottom) {
+		int clipBottom = m_clipOffsetY + m_clipSize.m_y;
+		int clipRight = m_clipOffsetX + m_clipSize.m_x;
+		if (left < m_clipOffsetX || top < m_clipOffsetY || clipRight <= right || bottom >= clipBottom) {
+			CVsRect translatedBounds;
 			translatedBounds.m_x = (short) left;
 			translatedBounds.m_y = (short) top;
 			translatedBounds.m_width = m_spriteGroundTranslatedPointRect.m_width;
 			translatedBounds.m_height = m_spriteGroundTranslatedPointRect.m_height;
 			m_lineAt9a8.m_bounds.m_width = translatedBounds.m_width;
 			m_lineAt9a8.m_bounds.m_height = translatedBounds.m_height;
-			static_cast<CVsPoint&>(m_lineAt9a8.m_bounds) = translatedBounds;
+			m_lineAt9a8.m_bounds.CVsPoint::operator=(translatedBounds);
 			m_lineAt9a8.m_color = 0;
 			m_lineAt9a8.Draw(m_gdi);
 		}
@@ -3643,9 +3646,11 @@ void C2D::Draw(const CVsRect& p_rect)
 
 	m_viewDataCount = (unsigned short) m_ai->GetData(m_viewData);
 	m_pushActive.Draw(m_gdi);
+	CVsRect backgroundBounds;
 
 	{
-		CSolidRect& background = m_solidRects[m_primitiveCount++];
+		int primitiveIndex = m_primitiveCount++;
+		CSolidRect& background = m_solidRects[primitiveIndex];
 		if (m_clipConfigured == 0 && m_redrawPending == 0) {
 			backgroundBounds.m_width = m_clipSize.m_x;
 			backgroundBounds.m_height = m_clipSize.m_y;
@@ -3665,6 +3670,7 @@ void C2D::Draw(const CVsRect& p_rect)
 	}
 
 	if (m_clipConfigured != 0 || m_redrawPending != 0) {
+		CVsRect translatedBounds;
 		m_clipConfigured = 0;
 		translatedBounds.m_width = m_clipSize.m_x;
 		translatedBounds.m_height = m_clipSize.m_y;
@@ -3689,18 +3695,20 @@ void C2D::Draw(const CVsRect& p_rect)
 	m_popActive.Draw(m_gdi);
 	g_pSoundView->SoundEffect(m_viewData, m_viewDataCount, m_originPosition);
 
-	CVsRect& windowRect = m_gdi->m_renderTarget->m_windowRect;
-	translatedBounds.m_width = windowRect.m_width;
-	translatedBounds.m_height = windowRect.m_height;
-	translatedBounds.m_x = 0;
-	translatedBounds.m_y = 0;
-	CSolidRect& surfaceBackground = m_solidRects[m_primitiveCount++];
-	surfaceBackground.m_bounds.m_width = translatedBounds.m_width;
-	surfaceBackground.m_bounds.m_height = translatedBounds.m_height;
-	surfaceBackground.m_bounds.m_x = translatedBounds.m_x;
-	surfaceBackground.m_bounds.m_y = translatedBounds.m_y;
-	surfaceBackground.m_color = 0;
-	surfaceBackground.Draw(m_gdi);
+	{
+		int surfacePrimitiveIndex = m_primitiveCount++;
+		CSolidRect& surfaceBackground = m_solidRects[surfacePrimitiveIndex];
+		CVsRect& windowRect = m_gdi->m_renderTarget->m_windowRect;
+		CVsRect translatedBounds(windowRect);
+		translatedBounds.m_x = 0;
+		translatedBounds.m_y = 0;
+		memcpy(&surfaceBackground.m_bounds.m_width, &translatedBounds.m_width, sizeof(short));
+		memcpy(&surfaceBackground.m_bounds.m_height, &translatedBounds.m_height, sizeof(short));
+		memcpy(&surfaceBackground.m_bounds.m_x, &translatedBounds.m_x, sizeof(short));
+		memcpy(&surfaceBackground.m_bounds.m_y, &translatedBounds.m_y, sizeof(short));
+		surfaceBackground.m_color = 0;
+		surfaceBackground.Draw(m_gdi);
+	}
 
 	m_frameTime += timeGetTime() - startTime;
 }
