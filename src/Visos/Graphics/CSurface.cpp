@@ -1911,8 +1911,8 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned short* zlines;
-			int width = p_rect.m_width;
 			int runCount;
+			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
 			zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
@@ -1923,8 +1923,8 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 					clipX -= run;
 					if (clipX < 0) {
 						dst -= clipX;
-						width += clipX;
 						zlines -= clipX;
+						width += clipX;
 					}
 				}
 				else if (run > 0x80) {
@@ -1949,10 +1949,13 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 							}
 						}
 						else {
-							unsigned char* copyDst = dst;
-							unsigned short* copyZ = zlines;
-							unsigned char* copySrc = src + runCount + clipX;
+							unsigned char* copyDst;
+							unsigned short* copyZ;
+							unsigned char* copySrc;
 							unsigned char count = (unsigned char) width;
+							copyZ = zlines;
+							copySrc = src + runCount + clipX;
+							copyDst = dst;
 							while (count != 0) {
 								count--;
 								if (*copyZ <= p_depth) {
