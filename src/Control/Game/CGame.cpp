@@ -129,29 +129,17 @@ CGame::CGame(char* p_runtimeFileName)
 		}
 	}
 
-	int cdResult = 0;
-	do {
-		if (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) != 0) {
-			break;
-		}
-		if (0) {
-			cdResult = MessageBoxA(0, g_szInsertCdPrompt, g_szUnableToFindCd, 1);
-			if (cdResult == 1) {
-				continue;
-			}
-		}
-	} while (cdResult != 2);
-	if (cdResult == 2) {
-		return;
-	}
+	g_pTargetPlatformServices->GetCDDir(g_szVsMemDll);
 
 	g_pGameStatus = new CGameStatus();
-	m_processingStat = new CTimeStat(g_szProcessing);
-	m_refreshingStat = new CTimeStat(g_szRefreshing);
+	CTimeStat*& processingStat = m_processingStat;
+	processingStat = new CTimeStat(g_szProcessing);
+	CTimeStat*& refreshingStat = m_refreshingStat;
+	refreshingStat = new CTimeStat(g_szRefreshing);
 
 	m_flowTicks = 0;
-	g_pStatManager->Register(m_processingStat);
-	g_pStatManager->Register(m_refreshingStat);
+	g_pStatManager->Register(processingStat);
+	g_pStatManager->Register(refreshingStat);
 
 	storage = CMogloadArena::operator new(0x28);
 	if (storage != 0) {
