@@ -229,15 +229,16 @@ void CTextWnd::RedrawLines(int p_firstLine, int p_lineCount)
 // FUNCTION: LEMBALL 0x00474000
 int CTextWnd::UpdateVisibleRows()
 {
+	CCritical* critical = this;
 	RECT rect;
-	EnterCritical();
+	critical->EnterCritical();
 	GetClientRect((HWND) m_windowHandle, &rect);
 	int lineHeight;
 	int height = rect.bottom - rect.top;
 	lineHeight = m_lineHeight;
 	m_visibleRows = height / lineHeight;
 	m_visibleRowsCeiling = (lineHeight + height - 1) / lineHeight;
-	LeaveCritical();
+	critical->LeaveCritical();
 	return m_visibleRowsCeiling;
 }
 
