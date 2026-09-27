@@ -59,8 +59,8 @@ void CRocket::Set(unsigned short p_id, const AiCoord& p_position)
 // FUNCTION: LEMBALL 0x004268e0
 bool CRocket::Process()
 {
-	unsigned int remoteObject = m_isRemoteObject;
 	unsigned long tick;
+	unsigned int remoteObject = m_isRemoteObject;
 	if (remoteObject != 0) {
 		tick = g_dwRemoteGameTick;
 	}
@@ -69,7 +69,8 @@ bool CRocket::Process()
 	}
 	eAction action = m_action;
 	if (action == ACTION_4) {
-		m_position.m_zFixed = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << 12;
+		const unsigned long& height = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << 12;
+		m_position.m_zFixed = height;
 	}
 
 	if (remoteObject != 0) {
