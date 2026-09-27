@@ -114,11 +114,13 @@ void CIntroAnimDrawer::Processing()
 		return;
 	}
 	if (m_startCountdown == 0) {
-		CVsRect introRect;
-		introRect.m_x = (short) (m_display->m_rect.m_width - 320) / 2;
+		CVsSize displaySize(m_display->m_rect);
+		CVsRect introRect(0, 0, displaySize.m_width, displaySize.m_height);
+		introRect.m_x = (short) (introRect.m_width - 320) / 2;
+		short height = introRect.m_height;
 		introRect.m_width = 320;
 		introRect.m_height = 240;
-		introRect.m_y = (short) (m_display->m_rect.m_height - 240) / 2;
+		introRect.m_y = (short) (height - 240) / 2;
 		if (m_started == 0) {
 			g_pSoundView->ChangeState(1, 0);
 			m_animWindow.Create(introRect, m_display, g_szPaintBallIntroSequence);
