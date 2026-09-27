@@ -274,6 +274,7 @@ CResBase* CMogRes::Find(unsigned int p_resourceId)
 	register int remaining = count;
 
 	if (count > i) {
+		unsigned int resourceId = p_resourceId;
 		do {
 			if (m_resources[i] == 0) {
 				CResBase** slot = &m_resources[i];
@@ -282,7 +283,7 @@ CResBase* CMogRes::Find(unsigned int p_resourceId)
 					i++;
 				} while (*slot == 0);
 			}
-			if (m_resources[i]->m_resourceId == p_resourceId) {
+			if (m_resources[i]->m_resourceId == resourceId) {
 				break;
 			}
 			remaining--;
