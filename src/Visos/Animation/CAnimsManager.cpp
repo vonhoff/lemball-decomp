@@ -233,11 +233,11 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 								CAnimFrameBASE* p_frame,
 								CRemap* p_remap)
 {
+	unsigned int frameIndex;
 	CResBase* resource;
 	CResZRLE* sizeSource;
 	CZRLE* zrle;
 	CAnim* anim;
-	unsigned int frameIndex;
 	CGDI* current;
 
 	if (m_doubleBuffered != 0) {
