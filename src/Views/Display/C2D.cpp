@@ -3894,83 +3894,167 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 
 	unsigned short tileX = (unsigned short) (p_x / 0x10);
 	unsigned short tileY = (unsigned short) (p_y / 0x10);
-	unsigned short code = (unsigned short) ((tileX + tileY) * 0x40 + 4);
+	unsigned short code = (unsigned short) ((tileY + tileX) * 0x40 + 4);
 	if (baseCodeOnly) {
 		return code;
 	}
 
 	p_z += 2;
 
-	unsigned short southZ = 0;
+	unsigned short southZValue;
+	unsigned short& southZ = southZValue;
 	int southTileX = p_x >> 4;
 	int southTileY = (p_y + 0x10) >> 4;
-	if (p_x >= 0 && p_y + 0x10 >= 0 && southTileX < m_map->m_ground.m_width && southTileY < m_map->m_ground.m_height) {
-		southZ = m_map->m_ground.m_ground[southTileY * m_map->m_ground.m_width + southTileX].GetZ(p_x & 0xf, p_y & 0xf);
+	{
+		CMap* map = m_map;
+		int width;
+		if (p_x < 0 || p_y + 0x10 < 0 || (width = map->m_ground.m_width, width <= southTileX) ||
+			map->m_ground.m_height <= southTileY) {
+			southZ = 0;
+		}
+		else {
+			int sampleY;
+			int& cellY = sampleY;
+			int cellX = p_x;
+			cellY = p_y;
+			cellY &= 0xf;
+			width *= southTileY;
+			cellX &= 0xf;
+			southZ = (map->m_ground.m_ground + width + southTileX)->GetZ(cellX, cellY);
+		}
 	}
 
-	unsigned short eastZ = 0;
+	unsigned short eastZ;
 	int eastTileX = (p_x + 0x10) >> 4;
 	int eastTileY = p_y >> 4;
-	if (p_x + 0x10 >= 0 && p_y >= 0 && eastTileX < m_map->m_ground.m_width && eastTileY < m_map->m_ground.m_height) {
-		eastZ = m_map->m_ground.m_ground[eastTileY * m_map->m_ground.m_width + eastTileX].GetZ(p_x & 0xf, p_y & 0xf);
-	}
-
-	unsigned short southeastZ = 0;
-	if (p_x + 0x10 >= 0 && p_y + 0x10 >= 0 && eastTileX < m_map->m_ground.m_width &&
-		southTileY < m_map->m_ground.m_height) {
-		southeastZ =
-			m_map->m_ground.m_ground[southTileY * m_map->m_ground.m_width + eastTileX].GetZ(p_x & 0xf, p_y & 0xf);
-	}
-
-	int threshold = (int) p_z - 0x18;
-	bool southSolid = false;
-	if ((int) southZ >= threshold) {
-		int collisionX = (unsigned short) tileX;
-		int collisionY = (unsigned short) tileY;
-		collisionY++;
-		unsigned short collision = 3;
-		if (collisionY >= 0 && collisionX < m_map->m_ground.m_width && collisionY < m_map->m_ground.m_height) {
-			collision = m_map->m_ground.m_ground[collisionY * m_map->m_ground.m_width + collisionX].m_collision;
+	{
+		CMap* map = m_map;
+		if (p_x + 0x10 < 0 || p_y < 0 || map->m_ground.m_width <= eastTileX || map->m_ground.m_height <= eastTileY) {
+			eastZ = 0;
 		}
-		southSolid = (collision & 1) != 0;
-	}
-
-	bool eastSolid = false;
-	if ((int) eastZ >= threshold) {
-		int collisionX = (unsigned short) tileX;
-		int collisionY = (unsigned short) tileY;
-		collisionX++;
-		unsigned short collision = 3;
-		if (collisionX >= 0 && collisionX < m_map->m_ground.m_width && collisionY < m_map->m_ground.m_height) {
-			collision = m_map->m_ground.m_ground[collisionY * m_map->m_ground.m_width + collisionX].m_collision;
+		else {
+			int sampleY;
+			int& cellY = sampleY;
+			int cellX = p_x;
+			cellY = p_y;
+			cellY &= 0xf;
+			eastTileY *= map->m_ground.m_width;
+			cellX &= 0xf;
+			eastZ = (map->m_ground.m_ground + eastTileY + eastTileX)->GetZ(cellX, cellY);
 		}
-		eastSolid = (collision & 1) != 0;
 	}
 
-	bool southeastSolid = false;
-	if ((int) southeastZ >= threshold) {
-		int collisionX = (unsigned short) tileX;
-		int collisionY = (unsigned short) tileY;
-		collisionX++;
-		collisionY++;
-		unsigned short collision = 3;
-		if (collisionX >= 0 && collisionY >= 0 && collisionX < m_map->m_ground.m_width &&
-			collisionY < m_map->m_ground.m_height) {
-			collision = m_map->m_ground.m_ground[collisionY * m_map->m_ground.m_width + collisionX].m_collision;
+	unsigned short southeastZ;
+	{
+		CMap* map = m_map;
+		int width;
+		if (p_x + 0x10 < 0 || p_y + 0x10 < 0 || (width = map->m_ground.m_width, width <= eastTileX) ||
+			map->m_ground.m_height <= southTileY) {
+			southeastZ = 0;
 		}
-		southeastSolid = (collision & 1) != 0;
+		else {
+			p_x &= 0xf;
+			p_y &= 0xf;
+			width *= southTileY;
+			southeastZ = (map->m_ground.m_ground + width + eastTileX)->GetZ(p_x, p_y);
+		}
 	}
 
-	bool southWithinZ = p_z >= southZ;
-	bool eastWithinZ = p_z >= eastZ;
-	bool southeastWithinZ = p_z >= southeastZ;
-	if (southWithinZ && eastWithinZ && southeastWithinZ && !southeastSolid && !eastSolid && !southSolid) {
-		code += 0x80;
+	{
+		const int& southWithinZ = p_z >= southZ;
+		bool eastWithinZ = p_z >= eastZ;
+		bool southeastWithinZ = p_z >= southeastZ;
+		int threshold = (int) p_z - 0x18;
+		bool southSolid;
+		if ((int) southZ < threshold) {
+		southClear:
+			southSolid = false;
+		}
+		else {
+			int collisionY = (unsigned short) tileY + 1;
+			unsigned short collision;
+			if (collisionY < 0) {
+				collision = 3;
+			}
+			else {
+				CMap* map = m_map;
+				int collisionX = (unsigned short) tileX;
+				int width = map->m_ground.m_width;
+				if (width <= collisionX || map->m_ground.m_height <= collisionY) {
+					collision = 3;
+				}
+				else {
+					collision = map->m_ground.m_ground[width * collisionY + collisionX].m_collision;
+				}
+			}
+			if ((collision & 1) == 0) {
+				goto southClear;
+			}
+			southSolid = true;
+		}
+
+		bool eastSolid;
+		if ((int) eastZ < threshold) {
+		eastClear:
+			eastSolid = false;
+		}
+		else {
+			int collisionX = (unsigned short) tileX;
+			unsigned short collision;
+			if (collisionX + 1 < 0) {
+				collision = 3;
+			}
+			else {
+				CMap* map = m_map;
+				int width = map->m_ground.m_width;
+				if (width <= collisionX + 1 || map->m_ground.m_height <= (unsigned short) tileY) {
+					collision = 3;
+				}
+				else {
+					collision = map->m_ground.m_ground[width * (unsigned short) tileY + collisionX + 1].m_collision;
+				}
+			}
+			if ((collision & 1) == 0) {
+				goto eastClear;
+			}
+			eastSolid = true;
+		}
+
+		bool southeastSolid;
+		if ((int) southeastZ < threshold) {
+		southeastClear:
+			southeastSolid = false;
+		}
+		else {
+			int collisionX = (unsigned short) tileX;
+			int collisionY = (unsigned short) tileY + 1;
+			unsigned short collision;
+			if (collisionX + 1 < 0 || collisionY < 0) {
+				collision = 3;
+			}
+			else {
+				CMap* map = m_map;
+				int width = map->m_ground.m_width;
+				if (width <= collisionX + 1 || map->m_ground.m_height <= collisionY) {
+					collision = 3;
+				}
+				else {
+					collision = map->m_ground.m_ground[width * collisionY + collisionX + 1].m_collision;
+				}
+			}
+			if ((collision & 1) == 0) {
+				goto southeastClear;
+			}
+			southeastSolid = true;
+		}
+		if (southWithinZ && eastWithinZ && southeastWithinZ && !southeastSolid && !eastSolid && !southSolid) {
+			code += 0x80;
+		}
+		else if (southWithinZ || eastWithinZ) {
+			code += 0x40;
+		}
+		return code;
 	}
-	else if (southWithinZ || eastWithinZ) {
-		code += 0x40;
-	}
-	return code;
 }
 
 // FUNCTION: LEMBALL 0x00440c00
