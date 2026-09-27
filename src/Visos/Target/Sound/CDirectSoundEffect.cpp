@@ -316,7 +316,8 @@ void CDirectSoundEffect::Stop()
 // FUNCTION: LEMBALL 0x0047dba0
 bool CDirectSoundEffect::SetBufferVolume(int p_index, int p_volume)
 {
-	unsigned int result = m_buffers[p_index]->SetVolume(p_volume);
+	IDirectSoundBuffer*& buffer = m_buffers[p_index];
+	unsigned int result = buffer->SetVolume(p_volume);
 	if (result != 0) {
 		*g_pErrorOutput << "Effect Buffer Set Volume Request failed: " << DescribeDirectSoundError(result & 0xfff)
 						<< "\n";
