@@ -162,9 +162,9 @@ void CSoundView::SetMusicOn(unsigned int p_enabled)
 // FUNCTION: LEMBALL 0x00439c40
 void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AiCoord& p_listener)
 {
-	int dist;
-	int volume;
 	int attenuatedVol;
+	int volume;
+	int dist;
 	unsigned long now;
 	int x;
 	int y;
@@ -185,13 +185,14 @@ void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AiCoord& p_list
 			for (i = 0; i < p_count; i++) {
 				effectId = p_viewData[i].m_soundEffect;
 				if (effectId != 0) {
-					int effectX = (unsigned short) p_viewData[i].m_gameX;
-					int effectY = (unsigned short) p_viewData[i].m_gameY;
+					const int& effectX = (unsigned short) p_viewData[i].m_gameX;
+					const int& effectY = (unsigned short) p_viewData[i].m_gameY;
 					dist = Distance(x, y, effectX, effectY);
 					attenuatedVol = volume;
 					dist -= 200;
 					if (dist > 0) {
-						attenuatedVol = volume + (int) (dist * volume * -40) / 124800;
+						dist *= volume;
+						attenuatedVol = volume + (int) (dist * -40) / 124800;
 						if (attenuatedVol > volume) {
 							attenuatedVol = volume;
 						}
