@@ -31,25 +31,33 @@ int CPadToButton::ProcessMsg(Message* p_message)
 	int result = 0;
 	int index = 0;
 	unsigned short type = p_message->type;
-	if (type >= 3 && type <= 4 && m_entryCount > 0) {
-		unsigned int* padCode = &m_entries->m_padCode;
-		while (*padCode != (unsigned int) p_message->code) {
-			padCode += 2;
-			index++;
-			if (index >= m_entryCount) {
-				return result;
+	switch ((int) type) {
+	case 3:
+	case 4: {
+		int count = m_entryCount;
+		if (count > 0) {
+			PadToButtonEntry* entries = m_entries;
+			unsigned int messageCode = (unsigned int) p_message->code;
+			unsigned int* padCode = &entries->m_padCode;
+			while (*padCode != messageCode) {
+				padCode += 2;
+				index++;
+				if (index >= count) {
+					return result;
+				}
 			}
+			CPVButton* button = entries[index].m_button;
+			if (type == 4) {
+				CVsPoint point(0, 0);
+				button->OnButtonDown(point, 0);
+			}
+			else {
+				CVsPoint point(0, 0);
+				button->OnButtonUp(point, 0);
+			}
+			result = 1;
 		}
-		CPVButton* button = m_entries[index].m_button;
-		if (type == 4) {
-			CVsPoint point;
-			button->OnButtonDown(point, 0);
-		}
-		else {
-			CVsPoint point;
-			button->OnButtonUp(point, 0);
-		}
-		result = 1;
+	} break;
 	}
 	return result;
 }
