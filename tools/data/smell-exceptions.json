@@ -4,6 +4,14 @@
   "identity": "Exact path + rule + complete reported source line, with a count limit. Line numbers are excluded. Inspect matches and reasons with python tools/gate.py --verbose.",
   "findings": [
     {
+      "path": "src/AI/Managers/CBulletManager.cpp",
+      "rule": "no-annotation",
+      "code": "inline static int CollectBulletViewData(CBulletManager* p_manager, CViewData* p_viewData)",
+      "count": 1,
+      "reason": "CBulletManager::GetViewData (0x004180e0): local inline reconstruction of the original query/output loop. Manager-first formal restores receiver-before-count ordering while preserving virtual calls, output advances, stack and return flow; caller is an effective match. No separate original entry point exists to annotate; helper name is inferred. Required to preserve the prior exact report match after the Restart reconstruction."
+    },
+
+    {
       "path": "src/Visos/Graphics/CPVWnd.cpp",
       "rule": "no-annotation",
       "code": "inline static void AddWindowOwner(WindowOwnerList* list, CPVWnd* p_window)",

@@ -23,15 +23,28 @@ CBulletManager::CBulletManager() : CBaseObjectManager(0x21, 0x16)
 	m_poolStart = 0;
 }
 
+inline static void RestartBullets(CBullet** p_activeBullets,
+								  CBulletManager* p_manager,
+								  CBullet* CBulletManager::* p_bullets,
+								  int CBulletManager::* p_iterator,
+								  int CBulletManager::* p_activeCount)
+{
+	p_manager->*p_iterator = 0;
+	p_manager->*p_activeCount = 0;
+	for (int i = 0; i < 40; i++) {
+		p_activeBullets[i] = 0;
+		(p_manager->*p_bullets)[i].Restart();
+	}
+}
+
 // FUNCTION: LEMBALL 0x00417e80
 void CBulletManager::Restart()
 {
-	m_iterator = 0;
-	m_activeCount = 0;
-	for (int i = 0; i < 40; i++) {
-		m_activeBullets[i] = 0;
-		m_bullets[i].Restart();
-	}
+	RestartBullets(m_activeBullets,
+				   this,
+				   &CBulletManager::m_bullets,
+				   &CBulletManager::m_iterator,
+				   &CBulletManager::m_activeCount);
 }
 
 // FUNCTION: LEMBALL 0x00417ec0
@@ -148,10 +161,9 @@ void CBulletManager::RemoveBullet(CBullet* p_bullet)
 	}
 }
 
-// FUNCTION: LEMBALL 0x004180e0
-int CBulletManager::GetViewData(CViewData* p_viewData)
+inline static int CollectBulletViewData(CBulletManager* p_manager, CViewData* p_viewData)
 {
-	CBullet* bullet = GetFirstBullet();
+	CBullet* bullet = p_manager->GetFirstBullet();
 	int count = 0;
 	if (bullet != 0) {
 		CViewData* viewData = p_viewData;
@@ -159,10 +171,16 @@ int CBulletManager::GetViewData(CViewData* p_viewData)
 			bullet->GetViewData(*viewData);
 			viewData++;
 			count++;
-			bullet = GetNextBullet();
+			bullet = p_manager->GetNextBullet();
 		} while (bullet != 0);
 	}
 	return count;
+}
+
+// FUNCTION: LEMBALL 0x004180e0
+int CBulletManager::GetViewData(CViewData* p_viewData)
+{
+	return CollectBulletViewData(this, p_viewData);
 }
 
 // FUNCTION: LEMBALL 0x00418120
