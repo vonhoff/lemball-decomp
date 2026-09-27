@@ -161,7 +161,7 @@ bool CIce::Process()
 	int maxY = m_max.m_y + 7;
 	for (int i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AiCoord position(object->m_position);
+		AiCoord position = AiCoord(object->m_position);
 		int dx = (m_velocityX * elapsed * 4096) / 8;
 		int dy = (m_velocityY * elapsed * 4096) / 8;
 		int ax = abs(dx >> 12);
@@ -174,19 +174,22 @@ bool CIce::Process()
 		}
 		position.m_xFixed += dx;
 		position.m_yFixed += dy;
-		unsigned short groundZ;
+		unsigned short terrainZ;
 		{
+			CMap* map = g_pMap;
+			int width;
 			int y = (position.m_yFixed >> 12);
 			int x = (position.m_xFixed >> 12);
 			int by = y >> 4;
 			int bx = x >> 4;
-			if (x < 0 || y < 0 || bx >= g_pMap->m_ground.m_width || by >= g_pMap->m_ground.m_height) {
-				groundZ = 0;
+			if (x < 0 || y < 0 || bx >= (width = map->m_ground.m_width) || by >= map->m_ground.m_height) {
+				terrainZ = 0;
 			}
 			else {
-				groundZ = g_pMap->m_ground.m_ground[by * g_pMap->m_ground.m_width + bx].GetZ(x & 15, y & 15);
+				terrainZ = map->m_ground.m_ground[by * width + bx].GetZ(x & 15, y & 15);
 			}
 		}
+		int groundZ = terrainZ;
 		int z = position.m_zFixed >> 12;
 		if (z < groundZ) {
 			position.m_zFixed = groundZ << 12;
@@ -194,11 +197,24 @@ bool CIce::Process()
 		else if (groundZ < z) {
 			z -= elapsed * 4;
 			if (z < groundZ) {
-				z = groundZ;
+				const int& floorZ = groundZ;
+				int& fallingZ = z;
+				fallingZ = floorZ;
 			}
 			position.m_zFixed = z << 12;
 		}
-		if (m_velocityX == 0) {
+		if (m_velocityX != 0) {
+			if (m_velocityY == 0) {
+				int fraction = (position.m_yFixed & 0xf000U) >> 12;
+				if (fraction > 8) {
+					position.m_yFixed -= 4096;
+				}
+				else if (fraction < 8) {
+					position.m_yFixed += 4096;
+				}
+			}
+		}
+		else {
 			int fraction = (position.m_xFixed & 0xf000U) >> 12;
 			if (fraction > 8) {
 				position.m_xFixed -= 4096;
@@ -207,22 +223,15 @@ bool CIce::Process()
 				position.m_xFixed += 4096;
 			}
 		}
-		else if (m_velocityY == 0) {
-			int fraction = (position.m_yFixed & 0xf000U) >> 12;
-			if (fraction > 8) {
-				position.m_yFixed -= 4096;
-			}
-			else if (fraction < 8) {
-				position.m_yFixed += 4096;
-			}
-		}
-		object->m_position = position;
+		const AiCoord& movedPosition = position;
+		object->m_position = movedPosition;
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AiCoord current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
-		if ((current.m_xFixed >> 12) < minX || maxX < (current.m_xFixed >> 12) || (current.m_yFixed >> 12) < minY ||
-			maxY < (current.m_yFixed >> 12)) {
+		AiCoord current = object->m_position;
+		int x = current.m_xFixed >> 12;
+		int y = current.m_yFixed >> 12;
+		if (x < minX || x > maxX || y < minY || y > maxY) {
 			object->m_unk0xc0 = 0;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
@@ -231,9 +240,9 @@ bool CIce::Process()
 				object->SetBored(4000);
 				object->OnConveyor(0, 0, 0);
 				{
-					CMap* map = g_pMap;
 					int y = (current.m_yFixed >> 12);
 					int x = (current.m_xFixed >> 12);
+					CMap* map = g_pMap;
 					int by = y >> 4;
 					int bx = x >> 4;
 					if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
@@ -276,7 +285,8 @@ bool CIce::Process()
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AiCoord position(object->m_position);
+		AiCoord positionValue(object->m_position);
+		const AiCoord& position = positionValue;
 		unsigned short groundZ;
 		{
 			CMap* map = g_pMap;
