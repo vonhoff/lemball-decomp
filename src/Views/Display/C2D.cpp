@@ -3399,6 +3399,8 @@ void C2D::DrawObject(CViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043ed20
 void C2D::SetOrigin()
 {
+	int projectedX;
+	int projectedY;
 	AiCoord origin;
 	unsigned int player;
 	int changed = 0;
@@ -3425,9 +3427,7 @@ void C2D::SetOrigin()
 	if (m_ai->m_gameStatus == 0 || m_ai->m_gameStatus == 2) {
 		int marginX = m_clipSize.m_x * 2 / 5;
 		int marginY = m_clipSize.m_y * 2 / 5;
-		m_originPosition.m_xFixed = origin.m_xFixed;
-		m_originPosition.m_zFixed = origin.m_zFixed;
-		m_originPosition.m_yFixed = origin.m_yFixed;
+		m_originPosition = origin;
 
 		{
 			int screenX = origin.m_xFixed >> 12;
@@ -3438,8 +3438,8 @@ void C2D::SetOrigin()
 			origin.m_yFixed = (screenY - screenZ) * 0x1000;
 		}
 		int oldViewOriginX = m_viewOriginX;
-		int projectedX = origin.m_xFixed >> 12;
-		int projectedY = origin.m_yFixed >> 12;
+		projectedX = origin.m_xFixed >> 12;
+		projectedY = origin.m_yFixed >> 12;
 		int oldViewOriginY = m_viewOriginY;
 		int differenceX = projectedX - m_viewOriginX;
 		int differenceY = projectedY - m_viewOriginY;
