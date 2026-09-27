@@ -130,8 +130,9 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 	int status = p_message->code;
 	int slot;
 	CConnect* request;
+	unsigned int messageType = p_message->type;
 
-	switch ((unsigned int) p_message->type) {
+	switch (messageType) {
 	case 1:
 		return 1;
 	case 3:
@@ -206,7 +207,7 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 	}
 	case 13:
 		if (g_pNetworkOptionsProc != 0) {
-			g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) p_message->type);
+			g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) messageType);
 		}
 		return 1;
 	default:
