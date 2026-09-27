@@ -1745,9 +1745,9 @@ static const int g_clipNeighborStepXByOrientation[4] = {0, 1, 0, -1};
 // GLOBAL: LEMBALL 0x00497248
 static const int g_clipNeighborStepYByOrientation[4] = {1, 0, -1, 0};
 // GLOBAL: LEMBALL 0x00497258
-static const int g_clipRowStepXByOrientation[4] = {1, -1, -1, 1};
+static const int g_clipRowStepXByOrientation[4] = {1, 1, -1, -1};
 // GLOBAL: LEMBALL 0x00497268
-static const int g_clipRowStepYByOrientation[4] = {-1, -1, 1, 1};
+static const int g_clipRowStepYByOrientation[4] = {1, -1, -1, 1};
 
 // FUNCTION: LEMBALL 0x0043b4d0
 int C2D::DrawClippedRectangle(const CVsRect& p_rect)
