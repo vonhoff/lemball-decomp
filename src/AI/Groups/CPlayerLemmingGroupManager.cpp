@@ -92,44 +92,6 @@ void CPlayerLemmingGroupManager::ProcessDead()
 {
 }
 
-// FUNCTION: LEMBALL 0x00418650
-void CPlayerLemmingGroupManager::Process()
-{
-	bool controlledGroupDeleted = 0;
-	CGenericGroup* genericGroup = CGenericGroupManager::GetFirstGroup();
-	while (genericGroup != 0) {
-		genericGroup->Process();
-		genericGroup = CGenericGroupManager::GetNextGroup();
-	}
-
-	CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) CGenericGroupManager::GetFirstGroup();
-	while (group != 0) {
-		CPlayerLemming* lemming = group->GetFirstDeadLemming();
-		if (lemming != 0) {
-			do {
-				group->RemoveLemmingFromGroup(lemming);
-				m_dead[m_deadCount] = lemming;
-				m_deadCount++;
-				if (group->GetElementsInGroup() == 0) {
-					lemming = 0;
-					if (GetPlayerControlledGroup() == group) {
-						controlledGroupDeleted = 1;
-					}
-					DeleteGroup(group);
-				}
-				else {
-					lemming = group->GetFirstDeadLemming();
-				}
-			} while (lemming != 0);
-		}
-		group = (CPlayerLemmingGroup*) CGenericGroupManager::GetNextGroup();
-	}
-	if (controlledGroupDeleted) {
-		MakePreviousGroupPlayerControlled();
-	}
-	ProcessDead();
-}
-
 // FUNCTION: LEMBALL 0x00418720
 void CPlayerLemmingGroupManager::DeleteGroup(CPlayerLemmingGroup* p_group)
 {
