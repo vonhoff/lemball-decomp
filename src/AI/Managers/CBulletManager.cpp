@@ -153,11 +153,14 @@ int CBulletManager::GetViewData(CViewData* p_viewData)
 {
 	CBullet* bullet = GetFirstBullet();
 	int count = 0;
-	while (bullet != 0) {
-		bullet->GetViewData(*p_viewData);
-		p_viewData++;
-		count++;
-		bullet = GetNextBullet();
+	if (bullet != 0) {
+		CViewData* viewData = p_viewData;
+		do {
+			bullet->GetViewData(*viewData);
+			viewData++;
+			count++;
+			bullet = GetNextBullet();
+		} while (bullet != 0);
 	}
 	return count;
 }
