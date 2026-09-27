@@ -2146,9 +2146,11 @@ void CSurface::BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZ
 						run &= 0x7f;
 						int count = run;
 						if (count < width) {
+							unsigned char* copySrc;
+							unsigned char* copyDst;
 							int remaining = count;
-							unsigned char* copySrc = src;
-							unsigned char* copyDst = dst;
+							copySrc = src;
+							copyDst = dst;
 							while (remaining > 0) {
 								*copyDst-- = *copySrc++;
 								remaining--;
