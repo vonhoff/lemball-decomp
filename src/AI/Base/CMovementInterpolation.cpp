@@ -1,16 +1,4 @@
-#include "../../Visos/Foundation/CVector.h"
-
-class CMovementInterpolation {
-public:
-	void SetEndpoints(CVector p_start, CVector p_end);
-	CMovementInterpolation& operator=(const CMovementInterpolation& p_other);
-
-private:
-	int m_startX; // 0x00
-	int m_startY; // 0x04
-	int m_deltaX; // 0x08
-	int m_deltaY; // 0x0c
-};
+#include "CMovementInterpolation.h"
 
 // FUNCTION: LEMBALL 0x00417b00
 void CMovementInterpolation::SetEndpoints(CVector p_start, CVector p_end)

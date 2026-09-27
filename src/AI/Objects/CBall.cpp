@@ -5,6 +5,7 @@
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Foundation/CVector.h"
+#include "../Base/CMovementInterpolation.h"
 #include "../Base/CPt3.h"
 #include "../Managers/CBallManager.h"
 #include "../Navigation/CAI.h"
@@ -78,10 +79,11 @@ void CBall::StartMovement(unsigned int p_direction)
 		m_moveDurationTicks = 1;
 	}
 	m_actionDeadline = m_moveDurationTicks + g_dwGameTick;
-	m_moveStartXFixed = m_position.m_xFixed;
-	m_moveStartYFixed = m_position.m_yFixed;
-	m_moveDeltaXFixed = targetX - m_moveStartXFixed;
-	m_moveDeltaYFixed = targetY - m_moveStartYFixed;
+	CVector start(m_position.m_xFixed, m_position.m_yFixed);
+	CVector end(start);
+	end.m_xFixed = targetX;
+	end.m_yFixed = targetY;
+	((CMovementInterpolation*) &m_moveStartXFixed)->SetEndpoints(start, end);
 }
 
 // FUNCTION: LEMBALL 0x00421870
