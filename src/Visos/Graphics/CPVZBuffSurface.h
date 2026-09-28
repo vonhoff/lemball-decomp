@@ -13,8 +13,8 @@ class CZBuffClear;
 class CPVZBuffSurface : public virtual CPVSurface {
 public:
 	CPVZBuffSurface();
-	virtual void Blit(CZBuffScroll* p_arg0) = 0; // vtable+0x04
-	virtual void Blit(CZBuffClear* p_arg0) = 0;  // vtable+0x00
+	virtual void Blit(CZBuffScroll* scroll) = 0; // vtable+0x04
+	virtual void Blit(CZBuffClear* clear) = 0;   // vtable+0x00
 	virtual bool HasZBuff();                     // vtable+0x40
 	void AllocateZBuff();
 	void EnableZBuff(int p_enabled);

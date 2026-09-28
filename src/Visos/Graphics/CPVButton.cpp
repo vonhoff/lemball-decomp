@@ -54,12 +54,12 @@ void CPVButton::OnVisibilityChange()
 }
 
 // FUNCTION: LEMBALL 0x00467c10
-CPVButton::CPVButton(const CVsRect& p_arg0, CPVGWnd* p_arg1)
-	: CHotAreaHandler(CVsRect(0, 0, p_arg0.m_width, p_arg0.m_height)), m_buttonX(m_buttonY = 0)
+CPVButton::CPVButton(const CVsRect& bounds, CPVGWnd* ownerWindow)
+	: CHotAreaHandler(CVsRect(0, 0, bounds.m_width, bounds.m_height)), m_buttonX(m_buttonY = 0)
 {
 	m_clickY = 0;
 	m_clickX = 0;
-	const CVsRect* rect = &p_arg0;
+	const CVsRect* rect = &bounds;
 	const short* position;
 	if (rect != 0) {
 		position = &rect->m_x;
@@ -69,16 +69,16 @@ CPVButton::CPVButton(const CVsRect& p_arg0, CPVGWnd* p_arg1)
 	}
 	m_buttonX = *position;
 	m_buttonY = position[1];
-	m_ownerWindow = p_arg1;
+	m_ownerWindow = ownerWindow;
 	Initialise();
 }
 
 // FUNCTION: LEMBALL 0x00467cd0
-CPVButton::CPVButton(CPVGWnd* p_arg0) : m_buttonX(m_buttonY = 0)
+CPVButton::CPVButton(CPVGWnd* ownerWindow) : m_buttonX(m_buttonY = 0)
 {
 	m_clickY = 0;
 	m_clickX = 0;
-	m_ownerWindow = p_arg0;
+	m_ownerWindow = ownerWindow;
 	Initialise();
 }
 

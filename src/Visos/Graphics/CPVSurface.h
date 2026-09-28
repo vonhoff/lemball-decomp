@@ -27,13 +27,13 @@ public:
 	CPVSurface();
 	virtual void Blit(CZRLE* p_primitive, CResZRLE* p_zrle) = 0;       // vtable+0x24
 	virtual void Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap) = 0; // vtable+0x20
-	virtual void Blit(CBigBitmap* p_arg0, CResBITMAP* p_arg1) = 0;     // vtable+0x1c
+	virtual void Blit(CBigBitmap* bitmap, CResBITMAP* resource) = 0;   // vtable+0x1c
 	virtual void Blit(CSolidRect* p_rect) = 0;                         // vtable+0x18
 	virtual void Blit(CPoint* p_point) = 0;                            // vtable+0x14
 	virtual void Blit(CLine* p_line) = 0;                              // vtable+0x10
 	virtual void Blit(CCircle* p_circle) = 0;                          // vtable+0x0c
 	virtual void Blit(CFilledCircle* p_circle) = 0;                    // vtable+0x08
-	virtual void Blit(CClipRect* p_arg0) = 0;                          // vtable+0x04
+	virtual void Blit(CClipRect* clipRect) = 0;                        // vtable+0x04
 	virtual void Blit(CScreenScroll* p_scroll) = 0;                    // vtable+0x00
 	virtual void Resize(const CVsSize& p_size);                        // vtable+0x28
 	virtual void Move(const CVsPoint& p_position) = 0;                 // vtable+0x2c
