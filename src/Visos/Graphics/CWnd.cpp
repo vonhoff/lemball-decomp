@@ -255,23 +255,25 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		window->m_rect.m_width = (short) p_lParam;
 		p_lParam >>= 16;
 		window->m_rect.m_height = (short) p_lParam;
-		if (p_wParam == SIZE_RESTORED) {
+		switch (p_wParam) {
+		case SIZE_RESTORED:
 			if (window->GetSizeStatus() != 2) {
 				window->SetSizeStatus(2);
 				window->OnRestore();
 			}
-		}
-		else if (p_wParam == SIZE_MINIMIZED) {
+			break;
+		case SIZE_MINIMIZED:
 			if (window->GetSizeStatus() != 0) {
 				window->SetSizeStatus(0);
 				window->OnMinimise();
 			}
-		}
-		else if (p_wParam == SIZE_MAXIMIZED) {
+			break;
+		case SIZE_MAXIMIZED:
 			if (window->GetSizeStatus() != 1) {
 				window->SetSizeStatus(1);
 				window->OnMaximise();
 			}
+			break;
 		}
 		window->_OnSize();
 		window->OnSize();
@@ -356,7 +358,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				}
 			}
 		}
-		return window->ProcessOtherMessages(WM_ACTIVATEAPP, p_wParam, p_lParam);
+		return window->ProcessOtherMessages(p_message, p_wParam, p_lParam);
 	}
 	case WM_DISPLAYCHANGE: {
 		if (g_pTargetGraphicsSystem != 0) {
