@@ -8,11 +8,11 @@ class CVSOStream;
 // VTABLE: LEMBALL 0x0049a468
 class CMasterInput {
 public:
-	CMasterInput(CBaseQueue* p_arg0);
+	CMasterInput(CBaseQueue* queue);
 	bool AddItem(void* p_item);
 	bool IsEmpty();
 	bool ProcessItems();
-	virtual CVSOStream& StreamOut(CVSOStream& p_arg0); // vtable+0x00
+	virtual CVSOStream& StreamOut(CVSOStream& stream); // vtable+0x00
 	virtual ~CMasterInput();                           // vtable+0x04
 
 	friend bool InitInput();

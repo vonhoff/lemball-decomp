@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498ee8
 class CMessOKConnect : public CBroadcastMessage {
 public:
-	CMessOKConnect(const char* p_arg0);
+	CMessOKConnect(const char* header);
 	void AddData();
 	void GetData();
 

@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498f18
 class CMessFAILEDConnect : public CBroadcastMessage {
 public:
-	CMessFAILEDConnect(const char* p_arg0);
+	CMessFAILEDConnect(const char* header);
 	void AddData();
 	void GetData();
 

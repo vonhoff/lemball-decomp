@@ -7,7 +7,7 @@
 #pragma intrinsic(strlen)
 
 // FUNCTION: LEMBALL 0x0045f580
-CMessGOConnect::CMessGOConnect(const char* p_arg0) : CBroadcastMessage(p_arg0)
+CMessGOConnect::CMessGOConnect(const char* header) : CBroadcastMessage(header)
 {
 	m_payloadCapacity += 0x38;
 	m_payloadCapacity += 0x101;

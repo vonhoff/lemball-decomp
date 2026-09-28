@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498f00
 class CMessGOConnect : public CBroadcastMessage {
 public:
-	CMessGOConnect(const char* p_arg0);
+	CMessGOConnect(const char* header);
 	void AddData();
 	void GetData();
 
