@@ -16,6 +16,12 @@
 
 #include <new.h>
 
+#define MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE 0xacef0004
+#define MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE 0xacef0005
+#define MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE 0xacef0006
+#define MAIN_OPTIONS2_ANIMATIONS_TOGGLE_MESSAGE 0xacef0007
+#define MAIN_OPTIONS2_RETURN_MESSAGE 0xacef0008
+
 // GLOBAL: LEMBALL 0x0049f578
 unsigned long g_dwMainOptions2AnimIds[10] = {RES_NEWFRONT_ICONS_HIRES_ZOOM_OFF,
 											 RES_NEWFRONT_ICONS_HIRES_ZOOM_ON,
@@ -127,9 +133,25 @@ void CMainOptions2Drawer::Load()
 	}
 
 	(*gunController)
-		->AddButton(m_buttonLayout[0], m_buttonLayout[1], zoomAnim, 0, disableZoom, 1, 0, &m_disableZoom, 0xacef0004);
+		->AddButton(m_buttonLayout[0],
+					m_buttonLayout[1],
+					zoomAnim,
+					0,
+					disableZoom,
+					1,
+					0,
+					&m_disableZoom,
+					MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE);
 	(*gunController)
-		->AddButton(m_buttonLayout[2], m_buttonLayout[3], animationsAnim, 0, 0, 1, 0, &m_disableAnimations, 0xacef0007);
+		->AddButton(m_buttonLayout[2],
+					m_buttonLayout[3],
+					animationsAnim,
+					0,
+					0,
+					1,
+					0,
+					&m_disableAnimations,
+					MAIN_OPTIONS2_ANIMATIONS_TOGGLE_MESSAGE);
 	(*gunController)
 		->AddButton(m_buttonLayout[4],
 					m_buttonLayout[5],
@@ -139,9 +161,17 @@ void CMainOptions2Drawer::Load()
 					1,
 					0,
 					&g_nPendingEffectsVolume,
-					0xacef0005);
+					MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE);
 	(*gunController)
-		->AddButton(m_buttonLayout[6], m_buttonLayout[7], musicAnim, 0, 0, 1, 0, &g_nPendingMusicVolume, 0xacef0006);
+		->AddButton(m_buttonLayout[6],
+					m_buttonLayout[7],
+					musicAnim,
+					0,
+					0,
+					1,
+					0,
+					&g_nPendingMusicVolume,
+					MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE);
 	(*gunController)
 		->AddButton(m_buttonLayout[10],
 					m_buttonLayout[11],
@@ -151,7 +181,7 @@ void CMainOptions2Drawer::Load()
 					0,
 					0,
 					&m_transitionPending,
-					0xacef0008);
+					MAIN_OPTIONS2_RETURN_MESSAGE);
 	(*gunController)->SetGun(0);
 	(*gunController)->SetSpriteWindow();
 }
@@ -206,10 +236,10 @@ bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 	}
 
 	switch ((unsigned int) p_message->code) {
-	case 0xacef0005:
-	case 0xacef0006:
+	case MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE:
+	case MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE:
 		return 1;
-	case 0xacef0008:
+	case MAIN_OPTIONS2_RETURN_MESSAGE:
 		m_quitYet = 1;
 		m_returnState = 2;
 		return 1;
