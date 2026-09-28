@@ -264,15 +264,17 @@ void CBaseCursor::SetMainID(unsigned int p_resourceId, int p_frame)
 // FUNCTION: LEMBALL 0x0046b460
 bool CBaseCursor::InWindow(CGWnd* p_window)
 {
+	short cursorX;
+	short cursorY;
 	CVsRect bounds(p_window->m_rect);
 	short& width = bounds.m_width;
-	short& height = bounds.m_height;
 	short& x = bounds.m_x;
 	short& y = bounds.m_y;
+	short& height = bounds.m_height;
 	short innerWidth;
-	short innerHeight;
 	short clipX;
 	short clipY;
+	short innerHeight;
 	CVsPoint* innerXY;
 
 	innerHeight = p_window->m_innerRect.m_height;
@@ -304,8 +306,9 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 			x = 0;
 		}
 	}
-	if (x <= m_position.m_x && m_position.m_x < (short) (x + width) && y <= m_position.m_y &&
-		m_position.m_y < (short) (height + y)) {
+	cursorX = m_position.m_x;
+	if (x <= cursorX && cursorX < (short) (x + width) && y <= (cursorY = m_position.m_y) &&
+		cursorY < (short) (height + y)) {
 		return 1;
 	}
 	return 0;
