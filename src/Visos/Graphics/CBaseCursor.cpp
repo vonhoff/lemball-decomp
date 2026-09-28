@@ -406,15 +406,8 @@ void CBaseCursor::Draw(CGWnd* p_window)
 void CBaseCursor::Process()
 {
 	unsigned long now;
-	int speed;
-	int cap;
-	short oldX;
-	short oldY;
-	short boundX;
-	short boundY;
 	short boundRight;
 	short boundBottom;
-	Message posted;
 
 	if (m_drawn == 0 && m_systemCursorVisible == 0) {
 		RestoreSystemCursor();
@@ -428,36 +421,34 @@ void CBaseCursor::Process()
 	}
 	now = CurrentMilliTimer();
 	if (m_directionX != 0) {
-		speed = m_velocityX + (int) (m_directionX * (now - m_lastInputX)) / 0x14;
+		m_velocityX += (int) (m_directionX * (now - m_lastInputX)) / 0x14;
 		m_lastInputX = now;
-		cap = m_acceleration;
-		m_velocityX = speed;
-		if (cap < speed) {
-			m_velocityX = cap;
+		if (m_velocityX > m_acceleration) {
+			m_velocityX = m_acceleration;
 		}
-		if (m_velocityX < -cap) {
-			m_velocityX = -cap;
+		if (m_velocityX < -m_acceleration) {
+			m_velocityX = -m_acceleration;
 		}
 	}
 	if (m_directionY != 0) {
-		speed = m_velocityY + (int) ((now - m_lastInputY) * m_directionY) / 0x14;
+		m_velocityY += (int) ((now - m_lastInputY) * m_directionY) / 0x14;
 		m_lastInputY = now;
-		cap = m_acceleration;
-		m_velocityY = speed;
-		if (cap < speed) {
-			m_velocityY = cap;
+		if (m_velocityY > m_acceleration) {
+			m_velocityY = m_acceleration;
 		}
-		if (m_velocityY < -cap) {
-			m_velocityY = -cap;
+		if (m_velocityY < -m_acceleration) {
+			m_velocityY = -m_acceleration;
 		}
 	}
-	oldX = m_position.m_x;
-	oldY = m_position.m_y;
-	m_fixedX = m_velocityX + m_fixedX;
-	m_fixedY = m_velocityY + m_fixedY;
-	m_position.m_x = (short) (m_fixedX >> 12);
-	m_position.m_y = (short) (m_fixedY >> 12);
-	if (m_keyboardInput != 0 && (m_position.m_x != oldX || m_position.m_y != oldY)) {
+	CVsPoint oldPosition(m_position);
+	int x = m_velocityX + m_fixedX;
+	int y = m_velocityY + m_fixedY;
+	m_fixedX = x;
+	m_fixedY = y;
+	m_position.m_x = (short) (x >> 12);
+	m_position.m_y = (short) (y >> 12);
+	if (m_keyboardInput != 0 && !m_position.Equals(oldPosition)) {
+		Message posted;
 		posted.m_type = 10;
 		posted.m_time = CurrentQueueTimer();
 		posted.m_code = PackParam(m_position.m_x, m_position.m_y);
@@ -466,17 +457,16 @@ void CBaseCursor::Process()
 		g_pMasterInputQueue->Post(posted);
 	}
 	if ((int) m_bounds.m_width * (int) m_bounds.m_height != 0) {
-		boundX = m_bounds.m_x;
-		boundY = m_bounds.m_y;
-		if (boundX > m_position.m_x || (short) (m_bounds.m_width + boundX) <= m_position.m_x ||
-			boundY > m_position.m_y || (short) (boundY + m_bounds.m_height) <= m_position.m_y) {
-			if (m_position.m_x < boundX) {
-				m_position.m_x = boundX;
+		if (m_position.m_x < m_bounds.m_x || (short) (m_bounds.m_width + m_bounds.m_x) <= m_position.m_x ||
+			m_bounds.m_y > m_position.m_y || (short) (m_bounds.m_y + m_bounds.m_height) <= m_position.m_y) {
+			CVsPoint* minimum = &m_bounds;
+			if (m_position.m_x < minimum->m_x) {
+				m_position.m_x = minimum->m_x;
 			}
-			if (m_position.m_y < boundY) {
-				m_position.m_y = boundY;
+			if (m_position.m_y < minimum->m_y) {
+				m_position.m_y = minimum->m_y;
 			}
-			boundRight = (short) (m_bounds.m_width + boundX - 1);
+			boundRight = (short) (m_bounds.m_width + m_bounds.m_x - 1);
 			boundBottom = (short) (m_bounds.m_y + m_bounds.m_height - 1);
 			if (boundRight < m_position.m_x) {
 				m_position.m_x = boundRight;
