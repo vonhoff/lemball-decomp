@@ -8,6 +8,7 @@
 #include "AI/Base/AiCoord.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
+#include "AI/Base/CPt3.h"
 #include "AI/Base/ObjectActions.h"
 #include "CViewData.h"
 #include "Map/Ground/CGround.h"
@@ -280,7 +281,25 @@ bool CLaser::StepOn(const AiCoord& p_position, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00428f90
 int CLaser::GetViewData(CViewData* p_viewData)
 {
-	CGameObject::GetViewData(*p_viewData++);
+	p_viewData->m_objectId = m_objectId;
+	p_viewData->m_objectType = m_objectType;
+	p_viewData->m_playerIndex = 0;
+	((CPt3&) p_viewData->m_positionX).InitializeFromAiCoord(m_position);
+	p_viewData->m_facingDirection = m_facingDirection;
+	unsigned int argument = (unsigned short) m_actionArgument;
+	unsigned int timer = m_stateTimer;
+	p_viewData->m_action = m_action;
+	p_viewData->m_actionArgument = argument;
+	p_viewData->m_stateTimer = timer;
+	p_viewData->m_statusFlags = 0;
+	p_viewData->m_hidden = m_hidden;
+	((C3DVector&) p_viewData->m_auxiliaryPosition) = (const C3DVector&) m_auxiliaryPosition;
+	p_viewData->m_soundEffect = m_soundEffect;
+	p_viewData->m_animationTime = m_isRemoteObject ? g_dwNetworkSimulationTimestamp : g_dwSimulationTimestamp;
+	SetSndEffect(SFX_NONE);
+	p_viewData->m_transientFlags = m_transientFlags;
+	m_transientFlags = 0;
+	p_viewData++;
 	int count = 1;
 	if (m_action == ACTION_ACTIVATED) {
 		switch (m_objectType) {
@@ -290,16 +309,34 @@ int CLaser::GetViewData(CViewData* p_viewData)
 			int y = m_position.m_yFixed >> 12;
 			int z = (m_position.m_zFixed >> 12) + 3;
 			for (unsigned int i = 1; i < 8; i++) {
-				unsigned short height = 0;
+				unsigned short height;
 				int blockX = x >> 4;
 				int blockY = y >> 4;
-				if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
-					height = g_pMap->m_ground.GetGroundCell(blockX, blockY)->GetZ(x & 0xf, y & 0xf);
+				CMap* map = g_pMap;
+				if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+					height = map->m_ground.GetGroundCell(blockX, blockY)->GetZ(x & 0xf, y & 0xf);
+				}
+				else {
+					height = 0;
 				}
 				if (height > z) {
 					break;
 				}
-				CGameObject::GetViewData(*p_viewData);
+				p_viewData->m_objectId = m_objectId;
+				p_viewData->m_objectType = m_objectType;
+				p_viewData->m_playerIndex = 0;
+				((CPt3&) p_viewData->m_positionX).InitializeFromAiCoord(m_position);
+				p_viewData->m_facingDirection = m_facingDirection;
+				p_viewData->SetViewActionTuple(m_action, (unsigned short) m_actionArgument, m_stateTimer);
+				p_viewData->m_statusFlags = 0;
+				p_viewData->m_hidden = m_hidden;
+				((C3DVector&) p_viewData->m_auxiliaryPosition) = (const C3DVector&) m_auxiliaryPosition;
+				p_viewData->m_soundEffect = m_soundEffect;
+				p_viewData->m_animationTime =
+					m_isRemoteObject ? g_dwNetworkSimulationTimestamp : g_dwSimulationTimestamp;
+				SetSndEffect(SFX_NONE);
+				p_viewData->m_transientFlags = m_transientFlags;
+				m_transientFlags = 0;
 				p_viewData->m_positionX = x;
 				p_viewData->m_positionY = y;
 				p_viewData->m_positionZ = z;
@@ -318,11 +355,15 @@ int CLaser::GetViewData(CViewData* p_viewData)
 			int y = (m_position.m_yFixed >> 12) + 0x14;
 			int z = (m_position.m_zFixed >> 12) + 3;
 			for (unsigned int i = 1; i < 8; i++) {
-				unsigned short height = 0;
+				unsigned short height;
 				int blockX = x >> 4;
 				int blockY = y >> 4;
-				if (x >= 0 && y >= 0 && blockX < g_pMap->m_ground.m_width && blockY < g_pMap->m_ground.m_height) {
-					height = g_pMap->m_ground.GetGroundCell(blockX, blockY)->GetZ(x & 0xf, y & 0xf);
+				CMap* map = g_pMap;
+				if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+					height = map->m_ground.GetGroundCell(blockX, blockY)->GetZ(x & 0xf, y & 0xf);
+				}
+				else {
+					height = 0;
 				}
 				if (height > z) {
 					break;
