@@ -71,19 +71,16 @@ void CTextButton::SetText(char* p_normalText, char* p_pressedText)
 {
 	m_pressedText = p_pressedText;
 	m_normalText = p_normalText;
-	short normalSizeStorage[2];
-	CVsSize* normalSize = (CVsSize*) normalSizeStorage;
-	m_font->GetSize(normalSize, p_normalText, 0x20);
-	ExpandToFitText(*normalSize);
-	CVsSize pressedSize(*normalSize);
+	CVsSize normalSize = m_font->GetSize(p_normalText, 0x20);
+	ExpandToFitText(normalSize);
+	CVsSize pressedSize(normalSize);
 	if (m_pressedText != 0) {
-		short sizeStorage[2];
-		CVsSize* size = m_font->GetSize((CVsSize*) sizeStorage, m_pressedText, 0x20);
-		pressedSize.m_width = size->m_width;
-		pressedSize.m_height = size->m_height;
+		const CVsSize& size = m_font->GetSize(m_pressedText, 0x20);
+		pressedSize.m_width = size.m_width;
+		pressedSize.m_height = size.m_height;
 		ExpandToFitText(pressedSize);
 	}
-	AlignTextPosition(m_normalTextPosition, *normalSize);
+	AlignTextPosition(m_normalTextPosition, normalSize);
 	if (m_pressedText != 0) {
 		AlignTextPosition(m_pressedTextPosition, pressedSize);
 	}

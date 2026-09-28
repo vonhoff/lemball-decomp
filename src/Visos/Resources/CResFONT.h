@@ -12,11 +12,13 @@ class CResFONT : public CResBaseLIST {
 public:
 	CResFONT(unsigned long p_resourceId);
 	CResZRLE* ASCIItoZRLE(unsigned int p_ascii);
-	CVsSize* GetSize(CVsSize* p_result, const char* p_text, unsigned int p_flags);
-	CVsSize GetSize(const char* p_text, unsigned int p_flags)
+	CVsSize GetSize(const char* p_text, unsigned int p_flags);
+	CVsSize* GetSize(CVsSize* p_result, const char* p_text, unsigned int p_flags)
 	{
-		short storage[2];
-		return *GetSize((CVsSize*) storage, p_text, p_flags);
+		CVsSize size = GetSize(p_text, p_flags);
+		p_result->m_width = size.m_width;
+		p_result->m_height = size.m_height;
+		return p_result;
 	}
 
 	static CResFONT* Load(unsigned int p_resourceId);

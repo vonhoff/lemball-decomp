@@ -150,9 +150,7 @@ CVsRect CPauseWindow::CalculateWindow()
 {
 	short positionX;
 	short positionY;
-	CVsSize textSize;
 	CVsSize maxTextSize;
-	CVsSize* measuredTextSize;
 	short parentWidth;
 	short parentHeight;
 	short horizontalWidth;
@@ -185,15 +183,15 @@ CVsRect CPauseWindow::CalculateWindow()
 		itemCount--;
 	}
 	for (i = 0; i < m_menuItemCount; i++) {
-		measuredTextSize = m_font->GetSize(&textSize, m_menuLabels[i], 0x20);
+		const CVsSize& measuredTextSize = m_font->GetSize(m_menuLabels[i], 0x20);
 		CVsPoint* storedTextSize = m_menuItemRects + i * 2;
-		storedTextSize->m_x = measuredTextSize->m_width;
-		storedTextSize->m_y = measuredTextSize->m_height;
+		storedTextSize->m_x = measuredTextSize.m_width;
+		storedTextSize->m_y = measuredTextSize.m_height;
 		if (itemCount > i) {
-			maxTextSize.m_height += measuredTextSize->m_height + m_textSpacing.m_y;
+			maxTextSize.m_height += measuredTextSize.m_height + m_textSpacing.m_y;
 		}
-		if (maxTextSize.m_width < measuredTextSize->m_width) {
-			maxTextSize.m_width = measuredTextSize->m_width;
+		if (maxTextSize.m_width < measuredTextSize.m_width) {
+			maxTextSize.m_width = measuredTextSize.m_width;
 		}
 	}
 	maxTextSize.m_height -= m_textSpacing.m_y;
