@@ -33,53 +33,6 @@ class CResANIM;
 
 extern char g_szButton[];
 
-// FUNCTION: LEMBALL 0x00442390
-CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPVGWnd* p_parent)
-	: CDepressedButton(p_rect, p_parent)
-{
-	m_lemming = p_lemming;
-	{
-		CVsPoint point;
-
-		point = p_lemming->m_panel->m_buttonSize;
-		m_statusRect.m_width = point.m_x;
-		m_statusRect.m_height = point.m_y;
-		m_statusRect.m_x = 0;
-		m_statusRect.m_y = 0;
-	}
-	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == ACTION_DEAD);
-	m_alternatePlayer = m_lemming->m_lemming->HasObject(OBJECT_FLAG_2);
-	m_lastAmmo = 0xffffffff;
-	m_lastBalloon = OBJECT_BALLOON_NONE;
-	m_inventoryCount = 0;
-	{
-		CVsPoint point;
-
-		short x = m_lemming->m_panel->m_buttonSize.m_x;
-		point = m_lemming->m_panel->m_balloonSize;
-		m_gdiFlags += 7;
-		m_inventoryRect.m_width = point.m_x;
-		m_inventoryRect.m_height = point.m_y;
-		m_inventoryRect.m_x = x;
-		m_inventoryRect.m_y = 0;
-	}
-	{
-		CVsRect createRect;
-		createRect.m_width = m_bounds.m_width;
-		createRect.m_height = m_bounds.m_height;
-		createRect.m_x = m_buttonX;
-		createRect.m_y = m_buttonY;
-		CGWnd* window = this;
-		window->Create(createRect, m_ownerWindow, g_szButton);
-	}
-	m_bounds.m_x = (short) (m_bounds.m_x + m_relativeTopLeft.m_x);
-	m_bounds.m_y = (short) (m_bounds.m_y + m_relativeTopLeft.m_y);
-	m_ownerWindow->m_hotAreaList->AddToList(static_cast<CHotAreaHandler*>(this));
-	m_gdi->m_renderTarget->m_flag70 = 0;
-	m_externalEnabled = 1;
-	m_pressedInside = 0;
-}
-
 // FUNCTION: LEMBALL 0x004425e0
 CPanelButton::~CPanelButton()
 {
