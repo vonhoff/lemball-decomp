@@ -69,3 +69,56 @@ class LinkFreshnessTests(unittest.TestCase):
         self.assertEqual(result[0], 1)
         self.assertEqual(calls, 2)
         self.assertIn("still older", result[1])
+
+
+class LogFilteringTests(unittest.TestCase):
+    def test_compilation_progress_with_error_or_failed_ignored(self):
+        ignored = [
+            "[ 74%] Building CXX object CMakeFiles/LEMBALL.dir/src/Visos/Messaging/CMessFAILEDConnect.cpp.obj",
+            "[ 95%] Building CXX object CMakeFiles/LEMBALL.dir/src/Visos/Target/Graphics/DirectDrawError.cpp.obj",
+            "[ 50%] Building CXX object CMakeFiles/LEMBALL.dir/src/Error.cpp.obj",
+            "[  1%] Building C object CMakeFiles/LEMBALL.dir/src/failed.c.obj",
+            "[10/50] Compiling CXX object CMakeFiles/LEMBALL.dir/src/Error.cpp.obj",
+        ]
+        for line in ignored:
+            with self.subTest(line=line):
+                self.assertFalse(build.is_line_of_interest(line))
+
+    def test_bare_compiler_filename_banner_ignored(self):
+        ignored = [
+            "CMessFAILEDConnect.cpp",
+            "DirectDrawError.cpp",
+            "Error.cpp",
+            "failed.c",
+            "LEMBALL.RC",
+        ]
+        for line in ignored:
+            with self.subTest(line=line):
+                self.assertFalse(build.is_line_of_interest(line))
+
+    def test_milestones_retained(self):
+        retained = [
+            "[100%] Linking CXX executable LEMBALL.EXE",
+            "[100%] Built target LEMBALL",
+            "Link output is stale; forcing one relink after LEMBALL.dir/src/test.obj",
+        ]
+        for line in retained:
+            with self.subTest(line=line):
+                self.assertTrue(build.is_line_of_interest(line))
+
+    def test_diagnostics_and_failures_retained(self):
+        retained = [
+            "src/Visos/Target/Graphics/DirectDrawError.cpp(42) : error C2065: 'foo' : undeclared identifier",
+            "LINK : fatal error LNK1181: cannot open input file 'foo.lib'",
+            "NMAKE : fatal error U1077: 'cl' : return code '0x2'",
+            "FAILED: CMakeFiles/LEMBALL.dir/src/foo.cpp.obj",
+            "ninja: build stopped: subcommand failed.",
+            "CMake Error at CMakeLists.txt:10 (message):",
+            "CMake Warning at CMakeLists.txt:12 (message):",
+            "Command line warning D4025 : overriding '/O2' with '/Od'",
+            "error: build did not produce both LEMBALL.EXE and LEMBALL.pdb",
+        ]
+        for line in retained:
+            with self.subTest(line=line):
+                self.assertTrue(build.is_line_of_interest(line))
+

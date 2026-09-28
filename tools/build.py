@@ -21,8 +21,28 @@ from pathlib import Path
 from lib.paths import BUILD, ROOT
 
 LOG_PATH = BUILD / "last_build.log"
-LOG_INTEREST = re.compile(r"warning|error|fatal|failed|built target|linking|relink|\[\s*100%\s*\]", re.IGNORECASE)
+LOG_INTEREST = re.compile(
+    r"\b(?:warning|error|fatal|failed)\b|built target|linking|relink|\[\s*100%\s*\]",
+    re.IGNORECASE,
+)
 MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
+MSVC_DIAGNOSTIC = re.compile(
+    r"(?:\b(?:fatal )?error\s+[A-Z]*\d*\s*:|\bwarning\s+[A-Z]*\d*\s*:|Command line (?:error|warning)\b)",
+    re.IGNORECASE,
+)
+CMAKE_BUILDING_LINE = re.compile(r"^\s*\[\s*(?:\d+%|\d+/\d+)\s*\]\s+(?:Building|Compiling)\b", re.IGNORECASE)
+BARE_SOURCE_LINE = re.compile(r"^\s*(?:.*[\\/])?[\w.-]+\.(?:cpp|c|cxx|rc)\s*$", re.IGNORECASE)
+
+
+def is_line_of_interest(line: str) -> bool:
+    if MSVC_DIAGNOSTIC.search(line):
+        return True
+    if CMAKE_BUILDING_LINE.match(line):
+        return False
+    if BARE_SOURCE_LINE.match(line):
+        return False
+    return bool(LOG_INTEREST.search(line))
+
 
 
 def win_short_path(path: str) -> str:
@@ -184,7 +204,7 @@ def run_build(clean_first: bool = False, extra_args: list[str] | None = None) ->
 
     LOG_PATH.write_text(output, encoding="utf-8")
     for line in output.splitlines():
-        if LOG_INTEREST.search(line):
+        if is_line_of_interest(line):
             print(line)
 
     has_exe = (BUILD / "LEMBALL.EXE").exists()
