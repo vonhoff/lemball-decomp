@@ -117,12 +117,12 @@ void CAboutScreen::DrawRegistrationText()
 {
 	unsigned char* key = (unsigned char*) g_szAboutWeatherManKey;
 	CResFONT* font;
-	CVsSize size;
 	int labelY;
 	int index;
 
 	font = m_textManager->GetFont(RES_GAME_FONT3);
-	font->GetSize(&size, g_szRegisteredTo, 0x20);
+	CVsSize sizeValue = font->GetSize(g_szRegisteredTo, 0x20);
+	CVsSize& size = sizeValue;
 	labelY = (int) (m_size.m_height / 2) - (int) (size.m_height / 2);
 	{
 		CVsSize advance;
@@ -134,7 +134,7 @@ void CAboutScreen::DrawRegistrationText()
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	vsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
 	{
-		CVsSize measuredSize = font->GetSize(g_szVisosBuildBuffer, 0x20);
+		const CVsSize& measuredSize = font->GetSize(g_szVisosBuildBuffer, 0x20);
 		size.m_width = measuredSize.m_width;
 		size.m_height = measuredSize.m_height;
 	}
@@ -154,7 +154,7 @@ void CAboutScreen::DrawRegistrationText()
 	}
 	g_szAboutDecodeBuffer[index] = '\0';
 	{
-		CVsSize measuredSize = font->GetSize(g_szAboutDecodeBuffer, 0x20);
+		const CVsSize& measuredSize = font->GetSize(g_szAboutDecodeBuffer, 0x20);
 		size.m_width = measuredSize.m_width;
 		size.m_height = measuredSize.m_height;
 	}
