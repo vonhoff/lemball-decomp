@@ -163,8 +163,8 @@ void CSuccFailDrawer::Load()
 {
 	unsigned long* returnAnim;
 	unsigned long* goAnim;
-	SuccFailDrawerFieldViews::DrawerPrims* primary;
 	SuccFailDrawerFieldViews::CPrimitive* primitive;
+	SuccFailDrawerFieldViews::DrawerPrims* primary;
 	CResBITMAP* resource;
 	unsigned int position;
 	int bitmapX;
@@ -229,12 +229,15 @@ void CSuccFailDrawer::Load()
 		primary->m_primary.m_resource = resource;
 		primary->m_primary.m_flags = 0x800;
 		primary->m_primary.m_remap = 0;
-		resource = m_secondaryBitmap;
-		if (resource != 0) {
-			position = m_layout->m_secondaryPosition.m_y;
-			primary->m_secondary.m_x = (short) m_layout->m_secondaryPosition.m_x;
-			primary->m_secondary.m_y = position;
-			primary->m_secondary.m_resource = resource;
+		CResBITMAP* secondaryResource = m_secondaryBitmap;
+		if (secondaryResource != 0) {
+			unsigned int secondaryY;
+			SuccFailLayout* layout = m_layout;
+			secondaryY = layout->m_secondaryPosition.m_y;
+			unsigned int secondaryX = layout->m_secondaryPosition.m_x;
+			primary->m_secondary.m_x = (short) secondaryX;
+			primary->m_secondary.m_y = secondaryY;
+			primary->m_secondary.m_resource = secondaryResource;
 			primary->m_secondary.m_flags = 0x800;
 			primary->m_secondary.m_remap = 0;
 		}

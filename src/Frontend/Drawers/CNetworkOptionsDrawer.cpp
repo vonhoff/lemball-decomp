@@ -398,7 +398,8 @@ void CNetworkOptionsDrawer::DrawText()
 		m_textManager
 			->DrawString(m_gdi, posComputer, CVsSize(), m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
 
-		posDivider.m_x = (short) (((int) m_width - (int) font->GetSize(divider, 0x20).m_width) / 2);
+		short dividerWidth = font->GetSize(divider, 0x20).m_width;
+		posDivider.m_x = (short) (((int) m_width - (int) dividerWidth) / 2);
 		m_textManager->DrawString(m_gdi, posDivider, CVsSize(), m_chalkFontId, divider, 0x20, 0);
 
 		if (g_szNetworkGameName[0] != 0) {
