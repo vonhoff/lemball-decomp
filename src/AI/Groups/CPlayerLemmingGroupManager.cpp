@@ -498,13 +498,21 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 		m_startX[i] = *data++;
 		m_startY[i] = *data++;
 		m_startZ[i] = *data++;
-		int x = m_startX[i];
-		int y = m_startY[i];
+		int y;
+		int x;
+		x = m_startX[i];
+		y = m_startY[i];
 		int blockX = x >> 4;
 		int blockY = y >> 4;
 		unsigned short z;
-		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && map->m_ground.m_height > blockY) {
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+		if (x >= 0 && y >= 0) {
+			int width = map->m_ground.m_width;
+			if (blockX < width && map->m_ground.m_height > blockY) {
+				z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x & 0xf, y & 0xf);
+			}
+			else {
+				z = 0;
+			}
 		}
 		else {
 			z = 0;
