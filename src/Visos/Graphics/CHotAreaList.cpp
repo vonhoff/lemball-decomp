@@ -128,8 +128,9 @@ void CHotAreaList::ProcessHandlers(const CVsPoint& p_point, Message* p_message)
 	}
 	type = p_message->m_type;
 	origin = &m_bounds;
-	CVsPoint localPoint((short) ((int) (short) (p_point.m_x - origin->m_x) / (int) m_scale),
-						(short) ((int) (short) (p_point.m_y - origin->m_y) / (int) m_scale));
+	CVsPoint localPointValue((short) ((int) (short) (p_point.m_x - origin->m_x) / (int) m_scale),
+							 (short) ((int) (short) (p_point.m_y - origin->m_y) / (int) m_scale));
+	CVsPoint& localPoint = localPointValue;
 	entry = m_tail;
 	for (;;) {
 		if (entry == 0) {
@@ -147,13 +148,20 @@ void CHotAreaList::ProcessHandlers(const CVsPoint& p_point, Message* p_message)
 			}
 		}
 	}
-	CVsRect scaledBounds(m_bounds);
-	scaledBounds.m_x = (short) (m_relativeTopLeft.m_x * ((short) m_scale - 1) + scaledBounds.m_x);
-	scaledBounds.m_y = (short) (m_relativeTopLeft.m_y * ((short) m_scale - 1) + scaledBounds.m_y);
-	scaledBounds.m_width = (short) (scaledBounds.m_width * (short) m_scale);
-	scaledBounds.m_height = (short) (scaledBounds.m_height * (short) m_scale);
-	if (p_point.m_x < scaledBounds.m_x || (short) (scaledBounds.m_x + scaledBounds.m_width) <= p_point.m_x ||
-		p_point.m_y < scaledBounds.m_y || (short) (scaledBounds.m_height + scaledBounds.m_y) <= p_point.m_y) {
+	short widthValue = m_bounds.m_width;
+	short& width = widthValue;
+	short heightValue = m_bounds.m_height;
+	short& height = heightValue;
+	const CVsPoint* boundsOrigin = &m_bounds;
+	short scale = (short) m_scale;
+	short xValue = (short) (m_relativeTopLeft.m_x * (scale - 1) + boundsOrigin->m_x);
+	short& x = xValue;
+	short yValue = (short) (m_relativeTopLeft.m_y * (scale - 1) + boundsOrigin->m_y);
+	short& y = yValue;
+	width = (short) (width * scale);
+	height = (short) (height * scale);
+	if (p_point.m_x < x || (short) (x + width) <= p_point.m_x || p_point.m_y < y ||
+		(short) (height + y) <= p_point.m_y) {
 		if (m_entered != 0) {
 			m_entered = 0;
 			OnExit();
