@@ -65,17 +65,17 @@ void CWriteSocket::DeleteNCBuffers()
 void CWriteSocket::DeleteCBuffers()
 {
 	CWriteCBuff* critical;
-	CWriteCBuff* unknown;
+	CWriteCBuff* buffer;
 
 	critical = m_criticalBuffer;
 	if (critical != 0) {
 		critical->CBasePacketBuff::~CBasePacketBuff();
 		operator delete(critical);
 	}
-	unknown = m_unknown50;
-	if (unknown != 0) {
-		unknown->CBasePacketBuff::~CBasePacketBuff();
-		operator delete(unknown);
+	buffer = m_unknown50;
+	if (buffer != 0) {
+		buffer->CBasePacketBuff::~CBasePacketBuff();
+		operator delete(buffer);
 	}
 }
 
