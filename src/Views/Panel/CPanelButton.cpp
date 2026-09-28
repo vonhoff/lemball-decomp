@@ -272,6 +272,7 @@ void CPanelButton::OnPressed(int p_flags)
 	CPlayerLemming* lemming = panelLemming->m_lemming;
 	eAction action = lemming->m_action;
 	CPlayerLemmingGroupManager* groupManager;
+	CPlayerLemmingGroup* controlledGroup;
 	CPlayerLemmingGroup* group;
 	if (action == ACTION_DEAD) {
 		return;
@@ -327,7 +328,8 @@ alternate:
 	groupManager = game->m_ai->m_playerGroupManager;
 	game->FormGroup();
 	group = m_lemming->m_lemming->GetGroup();
-	if (group != groupManager->GetPlayerControlledGroup()) {
+	controlledGroup = groupManager->GetPlayerControlledGroup();
+	if (group != controlledGroup) {
 		groupManager->GetPlayerControlledGroup()->SetPlayerControlled(0, 0);
 	}
 	m_lemming->m_lemming->GetGroup()->SetPlayerControlled(1, m_lemming->m_lemming);
