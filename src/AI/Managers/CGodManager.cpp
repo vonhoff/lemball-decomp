@@ -69,8 +69,8 @@ void CGodManager::Unregister(CBaseObjectManager* p_manager)
 {
 	CBaseObjectManager** managers;
 	CBaseObjectManager** item;
-	int index;
 	int count;
+	int index;
 
 	index = 0;
 	count = m_count;
