@@ -34,6 +34,14 @@ class CResBITMAP;
 extern "C" unsigned long __stdcall timeGetTime(void);
 extern char g_abPasswordLevelText[24];
 
+#define PASSWORD_BUTTON_MESSAGE_FIRST 0xabcd00b0
+#define PASSWORD_BUTTON_MESSAGE_LAST 0xabcd00bb
+#define PASSWORD_BUTTON_MESSAGE_TO_INDEX_OFFSET 0x5432ff50
+#define PASSWORD_BUTTON_COUNT 12
+#define PASSWORD_CODE_LENGTH 10
+#define PASSWORD_CLEAR_BUTTON_INDEX 10
+#define PASSWORD_RETURN_DELAY_MS 1000
+
 // GLOBAL: LEMBALL 0x0049ff48
 unsigned char g_abPasswordLayoutFull[0x80] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x01, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
@@ -57,7 +65,7 @@ unsigned char g_abPasswordLayoutCompact[0x80] = {
 };
 
 // GLOBAL: LEMBALL 0x0049ffc8
-unsigned long g_dwPasswordButtonAnimIdsFull[12] = {
+unsigned long g_dwPasswordButtonAnimIdsFull[PASSWORD_BUTTON_COUNT] = {
 	RES_NEWFRONT_ANIMS_HIRES_PASSWORD_BUTTON_0,
 	RES_NEWFRONT_ANIMS_HIRES_PASSWORD_BUTTON_1,
 	RES_NEWFRONT_ANIMS_HIRES_PASSWORD_BUTTON_2,
@@ -73,7 +81,7 @@ unsigned long g_dwPasswordButtonAnimIdsFull[12] = {
 };
 
 // GLOBAL: LEMBALL 0x0049fff8
-unsigned long g_dwPasswordButtonAnimIdsCompact[12] = {
+unsigned long g_dwPasswordButtonAnimIdsCompact[PASSWORD_BUTTON_COUNT] = {
 	RES_NEWFRONT_ANIMS_LORES_PASSWORD_BUTTON_0,
 	RES_NEWFRONT_ANIMS_LORES_PASSWORD_BUTTON_1,
 	RES_NEWFRONT_ANIMS_LORES_PASSWORD_BUTTON_2,
@@ -89,7 +97,7 @@ unsigned long g_dwPasswordButtonAnimIdsCompact[12] = {
 };
 
 // GLOBAL: LEMBALL 0x004a0028
-int g_passwordKeyMap[12] = {7, 8, 9, 4, 5, 6, 1, 2, 3, 10, 0, 11};
+int g_passwordKeyMap[PASSWORD_BUTTON_COUNT] = {7, 8, 9, 4, 5, 6, 1, 2, 3, 10, 0, 11};
 
 // GLOBAL: LEMBALL 0x004a0070
 char g_szPasswordSkillFun[] = "Fun";
@@ -188,7 +196,7 @@ void CPasswordDrawer::Load()
 													(CPVGWnd*) m_display,
 													m_buttonAnimIds[*keyMap],
 													3);
-			m_buttons[*keyMap]->m_controlMessage = 0xabcd00b0 + *keyMap;
+			m_buttons[*keyMap]->m_controlMessage = PASSWORD_BUTTON_MESSAGE_FIRST + *keyMap;
 			m_buttons[*keyMap]->m_messageQueue = g_pMasterInputQueue;
 			offsetPtr[0] = gridX - m_layout[2];
 			offsetPtr[1] = buttonY - m_layout[3];
@@ -222,7 +230,7 @@ void CPasswordDrawer::UnLoad()
 			delete m_buttons[i];
 		}
 		i++;
-	} while (i < 12);
+	} while (i < PASSWORD_BUTTON_COUNT);
 	CAnimsManager::UnLoadAnims(m_animationId);
 	if (m_hiliteWindow->m_lifecycleRefs == 1) {
 		m_hiliteWindow->Destroy();
@@ -263,10 +271,10 @@ void CPasswordDrawer::ShiftHilite(int p_delta)
 	m_buttons[g_passwordKeyMap[m_selectedButton]]->OnButtonUp(pt, 0);
 	m_selectedButton += p_delta;
 	if (m_selectedButton < 0) {
-		m_selectedButton += 12;
+		m_selectedButton += PASSWORD_BUTTON_COUNT;
 	}
-	if (m_selectedButton >= 12) {
-		m_selectedButton -= 12;
+	if (m_selectedButton >= PASSWORD_BUTTON_COUNT) {
+		m_selectedButton -= PASSWORD_BUTTON_COUNT;
 	}
 	m_hiliteX = m_buttonOffsets[m_selectedButton * 2];
 	m_hiliteY = m_buttonOffsets[m_selectedButton * 2 + 1];
@@ -298,7 +306,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		}
 		case 0x4d:
 		case 0x4e: {
-			CPVButton* button = m_buttons[10];
+			CPVButton* button = m_buttons[PASSWORD_CLEAR_BUTTON_INDEX];
 			CVsPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
@@ -343,7 +351,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		}
 		case 0x4d:
 		case 0x4e: {
-			CPVButton* button = m_buttons[10];
+			CPVButton* button = m_buttons[PASSWORD_CLEAR_BUTTON_INDEX];
 			CVsPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
@@ -363,8 +371,8 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		break;
 	case 0xc:
 		code = message->code;
-		if (code >= 0xabcd00b0 && code <= 0xabcd00bb) {
-			ButtonNumeric(code + 0x5432ff50);
+		if (code >= PASSWORD_BUTTON_MESSAGE_FIRST && code <= PASSWORD_BUTTON_MESSAGE_LAST) {
+			ButtonNumeric(code + PASSWORD_BUTTON_MESSAGE_TO_INDEX_OFFSET);
 			return 1;
 		}
 		break;
@@ -461,7 +469,7 @@ void CPasswordDrawer::ButtonNumeric(int p_button)
 	case 7:
 	case 8:
 	case 9:
-		if (m_passwordLength < 10) {
+		if (m_passwordLength < PASSWORD_CODE_LENGTH) {
 			m_password[m_passwordLength] = '0' + p_button;
 			m_passwordLength++;
 		}
@@ -476,7 +484,7 @@ void CPasswordDrawer::ButtonNumeric(int p_button)
 		else {
 			g_pSoundView->PlayEffect(SFX_CHINK);
 		}
-		if (m_passwordLength >= 0 && m_passwordLength < 10) {
+		if (m_passwordLength >= 0 && m_passwordLength < PASSWORD_CODE_LENGTH) {
 			m_password[m_passwordLength] = '-';
 		}
 		break;
@@ -487,7 +495,7 @@ void CPasswordDrawer::ButtonNumeric(int p_button)
 		g_pSoundView->PlayEffect((eSoundEffect) (0x13 + (m_passwordValid ? 0 : 0x0f)));
 		m_submitTime = timeGetTime();
 		m_passwordSubmitted = 1;
-		m_returnDeadline = m_submitTime + 1000;
+		m_returnDeadline = m_submitTime + PASSWORD_RETURN_DELAY_MS;
 		break;
 	default:
 		break;
@@ -497,7 +505,7 @@ void CPasswordDrawer::ButtonNumeric(int p_button)
 // FUNCTION: LEMBALL 0x00451e40 FOLDED
 void CPasswordDrawer::DrawButtons()
 {
-	for (int i = 0; i < 12; i++) {
+	for (int i = 0; i < PASSWORD_BUTTON_COUNT; i++) {
 		m_buttons[i]->Draw(1);
 	}
 }
