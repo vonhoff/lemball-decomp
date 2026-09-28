@@ -507,9 +507,9 @@ void CGunController::MoveDown()
 	int remaining;
 	int foundY;
 	int* directionField;
-	int bestY;
 	int direction;
 	int y;
+	int bestY;
 
 	bestY = 999999;
 	foundY = -1;
