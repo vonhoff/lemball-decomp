@@ -136,61 +136,63 @@ int CGunButtons::ProcessMsg(Message* p_message)
 	posted.m_code = 0;
 	posted.m_payload = 0;
 	posted.m_source = 0;
-	if (p_message->m_code == (int) m_controlMessage) {
-		switch ((unsigned int) p_message->m_type) {
-		case 0xc:
-			switch (m_mode) {
-			case 0:
-				if (m_postAction == 1) {
-					posted.m_code = (int) m_actionMessage;
-					g_pMasterInputQueue->Post(posted);
-					return 0;
-				}
-				nextValue = m_value + 1;
-				m_value = nextValue;
-				if (m_maximum < nextValue) {
-					m_value = m_minimum;
-				}
-				if (m_binding != 0) {
-					if (m_valueCount == 1) {
-						if (*m_binding == 0) {
-							*m_binding = 1;
-						}
-						else {
-							*m_binding = 0;
-						}
+	if (p_message->m_code != (int) m_controlMessage) {
+		return 0;
+	}
+	switch ((unsigned int) p_message->m_type) {
+	case 0xc:
+		switch (m_mode) {
+		case 0:
+			if (m_postAction == 1) {
+				posted.m_code = (int) m_actionMessage;
+				g_pMasterInputQueue->Post(posted);
+				return 0;
+			}
+			nextValue = m_value + 1;
+			m_value = nextValue;
+			if (m_maximum < nextValue) {
+				m_value = m_minimum;
+			}
+			if (m_binding != 0) {
+				if (m_valueCount == 1) {
+					if (*m_binding == 0) {
+						*m_binding = 1;
 					}
 					else {
-						*m_binding = m_value;
+						*m_binding = 0;
 					}
 				}
-				if (m_graphicButton != 0) {
-					animId = m_animIds[m_value - m_minimum];
-					m_graphicButton->SetAnimID(animId);
-				}
 				else {
-					animId = *m_animIds;
-					m_trackerButton->SetAnimID(animId);
+					*m_binding = m_value;
 				}
-				g_nGunButtonsRedrawPending = 1;
-				return 0;
-			case 1: {
-				int value = m_trackerButton->m_trackWindow->m_value;
-				int maximum = m_maximum;
-				if (value == maximum) {
-					value = 0;
-				}
-				else {
-					value += maximum / 4;
-					if (value > maximum) {
-						value = maximum;
-					}
-				}
-				*m_binding = value;
-				m_trackerButton->m_trackWindow->SetButtonValue(value);
-				break;
 			}
+			if (m_graphicButton != 0) {
+				animId = m_animIds[m_value - m_minimum];
+				m_graphicButton->SetAnimID(animId);
 			}
+			else {
+				animId = *m_animIds;
+				m_trackerButton->SetAnimID(animId);
+			}
+			g_nGunButtonsRedrawPending = 1;
+			return 0;
+		case 1: {
+			int maximum;
+			int value = m_trackerButton->m_trackWindow->m_value;
+			maximum = m_maximum;
+			if (value == maximum) {
+				value = 0;
+			}
+			else {
+				value += maximum / 4;
+				if (value > maximum) {
+					value = maximum;
+				}
+			}
+			*m_binding = value;
+			m_trackerButton->m_trackWindow->SetButtonValue(value);
+			break;
+		}
 		}
 	}
 	return 0;
