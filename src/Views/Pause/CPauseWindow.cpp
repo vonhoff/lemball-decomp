@@ -176,8 +176,8 @@ CVsRect CPauseWindow::CalculateWindow()
 		m_windowPadding.m_y = 0x14;
 	}
 
-	maxTextSize.m_width = 0;
 	maxTextSize.m_height = 0;
+	maxTextSize.m_width = 0;
 	itemCount = m_menuItemCount;
 	if (m_pauseMessage == 3) {
 		itemCount--;
@@ -281,49 +281,64 @@ CVsRect CPauseWindow::CalculateWindow()
 		} while (--cornerBatchCount != 0);
 	}
 
-	CVsPoint firstBorderPosition;
-	CVsPoint secondBorderPosition;
+	CVsPoint firstPositionValue(0, 0);
+	CVsPoint& firstBorderPosition = firstPositionValue;
 	firstBorderPosition.m_x = horizontalBorder[0];
-	secondBorderPosition.m_x = horizontalBorder[0];
-	secondBorderPosition.m_y = (short) (windowSize.m_height - verticalBorder[1]);
+	CVsPoint secondPositionValue(firstBorderPosition);
+	CVsPoint& secondBorderPosition = secondPositionValue;
+	secondBorderPosition.m_y += (short) (windowSize.m_height - verticalBorder[1]);
 	for (i = 0; i < m_borderTiles.m_width; i++) {
-		CAnim& firstBorder = m_borderAnims[i];
-		firstBorder.m_x = firstBorderPosition.m_x;
-		firstBorder.m_y = firstBorderPosition.m_y;
-		firstBorder.m_animResource = m_verticalBorderAnim;
-		firstBorder.m_animIndex = 0;
-		firstBorder.m_flags = 0;
-		firstBorder.m_remap = 0;
-		CAnim& secondBorder = m_borderAnims[m_borderAnimCount + i];
-		secondBorder.m_x = secondBorderPosition.m_x;
-		secondBorder.m_y = secondBorderPosition.m_y;
-		secondBorder.m_animResource = m_verticalBorderAnim;
-		secondBorder.m_animIndex = 1;
-		secondBorder.m_flags = 0;
-		secondBorder.m_remap = 0;
+		int pair = 0;
+		int opposite = 1;
+		do {
+			CResANIM* firstResource = m_verticalBorderAnim;
+			CAnim& firstBorder = m_borderAnims[i + m_borderAnimCount * pair * 2];
+			firstBorder.m_x = firstBorderPosition.m_x;
+			firstBorder.m_y = firstBorderPosition.m_y;
+			firstBorder.m_animResource = firstResource;
+			firstBorder.m_animIndex = 0;
+			firstBorder.m_flags = 0;
+			firstBorder.m_remap = 0;
+			CResANIM* secondResource = m_verticalBorderAnim;
+			CAnim& secondBorder = m_borderAnims[m_borderAnimCount * opposite + i];
+			secondBorder.m_x = secondBorderPosition.m_x;
+			secondBorder.m_y = secondBorderPosition.m_y;
+			secondBorder.m_animResource = secondResource;
+			secondBorder.m_animIndex = 1;
+			secondBorder.m_flags = 0;
+			secondBorder.m_remap = 0;
+			pair++;
+			opposite += 2;
+		} while (opposite < 3);
 		firstBorderPosition.m_x = (short) (firstBorderPosition.m_x + verticalBorder[0]);
 		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + verticalBorder[0]);
 	}
 
-	firstBorderPosition.m_x = 0;
-	firstBorderPosition.m_y = horizontalBorder[1];
-	secondBorderPosition.m_x = (short) (windowSize.m_width - verticalCorner[0]);
+	firstBorderPosition.m_x = cornerPositions[1].m_x;
+	firstBorderPosition.m_y = cornerPositions[1].m_y;
+	firstBorderPosition.m_y += horizontalBorder[1];
+	secondBorderPosition.m_x = firstBorderPosition.m_x;
 	secondBorderPosition.m_y = firstBorderPosition.m_y;
+	secondBorderPosition.m_x += (short) (windowSize.m_width - verticalCorner[0]);
 	for (i = 0; i < m_borderTiles.m_height; i++) {
-		CAnim& firstBorder = m_borderAnims[m_borderTiles.m_width + i];
-		firstBorder.m_x = firstBorderPosition.m_x;
-		firstBorder.m_y = firstBorderPosition.m_y;
-		firstBorder.m_animResource = m_verticalBorderAnim;
-		firstBorder.m_animIndex = 2;
-		firstBorder.m_flags = 0;
-		firstBorder.m_remap = 0;
-		CAnim& secondBorder = m_borderAnims[m_borderAnimCount + m_borderTiles.m_width + i];
-		secondBorder.m_x = secondBorderPosition.m_x;
-		secondBorder.m_y = secondBorderPosition.m_y;
-		secondBorder.m_animResource = m_verticalBorderAnim;
-		secondBorder.m_animIndex = 3;
-		secondBorder.m_flags = 0;
-		secondBorder.m_remap = 0;
+		for (int pair = 0, opposite = 1; opposite < 3; pair++, opposite += 2) {
+			CResANIM* firstResource = m_verticalBorderAnim;
+			CAnim& firstBorder = m_borderAnims[m_borderTiles.m_width + m_borderAnimCount * pair * 2 + i];
+			firstBorder.m_x = firstBorderPosition.m_x;
+			firstBorder.m_y = firstBorderPosition.m_y;
+			firstBorder.m_animResource = firstResource;
+			firstBorder.m_animIndex = 2;
+			firstBorder.m_flags = 0;
+			firstBorder.m_remap = 0;
+			CResANIM* secondResource = m_verticalBorderAnim;
+			CAnim& secondBorder = m_borderAnims[m_borderAnimCount * opposite + m_borderTiles.m_width + i];
+			secondBorder.m_x = secondBorderPosition.m_x;
+			secondBorder.m_y = secondBorderPosition.m_y;
+			secondBorder.m_animResource = secondResource;
+			secondBorder.m_animIndex = 3;
+			secondBorder.m_flags = 0;
+			secondBorder.m_remap = 0;
+		}
 		firstBorderPosition.m_y = (short) (firstBorderPosition.m_y + verticalCorner[1]);
 		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner[1]);
 	}
