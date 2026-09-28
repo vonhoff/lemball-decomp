@@ -211,9 +211,9 @@ CVsRect CPauseWindow::CalculateWindow()
 	}
 	parentHeight = (short) ((int) parentHeight / zoom);
 
-	CVsSize paddedTextSize;
-	paddedTextSize.m_width = maxTextSize.m_width;
-	paddedTextSize.m_height = (short) (maxTextSize.m_height + m_windowPadding.m_y);
+	CVsSize paddedTextSizeValue(maxTextSize);
+	CVsSize& paddedTextSize = paddedTextSizeValue;
+	paddedTextSize.m_height += m_windowPadding.m_y;
 	positionX = (short) (parentWidth - paddedTextSize.m_width) / 2;
 	CVsSize windowSize;
 	windowSize = paddedTextSize;
