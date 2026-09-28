@@ -415,9 +415,9 @@ void CPasswordDrawer::DrawText()
 		CVsSize countAdvance;
 		CVsPoint countPosition((short) countPos[-1], (short) countPos[0]);
 		m_textManager->DrawString(m_gdi, countPosition, countAdvance, m_chalkFontId, textPtr, 0x20, 0);
-		labelPos += 2;
 		countPos += 2;
 		skillIndex++;
+		labelPos += 2;
 		textPtr = textPtr + 6;
 	} while (textPtr < g_abPasswordLevelText + 24);
 	if (m_passwordSubmitted == 1) {
