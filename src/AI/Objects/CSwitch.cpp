@@ -19,16 +19,16 @@
 unsigned short g_wNextSwitchIndex;
 
 // FUNCTION: LEMBALL 0x0041d040
-CSwitch::CSwitch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_arg4)
-	: CBaseGlobalObject(p_arg0, OBJECT_SWITCH)
+CSwitch::CSwitch(AiCoord& position, swMessage legacyType, int legacyFirst, int legacyLast, int legacyAux)
+	: CBaseGlobalObject(position, OBJECT_SWITCH)
 {
-	m_position.m_xFixed = p_arg0.m_xFixed;
-	m_position.m_yFixed = p_arg0.m_yFixed;
-	m_position.m_zFixed = p_arg0.m_zFixed;
-	m_legacyType = p_arg1;
-	m_legacyFirst = p_arg2;
-	m_legacyLast = p_arg3;
-	m_legacyAux = p_arg4;
+	m_position.m_xFixed = position.m_xFixed;
+	m_position.m_yFixed = position.m_yFixed;
+	m_position.m_zFixed = position.m_zFixed;
+	m_legacyType = legacyType;
+	m_legacyFirst = legacyFirst;
+	m_legacyLast = legacyLast;
+	m_legacyAux = legacyAux;
 	m_switchId = g_wNextSwitchIndex++;
 }
 

@@ -9,7 +9,7 @@
 // VTABLE: LEMBALL 0x00494a18
 class CSwitch : public CBaseGlobalObject {
 public:
-	CSwitch(AiCoord& p_arg0, swMessage p_arg1, int p_arg2, int p_arg3, int p_arg4);
+	CSwitch(AiCoord& position, swMessage legacyType, int legacyFirst, int legacyLast, int legacyAux);
 	virtual AiCoord ActivatePosition();              // vtable+0x2c
 	virtual bool Activate(CGameObject* p_object);    // vtable+0x18
 	virtual bool Process();                          // vtable+0x14
