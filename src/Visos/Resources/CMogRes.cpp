@@ -112,9 +112,9 @@ bool CMogRes::SetWD(char* p_path)
 	}
 	cursor = copy;
 	{
-		int* current = &m_workingDirectory->m_currentDirIndex;
-		current[0] = m_workingDirectory->m_rootIndex;
-		current[1] = (int) m_workingDirectory->m_rootChunk;
+		int* current = &m_workingDirectory->m_currentDir.m_index;
+		current[0] = m_workingDirectory->m_root.m_index;
+		current[1] = (int) m_workingDirectory->m_root.m_info;
 		*current = -1;
 	}
 	for (;;) {
@@ -129,7 +129,7 @@ bool CMogRes::SetWD(char* p_path)
 				if (dir == 0) {
 					goto done;
 				}
-			} while (NameCmp((char*) m_workingDirectory->m_currentDirChunk->m_data, cursor) == 0);
+			} while (NameCmp((char*) m_workingDirectory->m_currentDir.m_info->m_data, cursor) == 0);
 			if (dir == 0) {
 				break;
 			}

@@ -30,10 +30,8 @@ public:
 	friend class CMogRes;
 
 private:
-	int m_rootIndex;                   // 0x00
-	ChunkInfo* m_rootChunk;            // 0x04
-	int m_currentDirIndex;             // 0x08
-	ChunkInfo* m_currentDirChunk;      // 0x0c
+	Chunk m_root;                      // 0x00
+	Chunk m_currentDir;                // 0x08
 	unsigned int m_directoryEndOffset; // 0x10
 	unsigned int m_payloadStartOffset; // 0x14
 	Chunk m_first;                     // 0x18

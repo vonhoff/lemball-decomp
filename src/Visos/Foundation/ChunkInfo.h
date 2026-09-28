@@ -1,6 +1,8 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CHUNKINFO_H
 #define LEMBALL_VISOS_FOUNDATION_CHUNKINFO_H
 
+#include "Chunk.h"
+
 class CMogDir;
 
 // SIZE 0x38
@@ -12,8 +14,7 @@ struct ChunkInfo {
 	unsigned int m_size;       // 0x10
 	int m_nextIndex;           // 0x14
 	ChunkInfo* m_next;         // 0x18
-	int m_childIndex;          // 0x1c
-	ChunkInfo* m_child;        // 0x20
+	Chunk m_child;             // 0x1c
 	CMogDir* m_directory;      // 0x24
 	char m_name[16];           // 0x28
 };
