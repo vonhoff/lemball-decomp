@@ -259,8 +259,8 @@ void CSuccFailDrawer::Load()
 {
 	unsigned long* returnAnim;
 	unsigned long* goAnim;
-	SuccFailDrawerFieldViews::CPrimitive* primitive;
 	SuccFailDrawerFieldViews::DrawerPrims* primary;
+	SuccFailDrawerFieldViews::CPrimitive* primitive;
 	CResBITMAP* resource;
 	unsigned int position;
 	int bitmapX;
@@ -285,14 +285,17 @@ void CSuccFailDrawer::Load()
 		m_layout = (SuccFailLayout*) g_abSuccFailLayoutFull;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
+		unsigned int& primaryId = m_primaryBitmapId;
 		if (m_success != 0) {
+			unsigned int bitmapId = g_dwSuccFailSingleLoseBitmapIdFull;
 			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_SUCCESS_EYES;
-			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdFull;
+			primaryId = bitmapId;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_BOARD;
 		}
 		else {
+			unsigned int bitmapId = g_dwSuccFailSingleWinBitmapIdFull;
 			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
-			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdFull;
+			primaryId = bitmapId;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_BOARD;
 		}
 	}
@@ -309,23 +312,25 @@ void CSuccFailDrawer::Load()
 	i = 1;
 	do {
 		resource = m_backgroundBitmap;
+		position = m_layout->m_backgroundPosition.m_y;
 		primitive->m_primitive.m_x = m_width - resource->m_x;
-		primitive->m_primitive.m_y = (short) m_layout->m_backgroundPosition.m_y;
+		primitive->m_primitive.m_y = position;
 		primitive->m_primitive.m_resource = resource;
 		primitive->m_primitive.m_flags = 0x800;
 		primitive->m_primitive.m_remap = 0;
+		resource = m_primaryBitmap;
 		position = m_layout->m_primaryPosition.m_y;
 		primary->m_primary.m_x = (short) bitmapX;
 		primary->m_primary.m_y = position;
-		resource = m_primaryBitmap;
 		primary->m_primary.m_resource = resource;
 		primary->m_primary.m_flags = 0x800;
 		primary->m_primary.m_remap = 0;
-		if (m_secondaryBitmap != 0) {
+		resource = m_secondaryBitmap;
+		if (resource != 0) {
 			position = m_layout->m_secondaryPosition.m_y;
 			primary->m_secondary.m_x = (short) m_layout->m_secondaryPosition.m_x;
 			primary->m_secondary.m_y = position;
-			primary->m_secondary.m_resource = m_secondaryBitmap;
+			primary->m_secondary.m_resource = resource;
 			primary->m_secondary.m_flags = 0x800;
 			primary->m_secondary.m_remap = 0;
 		}
@@ -356,14 +361,18 @@ void CSuccFailDrawer::Load()
 								  0xacef0011);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
+	short animY;
+	short animX;
 	if (m_success != 0) {
-		m_animPosition.m_x = (short) m_layout->m_primaryPosition.m_x + (short) m_layout->m_successAnimOffset.m_x;
-		m_animPosition.m_y = (short) m_layout->m_primaryPosition.m_y + (short) m_layout->m_successAnimOffset.m_y;
+		animY = (short) m_layout->m_successAnimOffset.m_y + (short) m_layout->m_primaryPosition.m_y;
+		animX = (short) m_layout->m_primaryPosition.m_x + (short) m_layout->m_successAnimOffset.m_x;
 	}
 	else {
-		m_animPosition.m_x = (short) m_layout->m_failurePosition.m_x + (short) m_layout->m_failureAnimOffset.m_x;
-		m_animPosition.m_y = (short) m_layout->m_failurePosition.m_y + (short) m_layout->m_failureAnimOffset.m_y;
+		animY = (short) m_layout->m_failurePosition.m_y + (short) m_layout->m_failureAnimOffset.m_y;
+		animX = (short) m_layout->m_failurePosition.m_x + (short) m_layout->m_failureAnimOffset.m_x;
 	}
+	m_animPosition.m_x = animX;
+	m_animPosition.m_y = animY;
 	CalculateText();
 	if (m_animationsEnabled != 0) {
 		m_animWindow.SetVariant(m_mode);
