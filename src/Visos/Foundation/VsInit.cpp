@@ -292,12 +292,6 @@ bool INIT_CheckOptions(char* p_option)
 // FUNCTION: LEMBALL 0x004596b0
 void INIT_CmdLine(char* p_commandLine)
 {
-	int i;
-	int remaining;
-	char** args;
-	int shift;
-	int count;
-
 	g_cParsedArgs = 0;
 	g_apszParsedArgs[0] = p_commandLine;
 	memset(g_afInitOptionSelected, 0, sizeof(g_afInitOptionSelected));
@@ -324,7 +318,12 @@ void INIT_CmdLine(char* p_commandLine)
 				}
 				p_commandLine = p_commandLine + 1;
 			}
-			i = 0;
+			char** args;
+			int remaining;
+			int shift;
+			char** next;
+			int count;
+			int i = 0;
 			g_cParsedArgs = g_cParsedArgs + 1;
 			if (0 < g_cParsedArgs) {
 				remaining = g_cParsedArgs;
@@ -338,9 +337,10 @@ void INIT_CmdLine(char* p_commandLine)
 							shift = shift - 1;
 							args = &g_apszParsedArgs[i];
 							do {
+								next = args + 1;
 								shift = shift - 1;
-								*args = args[1];
-								args = args + 1;
+								*args = *next;
+								args = next;
 							} while (shift != 0);
 						}
 						g_cParsedArgs = count;
