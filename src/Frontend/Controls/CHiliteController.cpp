@@ -167,18 +167,20 @@ void CHiliteController::AddButton(int p_x,
 								  unsigned long p_actionMessage)
 {
 	unsigned long controlMessage = ++m_nextControlMessage;
-	m_buttons[m_buttonCount] = new CHiliteButtons(m_window,
-												  m_gdi,
-												  p_x,
-												  p_y,
-												  p_animIds,
-												  p_mode,
-												  p_minimum,
-												  p_maximum,
-												  p_value,
-												  controlMessage,
-												  p_binding,
-												  p_actionMessage);
+	void* storage = operator new(sizeof(CHiliteButtons));
+	m_buttons[m_buttonCount] = storage != 0 ? new (storage) CHiliteButtons(m_window,
+																		   m_gdi,
+																		   p_x,
+																		   p_y,
+																		   p_animIds,
+																		   p_mode,
+																		   p_minimum,
+																		   p_maximum,
+																		   p_value,
+																		   controlMessage,
+																		   p_binding,
+																		   p_actionMessage)
+											: 0;
 	AddHJunction(p_x, p_y, m_buttons[m_buttonCount]->m_controlMessage);
 	m_buttonCount++;
 }
