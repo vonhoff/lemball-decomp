@@ -32,6 +32,11 @@ class CRemap;
 
 #pragma intrinsic(strcpy, strlen)
 
+#define PREVIEW_BUTTON_MESSAGE_GO 0xacef000c
+#define PREVIEW_BUTTON_MESSAGE_RETURN 0xacef000d
+#define PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL 0xacef000e
+#define PREVIEW_BUTTON_MESSAGE_PREVIOUS_LEVEL 0xacef000f
+
 // GLOBAL: LEMBALL 0x0049f678
 unsigned char g_abPreviewLayoutFull[0xd8] = {
 	0x19, 0x00, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0xb2, 0x00, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0x4b, 0x01,
@@ -205,7 +210,7 @@ void CPreviewDrawer::Load()
 								  0,
 								  0,
 								  buttonBinding,
-								  0xacef000d);
+								  PREVIEW_BUTTON_MESSAGE_RETURN);
 	m_hiliteController->AddButton(m_layout->m_positions[PreviewGoButton].m_x,
 								  m_layout->m_positions[PreviewGoButton].m_y,
 								  goAnim,
@@ -214,7 +219,7 @@ void CPreviewDrawer::Load()
 								  0,
 								  0,
 								  buttonBinding,
-								  0xacef000c);
+								  PREVIEW_BUTTON_MESSAGE_GO);
 	m_hiliteController->AddButton(m_layout->m_positions[PreviewPreviousButton].m_x,
 								  m_layout->m_positions[PreviewPreviousButton].m_y,
 								  m_previousButtonAnimIds,
@@ -223,7 +228,7 @@ void CPreviewDrawer::Load()
 								  1,
 								  0,
 								  &m_previousDisabled,
-								  0xacef000f);
+								  PREVIEW_BUTTON_MESSAGE_PREVIOUS_LEVEL);
 	m_hiliteController->AddButton(m_layout->m_positions[PreviewNextButton].m_x,
 								  m_layout->m_positions[PreviewNextButton].m_y,
 								  m_nextButtonAnimIds,
@@ -232,7 +237,7 @@ void CPreviewDrawer::Load()
 								  1,
 								  0,
 								  nextDisabled,
-								  0xacef000e);
+								  PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
 	LoadLevelInformation();
@@ -454,7 +459,7 @@ bool CPreviewDrawer::ProcessMessages(Message* p_message)
 	switch (p_message->code) {
 	default:
 		return 0;
-	case 0xacef000c:
+	case PREVIEW_BUTTON_MESSAGE_GO:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_2, USER_ACTION_STAGE_REQUEST);
 			return 1;
@@ -462,7 +467,7 @@ bool CPreviewDrawer::ProcessMessages(Message* p_message)
 		m_quitYet = 1;
 		m_returnState = 2;
 		return 1;
-	case 0xacef000d:
+	case PREVIEW_BUTTON_MESSAGE_RETURN:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
 			return 1;
@@ -470,7 +475,7 @@ bool CPreviewDrawer::ProcessMessages(Message* p_message)
 		m_quitYet = 1;
 		m_returnState = 5;
 		return 1;
-	case 0xacef000e:
+	case PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL:
 		if (m_nextDisabled == 1) {
 			m_ready = 1;
 			return 1;
@@ -481,7 +486,7 @@ bool CPreviewDrawer::ProcessMessages(Message* p_message)
 		}
 		NextLevel();
 		return 1;
-	case 0xacef000f:
+	case PREVIEW_BUTTON_MESSAGE_PREVIOUS_LEVEL:
 		if (m_previousDisabled == 1) {
 			m_ready = 1;
 			return 1;
@@ -747,8 +752,8 @@ void CPreviewDrawer::DisableNextLastButtons()
 		m_previousDisabled = 1;
 	}
 
-	m_hiliteController->UpdateAnimIDs(0xacef000e);
-	m_hiliteController->UpdateAnimIDs(0xacef000f);
+	m_hiliteController->UpdateAnimIDs(PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL);
+	m_hiliteController->UpdateAnimIDs(PREVIEW_BUTTON_MESSAGE_PREVIOUS_LEVEL);
 }
 
 // FUNCTION: LEMBALL 0x0044a970
