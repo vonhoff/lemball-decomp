@@ -1,0 +1,147 @@
+#include "../CSuccFailDrawer.h"
+
+#include "../../../Control/Game/CGameStatus.h"
+#include "../../../Control/Game/GameMain.h"
+#include "../../../Views/Display/CMain2DDisplay.h"
+#include "../../../Views/Sound/CSoundView.h"
+#include "../../../Visos/Animation/CStatManager.h"
+#include "../../../Visos/Foundation/CArena.h"
+#include "../../../Visos/Foundation/CTextManager.h"
+#include "../../../Visos/Foundation/CVSOStream.h"
+#include "../../../Visos/Foundation/VsTime.h"
+#include "../../../Visos/Resources/CResBITMAP.h"
+#include "../../../Visos/Resources/Manifest.h"
+#include "../../Base/CBaseFrontendProcess.h"
+#include "../../Controls/CHiliteController.h"
+
+extern "C" unsigned long __stdcall timeGetTime(void);
+
+#include "../../../Network/Game/CNetworkManager.h"
+#include "../../../Network/Messages/CNetworkGameMessage.h"
+#include "../../../Visos/Graphics/CBitmapRes.h"
+#include "../../../Visos/Network/CConnect.h"
+#include "../../../Visos/Resources/CResFONT.h"
+#include "Frontend/Base/CBaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Support/CoordPair.h"
+#include "Frontend/Windows/CSuccFailAnimWnd.h"
+#include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/tagPRIMS.h"
+#include "Visos/Graphics/CPVGWnd.h"
+
+#include <string.h>
+
+class CGWnd;
+
+#pragma intrinsic(strcpy, strlen)
+
+extern char* g_apSuccFailSingleWin[8];
+extern char* g_apSuccFailNetWin[8];
+extern char* g_apSuccFailSingleLose[8];
+extern char* g_apSuccFailNetLose[8];
+extern char g_szPasswordLabel[];
+
+// FUNCTION: LEMBALL 0x00450160
+void CSuccFailDrawer::CalculateText()
+{
+	CResFONT* font;
+	char* format;
+	char* hash;
+
+	font = m_textManager->GetFont(m_chalkFontId);
+	char** messages;
+	if (m_networkMode != 0) {
+		messages = g_apSuccFailNetWin;
+		if (m_success == 0) {
+			messages = g_apSuccFailNetLose;
+		}
+	}
+	else {
+		messages = g_apSuccFailSingleWin;
+		if (m_success == 0) {
+			messages = g_apSuccFailSingleLose;
+		}
+	}
+	format = messages[g_pGameStatus->m_skillState];
+	hash = strchr(format, '#');
+	if (hash != 0) {
+		int prefixLen = hash - format;
+		if (prefixLen != 0) {
+			strncpy(m_message, format, prefixLen);
+		}
+		m_message[prefixLen] = 0;
+		if (g_pActiveConnection != 0) {
+			CNetworkGameMessage* opponentMsg = g_pNetworkManager->GetGameMessage(g_pActiveConnection);
+			strcat(m_message, opponentMsg->m_gameName);
+		}
+		strcat(m_message, hash + 1);
+	}
+	else {
+		strcpy(m_message, format);
+	}
+
+	{
+		bool done = false;
+		short layoutMinX = (short) m_layout->m_messagePosition.m_x;
+		short layoutY = (short) m_layout->m_messagePosition.m_y;
+		m_firstLine = m_message;
+		m_secondLine = 0;
+		short lineX;
+		CVsSize measuredSize;
+		do {
+			const CVsSize& textSize = font->GetSize(m_firstLine, 0x20);
+			measuredSize.m_height = textSize.m_height;
+			measuredSize.m_width = textSize.m_width;
+			lineX = (short) m_layout->m_frameStart.m_x +
+					(short) ((m_layout->m_frameEnd.m_x - (int) measuredSize.m_width) / 2);
+			char* prevBreak = (m_secondLine != 0) ? (m_secondLine - 1) : 0;
+			if (lineX < layoutMinX) {
+				char* space = strrchr(m_firstLine, ' ');
+				m_secondLine = space;
+				*space = 0;
+				m_secondLine = m_secondLine + 1;
+				if (prevBreak != 0) {
+					*prevBreak = ' ';
+				}
+			}
+			else {
+				done = true;
+			}
+		} while (!done);
+
+		m_firstLinePos.m_x = lineX;
+		m_firstLinePos.m_y = layoutY;
+		if (m_secondLine == 0) {
+			m_firstLinePos.m_y = layoutY + measuredSize.m_height / 2;
+		}
+		else {
+			layoutY = layoutY + measuredSize.m_height;
+			const CVsSize& textSize = font->GetSize(m_secondLine, 0x20);
+			m_secondLinePos.m_x =
+				(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - (int) textSize.m_width) / 2);
+			m_secondLinePos.m_y = layoutY;
+		}
+	}
+	short passwordLabelY;
+	{
+		const CVsSize& textSize = font->GetSize(g_szPasswordLabel, 0x20);
+		short labelHeight = textSize.m_height;
+		int labelWidth = textSize.m_width;
+		passwordLabelY = (short) m_layout->m_passwordLabelPosition.m_y;
+		m_passwordLabelPos.m_x =
+			(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - labelWidth) / 2);
+		m_passwordLabelPos.m_y = passwordLabelY;
+		passwordLabelY += labelHeight;
+	}
+
+	{
+		const CVsSize& passwordSize = font->GetSize(m_password, 0x20);
+		int labelWidth = passwordSize.m_width;
+		m_passwordPos.m_x = (short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - labelWidth) / 2);
+		m_passwordPos.m_y = passwordLabelY;
+	}
+}
