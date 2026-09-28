@@ -240,8 +240,14 @@ void CPVButton::OnExternalButtonUp(const CVsPoint& p_point, int p_flags)
 	int i;
 	unsigned int* state;
 
-	m_clickX = (short) (p_point.m_x - m_relativeTopLeft.m_x);
-	m_clickY = (short) (p_point.m_y - m_relativeTopLeft.m_y);
+	CVsPoint relativeValue(m_relativeTopLeft);
+	const CVsPoint& relative = relativeValue;
+	CVsPoint originValue(m_relativeTopLeft);
+	const CVsPoint& origin = originValue;
+	relativeValue.m_y = (short) (p_point.m_y - origin.m_y);
+	relativeValue.m_x = (short) (p_point.m_x - origin.m_x);
+	m_clickX = relative.m_x;
+	m_clickY = relative.m_y;
 	state = m_buttonState;
 	i = 6;
 	while (i != 0) {
