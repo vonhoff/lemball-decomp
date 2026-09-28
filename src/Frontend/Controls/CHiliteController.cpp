@@ -285,19 +285,20 @@ void CHiliteController::Process()
 // FUNCTION: LEMBALL 0x0044fbd0
 void CHiliteController::ActivateButtons(int p_active)
 {
-	m_buttonsActive = p_active;
+	int active = p_active;
+	int initialCount = m_buttonCount;
+	m_buttonsActive = active;
 	int i = 0;
-	if (m_buttonCount > i) {
-		CHiliteButtons** pBtn = m_buttons;
+	if (initialCount > i) {
 		do {
-			CHiliteButtons* btn = *pBtn;
+			CHiliteButtons* btn = m_buttons[i];
 			if (btn != 0) {
-				btn->m_active = p_active;
-				btn->m_button->SetActive(p_active);
+				btn->m_active = active;
+				btn->m_button->SetActive(active);
 			}
-			pBtn++;
 			i++;
-		} while (m_buttonCount > i);
+			initialCount = m_buttonCount;
+		} while (initialCount > i);
 	}
 }
 
