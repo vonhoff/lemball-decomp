@@ -15,7 +15,7 @@
 
 #pragma intrinsic(_outp)
 
-typedef int(__stdcall* DisplayDibProc)(void*, void*, unsigned int);
+typedef int(__stdcall* DisplayDibProc)(void*, void*, unsigned short);
 
 // GLOBAL: LEMBALL 0x004a8290
 DisplayDibProc g_pDisplayDib = 0;
@@ -36,8 +36,7 @@ CDisplayDibDriver::CDisplayDibDriver(const CVsSize& p_size)
 		m_displayDibEnd = (void(__stdcall*)()) GetProcAddress((HMODULE) m_driverModule, "DisplayDibEnd32");
 		m_displayDibGetAddress =
 			(unsigned char*(__stdcall*) ()) GetProcAddress((HMODULE) m_driverModule, "DisplayDibGetAddress32");
-		g_pDisplayDib =
-			(int(__stdcall*)(void*, void*, unsigned int)) GetProcAddress((HMODULE) m_driverModule, "DisplayDib32");
+		g_pDisplayDib = (DisplayDibProc) GetProcAddress((HMODULE) m_driverModule, "DisplayDib32");
 		m_frameBuffer = m_displayDibGetAddress();
 		m_displayDibStart();
 		m_ready = 1;

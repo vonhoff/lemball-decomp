@@ -26,7 +26,7 @@
 #pragma intrinsic(_outpw)
 
 extern unsigned int g_windowDispatchDisabled;
-extern int(__stdcall* g_pDisplayDib)(void*, void*, unsigned int);
+extern int(__stdcall* g_pDisplayDib)(void*, void*, unsigned short);
 
 // GLOBAL: LEMBALL 0x004a1f64
 void* g_hFocusWindow = 0;
@@ -253,7 +253,8 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_SIZE: {
 		window->m_rect.m_width = (short) p_lParam;
-		window->m_rect.m_height = (short) (p_lParam >> 16);
+		p_lParam >>= 16;
+		window->m_rect.m_height = (short) p_lParam;
 		if (p_wParam == SIZE_RESTORED) {
 			if (window->GetSizeStatus() != 2) {
 				window->SetSizeStatus(2);
@@ -361,14 +362,15 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		if (g_pTargetGraphicsSystem != 0) {
 			CVsSize size;
 			size.m_width = (short) p_lParam;
-			size.m_height = (short) (p_lParam >> 16);
+			p_lParam >>= 16;
+			size.m_height = (short) p_lParam;
 			g_pTargetGraphicsSystem->UpdateDriverSize(size);
 		}
 		return 0;
 	}
 	case WM_KEYDOWN:
 	case WM_KEYUP: {
-		posted.m_type = (unsigned short) ((p_message == WM_KEYDOWN) + 1);
+		posted.m_type = (p_message == WM_KEYDOWN) ? 2 : 1;
 		posted.m_code = (int) p_wParam;
 		g_pMasterInputQueue->Post(posted);
 		return 0;
@@ -420,7 +422,8 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			}
 		}
 		mouseX = window->m_rect.m_x + (short) p_lParam;
-		mouseY = window->m_rect.m_y + (short) (p_lParam >> 16);
+		p_lParam >>= 16;
+		mouseY = window->m_rect.m_y + (short) p_lParam;
 		posted.m_code = PackParam(mouseX, mouseY);
 		posted.m_source = 0;
 		g_pMasterInputQueue->Post(posted);
@@ -433,17 +436,20 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	case WM_RBUTTONUP:
 	case WM_MBUTTONUP: {
 		posted.m_type = 5;
-		if (p_message == WM_LBUTTONUP) {
+		switch (p_message) {
+		case WM_LBUTTONUP:
 			posted.m_payload = (void*) 0x43;
-		}
-		else if (p_message == WM_RBUTTONUP) {
+			break;
+		case WM_RBUTTONUP:
 			posted.m_payload = (void*) 0x44;
-		}
-		else {
+			break;
+		case WM_MBUTTONUP:
 			posted.m_payload = (void*) 0x45;
+			break;
 		}
 		mouseX = window->m_rect.m_x + (short) p_lParam;
-		mouseY = window->m_rect.m_y + (short) (p_lParam >> 16);
+		p_lParam >>= 16;
+		mouseY = window->m_rect.m_y + (short) p_lParam;
 		posted.m_code = PackParam(mouseX, mouseY);
 		posted.m_source = 0;
 		g_pMasterInputQueue->Post(posted);
