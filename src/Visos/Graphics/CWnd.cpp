@@ -233,6 +233,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			SetCursor(0);
 			return 1;
 		}
+	defaultWindowMessage:
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 	case WM_QUIT: {
@@ -286,7 +287,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		}
 		window->SetFocusWindow();
 		window->OnFocusGained();
-		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+		goto defaultWindowMessage;
 	}
 	case WM_KILLFOCUS: {
 		if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
@@ -296,7 +297,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			}
 			g_hFocusWindow = 0;
 		}
-		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+		goto defaultWindowMessage;
 	}
 	case WM_ACTIVATEAPP: {
 		int wasDisplayDibActive = g_nDisplayDibActive;
