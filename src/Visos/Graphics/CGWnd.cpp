@@ -38,11 +38,11 @@ void CGWnd::OnSize()
 // FUNCTION: LEMBALL 0x00463b50
 CGWnd::CGWnd()
 {
-	m_refreshRect.m_width = 0;
+	m_refreshWidth = 0;
 	m_gdi = 0;
-	m_refreshRect.m_y = 0;
+	m_refreshY = 0;
 	m_gdiFlags = 0;
-	m_refreshRect.m_x = 0;
+	m_refreshX = 0;
 	m_paletteResourceId = 0;
 }
 
@@ -228,25 +228,19 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 			paintY = (short) paint.rcPaint.top;
 			paintHeight = (short) ((short) paint.rcPaint.bottom - (unsigned short) paint.rcPaint.top);
 			if ((int) paintHeight * (int) paintWidth != 0) {
-				if (paintX < (short) m_refreshRect.m_x) {
-					m_refreshRect.m_width =
-						(unsigned short) (m_refreshRect.m_width + (m_refreshRect.m_x - (unsigned short) paintX));
-					m_refreshRect.m_x = (unsigned short) paintX;
+				if (paintX < (short) m_refreshX) {
+					m_refreshWidth = (unsigned short) (m_refreshWidth + (m_refreshX - (unsigned short) paintX));
+					m_refreshX = (unsigned short) paintX;
 				}
-				if ((short) (m_refreshRect.m_width + m_refreshRect.m_x) <
-					(short) ((unsigned short) paintX + paintWidth)) {
-					m_refreshRect.m_width =
-						(unsigned short) ((paintWidth - m_refreshRect.m_x) + (unsigned short) paintX);
+				if ((short) (m_refreshWidth + m_refreshX) < (short) ((unsigned short) paintX + paintWidth)) {
+					m_refreshWidth = (unsigned short) ((paintWidth - m_refreshX) + (unsigned short) paintX);
 				}
-				if (paintY < (short) m_refreshRect.m_y) {
-					m_refreshRect.m_height =
-						(unsigned short) (m_refreshRect.m_height + (m_refreshRect.m_y - (unsigned short) paintY));
-					m_refreshRect.m_y = (unsigned short) paintY;
+				if (paintY < (short) m_refreshY) {
+					m_refreshHeight = (unsigned short) (m_refreshHeight + (m_refreshY - (unsigned short) paintY));
+					m_refreshY = (unsigned short) paintY;
 				}
-				if ((short) (m_refreshRect.m_height + m_refreshRect.m_y) <
-					(short) ((unsigned short) paintY + paintHeight)) {
-					m_refreshRect.m_height =
-						(unsigned short) ((paintHeight - m_refreshRect.m_y) + (unsigned short) paintY);
+				if ((short) (m_refreshHeight + m_refreshY) < (short) ((unsigned short) paintY + paintHeight)) {
+					m_refreshHeight = (unsigned short) ((paintHeight - m_refreshY) + (unsigned short) paintY);
 				}
 			}
 			EndPaint((HWND) m_nativeWindow, &paint);
@@ -262,19 +256,19 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 		paintWidth = m_rect.m_width;
 		paintHeight = m_rect.m_height;
 		if ((int) paintHeight * (int) paintWidth != 0) {
-			if (0 < (short) m_refreshRect.m_x) {
-				m_refreshRect.m_width = (unsigned short) (m_refreshRect.m_width + m_refreshRect.m_x);
-				m_refreshRect.m_x = 0;
+			if (0 < (short) m_refreshX) {
+				m_refreshWidth = (unsigned short) (m_refreshWidth + m_refreshX);
+				m_refreshX = 0;
 			}
-			if ((short) (m_refreshRect.m_width + m_refreshRect.m_x) < m_rect.m_width) {
-				m_refreshRect.m_width = (unsigned short) (m_rect.m_width - m_refreshRect.m_x);
+			if ((short) (m_refreshWidth + m_refreshX) < m_rect.m_width) {
+				m_refreshWidth = (unsigned short) (m_rect.m_width - m_refreshX);
 			}
-			if (0 < (short) m_refreshRect.m_y) {
-				m_refreshRect.m_height = (unsigned short) (m_refreshRect.m_height + m_refreshRect.m_y);
-				m_refreshRect.m_y = 0;
+			if (0 < (short) m_refreshY) {
+				m_refreshHeight = (unsigned short) (m_refreshHeight + m_refreshY);
+				m_refreshY = 0;
 			}
-			if ((short) (m_refreshRect.m_height + m_refreshRect.m_y) < m_rect.m_height) {
-				m_refreshRect.m_height = (unsigned short) (m_rect.m_height - m_refreshRect.m_y);
+			if ((short) (m_refreshHeight + m_refreshY) < m_rect.m_height) {
+				m_refreshHeight = (unsigned short) (m_rect.m_height - m_refreshY);
 			}
 		}
 		break;
@@ -349,10 +343,10 @@ void CGWnd::Refresh(CVsRect* p_rect)
 	short innerWidth;
 
 	Render();
-	height = m_refreshRect.m_height;
-	width = m_refreshRect.m_width;
+	height = m_refreshHeight;
+	width = m_refreshWidth;
 	if ((int) (short) height * (int) (short) width > 0) {
-		CVsRect damage(m_refreshRect);
+		CVsRect damage(*(const CVsRect*) &m_refreshWidth);
 		innerWidth = m_innerRect.m_width;
 		innerHeight = m_innerRect.m_height;
 		if ((int) innerWidth * (int) innerHeight != 0) {
@@ -391,10 +385,10 @@ void CGWnd::Refresh(CVsRect* p_rect)
 		}
 	}
 	Flush();
-	m_refreshRect.m_width = 0;
-	m_refreshRect.m_height = 0;
-	m_refreshRect.m_x = 0;
-	m_refreshRect.m_y = 0;
+	m_refreshWidth = 0;
+	m_refreshHeight = 0;
+	m_refreshX = 0;
+	m_refreshY = 0;
 }
 
 // FUNCTION: LEMBALL 0x00464440

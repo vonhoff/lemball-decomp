@@ -70,7 +70,10 @@ private:
 	CLine m_clearRectangle[1];         // 0x58
 	CBitmap m_backBufferCopy[1];       // 0x68
 	CCopyToBackBuff m_zBufferClear[1]; // 0x78
-	CVsRect m_refreshRect;             // 0x88
+	short m_refreshWidth;              // 0x88
+	short m_refreshHeight;             // 0x8a
+	short m_refreshX;                  // 0x8c
+	short m_refreshY;                  // 0x8e
 };
 
 #endif
