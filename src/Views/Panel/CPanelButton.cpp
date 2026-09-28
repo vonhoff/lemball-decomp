@@ -47,7 +47,7 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPVG
 		m_statusRect.m_x = 0;
 		m_statusRect.m_y = 0;
 	}
-	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == ACTION_8);
+	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == ACTION_DEAD);
 	m_alternatePlayer = m_lemming->m_lemming->HasObject(OBJECT_FLAG_2);
 	m_lastAmmo = 0xffffffff;
 	m_lastBalloon = OBJECT_BALLOON_NONE;
@@ -162,33 +162,33 @@ void CPanelButton::DrawButton()
 	CVsRect ammoRect(7, 11, 27, 9);
 	CVsSize& ammoSize = ammoRect;
 	CVsPoint& ammoPosition = ammoRect;
-	unsigned int color;
+	unsigned int colour;
 	CVsRect inventoryRect(7, 4, 6, 4);
 	CVsSize& inventorySize = inventoryRect;
 	CVsPoint& inventoryPosition = inventoryRect;
 	unsigned int packedSize;
 	ammoSize.m_width = (short) (ammo * ammoSize.m_width / 50);
 	if (m_enabled != 0 && m_unavailable == 0) {
-		color = 0x76;
+		colour = 0x76;
 	}
 	else {
-		color = 0x45;
+		colour = 0x45;
 		ammoPosition.m_x++;
 		ammoPosition.m_y++;
 		inventoryPosition.m_x++;
 		inventoryPosition.m_y++;
 	}
-	unsigned int mappedColor;
+	unsigned int mappedColour;
 	if (playerRemap != 0) {
-		mappedColor = playerRemap->m_remap[color];
+		mappedColour = playerRemap->m_remap[colour];
 	}
 	else {
 		memcpy(&packedSize, &ammoSize, sizeof(packedSize));
-		mappedColor = packedSize;
+		mappedColour = packedSize;
 	}
 	static_cast<CVsSize&>(m_statusLine[0].m_bounds) = ammoSize;
 	m_statusLine[0].m_bounds.CVsPoint::operator=(ammoPosition);
-	m_statusLine[0].m_color = mappedColor;
+	m_statusLine[0].m_colour = mappedColour;
 	m_statusLine[0].Draw(m_gdi);
 	if (m_unavailable == 0) {
 		for (int i = 0; i < (int) m_lemming->m_inventoryCount; i++) {
@@ -202,14 +202,14 @@ void CPanelButton::DrawButton()
 				remap = 0;
 			}
 			if (remap == 0) {
-				mappedColor = color;
+				mappedColour = colour;
 			}
 			else {
-				mappedColor = remap->m_remap[color];
+				mappedColour = remap->m_remap[colour];
 			}
 			static_cast<CVsSize&>(line->m_bounds) = inventorySize;
 			line->m_bounds.CVsPoint::operator=(inventoryPosition);
-			line->m_color = mappedColor;
+			line->m_colour = mappedColour;
 			line->Draw(m_gdi);
 			inventoryPosition.m_x += 11;
 		}
@@ -229,7 +229,7 @@ void CPanelButton::OnPaint(const CVsRect& p_rect)
 		m_forceDrawCount = 1;
 		m_inventoryCount = panelLemming->m_inventoryCount;
 	}
-	if ((unsigned int) (panelLemming->m_lemming->m_action == ACTION_8) != m_unavailable) {
+	if ((unsigned int) (panelLemming->m_lemming->m_action == ACTION_DEAD) != m_unavailable) {
 		m_forceDrawCount = 1;
 		m_unavailable = !m_unavailable;
 	}
@@ -273,7 +273,7 @@ void CPanelButton::OnPressed(int p_flags)
 	eAction action = lemming->m_action;
 	CPlayerLemmingGroupManager* groupManager;
 	CPlayerLemmingGroup* group;
-	if (action == ACTION_8) {
+	if (action == ACTION_DEAD) {
 		return;
 	}
 
@@ -298,7 +298,7 @@ normal:
 			if (clickY >= (short) (m_inventoryRect.m_height + inventoryY)) {
 				goto groupSelection;
 			}
-			if (action == ACTION_NONE || action == ACTION_2 || action == ACTION_6) {
+			if (action == ACTION_NONE || action == ACTION_WALKING || action == ACTION_IDLE_ANIMATION) {
 				m_lemming->m_lemming->SetSndEffect(SFX_BALLOON);
 				m_lemming->m_panel->m_game->UseBalloon(m_lemming->m_lemming);
 			}

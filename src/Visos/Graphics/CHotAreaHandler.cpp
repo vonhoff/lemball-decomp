@@ -135,7 +135,7 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVsPoint& p_point, c
 	int button;
 	unsigned int payload;
 
-	type = p_message->type;
+	type = p_message->m_type;
 	switch (type) {
 	case 8:
 	case 9:
@@ -144,7 +144,7 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVsPoint& p_point, c
 		}
 	case 5:
 	case 6:
-		payload = (unsigned int) p_message->payload;
+		payload = (unsigned int) p_message->m_payload;
 		switch (payload) {
 		case 0x43:
 			button = 0;
@@ -172,7 +172,7 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVsPoint& p_point, c
 			m_buttonState[button + 3] = 0;
 			m_buttonState[button] = 0;
 		}
-		if (p_message->type != 5 && p_message->type != 9) {
+		if (p_message->m_type != 5 && p_message->m_type != 9) {
 			OnButtonDown(p_point, button);
 			return;
 		}

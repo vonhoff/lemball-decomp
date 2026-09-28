@@ -16,10 +16,10 @@
 void* g_hApplicationIcon = 0;
 
 // FUNCTION: LEMBALL 0x004564e0
-extern "C" int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpCmdLine, int nCmdShow)
+extern "C" int __stdcall WinMain(void* p_hInstance, void* p_hPrevInstance, char* p_lpCmdLine, int p_nCmdShow)
 {
-	g_pApplicationInstance = hInstance;
-	return INIT_Main(lpCmdLine);
+	g_pApplicationInstance = p_hInstance;
+	return INIT_Main(p_lpCmdLine);
 }
 
 // FUNCTION: LEMBALL 0x00456500

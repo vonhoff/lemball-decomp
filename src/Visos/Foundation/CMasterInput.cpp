@@ -26,22 +26,22 @@ CMasterInput::~CMasterInput()
 bool CMasterInput::AddItem(void* p_item)
 {
 	struct CNode {
-		void* item;
-		CNode* next;
+		void* m_item;
+		CNode* m_next;
 	};
 	CNode* added = new CNode;
 	CNode* last = (CNode*) m_firstItem;
 	if (m_itemCount == 0) {
-		added->item = p_item;
+		added->m_item = p_item;
 		m_firstItem = added;
 		m_itemCount++;
 		return true;
 	}
 	for (unsigned int i = 1; i < m_itemCount; i++) {
-		last = last->next;
+		last = last->m_next;
 	}
-	added->item = p_item;
-	last->next = added;
+	added->m_item = p_item;
+	last->m_next = added;
 	m_itemCount++;
 	return true;
 }
@@ -53,17 +53,17 @@ bool CMasterInput::ProcessItems()
 		return false;
 	}
 	struct CNode {
-		CMasterInputItem* item;
-		CNode* next;
+		CMasterInputItem* m_item;
+		CNode* m_next;
 	};
 	CNode* node = (CNode*) m_firstItem;
 	for (unsigned int i = 0; i < m_itemCount; i++) {
-		if (node->item->IsReady() == 1) {
-			if (node->item->ProcessQueue(m_queue) == 0) {
+		if (node->m_item->IsReady() == 1) {
+			if (node->m_item->ProcessQueue(m_queue) == 0) {
 				return false;
 			}
 		}
-		node = node->next;
+		node = node->m_next;
 	}
 	return true;
 }

@@ -148,7 +148,7 @@ void CEnemy::GetEnemyType(eEnemyStateActions& p_action0,
 // FUNCTION: LEMBALL 0x0041fec0
 bool CEnemy::Process()
 {
-	if (m_action != ACTION_8) {
+	if (m_action != ACTION_DEAD) {
 		switch (m_stateIndex) {
 		case 0:
 			ProcessAction(m_state0Rule, m_state0Action, &m_state0Data);
@@ -282,10 +282,10 @@ void CEnemy::EnemyAction_TURNANDFIRESLOW(EnemyLemmingUnion* p_data)
 // FUNCTION: LEMBALL 0x004201c0
 void CEnemy::EnemyAction_TURNANDFIRERANDOM(EnemyLemmingUnion* p_data)
 {
-	int seed = *g_pSentinel;
+	int seed = *g_pRandomSeed;
 	seed = seed * 41 + 0x1f;
 	seed = seed & 0x7fffff;
-	*g_pSentinel = seed;
+	*g_pRandomSeed = seed;
 	RequestFire(seed % 1000 + 0x96);
 }
 

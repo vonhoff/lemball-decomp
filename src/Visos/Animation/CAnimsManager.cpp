@@ -306,8 +306,8 @@ void CAnimsManager::ResetPrimitives()
 	if (m_doubleBuffered == 0) {
 		m_zrleCount = 0;
 		struct PrimitiveState {
-			int count;
-			char drawMark[4];
+			int m_count;
+			char m_drawMark[4];
 		};
 		PrimitiveState* animState = (PrimitiveState*) &m_animCount;
 		PrimitiveState* zrleState = (PrimitiveState*) &m_zrleCount;

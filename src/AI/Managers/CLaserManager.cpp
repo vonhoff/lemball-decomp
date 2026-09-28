@@ -53,7 +53,7 @@ bool CLaserManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
 			return 0;
 		}
 		CLaser& laser = m_lasers[i];
-		if (laser.m_enabled != 0 && laser.m_autoActivate == 0 && laser.m_action == ACTION_0x18 &&
+		if (laser.m_enabled != 0 && laser.m_autoActivate == 0 && laser.m_action == ACTION_READY &&
 			laser.StepOn(p_position, p_object)) {
 			return 1;
 		}

@@ -18,24 +18,24 @@ int CTranslator::ProcessMsg(Message* p_message)
 	short keyState;
 	Message* message = p_message;
 
-	translated.time = message->time;
-	unsigned short type = message->type;
+	translated.m_time = message->m_time;
+	unsigned short type = message->m_type;
 	switch ((int) type) {
 	case 1:
 	case 2:
 		index = 0;
 		entry = g_dwInputTranslationPairs;
 		do {
-			if (entry->m_platformCode == (unsigned int) message->code) {
-				translated.type = 3;
+			if (entry->m_platformCode == (unsigned int) message->m_code) {
+				translated.m_type = 3;
 				if (type != 1) {
-					translated.type = 4;
+					translated.m_type = 4;
 				}
-				translated.code = (int) g_dwInputTranslationPairs[index].m_inputCode;
-				if (translated.code == 0x49) {
+				translated.m_code = (int) g_dwInputTranslationPairs[index].m_inputCode;
+				if (translated.m_code == 0x49) {
 					keyState = GetKeyState(0xa0);
 					if (keyState < 0) {
-						translated.code = 0x4a;
+						translated.m_code = 0x4a;
 					}
 				}
 				g_pMasterInputQueue->Post(translated);

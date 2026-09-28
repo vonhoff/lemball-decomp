@@ -19,7 +19,7 @@ class CVsRect;
 // VTABLE: LEMBALL 0x00497f0c CAnimsManager
 class CGunController : public CBaseQueueHandler, public CAnimsManager {
 public:
-	CGunController(CGWnd* p_arg0, CGDI* p_arg1, int p_arg2, unsigned int p_arg3);
+	CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigned int p_mode);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual ~CGunController();                  // vtable+0x04
 	void ActivateButtons(int p_active);

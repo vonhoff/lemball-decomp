@@ -29,7 +29,7 @@ void CInvisibleSwitch::Restart()
 // FUNCTION: LEMBALL 0x00409ce0
 void CInvisibleSwitch::Initialise()
 {
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_targetCount = 0;
 	m_triggered = 0;
 	m_objectCount = 0;
@@ -147,13 +147,13 @@ void CInvisibleSwitch::AddObject(CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00409fa0
 void CInvisibleSwitch::StepOn(const AiCoord& p_position, CGameObject* p_object)
 {
-	if (m_triggered == 0 && m_requestedAction == ACTION_0x18 && GetId() != (short) p_object->m_invisibleSwitchId) {
+	if (m_triggered == 0 && m_requestedAction == ACTION_READY && GetId() != (short) p_object->m_invisibleSwitchId) {
 		int x = p_position.m_xFixed >> 12;
 		int y = p_position.m_yFixed >> 12;
 		if (x >= m_minCorner.m_x - 8 && x <= m_maxCorner.m_x + 7 && y >= m_minCorner.m_y - 8 &&
 			y <= m_maxCorner.m_y + 7) {
 			m_activator = p_object;
-			RequestAction(ACTION_0x1a);
+			RequestAction(ACTION_ACTIVATED);
 		}
 	}
 }
@@ -172,12 +172,12 @@ bool CInvisibleSwitch::Process()
 {
 	VerifyObjects();
 	if (m_isRemoteObject) {
-		if (m_pendingAction != m_action && m_action != ACTION_0x1a) {
+		if (m_pendingAction != m_action && m_action != ACTION_ACTIVATED) {
 			return 1;
 		}
 	}
 
-	if (m_action == ACTION_0x1a) {
+	if (m_action == ACTION_ACTIVATED) {
 		if (m_repeatable == 0) {
 			m_triggered = 1;
 		}
@@ -196,7 +196,7 @@ bool CInvisibleSwitch::Process()
 			} while (i < m_targetCount);
 		}
 		SetSndEffect(SFX_SWITCH);
-		Action(ACTION_0x18);
+		Action(ACTION_READY);
 	}
 	return 1;
 }

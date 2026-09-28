@@ -18,17 +18,17 @@ public:
 	CPVButton(CPVGWnd* p_ownerWindow);
 	CPVButton(const CVsRect& p_bounds, CPVGWnd* p_ownerWindow);
 	int ConvertDoubleClick(int p_flags);
-	virtual unsigned int GetStyle();                                       // vtable+0x64
-	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8
-	virtual void Destroy();                                                // vtable+0x74
-	virtual void _DrawButton();                                            // vtable+0xb8
-	virtual void DrawButton() = 0;                                         // vtable+0xbc
-	virtual void OnReleased(int p_flags) = 0;                              // vtable+0xc0
-	virtual void OnPressed(int p_flags) = 0;                               // vtable+0xc4
-	virtual void OnEnterButton() = 0;                                      // vtable+0xc8
-	virtual void OnExitButton() = 0;                                       // vtable+0xcc
-	virtual void Move(const CVsPoint& p_point);                            // vtable+0x38
-	virtual void OnButtonUp(const CVsPoint& p_point, int p_flags);         // vtable+0x04
+	virtual unsigned int GetStyle();                               // vtable+0x64
+	virtual void OnPaint(const CVsRect& p_rect);                   // vtable+0xa8
+	virtual void Destroy();                                        // vtable+0x74
+	virtual void _DrawButton();                                    // vtable+0xb8
+	virtual void DrawButton() = 0;                                 // vtable+0xbc
+	virtual void OnReleased(int p_flags) = 0;                      // vtable+0xc0
+	virtual void OnPressed(int p_flags) = 0;                       // vtable+0xc4
+	virtual void OnEnterButton() = 0;                              // vtable+0xc8
+	virtual void OnExitButton() = 0;                               // vtable+0xcc
+	virtual void Move(const CVsPoint& p_point);                    // vtable+0x38
+	virtual void OnButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x04
 	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);
 	virtual void OnEnter();                                                // vtable+0x10
 	virtual void OnExit();                                                 // vtable+0x14

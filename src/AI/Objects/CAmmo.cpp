@@ -47,7 +47,7 @@ bool CAmmo::Process()
 	m_position.m_zFixed = z << 12;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
-			if (m_action == ACTION_0x1a) {
+			if (m_action == ACTION_ACTIVATED) {
 				SetSndEffect(SFX_RELOAD);
 			}
 			m_pendingAction = m_action;
@@ -55,20 +55,20 @@ bool CAmmo::Process()
 		return 1;
 	}
 	switch (m_action) {
-	case ACTION_0x1a:
+	case ACTION_ACTIVATED:
 		if (m_actionPhase2Deadline < g_dwGameTick) {
 			if (m_ammo == 0) {
 				m_objectActive = 0;
 			}
 			else {
 				m_actionDeadline = g_dwGameTick + (m_ammo * 1000) / GAME_TICK_MILLISECONDS;
-				RequestAction(ACTION_0x1b);
+				RequestAction(ACTION_RUNNING);
 			}
 		}
 		break;
-	case ACTION_0x1b:
+	case ACTION_RUNNING:
 		if (m_actionDeadline < g_dwGameTick) {
-			RequestAction(ACTION_0x18);
+			RequestAction(ACTION_READY);
 		}
 		break;
 	}
@@ -78,10 +78,10 @@ bool CAmmo::Process()
 // FUNCTION: LEMBALL 0x0041cbe0
 bool CAmmo::Activate(CGameObject* p_object)
 {
-	if (m_action == ACTION_0x18 && p_object->HasObject(m_objectType) == 0) {
+	if (m_action == ACTION_READY && p_object->HasObject(m_objectType) == 0) {
 		m_actionPhase2Deadline = 8;
 		m_activator = p_object;
-		RequestAction(ACTION_0x1a);
+		RequestAction(ACTION_ACTIVATED);
 		return 1;
 	}
 	return 0;

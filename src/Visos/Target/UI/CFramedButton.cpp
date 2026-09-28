@@ -16,10 +16,10 @@
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00468a40
-CFramedButton::CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColor)
+CFramedButton::CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColour)
 	: CDepressedButton(p_rect, p_parent)
 {
-	m_frameColor = p_frameColor;
+	m_frameColour = p_frameColour;
 	InitializeFramePrimitives();
 	CVsRect createRect;
 	createRect.m_width = m_bounds.m_width;
@@ -35,9 +35,9 @@ CFramedButton::CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned 
 }
 
 // FUNCTION: LEMBALL 0x00468b20
-CFramedButton::CFramedButton(CPVGWnd* p_parent, unsigned int p_frameColor) : CDepressedButton(p_parent)
+CFramedButton::CFramedButton(CPVGWnd* p_parent, unsigned int p_frameColour) : CDepressedButton(p_parent)
 {
-	m_frameColor = p_frameColor;
+	m_frameColour = p_frameColour;
 	InitializeFramePrimitives();
 }
 
@@ -70,14 +70,14 @@ void CFramedButton::DrawButton()
 	bounds.m_y = 0;
 	bounds.m_x = 0;
 	const CVsRect* rectangle = &bounds;
-	unsigned int color;
+	unsigned int colour;
 	CLine* line = m_frameLine;
-	color = m_frameColor;
+	colour = m_frameColour;
 	line->m_bounds.m_width = rectangle->m_width;
 	line->m_bounds.m_height = rectangle->m_height;
 	line->m_bounds.m_x = rectangle->m_x;
 	line->m_bounds.m_y = rectangle->m_y;
-	line->m_color = color;
+	line->m_colour = colour;
 	m_frameLine->Draw(m_gdi);
 	bool depressed = m_pressed != 0 && CHotAreaHandler::m_active != 0;
 	if (depressed) {

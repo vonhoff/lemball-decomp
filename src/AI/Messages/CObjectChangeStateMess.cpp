@@ -38,11 +38,11 @@ void CObjectChangeStateMess::GetData()
 	m_object->m_actionArgument = (short) GetWORD();
 	m_object->m_requestEnabled = 0;
 	m_object->m_requestActive = 0;
-	if (!m_object->IsUsable(m_object->m_action) && m_object->m_action != ACTION_0x27) {
+	if (!m_object->IsUsable(m_object->m_action) && m_object->m_action != ACTION_LOCAL_CONTROL) {
 		m_object->m_isRemoteObject = 1;
 		return;
 	}
 	m_object->m_isRemoteObject = 0;
-	m_object->m_pendingAction = ACTION_0x18;
+	m_object->m_pendingAction = ACTION_READY;
 	m_object->m_activationReserved = 0;
 }

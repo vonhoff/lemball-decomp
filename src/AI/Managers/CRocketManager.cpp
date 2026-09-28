@@ -64,7 +64,7 @@ int CRocketManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
 			return 0;
 		}
 		CRocket* rocket = &m_rockets[i];
-		if (rocket->m_active != 0 && rocket->m_action == ACTION_0x18 && rocket->m_requestedAction == ACTION_0x18 &&
+		if (rocket->m_active != 0 && rocket->m_action == ACTION_READY && rocket->m_requestedAction == ACTION_READY &&
 			rocket->StepOn(p_position, p_object) != 0) {
 			return 1;
 		}
@@ -92,7 +92,7 @@ int CRocketManager::GetViewData(CViewData* p_viewData)
 		do {
 			char* rocketBytes = reinterpret_cast<char*>(m_rockets);
 			CRocket* rocket = reinterpret_cast<CRocket*>(rocketBytes + byteIndex);
-			if (rocket->m_action != ACTION_0x18) {
+			if (rocket->m_action != ACTION_READY) {
 				rocket->GetViewData(*viewData++);
 				count++;
 			}

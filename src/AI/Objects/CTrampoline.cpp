@@ -42,7 +42,7 @@ void CTrampoline::Set(unsigned short p_id, const AiCoord& p_position)
 	m_position.m_xFixed = p_position.m_xFixed;
 	m_position.m_yFixed = p_position.m_yFixed;
 	m_position.m_zFixed = p_position.m_zFixed;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_active = 1;
 	m_enabled = 1;
 
@@ -64,7 +64,7 @@ bool CTrampoline::Process()
 {
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
-			if (m_action == ACTION_0x1b) {
+			if (m_action == ACTION_RUNNING) {
 				SetSndEffect(SFX_TRMPLINE);
 			}
 			m_pendingAction = m_action;
@@ -74,8 +74,8 @@ bool CTrampoline::Process()
 	if (m_enabled == 0) {
 		return 1;
 	}
-	if (m_action == ACTION_0x1b && m_actionDeadline < g_dwGameTick) {
-		Action(ACTION_0x18);
+	if (m_action == ACTION_RUNNING && m_actionDeadline < g_dwGameTick) {
+		Action(ACTION_READY);
 	}
 	return 1;
 }
@@ -201,7 +201,7 @@ int CTrampoline::Hit(const AiCoord& p_position, CGameObject* p_object)
 	p_object->ResetInstructions();
 	m_actionDeadline = g_dwGameTick + 0x10;
 	m_stateTimer = g_dwSimulationTimestamp;
-	Action(ACTION_0x1b);
+	Action(ACTION_RUNNING);
 	SetSndEffect(SFX_TRMPLINE);
 	g_pAI->Score(0x32);
 	return 1;

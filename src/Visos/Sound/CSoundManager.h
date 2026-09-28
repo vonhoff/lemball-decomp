@@ -10,7 +10,11 @@ class CPVMusicDevice;
 // VTABLE: LEMBALL 0x00498978
 class CSoundManager {
 public:
-	CSoundManager(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, int p_arg3, CWnd* p_arg4);
+	CSoundManager(unsigned int p_musicEnabled,
+				  unsigned int p_effectsEnabled,
+				  unsigned int p_useMusicCD,
+				  int p_deviceParameter,
+				  CWnd* p_window);
 	unsigned char GetEffectVolume();
 	unsigned long PrepareEffect(unsigned long p_resourceId);
 	unsigned long PrepareMusic(unsigned long p_resourceId, unsigned int p_flags);

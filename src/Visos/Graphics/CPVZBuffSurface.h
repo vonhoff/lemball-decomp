@@ -15,7 +15,7 @@ public:
 	CPVZBuffSurface();
 	virtual void Blit(CZBuffScroll* p_scroll) = 0; // vtable+0x04
 	virtual void Blit(CZBuffClear* p_clear) = 0;   // vtable+0x00
-	virtual bool HasZBuff();                     // vtable+0x40
+	virtual bool HasZBuff();                       // vtable+0x40
 	void AllocateZBuff();
 	void EnableZBuff(int p_enabled);
 	void FreeZBuff();

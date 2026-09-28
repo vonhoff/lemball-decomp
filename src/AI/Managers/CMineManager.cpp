@@ -65,9 +65,9 @@ void CMineManager::Triggered(CMine* p_mine)
 	Trigger(p_mine->m_managerIndex, p_mine->m_triggerDelay);
 }
 
-inline static int MineDistanceSquared(int dz, int dy, int dx)
+inline static int MineDistanceSquared(int p_dz, int p_dy, int p_dx)
 {
-	return dz * dz + dy * dy + dx * dx;
+	return p_dz * p_dz + p_dy * p_dy + p_dx * p_dx;
 }
 
 // FUNCTION: LEMBALL 0x00424580
@@ -80,7 +80,7 @@ void CMineManager::Trigger(int p_index, int p_delay)
 	if (0 < m_count) {
 		int positionOffset = 0;
 		do {
-			if (p_index != i && m_mines[i].m_action == 0x18) {
+			if (p_index != i && m_mines[i].m_action == ACTION_READY) {
 				Coord3d* position = &m_positions[positionOffset];
 				int dx = position->m_x - x;
 				int dy = position->m_y - y;
@@ -159,7 +159,7 @@ void CMineManager::Process()
 	}
 }
 
-inline static int CollectMineViewData(int i,
+inline static int CollectMineViewData(int p_i,
 									  CMineManager* p_manager,
 									  CViewData* p_viewData,
 									  CMine* CMineManager::* p_mines,
@@ -169,11 +169,11 @@ inline static int CollectMineViewData(int i,
 	if (0 < (p_manager->*p_count)) {
 		CViewData* viewData = p_viewData;
 		do {
-			(p_manager->*p_mines)[i].GetViewData(*viewData);
+			(p_manager->*p_mines)[p_i].GetViewData(*viewData);
 			viewData++;
 			count++;
-			i++;
-		} while (i < (p_manager->*p_count));
+			p_i++;
+		} while (p_i < (p_manager->*p_count));
 	}
 	return count;
 }

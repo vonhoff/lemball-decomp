@@ -269,7 +269,7 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 {
 	int restartMusic;
 	int musicId;
-	int sentinel;
+	int seed;
 
 	if (m_currentState != p_state) {
 		restartMusic = 1;
@@ -298,9 +298,9 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 		case 4:
 			g_pSoundManager->SetResId(RES_MUSIC_EFFECTS_BASEEFFECTS);
 			musicId = m_randomMusicIndex + RES_MUSIC_GAME_MUSIC;
-			sentinel = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-			*g_pSentinel = sentinel;
-			m_randomMusicIndex = sentinel % 9;
+			seed = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+			*g_pRandomSeed = seed;
+			m_randomMusicIndex = seed % 9;
 			break;
 		}
 		m_loadUpdate = p_loadUpdate;

@@ -218,19 +218,19 @@ void CAboutScreen::DrawChangedRegion()
 			m_rects[0].m_bounds.m_height = area.m_height;
 			m_rects[0].m_bounds.m_x = area.m_x;
 			m_rects[0].m_bounds.m_y = area.m_y;
-			m_rects[0].m_color = 0;
+			m_rects[0].m_colour = 0;
 			m_rects[0].Draw(m_gdi);
 			bitmap = m_backgroundBitmap;
 			const CVsSize& bitmapSize = *reinterpret_cast<const CVsSize*>(&bitmap->m_x);
 			m_line.m_bounds.m_width = m_size.m_width;
-			m_line.m_color = 0;
+			m_line.m_colour = 0;
 			m_line.m_bounds.m_height = m_size.m_height;
 			m_line.m_bounds.m_x = 0;
 			m_line.m_bounds.m_y = 0;
 			m_line.Draw(m_gdi);
-			int centeredY = ((int) m_size.m_height - (int) bitmapSize.m_height) / 2;
+			int centreedY = ((int) m_size.m_height - (int) bitmapSize.m_height) / 2;
 			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) bitmapSize.m_width) / 2);
-			m_bitmap.m_y = (short) centeredY;
+			m_bitmap.m_y = (short) centreedY;
 			m_bitmap.m_resource = m_backgroundBitmap;
 			m_bitmap.m_remap = 0;
 			m_bitmap.m_flags = 0x800;
@@ -241,7 +241,7 @@ void CAboutScreen::DrawChangedRegion()
 			CVsPoint origin;
 			m_rects[1].m_bounds.CVsSize::operator=(surfaceSize);
 			m_rects[1].m_bounds.CVsPoint::operator=(origin);
-			m_rects[1].m_color = 0;
+			m_rects[1].m_colour = 0;
 			m_rects[1].Draw(m_gdi);
 		}
 	}
@@ -252,7 +252,7 @@ void CAboutScreen::DrawChangedRegion()
 // FUNCTION: LEMBALL 0x0044be80
 int CAboutScreen::ProcessMsg(Message* p_message)
 {
-	switch (p_message->type) {
+	switch (p_message->m_type) {
 	case 4:
 		return 1;
 	default:

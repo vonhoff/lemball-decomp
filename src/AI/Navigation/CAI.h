@@ -186,18 +186,18 @@ public:
 	friend bool GameOver(CAI* p_ai, CGameObject* p_object, Info* p_info);
 
 private:
-	unsigned int m_unk0x48;            // 0x48
-	int m_initialised;                 // 0x4c
-	unsigned int* m_objectRequired;    // 0x50
-	unsigned short m_levelVersion;     // 0x54
-	unsigned short m_pad0x56;          // 0x56
-	unsigned int m_gameplayEnabled;    // 0x58
-	unsigned int m_gameplayStartDelay; // 0x5c
-	unsigned int m_mapType;            // 0x60
-	unsigned int m_networkMode;        // 0x64
-	unsigned int m_started;            // 0x68
-	unsigned int m_gameStatePending;   // 0x6c
-	unsigned int m_networkStartReady;  // 0x70
+	unsigned int m_unk0x48;                            // 0x48
+	int m_initialised;                                 // 0x4c
+	unsigned int* m_objectRequired;                    // 0x50
+	unsigned short m_levelVersion;                     // 0x54
+	unsigned short m_pad0x56;                          // 0x56
+	unsigned int m_gameplayEnabled;                    // 0x58
+	unsigned int m_gameplayStartDelay;                 // 0x5c
+	unsigned int m_mapType;                            // 0x60
+	unsigned int m_networkMode;                        // 0x64
+	unsigned int m_started;                            // 0x68
+	unsigned int m_gameStatePending;                   // 0x6c
+	unsigned int m_networkStartReady;                  // 0x70
 	CGameStateMessage* m_gameStateMessage;             // 0x74
 	CPBNetworkGame* m_networkGame;                     // 0x78
 	unsigned int m_isHost;                             // 0x7c
@@ -218,7 +218,7 @@ private:
 	int m_gameTime;                                    // 0xe8
 	int m_timeLimit;                                   // 0xec
 	int m_score;                                       // 0xf0
-	unsigned int m_unk0xf4;                            // 0xf4
+	unsigned int m_levelStartScore;                    // 0xf4
 	int m_lemmingCount;                                // 0xf8
 	int m_flagCounts[2];                               // 0xfc
 	unsigned int m_gameOverDeadline;                   // 0x104

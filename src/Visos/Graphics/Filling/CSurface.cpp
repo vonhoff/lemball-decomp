@@ -17,13 +17,13 @@ void CSurface::Blit(CCopyColourToBackBuff* p_fill)
 	}
 	startX = p_fill->m_x;
 	startY = p_fill->m_y;
-	int color = reinterpret_cast<int&>(p_fill->m_colour);
+	int colour = reinterpret_cast<int&>(p_fill->m_colour);
 	if (height <= 0) {
 		return;
 	}
 	do {
 		unsigned char* dest = (unsigned char*) CPVBackBuffSurface::m_bitmap.m_lines[startY] + startX;
-		memset(dest, color, width);
+		memset(dest, colour, width);
 		startY++;
 		height--;
 	} while (height != 0);

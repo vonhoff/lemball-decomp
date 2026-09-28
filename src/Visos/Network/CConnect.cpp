@@ -83,9 +83,9 @@ void CConnect::FirstReceive()
 {
 	Message message;
 
-	message.type = 3;
-	message.code = 0;
-	message.payload = this;
+	message.m_type = 3;
+	message.m_code = 0;
+	message.m_payload = this;
 	m_established = 1;
 	m_writeReady = 0;
 	m_eventPending = m_writeReady;
@@ -117,13 +117,13 @@ bool CConnect::Send(CNetworkMessage& p_message)
 		}
 		sent = CWriteSocket::Send(p_message);
 		if (!sent) {
-			message.type = 1;
-			message.code = 0xc;
+			message.m_type = 1;
+			message.m_code = 0xc;
 			if (p_message.m_headerEnabled == 0) {
-				message.code = 0xb;
+				message.m_code = 0xb;
 			}
-			message.payload = &p_message;
-			message.source = this;
+			message.m_payload = &p_message;
+			message.m_source = this;
 			g_pNetworkStatusQueue->Post(message);
 		}
 		if (opened) {
@@ -143,9 +143,9 @@ void CConnect::Closed(int p_notifyPeer)
 	m_killRequested = 1;
 	CRwSocket::Closed(p_notifyPeer);
 	if (p_notifyPeer != 0) {
-		message.type = 10;
-		message.code = 0;
-		message.payload = this;
+		message.m_type = 10;
+		message.m_code = 0;
+		message.m_payload = this;
 		g_pNetworkStatusQueue->Post(message);
 	}
 }
@@ -158,10 +158,10 @@ CNetworkMessage* CConnect::ReceiveAcknowledgement()
 
 	acknowledgement = CWriteSocket::ReceiveAcknowledgement();
 	if (acknowledgement != 0) {
-		message.type = 6;
-		message.code = 0;
-		message.payload = this;
-		message.source = acknowledgement;
+		message.m_type = 6;
+		message.m_code = 0;
+		message.m_payload = this;
+		message.m_source = acknowledgement;
 		g_pNetworkPacketQueue->Post(message);
 	}
 	return acknowledgement;
@@ -184,10 +184,10 @@ void CConnect::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 {
 	Message message;
 
-	message.type = p_event;
-	message.code = 0;
-	message.payload = this;
-	message.source = p_packet;
+	message.m_type = p_event;
+	message.m_code = 0;
+	message.m_payload = this;
+	message.m_source = p_packet;
 	g_pNetworkPacketQueue->Post(message);
 }
 

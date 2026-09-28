@@ -34,7 +34,7 @@ public:
 	CMain2DDisplay* m_display;      // 0x7c
 	CGDI* m_gdi;                    // 0x80
 	unsigned int m_animResourceId;  // 0x84
-	CVsPoint m_center;              // 0x88
+	CVsPoint m_centre;              // 0x88
 	unsigned int m_initialDraw;     // 0x8c
 	short m_progress;               // 0x90
 	CResBITMAP* m_backgroundBitmap; // 0x94

@@ -7,8 +7,8 @@
 #include "../Foundation/CVsRange.h"
 #include "CMogRes.h"
 
-#define kListHeaderUnset 0xffffffff
-#define kHeaderDataOffset 0x4c
+#define RESOURCE_LIST_HEADER_UNSET 0xffffffff
+#define RESOURCE_LIST_HEADER_DATA_OFFSET 0x4c
 
 // FUNCTION: LEMBALL 0x0045d290
 void CResBaseLIST::SetHeader()
@@ -23,7 +23,7 @@ void CResBaseLIST::SetHeader()
 // FUNCTION: LEMBALL 0x0045d2b0
 void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size)
 {
-	if ((int) this - (int) p_data == -kHeaderDataOffset) {
+	if ((int) this - (int) p_data == -RESOURCE_LIST_HEADER_DATA_OFFSET) {
 		if (m_headerData == 0) {
 			m_headerData = g_pActiveMogRes->AllocateMainMem(p_size);
 			memcpy(m_headerData, p_source, p_size);
@@ -74,7 +74,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 		}
 		m_loaded = 1;
 		OnLoad();
-		m_listHeader->m_totalSize = kListHeaderUnset;
+		m_listHeader->m_totalSize = RESOURCE_LIST_HEADER_UNSET;
 	}
 }
 
@@ -85,7 +85,7 @@ void CResBaseLIST::LoadData()
 		if (!GetfVramLoaded()) {
 			unsigned int headerTotal = m_listHeader->m_totalSize;
 			unsigned int count;
-			if (headerTotal != kListHeaderUnset && m_totalSize != headerTotal) {
+			if (headerTotal != RESOURCE_LIST_HEADER_UNSET && m_totalSize != headerTotal) {
 				return;
 			}
 			count = m_totalSize / m_listHeader->m_headerSize;

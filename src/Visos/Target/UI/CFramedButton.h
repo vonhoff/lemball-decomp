@@ -12,17 +12,17 @@ class CVsRect;
 // VTABLE: LEMBALL 0x00499818 CHotAreaHandler
 class CFramedButton : public CDepressedButton {
 public:
-	CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColor);
-	CFramedButton(CPVGWnd* p_parent, unsigned int p_frameColor);
+	CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColour);
+	CFramedButton(CPVGWnd* p_parent, unsigned int p_frameColour);
 	void InitializeFramePrimitives();
 	virtual ~CFramedButton();
 	virtual void DrawButton();
 	virtual void OnPaint(const CVsRect& p_rect);
 
 private:
-	CLine* m_frameLine;        // 0x10c
-	CClipRect* m_frameRects;   // 0x110
-	unsigned int m_frameColor; // 0x114
+	CLine* m_frameLine;         // 0x10c
+	CClipRect* m_frameRects;    // 0x110
+	unsigned int m_frameColour; // 0x114
 };
 
 // SYNTHETIC: LEMBALL 0x00469900

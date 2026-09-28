@@ -11,21 +11,21 @@
 
 #include <string.h>
 
-extern const short slinkyOffsets[4][2];
-extern const short sheepOffset[2];
+extern const short g_slinkyOffsets[4][2];
+extern const short g_sheepOffset[2];
 extern const unsigned int* g_styleObjectClip;
 
 // FUNCTION: LEMBALL 0x004368f0
 CVsRect* C2D::GetClipRectangle()
 {
-	static CVsRect clipRectangle;
+	static CVsRect g_clipRectangle;
 	CVsRect rectangle((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
 	volatile CVsRect* source = &rectangle;
-	clipRectangle.m_width = source->m_width;
-	clipRectangle.m_height = source->m_height;
-	clipRectangle.m_x = source->m_x;
-	clipRectangle.m_y = source->m_y;
-	return &clipRectangle;
+	g_clipRectangle.m_width = source->m_width;
+	g_clipRectangle.m_height = source->m_height;
+	g_clipRectangle.m_x = source->m_x;
+	g_clipRectangle.m_y = source->m_y;
+	return &g_clipRectangle;
 }
 
 // FUNCTION: LEMBALL 0x0043df30
@@ -158,19 +158,19 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				default:
 					AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
 					break;
-				case ACTION_10:
-				case ACTION_11:
+				case ACTION_JUMPING:
+				case ACTION_FALLING:
 					AddViewIndexToObjectClipGrid(gameX - 1, gameY - 1, p_viewIndex, p_viewData.m_positionZ, 0);
 					break;
 				}
 				break;
 			case OBJECT_CRATE:
 				switch (p_viewData.m_action) {
-				case ACTION_24:
+				case ACTION_OBJECT_READY:
 					AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
 					break;
-				case ACTION_25:
-				case ACTION_26:
+				case ACTION_OBJECT_ACTIVATING:
+				case ACTION_OBJECT_ACTIVATED:
 					AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_positionZ, 1);
 					break;
 				}
@@ -206,8 +206,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				bounds.m_y -= 20;
 				bounds.m_height += 20;
 			}
-			if (p_viewData.m_action != ACTION_4) {
-				if (p_viewData.m_action != ACTION_16) {
+			if (p_viewData.m_action != ACTION_FLYING) {
+				if (p_viewData.m_action != ACTION_ON_BALLOON) {
 					break;
 				}
 				bounds.m_y -= 40;
@@ -297,10 +297,10 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			bounds.m_height = 24;
 			break;
 		case OBJECT_SHEEP:
-			bounds.m_x = (short) screenX - sheepOffset[0];
-			bounds.m_y = (short) screenY - sheepOffset[1];
-			bounds.m_width = sheepOffset[0] * 2;
-			bounds.m_height = sheepOffset[1] * 2;
+			bounds.m_x = (short) screenX - g_sheepOffset[0];
+			bounds.m_y = (short) screenY - g_sheepOffset[1];
+			bounds.m_width = g_sheepOffset[0] * 2;
+			bounds.m_height = g_sheepOffset[1] * 2;
 			break;
 		case OBJECT_BALL:
 			bounds.m_x = (short) screenX - 10;
@@ -322,7 +322,7 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			bounds.m_height = (short) g_styleObjectClip[3];
 			break;
 		case OBJECT_CRATE:
-			if (p_viewData.m_action == ACTION_24) {
+			if (p_viewData.m_action == ACTION_OBJECT_READY) {
 				bounds.m_x = (short) screenX - 12;
 				bounds.m_y = (short) screenY - 12;
 				bounds.m_width = 24;
@@ -374,7 +374,7 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			bounds.m_y = (short) screenY - 24;
 			bounds.m_width = 48;
 			bounds.m_height = 40;
-			if (p_viewData.m_action == ACTION_0x1c) {
+			if (p_viewData.m_action == ACTION_DOOR_LOCKED_FEEDBACK) {
 				bounds.m_y -= 12;
 				bounds.m_height += 12;
 			}
@@ -462,8 +462,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			break;
 		case OBJECT_SLINKY: {
 			unsigned int direction = (unsigned short) p_viewData.m_actionArgument;
-			bounds.m_x = (short) screenX - slinkyOffsets[direction][0];
-			bounds.m_y = (short) screenY - slinkyOffsets[direction][1];
+			bounds.m_x = (short) screenX - g_slinkyOffsets[direction][0];
+			bounds.m_y = (short) screenY - g_slinkyOffsets[direction][1];
 			bounds.m_width = 40;
 			bounds.m_height = 42;
 			break;

@@ -12,8 +12,8 @@ class CTextWnd : public CCritical {
 public:
 	CTextWnd(const char* p_title, int p_lineCapacity);
 	~CTextWnd();
-	void PostText(const char* p_text, unsigned int p_color);
-	void AppendPostedText(char* p_text, unsigned int p_color);
+	void PostText(const char* p_text, unsigned int p_colour);
+	void AppendPostedText(char* p_text, unsigned int p_colour);
 	int PointToLine(int p_x, int p_y);
 	void RedrawAll();
 	void RedrawLines(int p_firstLine, int p_lineCount);

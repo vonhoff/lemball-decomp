@@ -21,7 +21,7 @@ CResCol* CResCol::Load(unsigned int p_resourceId)
 		}
 		return (CResCol*) res->CheckError();
 	}
-	if (res->m_chunkType != kChunkCol) {
+	if (res->m_chunkType != RESOURCE_CHUNK_COLOUR) {
 		res->UnLoad();
 		return 0;
 	}
@@ -31,7 +31,7 @@ CResCol* CResCol::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045e9f0
 void CResCol::SetType()
 {
-	m_chunkType = kChunkCol;
+	m_chunkType = RESOURCE_CHUNK_COLOUR;
 }
 
 // FUNCTION: LEMBALL 0x0045ea00

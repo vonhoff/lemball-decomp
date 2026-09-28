@@ -12,10 +12,10 @@
 #include <string.h>
 
 // GLOBAL: LEMBALL 0x00497044
-static const short baseOffset[] = {40, 60};
+static const short g_baseOffset[] = {40, 60};
 
 // GLOBAL: LEMBALL 0x00497048
-static const short animOffset[] = {40, 60};
+static const short g_animOffset[] = {40, 60};
 
 // FUNCTION: LEMBALL 0x0043d130
 void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
@@ -38,42 +38,48 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 	}
 
 	switch (action) {
-	case ACTION_0x18:
-		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
-		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
+	case ACTION_READY:
+		owner.m_lemmingAnims
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		owner.m_lemmingAnims
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
 		break;
 
-	case ACTION_0x19:
-		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
-		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
-		owner.m_lemmingAnims->DrawAnim(x - animOffset[0] - 8,
-									   y - animOffset[1],
+	case ACTION_ACTIVATING:
+		owner.m_lemmingAnims
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		owner.m_lemmingAnims
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
+		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0] - 8,
+									   y - g_animOffset[1],
 									   RES_GAME_CATMOUNT_SE,
 									   stateTimer,
 									   p_viewData.m_animationTime,
 									   (CRemap*) remap);
 		break;
 
-	case ACTION_0x1a:
-		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
-		owner.m_lemmingAnims->DrawAnim(x - animOffset[0],
-									   y - animOffset[1],
+	case ACTION_ACTIVATED:
+		owner.m_lemmingAnims
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0],
+									   y - g_animOffset[1],
 									   g_anGroundStyleResourceIds[9],
 									   stateTimer + 0x640,
 									   p_viewData.m_animationTime,
 									   0);
-		owner.m_lemmingAnims->DrawAnim(x - animOffset[0] - 8,
-									   y - animOffset[1],
+		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0] - 8,
+									   y - g_animOffset[1],
 									   RES_GAME_CATMOUNT_SE,
 									   stateTimer,
 									   p_viewData.m_animationTime,
 									   (CRemap*) remap);
 		break;
 
-	case ACTION_0x1b:
-		owner.m_lemmingAnims->DrawAnim(x - baseOffset[0], y - baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
-		owner.m_lemmingAnims->DrawAnim(x - animOffset[0],
-									   y - animOffset[1],
+	case ACTION_RUNNING:
+		owner.m_lemmingAnims
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0],
+									   y - g_animOffset[1],
 									   g_anGroundStyleResourceIds[9],
 									   stateTimer + 0x640,
 									   p_viewData.m_animationTime,

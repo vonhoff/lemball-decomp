@@ -7,7 +7,7 @@ public:
 	CEditString& operator+=(char p_character);
 	CEditString& operator=(const CEditString& p_other);
 	CEditString& operator=(const char* p_text);
-	CEditString(int p_arg0);
+	CEditString(int p_capacity);
 
 	friend class CNetworkOptionsDrawer;
 

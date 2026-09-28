@@ -30,14 +30,14 @@ int CPadToButton::ProcessMsg(Message* p_message)
 {
 	int result = 0;
 	int index = 0;
-	unsigned short type = p_message->type;
+	unsigned short type = p_message->m_type;
 	switch ((int) type) {
 	case 3:
 	case 4: {
 		int count = m_entryCount;
 		if (count > 0) {
 			PadToButtonEntry* entries = m_entries;
-			unsigned int messageCode = (unsigned int) p_message->code;
+			unsigned int messageCode = (unsigned int) p_message->m_code;
 			unsigned int* padCode = &entries->m_padCode;
 			while (*padCode != messageCode) {
 				padCode += 2;

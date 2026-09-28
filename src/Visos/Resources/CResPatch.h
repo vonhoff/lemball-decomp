@@ -3,7 +3,7 @@
 
 #include "CResBase.h"
 
-#define kChunkPtch 0x50544348
+#define RESOURCE_CHUNK_PATCH 0x50544348
 
 // SIZE 0x48
 // VTABLE: LEMBALL 0x00498da0

@@ -51,7 +51,7 @@ void CHand::Set(unsigned short p_id, const AiCoord& p_position)
 	m_position.m_yFixed = p_position.m_yFixed;
 	m_position.m_zFixed = p_position.m_zFixed;
 	m_enabled = 1;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_actionArgument = 0;
 	m_activated = 0;
 
@@ -85,7 +85,7 @@ bool CHand::Process()
 	if (m_isRemoteObject != 0) {
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
-			if (m_action == ACTION_0x1a) {
+			if (m_action == ACTION_ACTIVATED) {
 				SetSndEffect(SFX_EEEEH);
 			}
 			m_pendingAction = m_action;
@@ -100,20 +100,20 @@ bool CHand::Process()
 			if (m_actionDeadline < g_dwGameTick) {
 				m_enabled = 1;
 				m_activated = 0;
-				Action(ACTION_0x18);
+				Action(ACTION_READY);
 				return 1;
 			}
 			break;
-		case ACTION_0x19:
+		case ACTION_ACTIVATING:
 			if (m_actionPhase1Deadline < g_dwGameTick) {
-				m_target->Action(ACTION_0x15);
+				m_target->Action(ACTION_WAITING_TO_DIE);
 				m_target->m_actionDeadline = g_dwGameTick + 40;
-				Action(ACTION_0x1a);
+				Action(ACTION_ACTIVATED);
 				SetSndEffect(SFX_EEEEH);
 				return 1;
 			}
 			break;
-		case ACTION_0x1a:
+		case ACTION_ACTIVATED:
 			if (m_actionDeadline < g_dwGameTick) {
 				m_enabled = 1;
 				m_actionDeadline = g_dwGameTick + 20;
@@ -140,7 +140,7 @@ bool CHand::StepOn(const AiCoord& p_position, CGameObject* p_object)
 			p_object->ResetInstructions();
 			m_activator->Action(ACTION_NONE);
 			m_activator->m_actionDeadline = g_dwGameTick + 1000;
-			RequestAction(ACTION_0x19);
+			RequestAction(ACTION_ACTIVATING);
 			return 1;
 		}
 	}

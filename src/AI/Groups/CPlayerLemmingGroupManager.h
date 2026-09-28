@@ -54,7 +54,7 @@ private:
 	int m_deadCount;                      // 0x128
 	CPlayerLemming* m_dead[4];            // 0x12c
 	CPlayerLemming* m_networkLemmings[4]; // 0x13c
-	int m_networkInitialized;             // 0x14c
+	int m_networkInitialised;             // 0x14c
 
 public:
 	void GetPlayerStartPosition(AiCoord& p_position, int p_index);

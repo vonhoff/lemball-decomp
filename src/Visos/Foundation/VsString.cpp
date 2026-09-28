@@ -62,11 +62,11 @@ void vsLtoa(long p_value, char* p_buffer, int p_radix)
 char* vsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 {
 	// GLOBAL: LEMBALL 0x004a0e54
-	static int s_powersInitialized = 0;
+	static int g_powersInitialised = 0;
 	// GLOBAL: LEMBALL 0x004a8298
-	static unsigned int s_maxPowers[17];
+	static unsigned int g_maxPowers[17];
 
-	if (s_powersInitialized == 0) {
+	if (g_powersInitialised == 0) {
 		int r = 2;
 		unsigned int pow;
 		do {
@@ -77,14 +77,14 @@ char* vsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 					pow *= r;
 				} while (pow <= lim);
 			}
-			s_maxPowers[r] = pow;
+			g_maxPowers[r] = pow;
 			r++;
 		} while ((int) r <= 16);
-		s_powersInitialized = 1;
+		g_powersInitialised = 1;
 	}
 
 	unsigned int value = (unsigned int) p_value;
-	unsigned int power = s_maxPowers[p_radix];
+	unsigned int power = g_maxPowers[p_radix];
 	int hasWritten = 0;
 	int written = 0;
 	int i = 0;

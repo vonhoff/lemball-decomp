@@ -35,7 +35,7 @@ void CBullet::Restart()
 {
 	CGlobalGameObject::Restart();
 	m_active = 0;
-	m_action = ACTION_8;
+	m_action = ACTION_DEAD;
 }
 
 // FUNCTION: LEMBALL 0x0041a5c0
@@ -86,7 +86,7 @@ void CBullet::TriggerBullet()
 	end.m_y = m_destination.m_yFixed >> 12;
 	end.m_z = m_destination.m_zFixed >> 12;
 	m_movement.Set(start, end, m_lastMovementTick, 12);
-	m_action = ACTION_0x1b;
+	m_action = ACTION_RUNNING;
 	m_actionDeadline = m_lastMovementTick + 10;
 }
 
@@ -199,7 +199,7 @@ bool CBullet::Process()
 		m_lastMovementTick = currentTick;
 		return 1;
 	}
-	case ACTION_8:
+	case ACTION_DEAD:
 		return 0;
 	}
 }
@@ -257,8 +257,8 @@ void CBullet::GetData()
 void CBullet::Free()
 {
 	m_active = 0;
-	if (m_action != 8) {
-		Action(ACTION_8);
+	if (m_action != ACTION_DEAD) {
+		Action(ACTION_DEAD);
 	}
 	m_isRemoteObject = 0;
 }

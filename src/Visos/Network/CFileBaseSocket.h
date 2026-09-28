@@ -13,7 +13,7 @@ private:
 	friend class CFileBroadcast;
 	friend class CFileReadSocket;
 	friend class CFileWriteSocket;
-	CHeaders* m_file;          // 0x00
+	CHeaders* m_file;             // 0x00
 	unsigned int m_headersOffset; // 0x04
 	unsigned int m_dataOffset;    // 0x08
 };

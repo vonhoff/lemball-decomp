@@ -24,8 +24,8 @@ public:
 	friend class CTrackWindow;
 
 public:
-	CVsRect m_bounds;     // 0x04
-	unsigned int m_color; // 0x0c
+	CVsRect m_bounds;      // 0x04
+	unsigned int m_colour; // 0x0c
 };
 
 // SYNTHETIC: LEMBALL 0x00469930

@@ -25,25 +25,25 @@ struct CVsPoint;
 class CPVSurface {
 public:
 	CPVSurface();
-	virtual void Blit(CZRLE* p_primitive, CResZRLE* p_zrle) = 0;       // vtable+0x24
-	virtual void Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap) = 0; // vtable+0x20
-	virtual void Blit(CBigBitmap* p_bitmap, CResBITMAP* p_resource) = 0;   // vtable+0x1c
-	virtual void Blit(CSolidRect* p_rect) = 0;                         // vtable+0x18
-	virtual void Blit(CPoint* p_point) = 0;                            // vtable+0x14
-	virtual void Blit(CLine* p_line) = 0;                              // vtable+0x10
-	virtual void Blit(CCircle* p_circle) = 0;                          // vtable+0x0c
-	virtual void Blit(CFilledCircle* p_circle) = 0;                    // vtable+0x08
+	virtual void Blit(CZRLE* p_primitive, CResZRLE* p_zrle) = 0;         // vtable+0x24
+	virtual void Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap) = 0;   // vtable+0x20
+	virtual void Blit(CBigBitmap* p_bitmap, CResBITMAP* p_resource) = 0; // vtable+0x1c
+	virtual void Blit(CSolidRect* p_rect) = 0;                           // vtable+0x18
+	virtual void Blit(CPoint* p_point) = 0;                              // vtable+0x14
+	virtual void Blit(CLine* p_line) = 0;                                // vtable+0x10
+	virtual void Blit(CCircle* p_circle) = 0;                            // vtable+0x0c
+	virtual void Blit(CFilledCircle* p_circle) = 0;                      // vtable+0x08
 	virtual void Blit(CClipRect* p_clipRect) = 0;                        // vtable+0x04
-	virtual void Blit(CScreenScroll* p_scroll) = 0;                    // vtable+0x00
-	virtual void Resize(const CVsSize& p_size);                        // vtable+0x28
-	virtual void Move(const CVsPoint& p_position) = 0;                 // vtable+0x2c
-	virtual void AttachPalette(CResPALETTE* p_palette) = 0;            // vtable+0x30
-	virtual void Flush() = 0;                                          // vtable+0x34
-	virtual void* GetCurrDB() = 0;                                     // vtable+0x38
-	virtual bool HasBackBuff();                                        // vtable+0x3c
-	virtual bool HasZBuff();                                           // vtable+0x40
-	virtual void SetWorldWidth(int p_width);                           // vtable+0x44
-	virtual int GetWorldWidth();                                       // vtable+0x48
+	virtual void Blit(CScreenScroll* p_scroll) = 0;                      // vtable+0x00
+	virtual void Resize(const CVsSize& p_size);                          // vtable+0x28
+	virtual void Move(const CVsPoint& p_position) = 0;                   // vtable+0x2c
+	virtual void AttachPalette(CResPALETTE* p_palette) = 0;              // vtable+0x30
+	virtual void Flush() = 0;                                            // vtable+0x34
+	virtual void* GetCurrDB() = 0;                                       // vtable+0x38
+	virtual bool HasBackBuff();                                          // vtable+0x3c
+	virtual bool HasZBuff();                                             // vtable+0x40
+	virtual void SetWorldWidth(int p_width);                             // vtable+0x44
+	virtual int GetWorldWidth();                                         // vtable+0x48
 	void SetDontUpdateRect(const CVsRect& p_rect);
 	~CPVSurface();
 

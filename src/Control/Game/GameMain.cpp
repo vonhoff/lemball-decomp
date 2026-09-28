@@ -81,18 +81,18 @@ void DisplayHelp()
 // FUNCTION: LEMBALL 0x00406310
 int VSmain(int p_argc, char** p_argv)
 {
-	int* sentinel;
+	int* seed;
 	CGame* game;
 
 	g_pVSTrig = new VSTrig();
 
-	sentinel = (int*) operator new(4);
-	if (sentinel != 0) {
-		*sentinel = 0xad28;
-		g_pSentinel = sentinel;
+	seed = (int*) operator new(4);
+	if (seed != 0) {
+		*seed = 0xad28;
+		g_pRandomSeed = seed;
 	}
 	else {
-		g_pSentinel = 0;
+		g_pRandomSeed = 0;
 	}
 
 	_DEMO_Init(0x19000);
@@ -113,7 +113,7 @@ int VSmain(int p_argc, char** p_argv)
 	}
 
 	_DEMO_Quit();
-	operator delete(g_pSentinel);
+	operator delete(g_pRandomSeed);
 	operator delete(g_pVSTrig);
 	*g_pDebugOutput << g_szGameClosedDown;
 	return 0;

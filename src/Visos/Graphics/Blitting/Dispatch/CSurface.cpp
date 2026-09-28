@@ -23,10 +23,10 @@ void CSurface::BlitZRLE(int p_x,
 						unsigned short p_depth)
 {
 	struct {
-		short unused;
-		short warningHeight;
-		short destination[4];
-		short clip[4];
+		short m_unused;
+		short m_warningHeight;
+		short m_destination[4];
+		short m_clip[4];
 	} frame;
 	CResZRLE* resource;
 	short zHeight;
@@ -37,8 +37,8 @@ void CSurface::BlitZRLE(int p_x,
 	int width;
 
 	resource = p_zrle;
-	dest = (CVsRect*) frame.destination;
-	clipped = (CVsRect*) frame.clip;
+	dest = (CVsRect*) frame.m_destination;
+	clipped = (CVsRect*) frame.m_clip;
 	zWidth = resource->m_width;
 	zHeight = resource->m_height;
 	width = (int) zWidth;
@@ -60,9 +60,9 @@ void CSurface::BlitZRLE(int p_x,
 	clipped->m_x = 0;
 	if ((short) dest->m_width > 0xff || (short) dest->m_height > 0xff) {
 		CVSOStream& warning = *g_pDebugOutput << g_szWarningZrleIs;
-		frame.warningHeight = dest->m_height;
+		frame.m_warningHeight = dest->m_height;
 		CVSOStream& heightOutput = warning << width << g_szClippingWideAnd;
-		heightOutput << (int) frame.warningHeight << g_szClippingHighNewline;
+		heightOutput << (int) frame.m_warningHeight << g_szClippingHighNewline;
 		if ((short) dest->m_width > 0xff) {
 			*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
 			dest->m_width = 0xff;

@@ -15,10 +15,10 @@
 struct FILE;
 struct _Filet;
 
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd,
-														   const char* lpText,
-														   const char* lpCaption,
-														   unsigned int uType);
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_hWnd,
+														   const char* p_lpText,
+														   const char* p_lpCaption,
+														   unsigned int p_uType);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
 extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
 
@@ -51,7 +51,7 @@ void WriteDebugString2File(char* p_text)
 // FUNCTION: LEMBALL 0x00472910
 int _RAWOUT_DebugString(char* p_text)
 {
-	if (g_nDebugInitialized == 0) {
+	if (g_nDebugInitialised == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_DebugString", 0);
 		return 1;
 	}
@@ -67,7 +67,7 @@ int _RAWOUT_DebugString(char* p_text)
 // FUNCTION: LEMBALL 0x00472980
 int _RAWOUT_ErrorString(char* p_text)
 {
-	if (g_nDebugInitialized == 0) {
+	if (g_nDebugInitialised == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_ErrorString", 0);
 		return 1;
 	}
@@ -83,7 +83,7 @@ int _RAWOUT_ErrorString(char* p_text)
 // FUNCTION: LEMBALL 0x004729f0
 int _RAWOUT_SysString(char* p_text)
 {
-	if (g_nDebugInitialized == 0) {
+	if (g_nDebugInitialised == 0) {
 		MessageBoxA(NULL, p_text, "_RAWOUT_SysString", 0);
 		return 1;
 	}

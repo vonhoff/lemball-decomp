@@ -35,6 +35,6 @@ private:
 	void* m_frontendResources;     // 0x6c
 };
 
-extern int* g_pSentinel;
+extern int* g_pRandomSeed;
 extern unsigned int g_dwGameTick;
 #endif

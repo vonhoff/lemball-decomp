@@ -70,10 +70,10 @@ int C2D::ProcessMsg(Message* p_message)
 		return 0;
 	}
 
-	switch ((unsigned int) p_message->type) {
+	switch ((unsigned int) p_message->m_type) {
 	case 4:
 	case 0xc:
-		switch (p_message->code) {
+		switch (p_message->m_code) {
 		case 3:
 			PrevGroup();
 			return 1;

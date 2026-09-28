@@ -82,9 +82,9 @@ void CIntroAnimDrawer::EndPhase()
 // FUNCTION: LEMBALL 0x00447610
 bool CIntroAnimDrawer::ProcessMessages(Message* p_message)
 {
-	switch ((unsigned int) p_message->type) {
+	switch ((unsigned int) p_message->m_type) {
 	case 4:
-		switch (p_message->code) {
+		switch (p_message->m_code) {
 		case 0x1f:
 		case 0x22:
 		case 0x23:

@@ -41,12 +41,12 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	unsigned int length;
 	MMRESULT result;
 	union {
-		unsigned int downsample;
-		char errorText[0x100];
+		unsigned int m_downsample;
+		char m_errorText[0x100];
 	} work;
 
 	memcpy(&patchHeader, p_patch, sizeof(patchHeader));
-	patchHeader.m_unk4 = SwapBytes16(patchHeader.m_unk4);
+	patchHeader.m_formatVersion = SwapBytes16(patchHeader.m_formatVersion);
 	patchHeader.m_waveCount = SwapBytes16(patchHeader.m_waveCount);
 	m_prepared = 0;
 	m_waveOut = p_waveOut;
@@ -56,16 +56,16 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	}
 	wave = p_patch + sizeof(EffPatchHeader);
 	memcpy(&waveHeader, wave, sizeof(waveHeader));
-	waveHeader.m_unk4 = SwapBytes16(waveHeader.m_unk4);
+	waveHeader.m_formatVersion = SwapBytes16(waveHeader.m_formatVersion);
 	waveHeader.m_length = SwapBytes32(waveHeader.m_length);
 	waveHeader.m_sampleRate = SwapBytes32(waveHeader.m_sampleRate);
 	length = waveHeader.m_length;
 	if (p_use16Bit == 0) {
 		length >>= 1;
 	}
-	work.downsample = 0;
+	work.m_downsample = 0;
 	if (waveHeader.m_sampleRate != p_sampleRate) {
-		work.downsample = 1;
+		work.m_downsample = 1;
 		length >>= 1;
 	}
 	m_sampleHandle = GlobalAlloc(0x2002, length);
@@ -107,7 +107,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	if (p_use16Bit == 0) {
 		source = wave + sizeof(EffWaveHeader);
 		dest = m_sampleData;
-		if (work.downsample == 0) {
+		if (work.m_downsample == 0) {
 			while (length != 0) {
 				*dest++ = *source++;
 				source++;
@@ -125,7 +125,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	else {
 		source = wave + sizeof(EffWaveHeader);
 		dest = m_sampleData;
-		if (work.downsample == 0) {
+		if (work.m_downsample == 0) {
 			if ((length >> 1) > 0) {
 				length >>= 1;
 				do {
@@ -167,8 +167,8 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, WAVE_FORMAT_QUERY);
 	if (result != 0) {
 		*g_pErrorOutput << "Error! Sound System cannot support Wave Format!\n";
-		waveOutGetErrorTextA(result, work.errorText, 0x100);
-		*g_pErrorOutput << work.errorText << "\n";
+		waveOutGetErrorTextA(result, work.m_errorText, 0x100);
+		*g_pErrorOutput << work.m_errorText << "\n";
 		*g_pErrorOutput << "Wave Format:\n";
 		*g_pErrorOutput << "Samples/Sec: " << format.nSamplesPerSec << "\n";
 		*g_pErrorOutput << "Avg Bytes/S: " << format.nAvgBytesPerSec << "\n";
@@ -179,22 +179,22 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, 0);
 	if (result != 0) {
 		*g_pErrorOutput << "Error! Sound System cannot open Wave Device!\n";
-		waveOutGetErrorTextA(result, work.errorText, 0x100);
-		*g_pErrorOutput << work.errorText << "\n";
+		waveOutGetErrorTextA(result, work.m_errorText, 0x100);
+		*g_pErrorOutput << work.m_errorText << "\n";
 		return;
 	}
 	result = waveOutPrepareHeader(m_waveOut, m_waveHeader, 0x20);
 	if (result != 0) {
 		*g_pErrorOutput << "Error! Sound System cannot prepare Wave Header!\n";
-		waveOutGetErrorTextA(result, work.errorText, 0x100);
-		*g_pErrorOutput << work.errorText << "\n";
+		waveOutGetErrorTextA(result, work.m_errorText, 0x100);
+		*g_pErrorOutput << work.m_errorText << "\n";
 		return;
 	}
 	result = waveOutClose(m_waveOut);
 	if (result != 0) {
 		*g_pErrorOutput << "Error! Sound System cannot close Wave Device!\n";
-		waveOutGetErrorTextA(result, work.errorText, 0x100);
-		*g_pErrorOutput << work.errorText << "\n";
+		waveOutGetErrorTextA(result, work.m_errorText, 0x100);
+		*g_pErrorOutput << work.m_errorText << "\n";
 		return;
 	}
 	m_prepared = 1;

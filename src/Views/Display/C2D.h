@@ -295,6 +295,6 @@ private:
 // ?$S1@?1??GetClipRectangle@C2D@@QAEPAVCVsRect@@XZ@4EA
 
 // GLOBAL: LEMBALL 0x004a78b0
-// clipRectangle
+// g_clipRectangle
 
 #endif

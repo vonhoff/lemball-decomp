@@ -24,7 +24,7 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 	int mode;
 	CGameStatus* status;
 
-	type = p_message->type;
+	type = p_message->m_type;
 	switch (type) {
 	case 3:
 	case 4:
@@ -32,7 +32,7 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 		break;
 	case 0xc:
 		m_idleDeadline = timeGetTime() + 20000;
-		switch (p_message->code) {
+		switch (p_message->m_code) {
 		case 0xacef0001:
 			m_returnState = 3;
 			m_quitYet = 1;
@@ -54,7 +54,7 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 			status->m_skill = mode;
 			m_quitYet = 1;
 			g_nFrontendAutoFlowToggle = 1;
-			if (p_message->code == 0xacef00a6) {
+			if (p_message->m_code == 0xacef00a6) {
 				m_returnState = 4;
 			}
 			else {

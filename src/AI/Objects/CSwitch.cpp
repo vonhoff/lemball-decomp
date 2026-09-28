@@ -82,7 +82,7 @@ bool CSwitch::Process()
 	m_position.m_zFixed = ((int) z) << 12;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
-			if (m_action == ACTION_7) {
+			if (m_action == ACTION_HIT) {
 				SetSndEffect(SFX_SWITCH);
 			}
 			m_pendingAction = m_action;
@@ -90,15 +90,15 @@ bool CSwitch::Process()
 		return true;
 	}
 	switch (m_action) {
-	case ACTION_7:
+	case ACTION_HIT:
 		Throw();
-		Action(ACTION_0x18);
+		Action(ACTION_READY);
 		break;
-	case ACTION_0x19:
+	case ACTION_ACTIVATING:
 		break;
-	case ACTION_0x1a:
+	case ACTION_ACTIVATED:
 		if (m_actionPhase2Deadline < g_dwGameTick) {
-			Action(ACTION_7);
+			Action(ACTION_HIT);
 		}
 		break;
 	}
@@ -112,12 +112,12 @@ bool CSwitch::Activate(CGameObject* p_object)
 	case 0:
 		m_actionPhase2Deadline = 20;
 		m_actionArgument = 1;
-		RequestAction(ACTION_0x1a);
+		RequestAction(ACTION_ACTIVATED);
 		return 1;
 	case 1:
 		m_actionPhase2Deadline = 20;
 		m_actionArgument = 0;
-		RequestAction(ACTION_0x1a);
+		RequestAction(ACTION_ACTIVATED);
 		return 1;
 	default:
 		return 1;

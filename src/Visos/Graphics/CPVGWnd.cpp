@@ -36,13 +36,13 @@ unsigned int CPVGWnd::GetStyle()
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x00465aa0
-void CPVGWnd::Clear(int p_color)
+void CPVGWnd::Clear(int p_colour)
 {
 	if (g_dwWindowQuitRequested != 0 || m_lifecycleRefs != 1 || m_gdi == 0) {
 		return;
 	}
-	if (p_color == -1) {
-		p_color = 0;
+	if (p_colour == -1) {
+		p_colour = 0;
 	}
 
 	m_gdi->m_renderTarget->GetCurrDB();
@@ -57,7 +57,7 @@ void CPVGWnd::Clear(int p_color)
 	memcpy(&m_clearRectangle[0].m_bounds.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
 	memcpy(&m_clearRectangle[0].m_bounds.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
 	memcpy(&m_clearRectangle[0].m_bounds.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
-	m_clearRectangle[0].m_color = p_color;
+	m_clearRectangle[0].m_colour = p_colour;
 	m_clearRectangle[0].Draw(m_gdi);
 
 	if (m_gdi->m_renderTarget->HasBackBuff()) {

@@ -67,14 +67,14 @@ public:
 	friend class CGameObject;
 
 private:
-	unsigned int m_mapType;  // 0x00
-	int m_orientation;       // 0x04
+	unsigned int m_mapType; // 0x00
+	int m_orientation;      // 0x04
 
 public:
 	CGroundArray m_ground; // 0x08
 
 private:
-	CAI* m_unk0x18;            // 0x18
+	CAI* m_ownerAI;            // 0x18
 	int m_walkWidth;           // 0x1c
 	int m_walkHeight;          // 0x20
 	char m_levelName[33];      // 0x24
@@ -88,18 +88,18 @@ extern CMap* g_pMap;
 extern CMap* g_pActiveMap;
 extern CMap* g_pCurrentMap;
 extern void* g_apValidateDefaultBloxDataCases[25];
-extern unsigned short g_wDefaultBloxLimit0206;
-extern unsigned short g_wDefaultBloxLimit0207;
-extern unsigned short g_wDefaultBloxLimit0208;
-extern unsigned short g_wDefaultBloxLimit0209;
-extern unsigned short g_wDefaultBloxLimit020A;
-extern unsigned short g_wDefaultBloxLimit020B;
-extern unsigned short g_wDefaultBloxLimit020C;
-extern unsigned short g_wDefaultBloxLimit020D;
-extern unsigned short g_wDefaultBloxLimit020E;
-extern unsigned short g_wDefaultBloxLimit020F;
+extern unsigned short g_blox1FrameLimit;
+extern unsigned short g_blox2FrameLimit;
+extern unsigned short g_steepSwSlopeFrameLimit;
+extern unsigned short g_blox4FrameLimit;
+extern unsigned short g_blox5FrameLimit;
+extern unsigned short g_blox6FrameLimit;
+extern unsigned short g_blox7FrameLimit;
+extern unsigned short g_steepSeSlopeFrameLimit;
+extern unsigned short g_shallowSwSlopeFrameLimit;
+extern unsigned short g_shallowSeSlopeFrameLimit;
 extern unsigned short g_wDefaultBloxLimit0214;
-extern unsigned short g_wDefaultBloxLimit0210;
-extern unsigned short g_wDefaultBloxLimit0202;
-extern unsigned short g_wDefaultBloxLimit0217;
+extern unsigned short g_groundAnimFrameLimit;
+extern unsigned short g_treeFrameLimit;
+extern unsigned short g_embersFrameLimit;
 #endif

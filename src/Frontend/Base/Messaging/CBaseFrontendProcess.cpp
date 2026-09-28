@@ -15,7 +15,7 @@
 // FUNCTION: LEMBALL 0x004468d0
 int CBaseFrontendProcess::ProcessMsg(Message* p_message)
 {
-	int code = p_message->code;
+	int code = p_message->m_code;
 	Message* message = p_message;
 	CReadPacket* packet;
 	CConnect* connection;
@@ -25,10 +25,10 @@ int CBaseFrontendProcess::ProcessMsg(Message* p_message)
 		return 0;
 	}
 	if (ProcessMessages(message) == 0) {
-		switch ((unsigned int) message->type) {
+		switch ((unsigned int) message->m_type) {
 		case 5:
-			connection = (CConnect*) message->payload;
-			packet = (CReadPacket*) message->source;
+			connection = (CConnect*) message->m_payload;
+			packet = (CReadPacket*) message->m_source;
 			if (code != 0) {
 				return 1;
 			}

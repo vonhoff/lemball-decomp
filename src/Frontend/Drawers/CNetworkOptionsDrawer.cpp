@@ -563,10 +563,10 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		return 0;
 	}
 
-	switch ((int) p_message->type) {
+	switch ((int) p_message->m_type) {
 	case 4: {
 
-		code = p_message->code;
+		code = p_message->m_code;
 		if (code == 0x49) {
 			g_nNetworkOptionsShiftHeld = 1;
 			g_nNetworkOptionsCapsOrShift |= 1;
@@ -652,7 +652,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			}
 		}
 
-		switch (p_message->code) {
+		switch (p_message->m_code) {
 		case 1:
 			if (HighlightPreviousEntry()) {
 				g_pSoundView->PlayEffect(SFX_CHANGEOP);
@@ -677,7 +677,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		}
 	}
 	case 3:
-		code = p_message->code;
+		code = p_message->m_code;
 		if (code == 0x49) {
 			g_nNetworkOptionsCapsOrShift &= ~1;
 			g_nNetworkOptionsShiftHeld = 0;
@@ -698,7 +698,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		}
 		return 0;
 	case 0xc:
-		switch (p_message->code) {
+		switch (p_message->m_code) {
 		case 0xacef000c:
 			if (m_locked == 0) {
 				Start(0);

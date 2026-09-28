@@ -449,14 +449,14 @@ void CPreviewDrawer::DrawAnims()
 // FUNCTION: LEMBALL 0x00449d30
 bool CPreviewDrawer::ProcessMessages(Message* p_message)
 {
-	switch ((int) p_message->type) {
+	switch ((int) p_message->m_type) {
 	default:
 		m_processedCount = m_processedCount + 1;
 		return 0;
 	case 0xc:
 		break;
 	}
-	switch (p_message->code) {
+	switch (p_message->m_code) {
 	default:
 		return 0;
 	case PREVIEW_BUTTON_MESSAGE_GO:

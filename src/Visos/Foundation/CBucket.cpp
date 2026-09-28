@@ -10,7 +10,7 @@
 #pragma intrinsic(memset)
 
 // GLOBAL: LEMBALL 0x004a2a68
-static unsigned int s_bitMasks[32] = {
+static unsigned int g_bitMasks[32] = {
 	0x00000001, 0x00000002, 0x00000004, 0x00000008, 0x00000010, 0x00000020, 0x00000040, 0x00000080,
 	0x00000100, 0x00000200, 0x00000400, 0x00000800, 0x00001000, 0x00002000, 0x00004000, 0x00008000,
 	0x00010000, 0x00020000, 0x00040000, 0x00080000, 0x00100000, 0x00200000, 0x00400000, 0x00800000,
@@ -51,8 +51,8 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 	m_map = (unsigned int*) p_map;
 	m_memory = memory;
 	memset(p_map, 0, m_mapWordCount * sizeof(unsigned long));
-	m_freeOffset.wWord = 0;
-	m_freeOffset.wBit = 0;
+	m_freeOffset.m_wWord = 0;
+	m_freeOffset.m_wBit = 0;
 }
 
 // FUNCTION: LEMBALL 0x00472dc0
@@ -95,13 +95,13 @@ bool CBucket::Allocate(unsigned char** p_result)
 	}
 	*p_result = 0;
 	Boffset offset = current->m_freeOffset;
-	current->m_map[offset.wWord] |= s_bitMasks[offset.wBit];
+	current->m_map[offset.m_wWord] |= g_bitMasks[offset.m_wBit];
 	current->m_freeBytes -= current->m_blockSize;
 	if ((int) current->m_freeBytes <= 0) {
 		current->m_flags |= 4;
 	}
 	current->m_freeOffset = current->FindFreeOffset(offset);
-	*p_result = current->m_memory + (offset.wWord * 32 + offset.wBit) * current->m_blockSize;
+	*p_result = current->m_memory + (offset.m_wWord * 32 + offset.m_wBit) * current->m_blockSize;
 	current->m_totalAllocations++;
 	current->m_activeAllocations++;
 	if ((int) current->m_peakAllocations < (int) current->m_activeAllocations) {
@@ -128,15 +128,15 @@ bool CBucket::Free(unsigned char* p_memory)
 	}
 	int index = (p_memory - current->m_memory) / (int) current->m_blockSize;
 	Boffset offset;
-	offset.wWord = (short) (index / 32);
-	offset.wBit = (short) (index % 32);
+	offset.m_wWord = (short) (index / 32);
+	offset.m_wBit = (short) (index % 32);
 	unsigned short oldFlags = current->m_flags;
-	current->m_map[offset.wWord] &= ~s_bitMasks[offset.wBit];
+	current->m_map[offset.m_wWord] &= ~g_bitMasks[offset.m_wBit];
 	current->m_freeBytes += current->m_blockSize;
 	current->m_flags &= ~4;
 	current->m_activeAllocations--;
 	if ((oldFlags & 4) != 0 ||
-		(current->m_freeOffset.wWord > offset.wWord && current->m_freeOffset.wBit > offset.wBit)) {
+		(current->m_freeOffset.m_wWord > offset.m_wWord && current->m_freeOffset.m_wBit > offset.m_wBit)) {
 		current->m_freeOffset = offset;
 	}
 	if (current->m_totalBytes == current->m_freeBytes && current->m_parent != 0) {
@@ -152,7 +152,7 @@ Boffset CBucket::FindFreeOffset(Boffset p_offset)
 	if ((m_flags & 4) != 0) {
 		return p_offset;
 	}
-	unsigned short word = p_offset.wWord;
+	unsigned short word = p_offset.m_wWord;
 	if (m_map[word] == 0xFFFFFFFF) {
 		do {
 			word++;
@@ -161,18 +161,18 @@ Boffset CBucket::FindFreeOffset(Boffset p_offset)
 			}
 		} while (m_map[word] == 0xFFFFFFFF);
 	}
-	p_offset.wBit = 0;
+	p_offset.m_wBit = 0;
 	unsigned int* mask;
 	unsigned int bits = m_map[word];
-	mask = s_bitMasks;
+	mask = g_bitMasks;
 	do {
 		if ((*mask & bits) == 0) {
 			break;
 		}
-		p_offset.wBit++;
+		p_offset.m_wBit++;
 		mask++;
-	} while (mask < s_bitMasks + 32);
-	p_offset.wWord = word;
+	} while (mask < g_bitMasks + 32);
+	p_offset.m_wWord = word;
 	return p_offset;
 }
 

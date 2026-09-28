@@ -25,7 +25,7 @@ CBall::CBall() : CGameObject(OBJECT_BALL, 0, 0)
 void CBall::Restart()
 {
 	CGameObject::Restart();
-	m_action = BALL_ACTION_MOVING;
+	m_action = ACTION_BALL_MOVING;
 	m_speed = g_anTurnDelayCursor[m_objectType];
 }
 
@@ -41,7 +41,7 @@ void CBall::Set(AiCoord p_start, AiCoord p_destination, int p_speed)
 	m_destination.m_xFixed = p_destination.m_xFixed;
 	m_destination.m_yFixed = p_destination.m_yFixed;
 	m_destination.m_zFixed = p_destination.m_zFixed;
-	m_action = BALL_ACTION_MOVING;
+	m_action = ACTION_BALL_MOVING;
 	m_actionArgument = 0;
 	unsigned short* speed = &m_speed;
 	if (g_pAI->m_levelVersion < 7) {
@@ -143,7 +143,7 @@ bool CBall::Move()
 found:
 	if (hit != 0) {
 		hit->HitBall();
-		m_action = BALL_ACTION_EXPLODING;
+		m_action = ACTION_BALL_EXPLODING;
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionDeadline = g_dwGameTick + 0x16;
 		return 1;
@@ -220,7 +220,7 @@ void CBall::SetHeightCorrect()
 bool CBall::Process()
 {
 	switch (m_action) {
-	case BALL_ACTION_MOVING:
+	case ACTION_BALL_MOVING:
 		switch ((unsigned short) m_actionArgument) {
 		case 0:
 			m_actionDeadline = g_dwGameTick;
@@ -277,7 +277,7 @@ bool CBall::Process()
 		}
 		UpdateCollision();
 		return 1;
-	case BALL_ACTION_EXPLODING:
+	case ACTION_BALL_EXPLODING:
 		if (m_actionDeadline < g_dwGameTick) {
 			g_pBallManager->Delete(this);
 			return 0;

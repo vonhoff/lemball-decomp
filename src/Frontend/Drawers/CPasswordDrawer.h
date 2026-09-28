@@ -16,10 +16,19 @@ struct PasswordTextPosition {
 };
 
 struct PasswordTextLayout {
-	unsigned int m_unknown00[6];
+	unsigned int m_backgroundX;
+	unsigned int m_backgroundY;
+	unsigned int m_keypadX;
+	unsigned int m_keypadY;
+	unsigned int m_buttonGapX;
+	unsigned int m_buttonGapY;
 	PasswordTextPosition m_labelPositions[4];
 	PasswordTextPosition m_countPositions[4];
-	unsigned int m_unknown58[8];
+	unsigned int m_passwordRightMargin;
+	unsigned int m_passwordY;
+	unsigned int m_buttonWidth;
+	unsigned int m_buttonHeight;
+	unsigned int m_unknown68[4];
 	PasswordTextPosition m_resultPosition;
 };
 

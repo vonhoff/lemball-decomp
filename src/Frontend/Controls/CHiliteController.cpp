@@ -101,19 +101,19 @@ int CHiliteController::ProcessMsg(Message* p_message)
 	if (m_active == 0) {
 		return 0;
 	}
-	switch ((unsigned int) p_message->type) {
+	switch ((unsigned int) p_message->m_type) {
 	default:
 		m_processedCount++;
 		return 0;
 	case 3:
-		if (p_message->code == 0x1f || p_message->code == 0x22 || p_message->code == 0x4c) {
+		if (p_message->m_code == 0x1f || p_message->m_code == 0x22 || p_message->m_code == 0x4c) {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
 			button->OnButtonUp(CVsPoint(0, 0), 0);
 			return 0;
 		}
 		break;
 	case 4:
-		switch (p_message->code) {
+		switch (p_message->m_code) {
 		case 1:
 			if (m_horizontalMode == 0) {
 				return 0;
@@ -219,7 +219,7 @@ void CHiliteController::DrawHiliteWindow()
 		CGDI* hiliteGdi = (CGDI*) m_hiliteSurface;
 		CSurface* surface = hiliteGdi->m_renderTarget;
 		CVsSize dimensions(surface->m_windowRect);
-		m_hiliteRect.m_color = 0x10000;
+		m_hiliteRect.m_colour = 0x10000;
 		m_hiliteRect.m_bounds.m_width = dimensions.m_width;
 		m_hiliteRect.m_bounds.m_height = dimensions.m_height;
 		m_hiliteRect.m_bounds.m_x = 0;
@@ -272,9 +272,9 @@ void CHiliteController::SetHilite(int p_buttonIndex)
 // FUNCTION: LEMBALL 0x0044fb70
 void CHiliteController::PostSelectionMessage()
 {
-	m_navigationState.type = 0xc;
-	m_navigationState.time = CurrentQueueTimer();
-	m_navigationState.code = m_junctions[m_currentButton].m_controlMessage;
+	m_navigationState.m_type = 0xc;
+	m_navigationState.m_time = CurrentQueueTimer();
+	m_navigationState.m_code = m_junctions[m_currentButton].m_controlMessage;
 	g_pMasterInputQueue->Post(m_navigationState);
 	g_pSoundView->PlayEffect(SFX_GUNHIT);
 }

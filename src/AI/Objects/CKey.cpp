@@ -35,15 +35,15 @@ bool CKey::Process()
 	m_position.m_zFixed = z << 12;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
-			if (m_action == 26) {
+			if (m_action == ACTION_ACTIVATED) {
 				SetSndEffect(SFX_KEYS);
 			}
 			m_pendingAction = m_action;
 		}
 		return 1;
 	}
-	if (m_action == 26) {
-		Action(ACTION_0x18);
+	if (m_action == ACTION_ACTIVATED) {
+		Action(ACTION_READY);
 		m_objectActive = 0;
 	}
 	return 1;
@@ -54,7 +54,7 @@ bool CKey::Activate(CGameObject* p_object)
 {
 	m_activator = p_object;
 	if (m_activator->HasObject(m_objectType) == 0) {
-		RequestAction(ACTION_0x1a);
+		RequestAction(ACTION_ACTIVATED);
 		return 1;
 	}
 	return 0;

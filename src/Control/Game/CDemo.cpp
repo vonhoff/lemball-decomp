@@ -46,43 +46,43 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 		return false;
 	}
 	struct {
-		unsigned short type;
-		unsigned short reserved;
-		unsigned int time;
-		int code;
-		unsigned int payload;
-		unsigned int source;
+		unsigned short m_type;
+		unsigned short m_reserved;
+		unsigned int m_time;
+		int m_code;
+		unsigned int m_payload;
+		unsigned int m_source;
 	} message;
-	message.time = CurrentQueueTimer();
+	message.m_time = CurrentQueueTimer();
 	m_readCursor++;
-	message.type = m_readCursor[0];
-	message.type |= (unsigned short) m_readCursor[1] << 8;
+	message.m_type = m_readCursor[0];
+	message.m_type |= (unsigned short) m_readCursor[1] << 8;
 	m_readCursor += 2;
-	message.code = m_readCursor[0];
-	message.code |= (unsigned int) m_readCursor[1] << 8;
-	message.code |= (unsigned int) m_readCursor[2] << 16;
-	message.code |= (unsigned int) m_readCursor[3] << 24;
+	message.m_code = m_readCursor[0];
+	message.m_code |= (unsigned int) m_readCursor[1] << 8;
+	message.m_code |= (unsigned int) m_readCursor[2] << 16;
+	message.m_code |= (unsigned int) m_readCursor[3] << 24;
 	m_readCursor += 4;
-	message.payload = m_readCursor[0];
-	message.payload |= (unsigned int) m_readCursor[1] << 8;
-	message.payload |= (unsigned int) m_readCursor[2] << 16;
-	message.payload |= (unsigned int) m_readCursor[3] << 24;
+	message.m_payload = m_readCursor[0];
+	message.m_payload |= (unsigned int) m_readCursor[1] << 8;
+	message.m_payload |= (unsigned int) m_readCursor[2] << 16;
+	message.m_payload |= (unsigned int) m_readCursor[3] << 24;
 	m_readCursor += 4;
-	message.source = m_readCursor[0];
-	message.source |= (unsigned int) m_readCursor[1] << 8;
-	message.source |= (unsigned int) m_readCursor[2] << 16;
-	message.source |= (unsigned int) m_readCursor[3] << 24;
+	message.m_source = m_readCursor[0];
+	message.m_source |= (unsigned int) m_readCursor[1] << 8;
+	message.m_source |= (unsigned int) m_readCursor[2] << 16;
+	message.m_source |= (unsigned int) m_readCursor[3] << 24;
 	m_readCursor += 4;
 	if (m_window == 0) {
 		return false;
 	}
-	switch ((unsigned int) message.type) {
+	switch ((unsigned int) message.m_type) {
 	case 5:
 	case 6:
 	case 8:
 	case 9: {
 		int zoom;
-		CVsPoint position((short) message.code, (short) ((unsigned int) message.code >> 16));
+		CVsPoint position((short) message.m_code, (short) ((unsigned int) message.m_code >> 16));
 		CVsPoint& point = position;
 		zoom = m_window->m_zoom;
 		point.m_x = (short) (zoom * point.m_x);
@@ -96,11 +96,11 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 			point.m_y < window->m_rect.m_y || (short) (window->m_rect.m_height + window->m_rect.m_y) <= point.m_y) {
 			return false;
 		}
-		message.code = PackParam(point.m_x, point.m_y);
+		message.m_code = PackParam(point.m_x, point.m_y);
 		break;
 	}
 	}
-	message.type |= 0x8000;
+	message.m_type |= 0x8000;
 	g_pMasterInputQueue->Post((Message&) message);
 	return true;
 }
@@ -237,9 +237,9 @@ void CDemo::GameIsOver()
 int CDemo::ProcessMsg(Message* p_message)
 {
 	if (m_demoMode != 0) {
-		unsigned short type = p_message->type;
+		unsigned short type = p_message->m_type;
 		if ((type & 0x8000) != 0) {
-			p_message->type = type & 0x7fff;
+			p_message->m_type = type & 0x7fff;
 		}
 		else {
 			switch (type) {

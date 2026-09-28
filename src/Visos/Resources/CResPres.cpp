@@ -20,7 +20,7 @@ CResPres* CResPres::Load(unsigned int p_resourceId)
 		}
 		return (CResPres*) res->CheckError();
 	}
-	if (res->m_chunkType != kChunkPres) {
+	if (res->m_chunkType != RESOURCE_CHUNK_PRESENTATION) {
 		res->UnLoad();
 		return 0;
 	}
@@ -30,5 +30,5 @@ CResPres* CResPres::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045ec30
 void CResPres::SetType()
 {
-	m_chunkType = kChunkPres;
+	m_chunkType = RESOURCE_CHUNK_PRESENTATION;
 }

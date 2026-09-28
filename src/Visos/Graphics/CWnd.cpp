@@ -173,7 +173,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 
-	posted.time = GetMessageTime();
+	posted.m_time = GetMessageTime();
 	window = (CWnd*) GetWindowLongA((HWND) p_hwnd, GWL_USERDATA);
 	if (g_pTargetGraphicsDriver == 0) {
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
@@ -368,8 +368,8 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_KEYDOWN:
 	case WM_KEYUP: {
-		posted.type = (unsigned short) ((p_message == WM_KEYDOWN) + 1);
-		posted.code = (int) p_wParam;
+		posted.m_type = (unsigned short) ((p_message == WM_KEYDOWN) + 1);
+		posted.m_code = (int) p_wParam;
 		g_pMasterInputQueue->Post(posted);
 		return 0;
 	}
@@ -379,27 +379,27 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	case WM_RBUTTONDBLCLK:
 	case WM_MBUTTONDOWN:
 	case WM_MBUTTONDBLCLK: {
-		posted.type = 6;
+		posted.m_type = 6;
 		style = window->GetStyle();
 		if ((style & 0x1000) != 0) {
 			switch (p_message) {
 			case WM_LBUTTONDOWN:
-				posted.payload = (void*) 0x43;
+				posted.m_payload = (void*) 0x43;
 				break;
 			case WM_LBUTTONDBLCLK:
-				posted.payload = (void*) 0x46;
+				posted.m_payload = (void*) 0x46;
 				break;
 			case WM_RBUTTONDOWN:
-				posted.payload = (void*) 0x44;
+				posted.m_payload = (void*) 0x44;
 				break;
 			case WM_RBUTTONDBLCLK:
-				posted.payload = (void*) 0x47;
+				posted.m_payload = (void*) 0x47;
 				break;
 			case WM_MBUTTONDOWN:
-				posted.payload = (void*) 0x45;
+				posted.m_payload = (void*) 0x45;
 				break;
 			case WM_MBUTTONDBLCLK:
-				posted.payload = (void*) 0x48;
+				posted.m_payload = (void*) 0x48;
 				break;
 			}
 		}
@@ -407,22 +407,22 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			switch (p_message) {
 			case WM_LBUTTONDOWN:
 			case WM_LBUTTONDBLCLK:
-				posted.payload = (void*) 0x43;
+				posted.m_payload = (void*) 0x43;
 				break;
 			case WM_RBUTTONDOWN:
 			case WM_RBUTTONDBLCLK:
-				posted.payload = (void*) 0x44;
+				posted.m_payload = (void*) 0x44;
 				break;
 			case WM_MBUTTONDOWN:
 			case WM_MBUTTONDBLCLK:
-				posted.payload = (void*) 0x45;
+				posted.m_payload = (void*) 0x45;
 				break;
 			}
 		}
 		mouseX = window->m_rect.m_x + (short) p_lParam;
 		mouseY = window->m_rect.m_y + (short) (p_lParam >> 16);
-		posted.code = PackParam(mouseX, mouseY);
-		posted.source = 0;
+		posted.m_code = PackParam(mouseX, mouseY);
+		posted.m_source = 0;
 		g_pMasterInputQueue->Post(posted);
 		if (g_nMouseCaptureCount++ == 0) {
 			SetCapture((HWND) p_hwnd);
@@ -432,20 +432,20 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 	case WM_MBUTTONUP: {
-		posted.type = 5;
+		posted.m_type = 5;
 		if (p_message == WM_LBUTTONUP) {
-			posted.payload = (void*) 0x43;
+			posted.m_payload = (void*) 0x43;
 		}
 		else if (p_message == WM_RBUTTONUP) {
-			posted.payload = (void*) 0x44;
+			posted.m_payload = (void*) 0x44;
 		}
 		else {
-			posted.payload = (void*) 0x45;
+			posted.m_payload = (void*) 0x45;
 		}
 		mouseX = window->m_rect.m_x + (short) p_lParam;
 		mouseY = window->m_rect.m_y + (short) (p_lParam >> 16);
-		posted.code = PackParam(mouseX, mouseY);
-		posted.source = 0;
+		posted.m_code = PackParam(mouseX, mouseY);
+		posted.m_source = 0;
 		g_pMasterInputQueue->Post(posted);
 		g_nMouseCaptureCount = g_nMouseCaptureCount - 1;
 		if (g_nMouseCaptureCount == 0) {
@@ -457,9 +457,9 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		menuAction = window->SelectMenu(p_message, p_wParam, p_lParam);
 		if (menuAction != 0) {
 			Message command;
-			command.type = 0xf;
-			command.time = CurrentQueueTimer();
-			command.code = menuAction;
+			command.m_type = 0xf;
+			command.m_time = CurrentQueueTimer();
+			command.m_code = menuAction;
 			g_pMasterInputQueue->Post(command);
 			return 0;
 		}
@@ -536,11 +536,11 @@ void CWnd::ProcessMouseMoves()
 			g_nLastCursorX += g_pFocusWindow->m_rect.m_x;
 			g_nLastCursorY += g_pFocusWindow->m_rect.m_y;
 		}
-		posted.type = 7;
-		posted.time = CurrentQueueTimer();
-		posted.code = PackParam((short) g_nLastCursorX, (short) g_nLastCursorY);
-		posted.payload = 0;
-		posted.source = 0;
+		posted.m_type = 7;
+		posted.m_time = CurrentQueueTimer();
+		posted.m_code = PackParam((short) g_nLastCursorX, (short) g_nLastCursorY);
+		posted.m_payload = 0;
+		posted.m_source = 0;
 		g_pMasterInputQueue->Post(posted);
 	}
 }

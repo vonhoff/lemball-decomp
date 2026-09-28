@@ -94,8 +94,8 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 	if (m_active == 0) {
 		goto done;
 	}
-	time = p_message->time;
-	switch ((int) p_message->type) {
+	time = p_message->m_time;
+	switch ((int) p_message->m_type) {
 	default:
 	done:
 		return 0;
@@ -106,36 +106,36 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 			goto done;
 		}
 		now = CurrentMilliTimer();
-		code = p_message->code;
+		code = p_message->m_code;
 		if (m_changingCursor == 0) {
 			goto skipAction;
 		}
 		match = 0;
 		if (m_keys[4] == code) {
-			posted.payload = (void*) 0x43;
+			posted.m_payload = (void*) 0x43;
 			match = 1;
 		}
 		else if (m_keys[6] == code) {
-			posted.payload = (void*) 0x44;
+			posted.m_payload = (void*) 0x44;
 			match = 1;
 		}
 		else if (m_keys[5] == code) {
-			posted.payload = (void*) 0x45;
+			posted.m_payload = (void*) 0x45;
 			match = 1;
 		}
 		if (match != 0) {
-			posted.type = 8;
-			if (p_message->type != 4) {
-				posted.type = 9;
+			posted.m_type = 8;
+			if (p_message->m_type != 4) {
+				posted.m_type = 9;
 			}
-			posted.time = time;
-			posted.code = PackParam(m_position.m_x, m_position.m_y);
-			posted.source = 0;
+			posted.m_time = time;
+			posted.m_code = PackParam(m_position.m_x, m_position.m_y);
+			posted.m_source = 0;
 			g_pMasterInputQueue->Post(posted);
 			return 0;
 		}
 	skipAction:
-		if (p_message->type == 3) {
+		if (p_message->m_type == 3) {
 			if (m_keys[2] == code || m_keys[3] == code) {
 				m_velocityY = 0;
 				m_directionY = 0;
@@ -180,8 +180,8 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 		if (m_mouseInput == 0) {
 			return 0;
 		}
-		if (p_message->source == 0) {
-			CVsPoint position((short) p_message->code, (short) ((unsigned int) p_message->code >> 16));
+		if (p_message->m_source == 0) {
+			CVsPoint position((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
 			SetPos(position);
 		}
 		return 0;
@@ -458,11 +458,11 @@ void CBaseCursor::Process()
 	m_position.m_x = (short) (m_fixedX >> 12);
 	m_position.m_y = (short) (m_fixedY >> 12);
 	if (m_keyboardInput != 0 && (m_position.m_x != oldX || m_position.m_y != oldY)) {
-		posted.type = 10;
-		posted.time = CurrentQueueTimer();
-		posted.code = PackParam(m_position.m_x, m_position.m_y);
-		posted.payload = 0;
-		posted.source = 0;
+		posted.m_type = 10;
+		posted.m_time = CurrentQueueTimer();
+		posted.m_code = PackParam(m_position.m_x, m_position.m_y);
+		posted.m_payload = 0;
+		posted.m_source = 0;
 		g_pMasterInputQueue->Post(posted);
 	}
 	if ((int) m_bounds.m_width * (int) m_bounds.m_height != 0) {

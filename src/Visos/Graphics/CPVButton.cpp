@@ -124,11 +124,11 @@ void CPVButton::CheckForceDraw()
 		m_clipRect[0].m_bounds.m_height = m_gdi->m_renderTarget->m_windowRect.m_height;
 		m_clipRect[0].m_bounds.m_x = 0;
 		m_clipRect[0].m_bounds.m_y = 0;
-		m_clipRect[0].m_color = 0x10000;
+		m_clipRect[0].m_colour = 0x10000;
 		m_gdi->m_renderTarget->m_flag78 = 1;
 	}
 	else {
-		m_clipRect[0].m_color = 0;
+		m_clipRect[0].m_colour = 0;
 	}
 	m_clipRect[0].Draw(m_gdi);
 }
@@ -262,11 +262,11 @@ void CPVButton::_OnReleased(int p_flags)
 	}
 	if (m_messageQueue != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		posted.time = timeGetTime();
-		posted.code = (int) m_controlMessage;
-		posted.payload = this;
-		posted.type = 0xc;
-		posted.source = (void*) converted;
+		posted.m_time = timeGetTime();
+		posted.m_code = (int) m_controlMessage;
+		posted.m_payload = this;
+		posted.m_type = 0xc;
+		posted.m_source = (void*) converted;
 		m_messageQueue->Post(posted);
 	}
 }
@@ -282,11 +282,11 @@ void CPVButton::_OnPressed(int p_flags)
 	}
 	if (m_messageQueue != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		posted.time = timeGetTime();
-		posted.code = (int) m_controlMessage;
-		posted.payload = this;
-		posted.type = 0xb;
-		posted.source = (void*) converted;
+		posted.m_time = timeGetTime();
+		posted.m_code = (int) m_controlMessage;
+		posted.m_payload = this;
+		posted.m_type = 0xb;
+		posted.m_source = (void*) converted;
 		m_messageQueue->Post(posted);
 	}
 }
@@ -297,10 +297,10 @@ void CPVButton::_OnEnterButton()
 	Message posted;
 
 	if (m_messageQueue != 0) {
-		posted.time = timeGetTime();
-		posted.code = (int) m_controlMessage;
-		posted.type = 0xd;
-		posted.payload = this;
+		posted.m_time = timeGetTime();
+		posted.m_code = (int) m_controlMessage;
+		posted.m_type = 0xd;
+		posted.m_payload = this;
 		m_messageQueue->Post(posted);
 	}
 }
@@ -311,10 +311,10 @@ void CPVButton::_OnExitButton()
 	Message posted;
 
 	if (m_messageQueue != 0) {
-		posted.time = timeGetTime();
-		posted.code = (int) m_controlMessage;
-		posted.type = 0xe;
-		posted.payload = this;
+		posted.m_time = timeGetTime();
+		posted.m_code = (int) m_controlMessage;
+		posted.m_type = 0xe;
+		posted.m_payload = this;
 		m_messageQueue->Post(posted);
 	}
 }

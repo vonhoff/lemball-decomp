@@ -13,7 +13,7 @@
     {
       "path": "src/AI/Managers/CMineManager.cpp",
       "rule": "no-annotation",
-      "code": "inline static int MineDistanceSquared(int dz, int dy, int dx)",
+      "code": "inline static int MineDistanceSquared(int p_dz, int p_dy, int p_dx)",
       "count": 1,
       "reason": "CMineManager::Trigger (0x00424580): local inline squared-distance calculation preserves the original Z/Y/X accumulation and restores the prior effective match. No separate original entry point exists; helper name is inferred."
     },
@@ -35,7 +35,7 @@
     {
       "path": "src/Visos/Graphics/CPVWnd.cpp",
       "rule": "no-annotation",
-      "code": "inline static void AddWindowOwner(WindowOwnerList* list, CPVWnd* p_window)",
+      "code": "inline static void AddWindowOwner(WindowOwnerList* p_list, CPVWnd* p_window)",
       "count": 1,
       "reason": "CPVWnd::_OnCreate (0x00465f80): this local inline helper reconstructs the allocation and list splice at original 0x00465f90-0x00465fd2. List-first inline parameter priority reproduces ESI=list and EDI=window; the entire caller is assembly-exact. There is no separate original entry point to annotate, and the helper name is inferred. Shared record definitions remain unchanged."
     },

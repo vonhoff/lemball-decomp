@@ -18,7 +18,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "CResBase.h"
 #include "Visos/Animation/CMogloadStat.h"
 
-#define kPathSeparator '/'
+#define RESOURCE_PATH_SEPARATOR '/'
 
 // GLOBAL: LEMBALL 0x004a1d80
 char g_mogRootPath[4];
@@ -32,7 +32,7 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 	int offset;
 	CArena* arena;
 
-	g_mogRootPath[0] = kPathSeparator;
+	g_mogRootPath[0] = RESOURCE_PATH_SEPARATOR;
 	g_pActiveMogRes = this;
 	m_error = 0;
 	m_resources = 0;
@@ -55,7 +55,7 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 	timeGetTime();
 	m_workingDirectory = m_rootDirectory;
 	SetWD(g_mogRootPath);
-	m_resources = (CResBase**) CMogloadArena::operator new(kResourceHandleBytes);
+	m_resources = (CResBase**) CMogloadArena::operator new(RESOURCE_HANDLE_TABLE_BYTES);
 	for (offset = 0; offset < 1024; offset++) {
 		m_resources[offset] = 0;
 	}
@@ -100,14 +100,14 @@ bool CMogRes::SetWD(char* p_path)
 	register char* cursor;
 	CMogDir* dir;
 
-	if (*path == kPathSeparator) {
+	if (*path == RESOURCE_PATH_SEPARATOR) {
 		m_workingDirectory = m_rootDirectory;
 		copy = (char*) CMogloadArena::operator new(strlen(path) + 1);
 		strcpy(copy, path);
 	}
 	else {
 		copy = (char*) CMogloadArena::operator new(strlen(path) + 2);
-		copy[0] = kPathSeparator;
+		copy[0] = RESOURCE_PATH_SEPARATOR;
 		strcpy(copy + 1, path);
 	}
 	cursor = copy;
@@ -118,7 +118,7 @@ bool CMogRes::SetWD(char* p_path)
 		*current = -1;
 	}
 	for (;;) {
-		cursor = strchr(cursor, kPathSeparator);
+		cursor = strchr(cursor, RESOURCE_PATH_SEPARATOR);
 		if (cursor == 0) {
 			break;
 		}
@@ -209,17 +209,17 @@ int CMogRes::GetFreeHandle()
 	int handle = -1;
 
 	if ((int) m_resourceCount > 0) {
-		if ((int) m_resourceCount < kResourceHandleCount) {
-			while (i < kResourceHandleCount && m_resources[i] != 0) {
+		if ((int) m_resourceCount < RESOURCE_HANDLE_COUNT) {
+			while (i < RESOURCE_HANDLE_COUNT && m_resources[i] != 0) {
 				i++;
 			}
 		}
 		else {
-			while (i < kResourceHandleCount && m_resources[i]->m_referenceCount != 0) {
+			while (i < RESOURCE_HANDLE_COUNT && m_resources[i]->m_referenceCount != 0) {
 				i++;
 			}
 		}
-		if (i < kResourceHandleCount) {
+		if (i < RESOURCE_HANDLE_COUNT) {
 			handle = i;
 		}
 		return handle;
@@ -346,7 +346,7 @@ bool CMogRes::CheckAllUnloaded()
 
 	if (remaining != 0) {
 		do {
-			while (m_resources[i] == 0 && i < kResourceHandleCount) {
+			while (m_resources[i] == 0 && i < RESOURCE_HANDLE_COUNT) {
 				i++;
 			}
 			if (m_resources[i]->m_referenceCount != 0) {
@@ -403,7 +403,7 @@ void CMogRes::CleanUpResources()
 			while (m_resources[i] == 0) {
 				i++;
 			}
-			if (i == kResourceHandleCount) {
+			if (i == RESOURCE_HANDLE_COUNT) {
 				return;
 			}
 			if (m_resources[i]->m_referenceCount == 0) {

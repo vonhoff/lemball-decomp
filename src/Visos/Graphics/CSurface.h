@@ -36,7 +36,7 @@ public:
 	CSurface(GrafPort* p_port);
 	CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface);
 	bool ClipRect(CVsRect& p_rect, CVsRect* p_clipped);
-	int ClipCircle(int p_centerX, int p_centerY, int p_radius);
+	int ClipCircle(int p_centreX, int p_centreY, int p_radius);
 	inline unsigned int ClipCode(int p_x, int p_y);
 	int LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2);
 	virtual void Resize(const CVsSize& p_size);          // vtable+0x28
@@ -102,12 +102,12 @@ public:
 								  unsigned short p_depth,
 								  unsigned char* p_remap);
 	virtual void CopyBackBuffToScreen(const CVsRect& p_rect);
-	void DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius, int p_colour);
-	void FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour);
-	void DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radius, unsigned char p_colour);
-	void DrawCircleSpans(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour);
+	void DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radius, int p_colour);
+	void FilledCircleClipPoints(int p_centreX, int p_centreY, int p_xOffset, int p_yOffset, int p_colour);
+	void DrawClippedCircleOutline(int p_centreX, int p_centreY, int p_radius, unsigned char p_colour);
+	void DrawCircleSpans(int p_centreX, int p_centreY, int p_xOffset, int p_yOffset, int p_colour);
 	int ClipCirclePoint(int p_x, int p_y);
-	void DrawClippedCirclePoint(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, unsigned char p_colour);
+	void DrawClippedCirclePoint(int p_centreX, int p_centreY, int p_xOffset, int p_yOffset, unsigned char p_colour);
 	void Flush();
 	virtual void Move(const CVsPoint& p_position); // vtable+0x2c
 	void MoveRel(const CVsPoint& p_delta);
@@ -136,7 +136,7 @@ private:
 	SurfaceListNode* m_childSurfaceTail; // 0x52c
 	unsigned int m_childSurfaceCount;    // 0x530
 	char m_lock[0x18];                   // 0x534
-	unsigned int m_lockInitialized;      // 0x54c
+	unsigned int m_lockInitialised;      // 0x54c
 	CChangeList* m_changeList;           // 0x550
 	void* m_currDb;                      // 0x554
 };

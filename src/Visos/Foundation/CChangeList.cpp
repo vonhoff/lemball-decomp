@@ -272,11 +272,11 @@ found:
 	area.m_x = m_cellSize.m_width * (short) startX;
 	area.m_y = (short) scanY * m_cellSize.m_height;
 	item = m_items + m_itemCount;
-	memcpy(&item->width, &area.m_width, sizeof(area.m_width));
-	memcpy(&item->height, &area.m_height, sizeof(area.m_height));
-	memcpy(&item->x, &area.m_x, sizeof(area.m_x));
-	memcpy(&item->y, &area.m_y, sizeof(area.m_y));
-	m_items[m_itemCount].drawMark = p_itemMark;
+	memcpy(&item->m_width, &area.m_width, sizeof(area.m_width));
+	memcpy(&item->m_height, &area.m_height, sizeof(area.m_height));
+	memcpy(&item->m_x, &area.m_x, sizeof(area.m_x));
+	memcpy(&item->m_y, &area.m_y, sizeof(area.m_y));
+	m_items[m_itemCount].m_drawMark = p_itemMark;
 	m_scanX = 0;
 	m_itemCount = m_itemCount + 1;
 	if ((int) m_mapSize.m_width > scanX) {

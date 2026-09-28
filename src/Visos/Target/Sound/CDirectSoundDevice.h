@@ -64,7 +64,7 @@ private:
 			unsigned int m_unk0x2c;                                                   // 0x2c
 			unsigned int m_unk0x30;                                                   // 0x30
 			unsigned int m_sampleRate;                                                // 0x34
-			unsigned int m_unk0x38;                                                   // 0x38
+			unsigned int m_deviceId;                                                  // 0x38
 			unsigned short m_formatTag;                                               // 0x3c
 			unsigned short m_channels;                                                // 0x3e
 			unsigned int m_samplesPerSecond;                                          // 0x40

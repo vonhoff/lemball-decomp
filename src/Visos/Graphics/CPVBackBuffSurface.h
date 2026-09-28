@@ -17,7 +17,7 @@ public:
 	virtual void Blit(CCopyToBackBuff* p_copy) = 0;                 // vtable+0x04
 	virtual void Blit(CCopyColourToBackBuff* p_colourCopy) = 0;     // vtable+0x00
 	virtual void CopyBackBuffToScreen(const CVsRect& p_bounds) = 0; // vtable+0x08
-	virtual bool HasBackBuff();                                   // vtable+0x3c
+	virtual bool HasBackBuff();                                     // vtable+0x3c
 	void AllocateBackBuff();
 	void EnableBackBuff(unsigned int p_enabled);
 	void FreeBackBuff();

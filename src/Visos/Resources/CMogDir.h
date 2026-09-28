@@ -6,11 +6,11 @@
 
 #include <stddef.h>
 
-#define kChunkDirc 0x44495243
-#define kAnyChunkType 0xffffffff
-#define kMogFormatVersion 3
-#define kChunkInfoSize 0x38
-#define kMogDirAllocSize 0x38
+#define RESOURCE_CHUNK_DIRECTORY 0x44495243
+#define RESOURCE_CHUNK_ANY_TYPE 0xffffffff
+#define MOG_FORMAT_VERSION 3
+#define CHUNK_INFO_ALLOCATION_BYTES 0x38
+#define MOG_DIRECTORY_ALLOCATION_BYTES 0x38
 
 class CMogDir {
 public:
@@ -44,7 +44,7 @@ private:
 	unsigned int m_unk0x34;            // 0x34
 };
 
-extern int g_chunkIndex;
-extern ChunkInfo* g_pChunkInfo;
+extern int g_emptyChunkIndex;
+extern ChunkInfo* g_pEmptyChunkInfo;
 
 #endif

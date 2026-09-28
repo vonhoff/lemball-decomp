@@ -12,8 +12,8 @@ struct CTextLineBuffer {
 		m_count = 0;
 	}
 	~CTextLineBuffer() { delete[] m_lines; }
-	void AddLine(const char* p_text, unsigned int p_color);
-	void AddText(char* p_text, unsigned int p_color);
+	void AddLine(const char* p_text, unsigned int p_colour);
+	void AddText(char* p_text, unsigned int p_colour);
 
 	int m_capacity;     // 0x00
 	CTextLine* m_lines; // 0x04

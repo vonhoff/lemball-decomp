@@ -28,7 +28,6 @@ extern "C" __declspec(dllimport) int __stdcall PeekMessageA(void* p_message,
 															unsigned int p_remove);
 extern "C" __declspec(dllimport) long __stdcall DispatchMessageA(const void* p_message);
 
-
 // FUNCTION: LEMBALL 0x0046f210
 unsigned int FileNetworkMessageThread()
 {

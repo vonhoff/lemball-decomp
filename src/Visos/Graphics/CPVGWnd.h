@@ -33,7 +33,7 @@ public:
 	virtual void _OnDestroy() = 0;                             // vtable+0x1c
 	virtual void _OnMove() = 0;                                // vtable+0x28
 	virtual void _OnSize() = 0;                                // vtable+0x20
-	void Clear(int p_color);
+	void Clear(int p_colour);
 
 	friend struct CGraphicsState;
 	friend class CGWnd;

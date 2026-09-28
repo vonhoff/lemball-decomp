@@ -10,7 +10,7 @@ class CResZRLE;
 // VTABLE: LEMBALL 0x0049a480
 class CFontTable : public CPvFontTable {
 public:
-	CFontTable(CResFONT* p_arg0);
+	CFontTable(CResFONT* p_font);
 	virtual CResZRLE* GetZRLE(int p_character); // vtable+0x04
 	virtual char GetChar(CResZRLE* p_glyph);    // vtable+0x08
 	virtual ~CFontTable();                      // vtable+0x00

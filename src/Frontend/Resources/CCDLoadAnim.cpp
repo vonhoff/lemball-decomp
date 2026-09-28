@@ -31,8 +31,8 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager
 {
 	unsigned int* points;
 	union {
-		unsigned int value;
-		short coordinate[2];
+		unsigned int m_value;
+		short m_coordinate[2];
 	} packed;
 	int offset;
 	CVsPoint* dest;
@@ -63,16 +63,16 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager
 	p_display->AttachPalette(RES_FRONTEND_LOADING_LORES_PALETTE);
 	palette->UnLoad();
 	CVsRect& windowRect = m_display->m_rect;
-	CVsPoint center((short) ((short) (windowRect.m_width - m_backgroundBitmap->m_x) / 2),
+	CVsPoint centre((short) ((short) (windowRect.m_width - m_backgroundBitmap->m_x) / 2),
 					(short) ((short) (windowRect.m_height - m_backgroundBitmap->m_y) / 2));
-	m_center.m_x = center.m_x;
-	m_center.m_y = center.m_y;
+	m_centre.m_x = centre.m_x;
+	m_centre.m_y = centre.m_y;
 	offset = 0;
 	do {
-		packed.value = *points;
+		packed.m_value = *points;
 		dest = (CVsPoint*) ((int) &m_points->m_x + offset);
-		dest->m_x = packed.coordinate[0];
-		dest->m_y = packed.coordinate[1];
+		dest->m_x = packed.m_coordinate[0];
+		dest->m_y = packed.m_coordinate[1];
 		offset = offset + 4;
 		points = points + 1;
 	} while (offset < 0x14);
@@ -129,10 +129,10 @@ void CCDLoadAnim::Draw()
 		m_initialDraw = m_initialDraw - 1;
 		const CVsRect& displayRect = m_display->m_rect;
 		m_line[0].m_bounds = CVsRect(0, 0, displayRect.m_width, displayRect.m_height);
-		m_line[0].m_color = 0;
+		m_line[0].m_colour = 0;
 		m_line[0].Draw(m_gdi);
 		CResBITMAP* background = m_backgroundBitmap;
-		m_bitmapRes[0].CVsPoint::operator=(m_center);
+		m_bitmapRes[0].CVsPoint::operator=(m_centre);
 		m_bitmapRes[0].m_resource = background;
 		m_bitmapRes[0].m_flags = 0;
 		m_bitmapRes[0].m_remap = 0;
@@ -146,19 +146,19 @@ void CCDLoadAnim::Draw()
 	}
 	CResBITMAP* foreground = m_foregroundBitmap;
 	m_fgBlit[0].CVsPoint::operator=(
-		CVsPoint((short) (m_points->m_x + m_center.m_x), (short) (m_points->m_y + m_center.m_y)));
+		CVsPoint((short) (m_points->m_x + m_centre.m_x), (short) (m_points->m_y + m_centre.m_y)));
 	m_fgBlit[0].m_resource = foreground;
 	m_fgBlit[0].m_flags = 0;
 	m_fgBlit[0].m_remap = 0;
 	m_fgBlit[0].Draw(m_gdi);
-	DrawAnim(CVsPoint((short) (m_points[1].m_x + m_center.m_x), (short) (m_points[1].m_y + m_center.m_y)),
+	DrawAnim(CVsPoint((short) (m_points[1].m_x + m_centre.m_x), (short) (m_points[1].m_y + m_centre.m_y)),
 			 m_animResourceId,
 			 0,
 			 (CAnimFrameBASE*) m_repeatAnim,
 			 0);
 	short originStorage[2];
-	originStorage[0] = (short) (m_points[2].m_x + m_center.m_x);
-	originStorage[1] = (short) (m_points[2].m_y + m_center.m_y);
+	originStorage[0] = (short) (m_points[2].m_x + m_centre.m_x);
+	originStorage[1] = (short) (m_points[2].m_y + m_centre.m_y);
 	const short& originX = originStorage[0];
 	const short& originY = originStorage[1];
 	CVector radius((long) (short) -m_points[3].m_x, 0L);

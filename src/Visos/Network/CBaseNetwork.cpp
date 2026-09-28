@@ -33,7 +33,7 @@ CBaseNetwork::CBaseNetwork()
 	m_firstConnect = 0;
 	m_broadcastMode = 0;
 	m_suspendBroadcastOnConnect = 0;
-	m_initialized = 0;
+	m_initialised = 0;
 	m_initialisePending = 0;
 	m_pendingDetachQueue = 0;
 	m_activeStatusItem = 0;
@@ -61,14 +61,14 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 	g_networkPacketSize = p_packetSize;
 	ForceProcess();
 	start = timeGetTime();
-	if (m_initialized == 0) {
+	if (m_initialised == 0) {
 		do {
 			if (g_lastNetworkError != 0 || timeGetTime() - start >= 10000) {
 				break;
 			}
 			WaitProcess();
-		} while (m_initialized == 0);
-		if (m_initialized == 0) {
+		} while (m_initialised == 0);
+		if (m_initialised == 0) {
 			return 0;
 		}
 	}
@@ -97,7 +97,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 	m_shutdownRequested = 1;
 	ForceProcess();
 	start = timeGetTime();
-	while (m_initialized != 0 && timeGetTime() - start < 10000) {
+	while (m_initialised != 0 && timeGetTime() - start < 10000) {
 	}
 	return 0;
 }
@@ -119,7 +119,7 @@ bool CBaseNetwork::DoInitialise()
 	g_pPulseMessage = new CPulseMessage;
 	g_pAckMessage = new CAckMessage;
 	m_broadcast = (CBroadcast*) GetNewBroadcast();
-	m_initialized = 1;
+	m_initialised = 1;
 	m_serverMode = 1;
 	ForceProcess();
 	if (m_serverMode != 0 && g_lastNetworkError == 0) {
@@ -160,8 +160,8 @@ void CBaseNetwork::ShutDown()
 	CNetworkMessage* message;
 	short port;
 
-	if (m_initialized != 0) {
-		m_initialized = 0;
+	if (m_initialised != 0) {
+		m_initialised = 0;
 		m_serverMode = 0;
 		peer = m_firstConnect;
 		if (peer != 0) {
@@ -628,19 +628,19 @@ int CBaseNetwork::ProcessMsg(Message* p_message)
 
 	type = 0;
 	message = p_message;
-	type = message->type;
+	type = message->m_type;
 	switch (type) {
 	case 0xb:
-		if (message->code == 1) {
-			stream = (CNetworkMessage*) message->payload;
-			peer = (CConnect*) message->source;
+		if (message->m_code == 1) {
+			stream = (CNetworkMessage*) message->m_payload;
+			peer = (CConnect*) message->m_source;
 			peer->Send(*stream);
 			stream->CloseDataStream();
 		}
 		return 1;
 	case 0xc:
-		if (message->code == 1) {
-			stream = (CNetworkMessage*) message->payload;
+		if (message->m_code == 1) {
+			stream = (CNetworkMessage*) message->m_payload;
 			SendAll(*stream);
 			stream->CloseDataStream();
 		}

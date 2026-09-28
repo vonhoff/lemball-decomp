@@ -5,8 +5,8 @@
 
 // SIZE 0x04
 struct Boffset {
-	unsigned short wWord;
-	unsigned short wBit;
+	unsigned short m_wWord;
+	unsigned short m_wBit;
 };
 
 // SIZE 0x54

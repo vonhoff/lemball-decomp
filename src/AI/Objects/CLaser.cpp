@@ -29,7 +29,7 @@ void CLaser::Restart()
 // FUNCTION: LEMBALL 0x004288d0
 void CLaser::Initialise()
 {
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_stateTimer = 0;
 	m_active = 0;
 	m_enabled = 0;
@@ -56,18 +56,18 @@ void CLaser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_o
 
 	switch (p_orientation) {
 	case OBJECT_LASER_HORIZONTAL:
-		m_action = ACTION_0x18;
+		m_action = ACTION_READY;
 		m_autoActivate = 1;
 		m_active = 1;
 		break;
 	case OBJECT_LASER_VERTICAL:
-		m_action = ACTION_0x18;
+		m_action = ACTION_READY;
 		m_autoActivate = 1;
 		m_active = 1;
 		break;
 	case OBJECT_LASER_EMITTER_H: {
 		m_autoActivate = 0;
-		m_action = ACTION_0x18;
+		m_action = ACTION_READY;
 		m_active = 1;
 		for (int i = 1; i < 8; i++) {
 			int collisionX = blockX + i;
@@ -80,7 +80,7 @@ void CLaser::Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_o
 	}
 	case OBJECT_LASER_EMITTER_V: {
 		m_autoActivate = 0;
-		m_action = ACTION_0x18;
+		m_action = ACTION_READY;
 		m_active = 1;
 		for (int i = 1; i < 8; i++) {
 			int collisionY = blockY + i;
@@ -168,7 +168,7 @@ bool CLaser::CheckHits()
 	}
 	if (hit != 0) {
 		m_target = hit;
-		hit->m_action = ACTION_15;
+		hit->m_action = ACTION_EXTERNAL_CONTROL;
 		hit->m_actionArgument = 1;
 		m_target->m_actionDeadline = g_dwGameTick + 26;
 		SetSndEffect(SFX_ELECCY);
@@ -181,8 +181,8 @@ bool CLaser::CheckHits()
 bool CLaser::Process()
 {
 	if (m_isRemoteObject != 0) {
-		m_active = m_action != ACTION_0x18;
-		if (m_action == ACTION_0x1a && m_target == 0) {
+		m_active = m_action != ACTION_READY;
+		if (m_action == ACTION_ACTIVATED && m_target == 0) {
 			CheckHits();
 		}
 		if (m_pendingAction != m_action) {
@@ -192,9 +192,9 @@ bool CLaser::Process()
 					m_target->m_deathRequested = 1;
 					m_target = 0;
 				}
-				Action(ACTION_0x18);
+				Action(ACTION_READY);
 				break;
-			case ACTION_0x19:
+			case ACTION_ACTIVATING:
 				m_target = 0;
 				break;
 			}
@@ -213,22 +213,22 @@ bool CLaser::Process()
 				m_target->m_deathRequested = 1;
 				m_target = 0;
 			}
-			Action(ACTION_0x18);
+			Action(ACTION_READY);
 			return 1;
-		case ACTION_0x18:
+		case ACTION_READY:
 			if (m_actionDeadline < g_dwGameTick) {
 				Activate();
 				return 1;
 			}
 			break;
-		case ACTION_0x19:
+		case ACTION_ACTIVATING:
 			if (m_actionPhase1Deadline < g_dwGameTick) {
 				m_target = 0;
-				Action(ACTION_0x1a);
+				Action(ACTION_ACTIVATED);
 				return 1;
 			}
 			break;
-		case ACTION_0x1a:
+		case ACTION_ACTIVATED:
 			if (m_target == 0) {
 				CheckHits();
 			}
@@ -259,7 +259,7 @@ bool CLaser::Activate()
 	m_actionDeadline = g_dwGameTick + 0x18;
 	m_target = 0;
 	m_stateTimer = g_dwSimulationTimestamp;
-	Action(ACTION_0x19);
+	Action(ACTION_ACTIVATING);
 	return 1;
 }
 
@@ -282,7 +282,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 {
 	CGameObject::GetViewData(*p_viewData++);
 	int count = 1;
-	if (m_action == ACTION_0x1a) {
+	if (m_action == ACTION_ACTIVATED) {
 		switch (m_objectType) {
 		case OBJECT_LASER_HORIZONTAL:
 		case OBJECT_LASER_EMITTER_H: {
@@ -305,7 +305,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 				p_viewData->m_positionZ = z;
 				p_viewData->m_objectType = OBJECT_LASER_VERTICAL_BEAM;
 				p_viewData->m_facingDirection = 0;
-				p_viewData->m_action = ACTION_0x1a;
+				p_viewData->m_action = ACTION_ACTIVATED;
 				p_viewData++;
 				count++;
 				x += 0x10;
@@ -333,7 +333,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 				p_viewData->m_positionZ = z;
 				p_viewData->m_objectType = OBJECT_LASER_HORIZONTAL_BEAM;
 				p_viewData->m_facingDirection = 0;
-				p_viewData->m_action = ACTION_0x1a;
+				p_viewData->m_action = ACTION_ACTIVATED;
 				p_viewData++;
 				count++;
 				y += 0x10;

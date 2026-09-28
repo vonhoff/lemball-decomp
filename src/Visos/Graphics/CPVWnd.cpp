@@ -232,7 +232,7 @@ void CPVWnd::InitHotAreaList()
 	}
 }
 
-inline static void AddWindowOwner(WindowOwnerList* list, CPVWnd* p_window)
+inline static void AddWindowOwner(WindowOwnerList* p_list, CPVWnd* p_window)
 {
 	WindowOwnerNode* node = (WindowOwnerNode*) operator new(sizeof(WindowOwnerNode));
 	if (node != 0) {
@@ -243,15 +243,15 @@ inline static void AddWindowOwner(WindowOwnerList* list, CPVWnd* p_window)
 	else {
 		node = 0;
 	}
-	node->m_prev = list->m_tail;
-	if (list->m_tail != 0) {
-		list->m_tail->m_next = node;
+	node->m_prev = p_list->m_tail;
+	if (p_list->m_tail != 0) {
+		p_list->m_tail->m_next = node;
 	}
-	list->m_tail = node;
-	if (list->m_head == 0) {
-		list->m_head = node;
+	p_list->m_tail = node;
+	if (p_list->m_head == 0) {
+		p_list->m_head = node;
 	}
-	list->m_count++;
+	p_list->m_count++;
 }
 
 // FUNCTION: LEMBALL 0x00465f80

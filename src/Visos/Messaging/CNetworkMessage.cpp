@@ -288,10 +288,10 @@ void CNetworkMessage::Send(CConnect* p_connection)
 	Message message;
 
 	if (p_connection != 0) {
-		message.type = 0xb;
-		message.code = 1;
-		message.payload = this;
-		message.source = p_connection;
+		message.m_type = 0xb;
+		message.m_code = 1;
+		message.m_payload = this;
+		message.m_source = p_connection;
 		OpenDataStream();
 		m_pendingSendCount = 1;
 		g_pNetworkStatusQueue->Post(message);

@@ -128,8 +128,8 @@ bool CFileBroadcast::Start(const char* p_name)
 		m_lastBroadcastTime = timeGetTime() - 1000;
 
 		Message message;
-		message.type = 2;
-		message.code = 0;
+		message.m_type = 2;
+		message.m_code = 0;
 		g_pNetworkStatusQueue->Post(message);
 		m_lastProcessTime = timeGetTime();
 	}

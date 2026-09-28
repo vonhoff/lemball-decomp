@@ -43,10 +43,10 @@
 #pragma intrinsic(strcpy, strcat, strcmp)
 
 extern "C" unsigned long __stdcall timeGetTime(void);
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd,
-														   const char* lpText,
-														   const char* lpCaption,
-														   unsigned int uType);
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_hWnd,
+														   const char* p_lpText,
+														   const char* p_lpCaption,
+														   unsigned int p_uType);
 
 // GLOBAL: LEMBALL 0x0049cbc8
 char g_szLemmingsPaintball[20] = "Lemmings Paintball";
@@ -533,7 +533,7 @@ void CGame::StreamRuntimeStats()
 }
 
 // GLOBAL: LEMBALL 0x004a1bcc
-int* g_pSentinel = 0;
+int* g_pRandomSeed = 0;
 
 // GLOBAL: LEMBALL 0x0049ce04
 unsigned int g_dwGameTick = 0;

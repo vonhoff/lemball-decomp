@@ -48,7 +48,7 @@ bool CCatapult::Process()
 	if (m_isRemoteObject != 0) {
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
-			if (m_action == ACTION_0x1b) {
+			if (m_action == ACTION_RUNNING) {
 				SetSndEffect(SFX_CATAPULT);
 			}
 			m_pendingAction = m_action;
@@ -57,12 +57,12 @@ bool CCatapult::Process()
 	}
 	m_actionArgument = 0;
 	switch (m_action) {
-	case ACTION_0x19:
+	case ACTION_ACTIVATING:
 		if (g_dwGameTick > m_actionPhase1Deadline) {
-			Action(ACTION_0x1a);
+			Action(ACTION_ACTIVATED);
 		}
 		break;
-	case ACTION_0x1a: {
+	case ACTION_ACTIVATED: {
 		if (g_dwGameTick > m_actionPhase2Deadline) {
 			C3DVector pos;
 			pos.m_xFixed = m_position.m_xFixed - 0xc000;
@@ -70,28 +70,28 @@ bool CCatapult::Process()
 			pos.m_zFixed = m_position.m_zFixed + 0x20000;
 
 			C3DVector vel;
-			int r1 = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-			*g_pSentinel = r1;
-			vel.m_xFixed = ((r1 % 32768) * 4096 / 32768) + 0x9000;
-			int r2 = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-			*g_pSentinel = r2;
-			vel.m_yFixed = ((r2 % 32768) * 4096 / 32768);
-			int r3 = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-			*g_pSentinel = r3;
-			vel.m_zFixed = ((r3 % 32768) * 4096 / 32768) + 0xc000;
+			int randX = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+			*g_pRandomSeed = randX;
+			vel.m_xFixed = ((randX % 32768) * 4096 / 32768) + 0x9000;
+			int randY = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+			*g_pRandomSeed = randY;
+			vel.m_yFixed = ((randY % 32768) * 4096 / 32768);
+			int randZ = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+			*g_pRandomSeed = randZ;
+			vel.m_zFixed = ((randZ % 32768) * 4096 / 32768) + 0xc000;
 
-			m_activator->m_unk0xc0 = 0;
+			m_activator->m_hidden = 0;
 			m_activator->m_action = ACTION_NONE;
 			m_activator->StartFly(vel, &pos);
 			m_activator = 0;
-			Action(ACTION_0x1b);
+			Action(ACTION_RUNNING);
 			SetSndEffect(SFX_CATAPULT);
 		}
 		break;
 	}
-	case ACTION_0x1b:
+	case ACTION_RUNNING:
 		if (g_dwGameTick > m_actionDeadline) {
-			Action(ACTION_0x18);
+			Action(ACTION_READY);
 		}
 		break;
 	}
@@ -101,13 +101,13 @@ bool CCatapult::Process()
 // FUNCTION: LEMBALL 0x0041c9b0
 bool CCatapult::Activate(CGameObject* p_object)
 {
-	if (m_action == ACTION_0x18) {
+	if (m_action == ACTION_READY) {
 		m_activator = p_object;
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionPhase1Deadline = 32;
 		m_actionPhase2Deadline = 46;
 		m_actionDeadline = 94;
-		RequestAction(ACTION_0x19);
+		RequestAction(ACTION_ACTIVATING);
 		return 1;
 	}
 	return 0;
@@ -122,8 +122,8 @@ void CCatapult::DoActivate()
 	m_actionDeadline += g_dwGameTick;
 	CGameObject* activator = m_activator;
 	m_activatorObjectType = activator->m_objectType;
-	activator->m_unk0xc0 = 1;
-	activator->m_action = ACTION_5;
+	activator->m_hidden = 1;
+	activator->m_action = ACTION_HIDDEN;
 	g_pAI->Score(20);
 }
 

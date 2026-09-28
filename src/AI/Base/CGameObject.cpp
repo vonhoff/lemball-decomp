@@ -278,7 +278,7 @@ CIce* CGameObject::Conveyor()
 // FUNCTION: LEMBALL 0x0040ab50
 bool CGameObject::IsUsable(eAction p_action)
 {
-	return p_action == ACTION_0x18;
+	return p_action == ACTION_READY;
 }
 
 // FUNCTION: LEMBALL 0x0040c170
@@ -400,9 +400,9 @@ void CGameObject::Initialise()
 	m_facingDirection = 0;
 	m_objectActive = 0;
 	m_unk0xc4 = 0;
-	m_unk0x3c = 0;
+	m_initiallyActive = 0;
 	m_isFlying = 0;
-	m_unk0xc0 = 0;
+	m_hidden = 0;
 	m_activationReserved = 0;
 	m_routeSearchFailed = 0;
 	m_routeSearchActive = 0;
@@ -996,25 +996,25 @@ bool CGameObject::Fall()
 		m_position.m_zFixed = ((m_lastMovementTick - g_dwGameTick) * 3 + m_flightZ) << 12;
 
 		if ((x & 0xf) != 8) {
-			int centeredX;
+			int centreedX;
 			if ((x & 0xf) < 8) {
-				centeredX = x + 1;
+				centreedX = x + 1;
 			}
 			else {
-				centeredX = x - 1;
+				centreedX = x - 1;
 			}
-			position->m_xFixed = centeredX << 12;
+			position->m_xFixed = centreedX << 12;
 		}
 
 		if ((y & 0xf) != 8) {
-			int centeredY;
+			int centreedY;
 			if ((y & 0xf) < 8) {
-				centeredY = y + 1;
+				centreedY = y + 1;
 			}
 			else {
-				centeredY = y - 1;
+				centreedY = y - 1;
 			}
-			position->m_yFixed = centeredY << 12;
+			position->m_yFixed = centreedY << 12;
 		}
 
 		int groundZ = (int) g_pMap->GetZ(x, y, &mover) << 12;
@@ -1053,7 +1053,7 @@ bool CGameObject::Fall()
 // FUNCTION: LEMBALL 0x00416340
 bool CGameObject::OnLift(Coord3d& p_liftPosition)
 {
-	if (m_action == ACTION_8) {
+	if (m_action == ACTION_DEAD) {
 		return false;
 	}
 
@@ -1091,7 +1091,7 @@ void CGameObject::OffLift(Coord3d& p_liftPosition)
 // FUNCTION: LEMBALL 0x00416420
 bool CGameObject::OnLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
 {
-	if (m_action == ACTION_8) {
+	if (m_action == ACTION_DEAD) {
 		return false;
 	}
 
@@ -1131,8 +1131,8 @@ void CGameObject::OffLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
 // FUNCTION: LEMBALL 0x00416510
 void CGameObject::StartSommersault()
 {
-	int random = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-	*g_pSentinel = random;
+	int random = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+	*g_pRandomSeed = random;
 	m_actionDeadline = g_dwGameTick + (random % 500 + 50) / GAME_TICK_MILLISECONDS;
 	m_actionArgument = (short) g_dwSommersaultDirection;
 	g_dwSommersaultDirection ^= 1;
@@ -1141,10 +1141,10 @@ void CGameObject::StartSommersault()
 // FUNCTION: LEMBALL 0x00416570
 bool CGameObject::IsSelectable()
 {
-	if (m_action < ACTION_7) {
+	if (m_action < ACTION_HIT) {
 		goto selectable;
 	}
-	if (m_action <= ACTION_8 || m_action == ACTION_0x15) {
+	if (m_action <= ACTION_DEAD || m_action == ACTION_WAITING_TO_DIE) {
 		return 0;
 	}
 selectable:
@@ -1154,7 +1154,7 @@ selectable:
 // FUNCTION: LEMBALL 0x00416590
 void CGameObject::ResetInstructions()
 {
-	if (m_action != 4 && m_action != 12 && m_destinationList != 0) {
+	if (m_action != ACTION_FLYING && m_action != ACTION_WAITING_TO_SPAWN && m_destinationList != 0) {
 		if (IsSelectable()) {
 			m_actionDeadline = g_dwGameTick;
 		}

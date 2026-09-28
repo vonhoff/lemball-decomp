@@ -127,17 +127,17 @@ extern char g_szNetworkGameName[16];
 // FUNCTION: LEMBALL 0x00452850
 int CNetworkManager::ProcessMsg(Message* p_message)
 {
-	int status = p_message->code;
+	int status = p_message->m_code;
 	int slot;
 	CConnect* request;
-	unsigned int messageType = p_message->type;
+	unsigned int messageType = p_message->m_type;
 
 	switch (messageType) {
 	case 1:
 		return 1;
 	case 3:
 		if (status == 0) {
-			request = (CConnect*) p_message->payload;
+			request = (CConnect*) p_message->m_payload;
 			if (g_pActiveConnection != 0) {
 				*g_pDebugOutput << "Game connection request during game\n";
 				request->Kill();
@@ -162,8 +162,8 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 		}
 		return 1;
 	case 5: {
-		CConnect* connection = (CConnect*) p_message->payload;
-		CReadPacket* packet = (CReadPacket*) p_message->source;
+		CConnect* connection = (CConnect*) p_message->m_payload;
+		CReadPacket* packet = (CReadPacket*) p_message->m_source;
 		if (status != 0) {
 			return 1;
 		}
@@ -182,7 +182,7 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 		return 1;
 	}
 	case 10: {
-		CConnect* connection = (CConnect*) p_message->payload;
+		CConnect* connection = (CConnect*) p_message->m_payload;
 		int index = 0;
 		CConnect** connections = m_connections;
 		do {
@@ -196,7 +196,7 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 			m_gameMessages[index].m_valid = 0;
 			m_connections[index] = 0;
 			if (g_pNetworkOptionsProc != 0) {
-				g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) p_message->type);
+				g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) p_message->m_type);
 			}
 			if (g_pActiveConnection == connection) {
 				Kill();

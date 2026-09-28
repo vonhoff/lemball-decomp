@@ -22,7 +22,7 @@ bool CTimedQueue::Post(Message& p_message)
 	if (count != 0) {
 		do {
 			message = (Message*) slot;
-			if ((int) (p_message.time - message->time) < 0) {
+			if ((int) (p_message.m_time - message->m_time) < 0) {
 				break;
 			}
 			slot = slot + sizeof(Message);

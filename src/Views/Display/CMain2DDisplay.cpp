@@ -376,15 +376,15 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 	char* cdDir;
 	char helpPath[256];
 
-	switch ((int) p_message->type) {
+	switch ((int) p_message->m_type) {
 	case 4:
-		if (p_message->code != 0x25) {
+		if (p_message->m_code != 0x25) {
 			break;
 		}
 		ToggleResolution();
 		return 1;
 	case 0xf:
-		switch (p_message->code) {
+		switch (p_message->m_code) {
 		default:
 			return 1;
 		case 1:

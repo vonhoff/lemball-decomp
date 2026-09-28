@@ -2,8 +2,8 @@
 #define LEMBALL_VISOS_FOUNDATION_VSSTRING_H
 
 int StrCmpI(const char* p_left, const char* p_right, int p_maxLength);
-void vsLtoa(long p_arg0, char* p_arg1, int p_arg2);
-char* vsULtoa(unsigned long p_arg0, char* p_arg1, int p_arg2);
-char* OkFailed(int p_arg0);
-int strtol(char* p_arg0, char** p_arg1, int p_arg2);
+void vsLtoa(long p_value, char* p_buffer, int p_radix);
+char* vsULtoa(unsigned long p_value, char* p_buffer, int p_radix);
+char* OkFailed(int p_success);
+int strtol(char* p_text, char** p_end, int p_base);
 #endif

@@ -146,7 +146,7 @@ CGlobalGameObject* CObjectManager::AddObject(unsigned short p_id, CGlobalGameObj
 			p_object->SetId(p_id);
 		}
 		m_objects[m_count]->m_objectActive = 1;
-		m_objects[m_count]->m_unk0x3c = p_active;
+		m_objects[m_count]->m_initiallyActive = p_active;
 		return m_objects[m_count++];
 	}
 	return 0;
@@ -281,7 +281,7 @@ int CObjectManager::GetViewData(CViewData* p_viewData)
 		CGlobalGameObject* object = m_objects[i];
 		if (object->m_objectActive != 0 || object->GetSndEffect() != 0) {
 			object = m_objects[i];
-			if (object->m_objectType != OBJECT_AMMO || object->m_action != ACTION_0x1b) {
+			if (object->m_objectType != OBJECT_AMMO || object->m_action != ACTION_RUNNING) {
 				count++;
 				object->GetViewData(*p_viewData++);
 			}

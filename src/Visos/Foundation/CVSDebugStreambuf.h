@@ -12,8 +12,8 @@ public:
 	CVSDebugStreambuf(char* p_buffer, int p_size, void (*p_flushCallback)(char*));
 	virtual ~CVSDebugStreambuf();     // vtable+0x00
 	virtual void flush();             // vtable+0x04
-	virtual void sputc(char p_arg0);  // vtable+0x08
-	virtual void sputs(char* p_arg0); // vtable+0x0c
+	virtual void sputc(char p_c);     // vtable+0x08
+	virtual void sputs(char* p_text); // vtable+0x0c
 
 	void* m_flushCallback; // 0x18
 };
@@ -22,7 +22,7 @@ extern CVSDebugStreambuf* g_pDebugStreambuf;
 extern CVSDebugStreambuf* g_pSysStreambuf;
 extern CVSDebugStreambuf* g_pErrorStreambuf;
 extern void* g_pDebugAcceleratorTable;
-extern int g_nDebugInitialized;
+extern int g_nDebugInitialised;
 extern int g_nDebugFileOutputEnabled;
 extern int g_nAsyncDebugEnabled;
 extern void* g_pDebugThread;

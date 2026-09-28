@@ -44,12 +44,12 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_use16Bit = 0;
 	m_platform.m_unk0x2c = 0;
 	m_platform.m_sampleRate = 0;
-	m_platform.m_unk0x38 = 0xffffffff;
+	m_platform.m_deviceId = 0xffffffff;
 	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
 		m_platform.m_effects[i] = 0;
 	}
 	m_platform.m_sampleRate = 0x5622;
-	m_platform.m_unk0x38 = 0;
+	m_platform.m_deviceId = 0;
 	m_platform.m_samplesPerSecond = 0x5622;
 	m_platform.m_extraFormatBytes = 0;
 	m_platform.m_bitsPerSample = 16;

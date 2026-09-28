@@ -27,7 +27,7 @@ void CCollectable::Restart()
 	m_position.m_yFixed = m_spawnPosition.m_yFixed;
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
 	m_enabled = 1;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 }
 
 // FUNCTION: LEMBALL 0x004228f0
@@ -41,10 +41,10 @@ bool CCollectable::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case 8:
+			case ACTION_DEAD:
 				m_enabled = 0;
 				break;
-			case 26:
+			case ACTION_ACTIVATED:
 				SetSFX();
 				break;
 			}
@@ -54,10 +54,10 @@ bool CCollectable::Process()
 	}
 	if (m_enabled != 0) {
 		switch (m_action) {
-		case 8:
+		case ACTION_DEAD:
 			m_enabled = 0;
 			break;
-		case 24: {
+		case ACTION_READY: {
 			if (g_pActiveConnection == 0 || m_requestedAction == 24) {
 				if (m_onMover == 0) {
 					int y = m_position.m_yFixed >> 12;
@@ -101,15 +101,15 @@ bool CCollectable::Process()
 			found:
 				if (hit != 0 && hit->m_objectType == 2 && hit->HasObject(m_objectType) == 0) {
 					m_activator = hit;
-					RequestAction(ACTION_0x1a);
+					RequestAction(ACTION_ACTIVATED);
 				}
 			}
 			break;
 		}
-		case 26:
+		case ACTION_ACTIVATED:
 			Collected();
 			SetSFX();
-			Action(ACTION_8);
+			Action(ACTION_DEAD);
 			break;
 		}
 	}

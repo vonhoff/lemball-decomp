@@ -206,8 +206,8 @@ void CBroadcast::SendFailedInit(NetworkErrors p_error)
 {
 	Message message;
 
-	message.type = 2;
-	message.code = p_error;
+	message.m_type = 2;
+	message.m_code = p_error;
 	g_pNetworkStatusQueue->Post(message);
 }
 

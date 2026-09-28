@@ -70,7 +70,7 @@ void CTrackWindow::OnPaint(const CVsRect& p_rect)
 	int height = m_trackRect.m_height;
 	int width = (int) m_trackRect.m_width * m_value / 100;
 	if (m_value != 0) {
-		m_line.m_color = 0xac;
+		m_line.m_colour = 0xac;
 		m_line.m_bounds.m_width = width;
 		m_line.m_bounds.m_height = height;
 		m_line.m_bounds.m_x = 0;
@@ -108,12 +108,12 @@ void CTrackWindow::SetButtonValue(int p_value)
 {
 	if (m_value != p_value) {
 		Message message;
-		message.type = 12;
+		message.m_type = 12;
 		m_value = p_value;
-		message.time = CurrentQueueTimer();
-		message.code = m_contextId;
-		message.payload = (void*) m_value;
-		message.source = (void*) 100;
+		message.m_time = CurrentQueueTimer();
+		message.m_code = m_contextId;
+		message.m_payload = (void*) m_value;
+		message.m_source = (void*) 100;
 		g_pMasterInputQueue->Post(message);
 	}
 }

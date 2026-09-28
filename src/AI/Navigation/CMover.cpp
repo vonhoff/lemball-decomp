@@ -40,7 +40,7 @@ void CMover::Initialise()
 	m_switchRequested = 0;
 	m_objectCount = 0;
 	m_findOccupants = 1;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 }
 
 // FUNCTION: LEMBALL 0x0042e640
@@ -202,15 +202,15 @@ bool CMover::Process()
 		time = g_dwRemoteGameTick;
 		action = m_action;
 		if (m_pendingAction != action) {
-			if (action == ACTION_2) {
+			if (action == ACTION_WALKING) {
 				StopObjectsMoving();
 				SetUpNextNode(time);
 			}
 			action = m_action;
 			m_pendingAction = action;
 		}
-		else if (action != ACTION_2 && action != ACTION_0x24) {
-			action = ACTION_0x18;
+		else if (action != ACTION_WALKING && action != ACTION_MOVER_WAITING_FOR_SWITCH) {
+			action = ACTION_READY;
 		}
 	}
 	VerifyObjects();
@@ -254,28 +254,28 @@ bool CMover::Process()
 		if (m_movementMode != 0) {
 			m_lastMovementTick = g_dwGameTick;
 			if (local) {
-				Action(ACTION_0x24);
+				Action(ACTION_MOVER_WAITING_FOR_SWITCH);
 			}
 		}
 		else {
 			m_lastMovementTick = g_dwGameTick + 0x14;
 			if (local) {
-				Action(ACTION_1);
+				Action(ACTION_TURNING);
 			}
 		}
 		break;
 	}
-	case ACTION_1:
+	case ACTION_TURNING:
 		if (local) {
 			if (g_dwGameTick < m_lastMovementTick) {
 				return true;
 			}
 			StopObjectsMoving();
-			Action(ACTION_2);
+			Action(ACTION_WALKING);
 		}
 		SetUpNextNode(time);
 		break;
-	case ACTION_2:
+	case ACTION_WALKING:
 		SetPos();
 		if (local && m_actionDeadline < g_dwGameTick) {
 			Action(ACTION_NONE);
@@ -296,21 +296,21 @@ bool CMover::Process()
 			m_position.m_zFixed = position.m_z << 12;
 		}
 		break;
-	case ACTION_0x14:
+	case ACTION_STARTING_ROUTE:
 		SetUpNextNode(time);
 		SetPos();
 		if (local) {
-			Action(ACTION_1);
+			Action(ACTION_TURNING);
 		}
 		break;
-	case ACTION_0x18:
+	case ACTION_READY:
 		if (local) {
-			Action(ACTION_0x14);
+			Action(ACTION_STARTING_ROUTE);
 		}
 		break;
-	case ACTION_0x24:
+	case ACTION_MOVER_WAITING_FOR_SWITCH:
 		if (m_switchRequested != 0) {
-			Action(ACTION_1);
+			Action(ACTION_TURNING);
 			m_switchRequested = 0;
 		}
 	}
@@ -406,7 +406,7 @@ bool CMover::GetOn(CGameObject* p_object)
 		p_object->m_onMover = 1;
 		m_objectCount++;
 		StopObjectsMoving();
-		if (m_action != ACTION_2 && p_object->m_objectType == OBJECT_PLAYER_2) {
+		if (m_action != ACTION_WALKING && p_object->m_objectType == OBJECT_PLAYER_2) {
 			AiCoord destination(m_position.m_xFixed, m_position.m_yFixed, objectPosition.m_zFixed);
 			p_object->AddDestination(destination);
 			p_object->StartMoving();

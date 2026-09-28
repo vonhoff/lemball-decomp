@@ -46,7 +46,7 @@ void CPaintGun::Set(unsigned short p_id, const AiCoord& p_position, int p_direct
 	m_direction = p_direction;
 	m_active = 1;
 	m_enabled = 1;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	int groundX = (x >> 12) / 16;
 	int groundY = (y >> 12) / 16;
 	if (groundX >= 0 && groundY >= 0) {
@@ -64,7 +64,7 @@ bool CPaintGun::Process()
 {
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
-			if (m_action == ACTION_3) {
+			if (m_action == ACTION_FIRING) {
 				SetSndEffect(SFX_BIGGUN);
 			}
 			m_pendingAction = m_action;
@@ -78,23 +78,23 @@ bool CPaintGun::Process()
 		return 1;
 	}
 	switch (m_action) {
-	case ACTION_3:
-		Action(ACTION_0x1b);
+	case ACTION_FIRING:
+		Action(ACTION_RUNNING);
 		break;
-	case ACTION_0x18: {
+	case ACTION_READY: {
 		int direction = m_direction;
 		m_lastMovementTick = g_dwGameTick + ((28 - direction) * 1000) / 400;
 		m_stateTimer = g_dwSimulationTimestamp + (-direction * 1000) / 8;
 		m_actionDeadline = g_dwGameTick + ((58 - direction) * 1000) / 400;
-		Action(ACTION_0x1b);
+		Action(ACTION_RUNNING);
 		break;
 	}
-	case ACTION_0x1b:
+	case ACTION_RUNNING:
 		if (m_actionDeadline < g_dwGameTick) {
 			m_stateTimer = g_dwSimulationTimestamp;
 			m_lastMovementTick = g_dwGameTick + 70;
 			m_actionDeadline = g_dwGameTick + 145;
-			Action(ACTION_0x1b);
+			Action(ACTION_RUNNING);
 		}
 		else if (m_lastMovementTick < g_dwGameTick) {
 			AiCoord position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
@@ -147,7 +147,7 @@ bool CPaintGun::Process()
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 4, start, target);
 			SetSndEffect(SFX_BIGGUN);
 			m_lastMovementTick = m_actionDeadline;
-			Action(ACTION_3);
+			Action(ACTION_FIRING);
 		}
 		break;
 	}

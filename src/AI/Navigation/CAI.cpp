@@ -142,7 +142,7 @@ void CAI::Restart()
 	m_lemmingCount = 4;
 	m_flagCounts[0] = 1;
 	m_score = g_pGameStatus->m_levelState;
-	m_unk0xf4 = m_score;
+	m_levelStartScore = m_score;
 	m_paused = 0;
 	g_wLemmingCount = 0;
 	m_clockStartPending = 1;
@@ -158,7 +158,7 @@ void CAI::Restart()
 	g_pMap = m_map;
 	CMap* map = m_map;
 	map->m_ai = this;
-	map->m_unk0x18 = this;
+	map->m_ownerAI = this;
 	if (m_initialised == 0) {
 		m_maze = new CMaze(m_map);
 	}
@@ -290,7 +290,7 @@ void CAI::Restart()
 		level = packet[0];
 		skill = (eSkill) packet[1];
 		*g_pSysOutput << "Starting demo mode for level " << level << " on skill " << (int) skill << "\n";
-		*g_pSentinel = 0xad28;
+		*g_pRandomSeed = 0xad28;
 	}
 	else {
 		level = g_pGameStatus->Level();
@@ -810,21 +810,21 @@ void CAI::FireBullet(unsigned short p_id,
 // FUNCTION: LEMBALL 0x00412660
 int CAI::ProcessMsg(Message* p_message)
 {
-	unsigned int messageType = p_message->type;
+	unsigned int messageType = p_message->m_type;
 	if (messageType != 4) {
 		if (m_gameplayEnabled == 0) {
 			return 1;
 		}
 		switch (messageType) {
 		case 2:
-			m_playerGroupManager->AddNewWaypointToCurrentGroup(p_message->code, (int) p_message->payload);
+			m_playerGroupManager->AddNewWaypointToCurrentGroup(p_message->m_code, (int) p_message->m_payload);
 			return 0;
 		case 3:
 			m_playerGroupManager->RemoveWaypointsFromCurrentGroup();
 			return 0;
 		case 5:
-			m_playerGroupManager->CreateNewGroup((unsigned short) p_message->code,
-												 (unsigned short*) p_message->payload);
+			m_playerGroupManager->CreateNewGroup((unsigned short) p_message->m_code,
+												 (unsigned short*) p_message->m_payload);
 			return 0;
 		case 6:
 			m_playerGroupManager->MakePreviousGroupPlayerControlled();
@@ -833,14 +833,14 @@ int CAI::ProcessMsg(Message* p_message)
 			m_playerGroupManager->MakeNextGroupPlayerControlled();
 			return 0;
 		case 8:
-			m_playerGroupManager->UseObject(p_message->code);
+			m_playerGroupManager->UseObject(p_message->m_code);
 			return 0;
 		default:
 			m_processedCount = m_processedCount + 1;
 			return 0;
 		}
 	}
-	m_playerGroupManager->PlayerGroupRequestFire(p_message->code, (int) p_message->payload);
+	m_playerGroupManager->PlayerGroupRequestFire(p_message->m_code, (int) p_message->m_payload);
 	return 0;
 }
 
@@ -940,7 +940,7 @@ void CAI::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned shor
 	if ((collision & 4) != 0 && (p_mask & 0x40) != 0) {
 		eObjectType objectType = m_map->m_ground.m_ground[blockY * m_map->m_ground.m_width + blockX].m_objectType;
 		p_object->m_actionDeadline = g_dwGameTick + 26;
-		p_object->m_action = ACTION_15;
+		p_object->m_action = ACTION_EXTERNAL_CONTROL;
 		switch (objectType) {
 		default:
 			p_object->m_actionArgument = 2;

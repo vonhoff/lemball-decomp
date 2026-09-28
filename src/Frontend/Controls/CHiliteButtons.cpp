@@ -77,16 +77,16 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 {
 	Message posted;
 	int nextValue;
-	posted.type = 0xc;
-	posted.time = CurrentQueueTimer();
-	posted.code = 0;
-	posted.payload = 0;
-	posted.source = 0;
+	posted.m_type = 0xc;
+	posted.m_time = CurrentQueueTimer();
+	posted.m_code = 0;
+	posted.m_payload = 0;
+	posted.m_source = 0;
 
-	if (p_message->code != (int) m_controlMessage) {
+	if (p_message->m_code != (int) m_controlMessage) {
 		return 0;
 	}
-	switch ((int) p_message->type) {
+	switch ((int) p_message->m_type) {
 	default:
 		return 0;
 	case 0xb:
@@ -94,7 +94,7 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 		return 0;
 	case 0xc:
 		if (m_mode == 1) {
-			posted.code = (int) m_actionMessage;
+			posted.m_code = (int) m_actionMessage;
 			g_pMasterInputQueue->Post(posted);
 			return 0;
 		}

@@ -73,7 +73,7 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
 	int dy = abs(p_y1 - p_y2);
 	dx = dx * dx;
 	dy = dy * dy;
-	return ((CVSMath*) g_pSentinel)->SqRoot(dy + dx);
+	return ((CVSMath*) g_pRandomSeed)->SqRoot(dy + dx);
 }
 
 // FUNCTION: LEMBALL 0x004140d0

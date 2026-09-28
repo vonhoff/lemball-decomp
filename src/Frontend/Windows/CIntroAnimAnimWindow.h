@@ -15,8 +15,8 @@ public:
 	void SetAnim();
 
 private:
-	CIntroAnimDrawer* m_owner; // 0xbc
-	CMain2DDisplay* m_display; // 0xc0
+	CIntroAnimDrawer* m_owner;         // 0xbc
+	CMain2DDisplay* m_display;         // 0xc0
 	unsigned int m_completionSequence; // 0xc4
 };
 

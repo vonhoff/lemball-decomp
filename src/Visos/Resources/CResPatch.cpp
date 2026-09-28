@@ -9,7 +9,7 @@ CResPatch* CResPatch::Load(unsigned int p_resourceId)
 	if (res == 0) {
 		return (CResPatch*) (new CResPatch(p_resourceId))->CheckError();
 	}
-	if (res->m_chunkType != kChunkPtch) {
+	if (res->m_chunkType != RESOURCE_CHUNK_PATCH) {
 		res->UnLoad();
 		return 0;
 	}
@@ -19,5 +19,5 @@ CResPatch* CResPatch::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045ebd0
 void CResPatch::SetType()
 {
-	m_chunkType = kChunkPtch;
+	m_chunkType = RESOURCE_CHUNK_PATCH;
 }

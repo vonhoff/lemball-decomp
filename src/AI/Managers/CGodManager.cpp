@@ -111,10 +111,10 @@ CBaseObjectManager* CGodManager::GetManagerForTransport(int p_transportId)
 // FUNCTION: LEMBALL 0x0040b210
 int CGodManager::ProcessMsg(Message* p_message)
 {
-	int code = p_message->code;
-	switch (p_message->type) {
+	int code = p_message->m_code;
+	switch (p_message->m_type) {
 	case 5: {
-		CReadPacket* packet = (CReadPacket*) p_message->source;
+		CReadPacket* packet = (CReadPacket*) p_message->m_source;
 		if (code == 0) {
 			if (TransportReceive(packet)) {
 				return 1;

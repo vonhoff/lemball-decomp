@@ -19,15 +19,15 @@ void CSuccFailAnimWnd::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_di
 	if (p_success != 0) {
 		m_lowResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1;
 		m_highResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_SUCCESS_SUCCESS1;
-		sample = *g_pSentinel * 0x29 + 0x1f & 0x7fffff;
-		*g_pSentinel = sample;
+		sample = *g_pRandomSeed * 0x29 + 0x1f & 0x7fffff;
+		*g_pRandomSeed = sample;
 		m_variantIndex = sample % 3;
 		return;
 	}
 	m_lowResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1;
 	m_highResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_FAIL_FAIL1;
-	sample = *g_pSentinel * 0x29 + 0x1f & 0x7fffff;
-	*g_pSentinel = sample;
+	sample = *g_pRandomSeed * 0x29 + 0x1f & 0x7fffff;
+	*g_pRandomSeed = sample;
 	m_variantIndex = sample % 3;
 }
 

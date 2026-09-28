@@ -28,8 +28,8 @@ struct DirectSoundBufferDescription {
 };
 
 struct DirectSoundError {
-	const char* name;
-	unsigned int code;
+	const char* m_name;
+	unsigned int m_code;
 };
 
 // GLOBAL: LEMBALL 0x004a3320
@@ -64,11 +64,11 @@ const char* DescribeDirectSoundError(unsigned int p_error)
 	strcpy(g_directSoundErrorText, prefix);
 	int i = 0;
 	unsigned int code;
-	const unsigned int* codes = &g_directSoundErrors[0].code;
+	const unsigned int* codes = &g_directSoundErrors[0].m_code;
 	do {
 		code = *codes;
 		if (code == p_error) {
-			return g_directSoundErrors[i].name;
+			return g_directSoundErrors[i].m_name;
 		}
 		codes += 2;
 		i++;
@@ -106,7 +106,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 		m_buffers[index] = 0;
 	}
 	memcpy(&patchHeader, p_patch, sizeof(patchHeader));
-	patchHeader.m_unk4 = SwapBytes16(patchHeader.m_unk4);
+	patchHeader.m_formatVersion = SwapBytes16(patchHeader.m_formatVersion);
 	patchHeader.m_waveCount = SwapBytes16(patchHeader.m_waveCount);
 	m_prepared = 0;
 	m_unknown04 = 0;
@@ -118,7 +118,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	}
 	wave = p_patch + sizeof(EffPatchHeader);
 	memcpy(&waveHeader, wave, sizeof(waveHeader));
-	waveHeader.m_unk4 = SwapBytes16(waveHeader.m_unk4);
+	waveHeader.m_formatVersion = SwapBytes16(waveHeader.m_formatVersion);
 	waveHeader.m_length = SwapBytes32(waveHeader.m_length);
 	waveHeader.m_sampleRate = SwapBytes32(waveHeader.m_sampleRate);
 	length = p_use16Bit != 0 ? waveHeader.m_length : waveHeader.m_length >> 1;

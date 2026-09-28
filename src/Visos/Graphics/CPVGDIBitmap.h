@@ -19,7 +19,7 @@ public:
 	void ResetLinePtrs();
 	void ResetScroll();
 	void Scroll(const CVsRect* p_rect, const CVsPoint* p_destination);
-	void DrawCircleSymmetricPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_color);
+	void DrawCircleSymmetricPoints(int p_centreX, int p_centreY, int p_xOffset, int p_yOffset, int p_colour);
 	void SetBitsBase(unsigned char* p_bits, int p_stride);
 	~CPVGDIBitmap();
 

@@ -11,13 +11,13 @@
 #include <string.h>
 
 // GLOBAL: LEMBALL 0x004a1d78
-int g_chunkIndex = -1;
+int g_emptyChunkIndex = -1;
 
 // GLOBAL: LEMBALL 0x004a1d7c
-ChunkInfo* g_pChunkInfo = 0;
+ChunkInfo* g_pEmptyChunkInfo = 0;
 
-#define kSeekSet 0
-#define kDirectoryEntryStride 9
+#define MOG_SEEK_FROM_START 0
+#define MOG_DIRECTORY_ENTRY_STRIDE 9
 
 // FUNCTION: LEMBALL 0x0045bda0
 CMogDir::CMogDir(unsigned long p_fileOffset)
@@ -28,8 +28,8 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	int* iteratorIndex;
 	int* currentDirIndex;
 
-	int chunkIndex = g_chunkIndex;
-	ChunkInfo* chunkInfo = g_pChunkInfo;
+	int chunkIndex = g_emptyChunkIndex;
+	ChunkInfo* chunkInfo = g_pEmptyChunkInfo;
 	firstIndex = &m_first.m_index;
 	iteratorIndex = &m_iterator.m_index;
 	m_loadedChunkCount = 0;
@@ -37,22 +37,22 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	*iteratorIndex = chunkIndex;
 	m_first.m_info = chunkInfo;
 	m_iterator.m_info = chunkInfo;
-	chunkIndex = g_chunkIndex;
-	chunkInfo = g_pChunkInfo;
+	chunkIndex = g_emptyChunkIndex;
+	chunkInfo = g_pEmptyChunkInfo;
 	m_rootIndex = chunkIndex;
 	m_rootChunk = chunkInfo;
 	currentDirIndex = &m_currentDirIndex;
 	*currentDirIndex = chunkIndex;
 	m_currentDirChunk = chunkInfo;
-	vsSeek(g_pMogFile, p_fileOffset, kSeekSet);
+	vsSeek(g_pMogFile, p_fileOffset, MOG_SEEK_FROM_START);
 	if (p_fileOffset == 0) {
 		((CRawRead*) this)->InputByte();
-		vsSeek(g_pMogFile, 0, kSeekSet);
+		vsSeek(g_pMogFile, 0, MOG_SEEK_FROM_START);
 	}
 	((CRawRead*) this)->InputDword();
 	((CRawRead*) this)->InputDword();
 	m_chunkCount = ((CRawRead*) this)->InputDword();
-	if (((CRawRead*) this)->InputDword() != kMogFormatVersion) {
+	if (((CRawRead*) this)->InputDword() != MOG_FORMAT_VERSION) {
 		_VSRELassert("IsValidResourceFile", "MOGLOAD.CPP", 0x1a2);
 	}
 	m_directoryEndOffset = ((CRawRead*) this)->InputDword();
@@ -61,7 +61,7 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	m_directoryData = (unsigned char*) CMogloadArena::operator new(directoryDataSize);
 	vsRead(g_pMogFile, m_directoryData, directoryDataSize);
 	if (m_chunkCount != 0) {
-		m_first.m_info = (ChunkInfo*) CMogloadArena::operator new(kChunkInfoSize);
+		m_first.m_info = (ChunkInfo*) CMogloadArena::operator new(CHUNK_INFO_ALLOCATION_BYTES);
 		*firstIndex = 0;
 		GetChunkInfo(m_first.m_info);
 		m_loadedChunkCount++;
@@ -69,11 +69,11 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	*iteratorIndex = *firstIndex;
 	m_iterator.m_info = m_first.m_info;
 	do {
-		FindNext(chunk, kAnyChunkType);
+		FindNext(chunk, RESOURCE_CHUNK_ANY_TYPE);
 		if (chunk.m_info == 0) {
 			break;
 		}
-		if (chunk.m_info->m_type == kChunkDirc) {
+		if (chunk.m_info->m_type == RESOURCE_CHUNK_DIRECTORY) {
 			GetNextDir();
 		}
 	} while (chunk.m_info != 0);
@@ -100,7 +100,7 @@ CMogDir::~CMogDir()
 		chunk = m_first.m_info;
 		next = (Chunk*) &chunk->m_nextIndex;
 		*iterator = *next;
-		if (chunk->m_type == kChunkDirc && chunk->m_directory != 0) {
+		if (chunk->m_type == RESOURCE_CHUNK_DIRECTORY && chunk->m_directory != 0) {
 			CMogloadArena::operator delete(chunk->m_directory);
 			m_first.m_info->m_directory = 0;
 		}
@@ -117,7 +117,7 @@ CMogDir::~CMogDir()
 // FUNCTION: LEMBALL 0x0045bfa0
 void CMogDir::GetChunkInfo(ChunkInfo* p_info)
 {
-	vsSeek(g_pMogFile, (m_iterator.m_index * 4 + 4) * kDirectoryEntryStride + m_directoryEndOffset, 0);
+	vsSeek(g_pMogFile, (m_iterator.m_index * 4 + 4) * MOG_DIRECTORY_ENTRY_STRIDE + m_directoryEndOffset, 0);
 	p_info->m_next = 0;
 	p_info->m_child = 0;
 	p_info->m_directory = 0;
@@ -132,7 +132,7 @@ void CMogDir::GetChunkInfo(ChunkInfo* p_info)
 // FUNCTION: LEMBALL 0x0045c030
 ChunkInfo* CMogDir::NewChunkInfo()
 {
-	ChunkInfo* info = (ChunkInfo*) CMogloadArena::operator new(kChunkInfoSize);
+	ChunkInfo* info = (ChunkInfo*) CMogloadArena::operator new(CHUNK_INFO_ALLOCATION_BYTES);
 	m_iterator.m_info->m_next = info;
 	m_iterator.m_info->m_nextIndex = m_loadedChunkCount;
 	m_loadedChunkCount++;
@@ -149,14 +149,14 @@ CMogDir* CMogDir::GetNextDir()
 
 	chunk.m_info = 0;
 	if (m_rootChunk == 0) {
-		FindFirst(chunk, kChunkDirc);
+		FindFirst(chunk, RESOURCE_CHUNK_DIRECTORY);
 		if (chunk.m_info == 0) {
 			m_currentDirIndex = m_rootIndex;
 			m_currentDirChunk = m_rootChunk;
 			return 0;
 		}
-		if (chunk.m_info->m_type == kChunkDirc) {
-			dir = (CMogDir*) CMogloadArena::operator new(kMogDirAllocSize);
+		if (chunk.m_info->m_type == RESOURCE_CHUNK_DIRECTORY) {
+			dir = (CMogDir*) CMogloadArena::operator new(MOG_DIRECTORY_ALLOCATION_BYTES);
 			if (dir == 0) {
 				chunk.m_info->m_directory = 0;
 			}
@@ -189,12 +189,12 @@ CMogDir* CMogDir::GetNextDir()
 
 	m_iterator.m_index = *current;
 	m_iterator.m_info = m_currentDirChunk;
-	FindNext(chunk, kChunkDirc);
+	FindNext(chunk, RESOURCE_CHUNK_DIRECTORY);
 	if (chunk.m_info == 0) {
 		return 0;
 	}
-	if (chunk.m_info->m_type == kChunkDirc) {
-		dir = (CMogDir*) CMogloadArena::operator new(kMogDirAllocSize);
+	if (chunk.m_info->m_type == RESOURCE_CHUNK_DIRECTORY) {
+		dir = (CMogDir*) CMogloadArena::operator new(MOG_DIRECTORY_ALLOCATION_BYTES);
 		if (dir == 0) {
 			chunk.m_info->m_directory = 0;
 		}
@@ -267,9 +267,9 @@ void CMogDir::Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse)
 	Chunk* current;
 	Chunk* root;
 
-	FindFirst(p_chunk, kAnyChunkType);
+	FindFirst(p_chunk, RESOURCE_CHUNK_ANY_TYPE);
 	while (p_chunk.m_info != 0 && p_chunk.m_info->m_id != p_id) {
-		FindNext(p_chunk, kAnyChunkType);
+		FindNext(p_chunk, RESOURCE_CHUNK_ANY_TYPE);
 	}
 	if (p_chunk.m_info == 0) {
 		current = (Chunk*) &m_currentDirIndex;

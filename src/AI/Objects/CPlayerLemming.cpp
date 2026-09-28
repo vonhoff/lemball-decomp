@@ -63,7 +63,7 @@ void CPlayerLemming::Restart()
 		g_wNetworkLemmingIndex++;
 		g_pAI->m_networkLemmings[m_playerIndex] = this;
 		g_wLemmingCount++;
-		m_action = ACTION_12;
+		m_action = ACTION_WAITING_TO_SPAWN;
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionDeadline = m_spawnDelay + g_dwGameTick;
 		int tileX = m_spawnPosition.m_xFixed >> 12;
@@ -109,7 +109,7 @@ void CPlayerLemming::Restart()
 		g_wLocalLemmingIndex++;
 		g_pAI->m_networkLemmings[m_playerIndex + 4] = this;
 		m_isRemoteObject = 1;
-		m_action = ACTION_8;
+		m_action = ACTION_DEAD;
 	}
 	m_position.m_zFixed += 0x44000;
 	m_facingDirection = m_initialFacingDirection;
@@ -125,11 +125,11 @@ CPlayerLemming::~CPlayerLemming()
 void CPlayerLemming::HitBullet(CBullet* p_bullet)
 {
 	if (g_pGameStatus->m_status0 == 0) {
-		if ((int) m_action < 4 || ((int) m_action > 5 && m_action != 16)) {
+		if ((int) m_action < ACTION_FLYING || ((int) m_action > ACTION_HIDDEN && m_action != ACTION_ON_BALLOON)) {
 			switch (p_bullet->m_owner) {
 			case OWNER_ENEMY: {
-				int randVal = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-				*g_pSentinel = randVal;
+				int randVal = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+				*g_pRandomSeed = randVal;
 				if (randVal % 2) {
 					return;
 				}
@@ -143,7 +143,7 @@ void CPlayerLemming::HitBullet(CBullet* p_bullet)
 			default:
 				return;
 			}
-			m_unk0xc0 = 0;
+			m_hidden = 0;
 			m_wasHitByBullet = 1;
 			m_actionDeadline = g_dwGameTick + 40;
 			m_facingDirection = (p_bullet->m_facingDirection + 4) & 7;
@@ -244,7 +244,8 @@ bool CPlayerLemming::IsRequestingFire()
 // FUNCTION: LEMBALL 0x0040f2c0
 void CPlayerLemming::RequestFire(int p_x, int p_y)
 {
-	if (m_fireRequestState == FIRE_REQUEST_NONE && (m_action == 0 || m_action == 2 || m_action == 6)) {
+	if (m_fireRequestState == FIRE_REQUEST_NONE &&
+		(m_action == ACTION_NONE || m_action == ACTION_WALKING || m_action == ACTION_IDLE_ANIMATION)) {
 		m_fireRequestState = FIRE_REQUEST_PENDING;
 		m_fireTarget.m_xFixed = p_x << 12;
 		m_fireTarget.m_yFixed = p_y << 12;
@@ -260,16 +261,16 @@ void CPlayerLemming::Fire()
 	start.m_yFixed = m_position.m_yFixed;
 	start.m_zFixed = m_position.m_zFixed + 0xa000;
 	switch (m_action) {
-	case 4:
-	case 5:
-	case 7:
-	case 8:
-	case 9:
-	case 10:
-	case 11:
-	case 12:
-	case 14:
-	case 15:
+	case ACTION_FLYING:
+	case ACTION_HIDDEN:
+	case ACTION_HIT:
+	case ACTION_DEAD:
+	case ACTION_FINDING_ROUTE:
+	case ACTION_JUMPING:
+	case ACTION_FALLING:
+	case ACTION_WAITING_TO_SPAWN:
+	case ACTION_SOMMERSAULT:
+	case ACTION_EXTERNAL_CONTROL:
 		break;
 	default:
 		if (g_pGameStatus->m_status1 != 0 || m_ammoCount != 0) {
@@ -435,11 +436,11 @@ unsigned int CPlayerLemming::CheckNetworkStateChanged()
 	m_sfxChanged = ((m_networkPositionCache.m_zFixed ^ z) & 0xfffff000) != 0 || m_sfxChanged;
 	eAction action = m_action;
 	switch (action) {
-	case 0:
+	case ACTION_NONE:
 		m_sfxChanged = m_cachedAction != action || m_sfxChanged;
 		m_cachedAction = action;
 		break;
-	case 1:
+	case ACTION_TURNING:
 		break;
 	default:
 		m_sfxChanged = m_cachedAction != action || m_sfxChanged;
@@ -497,11 +498,11 @@ bool CPlayerLemming::AddObject(eObjectType p_objectType, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x0040fa10
 void CPlayerLemming::RandomAction()
 {
-	int randVal = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-	*g_pSentinel = randVal;
-	int action = randVal % 3;
-	m_actionArgument = (short) action;
-	switch (action) {
+	int randVal = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+	*g_pRandomSeed = randVal;
+	int idleAnim = randVal % 3;
+	m_actionArgument = (short) idleAnim;
+	switch (idleAnim) {
 	case 0:
 		m_actionDeadline = g_dwGameTick + 0x38;
 		break;
@@ -534,7 +535,7 @@ void CPlayerLemming::Resurrect(const AiCoord& p_position)
 	resetFlags = 0;
 	m_fireRequestState = FIRE_REQUEST_NONE;
 	m_isFlying = 0;
-	m_unk0xc0 = 0;
+	m_hidden = 0;
 	m_activationReserved = 0;
 	m_routeSearchFailed = 0;
 	m_routeSearchActive = 0;
@@ -624,7 +625,7 @@ void CPlayerLemming::ExternalControlEnd()
 	case 1:
 	case 2:
 		Die();
-		Action(ACTION_8);
+		Action(ACTION_DEAD);
 		break;
 	default:
 		Action(ACTION_NONE);
@@ -648,7 +649,7 @@ void CPlayerLemming::OnBalloon()
 		m_isFalling = 1;
 		m_actionArgument = 0;
 		m_lastMovementTick = g_dwGameTick;
-		m_action = ACTION_11;
+		m_action = ACTION_FALLING;
 		m_flightZ = m_position.m_zFixed >> 12;
 		ResetInstructions();
 		int posX = m_position.m_xFixed;
@@ -752,8 +753,8 @@ void CPlayerLemming::RequestBalloon()
 // FUNCTION: LEMBALL 0x00410090
 void CPlayerLemming::SetBored(unsigned long p_minimumDelay)
 {
-	int random = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-	*g_pSentinel = random;
+	int random = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+	*g_pRandomSeed = random;
 	m_boredDeadline = p_minimumDelay + random % 5000;
 	m_boredDeadline = m_boredDeadline - m_boredDeadline % 0x42;
 	m_boredDeadline = m_boredDeadline / GAME_TICK_MILLISECONDS;
@@ -798,7 +799,7 @@ void CPlayerLemming::StartStanding()
 void CPlayerLemming::Action(eAction p_action)
 {
 	m_stateTimer = g_dwSimulationTimestamp;
-	if (p_action == ACTION_8) {
+	if (p_action == ACTION_DEAD) {
 		CGlobalGameObject::Action(p_action);
 		return;
 	}
@@ -827,7 +828,7 @@ bool CPlayerLemming::IsSelectable()
 	if (!CGameObject::IsSelectable()) {
 		return 0;
 	}
-	if (m_action == 0xf) {
+	if (m_action == ACTION_EXTERNAL_CONTROL) {
 		int actionArgument = (unsigned short) m_actionArgument;
 		if (actionArgument >= 1 && actionArgument <= 2) {
 			return 0;

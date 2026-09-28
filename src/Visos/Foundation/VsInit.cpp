@@ -188,7 +188,7 @@ void INIT_SubSystems()
 
 	strmOk = _STRM_Init();
 	dbgOk = _DBG_Init();
-	g_nDebugInitialized = dbgOk;
+	g_nDebugInitialised = dbgOk;
 	InitPlatformServices();
 
 	*g_pSysOutput << "ViSOS v" << g_nVisosVersionMajor << "." << g_nVisosVersionMinor << "(" << 201 << ")"

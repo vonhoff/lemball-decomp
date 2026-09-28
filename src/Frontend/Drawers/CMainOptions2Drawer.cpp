@@ -227,7 +227,7 @@ CMainOptions2Drawer::~CMainOptions2Drawer()
 // FUNCTION: LEMBALL 0x00448ee0
 bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 {
-	switch (p_message->type) {
+	switch (p_message->m_type) {
 	case 0xc:
 		break;
 	default:
@@ -235,7 +235,7 @@ bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 		return 0;
 	}
 
-	switch ((unsigned int) p_message->code) {
+	switch ((unsigned int) p_message->m_code) {
 	case MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE:
 	case MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE:
 		return 1;
@@ -248,14 +248,14 @@ bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 		m_returnState = 0x11;
 		return 1;
 	case 0xacff0000:
-		g_nPendingEffectsVolume = (int) p_message->payload;
-		g_pSoundView->SetEffectsVolume((unsigned char) (((unsigned int) p_message->payload * RES_MAPEDIT_FONT4X8) /
-														(unsigned int) p_message->source));
+		g_nPendingEffectsVolume = (int) p_message->m_payload;
+		g_pSoundView->SetEffectsVolume((unsigned char) (((unsigned int) p_message->m_payload * RES_MAPEDIT_FONT4X8) /
+														(unsigned int) p_message->m_source));
 		return 1;
 	case 0xacff0001: {
-		g_nPendingMusicVolume = (int) p_message->payload;
-		unsigned char volume = (unsigned char) (((unsigned int) p_message->payload * RES_MAPEDIT_FONT4X8) /
-												(unsigned int) p_message->source);
+		g_nPendingMusicVolume = (int) p_message->m_payload;
+		unsigned char volume = (unsigned char) (((unsigned int) p_message->m_payload * RES_MAPEDIT_FONT4X8) /
+												(unsigned int) p_message->m_source);
 		*g_pSysOutput << "Setting music volume " << volume << "\n";
 		g_pSoundView->SetMusicVolume(volume);
 		return 1;

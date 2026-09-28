@@ -25,7 +25,7 @@ CPlayerLemmingGroupManager::CPlayerLemmingGroupManager(CAI* p_ai,
 	m_lemmingCounts[2] = 0;
 	m_lemmingCounts[1] = 0;
 	m_state = 0;
-	m_networkInitialized = 0;
+	m_networkInitialised = 0;
 	m_startY[0] = 0x34a;
 	m_startPositionCount = 1;
 	m_lemmingCounts[0] = 4;
@@ -53,7 +53,7 @@ CPlayerLemmingGroupManager::~CPlayerLemmingGroupManager()
 	for (int i = 0; i < m_deadCount; i++) {
 		delete m_dead[i];
 	}
-	if (m_networkInitialized != 0) {
+	if (m_networkInitialised != 0) {
 		for (int i = 0; i < 4; i++) {
 			delete m_networkLemmings[i];
 		}
@@ -285,7 +285,7 @@ void CPlayerLemmingGroupManager::UseObject(int p_objectId)
 		return;
 	}
 	CPlayerLemming* lemming = (CPlayerLemming*) object;
-	if (lemming->m_action != 8) {
+	if (lemming->m_action != ACTION_DEAD) {
 		CPlayerLemmingGroup* group = lemming->GetGroup();
 		if (group != controlledGroup) {
 			controlledGroup->SetPlayerControlled(0, 0);
@@ -370,7 +370,7 @@ void CPlayerLemmingGroupManager::InitialiseNetwork()
 		CPlayerLemming** lemmings = m_networkLemmings;
 		int remaining = 4;
 		do {
-			if (m_networkInitialized == 0) {
+			if (m_networkInitialised == 0) {
 				*lemmings = new CPlayerLemming(0, 0, 0, 0, 1, 0);
 			}
 			(*lemmings)->Restart();
@@ -379,7 +379,7 @@ void CPlayerLemmingGroupManager::InitialiseNetwork()
 			lemmings++;
 			remaining--;
 		} while (remaining != 0);
-		m_networkInitialized = 1;
+		m_networkInitialised = 1;
 	}
 }
 
@@ -431,7 +431,7 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 		lemming->Restart();
 		CBaseObjectManager* manager = this;
 		lemming->m_manager = manager;
-		lemming->m_action = ACTION_8;
+		lemming->m_action = ACTION_DEAD;
 		int& objectCount = g_pGenericGroupAI->m_objectCount;
 		for (int j = 0; j < objectCount; j++) {
 			CGameObject**& objects = g_pGenericGroupAI->m_objects;
@@ -520,7 +520,7 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 			lemming = *reuse++;
 		}
 		lemming->Restart();
-		lemming->m_action = ACTION_8;
+		lemming->m_action = ACTION_DEAD;
 		int& objectCount = g_pGenericGroupAI->m_objectCount;
 		for (int j = 0; j < objectCount; j++) {
 			CGameObject**& objects = g_pGenericGroupAI->m_objects;

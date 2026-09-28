@@ -10,7 +10,7 @@
 // VTABLE: LEMBALL 0x00498af0
 class CResFONT : public CResBaseLIST {
 public:
-	CResFONT(unsigned long p_arg0);
+	CResFONT(unsigned long p_resourceId);
 	CResZRLE* ASCIItoZRLE(unsigned int p_ascii);
 	CVsSize* GetSize(CVsSize* p_result, const char* p_text, unsigned int p_flags);
 	CVsSize GetSize(const char* p_text, unsigned int p_flags)

@@ -35,7 +35,7 @@ inline CCrate::~CCrate()
 void CCrate::Restart()
 {
 	CBaseGlobalObject::Restart();
-	m_pendingAction = ACTION_0x18;
+	m_pendingAction = ACTION_READY;
 }
 
 #include "../../Map/Base/CMap.h"
@@ -82,10 +82,10 @@ bool CCrate::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case 25:
+			case ACTION_ACTIVATING:
 				SetSndEffect(SFX_SNATCH);
 				break;
-			case 26:
+			case ACTION_ACTIVATED:
 				TriggerContents();
 				SetSndEffect(SFX_CRATEEXP);
 				break;
@@ -95,16 +95,16 @@ bool CCrate::Process()
 		return 1;
 	}
 	switch (m_action) {
-	case ACTION_0x19:
+	case ACTION_ACTIVATING:
 		if (m_actionPhase1Deadline < g_dwGameTick) {
 			TriggerContents();
 			SetSndEffect(SFX_CRATEEXP);
-			Action(ACTION_0x1a);
+			Action(ACTION_ACTIVATED);
 		}
 		break;
-	case ACTION_0x1a:
+	case ACTION_ACTIVATED:
 		if (m_actionPhase2Deadline < g_dwGameTick) {
-			Action(ACTION_0x18);
+			Action(ACTION_READY);
 			m_objectActive = 0;
 		}
 		break;
@@ -115,10 +115,10 @@ bool CCrate::Process()
 // FUNCTION: LEMBALL 0x0041ce50
 bool CCrate::Activate(CGameObject* p_object)
 {
-	if (m_action == ACTION_0x18) {
+	if (m_action == ACTION_READY) {
 		m_actionPhase1Deadline = 16;
 		m_actionPhase2Deadline = 30;
-		RequestAction(ACTION_0x19);
+		RequestAction(ACTION_ACTIVATING);
 		return 1;
 	}
 	return 0;

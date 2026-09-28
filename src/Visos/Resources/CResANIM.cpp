@@ -42,7 +42,7 @@ bool CResANIM::ForceLoadVram(unsigned int p_index)
 unsigned int CResANIM::GetnVramEntries()
 {
 	unsigned int count = 0;
-	if (m_animationEntries->m_initialized != 0) {
+	if (m_animationEntries->m_initialised != 0) {
 		count = 1;
 	}
 	return count;

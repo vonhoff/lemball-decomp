@@ -107,7 +107,7 @@ CVSDebugStreambuf* g_pErrorStreambuf;
 void* g_pDebugAcceleratorTable = 0;
 
 // GLOBAL: LEMBALL 0x004a0e68
-int g_nDebugInitialized = 0;
+int g_nDebugInitialised = 0;
 
 // GLOBAL: LEMBALL 0x004a0e80
 int g_nDebugFileOutputEnabled = 0;

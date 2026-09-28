@@ -37,7 +37,7 @@ void CRocket::Set(unsigned short p_id, const AiCoord& p_position)
 	m_position.m_yFixed = p_position.m_yFixed;
 	int z = p_position.m_zFixed;
 	m_active = 1;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_position.m_zFixed = z;
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
@@ -68,14 +68,14 @@ bool CRocket::Process()
 		tick = g_dwGameTick;
 	}
 	eAction action = m_action;
-	if (action == ACTION_4) {
+	if (action == ACTION_FLYING) {
 		const unsigned long& height = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << 12;
 		m_position.m_zFixed = height;
 	}
 
 	if (remoteObject != 0) {
 		if (m_pendingAction != action) {
-			if (action == ACTION_0x1b) {
+			if (action == ACTION_RUNNING) {
 				m_lastMovementTick = tick + 48;
 				m_launchBaseZ = m_position.m_zFixed >> 12;
 				SetSndEffect(SFX_ROCKET);
@@ -86,15 +86,15 @@ bool CRocket::Process()
 	}
 
 	switch (action) {
-	case ACTION_4:
+	case ACTION_FLYING:
 		if ((m_position.m_zFixed & -4096) > 0xc8000) {
-			Action(ACTION_0x18);
+			Action(ACTION_READY);
 			return 1;
 		}
 		break;
-	case ACTION_0x1b:
+	case ACTION_RUNNING:
 		if (m_lastMovementTick < g_dwGameTick) {
-			Action(ACTION_4);
+			Action(ACTION_FLYING);
 		}
 		break;
 	default:
@@ -116,7 +116,7 @@ int CRocket::StepOn(const AiCoord& p_position, CGameObject* p_object)
 		m_launchBaseZ = m_position.m_zFixed >> 12;
 		m_activator = p_object;
 		m_lastMovementTick = 0x30;
-		RequestAction(ACTION_0x1b);
+		RequestAction(ACTION_RUNNING);
 		return 1;
 	}
 	return 0;
@@ -130,7 +130,7 @@ void CRocket::DoActivate()
 {
 	m_lastMovementTick += g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
-	m_activator->Action(ACTION_0x15);
+	m_activator->Action(ACTION_WAITING_TO_DIE);
 	m_activator->m_actionDeadline = g_dwGameTick + 60;
 	SetSndEffect(SFX_ROCKET);
 	if (g_pActiveConnection != 0) {
@@ -165,7 +165,7 @@ void CRocket::GetViewData(CViewData& p_viewData)
 	p_viewData.m_action = action;
 	p_viewData.m_stateTimer = timer;
 	p_viewData.m_statusFlags = 0;
-	p_viewData.m_unk0x30 = m_unk0xc0;
+	p_viewData.m_hidden = m_hidden;
 	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
 	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
 	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;

@@ -49,7 +49,7 @@ void CSlinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 	m_position.m_zFixed = positionZ;
 	m_actionDeadline = g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
-	Action(ACTION_0x18);
+	Action(ACTION_READY);
 }
 
 // FUNCTION: LEMBALL 0x0040b5b0
@@ -87,8 +87,8 @@ bool CSlinky::Move()
 	int count = 0;
 	int dy;
 	do {
-		int random = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-		*g_pSentinel = random;
+		int random = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+		*g_pRandomSeed = random;
 		m_actionArgument = random % 4;
 		switch ((unsigned short) m_actionArgument) {
 		case 0:
@@ -129,15 +129,15 @@ bool CSlinky::Move()
 bool CSlinky::Process()
 {
 	switch (m_action) {
-	case ACTION_0x18:
+	case ACTION_READY:
 		if (g_dwGameTick >= m_actionDeadline) {
 			Move();
 			m_stateTimer = g_dwSimulationTimestamp;
-			Action(ACTION_0x1b);
+			Action(ACTION_RUNNING);
 			m_actionDeadline = g_dwGameTick + 0x10;
 		}
 		break;
-	case ACTION_0x1b:
+	case ACTION_RUNNING:
 		if (g_dwGameTick >= m_actionDeadline) {
 			int x = m_destination.m_xFixed;
 			int y = m_destination.m_yFixed;
@@ -146,7 +146,7 @@ bool CSlinky::Process()
 			m_position.m_yFixed = y;
 			m_position.m_zFixed = z;
 			m_stateTimer = g_dwSimulationTimestamp;
-			Action(ACTION_0x18);
+			Action(ACTION_READY);
 			m_actionDeadline = g_dwGameTick + 0x14;
 		}
 		break;

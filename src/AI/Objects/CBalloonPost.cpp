@@ -43,22 +43,22 @@ CBalloonPost::~CBalloonPost()
 bool CBalloonPost::FindPost(eObjectType p_objectType, AiCoord& p_position)
 {
 	switch (p_objectType) {
-	case 0x28:
+	case OBJECT_BALLOON_1:
 		p_position.m_xFixed = m_positions[0].m_xFixed;
 		p_position.m_yFixed = m_positions[0].m_yFixed;
 		p_position.m_zFixed = m_positions[0].m_zFixed;
 		return m_activeMask & 1;
-	case 0x2a:
+	case OBJECT_BALLOON_3:
 		p_position.m_xFixed = m_positions[1].m_xFixed;
 		p_position.m_yFixed = m_positions[1].m_yFixed;
 		p_position.m_zFixed = m_positions[1].m_zFixed;
 		return m_activeMask & 2;
-	case 0x2c:
+	case OBJECT_BALLOON_5:
 		p_position.m_xFixed = m_positions[2].m_xFixed;
 		p_position.m_yFixed = m_positions[2].m_yFixed;
 		p_position.m_zFixed = m_positions[2].m_zFixed;
 		return m_activeMask & 4;
-	case 0x2e:
+	case OBJECT_BALLOON_7:
 		p_position.m_xFixed = m_positions[3].m_xFixed;
 		p_position.m_yFixed = m_positions[3].m_yFixed;
 		p_position.m_zFixed = m_positions[3].m_zFixed;

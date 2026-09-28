@@ -420,71 +420,71 @@ void CMap::LoadDefaultBlox(class LoadDefaultBlox* p_data, unsigned long p_dataSi
 // FUNCTION: LEMBALL 0x00430eb0
 bool ValidateDefaultBloxData(eObjectType p_type, unsigned short* p_data)
 {
-	unsigned short data = *p_data;
+	unsigned short validatedData = *p_data;
 	switch (p_type) {
 	case TERRAIN_TREE:
-		if (*p_data >= g_wDefaultBloxLimit0202) {
-			data = 0;
+		if (*p_data >= g_treeFrameLimit) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_1:
-		if (g_wDefaultBloxLimit0206 <= *p_data) {
-			data = 0;
+		if (g_blox1FrameLimit <= *p_data) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_2:
-		if (g_wDefaultBloxLimit0207 <= *p_data) {
-			data = 0;
+		if (g_blox2FrameLimit <= *p_data) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_3_SLOPE_SW_STEEP:
-		if (*p_data >= g_wDefaultBloxLimit0208) {
-			data = 0;
+		if (*p_data >= g_steepSwSlopeFrameLimit) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_4:
-		if (*p_data >= g_wDefaultBloxLimit0209) {
-			data = 0;
+		if (*p_data >= g_blox4FrameLimit) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_5:
-		if (*p_data >= g_wDefaultBloxLimit020A) {
-			data = 0;
+		if (*p_data >= g_blox5FrameLimit) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_6:
-		if (*p_data >= g_wDefaultBloxLimit020B) {
-			data = 0;
+		if (*p_data >= g_blox6FrameLimit) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_7:
-		if (g_wDefaultBloxLimit020C <= *p_data) {
-			data = 0;
+		if (g_blox7FrameLimit <= *p_data) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
-		if (g_wDefaultBloxLimit020D <= *p_data) {
-			data = 0;
+		if (g_steepSeSlopeFrameLimit <= *p_data) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
-		if (g_wDefaultBloxLimit020E <= *p_data) {
-			data = 0;
+		if (g_shallowSwSlopeFrameLimit <= *p_data) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
-		if (g_wDefaultBloxLimit020F <= *p_data) {
-			data = 0;
+		if (g_shallowSeSlopeFrameLimit <= *p_data) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_ANIM:
-		if (*p_data >= g_wDefaultBloxLimit0210) {
-			data = 0;
+		if (*p_data >= g_groundAnimFrameLimit) {
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_0x214:
 		if (g_wDefaultBloxLimit0214 <= *p_data) {
-			data = 0;
+			validatedData = 0;
 		}
 		break;
 	case TERRAIN_FLAME:
@@ -494,12 +494,12 @@ bool ValidateDefaultBloxData(eObjectType p_type, unsigned short* p_data)
 	case TERRAIN_CONVEYOR_VARIANT_B:
 		return true;
 	case TERRAIN_EMBERS:
-		if (g_wDefaultBloxLimit0217 <= *p_data) {
-			data = 0;
+		if (g_embersFrameLimit <= *p_data) {
+			validatedData = 0;
 		}
 	}
-	if (data != *p_data) {
-		*p_data = data;
+	if (validatedData != *p_data) {
+		*p_data = validatedData;
 		return false;
 	}
 	return true;
@@ -524,43 +524,43 @@ void CMap::SetLevelName(char* p_name)
 CMap* g_pMap;
 
 // GLOBAL: LEMBALL 0x0049e4e8
-unsigned short g_wDefaultBloxLimit0206 = 0;
+unsigned short g_blox1FrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e4ec
-unsigned short g_wDefaultBloxLimit0207 = 0;
+unsigned short g_blox2FrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e4f0
-unsigned short g_wDefaultBloxLimit0208 = 0;
+unsigned short g_steepSwSlopeFrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e4f4
-unsigned short g_wDefaultBloxLimit0209 = 0;
+unsigned short g_blox4FrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e4f8
-unsigned short g_wDefaultBloxLimit020A = 0;
+unsigned short g_blox5FrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e4fc
-unsigned short g_wDefaultBloxLimit020B = 0;
+unsigned short g_blox6FrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e500
-unsigned short g_wDefaultBloxLimit020C = 0;
+unsigned short g_blox7FrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e504
-unsigned short g_wDefaultBloxLimit020D = 0;
+unsigned short g_steepSeSlopeFrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e51c
-unsigned short g_wDefaultBloxLimit020E = 0;
+unsigned short g_shallowSwSlopeFrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e520
-unsigned short g_wDefaultBloxLimit020F = 0;
+unsigned short g_shallowSeSlopeFrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e528
 unsigned short g_wDefaultBloxLimit0214 = 0;
 
 // GLOBAL: LEMBALL 0x0049e534
-unsigned short g_wDefaultBloxLimit0210 = 0;
+unsigned short g_groundAnimFrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e538
-unsigned short g_wDefaultBloxLimit0202 = 0;
+unsigned short g_treeFrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e544
-unsigned short g_wDefaultBloxLimit0217 = 1;
+unsigned short g_embersFrameLimit = 1;

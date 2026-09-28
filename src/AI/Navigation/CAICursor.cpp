@@ -64,9 +64,9 @@ void CAICursor::GetCursorSurfaceCoordinates(int& p_x, int& p_y)
 // FUNCTION: LEMBALL 0x00414e80
 int CAICursor::ProcessMsg(Message* p_message)
 {
-	switch (p_message->type) {
+	switch (p_message->m_type) {
 	case 1:
-		SetCursorXY(p_message->code, (int) p_message->payload);
+		SetCursorXY(p_message->m_code, (int) p_message->m_payload);
 		return 1;
 	default:
 		m_processedCount++;

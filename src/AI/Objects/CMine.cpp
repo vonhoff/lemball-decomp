@@ -30,7 +30,7 @@ void CMine::Restart()
 // FUNCTION: LEMBALL 0x00423c50
 void CMine::Initialise()
 {
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_enabled = 0;
 	m_activated = 0;
 	m_terrainSet = 0;
@@ -68,10 +68,10 @@ void CMine::Set(AiCoord p_position)
 // FUNCTION: LEMBALL 0x00423d40
 void CMine::Trigger(int p_delay)
 {
-	if (m_triggerPending == 0 && m_action == ACTION_0x18) {
+	if (m_triggerPending == 0 && m_action == ACTION_READY) {
 		m_triggerPending = 1;
 		m_triggerDelay = p_delay;
-		RequestAction(ACTION_0x1a);
+		RequestAction(ACTION_ACTIVATED);
 	}
 }
 
@@ -112,14 +112,14 @@ void CMine::SetTerrain()
 // FUNCTION: LEMBALL 0x00423e70
 void CMine::StepOn(CGameObject* p_object)
 {
-	RequestAction(ACTION_0x1b);
+	RequestAction(ACTION_RUNNING);
 	p_object->HitMine();
 }
 
 // FUNCTION: LEMBALL 0x00423e90
 bool CMine::IsUsable(eAction p_action)
 {
-	return p_action == ACTION_8 || p_action == ACTION_0x18;
+	return p_action == ACTION_DEAD || p_action == ACTION_READY;
 }
 
 // FUNCTION: LEMBALL 0x00423eb0
@@ -129,10 +129,10 @@ bool CMine::Process()
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != action) {
 			switch (action) {
-			case ACTION_8:
+			case ACTION_DEAD:
 				m_enabled = m_activated = 0;
 				break;
-			case ACTION_0x1b:
+			case ACTION_RUNNING:
 				SetTerrain();
 				break;
 			}
@@ -142,24 +142,24 @@ bool CMine::Process()
 	}
 
 	switch (action) {
-	case ACTION_0x19:
+	case ACTION_ACTIVATING:
 		m_terrainSet = 0;
 		return 0;
-	case ACTION_0x1a:
+	case ACTION_ACTIVATED:
 		if (m_lastMovementTick < g_dwGameTick) {
 			SetTerrain();
 			m_stateTimer = g_dwSimulationTimestamp;
 			m_actionDeadline = g_dwGameTick + 20;
-			Action(ACTION_0x1b);
+			Action(ACTION_RUNNING);
 			return 0;
 		}
 		break;
-	case ACTION_0x1b:
+	case ACTION_RUNNING:
 		if (m_actionDeadline < g_dwGameTick) {
 			m_activated = 0;
 			m_enabled = 0;
 			m_lastMovementTick = g_dwGameTick + 100;
-			Action(ACTION_8);
+			Action(ACTION_DEAD);
 		}
 		break;
 	default:

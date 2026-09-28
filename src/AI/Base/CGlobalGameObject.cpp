@@ -33,8 +33,8 @@ void CGlobalGameObject::Restart()
 {
 	CGameObject::Restart();
 	m_requestActive = 0;
-	m_requestedAction = ACTION_0x18;
-	m_pendingAction = ACTION_0x18;
+	m_requestedAction = ACTION_READY;
+	m_pendingAction = ACTION_READY;
 	m_usableState = 0;
 	m_requestEnabled = 1;
 }

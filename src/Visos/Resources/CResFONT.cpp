@@ -11,7 +11,7 @@ CResFONT::CResFONT(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g
 	m_fontEntries = 0;
 	m_fontTable = 0;
 	DoLoad(p_resourceId);
-	m_initialized = 1;
+	m_initialised = 1;
 }
 
 // FUNCTION: LEMBALL 0x0045d810
@@ -53,10 +53,10 @@ void CResFONT::AllocateResources(unsigned int p_count)
 unsigned int CResFONT::GetnVramEntries()
 {
 	unsigned int count = 0;
-	if (m_animationEntries->m_initialized != 0) {
+	if (m_animationEntries->m_initialised != 0) {
 		count = 1;
 	}
-	if (m_fontEntries->m_initialized != 0) {
+	if (m_fontEntries->m_initialised != 0) {
 		count++;
 	}
 	return count;

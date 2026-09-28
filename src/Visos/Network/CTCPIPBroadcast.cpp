@@ -126,8 +126,8 @@ void CTCPIPBroadcast::GotName(int p_failed)
 	else {
 		*g_pErrorOutput << "Specified computer name not found\n";
 		if (m_addressMode == 2) {
-			*(volatile unsigned short*) &result.m_status.m_message.type = 0xd;
-			*(volatile int*) &result.m_status.m_message.code = 0xf;
+			*(volatile unsigned short*) &result.m_status.m_message.m_type = 0xd;
+			*(volatile int*) &result.m_status.m_message.m_code = 0xf;
 			g_pNetworkStatusQueue->Post(result.m_status.m_message);
 		}
 	}
@@ -243,8 +243,8 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 	m_readReady = 1;
 	m_writeReady = 0;
 	CBroadcast::m_lastBroadcastTime = timeGetTime() - 1000;
-	message.type = 2;
-	message.code = 0;
+	message.m_type = 2;
+	message.m_code = 0;
 	g_pNetworkStatusQueue->Post(message);
 }
 

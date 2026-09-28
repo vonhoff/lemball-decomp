@@ -36,7 +36,7 @@ public:
 	static short NextLoadingId();
 	short GetId();
 	void Blocked();
-	unsigned short MapCheck(int p_arg0, int p_arg1);
+	unsigned short MapCheck(int p_x, int p_y);
 	virtual ~CGameObject();                                                          // vtable+0x00
 	virtual void Action(eAction p_action);                                           // vtable+0x08
 	virtual void Action(eAction p_action, int p_actionArgument);                     // vtable+0x04
@@ -183,7 +183,7 @@ protected:
 	unsigned int m_balloonPostActive;      // 0x30
 	unsigned int m_balloonPostId;          // 0x34
 	int m_objectActive;                    // 0x38
-	unsigned int m_unk0x3c;                // 0x3c
+	unsigned int m_initiallyActive;        // 0x3c
 	AiCoord m_spawnPosition;               // 0x40
 	AiCoord m_flightVelocity;              // 0x4c
 	unsigned int m_unk0x58;                // 0x58
@@ -211,7 +211,7 @@ protected:
 	short m_initialFacingDirection;        // 0xb6
 	eAction m_action;                      // 0xb8
 	short m_actionArgument;                // 0xbc
-	unsigned int m_unk0xc0;                // 0xc0
+	unsigned int m_hidden;                 // 0xc0
 	short m_unk0xc4;                       // 0xc4
 	unsigned int m_lastMovementTick;       // 0xc8
 	unsigned int m_actionDeadline;         // 0xcc
@@ -259,7 +259,7 @@ inline void CGameObject::GetViewData(CViewData& p_viewData)
 	p_viewData.m_actionArgument = argument;
 	p_viewData.m_stateTimer = timer;
 	p_viewData.m_statusFlags = 0;
-	p_viewData.m_unk0x30 = m_unk0xc0;
+	p_viewData.m_hidden = m_hidden;
 	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
 	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
 	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;

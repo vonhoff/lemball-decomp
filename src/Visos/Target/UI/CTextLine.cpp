@@ -12,6 +12,6 @@ CTextLine::~CTextLine()
 CTextLine::CTextLine()
 {
 	m_text = 0;
-	m_textColor = 0;
+	m_textColour = 0;
 	m_selected = 0;
 }

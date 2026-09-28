@@ -21,7 +21,7 @@ void CFlag::SetSFX()
 bool CFlag::Process()
 {
 	if (m_isRemoteObject == 0 && m_objectType == OBJECT_FLAG_1) {
-		if (m_action == ACTION_0x18 && m_onMover == 0) {
+		if (m_action == ACTION_READY && m_onMover == 0) {
 			int y = m_position.m_yFixed >> 12;
 			int x = m_position.m_xFixed >> 12;
 			unsigned short z;

@@ -142,7 +142,7 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 	m_borderLine[0].m_bounds.m_height = borderRect.m_height;
 	m_borderLine[0].m_bounds.m_x = borderRect.m_x;
 	m_borderLine[0].m_bounds.m_y = borderRect.m_y;
-	m_borderLine[0].m_color = 0xc;
+	m_borderLine[0].m_colour = 0xc;
 }
 
 // FUNCTION: LEMBALL 0x00444050
@@ -505,9 +505,9 @@ int CPauseWindow::ProcessMsg(Message* p_message)
 	int pauseMessage = m_pauseMessage;
 
 	if (pauseMessage == 0 || pauseMessage == 3) {
-		switch (p_message->type) {
+		switch (p_message->m_type) {
 		case 4:
-			switch (p_message->code) {
+			switch (p_message->m_code) {
 			case 1:
 			case 3:
 				if (m_selection > m_minimumSelection) {

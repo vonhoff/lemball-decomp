@@ -3,13 +3,13 @@
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x00476470
-void CSurface::FilledCircleClipPoints(int p_centerX, int p_centerY, int p_xOffset, int p_yOffset, int p_colour)
+void CSurface::FilledCircleClipPoints(int p_centreX, int p_centreY, int p_xOffset, int p_yOffset, int p_colour)
 {
-	int y1 = p_centerY - p_yOffset;
-	int y2 = p_centerY + p_yOffset;
+	int y1 = p_centreY - p_yOffset;
+	int y2 = p_centreY + p_yOffset;
 	if (y1 <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1) && m_clipRect.m_y <= y2) {
-		int x1 = p_centerX - p_xOffset;
-		int x2 = p_centerX + p_xOffset;
+		int x1 = p_centreX - p_xOffset;
+		int x2 = p_centreX + p_xOffset;
 		int clipX = m_clipRect.m_x;
 		if (clipX <= x2 && x1 <= (int) (m_clipRect.m_width + clipX - 1)) {
 			if ((int) (m_clipRect.m_width + clipX - 1) < x2) {

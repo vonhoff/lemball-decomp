@@ -125,7 +125,7 @@ CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
 	m_drawingPort = 0;
 	m_reserved40 = 0;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
-	m_lockInitialized = 1;
+	m_lockInitialised = 1;
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
 		m_changeList = new CChangeList(0x1000, p_rect, CVsSize(8, 8));
 	}
@@ -156,13 +156,13 @@ CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
 }
 
 // GLOBAL: LEMBALL 0x004a2018
-static const unsigned char g_anFallbackSystemColors[20][3] = {
+static const unsigned char g_anFallbackSystemColours[20][3] = {
 	{0x00, 0x00, 0x00}, {0x80, 0x00, 0x00}, {0x00, 0x80, 0x00}, {0x80, 0x80, 0x00}, {0x00, 0x00, 0x80},
 	{0x80, 0x00, 0x80}, {0x00, 0x80, 0x80}, {0xc0, 0xc0, 0xc0}, {0xc0, 0xdc, 0xc0}, {0xa6, 0xca, 0xf0},
 	{0xff, 0xfb, 0xf0}, {0xa0, 0xa0, 0xa4}, {0x80, 0x80, 0x80}, {0xff, 0x00, 0x00}, {0x00, 0xff, 0x00},
 	{0xff, 0xff, 0x00}, {0x00, 0x00, 0xff}, {0xff, 0x00, 0xff}, {0x00, 0xff, 0xff}, {0xff, 0xff, 0xff}};
 // GLOBAL: LEMBALL 0x004a2058
-static const unsigned char g_anReservedOutputColors[2][3] = {{0xff, 0xff, 0xff}, {0x00, 0x00, 0x00}};
+static const unsigned char g_anReservedOutputColours[2][3] = {{0xff, 0xff, 0xff}, {0x00, 0x00, 0x00}};
 
 // FUNCTION: LEMBALL 0x0046c380
 void BuildSurfaceColourTable(unsigned int* p_entries,
@@ -181,7 +181,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 	unsigned int last = GetSystemPaletteEntries(hdc, 0xf6, 10, systemEntries + 0xf6);
 	first |= last;
 	if (first == 0) {
-		source = &g_anFallbackSystemColors[0][0];
+		source = &g_anFallbackSystemColours[0][0];
 		entry = systemEntries;
 		do {
 			entry->peRed = *source++;
@@ -221,7 +221,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 		entry++;
 		output += 4;
 	} while (entry < systemEntries + 10);
-	source = &g_anReservedOutputColors[0][0];
+	source = &g_anReservedOutputColours[0][0];
 	output = &((RGBQUAD*) p_entries)[10].rgbRed;
 	count = 2;
 	do {
@@ -239,13 +239,13 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 			entry = systemEntries + 12;
 			output = &((RGBQUAD*) p_entries)[12].rgbRed;
 			do {
-				unsigned char color = -index;
-				entry->peRed = color;
-				output[0] = color;
-				entry->peGreen = color;
-				output[-1] = color;
-				entry->peBlue = color;
-				output[-2] = color;
+				unsigned char colour = -index;
+				entry->peRed = colour;
+				output[0] = colour;
+				entry->peGreen = colour;
+				output[-1] = colour;
+				entry->peBlue = colour;
+				output[-2] = colour;
 				output[1] = 0;
 				entry->peFlags = 1;
 				entry++;
@@ -259,15 +259,15 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 			output = &((RGBQUAD*) p_entries)[12].rgbRed;
 			fallback = &((RGBQUAD*) p_fallbackEntries)[12].rgbRed;
 			do {
-				unsigned char color = fallback[0];
-				output[0] = color;
-				entry->peRed = color;
-				color = fallback[-1];
-				entry->peGreen = color;
-				output[-1] = color;
-				color = fallback[-2];
-				entry->peBlue = color;
-				output[-2] = color;
+				unsigned char colour = fallback[0];
+				output[0] = colour;
+				entry->peRed = colour;
+				colour = fallback[-1];
+				entry->peGreen = colour;
+				output[-1] = colour;
+				colour = fallback[-2];
+				entry->peBlue = colour;
+				output[-2] = colour;
 				output[1] = 0;
 				entry->peFlags = 1;
 				entry++;
@@ -287,15 +287,15 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 			paletteCount -= 12;
 			do {
 				source = p_palette->m_data + i * 4;
-				unsigned char color = source[0];
-				systemEntries[i].peRed = color;
-				output[0] = color;
-				color = source[1];
-				systemEntries[i].peGreen = color;
-				output[-1] = color;
-				color = source[2];
-				systemEntries[i].peBlue = color;
-				output[-2] = color;
+				unsigned char colour = source[0];
+				systemEntries[i].peRed = colour;
+				output[0] = colour;
+				colour = source[1];
+				systemEntries[i].peGreen = colour;
+				output[-1] = colour;
+				colour = source[2];
+				systemEntries[i].peBlue = colour;
+				output[-2] = colour;
 				output[1] = 0;
 				systemEntries[i].peFlags = 1;
 				output += 4;
@@ -320,7 +320,7 @@ CSurface::CSurface(GrafPort* p_port)
 	m_changeList = 0;
 	m_parentSurface = 0;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
-	m_lockInitialized = 1;
+	m_lockInitialised = 1;
 	m_flag70 = 0;
 }
 
@@ -334,7 +334,7 @@ CSurface::~CSurface()
 	int locked;
 
 	locked = 0;
-	if (m_lockInitialized != 0) {
+	if (m_lockInitialised != 0) {
 		EnterCriticalSection((CRITICAL_SECTION*) m_lock);
 		locked = 1;
 	}
@@ -387,7 +387,7 @@ CSurface::~CSurface()
 	if (locked != 0) {
 		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 		DeleteCriticalSection((CRITICAL_SECTION*) m_lock);
-		m_lockInitialized = 0;
+		m_lockInitialised = 0;
 		if (g_pSurfaceList != 0) {
 			node = (SurfaceListNode*) g_pSurfaceList->m_first;
 			while (node != 0) {
@@ -1127,10 +1127,10 @@ void CSurface::CopyBackBuffToScreen(const CVsRect& p_rect)
 void CSurface::Blit(CPoint* p_point)
 {
 	const short& x = p_point->m_x;
-	int color = p_point->m_color;
+	int colour = p_point->m_colour;
 	if (m_clipRect.m_x <= x && x < (short) (m_clipRect.m_width + m_clipRect.m_x)) {
 		if (m_clipRect.m_y <= p_point->m_y && p_point->m_y < (short) (m_clipRect.m_height + m_clipRect.m_y)) {
-			*((unsigned char*) m_lines[p_point->m_y] + x) = (unsigned char) color;
+			*((unsigned char*) m_lines[p_point->m_y] + x) = (unsigned char) colour;
 			CVsRect rect(p_point->m_x, p_point->m_y, 1, 1);
 			AddToChangeList(rect);
 		}
@@ -1140,7 +1140,7 @@ void CSurface::Blit(CPoint* p_point)
 // FUNCTION: LEMBALL 0x00475080
 void CSurface::Blit(CSolidRect* p_rect)
 {
-	BlitRect(*p_rect->GetBounds(), p_rect->m_color);
+	BlitRect(*p_rect->GetBounds(), p_rect->m_colour);
 }
 
 // FUNCTION: LEMBALL 0x004750c0
@@ -1148,8 +1148,8 @@ void CSurface::Blit(CLine* p_line)
 {
 	int y2 = p_line->m_bounds.m_y;
 	int x2 = p_line->m_bounds.m_x;
-	int colorValue = p_line->m_color;
-	const int& color = colorValue;
+	int colourValue = p_line->m_colour;
+	const int& colour = colourValue;
 	int y1 = p_line->m_bounds.m_height;
 	int x1 = p_line->m_bounds.m_width;
 	if (x2 < x1) {
@@ -1188,7 +1188,7 @@ void CSurface::Blit(CLine* p_line)
 				remaining = remaining - 1;
 				x = x + 1;
 				err = err + doubleDy;
-				*((unsigned char*) m_lines[y] + (x - 1)) = (unsigned char) color;
+				*((unsigned char*) m_lines[y] + (x - 1)) = (unsigned char) colour;
 				if (dx < err) {
 					y = y + stepY;
 					err = err - doubleDx;
@@ -1207,7 +1207,7 @@ void CSurface::Blit(CLine* p_line)
 			do {
 				remaining = remaining - 1;
 				err = err + doubleDx;
-				*((unsigned char*) m_lines[y] + x) = (unsigned char) color;
+				*((unsigned char*) m_lines[y] + x) = (unsigned char) colour;
 				y = y + stepY;
 				if (absDy < err) {
 					x = x + 1;
@@ -1223,11 +1223,11 @@ void CSurface::Blit(CLine* p_line)
 // FUNCTION: LEMBALL 0x00475290
 void CSurface::Blit(CCircle* p_circle)
 {
-	int color = p_circle->m_color;
-	int centerY = p_circle->m_y;
-	int centerX = p_circle->m_x;
+	int colour = p_circle->m_colour;
+	int centreY = p_circle->m_y;
+	int centreX = p_circle->m_x;
 	int radius = abs((int) p_circle->m_radius);
-	int clipResult = ClipCircle(centerX, centerY, radius);
+	int clipResult = ClipCircle(centreX, centreY, radius);
 	if (clipResult != 1) {
 		switch (clipResult) {
 		case 2: {
@@ -1236,11 +1236,11 @@ void CSurface::Blit(CCircle* p_circle)
 			int err = 0;
 			int step = 1;
 			int errLimit = radius * 2 - 1;
-			*((unsigned char*) m_lines[centerY + radius] + centerX) = (unsigned char) color;
-			*((unsigned char*) m_lines[centerY - radius] + centerX) = (unsigned char) color;
-			unsigned char* centerPixel = (unsigned char*) m_lines[centerY] + centerX;
-			centerPixel[radius] = (unsigned char) color;
-			*((unsigned char*) m_lines[centerY] - radius + centerX) = (unsigned char) color;
+			*((unsigned char*) m_lines[centreY + radius] + centreX) = (unsigned char) colour;
+			*((unsigned char*) m_lines[centreY - radius] + centreX) = (unsigned char) colour;
+			unsigned char* centrePixel = (unsigned char*) m_lines[centreY] + centreX;
+			centrePixel[radius] = (unsigned char) colour;
+			*((unsigned char*) m_lines[centreY] - radius + centreX) = (unsigned char) colour;
 			while (curX < curY) {
 				curX++;
 				err += step;
@@ -1251,28 +1251,28 @@ void CSurface::Blit(CCircle* p_circle)
 					errLimit -= 2;
 				}
 				if (curX <= curY) {
-					DrawCircleSymmetricPoints(centerX, centerY, curX, curY, color);
+					DrawCircleSymmetricPoints(centreX, centreY, curX, curY, colour);
 					if (curX < curY) {
-						DrawCircleSymmetricPoints(centerX, centerY, curY, curX, color);
+						DrawCircleSymmetricPoints(centreX, centreY, curY, curX, colour);
 					}
 				}
 			}
 			break;
 		}
 		case 3:
-			DrawClippedCircleOutline(centerX, centerY, radius, color);
+			DrawClippedCircleOutline(centreX, centreY, radius, colour);
 			break;
 		}
-		centerX -= radius;
-		int boundY = centerY - radius;
+		centreX -= radius;
+		int boundY = centreY - radius;
 		int boundW = radius * 2 + 1;
 		int boundH = boundW;
-		if (centerX < (int) m_clipRect.m_x) {
-			boundW += centerX - m_clipRect.m_x;
-			centerX = m_clipRect.m_x;
+		if (centreX < (int) m_clipRect.m_x) {
+			boundW += centreX - m_clipRect.m_x;
+			centreX = m_clipRect.m_x;
 		}
-		if ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1 < centerX + boundW) {
-			boundW = (m_clipRect.m_x + m_clipRect.m_width) - centerX;
+		if ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1 < centreX + boundW) {
+			boundW = (m_clipRect.m_x + m_clipRect.m_width) - centreX;
 		}
 		if (boundY < (int) m_clipRect.m_y) {
 			boundH += boundY - m_clipRect.m_y;
@@ -1281,14 +1281,14 @@ void CSurface::Blit(CCircle* p_circle)
 		if ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1 < boundY + boundH) {
 			boundH = (m_clipRect.m_y + m_clipRect.m_height) - boundY;
 		}
-		AddToChangeList(CVsRect((short) centerX, (short) boundY, (short) boundW, (short) boundH));
+		AddToChangeList(CVsRect((short) centreX, (short) boundY, (short) boundW, (short) boundH));
 	}
 }
 
 // FUNCTION: LEMBALL 0x00475490
 void CSurface::Blit(CFilledCircle* p_circle)
 {
-	int colour = p_circle->m_color;
+	int colour = p_circle->m_colour;
 	int y = p_circle->m_y;
 	int x = p_circle->m_x;
 	int radius = abs((int) p_circle->m_radius);
@@ -1394,12 +1394,12 @@ inline unsigned int CSurface::ClipCode(int p_x, int p_y)
 }
 
 // FUNCTION: LEMBALL 0x00475bc0
-int CSurface::ClipCircle(int p_centerX, int p_centerY, int p_radius)
+int CSurface::ClipCircle(int p_centreX, int p_centreY, int p_radius)
 {
-	int left = p_centerX - p_radius;
-	int top = p_centerY - p_radius;
-	int right = p_centerX + p_radius;
-	int bottom = p_centerY + p_radius;
+	int left = p_centreX - p_radius;
+	int top = p_centreY - p_radius;
+	int right = p_centreX + p_radius;
+	int bottom = p_centreY + p_radius;
 
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return 1;
@@ -1416,7 +1416,7 @@ int CSurface::ClipCircle(int p_centerX, int p_centerY, int p_radius)
 }
 
 // FUNCTION: LEMBALL 0x00475ce0
-void CSurface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radius, unsigned char p_colour)
+void CSurface::DrawClippedCircleOutline(int p_centreX, int p_centreY, int p_radius, unsigned char p_colour)
 {
 	int x = 0;
 	int y = p_radius;
@@ -1424,29 +1424,29 @@ void CSurface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radi
 	int step = 1;
 	int errLimit = y * 2 - 1;
 
-	if (m_clipRect.m_x <= p_centerX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX) {
-		if (m_clipRect.m_y <= p_centerY + p_radius &&
-			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centerY + p_radius) {
-			*((unsigned char*) m_lines[p_centerY + p_radius] + p_centerX) = p_colour;
+	if (m_clipRect.m_x <= p_centreX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX) {
+		if (m_clipRect.m_y <= p_centreY + p_radius &&
+			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centreY + p_radius) {
+			*((unsigned char*) m_lines[p_centreY + p_radius] + p_centreX) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= p_centerX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX) {
-		if (m_clipRect.m_y <= p_centerY - p_radius &&
-			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centerY - p_radius) {
-			*((unsigned char*) m_lines[p_centerY - p_radius] + p_centerX) = p_colour;
+	if (m_clipRect.m_x <= p_centreX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX) {
+		if (m_clipRect.m_y <= p_centreY - p_radius &&
+			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centreY - p_radius) {
+			*((unsigned char*) m_lines[p_centreY - p_radius] + p_centreX) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= p_centerX + p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX + p_radius) {
+	if (m_clipRect.m_x <= p_centreX + p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX + p_radius) {
 		int clipY = m_clipRect.m_y;
-		if (clipY <= p_centerY && clipY + m_clipRect.m_height - 1 >= p_centerY) {
-			unsigned char* destination = (unsigned char*) m_lines[p_centerY] + p_centerX;
+		if (clipY <= p_centreY && clipY + m_clipRect.m_height - 1 >= p_centreY) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centreY] + p_centreX;
 			destination[p_radius] = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= p_centerX - p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centerX - p_radius) {
+	if (m_clipRect.m_x <= p_centreX - p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX - p_radius) {
 		int clipY = m_clipRect.m_y;
-		if (clipY <= p_centerY && clipY + m_clipRect.m_height - 1 >= p_centerY) {
-			*((unsigned char*) m_lines[p_centerY] + p_centerX - p_radius) = p_colour;
+		if (clipY <= p_centreY && clipY + m_clipRect.m_height - 1 >= p_centreY) {
+			*((unsigned char*) m_lines[p_centreY] + p_centreX - p_radius) = p_colour;
 		}
 	}
 	if (p_radius <= 0) {
@@ -1464,102 +1464,102 @@ void CSurface::DrawClippedCircleOutline(int p_centerX, int p_centerY, int p_radi
 		if (y < x) {
 			continue;
 		}
-		if (ClipCirclePoint(p_centerX + x, p_centerY + y) != 0) {
-			unsigned char* destination = (unsigned char*) m_lines[p_centerY + y] + p_centerX;
+		if (ClipCirclePoint(p_centreX + x, p_centreY + y) != 0) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centreY + y] + p_centreX;
 			destination[x] = p_colour;
 		}
-		if (ClipCirclePoint(p_centerX - x, p_centerY + y) != 0) {
-			*((unsigned char*) m_lines[p_centerY + y] + p_centerX - x) = p_colour;
+		if (ClipCirclePoint(p_centreX - x, p_centreY + y) != 0) {
+			*((unsigned char*) m_lines[p_centreY + y] + p_centreX - x) = p_colour;
 		}
-		if (ClipCirclePoint(p_centerX + x, p_centerY - y) != 0) {
-			unsigned char* destination = (unsigned char*) m_lines[p_centerY - y] + p_centerX;
+		if (ClipCirclePoint(p_centreX + x, p_centreY - y) != 0) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centreY - y] + p_centreX;
 			destination[x] = p_colour;
 		}
-		if (ClipCirclePoint(p_centerX - x, p_centerY - y) != 0) {
-			*((unsigned char*) m_lines[p_centerY - y] + p_centerX - x) = p_colour;
+		if (ClipCirclePoint(p_centreX - x, p_centreY - y) != 0) {
+			*((unsigned char*) m_lines[p_centreY - y] + p_centreX - x) = p_colour;
 		}
 		if (y > x) {
-			DrawClippedCirclePoint(p_centerX, p_centerY, y, x, p_colour);
+			DrawClippedCirclePoint(p_centreX, p_centreY, y, x, p_colour);
 		}
 	} while (y > x);
 }
 
 // FUNCTION: LEMBALL 0x00475fb0
-void CSurface::DrawClippedCirclePoint(int p_centerX,
-									  int p_centerY,
+void CSurface::DrawClippedCirclePoint(int p_centreX,
+									  int p_centreY,
 									  int p_xOffset,
 									  int p_yOffset,
 									  unsigned char p_colour)
 {
-	if (m_clipRect.m_x <= (p_centerX + p_xOffset) &&
-		(p_centerX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		if (m_clipRect.m_y <= (p_centerY + p_yOffset) &&
-			(p_centerY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[(p_centerY + p_yOffset)] + (p_centerX + p_xOffset)) = p_colour;
+	if (m_clipRect.m_x <= (p_centreX + p_xOffset) &&
+		(p_centreX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centreY + p_yOffset) &&
+			(p_centreY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centreY + p_yOffset)] + (p_centreX + p_xOffset)) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= (p_centerX - p_xOffset) &&
-		(p_centerX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		if (m_clipRect.m_y <= (p_centerY + p_yOffset) &&
-			(p_centerY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[(p_centerY + p_yOffset)] + (p_centerX - p_xOffset)) = p_colour;
+	if (m_clipRect.m_x <= (p_centreX - p_xOffset) &&
+		(p_centreX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centreY + p_yOffset) &&
+			(p_centreY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centreY + p_yOffset)] + (p_centreX - p_xOffset)) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= (p_centerX + p_xOffset) &&
-		(p_centerX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		if (m_clipRect.m_y <= (p_centerY - p_yOffset) &&
-			(p_centerY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[(p_centerY - p_yOffset)] + (p_centerX + p_xOffset)) = p_colour;
+	if (m_clipRect.m_x <= (p_centreX + p_xOffset) &&
+		(p_centreX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centreY - p_yOffset) &&
+			(p_centreY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centreY - p_yOffset)] + (p_centreX + p_xOffset)) = p_colour;
 		}
 	}
-	if (m_clipRect.m_x <= (p_centerX - p_xOffset) &&
-		(p_centerX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
-		if (m_clipRect.m_y <= (p_centerY - p_yOffset) &&
-			(p_centerY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[(p_centerY - p_yOffset)] + (p_centerX - p_xOffset)) = p_colour;
+	if (m_clipRect.m_x <= (p_centreX - p_xOffset) &&
+		(p_centreX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centreY - p_yOffset) &&
+			(p_centreY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centreY - p_yOffset)] + (p_centreX - p_xOffset)) = p_colour;
 		}
 	}
 }
 
 // FUNCTION: LEMBALL 0x00476100
-void CSurface::DrawCircleSpans(int p_centerX, int p_centerY, int p_halfWidth, int p_yOffset, int p_colour)
+void CSurface::DrawCircleSpans(int p_centreX, int p_centreY, int p_halfWidth, int p_yOffset, int p_colour)
 {
 	int spanWidth = p_halfWidth * 2 + 1;
-	unsigned char* negativeSpan = (unsigned char*) m_lines[p_centerY - p_yOffset] + p_centerX - p_halfWidth;
-	memset((unsigned char*) m_lines[p_centerY + p_yOffset] + p_centerX - p_halfWidth, p_colour, spanWidth);
+	unsigned char* negativeSpan = (unsigned char*) m_lines[p_centreY - p_yOffset] + p_centreX - p_halfWidth;
+	memset((unsigned char*) m_lines[p_centreY + p_yOffset] + p_centreX - p_halfWidth, p_colour, spanWidth);
 	memset(negativeSpan, p_colour, spanWidth);
 }
 
 // FUNCTION: LEMBALL 0x00476190
-void CSurface::DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radius, int p_colour)
+void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radius, int p_colour)
 {
 	int x = 0;
 	int err = 0;
 	int step = 1;
 	int errLimit = p_radius * 2 - 1;
 
-	if (p_centerX >= m_clipRect.m_x && p_centerX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
-		if ((p_centerY + p_radius) >= m_clipRect.m_y &&
-			(p_centerY + p_radius) <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-			*((unsigned char*) m_lines[(p_centerY + p_radius)] + p_centerX) = (unsigned char) p_colour;
+	if (p_centreX >= m_clipRect.m_x && p_centreX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
+		if ((p_centreY + p_radius) >= m_clipRect.m_y &&
+			(p_centreY + p_radius) <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+			*((unsigned char*) m_lines[(p_centreY + p_radius)] + p_centreX) = (unsigned char) p_colour;
 		}
 	}
-	if (p_centerX >= m_clipRect.m_x && p_centerX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
-		if ((p_centerY - p_radius) >= m_clipRect.m_y &&
-			(p_centerY - p_radius) <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-			*((unsigned char*) m_lines[(p_centerY - p_radius)] + p_centerX) = (unsigned char) p_colour;
+	if (p_centreX >= m_clipRect.m_x && p_centreX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
+		if ((p_centreY - p_radius) >= m_clipRect.m_y &&
+			(p_centreY - p_radius) <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+			*((unsigned char*) m_lines[(p_centreY - p_radius)] + p_centreX) = (unsigned char) p_colour;
 		}
 	}
-	if (p_centerY >= m_clipRect.m_y && p_centerY <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-		int x1 = p_centerX - p_radius;
-		int x2 = p_centerX + p_radius;
+	if (p_centreY >= m_clipRect.m_y && p_centreY <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+		int x1 = p_centreX - p_radius;
+		int x2 = p_centreX + p_radius;
 		if (x1 < m_clipRect.m_x) {
 			x1 = m_clipRect.m_x;
 		}
 		if ((int) (m_clipRect.m_width + m_clipRect.m_x - 1) < x2) {
 			x2 = m_clipRect.m_width + m_clipRect.m_x - 1;
 		}
-		memset((unsigned char*) m_lines[p_centerY] + x1, p_colour, x2 - x1 + 1);
+		memset((unsigned char*) m_lines[p_centreY] + x1, p_colour, x2 - x1 + 1);
 	}
 
 	if (p_radius > 1) {
@@ -1577,12 +1577,12 @@ void CSurface::DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radiu
 			}
 			if (x <= p_radius) {
 				if (changed != 0) {
-					int yTop = p_centerY - p_radius;
-					int yBottom = p_centerY + p_radius;
+					int yTop = p_centreY - p_radius;
+					int yBottom = p_centreY + p_radius;
 					int clipY = m_clipRect.m_y;
 					if (yTop <= (int) (m_clipRect.m_height + clipY - 1) && yBottom >= clipY) {
-						int xLeft = p_centerX - x;
-						int xRight = p_centerX + x;
+						int xLeft = p_centreX - x;
+						int xRight = p_centreX + x;
 						int clipX = m_clipRect.m_x;
 						if (clipX <= xRight && (int) (m_clipRect.m_width + clipX - 1) >= xLeft) {
 							if (xRight > (int) (m_clipRect.m_width + clipX - 1)) {
@@ -1601,7 +1601,7 @@ void CSurface::DrawClippedFilledCircle(int p_centerX, int p_centerY, int p_radiu
 					}
 				}
 				if (x < p_radius) {
-					FilledCircleClipPoints(p_centerX, p_centerY, p_radius, x, p_colour);
+					FilledCircleClipPoints(p_centreX, p_centreY, p_radius, x, p_colour);
 				}
 			}
 		}

@@ -65,7 +65,7 @@ private:
 public:
 	unsigned int m_shutdownRequested; // 0x14
 	unsigned int m_serverMode;        // 0x18
-	unsigned int m_initialized;       // 0x1c
+	unsigned int m_initialised;       // 0x1c
 	unsigned int m_initialisePending; // 0x20
 
 private:

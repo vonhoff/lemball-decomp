@@ -126,7 +126,7 @@ CTextWnd::~CTextWnd()
 }
 
 // FUNCTION: LEMBALL 0x00473d90
-void CTextWnd::PostText(const char* p_text, unsigned int p_color)
+void CTextWnd::PostText(const char* p_text, unsigned int p_colour)
 {
 	EnterCritical();
 	if (g_nTargetTextWindowActive != 0) {
@@ -136,17 +136,17 @@ void CTextWnd::PostText(const char* p_text, unsigned int p_color)
 		}
 		strcpy(copy, p_text);
 		if (m_windowHandle != 0) {
-			PostMessageA((HWND) m_windowHandle, 0x420, (unsigned int) copy, p_color);
+			PostMessageA((HWND) m_windowHandle, 0x420, (unsigned int) copy, p_colour);
 		}
 		LeaveCritical();
 	}
 }
 
 // FUNCTION: LEMBALL 0x00473e20
-void CTextWnd::AppendPostedText(char* p_text, unsigned int p_color)
+void CTextWnd::AppendPostedText(char* p_text, unsigned int p_colour)
 {
 	EnterCritical();
-	m_lineBuffer->AddText(p_text, p_color);
+	m_lineBuffer->AddText(p_text, p_colour);
 	int first = m_lineCount;
 	int count = m_lineBuffer->m_count;
 	m_lineCount = count;
@@ -299,7 +299,7 @@ void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
 		if (line < m_lineCount) {
 			CTextLine* entry = &m_lineBuffer->m_lines[line];
 			text = entry->m_text;
-			foreground = entry->m_textColor;
+			foreground = entry->m_textColour;
 			if (entry->m_selected != 0) {
 				background = 0;
 				foreground = 0xffffff;

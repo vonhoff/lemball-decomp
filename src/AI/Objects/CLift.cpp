@@ -66,7 +66,7 @@ void CLift::Edit(int p_height,
 	m_direction = p_direction;
 	m_defaultActive = p_initialActive;
 	m_activateType = p_activateType;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_activationLatched = 0;
 	for (int i = 0; i < 8; i++) {
 		m_objects[i] = 0;
@@ -162,32 +162,32 @@ bool CLift::Process()
 		time = g_dwGameTick;
 	}
 	switch (m_action) {
-	case ACTION_8:
+	case ACTION_DEAD:
 		m_active = 0;
-		m_action = ACTION_0x18;
+		m_action = ACTION_READY;
 		break;
-	case ACTION_0x19:
+	case ACTION_ACTIVATING:
 		m_active = 1;
 		m_activationLatched = 1;
 		SetSndEffect(SFX_LIFT);
 		if (m_active && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
 			m_stateTimer = time;
 			if (m_direction == 1) {
-				Action(ACTION_0x1f);
+				Action(ACTION_LIFT_START_RISING);
 			}
 			else {
-				Action(ACTION_0x23);
+				Action(ACTION_LIFT_START_LOWERING);
 			}
 		}
 		break;
-	case ACTION_0x1f:
+	case ACTION_LIFT_START_RISING:
 		m_movementStartHeight = m_start.m_z;
 		m_direction = 1;
 		m_active = 1;
-		m_action = ACTION_0x20;
+		m_action = ACTION_LIFT_RISING;
 		m_start.m_z = m_movementStartHeight + time - m_stateTimer;
 		break;
-	case ACTION_0x20:
+	case ACTION_LIFT_RISING:
 		m_start.m_z = (short) m_movementStartHeight - (short) m_stateTimer + (short) time;
 		if (m_start.m_z >= m_highHeight) {
 			m_start.m_z = m_highHeight;
@@ -195,14 +195,14 @@ bool CLift::Process()
 			m_direction = -1;
 			if (m_defaultActive && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
-				Action(ACTION_0x23);
+				Action(ACTION_LIFT_START_LOWERING);
 			}
 			else {
-				m_action = ACTION_0x18;
+				m_action = ACTION_READY;
 			}
 		}
 		break;
-	case ACTION_0x22:
+	case ACTION_LIFT_LOWERING:
 		m_start.m_z = (short) m_movementStartHeight - (short) time + (short) m_stateTimer;
 		if (m_start.m_z <= m_lowHeight) {
 			m_start.m_z = m_lowHeight;
@@ -210,17 +210,17 @@ bool CLift::Process()
 			m_direction = 1;
 			if (m_defaultActive && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
-				Action(ACTION_0x1f);
+				Action(ACTION_LIFT_START_RISING);
 			}
 			else {
-				m_action = ACTION_0x18;
+				m_action = ACTION_READY;
 			}
 		}
 		break;
-	case ACTION_0x23:
+	case ACTION_LIFT_START_LOWERING:
 		m_movementStartHeight = m_start.m_z;
 		m_direction = -1;
-		m_action = ACTION_0x22;
+		m_action = ACTION_LIFT_LOWERING;
 		m_active = 1;
 		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
 		break;
@@ -314,7 +314,7 @@ int CLift::StepOn(const AiCoord& p_position, CGameObject* p_object)
 int CLift::Activate()
 {
 	m_active = 1;
-	Action(ACTION_0x19);
+	Action(ACTION_ACTIVATING);
 	return 1;
 }
 
@@ -325,7 +325,7 @@ void CLift::ActivateDeactivate()
 		Activate();
 		return;
 	}
-	Action(ACTION_8);
+	Action(ACTION_DEAD);
 }
 
 // FUNCTION: LEMBALL 0x004266d0

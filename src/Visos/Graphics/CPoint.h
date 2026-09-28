@@ -9,9 +9,9 @@ public:
 	friend class CSurface;
 
 private:
-	short m_x;            // 0x04
-	short m_y;            // 0x06
-	unsigned int m_color; // 0x08
+	short m_x;             // 0x04
+	short m_y;             // 0x06
+	unsigned int m_colour; // 0x08
 };
 
 #endif

@@ -63,7 +63,7 @@ int CTrapDoorManager::GetViewData(CViewData* p_viewData)
 		CTrapDoor** door = m_doors;
 		CViewData* viewData = p_viewData;
 		do {
-			if ((*door)->m_action != 0x18 && (*door)->m_action != 0x1e) {
+			if ((*door)->m_action != ACTION_READY && (*door)->m_action != ACTION_DOOR_CLOSED) {
 				(*door)->GetViewData(*viewData++);
 				count++;
 			}

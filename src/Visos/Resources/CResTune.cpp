@@ -9,7 +9,7 @@ CResTune* CResTune::Load(unsigned int p_resourceId)
 	if (res == 0) {
 		return (CResTune*) (new CResTune(p_resourceId))->CheckError();
 	}
-	if (res->m_chunkType != kChunkTune) {
+	if (res->m_chunkType != RESOURCE_CHUNK_TUNE) {
 		res->UnLoad();
 		return 0;
 	}
@@ -19,5 +19,5 @@ CResTune* CResTune::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045ec00
 void CResTune::SetType()
 {
-	m_chunkType = kChunkTune;
+	m_chunkType = RESOURCE_CHUNK_TUNE;
 }

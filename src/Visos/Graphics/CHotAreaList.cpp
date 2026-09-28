@@ -90,15 +90,15 @@ void CHotAreaList::DeleteEntry(CHotAreaElement* p_entry)
 // FUNCTION: LEMBALL 0x0046a710
 int CHotAreaList::ProcessMsg(Message* p_message)
 {
-	switch ((int) p_message->type) {
+	switch ((int) p_message->m_type) {
 	case 5:
 	case 6:
 	case 7:
 	case 8:
 	case 9:
 	case 10:
-		if (p_message->source == 0) {
-			CVsPoint point((short) p_message->code, (short) ((unsigned int) p_message->code >> 16));
+		if (p_message->m_source == 0) {
+			CVsPoint point((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
 			CVsPoint* cursor = g_pHotAreaCursor;
 			cursor->m_x = point.m_x;
 			cursor->m_y = point.m_y;
@@ -118,15 +118,15 @@ void CHotAreaList::ProcessHandlers(const CVsPoint& p_point, Message* p_message)
 	unsigned int type;
 	const CVsPoint* origin;
 
-	fallback.type = 7;
-	fallback.time = 0;
-	fallback.code = 0;
-	fallback.payload = 0;
-	fallback.source = 0;
+	fallback.m_type = 7;
+	fallback.m_time = 0;
+	fallback.m_code = 0;
+	fallback.m_payload = 0;
+	fallback.m_source = 0;
 	if (p_message == 0) {
 		p_message = &fallback;
 	}
-	type = p_message->type;
+	type = p_message->m_type;
 	origin = &m_bounds;
 	CVsPoint localPoint((short) ((int) (short) (p_point.m_x - origin->m_x) / (int) m_scale),
 						(short) ((int) (short) (p_point.m_y - origin->m_y) / (int) m_scale));

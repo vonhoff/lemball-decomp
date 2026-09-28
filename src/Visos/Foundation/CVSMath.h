@@ -5,7 +5,7 @@
 
 class CVSMath {
 public:
-	unsigned int SqRoot(unsigned int p_arg0);
+	unsigned int SqRoot(unsigned int p_value);
 };
 
 inline int VsAbs(int p_val)

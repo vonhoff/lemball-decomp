@@ -287,9 +287,9 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 	Message* message = p_message;
 	unsigned int code;
 
-	switch (message->type) {
+	switch (message->m_type) {
 	case 3:
-		code = message->code;
+		code = message->m_code;
 		switch (code) {
 		case 0x1f:
 		case 0x22: {
@@ -322,7 +322,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		}
 		break;
 	case 4:
-		code = message->code;
+		code = message->m_code;
 		switch (code) {
 		case 1:
 			ShiftHilite(-3);
@@ -370,7 +370,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		g_pSoundView->PlayEffect(SFX_DRUM1);
 		break;
 	case 0xc:
-		code = message->code;
+		code = message->m_code;
 		if (code >= PASSWORD_BUTTON_MESSAGE_FIRST && code <= PASSWORD_BUTTON_MESSAGE_LAST) {
 			ButtonNumeric(code + PASSWORD_BUTTON_MESSAGE_TO_INDEX_OFFSET);
 			return 1;
@@ -519,7 +519,7 @@ void CPasswordDrawer::DrawHilite()
 	surface = ((CGDI*) m_hiliteSurface)->m_renderTarget;
 	short width = surface->m_windowRect.m_width;
 	short height = surface->m_windowRect.m_height;
-	m_hiliteRect.m_color = 0x10000;
+	m_hiliteRect.m_colour = 0x10000;
 	m_hiliteRect.m_bounds.m_width = width;
 	m_hiliteRect.m_bounds.m_height = height;
 	m_hiliteRect.m_bounds.m_x = 0;

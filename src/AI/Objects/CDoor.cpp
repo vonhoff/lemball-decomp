@@ -8,6 +8,7 @@
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectTypes.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
@@ -34,9 +35,9 @@ void CDoor::Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, in
 	m_spawnPosition.m_zFixed = p_z << 12;
 	m_doorType = p_doorType;
 	m_doorIndex = g_wNextDoorIndex++;
-	m_action = ACTION_0x1e;
+	m_action = ACTION_DOOR_CLOSED;
 	if (m_doorType != 0) {
-		m_action = ACTION_0x1d;
+		m_action = ACTION_DOOR_LOCKED;
 	}
 	switch ((unsigned short) m_doorType) {
 	case 0:
@@ -65,7 +66,7 @@ void CDoor::Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, in
 	blockY = p_y / 16;
 	CMap* groundMap;
 	switch (m_objectType) {
-	case 0x19:
+	case OBJECT_DOOR_1:
 		groundMap = g_pMap;
 		if (blockX >= 0 && blockY + 1 >= 0 && blockX < groundMap->m_ground.m_width &&
 			blockY + 1 < groundMap->m_ground.m_height) {
@@ -97,7 +98,7 @@ void CDoor::Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, in
 			groundMap->m_ground.GetGroundCell(blockX, blockY)->m_collision |= 1;
 		}
 		break;
-	case 0x1a:
+	case OBJECT_DOOR_2:
 		g_pMap->m_ground.SetCollision(blockX + 1, blockY, 0x8000);
 		g_pMap->m_ground.SetCollision(blockX + 1, blockY, 1);
 		g_pMap->m_ground.SetCollision(blockX, blockY, 0x8000);
@@ -186,11 +187,11 @@ bool CDoor::Process()
 	if (m_isRemoteObject) {
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case DOOR_ACTION_OPENING:
+			case ACTION_DOOR_OPENING:
 				SetSndEffect(SFX_DOOROPEN);
 				ResetCollision();
 				break;
-			case DOOR_ACTION_CLOSING:
+			case ACTION_DOOR_CLOSING:
 				SetCollision();
 				break;
 			default:
@@ -211,30 +212,30 @@ bool CDoor::Process()
 
 	m_stateTimer = g_dwSimulationTimestamp;
 	switch (m_action) {
-	case ACTION_0x1c:
-		Action(ACTION_0x1d);
+	case ACTION_DOOR_LOCKED_FEEDBACK:
+		Action(ACTION_DOOR_LOCKED);
 		m_activationPending = 0;
 		break;
-	case DOOR_ACTION_OPENING:
+	case ACTION_DOOR_OPENING:
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionDeadline = g_dwGameTick + 80;
 		ResetCollision();
-		Action(DOOR_ACTION_OPEN);
+		Action(ACTION_DOOR_OPEN);
 		break;
-	case DOOR_ACTION_OPEN:
+	case ACTION_DOOR_OPEN:
 		if (m_doorType == 0) {
 			m_stateTimer = g_dwSimulationTimestamp;
 			m_actionDeadline = g_dwGameTick + 20;
 			SetCollision();
 			SetSndEffect(SFX_DOOROPEN);
-			Action(DOOR_ACTION_CLOSING);
+			Action(ACTION_DOOR_CLOSING);
 			return 1;
 		}
 		m_activationPending = 0;
 		break;
-	case DOOR_ACTION_CLOSING:
+	case ACTION_DOOR_CLOSING:
 		m_activationPending = 0;
-		Action(ACTION_0x1e);
+		Action(ACTION_DOOR_CLOSED);
 		break;
 	default:
 		break;
@@ -246,17 +247,17 @@ bool CDoor::Process()
 // FUNCTION: LEMBALL 0x0040dd00
 void CDoor::Unlock()
 {
-	if (m_action >= ACTION_0x1c && m_action <= ACTION_0x1d) {
+	if (m_action >= ACTION_DOOR_LOCKED_FEEDBACK && m_action <= ACTION_DOOR_LOCKED) {
 		m_actionDeadline = 0x14;
 		SetSndEffect(SFX_DOOROPEN);
-		RequestAction(DOOR_ACTION_OPENING);
+		RequestAction(ACTION_DOOR_OPENING);
 	}
 }
 
 // FUNCTION: LEMBALL 0x0040dd30
 bool CDoor::IsUsable(eAction p_action)
 {
-	return p_action == ACTION_0x18 || (p_action >= ACTION_0x1d && p_action <= ACTION_0x1e);
+	return p_action == ACTION_READY || (p_action >= ACTION_DOOR_LOCKED && p_action <= ACTION_DOOR_CLOSED);
 }
 
 // FUNCTION: LEMBALL 0x0040dd50
@@ -286,27 +287,27 @@ int CDoor::Hits(const AiCoord& p_position, CGameObject* p_object)
 	int maxY = doorY + 16;
 	if (doorX <= x && maxX >= x && doorY <= y && maxY >= y) {
 		switch (m_action) {
-		case ACTION_0x1c:
-		case ACTION_0x1d:
+		case ACTION_DOOR_LOCKED_FEEDBACK:
+		case ACTION_DOOR_LOCKED:
 			if (p_object->HasObject((eObjectType) (unsigned short) m_actionArgument)) {
 				m_actionDeadline = 20;
 				SetSndEffect(SFX_DOOROPEN);
-				RequestAction(DOOR_ACTION_OPENING);
+				RequestAction(ACTION_DOOR_OPENING);
 				return 1;
 			}
 			m_actionDeadline = 40;
-			RequestAction(ACTION_0x1c);
+			RequestAction(ACTION_DOOR_LOCKED_FEEDBACK);
 			return 0;
-		case ACTION_0x1e:
+		case ACTION_DOOR_CLOSED:
 			m_actionDeadline = 20;
 			SetSndEffect(SFX_DOOROPEN);
-			RequestAction(DOOR_ACTION_OPENING);
+			RequestAction(ACTION_DOOR_OPENING);
 			return 1;
-		case DOOR_ACTION_OPENING:
+		case ACTION_DOOR_OPENING:
 			return 1;
-		case DOOR_ACTION_OPEN:
+		case ACTION_DOOR_OPEN:
 			return 0;
-		case DOOR_ACTION_CLOSING:
+		case ACTION_DOOR_CLOSING:
 			return 1;
 		default:
 			return 1;
@@ -321,7 +322,7 @@ void CDoor::DoActivate()
 	m_activationPending = 1;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_actionDeadline += g_dwGameTick;
-	if (m_action != ACTION_0x1c) {
+	if (m_action != ACTION_DOOR_LOCKED_FEEDBACK) {
 		int actionArgument = (unsigned short) m_actionArgument;
 		int score;
 		switch (actionArgument) {

@@ -77,8 +77,8 @@ void CSheepGroup::RunAway(AiCoord p_threatPosition)
 			if ((escapeDestination.m_yFixed >> 12) < 0) {
 				escapeDestination.m_yFixed = 0;
 			}
-			int formationRandomValue = (*g_pSentinel * 41 + 31) & 0x7fffff;
-			*g_pSentinel = formationRandomValue;
+			int formationRandomValue = (*g_pRandomSeed * 41 + 31) & 0x7fffff;
+			*g_pRandomSeed = formationRandomValue;
 			SetFormationIndex(formationRandomValue % 3);
 			SendNewWaypoint(escapeDestination);
 			m_runAwayActive = 1;

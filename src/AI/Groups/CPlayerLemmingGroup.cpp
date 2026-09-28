@@ -45,7 +45,7 @@ int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 	if (object != 0) {
 		view = p_viewData;
 		do {
-			if (object->m_action != ACTION_12) {
+			if (object->m_action != ACTION_WAITING_TO_SPAWN) {
 				object->GetViewData(*view);
 				view++;
 				count++;
@@ -193,7 +193,7 @@ bool CPlayerLemmingGroup::Process()
 			}
 			break;
 		case 2:
-			if (m_useObject->m_action == ACTION_0x18 && moving == 0) {
+			if (m_useObject->m_action == ACTION_READY && moving == 0) {
 				if (GetElementsInGroup() <= m_currentUseElement) {
 					SetGroupState(GROUP_STATE_IDLE);
 					m_useObject->m_activationReserved = 0;
@@ -370,7 +370,7 @@ CPlayerLemming* CPlayerLemmingGroup::GetFirstDeadLemming()
 		if (lemming == 0) {
 			return 0;
 		}
-		if (lemming->m_action == 8) {
+		if (lemming->m_action == ACTION_DEAD) {
 			break;
 		}
 		lemming = (CPlayerLemming*) CGenericGroup::GetNextElementInGroup();

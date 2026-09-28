@@ -7,7 +7,7 @@
 // GLOBAL: LEMBALL 0x004a1d50
 _Filet* g_pMogFile = 0;
 
-#define kPathSeparator '/'
+#define RESOURCE_PATH_SEPARATOR '/'
 
 // FUNCTION: LEMBALL 0x0045bbc0
 bool CRawRead::Open(char* p_path, char* p_mode)
@@ -40,7 +40,7 @@ bool CRawRead::NameCmp(char* p_path, char* p_name)
 	char* path = p_path;
 	do {
 		char pathChar = (char) toupper(*path);
-		if (pathChar == kPathSeparator) {
+		if (pathChar == RESOURCE_PATH_SEPARATOR) {
 			pathChar = 0;
 		}
 		int nameChar = *name++;

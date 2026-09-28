@@ -52,7 +52,7 @@ void CPanelLemming::UpdateStatus()
 	unsigned int selected;
 	CPlayerLemming* lemming = m_lemming;
 
-	if (lemming->m_action == ACTION_8) {
+	if (lemming->m_action == ACTION_DEAD) {
 		selected = 0;
 	}
 	else {

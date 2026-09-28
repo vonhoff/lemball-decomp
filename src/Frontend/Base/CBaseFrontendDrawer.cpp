@@ -27,7 +27,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Foundation/CVSOStream.h"
 
-extern int* g_pSentinel;
+extern int* g_pRandomSeed;
 extern char g_szUnknownUserActionSpecified[];
 extern char g_szUnknownUserActionReceived[];
 
@@ -284,7 +284,7 @@ void CBaseFrontendDrawer::ReplaceBackground()
 			line.m_bounds.m_height = size->m_height;
 			line.m_bounds.m_x = origin->m_x;
 			line.m_bounds.m_y = origin->m_y;
-			line.m_color = 0;
+			line.m_colour = 0;
 			CPrimitive* primitive = &m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
 			primitive->Draw(m_gdi);
 			m_framePrimitiveCount++;
@@ -464,7 +464,7 @@ void CBaseFrontendDrawer::DrawFrame(CVsRect p_rect)
 		line.m_bounds.m_height = frameBounds.m_height;
 		line.m_bounds.m_x = frameBounds.m_x;
 		line.m_bounds.m_y = frameBounds.m_y;
-		line.m_color = 0x10;
+		line.m_colour = 0x10;
 		m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount].Draw(m_gdi);
 	}
 	m_framePrimitiveCount++;
@@ -534,7 +534,7 @@ int CBaseFrontendDrawer::ProcessMsg(Message* p_message)
 	if (m_actionPending != 0) {
 		return 0;
 	}
-	sequence = p_message->time;
+	sequence = p_message->m_time;
 	if ((int) (sequence - m_createdAt) < 0) {
 		return 0;
 	}
@@ -564,8 +564,8 @@ void CBaseFrontendDrawer::Process()
 			now = CurrentMilliTimer();
 			m_ambientUpdatedAt = now;
 			m_ambientAnim->SetStartTime(now);
-			seed = *g_pSentinel * 0x29 + 0x1f & 0x7fffff;
-			*g_pSentinel = seed;
+			seed = *g_pRandomSeed * 0x29 + 0x1f & 0x7fffff;
+			*g_pRandomSeed = seed;
 			m_ambientDelay = seed % 6000;
 		}
 	}

@@ -9,25 +9,25 @@ class CString;
 // SIZE 0x04
 struct CHAR4 {
 	unsigned int m_value;
-	CHAR4(unsigned int v = 0) : m_value(v) {}
+	CHAR4(unsigned int p_v = 0) : m_value(p_v) {}
 };
 
 // SIZE 0x04
 struct Hex {
 	unsigned int m_value;
-	Hex(unsigned int v = 0) : m_value(v) {}
+	Hex(unsigned int p_v = 0) : m_value(p_v) {}
 };
 
 // SIZE 0x04
 struct Hex8 {
 	unsigned int m_value;
-	Hex8(unsigned int v = 0) : m_value(v) {}
+	Hex8(unsigned int p_v = 0) : m_value(p_v) {}
 };
 
 // SIZE 0x04
 struct Rname {
 	unsigned int m_value;
-	Rname(unsigned int v = 0) : m_value(v) {}
+	Rname(unsigned int p_v = 0) : m_value(p_v) {}
 };
 
 // SIZE 0x14c

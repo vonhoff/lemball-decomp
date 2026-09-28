@@ -178,10 +178,10 @@ unsigned long CPanel::TranslateKey(unsigned long p_key)
 int CPanel::ProcessMsg(Message* p_message)
 {
 	if (m_game->m_paused == 0 && m_game->m_ai->m_gameStatus != 1) {
-		unsigned int type = p_message->type;
+		unsigned int type = p_message->m_type;
 		switch (type) {
 		case 4:
-			if (TranslateKey(p_message->code) == 8) {
+			if (TranslateKey(p_message->m_code) == 8) {
 				g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 				unsigned int pause = m_game->m_paused == 0;
 				m_game->TriggerPause((unsigned char) pause);

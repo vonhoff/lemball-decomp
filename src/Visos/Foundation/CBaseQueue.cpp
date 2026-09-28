@@ -6,9 +6,9 @@
 #include <new.h>
 
 struct QueueHandlerNode {
-	CBaseQueueHandler* handler;
-	int priority;
-	QueueHandlerNode* next;
+	CBaseQueueHandler* m_handler;
+	int m_priority;
+	QueueHandlerNode* m_next;
 };
 
 // FUNCTION: LEMBALL 0x00463020
@@ -68,7 +68,7 @@ CBaseQueue::~CBaseQueue()
 	index = 0;
 	if (index < m_handlerCount) {
 		do {
-			next = node->next;
+			next = node->m_next;
 			operator delete(node);
 			node = next;
 			index = index + 1;
@@ -84,7 +84,7 @@ bool CBaseQueue::Post(Message& p_message)
 
 	EnterCritical();
 	m_postCount = m_postCount + 1;
-	p_message.time = m_nextSequence;
+	p_message.m_time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
 	if (m_capacity == m_messageCount) {
 		m_overflowCount = m_overflowCount + 1;
@@ -112,7 +112,7 @@ bool CBaseQueue::Send(Message& p_message)
 
 	EnterCritical();
 	m_sendCount = m_sendCount + 1;
-	p_message.time = m_nextSequence;
+	p_message.m_time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
 	result = Process(&p_message);
 	if (result != 0) {
@@ -141,11 +141,11 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 	EnterCritical();
 	node = (QueueHandlerNode*) operator new(0xc);
 	current = m_handlerList;
-	node->handler = p_handler;
-	node->priority = p_priority;
+	node->m_handler = p_handler;
+	node->m_priority = p_priority;
 	if (m_handlerList == 0) {
 		m_handlerList = node;
-		node->next = 0;
+		node->m_next = 0;
 		m_handlerCount = 1;
 		LeaveCritical();
 		return 1;
@@ -161,24 +161,24 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 	index = 0;
 	if (count != 0) {
 		do {
-			if (p_priority < current->priority) {
+			if (p_priority < current->m_priority) {
 				if (index == 0) {
-					node->next = m_handlerList;
+					node->m_next = m_handlerList;
 					m_handlerList = node;
 				}
 				else {
-					node->next = previous->next;
-					previous->next = node;
+					node->m_next = previous->m_next;
+					previous->m_next = node;
 				}
 				m_handlerCount = m_handlerCount + 1;
 				LeaveCritical();
 				return 1;
 			}
 			previous = current;
-			current = current->next;
+			current = current->m_next;
 			if (current == 0) {
-				node->next = 0;
-				previous->next = node;
+				node->m_next = 0;
+				previous->m_next = node;
 				m_handlerCount = m_handlerCount + 1;
 				LeaveCritical();
 				return 1;
@@ -203,15 +203,15 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 	previous = current;
 	if (m_handlerCount != 0) {
 		do {
-			if (current->priority == p_priority && current->handler == p_handler) {
+			if (current->m_priority == p_priority && current->m_handler == p_handler) {
 				if (index == 0) {
-					m_handlerList = current->next;
+					m_handlerList = current->m_next;
 					operator delete(current);
 					m_handlerCount = m_handlerCount - 1;
 					LeaveCritical();
 					return 1;
 				}
-				previous->next = current->next;
+				previous->m_next = current->m_next;
 				operator delete(current);
 				m_handlerCount = m_handlerCount - 1;
 				LeaveCritical();
@@ -219,7 +219,7 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 			}
 			previous = current;
 			index = index + 1;
-			current = current->next;
+			current = current->m_next;
 		} while (index < m_handlerCount);
 	}
 	LeaveCritical();
@@ -390,11 +390,11 @@ bool CBaseQueue::Process(Message* p_message)
 	EnterCritical();
 	node = m_handlerList;
 	for (index = 0; index < m_handlerCount; index++) {
-		if (node->handler->ProcessMsg(p_message) == 1) {
+		if (node->m_handler->ProcessMsg(p_message) == 1) {
 			LeaveCritical();
 			return 1;
 		}
-		node = node->next;
+		node = node->m_next;
 	}
 	m_unhandledCount = m_unhandledCount + 1;
 	LeaveCritical();

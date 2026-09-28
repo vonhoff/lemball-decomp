@@ -35,7 +35,7 @@ void CTrapDoor::Restart()
 	m_position.m_xFixed = m_spawnPosition.m_xFixed;
 	m_position.m_yFixed = m_spawnPosition.m_yFixed;
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_active = 1;
 	m_deadline = 80;
@@ -75,7 +75,7 @@ void CTrapDoor::GetViewData(CViewData& p_viewData)
 	p_viewData.m_actionArgument = actionArgument;
 	p_viewData.m_stateTimer = stateTimer;
 	p_viewData.m_statusFlags = 0;
-	p_viewData.m_unk0x30 = m_unk0xc0;
+	p_viewData.m_hidden = m_hidden;
 	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
 	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
 	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;
@@ -101,16 +101,16 @@ bool CTrapDoor::Process()
 		bool finished = false;
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case ACTION_0x1e:
+			case ACTION_DOOR_CLOSED:
 				finished = true;
 				break;
-			case DOOR_ACTION_OPENING:
+			case ACTION_DOOR_OPENING:
 				if (g_dwTrapDoorRemoteSfxState == 0) {
 					g_dwTrapDoorRemoteSfxState = 1;
 					SetSndEffect(SFX_TRAPDOOR);
 				}
 				break;
-			case DOOR_ACTION_CLOSING:
+			case ACTION_DOOR_CLOSING:
 				if (g_dwTrapDoorRemoteSfxState == 1) {
 					g_dwTrapDoorRemoteSfxState = 0;
 					SetSndEffect(SFX_TRAPDOOR);
@@ -127,47 +127,47 @@ bool CTrapDoor::Process()
 	if (m_actionDeadline <= g_dwGameTick) {
 		m_stateTimer = g_dwSimulationTimestamp;
 		switch (m_action) {
-		case ACTION_0x18:
+		case ACTION_READY:
 			if (g_dwTrapDoorLocalSfxState == 0) {
 				SetSndEffect(SFX_DOORAPPR);
 				g_dwTrapDoorLocalSfxState = 1;
 			}
 			m_actionDeadline = g_dwGameTick + 0x36;
-			Action(ACTION_0x1f);
+			Action(ACTION_ARRIVING);
 			break;
-		case ACTION_0x1f:
+		case ACTION_ARRIVING:
 			if (g_dwTrapDoorLocalSfxState == 1) {
 				g_dwTrapDoorLocalSfxState = 0;
 				SetSndEffect(SFX_TRAPDOOR);
 			}
 			m_actionDeadline = g_dwGameTick + 0x14;
-			Action(DOOR_ACTION_OPENING);
+			Action(ACTION_DOOR_OPENING);
 			return true;
-		case DOOR_ACTION_OPENING:
+		case ACTION_DOOR_OPENING:
 			if (g_dwTrapDoorLocalSfxState == 0) {
 				g_dwTrapDoorLocalSfxState = 1;
 				SetSndEffect(SFX_LETSGO);
 			}
 			m_actionDeadline = g_dwGameTick + 0x50;
-			Action(DOOR_ACTION_OPEN);
+			Action(ACTION_DOOR_OPEN);
 			return true;
-		case DOOR_ACTION_OPEN:
+		case ACTION_DOOR_OPEN:
 			if (g_dwTrapDoorLocalSfxState == 1) {
 				g_dwTrapDoorLocalSfxState = 0;
 				SetSndEffect(SFX_TRAPDOOR);
 			}
 			m_actionDeadline = g_dwGameTick + 0x14;
-			Action(DOOR_ACTION_CLOSING);
+			Action(ACTION_DOOR_CLOSING);
 			return true;
-		case DOOR_ACTION_CLOSING:
+		case ACTION_DOOR_CLOSING:
 			if (g_dwTrapDoorLocalSfxState == 0) {
 				SetSndEffect(SFX_DOORGO);
 			}
 			m_actionDeadline = g_dwGameTick + 0x36;
-			Action(ACTION_0x23);
+			Action(ACTION_LEAVING);
 			return true;
-		case ACTION_0x23:
-			Action(ACTION_0x1e);
+		case ACTION_LEAVING:
+			Action(ACTION_DOOR_CLOSED);
 			return false;
 		}
 	}

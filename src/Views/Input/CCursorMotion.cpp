@@ -44,13 +44,13 @@ void CCursorMotion::PostPosition()
 	int x;
 	int y;
 	Message message;
-	message.type = 1;
-	memset(&message.time, 0, 16);
+	message.m_type = 1;
+	memset(&message.m_time, 0, 16);
 	int screenX = m_fixedX >> 12;
 	int screenY = m_fixedY >> 12;
 	m_map->ScreenToGame(screenX, screenY, x, y);
-	message.code = x;
-	message.payload = (void*) y;
+	message.m_code = x;
+	message.m_payload = (void*) y;
 	m_aiQueue->Post(message);
 }
 

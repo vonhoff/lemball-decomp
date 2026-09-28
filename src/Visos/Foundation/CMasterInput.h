@@ -13,7 +13,7 @@ public:
 	bool IsEmpty();
 	bool ProcessItems();
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
-	virtual ~CMasterInput();                           // vtable+0x04
+	virtual ~CMasterInput();                             // vtable+0x04
 
 	friend bool InitInput();
 	friend bool QuitInput();

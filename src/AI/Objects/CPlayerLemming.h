@@ -32,44 +32,44 @@ public:
 	unsigned int CheckNetworkStateChanged();
 	int GetLastBalloon();
 	int GetObject(int p_index);
-	virtual void Action(eAction p_arg0);                                             // vtable+0x08
-	virtual void GetViewData(CViewData& p_viewData);                                 // vtable+0x0c
-	virtual bool Process();                                                          // vtable+0x14
-	virtual void StartStanding();                                                    // vtable+0x30
-	virtual void HitBullet(CBullet* p_bullet);                                       // vtable+0x54
-	virtual void HitBall();                                                          // vtable+0x58
-	virtual int IsHit();                                                             // vtable+0x5c
-	virtual void GetHit();                                                           // vtable+0x60
-	virtual void HitMine();                                                          // vtable+0x64
-	virtual void Die();                                                              // vtable+0x68
-	virtual bool IsSelectable();                                                     // vtable+0x70
-	virtual bool FacingCursor();                                                     // vtable+0x74
-	virtual void TurnToFaceCursor();                                                 // vtable+0x78
-	virtual bool IsRequestingFire();                                                 // vtable+0x7c
-	virtual int Bored();                                                             // vtable+0x80
-	virtual void SetBored(unsigned long p_arg0);                                     // vtable+0x84
-	virtual void Fire();                                                             // vtable+0x88
-	virtual void StartFiring();                                                      // vtable+0x8c
-	virtual void EndFiring();                                                        // vtable+0x90
-	virtual void RandomAction();                                                     // vtable+0x94
-	virtual bool FacingTarget();                                                     // vtable+0x98
-	virtual void TurnToFaceTarget();                                                 // vtable+0x9c
-	virtual bool HasObject(eObjectType p_objectType);                                // vtable+0xb4
-	virtual bool AddObject(eObjectType p_objectType, CGameObject* p_object);         // vtable+0xb8
-	virtual void PickUpAmmo(unsigned short p_amount);                                // vtable+0xcc
-	virtual void ExternalControlEnd();                                               // vtable+0xd0
-	virtual void RequestBalloon();                                                   // vtable+0xd4
-	virtual void StartBalloon();                                                     // vtable+0xd8
-	virtual void OnBalloon();                                                        // vtable+0xdc
-	virtual int QOnBalloon();                                                        // vtable+0xe0
-	virtual void OnConveyor(unsigned int p_arg0, CIce* p_arg1, unsigned int p_arg2); // vtable+0xe8
-	virtual int OnConveyor();                                                        // vtable+0xe4
-	virtual CIce* Conveyor();                                                        // vtable+0xec
-	virtual void Restart();                                                          // vtable+0x104
+	virtual void Action(eAction p_action);                                                 // vtable+0x08
+	virtual void GetViewData(CViewData& p_viewData);                                       // vtable+0x0c
+	virtual bool Process();                                                                // vtable+0x14
+	virtual void StartStanding();                                                          // vtable+0x30
+	virtual void HitBullet(CBullet* p_bullet);                                             // vtable+0x54
+	virtual void HitBall();                                                                // vtable+0x58
+	virtual int IsHit();                                                                   // vtable+0x5c
+	virtual void GetHit();                                                                 // vtable+0x60
+	virtual void HitMine();                                                                // vtable+0x64
+	virtual void Die();                                                                    // vtable+0x68
+	virtual bool IsSelectable();                                                           // vtable+0x70
+	virtual bool FacingCursor();                                                           // vtable+0x74
+	virtual void TurnToFaceCursor();                                                       // vtable+0x78
+	virtual bool IsRequestingFire();                                                       // vtable+0x7c
+	virtual int Bored();                                                                   // vtable+0x80
+	virtual void SetBored(unsigned long p_minimumDelay);                                   // vtable+0x84
+	virtual void Fire();                                                                   // vtable+0x88
+	virtual void StartFiring();                                                            // vtable+0x8c
+	virtual void EndFiring();                                                              // vtable+0x90
+	virtual void RandomAction();                                                           // vtable+0x94
+	virtual bool FacingTarget();                                                           // vtable+0x98
+	virtual void TurnToFaceTarget();                                                       // vtable+0x9c
+	virtual bool HasObject(eObjectType p_objectType);                                      // vtable+0xb4
+	virtual bool AddObject(eObjectType p_objectType, CGameObject* p_object);               // vtable+0xb8
+	virtual void PickUpAmmo(unsigned short p_amount);                                      // vtable+0xcc
+	virtual void ExternalControlEnd();                                                     // vtable+0xd0
+	virtual void RequestBalloon();                                                         // vtable+0xd4
+	virtual void StartBalloon();                                                           // vtable+0xd8
+	virtual void OnBalloon();                                                              // vtable+0xdc
+	virtual int QOnBalloon();                                                              // vtable+0xe0
+	virtual void OnConveyor(unsigned int p_onConveyor, CIce* p_ice, unsigned int p_leave); // vtable+0xe8
+	virtual int OnConveyor();                                                              // vtable+0xe4
+	virtual CIce* Conveyor();                                                              // vtable+0xec
+	virtual void Restart();                                                                // vtable+0x104
 	void AddData();
 	void GetData();
 	void RemoveObject(eObjectType p_objectType);
-	void RequestFire(int p_arg0, int p_arg1);
+	void RequestFire(int p_x, int p_y);
 	void Resurrect(const AiCoord& p_position);
 	void SetGroup(CPlayerLemmingGroup* p_group);
 	void SetGroup(unsigned int p_groupIndex);

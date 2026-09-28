@@ -11,7 +11,7 @@ public:
 	unsigned char* Allocate(int p_size, char* p_description);
 	~CSmallMemory();
 
-	friend bool CheckValidPointer(void* p_arg0);
+	friend bool CheckValidPointer(void* p_pointer);
 
 private:
 	CBucket* m_buckets[7]; // 0x00

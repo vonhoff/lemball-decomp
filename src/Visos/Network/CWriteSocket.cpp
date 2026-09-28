@@ -27,7 +27,7 @@ CWriteSocket::CWriteSocket()
 	header->m_magic = 0x56533039;
 	m_nonCriticalBuffer = 0;
 	m_criticalBuffer = 0;
-	m_unknown50 = 0;
+	m_secondaryCriticalBuffer = 0;
 	m_segmentedMessage = 0;
 	m_segmentIndex = -1;
 	m_destinationAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
@@ -65,17 +65,17 @@ void CWriteSocket::DeleteNCBuffers()
 void CWriteSocket::DeleteCBuffers()
 {
 	CWriteCBuff* critical;
-	CWriteCBuff* unknown;
+	CWriteCBuff* secondary;
 
 	critical = m_criticalBuffer;
 	if (critical != 0) {
 		critical->CBasePacketBuff::~CBasePacketBuff();
 		operator delete(critical);
 	}
-	unknown = m_unknown50;
-	if (unknown != 0) {
-		unknown->CBasePacketBuff::~CBasePacketBuff();
-		operator delete(unknown);
+	secondary = m_secondaryCriticalBuffer;
+	if (secondary != 0) {
+		secondary->CBasePacketBuff::~CBasePacketBuff();
+		operator delete(secondary);
 	}
 }
 

@@ -1,7 +1,6 @@
 #ifndef LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 #define LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 
-
 struct in_addr;
 struct TcpIpSocketAddress;
 struct TcpIpDestinationAddress;

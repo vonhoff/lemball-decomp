@@ -36,7 +36,7 @@ void CDuplicator::Restart()
 	m_stateTimer = 0;
 	m_terrainCell1Set = 0;
 	m_terrainCell0Set = 0;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	Set(m_spawnPosition);
 }
 
@@ -92,7 +92,7 @@ bool CDuplicator::Process()
 	if (m_isRemoteObject != 0) {
 		m_actionArgument = 1;
 		if (m_pendingAction != m_action) {
-			if (m_action == ACTION_0x1a) {
+			if (m_action == ACTION_ACTIVATED) {
 				SetSndEffect(SFX_DUPLICTR);
 			}
 			m_pendingAction = m_action;
@@ -100,9 +100,9 @@ bool CDuplicator::Process()
 		return 1;
 	}
 	m_actionArgument = 0;
-	if (m_action == ACTION_0x1a && m_actionDeadline < g_dwGameTick) {
+	if (m_action == ACTION_ACTIVATED && m_actionDeadline < g_dwGameTick) {
 		CGameObject* duplicatedObject = m_duplicatedObject;
-		duplicatedObject->m_unk0xc0 = 0;
+		duplicatedObject->m_hidden = 0;
 		duplicatedObject->m_action = ACTION_NONE;
 		m_duplicatedObject->Action(ACTION_NONE);
 		m_duplicatedObject->ResetInstructions();
@@ -113,7 +113,7 @@ bool CDuplicator::Process()
 			CPlayerLemmingGroup* group = ((CPlayerLemming*) m_duplicatedObject)->GetGroup();
 			group->AddLemmingToGroup(dead);
 		}
-		Action(ACTION_0x18);
+		Action(ACTION_READY);
 	}
 	return 1;
 }
@@ -133,10 +133,10 @@ bool CDuplicator::Activate(CGameObject* p_object)
 	if (!g_pAI->nDead()) {
 		return 0;
 	}
-	if (p_object->m_objectType == OBJECT_PLAYER_2 && m_action == ACTION_0x18) {
+	if (p_object->m_objectType == OBJECT_PLAYER_2 && m_action == ACTION_READY) {
 		m_actionDeadline = 82;
 		m_activator = p_object;
-		RequestAction(ACTION_0x1a);
+		RequestAction(ACTION_ACTIVATED);
 		return 1;
 	}
 	return 0;
@@ -152,8 +152,8 @@ void CDuplicator::DoActivate()
 	m_actionDeadline += g_dwGameTick;
 	m_duplicatedObject = activator;
 	int x = m_position.m_xFixed;
-	activator->m_unk0xc0 = 1;
-	activator->m_action = ACTION_5;
+	activator->m_hidden = 1;
+	activator->m_action = ACTION_HIDDEN;
 	CGameObject* dup = m_duplicatedObject;
 	dup->m_position.m_xFixed = x;
 	dup->m_position.m_yFixed = y;

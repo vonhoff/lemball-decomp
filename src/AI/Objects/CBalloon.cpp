@@ -22,8 +22,8 @@ int CBalloon::Usage()
 void CBalloon::Restart()
 {
 	CBaseGlobalObject::Restart();
-	int randVal = (*g_pSentinel * 0x29 + 0x1f) & 0x7fffff;
-	*g_pSentinel = randVal;
+	int randVal = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+	*g_pRandomSeed = randVal;
 	m_stateTimer = g_dwSimulationTimestamp - (randVal % 4096);
 }
 
@@ -32,7 +32,7 @@ bool CBalloon::Activate(CGameObject* p_object)
 {
 	m_activator = p_object;
 	if (m_activator->HasObject(m_objectType) == 0) {
-		RequestAction(ACTION_0x1a);
+		RequestAction(ACTION_ACTIVATED);
 		return 1;
 	}
 	return 0;

@@ -26,7 +26,7 @@ void CIce::Initialise()
 	m_switched = 0;
 	m_enabled = 0;
 	m_objectCount = 0;
-	m_action = ACTION_0x18;
+	m_action = ACTION_READY;
 	m_lastMovementTick = g_dwGameTick;
 }
 
@@ -135,17 +135,17 @@ bool CIce::Process()
 {
 	if (m_isRemoteObject) {
 		if (m_pendingAction != m_action) {
-			if (m_action == 0x1a) {
+			if (m_action == ACTION_ACTIVATED) {
 				m_switched = !m_switched;
 				Switched();
 			}
 			m_pendingAction = m_action;
 		}
 	}
-	else if (m_action == 0x1a) {
+	else if (m_action == ACTION_ACTIVATED) {
 		m_switched = !m_switched;
 		Switched();
-		Action(ACTION_0x18);
+		Action(ACTION_READY);
 	}
 	if (!m_switched) {
 		return true;
@@ -232,7 +232,7 @@ bool CIce::Process()
 		int x = current.m_xFixed >> 12;
 		int y = current.m_yFixed >> 12;
 		if (x < minX || x > maxX || y < minY || y > maxY) {
-			object->m_unk0xc0 = 0;
+			object->m_hidden = 0;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
 			unsigned short groundZ;
@@ -319,7 +319,7 @@ bool CIce::StepOn(const AiCoord& p_position, CGameObject* p_object)
 		alreadyOn = p_object->OnConveyor();
 	}
 	else {
-		alreadyOn = p_object->m_action == 0xf && p_object->m_actionArgument == 3;
+		alreadyOn = p_object->m_action == ACTION_EXTERNAL_CONTROL && p_object->m_actionArgument == 3;
 	}
 	if (alreadyOn) {
 		return false;
@@ -333,12 +333,12 @@ bool CIce::StepOn(const AiCoord& p_position, CGameObject* p_object)
 			p_object->m_stateTimer = g_dwGameTick * 50;
 			p_object->m_actionDeadline = g_dwGameTick + 1000;
 			if (p_object->m_objectType == 2) {
-				p_object->Action(ACTION_0x16);
+				p_object->Action(ACTION_ON_CONVEYOR);
 				p_object->SetSndEffect(SFX_WHEEE);
 				p_object->OnConveyor(1, this, 0);
 				return true;
 			}
-			p_object->Action(ACTION_15, 3);
+			p_object->Action(ACTION_EXTERNAL_CONTROL, 3);
 			p_object->SetSndEffect(SFX_WHEEE);
 		}
 		return true;
@@ -375,7 +375,7 @@ void CIce::Leave(CPlayerLemming* p_lemming)
 // FUNCTION: LEMBALL 0x0042d550
 void CIce::Switch()
 {
-	RequestAction(ACTION_0x1a);
+	RequestAction(ACTION_ACTIVATED);
 }
 
 // FUNCTION: LEMBALL 0x0042d560
@@ -389,7 +389,7 @@ void CIce::Switched()
 		for (int i = 0; i < m_objectCount; i++) {
 			CGameObject* object = m_objects[i];
 			AiCoord current = object->m_position;
-			object->m_unk0xc0 = 0;
+			object->m_hidden = 0;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
 			unsigned short groundZ;

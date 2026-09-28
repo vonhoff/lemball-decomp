@@ -434,7 +434,7 @@ void CSuccFailDrawer::DrawText()
 // FUNCTION: LEMBALL 0x00450970
 bool CSuccFailDrawer::ProcessMessages(Message* p_message)
 {
-	switch ((unsigned int) p_message->type) {
+	switch ((unsigned int) p_message->m_type) {
 	case 0xc:
 		break;
 	default:
@@ -442,7 +442,7 @@ bool CSuccFailDrawer::ProcessMessages(Message* p_message)
 		return 0;
 	}
 
-	switch ((unsigned int) p_message->code) {
+	switch ((unsigned int) p_message->m_code) {
 	case 0xacef0010:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
