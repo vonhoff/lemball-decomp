@@ -225,7 +225,6 @@ void CGunButtons::Draw(int p_firstState, int p_secondState)
 void CGunButtons::LoadFaces(unsigned long* p_animIds)
 {
 	int i;
-	void* storage;
 
 	m_animIds = p_animIds;
 	m_resources = (CResANIM**) operator new(m_valueCount * 4);
@@ -237,15 +236,8 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 		} while (i < m_valueCount);
 	}
 	if (m_mode == 0) {
-		storage = operator new(0x130);
-		if (storage != 0) {
-			CVsPoint position((short) m_x, (short) m_y);
-			m_graphicButton =
-				new (storage) CGunButton(position, (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
-		}
-		else {
-			m_graphicButton = 0;
-		}
+		m_graphicButton =
+			new CGunButton(CVsPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
 		CSurface* surface = m_graphicButton->m_gdi->m_renderTarget;
 		m_graphicButton->SetAutoDraw(0);
 		surface->m_flag70 = 0;
@@ -254,14 +246,8 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 		m_trackerButton = 0;
 		return;
 	}
-	storage = operator new(0x138);
-	if (storage != 0) {
-		CVsPoint position((short) m_x, (short) m_y);
-		m_trackerButton = new (storage) CTrackerButton(position, (CPVGWnd*) m_window, *m_animIds, m_trackRect, m_value);
-	}
-	else {
-		m_trackerButton = 0;
-	}
+	m_trackerButton =
+		new CTrackerButton(CVsPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, *m_animIds, m_trackRect, m_value);
 	CSurface* surface = m_trackerButton->m_gdi->m_renderTarget;
 	m_trackerButton->SetAutoDraw(0);
 	surface->m_flag70 = 0;
