@@ -933,9 +933,11 @@ void CWnd::_SetRect(const CVsRect& p_rect)
 		SetWindowPos((HWND) m_nativeWindow, 0, window.left, window.top, adjusted.right, adjusted.bottom, 4);
 		return;
 	}
-	position = (const CVsPoint*) &m_parent->m_rect;
-	window.top = (short) (position->m_y + origin->m_y);
+	const CVsRect* parentRect = &m_parent->m_rect;
+	position = parentRect;
+	int top = (short) (position->m_y + origin->m_y);
 	window.left = (short) (position->m_x + origin->m_x);
+	window.top = top;
 	ClientToScreen((HWND) ((CWnd*) m_parent)->m_nativeWindow, (POINT*) &window);
 	m_rect.m_x = (short) window.left;
 	m_rect.m_y = (short) window.top;
