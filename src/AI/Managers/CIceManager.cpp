@@ -51,8 +51,16 @@ CIceManager::~CIceManager()
 // FUNCTION: LEMBALL 0x0042dd00
 void CIceManager::Process()
 {
-	for (int i = 0; i < m_count; i++) {
-		m_ice[i].Process();
+	int offset = 0;
+	int index = 0;
+	register CIceManager* manager = this;
+	if (manager->m_count > 0) {
+		do {
+			CIce* ice = (CIce*) ((char*) manager->m_ice + offset);
+			ice->Process();
+			offset += sizeof(CIce);
+			index++;
+		} while (index < manager->m_count);
 	}
 }
 
