@@ -47,7 +47,7 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	vsSeek(g_pMogFile, p_fileOffset, MOG_SEEK_FROM_START);
 	if (p_fileOffset == 0) {
 		((CRawRead*) this)->InputByte();
-		vsSeek(g_pMogFile, 0, MOG_SEEK_FROM_START);
+		vsSeek(g_pMogFile, p_fileOffset, MOG_SEEK_FROM_START);
 	}
 	((CRawRead*) this)->InputDword();
 	((CRawRead*) this)->InputDword();
@@ -61,9 +61,10 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	m_directoryData = (unsigned char*) CMogloadArena::operator new(directoryDataSize);
 	vsRead(g_pMogFile, m_directoryData, directoryDataSize);
 	if (m_chunkCount != 0) {
-		m_first.m_info = (ChunkInfo*) CMogloadArena::operator new(CHUNK_INFO_ALLOCATION_BYTES);
+		ChunkInfo* info = (ChunkInfo*) CMogloadArena::operator new(CHUNK_INFO_ALLOCATION_BYTES);
+		m_first.m_info = info;
 		*firstIndex = 0;
-		GetChunkInfo(m_first.m_info);
+		GetChunkInfo(info);
 		m_loadedChunkCount++;
 	}
 	*iteratorIndex = *firstIndex;
