@@ -48,6 +48,7 @@ CFormationManager::~CFormationManager()
 // FUNCTION: LEMBALL 0x0041a1d0
 void CFormationManager::TransformFormation(int p_formationIndex, int p_angle)
 {
+	int angle = p_angle;
 	CVector* source;
 	CVector* transformed;
 	int remaining;
@@ -56,10 +57,27 @@ void CFormationManager::TransformFormation(int p_formationIndex, int p_angle)
 	transformed = m_transformedVectors;
 	remaining = 8;
 	do {
-		CFixed sin = g_pVSTrig->Sin(p_angle);
-		CFixed cos = g_pVSTrig->Cos(p_angle);
-		CVector rotated = g_pVSTrig->Rotate(*source, sin, cos);
-		*transformed = rotated;
+		VSTrig* trig = g_pVSTrig;
+		int sine;
+		if (angle < 0) {
+			sine = -trig->m_sine[(-angle) % 512].m_value;
+		}
+		else {
+			sine = g_pVSTrig->m_sine[angle % 512].m_value;
+		}
+		CFixed sin(sine);
+		CFixed cos(0);
+		if (angle + 128 < 0) {
+			cos.m_value = -g_pVSTrig->m_sine[(-128 - angle) % 512].m_value;
+		}
+		else {
+			cos.m_value = g_pVSTrig->m_sine[(angle + 128) % 512].m_value;
+		}
+		CVector rotated = trig->Rotate(*source, sin, cos);
+		int x = rotated.m_xFixed;
+		int y = rotated.m_yFixed;
+		transformed->m_xFixed = x;
+		transformed->m_yFixed = y;
 		source++;
 		transformed++;
 		remaining--;

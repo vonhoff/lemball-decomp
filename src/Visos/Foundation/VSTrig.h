@@ -15,6 +15,7 @@ public:
 
 private:
 	friend class CSheepGroup;
+	friend class CFormationManager;
 	CFixed m_sine[512]; // 0x00
 };
 
