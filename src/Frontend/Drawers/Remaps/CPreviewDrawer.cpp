@@ -1,0 +1,67 @@
+#include "../CPreviewDrawer.h"
+
+#include "../../../Control/Game/CGameStatus.h"
+#include "../../../Control/Level/CLevelLoader.h"
+#include "../../../Control/Support/PreviewData.h"
+#include "../../../Views/Display/CMain2DDisplay.h"
+#include "../../../Visos/Animation/CAnimsManager.h"
+#include "../../../Visos/Animation/CRepeatAnim.h"
+#include "../../../Visos/Foundation/CTextManager.h"
+#include "../../../Visos/Graphics/CBasePalManager.h"
+#include "../../../Visos/Resources/CResBITMAP.h"
+#include "../../../Visos/Resources/CResFONT.h"
+#include "../../../Visos/Resources/CResPALETTE.h"
+#include "../../../Visos/Resources/Manifest.h"
+#include "../../Base/CBaseFrontendProcess.h"
+#include "../../Controls/CHiliteController.h"
+#include "Frontend/Base/CBaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Support/CoordPair.h"
+#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/Message.h"
+#include "Visos/Foundation/tagPRIMS.h"
+#include "Visos/Graphics/CBaseRemap.h"
+#include "Visos/Graphics/CBitmapRes.h"
+
+#include <new.h>
+#include <string.h>
+
+class CGWnd;
+class CRemap;
+
+#pragma intrinsic(strcpy, strlen)
+
+#define PREVIEW_BUTTON_MESSAGE_GO 0xacef000c
+#define PREVIEW_BUTTON_MESSAGE_RETURN 0xacef000d
+#define PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL 0xacef000e
+#define PREVIEW_BUTTON_MESSAGE_PREVIOUS_LEVEL 0xacef000f
+
+extern int g_previewRemapSourceIndices[10];
+extern int g_previewRemapTargetIndices[10];
+
+// FUNCTION: LEMBALL 0x0044a330
+void CPreviewDrawer::RegisterRemaps()
+{
+	CResPALETTE* palette;
+	int i;
+
+	palette = CResPALETTE::Load(RES_PALETTES_TITLEPALETTE);
+	m_remapTable = (unsigned char*) operator new(0x100);
+	i = 0;
+	do {
+		m_remapTable[i] = (unsigned char) i;
+		i = i + 1;
+	} while (i < 0x100);
+	i = 0;
+	do {
+		int target = g_previewRemapTargetIndices[i];
+		int source = g_previewRemapSourceIndices[i];
+		if (target != 0) {
+			m_remapTable[source] = (unsigned char) target;
+		}
+		i = i + 1;
+	} while (i < 10);
+	m_remap = g_pBasePalManager->RegisterRemap(RES_PALETTES_TITLEPALETTE, m_remapTable, PALETTE_DEFAULT);
+	palette->UnLoad();
+}

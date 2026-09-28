@@ -342,12 +342,11 @@ void CPreviewDrawer::DrawText()
 
 		skill = g_pGameStatus->m_skill;
 		PreviewLayout* skillLayout = m_layout;
+		int skillX = skillLayout->m_positions[PreviewSkillText].m_x;
 		int skillY = skillLayout->m_positions[PreviewSkillText].m_y;
-		pos.m_width = (short) (skillLayout->m_positions[PreviewSkillText].m_x -
-							   m_textManager->GetFont(m_chalkFontId)
-									   ->GetSize(&advance, g_szPreviewSkillNames[skill], 0x20)
-									   ->m_width /
-								   2);
+		short halfWidth =
+			(short) (m_textManager->GetFont(m_chalkFontId)->GetSize(g_szPreviewSkillNames[skill], 0x20).m_width / 2);
+		pos.m_width = (short) (skillX - halfWidth);
 		advance.m_height = 0;
 		advance.m_width = 0;
 		pos.m_height = (short) skillY;
@@ -702,32 +701,6 @@ bool CPreviewDrawer::AddWord(char* p_source, char* p_line, int& p_sourcePos, int
 	}
 	p_sourcePos = p_sourcePos + 1;
 	return 0;
-}
-
-// FUNCTION: LEMBALL 0x0044a330
-void CPreviewDrawer::RegisterRemaps()
-{
-	CResPALETTE* palette;
-	int i;
-
-	palette = CResPALETTE::Load(RES_PALETTES_TITLEPALETTE);
-	m_remapTable = (unsigned char*) operator new(0x100);
-	i = 0;
-	do {
-		m_remapTable[i] = (unsigned char) i;
-		i = i + 1;
-	} while (i < 0x100);
-	i = 0;
-	do {
-		int target = g_previewRemapTargetIndices[i];
-		int source = g_previewRemapSourceIndices[i];
-		if (target != 0) {
-			m_remapTable[source] = (unsigned char) target;
-		}
-		i = i + 1;
-	} while (i < 10);
-	m_remap = g_pBasePalManager->RegisterRemap(RES_PALETTES_TITLEPALETTE, m_remapTable, PALETTE_DEFAULT);
-	palette->UnLoad();
 }
 
 // FUNCTION: LEMBALL 0x0044a3c0
