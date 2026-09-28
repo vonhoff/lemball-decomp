@@ -187,7 +187,7 @@ bool CLaser::Process()
 		}
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
-			case ACTION_0x17:
+			case ACTION_RECOVERY:
 				if (m_target != 0) {
 					m_target->m_deathRequested = 1;
 					m_target = 0;
@@ -207,7 +207,7 @@ bool CLaser::Process()
 	}
 	if (m_active != 0) {
 		switch (m_action) {
-		case ACTION_0x17:
+		case ACTION_RECOVERY:
 			if (m_target != 0) {
 				m_target->SetSndEffect(SFX_ELECCY);
 				m_target->m_deathRequested = 1;
@@ -240,7 +240,7 @@ bool CLaser::Process()
 					m_target->m_deathRequested = 1;
 					m_target = 0;
 				}
-				Action(ACTION_0x17);
+				Action(ACTION_RECOVERY);
 			}
 		}
 	}

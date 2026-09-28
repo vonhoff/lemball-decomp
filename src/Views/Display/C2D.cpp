@@ -2458,7 +2458,7 @@ void C2D::DrawHand(CViewData& p_viewData)
 	}
 
 	switch (action) {
-	case ACTION_0x17:
+	case ACTION_RECOVERY:
 	case ACTION_0x18:
 		m_lemmingAnims->DrawAnim(drawX, drawY, g_anGroundStyleResourceIds[2], 0, 0, 0);
 		break;
@@ -2766,7 +2766,7 @@ void C2D::DrawLaser(CViewData& p_viewData)
 	}
 
 	switch (action) {
-	case ACTION_0x17:
+	case ACTION_RECOVERY:
 	case ACTION_0x18:
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, 0);
 		break;

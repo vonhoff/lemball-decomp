@@ -96,7 +96,7 @@ bool CHand::Process()
 	m_actionArgument = 0;
 	if (m_activated != 0) {
 		switch (m_action) {
-		case ACTION_0x17:
+		case ACTION_RECOVERY:
 			if (m_actionDeadline < g_dwGameTick) {
 				m_enabled = 1;
 				m_activated = 0;
@@ -117,7 +117,7 @@ bool CHand::Process()
 			if (m_actionDeadline < g_dwGameTick) {
 				m_enabled = 1;
 				m_actionDeadline = g_dwGameTick + 20;
-				Action(ACTION_0x17);
+				Action(ACTION_RECOVERY);
 			}
 			break;
 		default:
