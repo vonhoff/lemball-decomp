@@ -65,16 +65,18 @@ void CGraphicButton::Initialise()
 	}
 	animation->m_directUseCount++;
 	entries = m_animation->m_animationEntries;
-	m_graphicWidth = (unsigned short) entries->m_width;
-	m_graphicHeight = (unsigned short) entries->m_height;
+	unsigned short& graphicHeight = m_graphicHeight;
+	short firstWidth = entries->m_width;
 	CResZRLE* second = entries + 1;
+	m_graphicWidth = (unsigned short) firstWidth;
+	graphicHeight = (unsigned short) entries->m_height;
 	short width = second->m_width;
 	short height = second->m_height;
-	if ((short) m_graphicWidth < width) {
+	if (firstWidth < width) {
 		m_graphicWidth = (unsigned short) width;
 	}
 	if ((short) m_graphicHeight < height) {
-		m_graphicHeight = (unsigned short) height;
+		graphicHeight = (unsigned short) height;
 	}
 	m_animation->m_directUseCount = m_animation->m_directUseCount - 1;
 	const CVsPoint* position = &this->CHotAreaHandler::m_bounds;
@@ -97,11 +99,12 @@ void CGraphicButton::Initialise()
 	if ((int) CHotAreaHandler::m_bounds.m_width * (int) CHotAreaHandler::m_bounds.m_height != 0) {
 		CHotAreaHandler::SetActive(1);
 	}
+	short& offsetX = m_graphicOffsetX;
 	if ((m_alignmentFlags & 4) != 0) {
-		m_graphicOffsetX = (short) (((int) CHotAreaHandler::m_bounds.m_width - (int) (short) m_graphicWidth) / 2);
+		offsetX = (short) (((int) CHotAreaHandler::m_bounds.m_width - (int) (short) m_graphicWidth) / 2);
 	}
 	else if ((m_alignmentFlags & 0x10) != 0) {
-		m_graphicOffsetX = (short) (CHotAreaHandler::m_bounds.m_width - (short) m_graphicWidth);
+		offsetX = (short) (CHotAreaHandler::m_bounds.m_width - (short) m_graphicWidth);
 	}
 	if ((m_alignmentFlags & 8) != 0) {
 		m_graphicOffsetY = (short) (((int) CHotAreaHandler::m_bounds.m_height - (int) (short) m_graphicHeight) / 2);
