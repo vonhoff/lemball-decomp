@@ -126,18 +126,28 @@ bool CLaser::CheckHits()
 	for (int step = 0; step < 8; step++) {
 		x += stepX;
 		y += stepY;
+		int blockX;
 		CMap* map = g_pMap;
-		int blockX = x >> 4;
+		blockX = x >> 4;
 		int blockY = y >> 4;
 		unsigned short groundZ;
-		int width;
-		if (x < 0 || y < 0 || blockX >= (width = map->m_ground.m_width) || blockY >= map->m_ground.m_height) {
-			groundZ = 0;
+		if (x >= 0 && y >= 0) {
+			int cellYValue;
+			int widthValue = map->m_ground.m_width;
+			const int& width = widthValue;
+			if (blockX < width && map->m_ground.m_height > blockY) {
+				int cellX = x & 15;
+				cellYValue = y;
+				const int& cellY = cellYValue;
+				cellYValue &= 15;
+				groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(cellX, cellY);
+			}
+			else {
+				groundZ = 0;
+			}
 		}
 		else {
-			int cellX = x & 15;
-			int cellY = y & 15;
-			groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(cellX, cellY);
+			groundZ = 0;
 		}
 		if (groundZ > z) {
 			break;
