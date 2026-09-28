@@ -1925,12 +1925,17 @@ unsigned long C2D::LemmingFly(CViewData& p_viewData, int& p_frame)
 		return g_lemmingFlyResources[direction];
 	}
 
-	CMap* map = m_map;
-	int viewX = (unsigned short) p_viewData.m_gameX;
-	int viewY = (unsigned short) p_viewData.m_gameY;
-	int blockX = viewX >> 4;
-	int blockY = viewY >> 4;
-	int groundZ;
+	CMap* map;
+	int viewX;
+	int viewY;
+	int blockX;
+	int blockY;
+	viewY = (unsigned short) p_viewData.m_gameY;
+	map = m_map;
+	viewX = (unsigned short) p_viewData.m_gameX;
+	blockY = viewY >> 4;
+	blockX = viewX >> 4;
+	unsigned short groundZ;
 	if (viewX >= 0 && viewY >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
 		groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(viewX & 0xf, viewY & 0xf);
 	}
@@ -1938,15 +1943,14 @@ unsigned long C2D::LemmingFly(CViewData& p_viewData, int& p_frame)
 		groundZ = 0;
 	}
 
-	int frame = frameDelta * 15;
 	if (p_viewData.m_positionZ <= groundZ) {
-		p_frame = frame / 1000 + 7;
+		p_frame = frameDelta * 15 / 1000 + 7;
 		if (p_frame > 12) {
 			p_frame = 12;
 		}
 	}
 	else {
-		p_frame = frame / 1000;
+		p_frame = frameDelta * 15 / 1000;
 		if (p_frame > 6) {
 			p_frame = 6;
 		}
@@ -3032,9 +3036,9 @@ void C2D::DrawDoor(CViewData& p_viewData)
 {
 	int x;
 	int y;
-	int elapsed;
 	eAction action;
 	eObjectType objectType;
+	int elapsed;
 	unsigned long resourceId;
 	int playerIndex;
 	CBaseRemap* remap;
