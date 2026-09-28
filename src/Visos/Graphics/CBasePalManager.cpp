@@ -25,23 +25,28 @@ CBasePalManager::CBasePalManager(int p_capacity)
 // FUNCTION: LEMBALL 0x0046ad10
 CBasePalManager::~CBasePalManager()
 {
-	int i;
+	int i = 0;
+	CBasePalManager* manager = this;
+	int offset;
 	CBaseRemap* remap;
 
-	if (m_remaps != 0 && 0 < m_remapCount) {
-		i = 0;
+	if (manager->m_remaps != 0 && 0 < manager->m_remapCount) {
+		offset = 0;
 		do {
-			remap = m_remaps[i];
+			CBaseRemap** slot = (CBaseRemap**) ((char*) manager->m_remaps + offset);
+			remap = *slot;
 			if (remap != 0) {
 				remap->~CBaseRemap();
 				operator delete(remap);
 			}
-			m_remaps[i] = 0;
+			offset += sizeof(CBaseRemap*);
 			i = i + 1;
-		} while (i < m_remapCount);
+			CBaseRemap** previousSlot = (CBaseRemap**) ((char*) manager->m_remaps + offset - sizeof(CBaseRemap*));
+			*previousSlot = 0;
+		} while (i < manager->m_remapCount);
 	}
-	if (m_remaps != 0) {
-		operator delete(m_remaps);
+	if (manager->m_remaps != 0) {
+		operator delete(manager->m_remaps);
 	}
 }
 
