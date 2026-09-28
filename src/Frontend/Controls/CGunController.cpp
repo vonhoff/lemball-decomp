@@ -607,6 +607,7 @@ void CGunController::SetGun(int p_junction)
 void CGunController::SelectOption()
 {
 	int i;
+	int* targetX;
 	int* offsets;
 	unsigned int delta;
 
@@ -634,22 +635,23 @@ void CGunController::SelectOption()
 		m_cursorAnim->StartAnim(0xfa);
 		m_hitAnim->StartAnim(500);
 		m_leftShotAnim->StartAnim(500);
+		targetX = &m_projectileTargetX;
 		if (m_targetSide == 0) {
 			m_projectileX = offsets[6] + m_selectionStartX;
 			m_projectileY = offsets[7] + m_targetY;
-			m_projectileTargetX = offsets[8] + m_junctions[i].m_leftX;
+			*targetX = offsets[8] + m_junctions[i].m_leftX;
 			m_projectileEndX = offsets[10] + m_junctions[i].m_leftX;
 			m_projectileEndY = offsets[11] + m_junctions[i].m_y;
 		}
 		else {
 			m_projectileX = offsets[12] + m_selectionStartX;
 			m_projectileY = offsets[13] + m_targetY;
-			m_projectileTargetX = offsets[14] + m_junctions[i].m_rightX;
+			*targetX = offsets[14] + m_junctions[i].m_rightX;
 			m_projectileEndX = offsets[16] + m_junctions[i].m_rightX;
 			m_projectileEndY = offsets[17] + m_junctions[i].m_y;
 		}
 		m_selectStartTime = CurrentMilliTimer();
-		delta = m_projectileTargetX - m_projectileX;
+		delta = *targetX - m_projectileX;
 		delta = abs((int) delta);
 		m_selectEndTime = delta * 2 + m_selectStartTime;
 		m_selectionState = 2;
