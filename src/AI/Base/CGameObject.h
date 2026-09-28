@@ -30,7 +30,7 @@ public:
 	bool DestinationExists();
 	bool FacingDestination();
 	bool Fall();
-	bool Jump();
+	void Jump();
 	void ResetInstructions();
 	static short NextId();
 	static short NextLoadingId();

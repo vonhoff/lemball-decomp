@@ -952,33 +952,36 @@ void CGameObject::GetBoundingBox(CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00416130
-bool CGameObject::Jump()
+void CGameObject::Jump()
 {
-	bool result = false;
 	CMover* mover = 0;
-	unsigned int actionArgument = (unsigned short) m_actionArgument;
+	unsigned int actionArgumentValue = (unsigned short) m_actionArgument;
+	const unsigned int& actionArgument = actionArgumentValue;
 	if (actionArgument != 0) {
-		return (bool) actionArgument;
+		return;
 	}
 
 	int elapsed = g_dwGameTick - m_lastMovementTick;
-	unsigned int groundZ = g_pMap->GetZ(m_groundPosition.m_xFixed >> 12, m_groundPosition.m_yFixed >> 12, &mover);
-	m_position.m_zFixed = (elapsed * 3 + m_flightZ) << 12;
-	groundZ <<= 12;
+	unsigned int groundHeightValue =
+		g_pMap->GetZ(m_groundPosition.m_xFixed >> 12, m_groundPosition.m_yFixed >> 12, &mover);
+	const unsigned int& groundHeight = groundHeightValue;
+	int& positionZ = m_position.m_zFixed;
+	positionZ = (elapsed * 3 + m_flightZ) << 12;
+	unsigned int groundZ = groundHeight << 12;
 	if (m_position.m_zFixed >= (int) groundZ) {
 		AiCoord* position = &m_position;
-		m_position.m_xFixed = m_groundPosition.m_xFixed;
-		m_position.m_yFixed = m_groundPosition.m_yFixed;
-		position->m_zFixed = groundZ;
+		m_position = m_groundPosition;
+		m_position.m_zFixed = groundZ;
 		m_isJumping = 0;
 		if (m_onMover == 0 && mover != 0) {
-			if (mover->GetOn(this)) {
-				return true;
+			if (!mover->GetOn(this)) {
+				g_pAI->StepOn(*position, this, m_collisionFlags);
 			}
 		}
-		g_pAI->StepOn(*position, this, m_collisionFlags);
+		else {
+			g_pAI->StepOn(*position, this, m_collisionFlags);
+		}
 	}
-	return result;
 }
 
 // FUNCTION: LEMBALL 0x00416220
@@ -1235,32 +1238,6 @@ short CGameObject::NextLoadingId()
 	return 0;
 }
 
-// FUNCTION: LEMBALL 0x004166d0
-short CollectUnusedObjectIds(unsigned short* p_ids, int p_capacity)
-{
-	int count = 0;
-	unsigned short* output;
-	int i = 0;
-	do {
-		if (g_abObjectIdBitmap[i] != 0xff) {
-			int j = 0;
-			output = p_ids + count;
-			do {
-				if ((g_abObjectIdBitmap[i] & g_abBitMasks[j]) == 0) {
-					*output++ = j + i * 8;
-					count++;
-					if (count == p_capacity) {
-						return p_capacity;
-					}
-				}
-				j++;
-			} while (j < 8);
-		}
-		i++;
-	} while (i < 0x100);
-	return count;
-}
-
 // FUNCTION: LEMBALL 0x00416740
 void CGameObject::RegisterId()
 {
@@ -1288,9 +1265,9 @@ void CGameObject::RegisterId()
 // FUNCTION: LEMBALL 0x004167c0
 void CGameObject::UpdateCollision()
 {
+	int x;
 	int y;
 	int z;
-	int x;
 	x = (m_position.m_xFixed >> 12) - 8;
 	y = (m_position.m_yFixed >> 12) - 8;
 	z = m_position.m_zFixed >> 12;
