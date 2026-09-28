@@ -2946,10 +2946,10 @@ void C2D::DrawBall(CViewData& p_viewData)
 	y = p_viewData.m_positionY;
 
 	switch (p_viewData.m_action) {
-	case ACTION_0x25:
+	case BALL_ACTION_MOVING:
 		m_lemmingAnims->DrawAnim(x - ballOffset[0], y - ballOffset[1], RES_GAME_BALL, 0, p_viewData.m_animationTime, 0);
 		break;
-	case ACTION_0x26:
+	case BALL_ACTION_EXPLODING:
 		elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 		frame = elapsed / 64;
 		if (frame > 8) {
