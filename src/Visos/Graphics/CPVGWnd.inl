@@ -3,7 +3,6 @@
 
 inline CPVGWnd::CPVGWnd()
 {
-	m_refreshHeight = 0;
 }
 
 #endif

@@ -1,13 +1,13 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 #define LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 
+#include "../Foundation/CVsRect.h"
 #include "CBitmap.h"
 #include "CCopyToBackBuff.h"
 #include "CLine.h"
 #include "CWnd.h"
 class CGDI;
 class CPVWnd;
-class CVsRect;
 
 struct WinGDrawState;
 
@@ -70,10 +70,7 @@ private:
 	CLine m_clearRectangle[1];         // 0x58
 	CBitmap m_backBufferCopy[1];       // 0x68
 	CCopyToBackBuff m_zBufferClear[1]; // 0x78
-	unsigned short m_refreshWidth;     // 0x88
-	unsigned short m_refreshHeight;    // 0x8a
-	unsigned short m_refreshX;         // 0x8c
-	unsigned short m_refreshY;         // 0x8e
+	CVsRect m_refreshRect;             // 0x88
 };
 
 #endif
