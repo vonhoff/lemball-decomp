@@ -6,7 +6,8 @@
 CHeaders::CHeaders(int p_headerCount)
 {
 	m_count = p_headerCount;
-	m_headers = new CHeaderMessage[p_headerCount];
+	CHeaderMessage* headers = new CHeaderMessage[p_headerCount];
+	m_headers = headers;
 	m_sequences = new unsigned short[m_count];
 	for (int index = 0; index < m_count; index++) {
 		m_sequences[index] = 0;
