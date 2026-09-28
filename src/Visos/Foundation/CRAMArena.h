@@ -8,20 +8,20 @@
 // VTABLE: LEMBALL 0x00498910 CCritical
 class CRAMArena : public CArena {
 public:
-	CRAMArena(unsigned long p_arg0, char* p_arg1, CArena* p_arg2, CArena* p_arg3);
+	CRAMArena(unsigned long arenaSize, char* description, CArena* parentArena, CArena* arenaLink);
 	virtual ~CRAMArena();
 	virtual int GetSizeOf();
 	virtual int GetSizeOfBlock();
-	virtual CArena* CreateNew(unsigned char* p_arg0,
-							  unsigned long p_arg1,
-							  char* p_arg2,
-							  CArena* p_arg3,
-							  CArena* p_arg4);
-	virtual CMBlock* CreateNewBlock(unsigned char* p_arg0,
-									CArena* p_arg1,
-									CMBlock* p_arg2,
-									char* p_arg3,
-									unsigned long p_arg4);
+	virtual CArena* CreateNew(unsigned char* memory,
+							  unsigned long arenaSize,
+							  char* description,
+							  CArena* parentArena,
+							  CArena* arenaLink);
+	virtual CMBlock* CreateNewBlock(unsigned char* memory,
+									CArena* arena,
+									CMBlock* previousBlock,
+									char* description,
+									unsigned long totalSize);
 	void operator delete(void*) {}
 };
 

@@ -11,10 +11,11 @@
 #pragma intrinsic(memcpy)
 
 // FUNCTION: LEMBALL 0x004599f0
-CArena::CArena(unsigned long p_arg0, char* p_arg1, class CArena* p_arg2, class CArena* p_arg3) : CCritical()
+CArena::CArena(unsigned long arenaSize, char* description, class CArena* parentArena, class CArena* arenaLink)
+	: CCritical()
 {
-	m_parentArena = p_arg2;
-	m_arenaLinkB = p_arg3;
+	m_parentArena = parentArena;
+	m_arenaLinkB = arenaLink;
 	m_firstBlock = 0;
 	m_lastBlock = 0;
 	m_lastFreeBlock = 0;
@@ -337,9 +338,9 @@ unsigned long CArena::GetAllocSize()
 }
 
 // FUNCTION: LEMBALL 0x0045a390
-void* CArena::operator new(size_t p_size, void* p_memory)
+void* CArena::operator new(size_t allocationSize, void* memory)
 {
-	return p_memory;
+	return memory;
 }
 
 // FUNCTION: LEMBALL 0x0045a3a0

@@ -14,7 +14,7 @@ void INIT_SubSystems();
 // VTABLE: LEMBALL 0x004988d8 CCritical
 class CArena : public CArenaBase, public CCritical {
 public:
-	CArena(unsigned long p_arg0, char* p_arg1, CArena* p_arg2, CArena* p_arg3);
+	CArena(unsigned long arenaSize, char* description, CArena* parentArena, CArena* arenaLink);
 	CMBlock* FindSmallestBlock(unsigned long p_size, char* p_description);
 	bool AddToArenaList(CArena* p_arena);
 	bool AddToBlockList(CMBlock* p_block, CMBlock* p_previous);
@@ -39,18 +39,18 @@ public:
 	virtual void MemCopy(unsigned char* p_destination, unsigned char* p_source, unsigned long p_size); // vtable+0x14
 	virtual int GetSizeOf() = 0;                                                                       // vtable+0x18
 	virtual int GetSizeOfBlock() = 0;                                                                  // vtable+0x1c
-	virtual CArena* CreateNew(unsigned char* p_arg0,
-							  unsigned long p_arg1,
-							  char* p_arg2,
-							  CArena* p_arg3,
-							  CArena* p_arg4) = 0; // vtable+0x20
-	virtual CMBlock* CreateNewBlock(unsigned char* p_arg0,
-									CArena* p_arg1,
-									CMBlock* p_arg2,
-									char* p_arg3,
-									unsigned long p_arg4) = 0; // vtable+0x24
+	virtual CArena* CreateNew(unsigned char* memory,
+							  unsigned long arenaSize,
+							  char* description,
+							  CArena* parentArena,
+							  CArena* arenaLink) = 0; // vtable+0x20
+	virtual CMBlock* CreateNewBlock(unsigned char* memory,
+									CArena* arena,
+									CMBlock* previousBlock,
+									char* description,
+									unsigned long totalSize) = 0; // vtable+0x24
 	void DeleteLists();
-	void* operator new(size_t p_arg0, void* p_arg1);
+	void* operator new(size_t allocationSize, void* memory);
 	void operator delete(void*) {}
 	CArena();
 

@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 
-void* InternalNew(unsigned long p_arg0);
-void InternalDelete(void* p_arg0);
-void* operator new(size_t p_arg0);
-void operator delete(void* p_arg0);
-bool CheckValidPointer(void* p_arg0);
+void* InternalNew(unsigned long allocationSize);
+void InternalDelete(void* memory);
+void* operator new(size_t allocationSize);
+void operator delete(void* memory);
+bool CheckValidPointer(void* pointer);
 #endif

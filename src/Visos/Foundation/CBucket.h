@@ -14,7 +14,7 @@ struct Boffset {
 class CBucket : public CCritical {
 public:
 	Boffset FindFreeOffset(Boffset p_offset);
-	CBucket(int p_arg0, int p_arg1, unsigned char* p_arg2, unsigned long* p_arg3);
+	CBucket(int blockSize, int blockCount, unsigned char* memory, unsigned long* map);
 	bool Allocate(unsigned char** p_result);
 	bool CheckValidPointer(unsigned char* p_memory);
 	bool Free(unsigned char* p_memory);
