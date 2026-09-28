@@ -394,23 +394,32 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 	m_startY[0] = y;
 	m_startZ[0] = *data++;
 	CMap* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	int blockY;
+	int blockX;
+	blockX = x >> 4;
+	blockY = y >> 4;
 	unsigned short z;
-	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && map->m_ground.m_height > blockY) {
-		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x & 0xf, y & 0xf);
+	if (x >= 0 && y >= 0) {
+		int width = map->m_ground.m_width;
+		if (blockX < width && map->m_ground.m_height > blockY) {
+			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x & 0xf, y & 0xf);
+		}
+		else {
+			z = 0;
+		}
 	}
 	else {
 		z = 0;
 	}
 	m_startZ[0] = z;
+	int remaining;
 	int* start = &m_startX[1];
-	int remaining = 3;
+	remaining = 3;
 	do {
-		int* current = start++;
-		current[0] = m_startX[0];
-		current[4] = m_startY[0];
-		current[8] = m_startZ[0];
+		int current = m_startX[0];
+		*start++ = current;
+		start[3] = m_startY[0];
+		start[7] = m_startZ[0];
 	} while (--remaining != 0);
 	CPlayerLemming** reuse = 0;
 	int count = g_pGenericGroupAI->m_lemmingCount;
