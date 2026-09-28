@@ -9,7 +9,7 @@
 // SIZE 0x4c
 class CViewData {
 public:
-	void SetViewActionTuple(eAction p_action, unsigned int p_argument, unsigned int p_stateTimer);
+	void SetViewActionTuple(eAction p_action, unsigned int actionArgument, unsigned int p_stateTimer);
 
 	// FUNCTION: LEMBALL 0x00439340
 	CViewData()
