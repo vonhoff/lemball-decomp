@@ -422,11 +422,10 @@ void CMogRes::CleanUpResources()
 // FUNCTION: LEMBALL 0x0045ceb0
 void CMogRes::Remove(CResBase* p_resource)
 {
-	unsigned int count = m_resourceCount;
-	unsigned int scanned = 0;
-	unsigned int i = 0;
+	int scanned = 0;
+	int i = 0;
 
-	if (count > scanned) {
+	if ((int) m_resourceCount > scanned) {
 		do {
 			if (m_resources[i] == 0) {
 				do {
@@ -439,9 +438,9 @@ void CMogRes::Remove(CResBase* p_resource)
 			}
 			scanned++;
 			i++;
-		} while (scanned < count);
+		} while (scanned < (int) m_resourceCount);
 	}
-	unsigned int total = m_resourceCount;
+	int total = m_resourceCount;
 	if (scanned != total) {
 		total--;
 		m_resourceCount = total;
