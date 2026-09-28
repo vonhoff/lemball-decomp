@@ -50,7 +50,7 @@ public:
 									char* description,
 									unsigned long totalSize) = 0; // vtable+0x24
 	void DeleteLists();
-	void* operator new(size_t allocationSize, void* memory);
+	void* operator new(size_t p_size, void* p_memory);
 	void operator delete(void*) {}
 	CArena();
 

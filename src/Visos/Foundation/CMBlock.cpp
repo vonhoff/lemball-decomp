@@ -38,12 +38,12 @@ CVSOStream& CMBlock::StreamOut(CVSOStream& p_stream)
 }
 
 // FUNCTION: LEMBALL 0x0045a610
-void CMBlock::SetDesc(char* description)
+void CMBlock::SetDesc(char* p_description)
 {
 }
 
 // FUNCTION: LEMBALL 0x0045a630
-void* CMBlock::operator new(size_t allocationSize, void* memory)
+void* CMBlock::operator new(size_t p_size, void* p_memory)
 {
-	return memory;
+	return p_memory;
 }

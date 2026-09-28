@@ -9,7 +9,7 @@ class CSlinky : public CGameObject {
 public:
 	CSlinky();
 	bool GoodEndPt(const AiCoord& p_coordinate);
-	bool ContainsIntegerPoint(const int* point);
+	bool ContainsIntegerPoint(const int* p_xy);
 	virtual bool Move();    // vtable+0x44
 	virtual bool Process(); // vtable+0x14
 	void Set(int p_minX, int p_maxX, int p_minY, int p_maxY);

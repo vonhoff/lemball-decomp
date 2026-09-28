@@ -12,9 +12,9 @@ public:
 	CMBlock(class CArena* p_arena, class CMBlock* p_previous, char* p_description, unsigned long p_size);
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	virtual ~CMBlock();                                  // vtable+0x04
-	void SetDesc(char* description);
+	void SetDesc(char* p_description);
 	bool ContainsAddress(void* p_address);
-	void* operator new(size_t allocationSize, void* memory);
+	void* operator new(size_t p_size, void* p_memory);
 	void operator delete(void*) {}
 	CMBlock();
 

@@ -62,9 +62,9 @@ void CSlinky::GetBounds(int* p_minX, int* p_maxX, int* p_minY, int* p_maxY)
 }
 
 // FUNCTION: LEMBALL 0x0040b5f0
-bool CSlinky::ContainsIntegerPoint(const int* point)
+bool CSlinky::ContainsIntegerPoint(const int* p_xy)
 {
-	return m_minX <= point[0] && m_minY <= point[1] && point[0] <= m_maxX && point[1] <= m_maxY;
+	return m_minX <= p_xy[0] && m_minY <= p_xy[1] && p_xy[0] <= m_maxX && p_xy[1] <= m_maxY;
 }
 
 // FUNCTION: LEMBALL 0x0040b630

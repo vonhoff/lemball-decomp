@@ -338,9 +338,9 @@ unsigned long CArena::GetAllocSize()
 }
 
 // FUNCTION: LEMBALL 0x0045a390
-void* CArena::operator new(size_t allocationSize, void* memory)
+void* CArena::operator new(size_t p_size, void* p_memory)
 {
-	return memory;
+	return p_memory;
 }
 
 // FUNCTION: LEMBALL 0x0045a3a0

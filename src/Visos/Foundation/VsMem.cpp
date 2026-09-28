@@ -6,31 +6,31 @@
 #include "VsDebug.h"
 
 // FUNCTION: LEMBALL 0x0045a6b0
-void* InternalNew(unsigned long allocationSize)
+void* InternalNew(unsigned long p_size)
 {
 	unsigned char* result;
 	if (g_nSmallMemoryEnabled != 0) {
-		if (g_maxSmallMemorySize > allocationSize) {
-			result = g_pSmallMemory->Allocate(allocationSize, g_pCurrentAllocDescription);
+		if (g_maxSmallMemorySize > p_size) {
+			result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
 			if (result != 0) {
 				g_pCurrentAllocDescription = "new";
 				return result;
 			}
 		}
 	}
-	if (!g_pMasterArena->Allocate(&result, allocationSize, g_pCurrentAllocDescription)) {
+	if (!g_pMasterArena->Allocate(&result, p_size, g_pCurrentAllocDescription)) {
 		_VSRELassert("EnoughMemory", "VSMEM.CPP", 1677);
 	}
 	return result;
 }
 
 // FUNCTION: LEMBALL 0x0045a730
-void InternalDelete(void* memory)
+void InternalDelete(void* p_ptr)
 {
-	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory->Free((unsigned char*) memory)) {
+	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory->Free((unsigned char*) p_ptr)) {
 		return;
 	}
-	if (g_pMasterArena->Free((unsigned char*) memory)) {
+	if (g_pMasterArena->Free((unsigned char*) p_ptr)) {
 		return;
 	}
 	_VSRELassert("EnoughMemory", "VSMEM.CPP", 1738);
