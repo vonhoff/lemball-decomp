@@ -79,8 +79,10 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 		clipped.m_height = 0;
 		clipped.m_width = 0;
 	}
-	int rows = clipped.m_height;
-	int width = clipped.m_width;
+	int width;
+	int rows;
+	rows = clipped.m_height;
+	width = clipped.m_width;
 	if (rows * width == 0) {
 		return 1;
 	}
@@ -92,7 +94,10 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 	int row = p_position->m_y;
 	unsigned char* destination = m_frameBuffer + p_rect->m_y * stride;
 	int i = 0;
-	while (i < rows) {
+	for (;;) {
+		if (i >= rows) {
+			break;
+		}
 		unsigned char* source = (unsigned char*) m_currentBitmap->m_lines[row];
 		int plane = 0;
 		do {
