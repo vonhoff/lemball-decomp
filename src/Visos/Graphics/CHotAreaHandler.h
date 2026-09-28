@@ -12,7 +12,7 @@ class CHotAreaList;
 class CHotAreaHandler {
 public:
 	CHotAreaHandler();
-	CHotAreaHandler(const CVsRect& bounds);
+	CHotAreaHandler(const CVsRect& p_bounds);
 	void ProcessArea(Message* p_message, const CVsPoint& p_point, class CHotAreaHandler* p_currentHandler);
 	virtual ~CHotAreaHandler() {}                                          // vtable+0x00
 	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);       // vtable+0x04

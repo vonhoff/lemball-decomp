@@ -5,11 +5,11 @@
 #include "Visos/Foundation/CMBlock.h"
 
 // FUNCTION: LEMBALL 0x0045a3f0
-CRAMArena::CRAMArena(unsigned long arenaSize, char* description, CArena* parentArena, CArena* arenaLink)
-	: CArena(arenaSize, description, parentArena, arenaLink)
+CRAMArena::CRAMArena(unsigned long p_arenaSize, char* p_description, CArena* p_parentArena, CArena* p_arenaLink)
+	: CArena(p_arenaSize, p_description, p_parentArena, p_arenaLink)
 {
 	m_signature = 0x5241524e;
-	m_arenaSize = arenaSize - GetSizeOf();
+	m_arenaSize = p_arenaSize - GetSizeOf();
 	m_freeSize = m_arenaSize - GetSizeOfBlock();
 	m_arenaBase = (unsigned char*) this + GetSizeOf();
 	CMBlock* block = CreateNewBlock(m_arenaBase, this, 0, "Free", m_arenaSize);
@@ -37,21 +37,21 @@ int CRAMArena::GetSizeOfBlock()
 }
 
 // FUNCTION: LEMBALL 0x0045a4c0
-CArena* CRAMArena::CreateNew(unsigned char* memory,
-							 unsigned long arenaSize,
-							 char* description,
-							 CArena* parentArena,
-							 CArena* arenaLink)
+CArena* CRAMArena::CreateNew(unsigned char* p_memory,
+							 unsigned long p_arenaSize,
+							 char* p_description,
+							 CArena* p_parentArena,
+							 CArena* p_arenaLink)
 {
-	return new (memory) CRAMArena(arenaSize, description, parentArena, arenaLink);
+	return new (p_memory) CRAMArena(p_arenaSize, p_description, p_parentArena, p_arenaLink);
 }
 
 // FUNCTION: LEMBALL 0x0045a500
-CMBlock* CRAMArena::CreateNewBlock(unsigned char* memory,
-								   CArena* arena,
-								   CMBlock* previousBlock,
-								   char* description,
-								   unsigned long totalSize)
+CMBlock* CRAMArena::CreateNewBlock(unsigned char* p_memory,
+								   CArena* p_arena,
+								   CMBlock* p_previousBlock,
+								   char* p_description,
+								   unsigned long p_totalSize)
 {
-	return new (memory) CMRAMBlock(arena, previousBlock, description, totalSize);
+	return new (p_memory) CMRAMBlock(p_arena, p_previousBlock, p_description, p_totalSize);
 }

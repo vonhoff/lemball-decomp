@@ -12,10 +12,10 @@
 class CBroadcastMessage : public CNetworkMessage {
 public:
 	inline CBroadcastMessage() {}
-	inline CBroadcastMessage(const char* header)
+	inline CBroadcastMessage(const char* p_header)
 	{
-		m_header = header;
-		m_payloadCapacity += strlen(header) + 1;
+		m_header = p_header;
+		m_payloadCapacity += strlen(p_header) + 1;
 	}
 	virtual bool GetHeader(); // vtable+0x04
 	virtual void AddHeader(); // vtable+0x0c

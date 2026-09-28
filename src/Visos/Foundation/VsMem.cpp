@@ -37,23 +37,23 @@ void InternalDelete(void* p_ptr)
 }
 
 // FUNCTION: LEMBALL 0x0045a780
-void* operator new(size_t allocationSize)
+void* operator new(size_t p_allocationSize)
 {
-	return InternalNew(allocationSize);
+	return InternalNew(p_allocationSize);
 }
 
 // FUNCTION: LEMBALL 0x0045a790
-void operator delete(void* memory)
+void operator delete(void* p_memory)
 {
-	InternalDelete(memory);
+	InternalDelete(p_memory);
 }
 
 // FUNCTION: LEMBALL 0x0045a800
-bool CheckValidPointer(void* pointer)
+bool CheckValidPointer(void* p_pointer)
 {
 	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory != 0) {
 		int i = 0;
-		register unsigned char* ptr = (unsigned char*) pointer;
+		register unsigned char* ptr = (unsigned char*) p_pointer;
 		register CBucket** buckets = (CBucket**) g_pSmallMemory;
 		do {
 			if (*buckets != 0 && (*buckets)->CheckValidPointer(ptr)) {
@@ -63,5 +63,5 @@ bool CheckValidPointer(void* pointer)
 			i++;
 		} while (i < 7);
 	}
-	return g_pMasterArena->CheckValidPointer(pointer) != 0;
+	return g_pMasterArena->CheckValidPointer(p_pointer) != 0;
 }

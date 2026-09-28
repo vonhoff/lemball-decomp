@@ -75,12 +75,12 @@ bool CHotAreaHandler::InArea(const CVsPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x0046a290
-CHotAreaHandler::CHotAreaHandler(const CVsRect& bounds)
+CHotAreaHandler::CHotAreaHandler(const CVsRect& p_bounds)
 {
 	Initialise();
-	m_bounds.m_width = bounds.m_width;
-	m_bounds.m_height = bounds.m_height;
-	const CVsRect* rect = &bounds;
+	m_bounds.m_width = p_bounds.m_width;
+	m_bounds.m_height = p_bounds.m_height;
+	const CVsRect* rect = &p_bounds;
 	const short* position;
 	if (rect != 0) {
 		position = &rect->m_x;

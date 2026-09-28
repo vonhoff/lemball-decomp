@@ -4,7 +4,7 @@
 #include "Visos/Messaging/CMessReqConnect.h"
 
 // FUNCTION: LEMBALL 0x0045f490
-CMessReqNewPort::CMessReqNewPort(const char* header) : CMessReqConnect(header)
+CMessReqNewPort::CMessReqNewPort(const char* p_header) : CMessReqConnect(p_header)
 {
 	m_payloadCapacity += sizeof(BasePacketHeader);
 }

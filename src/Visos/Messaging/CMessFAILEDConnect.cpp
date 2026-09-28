@@ -7,7 +7,7 @@
 #pragma intrinsic(strlen)
 
 // FUNCTION: LEMBALL 0x0045f610
-CMessFAILEDConnect::CMessFAILEDConnect(const char* header) : CBroadcastMessage(header)
+CMessFAILEDConnect::CMessFAILEDConnect(const char* p_header) : CBroadcastMessage(p_header)
 {
 	m_payloadCapacity += 0x101;
 }

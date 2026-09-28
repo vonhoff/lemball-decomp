@@ -11,11 +11,11 @@
 #pragma intrinsic(memcpy)
 
 // FUNCTION: LEMBALL 0x004599f0
-CArena::CArena(unsigned long arenaSize, char* description, class CArena* parentArena, class CArena* arenaLink)
+CArena::CArena(unsigned long p_arenaSize, char* p_description, class CArena* p_parentArena, class CArena* p_arenaLink)
 	: CCritical()
 {
-	m_parentArena = parentArena;
-	m_arenaLinkB = arenaLink;
+	m_parentArena = p_parentArena;
+	m_arenaLinkB = p_arenaLink;
 	m_firstBlock = 0;
 	m_lastBlock = 0;
 	m_lastFreeBlock = 0;

@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498ed0
 class CMessReqNewPort : public CMessReqConnect {
 public:
-	CMessReqNewPort(const char* header);
+	CMessReqNewPort(const char* p_header);
 	void AddData();
 	void GetData();
 

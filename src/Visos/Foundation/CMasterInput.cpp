@@ -3,11 +3,11 @@
 #include "../Target/Input/CMasterInputItem.h"
 
 // FUNCTION: LEMBALL 0x00472070
-CMasterInput::CMasterInput(CBaseQueue* queue)
+CMasterInput::CMasterInput(CBaseQueue* p_queue)
 {
 	m_itemCount = 0;
 	m_firstItem = 0;
-	m_queue = queue;
+	m_queue = p_queue;
 	m_state = 0;
 }
 
@@ -90,9 +90,9 @@ bool CMasterInput::IsEmpty()
 }
 
 // FUNCTION: LEMBALL 0x00472210
-CVSOStream& CMasterInput::StreamOut(CVSOStream& stream)
+CVSOStream& CMasterInput::StreamOut(CVSOStream& p_stream)
 {
-	return stream;
+	return p_stream;
 }
 
 // GLOBAL: LEMBALL 0x004a279c

@@ -15,8 +15,8 @@ class CVsRect;
 // VTABLE: LEMBALL 0x00499638 CHotAreaHandler
 class CPVButton : public CGWnd, public CHotAreaHandler {
 public:
-	CPVButton(CPVGWnd* ownerWindow);
-	CPVButton(const CVsRect& bounds, CPVGWnd* ownerWindow);
+	CPVButton(CPVGWnd* p_ownerWindow);
+	CPVButton(const CVsRect& p_bounds, CPVGWnd* p_ownerWindow);
 	int ConvertDoubleClick(int p_flags);
 	virtual unsigned int GetStyle();                                       // vtable+0x64
 	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8
