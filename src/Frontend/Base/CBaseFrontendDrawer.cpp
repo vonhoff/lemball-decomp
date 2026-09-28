@@ -317,8 +317,9 @@ void CBaseFrontendDrawer::_DrawBackGround()
 		tiles.m_height = m_height;
 		CVsSize& count = tiles;
 		CVsPoint& start = tiles;
-		tiles.m_height = (short) (tiles.m_height + tileSize.m_height - 1) / tileSize.m_height;
+		short height = (short) (tiles.m_height + tileSize.m_height - 1) / tileSize.m_height;
 		tiles.m_width = (short) (tiles.m_width + tileSize.m_width - 1) / tileSize.m_width;
+		tiles.m_height = height;
 		tiles.m_y /= tileSize.m_height;
 		tiles.m_x /= tileSize.m_width;
 		tiles.m_height -= tiles.m_y;
