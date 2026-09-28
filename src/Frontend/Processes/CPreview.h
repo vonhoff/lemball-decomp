@@ -9,7 +9,7 @@ class CGame;
 // VTABLE: LEMBALL 0x00497c70 CBaseProcess
 class CPreview : public CBaseFrontendProcess {
 public:
-	CPreview(CGame* p_arg0);
+	CPreview(CGame* p_game);
 };
 
 // SYNTHETIC: LEMBALL 0x0044a9d0

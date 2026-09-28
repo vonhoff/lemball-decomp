@@ -9,7 +9,7 @@ class CGame;
 // VTABLE: LEMBALL 0x004983d8 CBaseProcess
 class CSuccFail : public CBaseFrontendProcess {
 public:
-	CSuccFail(CGame* p_arg0, unsigned int p_arg1);
+	CSuccFail(CGame* p_game, unsigned int p_success);
 
 private:
 	unsigned int m_variant; // 0x28
