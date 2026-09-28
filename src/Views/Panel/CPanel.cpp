@@ -123,8 +123,12 @@ void CPanel::OnSize()
 	short calculatedPositionStorage[2];
 	short positionStorage[2];
 	CVsPoint* calculated = GetPausePos((CVsPoint*) calculatedPositionStorage);
-	positionStorage[0] = m_panelPosition.m_x = calculated->m_x;
-	positionStorage[1] = m_panelPosition.m_y = calculated->m_y;
+	short x = calculated->m_x;
+	m_panelPosition.m_x = x;
+	short y = calculated->m_y;
+	m_panelPosition.m_y = y;
+	positionStorage[0] = x;
+	positionStorage[1] = y;
 	m_pauseButton->Move(*(CVsPoint*) positionStorage);
 	positionStorage[0] += m_pauseSize.m_x;
 	CPanelLemming** lemming = m_lemmings;
