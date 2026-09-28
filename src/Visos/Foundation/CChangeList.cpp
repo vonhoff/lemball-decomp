@@ -190,8 +190,8 @@ unsigned int CChangeList::GetArea()
 // FUNCTION: LEMBALL 0x00466d40
 bool CChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark)
 {
-	int scanY;
 	int mapWidth;
+	int scanY;
 	int scanX;
 	unsigned char* row;
 	int startX;
@@ -243,9 +243,10 @@ found:
 	row = row + (int) m_mapSize.m_width;
 	if (scanY + 1 < (int) m_mapSize.m_height) {
 		while (scanY + heightCells < (int) m_mapSize.m_height) {
+			mapWidth = (int) m_mapSize.m_width;
 			probeX = startX;
-			if (probeX < (int) m_mapSize.m_width) {
-				while (probeX < (int) m_mapSize.m_width && row[probeX] == p_findMark) {
+			if (probeX < mapWidth) {
+				while (probeX < mapWidth && row[probeX] == p_findMark) {
 					probeX = probeX + 1;
 				}
 			}
