@@ -128,16 +128,21 @@ CGunController::CGunController(CGWnd* p_arg0, CGDI* p_arg1, int p_arg2, unsigned
 void CGunController::ActivateButtons(int p_active)
 {
 	int i;
+	int initialCount;
+	initialCount = m_buttonCount;
 
 	m_buttonsActive = p_active;
 	i = 0;
-	while (i < m_buttonCount) {
-		CGunButtons* button = m_buttons[i];
-		if (button != 0) {
-			button->m_active = p_active;
-			button->m_graphicButton->SetActive(p_active);
-		}
-		i = i + 1;
+	if (initialCount > i) {
+		do {
+			CGunButtons* button = m_buttons[i];
+			if (button != 0) {
+				button->m_active = p_active;
+				button->m_graphicButton->SetActive(p_active);
+			}
+			i = i + 1;
+			initialCount = m_buttonCount;
+		} while (initialCount > i);
 	}
 }
 
