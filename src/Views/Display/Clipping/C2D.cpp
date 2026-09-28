@@ -254,28 +254,34 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 					}
 				}
 			}
-			int gameX = (unsigned short) p_viewData.m_gameX;
-			int gameY = (unsigned short) p_viewData.m_gameY;
-			CMap* map = m_map;
-			int blockX = gameX >> 4;
-			int blockY = gameY >> 4;
-			unsigned short groundHeight;
-			if (gameX < 0 || gameY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
-				groundHeight = 0;
+			{
+				int gameX = (unsigned short) p_viewData.m_gameX;
+				int gameY = (unsigned short) p_viewData.m_gameY;
+				CMap* map = m_map;
+				int blockX = gameX >> 4;
+				int blockY = gameY >> 4;
+				unsigned short groundHeight;
+				if (gameX < 0 || gameY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+					groundHeight = 0;
+				}
+				else {
+					int localX = gameX & 15;
+					int localY = gameY & 15;
+					groundHeight = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(localX, localY);
+				}
+				gameX = (gameX << 12) >> 12;
+				gameY = (gameY << 12) >> 12;
+				m_map->GameToScreen(gameX, gameY);
+				int heightFixed = (unsigned int) groundHeight << 12;
+				const int& projectedY = gameY - (heightFixed >> 12);
+				int left = ((gameX - m_viewOriginX) << 12) >> 12;
+				int top = ((projectedY - m_viewOriginY) << 12) >> 12;
+				bounds.m_x = (short) left - 10;
+				bounds.m_y = (short) top - 5;
+				bounds.m_width = 20;
+				bounds.m_height = 10;
+				m_clipSearchHeight = 160;
 			}
-			else {
-				int localX = gameX & 15;
-				int localY = gameY & 15;
-				groundHeight = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(localX, localY);
-			}
-			gameX = (gameX << 12) >> 12;
-			gameY = (gameY << 12) >> 12;
-			m_map->GameToScreen(gameX, gameY);
-			bounds.m_x = (short) (((gameX - m_viewOriginX) << 12) >> 12) - 10;
-			bounds.m_y = (short) (((gameY - ((groundHeight << 12) >> 12) - m_viewOriginY) << 12) >> 12) - 5;
-			bounds.m_width = 20;
-			bounds.m_height = 10;
-			m_clipSearchHeight = 160;
 			break;
 		}
 		case OBJECT_BULLET:
