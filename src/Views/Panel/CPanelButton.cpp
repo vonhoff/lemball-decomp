@@ -119,7 +119,6 @@ void CPanelButton::DrawButton()
 	CVsRect inventoryRect(7, 4, 6, 4);
 	CVsSize& inventorySize = inventoryRect;
 	CVsPoint& inventoryPosition = inventoryRect;
-	unsigned int packedSize;
 	ammoSize.m_width = (short) (ammo * ammoSize.m_width / 50);
 	if (m_enabled != 0 && m_unavailable == 0) {
 		colour = 0x76;
@@ -136,8 +135,7 @@ void CPanelButton::DrawButton()
 		mappedColour = playerRemap->m_remap[colour];
 	}
 	else {
-		memcpy(&packedSize, &ammoSize, sizeof(packedSize));
-		mappedColour = packedSize;
+		mappedColour = *(const unsigned int*) &ammoSize;
 	}
 	static_cast<CVsSize&>(m_statusLine[0].m_bounds) = ammoSize;
 	m_statusLine[0].m_bounds.CVsPoint::operator=(ammoPosition);
