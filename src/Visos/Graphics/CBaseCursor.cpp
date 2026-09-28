@@ -317,7 +317,6 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 // FUNCTION: LEMBALL 0x0046b5c0
 void CBaseCursor::Draw(CGWnd* p_window)
 {
-	short innerWidth;
 	short innerHeight;
 	CVsPoint* innerXY;
 	short clipX;
@@ -351,33 +350,36 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	short& height = bounds.m_height;
 	short& x = bounds.m_x;
 	short& y = bounds.m_y;
-	innerWidth = p_window->m_innerRect.m_width;
-	innerHeight = p_window->m_innerRect.m_height;
-	innerXY = &p_window->m_innerRect;
-	clipX = innerXY->m_x;
-	clipY = innerXY->m_y;
-	if ((int) innerHeight * (int) innerWidth != 0) {
-		clipX = (short) (clipX + x);
-		clipY = (short) (clipY + y);
-		if (x < clipX) {
-			width = (short) (width + (x - clipX));
-			x = clipX;
-		}
-		if ((short) (innerWidth + clipX) < (short) (x + width)) {
-			width = (short) ((clipX - x) + innerWidth);
-		}
-		if (y < clipY) {
-			height = (short) (height + (y - clipY));
-			y = clipY;
-		}
-		if ((short) (clipY + innerHeight) < (short) (height + y)) {
-			height = (short) ((innerHeight - y) + clipY);
-		}
-		if (width <= 0 || height <= 0) {
-			height = 0;
-			width = 0;
-			y = 0;
-			x = 0;
+	{
+		CVsSize innerSize(p_window->m_innerRect);
+		short& innerWidth = innerSize.m_width;
+		innerHeight = innerSize.m_height;
+		innerXY = &p_window->m_innerRect;
+		clipX = innerXY->m_x;
+		clipY = innerXY->m_y;
+		if ((int) innerHeight * (int) innerWidth != 0) {
+			clipX = (short) (clipX + x);
+			clipY = (short) (clipY + y);
+			if (x < clipX) {
+				width = (short) (width + (x - clipX));
+				x = clipX;
+			}
+			if ((short) (innerWidth + clipX) < (short) (x + width)) {
+				width = (short) ((clipX - x) + innerWidth);
+			}
+			if (y < clipY) {
+				height = (short) (height + (y - clipY));
+				y = clipY;
+			}
+			if ((short) (clipY + innerHeight) < (short) (height + y)) {
+				height = (short) ((innerHeight - y) + clipY);
+			}
+			if (width <= 0 || height <= 0) {
+				height = 0;
+				width = 0;
+				y = 0;
+				x = 0;
+			}
 		}
 	}
 	if (InWindow(p_window) == 0) {
@@ -391,18 +393,21 @@ void CBaseCursor::Draw(CGWnd* p_window)
 		return;
 	}
 	zoom = (int) p_window->m_zoom;
-	CVsPoint destination;
-	destination.m_x = (short) ((int) (short) (m_position.m_x - x) / zoom) - m_hotspot.m_x;
-	gdi = p_window->m_gdi;
-	destination.m_y = (short) ((int) (short) (m_position.m_y - y) / zoom) - m_hotspot.m_y;
-	surface = gdi->m_renderTarget;
-	surface->GetChangeList();
-	surface->GetCurrDB();
-	CZRLE* state = m_renderState;
-	state->m_x = destination.m_x;
-	state->m_y = destination.m_y;
-	surface->GetCurrDB();
-	m_renderState->Draw(gdi);
+	{
+		CVsPoint destinationValue;
+		CVsPoint& destination = destinationValue;
+		destination.m_x = (short) ((int) (short) (m_position.m_x - x) / zoom) - m_hotspot.m_x;
+		gdi = p_window->m_gdi;
+		destination.m_y = (short) ((int) (short) (m_position.m_y - y) / zoom) - m_hotspot.m_y;
+		surface = gdi->m_renderTarget;
+		surface->GetChangeList();
+		surface->GetCurrDB();
+		CZRLE* state = m_renderState;
+		state->m_x = destination.m_x;
+		state->m_y = destination.m_y;
+		surface->GetCurrDB();
+		m_renderState->Draw(gdi);
+	}
 }
 
 // FUNCTION: LEMBALL 0x0046b810
