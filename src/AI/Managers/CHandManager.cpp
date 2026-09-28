@@ -86,8 +86,9 @@ void CHandManager::Process()
 int CHandManager::GetViewData(CViewData* p_viewData)
 {
 	int count = 0;
+	CViewData* view = p_viewData;
 	for (int i = 0; i < m_count; i++) {
-		m_hands[i].GetViewData(*p_viewData++);
+		m_hands[i].GetViewData(*view++);
 		count++;
 	}
 	return count;
