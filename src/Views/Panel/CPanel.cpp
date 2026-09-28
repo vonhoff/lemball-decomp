@@ -34,16 +34,8 @@ CVsPoint* CPanel::GetPausePos(CVsPoint* p_result)
 // FUNCTION: LEMBALL 0x00442f80
 CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 {
-	m_buttonSize.m_x = 0;
-	m_buttonSize.m_y = 0;
-	m_balloonSize.m_x = 0;
-	m_balloonSize.m_y = 0;
-	m_pauseSize.m_x = 0;
-	m_pauseSize.m_y = 0;
-	m_panelSize.m_x = 0;
-	m_panelSize.m_y = 0;
-	m_panelPosition.m_x = 0;
-	m_panelPosition.m_y = 0;
+	int i;
+	CPanelLemming** lemming;
 	m_game = p_gameView;
 	m_window = (CPVGWnd*) p_gameView->m_display;
 	m_ai = p_gameView->m_ai;
@@ -52,19 +44,28 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_resources[2] = CResANIM::Load(0x2c);
 	m_resources[3] = CResANIM::Load(0x2b);
 
-	m_buttonSize.m_x = m_resources[1]->m_animationEntries[0].m_width;
-	m_buttonSize.m_y = m_resources[1]->m_animationEntries[0].m_height;
-	m_balloonSize.m_x = m_resources[2]->m_animationEntries[0].m_width;
-	m_balloonSize.m_y = m_resources[2]->m_animationEntries[0].m_height;
-	m_pauseSize.m_x = m_resources[0]->m_animationEntries[0].m_width;
-	m_pauseSize.m_y = m_resources[0]->m_animationEntries[0].m_height;
+	CVsSize* size = (CVsSize*) &m_resources[1]->m_animationEntries[0].m_width;
+	m_buttonSize.m_x = size->m_width;
+	m_buttonSize.m_y = size->m_height;
+	size = (CVsSize*) &m_resources[2]->m_animationEntries[0].m_width;
+	m_balloonSize.m_x = size->m_width;
+	m_balloonSize.m_y = size->m_height;
+	size = (CVsSize*) &m_resources[0]->m_animationEntries[0].m_width;
+	m_pauseSize.m_x = size->m_width;
+	m_pauseSize.m_y = size->m_height;
 	m_panelSize.m_x = m_pauseSize.m_x;
 	m_panelSize.m_y = m_pauseSize.m_y;
 	m_panelSize.m_x = (short) (m_panelSize.m_x + (m_balloonSize.m_x + m_buttonSize.m_x) * 4);
-	CVsPoint position;
-	GetPausePos(&position);
-	m_panelPosition.m_x = position.m_x;
-	m_panelPosition.m_y = position.m_y;
+	short calculatedPositionStorage[2];
+	short positionStorage[2];
+	CVsPoint* calculated = GetPausePos((CVsPoint*) calculatedPositionStorage);
+	short x = calculated->m_x;
+	m_panelPosition.m_x = x;
+	short y = calculated->m_y;
+	m_panelPosition.m_y = y;
+	positionStorage[0] = x;
+	positionStorage[1] = y;
+	CVsPoint& position = *(CVsPoint*) positionStorage;
 	void* storage = operator new(0x13c);
 	if (storage != 0) {
 		m_pauseButton = new (storage) CPanelPauseButton(this, position, m_window, 0x2d, 3);
@@ -74,8 +75,9 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	}
 
 	position.m_x = position.m_x + m_pauseSize.m_x;
-	CPanelLemming** lemming = m_lemmings;
-	for (int i = 0; i < 4; i++) {
+	i = 0;
+	lemming = m_lemmings;
+	do {
 		storage = operator new(0x2c);
 		if (storage != 0) {
 			*lemming = new (storage) CPanelLemming(m_ai->m_networkLemmings[i], position, this);
@@ -83,16 +85,17 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 		else {
 			*lemming = 0;
 		}
+		i++;
 		lemming++;
-	}
+	} while (i < 4);
 	g_pMasterInputQueue->Attach(this, 0);
 }
 
 // FUNCTION: LEMBALL 0x00443140
 CPanel::~CPanel()
 {
-	int count;
 	CPanelLemming** lemming;
+	int count;
 	lemming = m_lemmings;
 	g_pMasterInputQueue->Detach(this, 0);
 	count = 4;
