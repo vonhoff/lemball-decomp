@@ -346,7 +346,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 					char offset = ((g_nNetworkOptionsShiftHeld == 0) ? 0xe0 : 0) - 0x3c;
 					char ch = (char) code - offset;
 					*m_editor += ch;
-					handled = true;
+					goto input_accepted;
 				}
 				else {
 					g_pSoundView->PlayEffect(SFX_CHINK);
@@ -355,7 +355,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			else if (code >= 0x39 && code <= 0x42) {
 				if (m_editor->m_length != m_editor->m_maxLength) {
 					*m_editor += (char) (code - 9);
-					handled = true;
+					goto input_accepted;
 				}
 				else {
 					g_pSoundView->PlayEffect(SFX_CHINK);
@@ -366,7 +366,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 				case 0x1f:
 					if (m_editor->m_length != m_editor->m_maxLength) {
 						*m_editor += ' ';
-						handled = true;
+						goto input_accepted;
 					}
 					else {
 						g_pSoundView->PlayEffect(SFX_CHINK);
@@ -375,7 +375,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 				case 0x20:
 					if (m_editor->m_length != m_editor->m_maxLength) {
 						*m_editor += '.';
-						handled = true;
+						goto input_accepted;
 					}
 					else {
 						g_pSoundView->PlayEffect(SFX_CHINK);
@@ -386,12 +386,10 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 					m_editingActive = 0;
 					m_pendingEvent = 0;
 					SetMessage(1);
-					handled = true;
-					break;
+					goto input_accepted;
 				case 0x4c:
 					StopEditing();
-					handled = true;
-					break;
+					goto input_accepted;
 				case 0x4d:
 				case 0x4e: {
 					CEditString* editor = m_editor;
@@ -400,7 +398,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 							editor->m_length--;
 							editor->m_text[editor->m_length] = 0;
 						}
-						handled = true;
+						goto input_accepted;
 					}
 					else {
 						g_pSoundView->PlayEffect(SFX_CHINK);
@@ -410,6 +408,10 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 				}
 			}
 
+			goto input_done;
+		input_accepted:
+			handled = true;
+		input_done:
 			if (handled) {
 				m_lastDrawTime = CurrentMilliTimer();
 				m_redrawPending = 0;
