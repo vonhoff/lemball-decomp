@@ -467,40 +467,6 @@ void CGunController::DrawSpriteWindow()
 	CAnimsManager::ResetPrimitives();
 }
 
-// FUNCTION: LEMBALL 0x0044d830
-void CGunController::MoveUp()
-{
-	int* directionField;
-	int remaining;
-	int bestY;
-	int foundY;
-	int direction;
-
-	bestY = -1;
-	foundY = -1;
-	directionField = &m_junctions[0].m_direction;
-	remaining = 8;
-	do {
-		direction = *directionField;
-		if (direction != 3 && directionField[-2] < m_targetY && bestY < directionField[-2]) {
-			if (direction != 2) {
-				m_targetSide = direction;
-			}
-			foundY = directionField[-2];
-			bestY = foundY;
-			g_pSoundView->PlayEffect(SFX_RELOAD);
-		}
-		directionField += 8;
-	} while (--remaining != 0);
-	if (foundY != -1) {
-		m_targetY = foundY;
-	}
-	m_moveStartTime = CurrentMilliTimer();
-	m_moveStartY = m_gunY;
-	m_verticalMoving = 1;
-	m_moveEndTime = abs(m_targetY - m_gunY) * 3 + m_moveStartTime;
-}
-
 // FUNCTION: LEMBALL 0x0044d8e0
 void CGunController::MoveDown()
 {
