@@ -38,15 +38,16 @@ CPlayerLemmingGroup::~CPlayerLemmingGroup()
 // FUNCTION: LEMBALL 0x00414080
 int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 {
-	int count;
+	CViewData* view;
+	int count = 0;
 	CPlayerLemmingGroup* self = this;
 	CGameObject* object = self->GetFirstElementInGroup();
-	count = 0;
 	if (object != 0) {
+		view = p_viewData;
 		do {
 			if (object->m_action != ACTION_12) {
-				object->GetViewData(*p_viewData);
-				p_viewData++;
+				object->GetViewData(*view);
+				view++;
 				count++;
 			}
 			object = self->GetNextElementInGroup();
