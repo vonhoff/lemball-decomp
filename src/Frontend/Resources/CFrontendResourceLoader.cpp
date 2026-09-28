@@ -12,6 +12,8 @@
 #include "../../Visos/Resources/CResSTRING.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "CCDLoadAnim.h"
+
+#include <new.h>
 class CCdLoadAnimDraw;
 class CLoadUpdate;
 
@@ -54,7 +56,13 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	m_palettes = (CResPALETTE**) operator new(8);
 	m_strings = (CResSTRING**) operator new(4);
 	m_movies = (CResMOVIE**) operator new(0x18);
-	m_loadAnim = new CCDLoadAnim(p_display->m_gdi, p_display);
+	CCDLoadAnim* loadAnim = (CCDLoadAnim*) operator new(sizeof(CCDLoadAnim));
+	if (loadAnim == 0) {
+		m_loadAnim = 0;
+	}
+	else {
+		m_loadAnim = new (loadAnim) CCDLoadAnim(p_display->m_gdi, p_display);
+	}
 	CCdLoadAnimDraw* loadingDraw = static_cast<CCdLoadAnimDraw*>(m_loadAnim);
 	p_display->m_loadingDraw = loadingDraw;
 	m_totalResources += g_pSoundView->GetnEffects((unsigned short) p_soundState);
@@ -64,11 +72,11 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
 		LoadANIM(m_animResourceIds[i]);
 	}
-	for (i = 0; i < (unsigned int) m_fontCapacity; i++) {
-		LoadFONT(m_fontResourceIds[i]);
+	for (unsigned int fontIndex = 0; fontIndex < (unsigned int) m_fontCapacity; fontIndex++) {
+		LoadFONT(m_fontResourceIds[fontIndex]);
 	}
-	for (i = 0; i < (unsigned int) m_bitmapCapacity; i++) {
-		LoadBITMAP(m_bitmapResourceIds[i]);
+	for (unsigned int bitmapIndex = 0; bitmapIndex < (unsigned int) m_bitmapCapacity; bitmapIndex++) {
+		LoadBITMAP(m_bitmapResourceIds[bitmapIndex]);
 	}
 	id = g_dwFrontendPaletteIds;
 	do {
