@@ -309,11 +309,14 @@ void CBaseFrontendDrawer::ReplaceBackground()
 // FUNCTION: LEMBALL 0x00445c10
 void CBaseFrontendDrawer::_DrawBackGround()
 {
+	CBitmapRes* rec;
 	if (m_drawFrame != 0) {
-		CVsRect tiles(0, 0, m_width, m_height);
+		const CVsSize& tileSize = *(const CVsSize*) &m_tileBitmap->m_x;
+		CVsRect tiles;
+		tiles.m_width = m_width;
+		tiles.m_height = m_height;
 		CVsSize& count = tiles;
 		CVsPoint& start = tiles;
-		const CVsSize& tileSize = *(const CVsSize*) &m_tileBitmap->m_x;
 		tiles.m_height = (short) (tiles.m_height + tileSize.m_height - 1) / tileSize.m_height;
 		tiles.m_width = (short) (tiles.m_width + tileSize.m_width - 1) / tileSize.m_width;
 		tiles.m_y /= tileSize.m_height;
@@ -326,13 +329,13 @@ void CBaseFrontendDrawer::_DrawBackGround()
 			oddRow ^= 1;
 			for (int col = start.m_x; (int) ((short) (start.m_x + count.m_width) + oddRow) > col; col++) {
 				CResBITMAP* bitmap = m_tileBitmap;
+				rec = &m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
 				int y = tileSize.m_height * row;
-				CBitmapRes& rec = m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
-				rec.m_x = col * tileSize.m_width - (tileSize.m_width / 2) * oddRow;
-				rec.m_y = y;
-				rec.m_resource = bitmap;
-				rec.m_flags = 0;
-				rec.m_remap = 0;
+				rec->m_x = col * tileSize.m_width - (tileSize.m_width / 2) * oddRow;
+				rec->m_y = y;
+				rec->m_resource = bitmap;
+				rec->m_flags = 0;
+				rec->m_remap = 0;
 				m_primitiveBundle[m_primitiveBank].m_records[recordIndex].Draw(m_gdi);
 				recordIndex++;
 			}
