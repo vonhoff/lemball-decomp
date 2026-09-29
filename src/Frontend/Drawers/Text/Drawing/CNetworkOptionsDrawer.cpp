@@ -69,8 +69,13 @@ void CNetworkOptionsDrawer::DrawText()
 			short sizeStorage[2];
 			CVsSize& size = *(CVsSize*) sizeStorage;
 			size.m_height = 0;
-			size.m_width = 0;
-			m_textManager->DrawString(m_gdi, posLabel, size, m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, 0);
+			m_textManager->DrawString(m_gdi,
+									  posLabel,
+									  (size.m_width = 0, size),
+									  m_chalkFontId,
+									  g_szNetworkOptionsHeaderName,
+									  0x20,
+									  0);
 		}
 
 		posIp.m_x -= font->GetSize(g_szNetworkOptionsHeaderIp, 0x20).m_width / 2;
@@ -78,8 +83,13 @@ void CNetworkOptionsDrawer::DrawText()
 			short sizeStorage[2];
 			CVsSize& size = *(CVsSize*) sizeStorage;
 			size.m_height = 0;
-			size.m_width = 0;
-			m_textManager->DrawString(m_gdi, posIp, size, m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, 0);
+			m_textManager->DrawString(m_gdi,
+									  posIp,
+									  (size.m_width = 0, size),
+									  m_chalkFontId,
+									  g_szNetworkOptionsHeaderIp,
+									  0x20,
+									  0);
 		}
 
 		posComputer.m_x -= font->GetSize(g_szNetworkOptionsHeaderComputer, 0x20).m_width / 2;
@@ -87,9 +97,13 @@ void CNetworkOptionsDrawer::DrawText()
 			short sizeStorage[2];
 			CVsSize& size = *(CVsSize*) sizeStorage;
 			size.m_height = 0;
-			size.m_width = 0;
-			m_textManager
-				->DrawString(m_gdi, posComputer, size, m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
+			m_textManager->DrawString(m_gdi,
+									  posComputer,
+									  (size.m_width = 0, size),
+									  m_chalkFontId,
+									  g_szNetworkOptionsHeaderComputer,
+									  0x20,
+									  0);
 		}
 
 		short dividerWidth = font->GetSize(divider, 0x20).m_width;
@@ -98,8 +112,7 @@ void CNetworkOptionsDrawer::DrawText()
 			short sizeStorage[2];
 			CVsSize& size = *(CVsSize*) sizeStorage;
 			size.m_height = 0;
-			size.m_width = 0;
-			m_textManager->DrawString(m_gdi, posDivider, size, m_chalkFontId, divider, 0x20, 0);
+			m_textManager->DrawString(m_gdi, posDivider, (size.m_width = 0, size), m_chalkFontId, divider, 0x20, 0);
 		}
 
 		if (g_szNetworkGameName[0] != 0) {
@@ -111,10 +124,9 @@ void CNetworkOptionsDrawer::DrawText()
 				short sizeStorage[2];
 				CVsSize& size = *(CVsSize*) sizeStorage;
 				size.m_height = 0;
-				size.m_width = 0;
 				m_textManager->DrawString(m_gdi,
 										  posMyName,
-										  size,
+										  (size.m_width = 0, size),
 										  m_chalkFontId,
 										  g_szNetworkGameName,
 										  0x20,
@@ -128,9 +140,13 @@ void CNetworkOptionsDrawer::DrawText()
 					short sizeStorage[2];
 					CVsSize& size = *(CVsSize*) sizeStorage;
 					size.m_height = 0;
-					size.m_width = 0;
-					m_textManager
-						->DrawString(m_gdi, posMyIp, size, m_chalkFontId, m_stopPending, 0x20, (CRemap*) m_remaps[0]);
+					m_textManager->DrawString(m_gdi,
+											  posMyIp,
+											  (size.m_width = 0, size),
+											  m_chalkFontId,
+											  m_stopPending,
+											  0x20,
+											  (CRemap*) m_remaps[0]);
 				}
 			}
 
@@ -150,9 +166,13 @@ void CNetworkOptionsDrawer::DrawText()
 					short sizeStorage[2];
 					CVsSize& size = *(CVsSize*) sizeStorage;
 					size.m_height = 0;
-					size.m_width = 0;
-					m_textManager
-						->DrawString(m_gdi, posMyComputer, size, m_chalkFontId, lowerPeer, 0x20, (CRemap*) m_remaps[0]);
+					m_textManager->DrawString(m_gdi,
+											  posMyComputer,
+											  (size.m_width = 0, size),
+											  m_chalkFontId,
+											  lowerPeer,
+											  0x20,
+											  (CRemap*) m_remaps[0]);
 				}
 			}
 		}
