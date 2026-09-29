@@ -232,7 +232,7 @@ def main() -> int:
         description=__doc__,
         epilog=(
             "CD and installation enforcement default on for each invocation. "
-            "tools/match.py disables them to match the supplied reference EXE. "
+            "Matching and vtable builds use the same enabled defaults. "
             "Resource-version validation remains active in every configuration."
         ),
     )

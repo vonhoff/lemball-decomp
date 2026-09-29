@@ -48,7 +48,7 @@ def main() -> int:
     args = parser.parse_args()
 
     if not args.no_build:
-        exit_code = run_build(clean_first=args.clean_first, disable_enforcements=True)
+        exit_code = run_build(clean_first=args.clean_first)
         if exit_code != 0:
             print(f"BUILD_FAILED exit={exit_code} (see build-msvc400/last_build.log)")
             return exit_code
