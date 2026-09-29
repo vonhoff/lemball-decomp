@@ -250,10 +250,11 @@ void CFrontendResourceLoader::LoadSTRING(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447fe0
 void CFrontendResourceLoader::UnLoadSTRING(unsigned long p_resourceId)
 {
+	unsigned int count = m_loadedStrings;
 	CResSTRING** slot;
 	unsigned int i;
 
-	for (i = 0; i < (unsigned int) m_loadedStrings; i++) {
+	for (i = 0; i < count; i++) {
 		slot = &m_strings[i];
 		if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
 			m_strings[i]->UnLoad();
