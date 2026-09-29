@@ -65,37 +65,73 @@ void CNetworkOptionsDrawer::DrawText()
 		CVsPoint posIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_headerY);
 		CVsPoint posComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_headerY);
 		posLabel.m_x -= font->GetSize(g_szNetworkOptionsHeaderName, 0x20).m_width / 2;
-		m_textManager->DrawString(m_gdi, posLabel, CVsSize(), m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, 0);
+		{
+			short sizeStorage[2];
+			CVsSize& size = *(CVsSize*) sizeStorage;
+			size.m_height = 0;
+			size.m_width = 0;
+			m_textManager->DrawString(m_gdi, posLabel, size, m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, 0);
+		}
 
 		posIp.m_x -= font->GetSize(g_szNetworkOptionsHeaderIp, 0x20).m_width / 2;
-		m_textManager->DrawString(m_gdi, posIp, CVsSize(), m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, 0);
+		{
+			short sizeStorage[2];
+			CVsSize& size = *(CVsSize*) sizeStorage;
+			size.m_height = 0;
+			size.m_width = 0;
+			m_textManager->DrawString(m_gdi, posIp, size, m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, 0);
+		}
 
 		posComputer.m_x -= font->GetSize(g_szNetworkOptionsHeaderComputer, 0x20).m_width / 2;
-		m_textManager
-			->DrawString(m_gdi, posComputer, CVsSize(), m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
+		{
+			short sizeStorage[2];
+			CVsSize& size = *(CVsSize*) sizeStorage;
+			size.m_height = 0;
+			size.m_width = 0;
+			m_textManager
+				->DrawString(m_gdi, posComputer, size, m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
+		}
 
 		short dividerWidth = font->GetSize(divider, 0x20).m_width;
 		posDivider.m_x = (short) (((int) m_width - (int) dividerWidth) / 2);
-		m_textManager->DrawString(m_gdi, posDivider, CVsSize(), m_chalkFontId, divider, 0x20, 0);
+		{
+			short sizeStorage[2];
+			CVsSize& size = *(CVsSize*) sizeStorage;
+			size.m_height = 0;
+			size.m_width = 0;
+			m_textManager->DrawString(m_gdi, posDivider, size, m_chalkFontId, divider, 0x20, 0);
+		}
 
 		if (g_szNetworkGameName[0] != 0) {
 			CVsPoint posMyName((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_localPlayerY);
 			CVsPoint posMyIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_localPlayerY);
 			CVsPoint posMyComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_localPlayerY);
 			posMyName.m_x -= font->GetSize(g_szNetworkGameName, 0x20).m_width / 2;
-			m_textManager->DrawString(m_gdi,
-									  posMyName,
-									  CVsSize(),
-									  m_chalkFontId,
-									  g_szNetworkGameName,
-									  0x20,
-									  (CRemap*) m_remaps[0]);
+			{
+				short sizeStorage[2];
+				CVsSize& size = *(CVsSize*) sizeStorage;
+				size.m_height = 0;
+				size.m_width = 0;
+				m_textManager->DrawString(m_gdi,
+										  posMyName,
+										  size,
+										  m_chalkFontId,
+										  g_szNetworkGameName,
+										  0x20,
+										  (CRemap*) m_remaps[0]);
+			}
 
 			char* myIp = m_stopPending;
 			if (myIp != 0 && *myIp != 0) {
 				posMyIp.m_x -= font->GetSize(myIp, 0x20).m_width / 2;
-				m_textManager
-					->DrawString(m_gdi, posMyIp, CVsSize(), m_chalkFontId, m_stopPending, 0x20, (CRemap*) m_remaps[0]);
+				{
+					short sizeStorage[2];
+					CVsSize& size = *(CVsSize*) sizeStorage;
+					size.m_height = 0;
+					size.m_width = 0;
+					m_textManager
+						->DrawString(m_gdi, posMyIp, size, m_chalkFontId, m_stopPending, 0x20, (CRemap*) m_remaps[0]);
+				}
 			}
 
 			char* myPeer = m_connectionState;
@@ -110,13 +146,14 @@ void CNetworkOptionsDrawer::DrawText()
 				CString lowerPeer(trimmed);
 				lowerPeer.lower();
 				posMyComputer.m_x -= font->GetSize(trimmed, 0x20).m_width / 2;
-				m_textManager->DrawString(m_gdi,
-										  posMyComputer,
-										  CVsSize(),
-										  m_chalkFontId,
-										  lowerPeer,
-										  0x20,
-										  (CRemap*) m_remaps[0]);
+				{
+					short sizeStorage[2];
+					CVsSize& size = *(CVsSize*) sizeStorage;
+					size.m_height = 0;
+					size.m_width = 0;
+					m_textManager
+						->DrawString(m_gdi, posMyComputer, size, m_chalkFontId, lowerPeer, 0x20, (CRemap*) m_remaps[0]);
+				}
 			}
 		}
 
