@@ -12,7 +12,7 @@ class CRemap;
 class CBitmapResBase : public CPrimitive, public CVsPoint {
 public:
 	// FUNCTION: LEMBALL 0x0044b5f0
-	CBitmapResBase()
+	CBitmapResBase() : CVsPoint(0, 0)
 	{
 		m_height = 0;
 		m_width = 0;
