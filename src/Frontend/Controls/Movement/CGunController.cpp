@@ -55,7 +55,7 @@ void CGunController::MoveUp()
 		m_targetY = foundY;
 	}
 	m_moveStartTime = CurrentMilliTimer();
+	m_moveEndTime = abs(m_targetY - m_gunY) * 3 + m_moveStartTime;
 	m_moveStartY = m_gunY;
 	m_verticalMoving = 1;
-	m_moveEndTime = abs(m_targetY - m_gunY) * 3 + m_moveStartTime;
 }
