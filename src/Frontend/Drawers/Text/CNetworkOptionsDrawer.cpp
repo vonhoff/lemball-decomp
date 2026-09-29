@@ -63,16 +63,16 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 			CVsPoint& posAddress = addressPosition;
 			CVsPoint& posPeer = peerPosition;
 			short yOffset = (short) layout->m_rowStride * (short) p_value;
-			remap = 0;
 			posName.m_y += yOffset;
 			posAddress.m_y += yOffset;
 			posPeer.m_y += yOffset;
+			remap = 0;
 			if (p_remap != 6) {
 				remap = (CRemap*) m_remaps[p_remap];
 			}
 			gameName = entries[p_index].m_gameName;
-			peerName = entries[p_index].m_peerName;
 			addressStr = connections[p_index]->m_destinationAddress->GetStr();
+			peerName = entries[p_index].m_peerName;
 			strncpy(trimmedPeerName, peerName, 0x14);
 			len = 0x14;
 			do {
