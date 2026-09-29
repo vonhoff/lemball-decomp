@@ -375,6 +375,10 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 	int helpOk;
 	char* cdDir;
 	char helpPath[256];
+	// GLOBAL: LEMBALL 0x0049e818
+	static const char searchHelpError[] = "Couldn't help ya!\n";
+	// GLOBAL: LEMBALL 0x0049e82c
+	static const char quitHelpError[] = "Couldn't help ya!\n";
 
 	switch ((int) p_message->m_type) {
 	case 4:
@@ -407,7 +411,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
 			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x105, (unsigned long) "");
 			if (helpOk == 0) {
-				*g_pErrorOutput << "Couldn't help ya!\n";
+				*g_pErrorOutput << searchHelpError;
 			}
 			break;
 		case 4:
@@ -419,7 +423,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 		case 6:
 			helpOk = WinHelpA((HWND) m_nativeWindow, 0, 4, 0);
 			if (helpOk == 0) {
-				*g_pErrorOutput << "Couldn't help ya!\n";
+				*g_pErrorOutput << quitHelpError;
 			}
 			break;
 		}
