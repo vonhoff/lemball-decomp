@@ -19,7 +19,7 @@ void C2D::MarkGroundAnimAndLiftBounds()
 		do {
 			int screenX = coordinate->m_x;
 			int screenY = coordinate->m_y;
-			int groundHeight = coordinate->m_z;
+			const int& groundHeight = (int) coordinate->m_z;
 			C2D* view = this;
 			view->m_map->GameToScreen(screenX, screenY);
 			screenX -= view->m_viewOriginX;
