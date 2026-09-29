@@ -116,9 +116,9 @@ bool CLaser::CheckHits()
 		break;
 	case OBJECT_LASER_VERTICAL:
 	case OBJECT_LASER_EMITTER_V:
+		y += 8;
 		stepX = 0;
 		stepY = 16;
-		y += 8;
 		break;
 	default:
 		return false;
