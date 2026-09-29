@@ -156,9 +156,14 @@ void CGroundAnim::RemoveAtCoordinate(const Coord3d& p_coordinate)
 // FUNCTION: LEMBALL 0x0040d2b0
 int CGroundAnim::ExportCoordinates(Coord3d* p_records)
 {
-	for (int index = 0; index < m_count; index++) {
-		*p_records = m_entries[index].m_coordinate;
-		p_records++;
+	int index = 0;
+	if (index < m_count) {
+		GroundAnimEntry* entry = m_entries;
+		do {
+			*p_records++ = entry->m_coordinate;
+			entry++;
+			index++;
+		} while (index < m_count);
 	}
 	return m_count;
 }
