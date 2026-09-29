@@ -72,8 +72,10 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
 		LoadANIM(m_animResourceIds[i]);
 	}
+	unsigned int fontOffset = 0;
 	for (unsigned int fontIndex = 0; fontIndex < (unsigned int) m_fontCapacity; fontIndex++) {
-		LoadFONT(m_fontResourceIds[fontIndex]);
+		fontOffset += 4;
+		LoadFONT(*(unsigned int*) ((char*) m_fontResourceIds + fontOffset - 4));
 	}
 	for (unsigned int bitmapIndex = 0; bitmapIndex < (unsigned int) m_bitmapCapacity; bitmapIndex++) {
 		LoadBITMAP(m_bitmapResourceIds[bitmapIndex]);
@@ -203,20 +205,6 @@ void CFrontendResourceLoader::LoadBITMAP(unsigned long p_resourceId)
 	m_loadedBitmaps = m_loadedBitmaps + 1;
 }
 
-// FUNCTION: LEMBALL 0x00447ee0
-void CFrontendResourceLoader::UnLoadBITMAP(unsigned long p_resourceId)
-{
-	unsigned int i;
-
-	for (i = 0; i < (unsigned int) m_loadedBitmaps; i++) {
-		if (m_bitmaps[i] != 0 && m_bitmaps[i]->m_resourceId == p_resourceId) {
-			m_bitmaps[i]->UnLoad();
-			m_bitmaps[i] = 0;
-			break;
-		}
-	}
-}
-
 // FUNCTION: LEMBALL 0x00447f30
 void CFrontendResourceLoader::LoadPALETTE(unsigned long p_resourceId)
 {
@@ -225,43 +213,12 @@ void CFrontendResourceLoader::LoadPALETTE(unsigned long p_resourceId)
 	m_loadedPalettes = m_loadedPalettes + 1;
 }
 
-// FUNCTION: LEMBALL 0x00447f60
-void CFrontendResourceLoader::UnLoadPALETTE(unsigned long p_resourceId)
-{
-	unsigned int i;
-
-	for (i = 0; i < m_loadedPalettes; i++) {
-		if (m_palettes[i] != 0 && m_palettes[i]->m_resourceId == p_resourceId) {
-			m_palettes[i]->UnLoad();
-			m_palettes[i] = 0;
-			break;
-		}
-	}
-}
-
 // FUNCTION: LEMBALL 0x00447fb0
 void CFrontendResourceLoader::LoadSTRING(unsigned long p_resourceId)
 {
 	UpdateNonCacheLoad();
 	m_strings[m_loadedStrings] = CResSTRING::Load(p_resourceId);
 	m_loadedStrings = m_loadedStrings + 1;
-}
-
-// FUNCTION: LEMBALL 0x00447fe0
-void CFrontendResourceLoader::UnLoadSTRING(unsigned long p_resourceId)
-{
-	unsigned int count = m_loadedStrings;
-	CResSTRING** slot;
-	unsigned int i;
-
-	for (i = 0; i < count; i++) {
-		slot = &m_strings[i];
-		if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
-			m_strings[i]->UnLoad();
-			m_strings[i] = 0;
-			break;
-		}
-	}
 }
 
 // FUNCTION: LEMBALL 0x00448030

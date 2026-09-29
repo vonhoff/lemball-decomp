@@ -4,6 +4,13 @@
   "identity": "Exact path + rule + complete reported source line, with a count limit. Line numbers are excluded. Inspect matches and reasons with python tools/gate.py --verbose.",
   "findings": [
     {
+      "path": "src/Frontend/Resources/CFrontendResourceLoader.cpp",
+      "rule": "offset-poke",
+      "code": "LoadFONT(*(unsigned int*) ((char*) m_fontResourceIds + fontOffset - 4));",
+      "count": 2,
+      "reason": "CFrontendResourceLoader::CFrontendResourceLoader (0x004479e0): original 0x00447b7e ADD EDI,4 and 0x00447b82 MOV ECX,[EAX+EDI-4] index the named font-ID array by a byte offset. This expression preserves that MSVC 4.00 loop; typed element-index forms add masking and change codegen. UnLoadBITMAP remains exact in its own class-named source file."
+    },
+    {
       "path": "src/AI/Objects/CSwitch.cpp",
       "rule": "no-annotation",
       "code": "inline static unsigned char* LoadSwitchEntries(unsigned char*& p_data, CSwitch* p_switch)",
