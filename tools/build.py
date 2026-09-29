@@ -170,21 +170,32 @@ def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) ->
     return 0, output
 
 
-def run_build(clean_first: bool = False, extra_args: list[str] | None = None) -> int:
+def run_build(
+    clean_first: bool = False,
+    extra_args: list[str] | None = None,
+    disable_enforcements: bool = False,
+) -> int:
     cmake = resolve_cmake()
     BUILD.mkdir(parents=True, exist_ok=True)
 
     cached = cache_cmake_command()
     makefile = BUILD / "Makefile"
     toolchain = ROOT / "cmake" / "msvc400-toolchain.cmake"
+    startup_checks = "OFF" if disable_enforcements else "ON"
+    cache_path = BUILD / "CMakeCache.txt"
+    cache_lines = cache_path.read_text(encoding="utf-8").splitlines() if cache_path.exists() else []
     need_configure = (
         cached is None
         or " " in cached
         or not makefile.exists()
         or toolchain.stat().st_mtime > makefile.stat().st_mtime
+        or f"LEMBALL_ENFORCE_STARTUP_CHECKS:BOOL={startup_checks}" not in cache_lines
     )
     if need_configure:
-        res = subprocess.run([cmake, "--preset", "msvc400"], cwd=ROOT, check=False)
+        configure_args = [
+            cmake, "--preset", "msvc400", f"-DLEMBALL_ENFORCE_STARTUP_CHECKS={startup_checks}",
+        ]
+        res = subprocess.run(configure_args, cwd=ROOT, check=False)
         if res.returncode != 0:
             return res.returncode
 
@@ -217,12 +228,26 @@ def main() -> int:
     if len(sys.argv) > 1 and sys.argv[1] == "--link":
         return handle_link(sys.argv[2:])
 
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog=(
+            "CD and installation enforcement default on for each invocation. "
+            "tools/match.py disables them to match the supplied reference EXE. "
+            "Resource-version validation remains active in every configuration."
+        ),
+    )
     parser.add_argument("--clean-first", action="store_true", help="Perform full clean build")
+    parser.add_argument(
+        "--disable-enforcements", action="store_true",
+        help="Disable startup CD and installation checks (default: both enforced)",
+    )
     parser.add_argument("extra_args", nargs="*", help="Extra arguments passed to cmake --build")
     args = parser.parse_args()
 
-    return run_build(clean_first=args.clean_first, extra_args=args.extra_args)
+    return run_build(
+        clean_first=args.clean_first, extra_args=args.extra_args,
+        disable_enforcements=args.disable_enforcements,
+    )
 
 
 if __name__ == "__main__":

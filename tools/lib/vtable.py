@@ -520,7 +520,7 @@ def check_vtable(
     if not RECOMP_EXE.is_file():
         from build import run_build
 
-        result = run_build()
+        result = run_build(disable_enforcements=True)
         if result != 0:
             return result
 

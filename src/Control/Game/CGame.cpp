@@ -40,6 +40,10 @@
 #include <new.h>
 #include <string.h>
 
+#ifndef LEMBALL_ENFORCE_STARTUP_CHECKS
+#define LEMBALL_ENFORCE_STARTUP_CHECKS 1
+#endif
+
 #pragma intrinsic(strcpy, strcat, strcmp)
 
 extern "C" unsigned long __stdcall timeGetTime(void);
@@ -123,13 +127,30 @@ CGame::CGame(char* p_runtimeFileName)
 	m_process = 0;
 
 	if (g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintball, 1) == 0) {
+#if !LEMBALL_ENFORCE_STARTUP_CHECKS
 		if (0) {
+#endif
 			MessageBoxA(0, g_szInstallPrompt, g_szPaintballNotInstalled, 0);
 			return;
+#if !LEMBALL_ENFORCE_STARTUP_CHECKS
 		}
+#endif
 	}
 
+#if LEMBALL_ENFORCE_STARTUP_CHECKS
+	int cdResponse = 0;
+	while (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) == 0) {
+		cdResponse = MessageBoxA(0, g_szInsertCdPrompt, g_szUnableToFindCd, 1);
+		if (cdResponse != 1) {
+			break;
+		}
+	}
+	if (cdResponse == 2) {
+		return;
+	}
+#else
 	g_pTargetPlatformServices->GetCDDir(g_szVsMemDll);
+#endif
 
 	g_pGameStatus = new CGameStatus();
 	CTimeStat*& processingStat = m_processingStat;
