@@ -627,8 +627,7 @@ void CPreviewDrawer::LoadLevelInformation()
 		memset(candidateLine, '0', sizeof(candidateLine));
 		while (1) {
 			endOfSource = (int) AddWord(source, candidateLine, sourcePos, linePos);
-			short textSize[2];
-			measuredWidth = font->GetSize((CVsSize*) textSize, candidateLine, 0x20)->m_width;
+			measuredWidth = font->GetSize(candidateLine, 0x20).m_width;
 			if (measuredWidth > layoutWidth || endOfSource == 1) {
 				break;
 			}
@@ -641,10 +640,9 @@ void CPreviewDrawer::LoadLevelInformation()
 			endOfSource = 0;
 			SubWord(source, candidateLine, sourcePos, linePos);
 		}
-		short textSize[2];
-		CVsSize* size = font->GetSize((CVsSize*) textSize, candidateLine, 0x20);
-		short measuredHeight = size->m_height;
-		targetPos[0] = (layoutWidth / 2 - (int) (size->m_width / 2)) + layoutX;
+		const CVsSize& size = font->GetSize(candidateLine, 0x20);
+		short measuredHeight = size.m_height;
+		targetPos[0] = (layoutWidth / 2 - (int) (size.m_width / 2)) + layoutX;
 		targetPos[1] = layoutY;
 		strcpy(targetLine, candidateLine);
 		layoutY = layoutY + measuredHeight;
