@@ -99,6 +99,7 @@ bool CMogRes::SetWD(char* p_path)
 	register char* copy;
 	register char* cursor;
 	CMogDir* dir;
+	char* oldPath;
 
 	if (*path == RESOURCE_PATH_SEPARATOR) {
 		m_workingDirectory = m_rootDirectory;
@@ -112,10 +113,9 @@ bool CMogRes::SetWD(char* p_path)
 	}
 	cursor = copy;
 	{
-		int* current = &m_workingDirectory->m_currentDir.m_index;
-		current[0] = m_workingDirectory->m_root.m_index;
-		current[1] = (int) m_workingDirectory->m_root.m_info;
-		*current = -1;
+		Chunk* current = &m_workingDirectory->m_currentDir;
+		*current = m_workingDirectory->m_root;
+		current->m_index = -1;
 	}
 	for (;;) {
 		cursor = strchr(cursor, RESOURCE_PATH_SEPARATOR);
@@ -140,15 +140,16 @@ bool CMogRes::SetWD(char* p_path)
 		}
 	}
 done:
+	oldPath = m_workingPath;
 	if (cursor == 0) {
-		if (m_workingPath != 0) {
-			CMogloadArena::operator delete(m_workingPath);
+		if (oldPath != 0) {
+			CMogloadArena::operator delete(oldPath);
 			m_workingPath = 0;
 		}
 		m_workingPath = copy;
 		return 1;
 	}
-	SetWD(m_workingPath);
+	SetWD(oldPath);
 	if (copy != 0) {
 		CMogloadArena::operator delete(copy);
 	}
