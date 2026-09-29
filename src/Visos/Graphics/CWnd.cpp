@@ -314,7 +314,9 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				if (window->GetSizeStatus() == 0) {
 					SendMessageA((HWND) p_hwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
 				}
-				unsigned short flags = (g_pTargetGraphicsSystem->m_driverMode == 3 ? 5 : 1) | 0x8210;
+				unsigned short flags = g_pTargetGraphicsSystem->m_driverMode == 3 ? 4 : 0;
+				flags++;
+				flags |= 0x8210;
 				g_pDisplayDib(0, 0, flags);
 				g_dwFullScreenGdi = 0;
 				g_nDisplayDibActive = 1;
