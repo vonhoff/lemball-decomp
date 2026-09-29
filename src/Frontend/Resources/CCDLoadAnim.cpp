@@ -197,21 +197,23 @@ void CCDLoadAnim::Draw()
 	m_needle0[0].m_reserved0c = 0x66;
 	m_needle0[0].Draw(m_gdi);
 	{
-		short x = (short) ((rotatedLeft.m_xFixed >> 12) + originX);
-		short y = (short) ((rotatedLeft.m_yFixed >> 12) + originY);
-		CVsPoint point(x, y);
+		short pointStorage[2];
+		CVsPoint& point = *(CVsPoint*) pointStorage;
+		point.m_x = (short) ((rotatedLeft.m_xFixed >> 12) + originX);
 		m_needle1[0].m_bounds.m_width = tipX;
 		m_needle1[0].m_bounds.m_height = tipY;
+		point.m_y = (short) ((rotatedLeft.m_yFixed >> 12) + originY);
 		m_needle1[0].m_bounds.CVsPoint::operator=(point);
 		m_needle1[0].m_reserved0c = 0xba;
 		m_needle1[0].Draw(m_gdi);
 	}
 	{
-		short x = (short) ((rotatedRight.m_xFixed >> 12) + originX);
-		short y = (short) ((rotatedRight.m_yFixed >> 12) + originY);
-		CVsPoint point(x, y);
+		short pointStorage[2];
+		CVsPoint& point = *(CVsPoint*) pointStorage;
+		point.m_x = (short) ((rotatedRight.m_xFixed >> 12) + originX);
 		m_needle2[0].m_bounds.m_width = tipX;
 		m_needle2[0].m_bounds.m_height = tipY;
+		point.m_y = (short) ((rotatedRight.m_yFixed >> 12) + originY);
 		m_needle2[0].m_bounds.CVsPoint::operator=(point);
 		m_needle2[0].m_reserved0c = 0xbf;
 		m_needle2[0].Draw(m_gdi);
