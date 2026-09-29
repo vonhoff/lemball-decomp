@@ -4,6 +4,8 @@
 #include "Visos/Foundation/CFixed.h"
 #include "Visos/Foundation/CVector.h"
 
+#include <new.h>
+
 // FUNCTION: LEMBALL 0x0041a140
 CFormationManager::CFormationManager()
 {
@@ -66,13 +68,14 @@ void CFormationManager::TransformFormation(int p_formationIndex, int p_angle)
 			sine = g_pVSTrig->m_sine[angle % 512].m_value;
 		}
 		CFixed sin(sine);
-		CFixed cos(0);
+		unsigned int cosStorage;
 		if (angle + 128 < 0) {
-			cos.m_value = -g_pVSTrig->m_sine[(-128 - angle) % 512].m_value;
+			new (&cosStorage) CFixed(-g_pVSTrig->m_sine[(-128 - angle) % 512].m_value);
 		}
 		else {
-			cos.m_value = g_pVSTrig->m_sine[(angle + 128) % 512].m_value;
+			new (&cosStorage) CFixed(g_pVSTrig->m_sine[(angle + 128) % 512].m_value);
 		}
+		CFixed& cos = *static_cast<CFixed*>(static_cast<void*>(&cosStorage));
 		CVector rotated = trig->Rotate(*source, sin, cos);
 		int x = rotated.m_xFixed;
 		int y = rotated.m_yFixed;
