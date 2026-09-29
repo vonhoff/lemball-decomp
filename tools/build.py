@@ -228,14 +228,7 @@ def main() -> int:
     if len(sys.argv) > 1 and sys.argv[1] == "--link":
         return handle_link(sys.argv[2:])
 
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        epilog=(
-            "CD and installation enforcement default on for each invocation. "
-            "Matching and vtable builds use the same enabled defaults. "
-            "Resource-version validation remains active in every configuration."
-        ),
-    )
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--clean-first", action="store_true", help="Perform full clean build")
     parser.add_argument(
         "--disable-enforcements", action="store_true",
