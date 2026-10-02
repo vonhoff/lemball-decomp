@@ -42,6 +42,13 @@ jobs:
       - name: Install Python tools
         run: python -m pip install --requirement requirements.txt
 
+      - name: Configure MSVC 4.00 environment
+        run: |
+          "MSVC400_ROOT=S:\msvc400" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "INCLUDE=S:\msvc400\include" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "LIB=S:\msvc400\lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "S:\msvc400\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
       - name: Gate checks
         run: python tools/gate.py
 
@@ -61,7 +68,7 @@ jobs:
           }
 
       - name: Configure and build
-        run: python tools/build.py
+        run: python tools/build.py --clean-first
 
       - name: Generate objdiff report
         run: python tools/report.py
