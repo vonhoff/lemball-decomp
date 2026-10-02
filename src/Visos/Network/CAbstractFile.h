@@ -11,7 +11,11 @@ public:
 			operator delete(m_filename);
 		}
 	}
-	CAbstractFile() : m_filename(0) { m_closed = 1; }
+	CAbstractFile()
+	{
+		m_filename = 0;
+		m_closed = 1;
+	}
 	virtual bool Open(const char* p_filename, unsigned char p_mode, int p_create) = 0; // vtable+0x00
 	virtual bool Create(const char* p_filename, unsigned char p_mode) = 0;             // vtable+0x04
 	virtual bool CheckExists(const char* p_filename) = 0;                              // vtable+0x08
