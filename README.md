@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml/badge.svg)](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml)
 [![Exact Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](#matching-and-progress)
-[![Fuzzy Progress](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](#matching-and-progress)
+[![Fuzzy Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](#matching-and-progress)
 [![Effective Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Feffective.json)](#matching-and-progress)
 
 [<img src="https://decomp.dev/vonhoff/lemball-decomp.svg?w=512&h=256" width="512" height="256" alt="Decomp Progress Chart">](https://decomp.dev/vonhoff/lemball-decomp)
@@ -19,18 +19,18 @@ Only code independently developed for this project outside the reconstructed gam
 
 Build and compare one function with `python tools/match.py 0xADDRESS`.
 
-Exact Match is the percentage of reported code in non-stub functions with a raw
+**Exact Match** is the percentage of reported code in non-stub functions with a raw
 100% assembly score. Reccmp's
 [comparator](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
 normalizes addresses and symbols before comparison, so exact assembly matches do
 not imply a byte-identical executable.
 
-Fuzzy Progress is the average raw score, weighted by function size. Equivalent
+**Fuzzy Match** is the average raw score, weighted by function size. Equivalent
 register substitutions retain their raw score below 100%; stubs and missing
 comparisons contribute zero.
 
-Effective Match is the percentage of code in exact or reccmp-equivalent functions,
-including recognized register substitutions. It includes Exact Match. This supplementary
+**Effective Match** is the percentage of code in exact or reccmp-equivalent functions,
+including recognized register substitutions. It includes **Exact Match**. This supplementary
 badge does not increase exact progress or prove gameplay correctness; decomp.dev
 continues to track the raw exact and fuzzy measures.
 
