@@ -9,25 +9,25 @@
 
 This project is a matching decompilation of *Lemmings Paintball* (1996, Windows 95).
 
-The reconstructed C++ is compiled with Microsoft Visual C++ 4.00. [Reccmp](https://github.com/isledecomp/reccmp) compares each function with the original executable.
+Microsoft Visual C++ 4.00 compiles the C++ code. [Reccmp](https://github.com/isledecomp/reccmp) compares each function with the original executable.
 
-Only code independently developed for this project outside the reconstructed game code is covered by GPL-3.0. The reconstructed game code is provided without a license. Further details are given under [Legal](#legal).
+Only code written independently for this project, outside the reconstructed game code, is covered by GPL-3.0. The reconstructed game code has no license. See [Legal](#legal).
 
 ## Matching and progress
 
 Build and compare one function with `python tools/match.py 0xADDRESS`.
 
-**Exact Match**: percentage of code in non-stub functions with a raw 100%
-[normalized assembly](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py) score.
+**Exact Match**: share of code in functions with a raw 100%
+[normalized assembly](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py) score, excluding stubs.
 
-**Fuzzy Match**: average raw score, weighted by function size. Equivalent
-register substitutions retain their raw score below 100%; stubs and missing
-comparisons contribute zero.
+**Fuzzy Match**: average raw score, with larger functions counting more. Functions
+with equivalent register changes keep their score below 100%; stubs and functions
+without a comparison score zero.
 
-**Effective Match**: percentage of code in exact or reccmp-equivalent functions,
-including recognized register substitutions. Tracked separately from exact and fuzzy progress.
+**Effective Match**: share of code in exact matches or functions reccmp accepts as
+equivalent, including register changes. Shown separately from exact and fuzzy progress.
 
-Generate the current progress report with `python tools/report.py`. README badges
+Create the current progress report with `python tools/report.py`. README badges
 update after successful builds on `main`.
 
 Commands and tool checks: [tools/USAGE.md](tools/USAGE.md).
