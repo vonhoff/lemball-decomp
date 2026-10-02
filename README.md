@@ -7,24 +7,26 @@
 
 This project is a matching decompilation of *Lemmings Paintball* (1996, Windows 95).
 
-The goal is to recover readable C++ that expresses the game's behavior and matches the original executable as closely as possible. We compile the reconstructed code with Microsoft Visual C++ 4.00 and compare each function with [reccmp](https://github.com/isledecomp/reccmp).
+The game's behavior is being reconstructed in readable C++ to match the original executable as closely as possible. The reconstructed code is compiled with Microsoft Visual C++ 4.00, and each function is compared with [reccmp](https://github.com/isledecomp/reccmp).
 
-GPL-3.0 covers only code independently developed for this project outside the reconstructed game code. The reconstructed game code is provided without a license. See [Legal](#legal) for details.
+Only code independently developed for this project outside the reconstructed game code is covered by GPL-3.0. The reconstructed game code is provided without a license. Further details are given under [Legal](#legal).
 
 ## Matching and progress
 
-Use `python tools/match.py 0xADDRESS` to build and compare one function.
-To generate a progress report, run `python tools/report.py`. It writes reccmp
-results to `build-msvc400/reccmp.json` and converts them to
+A single function can be built and compared with `python tools/match.py 0xADDRESS`.
+A progress report is generated with `python tools/report.py`. The reccmp results
+are written to `build-msvc400/reccmp.json` and converted to
 `build-msvc400/report.json` (objdiff v2).
 
-A function counts as matched if it isn't a stub and reccmp reports
-`matching == 1.0`. The reccmp [comparator](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
-normalizes addresses and symbols when comparing assembly. Functions with
-equivalent register substitutions retain their raw score for fuzzy progress.
+A function is counted as matched if it isn't a stub and is given
+`matching == 1.0` by reccmp. Addresses and symbols are normalized by reccmp's
+[comparator](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
+when assembly is compared. Raw scores are retained for functions with equivalent
+register substitutions when fuzzy progress is calculated.
 
-The report includes each roadmap function that has an original address and a
-positive size. Comparisons are looked up by address, and the results use the
+Each roadmap function with an original address and a positive size is included
+in the report. Comparisons are looked up by address, and the results are stored
+using the
 [objdiff schema](https://github.com/encounter/objdiff/blob/eed74b99c4e94dd154882259931201badc6fdbd1/objdiff-core/protos/report.proto).
 
 | reccmp input | objdiff field |
@@ -35,14 +37,15 @@ positive size. Comparisons are looked up by address, and the results use the
 | Raw `matching` * 100; zero for stubs or missing comparisons | `fuzzy_match_percent` |
 | Module path with the CMake prefix and `.obj` removed | Unit `name`, or `Compiler-generated` if empty; `metadata.source_path` when the source file exists |
 
-Exact progress counts only functions with a 100% score. Fuzzy progress averages
-the scores, weighted by function size. Unit and project totals sum the functions
-included in the report. A percentage with a zero denominator is reported as 100%.
+Only functions with a 100% score are counted toward exact progress. Fuzzy progress
+is calculated as the average score weighted by function size. Unit and project
+totals are calculated by summing the functions included in the report. A
+percentage with a zero denominator is reported as 100%.
 
 ## Tool checks
 
-Install `ruff` and `pylint` with pip, then run the checks below. Both tools read
-their configuration from `pyproject.toml`.
+`ruff` and `pylint` can be installed with pip. Configuration for both tools is read
+from `pyproject.toml`. The checks are run with:
 
 ```sh
 python -m ruff check tools
@@ -65,10 +68,10 @@ python tools/gate.py
 
 ## Legal
 
-This unofficial project reverse-engineers *Lemmings Paintball* for preservation. The game's rights holders have not authorized or endorsed the project, and it is not affiliated with them.
+*Lemmings Paintball* is being reverse-engineered for preservation in this unofficial project. The project is not affiliated with, authorized by, or endorsed by the game's rights holders.
 
-The game, its name, trademarks, and original copyrighted material remain the property of their respective rights holders. This repository does not include or distribute the original executable or game assets.
+The game, its name, trademarks, and original copyrighted material remain the property of their respective rights holders. Neither the original executable nor game assets are included in or distributed with this repository.
 
-The reconstructed game code comes from reverse engineering and analysis of the compiled program. No original or leaked source code was used. This code is provided without a license. Nothing in this repository grants rights in third-party intellectual property.
+The reconstructed game code was produced through reverse engineering and analysis of the compiled program. No original or leaked source code was used. This code is provided without a license. No rights in third-party intellectual property are granted by this repository.
 
 Code independently developed for this project, outside the reconstructed game code, is licensed under the [GNU General Public License v3.0](LICENSE).
