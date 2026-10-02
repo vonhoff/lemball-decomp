@@ -16,7 +16,7 @@ public:
 		BITMAP_TRANSPARENT_ZERO = 0x800
 	};
 	// FUNCTION: LEMBALL 0x0044b5f0
-	CBitmap() : CVSPoint(0, 0), m_sourceRect() {}
+	CBitmap() : m_sourceRect() {}
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
 	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	// FUNCTION: LEMBALL 0x0044b630
