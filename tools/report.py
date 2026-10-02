@@ -3,7 +3,6 @@
 
 import json
 from collections import defaultdict
-from pathlib import Path
 
 from reccmp.compare.report import serialize_reccmp_report
 from reccmp.project.detect import DetectWhat, detect_project
@@ -64,7 +63,6 @@ def group_functions(entities, comparisons, modules):
             else None
         )
         name = module[1] if module else ""
-        name = name.removeprefix("CMakeFiles/LEMBALL.dir/src/").removesuffix(".obj")
         groups[name or "Compiler-generated"].append(
             function_record(entity, comparisons.entities.get(entity.orig_addr))
         )
@@ -79,9 +77,6 @@ def build_report(groups):
             key=lambda function: int(function["metadata"]["virtual_address"])
         )
         unit = {"name": name, "measures": measures(functions), "functions": functions}
-        source = Path("src") / name
-        if (ROOT / source).is_file():
-            unit["metadata"] = {"source_path": source.as_posix()}
         units.append(unit)
     functions = [function for unit in units for function in unit["functions"]]
     return {"version": 2, "units": units, "measures": measures(functions, len(units))}

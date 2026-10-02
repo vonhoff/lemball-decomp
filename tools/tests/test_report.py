@@ -109,12 +109,18 @@ class ReportTests(unittest.TestCase):
                 engine.recomp_bin.get_relative_addr.side_effect = check_address
                 modules.get_module.side_effect = lambda address: (
                     "",
-                    "exact.obj" if address == 0x501000 else "mixed.obj",
+                    "CMakeFiles/LEMBALL.dir/src/Exact.cpp.obj"
+                    if address == 0x501000 else "mixed.obj",
                 )
                 result = build_report(
                     group_functions(original_functions(engine), comparisons, modules)
                 )
                 functions = [f for u in result["units"] for f in u["functions"]]
+                self.assertEqual(
+                    [unit["name"] for unit in result["units"]],
+                    ["CMakeFiles/LEMBALL.dir/src/Exact.cpp.obj", "mixed.obj"],
+                )
+                self.assertTrue(all("metadata" not in unit for unit in result["units"]))
                 self.assertEqual(len({f["name"] for f in functions}), 7)
                 self.assertEqual(functions[1]["metadata"]["demangled_name"], "Equivalent(int)")
                 totals = result["measures"]
@@ -130,6 +136,3 @@ class ReportTests(unittest.TestCase):
                 )
                 for values in [totals] + [u["measures"] for u in result["units"]]:
                     self.assertFalse(any(k.startswith("complete_") for k in values))
-                self.assertTrue(
-                    all("complete" not in u.get("metadata", {}) for u in result["units"])
-                )
