@@ -76,9 +76,9 @@ bool _GDI_Quit()
 		device->~CGDIDevice();
 		operator delete(device);
 	}
-	system = g_pTargetGraphicsSystem;
 	g_pGdiHelperTarget = 0;
 	g_pGdiDevice = 0;
+	system = g_pTargetGraphicsSystem;
 	if (system != 0) {
 		if (g_pTargetGraphicsDriver != 0) {
 			delete g_pTargetGraphicsDriver;
