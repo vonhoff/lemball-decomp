@@ -34,18 +34,19 @@ VPTR_STORE = re.compile(
 
 def incremental_thunks(image):
     """Verify a section-leading E9 table closed by linker padding."""
-    result = {}
+    thunks = {}
     for region in image.get_code_regions():
         offset, entries = 0, {}
         while offset + 5 <= len(region.data) and region.data[offset] == 0xe9:
             address = region.addr + offset
             entries[address] = address + 5 + struct.unpack_from("<i", region.data, offset + 1)[0]
             offset += 5
+        code_start = region.addr + offset + 16
+        code_end = region.addr + len(region.data)
         if (entries and region.data[offset:offset + 16] == b"\xcc" * 16
-                and all(region.addr + offset + 16 <= target < region.addr + len(region.data)
-                        for target in entries.values())):
-            result.update(entries)
-    return result
+                and all(code_start <= target < code_end for target in entries.values())):
+            thunks.update(entries)
+    return thunks
 
 
 class EffectiveParseAsm(ParseAsm):
@@ -75,81 +76,92 @@ class EffectiveParseAsm(ParseAsm):
 
     def sanitize(self, inst):
         _, _, mnemonic, operands = inst
-        if (mnemonic in ("call", "jmp") and re.fullmatch(r"0x[0-9a-f]+", operands)
-                and self.lookup(int(operands, 16), exact=True) is None):
-            address = int(operands, 16)
-            try:
-                raw = self.image.read(address, 5)
-            except (ValueError, IndexError, InvalidVirtualAddressError, InvalidVirtualReadError):
-                raw = b""
-            if len(raw) == 5 and raw[0] == 0xe9:
-                target = address + 5 + struct.unpack_from("<i", raw, 1)[0]
-                name = super().lookup(target, exact=True)
-                if target in self.function_targets and name is not None and name.endswith(" (FUNCTION)"):
-                    self.reasons.add("verified linker thunk target")
-                    return mnemonic, self.replace(target, exact=True)
+        if mnemonic not in ("call", "jmp") or not re.fullmatch(r"0x[0-9a-f]+", operands):
+            return super().sanitize(inst)
+        address = int(operands, 16)
+        if self.lookup(address, exact=True) is not None:
+            return super().sanitize(inst)
+        try:
+            raw = self.image.read(address, 5)
+        except (ValueError, IndexError, InvalidVirtualAddressError, InvalidVirtualReadError):
+            return super().sanitize(inst)
+        if len(raw) != 5 or raw[0] != 0xe9:
+            return super().sanitize(inst)
+        target = address + 5 + struct.unpack_from("<i", raw, 1)[0]
+        name = super().lookup(target, exact=True)
+        if target in self.function_targets and name is not None and name.endswith(" (FUNCTION)"):
+            self.reasons.add("verified linker thunk target")
+            return mnemonic, self.replace(target, exact=True)
         return super().sanitize(inst)
 
 
 def zero_registers(generator, decoder):
     """Straight-line zero facts, invalidated at joins, writes, and ABI clobbers."""
+    code_sections = [
+        section for section in generator.sections
+        if section.type == SectionType.CODE and section.contents
+    ]
     entries = {
         address for address, kind in generator.confirmed_addrs.items()
         if kind == SectionType.CODE
     }
+    entries.update(section.contents[0][0] for section in code_sections)
     tables = {
         section.contents[0][0] for section in generator.sections
         if section.type == SectionType.ADDR_TAB and section.contents
     }
     instructions = []
-    for section in generator.sections:
-        if section.type != SectionType.CODE or not section.contents:
-            continue
-        entries.add(section.contents[0][0])
-        for address, size, mnemonic, operands in section.contents:
-            offset = address - generator.start
-            instruction = next(decoder.disasm(generator.blob[offset:offset + size], address))
-            # CMP and TEST differ in AF. Reject functions that can observe it.
-            if mnemonic in ("lahf", "pushf", "pushfd", "aaa", "aas", "daa", "das"):
+    code = (instruction for section in code_sections for instruction in section.contents)
+    for address, size, mnemonic, operands in code:
+        # CMP and TEST differ in AF. Reject functions that can observe it.
+        if mnemonic in ("lahf", "pushf", "pushfd", "aaa", "aas", "daa", "das"):
+            return {}
+        is_branch = mnemonic.startswith(("j", "loop"))
+        if (is_branch or mnemonic == "call") and re.fullmatch(r"0x[0-9a-f]+", operands):
+            entries.add(int(operands, 16))
+        elif is_branch:
+            table = re.fullmatch(r"dword ptr \[e\w+\*4 \+ (0x[0-9a-f]+)\]", operands)
+            if table is None or int(table[1], 16) not in tables:
                 return {}
-            if mnemonic == "call" and re.fullmatch(r"0x[0-9a-f]+", operands):
-                entries.add(int(operands, 16))
-            if mnemonic.startswith(("j", "loop")):
-                if re.fullmatch(r"0x[0-9a-f]+", operands):
-                    entries.add(int(operands, 16))
-                else:
-                    table = re.fullmatch(r"dword ptr \[e\w+\*4 \+ (0x[0-9a-f]+)\]", operands)
-                    if table is None or int(table[1], 16) not in tables:
-                        return {}
-            instructions.append(instruction)
-    known, result = set(), {}
+        offset = address - generator.start
+        instructions.append(next(decoder.disasm(generator.blob[offset:offset + size], address)))
+    return _zero_register_facts(instructions, entries)
+
+
+def _zero_register_facts(instructions, entries):
+    """Track register values within the validated straight-line instruction spans."""
+    known_zero = set()
+    zero_before = {}
     for instruction in instructions:
         if instruction.address in entries:
-            known.clear()
-        result[instruction.address] = known.copy()
+            known_zero.clear()
+        zero_before[instruction.address] = known_zero.copy()
         _, writes = instruction.regs_access()
-        known.difference_update(
+        known_zero.difference_update(
             REGISTER_FAMILIES.get(instruction.reg_name(register)) for register in writes
         )
         if instruction.mnemonic == "call":
-            known.difference_update(("eax", "ecx", "edx"))
+            known_zero.difference_update(("eax", "ecx", "edx"))
         elif instruction.mnemonic.startswith(("j", "loop", "ret", "int")):
-            known.clear()
+            known_zero.clear()
         elif instruction.mnemonic == "xor":
             left, _, right = instruction.op_str.partition(", ")
             if left == right and left in DWORD_REGS:
-                known.add(left)
-    return result
+                known_zero.add(left)
+    return zero_before
 
 
 def zero_cmp_test(original, rebuilt, index, original_zero, rebuilt_zero):
     """CMP against a proved zero and TEST of the same register, with the same Jcc."""
-    match = re.fullmatch(
+    cmp_operands = re.fullmatch(
         r"cmp (e(?:ax|bx|cx|dx|si|di|bp)), (e(?:bx|cx|si|di|bp))", original[index]
     )
-    if match is None or rebuilt[index] != f"test {match[1]}, {match[1]}":
+    if cmp_operands is None:
         return False
-    if match[2] not in original_zero or match[2] not in rebuilt_zero:
+    tested_register, zero_register = cmp_operands.groups()
+    if rebuilt[index] != f"test {tested_register}, {tested_register}":
+        return False
+    if zero_register not in original_zero or zero_register not in rebuilt_zero:
         return False
     for line, other in zip(original[index + 1:index + 4], rebuilt[index + 1:index + 4]):
         if line != other:
@@ -163,24 +175,29 @@ def zero_cmp_test(original, rebuilt, index, original_zero, rebuilt_zero):
 
 def dead_vptr_store(original, rebuilt, index):
     """A differing construction vptr overwritten before any read or control transfer."""
-    left = VPTR_STORE.fullmatch(original[index])
-    right = VPTR_STORE.fullmatch(rebuilt[index])
-    if (left is None or right is None or left.group(1, 2) != right.group(1, 2)
-            or not re.fullmatch(r"<OFFSET[0-9]+>", left[3])
-            or not right[3].endswith(" (VTABLE)")):
+    original_store = VPTR_STORE.fullmatch(original[index])
+    rebuilt_store = VPTR_STORE.fullmatch(rebuilt[index])
+    if original_store is None or rebuilt_store is None:
         return False
-    base, offset = left[1], int(left[2] or "0", 0)
+    destination = original_store.group(1, 2)
+    if (destination != rebuilt_store.group(1, 2)
+            or not re.fullmatch(r"<OFFSET[0-9]+>", original_store[3])
+            or not rebuilt_store[3].endswith(" (VTABLE)")):
+        return False
+    base, offset = original_store[1], int(original_store[2] or "0", 0)
     for next_index in range(index + 1, min(len(original), index + 4)):
         line = original[next_index]
         if line != rebuilt[next_index]:
             return False
         store = VPTR_STORE.fullmatch(line)
-        if store is not None:
-            if store.group(1, 2) == left.group(1, 2):
-                return store[3].endswith(" (VTABLE)")
-            if store[1] != base or abs(int(store[2] or "0", 0) - offset) < 4 or "[" in store[3]:
+        if store is None:
+            lea = re.fullmatch(r"lea (e[a-z]+), \[.*\]", line)
+            if lea is None or lea[1] == base:
                 return False
-        elif not re.fullmatch(r"lea (e[a-z]+), \[.*\]", line) or line.split(" ", 2)[1].rstrip(",") == base:
+            continue
+        if store.group(1, 2) == destination:
+            return store[3].endswith(" (VTABLE)")
+        if store[1] != base or abs(int(store[2] or "0", 0) - offset) < 4 or "[" in store[3]:
             return False
     return False
 
@@ -190,32 +207,37 @@ class EffectiveFunctionComparator(FullFunctionComparator):
 
     def __post_init__(self):
         super().__post_init__()
-        self.reasons = ()
-        self.orig_zero = self.recomp_zero = {}
-        if not self.is_32bit:
-            return
-        parsers = []
-        for image_id, image, parser in (
-            (ImageId.ORIG, self.orig_bin, self.orig_sanitize),
-            (ImageId.RECOMP, self.recomp_bin, self.recomp_sanitize),
-        ):
-            targets = {entity.addr(image_id) for entity in self.db.get_matches_by_type(EntityType.FUNCTION)}
-            thunks = {address: target for address, target in incremental_thunks(image).items() if target in targets}
-            indirect = {
-                address: thunks[value] for address in getattr(image, "relocations")
-                if (value := int.from_bytes(image.read(address, 4), "little")) in thunks
-            }
-            parsers.append(EffectiveParseAsm(
-                image=image, function_targets=targets, thunk_targets=thunks, indirect_targets=indirect,
-                addr_test=parser.addr_test, name_lookup=parser.name_lookup,
-                is_32bit=self.is_32bit,
-            ))
-        self.orig_sanitize = parsers[0]
-        self.recomp_sanitize = parsers[1]
+        self.reasons = set()
+        self.orig_zero = {}
+        self.recomp_zero = {}
+        if self.is_32bit:
+            self.orig_sanitize = self._make_parser(ImageId.ORIG, self.orig_bin, self.orig_sanitize)
+            self.recomp_sanitize = self._make_parser(ImageId.RECOMP, self.recomp_bin, self.recomp_sanitize)
+
+    def _make_parser(self, image_id, image, upstream_parser):
+        """Build thunk identities restricted to paired functions and relocations."""
+        function_targets = {
+            entity.addr(image_id) for entity in self.db.get_matches_by_type(EntityType.FUNCTION)
+        }
+        thunk_targets = {
+            address: target for address, target in incremental_thunks(image).items()
+            if target in function_targets
+        }
+        indirect_targets = {
+            address: thunk_targets[value] for address in getattr(image, "relocations")
+            if (value := int.from_bytes(image.read(address, 4), "little")) in thunk_targets
+        }
+        return EffectiveParseAsm(
+            image=image, function_targets=function_targets,
+            thunk_targets=thunk_targets, indirect_targets=indirect_targets,
+            addr_test=upstream_parser.addr_test, name_lookup=upstream_parser.name_lookup,
+            is_32bit=self.is_32bit,
+        )
 
     def compare_function(self, match):
-        self.reasons = ()
-        self.orig_zero = self.recomp_zero = {}
+        self.reasons.clear()
+        self.orig_zero = {}
+        self.recomp_zero = {}
         if self.is_32bit:
             decoder = Cs(CS_ARCH_X86, CS_MODE_32)
             decoder.detail = True
@@ -230,10 +252,8 @@ class EffectiveFunctionComparator(FullFunctionComparator):
                 )
         result = super().compare_function(match)
         if self.is_32bit and (result.match_ratio == 1 or result.is_effective_match):
-            reasons = set(self.reasons)
             for parser in (self.orig_sanitize, self.recomp_sanitize):
-                reasons.update(getattr(parser, "reasons"))
-            self.reasons = tuple(sorted(reasons))
+                self.reasons.update(parser.reasons)
         return result
 
     def _compare_function_assembly(self, orig, recomp, split_points):
@@ -258,11 +278,12 @@ class EffectiveFunctionComparator(FullFunctionComparator):
                 continue
             patched[index] = (recomp[index][0], left)
             reasons.add(reason)
-        if reasons:
-            checked = super()._compare_function_assembly(orig, patched, split_points)
-            if checked.match_ratio == 1 or checked.is_effective_match:
-                result.is_effective_match = True
-                self.reasons = tuple(sorted(reasons))
+        if not reasons:
+            return result
+        checked = super()._compare_function_assembly(orig, patched, split_points)
+        if checked.match_ratio == 1 or checked.is_effective_match:
+            result.is_effective_match = True
+            self.reasons.update(reasons)
         return result
 
 
@@ -280,7 +301,7 @@ def additional_effective_matches(engine, comparisons):
             continue
         result = comparator.compare_function(match)
         if (result.match_ratio == 1 or result.is_effective_match) and comparator.reasons:
-            matches[match.orig_addr] = comparator.reasons
+            matches[match.orig_addr] = tuple(sorted(comparator.reasons))
     return matches
 
 

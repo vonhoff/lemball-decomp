@@ -50,14 +50,15 @@ def compare_bytes(original, rebuilt):
     )
     raw = upstream.compare_function(match)
     result = comparator.compare_function(match)
-    return raw, result, comparator.reasons
+    return raw, result, tuple(sorted(comparator.reasons))
 
 
 def compare_assembly(original, rebuilt):
     comparator = EffectiveFunctionComparator.__new__(EffectiveFunctionComparator)
     comparator.is_32bit = True
-    comparator.orig_zero = comparator.recomp_zero = {}
-    comparator.reasons = ()
+    comparator.orig_zero = {}
+    comparator.recomp_zero = {}
+    comparator.reasons = set()
     comparator._source_ref_of_recomp_addr = lambda _address: None
     return comparator._compare_function_assembly(
         list(enumerate(original)), list(enumerate(rebuilt)), [],
