@@ -43,6 +43,24 @@ Reports: raw upstream scores; stubs zero; exact 100%; equivalent matches stay fu
 Empty code/function totals: 0% progress, including badges.
 Regenerate at batch boundaries. Annotation checks and comparisons: direct reccmp APIs.
 
+`report.json`: objdiff v2 format, reccmp scoring; not native objdiff scores.
+Code only: reccmp-discovered original FUNCTION and VTORDISP entries, including
+unmatched functions. No claim of complete binary coverage; data and sections omitted.
+Empty-total 0% is repository policy; native objdiff uses 100%. Completion/link status
+is not inferred from matching scores.
+
+Byte weights: explicit reccmp original size, else
+`tools/data/original-function-sizes.csv`. Never rebuilt sizes. Missing target extents
+fail report generation. Recorded extents: Ghidra entry through highest body address,
+including interior gaps/tables; analysis-derived, not original debug symbols.
+Supplemental original x86 endpoints: evidence column; alignment excluded.
+
+Refresh evidence with `tools/ghidra/ExportFunctionSizes.java` against the original
+LEMBALL.EXE; one script argument: scratch output CSV path. Verify the exported
+SHA-256 against `reccmp-project.yml`. Review boundaries and preserve independently
+inspected supplemental entries before updating the canonical CSV. Runtime reports
+need no Ghidra connection. Changes to inferred boundaries: audit backlog and review.
+
 Badges: exact/fuzzy from `report.json`; effective adds equivalent code from
 `reccmp.json`, each function counted once. Input reports unchanged. Successful
 `main` builds publish three JSON files to the `badges` branch; Shields.io reads them.
