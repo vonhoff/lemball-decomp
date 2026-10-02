@@ -13,12 +13,6 @@ Microsoft Visual C++ 4.00 compiles the C++ code. [Reccmp](https://github.com/isl
 
 ## Matching and progress
 
-To build and compare a reconstructed function with the original executable, run
-`python tools/match.py 0xADDRESS`. The output shows its raw assembly similarity
-score and any differences found by reccmp.
-
-The three progress badges measure different aspects of the reconstruction:
-
 - **Exact Match** shows the percentage of code contained in functions that reach
   a raw 100% [normalized assembly](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
   score. Stub functions do not count as exact matches.
@@ -31,12 +25,6 @@ The three progress badges measure different aspects of the reconstruction:
   functions that reccmp accepts as equivalent, including some differences in
   register use. This badge is reported separately; equivalent functions do not
   increase the assembly-exact function count or exact matched code bytes.
-
-Run `python tools/report.py` to generate the current comparison and progress
-reports in `build-msvc400`. The canonical `report.json` records the exact function
-count, exact matched code bytes, and raw fuzzy similarity. The Effective Match
-badge is calculated separately from the comparison results. README badges update
-when the build workflow completes successfully on `main`.
 
 For the available commands and validation checks, see [tools/USAGE.md](tools/USAGE.md).
 
