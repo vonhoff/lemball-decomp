@@ -84,9 +84,9 @@ void CConnect::FirstReceive()
 	Message message;
 
 	message.m_type = 3;
+	m_established = 1;
 	message.m_code = 0;
 	message.m_payload = this;
-	m_established = 1;
 	m_writeReady = 0;
 	m_eventPending = m_writeReady;
 	m_readReady = 1;
