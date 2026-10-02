@@ -282,8 +282,8 @@ CConnect* CBaseNetwork::NewConnect()
 		next = peer->m_nextConnect;
 		if (peer->m_killRequested != 0) {
 			if (!removed) {
-				removed = true;
 				BeforeDestroyConnections();
+				removed = true;
 			}
 			Delete(peer);
 		}
