@@ -12,10 +12,12 @@ extern unsigned int g_windowDispatchDisabled;
 static LRESULT CALLBACK NetworkWndProc(HWND p_window, UINT p_message, WPARAM p_wParam, LPARAM p_lParam);
 
 // FUNCTION: LEMBALL 0x0047c050
-CNetworkWnd::CNetworkWnd(const char* p_className, int* p_registered) : m_firstMessage(0), m_lastMessage(0)
+CNetworkWnd::CNetworkWnd(const char* p_className, int* p_registered)
 {
 	WNDCLASSA windowClass;
 
+	m_firstMessage = 0;
+	m_lastMessage = 0;
 	if (*p_registered == 0) {
 		windowClass.style = 0;
 		windowClass.lpfnWndProc = NetworkWndProc;
