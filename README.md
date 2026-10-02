@@ -9,9 +9,10 @@
 
 This project is a matching decompilation of *Lemmings Paintball* (1996, Windows 95).
 The goal is to reconstruct the full game in readable C++, preserve its original
-behavior, and reach 100% effective matching across all functions.
+behavior, and reach 100% effective matching across all functions. The code is 
+compiled by Microsoft Visual C++ 4.00. 
 
-The code is compiled by Microsoft Visual C++ 4.00. Each function is compared with the original executable using [reccmp](https://github.com/isledecomp/reccmp).
+Each function is compared with the original executable using [reccmp](https://github.com/isledecomp/reccmp).
 
 ## Progress Reporting
 
