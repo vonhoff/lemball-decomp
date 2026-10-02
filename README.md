@@ -37,13 +37,29 @@ similarity under fuzzy progress.
 
 ## Effective Matching
 
-Effective matching counts exact matches, reccmp equivalents, and matches covered by these rules:
+The Effective badge counts functions with a raw 100% assembly comparison score
+or an accepted equivalent instruction sequence. Each accepted function contributes
+its full original byte size, once. Stubs and unmatched functions contribute zero.
 
-| Rule | Reason |
-| --- | --- |
-| Linker thunks | Different jump stubs can reach the same matched function. |
-| `CMP` versus `TEST` | Comparing against a known zero and testing the same register give the same branch result. |
-| Overwritten vtable stores | An intermediate vtable pointer is overwritten before use. |
+Effective percentage = bytes in exact or accepted equivalent functions / total
+original function bytes × 100.
+
+Equivalence comes from reccmp's checks, such as register allocation differences,
+plus the additional checks in [tools/lib/effective.py](tools/lib/effective.py):
+
+| Difference | Example | Required checks |
+| --- | --- | --- |
+| Linker thunks (jump stubs) | A call reaches `Foo` through a linker jump stub instead of naming `Foo` directly. | Verify the jump target against the original/rebuilt function pairing. Resolve verified thunk references to that function identity. |
+| `CMP` versus `TEST` | `cmp eax, ebp` versus `test eax, eax`, with `ebp` known to be zero. | Prove the zero value at that point in both functions; require the same following conditional branch. Reject functions that can observe the differing auxiliary flag. |
+| Overwritten construction vtable stores | A temporary vtable pointer differs; both sequences then write the same final vtable pointer. | Require an overwrite of the same slot within the next three instructions, before any read, call, branch, or change to the base register. Intervening instructions must match and be limited to non-overlapping stores or address calculations. |
+
+The whole function must match after these checks, including any remaining
+differences accepted by reccmp. A high raw similarity alone earns no effective credit.
+
+For example, an accepted equivalent 100-byte function with 80% raw similarity
+contributes 100 bytes to Effective, 80 weighted bytes to Fuzzy, and zero bytes to
+Exact. Its raw score remains 80% in decomp.dev. [tools/badges.py](tools/badges.py)
+exports the Effective badge separately; `report.json` contains no effective fields.
 
 ## References
 
