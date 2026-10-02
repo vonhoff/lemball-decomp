@@ -11,7 +11,6 @@ class CBaseStat;
 struct CVSRange;
 
 #define RESOURCE_HANDLE_COUNT 0x400
-#define MOG_DIRECTORY_ALLOCATION_BYTES 0x38
 
 class CMogRes : public CRawRead {
 public:

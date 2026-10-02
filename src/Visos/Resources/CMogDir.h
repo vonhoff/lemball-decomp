@@ -9,9 +9,8 @@
 #define RESOURCE_CHUNK_DIRECTORY 0x44495243
 #define RESOURCE_CHUNK_ANY_TYPE 0xffffffff
 #define MOG_FORMAT_VERSION 3
-#define CHUNK_INFO_ALLOCATION_BYTES 0x38
-#define MOG_DIRECTORY_ALLOCATION_BYTES 0x38
 
+// SIZE 0x38
 class CMogDir {
 public:
 	void* operator new(size_t p_size) { return CMogloadArena::operator new(p_size); }
