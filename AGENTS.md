@@ -30,6 +30,12 @@ Deep comparison: `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
 Canonical progress: exact = non-stub, raw 100% assembly comparison score. Stubs contribute zero.
 Effective matches retain raw fuzzy scores. Effective badge includes exact + equivalent code; no effective fields in `report.json`.
 
+## Documentation changes
+
+Documentation-only edits, including `README.md` and `AGENTS.md`: review wording and links; run `git diff --check`.
+Do not run gate, builds, matching, or reports for documentation-only edits unless explicitly requested.
+The source reconstruction workflow below applies to C/C++ source changes. Tool changes: run gate and relevant tool checks.
+
 ## Source changes
 
 1. Select a focused target from the current report. When reconstruction-memory tools are available: `triage_report`, then `get_function_memory(addr)`.
