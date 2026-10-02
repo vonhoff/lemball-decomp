@@ -42,10 +42,9 @@ void SetGameTime()
 	}
 
 	unsigned int gameTick = CurrentMilliTimer() / GAME_TICK_MILLISECONDS - g_dwGameTimeTick;
-	unsigned int maximumTick = g_dwLastElapsedMilli + 2;
-	if (gameTick > maximumTick) {
+	if (gameTick > g_dwLastElapsedMilli + 2) {
 		g_dwGameTimeTick += gameTick - g_dwLastElapsedMilli - 2;
-		gameTick = maximumTick;
+		gameTick = g_dwLastElapsedMilli + 2;
 	}
 	g_dwGameTick = gameTick;
 	g_dwSimulationTimestamp = gameTick * GAME_TICK_MILLISECONDS;
