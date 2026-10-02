@@ -70,7 +70,8 @@ int CLiftManager::ExportEndpoints(LiftEndpointRecord* p_records)
 void CLiftManager::RemoveLift(CLift* p_lift)
 {
 	int i = 0;
-	while (i < m_count) {
+	int count = m_count;
+	while (i < count) {
 		if (&m_lifts[i] == p_lift) {
 			m_lifts[i].SetId(0xffff);
 			for (int next = i + 1; next < m_count; next++) {
