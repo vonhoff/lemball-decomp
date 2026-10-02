@@ -1,4 +1,4 @@
-"""Build freshness and diagnostic filtering."""
+"""Build artifact freshness."""
 
 import os
 import subprocess
@@ -43,18 +43,3 @@ class BuildTests(unittest.TestCase):
                 self.assertEqual((code, calls), (expected, attempts))
                 if mode == 'failed':
                     self.assertEqual(executable.read_bytes(), b'fixture')
-
-    def test_diagnostic_filter(self):
-        cases = {
-            '[ 74%] Building CXX object CMakeFiles/LEMBALL.dir/src/CMessFAILEDConnect.cpp.obj': False,
-            '[10/50] Compiling CXX object CMakeFiles/LEMBALL.dir/src/Error.cpp.obj': False,
-            'DirectDrawError.cpp': False,
-            '[100%] Linking CXX executable LEMBALL.EXE': True,
-            'Link output is stale; forcing one relink': True,
-            "DirectDrawError.cpp(42) : error C2065: undeclared identifier": True,
-            'LINK : fatal error LNK1181: cannot open input file': True,
-            'Command line warning D4025 : overriding options': True,
-        }
-        for line, expected in cases.items():
-            with self.subTest(line=line):
-                self.assertEqual(build.is_line_of_interest(line), expected)

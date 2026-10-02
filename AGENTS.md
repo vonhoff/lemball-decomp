@@ -22,9 +22,10 @@
 | `tools/build.py` | Build/link; `--clean-first` for stale PDB/build artifacts |
 | `tools/match.py 0xADDR` | Build/compare/diff with raw and Effective scores, `--no-build` for current artifacts |
 | `tools/next.py` | Rank unfinished functions with Effective scores, `--exact` for raw, then size/address |
-| `tools/gate.py` | Source checks and tool tests |
+| `tools/gate.py` | Source policy, annotation, and catalog checks |
 | `tools/report.py` | Canonical comparison/progress reports |
 | `tools/badges.py` | README badges, separate from canonical progress |
+| `python -m unittest discover -s tests` (from `tools/`) | Tool tests |
 
 Deep comparison: `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
 Canonical progress: exact = non-stub, raw 100% assembly comparison score. Stubs contribute zero.
@@ -44,10 +45,9 @@ The source reconstruction workflow below applies to C/C++ source changes. Tool c
 4. Batch boundary: snapshot `build-msvc400/report-baseline.json`; regenerate report; audit prior exact matches. Header/ABI/multi-TU changes: `detect_changes`. Explain regressions. No full reports per speculative trial.
 5. Clang-format touched C/C++; run gate and relevant checks; commit verified work.
 
-Unresolved reconstruction findings: `docs/reconstruction-audit-backlog.md`; location, evidence, uncertainty, disposition.
-
 ## Source conventions
 
+- Code comments: functional only; reccmp annotations/symbols, layout offsets/sizes, and format controls.
 - Class files: stem = primary class; free-function files allowed. Class definitions identical across TUs. Annotated functions: ascending original address.
 - Use typed objects, members, indexing, base conversions. Derive extents/strides from allocations and accesses; distinguish serialized and runtime layouts.
 - Allocations: `sizeof(Type)` / `count * sizeof(*elements)`. Byte cursors for streams/pixels.

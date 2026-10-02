@@ -3,6 +3,8 @@
 import re
 from pathlib import Path
 
+from reccmp.dir import source_code_search
+
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build-msvc400"
 SRC = ROOT / "src"
@@ -12,12 +14,6 @@ REPORT_JSON = BUILD / "report.json"
 
 TOKENS = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'')
 
-CPP_SUFFIXES = frozenset({".cpp", ".h", ".c"})
-RECCMP_MARK = re.compile(
-    r"^\s*//\s*(?:FUNCTION|STUB|TEMPLATE|SYNTHETIC|LIBRARY|GLOBAL|VTABLE)\s*:",
-    re.MULTILINE,
-)
-VTABLE_MARK = re.compile(r"^\s*//\s*VTABLE:\s+LEMBALL\b", re.MULTILINE)
 TYPE_DEF = re.compile(
     r"\b(?P<kind>class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
 )
@@ -48,25 +44,13 @@ def parenthesis_end(code: str, opening: int) -> int | None:
     return None
 
 
-def collect_sources(paths=None, suffixes=CPP_SUFFIXES):
-    """Collect unique C/C++ source and header files from given paths or src."""
-    files: set[Path] = set()
-    for path in paths or [SRC]:
-        target = ROOT / path
-        if target.is_dir():
-            files.update(p for p in target.rglob("*") if p.suffix.lower() in suffixes)
-        elif target.is_file() and target.suffix.lower() in suffixes:
-            files.add(target)
-    return sorted(files)
+def collect_sources(paths=None):
+    return list(source_code_search([ROOT / path for path in paths or [SRC]]))
 
 
 def load_engine():
     from reccmp.compare import Compare
     from reccmp.project.detect import RecCmpProject
-    from lib.extents import load_target_sizes, prepare_function_extents
-
-    load_target_sizes()
     target = RecCmpProject.from_directory(BUILD).get("LEMBALL")
     engine = Compare.from_target(target)
-    prepare_function_extents(engine)
     return target, engine

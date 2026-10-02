@@ -314,7 +314,7 @@ address,size,evidence
 0x004015ff,5,Ghidra body span
 0x00401604,5,Ghidra body span
 0x00401609,5,Ghidra body span
-0x0040160e,1,Ghidra body span
+0x0040160e,5,x86 E9 rel32 thunk: five-byte instruction
 0x00401613,5,Ghidra body span
 0x00401618,5,Ghidra body span
 0x0040161d,5,Ghidra body span
@@ -1559,7 +1559,7 @@ address,size,evidence
 0x00402e50,5,Ghidra body span
 0x00402e55,5,Ghidra body span
 0x00402e5a,5,Ghidra body span
-0x00402e5f,1,Ghidra body span
+0x00402e5f,5,x86 E9 rel32 thunk: five-byte instruction
 0x00402e64,5,Ghidra body span
 0x00402e69,5,Ghidra body span
 0x00402e6e,5,Ghidra body span
@@ -2070,7 +2070,7 @@ address,size,evidence
 0x0040384b,5,Ghidra body span
 0x00403850,5,Ghidra body span
 0x00403855,5,Ghidra body span
-0x0040385a,1,Ghidra body span
+0x0040385a,5,x86 E9 rel32 thunk: five-byte instruction
 0x0040385f,5,Ghidra body span
 0x00403864,5,Ghidra body span
 0x00403869,5,Ghidra body span

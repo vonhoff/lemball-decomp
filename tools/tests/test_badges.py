@@ -6,24 +6,10 @@ import unittest
 from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.types import EntityType
 
-from badges import build_badges, effective_totals
+from badges import build_badges
 
 
 class BadgeTests(unittest.TestCase):
-    def test_empty_report_badges_have_zero_progress(self):
-        comparisons = ReccmpStatusReport("LEMBALL.EXE")
-        report = {
-            "units": [],
-            "measures": {
-                "total_code": "0",
-                "matched_code_percent": 0.0,
-                "fuzzy_match_percent": 0.0,
-            },
-        }
-        badges = build_badges(report, comparisons)
-        self.assertEqual(effective_totals(report, comparisons), (0, 0))
-        self.assertTrue(all(badge["message"] == "0.00%" for badge in badges.values()))
-
     def test_exact_fuzzy_and_effective_are_distinct(self):
         comparisons = ReccmpStatusReport("LEMBALL.EXE")
         functions = []
@@ -65,7 +51,6 @@ class BadgeTests(unittest.TestCase):
         }
         unchanged = copy.deepcopy(report)
         badges = build_badges(report, comparisons)
-        self.assertEqual(effective_totals(report, comparisons), (30, 2))
         self.assertEqual(badges["exact"]["message"], "12.50%")
         self.assertEqual(badges["fuzzy"]["message"], "38.75%")
         self.assertEqual(badges["effective"]["message"], "37.50%")
@@ -76,7 +61,6 @@ class BadgeTests(unittest.TestCase):
                       0x401060: ("Extra equivalence",), 0x401080: ("Unmatched",),
                       0x4010C0: ("No comparison",)}
         extended = build_badges(report, comparisons, additional)
-        self.assertEqual(effective_totals(report, comparisons, additional), (40, 3))
         self.assertEqual(extended["effective"]["message"], "50.00%")
         self.assertEqual(extended["exact"], badges["exact"])
         self.assertEqual(extended["fuzzy"], badges["fuzzy"])

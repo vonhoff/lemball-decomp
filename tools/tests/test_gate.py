@@ -35,20 +35,17 @@ class GateTests(unittest.TestCase):
 
     def test_modes_and_first_failure(self):
         source = [
-            "check_comments",
-            "check_smell",
-            "check_layout",
+            "check_policy",
             "check_annotations",
             "check_names",
         ]
         cases = (
-            ([], None, source + ["check_tool_tests"]),
+            ([], None, source),
             (["--path", "Fixture.cpp"], None, source),
             (["--names"], None, ["check_names"]),
             (["--names", "--path", "Fixture.cpp"], None, ["check_names"]),
             (["--vtable"], None, ["check_vtable"]),
             *[([], failure, source[: index + 1]) for index, failure in enumerate(source)],
-            ([], "check_tool_tests", source + ["check_tool_tests"]),
             (["--names"], "check_names", ["check_names"]),
             (["--vtable"], "check_vtable", ["check_vtable"]),
         )
@@ -64,7 +61,7 @@ class GateTests(unittest.TestCase):
                 self.subTest(flags=flags, failure=failure),
                 patch.object(sys, "argv", ["gate.py", *flags]),
                 patch.multiple(
-                    gate, **dict.fromkeys(source + ["check_tool_tests", "check_vtable"], DEFAULT)
+                    gate, **dict.fromkeys(source + ["check_vtable"], DEFAULT)
                 ) as checks,
             ):
                 for name, check in checks.items():

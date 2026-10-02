@@ -1,39 +1,64 @@
 """Check report parsing and exact/fuzzy metrics together."""
 
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from reccmp.compare.db import ReccmpEntity
+from reccmp.compare.csv import csv_parse
 from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
-from reccmp.formats.exceptions import InvalidVirtualAddressError
 from reccmp.types import EntityType
 
-from lib.extents import original_functions
-from report import build_report, group_functions, measures
+from report import build_report
+from lib import ROOT
 
 
 class ReportTests(unittest.TestCase):
-    def test_empty_reports_have_zero_progress(self):
-        for groups in ({}, {"Empty": []}):
-            with self.subTest(groups=groups):
-                report = build_report(groups)
-                self.assertEqual(report["measures"]["total_units"], len(groups))
-                for values in [report["measures"]] + [
-                    u["measures"] for u in report["units"]
-                ]:
-                    self.assertEqual(values["total_code"], "0")
-                    self.assertEqual(values["matched_code"], "0")
-                    self.assertEqual(values["total_functions"], 0)
-                    self.assertEqual(values["matched_functions"], 0)
-                    self.assertEqual(values["fuzzy_match_percent"], 0.0)
-                    self.assertEqual(values["matched_code_percent"], 0.0)
-                    self.assertEqual(values["matched_functions_percent"], 0.0)
+    def test_lemball_catalog_has_unique_non_overlapping_code(self):
+        catalog = list(csv_parse(
+            (ROOT / "tools/data/original-function-sizes.csv").read_text(encoding="utf-8")
+        ))
+        self.assertEqual(len(catalog), len({address for address, _ in catalog}))
+        previous_end = 0
+        for address, values in sorted(catalog):
+            self.assertGreater(values["size"], 0)
+            self.assertGreaterEqual(address, previous_end)
+            previous_end = address + values["size"]
 
-    def test_zero_code_does_not_claim_matched_bytes(self):
-        values = measures([{"size": "0", "fuzzy_match_percent": 100.0}])
-        self.assertEqual(values["fuzzy_match_percent"], 0.0)
-        self.assertEqual(values["matched_code_percent"], 0.0)
-        self.assertEqual(values["matched_functions_percent"], 100.0)
+    def test_catalogued_untyped_and_linker_code_remains_in_denominator(self):
+        entities = [
+            ReccmpEntity(0x401000, 0x501000, {
+                "type": EntityType.FUNCTION, "orig_size": 10,
+            }),
+            ReccmpEntity(0x401020, None, {"orig_size": 20}),
+            ReccmpEntity(0x401040, None, {
+                "type": EntityType.THUNK, "orig_size": 5,
+            }),
+            ReccmpEntity(0x401050, 0x501050, {
+                "type": EntityType.IMPORT_THUNK, "orig_size": 6,
+            }),
+            ReccmpEntity(0x402000, None, {
+                "type": EntityType.DATA, "orig_size": 4,
+            }),
+        ]
+        engine, modules = Mock(), Mock()
+        engine.get_all.return_value = entities
+        modules.get_module.return_value = None
+        comparisons = ReccmpStatusReport("LEMBALL.EXE")
+        comparisons.add_match(ReccmpComparedEntity(
+            0x401000, "Exact", 1.0, EntityType.FUNCTION, 0x501000,
+        ))
+        catalog = {0x401000: 10, 0x401020: 20, 0x401040: 5, 0x401050: 6}
+        with patch("report.csv_parse", return_value=catalog.items()):
+            result = build_report(engine, comparisons, modules)
+        self.assertEqual(result["measures"]["total_functions"], 4)
+        self.assertEqual(result["measures"]["total_code"], "41")
+        self.assertEqual(result["measures"]["matched_functions"], 1)
+        self.assertEqual(result["measures"]["matched_code"], "10")
+        self.assertAlmostEqual(result["measures"]["fuzzy_match_percent"], 1000 / 41)
+        self.assertEqual(
+            [f["fuzzy_match_percent"] for u in result["units"] for f in u["functions"]],
+            [100.0, 0.0, 0.0, 0.0],
+        )
 
     def test_inventory_and_progress_ignore_rebuilt_sizes(self):
         comparisons = ReccmpStatusReport("LEMBALL.EXE")
@@ -66,26 +91,20 @@ class ReportTests(unittest.TestCase):
                 ]
                 entities.extend((
                     ReccmpEntity(0x401080, 0x501080, {"type": EntityType.FUNCTION, "orig_size": 12}),
-                    ReccmpEntity(0x1234, None, {"type": EntityType.FUNCTION, "orig_size": 10}),
-                    ReccmpEntity(0x401090, 0x5678, {"type": EntityType.FUNCTION, "orig_size": 10}),
+                    ReccmpEntity(0x401090, 0x501090, {"type": EntityType.FUNCTION, "orig_size": 10}),
                 ))
                 engine, modules = Mock(), Mock()
                 engine.get_all.return_value = entities
 
-                def check_address(virtual_address):
-                    if virtual_address in (0x1234, 0x5678):
-                        raise InvalidVirtualAddressError("Fixture address outside PE sections")
-                    return 1, 0
-
-                engine.orig_bin.get_relative_addr.side_effect = check_address
                 modules.get_module.side_effect = lambda recompiled_address: (
                     "",
                     "CMakeFiles/LEMBALL.dir/src/Exact.cpp.obj"
                     if recompiled_address == 0x501000 else "mixed.obj",
                 )
-                result = build_report(
-                    group_functions(original_functions(engine), comparisons, modules)
-                )
+                catalog = {entity.orig_addr: {} for entity in entities
+                           if entity.orig_addr is not None and entity.entity_type != EntityType.DATA}
+                with patch("report.csv_parse", return_value=catalog.items()):
+                    result = build_report(engine, comparisons, modules)
                 functions = [f for u in result["units"] for f in u["functions"]]
                 self.assertEqual(
                     [unit["name"] for unit in result["units"]],

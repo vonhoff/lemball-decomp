@@ -1,21 +1,16 @@
 #!/usr/bin/env python3
-"""Check source reconstruction and comparison tools."""
+"""Check source policy, annotations, and catalog identities."""
 
 import argparse
-import unittest
 from itertools import groupby
-from pathlib import Path
 
 from colorama import Style
-from reccmp.dir import source_code_search
 from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 from reccmp.types import EntityType
 
-from lib import SRC, load_engine
-from lib.comments import check_comments
-from lib.layout import check_layout
+from lib import collect_sources, load_engine
 from lib.names import check_names
-from lib.smell import check_smell
+from lib.policy import check_policy
 
 
 def check_vtable():
@@ -26,13 +21,8 @@ def check_vtable():
     return int(not tables or exact != len(tables))
 
 
-def check_tool_tests() -> int:
-    suite = unittest.defaultTestLoader.discover(str(Path(__file__).parent / "tests"))
-    return int(not unittest.TextTestRunner().run(suite).wasSuccessful())
-
-
 def check_annotations(paths=None):
-    files = tuple(source_code_search([Path(path) for path in paths or [SRC]]))
+    files = tuple(collect_sources(paths))
     target = DecomplintTarget(files, "LEMBALL", "utf-8")
     alerts = [alert for alert in lint_all_targets((target,)) if alert.target in (None, "LEMBALL")]
     alerts.sort(key=lambda alert: str(alert.path).lower())
@@ -56,10 +46,10 @@ def main() -> int:
         return check_vtable()
     if args.names:
         return check_names(args.paths, verbose=True)
-    for check in (check_comments, check_smell, check_layout, check_annotations, check_names):
+    for check in (check_policy, check_annotations, check_names):
         if code := check(args.paths):
             return code
-    return 0 if args.paths else check_tool_tests()
+    return 0
 
 
 if __name__ == "__main__":

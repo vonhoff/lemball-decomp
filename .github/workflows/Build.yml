@@ -52,6 +52,10 @@ jobs:
       - name: Gate checks
         run: python tools/gate.py
 
+      - name: Tool tests
+        working-directory: S:\tools
+        run: python -m unittest discover -s tests
+
       - name: Prepare target binary
         env:
           LEMBALL_REFERENCE_URL: ${{ secrets.LEMBALL_REFERENCE_URL }}

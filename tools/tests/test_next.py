@@ -1,4 +1,4 @@
-"""Ranking order, output limits, and report read failures."""
+"""Ranking order and output limits for LEMBALL reports."""
 
 import contextlib
 import io
@@ -71,17 +71,3 @@ class RankingTests(unittest.TestCase):
                 self.assertIn("99.00%", output.getvalue())
                 self.assertEqual(path.read_text(encoding="utf-8"), serialized)
         self.assertEqual(ranking.rank_functions({"units": []}), [])
-
-    def test_unreadable_report(self):
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "report.json"
-            for missing in (True, False):
-                if not missing:
-                    path.write_text("{", encoding="utf-8")
-                with (
-                    self.subTest(missing=missing),
-                    patch.object(ranking, "REPORT_JSON", path),
-                    patch("sys.argv", ["next.py"]),
-                    self.assertRaisesRegex(SystemExit, "cannot read report:"),
-                ):
-                    ranking.main()

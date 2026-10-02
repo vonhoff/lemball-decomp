@@ -13,23 +13,11 @@ from pathlib import Path
 from lib import BUILD, ROOT
 
 LOG_PATH = BUILD / "last_build.log"
-LOG_INTEREST = re.compile(
-    r"\b(?:warning|error|fatal|failed)\b|built target|linking|relink|\[\s*100%\s*\]",
-    re.IGNORECASE,
-)
 MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
 MSVC_DIAGNOSTIC = re.compile(
     r"(?:\b(?:fatal )?error\s+[A-Z]*\d*\s*:|\bwarning\s+[A-Z]*\d*\s*:|Command line (?:error|warning)\b)",
     re.IGNORECASE,
 )
-CMAKE_BUILDING_LINE = re.compile(r"^\s*\[\s*(?:\d+%|\d+/\d+)\s*\]\s+(?:Building|Compiling)\b", re.IGNORECASE)
-BARE_SOURCE_LINE = re.compile(r"^\s*(?:.*[\\/])?[\w.-]+\.(?:cpp|c|cxx|rc)\s*$", re.IGNORECASE)
-
-
-def is_line_of_interest(line: str) -> bool:
-    return bool(MSVC_DIAGNOSTIC.search(line) or (
-        LOG_INTEREST.search(line) and not CMAKE_BUILDING_LINE.match(line) and not BARE_SOURCE_LINE.match(line)
-    ))
 
 
 def win_short_path(path: str) -> str:
@@ -109,31 +97,15 @@ def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) ->
     return 1, output + '\nerror: executable is still older than its link inputs after retry\n'
 
 
-def configure_build(cmake: str, startup_checks: str) -> int:
-    """Refresh the cache when paths, the toolchain, or startup-check settings changed."""
-    makefile = BUILD / "Makefile"
-    toolchain = ROOT / "cmake" / "msvc400-toolchain.cmake"
-    cache_path = BUILD / "CMakeCache.txt"
-    cache_lines = cache_path.read_text(encoding="utf-8").splitlines() if cache_path.exists() else []
-    cached = next((line.split("=", 1)[1].strip().strip('"')
-                   for line in cache_lines if line.startswith("CMAKE_COMMAND:")), None)
-    need_configure = (
-        cached is None or " " in cached or not makefile.exists()
-        or toolchain.stat().st_mtime > makefile.stat().st_mtime
-        or f"LEMBALL_ENFORCE_STARTUP_CHECKS:BOOL={startup_checks}" not in cache_lines
-    )
-    if need_configure:
-        res = subprocess.run([cmake, '--preset', 'msvc400',
-                              f'-DLEMBALL_ENFORCE_STARTUP_CHECKS={startup_checks}'], cwd=ROOT, check=False)
-        return res.returncode
-    return 0
-
-
 def run_build(clean_first=False, disable_enforcements=False) -> int:
     """Configure, optionally clean, build with link checks, and save diagnostics."""
     cmake = resolve_cmake()
     BUILD.mkdir(parents=True, exist_ok=True)
-    configured = configure_build(cmake, "OFF" if disable_enforcements else "ON")
+    startup_checks = "OFF" if disable_enforcements else "ON"
+    configured = subprocess.run(
+        [cmake, "--preset", "msvc400", f"-DLEMBALL_ENFORCE_STARTUP_CHECKS={startup_checks}"],
+        cwd=ROOT, check=False,
+    ).returncode
     if configured:
         return configured
 
@@ -147,9 +119,12 @@ def run_build(clean_first=False, disable_enforcements=False) -> int:
 
     returncode, output = build_with_link_check(cmake_args, BUILD, ROOT)
     LOG_PATH.write_text(output, encoding="utf-8")
-    for line in output.splitlines():
-        if is_line_of_interest(line):
-            print(line)
+    if returncode:
+        print(output)
+    else:
+        for line in output.splitlines():
+            if MSVC_DIAGNOSTIC.search(line):
+                print(line)
 
     print(f"build: exit={returncode}; log={LOG_PATH}")
     return returncode
