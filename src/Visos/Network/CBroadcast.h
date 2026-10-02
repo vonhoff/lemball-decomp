@@ -67,6 +67,9 @@ protected:
 // SYNTHETIC: LEMBALL 0x00462c60 SYMBOL
 // ??_ECBroadcast@@$4PPPPPPPM@KI@AEPAXI@Z
 
+// SYNTHETIC: LEMBALL 0x0047bc80 SYMBOL
+// ?PostRead@CBroadcast@@WDM@AEXW4NetworkEvents@@PAVCBasePacket@@@Z
+
 // GLOBAL: LEMBALL 0x00499048
 // CBroadcast::`vbtable'{for `CRwSocket'}
 

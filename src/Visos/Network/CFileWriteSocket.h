@@ -28,6 +28,9 @@ private:
 };
 #pragma warning(default : 4250)
 
+// SYNTHETIC: LEMBALL 0x0047bc30 SYMBOL
+// ?SetDestAddr@CFileWriteSocket@@WPPPPPOKM@AEXPAVCNetworkAddress@@@Z
+
 // SYNTHETIC: LEMBALL 0x0047bca0 SYMBOL
 // ?SysCloseSocket@CFileCommonSocket@@WPPPPPPCI@AEHXZ
 
