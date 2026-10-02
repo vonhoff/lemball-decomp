@@ -127,13 +127,18 @@ void CRocketManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned c
 			else {
 				id = (unsigned short) CGameObject::NextId();
 			}
-			unsigned short x = *(unsigned short*) p_data;
-			p_data += 2;
-			unsigned short y = *(unsigned short*) p_data;
-			p_data += 2;
-			unsigned short z = *(unsigned short*) p_data;
-			p_data += 2;
-			Add(id, x, y, z);
+			struct LevelPosition {
+				unsigned short x;
+				unsigned short y;
+				unsigned short z;
+			} position;
+			position.x = *(unsigned short*) p_data;
+			p_data += sizeof(position.x);
+			position.y = *(unsigned short*) p_data;
+			p_data += sizeof(position.y);
+			position.z = *(unsigned short*) p_data;
+			p_data += sizeof(position.z);
+			Add(id, position.x, position.y, position.z);
 			remaining--;
 		} while (remaining != 0);
 	}
