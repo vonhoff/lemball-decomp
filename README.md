@@ -24,10 +24,11 @@ The three progress badges measure different aspects of the reconstruction:
 - **Exact Match** shows the percentage of code contained in functions that reach
   a raw 100% [normalized assembly](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
   score. Stub functions do not count as exact matches.
-- **Fuzzy Match** shows the average raw similarity score, weighted by function
-  size. Larger functions contribute more to this percentage. Stubs and functions
-  without a comparison contribute zero. Functions that reccmp accepts as
-  equivalent retain their raw scores, even when those scores are below 100%.
+- **Fuzzy Match** shows the average raw assembly similarity reported by reccmp,
+  weighted by function size in bytes. Larger functions contribute more to this
+  percentage. Stubs and functions without a comparison contribute zero. Functions
+  that reccmp accepts as equivalent retain their raw scores, even when those
+  scores are below 100%.
 - **Effective Match** shows the percentage of code contained in exact matches or
   functions that reccmp accepts as equivalent, including some differences in
   register use. This badge is reported separately; equivalent functions do not
