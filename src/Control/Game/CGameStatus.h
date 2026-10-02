@@ -40,9 +40,7 @@ private:
 	unsigned int m_levelState; // 0x04
 	int m_skill;               // 0x08
 	unsigned int m_skillState; // 0x0c
-	char m_password[10];       // 0x10
-	unsigned short m_pad0x1a;  // 0x1a
-	unsigned int m_pad0x1c;    // 0x1c
+	char m_password[16];       // 0x10
 	unsigned int m_status0;    // 0x20
 	unsigned int m_status1;    // 0x24
 	int m_maxLevels[5];        // 0x28

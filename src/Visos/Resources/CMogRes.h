@@ -8,7 +8,7 @@
 class CResBase;
 class CMogDir;
 class CBaseStat;
-struct CVsRange;
+struct CVSRange;
 
 #define RESOURCE_HANDLE_COUNT 0x400
 #define RESOURCE_HANDLE_TABLE_BYTES 0x1000
@@ -19,7 +19,7 @@ public:
 	CMogRes(char* p_path, unsigned long p_arenaSize);
 	CResBase* Find(unsigned int p_resourceId);
 	bool CheckAllUnloaded();
-	bool Load(const CVsRange& p_range, unsigned char*& p_data, CResBase* p_resource);
+	bool Load(const CVSRange& p_range, unsigned char*& p_data, CResBase* p_resource);
 	bool Load(unsigned int p_resourceId, CResBase* p_resource, unsigned int p_recurse);
 	bool Load(CResBase* p_resource, Chunk p_chunk);
 	bool SetWD(char* p_path);

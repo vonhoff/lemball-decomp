@@ -1,29 +1,28 @@
 #include "../CMap.h"
 
 #include "AI/Base/ObjectTypes.h"
+#include "Map/Base/tagLoadGroundSurfaceData.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
 // FUNCTION: LEMBALL 0x00430db0
-void CMap::LoadLevel(LoadGroundSurfaceData* p_data, unsigned long p_dataSize, unsigned char p_skip)
+void CMap::LoadLevel(tagLoadGroundSurfaceData* p_data, unsigned long p_dataSize, unsigned char p_skip)
 {
+	unsigned short* data;
 	int x;
 	int y;
-	int width = ((unsigned short*) p_data)[0];
-	int height = ((unsigned short*) p_data)[1];
-	p_data = (LoadGroundSurfaceData*) &((unsigned short*) p_data)[2];
+	int width = p_data->m_width;
+	int height = p_data->m_height;
+	data = (unsigned short*) (p_data + 1);
 
 	m_ground.Clear();
 	ReSize(width, height);
 
 	for (y = 0; height > y; y++) {
 		for (x = 0; width > x; x++) {
-			eObjectType objectType = (eObjectType) * (unsigned short*) p_data;
-			p_data = (LoadGroundSurfaceData*) &((unsigned short*) p_data)[1];
-			unsigned short objectData = *(unsigned short*) p_data;
-			p_data = (LoadGroundSurfaceData*) &((unsigned short*) p_data)[1];
-			unsigned short groundHeight = *(unsigned short*) p_data;
-			p_data = (LoadGroundSurfaceData*) &((unsigned short*) p_data)[1];
+			eObjectType objectType = (eObjectType) *data++;
+			unsigned short objectData = *data++;
+			unsigned short groundHeight = *data++;
 
 			CGround* ground = m_ground.m_ground + m_ground.m_width * y + x;
 			ground->m_objectType = objectType;

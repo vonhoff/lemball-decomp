@@ -4,7 +4,7 @@
 #include "CDepressedButton.h"
 #include "CPushActive.h"
 
-struct CVsPoint;
+struct CVSPoint;
 class CPVGWnd;
 class CResANIM;
 class CPrimitive;
@@ -14,7 +14,7 @@ class CPrimitive;
 // VTABLE: LEMBALL 0x00499728 CHotAreaHandler
 class CGraphicButton : public CDepressedButton {
 public:
-	CGraphicButton(const CVsPoint& p_position,
+	CGraphicButton(const CVSPoint& p_position,
 				   CPVGWnd* p_parent,
 				   unsigned long p_animId,
 				   unsigned long p_alignmentFlags);

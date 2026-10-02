@@ -14,7 +14,7 @@
 
 // FUNCTION: LEMBALL 0x004421d0
 CPanelPauseButton::CPanelPauseButton(CPanel* p_panel,
-									 const CVsPoint& p_position,
+									 const CVSPoint& p_position,
 									 CPVGWnd* p_parent,
 									 unsigned long p_animId,
 									 unsigned long p_flags)
@@ -26,7 +26,7 @@ CPanelPauseButton::CPanelPauseButton(CPanel* p_panel,
 }
 
 // FUNCTION: LEMBALL 0x00442240
-void CPanelPauseButton::OnInside(const CVsPoint& p_point)
+void CPanelPauseButton::OnInside(const CVSPoint& p_point)
 {
 	CursorChangeType(CURSOR_DISPLAY_HAND, m_pressedInside);
 }
@@ -38,9 +38,9 @@ void CPanelPauseButton::DrawButton()
 }
 
 // FUNCTION: LEMBALL 0x00442270
-void CPanelPauseButton::OnPaint(const CVsRect& p_rect)
+void CPanelPauseButton::OnPaint(const CVSRect& p_rect)
 {
-	reinterpret_cast<CDepressedButton*>(this)->CDepressedButton::OnPaint(p_rect);
+	CDepressedButton::OnPaint(p_rect);
 }
 
 // FUNCTION: LEMBALL 0x00442280
@@ -63,7 +63,7 @@ void CPanelPauseButton::OnReleased(int p_flags)
 
 		if ((paused == 0 && m_panel->m_game->GetPauser() != 0) ||
 			(paused != 0 && m_panel->m_game->m_ai->m_gameStatus != 1)) {
-			m_panel->m_game->TriggerPause((unsigned char) paused);
+			m_panel->m_game->TriggerPause(paused);
 		}
 
 		m_toggled = m_panel->m_game->m_paused;
@@ -74,7 +74,7 @@ void CPanelPauseButton::OnReleased(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00442350
-void CPanelPauseButton::OnExternalButtonUp(const CVsPoint& p_point, int p_flags)
+void CPanelPauseButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	CPVButton::OnExternalButtonUp(p_point, p_flags);
 	if (p_flags == 0 && m_pressedInside != 0) {

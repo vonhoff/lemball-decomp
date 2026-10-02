@@ -3,7 +3,7 @@
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/CMasterInput.h"
-#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Foundation/CVSPoint.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
@@ -126,7 +126,7 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 // FUNCTION: LEMBALL 0x0044f240
 void CHiliteButtons::MoveCurrentButton(int p_x, int p_y)
 {
-	CVsPoint point(p_x, p_y);
+	CVSPoint point(p_x, p_y);
 	if (m_button != 0) {
 		m_button->Move(point);
 	}
@@ -153,7 +153,7 @@ void CHiliteButtons::LoadFaces(unsigned long* p_animIds)
 		index = index + 1;
 	}
 	m_button =
-		new CGraphicButton(CVsPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
+		new CGraphicButton(CVSPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
 	CSurface* surface = m_button->m_gdi->m_renderTarget;
 	m_button->SetAutoDraw(0);
 	surface->m_flag70 = 0;

@@ -1,7 +1,7 @@
 #include "../../C2D.h"
 
 #include "../../../Target/SpriteGroundLookup.h"
-#include "AI/Base/Coord3d.h"
+#include "AI/Base/tCoord3d.h"
 #include "AI/Navigation/CAI.h"
 #include "AI/Objects/LiftEndpointRecord.h"
 #include "Map/Base/CMap.h"
@@ -12,10 +12,10 @@
 void C2D::MarkGroundAnimAndLiftBounds()
 {
 	char* scratch = m_groundClipScratch;
-	int count = m_ai->ExportGroundAnimRecords((Coord3d*) scratch);
+	int count = m_ai->ExportGroundAnimRecords((tCoord3d*) scratch);
 	if (count > 0) {
 		int remaining = count;
-		Coord3d* coordinate = (Coord3d*) scratch;
+		tCoord3d* coordinate = (tCoord3d*) scratch;
 		do {
 			int screenX = coordinate->m_x;
 			int screenY = coordinate->m_y;

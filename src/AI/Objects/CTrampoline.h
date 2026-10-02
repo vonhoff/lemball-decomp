@@ -3,20 +3,20 @@
 
 #include "../Base/CGlobalGameObject.h"
 
-class AiCoord;
+class AICOORD;
 class CGameObject;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x004965c8
 class CTrampoline : public CGlobalGameObject {
 public:
 	CTrampoline();
-	int Hit(const AiCoord& p_position, CGameObject* p_object);
+	int Hit(const AICOORD& p_position, CGameObject* p_object);
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c
 	virtual void Restart();    // vtable+0x104
 	virtual ~CTrampoline();    // vtable+0x00
-	void Set(unsigned short p_id, const AiCoord& p_position);
-	int TryEnableNearPosition(const AiCoord& p_position, CGameObject* p_object);
+	void Set(unsigned short p_id, const AICOORD& p_position);
+	int TryEnableNearPosition(const AICOORD& p_position, CGameObject* p_object);
 
 	friend class CTrampolineManager;
 

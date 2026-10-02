@@ -1,16 +1,16 @@
 #include "AI/Managers/CLiftManager.h"
 
 #include "AI/Base/CGameObject.h"
-#include "AI/Base/Coord3d.h"
+#include "AI/Base/tCoord3d.h"
 #include "AI/Navigation/CAI.h"
 #include "AI/Objects/CLift.h"
 
 // FUNCTION: LEMBALL 0x00425fc0
 void CLiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	Coord3d start;
-	Coord3d end;
-	Coord3d position;
+	tCoord3d start;
+	tCoord3d end;
+	tCoord3d position;
 	unsigned short* data;
 	unsigned short count;
 

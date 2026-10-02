@@ -6,17 +6,17 @@ void CDrawer::ShutDown()
 }
 
 // FUNCTION: LEMBALL 0x00439380
-void CDrawer::OnZoom(const CVsRect& p_rect)
+void CDrawer::OnZoom(const CVSRect& p_rect)
 {
 }
 
 // FUNCTION: LEMBALL 0x00439390
-void CDrawer::OnSize(const CVsRect& p_rect)
+void CDrawer::OnSize(const CVSRect& p_rect)
 {
 }
 
 // FUNCTION: LEMBALL 0x004393a0
-void CDrawer::OnMove(const CVsRect& p_rect)
+void CDrawer::OnMove(const CVSRect& p_rect)
 {
 }
 

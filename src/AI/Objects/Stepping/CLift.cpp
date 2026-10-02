@@ -1,11 +1,11 @@
 #include "AI/Objects/CLift.h"
 
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
-#include "AI/Base/Coord3d.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
+#include "AI/Base/tCoord3d.h"
 #include "Control/Game/CGame.h"
 #include "Control/Game/GameTime.h"
 #include "Map/Base/CMap.h"
@@ -17,7 +17,7 @@
 extern unsigned short g_wMovingLiftCount;
 
 // FUNCTION: LEMBALL 0x004254a0
-int CLift::StepOn(const AiCoord& p_position, CGameObject* p_object)
+int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	if (m_liftId == p_object->m_liftId) {
 		return 1;
@@ -26,7 +26,7 @@ int CLift::StepOn(const AiCoord& p_position, CGameObject* p_object)
 	int endX = m_end.m_x + 7;
 	int startY = m_start.m_y - 8;
 	int endY = m_end.m_y + 7;
-	const AiCoord* position = &p_position;
+	const AICOORD* position = &p_position;
 	int y;
 	int x;
 	x = position->m_xFixed >> 12;

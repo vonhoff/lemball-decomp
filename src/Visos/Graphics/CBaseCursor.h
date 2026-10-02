@@ -2,8 +2,8 @@
 #define LEMBALL_VISOS_GRAPHICS_CBASECURSOR_H
 
 #include "../Foundation/CBaseQueueHandler.h"
-#include "../Foundation/CVsPoint.h"
-#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVSPoint.h"
+#include "../Foundation/CVSRect.h"
 #include "CPopActive.h"
 #include "CPushActive.h"
 
@@ -34,15 +34,15 @@ public:
 	void SetActive(unsigned int p_active);
 	void SetMainID(unsigned int p_resourceId);
 	void SetMainID(unsigned int p_resourceId, int p_frame);
-	void SetPos(const CVsPoint& p_position);
+	void SetPos(const CVSPoint& p_position);
 
 	friend class CCursor;
 	friend class C2D;
 	friend void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame);
 
 private:
-	CVsPoint m_position;                // 0x10
-	CVsPoint m_hotspot;                 // 0x14
+	CVSPoint m_position;                // 0x10
+	CVSPoint m_hotspot;                 // 0x14
 	unsigned int m_active;              // 0x18
 	CZRLE* m_renderState;               // 0x1c
 	CResBase* m_resource;               // 0x20
@@ -65,7 +65,7 @@ private:
 	int m_directionY;                   // 0x68
 	unsigned int m_lastInputX;          // 0x6c
 	unsigned int m_lastInputY;          // 0x70
-	CVsRect m_bounds;                   // 0x74
+	CVSRect m_bounds;                   // 0x74
 	int m_keys[7];                      // 0x7c
 	unsigned int m_reserved98;          // 0x98
 };

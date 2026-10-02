@@ -6,7 +6,7 @@
 #include "../Groups/CPlayerLemmingGroup.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CPlayerLemming.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -16,7 +16,7 @@
 #include "Views/Sound/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x004275b0
-CDuplicator::CDuplicator(const AiCoord& p_position) : CGlobalGameObject(OBJECT_DUPLICATOR, 0, 0)
+CDuplicator::CDuplicator(const AICOORD& p_position) : CGlobalGameObject(OBJECT_DUPLICATOR, 0, 0)
 {
 	m_spawnPosition.m_xFixed = p_position.m_xFixed;
 	m_spawnPosition.m_yFixed = p_position.m_yFixed;
@@ -41,7 +41,7 @@ void CDuplicator::Restart()
 }
 
 // FUNCTION: LEMBALL 0x00427630
-void CDuplicator::Set(const AiCoord& p_position)
+void CDuplicator::Set(const AICOORD& p_position)
 {
 	m_position.m_xFixed = p_position.m_xFixed;
 	m_position.m_yFixed = p_position.m_yFixed;
@@ -108,7 +108,7 @@ bool CDuplicator::Process()
 		m_duplicatedObject->ResetInstructions();
 		CPlayerLemming* dead = g_pAI->GetDead();
 		if (dead != 0) {
-			AiCoord pos(m_position.m_xFixed, m_position.m_yFixed - 0x34000, m_position.m_zFixed);
+			AICOORD pos(m_position.m_xFixed, m_position.m_yFixed - 0x34000, m_position.m_zFixed);
 			dead->Resurrect(pos);
 			CPlayerLemmingGroup* group = ((CPlayerLemming*) m_duplicatedObject)->GetGroup();
 			group->AddLemmingToGroup(dead);
@@ -119,12 +119,12 @@ bool CDuplicator::Process()
 }
 
 // FUNCTION: LEMBALL 0x00427890
-AiCoord CDuplicator::ActivatePosition()
+AICOORD CDuplicator::ActivatePosition()
 {
 	int y = m_position.m_yFixed + 0x8000;
 	int z = m_position.m_zFixed;
 	int x = m_position.m_xFixed;
-	return AiCoord(x, y, z);
+	return AICOORD(x, y, z);
 }
 
 // FUNCTION: LEMBALL 0x004278c0

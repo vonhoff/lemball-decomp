@@ -23,9 +23,9 @@
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CEntryHandler.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CBaseRemap.h"
 
@@ -56,12 +56,12 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 			font = m_textManager->GetFont(m_chalkFontId);
 			NetworkOptionsLayout* layout = m_layoutTable;
 			CNetworkGameMessage* entries = g_pNetworkManager->m_gameMessages;
-			CVsPoint namePosition((short) layout->m_headerNameX, (short) layout->m_playerListY);
-			CVsPoint addressPosition((short) layout->m_headerIpX, (short) layout->m_playerListY);
-			CVsPoint peerPosition((short) layout->m_headerComputerX, (short) layout->m_playerListY);
-			CVsPoint& posName = namePosition;
-			CVsPoint& posAddress = addressPosition;
-			CVsPoint& posPeer = peerPosition;
+			CVSPoint namePosition((short) layout->m_headerNameX, (short) layout->m_playerListY);
+			CVSPoint addressPosition((short) layout->m_headerIpX, (short) layout->m_playerListY);
+			CVSPoint peerPosition((short) layout->m_headerComputerX, (short) layout->m_playerListY);
+			CVSPoint& posName = namePosition;
+			CVSPoint& posAddress = addressPosition;
+			CVSPoint& posPeer = peerPosition;
 			short yOffset = (short) layout->m_rowStride * (short) p_value;
 			posName.m_y += yOffset;
 			posAddress.m_y += yOffset;
@@ -88,9 +88,9 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 			posAddress.m_x -= font->GetSize(addressStr, 0x20).m_width / 2;
 			posPeer.m_x -= font->GetSize(peerName, 0x20).m_width / 2;
 
-			m_textManager->DrawString(m_gdi, posName, CVsSize(), m_chalkFontId, gameName, 0x20, remap);
-			m_textManager->DrawString(m_gdi, posAddress, CVsSize(), m_chalkFontId, addressStr, 0x20, remap);
-			m_textManager->DrawString(m_gdi, posPeer, CVsSize(), m_chalkFontId, peerName, 0x20, remap);
+			m_textManager->DrawString(m_gdi, posName, CVSSize(), m_chalkFontId, gameName, 0x20, remap);
+			m_textManager->DrawString(m_gdi, posAddress, CVSSize(), m_chalkFontId, addressStr, 0x20, remap);
+			m_textManager->DrawString(m_gdi, posPeer, CVSSize(), m_chalkFontId, peerName, 0x20, remap);
 			p_value++;
 		}
 	}

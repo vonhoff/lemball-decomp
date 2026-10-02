@@ -1,9 +1,9 @@
 #include "CPVBackBuffSurface.h"
 
-#include "../Foundation/CVsSize.h"
+#include "../Foundation/CVSSize.h"
 #include "CGDIDevice.h"
 #include "CSurface.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Graphics/CPVGDIBitmap.h"
 
 // FUNCTION: LEMBALL 0x00466440
@@ -44,14 +44,14 @@ void CPVBackBuffSurface::FreeBackBuff()
 // FUNCTION: LEMBALL 0x00466540
 void CPVBackBuffSurface::AllocateBackBuff()
 {
-	const CVsSize& dimensions = m_windowRect;
+	const CVSSize& dimensions = m_windowRect;
 	short height = dimensions.m_height;
 	short width = dimensions.m_width;
-	CVsRect size(0, 0, width, height);
+	CVSRect size(0, 0, width, height);
 	int allocatedArea;
 	int neededArea;
 
-	const CVsSize& actualSize = m_bitmap.SetSize(size, m_reserved40);
+	const CVSSize& actualSize = m_bitmap.SetSize(size, m_reserved40);
 	size.m_width = actualSize.m_width;
 	size.m_height = actualSize.m_height;
 	allocatedArea = (int) m_allocatedWidth * (int) m_allocatedHeight;

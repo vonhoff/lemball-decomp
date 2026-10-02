@@ -2,14 +2,14 @@
 #define LEMBALL_FRONTEND_DRAWERS_CPASSWORDDRAWER_H
 
 #include "../../Visos/Animation/CStaticAnim.h"
-#include "../../Visos/Graphics/CSolidRect.h"
+#include "../../Visos/Graphics/CClipRect.h"
 #include "../Base/CBaseFrontendDrawer.h"
 
 class CGDI;
 class CMain2DDisplay;
 class CPasswordHiliteWindow;
 class CPVButton;
-class CVsRect;
+class CVSRect;
 struct PasswordTextPosition {
 	int m_x;
 	int m_y;
@@ -38,7 +38,7 @@ struct PasswordTextLayout {
 // VTABLE: LEMBALL 0x004983f0 CAnimsManager
 class CPasswordDrawer : public CBaseFrontendDrawer {
 public:
-	CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2);
+	CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2);
 	void ButtonNumeric(int p_button);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawAnims();                         // vtable+0x48
@@ -58,13 +58,13 @@ private:
 	unsigned int m_animationId;            // 0x398
 	char m_unknown39c[8];                  // 0x39c
 	CPasswordHiliteWindow* m_hiliteWindow; // 0x3a4
-	int* m_layout;                         // 0x3a8
+	PasswordTextLayout* m_layout;          // 0x3a8
 	unsigned long* m_buttonAnimIds;        // 0x3ac
 	char m_password[16];                   // 0x3b0
 	int m_buttonOffsets[24];               // 0x3c0
 	int m_passwordLength;                  // 0x420
 	CPVButton* m_buttons[12];              // 0x424
-	CSolidRect m_hiliteRect;               // 0x454
+	CClipRect m_hiliteRect;                // 0x454
 	CStaticAnim m_hiliteAnim;              // 0x464
 	void* m_hiliteSurface;                 // 0x474
 	int m_hiliteX;                         // 0x478

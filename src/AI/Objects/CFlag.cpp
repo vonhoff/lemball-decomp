@@ -9,7 +9,7 @@ void CFlag::SetSFX()
 }
 
 #include "../../Map/Base/CMap.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Objects/CCollectable.h"
@@ -39,7 +39,7 @@ bool CFlag::Process()
 			else {
 				z = 0;
 			}
-			const int& height = (int) z << 12;
+			const int height = (int) z << 12;
 			m_position.m_zFixed = height;
 		}
 		return 1;

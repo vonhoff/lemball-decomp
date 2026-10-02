@@ -17,17 +17,18 @@
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnim.h"
 #include "Visos/Foundation/CTextManager.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CBaseRemap.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
-#include "Visos/Graphics/CLine.h"
 #include "Visos/Graphics/CPVGWnd.h"
 #include "Visos/Graphics/CPVWnd.h"
+#include "Visos/Graphics/CSolidRect.h"
 #include "Visos/Resources/CResZRLE.h"
+#include "Visos/Resources/ResourceLimits.h"
 
 extern unsigned char* g_apPauseRemaps[4];
 extern char* g_apPauseMenuLabels[15];
@@ -70,21 +71,21 @@ void CPauseWindow::Restart()
 {
 	UnLoad();
 	Load();
-	CVsRect rect = CalculateWindow();
+	CVSRect rect = CalculateWindow();
 	CreateTheWindow(rect);
 }
 
 // FUNCTION: LEMBALL 0x00443db0
-void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
+void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 {
 	short verticalOffset = (short) m_verticalTextOffset;
-	CVsSize size;
-	CVsRect borderRect;
+	CVSSize size;
+	CVSRect borderRect;
 
 	if (m_pauseMessage != 3) {
 		if (m_menuItemCount > 0) {
 			int item = 0;
-			CVsPoint* textSize = m_menuItemRects;
+			CVSPoint* textSize = m_menuItemRects;
 			do {
 				item++;
 				textSize[1].m_x = (short) ((p_rect.m_width - textSize->m_x) / 2);
@@ -121,7 +122,7 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 		CPVWnd::SetRect(p_rect);
 	}
 
-	size = *(const CVsSize*) &p_rect;
+	size = *(const CVSSize*) &p_rect;
 	borderRect.m_width = size.m_width;
 	borderRect.m_height = size.m_height;
 	borderRect.m_x = 0;
@@ -134,10 +135,10 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 	}
 	size.m_width = m_borderPadding.m_x;
 	size.m_height = m_borderPadding.m_y;
-	((CVsPoint*) &borderRect.m_x)->AddInPlace((CVsPoint*) &size);
+	((CVSPoint*) &borderRect.m_x)->AddInPlace((CVSPoint*) &size);
 	size.m_width = (short) (m_borderPadding.m_x * 2);
 	size.m_height = (short) (m_borderPadding.m_y * 2);
-	((CVsPoint*) &borderRect.m_width)->SubtractInPlace((CVsPoint*) &size);
+	((CVSPoint*) &borderRect.m_width)->SubtractInPlace((CVSPoint*) &size);
 	m_borderLine[0].m_bounds.m_width = borderRect.m_width;
 	m_borderLine[0].m_bounds.m_height = borderRect.m_height;
 	m_borderLine[0].m_bounds.m_x = borderRect.m_x;
@@ -146,11 +147,11 @@ void CPauseWindow::CreateTheWindow(const CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00444050
-CVsRect CPauseWindow::CalculateWindow()
+CVSRect CPauseWindow::CalculateWindow()
 {
 	short positionX;
 	short positionY;
-	CVsSize maxTextSize;
+	CVSSize maxTextSize;
 	short parentWidth;
 	short parentHeight;
 	short horizontalWidth;
@@ -183,8 +184,8 @@ CVsRect CPauseWindow::CalculateWindow()
 		itemCount--;
 	}
 	for (i = 0; i < m_menuItemCount; i++) {
-		const CVsSize& measuredTextSize = m_font->GetSize(m_menuLabels[i], 0x20);
-		CVsPoint* storedTextSize = m_menuItemRects + i * 2;
+		const CVSSize& measuredTextSize = m_font->GetSize(m_menuLabels[i], 0x20);
+		CVSPoint* storedTextSize = m_menuItemRects + i * 2;
 		storedTextSize->m_x = measuredTextSize.m_width;
 		storedTextSize->m_y = measuredTextSize.m_height;
 		if (itemCount > i) {
@@ -211,11 +212,11 @@ CVsRect CPauseWindow::CalculateWindow()
 	}
 	parentHeight = (short) ((int) parentHeight / zoom);
 
-	CVsSize paddedTextSizeValue(maxTextSize);
-	CVsSize& paddedTextSize = paddedTextSizeValue;
+	CVSSize paddedTextSizeValue(maxTextSize);
+	CVSSize& paddedTextSize = paddedTextSizeValue;
 	paddedTextSize.m_height += m_windowPadding.m_y;
 	positionX = (short) (parentWidth - paddedTextSize.m_width) / 2;
-	CVsSize windowSize;
+	CVSSize windowSize;
 	windowSize = paddedTextSize;
 	positionY = (short) (parentHeight - paddedTextSize.m_height) / 2;
 
@@ -245,7 +246,7 @@ CVsRect CPauseWindow::CalculateWindow()
 		m_borderAnims = new CAnim[m_borderAnimCount * 2];
 	}
 
-	CVsPoint cornerPositions[2] = {CVsPoint(windowSize.m_width, windowSize.m_height), CVsPoint(0, 0)};
+	CVSPoint cornerPositions[2] = {CVSPoint(windowSize.m_width, windowSize.m_height), CVSPoint(0, 0)};
 	short* cornerSize = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
 	cornerPositions[0].m_x = (short) (cornerPositions[0].m_x - cornerSize[0]);
 	cornerPositions[0].m_y = (short) (cornerPositions[0].m_y - cornerSize[1]);
@@ -281,11 +282,11 @@ CVsRect CPauseWindow::CalculateWindow()
 		} while (--cornerBatchCount != 0);
 	}
 
-	CVsPoint firstPositionValue(0, 0);
-	CVsPoint& firstBorderPosition = firstPositionValue;
+	CVSPoint firstPositionValue(0, 0);
+	CVSPoint& firstBorderPosition = firstPositionValue;
 	firstBorderPosition.m_x = horizontalBorder[0];
-	CVsPoint secondPositionValue(firstBorderPosition);
-	CVsPoint& secondBorderPosition = secondPositionValue;
+	CVSPoint secondPositionValue(firstBorderPosition);
+	CVSPoint& secondBorderPosition = secondPositionValue;
 	secondBorderPosition.m_y += (short) (windowSize.m_height - verticalBorder[1]);
 	for (i = 0; i < m_borderTiles.m_width; i++) {
 		int pair = 0;
@@ -343,8 +344,8 @@ CVsRect CPauseWindow::CalculateWindow()
 		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner[1]);
 	}
 
-	CVsRect result;
-	(CVsSize&) result = windowSize;
+	CVSRect result;
+	(CVSSize&) result = windowSize;
 	result.m_x = positionX;
 	result.m_y = positionY;
 	return result;
@@ -354,7 +355,7 @@ CVsRect CPauseWindow::CalculateWindow()
 CPauseWindow::CPauseWindow(CReceiveWindowState* p_receiverState,
 						   CPVGWnd* p_parentWindow,
 						   ePauseWindowMessages p_pauseMessage)
-	: CTextManager(0x2b6, 1, 15, 0)
+	: CTextManager(RESOURCE_ID_COUNT, 1, 15, 0)
 {
 	m_receiverState = p_receiverState;
 	m_pauseMessage = p_pauseMessage;
@@ -409,7 +410,7 @@ CBaseRemap* CPauseWindow::Remap(int p_item)
 }
 
 // FUNCTION: LEMBALL 0x00444980
-void CPauseWindow::OnPaint(const CVsRect& p_rect)
+void CPauseWindow::OnPaint(const CVSRect& p_rect)
 {
 	m_gdi->m_renderTarget->GetCurrDB();
 	m_borderLine[0].Draw(m_gdi);
@@ -424,8 +425,8 @@ void CPauseWindow::OnPaint(const CVsRect& p_rect)
 		corner++;
 	} while (--count != 0);
 	for (i = 0; i < m_menuItemCount; i++) {
-		CVsPoint* position = (CVsRect*) (void*) m_menuItemRects + i;
-		CVsSize advance;
+		CVSPoint* position = (CVSRect*) (void*) m_menuItemRects + i;
+		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
 		CTextManager::DrawString(m_gdi, *position, advance, m_fontId, m_menuLabels[i], 0x20, (class CRemap*) Remap(i));
@@ -434,14 +435,14 @@ void CPauseWindow::OnPaint(const CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00444a90
-void CPauseWindow::OnInside(const CVsPoint& p_point)
+void CPauseWindow::OnInside(const CVSPoint& p_point)
 {
 	int selection = m_minimumSelection;
 	m_cursorState = 0;
 	if (selection < m_menuItemCount) {
 		short relX = p_point.m_x - m_relativeTopLeft.m_x;
 		short relY = p_point.m_y - m_relativeTopLeft.m_y;
-		CVsPoint* textSizes = m_menuItemRects + selection * 2 + 1;
+		CVSPoint* textSizes = m_menuItemRects + selection * 2 + 1;
 		do {
 			short textX = textSizes->m_x;
 			if (textX <= relX) {
@@ -466,13 +467,13 @@ void CPauseWindow::OnInside(const CVsPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x00444b20
-void CPauseWindow::OnButtonDown(const CVsPoint& p_point, int p_flags)
+void CPauseWindow::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
 	int selection = m_minimumSelection;
 	if (selection < m_menuItemCount) {
 		short relX = p_point.m_x - m_relativeTopLeft.m_x;
 		short relY = p_point.m_y - m_relativeTopLeft.m_y;
-		CVsPoint* textSizes = m_menuItemRects + selection * 2 + 1;
+		CVSPoint* textSizes = m_menuItemRects + selection * 2 + 1;
 		do {
 			short textX = textSizes->m_x;
 			if (textX <= relX) {
@@ -499,14 +500,14 @@ void CPauseWindow::OnButtonDown(const CVsPoint& p_point, int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00444bd0
-void CPauseWindow::OnButtonUp(const CVsPoint& p_point, int p_flags)
+void CPauseWindow::OnButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	m_cursorState = 0;
 	CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 }
 
 // FUNCTION: LEMBALL 0x00444bf0
-void CPauseWindow::OnExternalButtonUp(const CVsPoint& p_point, int p_flags)
+void CPauseWindow::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	m_cursorState = 0;
 	CursorChangeType(CURSOR_DISPLAY_HAND, 0);

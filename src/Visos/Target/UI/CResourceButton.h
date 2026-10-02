@@ -5,14 +5,14 @@
 
 class CGWnd;
 class CHotAreaHandler;
-class CVsRect;
+class CVSRect;
 // MINIMUM SIZE 0x11c
 // VTABLE: LEMBALL 0x00499928 CGWnd
 // VTABLE: LEMBALL 0x00499908 CHotAreaHandler
 class CResourceButton : public CFramedButton {
 public:
 	virtual ~CResourceButton();
-	virtual void OnPaint(const CVsRect& p_rect);
+	virtual void OnPaint(const CVSRect& p_rect);
 	virtual void OnDestroy();
 
 private:

@@ -10,25 +10,26 @@
 #include "CPanelPauseButton.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Resources/CResZRLE.h"
 
 #include <new.h>
 
 // FUNCTION: LEMBALL 0x00442f00
-CVsPoint* CPanel::GetPausePos(CVsPoint* p_result)
+CVSPoint CPanel::GetPausePos()
 {
+	CVSPoint result;
 	short width = m_window->m_innerRect.m_width;
 	short height = m_window->m_innerRect.m_height;
 	if (width * height == 0) {
 		width = m_window->m_rect.m_width;
 		height = m_window->m_rect.m_height;
 	}
-	p_result->m_x = (short) (((int) (short) ((int) width / (int) m_window->m_zoom) - (int) m_panelSize.m_x) / 2);
-	p_result->m_y = (short) ((int) height / (int) m_window->m_zoom - (int) m_pauseSize.m_y);
-	return p_result;
+	result.m_x = (short) (((int) (short) ((int) width / (int) m_window->m_zoom) - (int) m_panelSize.m_x) / 2);
+	result.m_y = (short) ((int) height / (int) m_window->m_zoom - (int) m_pauseSize.m_y);
+	return result;
 }
 
 // FUNCTION: LEMBALL 0x00442f80
@@ -44,29 +45,25 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_resources[2] = CResANIM::Load(0x2c);
 	m_resources[3] = CResANIM::Load(0x2b);
 
-	CVsSize* size = (CVsSize*) &m_resources[1]->m_animationEntries[0].m_width;
+	CVSSize* size = (CVSSize*) &m_resources[1]->m_animationEntries[0].m_width;
 	m_buttonSize.m_x = size->m_width;
 	m_buttonSize.m_y = size->m_height;
-	size = (CVsSize*) &m_resources[2]->m_animationEntries[0].m_width;
+	size = (CVSSize*) &m_resources[2]->m_animationEntries[0].m_width;
 	m_balloonSize.m_x = size->m_width;
 	m_balloonSize.m_y = size->m_height;
-	size = (CVsSize*) &m_resources[0]->m_animationEntries[0].m_width;
+	size = (CVSSize*) &m_resources[0]->m_animationEntries[0].m_width;
 	m_pauseSize.m_x = size->m_width;
 	m_pauseSize.m_y = size->m_height;
 	m_panelSize.m_x = m_pauseSize.m_x;
 	m_panelSize.m_y = m_pauseSize.m_y;
 	m_panelSize.m_x = (short) (m_panelSize.m_x + (m_balloonSize.m_x + m_buttonSize.m_x) * 4);
-	short calculatedPositionStorage[2];
-	short positionStorage[2];
-	CVsPoint* calculated = GetPausePos((CVsPoint*) calculatedPositionStorage);
-	short x = calculated->m_x;
+	CVSPoint calculated = GetPausePos();
+	short x = calculated.m_x;
 	m_panelPosition.m_x = x;
-	short y = calculated->m_y;
+	short y = calculated.m_y;
 	m_panelPosition.m_y = y;
-	positionStorage[0] = x;
-	positionStorage[1] = y;
-	CVsPoint& position = *(CVsPoint*) positionStorage;
-	void* storage = operator new(0x13c);
+	CVSPoint position(x, y);
+	void* storage = operator new(sizeof(CPanelPauseButton));
 	if (storage != 0) {
 		m_pauseButton = new (storage) CPanelPauseButton(this, position, m_window, 0x2d, 3);
 	}
@@ -78,7 +75,7 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	i = 0;
 	lemming = m_lemmings;
 	do {
-		storage = operator new(0x2c);
+		storage = operator new(sizeof(CPanelLemming));
 		if (storage != 0) {
 			*lemming = new (storage) CPanelLemming(m_ai->m_networkLemmings[i], position, this);
 		}
@@ -123,21 +120,18 @@ void CPanel::RefreshLemmings()
 // FUNCTION: LEMBALL 0x004431f0
 void CPanel::OnSize()
 {
-	short calculatedPositionStorage[2];
-	short positionStorage[2];
-	CVsPoint* calculated = GetPausePos((CVsPoint*) calculatedPositionStorage);
-	short x = calculated->m_x;
+	CVSPoint calculated = GetPausePos();
+	short x = calculated.m_x;
 	m_panelPosition.m_x = x;
-	short y = calculated->m_y;
+	short y = calculated.m_y;
 	m_panelPosition.m_y = y;
-	positionStorage[0] = x;
-	positionStorage[1] = y;
-	m_pauseButton->Move(*(CVsPoint*) positionStorage);
-	positionStorage[0] += m_pauseSize.m_x;
+	CVSPoint position(x, y);
+	m_pauseButton->Move(position);
+	position.m_x += m_pauseSize.m_x;
 	CPanelLemming** lemming = m_lemmings;
 	int count = 4;
 	do {
-		(*lemming)->Move(*(CVsPoint*) positionStorage);
+		(*lemming)->Move(position);
 		lemming++;
 		count--;
 	} while (count != 0);
@@ -187,7 +181,7 @@ int CPanel::ProcessMsg(Message* p_message)
 			if (TranslateKey(p_message->m_code) == 8) {
 				g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 				unsigned int pause = m_game->m_paused == 0;
-				m_game->TriggerPause((unsigned char) pause);
+				m_game->TriggerPause(pause);
 				CPanelPauseButton* pauseButton = m_pauseButton;
 				unsigned int paused = m_game->m_paused;
 				pauseButton->m_toggled = paused;
@@ -202,7 +196,7 @@ int CPanel::ProcessMsg(Message* p_message)
 }
 
 // FUNCTION: LEMBALL 0x00443360
-bool CPanel::MouseInPanel(const CVsPoint& p_point)
+bool CPanel::MouseInPanel(const CVSPoint& p_point)
 {
 	short panelWidth = m_panelSize.m_x;
 	short panelX = m_panelPosition.m_x;

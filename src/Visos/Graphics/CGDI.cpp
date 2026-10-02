@@ -1,6 +1,6 @@
 #include "CGDI.h"
 
-#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVSRect.h"
 #include "../Foundation/VsMem.h"
 #include "CGDIDevice.h"
 #include "CPrimitive.h"
@@ -10,7 +10,7 @@
 CPrimitive* g_pCurrentPrimitive = 0;
 
 // FUNCTION: LEMBALL 0x00467060
-CGDI::CGDI(const CVsRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSurface)
+CGDI::CGDI(const CVSRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSurface)
 {
 	int i;
 	CSurface* target;

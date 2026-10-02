@@ -15,7 +15,8 @@
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CFrames.h"
 #include "Visos/Animation/CTimedAnim.h"
-#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Resources/ResourceLimits.h"
 
 class CLoadUpdate;
 
@@ -45,14 +46,14 @@ unsigned int g_groundBlox7ResourceId;
 
 // FUNCTION: LEMBALL 0x00432b50
 CLemmingAnimsManager::CLemmingAnimsManager(CGDI* p_gdi, CMain2DDisplay* p_display, CAI* p_ai)
-	: CAnimsManager(p_gdi, 0x2b6, 0xc8, 0x28, 0x14, 1)
+	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, 0xc8, 0x28, 0x14, 1)
 {
 	m_display = p_display;
 	m_gdi = p_gdi;
 	m_ai = p_ai;
-	m_animFrames = (CAnimFrameBASE**) operator new(0xad8);
+	m_animFrames = (CAnimFrameBASE**) operator new(RESOURCE_ID_COUNT * sizeof(*m_animFrames));
 	m_drawFlags = 0;
-	for (int i = 0; i < 0x2b6; i++) {
+	for (int i = 0; i < RESOURCE_ID_COUNT; i++) {
 		m_animFrames[i] = 0;
 	}
 	m_loaded = 0;
@@ -609,7 +610,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_GAME_COLON: {
 		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, 0, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, 0, frame, p_remap);
 		break;
 	}
 	case RES_GAME_WAIT:
@@ -631,7 +632,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_SNOW_HUT:
 	case RES_LEGO_HUT: {
 		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_SHADOW:
@@ -683,7 +684,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_LEGO_LEGOTREE: {
 		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_LEMMINGWALKN:
@@ -708,7 +709,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(1000);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_WAIT_LOOK: {
@@ -716,7 +717,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(1933);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_WAIT_TOSS: {
@@ -724,7 +725,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(1600);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_WAIT_JIG: {
@@ -732,7 +733,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(2700);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_LEMMINGFIREN:
@@ -747,7 +748,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(2000);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_LEMMINGPELLETN:
@@ -763,7 +764,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(500);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_HIT_NORTH:
@@ -778,7 +779,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(3000);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_CATAPULT_ANIMSE:
@@ -788,7 +789,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(3133);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_CATMOUNT_SE: {
@@ -796,7 +797,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(2333);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_YELLOW_AMMO:
@@ -805,7 +806,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(1000);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_FLAG_GREEN:
@@ -814,7 +815,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(1500);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_EX_PELLET: {
@@ -822,7 +823,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(400);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_MINE:
@@ -831,7 +832,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(900);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_CRATE_EXPLODE: {
@@ -839,7 +840,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(1500);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_SHEEP_WALK_N:
@@ -854,7 +855,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(1400);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_SHEEP_MUNCH_NE:
@@ -865,7 +866,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(2400);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_SPINARROW: {
@@ -873,7 +874,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		frame->SetStartTime(0);
 		frame->m_fixedTime = p_time;
 		frame->SetAnimTime(560);
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_BLOX_1:
@@ -924,7 +925,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_SNOW_SNOWTREE: {
 		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	case RES_GAME_CONVEYOR:
@@ -933,7 +934,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 	case RES_GAME_EMBERS: {
 		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
-		CAnimsManager::DrawAnim(CVsPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
+		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
 	}
@@ -1005,7 +1006,7 @@ void CLemmingAnimsManager::DrawAnimOnGdi(CGDI* p_gdi,
 	case RES_LEGO_LEGOTREE: {
 		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->m_frameState = p_animIndex;
-		CVsPoint position(p_x, p_y);
+		CVSPoint position(p_x, p_y);
 		CGDI* previous = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = p_gdi;
 		CAnimsManager::DrawAnim(position, p_resourceId, 0, frame, p_remap);
@@ -1016,7 +1017,7 @@ void CLemmingAnimsManager::DrawAnimOnGdi(CGDI* p_gdi,
 	case RES_SNOW_HUT:
 	case RES_LEGO_HUT: {
 		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[p_resourceId]];
-		CVsPoint position(p_x, p_y);
+		CVSPoint position(p_x, p_y);
 		CGDI* previous = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = p_gdi;
 		CAnimsManager::DrawAnim(position, p_resourceId, 0, frame, p_remap);

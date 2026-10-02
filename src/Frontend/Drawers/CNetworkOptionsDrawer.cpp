@@ -23,9 +23,9 @@
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CEntryHandler.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CBaseRemap.h"
 
@@ -150,7 +150,7 @@ char g_szNetworkOptionsDividerLocal[] = "__________________________________";
 char g_szNetworkOptionsCursor[] = "_";
 
 // GLOBAL: LEMBALL 0x004a0320
-char* g_apNetworkOptionsMessages[9] = {
+char* g_apNetworkOptionsMessages[10] = {
 	g_szNetworkOptionsMsg1,
 	g_szNetworkOptionsMsg2,
 	g_szNetworkOptionsMsg3,
@@ -160,19 +160,20 @@ char* g_apNetworkOptionsMessages[9] = {
 	g_szNetworkOptionsMsg7,
 	g_szNetworkOptionsMsg8,
 	g_szNetworkOptionsMsg9,
+	g_szNetworkOptionsMsg10,
 };
 
-// GLOBAL: LEMBALL 0x004a0344
-int g_anNetworkOptionsEditMessages[4] = {(int) g_szNetworkOptionsMsg10, 2, 3, 0};
+// GLOBAL: LEMBALL 0x004a0348
+int g_anNetworkOptionsEditMessages[3] = {2, 3, 0};
 
-// GLOBAL: LEMBALL 0x004a0354
-int g_anNetworkOptionsEditMaxLength[4] = {0, 8, 0x14, 0};
+// GLOBAL: LEMBALL 0x004a0358
+int g_anNetworkOptionsEditMaxLength[3] = {8, NETWORK_OPTIONS_ADDRESS_MAX_LENGTH, 0};
 
 // GLOBAL: LEMBALL 0x004a0368
 char g_szNetworkGameName[16];
 
 // GLOBAL: LEMBALL 0x004a0378
-char g_szNetworkBroadcastAddress[16];
+char g_szNetworkBroadcastAddress[NETWORK_OPTIONS_ADDRESS_MAX_LENGTH + 1];
 
 // GLOBAL: LEMBALL 0x004a0390
 int g_nNetworkOptionsShiftHeld = 0;
@@ -181,22 +182,22 @@ int g_nNetworkOptionsShiftHeld = 0;
 int g_nNetworkOptionsCapsOrShift = 0;
 
 // FUNCTION: LEMBALL 0x00453280
-CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect)
+CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_NETWORK_OPTIONS, 0x32, 200, 0, 100, 0x28)
 {
 	int playerEntryIndex;
 
 	m_editingActive = 0;
 	m_message = 1;
-	m_messageDirty = 1;
+	m_drawnMessage = 1;
 	m_messageDuration = 0;
 	m_pendingEvent = 0;
 	m_broadcasting = 0;
 	m_networkState = 0;
 	m_redrawPending = 0;
 	m_lastDrawTime = CurrentMilliTimer();
-	m_stopPending = 0;
-	m_connectionState = 0;
+	m_localAddressText = 0;
+	m_localComputerName = 0;
 	m_locked = 0;
 	m_startPending = 0;
 	m_pendingStage = 0;
@@ -325,7 +326,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 	bool handled;
 	unsigned int code;
 
-	if (m_startPending != 0 || (unsigned int) m_message != m_messageDirty) {
+	if (m_startPending != 0 || (unsigned int) m_message != m_drawnMessage) {
 		return 0;
 	}
 
@@ -437,7 +438,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		case 0x22:
 		case 0x4c:
 			if (m_highlightedPlayer != -1) {
-				CVsPoint pt;
+				CVSPoint pt;
 				m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, 0);
 				return 1;
 			}
@@ -583,8 +584,8 @@ void CNetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
 			return;
 		}
 	}
-	m_editor->m_maxLength = g_anNetworkOptionsEditMaxLength[m_editingStage];
-	SetMessage(g_anNetworkOptionsEditMessages[m_editingStage]);
+	m_editor->m_maxLength = g_anNetworkOptionsEditMaxLength[m_editingStage - 1];
+	SetMessage(g_anNetworkOptionsEditMessages[m_editingStage - 1]);
 	m_editingActive = 1;
 }
 
@@ -627,7 +628,7 @@ void CNetworkOptionsDrawer::StopEditing()
 // FUNCTION: LEMBALL 0x00454830
 void CNetworkOptionsDrawer::LastError()
 {
-	if (m_pendingEvent == 7) {
+	if (m_pendingEvent == NETWORK_OPTIONS_MESSAGE_HOST_LOOKUP_FAILED) {
 		((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->StopBroadcast();
 		if (m_broadcasting == 0) {
 			return;
@@ -792,8 +793,7 @@ bool CNetworkOptionsDrawer::HighlightNextEntry()
 // FUNCTION: LEMBALL 0x00454df0
 void CNetworkOptionsDrawer::InitialiseHandlers()
 {
-	short rect[3];
-	volatile short rowY;
+	CVSRect rect;
 	CConnect** connections;
 	CNetworkGameMessage* messages;
 	int index;
@@ -804,21 +804,21 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 		connections = g_pNetworkManager->m_connections;
 		messages = g_pNetworkManager->m_gameMessages;
 	}
-	rect[1] = m_layoutTable->m_entryHeight;
-	rowY = (short) m_layoutTable->m_entryY;
-	rect[2] = (short) m_layoutTable->m_entryX;
-	rect[0] = (short) m_layoutTable->m_entryWidth;
+	rect.m_height = m_layoutTable->m_entryHeight;
+	rect.m_y = (short) m_layoutTable->m_entryY;
+	rect.m_x = (short) m_layoutTable->m_entryX;
+	rect.m_width = (short) m_layoutTable->m_entryWidth;
 	index = 0;
 	m_visibleEntryCount = 0;
 	do {
 		if (m_visibleEntryCount < 4 && connections != 0 && connections[index] != 0 && messages[index].m_valid != 0) {
 			CEntryHandler* entry = &m_playerEntries[index];
-			entry->m_bounds.m_width = rect[0];
-			entry->m_bounds.m_height = rect[1];
-			entry->m_bounds.m_x = rect[2];
-			entry->m_bounds.m_y = rowY;
+			entry->m_bounds.m_width = rect.m_width;
+			entry->m_bounds.m_height = rect.m_height;
+			entry->m_bounds.m_x = rect.m_x;
+			entry->m_bounds.m_y = rect.m_y;
 			entry->SetActive(1);
-			rowY += (short) m_layoutTable->m_rowStride;
+			rect.m_y += (short) m_layoutTable->m_rowStride;
 			m_visibleEntryCount++;
 		}
 		else {

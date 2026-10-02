@@ -193,17 +193,17 @@ bool CGenericGroup::ConfirmElementIsInGroup(unsigned short p_objectId)
 }
 
 // FUNCTION: LEMBALL 0x0041e140
-CVsRect CGenericGroup::GetBoundingBox()
+CVSRect CGenericGroup::GetBoundingBox()
 {
 	return m_bounds;
 }
 
 // FUNCTION: LEMBALL 0x0041e180
-void CGenericGroup::GetBoundingBox(CVsRect& p_rect)
+void CGenericGroup::GetBoundingBox(CVSRect& p_rect)
 {
 	p_rect.m_width = m_bounds.m_width;
 	p_rect.m_height = m_bounds.m_height;
-	const CVsPoint* position = &m_bounds;
+	const CVSPoint* position = &m_bounds;
 	p_rect.m_x = position->m_x;
 	p_rect.m_y = position->m_y;
 }
@@ -254,14 +254,14 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 }
 
 #include "../Navigation/CAiDestinationEntry.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectTypes.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVector.h"
-#include "Visos/Foundation/CVsRect.h"
 
 // FUNCTION: LEMBALL 0x0041e290
-void CGenericGroup::AddNewWaypoint(AiCoord p_coordinate, CFormationManager* p_formationManager)
+void CGenericGroup::AddNewWaypoint(AICOORD p_coordinate, CFormationManager* p_formationManager)
 {
 	g_pGroupFormationManager = p_formationManager;
 	CAiDestinationList* list = m_destinationList;
@@ -277,9 +277,9 @@ void CGenericGroup::AddNewWaypoint(AiCoord p_coordinate, CFormationManager* p_fo
 }
 
 // FUNCTION: LEMBALL 0x0041e2e0
-void CGenericGroup::SendNewWaypoint(AiCoord p_coordinate)
+void CGenericGroup::SendNewWaypoint(AICOORD p_coordinate)
 {
-	AiCoord destination;
+	AICOORD destination;
 	CGameObject* object = GetFirstElementInGroup();
 	if (object != 0) {
 		unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> 12,
@@ -303,7 +303,7 @@ void CGenericGroup::SendNewWaypoint(AiCoord p_coordinate)
 }
 
 // FUNCTION: LEMBALL 0x0041e3c0
-void CGenericGroup::OverideExistingWaypoints(AiCoord p_coordinate)
+void CGenericGroup::OverideExistingWaypoints(AICOORD p_coordinate)
 {
 }
 
@@ -337,14 +337,14 @@ int CGenericGroup::GetFormationIndex()
 // FUNCTION: LEMBALL 0x0041e420
 void CGenericGroup::ReformAlteredGroup(CFormationManager* p_formationManager)
 {
-	AiCoord coordinate;
+	AICOORD coordinate;
 
 	if (m_altered != 0) {
 		CGameObject* object = GetFirstElementInGroup();
 		if (object != 0) {
-			AiCoord destination;
+			AICOORD destination;
 			{
-				const AiCoord& returnedDestination = object->GetDestination();
+				const AICOORD& returnedDestination = object->GetDestination();
 				destination.m_xFixed = returnedDestination.m_xFixed;
 				destination.m_yFixed = returnedDestination.m_yFixed;
 				destination.m_zFixed = returnedDestination.m_zFixed;
@@ -370,7 +370,7 @@ void CGenericGroup::ReformAlteredGroup(CFormationManager* p_formationManager)
 }
 
 // FUNCTION: LEMBALL 0x0041e530
-bool CGenericGroup::CheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
+bool CGenericGroup::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate)
 {
 	int groupRight = m_bounds.m_width + m_bounds.m_x;
 	int groupBottom = m_bounds.m_height + m_bounds.m_y;

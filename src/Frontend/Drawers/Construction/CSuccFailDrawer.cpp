@@ -9,7 +9,7 @@
 extern char g_szSuccFailMoviePrefix[];
 
 // FUNCTION: LEMBALL 0x00450020
-CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect, unsigned int p_success)
+CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect, unsigned int p_success)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_SUCCESS, 0x32, 200, 0, 0x28, 0x30)
 {
 	m_success = p_success;

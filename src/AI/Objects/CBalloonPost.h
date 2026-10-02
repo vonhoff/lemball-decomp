@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CBALLOONPOST_H
 #define LEMBALL_AI_OBJECTS_CBALLOONPOST_H
 
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/ObjectTypes.h"
 
 class CAI;
@@ -12,7 +12,7 @@ class CViewData;
 class CBalloonPost {
 public:
 	CBalloonPost(CAI* p_ai, CMap* p_map);
-	bool FindPost(eObjectType p_objectType, AiCoord& p_position);
+	bool FindPost(eObjectType p_objectType, AICOORD& p_position);
 	int GetViewData(CViewData* p_viewData);
 	void Process();
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
@@ -23,7 +23,7 @@ public:
 
 private:
 	unsigned short m_activeMask; // 0x00
-	AiCoord m_positions[4];      // 0x04
+	AICOORD m_positions[4];      // 0x04
 	CTheBalloonPost* m_posts[4]; // 0x34
 	CAI* m_ai;                   // 0x44
 	CMap* m_map;                 // 0x48

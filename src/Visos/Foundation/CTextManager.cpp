@@ -3,7 +3,7 @@
 #include "../Resources/CResFONT.h"
 #include "CCopyText.h"
 #include "CText.h"
-#include "CVsSize.h"
+#include "CVSSize.h"
 #include "Visos/Foundation/CString.h"
 
 // FUNCTION: LEMBALL 0x00469c60
@@ -98,8 +98,8 @@ void CTextManager::UnLoadFont(unsigned long p_fontId)
 
 // FUNCTION: LEMBALL 0x00469f50
 void CTextManager::DrawString(CGDI* p_gdi,
-							  CVsPoint& p_position,
-							  const CVsSize& p_advance,
+							  CVSPoint& p_position,
+							  const CVSSize& p_advance,
 							  unsigned long p_fontId,
 							  char* p_text,
 							  unsigned long p_flags,
@@ -120,8 +120,8 @@ void CTextManager::DrawString(CGDI* p_gdi,
 
 // FUNCTION: LEMBALL 0x00469fd0
 void CTextManager::DrawString(CGDI* p_gdi,
-							  CVsPoint& p_position,
-							  const CVsSize& p_advance,
+							  CVSPoint& p_position,
+							  const CVSSize& p_advance,
 							  unsigned long p_fontId,
 							  CString p_text,
 							  unsigned long p_flags,

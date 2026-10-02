@@ -1,7 +1,7 @@
 #include "CObjectPosMess.h"
 
 #include "../Base/CGlobalGameObject.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Messages/CGameObjectMess.h"
 #include "AI/Messages/GameMessageIds.h"
 

@@ -1,22 +1,22 @@
 #include "CHotAreaList.h"
 
 #include "../Foundation/CBaseQueue.h"
-#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVSRect.h"
 #include "CHotAreaElement.h"
-#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
 
 class CBaseQueueHandler;
 
 // GLOBAL: LEMBALL 0x004a1ff8
-CVsPoint* g_pHotAreaCursor = 0;
+CVSPoint* g_pHotAreaCursor = 0;
 
 // GLOBAL: LEMBALL 0x004a1ffc
 int g_nHotAreaListCount = 0;
 
 // FUNCTION: LEMBALL 0x00466370
-void CHotAreaList::Set(const CVsRect& p_rect, CVsPoint p_relativeTopLeft, const CVsPoint& p_innerOrigin)
+void CHotAreaList::Set(const CVSRect& p_rect, CVSPoint p_relativeTopLeft, const CVSPoint& p_innerOrigin)
 {
 	const short* coords;
 
@@ -37,7 +37,7 @@ void CHotAreaList::Set(const CVsRect& p_rect, CVsPoint p_relativeTopLeft, const 
 }
 
 // FUNCTION: LEMBALL 0x0046a580
-CHotAreaList::CHotAreaList(const CVsRect& p_rect, const CVsPoint& p_relativeTopLeft, const CVsPoint& p_innerOrigin)
+CHotAreaList::CHotAreaList(const CVSRect& p_rect, const CVSPoint& p_relativeTopLeft, const CVSPoint& p_innerOrigin)
 	: CHotAreaHandler(p_rect)
 {
 	int previous;
@@ -45,7 +45,7 @@ CHotAreaList::CHotAreaList(const CVsRect& p_rect, const CVsPoint& p_relativeTopL
 	previous = g_nHotAreaListCount;
 	g_nHotAreaListCount = g_nHotAreaListCount + 1;
 	if (previous == 0) {
-		g_pHotAreaCursor = new CVsPoint;
+		g_pHotAreaCursor = new CVSPoint;
 	}
 	m_relativeTopLeft.m_x = p_relativeTopLeft.m_x;
 	m_relativeTopLeft.m_y = p_relativeTopLeft.m_y;
@@ -98,8 +98,8 @@ int CHotAreaList::ProcessMsg(Message* p_message)
 	case 9:
 	case 10:
 		if (p_message->m_source == 0) {
-			CVsPoint point((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
-			CVsPoint* cursor = g_pHotAreaCursor;
+			CVSPoint point((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
+			CVSPoint* cursor = g_pHotAreaCursor;
 			cursor->m_x = point.m_x;
 			cursor->m_y = point.m_y;
 			ProcessHandlers(point, p_message);
@@ -109,14 +109,14 @@ int CHotAreaList::ProcessMsg(Message* p_message)
 }
 
 // FUNCTION: LEMBALL 0x0046a770
-void CHotAreaList::ProcessHandlers(const CVsPoint& p_point, Message* p_message)
+void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
 {
 	CHotAreaHandler* handler;
 	CHotAreaElement* entry;
 	CHotAreaElement* previous;
 	Message fallback;
 	unsigned int type;
-	const CVsPoint* origin;
+	const CVSPoint* origin;
 
 	fallback.m_type = 7;
 	fallback.m_time = 0;
@@ -128,9 +128,9 @@ void CHotAreaList::ProcessHandlers(const CVsPoint& p_point, Message* p_message)
 	}
 	type = p_message->m_type;
 	origin = &m_bounds;
-	CVsPoint localPointValue((short) ((int) (short) (p_point.m_x - origin->m_x) / (int) m_scale),
+	CVSPoint localPointValue((short) ((int) (short) (p_point.m_x - origin->m_x) / (int) m_scale),
 							 (short) ((int) (short) (p_point.m_y - origin->m_y) / (int) m_scale));
-	CVsPoint& localPoint = localPointValue;
+	CVSPoint& localPoint = localPointValue;
 	entry = m_tail;
 	for (;;) {
 		if (entry == 0) {
@@ -152,7 +152,7 @@ void CHotAreaList::ProcessHandlers(const CVsPoint& p_point, Message* p_message)
 	short& width = widthValue;
 	short heightValue = m_bounds.m_height;
 	short& height = heightValue;
-	const CVsPoint* boundsOrigin = &m_bounds;
+	const CVSPoint* boundsOrigin = &m_bounds;
 	short scale = (short) m_scale;
 	short xValue = (short) (m_relativeTopLeft.m_x * (scale - 1) + boundsOrigin->m_x);
 	short& x = xValue;

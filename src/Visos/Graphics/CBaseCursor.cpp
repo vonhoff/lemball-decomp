@@ -12,8 +12,8 @@
 #include "CGWnd.h"
 #include "CSurface.h"
 #include "CZRLE.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CPushActive.h"
 
@@ -181,7 +181,7 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 			return 0;
 		}
 		if (p_message->m_source == 0) {
-			CVsPoint position((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
+			CVSPoint position((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
 			SetPos(position);
 		}
 		return 0;
@@ -190,7 +190,7 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 }
 
 // FUNCTION: LEMBALL 0x0046b2c0
-void CBaseCursor::SetPos(const CVsPoint& p_position)
+void CBaseCursor::SetPos(const CVSPoint& p_position)
 {
 	m_position.m_x = p_position.m_x;
 	m_position.m_y = p_position.m_y;
@@ -266,7 +266,7 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 {
 	short cursorX;
 	short cursorY;
-	CVsRect bounds(p_window->m_rect);
+	CVSRect bounds(p_window->m_rect);
 	short& width = bounds.m_width;
 	short& x = bounds.m_x;
 	short& y = bounds.m_y;
@@ -275,7 +275,7 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 	short clipX;
 	short clipY;
 	short innerHeight;
-	CVsPoint* innerXY;
+	CVSPoint* innerXY;
 
 	innerHeight = p_window->m_innerRect.m_height;
 	innerWidth = p_window->m_innerRect.m_width;
@@ -318,7 +318,7 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 void CBaseCursor::Draw(CGWnd* p_window)
 {
 	short innerHeight;
-	CVsPoint* innerXY;
+	CVSPoint* innerXY;
 	short clipX;
 	short clipY;
 	int zoom;
@@ -345,13 +345,13 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	if (m_active == 0) {
 		return;
 	}
-	CVsRect bounds(p_window->m_rect);
+	CVSRect bounds(p_window->m_rect);
 	short& width = bounds.m_width;
 	short& height = bounds.m_height;
 	short& x = bounds.m_x;
 	short& y = bounds.m_y;
 	{
-		CVsSize innerSize(p_window->m_innerRect);
+		CVSSize innerSize(p_window->m_innerRect);
 		short& innerWidth = innerSize.m_width;
 		innerHeight = innerSize.m_height;
 		innerXY = &p_window->m_innerRect;
@@ -394,8 +394,8 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	}
 	zoom = (int) p_window->m_zoom;
 	{
-		CVsPoint destinationValue;
-		CVsPoint& destination = destinationValue;
+		CVSPoint destinationValue;
+		CVSPoint& destination = destinationValue;
 		destination.m_x = (short) ((int) (short) (m_position.m_x - x) / zoom) - m_hotspot.m_x;
 		gdi = p_window->m_gdi;
 		destination.m_y = (short) ((int) (short) (m_position.m_y - y) / zoom) - m_hotspot.m_y;
@@ -448,7 +448,7 @@ void CBaseCursor::Process()
 			m_velocityY = -m_acceleration;
 		}
 	}
-	CVsPoint oldPosition(m_position);
+	CVSPoint oldPosition(m_position);
 	int x = m_velocityX + m_fixedX;
 	int y = m_velocityY + m_fixedY;
 	m_fixedX = x;
@@ -467,7 +467,7 @@ void CBaseCursor::Process()
 	if ((int) m_bounds.m_width * (int) m_bounds.m_height != 0) {
 		if (m_position.m_x < m_bounds.m_x || (short) (m_bounds.m_width + m_bounds.m_x) <= m_position.m_x ||
 			m_bounds.m_y > m_position.m_y || (short) (m_bounds.m_y + m_bounds.m_height) <= m_position.m_y) {
-			CVsPoint* minimum = &m_bounds;
+			CVSPoint* minimum = &m_bounds;
 			if (m_position.m_x < minimum->m_x) {
 				m_position.m_x = minimum->m_x;
 			}

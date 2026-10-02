@@ -4,7 +4,7 @@
 #include "../../Visos/Animation/CAnimsManager.h"
 #include "../../Visos/Animation/CStaticAnim.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Foundation/CVSPoint.h"
 #include "../../Visos/Foundation/tagPRIMS.h"
 #include "../../Visos/Graphics/CDrawer.h"
 #include "../Support/CUserActionMessage.h"
@@ -18,7 +18,7 @@ class CMain2DDisplay;
 class CPlayThruAnim;
 class CResBITMAP;
 class CTextManager;
-class CVsRect;
+class CVSRect;
 struct Message;
 // SIZE 0x398
 // VTABLE: LEMBALL 0x004978a8 CDrawer
@@ -28,7 +28,7 @@ class CBaseFrontendDrawer : public CDrawer, public CBaseQueueHandler, public CAn
 public:
 	CBaseFrontendDrawer(CMain2DDisplay* p_display,
 						CGDI* p_gdi,
-						const CVsRect& p_rect,
+						const CVSRect& p_rect,
 						eFlowProcesses p_flowProcess,
 						int p_resourceCapacity,
 						int p_animCapacity,
@@ -37,8 +37,8 @@ public:
 						int p_maxStringLen);
 	virtual int ProcessMsg(Message* p_message);          // vtable+0x08
 	virtual ~CBaseFrontendDrawer();                      // vtable+0x00
-	virtual void Draw(const CVsRect& p_rect);            // vtable+0x08
-	virtual void OnSize(const CVsRect& p_rect);          // vtable+0x10
+	virtual void Draw(const CVSRect& p_rect);            // vtable+0x08
+	virtual void OnSize(const CVSRect& p_rect);          // vtable+0x10
 	virtual void Process();                              // vtable+0x1c
 	virtual void ResetPrimitives();                      // vtable+0x20
 	virtual int GetReturnState();                        // vtable+0x28
@@ -58,7 +58,7 @@ public:
 	void _Load();
 	void _UnLoad();
 	void DrawFrame(CoordPair p_start, CoordPair p_end);
-	void DrawFrame(CVsRect p_rect);
+	void DrawFrame(CVSRect p_rect);
 	void InitialiseBackBuffer();
 	void LostConnection();
 	void RemoteAction(eUserActions p_action, eUserActionStages p_stage);
@@ -113,7 +113,7 @@ protected:
 	int m_quitYet;                         // 0x378
 	short m_width;                         // 0x37c
 	short m_height;                        // 0x37e
-	CVsPoint m_animPosition;               // 0x380
+	CVSPoint m_animPosition;               // 0x380
 	unsigned int m_chalkFontId;            // 0x384
 	unsigned int m_topFrameAnimId;         // 0x388
 	unsigned int m_sideFrameAnimId;        // 0x38c

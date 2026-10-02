@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 
-#include "../../Foundation/CVsPoint.h"
-#include "../../Foundation/CVsRect.h"
-#include "../../Foundation/CVsSize.h"
+#include "../../Foundation/CVSPoint.h"
+#include "../../Foundation/CVSRect.h"
+#include "../../Foundation/CVSSize.h"
 #include "CDibContext.h"
 #include "CDrawingContext.h"
 
@@ -36,13 +36,13 @@ public:
 											  unsigned int p_entryCount,
 											  void* p_colours) = 0; // vtable+0x18
 	virtual int StretchBltContexts(CDrawingContext* p_destination,
-								   CVsRect* p_destinationRect,
+								   CVSRect* p_destinationRect,
 								   CDrawingContext* p_source,
-								   CVsRect* p_sourceRect) = 0; // vtable+0x1c
+								   CVSRect* p_sourceRect) = 0; // vtable+0x1c
 	virtual int BitBltContexts(CDrawingContext* p_destination,
-							   CVsRect* p_destinationRect,
+							   CVSRect* p_destinationRect,
 							   CDrawingContext* p_source,
-							   CVsPoint* p_sourcePosition) = 0; // vtable+0x20
+							   CVSPoint* p_sourcePosition) = 0; // vtable+0x20
 	virtual CDibContext* SelectDibContext(CDrawingContext* p_drawingContext,
 										  CDibContext* p_dibContext) = 0; // vtable+0x24
 	virtual CDibContext* RestoreDibContext(CDrawingContext* p_drawingContext,
@@ -51,9 +51,9 @@ public:
 	virtual bool RealizePalette(CDrawingContext* p_drawingContext);        // vtable+0x30
 	virtual bool HasPalette();                                             // vtable+0x34
 	bool BlitWrappedBitmap(CDrawingContext* p_destination,
-						   CVsRect* p_destinationRect,
+						   CVSRect* p_destinationRect,
 						   CDrawingContext* p_source,
-						   CVsRect* p_sourceRect,
+						   CVSRect* p_sourceRect,
 						   CPVGDIBitmap* p_bitmap);
 
 	friend class CWnd;
@@ -68,7 +68,7 @@ protected:
 	void* m_palette;               // 0x08
 	unsigned int m_ready;          // 0x0c
 	void* m_window;                // 0x10
-	CVsSize m_screenSize;          // 0x14
+	CVSSize m_screenSize;          // 0x14
 	CPVGDIBitmap* m_currentBitmap; // 0x18
 };
 

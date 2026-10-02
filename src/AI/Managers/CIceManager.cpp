@@ -1,10 +1,13 @@
 #include "CIceManager.h"
 
-#include "../Base/Coord3d.h"
+#include "../Base/tCoord3d.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CIce.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
+
+#define ICE_LAST_VERSION_WITH_GENERATED_IDS 1
+#define ICE_FIRST_VERSION_WITH_INITIAL_SWITCH_STATE 10
 
 // FUNCTION: LEMBALL 0x0042d7a0
 CIceManager::CIceManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x19, 0xe)
@@ -51,16 +54,8 @@ CIceManager::~CIceManager()
 // FUNCTION: LEMBALL 0x0042dd00
 void CIceManager::Process()
 {
-	int offset = 0;
-	int index = 0;
-	register CIceManager* manager = this;
-	if (manager->m_count > 0) {
-		do {
-			CIce* ice = (CIce*) ((char*) manager->m_ice + offset);
-			ice->Process();
-			offset += sizeof(CIce);
-			index++;
-		} while (index < manager->m_count);
+	for (int index = 0; index < m_count; index++) {
+		m_ice[index].Process();
 	}
 }
 
@@ -71,7 +66,7 @@ int CIceManager::GetViewData(CViewData* p_viewData)
 }
 
 // FUNCTION: LEMBALL 0x0042dd40
-bool CIceManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
+bool CIceManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	for (int index = 0; index < m_count; ++index) {
 		if (m_ice[index].StepOn(p_position, p_object)) {
@@ -103,8 +98,8 @@ void CIceManager::Switch(int p_message, int p_id)
 
 // FUNCTION: LEMBALL 0x0042ddf0
 void CIceManager::Add(unsigned short p_id,
-					  const Coord3d& p_cornerA,
-					  const Coord3d& p_cornerB,
+					  const tCoord3d& p_cornerA,
+					  const tCoord3d& p_cornerB,
 					  int p_velocityX,
 					  int p_velocityY,
 					  unsigned int p_initialSwitched)
@@ -116,7 +111,7 @@ void CIceManager::Add(unsigned short p_id,
 }
 
 // FUNCTION: LEMBALL 0x0042de40
-int CIceManager::ExportIceRecords(Coord3d p_records[][2])
+int CIceManager::ExportIceRecords(tCoord3d p_records[][2])
 {
 	for (int i = 0; i < m_count; i++) {
 		CIce* ice = &m_ice[i];
@@ -137,15 +132,15 @@ void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 	if (count != 0) {
 		do {
 			unsigned short id;
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > ICE_LAST_VERSION_WITH_GENERATED_IDS) {
 				id = *data++;
 			}
 			else {
 				id = (unsigned short) CGameObject::NextId();
 			}
 
-			Coord3d cornerA;
-			Coord3d cornerB;
+			tCoord3d cornerA;
+			tCoord3d cornerB;
 			cornerA.m_x = (short) *data++;
 			cornerA.m_y = (short) *data++;
 			cornerA.m_z = (short) *data++;
@@ -153,9 +148,9 @@ void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 			cornerB.m_y = (short) *data++;
 			cornerB.m_z = (short) *data++;
 			int velocityX = (short) *data++;
-			const int& velocityY = (short) *data++;
+			int velocityY = (short) *data++;
 			unsigned int initialSwitched = 1;
-			if (m_ai->m_levelVersion >= 10) {
+			if (m_ai->m_levelVersion >= ICE_FIRST_VERSION_WITH_INITIAL_SWITCH_STATE) {
 				initialSwitched = *data++;
 			}
 			Add(id, cornerA, cornerB, velocityX, velocityY, initialSwitched);

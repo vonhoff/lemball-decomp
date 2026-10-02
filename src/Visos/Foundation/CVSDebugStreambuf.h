@@ -9,13 +9,13 @@ struct FILE;
 // VTABLE: LEMBALL 0x00498968
 class CVSDebugStreambuf : public CVSStreambuf {
 public:
-	CVSDebugStreambuf(char* p_buffer, int p_size, void (*p_flushCallback)(char*));
+	CVSDebugStreambuf(char* p_buffer, int p_size, int (*p_flushCallback)(char*));
 	virtual ~CVSDebugStreambuf();     // vtable+0x00
 	virtual void flush();             // vtable+0x04
 	virtual void sputc(char p_c);     // vtable+0x08
 	virtual void sputs(char* p_text); // vtable+0x0c
 
-	void* m_flushCallback; // 0x18
+	int (*m_flushCallback)(char*); // 0x18
 };
 
 extern CVSDebugStreambuf* g_pDebugStreambuf;

@@ -8,10 +8,10 @@
 #include "../../../Visos/Resources/Manifest.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
 
 class CGWnd;
 

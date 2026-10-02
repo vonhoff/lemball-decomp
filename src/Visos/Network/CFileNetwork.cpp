@@ -11,15 +11,8 @@
 
 #include <new.h>
 
-extern "C" __declspec(dllimport) int __stdcall KillTimer(void* p_window, unsigned int p_id);
-extern "C" __declspec(dllimport) int __stdcall PostMessageA(void* p_window,
-															unsigned int p_message,
-															unsigned int p_wParam,
-															long p_lParam);
-extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
-																 unsigned int p_id,
-																 unsigned int p_elapse,
-																 void* p_callback);
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 // FUNCTION: LEMBALL 0x0046f6b0
 CFileNetwork::CFileNetwork()
@@ -32,13 +25,13 @@ void CFileNetwork::Initialise()
 {
 	*g_pDebugOutput << "Network Initialised:\n";
 	*g_pDebugOutput << "Windows file-based networking\n";
-	m_timerId = SetTimer(m_windowHandle, 0x12345679, 0x14, 0);
+	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, FILE_NETWORK_TIMER_INTERVAL_MS, 0);
 }
 
 // FUNCTION: LEMBALL 0x0046f730
 void CFileNetwork::UnInitialise()
 {
-	KillTimer(m_windowHandle, m_timerId);
+	KillTimer((HWND) m_windowHandle, m_timerId);
 }
 
 // FUNCTION: LEMBALL 0x0046f740
@@ -46,8 +39,8 @@ void CFileNetwork::ResetTimer(unsigned int p_interval)
 {
 	*g_pDebugOutput << "Setting next timer event to " << (unsigned long) p_interval << "ms from now\n";
 
-	KillTimer(m_windowHandle, m_timerId);
-	m_timerId = SetTimer(m_windowHandle, 0x12345679, p_interval, 0);
+	KillTimer((HWND) m_windowHandle, m_timerId);
+	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, p_interval, 0);
 	m_alternateTimer = m_alternateTimer == 0;
 }
 
@@ -75,27 +68,26 @@ int CFileNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p_
 	(void) p_wParam;
 	(void) p_lParam;
 
-	if (p_message != 0x113) {
-		if (p_message != 0x444) {
+	if (p_message != WM_TIMER) {
+		if (p_message != FILE_NETWORK_MESSAGE_FORCE_PROCESS) {
 			return -1;
 		}
 		if (m_alternateTimer != 0) {
-			ResetTimer(20);
+			ResetTimer(FILE_NETWORK_TIMER_INTERVAL_MS);
 		}
 		if (g_pNetworkStatusQueue != 0 && ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount() != 0) {
 			((CBaseQueue*) g_pNetworkStatusQueue)
 				->ProcessNMsgs(((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount());
 		}
 	}
-	CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(CNetworkWnd));
-	network.Process();
+	Process();
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0046f840
 void CFileNetwork::ForceProcess()
 {
-	PostMessageA(m_windowHandle, 0x444, 0, 0);
+	PostMessageA((HWND) m_windowHandle, FILE_NETWORK_MESSAGE_FORCE_PROCESS, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0046f860
@@ -138,7 +130,7 @@ void* CFileNetwork::GetNewBroadcast()
 }
 
 // GLOBAL: LEMBALL 0x004a2260
-unsigned int g_dwFileNetworkThreadId = 0x12345678;
+unsigned long g_dwFileNetworkThreadId = 0x12345678;
 
 // GLOBAL: LEMBALL 0x004a2264
 void* g_hFileNetworkThread = 0;

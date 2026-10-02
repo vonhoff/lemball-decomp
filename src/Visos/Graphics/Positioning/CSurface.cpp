@@ -8,32 +8,32 @@
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x0046d5b0
-void CSurface::Move(const CVsPoint& p_position)
+void CSurface::Move(const CVSPoint& p_position)
 {
-	const CVsPoint& position = m_surfaceRect;
-	CVsPoint delta(p_position.m_x - position.m_x, p_position.m_y - position.m_y);
+	const CVSPoint& position = m_surfaceRect;
+	CVSPoint delta(p_position.m_x - position.m_x, p_position.m_y - position.m_y);
 
 	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
 		CRITICAL_SECTION* lock = (CRITICAL_SECTION*) m_lock;
 		EnterCriticalSection(lock);
 		{
-			CVsRect& surface = m_surfaceRect;
+			CVSRect& surface = m_surfaceRect;
 			surface.m_x = p_position.m_x;
 			surface.m_y = p_position.m_y;
 		}
-		CVsRect oldRect(m_windowRect);
+		CVSRect oldRect(m_windowRect);
 		{
-			CVsRect& window = m_windowRect;
-			const CVsRect& surface = m_surfaceRect;
+			CVSRect& window = m_windowRect;
+			const CVSRect& surface = m_surfaceRect;
 			window.m_width = surface.m_width;
 			window.m_height = surface.m_height;
-			const CVsPoint& origin = surface;
+			const CVSPoint& origin = surface;
 			window.m_x = origin.m_x;
 			window.m_y = origin.m_y;
 		}
 
-		const CVsSize& parentSize = m_parentSurface->m_windowRect;
-		CVsRect& clipped = m_windowRect;
+		const CVSSize& parentSize = m_parentSurface->m_windowRect;
+		CVSRect& clipped = m_windowRect;
 		short parentWidth = parentSize.m_width;
 		short parentHeight = parentSize.m_height;
 
@@ -62,13 +62,13 @@ void CSurface::Move(const CVsPoint& p_position)
 			clipped.m_x = 0;
 		}
 		{
-			const CVsSize& windowSize = m_windowRect;
-			CVsSize& clipSize = m_clipRect;
+			const CVSSize& windowSize = m_windowRect;
+			CVSSize& clipSize = m_clipRect;
 			short height = windowSize.m_height;
 			clipSize.m_width = windowSize.m_width;
 			clipSize.m_height = height;
 		}
-		const CVsSize& newSize = m_windowRect;
+		const CVSSize& newSize = m_windowRect;
 		short height = newSize.m_height;
 		if (newSize.m_width != oldRect.m_width || oldRect.m_height != height) {
 			Resize(newSize);

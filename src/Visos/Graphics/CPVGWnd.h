@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 #define LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 
-#include "../Foundation/CVsRect.h"
-#include "CBitmap.h"
+#include "../Foundation/CVSRect.h"
 #include "CCopyToBackBuff.h"
-#include "CLine.h"
+#include "CSolidRect.h"
 #include "CWnd.h"
+#include "CZBuffClear.h"
 class CGDI;
 class CPVWnd;
 
@@ -16,19 +16,19 @@ struct WinGDrawState;
 class CPVGWnd : public CWnd {
 public:
 	CPVGWnd();
-	virtual void Create(const CVsRect& p_rect,
+	virtual void Create(const CVSRect& p_rect,
 						CPVWnd* p_parent,
 						char* p_title,
 						unsigned long p_paletteId) = 0;        // vtable+0xa4
-	virtual void OnPaint(const CVsRect& p_rect) = 0;           // vtable+0xa8
+	virtual void OnPaint(const CVSRect& p_rect) = 0;           // vtable+0xa8
 	virtual void AttachPalette(unsigned long p_paletteId) = 0; // vtable+0xac
 	virtual void Render() = 0;                                 // vtable+0xb0
 	virtual void Flush() = 0;                                  // vtable+0xb4
 	virtual unsigned int GetStyle();                           // vtable+0x64
 	virtual void OnVisibilityChange();                         // vtable+0x80
 	virtual void _OnZoom(int p_oldZoom);                       // vtable+0x2c
-	virtual void SetDontUpdateRect(const CVsRect& p_rect);     // vtable+0x84
-	virtual void SetInnerWindow(const CVsRect& p_rect);        // vtable+0x08
+	virtual void SetDontUpdateRect(const CVSRect& p_rect);     // vtable+0x84
+	virtual void SetInnerWindow(const CVSRect& p_rect);        // vtable+0x08
 	virtual void _OnCreate() = 0;                              // vtable+0x18
 	virtual void _OnDestroy() = 0;                             // vtable+0x1c
 	virtual void _OnMove() = 0;                                // vtable+0x28
@@ -64,16 +64,16 @@ public:
 	friend int __stdcall WinGDrawFrame(struct WinGDrawState* p_state, void* p_request, long p_param2);
 
 private:
-	CGDI* m_gdi;                       // 0x4c
-	unsigned int m_gdiFlags;           // 0x50
-	unsigned int m_paletteResourceId;  // 0x54
-	CLine m_clearRectangle[1];         // 0x58
-	CBitmap m_backBufferCopy[1];       // 0x68
-	CCopyToBackBuff m_zBufferClear[1]; // 0x78
-	short m_refreshWidth;              // 0x88
-	short m_refreshHeight;             // 0x8a
-	short m_refreshX;                  // 0x8c
-	short m_refreshY;                  // 0x8e
+	CGDI* m_gdi;                         // 0x4c
+	unsigned int m_gdiFlags;             // 0x50
+	unsigned int m_paletteResourceId;    // 0x54
+	CSolidRect m_clearRectangle[1];      // 0x58
+	CCopyToBackBuff m_backBufferCopy[1]; // 0x68
+	CZBuffClear m_zBufferClear[1];       // 0x78
+	short m_refreshWidth;                // 0x88
+	short m_refreshHeight;               // 0x8a
+	short m_refreshX;                    // 0x8c
+	short m_refreshY;                    // 0x8e
 };
 
 #endif

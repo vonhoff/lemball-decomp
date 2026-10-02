@@ -4,7 +4,7 @@
 #include "../../../Control/Game/GameTime.h"
 #include "../../../Map/Base/CMap.h"
 #include "../../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"

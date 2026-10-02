@@ -4,16 +4,19 @@
 #include "../Base/CGameObject.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CTrapDoor.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
+#define TRAP_DOOR_NETWORK_MESSAGE_ID 0x1e
+#define TRAP_DOOR_TRANSPORT_ID 0x13
+
 // FUNCTION: LEMBALL 0x0040c750
-CTrapDoorManager::CTrapDoorManager() : CBaseObjectManager(0x1e, 0x13)
+CTrapDoorManager::CTrapDoorManager() : CBaseObjectManager(TRAP_DOOR_NETWORK_MESSAGE_ID, TRAP_DOOR_TRANSPORT_ID)
 {
 	m_count = 0;
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < TRAP_DOOR_CAPACITY; i++) {
 		m_doors[i] = 0;
 	}
 }
@@ -21,15 +24,21 @@ CTrapDoorManager::CTrapDoorManager() : CBaseObjectManager(0x1e, 0x13)
 // FUNCTION: LEMBALL 0x0040c7b0
 void CTrapDoorManager::Restart()
 {
-	for (int i = 0; i < m_count; i++) {
-		m_doors[i]->Restart();
+	CTrapDoor** door;
+	int i = 0;
+	if (m_count > 0) {
+		door = m_doors;
+		do {
+			(*door++)->Restart();
+			i++;
+		} while (i < m_count);
 	}
 }
 
 // FUNCTION: LEMBALL 0x0040c7e0
 CTrapDoorManager::~CTrapDoorManager()
 {
-	int remaining = 8;
+	int remaining = TRAP_DOOR_CAPACITY;
 	CTrapDoor** door = m_doors;
 	do {
 		delete *door;
@@ -39,11 +48,11 @@ CTrapDoorManager::~CTrapDoorManager()
 
 // FUNCTION: LEMBALL 0x0040c810
 void CTrapDoorManager::AddNewDoor(unsigned short p_id,
-								  const AiCoord& p_position,
+								  const AICOORD& p_position,
 								  unsigned int p_mode,
 								  unsigned long p_deadline)
 {
-	m_doors[m_count] = new CTrapDoor((AiCoord&) p_position, p_mode);
+	m_doors[m_count] = new CTrapDoor((AICOORD&) p_position, p_mode);
 	m_doors[m_count]->Restart();
 	m_doors[m_count]->SetId(p_id);
 	m_doors[m_count]->m_manager = this;
@@ -90,7 +99,7 @@ void CTrapDoorManager::Process()
 }
 
 // FUNCTION: LEMBALL 0x0040c950
-int CTrapDoorManager::GetTrapDoorPosition(AiCoord& p_position, int p_index)
+int CTrapDoorManager::GetTrapDoorPosition(AICOORD& p_position, int p_index)
 {
 	if (m_count == 0) {
 		return 0;
@@ -140,7 +149,7 @@ void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 			if (p_skip == 0) {
 				id = CGameObject::NextLoadingId();
 			}
-			AiCoord position;
+			AICOORD position;
 			position.m_xFixed = *data++ << 12;
 			position.m_yFixed = *data++ << 12;
 			data++;
@@ -177,7 +186,7 @@ void CTrapDoorManager::ClearAllTrapDoors()
 {
 	m_count = 0;
 	CTrapDoor** door = m_doors;
-	int remaining = 8;
+	int remaining = TRAP_DOOR_CAPACITY;
 	do {
 		if (*door != 0) {
 			delete *door;

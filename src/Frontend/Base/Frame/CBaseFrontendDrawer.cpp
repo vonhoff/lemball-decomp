@@ -11,7 +11,7 @@
 #include "../../../Visos/Foundation/CTextManager.h"
 #include "../../../Visos/Foundation/CVSOStream.h"
 #include "../../../Visos/Foundation/VsTime.h"
-#include "../../../Visos/Graphics/CBitmap.h"
+#include "../../../Visos/Graphics/CCopyToBackBuff.h"
 #include "../../../Visos/Graphics/CCursor.h"
 #include "../../../Visos/Graphics/CGDI.h"
 #include "../../../Visos/Graphics/CSurface.h"
@@ -30,22 +30,22 @@
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBaseCursor.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
 #include "Visos/Graphics/CDrawingMark.h"
-#include "Visos/Graphics/CLine.h"
 #include "Visos/Graphics/CPrimitive.h"
+#include "Visos/Graphics/CSolidRect.h"
 
 #include <new.h>
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x00446110
-void CBaseFrontendDrawer::DrawFrame(CVsRect p_rect)
+void CBaseFrontendDrawer::DrawFrame(CVSRect p_rect)
 {
 	int startX = p_rect.m_x;
 	int startY = p_rect.m_y;
@@ -54,7 +54,7 @@ void CBaseFrontendDrawer::DrawFrame(CVsRect p_rect)
 	int tileWidth;
 	int tileHeight;
 	{
-		const CVsSize& tileSize = CAnimsManager::GetAnimSize(m_topFrameAnimId, 0);
+		const CVSSize& tileSize = CAnimsManager::GetAnimSize(m_topFrameAnimId, 0);
 		tileWidth = tileSize.m_width;
 		tileHeight = tileSize.m_height;
 	}
@@ -63,9 +63,9 @@ void CBaseFrontendDrawer::DrawFrame(CVsRect p_rect)
 	height += tileHeight - 1;
 	height -= height % tileHeight;
 	{
-		CVsRect frame(p_rect.m_x, p_rect.m_y, (short) width, (short) height);
-		const CVsRect& frameBounds = frame;
-		CLine& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
+		CVSRect frame(p_rect.m_x, p_rect.m_y, (short) width, (short) height);
+		const CVSRect& frameBounds = frame;
+		CSolidRect& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
 		line.m_bounds.m_width = frameBounds.m_width;
 		line.m_bounds.m_height = frameBounds.m_height;
 		line.m_bounds.m_x = frameBounds.m_x;
@@ -75,7 +75,7 @@ void CBaseFrontendDrawer::DrawFrame(CVsRect p_rect)
 	}
 	m_framePrimitiveCount++;
 	m_staticAnim.m_frameState = 0;
-	CAnimsManager::DrawAnim(CVsPoint((short) startX, (short) startY),
+	CAnimsManager::DrawAnim(CVSPoint((short) startX, (short) startY),
 							m_topFrameAnimId,
 							0,
 							(CAnimFrameBASE*) &m_staticAnim,
@@ -84,14 +84,14 @@ void CBaseFrontendDrawer::DrawFrame(CVsRect p_rect)
 	int right = width - tileWidth;
 	for (; right > x; x += tileWidth) {
 		m_staticAnim.m_frameState = 1;
-		CAnimsManager::DrawAnim(CVsPoint((short) (startX + x), (short) startY),
+		CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) startY),
 								m_topFrameAnimId,
 								0,
 								(CAnimFrameBASE*) &m_staticAnim,
 								0);
 	}
 	m_staticAnim.m_frameState = 2;
-	CAnimsManager::DrawAnim(CVsPoint((short) (startX + x), (short) startY),
+	CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) startY),
 							m_topFrameAnimId,
 							0,
 							(CAnimFrameBASE*) &m_staticAnim,
@@ -101,31 +101,31 @@ void CBaseFrontendDrawer::DrawFrame(CVsRect p_rect)
 	for (; y < height; y += tileHeight) {
 		m_staticAnim.m_frameState = 0;
 		short currentY = (short) (startY + y);
-		CVsPoint left((short) startX, currentY);
+		CVSPoint left((short) startX, currentY);
 		CAnimsManager::DrawAnim(left, m_sideFrameAnimId, 0, (CAnimFrameBASE*) &m_staticAnim, 0);
 		m_staticAnim.m_frameState = 2;
-		CAnimsManager::DrawAnim(CVsPoint((short) (width - tileWidth + startX), currentY),
+		CAnimsManager::DrawAnim(CVSPoint((short) (width - tileWidth + startX), currentY),
 								m_sideFrameAnimId,
 								0,
 								(CAnimFrameBASE*) &m_staticAnim,
 								0);
 	}
 	m_staticAnim.m_frameState = 0;
-	CAnimsManager::DrawAnim(CVsPoint((short) startX, (short) (startY + y)),
+	CAnimsManager::DrawAnim(CVSPoint((short) startX, (short) (startY + y)),
 							m_bottomFrameAnimId,
 							0,
 							(CAnimFrameBASE*) &m_staticAnim,
 							0);
 	for (x = tileWidth; right > x; x += tileWidth) {
 		m_staticAnim.m_frameState = 1;
-		CAnimsManager::DrawAnim(CVsPoint((short) (startX + x), (short) (startY + y)),
+		CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) (startY + y)),
 								m_bottomFrameAnimId,
 								0,
 								(CAnimFrameBASE*) &m_staticAnim,
 								0);
 	}
 	m_staticAnim.m_frameState = 2;
-	CAnimsManager::DrawAnim(CVsPoint((short) (startX + x), (short) (startY + y)),
+	CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) (startY + y)),
 							m_bottomFrameAnimId,
 							0,
 							(CAnimFrameBASE*) &m_staticAnim,

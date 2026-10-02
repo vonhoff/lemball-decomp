@@ -2,7 +2,7 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Map/Base/CMap.h"
-#include "../Base/Coord3d.h"
+#include "../Base/tCoord3d.h"
 #include "../Navigation/CAI.h"
 
 #include <stdlib.h>
@@ -37,8 +37,8 @@ CIce::~CIce()
 
 // FUNCTION: LEMBALL 0x0042cb00
 void CIce::Set(unsigned short p_id,
-			   const Coord3d& p_cornerA,
-			   const Coord3d& p_cornerB,
+			   const tCoord3d& p_cornerA,
+			   const tCoord3d& p_cornerB,
 			   int p_velocityX,
 			   int p_velocityY,
 			   unsigned int p_initialSwitched)
@@ -161,7 +161,7 @@ bool CIce::Process()
 	int maxY = m_max.m_y + 7;
 	for (int i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AiCoord position = AiCoord(object->m_position);
+		AICOORD position = AICOORD(object->m_position);
 		int dx = (m_velocityX * elapsed * 4096) / 8;
 		int dy = (m_velocityY * elapsed * 4096) / 8;
 		int ax = abs(dx >> 12);
@@ -223,12 +223,12 @@ bool CIce::Process()
 				position.m_xFixed += 4096;
 			}
 		}
-		const AiCoord& movedPosition = position;
+		const AICOORD& movedPosition = position;
 		object->m_position = movedPosition;
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AiCoord current = object->m_position;
+		AICOORD current = object->m_position;
 		int x = current.m_xFixed >> 12;
 		int y = current.m_yFixed >> 12;
 		if (x < minX || x > maxX || y < minY || y > maxY) {
@@ -285,8 +285,8 @@ bool CIce::Process()
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AiCoord positionValue(object->m_position);
-		const AiCoord& position = positionValue;
+		AICOORD positionValue(object->m_position);
+		const AICOORD& position = positionValue;
 		unsigned short groundZ;
 		{
 			CMap* map = g_pMap;
@@ -309,7 +309,7 @@ bool CIce::Process()
 }
 
 // FUNCTION: LEMBALL 0x0042d380
-bool CIce::StepOn(const AiCoord& p_position, CGameObject* p_object)
+bool CIce::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	if (!m_switched) {
 		return false;
@@ -388,7 +388,7 @@ void CIce::Switched()
 	{
 		for (int i = 0; i < m_objectCount; i++) {
 			CGameObject* object = m_objects[i];
-			AiCoord current = object->m_position;
+			AICOORD current = object->m_position;
 			object->m_hidden = 0;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;

@@ -5,7 +5,7 @@
 #include "../../Visos/Animation/CStaticAnim.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
 #include "../../Visos/Foundation/Message.h"
-#include "../../Visos/Graphics/CSolidRect.h"
+#include "../../Visos/Graphics/CClipRect.h"
 #include "GunControllerJunction.h"
 
 class CGWnd;
@@ -13,7 +13,7 @@ class CGDI;
 class CGunButtons;
 class CPlayThruAnim;
 class CSpriteWindow;
-class CVsRect;
+class CVSRect;
 // SIZE 0x27c
 // VTABLE: LEMBALL 0x00497f10 CBaseQueueHandler
 // VTABLE: LEMBALL 0x00497f0c CAnimsManager
@@ -52,7 +52,7 @@ public:
 						   unsigned int p_unusedSecond,
 						   int p_value,
 						   int* p_binding,
-						   const CVsRect& p_rect,
+						   const CVSRect& p_rect,
 						   int p_actionMessage,
 						   int p_context);
 
@@ -81,7 +81,7 @@ private:
 	unsigned int m_verticalMoving;        // 0xdc
 	GunControllerJunction m_junctions[8]; // 0xe0
 	CGunButtons* m_buttons[8];            // 0x1e0
-	CSolidRect m_cursorRect[1];           // 0x200
+	CClipRect m_cursorRect[1];            // 0x200
 	CGDI* m_gdi;                          // 0x210
 	CGWnd* m_window;                      // 0x214
 	unsigned int m_nextMessageId;         // 0x218

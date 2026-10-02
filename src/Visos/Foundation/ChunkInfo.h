@@ -12,8 +12,7 @@ struct ChunkInfo {
 	unsigned int m_id;         // 0x08
 	unsigned int m_fileOffset; // 0x0c
 	unsigned int m_size;       // 0x10
-	int m_nextIndex;           // 0x14
-	ChunkInfo* m_next;         // 0x18
+	Chunk m_next;              // 0x14
 	Chunk m_child;             // 0x1c
 	CMogDir* m_directory;      // 0x24
 	char m_name[16];           // 0x28

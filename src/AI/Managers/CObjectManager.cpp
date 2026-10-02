@@ -12,7 +12,7 @@
 #include "../Objects/CKey.h"
 #include "../Objects/CSwitch.h"
 #include "../Objects/CTower.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/Rect.h"
@@ -96,7 +96,7 @@ CObjectManager::~CObjectManager()
 void CObjectManager::ClearAllObjects()
 {
 	for (int index = 0; index < m_count; index++) {
-		m_objects[index]->SetId(0xffff);
+		m_objects[index]->SetId(INVALID_OBJECT_ID);
 		delete m_objects[index];
 	}
 	m_count = 0;
@@ -111,7 +111,7 @@ void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
 	for (; index < m_count; index++) {
 		if (m_objects[index] == p_object) {
 			p_object->Delete();
-			p_object->SetId(0xffff);
+			p_object->SetId(INVALID_OBJECT_ID);
 			delete p_object;
 			index++;
 			while (index < m_count) {
@@ -127,7 +127,7 @@ void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
 				break;
 			}
 			if (m_objects[linkedIndex]->m_objectType == OBJECT_CRATE) {
-				volatile unsigned short contentsId = ((CCrate*) m_objects[linkedIndex])->m_contentsId;
+				unsigned short contentsId = ((CCrate*) m_objects[linkedIndex])->m_contentsId;
 				if ((unsigned short) p_object->GetId() == contentsId) {
 					DeleteObjectAndLinkedTargets(m_objects[linkedIndex]);
 				}
@@ -142,7 +142,7 @@ CGlobalGameObject* CObjectManager::AddObject(unsigned short p_id, CGlobalGameObj
 {
 	if (m_count < m_capacity) {
 		m_objects[m_count] = p_object;
-		if (p_id != 0xffff) {
+		if (p_id != INVALID_OBJECT_ID) {
 			p_object->SetId(p_id);
 		}
 		m_objects[m_count]->m_objectActive = 1;
@@ -161,13 +161,13 @@ CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
 									   unsigned short p_linkedObjectId,
 									   eObjectType p_linkedObjectType)
 {
-	AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+	AICOORD position(p_x << 12, p_y << 12, p_z << 12);
 	return Add(p_id, position, p_objectType, p_linkedObjectId, p_linkedObjectType);
 }
 
 // FUNCTION: LEMBALL 0x0041b370
 CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
-									   AiCoord p_position,
+									   AICOORD p_position,
 									   eObjectType p_objectType,
 									   unsigned short p_linkedObjectId,
 									   eObjectType p_linkedObjectType)
@@ -246,7 +246,7 @@ CSwitch* CObjectManager::AddSwitch(unsigned short p_id,
 								   int p_legacyLast,
 								   int p_legacyAux)
 {
-	AiCoord position(p_x << 0xc, p_y << 0xc, p_z << 0xc);
+	AICOORD position(p_x << 0xc, p_y << 0xc, p_z << 0xc);
 	CSwitch* object = new CSwitch(position, (swMessage) p_message, p_legacyFirst, p_legacyLast, p_legacyAux);
 	object->Restart();
 	return (CSwitch*) AddObject(p_id, object, 1);
@@ -350,7 +350,7 @@ void CObjectManager::Remove(CGlobalGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x0041b9f0
-CGlobalGameObject* CObjectManager::FindNearbyObject(AiCoord p_position)
+CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position)
 {
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
@@ -374,7 +374,7 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AiCoord p_position)
 }
 
 // FUNCTION: LEMBALL 0x0041ba80
-CGlobalGameObject* CObjectManager::FindNearbyObject(AiCoord p_position, eObjectType p_objectType)
+CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position, eObjectType p_objectType)
 {
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
@@ -400,7 +400,7 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AiCoord p_position, eObjectT
 }
 
 // FUNCTION: LEMBALL 0x0041bb10
-CGlobalGameObject* CObjectManager::FindObjectInBounds(CVsRect* p_bounds, eObjectType p_objectType)
+CGlobalGameObject* CObjectManager::FindObjectInBounds(CVSRect* p_bounds, eObjectType p_objectType)
 {
 	Rect query;
 	query.m_left = p_bounds->m_x;

@@ -64,7 +64,7 @@ void CBaseRemap::MapRemap(const unsigned char* p_mapping)
 // FUNCTION: LEMBALL 0x0046ab70
 void CBaseRemap::CalculateGreyScale()
 {
-	volatile short grey;
+	short grey;
 	CResPALETTE* palette = m_paletteResource;
 	if (palette->m_loaded != 0) {
 		palette->m_age = 0;

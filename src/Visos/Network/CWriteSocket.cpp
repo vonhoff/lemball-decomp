@@ -12,7 +12,9 @@
 #include "Visos/Messaging/CBasePacketBuff.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
+#include <memory.h>
 #include <new.h>
+#pragma intrinsic(memcpy)
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -24,7 +26,7 @@ CWriteSocket::CWriteSocket()
 	m_lastSendTime = timeGetTime() - 1000;
 	header = (BasePacketHeader*) operator new(sizeof(BasePacketHeader));
 	m_packetHeader = header;
-	header->m_magic = 0x56533039;
+	header->m_magic = BASE_PACKET_MAGIC;
 	m_nonCriticalBuffer = 0;
 	m_criticalBuffer = 0;
 	m_secondaryCriticalBuffer = 0;
@@ -155,6 +157,10 @@ bool CWriteSocket::ResendCritical(CWritePacket* p_packet)
 // FUNCTION: LEMBALL 0x0045ff70
 bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 {
+	enum {
+		HEADER_SIZE = sizeof(BasePacketHeader),
+		MAX_SEGMENTS_PER_CALL = 9
+	};
 	unsigned char* data;
 	int remaining;
 	unsigned int dataSize;
@@ -166,18 +172,18 @@ bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 		m_segmentSequence = (short) ++m_multiMessageSequence;
 		m_segmentedMessage = &p_message;
 	}
-	dataSize = g_networkPacketSize - 0x10;
+	dataSize = g_networkPacketSize - HEADER_SIZE;
 	data = p_message.m_buffer;
 	remaining = p_message.m_writeCursor - data;
 	sendCount = 0;
-	segmentCount = (remaining + dataSize - 0x11) / dataSize;
+	segmentCount = (remaining + dataSize - HEADER_SIZE - 1) / dataSize;
 	if (m_segmentIndex != 0) {
 		dataSize *= m_segmentIndex;
 		data += dataSize;
 		remaining -= dataSize;
 	}
 	m_packetHeader->m_packetSequence = (unsigned short) m_segmentSequence;
-	while (segmentCount > m_segmentIndex && sendCount++ < 9) {
+	while (segmentCount > m_segmentIndex && sendCount++ < MAX_SEGMENTS_PER_CALL) {
 		int sendSize;
 
 		m_packetHeader->m_subpacketSequence = (unsigned short) m_segmentIndex;
@@ -194,21 +200,17 @@ bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 		else {
 			bool sent;
 
-			m_savedHeader.m_magic = ((BasePacketHeader*) data)->m_magic;
-			m_savedHeader.m_packetSize = ((BasePacketHeader*) data)->m_packetSize;
-			*(unsigned int*) &m_savedHeader.m_messageId = *(unsigned int*) &((BasePacketHeader*) data)->m_messageId;
-			*(unsigned int*) &m_savedHeader.m_subpacketSequence =
-				*(unsigned int*) &((BasePacketHeader*) data)->m_subpacketSequence;
+			memcpy(&m_savedHeader, data, sizeof(m_savedHeader));
 			CopyDataStream(data, 0);
 			sent = SendPacket(data, sendSize);
-			*(BasePacketHeader*) data = m_savedHeader;
+			memcpy(data, &m_savedHeader, sizeof(m_savedHeader));
 			if (sent == 0) {
 				break;
 			}
 		}
 		remaining -= sendSize;
-		data += sendSize - 0x10;
-		remaining += 0x10;
+		data += sendSize - HEADER_SIZE;
+		remaining += HEADER_SIZE;
 		m_segmentIndex++;
 	}
 	if (m_segmentIndex != segmentCount) {
@@ -243,7 +245,7 @@ bool CWriteSocket::Send(CNetworkMessage& p_message)
 		}
 	}
 	else {
-		m_packetHeader->m_subpacketSequence = 0x100;
+		m_packetHeader->m_subpacketSequence = BASE_PACKET_UNSEGMENTED;
 		if (p_message.m_headerEnabled == 0) {
 			m_packetHeader->m_packetSequence = ++m_nonCriticalSequence;
 			m_packetHeader->m_critical = 0;
@@ -274,7 +276,7 @@ CNetworkMessage* CWriteSocket::ReceiveAcknowledgement()
 
 	message = 0;
 	g_pAckMessage->Set((unsigned char*) (g_pNetworkPacketScratch + 1));
-	if (g_pAckMessage->m_subpacketSequence == 0x100) {
+	if (g_pAckMessage->m_subpacketSequence == BASE_PACKET_UNSEGMENTED) {
 		CWriteCBuff* buffer;
 		CWritePacket* packet;
 

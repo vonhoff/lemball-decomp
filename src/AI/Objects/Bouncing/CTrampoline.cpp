@@ -6,7 +6,7 @@
 #include "../../../Visos/Foundation/CFixed.h"
 #include "../../../Visos/Foundation/CVSMath.h"
 #include "../../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
@@ -17,7 +17,7 @@
 #include "Views/Sound/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x0042ab90
-int CTrampoline::Hit(const AiCoord& p_position, CGameObject* p_object)
+int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 {
 	int positionX = p_position.m_xFixed >> 12;
 	int positionY = p_position.m_yFixed >> 12;
@@ -107,9 +107,8 @@ int CTrampoline::Hit(const AiCoord& p_position, CGameObject* p_object)
 		flightVelocity.m_zFixed = 0x14000;
 	}
 
-	AiCoord position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
-	AiCoord& (AiCoord::*assignPosition)(const AiCoord&) = &AiCoord::operator=;
-	(p_object->m_position.*assignPosition)(position);
+	AICOORD position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
+	p_object->m_position = position;
 	p_object->StartFly(flightVelocity, 0);
 	p_object->m_balloonPostId = 1;
 	p_object->ResetInstructions();

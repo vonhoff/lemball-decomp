@@ -4,7 +4,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -47,9 +47,9 @@ void CBalloon::DoActivate()
 }
 
 // FUNCTION: LEMBALL 0x0041d7b0
-AiCoord CBalloon::ActivatePosition()
+AICOORD CBalloon::ActivatePosition()
 {
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	return AiCoord(m_position.m_xFixed, y, z);
+	return AICOORD(m_position.m_xFixed, y, z);
 }

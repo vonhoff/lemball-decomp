@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CSWITCH_H
 #define LEMBALL_AI_OBJECTS_CSWITCH_H
 
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/CBaseGlobalObject.h"
 #include "SwitchEntry.h"
 
@@ -9,8 +9,8 @@
 // VTABLE: LEMBALL 0x00494a18
 class CSwitch : public CBaseGlobalObject {
 public:
-	CSwitch(AiCoord& p_position, swMessage p_legacyType, int p_legacyFirst, int p_legacyLast, int p_legacyAux);
-	virtual AiCoord ActivatePosition();              // vtable+0x2c
+	CSwitch(AICOORD& p_position, swMessage p_legacyType, int p_legacyFirst, int p_legacyLast, int p_legacyAux);
+	virtual AICOORD ActivatePosition();              // vtable+0x2c
 	virtual bool Activate(CGameObject* p_object);    // vtable+0x18
 	virtual bool Process();                          // vtable+0x14
 	virtual int Usage();                             // vtable+0x28

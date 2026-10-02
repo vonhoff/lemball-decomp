@@ -28,9 +28,9 @@ void CGWnd::OnSize()
 }
 
 #include "CPVGWnd.inl"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Graphics/CPVSurface.h"
 #include "Visos/Graphics/CPVWnd.h"
 #include "Visos/Graphics/CWnd.h"
@@ -52,7 +52,7 @@ CGWnd::~CGWnd()
 }
 
 // FUNCTION: LEMBALL 0x00463c20
-void CGWnd::Move(const CVsPoint& p_point)
+void CGWnd::Move(const CVSPoint& p_point)
 {
 	CWnd::Move(p_point);
 }
@@ -74,13 +74,13 @@ void CGWnd::_OnCreate()
 		parentSurface = ((CGWnd*) m_parent)->m_gdi->m_renderTarget;
 	}
 
-	CVsRect localRect(m_rect);
+	CVSRect localRect(m_rect);
 	localRect.m_x = m_relativeTopLeft.m_x;
 	localRect.m_y = m_relativeTopLeft.m_y;
 	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
 		localRect.m_width = m_innerRect.m_width;
 		localRect.m_height = m_innerRect.m_height;
-		CVsPoint* innerOrigin = &m_innerRect;
+		CVSPoint* innerOrigin = &m_innerRect;
 		localRect.m_x = innerOrigin->m_x;
 		localRect.m_y = innerOrigin->m_y;
 		localRect.m_x += m_relativeTopLeft.m_x;
@@ -98,22 +98,22 @@ void CGWnd::_OnCreate()
 	if (m_parent == 0) {
 		target->m_zoom = (short) m_zoom;
 	}
-	CVsPoint* innerOrigin = &m_innerRect;
+	CVSPoint* innerOrigin = &m_innerRect;
 	originX = innerOrigin->m_x;
 	originY = innerOrigin->m_y;
 	if (m_parent != 0) {
-		CVsPoint* parentOrigin = &m_parent->m_relativeTopLeft;
+		CVSPoint* parentOrigin = &m_parent->m_relativeTopLeft;
 		originX = (short) (originX - parentOrigin->m_x);
 		originY = (short) (originY - parentOrigin->m_y);
 	}
-	CPVSurface* surface = (CPVSurface*) ((char*) &target->m_relOriginX - FIELD_OFFSET(CPVSurface, m_relOriginX));
-	surface->m_relOriginX = originX;
-	surface->m_relOriginY = originY;
+	CPVSurface& surface = *target;
+	surface.m_relOriginX = originX;
+	surface.m_relOriginY = originY;
 	style = GetStyle();
 	if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
 		style = GetWindowLongA((HWND) m_nativeWindow, -16);
 		if ((style & 0x40000000) != 0) {
-			CVsPoint* createOrigin = &m_createRect->m_relativeTopLeft;
+			CVSPoint* createOrigin = &m_createRect->m_relativeTopLeft;
 			localRect.m_x = (short) (localRect.m_x - createOrigin->m_x);
 			localRect.m_y = (short) (localRect.m_y - createOrigin->m_y);
 			CSurface* presentTarget = (*gdi)->m_renderTarget;
@@ -144,7 +144,7 @@ void CGWnd::_OnDestroy()
 	style = GetStyle();
 	if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
 		if ((GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE) & 0x40000000) != 0) {
-			CVsRect emptyRect(0, 0, 0, 0);
+			CVSRect emptyRect(0, 0, 0, 0);
 			m_createRect->SetDontUpdateRect(emptyRect);
 		}
 	}
@@ -155,8 +155,8 @@ void CGWnd::_OnDestroy()
 void CGWnd::_OnSize()
 {
 	CSurface* target;
-	CVsPoint* innerOrigin;
-	CVsPoint* parentOrigin;
+	CVSPoint* innerOrigin;
+	CVSPoint* parentOrigin;
 	short relX;
 	short relY;
 
@@ -164,7 +164,7 @@ void CGWnd::_OnSize()
 	if (m_gdi == 0) {
 		return;
 	}
-	CVsSize size(m_rect);
+	CVSSize size(m_rect);
 	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
 		size.m_width = m_innerRect.m_width;
 		size.m_height = m_innerRect.m_height;
@@ -175,12 +175,7 @@ void CGWnd::_OnSize()
 		size.m_height = (short) ((int) size.m_height / (int) m_zoom);
 	}
 	target->Resize(size);
-	if (this != (CGWnd*) -16) {
-		innerOrigin = (CVsPoint*) &m_innerRect.m_x;
-	}
-	else {
-		innerOrigin = 0;
-	}
+	innerOrigin = &m_innerRect;
 	relX = innerOrigin->m_x;
 	relY = innerOrigin->m_y;
 	if (m_parent != 0) {
@@ -188,9 +183,9 @@ void CGWnd::_OnSize()
 		relX = (short) (relX - parentOrigin->m_x);
 		relY = (short) (relY - parentOrigin->m_y);
 	}
-	CPVSurface* surface = (CPVSurface*) ((char*) &target->m_relOriginX - FIELD_OFFSET(CPVSurface, m_relOriginX));
-	surface->m_relOriginX = relX;
-	surface->m_relOriginY = relY;
+	CPVSurface& surface = *target;
+	surface.m_relOriginX = relX;
+	surface.m_relOriginY = relY;
 }
 
 // FUNCTION: LEMBALL 0x00463f30
@@ -201,7 +196,7 @@ void CGWnd::_OnMove()
 }
 
 // FUNCTION: LEMBALL 0x00463f60
-void CGWnd::OnPaint(const CVsRect& p_rect)
+void CGWnd::OnPaint(const CVSRect& p_rect)
 {
 }
 
@@ -282,7 +277,7 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 // FUNCTION: LEMBALL 0x00464190
 void CGWnd::Render()
 {
-	CVsRect paintRect;
+	CVSRect paintRect;
 	if (m_lifecycleRefs == 0 || m_active == 0) {
 		return;
 	}
@@ -334,7 +329,7 @@ void CGWnd::Flush()
 }
 
 // FUNCTION: LEMBALL 0x004642c0
-void CGWnd::Refresh(CVsRect* p_rect)
+void CGWnd::Refresh(CVSRect* p_rect)
 {
 	short height;
 	short width;
@@ -346,7 +341,7 @@ void CGWnd::Refresh(CVsRect* p_rect)
 	height = m_refreshHeight;
 	width = m_refreshWidth;
 	if ((int) (short) height * (int) (short) width > 0) {
-		CVsRect damage(*(const CVsRect*) &m_refreshWidth);
+		CVSRect damage(*(const CVSRect*) &m_refreshWidth);
 		innerWidth = m_innerRect.m_width;
 		innerHeight = m_innerRect.m_height;
 		if ((int) innerWidth * (int) innerHeight != 0) {
@@ -376,7 +371,7 @@ void CGWnd::Refresh(CVsRect* p_rect)
 			}
 		}
 		if ((int) (short) damage.m_height * (int) (short) damage.m_width > 0) {
-			const CVsPoint* origin = &m_innerRect;
+			const CVSPoint* origin = &m_innerRect;
 			short originY = origin->m_y;
 			short originX = origin->m_x;
 			damage.m_x -= originX;
@@ -392,14 +387,14 @@ void CGWnd::Refresh(CVsRect* p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00464440
-void CGWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title, unsigned long p_paletteId)
+void CGWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title, unsigned long p_paletteId)
 {
 	CWnd::Create(p_rect, p_parent, p_title);
 	AttachPalette(p_paletteId);
 }
 
 // FUNCTION: LEMBALL 0x00464470
-void CGWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
+void CGWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 {
 	Create(p_rect, p_parent, p_title, 0);
 }

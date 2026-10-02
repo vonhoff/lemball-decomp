@@ -3,7 +3,7 @@
 
 #include "../Base/CGlobalGameObject.h"
 
-class AiCoord;
+class AICOORD;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x00496740
 class CPaintGun : public CGlobalGameObject {
@@ -13,7 +13,7 @@ public:
 	virtual void DoActivate(); // vtable+0x10c
 	virtual void Restart();    // vtable+0x104
 	virtual ~CPaintGun();      // vtable+0x00
-	void Set(unsigned short p_id, const AiCoord& p_position, int p_direction);
+	void Set(unsigned short p_id, const AICOORD& p_position, int p_direction);
 
 	friend class CPaintGunManager;
 

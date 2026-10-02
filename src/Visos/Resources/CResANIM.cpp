@@ -49,15 +49,15 @@ unsigned int CResANIM::GetnVramEntries()
 }
 
 // FUNCTION: LEMBALL 0x0045e730
-bool CResANIM::DirectResources(unsigned int p_index, unsigned char** p_cursor)
+bool CResANIM::DirectResources(unsigned long p_index, unsigned char*& p_cursor)
 {
-	return m_animationEntries[p_index].Direct(*p_cursor, this);
+	return m_animationEntries[p_index].Direct(p_cursor, this);
 }
 
 // FUNCTION: LEMBALL 0x0045e750
-bool CResANIM::DirectResources(unsigned int p_index, unsigned char** p_headerCursor, unsigned char** p_dataCursor)
+bool CResANIM::DirectResources(unsigned long p_index, unsigned char*& p_headerCursor, unsigned char*& p_dataCursor)
 {
-	return m_animationEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this);
+	return m_animationEntries[p_index].Direct(p_headerCursor, p_dataCursor, this);
 }
 
 // FUNCTION: LEMBALL 0x0045e780

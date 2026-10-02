@@ -8,7 +8,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "../Animation/CStatManager.h"
 #include "../Foundation/CArena.h"
-#include "../Foundation/CVsRange.h"
+#include "../Foundation/CVSRange.h"
 #include "../Foundation/Chunk.h"
 #include "../Foundation/ChunkInfo.h"
 #include "../Foundation/VsFile.h"
@@ -384,7 +384,7 @@ void CMogRes::AgeResources()
 }
 
 // FUNCTION: LEMBALL 0x0045ce00
-bool CMogRes::Load(const CVsRange& p_range, unsigned char*& p_data, CResBase* p_resource)
+bool CMogRes::Load(const CVSRange& p_range, unsigned char*& p_data, CResBase* p_resource)
 {
 	p_data = AllocateMainMem(p_range.m_size);
 	vsSeek(g_pMogFile, p_range.m_offset + 8, 0);

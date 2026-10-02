@@ -53,7 +53,7 @@ void CPauseWindow::Initialise()
 	m_initialSelection = m_selection;
 	g_pMasterInputQueue->Attach(this, 0);
 	m_vramSurface = 0;
-	m_menuItemRects = (CVsPoint*) (void*) new CVsRect[m_menuItemCount];
+	m_menuItemRects = (CVSPoint*) (void*) new CVSRect[m_menuItemCount];
 	RegisterRemaps();
 	m_loaded = 0;
 	m_borderAnims = 0;

@@ -1,15 +1,19 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CNETWORKOPTIONSDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CNETWORKOPTIONSDRAWER_H
 
-#include "../../Visos/Graphics/CBitmapRes.h"
+#include "../../Visos/Graphics/CBigBitmap.h"
 #include "../Base/CBaseFrontendDrawer.h"
+
+#define NETWORK_OPTIONS_MESSAGE_HOST_LOOKUP_FAILED 7
+#define NETWORK_OPTIONS_ADDRESS_MAX_LENGTH 20
+
 class CEntryHandler;
 
 class CBaseRemap;
 class CEditString;
 class CGDI;
 class CMain2DDisplay;
-class CVsRect;
+class CVSRect;
 // SIZE 0xa0
 // SIZE 0x08
 struct NetworkOptionsFramePos {
@@ -49,7 +53,7 @@ struct NetworkOptionsLayout {
 // VTABLE: LEMBALL 0x0049862c CAnimsManager
 class CNetworkOptionsDrawer : public CBaseFrontendDrawer {
 public:
-	CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect);
+	CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect);
 	bool AcceptingLock();
 	bool HighlightNextEntry();
 	bool HighlightPreviousEntry();
@@ -89,7 +93,7 @@ private:
 	int m_editingStage;                  // 0x3a0
 	unsigned int m_pendingStage;         // 0x3a4
 	int m_message;                       // 0x3a8
-	unsigned int m_messageDirty;         // 0x3ac
+	unsigned int m_drawnMessage;         // 0x3ac
 	unsigned int m_messageStartTime;     // 0x3b0
 	unsigned int m_messageDuration;      // 0x3b4
 	unsigned int m_broadcasting;         // 0x3b8
@@ -103,9 +107,9 @@ private:
 	int m_visibleEntryCount;             // 0x3d8
 	unsigned int m_locked;               // 0x3dc
 	unsigned int m_startPending;         // 0x3e0
-	char* m_stopPending;                 // 0x3e4
-	char* m_connectionState;             // 0x3e8
-	CBitmapRes m_bitmap;                 // 0x3ec
+	char* m_localAddressText;            // 0x3e4
+	char* m_localComputerName;           // 0x3e8
+	CBigBitmap m_bitmap;                 // 0x3ec
 	unsigned int m_unknown410;           // 0x410
 	CBaseRemap* m_remaps[6];             // 0x414
 	NetworkOptionsLayout* m_layoutTable; // 0x42c

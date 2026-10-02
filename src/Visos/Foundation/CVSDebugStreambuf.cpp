@@ -5,10 +5,10 @@
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x0045ad70
-CVSDebugStreambuf::CVSDebugStreambuf(char* p_buffer, int p_size, void (*p_flushCallback)(char*))
+CVSDebugStreambuf::CVSDebugStreambuf(char* p_buffer, int p_size, int (*p_flushCallback)(char*))
 	: CVSStreambuf(p_buffer, p_size)
 {
-	m_flushCallback = (void*) p_flushCallback;
+	m_flushCallback = p_flushCallback;
 	m_buffer = p_buffer;
 	m_cursor = p_buffer;
 	m_length = 0;
@@ -25,7 +25,7 @@ CVSDebugStreambuf::~CVSDebugStreambuf()
 void CVSDebugStreambuf::flush()
 {
 	if (m_flushCallback != NULL) {
-		((void (*)(char*)) m_flushCallback)(m_buffer);
+		m_flushCallback(m_buffer);
 	}
 	m_cursor = m_buffer;
 	m_length = 0;

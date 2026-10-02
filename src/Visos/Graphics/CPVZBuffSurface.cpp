@@ -1,7 +1,7 @@
 #include "CPVZBuffSurface.h"
 
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Graphics/CPVGDIBitmap.h"
 
 // FUNCTION: LEMBALL 0x00466670
@@ -36,8 +36,8 @@ void CPVZBuffSurface::AllocateZBuff()
 	unsigned int allocatedArea;
 	unsigned int neededArea;
 
-	CVsSize size =
-		m_bitmap.SetSize(CVsRect(0, 0, (short) (m_windowRect.m_width * 2), m_windowRect.m_height), m_reserved40 * 2);
+	CVSSize size =
+		m_bitmap.SetSize(CVSRect(0, 0, (short) (m_windowRect.m_width * 2), m_windowRect.m_height), m_reserved40 * 2);
 	allocatedArea = (unsigned int) m_allocatedWidth * (unsigned int) m_allocatedHeight * 2;
 	neededArea = (unsigned int) ((int) size.m_height * (int) size.m_width);
 	if (allocatedArea < neededArea) {

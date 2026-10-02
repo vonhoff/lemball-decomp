@@ -1,6 +1,6 @@
 #include "CLiftManager.h"
 
-#include "../Base/Coord3d.h"
+#include "../Base/tCoord3d.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CLift.h"
 #include "../Objects/LiftEndpointRecord.h"
@@ -66,6 +66,23 @@ int CLiftManager::ExportEndpoints(LiftEndpointRecord* p_records)
 	return m_count;
 }
 
+// FUNCTION: LEMBALL 0x00425890
+void CLiftManager::RemoveLift(CLift* p_lift)
+{
+	int i = 0;
+	while (i < m_count) {
+		if (&m_lifts[i] == p_lift) {
+			m_lifts[i].SetId(0xffff);
+			for (int next = i + 1; next < m_count; next++) {
+				m_lifts[next - 1] = m_lifts[next];
+			}
+			m_count--;
+			return;
+		}
+		i++;
+	}
+}
+
 // FUNCTION: LEMBALL 0x00425c80
 void CLiftManager::AddLiftFromXyz(unsigned short p_id, int p_x, int p_y, int p_z)
 {
@@ -77,7 +94,7 @@ void CLiftManager::AddLiftFromXyz(unsigned short p_id, int p_x, int p_y, int p_z
 }
 
 // FUNCTION: LEMBALL 0x00425ce0
-void CLiftManager::AddLiftFromEndpoints(unsigned short p_id, const Coord3d& p_start, const Coord3d& p_end)
+void CLiftManager::AddLiftFromEndpoints(unsigned short p_id, tCoord3d& p_start, tCoord3d& p_end)
 {
 	if (m_count < m_capacity) {
 		m_lifts[m_count].SetId(p_id);

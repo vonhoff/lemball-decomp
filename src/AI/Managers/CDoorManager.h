@@ -1,10 +1,12 @@
 #ifndef LEMBALL_AI_MANAGERS_CDOORMANAGER_H
 #define LEMBALL_AI_MANAGERS_CDOORMANAGER_H
 
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/ObjectTypes.h"
 #include "../Objects/SwitchEntry.h"
 #include "CBaseObjectManager.h"
+
+#define INVALID_DOOR_INDEX 0xffff
 
 class CAI;
 class CDoor;
@@ -16,7 +18,7 @@ public:
 	CDoorManager(CAI* p_ai, int p_capacity);
 	int Add(unsigned short p_id, eObjectType p_objectType, unsigned short p_doorType, int p_x, int p_y, int p_z);
 	int GetViewData(CViewData* p_viewData);
-	int Open(const AiCoord& p_position, CGameObject* p_object);
+	int Open(const AICOORD& p_position, CGameObject* p_object);
 	unsigned short Id(int p_index);
 	virtual ~CDoorManager(); // vtable+0x14
 	void Initialise(int p_capacity);

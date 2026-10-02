@@ -1,8 +1,8 @@
 #include "CPVSurface.h"
 
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 
-struct CVsSize;
+struct CVSSize;
 
 // FUNCTION: LEMBALL 0x004663d0
 CPVSurface::CPVSurface()
@@ -35,7 +35,7 @@ CPVSurface::~CPVSurface()
 }
 
 // FUNCTION: LEMBALL 0x00466880
-void CPVSurface::SetDontUpdateRect(const CVsRect& p_rect)
+void CPVSurface::SetDontUpdateRect(const CVSRect& p_rect)
 {
 	const short* coords;
 
@@ -55,7 +55,7 @@ void CPVSurface::SetDontUpdateRect(const CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00466920
-void CPVSurface::Resize(const CVsSize& p_size)
+void CPVSurface::Resize(const CVSSize& p_size)
 {
 }
 

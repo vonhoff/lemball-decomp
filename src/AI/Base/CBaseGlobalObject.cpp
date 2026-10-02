@@ -2,7 +2,7 @@
 
 #include "../../Visos/Network/CConnect.h"
 #include "../Messages/CObjectPosMess.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
 

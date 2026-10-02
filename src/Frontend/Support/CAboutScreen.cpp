@@ -16,15 +16,16 @@
 #include "../../Visos/Resources/CResFONT.h"
 #include "../../Visos/Resources/CResSTRING.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
+#include "Visos/Graphics/CClipRect.h"
 #include "Visos/Graphics/CDrawingMark.h"
-#include "Visos/Graphics/CLine.h"
-#include "Visos/Graphics/CPVGWnd.h"
+#include "Visos/Graphics/CPVButton.h"
 #include "Visos/Graphics/CSolidRect.h"
+#include "Visos/Resources/ResourceLimits.h"
 
 #include <new.h>
 #include <string.h>
@@ -43,13 +44,11 @@ char g_szAboutWeatherManKey[] = "John Ketley is a Weatherman, and so is Michael 
 // GLOBAL: LEMBALL 0x0049fa40
 char g_szVisosBuild[] = "ViSOS Build ";
 
-struct AboutTextWindowBase : public CGWnd, public CHotAreaHandler {};
-
 // GLOBAL: LEMBALL 0x004a78d0
 char g_szVisosBuildBuffer[80];
 
 // FUNCTION: LEMBALL 0x0044b750
-CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect)
+CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 {
 	void* storage;
 
@@ -64,9 +63,9 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect
 	p_display->AttachPalette(RES_REGISTRATION_VISOS_PALETTE);
 	m_backgroundBitmap = CResBITMAP::Load(RES_REGISTRATION_VISOS_LOGO);
 	m_textWindow = 0;
-	storage = operator new(0x24);
+	storage = operator new(sizeof(CTextManager));
 	if (storage != 0) {
-		m_textManager = new (storage) CTextManager(0x2b6, 1, 10, 0);
+		m_textManager = new (storage) CTextManager(RESOURCE_ID_COUNT, 1, 10, 0);
 	}
 	else {
 		m_textManager = 0;
@@ -93,7 +92,7 @@ CAboutScreen::~CAboutScreen()
 	m_backgroundBitmap->UnLoad();
 	m_textManager->UnLoadFont(RES_GAME_FONT3);
 	if (m_textWindow != 0) {
-		delete (AboutTextWindowBase*) m_textWindow;
+		delete m_textWindow;
 	}
 	if (m_textManager != 0) {
 		delete m_textManager;
@@ -105,7 +104,7 @@ CAboutScreen::~CAboutScreen()
 }
 
 // FUNCTION: LEMBALL 0x0044b9e0
-void CAboutScreen::Draw(const CVsRect& p_rect)
+void CAboutScreen::Draw(const CVSRect& p_rect)
 {
 	if (m_gdi != 0) {
 		DrawChangedRegion();
@@ -121,13 +120,13 @@ void CAboutScreen::DrawRegistrationText()
 	int index;
 
 	font = m_textManager->GetFont(RES_GAME_FONT3);
-	CVsSize sizeValue = font->GetSize(g_szRegisteredTo, 0x20);
-	CVsSize& size = sizeValue;
+	CVSSize sizeValue = font->GetSize(g_szRegisteredTo, 0x20);
+	CVSSize& size = sizeValue;
 	labelY = (int) (m_size.m_height / 2) - (int) (size.m_height / 2);
 	short labelPointStorage[2];
-	CVsPoint& labelPosition = *(CVsPoint*) labelPointStorage;
+	CVSPoint& labelPosition = *(CVSPoint*) labelPointStorage;
 	{
-		CVsSize advance;
+		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
 		labelPosition.m_x = (short) (m_size.m_width / 2 - size.m_width / 2);
@@ -137,16 +136,16 @@ void CAboutScreen::DrawRegistrationText()
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	vsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
 	{
-		const CVsSize& measuredSize = font->GetSize(g_szVisosBuildBuffer, 0x20);
+		const CVSSize& measuredSize = font->GetSize(g_szVisosBuildBuffer, 0x20);
 		size.m_width = measuredSize.m_width;
 		size.m_height = measuredSize.m_height;
 	}
 	{
-		CVsSize advance;
+		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
 		short pointStorage[2];
-		CVsPoint& position = *(CVsPoint*) pointStorage;
+		CVSPoint& position = *(CVSPoint*) pointStorage;
 		position.m_x = (short) (m_size.m_width - size.m_width) / 2;
 		position.m_y = (short) (m_size.m_height - size.m_height) / 2;
 		position.m_y += size.m_height * 4;
@@ -160,24 +159,24 @@ void CAboutScreen::DrawRegistrationText()
 	}
 	g_szAboutDecodeBuffer[index] = '\0';
 	{
-		const CVsSize& measuredSize = font->GetSize(g_szAboutDecodeBuffer, 0x20);
+		const CVSSize& measuredSize = font->GetSize(g_szAboutDecodeBuffer, 0x20);
 		size.m_width = measuredSize.m_width;
 		size.m_height = measuredSize.m_height;
 	}
 	{
-		CVsSize advance;
+		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		CVsPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY + 0x23);
+		CVSPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY + 0x23);
 		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szAboutDecodeBuffer, 0x20, 0);
 	}
 	m_textManager->ResetPrimitives();
 }
 
 // FUNCTION: LEMBALL 0x0044bc50
-void CAboutScreen::OnSize(const CVsRect& p_rect)
+void CAboutScreen::OnSize(const CVSRect& p_rect)
 {
-	CVsPoint position;
+	CVSPoint position;
 	int textY;
 	int textX;
 
@@ -206,11 +205,11 @@ void CAboutScreen::DrawChangedRegion()
 	index = changes->GetDrawMark();
 	if (index < itemCount) {
 		item = changes->GetNItem(index);
-		CVsRect area = *(CVsRect*) item;
+		CVSRect area = *(CVSRect*) item;
 		index = index + 1;
 		while (index < itemCount) {
 			item = changes->GetNItem(index);
-			area.ExpandToInclude(*(CVsRect*) item);
+			area.ExpandToInclude(*(CVSRect*) item);
 			index = index + 1;
 		}
 		if (0 < (int) area.m_height * (int) area.m_width) {
@@ -224,30 +223,29 @@ void CAboutScreen::DrawChangedRegion()
 			m_rects[0].m_bounds.m_height = area.m_height;
 			m_rects[0].m_bounds.m_x = area.m_x;
 			m_rects[0].m_bounds.m_y = area.m_y;
-			m_rects[0].m_colour = 0;
+			m_rects[0].m_flags = 0;
 			m_rects[0].Draw(m_gdi);
 			bitmap = m_backgroundBitmap;
-			const CVsSize& bitmapSize = *reinterpret_cast<const CVsSize*>(&bitmap->m_x);
 			m_line.m_bounds.m_width = m_size.m_width;
 			m_line.m_colour = 0;
 			m_line.m_bounds.m_height = m_size.m_height;
 			m_line.m_bounds.m_x = 0;
 			m_line.m_bounds.m_y = 0;
 			m_line.Draw(m_gdi);
-			int centreedY = ((int) m_size.m_height - (int) bitmapSize.m_height) / 2;
-			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) bitmapSize.m_width) / 2);
+			int centreedY = ((int) m_size.m_height - (int) bitmap->m_y) / 2;
+			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) bitmap->m_x) / 2);
 			m_bitmap.m_y = (short) centreedY;
 			m_bitmap.m_resource = m_backgroundBitmap;
 			m_bitmap.m_remap = 0;
-			m_bitmap.m_flags = 0x800;
+			m_bitmap.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 			m_bitmap.Draw(m_gdi);
 			DrawRegistrationText();
-			CVsSize surfaceSize;
-			surfaceSize = static_cast<CVsSize&>(m_gdi->m_renderTarget->m_windowRect);
-			CVsPoint origin;
-			m_rects[1].m_bounds.CVsSize::operator=(surfaceSize);
-			m_rects[1].m_bounds.CVsPoint::operator=(origin);
-			m_rects[1].m_colour = 0;
+			CVSSize surfaceSize;
+			surfaceSize = static_cast<CVSSize&>(m_gdi->m_renderTarget->m_windowRect);
+			CVSPoint origin;
+			m_rects[1].m_bounds.CVSSize::operator=(surfaceSize);
+			m_rects[1].m_bounds.CVSPoint::operator=(origin);
+			m_rects[1].m_flags = 0;
 			m_rects[1].Draw(m_gdi);
 		}
 	}

@@ -1,18 +1,17 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 
-#include "../../Visos/Foundation/CVsPoint.h"
-#include "../../Visos/Graphics/CBitmapRes.h"
+#include "../../Visos/Foundation/CVSPoint.h"
+#include "../../Visos/Graphics/CBigBitmap.h"
 #include "../Base/CBaseFrontendDrawer.h"
 #include "../Support/CoordPair.h"
 #include "../Windows/CSuccFailAnimWnd.h"
 #include "Frontend/Support/CUserActionMessage.h"
-#include "SuccFailDrawerFieldViews.h"
 
 class CGDI;
 class CMain2DDisplay;
 class CResBITMAP;
-class CVsRect;
+class CVSRect;
 // SIZE 0x68
 struct SuccFailLayout {
 	CoordPair m_returnButton;          // 0x00
@@ -36,7 +35,7 @@ struct SuccFailLayout {
 // VTABLE: LEMBALL 0x00498340 CAnimsManager
 class CSuccFailDrawer : public CBaseFrontendDrawer {
 public:
-	CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect, unsigned int p_success);
+	CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect, unsigned int p_success);
 	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawBackGround();                    // vtable+0x50
@@ -56,18 +55,18 @@ private:
 		tagPRIMS();
 		~tagPRIMS();
 
-		CBitmapRes m_primary;   // 0x00
-		CBitmapRes m_secondary; // 0x24
+		CBigBitmap m_primary;   // 0x00
+		CBigBitmap m_secondary; // 0x24
 	};
 
 	tagPRIMS m_primitives[1];         // 0x398
 	char m_message[256];              // 0x3e0
 	char* m_firstLine;                // 0x4e0
 	char* m_secondLine;               // 0x4e4
-	CVsPoint m_firstLinePos;          // 0x4e8
-	CVsPoint m_secondLinePos;         // 0x4ec
-	CVsPoint m_passwordLabelPos;      // 0x4f0
-	CVsPoint m_passwordPos;           // 0x4f4
+	CVSPoint m_firstLinePos;          // 0x4e8
+	CVSPoint m_secondLinePos;         // 0x4ec
+	CVSPoint m_passwordLabelPos;      // 0x4f0
+	CVSPoint m_passwordPos;           // 0x4f4
 	char* m_password;                 // 0x4f8
 	CResBITMAP* m_primaryBitmap;      // 0x4fc
 	CResBITMAP* m_secondaryBitmap;    // 0x500

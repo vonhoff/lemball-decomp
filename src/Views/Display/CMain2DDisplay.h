@@ -3,7 +3,7 @@
 
 #include "../../Frontend/Base/FlowProcesses.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Foundation/CVSRect.h"
 #include "../../Visos/Graphics/CDrawingMark.h"
 #include "../../Visos/Graphics/CGWnd.h"
 
@@ -14,7 +14,7 @@ class CGame;
 class CMain2DDisplay : public CGWnd, public CBaseQueueHandler {
 public:
 	CMain2DDisplay(CGame* p_game);
-	CVsRect GetUseRect(int p_x, int p_y);
+	CVSRect GetUseRect(int p_x, int p_y);
 	virtual bool GetMenu(int& p_count, MenuList*** p_menu); // vtable+0x0c
 	bool IsWindowValid();
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
@@ -27,7 +27,7 @@ public:
 	void KillDrawer(eFlowProcesses p_flow);
 	virtual void OnCreate(); // vtable+0x3c
 	virtual void OnDestroy();
-	virtual void OnPaint(const CVsRect& p_rect);
+	virtual void OnPaint(const CVSRect& p_rect);
 	virtual void OnSize();
 	virtual void OnZoom(int p_zoom);
 	void Process();

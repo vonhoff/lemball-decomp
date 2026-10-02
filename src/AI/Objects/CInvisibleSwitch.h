@@ -2,10 +2,10 @@
 #define LEMBALL_AI_OBJECTS_CINVISIBLESWITCH_H
 
 #include "../Base/CGlobalGameObject.h"
-#include "../Base/Coord3d.h"
+#include "../Base/tCoord3d.h"
 #include "InvisibleSwitchTarget.h"
 
-class AiCoord;
+class AICOORD;
 class CGameObject;
 // SIZE 0x2b8
 // VTABLE: LEMBALL 0x00493120
@@ -19,16 +19,16 @@ public:
 	void AddObject(CGameObject* p_object);
 	void Initialise();
 	void Load(unsigned char*& p_data);
-	void Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB);
+	void Set(const tCoord3d& p_cornerA, const tCoord3d& p_cornerB);
 	void SetPointFromIntegers(short p_x, short p_y, short p_z);
-	void StepOn(const AiCoord& p_position, CGameObject* p_object);
+	void StepOn(const AICOORD& p_position, CGameObject* p_object);
 	void VerifyObjects();
 
 	friend class CInvisibleSwitchManager;
 
 private:
-	Coord3d m_minCorner;                 // 0x138
-	Coord3d m_maxCorner;                 // 0x13e
+	tCoord3d m_minCorner;                // 0x138
+	tCoord3d m_maxCorner;                // 0x13e
 	unsigned int m_repeatable;           // 0x144
 	unsigned int m_triggered;            // 0x148
 	unsigned int m_scoreAwarded;         // 0x14c

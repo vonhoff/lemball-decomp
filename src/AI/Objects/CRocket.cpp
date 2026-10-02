@@ -30,7 +30,7 @@ CRocket::~CRocket()
 }
 
 // FUNCTION: LEMBALL 0x00426840
-void CRocket::Set(unsigned short p_id, const AiCoord& p_position)
+void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 {
 	SetId(p_id);
 	m_position.m_xFixed = p_position.m_xFixed;
@@ -104,7 +104,7 @@ bool CRocket::Process()
 }
 
 // FUNCTION: LEMBALL 0x004269d0
-int CRocket::StepOn(const AiCoord& p_position, CGameObject* p_object)
+int CRocket::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	if ((int) Distance(m_position.m_xFixed >> 12,
 					   m_position.m_yFixed >> 12,
@@ -138,7 +138,7 @@ void CRocket::DoActivate()
 	}
 }
 
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"

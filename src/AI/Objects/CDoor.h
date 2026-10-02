@@ -5,14 +5,14 @@
 #include "../Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
 
-class AiCoord;
+class AICOORD;
 class CGameObject;
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x004936f8
 class CDoor : public CGlobalGameObject {
 public:
 	CDoor();
-	int Hits(const AiCoord& p_position, CGameObject* p_object);
+	int Hits(const AICOORD& p_position, CGameObject* p_object);
 	virtual bool IsUsable(eAction p_action); // vtable+0xb4
 	bool TryBeginActivation();
 	virtual bool Process();    // vtable+0x14

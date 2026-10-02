@@ -17,7 +17,7 @@ int g_emptyChunkIndex = -1;
 ChunkInfo* g_pEmptyChunkInfo = 0;
 
 #define MOG_SEEK_FROM_START 0
-#define MOG_DIRECTORY_ENTRY_STRIDE 9
+#define MOG_DIRECTORY_ENTRY_STRIDE 36
 
 // FUNCTION: LEMBALL 0x0045bda0
 CMogDir::CMogDir(unsigned long p_fileOffset)
@@ -99,7 +99,7 @@ CMogDir::~CMogDir()
 	while (chunk != 0) {
 		*first = *iterator;
 		chunk = m_first.m_info;
-		next = (Chunk*) &chunk->m_nextIndex;
+		next = &chunk->m_next;
 		*iterator = *next;
 		if (chunk->m_type == RESOURCE_CHUNK_DIRECTORY && chunk->m_directory != 0) {
 			CMogloadArena::operator delete(chunk->m_directory);
@@ -118,8 +118,10 @@ CMogDir::~CMogDir()
 // FUNCTION: LEMBALL 0x0045bfa0
 void CMogDir::GetChunkInfo(ChunkInfo* p_info)
 {
-	vsSeek(g_pMogFile, (m_iterator.m_index * 4 + 4) * MOG_DIRECTORY_ENTRY_STRIDE + m_directoryEndOffset, 0);
-	p_info->m_next = 0;
+	vsSeek(g_pMogFile,
+		   (m_iterator.m_index + 1) * MOG_DIRECTORY_ENTRY_STRIDE + m_directoryEndOffset,
+		   MOG_SEEK_FROM_START);
+	p_info->m_next.m_info = 0;
 	p_info->m_child.m_info = 0;
 	p_info->m_directory = 0;
 	p_info->m_data = m_directoryData + (((CRawRead*) this)->InputDword() - m_payloadStartOffset);
@@ -134,8 +136,8 @@ void CMogDir::GetChunkInfo(ChunkInfo* p_info)
 ChunkInfo* CMogDir::NewChunkInfo()
 {
 	ChunkInfo* info = (ChunkInfo*) CMogloadArena::operator new(CHUNK_INFO_ALLOCATION_BYTES);
-	m_iterator.m_info->m_next = info;
-	m_iterator.m_info->m_nextIndex = m_loadedChunkCount;
+	m_iterator.m_info->m_next.m_info = info;
+	m_iterator.m_info->m_next.m_index = m_loadedChunkCount;
 	m_loadedChunkCount++;
 	GetChunkInfo(info);
 	return info;
@@ -212,10 +214,10 @@ void CMogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 				exhausted = 1;
 				break;
 			}
-			if (m_iterator.m_info->m_next == 0) {
+			if (m_iterator.m_info->m_next.m_info == 0) {
 				NewChunkInfo();
 			}
-			next = (Chunk*) &m_iterator.m_info->m_nextIndex;
+			next = &m_iterator.m_info->m_next;
 		}
 		else {
 			next = &m_first;
@@ -259,9 +261,9 @@ void CMogDir::Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse)
 		FindNext(p_chunk, RESOURCE_CHUNK_ANY_TYPE);
 	}
 	if (p_chunk.m_info == 0) {
-		current = (Chunk*) &m_currentDir.m_index;
+		current = &m_currentDir;
 		saved = *current;
-		root = (Chunk*) &m_root.m_index;
+		root = &m_root;
 		*current = *root;
 		current->m_index = -1;
 		while (p_chunk.m_info == 0) {

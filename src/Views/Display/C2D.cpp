@@ -28,7 +28,7 @@
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Resources/CResFONT.h"
 #include "../../Visos/Resources/CResPALETTE.h"
-#include "../../Visos/Resources/Manifest.h"
+#include "../../Visos/Resources/ResourceLimits.h"
 #include "../Animation/CLemmingAnimsManager.h"
 #include "../Input/CPadToButton.h"
 #include "../Panel/CPanel.h"
@@ -51,7 +51,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 extern char* g_demoText;
 
 // FUNCTION: LEMBALL 0x004358d0
-C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const CVsRect& p_rect)
+C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const CVSRect& p_rect)
 	: CHotAreaHandler(p_rect)
 {
 	void* storage;
@@ -105,9 +105,9 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 		m_lemmingAnims = 0;
 	}
 
-	storage = operator new(0x24);
+	storage = operator new(sizeof(CTextManager));
 	if (storage != 0) {
-		m_textManager = new (storage) CTextManager(0x2b6, 2, 2, 10);
+		m_textManager = new (storage) CTextManager(RESOURCE_ID_COUNT, 2, 2, 10);
 	}
 	else {
 		m_textManager = 0;
@@ -265,7 +265,7 @@ void C2D::ShutDown()
 		}
 	}
 	m_display->m_gdi->m_renderTarget->SetWorldWidth(0);
-	CVsRect rect;
+	CVSRect rect;
 	rect.m_x = 0;
 	rect.m_y = 0;
 	rect.m_width = 0;
@@ -352,7 +352,7 @@ void C2D::OnLoaded()
 	oldZoom = m_zoom;
 	m_zoom = (unsigned short) zoom;
 	zoomDivisor = (unsigned short) zoom;
-	CVsRect* displayRect = &m_display->m_rect;
+	CVSRect* displayRect = &m_display->m_rect;
 	m_viewSize.m_x = displayRect->m_width;
 	m_viewSize.m_y = displayRect->m_height;
 	m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) zoomDivisor);
@@ -360,7 +360,7 @@ void C2D::OnLoaded()
 	SetClipSize();
 
 	if (m_viewSize.m_x != m_clipSize.m_x || m_viewSize.m_y != m_clipSize.m_y) {
-		CVsRect innerRect((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
+		CVSRect innerRect((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
 		m_display->SetInnerWindow(innerRect);
 	}
 
@@ -396,12 +396,12 @@ void C2D::DoButtons()
 }
 
 // FUNCTION: LEMBALL 0x004366a0
-void C2D::OnZoom(const CVsRect& p_rect)
+void C2D::OnZoom(const CVSRect& p_rect)
 {
 }
 
 // FUNCTION: LEMBALL 0x004366b0
-void C2D::OnSize(const CVsRect& p_rect)
+void C2D::OnSize(const CVSRect& p_rect)
 {
 	unsigned int zoomDivisor;
 
@@ -493,7 +493,7 @@ void C2D::CheckValidFormGroup()
 }
 
 // FUNCTION: LEMBALL 0x00436e40
-bool C2D::FindGameObject(const CVsPoint& p_point, int& p_index, int p_preferLemming)
+bool C2D::FindGameObject(const CVSPoint& p_point, int& p_index, int p_preferLemming)
 {
 	int pointX = p_point.m_x - m_viewOriginX;
 	int pointY = p_point.m_y - m_viewOriginY;
@@ -642,7 +642,7 @@ void C2D::FormGroup()
 }
 
 // FUNCTION: LEMBALL 0x004371e0
-void C2D::MoveGroup(const CVsPoint& p_point)
+void C2D::MoveGroup(const CVSPoint& p_point)
 {
 	Message msg;
 	msg.m_type = 2;
@@ -778,7 +778,7 @@ bool C2D::IsInGrouping(CGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x004376b0
-void C2D::GroupingLeftClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gamePoint, unsigned int p_alternate)
+void C2D::GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint, unsigned int p_alternate)
 {
 	int index;
 	if (FindGameObject(p_screenPoint, index, 0)) {
@@ -829,8 +829,8 @@ void C2D::GroupingLeftClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gam
 }
 
 // FUNCTION: LEMBALL 0x00437840
-void C2D::LeftClick(const CVsPoint& p_screenPoint,
-					const CVsPoint& p_gamePoint,
+void C2D::LeftClick(const CVSPoint& p_screenPoint,
+					const CVSPoint& p_gamePoint,
 					unsigned int p_cancelMoves,
 					unsigned int p_alternate)
 {
@@ -845,7 +845,7 @@ void C2D::LeftClick(const CVsPoint& p_screenPoint,
 }
 
 // FUNCTION: LEMBALL 0x00437890
-void C2D::NoStateRightClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gamePoint)
+void C2D::NoStateRightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint)
 {
 	CViewData* views;
 	int index;
@@ -868,7 +868,7 @@ void C2D::NoStateRightClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gam
 }
 
 // FUNCTION: LEMBALL 0x00437930
-void C2D::RightClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gamePoint)
+void C2D::RightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint)
 {
 	if (m_groupingActive != 0) {
 		if (m_groupingActive != 1) {
@@ -954,13 +954,13 @@ void C2D::NewPauseWindow(ePauseWindowMessages p_message)
 }
 
 // FUNCTION: LEMBALL 0x00437da0
-void C2D::TriggerPause(unsigned char p_paused)
+void C2D::TriggerPause(unsigned int p_paused)
 {
-	unsigned int paused = *(volatile unsigned int*) &p_paused;
+	unsigned int paused = p_paused;
 	if (paused != 0) {
 		int gameStatus = m_ai->m_gameStatus;
 		if (gameStatus >= 1 && gameStatus <= 2) {
-			(*(CAI* volatile*) &m_ai)->GameState(GAME_STATUS_PAUSED);
+			m_ai->GameState(GAME_STATUS_PAUSED);
 		}
 	}
 	else {
@@ -1045,15 +1045,15 @@ void C2D::SetMouseShape()
 	if (m_paused != 0) {
 		return;
 	}
-	const CVsPoint* origin = &m_display->m_rect;
+	const CVSPoint* origin = &m_display->m_rect;
 	zoom = (int) m_display->m_zoom;
 	short screenX = (short) ((int) (short) (g_pCursor->m_position.m_x - origin->m_x) / zoom);
 	short screenY = (short) ((int) (short) (g_pCursor->m_position.m_y - origin->m_y) / zoom);
-	if (m_panel->MouseInPanel(CVsPoint(screenX, screenY)) != 0) {
+	if (m_panel->MouseInPanel(CVSPoint(screenX, screenY)) != 0) {
 		m_cursorState = 3;
 		return;
 	}
-	CVsPoint game((short) (m_viewOriginX + m_cursorGamePoint.m_x),
+	CVSPoint game((short) (m_viewOriginX + m_cursorGamePoint.m_x),
 				  (short) (m_cursorGamePoint.m_y + (short) m_viewOriginY));
 	if (screenX < m_bounds.m_x || (short) (m_bounds.m_width + m_bounds.m_x) <= screenX || screenY < m_bounds.m_y ||
 		(short) (m_bounds.m_height + m_bounds.m_y) <= screenY) {
@@ -1105,9 +1105,9 @@ void C2D::SendCursorMsg()
 		   0,
 		   sizeof(message.m_time) + sizeof(message.m_code) + sizeof(message.m_payload) + sizeof(message.m_source));
 	{
-		CVsPoint point =
-			CVsPoint((short) m_viewOriginX + m_cursorGamePoint.m_x, m_cursorGamePoint.m_y + (short) m_viewOriginY);
-		CVsPoint* screenPoint = &point;
+		CVSPoint point =
+			CVSPoint((short) m_viewOriginX + m_cursorGamePoint.m_x, m_cursorGamePoint.m_y + (short) m_viewOriginY);
+		CVSPoint* screenPoint = &point;
 		screenY = screenPoint->m_y;
 		screenX = screenPoint->m_x;
 	}
@@ -1124,7 +1124,7 @@ void C2D::SendCursorMsg()
 }
 
 // FUNCTION: LEMBALL 0x00438170
-void C2D::OnInside(const CVsPoint& p_point)
+void C2D::OnInside(const CVSPoint& p_point)
 {
 	if ((g_pDemo == 0 || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
 		return;
@@ -1135,7 +1135,7 @@ void C2D::OnInside(const CVsPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x004381c0
-void C2D::OnButtonUp(const CVsPoint& p_point, int p_flags)
+void C2D::OnButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	m_mouseButtonDown = 0;
 	if (m_paused == 0) {
@@ -1147,21 +1147,21 @@ void C2D::OnButtonUp(const CVsPoint& p_point, int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00438210
-void C2D::OnButtonDown(const CVsPoint& p_point, int p_flags)
+void C2D::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
 	m_mouseButtonDown = 1;
 	if (m_paused == 0) {
 		if ((g_pDemo == 0 || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
 			return;
 		}
-		CVsPoint screenPoint((short) m_viewOriginX + p_point.m_x, p_point.m_y + (short) m_viewOriginY);
+		CVSPoint screenPoint((short) m_viewOriginX + p_point.m_x, p_point.m_y + (short) m_viewOriginY);
 		int screenX = screenPoint.m_x;
 		int screenY = screenPoint.m_y;
 		g_nMouseShapeOnGround = ScreenToGame(screenX, screenY, g_nMouseShapeGameX, g_nMouseShapeGameY);
 		if (g_nMouseShapeOnGround == 0) {
 			m_map->ScreenToGame(screenX, screenY, g_nMouseShapeGameX, g_nMouseShapeGameY);
 		}
-		CVsPoint gamePoint((short) g_nMouseShapeGameX, (short) g_nMouseShapeGameY);
+		CVSPoint gamePoint((short) g_nMouseShapeGameX, (short) g_nMouseShapeGameY);
 		switch (p_flags) {
 		case 0:
 		case 3:
@@ -1200,7 +1200,7 @@ void C2D::UseBalloon(CPlayerLemming* p_lemming)
 void C2D::OnDriverChange()
 {
 	if (m_display->GetSizeStatus() != 0) {
-		CVsRect useRect = m_display->GetUseRect(-1, -1);
+		CVSRect useRect = m_display->GetUseRect(-1, -1);
 		int zoom;
 		if (g_nCompactPrimaryContextLayout != 0 || g_nEditLevelMode != 0 || g_nZoomEnabled != 0) {
 			zoom = 1;
@@ -1214,11 +1214,11 @@ void C2D::OnDriverChange()
 		m_viewSize.m_y = (short) ((int) useRect.m_height / (int) zoomDivisor);
 		SetClipSize();
 
-		CVsRect innerRect;
+		CVSRect innerRect;
 		short clipSizeX = m_clipSize.m_x;
 		if (m_viewSize.m_x != clipSizeX || m_clipSize.m_y != m_viewSize.m_y) {
-			CVsRect clipRect((short) m_clipOffsetX, (short) m_clipOffsetY, clipSizeX, m_clipSize.m_y);
-			const CVsRect& source = clipRect;
+			CVSRect clipRect((short) m_clipOffsetX, (short) m_clipOffsetY, clipSizeX, m_clipSize.m_y);
+			const CVSRect& source = clipRect;
 			memcpy(&innerRect.m_width, &clipRect.m_width, sizeof(short));
 			memcpy(&innerRect.m_height, &clipRect.m_height, sizeof(short));
 			innerRect.m_x = source.m_x;
@@ -1752,14 +1752,14 @@ static const int g_clipRowStepXByOrientation[4] = {1, 1, -1, -1};
 static const int g_clipRowStepYByOrientation[4] = {1, -1, -1, 1};
 
 // FUNCTION: LEMBALL 0x0043b4d0
-int C2D::DrawClippedRectangle(const CVsRect& p_rect)
+int C2D::DrawClippedRectangle(const CVSRect& p_rect)
 {
 	int orientationOffset;
 	int x;
 	int y;
 	int width;
 	int height;
-	CVsRect clippedRect;
+	CVSRect clippedRect;
 	int left;
 	int right;
 	int bottom;
@@ -1796,12 +1796,12 @@ int C2D::DrawClippedRectangle(const CVsRect& p_rect)
 	clippedRect.m_height = (short) height;
 	clippedRect.m_x = (short) x;
 	clippedRect.m_y = (short) y;
-	CSolidRect& clipRect = m_solidRects[m_primitiveCount++];
+	CClipRect& clipRect = m_clipRects[m_primitiveCount++];
 	clipRect.m_bounds.m_width = clippedRect.m_width;
 	clipRect.m_bounds.m_height = clippedRect.m_height;
 	memcpy(&clipRect.m_bounds.m_x, &clippedRect.m_x, sizeof(short));
 	memcpy(&clipRect.m_bounds.m_y, &clippedRect.m_y, sizeof(short));
-	clipRect.m_colour = 0;
+	clipRect.m_flags = 0;
 	clipRect.Draw(m_gdi);
 
 	left = x - 0x10;
@@ -1867,15 +1867,15 @@ int C2D::DrawClippedRectangle(const CVsRect& p_rect)
 	}
 
 	result = DrawClipData();
-	CBitmap& bitmap = m_bitmaps[m_bitmapCount];
+	CCopyToBackBuff& bitmap = m_backBufferCopies[m_backBufferCopyCount];
 	bitmap.m_x = clippedRect.m_x;
 	bitmap.m_y = clippedRect.m_y;
-	bitmap.m_sourceRect.m_width = clippedRect.m_width;
-	bitmap.m_sourceRect.m_height = clippedRect.m_height;
-	bitmap.m_sourceRect.m_x = clippedRect.m_x;
-	bitmap.m_sourceRect.m_y = clippedRect.m_y;
-	m_bitmaps[m_bitmapCount].Draw(m_gdi);
-	m_bitmapCount++;
+	bitmap.m_destination.m_width = clippedRect.m_width;
+	bitmap.m_destination.m_height = clippedRect.m_height;
+	bitmap.m_destination.m_x = clippedRect.m_x;
+	bitmap.m_destination.m_y = clippedRect.m_y;
+	m_backBufferCopies[m_backBufferCopyCount].Draw(m_gdi);
+	m_backBufferCopyCount++;
 	return result;
 }
 
@@ -3414,7 +3414,7 @@ void C2D::SetOrigin()
 {
 	int projectedX;
 	int projectedY;
-	AiCoord origin;
+	AICOORD origin;
 	unsigned int player;
 	int changed = 0;
 
@@ -3495,8 +3495,8 @@ void C2D::DrawDemo()
 		g_lastBlink = CurrentMilliTimer();
 	}
 	if (g_visible) {
-		CVsPoint& position = m_demoTextRect;
-		CVsSize advance;
+		CVSPoint& position = m_demoTextRect;
+		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
 		m_textManager
@@ -3532,8 +3532,8 @@ void C2D::DrawTime()
 		g_timeText[4] = 0;
 	}
 
-	CVsPoint& position = m_spriteGroundLookupRectA;
-	CVsSize advance;
+	CVSPoint& position = m_spriteGroundLookupRectA;
+	CVSSize advance;
 	advance.m_width = -4;
 	advance.m_height = 0;
 	m_textManager->DrawString(m_gdi, position, advance, RES_NEWFRONT_FONTS_GAME_SCORETIME, g_timeText, 0x20, 0);
@@ -3571,7 +3571,7 @@ void C2D::DrawScore()
 		score = 9999999;
 	}
 
-	CVsSize advance;
+	CVSSize advance;
 	char scoreText[8];
 	scoreText[7] = 0;
 	int i = 1;
@@ -3581,7 +3581,7 @@ void C2D::DrawScore()
 		score /= 10;
 	} while (i <= 7);
 
-	CVsPoint* position = &m_spriteGroundLookupRectB;
+	CVSPoint* position = &m_spriteGroundLookupRectB;
 	advance.m_width = -4;
 	advance.m_height = 0;
 	m_textManager->DrawString(m_gdi, *position, advance, RES_NEWFRONT_FONTS_GAME_SCORETIME, scoreText, 0x20, 0);
@@ -3609,7 +3609,7 @@ void C2D::SortViewData()
 }
 
 // FUNCTION: LEMBALL 0x00440000
-void C2D::Draw(const CVsRect& p_rect)
+void C2D::Draw(const CVSRect& p_rect)
 {
 	if (m_gdi == 0 || m_clipSize.m_x <= 0 || m_clipSize.m_y <= 0) {
 		return;
@@ -3625,10 +3625,10 @@ void C2D::Draw(const CVsRect& p_rect)
 	unsigned long startTime = timeGetTime();
 	m_clipSearchHeight = 0x40;
 
-	CVsRect* displayRect = &m_display->m_rect;
-	CVsPoint* displayPosition = displayRect;
+	CVSRect* displayRect = &m_display->m_rect;
+	CVSPoint* displayPosition = displayRect;
 	int zoom = m_display->m_zoom;
-	CVsPoint cursorPosition;
+	CVSPoint cursorPosition;
 	cursorPosition.m_y = (short) ((short) (g_pCursor->m_position.m_y - displayPosition->m_y) / zoom);
 	cursorPosition.m_x = (short) ((short) (g_pCursor->m_position.m_x - displayPosition->m_x) / zoom);
 	m_spriteGroundTranslationPoint.m_x = cursorPosition.m_x;
@@ -3644,14 +3644,14 @@ void C2D::Draw(const CVsRect& p_rect)
 		int clipBottom = m_clipOffsetY + m_clipSize.m_y;
 		int clipRight = m_clipOffsetX + m_clipSize.m_x;
 		if (left < m_clipOffsetX || top < m_clipOffsetY || clipRight <= right || bottom >= clipBottom) {
-			CVsRect translatedBounds;
+			CVSRect translatedBounds;
 			translatedBounds.m_x = (short) left;
 			translatedBounds.m_y = (short) top;
 			translatedBounds.m_width = m_spriteGroundTranslatedPointRect.m_width;
 			translatedBounds.m_height = m_spriteGroundTranslatedPointRect.m_height;
 			m_lineAt9a8.m_bounds.m_width = translatedBounds.m_width;
 			m_lineAt9a8.m_bounds.m_height = translatedBounds.m_height;
-			m_lineAt9a8.m_bounds.CVsPoint::operator=(translatedBounds);
+			m_lineAt9a8.m_bounds.CVSPoint::operator=(translatedBounds);
 			m_lineAt9a8.m_colour = 0;
 			m_lineAt9a8.Draw(m_gdi);
 		}
@@ -3659,11 +3659,11 @@ void C2D::Draw(const CVsRect& p_rect)
 
 	m_viewDataCount = (unsigned short) m_ai->GetData(m_viewData);
 	m_pushActive.Draw(m_gdi);
-	CVsRect backgroundBounds;
+	CVSRect backgroundBounds;
 
 	{
 		int primitiveIndex = m_primitiveCount++;
-		CSolidRect& background = m_solidRects[primitiveIndex];
+		CClipRect& background = m_clipRects[primitiveIndex];
 		if (m_clipConfigured == 0 && m_redrawPending == 0) {
 			backgroundBounds.m_width = m_clipSize.m_x;
 			backgroundBounds.m_height = m_clipSize.m_y;
@@ -3676,14 +3676,14 @@ void C2D::Draw(const CVsRect& p_rect)
 			backgroundBounds.m_x = 0;
 			backgroundBounds.m_y = 0;
 		}
-		static_cast<CVsSize&>(background.m_bounds) = backgroundBounds;
-		background.m_bounds.CVsPoint::operator=(backgroundBounds);
-		background.m_colour = 0;
+		static_cast<CVSSize&>(background.m_bounds) = backgroundBounds;
+		background.m_bounds.CVSPoint::operator=(backgroundBounds);
+		background.m_flags = 0;
 		background.Draw(m_gdi);
 	}
 
 	if (m_clipConfigured != 0 || m_redrawPending != 0) {
-		CVsRect translatedBounds;
+		CVSRect translatedBounds;
 		m_clipConfigured = 0;
 		translatedBounds.m_width = m_clipSize.m_x;
 		translatedBounds.m_height = m_clipSize.m_y;
@@ -3710,16 +3710,16 @@ void C2D::Draw(const CVsRect& p_rect)
 
 	{
 		int surfacePrimitiveIndex = m_primitiveCount++;
-		CSolidRect& surfaceBackground = m_solidRects[surfacePrimitiveIndex];
-		CVsRect& windowRect = m_gdi->m_renderTarget->m_windowRect;
-		CVsRect translatedBounds(windowRect);
+		CClipRect& surfaceBackground = m_clipRects[surfacePrimitiveIndex];
+		CVSRect& windowRect = m_gdi->m_renderTarget->m_windowRect;
+		CVSRect translatedBounds(windowRect);
 		translatedBounds.m_x = 0;
 		translatedBounds.m_y = 0;
 		memcpy(&surfaceBackground.m_bounds.m_width, &translatedBounds.m_width, sizeof(short));
 		memcpy(&surfaceBackground.m_bounds.m_height, &translatedBounds.m_height, sizeof(short));
 		memcpy(&surfaceBackground.m_bounds.m_x, &translatedBounds.m_x, sizeof(short));
 		memcpy(&surfaceBackground.m_bounds.m_y, &translatedBounds.m_y, sizeof(short));
-		surfaceBackground.m_colour = 0;
+		surfaceBackground.m_flags = 0;
 		surfaceBackground.Draw(m_gdi);
 	}
 
@@ -3727,22 +3727,22 @@ void C2D::Draw(const CVsRect& p_rect)
 }
 
 #include "../../Visos/Foundation/CChangeList.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CGameObject.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CBaseRemap.h"
-#include "Visos/Graphics/CBitmap.h"
+#include "Visos/Graphics/CClipRect.h"
+#include "Visos/Graphics/CCopyToBackBuff.h"
 #include "Visos/Graphics/CDrawingMark.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
-#include "Visos/Graphics/CLine.h"
 #include "Visos/Graphics/CPopActive.h"
 #include "Visos/Graphics/CPushActive.h"
 #include "Visos/Graphics/CSolidRect.h"
@@ -3795,18 +3795,18 @@ void C2D::DrawZBuff_Anim(int p_index, unsigned short p_z)
 // FUNCTION: LEMBALL 0x00440560
 void C2D::DrawObjectsZBuff()
 {
-	CVsRect backgroundBounds;
+	CVSRect backgroundBounds;
 	backgroundBounds.m_width = m_clipSize.m_x;
 	backgroundBounds.m_height = m_clipSize.m_y;
 	backgroundBounds.m_y = 0;
 	backgroundBounds.m_x = 0;
 	int primitiveIndex = m_primitiveCount++;
-	CSolidRect& background = m_solidRects[primitiveIndex];
+	CClipRect& background = m_clipRects[primitiveIndex];
 	memcpy(&background.m_bounds.m_width, &backgroundBounds.m_width, sizeof(short));
 	memcpy(&background.m_bounds.m_height, &backgroundBounds.m_height, sizeof(short));
 	memcpy(&background.m_bounds.m_x, &backgroundBounds.m_x, sizeof(short));
 	memcpy(&background.m_bounds.m_y, &backgroundBounds.m_y, sizeof(short));
-	background.m_colour = 0;
+	background.m_flags = 0;
 	background.Draw(m_gdi);
 
 	{

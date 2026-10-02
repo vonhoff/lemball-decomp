@@ -2,7 +2,7 @@
 
 #include "../../../Control/Game/CGameStatus.h"
 #include "../../../Control/Level/CLevelLoader.h"
-#include "../../../Control/Support/PreviewData.h"
+#include "../../../Control/Support/tPreviewData.h"
 #include "../../../Views/Display/CMain2DDisplay.h"
 #include "../../../Visos/Animation/CAnimsManager.h"
 #include "../../../Visos/Animation/CRepeatAnim.h"
@@ -17,12 +17,12 @@
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CoordPair.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBaseRemap.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
 
 #include <new.h>
 #include <string.h>

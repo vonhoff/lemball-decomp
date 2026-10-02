@@ -9,8 +9,8 @@
 #include "../Windows/CTrackWindow.h"
 #include "CGunButton.h"
 #include "CTrackerButton.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Resources/CResBase.h"
@@ -71,7 +71,7 @@ CGunButtons::CGunButtons(CGWnd* p_window,
 }
 
 // FUNCTION: LEMBALL 0x0044c330
-CGunButtons::CGunButtons(const CVsRect& p_rect,
+CGunButtons::CGunButtons(const CVSRect& p_rect,
 						 CGWnd* p_window,
 						 CGDI* p_gdi,
 						 int p_x,
@@ -86,7 +86,7 @@ CGunButtons::CGunButtons(const CVsRect& p_rect,
 	m_mode = 1;
 	m_trackRect.m_width = p_rect.m_width;
 	m_trackRect.m_height = p_rect.m_height;
-	const CVsPoint& position = p_rect;
+	const CVSPoint& position = p_rect;
 	m_trackRect.m_x = position.m_x;
 	m_trackRect.m_y = position.m_y;
 	m_window = p_window;
@@ -201,7 +201,7 @@ int CGunButtons::ProcessMsg(Message* p_message)
 // FUNCTION: LEMBALL 0x0044c5b0
 void CGunButtons::Move(int p_x, int p_y)
 {
-	CVsPoint point((short) p_x, (short) p_y);
+	CVSPoint point((short) p_x, (short) p_y);
 	if (m_graphicButton != 0) {
 		m_graphicButton->Move(point);
 	}
@@ -237,7 +237,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 	}
 	if (m_mode == 0) {
 		m_graphicButton =
-			new CGunButton(CVsPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
+			new CGunButton(CVSPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
 		CSurface* surface = m_graphicButton->m_gdi->m_renderTarget;
 		m_graphicButton->SetAutoDraw(0);
 		surface->m_flag70 = 0;
@@ -247,7 +247,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 		return;
 	}
 	m_trackerButton =
-		new CTrackerButton(CVsPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, *m_animIds, m_trackRect, m_value);
+		new CTrackerButton(CVSPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, *m_animIds, m_trackRect, m_value);
 	CSurface* surface = m_trackerButton->m_gdi->m_renderTarget;
 	m_trackerButton->SetAutoDraw(0);
 	surface->m_flag70 = 0;

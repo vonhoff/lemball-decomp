@@ -1,14 +1,11 @@
 #include "CMineManager.h"
 
 #include "../Base/CGameObject.h"
-#include "../Base/Coord3d.h"
+#include "../Base/tCoord3d.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CMine.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Managers/CBaseObjectManager.h"
-
-#include <memory.h>
-#pragma intrinsic(memcpy)
 
 // FUNCTION: LEMBALL 0x00424020
 CMineManager::CMineManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0xd, 2)
@@ -46,7 +43,7 @@ void CMineManager::Initialise(int p_capacity)
 			mine->m_manager = this;
 			m_mines[i].Restart();
 		}
-		m_positions = new Coord3d[m_capacity];
+		m_positions = new tCoord3d[m_capacity];
 	}
 }
 
@@ -65,14 +62,13 @@ void CMineManager::Triggered(CMine* p_mine)
 	Trigger(p_mine->m_managerIndex, p_mine->m_triggerDelay);
 }
 
-inline static int MineDistanceSquared(int p_dz, int p_dy, int p_dx)
-{
-	return p_dz * p_dz + p_dy * p_dy + p_dx * p_dx;
-}
-
 // FUNCTION: LEMBALL 0x00424580
 void CMineManager::Trigger(int p_index, int p_delay)
 {
+	enum {
+		CHAIN_TRIGGER_DISTANCE_SQUARED = 0x800,
+		CHAIN_TRIGGER_DELAY = 6
+	};
 	int x = m_positions[p_index].m_x;
 	int y = m_positions[p_index].m_y;
 	int z = m_positions[p_index].m_z;
@@ -81,12 +77,12 @@ void CMineManager::Trigger(int p_index, int p_delay)
 		int positionOffset = 0;
 		do {
 			if (p_index != i && m_mines[i].m_action == ACTION_READY) {
-				Coord3d* position = &m_positions[positionOffset];
+				tCoord3d* position = &m_positions[positionOffset];
 				int dx = position->m_x - x;
 				int dy = position->m_y - y;
 				int dz = position->m_z - z;
-				if (MineDistanceSquared(dz, dy, dx) <= 0x800) {
-					m_mines[i].Trigger(p_delay + 6);
+				if (dz * dz + dy * dy + dx * dx <= CHAIN_TRIGGER_DISTANCE_SQUARED) {
+					m_mines[i].Trigger(p_delay + CHAIN_TRIGGER_DELAY);
 				}
 			}
 			positionOffset++;
@@ -95,24 +91,19 @@ void CMineManager::Trigger(int p_index, int p_delay)
 	}
 }
 
-inline static int FixedPointMinimum(const int& p_fixed)
-{
-	int value;
-	memcpy(&value, &p_fixed, sizeof(value));
-	return (value >> 0xc) - 8;
-}
-
 // FUNCTION: LEMBALL 0x00424630
-void CMineManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
+void CMineManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
-	int xMin = (p_position.m_xFixed >> 0xc) - 8;
-	int yBounds[2];
-	yBounds[0] = FixedPointMinimum(p_position.m_yFixed);
-	const int& yMin = yBounds[0];
-	int zMin = (p_position.m_zFixed >> 0xc) - 8;
-	int xMax = xMin + 15;
-	yBounds[1] = yMin + 15;
-	const int& yMax = yBounds[1];
+	enum {
+		COORD_FRACTION_BITS = 12,
+		STEP_ON_HALF_WIDTH = 8,
+		STEP_ON_BOUND_SPAN = 15
+	};
+	int xMin = (p_position.m_xFixed >> COORD_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	int yMin = (p_position.m_yFixed >> COORD_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	int zMin = (p_position.m_zFixed >> COORD_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	int xMax = xMin + STEP_ON_BOUND_SPAN;
+	int yMax = yMin + STEP_ON_BOUND_SPAN;
 	int i = 0;
 	if (m_count <= 0) {
 		return;
@@ -135,7 +126,7 @@ void CMineManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x00424710
-void CMineManager::Add(unsigned short p_id, AiCoord p_position)
+void CMineManager::Add(unsigned short p_id, AICOORD p_position)
 {
 	if (p_id != 0xffff && m_count < m_capacity) {
 		m_mines[m_count].SetId(p_id);
@@ -159,29 +150,21 @@ void CMineManager::Process()
 	}
 }
 
-inline static int CollectMineViewData(int p_i,
-									  CMineManager* p_manager,
-									  CViewData* p_viewData,
-									  CMine* CMineManager::* p_mines,
-									  int CMineManager::* p_count)
-{
-	int count = 0;
-	if (0 < (p_manager->*p_count)) {
-		CViewData* viewData = p_viewData;
-		do {
-			(p_manager->*p_mines)[p_i].GetViewData(*viewData);
-			viewData++;
-			count++;
-			p_i++;
-		} while (p_i < (p_manager->*p_count));
-	}
-	return count;
-}
-
 // FUNCTION: LEMBALL 0x00424800
 int CMineManager::GetViewData(CViewData* p_viewData)
 {
-	return CollectMineViewData(0, this, p_viewData, &CMineManager::m_mines, &CMineManager::m_count);
+	int count = 0;
+	int i = 0;
+	if (0 < m_count) {
+		CViewData* viewData = p_viewData;
+		do {
+			m_mines[i].GetViewData(*viewData);
+			viewData++;
+			count++;
+			i++;
+		} while (i < m_count);
+	}
+	return count;
 }
 
 // FUNCTION: LEMBALL 0x00424850
@@ -204,7 +187,7 @@ void CMineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 			unsigned int x = *data++;
 			unsigned int y = *data++;
 			unsigned int z = *data++;
-			AiCoord position(x << 0xc, y << 0xc, z << 0xc);
+			AICOORD position(x << 0xc, y << 0xc, z << 0xc);
 			Add(id, position);
 			remaining--;
 		} while (remaining != 0);

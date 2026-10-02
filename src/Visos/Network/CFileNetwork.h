@@ -4,11 +4,17 @@
 #include "../Target/Network/CNetworkWnd.h"
 #include "CBaseNetwork.h"
 
+#define FILE_NETWORK_MESSAGE_FORCE_PROCESS 0x444
+#define FILE_NETWORK_TIMER_ID 0x12345679
+#define FILE_NETWORK_TIMER_INTERVAL_MS 20
+
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x0049a02c CNetworkWnd
 // VTABLE: LEMBALL 0x00499ff8 CBaseNetwork
 class CFileNetwork : public CNetworkWnd, public CBaseNetwork {
 public:
+	using CBaseNetwork::Process;
+
 	CFileNetwork();
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
 	virtual void* GetNewBroadcast();                                                   // vtable+0x28
@@ -27,7 +33,7 @@ private:
 	unsigned int m_alternateTimer; // 0x78
 };
 
-extern unsigned int g_dwFileNetworkThreadId;
+extern unsigned long g_dwFileNetworkThreadId;
 extern void* g_hFileNetworkThread;
 extern int g_fileNetworkWindowClassRegistered;
 extern char* g_pFileBroadcastData;

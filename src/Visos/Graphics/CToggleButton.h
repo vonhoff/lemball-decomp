@@ -3,14 +3,14 @@
 
 #include "CGraphicButton.h"
 class CPVGWnd;
-struct CVsPoint;
+struct CVSPoint;
 
 // SIZE 0x134
 // VTABLE: LEMBALL 0x004973e0 CGWnd
 // VTABLE: LEMBALL 0x004973b8 CHotAreaHandler
 class CToggleButton : public CGraphicButton {
 public:
-	CToggleButton(const CVsPoint& p_position, CPVGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
+	CToggleButton(const CVSPoint& p_position, CPVGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
 		: CGraphicButton(p_position, p_parent, p_animId, p_flags)
 	{
 		m_toggled = 0;

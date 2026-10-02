@@ -9,7 +9,7 @@ void CEntryHandler::Reset()
 }
 
 // FUNCTION: LEMBALL 0x00453260
-void CEntryHandler::OnButtonDown(const CVsPoint& p_point, int p_flags)
+void CEntryHandler::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
 	if (p_flags == 0 || p_flags == 3) {
 		m_pressed = 1;

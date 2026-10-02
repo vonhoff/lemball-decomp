@@ -4,7 +4,7 @@
 #include "../Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectTypes.h"
 
-class AiCoord;
+class AICOORD;
 class CGameObject;
 class CViewData;
 // SIZE 0x148
@@ -14,14 +14,14 @@ public:
 	CLaser();
 	bool Activate();
 	bool CheckHits();
-	bool StepOn(const AiCoord& p_position, CGameObject* p_object);
+	bool StepOn(const AICOORD& p_position, CGameObject* p_object);
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c
 	int GetViewData(CViewData* p_viewData);
 	virtual void Restart(); // vtable+0x104
 	virtual ~CLaser();      // vtable+0x00
 	void Initialise();
-	void Set(unsigned short p_id, const AiCoord& p_position, eObjectType p_orientation);
+	void Set(unsigned short p_id, const AICOORD& p_position, eObjectType p_orientation);
 
 	friend class CLaserManager;
 

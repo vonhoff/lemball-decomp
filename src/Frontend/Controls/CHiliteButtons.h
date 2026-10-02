@@ -2,7 +2,7 @@
 #define LEMBALL_FRONTEND_CONTROLS_CHILITEBUTTONS_H
 
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Foundation/CVSRect.h"
 
 class CGWnd;
 class CGDI;
@@ -35,7 +35,7 @@ public:
 	friend class CHiliteController;
 
 private:
-	CVsRect m_bounds;              // 0x10
+	CVSRect m_bounds;              // 0x10
 	int m_x;                       // 0x18
 	int m_y;                       // 0x1c
 	CGDI* m_gdi;                   // 0x20

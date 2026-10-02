@@ -7,7 +7,7 @@
 #include "AI/Base/CGameObject.h"
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 
 #include <string.h>
 
@@ -268,7 +268,7 @@ int CGenericGroupManager::GetAllBoundingBoxes(Rect* p_rects)
 {
 	Rect* output;
 	int count = 0;
-	CVsRect bounds;
+	CVSRect bounds;
 	CGenericGroup* group = GetFirstGroup();
 	if (group != 0) {
 		output = p_rects;
@@ -301,7 +301,7 @@ int CGenericGroupManager::GetViewData(CViewData* p_viewData)
 }
 
 // FUNCTION: LEMBALL 0x0041eed0
-bool CGenericGroupManager::CheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
+bool CGenericGroupManager::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate)
 {
 	CGenericGroup* group = GetFirstGroup();
 	while (group != 0) {

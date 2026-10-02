@@ -1,14 +1,14 @@
 #include "CPVButton.h"
 
 #include "../Foundation/CBaseQueue.h"
+#include "CClipRect.h"
 #include "CDrawingMark.h"
 #include "CGDI.h"
 #include "CHotAreaList.h"
-#include "CSolidRect.h"
 #include "CSurface.h"
 #include "CWnd.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
@@ -33,7 +33,7 @@ unsigned int CPVButton::GetStyle()
 }
 
 // FUNCTION: LEMBALL 0x0043a580
-void CPVButton::Move(const CVsPoint& p_point)
+void CPVButton::Move(const CVSPoint& p_point)
 {
 	m_forceDrawCount = 1;
 	CHotAreaHandler::m_bounds.m_x -= m_relativeTopLeft.m_x;
@@ -54,12 +54,12 @@ void CPVButton::OnVisibilityChange()
 }
 
 // FUNCTION: LEMBALL 0x00467c10
-CPVButton::CPVButton(const CVsRect& p_bounds, CPVGWnd* p_ownerWindow)
-	: CHotAreaHandler(CVsRect(0, 0, p_bounds.m_width, p_bounds.m_height)), m_buttonX(m_buttonY = 0)
+CPVButton::CPVButton(const CVSRect& p_bounds, CPVGWnd* p_ownerWindow)
+	: CHotAreaHandler(CVSRect(0, 0, p_bounds.m_width, p_bounds.m_height)), m_buttonX(m_buttonY = 0)
 {
 	m_clickY = 0;
 	m_clickX = 0;
-	const CVsRect* rect = &p_bounds;
+	const CVSRect* rect = &p_bounds;
 	const short* position;
 	if (rect != 0) {
 		position = &rect->m_x;
@@ -124,11 +124,11 @@ void CPVButton::CheckForceDraw()
 		m_clipRect[0].m_bounds.m_height = m_gdi->m_renderTarget->m_windowRect.m_height;
 		m_clipRect[0].m_bounds.m_x = 0;
 		m_clipRect[0].m_bounds.m_y = 0;
-		m_clipRect[0].m_colour = 0x10000;
+		m_clipRect[0].m_flags = CClipRect::CLIP_IGNORE_PARENT;
 		m_gdi->m_renderTarget->m_flag78 = 1;
 	}
 	else {
-		m_clipRect[0].m_colour = 0;
+		m_clipRect[0].m_flags = 0;
 	}
 	m_clipRect[0].Draw(m_gdi);
 }
@@ -147,7 +147,7 @@ void CPVButton::_DrawButton()
 void CPVButton::Draw(unsigned int p_force)
 {
 	unsigned int autoDraw;
-	CVsRect paintRect;
+	CVSRect paintRect;
 
 	if (m_drawCompleted == 0 || p_force != 0) {
 		autoDraw = m_autoDraw;
@@ -199,10 +199,10 @@ int CPVButton::ConvertDoubleClick(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00468050
-void CPVButton::OnButtonDown(const CVsPoint& p_point, int p_flags)
+void CPVButton::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
 	int converted;
-	CVsPoint clickPos;
+	CVSPoint clickPos;
 
 	if (p_flags == 0 || p_flags == 3) {
 		m_pressed = 1;
@@ -217,13 +217,13 @@ void CPVButton::OnButtonDown(const CVsPoint& p_point, int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x004680c0
-void CPVButton::OnButtonUp(const CVsPoint& p_point, int p_flags)
+void CPVButton::OnButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	int converted;
 
 	if (m_pressed != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		CVsPoint clickPos;
+		CVSPoint clickPos;
 		clickPos.m_y = (short) (p_point.m_y - m_relativeTopLeft.m_y);
 		clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
 		m_clickX = clickPos.m_x;
@@ -235,15 +235,15 @@ void CPVButton::OnButtonUp(const CVsPoint& p_point, int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00468130
-void CPVButton::OnExternalButtonUp(const CVsPoint& p_point, int p_flags)
+void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	int i;
 	unsigned int* state;
 
-	CVsPoint relativeValue(m_relativeTopLeft);
-	const CVsPoint& relative = relativeValue;
-	CVsPoint originValue(m_relativeTopLeft);
-	const CVsPoint& origin = originValue;
+	CVSPoint relativeValue(m_relativeTopLeft);
+	const CVSPoint& relative = relativeValue;
+	CVSPoint originValue(m_relativeTopLeft);
+	const CVSPoint& origin = originValue;
 	relativeValue.m_y = (short) (p_point.m_y - origin.m_y);
 	relativeValue.m_x = (short) (p_point.m_x - origin.m_x);
 	m_clickX = relative.m_x;
@@ -326,6 +326,6 @@ void CPVButton::_OnExitButton()
 }
 
 // FUNCTION: LEMBALL 0x00469870
-void CPVButton::OnPaint(const CVsRect& p_rect)
+void CPVButton::OnPaint(const CVSRect& p_rect)
 {
 }

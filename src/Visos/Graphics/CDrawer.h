@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CDRAWER_H
 #define LEMBALL_VISOS_GRAPHICS_CDRAWER_H
 
-class CVsRect;
+class CVSRect;
 
 // SIZE 0x04
 // VTABLE: LEMBALL 0x00496d48
@@ -9,10 +9,10 @@ class CDrawer {
 public:
 	virtual ~CDrawer() {}                         // vtable+0x00
 	virtual void ShutDown();                      // vtable+0x04
-	virtual void Draw(const CVsRect& p_rect) = 0; // vtable+0x08
-	virtual void OnZoom(const CVsRect& p_rect);   // vtable+0x0c
-	virtual void OnSize(const CVsRect& p_rect);   // vtable+0x10
-	virtual void OnMove(const CVsRect& p_rect);   // vtable+0x14
+	virtual void Draw(const CVSRect& p_rect) = 0; // vtable+0x08
+	virtual void OnZoom(const CVSRect& p_rect);   // vtable+0x0c
+	virtual void OnSize(const CVSRect& p_rect);   // vtable+0x10
+	virtual void OnMove(const CVSRect& p_rect);   // vtable+0x14
 	virtual void DestroyDrawer();                 // vtable+0x18
 	virtual void Process();                       // vtable+0x1c
 	virtual void ResetPrimitives() = 0;           // vtable+0x20

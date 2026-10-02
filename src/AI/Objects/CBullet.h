@@ -2,7 +2,7 @@
 #define LEMBALL_AI_OBJECTS_CBULLET_H
 
 #include "../../Visos/Messaging/CNetworkMessage.h"
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/CGlobalGameObject.h"
 #include "../Base/CMove3d.h"
 
@@ -34,8 +34,8 @@ public:
 			 eBulletType p_bulletType,
 			 eOwner p_owner,
 			 int p_sourceObjectId,
-			 AiCoord p_start,
-			 AiCoord p_target);
+			 AICOORD p_start,
+			 AICOORD p_target);
 	void TriggerBullet();
 
 	friend class CPlayerLemming;

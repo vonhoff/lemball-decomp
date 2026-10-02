@@ -2,7 +2,7 @@
 
 #include "../Navigation/CAI.h"
 #include "../Objects/CRocket.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Managers/CBaseObjectManager.h"
@@ -56,7 +56,7 @@ void CRocketManager::ResetCount()
 }
 
 // FUNCTION: LEMBALL 0x00426fb0
-int CRocketManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
+int CRocketManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	int i = 0;
 	while (true) {
@@ -84,19 +84,16 @@ void CRocketManager::Process()
 // FUNCTION: LEMBALL 0x00427050
 int CRocketManager::GetViewData(CViewData* p_viewData)
 {
-	int byteIndex = 0;
 	int ordinal = 0;
 	int count = 0;
-	if (m_count > byteIndex) {
+	if (m_count > ordinal) {
 		CViewData* viewData = p_viewData;
 		do {
-			char* rocketBytes = reinterpret_cast<char*>(m_rockets);
-			CRocket* rocket = reinterpret_cast<CRocket*>(rocketBytes + byteIndex);
+			CRocket* rocket = &m_rockets[ordinal];
 			if (rocket->m_action != ACTION_READY) {
 				rocket->GetViewData(*viewData++);
 				count++;
 			}
-			byteIndex += sizeof(CRocket);
 			ordinal++;
 		} while (m_count > ordinal);
 	}
@@ -107,7 +104,7 @@ int CRocketManager::GetViewData(CViewData* p_viewData)
 void CRocketManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
-		AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+		AICOORD position(p_x << 12, p_y << 12, p_z << 12);
 		m_rockets[m_count].Set(p_id, position);
 		m_count++;
 	}

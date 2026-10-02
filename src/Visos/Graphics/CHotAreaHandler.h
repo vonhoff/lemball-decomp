@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CHOTAREAHANDLER_H
 #define LEMBALL_VISOS_GRAPHICS_CHOTAREAHANDLER_H
 
-#include "../Foundation/CVsRect.h"
-struct CVsPoint;
+#include "../Foundation/CVSRect.h"
+struct CVSPoint;
 
 struct Message;
 class CHotAreaList;
@@ -12,16 +12,16 @@ class CHotAreaList;
 class CHotAreaHandler {
 public:
 	CHotAreaHandler();
-	CHotAreaHandler(const CVsRect& p_bounds);
-	void ProcessArea(Message* p_message, const CVsPoint& p_point, class CHotAreaHandler* p_currentHandler);
+	CHotAreaHandler(const CVSRect& p_bounds);
+	void ProcessArea(Message* p_message, const CVSPoint& p_point, class CHotAreaHandler* p_currentHandler);
 	virtual ~CHotAreaHandler() {}                                          // vtable+0x00
-	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);       // vtable+0x04
-	virtual void OnButtonUp(const CVsPoint& p_point, int p_flags);         // vtable+0x08
-	virtual void OnExternalButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnButtonDown(const CVSPoint& p_point, int p_flags);       // vtable+0x04
+	virtual void OnButtonUp(const CVSPoint& p_point, int p_flags);         // vtable+0x08
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
 	virtual void OnEnter();                                                // vtable+0x10
 	virtual void OnExit();                                                 // vtable+0x14
-	virtual void OnInside(const CVsPoint& p_point);                        // vtable+0x18
-	virtual bool InArea(const CVsPoint& p_point);                          // vtable+0x1c
+	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
+	virtual bool InArea(const CVSPoint& p_point);                          // vtable+0x1c
 	void Initialise();
 	void Reset();
 	void SetActive(unsigned int p_active);
@@ -48,7 +48,7 @@ private:
 	unsigned int m_buttonState[6];  // 0x10
 	unsigned int m_externalEnabled; // 0x28
 	unsigned int m_reserved;        // 0x2c
-	CVsRect m_bounds;               // 0x30
+	CVSRect m_bounds;               // 0x30
 };
 
 // SYNTHETIC: LEMBALL 0x00439a40

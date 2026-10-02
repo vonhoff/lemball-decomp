@@ -3,7 +3,7 @@
 #include "../../Foundation/CBaseQueue.h"
 #include "../CHotAreaElement.h"
 
-extern CVsPoint* g_pHotAreaCursor;
+extern CVSPoint* g_pHotAreaCursor;
 extern int g_nHotAreaListCount;
 
 // FUNCTION: LEMBALL 0x0046a650

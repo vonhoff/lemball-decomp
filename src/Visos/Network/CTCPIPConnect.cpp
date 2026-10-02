@@ -49,7 +49,8 @@ void CTCPIPConnect::GotHost(int p_failed)
 		memcpy(&hostAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
 		CTCPIPNetworkAddress address;
 		address.m_text[0] = '\0';
-		strcpy(address.m_text, inet_ntoa(*(in_addr*) &(address.m_ipv4Address = hostAddress.s_addr)));
+		address.m_ipv4Address = hostAddress.s_addr;
+		strcpy(address.m_text, inet_ntoa(hostAddress));
 		SetDestAddr(&address);
 		m_port = (short) atoi((char*) m_address);
 		if (m_port == 0) {

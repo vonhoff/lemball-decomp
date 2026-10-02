@@ -1,25 +1,12 @@
 #!/usr/bin/env python3
 """Check one primary class per file and matching class/filename spelling."""
 
-from __future__ import annotations
-
-import json
 import re
 import sys
 from collections import Counter
 from pathlib import Path
 
-from .paths import ROOT
-from .source import (
-    RECCMP_MARK,
-    brace_ends,
-    collect_sources,
-    mask_comments_and_strings,
-    rel_posix,
-)
-from .source import (
-    VTABLE_MARK as VTABLE,
-)
+from . import ROOT, VTABLE_MARK, brace_ends, collect_sources, mask_comments_and_strings
 
 TYPE_DEF = re.compile(
     r"\b(?P<kind>class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
@@ -34,163 +21,69 @@ METHOD_DEF = re.compile(
 )
 
 
-def class_stem(name: str) -> str:
-    return name.split("::")[0]
-
-
-def stems_equal(left: str, right: str) -> bool:
-    return left.casefold() == right.casefold()
-
-
-def line_of(text: str, offset: int) -> int:
-    return text.count("\n", 0, offset) + 1
-
-
-def has_vtable_above(text: str, type_offset: int) -> bool:
-    block_start = text.rfind("\n", 0, type_offset) + 1
-    while block_start > 0:
-        prev = text.rfind("\n", 0, block_start - 1) + 1
-        line = text[prev:block_start]
-        stripped = line.strip()
-        if not stripped:
-            block_start = prev
+def has_vtable_above(text, type_offset):
+    for line in reversed(text[:type_offset].splitlines()):
+        line = line.strip()
+        if not line:
             continue
-        if stripped.startswith("//"):
-            if VTABLE.match(stripped):
-                return True
-            block_start = prev
-            continue
-        break
+        if not line.startswith("//"):
+            break
+        if VTABLE_MARK.match(line):
+            return True
     return False
 
 
-def top_level_types(text: str, code: str) -> list[dict]:
-    ends = brace_ends(code)
-    ranges = []
-    for match in TYPE_DEF.finditer(code):
-        opening = match.end() - 1
-        if opening not in ends:
-            continue
-        ranges.append(
-            {
-                "kind": match["kind"],
-                "name": match["name"],
-                "start": match.start(),
-                "open": opening,
-                "end": ends[opening],
-                "line": line_of(text, match.start()),
-            }
-        )
-    top = []
-    for entry in ranges:
-        nested = any(
-            other["open"] < entry["start"] < other["end"] for other in ranges if other is not entry
-        )
-        if nested:
-            continue
-        entry["vtable"] = has_vtable_above(text, entry["start"])
-        top.append(entry)
-    return top
-
-
-def method_owners(code: str) -> list[str]:
-    owners = []
-    for match in METHOD_DEF.finditer(code):
-        owner = match["owner"].split("::")[0]
-        if owner:
-            owners.append(owner)
-    # Repeated definitions of methods belong to one primary class.
-    by_stem = {}
-    for owner in owners:
-        by_stem.setdefault(class_stem(owner).casefold(), owner)
-    return sorted(by_stem.values(), key=lambda name: class_stem(name).casefold())
-
-
-def primary_names(path: Path, code: str, types: list[dict]) -> list[str]:
+def primary_names(path, text, code):
     if path.suffix == ".cpp":
-        owners = method_owners(code)
-        if owners:
-            return owners
-        # Local helper structs in a free-function TU are not primary classes.
-        return []
-    vtable = [entry["name"] for entry in types if entry["vtable"]]
-    if vtable:
-        return sorted(set(vtable))
-    classes = [entry for entry in types if entry["kind"] == "class"]
-    matched = [entry for entry in types if stems_equal(class_stem(entry["name"]), path.stem)]
-    if matched:
-        return sorted({entry["name"] for entry in matched + classes})
-    if classes:
-        return sorted({entry["name"] for entry in classes})
-    return sorted({entry["name"] for entry in types})
+        owners = {}
+        for match in METHOD_DEF.finditer(code):
+            owner = match["owner"].split("::")[0]
+            owners.setdefault(owner.casefold(), owner)
+        return sorted(owners.values(), key=str.casefold)
+    ends = brace_ends(code)
+    types = [match for match in TYPE_DEF.finditer(code) if match.end() - 1 in ends]
+    types = [match for match in types if not any(
+        other.end() - 1 < match.start() < ends[other.end() - 1] for other in types)]
+    vtables = {match["name"] for match in types if has_vtable_above(text, match.start())}
+    if vtables:
+        return sorted(vtables)
+    classes = {match["name"] for match in types if match["kind"] == "class"}
+    matched = {match["name"] for match in types if match["name"].casefold() == path.stem.casefold()}
+    return sorted(matched | classes or {match["name"] for match in types})
 
 
 def scan(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
-    types = top_level_types(text, code)
-    primary = primary_names(path, code, types)
-    helpers = sorted(
-        {entry["name"] for entry in types if entry["name"] not in primary}
-    )
+    primary = primary_names(path, text, code)
     stem = path.stem
-    rel = rel_posix(path)
-    expected = class_stem(primary[0]) if len(primary) == 1 else None
+    expected = primary[0] if len(primary) == 1 else None
 
     if len(primary) > 1:
         status = "multi-class"
         detail = "primary classes: " + ", ".join(primary)
-    elif expected is not None and not stems_equal(stem, expected):
+    elif expected is not None and stem.casefold() != expected.casefold():
         status = "stem-name"
         detail = f"stem {stem} != expected {expected} (class)"
     elif not primary:
         status = "free"
         detail = "no primary class"
-        if RECCMP_MARK.search(text):
-            detail = "free-function or data TU"
     else:
         status = "match"
         detail = None
 
-    return {
-        "path": str(path),
-        "relpath": rel,
-        "line": 1,
-        "stem": stem,
-        "primary": primary,
-        "helpers": helpers,
-        "expected_stem": expected,
-        "name_evidence": "class" if expected else None,
-        "status": status,
-        "detail": detail,
-    }
+    return {"relpath": path.resolve().relative_to(ROOT).as_posix(),
+            "primary": primary, "status": status, "detail": detail}
 
 
-def check_layout(
-    paths: list[Path | str] | None = None,
-    fail: bool = True,
-    as_json: bool = False,
-) -> int:
+def check_layout(paths=None):
     files = collect_sources(paths)
     if not files:
-        sys.stderr.write("layout: no C++ source files found\n")
+        print("layout: no C++ source files found", file=sys.stderr)
         return 2
     rows = [scan(path) for path in files]
-    counts = dict(Counter(row["status"] for row in rows))
-    failing = {"multi-class", "stem-name"}
-    selected = [row for row in rows if row["status"] in failing]
-    if as_json:
-        print(
-            json.dumps(
-                {"files": len(files), "counts": counts, "translations": rows},
-                indent=2,
-            )
-        )
-    else:
-        for row in selected:
-            detail = row["detail"] or row["status"]
-            print(f'{row["relpath"]}: {row["status"]}: {detail}')
-        print(f'{len(files)} files: {counts}')
-    if fail and selected:
-        return 1
-    return 0
+    failures = [r for r in rows if r["status"] in ("multi-class", "stem-name")]
+    for row in failures:
+        print(f'{row["relpath"]}: {row["status"]}: {row["detail"]}')
+    print(f'{len(files)} files: {dict(Counter(row["status"] for row in rows))}')
+    return int(bool(failures))

@@ -47,7 +47,7 @@ CInvisibleSwitchManager::~CInvisibleSwitchManager()
 }
 
 // FUNCTION: LEMBALL 0x0040a370
-void CInvisibleSwitchManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
+void CInvisibleSwitchManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	for (int i = 0; i < m_count; i++) {
 		m_switches[i].StepOn(p_position, p_object);
@@ -63,7 +63,7 @@ void CInvisibleSwitchManager::Process()
 }
 
 // FUNCTION: LEMBALL 0x0040a3e0
-void CInvisibleSwitchManager::AddSwitch(unsigned short p_id, const Coord3d& p_min, const Coord3d& p_max)
+void CInvisibleSwitchManager::AddSwitch(unsigned short p_id, const tCoord3d& p_min, const tCoord3d& p_max)
 {
 	if (m_count < m_capacity) {
 		m_switches[m_count].SetId(p_id);

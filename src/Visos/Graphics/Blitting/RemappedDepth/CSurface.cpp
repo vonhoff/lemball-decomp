@@ -1,11 +1,11 @@
 #include "Visos/Graphics/CSurface.h"
 
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Graphics/CPVZBuffSurface.h"
 #include "Visos/Resources/CResZRLE.h"
 
 // FUNCTION: LEMBALL 0x00477540
-void CSurface::BlitZRLENoClipQZBuffRemap(const CVsRect& p_rect,
+void CSurface::BlitZRLENoClipQZBuffRemap(const CVSRect& p_rect,
 										 CResZRLE* p_zrle,
 										 unsigned short p_depth,
 										 unsigned char* p_remap)

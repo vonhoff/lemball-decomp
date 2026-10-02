@@ -17,10 +17,10 @@ public:
 	}
 	inline CResANIM() {}
 	static CResANIM* Load(unsigned long p_resourceId);
-	virtual bool DirectResources(unsigned int p_index, unsigned char** p_cursor); // vtable+0x50
-	virtual bool DirectResources(unsigned int p_index,
-								 unsigned char** p_headerCursor,
-								 unsigned char** p_dataCursor);               // vtable+0x4c
+	virtual bool DirectResources(unsigned long p_index, unsigned char*& p_cursor); // vtable+0x50
+	virtual bool DirectResources(unsigned long p_index,
+								 unsigned char*& p_headerCursor,
+								 unsigned char*& p_dataCursor);               // vtable+0x4c
 	virtual bool ForceLoadVram(unsigned int p_index);                         // vtable+0x3c
 	virtual unsigned int GetnVramEntries();                                   // vtable+0x48
 	virtual void AllocateResources(unsigned int p_count);                     // vtable+0x44

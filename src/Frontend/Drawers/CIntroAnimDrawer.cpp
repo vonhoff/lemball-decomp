@@ -6,7 +6,7 @@
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Windows/CIntroAnimAnimWindow.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 
 // GLOBAL: LEMBALL 0x0049f19c
@@ -17,7 +17,7 @@ extern char g_szMoviePrefix[];
 // FUNCTION: LEMBALL 0x00447410
 CIntroAnimDrawer::CIntroAnimDrawer(CMain2DDisplay* p_display,
 								   CGDI* p_gdi,
-								   const CVsRect& p_rect,
+								   const CVSRect& p_rect,
 								   unsigned int p_completionSequence)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_INTRO_ANIM, 0, 0, 0, 0, 0)
 {
@@ -114,8 +114,8 @@ void CIntroAnimDrawer::Processing()
 		return;
 	}
 	if (m_startCountdown == 0) {
-		CVsSize displaySize(m_display->m_rect);
-		CVsRect introRect(0, 0, displaySize.m_width, displaySize.m_height);
+		CVSSize displaySize(m_display->m_rect);
+		CVSRect introRect(0, 0, displaySize.m_width, displaySize.m_height);
 		introRect.m_x = (short) (introRect.m_width - 320) / 2;
 		short height = introRect.m_height;
 		introRect.m_width = 320;

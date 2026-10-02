@@ -44,8 +44,8 @@ public:
 	friend class CAnim;
 	friend class CAnimWnd;
 	friend class CGraphicButton;
-	friend class CBitmapRes;
-	friend class CBitmapResBase;
+	friend class CBigBitmap;
+	friend class CBitmap;
 	friend class CFrontendResourceLoader;
 	friend class CBaseCursor;
 	friend class CDemo;

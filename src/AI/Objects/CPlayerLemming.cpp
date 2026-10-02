@@ -22,7 +22,7 @@
 #include "../Objects/CBalloonPost.h"
 #include "../Objects/CBullet.h"
 #include "../Objects/CIce.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Messages/GameMessageIds.h"
@@ -89,7 +89,7 @@ void CPlayerLemming::Restart()
 		m_fireRequestState = FIRE_REQUEST_NONE;
 		m_desiredFacingDirection = m_initialFacingDirection;
 		SetBored(4000);
-		AiCoord dest;
+		AICOORD dest;
 		dest.m_xFixed = ((4 - m_playerIndex) * 16 + tileX) << 12;
 		dest.m_yFixed = tileY << 12;
 		dest.m_zFixed = tileZ << 12;
@@ -255,7 +255,7 @@ void CPlayerLemming::RequestFire(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x0040f310
 void CPlayerLemming::Fire()
 {
-	AiCoord start;
+	AICOORD start;
 	start.m_xFixed = m_position.m_xFixed;
 	int facing = m_facingDirection;
 	start.m_yFixed = m_position.m_yFixed;
@@ -516,7 +516,7 @@ void CPlayerLemming::RandomAction()
 }
 
 // FUNCTION: LEMBALL 0x0040fa80
-void CPlayerLemming::Resurrect(const AiCoord& p_position)
+void CPlayerLemming::Resurrect(const AICOORD& p_position)
 {
 	m_position.m_xFixed = p_position.m_xFixed;
 	m_position.m_yFixed = p_position.m_yFixed;
@@ -636,7 +636,7 @@ void CPlayerLemming::ExternalControlEnd()
 // FUNCTION: LEMBALL 0x0040fd10
 void CPlayerLemming::OnBalloon()
 {
-	AiCoord postPos;
+	AICOORD postPos;
 	postPos.m_xFixed = DEBUG_SENTINEL;
 	postPos.m_yFixed = DEBUG_SENTINEL;
 	postPos.m_zFixed = DEBUG_SENTINEL;
@@ -715,7 +715,7 @@ void CPlayerLemming::StartBalloon()
 // FUNCTION: LEMBALL 0x0040ff70
 void CPlayerLemming::RequestBalloon()
 {
-	AiCoord postPos;
+	AICOORD postPos;
 	postPos.m_xFixed = DEBUG_SENTINEL;
 	postPos.m_yFixed = DEBUG_SENTINEL;
 	postPos.m_zFixed = DEBUG_SENTINEL;
@@ -765,7 +765,7 @@ void CPlayerLemming::SetBored(unsigned long p_minimumDelay)
 void CPlayerLemming::StartStanding()
 {
 	CMover* mover = 0;
-	volatile unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
+	unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
 	int tileZ = m_position.m_zFixed >> 12;
 	if (m_onMover == 0 && mover != 0) {
 		mover->GetOn(this);

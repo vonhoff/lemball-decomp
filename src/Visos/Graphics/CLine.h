@@ -1,34 +1,35 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CLINE_H
 #define LEMBALL_VISOS_GRAPHICS_CLINE_H
 
-#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVSPoint.h"
 #include "CPrimitive.h"
 
 // SIZE 0x10
-// VTABLE: LEMBALL 0x00496d38
+// VTABLE: LEMBALL 0x00496cc8
 class CLine : public CPrimitive {
 public:
-	// FUNCTION: LEMBALL 0x004394c0
-	CLine() : m_bounds() {}
+	CLine();
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
 	virtual void Render(CGDI* p_gdi); // vtable+0x08
-	// FUNCTION: LEMBALL 0x00439710
+	// FUNCTION: LEMBALL 0x00432ac0
 	virtual ~CLine() {} // vtable+0x00
 
-	friend class CBaseFrontendDrawer;
-	friend class CCdLoadAnimDraw;
-	friend class CAboutScreen;
-	friend class CSurface;
-	friend class CPauseWindow;
-	friend class C2D;
+	friend class CPVButton;
 	friend class CTrackWindow;
+	friend class CSurface;
+	friend class CCDLoadAnim;
+	friend class CFramedButton;
 
-public:
-	CVsRect m_bounds;      // 0x04
+private:
+	CVSPoint m_start;      // 0x04
+	CVSPoint m_end;        // 0x08
 	unsigned int m_colour; // 0x0c
 };
 
-// SYNTHETIC: LEMBALL 0x00469930
+// SYNTHETIC: LEMBALL 0x00432a60
+// CLine::`scalar deleting destructor'
+
+// SYNTHETIC: LEMBALL 0x00467bb0
 // CLine::`vector deleting destructor'
 
 #endif

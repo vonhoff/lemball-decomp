@@ -1,21 +1,21 @@
 #include "CPVScrollableSurface.h"
 
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 
-struct CVsSize;
+struct CVSSize;
 
 // FUNCTION: LEMBALL 0x004668d0
 void CPVScrollableSurface::SetWorldWidth(int p_width)
 {
 	short size[2];
-	CVsRect* rect;
+	CVSRect* rect;
 
 	if (m_reserved40 != p_width) {
 		m_reserved40 = p_width;
 		rect = &m_surfaceRect;
 		size[0] = rect->m_width;
 		size[1] = rect->m_height;
-		Resize(*(CVsSize*) size);
+		Resize(*(CVSSize*) size);
 	}
 }
 

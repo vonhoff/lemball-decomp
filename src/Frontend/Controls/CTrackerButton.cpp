@@ -1,8 +1,8 @@
 #include "CTrackerButton.h"
 
 #include "../Windows/CTrackWindow.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CGraphicButton.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
@@ -11,19 +11,19 @@
 #include <new.h>
 
 // FUNCTION: LEMBALL 0x0044ec30
-CTrackerButton::CTrackerButton(const CVsPoint& p_position,
+CTrackerButton::CTrackerButton(const CVSPoint& p_position,
 							   CPVGWnd* p_parent,
 							   unsigned long p_animId,
-							   CVsRect& p_trackRect,
+							   CVSRect& p_trackRect,
 							   int p_value)
 	: CGraphicButton(p_position, p_parent, p_animId, 3)
 {
 	m_trackOffsetY = 0;
 	m_trackOffsetX = 0;
-	CVsRect createRect(p_trackRect);
+	CVSRect createRect(p_trackRect);
 	createRect.m_x += p_position.m_x;
 	createRect.m_y += p_position.m_y;
-	const CVsPoint* trackPosition = &p_trackRect;
+	const CVSPoint* trackPosition = &p_trackRect;
 	m_trackOffsetX = trackPosition->m_x;
 	m_trackOffsetY = trackPosition->m_y;
 	m_trackWindow = new CTrackWindow(p_trackRect, p_value, p_parent);
@@ -40,7 +40,7 @@ CTrackerButton::~CTrackerButton()
 }
 
 // FUNCTION: LEMBALL 0x0044ed70
-void CTrackerButton::Move(const CVsPoint& p_point)
+void CTrackerButton::Move(const CVSPoint& p_point)
 {
 	m_forceDrawCount = 1;
 	CHotAreaHandler::m_bounds.m_x -= m_relativeTopLeft.m_x;
@@ -48,6 +48,6 @@ void CTrackerButton::Move(const CVsPoint& p_point)
 	CGWnd::Move(p_point);
 	CHotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;
 	CHotAreaHandler::m_bounds.m_y += m_relativeTopLeft.m_y;
-	m_trackWindow->Move(CVsPoint(m_buttonX + m_trackOffsetX, m_buttonY + m_trackOffsetY));
-	m_trackWindow->Move(CVsPoint(p_point.m_x + m_trackOffsetX, p_point.m_y + m_trackOffsetY));
+	m_trackWindow->Move(CVSPoint(m_buttonX + m_trackOffsetX, m_buttonY + m_trackOffsetY));
+	m_trackWindow->Move(CVSPoint(p_point.m_x + m_trackOffsetX, p_point.m_y + m_trackOffsetY));
 }

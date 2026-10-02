@@ -15,8 +15,7 @@ bool _STRM_Init()
 
 	storage = operator new(0x1c);
 	if (storage != 0) {
-		g_pDebugStreambuf =
-			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) _RAWOUT_DebugString);
+		g_pDebugStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_DebugString);
 	}
 	else {
 		g_pDebugStreambuf = 0;
@@ -24,8 +23,7 @@ bool _STRM_Init()
 
 	storage = operator new(0x1c);
 	if (storage != 0) {
-		g_pSysStreambuf =
-			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) _RAWOUT_SysString);
+		g_pSysStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_SysString);
 	}
 	else {
 		g_pSysStreambuf = 0;
@@ -33,8 +31,7 @@ bool _STRM_Init()
 
 	storage = operator new(0x1c);
 	if (storage != 0) {
-		g_pErrorStreambuf =
-			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, (void (*)(char*)) _RAWOUT_ErrorString);
+		g_pErrorStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_ErrorString);
 	}
 	else {
 		g_pErrorStreambuf = 0;

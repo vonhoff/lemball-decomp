@@ -40,13 +40,13 @@ int CGameObject::Usage()
 }
 
 // FUNCTION: LEMBALL 0x0040a830 FOLDED
-AiCoord CGameObject::Position()
+AICOORD CGameObject::Position()
 {
 	return m_position;
 }
 
 // FUNCTION: LEMBALL 0x0040a830 FOLDED
-AiCoord CGameObject::ActivatePosition()
+AICOORD CGameObject::ActivatePosition()
 {
 	return m_position;
 }
@@ -314,8 +314,6 @@ int CGameObject::UsableState()
 CGameObject::CGameObject(eObjectType p_objectType,
 						 unsigned short p_collisionFlags,
 						 unsigned short p_destinationCapacity)
-	: m_moveStartXFixed(DEBUG_SENTINEL), m_moveStartYFixed(DEBUG_SENTINEL), m_moveDeltaXFixed(DEBUG_SENTINEL),
-	  m_moveDeltaYFixed(DEBUG_SENTINEL)
 {
 	m_objectType = p_objectType;
 	m_collisionFlags = p_collisionFlags;
@@ -329,7 +327,7 @@ CGameObject::CGameObject(eObjectType p_objectType,
 	else {
 		m_destinationList = 0;
 	}
-	m_linkedObjectId = 0xffff;
+	m_linkedObjectId = INVALID_OBJECT_ID;
 	bool found = false;
 	int i = 0;
 	if (0 < g_wObjectCount) {
@@ -387,7 +385,7 @@ CGameObject::~CGameObject()
 		operator delete(destinationList->m_entries);
 		operator delete(destinationList);
 	}
-	m_objectId = 0xffff;
+	m_objectId = INVALID_OBJECT_REGISTRY_INDEX;
 }
 
 // FUNCTION: LEMBALL 0x004151b0
@@ -557,7 +555,7 @@ void CGameObject::StartMoving()
 			mover->GetOn(this);
 		}
 		if (objectZ == groundZ) {
-			AiCoord destination = GetDestination();
+			AICOORD destination = GetDestination();
 			m_destination.m_xFixed = destination.m_xFixed;
 			m_destination.m_yFixed = destination.m_yFixed;
 			m_destination.m_zFixed = destination.m_zFixed;
@@ -571,10 +569,11 @@ void CGameObject::StartMoving()
 				m_moveDurationTicks = 1;
 			}
 			m_actionDeadline = m_moveDurationTicks + g_dwGameTick;
-			m_moveStartXFixed = m_position.m_xFixed;
-			m_moveStartYFixed = m_position.m_yFixed;
-			m_moveDeltaXFixed = m_destination.m_xFixed - m_moveStartXFixed;
-			m_moveDeltaYFixed = m_destination.m_yFixed - m_moveStartYFixed;
+			CVector start(m_position.m_xFixed, m_position.m_yFixed);
+			CVector end(start);
+			end.m_xFixed = m_destination.m_xFixed;
+			end.m_yFixed = m_destination.m_yFixed;
+			m_movement.SetEndpoints(start, end);
 		}
 		else if (m_balloonPostActive == 0) {
 			m_actionDeadline = g_dwGameTick;
@@ -666,7 +665,7 @@ bool CGameObject::SearchRoute()
 				if (index >= 0) {
 					Solution* solution = &solutions[index];
 					do {
-						AiCoord coordinate;
+						AICOORD coordinate;
 						coordinate.m_xFixed = ((unsigned int) (unsigned short) solution->m_x << 16) + 0x8000;
 						coordinate.m_yFixed = ((unsigned int) (unsigned short) solution->m_y << 16) + 0x8000;
 						coordinate.m_zFixed = 0;
@@ -717,9 +716,9 @@ void CGameObject::Blocked()
 bool CGameObject::Move()
 {
 	int elapsed = (int) (g_dwGameTick - m_lastMovementTick);
-	AiCoord position;
-	position.m_xFixed = m_moveStartXFixed + (m_moveDeltaXFixed * elapsed) / m_moveDurationTicks;
-	position.m_yFixed = m_moveStartYFixed + (m_moveDeltaYFixed * elapsed) / m_moveDurationTicks;
+	AICOORD position;
+	position.m_xFixed = m_movement.m_start.m_xFixed + (m_movement.m_delta.m_xFixed * elapsed) / m_moveDurationTicks;
+	position.m_yFixed = m_movement.m_start.m_yFixed + (m_movement.m_delta.m_yFixed * elapsed) / m_moveDurationTicks;
 	int x = position.m_xFixed >> 12;
 	int y = position.m_yFixed >> 12;
 	CMap* map;
@@ -820,7 +819,7 @@ bool CGameObject::Move()
 // FUNCTION: LEMBALL 0x00415d90
 void CGameObject::TurnToFaceDestination()
 {
-	AiCoord destination = GetDestination();
+	AICOORD destination = GetDestination();
 	int direction = (int) ReturnFacingDirection(m_position.m_xFixed >> 12,
 												m_position.m_yFixed >> 12,
 												destination.m_xFixed >> 12,
@@ -839,7 +838,7 @@ void CGameObject::TurnToFaceDestination()
 // FUNCTION: LEMBALL 0x00415e20
 bool CGameObject::FacingDestination()
 {
-	AiCoord dest = GetDestination();
+	AICOORD dest = GetDestination();
 	int dir = ReturnFacingDirection(m_position.m_xFixed >> 12,
 									m_position.m_yFixed >> 12,
 									dest.m_xFixed >> 12,
@@ -867,7 +866,7 @@ void CGameObject::DeleteFirstEntryFromDestinationList()
 	m_hasDestination = (unsigned short) 0 < m_destinationList->m_count;
 }
 // FUNCTION: LEMBALL 0x00415ef0
-void CGameObject::AddDestination(const AiCoord& p_destination)
+void CGameObject::AddDestination(const AICOORD& p_destination)
 {
 	CAiDestinationList* list = m_destinationList;
 	if (list != 0 && list->m_count < list->m_capacity) {
@@ -882,7 +881,7 @@ void CGameObject::AddDestination(const AiCoord& p_destination)
 }
 
 // FUNCTION: LEMBALL 0x00415f30
-void CGameObject::AlterDestination(const AiCoord& p_destination)
+void CGameObject::AlterDestination(const AICOORD& p_destination)
 {
 	int i;
 	CAiDestinationList* list = m_destinationList;
@@ -922,7 +921,7 @@ void CGameObject::AlterDestination(const AiCoord& p_destination)
 }
 
 // FUNCTION: LEMBALL 0x00416000
-AiCoord CGameObject::GetDestination()
+AICOORD CGameObject::GetDestination()
 {
 	if (m_destinationList->m_count > 0) {
 		return m_destinationList->m_entries[0].GetCoordinate();
@@ -943,7 +942,7 @@ void CGameObject::EmptyDestinationList()
 }
 
 // FUNCTION: LEMBALL 0x004160f0
-void CGameObject::GetBoundingBox(CVsRect& p_rect)
+void CGameObject::GetBoundingBox(CVSRect& p_rect)
 {
 	p_rect.m_x = (short) (m_position.m_xFixed >> 12) - 24;
 	p_rect.m_y = (short) (m_position.m_yFixed >> 12) - 24;
@@ -969,7 +968,7 @@ void CGameObject::Jump()
 	positionZ = (elapsed * 3 + m_flightZ) << 12;
 	unsigned int groundZ = groundHeight << 12;
 	if (m_position.m_zFixed >= (int) groundZ) {
-		AiCoord* position = &m_position;
+		AICOORD* position = &m_position;
 		m_position = m_groundPosition;
 		m_position.m_zFixed = groundZ;
 		m_isJumping = 0;
@@ -993,7 +992,7 @@ bool CGameObject::Fall()
 		return (bool) actionArgument;
 	}
 	else {
-		AiCoord* position = &m_position;
+		AICOORD* position = &m_position;
 		int x = position->m_xFixed >> 12;
 		int y = position->m_yFixed >> 12;
 		m_position.m_zFixed = ((m_lastMovementTick - g_dwGameTick) * 3 + m_flightZ) << 12;
@@ -1042,19 +1041,19 @@ bool CGameObject::Fall()
 	return false;
 }
 
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CRect3.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
-#include "Coord3d.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/VsDebug.h"
+#include "tCoord3d.h"
 
 // FUNCTION: LEMBALL 0x00416340
-bool CGameObject::OnLift(Coord3d& p_liftPosition)
+bool CGameObject::OnLift(tCoord3d& p_liftPosition)
 {
 	if (m_action == ACTION_DEAD) {
 		return false;
@@ -1086,13 +1085,13 @@ bool CGameObject::OnLift(Coord3d& p_liftPosition)
 }
 
 // FUNCTION: LEMBALL 0x00416410
-void CGameObject::OffLift(Coord3d& p_liftPosition)
+void CGameObject::OffLift(tCoord3d& p_liftPosition)
 {
 	OnLift(p_liftPosition);
 }
 
 // FUNCTION: LEMBALL 0x00416420
-bool CGameObject::OnLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
+bool CGameObject::OnLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax)
 {
 	if (m_action == ACTION_DEAD) {
 		return false;
@@ -1126,7 +1125,7 @@ bool CGameObject::OnLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
 }
 
 // FUNCTION: LEMBALL 0x004164f0
-void CGameObject::OffLift(Coord3d& p_liftMin, Coord3d& p_liftMax)
+void CGameObject::OffLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax)
 {
 	OnLift(p_liftMin, p_liftMax);
 }
@@ -1194,7 +1193,7 @@ void CGameObject::SetId(unsigned short p_id)
 // FUNCTION: LEMBALL 0x00416640
 void CGameObject::ReSetId()
 {
-	if (m_linkedObjectId != (unsigned short) 0xffff) {
+	if (m_linkedObjectId != INVALID_OBJECT_ID) {
 		g_abObjectIdBitmap[m_linkedObjectId >> 3] &= ~g_abBitMasks[m_linkedObjectId & 7];
 	}
 }
@@ -1242,7 +1241,7 @@ short CGameObject::NextLoadingId()
 void CGameObject::RegisterId()
 {
 	unsigned short id = m_linkedObjectId;
-	if (id != (unsigned short) 0xffff) {
+	if (id != INVALID_OBJECT_ID) {
 		unsigned short byteIndex = id >> 3;
 		unsigned short bitIndex = id & 7;
 		unsigned char mask = g_abBitMasks[bitIndex];
@@ -1255,7 +1254,7 @@ void CGameObject::RegisterId()
 					g_pObjects[(unsigned short) objectIndex]->GetId();
 				}
 			}
-			m_linkedObjectId = 0xffff;
+			m_linkedObjectId = INVALID_OBJECT_ID;
 			return;
 		}
 		*bitmapBytePtr = mask | bitmapByte;
@@ -1316,7 +1315,7 @@ int g_wLemmingCount;
 unsigned char g_abObjectIdBitmap[256];
 
 // GLOBAL: LEMBALL 0x004a6510
-CGameObject* g_pObjects[256];
+CGameObject* g_pObjects[OBJECT_REGISTRY_CAPACITY];
 
 // GLOBAL: LEMBALL 0x004a74bc
 unsigned short g_wObjectCount;

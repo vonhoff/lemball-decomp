@@ -6,7 +6,7 @@
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x0043a130
-CInputTextButton::CInputTextButton(const CVsRect& p_rect,
+CInputTextButton::CInputTextButton(const CVSRect& p_rect,
 								   CPVGWnd* p_parent,
 								   unsigned int p_controlMessage,
 								   char* p_text)

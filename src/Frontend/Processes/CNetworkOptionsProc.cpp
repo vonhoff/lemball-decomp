@@ -148,8 +148,8 @@ void CNetworkOptionsProc::NetworkEvent(NetworkEvents p_event)
 		case 10:
 			g_pNetworkOptionsDrawer->ResetHandlers();
 			break;
-		case 13:
-			g_pNetworkOptionsDrawer->m_pendingEvent = 7;
+		case NETWORK_EVENT_HOST_LOOKUP_FAILED:
+			g_pNetworkOptionsDrawer->m_pendingEvent = NETWORK_OPTIONS_MESSAGE_HOST_LOOKUP_FAILED;
 			break;
 		}
 	}

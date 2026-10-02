@@ -4,10 +4,10 @@
 #include "CBaseObjectManager.h"
 
 class CAI;
-class AiCoord;
+class AICOORD;
 class CGameObject;
 class CInvisibleSwitch;
-struct Coord3d;
+struct tCoord3d;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00493298
 class CInvisibleSwitchManager : public CBaseObjectManager {
@@ -18,8 +18,8 @@ public:
 	void Restart();
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
-	void StepOn(const AiCoord& p_position, CGameObject* p_object);
-	void AddSwitch(unsigned short p_id, const Coord3d& p_min, const Coord3d& p_max);
+	void StepOn(const AICOORD& p_position, CGameObject* p_object);
+	void AddSwitch(unsigned short p_id, const tCoord3d& p_min, const tCoord3d& p_max);
 
 private:
 	int m_capacity;               // 0x30

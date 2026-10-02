@@ -45,8 +45,7 @@ void CTCPIPNetworkAddress::operator=(const char* p_text)
 // FUNCTION: LEMBALL 0x00471590
 bool CTCPIPNetworkAddress::operator==(CNetworkAddress& p_address)
 {
-	in_addr in = *(in_addr*) &((CTCPIPNetworkAddress*) &p_address)->m_ipv4Address;
-	return !(m_ipv4Address - in.s_addr);
+	return ((CTCPIPNetworkAddress*) &p_address)->m_ipv4Address == m_ipv4Address;
 }
 
 // FUNCTION: LEMBALL 0x004715b0

@@ -5,12 +5,12 @@
 #include "../CMain2DDisplay.h"
 
 // FUNCTION: LEMBALL 0x00437520
-void C2D::NoStateLeftClick(const CVsPoint& p_screenPoint,
-						   const CVsPoint& p_gamePoint,
+void C2D::NoStateLeftClick(const CVSPoint& p_screenPoint,
+						   const CVSPoint& p_gamePoint,
 						   unsigned int p_cancelMoves,
 						   unsigned int p_alternate)
 {
-	CVsPoint destination(p_gamePoint);
+	CVSPoint destination(p_gamePoint);
 	int index;
 	if (FindGameObject(p_screenPoint, index, 0)) {
 		CViewData& view = m_viewData[index];

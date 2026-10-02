@@ -4,8 +4,9 @@
 #include "CBaseCommonSocket.h"
 #include "CTCPIPCommonSocket.h"
 #include "CWriteSocket.h"
+#include "Platform/WinSock/TcpIpSocketAddress.h"
 
-// SIZE 0xe0
+// SIZE 0xdc
 // VTABLE: LEMBALL 0x0049a088 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a090 CBaseSocket
 // VTABLE: LEMBALL 0x0049a0c0 CTCPIPWriteSocket
@@ -22,10 +23,7 @@ public:
 	virtual void SetPort(short p_port);                                                // vtable+0x28
 
 private:
-	unsigned short m_addressFamily; // 0x04
-	unsigned short m_networkPort;   // 0x06
-	unsigned int m_destinationIPv4; // 0x08
-	char m_sockaddrPadding[8];      // 0x0c
+	TcpIpSocketAddress m_destination; // 0x04
 };
 #pragma warning(default : 4250)
 

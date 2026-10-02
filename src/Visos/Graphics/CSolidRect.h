@@ -1,35 +1,35 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CSOLIDRECT_H
 #define LEMBALL_VISOS_GRAPHICS_CSOLIDRECT_H
 
-#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVSRect.h"
 #include "CPrimitive.h"
 
 // SIZE 0x10
-// VTABLE: LEMBALL 0x00496cb8
+// VTABLE: LEMBALL 0x00496d38
 class CSolidRect : public CPrimitive {
 public:
-	// FUNCTION: LEMBALL 0x00439520
-	CSolidRect() {}
-	CVsRect* GetBounds();
+	// FUNCTION: LEMBALL 0x004394c0
+	CSolidRect() : m_bounds() {}
+	CVSRect* GetBounds();
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
 	virtual void Render(CGDI* p_gdi); // vtable+0x08
-	// FUNCTION: LEMBALL 0x00439730 FOLDED
+	// FUNCTION: LEMBALL 0x00439710
 	virtual ~CSolidRect() {} // vtable+0x00
 
-	friend class CGunController;
+	friend class CBaseFrontendDrawer;
+	friend class CCdLoadAnimDraw;
 	friend class CAboutScreen;
-	friend class CHiliteController;
-	friend class CPasswordDrawer;
 	friend class CSurface;
+	friend class CPauseWindow;
 	friend class C2D;
-	friend class CPVButton;
+	friend class CTrackWindow;
 
-private:
-	CVsRect m_bounds;      // 0x04
+public:
+	CVSRect m_bounds;      // 0x04
 	unsigned int m_colour; // 0x0c
 };
 
-// SYNTHETIC: LEMBALL 0x00432a90
-// CSolidRect::`scalar deleting destructor'
+// SYNTHETIC: LEMBALL 0x00469930
+// CSolidRect::`vector deleting destructor'
 
 #endif

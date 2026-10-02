@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_GROUPS_CSHEEPGROUP_H
 #define LEMBALL_AI_GROUPS_CSHEEPGROUP_H
 
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "CGenericGroup.h"
 
 class CAI;
@@ -14,7 +14,7 @@ public:
 	CSheepGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	bool CheckAgainstCatapults();
 	void CheckAgainstLemmings();
-	void RunAway(AiCoord p_threatPosition);
+	void RunAway(AICOORD p_threatPosition);
 	virtual bool Process(); // vtable+0x14
 
 private:

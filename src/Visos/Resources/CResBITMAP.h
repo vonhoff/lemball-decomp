@@ -23,7 +23,7 @@ public:
 	virtual void SetType();   // vtable+0x34
 
 	friend class CBaseFrontendDrawer;
-	friend class CBitmapRes;
+	friend class CBigBitmap;
 	friend class CSurface;
 
 private:

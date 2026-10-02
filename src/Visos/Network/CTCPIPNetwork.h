@@ -4,6 +4,8 @@
 #include "../Target/Network/CNetworkWnd.h"
 #include "CBaseNetwork.h"
 
+#define TCPIP_MESSAGE_FORCE_PROCESS 0x444
+
 struct BasePacketHeader;
 
 // SIZE 0x78
@@ -11,6 +13,8 @@ struct BasePacketHeader;
 // VTABLE: LEMBALL 0x0049a2a8 CBaseNetwork
 class CTCPIPNetwork : public CNetworkWnd, public CBaseNetwork {
 public:
+	using CBaseNetwork::Process;
+
 	CTCPIPNetwork();
 	virtual void* GetNewBroadcast();                                                   // vtable+0x28
 	virtual void* GetNewConnect();                                                     // vtable+0x24
@@ -24,7 +28,7 @@ private:
 	unsigned int m_timerId; // 0x74
 };
 
-extern unsigned int g_dwTCPIPNetworkThreadId;
+extern unsigned long g_dwTCPIPNetworkThreadId;
 extern void* g_hTCPIPNetworkThread;
 extern int g_socketWindowClassRegistered;
 extern int g_tcpIpNetworkWindowClassRegistered;

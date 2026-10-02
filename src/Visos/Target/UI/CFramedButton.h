@@ -3,25 +3,25 @@
 
 #include "../../Graphics/CDepressedButton.h"
 
-class CClipRect;
 class CLine;
+class CSolidRect;
 class CPVGWnd;
-class CVsRect;
+class CVSRect;
 // SIZE 0x118
 // VTABLE: LEMBALL 0x00499838 CGWnd
 // VTABLE: LEMBALL 0x00499818 CHotAreaHandler
 class CFramedButton : public CDepressedButton {
 public:
-	CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColour);
+	CFramedButton(const CVSRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColour);
 	CFramedButton(CPVGWnd* p_parent, unsigned int p_frameColour);
 	void InitializeFramePrimitives();
 	virtual ~CFramedButton();
 	virtual void DrawButton();
-	virtual void OnPaint(const CVsRect& p_rect);
+	virtual void OnPaint(const CVSRect& p_rect);
 
 private:
-	CLine* m_frameLine;         // 0x10c
-	CClipRect* m_frameRects;    // 0x110
+	CSolidRect* m_frameLine;    // 0x10c
+	CLine* m_frameEdges;        // 0x110
 	unsigned int m_frameColour; // 0x114
 };
 

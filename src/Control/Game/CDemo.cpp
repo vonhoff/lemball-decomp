@@ -82,8 +82,8 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	case 8:
 	case 9: {
 		int zoom;
-		CVsPoint position((short) message.m_code, (short) ((unsigned int) message.m_code >> 16));
-		CVsPoint& point = position;
+		CVSPoint position((short) message.m_code, (short) ((unsigned int) message.m_code >> 16));
+		CVSPoint& point = position;
 		zoom = m_window->m_zoom;
 		point.m_x = (short) (zoom * point.m_x);
 		point.m_y = (short) (zoom * point.m_y);
@@ -149,8 +149,8 @@ bool CDemo::LoadBuffer()
 	return 1;
 }
 
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 
 #include <string.h>

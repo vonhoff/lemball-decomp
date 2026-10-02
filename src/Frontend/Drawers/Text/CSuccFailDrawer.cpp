@@ -18,7 +18,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "../../../Network/Game/CNetworkManager.h"
 #include "../../../Network/Messages/CNetworkGameMessage.h"
-#include "../../../Visos/Graphics/CBitmapRes.h"
+#include "../../../Visos/Graphics/CBigBitmap.h"
 #include "../../../Visos/Network/CConnect.h"
 #include "../../../Visos/Resources/CResFONT.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
@@ -26,9 +26,9 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Frontend/Support/CoordPair.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CPVGWnd.h"
@@ -91,9 +91,9 @@ void CSuccFailDrawer::CalculateText()
 		m_firstLine = m_message;
 		m_secondLine = 0;
 		short lineX;
-		CVsSize measuredSize;
+		CVSSize measuredSize;
 		do {
-			const CVsSize& textSize = font->GetSize(m_firstLine, 0x20);
+			const CVSSize& textSize = font->GetSize(m_firstLine, 0x20);
 			measuredSize.m_height = textSize.m_height;
 			measuredSize.m_width = textSize.m_width;
 			lineX = (short) m_layout->m_frameStart.m_x +
@@ -120,7 +120,7 @@ void CSuccFailDrawer::CalculateText()
 		}
 		else {
 			layoutY = layoutY + measuredSize.m_height;
-			const CVsSize& textSize = font->GetSize(m_secondLine, 0x20);
+			const CVSSize& textSize = font->GetSize(m_secondLine, 0x20);
 			m_secondLinePos.m_x =
 				(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - (int) textSize.m_width) / 2);
 			m_secondLinePos.m_y = layoutY;
@@ -128,7 +128,7 @@ void CSuccFailDrawer::CalculateText()
 	}
 	short passwordLabelY;
 	{
-		const CVsSize& textSize = font->GetSize(g_szPasswordLabel, 0x20);
+		const CVSSize& textSize = font->GetSize(g_szPasswordLabel, 0x20);
 		short labelHeight = textSize.m_height;
 		int labelWidth = textSize.m_width;
 		passwordLabelY = (short) m_layout->m_passwordLabelPosition.m_y;
@@ -139,7 +139,7 @@ void CSuccFailDrawer::CalculateText()
 	}
 
 	{
-		const CVsSize& passwordSize = font->GetSize(m_password, 0x20);
+		const CVSSize& passwordSize = font->GetSize(m_password, 0x20);
 		int labelWidth = passwordSize.m_width;
 		m_passwordPos.m_x = (short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - labelWidth) / 2);
 		m_passwordPos.m_y = passwordLabelY;

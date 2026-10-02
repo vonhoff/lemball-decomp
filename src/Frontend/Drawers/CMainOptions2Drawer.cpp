@@ -9,10 +9,10 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
 
 #include <new.h>
 
@@ -21,6 +21,7 @@
 #define MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE 0xacef0006
 #define MAIN_OPTIONS2_ANIMATIONS_TOGGLE_MESSAGE 0xacef0007
 #define MAIN_OPTIONS2_RETURN_MESSAGE 0xacef0008
+#define MAIN_OPTIONS2_MAX_VOLUME 255
 
 // GLOBAL: LEMBALL 0x0049f578
 unsigned long g_dwMainOptions2AnimIds[10] = {RES_NEWFRONT_ICONS_HIRES_ZOOM_OFF,
@@ -53,7 +54,7 @@ int g_anMainOptions2ButtonLayout[12] = {32, 116, 480, 116, 48, 232, 464, 232, 64
 int g_anMainOptions2CompactButtonLayout[12] = {16, 58, 240, 58, 24, 116, 232, 116, 32, 174, 208, 174};
 
 // FUNCTION: LEMBALL 0x00448ab0
-CMainOptions2Drawer::CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2)
+CMainOptions2Drawer::CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_2, 0, 0, 0, 0, 0)
 {
 	if (g_nMusicAvailable == 0) {
@@ -113,7 +114,7 @@ void CMainOptions2Drawer::Load()
 		m_primitiveBundle[i].m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) background->m_x) / 2);
 		m_primitiveBundle[i].m_primitive.m_y = 0;
 		m_primitiveBundle[i].m_primitive.m_resource = background;
-		m_primitiveBundle[i].m_primitive.m_flags = 0x800;
+		m_primitiveBundle[i].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 		m_primitiveBundle[i].m_primitive.m_remap = 0;
 	}
 
@@ -249,12 +250,13 @@ bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 		return 1;
 	case 0xacff0000:
 		g_nPendingEffectsVolume = (int) p_message->m_payload;
-		g_pSoundView->SetEffectsVolume((unsigned char) (((unsigned int) p_message->m_payload * RES_MAPEDIT_FONT4X8) /
-														(unsigned int) p_message->m_source));
+		g_pSoundView->SetEffectsVolume(
+			(unsigned char) (((unsigned int) p_message->m_payload * MAIN_OPTIONS2_MAX_VOLUME) /
+							 (unsigned int) p_message->m_source));
 		return 1;
 	case 0xacff0001: {
 		g_nPendingMusicVolume = (int) p_message->m_payload;
-		unsigned char volume = (unsigned char) (((unsigned int) p_message->m_payload * RES_MAPEDIT_FONT4X8) /
+		unsigned char volume = (unsigned char) (((unsigned int) p_message->m_payload * MAIN_OPTIONS2_MAX_VOLUME) /
 												(unsigned int) p_message->m_source);
 		*g_pSysOutput << "Setting music volume " << volume << "\n";
 		g_pSoundView->SetMusicVolume(volume);

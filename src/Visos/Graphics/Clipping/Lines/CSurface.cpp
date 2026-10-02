@@ -1,6 +1,6 @@
 #include "Visos/Graphics/CSurface.h"
 
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 
 // FUNCTION: LEMBALL 0x004757a0
 int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)

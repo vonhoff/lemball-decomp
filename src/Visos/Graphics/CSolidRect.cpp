@@ -2,22 +2,21 @@
 
 #include "CGDI.h"
 #include "CSurface.h"
-class CClipRect;
 
-// FUNCTION: LEMBALL 0x00432b10
+// FUNCTION: LEMBALL 0x00439800
 void CSolidRect::Draw(CGDI* p_gdi)
 {
 	p_gdi->AddToList(this);
 }
 
-// FUNCTION: LEMBALL 0x00432b20
+// FUNCTION: LEMBALL 0x00439810
 void CSolidRect::Render(CGDI* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit((CClipRect*) this);
+	p_gdi->m_renderTarget->Blit(this);
 }
 
 // FUNCTION: LEMBALL 0x004756d0
-CVsRect* CSolidRect::GetBounds()
+CVSRect* CSolidRect::GetBounds()
 {
 	return &m_bounds;
 }

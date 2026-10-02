@@ -9,7 +9,7 @@
 #include "../Base/CPt3.h"
 #include "../Managers/CBallManager.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
@@ -30,28 +30,26 @@ void CBall::Restart()
 }
 
 // FUNCTION: LEMBALL 0x004216c0
-void CBall::Set(AiCoord p_start, AiCoord p_destination, int p_speed)
+void CBall::Set(AICOORD p_start, AICOORD p_destination, int p_speed)
 {
-	m_position.m_xFixed = p_start.m_xFixed;
-	m_position.m_yFixed = p_start.m_yFixed;
-	m_position.m_zFixed = p_start.m_zFixed;
-	m_spawnPosition.m_xFixed = p_start.m_xFixed;
-	m_spawnPosition.m_yFixed = p_start.m_yFixed;
-	m_spawnPosition.m_zFixed = p_start.m_zFixed;
-	m_destination.m_xFixed = p_destination.m_xFixed;
-	m_destination.m_yFixed = p_destination.m_yFixed;
-	m_destination.m_zFixed = p_destination.m_zFixed;
+	enum {
+		FIRST_VERSION_USING_BALL_SPEED = 7,
+		MIN_CUSTOM_SPEED = 2
+	};
+
+	m_position = p_start;
+	m_spawnPosition = p_start;
+	m_destination = p_destination;
 	m_action = ACTION_BALL_MOVING;
 	m_actionArgument = 0;
-	unsigned short* speed = &m_speed;
-	if (g_pAI->m_levelVersion < 7) {
-		*speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
+	if (g_pAI->m_levelVersion < FIRST_VERSION_USING_BALL_SPEED) {
+		m_speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
 	}
 	else {
-		*speed = (unsigned short) p_speed;
+		m_speed = (unsigned short) p_speed;
 	}
-	if (*speed <= 1) {
-		*speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
+	if (m_speed < MIN_CUSTOM_SPEED) {
+		m_speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
 	}
 	m_enabled = 1;
 }
@@ -83,7 +81,7 @@ void CBall::StartMovement(unsigned int p_direction)
 	CVector end(start);
 	end.m_xFixed = targetX;
 	end.m_yFixed = targetY;
-	((CMovementInterpolation*) &m_moveStartXFixed)->SetEndpoints(start, end);
+	m_movement.SetEndpoints(start, end);
 }
 
 // FUNCTION: LEMBALL 0x00421870
@@ -98,11 +96,11 @@ bool CBall::Move()
 	int x;
 	int y;
 	{
-		CVector movement = *(const CVector*) &m_moveDeltaXFixed * elapsed;
+		CVector movement = m_movement.m_delta * elapsed;
 		movement.m_xFixed /= duration;
 		movement.m_yFixed /= duration;
-		x = (m_moveStartXFixed + movement.m_xFixed) >> 12;
-		y = (m_moveStartYFixed + movement.m_yFixed) >> 12;
+		x = (m_movement.m_start.m_xFixed + movement.m_xFixed) >> 12;
+		y = (m_movement.m_start.m_yFixed + movement.m_yFixed) >> 12;
 	}
 
 	map = g_pMap;
@@ -290,37 +288,43 @@ bool CBall::Process()
 // FUNCTION: LEMBALL 0x00421da0
 void CBall::LoadLevel(unsigned char*& p_data)
 {
-	AiCoord start;
-	AiCoord destination;
+	enum {
+		FIRST_VERSION_WITH_OBJECT_ID = 2,
+		LEVEL_WORD_BYTES = 2,
+		POSITION_FRACTION_BITS = 12
+	};
 
-	if (g_pAI->m_levelVersion > 1) {
+	AICOORD start;
+	AICOORD destination;
+
+	if (g_pAI->m_levelVersion >= FIRST_VERSION_WITH_OBJECT_ID) {
 		unsigned short id = *(unsigned short*) p_data;
-		p_data += 2;
+		p_data += LEVEL_WORD_BYTES;
 		SetId(id);
 	}
 
-	const int& startX = *(unsigned short*) p_data << 12;
+	const int startX = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
 	start.m_xFixed = startX;
-	p_data += 2;
-	const int& startY = *(unsigned short*) p_data << 12;
+	p_data += LEVEL_WORD_BYTES;
+	const int startY = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
 	start.m_yFixed = startY;
-	p_data += 2;
-	const int& startZ = *(unsigned short*) p_data << 12;
+	p_data += LEVEL_WORD_BYTES;
+	const int startZ = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
 	start.m_zFixed = startZ;
-	p_data += 2;
+	p_data += LEVEL_WORD_BYTES;
 
-	const int& destinationX = *(unsigned short*) p_data << 12;
+	const int destinationX = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
 	destination.m_xFixed = destinationX;
-	p_data += 2;
-	const int& destinationY = *(unsigned short*) p_data << 12;
+	p_data += LEVEL_WORD_BYTES;
+	const int destinationY = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
 	destination.m_yFixed = destinationY;
-	p_data += 2;
-	const int& destinationZ = *(unsigned short*) p_data << 12;
+	p_data += LEVEL_WORD_BYTES;
+	const int destinationZ = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
 	destination.m_zFixed = destinationZ;
-	p_data += 2;
+	p_data += LEVEL_WORD_BYTES;
 
 	unsigned short speed = *(unsigned short*) p_data;
-	p_data += 2;
+	p_data += LEVEL_WORD_BYTES;
 
 	Set(start, destination, speed);
 }

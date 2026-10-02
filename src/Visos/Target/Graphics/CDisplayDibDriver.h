@@ -3,25 +3,25 @@
 
 #include "CGdiDriver.h"
 
-struct CVsSize;
+struct CVSSize;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x004987b0
 class CDisplayDibDriver : public CGdiDriver {
 public:
-	CDisplayDibDriver(const CVsSize& p_size);
+	CDisplayDibDriver(const CVSSize& p_size);
 	virtual ~CDisplayDibDriver();
 	virtual unsigned int UpdateDibColourTable(CDrawingContext* p_context,
 											  unsigned int p_start,
 											  unsigned int p_count,
 											  void* p_colours);
 	virtual int BitBltContexts(CDrawingContext* p_destination,
-							   CVsRect* p_rect,
+							   CVSRect* p_rect,
 							   CDrawingContext* p_source,
-							   CVsPoint* p_position);
+							   CVSPoint* p_position);
 	virtual int StretchBltContexts(CDrawingContext* p_destination,
-								   CVsRect* p_rect,
+								   CVSRect* p_rect,
 								   CDrawingContext* p_source,
-								   CVsRect* p_sourceRect);
+								   CVSRect* p_sourceRect);
 
 private:
 	friend class CPlanarDibDriver;

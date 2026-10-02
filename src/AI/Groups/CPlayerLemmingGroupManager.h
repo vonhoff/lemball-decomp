@@ -5,7 +5,7 @@
 #include "CGenericGroupManager.h"
 
 class CAI;
-class AiCoord;
+class AICOORD;
 class CFormationManager;
 class CObjectManager;
 class CPlayerLemming;
@@ -19,7 +19,7 @@ public:
 	CPlayerLemming* GetDead();
 	CPlayerLemmingGroup* GetPlayerControlledGroup();
 	CPlayerLemmingGroupManager(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
-	bool GetLeaderPos(AiCoord& p_position);
+	bool GetLeaderPos(AICOORD& p_position);
 	bool HasSFXChanged();
 	bool IsLemmingPlayerControlled(CPlayerLemming* p_lemming);
 	bool MakeNextGroupPlayerControlled();
@@ -57,7 +57,7 @@ private:
 	int m_networkInitialised;             // 0x14c
 
 public:
-	void GetPlayerStartPosition(AiCoord& p_position, int p_index);
+	void GetPlayerStartPosition(AICOORD& p_position, int p_index);
 	void SetLemmingCounts(int p_playerCount, int p_count0, int p_count1, int p_count2, int p_count3);
 	int GetLemmingCountForPlayer(int p_playerIndex);
 };

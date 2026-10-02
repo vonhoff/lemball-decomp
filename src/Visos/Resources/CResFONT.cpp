@@ -63,11 +63,11 @@ unsigned int CResFONT::GetnVramEntries()
 }
 
 // FUNCTION: LEMBALL 0x0045d990
-bool CResFONT::DirectResources(unsigned int p_index, unsigned char** p_headerCursor, unsigned char** p_dataCursor)
+bool CResFONT::DirectResources(unsigned long p_index, unsigned char*& p_headerCursor, unsigned char*& p_dataCursor)
 {
-	int direct = (unsigned int) m_fontEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this) >= 1;
-	if (direct == 0) {
-		if (m_animationEntries[p_index].Direct(*p_headerCursor, *p_dataCursor, this) == 0) {
+	bool failed = m_fontEntries[p_index].Direct(p_headerCursor, p_dataCursor, this) != 0;
+	if (!failed) {
+		if (m_animationEntries[p_index].Direct(p_headerCursor, p_dataCursor, this) == 0) {
 			return 0;
 		}
 	}
@@ -75,11 +75,11 @@ bool CResFONT::DirectResources(unsigned int p_index, unsigned char** p_headerCur
 }
 
 // FUNCTION: LEMBALL 0x0045d9f0
-bool CResFONT::DirectResources(unsigned int p_index, unsigned char** p_cursor)
+bool CResFONT::DirectResources(unsigned long p_index, unsigned char*& p_cursor)
 {
-	int direct = (unsigned int) m_fontEntries[p_index].Direct(*p_cursor, this) >= 1;
-	if (direct == 0) {
-		if (m_animationEntries[p_index].Direct(*p_cursor, this) == 0) {
+	bool failed = m_fontEntries[p_index].Direct(p_cursor, this) != 0;
+	if (!failed) {
+		if (m_animationEntries[p_index].Direct(p_cursor, this) == 0) {
 			return 0;
 		}
 	}

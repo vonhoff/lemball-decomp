@@ -1,23 +1,29 @@
 #include "CBigBitmap.h"
 
+#include "../Resources/CResBITMAP.h"
 #include "CGDI.h"
-
-// FUNCTION: LEMBALL 0x00439720
-CBigBitmap::~CBigBitmap()
-{
-}
-
 #include "CSurface.h"
-class CCopyColourToBackBuff;
 
-// FUNCTION: LEMBALL 0x004398d0
+// FUNCTION: LEMBALL 0x00447380
 void CBigBitmap::Draw(CGDI* p_gdi)
 {
+	CResBITMAP* resource = m_resource;
+
+	if (resource->m_loaded != 0) {
+		resource->m_age = 0;
+	}
+	else {
+		resource->LoadData();
+	}
+	resource->m_directUseCount++;
+	m_resource->m_rendered = 1;
 	p_gdi->AddToList(this);
 }
 
-// FUNCTION: LEMBALL 0x004398e0
+// FUNCTION: LEMBALL 0x004473d0
 void CBigBitmap::Render(CGDI* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit((CCopyColourToBackBuff*) this);
+	p_gdi->m_renderTarget->Blit(this, m_resource);
+	m_resource->m_rendered = 0;
+	m_resource->m_directUseCount--;
 }

@@ -55,7 +55,7 @@ void CDepressedButton::_DrawButton()
 }
 
 // FUNCTION: LEMBALL 0x00468360 FOLDED
-void CDepressedButton::OnPaint(const CVsRect& p_rect)
+void CDepressedButton::OnPaint(const CVSRect& p_rect)
 {
 	int clipOk;
 	CChangeList* changeList;

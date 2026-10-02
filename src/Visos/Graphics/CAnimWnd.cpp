@@ -198,7 +198,7 @@ int CAnimWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam
 }
 
 // FUNCTION: LEMBALL 0x0046e120
-void CAnimWnd::Refresh(CVsRect* p_rect)
+void CAnimWnd::Refresh(CVSRect* p_rect)
 {
 }
 

@@ -7,7 +7,7 @@
 #include "../Navigation/CAiDestinationEntry.h"
 #include "../Navigation/CAiDestinationList.h"
 #include "../Objects/CPlayerLemming.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Groups/CGenericGroup.h"
@@ -70,8 +70,8 @@ bool CPlayerLemmingGroup::Process()
 {
 	int count = 0;
 	int moving = 0;
-	AiCoord position;
-	AiCoord memberPosition;
+	AICOORD position;
+	AICOORD memberPosition;
 	CGenericGroup::CalculateBoundingBox(0x18);
 	CGameObject* member = CGenericGroup::GetFirstElementInGroup();
 	while (member != 0) {
@@ -97,7 +97,7 @@ bool CPlayerLemmingGroup::Process()
 					CGameObject* object = g_pGroupObjectManager->FindObject(id);
 					if (object != 0) {
 						if (object->m_activationReserved != 0) {
-							const AiCoord& activation = object->ActivatePosition();
+							const AICOORD& activation = object->ActivatePosition();
 							position.m_xFixed = activation.m_xFixed;
 							position.m_yFixed = activation.m_yFixed;
 							position.m_zFixed = activation.m_zFixed;
@@ -115,7 +115,7 @@ bool CPlayerLemmingGroup::Process()
 						else {
 							member = CGenericGroup::GetNthElementInGroup(0);
 							if (member != 0) {
-								const AiCoord& activation = object->ActivatePosition();
+								const AICOORD& activation = object->ActivatePosition();
 								position.m_xFixed = activation.m_xFixed;
 								position.m_yFixed = activation.m_yFixed;
 								position.m_zFixed = activation.m_zFixed;
@@ -211,7 +211,7 @@ bool CPlayerLemmingGroup::Process()
 			case 1:
 				m_useObject->m_activationReserved = 0;
 				if (m_useObject->m_objectActive != 0) {
-					const AiCoord& activation = m_useObject->ActivatePosition();
+					const AICOORD& activation = m_useObject->ActivatePosition();
 					position.m_xFixed = activation.m_xFixed;
 					position.m_yFixed = activation.m_yFixed;
 					position.m_zFixed = activation.m_zFixed;
@@ -267,7 +267,7 @@ void CPlayerLemmingGroup::AddUseObject(int p_objectId)
 			break;
 		}
 	}
-	AiCoord position = p_object->ActivatePosition();
+	AICOORD position = p_object->ActivatePosition();
 	list = m_destinationList;
 	count = list->m_count;
 	if (count < list->m_capacity) {
@@ -296,7 +296,7 @@ void CPlayerLemmingGroup::AddUseObject(CGameObject* p_object, int p_objectId)
 {
 	unsigned short count;
 	CAiDestinationList* list;
-	AiCoord position = p_object->ActivatePosition();
+	AICOORD position = p_object->ActivatePosition();
 	list = m_destinationList;
 	count = list->m_count;
 	if (count < list->m_capacity) {

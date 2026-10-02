@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CMINE_H
 #define LEMBALL_AI_OBJECTS_CMINE_H
 
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
 
@@ -17,7 +17,7 @@ public:
 	virtual void Restart();                  // vtable+0x104
 	void Initialise();
 	void OnGround();
-	void Set(AiCoord p_position);
+	void Set(AICOORD p_position);
 	void SetTerrain();
 	void StepOn(CGameObject* p_object);
 	void Trigger(int p_delay);

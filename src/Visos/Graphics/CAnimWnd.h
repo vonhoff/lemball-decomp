@@ -18,7 +18,7 @@ public:
 	virtual int ProcessOtherMessages(unsigned int p_message,
 									 unsigned int p_wParam,
 									 unsigned int p_lParam); // vtable+0xa0
-	virtual void Refresh(CVsRect* p_rect);                   // vtable+0x70
+	virtual void Refresh(CVSRect* p_rect);                   // vtable+0x70
 	void Initialise();
 	void OnNotifyError(int p_error);
 	void OnNotifyMode(int p_mode);

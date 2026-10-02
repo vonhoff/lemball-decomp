@@ -1,6 +1,6 @@
 #include "../CGroundAnim.h"
 
-#include "AI/Base/Coord3d.h"
+#include "AI/Base/tCoord3d.h"
 
 // FUNCTION: LEMBALL 0x0040d2e0
 void CGroundAnim::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
@@ -11,7 +11,7 @@ void CGroundAnim::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 	if (count != 0) {
 		unsigned int remaining = count;
 		do {
-			Coord3d coordinate;
+			tCoord3d coordinate;
 			coordinate.m_x = *(unsigned short*) p_data;
 			p_data += 2;
 			coordinate.m_y = *(unsigned short*) p_data;

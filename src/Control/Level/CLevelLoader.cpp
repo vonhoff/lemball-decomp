@@ -29,20 +29,26 @@
 #include "../../Visos/Network/CConnect.h"
 #include "../../Visos/Resources/CResBIN.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "../Support/PreviewData.h"
-#include "LoadBlockHeader.h"
+#include "../Support/tPreviewData.h"
+#include "tagLoadBlockHeader.h"
 
 #include <string.h>
-struct LoadEnemyData;
-struct LoadGroundName;
-struct LoadGroundSurfaceData;
-struct LoadSheepData;
+struct tagLoadEnemyData;
+struct tagLoadGroundName;
+struct tagLoadGroundSurfaceData;
+struct tagLoadSheepData;
 struct _Filet;
 
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
 														   char* p_text,
 														   char* p_caption,
 														   unsigned int p_type);
+
+#define LEVEL_AI_UNVERSIONED_DATA_BYTES (2 * sizeof(unsigned short))
+#define LEVEL_AI_FIRST_VERSION_WITH_COUNTS 4
+#define LEVEL_AI_LEGACY_LEMMING_COUNT 4
+#define LEVEL_AI_LEGACY_PLAYER_COUNT 1
+#define LEVEL_START_COORDINATE_WORDS 3
 
 extern char g_szNSkillFormat[];
 extern char g_szNLevelFormat[];
@@ -63,7 +69,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 {
 	bool endFound = false;
 	CResBIN* binResource = 0;
-	LoadBlockHeader* header;
+	tagLoadBlockHeader* header;
 	unsigned int dataSize;
 	unsigned int blockType;
 
@@ -90,7 +96,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 	do {
 		dataSize = header->m_size;
 		blockType = header->m_type;
-		dataSize -= 8;
+		dataSize -= sizeof(*header);
 		switch (blockType) {
 		case LEVEL_BLOCK_AI:
 			m_ai->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
@@ -108,7 +114,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 			m_ai->m_collectableManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
 		case LEVEL_BLOCK_DEFAULT_BLOX:
-			m_ai->m_map->LoadDefaultBlox((class LoadDefaultBlox*) (header + 1), dataSize);
+			m_ai->m_map->LoadDefaultBlox((tagLoadDefaultBlox*) (header + 1), dataSize);
 			break;
 		case LEVEL_BLOCK_DOORS:
 			m_ai->m_doorManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
@@ -117,13 +123,13 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 			endFound = true;
 			break;
 		case LEVEL_BLOCK_ENEMY_GROUPS:
-			m_ai->m_enemyGroupManager->LoadLevel((LoadEnemyData*) (header + 1), dataSize, p_skip);
+			m_ai->m_enemyGroupManager->LoadLevel((tagLoadEnemyData*) (header + 1), dataSize, p_skip);
 			break;
 		case LEVEL_BLOCK_FLAGS:
 			m_ai->LoadFlagInfo((unsigned char*) (header + 1), dataSize);
 			break;
 		case LEVEL_BLOCK_GROUND_SURFACE:
-			m_ai->m_map->LoadLevel((LoadGroundSurfaceData*) (header + 1), dataSize, p_skip);
+			m_ai->m_map->LoadLevel((tagLoadGroundSurfaceData*) (header + 1), dataSize, p_skip);
 			break;
 		case LEVEL_BLOCK_OBJECTS:
 			m_ai->m_objectManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
@@ -150,7 +156,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 			m_ai->m_moverManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
 		case LEVEL_BLOCK_NAME:
-			m_ai->m_map->LoadLevelName((LoadGroundName*) (header + 1), dataSize);
+			m_ai->m_map->LoadLevelName((tagLoadGroundName*) (header + 1), dataSize);
 			break;
 		case LEVEL_BLOCK_NETWORK_STARTS:
 			if (m_ai->m_networkMode != 1) {
@@ -197,7 +203,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 			m_ai->m_rocketManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
 		case LEVEL_BLOCK_SHEEP_GROUPS:
-			m_ai->m_sheepGroupManager->LoadLevel((LoadSheepData*) (header + 1), dataSize, p_skip);
+			m_ai->m_sheepGroupManager->LoadLevel((tagLoadSheepData*) (header + 1), dataSize, p_skip);
 			break;
 		case LEVEL_BLOCK_SLINKIES:
 			m_ai->m_slinkyManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
@@ -239,27 +245,28 @@ bool CLevelLoader::LocateStartOfLevelFile()
 }
 
 // FUNCTION: LEMBALL 0x00408830
-LoadBlockHeader* CLevelLoader::GetNextBlockHeader(LoadBlockHeader* p_header)
+tagLoadBlockHeader* CLevelLoader::GetNextBlockHeader(tagLoadBlockHeader* p_header)
 {
 	unsigned int size;
 
 	if (p_header == 0) {
-		return (LoadBlockHeader*) g_pLevelFileData;
+		return (tagLoadBlockHeader*) g_pLevelFileData;
 	}
 	size = p_header->m_size;
-	if ((size & 3) != 0) {
-		size = (size - (size & 3)) + 4;
+	unsigned int remainder = size & LEVEL_BLOCK_ALIGNMENT_MASK;
+	if (remainder != 0) {
+		size = (size - remainder) + LEVEL_BLOCK_ALIGNMENT;
 	}
-	p_header = (LoadBlockHeader*) ((unsigned char*) p_header + size);
+	p_header = (tagLoadBlockHeader*) ((unsigned char*) p_header + size);
 	return p_header;
 }
 
 // FUNCTION: LEMBALL 0x00408850
-void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* p_preview)
+void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData* p_preview)
 {
 	bool endFound = false;
 	CResBIN* binResource = 0;
-	LoadBlockHeader* header;
+	tagLoadBlockHeader* header;
 	unsigned short* data16;
 	unsigned int dataSize;
 	unsigned int blockType;
@@ -285,24 +292,23 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData*
 
 	header = GetNextBlockHeader(0);
 	do {
-		dataSize = header->m_size;
+		dataSize = header->m_size - sizeof(*header);
 		data16 = (unsigned short*) (header + 1);
-		dataSize -= 8;
 		blockType = header->m_type;
 
 		switch (blockType) {
 		case LEVEL_BLOCK_AI: {
-			unsigned short version = dataSize > 4 ? *data16++ : 0;
+			unsigned short version = dataSize > LEVEL_AI_UNVERSIONED_DATA_BYTES ? *data16++ : 0;
 			data16++;
 			p_preview->m_timeLimit = *data16;
 			data16++;
-			if (version >= 4) {
+			if (version >= LEVEL_AI_FIRST_VERSION_WITH_COUNTS) {
 				p_preview->m_lemmingCount = data16[0];
 				p_preview->m_playerCount = data16[1];
 			}
 			else {
-				p_preview->m_lemmingCount = 4;
-				p_preview->m_playerCount = 1;
+				p_preview->m_lemmingCount = LEVEL_AI_LEGACY_LEMMING_COUNT;
+				p_preview->m_playerCount = LEVEL_AI_LEGACY_PLAYER_COUNT;
 			}
 			break;
 		}
@@ -330,14 +336,14 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData*
 			break;
 		case LEVEL_BLOCK_NAME: {
 			strcpy(p_preview->m_name, (char*) data16);
-			p_preview->m_name[0x20] = 0;
+			p_preview->m_name[sizeof(p_preview->m_name) - 1] = 0;
 			break;
 		}
 		case LEVEL_BLOCK_NETWORK_STARTS: {
 			total = 0;
 			count = (unsigned int) *data16++;
 			while (count > 0) {
-				data16 += 3;
+				data16 += LEVEL_START_COORDINATE_WORDS;
 				total += (unsigned int) *data16++;
 				count--;
 			}
@@ -360,7 +366,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, PreviewData*
 			total = 0;
 			count = (unsigned int) *data16++;
 			while (count > 0) {
-				data16 += 3;
+				data16 += LEVEL_START_COORDINATE_WORDS;
 				total += (unsigned int) *data16++;
 				count--;
 			}

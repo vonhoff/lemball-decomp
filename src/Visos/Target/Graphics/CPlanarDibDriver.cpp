@@ -4,9 +4,9 @@
 #include "CGdiContext.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Target/Graphics/CDibContext.h"
 #include "Visos/Target/Graphics/CGraphicsDriver.h"
 
@@ -37,9 +37,9 @@ void CPlanarDibDriver::ExtractPlaneBytes(unsigned char* p_destination, unsigned 
 
 // FUNCTION: LEMBALL 0x004570b0
 int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
-									 CVsRect* p_rect,
+									 CVSRect* p_rect,
 									 CDrawingContext* p_source,
-									 CVsPoint* p_position)
+									 CVSPoint* p_position)
 {
 	if (g_dwFullScreenGdi != 0) {
 		return BitBlt((HDC) ((CGdiContext*) p_destination)->m_hDC,
@@ -52,13 +52,13 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 					  p_position->m_y,
 					  SRCCOPY);
 	}
-	CVsRect clipped;
+	CVSRect clipped;
 	clipped.m_width = p_rect->m_width;
 	clipped.m_height = p_rect->m_height;
-	CVsPoint* point = p_rect;
+	CVSPoint* point = p_rect;
 	clipped.m_x = point->m_x;
 	clipped.m_y = point->m_y;
-	CVsSize limits;
+	CVSSize limits;
 	limits.m_width = m_screenSize.m_width;
 	limits.m_height = m_screenSize.m_height;
 	if (clipped.m_x < 0) {
@@ -120,11 +120,11 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 
 // FUNCTION: LEMBALL 0x004572c0
 int CPlanarDibDriver::StretchBltContexts(CDrawingContext* p_destination,
-										 CVsRect* p_rect,
+										 CVSRect* p_rect,
 										 CDrawingContext* p_source,
-										 CVsRect* p_sourceRect)
+										 CVSRect* p_sourceRect)
 {
-	CVsPoint* point = p_sourceRect;
-	CVsPoint position(*point);
+	CVSPoint* point = p_sourceRect;
+	CVSPoint position(*point);
 	return BitBltContexts(p_destination, p_rect, p_source, &position);
 }

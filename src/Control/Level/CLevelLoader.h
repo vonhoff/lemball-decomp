@@ -2,8 +2,8 @@
 #define LEMBALL_CONTROL_LEVEL_CLEVELLOADER_H
 
 class CAI;
-struct LoadBlockHeader;
-struct PreviewData;
+struct tagLoadBlockHeader;
+struct tPreviewData;
 enum eSkill {
 	SKILL_FUN = 0,
 	SKILL_TRICKY = 1,
@@ -16,11 +16,11 @@ enum eSkill {
 class CLevelLoader {
 public:
 	CLevelLoader(CAI* p_ai);
-	static LoadBlockHeader* GetNextBlockHeader(LoadBlockHeader* p_header);
+	static tagLoadBlockHeader* GetNextBlockHeader(tagLoadBlockHeader* p_header);
 	static bool LocateStartOfLevelFile();
 	static unsigned int CalcLevelID(eSkill p_skill, int p_level);
 	void LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip);
-	static void RetrievePreviewData(eSkill p_skill, int p_level, PreviewData* p_preview);
+	static void RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData* p_preview);
 
 private:
 	CAI* m_ai;           // 0x00

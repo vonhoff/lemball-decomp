@@ -4,7 +4,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CRect3.h"
 #include "AI/Base/ObjectActions.h"
@@ -68,7 +68,7 @@ bool CSlinky::ContainsIntegerPoint(const int* p_xy)
 }
 
 // FUNCTION: LEMBALL 0x0040b630
-bool CSlinky::GoodEndPt(const AiCoord& p_coordinate)
+bool CSlinky::GoodEndPt(const AICOORD& p_coordinate)
 {
 	int x = p_coordinate.m_xFixed >> 12;
 	if (m_minX <= x) {
@@ -83,45 +83,57 @@ bool CSlinky::GoodEndPt(const AiCoord& p_coordinate)
 // FUNCTION: LEMBALL 0x0040b670
 bool CSlinky::Move()
 {
+	enum {
+		DIRECTION_POSITIVE_X = 0,
+		DIRECTION_NEGATIVE_X = 1,
+		DIRECTION_POSITIVE_Y = 2,
+		DIRECTION_NEGATIVE_Y = 3,
+		DIRECTION_COUNT = 4,
+		STEP_PIXELS = 16,
+		MAX_ATTEMPTS = 8,
+		RANDOM_MULTIPLIER = 41,
+		RANDOM_INCREMENT = 31,
+		RANDOM_MASK = (1 << 23) - 1
+	};
 	int dx;
 	int count = 0;
 	int dy;
 	do {
-		int random = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+		int random = (*g_pRandomSeed * RANDOM_MULTIPLIER + RANDOM_INCREMENT) & RANDOM_MASK;
 		*g_pRandomSeed = random;
-		m_actionArgument = random % 4;
+		m_actionArgument = random % DIRECTION_COUNT;
 		switch ((unsigned short) m_actionArgument) {
-		case 0:
-			dx = 16;
+		case DIRECTION_POSITIVE_X:
+			dx = STEP_PIXELS;
 			dy = 0;
 			break;
-		case 1:
-			dx = -16;
+		case DIRECTION_NEGATIVE_X:
+			dx = -STEP_PIXELS;
 			dy = 0;
 			break;
-		case 2:
+		case DIRECTION_POSITIVE_Y:
 			dx = 0;
-			dy = 16;
+			dy = STEP_PIXELS;
 			break;
-		case 3:
+		case DIRECTION_NEGATIVE_Y:
 			dx = 0;
-			dy = -16;
+			dy = -STEP_PIXELS;
 			break;
 		}
 		{
-			const int& x = m_position.m_xFixed >> 12;
+			const int x = m_position.m_xFixed >> 12;
 			count++;
 			m_destination.m_xFixed = (x + dx) << 12;
 		}
 		{
-			const int& y = m_position.m_yFixed >> 12;
+			const int y = m_position.m_yFixed >> 12;
 			m_destination.m_yFixed = (y + dy) << 12;
 		}
 		{
-			const int& z = m_position.m_zFixed >> 12;
+			const int z = m_position.m_zFixed >> 12;
 			m_destination.m_zFixed = z << 12;
 		}
-	} while (count < 8 && !GoodEndPt(m_destination));
+	} while (count < MAX_ATTEMPTS && !GoodEndPt(m_destination));
 	return true;
 }
 

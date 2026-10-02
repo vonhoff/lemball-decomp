@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CVSMATH_H
 #define LEMBALL_VISOS_FOUNDATION_CVSMATH_H
 
-#include "../../AI/Base/AiCoord.h"
+#include "../../AI/Base/AICOORD.h"
 
 class CVSMath {
 public:
@@ -25,7 +25,7 @@ inline int VsAbs(int p_val)
 
 unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY);
 unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2);
-bool CloseTo(AiCoord p_first, AiCoord p_second);
+bool CloseTo(AICOORD p_first, AICOORD p_second);
 int sgn(int p_value);
 
 extern int g_anRotationDirections[8];

@@ -1,6 +1,6 @@
 #include "CSoundView.h"
 
-#include "../../AI/Base/AiCoord.h"
+#include "../../AI/Base/AICOORD.h"
 #include "../../AI/Objects/CViewData.h"
 #include "../../Control/Game/CDemo.h"
 #include "../../Control/Game/CGame.h"
@@ -160,7 +160,7 @@ void CSoundView::SetMusicOn(unsigned int p_enabled)
 }
 
 // FUNCTION: LEMBALL 0x00439c40
-void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AiCoord& p_listener)
+void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AICOORD& p_listener)
 {
 	int attenuatedVol;
 	int volume;

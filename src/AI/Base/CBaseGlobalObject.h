@@ -2,7 +2,7 @@
 #define LEMBALL_AI_BASE_CBASEGLOBALOBJECT_H
 
 #include "AI/Base/ObjectTypes.h"
-#include "AiCoord.h"
+#include "AICOORD.h"
 #include "CGlobalGameObject.h"
 
 // SIZE 0x144
@@ -10,7 +10,7 @@
 class CBaseGlobalObject : public CGlobalGameObject {
 public:
 	// FUNCTION: LEMBALL 0x0041c380
-	inline CBaseGlobalObject(const AiCoord& p_position, eObjectType p_type) : CGlobalGameObject(p_type, 0, 0)
+	inline CBaseGlobalObject(const AICOORD& p_position, eObjectType p_type) : CGlobalGameObject(p_type, 0, 0)
 	{
 		m_initialPosition = p_position;
 	}
@@ -18,7 +18,7 @@ public:
 	void OldRestart();
 
 private:
-	AiCoord m_initialPosition; // 0x138
+	AICOORD m_initialPosition; // 0x138
 };
 
 // SYNTHETIC: LEMBALL 0x0040ce50

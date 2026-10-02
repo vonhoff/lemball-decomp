@@ -3,7 +3,7 @@
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Animation/CPlayThruAnim.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Foundation/CVSPoint.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
@@ -17,11 +17,12 @@
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
+#include "Visos/Graphics/CClipRect.h"
 #include "Visos/Graphics/CGWnd.h"
-#include "Visos/Graphics/CSolidRect.h"
+#include "Visos/Resources/ResourceLimits.h"
 
 #include <stdlib.h>
 
@@ -55,7 +56,7 @@ int g_anGunSpriteOffsetCompact[20] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0,
 
 // FUNCTION: LEMBALL 0x0044c870
 CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigned int p_mode)
-	: CAnimsManager(p_gdi, 0x2b6, 10, 5, 0, 0)
+	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, 10, 5, 0, 0)
 {
 	int i;
 
@@ -150,7 +151,7 @@ void CGunController::ActivateButtons(int p_active)
 void CGunController::SetSpriteWindow()
 {
 	m_spriteWindow = new CSpriteWindow();
-	CVsRect createRect(m_window->m_rect);
+	CVSRect createRect(m_window->m_rect);
 	createRect.m_x = 0;
 	createRect.m_y = 0;
 	m_spriteWindow->Create(createRect, m_window, 0);
@@ -267,7 +268,7 @@ void CGunController::AddButtonWithRect(int p_x,
 									   unsigned int p_unusedSecond,
 									   int p_value,
 									   int* p_binding,
-									   const CVsRect& p_rect,
+									   const CVSRect& p_rect,
 									   int p_actionMessage,
 									   int p_context)
 {
@@ -357,7 +358,7 @@ void CGunController::DrawSpriteWindow()
 {
 	CGDI* previousGdi;
 	int* offsets;
-	CVsPoint position;
+	CVSPoint position;
 	unsigned long frame;
 
 	m_spriteSurface->m_renderTarget->GetCurrDB();
@@ -365,7 +366,7 @@ void CGunController::DrawSpriteWindow()
 	m_cursorRect[0].m_bounds.m_height = m_spriteSurface->m_renderTarget->m_windowRect.m_height;
 	m_cursorRect[0].m_bounds.m_x = 0;
 	m_cursorRect[0].m_bounds.m_y = 0;
-	m_cursorRect[0].m_colour = 0x10000;
+	m_cursorRect[0].m_flags = CClipRect::CLIP_IGNORE_PARENT;
 	m_cursorRect[0].Draw(m_spriteSurface);
 	offsets = g_anGunSpriteOffsetCompact;
 	if (m_alternateAssets != 1) {
@@ -553,7 +554,7 @@ void CGunController::SetGun(int p_junction)
 {
 	int direction;
 
-	const CVsSize& animSize = CAnimsManager::GetAnimSize(g_gunTurnResourceId, 0);
+	const CVSSize& animSize = CAnimsManager::GetAnimSize(g_gunTurnResourceId, 0);
 	m_gunX = (int) (m_window->m_rect.m_width / 2) - (int) (animSize.m_width / 2);
 	m_gunY = m_junctions[p_junction].m_y;
 	direction = m_junctions[p_junction].m_direction;

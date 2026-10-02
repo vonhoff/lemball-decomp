@@ -4,11 +4,12 @@
 #include "../Navigation/CAI.h"
 #include "../Objects/CDoor.h"
 #include "../Objects/CViewData.h"
+#include "AI/Base/ObjectIds.h"
 #include "AI/Base/ObjectTypes.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "AI/Objects/SwitchEntry.h"
 
-class AiCoord;
+class AICOORD;
 
 // GLOBAL: LEMBALL 0x0049cf48
 unsigned short g_wNextDoorIndex = 0;
@@ -76,7 +77,7 @@ int CDoorManager::Add(unsigned short p_id,
 					  int p_z)
 {
 	if (m_count < m_capacity) {
-		if (p_id == 0xffff) {
+		if (p_id == INVALID_OBJECT_ID) {
 			p_id = (unsigned short) CGameObject::NextId();
 		}
 		m_doors[m_count].SetId(p_id);
@@ -84,11 +85,11 @@ int CDoorManager::Add(unsigned short p_id,
 		m_count++;
 		return m_count - 1;
 	}
-	return 0xffff;
+	return INVALID_DOOR_INDEX;
 }
 
 // FUNCTION: LEMBALL 0x0040e500
-int CDoorManager::Open(const AiCoord& p_position, CGameObject* p_object)
+int CDoorManager::Open(const AICOORD& p_position, CGameObject* p_object)
 {
 	int i = 0;
 	if (0 < m_count) {
@@ -142,7 +143,7 @@ unsigned short CDoorManager::Id(int p_index)
 	if (p_index < m_count) {
 		return m_doors[p_index].GetId();
 	}
-	return 0xffff;
+	return INVALID_OBJECT_ID;
 }
 
 // FUNCTION: LEMBALL 0x0040e630

@@ -1,20 +1,28 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CZBUFFCLEAR_H
 #define LEMBALL_VISOS_GRAPHICS_CZBUFFCLEAR_H
 
+#include "../Foundation/CVSRect.h"
 #include "CPrimitive.h"
 
 // SIZE 0x10
+// VTABLE: LEMBALL 0x00496da0
 class CZBuffClear : public CPrimitive {
 public:
+	// FUNCTION: LEMBALL 0x00439550
+	CZBuffClear() {}
+	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
+	virtual void Render(CGDI* p_gdi); // vtable+0x08
+	// FUNCTION: LEMBALL 0x00439740
+	virtual ~CZBuffClear() {} // vtable+0x00
+
 	friend class CSurface;
 
-private:
-	short m_depth;      // 0x04
-	short m_reserved06; // 0x06
-	short m_width;      // 0x08
-	short m_height;     // 0x0a
-	short m_x;          // 0x0c
-	short m_y;          // 0x0e
+public:
+	unsigned int m_depth; // 0x04
+	CVSRect m_bounds;     // 0x08
 };
+
+// SYNTHETIC: LEMBALL 0x004396b0
+// CZBuffClear::`scalar deleting destructor'
 
 #endif

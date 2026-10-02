@@ -1,47 +1,20 @@
 #!/usr/bin/env python3
-"""Compare reconstructed functions to LEMBALL.EXE at original addresses.
-
-  python tools/match.py 0xADDRESS
-  python tools/match.py 0xADDRESS --no-build
-"""
-
-from __future__ import annotations
+"""Compare reconstructed functions at original LEMBALL.EXE addresses."""
 
 import argparse
 import sys
 
-from lib.reccmp_compat import load_engine
 from reccmp.tools.asmcmp import print_match_verbose
 
 from build import run_build
-
-
-def match_status(match) -> str:
-    """Distinguish normalized assembly equality from reccmp's effective match."""
-    if match.is_stub:
-        return "STUB"
-    if match.accuracy == 1.0:
-        return "ASM_EXACT"
-    if match.effective_accuracy == 1.0:
-        return "EFFECTIVE"
-    return "PARTIAL"
-
-
-def configure_output(stream) -> None:
-    """Keep the selected encoding; escape characters it cannot represent."""
-    if hasattr(stream, "reconfigure"):
-        stream.reconfigure(errors="backslashreplace")
-
-
-def hexadecimal(value: str) -> int:
-    return int(value, 16)
+from lib import load_engine
 
 
 def main() -> int:
-    configure_output(sys.stdout)
-    configure_output(sys.stderr)
+    sys.stdout.reconfigure(errors="backslashreplace")
+    sys.stderr.reconfigure(errors="backslashreplace")
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("addrs", nargs="+", type=hexadecimal, help="Hex addresses (e.g. 0x0045ca30)")
+    parser.add_argument("addrs", nargs="+", type=lambda value: int(value, 16), help="Hex addresses (e.g. 0x0045ca30)")
     parser.add_argument("--no-diff", action="store_true", help="Hide instruction diff")
     parser.add_argument("--no-build", action="store_true", help="Skip incremental build")
     parser.add_argument("--clean-first", action="store_true")
@@ -61,9 +34,16 @@ def main() -> int:
             print(f"0x{addr:08x}: NOT_FOUND")
             continue
 
-        pct = match.effective_accuracy * 100.0
-        summary = f"0x{addr:08x} {match.name}: {pct:.2f}% {match_status(match)}"
-        print(summary if args.no_diff else summary + " (reccmp normalized assembly)")
+        pct = 0.0 if match.is_stub else match.accuracy * 100.0
+        if match.is_stub:
+            status = "STUB"
+        elif match.accuracy == 1:
+            status = "ASM_EXACT"
+        elif match.is_effective_match:
+            status = "EFFECTIVE"
+        else:
+            status = "PARTIAL"
+        print(f"0x{addr:08x} {match.name}: {pct:.2f}% {status}")
         if not args.no_diff:
             print_match_verbose(match)
 

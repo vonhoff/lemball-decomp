@@ -4,7 +4,7 @@
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/CFixed.h"
-#include "../../Visos/Foundation/CVsPoint.h"
+#include "../../Visos/Foundation/CVSPoint.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Animation/CLemmingAnimsManager.h"
@@ -99,13 +99,13 @@ void CCursorMotion::Draw(unsigned int p_unused)
 }
 
 // FUNCTION: LEMBALL 0x004327e0
-void CCursorMotion::DrawAt(unsigned int p_unused, const CVsPoint& p_position)
+void CCursorMotion::DrawAt(unsigned int p_unused, const CVSPoint& p_position)
 {
 	m_anims->DrawAnim(p_position.m_x, p_position.m_y, RES_CURSORS_HAND, 0, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x00432810
-void CCursorMotion::SetPosition(const CVsPoint& p_position)
+void CCursorMotion::SetPosition(const CVSPoint& p_position)
 {
 	m_positionDirty = 1;
 	m_horizontalActive = 0;
@@ -115,9 +115,9 @@ void CCursorMotion::SetPosition(const CVsPoint& p_position)
 }
 
 // FUNCTION: LEMBALL 0x00432840
-CVsPoint CCursorMotion::GetPosition()
+CVSPoint CCursorMotion::GetPosition()
 {
-	return CVsPoint((short) (m_fixedX >> 12), (short) (m_fixedY >> 12));
+	return CVSPoint((short) (m_fixedX >> 12), (short) (m_fixedY >> 12));
 }
 
 // FUNCTION: LEMBALL 0x00432860

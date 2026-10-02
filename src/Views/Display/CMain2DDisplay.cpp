@@ -36,8 +36,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Resources/CCdLoadAnimDraw.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CDrawer.h"
@@ -132,7 +132,7 @@ void CMain2DDisplay::OnDestroy()
 }
 
 // FUNCTION: LEMBALL 0x00431810
-void CMain2DDisplay::OnPaint(const CVsRect& p_rect)
+void CMain2DDisplay::OnPaint(const CVSRect& p_rect)
 {
 	if (m_gdi != 0) {
 		if (IsWindowValid() != 0) {
@@ -140,11 +140,11 @@ void CMain2DDisplay::OnPaint(const CVsRect& p_rect)
 				((CCdLoadAnimDraw*) m_loadingDraw)->Draw();
 			}
 			if (m_drawer != 0) {
-				((CBaseFrontendDrawer*) m_drawer)->Draw(p_rect);
+				m_drawer->Draw(p_rect);
 			}
 			if (m_drawer != 0) {
 				m_frameCount = m_frameCount + 1;
-				((CBaseFrontendDrawer*) m_drawer)->ResetPrimitives();
+				m_drawer->ResetPrimitives();
 			}
 		}
 	}
@@ -237,7 +237,7 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 	}
 
 	SetZoom(1);
-	CVsRect localRect;
+	CVSRect localRect;
 	localRect.m_width = m_rect.m_width;
 	localRect.m_height = m_rect.m_height;
 	localRect.m_y = 0;
@@ -248,8 +248,8 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 
 	m_currentFlow = p_flow;
 	switch (p_flow) {
-	case 1:
-		storage = operator new(0x484);
+	case FLOW_INTRO_ANIM:
+		storage = operator new(sizeof(CIntroAnimDrawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
@@ -257,38 +257,38 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		variant = 0;
 		m_drawer = new (storage) CIntroAnimDrawer(this, m_gdi, localRect, variant);
 		break;
-	case 2:
-		storage = operator new(0x3bc);
+	case FLOW_MAIN_OPTIONS_1:
+		storage = operator new(sizeof(CMainOptions1Drawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
 		m_drawer = new (storage) CMainOptions1Drawer(this, m_gdi, localRect);
 		break;
-	case 3:
-		storage = operator new(0x3ac);
+	case FLOW_MAIN_OPTIONS_2:
+		storage = operator new(sizeof(CMainOptions2Drawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
 		m_drawer = new (storage) CMainOptions2Drawer(this, m_gdi, localRect);
 		break;
-	case 4:
-		storage = operator new(0x488);
+	case FLOW_PREVIEW:
+		storage = operator new(sizeof(CPreviewDrawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
 		m_drawer = new (storage) CPreviewDrawer(this, m_gdi, localRect);
 		break;
-	case 5:
-	case 0x13: {
+	case FLOW_GAMEPLAY:
+	case FLOW_DEMO: {
 		CAI* ai;
 
 		m_ai = (CAI*) m_game->m_process;
 		ai = (CAI*) m_game->m_process;
 		m_map = ai->m_map;
-		storage = operator new(0x2428);
+		storage = operator new(sizeof(C2D));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
@@ -296,48 +296,48 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		m_drawer = new (storage) C2D(this, (CAI*) m_ai, m_gdi, (CMap*) m_map, localRect);
 		break;
 	}
-	case 10:
-		storage = operator new(0x9c);
+	case FLOW_ABOUT:
+		storage = operator new(sizeof(CAboutScreen));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
 		m_drawer = new (storage) CAboutScreen(this, m_gdi, localRect);
 		break;
-	case 0xc:
-		storage = operator new(0x438);
+	case FLOW_NETWORK_OPTIONS:
+		storage = operator new(sizeof(CNetworkOptionsDrawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
 		m_drawer = new (storage) CNetworkOptionsDrawer(this, m_gdi, localRect);
 		break;
-	case 0xe:
-		storage = operator new(0x60c);
+	case FLOW_SUCCESS:
+		storage = operator new(sizeof(CSuccFailDrawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
 		m_drawer = new (storage) CSuccFailDrawer(this, m_gdi, localRect, 1);
 		break;
-	case 0xf:
-		storage = operator new(0x60c);
+	case FLOW_FAILURE:
+		storage = operator new(sizeof(CSuccFailDrawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
 		m_drawer = new (storage) CSuccFailDrawer(this, m_gdi, localRect, 0);
 		break;
-	case 0x10:
-		storage = operator new(0x494);
+	case FLOW_PASSWORD:
+		storage = operator new(sizeof(CPasswordDrawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
 		}
 		m_drawer = new (storage) CPasswordDrawer(this, m_gdi, localRect);
 		break;
-	case 0x12:
-		storage = operator new(0x484);
+	case FLOW_LEVEL_INTRO:
+		storage = operator new(sizeof(CIntroAnimDrawer));
 		if (storage == 0) {
 			m_drawer = 0;
 			break;
@@ -469,15 +469,15 @@ int CMain2DDisplay::GetReturnState()
 }
 
 // FUNCTION: LEMBALL 0x00431f30
-CVsRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
+CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 {
-	CVsRect result;
+	CVSRect result;
 	short& width = result.m_width;
 	short& height = result.m_height;
 	short& x = result.m_x;
 	short& y = result.m_y;
 	int compact;
-	const CVsSize& screenSize = g_pTargetGraphicsDriver->m_screenSize;
+	const CVSSize& screenSize = g_pTargetGraphicsDriver->m_screenSize;
 
 	compact = g_pTargetGraphicsSystem->m_driverMode == 3;
 	g_nCompactPrimaryContextLayout = compact;

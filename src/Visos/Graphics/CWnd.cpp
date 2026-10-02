@@ -12,9 +12,9 @@
 #include "../Target/Graphics/CGraphicsState.h"
 #include "../Target/System/CPlatformServices.h"
 #include "CCursor.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CPVWnd.h"
 #include "Visos/Graphics/MenuList.h"
@@ -208,7 +208,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		}
 		window->m_rect.m_x = mouseX;
 		window->m_rect.m_y = mouseY;
-		CVsPoint* topLeft = &window->m_rect;
+		CVSPoint* topLeft = &window->m_rect;
 		window->m_relativeTopLeft.m_x = topLeft->m_x;
 		window->m_relativeTopLeft.m_y = topLeft->m_y;
 		window->_OnCreate();
@@ -247,7 +247,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			position.x = 0;
 			position.y = 0;
 			ClientToScreen((HWND) p_hwnd, &position);
-			CVsPoint point((short) position.x, (short) position.y);
+			CVSPoint point((short) position.x, (short) position.y);
 			window->MoveAbsolute(point);
 		}
 		return 0;
@@ -340,7 +340,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				memcpy(g_savedMouseParameters, mouseParameters, sizeof(mouseParameters));
 				GetSystemMetrics(SM_CYSCREEN);
 				short screenWidth = (short) GetSystemMetrics(SM_CXSCREEN);
-				CVsSize* screenSize = &g_pTargetGraphicsDriver->m_screenSize;
+				CVSSize* screenSize = &g_pTargetGraphicsDriver->m_screenSize;
 				mouseParameters[2] = screenSize->m_width * mouseParameters[2] / screenWidth;
 				SystemParametersInfoA(SPI_SETMOUSE, 0, mouseParameters, 0);
 				SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &g_nSavedScreenSaverActive, 0);
@@ -365,7 +365,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_DISPLAYCHANGE: {
 		if (g_pTargetGraphicsSystem != 0) {
-			CVsSize size;
+			CVSSize size;
 			size.m_width = (short) p_lParam;
 			p_lParam >>= 16;
 			size.m_height = (short) p_lParam;
@@ -483,17 +483,17 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 }
 
 // FUNCTION: LEMBALL 0x00464f10
-void CWnd::MoveAbsolute(const CVsPoint& p_point)
+void CWnd::MoveAbsolute(const CVSPoint& p_point)
 {
 	void** node = (void**) m_childList;
-	CVsPoint* position;
+	CVSPoint* position;
 	if (this != (CWnd*) -8) {
-		position = (CVsPoint*) &m_rect.m_x;
+		position = (CVSPoint*) &m_rect.m_x;
 	}
 	else {
 		position = 0;
 	}
-	CVsPoint delta((short) (p_point.m_x - position->m_x), (short) (p_point.m_y - position->m_y));
+	CVSPoint delta((short) (p_point.m_x - position->m_x), (short) (p_point.m_y - position->m_y));
 	for (;;) {
 		if (node == 0) {
 			break;
@@ -509,10 +509,10 @@ void CWnd::MoveAbsolute(const CVsPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x00464fa0
-void CWnd::Move(const CVsPoint& p_point)
+void CWnd::Move(const CVSPoint& p_point)
 {
 	void** node = (void**) m_childList;
-	CVsPoint delta((short) (p_point.m_x - m_relativeTopLeft.m_x), (short) (p_point.m_y - m_relativeTopLeft.m_y));
+	CVSPoint delta((short) (p_point.m_x - m_relativeTopLeft.m_x), (short) (p_point.m_y - m_relativeTopLeft.m_y));
 	for (;;) {
 		if (node == 0) {
 			break;
@@ -598,7 +598,7 @@ CWnd::CWnd()
 }
 
 // FUNCTION: LEMBALL 0x00465200
-void CWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
+void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 {
 	unsigned int styleFlags;
 
@@ -617,13 +617,13 @@ void CWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 		if ((styleFlags & 0x40000000) == 0) {
 			POINT screenPoint;
 			m_parent->AddChild(this);
-			const CVsRect& parentRect = m_parent->m_rect;
+			const CVSRect& parentRect = m_parent->m_rect;
 			screenPoint.x = (LONG) ((int) parentRect.m_x + (int) p_rect.m_x);
 			screenPoint.y = (LONG) ((int) parentRect.m_y + (int) p_rect.m_y);
 			ClientToScreen((HWND) ((CWnd*) m_parent)->m_nativeWindow, &screenPoint);
 			m_rect.m_x = (short) screenPoint.x;
 			m_rect.m_y = (short) screenPoint.y;
-			const CVsPoint* relativeOrigin = &p_rect;
+			const CVSPoint* relativeOrigin = &p_rect;
 			short relativeY = relativeOrigin->m_y;
 			m_relativeTopLeft.m_x = relativeOrigin->m_x;
 			m_relativeTopLeft.m_y = relativeY;
@@ -710,10 +710,10 @@ void CWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
 		m_parent = 0;
 		m_rect.m_width = p_rect.m_width;
 		m_rect.m_height = p_rect.m_height;
-		const CVsPoint* rectOrigin = &p_rect;
+		const CVSPoint* rectOrigin = &p_rect;
 		m_rect.m_x = rectOrigin->m_x;
 		m_rect.m_y = rectOrigin->m_y;
-		const CVsPoint* relativeOrigin = &p_rect;
+		const CVSPoint* relativeOrigin = &p_rect;
 		short relativeY = relativeOrigin->m_y;
 		m_relativeTopLeft.m_x = relativeOrigin->m_x;
 		m_relativeTopLeft.m_y = relativeY;
@@ -787,7 +787,7 @@ void CWnd::Destroy()
 }
 
 // FUNCTION: LEMBALL 0x004655f0
-void CWnd::Refresh(CVsRect* p_rect)
+void CWnd::Refresh(CVSRect* p_rect)
 {
 	RECT rect;
 
@@ -905,15 +905,15 @@ void CWnd::_OnZoom(int p_oldZoom)
 }
 
 // FUNCTION: LEMBALL 0x00465820
-void CWnd::_SetRect(const CVsRect& p_rect)
+void CWnd::_SetRect(const CVSRect& p_rect)
 {
-	CVsRect rect(p_rect);
-	CVsPoint* origin = &rect;
-	const CVsSize* size = &rect;
+	CVSRect rect(p_rect);
+	CVSPoint* origin = &rect;
+	const CVSSize* size = &rect;
 	RECT adjusted;
 	RECT window;
 	POINT client;
-	const CVsPoint* position;
+	const CVSPoint* position;
 	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
 		if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0) {
 			origin->m_x = 0;
@@ -936,7 +936,7 @@ void CWnd::_SetRect(const CVsRect& p_rect)
 		SetWindowPos((HWND) m_nativeWindow, 0, window.left, window.top, adjusted.right, adjusted.bottom, 4);
 		return;
 	}
-	const CVsRect* parentRect = &m_parent->m_rect;
+	const CVSRect* parentRect = &m_parent->m_rect;
 	position = parentRect;
 	int top = (short) (position->m_y + origin->m_y);
 	window.left = (short) (position->m_x + origin->m_x);
@@ -956,9 +956,9 @@ void CWnd::_SetRect(const CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00465a00
-void CWnd::_SetRelTL(const CVsPoint& p_point)
+void CWnd::_SetRelTL(const CVSPoint& p_point)
 {
-	CVsRect rect(p_point.m_x, p_point.m_y, m_rect.m_width, m_rect.m_height);
+	CVSRect rect(p_point.m_x, p_point.m_y, m_rect.m_width, m_rect.m_height);
 	_SetRect(rect);
 }
 

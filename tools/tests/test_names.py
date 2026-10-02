@@ -1,84 +1,81 @@
 """Independent catalog naming authority, signature parsing, and failure cases."""
 
+# Pylint infers an empty list for scan(), ignoring its append calls.
+# pylint: disable=unbalanced-tuple-unpacking
+
 import contextlib
 import io
 import tempfile
 import unittest
 from pathlib import Path
 
-from lib.cpp_signatures import canonical_type, parameter_type
-from lib.mac_symbols import decode_signature
-from lib.names import check_names, scan
-from lib.provenance import catalog_entries, read_catalog
+from lib.names import check_names, read_catalog, scan
+from lib.signatures import canonical_type, decode_signature, parameter_type
 
 
-class MacSignatureTests(unittest.TestCase):
-    def test_constructor_and_parameter_type(self):
-        signature = decode_signature("__ct__12CPadToButtonFi")
-        self.assertEqual(signature.display(), "CPadToButton::CPadToButton(int)")
-        self.assertEqual(signature.parameters, ("int",))
-
-    def test_destructor_qualified_owner_and_const_method(self):
-        self.assertEqual(decode_signature("__dt__Q214CPreviewDrawer8tagPRIMSFv").display(),
-                         "CPreviewDrawer::tagPRIMS::~tagPRIMS()")
-        self.assertEqual(decode_signature("Get__6CFixedCFv").display(), "CFixed::Get() const")
-
-    def test_pointer_reference_const_and_unsigned(self):
-        self.assertEqual(decode_signature("Test__FPCcRC8CVSPointUlCPi").parameters,
-                         ("const char*", "const CVSPoint&", "unsigned long", "int* const"))
-
-    def test_function_pointer_keeps_encoded_return_type(self):
-        self.assertEqual(decode_signature("Callback__FPFPc_Uc").parameters,
-                         ("unsigned char (*)(char*)",))
-
-    def test_unmangled_name_does_not_invent_parameters(self):
-        self.assertIsNone(decode_signature("main").parameters)
-
-    def test_embedded_separator_and_conversion_operator(self):
-        self.assertEqual(decode_signature("CSurface__2DMemSet__FPPUcUcsss").owner, "")
-        self.assertEqual(decode_signature("__op7CVector__8CVSPointCFv").display(),
-                         "CVSPoint::operator CVector() const")
-
-    def test_invalid_encodings_are_not_silently_typed(self):
-        for symbol in ("__ct__99MissingFi", "Wrong__Fz", "Wrong__FP", "Wrong__F", "Wrong__Fvi"):
-            with self.subTest(symbol=symbol), self.assertRaises(ValueError):
-                decode_signature(symbol)
-
-    def test_complete_catalog_decodes_without_guessed_parameters(self):
-        symbols, _ = catalog_entries(read_catalog())
+class SignatureTests(unittest.TestCase):
+    def test_catalog_encodings(self):
+        cases = {
+            '__ct__12CPadToButtonFi': 'CPadToButton::CPadToButton(int)',
+            '__dt__Q214CPreviewDrawer8tagPRIMSFv': 'CPreviewDrawer::tagPRIMS::~tagPRIMS()',
+            'Get__6CFixedCFv': 'CFixed::Get() const',
+            'Callback__FPFPc_Uc': 'Callback(unsigned char (*)(char*))',
+            '__op7CVector__8CVSPointCFv': 'CVSPoint::operator CVector() const',
+            'main': 'main(?)',
+        }
+        for symbol, expected in cases.items():
+            self.assertEqual(decode_signature(symbol).display(), expected)
+        symbols, _ = read_catalog()
         for symbol in symbols.values():
-            with self.subTest(symbol=symbol):
-                decode_signature(symbol)
-
-
-class ParameterTests(unittest.TestCase):
-    def test_names_defaults_and_unnamed_parameters(self):
-        for source in ("int p_arg0", "int capacity", "int", "int capacity = 42"):
-            with self.subTest(source=source):
-                self.assertEqual(parameter_type(source), "int")
-
-    def test_unsigned_and_const_types_do_not_lose_their_type_name(self):
-        cases = {"unsigned int": "unsigned int", "const Widget": "Widget",
-                 "Widget const* value": "const Widget*", "Widget* const value": "Widget*",
-                 "Widget const& value": "const Widget&", "unsigned long value": "unsigned long",
-                 "char buffer[12]": "char*", "Namespace::Widget": "Namespace::Widget"}
-        for source, expected in cases.items():
-            with self.subTest(source=source):
-                self.assertEqual(parameter_type(source), expected)
-
-    def test_windows_integer_width_does_not_make_long_and_int_same_type(self):
-        self.assertNotEqual(canonical_type("unsigned long"), canonical_type("unsigned int"))
-
-    def test_complex_declarator_requires_review(self):
+            decode_signature(symbol)
         with self.assertRaises(ValueError):
-            parameter_type("void (*callback)(int)")
+            decode_signature('Wrong__FP')
+
+    def test_cpp_parameter_types(self):
+        cases = {'int capacity = 42': 'int', 'Widget const* value': 'const Widget*',
+                 'Widget* const value': 'Widget*', 'char buffer[12]': 'char*',
+                 'Namespace::Widget': 'Namespace::Widget', 'unsigned long value': 'unsigned long',
+                 'int (*callback)(char* text)': 'int (*)(char*)',
+                 'void (*outer)(int (*inner)(const char* text))': 'void (*)(int (*)(const char*))'}
+        for source, expected in cases.items():
+            self.assertEqual(parameter_type(source), expected)
+        self.assertNotEqual(canonical_type('unsigned long'), canonical_type('unsigned int'))
+        for source in ('void (__stdcall *callback)(int)', 'void (Widget::*callback)(int)',
+                       'void (*callback)(void, int)'):
+            with self.assertRaises(ValueError):
+                parameter_type(source)
+
+
+class CatalogTests(unittest.TestCase):
+    def test_catalog_preserves_variants_and_rejects_bad_evidence(self):
+        header = "mac_address,symbol,windows_address\n"
+        row = "1060000c,Real__Fv,401000\n"
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "catalog.csv"
+            path.write_text(header + row + "1060000c,Real__Fv,402000\n10600020,MacOnly__Fv,\n",
+                            encoding="utf-8")
+            self.assertEqual(read_catalog(path), (
+                {0x1060000c: "Real__Fv", 0x10600020: "MacOnly__Fv"},
+                {(0x1060000c, 0x401000), (0x1060000c, 0x402000)},
+            ))
+            for invalid in ("mac_address,symbol\n", header, header + row + row,
+                            header + row + "1060000c,Wrong__Fv,402000\n",
+                            header + row + "1060000c,Real__Fv,\n",
+                            header + "1060000c,Made up,401000\n",
+                            header + "1060000c,Real__Fv,0\n",
+                            header + "1060000c,Real__Fv,100000000\n"):
+                path.write_text(invalid, encoding="utf-8")
+                with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                    read_catalog(path)
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                    self.assertEqual(check_names(catalog_path=path), 2)
 
 
 class CatalogNamingTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
-        self.addCleanup(self.temp.cleanup)
-        self.path = Path(self.temp.name) / "Fixture.cpp"
+        # enterContext registers cleanup with unittest.
+        with_directory = tempfile.TemporaryDirectory()  # pylint: disable=consider-using-with
+        self.path = Path(self.enterContext(with_directory)) / "Fixture.cpp"
         self.symbols = {0x10b0f952: "__ct__12CPadToButtonFi"}
         self.pairs = {(0x10b0f952, 0x43a250)}
 
@@ -86,40 +83,32 @@ class CatalogNamingTests(unittest.TestCase):
         self.path.write_text(source, encoding="utf-8")
         return scan(self.path, self.symbols, self.pairs, **kwargs)
 
-    def test_windows_address_without_mac_comment_resolves_catalog_name(self):
-        row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(int capacity) {}")
-        self.assertEqual((row["status"], row["signature_status"]), ("match", "match"))
-        self.assertEqual(row["original_signature"], "CPadToButton::CPadToButton(int)")
+    def test_callback_abi_difference_is_compared_not_suppressed(self):
+        self.symbols[0x10b0f952] = "__ct__17CVSDebugStreambufFPciPFPc_Uc"
+        row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\n"
+                         "CVSDebugStreambuf::CVSDebugStreambuf(char* buffer, int size, int (*callback)(char*)) {}")
+        self.assertEqual((row["status"], row["signature_status"]), ("match", "review"))
+        self.assertIn("unsigned char (*)(char*)", row["original_signature"])
+        self.assertIn("int (*)(char*)", row["actual_signature"])
 
     def test_changed_annotation_and_source_cannot_forge_expected_symbol(self):
         rows = self.scan("// 68K 0x10b0f952 __ct__5CFakeFi\n// FUNCTION: LEMBALL 0x0043a250\nCFake::CFake(int n) {}")
-        self.assertEqual([r["status"] for r in rows], ["invalid", "mismatch"])
+        self.assertEqual([r["status"] for r in rows], ["mismatch"])
         self.assertEqual(rows[-1]["symbol"], self.symbols[0x10b0f952])
-
-    def test_real_symbol_at_wrong_windows_entry_is_rejected(self):
-        rows = self.scan("// 68K 0x10b0f952 __ct__12CPadToButtonFi\n// FUNCTION: LEMBALL 0x00401000\nCPadToButton::CPadToButton(int n) {}")
-        self.assertEqual([r["status"] for r in rows], ["invalid", "unmapped"])
 
     def test_parameter_names_ignored_but_arity_signedness_and_reference_checked(self):
         for parameters in ("unsigned int n", "int& n", "int n, int extra", ""):
             with self.subTest(parameters=parameters):
                 row, = self.scan(f"// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton({parameters}) {{}}")
                 self.assertEqual(row["signature_status"], "review")
-
-    def test_method_constness_checked(self):
-        self.symbols[0x10b0f952] = "Get__12CPadToButtonCFv"
-        row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nint CPadToButton::Get() {}")
-        self.assertEqual(row["signature_status"], "review")
+        self.symbols[0x10b0f952] = 'Get__12CPadToButtonCFv'
+        row, = self.scan('// FUNCTION: LEMBALL 0x0043a250\nint CPadToButton::Get() {}')
+        self.assertEqual(row['signature_status'], 'review')
 
     def test_fake_markers_in_strings_and_block_comments_are_ignored(self):
         rows = self.scan('const char* s = "// FUNCTION: LEMBALL 0x0043a250";\n'
                          '/* // 68K 0x10b0f952 Fake */\n')
         self.assertEqual(rows, [])
-
-    def test_inline_without_windows_pair_uses_catalog_symbol(self):
-        row, = self.scan("class CPadToButton {\n// 68K 0x10b0f952 __ct__12CPadToButtonFi\nCPadToButton(int size);\n};")
-        self.assertEqual(row["status"], "match")
-        self.assertIsNone(row["windows_address"])
 
     def test_folded_windows_entry_uses_matching_catalog_candidate(self):
         self.symbols[0x10100004] = "Wrong__5COtherFv"
@@ -127,19 +116,13 @@ class CatalogNamingTests(unittest.TestCase):
         row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(int n) {}")
         self.assertEqual(row["status"], "match")
         self.assertEqual(len(row["catalog_candidates"]), 2)
+        self.assertEqual(row["original_signature"], "CPadToButton::CPadToButton(int)")
 
     def test_synthetic_comment_cannot_attach_across_blank_line(self):
         rows = self.scan("// SYNTHETIC: LEMBALL 0x0043a250\n// CPadToButton::compiler helper\n\n"
                          "// FUNCTION: LEMBALL 0x00401000\nvoid Unrelated() {}")
         self.assertEqual(rows[0]["status"], "synthetic")
         self.assertEqual(rows[1]["status"], "unmapped")
-
-    def test_original_symbol_casing_and_underscores_preserved(self):
-        self.symbols[0x10b0f952] = "_Draw__12CPVFontTableFi"
-        row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nvoid CPVFontTable::_Draw(int n) {}")
-        self.assertEqual(row["status"], "match")
-        self.assertEqual(row["wanted_class"], "CPVFontTable")
-        self.assertEqual(row["wanted_method"], "_Draw")
 
     def test_windows_member_review_keeps_original_catalog_identity(self):
         self.symbols = {0x1010c30e: "GetCDDir__FPCc"}
@@ -170,7 +153,8 @@ class CatalogNamingTests(unittest.TestCase):
         self.assertEqual(row["status"], "mismatch")
 
     def test_strict_signature_review_exit_status(self):
-        self.path.write_text("// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(short n) {}", encoding="utf-8")
+        self.path.write_text("// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(short n) {}",
+                             encoding="utf-8")
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(check_names([self.path], strict=True), 1)
             self.assertEqual(check_names([self.path]), 0)

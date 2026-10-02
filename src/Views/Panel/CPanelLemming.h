@@ -7,12 +7,12 @@ class CPanel;
 class CPanelButton;
 class CPlayerLemming;
 class CPVGWnd;
-struct CVsPoint;
+struct CVSPoint;
 // SIZE 0x2c
 class CPanelLemming {
 public:
-	CPanelLemming(CPlayerLemming* p_lemming, const CVsPoint& p_position, CPanel* p_panel);
-	void Move(const CVsPoint& p_position);
+	CPanelLemming(CPlayerLemming* p_lemming, const CVSPoint& p_position, CPanel* p_panel);
+	void Move(const CVSPoint& p_position);
 	void UpdateStatus();
 	~CPanelLemming();
 

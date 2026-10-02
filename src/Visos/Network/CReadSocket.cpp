@@ -138,7 +138,7 @@ bool CReadSocket::ProcessPacket()
 	m_packetHeader = g_pNetworkPacketScratch;
 	Set((unsigned char*) g_pNetworkPacketScratch);
 	packetHeader = m_packetHeader;
-	if (packetHeader->m_magic != 0x56533039) {
+	if (packetHeader->m_magic != BASE_PACKET_MAGIC) {
 		return false;
 	}
 
@@ -152,7 +152,7 @@ bool CReadSocket::ProcessPacket()
 	}
 
 	subpacketSequence = packetHeader->m_subpacketSequence;
-	if (subpacketSequence != 0x100) {
+	if (subpacketSequence != BASE_PACKET_UNSEGMENTED) {
 		if (packetHeader->m_critical == 0) {
 			message = m_nonCriticalMultiBuffer->UpdateSubPacket();
 			if (message != 0) {
@@ -236,22 +236,14 @@ bool CReadSocket::IsChanged(CNetworkMessage& p_message)
 	return m_nonCriticalBuffer->GetPacket(p_message.m_messageId)->m_used;
 }
 
-inline static void SetLatestPacket(CReadPacket* p_packet,
-								   CNetworkMessage& p_message,
-								   unsigned char* CReadPacket::* p_data,
-								   unsigned int CReadPacket::* p_used)
-{
-	p_packet->EnterCritical();
-	p_message.Set((p_packet->*p_data) + sizeof(BasePacketHeader));
-	p_packet->LeaveCritical();
-	p_packet->*p_used = 0;
-}
-
 // FUNCTION: LEMBALL 0x0045fc50
 void CReadSocket::GetLatest(CNetworkMessage& p_message)
 {
 	CReadPacket* packet = m_nonCriticalBuffer->GetPacket(p_message.m_messageId);
-	SetLatestPacket(packet, p_message, &CReadPacket::m_data, &CReadPacket::m_used);
+	packet->EnterCritical();
+	p_message.Set(packet->m_data + sizeof(BasePacketHeader));
+	packet->LeaveCritical();
+	packet->m_used = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045fcc0

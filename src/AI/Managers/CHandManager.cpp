@@ -2,7 +2,7 @@
 
 #include "../Navigation/CAI.h"
 #include "../Objects/CHand.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
@@ -55,7 +55,7 @@ void CHandManager::ResetCount()
 }
 
 // FUNCTION: LEMBALL 0x00428360
-bool CHandManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
+bool CHandManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	int i = 0;
 	for (;;) {
@@ -98,7 +98,7 @@ int CHandManager::GetViewData(CViewData* p_viewData)
 void CHandManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
-		AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+		AICOORD position(p_x << 12, p_y << 12, p_z << 12);
 		m_hands[m_count].Set(p_id, position);
 		m_count++;
 	}

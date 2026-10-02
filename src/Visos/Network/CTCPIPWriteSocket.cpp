@@ -2,31 +2,23 @@
 
 #include "CTCPIPNetwork.h"
 #include "CTCPIPNetworkAddress.h"
+#include "Platform/WinSock/WinSock.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 #include "Visos/Network/CWriteSocket.h"
-
-struct TcpIpDestinationAddress {
-	unsigned short m_family;
-	unsigned short m_port;
-	unsigned int m_address;
-	unsigned char m_padding[8];
-};
-
-#include "Platform/WinSock/WinSock.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00470030
 CTCPIPWriteSocket::CTCPIPWriteSocket()
 {
-	m_addressFamily = 2;
+	m_destination.m_family = AF_INET;
 }
 
 // FUNCTION: LEMBALL 0x004700f0
 void CTCPIPWriteSocket::SetDestAddr(CNetworkAddress* p_address)
 {
 	_SetDestAddr(p_address);
-	m_destinationIPv4 = ((CTCPIPNetworkAddress*) p_address)->m_ipv4Address;
+	m_destination.m_address.s_addr = ((CTCPIPNetworkAddress*) p_address)->m_ipv4Address;
 }
 
 // FUNCTION: LEMBALL 0x00470120
@@ -37,15 +29,10 @@ bool CTCPIPWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 	if (m_socketFlags == 0) {
 		return false;
 	}
-	sent = sendto(m_socketHandle,
-				  (const char*) p_data,
-				  p_size,
-				  0,
-				  (TcpIpDestinationAddress*) &m_addressFamily,
-				  sizeof(TcpIpDestinationAddress));
+	sent = sendto(m_socketHandle, (const char*) p_data, p_size, 0, &m_destination, sizeof(m_destination));
 	m_lastSendTime = timeGetTime();
 	if (sent == -1) {
-		if (WSAGetLastError() == 0x2733) {
+		if (WSAGetLastError() == WSAEWOULDBLOCK) {
 			return false;
 		}
 		SocketError();
@@ -61,7 +48,7 @@ int CTCPIPWriteSocket::Process(unsigned int p_message, unsigned int p_wParam, lo
 	unsigned int error;
 
 	(void) p_wParam;
-	if (p_message == 0x443) {
+	if (p_message == TCPIP_MESSAGE_SOCKET_EVENT) {
 		if (m_socketHandle == -1) {
 			return -1;
 		}
@@ -69,7 +56,7 @@ int CTCPIPWriteSocket::Process(unsigned int p_message, unsigned int p_wParam, lo
 		error = (unsigned short) ((unsigned long) p_lParam >> 16);
 		CBaseCommonSocket::SocketError((NetworkErrors) error);
 		switch (event) {
-		case 2:
+		case FD_WRITE:
 			if (error == 0) {
 				m_socketFlags = 1;
 			}
@@ -83,7 +70,7 @@ int CTCPIPWriteSocket::Process(unsigned int p_message, unsigned int p_wParam, lo
 void CTCPIPWriteSocket::SetPort(short p_port)
 {
 	CWriteSocket::SetPort(p_port);
-	m_networkPort = htons((unsigned short) (m_port + g_broadcastPort));
+	m_destination.m_port = htons((unsigned short) (m_port + g_broadcastPort));
 }
 
 // FUNCTION: LEMBALL 0x00471ee0

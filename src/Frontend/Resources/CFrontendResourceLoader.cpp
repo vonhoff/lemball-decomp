@@ -50,12 +50,12 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	m_totalResources += 3;
 	m_totalResources += 3;
 	m_totalResources += 3;
-	m_anims = (CResANIM**) operator new(m_animCapacity << 2);
-	m_fonts = (CResFONT**) operator new(m_fontCapacity << 2);
-	m_bitmaps = (CResBITMAP**) operator new(m_bitmapCapacity << 2);
-	m_palettes = (CResPALETTE**) operator new(8);
-	m_strings = (CResSTRING**) operator new(4);
-	m_movies = (CResMOVIE**) operator new(0x18);
+	m_anims = (CResANIM**) operator new(m_animCapacity * sizeof(*m_anims));
+	m_fonts = (CResFONT**) operator new(m_fontCapacity * sizeof(*m_fonts));
+	m_bitmaps = (CResBITMAP**) operator new(m_bitmapCapacity * sizeof(*m_bitmaps));
+	m_palettes = (CResPALETTE**) operator new(2 * sizeof(*m_palettes));
+	m_strings = (CResSTRING**) operator new(sizeof(*m_strings));
+	m_movies = (CResMOVIE**) operator new(6 * sizeof(*m_movies));
 	CCDLoadAnim* loadAnim = (CCDLoadAnim*) operator new(sizeof(CCDLoadAnim));
 	if (loadAnim == 0) {
 		m_loadAnim = 0;
@@ -72,10 +72,8 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
 		LoadANIM(m_animResourceIds[i]);
 	}
-	unsigned int fontOffset = 0;
 	for (unsigned int fontIndex = 0; fontIndex < (unsigned int) m_fontCapacity; fontIndex++) {
-		fontOffset += 4;
-		LoadFONT(*(unsigned int*) ((char*) m_fontResourceIds + fontOffset - 4));
+		LoadFONT(m_fontResourceIds[fontIndex]);
 	}
 	for (unsigned int bitmapIndex = 0; bitmapIndex < (unsigned int) m_bitmapCapacity; bitmapIndex++) {
 		LoadBITMAP(m_bitmapResourceIds[bitmapIndex]);

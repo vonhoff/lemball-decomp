@@ -5,24 +5,24 @@
 #include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CHotAreaList.h"
 #include "../../Visos/Graphics/CSurface.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Graphics/CClipRect.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
 #include "Visos/Graphics/CLine.h"
 #include "Visos/Graphics/CPVGWnd.h"
+#include "Visos/Graphics/CSolidRect.h"
 
 // FUNCTION: LEMBALL 0x0044e790
-CTrackWindow::CTrackWindow(const CVsRect& p_rect, int p_value, CPVGWnd* p_parent) : CHotAreaHandler(p_rect)
+CTrackWindow::CTrackWindow(const CVSRect& p_rect, int p_value, CPVGWnd* p_parent) : CHotAreaHandler(p_rect)
 {
 	m_reserved128 = 0;
 	m_trackWidth = p_rect.m_width;
 	m_value = p_value;
 	m_trackRect.m_width = p_rect.m_width;
 	m_trackRect.m_height = p_rect.m_height;
-	const CVsPoint* position = &p_rect;
+	const CVSPoint* position = &p_rect;
 	m_trackRect.m_x = position->m_x;
 	short y = position->m_y;
 	m_gdiFlags = m_gdiFlags + 6;
@@ -41,10 +41,10 @@ void CTrackWindow::OnCreate()
 }
 
 // FUNCTION: LEMBALL 0x0044e960
-void CTrackWindow::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_name)
+void CTrackWindow::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_name)
 {
 	CHotAreaHandler* handler;
-	const CVsPoint* position;
+	const CVSPoint* position;
 
 	CGWnd::Create(p_rect, p_parent, p_name);
 	CHotAreaHandler::m_bounds.m_width = p_rect.m_width;
@@ -57,7 +57,7 @@ void CTrackWindow::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_name)
 }
 
 // FUNCTION: LEMBALL 0x0044e9d0
-void CTrackWindow::Move(const CVsPoint& p_position)
+void CTrackWindow::Move(const CVSPoint& p_position)
 {
 	CGWnd::Move(p_position);
 	m_trackRect.m_x = p_position.m_x;
@@ -65,7 +65,7 @@ void CTrackWindow::Move(const CVsPoint& p_position)
 }
 
 // FUNCTION: LEMBALL 0x0044ea00
-void CTrackWindow::OnPaint(const CVsRect& p_rect)
+void CTrackWindow::OnPaint(const CVSRect& p_rect)
 {
 	int height = m_trackRect.m_height;
 	int width = (int) m_trackRect.m_width * m_value / 100;
@@ -76,30 +76,30 @@ void CTrackWindow::OnPaint(const CVsRect& p_rect)
 		m_line.m_bounds.m_x = 0;
 		m_line.m_bounds.m_y = 0;
 		m_line.Draw(m_gdi);
-		m_clipRects[0].m_bounds.m_width = 0;
-		m_clipRects[0].m_bounds.m_height = 0;
-		m_clipRects[0].m_bounds.m_x = width;
-		m_clipRects[0].m_bounds.m_y = 0;
-		m_clipRects[0].m_reserved0c = 0xab;
-		m_clipRects[0].Draw(m_gdi);
-		m_clipRects[1].m_bounds.m_width = 0;
-		m_clipRects[1].m_bounds.m_height = 0;
-		m_clipRects[1].m_bounds.m_x = 0;
-		m_clipRects[1].m_bounds.m_y = height;
-		m_clipRects[1].m_reserved0c = 0xab;
-		m_clipRects[1].Draw(m_gdi);
-		m_clipRects[2].m_bounds.m_width = (short) m_value;
-		m_clipRects[2].m_bounds.m_height = height;
-		m_clipRects[2].m_bounds.m_x = 0;
-		m_clipRects[2].m_bounds.m_y = height;
-		m_clipRects[2].m_reserved0c = 0xbc;
-		m_clipRects[2].Draw(m_gdi);
-		m_clipRects[3].m_bounds.m_width = (short) m_value;
-		m_clipRects[3].m_bounds.m_height = height;
-		m_clipRects[3].m_bounds.m_x = width;
-		m_clipRects[3].m_bounds.m_y = 0;
-		m_clipRects[3].m_reserved0c = 0xbc;
-		m_clipRects[3].Draw(m_gdi);
+		m_edges[0].m_start.m_x = 0;
+		m_edges[0].m_start.m_y = 0;
+		m_edges[0].m_end.m_x = width;
+		m_edges[0].m_end.m_y = 0;
+		m_edges[0].m_colour = 0xab;
+		m_edges[0].Draw(m_gdi);
+		m_edges[1].m_start.m_x = 0;
+		m_edges[1].m_start.m_y = 0;
+		m_edges[1].m_end.m_x = 0;
+		m_edges[1].m_end.m_y = height;
+		m_edges[1].m_colour = 0xab;
+		m_edges[1].Draw(m_gdi);
+		m_edges[2].m_start.m_x = (short) m_value;
+		m_edges[2].m_start.m_y = height;
+		m_edges[2].m_end.m_x = 0;
+		m_edges[2].m_end.m_y = height;
+		m_edges[2].m_colour = 0xbc;
+		m_edges[2].Draw(m_gdi);
+		m_edges[3].m_start.m_x = (short) m_value;
+		m_edges[3].m_start.m_y = height;
+		m_edges[3].m_end.m_x = width;
+		m_edges[3].m_end.m_y = 0;
+		m_edges[3].m_colour = 0xbc;
+		m_edges[3].Draw(m_gdi);
 	}
 }
 
@@ -119,7 +119,7 @@ void CTrackWindow::SetButtonValue(int p_value)
 }
 
 // FUNCTION: LEMBALL 0x0044ebc0
-void CTrackWindow::OnInside(const CVsPoint& p_point)
+void CTrackWindow::OnInside(const CVSPoint& p_point)
 {
 	if (m_buttonState[0] != 0) {
 		int distance = (int) p_point.m_x - (int) CHotAreaHandler::m_bounds.m_x;
@@ -134,7 +134,7 @@ void CTrackWindow::OnInside(const CVsPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x0044ec10
-void CTrackWindow::OnButtonDown(const CVsPoint& p_point, int p_flags)
+void CTrackWindow::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
 	OnInside(p_point);
 }

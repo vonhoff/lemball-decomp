@@ -1,8 +1,8 @@
 #include "CAnimsManager.h"
 
-#include "../Foundation/CVsPoint.h"
+#include "../Foundation/CVSPoint.h"
 #include "../Graphics/CGDI.h"
-#include "../Graphics/CLine.h"
+#include "../Graphics/CSolidRect.h"
 #include "../Graphics/CSurface.h"
 #include "../Graphics/CZRLE.h"
 #include "../Resources/CResANIM.h"
@@ -11,8 +11,8 @@
 #include "../Resources/CResZRLE.h"
 #include "CAnim.h"
 #include "CFrames.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 
 #include <string.h>
 
@@ -22,9 +22,9 @@ void CAnimsManager::FreeVram()
 }
 
 // FUNCTION: LEMBALL 0x0044e700
-CVsRect* CAnimsManager::DrawAnimOnGdi(CVsRect* p_bounds,
+CVSRect* CAnimsManager::DrawAnimOnGdi(CVSRect* p_bounds,
 									  CGDI* p_gdi,
-									  const CVsPoint& p_position,
+									  const CVSPoint& p_position,
 									  unsigned long p_resourceId,
 									  unsigned long p_drawFlags,
 									  CAnimFrameBASE* p_frame,
@@ -32,7 +32,7 @@ CVsRect* CAnimsManager::DrawAnimOnGdi(CVsRect* p_bounds,
 {
 	CGDI* previous = m_gdi;
 	m_gdi = p_gdi;
-	CVsRect bounds = DrawAnim(p_position, p_resourceId, p_drawFlags, p_frame, p_remap);
+	CVSRect bounds = DrawAnim(p_position, p_resourceId, p_drawFlags, p_frame, p_remap);
 	m_gdi = previous;
 	p_bounds->m_width = bounds.m_width;
 	p_bounds->m_height = bounds.m_height;
@@ -62,8 +62,8 @@ CAnimsManager::CAnimsManager(CGDI* p_gdi,
 	m_doubleBuffered = p_doubleBuffered;
 	m_loadedResourceCount = 0;
 	m_reserved6c = 0xffffffff;
-	m_resources = (CResBase**) operator new(m_resourceCapacity * 4);
-	m_resourceSlots = (short*) operator new(m_resourceIdCount * 2);
+	m_resources = (CResBase**) operator new(m_resourceCapacity * sizeof(*m_resources));
+	m_resourceSlots = (short*) operator new(m_resourceIdCount * sizeof(*m_resourceSlots));
 	for (i = 0; i < m_resourceCapacity; i++) {
 		m_resources[i] = 0;
 	}
@@ -180,9 +180,9 @@ unsigned long CAnimsManager::GetnAnims(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x00467570
-CVsSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex)
+CVSSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex)
 {
-	CVsSize size;
+	CVSSize size;
 	CResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
 	if (resource->m_chunkType != 0x5a524c45) {
 		CResZRLE* entry = ((CResANIM*) resource)->m_animationEntries + p_animIndex;

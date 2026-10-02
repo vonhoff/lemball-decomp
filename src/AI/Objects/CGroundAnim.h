@@ -3,20 +3,20 @@
 
 #include "GroundAnimEntry.h"
 
-struct Coord3d;
+struct tCoord3d;
 // SIZE 0x12cc
 class CGroundAnim {
 public:
 	CGroundAnim();
-	bool Check(const Coord3d& p_coordinate);
+	bool Check(const tCoord3d& p_coordinate);
 	bool CheckAllAnims();
-	int ExportCoordinates(Coord3d* p_records);
-	void Add(const Coord3d& p_coordinate, unsigned short p_startFrame, unsigned short p_endFrame);
+	int ExportCoordinates(tCoord3d* p_records);
+	void Add(const tCoord3d& p_coordinate, unsigned short p_startFrame, unsigned short p_endFrame);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
 	~CGroundAnim();
-	void RemoveAtCoordinate(const Coord3d& p_coordinate);
+	void RemoveAtCoordinate(const tCoord3d& p_coordinate);
 
 private:
 	unsigned int m_nextProcessTick; // 0x0000

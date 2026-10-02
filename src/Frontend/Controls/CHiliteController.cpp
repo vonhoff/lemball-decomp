@@ -2,8 +2,8 @@
 
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Foundation/CVsPoint.h"
-#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Foundation/CVSPoint.h"
+#include "../../Visos/Foundation/CVSRect.h"
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CGraphicButton.h"
@@ -16,9 +16,10 @@
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CStaticAnim.h"
 #include "Visos/Foundation/Message.h"
+#include "Visos/Graphics/CClipRect.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CPVGWnd.h"
-#include "Visos/Graphics/CSolidRect.h"
+#include "Visos/Resources/ResourceLimits.h"
 
 #include <new.h>
 
@@ -30,7 +31,7 @@ CHiliteController::CHiliteController(CGWnd* p_window,
 									 int p_arg2,
 									 unsigned int p_layoutMode,
 									 unsigned int p_horizontalMode)
-	: CAnimsManager(p_gdi, 0x2b6, 1, 1, 0, 0)
+	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, 1, 1, 0, 0)
 {
 	int index;
 
@@ -70,7 +71,7 @@ void CHiliteController::SetHiliteWindow()
 	else {
 		m_hiliteWindow = new (storage) CHiliteWindow();
 	}
-	CVsRect rect(m_window->m_rect);
+	CVSRect rect(m_window->m_rect);
 	rect.m_x = 0;
 	rect.m_y = 0;
 	m_hiliteWindow->Create(rect, (CPVGWnd*) m_window, 0);
@@ -108,7 +109,7 @@ int CHiliteController::ProcessMsg(Message* p_message)
 	case 3:
 		if (p_message->m_code == 0x1f || p_message->m_code == 0x22 || p_message->m_code == 0x4c) {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
-			button->OnButtonUp(CVsPoint(0, 0), 0);
+			button->OnButtonUp(CVSPoint(0, 0), 0);
 			return 0;
 		}
 		break;
@@ -146,7 +147,7 @@ int CHiliteController::ProcessMsg(Message* p_message)
 		case 0x22:
 		case 0x4c: {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
-			button->OnButtonDown(CVsPoint(0, 0), 0);
+			button->OnButtonDown(CVSPoint(0, 0), 0);
 			break;
 		}
 		}
@@ -218,15 +219,15 @@ void CHiliteController::DrawHiliteWindow()
 		int offset = m_layoutMode == 1 ? -1 : -2;
 		CGDI* hiliteGdi = (CGDI*) m_hiliteSurface;
 		CSurface* surface = hiliteGdi->m_renderTarget;
-		CVsSize dimensions(surface->m_windowRect);
-		m_hiliteRect.m_colour = 0x10000;
+		CVSSize dimensions(surface->m_windowRect);
+		m_hiliteRect.m_flags = CClipRect::CLIP_IGNORE_PARENT;
 		m_hiliteRect.m_bounds.m_width = dimensions.m_width;
 		m_hiliteRect.m_bounds.m_height = dimensions.m_height;
 		m_hiliteRect.m_bounds.m_x = 0;
 		m_hiliteRect.m_bounds.m_y = 0;
 		m_hiliteRect.Draw(hiliteGdi);
 		m_hiliteAnim.m_frameState = 0;
-		CVsPoint position;
+		CVSPoint position;
 		position.m_x = (short) m_currentX + (short) offset;
 		position.m_y = (short) m_currentY + (short) offset;
 		unsigned long animationId = g_dwHiliteAnimationId;

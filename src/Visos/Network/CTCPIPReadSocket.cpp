@@ -11,15 +11,8 @@
 #pragma intrinsic(strcpy)
 
 #include "Platform/WinSock/TcpIpSocketAddress.h"
-#include "Platform/WinSock/in_addr.h"
-
-struct TcpIpReceiveFromData {
-	unsigned int m_reserved;
-	int m_addressLength;
-	TcpIpSocketAddress m_address;
-};
-
 #include "Platform/WinSock/WinSock.h"
+#include "Platform/WinSock/in_addr.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -28,15 +21,15 @@ extern unsigned int g_tcpIpBytesReceived;
 // FUNCTION: LEMBALL 0x0046fe10
 bool CTCPIPReadSocket::ReadBuffFrom()
 {
-	TcpIpReceiveFromData receiveData;
-	receiveData.m_addressLength = sizeof(TcpIpSocketAddress);
+	int addressLength = sizeof(TcpIpSocketAddress);
+	TcpIpSocketAddress sourceAddress;
 
 	g_receivedPacketSize = recvfrom(m_socketHandle,
 									(char*) g_pNetworkPacketScratch,
 									g_networkPacketSize,
 									0,
-									&receiveData.m_address,
-									&receiveData.m_addressLength);
+									&sourceAddress,
+									&addressLength);
 	if (g_receivedPacketSize == (unsigned int) -1) {
 		*g_pErrorOutput << "Receive error (after receive from):" << WSAGetLastError() << "\n";
 		SocketError();
@@ -45,9 +38,10 @@ bool CTCPIPReadSocket::ReadBuffFrom()
 
 	{
 		CTCPIPNetworkAddress* address = (CTCPIPNetworkAddress*) g_pBroadcastReceiveAddress;
+		in_addr senderAddress = sourceAddress.m_address;
 
-		strcpy(address->m_text,
-			   inet_ntoa(*(in_addr*) &(address->m_ipv4Address = receiveData.m_address.m_address.s_addr)));
+		address->m_ipv4Address = senderAddress.s_addr;
+		strcpy(address->m_text, inet_ntoa(senderAddress));
 	}
 	return ProcessPacket();
 }
@@ -76,14 +70,14 @@ int CTCPIPReadSocket::Process(unsigned int p_message, unsigned int p_wParam, lon
 	unsigned int error;
 
 	(void) p_wParam;
-	if (p_message == 0x443) {
+	if (p_message == TCPIP_MESSAGE_SOCKET_EVENT) {
 		event = (unsigned short) p_lParam;
 		if (m_socketHandle == -1) {
 			return 0;
 		}
 		error = (unsigned short) ((unsigned long) p_lParam >> 16);
 		CBaseCommonSocket::SocketError((NetworkErrors) error);
-		if (event == 1) {
+		if (event == FD_READ) {
 			if (error == 0) {
 				ReadBuff();
 				return 0;

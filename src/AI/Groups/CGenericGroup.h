@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_GROUPS_CGENERICGROUP_H
 #define LEMBALL_AI_GROUPS_CGENERICGROUP_H
 
-#include "../../Visos/Foundation/CVsRect.h"
-#include "../Base/AiCoord.h"
+#include "../../Visos/Foundation/CVSRect.h"
+#include "../Base/AICOORD.h"
 #include "../Base/CGameObject.h"
 
 class CAI;
@@ -35,18 +35,18 @@ public:
 	virtual void RemoveElementFromGroup(CGameObject* p_object);                               // vtable+0x128
 	virtual bool ConfirmElementIsInGroup(CGameObject* p_object);                              // vtable+0x130
 	virtual bool ConfirmElementIsInGroup(unsigned short p_objectId);                          // vtable+0x12c
-	virtual CVsRect GetBoundingBox();                                                         // vtable+0x134
+	virtual CVSRect GetBoundingBox();                                                         // vtable+0x134
 	virtual void CalculateBoundingBox(int p_radius);                                          // vtable+0x138
 	virtual eGroupState GetGroupState();                                                      // vtable+0x13c
 	virtual void SetGroupState(eGroupState p_state);                                          // vtable+0x140
-	virtual void AddNewWaypoint(AiCoord p_coordinate, CFormationManager* p_formationManager); // vtable+0x144
-	virtual void SendNewWaypoint(AiCoord p_coordinate);                                       // vtable+0x148
-	virtual void OverideExistingWaypoints(AiCoord p_coordinate);                              // vtable+0x14c
+	virtual void AddNewWaypoint(AICOORD p_coordinate, CFormationManager* p_formationManager); // vtable+0x144
+	virtual void SendNewWaypoint(AICOORD p_coordinate);                                       // vtable+0x148
+	virtual void OverideExistingWaypoints(AICOORD p_coordinate);                              // vtable+0x14c
 	virtual void ClearExistingWaypoints();                                                    // vtable+0x150
 	virtual void ReformAlteredGroup(CFormationManager* p_formationManager);                   // vtable+0x154
 	virtual int GetViewData(CViewData* p_viewData);                                           // vtable+0x158
-	virtual bool CheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);              // vtable+0x15c
-	virtual void GetBoundingBox(CVsRect& p_rect);                                             // vtable+0x48
+	virtual bool CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);              // vtable+0x15c
+	virtual void GetBoundingBox(CVSRect& p_rect);                                             // vtable+0x48
 	void SwapElements(CGameObject* p_first, CGameObject* p_second);
 	CGenericGroup();
 
@@ -55,7 +55,7 @@ protected:
 	CGameObject* m_elements[10]; // 0x128
 	int m_currentElement;        // 0x150
 	eGroupState m_groupState;    // 0x154
-	CVsRect m_bounds;            // 0x158
+	CVSRect m_bounds;            // 0x158
 	int m_formationIndex;        // 0x160
 	int m_altered;               // 0x164
 };

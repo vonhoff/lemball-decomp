@@ -4,7 +4,7 @@
 #include "CBaseObjectManager.h"
 
 class CAI;
-class AiCoord;
+class AICOORD;
 class CGameObject;
 class CHand;
 // SIZE 0x40
@@ -12,7 +12,7 @@ class CHand;
 class CHandManager : public CBaseObjectManager {
 public:
 	CHandManager(CAI* p_ai, int p_capacity);
-	bool StepOn(const AiCoord& p_position, CGameObject* p_object);
+	bool StepOn(const AICOORD& p_position, CGameObject* p_object);
 	virtual int GetViewData(CViewData* p_viewData); // vtable+0x24
 	virtual void Process();                         // vtable+0x1c
 	virtual ~CHandManager();                        // vtable+0x14

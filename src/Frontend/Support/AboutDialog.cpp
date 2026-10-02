@@ -3,6 +3,15 @@
 #include "../../Platform/Windows/Entry.h"
 #include "../../Visos/Sound/CSoundManager.h"
 
+enum {
+	ABOUT_SYSTEM_INFO_BUFFER_SIZE = 1024,
+	ABOUT_MODULE_PATH_BUFFER_SIZE = 256,
+	ABOUT_VERSION_VALUE_BUFFER_SIZE = 256,
+	ABOUT_VERSION_QUERY_BUFFER_SIZE = 1024,
+	ABOUT_DEFAULT_PHYSICAL_MEMORY_BYTES = 1024,
+	ABOUT_FONT_HEIGHT = 14
+};
+
 // GLOBAL: LEMBALL 0x004a05ec
 int g_nVisosBuildNumber = 201;
 
@@ -36,7 +45,7 @@ MEMORYSTATUS g_memoryStatus;
 HFONT g_hAboutFont = 0;
 
 // GLOBAL: LEMBALL 0x004a7bb0
-char g_szAboutSystemInfo[0x400];
+char g_szAboutSystemInfo[ABOUT_SYSTEM_INFO_BUFFER_SIZE];
 
 // GLOBAL: LEMBALL 0x0049e798
 char g_szAboutBox[12] = "AboutBox";
@@ -142,9 +151,9 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 	unsigned long handle;
 	unsigned int versionSize;
 	void* versionData;
-	char modulePath[256];
-	char itemText[256];
-	char queryPath[1024];
+	char modulePath[ABOUT_MODULE_PATH_BUFFER_SIZE];
+	char itemText[ABOUT_VERSION_VALUE_BUFFER_SIZE];
+	char queryPath[ABOUT_VERSION_QUERY_BUFFER_SIZE];
 	unsigned int queryLen;
 	char* queryValue;
 	int queryOk;
@@ -153,16 +162,29 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 	(void) p_lParam;
 	switch (p_msg) {
 	case WM_INITDIALOG:
-		controlId = 0x400;
-		g_memoryStatus.dwLength = 0x20;
-		g_memoryStatus.dwTotalPhys = 0x400;
+		controlId = IDC_ABOUT_COMPANY_NAME;
+		g_memoryStatus.dwLength = sizeof(g_memoryStatus);
+		g_memoryStatus.dwTotalPhys = ABOUT_DEFAULT_PHYSICAL_MEMORY_BYTES;
 		GlobalMemoryStatus(&g_memoryStatus);
-		g_hAboutFont = CreateFontA(0xe, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x22, g_szAboutFontFace);
-		CenterWindowOnParent(p_dlg, GetWindow((HWND) p_dlg, 4));
+		g_hAboutFont = CreateFontA(ABOUT_FONT_HEIGHT,
+								   0,
+								   0,
+								   0,
+								   0,
+								   0,
+								   0,
+								   0,
+								   0,
+								   0,
+								   0,
+								   0,
+								   VARIABLE_PITCH | FF_SWISS,
+								   g_szAboutFontFace);
+		CenterWindowOnParent(p_dlg, GetWindow((HWND) p_dlg, GW_OWNER));
 		systemInfo = BuildAboutSystemInfo();
-		SetDlgItemTextA((HWND) p_dlg, 0x11b, systemInfo);
-		SendMessageA(GetDlgItem((HWND) p_dlg, 0x11b), 0x30, (unsigned int) g_hAboutFont, 1);
-		GetModuleFileNameA((HINSTANCE) g_pApplicationInstance, modulePath, 0x100);
+		SetDlgItemTextA((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO, systemInfo);
+		SendMessageA(GetDlgItem((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO), WM_SETFONT, (unsigned int) g_hAboutFont, 1);
+		GetModuleFileNameA((HINSTANCE) g_pApplicationInstance, modulePath, sizeof(modulePath));
 		versionSize = GetFileVersionInfoSizeA(modulePath, &handle);
 		if (versionSize != 0) {
 			versionData = operator new(versionSize);
@@ -170,7 +192,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 			lstrcpyA(queryPath, g_szStringFileInfoPrefix);
 			queryEnd = queryPath + (unsigned short) lstrlenA(queryPath);
 			do {
-				GetDlgItemTextA((HWND) p_dlg, controlId, itemText, 0x100);
+				GetDlgItemTextA((HWND) p_dlg, controlId, itemText, sizeof(itemText));
 				*queryEnd = 0;
 				lstrcatA(queryPath, itemText);
 				queryLen = 0;
@@ -179,15 +201,15 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 				if (queryOk != 0 && queryLen != 0 && queryValue != 0) {
 					lstrcpyA(itemText, queryValue);
 					SetDlgItemTextA((HWND) p_dlg, controlId, itemText);
-					SendMessageA(GetDlgItem((HWND) p_dlg, controlId), 0x30, (unsigned int) g_hAboutFont, 1);
+					SendMessageA(GetDlgItem((HWND) p_dlg, controlId), WM_SETFONT, (unsigned int) g_hAboutFont, 1);
 				}
 				controlId = controlId + 1;
-			} while (controlId <= 0x404);
+			} while (controlId <= IDC_ABOUT_LEGAL_TRADEMARKS);
 			operator delete(versionData);
 		}
 		return 1;
 	case WM_COMMAND:
-		if ((short) p_wParam == 1 || (short) p_wParam == 2) {
+		if ((short) p_wParam == IDOK || (short) p_wParam == IDCANCEL) {
 			EndDialog((HWND) p_dlg, 1);
 			DeleteObject(g_hAboutFont);
 			return 1;

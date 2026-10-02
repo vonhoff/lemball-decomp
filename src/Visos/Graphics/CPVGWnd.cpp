@@ -15,7 +15,7 @@ void CPVGWnd::OnVisibilityChange()
 }
 
 // FUNCTION: LEMBALL 0x00432560
-void CPVGWnd::SetDontUpdateRect(const CVsRect& p_rect)
+void CPVGWnd::SetDontUpdateRect(const CVSRect& p_rect)
 {
 	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
 		CPVSurface& target = *m_gdi->m_renderTarget;
@@ -46,7 +46,7 @@ void CPVGWnd::Clear(int p_colour)
 	}
 
 	m_gdi->m_renderTarget->GetCurrDB();
-	CVsRect clearRect(m_gdi->m_renderTarget->CPVSurface::m_windowRect);
+	CVSRect clearRect(m_gdi->m_renderTarget->CPVSurface::m_windowRect);
 	clearRect.m_x = clearRect.m_y = 0;
 	CDrawingMark* drawingMark = new CDrawingMark;
 
@@ -63,21 +63,19 @@ void CPVGWnd::Clear(int p_colour)
 	if (m_gdi->m_renderTarget->HasBackBuff()) {
 		m_backBufferCopy[0].m_x = 0;
 		m_backBufferCopy[0].m_y = 0;
-		memcpy(&m_backBufferCopy[0].m_sourceRect.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
-		memcpy(&m_backBufferCopy[0].m_sourceRect.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
-		memcpy(&m_backBufferCopy[0].m_sourceRect.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
-		memcpy(&m_backBufferCopy[0].m_sourceRect.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
+		memcpy(&m_backBufferCopy[0].m_destination.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
+		memcpy(&m_backBufferCopy[0].m_destination.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
+		memcpy(&m_backBufferCopy[0].m_destination.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
+		memcpy(&m_backBufferCopy[0].m_destination.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
 		m_backBufferCopy[0].Draw(m_gdi);
 	}
 
 	if (m_gdi->m_renderTarget->HasZBuff()) {
-		memcpy(&m_zBufferClear[0].m_destination.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
-		memcpy(&m_zBufferClear[0].m_destination.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
-		memcpy(&m_zBufferClear[0].m_destination.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
-		memcpy(&m_zBufferClear[0].m_destination.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
-		memset(&m_zBufferClear[0].m_sourceX,
-			   0,
-			   sizeof(m_zBufferClear[0].m_sourceX) + sizeof(m_zBufferClear[0].m_sourceY));
+		memcpy(&m_zBufferClear[0].m_bounds.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
+		memcpy(&m_zBufferClear[0].m_bounds.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
+		memcpy(&m_zBufferClear[0].m_bounds.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
+		memcpy(&m_zBufferClear[0].m_bounds.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
+		m_zBufferClear[0].m_depth = 0;
 		m_zBufferClear[0].Draw(m_gdi);
 	}
 
@@ -88,7 +86,7 @@ void CPVGWnd::Clear(int p_colour)
 }
 
 // FUNCTION: LEMBALL 0x00465c70
-void CPVGWnd::SetInnerWindow(const CVsRect& p_rect)
+void CPVGWnd::SetInnerWindow(const CVSRect& p_rect)
 {
 	CPVWnd::SetInnerWindow(p_rect);
 }

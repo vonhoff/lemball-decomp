@@ -1,6 +1,6 @@
 #include "../CObjectManager.h"
 
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Navigation/CAI.h"
 #include "AI/Objects/CAmmo.h"
@@ -34,7 +34,7 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 			p_data += 2;
 			eObjectType objectType = (eObjectType) * (unsigned short*) p_data;
 			p_data += 4;
-			AiCoord position(x << 0xc, y << 0xc, z << 0xc);
+			AICOORD position(x << 0xc, y << 0xc, z << 0xc);
 			switch (objectType) {
 			case OBJECT_CATAPULT:
 			case OBJECT_TOWER:

@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
-"""Build wrapper for LEMBALL MSVC 4.00 recompilation.
-
-CL uses /WX (see cmake/msvc400-toolchain.cmake); LINK warnings are detected here.
-Warnings from either tool fail the build.
-Stdout is filtered; full log is written to build-msvc400/last_build.log.
-"""
-
-from __future__ import annotations
+"""Build LEMBALL with MSVC 4.00; save the full log to last_build.log."""
 
 import argparse
 import ctypes
@@ -15,10 +8,9 @@ import re
 import shutil
 import subprocess
 import sys
-import time
 from pathlib import Path
 
-from lib.paths import BUILD, ROOT
+from lib import BUILD, ROOT
 
 LOG_PATH = BUILD / "last_build.log"
 LOG_INTEREST = re.compile(
@@ -35,14 +27,9 @@ BARE_SOURCE_LINE = re.compile(r"^\s*(?:.*[\\/])?[\w.-]+\.(?:cpp|c|cxx|rc)\s*$", 
 
 
 def is_line_of_interest(line: str) -> bool:
-    if MSVC_DIAGNOSTIC.search(line):
-        return True
-    if CMAKE_BUILDING_LINE.match(line):
-        return False
-    if BARE_SOURCE_LINE.match(line):
-        return False
-    return bool(LOG_INTEREST.search(line))
-
+    return bool(MSVC_DIAGNOSTIC.search(line) or (
+        LOG_INTEREST.search(line) and not CMAKE_BUILDING_LINE.match(line) and not BARE_SOURCE_LINE.match(line)
+    ))
 
 
 def win_short_path(path: str) -> str:
@@ -59,44 +46,24 @@ def win_short_path(path: str) -> str:
 
 
 def resolve_cmake() -> str:
-    venv = ROOT / ".decomp-venv" / "Scripts" / "cmake.exe"
-    if venv.exists():
-        return win_short_path(str(venv))
-    found = shutil.which("cmake")
-    if found:
-        return win_short_path(found)
-    raise SystemExit("cmake not found")
-
-
-def cache_cmake_command() -> str | None:
-    cache = BUILD / "CMakeCache.txt"
-    if not cache.exists():
-        return None
-    for line in cache.read_text(encoding="utf-8", errors="replace").splitlines():
-        if line.startswith("CMAKE_COMMAND:"):
-            return line.split("=", 1)[-1].strip().strip('"')
-    return None
+    venv = ROOT / '.decomp-venv/Scripts/cmake.exe'
+    path = str(venv) if venv.exists() else shutil.which('cmake')
+    if not path:
+        raise SystemExit('cmake not found')
+    return win_short_path(path)
 
 
 def handle_link(args: list[str]) -> int:
     if not args:
         sys.exit("build.py --link requires linker executable and arguments")
-
-    linker = win_short_path(args[0])
-    link_args = args[1:]
-
-    # MSVC 4.00 LINK.EXE fails during Pass 1 when environment variables or working directory paths
-    # are long. Shorten the working directory and toolchain environment variables.
+    linker, link_args = win_short_path(args[0]), args[1:]
+    # LINK 4.00 requires short working-directory and toolchain paths.
     if os.name == "nt":
-        short_cwd = win_short_path(os.getcwd())
-        if short_cwd != os.getcwd():
-            os.chdir(short_cwd)
+        os.chdir(win_short_path(os.getcwd()))
         for env_var in ("LIB", "INCLUDE", "PATH"):
             val = os.environ.get(env_var, "")
             if val:
-                parts = [win_short_path(p) for p in val.split(";") if p]
-                new_val = ";".join(parts)
-                os.environ[env_var] = new_val
+                os.environ[env_var] = ';'.join(win_short_path(p) for p in val.split(';') if p)
 
     for arg in link_args:
         if arg.startswith("@"):
@@ -107,20 +74,13 @@ def handle_link(args: list[str]) -> int:
                 rsp_path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
 
     out_arg = next((Path(arg[5:]) for arg in link_args if arg.upper().startswith("/OUT:")), None)
-    res = subprocess.run(
-        [linker, *link_args],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        errors="replace",
-        check=False,
-    )
+    res = subprocess.run([linker, *link_args], stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT, text=True, errors="replace", check=False)
     output = res.stdout
     sys.stdout.write(output)
-    warning_count = sum(1 for line in output.splitlines() if MSVC_WARNING.search(line))
-    if warning_count:
-        sys.stderr.write(f"linker emitted {warning_count} warning(s)\n")
-        return 1 if res.returncode == 0 else res.returncode
+    if any(MSVC_WARNING.search(line) for line in output.splitlines()):
+        sys.stderr.write('linker emitted warnings\n')
+        return res.returncode or 1
     if res.returncode == 0 and (out_arg is None or not out_arg.exists()):
         sys.stderr.write(f"linker produced no output: {out_arg}\n")
         return 1
@@ -140,62 +100,45 @@ def stale_link_inputs(build_dir: Path) -> list[Path]:
 
 
 def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) -> tuple[int, str]:
-    """Retry a skipped stale link once; never report stale output as success."""
-    def invoke():
-        return subprocess.run(
-            cmake_args, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-            text=True, errors="replace", check=False,
-        )
-
-    proc = invoke()
-    output = proc.stdout
-    if proc.returncode != 0:
-        return proc.returncode, output
-
-    stale = stale_link_inputs(build_dir)
-    if stale:
-        output += "\nLink output is stale; forcing one relink after " + str(stale[0]) + "\n"
-        # This is only the generated executable, not the reference image or PDB.
-        # Removing it makes old NMake invoke the existing CMake link rule.
-        (build_dir / "LEMBALL.EXE").unlink()
-        proc = invoke()
+    output = ''
+    retried = False
+    while True:
+        proc = subprocess.run(cmake_args, cwd=root, stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT, text=True, errors='replace', check=False)
         output += proc.stdout
-        if proc.returncode != 0:
+        if proc.returncode:
             return proc.returncode, output
+        stale = stale_link_inputs(build_dir)
+        if not stale:
+            if all((build_dir / name).exists() for name in ('LEMBALL.EXE', 'LEMBALL.pdb')):
+                return 0, output
+            return 1, output + '\nerror: build did not produce both LEMBALL.EXE and LEMBALL.pdb\n'
+        if retried:
+            return 1, output + '\nerror: executable is still older than its link inputs after retry\n'
+        output += f'\nLink output is stale; forcing one relink after {stale[0]}\n'
+        (build_dir / 'LEMBALL.EXE').unlink()
+        retried = True
 
-    if not all((build_dir / name).exists() for name in ("LEMBALL.EXE", "LEMBALL.pdb")):
-        return 1, output + "\nerror: build did not produce both LEMBALL.EXE and LEMBALL.pdb\n"
-    if stale_link_inputs(build_dir):
-        return 1, output + "\nerror: executable is still older than its link inputs after retry\n"
-    return 0, output
 
-
-def run_build(
-    clean_first: bool = False,
-    extra_args: list[str] | None = None,
-    disable_enforcements: bool = False,
-) -> int:
+def run_build(clean_first=False, extra_args=None, disable_enforcements=False) -> int:
     cmake = resolve_cmake()
     BUILD.mkdir(parents=True, exist_ok=True)
 
-    cached = cache_cmake_command()
     makefile = BUILD / "Makefile"
     toolchain = ROOT / "cmake" / "msvc400-toolchain.cmake"
     startup_checks = "OFF" if disable_enforcements else "ON"
     cache_path = BUILD / "CMakeCache.txt"
     cache_lines = cache_path.read_text(encoding="utf-8").splitlines() if cache_path.exists() else []
+    cached = next((line.split("=", 1)[1].strip().strip('"')
+                   for line in cache_lines if line.startswith("CMAKE_COMMAND:")), None)
     need_configure = (
-        cached is None
-        or " " in cached
-        or not makefile.exists()
+        cached is None or " " in cached or not makefile.exists()
         or toolchain.stat().st_mtime > makefile.stat().st_mtime
         or f"LEMBALL_ENFORCE_STARTUP_CHECKS:BOOL={startup_checks}" not in cache_lines
     )
     if need_configure:
-        configure_args = [
-            cmake, "--preset", "msvc400", f"-DLEMBALL_ENFORCE_STARTUP_CHECKS={startup_checks}",
-        ]
-        res = subprocess.run(configure_args, cwd=ROOT, check=False)
+        res = subprocess.run([cmake, '--preset', 'msvc400',
+                              f'-DLEMBALL_ENFORCE_STARTUP_CHECKS={startup_checks}'], cwd=ROOT, check=False)
         if res.returncode != 0:
             return res.returncode
 
@@ -204,23 +147,16 @@ def run_build(
             (BUILD / fname).unlink(missing_ok=True)
 
     cmake_args = [cmake, "--build", "--preset", "msvc400"]
-    if clean_first:
-        cmake_args.append("--clean-first")
-    if extra_args:
-        cmake_args.extend(extra_args)
+    cmake_args.extend(['--clean-first'] if clean_first else [])
+    cmake_args.extend(extra_args or [])
 
-    start = time.perf_counter()
     returncode, output = build_with_link_check(cmake_args, BUILD, ROOT)
-    elapsed = time.perf_counter() - start
-
     LOG_PATH.write_text(output, encoding="utf-8")
     for line in output.splitlines():
         if is_line_of_interest(line):
             print(line)
 
-    has_exe = (BUILD / "LEMBALL.EXE").exists()
-    has_pdb = (BUILD / "LEMBALL.pdb").exists()
-    print(f"RESULT exit={returncode} elapsed_s={elapsed:.1f} exe={has_exe} pdb={has_pdb} log={LOG_PATH}")
+    print(f"build: exit={returncode}; log={LOG_PATH}")
     return returncode
 
 
@@ -230,17 +166,12 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--clean-first", action="store_true", help="Perform full clean build")
-    parser.add_argument(
-        "--disable-enforcements", action="store_true",
-        help="Disable startup CD and installation checks (default: both enforced)",
-    )
+    parser.add_argument('--disable-enforcements', action='store_true',
+                        help='Disable startup CD and installation checks')
     parser.add_argument("extra_args", nargs="*", help="Extra arguments passed to cmake --build")
     args = parser.parse_args()
 
-    return run_build(
-        clean_first=args.clean_first, extra_args=args.extra_args,
-        disable_enforcements=args.disable_enforcements,
-    )
+    return run_build(args.clean_first, args.extra_args, args.disable_enforcements)
 
 
 if __name__ == "__main__":

@@ -15,9 +15,9 @@ public:
 	friend class CBroadcast;
 
 private:
-	unsigned short m_requestedPort;  // 0x30
-	unsigned char* m_connectionData; // 0x34
-	char* m_peerName;                // 0x38
+	unsigned short m_requestedPort;        // 0x30
+	const unsigned char* m_connectionData; // 0x34
+	const char* m_peerName;                // 0x38
 };
 
 extern CMessReqConnect* g_pMessReqConnect;

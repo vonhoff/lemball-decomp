@@ -71,7 +71,7 @@ CPlayerLemming* CPlayerLemmingGroupManager::GetDead()
 }
 
 // FUNCTION: LEMBALL 0x004185f0
-bool CPlayerLemmingGroupManager::GetLeaderPos(AiCoord& p_position)
+bool CPlayerLemmingGroupManager::GetLeaderPos(AICOORD& p_position)
 {
 	CPlayerLemmingGroup* group = GetPlayerControlledGroup();
 	if (group == 0) {
@@ -256,7 +256,7 @@ CPlayerLemmingGroup* CPlayerLemmingGroupManager::GetPlayerControlledGroup()
 // FUNCTION: LEMBALL 0x00418a30
 void CPlayerLemmingGroupManager::AddNewWaypointToCurrentGroup(int p_x, int p_y)
 {
-	AiCoord coordinate(p_x << 12, p_y << 12, 0);
+	AICOORD coordinate(p_x << 12, p_y << 12, 0);
 	CPlayerLemmingGroup* group = GetPlayerControlledGroup();
 	if (group != 0) {
 		group->AddNewWaypoint(coordinate, g_pGenericGroupFormationManager);
@@ -320,7 +320,7 @@ void CPlayerLemmingGroupManager::PlayerGroupRequestFire(int p_x, int p_y)
 }
 
 // FUNCTION: LEMBALL 0x00418ba0
-void CPlayerLemmingGroupManager::GetPlayerStartPosition(AiCoord& p_position, int p_index)
+void CPlayerLemmingGroupManager::GetPlayerStartPosition(AICOORD& p_position, int p_index)
 {
 	p_position.m_xFixed = m_startX[p_index] << 12;
 	p_position.m_yFixed = m_startY[p_index] << 12;

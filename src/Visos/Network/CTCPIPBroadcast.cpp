@@ -21,29 +21,8 @@
 #include "Platform/WinSock/TcpIpHostEntry.h"
 #include "Platform/WinSock/TcpIpServiceEntry.h"
 #include "Platform/WinSock/TcpIpSocketAddress.h"
-#include "Platform/WinSock/in_addr.h"
-
-struct TcpIpAddressResult {
-	unsigned int m_reserved;
-	unsigned char m_data[20];
-};
-
-struct TcpIpHostAddressResult {
-	unsigned int m_reserved;
-	in_addr m_address;
-};
-
-struct TcpIpStatusResult {
-	unsigned int m_reserved;
-	Message m_message;
-};
-
-union TcpIpLookupResult {
-	TcpIpAddressResult m_address;
-	TcpIpStatusResult m_status;
-};
-
 #include "Platform/WinSock/WinSock.h"
+#include "Platform/WinSock/in_addr.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -65,14 +44,14 @@ CTCPIPBroadcast::~CTCPIPBroadcast()
 // FUNCTION: LEMBALL 0x00470580
 void CTCPIPBroadcast::GetSpecificAddr(const char* p_name)
 {
-	CNetworkAddress* address;
+	CTCPIPNetworkAddress* address;
 	void* storage;
 
-	if (inet_addr(p_name) != 0xffffffff) {
+	if (inet_addr(p_name) != INADDR_NONE) {
 		storage = operator new(sizeof(CTCPIPNetworkAddress));
 		if (storage != 0) {
 			address = new (storage) CTCPIPNetworkAddress;
-			((CTCPIPNetworkAddress*) storage)->m_text[0] = '\0';
+			address->m_text[0] = '\0';
 		}
 		else {
 			address = 0;
@@ -90,8 +69,12 @@ void CTCPIPBroadcast::GetSpecificAddr(const char* p_name)
 		operator delete(m_specificNameBuffer);
 		m_specificNameBuffer = 0;
 	}
-	m_specificNameBuffer = (char*) operator new(0x400);
-	m_specificNameRequest = WSAAsyncGetHostByName(m_windowHandle, 0x441, p_name, m_specificNameBuffer, 0x400);
+	m_specificNameBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
+	m_specificNameRequest = WSAAsyncGetHostByName(m_windowHandle,
+												  TCPIP_MESSAGE_SPECIFIC_HOST_RESOLVED,
+												  p_name,
+												  m_specificNameBuffer,
+												  MAXGETHOSTSTRUCT);
 	if (m_specificNameRequest == 0) {
 		SocketError();
 	}
@@ -100,35 +83,39 @@ void CTCPIPBroadcast::GetSpecificAddr(const char* p_name)
 // FUNCTION: LEMBALL 0x00470650
 void CTCPIPBroadcast::GotName(int p_failed)
 {
-	TcpIpLookupResult result;
+	enum {
+		STATUS_HOST_LOOKUP_FAILED = 15
+	};
 
 	if (p_failed == 0) {
-		CNetworkAddress* address;
+		CTCPIPNetworkAddress* address;
 		TcpIpHostEntry* hostEntry;
 		void* storage;
+		in_addr lookupAddress;
 
 		hostEntry = (TcpIpHostEntry*) m_specificNameBuffer;
-		memcpy(result.m_address.m_data, *hostEntry->m_addressList, hostEntry->m_addressLength);
+		memcpy(&lookupAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
 		storage = operator new(sizeof(CTCPIPNetworkAddress));
 		if (storage != 0) {
 			address = new (storage) CTCPIPNetworkAddress;
-			((CTCPIPNetworkAddress*) storage)->m_text[0] = '\0';
+			address->m_text[0] = '\0';
 		}
 		else {
 			address = 0;
 		}
 		m_specificAddress = address;
-		strcpy(((CTCPIPNetworkAddress*) address)->m_text,
-			   inet_ntoa(*(in_addr*) &(((CTCPIPNetworkAddress*) address)->m_ipv4Address =
-										   *(unsigned int*) result.m_address.m_data)));
+		in_addr hostAddress = lookupAddress;
+		address->m_ipv4Address = hostAddress.s_addr;
+		strcpy(address->m_text, inet_ntoa(hostAddress));
 		address->GetStr();
 	}
 	else {
 		*g_pErrorOutput << "Specified computer name not found\n";
-		if (m_addressMode == 2) {
-			*(volatile unsigned short*) &result.m_status.m_message.m_type = 0xd;
-			*(volatile int*) &result.m_status.m_message.m_code = 0xf;
-			g_pNetworkStatusQueue->Post(result.m_status.m_message);
+		if (m_addressMode == BROADCAST_ADDRESS_SPECIFIC) {
+			Message message;
+			message.m_type = NETWORK_EVENT_HOST_LOOKUP_FAILED;
+			message.m_code = STATUS_HOST_LOOKUP_FAILED;
+			g_pNetworkStatusQueue->Post(message);
 		}
 	}
 	operator delete(m_specificNameBuffer);
@@ -148,9 +135,13 @@ bool CTCPIPBroadcast::Start(const char* p_name)
 	}
 	g_szBroadcastPeerName = (char*) operator new(strlen(hostName) + 1);
 	strcpy(g_szBroadcastPeerName, hostName);
-	m_asyncBuffer = (char*) operator new(0x400);
+	m_asyncBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
 	m_writeReady = 1;
-	m_asyncRequest = WSAAsyncGetHostByName(m_windowHandle, 0x440, g_szBroadcastPeerName, m_asyncBuffer, 0x400);
+	m_asyncRequest = WSAAsyncGetHostByName(m_windowHandle,
+										   TCPIP_MESSAGE_LOCAL_HOST_RESOLVED,
+										   g_szBroadcastPeerName,
+										   m_asyncBuffer,
+										   MAXGETHOSTSTRUCT);
 	if (m_asyncRequest == 0) {
 		SocketError();
 		return false;
@@ -161,7 +152,7 @@ bool CTCPIPBroadcast::Start(const char* p_name)
 // FUNCTION: LEMBALL 0x00470840
 void CTCPIPBroadcast::GotHost(int p_failed)
 {
-	TcpIpHostAddressResult result;
+	in_addr lookupAddress;
 
 	if (p_failed != 0) {
 		*g_pErrorOutput << "Local host name not found\n";
@@ -171,24 +162,31 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 		CTCPIPNetworkAddress* address;
 
 		hostEntry = (TcpIpHostEntry*) m_asyncBuffer;
-		memcpy(&result.m_address, *hostEntry->m_addressList, hostEntry->m_addressLength);
+		memcpy(&lookupAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
 		address = (CTCPIPNetworkAddress*) g_pBroadcastAddress;
-		strcpy(address->m_text, inet_ntoa(*(in_addr*) &(address->m_ipv4Address = result.m_address.s_addr)));
+		in_addr hostAddress = lookupAddress;
+		address->m_ipv4Address = hostAddress.s_addr;
+		strcpy(address->m_text, inet_ntoa(hostAddress));
 		g_pBroadcastAddress->GetStr();
 	}
 	g_localHostLookupComplete = 1;
 	operator delete(m_asyncBuffer);
 	m_asyncBuffer = 0;
-	m_socketHandle = socket(2, 2, 0);
+	m_socketHandle = socket(AF_INET, SOCK_DGRAM, 0);
 	if (m_socketHandle == -1) {
 		SocketError();
 		CBroadcast::SendFailedInit((NetworkErrors) 1);
 		return;
 	}
 	m_isOpen = 1;
-	m_asyncBuffer = (char*) operator new(0x400);
+	m_asyncBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
 	m_writeReady = 1;
-	m_asyncRequest = WSAAsyncGetServByName(m_windowHandle, 0x442, "tftp", "udp", m_asyncBuffer, 0x400);
+	m_asyncRequest = WSAAsyncGetServByName(m_windowHandle,
+										   TCPIP_MESSAGE_SERVICE_RESOLVED,
+										   "tftp",
+										   "udp",
+										   m_asyncBuffer,
+										   MAXGETHOSTSTRUCT);
 	if (m_asyncRequest == 0) {
 		SocketError();
 		CBroadcast::SendFailedInit((NetworkErrors) 2);
@@ -216,12 +214,12 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 	operator delete(m_asyncBuffer);
 	m_asyncBuffer = 0;
 	option = 1;
-	if (setsockopt(m_socketHandle, 0xffff, 0x20, (const char*) &option, sizeof(option)) == -1) {
+	if (setsockopt(m_socketHandle, SOL_SOCKET, SO_BROADCAST, (const char*) &option, sizeof(option)) == -1) {
 		SocketError();
 		CBroadcast::SendFailedInit((NetworkErrors) 3);
 		return;
 	}
-	address.m_family = 2;
+	address.m_family = AF_INET;
 	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
 	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
 	if (bind(m_socketHandle, &address, sizeof(address)) == -1) {
@@ -230,10 +228,10 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 		return;
 	}
 	if (CBroadcast::m_listenEnabled != 0) {
-		selectResult = WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 3);
+		selectResult = WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE);
 	}
 	else {
-		selectResult = WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 2);
+		selectResult = WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_WRITE);
 	}
 	if (selectResult == -1) {
 		SocketError();
@@ -256,26 +254,26 @@ int CTCPIPBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long
 	int result;
 
 	switch (p_message) {
-	case 0x440:
+	case TCPIP_MESSAGE_LOCAL_HOST_RESOLVED:
 		result = OnNameResolved(p_wParam, p_lParam, &m_asyncBuffer);
-		if (result != 0xe) {
-			GotHost(result == 2);
+		if (result != NAME_LOOKUP_ERROR_HANDLED) {
+			GotHost(result == NAME_LOOKUP_FAILED);
 		}
 		return 0;
-	case 0x441:
+	case TCPIP_MESSAGE_SPECIFIC_HOST_RESOLVED:
 		m_specificNameRequest = 0;
 		result = OnNameResolved(p_wParam, p_lParam, &m_specificNameBuffer);
-		if (result != 0xe) {
-			GotName(result == 2);
+		if (result != NAME_LOOKUP_ERROR_HANDLED) {
+			GotName(result == NAME_LOOKUP_FAILED);
 		}
 		return 0;
-	case 0x442:
+	case TCPIP_MESSAGE_SERVICE_RESOLVED:
 		result = OnNameResolved(p_wParam, p_lParam, &m_asyncBuffer);
-		if (result != 0xe) {
-			HandleServiceLookupResult(result == 2);
+		if (result != NAME_LOOKUP_ERROR_HANDLED) {
+			HandleServiceLookupResult(result == NAME_LOOKUP_FAILED);
 		}
 		return 0;
-	case 0x443:
+	case TCPIP_MESSAGE_SOCKET_EVENT:
 		if (m_socketHandle == -1) {
 			return 0;
 		}
@@ -283,7 +281,7 @@ int CTCPIPBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long
 		error = (unsigned short) ((unsigned long) p_lParam >> 16);
 		CBaseCommonSocket::SocketError((NetworkErrors) error);
 		switch (event) {
-		case 1:
+		case FD_READ:
 			if (error == 0) {
 				CTCPIPReadSocket::ReadBuffFrom();
 			}
@@ -298,7 +296,8 @@ int CTCPIPBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long
 void CTCPIPBroadcast::StartListen()
 {
 	if (CBroadcast::m_listenEnabled == 0) {
-		if (m_readReady != 0 && WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 3) == -1) {
+		if (m_readReady != 0 &&
+			WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) == -1) {
 			SocketError();
 			return;
 		}
@@ -310,7 +309,8 @@ void CTCPIPBroadcast::StartListen()
 void CTCPIPBroadcast::StopListen()
 {
 	if (CBroadcast::m_listenEnabled != 0) {
-		if (m_readReady != 0 && WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 2) == -1) {
+		if (m_readReady != 0 &&
+			WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_WRITE) == -1) {
 			SocketError();
 			return;
 		}

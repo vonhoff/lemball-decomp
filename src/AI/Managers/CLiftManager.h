@@ -5,10 +5,10 @@
 #include "CBaseObjectManager.h"
 
 class CAI;
-class AiCoord;
+class AICOORD;
 class CGameObject;
 class CLift;
-struct Coord3d;
+struct tCoord3d;
 struct LiftEndpointRecord;
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00495ea8
@@ -23,9 +23,10 @@ public:
 	void Process();
 	void Restart();
 	void AddLiftFromXyz(unsigned short p_id, int p_x, int p_y, int p_z);
-	void AddLiftFromEndpoints(unsigned short p_id, const Coord3d& p_start, const Coord3d& p_end);
+	void AddLiftFromEndpoints(unsigned short p_id, tCoord3d& p_start, tCoord3d& p_end);
 	int ExportEndpoints(LiftEndpointRecord* p_records);
-	void StepOn(const AiCoord& p_position, CGameObject* p_object);
+	void RemoveLift(CLift* p_lift);
+	void StepOn(const AICOORD& p_position, CGameObject* p_object);
 	void Switch(swMessage p_message, int p_id, int p_legacyA, int p_legacyB);
 
 private:

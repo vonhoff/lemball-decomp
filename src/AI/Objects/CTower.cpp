@@ -1,7 +1,7 @@
 #include "CTower.h"
 
 #include "../../Map/Base/CMap.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
@@ -46,10 +46,10 @@ bool CTower::Activate(CGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x0041d010
-AiCoord CTower::ActivatePosition()
+AICOORD CTower::ActivatePosition()
 {
 	int y = m_position.m_yFixed - 0x8000;
 	int z = m_position.m_zFixed;
 	int x = m_position.m_xFixed - 0x30000;
-	return AiCoord(x, y, z);
+	return AICOORD(x, y, z);
 }

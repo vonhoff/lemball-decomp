@@ -2,7 +2,7 @@
 
 #include "../Base/StateMachine.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectTypes.h"

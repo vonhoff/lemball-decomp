@@ -7,14 +7,14 @@
 
 class CGDI;
 class CMain2DDisplay;
-class CVsRect;
+class CVSRect;
 // SIZE 0x3bc
 // VTABLE: LEMBALL 0x00497af0 CDrawer
 // VTABLE: LEMBALL 0x00497ae0 CBaseQueueHandler
 // VTABLE: LEMBALL 0x00497ad8 CAnimsManager
 class CMainOptions1Drawer : public CBaseFrontendDrawer {
 public:
-	CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2);
+	CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2);
 	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
 	virtual void DrawBackGround();                    // vtable+0x50
 	virtual void Load();                              // vtable+0x40

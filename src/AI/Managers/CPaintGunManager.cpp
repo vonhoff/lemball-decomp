@@ -2,7 +2,7 @@
 
 #include "../Navigation/CAI.h"
 #include "../Objects/CPaintGun.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
@@ -69,21 +69,17 @@ void CPaintGunManager::Process()
 int CPaintGunManager::GetViewData(CViewData* p_viewData)
 {
 	int count = 0;
-	int byteIndex;
 	CViewData* viewData;
 	CPaintGunManager* manager = this;
 	int ordinal = 0;
 	if (manager->m_count > 0) {
-		byteIndex = 0;
 		viewData = p_viewData;
 		do {
-			char* gunBytes = reinterpret_cast<char*>(manager->m_paintGuns);
-			CPaintGun* gun = reinterpret_cast<CPaintGun*>(gunBytes + byteIndex);
+			CPaintGun* gun = &manager->m_paintGuns[ordinal];
 			if (gun->m_enabled != 0) {
 				gun->GetViewData(*viewData++);
 				count++;
 			}
-			byteIndex += sizeof(CPaintGun);
 			ordinal++;
 		} while (manager->m_count > ordinal);
 	}
@@ -94,7 +90,7 @@ int CPaintGunManager::GetViewData(CViewData* p_viewData)
 void CPaintGunManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, int p_direction)
 {
 	if (m_count < m_capacity) {
-		AiCoord position;
+		AICOORD position;
 		position.m_xFixed = p_x << 12;
 		position.m_yFixed = p_y << 12;
 		position.m_zFixed = p_z << 12;

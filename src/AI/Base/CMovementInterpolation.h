@@ -2,17 +2,29 @@
 #define LEMBALL_AI_BASE_CMOVEMENTINTERPOLATION_H
 
 #include "../../Visos/Foundation/CVector.h"
+#include "../../Visos/Foundation/VsDebug.h"
 
 class CMovementInterpolation {
 public:
+	CMovementInterpolation() : m_start(DEBUG_SENTINEL, DEBUG_SENTINEL), m_delta(DEBUG_SENTINEL, DEBUG_SENTINEL) {}
+
 	void SetEndpoints(CVector p_start, CVector p_end);
-	CMovementInterpolation& operator=(const CMovementInterpolation& p_other);
+	// FUNCTION: LEMBALL 0x004267a0
+	CMovementInterpolation& operator=(const CMovementInterpolation& p_other)
+	{
+		m_start.m_xFixed = p_other.m_start.m_xFixed;
+		m_start.m_yFixed = p_other.m_start.m_yFixed;
+		m_delta.m_xFixed = p_other.m_delta.m_xFixed;
+		m_delta.m_yFixed = p_other.m_delta.m_yFixed;
+		return *this;
+	}
 
 private:
-	int m_startX; // 0x00
-	int m_startY; // 0x04
-	int m_deltaX; // 0x08
-	int m_deltaY; // 0x0c
+	friend class CGameObject;
+	friend class CBall;
+
+	CVector m_start; // 0x00
+	CVector m_delta; // 0x08
 };
 
 #endif

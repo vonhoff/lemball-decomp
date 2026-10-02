@@ -2,9 +2,9 @@
 #define LEMBALL_AI_OBJECTS_CICE_H
 
 #include "../Base/CGlobalGameObject.h"
-#include "../Base/Coord3d.h"
+#include "../Base/tCoord3d.h"
 
-class AiCoord;
+class AICOORD;
 class CGameObject;
 class CIceManager;
 class CPlayerLemming;
@@ -14,15 +14,15 @@ class CSwitch;
 class CIce : public CGlobalGameObject {
 public:
 	CIce();
-	bool StepOn(const AiCoord& p_position, CGameObject* p_object);
+	bool StepOn(const AICOORD& p_position, CGameObject* p_object);
 	virtual bool Process(); // vtable+0x14
 	virtual void Restart(); // vtable+0x104
 	virtual ~CIce();        // vtable+0x00
 	void Initialise();
 	void Leave(CPlayerLemming* p_lemming);
 	void Set(unsigned short p_id,
-			 const Coord3d& p_cornerA,
-			 const Coord3d& p_cornerB,
+			 const tCoord3d& p_cornerA,
+			 const tCoord3d& p_cornerB,
 			 int p_velocityX,
 			 int p_velocityY,
 			 unsigned int p_initialSwitched);
@@ -40,8 +40,8 @@ private:
 	unsigned int m_initialSwitched; // 0x14c
 	int m_objectCount;              // 0x150
 	CGameObject* m_objects[10];     // 0x154
-	Coord3d m_min;                  // 0x17c
-	Coord3d m_max;                  // 0x182
+	tCoord3d m_min;                 // 0x17c
+	tCoord3d m_max;                 // 0x182
 };
 
 // SYNTHETIC: LEMBALL 0x0042e500

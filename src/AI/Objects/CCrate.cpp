@@ -5,7 +5,7 @@
 #include "../Navigation/CAI.h"
 
 // FUNCTION: LEMBALL 0x0041c470
-CCrate::CCrate(const AiCoord& p_position, CGlobalGameObject* p_contents, unsigned short p_contentsId)
+CCrate::CCrate(const AICOORD& p_position, CGlobalGameObject* p_contents, unsigned short p_contentsId)
 	: CBaseGlobalObject(p_position, OBJECT_CRATE)
 {
 	m_contentsId = p_contentsId;
@@ -40,7 +40,7 @@ void CCrate::Restart()
 
 #include "../../Map/Base/CMap.h"
 #include "../Managers/CObjectManager.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -127,43 +127,53 @@ bool CCrate::Activate(CGameObject* p_object)
 // FUNCTION: LEMBALL 0x0041ce90
 void CCrate::DoActivate()
 {
+	enum {
+		CATAPULT_SCORE = 100,
+		KEY_SCORE = 50,
+		EMPTY_SCORE = 25
+	};
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_actionPhase1Deadline += g_dwGameTick;
 	m_actionPhase2Deadline += g_dwGameTick;
 	SetSndEffect(SFX_SNATCH);
 	int score;
 	switch (m_contentsType) {
-	case 4:
-		score = 100;
+	case OBJECT_CATAPULT:
+		score = CATAPULT_SCORE;
 		break;
-	case 21:
-	case 22:
-	case 23:
-		score = 50;
+	case OBJECT_KEY_1:
+	case OBJECT_KEY_2:
+	case OBJECT_KEY_3:
+		score = KEY_SCORE;
 		break;
-	case 0xffff:
-		score = 25;
+	case OBJECT_INVALID:
+		score = EMPTY_SCORE;
 		break;
 	}
 	g_pAI->Score(score);
 }
 
 // FUNCTION: LEMBALL 0x0041cf10
-AiCoord CCrate::ActivatePosition()
+AICOORD CCrate::ActivatePosition()
 {
+	enum {
+		DEFAULT_X_OFFSET = 48 << 12,
+		DEFAULT_Y_OFFSET = 8 << 12,
+		CONTENTS_X_OFFSET = 8 << 12
+	};
 	int x = m_position.m_xFixed;
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	if (m_contentsType < 0x15) {
+	if (m_contentsType < OBJECT_KEY_1) {
 		goto default_position;
 	}
-	if (m_contentsType <= 0x17 || m_contentsType == 0xffff) {
+	if (m_contentsType <= OBJECT_KEY_3 || m_contentsType == OBJECT_INVALID) {
 		goto contents_position;
 	}
 
 default_position:
-	return AiCoord(x - 0x30000, y - 0x8000, z);
+	return AICOORD(x - DEFAULT_X_OFFSET, y - DEFAULT_Y_OFFSET, z);
 
 contents_position:
-	return AiCoord(x - 0x8000, y, z);
+	return AICOORD(x - CONTENTS_X_OFFSET, y, z);
 }

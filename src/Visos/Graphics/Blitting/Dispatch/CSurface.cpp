@@ -32,13 +32,13 @@ void CSurface::BlitZRLE(int p_x,
 	short zHeight;
 	short zWidth;
 	unsigned int flags;
-	CVsRect* dest;
-	CVsRect* clipped;
+	CVSRect* dest;
+	CVSRect* clipped;
 	int width;
 
 	resource = p_zrle;
-	dest = (CVsRect*) frame.m_destination;
-	clipped = (CVsRect*) frame.m_clip;
+	dest = (CVSRect*) frame.m_destination;
+	clipped = (CVSRect*) frame.m_clip;
 	zWidth = resource->m_width;
 	zHeight = resource->m_height;
 	width = (int) zWidth;

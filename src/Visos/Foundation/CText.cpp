@@ -5,7 +5,7 @@
 #include "../Resources/CResFONT.h"
 #include "../Resources/CResZRLE.h"
 #include "CVSOStream.h"
-#include "CVsPoint.h"
+#include "CVSPoint.h"
 #include "Visos/Foundation/CString.h"
 #include "Visos/Graphics/CZRLE.h"
 
@@ -21,7 +21,7 @@ void CText::Set(int p_x, int p_y, CResFONT* p_font, char* p_text, unsigned long 
 }
 
 // FUNCTION: LEMBALL 0x00469a80
-void CText::Set(CVsPoint& p_position, CResFONT* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
+void CText::Set(CVSPoint& p_position, CResFONT* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	m_startX = p_position.m_x;
 	m_startY = p_position.m_y;
@@ -43,7 +43,7 @@ void CText::Set(int p_x, int p_y, CResFONT* p_font, CString p_text, unsigned lon
 }
 
 // FUNCTION: LEMBALL 0x00469b00
-void CText::Set(CVsPoint& p_position, CResFONT* p_font, CString p_text, unsigned long p_flags, CRemap* p_remap)
+void CText::Set(CVSPoint& p_position, CResFONT* p_font, CString p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	m_startX = p_position.m_x;
 	m_startY = p_position.m_y;

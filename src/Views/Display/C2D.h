@@ -1,24 +1,24 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_C2D_H
 #define LEMBALL_VIEWS_DISPLAY_C2D_H
 
-#include "../../AI/Base/AiCoord.h"
+#include "../../AI/Base/AICOORD.h"
 #include "../../AI/Objects/CViewData.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVsPoint.h"
-#include "../../Visos/Foundation/CVsRect.h"
-#include "../../Visos/Graphics/CBigBitmap.h"
-#include "../../Visos/Graphics/CBitmap.h"
+#include "../../Visos/Foundation/CVSPoint.h"
+#include "../../Visos/Foundation/CVSRect.h"
+#include "../../Visos/Graphics/CClipRect.h"
 #include "../../Visos/Graphics/CCopyColourToBackBuff.h"
 #include "../../Visos/Graphics/CCopyToBackBuff.h"
 #include "../../Visos/Graphics/CDrawer.h"
 #include "../../Visos/Graphics/CDrawingMark.h"
 #include "../../Visos/Graphics/CHotAreaHandler.h"
-#include "../../Visos/Graphics/CLine.h"
 #include "../../Visos/Graphics/CPopActive.h"
 #include "../../Visos/Graphics/CPushActive.h"
 #include "../../Visos/Graphics/CReceiveWindowState.h"
 #include "../../Visos/Graphics/CScreenScroll.h"
 #include "../../Visos/Graphics/CSolidRect.h"
+#include "../../Visos/Graphics/CZBuffClear.h"
+#include "../../Visos/Graphics/CZBuffScroll.h"
 #include "../Pause/CPauseWindow.h"
 #include "AI/Base/ObjectTypes.h"
 
@@ -44,8 +44,8 @@ struct SpriteGroundLookup;
 // VTABLE: LEMBALL 0x00496db0 CReceiveWindowState
 class C2D : public CDrawer, public CBaseQueueHandler, public CHotAreaHandler, public CReceiveWindowState {
 public:
-	C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const CVsRect& p_rect);
-	bool FindGameObject(const CVsPoint& p_point, int& p_index, int p_preferLemming);
+	C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const CVSRect& p_rect);
+	bool FindGameObject(const CVSPoint& p_point, int& p_index, int p_preferLemming);
 	bool InGroupByObjectNo(int p_objectNo);
 	bool IsInGrouping(CGameObject* p_object);
 	bool ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY);
@@ -57,12 +57,12 @@ public:
 	virtual bool QuitYet();                                          // vtable+0x2c
 	virtual int GetReturnState();                                    // vtable+0x28
 	virtual int ProcessMsg(Message* p_message);                      // vtable+0x08
-	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags); // vtable+0x04
-	virtual void OnButtonUp(const CVsPoint& p_point, int p_flags);   // vtable+0x08
+	virtual void OnButtonDown(const CVSPoint& p_point, int p_flags); // vtable+0x04
+	virtual void OnButtonUp(const CVSPoint& p_point, int p_flags);   // vtable+0x08
 	virtual void OnDriverChange();                                   // vtable+0x30
-	virtual void OnInside(const CVsPoint& p_point);                  // vtable+0x18
-	virtual void OnSize(const CVsRect& p_rect);                      // vtable+0x10
-	virtual void OnZoom(const CVsRect& p_rect);                      // vtable+0x0c
+	virtual void OnInside(const CVSPoint& p_point);                  // vtable+0x18
+	virtual void OnSize(const CVSRect& p_rect);                      // vtable+0x10
+	virtual void OnZoom(const CVSRect& p_rect);                      // vtable+0x0c
 	virtual void Process();                                          // vtable+0x1c
 	virtual void ShutDown();                                         // vtable+0x04
 	virtual ~C2D();                                                  // vtable+0x00
@@ -75,7 +75,7 @@ public:
 	void DoButtons();
 	void DoClipWidth(int p_mapX, int p_mapY, int p_count);
 	void DoClipWidthSearch(int p_mapX, int p_mapY, int p_count);
-	void Draw(const CVsRect& p_rect);
+	void Draw(const CVSRect& p_rect);
 	void DrawAmmo(CViewData& p_viewData, int p_objectNo);
 	void DrawBall(CViewData& p_viewData);
 	void DrawBalloon(CViewData& p_viewData, int p_playerIndex);
@@ -85,7 +85,7 @@ public:
 	void DrawCatapult(CViewData& p_viewData, int p_objectNo);
 	void DrawCliff(int p_x, int p_y, int p_height, int p_count);
 	int DrawClipData();
-	int DrawClippedRectangle(const CVsRect& p_rect);
+	int DrawClippedRectangle(const CVSRect& p_rect);
 	void DrawCrate(CViewData& p_viewData, int p_objectNo);
 	void DrawDemo();
 	void DrawDoor(CViewData& p_viewData);
@@ -123,22 +123,22 @@ public:
 	void DrawZBuff_Anim(int p_index, unsigned short p_z);
 	void DrawZBuff_Sprite(int p_index, unsigned short p_z);
 	void FormGroup();
-	void GroupingLeftClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gamePoint, unsigned int p_alternate);
+	void GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint, unsigned int p_alternate);
 	void InitSpriteGroundLU();
 	void KillRemapPalettes();
-	void LeftClick(const CVsPoint& p_screenPoint,
-				   const CVsPoint& p_gamePoint,
+	void LeftClick(const CVSPoint& p_screenPoint,
+				   const CVSPoint& p_gamePoint,
 				   unsigned int p_cancelMoves,
 				   unsigned int p_alternate);
-	void MoveGroup(const CVsPoint& p_point);
+	void MoveGroup(const CVSPoint& p_point);
 	void MarkGroundAnimAndLiftBounds();
 	void NewPauseWindow(ePauseWindowMessages p_message);
 	void NextGroup();
-	void NoStateLeftClick(const CVsPoint& p_screenPoint,
-						  const CVsPoint& p_gamePoint,
+	void NoStateLeftClick(const CVSPoint& p_screenPoint,
+						  const CVSPoint& p_gamePoint,
 						  unsigned int p_cancelMoves,
 						  unsigned int p_alternate);
-	void NoStateRightClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gamePoint);
+	void NoStateRightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint);
 	void OnLoaded();
 	void PrevGroup();
 	void RegisterRemaps();
@@ -146,7 +146,7 @@ public:
 	void ReplaceBackground();
 	void ResetPrimitives();
 	void Restart();
-	void RightClick(const CVsPoint& p_screenPoint, const CVsPoint& p_gamePoint);
+	void RightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint);
 	void SelectLemming(int p_playerIndex);
 	void SelectObject(int p_viewIndex);
 	void SendCursorMsg();
@@ -157,126 +157,126 @@ public:
 	void SetUpRemapPalettes();
 	void SortViewData();
 	void TransformAndSortViewData();
-	void TriggerPause(unsigned char p_paused);
+	void TriggerPause(unsigned int p_paused);
 	void UnRegisterRemaps();
 	void UpdateSpriteGroundLookupRegions();
 	void UseBalloon(CPlayerLemming* p_lemming);
-	CVsRect* GetClipRectangle();
+	CVSRect* GetClipRectangle();
 	friend class CPanel;
 	friend class CPanelLemming;
 	friend class CPanelPauseButton;
 	friend class CPanelButton;
 
 private:
-	unsigned char* m_remapTables[4];              // 0x54
-	CBaseRemap* m_remaps[5];                      // 0x64
-	CTextManager* m_textManager;                  // 0x78
-	CViewData m_unk0x7c;                          // 0x7c
-	CViewData m_unk0xc8;                          // 0xc8
-	CViewData m_unk0x114;                         // 0x114
-	unsigned short m_zoom;                        // 0x160
-	unsigned short m_groundWidth;                 // 0x162
-	unsigned short m_groundHeight;                // 0x164
-	short m_groundAnimationFrame;                 // 0x166
-	char m_pad0x168[8];                           // 0x168
-	int m_clipMapStepX;                           // 0x170
-	int m_clipMapStepY;                           // 0x174
-	char m_pad0x178[0x0c];                        // 0x178
-	int m_clipScreenX;                            // 0x184
-	int m_clipScreenY;                            // 0x188
-	unsigned int m_mouseButtonDown;               // 0x18c
-	unsigned int m_frameCount;                    // 0x190
-	unsigned int m_frameTime;                     // 0x194
-	unsigned int m_levelTestFrame;                // 0x198
-	char m_pad0x19c[8];                           // 0x19c
-	unsigned int m_cursorState;                   // 0x1a4
-	unsigned int m_cursorTimestamp;               // 0x1a8
-	unsigned short m_cursorBlinkPhase;            // 0x1ac
-	char m_groundClipScratch[0x71a];              // 0x1ae
-	unsigned int m_pad0x8c8;                      // 0x8c8
-	unsigned int m_pad0x8cc;                      // 0x8cc
-	unsigned short m_clipSearchHeight;            // 0x8d0
-	CVsRect m_spriteGroundLookupRectA;            // 0x8d2
-	CVsRect m_spriteGroundLookupRectB;            // 0x8da
-	CVsRect m_demoTextRect;                       // 0x8e2
-	char m_pad0x8ea[2];                           // 0x8ea
-	unsigned int m_zBufferEnabled;                // 0x8ec
-	int m_score;                                  // 0x8f0
-	int m_levelScore;                             // 0x8f4
-	unsigned int m_scoreTimestamp;                // 0x8f8
-	int m_returnState;                            // 0x8fc
-	CPushActive m_pushActive;                     // 0x900
-	CPopActive m_popActive;                       // 0x908
-	unsigned int m_viewOrientation;               // 0x90c
-	unsigned int m_pad0x910;                      // 0x910
-	CMap* m_map;                                  // 0x914
-	int m_viewOriginX;                            // 0x918
-	int m_viewOriginY;                            // 0x91c
-	unsigned int m_pad0x920;                      // 0x920
-	char m_pad0x924[8];                           // 0x924
-	CPadToButton* m_padToButton;                  // 0x92c
-	SpriteGroundLookup* m_spriteGroundLookup;     // 0x930
-	ObjectClipGrid* m_objectClipGrid;             // 0x934
-	CVsPoint m_spriteGroundTranslationPoint;      // 0x938
-	CVsPoint m_cursorGamePoint;                   // 0x93c
-	CVsPoint m_viewSize;                          // 0x940
-	AiCoord m_originPosition;                     // 0x944
-	int m_clipOffsetX;                            // 0x950
-	int m_clipOffsetY;                            // 0x954
-	CVsPoint m_clipSize;                          // 0x958
-	CViewData* m_viewData;                        // 0x95c
-	unsigned char* m_zBuffer;                     // 0x960
-	unsigned short m_viewDataCount;               // 0x964
-	CBaseRemap* m_paletteRemap;                   // 0x968
-	CAI* m_ai;                                    // 0x96c
-	CGDI* m_gdi;                                  // 0x970
-	CBaseQueue* m_lemmingManager;                 // 0x974
-	CMain2DDisplay* m_display;                    // 0x978
-	CPanel* m_panel;                              // 0x97c
-	CPauseWindow* m_pauseWindow;                  // 0x980
-	unsigned int m_pauseSelection;                // 0x984
-	ePauseWindowMessages m_pauseMessage;          // 0x988
-	ePauseWindowMessages m_previousPauseMessage;  // 0x98c
-	CDrawingMark m_drawingMark;                   // 0x990
-	unsigned int m_clipConfigured;                // 0x994
-	CLine m_lineAt998;                            // 0x998
-	CLine m_lineAt9a8;                            // 0x9a8
-	CVsRect m_spriteGroundTranslatedPointRect;    // 0x9b8
-	CLine m_lines[4];                             // 0x9c0
-	CBigBitmap m_bigBitmaps[4];                   // 0xa00
-	CLemmingAnimsManager* m_lemmingAnims;         // 0xa40
-	char m_pad0xa44[4];                           // 0xa44
-	unsigned int m_groupingActive;                // 0xa48
-	unsigned short m_groupCount;                  // 0xa4c
-	unsigned short m_groupSelectionCount;         // 0xa4e
-	unsigned short m_groupObjectIds[20];          // 0xa50
-	unsigned int m_quitRequested;                 // 0xa78
-	unsigned int m_paused;                        // 0xa7c
-	unsigned int m_pauser;                        // 0xa80
-	unsigned int m_connectionTimeoutActive;       // 0xa84
-	unsigned int m_connectionTimeoutStart;        // 0xa88
-	char m_pad0xa8c[0x204];                       // 0xa8c
-	unsigned int m_unk0xc90;                      // 0xc90
-	char m_pad0xc94[0x7d0];                       // 0xc94
-	unsigned int m_unk0x1464;                     // 0x1464
-	CSolidRect m_solidRects[210];                 // 0x1468
-	unsigned int m_primitiveCount;                // 0x2188
-	unsigned short m_groundHitMode;               // 0x218c
-	char m_pad0x218e[2];                          // 0x218e
-	CSolidRect m_solidRect[1];                    // 0x2190
-	CScreenScroll m_screenScroll;                 // 0x21a0
-	CCopyColourToBackBuff m_copyColourToBackBuff; // 0x21b0
-	CCopyToBackBuff m_copyToBackBuff;             // 0x21c0
-	CCopyToBackBuff m_scrollCopyToBackBuffs[2];   // 0x21d0
-	unsigned int m_bitmapCount;                   // 0x21f0
-	CBitmap m_bitmaps[2];                         // 0x21f4
-	unsigned int m_redrawPending;                 // 0x2214
-	unsigned int m_scrollPending;                 // 0x2218
-	short m_scrollDeltaX;                         // 0x221c
-	short m_scrollDeltaY;                         // 0x221e
-	AnimSpecialEntry* m_zBufferAnimations;        // 0x2220
-	int m_zBufferAnimationCount;                  // 0x2224
-	char m_pad0x2228[0x200];                      // 0x2228
+	unsigned char* m_remapTables[4];             // 0x54
+	CBaseRemap* m_remaps[5];                     // 0x64
+	CTextManager* m_textManager;                 // 0x78
+	CViewData m_unk0x7c;                         // 0x7c
+	CViewData m_unk0xc8;                         // 0xc8
+	CViewData m_unk0x114;                        // 0x114
+	unsigned short m_zoom;                       // 0x160
+	unsigned short m_groundWidth;                // 0x162
+	unsigned short m_groundHeight;               // 0x164
+	short m_groundAnimationFrame;                // 0x166
+	char m_pad0x168[8];                          // 0x168
+	int m_clipMapStepX;                          // 0x170
+	int m_clipMapStepY;                          // 0x174
+	char m_pad0x178[0x0c];                       // 0x178
+	int m_clipScreenX;                           // 0x184
+	int m_clipScreenY;                           // 0x188
+	unsigned int m_mouseButtonDown;              // 0x18c
+	unsigned int m_frameCount;                   // 0x190
+	unsigned int m_frameTime;                    // 0x194
+	unsigned int m_levelTestFrame;               // 0x198
+	char m_pad0x19c[8];                          // 0x19c
+	unsigned int m_cursorState;                  // 0x1a4
+	unsigned int m_cursorTimestamp;              // 0x1a8
+	unsigned short m_cursorBlinkPhase;           // 0x1ac
+	char m_groundClipScratch[0x71a];             // 0x1ae
+	unsigned int m_pad0x8c8;                     // 0x8c8
+	unsigned int m_pad0x8cc;                     // 0x8cc
+	unsigned short m_clipSearchHeight;           // 0x8d0
+	CVSRect m_spriteGroundLookupRectA;           // 0x8d2
+	CVSRect m_spriteGroundLookupRectB;           // 0x8da
+	CVSRect m_demoTextRect;                      // 0x8e2
+	char m_pad0x8ea[2];                          // 0x8ea
+	unsigned int m_zBufferEnabled;               // 0x8ec
+	int m_score;                                 // 0x8f0
+	int m_levelScore;                            // 0x8f4
+	unsigned int m_scoreTimestamp;               // 0x8f8
+	int m_returnState;                           // 0x8fc
+	CPushActive m_pushActive;                    // 0x900
+	CPopActive m_popActive;                      // 0x908
+	unsigned int m_viewOrientation;              // 0x90c
+	unsigned int m_pad0x910;                     // 0x910
+	CMap* m_map;                                 // 0x914
+	int m_viewOriginX;                           // 0x918
+	int m_viewOriginY;                           // 0x91c
+	unsigned int m_pad0x920;                     // 0x920
+	char m_pad0x924[8];                          // 0x924
+	CPadToButton* m_padToButton;                 // 0x92c
+	SpriteGroundLookup* m_spriteGroundLookup;    // 0x930
+	ObjectClipGrid* m_objectClipGrid;            // 0x934
+	CVSPoint m_spriteGroundTranslationPoint;     // 0x938
+	CVSPoint m_cursorGamePoint;                  // 0x93c
+	CVSPoint m_viewSize;                         // 0x940
+	AICOORD m_originPosition;                    // 0x944
+	int m_clipOffsetX;                           // 0x950
+	int m_clipOffsetY;                           // 0x954
+	CVSPoint m_clipSize;                         // 0x958
+	CViewData* m_viewData;                       // 0x95c
+	unsigned char* m_zBuffer;                    // 0x960
+	unsigned short m_viewDataCount;              // 0x964
+	CBaseRemap* m_paletteRemap;                  // 0x968
+	CAI* m_ai;                                   // 0x96c
+	CGDI* m_gdi;                                 // 0x970
+	CBaseQueue* m_lemmingManager;                // 0x974
+	CMain2DDisplay* m_display;                   // 0x978
+	CPanel* m_panel;                             // 0x97c
+	CPauseWindow* m_pauseWindow;                 // 0x980
+	unsigned int m_pauseSelection;               // 0x984
+	ePauseWindowMessages m_pauseMessage;         // 0x988
+	ePauseWindowMessages m_previousPauseMessage; // 0x98c
+	CDrawingMark m_drawingMark;                  // 0x990
+	unsigned int m_clipConfigured;               // 0x994
+	CSolidRect m_lineAt998;                      // 0x998
+	CSolidRect m_lineAt9a8;                      // 0x9a8
+	CVSRect m_spriteGroundTranslatedPointRect;   // 0x9b8
+	CSolidRect m_lines[4];                       // 0x9c0
+	CCopyColourToBackBuff m_backBufferFills[4];  // 0xa00
+	CLemmingAnimsManager* m_lemmingAnims;        // 0xa40
+	char m_pad0xa44[4];                          // 0xa44
+	unsigned int m_groupingActive;               // 0xa48
+	unsigned short m_groupCount;                 // 0xa4c
+	unsigned short m_groupSelectionCount;        // 0xa4e
+	unsigned short m_groupObjectIds[20];         // 0xa50
+	unsigned int m_quitRequested;                // 0xa78
+	unsigned int m_paused;                       // 0xa7c
+	unsigned int m_pauser;                       // 0xa80
+	unsigned int m_connectionTimeoutActive;      // 0xa84
+	unsigned int m_connectionTimeoutStart;       // 0xa88
+	char m_pad0xa8c[0x204];                      // 0xa8c
+	unsigned int m_unk0xc90;                     // 0xc90
+	char m_pad0xc94[0x7d0];                      // 0xc94
+	unsigned int m_unk0x1464;                    // 0x1464
+	CClipRect m_clipRects[210];                  // 0x1468
+	unsigned int m_primitiveCount;               // 0x2188
+	unsigned short m_groundHitMode;              // 0x218c
+	char m_pad0x218e[2];                         // 0x218e
+	CClipRect m_clipRect[1];                     // 0x2190
+	CScreenScroll m_screenScroll;                // 0x21a0
+	CZBuffScroll m_depthScroll;                  // 0x21b0
+	CZBuffClear m_depthClear;                    // 0x21c0
+	CZBuffClear m_scrollDepthClears[2];          // 0x21d0
+	unsigned int m_backBufferCopyCount;          // 0x21f0
+	CCopyToBackBuff m_backBufferCopies[2];       // 0x21f4
+	unsigned int m_redrawPending;                // 0x2214
+	unsigned int m_scrollPending;                // 0x2218
+	short m_scrollDeltaX;                        // 0x221c
+	short m_scrollDeltaY;                        // 0x221e
+	AnimSpecialEntry* m_zBufferAnimations;       // 0x2220
+	int m_zBufferAnimationCount;                 // 0x2224
+	char m_pad0x2228[0x200];                     // 0x2228
 };
 
 // SYNTHETIC: LEMBALL 0x004369a0
@@ -292,7 +292,7 @@ private:
 // ??_EC2D@@WBE@AEPAXI@Z
 
 // GLOBAL: LEMBALL 0x004a78a8
-// ?$S1@?1??GetClipRectangle@C2D@@QAEPAVCVsRect@@XZ@4EA
+// ?$S1@?1??GetClipRectangle@C2D@@QAEPAVCVSRect@@XZ@4EA
 
 // GLOBAL: LEMBALL 0x004a78b0
 // g_clipRectangle

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CCRATE_H
 #define LEMBALL_AI_OBJECTS_CCRATE_H
 
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/CBaseGlobalObject.h"
 #include "AI/Base/ObjectTypes.h"
 
@@ -10,8 +10,8 @@ class CGlobalGameObject;
 // VTABLE: LEMBALL 0x004948d0
 class CCrate : public CBaseGlobalObject {
 public:
-	CCrate(const AiCoord& p_position, CGlobalGameObject* p_contents, unsigned short p_contentsId);
-	virtual AiCoord ActivatePosition();           // vtable+0x2c
+	CCrate(const AICOORD& p_position, CGlobalGameObject* p_contents, unsigned short p_contentsId);
+	virtual AICOORD ActivatePosition();           // vtable+0x2c
 	virtual bool Activate(CGameObject* p_object); // vtable+0x18
 	virtual bool Process();                       // vtable+0x14
 	virtual int Usage();                          // vtable+0x28

@@ -99,7 +99,7 @@ void CBroadcast::SetSpecificAddr(const char* p_address)
 		m_specificAddress = 0;
 		operator delete(address);
 	}
-	m_addressMode = 2;
+	m_addressMode = BROADCAST_ADDRESS_SPECIFIC;
 	GetSpecificAddr(p_address);
 }
 
@@ -139,8 +139,9 @@ void CBroadcast::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 {
 	g_pBroadcastReceiveAddress->GetStr();
 	if (!(*g_pBroadcastReceiveAddress == *g_pBroadcastAddress) &&
-		(m_addressMode != 2 ||
-		 (m_specificAddress != 0 && (m_addressMode != 2 || *g_pBroadcastReceiveAddress == *m_specificAddress)))) {
+		(m_addressMode != BROADCAST_ADDRESS_SPECIFIC ||
+		 (m_specificAddress != 0 &&
+		  (m_addressMode != BROADCAST_ADDRESS_SPECIFIC || *g_pBroadcastReceiveAddress == *m_specificAddress)))) {
 		unsigned int length;
 
 		length = g_broadcastPayloadLength;
@@ -180,7 +181,7 @@ void CBroadcast::Process()
 				g_pMessReqConnect->m_peerName = g_szBroadcastPeerName;
 				g_pMessReqConnect->m_connectionData = m_connectionData;
 				address = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
-				if (m_addressMode == 2) {
+				if (m_addressMode == BROADCAST_ADDRESS_SPECIFIC) {
 					if (m_specificAddress != 0) {
 						*address = *m_specificAddress;
 					}

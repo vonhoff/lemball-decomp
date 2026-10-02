@@ -67,7 +67,7 @@ int CGDIDevice::FindFreeSurface()
 }
 
 // FUNCTION: LEMBALL 0x0046bd10
-CSurface* CGDIDevice::AllocateSurface(const CVsRect& p_rect, CSurface* p_parentSurface)
+CSurface* CGDIDevice::AllocateSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 {
 	int i;
 

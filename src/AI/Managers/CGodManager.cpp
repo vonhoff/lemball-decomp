@@ -58,7 +58,7 @@ void CGodManager::Restart()
 // FUNCTION: LEMBALL 0x0040b150
 void CGodManager::Register(CBaseObjectManager* p_manager)
 {
-	m_transportMap[p_manager->m_messageType] = m_count;
+	m_transportMap[p_manager->m_transportId] = m_count;
 	m_managers[m_count] = p_manager;
 	m_count++;
 	p_manager->Restart();
@@ -92,7 +92,7 @@ void CGodManager::Unregister(CBaseObjectManager* p_manager)
 				*item = item[1];
 			} while (index < m_count - 1);
 		}
-		m_transportMap[p_manager->m_messageType] = -1;
+		m_transportMap[p_manager->m_transportId] = -1;
 		m_managers[index] = 0;
 		m_count--;
 	}

@@ -8,26 +8,26 @@
 #include "AI/Base/ObjectTypes.h"
 #include "CPanel.h"
 #include "CPanelButton.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 
 class CPlayerLemmingGroup;
 
 // FUNCTION: LEMBALL 0x00442ca0
-void CPanelLemming::Move(const CVsPoint& p_position)
+void CPanelLemming::Move(const CVSPoint& p_position)
 {
-	CVsPoint position = p_position;
+	CVSPoint position = p_position;
 	position.m_x += (m_panel->m_balloonSize.m_x + m_panel->m_buttonSize.m_x) * (short) m_playerIndex;
 	m_button->Move(position);
 }
 
 // FUNCTION: LEMBALL 0x00442ce0
-CPanelLemming::CPanelLemming(CPlayerLemming* p_lemming, const CVsPoint& p_position, CPanel* p_panel)
+CPanelLemming::CPanelLemming(CPlayerLemming* p_lemming, const CVSPoint& p_position, CPanel* p_panel)
 {
 	m_panel = p_panel;
 	m_window = p_panel->m_game->m_display;
 	m_lemming = p_lemming;
-	CVsRect rect;
+	CVSRect rect;
 	m_playerIndex = p_lemming->m_playerIndex;
 	m_balloonType = OBJECT_BALLOON_NONE;
 	m_inventoryCount = 0;

@@ -2,7 +2,8 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Map/Base/CMap.h"
-#include "AI/Base/Coord3d.h"
+#include "AI/Base/ObjectTypes.h"
+#include "AI/Base/tCoord3d.h"
 #include "AI/Objects/GroundAnimEntry.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
@@ -34,15 +35,15 @@ bool CGroundAnim::CheckAllAnims()
 		unsigned int& active = m_entries[index].m_active;
 		if (active != 0) {
 			switch (m_entries[index].m_mapCell->m_objectType) {
-			case 0x210:
+			case TERRAIN_ANIM:
 				active = 1;
 				break;
-			case 0x215:
-			case 0x216:
+			case TERRAIN_FLAME:
+			case TERRAIN_ELECTRIC:
 				active = 0;
 				break;
-			case 0x219:
-			case 0x21a:
+			case TERRAIN_CONVEYOR_VARIANT_A:
+			case TERRAIN_CONVEYOR_VARIANT_B:
 				active = 1;
 				break;
 			default: {
@@ -100,7 +101,7 @@ void CGroundAnim::Process()
 }
 
 // FUNCTION: LEMBALL 0x0040d080
-bool CGroundAnim::Check(const Coord3d& p_coordinate)
+bool CGroundAnim::Check(const tCoord3d& p_coordinate)
 {
 	int index = 0;
 	if (0 < m_count) {
@@ -117,7 +118,7 @@ bool CGroundAnim::Check(const Coord3d& p_coordinate)
 }
 
 // FUNCTION: LEMBALL 0x0040d130
-void CGroundAnim::Add(const Coord3d& p_coordinate, unsigned short p_startFrame, unsigned short p_endFrame)
+void CGroundAnim::Add(const tCoord3d& p_coordinate, unsigned short p_startFrame, unsigned short p_endFrame)
 {
 	if (Check(p_coordinate) != 0 || m_count >= 200) {
 		return;
@@ -141,7 +142,7 @@ void CGroundAnim::Add(const Coord3d& p_coordinate, unsigned short p_startFrame, 
 }
 
 // FUNCTION: LEMBALL 0x0040d230
-void CGroundAnim::RemoveAtCoordinate(const Coord3d& p_coordinate)
+void CGroundAnim::RemoveAtCoordinate(const tCoord3d& p_coordinate)
 {
 	for (int i = 0; i < m_count; i++) {
 		if (p_coordinate.m_x == m_entries[i].m_coordinate.m_x && p_coordinate.m_y == m_entries[i].m_coordinate.m_y) {
@@ -154,7 +155,7 @@ void CGroundAnim::RemoveAtCoordinate(const Coord3d& p_coordinate)
 }
 
 // FUNCTION: LEMBALL 0x0040d2b0
-int CGroundAnim::ExportCoordinates(Coord3d* p_records)
+int CGroundAnim::ExportCoordinates(tCoord3d* p_records)
 {
 	int index = 0;
 	if (index < m_count) {

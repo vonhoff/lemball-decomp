@@ -3,9 +3,9 @@
 
 #include "../../AI/Base/ObjectTypes.h"
 #include "../../Visos/Animation/CAnim.h"
-#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Foundation/CVSRect.h"
 #include "../../Visos/Graphics/CDepressedButton.h"
-#include "../../Visos/Graphics/CLine.h"
+#include "../../Visos/Graphics/CSolidRect.h"
 
 class CPanelLemming;
 class CPVGWnd;
@@ -14,13 +14,13 @@ class CPVGWnd;
 // VTABLE: LEMBALL 0x004974e0 CHotAreaHandler
 class CPanelButton : public CDepressedButton {
 public:
-	CPanelButton(CPanelLemming* p_lemming, const CVsRect& p_rect, CPVGWnd* p_parent);
-	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8
+	CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVGWnd* p_parent);
+	virtual void OnPaint(const CVSRect& p_rect);                           // vtable+0xa8
 	virtual void DrawButton();                                             // vtable+0xbc
 	virtual void OnEnterButton();                                          // vtable+0xc8
 	virtual void OnExitButton();                                           // vtable+0xcc
-	virtual void OnExternalButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x0c
-	virtual void OnInside(const CVsPoint& p_point);                        // vtable+0x18
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
 	virtual void OnPressed(int p_flags);                                   // vtable+0xc4
 	virtual void OnReleased(int p_flags);                                  // vtable+0xc0
 	virtual ~CPanelButton();                                               // vtable+0x00
@@ -28,10 +28,10 @@ public:
 private:
 	unsigned int m_pressedInside;   // 0x10c
 	CPanelLemming* m_lemming;       // 0x110
-	CLine m_statusLine[1];          // 0x114
-	CLine m_inventoryLines[3];      // 0x124
-	CVsRect m_statusRect;           // 0x154
-	CVsRect m_inventoryRect;        // 0x15c
+	CSolidRect m_statusLine[1];     // 0x114
+	CSolidRect m_inventoryLines[3]; // 0x124
+	CVSRect m_statusRect;           // 0x154
+	CVSRect m_inventoryRect;        // 0x15c
 	unsigned int m_lastAmmo;        // 0x164
 	unsigned int m_unavailable;     // 0x168
 	unsigned int m_alternatePlayer; // 0x16c

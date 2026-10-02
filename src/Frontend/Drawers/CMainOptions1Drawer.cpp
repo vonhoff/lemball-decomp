@@ -8,10 +8,10 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
 
 class CGWnd;
 
@@ -52,7 +52,7 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 													RES_NEWFRONT_ICONS_LORES_FULLSCREEN};
 
 // FUNCTION: LEMBALL 0x00448200
-CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2)
+CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_1, 0, 0, 0, 0, 0)
 {
 	m_idleDeadline = timeGetTime() + 20000;
@@ -120,7 +120,7 @@ void CMainOptions1Drawer::Load()
 		m_primitiveBundle[i].m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) bitmap->m_x) / 2);
 		m_primitiveBundle[i].m_primitive.m_y = 0;
 		m_primitiveBundle[i].m_primitive.m_resource = bitmap;
-		m_primitiveBundle[i].m_primitive.m_flags = 0x800;
+		m_primitiveBundle[i].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 		m_primitiveBundle[i].m_primitive.m_remap = 0;
 	}
 	m_gunController = new CGunController((CGWnd*) m_display, m_gdi, 6, m_mode);

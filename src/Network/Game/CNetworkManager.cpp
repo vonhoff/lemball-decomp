@@ -205,7 +205,7 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 		}
 		return 1;
 	}
-	case 13:
+	case NETWORK_EVENT_HOST_LOOKUP_FAILED:
 		if (g_pNetworkOptionsProc != 0) {
 			g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) messageType);
 		}

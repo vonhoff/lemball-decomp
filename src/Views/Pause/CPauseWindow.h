@@ -4,12 +4,12 @@
 #include "../../Visos/Animation/CAnim.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
 #include "../../Visos/Foundation/CTextManager.h"
-#include "../../Visos/Foundation/CVsPoint.h"
-#include "../../Visos/Foundation/CVsRect.h"
-#include "../../Visos/Foundation/CVsSize.h"
+#include "../../Visos/Foundation/CVSPoint.h"
+#include "../../Visos/Foundation/CVSRect.h"
+#include "../../Visos/Foundation/CVSSize.h"
 #include "../../Visos/Graphics/CGWnd.h"
 #include "../../Visos/Graphics/CHotAreaHandler.h"
-#include "../../Visos/Graphics/CLine.h"
+#include "../../Visos/Graphics/CSolidRect.h"
 #include "CPauseVramHandler.h"
 
 class CBaseRemap;
@@ -39,16 +39,16 @@ class CPauseWindow : public CGWnd,
 public:
 	CBaseRemap* Remap(int p_item);
 	CPauseWindow(CReceiveWindowState* p_receiverState, CPVGWnd* p_parentWindow, ePauseWindowMessages p_pauseMessage);
-	CVsRect CalculateWindow();
+	CVSRect CalculateWindow();
 	virtual int ProcessMsg(Message* p_message);                            // vtable+0x08
-	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);       // vtable+0x04
+	virtual void OnButtonDown(const CVSPoint& p_point, int p_flags);       // vtable+0x04
 	virtual void FreeVram();                                               // vtable+0x00
-	virtual void OnButtonUp(const CVsPoint& p_point, int p_flags);         // vtable+0x08
+	virtual void OnButtonUp(const CVSPoint& p_point, int p_flags);         // vtable+0x08
 	virtual void OnDriverChange();                                         // vtable+0x5c
-	virtual void OnExternalButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x0c
-	virtual void OnInside(const CVsPoint& p_point);                        // vtable+0x18
-	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8
-	void CreateTheWindow(const CVsRect& p_rect);
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
+	virtual void OnPaint(const CVSRect& p_rect);                           // vtable+0xa8
+	void CreateTheWindow(const CVSRect& p_rect);
 	void Initialise();
 	void Load();
 	void RegisterRemaps();
@@ -70,12 +70,12 @@ private:
 	int m_minimumSelection;                // 0x124
 	int m_initialSelection;                // 0x128
 	int m_verticalTextOffset;              // 0x12c
-	CVsSize m_borderTiles;                 // 0x130
+	CVSSize m_borderTiles;                 // 0x130
 	int m_borderAnimCount;                 // 0x134
-	CLine m_borderLine[1];                 // 0x138
-	CVsPoint m_windowPadding;              // 0x148
-	CVsPoint m_textSpacing;                // 0x14c
-	CVsPoint m_borderPadding;              // 0x150
+	CSolidRect m_borderLine[1];            // 0x138
+	CVSPoint m_windowPadding;              // 0x148
+	CVSPoint m_textSpacing;                // 0x14c
+	CVSPoint m_borderPadding;              // 0x150
 	CResANIM* m_horizontalBorderAnim;      // 0x154
 	CResANIM* m_verticalBorderAnim;        // 0x158
 	CAnim m_cornerAnims[4];                // 0x15c
@@ -83,7 +83,7 @@ private:
 	CBaseRemap* m_remaps[4];               // 0x1e0
 	CResFONT* m_font;                      // 0x1f0
 	CPauseVramHandler* m_vramSurface;      // 0x1f4
-	CVsPoint* m_menuItemRects;             // 0x1f8
+	CVSPoint* m_menuItemRects;             // 0x1f8
 	unsigned int m_horizontalBorderAnimId; // 0x1fc
 	unsigned int m_verticalBorderAnimId;   // 0x200
 	unsigned int m_fontId;                 // 0x204

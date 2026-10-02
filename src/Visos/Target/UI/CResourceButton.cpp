@@ -7,7 +7,7 @@ CResourceButton::~CResourceButton()
 }
 
 // FUNCTION: LEMBALL 0x00468f80
-void CResourceButton::OnPaint(const CVsRect& p_rect)
+void CResourceButton::OnPaint(const CVSRect& p_rect)
 {
 	CFramedButton::OnPaint(p_rect);
 }

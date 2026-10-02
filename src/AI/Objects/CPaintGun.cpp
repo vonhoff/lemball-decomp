@@ -5,7 +5,7 @@
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
@@ -35,7 +35,7 @@ CPaintGun::~CPaintGun()
 }
 
 // FUNCTION: LEMBALL 0x0042bb30
-void CPaintGun::Set(unsigned short p_id, const AiCoord& p_position, int p_direction)
+void CPaintGun::Set(unsigned short p_id, const AICOORD& p_position, int p_direction)
 {
 	SetId(p_id);
 	int x = p_position.m_xFixed;
@@ -97,10 +97,10 @@ bool CPaintGun::Process()
 			Action(ACTION_RUNNING);
 		}
 		else if (m_lastMovementTick < g_dwGameTick) {
-			AiCoord position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
-			AiCoord start;
-			AiCoord target;
-			volatile int coordinate;
+			AICOORD position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
+			AICOORD start;
+			AICOORD target;
+			int coordinate;
 
 			start.m_yFixed = position.m_yFixed;
 			start.m_zFixed = position.m_zFixed;

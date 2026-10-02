@@ -8,7 +8,7 @@
 class CRemap;
 class CResFONT;
 class CResZRLE;
-struct CVsPoint;
+struct CVSPoint;
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00499ae8
@@ -25,7 +25,7 @@ public:
 					 char* p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x18
-	virtual void Set(CVsPoint& p_position,
+	virtual void Set(CVSPoint& p_position,
 					 CResFONT* p_font,
 					 char* p_text,
 					 unsigned long p_flags,
@@ -36,7 +36,7 @@ public:
 					 CString p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x10
-	virtual void Set(CVsPoint& p_position,
+	virtual void Set(CVSPoint& p_position,
 					 CResFONT* p_font,
 					 CString p_text,
 					 unsigned long p_flags,

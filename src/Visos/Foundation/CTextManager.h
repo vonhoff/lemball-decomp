@@ -7,8 +7,8 @@ class CGDI;
 class CRemap;
 class CResFONT;
 class CText;
-struct CVsPoint;
-struct CVsSize;
+struct CVSPoint;
+struct CVSSize;
 
 // SIZE 0x24
 class CTextManager {
@@ -16,15 +16,15 @@ public:
 	CResFONT* GetFont(unsigned long p_fontId);
 	CTextManager(unsigned long p_fontIdCount, int p_fontCapacity, int p_primitiveCount, unsigned int p_maxStringLen);
 	void DrawString(CGDI* p_gdi,
-					CVsPoint& p_position,
-					const CVsSize& p_advance,
+					CVSPoint& p_position,
+					const CVSSize& p_advance,
 					unsigned long p_fontId,
 					CString p_text,
 					unsigned long p_flags,
 					CRemap* p_remap);
 	void DrawString(CGDI* p_gdi,
-					CVsPoint& p_position,
-					const CVsSize& p_advance,
+					CVSPoint& p_position,
+					const CVSSize& p_advance,
 					unsigned long p_fontId,
 					char* p_text,
 					unsigned long p_flags,

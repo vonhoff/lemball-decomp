@@ -2,13 +2,14 @@
 #define LEMBALL_PLATFORM_DIRECTX_IDIRECTSOUND_H
 
 class IDirectSoundBuffer;
+struct DSBUFFERDESC;
 
 class IDirectSound {
 public:
 	virtual long __stdcall QueryInterface(const void* p_interfaceId, void** p_object) = 0;
 	virtual unsigned long __stdcall AddRef() = 0;
 	virtual unsigned long __stdcall Release() = 0;
-	virtual long __stdcall CreateSoundBuffer(const void* p_description,
+	virtual long __stdcall CreateSoundBuffer(const DSBUFFERDESC* p_description,
 											 IDirectSoundBuffer** p_buffer,
 											 void* p_outer) = 0;
 	virtual long __stdcall GetCaps(void* p_caps) = 0;

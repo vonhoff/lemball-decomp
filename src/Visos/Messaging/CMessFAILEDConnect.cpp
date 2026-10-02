@@ -15,7 +15,7 @@ CMessFAILEDConnect::CMessFAILEDConnect(const char* p_header) : CBroadcastMessage
 // FUNCTION: LEMBALL 0x0045f660
 void CMessFAILEDConnect::GetData()
 {
-	Get(*(const char**) &m_failureReason);
+	Get(m_failureReason);
 }
 
 // FUNCTION: LEMBALL 0x0045f670

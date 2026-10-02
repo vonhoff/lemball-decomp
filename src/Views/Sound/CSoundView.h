@@ -4,7 +4,7 @@
 #include "SoundEffects.h"
 class CLoadUpdate;
 
-class AiCoord;
+class AICOORD;
 class CViewData;
 struct EffectSpec {
 	int m_soundId;              // 0x00
@@ -33,7 +33,7 @@ public:
 	void SetMusicVolume(unsigned char p_volume);
 	void StopMusicIfEnabled();
 	void ResumeMusicIfEnabled();
-	void SoundEffect(CViewData* p_viewData, int p_count, AiCoord& p_listener);
+	void SoundEffect(CViewData* p_viewData, int p_count, AICOORD& p_listener);
 	void UnprepareEffects();
 	~CSoundView();
 

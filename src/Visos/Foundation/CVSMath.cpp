@@ -1,7 +1,7 @@
 #include "CVSMath.h"
 
 #include "../../Control/Game/CGame.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 
 #include <stdlib.h>
 
@@ -77,7 +77,7 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
 }
 
 // FUNCTION: LEMBALL 0x004140d0
-bool CloseTo(AiCoord p_first, AiCoord p_second)
+bool CloseTo(AICOORD p_first, AICOORD p_second)
 {
 	int dx = (p_first.m_xFixed >> 12) - (p_second.m_xFixed >> 12);
 	int dy = (p_first.m_yFixed >> 12) - (p_second.m_yFixed >> 12);

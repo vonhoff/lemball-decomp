@@ -23,9 +23,9 @@
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CEntryHandler.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CBaseRemap.h"
 

@@ -1,28 +1,21 @@
-#include "CVsRect.h"
+#include "CVSRect.h"
 
-#include "CVsPoint.h"
-#include "CVsSize.h"
+#include "CVSPoint.h"
+#include "CVSSize.h"
 
 // FUNCTION: LEMBALL 0x00442190
-CVsRect& CVsRect::operator=(const CVsRect& p_source)
+CVSRect& CVSRect::operator=(const CVSRect& p_source)
 {
-	const short* coords;
-
 	m_width = p_source.m_width;
 	m_height = p_source.m_height;
-	if (&p_source != 0) {
-		coords = &p_source.m_x;
-	}
-	else {
-		coords = 0;
-	}
-	m_x = *coords;
-	m_y = coords[1];
+	const CVSPoint& point = p_source;
+	m_x = point.m_x;
+	m_y = point.m_y;
 	return *this;
 }
 
 // FUNCTION: LEMBALL 0x0044c100
-CVsRect* CVsRect::ExpandToInclude(const CVsRect& p_rect)
+CVSRect* CVSRect::ExpandToInclude(const CVSRect& p_rect)
 {
 	if ((int) p_rect.m_width * (int) p_rect.m_height == 0) {
 		return this;
@@ -66,6 +59,6 @@ CVsRect* CVsRect::ExpandToInclude(const CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00478b80
-CVsRect::CVsRect(short p_x, short p_y, CVsSize* p_size) : CVsSize(*p_size), CVsPoint(p_x, p_y)
+CVSRect::CVSRect(short p_x, short p_y, CVSSize* p_size) : CVSSize(*p_size), CVSPoint(p_x, p_y)
 {
 }

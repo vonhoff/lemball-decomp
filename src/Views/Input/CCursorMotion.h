@@ -2,13 +2,13 @@
 #define LEMBALL_VIEWS_INPUT_CCURSORMOTION_H
 
 #include "../../Visos/Graphics/CClipRect.h"
-#include "../../Visos/Graphics/CSolidRect.h"
+#include "../../Visos/Graphics/CLine.h"
 
 class CAI;
 class CBaseQueue;
 class CLemmingAnimsManager;
 class CMap;
-struct CVsPoint;
+struct CVSPoint;
 // SIZE 0x78
 class CCursorMotion {
 public:
@@ -17,9 +17,9 @@ public:
 	void PostPosition();
 	void Process();
 	void Draw(unsigned int p_unused);
-	void DrawAt(unsigned int p_unused, const CVsPoint& p_position);
-	void SetPosition(const CVsPoint& p_position);
-	CVsPoint GetPosition();
+	void DrawAt(unsigned int p_unused, const CVSPoint& p_position);
+	void SetPosition(const CVSPoint& p_position);
+	CVSPoint GetPosition();
 	void StopVertical();
 	void StopHorizontal();
 	void StartHorizontal(unsigned int p_positive);
@@ -32,7 +32,7 @@ private:
 	CAI* m_ai;                       // 0x08
 	CBaseQueue* m_aiQueue;           // 0x0c
 	CLemmingAnimsManager* m_anims;   // 0x10
-	CClipRect m_clipRects[2];        // 0x14
+	CLine m_clipRects[2];            // 0x14
 	int m_fixedX;                    // 0x34
 	int m_fixedY;                    // 0x38
 	int m_velocityX;                 // 0x3c
@@ -44,7 +44,7 @@ private:
 	unsigned int m_horizontalActive; // 0x54
 	unsigned int m_verticalActive;   // 0x58
 	unsigned int m_positionDirty;    // 0x5c
-	CSolidRect m_marker;             // 0x60
+	CClipRect m_marker;              // 0x60
 	unsigned int m_drawOffsetX;      // 0x70
 	unsigned int m_drawOffsetY;      // 0x74
 };

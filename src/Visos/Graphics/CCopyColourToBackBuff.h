@@ -1,37 +1,26 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CCOPYCOLOURTOBACKBUFF_H
 #define LEMBALL_VISOS_GRAPHICS_CCOPYCOLOURTOBACKBUFF_H
 
+#include "../Foundation/CVSRect.h"
 #include "CPrimitive.h"
 
 // SIZE 0x10
-// VTABLE: LEMBALL 0x00496d90
+// VTABLE: LEMBALL 0x00496e80
 class CCopyColourToBackBuff : public CPrimitive {
 public:
-	CCopyColourToBackBuff() : m_field06(0)
-	{
-		m_colour = 0;
-		m_height = 0;
-		m_width = 0;
-		m_y = 0;
-		m_x = 0;
-	}
-	virtual void Draw(CGDI* p_gdi);     // vtable+0x04
-	virtual void Render(CGDI* p_gdi);   // vtable+0x08
-	virtual ~CCopyColourToBackBuff() {} // vtable+0x00
-
-	friend class CSurface;
-	friend class C2D;
+	// FUNCTION: LEMBALL 0x004394f0
+	CCopyColourToBackBuff() : m_bounds() {}
+	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
+	virtual void Render(CGDI* p_gdi); // vtable+0x08
+	virtual ~CCopyColourToBackBuff(); // vtable+0x00
 
 private:
-	short m_colour;  // 0x04
-	short m_field06; // 0x06
-	short m_width;   // 0x08
-	short m_height;  // 0x0a
-	short m_x;       // 0x0c
-	short m_y;       // 0x0e
+	friend class CSurface;
+	unsigned int m_colour; // 0x04
+	CVSRect m_bounds;      // 0x08
 };
 
-// SYNTHETIC: LEMBALL 0x00439680
+// SYNTHETIC: LEMBALL 0x00439620
 // CCopyColourToBackBuff::`scalar deleting destructor'
 
 #endif

@@ -6,7 +6,7 @@
 #include "../../Visos/Foundation/CFixed.h"
 #include "../../Visos/Foundation/CVSMath.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
@@ -36,7 +36,7 @@ CTrampoline::~CTrampoline()
 }
 
 // FUNCTION: LEMBALL 0x0042a9e0
-void CTrampoline::Set(unsigned short p_id, const AiCoord& p_position)
+void CTrampoline::Set(unsigned short p_id, const AICOORD& p_position)
 {
 	SetId(p_id);
 	m_position.m_xFixed = p_position.m_xFixed;
@@ -81,7 +81,7 @@ bool CTrampoline::Process()
 }
 
 // FUNCTION: LEMBALL 0x0042aaf0
-int CTrampoline::TryEnableNearPosition(const AiCoord& p_position, CGameObject* p_object)
+int CTrampoline::TryEnableNearPosition(const AICOORD& p_position, CGameObject* p_object)
 {
 	if ((int) Distance(m_position.m_xFixed >> 12,
 					   m_position.m_yFixed >> 12,

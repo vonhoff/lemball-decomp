@@ -4,7 +4,7 @@
 #include "../Base/CGlobalGameObject.h"
 #include "../Base/CMove3d.h"
 
-class AiCoord;
+class AICOORD;
 class CGameObject;
 // SIZE 0x1a0
 // VTABLE: LEMBALL 0x00496a30
@@ -13,7 +13,7 @@ public:
 	CMover();
 	bool GetOn(CGameObject* p_object);
 	bool IsAt(int p_x, int p_y, int& p_height);
-	bool IsOn(const AiCoord& p_position);
+	bool IsOn(const AICOORD& p_position);
 	void FindObjectsOnTopOfMe();
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c

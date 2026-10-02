@@ -1,8 +1,8 @@
 #include "../CAnimsManager.h"
 
-#include "../../Foundation/CVsPoint.h"
+#include "../../Foundation/CVSPoint.h"
 #include "../../Graphics/CGDI.h"
-#include "../../Graphics/CLine.h"
+#include "../../Graphics/CSolidRect.h"
 #include "../../Graphics/CSurface.h"
 #include "../../Graphics/CZRLE.h"
 #include "../../Resources/CResANIM.h"
@@ -11,13 +11,13 @@
 #include "../../Resources/CResZRLE.h"
 #include "../CAnim.h"
 #include "../CFrames.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x00467730
-CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
+CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 								unsigned long p_resourceId,
 								unsigned long p_drawFlags,
 								CAnimFrameBASE* p_frame,
@@ -90,5 +90,5 @@ CVsRect CAnimsManager::DrawAnim(const CVsPoint& p_position,
 		anim->m_remap = p_remap;
 		anim->Draw(m_gdi);
 	}
-	return CVsRect(sizeSource->m_x, sizeSource->m_y, sizeSource->m_width, sizeSource->m_height);
+	return CVSRect(sizeSource->m_x, sizeSource->m_y, sizeSource->m_width, sizeSource->m_height);
 }

@@ -5,8 +5,8 @@
 #include "CGDI.h"
 #include "CHotAreaList.h"
 #include "CSurface.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Graphics/CDepressedButton.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
@@ -20,7 +20,7 @@ class CRemap;
 char g_szButton[] = "Button";
 
 // FUNCTION: LEMBALL 0x00468530
-CGraphicButton::CGraphicButton(const CVsPoint& p_position,
+CGraphicButton::CGraphicButton(const CVSPoint& p_position,
 							   CPVGWnd* p_parent,
 							   unsigned long p_animId,
 							   unsigned long p_alignmentFlags)
@@ -35,7 +35,7 @@ CGraphicButton::CGraphicButton(const CVsPoint& p_position,
 	m_buttonX = x;
 	short y = p_position.m_y;
 	m_buttonY = y;
-	CVsRect createRect(x, y, CHotAreaHandler::m_bounds.m_width, CHotAreaHandler::m_bounds.m_height);
+	CVSRect createRect(x, y, CHotAreaHandler::m_bounds.m_width, CHotAreaHandler::m_bounds.m_height);
 	CGWnd* window = this;
 	window->Create(createRect, m_ownerWindow, g_szButton);
 	CHotAreaHandler::m_bounds.m_x = (short) (CHotAreaHandler::m_bounds.m_x + m_relativeTopLeft.m_x);
@@ -79,7 +79,7 @@ void CGraphicButton::Initialise()
 		graphicHeight = (unsigned short) height;
 	}
 	m_animation->m_directUseCount = m_animation->m_directUseCount - 1;
-	const CVsPoint* position = &this->CHotAreaHandler::m_bounds;
+	const CVSPoint* position = &this->CHotAreaHandler::m_bounds;
 	m_graphicOffsetX = position->m_x;
 	m_graphicOffsetY = position->m_y;
 	boxWidth = CHotAreaHandler::m_bounds.m_width;

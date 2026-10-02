@@ -16,7 +16,7 @@
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Graphics/CPVGWnd.h"
 #include "Visos/Graphics/CWnd.h"
 #include "Visos/Target/Graphics/CGraphicsDriver.h"
@@ -69,7 +69,7 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 	case 2:
 		driverStorage = operator new(sizeof(CDisplayDibDriver));
 		if (driverStorage != 0) {
-			CVsSize size;
+			CVSSize size;
 			size.m_width = 320;
 			size.m_height = 200;
 			g_pTargetGraphicsDriver = new (driverStorage) CDisplayDibDriver(size);
@@ -81,7 +81,7 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 	case 3:
 		driverStorage = operator new(sizeof(CPlanarDibDriver));
 		if (driverStorage != 0) {
-			CVsSize size;
+			CVSSize size;
 			size.m_width = 320;
 			size.m_height = 240;
 			g_pTargetGraphicsDriver = new (driverStorage) CPlanarDibDriver(size);
@@ -91,11 +91,11 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 		}
 		break;
 	case 4:
-		g_pTargetGraphicsDriver = new CDirectDrawDriver(&CVsSize(640, 480), 1);
+		g_pTargetGraphicsDriver = new CDirectDrawDriver(&CVSSize(640, 480), 1);
 		break;
 	case 6:
 		resolvedDriverMode = 4;
-		g_pTargetGraphicsDriver = new CDirectDrawDriver(&CVsSize(640, 480), 1);
+		g_pTargetGraphicsDriver = new CDirectDrawDriver(&CVSSize(640, 480), 1);
 		break;
 	default:
 		*g_pErrorOutput << "No valid driver selected to initialise\n";
@@ -200,7 +200,7 @@ bool CGraphicsState::IsDisplayDibDriver()
 }
 
 // FUNCTION: LEMBALL 0x004581d0
-void CGraphicsState::UpdateDriverSize(const CVsSize& p_size)
+void CGraphicsState::UpdateDriverSize(const CVSSize& p_size)
 {
 	if (g_pTargetGraphicsDriver != 0) {
 		CGraphicsDriver* driver = g_pTargetGraphicsDriver;

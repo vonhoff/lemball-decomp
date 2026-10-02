@@ -3,9 +3,9 @@
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGameObject.h"
 #include "../Objects/CBullet.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Managers/CBaseObjectManager.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 
 // FUNCTION: LEMBALL 0x00417d80
 CBulletManager::CBulletManager() : CBaseObjectManager(0x21, 0x16)
@@ -23,28 +23,18 @@ CBulletManager::CBulletManager() : CBaseObjectManager(0x21, 0x16)
 	m_poolStart = 0;
 }
 
-inline static void RestartBullets(CBullet** p_activeBullets,
-								  CBulletManager* p_manager,
-								  CBullet* CBulletManager::* p_bullets,
-								  int CBulletManager::* p_iterator,
-								  int CBulletManager::* p_activeCount)
-{
-	p_manager->*p_iterator = 0;
-	p_manager->*p_activeCount = 0;
-	for (int i = 0; i < 40; i++) {
-		p_activeBullets[i] = 0;
-		(p_manager->*p_bullets)[i].Restart();
-	}
-}
-
 // FUNCTION: LEMBALL 0x00417e80
 void CBulletManager::Restart()
 {
-	RestartBullets(m_activeBullets,
-				   this,
-				   &CBulletManager::m_bullets,
-				   &CBulletManager::m_iterator,
-				   &CBulletManager::m_activeCount);
+	enum {
+		BULLET_POOL_CAPACITY = sizeof(m_activeBullets) / sizeof(m_activeBullets[0])
+	};
+	m_iterator = 0;
+	m_activeCount = 0;
+	for (int i = 0; i < BULLET_POOL_CAPACITY; i++) {
+		m_activeBullets[i] = 0;
+		m_bullets[i].Restart();
+	}
 }
 
 // FUNCTION: LEMBALL 0x00417ec0
@@ -111,8 +101,8 @@ bool CBulletManager::RequestBullet(unsigned short p_id,
 								   eBulletType p_bulletType,
 								   eOwner p_owner,
 								   int p_sourceObjectId,
-								   AiCoord p_start,
-								   AiCoord p_target)
+								   AICOORD p_start,
+								   AICOORD p_target)
 {
 	if (m_activeCount < 0x28) {
 		m_activeBullets[m_activeCount] = NextFreeBullet();
@@ -161,9 +151,10 @@ void CBulletManager::RemoveBullet(CBullet* p_bullet)
 	}
 }
 
-inline static int CollectBulletViewData(CBulletManager* p_manager, CViewData* p_viewData)
+// FUNCTION: LEMBALL 0x004180e0
+int CBulletManager::GetViewData(CViewData* p_viewData)
 {
-	CBullet* bullet = p_manager->GetFirstBullet();
+	CBullet* bullet = GetFirstBullet();
 	int count = 0;
 	if (bullet != 0) {
 		CViewData* viewData = p_viewData;
@@ -171,20 +162,14 @@ inline static int CollectBulletViewData(CBulletManager* p_manager, CViewData* p_
 			bullet->GetViewData(*viewData);
 			viewData++;
 			count++;
-			bullet = p_manager->GetNextBullet();
+			bullet = GetNextBullet();
 		} while (bullet != 0);
 	}
 	return count;
 }
 
-// FUNCTION: LEMBALL 0x004180e0
-int CBulletManager::GetViewData(CViewData* p_viewData)
-{
-	return CollectBulletViewData(this, p_viewData);
-}
-
 // FUNCTION: LEMBALL 0x00418120
-bool CBulletManager::CheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
+bool CBulletManager::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate)
 {
 	int rectTop;
 	int rectLeft = p_rect->m_x;
@@ -193,12 +178,10 @@ bool CBulletManager::CheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordina
 	int rectBottom = p_rect->m_height + rectTop;
 	CBullet* bullet = GetFirstBullet();
 	while (bullet != 0) {
-		int x = bullet->m_position.m_xFixed >> 0xc;
-		int y = bullet->m_position.m_yFixed >> 0xc;
-		int& left = x;
-		int& top = y;
-		int right = x + 8;
-		int bottom = y + 8;
+		int left = bullet->m_position.m_xFixed >> 0xc;
+		int top = bullet->m_position.m_yFixed >> 0xc;
+		int right = left + 8;
+		int bottom = top + 8;
 		left -= 8;
 		top -= 8;
 		if (rectRight > left && right > rectLeft && rectBottom > top && bottom > rectTop) {

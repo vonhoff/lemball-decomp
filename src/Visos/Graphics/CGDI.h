@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CGDI_H
 #define LEMBALL_VISOS_GRAPHICS_CGDI_H
 
-class CVsRect;
+class CVSRect;
 class CSurface;
 class CPrimitive;
 struct WinGDrawState;
@@ -9,22 +9,22 @@ struct WinGDrawState;
 // SIZE 0x10
 class CGDI {
 public:
-	CGDI(const CVsRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSurface);
+	CGDI(const CVSRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSurface);
 	void AddToList(CPrimitive* p_primitive);
 	void Render();
 	~CGDI();
 
-	friend class CBitmap;
-	friend class CBigBitmap;
-	friend class CClipRect;
-	friend class CCopyColourToBackBuff;
 	friend class CCopyToBackBuff;
+	friend class CCopyColourToBackBuff;
+	friend class CLine;
+	friend class CZBuffScroll;
+	friend class CZBuffClear;
 	friend class CDrawingMark;
 	friend class CScreenScroll;
-	friend class CLine;
+	friend class CSolidRect;
 	friend class CPopActive;
 	friend class CPushActive;
-	friend class CSolidRect;
+	friend class CClipRect;
 	friend class CText;
 	friend class CZRLE;
 	friend class CMain2DDisplay;
@@ -42,8 +42,8 @@ public:
 	friend class CPVButton;
 	friend class CPanelButton;
 	friend class CGunController;
-	friend class CBitmapRes;
-	friend class CBitmapResBase;
+	friend class CBigBitmap;
+	friend class CBitmap;
 	friend class CCDLoadAnim;
 	friend class CBaseCursor;
 	friend class CAnim;

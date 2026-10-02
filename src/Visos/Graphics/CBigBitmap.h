@@ -1,32 +1,40 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CBIGBITMAP_H
 #define LEMBALL_VISOS_GRAPHICS_CBIGBITMAP_H
 
-#include "CPrimitive.h"
+#include "CBitmap.h"
 
-// SIZE 0x10
-// VTABLE: LEMBALL 0x00496e80
-class CBigBitmap : public CPrimitive {
+// SIZE 0x24
+// VTABLE: LEMBALL 0x00497918
+class CBigBitmap : public CBitmap {
 public:
-	// FUNCTION: LEMBALL 0x004394f0
-	CBigBitmap() : m_y(0)
+	// FUNCTION: LEMBALL 0x00447120
+	CBigBitmap()
 	{
-		m_x = 0;
-		m_height = 0;
-		m_width = 0;
+		m_unknown22 = 0;
+		m_unknown20 = 0;
 	}
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
 	virtual void Render(CGDI* p_gdi); // vtable+0x08
-	virtual ~CBigBitmap();            // vtable+0x00
+	// FUNCTION: LEMBALL 0x00447260
+	virtual ~CBigBitmap() {} // vtable+0x00
+
+	friend class CBaseFrontendDrawer;
+	friend class CMainOptions1Drawer;
+	friend class CMainOptions2Drawer;
+	friend class CPasswordDrawer;
+	friend class CPreviewDrawer;
+	friend class CSuccFailDrawer;
+	friend class CSurface;
+	friend class CCDLoadAnim;
+	friend class CAboutScreen;
 
 private:
-	unsigned int m_reserved04; // 0x04
-	short m_x;                 // 0x08
-	short m_y;                 // 0x0a
-	short m_width;             // 0x0c
-	short m_height;            // 0x0e
+	unsigned int m_unknown1c; // 0x1c
+	short m_unknown20;        // 0x20
+	short m_unknown22;        // 0x22
 };
 
-// SYNTHETIC: LEMBALL 0x00439620
+// SYNTHETIC: LEMBALL 0x00447170
 // CBigBitmap::`scalar deleting destructor'
 
 #endif

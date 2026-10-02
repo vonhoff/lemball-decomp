@@ -2,7 +2,7 @@
 
 #include "../../Target/ObjectClipGrid.h"
 #include "../../Target/SpriteGroundLookup.h"
-#include "AI/Base/Coord3d.h"
+#include "AI/Base/tCoord3d.h"
 #include "AI/Navigation/CAI.h"
 #include "AI/Objects/LiftEndpointRecord.h"
 #include "Control/Game/GameMain.h"
@@ -16,11 +16,11 @@ extern const short g_sheepOffset[2];
 extern const unsigned int* g_styleObjectClip;
 
 // FUNCTION: LEMBALL 0x004368f0
-CVsRect* C2D::GetClipRectangle()
+CVSRect* C2D::GetClipRectangle()
 {
-	static CVsRect g_clipRectangle;
-	CVsRect rectangle((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
-	volatile CVsRect* source = &rectangle;
+	static CVSRect g_clipRectangle;
+	CVSRect rectangle((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
+	CVSRect* source = &rectangle;
 	g_clipRectangle.m_width = source->m_width;
 	g_clipRectangle.m_height = source->m_height;
 	g_clipRectangle.m_x = source->m_x;
@@ -139,8 +139,8 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 // FUNCTION: LEMBALL 0x0043e220
 void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 {
-	CVsRect boundsValue;
-	CVsRect& bounds = boundsValue;
+	CVSRect boundsValue;
+	CVSRect& bounds = boundsValue;
 	eObjectType objectType = p_viewData.m_objectType;
 	int screenX = p_viewData.m_positionX;
 	int screenY = p_viewData.m_positionY;
@@ -216,7 +216,7 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			}
 			{
 				SpriteGroundLookup* lookup = m_spriteGroundLookup;
-				const CVsRect& markedRect = bounds;
+				const CVSRect& markedRect = bounds;
 				int rectangleWidth = markedRect.m_width;
 				short pixelX = markedRect.m_x;
 				short pixelY = markedRect.m_y;
@@ -480,7 +480,7 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 	}
 	{
 		SpriteGroundLookup* lookup = m_spriteGroundLookup;
-		const CVsRect& markedRect = bounds;
+		const CVSRect& markedRect = bounds;
 		int rectangleWidth = markedRect.m_width;
 		short pixelX = markedRect.m_x;
 		short pixelY = markedRect.m_y;

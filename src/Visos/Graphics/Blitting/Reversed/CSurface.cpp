@@ -3,7 +3,7 @@
 #include "Visos/Resources/CResZRLE.h"
 
 // FUNCTION: LEMBALL 0x00477660
-void CSurface::BlitZRLENoClipR(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
 	int y = p_rect.m_y;

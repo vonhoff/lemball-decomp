@@ -2,9 +2,7 @@
 
 #include "../../AI/Navigation/CAI.h"
 #include "../../Control/Game/GameTime.h"
-#include "AI/Base/CGlobalGameObject.h"
-#include "Visos/Foundation/CBaseProcess.h"
-#include "Visos/Foundation/CBaseQueueHandler.h"
+#include "AI/Objects/CPlayerLemming.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00452fe0
@@ -19,9 +17,9 @@ void CPBNetworkGame::AddData()
 {
 	CNetworkMessage::Add((unsigned short) 0x2d);
 	CNetworkMessage::Add(g_dwSimulationTimestamp);
-	CNetworkMessage* ai = (CNetworkMessage*) ((unsigned char*) m_ai + sizeof(CBaseQueueHandler) + sizeof(CBaseProcess));
-	ai->CopyDataStream(m_writeCursor, 0);
-	m_writeCursor += ai->m_writeCursor - ai->m_buffer;
+	CAI& ai = *m_ai;
+	ai.CopyDataStream(m_writeCursor, 0);
+	m_writeCursor += ai.m_writeCursor - ai.m_buffer;
 	CNetworkMessage::Add((unsigned short) 0x2f);
 }
 
@@ -33,11 +31,10 @@ void CPBNetworkGame::GetData()
 		switch (marker) {
 		case 0x2c: {
 			unsigned char playerIndex = CNetworkMessage::GetBYTE();
-			CPlayerLemming* player = m_networkLemmings[playerIndex + 4];
-			CNetworkMessage* message = (CNetworkMessage*) ((unsigned char*) player + sizeof(CGlobalGameObject));
+			CPlayerLemming& player = *m_networkLemmings[playerIndex + 4];
 			unsigned char* readCursor = m_readCursor;
-			if (message->Set(readCursor)) {
-				m_readCursor = message->m_readCursor;
+			if (player.Set(readCursor)) {
+				m_readCursor = player.m_readCursor;
 			}
 			break;
 		}

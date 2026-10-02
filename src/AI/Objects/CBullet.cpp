@@ -10,7 +10,7 @@
 #include "../Managers/CBulletManager.h"
 #include "../Messages/GameMessageIds.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/CMove3d.h"
@@ -43,8 +43,8 @@ void CBullet::Set(unsigned short p_id,
 				  eBulletType p_bulletType,
 				  eOwner p_owner,
 				  int p_sourceObjectId,
-				  AiCoord p_start,
-				  AiCoord p_target)
+				  AICOORD p_start,
+				  AICOORD p_target)
 {
 	m_bulletType = p_bulletType;
 	m_owner = p_owner;
@@ -228,17 +228,17 @@ void CBullet::AddData()
 void CBullet::GetData()
 {
 	SetRemoteGameTimeReal(GetDWORD());
-	const int& x = (int) (short) GetWORD() << 12;
+	const int x = (int) (short) GetWORD() << 12;
 	m_position.m_xFixed = x;
-	const int& y = (int) (short) GetWORD() << 12;
+	const int y = (int) (short) GetWORD() << 12;
 	m_position.m_yFixed = y;
-	const int& z = (int) (short) GetWORD() << 12;
+	const int z = (int) (short) GetWORD() << 12;
 	m_position.m_zFixed = z;
-	const int& destinationX = (int) (short) GetWORD() << 12;
+	const int destinationX = (int) (short) GetWORD() << 12;
 	m_destination.m_xFixed = destinationX;
-	const int& destinationY = (int) (short) GetWORD() << 12;
+	const int destinationY = (int) (short) GetWORD() << 12;
 	m_destination.m_yFixed = destinationY;
-	const int& destinationZ = (int) (short) GetWORD() << 12;
+	const int destinationZ = (int) (short) GetWORD() << 12;
 	m_destination.m_zFixed = destinationZ;
 	m_facingDirection = (short) GetWORD();
 	m_soundEffect = (eSoundEffect) GetDWORD();

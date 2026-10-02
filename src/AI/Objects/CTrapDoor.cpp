@@ -3,7 +3,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -20,7 +20,7 @@ unsigned int g_dwTrapDoorLocalSfxState = 0;
 unsigned int g_dwTrapDoorRemoteSfxState = 0;
 
 // FUNCTION: LEMBALL 0x0040c2d0
-CTrapDoor::CTrapDoor(AiCoord& p_position, unsigned int p_mode) : CBaseGlobalObject(p_position, OBJECT_TRAP_DOOR)
+CTrapDoor::CTrapDoor(AICOORD& p_position, unsigned int p_mode) : CBaseGlobalObject(p_position, OBJECT_TRAP_DOOR)
 {
 	m_spawnPosition.m_xFixed = p_position.m_xFixed;
 	m_spawnPosition.m_yFixed = p_position.m_yFixed;

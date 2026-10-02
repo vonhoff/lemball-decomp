@@ -1,11 +1,11 @@
 #ifndef LEMBALL_AI_MANAGERS_CBULLETMANAGER_H
 #define LEMBALL_AI_MANAGERS_CBULLETMANAGER_H
 
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Objects/CBullet.h"
 #include "CBaseObjectManager.h"
 
-class CVsRect;
+class CVSRect;
 // SIZE 0xe0
 // VTABLE: LEMBALL 0x00494008
 class CBulletManager : public CBaseObjectManager {
@@ -18,10 +18,10 @@ public:
 					   eBulletType p_bulletType,
 					   eOwner p_owner,
 					   int p_sourceObjectId,
-					   AiCoord p_start,
-					   AiCoord p_target);
+					   AICOORD p_start,
+					   AICOORD p_target);
 	CBulletManager();
-	bool CheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);
+	bool CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);
 	int GetViewData(CViewData* p_viewData);
 	virtual ~CBulletManager(); // vtable+0x14
 	void Process();

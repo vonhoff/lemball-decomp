@@ -45,7 +45,7 @@ CLaserManager::~CLaserManager()
 }
 
 // FUNCTION: LEMBALL 0x004297f0
-bool CLaserManager::StepOn(const AiCoord& p_position, CGameObject* p_object)
+bool CLaserManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	int i = 0;
 	for (;;) {
@@ -88,7 +88,7 @@ int CLaserManager::GetViewData(CViewData* p_viewData)
 void CLaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectType p_orientation)
 {
 	if (m_count < m_capacity) {
-		AiCoord position;
+		AICOORD position;
 		position.m_xFixed = p_x << 12;
 		position.m_yFixed = p_y << 12;
 		position.m_zFixed = p_z << 12;
@@ -98,7 +98,7 @@ void CLaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectT
 }
 
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"

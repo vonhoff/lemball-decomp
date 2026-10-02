@@ -4,11 +4,11 @@
 #include "CClipRect.h"
 #include "CGWnd.h"
 #include "CHotAreaHandler.h"
-#include "CSolidRect.h"
+#include "CLine.h"
 class CBaseQueue;
 class CPrimitive;
 class CPVGWnd;
-class CVsRect;
+class CVSRect;
 
 // SIZE 0x104
 // VTABLE: LEMBALL 0x00499658 CGWnd
@@ -16,10 +16,10 @@ class CVsRect;
 class CPVButton : public CGWnd, public CHotAreaHandler {
 public:
 	CPVButton(CPVGWnd* p_ownerWindow);
-	CPVButton(const CVsRect& p_bounds, CPVGWnd* p_ownerWindow);
+	CPVButton(const CVSRect& p_bounds, CPVGWnd* p_ownerWindow);
 	int ConvertDoubleClick(int p_flags);
 	virtual unsigned int GetStyle();                               // vtable+0x64
-	virtual void OnPaint(const CVsRect& p_rect);                   // vtable+0xa8
+	virtual void OnPaint(const CVSRect& p_rect);                   // vtable+0xa8
 	virtual void Destroy();                                        // vtable+0x74
 	virtual void _DrawButton();                                    // vtable+0xb8
 	virtual void DrawButton() = 0;                                 // vtable+0xbc
@@ -27,12 +27,12 @@ public:
 	virtual void OnPressed(int p_flags) = 0;                       // vtable+0xc4
 	virtual void OnEnterButton() = 0;                              // vtable+0xc8
 	virtual void OnExitButton() = 0;                               // vtable+0xcc
-	virtual void Move(const CVsPoint& p_point);                    // vtable+0x38
-	virtual void OnButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x04
-	virtual void OnButtonDown(const CVsPoint& p_point, int p_flags);
+	virtual void Move(const CVSPoint& p_point);                    // vtable+0x38
+	virtual void OnButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x04
+	virtual void OnButtonDown(const CVSPoint& p_point, int p_flags);
 	virtual void OnEnter();                                                // vtable+0x10
 	virtual void OnExit();                                                 // vtable+0x14
-	virtual void OnExternalButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
 	virtual void OnVisibilityChange();                                     // vtable+0x80
 	virtual ~CPVButton();                                                  // vtable+0x00
 	void CheckForceDraw();
@@ -68,7 +68,7 @@ private:
 	short m_buttonX;                 // 0xdc
 	short m_buttonY;                 // 0xde
 	CPrimitive* m_primitive;         // 0xe0
-	CSolidRect m_clipRect[1];        // 0xe4
+	CClipRect m_clipRect[1];         // 0xe4
 	CBaseQueue* m_messageQueue;      // 0xf4
 	unsigned int m_autoDraw;         // 0xf8
 	unsigned int m_drawCompleted;    // 0xfc

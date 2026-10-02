@@ -9,7 +9,7 @@ struct CGraphicsState {
 	bool IsFullscreenDriver();
 	bool IsDirectDrawDriver();
 	bool IsDisplayDibDriver();
-	void UpdateDriverSize(const struct CVsSize& p_size);
+	void UpdateDriverSize(const struct CVSSize& p_size);
 
 	int m_driverMode;                    // 0x00
 	unsigned int m_targetWindow;         // 0x04

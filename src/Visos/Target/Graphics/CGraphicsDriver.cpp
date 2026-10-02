@@ -43,14 +43,14 @@ bool CGraphicsDriver::RealizePalette(CDrawingContext* p_drawingContext)
 
 // FUNCTION: LEMBALL 0x00456970
 bool CGraphicsDriver::BlitWrappedBitmap(CDrawingContext* p_destination,
-										CVsRect* p_destinationRect,
+										CVSRect* p_destinationRect,
 										CDrawingContext* p_source,
-										CVsRect* p_sourceRect,
+										CVSRect* p_sourceRect,
 										CPVGDIBitmap* p_bitmap)
 {
 	int scale;
-	CVsRect* rect0;
-	CVsRect* rect1;
+	CVSRect* rect0;
+	CVSRect* rect1;
 	bool copied;
 
 	copied = 0;
@@ -61,17 +61,17 @@ bool CGraphicsDriver::BlitWrappedBitmap(CDrawingContext* p_destination,
 	p_bitmap->GetRects(*p_sourceRect, rect0, rect1);
 	bool copiedSecond = 0;
 	if (rect0 != 0) {
-		CVsPoint* point = p_destinationRect;
+		CVSPoint* point = p_destinationRect;
 		short height = (short) (rect0->m_height * scale);
 		short width = (short) (rect0->m_width * scale);
-		CVsRect destRect(point->m_x, point->m_y, width, height);
+		CVSRect destRect(point->m_x, point->m_y, width, height);
 		copied = StretchBltContexts(p_destination, &destRect, p_source, rect0);
 	}
 	if (rect1 != 0) {
 		short height = (short) (rect1->m_height * scale);
 		short y = (short) (rect0->m_height * scale + p_destinationRect->m_y);
 		short width = (short) (rect1->m_width * scale);
-		CVsRect destRect(p_destinationRect->m_x, y, width, height);
+		CVSRect destRect(p_destinationRect->m_x, y, width, height);
 		copiedSecond = StretchBltContexts(p_destination, &destRect, p_source, rect1);
 	}
 	return copied | copiedSecond;

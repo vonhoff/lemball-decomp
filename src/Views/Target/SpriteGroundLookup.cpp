@@ -1,11 +1,11 @@
 #include "SpriteGroundLookup.h"
 
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSRect.h"
 
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x00441fe0
-void SpriteGroundLookup::MarkRect(const CVsRect& p_rect)
+void SpriteGroundLookup::MarkRect(const CVSRect& p_rect)
 {
 	short pixelX = p_rect.m_x;
 	const short& pixelY = p_rect.m_y;

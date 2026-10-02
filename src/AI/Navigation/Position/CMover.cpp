@@ -1,7 +1,7 @@
 #include "../CMover.h"
 
 #include "../../../Map/Base/CMap.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 

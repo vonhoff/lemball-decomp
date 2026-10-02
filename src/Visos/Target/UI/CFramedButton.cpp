@@ -1,13 +1,13 @@
 #include "CFramedButton.h"
 
 #include "../../Foundation/CChangeList.h"
-#include "../../Graphics/CClipRect.h"
 #include "../../Graphics/CGDI.h"
 #include "../../Graphics/CHotAreaList.h"
 #include "../../Graphics/CLine.h"
+#include "../../Graphics/CSolidRect.h"
 #include "../../Graphics/CSurface.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Graphics/CDepressedButton.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
@@ -16,12 +16,12 @@
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00468a40
-CFramedButton::CFramedButton(const CVsRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColour)
+CFramedButton::CFramedButton(const CVSRect& p_rect, CPVGWnd* p_parent, unsigned int p_frameColour)
 	: CDepressedButton(p_rect, p_parent)
 {
 	m_frameColour = p_frameColour;
 	InitializeFramePrimitives();
-	CVsRect createRect;
+	CVSRect createRect;
 	createRect.m_width = m_bounds.m_width;
 	createRect.m_height = m_bounds.m_height;
 	createRect.m_x = m_buttonX;
@@ -44,16 +44,16 @@ CFramedButton::CFramedButton(CPVGWnd* p_parent, unsigned int p_frameColour) : CD
 // FUNCTION: LEMBALL 0x00468b80
 void CFramedButton::InitializeFramePrimitives()
 {
-	m_frameLine = new CLine[1];
+	m_frameLine = new CSolidRect[1];
 	m_gdiFlags++;
-	m_frameRects = new CClipRect[4];
+	m_frameEdges = new CLine[4];
 	m_gdiFlags += 4;
 }
 
 // FUNCTION: LEMBALL 0x00468c10
 CFramedButton::~CFramedButton()
 {
-	delete[] m_frameRects;
+	delete[] m_frameEdges;
 	delete[] m_frameLine;
 }
 
@@ -64,14 +64,14 @@ void CFramedButton::DrawButton()
 	unsigned int dark;
 	unsigned int i;
 	m_gdi->m_renderTarget->GetCurrDB();
-	CVsRect bounds;
+	CVSRect bounds;
 	bounds.m_width = m_bounds.m_width;
 	bounds.m_height = m_bounds.m_height;
 	bounds.m_y = 0;
 	bounds.m_x = 0;
-	const CVsRect* rectangle = &bounds;
+	const CVSRect* rectangle = &bounds;
 	unsigned int colour;
-	CLine* line = m_frameLine;
+	CSolidRect* line = m_frameLine;
 	colour = m_frameColour;
 	line->m_bounds.m_width = rectangle->m_width;
 	line->m_bounds.m_height = rectangle->m_height;
@@ -90,59 +90,59 @@ void CFramedButton::DrawButton()
 	}
 	{
 		int right;
-		CClipRect* edge = &m_frameRects[0];
+		CLine* edge = &m_frameEdges[0];
 		right = m_bounds.m_width - 1;
-		edge->m_bounds.m_width = 0;
-		edge->m_bounds.m_height = 0;
-		edge->m_bounds.m_x = (short) right;
-		edge->m_bounds.m_y = 0;
-		edge->m_reserved0c = light;
+		edge->m_start.m_x = 0;
+		edge->m_start.m_y = 0;
+		edge->m_end.m_x = (short) right;
+		edge->m_end.m_y = 0;
+		edge->m_colour = light;
 	}
 	{
 		int bottom;
-		CClipRect* edge = m_frameRects;
+		CLine* edge = m_frameEdges;
 		bottom = m_bounds.m_height - 1;
-		edge[1].m_bounds.m_width = 0;
-		edge[1].m_bounds.m_height = 0;
+		edge[1].m_start.m_x = 0;
+		edge[1].m_start.m_y = 0;
 		edge++;
-		edge->m_bounds.m_x = 0;
-		edge->m_bounds.m_y = (short) bottom;
-		edge->m_reserved0c = light;
+		edge->m_end.m_x = 0;
+		edge->m_end.m_y = (short) bottom;
+		edge->m_colour = light;
 	}
 	{
-		CClipRect* edge = m_frameRects;
+		CLine* edge = m_frameEdges;
 		short left = (short) (m_bounds.m_width - 1);
 		edge += 2;
 		int right = m_bounds.m_width - 1;
 		int bottom = m_bounds.m_height - 1;
-		edge->m_bounds.m_width = left;
-		edge->m_bounds.m_height = 0;
-		edge->m_bounds.m_x = (short) right;
-		edge->m_bounds.m_y = (short) bottom;
-		edge->m_reserved0c = dark;
+		edge->m_start.m_x = left;
+		edge->m_start.m_y = 0;
+		edge->m_end.m_x = (short) right;
+		edge->m_end.m_y = (short) bottom;
+		edge->m_colour = dark;
 	}
 	{
 		int bottom;
 		int right;
-		CClipRect* edge = m_frameRects;
+		CLine* edge = m_frameEdges;
 		bottom = m_bounds.m_height - 1;
 		right = m_bounds.m_width - 1;
-		edge[3].m_bounds.m_width = 0;
-		edge[3].m_bounds.m_height = (short) bottom;
-		edge[3].m_bounds.m_x = (short) right;
+		edge[3].m_start.m_x = 0;
+		edge[3].m_start.m_y = (short) bottom;
+		edge[3].m_end.m_x = (short) right;
 		edge += 3;
-		edge->m_bounds.m_y = (short) bottom;
-		edge->m_reserved0c = dark;
+		edge->m_end.m_y = (short) bottom;
+		edge->m_colour = dark;
 	}
 	i = 0;
 	do {
-		m_frameRects[i].Draw(m_gdi);
+		m_frameEdges[i].Draw(m_gdi);
 		i++;
 	} while (i < 4);
 }
 
 // FUNCTION: LEMBALL 0x00468dd0
-void CFramedButton::OnPaint(const CVsRect& p_rect)
+void CFramedButton::OnPaint(const CVSRect& p_rect)
 {
 	if (m_gdi->m_primitiveCount == 0 && (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed)) {
 		if (GetSizeStatus() != 0) {

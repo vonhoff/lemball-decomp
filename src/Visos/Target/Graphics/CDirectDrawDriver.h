@@ -3,7 +3,7 @@
 
 #include "CGraphicsDriver.h"
 
-struct CVsSize;
+struct CVSSize;
 struct IDirectDrawPalette;
 struct IDirectDraw;
 struct IDirectDrawSurface;
@@ -12,7 +12,7 @@ struct IDirectDrawSurface;
 // VTABLE: LEMBALL 0x004987e8
 class CDirectDrawDriver : public CGraphicsDriver {
 public:
-	CDirectDrawDriver(CVsSize* p_size, int p_fullScreen);
+	CDirectDrawDriver(CVSSize* p_size, int p_fullScreen);
 	virtual ~CDirectDrawDriver();
 	virtual CDrawingContext* CreateDrawingContext();
 	virtual int DestroyDrawingContext(CDrawingContext* p_drawingContext);
@@ -28,13 +28,13 @@ public:
 	virtual bool CreatePalette(void* p_paletteDescription);
 	virtual bool HasPalette();
 	virtual int BitBltContexts(CDrawingContext* p_destination,
-							   CVsRect* p_destinationRect,
+							   CVSRect* p_destinationRect,
 							   CDrawingContext* p_source,
-							   CVsPoint* p_sourcePosition);
+							   CVSPoint* p_sourcePosition);
 	virtual int StretchBltContexts(CDrawingContext* p_destination,
-								   CVsRect* p_destinationRect,
+								   CVSRect* p_destinationRect,
 								   CDrawingContext* p_source,
-								   CVsRect* p_sourceRect);
+								   CVSRect* p_sourceRect);
 
 private:
 	IDirectDraw* m_directDraw;              // 0x1c

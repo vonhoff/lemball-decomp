@@ -14,7 +14,7 @@ public:
 	friend class CBaseNetwork;
 
 private:
-	char* m_failureReason; // 0x30
+	const char* m_failureReason; // 0x30
 };
 
 extern CMessFAILEDConnect* g_pMessFAILEDConnect;

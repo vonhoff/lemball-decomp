@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVSURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_CPVSURFACE_H
 
-#include "../Foundation/CVsRect.h"
-#include "../Foundation/CVsSize.h"
+#include "../Foundation/CVSRect.h"
+#include "../Foundation/CVSSize.h"
 
 class CZRLE;
 class CResZRLE;
@@ -18,7 +18,7 @@ class CClipRect;
 class CScreenScroll;
 class CResPALETTE;
 class CSurface;
-struct CVsPoint;
+struct CVSPoint;
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00499508
@@ -35,8 +35,8 @@ public:
 	virtual void Blit(CFilledCircle* p_circle) = 0;                      // vtable+0x08
 	virtual void Blit(CClipRect* p_clipRect) = 0;                        // vtable+0x04
 	virtual void Blit(CScreenScroll* p_scroll) = 0;                      // vtable+0x00
-	virtual void Resize(const CVsSize& p_size);                          // vtable+0x28
-	virtual void Move(const CVsPoint& p_position) = 0;                   // vtable+0x2c
+	virtual void Resize(const CVSSize& p_size);                          // vtable+0x28
+	virtual void Move(const CVSPoint& p_position) = 0;                   // vtable+0x2c
 	virtual void AttachPalette(CResPALETTE* p_palette) = 0;              // vtable+0x30
 	virtual void Flush() = 0;                                            // vtable+0x34
 	virtual void* GetCurrDB() = 0;                                       // vtable+0x38
@@ -44,7 +44,7 @@ public:
 	virtual bool HasZBuff();                                             // vtable+0x40
 	virtual void SetWorldWidth(int p_width);                             // vtable+0x44
 	virtual int GetWorldWidth();                                         // vtable+0x48
-	void SetDontUpdateRect(const CVsRect& p_rect);
+	void SetDontUpdateRect(const CVSRect& p_rect);
 	~CPVSurface();
 
 	friend class CSurface;
@@ -70,13 +70,13 @@ public:
 	friend class CAboutScreen;
 
 private:
-	CVsRect m_dontUpdateRect;     // 0x04
-	CVsRect m_surfaceRect;        // 0x0c
-	CVsRect m_windowRect;         // 0x14
+	CVSRect m_dontUpdateRect;     // 0x04
+	CVSRect m_surfaceRect;        // 0x0c
+	CVSRect m_windowRect;         // 0x14
 	short m_relOriginX;           // 0x1c
 	short m_relOriginY;           // 0x1e
 	CSurface* m_parentSurface;    // 0x20
-	CVsRect m_clipRect;           // 0x24
+	CVSRect m_clipRect;           // 0x24
 	short m_zoom;                 // 0x2c
 	short m_pad2e;                // 0x2e
 	unsigned int m_flag70;        // 0x30

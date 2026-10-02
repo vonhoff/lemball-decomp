@@ -3,7 +3,7 @@
 #include "../../../Resources/CResZRLE.h"
 
 // FUNCTION: LEMBALL 0x00477440
-void CSurface::BlitZRLENoClipQZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
+void CSurface::BlitZRLENoClipQZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
 {
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;

@@ -2,7 +2,7 @@
 
 #include "../Foundation/CChangeList.h"
 #include "../Foundation/CVSOStream.h"
-#include "../Foundation/CVsPoint.h"
+#include "../Foundation/CVSPoint.h"
 #include "../Foundation/VsDebug.h"
 #include "../Resources/CResBITMAP.h"
 #include "../Resources/CResPALETTE.h"
@@ -11,8 +11,8 @@
 #include "../Target/Graphics/CDrawingContext.h"
 #include "../Target/Graphics/CGdiContext.h"
 #include "../Target/Graphics/CGraphicsDriver.h"
+#include "CBigBitmap.h"
 #include "CBitmap.h"
-#include "CBitmapRes.h"
 #include "CCircle.h"
 #include "CClipRect.h"
 #include "CCopyColourToBackBuff.h"
@@ -32,8 +32,8 @@
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/ChangeListItem.h"
 #include "Visos/Graphics/CPVBackBuffSurface.h"
 #include "Visos/Graphics/CPVGDIBitmap.h"
@@ -54,7 +54,7 @@ struct SurfaceListHead {
 SurfaceListHead* g_pSurfaceList = 0;
 
 // FUNCTION: LEMBALL 0x0046c050
-CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
+CSurface::CSurface(const CVSRect& p_rect, class CSurface* p_parentSurface)
 	: m_presentX(m_presentY = 0), m_childSurfaceHead(0), m_childSurfaceTail(0), m_childSurfaceCount(0)
 {
 	SurfaceListHead* head;
@@ -127,10 +127,10 @@ CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
 	m_lockInitialised = 1;
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
-		m_changeList = new CChangeList(0x1000, p_rect, CVsSize(8, 8));
+		m_changeList = new CChangeList(0x1000, p_rect, CVSSize(8, 8));
 	}
 	else {
-		m_changeList = new CChangeList(0, p_rect, CVsSize(8, 8));
+		m_changeList = new CChangeList(0, p_rect, CVSSize(8, 8));
 	}
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
 		BuildSurfaceColourTable((unsigned int*) m_colourTable,
@@ -140,7 +140,7 @@ CSurface::CSurface(const CVsRect& p_rect, class CSurface* p_parentSurface)
 		CGraphicsDriver* driver = g_pTargetGraphicsDriver;
 		m_drawingPort = driver->CreateDrawingContext();
 	}
-	CVsRect& rect = m_surfaceRect;
+	CVSRect& rect = m_surfaceRect;
 	rect.m_width = p_rect.m_width;
 	rect.m_height = p_rect.m_height;
 	const short* coords;
@@ -506,10 +506,10 @@ void CSurface::SetLinePtrs()
 }
 
 // FUNCTION: LEMBALL 0x0046cb20
-void CSurface::AddToChangeList(const CVsRect& p_rect)
+void CSurface::AddToChangeList(const CVSRect& p_rect)
 {
 	CSurface* parent;
-	const CVsPoint* origin;
+	const CVSPoint* origin;
 	short originX;
 	short originY;
 
@@ -519,7 +519,7 @@ void CSurface::AddToChangeList(const CVsRect& p_rect)
 		origin = &this->CPVScrollableSurface::m_surfaceRect;
 		originX = origin->m_x;
 		originY = origin->m_y;
-		CVsRect translated(p_rect);
+		CVSRect translated(p_rect);
 		translated.m_x += originX;
 		translated.m_y += originY;
 		((CSurface*) CPVScrollableSurface::m_parentSurface)->AddToChangeList(translated);
@@ -537,10 +537,10 @@ CChangeList* CSurface::GetChangeList()
 // FUNCTION: LEMBALL 0x0046cbe0
 void CSurface::Blit(class CClipRect* p_clipRect)
 {
-	CVsRect* clip = &m_clipRect;
+	CVSRect* clip = &m_clipRect;
 	short clipRight;
 
-	if ((p_clipRect->m_reserved0c & 0x1000) == 0) {
+	if ((p_clipRect->m_flags & CClipRect::CLIP_EXPAND_BOUNDS) == 0) {
 		const short* coords;
 
 		clip->m_width = p_clipRect->m_bounds.m_width;
@@ -586,10 +586,10 @@ void CSurface::Blit(class CClipRect* p_clipRect)
 		}
 	}
 	CSurface* parent = m_parentSurface;
-	if ((CSurface*) g_pGdiHelperTarget != parent && (p_clipRect->m_reserved0c & 0x10000) == 0) {
-		CVsRect* parentClip = &parent->m_clipRect;
+	if ((CSurface*) g_pGdiHelperTarget != parent && (p_clipRect->m_flags & CClipRect::CLIP_IGNORE_PARENT) == 0) {
+		CVSRect* parentClip = &parent->m_clipRect;
 		short parentX = parentClip->m_x;
-		CVsRect* childClip = &m_clipRect;
+		CVSRect* childClip = &m_clipRect;
 		clipRight = childClip->m_x;
 		if (clipRight < parentX) {
 			childClip->m_width = (short) (childClip->m_width + (clipRight - parentX));
@@ -655,12 +655,12 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 	if (m_changeList->GetNumItems() > 0) {
 		do {
 			ChangeListItem* item = m_changeList->GetNItem(index);
-			CVsRect translated(*(CVsRect*) item);
+			CVSRect translated(*(CVSRect*) item);
 			if (g_dwFullScreenGdi == 0) {
 				translated.m_x += m_presentX;
 				translated.m_y += m_presentY;
 			}
-			const CVsPoint* origin = (const CVsPoint*) &m_relOriginX;
+			const CVSPoint* origin = (const CVSPoint*) &m_relOriginX;
 			translated.m_x += origin->m_x;
 			translated.m_y += origin->m_y;
 			short zoom = m_zoom;
@@ -668,18 +668,18 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
 														   &translated,
 														   (CDrawingContext*) m_drawingPort,
-														   (CVsRect*) item,
+														   (CVSRect*) item,
 														   this);
 			}
 			else {
-				CVsRect destRect(translated.m_x * zoom,
+				CVSRect destRect(translated.m_x * zoom,
 								 translated.m_y * zoom,
 								 translated.m_width * zoom,
 								 translated.m_height * zoom);
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
 														   &destRect,
 														   (CDrawingContext*) m_drawingPort,
-														   (CVsRect*) item,
+														   (CVSRect*) item,
 														   this);
 			}
 			index++;
@@ -691,7 +691,7 @@ void CSurface::ToScreen(class CSurface* p_destinationSurface)
 		if (m_changeList->GetNumItems() > 0) {
 			do {
 				ChangeListItem* item = m_changeList->GetNItem(i);
-				CopyBackBuffToScreen(*(CVsRect*) item);
+				CopyBackBuffToScreen(*(CVSRect*) item);
 				i++;
 			} while (i < m_changeList->GetNumItems());
 		}
@@ -716,30 +716,30 @@ void CSurface::AttachPalette(CResPALETTE* p_palette)
 }
 
 // FUNCTION: LEMBALL 0x0046d090
-void CSurface::NewBitmap(const CVsRect& p_rect)
+void CSurface::NewBitmap(const CVSRect& p_rect)
 {
 	EnterCriticalSection((CRITICAL_SECTION*) m_lock);
 	{
-		CVsRect& bounds = m_surfaceRect;
+		CVSRect& bounds = m_surfaceRect;
 		bounds.m_width = p_rect.m_width;
 		bounds.m_height = p_rect.m_height;
-		const CVsPoint* position = &p_rect;
+		const CVSPoint* position = &p_rect;
 		bounds.m_x = position->m_x;
 		bounds.m_y = position->m_y;
 	}
 	{
-		CVsRect& bounds = m_windowRect;
+		CVSRect& bounds = m_windowRect;
 		bounds.m_width = p_rect.m_width;
 		bounds.m_height = p_rect.m_height;
-		const CVsPoint* position = &p_rect;
+		const CVSPoint* position = &p_rect;
 		bounds.m_x = position->m_x;
 		bounds.m_y = position->m_y;
 	}
 	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
-		const CVsSize& parentSize = m_parentSurface->m_windowRect;
+		const CVSSize& parentSize = m_parentSurface->m_windowRect;
 		short parentWidth = parentSize.m_width;
 		short parentHeight = parentSize.m_height;
-		CVsRect& clipped = m_windowRect;
+		CVSRect& clipped = m_windowRect;
 		if (clipped.m_x < 0) {
 			clipped.m_width += clipped.m_x;
 			clipped.m_x = 0;
@@ -761,8 +761,8 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 			clipped.m_x = 0;
 		}
 		{
-			const CVsSize& windowSize = m_windowRect;
-			CVsSize& clipSize = m_clipRect;
+			const CVSSize& windowSize = m_windowRect;
+			CVSSize& clipSize = m_clipRect;
 			short height = windowSize.m_height;
 			clipSize.m_width = windowSize.m_width;
 			clipSize.m_height = height;
@@ -774,16 +774,16 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 	}
 	m_windowRect.m_width = (m_windowRect.m_width + 3) & ~3;
 	{
-		const CVsSize& windowSize = m_windowRect;
+		const CVSSize& windowSize = m_windowRect;
 		short height = windowSize.m_height;
-		CVsSize& clipSize = m_clipRect;
+		CVSSize& clipSize = m_clipRect;
 		clipSize.m_width = windowSize.m_width;
 		clipSize.m_height = height;
 	}
 	short width;
 	short height;
 	{
-		const CVsSize& size = SetSize(m_windowRect, m_reserved40);
+		const CVSSize& size = SetSize(m_windowRect, m_reserved40);
 		width = size.m_width;
 		height = size.m_height;
 	}
@@ -802,13 +802,13 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biHeight =
 				(int) height * (int) ((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biHeight;
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biPlanes = 1;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biCompression = 0;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biCompression = BI_RGB;
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biSizeImage = 0;
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biXPelsPerMeter = 0;
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biYPelsPerMeter = 0;
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biClrUsed = 0;
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biClrImportant = 0;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biSize = 0x28;
+			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biBitCount = 8;
 			m_platformBitmap =
 				g_pTargetGraphicsDriver->CreateDibContext((CDrawingContext*) m_drawingPort, (BITMAPINFO*) m_bitmapInfo);
@@ -824,8 +824,8 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 		CDibContext* dib = (CDibContext*) m_platformBitmap;
 		SetBitsBase(dib->GetBits(), dib->GetStride());
 		m_changeList->SetDrawMark();
-		CVsRect clip;
-		const CVsSize& drawSize = m_surfaceRect;
+		CVSRect clip;
+		const CVSSize& drawSize = m_surfaceRect;
 		short drawHeight = drawSize.m_height;
 		clip.m_width = drawSize.m_width;
 		clip.m_height = drawHeight;
@@ -835,9 +835,9 @@ void CSurface::NewBitmap(const CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x0046d420
-void CSurface::Resize(const CVsSize& p_size)
+void CSurface::Resize(const CVSSize& p_size)
 {
-	CVsRect rect(m_surfaceRect);
+	CVSRect rect(m_surfaceRect);
 	rect.m_width = p_size.m_width;
 	rect.m_height = p_size.m_height;
 	if (m_changeList != 0) {
@@ -856,15 +856,15 @@ void CSurface::Resize(const CVsSize& p_size)
 	}
 	for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {
 		CSurface* child = node->m_surface;
-		CVsSize childSize(child->m_surfaceRect);
+		CVSSize childSize(child->m_surfaceRect);
 		child->Resize(childSize);
 	}
 }
 
 // FUNCTION: LEMBALL 0x0046d560
-void CSurface::MoveRel(const CVsPoint& p_delta)
+void CSurface::MoveRel(const CVSPoint& p_delta)
 {
-	CVsRect* rect = &m_surfaceRect;
+	CVSRect* rect = &m_surfaceRect;
 	rect->m_x += p_delta.m_x;
 	rect->m_y += p_delta.m_y;
 	Move(*rect);
@@ -901,7 +901,7 @@ copyRow:
 		goto copyRow;
 	}
 copiedRows:
-	CVsRect rect = CVsRect(0, 0, m_windowRect.m_width, m_windowRect.m_height);
+	CVSRect rect = CVSRect(0, 0, m_windowRect.m_width, m_windowRect.m_height);
 	rect.m_x = rect.m_y = 0;
 	m_changeList->Reset();
 	AddToChangeList(rect);
@@ -1003,7 +1003,7 @@ void CSurface::EndRender()
 // FUNCTION: LEMBALL 0x0046dbc0
 void CSurface::Blit(CBigBitmap* p_primitive, CResBITMAP* p_bitmap)
 {
-	Blit((CBitmap*) p_primitive, p_bitmap);
+	Blit(static_cast<CBitmap*>(p_primitive), p_bitmap);
 }
 
 // FUNCTION: LEMBALL 0x0046dc50
@@ -1021,15 +1021,15 @@ void* CSurface::GetCurrDB()
 // FUNCTION: LEMBALL 0x00474c20
 void CSurface::Blit(CScreenScroll* p_scroll)
 {
-	CVsRect rect = p_scroll->m_rect;
-	CVsPoint dst = p_scroll->m_destination;
+	CVSRect rect = p_scroll->m_rect;
+	CVSPoint dst = p_scroll->m_destination;
 
 	if (HasBackBuff()) {
 		CPVBackBuffSurface::m_bitmap.Scroll(&rect, &dst);
 	}
 	if (HasZBuff()) {
-		CVsRect zrect(rect.m_x * 2, rect.m_y, rect.m_width * 2, rect.m_height);
-		CVsPoint zdst;
+		CVSRect zrect(rect.m_x * 2, rect.m_y, rect.m_width * 2, rect.m_height);
+		CVSPoint zdst;
 		zdst.m_x = dst.m_x * 2;
 		zdst.m_y = dst.m_y;
 		CPVZBuffSurface::m_bitmap.Scroll(&zrect, &zdst);
@@ -1041,22 +1041,21 @@ void CSurface::Blit(CScreenScroll* p_scroll)
 // FUNCTION: LEMBALL 0x00474d40
 void CSurface::Blit(CZBuffClear* p_clear)
 {
-	int width = p_clear->m_width;
+	int width = p_clear->m_bounds.m_width;
 	int startX;
-	int height = p_clear->m_height;
+	int height = p_clear->m_bounds.m_height;
 
 	if (width == 0 || height == 0) {
 		return;
 	}
-	startX = p_clear->m_x;
-	int startY = p_clear->m_y;
+	startX = p_clear->m_bounds.m_x;
+	int startY = p_clear->m_bounds.m_y;
 	unsigned short depth = (unsigned short) p_clear->m_depth;
 	if (height <= 0) {
 		return;
 	}
 	do {
-		unsigned short* dest =
-			(unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[startY] + startX * 2);
+		unsigned short* dest = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[startY] + startX;
 		for (int i = 0; i < width; i++) {
 			dest[i] = depth;
 		}
@@ -1078,20 +1077,17 @@ void CSurface::Blit(CCopyToBackBuff* p_copy)
 	int height = primitive->m_destination.m_height;
 	if (width != 0 && height != 0) {
 		int dstX = primitive->m_destination.m_x;
-		int srcX = primitive->m_sourceX;
+		int srcX = primitive->m_x;
 		int dstY = primitive->m_destination.m_y;
-		int srcY = primitive->m_sourceY;
+		int srcY = primitive->m_y;
 		if (height > 0) {
-			int srcRow = srcY * 4;
 			int count = height;
-			int dstRow = dstY * 4;
 			do {
-				unsigned char* dst =
-					(unsigned char*) *(int*) ((int) CPVBackBuffSurface::m_bitmap.m_lines + dstRow) + dstX;
-				unsigned char* src = (unsigned char*) *(int*) ((int) m_lines + srcRow) + srcX;
+				unsigned char* dst = (unsigned char*) CPVBackBuffSurface::m_bitmap.m_lines[dstY] + dstX;
+				unsigned char* src = (unsigned char*) m_lines[srcY] + srcX;
 				memcpy(dst, src, width);
-				srcRow += 4;
-				dstRow += 4;
+				srcY++;
+				dstY++;
 				count--;
 			} while (count != 0);
 		}
@@ -1099,20 +1095,20 @@ void CSurface::Blit(CCopyToBackBuff* p_copy)
 }
 
 // FUNCTION: LEMBALL 0x00474ee0
-void CSurface::CopyBackBuffToScreen(const CVsRect& p_rect)
+void CSurface::CopyBackBuffToScreen(const CVSRect& p_rect)
 {
 	short height = p_rect.m_height;
 	short width = p_rect.m_width;
 
 	if ((int) height * (int) width != 0) {
-		CVsRect rect(p_rect);
+		CVSRect rect(p_rect);
 		if ((int) (short) (rect.m_x + rect.m_width) > (int) CPVBackBuffSurface::m_allocatedWidth) {
 			rect.m_width = (short) (CPVBackBuffSurface::m_allocatedWidth - rect.m_x);
 		}
 		if ((int) (short) (rect.m_height + rect.m_y) > (int) CPVBackBuffSurface::m_allocatedHeight) {
 			rect.m_height = (short) (CPVBackBuffSurface::m_allocatedHeight - rect.m_y);
 		}
-		const CVsPoint* origin = &rect;
+		const CVSPoint* origin = &rect;
 		int x = origin->m_x;
 		int y = origin->m_y;
 		for (int i = 0; i < rect.m_height; i++) {
@@ -1131,7 +1127,7 @@ void CSurface::Blit(CPoint* p_point)
 	if (m_clipRect.m_x <= x && x < (short) (m_clipRect.m_width + m_clipRect.m_x)) {
 		if (m_clipRect.m_y <= p_point->m_y && p_point->m_y < (short) (m_clipRect.m_height + m_clipRect.m_y)) {
 			*((unsigned char*) m_lines[p_point->m_y] + x) = (unsigned char) colour;
-			CVsRect rect(p_point->m_x, p_point->m_y, 1, 1);
+			CVSRect rect(p_point->m_x, p_point->m_y, 1, 1);
 			AddToChangeList(rect);
 		}
 	}
@@ -1146,12 +1142,12 @@ void CSurface::Blit(CSolidRect* p_rect)
 // FUNCTION: LEMBALL 0x004750c0
 void CSurface::Blit(CLine* p_line)
 {
-	int y2 = p_line->m_bounds.m_y;
-	int x2 = p_line->m_bounds.m_x;
+	int y2 = p_line->m_end.m_y;
+	int x2 = p_line->m_end.m_x;
 	int colourValue = p_line->m_colour;
 	const int& colour = colourValue;
-	int y1 = p_line->m_bounds.m_height;
-	int x1 = p_line->m_bounds.m_width;
+	int y1 = p_line->m_start.m_y;
+	int x1 = p_line->m_start.m_x;
 	if (x2 < x1) {
 		int x = x1;
 		x1 = x2;
@@ -1217,7 +1213,7 @@ void CSurface::Blit(CLine* p_line)
 		}
 	}
 	surface->AddToChangeList(
-		CVsRect((short) x1, (short) min(y1, y2), (short) (x2 - x1 + 1), (short) (abs(y2 - y1) + 1)));
+		CVSRect((short) x1, (short) min(y1, y2), (short) (x2 - x1 + 1), (short) (abs(y2 - y1) + 1)));
 }
 
 // FUNCTION: LEMBALL 0x00475290
@@ -1281,7 +1277,7 @@ void CSurface::Blit(CCircle* p_circle)
 		if ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1 < boundY + boundH) {
 			boundH = (m_clipRect.m_y + m_clipRect.m_height) - boundY;
 		}
-		AddToChangeList(CVsRect((short) centreX, (short) boundY, (short) boundW, (short) boundH));
+		AddToChangeList(CVSRect((short) centreX, (short) boundY, (short) boundW, (short) boundH));
 	}
 }
 
@@ -1351,15 +1347,15 @@ void CSurface::Blit(CFilledCircle* p_circle)
 		if (m_clipRect.m_y + m_clipRect.m_height - 1 < minY + height) {
 			height = m_clipRect.m_y + m_clipRect.m_height - minY;
 		}
-		AddToChangeList(CVsRect((short) minX, (short) minY, (short) width, (short) height));
+		AddToChangeList(CVSRect((short) minX, (short) minY, (short) width, (short) height));
 	}
 }
 
 // FUNCTION: LEMBALL 0x004756e0
-void CSurface::BlitRect(CVsRect p_rect, int p_colour)
+void CSurface::BlitRect(CVSRect p_rect, int p_colour)
 {
 	short storage[4];
-	CVsRect& clipped = *(CVsRect*) storage;
+	CVSRect& clipped = *(CVSRect*) storage;
 	clipped.m_width = clipped.m_height = 0;
 	clipped.m_x = clipped.m_y = 0;
 	if (ClipRect(p_rect, &clipped)) {
@@ -1609,7 +1605,7 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 }
 
 // FUNCTION: LEMBALL 0x00476580
-bool CSurface::ClipRect(CVsRect& p_rect, CVsRect* p_clipped)
+bool CSurface::ClipRect(CVSRect& p_rect, CVSRect* p_clipped)
 {
 	bool clipped = false;
 	short clipX = m_clipRect.m_x;
@@ -1656,7 +1652,7 @@ bool CSurface::ClipRect(CVsRect& p_rect, CVsRect* p_clipped)
 }
 
 // FUNCTION: LEMBALL 0x004766f0
-void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	int x = p_rect.m_x;
 	int step = 1;
@@ -1774,7 +1770,7 @@ void CSurface::BlitZRLEClip(const CVsRect& p_rect, const CVsRect& p_clip, CResZR
 }
 
 // FUNCTION: LEMBALL 0x00476910
-void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth)
+void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth)
 {
 	unsigned char* src = p_zrle->GetData();
 	if (p_clip.m_y > 0) {
@@ -1889,8 +1885,8 @@ void CSurface::BlitZRLEClipZBuff(const CVsRect& p_rect, const CVsRect& p_clip, C
 }
 
 // FUNCTION: LEMBALL 0x00476bf0
-void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
-								  const CVsRect& p_clip,
+void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
+								  const CVSRect& p_clip,
 								  CResZRLE* p_zrle,
 								  unsigned short p_depth)
 {
@@ -2050,7 +2046,7 @@ void CSurface::BlitZRLEClipQZBuff(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00476ee0
-void CSurface::BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	unsigned char* src = p_zrle->GetData();
 	short sourceWidth = p_zrle->m_width;
@@ -2185,7 +2181,7 @@ void CSurface::BlitZRLEClipR(const CVsRect& p_rect, const CVsRect& p_clip, CResZ
 }
 
 // FUNCTION: LEMBALL 0x00477130
-void CSurface::BlitZRLENoClip(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	int x = p_rect.m_x;
 	int step = 1;
@@ -2219,7 +2215,7 @@ void CSurface::BlitZRLENoClip(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned 
 }
 
 // FUNCTION: LEMBALL 0x00477200
-void CSurface::BlitZRLENoClipZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
+void CSurface::BlitZRLENoClipZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
 {
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
@@ -2254,7 +2250,7 @@ void CSurface::BlitZRLENoClipZBuff(const CVsRect& p_rect, CResZRLE* p_zrle, unsi
 }
 
 // FUNCTION: LEMBALL 0x00477310
-void CSurface::BlitZRLENoClipZBuffRemap(const CVsRect& p_rect,
+void CSurface::BlitZRLENoClipZBuffRemap(const CVSRect& p_rect,
 										CResZRLE* p_zrle,
 										unsigned short p_depth,
 										unsigned char* p_remap)
@@ -2298,8 +2294,8 @@ void CSurface::BlitZRLENoClipZBuffRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00477740
-void CSurface::BlitZRLEClipRemap(const CVsRect& p_rect,
-								 const CVsRect& p_clip,
+void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
+								 const CVSRect& p_clip,
 								 CResZRLE* p_zrle,
 								 unsigned int p_reverse,
 								 unsigned char* p_remap)
@@ -2433,8 +2429,8 @@ void CSurface::BlitZRLEClipRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x004779d0
-void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
-									  const CVsRect& p_clip,
+void CSurface::BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
+									  const CVSRect& p_clip,
 									  CResZRLE* p_zrle,
 									  unsigned short p_depth,
 									  unsigned char* p_remap)
@@ -2557,8 +2553,8 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00477c60
-void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
-									   const CVsRect& p_clip,
+void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
+									   const CVSRect& p_clip,
 									   CResZRLE* p_zrle,
 									   unsigned short p_depth,
 									   unsigned char* p_remap)
@@ -2707,8 +2703,8 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00477f50
-void CSurface::BlitZRLEClipRemapR(const CVsRect& p_rect,
-								  const CVsRect& p_clip,
+void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
+								  const CVSRect& p_clip,
 								  CResZRLE* p_zrle,
 								  unsigned int p_reverse,
 								  unsigned char* p_remap)
@@ -2847,7 +2843,7 @@ void CSurface::BlitZRLEClipRemapR(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x004781e0
-void CSurface::BlitZRLENoClipRemap(const CVsRect& p_rect,
+void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect,
 								   CResZRLE* p_zrle,
 								   unsigned int p_reverse,
 								   unsigned char* p_remap)
@@ -2890,7 +2886,7 @@ void CSurface::BlitZRLENoClipRemap(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x004782d0
-void CSurface::BlitZRLENoClipRemapR(const CVsRect& p_rect,
+void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect,
 									CResZRLE* p_zrle,
 									unsigned int p_reverse,
 									unsigned char* p_remap)
@@ -2969,12 +2965,12 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 			return;
 		}
 		{
-			CVsRect dest((short) primitiveX, (short) primitiveY, (CVsSize*) &p_zrle->m_width);
+			CVSRect dest((short) primitiveX, (short) primitiveY, (CVSSize*) &p_zrle->m_width);
 			if ((flags & 0x400) == 0) {
-				((CVsPoint*) &dest.m_x)->AddInPlace((CVsPoint*) &p_zrle->m_x);
+				((CVSPoint*) &dest.m_x)->AddInPlace((CVSPoint*) &p_zrle->m_x);
 			}
 			{
-				CVsRect clipped;
+				CVSRect clipped;
 
 				if ((short) dest.m_width > 0xff || (short) dest.m_height > 0xff) {
 					short warningWidth = dest.m_width;
@@ -3068,37 +3064,37 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 {
 	short x = p_primitive->m_x;
 	short y = p_primitive->m_y;
-	CVsRect sourceRect(p_primitive->m_sourceRect);
+	CVSRect sourceRect(p_primitive->m_sourceRect);
 	if (sourceRect.m_height == 0 && sourceRect.m_width == 0) {
 		sourceRect.m_width = p_bitmap->m_x;
 		sourceRect.m_height = p_bitmap->m_y;
 	}
-	unsigned int flags = ((CBitmapRes*) p_primitive)->m_flags;
+	unsigned int flags = p_primitive->m_flags;
 	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x != 0) {
-		CVsRect dest(sourceRect);
+		CVSRect dest(sourceRect);
 		dest.m_x = x;
 		dest.m_y = y;
-		CVsRect clip;
+		CVSRect clip;
 		if (ClipRect(dest, &clip) != 0) {
 			if (clip.m_width <= 0 || clip.m_height <= 0) {
 				return;
 			}
-			CVsSize clippedSize;
+			CVSSize clippedSize;
 			clippedSize = clip;
-			(CVsSize&) dest = clippedSize;
+			(CVSSize&) dest = clippedSize;
 		}
 		AddToChangeList(dest);
 		int destX = dest.m_x;
 		int destY = dest.m_y;
 		int yStep = 1;
-		if ((flags & 2) != 0) {
+		if ((flags & CBitmap::BITMAP_REVERSE_ROWS) != 0) {
 			yStep = -1;
 			destY += dest.m_height - 1;
 		}
 		int bitmapWidth = (int) p_bitmap->m_x;
 		unsigned char* source = p_bitmap->GetData() + ((int) sourceRect.m_y + (int) clip.m_y) * bitmapWidth +
 								(int) sourceRect.m_x + (int) clip.m_x;
-		if ((flags & 0x800) != 0) {
+		if ((flags & CBitmap::BITMAP_TRANSPARENT_ZERO) != 0) {
 			int sourceSkip = bitmapWidth - dest.m_width;
 			int i = 0;
 			if (dest.m_height > 0) {

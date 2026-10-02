@@ -4,7 +4,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -19,7 +19,7 @@
 unsigned short g_wNextSwitchIndex;
 
 // FUNCTION: LEMBALL 0x0041d040
-CSwitch::CSwitch(AiCoord& p_position, swMessage p_legacyType, int p_legacyFirst, int p_legacyLast, int p_legacyAux)
+CSwitch::CSwitch(AICOORD& p_position, swMessage p_legacyType, int p_legacyFirst, int p_legacyLast, int p_legacyAux)
 	: CBaseGlobalObject(p_position, OBJECT_SWITCH)
 {
 	m_position.m_xFixed = p_position.m_xFixed;
@@ -136,12 +136,12 @@ void CSwitch::DoActivate()
 }
 
 // FUNCTION: LEMBALL 0x0041d320
-AiCoord CSwitch::ActivatePosition()
+AICOORD CSwitch::ActivatePosition()
 {
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
 	int x = m_position.m_xFixed - 0x8000;
-	return AiCoord(x, y, z);
+	return AICOORD(x, y, z);
 }
 
 // FUNCTION: LEMBALL 0x0041d350
@@ -180,11 +180,12 @@ void CSwitch::ConvertVer0ToVer1()
 	}
 }
 
-inline static unsigned char* LoadSwitchEntries(unsigned char*& p_data, CSwitch* p_switch)
+// FUNCTION: LEMBALL 0x0041d430
+unsigned char* CSwitch::Load(unsigned char*& p_data)
 {
 	unsigned short* data = (unsigned short*) p_data;
 	unsigned short count = *data;
-	p_data += 2;
+	p_data += sizeof(count);
 	if (count != 0) {
 		unsigned int remaining = count;
 		do {
@@ -194,17 +195,11 @@ inline static unsigned char* LoadSwitchEntries(unsigned char*& p_data, CSwitch* 
 			p_data = (unsigned char*) cursor;
 			objectId = *cursor++;
 			p_data = (unsigned char*) cursor;
-			p_switch->AddEntry(message, objectId);
+			AddEntry(message, objectId);
 			remaining--;
 		} while (remaining != 0);
 	}
 	return p_data;
-}
-
-// FUNCTION: LEMBALL 0x0041d430
-unsigned char* CSwitch::Load(unsigned char*& p_data)
-{
-	return LoadSwitchEntries(p_data, this);
 }
 
 // FUNCTION: LEMBALL 0x0041dc40

@@ -1,192 +1,89 @@
 #!/usr/bin/env python3
-"""Produce an objdiff report v2 from reconstructed LEMBALL binary.
+"""Generate objdiff progress from raw assembly comparisons."""
 
-Fully linked code counts whole units whose inventoried functions all have
-reccmp effective matches. Stubs and missing comparisons keep a unit incomplete.
-Data matching is not measured by this function-only report.
-"""
-
-import argparse
 import csv
 import json
-import struct
 import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
 
-from lib.compare import compute_ratio, load_matches
-from lib.paths import BUILD, RECCMP_JSON, REPORT_JSON, ROADMAP_CSV, ROOT
-from lib.reccmp_compat import load_engine
-from reccmp.compare.report import ReccmpStatusReport, serialize_reccmp_report
+from reccmp.compare.report import serialize_reccmp_report
 from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.types import EntityType
 
-
-def f32(value):
-    return struct.unpack("<f", struct.pack("<f", value))[0]
+from lib import BUILD, RECCMP_JSON, REPORT_JSON, ROADMAP_CSV, ROOT, load_engine
 
 
-def unit_name(module):
-    name = module.removeprefix("CMakeFiles/LEMBALL.dir/src/").removesuffix(".obj")
-    return name or "Compiler-generated"
-
-
-def measures(functions, total_units=1, *, complete_code=None, complete_units=None):
-    total_code = sum(f["size"] for f in functions)
-    matched = [f for f in functions if f["ratio"] == 100.0]
-    matched_code = sum(f["size"] for f in matched)
-    fuzzy = sum(f["ratio"] * f["size"] for f in functions)
-    if complete_units is None:
-        complete_units = int(bool(functions) and len(matched) == len(functions))
-    if complete_code is None:
-        complete_code = total_code if complete_units else 0
-    res = {
+def measures(functions, total_units=1):
+    total_code = sum(int(f["size"]) for f in functions)
+    matched = [f for f in functions if f["fuzzy_match_percent"] == 100]
+    matched_code = sum(int(f["size"]) for f in matched)
+    return {
         "total_units": total_units,
-        "complete_units": complete_units,
-        "complete_code": str(complete_code),
-        "complete_code_percent": f32(complete_code / total_code * 100) if total_code else 0.0,
+        "total_code": str(total_code),
+        "matched_code": str(matched_code),
+        "fuzzy_match_percent": sum(f["fuzzy_match_percent"] * int(f["size"])
+                                   for f in functions) / total_code if total_code else 100.0,
+        "matched_code_percent": matched_code / total_code * 100 if total_code else 100.0,
+        "total_functions": len(functions),
+        "matched_functions": len(matched),
+        "matched_functions_percent": len(matched) / len(functions) * 100 if functions else 100.0,
     }
-    if total_code:
-        res.update(
-            total_code=str(total_code),
-            matched_code=str(matched_code),
-            fuzzy_match_percent=f32(fuzzy / total_code),
-            matched_code_percent=f32(matched_code / total_code * 100),
-        )
-    if functions:
-        res.update(
-            total_functions=len(functions),
-            matched_functions=len(matched),
-            matched_functions_percent=f32(len(matched) / len(functions) * 100),
-        )
-    return res
-
-
-def load_inventory(path):
-    with path.open(newline="", encoding="utf-8-sig") as stream:
-        for row in csv.DictReader(stream):
-            if row["row_type"] == "fun" and row["orig_addr"]:
-                yield {
-                    "address": int(row["orig_addr"], 16),
-                    "size": int(row["size"], 16),
-                    "name": row["name"],
-                    "module": row["module"],
-                }
 
 
 def build_report(roadmap_path, reccmp_path):
-    matches = load_matches(reccmp_path)
+    data = json.loads(reccmp_path.read_text(encoding="utf-8"))["data"]
+    matches = {int(m["address"], 16): m for m in data if m["type"] == EntityType.FUNCTION}
     groups = defaultdict(list)
-    for item in load_inventory(roadmap_path):
-        item["ratio"] = compute_ratio(matches.get(item["address"]))
-        groups[unit_name(item["module"])].append(item)
+    with roadmap_path.open(newline="", encoding="utf-8-sig") as stream:
+        for row in csv.DictReader(stream):
+            if row["row_type"] != "fun" or not row["orig_addr"]:
+                continue
+            size = int(row["size"] or "0", 16)
+            if not size:
+                continue
+            address = int(row["orig_addr"], 16)
+            match = matches.get(address, {})
+            name = row["module"].removeprefix("CMakeFiles/LEMBALL.dir/src/").removesuffix(".obj")
+            groups[name or "Compiler-generated"].append({
+                "name": f"0x{address:08x}", "size": str(size),
+                "metadata": {"virtual_address": str(address),
+                             "demangled_name": match.get("name", row["name"])},
+                "fuzzy_match_percent": 0.0 if match.get("stub") else match.get("matching", 0.0) * 100,
+            })
 
     units = []
     for name, functions in sorted(groups.items()):
-        functions.sort(key=lambda f: f["address"])
-        unit_measures = measures(functions)
-        metadata = {"module_name": name, "complete": bool(unit_measures["complete_units"])}
-        source_path = Path("src") / name
-        if (ROOT / source_path).is_file():
-            metadata["source_path"] = source_path.as_posix()
-        units.append(
-            {
-                "name": name,
-                "measures": unit_measures,
-                "sections": [
-                    {
-                        "name": ".text",
-                        "size": unit_measures.get("total_code", "0"),
-                        "fuzzy_match_percent": unit_measures.get("fuzzy_match_percent", 0.0),
-                    }
-                ],
-                "functions": [
-                    {
-                        "name": f["name"],
-                        "size": str(f["size"]),
-                        "metadata": {"virtual_address": str(f["address"])},
-                        "fuzzy_match_percent": f32(f["ratio"]),
-                    }
-                    for f in functions
-                ],
-                "metadata": metadata,
-            }
-        )
-
-    all_functions = [f for group in groups.values() for f in group]
+        functions.sort(key=lambda f: int(f["metadata"]["virtual_address"]))
+        unit = {"name": name, "measures": measures(functions), "functions": functions}
+        source = Path("src") / name
+        if (ROOT / source).is_file():
+            unit["metadata"] = {"source_path": source.as_posix()}
+        units.append(unit)
     return {
-        "measures": measures(
-            all_functions,
-            len(units),
-            complete_code=sum(int(unit["measures"]["complete_code"]) for unit in units),
-            complete_units=sum(unit["measures"]["complete_units"] for unit in units),
-        ),
-        "units": units,
-        "version": 2,
+        "version": 2, "units": units,
+        "measures": measures([f for u in units for f in u["functions"]], len(units)),
     }
 
 
-def run_reccmp() -> Path:
-    out = RECCMP_JSON.resolve()
-    BUILD.mkdir(parents=True, exist_ok=True)
-
-    detect_project(
-        project_directory=ROOT,
-        search_path=[ROOT / "data"],
-        detect_what=DetectWhat.ORIGINAL,
-        build_directory=BUILD,
-    )
-
+def main():
+    detect_project(project_directory=ROOT, search_path=[ROOT / "data"],
+                   detect_what=DetectWhat.ORIGINAL, build_directory=BUILD)
     target, engine = load_engine()
-    report = ReccmpStatusReport(filename=target.original_path.name)
-    for match in engine.compare_all():
-        match_type = getattr(match, "type", None)
-        if (
-            match_type == EntityType.FUNCTION
-            and match.name in target.report_config.ignore_functions
-        ):
-            continue
-        report.add_match(match)
-    out.write_text(serialize_reccmp_report(report, diff_included=True), encoding="utf-8")
-
+    comparisons = engine.to_report(filename=target.original_path.name)
+    RECCMP_JSON.write_text(serialize_reccmp_report(comparisons, diff_included=True), encoding="utf-8")
     subprocess.run(
-        [sys.executable, "-m", "reccmp.tools.roadmap", "--target", "LEMBALL",
-         "--csv", str(ROADMAP_CSV)],
-        cwd=BUILD,
-        check=True,
+        [sys.executable, "-m", "reccmp.tools.roadmap", "--target", "LEMBALL", "--csv", str(ROADMAP_CSV)],
+        cwd=BUILD, check=True,
     )
-
-    return out
-
-
-def make_report(output_path: Path = REPORT_JSON) -> dict:
-    reccmp_path = run_reccmp()
-    report = build_report(ROADMAP_CSV, reccmp_path)
-    output_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    report = build_report(ROADMAP_CSV, RECCMP_JSON)
+    REPORT_JSON.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
-    matches = load_matches(reccmp_path)
-    exact = [item for item in load_inventory(ROADMAP_CSV)
-             if (match := matches.get(item["address"]))
-             and not match.get("stub") and match.get("matching") == 1.0]
-    print(f"assembly-exact (normalized): {len(exact)}/{values['total_functions']} functions, "
-          f"{sum(item['size'] for item in exact)}/{values['total_code']} code bytes")
-    print(f"effective: {values['matched_functions']}/{values['total_functions']} functions, "
-          f"{values['matched_code']}/{values['total_code']} code bytes")
-    print(f"fully linked: {values['complete_units']}/{values['total_units']} units, "
-          f"{values['complete_code']}/{values['total_code']} code bytes "
-          f"({values['complete_code_percent']:.2f}%)")
-    print(f"wrote {output_path}")
-    return report
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=REPORT_JSON)
-    args = parser.parse_args()
-    make_report(args.output)
-    return 0
+    print(f"Normalized-exact: {values['matched_functions']}/{values['total_functions']} functions, "
+          f"{values['matched_code']}/{values['total_code']} bytes; "
+          f"fuzzy: {values['fuzzy_match_percent']:.2f}%")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

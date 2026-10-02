@@ -5,7 +5,7 @@
 #include "AI/Base/ObjectTypes.h"
 #include "CBaseObjectManager.h"
 
-class AiCoord;
+class AICOORD;
 class CAI;
 class CSwitch;
 
@@ -26,15 +26,15 @@ public:
 	void RemoveById(short p_id);
 	void DeactivateObjectAtIndex(int p_index);
 	CGlobalGameObject* Add(unsigned short p_id,
-						   AiCoord p_position,
+						   AICOORD p_position,
 						   eObjectType p_objectType,
 						   unsigned short p_linkedObjectId,
 						   eObjectType p_linkedObjectType);
 	CGlobalGameObject* AddObject(unsigned short p_id, CGlobalGameObject* p_object, unsigned int p_active);
 	CGlobalGameObject* FindObject(int p_id);
-	CGlobalGameObject* FindNearbyObject(AiCoord p_position);
-	CGlobalGameObject* FindNearbyObject(AiCoord p_position, eObjectType p_objectType);
-	CGlobalGameObject* FindObjectInBounds(CVsRect* p_bounds, eObjectType p_objectType);
+	CGlobalGameObject* FindNearbyObject(AICOORD p_position);
+	CGlobalGameObject* FindNearbyObject(AICOORD p_position, eObjectType p_objectType);
+	CGlobalGameObject* FindObjectInBounds(CVSRect* p_bounds, eObjectType p_objectType);
 	CObjectManager(CAI* p_ai, int p_arg1);
 	CSwitch* AddSwitch(unsigned short p_id,
 					   int p_x,

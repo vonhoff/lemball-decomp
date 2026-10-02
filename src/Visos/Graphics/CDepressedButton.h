@@ -3,7 +3,7 @@
 
 #include "CPVButton.h"
 class CPVGWnd;
-class CVsRect;
+class CVSRect;
 
 // SIZE 0x10c
 // VTABLE: LEMBALL 0x00497630 CGWnd
@@ -15,12 +15,12 @@ public:
 		m_state = 0;
 		m_enabled = 0;
 	}
-	CDepressedButton(const CVsRect& p_rect, CPVGWnd* p_parent) : CPVButton(p_rect, p_parent)
+	CDepressedButton(const CVSRect& p_rect, CPVGWnd* p_parent) : CPVButton(p_rect, p_parent)
 	{
 		m_state = 0;
 		m_enabled = 0;
 	}
-	virtual void OnPaint(const CVsRect& p_rect); // vtable+0xa8
+	virtual void OnPaint(const CVSRect& p_rect); // vtable+0xa8
 	virtual void _DrawButton();                  // vtable+0xb8
 	virtual void OnReleased(int p_flags);        // vtable+0xc0
 	virtual void OnPressed(int p_flags);         // vtable+0xc4

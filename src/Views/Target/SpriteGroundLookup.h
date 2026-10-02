@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VIEWS_TARGET_SPRITEGROUNDLOOKUP_H
 #define LEMBALL_VIEWS_TARGET_SPRITEGROUNDLOOKUP_H
 
-class CVsRect;
+class CVSRect;
 
 // SIZE 0x18
 struct SpriteGroundLookup {
-	void MarkRect(const CVsRect& p_rect);
+	void MarkRect(const CVSRect& p_rect);
 
 	unsigned char m_header[8]; // 0x00
 	short m_width;             // 0x08

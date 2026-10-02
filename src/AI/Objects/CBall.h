@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CBALL_H
 #define LEMBALL_AI_OBJECTS_CBALL_H
 
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/CGameObject.h"
 
 // SIZE 0x13c
@@ -15,12 +15,12 @@ public:
 	virtual void Delete();                     // vtable+0xc8
 	virtual void Restart();                    // vtable+0x104
 	void LoadLevel(unsigned char*& p_data);
-	void Set(AiCoord p_start, AiCoord p_destination, int p_speed);
+	void Set(AICOORD p_start, AICOORD p_destination, int p_speed);
 	void SetHeightCorrect();
 	void StartMovement(unsigned int p_direction);
 
 private:
-	AiCoord m_destination;    // 0x124
+	AICOORD m_destination;    // 0x124
 	unsigned short m_speed;   // 0x130
 	unsigned int m_enabled;   // 0x134
 	unsigned int m_direction; // 0x138

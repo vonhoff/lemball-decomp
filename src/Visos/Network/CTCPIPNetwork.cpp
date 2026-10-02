@@ -4,6 +4,7 @@
 #include "CTCPIPBroadcast.h"
 #include "CTCPIPConnect.h"
 #include "CTCPIPNetworkAddress.h"
+#include "Platform/WinSock/WSAData.h"
 #include "Platform/WinSock/WinSock.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Network/CBaseNetwork.h"
@@ -11,37 +12,18 @@
 
 #include <new.h>
 
-extern "C" __declspec(dllimport) int __stdcall PostMessageA(void* p_window,
-															unsigned int p_message,
-															unsigned int p_wParam,
-															long p_lParam);
-extern "C" __declspec(dllimport) unsigned int __stdcall SetTimer(void* p_window,
-																 unsigned int p_id,
-																 unsigned int p_elapse,
-																 void* p_callback);
-extern "C" __declspec(dllimport) int __stdcall KillTimer(void* p_window, unsigned int p_id);
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 // FUNCTION: LEMBALL 0x004713c0
 CTCPIPNetwork::CTCPIPNetwork() : CNetworkWnd("TCPIP Network", &g_tcpIpNetworkWindowClassRegistered)
 {
 }
 
-#pragma pack(1)
-struct WinsockStartupData {
-	unsigned short m_version;
-	unsigned short m_highVersion;
-	char m_description[257];
-	char m_systemStatus[129];
-	unsigned short m_maxSockets;
-	unsigned short m_maxDatagram;
-	char* m_vendorInfo;
-};
-#pragma pack()
-
 // FUNCTION: LEMBALL 0x004713f0
 void CTCPIPNetwork::Initialise()
 {
-	WinsockStartupData wsaData;
+	WSADATA wsaData;
 	int wsaResult;
 	int maxDatagram;
 
@@ -51,17 +33,17 @@ void CTCPIPNetwork::Initialise()
 		return;
 	}
 
-	maxDatagram = wsaData.m_maxDatagram;
-	if (maxDatagram < (int) g_networkPacketSize) {
+	maxDatagram = wsaData.iMaxUdpDg;
+	if ((int) g_networkPacketSize > maxDatagram) {
 		g_networkPacketSize = (unsigned int) maxDatagram;
 	}
-	m_timerId = SetTimer(m_windowHandle, 0x12345678, 10, 0);
+	m_timerId = SetTimer((HWND) m_windowHandle, 0x12345678, 10, 0);
 }
 
 // FUNCTION: LEMBALL 0x00471460
 void CTCPIPNetwork::UnInitialise()
 {
-	KillTimer(m_windowHandle, m_timerId);
+	KillTimer((HWND) m_windowHandle, m_timerId);
 	WSACleanup();
 }
 
@@ -71,8 +53,8 @@ int CTCPIPNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p
 	(void) p_wParam;
 	(void) p_lParam;
 
-	if (p_message != 0x113) {
-		if (p_message != 0x444) {
+	if (p_message != WM_TIMER) {
+		if (p_message != TCPIP_MESSAGE_FORCE_PROCESS) {
 			return -1;
 		}
 		if (g_pNetworkStatusQueue != 0 && ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount() != 0) {
@@ -80,15 +62,14 @@ int CTCPIPNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p
 				->ProcessNMsgs(((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount());
 		}
 	}
-	CBaseNetwork& network = *(CBaseNetwork*) ((unsigned char*) this + sizeof(CNetworkWnd));
-	network.Process();
+	Process();
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x004714d0
 void CTCPIPNetwork::ForceProcess()
 {
-	PostMessageA(m_windowHandle, 0x444, 0, 0);
+	PostMessageA((HWND) m_windowHandle, TCPIP_MESSAGE_FORCE_PROCESS, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x004715c0
@@ -119,7 +100,7 @@ void* CTCPIPNetwork::GetNewBroadcast()
 }
 
 // GLOBAL: LEMBALL 0x004a23b0
-unsigned int g_dwTCPIPNetworkThreadId = 0x12345678;
+unsigned long g_dwTCPIPNetworkThreadId = 0x12345678;
 
 // GLOBAL: LEMBALL 0x004a23b4
 void* g_hTCPIPNetworkThread = 0;

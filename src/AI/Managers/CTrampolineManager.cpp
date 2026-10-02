@@ -2,7 +2,7 @@
 
 #include "../Navigation/CAI.h"
 #include "../Objects/CTrampoline.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
@@ -55,7 +55,7 @@ void CTrampolineManager::ResetCount()
 }
 
 // FUNCTION: LEMBALL 0x0042b440
-int CTrampolineManager::TryEnableNear(const AiCoord& p_position, CGameObject* p_object)
+int CTrampolineManager::TryEnableNear(const AICOORD& p_position, CGameObject* p_object)
 {
 	for (int i = 0;; i++) {
 		if (m_count <= i) {
@@ -96,7 +96,7 @@ int CTrampolineManager::GetViewData(CViewData* p_viewData)
 }
 
 // FUNCTION: LEMBALL 0x0042b550
-int CTrampolineManager::Hit(const AiCoord& p_position, CGameObject* p_object)
+int CTrampolineManager::Hit(const AICOORD& p_position, CGameObject* p_object)
 {
 	for (int i = 0; i < m_count; i++) {
 		if (m_trampolines[i].Hit(p_position, p_object) != 0) {
@@ -110,7 +110,7 @@ int CTrampolineManager::Hit(const AiCoord& p_position, CGameObject* p_object)
 void CTrampolineManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
-		AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+		AICOORD position(p_x << 12, p_y << 12, p_z << 12);
 		m_trampolines[m_count].Set(p_id, position);
 		m_count++;
 	}

@@ -1,23 +1,23 @@
 #include "CHotAreaHandler.h"
 
 #include "../Foundation/CMasterInput.h"
-#include "../Foundation/CVsPoint.h"
-#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVSPoint.h"
+#include "../Foundation/CVSRect.h"
 #include "CHotAreaList.h"
 #include "Visos/Foundation/Message.h"
 
 // FUNCTION: LEMBALL 0x00439960
-void CHotAreaHandler::OnButtonDown(const CVsPoint& p_point, int p_flags)
+void CHotAreaHandler::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
 }
 
 // FUNCTION: LEMBALL 0x00439970
-void CHotAreaHandler::OnButtonUp(const CVsPoint& p_point, int p_flags)
+void CHotAreaHandler::OnButtonUp(const CVSPoint& p_point, int p_flags)
 {
 }
 
 // FUNCTION: LEMBALL 0x00439980
-void CHotAreaHandler::OnExternalButtonUp(const CVsPoint& p_point, int p_flags)
+void CHotAreaHandler::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	m_buttonState[p_flags + 3] = 0;
 	m_buttonState[p_flags] = 0;
@@ -46,12 +46,12 @@ void CHotAreaHandler::OnExit()
 }
 
 // FUNCTION: LEMBALL 0x004399d0
-void CHotAreaHandler::OnInside(const CVsPoint& p_point)
+void CHotAreaHandler::OnInside(const CVSPoint& p_point)
 {
 }
 
 // FUNCTION: LEMBALL 0x004399e0
-bool CHotAreaHandler::InArea(const CVsPoint& p_point)
+bool CHotAreaHandler::InArea(const CVSPoint& p_point)
 {
 	short px;
 	short top;
@@ -75,12 +75,12 @@ bool CHotAreaHandler::InArea(const CVsPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x0046a290
-CHotAreaHandler::CHotAreaHandler(const CVsRect& p_bounds)
+CHotAreaHandler::CHotAreaHandler(const CVSRect& p_bounds)
 {
 	Initialise();
 	m_bounds.m_width = p_bounds.m_width;
 	m_bounds.m_height = p_bounds.m_height;
-	const CVsRect* rect = &p_bounds;
+	const CVSRect* rect = &p_bounds;
 	const short* position;
 	if (rect != 0) {
 		position = &rect->m_x;
@@ -129,7 +129,7 @@ void CHotAreaHandler::Reset()
 }
 
 // FUNCTION: LEMBALL 0x0046a380
-void CHotAreaHandler::ProcessArea(Message* p_message, const CVsPoint& p_point, class CHotAreaHandler* p_currentHandler)
+void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, class CHotAreaHandler* p_currentHandler)
 {
 	unsigned short type;
 	int button;

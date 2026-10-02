@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CSCREENSCROLL_H
 #define LEMBALL_VISOS_GRAPHICS_CSCREENSCROLL_H
 
-#include "../Foundation/CVsPoint.h"
-#include "../Foundation/CVsRect.h"
+#include "../Foundation/CVSPoint.h"
+#include "../Foundation/CVSRect.h"
 #include "CPrimitive.h"
 
 // SIZE 0x10
@@ -16,8 +16,8 @@ public:
 	friend class CSurface;
 
 public:
-	CVsPoint m_destination; // 0x04
-	CVsRect m_rect;         // 0x08
+	CVSPoint m_destination; // 0x04
+	CVSRect m_rect;         // 0x08
 };
 
 // SYNTHETIC: LEMBALL 0x00439650

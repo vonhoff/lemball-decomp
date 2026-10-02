@@ -2,12 +2,12 @@
 
 #include "../../Map/Base/CMap.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
-#include "AI/Base/Coord3d.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
+#include "AI/Base/tCoord3d.h"
 #include "AI/Objects/InvisibleSwitchTarget.h"
 #include "AI/Objects/SwitchEntry.h"
 #include "Map/Ground/CGround.h"
@@ -49,11 +49,11 @@ void CInvisibleSwitch::SetPointFromIntegers(short p_x, short p_y, short p_z)
 	short y = p_y;
 	short z = p_z;
 	short x = p_x;
-	Coord3d first;
+	tCoord3d first;
 	first.m_y = y;
 	first.m_z = z;
 	first.m_x = x;
-	Coord3d second;
+	tCoord3d second;
 	second.m_y = y;
 	second.m_z = z;
 	second.m_x = x;
@@ -61,7 +61,7 @@ void CInvisibleSwitch::SetPointFromIntegers(short p_x, short p_y, short p_z)
 }
 
 // FUNCTION: LEMBALL 0x00409d70
-void CInvisibleSwitch::Set(const Coord3d& p_cornerA, const Coord3d& p_cornerB)
+void CInvisibleSwitch::Set(const tCoord3d& p_cornerA, const tCoord3d& p_cornerB)
 {
 	m_objectCount = 0;
 	m_minCorner = p_cornerA;
@@ -145,7 +145,7 @@ void CInvisibleSwitch::AddObject(CGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x00409fa0
-void CInvisibleSwitch::StepOn(const AiCoord& p_position, CGameObject* p_object)
+void CInvisibleSwitch::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	if (m_triggered == 0 && m_requestedAction == ACTION_READY && GetId() != (short) p_object->m_invisibleSwitchId) {
 		int x = p_position.m_xFixed >> 12;
@@ -208,7 +208,7 @@ void CInvisibleSwitch::Load(unsigned char*& p_data)
 	p_data += 2;
 	SetId(id);
 
-	Coord3d cornerA;
+	tCoord3d cornerA;
 	cornerA.m_x = *(short*) p_data;
 	p_data += 2;
 	cornerA.m_y = *(short*) p_data;
@@ -216,7 +216,7 @@ void CInvisibleSwitch::Load(unsigned char*& p_data)
 	cornerA.m_z = *(short*) p_data;
 	p_data += 2;
 
-	Coord3d cornerB;
+	tCoord3d cornerB;
 	cornerB.m_x = *(short*) p_data;
 	p_data += 2;
 	cornerB.m_y = *(short*) p_data;

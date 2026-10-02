@@ -2,8 +2,9 @@
 #define LEMBALL_AI_OBJECTS_CVIEWDATA_H
 
 #include "../../Views/Sound/SoundEffects.h"
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/ObjectActions.h"
+#include "../Base/ObjectIds.h"
 #include "../Base/ObjectTypes.h"
 
 // SIZE 0x4c
@@ -14,7 +15,7 @@ public:
 	// FUNCTION: LEMBALL 0x00439340
 	CViewData()
 	{
-		m_objectId = 0xffff;
+		m_objectId = INVALID_OBJECT_REGISTRY_INDEX;
 		m_transientFlags = 0;
 		m_hidden = 0;
 		m_action = ACTION_NONE;
@@ -48,7 +49,7 @@ private:
 	unsigned short m_playerIndex;  // 0x2e
 	unsigned int m_hidden;         // 0x30
 	unsigned int m_transientFlags; // 0x34
-	AiCoord m_auxiliaryPosition;   // 0x38
+	AICOORD m_auxiliaryPosition;   // 0x38
 	eSoundEffect m_soundEffect;    // 0x44
 	unsigned int m_sortZKey;       // 0x48
 };

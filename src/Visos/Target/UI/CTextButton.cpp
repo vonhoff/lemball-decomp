@@ -11,16 +11,16 @@
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00468f90
-CTextButton::CTextButton(const CVsRect& p_rect,
+CTextButton::CTextButton(const CVSRect& p_rect,
 						 CPVGWnd* p_parent,
 						 unsigned int p_fontResourceId,
 						 unsigned int p_alignmentFlags)
 	: CFramedButton(p_parent, 0xf7)
 {
-	const CVsPoint* position = &p_rect;
+	const CVSPoint* position = &p_rect;
 	m_buttonX = position->m_x;
 	m_buttonY = position->m_y;
-	CVsRect bounds(p_rect);
+	CVSRect bounds(p_rect);
 	bounds.m_x = 0;
 	bounds.m_y = 0;
 	m_bounds.m_width = bounds.m_width;
@@ -34,7 +34,7 @@ CTextButton::CTextButton(const CVsRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00469120
-void CTextButton::ExpandToFitText(const CVsSize& p_textSize)
+void CTextButton::ExpandToFitText(const CVSSize& p_textSize)
 {
 	if (m_textMargins.m_width * m_textMargins.m_height != 0) {
 		short width = (short) (p_textSize.m_width + 2 * m_textMargins.m_width);
@@ -49,7 +49,7 @@ void CTextButton::ExpandToFitText(const CVsSize& p_textSize)
 }
 
 // FUNCTION: LEMBALL 0x00469180
-void CTextButton::AlignTextPosition(CVsPoint& p_position, const CVsSize& p_textSize)
+void CTextButton::AlignTextPosition(CVSPoint& p_position, const CVSSize& p_textSize)
 {
 	if ((m_alignmentFlags & 0x10) != 0) {
 		p_position.m_x = (short) (m_bounds.m_width - p_textSize.m_width);
@@ -71,11 +71,11 @@ void CTextButton::SetText(char* p_normalText, char* p_pressedText)
 {
 	m_pressedText = p_pressedText;
 	m_normalText = p_normalText;
-	CVsSize normalSize = m_font->GetSize(p_normalText, 0x20);
+	CVSSize normalSize = m_font->GetSize(p_normalText, 0x20);
 	ExpandToFitText(normalSize);
-	CVsSize pressedSize(normalSize);
+	CVSSize pressedSize(normalSize);
 	if (m_pressedText != 0) {
-		const CVsSize& size = m_font->GetSize(m_pressedText, 0x20);
+		const CVSSize& size = m_font->GetSize(m_pressedText, 0x20);
 		pressedSize.m_width = size.m_width;
 		pressedSize.m_height = size.m_height;
 		ExpandToFitText(pressedSize);
@@ -92,7 +92,7 @@ void CTextButton::SetText(char* p_normalText, char* p_pressedText)
 	m_pressedTextPosition.m_x++;
 	m_pressedTextPosition.m_y++;
 	if (m_nativeButtonCreated == 0) {
-		CVsRect rect(m_buttonX, m_buttonY, m_bounds.m_width, m_bounds.m_height);
+		CVSRect rect(m_buttonX, m_buttonY, m_bounds.m_width, m_bounds.m_height);
 		Create(rect, m_ownerWindow, g_szButton);
 		m_bounds.m_x += m_relativeTopLeft.m_x;
 		m_bounds.m_y += m_relativeTopLeft.m_y;
@@ -128,7 +128,7 @@ CTextButton::~CTextButton()
 // FUNCTION: LEMBALL 0x00469480
 void CTextButton::DrawButton()
 {
-	CVsPoint position;
+	CVSPoint position;
 	char* text;
 	bool depressed = m_pressed != 0 && CHotAreaHandler::m_active != 0;
 	if (!depressed) {
@@ -149,7 +149,7 @@ void CTextButton::DrawButton()
 }
 
 // FUNCTION: LEMBALL 0x00469530
-void CTextButton::OnPaint(const CVsRect& p_rect)
+void CTextButton::OnPaint(const CVSRect& p_rect)
 {
 	if (m_lastDrawnRemap != m_remap) {
 		m_forceDrawCount = 1;

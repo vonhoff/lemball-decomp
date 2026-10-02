@@ -2,7 +2,7 @@
 #define LEMBALL_FRONTEND_CONTROLS_CGUNBUTTONS_H
 
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Foundation/CVSRect.h"
 
 class CGWnd;
 class CGDI;
@@ -32,7 +32,7 @@ public:
 	void LoadFaces(unsigned long* p_animIds);
 	void UnLoadFaces();
 	void Move(int p_x, int p_y);
-	CGunButtons(const CVsRect& p_rect,
+	CGunButtons(const CVSRect& p_rect,
 				CGWnd* p_window,
 				CGDI* p_gdi,
 				int p_x,
@@ -48,7 +48,7 @@ public:
 
 private:
 	int m_mode;                      // 0x10
-	CVsRect m_trackRect;             // 0x14
+	CVSRect m_trackRect;             // 0x14
 	int m_x;                         // 0x1c
 	int m_y;                         // 0x20
 	CGDI* m_gdi;                     // 0x24

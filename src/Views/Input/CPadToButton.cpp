@@ -3,7 +3,7 @@
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Graphics/CPVButton.h"
 #include "PadToButtonEntry.h"
-#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/Message.h"
 
 // FUNCTION: LEMBALL 0x0043a250
@@ -48,11 +48,11 @@ int CPadToButton::ProcessMsg(Message* p_message)
 			}
 			CPVButton* button = entries[index].m_button;
 			if (type == 4) {
-				CVsPoint point(0, 0);
+				CVSPoint point(0, 0);
 				button->OnButtonDown(point, 0);
 			}
 			else {
-				CVsPoint point(0, 0);
+				CVSPoint point(0, 0);
 				button->OnButtonUp(point, 0);
 			}
 			result = 1;

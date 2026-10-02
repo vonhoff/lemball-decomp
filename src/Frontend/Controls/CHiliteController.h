@@ -5,7 +5,7 @@
 #include "../../Visos/Animation/CStaticAnim.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
 #include "../../Visos/Foundation/Message.h"
-#include "../../Visos/Graphics/CSolidRect.h"
+#include "../../Visos/Graphics/CClipRect.h"
 #include "HiliteControllerJunction.h"
 
 class CGWnd;
@@ -59,7 +59,7 @@ private:
 	int m_currentButton;                     // 0xa8
 	CHiliteButtons* m_buttons[4];            // 0xac
 	HiliteControllerJunction m_junctions[4]; // 0xbc
-	CSolidRect m_hiliteRect;                 // 0xfc
+	CClipRect m_hiliteRect;                  // 0xfc
 	CGDI* m_gdi;                             // 0x10c
 	CGWnd* m_window;                         // 0x110
 	unsigned int m_nextControlMessage;       // 0x114

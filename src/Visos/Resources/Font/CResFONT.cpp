@@ -1,11 +1,11 @@
 #include "../CResFONT.h"
 
 // FUNCTION: LEMBALL 0x0045db30
-CVsSize CResFONT::GetSize(const char* p_text, unsigned int p_flags)
+CVSSize CResFONT::GetSize(const char* p_text, unsigned int p_flags)
 {
 	int textIndex = 0;
-	CVsSize sizeValue;
-	CVsSize& size = sizeValue;
+	CVSSize sizeValue;
+	CVSSize& size = sizeValue;
 	size.m_height = 0;
 	size.m_width = 0;
 	if (p_text[0] != '\0') {

@@ -1,16 +1,16 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CANIMSMANAGER_H
 #define LEMBALL_VISOS_ANIMATION_CANIMSMANAGER_H
 
-#include "../Foundation/CVsRect.h"
-#include "../Foundation/CVsSize.h"
-struct CVsPoint;
+#include "../Foundation/CVSRect.h"
+#include "../Foundation/CVSSize.h"
+struct CVSPoint;
 
 class CGDI;
 class CAnimFrameBASE;
 class CRemap;
 class CResZRLE;
 class CResBase;
-class CLine;
+class CSolidRect;
 class CAnim;
 class CZRLE;
 
@@ -24,19 +24,19 @@ public:
 				  int p_animCapacity,
 				  int p_zrleCapacity,
 				  unsigned int p_doubleBuffered);
-	CVsRect DrawAnim(const CVsPoint& p_position,
+	CVSRect DrawAnim(const CVSPoint& p_position,
 					 unsigned long p_resourceId,
 					 unsigned long p_drawFlags,
 					 CAnimFrameBASE* p_frame,
 					 CRemap* p_remap);
-	CVsSize GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex);
+	CVSSize GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex);
 	unsigned long GetnAnims(unsigned long p_resourceId);
 	virtual void FreeVram(); // vtable+0x00
 	void LoadAnims(unsigned long p_resourceId);
 	void ResetPrimitives();
-	CVsRect* DrawAnimOnGdi(CVsRect* p_bounds,
+	CVSRect* DrawAnimOnGdi(CVSRect* p_bounds,
 						   CGDI* p_gdi,
-						   const CVsPoint& p_position,
+						   const CVSPoint& p_position,
 						   unsigned long p_resourceId,
 						   unsigned long p_drawFlags,
 						   CAnimFrameBASE* p_frame,
@@ -56,7 +56,7 @@ public:
 	friend class CLemmingAnimsManager;
 
 private:
-	CLine* m_linePrimitives;            // 0x04
+	CSolidRect* m_linePrimitives;       // 0x04
 	char m_reserved08[4];               // 0x08
 	unsigned int m_resetState;          // 0x0c
 	unsigned int m_ownsLinePrimitives;  // 0x10

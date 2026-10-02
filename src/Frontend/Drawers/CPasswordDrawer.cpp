@@ -17,14 +17,14 @@
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
+#include "Visos/Graphics/CClipRect.h"
 #include "Visos/Graphics/CPVGWnd.h"
-#include "Visos/Graphics/CSolidRect.h"
 
 #include <string.h>
 
@@ -43,26 +43,36 @@ extern char g_abPasswordLevelText[24];
 #define PASSWORD_RETURN_DELAY_MS 1000
 
 // GLOBAL: LEMBALL 0x0049ff48
-unsigned char g_abPasswordLayoutFull[0x80] = {
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x01, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
-	0x00, 0x10, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0xb0, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0xd0, 0x00,
-	0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0xf0, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0xc0,
-	0x00, 0x00, 0x00, 0xb0, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0xd0, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00,
-	0xf0, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x70, 0x01, 0x00,
-	0x00, 0x40, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x40, 0x01, 0x00, 0x00, 0x70, 0x01, 0x00, 0x00, 0x40, 0x01,
-	0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x90, 0x01, 0x00, 0x00,
-};
+PasswordTextLayout g_passwordLayoutFull = {0,
+										   0,
+										   384,
+										   32,
+										   16,
+										   16,
+										   {{16, 176}, {16, 208}, {16, 240}, {16, 272}},
+										   {{192, 176}, {192, 208}, {192, 240}, {192, 272}},
+										   64,
+										   368,
+										   64,
+										   64,
+										   {320, 368, 320, 40},
+										   {32, 400}};
 
 // GLOBAL: LEMBALL 0x0049fec8
-unsigned char g_abPasswordLayoutCompact[0x80] = {
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00,
-	0x00, 0x08, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x58, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x68, 0x00,
-	0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x78, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x88, 0x00, 0x00, 0x00, 0x60,
-	0x00, 0x00, 0x00, 0x58, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00,
-	0x78, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x88, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0xb8, 0x00, 0x00,
-	0x00, 0x20, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 0x00, 0xb8, 0x00, 0x00, 0x00, 0xa0, 0x00,
-	0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0xc8, 0x00, 0x00, 0x00,
-};
+PasswordTextLayout g_passwordLayoutCompact = {0,
+											  0,
+											  192,
+											  16,
+											  8,
+											  8,
+											  {{8, 88}, {8, 104}, {8, 120}, {8, 136}},
+											  {{96, 88}, {96, 104}, {96, 120}, {96, 136}},
+											  32,
+											  184,
+											  32,
+											  32,
+											  {160, 184, 160, 24},
+											  {16, 200}};
 
 // GLOBAL: LEMBALL 0x0049ffc8
 unsigned long g_dwPasswordButtonAnimIdsFull[PASSWORD_BUTTON_COUNT] = {
@@ -129,7 +139,7 @@ char* g_apPasswordSkillLabels[4] = {
 };
 
 // FUNCTION: LEMBALL 0x00451210
-CPasswordDrawer::CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVsRect& p_arg2)
+CPasswordDrawer::CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_PASSWORD, 10, 10, 0, 0x28, 0x30)
 {
 	char* encoded;
@@ -159,12 +169,12 @@ void CPasswordDrawer::Load()
 	int buttonY;
 
 	if (m_mode != 0) {
-		m_layout = (int*) g_abPasswordLayoutCompact;
+		m_layout = &g_passwordLayoutCompact;
 		m_buttonAnimIds = g_dwPasswordButtonAnimIdsCompact;
 		m_animationId = RES_NEWFRONT_ANIMS_LORES_PASSWORD_HILITE;
 	}
 	else {
-		m_layout = (int*) g_abPasswordLayoutFull;
+		m_layout = &g_passwordLayoutFull;
 		m_buttonAnimIds = g_dwPasswordButtonAnimIdsFull;
 		m_animationId = RES_NEWFRONT_ANIMS_HIRES_PASSWORD_HILITE;
 	}
@@ -172,45 +182,45 @@ void CPasswordDrawer::Load()
 	primitiveCount = 1;
 	do {
 		CResBITMAP* background = m_backgroundBitmap;
-		int* layout = (int*) m_layout;
-		int layoutY = layout[1];
-		m_primitiveBundle[primitiveIndex].m_primitive.m_x = (short) layout[0];
+		PasswordTextLayout* layout = m_layout;
+		int layoutY = layout->m_backgroundY;
+		m_primitiveBundle[primitiveIndex].m_primitive.m_x = (short) layout->m_backgroundX;
 		m_primitiveBundle[primitiveIndex].m_primitive.m_y = (short) layoutY;
 		m_primitiveBundle[primitiveIndex].m_primitive.m_resource = background;
-		m_primitiveBundle[primitiveIndex].m_primitive.m_flags = 0x800;
+		m_primitiveBundle[primitiveIndex].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 		m_primitiveBundle[primitiveIndex].m_primitive.m_remap = 0;
 		primitiveIndex++;
 	} while (--primitiveCount != 0);
 	CAnimsManager::LoadAnims(m_animationId);
 	int* keyMap = g_passwordKeyMap;
 	int* offsetPtr = m_buttonOffsets;
-	gridStartX = m_layout[2];
-	gridY = m_layout[3];
+	gridStartX = m_layout->m_keypadX;
+	gridY = m_layout->m_keypadY;
 	gridX = gridStartX;
 	buttonY = gridY;
 	row = 4;
 	do {
 		col = 3;
 		do {
-			m_buttons[*keyMap] = new CGraphicButton(CVsPoint((short) gridX, (short) buttonY),
+			m_buttons[*keyMap] = new CGraphicButton(CVSPoint((short) gridX, (short) buttonY),
 													(CPVGWnd*) m_display,
 													m_buttonAnimIds[*keyMap],
 													3);
 			m_buttons[*keyMap]->m_controlMessage = PASSWORD_BUTTON_MESSAGE_FIRST + *keyMap;
 			m_buttons[*keyMap]->m_messageQueue = g_pMasterInputQueue;
-			offsetPtr[0] = gridX - m_layout[2];
-			offsetPtr[1] = buttonY - m_layout[3];
+			offsetPtr[0] = gridX - m_layout->m_keypadX;
+			offsetPtr[1] = buttonY - m_layout->m_keypadY;
 			CGDI* buttonGdi = m_buttons[*keyMap]->m_gdi;
 			CSurface* target = buttonGdi->m_renderTarget;
 			m_buttons[*keyMap]->SetAutoDraw(0);
 			target->m_flag70 = 0;
-			gridX = gridX + m_layout[0x60 / 4] + m_layout[4];
+			gridX = gridX + m_layout->m_buttonWidth + m_layout->m_buttonGapX;
 			offsetPtr = offsetPtr + 2;
 			keyMap++;
 			--col;
 		} while (col != 0);
 		gridX = gridStartX;
-		gridY = gridY + m_layout[0x64 / 4] + m_layout[5];
+		gridY = gridY + m_layout->m_buttonHeight + m_layout->m_buttonGapY;
 		buttonY = gridY;
 		--row;
 	} while (row != 0);
@@ -265,7 +275,7 @@ void CPasswordDrawer::ShiftHilite(int p_delta)
 	if (m_passwordSubmitted == 1) {
 		return;
 	}
-	CVsPoint pt;
+	CVSPoint pt;
 	pt.m_x = 0;
 	pt.m_y = 0;
 	m_buttons[g_passwordKeyMap[m_selectedButton]]->OnButtonUp(pt, 0);
@@ -294,20 +304,20 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		case 0x1f:
 		case 0x22: {
 			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
-			CVsPoint pt(0, 0);
+			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
 		}
 		case 0x4c: {
 			CPVButton* button = m_buttons[11];
-			CVsPoint pt(0, 0);
+			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
 		}
 		case 0x4d:
 		case 0x4e: {
 			CPVButton* button = m_buttons[PASSWORD_CLEAR_BUTTON_INDEX];
-			CVsPoint pt(0, 0);
+			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
 		}
@@ -315,7 +325,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		if (code >= 0x39 && code <= 0x42) {
 			{
 				CPVButton* button = m_buttons[code - 0x39];
-				CVsPoint pt(0, 0);
+				CVSPoint pt(0, 0);
 				button->OnButtonUp(pt, 0);
 				return 1;
 			}
@@ -339,20 +349,20 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		case 0x1f:
 		case 0x22: {
 			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
-			CVsPoint pt(0, 0);
+			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
 		}
 		case 0x4c: {
 			CPVButton* button = m_buttons[11];
-			CVsPoint pt(0, 0);
+			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
 		}
 		case 0x4d:
 		case 0x4e: {
 			CPVButton* button = m_buttons[PASSWORD_CLEAR_BUTTON_INDEX];
-			CVsPoint pt(0, 0);
+			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
 		}
@@ -360,7 +370,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		if (code >= 0x39 && code <= 0x42) {
 			{
 				CPVButton* button = m_buttons[code - 0x39];
-				CVsPoint pt(0, 0);
+				CVSPoint pt(0, 0);
 				button->OnButtonDown(pt, 0);
 				return 1;
 			}
@@ -397,40 +407,38 @@ void CPasswordDrawer::Processing()
 // FUNCTION: LEMBALL 0x00451aa0
 void CPasswordDrawer::DrawText()
 {
-	int* countPos;
+	PasswordTextPosition* countPos;
 	int skillIndex;
-	int* labelPos;
+	PasswordTextPosition* labelPos;
 	char* textPtr;
-	countPos = &((PasswordTextLayout*) m_layout)->m_countPositions[0].m_y;
-	labelPos = &((PasswordTextLayout*) m_layout)->m_labelPositions[0].m_y;
+	countPos = m_layout->m_countPositions;
+	labelPos = m_layout->m_labelPositions;
 	textPtr = g_abPasswordLevelText;
 	skillIndex = 0;
 	do {
-		CVsSize advance;
-		CVsPoint position((short) labelPos[-1], (short) labelPos[0]);
+		CVSSize advance;
+		CVSPoint position((short) labelPos->m_x, (short) labelPos->m_y);
 		m_textManager
 			->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillIndex], 0x20, 0);
 		strcpy(textPtr, g_szPasswordLevelFormat);
 		vsLtoa(g_pGameStatus->m_maxLevels[skillIndex] + 1, textPtr + 2, 10);
-		CVsSize countAdvance;
-		CVsPoint countPosition((short) countPos[-1], (short) countPos[0]);
+		CVSSize countAdvance;
+		CVSPoint countPosition((short) countPos->m_x, (short) countPos->m_y);
 		m_textManager->DrawString(m_gdi, countPosition, countAdvance, m_chalkFontId, textPtr, 0x20, 0);
-		countPos += 2;
+		countPos++;
 		skillIndex++;
-		labelPos += 2;
+		labelPos++;
 		textPtr = textPtr + 6;
 	} while (textPtr < g_abPasswordLevelText + 24);
 	if (m_passwordSubmitted == 1) {
 		if (m_passwordValid == 1) {
-			CVsSize advance;
-			CVsPoint position((short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_x,
-							  (short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_y);
+			CVSSize advance;
+			CVSPoint position((short) m_layout->m_resultPosition.m_x, (short) m_layout->m_resultPosition.m_y);
 			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordOk, 0x20, 0);
 		}
 		else {
-			CVsSize advance;
-			CVsPoint position((short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_x,
-							  (short) ((PasswordTextLayout*) m_layout)->m_resultPosition.m_y);
+			CVSSize advance;
+			CVSPoint position((short) m_layout->m_resultPosition.m_x, (short) m_layout->m_resultPosition.m_y);
 			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordInvalid, 0x20, 0);
 		}
 	}
@@ -439,13 +447,12 @@ void CPasswordDrawer::DrawText()
 // FUNCTION: LEMBALL 0x00451c90
 void CPasswordDrawer::DrawPassword()
 {
-	int* layout = (int*) m_layout;
-	int y = layout[0x5c / 4];
-	int x = m_width - layout[0x58 / 4];
-	short storage[2];
-	CVsSize& textSize = *(CVsSize*) storage;
-	x -= m_textManager->GetFont(m_chalkFontId)->GetSize(&textSize, m_password, 0x20)->m_width;
-	CVsPoint position((short) x, (short) y);
+	PasswordTextLayout* layout = m_layout;
+	int y = layout->m_passwordY;
+	int x = m_width - layout->m_passwordRightMargin;
+	CVSSize textSize = m_textManager->GetFont(m_chalkFontId)->GetSize(m_password, 0x20);
+	x -= textSize.m_width;
+	CVSPoint position((short) x, (short) y);
 	textSize.m_height = 0;
 	textSize.m_width = 0;
 	m_textManager->DrawString(m_gdi, position, textSize, m_chalkFontId, m_password, 0x20, 0);
@@ -519,13 +526,13 @@ void CPasswordDrawer::DrawHilite()
 	surface = ((CGDI*) m_hiliteSurface)->m_renderTarget;
 	short width = surface->m_windowRect.m_width;
 	short height = surface->m_windowRect.m_height;
-	m_hiliteRect.m_colour = 0x10000;
+	m_hiliteRect.m_flags = CClipRect::CLIP_IGNORE_PARENT;
 	m_hiliteRect.m_bounds.m_width = width;
 	m_hiliteRect.m_bounds.m_height = height;
 	m_hiliteRect.m_bounds.m_x = 0;
 	m_hiliteRect.m_bounds.m_y = 0;
 	m_hiliteRect.Draw((CGDI*) m_hiliteSurface);
-	CVsPoint position((short) m_hiliteX, (short) m_hiliteY);
+	CVSPoint position((short) m_hiliteX, (short) m_hiliteY);
 	savedGdi = CAnimsManager::m_gdi;
 	m_hiliteAnim.m_frameState = 0;
 	CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
@@ -536,14 +543,17 @@ void CPasswordDrawer::DrawHilite()
 // FUNCTION: LEMBALL 0x00451f10
 void CPasswordDrawer::SetHiliteWindow()
 {
-	int* layout;
+	PasswordTextLayout* layout;
 	int pitch;
 
-	layout = (int*) m_layout;
-	pitch = layout[0x60 / 4] + layout[0x10 / 4];
+	layout = m_layout;
+	pitch = layout->m_buttonWidth + layout->m_buttonGapX;
 	m_hiliteWindow = new CPasswordHiliteWindow();
-	layout = (int*) m_layout;
-	CVsRect rect((short) (layout[2] - 1), (short) (layout[3] - 1), (short) (pitch * 3), (short) (pitch * 4));
+	layout = m_layout;
+	CVSRect rect((short) (layout->m_keypadX - 1),
+				 (short) (layout->m_keypadY - 1),
+				 (short) (pitch * 3),
+				 (short) (pitch * 4));
 	m_hiliteWindow->Create(rect, (CPVGWnd*) m_display, 0);
 	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
 }

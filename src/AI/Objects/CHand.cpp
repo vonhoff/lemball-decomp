@@ -3,7 +3,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -41,7 +41,7 @@ CHand::~CHand()
 }
 
 // FUNCTION: LEMBALL 0x00427b50
-void CHand::Set(unsigned short p_id, const AiCoord& p_position)
+void CHand::Set(unsigned short p_id, const AICOORD& p_position)
 {
 	SetId(p_id);
 	m_spawnPosition.m_xFixed = p_position.m_xFixed;
@@ -128,7 +128,7 @@ bool CHand::Process()
 }
 
 // FUNCTION: LEMBALL 0x00427d70
-bool CHand::StepOn(const AiCoord& p_position, CGameObject* p_object)
+bool CHand::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	if (p_object->m_objectType == OBJECT_PLAYER_2) {
 		int distanceY = (p_position.m_yFixed >> 12) - (m_position.m_yFixed >> 12);

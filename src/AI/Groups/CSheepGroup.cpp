@@ -2,10 +2,10 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Visos/Foundation/CVSMath.h"
-#include "../../Visos/Foundation/CVsRect.h"
+#include "../../Visos/Foundation/CVSRect.h"
 #include "../../Visos/Foundation/VSTrig.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Groups/CGenericGroup.h"
 #include "AI/Objects/CViewData.h"
@@ -20,11 +20,11 @@ CSheepGroup::CSheepGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationM
 }
 
 // FUNCTION: LEMBALL 0x0041f530
-void CSheepGroup::RunAway(AiCoord p_threatPosition)
+void CSheepGroup::RunAway(AICOORD p_threatPosition)
 {
 	int membersWithDestination;
 	CGameObject* groupMember;
-	AiCoord escapeDestination;
+	AICOORD escapeDestination;
 	CVector escapeVector(0x32000, 0);
 	membersWithDestination = 0;
 	groupMember = GetFirstElementInGroup();
@@ -89,8 +89,8 @@ void CSheepGroup::RunAway(AiCoord p_threatPosition)
 // FUNCTION: LEMBALL 0x0041f730
 void CSheepGroup::CheckAgainstLemmings()
 {
-	AiCoord coordinate;
-	CVsRect bounds;
+	AICOORD coordinate;
+	CVSRect bounds;
 	GetBoundingBox(bounds);
 	if (g_pGroupAI->PlayerCheckGroupIntersection(&bounds, &coordinate) == 1) {
 		RunAway(coordinate);

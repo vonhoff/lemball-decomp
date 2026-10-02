@@ -1,6 +1,6 @@
 #include "CResBase.h"
 
-#include "../Foundation/CVsRange.h"
+#include "../Foundation/CVSRange.h"
 #include "CMogRes.h"
 #include "CResBaseLIST.h"
 
@@ -105,7 +105,7 @@ void CResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned 
 // FUNCTION: LEMBALL 0x0045d100
 void CResBase::LoadData()
 {
-	CVsRange range;
+	CVSRange range;
 
 	if (m_loaded == 0) {
 		if (GetfVramLoaded() == 0) {

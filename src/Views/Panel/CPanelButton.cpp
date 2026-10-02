@@ -17,14 +17,14 @@
 #include "CPanelLemming.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnim.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CDepressedButton.h"
 #include "Visos/Graphics/CGWnd.h"
-#include "Visos/Graphics/CLine.h"
 #include "Visos/Graphics/CPVGWnd.h"
+#include "Visos/Graphics/CSolidRect.h"
 
 #include <memory.h>
 
@@ -42,7 +42,7 @@ CPanelButton::~CPanelButton()
 }
 
 // FUNCTION: LEMBALL 0x00442670
-void CPanelButton::OnInside(const CVsPoint& p_point)
+void CPanelButton::OnInside(const CVSPoint& p_point)
 {
 	CursorChangeType(CURSOR_DISPLAY_HAND, m_pressedInside);
 }
@@ -75,7 +75,7 @@ void CPanelButton::DrawButton()
 		frame = 1;
 	}
 	m_gdi->m_renderTarget->GetCurrDB();
-	const CVsPoint* position = (const CVsPoint*) &m_statusRect;
+	const CVSPoint* position = (const CVSPoint*) &m_statusRect;
 	CResANIM* resource = m_lemming->m_panel->m_resources[1];
 	m_statusAnim[0].m_x = position->m_x;
 	m_statusAnim[0].m_y = position->m_y;
@@ -87,7 +87,7 @@ void CPanelButton::DrawButton()
 	lemming = m_lemming;
 	if (lemming->m_balloonType != -1 && m_unavailable == 0) {
 		CResANIM* resource;
-		const CVsPoint* position = (const CVsPoint*) &m_inventoryRect;
+		const CVSPoint* position = (const CVSPoint*) &m_inventoryRect;
 		resource = lemming->m_panel->m_resources[3];
 		m_inventoryAnim[0].m_x = position->m_x;
 		m_inventoryAnim[0].m_y = position->m_y;
@@ -101,7 +101,7 @@ void CPanelButton::DrawButton()
 			frame += 3;
 		}
 		CResANIM* resource;
-		const CVsPoint* position = (const CVsPoint*) &m_inventoryRect;
+		const CVSPoint* position = (const CVSPoint*) &m_inventoryRect;
 		resource = lemming->m_panel->m_resources[2];
 		m_inventoryAnim[0].m_x = position->m_x;
 		m_inventoryAnim[0].m_y = position->m_y;
@@ -112,13 +112,13 @@ void CPanelButton::DrawButton()
 	m_inventoryAnim[0].m_remap = (CRemap*) balloonRemap;
 	m_inventoryAnim[0].Draw(m_gdi);
 	int ammo = m_lemming->m_lemming->m_ammoCount;
-	CVsRect ammoRect(7, 11, 27, 9);
-	CVsSize& ammoSize = ammoRect;
-	CVsPoint& ammoPosition = ammoRect;
+	CVSRect ammoRect(7, 11, 27, 9);
+	CVSSize& ammoSize = ammoRect;
+	CVSPoint& ammoPosition = ammoRect;
 	unsigned int colour;
-	CVsRect inventoryRect(7, 4, 6, 4);
-	CVsSize& inventorySize = inventoryRect;
-	CVsPoint& inventoryPosition = inventoryRect;
+	CVSRect inventoryRect(7, 4, 6, 4);
+	CVSSize& inventorySize = inventoryRect;
+	CVSPoint& inventoryPosition = inventoryRect;
 	ammoSize.m_width = (short) (ammo * ammoSize.m_width / 50);
 	if (m_enabled != 0 && m_unavailable == 0) {
 		colour = 0x76;
@@ -137,13 +137,13 @@ void CPanelButton::DrawButton()
 	else {
 		mappedColour = *(const unsigned int*) &ammoSize;
 	}
-	static_cast<CVsSize&>(m_statusLine[0].m_bounds) = ammoSize;
-	m_statusLine[0].m_bounds.CVsPoint::operator=(ammoPosition);
+	static_cast<CVSSize&>(m_statusLine[0].m_bounds) = ammoSize;
+	m_statusLine[0].m_bounds.CVSPoint::operator=(ammoPosition);
 	m_statusLine[0].m_colour = mappedColour;
 	m_statusLine[0].Draw(m_gdi);
 	if (m_unavailable == 0) {
 		for (int i = 0; i < (int) m_lemming->m_inventoryCount; i++) {
-			CLine* line = &m_inventoryLines[i];
+			CSolidRect* line = &m_inventoryLines[i];
 			int type = m_lemming->m_inventoryTypes[i];
 			CBaseRemap* remap;
 			if (type < 4) {
@@ -158,8 +158,8 @@ void CPanelButton::DrawButton()
 			else {
 				mappedColour = remap->m_remap[colour];
 			}
-			static_cast<CVsSize&>(line->m_bounds) = inventorySize;
-			line->m_bounds.CVsPoint::operator=(inventoryPosition);
+			static_cast<CVSSize&>(line->m_bounds) = inventorySize;
+			line->m_bounds.CVSPoint::operator=(inventoryPosition);
 			line->m_colour = mappedColour;
 			line->Draw(m_gdi);
 			inventoryPosition.m_x += 11;
@@ -168,7 +168,7 @@ void CPanelButton::DrawButton()
 }
 
 // FUNCTION: LEMBALL 0x004429b0
-void CPanelButton::OnPaint(const CVsRect& p_rect)
+void CPanelButton::OnPaint(const CVSRect& p_rect)
 {
 	CPanelLemming* panelLemming = m_lemming;
 
@@ -203,7 +203,7 @@ void CPanelButton::OnReleased(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00442ac0
-void CPanelButton::OnExternalButtonUp(const CVsPoint& p_point, int p_flags)
+void CPanelButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	if (m_pressedInside != 0) {
 		m_pressedInside = 0;

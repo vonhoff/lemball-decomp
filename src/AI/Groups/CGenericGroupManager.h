@@ -2,13 +2,13 @@
 #define LEMBALL_AI_GROUPS_CGENERICGROUPMANAGER_H
 
 class CAI;
-class AiCoord;
+class AICOORD;
 class CFormationManager;
 class CGameObject;
 class CGenericGroup;
 class CObjectManager;
 class CViewData;
-class CVsRect;
+class CVSRect;
 struct Rect;
 // SIZE 0xb0
 // VTABLE: LEMBALL 0x00494d08
@@ -36,7 +36,7 @@ public:
 	virtual void FindElementInGroupAndRemoveIt(CGameObject* p_object);                  // vtable+0x44
 	virtual int GetAllBoundingBoxes(Rect* p_rects);                                     // vtable+0x48
 	virtual int GetViewData(CViewData* p_viewData);                                     // vtable+0x4c
-	virtual bool CheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);        // vtable+0x50
+	virtual bool CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);        // vtable+0x50
 	void Restart();
 	~CGenericGroupManager();
 	CGenericGroupManager();

@@ -4,7 +4,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -275,7 +275,7 @@ bool CDoor::TryBeginActivation()
 }
 
 // FUNCTION: LEMBALL 0x0040dd80
-int CDoor::Hits(const AiCoord& p_position, CGameObject* p_object)
+int CDoor::Hits(const AICOORD& p_position, CGameObject* p_object)
 {
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;

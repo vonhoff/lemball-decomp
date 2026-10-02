@@ -2,12 +2,12 @@
 #define LEMBALL_AI_OBJECTS_GROUNDANIMENTRY_H
 
 #include "../../Map/Ground/CGround.h"
-#include "../Base/Coord3d.h"
+#include "../Base/tCoord3d.h"
 
 class CMap;
 // SIZE 0x18
 struct GroundAnimEntry {
-	Coord3d m_coordinate;              // 0x00
+	tCoord3d m_coordinate;             // 0x00
 	unsigned short m_alignmentPadding; // 0x06
 	CGround* m_mapCell;                // 0x08
 	short m_currentFrame;              // 0x0c

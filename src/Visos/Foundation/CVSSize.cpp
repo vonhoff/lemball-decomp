@@ -1,7 +1,7 @@
-#include "CVsSize.h"
+#include "CVSSize.h"
 
 // FUNCTION: LEMBALL 0x00442150
-CVsSize& CVsSize::operator=(const CVsSize& p_source)
+CVSSize& CVSSize::operator=(const CVSSize& p_source)
 {
 	m_width = p_source.m_width;
 	m_height = p_source.m_height;

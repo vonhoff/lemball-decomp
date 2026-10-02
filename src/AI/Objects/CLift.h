@@ -2,9 +2,9 @@
 #define LEMBALL_AI_OBJECTS_CLIFT_H
 
 #include "../Base/CGlobalGameObject.h"
-#include "../Base/Coord3d.h"
+#include "../Base/tCoord3d.h"
 
-class AiCoord;
+class AICOORD;
 class CGameObject;
 class CGround;
 enum eLiftActivateType {
@@ -21,7 +21,7 @@ class CLift : public CGlobalGameObject {
 public:
 	CLift();
 	int Activate();
-	int StepOn(const AiCoord& p_position, CGameObject* p_object);
+	int StepOn(const AICOORD& p_position, CGameObject* p_object);
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c
 	virtual ~CLift();          // vtable+0x00
@@ -34,8 +34,8 @@ public:
 			  int p_highHeight,
 			  eLiftActivateType p_activateType,
 			  unsigned int p_initialActive);
-	void Set(const Coord3d& p_start,
-			 const Coord3d& p_end,
+	void Set(tCoord3d& p_start,
+			 tCoord3d& p_end,
 			 short p_direction,
 			 int p_lowHeight,
 			 int p_highHeight,
@@ -54,8 +54,8 @@ public:
 
 private:
 	unsigned short m_liftId;          // 0x138
-	Coord3d m_start;                  // 0x13a
-	Coord3d m_end;                    // 0x140
+	tCoord3d m_start;                 // 0x13a
+	tCoord3d m_end;                   // 0x140
 	int m_lowHeight;                  // 0x148
 	int m_highHeight;                 // 0x14c
 	int m_movementStartHeight;        // 0x150

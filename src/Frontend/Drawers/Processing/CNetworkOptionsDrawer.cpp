@@ -26,7 +26,7 @@ void CNetworkOptionsDrawer::Processing()
 	int activation;
 	int acceptedPlayer;
 
-	if (m_messageDirty != (unsigned int) m_message) {
+	if (m_drawnMessage != (unsigned int) m_message) {
 		return;
 	}
 	if (m_startPending != 0) {
@@ -49,13 +49,13 @@ void CNetworkOptionsDrawer::Processing()
 	if (g_pNetworkManager != 0) {
 		ident = g_pBroadcastAddress->GetStr();
 		peer = g_szBroadcastPeerName;
-		if (m_stopPending != ident) {
+		if (m_localAddressText != ident) {
 			m_backBufferNeeded = 1;
-			m_stopPending = ident;
+			m_localAddressText = ident;
 		}
-		if (m_connectionState != peer) {
+		if (m_localComputerName != peer) {
 			m_backBufferNeeded = 1;
-			m_connectionState = peer;
+			m_localComputerName = peer;
 		}
 		if (m_networkState == 0) {
 			if (g_pNetworkManager->m_connectionsChanged != 0) {

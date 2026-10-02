@@ -5,6 +5,7 @@
 #include "DirectSound.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
+#include "Platform/DirectX/DSBUFFERDESC.h"
 #include "Platform/DirectX/IDirectSound.h"
 
 #include <string.h>
@@ -18,14 +19,6 @@
 
 unsigned short SwapBytes16(unsigned short p_value);
 unsigned int SwapBytes32(unsigned int p_value);
-
-struct DirectSoundBufferDescription {
-	unsigned int m_size;
-	unsigned int m_flags;
-	unsigned int m_bytes;
-	unsigned int m_reserved;
-	WAVEFORMATEX* m_format;
-};
 
 struct DirectSoundError {
 	const char* m_name;
@@ -89,7 +82,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	unsigned int downsample;
 	unsigned long audioBytes[2];
 	unsigned char* audio[2];
-	DirectSoundBufferDescription description;
+	DSBUFFERDESC description;
 	WAVEFORMATEX format;
 	EffPatchHeader patchHeader;
 	EffWaveHeader waveHeader;
@@ -135,18 +128,18 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
 	format.wBitsPerSample = 16;
 	memset(&description, 0, sizeof(description));
-	description.m_bytes = length;
-	description.m_format = &format;
-	description.m_flags = 2;
-	description.m_size = sizeof(description);
+	description.dwBufferBytes = length;
+	description.lpwfxFormat = &format;
+	description.dwFlags = 2;
+	description.dwSize = sizeof(description);
 	if ((m_controlFlags & 1) != 0) {
-		description.m_flags |= 0x80;
+		description.dwFlags |= 0x80;
 	}
 	if ((m_controlFlags & 2) != 0) {
-		description.m_flags |= 0x40;
+		description.dwFlags |= 0x40;
 	}
 	if ((m_controlFlags & 4) != 0) {
-		description.m_flags |= 0x20;
+		description.dwFlags |= 0x20;
 	}
 	result = g_directSound->CreateSoundBuffer(&description, m_buffers, 0);
 	if (result != 0) {
@@ -299,16 +292,13 @@ void CDirectSoundEffect::PlayBuffer(int p_index)
 void CDirectSoundEffect::Stop()
 {
 	int i = 0;
-	unsigned int byteIndex = 0;
 	while (i < m_bufferCount) {
-		char* bufferBytes = (char*) m_buffers;
-		IDirectSoundBuffer** slot = (IDirectSoundBuffer**) (bufferBytes + byteIndex);
+		IDirectSoundBuffer** slot = &m_buffers[i];
 		unsigned int result = (*slot)->Stop();
 		if (result != 0) {
 			*g_pErrorOutput << "Effect Stop failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 			return;
 		}
-		byteIndex += sizeof(IDirectSoundBuffer*);
 		++i;
 	}
 }

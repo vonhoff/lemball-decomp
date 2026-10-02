@@ -4,7 +4,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../Managers/CMineManager.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectTypes.h"
@@ -43,7 +43,7 @@ void CMine::Initialise()
 }
 
 // FUNCTION: LEMBALL 0x00423cb0
-void CMine::Set(AiCoord p_position)
+void CMine::Set(AICOORD p_position)
 {
 	m_position.m_xFixed = p_position.m_xFixed;
 	m_position.m_yFixed = p_position.m_yFixed;
@@ -185,6 +185,6 @@ void CMine::OnGround()
 		int groundY = y & 0xf;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
 	}
-	const unsigned int& height = (unsigned int) z << 12;
+	const unsigned int height = (unsigned int) z << 12;
 	m_position.m_zFixed = height;
 }

@@ -1,6 +1,6 @@
 #include "CSheepGroupManager.h"
 
-#include "../Base/LoadSheepData.h"
+#include "../Base/tagLoadSheepData.h"
 #include "../Managers/CObjectManager.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CSheep.h"
@@ -9,6 +9,8 @@
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
 #include "CSheepGroup.h"
+
+#define SHEEP_INITIAL_SPACING 20
 
 // FUNCTION: LEMBALL 0x0041f0b0
 CSheepGroupManager::CSheepGroupManager(CAI* p_ai,
@@ -52,9 +54,9 @@ int CSheepGroupManager::Process()
 }
 
 // FUNCTION: LEMBALL 0x0041f2e0
-void CSheepGroupManager::LoadLevel(LoadSheepData* p_data, unsigned long p_dataSize, unsigned int p_skip)
+void CSheepGroupManager::LoadLevel(tagLoadSheepData* p_data, unsigned long p_dataSize, unsigned int p_skip)
 {
-	int count = p_dataSize / sizeof(LoadSheepData);
+	int count = p_dataSize / sizeof(tagLoadSheepData);
 	if (p_skip != 0) {
 		return;
 	}
@@ -77,7 +79,8 @@ void CSheepGroupManager::LoadLevel(LoadSheepData* p_data, unsigned long p_dataSi
 		group->SetFormationIndex(formationIndex);
 
 		for (int i = 0; i < sheepCount; i++) {
-			CSheep* sheep = new CSheep(g_pGenericGroupAI, x - i * 20, y - i * 20, 0, 0);
+			CSheep* sheep =
+				new CSheep(g_pGenericGroupAI, x - i * SHEEP_INITIAL_SPACING, y - i * SHEEP_INITIAL_SPACING, 0, 0);
 			sheep->Restart();
 			CGenericGroupManager::AddElementToGroup(sheep, group);
 		}

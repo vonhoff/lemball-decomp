@@ -2,7 +2,7 @@
 #define LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 
 #include "../../Visos/Messaging/CNetworkMessage.h"
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
@@ -70,7 +70,7 @@ public:
 	void GetData();
 	void RemoveObject(eObjectType p_objectType);
 	void RequestFire(int p_x, int p_y);
-	void Resurrect(const AiCoord& p_position);
+	void Resurrect(const AICOORD& p_position);
 	void SetGroup(CPlayerLemmingGroup* p_group);
 	void SetGroup(unsigned int p_groupIndex);
 	void SetGroupLeader(unsigned int p_isLeader);
@@ -91,13 +91,13 @@ private:
 	unsigned int m_onConveyor;                                  // 0x188
 	CIce* m_ice;                                                // 0x18c
 	unsigned int m_boredDeadline;                               // 0x190
-	AiCoord m_networkPositionCache;                             // 0x194
+	AICOORD m_networkPositionCache;                             // 0x194
 	short m_cachedFacingDirection;                              // 0x1a0
 	eAction m_cachedAction;                                     // 0x1a4
 	short m_cachedActionArgument;                               // 0x1a8
 	unsigned int m_cachedStateTimer;                            // 0x1ac
 	eSoundEffect m_cachedSoundEffect;                           // 0x1b0
-	AiCoord m_fireTarget;                                       // 0x1b4
+	AICOORD m_fireTarget;                                       // 0x1b4
 	eObjectType m_inventoryTypes[PLAYER_INVENTORY_CAPACITY];    // 0x1c0
 	CGameObject* m_inventoryObjects[PLAYER_INVENTORY_CAPACITY]; // 0x1f0
 	unsigned int m_inventoryCount;                              // 0x220

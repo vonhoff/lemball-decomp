@@ -4,7 +4,7 @@
 #include "../../Visos/Foundation/CBaseProcess.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
 #include "../../Visos/Messaging/CNetworkMessage.h"
-#include "../Base/AiCoord.h"
+#include "../Base/AICOORD.h"
 #include "../Base/CPt3.h"
 #include "../Base/CRect3.h"
 #include "../Messages/CGameStateMessage.h"
@@ -50,8 +50,8 @@ class CSlinkyManager;
 class CTrampolineManager;
 class CTrapDoorManager;
 class CViewData;
-class CVsRect;
-struct Coord3d;
+class CVSRect;
+struct tCoord3d;
 struct LiftEndpointRecord;
 enum eGameStatus {
 	GAME_STATUS_0 = 0,
@@ -73,33 +73,33 @@ class CAI : public CBaseQueueHandler, public CBaseProcess, public CNetworkMessag
 public:
 	CAI(CGame* p_game);
 	CGame* LevelName();
-	CGlobalGameObject* FindNearbyObject(AiCoord p_position);
-	CGlobalGameObject* FindNearbyObject(AiCoord p_position, eObjectType p_objectType);
-	CGlobalGameObject* FindObjectInBounds(CVsRect* p_bounds, eObjectType p_objectType);
+	CGlobalGameObject* FindNearbyObject(AICOORD p_position);
+	CGlobalGameObject* FindNearbyObject(AICOORD p_position, eObjectType p_objectType);
+	CGlobalGameObject* FindObjectInBounds(CVSRect* p_bounds, eObjectType p_objectType);
 	CMover* FindMoverHeight(int p_x, int p_y, int& p_height);
 	CPlayerLemming* GetDead();
 	CPt3 GetNodePosition(int p_node);
-	bool BulletCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);
-	bool EnemyCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);
+	bool BulletCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);
+	bool EnemyCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);
 	bool GetObjectRequired(eObjectType p_objectType);
 	bool IsLemmingPlayerControlled(CPlayerLemming* p_lemming);
 	bool LemmingsSFXChanged();
-	bool OpenDoor(const AiCoord& p_position, CGameObject* p_object, unsigned short p_mask);
-	bool PlayerCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);
-	bool SheepCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate);
+	bool OpenDoor(const AICOORD& p_position, CGameObject* p_object, unsigned short p_mask);
+	bool PlayerCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);
+	bool SheepCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);
 	int GetData(CViewData* p_viewData);
-	int ExportGroundAnimRecords(Coord3d* p_records);
+	int ExportGroundAnimRecords(tCoord3d* p_records);
 	int ExportLiftEndpointRecords(LiftEndpointRecord* p_records);
 	int nDead();
 	void RemoteGameState(CGameStateMessage* p_message);
 	void SetObjectRequired(eObjectType p_objectType, unsigned int p_required);
-	void StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned short p_mask);
+	void StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned short p_mask);
 	unsigned short DoorId(int p_index);
 	unsigned short LiftId(int p_index);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	void AddANetworkStart(int p_x, int p_y, int p_z, int p_index);
 	void AddData();
-	void AddNewTrapDoor(const AiCoord& p_position, unsigned long p_time);
+	void AddNewTrapDoor(const AICOORD& p_position, unsigned long p_time);
 	void AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time);
 	void ClearAllTrapDoors();
 	void AddTime(int p_time);
@@ -108,20 +108,20 @@ public:
 					eBulletType p_bulletType,
 					eOwner p_owner,
 					int p_parameter,
-					AiCoord p_start,
-					AiCoord p_target);
+					AICOORD p_start,
+					AICOORD p_target);
 	void FixUpLevel();
 	void GameState(eGameStatus p_status);
 	void GetData();
-	bool GetOrigin(AiCoord& p_origin, unsigned int& p_player);
+	bool GetOrigin(AICOORD& p_origin, unsigned int& p_player);
 	void GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z);
 	void GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z, int p_index);
-	void GetPlayerStartPosition(AiCoord& p_position, int p_index);
+	void GetPlayerStartPosition(AICOORD& p_position, int p_index);
 	int GetStartPositionCount();
 	void ConfigurePlayerLemmingCounts(int p_playerCount, int p_count0, int p_count1, int p_count2, int p_count3);
 	int GetLemmingCountForPlayer(int p_playerIndex);
-	void GetPlayerPos(int p_id, AiCoord& p_position);
-	int HitTrampoline(const AiCoord& p_position, CGameObject* p_object);
+	void GetPlayerPos(int p_id, AICOORD& p_position);
+	int HitTrampoline(const AICOORD& p_position, CGameObject* p_object);
 	void LoadFlagInfo(unsigned char* p_data, int p_size);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void NLemmings(int p_count);
@@ -135,7 +135,7 @@ public:
 	void SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_third, int p_fourth);
 	int GetNetworkTrapDoor(int p_index);
 	void SetNetworkTrapDoor(int p_value, int p_index);
-	void GetNetworkStartPosition(AiCoord& p_position, int p_index);
+	void GetNetworkStartPosition(AICOORD& p_position, int p_index);
 	void SetPlayerIDs();
 	void Start();
 	void SwitchMessage(swMessage p_message, int p_first, int p_last = 0, int p_arg3 = 0);

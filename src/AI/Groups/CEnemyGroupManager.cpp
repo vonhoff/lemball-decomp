@@ -1,11 +1,17 @@
 #include "CEnemyGroupManager.h"
 
-#include "../Base/WaypointInformation.h"
+#include "../Base/tagLoadEnemyData.h"
+#include "../Base/tagWaypointInformation.h"
 #include "../Objects/CEnemy.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Groups/CGenericGroup.h"
 #include "AI/Groups/CGenericGroupManager.h"
 #include "CEnemyGroup.h"
+
+#define ENEMY_LEVEL_HEADER_BYTES (2 * sizeof(unsigned short))
+#define ENEMY_WAYPOINT_DESCRIPTOR_BYTES 4
+#define ENEMY_WAYPOINT_STEP_SIGN_BIT 0x80
+#define ENEMY_WAYPOINT_STEP_SIGN_EXTENSION_MASK 0xffffff00
 
 extern CAI* g_pGenericGroupAI;
 extern CObjectManager* g_pGenericGroupObjectManager;
@@ -52,13 +58,12 @@ void CEnemyGroupManager::Restart()
 }
 
 // FUNCTION: LEMBALL 0x00420dd0
-void CEnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip)
+void CEnemyGroupManager::LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip)
 {
 	unsigned short* wordData = (unsigned short*) p_data;
 	int headerCount = *wordData;
 	int count;
-	wordData += 2;
-	unsigned char* data = (unsigned char*) wordData;
+	unsigned char* data = (unsigned char*) p_data + ENEMY_LEVEL_HEADER_BYTES;
 	unsigned int x;
 	unsigned int y;
 	unsigned int facing;
@@ -68,9 +73,9 @@ void CEnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSi
 	eEnemyStateRules rule1;
 	eEnemyStateActions action2;
 	eEnemyStateRules rule2;
-	WaypointInformation* waypoint0;
-	WaypointInformation* waypoint1;
-	WaypointInformation* waypoint2;
+	tagWaypointInformation* waypoint0;
+	tagWaypointInformation* waypoint1;
+	tagWaypointInformation* waypoint2;
 
 	if (p_skip != 0) {
 		return;
@@ -81,17 +86,17 @@ void CEnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSi
 	count = headerCount;
 
 	do {
-		wordData = (unsigned short*) data;
-		x = wordData[0];
-		y = wordData[1];
-		facing = data[4];
-		action0 = (eEnemyStateActions) data[5];
-		rule0 = (eEnemyStateRules) data[6];
-		action1 = (eEnemyStateActions) data[7];
-		rule1 = (eEnemyStateRules) data[8];
-		action2 = (eEnemyStateActions) data[9];
-		rule2 = (eEnemyStateRules) data[10];
-		data += 12;
+		tagLoadEnemyData* enemyData = (tagLoadEnemyData*) data;
+		x = enemyData->m_x;
+		y = enemyData->m_y;
+		facing = enemyData->m_facing;
+		action0 = (eEnemyStateActions) enemyData->m_action0;
+		rule0 = (eEnemyStateRules) enemyData->m_rule0;
+		action1 = (eEnemyStateActions) enemyData->m_action1;
+		rule1 = (eEnemyStateRules) enemyData->m_rule1;
+		action2 = (eEnemyStateActions) enemyData->m_action2;
+		rule2 = (eEnemyStateRules) enemyData->m_rule2;
+		data += sizeof(*enemyData);
 
 		CEnemyGroup* group =
 			new CEnemyGroup(g_pGenericGroupAI, g_pGenericGroupObjectManager, g_pGenericGroupFormationManager);
@@ -103,16 +108,16 @@ void CEnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSi
 		enemy->Restart();
 		enemy->SetEnemyType(action0, rule0, action1, rule1, action2, rule2);
 
-		if (action0 == 1) {
-			data = (unsigned char*) LoadLevelAdditional_Waypoint((LoadEnemyDataAdditionalAction*) data, waypoint0);
+		if (action0 == ENEMY_ACTION_PATROL) {
+			data = (unsigned char*) LoadLevelAdditional_Waypoint((tagLoadEnemyDataAdditionalAction*) data, waypoint0);
 			enemy->m_state0Data.m_waypointInformation = waypoint0;
 		}
-		if (action1 == 1) {
-			data = (unsigned char*) LoadLevelAdditional_Waypoint((LoadEnemyDataAdditionalAction*) data, waypoint1);
+		if (action1 == ENEMY_ACTION_PATROL) {
+			data = (unsigned char*) LoadLevelAdditional_Waypoint((tagLoadEnemyDataAdditionalAction*) data, waypoint1);
 			enemy->m_state1Data.m_waypointInformation = waypoint1;
 		}
-		if (action2 == 1) {
-			data = (unsigned char*) LoadLevelAdditional_Waypoint((LoadEnemyDataAdditionalAction*) data, waypoint2);
+		if (action2 == ENEMY_ACTION_PATROL) {
+			data = (unsigned char*) LoadLevelAdditional_Waypoint((tagLoadEnemyDataAdditionalAction*) data, waypoint2);
 			enemy->m_state2Data.m_waypointInformation = waypoint2;
 		}
 
@@ -122,33 +127,33 @@ void CEnemyGroupManager::LoadLevel(LoadEnemyData* p_data, unsigned long p_dataSi
 }
 
 // FUNCTION: LEMBALL 0x00420f90
-LoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoint(LoadEnemyDataAdditionalAction* p_data,
-																				WaypointInformation*& p_waypointInfo)
+tagLoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoint(
+	tagLoadEnemyDataAdditionalAction* p_data,
+	tagWaypointInformation*& p_waypointInfo)
 {
 	unsigned char* data = (unsigned char*) p_data;
 	ENEMY_GetLONG((unsigned long*) data);
-	data += 4;
+	data += sizeof(unsigned long);
 
-	p_waypointInfo = new WaypointInformation;
+	p_waypointInfo = new tagWaypointInformation;
 	unsigned int waypointCount = data[1];
-	p_waypointInfo->m_action = data[0];
+	p_waypointInfo->m_patrolMode = data[0];
 	p_waypointInfo->m_waypointCount = waypointCount;
-	p_waypointInfo->m_value = data[2];
+	p_waypointInfo->m_waypointIndex = data[2];
 
-	unsigned char rawSignedValue = data[3];
-	int signedValue;
-	if ((rawSignedValue & 0x80) != 0) {
-		signedValue = rawSignedValue | 0xffffff00;
+	unsigned char rawWaypointStep = data[3];
+	int waypointStep;
+	if ((rawWaypointStep & ENEMY_WAYPOINT_STEP_SIGN_BIT) != 0) {
+		waypointStep = rawWaypointStep | ENEMY_WAYPOINT_STEP_SIGN_EXTENSION_MASK;
 	}
 	else {
-		signedValue = rawSignedValue;
+		waypointStep = rawWaypointStep;
 	}
-	p_waypointInfo->m_signedValue = signedValue;
+	p_waypointInfo->m_waypointStep = waypointStep;
 
 	p_waypointInfo->m_waypoints = new unsigned short[waypointCount];
 	if ((int) waypointCount > 0) {
-		unsigned short* waypointData = (unsigned short*) data;
-		waypointData += 2;
+		unsigned short* waypointData = (unsigned short*) (data + ENEMY_WAYPOINT_DESCRIPTOR_BYTES);
 		int i = 0;
 		unsigned int remaining = waypointCount;
 		do {
@@ -158,5 +163,6 @@ LoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoint(
 		} while (remaining != 0);
 	}
 
-	return (LoadEnemyDataAdditionalAction*) (data + waypointCount * 2 + 4);
+	return (tagLoadEnemyDataAdditionalAction*) (data + waypointCount * sizeof(*p_waypointInfo->m_waypoints) +
+												ENEMY_WAYPOINT_DESCRIPTOR_BYTES);
 }

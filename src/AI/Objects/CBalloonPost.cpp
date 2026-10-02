@@ -1,7 +1,7 @@
 #include "CBalloonPost.h"
 
 #include "../../Map/Base/CMap.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/ObjectTypes.h"
 #include "CTheBalloonPost.h"
 #include "CViewData.h"
@@ -40,7 +40,7 @@ CBalloonPost::~CBalloonPost()
 }
 
 // FUNCTION: LEMBALL 0x0042a0b0
-bool CBalloonPost::FindPost(eObjectType p_objectType, AiCoord& p_position)
+bool CBalloonPost::FindPost(eObjectType p_objectType, AICOORD& p_position)
 {
 	switch (p_objectType) {
 	case OBJECT_BALLOON_1:
@@ -245,7 +245,7 @@ void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 	p_data += 2;
 
 	int count = 4;
-	AiCoord* position = m_positions;
+	AICOORD* position = m_positions;
 	CTheBalloonPost** post = m_posts;
 	unsigned short z;
 	unsigned short x;

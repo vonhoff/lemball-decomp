@@ -13,9 +13,9 @@ extern unsigned int g_networkPacketSize;
 // VTABLE: LEMBALL 0x00493268
 class CBaseObjectManager : public CNetworkMessage {
 public:
-	inline CBaseObjectManager(unsigned long p_messageId, int p_messageType) : CNetworkMessage(p_messageId)
+	inline CBaseObjectManager(unsigned long p_messageId, int p_transportId) : CNetworkMessage(p_messageId)
 	{
-		m_messageType = p_messageType;
+		m_transportId = p_transportId;
 		if (g_pBaseNetwork != 0) {
 			m_headerEnabled = 1;
 			m_payloadCapacity += g_networkPacketSize;
@@ -35,7 +35,7 @@ public:
 	friend class CGodManager;
 
 protected:
-	int m_messageType; // 0x2c
+	int m_transportId; // 0x2c
 };
 
 // SYNTHETIC: LEMBALL 0x0040aba0

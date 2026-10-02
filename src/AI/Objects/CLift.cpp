@@ -4,8 +4,8 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Network/CConnect.h"
-#include "../Base/Coord3d.h"
-#include "AI/Base/AiCoord.h"
+#include "../Base/tCoord3d.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -84,19 +84,19 @@ void CLift::Edit(int p_height,
 			int bx = x / 16;
 			int by = y / 16;
 			switch (p_activateType) {
-			case 0:
+			case LIFT_ACTIVATE_SWITCH_TOGGLE:
 				m_active = 0;
 				break;
-			case 1:
+			case LIFT_ACTIVATE_STEP:
 				m_active = 0;
 				break;
-			case 2:
+			case LIFT_ACTIVATE_CONTINUOUS:
 				Activate();
 				break;
-			case 3:
+			case LIFT_ACTIVATE_SWITCH_ONCE:
 				m_active = 0;
 				break;
-			case 4:
+			case LIFT_ACTIVATE_STEP_ONCE:
 				m_active = 0;
 				m_defaultActive = 0;
 				break;
@@ -123,7 +123,7 @@ void CLift::Set(int p_x,
 				eLiftActivateType p_activateType,
 				unsigned int p_initialActive)
 {
-	Coord3d position;
+	tCoord3d position;
 	position.m_x = p_x;
 	position.m_y = p_y;
 	position.m_z = p_z;
@@ -131,8 +131,8 @@ void CLift::Set(int p_x,
 }
 
 // FUNCTION: LEMBALL 0x00425060
-void CLift::Set(const Coord3d& p_start,
-				const Coord3d& p_end,
+void CLift::Set(tCoord3d& p_start,
+				tCoord3d& p_end,
 				short p_direction,
 				int p_lowHeight,
 				int p_highHeight,
@@ -188,7 +188,7 @@ bool CLift::Process()
 		m_start.m_z = m_movementStartHeight + time - m_stateTimer;
 		break;
 	case ACTION_LIFT_RISING:
-		m_start.m_z = (short) m_movementStartHeight - (short) m_stateTimer + (short) time;
+		m_start.m_z = m_movementStartHeight - m_stateTimer + time;
 		if (m_start.m_z >= m_highHeight) {
 			m_start.m_z = m_highHeight;
 			m_active = m_defaultActive;
@@ -203,7 +203,7 @@ bool CLift::Process()
 		}
 		break;
 	case ACTION_LIFT_LOWERING:
-		m_start.m_z = (short) m_movementStartHeight - (short) time + (short) m_stateTimer;
+		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
 		if (m_start.m_z <= m_lowHeight) {
 			m_start.m_z = m_lowHeight;
 			m_active = m_defaultActive;

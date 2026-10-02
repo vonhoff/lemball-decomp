@@ -5,19 +5,19 @@
 
 class CPVGWnd;
 class CTrackWindow;
-class CVsRect;
-struct CVsPoint;
+class CVSRect;
+struct CVSPoint;
 // SIZE 0x138
 // VTABLE: LEMBALL 0x00498050 CGWnd
 // VTABLE: LEMBALL 0x00498028 CHotAreaHandler
 class CTrackerButton : public CGraphicButton {
 public:
-	CTrackerButton(const CVsPoint& p_position,
+	CTrackerButton(const CVSPoint& p_position,
 				   CPVGWnd* p_parent,
 				   unsigned long p_animId,
-				   CVsRect& p_trackRect,
+				   CVSRect& p_trackRect,
 				   int p_value);
-	virtual void Move(const CVsPoint& p_point); // vtable+0x38
+	virtual void Move(const CVSPoint& p_point); // vtable+0x38
 	virtual ~CTrackerButton();                  // vtable+0x00
 
 private:

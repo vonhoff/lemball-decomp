@@ -3,20 +3,20 @@
 
 #include "../Base/CGlobalGameObject.h"
 
-class AiCoord;
+class AICOORD;
 class CGameObject;
 // SIZE 0x144
 // VTABLE: LEMBALL 0x00496198
 class CHand : public CGlobalGameObject {
 public:
 	CHand();
-	bool StepOn(const AiCoord& p_position, CGameObject* p_object);
+	bool StepOn(const AICOORD& p_position, CGameObject* p_object);
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c
 	virtual void Restart();    // vtable+0x104
 	virtual ~CHand();          // vtable+0x00
 	void Initialise();
-	void Set(unsigned short p_id, const AiCoord& p_position);
+	void Set(unsigned short p_id, const AICOORD& p_position);
 
 	friend class CHandManager;
 

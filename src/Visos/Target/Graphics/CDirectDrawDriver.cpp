@@ -13,16 +13,16 @@
 #include "Platform/DirectX/DDSURFACEDESC.h"
 #include "Platform/DirectX/IDirectDrawPalette.h"
 #include "Platform/DirectX/IDirectDrawSurface.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Target/Graphics/CDibContext.h"
 #include "Visos/Target/Graphics/CDrawingContext.h"
 
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x00457410
-CDirectDrawDriver::CDirectDrawDriver(CVsSize* p_size, int p_fullScreen)
+CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
 {
 	WNDCLASSA windowClass;
 	DDSURFACEDESC description;
@@ -227,18 +227,18 @@ unsigned int CDirectDrawDriver::UpdateDibColourTable(CDrawingContext* p_drawingC
 
 // FUNCTION: LEMBALL 0x004578d0
 int CDirectDrawDriver::BitBltContexts(CDrawingContext* p_destination,
-									  CVsRect* p_destinationRect,
+									  CVSRect* p_destinationRect,
 									  CDrawingContext* p_source,
-									  CVsPoint* p_sourcePosition)
+									  CVSPoint* p_sourcePosition)
 {
 	RECT source;
-	CVsRect clipped;
+	CVSRect clipped;
 	clipped.m_height = p_destinationRect->m_height;
 	clipped.m_width = p_destinationRect->m_width;
-	CVsPoint* point = p_destinationRect;
+	CVSPoint* point = p_destinationRect;
 	clipped.m_x = point->m_x;
 	clipped.m_y = point->m_y;
-	CVsSize limits;
+	CVSSize limits;
 	limits.m_width = m_screenSize.m_width;
 	limits.m_height = m_screenSize.m_height;
 	if (clipped.m_x < 0) {
@@ -289,17 +289,17 @@ int CDirectDrawDriver::BitBltContexts(CDrawingContext* p_destination,
 
 // FUNCTION: LEMBALL 0x00457a60
 int CDirectDrawDriver::StretchBltContexts(CDrawingContext* p_destination,
-										  CVsRect* p_destinationRect,
+										  CVSRect* p_destinationRect,
 										  CDrawingContext* p_source,
-										  CVsRect* p_sourceRect)
+										  CVSRect* p_sourceRect)
 {
-	CVsRect clipped;
+	CVSRect clipped;
 	clipped.m_width = p_destinationRect->m_width;
 	clipped.m_height = p_destinationRect->m_height;
-	CVsPoint* point = p_destinationRect;
+	CVSPoint* point = p_destinationRect;
 	clipped.m_x = point->m_x;
 	clipped.m_y = point->m_y;
-	CVsSize limits;
+	CVSSize limits;
 	limits.m_width = m_screenSize.m_width;
 	limits.m_height = m_screenSize.m_height;
 	if (clipped.m_x < 0) {

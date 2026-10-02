@@ -4,11 +4,10 @@
 
 #pragma intrinsic(memcpy)
 
-#include "../Foundation/CVsRange.h"
+#include "../Foundation/CVSRange.h"
 #include "CMogRes.h"
 
 #define RESOURCE_LIST_HEADER_UNSET 0xffffffff
-#define RESOURCE_LIST_HEADER_DATA_OFFSET 0x4c
 
 // FUNCTION: LEMBALL 0x0045d290
 void CResBaseLIST::SetHeader()
@@ -23,7 +22,7 @@ void CResBaseLIST::SetHeader()
 // FUNCTION: LEMBALL 0x0045d2b0
 void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size)
 {
-	if ((int) this - (int) p_data == -RESOURCE_LIST_HEADER_DATA_OFFSET) {
+	if (p_data == &m_headerData) {
 		if (m_headerData == 0) {
 			m_headerData = g_pActiveMogRes->AllocateMainMem(p_size);
 			memcpy(m_headerData, p_source, p_size);
@@ -51,7 +50,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 				m_vramEntryCount = -1;
 			}
 			for (unsigned int i = 0; i < count; i++) {
-				if (DirectResources(i, &headerCursor, &dataCursor) != 0 || directed != 0) {
+				if (DirectResources(i, headerCursor, dataCursor) != 0 || directed != 0) {
 					directed = 1;
 				}
 				else {
@@ -64,7 +63,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 		}
 		else {
 			for (unsigned int i = 0; i < count; i++) {
-				if (DirectResources(i, &dataCursor) != 0 || directed != 0) {
+				if (DirectResources(i, dataCursor) != 0 || directed != 0) {
 					directed = 1;
 				}
 				else {
@@ -91,14 +90,14 @@ void CResBaseLIST::LoadData()
 			count = m_totalSize / m_listHeader->m_headerSize;
 			if (m_vramReady == 0) {
 				AllocateResources(count);
-				CVsRange headerRange;
+				CVSRange headerRange;
 				headerRange.m_offset = m_fileOffset;
 				headerRange.m_size = m_headerSize;
 				if (g_pActiveMogRes->Load(headerRange, m_headerData, this)) {
 					OnRead(m_headerData, &m_headerData, m_headerSize);
 				}
 			}
-			CVsRange bodyRange;
+			CVSRange bodyRange;
 			bodyRange.m_offset = m_fileOffset + m_headerSize;
 			bodyRange.m_size = m_bodySize;
 			if (g_pActiveMogRes->Load(bodyRange, m_data, this)) {
@@ -151,22 +150,14 @@ unload_entries:
 	OnUnLoad();
 }
 
-inline static void UnLoadListVram(CResBaseLIST* p_list,
-								  unsigned int p_force,
-								  unsigned int CResBaseLIST::* p_totalSize,
-								  ResListHeader* CResBaseLIST::* p_listHeader)
-{
-	if (p_list->GetfAnyVramLoaded()) {
-		for (unsigned int i = 0; i < (p_list->*p_totalSize) / (p_list->*p_listHeader)->m_headerSize; i++) {
-			p_list->UnLoadVramData(i, p_force);
-		}
-	}
-}
-
 // FUNCTION: LEMBALL 0x0045d5c0
 void CResBaseLIST::UnLoadVramData(unsigned int p_force)
 {
-	UnLoadListVram(this, p_force, &CResBaseLIST::m_totalSize, &CResBaseLIST::m_listHeader);
+	if (GetfAnyVramLoaded()) {
+		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_headerSize; i++) {
+			UnLoadVramData(i, p_force);
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x0045e680

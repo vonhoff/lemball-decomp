@@ -13,12 +13,13 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "../Base/CBaseFrontendProcess.h"
 #include "../Controls/CHiliteController.h"
+#include "Visos/Foundation/tagPRIMS.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "../../Network/Game/CNetworkManager.h"
 #include "../../Network/Messages/CNetworkGameMessage.h"
-#include "../../Visos/Graphics/CBitmapRes.h"
+#include "../../Visos/Graphics/CBigBitmap.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../../Visos/Resources/CResFONT.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
@@ -26,9 +27,9 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Frontend/Support/CoordPair.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CPVGWnd.h"
@@ -112,24 +113,34 @@ char* g_apSuccFailNetLose[8] = {0,
 								0};
 
 // GLOBAL: LEMBALL 0x0049fbb8
-unsigned char g_abSuccFailLayoutFull[0x68] = {
-	0x5c, 0x00, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0xa0, 0x01, 0x00, 0x00, 0x77, 0x01, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x92, 0x00, 0x00, 0x00, 0x91, 0x00, 0x00, 0x00,
-	0x4d, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x92, 0x00, 0x00, 0x00, 0x93, 0x00, 0x00, 0x00, 0x60, 0x00,
-	0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0xe0, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0xf0, 0x00,
-	0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x32, 0x01, 0x00, 0x00,
-};
+SuccFailLayout g_succFailLayoutFull = {{92, 375},
+									   {416, 375},
+									   {0, 0},
+									   {32, 146},
+									   {145, 77},
+									   {32, 146},
+									   {147, 96},
+									   {16, 80},
+									   {272, 224},
+									   {0, 6},
+									   {32, 96},
+									   {240, 192},
+									   {0, 306}};
 
 // GLOBAL: LEMBALL 0x0049fc20
-unsigned char g_abSuccFailLayoutCompact[0x68] = {
-	0x2e, 0x00, 0x00, 0x00, 0xbe, 0x00, 0x00, 0x00, 0xd0, 0x00, 0x00, 0x00, 0xbe, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x4b, 0x00, 0x00, 0x00, 0x49, 0x00, 0x00, 0x00,
-	0x29, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x46, 0x00, 0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 0x2c, 0x00,
-	0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x90, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x80, 0x00,
-	0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x99, 0x00, 0x00, 0x00,
-};
+SuccFailLayout g_succFailLayoutCompact = {{46, 190},
+										  {208, 190},
+										  {0, 0},
+										  {16, 75},
+										  {73, 41},
+										  {16, 70},
+										  {73, 44},
+										  {8, 40},
+										  {144, 112},
+										  {0, 4},
+										  {16, 48},
+										  {128, 96},
+										  {0, 153}};
 
 // GLOBAL: LEMBALL 0x0049fc88
 char g_szPasswordLabel[] = "Password: ";
@@ -147,57 +158,57 @@ unsigned long g_dwSuccFailReturnAnimIdsCompact = RES_NEWFRONT_ICONS_LORES_RETURN
 unsigned long g_dwSuccFailGoAnimIdsCompact = RES_NEWFRONT_ICONS_LORES_OKAY;
 
 // GLOBAL: LEMBALL 0x0049fca4
-unsigned long g_dwSuccFailSingleWinBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_LEMMING;
+unsigned long g_dwSuccFailFailureBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_LEMMING;
 
 // GLOBAL: LEMBALL 0x0049fca8
-unsigned long g_dwSuccFailSingleWinBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_FAILURE_LEMMING;
+unsigned long g_dwSuccFailFailureBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_FAILURE_LEMMING;
 
 // GLOBAL: LEMBALL 0x0049fcac
-unsigned long g_dwSuccFailSingleLoseBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_LEMMING;
+unsigned long g_dwSuccFailSuccessBitmapIdFull = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_LEMMING;
 
 // GLOBAL: LEMBALL 0x0049fcb0
-unsigned long g_dwSuccFailSingleLoseBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_LEMMING;
+unsigned long g_dwSuccFailSuccessBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_LEMMING;
 
 // FUNCTION: LEMBALL 0x00450460
 void CSuccFailDrawer::Load()
 {
 	unsigned long* returnAnim;
 	unsigned long* goAnim;
-	SuccFailDrawerFieldViews::CPrimitive* primitive;
-	SuccFailDrawerFieldViews::DrawerPrims* primary;
+	::tagPRIMS* primitive;
+	tagPRIMS* primary;
 	CResBITMAP* resource;
 	unsigned int position;
 	int bitmapX;
 	int i;
 
 	if (m_mode != 0) {
-		m_layout = (SuccFailLayout*) g_abSuccFailLayoutCompact;
+		m_layout = &g_succFailLayoutCompact;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsCompact;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsCompact;
 		if (m_success != 0) {
 			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_SUCCESS_EYES;
-			m_primaryBitmapId = g_dwSuccFailSingleLoseBitmapIdCompact;
+			m_primaryBitmapId = g_dwSuccFailSuccessBitmapIdCompact;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_SUCCESS_BOARD;
 		}
 		else {
-			m_primaryBitmapId = g_dwSuccFailSingleWinBitmapIdCompact;
+			m_primaryBitmapId = g_dwSuccFailFailureBitmapIdCompact;
 			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_FAIL_EYES;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_LORES_FAILURE_BOARD;
 		}
 	}
 	else {
-		m_layout = (SuccFailLayout*) g_abSuccFailLayoutFull;
+		m_layout = &g_succFailLayoutFull;
 		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
 		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
 		unsigned int& primaryId = m_primaryBitmapId;
 		if (m_success != 0) {
-			unsigned int bitmapId = g_dwSuccFailSingleLoseBitmapIdFull;
+			unsigned int bitmapId = g_dwSuccFailSuccessBitmapIdFull;
 			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_SUCCESS_EYES;
 			primaryId = bitmapId;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_SUCCESS_BOARD;
 		}
 		else {
-			unsigned int bitmapId = g_dwSuccFailSingleWinBitmapIdFull;
+			unsigned int bitmapId = g_dwSuccFailFailureBitmapIdFull;
 			m_backgroundId = RES_NEWFRONT_ANIMS_HIRES_FAIL_EYES;
 			primaryId = bitmapId;
 			m_secondaryBitmapId = RES_NEWFRONT_BITMAPS_HIRES_FAILURE_BOARD;
@@ -211,8 +222,8 @@ void CSuccFailDrawer::Load()
 		m_secondaryBitmap = 0;
 	}
 	bitmapX = (int) m_width - (int) (short) m_primaryBitmap->m_x;
-	primitive = reinterpret_cast<SuccFailDrawerFieldViews::CPrimitive*>(&m_primitiveBundle->m_primitive.m_x);
-	primary = reinterpret_cast<SuccFailDrawerFieldViews::DrawerPrims*>(&m_primitives->m_primary.m_x);
+	primitive = m_primitiveBundle;
+	primary = m_primitives;
 	i = 1;
 	do {
 		resource = m_backgroundBitmap;
@@ -220,14 +231,14 @@ void CSuccFailDrawer::Load()
 		primitive->m_primitive.m_x = m_width - resource->m_x;
 		primitive->m_primitive.m_y = position;
 		primitive->m_primitive.m_resource = resource;
-		primitive->m_primitive.m_flags = 0x800;
+		primitive->m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 		primitive->m_primitive.m_remap = 0;
 		resource = m_primaryBitmap;
 		position = m_layout->m_primaryPosition.m_y;
 		primary->m_primary.m_x = (short) bitmapX;
 		primary->m_primary.m_y = position;
 		primary->m_primary.m_resource = resource;
-		primary->m_primary.m_flags = 0x800;
+		primary->m_primary.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 		primary->m_primary.m_remap = 0;
 		CResBITMAP* secondaryResource = m_secondaryBitmap;
 		if (secondaryResource != 0) {
@@ -238,7 +249,7 @@ void CSuccFailDrawer::Load()
 			primary->m_secondary.m_x = (short) secondaryX;
 			primary->m_secondary.m_y = secondaryY;
 			primary->m_secondary.m_resource = secondaryResource;
-			primary->m_secondary.m_flags = 0x800;
+			primary->m_secondary.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 			primary->m_secondary.m_remap = 0;
 		}
 		primary++;
@@ -327,7 +338,7 @@ void CSuccFailDrawer::DestroyDrawer()
 // FUNCTION: LEMBALL 0x00450860
 void CSuccFailDrawer::DrawText()
 {
-	CVsSize advance;
+	CVSSize advance;
 
 	if (m_drawingBackBuffer != 0) {
 		advance.m_height = 0;
@@ -429,7 +440,7 @@ void CSuccFailDrawer::Processing()
 				short rectHeight = (short) layout->m_animWindowEnd.m_y;
 				short rectY = (short) layout->m_secondaryPosition.m_y;
 				short rectX = (short) layout->m_secondaryPosition.m_x;
-				CVsRect rect(rectX, rectY, (short) layout->m_animWindowEnd.m_x, rectHeight);
+				CVSRect rect(rectX, rectY, (short) layout->m_animWindowEnd.m_x, rectHeight);
 				m_animWindow.Create(rect, (CPVGWnd*) m_display, g_szPaintballSequence);
 				m_animWindow.Play();
 				m_animStarted = 1;

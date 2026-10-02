@@ -1,13 +1,13 @@
 #include "CChangeList.h"
 
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/ChangeListItem.h"
 
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x004669a0
-CChangeList::CChangeList(int p_capacity, CVsSize p_viewSize, CVsSize p_cellSize)
+CChangeList::CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize)
 {
 	if (p_capacity != 0) {
 		m_items = new ChangeListItem[p_capacity];
@@ -51,7 +51,7 @@ void CChangeList::AllocMap()
 }
 
 // FUNCTION: LEMBALL 0x00466af0
-void CChangeList::Resize(CVsSize p_size)
+void CChangeList::Resize(CVSSize p_size)
 {
 	short mapWidth;
 	int mapHeight;
@@ -115,7 +115,7 @@ void CChangeList::PopActive()
 }
 
 // FUNCTION: LEMBALL 0x00466be0
-void CChangeList::Add(const CVsRect& p_area)
+void CChangeList::Add(const CVSRect& p_area)
 {
 	short cellWidth;
 	short cellHeight;
@@ -155,7 +155,7 @@ void CChangeList::Add(const CVsRect& p_area)
 }
 
 // FUNCTION: LEMBALL 0x00466ce0
-void CChangeList::AddWithActiveMark(const CVsRect& p_area, unsigned char p_mark)
+void CChangeList::AddWithActiveMark(const CVSRect& p_area, unsigned char p_mark)
 {
 	unsigned char prior;
 
@@ -267,7 +267,7 @@ found:
 		}
 	}
 
-	CVsRect area;
+	CVSRect area;
 	area.m_width = (short) widthPixels;
 	area.m_height = (short) heightCells * m_cellSize.m_height;
 	area.m_x = m_cellSize.m_width * (short) startX;

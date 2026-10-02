@@ -3,7 +3,7 @@
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/CPt3.h"
@@ -58,7 +58,7 @@ bool CCollectable::Process()
 			m_enabled = 0;
 			break;
 		case ACTION_READY: {
-			if (g_pActiveConnection == 0 || m_requestedAction == 24) {
+			if (g_pActiveConnection == 0 || m_requestedAction == ACTION_READY) {
 				if (m_onMover == 0) {
 					int y = m_position.m_yFixed >> 12;
 					int x = m_position.m_xFixed >> 12;
@@ -74,7 +74,7 @@ bool CCollectable::Process()
 					else {
 						z = 0;
 					}
-					const int& height = (int) z << 12;
+					const int height = (int) z << 12;
 					m_position.m_zFixed = height;
 				}
 				CPt3 pt;
@@ -99,7 +99,7 @@ bool CCollectable::Process()
 				}
 				hit = 0;
 			found:
-				if (hit != 0 && hit->m_objectType == 2 && hit->HasObject(m_objectType) == 0) {
+				if (hit != 0 && hit->m_objectType == OBJECT_PLAYER_2 && hit->HasObject(m_objectType) == 0) {
 					m_activator = hit;
 					RequestAction(ACTION_ACTIVATED);
 				}

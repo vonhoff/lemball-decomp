@@ -2,16 +2,15 @@
 
 #include "CGDI.h"
 #include "CSurface.h"
-class CZBuffClear;
 
-// FUNCTION: LEMBALL 0x00439900
+// FUNCTION: LEMBALL 0x004398a0
 void CCopyToBackBuff::Draw(CGDI* p_gdi)
 {
 	p_gdi->AddToList(this);
 }
 
-// FUNCTION: LEMBALL 0x00439910
+// FUNCTION: LEMBALL 0x004398b0
 void CCopyToBackBuff::Render(CGDI* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit((CZBuffClear*) this);
+	p_gdi->m_renderTarget->Blit(this);
 }

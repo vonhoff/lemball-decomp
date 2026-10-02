@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVWND_H
 #define LEMBALL_VISOS_GRAPHICS_CPVWND_H
 
-#include "../Foundation/CVsPoint.h"
-#include "../Foundation/CVsRect.h"
-#include "../Foundation/CVsSize.h"
+#include "../Foundation/CVSPoint.h"
+#include "../Foundation/CVSRect.h"
+#include "../Foundation/CVSSize.h"
 struct MenuList;
 
 class CHotAreaList;
@@ -30,8 +30,8 @@ class CPVWnd {
 public:
 	CPVWnd();
 	virtual void ReSetMenu();                                                              // vtable+0x00
-	virtual void Create(const CVsRect& p_rect, class CPVWnd* p_parent, char* p_title) = 0; // vtable+0x04
-	virtual void SetInnerWindow(const CVsRect& p_rect);                                    // vtable+0x08
+	virtual void Create(const CVSRect& p_rect, class CPVWnd* p_parent, char* p_title) = 0; // vtable+0x04
+	virtual void SetInnerWindow(const CVSRect& p_rect);                                    // vtable+0x08
 	virtual bool GetMenu(int& p_menuResourceId, MenuList*** p_menuLists);                  // vtable+0x0c
 	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists);                   // vtable+0x10
 	virtual void InitHotAreaList();                                                        // vtable+0x14
@@ -39,11 +39,11 @@ public:
 	virtual void _OnDestroy();                                                             // vtable+0x1c
 	virtual void _OnSize();                                                                // vtable+0x20
 	virtual void _OnMove();                                                                // vtable+0x28
-	virtual void _OnMove(CVsPoint p_point);                                                // vtable+0x24
+	virtual void _OnMove(CVSPoint p_point);                                                // vtable+0x24
 	virtual void _OnZoom(int p_oldZoom);                                                   // vtable+0x2c
-	virtual void _SetRect(const CVsRect& p_rect);                                          // vtable+0x30
-	virtual void _SetRelTL(const CVsPoint& p_point);                                       // vtable+0x34
-	virtual void Move(const CVsPoint& p_point) = 0;                                        // vtable+0x38
+	virtual void _SetRect(const CVSRect& p_rect);                                          // vtable+0x30
+	virtual void _SetRelTL(const CVSPoint& p_point);                                       // vtable+0x34
+	virtual void Move(const CVSPoint& p_point) = 0;                                        // vtable+0x38
 	virtual void OnCreate() = 0;                                                           // vtable+0x3c
 	virtual void OnDestroy() = 0;                                                          // vtable+0x40
 	virtual void OnSize() = 0;                                                             // vtable+0x44
@@ -57,15 +57,15 @@ public:
 	virtual unsigned int GetStyle() = 0;                                                   // vtable+0x64
 	virtual unsigned int GetSizeStatus();                                                  // vtable+0x68
 	virtual void SetSizeStatus(unsigned int p_status);                                     // vtable+0x6c
-	virtual void Refresh(CVsRect* p_rect) = 0;                                             // vtable+0x70
+	virtual void Refresh(CVSRect* p_rect) = 0;                                             // vtable+0x70
 	virtual void Destroy() = 0;                                                            // vtable+0x74
 	virtual void AddChild(class CPVWnd* p_child);                                          // vtable+0x78
 	virtual void RemoveChild(class CPVWnd* p_child);                                       // vtable+0x7c
 	virtual void OnVisibilityChange();                                                     // vtable+0x80
-	virtual void SetDontUpdateRect(const CVsRect& p_rect);                                 // vtable+0x84
-	virtual void Resize(CVsSize p_size);                                                   // vtable+0x88
-	void SetRect(const CVsRect& p_rect);
-	void SetRectInnerZoom(const CVsRect& p_rect, const CVsRect& p_innerRect, int p_zoom);
+	virtual void SetDontUpdateRect(const CVSRect& p_rect);                                 // vtable+0x84
+	virtual void Resize(CVSSize p_size);                                                   // vtable+0x88
+	void SetRect(const CVSRect& p_rect);
+	void SetRectInnerZoom(const CVSRect& p_rect, const CVSRect& p_innerRect, int p_zoom);
 	void SetZoom(int p_zoom);
 	~CPVWnd();
 
@@ -100,9 +100,9 @@ public:
 
 private:
 	unsigned int m_lifecycleRefs; // 0x04
-	CVsRect m_rect;               // 0x08
-	CVsRect m_innerRect;          // 0x10
-	CVsPoint m_relativeTopLeft;   // 0x18
+	CVSRect m_rect;               // 0x08
+	CVSRect m_innerRect;          // 0x10
+	CVSPoint m_relativeTopLeft;   // 0x18
 	CHotAreaList* m_hotAreaList;  // 0x1c
 	class CPVWnd* m_parent;       // 0x20
 	void* m_childList;            // 0x24

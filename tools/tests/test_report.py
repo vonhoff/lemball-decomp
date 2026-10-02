@@ -1,92 +1,76 @@
-"""Report exact matches must agree with match.py's reccmp criterion."""
+"""Check report parsing and exact/fuzzy metrics together."""
 
+import contextlib
+import importlib
+import io
+import json
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
-from report import build_report, measures
+from report import build_report
 
 
-class ReportMatchTests(unittest.TestCase):
-    def test_report_counts_only_reccmp_effective_matches(self):
-        inventory = [
-            {"address": 1, "size": 80, "name": "Partial", "module": "partial.obj"},
-            {"address": 2, "size": 20, "name": "Effective", "module": "exact.obj"},
-        ]
-        matches = {
-            1: {"matching": 0.75, "diff": [["", [{
-                "orig": [[0, "call <OFFSET1>"]],
-                "recomp": [[0, "call Example (FUNCTION)"]],
-            }]]]},
-            2: {"matching": 0.9, "effective": True},
-        }
-        with patch("report.load_inventory", return_value=inventory), patch(
-            "report.load_matches", return_value=matches
-        ):
-            result = build_report(None, None)
-
-        self.assertEqual(result["measures"]["matched_functions"], 1)
-        self.assertEqual(result["measures"]["matched_code"], "20")
-        scores = {f["name"]: f["fuzzy_match_percent"]
-                  for unit in result["units"] for f in unit["functions"]}
-        self.assertEqual(scores, {"Partial": 75.0, "Effective": 100.0})
-
-    def test_fully_linked_counts_whole_units_not_individual_matches(self):
-        inventory = [
-            {"address": 1, "size": 30, "name": "Exact", "module": "mixed.obj"},
-            {"address": 2, "size": 50, "name": "Partial", "module": "mixed.obj"},
-            {"address": 3, "size": 20, "name": "Effective", "module": "complete.obj"},
-        ]
-        matches = {
-            1: {"matching": 1.0},
-            2: {"matching": 0.5},
-            3: {"matching": 0.9, "effective": True},
-        }
-        with patch("report.load_inventory", return_value=inventory), patch(
-            "report.load_matches", return_value=matches
-        ):
-            result = build_report(None, None)
-
+class ReportTests(unittest.TestCase):
+    def test_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            roadmap, comparisons = Path(directory) / "roadmap.csv", Path(directory) / "reccmp.json"
+            roadmap.write_text(
+                "row_type,orig_addr,size,name,module\n"
+                "fun,401000,a,Exact,exact.obj\n"
+                "fun,401020,14,Equivalent,mixed.obj\n"
+                "fun,401040,a,Equivalent,mixed.obj\n"
+                "fun,401060,a,Equivalent,mixed.obj\n"
+                "fun,401080,0,Zero,mixed.obj\n"
+                "dat,402000,4,Data,mixed.obj\n", encoding="utf-8",
+            )
+            comparisons.write_text(json.dumps({"data": [
+                {"address": "0x401000", "type": 1, "matching": 1.0},
+                {"address": "0x401020", "type": 1, "name": "Equivalent(int)",
+                 "matching": 0.8, "effective": True},
+                {"address": "0x401040", "type": 1, "matching": 1.0, "stub": True},
+                {"address": "0x402000", "type": 2, "matching": 1.0},
+            ]}), encoding="utf-8")
+            result = build_report(roadmap, comparisons)
+            roadmap.write_text("row_type,orig_addr,size,name,module\n", encoding="utf-8")
+            empty = build_report(roadmap, comparisons)
+        self.assertEqual(empty["measures"]["total_functions"], 0)
+        self.assertEqual(empty["measures"]["fuzzy_match_percent"], 100.0)
+        functions = [f for u in result["units"] for f in u["functions"]]
+        self.assertEqual(len({f["name"] for f in functions}), 4)
+        self.assertEqual(functions[1]["metadata"]["demangled_name"], "Equivalent(int)")
         totals = result["measures"]
-        self.assertEqual(totals["matched_code"], "50")
-        self.assertEqual(totals["complete_code"], "20")
-        self.assertEqual(totals["complete_code_percent"], 20.0)
-        self.assertEqual(totals["complete_units"], 1)
-        self.assertEqual(totals["total_units"], 2)
-        units = {unit["name"]: unit for unit in result["units"]}
-        self.assertFalse(units["mixed"]["metadata"]["complete"])
-        self.assertEqual(units["mixed"]["measures"]["complete_code"], "0")
-        self.assertTrue(units["complete"]["metadata"]["complete"])
-        self.assertEqual(units["complete"]["measures"]["complete_code_percent"], 100.0)
-        self.assertEqual(units["mixed"]["sections"], [
-            {"name": ".text", "size": "80", "fuzzy_match_percent": 68.75}
-        ])
+        self.assertEqual(totals["total_functions"], 4)
+        self.assertEqual(totals["matched_functions"], 1)
+        self.assertEqual(totals["matched_code"], "10")
+        self.assertEqual(totals["total_code"], "50")
+        self.assertEqual(totals["fuzzy_match_percent"], 52.0)
+        self.assertEqual([f["fuzzy_match_percent"] for u in result["units"]
+                          for f in u["functions"]], [100.0, 80.0, 0.0, 0.0])
+        for measures in [totals] + [u["measures"] for u in result["units"]]:
+            self.assertFalse(any(k.startswith("complete_") for k in measures))
+        self.assertTrue(all("complete" not in u.get("metadata", {}) for u in result["units"]))
 
-    def test_stub_and_missing_comparison_keep_units_incomplete(self):
-        inventory = [
-            {"address": 1, "size": 10, "name": "Exact", "module": "stub.obj"},
-            {"address": 2, "size": 10, "name": "Stub", "module": "stub.obj"},
-            {"address": 3, "size": 10, "name": "Missing", "module": "missing.obj"},
+    def test_ranking_uses_raw_scores_and_rebuilt_sizes(self):
+        ranking = importlib.import_module("next")
+        functions = [
+            {"name": name, "size": str(size), "fuzzy_match_percent": score,
+             "metadata": {"virtual_address": str(address)}}
+            for name, size, score, address in
+            (("Near", 8, 99, 0x401000), ("Gain", 100, 75, 0x402000), ("Exact", 200, 100, 0x403000))
         ]
-        matches = {1: {"matching": 1.0}, 2: {"matching": 1.0, "stub": True}}
-        with patch("report.load_inventory", return_value=inventory), patch(
-            "report.load_matches", return_value=matches
-        ):
-            result = build_report(None, None)
-
-        self.assertEqual(result["measures"]["total_functions"], 3)
-        self.assertEqual(result["measures"]["complete_units"], 0)
-        self.assertEqual(result["measures"]["complete_code"], "0")
-        self.assertTrue(all(not unit["metadata"]["complete"] for unit in result["units"]))
-
-    def test_empty_and_zero_size_reports_have_finite_linked_percent(self):
-        empty = measures([], total_units=0)
-        self.assertEqual(empty["complete_units"], 0)
-        self.assertEqual(empty["complete_code_percent"], 0.0)
-        zero_size = measures([{"size": 0, "ratio": 100.0}])
-        self.assertEqual(zero_size["complete_units"], 1)
-        self.assertEqual(zero_size["complete_code"], "0")
-        self.assertEqual(zero_size["complete_code_percent"], 0.0)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            report.write_text(json.dumps({"units": [{"name": "Unit", "functions": functions}]}),
+                              encoding="utf-8")
+            with patch.object(ranking, "REPORT_JSON", report):
+                for kind, address, score in (("near", "0x00401000", "99.00%"),
+                                             ("gain", "0x00402000", "75.00%")):
+                    output = io.StringIO()
+                    with (patch("sys.argv", ["next.py", "--kind", kind, "--limit", "1"]),
+                          contextlib.redirect_stdout(output)):
+                        self.assertEqual(ranking.main(), 0)
+                    self.assertEqual(len(output.getvalue().splitlines()), 1)
+                    self.assertIn(address, output.getvalue())
+                    self.assertIn(score, output.getvalue())

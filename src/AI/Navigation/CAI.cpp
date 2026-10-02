@@ -42,7 +42,7 @@
 #include "../Objects/CGroundAnim.h"
 #include "../Objects/CPlayerLemming.h"
 #include "../Objects/CViewData.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/CPt3.h"
 #include "AI/Base/CRect3.h"
@@ -785,7 +785,7 @@ int CAI::GetData(CViewData* p_viewData)
 }
 
 // FUNCTION: LEMBALL 0x004125c0
-int CAI::HitTrampoline(const AiCoord& p_position, CGameObject* p_object)
+int CAI::HitTrampoline(const AICOORD& p_position, CGameObject* p_object)
 {
 	return m_trampolineManager->Hit(p_position, p_object);
 }
@@ -801,8 +801,8 @@ void CAI::FireBullet(unsigned short p_id,
 					 eBulletType p_bulletType,
 					 eOwner p_owner,
 					 int p_parameter,
-					 AiCoord p_start,
-					 AiCoord p_target)
+					 AICOORD p_start,
+					 AICOORD p_target)
 {
 	m_bulletManager->RequestBullet(p_id, p_bulletType, p_owner, p_parameter, p_start, p_target);
 }
@@ -845,49 +845,49 @@ int CAI::ProcessMsg(Message* p_message)
 }
 
 // FUNCTION: LEMBALL 0x00412780
-bool CAI::PlayerCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
+bool CAI::PlayerCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate)
 {
 	return m_playerGroupManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
 // FUNCTION: LEMBALL 0x004127a0
-bool CAI::EnemyCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
+bool CAI::EnemyCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate)
 {
 	return m_enemyGroupManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
 // FUNCTION: LEMBALL 0x004127c0
-bool CAI::SheepCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
+bool CAI::SheepCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate)
 {
 	return m_sheepGroupManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
 // FUNCTION: LEMBALL 0x004127e0
-bool CAI::BulletCheckGroupIntersection(CVsRect* p_rect, AiCoord* p_coordinate)
+bool CAI::BulletCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate)
 {
 	return m_bulletManager->CheckGroupIntersection(p_rect, p_coordinate);
 }
 
 // FUNCTION: LEMBALL 0x00412800
-CGlobalGameObject* CAI::FindNearbyObject(AiCoord p_position)
+CGlobalGameObject* CAI::FindNearbyObject(AICOORD p_position)
 {
 	return m_objectManager->FindNearbyObject(p_position);
 }
 
 // FUNCTION: LEMBALL 0x00412830
-CGlobalGameObject* CAI::FindNearbyObject(AiCoord p_position, eObjectType p_objectType)
+CGlobalGameObject* CAI::FindNearbyObject(AICOORD p_position, eObjectType p_objectType)
 {
 	return m_objectManager->FindNearbyObject(p_position, p_objectType);
 }
 
 // FUNCTION: LEMBALL 0x00412870
-CGlobalGameObject* CAI::FindObjectInBounds(CVsRect* p_bounds, eObjectType p_objectType)
+CGlobalGameObject* CAI::FindObjectInBounds(CVSRect* p_bounds, eObjectType p_objectType)
 {
 	return m_objectManager->FindObjectInBounds(p_bounds, p_objectType);
 }
 
 // FUNCTION: LEMBALL 0x00412890
-void CAI::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned short p_mask)
+void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned short p_mask)
 {
 	int y;
 	int x = p_position.m_xFixed >> 12;
@@ -976,7 +976,7 @@ void CAI::StepOn(const AiCoord& p_position, CGameObject* p_object, unsigned shor
 }
 
 // FUNCTION: LEMBALL 0x00412ad0
-bool CAI::OpenDoor(const AiCoord& p_position, CGameObject* p_object, unsigned short p_mask)
+bool CAI::OpenDoor(const AICOORD& p_position, CGameObject* p_object, unsigned short p_mask)
 {
 	int blockX = (p_position.m_xFixed >> 12) / 16;
 	int blockY = (p_position.m_yFixed >> 12) / 16;
@@ -1013,9 +1013,9 @@ void CAI::AddData()
 	CPlayerLemming** lemming = m_networkLemmings;
 	do {
 		CNetworkMessage* stream = this;
-		CNetworkMessage* message = (CNetworkMessage*) ((unsigned char*) *lemming + sizeof(CGlobalGameObject));
-		message->CopyDataStream(stream->m_writeCursor, 0);
-		stream->m_writeCursor += message->m_writeCursor - message->m_buffer;
+		CPlayerLemming& message = **lemming;
+		message.CopyDataStream(stream->m_writeCursor, 0);
+		stream->m_writeCursor += message.m_writeCursor - message.m_buffer;
 		lemming++;
 		remaining--;
 	} while (remaining != 0);
@@ -1027,9 +1027,9 @@ void CAI::GetData()
 	CPlayerLemming** lemming = &m_networkLemmings[4];
 	for (int i = 0; i < 4; i++) {
 		CNetworkMessage* stream = this;
-		CNetworkMessage* message = (CNetworkMessage*) ((unsigned char*) *lemming + sizeof(CGlobalGameObject));
-		if (message->Set(stream->m_readCursor)) {
-			stream->m_readCursor = message->m_readCursor;
+		CPlayerLemming& message = **lemming;
+		if (message.Set(stream->m_readCursor)) {
+			stream->m_readCursor = message.m_readCursor;
 		}
 		lemming++;
 	}
@@ -1097,7 +1097,7 @@ void CAI::GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z, int p_index)
 }
 
 // FUNCTION: LEMBALL 0x00412dc0
-void CAI::GetPlayerPos(int p_id, AiCoord& p_position)
+void CAI::GetPlayerPos(int p_id, AICOORD& p_position)
 {
 	CPlayerLemming** lemming = m_networkLemmings;
 	int index = 0;
@@ -1115,14 +1115,14 @@ void CAI::GetPlayerPos(int p_id, AiCoord& p_position)
 }
 
 // FUNCTION: LEMBALL 0x00412e20
-bool CAI::GetOrigin(AiCoord& p_origin, unsigned int& p_player)
+bool CAI::GetOrigin(AICOORD& p_origin, unsigned int& p_player)
 {
 	p_player = 0;
 	return m_playerGroupManager->GetLeaderPos(p_origin);
 }
 
 // FUNCTION: LEMBALL 0x00412e40
-int CAI::ExportGroundAnimRecords(Coord3d* p_records)
+int CAI::ExportGroundAnimRecords(tCoord3d* p_records)
 {
 	return m_groundAnim->ExportCoordinates(p_records);
 }
@@ -1134,7 +1134,7 @@ int CAI::ExportLiftEndpointRecords(LiftEndpointRecord* p_records)
 }
 
 // FUNCTION: LEMBALL 0x00412e80
-void CAI::AddNewTrapDoor(const AiCoord& p_position, unsigned long p_time)
+void CAI::AddNewTrapDoor(const AICOORD& p_position, unsigned long p_time)
 {
 	short id = CGameObject::NextLoadingId();
 	m_trapDoorManager->AddNewDoor(id, p_position, 0, p_time);
@@ -1144,7 +1144,7 @@ void CAI::AddNewTrapDoor(const AiCoord& p_position, unsigned long p_time)
 void CAI::AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time)
 {
 	short id = CGameObject::NextLoadingId();
-	AiCoord position(p_x << 12, p_y << 12, p_z << 12);
+	AICOORD position(p_x << 12, p_y << 12, p_z << 12);
 	m_trapDoorManager->AddNewDoor(id, position, 0, p_time);
 }
 
@@ -1241,7 +1241,7 @@ void CAI::NLemmings(int p_count)
 }
 
 // FUNCTION: LEMBALL 0x00413100
-void CAI::GetPlayerStartPosition(AiCoord& p_position, int p_index)
+void CAI::GetPlayerStartPosition(AICOORD& p_position, int p_index)
 {
 	m_playerGroupManager->GetPlayerStartPosition(p_position, p_index);
 }
@@ -1322,7 +1322,7 @@ void CAI::SetNetworkTrapDoor(int p_value, int p_index)
 }
 
 // FUNCTION: LEMBALL 0x004132c0
-void CAI::GetNetworkStartPosition(AiCoord& p_position, int p_index)
+void CAI::GetNetworkStartPosition(AICOORD& p_position, int p_index)
 {
 	p_position.m_xFixed = m_networkStartsX[p_index] << 12;
 	p_position.m_yFixed = m_networkStartsY[p_index] << 12;

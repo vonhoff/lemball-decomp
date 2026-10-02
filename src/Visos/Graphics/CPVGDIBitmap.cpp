@@ -1,8 +1,8 @@
 #include "CPVGDIBitmap.h"
 
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -108,7 +108,7 @@ void CPVGDIBitmap::SetLinePtrs()
 }
 
 // FUNCTION: LEMBALL 0x00472440
-void CPVGDIBitmap::Scroll(const CVsRect* p_rect, const CVsPoint* p_destination)
+void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 {
 	int width;
 	int height;
@@ -207,7 +207,7 @@ void CPVGDIBitmap::Scroll(const CVsRect* p_rect, const CVsPoint* p_destination)
 }
 
 // FUNCTION: LEMBALL 0x004725f0
-CVsSize CPVGDIBitmap::SetSize(const CVsSize& p_size, int p_pitch)
+CVSSize CPVGDIBitmap::SetSize(const CVSSize& p_size, int p_pitch)
 {
 	m_width = p_size.m_width;
 	m_height = p_size.m_height;
@@ -223,7 +223,7 @@ CVsSize CPVGDIBitmap::SetSize(const CVsSize& p_size, int p_pitch)
 	else {
 		m_extraRows = (int) (p_size.m_width - 1 + m_rowPadding * 2) / (int) p_size.m_width;
 	}
-	return CVsSize(m_width, (short) (m_height + m_extraRows));
+	return CVSSize(m_width, (short) (m_height + m_extraRows));
 }
 
 // FUNCTION: LEMBALL 0x00472670
@@ -239,7 +239,7 @@ void CPVGDIBitmap::SetBitsBase(unsigned char* p_bits, int p_stride)
 }
 
 // FUNCTION: LEMBALL 0x004726b0
-void CPVGDIBitmap::GetRects(const CVsRect& p_rect, CVsRect*& p_rect0, CVsRect*& p_rect1)
+void CPVGDIBitmap::GetRects(const CVSRect& p_rect, CVSRect*& p_rect0, CVSRect*& p_rect1)
 {
 	const short* position;
 

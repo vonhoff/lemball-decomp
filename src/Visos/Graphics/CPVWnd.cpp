@@ -1,9 +1,9 @@
 #include "CPVWnd.h"
 
 #include "CHotAreaList.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 
 struct MenuList;
 
@@ -95,7 +95,7 @@ void CPVWnd::OnVisibilityChange()
 }
 
 // FUNCTION: LEMBALL 0x00465a80
-void CPVWnd::SetDontUpdateRect(const CVsRect& p_rect)
+void CPVWnd::SetDontUpdateRect(const CVSRect& p_rect)
 {
 }
 
@@ -156,7 +156,7 @@ CPVWnd::~CPVWnd()
 }
 
 // FUNCTION: LEMBALL 0x00465db0
-void CPVWnd::SetInnerWindow(const CVsRect& p_rect)
+void CPVWnd::SetInnerWindow(const CVSRect& p_rect)
 {
 	const short* position;
 
@@ -174,16 +174,16 @@ void CPVWnd::SetInnerWindow(const CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00465df0
-void CPVWnd::SetRect(const CVsRect& p_rect)
+void CPVWnd::SetRect(const CVSRect& p_rect)
 {
 	_SetRect(p_rect);
 }
 
 // FUNCTION: LEMBALL 0x00465e00
-void CPVWnd::SetRectInnerZoom(const CVsRect& p_rect, const CVsRect& p_innerRect, int p_zoom)
+void CPVWnd::SetRectInnerZoom(const CVSRect& p_rect, const CVSRect& p_innerRect, int p_zoom)
 {
 	int oldZoom = m_zoom;
-	const CVsPoint* innerXY;
+	const CVSPoint* innerXY;
 	if (p_zoom != oldZoom) {
 		m_zoom = p_zoom;
 		_OnZoom(oldZoom);
@@ -191,7 +191,7 @@ void CPVWnd::SetRectInnerZoom(const CVsRect& p_rect, const CVsRect& p_innerRect,
 	}
 	m_innerRect.m_width = p_innerRect.m_width;
 	m_innerRect.m_height = p_innerRect.m_height;
-	innerXY = (const CVsPoint*) &p_innerRect;
+	innerXY = (const CVSPoint*) &p_innerRect;
 	m_innerRect.m_x = innerXY->m_x;
 	m_innerRect.m_y = innerXY->m_y;
 	_SetRect(p_rect);
@@ -204,14 +204,14 @@ void CPVWnd::InitHotAreaList()
 
 	style = GetStyle();
 	if ((style & 0x800) != 0 && m_hotAreaList == 0) {
-		CVsRect listRect;
+		CVSRect listRect;
 		if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
 			listRect.m_width = m_innerRect.m_width;
 			listRect.m_height = m_innerRect.m_height;
-			CVsPoint* innerPoint = static_cast<CVsPoint*>(&m_innerRect);
+			CVSPoint* innerPoint = static_cast<CVSPoint*>(&m_innerRect);
 			listRect.m_x = innerPoint->m_x;
 			listRect.m_y = innerPoint->m_y;
-			CVsPoint* rectPoint = static_cast<CVsPoint*>(&m_rect);
+			CVSPoint* rectPoint = static_cast<CVSPoint*>(&m_rect);
 			short y = rectPoint->m_y;
 			listRect.m_x += rectPoint->m_x;
 			listRect.m_y += y;
@@ -219,39 +219,17 @@ void CPVWnd::InitHotAreaList()
 		else {
 			listRect.m_width = m_rect.m_width;
 			listRect.m_height = m_rect.m_height;
-			CVsPoint* rectPoint = static_cast<CVsPoint*>(&m_rect);
+			CVSPoint* rectPoint = static_cast<CVSPoint*>(&m_rect);
 			listRect.m_x = rectPoint->m_x;
 			listRect.m_y = rectPoint->m_y;
 		}
-		CVsPoint offset(m_relativeTopLeft.m_x, m_relativeTopLeft.m_y);
+		CVSPoint offset(m_relativeTopLeft.m_x, m_relativeTopLeft.m_y);
 		if (m_parent == 0) {
 			offset.m_x = 0;
 			offset.m_y = 0;
 		}
-		m_hotAreaList = new CHotAreaList(listRect, offset, *static_cast<CVsPoint*>(&m_innerRect));
+		m_hotAreaList = new CHotAreaList(listRect, offset, *static_cast<CVSPoint*>(&m_innerRect));
 	}
-}
-
-inline static void AddWindowOwner(WindowOwnerList* p_list, CPVWnd* p_window)
-{
-	WindowOwnerNode* node = (WindowOwnerNode*) operator new(sizeof(WindowOwnerNode));
-	if (node != 0) {
-		node->m_window = p_window;
-		node->m_next = 0;
-		node->m_prev = 0;
-	}
-	else {
-		node = 0;
-	}
-	node->m_prev = p_list->m_tail;
-	if (p_list->m_tail != 0) {
-		p_list->m_tail->m_next = node;
-	}
-	p_list->m_tail = node;
-	if (p_list->m_head == 0) {
-		p_list->m_head = node;
-	}
-	p_list->m_count++;
 }
 
 // FUNCTION: LEMBALL 0x00465f80
@@ -259,7 +237,25 @@ void CPVWnd::_OnCreate()
 {
 	g_nNativeWindowCount++;
 	if (m_parent == 0) {
-		AddWindowOwner(g_pWindowOwnerList, this);
+		WindowOwnerList* list = g_pWindowOwnerList;
+		WindowOwnerNode* node = (WindowOwnerNode*) operator new(sizeof(WindowOwnerNode));
+		if (node != 0) {
+			node->m_window = this;
+			node->m_next = 0;
+			node->m_prev = 0;
+		}
+		else {
+			node = 0;
+		}
+		node->m_prev = list->m_tail;
+		if (list->m_tail != 0) {
+			list->m_tail->m_next = node;
+		}
+		list->m_tail = node;
+		if (list->m_head == 0) {
+			list->m_head = node;
+		}
+		list->m_count++;
 	}
 	m_lifecycleRefs++;
 }
@@ -316,9 +312,9 @@ void CPVWnd::_OnDestroy()
 void CPVWnd::_OnSize()
 {
 	CHotAreaList* list;
-	CVsRect area;
-	CVsPoint* innerXY;
-	CVsPoint* rectXY;
+	CVSRect area;
+	CVSPoint* innerXY;
+	CVSPoint* rectXY;
 
 	list = m_hotAreaList;
 	if (list == 0) {
@@ -329,20 +325,10 @@ void CPVWnd::_OnSize()
 	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
 		area.m_width = m_innerRect.m_width;
 		area.m_height = m_innerRect.m_height;
-		if (this != (CPVWnd*) -16) {
-			innerXY = (CVsPoint*) &m_innerRect.m_x;
-		}
-		else {
-			innerXY = 0;
-		}
+		innerXY = &m_innerRect;
 		area.m_x = innerXY->m_x;
 		area.m_y = innerXY->m_y;
-		if (this != (CPVWnd*) -8) {
-			rectXY = (CVsPoint*) &m_rect.m_x;
-		}
-		else {
-			rectXY = 0;
-		}
+		rectXY = &m_rect;
 		short y = rectXY->m_y;
 		area.m_x = (short) (area.m_x + rectXY->m_x);
 		area.m_y = (short) (area.m_y + y);
@@ -350,26 +336,16 @@ void CPVWnd::_OnSize()
 	else {
 		area.m_width = m_rect.m_width;
 		area.m_height = m_rect.m_height;
-		if (this != (CPVWnd*) -8) {
-			rectXY = (CVsPoint*) &m_rect.m_x;
-		}
-		else {
-			rectXY = 0;
-		}
+		rectXY = &m_rect;
 		area.m_x = rectXY->m_x;
 		area.m_y = rectXY->m_y;
 	}
-	CVsPoint origin(m_relativeTopLeft.m_x, m_relativeTopLeft.m_y);
+	CVSPoint origin(m_relativeTopLeft.m_x, m_relativeTopLeft.m_y);
 	if (m_parent == 0) {
 		origin.m_x = 0;
 		origin.m_y = 0;
 	}
-	if (this != (CPVWnd*) -16) {
-		innerXY = (CVsPoint*) &m_innerRect.m_x;
-	}
-	else {
-		innerXY = 0;
-	}
+	innerXY = &m_innerRect;
 	list->Set(area, origin, *innerXY);
 }
 
@@ -377,31 +353,21 @@ void CPVWnd::_OnSize()
 void CPVWnd::_OnMove()
 {
 	CHotAreaList* list;
-	CVsPoint* innerXY;
-	CVsPoint* rectXY;
+	CVSPoint* innerXY;
+	CVSPoint* rectXY;
 
 	list = m_hotAreaList;
 	if (list == 0) {
 		return;
 	}
-	CVsRect area;
+	CVSRect area;
 	if ((int) m_innerRect.m_height * (int) m_innerRect.m_width != 0) {
 		area.m_width = m_innerRect.m_width;
 		area.m_height = m_innerRect.m_height;
-		if (this != (CPVWnd*) -16) {
-			innerXY = (CVsPoint*) &m_innerRect.m_x;
-		}
-		else {
-			innerXY = 0;
-		}
+		innerXY = &m_innerRect;
 		area.m_x = innerXY->m_x;
 		area.m_y = innerXY->m_y;
-		if (this != (CPVWnd*) -8) {
-			rectXY = (CVsPoint*) &m_rect.m_x;
-		}
-		else {
-			rectXY = 0;
-		}
+		rectXY = &m_rect;
 		short y = rectXY->m_y;
 		short x = rectXY->m_x;
 		area.m_x = (short) (area.m_x + x);
@@ -410,31 +376,21 @@ void CPVWnd::_OnMove()
 	else {
 		area.m_width = m_rect.m_width;
 		area.m_height = m_rect.m_height;
-		if (this != (CPVWnd*) -8) {
-			rectXY = (CVsPoint*) &m_rect.m_x;
-		}
-		else {
-			rectXY = 0;
-		}
+		rectXY = &m_rect;
 		area.m_x = rectXY->m_x;
 		area.m_y = rectXY->m_y;
 	}
-	CVsPoint origin(m_relativeTopLeft);
+	CVSPoint origin(m_relativeTopLeft);
 	if (m_parent == 0) {
 		origin.m_x = 0;
 		origin.m_y = 0;
 	}
-	if (this != (CPVWnd*) -16) {
-		innerXY = (CVsPoint*) &m_innerRect.m_x;
-	}
-	else {
-		innerXY = 0;
-	}
+	innerXY = &m_innerRect;
 	list->Set(area, origin, *innerXY);
 }
 
 // FUNCTION: LEMBALL 0x00466260
-void CPVWnd::_OnMove(CVsPoint p_point)
+void CPVWnd::_OnMove(CVSPoint p_point)
 {
 	m_rect.m_x = (short) (m_rect.m_x + p_point.m_x);
 	m_rect.m_y = (short) (m_rect.m_y + p_point.m_y);
@@ -478,7 +434,7 @@ void CPVWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
 }
 
 // FUNCTION: LEMBALL 0x00466300
-void CPVWnd::_SetRect(const CVsRect& p_rect)
+void CPVWnd::_SetRect(const CVSRect& p_rect)
 {
 	const short* position;
 
@@ -495,7 +451,7 @@ void CPVWnd::_SetRect(const CVsRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00466330
-void CPVWnd::_SetRelTL(const CVsPoint& p_point)
+void CPVWnd::_SetRelTL(const CVSPoint& p_point)
 {
 }
 
@@ -511,14 +467,14 @@ bool CPVWnd::IsFocusWindow()
 }
 
 // FUNCTION: LEMBALL 0x00466360
-void CPVWnd::Resize(CVsSize p_size)
+void CPVWnd::Resize(CVSSize p_size)
 {
 }
 
-void CPVWnd::Create(const CVsRect& p_rect, CPVWnd* p_parent, char* p_title)
+void CPVWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 {
 }
-void CPVWnd::Move(const CVsPoint& p_point)
+void CPVWnd::Move(const CVSPoint& p_point)
 {
 }
 void CPVWnd::OnCreate()
@@ -546,7 +502,7 @@ unsigned int CPVWnd::GetStyle()
 {
 	return 0;
 }
-void CPVWnd::Refresh(CVsRect* p_rect)
+void CPVWnd::Refresh(CVSRect* p_rect)
 {
 }
 void CPVWnd::Destroy()

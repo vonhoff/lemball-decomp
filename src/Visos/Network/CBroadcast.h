@@ -4,6 +4,8 @@
 #include "CRwSocket.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 
+#define BROADCAST_ADDRESS_SPECIFIC 2
+
 class CBroadcastMessage;
 class CNetworkAddress;
 

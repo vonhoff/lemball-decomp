@@ -3,7 +3,7 @@
 
 class CSurface;
 class CTimeStat;
-class CVsRect;
+class CVSRect;
 
 // SIZE 0x1c
 struct GdiSurfaceSlot {
@@ -23,7 +23,7 @@ public:
 	CGDIDevice(int p_surfaceCapacity);
 	int FindFreeSurface();
 	int FindSurface(CSurface* p_surface);
-	virtual CSurface* AllocateSurface(const CVsRect& p_rect, CSurface* p_parentSurface); // vtable+0x00
+	virtual CSurface* AllocateSurface(const CVSRect& p_rect, CSurface* p_parentSurface); // vtable+0x00
 	virtual void FreeSurface(CSurface* p_surface);                                       // vtable+0x04
 	virtual void Sync();                                                                 // vtable+0x08
 	virtual void Flush(CSurface* p_surface);                                             // vtable+0x0c

@@ -9,6 +9,19 @@
 // VTABLE: LEMBALL 0x0049a050 CBaseCommonSocket
 class CTCPIPCommonSocket : public CNetworkWnd, public virtual CBaseCommonSocket {
 public:
+	enum AsyncMessage {
+		TCPIP_MESSAGE_LOCAL_HOST_RESOLVED = 0x440,
+		TCPIP_MESSAGE_SPECIFIC_HOST_RESOLVED = 0x441,
+		TCPIP_MESSAGE_SERVICE_RESOLVED = 0x442,
+		TCPIP_MESSAGE_SOCKET_EVENT = 0x443
+	};
+
+	enum NameResult {
+		NAME_RESOLVED = 0,
+		NAME_LOOKUP_FAILED = 2,
+		NAME_LOOKUP_ERROR_HANDLED = 14
+	};
+
 	using CBaseCommonSocket::SocketError;
 
 	CTCPIPCommonSocket();

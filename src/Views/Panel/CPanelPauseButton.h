@@ -5,21 +5,21 @@
 
 class CPanel;
 class CPVGWnd;
-struct CVsPoint;
+struct CVSPoint;
 // SIZE 0x13c
 // VTABLE: LEMBALL 0x004972b8 CGWnd
 // VTABLE: LEMBALL 0x00497290 CHotAreaHandler
 class CPanelPauseButton : public CToggleButton {
 public:
 	CPanelPauseButton(CPanel* p_panel,
-					  const CVsPoint& p_position,
+					  const CVSPoint& p_position,
 					  CPVGWnd* p_parent,
 					  unsigned long p_animId,
 					  unsigned long p_flags);
-	virtual void OnPaint(const CVsRect& p_rect);                           // vtable+0xa8
+	virtual void OnPaint(const CVSRect& p_rect);                           // vtable+0xa8
 	virtual void DrawButton();                                             // vtable+0xbc
-	virtual void OnExternalButtonUp(const CVsPoint& p_point, int p_flags); // vtable+0x0c
-	virtual void OnInside(const CVsPoint& p_point);                        // vtable+0x18
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
 	virtual void OnPressed(int p_flags);                                   // vtable+0xc4
 	virtual void OnReleased(int p_flags);                                  // vtable+0xc0
 

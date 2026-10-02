@@ -2,7 +2,7 @@
 
 #include "../../Control/Game/CGameStatus.h"
 #include "../../Control/Level/CLevelLoader.h"
-#include "../../Control/Support/PreviewData.h"
+#include "../../Control/Support/tPreviewData.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Visos/Animation/CAnimsManager.h"
 #include "../../Visos/Animation/CRepeatAnim.h"
@@ -17,12 +17,12 @@
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CoordPair.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBaseRemap.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
 
 #include <new.h>
 #include <string.h>
@@ -122,7 +122,7 @@ char g_szPreviewNone[] = "None";
 char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 
 // FUNCTION: LEMBALL 0x004491b0
-CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVsRect& p_rect)
+CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)
 {
 	m_drawBackground = 1;
@@ -184,12 +184,12 @@ void CPreviewDrawer::Load()
 		m_primitiveBundle[i].m_primitive.m_x = (short) m_layout->m_positions[PreviewBackground].m_x;
 		m_primitiveBundle[i].m_primitive.m_y = (short) m_layout->m_positions[PreviewBackground].m_y;
 		m_primitiveBundle[i].m_primitive.m_resource = CBaseFrontendDrawer::m_backgroundBitmap;
-		m_primitiveBundle[i].m_primitive.m_flags = 0x800;
+		m_primitiveBundle[i].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 		m_primitiveBundle[i].m_primitive.m_remap = 0;
 		m_primitive[i].m_bitmap.m_x = (short) m_layout->m_positions[PreviewGunLemming].m_x;
 		m_primitive[i].m_bitmap.m_y = (short) m_layout->m_positions[PreviewGunLemming].m_y;
 		m_primitive[i].m_bitmap.m_resource = m_backgroundBitmap;
-		m_primitive[i].m_bitmap.m_flags = 0x800;
+		m_primitive[i].m_bitmap.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 		m_primitive[i].m_bitmap.m_remap = 0;
 	}
 	LoadAnims(m_lemmingAnimId);
@@ -279,8 +279,8 @@ void CPreviewDrawer::DrawBackGround()
 // FUNCTION: LEMBALL 0x004497b0
 void CPreviewDrawer::DrawText()
 {
-	CVsSize advance;
-	CVsSize pos;
+	CVSSize advance;
+	CVSSize pos;
 	int* positions;
 	char* line;
 	int count;
@@ -296,7 +296,7 @@ void CPreviewDrawer::DrawText()
 				pos.m_height = (short) positions[1];
 				advance.m_height = 0;
 				advance.m_width = 0;
-				m_textManager->DrawString(m_gdi, (CVsPoint&) pos, advance, m_chalkFontId, line, 0x20, 0);
+				m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, line, 0x20, 0);
 			}
 			line = line + 0x20;
 			positions = positions + 2;
@@ -317,7 +317,7 @@ void CPreviewDrawer::DrawText()
 				pos.m_height = (short) layoutPosition->m_y;
 				positions = positions + 1;
 				m_textManager
-					->DrawString(m_gdi, (CVsPoint&) pos, advance, m_chalkFontId, (char*) g_szPreviewX, 0x20, 0);
+					->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, (char*) g_szPreviewX, 0x20, 0);
 				count = count - 1;
 			} while (count != 0);
 		}
@@ -329,14 +329,14 @@ void CPreviewDrawer::DrawText()
 				advance.m_width = 0;
 				pos.m_width = (short) layout->m_positions[PreviewTimeText].m_x;
 				pos.m_height = (short) layout->m_positions[PreviewTimeText].m_y;
-				m_textManager->DrawString(m_gdi, (CVsPoint&) pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, 0);
+				m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, 0);
 			}
 			else {
 				advance.m_height = 0;
 				advance.m_width = 0;
 				pos.m_width = (short) layout->m_positions[PreviewTimeText].m_x;
 				pos.m_height = (short) layout->m_positions[PreviewTimeText].m_y;
-				m_textManager->DrawString(m_gdi, (CVsPoint&) pos, advance, m_chalkFontId, m_timeText, 0x20, 0);
+				m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, m_timeText, 0x20, 0);
 			}
 		}
 
@@ -351,14 +351,14 @@ void CPreviewDrawer::DrawText()
 		advance.m_width = 0;
 		pos.m_height = (short) skillY;
 		m_textManager
-			->DrawString(m_gdi, (CVsPoint&) pos, advance, m_chalkFontId, g_szPreviewSkillNames[skill], 0x20, 0);
+			->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, g_szPreviewSkillNames[skill], 0x20, 0);
 
 		if (m_teamCount > 4) {
 			advance.m_height = 0;
 			advance.m_width = 0;
 			pos.m_width = (short) m_layout->m_positions[PreviewTimeText].m_x;
 			pos.m_height = (short) m_layout->m_positions[PreviewNoneText].m_y;
-			m_textManager->DrawString(m_gdi, (CVsPoint&) pos, advance, m_chalkFontId, g_szPreviewNone, 0x20, 0);
+			m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, g_szPreviewNone, 0x20, 0);
 		}
 	}
 }
@@ -371,21 +371,21 @@ void CPreviewDrawer::DrawAnims()
 	int x;
 	int y;
 
-	CAnimsManager::DrawAnim(CVsPoint((short) m_layout->m_positions[PreviewLemmingAnim].m_x,
+	CAnimsManager::DrawAnim(CVSPoint((short) m_layout->m_positions[PreviewLemmingAnim].m_x,
 									 (short) m_layout->m_positions[PreviewLemmingAnim].m_y),
 							m_lemmingAnimId,
 							0,
 							m_lemmingAnim,
 							0);
 
-	CAnimsManager::DrawAnim(CVsPoint((short) m_layout->m_positions[PreviewOpponentAnim].m_x,
+	CAnimsManager::DrawAnim(CVSPoint((short) m_layout->m_positions[PreviewOpponentAnim].m_x,
 									 (short) m_layout->m_positions[PreviewOpponentAnim].m_y),
 							m_opponentAnimId,
 							0,
 							m_opponentAnim,
 							0);
 
-	DrawAnim(CVsPoint((short) m_layout->m_positions[PreviewTeamAnim].m_x,
+	DrawAnim(CVSPoint((short) m_layout->m_positions[PreviewTeamAnim].m_x,
 					  (short) m_layout->m_positions[PreviewTeamAnim].m_y),
 			 m_teamAnimId,
 			 0,
@@ -393,7 +393,7 @@ void CPreviewDrawer::DrawAnims()
 			 0);
 
 	if (m_networkMode != 0) {
-		CAnimsManager::DrawAnim(CVsPoint((short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_x,
+		CAnimsManager::DrawAnim(CVSPoint((short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_x,
 										 (short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_y),
 								m_lemmingAnimId,
 								0,
@@ -407,7 +407,7 @@ void CPreviewDrawer::DrawAnims()
 		if (m_lemmingCount > 0) {
 			do {
 				x = x - ((short) (width / 8) + width);
-				CVsPoint point((short) x, (short) y);
+				CVSPoint point((short) x, (short) y);
 				CAnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, (CRemap*) m_remap);
 				i = i + 1;
 			} while (i < m_lemmingCount);
@@ -422,7 +422,7 @@ void CPreviewDrawer::DrawAnims()
 	if (m_opponentCount > 0) {
 		do {
 			x = x - ((short) (width / 8) + width);
-			CVsPoint point((short) x, (short) y);
+			CVSPoint point((short) x, (short) y);
 			CAnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, 0);
 			i = i + 1;
 		} while (i < m_opponentCount);
@@ -437,7 +437,7 @@ void CPreviewDrawer::DrawAnims()
 		if (m_teamCount > 0) {
 			do {
 				x = x - width;
-				CVsPoint point((short) x, (short) y);
+				CVSPoint point((short) x, (short) y);
 				CAnimsManager::DrawAnim(point, m_teamAnimId, 0, m_teamAnim, 0);
 				i = i + 1;
 			} while (i < m_teamCount);
@@ -560,7 +560,7 @@ void CPreviewDrawer::Processing()
 // FUNCTION: LEMBALL 0x00449f60
 void CPreviewDrawer::LoadLevelInformation()
 {
-	PreviewData preview;
+	tPreviewData preview;
 	char* source;
 	CResFONT* font;
 	short measuredWidth;
@@ -640,7 +640,7 @@ void CPreviewDrawer::LoadLevelInformation()
 			endOfSource = 0;
 			SubWord(source, candidateLine, sourcePos, linePos);
 		}
-		const CVsSize& size = font->GetSize(candidateLine, 0x20);
+		const CVSSize& size = font->GetSize(candidateLine, 0x20);
 		short measuredHeight = size.m_height;
 		targetPos[0] = (layoutWidth / 2 - (int) (size.m_width / 2)) + layoutX;
 		targetPos[1] = layoutY;

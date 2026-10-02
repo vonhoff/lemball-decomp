@@ -8,7 +8,7 @@
 #include "../../Visos/Foundation/CChangeList.h"
 #include "../../Visos/Foundation/CTextManager.h"
 #include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CBitmap.h"
+#include "../../Visos/Graphics/CCopyToBackBuff.h"
 #include "../../Visos/Graphics/CCursor.h"
 #include "../../Visos/Graphics/CGDI.h"
 #include "../../Visos/Graphics/CSurface.h"
@@ -37,16 +37,17 @@ extern char g_szUnknownUserActionReceived[];
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Foundation/CVsPoint.h"
-#include "Visos/Foundation/CVsRect.h"
-#include "Visos/Foundation/CVsSize.h"
+#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBaseCursor.h"
-#include "Visos/Graphics/CBitmapRes.h"
+#include "Visos/Graphics/CBigBitmap.h"
 #include "Visos/Graphics/CDrawingMark.h"
-#include "Visos/Graphics/CLine.h"
 #include "Visos/Graphics/CPrimitive.h"
+#include "Visos/Graphics/CSolidRect.h"
+#include "Visos/Resources/ResourceLimits.h"
 
 #include <new.h>
 #include <string.h>
@@ -56,14 +57,14 @@ class CAnimFrameBASE;
 // FUNCTION: LEMBALL 0x00445420
 CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 										 CGDI* p_gdi,
-										 const CVsRect& p_rect,
+										 const CVSRect& p_rect,
 										 eFlowProcesses p_flowProcess,
 										 int p_resourceCapacity,
 										 int p_animCapacity,
 										 int p_zrleCapacity,
 										 int p_textPrimitiveCapacity,
 										 int p_maxStringLen)
-	: CAnimsManager(p_gdi, 0x2b6, p_resourceCapacity + 3, p_animCapacity + 200, p_zrleCapacity, 0)
+	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, p_resourceCapacity + 3, p_animCapacity + 200, p_zrleCapacity, 0)
 {
 	m_height = 0;
 	m_width = 0;
@@ -124,7 +125,7 @@ void CBaseFrontendDrawer::Setup()
 			m_textManager = 0;
 		}
 		else {
-			m_textManager = new (storage) CTextManager(0x2b6, 1, m_textPrimitiveCapacity, m_maxStringLen);
+			m_textManager = new (storage) CTextManager(RESOURCE_ID_COUNT, 1, m_textPrimitiveCapacity, m_maxStringLen);
 		}
 	}
 
@@ -226,16 +227,16 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 	}
 	g_pCursor->SetActive(0);
 	m_display->Render();
-	CVsRect source(0, 0, m_width, m_height);
-	const CVsSize* size = &source;
-	const CVsPoint* origin = &source;
-	CBitmap* bitmap = &m_primitiveBundle[m_primitiveBank].m_bitmap;
+	CVSRect source(0, 0, m_width, m_height);
+	const CVSSize* size = &source;
+	const CVSPoint* origin = &source;
+	CCopyToBackBuff* bitmap = &m_primitiveBundle[m_primitiveBank].m_bitmap;
 	bitmap->m_x = 0;
 	bitmap->m_y = 0;
-	bitmap->m_sourceRect.m_width = size->m_width;
-	bitmap->m_sourceRect.m_height = size->m_height;
-	bitmap->m_sourceRect.m_x = origin->m_x;
-	bitmap->m_sourceRect.m_y = origin->m_y;
+	bitmap->m_destination.m_width = size->m_width;
+	bitmap->m_destination.m_height = size->m_height;
+	bitmap->m_destination.m_x = origin->m_x;
+	bitmap->m_destination.m_y = origin->m_y;
 	m_primitiveBundle[m_primitiveBank].m_bitmap.Draw(m_gdi);
 	m_drawingBackBuffer = 0;
 	if (m_hiliteController != 0 && hiliteActive != 0) {
@@ -248,7 +249,7 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 }
 
 // FUNCTION: LEMBALL 0x00445a40
-void CBaseFrontendDrawer::Draw(const CVsRect& p_rect)
+void CBaseFrontendDrawer::Draw(const CVSRect& p_rect)
 {
 	if (m_gdi != 0) {
 		m_gdi->m_renderTarget->GetCurrDB();
@@ -276,10 +277,10 @@ void CBaseFrontendDrawer::ReplaceBackground()
 	m_gdi->AddToList(&m_primitiveBundle[m_primitiveBank].m_drawingMark);
 	if (m_drawingBackBuffer != 0) {
 		if (m_drawFrame == 0) {
-			CVsRect frame(0, 0, m_width, m_height);
-			const CVsSize* size = &frame;
-			const CVsPoint* origin = &frame;
-			CLine& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
+			CVSRect frame(0, 0, m_width, m_height);
+			const CVSSize* size = &frame;
+			const CVSPoint* origin = &frame;
+			CSolidRect& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
 			line.m_bounds.m_width = size->m_width;
 			line.m_bounds.m_height = size->m_height;
 			line.m_bounds.m_x = origin->m_x;
@@ -309,14 +310,14 @@ void CBaseFrontendDrawer::ReplaceBackground()
 // FUNCTION: LEMBALL 0x00445c10
 void CBaseFrontendDrawer::_DrawBackGround()
 {
-	CBitmapRes* rec;
+	CBigBitmap* rec;
 	if (m_drawFrame != 0) {
-		const CVsSize& tileSize = *(const CVsSize*) &m_tileBitmap->m_x;
-		CVsRect tiles;
+		const CVSSize& tileSize = *(const CVSSize*) &m_tileBitmap->m_x;
+		CVSRect tiles;
 		tiles.m_width = m_width;
 		tiles.m_height = m_height;
-		CVsSize& count = tiles;
-		CVsPoint& start = tiles;
+		CVSSize& count = tiles;
+		CVSPoint& start = tiles;
 		short height = (short) (tiles.m_height + tileSize.m_height - 1) / tileSize.m_height;
 		tiles.m_width = (short) (tiles.m_width + tileSize.m_width - 1) / tileSize.m_width;
 		tiles.m_height = height;
@@ -439,7 +440,7 @@ void CBaseFrontendDrawer::ResetPrimitives()
 // FUNCTION: LEMBALL 0x004460d0
 void CBaseFrontendDrawer::DrawFrame(CoordPair p_start, CoordPair p_end)
 {
-	DrawFrame(CVsRect(p_start.m_x, p_start.m_y, p_end.m_x, p_end.m_y));
+	DrawFrame(CVSRect(p_start.m_x, p_start.m_y, p_end.m_x, p_end.m_y));
 }
 
 // FUNCTION: LEMBALL 0x00446480
@@ -594,7 +595,7 @@ bool CBaseFrontendDrawer::QuitYet()
 }
 
 // FUNCTION: LEMBALL 0x00446fd0
-void CBaseFrontendDrawer::OnSize(const CVsRect& p_rect)
+void CBaseFrontendDrawer::OnSize(const CVSRect& p_rect)
 {
 	m_width = p_rect.m_width;
 	m_height = p_rect.m_height;

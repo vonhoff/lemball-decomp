@@ -4,6 +4,7 @@
 #include "../../Graphics/CWnd.h"
 #include "CDirectSoundEffect.h"
 #include "DirectSound.h"
+#include "Platform/DirectX/DSBUFFERDESC.h"
 #include "Platform/DirectX/IDirectSound.h"
 #include "Platform/DirectX/IDirectSoundBuffer.h"
 
@@ -36,7 +37,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_effectCapacity = p_effectCapacity;
 	m_platform.m_buffersPerEffect = p_buffersPerEffect;
 	m_platform.m_nativeWindow = 0;
-	m_platform.m_effects = (CDirectSoundEffect**) operator new(p_effectCapacity * 4 + 4);
+	m_platform.m_effects = (CDirectSoundEffect**) operator new((p_effectCapacity + 1) * sizeof(*m_platform.m_effects));
 	m_platform.m_open = 0;
 	m_platform.m_musicAvailable = 0;
 	m_platform.m_available = 0;
@@ -50,15 +51,15 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	}
 	m_platform.m_sampleRate = 0x5622;
 	m_platform.m_deviceId = 0;
-	m_platform.m_samplesPerSecond = 0x5622;
-	m_platform.m_extraFormatBytes = 0;
-	m_platform.m_bitsPerSample = 16;
-	m_platform.m_blockAlign = 2;
-	m_platform.m_formatTag = 1;
+	m_platform.m_format.nSamplesPerSec = 0x5622;
+	m_platform.m_format.cbSize = 0;
+	m_platform.m_format.wBitsPerSample = 16;
+	m_platform.m_format.nBlockAlign = 2;
+	m_platform.m_format.wFormatTag = 1;
 	m_platform.m_use16Bit = 1;
-	m_platform.m_channels = 1;
-	m_platform.m_averageBytesPerSecond = 1;
-	m_platform.m_averageBytesPerSecond *= m_platform.m_samplesPerSecond * m_platform.m_blockAlign;
+	m_platform.m_format.nChannels = 1;
+	m_platform.m_format.nAvgBytesPerSec = 1;
+	m_platform.m_format.nAvgBytesPerSec *= m_platform.m_format.nSamplesPerSec * m_platform.m_format.nBlockAlign;
 	m_platform.m_library = LoadLibraryA("DSOUND.DLL");
 	if (m_platform.m_library != 0) {
 		if (GetSystemDirectoryA(path, sizeof(path)) != 0) {
@@ -116,7 +117,7 @@ char* CDirectSoundDevice::GetInfo()
 // FUNCTION: LEMBALL 0x0047e020
 int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
-	unsigned int description[5];
+	DSBUFFERDESC description;
 	unsigned int result;
 
 	result = m_platform.m_createDirectSound(0, &g_directSound, 0);
@@ -125,11 +126,11 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 		m_platform.m_available = 0;
 		return 0;
 	}
-	memset(description, 0, sizeof(description));
-	description[0] = sizeof(description);
-	description[1] = 1;
-	description[2] = 0;
-	description[4] = 0;
+	memset(&description, 0, sizeof(description));
+	description.dwSize = sizeof(description);
+	description.dwFlags = DSBCAPS_PRIMARYBUFFER;
+	description.dwBufferBytes = 0;
+	description.lpwfxFormat = 0;
 	result = g_directSound->SetCooperativeLevel(m_platform.m_nativeWindow, 2);
 	if (result != 0) {
 		*g_pErrorOutput << "Effect Buffer Set Cooperative Level failed: " << DescribeDirectSoundError(result & 0xfff)
@@ -137,30 +138,30 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 		m_platform.m_available = 0;
 		return 0;
 	}
-	result = g_directSound->CreateSoundBuffer(description, &g_primarySoundBuffer, 0);
+	result = g_directSound->CreateSoundBuffer(&description, &g_primarySoundBuffer, 0);
 	if (result != 0) {
 		*g_pErrorOutput << "Primary Sound Buffer failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 		m_platform.m_available = 0;
 		return 0;
 	}
-	void* format = &m_platform.m_formatTag;
+	WAVEFORMATEX* format = &m_platform.m_format;
 	result = g_primarySoundBuffer->SetFormat(format);
 	if (result != 0) {
 		*g_pSysOutput << "Primary Buffer Set Format failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 		*g_pSysOutput << "Trying 22Khz/8-bit...\n";
-		m_platform.m_bitsPerSample = 8;
+		m_platform.m_format.wBitsPerSample = 8;
 		result = g_primarySoundBuffer->SetFormat(format);
 		if (result != 0) {
 			*g_pSysOutput << "Primary Buffer Set Format failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 			*g_pSysOutput << "Trying 11khz/16-bit...\n";
-			m_platform.m_samplesPerSecond = 0x2b11;
-			m_platform.m_bitsPerSample = 16;
+			m_platform.m_format.nSamplesPerSec = 0x2b11;
+			m_platform.m_format.wBitsPerSample = 16;
 			result = g_primarySoundBuffer->SetFormat(format);
 			if (result != 0) {
 				*g_pSysOutput << "Primary Buffer Set Format failed: " << DescribeDirectSoundError(result & 0xfff)
 							  << "\n";
 				*g_pSysOutput << "Trying 11khz/8-bit...\n";
-				m_platform.m_bitsPerSample = 8;
+				m_platform.m_format.wBitsPerSample = 8;
 				result = g_primarySoundBuffer->SetFormat(format);
 				if (result != 0) {
 					*g_pErrorOutput << "Primary Buffer Set Format failed: " << DescribeDirectSoundError(result & 0xfff)

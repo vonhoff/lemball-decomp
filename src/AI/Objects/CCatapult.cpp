@@ -18,7 +18,7 @@ void CCatapult::Restart()
 }
 
 #include "../../Map/Base/CMap.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGameObject.h"
@@ -128,10 +128,10 @@ void CCatapult::DoActivate()
 }
 
 // FUNCTION: LEMBALL 0x0041ca60
-AiCoord CCatapult::ActivatePosition()
+AICOORD CCatapult::ActivatePosition()
 {
 	int y = m_position.m_yFixed - 0xc000;
 	int z = m_position.m_zFixed;
 	int x = m_position.m_xFixed - 0x3c000;
-	return AiCoord(x, y, z);
+	return AICOORD(x, y, z);
 }

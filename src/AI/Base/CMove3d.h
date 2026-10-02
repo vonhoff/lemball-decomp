@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_BASE_CMOVE3D_H
 #define LEMBALL_AI_BASE_CMOVE3D_H
 
-#include "AiCoord.h"
+#include "AICOORD.h"
 #include "CPt3.h"
 
 // SIZE 0x1c
@@ -14,7 +14,7 @@ public:
 private:
 	int m_startTime;    // 0x00
 	CPt3 m_start;       // 0x04
-	AiCoord m_velocity; // 0x10
+	AICOORD m_velocity; // 0x10
 };
 
 #endif

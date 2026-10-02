@@ -2,10 +2,10 @@
 #define LEMBALL_VISOS_GRAPHICS_CHOTAREALIST_H
 
 #include "../Foundation/CBaseQueueHandler.h"
-#include "../Foundation/CVsPoint.h"
+#include "../Foundation/CVSPoint.h"
 #include "CHotAreaHandler.h"
 
-class CVsRect;
+class CVSRect;
 struct Message;
 struct CHotAreaElement;
 
@@ -14,15 +14,15 @@ struct CHotAreaElement;
 // VTABLE: LEMBALL 0x00499d08 CBaseQueueHandler
 class CHotAreaList : public CHotAreaHandler, public CBaseQueueHandler {
 public:
-	CHotAreaList(const CVsRect& p_rect, const CVsPoint& p_relativeTopLeft, const CVsPoint& p_innerOrigin);
-	void Set(const CVsRect& p_rect, CVsPoint p_relativeTopLeft, const CVsPoint& p_innerOrigin);
+	CHotAreaList(const CVSRect& p_rect, const CVSPoint& p_relativeTopLeft, const CVSPoint& p_innerOrigin);
+	void Set(const CVSRect& p_rect, CVSPoint p_relativeTopLeft, const CVSPoint& p_innerOrigin);
 	void RemoveFromList(CHotAreaHandler* p_handler);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	virtual void OnExit();                      // vtable+0x14
 	virtual ~CHotAreaList();                    // vtable+0x00
 	void AddToList(CHotAreaHandler* p_handler);
 	void DeleteEntry(CHotAreaElement* p_entry);
-	void ProcessHandlers(const CVsPoint& p_point, Message* p_message);
+	void ProcessHandlers(const CVSPoint& p_point, Message* p_message);
 	void UpdateHandlers();
 
 	friend class CPVWnd;
@@ -31,8 +31,8 @@ private:
 	CHotAreaElement* m_head;           // 0x48
 	CHotAreaElement* m_tail;           // 0x4c
 	unsigned int m_scale;              // 0x50
-	CVsPoint m_relativeTopLeft;        // 0x54
-	CVsPoint m_innerOrigin;            // 0x58
+	CVSPoint m_relativeTopLeft;        // 0x54
+	CVSPoint m_innerOrigin;            // 0x58
 	CHotAreaHandler* m_currentHandler; // 0x5c
 };
 

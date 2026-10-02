@@ -1,6 +1,6 @@
 #include "CAiDestinationList.h"
 
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "CAiDestinationEntry.h"
 
 // FUNCTION: LEMBALL 0x00414cd0

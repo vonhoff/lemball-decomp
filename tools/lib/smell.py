@@ -3,24 +3,15 @@
 
 from __future__ import annotations
 
-import json
 import re
 import sys
-from collections import Counter
 from pathlib import Path
 
-from .paths import ROOT
-from .source import RECCMP_MARK, SYNTHETIC_MARK, collect_sources, mask_comments_and_strings
-
-EXCEPTIONS = ROOT / "tools" / "data" / "smell-exceptions.json"
+from . import RECCMP_MARK, ROOT, TOKENS, collect_sources, mask_comments_and_strings
 
 # Hit: relative path, line number, rule, complete source line without trailing comments.
 Hit = tuple[str, int, str, str]
 
-K68_MARK = re.compile(r"^\s*//\s*68K\s+")
-SYNTHETIC_DTOR_NAME = re.compile(
-    r"^\s*//\s*(?P<class>[A-Za-z_][\w:]*)::`(?:scalar|vector) deleting destructor'\s*$"
-)
 VBPTR_WALK = re.compile(
     r"\*\(\s*int\s*\*\s*\)\s*\(\s*\*\(\s*int\s*\*\s*\)\s*\(\s*[^;]{1,60}?\+\s*0x40\s*\)\s*\+\s*4\s*\)"
 )
@@ -77,7 +68,6 @@ CHAR_VAR_OFFSET = re.compile(
     r"\(\s*char\s*\*\s*\)\s*(?P<expr>this|[A-Za-z_][\w]*)\s*[+-]\s*(?!0x)(?P<off>[A-Za-z_][\w]*)"
 )
 METHOD_DEF = re.compile(r"^[A-Za-z_][\w:]*::~?[A-Za-z_][\w]*\s*\(")
-DTOR_DEF = re.compile(r"^(?P<class>[A-Za-z_][\w:]*)::~[A-Za-z_][\w]*\s*\(")
 FREE_DEF = re.compile(r"^(?:static\s+)?(?:[A-Za-z_][\w:*&]*\s+)+\w+\s*\(")
 BUFFER_OK = re.compile(r"m_numberBuffer|Bits\b|sz[A-Z]|\bp_bits\b")
 SKIP_LEAD = {"if", "while", "for", "switch", "return", "else", "case", "catch", "extern"}
@@ -86,16 +76,6 @@ SCALAR_PTR_BASE = re.compile(
 )
 RHS_HAS_ARITH = re.compile(r"\s[+-]\s|\b[+-]\s*(?:0x[0-9A-Fa-f]+|\d+|[A-Za-z_])")
 RHS_LITERAL_ADDR = re.compile(r"^(?:0x[0-9A-Fa-f]+|\d+)\b")
-
-
-def strip_line_comment(line: str) -> str:
-    in_str = False
-    for i, ch in enumerate(line):
-        if ch == '"' and (i == 0 or line[i - 1] != "\\"):
-            in_str = not in_str
-        if not in_str and line.startswith("//", i):
-            return line[:i]
-    return line
 
 
 def is_func_def(stripped: str) -> bool:
@@ -127,56 +107,10 @@ def declaration_has_body(code: str) -> bool:
     return bool(re.match(r"\s*(?:(?:const|volatile)\s*)*(?:\{|:(?!:))", code[end:]))
 
 
-def body_is_empty(lines: list[str], index: int) -> bool:
-    saw_open = False
-    for line in lines[index:index + 6]:
-        text = line.strip()
-        if "{" in text:
-            saw_open = True
-            after = text.split("{", 1)[1].strip()
-            if after.startswith("}"):
-                return True
-            if after:
-                return False
-        elif saw_open:
-            if text.startswith("}"):
-                return True
-            if text:
-                return False
-    return False
-
-
-def preceding_block(lines: list[str], index: int) -> list[str]:
-    block = []
-    i = index - 1
-    while i >= 0:
-        raw = lines[i].strip()
-        if raw == "":
-            if block:
-                break
-            i -= 1
-            continue
-        if raw.startswith("//"):
-            block.append(raw)
-            i -= 1
-            continue
-        break
-    block.reverse()
-    return block
-
-
-def is_offset_poke(code: str) -> bool:
-    if BUFFER_OK.search(code):
-        return False
-    if CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code) or NAKED_DATA_OFFSET.search(code):
-        return True
-    return any(not BUFFER_OK.search(match.group("expr")) for match in EXPR_CHAR_OFFSET.finditer(code))
-
-
 def iter_raw_deref_casts(code: str):
-    """Yield (type_text, rhs, form) for *(T*)rhs and *((T*) rhs)."""
+    """Yield (type_text, rhs) for *(T*)rhs and *((T*) rhs)."""
     for match in RAW_DEREF_CAST.finditer(code):
-        yield match.group("type"), match.group("rhs").strip(), "direct"
+        yield match.group("type"), match.group("rhs").strip()
 
     for start in PAREN_RAW_DEREF_START.finditer(code):
         cast = CAST_TYPE_AT.match(code, start.end())
@@ -197,14 +131,14 @@ def iter_raw_deref_casts(code: str):
             continue
         rhs = code[rhs_start : pos - 1].strip()
         if rhs:
-            yield type_text, rhs, "paren"
+            yield type_text, rhs
 
 
 ADDR_OF = re.compile(r"^\(?\s*&")
 
 
-def raw_cast_reason(code: str, audit: bool = False) -> str | None:
-    for type_text, rhs, form in iter_raw_deref_casts(code):
+def raw_cast_reason(code: str) -> str | None:
+    for type_text, rhs in iter_raw_deref_casts(code):
         base_type = re.sub(r"\s*\*\s*", "", type_text).strip()
         scalar_type = SCALAR_PTR_BASE.fullmatch(base_type)
         if scalar_type is None and RHS_HAS_ARITH.search(rhs):
@@ -213,206 +147,75 @@ def raw_cast_reason(code: str, audit: bool = False) -> str | None:
             return "literal-address-cast"
         if ADDR_OF.match(rhs):
             return "addr-cast-punning"
-        # In audit mode, report every direct cast dereference.
-        if audit and form == "direct":
-            return "raw-cast"
     return None
 
 
-def format_hit(hit: Hit) -> str:
-    rel, lineno, rule, code = hit
-    if code:
-        return f"{rel}:{lineno}: {rule} {code}"
-    return f"{rel}:{lineno}: {rule}"
-
-
-def load_exceptions() -> dict[tuple[str, str, str], tuple[int, str]]:
-    try:
-        data = json.loads(EXCEPTIONS.read_text(encoding="utf-8"))
-    except (OSError, ValueError) as error:
-        raise ValueError(f"cannot read {EXCEPTIONS}: {error}") from error
-    if (
-        not isinstance(data, dict) or type(data.get("version")) is not int
-        or data["version"] != 1 or not isinstance(data.get("findings"), list)
-    ):
-        raise ValueError(f"invalid {EXCEPTIONS}: expected version 1 and a findings list")
-    exceptions = {}
-    for index, item in enumerate(data["findings"], 1):
-        context = f"{EXCEPTIONS}: finding {index}"
-        if not isinstance(item, dict) or any(
-            not isinstance(item.get(field), str) or not item[field].strip()
-            for field in ("path", "rule", "code", "reason")
-        ):
-            raise ValueError(f"{context}: path, rule, code and reason must be nonempty strings")
-        path = item["path"]
-        if not path.startswith("src/") or "\\" in path or any(part in {"", ".", ".."} for part in path.split("/")):
-            raise ValueError(f"{context}: path must be relative to src with forward slashes")
-        count = item.get("count", 1)
-        if type(count) is not int or count < 1:
-            raise ValueError(f"{context}: count must be a positive integer")
-        key = (path, item["rule"], item["code"])
-        if key in exceptions:
-            raise ValueError(f"{context}: duplicate exception; use count for repeated findings")
-        exceptions[key] = (count, item["reason"])
-    return exceptions
-
-
-def apply_exceptions(
-    hits: list[Hit], files: list[Path], *, full_scan: bool = False,
-) -> tuple[list[Hit], list[str], list[tuple[Hit, str]]]:
-    exceptions = load_exceptions()
-    remaining = Counter({key: count for key, (count, _) in exceptions.items()})
-    unreviewed: list[Hit] = []
-    reviewed: list[tuple[Hit, str]] = []
-    for hit in hits:
-        key = (hit[0], hit[2], hit[3])
-        if remaining[key] > 0:
-            remaining[key] -= 1
-            reviewed.append((hit, exceptions[key][1]))
-        else:
-            unreviewed.append(hit)
-    scanned = {path.resolve().relative_to(ROOT).as_posix() for path in files}
-    stale = []
-    for (path, rule, code), count in sorted(remaining.items()):
-        if count > 0 and (full_scan or path in scanned):
-            stale.append(f"{path}: exception-stale {rule} {code} (count {count})")
-    return unreviewed, stale, reviewed
-
-
-def scan_file(
-    path: Path,
-    annot: bool,
-    annot_strict: bool,
-    synthetic_destructors: set[str],
-    raw_cast_audit: bool = False,
-) -> tuple[list[Hit], list[tuple[str, str]]]:
+def scan_file(path: Path) -> list[Hit]:
     lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
     hits: list[Hit] = []
-    reviews: list[tuple[str, str]] = []
     rel = path.resolve().relative_to(ROOT).as_posix()
-    if path.suffix.lower() in {".cpp", ".h", ".c"}:
-        for lineno, raw in enumerate(lines, 1):
-            code = strip_line_comment(raw)
-            raw_cast = raw_cast_reason(code, audit=raw_cast_audit)
-            if raw_cast is not None:
-                hits.append((rel, lineno, raw_cast, code.strip()))
-            if VBPTR_WALK.search(code):
-                hits.append((rel, lineno, "vbptr-walk", code.strip()))
-            if THIS_ADJUST.search(code):
-                hits.append((rel, lineno, "this-adjust-poke", code.strip()))
-            poked = False
-            type_erase = CAST_BYTE_DIV_INDEX.search(code)
-            if type_erase is not None:
-                hits.append((rel, lineno, "type-erase-index", code.strip()))
+    for lineno, raw in enumerate(lines, 1):
+        comment = next((token for token in TOKENS.finditer(raw) if token[0].startswith('//')), None)
+        code = raw[:comment.start()] if comment else raw
+        raw_cast = raw_cast_reason(code)
+        if raw_cast is not None:
+            hits.append((rel, lineno, raw_cast, code.strip()))
+        if VBPTR_WALK.search(code):
+            hits.append((rel, lineno, "vbptr-walk", code.strip()))
+        if THIS_ADJUST.search(code):
+            hits.append((rel, lineno, "this-adjust-poke", code.strip()))
+        poked = False
+        type_erase = CAST_BYTE_DIV_INDEX.search(code)
+        if type_erase is not None:
+            hits.append((rel, lineno, "type-erase-index", code.strip()))
+            poked = True
+        for match in EXPR_CHAR_OFFSET.finditer(code):
+            if not BUFFER_OK.search(match.group("expr")):
+                hits.append((rel, lineno, "expr-char-offset", code.strip()))
                 poked = True
-            for match in EXPR_CHAR_OFFSET.finditer(code):
-                if not BUFFER_OK.search(match.group("expr")):
-                    hits.append((rel, lineno, "expr-char-offset", code.strip()))
-                    poked = True
-                    break
-            if MI_DTOR_POKE.search(code):
-                hits.append((rel, lineno, "mi-dtor-poke", code.strip()))
-                poked = True
-            if not poked and is_offset_poke(code):
-                hits.append((rel, lineno, "offset-poke", code.strip()))
-            for match in CHAR_VAR_OFFSET.finditer(code):
-                if BUFFER_OK.search(match.group("expr")):
-                    continue
-                if match.group("off") == "sizeof":
-                    continue
-                hits.append((rel, lineno, "offset-poke", code.strip()))
+                break
+        if MI_DTOR_POKE.search(code):
+            hits.append((rel, lineno, "mi-dtor-poke", code.strip()))
+            poked = True
+        if (not poked and not BUFFER_OK.search(code)
+                and (CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code)
+                     or NAKED_DATA_OFFSET.search(code))):
+            hits.append((rel, lineno, "offset-poke", code.strip()))
+        for match in CHAR_VAR_OFFSET.finditer(code):
+            if BUFFER_OK.search(match.group("expr")):
+                continue
+            if match.group("off") == "sizeof":
+                continue
+            hits.append((rel, lineno, "offset-poke", code.strip()))
     if path.suffix.lower() != ".cpp":
-        return hits, reviews
+        return hits
     masked_lines = mask_comments_and_strings("\n".join(lines)).splitlines()
     for i, raw in enumerate(lines):
         stripped = raw.strip()
         if not is_func_def(stripped) or not declaration_has_body("\n".join(masked_lines[i:])):
             continue
-        prev = preceding_block(lines, i)
-        has_reccmp = any(RECCMP_MARK.match(line) for line in prev)
-        has_68k = any(K68_MARK.match(line) for line in prev)
-        dtor = DTOR_DEF.match(stripped)
-        has_synthetic_dtor = dtor is not None and dtor.group("class") in synthetic_destructors
-        if has_reccmp:
-            continue
-        if annot_strict:
-            disposition = "hit"
-        elif annot:
-            if body_is_empty(lines, i):
-                disposition = "review-empty"
-            elif has_synthetic_dtor:
-                disposition = "review-synthetic"
+        block = []
+        for previous in reversed(lines[:i]):
+            previous = previous.strip()
+            if not previous:
+                if block:
+                    break
+            elif previous.startswith("//"):
+                block.append(previous)
             else:
-                disposition = "hit"
-        elif has_68k or body_is_empty(lines, i):
-            continue
-        else:
-            disposition = "hit"
-        kind = "incomplete-annotation" if has_68k else "no-annotation"
-        record = f"{rel}:{i + 1}: {kind} {stripped[:90]}"
-        if disposition.startswith("review-"):
-            reviews.append((disposition, record))
-        else:
-            hits.append((rel, i + 1, kind, stripped))
-    return hits, reviews
+                break
+        if not any(RECCMP_MARK.match(line) for line in block):
+            hits.append((rel, i + 1, 'no-annotation', stripped))
+    return hits
 
 
-def collect_synthetic_destructors(files: list[Path]) -> set[str]:
-    classes: set[str] = set()
-    for path in files:
-        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-        for index, line in enumerate(lines[:-1]):
-            if not SYNTHETIC_MARK.match(line):
-                continue
-            name = SYNTHETIC_DTOR_NAME.match(lines[index + 1])
-            if name is not None:
-                classes.add(name.group("class"))
-    return classes
-
-
-def check_smell(
-    paths: list[Path | str] | None = None,
-    annot: bool = False,
-    annot_strict: bool = False,
-    raw_cast_audit: bool = False,
-    verbose: bool = False,
-) -> int:
+def check_smell(paths=None) -> int:
     files = collect_sources(paths)
     if not files:
-        sys.stderr.write("smell: no C++ source files found\n")
+        sys.stderr.write('smell: no C++ source files found\n')
         return 2
-    hits: list[Hit] = []
-    reviews: list[tuple[str, str]] = []
-    synthetic_roots = collect_sources() if paths is None else files
-    synthetic_destructors = collect_synthetic_destructors(synthetic_roots)
-    for path in files:
-        file_hits, file_reviews = scan_file(
-            path, annot, annot_strict, synthetic_destructors, raw_cast_audit=raw_cast_audit
-        )
-        hits.extend(file_hits)
-        reviews.extend(file_reviews)
-    try:
-        hits, stale, reviewed = apply_exceptions(hits, files, full_scan=not paths)
-    except ValueError as error:
-        sys.stderr.write(f"smell: {error}\n")
-        return 2
-    if reviewed:
-        sys.stdout.write(f"smell: {len(reviewed)} reviewed exception(s) in tools/data/smell-exceptions.json\n")
-        if verbose:
-            for hit, reason in reviewed:
-                sys.stdout.write(f"  {format_hit(hit)}\n    reason: {reason}\n")
-    if reviews:
-        empty_reviews = sum(reason == "review-empty" for reason, _ in reviews)
-        synthetic_reviews = sum(reason == "review-synthetic" for reason, _ in reviews)
-        sys.stderr.write(
-            f"smell: review empty={empty_reviews} synthetic={synthetic_reviews} (use --annot-strict)\n"
-        )
-    messages = [format_hit(hit) for hit in hits]
-    messages.extend(stale)
-    if messages:
-        sys.stderr.write(f"smell: {len(messages)} hit(s)\n")
-        for message in messages:
-            sys.stderr.write(message + "\n")
-        return 1
-    sys.stdout.write("smell: ok\n")
-    return 0
+    hits = [hit for path in files for hit in scan_file(path)]
+    for path, line, rule, code in hits:
+        print(f'{path}:{line}: {rule} {code}', file=sys.stderr)
+    print(f'smell: {len(hits)} hits')
+    return int(bool(hits))

@@ -7,7 +7,7 @@
 #include "../../Visos/Network/CConnect.h"
 #include "../Groups/CPlayerLemmingGroup.h"
 #include "../Objects/CPlayerLemming.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/CMove3d.h"
@@ -17,6 +17,11 @@
 #include "CAI.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
+
+#define MOVER_POSITION_FRACTION_BITS 12
+#define MOVER_FOOTPRINT_HALF_SIZE 8
+#define MOVER_FOOTPRINT_LAST_OFFSET 15
+#define MOVER_SURFACE_Z_OFFSET 8
 
 // FUNCTION: LEMBALL 0x0042e590
 CMover::CMover() : CGlobalGameObject(OBJECT_MOVER, 0, 0)
@@ -51,12 +56,13 @@ CMover::~CMover()
 // FUNCTION: LEMBALL 0x0042e700
 bool CMover::IsAt(int p_x, int p_y, int& p_height)
 {
-	int x = (m_position.m_xFixed >> 12) - 8;
-	int xMax = x + 15;
-	int y = (m_position.m_yFixed >> 12) - 8;
-	int yMax = y + 15;
+
+	int x = (m_position.m_xFixed >> MOVER_POSITION_FRACTION_BITS) - MOVER_FOOTPRINT_HALF_SIZE;
+	int xMax = x + MOVER_FOOTPRINT_LAST_OFFSET;
+	int y = (m_position.m_yFixed >> MOVER_POSITION_FRACTION_BITS) - MOVER_FOOTPRINT_HALF_SIZE;
+	int yMax = y + MOVER_FOOTPRINT_LAST_OFFSET;
 	if (p_x >= x && p_x <= xMax && p_y >= y && p_y <= yMax) {
-		p_height = (m_position.m_zFixed >> 12) + 8;
+		p_height = (m_position.m_zFixed >> MOVER_POSITION_FRACTION_BITS) + MOVER_SURFACE_Z_OFFSET;
 		return true;
 	}
 	return false;
@@ -221,7 +227,7 @@ bool CMover::Process()
 			next = 0;
 		}
 		m_currentNode = next;
-		AiCoord oldPosition = m_position;
+		AICOORD oldPosition = m_position;
 		int groundX;
 		int y;
 		int x;
@@ -324,7 +330,7 @@ void CMover::Switch()
 }
 
 // FUNCTION: LEMBALL 0x0042eee0
-bool CMover::IsOn(const AiCoord& p_position)
+bool CMover::IsOn(const AICOORD& p_position)
 {
 	int minX = (m_position.m_xFixed >> 12) - 8;
 	int maxX = minX + 15;
@@ -373,7 +379,7 @@ void CMover::VerifyObjects()
 // FUNCTION: LEMBALL 0x0042eff0
 bool CMover::GetOn(CGameObject* p_object)
 {
-	AiCoord objectPosition;
+	AICOORD objectPosition;
 	objectPosition.m_xFixed = p_object->m_position.m_xFixed;
 	objectPosition.m_yFixed = p_object->m_position.m_yFixed;
 	objectPosition.m_zFixed = p_object->m_position.m_zFixed;
@@ -407,7 +413,7 @@ bool CMover::GetOn(CGameObject* p_object)
 		m_objectCount++;
 		StopObjectsMoving();
 		if (m_action != ACTION_WALKING && p_object->m_objectType == OBJECT_PLAYER_2) {
-			AiCoord destination(m_position.m_xFixed, m_position.m_yFixed, objectPosition.m_zFixed);
+			AICOORD destination(m_position.m_xFixed, m_position.m_yFixed, objectPosition.m_zFixed);
 			p_object->AddDestination(destination);
 			p_object->StartMoving();
 		}

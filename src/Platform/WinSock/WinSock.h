@@ -1,9 +1,25 @@
 #ifndef LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 #define LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 
+#define SOL_SOCKET 0xffff
+#define SO_BROADCAST 0x0020
+#define FD_READ 0x01
+#define FD_WRITE 0x02
+
+#define AF_INET 2
+#define SOCK_DGRAM 2
+
+#define INADDR_NONE 0xffffffff
+#define MAXGETHOSTSTRUCT 1024
+
+#define WSABASEERR 10000
+#define WSAEWOULDBLOCK (WSABASEERR + 35)
+#define WSAHOST_NOT_FOUND (WSABASEERR + 1001)
+#define WSANO_DATA (WSABASEERR + 1004)
+
 struct in_addr;
 struct TcpIpSocketAddress;
-struct TcpIpDestinationAddress;
+struct WSAData;
 
 extern "C" unsigned long __stdcall inet_addr(const char* p_text);
 extern "C" char* __stdcall inet_ntoa(in_addr p_address);
@@ -29,7 +45,7 @@ extern "C" int __stdcall WSAAsyncSelect(int p_socket, void* p_window, unsigned i
 extern "C" int __stdcall closesocket(int p_socket);
 extern "C" int __stdcall WSAGetLastError();
 extern "C" int __stdcall ioctlsocket(int p_socket, long p_command, unsigned long* p_value);
-extern "C" int __stdcall WSAStartup(unsigned short p_version, void* p_data);
+extern "C" int __stdcall WSAStartup(unsigned short p_version, WSAData* p_data);
 extern "C" int __stdcall WSACleanup();
 extern "C" int __stdcall recv(int p_socket, char* p_buffer, int p_length, int p_flags);
 extern "C" int __stdcall recvfrom(int p_socket,
@@ -42,7 +58,7 @@ extern "C" int __stdcall sendto(int p_socket,
 								const char* p_buffer,
 								int p_length,
 								int p_flags,
-								const TcpIpDestinationAddress* p_address,
+								const TcpIpSocketAddress* p_address,
 								int p_addressLength);
 
 #endif

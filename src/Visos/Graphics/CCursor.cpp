@@ -2,7 +2,7 @@
 
 #include "../../Control/Game/CDemo.h"
 #include "../Resources/Manifest.h"
-#include "Visos/Foundation/CVsPoint.h"
+#include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Graphics/CBaseCursor.h"
 
 extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void* p_instance, const char* p_name);

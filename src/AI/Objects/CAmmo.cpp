@@ -4,7 +4,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../Navigation/CAI.h"
-#include "AI/Base/AiCoord.h"
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
@@ -98,10 +98,10 @@ void CAmmo::DoActivate()
 }
 
 // FUNCTION: LEMBALL 0x0041cc70
-AiCoord CAmmo::ActivatePosition()
+AICOORD CAmmo::ActivatePosition()
 {
 	int z = m_position.m_zFixed;
 	int y = m_position.m_yFixed;
 	int x = m_position.m_xFixed;
-	return AiCoord(x, y, z);
+	return AICOORD(x, y, z);
 }
