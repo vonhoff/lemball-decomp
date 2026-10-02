@@ -410,10 +410,10 @@ void CLemmingAnimsManager::Unload()
 		UnLoadAnims(RES_BORDERS_LORES_BORDERCORNERS);
 		UnLoadAnims(RES_BORDERS_HIRES_BORDEREDGES);
 		UnLoadAnims(RES_BORDERS_HIRES_BORDERCORNERS);
-		CResFONT** font = m_interfaceFonts;
-		for (int count = 3; count != 0; font++, count--) {
-			if (*font != 0) {
-				(*font)->UnLoad();
+		for (int fontIndex = 0; fontIndex < 3; fontIndex++) {
+			CResFONT* font = m_interfaceFonts[fontIndex];
+			if (font != 0) {
+				font->UnLoad();
 			}
 		}
 		UnLoadAnimation(RES_CURSORS_HAND);
