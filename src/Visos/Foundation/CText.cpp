@@ -106,8 +106,8 @@ void CText::Render(CGDI* p_gdi)
 	}
 	font->m_directUseCount++;
 	m_x = m_startX;
-	m_primitive.m_flags = m_flags;
 	m_y = m_startY;
+	m_primitive.m_flags = m_flags;
 	m_primitive.m_remap = m_remap;
 	const char* text = m_text;
 	if (*text != '\0') {
