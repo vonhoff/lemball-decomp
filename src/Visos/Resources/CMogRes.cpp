@@ -55,8 +55,8 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 	timeGetTime();
 	m_workingDirectory = m_rootDirectory;
 	SetWD(g_mogRootPath);
-	m_resources = (CResBase**) CMogloadArena::operator new(RESOURCE_HANDLE_TABLE_BYTES);
-	for (offset = 0; offset < 1024; offset++) {
+	m_resources = (CResBase**) CMogloadArena::operator new(RESOURCE_HANDLE_COUNT * sizeof(*m_resources));
+	for (offset = 0; offset < RESOURCE_HANDLE_COUNT; offset++) {
 		m_resources[offset] = 0;
 	}
 	g_pMogloadStat = new CMogloadStat("Mogload memory");
