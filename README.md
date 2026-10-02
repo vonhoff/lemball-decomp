@@ -17,37 +17,36 @@ Only code independently developed for this project outside the reconstructed gam
 
 ## Matching and progress
 
-A single function can be built and compared with `python tools/match.py 0xADDRESS`.
-A progress report is generated with `python tools/report.py`. It uses one reccmp
-comparison engine and the upstream PDB module lookup directly, without a temporary
-CSV or subprocess. It writes the full comparison results to
-`build-msvc400/reccmp.json` and progress to `build-msvc400/report.json` (objdiff v2).
+Build and compare a single function with `python tools/match.py 0xADDRESS`.
 
-A function is counted as exact if it isn't a stub and its raw reccmp
-`accuracy == 1.0` (serialized as `matching`). Addresses and symbols are normalized by reccmp's
+Generate progress with `python tools/report.py`. The script writes full comparison
+results to `build-msvc400/reccmp.json` and an objdiff v2 progress report to
+`build-msvc400/report.json`. It uses one reccmp comparison engine and the upstream
+PDB module lookup directly, without a temporary CSV or subprocess.
+
+Exact Match counts code in non-stub functions with a raw reccmp score of
+`accuracy == 1.0` (serialized as `matching`). Reccmp's
 [comparator](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
-when assembly is compared. Raw scores are retained for functions with equivalent
-register substitutions when fuzzy progress is calculated. Exact here means identical
-normalized assembly, not a byte-identical executable.
+normalizes addresses and symbols before comparing assembly. Exact means identical
+normalized assembly; it does not imply a byte-identical executable.
 
-All three badges use the same function inventory and code sizes:
+Fuzzy Progress is the average raw comparison score, weighted by function size.
+Functions with equivalent register substitutions keep their raw score below 100%.
 
-- **Exact Match:** percentage of code in functions with a raw 100% score.
-- **Fuzzy Progress:** average raw comparison score, weighted by function size.
-  Effective matches retain their raw score; they are not promoted to 100%.
-- **Effective Match:** percentage of code in exact or reccmp-effective functions.
-  This includes Exact Match and recognizes reccmp's register substitutions; it is
-  an informational measure, not canonical exact progress or proof of game behavior.
+Effective Match counts code in exact or reccmp-effective functions, so it includes
+Exact Match. Reccmp uses its effective flag for equivalent register substitutions.
+The badge is informational and does not prove gameplay correctness.
 
-After a successful build on `main`, CI runs `tools/badges.py` and publishes three
-small JSON files to the `badges` branch. [Shields.io](https://shields.io/badges/endpoint-badge)
-renders them dynamically. The effective flag comes from `reccmp.json`; no effective
-fields or adjusted scores are added to the canonical `report.json` used by decomp.dev.
+The effective badge reads its flag from `reccmp.json`. It remains separate from
+the canonical `report.json` used by decomp.dev: no effective fields or adjusted
+scores enter that report.
 
-Each upstream function with an original address in the PE sections and a nonzero
-size is included in the report. Entries with invalid original or rebuilt section
-addresses are skipped. Comparisons are looked up by original address, and the results are stored
-using the
+The report and all three badges share the same function inventory and code sizes.
+The inventory includes upstream functions with an original address in the PE
+sections and a nonzero size. Invalid original or rebuilt section addresses are
+skipped; comparisons are looked up by original address.
+
+Report fields follow the
 [objdiff schema](https://github.com/encounter/objdiff/blob/eed74b99c4e94dd154882259931201badc6fdbd1/objdiff-core/protos/report.proto).
 
 | reccmp input | objdiff field |
@@ -58,10 +57,12 @@ using the
 | Raw comparison `accuracy` * 100; zero for stubs or missing comparisons | `fuzzy_match_percent` |
 | PDB module path with the CMake prefix and `.obj` removed | Unit `name`, or `Compiler-generated` if empty; `metadata.source_path` when the source file exists |
 
-Only functions with a 100% score are counted toward exact progress. Fuzzy progress
-is calculated as the average score weighted by function size. Unit and project
-totals are calculated by summing the functions included in the report. A
-percentage with a zero denominator is reported as 100%.
+Unit and project totals sum the functions included in the report. Percentages
+with a zero denominator are reported as 100%.
+
+After a successful build on `main`, CI runs `tools/badges.py` and publishes three
+small JSON files to the `badges` branch.
+[Shields.io](https://shields.io/badges/endpoint-badge) renders the badges dynamically.
 
 Use `python tools/next.py --kind near` to rank unfinished functions, or `--kind gain`
 to rank by size times raw score. See [tools/USAGE.md](tools/USAGE.md) for the commands.
