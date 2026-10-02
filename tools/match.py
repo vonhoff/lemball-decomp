@@ -10,45 +10,53 @@ from build import run_build
 from lib import load_engine
 
 
-def main() -> int:
-    sys.stdout.reconfigure(errors="backslashreplace")
-    sys.stderr.reconfigure(errors="backslashreplace")
+def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("addrs", nargs="+", type=lambda value: int(value, 16), help="Hex addresses (e.g. 0x0045ca30)")
+    parser.add_argument(
+        "addrs",
+        nargs="+",
+        type=lambda value: int(value, 16),
+        help="Hex addresses (e.g. 0x0045ca30)",
+    )
     parser.add_argument("--no-diff", action="store_true", help="Hide instruction diff")
     parser.add_argument("--no-build", action="store_true", help="Skip incremental build")
-    parser.add_argument("--clean-first", action="store_true")
-    args = parser.parse_args()
+    return parser.parse_args()
 
+
+def print_comparison(address, comparison, show_diff=True):
+    """Print raw accuracy and status; delegate instruction diffs to reccmp."""
+    if comparison is None:
+        print(f"0x{address:08x}: NOT_FOUND")
+        return
+    percent = 0.0 if comparison.is_stub else comparison.accuracy * 100.0
+    if comparison.is_stub:
+        status = "STUB"
+    elif comparison.accuracy == 1:
+        status = "ASM_EXACT"
+    elif comparison.is_effective_match:
+        status = "EFFECTIVE"
+    else:
+        status = "PARTIAL"
+    print(f"0x{address:08x} {comparison.name}: {percent:.2f}% {status}")
+    if show_diff:
+        print_match_verbose(comparison)
+
+
+def main() -> int:
+    args = parse_args()
     if not args.no_build:
-        exit_code = run_build(clean_first=args.clean_first)
-        if exit_code != 0:
-            print(f"BUILD_FAILED exit={exit_code} (see build-msvc400/last_build.log)")
-            return exit_code
+        code = run_build()
+        if code:
+            print(f"BUILD_FAILED exit={code} (see build-msvc400/last_build.log)")
+            return code
 
     _, engine = load_engine()
-
-    for addr in args.addrs:
-        match = engine.compare_address(addr)
-        if match is None:
-            print(f"0x{addr:08x}: NOT_FOUND")
-            continue
-
-        pct = 0.0 if match.is_stub else match.accuracy * 100.0
-        if match.is_stub:
-            status = "STUB"
-        elif match.accuracy == 1:
-            status = "ASM_EXACT"
-        elif match.is_effective_match:
-            status = "EFFECTIVE"
-        else:
-            status = "PARTIAL"
-        print(f"0x{addr:08x} {match.name}: {pct:.2f}% {status}")
-        if not args.no_diff:
-            print_match_verbose(match)
-
+    for address in args.addrs:
+        print_comparison(address, engine.compare_address(address), show_diff=not args.no_diff)
     return 0
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(errors="backslashreplace")
+    sys.stderr.reconfigure(errors="backslashreplace")
     raise SystemExit(main())

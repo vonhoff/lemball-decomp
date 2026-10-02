@@ -2,7 +2,6 @@
 """Audit C++ names and signatures against independent, reviewed CSV evidence."""
 
 import csv
-import json
 import re
 import sys
 from collections import Counter
@@ -148,7 +147,7 @@ def scan(path, symbols, mappings):
                     comparison = {"status": "unresolved", "reason": str(error)}
                 comparisons.append(dict(comparison, address_68k=f"0x{mac:08x}", symbol=symbol))
             # Folded code can have several legitimate source identities. Preserve all
-            # candidates in JSON and accept a compatible one, never an arbitrary row.
+            # catalog candidates and accept a compatible one, never an arbitrary row.
             best = min(comparisons, key=lambda r: (order[r["status"]], r.get("signature_status") != "match"))
             row.update(best)
             row["catalog_candidates"] = comparisons
@@ -156,7 +155,7 @@ def scan(path, symbols, mappings):
     return rows
 
 
-def check_names(paths: list[Path | str] | None = None, strict=False, as_json=False,
+def check_names(paths: list[Path | str] | None = None, strict=False,
                 verbose=False, catalog_path=CATALOG):
     try:
         symbols, mappings = read_catalog(catalog_path)
@@ -172,27 +171,23 @@ def check_names(paths: list[Path | str] | None = None, strict=False, as_json=Fal
     failures = [r for r in rows if r["status"] in ("mismatch", "unresolved")
                 or (strict and r["status"] == "case")
                 or (strict and r.get("signature_status") in ("review", "unresolved"))]
-    if as_json:
-        print(json.dumps({"files": len(files), "entries": len(rows), "counts": counts,
-                              "signatures": signatures, "comparisons": rows}, indent=2))
-    else:
-        for row in rows:
-            if row not in failures and row["status"] != "windows" and not (
-                    verbose and row.get("signature_status") in ("review", "unresolved")):
-                continue
-            detail = row.get("reason") or (
-                f'{row["original_signature"]} -> {row["actual_signature"]}'
-                f' ({", ".join(row["differences"]) or row.get("signature_status", "")})'
-            )
-            address = row["windows_address"]
-            print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{address}]')
-            if row.get("windows_evidence"):
-                print(f'  Windows evidence: {row["windows_evidence"]}')
-        print(f"names: {len(files)} files, {len(rows)} entries from CSV: {counts}")
-        print(f"names: parameter/const comparisons: {signatures}")
-        if signatures.get("review") or signatures.get("unresolved"):
-            print("names: signature review requires Windows evidence; "
-                  "--verbose lists items, --names-strict fails them.")
+    for row in rows:
+        if row not in failures and row["status"] != "windows" and not (
+                verbose and row.get("signature_status") in ("review", "unresolved")):
+            continue
+        detail = row.get("reason") or (
+            f'{row["original_signature"]} -> {row["actual_signature"]}'
+            f' ({", ".join(row["differences"]) or row.get("signature_status", "")})'
+        )
+        address = row["windows_address"]
+        print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{address}]')
+        if row.get("windows_evidence"):
+            print(f'  Windows evidence: {row["windows_evidence"]}')
+    print(f"names: {len(files)} files, {len(rows)} entries from CSV: {counts}")
+    print(f"names: parameter/const comparisons: {signatures}")
+    if signatures.get("review") or signatures.get("unresolved"):
+        print("names: signature review requires Windows evidence; "
+              "--verbose lists items, --names-strict fails them.")
     if counts.get("unresolved") or (not rows and not paths):
         return 2
     return int(bool(failures))

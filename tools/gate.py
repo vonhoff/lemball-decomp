@@ -57,7 +57,7 @@ def check_source(paths=None):
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--path", action="append", dest="paths")
-    for option in ("names", "names-strict", "names-json", "vtable", "tools"):
+    for option in ("names", "names-strict", "vtable"):
         parser.add_argument(f"--{option}", action="store_true")
     parser.add_argument("--verbose", "-v", action="store_true")
     parser.add_argument("--all", action="store_true", help="also compare vtables")
@@ -66,18 +66,13 @@ def parse_args():
 
 def main() -> int:
     args = parse_args()
-    names_only = not args.all and (args.names or args.names_strict or args.names_json)
-    if not args.all and not names_only:
-        if args.vtable:
-            return check_vtable(args.verbose)
-        if args.tools:
-            return check_tool_tests()
+    names_only = not args.all and (args.names or args.names_strict)
+    if args.vtable and not args.all and not names_only:
+        return check_vtable(args.verbose)
     if not names_only:
         if code := check_source(args.paths):
             return code
-    code = check_names(
-        args.paths, strict=args.names_strict, verbose=args.verbose, as_json=args.names_json
-    )
+    code = check_names(args.paths, strict=args.names_strict, verbose=args.verbose)
     if code or names_only:
         return code
     if not args.paths and (code := check_tool_tests()):

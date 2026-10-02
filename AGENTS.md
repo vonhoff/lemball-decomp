@@ -22,9 +22,15 @@ Run with `python`:
 | `tools/report.py` | Canonical progress report |
 | `tools/build.py` | Build/link wrapper; `--clean-first` for PDB desync |
 
+Commands and module responsibilities: `tools/USAGE.md`. Keep command parsing,
+comparison/ranking, and output separate; use upstream APIs before adding adapters.
+Report generation uses one engine and upstream PDB module lookup, writes
+`build-msvc400/reccmp.json` and `report.json`, and needs no roadmap CSV.
+README badges: `tools/badges.py` reads those reports. Effective includes exact plus
+upstream equivalence; keep that separate from canonical exact and fuzzy measures.
+
 Use project scripts. Deep comparison: `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
 Upstream reccmp authoritative. Raw scores; exact = 100%; equivalence stays fuzzy. Measured report fields only.
-PE/COFF scaffold: `openblack/bw1-decomp` / `encounter/dtk-template`. Native scaffold: `tools2/README.md`. Latest template files verbatim; PE port separate. Native objdiff, executable hash check. Keep native reports separate from reccmp's canonical report; promote linked units only after verified source replacement.
 
 ## Workflow
 

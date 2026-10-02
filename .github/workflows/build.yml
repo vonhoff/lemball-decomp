@@ -15,6 +15,8 @@ jobs:
     if: github.event_name != 'pull_request'
     name: Build + verify (MSVC 4.00)
     runs-on: windows-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Check out repository
@@ -97,16 +99,21 @@ jobs:
         run: |
           python tools/report.py
 
-      - name: Gate checks and comparisons
+      - name: Gate checks
         shell: pwsh
         working-directory: S:\
-        run: |
-          python tools/gate.py
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python tools/gate.py --names
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python tools/gate.py --vtable
-          exit 0
+        run: python tools/gate.py
+
+      - name: Vtable comparison (informational)
+        continue-on-error: true
+        shell: pwsh
+        working-directory: S:\
+        run: python tools/gate.py --vtable
+
+      - name: Generate progress badges
+        shell: pwsh
+        working-directory: S:\
+        run: python tools/badges.py
 
       - name: Upload progress report
         uses: actions/upload-artifact@v7
@@ -116,3 +123,34 @@ jobs:
           path: |
             build-msvc400/report.json
             build-msvc400/reccmp.json
+
+      - name: Publish progress badges
+        if: github.ref == 'refs/heads/main'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('node:fs');
+            const repo = context.repo;
+            const ref = 'heads/badges';
+            let parent;
+            try {
+              parent = (await github.rest.git.getRef({ ...repo, ref })).data.object.sha;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            const tree = await github.rest.git.createTree({
+              ...repo,
+              tree: ['exact', 'fuzzy', 'effective'].map(name => ({
+                path: `${name}.json`, mode: '100644', type: 'blob',
+                content: fs.readFileSync(`build-msvc400/badges/${name}.json`, 'utf8')
+              }))
+            });
+            const commit = await github.rest.git.createCommit({
+              ...repo, tree: tree.data.sha, parents: parent ? [parent] : [],
+              message: `Progress badges for ${context.sha}`
+            });
+            if (parent) {
+              await github.rest.git.updateRef({ ...repo, ref, sha: commit.data.sha });
+            } else {
+              await github.rest.git.createRef({ ...repo, ref: `refs/${ref}`, sha: commit.data.sha });
+            }

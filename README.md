@@ -1,11 +1,15 @@
 # Lemmings Paintball Decompilation
 
 [![Build Status](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml/badge.svg)](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml)
-[![Code Progress](https://decomp.dev/vonhoff/lemball-decomp.svg?mode=shield&measure=code&label=Code)](https://decomp.dev/vonhoff/lemball-decomp)
+[![Exact Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](#matching-and-progress)
+[![Fuzzy Progress](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](#matching-and-progress)
+[![Effective Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Feffective.json)](#matching-and-progress)
 
 [<img src="https://decomp.dev/vonhoff/lemball-decomp.svg?w=512&h=256" width="512" height="256" alt="Decomp Progress Chart">](https://decomp.dev/vonhoff/lemball-decomp)
 
 This project is a matching decompilation of *Lemmings Paintball* (1996, Windows 95).
+
+The reconstructed game is in a playable state. Reconstruction and matching work are ongoing.
 
 The game's behavior is being reconstructed in readable C++ to match the original executable as closely as possible. The reconstructed code is compiled with Microsoft Visual C++ 4.00, and each function is compared with [reccmp](https://github.com/isledecomp/reccmp).
 
@@ -14,33 +18,53 @@ Only code independently developed for this project outside the reconstructed gam
 ## Matching and progress
 
 A single function can be built and compared with `python tools/match.py 0xADDRESS`.
-A progress report is generated with `python tools/report.py`. The reccmp results
-are written to `build-msvc400/reccmp.json` and converted to
-`build-msvc400/report.json` (objdiff v2).
+A progress report is generated with `python tools/report.py`. It uses one reccmp
+comparison engine and the upstream PDB module lookup directly, without a temporary
+CSV or subprocess. It writes the full comparison results to
+`build-msvc400/reccmp.json` and progress to `build-msvc400/report.json` (objdiff v2).
 
-A function is counted as matched if it isn't a stub and is given
-`matching == 1.0` by reccmp. Addresses and symbols are normalized by reccmp's
+A function is counted as exact if it isn't a stub and its raw reccmp
+`accuracy == 1.0` (serialized as `matching`). Addresses and symbols are normalized by reccmp's
 [comparator](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
 when assembly is compared. Raw scores are retained for functions with equivalent
-register substitutions when fuzzy progress is calculated.
+register substitutions when fuzzy progress is calculated. Exact here means identical
+normalized assembly, not a byte-identical executable.
 
-Each roadmap function with an original address and a positive size is included
-in the report. Comparisons are looked up by address, and the results are stored
+All three badges use the same function inventory and code sizes:
+
+- **Exact Match:** percentage of code in functions with a raw 100% score.
+- **Fuzzy Progress:** average raw comparison score, weighted by function size.
+  Effective matches retain their raw score; they are not promoted to 100%.
+- **Effective Match:** percentage of code in exact or reccmp-effective functions.
+  This includes Exact Match and recognizes reccmp's register substitutions; it is
+  an informational measure, not canonical exact progress or proof of game behavior.
+
+After a successful build on `main`, CI runs `tools/badges.py` and publishes three
+small JSON files to the `badges` branch. [Shields.io](https://shields.io/badges/endpoint-badge)
+renders them dynamically. The effective flag comes from `reccmp.json`; no effective
+fields or adjusted scores are added to the canonical `report.json` used by decomp.dev.
+
+Each upstream function with an original address in the PE sections and a nonzero
+size is included in the report. Entries with invalid original or rebuilt section
+addresses are skipped. Comparisons are looked up by original address, and the results are stored
 using the
 [objdiff schema](https://github.com/encounter/objdiff/blob/eed74b99c4e94dd154882259931201badc6fdbd1/objdiff-core/protos/report.proto).
 
 | reccmp input | objdiff field |
 | --- | --- |
 | Original address | Function `name` as `0xADDRESS`; `metadata.virtual_address` as a decimal string |
-| Comparison name, falling back to the roadmap name | `metadata.demangled_name` |
-| Roadmap size: rebuilt size, falling back to original size | `size` as a decimal string |
-| Raw `matching` * 100; zero for stubs or missing comparisons | `fuzzy_match_percent` |
-| Module path with the CMake prefix and `.obj` removed | Unit `name`, or `Compiler-generated` if empty; `metadata.source_path` when the source file exists |
+| Comparison name, falling back to the upstream entity name | `metadata.demangled_name` |
+| Upstream `any_size()`: rebuilt size, falling back to original size | `size` as a decimal string |
+| Raw comparison `accuracy` * 100; zero for stubs or missing comparisons | `fuzzy_match_percent` |
+| PDB module path with the CMake prefix and `.obj` removed | Unit `name`, or `Compiler-generated` if empty; `metadata.source_path` when the source file exists |
 
 Only functions with a 100% score are counted toward exact progress. Fuzzy progress
 is calculated as the average score weighted by function size. Unit and project
 totals are calculated by summing the functions included in the report. A
 percentage with a zero denominator is reported as 100%.
+
+Use `python tools/next.py --kind near` to rank unfinished functions, or `--kind gain`
+to rank by size times raw score. See [tools/USAGE.md](tools/USAGE.md) for the commands.
 
 ## Tool checks
 

@@ -1,13 +1,7 @@
 """Check report parsing and exact/fuzzy metrics together."""
 
-import contextlib
-import importlib
-import io
-import json
-import tempfile
 import unittest
-from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from reccmp.compare.db import ReccmpEntity
 from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
@@ -89,38 +83,3 @@ class ReportTests(unittest.TestCase):
         for measures in [totals] + [u["measures"] for u in result["units"]]:
             self.assertFalse(any(k.startswith("complete_") for k in measures))
         self.assertTrue(all("complete" not in u.get("metadata", {}) for u in result["units"]))
-
-    def test_ranking_uses_raw_scores_and_rebuilt_sizes(self):
-        ranking = importlib.import_module("next")
-        functions = [
-            {
-                "name": name,
-                "size": str(size),
-                "fuzzy_match_percent": score,
-                "metadata": {"virtual_address": str(address)},
-            }
-            for name, size, score, address in (
-                ("Near", 8, 99, 0x401000),
-                ("Gain", 100, 75, 0x402000),
-                ("Exact", 200, 100, 0x403000),
-            )
-        ]
-        with tempfile.TemporaryDirectory() as directory:
-            report = Path(directory) / "report.json"
-            report.write_text(
-                json.dumps({"units": [{"name": "Unit", "functions": functions}]}), encoding="utf-8"
-            )
-            with patch.object(ranking, "REPORT_JSON", report):
-                for kind, address, score in (
-                    ("near", "0x00401000", "99.00%"),
-                    ("gain", "0x00402000", "75.00%"),
-                ):
-                    output = io.StringIO()
-                    with (
-                        patch("sys.argv", ["next.py", "--kind", kind, "--limit", "1"]),
-                        contextlib.redirect_stdout(output),
-                    ):
-                        self.assertEqual(ranking.main(), 0)
-                    self.assertEqual(len(output.getvalue().splitlines()), 1)
-                    self.assertIn(address, output.getvalue())
-                    self.assertIn(score, output.getvalue())

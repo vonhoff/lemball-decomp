@@ -45,10 +45,8 @@ class GateTests(unittest.TestCase):
             (["--path", "Fixture.cpp"], None, source),
             (["--names"], None, ["check_names"]),
             (["--names-strict"], None, ["check_names"]),
-            (["--names-json"], None, ["check_names"]),
             (["--vtable", "-v"], None, ["check_vtable"]),
-            (["--tools"], None, ["check_tool_tests"]),
-            (["--names", "--vtable", "--tools"], None, ["check_names"]),
+            (["--names", "--vtable"], None, ["check_names"]),
             (["--all", "--names-strict"], None, source + ["check_tool_tests", "check_vtable"]),
             (["--all", "--path", "Fixture.cpp"], None, source + ["check_vtable"]),
             *[([], failure, source[: index + 1]) for index, failure in enumerate(source)],
@@ -82,6 +80,5 @@ class GateTests(unittest.TestCase):
                         {
                             "strict": "--names-strict" in flags,
                             "verbose": "-v" in flags,
-                            "as_json": "--names-json" in flags,
                         },
                     )

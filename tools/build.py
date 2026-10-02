@@ -120,7 +120,7 @@ def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) ->
         retried = True
 
 
-def run_build(clean_first=False, extra_args=None, disable_enforcements=False) -> int:
+def run_build(clean_first=False, disable_enforcements=False) -> int:
     cmake = resolve_cmake()
     BUILD.mkdir(parents=True, exist_ok=True)
 
@@ -148,7 +148,6 @@ def run_build(clean_first=False, extra_args=None, disable_enforcements=False) ->
 
     cmake_args = [cmake, "--build", "--preset", "msvc400"]
     cmake_args.extend(['--clean-first'] if clean_first else [])
-    cmake_args.extend(extra_args or [])
 
     returncode, output = build_with_link_check(cmake_args, BUILD, ROOT)
     LOG_PATH.write_text(output, encoding="utf-8")
@@ -168,10 +167,9 @@ def main() -> int:
     parser.add_argument("--clean-first", action="store_true", help="Perform full clean build")
     parser.add_argument('--disable-enforcements', action='store_true',
                         help='Disable startup CD and installation checks')
-    parser.add_argument("extra_args", nargs="*", help="Extra arguments passed to cmake --build")
     args = parser.parse_args()
 
-    return run_build(args.clean_first, args.extra_args, args.disable_enforcements)
+    return run_build(clean_first=args.clean_first, disable_enforcements=args.disable_enforcements)
 
 
 if __name__ == "__main__":
