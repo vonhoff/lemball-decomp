@@ -21,16 +21,9 @@ The badges measure code bytes in the reported original functions:
 | Fuzzy Match | Raw assembly similarity, weighted by original function size. Stubs and functions without a matched comparison score zero. |
 | Effective Match | Exact matches plus functions reccmp accepts as equivalent, including some differences in register use. Stubs score zero. |
 
-Fuzzy Match is `sum(score * original size) / sum(original size)`. Larger functions
-carry more weight. Equivalent functions keep their raw fuzzy scores, even below
-100%. They do not increase the exact function count or exact matched bytes.
+Fuzzy Match is `sum(score * original size) / sum(original size)`.
 
 ### Reccmp to objdiff reports
-
-[tools/report.py](tools/report.py) runs reccmp and writes two files:
-`build-msvc400/reccmp.json`, with comparison details and diffs, and
-`build-msvc400/report.json`, with progress in objdiff's version 2 report format.
-Reccmp supplies the assembly scores.
 
 | Objdiff field | Mapping |
 | --- | --- |
@@ -45,15 +38,6 @@ Reccmp supplies the assembly scores.
 | `measures.matched_code` / `matched_functions` | Bytes and count of functions whose exported score is exactly 100%. |
 | `measures.fuzzy_match_percent` | Average exported score, weighted by original bytes. |
 | `measures.matched_code_percent` / `matched_functions_percent` | Exact matched bytes or functions divided by the corresponding total, times 100. |
-
-Measures appear per unit and for the whole report. Functions without a matched
-comparison remain in the totals. Rebuilt-only functions and data symbols are
-excluded. Empty totals produce zero percentages.
-
-CI uploads both files as the `LEMBALL_report` artifact.
-[tools/badges.py](tools/badges.py) uses them to generate the README badges.
-Effective Match is separate from the canonical objdiff report. `report.json`
-contains no effective-match fields.
 
 ## References
 
@@ -70,9 +54,9 @@ contains no effective-match fields.
 
 ## Legal
 
-This unofficial project reverse-engineers *Lemmings Paintball* for preservation.
-The original game and assets remain the property of their rights holders and are
-not distributed with this repository.
+This is an unofficial reverse-engineering project for the preservation of *Lemmings Paintball*.
+The original game and its assets remain the property of their respective rights holders and 
+are not distributed with this repository.
 
 The reconstructed game code has no license. Code independently developed for this
 project is licensed under the [GNU General Public License v3.0](LICENSE).
