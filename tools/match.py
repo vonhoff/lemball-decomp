@@ -18,12 +18,11 @@ def parse_args():
         type=lambda value: int(value, 16),
         help="Hex addresses (e.g. 0x0045ca30)",
     )
-    parser.add_argument("--no-diff", action="store_true", help="Hide instruction diff")
     parser.add_argument("--no-build", action="store_true", help="Skip incremental build")
     return parser.parse_args()
 
 
-def print_comparison(address, comparison, show_diff=True):
+def print_comparison(address, comparison):
     """Print raw accuracy and status; delegate instruction diffs to reccmp."""
     if comparison is None:
         print(f"0x{address:08x}: NOT_FOUND")
@@ -38,8 +37,7 @@ def print_comparison(address, comparison, show_diff=True):
     else:
         status = "PARTIAL"
     print(f"0x{address:08x} {comparison.name}: {percent:.2f}% {status}")
-    if show_diff:
-        print_match_verbose(comparison)
+    print_match_verbose(comparison)
 
 
 def main() -> int:
@@ -52,7 +50,7 @@ def main() -> int:
 
     _, engine = load_engine()
     for address in args.addrs:
-        print_comparison(address, engine.compare_address(address), show_diff=not args.no_diff)
+        print_comparison(address, engine.compare_address(address))
     return 0
 
 

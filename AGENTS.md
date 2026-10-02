@@ -23,7 +23,7 @@ Run with `python`; options and responsibilities: `tools/USAGE.md`.
 | --- | --- |
 | `tools/build.py` | Build/link; `--clean-first` for stale PDB/build artifacts |
 | `tools/match.py 0xADDR` | Build/compare/diff; `--no-build` for current artifacts |
-| `tools/next.py --kind near` | Rank unfinished functions; `gain` also |
+| `tools/next.py` | Rank unfinished functions by raw score, then size/address |
 | `tools/gate.py` | Source checks and tool tests |
 | `tools/report.py` | Canonical comparison/progress reports |
 | `tools/badges.py` | README badges, separate from canonical progress |
@@ -50,4 +50,4 @@ Unresolved reconstruction findings: `docs/reconstruction-audit-backlog.md`; loca
 - Calling conventions: arguments, forwarding, cleanup; zero-argument `RET` alone insufficient. Qualified base calls require direct-dispatch evidence.
 - Constants: evidenced meaning; verify resource IDs against Manifest/RC. Preserve original assertion filenames when renaming files.
 - Reccmp annotations: original Windows addresses; STUB promotion only when substantially implemented.
-- `gate.py --names`: catalog comparison by Windows address; parameter names ignored, types/constness checked. `--verbose`: review details; `--names-strict`: fail case differences and pending signature reviews. Normal pass leaves reviews open.
+- `gate.py --names`: catalog review details by Windows address; parameter names ignored, types/constness checked. ABI differences need Windows evidence; normal pass leaves reviews open.

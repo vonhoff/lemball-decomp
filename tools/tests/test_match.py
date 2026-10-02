@@ -31,7 +31,7 @@ class MatchTests(unittest.TestCase):
         )
         for flags, build_code in (
             ([], 0),
-            (["--no-build", "--no-diff"], 0),
+            (["--no-build"], 0),
             ([], 7),
         ):
             engine = Mock()
@@ -67,7 +67,7 @@ class MatchTests(unittest.TestCase):
                     self.assertEqual(output.getvalue(), expected)
                     self.assertEqual(
                         diff.call_args_list,
-                        [] if "--no-diff" in flags else [call(item) for item in comparisons[:-1]],
+                        [call(item) for item in comparisons[:-1]],
                     )
 
     def test_invalid_address_prevents_build(self):

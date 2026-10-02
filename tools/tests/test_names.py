@@ -165,12 +165,15 @@ class CatalogNamingTests(unittest.TestCase):
         row, = self.scan("// FUNCTION: LEMBALL 0x0043a500\nvoid CWnd::OnDriverChange(int value) {}")
         self.assertEqual(row["status"], "mismatch")
 
-    def test_strict_signature_review_exit_status(self):
+    def test_signature_review_details_do_not_fail_gate(self):
         self.path.write_text("// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(short n) {}",
                              encoding="utf-8")
-        with contextlib.redirect_stdout(io.StringIO()):
-            self.assertEqual(check_names([self.path], strict=True), 1)
-            self.assertEqual(check_names([self.path]), 0)
+        for verbose in (False, True):
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(check_names([self.path], verbose=verbose), 0)
+            self.assertIn("signature review requires Windows evidence", output.getvalue())
+            self.assertEqual("CPadToButton::CPadToButton(short)" in output.getvalue(), verbose)
 
 
 if __name__ == "__main__":

@@ -21,12 +21,12 @@ class RankingTests(unittest.TestCase):
                 "metadata": {"virtual_address": str(address)},
             }
             for name, size, score, address in (
-                ("NearLarge", 16, 99, 0x401020),
-                ("NearLow", 8, 99, 0x401010),
-                ("NearHigh", 8, 99, 0x401030),
-                ("GainSmall", 100, 75, 0x402020),
-                ("GainLarge", 150, 50, 0x402010),
-                ("GainSmallLow", 100, 75, 0x402000),
+                ("Large", 16, 99, 0x401020),
+                ("LowAddress", 8, 99, 0x401010),
+                ("HighAddress", 8, 99, 0x401030),
+                ("Partial", 100, 75, 0x402020),
+                ("LowerScore", 150, 50, 0x402010),
+                ("PartialLowAddress", 100, 75, 0x402000),
                 ("Exact", 200, 100, 0x403000),
             )
         ]
@@ -35,32 +35,24 @@ class RankingTests(unittest.TestCase):
             path = Path(directory) / "report.json"
             serialized = json.dumps(report)
             path.write_text(serialized, encoding="utf-8")
-            for kind, names in (
-                (
-                    "near",
-                    ["NearLow", "NearHigh", "NearLarge", "GainSmallLow", "GainSmall", "GainLarge"],
-                ),
-                (
-                    "gain",
-                    ["GainLarge", "GainSmallLow", "GainSmall", "NearLarge", "NearLow", "NearHigh"],
-                ),
-            ):
-                for limit in (1, 0, -1):
-                    output = io.StringIO()
-                    with (
-                        self.subTest(kind=kind, limit=limit),
-                        patch.object(ranking, "REPORT_JSON", path),
-                        patch("sys.argv", ["next.py", "--kind", kind, "--limit", str(limit)]),
-                        contextlib.redirect_stdout(output),
-                    ):
-                        self.assertEqual(ranking.main(), 0)
-                    self.assertEqual(
-                        [line.split()[-1] for line in output.getvalue().splitlines()],
-                        names[:limit] if limit > 0 else names,
-                    )
-                    self.assertIn("99.00%" if kind == "near" else "50.00%", output.getvalue())
-                    self.assertEqual(path.read_text(encoding="utf-8"), serialized)
-        self.assertEqual(ranking.rank_functions({"units": []}, "near"), [])
+            names = ["LowAddress", "HighAddress", "Large", "PartialLowAddress", "Partial", "LowerScore"]
+            for limit in (None, 1, 0, -1):
+                output = io.StringIO()
+                flags = [] if limit is None else ["--limit", str(limit)]
+                with (
+                    self.subTest(limit=limit),
+                    patch.object(ranking, "REPORT_JSON", path),
+                    patch("sys.argv", ["next.py", *flags]),
+                    contextlib.redirect_stdout(output),
+                ):
+                    self.assertEqual(ranking.main(), 0)
+                self.assertEqual(
+                    [line.split()[-1] for line in output.getvalue().splitlines()],
+                    names[:limit] if limit is not None and limit > 0 else names,
+                )
+                self.assertIn("99.00%", output.getvalue())
+                self.assertEqual(path.read_text(encoding="utf-8"), serialized)
+        self.assertEqual(ranking.rank_functions({"units": []}), [])
 
     def test_unreadable_report(self):
         with tempfile.TemporaryDirectory() as directory:

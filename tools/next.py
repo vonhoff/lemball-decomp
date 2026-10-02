@@ -10,21 +10,18 @@ from lib import REPORT_JSON
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--kind", choices=("near", "gain"), default="near")
     parser.add_argument("--limit", type=int, default=40, help="rows; 0 = unlimited")
     return parser.parse_args()
 
 
-def ranking_key(function, kind):
+def ranking_key(function):
     score = function["fuzzy_match_percent"]
     size = int(function["size"])
     address = int(function["metadata"]["virtual_address"])
-    if kind == "near":
-        return -score, size, address
-    return -size * score, -size, address
+    return -score, size, address
 
 
-def rank_functions(report, kind):
+def rank_functions(report):
     """Rank unfinished functions without changing the canonical report."""
     functions = [
         {**function, "unit": unit["name"]}
@@ -32,7 +29,7 @@ def rank_functions(report, kind):
         for function in unit["functions"]
         if function["fuzzy_match_percent"] < 100
     ]
-    return sorted(functions, key=lambda function: ranking_key(function, kind))
+    return sorted(functions, key=ranking_key)
 
 
 def print_functions(functions):
@@ -51,7 +48,7 @@ def main() -> int:
         report = json.loads(REPORT_JSON.read_text(encoding="utf-8"))
     except (OSError, ValueError) as error:
         sys.exit(f"cannot read report: {error}")
-    functions = rank_functions(report, args.kind)
+    functions = rank_functions(report)
     if args.limit > 0:
         functions = functions[: args.limit]
     print_functions(functions)

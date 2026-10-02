@@ -48,7 +48,7 @@ def read_catalog(path=CATALOG):
 
 # Exact Windows ABI reviews, not spelling aliases. Keep the catalog spelling
 # everywhere else; changing the address, catalog symbol, or source signature
-# invalidates the review. --names-strict still rejects these review items.
+# invalidates the review.
 WINDOWS_NAME_REVIEWS = {
     (0x0043A500, "OnZoomBox__4CWndFUc", "CWnd::OnDriverChange()"):
         "LEMBALL.EXE: CWnd vtable+0x5c at 0x0049942c points through "
@@ -155,8 +155,7 @@ def scan(path, symbols, mappings):
     return rows
 
 
-def check_names(paths: list[Path | str] | None = None, strict=False,
-                verbose=False, catalog_path=CATALOG):
+def check_names(paths: list[Path | str] | None = None, verbose=False, catalog_path=CATALOG):
     try:
         symbols, mappings = read_catalog(catalog_path)
         files = collect_sources(paths)
@@ -168,12 +167,11 @@ def check_names(paths: list[Path | str] | None = None, strict=False,
         return 2
     counts = dict(Counter(row["status"] for row in rows))
     signatures = dict(Counter(row["signature_status"] for row in rows if "signature_status" in row))
-    failures = [r for r in rows if r["status"] in ("mismatch", "unresolved")
-                or (strict and r["status"] == "case")
-                or (strict and r.get("signature_status") in ("review", "unresolved"))]
+    failures = [r for r in rows if r["status"] in ("mismatch", "unresolved")]
     for row in rows:
         if row not in failures and row["status"] != "windows" and not (
-                verbose and row.get("signature_status") in ("review", "unresolved")):
+                verbose and (row["status"] == "case"
+                             or row.get("signature_status") in ("review", "unresolved"))):
             continue
         detail = row.get("reason") or (
             f'{row["original_signature"]} -> {row["actual_signature"]}'
@@ -187,7 +185,7 @@ def check_names(paths: list[Path | str] | None = None, strict=False,
     print(f"names: parameter/const comparisons: {signatures}")
     if signatures.get("review") or signatures.get("unresolved"):
         print("names: signature review requires Windows evidence; "
-              "--verbose lists items, --names-strict fails them.")
+              "gate.py --names lists items.")
     if counts.get("unresolved") or (not rows and not paths):
         return 2
     return int(bool(failures))

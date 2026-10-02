@@ -44,14 +44,12 @@ class GateTests(unittest.TestCase):
             ([], None, source + ["check_tool_tests"]),
             (["--path", "Fixture.cpp"], None, source),
             (["--names"], None, ["check_names"]),
-            (["--names-strict"], None, ["check_names"]),
-            (["--vtable", "-v"], None, ["check_vtable"]),
-            (["--names", "--vtable"], None, ["check_names"]),
-            (["--all", "--names-strict"], None, source + ["check_tool_tests", "check_vtable"]),
-            (["--all", "--path", "Fixture.cpp"], None, source + ["check_vtable"]),
+            (["--names", "--path", "Fixture.cpp"], None, ["check_names"]),
+            (["--vtable"], None, ["check_vtable"]),
             *[([], failure, source[: index + 1]) for index, failure in enumerate(source)],
             ([], "check_tool_tests", source + ["check_tool_tests"]),
-            (["--all"], "check_vtable", source + ["check_tool_tests", "check_vtable"]),
+            (["--names"], "check_names", ["check_names"]),
+            (["--vtable"], "check_vtable", ["check_vtable"]),
         )
         calls = []
         for flags, failure, expected in cases:
@@ -77,8 +75,20 @@ class GateTests(unittest.TestCase):
                 if "check_names" in calls:
                     self.assertEqual(
                         checks["check_names"].call_args.kwargs,
-                        {
-                            "strict": "--names-strict" in flags,
-                            "verbose": "-v" in flags,
-                        },
+                        {"verbose": True} if "--names" in flags else {},
                     )
+                    self.assertEqual(
+                        checks["check_names"].call_args.args,
+                        (["Fixture.cpp"] if "--path" in flags else None,),
+                    )
+
+    def test_conflicting_checks_rejected(self):
+        for flags in (["--names", "--vtable"], ["--vtable", "--path", "Fixture.cpp"]):
+            with (
+                self.subTest(flags=flags),
+                patch.object(sys, "argv", ["gate.py", *flags]),
+                contextlib.redirect_stderr(io.StringIO()),
+                self.assertRaises(SystemExit) as error,
+            ):
+                gate.main()
+            self.assertEqual(error.exception.code, 2)

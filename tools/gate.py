@@ -8,7 +8,6 @@ from pathlib import Path
 
 from colorama import Style
 from reccmp.dir import source_code_search
-from reccmp.tools.asmcmp import print_match_verbose
 from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 from reccmp.types import EntityType
 
@@ -19,12 +18,9 @@ from lib.names import check_names
 from lib.smell import check_smell
 
 
-def check_vtable(verbose=False):
+def check_vtable():
     _, engine = load_engine()
     tables = list(engine.compare_all(lambda entity: entity.entity_type == EntityType.VTABLE))
-    for table in tables:
-        if verbose and table.accuracy < 1:
-            print_match_verbose(table)
     exact = sum(table.accuracy == 1 for table in tables)
     print(f"vtables: {exact}/{len(tables)} exact")
     return int(not tables or exact != len(tables))
@@ -57,27 +53,26 @@ def check_source(paths=None):
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--path", action="append", dest="paths")
-    for option in ("names", "names-strict", "vtable"):
-        parser.add_argument(f"--{option}", action="store_true")
-    parser.add_argument("--verbose", "-v", action="store_true")
-    parser.add_argument("--all", action="store_true", help="also compare vtables")
-    return parser.parse_args()
+    checks = parser.add_mutually_exclusive_group()
+    checks.add_argument("--names", action="store_true", help="show catalog review details only")
+    checks.add_argument("--vtable", action="store_true", help="compare vtables only")
+    args = parser.parse_args()
+    if args.vtable and args.paths:
+        parser.error("--path applies to source checks, not --vtable")
+    return args
 
 
 def main() -> int:
     args = parse_args()
-    names_only = not args.all and (args.names or args.names_strict)
-    if args.vtable and not args.all and not names_only:
-        return check_vtable(args.verbose)
-    if not names_only:
-        if code := check_source(args.paths):
-            return code
-    code = check_names(args.paths, strict=args.names_strict, verbose=args.verbose)
-    if code or names_only:
+    if args.vtable:
+        return check_vtable()
+    if args.names:
+        return check_names(args.paths, verbose=True)
+    if code := check_source(args.paths):
         return code
-    if not args.paths and (code := check_tool_tests()):
+    if code := check_names(args.paths):
         return code
-    return check_vtable(args.verbose) if args.all else 0
+    return 0 if args.paths else check_tool_tests()
 
 
 if __name__ == "__main__":
