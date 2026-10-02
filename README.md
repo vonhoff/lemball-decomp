@@ -13,18 +13,47 @@ Microsoft Visual C++ 4.00 compiles the C++ code. [Reccmp](https://github.com/isl
 
 ## Matching and progress
 
-- **Exact Match** shows the percentage of code contained in functions that reach
-  a raw 100% [normalized assembly](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
-  score. Stub functions do not count as exact matches.
-- **Fuzzy Match** shows the average raw assembly similarity reported by reccmp,
-  weighted by function size in bytes. Larger functions contribute more to this
-  percentage. Stubs and functions without a comparison contribute zero. Functions
-  that reccmp accepts as equivalent retain their raw scores, even when those
-  scores are below 100%.
-- **Effective Match** shows the percentage of code contained in exact matches or
-  functions that reccmp accepts as equivalent, including some differences in
-  register use. This badge is reported separately; equivalent functions do not
-  increase the assembly-exact function count or exact matched code bytes.
+The badges measure code bytes in the reported original functions:
+
+| Badge | What counts |
+| --- | --- |
+| Exact Match | Functions with a raw 100% [normalized assembly](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py) score, excluding stubs. |
+| Fuzzy Match | Raw assembly similarity, weighted by original function size. Stubs and functions without a matched comparison score zero. |
+| Effective Match | Exact matches plus functions reccmp accepts as equivalent, including some differences in register use. Stubs score zero. |
+
+Fuzzy Match is `sum(score * original size) / sum(original size)`. Larger functions
+carry more weight. Equivalent functions keep their raw fuzzy scores, even below
+100%. They do not increase the exact function count or exact matched bytes.
+
+### Reccmp to objdiff reports
+
+[tools/report.py](tools/report.py) runs reccmp and writes two files:
+`build-msvc400/reccmp.json`, with comparison details and diffs, and
+`build-msvc400/report.json`, with progress in objdiff's version 2 report format.
+Reccmp supplies the assembly scores.
+
+| Objdiff field | Mapping |
+| --- | --- |
+| `units[].name` | Rebuilt PDB module name, or `Compiler-generated` when no module is available. |
+| `functions[].name` | Original virtual address in hexadecimal. |
+| `functions[].size` | Original function size in bytes, stored as a decimal string. |
+| `functions[].metadata.virtual_address` | Original virtual address, stored as a decimal string. |
+| `functions[].metadata.demangled_name` | Name from the matched comparison, or the entity name when unmatched. |
+| `functions[].fuzzy_match_percent` | Reccmp `accuracy * 100` for matched functions. Stubs and functions without a matched comparison score zero. |
+| `measures.total_code` | Sum of original function sizes. |
+| `measures.total_functions` / `total_units` | Number of reported functions and PDB module groups. |
+| `measures.matched_code` / `matched_functions` | Bytes and count of functions whose exported score is exactly 100%. |
+| `measures.fuzzy_match_percent` | Average exported score, weighted by original bytes. |
+| `measures.matched_code_percent` / `matched_functions_percent` | Exact matched bytes or functions divided by the corresponding total, times 100. |
+
+Measures appear per unit and for the whole report. Functions without a matched
+comparison remain in the totals. Rebuilt-only functions and data symbols are
+excluded. Empty totals produce zero percentages.
+
+CI uploads both files as the `LEMBALL_report` artifact.
+[tools/badges.py](tools/badges.py) uses them to generate the README badges.
+Effective Match is separate from the canonical objdiff report. `report.json`
+contains no effective-match fields.
 
 ## References
 
