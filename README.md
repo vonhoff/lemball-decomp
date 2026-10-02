@@ -17,29 +17,20 @@ Only code independently developed for this project outside the reconstructed gam
 
 Build and compare one function with `python tools/match.py 0xADDRESS`.
 
-**Exact Match** is the percentage of reported code in non-stub functions with a raw
-100% assembly score. Reccmp's
-[comparator](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
-normalizes addresses and symbols before comparison, so exact assembly matches do
-not imply a byte-identical executable.
+**Exact Match**: percentage of code in non-stub functions with a raw 100%
+[normalized assembly](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py) score.
 
-**Fuzzy Match** is the average raw score, weighted by function size. Equivalent
+**Fuzzy Match**: average raw score, weighted by function size. Equivalent
 register substitutions retain their raw score below 100%; stubs and missing
 comparisons contribute zero.
 
-**Effective Match** is the percentage of code in exact or reccmp-equivalent functions,
-including recognized register substitutions. It includes **Exact Match**. This supplementary
-badge does not increase exact progress or prove gameplay correctness; decomp.dev
-continues to track the raw exact and fuzzy measures.
-
-All percentages use the same function inventory and code sizes.
+**Effective Match**: percentage of code in exact or reccmp-equivalent functions,
+including recognized register substitutions. Tracked separately from exact and fuzzy progress.
 
 Generate the current progress report with `python tools/report.py`. README badges
 update after successful builds on `main`.
 
-Use `python tools/next.py --kind near` to rank unfinished functions, or `--kind gain`
-to rank by size times raw score. Build options and tool checks:
-[tools/USAGE.md](tools/USAGE.md).
+Commands and tool checks: [tools/USAGE.md](tools/USAGE.md).
 
 ## References
 
