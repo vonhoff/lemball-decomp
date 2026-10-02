@@ -8,9 +8,8 @@ from pathlib import Path
 from reccmp.compare.report import serialize_reccmp_report
 from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.tools.roadmap import ModuleMap
-from reccmp.types import EntityType
 
-from lib import BUILD, RECCMP_JSON, REPORT_JSON, ROOT, load_engine
+from lib import RECCMP_JSON, REPORT_JSON, ROOT, load_engine
 from lib.extents import original_functions, target_size
 
 
@@ -39,32 +38,24 @@ def measures(functions, total_units=1):
     }
 
 
-def function_record(entity, comparison, size):
+def function_record(entity, comparison):
     """Represent one original function using its raw comparison score."""
-    name = entity.name or ""
-    score = 0.0
-    if comparison is not None:
-        name = comparison.name
-        if not comparison.is_stub:
-            score = comparison.accuracy * 100
+    matched = comparison is not None and comparison.is_matched()
     return {
         "name": f"0x{entity.orig_addr:08x}",
-        "size": str(size),
+        "size": str(target_size(entity)),
         "metadata": {
             "virtual_address": str(entity.orig_addr),
-            "demangled_name": name,
+            "demangled_name": comparison.name if matched else entity.name or "",
         },
-        "fuzzy_match_percent": score,
+        "fuzzy_match_percent": comparison.accuracy * 100
+        if matched and not comparison.is_stub
+        else 0.0,
     }
 
 
 def group_functions(entities, comparisons, modules):
     """Group function records by their upstream PDB module."""
-    matches = {
-        address: match
-        for address, match in comparisons.entities.items()
-        if match.type == EntityType.FUNCTION and match.is_matched()
-    }
     groups = defaultdict(list)
     for entity in entities:
         module = (
@@ -74,10 +65,9 @@ def group_functions(entities, comparisons, modules):
         )
         name = module[1] if module else ""
         name = name.removeprefix("CMakeFiles/LEMBALL.dir/src/").removesuffix(".obj")
-        record = function_record(
-            entity, matches.get(entity.orig_addr), target_size(entity)
+        groups[name or "Compiler-generated"].append(
+            function_record(entity, comparisons.entities.get(entity.orig_addr))
         )
-        groups[name or "Compiler-generated"].append(record)
     return groups
 
 
@@ -102,7 +92,6 @@ def main():
         project_directory=ROOT,
         search_path=[ROOT / "data"],
         detect_what=DetectWhat.ORIGINAL,
-        build_directory=BUILD,
     )
     target, engine = load_engine()
     comparisons = engine.to_report(filename=target.original_path.name)
