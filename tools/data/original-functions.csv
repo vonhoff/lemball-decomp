@@ -1,0 +1,5 @@
+# Independently verified original x86 routines missing from Ghidra's function list.
+# Extents: original-function-sizes.csv. Names and parameter types unresolved.
+address,type,evidence
+0x00419d40,function,x86 wrapper: MOV ECX [ESP+8]; MOV EAX [ECX]; JMP [EAX+0x8c]
+0x00481230,function,x86 string helper after INT3 alignment; RET at 0x00481262

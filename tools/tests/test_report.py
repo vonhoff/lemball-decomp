@@ -10,32 +10,37 @@ from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.formats.exceptions import InvalidVirtualAddressError
 from reccmp.types import EntityType
 
+from lib.extents import load_target_sizes, original_functions, target_size
 from report import (
     build_report,
     function_record,
     group_functions,
-    load_target_sizes,
     measures,
-    original_functions,
-    target_size,
 )
 
 
 class ReportTests(unittest.TestCase):
     def test_rebuilt_stub_size_cannot_change_progress(self):
-        exact = ReccmpComparedEntity(0x401000, "Exact", 1.0, EntityType.FUNCTION, 0x501000)
+        exact = ReccmpComparedEntity(
+            0x401000, "Exact", 1.0, EntityType.FUNCTION, 0x501000
+        )
         stub = ReccmpComparedEntity(
             0x402000, "Stub", 1.0, EntityType.FUNCTION, 0x502000, is_stub=True
         )
-        sizes = {0x401000: 100, 0x402000: 100}
         for rebuilt_size in (1, 10, 100, 1000):
             with self.subTest(rebuilt_size=rebuilt_size):
                 entities = [
-                    ReccmpEntity(0x401000, 0x501000, {"recomp_size": 100}),
-                    ReccmpEntity(0x402000, 0x502000, {"recomp_size": rebuilt_size}),
+                    ReccmpEntity(
+                        0x401000, 0x501000, {"orig_size": 100, "recomp_size": 100}
+                    ),
+                    ReccmpEntity(
+                        0x402000,
+                        0x502000,
+                        {"orig_size": 100, "recomp_size": rebuilt_size},
+                    ),
                 ]
                 functions = [
-                    function_record(entity, comparison, target_size(entity, sizes))
+                    function_record(entity, comparison, target_size(entity))
                     for entity, comparison in zip(entities, (exact, stub))
                 ]
                 values = measures(functions)
@@ -43,19 +48,27 @@ class ReportTests(unittest.TestCase):
                 self.assertEqual(values["matched_code_percent"], 50.0)
                 self.assertEqual(values["fuzzy_match_percent"], 50.0)
 
-    def test_original_size_is_required_and_takes_precedence(self):
+    def test_original_comparison_size_is_required(self):
         entity = ReccmpEntity(0x401000, 0x501000, {"orig_size": 25, "recomp_size": 9})
-        self.assertEqual(target_size(entity, {0x401000: 33}), 25)
+        self.assertEqual(target_size(entity), 25)
         entity = ReccmpEntity(0x401000, 0x501000, {"recomp_size": 9})
-        with self.assertRaisesRegex(ValueError, "Missing original function extent at 0x00401000"):
-            target_size(entity, {})
+        with self.assertRaisesRegex(
+            ValueError, "Missing original function extent at 0x00401000"
+        ):
+            target_size(entity)
 
     def test_target_extent_csv_validation(self):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "sizes.csv"
-            path.write_text("# Original evidence\naddress,size,evidence\n0x401000,25,x86\n")
+            path.write_text(
+                "# Original evidence\naddress,size,evidence\n0x401000,25,x86\n"
+            )
             self.assertEqual(load_target_sizes(path), {0x401000: 25})
-            for rows in ("0x401000,0\n", "0x401000,25\n0x401000,30\n"):
+            for rows in (
+                "0x401000,0\n",
+                "0x401000,25\n0x401000,30\n",
+                "0x401010,10\n0x401000,25\n",
+            ):
                 path.write_text("address,size\n" + rows)
                 with self.assertRaises(ValueError):
                     load_target_sizes(path)
@@ -65,7 +78,9 @@ class ReportTests(unittest.TestCase):
             with self.subTest(groups=groups):
                 report = build_report(groups)
                 self.assertEqual(report["measures"]["total_units"], len(groups))
-                for values in [report["measures"]] + [u["measures"] for u in report["units"]]:
+                for values in [report["measures"]] + [
+                    u["measures"] for u in report["units"]
+                ]:
                     self.assertEqual(values["total_code"], "0")
                     self.assertEqual(values["matched_code"], "0")
                     self.assertEqual(values["total_functions"], 0)
@@ -96,13 +111,17 @@ class ReportTests(unittest.TestCase):
                 0x401040, "Stub", 1.0, EntityType.FUNCTION, 0x501040, is_stub=True
             ),
             ReccmpComparedEntity(0x401060, "Unmatched", 1.0, EntityType.FUNCTION),
-            ReccmpComparedEntity(0x401070, "Adjuster", 1.0, EntityType.FUNCTION, 0x501070),
+            ReccmpComparedEntity(
+                0x401070, "Adjuster", 1.0, EntityType.FUNCTION, 0x501070
+            ),
             ReccmpComparedEntity(0x402000, "Data", 1.0, EntityType.DATA, 0x502000),
         ):
             comparisons.add_match(entity)
         entities = [
             ReccmpEntity(
-                address, recomp, {"type": kind, "name": name, "orig_size": size, "recomp_size": 99}
+                address,
+                recomp,
+                {"type": kind, "name": name, "orig_size": size, "recomp_size": 99},
             )
             for address, recomp, size, name, kind in (
                 (0x401000, 0x501000, 10, "Exact", EntityType.FUNCTION),
@@ -114,10 +133,23 @@ class ReportTests(unittest.TestCase):
                 (0x402000, 0x502000, 4, "Data", EntityType.DATA),
             )
         ]
-        entities.append(ReccmpEntity(0x401080, 0x501080, {"type": EntityType.FUNCTION}))
-        entities.append(ReccmpEntity(0x1234, None, {"type": EntityType.FUNCTION, "orig_size": 10}))
         entities.append(
-            ReccmpEntity(0x401090, 0x5678, {"type": EntityType.FUNCTION, "orig_size": 10})
+            ReccmpEntity(
+                0x401080,
+                0x501080,
+                {
+                    "type": EntityType.FUNCTION,
+                    "orig_size": 12,
+                },
+            )
+        )
+        entities.append(
+            ReccmpEntity(0x1234, None, {"type": EntityType.FUNCTION, "orig_size": 10})
+        )
+        entities.append(
+            ReccmpEntity(
+                0x401090, 0x5678, {"type": EntityType.FUNCTION, "orig_size": 10}
+            )
         )
         engine, modules = Mock(), Mock()
         engine.get_all.return_value = entities
@@ -134,7 +166,7 @@ class ReportTests(unittest.TestCase):
             "exact.obj" if address == 0x501000 else "mixed.obj",
         )
         result = build_report(
-            group_functions(original_functions(engine), comparisons, modules, {0x401080: 12})
+            group_functions(original_functions(engine), comparisons, modules)
         )
         functions = [f for u in result["units"] for f in u["functions"]]
         self.assertEqual(len({f["name"] for f in functions}), 7)
@@ -151,4 +183,6 @@ class ReportTests(unittest.TestCase):
         )
         for values in [totals] + [u["measures"] for u in result["units"]]:
             self.assertFalse(any(k.startswith("complete_") for k in values))
-        self.assertTrue(all("complete" not in u.get("metadata", {}) for u in result["units"]))
+        self.assertTrue(
+            all("complete" not in u.get("metadata", {}) for u in result["units"])
+        )

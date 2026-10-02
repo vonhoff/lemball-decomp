@@ -1,8 +1,8 @@
-# LEMBALL.EXE original x86 function spans; never rebuilt sizes.
-# Ghidra LEMBALL.EXE analysis, exported 2026-10-02; entry to highest body address inclusive.
-# Analysis-derived boundaries, not original debug symbols. Spans include interior gaps/tables.
-# Supplemental x86 endpoints inspected in data/LEMBALL.EXE; evidence column gives exclusive end.
-# Only reccmp FUNCTION/VTORDISP entities enter progress; this table also covers unannotated entries.
+# LEMBALL.EXE original x86 symbol spans; never rebuilt sizes.
+# SHA-256: d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63
+# Ghidra body plus referenced local data; analysis-derived, reviewed 2026-10-02.
+# Original x86 endpoints override analysis; trailing alignment excluded.
+# Shared labeled tails have disjoint ownership. Interior gaps/tables remain included.
 address,size,evidence
 0x00401000,5,Ghidra body span
 0x00401005,5,Ghidra body span
@@ -2103,7 +2103,7 @@ address,size,evidence
 0x00407300,164,Ghidra body span
 0x004073b0,57,Ghidra body span
 0x004073f0,37,Ghidra body span
-0x00407420,886,Ghidra body span
+0x00407420,959,Ghidra body and referenced local data to 0x004077df
 0x004077e0,268,Ghidra body span
 0x004078f0,93,Ghidra body span
 0x00407950,140,Ghidra body span
@@ -2134,22 +2134,22 @@ address,size,evidence
 0x004087b0,122,Ghidra body span
 0x00408830,32,Ghidra body span
 0x00408850,676,Ghidra body span
-0x00408b00,66,Ghidra body span
-0x00408dc0,103,Ghidra body span
+0x00408b00,84,Ghidra body and referenced local data to 0x00408b54
+0x00408dc0,124,Ghidra body and referenced local data to 0x00408e3c
 0x00408e40,25,Ghidra body span
-0x00408e60,76,Ghidra body span
-0x00408ec0,86,Ghidra body span
-0x00408f30,84,Ghidra body span
+0x00408e60,92,Ghidra body and referenced local data to 0x00408ebc
+0x00408ec0,104,Ghidra body and referenced local data to 0x00408f28
+0x00408f30,104,Ghidra body and referenced local data to 0x00408f98
 0x00408fa0,34,Ghidra body span
 0x00408fd0,7,Ghidra body span
-0x00408fe0,111,Ghidra body span
+0x00408fe0,132,Ghidra body and referenced local data to 0x00409064
 0x00409070,16,Ghidra body span
 0x00409080,8,Ghidra body span
 0x00409150,43,Ghidra body span
 0x00409180,33,Ghidra body span
 0x004091b0,98,Ghidra body span
 0x00409220,36,Ghidra body span
-0x00409250,503,Ghidra body span
+0x00409250,524,Ghidra body and referenced local data to 0x0040945c
 0x00409460,245,Ghidra body span
 0x00409560,122,Ghidra body span
 0x004095e0,19,Ghidra body span
@@ -2157,11 +2157,11 @@ address,size,evidence
 0x00409620,63,Ghidra body span
 0x00409660,64,Ghidra body span
 0x004096a0,12,Ghidra body span
-0x004096b0,75,Ghidra body span
+0x004096b0,115,Ghidra body and referenced local data to 0x00409723
 0x004098b0,30,Ghidra body span
 0x004098e0,31,Ghidra body span
 0x00409910,23,Ghidra body span
-0x00409930,589,Ghidra body span
+0x00409930,677,Ghidra body and referenced local data to 0x00409bd5
 0x00409ca0,24,Ghidra body span
 0x00409cc0,17,Ghidra body span
 0x00409ce0,47,Ghidra body span
@@ -2260,7 +2260,7 @@ address,size,evidence
 0x0040b5b0,51,Ghidra body span
 0x0040b5f0,54,Ghidra body span
 0x0040b630,60,Ghidra body span
-0x0040b670,215,Ghidra body span
+0x0040b670,232,Ghidra body and referenced local data to 0x0040b758
 0x0040b760,374,Ghidra body span
 0x0040b8e0,25,Ghidra body span
 0x0040b900,48,Ghidra body span
@@ -2284,7 +2284,7 @@ address,size,evidence
 0x0040c2d0,119,Ghidra body span
 0x0040c350,90,Ghidra body span
 0x0040c3b0,313,Ghidra body span
-0x0040c4f0,510,Ghidra body span
+0x0040c4f0,552,Ghidra body and referenced local data to 0x0040c718
 0x0040c720,42,Ghidra body span
 0x0040c750,89,Ghidra body span
 0x0040c7b0,38,Ghidra body span
@@ -2305,7 +2305,7 @@ address,size,evidence
 0x0040cf00,3,Ghidra body span
 0x0040cf10,28,Ghidra body span
 0x0040cf30,1,Ghidra body span
-0x0040cf40,137,Ghidra body span
+0x0040cf40,167,Ghidra body and referenced local data to 0x0040cfe7
 0x0040cff0,141,Ghidra body span
 0x0040d080,64,Ghidra body span
 0x0040d0c0,109,Ghidra body span
@@ -2315,15 +2315,15 @@ address,size,evidence
 0x0040d2e0,105,Ghidra body span
 0x0040d470,24,Ghidra body span
 0x0040d490,5,Ghidra body span
-0x0040d4a0,678,Ghidra body span
+0x0040d4a0,700,Ghidra body and referenced local data to 0x0040d75c
 0x0040d760,417,Ghidra body span
 0x0040d910,293,Ghidra body span
 0x0040da40,305,Ghidra body span
-0x0040db80,345,Ghidra body span
+0x0040db80,376,Ghidra body and referenced local data to 0x0040dcf8
 0x0040dd00,47,Ghidra body span
 0x0040dd30,32,Ghidra body span
 0x0040dd50,39,Ghidra body span
-0x0040dd80,292,Ghidra body span
+0x0040dd80,320,Ghidra body and referenced local data to 0x0040dec0
 0x0040dec0,98,Ghidra body span
 0x0040df30,91,Ghidra body span
 0x0040df90,48,Ghidra body span
@@ -2356,12 +2356,12 @@ address,size,evidence
 0x0040f220,140,Ghidra body span
 0x0040f2b0,15,Ghidra body span
 0x0040f2c0,68,Ghidra body span
-0x0040f310,223,Ghidra body span
+0x0040f310,252,Ghidra body and referenced local data to 0x0040f40c
 0x0040f410,15,Ghidra body span
 0x0040f420,11,Ghidra body span
 0x0040f430,113,Ghidra body span
 0x0040f4b0,69,Ghidra body span
-0x0040f500,189,Ghidra body span
+0x0040f500,241,Ghidra body and referenced local data to 0x0040f5f1
 0x0040f600,61,Ghidra body span
 0x0040f640,169,Ghidra body span
 0x0040f6f0,167,Ghidra body span
@@ -2371,13 +2371,13 @@ address,size,evidence
 0x0040f9b0,92,Ghidra body span
 0x0040fa10,109,Ghidra body span
 0x0040fa80,351,Ghidra body span
-0x0040fbe0,79,Ghidra body span
+0x0040fbe0,108,Ghidra body and referenced local data to 0x0040fc4c
 0x0040fc50,82,Ghidra body span
 0x0040fcb0,30,Ghidra body span
 0x0040fcd0,52,Ghidra body span
 0x0040fd10,589,Ghidra body span
 0x0040ff60,1,Ghidra body span
-0x0040ff70,251,Ghidra body span
+0x0040ff70,280,Ghidra body and referenced local data to 0x00410088
 0x00410090,106,Ghidra body span
 0x00410100,278,Ghidra body span
 0x00410220,38,Ghidra body span
@@ -2403,17 +2403,17 @@ address,size,evidence
 0x004117a0,873,Ghidra body span
 0x00411b10,95,Ghidra body span
 0x00411b70,160,Ghidra body span
-0x00411c10,706,Ghidra body span
-0x00411f20,309,Ghidra body span
+0x00411c10,772,Ghidra body and referenced local data to 0x00411f14
+0x00411f20,344,Ghidra body and referenced local data to 0x00412078
 0x00412080,113,Ghidra body span
 0x00412100,221,Ghidra body span
 0x004121e0,13,Ghidra body span
-0x004121f0,698,Ghidra body span
+0x004121f0,728,Ghidra body and referenced local data to 0x004124c8
 0x004124d0,227,Ghidra body span
 0x004125c0,24,Ghidra body span
 0x004125e0,19,Ghidra body span
 0x00412600,87,Ghidra body span
-0x00412660,195,Ghidra body span
+0x00412660,224,Ghidra body and referenced local data to 0x00412740
 0x00412740,62,Ghidra body span
 0x00412780,24,Ghidra body span
 0x004127a0,24,Ghidra body span
@@ -2430,7 +2430,7 @@ address,size,evidence
 0x00412c40,11,Ghidra body span
 0x00412c50,11,Ghidra body span
 0x00412c60,30,Ghidra body span
-0x00412c80,174,Ghidra body span
+0x00412c80,196,Ghidra body and referenced local data to 0x00412d44
 0x00412d50,45,Ghidra body span
 0x00412d80,52,Ghidra body span
 0x00412dc0,85,Ghidra body span
@@ -2479,7 +2479,7 @@ address,size,evidence
 0x00414080,68,Ghidra body span
 0x004140d0,82,Ghidra body span
 0x00414130,31,Ghidra body span
-0x00414150,1180,Ghidra body span
+0x00414150,1196,Ghidra body and referenced local data to 0x004145fc
 0x00414600,93,Ghidra body span
 0x00414660,195,Ghidra body span
 0x00414730,149,Ghidra body span
@@ -2552,7 +2552,7 @@ address,size,evidence
 0x00416850,44,Ghidra body span
 0x00416880,19,Ghidra body span
 0x004168a0,30,Ghidra body span
-0x004168c0,16,Ghidra body span
+0x004168c0,1,x86 extent to 0x004168c1; trailing MSVC alignment excluded
 0x004168d0,24,Ghidra body span
 0x004168f0,75,Ghidra body span
 0x00416940,202,Ghidra body span
@@ -2566,13 +2566,13 @@ address,size,evidence
 0x00416b90,20,Ghidra body span
 0x00416bb0,24,Ghidra body span
 0x00416bd0,84,Ghidra body span
-0x00416c30,80,Ghidra body span
+0x00416c30,79,x86 extent to 0x00416c7f; trailing MSVC alignment excluded
 0x00416c80,24,Ghidra body span
 0x00416ca0,24,Ghidra body span
 0x00416cc0,22,Ghidra body span
 0x00416ce0,24,Ghidra body span
 0x00416d00,5,Ghidra body span
-0x00416d10,16,Ghidra body span
+0x00416d10,1,x86 extent to 0x00416d11; trailing MSVC alignment excluded
 0x00416d20,42,Ghidra body span
 0x00416d50,51,Ghidra body span
 0x00416d90,21,Ghidra body span
@@ -2581,7 +2581,7 @@ address,size,evidence
 0x00416e00,24,Ghidra body span
 0x00416e20,68,Ghidra body span
 0x00416e70,29,Ghidra body span
-0x00416e90,268,Ghidra body span
+0x00416e90,296,Ghidra body and referenced local data to 0x00416fb8
 0x00416fc0,13,Ghidra body span
 0x00416fd0,13,Ghidra body span
 0x00416fe0,356,Ghidra body span
@@ -2658,54 +2658,55 @@ address,size,evidence
 0x00419a50,24,Ghidra body span
 0x00419a70,24,Ghidra body span
 0x00419a90,24,Ghidra body span
-0x00419ab0,32,Ghidra body span
-0x00419ad0,48,Ghidra body span
-0x00419b00,16,Ghidra body span
-0x00419b10,48,Ghidra body span
-0x00419b40,16,Ghidra body span
-0x00419b50,48,Ghidra body span
-0x00419b80,16,Ghidra body span
-0x00419b90,48,Ghidra body span
-0x00419bc0,32,Ghidra body span
-0x00419be0,16,Ghidra body span
-0x00419bf0,16,Ghidra body span
+0x00419ab0,17,x86 extent to 0x00419ac1; trailing MSVC alignment excluded
+0x00419ad0,42,x86 extent to 0x00419afa; trailing MSVC alignment excluded
+0x00419b00,9,x86 extent to 0x00419b09; trailing MSVC alignment excluded
+0x00419b10,40,x86 extent to 0x00419b38; trailing MSVC alignment excluded
+0x00419b40,12,x86 extent to 0x00419b4c; trailing MSVC alignment excluded
+0x00419b50,42,x86 extent to 0x00419b7a; trailing MSVC alignment excluded
+0x00419b80,9,x86 extent to 0x00419b89; trailing MSVC alignment excluded
+0x00419b90,40,x86 extent to 0x00419bb8; trailing MSVC alignment excluded
+0x00419bc0,31,x86 extent to 0x00419bdf; trailing MSVC alignment excluded
+0x00419be0,8,x86 extent to 0x00419be8; trailing MSVC alignment excluded
+0x00419bf0,8,x86 extent to 0x00419bf8; trailing MSVC alignment excluded
 0x00419c00,48,Ghidra body span
-0x00419c30,16,Ghidra body span
-0x00419c40,32,Ghidra body span
-0x00419c60,32,Ghidra body span
-0x00419c80,16,Ghidra body span
-0x00419c90,16,Ghidra body span
-0x00419ca0,16,Ghidra body span
-0x00419cb0,16,Ghidra body span
-0x00419cc0,16,Ghidra body span
-0x00419cd0,48,Ghidra body span
-0x00419d00,48,Ghidra body span
-0x00419d30,32,Ghidra body span
-0x00419d50,48,Ghidra body span
-0x00419d80,16,Ghidra body span
-0x00419d90,64,Ghidra body span
-0x00419dd0,48,Ghidra body span
-0x00419e00,16,Ghidra body span
-0x00419e10,16,Ghidra body span
-0x00419e20,48,Ghidra body span
-0x00419e50,16,Ghidra body span
-0x00419e60,16,Ghidra body span
-0x00419e70,16,Ghidra body span
-0x00419e80,16,Ghidra body span
-0x00419e90,16,Ghidra body span
-0x00419ea0,16,Ghidra body span
-0x00419eb0,16,Ghidra body span
-0x00419ec0,16,Ghidra body span
-0x00419ed0,48,Ghidra body span
-0x00419f00,16,Ghidra body span
-0x00419f10,16,Ghidra body span
-0x00419f20,16,Ghidra body span
-0x00419f30,48,Ghidra body span
-0x00419f60,16,Ghidra body span
-0x00419f70,16,Ghidra body span
-0x00419f80,16,Ghidra body span
-0x00419f90,16,Ghidra body span
-0x00419fa0,32,Ghidra body span
+0x00419c30,9,x86 extent to 0x00419c39; trailing MSVC alignment excluded
+0x00419c40,20,x86 extent to 0x00419c54; trailing MSVC alignment excluded
+0x00419c60,25,x86 extent to 0x00419c79; trailing MSVC alignment excluded
+0x00419c80,9,x86 extent to 0x00419c89; trailing MSVC alignment excluded
+0x00419c90,9,x86 extent to 0x00419c99; trailing MSVC alignment excluded
+0x00419ca0,11,x86 extent to 0x00419cab; trailing MSVC alignment excluded
+0x00419cb0,11,x86 extent to 0x00419cbb; trailing MSVC alignment excluded
+0x00419cc0,12,x86 extent to 0x00419ccc; trailing MSVC alignment excluded
+0x00419cd0,33,x86 extent to 0x00419cf1; trailing MSVC alignment excluded
+0x00419d00,36,x86 extent to 0x00419d24; trailing MSVC alignment excluded
+0x00419d30,12,x86 extent to 0x00419d3c; adjacent wrapper starts at 0x00419d40; alignment excluded
+0x00419d40,12,x86 extent to 0x00419d4c; indirect dispatch through vtable offset 0x8c; original-only routine
+0x00419d50,36,x86 extent to 0x00419d74; trailing MSVC alignment excluded
+0x00419d80,9,x86 extent to 0x00419d89; trailing MSVC alignment excluded
+0x00419d90,51,x86 extent to 0x00419dc3; trailing MSVC alignment excluded
+0x00419dd0,36,x86 extent to 0x00419df4; trailing MSVC alignment excluded
+0x00419e00,12,x86 extent to 0x00419e0c; trailing MSVC alignment excluded
+0x00419e10,9,x86 extent to 0x00419e19; trailing MSVC alignment excluded
+0x00419e20,33,x86 extent to 0x00419e41; trailing MSVC alignment excluded
+0x00419e50,9,x86 extent to 0x00419e59; trailing MSVC alignment excluded
+0x00419e60,9,x86 extent to 0x00419e69; trailing MSVC alignment excluded
+0x00419e70,9,x86 extent to 0x00419e79; trailing MSVC alignment excluded
+0x00419e80,9,x86 extent to 0x00419e89; trailing MSVC alignment excluded
+0x00419e90,9,x86 extent to 0x00419e99; trailing MSVC alignment excluded
+0x00419ea0,9,x86 extent to 0x00419ea9; trailing MSVC alignment excluded
+0x00419eb0,9,x86 extent to 0x00419eb9; trailing MSVC alignment excluded
+0x00419ec0,9,x86 extent to 0x00419ec9; trailing MSVC alignment excluded
+0x00419ed0,42,x86 extent to 0x00419efa; trailing MSVC alignment excluded
+0x00419f00,9,x86 extent to 0x00419f09; trailing MSVC alignment excluded
+0x00419f10,9,x86 extent to 0x00419f19; trailing MSVC alignment excluded
+0x00419f20,12,x86 extent to 0x00419f2c; trailing MSVC alignment excluded
+0x00419f30,45,x86 extent to 0x00419f5d; trailing MSVC alignment excluded
+0x00419f60,12,x86 extent to 0x00419f6c; trailing MSVC alignment excluded
+0x00419f70,12,x86 extent to 0x00419f7c; trailing MSVC alignment excluded
+0x00419f80,12,x86 extent to 0x00419f8c; trailing MSVC alignment excluded
+0x00419f90,12,x86 extent to 0x00419f9c; trailing MSVC alignment excluded
+0x00419fa0,12,x86 extent to 0x00419fac; trailing MSVC alignment excluded
 0x0041a140,103,Ghidra body span
 0x0041a1b0,11,Ghidra body span
 0x0041a1c0,1,Ghidra body span
@@ -2736,7 +2737,7 @@ address,size,evidence
 0x0041b1b0,238,Ghidra body span
 0x0041b2a0,111,Ghidra body span
 0x0041b310,95,Ghidra body span
-0x0041b370,852,Ghidra body span
+0x0041b370,972,Ghidra body and referenced local data to 0x0041b73c
 0x0041b740,130,Ghidra body span
 0x0041b7d0,96,Ghidra body span
 0x0041b830,112,Ghidra body span
@@ -2748,7 +2749,7 @@ address,size,evidence
 0x0041b9f0,138,Ghidra body span
 0x0041ba80,141,Ghidra body span
 0x0041bb10,169,Ghidra body span
-0x0041bbc0,672,Ghidra body span
+0x0041bbc0,762,Ghidra body and referenced local data to 0x0041beba
 0x0041bec0,59,Ghidra body span
 0x0041bf00,37,Ghidra body span
 0x0041c330,30,Ghidra body span
@@ -2890,8 +2891,8 @@ address,size,evidence
 0x0041fe30,63,Ghidra body span
 0x0041fe70,75,Ghidra body span
 0x0041fec0,153,Ghidra body span
-0x0041ff60,142,Ghidra body span
-0x00420000,75,Ghidra body span
+0x0041ff60,160,Ghidra body and referenced local data to 0x00420000
+0x00420000,100,Ghidra body and referenced local data to 0x00420064
 0x00420070,22,Ghidra body span
 0x00420090,89,Ghidra body span
 0x004200f0,174,Ghidra body span
@@ -2950,7 +2951,7 @@ address,size,evidence
 0x00421aa0,11,Ghidra body span
 0x00421ab0,133,Ghidra body span
 0x00421b40,128,Ghidra body span
-0x00421bc0,441,Ghidra body span
+0x00421bc0,468,Ghidra body and referenced local data to 0x00421d94
 0x00421da0,250,Ghidra body span
 0x00421ea0,31,Ghidra body span
 0x00421ec0,47,Ghidra body span
@@ -2968,7 +2969,7 @@ address,size,evidence
 0x004224c0,73,Ghidra body span
 0x00422510,50,Ghidra body span
 0x00422550,59,Ghidra body span
-0x00422590,340,Ghidra body span
+0x00422590,377,Ghidra body and referenced local data to 0x00422709
 0x00422710,118,Ghidra body span
 0x00422790,217,Ghidra body span
 0x00422870,59,Ghidra body span
@@ -3033,10 +3034,10 @@ address,size,evidence
 0x00424d00,27,Ghidra body span
 0x00424d20,11,Ghidra body span
 0x00424d30,184,Ghidra body span
-0x00424df0,522,Ghidra body span
+0x00424df0,544,Ghidra body and referenced local data to 0x00425010
 0x00425010,77,Ghidra body span
 0x00425060,148,Ghidra body span
-0x00425100,767,Ghidra body span
+0x00425100,824,Ghidra body and referenced local data to 0x00425438
 0x00425440,93,Ghidra body span
 0x004254a0,408,Ghidra body span
 0x00425640,23,Ghidra body span
@@ -3119,12 +3120,12 @@ address,size,evidence
 0x004288b0,17,Ghidra body span
 0x004288d0,31,Ghidra body span
 0x004288f0,11,Ghidra body span
-0x00428900,385,Ghidra body span
-0x00428ab0,524,Ghidra body span
-0x00428cf0,447,Ghidra body span
+0x00428900,428,Ghidra body and referenced local data to 0x00428aac
+0x00428ab0,564,Ghidra body and referenced local data to 0x00428ce4
+0x00428cf0,464,Ghidra body and referenced local data to 0x00428ec0
 0x00428ec0,107,Ghidra body span
 0x00428f30,94,Ghidra body span
-0x00428f90,860,Ghidra body span
+0x00428f90,900,Ghidra body and referenced local data to 0x00429314
 0x00429320,91,Ghidra body span
 0x00429380,48,Ghidra body span
 0x004293b0,154,Ghidra body span
@@ -3144,11 +3145,11 @@ address,size,evidence
 0x00429f50,214,Ghidra body span
 0x0042a030,54,Ghidra body span
 0x0042a070,57,Ghidra body span
-0x0042a0b0,152,Ghidra body span
+0x0042a0b0,180,Ghidra body and referenced local data to 0x0042a164
 0x0042a170,417,Ghidra body span
 0x0042a320,116,Ghidra body span
-0x0042a3a0,153,Ghidra body span
-0x0042a460,85,Ghidra body span
+0x0042a3a0,184,Ghidra body and referenced local data to 0x0042a458
+0x0042a460,116,Ghidra body and referenced local data to 0x0042a4d4
 0x0042a4e0,221,Ghidra body span
 0x0042a5c0,39,Ghidra body span
 0x0042a7a0,30,Ghidra body span
@@ -3237,7 +3238,7 @@ address,size,evidence
 0x0042e980,192,Ghidra body span
 0x0042ea40,126,Ghidra body span
 0x0042eac0,62,Ghidra body span
-0x0042eb00,872,Ghidra body span
+0x0042eb00,937,Ghidra body and referenced local data to 0x0042eea9
 0x0042eeb0,11,Ghidra body span
 0x0042eec0,5,Ghidra body span
 0x0042eed0,5,Ghidra body span
@@ -3262,9 +3263,9 @@ address,size,evidence
 0x0042fba0,30,Ghidra body span
 0x0042fbd0,105,Ghidra body span
 0x0042fc60,712,Ghidra body span
-0x0042ffe0,207,Ghidra body span
-0x00430110,350,Ghidra body span
-0x004302d0,76,Ghidra body span
+0x0042ffe0,297,Ghidra body and referenced local data to 0x00430109
+0x00430110,441,Ghidra body and referenced local data to 0x004302c9
+0x004302d0,155,Ghidra body and referenced local data to 0x0043036b
 0x00430370,72,Ghidra body span
 0x004303c0,35,Ghidra body span
 0x004303f0,26,Ghidra body span
@@ -3275,14 +3276,14 @@ address,size,evidence
 0x004305f0,48,Ghidra body span
 0x00430620,1021,Ghidra body span
 0x00430a20,45,Ghidra body span
-0x00430a50,193,Ghidra body span
-0x00430b30,147,Ghidra body span
-0x00430be0,238,Ghidra body span
-0x00430ce0,191,Ghidra body span
+0x00430a50,212,Ghidra body and referenced local data to 0x00430b24
+0x00430b30,164,Ghidra body and referenced local data to 0x00430bd4
+0x00430be0,256,Ghidra body and referenced local data to 0x00430ce0
+0x00430ce0,208,Ghidra body and referenced local data to 0x00430db0
 0x00430db0,201,Ghidra body span
 0x00430e80,13,Ghidra body span
 0x00430e90,26,Ghidra body span
-0x00430eb0,246,Ghidra body span
+0x00430eb0,348,Ghidra body and referenced local data to 0x0043100c
 0x00431010,32,Ghidra body span
 0x00431030,128,Ghidra body span
 0x004314f0,27,Ghidra body span
@@ -3300,9 +3301,9 @@ address,size,evidence
 0x00431910,44,Ghidra body span
 0x00431940,16,Ghidra body span
 0x00431950,58,Ghidra body span
-0x00431990,692,Ghidra body span
+0x00431990,763,Ghidra body and referenced local data to 0x00431c8b
 0x00431c90,61,Ghidra body span
-0x00431cd0,441,Ghidra body span
+0x00431cd0,468,Ghidra body and referenced local data to 0x00431ea4
 0x00431eb0,28,Ghidra body span
 0x00431ed0,16,Ghidra body span
 0x00431ee0,33,Ghidra body span
@@ -3350,17 +3351,17 @@ address,size,evidence
 0x00432b20,28,Ghidra body span
 0x00432b50,208,Ghidra body span
 0x00432c20,90,Ghidra body span
-0x00432c80,848,Ghidra body span
+0x00432c80,864,Ghidra body and referenced local data to 0x00432fe0
 0x00432fe0,1293,Ghidra body span
 0x004334f0,763,Ghidra body span
 0x004337f0,191,Ghidra body span
 0x004338b0,1782,Ghidra body span
 0x00433fb0,11,Ghidra body span
-0x00433fc0,2140,Ghidra body span
-0x004349e0,207,Ghidra body span
-0x00434bc0,311,Ghidra body span
+0x00433fc0,2591,Ghidra body and referenced local data to 0x004349df
+0x004349e0,473,Ghidra body and referenced local data to 0x00434bb9
+0x00434bc0,328,Ghidra body and referenced local data to 0x00434d08
 0x00434d10,40,Ghidra body span
-0x00434d40,362,Ghidra body span
+0x00434d40,380,Ghidra body and referenced local data to 0x00434ebc
 0x00434ec0,64,Ghidra body span
 0x00434f00,79,Ghidra body span
 0x00434f50,13,Ghidra body span
@@ -3380,14 +3381,14 @@ address,size,evidence
 0x00436690,1,Ghidra body span
 0x004366a0,3,Ghidra body span
 0x004366b0,167,Ghidra body span
-0x00436760,102,Ghidra body span
+0x00436760,202,Ghidra body and referenced local data to 0x0043682a
 0x00436830,19,Ghidra body span
 0x00436850,145,Ghidra body span
 0x004368f0,164,Ghidra body span
 0x004369a0,1,x86 extent to 0x004369a1; alignment excluded
 0x004369b0,86,Ghidra body span
-0x00436a10,1028,Ghidra body span
-0x00436e40,636,Ghidra body span
+0x00436a10,1060,Ghidra body and referenced local data to 0x00436e34
+0x00436e40,747,Ghidra body and referenced local data to 0x0043712b
 0x00437130,54,Ghidra body span
 0x00437170,111,Ghidra body span
 0x004371e0,100,Ghidra body span
@@ -3399,13 +3400,13 @@ address,size,evidence
 0x00437420,63,Ghidra body span
 0x00437460,119,Ghidra body span
 0x004374e0,59,Ghidra body span
-0x00437520,290,Ghidra body span
-0x004376b0,285,Ghidra body span
+0x00437520,395,Ghidra body and referenced local data to 0x004376ab
+0x004376b0,391,Ghidra body and referenced local data to 0x00437837
 0x00437840,69,Ghidra body span
 0x00437890,147,Ghidra body span
 0x00437930,64,Ghidra body span
 0x00437970,494,Ghidra body span
-0x00437b60,305,Ghidra body span
+0x00437b60,416,Ghidra body and referenced local data to 0x00437d00
 0x00437d00,159,Ghidra body span
 0x00437da0,55,Ghidra body span
 0x00437de0,163,Ghidra body span
@@ -3413,7 +3414,7 @@ address,size,evidence
 0x004380c0,162,Ghidra body span
 0x00438170,75,Ghidra body span
 0x004381c0,69,Ghidra body span
-0x00438210,260,Ghidra body span
+0x00438210,280,Ghidra body and referenced local data to 0x00438328
 0x00438330,68,Ghidra body span
 0x00438380,62,Ghidra body span
 0x004383c0,313,Ghidra body span
@@ -3489,7 +3490,7 @@ address,size,evidence
 0x00439d60,44,Ghidra body span
 0x00439d90,93,Ghidra body span
 0x00439df0,49,Ghidra body span
-0x00439e30,263,Ghidra body span
+0x00439e30,284,Ghidra body and referenced local data to 0x00439f4c
 0x00439f50,23,Ghidra body span
 0x00439f70,23,Ghidra body span
 0x00439f90,28,Ghidra body span
@@ -3497,7 +3498,7 @@ address,size,evidence
 0x0043a130,88,Ghidra body span
 0x0043a190,47,Ghidra body span
 0x0043a1c0,1,Ghidra body span
-0x0043a1d0,44,Ghidra body span
+0x0043a1d0,115,x86 extent to 0x0043a243; includes code after operator new; RET at 0x0043a240
 0x0043a250,88,Ghidra body span
 0x0043a2b0,43,Ghidra body span
 0x0043a2e0,154,Ghidra body span
@@ -3520,11 +3521,11 @@ address,size,evidence
 0x0043a660,48,Ghidra body span
 0x0043a6a0,49,Ghidra body span
 0x0043a6e0,49,Ghidra body span
-0x0043a720,244,Ghidra body span
-0x0043a880,1019,Ghidra body span
+0x0043a720,260,Ghidra body and referenced local data to 0x0043a824
+0x0043a880,1113,Ghidra body and referenced local data to 0x0043acd9
 0x0043ace0,89,Ghidra body span
-0x0043ad40,835,Ghidra body span
-0x0043b0e0,870,Ghidra body span
+0x0043ad40,925,Ghidra body and referenced local data to 0x0043b0dd
+0x0043b0e0,969,Ghidra body and referenced local data to 0x0043b4a9
 0x0043b4b0,22,Ghidra body span
 0x0043b4d0,993,Ghidra body span
 0x0043bcd0,1,Ghidra body span
@@ -3535,42 +3536,42 @@ address,size,evidence
 0x0043c070,18,Ghidra body span
 0x0043c090,264,Ghidra body span
 0x0043c1a0,96,Ghidra body span
-0x0043c200,911,Ghidra body span
+0x0043c200,1032,Ghidra body and referenced local data to 0x0043c608
 0x0043c610,75,Ghidra body span
 0x0043c660,122,Ghidra body span
 0x0043c6e0,258,Ghidra body span
-0x0043c7f0,145,Ghidra body span
+0x0043c7f0,164,Ghidra body and referenced local data to 0x0043c894
 0x0043c8a0,160,Ghidra body span
 0x0043c940,169,Ghidra body span
 0x0043c9f0,61,Ghidra body span
 0x0043ca30,140,Ghidra body span
-0x0043cac0,213,Ghidra body span
-0x0043cbb0,372,Ghidra body span
+0x0043cac0,232,Ghidra body and referenced local data to 0x0043cba8
+0x0043cbb0,404,Ghidra body and referenced local data to 0x0043cd44
 0x0043cd50,212,Ghidra body span
 0x0043ce30,98,Ghidra body span
-0x0043cea0,196,Ghidra body span
+0x0043cea0,252,Ghidra body and referenced local data to 0x0043cf9c
 0x0043cfa0,208,Ghidra body span
 0x0043d070,128,Ghidra body span
 0x0043d0f0,55,Ghidra body span
-0x0043d130,545,Ghidra body span
-0x0043d370,148,Ghidra body span
+0x0043d130,564,Ghidra body and referenced local data to 0x0043d364
+0x0043d370,168,Ghidra body and referenced local data to 0x0043d418
 0x0043d420,136,Ghidra body span
 0x0043d4b0,67,Ghidra body span
 0x0043d500,129,Ghidra body span
-0x0043d590,535,Ghidra body span
+0x0043d590,580,Ghidra body and referenced local data to 0x0043d7d4
 0x0043d7e0,228,Ghidra body span
 0x0043d8d0,115,Ghidra body span
 0x0043d950,53,Ghidra body span
-0x0043d990,701,Ghidra body span
-0x0043dc70,492,Ghidra body span
+0x0043d990,724,Ghidra body and referenced local data to 0x0043dc64
+0x0043dc70,704,Ghidra body and referenced local data to 0x0043df30
 0x0043df30,741,Ghidra body span
-0x0043e220,2509,Ghidra body span
+0x0043e220,2789,Ghidra body and referenced local data to 0x0043ed05
 0x0043ed10,1,Ghidra body span
 0x0043ed20,610,Ghidra body span
 0x0043ef90,194,Ghidra body span
 0x0043f060,1048,Ghidra body span
 0x0043f480,404,Ghidra body span
-0x0043f620,1711,Ghidra body span
+0x0043f620,1728,Ghidra body and referenced local data to 0x0043fce0
 0x0043fce0,156,Ghidra body span
 0x0043fd80,229,Ghidra body span
 0x0043fe70,1,Ghidra body span
@@ -3584,7 +3585,7 @@ address,size,evidence
 0x00440490,198,Ghidra body span
 0x00440560,629,Ghidra body span
 0x004407e0,91,Ghidra body span
-0x00440840,903,Ghidra body span
+0x00440840,957,Ghidra body and referenced local data to 0x00440bfd
 0x00440c00,1,Ghidra body span
 0x00441fe0,260,Ghidra body span
 0x00442130,23,Ghidra body span
@@ -3609,7 +3610,7 @@ address,size,evidence
 0x00442ca0,64,Ghidra body span
 0x00442ce0,205,Ghidra body span
 0x00442db0,24,Ghidra body span
-0x00442dd0,261,Ghidra body span
+0x00442dd0,292,Ghidra body and referenced local data to 0x00442ef4
 0x00442f00,121,Ghidra body span
 0x00442f80,434,Ghidra body span
 0x00443140,128,Ghidra body span
@@ -3637,7 +3638,7 @@ address,size,evidence
 0x00443a20,47,Ghidra body span
 0x00443a60,55,Ghidra body span
 0x00443ab0,40,Ghidra body span
-0x00443af0,355,Ghidra body span
+0x00443af0,376,Ghidra body and referenced local data to 0x00443c68
 0x00443c70,199,Ghidra body span
 0x00443d40,64,Ghidra body span
 0x00443d80,47,Ghidra body span
@@ -3653,7 +3654,7 @@ address,size,evidence
 0x00444b20,167,Ghidra body span
 0x00444bd0,22,Ghidra body span
 0x00444bf0,22,Ghidra body span
-0x00444c10,267,Ghidra body span
+0x00444c10,400,Ghidra body and referenced local data to 0x00444da0
 0x00444da0,37,Ghidra body span
 0x00444dd0,5,Ghidra body span
 0x004452a0,23,Ghidra body span
@@ -3666,7 +3667,7 @@ address,size,evidence
 0x004453e0,25,Ghidra body span
 0x00445400,23,Ghidra body span
 0x00445420,454,Ghidra body span
-0x004455f0,379,Ghidra body span
+0x004455f0,408,Ghidra body and referenced local data to 0x00445788
 0x00445790,324,Ghidra body span
 0x004458e0,345,Ghidra body span
 0x00445a40,127,Ghidra body span
@@ -3722,10 +3723,10 @@ address,size,evidence
 0x00447550,80,Ghidra body span
 0x004475a0,54,Ghidra body span
 0x004475e0,47,Ghidra body span
-0x00447610,84,Ghidra body span
+0x00447610,146,Ghidra body and referenced local data to 0x004476a2
 0x004476b0,248,Ghidra body span
 0x004477b0,33,Ghidra body span
-0x004477e0,62,Ghidra body span
+0x004477e0,80,Ghidra body and referenced local data to 0x00447830
 0x00447830,21,Ghidra body span
 0x00447960,3,Ghidra body span
 0x00447970,3,Ghidra body span
@@ -3747,12 +3748,12 @@ address,size,evidence
 0x00447fb0,36,Ghidra body span
 0x00447fe0,75,Ghidra body span
 0x00448030,36,Ghidra body span
-0x00448200,221,Ghidra body span
+0x00448200,244,Ghidra body and referenced local data to 0x004482f4
 0x00448300,575,Ghidra body span
 0x00448540,18,Ghidra body span
-0x00448560,155,Ghidra body span
+0x00448560,172,Ghidra body and referenced local data to 0x0044860c
 0x00448610,1,Ghidra body span
-0x00448620,284,Ghidra body span
+0x00448620,471,Ghidra body and referenced local data to 0x004487f7
 0x00448800,181,Ghidra body span
 0x00448a70,30,Ghidra body span
 0x00448aa0,8,Ghidra body span
@@ -3771,12 +3772,12 @@ address,size,evidence
 0x00449750,85,Ghidra body span
 0x004497b0,646,Ghidra body span
 0x00449a40,745,Ghidra body span
-0x00449d30,287,Ghidra body span
+0x00449d30,304,Ghidra body and referenced local data to 0x00449e60
 0x00449e60,23,Ghidra body span
 0x00449e80,23,Ghidra body span
 0x00449ea0,21,Ghidra body span
 0x00449ec0,21,Ghidra body span
-0x00449ee0,73,Ghidra body span
+0x00449ee0,92,Ghidra body and referenced local data to 0x00449f3c
 0x00449f40,30,Ghidra body span
 0x00449f60,737,Ghidra body span
 0x0044a250,116,Ghidra body span
@@ -3839,12 +3840,12 @@ address,size,evidence
 0x0044cc90,75,Ghidra body span
 0x0044cce0,124,Ghidra body span
 0x0044cd60,351,Ghidra body span
-0x0044cec0,124,Ghidra body span
+0x0044cec0,232,Ghidra body and referenced local data to 0x0044cfa8
 0x0044cfb0,201,Ghidra body span
 0x0044d080,194,Ghidra body span
 0x0044d150,318,Ghidra body span
 0x0044d290,49,Ghidra body span
-0x0044d2d0,1355,Ghidra body span
+0x0044d2d0,1372,Ghidra body and referenced local data to 0x0044d82c
 0x0044d830,170,Ghidra body span
 0x0044d8e0,175,Ghidra body span
 0x0044d990,68,Ghidra body span
@@ -3888,7 +3889,7 @@ address,size,evidence
 0x0044f440,328,Ghidra body span
 0x0044f590,124,Ghidra body span
 0x0044f610,161,Ghidra body span
-0x0044f6c0,390,Ghidra body span
+0x0044f6c0,500,Ghidra body and referenced local data to 0x0044f8b4
 0x0044f8c0,169,Ghidra body span
 0x0044f970,83,Ghidra body span
 0x0044f9d0,42,Ghidra body span
@@ -3935,11 +3936,11 @@ address,size,evidence
 0x00451600,5,Ghidra body span
 0x00451610,17,Ghidra body span
 0x00451630,178,Ghidra body span
-0x004516f0,680,Ghidra body span
+0x004516f0,894,Ghidra body and referenced local data to 0x00451a6e
 0x00451a70,47,Ghidra body span
 0x00451aa0,495,Ghidra body span
 0x00451c90,141,Ghidra body span
-0x00451d20,256,Ghidra body span
+0x00451d20,284,Ghidra body and referenced local data to 0x00451e3c
 0x00451e40,31,Ghidra body span
 0x00451e60,171,Ghidra body span
 0x00451f10,155,Ghidra body span
@@ -3961,7 +3962,7 @@ address,size,evidence
 0x00452740,58,Ghidra body span
 0x00452780,53,Ghidra body span
 0x004527c0,143,Ghidra body span
-0x00452850,456,Ghidra body span
+0x00452850,493,Ghidra body and referenced local data to 0x00452a3d
 0x00452a40,103,Ghidra body span
 0x00452ab0,8,Ghidra body span
 0x00452ac0,192,Ghidra body span
@@ -3997,7 +3998,7 @@ address,size,evidence
 0x004536f0,585,Ghidra body span
 0x00453940,1808,Ghidra body span
 0x00454050,1,Ghidra body span
-0x00454060,947,Ghidra body span
+0x00454060,1214,Ghidra body and referenced local data to 0x0045451e
 0x00454520,147,Ghidra body span
 0x004545c0,84,Ghidra body span
 0x00454620,48,Ghidra body span
@@ -4093,7 +4094,7 @@ address,size,evidence
 0x00457c50,21,Ghidra body span
 0x00457c70,7,Ghidra body span
 0x00457c80,389,Ghidra body span
-0x00457e10,664,Ghidra body span
+0x00457e10,688,Ghidra body and referenced local data to 0x004580c0
 0x004580c0,102,Ghidra body span
 0x00458130,65,Ghidra body span
 0x00458180,21,Ghidra body span
@@ -4153,7 +4154,7 @@ address,size,evidence
 0x004595d0,212,Ghidra body span
 0x004596b0,420,Ghidra body span
 0x00459860,266,Ghidra body span
-0x00459970,15,Ghidra body span
+0x00459970,19,x86 extent to 0x00459983; includes emitted epilogue after _longjmp
 0x00459990,11,Ghidra body span
 0x004599a0,11,Ghidra body span
 0x004599b0,30,Ghidra body span
@@ -4251,7 +4252,7 @@ address,size,evidence
 0x0045b600,354,Ghidra body span
 0x0045b770,73,Ghidra body span
 0x0045b7c0,39,Ghidra body span
-0x0045b8e0,20,Ghidra body span
+0x0045b8e0,24,x86 extent to 0x0045b8f8; includes emitted epilogue after DisplayRelAssert
 0x0045b900,327,Ghidra body span
 0x0045ba50,127,Ghidra body span
 0x0045bad0,21,Ghidra body span
@@ -4689,7 +4690,7 @@ address,size,evidence
 0x004644f0,1,Ghidra body span
 0x00464500,1,Ghidra body span
 0x00464510,1,Ghidra body span
-0x00464520,2143,Ghidra body span
+0x00464520,2536,Ghidra body and referenced local data to 0x00464f08
 0x00464f10,137,Ghidra body span
 0x00464fa0,175,Ghidra body span
 0x00465050,182,Ghidra body span
@@ -4815,7 +4816,7 @@ address,size,evidence
 0x00467f30,108,Ghidra body span
 0x00467fa0,45,Ghidra body span
 0x00467fd0,33,Ghidra body span
-0x00468000,45,Ghidra body span
+0x00468000,72,Ghidra body and referenced local data to 0x00468048
 0x00468050,112,Ghidra body span
 0x004680c0,109,Ghidra body span
 0x00468130,70,Ghidra body span
@@ -4884,7 +4885,7 @@ address,size,evidence
 0x0046a300,36,Ghidra body span
 0x0046a330,19,Ghidra body span
 0x0046a350,35,Ghidra body span
-0x0046a380,379,Ghidra body span
+0x0046a380,428,Ghidra body and referenced local data to 0x0046a52c
 0x0046a530,34,Ghidra body span
 0x0046a560,17,Ghidra body span
 0x0046a580,207,Ghidra body span
@@ -4983,12 +4984,12 @@ address,size,evidence
 0x0046de70,94,Ghidra body span
 0x0046ded0,103,Ghidra body span
 0x0046df40,64,Ghidra body span
-0x0046df80,57,Ghidra body span
+0x0046df80,84,Ghidra body and referenced local data to 0x0046dfd4
 0x0046dfe0,97,Ghidra body span
 0x0046e050,3,Ghidra body span
 0x0046e060,3,Ghidra body span
 0x0046e070,3,Ghidra body span
-0x0046e080,128,Ghidra body span
+0x0046e080,152,Ghidra body and referenced local data to 0x0046e118
 0x0046e120,3,Ghidra body span
 0x0046e130,452,Ghidra body span
 0x0046e300,68,Ghidra body span
@@ -5058,7 +5059,7 @@ address,size,evidence
 0x00470730,264,Ghidra body span
 0x00470840,372,Ghidra body span
 0x004709c0,456,Ghidra body span
-0x00470b90,387,Ghidra body span
+0x00470b90,404,Ghidra body and referenced local data to 0x00470d24
 0x00470d30,78,Ghidra body span
 0x00470d80,78,Ghidra body span
 0x00470dd0,250,Ghidra body span
@@ -5196,7 +5197,7 @@ address,size,evidence
 0x004732d0,102,Ghidra body span
 0x00473340,80,Ghidra body span
 0x00473390,341,Ghidra body span
-0x004734f0,272,Ghidra body span
+0x004734f0,288,x86 extent to 0x00473610; includes emitted cleanup after _VSExit
 0x00473610,29,Ghidra body span
 0x00473630,19,Ghidra body span
 0x00473650,164,Ghidra body span
@@ -5220,7 +5221,7 @@ address,size,evidence
 0x00474050,51,Ghidra body span
 0x00474090,160,Ghidra body span
 0x00474130,348,Ghidra body span
-0x00474290,131,Ghidra body span
+0x00474290,164,Ghidra body and referenced local data to 0x00474334
 0x00474340,100,Ghidra body span
 0x004743b0,37,Ghidra body span
 0x004743e0,75,Ghidra body span
@@ -5280,7 +5281,7 @@ address,size,evidence
 0x004787f0,568,Ghidra body span
 0x00478b80,41,Ghidra body span
 0x00478bb0,1017,Ghidra body span
-0x00478fb0,437,Ghidra body span
+0x00478fb0,480,Ghidra body and referenced local data to 0x00479190
 0x00479190,120,Ghidra body span
 0x00479210,132,Ghidra body span
 0x004792a0,135,Ghidra body span
@@ -5574,14 +5575,14 @@ address,size,evidence
 0x0047fdd0,36,Ghidra body span
 0x0047fe00,24,Ghidra body span
 0x0047fe20,409,Ghidra body span
-0x0047ffc0,38,Ghidra body span
+0x0047ffc0,42,x86 extent to 0x0047ffea; includes emitted epilogue after indirect __exit call
 0x0047fff0,24,Ghidra body span
 0x00480010,56,Ghidra body span
 0x00480050,8,x86 extent to 0x00480058; alignment excluded
 0x00480060,68,Ghidra body span
 0x004800b0,229,Ghidra body span
 0x00480198,123,Ghidra body span
-0x00480214,120,Ghidra body span
+0x00480214,121,x86 extent to 0x0048028d; includes emitted RET after indirect JMP
 0x00480290,334,Ghidra body span
 0x004803e0,58,Ghidra body span
 0x00480420,21,Ghidra body span
@@ -5614,7 +5615,8 @@ address,size,evidence
 0x00480f90,54,Ghidra body span
 0x00480fd0,40,Ghidra body span
 0x00481000,29,x86 extent to 0x0048101d; alignment excluded
-0x00481020,579,x86 extent to 0x00481263; alignment excluded
+0x00481020,524,x86 extent to 0x0048122c; RET at 0x0048122b; following helper starts at 0x00481230
+0x00481230,51,x86 extent to 0x00481263; RET at 0x00481262; original-only string helper
 0x00481270,555,Ghidra body span
 0x004814a0,44,Ghidra body span
 0x004814d0,436,Ghidra body span
@@ -5630,12 +5632,12 @@ address,size,evidence
 0x00481900,32,Ghidra body span
 0x00481920,111,x86 extent to 0x0048198f; alignment excluded
 0x00481990,21,x86 extent to 0x004819a5; alignment excluded
-0x004819a8,32,Ghidra body span
-0x004819ea,104,Ghidra body span
+0x004819a8,66,x86 extent to 0x004819ea; includes contiguous unwind handler at 0x004819c8
+0x004819ea,88,x86 extent to 0x00481a42; shared tail owned by annotated __NLG_Return2 at 0x00481a42
 0x00481a42,16,x86 extent to 0x00481a52; alignment excluded
 0x00481a52,35,x86 extent to 0x00481a75; alignment excluded
 0x00481a75,9,x86 extent to 0x00481a7e; alignment excluded
-0x00481a7e,24,Ghidra body span
+0x00481a7e,19,x86 extent to 0x00481a91; shared epilogue owned by annotated __NLG_Dispatch at 0x00481a91
 0x00481a91,5,x86 extent to 0x00481a96; alignment excluded
 0x00481aa0,335,Ghidra body span
 0x00481bf0,47,Ghidra body span
@@ -5658,7 +5660,7 @@ address,size,evidence
 0x00482330,411,Ghidra body span
 0x004824d0,547,Ghidra body span
 0x00482700,77,Ghidra body span
-0x00482750,56,Ghidra body span
+0x00482750,95,Ghidra body and referenced local data to 0x004827af
 0x004827b0,44,Ghidra body span
 0x004827e0,6,x86 extent to 0x004827e6; alignment excluded
 0x004827f0,11,Ghidra body span
@@ -5677,7 +5679,7 @@ address,size,evidence
 0x00482d80,494,Ghidra body span
 0x00482f70,52,x86 extent to 0x00482fa4; alignment excluded
 0x00482fb0,119,Ghidra body span
-0x00483030,411,Ghidra body span
+0x00483030,526,Ghidra body and referenced local data to 0x0048323e
 0x00483240,225,Ghidra body span
 0x00483330,110,Ghidra body span
 0x004833a0,137,Ghidra body span
@@ -5704,7 +5706,7 @@ address,size,evidence
 0x00484050,24,Ghidra body span
 0x00484070,146,Ghidra body span
 0x00484110,26,x86 extent to 0x0048412a; alignment excluded
-0x00484130,1047,Ghidra body span
+0x00484130,1117,Ghidra body and referenced local data to 0x0048458d
 0x00484590,326,Ghidra body span
 0x004846e0,164,Ghidra body span
 0x00484790,145,Ghidra body span
@@ -5721,8 +5723,8 @@ address,size,evidence
 0x00485200,31,x86 extent to 0x0048521f; alignment excluded
 0x00485220,73,x86 extent to 0x00485269; alignment excluded
 0x00485270,204,x86 extent to 0x0048533c; alignment excluded
-0x00485340,428,Ghidra body span
-0x004855b0,424,Ghidra body span
+0x00485340,469,Ghidra body and referenced local data to 0x00485515
+0x004855b0,477,Ghidra body and referenced local data to 0x0048578d
 0x00485790,49,Ghidra body span
 0x004857d0,9,x86 extent to 0x004857d9; alignment excluded
 0x004857e0,9,x86 extent to 0x004857e9; alignment excluded

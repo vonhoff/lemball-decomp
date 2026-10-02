@@ -49,16 +49,31 @@ unmatched functions. No claim of complete binary coverage; data and sections omi
 Empty-total 0% is repository policy; native objdiff uses 100%. Completion/link status
 is not inferred from matching scores.
 
-Byte weights: explicit reccmp original size, else
-`tools/data/original-function-sizes.csv`. Never rebuilt sizes. Missing target extents
-fail report generation. Recorded extents: Ghidra entry through highest body address,
-including interior gaps/tables; analysis-derived, not original debug symbols.
-Supplemental original x86 endpoints: evidence column; alignment excluded.
+Original sizes: `tools/data/original-function-sizes.csv`, ingested through upstream
+CSV metadata in `reccmp-project.yml`. Comparisons and byte weights use the same
+explicit original extent; rebuilt sizes never select original comparison coverage.
+Shared code labels own disjoint spans. Missing extents, duplicate/overlapping spans,
+trailing alignment, and undecoded original bytes fail before comparison.
+
+Recorded extents: Ghidra body plus referenced local switch/data tables; original x86
+endpoints override analysis. Includes interior gaps/tables and emitted epilogues
+after calls classified as non-returning. Analysis-derived, not original debug symbols.
+Verified original-only routines in `tools/data/original-functions.csv` enter the
+inventory at zero until matched.
+
+Shared engine setup removes a fully decoded, untargeted MSVC alignment suffix from
+rebuilt spans after RET/JMP. Interior code/tables remain. A scoped workaround for
+reccmp 0.1.7 retains intentional INT3 inside explicit extents (CRT `_assert`); the
+upstream instruction decoder hook is restored after each function. Reccmp still
+performs normalization, diffing, raw scoring, and effective-match recognition.
+Direct upstream CLI commands use the CSV but omit these shared setup adjustments.
 
 Refresh evidence with `tools/ghidra/ExportFunctionSizes.java` against the original
 LEMBALL.EXE; one script argument: scratch output CSV path. Verify the exported
 SHA-256 against `reccmp-project.yml`. Review boundaries and preserve independently
-inspected supplemental entries before updating the canonical CSV. Runtime reports
+inspected supplemental entries before updating the canonical CSV. Inspect padding,
+shared labels, emitted epilogues, and unrecognized adjacent routines; exporter output
+is review material. Runtime reports
 need no Ghidra connection. Changes to inferred boundaries: audit backlog and review.
 
 Badges: exact/fuzzy from `report.json`; effective adds equivalent code from

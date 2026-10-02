@@ -13,7 +13,10 @@ REPORT_JSON = BUILD / "report.json"
 TOKENS = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'')
 
 CPP_SUFFIXES = frozenset({".cpp", ".h", ".c"})
-RECCMP_MARK = re.compile(r"^\s*//\s*(?:FUNCTION|STUB|TEMPLATE|SYNTHETIC|LIBRARY|GLOBAL|VTABLE)\s*:", re.MULTILINE)
+RECCMP_MARK = re.compile(
+    r"^\s*//\s*(?:FUNCTION|STUB|TEMPLATE|SYNTHETIC|LIBRARY|GLOBAL|VTABLE)\s*:",
+    re.MULTILINE,
+)
 VTABLE_MARK = re.compile(r"^\s*//\s*VTABLE:\s+LEMBALL\b", re.MULTILINE)
 TYPE_DEF = re.compile(
     r"\b(?P<kind>class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
@@ -65,6 +68,10 @@ def collect_sources(paths=None, suffixes=CPP_SUFFIXES):
 def load_engine():
     from reccmp.compare import Compare
     from reccmp.project.detect import RecCmpProject
+    from lib.extents import load_target_sizes, prepare_function_extents
 
+    load_target_sizes()
     target = RecCmpProject.from_directory(BUILD).get("LEMBALL")
-    return target, Compare.from_target(target)
+    engine = Compare.from_target(target)
+    prepare_function_extents(engine)
+    return target, engine
