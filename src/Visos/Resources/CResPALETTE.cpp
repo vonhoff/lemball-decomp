@@ -39,5 +39,5 @@ void CResPALETTE::SetType()
 void CResPALETTE::SetHeader()
 {
 	PaletteHeader* header = (PaletteHeader*) m_name;
-	m_paletteState = header->m_paletteState;
+	m_entryCount = header->m_entryCount;
 }

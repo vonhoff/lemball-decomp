@@ -5,7 +5,7 @@
 
 // SIZE 0x04
 struct PaletteHeader {
-	unsigned int m_paletteState;
+	unsigned int m_entryCount;
 };
 
 // SIZE 0x4c
@@ -25,7 +25,7 @@ public:
 	friend class CBaseRemap;
 
 private:
-	unsigned int m_paletteState; // 0x48
+	unsigned int m_entryCount; // 0x48
 };
 
 // SYNTHETIC: LEMBALL 0x0045ea50

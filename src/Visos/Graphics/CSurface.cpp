@@ -277,7 +277,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 		}
 	}
 	else {
-		int paletteCount = (int) p_palette->m_paletteState - 10;
+		int paletteCount = (int) p_palette->m_entryCount - 10;
 		if (paletteCount > 0xf6) {
 			paletteCount = 0xec;
 		}

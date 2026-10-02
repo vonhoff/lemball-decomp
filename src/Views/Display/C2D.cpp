@@ -283,7 +283,7 @@ void C2D::RegisterRemaps()
 
 	targets = g_anC2DRemapTargetIndices[0];
 	palette = CResPALETTE::Load(RES_GAME_GAMEPALETTE);
-	paletteSize = (int) palette->m_paletteState;
+	paletteSize = (int) palette->m_entryCount;
 	remapIndex = 0;
 	do {
 		m_remapTables[remapIndex] = (unsigned char*) operator new(paletteSize);
