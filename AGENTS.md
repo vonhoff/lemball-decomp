@@ -11,7 +11,7 @@
 
 - `data/LEMBALL.EXE` and original x86: behavior and ABI evidence. Ghidra: analysis; PDB: rebuilt symbols.
 - Structural source exploration: codebase-memory skill; verify against source.
-- `tools/data/catalog.csv`: Mac symbols with optional Windows mappings. Naming/type evidence; Windows ABI differences require Windows evidence.
+- `tools/data/mac-symbol-catalog.csv`: Mac symbols with optional Windows mappings. Naming/type evidence; Windows ABI differences require Windows evidence.
 - Matching: validation of a source hypothesis. Qualify inferred names, types, layouts; no score-only source tricks.
 - `README.md`, `Manifest.h`, reference hashes, compiler flags: edit only when asked.
 

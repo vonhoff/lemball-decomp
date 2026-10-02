@@ -51,7 +51,7 @@ class CatalogTests(unittest.TestCase):
         header = "mac_address,symbol,windows_address\n"
         row = "1060000c,Real__Fv,401000\n"
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "catalog.csv"
+            path = Path(directory) / "mac-symbol-catalog.csv"
             path.write_text(header + row + "1060000c,Real__Fv,402000\n10600020,MacOnly__Fv,\n",
                             encoding="utf-8")
             self.assertEqual(read_catalog(path), (

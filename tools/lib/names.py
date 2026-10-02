@@ -10,7 +10,7 @@ from pathlib import Path
 from . import ROOT, TOKENS, collect_sources, mask_comments_and_strings
 from .signatures import adjacent_signature, canonical_type, class_ranges, decode_signature
 
-CATALOG = ROOT / "tools/data/catalog.csv"
+CATALOG = ROOT / "tools/data/mac-symbol-catalog.csv"
 WINDOWS_MARK = re.compile(
     r"//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s*LEMBALL\s+(0x[0-9a-fA-F]+)\b"
 )
