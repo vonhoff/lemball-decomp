@@ -36,21 +36,13 @@ similarity under fuzzy progress.
 
 ## Effective Matching
 
-Effective matching counts exact matches, reccmp equivalents, and matches covered by
-the rules below, weighted by original function size.
+Effective matching counts exact matches, reccmp equivalents, and matches covered by these rules:
 
 | Rule | Reason |
 | --- | --- |
 | Linker thunks | Different jump stubs can reach the same matched function. |
 | `CMP` versus `TEST` | Comparing against a known zero and testing the same register give the same branch result. |
 | Overwritten vtable stores | An intermediate vtable pointer is overwritten before use. |
-
-[tools/lib/effective.py](tools/lib/effective.py) checks these rules. Additional matches
-and their reasons are stored in `build-msvc400/effective.json`. Raw scores and exact
-totals stay unchanged.
-
-`tools/next.py` skips effective matches, with `--exact` to rank by raw scores.
-`tools/match.py` shows both scores above the assembly diff.
 
 ## References
 
