@@ -11,6 +11,13 @@ from report import build_report
 
 
 class BadgeTests(unittest.TestCase):
+    def test_empty_report_badges_have_zero_progress(self):
+        comparisons = ReccmpStatusReport("LEMBALL.EXE")
+        for groups in ({}, {"Empty": []}):
+            with self.subTest(groups=groups):
+                badges = build_badges(build_report(groups), comparisons)
+                self.assertTrue(all(badge["message"] == "0.00%" for badge in badges.values()))
+
     def test_exact_fuzzy_and_effective_are_distinct(self):
         comparisons = ReccmpStatusReport("LEMBALL.EXE")
         functions = []
@@ -52,5 +59,3 @@ class BadgeTests(unittest.TestCase):
         self.assertEqual(report, unchanged)
         self.assertEqual(report["measures"]["matched_functions"], 1)
         self.assertTrue(all(badge["schemaVersion"] == 1 for badge in badges.values()))
-        empty = build_badges(build_report({}), comparisons)
-        self.assertTrue(all(badge["message"] == "100.00%" for badge in empty.values()))

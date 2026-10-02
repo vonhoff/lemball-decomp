@@ -8,10 +8,30 @@ from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.formats.exceptions import InvalidVirtualAddressError
 from reccmp.types import EntityType
 
-from report import build_report, group_functions, original_functions
+from report import build_report, group_functions, measures, original_functions
 
 
 class ReportTests(unittest.TestCase):
+    def test_empty_reports_have_zero_progress(self):
+        for groups in ({}, {"Empty": []}):
+            with self.subTest(groups=groups):
+                report = build_report(groups)
+                self.assertEqual(report["measures"]["total_units"], len(groups))
+                for values in [report["measures"]] + [u["measures"] for u in report["units"]]:
+                    self.assertEqual(values["total_code"], "0")
+                    self.assertEqual(values["matched_code"], "0")
+                    self.assertEqual(values["total_functions"], 0)
+                    self.assertEqual(values["matched_functions"], 0)
+                    self.assertEqual(values["fuzzy_match_percent"], 0.0)
+                    self.assertEqual(values["matched_code_percent"], 0.0)
+                    self.assertEqual(values["matched_functions_percent"], 0.0)
+
+    def test_zero_code_does_not_claim_matched_bytes(self):
+        values = measures([{"size": "0", "fuzzy_match_percent": 100.0}])
+        self.assertEqual(values["fuzzy_match_percent"], 0.0)
+        self.assertEqual(values["matched_code_percent"], 0.0)
+        self.assertEqual(values["matched_functions_percent"], 100.0)
+
     def test_report(self):
         comparisons = ReccmpStatusReport("LEMBALL.EXE")
         for entity in (
@@ -64,9 +84,6 @@ class ReportTests(unittest.TestCase):
             "exact.obj" if address == 0x501000 else "mixed.obj",
         )
         result = build_report(group_functions(original_functions(engine), comparisons, modules))
-        empty = build_report({})
-        self.assertEqual(empty["measures"]["total_functions"], 0)
-        self.assertEqual(empty["measures"]["fuzzy_match_percent"], 100.0)
         functions = [f for u in result["units"] for f in u["functions"]]
         self.assertEqual(len({f["name"] for f in functions}), 4)
         self.assertEqual(functions[1]["metadata"]["demangled_name"], "Equivalent(int)")
@@ -80,6 +97,6 @@ class ReportTests(unittest.TestCase):
             [f["fuzzy_match_percent"] for u in result["units"] for f in u["functions"]],
             [100.0, 80.0, 0.0, 0.0],
         )
-        for measures in [totals] + [u["measures"] for u in result["units"]]:
-            self.assertFalse(any(k.startswith("complete_") for k in measures))
+        for values in [totals] + [u["measures"] for u in result["units"]]:
+            self.assertFalse(any(k.startswith("complete_") for k in values))
         self.assertTrue(all("complete" not in u.get("metadata", {}) for u in result["units"]))

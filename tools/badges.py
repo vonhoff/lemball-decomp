@@ -29,7 +29,7 @@ def build_badges(report, comparisons):
                 effective_code += int(function["size"])
     values = report["measures"]
     total_code = int(values["total_code"])
-    effective_percent = effective_code / total_code * 100 if total_code else 100.0
+    effective_percent = effective_code / total_code * 100 if total_code else 0.0
     return {
         name: {"schemaVersion": 1, "label": label, "message": f"{percent:.2f}%", "color": color}
         for name, label, percent, color in (

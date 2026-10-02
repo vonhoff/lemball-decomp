@@ -40,6 +40,7 @@ Recognizers: limited C++ syntax. Mask comments/strings; preserve offsets and lin
 numbers. Unsupported signatures: unresolved. Parser changes: regression cases in `tests/`.
 
 Reports: raw upstream scores; stubs zero; exact 100%; equivalent matches stay fuzzy.
+Empty code/function totals: 0% progress, including badges.
 Regenerate at batch boundaries. Annotation checks and comparisons: direct reccmp APIs.
 
 Badges: exact/fuzzy from `report.json`; effective adds equivalent code from

@@ -15,7 +15,7 @@ from lib import BUILD, RECCMP_JSON, REPORT_JSON, ROOT, load_engine
 
 
 def measures(functions, total_units=1):
-    """Count exact matches and weight raw scores by code size."""
+    """Count exact matches and weight raw scores by code size; empty totals score zero."""
     total_code = sum(int(function["size"]) for function in functions)
     exact = [function for function in functions if function["fuzzy_match_percent"] == 100]
     exact_code = sum(int(function["size"]) for function in exact)
@@ -26,11 +26,11 @@ def measures(functions, total_units=1):
         "total_units": total_units,
         "total_code": str(total_code),
         "matched_code": str(exact_code),
-        "fuzzy_match_percent": weighted_score / total_code if total_code else 100.0,
-        "matched_code_percent": exact_code / total_code * 100 if total_code else 100.0,
+        "fuzzy_match_percent": weighted_score / total_code if total_code else 0.0,
+        "matched_code_percent": exact_code / total_code * 100 if total_code else 0.0,
         "total_functions": len(functions),
         "matched_functions": len(exact),
-        "matched_functions_percent": len(exact) / len(functions) * 100 if functions else 100.0,
+        "matched_functions_percent": len(exact) / len(functions) * 100 if functions else 0.0,
     }
 
 
