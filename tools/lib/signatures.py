@@ -6,7 +6,7 @@ CodeWarrior grammar: https://github.com/encounter/cwdemangle (CC0).
 import re
 from dataclasses import dataclass
 
-from . import brace_ends
+from . import TYPE_DEF, brace_ends, parenthesis_end
 
 OPERATORS = {
     "__as": "operator=", "__ls": "operator<<", "__nw": "operatornew",
@@ -256,10 +256,10 @@ def parameter_type(text):
 def class_ranges(code):
     ends = brace_ends(code)
     result = []
-    for match in re.finditer(r"\b(?:class|struct)\s+(\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{", code):
+    for match in TYPE_DEF.finditer(code):
         opening = match.end() - 1
         if opening in ends:
-            result.append((opening, ends[opening], match[1]))
+            result.append((opening, ends[opening], match["name"]))
     return result
 
 
@@ -279,14 +279,11 @@ def adjacent_signature(code, offset, ranges):
         method = "<constructor>"
     elif owner and method == "~" + leaf:
         method = "<destructor>"
-    depth, closing = 1, match.end()
-    while closing < len(declaration) and depth:
-        depth += (declaration[closing] == "(") - (declaration[closing] == ")")
-        closing += 1
-    if depth:
+    closing = parenthesis_end(declaration, match.end() - 1)
+    if closing is None:
         raise ValueError("unclosed function parameters")
-    raw = declaration[match.end():closing - 1].strip()
-    const = bool(re.match(r"\s*const\b", declaration[closing:]))
+    raw = declaration[match.end():closing].strip()
+    const = bool(re.match(r"\s*const\b", declaration[closing + 1:]))
     try:
         parameters = () if raw in ("", "void") else tuple(parameter_type(p) for p in split_parameters(raw))
         reason = None

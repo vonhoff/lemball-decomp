@@ -6,11 +6,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from . import ROOT, VTABLE_MARK, brace_ends, collect_sources, mask_comments_and_strings
+from . import ROOT, TYPE_DEF, VTABLE_MARK, brace_ends, collect_sources, mask_comments_and_strings
 
-TYPE_DEF = re.compile(
-    r"\b(?P<kind>class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
-)
 # Out-of-line definitions start in column 0. Indented Class::Call sites are ignored.
 METHOD_DEF = re.compile(
     r"^(?:(?P<ret>(?:(?:unsigned|signed|const|volatile|static|inline|virtual)\s+)*"

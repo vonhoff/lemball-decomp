@@ -11,6 +11,27 @@ from lib.smell import check_smell, scan_file
 
 
 class SmellTests(unittest.TestCase):
+    def test_masking_and_nested_parentheses(self):
+        text = (
+            'const char* text = "(char*) this - 0x10";\n'
+            '/*\nvoid Fake() {}\n(char*) this - 0x10;\n*/\n'
+            'void Prototype(void (*callback)(int));\n'
+            '// FUNCTION: LEMBALL 0x00401000\n'
+            'void Annotated(void (*callback)(int)) {}\n'
+            'void Missing(void (*callback)(int)) {}\n'
+            'auto value = *((Widget*) (owner + offset)); // trailing comment\n'
+            'auto broken = *((Widget*) (owner + offset);\n'
+        )
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp).resolve()
+            source = root / 'Fixture.cpp'
+            source.write_text(text, encoding='utf-8')
+            with patch('lib.smell.ROOT', root):
+                hits = scan_file(source)
+        self.assertEqual([(line, rule) for _, line, rule, _ in hits],
+                         [(10, 'cast-deref-offset'), (9, 'no-annotation')])
+        self.assertEqual(hits[0][3], 'auto value = *((Widget*) (owner + offset));')
+
     def test_smell_gate(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp).resolve()

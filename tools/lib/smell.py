@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-from . import RECCMP_MARK, ROOT, TOKENS, collect_sources, mask_comments_and_strings
+from . import RECCMP_MARK, ROOT, TOKENS, collect_sources, mask_comments_and_strings, parenthesis_end
 
 # Hit: relative path, line number, rule, complete source line without trailing comments.
 Hit = tuple[str, int, str, str]
@@ -93,18 +93,12 @@ def is_func_def(stripped: str) -> bool:
     return bool(FREE_DEF.match(stripped))
 
 
-def declaration_has_body(code: str) -> bool:
+def declaration_has_body(code: str, offset: int = 0) -> bool:
     """A wrapped local constructor call or prototype ends in ';', not a body."""
-    opening = code.find("(")
-    if opening < 0:
+    end = parenthesis_end(code, code.find("(", offset))
+    if end is None:
         return False
-    depth, end = 1, opening + 1
-    while end < len(code) and depth:
-        depth += (code[end] == "(") - (code[end] == ")")
-        end += 1
-    if depth:
-        return False
-    return bool(re.match(r"\s*(?:(?:const|volatile)\s*)*(?:\{|:(?!:))", code[end:]))
+    return bool(re.match(r"\s*(?:(?:const|volatile)\s*)*(?:\{|:(?!:))", code[end + 1:]))
 
 
 def iter_raw_deref_casts(code: str):
@@ -116,22 +110,12 @@ def iter_raw_deref_casts(code: str):
         cast = CAST_TYPE_AT.match(code, start.end())
         if cast is None:
             continue
-        type_text = cast.group("type")
-        pos = cast.end()
-        depth = 1
-        rhs_start = pos
-        while pos < len(code) and depth:
-            ch = code[pos]
-            if ch == "(":
-                depth += 1
-            elif ch == ")":
-                depth -= 1
-            pos += 1
-        if depth != 0:
+        end = parenthesis_end(code, start.end() - 1)
+        if end is None:
             continue
-        rhs = code[rhs_start : pos - 1].strip()
+        rhs = code[cast.end():end].strip()
         if rhs:
-            yield type_text, rhs
+            yield cast.group("type"), rhs
 
 
 ADDR_OF = re.compile(r"^\(?\s*&")
@@ -152,47 +136,49 @@ def raw_cast_reason(code: str) -> str | None:
 
 def scan_file(path: Path) -> list[Hit]:
     lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    masked = mask_comments_and_strings("\n".join(lines))
+    masked_lines = masked.splitlines()
     hits: list[Hit] = []
     rel = path.resolve().relative_to(ROOT).as_posix()
-    for lineno, raw in enumerate(lines, 1):
+    for lineno, (raw, code) in enumerate(zip(lines, masked_lines), 1):
         comment = next((token for token in TOKENS.finditer(raw) if token[0].startswith('//')), None)
-        code = raw[:comment.start()] if comment else raw
+        display = (raw[:comment.start()] if comment else raw).strip()
         raw_cast = raw_cast_reason(code)
         if raw_cast is not None:
-            hits.append((rel, lineno, raw_cast, code.strip()))
+            hits.append((rel, lineno, raw_cast, display))
         if VBPTR_WALK.search(code):
-            hits.append((rel, lineno, "vbptr-walk", code.strip()))
+            hits.append((rel, lineno, "vbptr-walk", display))
         if THIS_ADJUST.search(code):
-            hits.append((rel, lineno, "this-adjust-poke", code.strip()))
+            hits.append((rel, lineno, "this-adjust-poke", display))
         poked = False
         type_erase = CAST_BYTE_DIV_INDEX.search(code)
         if type_erase is not None:
-            hits.append((rel, lineno, "type-erase-index", code.strip()))
+            hits.append((rel, lineno, "type-erase-index", display))
             poked = True
         for match in EXPR_CHAR_OFFSET.finditer(code):
             if not BUFFER_OK.search(match.group("expr")):
-                hits.append((rel, lineno, "expr-char-offset", code.strip()))
+                hits.append((rel, lineno, "expr-char-offset", display))
                 poked = True
                 break
         if MI_DTOR_POKE.search(code):
-            hits.append((rel, lineno, "mi-dtor-poke", code.strip()))
+            hits.append((rel, lineno, "mi-dtor-poke", display))
             poked = True
         if (not poked and not BUFFER_OK.search(code)
                 and (CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code)
                      or NAKED_DATA_OFFSET.search(code))):
-            hits.append((rel, lineno, "offset-poke", code.strip()))
+            hits.append((rel, lineno, "offset-poke", display))
         for match in CHAR_VAR_OFFSET.finditer(code):
             if BUFFER_OK.search(match.group("expr")):
                 continue
             if match.group("off") == "sizeof":
                 continue
-            hits.append((rel, lineno, "offset-poke", code.strip()))
+            hits.append((rel, lineno, "offset-poke", display))
     if path.suffix.lower() != ".cpp":
         return hits
-    masked_lines = mask_comments_and_strings("\n".join(lines)).splitlines()
-    for i, raw in enumerate(lines):
-        stripped = raw.strip()
-        if not is_func_def(stripped) or not declaration_has_body("\n".join(masked_lines[i:])):
+    offset = 0
+    for i, (raw, code) in enumerate(zip(lines, masked_lines)):
+        start, offset = offset, offset + len(code) + 1
+        if not is_func_def(code.strip()) or not declaration_has_body(masked, start):
             continue
         block = []
         for previous in reversed(lines[:i]):
@@ -205,7 +191,7 @@ def scan_file(path: Path) -> list[Hit]:
             else:
                 break
         if not any(RECCMP_MARK.match(line) for line in block):
-            hits.append((rel, i + 1, 'no-annotation', stripped))
+            hits.append((rel, i + 1, 'no-annotation', raw.strip()))
     return hits
 
 

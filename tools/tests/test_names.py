@@ -83,6 +83,19 @@ class CatalogNamingTests(unittest.TestCase):
         self.path.write_text(source, encoding="utf-8")
         return scan(self.path, self.symbols, self.pairs, **kwargs)
 
+    def test_nested_class_callback_and_unclosed_declaration(self):
+        self.symbols[0x10b0f952] = 'Read__Q25Outer5InnerCFPFPCc_i'
+        row, = self.scan('class Outer final : public Base {\nstruct Inner {\n'
+                         '// FUNCTION: LEMBALL 0x0043a250\n'
+                         'int Read(int (*callback)(const char* text)) const;\n};\n};\n')
+        self.assertEqual((row['status'], row['signature_status']), ('match', 'match'))
+        self.assertEqual(row['actual_signature'],
+                         'Outer::Inner::Read(int (*)(const char*)) const')
+        row, = self.scan('// FUNCTION: LEMBALL 0x0043a250\n'
+                         'int Read(int (*callback)(const char* text);')
+        self.assertEqual(row['status'], 'unresolved')
+        self.assertEqual(row['reason'], 'unclosed function parameters')
+
     def test_callback_abi_difference_is_compared_not_suppressed(self):
         self.symbols[0x10b0f952] = "__ct__17CVSDebugStreambufFPciPFPc_Uc"
         row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\n"

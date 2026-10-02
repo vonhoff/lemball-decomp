@@ -16,6 +16,9 @@ TOKENS = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\]
 CPP_SUFFIXES = frozenset({".cpp", ".h", ".c"})
 RECCMP_MARK = re.compile(r"^\s*//\s*(?:FUNCTION|STUB|TEMPLATE|SYNTHETIC|LIBRARY|GLOBAL|VTABLE)\s*:", re.MULTILINE)
 VTABLE_MARK = re.compile(r"^\s*//\s*VTABLE:\s+LEMBALL\b", re.MULTILINE)
+TYPE_DEF = re.compile(
+    r"\b(?P<kind>class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
+)
 
 
 def mask_comments_and_strings(text: str) -> str:
@@ -31,6 +34,18 @@ def brace_ends(code: str) -> dict[int, int]:
         elif char == "}" and stack:
             ends[stack.pop()] = pos
     return ends
+
+
+def parenthesis_end(code: str, opening: int) -> int | None:
+    """Find a closing parenthesis in masked code; return None if unclosed."""
+    if opening < 0 or opening >= len(code) or code[opening] != "(":
+        return None
+    depth = 0
+    for pos in range(opening, len(code)):
+        depth += (code[pos] == "(") - (code[pos] == ")")
+        if depth == 0:
+            return pos
+    return None
 
 
 def collect_sources(paths=None, suffixes=CPP_SUFFIXES):
