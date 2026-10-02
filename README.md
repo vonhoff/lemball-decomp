@@ -58,10 +58,9 @@ For the available commands and validation checks, see [tools/USAGE.md](tools/USA
 
 ## Legal
 
-*Lemmings Paintball* is being reverse-engineered for preservation in this unofficial project. The project is not affiliated with, authorized by, or endorsed by the game's rights holders.
+This unofficial project reverse-engineers *Lemmings Paintball* for preservation.
+The original game and assets remain the property of their rights holders and are
+not distributed with this repository.
 
-The game, its name, trademarks, and original copyrighted material remain the property of their respective rights holders. Neither the original executable nor game assets are included in or distributed with this repository.
-
-The reconstructed game code was produced through reverse engineering and analysis of the compiled program. No original or leaked source code was used. This code is provided without a license. No rights in third-party intellectual property are granted by this repository.
-
-Code independently developed for this project, outside the reconstructed game code, is licensed under the [GNU General Public License v3.0](LICENSE).
+The reconstructed game code has no license. Code independently developed for this
+project is licensed under the [GNU General Public License v3.0](LICENSE).
