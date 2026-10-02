@@ -262,8 +262,8 @@ int CWaveSoundDevice::StopAllEffects()
 			if (tries >= 500) {
 				break;
 			}
-			tries = tries + 1;
 			result = waveOutReset(m_waveOut);
+			tries = tries + 1;
 		} while (result != 0);
 		if (tries == 500) {
 			*g_pErrorOutput << "Error stopping playback in device : ";
