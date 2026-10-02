@@ -3,11 +3,13 @@
 
 import argparse
 import sys
+from dataclasses import replace
 
 from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
 from build import run_build
 from lib import load_engine
+from lib.effective import additional_effective_matches
 
 
 def main() -> int:
@@ -23,14 +25,21 @@ def main() -> int:
             return code
 
     _, engine = load_engine()
-    for address in args.addrs:
-        comparison = engine.compare_address(address)
+    comparisons = [engine.compare_address(address) for address in args.addrs]
+    additional = additional_effective_matches(
+        engine, {comparison.orig_addr: comparison for comparison in comparisons if comparison is not None}
+    )
+    for address, comparison in zip(args.addrs, comparisons):
         if comparison is None:
             print(f"0x{address:08x}: NOT_FOUND")
         elif comparison.is_stub:
             print_match_oneline(comparison)
         else:
-            print_match_verbose(comparison)
+            effective = replace(
+                comparison, is_effective_match=comparison.is_effective_match or address in additional,
+            )
+            print(f"Raw: {comparison.accuracy * 100:.2f}%  Effective: {effective.effective_accuracy * 100:.2f}%")
+            print_match_verbose(effective)
     return 0
 
 

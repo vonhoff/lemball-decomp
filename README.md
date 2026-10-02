@@ -1,25 +1,40 @@
 # Lemmings Paintball Decompilation
 
 [![Build Status](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml/badge.svg)](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml)
-[![Exact](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](#matching-and-progress)
-[![Fuzzy](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](#matching-and-progress)
 [![Effective](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Feffective.json)](#matching-and-progress)
+[![Exact](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](https://decomp.dev/vonhoff/lemball-decomp)
+[![Fuzzy](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](https://decomp.dev/vonhoff/lemball-decomp)
 
 [<img src="https://decomp.dev/vonhoff/lemball-decomp.svg?w=512&h=256" width="512" height="256" alt="Decomp Progress Chart">](https://decomp.dev/vonhoff/lemball-decomp)
 
 This project is a matching decompilation of *Lemmings Paintball* (1996, Windows 95).
+The goal is to reconstruct the full game in readable C++, preserve its original
+behavior, and reach 100% effective matching across all functions.
 
 Microsoft Visual C++ 4.00 compiles the C++ code. [Reccmp](https://github.com/isledecomp/reccmp) compares each function with the original executable.
 
 ## Matching and progress
 
-The badges measure code bytes in the reported original functions:
+In the decomp.dev report, `matched_*` counts functions with a raw 100% assembly
+comparison score. Equivalent functions with lower scores retain their raw
+similarity under fuzzy progress.
 
-| Badge | What counts |
-| --- | --- |
-| Exact Match | Functions with a raw 100% [normalized assembly](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py) score, excluding stubs. |
-| Fuzzy Match | Raw assembly similarity, weighted by original function size. Stubs and functions without a matched comparison score zero. |
-| Effective Match | Exact matches plus functions reccmp accepts as equivalent, including some differences in register use. Stubs score zero. |
+The Effective metric includes exact matches, reccmp's register and instruction-order
+equivalents, and the checks below. Code percentages are weighted by original
+function size.
+
+| Additional rule | Why it counts | Required evidence |
+| --- | --- | --- |
+| Linker thunk targets | Calls and function pointers can reach the same function through different linker jump stubs. | An `E9` jump to a paired function. Incremental linker tables require closing padding and forward code targets, indirect pointers require relocation entries. |
+| Known-zero `CMP` versus `TEST` | Comparing a register against zero and testing that register produce the same branch decision. | A proved zero on both sides, the same following branch, and no instructions that observe the differing auxiliary flag. Writes and control-flow joins invalidate zero facts. |
+| Overwritten construction vtable stores | An intermediate vtable address has no effect when overwritten before use. | The same destination, overwritten within the next three instructions before any read, call, or branch. |
+
+[tools/lib/effective.py](tools/lib/effective.py) records additional matches and their
+reasons in `build-msvc400/effective.json`. These checks affect the Effective metric,
+with raw comparison scores and exact totals unchanged.
+
+`tools/next.py` skips effective matches and accepts `--exact` to rank by raw scores.
+`tools/match.py` displays raw and Effective scores with the assembly diff.
 
 [tools/report.py](tools/report.py) maps reccmp results to objdiff's `report.json`:
 

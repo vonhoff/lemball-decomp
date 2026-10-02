@@ -20,14 +20,14 @@
 | Script | Purpose |
 | --- | --- |
 | `tools/build.py` | Build/link; `--clean-first` for stale PDB/build artifacts |
-| `tools/match.py 0xADDR` | Build/compare/diff; `--no-build` for current artifacts |
-| `tools/next.py` | Rank unfinished functions by raw score, then size/address |
+| `tools/match.py 0xADDR` | Build/compare/diff with raw and Effective scores, `--no-build` for current artifacts |
+| `tools/next.py` | Rank unfinished functions with Effective scores, `--exact` for raw, then size/address |
 | `tools/gate.py` | Source checks and tool tests |
 | `tools/report.py` | Canonical comparison/progress reports |
 | `tools/badges.py` | README badges, separate from canonical progress |
 
 Deep comparison: `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
-Canonical progress: exact = non-stub, raw 100% normalized assembly; stubs contribute zero.
+Canonical progress: exact = non-stub, raw 100% assembly comparison score. Stubs contribute zero.
 Effective matches retain raw fuzzy scores. Effective badge includes exact + equivalent code; no effective fields in `report.json`.
 
 ## Source changes

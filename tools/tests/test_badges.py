@@ -71,3 +71,14 @@ class BadgeTests(unittest.TestCase):
         self.assertEqual(badges["effective"]["message"], "37.50%")
         self.assertEqual(report, unchanged)
         self.assertTrue(all(badge["schemaVersion"] == 1 for badge in badges.values()))
+        raw_comparisons = copy.deepcopy(comparisons.entities)
+        additional = {0x401000: ("Already exact",), 0x401040: ("Stub",),
+                      0x401060: ("Extra equivalence",), 0x401080: ("Unmatched",),
+                      0x4010C0: ("No comparison",)}
+        extended = build_badges(report, comparisons, additional)
+        self.assertEqual(effective_totals(report, comparisons, additional), (40, 3))
+        self.assertEqual(extended["effective"]["message"], "50.00%")
+        self.assertEqual(extended["exact"], badges["exact"])
+        self.assertEqual(extended["fuzzy"], badges["fuzzy"])
+        self.assertEqual(report, unchanged)
+        self.assertEqual(comparisons.entities, raw_comparisons)

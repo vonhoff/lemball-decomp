@@ -8,6 +8,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport, serialize_reccmp_report
+from reccmp.types import EntityType
+
 import next as ranking
 
 
@@ -34,13 +37,29 @@ class RankingTests(unittest.TestCase):
             path = Path(directory) / "report.json"
             serialized = json.dumps(report)
             path.write_text(serialized, encoding="utf-8")
-            names = ["LowAddress", "HighAddress", "Large", "Partial", "LowerScore"]
-            for limit in (None, 1, 0):
+            reccmp_path = Path(directory) / "reccmp.json"
+            effective_path = Path(directory) / "effective.json"
+            comparisons = ReccmpStatusReport("Fixture")
+            for function in functions:
+                address = int(function["metadata"]["virtual_address"])
+                comparisons.add_match(ReccmpComparedEntity(
+                    address, function["name"], function["fuzzy_match_percent"] / 100,
+                    EntityType.FUNCTION, address + 0x100000,
+                    is_effective_match=function["name"] == "HighAddress",
+                ))
+            reccmp_path.write_text(serialize_reccmp_report(comparisons), encoding="utf-8")
+            effective_path.write_text(json.dumps({str(0x402020): ["Extra equivalence"]}), encoding="utf-8")
+            for exact, limit in ((exact, limit) for exact in (False, True) for limit in (None, 1, 0)):
+                names = ["LowAddress", "HighAddress", "Large", "Partial", "LowerScore"] if exact else ["LowAddress", "Large", "LowerScore"]
                 output = io.StringIO()
                 flags = [] if limit is None else ["--limit", str(limit)]
+                if exact:
+                    flags.append("--exact")
                 with (
-                    self.subTest(limit=limit),
+                    self.subTest(exact=exact, limit=limit),
                     patch.object(ranking, "REPORT_JSON", path),
+                    patch.object(ranking, "RECCMP_JSON", reccmp_path),
+                    patch.object(ranking, "EFFECTIVE_JSON", effective_path),
                     patch("sys.argv", ["next.py", *flags]),
                     contextlib.redirect_stdout(output),
                 ):

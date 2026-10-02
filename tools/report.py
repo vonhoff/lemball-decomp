@@ -11,6 +11,7 @@ from reccmp.tools.roadmap import ModuleMap
 from badges import effective_totals
 from lib import RECCMP_JSON, REPORT_JSON, ROOT, load_engine
 from lib.extents import original_functions, target_size
+from lib.effective import EFFECTIVE_JSON, additional_effective_matches
 
 
 def measures(functions, total_units=1):
@@ -94,12 +95,13 @@ def main():
     modules = ModuleMap(target.recompiled_pdb, engine.recomp_bin)
     groups = group_functions(original_functions(engine), comparisons, modules)
     report = build_report(groups)
-    RECCMP_JSON.write_text(
-        serialize_reccmp_report(comparisons, diff_included=True), encoding="utf-8"
-    )
+    additional = additional_effective_matches(engine, comparisons.entities)
+    reccmp_text = serialize_reccmp_report(comparisons, diff_included=True)
+    RECCMP_JSON.write_text(reccmp_text, encoding="utf-8")
     REPORT_JSON.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    EFFECTIVE_JSON.write_text(json.dumps(additional, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
-    effective_code, effective_count = effective_totals(report, comparisons)
+    effective_code, effective_count = effective_totals(report, comparisons, additional)
     total_code = int(values["total_code"])
     effective_percent = effective_code / total_code * 100 if total_code else 0.0
     print(
