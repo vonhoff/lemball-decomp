@@ -66,17 +66,17 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	m_paused = 0;
 	m_pauser = 0;
 	m_connectionTimeoutActive = 0;
-	m_cursorBlinkPhase = 0;
 	m_pad0x920 = 0;
 	m_mouseButtonDown = 0;
+	m_cursorBlinkPhase = 0;
 	m_zBufferEnabled = 1;
 	InitSpriteGroundLU();
 	m_groundHitMode = 0;
 	m_pauseWindow = 0;
 	m_optionSelection = 0;
 	m_cursorState = 0;
-	m_returnState = 2;
 	m_cursorTimestamp = g_dwSimulationTimestamp;
+	m_returnState = 2;
 	if (g_nTestAllLevels != 0) {
 		m_levelTestFrame = 0;
 	}
@@ -97,7 +97,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 
 	m_display->m_hotAreaList->AddToList(this);
 
-	storage = operator new(0xb4);
+	storage = operator new(sizeof(CLemmingAnimsManager));
 	if (storage != 0) {
 		m_lemmingAnims = new (storage) CLemmingAnimsManager(m_gdi, m_display, m_ai);
 	}
@@ -126,7 +126,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	g_pMasterInputQueue->Attach(queueHandler, 0);
 	ClockEditMode(0);
 
-	storage = operator new(0x1c);
+	storage = operator new(sizeof(CPadToButton));
 	if (storage != 0) {
 		m_padToButton = new (storage) CPadToButton(3);
 	}
@@ -143,7 +143,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	}
 
 	m_spriteGroundLookup = 0;
-	objectClipGrid = (ObjectClipGrid*) operator new(0x1a4);
+	objectClipGrid = (ObjectClipGrid*) operator new(sizeof(ObjectClipGrid));
 	if (objectClipGrid != 0) {
 		groundHeight = m_map->m_ground.m_height << 4;
 		groundWidth = m_map->m_ground.m_width << 4;
