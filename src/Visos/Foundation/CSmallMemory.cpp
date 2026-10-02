@@ -17,7 +17,8 @@ unsigned int g_maxSmallMemorySize = 0;
 CSmallMemory::CSmallMemory()
 {
 	int baseShift = 1 << (g_preInitActive.m_startBucket + 1);
-	int limit = g_preInitActive.m_capabilityCount + g_preInitActive.m_startBucket;
+	int limit = g_preInitActive.m_capabilityCount;
+	limit += g_preInitActive.m_startBucket;
 	m_bucketLimit = limit;
 	if (7 < limit) {
 		m_bucketLimit = 7;
