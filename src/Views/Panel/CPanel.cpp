@@ -14,6 +14,7 @@
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Resources/CResZRLE.h"
+#include "Visos/Resources/Manifest.h"
 
 #include <new.h>
 
@@ -42,23 +43,23 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_game = p_gameView;
 	m_window = (CPVGWnd*) p_gameView->m_display;
 	m_ai = p_gameView->m_ai;
-	m_resources[0] = CResANIM::Load(0x2d);
-	m_resources[1] = CResANIM::Load(0x2a);
-	m_resources[2] = CResANIM::Load(0x2c);
-	m_resources[3] = CResANIM::Load(0x2b);
+	m_resources[0] = CResANIM::Load(RES_GAME_BUTPAWS);
+	m_resources[1] = CResANIM::Load(RES_GAME_BUTAMMO);
+	m_resources[2] = CResANIM::Load(RES_GAME_BUTLEMMING);
+	m_resources[3] = CResANIM::Load(RES_GAME_BUTBALLOON);
 
 	CVSSize* size = (CVSSize*) &m_resources[1]->m_animationEntries[0].m_width;
-	m_buttonSize.m_x = size->m_width;
-	m_buttonSize.m_y = size->m_height;
+	m_ammoButtonSize.m_x = size->m_width;
+	m_ammoButtonSize.m_y = size->m_height;
 	size = (CVSSize*) &m_resources[2]->m_animationEntries[0].m_width;
-	m_balloonSize.m_x = size->m_width;
-	m_balloonSize.m_y = size->m_height;
+	m_lemmingButtonSize.m_x = size->m_width;
+	m_lemmingButtonSize.m_y = size->m_height;
 	size = (CVSSize*) &m_resources[0]->m_animationEntries[0].m_width;
 	m_pauseSize.m_x = size->m_width;
 	m_pauseSize.m_y = size->m_height;
 	m_panelSize.m_x = m_pauseSize.m_x;
 	m_panelSize.m_y = m_pauseSize.m_y;
-	m_panelSize.m_x = (short) (m_panelSize.m_x + (m_balloonSize.m_x + m_buttonSize.m_x) * 4);
+	m_panelSize.m_x = (short) (m_panelSize.m_x + (m_lemmingButtonSize.m_x + m_ammoButtonSize.m_x) * 4);
 	CVSPoint calculated = GetPausePos();
 	short x = calculated.m_x;
 	m_panelPosition.m_x = x;
@@ -67,7 +68,7 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	CVSPoint position(x, y);
 	void* storage = operator new(sizeof(CPanelPauseButton));
 	if (storage != 0) {
-		m_pauseButton = new (storage) CPanelPauseButton(this, position, m_window, 0x2d, 3);
+		m_pauseButton = new (storage) CPanelPauseButton(this, position, m_window, RES_GAME_BUTPAWS, 3);
 	}
 	else {
 		m_pauseButton = 0;

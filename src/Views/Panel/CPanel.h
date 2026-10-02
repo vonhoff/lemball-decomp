@@ -36,8 +36,8 @@ private:
 	CPanelPauseButton* m_pauseButton; // 0x2c
 	CResANIM* m_resources[4];         // 0x30
 	unsigned int m_reserved;          // 0x40
-	CVSPoint m_buttonSize;            // 0x44
-	CVSPoint m_balloonSize;           // 0x48
+	CVSPoint m_ammoButtonSize;        // 0x44
+	CVSPoint m_lemmingButtonSize;     // 0x48
 	CVSPoint m_pauseSize;             // 0x4c
 	CVSPoint m_panelSize;             // 0x50
 	CVSPoint m_panelPosition;         // 0x54

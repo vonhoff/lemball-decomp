@@ -41,7 +41,7 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVG
 	{
 		CVSSize size;
 
-		size = (const CVSSize&) p_lemming->m_panel->m_buttonSize;
+		size = (const CVSSize&) p_lemming->m_panel->m_ammoButtonSize;
 		m_statusRect.m_width = size.m_width;
 		m_statusRect.m_height = size.m_height;
 		m_statusRect.m_x = 0;
@@ -55,8 +55,8 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVG
 	{
 		CVSSize size;
 
-		short x = m_lemming->m_panel->m_buttonSize.m_x;
-		size = (const CVSSize&) m_lemming->m_panel->m_balloonSize;
+		short x = m_lemming->m_panel->m_ammoButtonSize.m_x;
+		size = (const CVSSize&) m_lemming->m_panel->m_lemmingButtonSize;
 		m_gdiFlags += 7;
 		m_inventoryRect.m_width = size.m_width;
 		m_inventoryRect.m_height = size.m_height;
