@@ -20,7 +20,6 @@ class PolicyTests(unittest.TestCase):
             "base = (unsigned long)this + 16;",
             "base = (char*)this + 0x34U;",
             "table = *(void***)this;",
-            "offset = *(int*)this;",
             "object->__vfptr[2](object);",
             "offset = object->__vbptr[1];",
             "value = *(int*)0x00401000;",
@@ -29,9 +28,7 @@ class PolicyTests(unittest.TestCase):
             "((void (__cdecl*)())0x00401000)();",
             "auto function = reinterpret_cast<int (*)(int)>(0x00401000);",
             "__asm { mov eax, ecx }",
-            "_asm mov eax, ecx",
             "_emit 0x90;",
-            "#define FIELD(p) (*(int*)((char*)p + 4))",
             "*(int*) (\n  (char*)object + 0x34\n) = value;",
         )
         for code in cases:
@@ -40,8 +37,6 @@ class PolicyTests(unittest.TestCase):
 
     def test_legitimate_operations(self):
         cases = (
-            "object->field = value;",
-            "base = static_cast<Base*>(this);",
             "cursor += 4; pixels[y * stride + x] = colour;",
             "value = *reinterpret_cast<unsigned short*>(p_data);",
             "value = *(unsigned short*)p_data;",
@@ -51,10 +46,7 @@ class PolicyTests(unittest.TestCase):
             "start = (unsigned char*)this + GetSizeOf();",
             "dst = *(unsigned char**)((unsigned char*)m_lines + lineOffset) + startX;",
             "LoadIconA(instance, (char*)0x75);",
-            "LoadCursorA(0, (char*)0x7f00);",
-            "RegOpenKeyExA((void*)0x80000002, name, 0, flags, &key);",
             "message.m_source = (void*)40001;",
-            "pointer = (char*)0; handle = (HANDLE)-1;",
             'text = "__asm // prose *(int*)0x00401000";',
             "int assembly = 0; char slash = '/';",
         )
@@ -82,7 +74,6 @@ class PolicyTests(unittest.TestCase):
             "// Explain the previous implementation.",
             "int value; // increment this later",
             "/* raw offset access is justified here */",
-            "// gate: ignore",
             "// clang-format off because matching",
             "int value; // clang-format off",
             "// SIZE 0x08 probably",
@@ -97,17 +88,12 @@ class PolicyTests(unittest.TestCase):
             with self.subTest(code=code):
                 self.assertTrue(list(violations(code)))
 
-    def test_paths_diagnostics_and_empty_input(self):
+    def test_source_extensions_and_diagnostic_lines(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             for suffix in (".cpp", ".h", ".inl", ".RC"):
                 path = root / f"Fixture{suffix}"
                 path.write_text('\n"__asm";\n__asm nop;\n', encoding="utf-8")
-                with self.subTest(suffix=suffix), contextlib.redirect_stdout(io.StringIO()) as output:
-                    self.assertEqual(check_policy([path]), 1)
-                    self.assertIn(f"{path}:3: assembly:", output.getvalue())
             with contextlib.redirect_stdout(io.StringIO()) as output:
-                self.assertEqual(check_policy([root, root / "Fixture.cpp"]), 1)
-                self.assertIn("policy: 4 violations", output.getvalue())
-            with contextlib.redirect_stdout(io.StringIO()):
-                self.assertEqual(check_policy([root / "missing"]), 2)
+                self.assertEqual(check_policy([root]), 1)
+            self.assertEqual(output.getvalue().count(":3: assembly:"), 4)

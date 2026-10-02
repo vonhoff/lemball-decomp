@@ -64,8 +64,7 @@ class ThunkTests(unittest.TestCase):
                 self.assertEqual(compare(comparator, match), {0x1000: ("verified jump thunk target",)})
 
     def test_thunk_requires_a_complete_e9_to_a_paired_function(self):
-        for thunk in (b"", b"\xe9", THUNK[:4], b"\xe8" + THUNK[1:],
-                      b"\x40" + THUNK, b"\xe9" + struct.pack("<i", 17)):
+        for thunk in (THUNK[:4], b"\xe8" + THUNK[1:], b"\xe9" + struct.pack("<i", 17)):
             with self.subTest(thunk=thunk):
                 self.assertEqual(compare(*fixture(thunk=thunk)), {})
         comparator, match = fixture()

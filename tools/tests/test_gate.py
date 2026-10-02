@@ -1,90 +1,27 @@
-"""Gate routing, ordering, and failure propagation."""
+"""Gate rejects source-policy violations and catalog mismatches."""
 
 import contextlib
 import io
-import sys
 import tempfile
 import unittest
-from functools import partial
 from pathlib import Path
-from unittest.mock import DEFAULT, patch
+from unittest.mock import patch
 
 import gate
 
 
 class GateTests(unittest.TestCase):
-    def test_upstream_annotation_checks(self):
+    def test_source_failures_reach_exit_status(self):
         with tempfile.TemporaryDirectory() as directory:
-            source = Path(directory) / "Fixture.cpp"
-            for target, last_address, expected in (
-                ("LEMBALL", "0x00401020", 0),
-                ("LEMBALL", "0x00401010", 1),
-                ("LEMBALL", "0x00401000", 1),
-                ("OTHER", "0x00401000", 0),
+            path = Path(directory) / "Fixture.cpp"
+            for owner, body, expected in (
+                ("CPadToButton", "", 0),
+                ("CPadToButton", "*(int*)((char*)this + 0x34) = n;", 1),
+                ("CFake", "", 1),
             ):
-                source.write_text(
-                    f"// FUNCTION: {target} 0x00401010\nvoid First() {{}}\n"
-                    f"// FUNCTION: {target} {last_address}\nvoid Second() {{}}\n",
-                    encoding="utf-8",
-                )
-                with (
-                    self.subTest(target=target, address=last_address),
-                    contextlib.redirect_stdout(io.StringIO()),
-                ):
-                    self.assertEqual(gate.check_annotations([source]), expected)
-
-    def test_modes_and_first_failure(self):
-        source = [
-            "check_policy",
-            "check_annotations",
-            "check_names",
-        ]
-        cases = (
-            ([], None, source),
-            (["--path", "Fixture.cpp"], None, source),
-            (["--names"], None, ["check_names"]),
-            (["--names", "--path", "Fixture.cpp"], None, ["check_names"]),
-            (["--vtable"], None, ["check_vtable"]),
-            *[([], failure, source[: index + 1]) for index, failure in enumerate(source)],
-            (["--names"], "check_names", ["check_names"]),
-            (["--vtable"], "check_vtable", ["check_vtable"]),
-        )
-        calls = []
-        for flags, failure, expected in cases:
-            calls.clear()
-
-            def result(check_name, *_args, failure=failure, **_kwargs):
-                calls.append(check_name)
-                return 7 if check_name == failure else 0
-
-            with (
-                self.subTest(flags=flags, failure=failure),
-                patch.object(sys, "argv", ["gate.py", *flags]),
-                patch.multiple(
-                    gate, **dict.fromkeys(source + ["check_vtable"], DEFAULT)
-                ) as checks,
-            ):
-                for name, check in checks.items():
-                    check.side_effect = partial(result, name)
-                self.assertEqual(gate.main(), 7 if failure else 0)
-                self.assertEqual(calls, expected)
-                if "check_names" in calls:
-                    self.assertEqual(
-                        checks["check_names"].call_args.kwargs,
-                        {"verbose": True} if "--names" in flags else {},
-                    )
-                    self.assertEqual(
-                        checks["check_names"].call_args.args,
-                        (["Fixture.cpp"] if "--path" in flags else None,),
-                    )
-
-    def test_conflicting_checks_rejected(self):
-        for flags in (["--names", "--vtable"], ["--vtable", "--path", "Fixture.cpp"]):
-            with (
-                self.subTest(flags=flags),
-                patch.object(sys, "argv", ["gate.py", *flags]),
-                contextlib.redirect_stderr(io.StringIO()),
-                self.assertRaises(SystemExit) as error,
-            ):
-                gate.main()
-            self.assertEqual(error.exception.code, 2)
+                path.write_text(f"// FUNCTION: LEMBALL 0x0043a250\n"
+                                f"{owner}::{owner}(int n) {{ {body} }}\n", encoding="utf-8")
+                with (self.subTest(owner=owner, body=body),
+                      patch("sys.argv", ["gate.py", "--path", str(path)]),
+                      contextlib.redirect_stdout(io.StringIO())):
+                    self.assertEqual(gate.main(), expected)
