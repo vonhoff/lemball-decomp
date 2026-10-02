@@ -11,8 +11,6 @@ This project is a matching decompilation of *Lemmings Paintball* (1996, Windows 
 
 Microsoft Visual C++ 4.00 compiles the C++ code. [Reccmp](https://github.com/isledecomp/reccmp) compares each function with the original executable.
 
-Only code written independently for this project, outside the reconstructed game code, is covered by GPL-3.0. The reconstructed game code has no license. See [Legal](#legal).
-
 ## Matching and progress
 
 To build and compare a reconstructed function with the original executable, run
