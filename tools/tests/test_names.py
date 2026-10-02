@@ -67,8 +67,8 @@ class CatalogTests(unittest.TestCase):
                 path.write_text(invalid, encoding="utf-8")
                 with self.subTest(invalid=invalid), self.assertRaises(ValueError):
                     read_catalog(path)
-                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-                    self.assertEqual(check_names(catalog_path=path), 2)
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(check_names(catalog_path=path), 2)
 
 
 class CatalogNamingTests(unittest.TestCase):

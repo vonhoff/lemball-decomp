@@ -1,10 +1,12 @@
 """Byte ownership, padding boundaries, and full upstream assembly coverage."""
 
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import Mock, patch
 
 from reccmp.compare.asm import instgen
-from reccmp.compare.db import EntityDb
+from reccmp.compare.db import EntityDb, ReccmpEntity
 from reccmp.compare.functions import FunctionComparator
 from reccmp.compare.lines import LinesDb
 from reccmp.cvdump.types import CvdumpTypesParser
@@ -13,10 +15,10 @@ from reccmp.types import EntityType, ImageId
 from lib.extents import (
     FullFunctionComparator,
     alignment_extent,
-    complete_instruction_stream,
     decoded_extent,
+    load_target_sizes,
     prepare_function_extents,
-    validate_extents,
+    target_size,
 )
 
 
@@ -53,6 +55,32 @@ def comparison_fixture(original, rebuilt, original_size=None):
 
 
 class ExtentTests(unittest.TestCase):
+    def test_original_comparison_size_is_required(self):
+        entity = ReccmpEntity(0x401000, 0x501000, {"orig_size": 25, "recomp_size": 9})
+        self.assertEqual(target_size(entity), 25)
+        entity = ReccmpEntity(0x401000, 0x501000, {"recomp_size": 9})
+        with self.assertRaisesRegex(
+            ValueError, "Missing original function extent at 0x00401000"
+        ):
+            target_size(entity)
+
+    def test_target_extent_csv_validation(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "sizes.csv"
+            path.write_text(
+                "# Original evidence\naddress,size,evidence\n"
+                "0x401019,10,x86\n0x401000,25,x86\n", encoding="utf-8"
+            )
+            self.assertEqual(load_target_sizes(path), {0x401000: 25, 0x401019: 10})
+            for rows, message in (
+                ("0x401000,0\n", "Invalid or duplicate target extent"),
+                ("0x401000,25\n0x401000,30\n", "Invalid or duplicate target extent"),
+                ("0x401010,10\n0x401000,25\n", "Overlapping original function extent"),
+            ):
+                path.write_text("address,size\n" + rows, encoding="utf-8")
+                with self.subTest(rows=rows), self.assertRaisesRegex(ValueError, message):
+                    load_target_sizes(path)
+
     def test_original_suffix_is_compared_when_rebuilt_function_is_shorter(self):
         original = bytes.fromhex("b801000000c3")
         rebuilt = original[:5]
@@ -81,10 +109,6 @@ class ExtentTests(unittest.TestCase):
         self.assertEqual(result.match_ratio, 0.75)
         self.assertIs(instgen.stop_at_int3, previous)
         self.assertEqual(decoded_extent(original, 0x401000), len(original))
-        with self.assertRaisesRegex(RuntimeError, "fixture"):
-            with complete_instruction_stream():
-                raise RuntimeError("fixture")
-        self.assertIs(instgen.stop_at_int3, previous)
 
     def test_padding_must_follow_a_terminal_and_be_untargeted(self):
         for blob, expected in (
@@ -128,11 +152,6 @@ class ExtentTests(unittest.TestCase):
                 engine.orig_bin, engine.recomp_bin = args[2:4]
                 with self.assertRaisesRegex(ValueError, message):
                     prepare_function_extents(engine)
-
-    def test_adjacent_labels_have_disjoint_ownership(self):
-        validate_extents({0x481A42: 16, 0x4819EA: 88})
-        with self.assertRaisesRegex(ValueError, "Overlapping original"):
-            validate_extents({0x4819EA: 104, 0x481A42: 16})
 
     def test_switch_table_is_retained(self):
         # CMP EAX,1; JA default; JMP [EAX*4+table]; RET; two target addresses.

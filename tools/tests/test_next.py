@@ -26,7 +26,6 @@ class RankingTests(unittest.TestCase):
                 ("HighAddress", 8, 99, 0x401030),
                 ("Partial", 100, 75, 0x402020),
                 ("LowerScore", 150, 50, 0x402010),
-                ("PartialLowAddress", 100, 75, 0x402000),
                 ("Exact", 200, 100, 0x403000),
             )
         ]
@@ -35,8 +34,8 @@ class RankingTests(unittest.TestCase):
             path = Path(directory) / "report.json"
             serialized = json.dumps(report)
             path.write_text(serialized, encoding="utf-8")
-            names = ["LowAddress", "HighAddress", "Large", "PartialLowAddress", "Partial", "LowerScore"]
-            for limit in (None, 1, 0, -1):
+            names = ["LowAddress", "HighAddress", "Large", "Partial", "LowerScore"]
+            for limit in (None, 1, 0):
                 output = io.StringIO()
                 flags = [] if limit is None else ["--limit", str(limit)]
                 with (

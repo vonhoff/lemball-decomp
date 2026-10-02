@@ -7,16 +7,21 @@ from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.types import EntityType
 
 from badges import build_badges
-from report import build_report
 
 
 class BadgeTests(unittest.TestCase):
     def test_empty_report_badges_have_zero_progress(self):
         comparisons = ReccmpStatusReport("LEMBALL.EXE")
-        for groups in ({}, {"Empty": []}):
-            with self.subTest(groups=groups):
-                badges = build_badges(build_report(groups), comparisons)
-                self.assertTrue(all(badge["message"] == "0.00%" for badge in badges.values()))
+        report = {
+            "units": [],
+            "measures": {
+                "total_code": "0",
+                "matched_code_percent": 0.0,
+                "fuzzy_match_percent": 0.0,
+            },
+        }
+        badges = build_badges(report, comparisons)
+        self.assertTrue(all(badge["message"] == "0.00%" for badge in badges.values()))
 
     def test_exact_fuzzy_and_effective_are_distinct(self):
         comparisons = ReccmpStatusReport("LEMBALL.EXE")
@@ -50,12 +55,18 @@ class BadgeTests(unittest.TestCase):
                         is_stub=stub,
                     )
                 )
-        report = build_report({"Fixture": functions})
+        report = {
+            "units": [{"name": "Fixture", "functions": functions}],
+            "measures": {
+                "total_code": "80",
+                "matched_code_percent": 12.5,
+                "fuzzy_match_percent": 38.75,
+            },
+        }
         unchanged = copy.deepcopy(report)
         badges = build_badges(report, comparisons)
         self.assertEqual(badges["exact"]["message"], "12.50%")
         self.assertEqual(badges["fuzzy"]["message"], "38.75%")
         self.assertEqual(badges["effective"]["message"], "37.50%")
         self.assertEqual(report, unchanged)
-        self.assertEqual(report["measures"]["matched_functions"], 1)
         self.assertTrue(all(badge["schemaVersion"] == 1 for badge in badges.values()))

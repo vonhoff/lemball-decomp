@@ -11,7 +11,7 @@ import match as matching
 
 
 class MatchTests(unittest.TestCase):
-    def test_comparison_command(self):
+    def test_raw_status_and_diff_delegation(self):
         comparisons = [
             ReccmpComparedEntity(0x401000, "Exact", 1.0),
             ReccmpComparedEntity(0x401020, "Effective", 0.8, is_effective_match=True),
@@ -29,12 +29,21 @@ class MatchTests(unittest.TestCase):
             "0x00401080 ExactEffective: 100.00% ASM_EXACT\n"
             "0x004010a0: NOT_FOUND\n"
         )
-        for flags, build_code in (
-            ([], 0),
-            (["--no-build"], 0),
-            ([], 7),
+        output = io.StringIO()
+        with (
+            patch.object(matching, "print_match_verbose") as diff,
+            contextlib.redirect_stdout(output),
         ):
+            for address, comparison in zip(addresses, comparisons):
+                matching.print_comparison(address, comparison)
+        self.assertEqual(output.getvalue(), expected)
+        self.assertEqual(diff.call_args_list, [call(item) for item in comparisons[:-1]])
+
+    def test_build_modes_and_comparison_dispatch(self):
+        addresses = [0x401000, 0x401020]
+        for flags, build_code in (([], 0), (["--no-build"], 0), ([], 7)):
             engine = Mock()
+            comparisons = [Mock(), None]
             engine.compare_address.side_effect = comparisons
             output = io.StringIO()
             with (
@@ -42,7 +51,7 @@ class MatchTests(unittest.TestCase):
                 patch("sys.argv", ["match.py", *map(hex, addresses), *flags]),
                 patch.object(matching, "run_build", return_value=build_code) as build,
                 patch.object(matching, "load_engine", return_value=(None, engine)) as load,
-                patch.object(matching, "print_match_verbose") as diff,
+                patch.object(matching, "print_comparison") as display,
                 contextlib.redirect_stdout(output),
             ):
                 self.assertEqual(matching.main(), build_code)
@@ -53,7 +62,7 @@ class MatchTests(unittest.TestCase):
                 if build_code:
                     load.assert_not_called()
                     engine.compare_address.assert_not_called()
-                    diff.assert_not_called()
+                    display.assert_not_called()
                     self.assertEqual(
                         output.getvalue(),
                         "BUILD_FAILED exit=7 (see build-msvc400/last_build.log)\n",
@@ -64,10 +73,9 @@ class MatchTests(unittest.TestCase):
                         engine.compare_address.call_args_list,
                         [call(address) for address in addresses],
                     )
-                    self.assertEqual(output.getvalue(), expected)
                     self.assertEqual(
-                        diff.call_args_list,
-                        [call(item) for item in comparisons[:-1]],
+                        display.call_args_list,
+                        [call(address, item) for address, item in zip(addresses, comparisons)],
                     )
 
     def test_invalid_address_prevents_build(self):
