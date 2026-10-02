@@ -143,8 +143,8 @@ void CAnimWnd::SetMovieWindow(unsigned int p_lParam)
 	unsigned int params[7];
 
 	(void) p_lParam;
-	params[1] = 0x8000;
 	params[2] = (unsigned int) WinGDrawDriverProc;
+	params[1] = 0x8000;
 	mciId = (unsigned int) SendMessageA((HWND) m_movieWindow, 0x464, 0, 0);
 	if (mciId != 0) {
 		error = mciSendCommandA(mciId, 0x876, 0x1100000, params);
