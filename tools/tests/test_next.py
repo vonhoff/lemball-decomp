@@ -18,7 +18,7 @@ class RankingTests(unittest.TestCase):
                 "name": name,
                 "size": str(size),
                 "fuzzy_match_percent": score,
-                "metadata": {"virtual_address": str(address)},
+                "metadata": {"virtual_address": str(address), "demangled_name": name},
             }
             for name, size, score, address in (
                 ("Large", 16, 99, 0x401020),

@@ -76,7 +76,7 @@ class Decoder:
 
     def type(self):
         token = self.peek()
-        if token and (token.isdigit() or token == "Q"):
+        if token.isdigit() or token == "Q":
             return self.name()
         token = self.take()
         if token in SCALARS:
@@ -86,8 +86,7 @@ class Decoder:
             if self.peek() == "F":
                 self.take()
                 args = self.parameters(stop="_")
-                if self.take() != "_":
-                    raise ValueError("missing function-pointer return type")
+                self.take()  # parameters() stops at '_'; take() rejects end of input.
                 result = self.type()
                 return f"{result} ({suffix})({', '.join(args)})"
             return self.type() + suffix

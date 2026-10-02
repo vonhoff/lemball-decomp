@@ -4,7 +4,6 @@
 import json
 
 from reccmp.compare.report import deserialize_reccmp_report
-from reccmp.types import EntityType
 
 from lib import BUILD, RECCMP_JSON, REPORT_JSON
 
@@ -20,8 +19,6 @@ def build_badges(report, comparisons):
             comparison = comparisons.entities.get(address)
             equivalent = (
                 comparison is not None
-                and comparison.type == EntityType.FUNCTION
-                and comparison.is_matched()
                 and not comparison.is_stub
                 and comparison.is_effective_match
             )

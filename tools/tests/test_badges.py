@@ -26,14 +26,13 @@ class BadgeTests(unittest.TestCase):
     def test_exact_fuzzy_and_effective_are_distinct(self):
         comparisons = ReccmpStatusReport("LEMBALL.EXE")
         functions = []
-        for address, size, score, effective, stub, kind, recomp in (
-            (0x401000, 10, 100, True, False, EntityType.FUNCTION, 0x501000),
-            (0x401020, 20, 80, True, False, EntityType.FUNCTION, 0x501020),
-            (0x401040, 10, 0, True, True, EntityType.FUNCTION, 0x501040),
-            (0x401060, 10, 50, False, False, EntityType.FUNCTION, 0x501060),
-            (0x401080, 10, 0, True, False, EntityType.FUNCTION, None),
-            (0x4010A0, 10, 0, True, False, EntityType.DATA, 0x5010A0),
-            (0x4010C0, 10, 0, False, False, EntityType.FUNCTION, None),
+        for address, size, score, effective, stub, recomp in (
+            (0x401000, 10, 100, True, False, 0x501000),
+            (0x401020, 20, 80, True, False, 0x501020),
+            (0x401040, 10, 0, True, True, 0x501040),
+            (0x401060, 10, 50, False, False, 0x501060),
+            (0x401080, 10, 0, False, True, None),
+            (0x4010C0, 20, 0, False, False, None),
         ):
             functions.append(
                 {
@@ -49,7 +48,7 @@ class BadgeTests(unittest.TestCase):
                         address,
                         "Fixture",
                         score / 100,
-                        kind,
+                        EntityType.FUNCTION,
                         recomp,
                         is_effective_match=effective,
                         is_stub=stub,

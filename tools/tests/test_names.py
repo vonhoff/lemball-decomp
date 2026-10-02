@@ -28,8 +28,9 @@ class SignatureTests(unittest.TestCase):
         symbols, _ = read_catalog()
         for symbol in symbols.values():
             decode_signature(symbol)
-        with self.assertRaises(ValueError):
-            decode_signature('Wrong__FP')
+        for symbol in ('Wrong__FP', 'Callback__FPFPc', 'Callback__FPFPc_'):
+            with self.subTest(symbol=symbol), self.assertRaises(ValueError):
+                decode_signature(symbol)
 
     def test_cpp_parameter_types(self):
         cases = {'int capacity = 42': 'int', 'Widget const* value': 'const Widget*',

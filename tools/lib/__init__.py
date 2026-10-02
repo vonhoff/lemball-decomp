@@ -39,9 +39,7 @@ def brace_ends(code: str) -> dict[int, int]:
 
 
 def parenthesis_end(code: str, opening: int) -> int | None:
-    """Find a closing parenthesis in masked code; return None if unclosed."""
-    if opening < 0 or opening >= len(code) or code[opening] != "(":
-        return None
+    """Find the closing parenthesis for a known '('; return None if unclosed."""
     depth = 0
     for pos in range(opening, len(code)):
         depth += (code[pos] == "(") - (code[pos] == ")")

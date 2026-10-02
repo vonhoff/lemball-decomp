@@ -38,7 +38,7 @@ def print_functions(functions):
         print(
             f"0x{address:08x} {function['fuzzy_match_percent']:6.2f}% "
             f"size={int(function['size']):4d} {function['unit']} "
-            f"{function['metadata'].get('demangled_name', function['name'])}"
+            f"{function['metadata']['demangled_name']}"
         )
 
 

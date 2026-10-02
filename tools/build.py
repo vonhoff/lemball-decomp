@@ -33,8 +33,6 @@ def is_line_of_interest(line: str) -> bool:
 
 
 def win_short_path(path: str) -> str:
-    if os.name != "nt":
-        return str(path)
     absp = os.path.abspath(path)
     get_short = ctypes.windll.kernel32.GetShortPathNameW
     get_short.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint]
@@ -54,26 +52,21 @@ def resolve_cmake() -> str:
 
 
 def handle_link(args: list[str]) -> int:
-    if not args:
-        sys.exit("build.py --link requires linker executable and arguments")
     linker, link_args = win_short_path(args[0]), args[1:]
     # LINK 4.00 requires short working-directory and toolchain paths.
-    if os.name == "nt":
-        os.chdir(win_short_path(os.getcwd()))
-        for env_var in ("LIB", "INCLUDE", "PATH"):
-            val = os.environ.get(env_var, "")
-            if val:
-                os.environ[env_var] = ';'.join(win_short_path(p) for p in val.split(';') if p)
+    os.chdir(win_short_path(os.getcwd()))
+    for env_var in ("LIB", "INCLUDE", "PATH"):
+        val = os.environ.get(env_var, "")
+        if val:
+            os.environ[env_var] = ';'.join(win_short_path(p) for p in val.split(';') if p)
 
     for arg in link_args:
         if arg.startswith("@"):
             rsp_path = Path(arg[1:])
-            if rsp_path.exists():
-                content = rsp_path.read_text(encoding="utf-8", errors="ignore")
-                # LINK 4.00 limits lines to 16383 characters; multiple response files crash it.
-                rsp_path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
+            content = rsp_path.read_text(encoding="utf-8")
+            # LINK 4.00 limits lines to 16383 characters; multiple response files crash it.
+            rsp_path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
 
-    out_arg = next((Path(arg[5:]) for arg in link_args if arg.upper().startswith("/OUT:")), None)
     res = subprocess.run([linker, *link_args], stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT, text=True, errors="replace", check=False)
     output = res.stdout
@@ -81,9 +74,6 @@ def handle_link(args: list[str]) -> int:
     if any(MSVC_WARNING.search(line) for line in output.splitlines()):
         sys.stderr.write('linker emitted warnings\n')
         return res.returncode or 1
-    if res.returncode == 0 and (out_arg is None or not out_arg.exists()):
-        sys.stderr.write(f"linker produced no output: {out_arg}\n")
-        return 1
     return res.returncode
 
 
