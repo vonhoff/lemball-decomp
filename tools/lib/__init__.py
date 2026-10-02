@@ -8,7 +8,6 @@ BUILD = ROOT / "build-msvc400"
 SRC = ROOT / "src"
 RECCMP_JSON = BUILD / "reccmp.json"
 REPORT_JSON = BUILD / "report.json"
-ROADMAP_CSV = BUILD / "roadmap.csv"
 
 
 TOKENS = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'')

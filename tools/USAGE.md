@@ -9,7 +9,7 @@ Run these commands from the repository root with the Python environment containi
 | `python tools/build.py --clean-first` | Clean rebuild, including removal of stale executable/PDB artifacts. |
 | `python tools/match.py 0x00401000` | Build and compare one original address using upstream reccmp. Accepts multiple addresses. |
 | `python tools/match.py 0x00401000 --no-build` | Compare using the current executable and PDB. |
-| `python tools/report.py` | Regenerate canonical `reccmp.json`, `roadmap.csv`, and `report.json` in `build-msvc400`. |
+| `python tools/report.py` | Regenerate canonical `reccmp.json` and `report.json` in `build-msvc400`. |
 | `python tools/next.py --kind near` | Rank unfinished functions by raw score, then size and address. |
 | `python tools/next.py --kind gain` | Rank by size times raw score. `--limit 0` shows every row. |
 | `python tools/gate.py` | Check comments, reconstruction smells, class/file layout, upstream annotations, names, and tool tests. |
@@ -46,3 +46,10 @@ a recognizer. Run `python tools/gate.py` and `python -m ruff check tools` afterw
 Reports retain raw upstream scores: stubs score zero, exact means 100%, and effective
 matches remain fuzzy. Keep native comparison reports separate from this canonical
 report. Regenerate full reports at batch boundaries, not for each source trial.
+
+Annotation checks call reccmp's linter directly. Reporting uses one comparison
+engine and upstream PDB module lookup; it needs no subprocess or temporary CSV.
+In `gate.py`, argument parsing, source checks, annotation checks, and command routing
+are separate functions. In `report.py`, inventory selection, module grouping, record
+conversion, totals, and report assembly are separate functions. Its `main()` handles
+generation and file output.
