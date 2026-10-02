@@ -11,6 +11,24 @@ from lib.smell import check_smell, scan_file
 
 
 class SmellTests(unittest.TestCase):
+    def test_offset_rules_preserve_specific_hits_and_buffer_exceptions(self):
+        text = (
+            'auto member = (char*) owner + 0x10;\n'
+            'auto buffer = (char*) p_bits + 0x10;\n'
+            'auto bytes = (char*) owner + sizeof(Widget);\n'
+            'auto indexed = ((int*) owner)[0x58 / 4];\n'
+            'auto offsets = (char*) first + offset + (char*) second + offset;\n'
+        )
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp).resolve()
+            source = root / 'Fixture.h'
+            source.write_text(text, encoding='utf-8')
+            with patch('lib.smell.ROOT', root):
+                hits = scan_file(source)
+        self.assertEqual([(line, rule) for _, line, rule, _ in hits],
+                         [(1, 'expr-char-offset'), (4, 'type-erase-index'),
+                          (5, 'offset-poke'), (5, 'offset-poke')])
+
     def test_masking_and_nested_parentheses(self):
         text = (
             'const char* text = "(char*) this - 0x10";\n'

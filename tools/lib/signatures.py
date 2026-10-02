@@ -8,7 +8,8 @@ from dataclasses import dataclass
 
 from . import TYPE_DEF, brace_ends, parenthesis_end
 
-OPERATORS = {
+METHOD_NAMES = {
+    "__ct": "<constructor>", "__dt": "<destructor>",
     "__as": "operator=", "__ls": "operator<<", "__nw": "operatornew",
     "__dl": "operatordelete", "__apl": "operator+=", "__pl": "operator+",
     "__eq": "operator==", "__gt": "operator>", "__ml": "operator*",
@@ -110,38 +111,42 @@ class Decoder:
             raise ValueError("missing parameter encoding")
         return tuple(parameters)
 
+    def signature(self, method):
+        """Decode the owner, constness, and parameters after a symbol separator."""
+        owner = "" if self.peek() == "F" else self.name()
+        const = False
+        while self.peek() and self.peek() in "CS":
+            const |= self.take() == "C"
+        if self.take() != "F":
+            raise ValueError("missing function encoding")
+        parameters = self.parameters()
+        method = decode_method_name(method)
+        if method in ("<constructor>", "<destructor>") and not owner:
+            raise ValueError("constructor or destructor without owner")
+        return Signature(owner, method, parameters, const)
+
+
+def decode_method_name(method):
+    """Translate CodeWarrior constructors, operators, and conversion names."""
+    if method.startswith("__op"):
+        conversion = Decoder(method[4:])
+        name = "operator " + conversion.type()
+        if conversion.peek():
+            raise ValueError("trailing conversion encoding")
+        return name
+    if not method.startswith("__"):
+        return method
+    if method not in METHOD_NAMES:
+        raise ValueError("unsupported operator " + method)
+    return METHOD_NAMES[method]
+
 
 def decode_signature(symbol):
-    # A source identifier can itself contain '__' (e.g. CSurface__2DMemSet).
-    # Accept only a separator whose complete suffix parses.
+    """Try separators until a complete encoding parses; identifiers may contain '__'."""
     failure = None
     for split in re.finditer(r"__(?=\d|Q\d|F)", symbol):
-        method = symbol[:split.start()]
-        decoder = Decoder(symbol[split.end():])
         try:
-            owner = "" if decoder.peek() == "F" else decoder.name()
-            const = False
-            while decoder.peek() and decoder.peek() in "CS":
-                const |= decoder.take() == "C"
-            if decoder.take() != "F":
-                raise ValueError("missing function encoding")
-            parameters = decoder.parameters()
-            if method == "__ct":
-                method = "<constructor>"
-            elif method == "__dt":
-                method = "<destructor>"
-            elif method.startswith("__op"):
-                conversion = Decoder(method[4:])
-                method = "operator " + conversion.type()
-                if conversion.peek():
-                    raise ValueError("trailing conversion encoding")
-            elif method.startswith("__"):
-                if method not in OPERATORS:
-                    raise ValueError("unsupported operator " + method)
-                method = OPERATORS[method]
-            if method in ("<constructor>", "<destructor>") and not owner:
-                raise ValueError("constructor or destructor without owner")
-            return Signature(owner, method, parameters, const)
+            return Decoder(symbol[split.end():]).signature(symbol[:split.start()])
         except ValueError as error:
             failure = str(error)
     if failure is not None:
@@ -179,6 +184,21 @@ def split_parameters(text, separator=","):
     return parts + [text[start:].strip()]
 
 
+def normalize_integer_words(words):
+    """Normalize optional 'int' and 'signed' without changing integer width."""
+    if words == ["unsigned"]:
+        return ["unsigned", "int"]
+    if words in (["signed"], ["signed", "int"]):
+        return ["int"]
+    if "short" in words or "long" in words:
+        for optional in ("int", "signed"):
+            if optional in words:
+                words.remove(optional)
+    if not words:
+        raise ValueError("missing parameter type")
+    return words
+
+
 def canonical_type(text):
     """Normalize spelling, preserving pointee constness and integer distinctions."""
     text = re.sub(r"\b(?:class|struct|enum|register)\s+", "", text).strip()
@@ -201,16 +221,7 @@ def canonical_type(text):
         if index == len(parts) - 1:
             cv = []
         if index == 0:
-            if words == ["unsigned"]:
-                words = ["unsigned", "int"]
-            if words in (["signed"], ["signed", "int"]):
-                words = ["int"]
-            if "int" in words and ("short" in words or "long" in words):
-                words.remove("int")
-            if "signed" in words and ("short" in words or "long" in words):
-                words.remove("signed")
-            if not words:
-                raise ValueError("missing parameter type")
+            words = normalize_integer_words(words)
         parts[index] = " ".join(cv + words)
     return "".join(parts)
 
@@ -263,11 +274,12 @@ def class_ranges(code):
 
 
 def adjacent_signature(code, offset, ranges):
-    start = offset
-    while start < len(code) and code[start].isspace():
-        start += 1
-    end = re.search(r"[;{}#]", code[start:])
-    declaration = code[start:start + end.start()] if end else code[start:]
+    """Parse the declaration after an annotation; unsupported parameters stay unresolved."""
+    declaration = code[offset:].lstrip()
+    start = len(code) - len(declaration)
+    end = re.search(r"[;{}#]", declaration)
+    if end:
+        declaration = declaration[:end.start()]
     match = FUNCTION.search(declaration)
     if not match:
         raise ValueError("no adjacent function declaration")
@@ -285,7 +297,6 @@ def adjacent_signature(code, offset, ranges):
     const = bool(re.match(r"\s*const\b", declaration[closing + 1:]))
     try:
         parameters = () if raw in ("", "void") else tuple(parameter_type(p) for p in split_parameters(raw))
-        reason = None
-    except ValueError as error:
-        parameters, reason = None, str(error)
-    return Signature(owner, method, parameters, const), reason
+    except ValueError:
+        parameters = None
+    return Signature(owner, method, parameters, const)

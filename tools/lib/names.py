@@ -4,7 +4,7 @@
 import csv
 import re
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from . import ROOT, TOKENS, collect_sources, mask_comments_and_strings
@@ -17,6 +17,7 @@ WINDOWS_MARK = re.compile(
 
 
 def read_catalog(path=CATALOG):
+    """Read symbol identities and Windows mappings; reject conflicting evidence."""
     symbols, mappings, unmapped = {}, set(), set()
     with path.open(newline="", encoding="utf-8-sig") as stream:
         rows = csv.reader(stream, strict=True)
@@ -61,101 +62,135 @@ WINDOWS_NAME_REVIEWS = {
 }
 
 
-def compare_signature(expected, actual, parameter_error=None):
-    wanted_class = expected.owner
-    wanted_method = expected.method
-    diffs = []
-    if wanted_class != actual.owner:
-        diffs.append("class-case" if wanted_class.lower() == actual.owner.lower() else "class-name")
-    if wanted_method != actual.method:
-        diffs.append("method-case" if wanted_method.lower() == actual.method.lower() else "method-name")
+def compare_signature(expected, actual):
+    """Compare names, parameter types, and constness; ABI differences need review."""
+    differences = []
+    for part, wanted, found in (
+        ("class", expected.owner, actual.owner),
+        ("method", expected.method, actual.method),
+    ):
+        if wanted != found:
+            kind = "case" if wanted.lower() == found.lower() else "name"
+            differences.append(f"{part}-{kind}")
     status = "match"
-    if any(d.endswith("-name") for d in diffs):
+    if any(difference.endswith("-name") for difference in differences):
         status = "mismatch"
-    elif diffs:
+    elif differences:
         status = "case"
-    signature_status, detail = "match", None
+
+    signature_status = "match"
     if expected.parameters is None:
-        signature_status, detail = "unencoded", "MacsBug name contains no parameter-type encoding"
+        signature_status = "unencoded"
     elif actual.parameters is None:
-        signature_status, detail = "unresolved", parameter_error
+        signature_status = "unresolved"
     else:
         try:
-            wanted = tuple(canonical_type(p) for p in expected.parameters)
-            actual_types = tuple(canonical_type(p) for p in actual.parameters)
-            if wanted != actual_types or expected.const != actual.const:
+            wanted = tuple(canonical_type(parameter) for parameter in expected.parameters)
+            found = tuple(canonical_type(parameter) for parameter in actual.parameters)
+            if wanted != found or expected.const != actual.const:
                 signature_status = "review"
-                detail = f"Mac {expected.display()} -> source {actual.display()}"
-        except ValueError as error:
-            signature_status, detail = "unresolved", str(error)
-    return {"status": status, "wanted_class": wanted_class, "wanted_method": wanted_method,
-                "actual_class": actual.owner, "actual_method": actual.method, "differences": diffs,
-                "signature_status": signature_status, "signature_detail": detail,
-                "original_signature": expected.display(), "actual_signature": actual.display()}
+        except ValueError:
+            signature_status = "unresolved"
+    return {
+        "status": status,
+        "differences": differences,
+        "signature_status": signature_status,
+        "original_signature": expected.display(),
+        "actual_signature": actual.display(),
+    }
 
 
-def scan(path, symbols, mappings):
-    order = {"match": 0, "windows": 1, "case": 2, "mismatch": 3, "unresolved": 4}
-    by_windows = {}
-    for mac, win in sorted(mappings):
-        by_windows.setdefault(win, []).append(mac)
-    text = path.read_text(encoding="utf-8")
-    code = mask_comments_and_strings(text)
-    ranges = class_ranges(code)
-    rows = []
-    blocks, block = [], []
+def annotation_blocks(text, code):
+    """Yield line-comment blocks and the next block's offset to bound declarations."""
+    block = []
     for token in TOKENS.finditer(text):
         if not token[0].startswith("//"):
             continue
         if block:
-            gap = text[block[-1].end():token.start()]
-            if code[block[-1].end():token.start()].strip() or re.search(r"\n[ \t\r]*\n", gap):
-                blocks.append(block)
+            start = block[-1].end()
+            has_code = code[start:token.start()].strip()
+            blank_line = re.search(r"\n[ \t\r]*\n", text[start:token.start()])
+            if has_code or blank_line:
+                yield block, token.start()
                 block = []
         block.append(token)
     if block:
-        blocks.append(block)
-    for block_index, block in enumerate(blocks):
-        limit = blocks[block_index + 1][0].start() if block_index + 1 < len(blocks) else len(code)
-        windows = [(token, int(mark[1], 16)) for token in block
-                   if (mark := WINDOWS_MARK.match(token[0]))]
-        for token, win in windows:
-            candidates = by_windows.get(win, [])
+        yield block, len(code)
+
+
+def compare_catalog_candidates(address, actual, symbols, candidates):
+    """Preserve every folded identity; apply Windows reviews only to exact keys."""
+    comparisons = []
+    for mac in candidates:
+        symbol = symbols[mac]
+        try:
+            comparison = compare_signature(decode_signature(symbol), actual)
+            evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual.display()))
+            if evidence and comparison["status"] != "match":
+                comparison.update(
+                    status="windows", signature_status="review", windows_evidence=evidence
+                )
+        except ValueError as error:
+            comparison = {"status": "unresolved", "reason": str(error)}
+        comparisons.append(dict(comparison, address_68k=f"0x{mac:08x}", symbol=symbol))
+    return comparisons
+
+
+CANDIDATE_PRIORITY = {"match": 0, "windows": 1, "case": 2, "mismatch": 3, "unresolved": 4}
+
+
+def scan(path, symbols, mappings):
+    """Attach each Windows annotation to its declaration and catalog candidates."""
+    by_windows = defaultdict(list)
+    for mac, address in sorted(mappings):
+        by_windows[address].append(mac)
+    text = path.read_text(encoding="utf-8")
+    code = mask_comments_and_strings(text)
+    ranges = class_ranges(code)
+    rows = []
+    for block, limit in annotation_blocks(text, code):
+        for token in block:
+            marker = WINDOWS_MARK.match(token[0])
+            if marker is None:
+                continue
+            address = int(marker[1], 16)
             row = {"path": str(path), "line": text.count("\n", 0, token.start()) + 1,
-                       "windows_address": f"0x{win:08x}"}
+                   "windows_address": f"0x{address:08x}"}
+            candidates = by_windows.get(address)
             if not candidates:
                 rows.append(dict(row, status="unmapped"))
                 continue
             if "SYNTHETIC:" in token[0]:
-                rows.append(dict(row, status="synthetic", reason="compiler-emitted function; no C++ signature"))
+                rows.append(dict(row, status="synthetic",
+                                 reason="compiler-emitted function; no C++ signature"))
                 continue
             try:
-                actual, parameter_error = adjacent_signature(code[:limit], block[-1].end(), ranges)
+                actual = adjacent_signature(code[:limit], block[-1].end(), ranges)
             except ValueError as error:
                 rows.append(dict(row, status="unresolved", reason=str(error)))
                 continue
-            comparisons = []
-            for mac in candidates:
-                symbol = symbols[mac]
-                try:
-                    comparison = compare_signature(decode_signature(symbol), actual, parameter_error)
-                    evidence = WINDOWS_NAME_REVIEWS.get((win, symbol, actual.display()))
-                    if evidence and comparison["status"] != "match":
-                        comparison.update(status="windows", signature_status="review",
-                                          windows_evidence=evidence)
-                except ValueError as error:
-                    comparison = {"status": "unresolved", "reason": str(error)}
-                comparisons.append(dict(comparison, address_68k=f"0x{mac:08x}", symbol=symbol))
-            # Folded code can have several legitimate source identities. Preserve all
-            # catalog candidates and accept a compatible one, never an arbitrary row.
-            best = min(comparisons, key=lambda r: (order[r["status"]], r.get("signature_status") != "match"))
-            row.update(best)
-            row["catalog_candidates"] = comparisons
-            rows.append(row)
+            comparisons = compare_catalog_candidates(address, actual, symbols, candidates)
+            best = min(comparisons, key=lambda candidate: (
+                CANDIDATE_PRIORITY[candidate["status"]],
+                candidate.get("signature_status") != "match",
+            ))
+            rows.append(dict(row, **best, catalog_candidates=comparisons))
     return rows
 
 
+def print_review(row):
+    """Print one name/signature review and its original Windows evidence."""
+    detail = row.get("reason") or (
+        f'{row["original_signature"]} -> {row["actual_signature"]}'
+        f' ({", ".join(row["differences"]) or row["signature_status"]})'
+    )
+    print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{row["windows_address"]}]')
+    if row.get("windows_evidence"):
+        print(f'  Windows evidence: {row["windows_evidence"]}')
+
+
 def check_names(paths: list[Path | str] | None = None, verbose=False, catalog_path=CATALOG):
+    """Fail on unresolved identities or name mismatches; keep ABI reviews informational."""
     try:
         symbols, mappings = read_catalog(catalog_path)
         files = collect_sources(paths)
@@ -167,20 +202,13 @@ def check_names(paths: list[Path | str] | None = None, verbose=False, catalog_pa
         return 2
     counts = dict(Counter(row["status"] for row in rows))
     signatures = dict(Counter(row["signature_status"] for row in rows if "signature_status" in row))
-    failures = [r for r in rows if r["status"] in ("mismatch", "unresolved")]
     for row in rows:
-        if row not in failures and row["status"] != "windows" and not (
-                verbose and (row["status"] == "case"
-                             or row.get("signature_status") in ("review", "unresolved"))):
-            continue
-        detail = row.get("reason") or (
-            f'{row["original_signature"]} -> {row["actual_signature"]}'
-            f' ({", ".join(row["differences"]) or row.get("signature_status", "")})'
+        required = row["status"] in ("mismatch", "unresolved", "windows")
+        requested = verbose and (
+            row["status"] == "case" or row.get("signature_status") in ("review", "unresolved")
         )
-        address = row["windows_address"]
-        print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{address}]')
-        if row.get("windows_evidence"):
-            print(f'  Windows evidence: {row["windows_evidence"]}')
+        if required or requested:
+            print_review(row)
     print(f"names: {len(files)} files, {len(rows)} entries from CSV: {counts}")
     print(f"names: parameter/const comparisons: {signatures}")
     if signatures.get("review") or signatures.get("unresolved"):
@@ -188,4 +216,4 @@ def check_names(paths: list[Path | str] | None = None, verbose=False, catalog_pa
               "gate.py --names lists items.")
     if counts.get("unresolved") or (not rows and not paths):
         return 2
-    return int(bool(failures))
+    return int(bool(counts.get("mismatch")))

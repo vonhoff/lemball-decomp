@@ -19,6 +19,7 @@ METHOD_DEF = re.compile(
 
 
 def has_vtable_above(text, type_offset):
+    """Look for a vtable marker in the comments immediately above a type."""
     for line in reversed(text[:type_offset].splitlines()):
         line = line.strip()
         if not line:
@@ -30,17 +31,26 @@ def has_vtable_above(text, type_offset):
     return False
 
 
+def top_level_types(code):
+    """Yield complete type definitions, skipping nested classes and structs."""
+    ends = brace_ends(code)
+    previous_end = 0
+    for match in TYPE_DEF.finditer(code):
+        closing = ends.get(match.end() - 1)
+        if closing is not None and match.start() >= previous_end:
+            yield match
+            previous_end = closing
+
+
 def primary_names(path, text, code):
+    """Use method owners for .cpp; prefer vtables, then classes or the header stem."""
     if path.suffix == ".cpp":
         owners = {}
         for match in METHOD_DEF.finditer(code):
             owner = match["owner"].split("::")[0]
             owners.setdefault(owner.casefold(), owner)
         return sorted(owners.values(), key=str.casefold)
-    ends = brace_ends(code)
-    types = [match for match in TYPE_DEF.finditer(code) if match.end() - 1 in ends]
-    types = [match for match in types if not any(
-        other.end() - 1 < match.start() < ends[other.end() - 1] for other in types)]
+    types = list(top_level_types(code))
     vtables = {match["name"] for match in types if has_vtable_above(text, match.start())}
     if vtables:
         return sorted(vtables)
@@ -50,21 +60,21 @@ def primary_names(path, text, code):
 
 
 def scan(path: Path) -> dict:
+    """Classify a file's primary names against its filename."""
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
     primary = primary_names(path, text, code)
     stem = path.stem
-    expected = primary[0] if len(primary) == 1 else None
 
     if len(primary) > 1:
         status = "multi-class"
         detail = "primary classes: " + ", ".join(primary)
-    elif expected is not None and stem.casefold() != expected.casefold():
-        status = "stem-name"
-        detail = f"stem {stem} != expected {expected} (class)"
     elif not primary:
         status = "free"
         detail = "no primary class"
+    elif stem.casefold() != primary[0].casefold():
+        status = "stem-name"
+        detail = f"stem {stem} != expected {primary[0]} (class)"
     else:
         status = "match"
         detail = None

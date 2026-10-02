@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Fail on decomp smells (via tools/gate.py)."""
 
-from __future__ import annotations
-
 import re
 import sys
 from pathlib import Path
@@ -83,8 +81,7 @@ def is_func_def(stripped: str) -> bool:
         return False
     if stripped.endswith((";", ",")):
         return False
-    lead = stripped.split(None, 1)
-    if lead and lead[0] in SKIP_LEAD:
+    if stripped.split(None, 1)[0] in SKIP_LEAD:
         return False
     if METHOD_DEF.match(stripped):
         return True
@@ -134,49 +131,39 @@ def raw_cast_reason(code: str) -> str | None:
     return None
 
 
-def scan_file(path: Path) -> list[Hit]:
-    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-    masked = mask_comments_and_strings("\n".join(lines))
-    masked_lines = masked.splitlines()
-    hits: list[Hit] = []
-    rel = path.resolve().relative_to(ROOT).as_posix()
-    for lineno, (raw, code) in enumerate(zip(lines, masked_lines), 1):
-        comment = next((token for token in TOKENS.finditer(raw) if token[0].startswith('//')), None)
-        display = (raw[:comment.start()] if comment else raw).strip()
-        raw_cast = raw_cast_reason(code)
-        if raw_cast is not None:
-            hits.append((rel, lineno, raw_cast, display))
-        if VBPTR_WALK.search(code):
-            hits.append((rel, lineno, "vbptr-walk", display))
-        if THIS_ADJUST.search(code):
-            hits.append((rel, lineno, "this-adjust-poke", display))
-        poked = False
-        type_erase = CAST_BYTE_DIV_INDEX.search(code)
-        if type_erase is not None:
-            hits.append((rel, lineno, "type-erase-index", display))
-            poked = True
-        for match in EXPR_CHAR_OFFSET.finditer(code):
-            if not BUFFER_OK.search(match.group("expr")):
-                hits.append((rel, lineno, "expr-char-offset", display))
-                poked = True
-                break
-        if MI_DTOR_POKE.search(code):
-            hits.append((rel, lineno, "mi-dtor-poke", display))
-            poked = True
-        if (not poked and not BUFFER_OK.search(code)
-                and (CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code)
-                     or NAKED_DATA_OFFSET.search(code))):
-            hits.append((rel, lineno, "offset-poke", display))
-        for match in CHAR_VAR_OFFSET.finditer(code):
-            if BUFFER_OK.search(match.group("expr")):
-                continue
-            if match.group("off") == "sizeof":
-                continue
-            hits.append((rel, lineno, "offset-poke", display))
-    if path.suffix.lower() != ".cpp":
-        return hits
+def line_smells(code: str):
+    """Yield specific cast/offset rules before the generic offset fallback."""
+    raw_cast = raw_cast_reason(code)
+    if raw_cast is not None:
+        yield raw_cast
+    for pattern, rule in ((VBPTR_WALK, "vbptr-walk"), (THIS_ADJUST, "this-adjust-poke")):
+        if pattern.search(code):
+            yield rule
+
+    specific_offsets = (
+        (CAST_BYTE_DIV_INDEX.search(code), "type-erase-index"),
+        (
+            any(not BUFFER_OK.search(match["expr"]) for match in EXPR_CHAR_OFFSET.finditer(code)),
+            "expr-char-offset",
+        ),
+        (MI_DTOR_POKE.search(code), "mi-dtor-poke"),
+    )
+    for matched, rule in specific_offsets:
+        if matched:
+            yield rule
+    if (not any(matched for matched, _ in specific_offsets) and not BUFFER_OK.search(code)
+            and (CAST_THEN_ARITH.search(code) or CAST_PAREN_ARITH.search(code)
+                 or NAKED_DATA_OFFSET.search(code))):
+        yield "offset-poke"
+    for match in CHAR_VAR_OFFSET.finditer(code):
+        if not BUFFER_OK.search(match["expr"]) and match["off"] != "sizeof":
+            yield "offset-poke"
+
+
+def unannotated_definitions(lines: list[str], masked: str):
+    """Find function bodies without a reccmp marker in their preceding comment block."""
     offset = 0
-    for i, (raw, code) in enumerate(zip(lines, masked_lines)):
+    for i, (raw, code) in enumerate(zip(lines, masked.splitlines())):
         start, offset = offset, offset + len(code) + 1
         if not is_func_def(code.strip()) or not declaration_has_body(masked, start):
             continue
@@ -191,7 +178,22 @@ def scan_file(path: Path) -> list[Hit]:
             else:
                 break
         if not any(RECCMP_MARK.match(line) for line in block):
-            hits.append((rel, i + 1, 'no-annotation', raw.strip()))
+            yield i + 1, raw.strip()
+
+
+def scan_file(path: Path) -> list[Hit]:
+    """Scan masked code; retain source text and line numbers for diagnostics."""
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    masked = mask_comments_and_strings("\n".join(lines))
+    rel = path.resolve().relative_to(ROOT).as_posix()
+    hits: list[Hit] = []
+    for lineno, (raw, code) in enumerate(zip(lines, masked.splitlines()), 1):
+        comment = next((token for token in TOKENS.finditer(raw) if token[0].startswith('//')), None)
+        display = (raw[:comment.start()] if comment else raw).strip()
+        hits.extend((rel, lineno, rule, display) for rule in line_smells(code))
+    if path.suffix.lower() == ".cpp":
+        hits.extend((rel, line, 'no-annotation', code)
+                    for line, code in unannotated_definitions(lines, masked))
     return hits
 
 

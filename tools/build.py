@@ -90,9 +90,9 @@ def stale_link_inputs(build_dir: Path) -> list[Path]:
 
 
 def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) -> tuple[int, str]:
+    """Verify both link artifacts; force at most one relink for stale dependencies."""
     output = ''
-    retried = False
-    while True:
+    for attempt in range(2):
         proc = subprocess.run(cmake_args, cwd=root, stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT, text=True, errors='replace', check=False)
         output += proc.stdout
@@ -103,20 +103,16 @@ def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) ->
             if all((build_dir / name).exists() for name in ('LEMBALL.EXE', 'LEMBALL.pdb')):
                 return 0, output
             return 1, output + '\nerror: build did not produce both LEMBALL.EXE and LEMBALL.pdb\n'
-        if retried:
-            return 1, output + '\nerror: executable is still older than its link inputs after retry\n'
-        output += f'\nLink output is stale; forcing one relink after {stale[0]}\n'
-        (build_dir / 'LEMBALL.EXE').unlink()
-        retried = True
+        if attempt == 0:
+            output += f'\nLink output is stale; forcing one relink after {stale[0]}\n'
+            (build_dir / 'LEMBALL.EXE').unlink()
+    return 1, output + '\nerror: executable is still older than its link inputs after retry\n'
 
 
-def run_build(clean_first=False, disable_enforcements=False) -> int:
-    cmake = resolve_cmake()
-    BUILD.mkdir(parents=True, exist_ok=True)
-
+def configure_build(cmake: str, startup_checks: str) -> int:
+    """Refresh the cache when paths, the toolchain, or startup-check settings changed."""
     makefile = BUILD / "Makefile"
     toolchain = ROOT / "cmake" / "msvc400-toolchain.cmake"
-    startup_checks = "OFF" if disable_enforcements else "ON"
     cache_path = BUILD / "CMakeCache.txt"
     cache_lines = cache_path.read_text(encoding="utf-8").splitlines() if cache_path.exists() else []
     cached = next((line.split("=", 1)[1].strip().strip('"')
@@ -129,8 +125,17 @@ def run_build(clean_first=False, disable_enforcements=False) -> int:
     if need_configure:
         res = subprocess.run([cmake, '--preset', 'msvc400',
                               f'-DLEMBALL_ENFORCE_STARTUP_CHECKS={startup_checks}'], cwd=ROOT, check=False)
-        if res.returncode != 0:
-            return res.returncode
+        return res.returncode
+    return 0
+
+
+def run_build(clean_first=False, disable_enforcements=False) -> int:
+    """Configure, optionally clean, build with link checks, and save diagnostics."""
+    cmake = resolve_cmake()
+    BUILD.mkdir(parents=True, exist_ok=True)
+    configured = configure_build(cmake, "OFF" if disable_enforcements else "ON")
+    if configured:
+        return configured
 
     if clean_first:
         for fname in ("LEMBALL.pdb", "LEMBALL.ilk", "LEMBALL.EXE"):

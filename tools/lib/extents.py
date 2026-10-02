@@ -14,10 +14,10 @@ from lib import ROOT
 
 TARGET_SIZES = ROOT / "tools/data/original-function-sizes.csv"
 FUNCTION_TYPES = (EntityType.FUNCTION, EntityType.VTORDISP)
-IDENTITY_LEAS = {
-    f"{register}, [{register}]"
+ALIGNMENT_ENCODINGS = {
+    ("lea", f"{register}, [{register}]")
     for register in ("eax", "ebx", "ecx", "edx", "esi", "edi", "esp", "ebp")
-}
+} | {("mov", "edi, edi"), ("add", "eax, 0")}
 
 
 def load_target_sizes(path=TARGET_SIZES):
@@ -66,15 +66,18 @@ def target_size(entity):
 def is_alignment(instruction):
     """MSVC 4.00 alignment encodings; only used after a terminal instruction."""
     mnemonic, operands = instruction[2:]
-    return (
-        mnemonic in ("nop", "int3")
-        or mnemonic == "lea"
-        and operands in IDENTITY_LEAS
-        or mnemonic == "mov"
-        and operands == "edi, edi"
-        or mnemonic == "add"
-        and operands == "eax, 0"
-    )
+    return mnemonic in ("nop", "int3") or (mnemonic, operands) in ALIGNMENT_ENCODINGS
+
+
+def branch_targets(sections):
+    """Yield direct control-flow destinations and switch-table entries."""
+    for section in sections:
+        if section.type == SectionType.ADDR_TAB:
+            yield from (target for _, target in section.contents)
+        elif section.type == SectionType.CODE:
+            for _, _, mnemonic, operands in section.contents:
+                if (mnemonic.startswith("j") or mnemonic == "call") and operands.startswith("0x"):
+                    yield int(operands, 16)
 
 
 def alignment_extent(data, address):
@@ -97,20 +100,8 @@ def alignment_extent(data, address):
         or not all(is_alignment(instruction) for instruction in tail)
     ):
         return len(data)
-    for section in sections:
-        if section.type == SectionType.CODE:
-            for _, _, mnemonic, operands in section.contents:
-                if (
-                    (mnemonic.startswith("j") or mnemonic == "call")
-                    and operands.startswith("0x")
-                    and end <= int(operands, 16) < address + len(data)
-                ):
-                    return len(data)
-        elif section.type == SectionType.ADDR_TAB:
-            if any(
-                end <= target < address + len(data) for _, target in section.contents
-            ):
-                return len(data)
+    if any(end <= target < address + len(data) for target in branch_targets(sections)):
+        return len(data)
     return end - address
 
 
@@ -156,23 +147,28 @@ class FullFunctionComparator(FunctionComparator):
             return super().compare_function(match)
 
 
-def prepare_function_extents(engine):
-    """Validate original metadata and remove rebuilt trailing alignment before diffing."""
+def validate_original_functions(engine):
+    """Require non-overlapping, fully decoded original code without trailing alignment."""
     functions = list(original_functions(engine))
     validate_extents({entity.orig_addr: target_size(entity) for entity in functions})
-    comparator = engine.function_comparator
-    with comparator.db.batch() as batch:
+    for entity in functions:
+        size = target_size(entity)
+        data = engine.orig_bin.read(entity.orig_addr, size)
+        if alignment_extent(data, entity.orig_addr) != size:
+            raise ValueError(
+                f"Original extent includes trailing alignment at 0x{entity.orig_addr:08x}"
+            )
+        if decoded_extent(data, entity.orig_addr) != size:
+            raise ValueError(
+                f"Original extent contains undecoded bytes at 0x{entity.orig_addr:08x}"
+            )
+    return functions
+
+
+def trim_rebuilt_alignment(engine, functions):
+    """Keep executable rebuilt bytes; exclude only untargeted alignment suffixes."""
+    with engine.function_comparator.db.batch() as batch:
         for entity in functions:
-            size = target_size(entity)
-            data = engine.orig_bin.read(entity.orig_addr, size)
-            if alignment_extent(data, entity.orig_addr) != size:
-                raise ValueError(
-                    f"Original extent includes trailing alignment at 0x{entity.orig_addr:08x}"
-                )
-            if decoded_extent(data, entity.orig_addr) != size:
-                raise ValueError(
-                    f"Original extent contains undecoded bytes at 0x{entity.orig_addr:08x}"
-                )
             if entity.recomp_addr is None:
                 continue
             rebuilt_size = entity.size(ImageId.RECOMP)
@@ -182,6 +178,13 @@ def prepare_function_extents(engine):
             size = alignment_extent(rebuilt_data, entity.recomp_addr)
             if size != rebuilt_size:
                 batch.set(ImageId.RECOMP, entity.recomp_addr, size=size)
+
+
+def prepare_function_extents(engine):
+    """Validate extents, trim rebuilt padding, and retain intentional INT3 in comparisons."""
+    functions = validate_original_functions(engine)
+    trim_rebuilt_alignment(engine, functions)
+    comparator = engine.function_comparator
     engine.function_comparator = FullFunctionComparator(
         **{field.name: getattr(comparator, field.name) for field in fields(comparator)}
     )
