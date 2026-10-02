@@ -66,10 +66,6 @@ jobs:
       - name: Generate objdiff report
         run: python tools/report.py
 
-      - name: Vtable comparison (informational)
-        continue-on-error: true
-        run: python tools/gate.py --vtable
-
       - name: Generate progress badges
         run: python tools/badges.py
 
