@@ -13,14 +13,15 @@ void C2D::NoStateLeftClick(const CVSPoint& p_screenPoint,
 	CVSPoint destination(p_gamePoint);
 	int index;
 	if (FindGameObject(p_screenPoint, index, 0)) {
-		CViewData& view = m_viewData[index];
+		CViewData* views = m_viewData;
+		CViewData& view = views[index];
 		switch (view.m_objectType) {
 		case OBJECT_PLAYER_2:
 			if (p_alternate == 0) {
 				m_groupCount = 0;
 				m_groupSelectionCount = 0;
 				m_groupingActive = 1;
-				AddObjectToGroup(m_viewData[index].m_objectId, 0);
+				AddObjectToGroup(views[index].m_objectId, 0);
 				g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 				return;
 			}
@@ -44,10 +45,13 @@ void C2D::NoStateLeftClick(const CVSPoint& p_screenPoint,
 			}
 			SelectObject(index);
 			return;
-		case OBJECT_MOVER:
-			destination.m_x = view.m_gameX;
-			destination.m_y = view.m_gameY;
+		case OBJECT_MOVER: {
+			short y = view.m_gameY;
+			short x = view.m_gameX;
+			destination.m_x = x;
+			destination.m_y = y;
 			break;
+		}
 		default:
 			return;
 		}
