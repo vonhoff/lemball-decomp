@@ -15,7 +15,7 @@ bool _GDI_Init()
 	CCursor* cursor;
 	CGraphicsState* system;
 
-	storage = operator new(0xc);
+	storage = operator new(sizeof(CGraphicsState));
 	system = (CGraphicsState*) storage;
 	if (system != 0) {
 		system->m_targetWindow = 0;
@@ -35,7 +35,7 @@ bool _GDI_Init()
 		g_pGdiDevice = 0;
 	}
 
-	storage = operator new(0x5a0);
+	storage = operator new(sizeof(CSurface));
 	if (storage != 0) {
 		g_pGdiHelperTarget = new (storage) CSurface((GrafPort*) 0);
 	}
