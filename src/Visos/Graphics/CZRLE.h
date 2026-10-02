@@ -10,7 +10,7 @@ class CRemap;
 // VTABLE: LEMBALL 0x00499628
 class CZRLE : public CPrimitive {
 public:
-	inline CZRLE() : m_y(0), m_x(0) {}
+	inline CZRLE() : m_x(m_y = 0) {}
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04
 	virtual void Render(CGDI* p_gdi); // vtable+0x08
 	virtual ~CZRLE() {}
