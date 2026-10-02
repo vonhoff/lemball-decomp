@@ -13,7 +13,7 @@ behavior, and reach 100% effective matching across all functions.
 
 Microsoft Visual C++ 4.00 compiles the C++ code. [Reccmp](https://github.com/isledecomp/reccmp) compares each function with the original executable.
 
-## Matching and Progress
+## Progress Reporting
 
 In the decomp.dev report, `matched_*` counts functions with a raw 100% assembly
 comparison score. Equivalent functions with lower scores retain their raw
@@ -34,11 +34,10 @@ similarity under fuzzy progress.
 | Raw similarity weighted by original size | `measures.fuzzy_match_percent` |
 | Exact-match by bytes and count | `measures.matched_code_percent`, `measures.matched_functions_percent` |
 
-### Effective Matching
+## Effective Matching
 
-The Effective metric counts exact matches, functions reccmp accepts as equivalent,
-and functions that pass these extra checks. The percentage is weighted by original
-function size.
+Effective matching counts exact matches, reccmp equivalents, and matches covered by
+the rules below, weighted by original function size.
 
 | Rule | Reason |
 | --- | --- |
