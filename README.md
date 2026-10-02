@@ -27,14 +27,14 @@ The badges measure code bytes in the reported original functions:
 | --- | --- |
 | Rebuilt PDB module name | `units[].name` |
 | Original virtual address (`orig_addr`) | `functions[].name`, `functions[].metadata.virtual_address` |
-| Comparison name, falling back to entity name | `functions[].metadata.demangled_name` |
+| Comparison name or entity name | `functions[].metadata.demangled_name` |
 | Original function size in bytes | `functions[].size` |
 | Raw similarity (`accuracy * 100`) | `functions[].fuzzy_match_percent` |
 | Total original function bytes | `measures.total_code` |
 | Function and module counts | `measures.total_functions`, `measures.total_units` |
 | Bytes and count of exact matches | `measures.matched_code`, `measures.matched_functions` |
 | Raw similarity weighted by original size | `measures.fuzzy_match_percent` |
-| Exact-match percentages by bytes and count | `measures.matched_code_percent`, `measures.matched_functions_percent` |
+| Exact-match by bytes and count | `measures.matched_code_percent`, `measures.matched_functions_percent` |
 
 ## References
 
