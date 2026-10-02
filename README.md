@@ -37,17 +37,16 @@ similarity under fuzzy progress.
 
 ## Effective Matching
 
-The effective metric counts functions that have a raw assembly comparison score of 100% or an equivalent accepted 
-instruction sequence. Each accepted function contributes its full original byte size only once. Stubs and unmatched 
-functions contribute zero bytes.
+Effective matching counts exact assembly matches and accepted equivalent instruction sequences. Each accepted function 
+contributes its original size in bytes, counted once. Stubs and unmatched functions contribute zero bytes.
 
 Equivalence comes from reccmp's checks, plus the additional checks in [tools/lib/effective.py](tools/lib/effective.py):
 
-| Difference | Example | Required checks |
+| Difference | Example | Equivalence checks |
 | --- | --- | --- |
-| Linker thunks (jump stubs) | A call reaches `Foo` through a linker jump stub instead of naming `Foo` directly. | Verify the jump target against the original/rebuilt function pairing. Resolve verified thunk references to that function identity. |
-| `CMP` versus `TEST` | `cmp eax, ebp` versus `test eax, eax`, with `ebp` known to be zero. | Prove the zero value at that point in both functions; require the same following conditional branch. Reject functions that can observe the differing auxiliary flag. |
-| Overwritten construction vtable stores | A temporary vtable pointer differs; both sequences then write the same final vtable pointer. | Require an overwrite of the same slot within the next three instructions, before any read, call, branch, or change to the base register. Intervening instructions must match and be limited to non-overlapping stores or address calculations. |
+| Linker thunks (jump stubs) | One version calls `Foo` directly; the other calls a short stub that jumps to `Foo`. | The checker follows the jump and confirms that both calls reach the matching function in each executable. |
+| `CMP` versus `TEST` | One version compares `eax` with a register known to hold zero (`cmp eax, ebp`); the other tests `eax` against itself (`test eax, eax`). | The checker confirms that `ebp` is zero at this point in both versions and that the next conditional jump is the same. Neither function uses the auxiliary carry flag, which can differ between these instructions. |
+| Temporary vtable writes | During construction, the versions write different vtable pointers, then replace them with the same final pointer. | Both versions replace the pointer in the same memory slot within the next three instructions, before any read, call, jump, or change to the address register. Instructions between the writes are identical and only calculate addresses or write to other, non-overlapping memory. |
 
 ## References
 
