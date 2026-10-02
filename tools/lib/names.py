@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Audit C++ names and signatures against independent, reviewed CSV evidence."""
 
 import csv

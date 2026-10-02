@@ -15,14 +15,14 @@ from lib import BUILD, ROOT
 LOG_PATH = BUILD / "last_build.log"
 MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
 MSVC_DIAGNOSTIC = re.compile(
-    r"(?:\b(?:fatal )?error\s+[A-Z]*\d*\s*:|\bwarning\s+[A-Z]*\d*\s*:|Command line (?:error|warning)\b)",
+    r"\b(?:fatal )?error\s+[A-Z]*\d*\s*:|\bwarning\s+[A-Z]*\d*\s*:|Command line (?:error|warning)\b",
     re.IGNORECASE,
 )
 
 
 def win_short_path(path: str) -> str:
     absp = os.path.abspath(path)
-    get_short = ctypes.windll.kernel32.GetShortPathNameW
+    get_short = ctypes.WinDLL("kernel32")["GetShortPathNameW"]
     get_short.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint]
     get_short.restype = ctypes.c_uint
     buf = ctypes.create_unicode_buffer(32768)

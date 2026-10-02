@@ -83,9 +83,9 @@ def main():
     REPORT_JSON.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     EFFECTIVE_JSON.write_text(json.dumps(additional, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
-    print(f"Report: {values['total_functions']:,} functions; "
-          f"{values['matched_code_percent']:.2f}% exact; "
-          f"{values['fuzzy_match_percent']:.2f}% fuzzy")
+    print(f"Report: {int(values['total_functions']):,} functions; "
+          f"{float(values['matched_code_percent']):.2f}% exact; "
+          f"{float(values['fuzzy_match_percent']):.2f}% fuzzy")
 
 
 if __name__ == "__main__":

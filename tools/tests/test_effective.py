@@ -24,14 +24,14 @@ def fixture(original="c3", rebuilt=None, thunk=THUNK, opcode="e8"):
               for tail in (original, original if rebuilt is None else rebuilt)]
     images = []
     for start, body in zip((0x1000, 0x2000), bodies):
-        regions = {start: body, 0x4000: thunk}
         images.append(SimpleNamespace(
-            read=lambda address, size, regions=regions: regions.get(address, b"")[:size],
+            read=lambda address, size, start=start, body=body:
+                (body if address == start else thunk if address == 0x4000 else b"")[:size],
             imagebase=0, is_relocated_addr=lambda _address: False,
         ))
     lines = Mock()
     lines.find_line_of_recomp_address.return_value = None
-    comparator = FunctionComparator(EntityDb(), lines, *images, Mock(), Mock())
+    comparator = FunctionComparator(EntityDb(), lines, images[0], images[1], Mock(), Mock())
     with comparator.db.batch() as batch:
         for side, address in ((ImageId.ORIG, 0x4015), (ImageId.RECOMP, 0x5000)):
             batch.set(side, address, type=EntityType.FUNCTION, name="Target", size=1)
@@ -80,9 +80,9 @@ class ThunkTests(unittest.TestCase):
         for call_first in (True, False):
             parser = ThunkParseAsm(
                 SimpleNamespace(read=lambda _address, _size: THUNK), {0x4015},
-                ParseAsm(addr_test=lambda _address: True, name_lookup=lambda address, **_kwargs: {
+                ParseAsm(addr_test=lambda _address: True, name_lookup=lambda addr, exact=False, indirect=False: {
                     0x4000: "Wrapper", 0x4015: "Target",
-                }.get(address)),
+                }.get(addr)),
             )
             call = (0x1000, 5, "call", "0x4000")
             pointer = (0x1005, 5, "mov", "eax, 0x4000")
@@ -134,7 +134,9 @@ class ThunkTests(unittest.TestCase):
     def test_parser_state_is_per_function(self):
         comparator, match = fixture()
         parser = ThunkParseAsm(comparator.orig_bin, {0x4015}, comparator.orig_sanitize)
-        parser.parse_asm(comparator.orig_bin.read(0x1000, match.size(ImageId.ORIG)), 0x1000)
+        size = match.size(ImageId.ORIG)
+        assert size is not None
+        parser.parse_asm(comparator.orig_bin.read(0x1000, size), 0x1000)
         self.assertTrue(parser.used_thunk)
         self.assertIsNotNone(parser.signature)
         parser.parse_asm(b"\x0f", 0x1100)

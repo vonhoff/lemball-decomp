@@ -48,7 +48,7 @@ def violations(text):
         marker = match_marker(value) if standalone and is_marker_exact(value) else None
         annotation = marker and marker.type != MarkerType.UNKNOWN and (
             marker.extra in (None, "FOLDED", "SYMBOL") or marker.type == MarkerType.VTABLE
-            and re.fullmatch(r"[A-Za-z_]\w*(?:'s `[A-Za-z_]\w*)?", marker.extra))
+            and re.fullmatch(r"[A-Za-z_]\w*(?:'s `[A-Za-z_]\w*)?", marker.extra or ""))
         symbol = (standalone and by_name and line == previous_line + 1
                   and re.fullmatch(r"// (?:\S+|\S+::.+|\"(?:\\.|[^\"\\])*\")", value))
         functional = FUNCTIONAL.fullmatch(value) and (standalone or "clang-format" not in value)

@@ -7,7 +7,7 @@ from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.compare.asm.parse import ParseAsm
 from reccmp.compare.functions import FunctionComparator
 from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtualReadError
-from reccmp.types import EntityType, ImageId
+from reccmp.types import EntityType
 
 from . import BUILD
 
@@ -18,6 +18,7 @@ class ThunkParseAsm(ParseAsm):
     def __init__(self, image, targets, upstream):
         super().__init__(addr_test=upstream.addr_test, name_lookup=upstream.name_lookup)
         self.image, self.targets = image, targets
+        self.used_thunk, self.signature = False, None
 
     def sanitize(self, inst):
         _, _, mnemonic, operands = inst
@@ -40,9 +41,10 @@ class ThunkParseAsm(ParseAsm):
 
     def parse_asm(self, data, start_addr):
         self.used_thunk, self.signature = False, None
+        data = bytes(data)
         asm = super().parse_asm(data, start_addr)
         cursor = start_addr
-        for section in InstructGen(bytes(data), start_addr).sections:
+        for section in InstructGen(data, start_addr).sections:
             if section.type != SectionType.CODE:
                 return asm
             for address, size, _, _ in section.contents:
@@ -71,14 +73,13 @@ def additional_effective_matches(engine, comparisons):
         upstream.report, upstream.types,
     )
     functions = list(upstream.db.get_matches_by_type(EntityType.FUNCTION))
-    for side, attribute, image in (
-        (ImageId.ORIG, "orig_sanitize", upstream.orig_bin),
-        (ImageId.RECOMP, "recomp_sanitize", upstream.recomp_bin),
-    ):
-        setattr(comparator, attribute, ThunkParseAsm(
-            image, {entity.addr(side) for entity in functions}, getattr(comparator, attribute),
-        ))
-    parsers = (comparator.orig_sanitize, comparator.recomp_sanitize)
+    original = ThunkParseAsm(
+        upstream.orig_bin, {entity.orig_addr for entity in functions}, comparator.orig_sanitize,
+    )
+    rebuilt = ThunkParseAsm(
+        upstream.recomp_bin, {entity.recomp_addr for entity in functions}, comparator.recomp_sanitize,
+    )
+    comparator.orig_sanitize, comparator.recomp_sanitize = original, rebuilt
     matches = {}
     for match in engine.get_functions():
         comparison = comparisons.get(match.orig_addr)
@@ -86,9 +87,8 @@ def additional_effective_matches(engine, comparisons):
                 or comparison.accuracy == 1 or comparison.is_effective_match):
             continue
         comparator.compare_function(match)
-        if (all(parser.signature is not None for parser in parsers)
-                and parsers[0].signature == parsers[1].signature
-                and any(parser.used_thunk for parser in parsers)):
+        if (original.signature is not None and original.signature == rebuilt.signature
+                and (original.used_thunk or rebuilt.used_thunk)):
             matches[match.orig_addr] = ("verified jump thunk target",)
     return matches
 

@@ -247,7 +247,7 @@ def parameter_type(text):
     function = function_parameter_type(text)
     if function is not None:
         return function
-    array = re.search(r"\s*\[(?:\d+)?\]\s*$", text)
+    array = re.search(r"\s*\[(?:\d+)?]\s*$", text)
     if array:
         text = text[:array.start()]
     tail = re.search(r"\b([A-Za-z_]\w*)\s*$", text)

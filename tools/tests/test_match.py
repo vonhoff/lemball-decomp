@@ -15,8 +15,8 @@ class MatchTests(unittest.TestCase):
     def test_failed_build_prevents_comparison(self):
         with (
             patch("sys.argv", ["match.py", "0x401000"]),
-            patch.object(matching, "run_build", return_value=7),
-            patch.object(matching, "load_engine") as load,
+            patch("match.run_build", return_value=7),
+            patch("match.load_engine") as load,
             contextlib.redirect_stdout(io.StringIO()),
         ):
             self.assertEqual(matching.main(), 7)
@@ -34,9 +34,9 @@ class MatchTests(unittest.TestCase):
         output = io.StringIO()
         with (
             patch("sys.argv", ["match.py", *[hex(c.orig_addr) for c in comparisons], "--no-build"]),
-            patch.object(matching, "load_engine", return_value=(None, engine)),
-            patch.object(matching, "additional_effective_matches", return_value={0x401020: ("Rule",)}),
-            patch.object(matching, "print_match_verbose") as display,
+            patch("match.load_engine", return_value=(None, engine)),
+            patch("match.additional_effective_matches", return_value={0x401020: ("Rule",)}),
+            patch("match.print_match_verbose") as display,
             contextlib.redirect_stdout(output),
         ):
             self.assertEqual(matching.main(), 0)
