@@ -33,9 +33,9 @@ def build_badges(report, comparisons, additional=()):
     return {
         name: {"schemaVersion": 1, "label": label, "message": f"{percent:.2f}%", "color": color}
         for name, label, percent, color in (
-            ("exact", "Exact", values["matched_code_percent"], "blue"),
-            ("fuzzy", "Fuzzy", values["fuzzy_match_percent"], "lightgrey"),
-            ("effective", "Effective", effective_percent, "green"),
+            ("exact", "Exact", values["matched_code_percent"], "informational"),
+            ("fuzzy", "Fuzzy", values["fuzzy_match_percent"], "inactive"),
+            ("effective", "Effective", effective_percent, "success"),
         )
     }
 
