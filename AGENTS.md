@@ -17,8 +17,6 @@
 
 ## Commands
 
-Run with `python`; options and responsibilities: `tools/USAGE.md`.
-
 | Script | Purpose |
 | --- | --- |
 | `tools/build.py` | Build/link; `--clean-first` for stale PDB/build artifacts |

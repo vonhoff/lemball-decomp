@@ -26,8 +26,6 @@ Microsoft Visual C++ 4.00 compiles the C++ code. [Reccmp](https://github.com/isl
   register use. This badge is reported separately; equivalent functions do not
   increase the assembly-exact function count or exact matched code bytes.
 
-For the available commands and validation checks, see [tools/USAGE.md](tools/USAGE.md).
-
 ## References
 
 ### Technical resources
