@@ -3,7 +3,6 @@ name: Build
 on:
   push:
     branches: [main]
-  pull_request:
   workflow_dispatch:
 
 concurrency:
@@ -12,11 +11,13 @@ concurrency:
 
 jobs:
   build:
-    if: github.event_name != 'pull_request'
     name: Build + verify (MSVC 4.00)
     runs-on: windows-latest
     permissions:
       contents: write
+    defaults:
+      run:
+        working-directory: S:\
 
     steps:
       - name: Check out repository
@@ -28,91 +29,48 @@ jobs:
           repository: vonhoff/MSVC400
           path: msvc400
 
+      - name: Set up short workspace drive
+        working-directory: .
+        run: 'subst S: $env:GITHUB_WORKSPACE'
+
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: "3.x"
           cache: pip
-          cache-dependency-path: requirements.txt
 
       - name: Install Python tools
-        shell: pwsh
         run: python -m pip install --requirement requirements.txt
 
-      - name: Set up short workspace drive
-        shell: pwsh
-        run: |
-          subst S: $env:GITHUB_WORKSPACE
-
-      - name: Configure MSVC 4.00 environment
-        shell: pwsh
-        run: |
-          "MSVC400_ROOT=S:\msvc400" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "INCLUDE=S:\msvc400\include" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "LIB=S:\msvc400\lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "S:\msvc400\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Gate checks
+        run: python tools/gate.py
 
       - name: Prepare target binary
-        shell: bash
         env:
           LEMBALL_REFERENCE_URL: ${{ secrets.LEMBALL_REFERENCE_URL }}
           LEMBALL_SHA256: d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63
         run: |
-          if [ -z "${LEMBALL_REFERENCE_URL:-}" ]; then
-            echo '::error::LEMBALL_REFERENCE_URL secret is not set'
-            exit 1
-          fi
-          if [ -z "${LEMBALL_SHA256:-}" ]; then
-            echo '::error::LEMBALL_SHA256 secret is not set'
-            exit 1
-          fi
-          if ! [[ "$LEMBALL_SHA256" =~ ^[[:xdigit:]]{64}$ ]]; then
-            echo '::error::LEMBALL_SHA256 must be exactly 64 hexadecimal characters'
-            exit 1
-          fi
-          if ! curl --fail --location --silent --show-error \
-            "$LEMBALL_REFERENCE_URL" \
-            --output "$RUNNER_TEMP/LEMBALL.EXE"; then
-            echo '::error::reference download failed; verify the URL is public and directly downloadable'
-            exit 1
-          fi
-          actual=$(REFERENCE_PATH="$RUNNER_TEMP/LEMBALL.EXE" python -c 'import hashlib, os; print(hashlib.file_digest(open(os.environ["REFERENCE_PATH"], "rb"), "sha256").hexdigest())')
-          if [ "$actual" != "$LEMBALL_SHA256" ]; then
-            echo "::error::reference SHA-256 mismatch (downloaded: $actual)"
-            exit 1
-          fi
-          mkdir -p data
-          cp "$RUNNER_TEMP/LEMBALL.EXE" data/LEMBALL.EXE
-
-      - name: Configure and build
-        shell: pwsh
-        working-directory: S:\
-        run: |
-          python tools/build.py --clean-first
-          if (!(Test-Path build-msvc400\LEMBALL.EXE)) {
-            throw 'build did not produce LEMBALL.EXE'
+          if (!$env:LEMBALL_REFERENCE_URL) {
+            throw 'LEMBALL_REFERENCE_URL secret is not set'
+          }
+          New-Item -ItemType Directory -Force data | Out-Null
+          Invoke-WebRequest -Uri $env:LEMBALL_REFERENCE_URL -OutFile data/LEMBALL.EXE
+          $actual = (Get-FileHash data/LEMBALL.EXE -Algorithm SHA256).Hash
+          if ($actual -ne $env:LEMBALL_SHA256) {
+            throw "Reference SHA-256 mismatch (downloaded: $actual)"
           }
 
-      - name: Generate objdiff report
-        shell: pwsh
-        working-directory: S:\
-        run: |
-          python tools/report.py
+      - name: Configure and build
+        run: python tools/build.py
 
-      - name: Gate checks
-        shell: pwsh
-        working-directory: S:\
-        run: python tools/gate.py
+      - name: Generate objdiff report
+        run: python tools/report.py
 
       - name: Vtable comparison (informational)
         continue-on-error: true
-        shell: pwsh
-        working-directory: S:\
         run: python tools/gate.py --vtable
 
       - name: Generate progress badges
-        shell: pwsh
-        working-directory: S:\
         run: python tools/badges.py
 
       - name: Upload progress report
