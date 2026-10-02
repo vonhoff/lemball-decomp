@@ -1,5 +1,4 @@
 """Extra equivalences preserve raw comparisons and reject observable changes."""
-# pylint: disable=protected-access
 
 import copy
 import struct
@@ -54,15 +53,13 @@ def compare_bytes(original, rebuilt):
 
 
 def compare_assembly(original, rebuilt):
-    comparator = EffectiveFunctionComparator.__new__(EffectiveFunctionComparator)
-    comparator.is_32bit = True
-    comparator.orig_zero = {}
-    comparator.recomp_zero = {}
-    comparator.reasons = set()
-    comparator._source_ref_of_recomp_addr = lambda _address: None
-    return comparator._compare_function_assembly(
-        list(enumerate(original)), list(enumerate(rebuilt)), [],
+    upstream, match = fixture("c3", "c3")
+    comparator = EffectiveFunctionComparator(
+        **{field.name: getattr(upstream, field.name) for field in fields(upstream)}
     )
+    comparator.orig_sanitize.parse_asm = Mock(return_value=list(enumerate(original)))
+    comparator.recomp_sanitize.parse_asm = Mock(return_value=list(enumerate(rebuilt)))
+    return comparator.compare_function(match)
 
 
 class ThunkTests(unittest.TestCase):

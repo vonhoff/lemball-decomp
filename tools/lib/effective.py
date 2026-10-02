@@ -7,12 +7,13 @@ from dataclasses import fields
 from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.compare.asm.parse import ParseAsm
-from reccmp.compare.asm.fixes import DWORD_REGS
+from reccmp.compare.asm.fixes import DWORD_REGS, find_effective_match
+from reccmp.compare.pinned_sequences import SequenceMatcherWithPins
 from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtualReadError
 from reccmp.types import EntityType, ImageId
 
-from lib import BUILD
-from lib.extents import FullFunctionComparator, complete_instruction_stream
+from . import BUILD
+from .extents import FullFunctionComparator, complete_instruction_stream
 
 EFFECTIVE_JSON = BUILD / "effective.json"
 REGISTER_FAMILIES = {
@@ -205,11 +206,14 @@ def dead_vptr_store(original, rebuilt, index):
 class EffectiveFunctionComparator(FullFunctionComparator):
     """Secondary comparison used only to classify additional Effective functions."""
 
-    def __post_init__(self):
-        super().__post_init__()
+    def __init__(self, **kwargs):
         self.reasons = set()
         self.orig_zero = {}
         self.recomp_zero = {}
+        super().__init__(**kwargs)
+
+    def __post_init__(self):
+        super().__post_init__()
         if self.is_32bit:
             self.orig_sanitize = self._make_parser(ImageId.ORIG, self.orig_bin, self.orig_sanitize)
             self.recomp_sanitize = self._make_parser(ImageId.RECOMP, self.recomp_bin, self.recomp_sanitize)
@@ -257,11 +261,12 @@ class EffectiveFunctionComparator(FullFunctionComparator):
         return result
 
     def _compare_function_assembly(self, orig, recomp, split_points):
+        # noinspection PyProtectedMember
         result = super()._compare_function_assembly(orig, recomp, split_points)
         if not self.is_32bit or result.match_ratio == 1 or result.is_effective_match or len(orig) != len(recomp):
             return result
         original, rebuilt = [line for _, line in orig], [line for _, line in recomp]
-        patched = recomp.copy()
+        patched = rebuilt.copy()
         reasons = set()
         for index, (left, right) in enumerate(zip(original, rebuilt)):
             if left == right:
@@ -276,12 +281,12 @@ class EffectiveFunctionComparator(FullFunctionComparator):
                 reason = "known-zero CMP versus TEST"
             else:
                 continue
-            patched[index] = (recomp[index][0], left)
+            patched[index] = left
             reasons.add(reason)
         if not reasons:
             return result
-        checked = super()._compare_function_assembly(orig, patched, split_points)
-        if checked.match_ratio == 1 or checked.is_effective_match:
+        checked = SequenceMatcherWithPins(original, patched, split_points)
+        if checked.ratio() == 1 or find_effective_match(checked.get_opcodes(), original, patched):
             result.is_effective_match = True
             self.reasons.update(reasons)
         return result
@@ -291,7 +296,7 @@ def additional_effective_matches(engine, comparisons):
     """Return extra function addresses and reasons without editing either report."""
     upstream = engine.function_comparator
     comparator = EffectiveFunctionComparator(
-        **{field.name: getattr(upstream, field.name) for field in fields(upstream)}
+        **{member.name: getattr(upstream, member.name) for member in fields(upstream)}
     )
     matches = {}
     for match in engine.get_functions():
