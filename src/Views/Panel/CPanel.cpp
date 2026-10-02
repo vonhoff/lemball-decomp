@@ -27,8 +27,9 @@ CVSPoint CPanel::GetPausePos()
 		width = m_window->m_rect.m_width;
 		height = m_window->m_rect.m_height;
 	}
-	result.m_x = (short) (((int) (short) ((int) width / (int) m_window->m_zoom) - (int) m_panelSize.m_x) / 2);
+	width = (short) ((int) width / (int) m_window->m_zoom);
 	result.m_y = (short) ((int) height / (int) m_window->m_zoom - (int) m_pauseSize.m_y);
+	result.m_x = (short) (((int) width - (int) m_panelSize.m_x) / 2);
 	return result;
 }
 
