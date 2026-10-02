@@ -11,72 +11,37 @@ This project is a matching decompilation of *Lemmings Paintball* (1996, Windows 
 
 The reconstructed game is in a playable state. Reconstruction and matching work are ongoing.
 
-The game's behavior is being reconstructed in readable C++ to match the original executable as closely as possible. The reconstructed code is compiled with Microsoft Visual C++ 4.00, and each function is compared with [reccmp](https://github.com/isledecomp/reccmp).
+The reconstructed C++ is compiled with Microsoft Visual C++ 4.00. [Reccmp](https://github.com/isledecomp/reccmp) compares each function with the original executable.
 
 Only code independently developed for this project outside the reconstructed game code is covered by GPL-3.0. The reconstructed game code is provided without a license. Further details are given under [Legal](#legal).
 
 ## Matching and progress
 
-Build and compare a single function with `python tools/match.py 0xADDRESS`.
+Build and compare one function with `python tools/match.py 0xADDRESS`.
 
-Generate progress with `python tools/report.py`. The script writes full comparison
-results to `build-msvc400/reccmp.json` and an objdiff v2 progress report to
-`build-msvc400/report.json`. It uses one reccmp comparison engine and the upstream
-PDB module lookup directly, without a temporary CSV or subprocess.
-
-Exact Match counts code in non-stub functions with a raw reccmp score of
-`accuracy == 1.0` (serialized as `matching`). Reccmp's
+Exact Match is the percentage of reported code in non-stub functions with a raw
+100% assembly score. Reccmp's
 [comparator](https://github.com/isledecomp/reccmp/blob/v0.1.7/reccmp/compare/functions.py)
-normalizes addresses and symbols before comparing assembly. Exact means identical
-normalized assembly; it does not imply a byte-identical executable.
+normalizes addresses and symbols before comparison, so exact assembly matches do
+not imply a byte-identical executable.
 
-Fuzzy Progress is the average raw comparison score, weighted by function size.
-Functions with equivalent register substitutions keep their raw score below 100%.
+Fuzzy Progress is the average raw score, weighted by function size. Equivalent
+register substitutions retain their raw score below 100%; stubs and missing
+comparisons contribute zero.
 
-Effective Match counts code in exact or reccmp-effective functions, so it includes
-Exact Match. Reccmp uses its effective flag for equivalent register substitutions.
-The badge is informational and does not prove gameplay correctness.
+Effective Match is the percentage of code in exact or reccmp-equivalent functions,
+including recognized register substitutions. It includes Exact Match. This supplementary
+badge does not increase exact progress or prove gameplay correctness; decomp.dev
+continues to track the raw exact and fuzzy measures.
 
-The effective badge reads its flag from `reccmp.json`. It remains separate from
-the canonical `report.json` used by decomp.dev: no effective fields or adjusted
-scores enter that report.
+All percentages use the same function inventory and code sizes.
 
-The report and all three badges share the same function inventory and code sizes.
-The inventory includes upstream functions with an original address in the PE
-sections and a nonzero size. Invalid original or rebuilt section addresses are
-skipped; comparisons are looked up by original address.
-
-Report fields follow the
-[objdiff schema](https://github.com/encounter/objdiff/blob/eed74b99c4e94dd154882259931201badc6fdbd1/objdiff-core/protos/report.proto).
-
-| reccmp input | objdiff field |
-| --- | --- |
-| Original address | Function `name` as `0xADDRESS`; `metadata.virtual_address` as a decimal string |
-| Comparison name, falling back to the upstream entity name | `metadata.demangled_name` |
-| Upstream `any_size()`: rebuilt size, falling back to original size | `size` as a decimal string |
-| Raw comparison `accuracy` * 100; zero for stubs or missing comparisons | `fuzzy_match_percent` |
-| PDB module path with the CMake prefix and `.obj` removed | Unit `name`, or `Compiler-generated` if empty; `metadata.source_path` when the source file exists |
-
-Unit and project totals sum the functions included in the report. Percentages
-with a zero denominator are reported as 100%.
-
-After a successful build on `main`, CI runs `tools/badges.py` and publishes three
-small JSON files to the `badges` branch.
-[Shields.io](https://shields.io/badges/endpoint-badge) renders the badges dynamically.
+Generate the current progress report with `python tools/report.py`. README badges
+update after successful builds on `main`.
 
 Use `python tools/next.py --kind near` to rank unfinished functions, or `--kind gain`
-to rank by size times raw score. See [tools/USAGE.md](tools/USAGE.md) for the commands.
-
-## Tool checks
-
-`ruff` and `pylint` can be installed with pip. Configuration for both tools is read
-from `pyproject.toml`. The checks are run with:
-
-```sh
-python -m ruff check tools
-python -m pylint --recursive=y --reports=n tools
-python tools/gate.py
-```
+to rank by size times raw score. Build options and tool checks:
+[tools/USAGE.md](tools/USAGE.md).
 
 ## References
 

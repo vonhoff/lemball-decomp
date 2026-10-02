@@ -69,3 +69,14 @@ come from `report.json`; effective adds code in upstream equivalent functions fr
 `reccmp.json` to exact code, counting each function once. It never modifies either
 report. CI publishes only the three badge JSON files to the `badges` branch on
 successful `main` builds; Shields.io reads them from GitHub's raw file host.
+
+## Tool checks
+
+`ruff` and `pylint` can be installed with pip. Configuration for both tools is read
+from `pyproject.toml`. The checks are run with:
+
+```sh
+python -m ruff check tools
+python -m pylint --recursive=y --reports=n tools
+python tools/gate.py
+```
