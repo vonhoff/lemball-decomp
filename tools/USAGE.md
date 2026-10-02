@@ -95,3 +95,17 @@ python -m ruff check tools
 python -m pylint --recursive=y --reports=n tools
 python tools/gate.py
 ```
+
+CLion inspection snapshot: `build-msvc400/py-issues`. All 29 findings reviewed;
+12 clarity fixes, 17 false positives. Python union annotations require Python 3.10+.
+
+| Inspection | Count | Disposition |
+| --- | ---: | --- |
+| Shadowed names | 10 | Renamed test fixture locals/parameters; captured loop values preserved. |
+| Method may be static | 1 | Stateless `SmellTests.scan` marked static. |
+| Unbound local | 1 | `next.py`: explicit `raise SystemExit` on report errors. Previous `sys.exit` also terminated. |
+| Attribute outside init | 9 | `test_names.py`: fixtures created by `unittest.setUp`; per-test mutations intentional. |
+| Class has no init | 1 | `Signature`: frozen dataclass generates its constructor. |
+| PEP 8 naming | 1 | `setUp`: required `unittest` hook name. |
+| Type hints | 4 | Valid `T \| None` annotations; runtime resolution checked. |
+| Inconsistent returns | 2 | Returns inside context managers in `extents.py` and `test_smell.py`; exceptions propagate, never fall through. |

@@ -56,9 +56,9 @@ class GateTests(unittest.TestCase):
         for flags, failure, expected in cases:
             calls.clear()
 
-            def result(name, *_args, failure=failure, **_kwargs):
-                calls.append(name)
-                return 7 if name == failure else 0
+            def result(check_name, *_args, failure=failure, **_kwargs):
+                calls.append(check_name)
+                return 7 if check_name == failure else 0
 
             with (
                 self.subTest(flags=flags, failure=failure),

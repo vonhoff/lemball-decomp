@@ -28,15 +28,15 @@ class BuildTests(unittest.TestCase):
                     pdb.unlink()
                 calls = 0
 
-                def invoke(*_args, mode=mode, executable=executable, **_kwargs):
+                def invoke(*_args, build_mode=mode, output=executable, **_kwargs):
                     nonlocal calls
                     calls += 1
                     if calls == 2:
-                        self.assertFalse(executable.exists())
-                        executable.write_bytes(b'linked')
-                        timestamp = 30_000_000_000 if mode == 'relink' else 10_000_000_000
-                        os.utime(executable, ns=(timestamp, timestamp))
-                    return subprocess.CompletedProcess([], 7 if mode == 'failed' else 0, 'build output')
+                        self.assertFalse(output.exists())
+                        output.write_bytes(b'linked')
+                        timestamp = 30_000_000_000 if build_mode == 'relink' else 10_000_000_000
+                        os.utime(output, ns=(timestamp, timestamp))
+                    return subprocess.CompletedProcess([], 7 if build_mode == 'failed' else 0, 'build output')
 
                 with patch.object(build.subprocess, 'run', side_effect=invoke):
                     code, _ = build.build_with_link_check(['cmake', '--build'], directory, directory)

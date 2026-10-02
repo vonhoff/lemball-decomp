@@ -3,7 +3,6 @@
 
 import argparse
 import json
-import sys
 
 from lib import REPORT_JSON
 
@@ -30,7 +29,7 @@ def main() -> int:
     try:
         report = json.loads(REPORT_JSON.read_text(encoding="utf-8"))
     except (OSError, ValueError) as error:
-        sys.exit(f"cannot read report: {error}")
+        raise SystemExit(f"cannot read report: {error}") from error
     functions = rank_functions(report)
     if args.limit > 0:
         functions = functions[: args.limit]

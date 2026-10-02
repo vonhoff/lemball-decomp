@@ -25,9 +25,9 @@ from lib.extents import (
 def comparison_fixture(original, rebuilt, original_size=None):
     database = EntityDb()
     with database.batch() as batch:
-        for image, address, size in ((ImageId.ORIG, 0x401000, original_size),
-                                     (ImageId.RECOMP, 0x501000, len(rebuilt))):
-            batch.set(image, address, type=EntityType.FUNCTION, name="Fixture", size=size)
+        for image, fixture_address, extent_size in ((ImageId.ORIG, 0x401000, original_size),
+                                                   (ImageId.RECOMP, 0x501000, len(rebuilt))):
+            batch.set(image, fixture_address, type=EntityType.FUNCTION, name="Fixture", size=extent_size)
         batch.match(0x401000, 0x501000)
     original_image = SimpleNamespace(read=lambda address, size: original[:size],
                                      get_relative_addr=lambda address: (1, 0))

@@ -72,16 +72,16 @@ class ReportTests(unittest.TestCase):
                 engine, modules = Mock(), Mock()
                 engine.get_all.return_value = entities
 
-                def check_address(address):
-                    if address in (0x1234, 0x5678):
+                def check_address(virtual_address):
+                    if virtual_address in (0x1234, 0x5678):
                         raise InvalidVirtualAddressError("Fixture address outside PE sections")
                     return 1, 0
 
                 engine.orig_bin.get_relative_addr.side_effect = check_address
-                modules.get_module.side_effect = lambda address: (
+                modules.get_module.side_effect = lambda recompiled_address: (
                     "",
                     "CMakeFiles/LEMBALL.dir/src/Exact.cpp.obj"
-                    if address == 0x501000 else "mixed.obj",
+                    if recompiled_address == 0x501000 else "mixed.obj",
                 )
                 result = build_report(
                     group_functions(original_functions(engine), comparisons, modules)

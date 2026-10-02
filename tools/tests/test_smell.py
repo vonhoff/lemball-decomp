@@ -12,7 +12,8 @@ from lib.smell import check_smell, scan_file, unannotated_definitions
 
 
 class SmellTests(unittest.TestCase):
-    def scan(self, text, filename="Fixture.cpp"):
+    @staticmethod
+    def scan(text, filename="Fixture.cpp"):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp).resolve()
             source = root / filename
