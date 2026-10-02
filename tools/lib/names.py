@@ -44,7 +44,10 @@ def read_catalog(path=CATALOG):
             symbols[mac] = name
     if not mappings:
         raise ValueError("catalog contains no reviewed Windows pairs")
-    return symbols, mappings
+    by_windows = defaultdict(list)
+    for mac, address in sorted(mappings):
+        by_windows[address].append(mac)
+    return symbols, by_windows
 
 
 # Exact Windows ABI reviews, not spelling aliases. Keep the catalog spelling
@@ -121,11 +124,12 @@ def annotation_blocks(text, code):
 def compare_catalog_candidates(address, actual, symbols, candidates):
     """Preserve every folded identity; apply Windows reviews only to exact keys."""
     comparisons = []
+    actual_signature = actual.display()
     for mac in candidates:
         symbol = symbols[mac]
         try:
             comparison = compare_signature(decode_signature(symbol), actual)
-            evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual.display()))
+            evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual_signature))
             if evidence and comparison["status"] != "match":
                 comparison.update(
                     status="windows", signature_status="review", windows_evidence=evidence
@@ -139,15 +143,11 @@ def compare_catalog_candidates(address, actual, symbols, candidates):
 CANDIDATE_PRIORITY = {"match": 0, "windows": 1, "case": 2, "mismatch": 3, "unresolved": 4}
 
 
-def scan(path, symbols, mappings):
+def scan(path, symbols, by_windows):
     """Attach each Windows annotation to its declaration and catalog candidates."""
-    by_windows = defaultdict(list)
-    for mac, address in sorted(mappings):
-        by_windows[address].append(mac)
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
     ranges = class_ranges(code)
-    rows = []
     for block, limit in annotation_blocks(text, code):
         for token in block:
             marker = WINDOWS_MARK.match(token[0])
@@ -158,24 +158,23 @@ def scan(path, symbols, mappings):
                    "windows_address": f"0x{address:08x}"}
             candidates = by_windows.get(address)
             if not candidates:
-                rows.append(dict(row, status="unmapped"))
+                yield dict(row, status="unmapped")
                 continue
             if "SYNTHETIC:" in token[0]:
-                rows.append(dict(row, status="synthetic",
-                                 reason="compiler-emitted function; no C++ signature"))
+                yield dict(row, status="synthetic",
+                           reason="compiler-emitted function; no C++ signature")
                 continue
             try:
                 actual = adjacent_signature(code[:limit], block[-1].end(), ranges)
             except ValueError as error:
-                rows.append(dict(row, status="unresolved", reason=str(error)))
+                yield dict(row, status="unresolved", reason=str(error))
                 continue
             comparisons = compare_catalog_candidates(address, actual, symbols, candidates)
             best = min(comparisons, key=lambda candidate: (
                 CANDIDATE_PRIORITY[candidate["status"]],
                 candidate.get("signature_status") != "match",
             ))
-            rows.append(dict(row, **best, catalog_candidates=comparisons))
-    return rows
+            yield dict(row, **best, catalog_candidates=comparisons)
 
 
 def print_review(row):

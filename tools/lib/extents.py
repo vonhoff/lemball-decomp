@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from dataclasses import fields
 
 from reccmp.compare.asm import instgen
-from reccmp.compare.asm.instgen import InstructGen, SectionType, get_disassembler
+from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.compare.csv import csv_parse
 from reccmp.compare.functions import FunctionComparator
 from reccmp.formats.exceptions import InvalidVirtualAddressError
@@ -80,61 +80,41 @@ def branch_targets(sections):
                     yield int(operands, 16)
 
 
-def alignment_extent(data, address):
-    """Remove a fully decoded, untargeted alignment suffix; retain tables and code."""
+def function_extents(data, address):
+    """Return decoded and unpadded sizes; retain targeted alignment and local tables."""
     with complete_instruction_stream():
         sections = InstructGen(bytes(data), address).sections
-    if not sections or sections[-1].type != SectionType.CODE:
-        return len(data)
+    decoded = 0
+    for section in sections:
+        if section.contents:
+            entry = section.contents[-1]
+            width = entry[1] if section.type == SectionType.CODE else (
+                4 if section.type == SectionType.ADDR_TAB else 1
+            )
+            decoded = max(decoded, entry[0] + width - address)
+    if decoded != len(data) or not sections or sections[-1].type != SectionType.CODE:
+        return decoded, len(data)
     instructions = sections[-1].contents
     last = len(instructions) - 1
     while last >= 0 and is_alignment(instructions[last]):
         last -= 1
     if last < 0 or instructions[last][2] not in ("ret", "retf", "jmp"):
-        return len(data)
+        return decoded, len(data)
     end = instructions[last][0] + instructions[last][1]
-    tail = list(get_disassembler().disasm_lite(bytes(data[end - address :]), end))
-    if (
-        not tail
-        or sum(instruction[1] for instruction in tail) != len(data) - (end - address)
-        or not all(is_alignment(instruction) for instruction in tail)
-    ):
-        return len(data)
     if any(end <= target < address + len(data) for target in branch_targets(sections)):
-        return len(data)
-    return end - address
-
-
-def _all_instructions(instructions):
-    return instructions
+        return decoded, len(data)
+    return decoded, end - address
 
 
 @contextmanager
 def complete_instruction_stream():
     """Scoped reccmp 0.1.7 workaround for intentional in-function INT3."""
     previous = instgen.stop_at_int3
-    instgen.stop_at_int3 = _all_instructions
+    instgen.stop_at_int3 = iter
     try:
         yield
     finally:
         instgen.stop_at_int3 = previous
-
-
-def decoded_extent(data, address):
-    """Byte endpoint actually consumed by the upstream code/table pre-parser."""
-    with complete_instruction_stream():
-        sections = InstructGen(bytes(data), address).sections
-    end = address
-    for section in sections:
-        if section.contents:
-            last = section.contents[-1]
-            width = (
-                last[1]
-                if section.type == SectionType.CODE
-                else (4 if section.type == SectionType.ADDR_TAB else 1)
-            )
-            end = max(end, last[0] + width)
-    return end - address
 
 
 class FullFunctionComparator(FunctionComparator):
@@ -154,11 +134,12 @@ def validate_original_functions(engine):
     for entity in functions:
         size = target_size(entity)
         data = engine.orig_bin.read(entity.orig_addr, size)
-        if alignment_extent(data, entity.orig_addr) != size:
+        decoded, unpadded = function_extents(data, entity.orig_addr)
+        if unpadded != size:
             raise ValueError(
                 f"Original extent includes trailing alignment at 0x{entity.orig_addr:08x}"
             )
-        if decoded_extent(data, entity.orig_addr) != size:
+        if decoded != size:
             raise ValueError(
                 f"Original extent contains undecoded bytes at 0x{entity.orig_addr:08x}"
             )
@@ -175,7 +156,7 @@ def trim_rebuilt_alignment(engine, functions):
             if rebuilt_size is None:
                 continue
             rebuilt_data = engine.recomp_bin.read(entity.recomp_addr, rebuilt_size)
-            size = alignment_extent(rebuilt_data, entity.recomp_addr)
+            _, size = function_extents(rebuilt_data, entity.recomp_addr)
             if size != rebuilt_size:
                 batch.set(ImageId.RECOMP, entity.recomp_addr, size=size)
 

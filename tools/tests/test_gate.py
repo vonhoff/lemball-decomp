@@ -5,6 +5,7 @@ import io
 import sys
 import tempfile
 import unittest
+from functools import partial
 from pathlib import Path
 from unittest.mock import DEFAULT, patch
 
@@ -55,7 +56,7 @@ class GateTests(unittest.TestCase):
         for flags, failure, expected in cases:
             calls.clear()
 
-            def result(name, failure=failure):
+            def result(name, *_args, failure=failure, **_kwargs):
                 calls.append(name)
                 return 7 if name == failure else 0
 
@@ -67,9 +68,7 @@ class GateTests(unittest.TestCase):
                 ) as checks,
             ):
                 for name, check in checks.items():
-                    check.side_effect = lambda *args, name=name, result=result, **kwargs: result(
-                        name
-                    )
+                    check.side_effect = partial(result, name)
                 self.assertEqual(gate.main(), 7 if failure else 0)
                 self.assertEqual(calls, expected)
                 if "check_names" in calls:

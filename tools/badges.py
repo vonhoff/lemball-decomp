@@ -10,9 +10,9 @@ from lib import BUILD, RECCMP_JSON, REPORT_JSON
 BADGES_DIR = BUILD / "badges"
 
 
-def build_badges(report, comparisons):
-    """Use the canonical inventory and sizes for all three code percentages."""
-    effective_code = 0
+def effective_totals(report, comparisons):
+    """Count exact and equivalent functions once, using canonical original sizes."""
+    effective_code = effective_count = 0
     for unit in report["units"]:
         for function in unit["functions"]:
             address = int(function["metadata"]["virtual_address"])
@@ -24,6 +24,13 @@ def build_badges(report, comparisons):
             )
             if function["fuzzy_match_percent"] == 100 or equivalent:
                 effective_code += int(function["size"])
+                effective_count += 1
+    return effective_code, effective_count
+
+
+def build_badges(report, comparisons):
+    """Use the canonical inventory and sizes for all three code percentages."""
+    effective_code, _ = effective_totals(report, comparisons)
     values = report["measures"]
     total_code = int(values["total_code"])
     effective_percent = effective_code / total_code * 100 if total_code else 0.0

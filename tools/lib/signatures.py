@@ -101,7 +101,7 @@ class Decoder:
 
     def parameters(self, stop=""):
         parameters = []
-        while self.peek() and (not stop or self.peek() != stop):
+        while self.peek() and self.peek() != stop:
             parameters.append(self.type())
         if parameters == ["void"]:
             return ()

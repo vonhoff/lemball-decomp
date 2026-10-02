@@ -8,6 +8,7 @@ from reccmp.compare.report import serialize_reccmp_report
 from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.tools.roadmap import ModuleMap
 
+from badges import effective_totals
 from lib import RECCMP_JSON, REPORT_JSON, ROOT, load_engine
 from lib.extents import original_functions, target_size
 
@@ -98,10 +99,19 @@ def main():
     )
     REPORT_JSON.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
+    effective_code, effective_count = effective_totals(report, comparisons)
+    total_code = int(values["total_code"])
+    effective_percent = effective_code / total_code * 100 if total_code else 0.0
     print(
-        f"Normalized-exact: {values['matched_functions']}/{values['total_functions']} functions, "
-        f"{values['matched_code']}/{values['total_code']} bytes; "
-        f"fuzzy: {values['fuzzy_match_percent']:.2f}%"
+        f"Exact: {values['matched_code_percent']:.2f}% code; "
+        f"{int(values['matched_code']):,}/{total_code:,} bytes; "
+        f"{values['matched_functions']:,}/{values['total_functions']:,} functions"
+    )
+    print(f"Fuzzy: {values['fuzzy_match_percent']:.2f}% code; "
+          "raw assembly similarity weighted by original bytes")
+    print(
+        f"Effective: {effective_percent:.2f}% code; {effective_code:,}/{total_code:,} bytes; "
+        f"{effective_count:,}/{values['total_functions']:,} functions (exact + equivalent)"
     )
 
 

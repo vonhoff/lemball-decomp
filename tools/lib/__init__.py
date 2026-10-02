@@ -50,15 +50,12 @@ def parenthesis_end(code: str, opening: int) -> int | None:
 
 def collect_sources(paths=None, suffixes=CPP_SUFFIXES):
     """Collect unique C/C++ source and header files from given paths or src."""
-    search_paths = [Path(p) for p in paths] if paths else [SRC]
     files: set[Path] = set()
-    for path in search_paths:
-        target = path if path.is_absolute() else ROOT / path
-        if not target.exists():
-            continue
+    for path in paths or [SRC]:
+        target = ROOT / path
         if target.is_dir():
             files.update(p for p in target.rglob("*") if p.suffix.lower() in suffixes)
-        elif target.suffix.lower() in suffixes:
+        elif target.is_file() and target.suffix.lower() in suffixes:
             files.add(target)
     return sorted(files)
 

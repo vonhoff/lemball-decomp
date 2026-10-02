@@ -6,7 +6,7 @@ Run from the repository root. Python environment: dependencies from `requirement
 | --- | --- |
 | `python tools/build.py` | Incremental MSVC 4.00 build. `--clean-first`: clean rebuild. |
 | `python tools/match.py 0x00401000` | Build, compare, show reccmp diff. Multiple addresses accepted; `--no-build`: use current artifacts. |
-| `python tools/report.py` | Regenerate canonical `reccmp.json` and `report.json` in `build-msvc400`. |
+| `python tools/report.py` | Regenerate canonical reports; print Exact, Fuzzy, and Effective code progress with byte/function totals. |
 | `python tools/badges.py` | Export Exact, Fuzzy, and Effective code badges from the current reports to `build-msvc400/badges/`. |
 | `python tools/next.py` | Show 40 unfinished functions: highest raw score first, then smallest size and address. `--limit N`: row count; `0`: all. |
 | `python tools/gate.py` | Check comments, reconstruction smells, class/file layout, upstream annotations, names, and tool tests. |

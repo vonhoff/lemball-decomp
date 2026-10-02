@@ -1,8 +1,5 @@
 """Independent catalog naming authority, signature parsing, and failure cases."""
 
-# Pylint infers an empty list for scan(), ignoring its append calls.
-# pylint: disable=unbalanced-tuple-unpacking
-
 import contextlib
 import io
 import tempfile
@@ -57,7 +54,7 @@ class CatalogTests(unittest.TestCase):
                             encoding="utf-8")
             self.assertEqual(read_catalog(path), (
                 {0x1060000c: "Real__Fv", 0x10600020: "MacOnly__Fv"},
-                {(0x1060000c, 0x401000), (0x1060000c, 0x402000)},
+                {0x401000: [0x1060000c], 0x402000: [0x1060000c]},
             ))
             for invalid in ("mac_address,symbol\n", header, header + row + row,
                             header + row + "1060000c,Wrong__Fv,402000\n",
@@ -78,11 +75,11 @@ class CatalogNamingTests(unittest.TestCase):
         with_directory = tempfile.TemporaryDirectory()  # pylint: disable=consider-using-with
         self.path = Path(self.enterContext(with_directory)) / "Fixture.cpp"
         self.symbols = {0x10b0f952: "__ct__12CPadToButtonFi"}
-        self.pairs = {(0x10b0f952, 0x43a250)}
+        self.mappings = {0x43a250: [0x10b0f952]}
 
-    def scan(self, source, **kwargs):
+    def scan(self, source):
         self.path.write_text(source, encoding="utf-8")
-        return scan(self.path, self.symbols, self.pairs, **kwargs)
+        return list(scan(self.path, self.symbols, self.mappings))
 
     def test_nested_class_callback_and_unclosed_declaration(self):
         self.symbols[0x10b0f952] = 'Read__Q25Outer5InnerCFPFPCc_i'
@@ -126,7 +123,7 @@ class CatalogNamingTests(unittest.TestCase):
 
     def test_folded_windows_entry_uses_matching_catalog_candidate(self):
         self.symbols[0x10100004] = "Wrong__5COtherFv"
-        self.pairs.add((0x10100004, 0x43a250))
+        self.mappings[0x43a250].insert(0, 0x10100004)
         row, = self.scan("// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(int n) {}")
         self.assertEqual(row["status"], "match")
         self.assertEqual(len(row["catalog_candidates"]), 2)
@@ -140,7 +137,7 @@ class CatalogNamingTests(unittest.TestCase):
 
     def test_windows_member_review_keeps_original_catalog_identity(self):
         self.symbols = {0x1010c30e: "GetCDDir__FPCc"}
-        self.pairs = {(0x1010c30e, 0x45eda0)}
+        self.mappings = {0x45eda0: [0x1010c30e]}
         row, = self.scan("// FUNCTION: LEMBALL 0x0045eda0\n"
                          "char* CPlatformServices::GetCDDir(const char* file) {}")
         self.assertEqual((row["status"], row["signature_status"]), ("windows", "review"))
@@ -154,13 +151,13 @@ class CatalogNamingTests(unittest.TestCase):
                 (0x45eda0, "char* CPlatformServices::GetCDDir(char* file)"),
                 (0x45eda1, "char* CPlatformServices::GetCDDir(const char* file)")):
             with self.subTest(address=address, declaration=declaration):
-                self.pairs = {(0x1010c30e, address)}
+                self.mappings = {address: [0x1010c30e]}
                 row, = self.scan(f"// FUNCTION: LEMBALL 0x{address:08x}\n{declaration} {{}}")
                 self.assertEqual(row["status"], "mismatch")
 
     def test_windows_callback_review_requires_zero_arguments(self):
         self.symbols = {0x10b0f952: "OnZoomBox__4CWndFUc"}
-        self.pairs = {(0x10b0f952, 0x43a500)}
+        self.mappings = {0x43a500: [0x10b0f952]}
         row, = self.scan("// FUNCTION: LEMBALL 0x0043a500\nvoid CWnd::OnDriverChange() {}")
         self.assertEqual((row["status"], row["signature_status"]), ("windows", "review"))
         row, = self.scan("// FUNCTION: LEMBALL 0x0043a500\nvoid CWnd::OnDriverChange(int value) {}")

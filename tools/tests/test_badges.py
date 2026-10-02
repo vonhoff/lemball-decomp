@@ -6,7 +6,7 @@ import unittest
 from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.types import EntityType
 
-from badges import build_badges
+from badges import build_badges, effective_totals
 
 
 class BadgeTests(unittest.TestCase):
@@ -21,6 +21,7 @@ class BadgeTests(unittest.TestCase):
             },
         }
         badges = build_badges(report, comparisons)
+        self.assertEqual(effective_totals(report, comparisons), (0, 0))
         self.assertTrue(all(badge["message"] == "0.00%" for badge in badges.values()))
 
     def test_exact_fuzzy_and_effective_are_distinct(self):
@@ -64,6 +65,7 @@ class BadgeTests(unittest.TestCase):
         }
         unchanged = copy.deepcopy(report)
         badges = build_badges(report, comparisons)
+        self.assertEqual(effective_totals(report, comparisons), (30, 2))
         self.assertEqual(badges["exact"]["message"], "12.50%")
         self.assertEqual(badges["fuzzy"]["message"], "38.75%")
         self.assertEqual(badges["effective"]["message"], "37.50%")

@@ -162,23 +162,19 @@ def line_smells(code: str):
 
 def unannotated_definitions(lines: list[str], masked: str):
     """Find function bodies without a reccmp marker in their preceding comment block."""
-    offset = 0
-    for i, (raw, code) in enumerate(zip(lines, masked.splitlines())):
+    offset, annotated, separated = 0, False, False
+    for line, (raw, code) in enumerate(zip(lines, masked.splitlines()), 1):
         start, offset = offset, offset + len(code) + 1
-        if not is_func_def(code.strip()) or not declaration_has_body(masked, start):
-            continue
-        block = []
-        for previous in reversed(lines[:i]):
-            previous = previous.strip()
-            if not previous:
-                if block:
-                    break
-            elif previous.startswith("//"):
-                block.append(previous)
-            else:
-                break
-        if not any(RECCMP_MARK.match(line) for line in block):
-            yield i + 1, raw.strip()
+        stripped = raw.strip()
+        if stripped.startswith("//"):
+            annotated = bool(RECCMP_MARK.match(stripped)) or (annotated and not separated)
+            separated = False
+        elif not stripped:
+            separated = True
+        else:
+            if not annotated and is_func_def(code.strip()) and declaration_has_body(masked, start):
+                yield line, stripped
+            annotated = separated = False
 
 
 def scan_file(path: Path) -> list[Hit]:

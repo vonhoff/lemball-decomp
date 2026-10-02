@@ -71,7 +71,7 @@ def handle_link(args: list[str]) -> int:
                          stderr=subprocess.STDOUT, text=True, errors="replace", check=False)
     output = res.stdout
     sys.stdout.write(output)
-    if any(MSVC_WARNING.search(line) for line in output.splitlines()):
+    if MSVC_WARNING.search(output):
         sys.stderr.write('linker emitted warnings\n')
         return res.returncode or 1
     return res.returncode
@@ -142,7 +142,8 @@ def run_build(clean_first=False, disable_enforcements=False) -> int:
             (BUILD / fname).unlink(missing_ok=True)
 
     cmake_args = [cmake, "--build", "--preset", "msvc400"]
-    cmake_args.extend(['--clean-first'] if clean_first else [])
+    if clean_first:
+        cmake_args.append('--clean-first')
 
     returncode, output = build_with_link_check(cmake_args, BUILD, ROOT)
     LOG_PATH.write_text(output, encoding="utf-8")

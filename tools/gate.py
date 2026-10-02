@@ -43,14 +43,7 @@ def check_annotations(paths=None):
     return int(any(alert.is_error() or alert.is_warning() for alert in alerts))
 
 
-def check_source(paths=None):
-    for check in (check_comments, check_smell, check_layout, check_annotations):
-        if code := check(paths):
-            return code
-    return 0
-
-
-def parse_args():
+def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--path", action="append", dest="paths")
     checks = parser.add_mutually_exclusive_group()
@@ -59,19 +52,13 @@ def parse_args():
     args = parser.parse_args()
     if args.vtable and args.paths:
         parser.error("--path applies to source checks, not --vtable")
-    return args
-
-
-def main() -> int:
-    args = parse_args()
     if args.vtable:
         return check_vtable()
     if args.names:
         return check_names(args.paths, verbose=True)
-    if code := check_source(args.paths):
-        return code
-    if code := check_names(args.paths):
-        return code
+    for check in (check_comments, check_smell, check_layout, check_annotations, check_names):
+        if code := check(args.paths):
+            return code
     return 0 if args.paths else check_tool_tests()
 
 

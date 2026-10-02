@@ -4,44 +4,18 @@
 import argparse
 import sys
 
-from reccmp.tools.asmcmp import print_match_verbose
+from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
 from build import run_build
 from lib import load_engine
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "addrs",
-        nargs="+",
-        type=lambda value: int(value, 16),
-        help="Hex addresses (e.g. 0x0045ca30)",
-    )
-    parser.add_argument("--no-build", action="store_true", help="Skip incremental build")
-    return parser.parse_args()
-
-
-def print_comparison(address, comparison):
-    """Print raw accuracy and status; delegate instruction diffs to reccmp."""
-    if comparison is None:
-        print(f"0x{address:08x}: NOT_FOUND")
-        return
-    percent = 0.0 if comparison.is_stub else comparison.accuracy * 100.0
-    if comparison.is_stub:
-        status = "STUB"
-    elif comparison.accuracy == 1:
-        status = "ASM_EXACT"
-    elif comparison.is_effective_match:
-        status = "EFFECTIVE"
-    else:
-        status = "PARTIAL"
-    print(f"0x{address:08x} {comparison.name}: {percent:.2f}% {status}")
-    print_match_verbose(comparison)
-
-
 def main() -> int:
-    args = parse_args()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("addrs", nargs="+", type=lambda value: int(value, 16),
+                        help="Hex addresses (e.g. 0x0045ca30)")
+    parser.add_argument("--no-build", action="store_true", help="Skip incremental build")
+    args = parser.parse_args()
     if not args.no_build:
         code = run_build()
         if code:
@@ -50,7 +24,13 @@ def main() -> int:
 
     _, engine = load_engine()
     for address in args.addrs:
-        print_comparison(address, engine.compare_address(address))
+        comparison = engine.compare_address(address)
+        if comparison is None:
+            print(f"0x{address:08x}: NOT_FOUND")
+        elif comparison.is_stub:
+            print_match_oneline(comparison)
+        else:
+            print_match_verbose(comparison)
     return 0
 
 

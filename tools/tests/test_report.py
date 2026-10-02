@@ -9,11 +9,7 @@ from reccmp.formats.exceptions import InvalidVirtualAddressError
 from reccmp.types import EntityType
 
 from lib.extents import original_functions
-from report import (
-    build_report,
-    group_functions,
-    measures,
-)
+from report import build_report, group_functions, measures
 
 
 class ReportTests(unittest.TestCase):
@@ -41,26 +37,15 @@ class ReportTests(unittest.TestCase):
 
     def test_inventory_and_progress_ignore_rebuilt_sizes(self):
         comparisons = ReccmpStatusReport("LEMBALL.EXE")
-        for entity in (
-            ReccmpComparedEntity(0x401000, "Exact", 1.0, EntityType.FUNCTION, 0x501000),
-            ReccmpComparedEntity(
-                0x401020,
-                "Equivalent(int)",
-                0.8,
-                EntityType.FUNCTION,
-                0x501020,
-                is_effective_match=True,
-            ),
-            ReccmpComparedEntity(
-                0x401040, "Stub", 1.0, EntityType.FUNCTION, 0x501040, is_stub=True
-            ),
-            ReccmpComparedEntity(0x401060, "Unmatched", 1.0, EntityType.FUNCTION),
-            ReccmpComparedEntity(
-                0x401070, "Adjuster", 1.0, EntityType.FUNCTION, 0x501070
-            ),
-            ReccmpComparedEntity(0x402000, "Data", 1.0, EntityType.DATA, 0x502000),
+        for address, name, score, recomp, kind, flags in (
+            (0x401000, "Exact", 1.0, 0x501000, EntityType.FUNCTION, {}),
+            (0x401020, "Equivalent(int)", 0.8, 0x501020, EntityType.FUNCTION, {"is_effective_match": True}),
+            (0x401040, "Stub", 1.0, 0x501040, EntityType.FUNCTION, {"is_stub": True}),
+            (0x401060, "Unmatched", 1.0, None, EntityType.FUNCTION, {}),
+            (0x401070, "Adjuster", 1.0, 0x501070, EntityType.FUNCTION, {}),
+            (0x402000, "Data", 1.0, 0x502000, EntityType.DATA, {}),
         ):
-            comparisons.add_match(entity)
+            comparisons.add_match(ReccmpComparedEntity(address, name, score, kind, recomp, **flags))
         for rebuilt_size in (1, 1000):
             with self.subTest(rebuilt_size=rebuilt_size):
                 entities = [
@@ -79,24 +64,11 @@ class ReportTests(unittest.TestCase):
                         (0x402000, 0x502000, 4, "Data", EntityType.DATA),
                     )
                 ]
-                entities.append(
-                    ReccmpEntity(
-                        0x401080,
-                        0x501080,
-                        {
-                            "type": EntityType.FUNCTION,
-                            "orig_size": 12,
-                        },
-                    )
-                )
-                entities.append(
-                    ReccmpEntity(0x1234, None, {"type": EntityType.FUNCTION, "orig_size": 10})
-                )
-                entities.append(
-                    ReccmpEntity(
-                        0x401090, 0x5678, {"type": EntityType.FUNCTION, "orig_size": 10}
-                    )
-                )
+                entities.extend((
+                    ReccmpEntity(0x401080, 0x501080, {"type": EntityType.FUNCTION, "orig_size": 12}),
+                    ReccmpEntity(0x1234, None, {"type": EntityType.FUNCTION, "orig_size": 10}),
+                    ReccmpEntity(0x401090, 0x5678, {"type": EntityType.FUNCTION, "orig_size": 10}),
+                ))
                 engine, modules = Mock(), Mock()
                 engine.get_all.return_value = entities
 
@@ -106,7 +78,6 @@ class ReportTests(unittest.TestCase):
                     return 1, 0
 
                 engine.orig_bin.get_relative_addr.side_effect = check_address
-                engine.recomp_bin.get_relative_addr.side_effect = check_address
                 modules.get_module.side_effect = lambda address: (
                     "",
                     "CMakeFiles/LEMBALL.dir/src/Exact.cpp.obj"

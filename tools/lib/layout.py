@@ -4,7 +4,6 @@
 import re
 import sys
 from collections import Counter
-from pathlib import Path
 
 from . import ROOT, TYPE_DEF, VTABLE_MARK, brace_ends, collect_sources, mask_comments_and_strings
 
@@ -59,38 +58,29 @@ def primary_names(path, text, code):
     return sorted(matched | classes or {match["name"] for match in types})
 
 
-def scan(path: Path) -> dict:
-    """Classify a file's primary names against its filename."""
-    text = path.read_text(encoding="utf-8")
-    code = mask_comments_and_strings(text)
-    primary = primary_names(path, text, code)
-    stem = path.stem
-
-    if len(primary) > 1:
-        status = "multi-class"
-        detail = "primary classes: " + ", ".join(primary)
-    elif not primary:
-        status = "free"
-        detail = "no primary class"
-    elif stem.casefold() != primary[0].casefold():
-        status = "stem-name"
-        detail = f"stem {stem} != expected {primary[0]} (class)"
-    else:
-        status = "match"
-        detail = None
-
-    return {"relpath": path.resolve().relative_to(ROOT).as_posix(),
-            "primary": primary, "status": status, "detail": detail}
-
-
 def check_layout(paths=None):
     files = collect_sources(paths)
     if not files:
         print("layout: no C++ source files found", file=sys.stderr)
         return 2
-    rows = [scan(path) for path in files]
-    failures = [r for r in rows if r["status"] in ("multi-class", "stem-name")]
-    for row in failures:
-        print(f'{row["relpath"]}: {row["status"]}: {row["detail"]}')
-    print(f'{len(files)} files: {dict(Counter(row["status"] for row in rows))}')
-    return int(bool(failures))
+    counts = Counter()
+    for path in files:
+        text = path.read_text(encoding="utf-8")
+        primary = primary_names(path, text, mask_comments_and_strings(text))
+        relpath = path.resolve().relative_to(ROOT).as_posix()
+        detail = None
+        if len(primary) > 1:
+            status = "multi-class"
+            detail = "primary classes: " + ", ".join(primary)
+        elif not primary:
+            status = "free"
+        elif path.stem.casefold() != primary[0].casefold():
+            status = "stem-name"
+            detail = f"stem {path.stem} != expected {primary[0]} (class)"
+        else:
+            status = "match"
+        counts[status] += 1
+        if detail:
+            print(f"{relpath}: {status}: {detail}")
+    print(f"{len(files)} files: {dict(counts)}")
+    return int(bool(counts["multi-class"] or counts["stem-name"]))
