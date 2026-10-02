@@ -61,6 +61,12 @@ after calls classified as non-returning. Analysis-derived, not original debug sy
 Verified original-only routines in `tools/data/original-functions.csv` enter the
 inventory at zero until matched.
 
+`tools/data/original-vtables.csv`: explicit PDB symbol identities for nested
+virtual-base paths. Native constructor stores and virtual-base offsets identify
+each table; all slots verified against original targets. Upstream friendly names
+omit the read/write path through CBaseSocket. Identity correction only; no code
+or scoring changes. Incremental-link JMP references remain a separate limitation.
+
 Shared engine setup removes a fully decoded, untargeted MSVC alignment suffix from
 rebuilt spans after RET/JMP. Interior code/tables remain. A scoped workaround for
 reccmp 0.1.7 retains intentional INT3 inside explicit extents (CRT `_assert`); the
