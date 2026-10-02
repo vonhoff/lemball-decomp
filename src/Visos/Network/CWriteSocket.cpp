@@ -114,9 +114,9 @@ bool CWriteSocket::SendCritical(CNetworkMessage& p_message)
 	int size;
 	CWritePacket* packet;
 
-	m_packetHeader->m_critical = 1;
 	data = p_message.m_buffer;
 	size = p_message.m_writeCursor - data;
+	m_packetHeader->m_critical = 1;
 	CopyDataStream(data, 0);
 	packet = m_criticalBuffer->StorePacket(m_packetHeader->m_packetSequence, data, size, &p_message);
 	if (packet == 0) {
