@@ -331,8 +331,8 @@ void CWriteSocket::Process()
 			}
 			else {
 				packet->m_available = 1;
-				index++;
 				Closed(1);
+				index++;
 				continue;
 			}
 		}
