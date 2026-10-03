@@ -6,6 +6,7 @@
 
 class CAI;
 class CFormationManager;
+class CEnemyGroup;
 class CObjectManager;
 struct tagLoadEnemyData;
 struct tagLoadEnemyDataAdditionalAction;
@@ -19,6 +20,7 @@ public:
 																   tagWaypointInformation*& p_waypointInfo);
 	void LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip);
 	void Restart();
+	void RemoveEnemyGroup(CEnemyGroup* p_group);
 	void AddEnemyGroup(int p_x,
 					   int p_y,
 					   int p_z,

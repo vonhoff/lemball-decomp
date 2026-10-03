@@ -2,6 +2,7 @@
 
 #include "../Base/tagLoadEnemyData.h"
 #include "../Base/tagWaypointInformation.h"
+#include "../Navigation/CAI.h"
 #include "../Objects/CEnemy.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Groups/CGenericGroup.h"
@@ -90,6 +91,32 @@ void CEnemyGroupManager::AddEnemyGroup(int p_x,
 		}
 		enemy->m_state0Data.m_waypointInformation = waypoint;
 	}
+}
+
+// FUNCTION: LEMBALL 0x00420d30
+void CEnemyGroupManager::RemoveEnemyGroup(CEnemyGroup* p_group)
+{
+	int i = 0;
+	int& count = g_pGenericGroupAI->m_objectCount;
+	int originalCount = count;
+	if (i < originalCount) {
+		CGameObject**& objects = g_pGenericGroupAI->m_objects;
+		do {
+			if (objects[i] == p_group) {
+				count--;
+				while (i < count) {
+					objects[i] = objects[i + 1];
+					i++;
+				}
+				objects[count] = 0;
+				break;
+			}
+			i++;
+		} while (i < originalCount);
+	}
+	FindElementInGroupAndRemoveIt(p_group);
+	p_group->Delete();
+	delete p_group;
 }
 
 // FUNCTION: LEMBALL 0x00420dd0
