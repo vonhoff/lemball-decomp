@@ -52,6 +52,8 @@ extern char g_szNetworkOptionsHeaderName[];
 // FUNCTION: LEMBALL 0x00453940
 void CNetworkOptionsDrawer::DrawText()
 {
+	int idx;
+	int searchIndex;
 	CVSPoint pos((short) m_layoutTable->m_editPos.m_x, (short) m_layoutTable->m_editPos.m_y);
 
 	if (m_drawingBackBuffer != 0) {
@@ -167,8 +169,6 @@ void CNetworkOptionsDrawer::DrawText()
 
 		m_drawnMessage = m_message;
 		if (g_pNetworkManager != 0) {
-			int idx;
-			int searchIndex;
 			int row = 0;
 			int fallbackHighlighted = -1;
 			CNetworkGameMessage* messages = g_pNetworkManager->m_gameMessages;
@@ -188,8 +188,8 @@ void CNetworkOptionsDrawer::DrawText()
 			idx = 0;
 			for (; idx < 10; idx++) {
 				if (messages[idx].m_valid != 0) {
-					int state = 1;
 					int isAccepted = 0;
+					int state = 1;
 					if (m_playerEntries[idx].m_hoverState != 0 || fallbackHighlighted == idx) {
 						isAccepted = 1;
 					}
