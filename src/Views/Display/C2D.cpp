@@ -3642,13 +3642,15 @@ void C2D::Draw(const CVSRect& p_rect)
 		int clipRight = m_clipOffsetX + m_clipSize.m_x;
 		if (left < m_clipOffsetX || top < m_clipOffsetY || clipRight <= right || bottom >= clipBottom) {
 			CVSRect translatedBounds;
-			translatedBounds.m_x = (short) left;
-			translatedBounds.m_y = (short) top;
-			translatedBounds.m_width = m_spriteGroundTranslatedPointRect.m_width;
-			translatedBounds.m_height = m_spriteGroundTranslatedPointRect.m_height;
-			m_lineAt9a8.m_bounds.m_width = translatedBounds.m_width;
-			m_lineAt9a8.m_bounds.m_height = translatedBounds.m_height;
-			m_lineAt9a8.m_bounds.CVSPoint::operator=(translatedBounds);
+			CVSSize& translatedSize = translatedBounds;
+			CVSPoint& translatedPosition = translatedBounds;
+			translatedPosition.m_x = (short) left;
+			translatedPosition.m_y = (short) top;
+			translatedSize.m_width = m_spriteGroundTranslatedPointRect.m_width;
+			translatedSize.m_height = m_spriteGroundTranslatedPointRect.m_height;
+			m_lineAt9a8.m_bounds.m_width = translatedSize.m_width;
+			m_lineAt9a8.m_bounds.m_height = translatedSize.m_height;
+			m_lineAt9a8.m_bounds.CVSPoint::operator=(translatedPosition);
 			m_lineAt9a8.m_colour = 0;
 			m_lineAt9a8.Draw(m_gdi);
 		}
