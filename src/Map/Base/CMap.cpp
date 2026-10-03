@@ -84,7 +84,6 @@ void CMap::ReSize(int p_width, int p_height)
 // FUNCTION: LEMBALL 0x004304e0
 unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 {
-	CMap* map = this;
 	if (p_mover != 0) {
 		int blockX = p_x >> 4;
 		int blockY = p_y >> 4;
@@ -100,7 +99,9 @@ unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 	int blockX = p_x >> 4;
 	int blockY = p_y >> 4;
 	if (p_x >= 0 && p_y >= 0 && blockX < m_ground.m_width && blockY < m_ground.m_height) {
-		return m_ground.m_ground[blockY * m_ground.m_width + blockX].GetZ(p_x & 0xf, p_y & 0xf);
+		p_x &= 0xf;
+		p_y &= 0xf;
+		return m_ground.m_ground[blockY * m_ground.m_width + blockX].GetZ(p_x, p_y);
 	}
 	return 0;
 }
