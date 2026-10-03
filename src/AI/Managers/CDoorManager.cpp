@@ -154,9 +154,10 @@ void CDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 
 	data = (unsigned short*) p_data;
 	count = *data++;
-	Initialise(count);
+	unsigned int capacity = count;
+	Initialise(capacity);
 	if (count != 0) {
-		unsigned int remaining = count;
+		unsigned int remaining = capacity;
 		unsigned short id;
 		eObjectType objectType;
 		unsigned short doorType;
