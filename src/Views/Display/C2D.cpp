@@ -882,40 +882,55 @@ void C2D::RightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint)
 // FUNCTION: LEMBALL 0x00437970
 bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 {
-	CMap* initialMap = m_map;
-	int maxGameX = initialMap->m_ground.m_width * 0x10 - 1;
-	int maxGameY = initialMap->m_ground.m_height * 0x10 - 1;
-	int searchY = p_screenY + 0x50;
+	CMap* initialMap;
+	int maxGameX;
+	int maxGameY;
+	int searchY;
+	int searchMinX;
+	int searchMaxX;
+	int searchX;
+	int gameX;
+	int gameY;
+	int groundScreenX;
+	int groundScreenY;
+	int left;
+	int top;
+	int right;
+	int bottom;
+	CGround* ground;
+	int hitX;
+	int hitY;
+	unsigned int includeSpecial;
+
+	initialMap = m_map;
+	maxGameX = initialMap->m_ground.m_width * 0x10 - 1;
+	maxGameY = initialMap->m_ground.m_height * 0x10 - 1;
+	searchY = p_screenY + 0x50;
 	if (searchY >= p_screenY) {
-		int searchMinX = p_screenX - 0x20;
-		int searchMaxX = p_screenX + 0x20;
+		searchMinX = p_screenX - 0x20;
+		searchMaxX = p_screenX + 0x20;
 		do {
-			int searchX = searchMinX;
+			searchX = searchMinX;
 			if (searchMaxX >= searchX) {
 				do {
-					int gameX;
-					int gameY;
 					m_map->ScreenToGame(searchX, searchY, gameX, gameY);
 					if (gameX >= 0 && maxGameX >= gameX && gameY >= 0 && maxGameY >= gameY) {
 						gameX /= 0x10;
 						gameY /= 0x10;
 
-						int groundScreenX;
-						int groundScreenY;
 						m_map->GameToScreen(gameX << 4, gameY << 4, groundScreenX, groundScreenY);
 						groundScreenY -= m_map->m_ground.m_ground[m_map->m_ground.m_width * gameY + gameX].m_height;
 
-						int left = groundScreenX - 0x10;
-
-						int top = groundScreenY - 0x10;
-						int right = groundScreenX + 0xf;
-						int bottom = groundScreenY + 0xf;
+						left = groundScreenX - 0x10;
+						right = groundScreenX + 0xf;
+						top = groundScreenY - 0x10;
+						bottom = groundScreenY + 0xf;
 						if (left <= p_screenX && right >= p_screenX && top <= p_screenY && bottom >= p_screenY) {
-							CGround* ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * gameY + gameX;
-							int hitX = p_screenX - left;
-							int hitY = p_screenY - top;
+							ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * gameY + gameX;
+							hitX = p_screenX - left;
+							hitY = p_screenY - top;
 							if (hitX >= 0 && hitY >= 0 && hitX <= 0x1f && hitY <= 0x1f) {
-								unsigned int includeSpecial = m_groundHitMode >= 1;
+								includeSpecial = m_groundHitMode >= 1;
 								if (ground->IsHit(hitX, hitY, includeSpecial)) {
 									p_gameX = gameX * 0x10 + 8;
 									p_gameY = gameY * 0x10 + 8;
