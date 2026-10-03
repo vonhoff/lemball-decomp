@@ -80,8 +80,9 @@ bool CCatapult::Process()
 			*g_pRandomSeed = randZ;
 			vel.m_zFixed = ((randZ % 32768) * 4096 / 32768) + 0xc000;
 
-			m_activator->m_hidden = 0;
-			m_activator->m_action = ACTION_NONE;
+			CGameObject* activator = m_activator;
+			activator->m_hidden = 0;
+			activator->m_action = ACTION_NONE;
 			m_activator->StartFly(vel, &pos);
 			m_activator = 0;
 			Action(ACTION_RUNNING);
