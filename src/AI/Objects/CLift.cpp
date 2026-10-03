@@ -180,13 +180,15 @@ bool CLift::Process()
 			}
 		}
 		break;
-	case ACTION_LIFT_START_RISING:
-		m_movementStartHeight = m_start.m_z;
+	case ACTION_LIFT_START_RISING: {
+		int startHeight = m_start.m_z;
+		m_movementStartHeight = startHeight;
 		m_direction = 1;
+		m_start.m_z = startHeight + time - m_stateTimer;
 		m_active = 1;
 		m_action = ACTION_LIFT_RISING;
-		m_start.m_z = m_movementStartHeight + time - m_stateTimer;
 		break;
+	}
 	case ACTION_LIFT_RISING:
 		m_start.m_z = m_movementStartHeight - m_stateTimer + time;
 		if (m_start.m_z >= m_highHeight) {
@@ -220,9 +222,9 @@ bool CLift::Process()
 	case ACTION_LIFT_START_LOWERING:
 		m_movementStartHeight = m_start.m_z;
 		m_direction = -1;
+		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
 		m_action = ACTION_LIFT_LOWERING;
 		m_active = 1;
-		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
 		break;
 	}
 	int height = m_start.m_z;
