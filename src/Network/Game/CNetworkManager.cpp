@@ -127,10 +127,11 @@ extern char g_szNetworkGameName[16];
 // FUNCTION: LEMBALL 0x00452850
 int CNetworkManager::ProcessMsg(Message* p_message)
 {
+	unsigned int messageType;
 	int status = p_message->m_code;
 	int slot;
 	CConnect* request;
-	unsigned int messageType = p_message->m_type;
+	messageType = p_message->m_type;
 
 	switch (messageType) {
 	case 1:
