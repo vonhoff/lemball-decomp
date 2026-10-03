@@ -19,7 +19,6 @@ void CNetworkOptionsDrawer::Processing()
 	unsigned long duration;
 	char* ident;
 	char* peer;
-	CConnect* connection;
 	CConnect** current;
 	CConnect** connections;
 	int index;
@@ -78,7 +77,7 @@ void CNetworkOptionsDrawer::Processing()
 				g_pSoundView->PlayEffect(SFX_DRUM1);
 				acceptedPlayer = m_acceptedPlayer;
 				if (acceptedPlayer != -1) {
-					connection = connections[acceptedPlayer];
+					CConnect* connection = connections[acceptedPlayer];
 					if (connection != 0) {
 						((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Reject(connection);
 					}
