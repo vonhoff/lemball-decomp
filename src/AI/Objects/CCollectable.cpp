@@ -10,6 +10,13 @@
 #include "AI/Base/ObjectActions.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
+#include "Visos/Foundation/CFixed.h"
+
+inline static CFixed FixedGroundHeight(unsigned short p_height)
+{
+	CFixed height((int) p_height << 12);
+	return height;
+}
 
 // FUNCTION: LEMBALL 0x00422870
 CCollectable::CCollectable(int p_x, int p_y, int p_z, eObjectType p_objectType) : CGlobalGameObject(p_objectType, 0, 0)
@@ -74,8 +81,7 @@ bool CCollectable::Process()
 					else {
 						z = 0;
 					}
-					const int height = (int) z << 12;
-					m_position.m_zFixed = height;
+					m_position.m_zFixed = FixedGroundHeight(z).m_value;
 				}
 				CPt3 pt;
 				pt.m_x = m_position.m_xFixed >> 12;
