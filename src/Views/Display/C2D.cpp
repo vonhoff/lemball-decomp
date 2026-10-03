@@ -1058,8 +1058,8 @@ void C2D::SetMouseShape()
 	}
 	else if (FindGameObject(game, objectIndex, 0) != 0) {
 		if (m_cursorState != 2) {
-			m_cursorState = 2;
 			m_cursorTimestamp = g_dwSimulationTimestamp;
+			m_cursorState = 2;
 			CursorChangeType(1, 4);
 			return;
 		}
@@ -1077,8 +1077,8 @@ void C2D::SetMouseShape()
 			return;
 		}
 		if (m_cursorState != 1) {
-			m_cursorState = 1;
 			m_cursorTimestamp = g_dwSimulationTimestamp;
+			m_cursorState = 1;
 			CursorChangeType(1, 2);
 			return;
 		}
