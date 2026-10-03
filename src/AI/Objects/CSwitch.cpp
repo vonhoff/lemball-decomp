@@ -54,7 +54,7 @@ void CSwitch::Throw()
 	if (i < m_entryCount) {
 		entry = m_entries;
 		do {
-			g_pAI->SwitchMessage((swMessage) entry->m_message, entry->m_objectId, 0, 0);
+			g_pAI->SwitchMessage(entry->m_message, entry->m_objectId, 0, 0);
 			entry++;
 			i++;
 		} while (i < m_entryCount);

@@ -18,7 +18,7 @@ void CHeaderMessage::AddData()
 	unsigned long value;
 
 	++m_sequence;
-	Add((unsigned short) m_sequence);
+	Add(m_sequence);
 	sequence = m_sequence;
 	value = m_headerValue;
 	m_mirroredSequence = sequence;

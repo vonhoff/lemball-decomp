@@ -590,11 +590,11 @@ void CGameObject::StartMoving()
 				m_flightZ = objectZ;
 				m_groundPosition.m_xFixed = m_position.m_xFixed;
 				m_groundPosition.m_yFixed = m_position.m_yFixed;
-				m_groundPosition.m_zFixed = (int) groundZ << 12;
+				m_groundPosition.m_zFixed = groundZ << 12;
 			}
 		}
 		else {
-			m_position.m_zFixed = (int) groundZ << 12;
+			m_position.m_zFixed = groundZ << 12;
 		}
 	}
 }

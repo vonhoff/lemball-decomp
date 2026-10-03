@@ -19,7 +19,7 @@ void CMessOKConnect::GetData()
 // FUNCTION: LEMBALL 0x0045f560
 void CMessOKConnect::AddData()
 {
-	Add((unsigned short) m_assignedPort);
+	Add(m_assignedPort);
 	Add((unsigned long) m_connectionId);
 }
 

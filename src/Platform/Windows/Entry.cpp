@@ -32,9 +32,9 @@ bool PumpEvents()
 	g_dwWindowQuitRequested = 0;
 	if (g_pBaseNetwork != NULL && g_pNetworkPacketQueue != NULL) {
 		do {
-			count = ((CBaseQueue*) g_pNetworkPacketQueue)->GetMessageCount();
+			count = g_pNetworkPacketQueue->GetMessageCount();
 			if (count != 0) {
-				((CBaseQueue*) g_pNetworkPacketQueue)->ProcessNMsgs(count);
+				g_pNetworkPacketQueue->ProcessNMsgs(count);
 			}
 		} while (count != 0);
 	}

@@ -833,8 +833,8 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 		messages = g_pNetworkManager->m_gameMessages;
 	}
 	rect.m_height = m_layoutTable->m_entryHeight;
-	rect.m_y = (short) m_layoutTable->m_entryY;
-	rect.m_x = (short) m_layoutTable->m_entryX;
+	rect.m_y = m_layoutTable->m_entryY;
+	rect.m_x = m_layoutTable->m_entryX;
 	rect.m_width = (short) m_layoutTable->m_entryWidth;
 	index = 0;
 	m_visibleEntryCount = 0;

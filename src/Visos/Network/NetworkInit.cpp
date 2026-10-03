@@ -42,9 +42,9 @@ unsigned int FileNetworkMessageThread()
 			}
 			if (g_pNetworkStatusQueue != NULL) {
 				do {
-					count = ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
+					count = g_pNetworkStatusQueue->GetMessageCount();
 					if (count != 0) {
-						((CBaseQueue*) g_pNetworkStatusQueue)->ProcessNMsgs(count);
+						g_pNetworkStatusQueue->ProcessNMsgs(count);
 					}
 				} while (count != 0);
 			}
@@ -139,9 +139,9 @@ unsigned int TcpIpNetworkMessageThread()
 			}
 			if (g_pNetworkStatusQueue != NULL) {
 				do {
-					count = ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
+					count = g_pNetworkStatusQueue->GetMessageCount();
 					if (count != 0) {
-						((CBaseQueue*) g_pNetworkStatusQueue)->ProcessNMsgs(count);
+						g_pNetworkStatusQueue->ProcessNMsgs(count);
 					}
 				} while (count != 0);
 			}

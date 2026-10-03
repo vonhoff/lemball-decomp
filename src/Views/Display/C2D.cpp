@@ -1511,13 +1511,13 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 				cliff = ground->m_cliff;
 				groundType = ground->m_objectType;
 
-				if ((short) height < 0) {
+				if (height < 0) {
 					groundType = defaultGroundType;
 					groundData = defaultGroundData;
 					height = 0;
 				}
 
-				heightValue = (short) height;
+				heightValue = height;
 				groundY = screenY - heightValue;
 				switch (groundType) {
 				case TERRAIN_TREE:
@@ -1566,7 +1566,7 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 
 				m_lemmingAnims->m_primitiveSequence = (unsigned short) (zOffset + baseZ + height);
 				if (delayed == 0) {
-					if ((short) height > 0) {
+					if (height > 0) {
 						DrawCliff(screenX, screenY, heightValue, (short) cliff);
 					}
 					if (drawGround != 0) {
@@ -1575,7 +1575,7 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 					drawGround = 1;
 				}
 				if (delayed != 0) {
-					if ((short) height > 0) {
+					if (height > 0) {
 						DrawCliff(screenX, screenY, heightValue, (short) cliff);
 					}
 					if (drawGround != 0) {
@@ -3869,7 +3869,7 @@ void C2D::DrawObjectsZBuff()
 
 	while (spriteIndex < (int) m_viewDataCount && animationIndex < m_zBufferAnimationCount) {
 		if (!spriteZValid) {
-			spriteZ = (unsigned short) CalcZValue_Sprite(spriteIndex);
+			spriteZ = CalcZValue_Sprite(spriteIndex);
 			spriteZValid = true;
 		}
 		if (!animationZValid) {
@@ -3890,7 +3890,7 @@ void C2D::DrawObjectsZBuff()
 	}
 
 	while (spriteIndex < (int) m_viewDataCount) {
-		unsigned short z = (unsigned short) CalcZValue_Sprite(spriteIndex);
+		unsigned short z = CalcZValue_Sprite(spriteIndex);
 		DrawZBuff_Sprite(spriteIndex, z);
 		spriteIndex++;
 	}
@@ -4020,14 +4020,14 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			southSolid = false;
 		}
 		else {
-			int collisionY = (unsigned short) tileY + 1;
+			int collisionY = tileY + 1;
 			unsigned short collision;
 			if (collisionY < 0) {
 				collision = 3;
 			}
 			else {
 				CMap* map = m_map;
-				int collisionX = (unsigned short) tileX;
+				int collisionX = tileX;
 				int width = map->m_ground.m_width;
 				if (width <= collisionX || map->m_ground.m_height <= collisionY) {
 					collision = 3;
@@ -4048,7 +4048,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			eastSolid = false;
 		}
 		else {
-			int collisionX = (unsigned short) tileX;
+			int collisionX = tileX;
 			unsigned short collision;
 			if (collisionX + 1 < 0) {
 				collision = 3;
@@ -4056,11 +4056,11 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			else {
 				CMap* map = m_map;
 				int width = map->m_ground.m_width;
-				if (width <= collisionX + 1 || map->m_ground.m_height <= (unsigned short) tileY) {
+				if (width <= collisionX + 1 || map->m_ground.m_height <= tileY) {
 					collision = 3;
 				}
 				else {
-					collision = map->m_ground.m_ground[width * (unsigned short) tileY + collisionX + 1].m_collision;
+					collision = map->m_ground.m_ground[width * tileY + collisionX + 1].m_collision;
 				}
 			}
 			if ((collision & 1) == 0) {
@@ -4075,8 +4075,8 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			southeastSolid = false;
 		}
 		else {
-			int collisionX = (unsigned short) tileX;
-			int collisionY = (unsigned short) tileY + 1;
+			int collisionX = tileX;
+			int collisionY = tileY + 1;
 			unsigned short collision;
 			if (collisionX + 1 < 0 || collisionY < 0) {
 				collision = 3;

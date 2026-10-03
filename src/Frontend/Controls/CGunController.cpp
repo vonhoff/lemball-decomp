@@ -689,9 +689,9 @@ void CGunController::Process()
 	}
 	if (m_verticalMoving != 0) {
 		if (now < m_moveEndTime) {
-			m_gunY = (int) ((m_targetY - m_moveStartY) * (int) (now - m_moveStartTime)) /
-						 (int) (m_moveEndTime - m_moveStartTime) +
-					 m_moveStartY;
+			m_gunY =
+				((m_targetY - m_moveStartY) * (int) (now - m_moveStartTime)) / (int) (m_moveEndTime - m_moveStartTime) +
+				m_moveStartY;
 			return;
 		}
 		m_verticalMoving = 0;

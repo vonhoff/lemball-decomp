@@ -54,7 +54,7 @@ void CCrate::Restart()
 void CCrate::TriggerContents()
 {
 	if (m_contentsType != OBJECT_INVALID) {
-		CGlobalGameObject* contents = (CGlobalGameObject*) m_contents;
+		CGlobalGameObject* contents = m_contents;
 		m_position.m_xFixed = contents->m_position.m_xFixed;
 		m_position.m_yFixed = contents->m_position.m_yFixed;
 		m_position.m_zFixed = contents->m_position.m_zFixed;

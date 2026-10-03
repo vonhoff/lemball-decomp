@@ -59,8 +59,8 @@ CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 	}
 	else {
 		if (p_frame != NULL) {
-			frameIndex = ((CAnimFrameBASE*) p_frame)->GetFrameNo();
-			((CAnimFrameBASE*) p_frame)->m_reserved08 = frameIndex;
+			frameIndex = p_frame->GetFrameNo();
+			p_frame->m_reserved08 = frameIndex;
 		}
 		else {
 			frameIndex = 0;

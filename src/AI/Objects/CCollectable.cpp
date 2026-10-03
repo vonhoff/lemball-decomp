@@ -103,7 +103,7 @@ bool CCollectable::Process()
 							goto found;
 						}
 						ai->m_collisionIndex++;
-					} while ((int) ai->m_collisionIndex < ai->m_objectCount);
+					} while (ai->m_collisionIndex < ai->m_objectCount);
 				}
 				hit = NULL;
 			found:

@@ -167,7 +167,7 @@ found:
 		return true;
 	}
 
-	m_position.m_zFixed = (unsigned int) z << 12;
+	m_position.m_zFixed = z << 12;
 	m_position.m_xFixed = x << 12;
 	m_position.m_yFixed = y << 12;
 	return true;

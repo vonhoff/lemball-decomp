@@ -182,8 +182,8 @@ void CSuccFailDrawer::Load()
 
 	if (m_mode != 0) {
 		m_layout = &g_succFailLayoutCompact;
-		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsCompact;
-		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsCompact;
+		returnAnim = &g_dwSuccFailReturnAnimIdsCompact;
+		goAnim = &g_dwSuccFailGoAnimIdsCompact;
 		if (m_success != 0) {
 			m_backgroundId = RES_NEWFRONT_ANIMS_LORES_SUCCESS_EYES;
 			m_primaryBitmapId = g_dwSuccFailSuccessBitmapIdCompact;
@@ -197,8 +197,8 @@ void CSuccFailDrawer::Load()
 	}
 	else {
 		m_layout = &g_succFailLayoutFull;
-		returnAnim = (unsigned long*) &g_dwSuccFailReturnAnimIdsFull;
-		goAnim = (unsigned long*) &g_dwSuccFailGoAnimIdsFull;
+		returnAnim = &g_dwSuccFailReturnAnimIdsFull;
+		goAnim = &g_dwSuccFailGoAnimIdsFull;
 		unsigned int& primaryId = m_primaryBitmapId;
 		if (m_success != 0) {
 			unsigned int bitmapId = g_dwSuccFailSuccessBitmapIdFull;
@@ -220,7 +220,7 @@ void CSuccFailDrawer::Load()
 	else {
 		m_secondaryBitmap = NULL;
 	}
-	bitmapX = (int) m_size.m_width - (int) (short) m_primaryBitmap->m_x;
+	bitmapX = m_size.m_width - m_primaryBitmap->m_x;
 	primitive = m_primitiveBundle;
 	primary = m_primitives;
 	i = 1;

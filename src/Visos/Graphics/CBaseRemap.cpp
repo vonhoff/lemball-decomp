@@ -44,7 +44,7 @@ void CBaseRemap::MapRemap(const unsigned char* p_mapping)
 	}
 	++palette->m_directUseCount;
 
-	unsigned int paletteSize = (unsigned int) m_paletteResource->m_entryCount;
+	unsigned int paletteSize = m_paletteResource->m_entryCount;
 	m_remap = new unsigned char[paletteSize];
 	unsigned int mappingCount = *p_mapping++;
 	int i;
@@ -83,14 +83,14 @@ void CBaseRemap::CalculateGreyScale()
 	int paletteIndex;
 	int greyIndex;
 
-	for (paletteIndex = 1; paletteIndex < (int) paletteSize - 1; ++paletteIndex) {
+	for (paletteIndex = 1; paletteIndex < paletteSize - 1; ++paletteIndex) {
 		unsigned char* colour = m_paletteResource->m_data + paletteIndex * 4;
 		if (colour[0] == colour[1] && colour[2] == colour[1]) {
 			greyIndices[greyCount++] = (unsigned char) paletteIndex;
 		}
 	}
 
-	for (paletteIndex = 1; paletteIndex < (int) paletteSize - 1; ++paletteIndex) {
+	for (paletteIndex = 1; paletteIndex < paletteSize - 1; ++paletteIndex) {
 		unsigned char* colour = m_paletteResource->m_data + paletteIndex * 4;
 		grey = (short) (((short) ((unsigned short) colour[0] * 2) + (short) ((unsigned short) colour[1] * 7) +
 						 (int) colour[2]) /

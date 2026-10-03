@@ -123,7 +123,7 @@ bool CNetworkFile::Write(const unsigned char* p_data, int p_size)
 
 	success = WriteFile(m_handle, p_data, (unsigned int) p_size, &written, NULL);
 	if (success == 0) {
-		int error = (int) GetLastError();
+		int error = GetLastError();
 		*g_pErrorOutput << "Write error: " << error << "\n";
 		return false;
 	}

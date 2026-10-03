@@ -313,8 +313,7 @@ void CPreviewDrawer::DrawText()
 				pos.m_width = (short) layoutPosition->m_x;
 				pos.m_height = (short) layoutPosition->m_y;
 				positions = positions + 1;
-				m_textManager
-					->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, (char*) g_szPreviewX, 0x20, NULL);
+				m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, g_szPreviewX, 0x20, NULL);
 				count = count - 1;
 			} while (count != 0);
 		}
@@ -426,7 +425,7 @@ void CPreviewDrawer::DrawAnims()
 		} while (i < m_opponentCount);
 	}
 
-	width = (short) CAnimsManager::GetAnimSize(m_teamAnimId, 0).m_width;
+	width = CAnimsManager::GetAnimSize(m_teamAnimId, 0).m_width;
 	x = m_layout->m_positions[PreviewFormationAnchor].m_x - m_layout->m_positions[PreviewTeamOffset].m_x +
 		m_layout->m_positions[PreviewFormationOffset].m_x;
 	y = m_layout->m_positions[PreviewTeamRow].m_y;
@@ -624,7 +623,7 @@ void CPreviewDrawer::LoadLevelInformation()
 		linePos = 0;
 		memset(candidateLine, '0', sizeof(candidateLine));
 		while (1) {
-			endOfSource = (int) AddWord(source, candidateLine, sourcePos, linePos);
+			endOfSource = AddWord(source, candidateLine, sourcePos, linePos);
 			measuredWidth = font->GetSize(candidateLine, 0x20).m_width;
 			if (measuredWidth > layoutWidth || endOfSource == 1) {
 				break;

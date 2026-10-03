@@ -221,7 +221,7 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 			paintY = (short) paint.rcPaint.top;
 			paintHeight = (short) ((short) paint.rcPaint.bottom - (unsigned short) paint.rcPaint.top);
 			if ((int) paintHeight * (int) paintWidth != 0) {
-				if (paintX < (short) m_refreshX) {
+				if (paintX < m_refreshX) {
 					m_refreshWidth = (unsigned short) (m_refreshWidth + (m_refreshX - (unsigned short) paintX));
 					m_refreshX = (unsigned short) paintX;
 				}
@@ -229,7 +229,7 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 					paintWidth = (short) (paintWidth - m_refreshX);
 					m_refreshWidth = (unsigned short) (paintWidth + (unsigned short) paintX);
 				}
-				if (paintY < (short) m_refreshY) {
+				if (paintY < m_refreshY) {
 					m_refreshHeight = (unsigned short) (m_refreshHeight + (m_refreshY - (unsigned short) paintY));
 					m_refreshY = (unsigned short) paintY;
 				}
@@ -250,14 +250,14 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 		paintWidth = m_rect.m_width;
 		paintHeight = m_rect.m_height;
 		if ((int) paintHeight * (int) paintWidth != 0) {
-			if (0 < (short) m_refreshX) {
+			if (0 < m_refreshX) {
 				m_refreshWidth = (unsigned short) (m_refreshWidth + m_refreshX);
 				m_refreshX = 0;
 			}
 			if ((short) (m_refreshWidth + m_refreshX) < m_rect.m_width) {
 				m_refreshWidth = (unsigned short) (m_rect.m_width - m_refreshX);
 			}
-			if (0 < (short) m_refreshY) {
+			if (0 < m_refreshY) {
 				m_refreshHeight = (unsigned short) (m_refreshHeight + m_refreshY);
 				m_refreshY = 0;
 			}
@@ -339,13 +339,13 @@ void CGWnd::Refresh(CVSRect* p_rect)
 	Render();
 	height = m_refreshHeight;
 	width = m_refreshWidth;
-	if ((int) (short) height * (int) (short) width > 0) {
+	if (height * width > 0) {
 		CVSRect damage(*(const CVSRect*) &m_refreshWidth);
 		innerWidth = m_innerRect.m_width;
 		innerHeight = m_innerRect.m_height;
-		if ((int) innerWidth * (int) innerHeight != 0) {
+		if (innerWidth * innerHeight != 0) {
 			innerX = (unsigned short) m_innerRect.m_x;
-			if ((short) damage.m_x < (short) innerX) {
+			if (damage.m_x < (short) innerX) {
 				damage.m_width += (short) (damage.m_x - innerX);
 				damage.m_x = (short) innerX;
 			}
@@ -353,23 +353,23 @@ void CGWnd::Refresh(CVSRect* p_rect)
 			if ((short) (damage.m_x + damage.m_width) > (short) innerX) {
 				damage.m_width = (short) (innerX - damage.m_x);
 			}
-			width = (unsigned short) m_innerRect.m_y;
-			if ((short) damage.m_y < (short) width) {
+			width = m_innerRect.m_y;
+			if (damage.m_y < width) {
 				damage.m_height += (short) (damage.m_y - width);
-				damage.m_y = (short) width;
+				damage.m_y = width;
 			}
 			width = (short) (width + innerHeight);
-			if ((short) (damage.m_y + damage.m_height) > (short) width) {
+			if ((short) (damage.m_y + damage.m_height) > width) {
 				damage.m_height = (short) (width - damage.m_y);
 			}
-			if ((short) damage.m_width <= 0 || (short) damage.m_height <= 0) {
+			if (damage.m_width <= 0 || damage.m_height <= 0) {
 				damage.m_height = 0;
 				damage.m_width = 0;
 				damage.m_y = 0;
 				damage.m_x = 0;
 			}
 		}
-		if ((int) (short) damage.m_height * (int) (short) damage.m_width > 0) {
+		if (damage.m_height * damage.m_width > 0) {
 			const CVSPoint* origin = &m_innerRect;
 			short originY = origin->m_y;
 			short originX = origin->m_x;

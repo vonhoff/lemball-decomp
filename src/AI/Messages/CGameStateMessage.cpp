@@ -16,8 +16,8 @@ void CGameStateMessage::AddData()
 {
 	Add((unsigned long) m_state);
 	Add((unsigned long) m_stage);
-	Add((unsigned long) m_levelTime);
-	Add((unsigned long) m_score);
+	Add(m_levelTime);
+	Add(m_score);
 }
 
 // FUNCTION: LEMBALL 0x00410be0

@@ -194,7 +194,7 @@ void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AICOORD& p_list
 					dist -= 200;
 					if (dist > 0) {
 						dist *= volume;
-						attenuatedVol = volume + (int) (dist * -40) / 124800;
+						attenuatedVol = volume + (dist * -40) / 124800;
 						if (attenuatedVol > volume) {
 							attenuatedVol = volume;
 						}

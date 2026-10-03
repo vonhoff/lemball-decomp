@@ -237,8 +237,7 @@ void CPanelButton::OnPressed(int p_flags)
 
 normal:
 	if (panelLemming->m_balloonType != OBJECT_BALLOON_NONE) {
-		if ((short) m_inventoryRect.m_x <= (short) m_clickX &&
-			(short) m_clickX < (short) (m_inventoryRect.m_width + m_inventoryRect.m_x)) {
+		if (m_inventoryRect.m_x <= m_clickX && m_clickX < (short) (m_inventoryRect.m_width + m_inventoryRect.m_x)) {
 			short inventoryY = m_inventoryRect.m_y;
 			short clickY = m_clickY;
 			if (inventoryY > clickY) {

@@ -79,7 +79,7 @@ char* vsULtoa(unsigned long p_value, char* p_buffer, int p_radix)
 			}
 			g_maxPowers[r] = pow;
 			r++;
-		} while ((int) r <= 16);
+		} while (r <= 16);
 		g_powersInitialised = 1;
 	}
 

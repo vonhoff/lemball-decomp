@@ -424,7 +424,7 @@ CSurface::~CSurface()
 			}
 		}
 	}
-	node = (SurfaceListNode*) m_childSurfaceHead;
+	node = m_childSurfaceHead;
 	while (node != NULL) {
 		next = node->m_next;
 		operator delete(node);
@@ -489,13 +489,13 @@ void CSurface::SetLinePtrs()
 		}
 		parentY = (int) CPVScrollableSurface::m_windowRect.m_y;
 		y = 0;
-		if (0 < (short) m_height) {
+		if (0 < m_height) {
 			do {
 				m_lines[y] = (void*) ((int) CPVScrollableSurface::m_parentSurface->m_lines[parentY] +
 									  (int) CPVScrollableSurface::m_windowRect.m_x);
 				y = y + 1;
 				parentY = parentY + 1;
-			} while (y < (int) (short) m_height);
+			} while (y < m_height);
 		}
 	}
 	else {
@@ -1547,26 +1547,26 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 	step = 1;
 	errLimit = p_radius * 2 - 1;
 
-	if (p_centreX >= m_clipRect.m_x && p_centreX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
+	if (p_centreX >= m_clipRect.m_x && p_centreX <= (m_clipRect.m_width + m_clipRect.m_x - 1)) {
 		clipY = m_clipRect.m_y;
 		poleY = p_centreY + p_radius;
-		if (poleY >= clipY && poleY <= (int) (m_clipRect.m_height + clipY - 1)) {
+		if (poleY >= clipY && poleY <= (m_clipRect.m_height + clipY - 1)) {
 			*((unsigned char*) m_lines[poleY] + p_centreX) = (unsigned char) p_colour;
 		}
 	}
-	if (p_centreX >= m_clipRect.m_x && p_centreX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
+	if (p_centreX >= m_clipRect.m_x && p_centreX <= (m_clipRect.m_width + m_clipRect.m_x - 1)) {
 		if ((p_centreY - p_radius) >= m_clipRect.m_y &&
-			(p_centreY - p_radius) <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+			(p_centreY - p_radius) <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
 			*((unsigned char*) m_lines[(p_centreY - p_radius)] + p_centreX) = (unsigned char) p_colour;
 		}
 	}
-	if (p_centreY >= m_clipRect.m_y && p_centreY <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+	if (p_centreY >= m_clipRect.m_y && p_centreY <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
 		x1 = p_centreX - p_radius;
 		x2 = p_centreX + p_radius;
 		if (x1 < m_clipRect.m_x) {
 			x1 = m_clipRect.m_x;
 		}
-		if ((int) (m_clipRect.m_width + m_clipRect.m_x - 1) < x2) {
+		if ((m_clipRect.m_width + m_clipRect.m_x - 1) < x2) {
 			x2 = m_clipRect.m_width + m_clipRect.m_x - 1;
 		}
 		memset((unsigned char*) m_lines[p_centreY] + x1, p_colour, x2 - x1 + 1);
@@ -1590,12 +1590,12 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 					yTop = p_centreY - p_radius;
 					yBottom = p_centreY + p_radius;
 					clipY = m_clipRect.m_y;
-					if (yTop <= (int) (m_clipRect.m_height + clipY - 1) && yBottom >= clipY) {
+					if (yTop <= (m_clipRect.m_height + clipY - 1) && yBottom >= clipY) {
 						xLeft = p_centreX - x;
 						xRight = p_centreX + x;
 						clipX = m_clipRect.m_x;
-						if (clipX <= xRight && (int) (m_clipRect.m_width + clipX - 1) >= xLeft) {
-							if (xRight > (int) (m_clipRect.m_width + clipX - 1)) {
+						if (clipX <= xRight && (m_clipRect.m_width + clipX - 1) >= xLeft) {
+							if (xRight > (m_clipRect.m_width + clipX - 1)) {
 								xRight = m_clipRect.m_width + clipX - 1;
 							}
 							if (xLeft < clipX) {
@@ -1604,7 +1604,7 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 							if (yTop >= clipY) {
 								memset((unsigned char*) m_lines[yTop] + xLeft, p_colour, xRight - xLeft + 1);
 							}
-							if (yBottom <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+							if (yBottom <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
 								memset((unsigned char*) m_lines[yBottom] + xLeft, p_colour, xRight - xLeft + 1);
 							}
 						}
@@ -2983,17 +2983,17 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 			{
 				CVSRect clipped;
 
-				if ((short) dest.m_width > 0xff || (short) dest.m_height > 0xff) {
+				if (dest.m_width > 0xff || dest.m_height > 0xff) {
 					short warningWidth = dest.m_width;
 					CVSOStream& warningStream = *g_pDebugOutput << g_szWarningZrleIs;
 					short warningHeight = dest.m_height;
 					CVSOStream& widthStream = warningStream << (int) warningWidth << g_szClippingWideAnd;
 					widthStream << (int) warningHeight << g_szClippingHighNewline;
-					if ((short) dest.m_width > 0xff) {
+					if (dest.m_width > 0xff) {
 						*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
 						dest.m_width = 0xff;
 					}
-					if ((short) dest.m_height > 0xff) {
+					if (dest.m_height > 0xff) {
 						*g_pDebugOutput << g_szClippingHeightTo << 0xff << g_szClippingDotNewline;
 						dest.m_height = 0xff;
 					}

@@ -155,7 +155,7 @@ void CMover::SetUpNextNode(unsigned int p_time)
 // FUNCTION: LEMBALL 0x0042e980
 void CMover::FindObjectsOnTopOfMe()
 {
-	int objectCount = (unsigned short) g_wObjectCount;
+	int objectCount = g_wObjectCount;
 	const int& minX = (m_position.m_xFixed >> 12) - 8;
 	CMover* const& mover = this;
 	const int& maxX = minX + 15;

@@ -59,16 +59,16 @@ void CSurface::BlitZRLE(int p_x,
 	clipped->m_width = 0;
 	clipped->m_y = 0;
 	clipped->m_x = 0;
-	if ((short) dest->m_width > 0xff || (short) dest->m_height > 0xff) {
+	if (dest->m_width > 0xff || dest->m_height > 0xff) {
 		CVSOStream& warning = *g_pDebugOutput << g_szWarningZrleIs;
 		frame.m_warningHeight = dest->m_height;
 		CVSOStream& heightOutput = warning << width << g_szClippingWideAnd;
 		heightOutput << (int) frame.m_warningHeight << g_szClippingHighNewline;
-		if ((short) dest->m_width > 0xff) {
+		if (dest->m_width > 0xff) {
 			*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
 			dest->m_width = 0xff;
 		}
-		if ((short) dest->m_height > 0xff) {
+		if (dest->m_height > 0xff) {
 			*g_pDebugOutput << g_szClippingHeightTo << 0xff << g_szClippingDotNewline;
 			dest->m_height = 0xff;
 		}

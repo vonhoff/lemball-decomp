@@ -63,7 +63,7 @@ void CChangeList::Resize(CVSSize p_size)
 		m_viewSize.m_width = p_size.m_width;
 		m_viewSize.m_height = p_size.m_height;
 		m_mapSize.m_width = mapWidth;
-		needed = (int) mapWidth * (int) mapHeight;
+		needed = (int) mapWidth * mapHeight;
 		m_mapSize.m_height = mapHeight;
 		if (needed > (int) m_mapCapacity) {
 			FreeMap();

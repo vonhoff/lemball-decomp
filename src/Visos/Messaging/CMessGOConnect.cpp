@@ -19,7 +19,7 @@ void CMessGOConnect::GetData()
 // FUNCTION: LEMBALL 0x0045f5f0
 void CMessGOConnect::AddData()
 {
-	Add((unsigned short) m_assignedPort);
+	Add(m_assignedPort);
 	Add((unsigned long) m_connectionId);
 }
 
