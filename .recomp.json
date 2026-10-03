@@ -1,0 +1,32 @@
+{
+  "$schema": "https://recomp.fyi/schema/v1.json",
+  "game": "Lemmings Paintball",
+  "wikidata": "Q3229372",
+  "system": "PC (Windows)",
+  "type": "decomp",
+  "original": {
+    "region": "Europe",
+    "revision": "1.0.0.0"
+  },
+  "project": "Lemmings Paintball Decompilation",
+  "status": "playable",
+  "targets": [
+    "Windows"
+  ],
+  "toolchain": "reccmp",
+  "approach": "Matching MSVC 4.0 decompilation using reccmp for verification",
+  "maintainers": [
+    {
+      "name": "vonhoff",
+      "link": "https://github.com/vonhoff"
+    }
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/vonhoff/lemball-decomp"
+    }
+  ],
+  "help": [],
+  "notes": "Actively being reconstructed toward a complete match with the original executable."
+}
