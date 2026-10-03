@@ -14,6 +14,20 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+inline static void ClampUpperTargetCoordinate(int& p_coordinate)
+{
+	if (p_coordinate > 1024) {
+		p_coordinate = 1023;
+	}
+}
+
+inline static void ClampLowerTargetCoordinate(int& p_coordinate)
+{
+	if (p_coordinate < 0) {
+		p_coordinate = 0;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0042bad0
 CPaintGun::CPaintGun() : CGlobalGameObject(OBJECT_PAINT_GUN, 0, 0)
 {
@@ -98,18 +112,13 @@ bool CPaintGun::Process()
 		}
 		else if (m_lastMovementTick < g_dwGameTick) {
 			AICOORD position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
-			AICOORD start;
-			AICOORD target;
+			AICOORD start(position);
+			AICOORD target(position);
 			int coordinate;
 
-			start.m_yFixed = position.m_yFixed;
-			start.m_zFixed = position.m_zFixed;
-			target.m_yFixed = position.m_yFixed;
-			target.m_zFixed = position.m_zFixed;
 			start.m_xFixed = position.m_xFixed + 0x10000;
-			if ((coordinate = (position.m_xFixed >> 12) + 200) > 1024) {
-				coordinate = 1023;
-			}
+			coordinate = (position.m_xFixed >> 12) + 200;
+			ClampUpperTargetCoordinate(coordinate);
 			target.m_xFixed = coordinate << 12;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 2, start, target);
 
@@ -118,9 +127,8 @@ bool CPaintGun::Process()
 			target.m_yFixed = position.m_yFixed;
 			target.m_zFixed = position.m_zFixed;
 			start.m_xFixed = position.m_xFixed - 0x10000;
-			if ((coordinate = (position.m_xFixed >> 12) - 200) < 0) {
-				coordinate = 0;
-			}
+			coordinate = (position.m_xFixed >> 12) - 200;
+			ClampLowerTargetCoordinate(coordinate);
 			target.m_xFixed = coordinate << 12;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 6, start, target);
 
@@ -129,9 +137,8 @@ bool CPaintGun::Process()
 			target.m_xFixed = position.m_xFixed;
 			target.m_zFixed = position.m_zFixed;
 			start.m_yFixed = position.m_yFixed + 0x10000;
-			if ((coordinate = (position.m_yFixed >> 12) + 200) > 1024) {
-				coordinate = 1023;
-			}
+			coordinate = (position.m_yFixed >> 12) + 200;
+			ClampUpperTargetCoordinate(coordinate);
 			target.m_yFixed = coordinate << 12;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 8, start, target);
 
@@ -140,9 +147,8 @@ bool CPaintGun::Process()
 			target.m_xFixed = position.m_xFixed;
 			target.m_zFixed = position.m_zFixed;
 			start.m_yFixed = position.m_yFixed - 0x10000;
-			if ((coordinate = (position.m_yFixed >> 12) - 200) < 0) {
-				coordinate = 0;
-			}
+			coordinate = (position.m_yFixed >> 12) - 200;
+			ClampLowerTargetCoordinate(coordinate);
 			target.m_yFixed = coordinate << 12;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 4, start, target);
 			SetSndEffect(SFX_BIGGUN);
