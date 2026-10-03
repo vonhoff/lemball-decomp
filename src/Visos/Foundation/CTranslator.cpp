@@ -32,10 +32,10 @@ int CTranslator::ProcessMsg(Message* p_message)
 					translated.m_type = 4;
 				}
 				translated.m_code = (int) g_dwInputTranslationPairs[index].m_inputCode;
-				if (translated.m_code == 0x49) {
-					keyState = GetKeyState(0xa0);
+				if (translated.m_code == INPUT_KEY_SHIFT) {
+					keyState = GetKeyState(VK_LSHIFT);
 					if (keyState < 0) {
-						translated.m_code = 0x4a;
+						translated.m_code = INPUT_KEY_LEFT_SHIFT;
 					}
 				}
 				g_pMasterInputQueue->Post(translated);

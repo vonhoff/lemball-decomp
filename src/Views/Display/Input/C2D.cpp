@@ -78,34 +78,34 @@ int C2D::ProcessMsg(Message* p_message)
 	case 4:
 	case 0xc:
 		switch (p_message->m_code) {
-		case 3:
+		case INPUT_KEY_LEFT:
 			PrevGroup();
 			return 1;
-		case 4:
+		case INPUT_KEY_RIGHT:
 			NextGroup();
 			return 1;
-		case 0x39:
+		case INPUT_KEY_0:
 			UseBalloon(3);
 			return 1;
-		case 0x3a:
+		case INPUT_KEY_1:
 			SelectLemming(0);
 			return 1;
-		case 0x3b:
+		case INPUT_KEY_2:
 			SelectLemming(1);
 			return 1;
-		case 0x3c:
+		case INPUT_KEY_3:
 			SelectLemming(2);
 			return 1;
-		case 0x3d:
+		case INPUT_KEY_4:
 			SelectLemming(3);
 			return 1;
-		case 0x40:
+		case INPUT_KEY_7:
 			UseBalloon(0);
 			return 1;
-		case 0x41:
+		case INPUT_KEY_8:
 			UseBalloon(1);
 			return 1;
-		case 0x42:
+		case INPUT_KEY_9:
 			UseBalloon(2);
 			return 1;
 		}

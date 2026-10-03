@@ -362,7 +362,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 	case 4: {
 
 		code = p_message->m_code;
-		if (code == 0x49) {
+		if (code == INPUT_KEY_SHIFT) {
 			g_nNetworkOptionsShiftHeld = 1;
 			g_nNetworkOptionsCapsOrShift |= 1;
 			return 1;
@@ -370,7 +370,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 
 		if (m_editingActive != 0) {
 			handled = false;
-			if (code >= 5 && code <= 0x1e) {
+			if (code >= INPUT_KEY_A && code <= INPUT_KEY_Z) {
 				if (m_editor->m_length != m_editor->m_maxLength) {
 					char offset = ((g_nNetworkOptionsShiftHeld == 0) ? 0xe0 : 0) - 0x3c;
 					char ch = (char) code - offset;
@@ -381,9 +381,9 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 					g_pSoundView->PlayEffect(SFX_CHINK);
 				}
 			}
-			else if (code >= 0x39 && code <= 0x42) {
+			else if (code >= INPUT_KEY_0 && code <= INPUT_KEY_9) {
 				if (m_editor->m_length != m_editor->m_maxLength) {
-					*m_editor += (char) (code - 9);
+					*m_editor += (char) (code - INPUT_DIGIT_ASCII_OFFSET);
 					goto input_accepted;
 				}
 				else {
@@ -392,7 +392,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			}
 			else {
 				switch (code) {
-				case 0x1f:
+				case INPUT_KEY_SPACE:
 					if (m_editor->m_length != m_editor->m_maxLength) {
 						*m_editor += ' ';
 						goto input_accepted;
@@ -401,7 +401,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 						g_pSoundView->PlayEffect(SFX_CHINK);
 					}
 					break;
-				case 0x20:
+				case INPUT_KEY_PERIOD:
 					if (m_editor->m_length != m_editor->m_maxLength) {
 						*m_editor += '.';
 						goto input_accepted;
@@ -410,17 +410,17 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 						g_pSoundView->PlayEffect(SFX_CHINK);
 					}
 					break;
-				case 0x23:
+				case INPUT_KEY_ESCAPE:
 					m_broadcasting = 0;
 					m_editingActive = 0;
 					m_pendingEvent = 0;
 					SetMessage(1);
 					goto input_accepted;
-				case 0x4c:
+				case INPUT_KEY_RETURN:
 					StopEditing();
 					goto input_accepted;
-				case 0x4d:
-				case 0x4e: {
+				case INPUT_KEY_DELETE:
+				case INPUT_KEY_BACKSPACE: {
 					CEditString* editor = m_editor;
 					if (editor->m_length != 0) {
 						if (editor->m_length > 0) {
@@ -450,21 +450,21 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		}
 
 		switch (p_message->m_code) {
-		case 1:
+		case INPUT_KEY_UP:
 			if (HighlightPreviousEntry()) {
 				g_pSoundView->PlayEffect(SFX_CHANGEOP);
 				return 1;
 			}
 			break;
-		case 2:
+		case INPUT_KEY_DOWN:
 			if (HighlightNextEntry()) {
 				g_pSoundView->PlayEffect(SFX_CHANGEOP);
 				return 1;
 			}
 			break;
-		case 0x1f:
+		case INPUT_KEY_SPACE:
 		case 0x22:
-		case 0x4c:
+		case INPUT_KEY_RETURN:
 			if (m_highlightedPlayer != -1) {
 				CVSPoint pt;
 				m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, 0);
@@ -475,21 +475,21 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 	}
 	case 3:
 		code = p_message->m_code;
-		if (code == 0x49) {
+		if (code == INPUT_KEY_SHIFT) {
 			g_nNetworkOptionsCapsOrShift &= ~1;
 			g_nNetworkOptionsShiftHeld = 0;
 			return 1;
 		}
 		if (m_editingActive != 0) {
-			if (code >= 5 && code <= 0x1e) {
+			if (code >= INPUT_KEY_A && code <= INPUT_KEY_Z) {
 				return 1;
 			}
 			switch (code) {
-			case 1:
-			case 0x1f:
-			case 0x4c:
-			case 0x4d:
-			case 0x4e:
+			case INPUT_KEY_UP:
+			case INPUT_KEY_SPACE:
+			case INPUT_KEY_RETURN:
+			case INPUT_KEY_DELETE:
+			case INPUT_KEY_BACKSPACE:
 				return 1;
 			}
 		}

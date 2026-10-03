@@ -522,16 +522,16 @@ int CPauseWindow::ProcessMsg(Message* p_message)
 		switch (p_message->m_type) {
 		case 4:
 			switch (p_message->m_code) {
-			case 1:
-			case 3:
+			case INPUT_KEY_UP:
+			case INPUT_KEY_LEFT:
 				if (m_selection > m_minimumSelection) {
 					m_selection--;
 					g_pSoundView->PlayEffect(SFX_CHANGEOP);
 					return 1;
 				}
 				break;
-			case 2:
-			case 4:
+			case INPUT_KEY_DOWN:
+			case INPUT_KEY_RIGHT:
 				if (m_selection < m_menuItemCount - 1) {
 					m_selection++;
 					g_pSoundView->PlayEffect(SFX_CHANGEOP);
@@ -541,13 +541,13 @@ int CPauseWindow::ProcessMsg(Message* p_message)
 			case 0x22:
 			case 0x2a:
 			case 0x2e:
-			case 0x4c:
+			case INPUT_KEY_RETURN:
 			case 0x57:
 			case 0x58:
 				m_receiverState->SetOptionSelection(m_selection + 1);
 				g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 				return 1;
-			case 0x23:
+			case INPUT_KEY_ESCAPE:
 				if (pauseMessage != 0 || m_receiverState->GetPauser()) {
 					m_receiverState->SetOptionSelection(m_initialSelection + 1);
 					g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);

@@ -301,30 +301,30 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 	case 3:
 		code = message->m_code;
 		switch (code) {
-		case 0x1f:
+		case INPUT_KEY_SPACE:
 		case 0x22: {
 			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
 			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
 		}
-		case 0x4c: {
+		case INPUT_KEY_RETURN: {
 			CPVButton* button = m_buttons[11];
 			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
 		}
-		case 0x4d:
-		case 0x4e: {
+		case INPUT_KEY_DELETE:
+		case INPUT_KEY_BACKSPACE: {
 			CPVButton* button = m_buttons[PASSWORD_CLEAR_BUTTON_INDEX];
 			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
 			return 1;
 		}
 		}
-		if (code >= 0x39 && code <= 0x42) {
+		if (code >= INPUT_KEY_0 && code <= INPUT_KEY_9) {
 			{
-				CPVButton* button = m_buttons[code - 0x39];
+				CPVButton* button = m_buttons[code - INPUT_KEY_0];
 				CVSPoint pt(0, 0);
 				button->OnButtonUp(pt, 0);
 				return 1;
@@ -334,42 +334,42 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 	case 4:
 		code = message->m_code;
 		switch (code) {
-		case 1:
+		case INPUT_KEY_UP:
 			ShiftHilite(-3);
 			return 1;
-		case 2:
+		case INPUT_KEY_DOWN:
 			ShiftHilite(3);
 			return 1;
-		case 3:
+		case INPUT_KEY_LEFT:
 			ShiftHilite(-1);
 			return 1;
-		case 4:
+		case INPUT_KEY_RIGHT:
 			ShiftHilite(1);
 			return 1;
-		case 0x1f:
+		case INPUT_KEY_SPACE:
 		case 0x22: {
 			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
 			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
 		}
-		case 0x4c: {
+		case INPUT_KEY_RETURN: {
 			CPVButton* button = m_buttons[11];
 			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
 		}
-		case 0x4d:
-		case 0x4e: {
+		case INPUT_KEY_DELETE:
+		case INPUT_KEY_BACKSPACE: {
 			CPVButton* button = m_buttons[PASSWORD_CLEAR_BUTTON_INDEX];
 			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
 			return 1;
 		}
 		}
-		if (code >= 0x39 && code <= 0x42) {
+		if (code >= INPUT_KEY_0 && code <= INPUT_KEY_9) {
 			{
-				CPVButton* button = m_buttons[code - 0x39];
+				CPVButton* button = m_buttons[code - INPUT_KEY_0];
 				CVSPoint pt(0, 0);
 				button->OnButtonDown(pt, 0);
 				return 1;

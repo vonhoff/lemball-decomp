@@ -85,10 +85,10 @@ bool CIntroAnimDrawer::ProcessMessages(Message* p_message)
 	switch ((unsigned int) p_message->m_type) {
 	case 4:
 		switch (p_message->m_code) {
-		case 0x1f:
+		case INPUT_KEY_SPACE:
 		case 0x22:
-		case 0x23:
-		case 0x4c:
+		case INPUT_KEY_ESCAPE:
+		case INPUT_KEY_RETURN:
 			EndPhase();
 			return 1;
 		default:

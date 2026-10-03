@@ -205,21 +205,21 @@ int CGunController::ProcessMsg(Message* p_message)
 		return 0;
 	}
 	switch (p_message->m_code) {
-	case 1:
+	case INPUT_KEY_UP:
 		MoveUp();
 		return 1;
-	case 2:
+	case INPUT_KEY_DOWN:
 		MoveDown();
 		return 1;
-	case 3:
+	case INPUT_KEY_LEFT:
 		MoveLeft();
 		return 1;
-	case 4:
+	case INPUT_KEY_RIGHT:
 		MoveRight();
 		return 1;
-	case 0x1f:
+	case INPUT_KEY_SPACE:
 	case 0x22:
-	case 0x4c:
+	case INPUT_KEY_RETURN:
 		SelectOption();
 		break;
 	}

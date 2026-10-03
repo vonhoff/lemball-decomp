@@ -107,7 +107,8 @@ int CHiliteController::ProcessMsg(Message* p_message)
 		m_processedCount++;
 		return 0;
 	case 3:
-		if (p_message->m_code == 0x1f || p_message->m_code == 0x22 || p_message->m_code == 0x4c) {
+		if (p_message->m_code == INPUT_KEY_SPACE || p_message->m_code == 0x22 ||
+			p_message->m_code == INPUT_KEY_RETURN) {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
 			button->OnButtonUp(CVSPoint(0, 0), 0);
 			return 0;
@@ -115,37 +116,37 @@ int CHiliteController::ProcessMsg(Message* p_message)
 		break;
 	case 4:
 		switch (p_message->m_code) {
-		case 1:
+		case INPUT_KEY_UP:
 			if (m_horizontalMode == 0) {
 				return 0;
 			}
 			MoveLeft();
 			g_pSoundView->PlayEffect(SFX_CHANGEOP);
 			return 1;
-		case 2:
+		case INPUT_KEY_DOWN:
 			if (m_horizontalMode == 0) {
 				return 0;
 			}
 			MoveRight();
 			g_pSoundView->PlayEffect(SFX_CHANGEOP);
 			return 1;
-		case 3:
+		case INPUT_KEY_LEFT:
 			if (m_horizontalMode == 1) {
 				return 0;
 			}
 			MoveLeft();
 			g_pSoundView->PlayEffect(SFX_CHANGEOP);
 			return 1;
-		case 4:
+		case INPUT_KEY_RIGHT:
 			if (m_horizontalMode == 1) {
 				return 0;
 			}
 			MoveRight();
 			g_pSoundView->PlayEffect(SFX_CHANGEOP);
 			return 1;
-		case 0x1f:
+		case INPUT_KEY_SPACE:
 		case 0x22:
-		case 0x4c: {
+		case INPUT_KEY_RETURN: {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
 			button->OnButtonDown(CVSPoint(0, 0), 0);
 			break;
