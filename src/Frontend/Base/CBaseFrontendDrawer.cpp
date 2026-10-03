@@ -36,7 +36,6 @@ extern char g_szUnknownUserActionReceived[];
 #include "Frontend/Support/CoordPair.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
-#include "Visos/Animation/CStaticAnim.h"
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
@@ -44,13 +43,11 @@ extern char g_szUnknownUserActionReceived[];
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CBigBitmap.h"
-#include "Visos/Graphics/CDrawingMark.h"
 #include "Visos/Graphics/CPrimitive.h"
 #include "Visos/Graphics/CSolidRect.h"
 #include "Visos/Resources/ResourceLimits.h"
 
 #include <new.h>
-#include <string.h>
 
 class CAnimFrameBASE;
 

@@ -7,7 +7,6 @@
 #include "Visos/Network/CNetworkAddress.h"
 #include "Visos/Network/CTCPIPRWSocket.h"
 
-#include <memory.h>
 #include <stdlib.h>
 #include <string.h>
 

@@ -4,19 +4,14 @@
 #include "../../../AI/Groups/CPlayerLemmingGroupManager.h"
 #include "../../../AI/Navigation/CAI.h"
 #include "../../../AI/Objects/CPlayerLemming.h"
-#include "../../../Visos/Graphics/CBaseRemap.h"
-#include "../../../Visos/Graphics/CCursor.h"
 #include "../../../Visos/Graphics/CGDI.h"
 #include "../../../Visos/Graphics/CHotAreaList.h"
 #include "../../../Visos/Graphics/CSurface.h"
 #include "../../Display/C2D.h"
-#include "../../Sound/CSoundView.h"
 #include "../CPanel.h"
 #include "../CPanelLemming.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
-#include "Views/Sound/SoundEffects.h"
-#include "Visos/Animation/CAnim.h"
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
@@ -24,9 +19,6 @@
 #include "Visos/Graphics/CDepressedButton.h"
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CPVGWnd.h"
-#include "Visos/Graphics/CSolidRect.h"
-
-#include <memory.h>
 
 class CRemap;
 class CResANIM;

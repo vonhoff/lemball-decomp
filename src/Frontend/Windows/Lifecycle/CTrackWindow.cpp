@@ -1,8 +1,6 @@
 #include "../CTrackWindow.h"
 
-#include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CHotAreaList.h"
-#include "Visos/Graphics/CLine.h"
 #include "Visos/Graphics/CPVGWnd.h"
 
 // FUNCTION: LEMBALL 0x0044e8c0

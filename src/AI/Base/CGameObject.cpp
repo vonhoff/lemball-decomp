@@ -1051,7 +1051,6 @@ bool CGameObject::Fall()
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/VsDebug.h"
 #include "tCoord3d.h"
 
 // FUNCTION: LEMBALL 0x00416340

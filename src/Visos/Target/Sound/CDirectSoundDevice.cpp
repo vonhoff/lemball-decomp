@@ -8,8 +8,6 @@
 #include "Platform/DirectX/IDirectSound.h"
 #include "Platform/DirectX/IDirectSoundBuffer.h"
 
-#include <memory.h>
-#include <new.h>
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN

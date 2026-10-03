@@ -2,7 +2,6 @@
 
 #include "../Foundation/CVSPoint.h"
 #include "../Graphics/CGDI.h"
-#include "../Graphics/CSolidRect.h"
 #include "../Graphics/CSurface.h"
 #include "../Graphics/CZRLE.h"
 #include "../Resources/CResANIM.h"
@@ -10,11 +9,10 @@
 #include "../Resources/CResBaseLIST.h"
 #include "../Resources/CResZRLE.h"
 #include "CAnim.h"
-#include "CFrames.h"
+#include "Visos/Animation/CAnimFrameBASE.h"
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
-
-#include <string.h>
+#include "Visos/Graphics/CSolidRect.h"
 
 // FUNCTION: LEMBALL 0x004358c0
 void CAnimsManager::FreeVram()

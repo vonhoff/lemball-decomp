@@ -10,7 +10,6 @@
 #include "../../Visos/Graphics/CBasePalManager.h"
 #include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/CResFONT.h"
-#include "../../Visos/Resources/CResPALETTE.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Base/CBaseFrontendProcess.h"
 #include "../Controls/CHiliteController.h"
@@ -21,10 +20,8 @@
 #include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CBaseRemap.h"
 #include "Visos/Graphics/CBigBitmap.h"
 
-#include <new.h>
 #include <string.h>
 
 class CGWnd;

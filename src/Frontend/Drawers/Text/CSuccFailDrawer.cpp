@@ -1,37 +1,19 @@
 #include "../CSuccFailDrawer.h"
 
 #include "../../../Control/Game/CGameStatus.h"
-#include "../../../Control/Game/GameMain.h"
-#include "../../../Views/Display/CMain2DDisplay.h"
-#include "../../../Views/Sound/CSoundView.h"
-#include "../../../Visos/Animation/CStatManager.h"
-#include "../../../Visos/Foundation/CArena.h"
 #include "../../../Visos/Foundation/CTextManager.h"
-#include "../../../Visos/Foundation/CVSOStream.h"
-#include "../../../Visos/Foundation/VsTime.h"
-#include "../../../Visos/Resources/CResBITMAP.h"
-#include "../../../Visos/Resources/Manifest.h"
-#include "../../Base/CBaseFrontendProcess.h"
-#include "../../Controls/CHiliteController.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "../../../Network/Game/CNetworkManager.h"
 #include "../../../Network/Messages/CNetworkGameMessage.h"
-#include "../../../Visos/Graphics/CBigBitmap.h"
 #include "../../../Visos/Network/CConnect.h"
 #include "../../../Visos/Resources/CResFONT.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
-#include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CoordPair.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
-#include "Views/Sound/SoundEffects.h"
 #include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CPVGWnd.h"
 
 #include <string.h>
 

@@ -19,7 +19,6 @@
 #include "Visos/Network/CNetworkFile.h"
 #include "Visos/Network/COpenCount.h"
 
-#include <memory.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy, strlen, strcat)

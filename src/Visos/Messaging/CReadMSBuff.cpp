@@ -3,7 +3,7 @@
 #include "../Network/CTCPIPNetwork.h"
 #include "BasePacketHeader.h"
 
-#include <memory.h>
+#include <string.h>
 
 #pragma intrinsic(memcpy)
 

@@ -2,7 +2,6 @@
 
 #include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Network/CConnect.h"
-#include "../Base/CGlobalGameObject.h"
 #include "../Managers/CObjectManager.h"
 #include "../Navigation/CAiDestinationEntry.h"
 #include "../Navigation/CAiDestinationList.h"

@@ -1,7 +1,6 @@
 #include "../../CSurface.h"
 
 #include "../../../Foundation/CVSOStream.h"
-#include "../../../Foundation/VsDebug.h"
 #include "../../../Resources/CResZRLE.h"
 #include "../../CRemap.h"
 

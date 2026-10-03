@@ -15,7 +15,6 @@
 #include "Visos/Network/CRwSocket.h"
 #include "Visos/Network/CWriteSocket.h"
 
-#include <memory.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcat, strcpy, strlen)

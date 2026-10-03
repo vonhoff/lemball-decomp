@@ -7,7 +7,6 @@
 #include "Platform/WinSock/WSAData.h"
 #include "Platform/WinSock/WinSock.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
-#include "Visos/Network/CBaseNetwork.h"
 #include "Visos/Target/Network/CNetworkWnd.h"
 
 #include <new.h>

@@ -8,8 +8,6 @@
 #include "Visos/Graphics/CHotAreaHandler.h"
 #include "Visos/Graphics/CPVGWnd.h"
 
-#include <new.h>
-
 // FUNCTION: LEMBALL 0x0044ec30
 CTrackerButton::CTrackerButton(const CVSPoint& p_position,
 							   CPVGWnd* p_parent,

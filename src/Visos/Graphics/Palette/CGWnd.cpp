@@ -3,20 +3,12 @@
 #define WIN32_LEAN_AND_MEAN
 #include "../../Resources/CResPALETTE.h"
 #include "../../Target/Graphics/CGraphicsDriver.h"
-#include "../../Target/Graphics/CGraphicsState.h"
-#include "../CCursor.h"
 #include "../CGDI.h"
 #include "../CGDIDevice.h"
-#include "../CPVGWnd.inl"
 #include "../CSurface.h"
-#include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/CVSSize.h"
 #include "Visos/Graphics/CPVSurface.h"
-#include "Visos/Graphics/CPVWnd.h"
-#include "Visos/Graphics/CWnd.h"
 
-#include <new.h>
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x00464490

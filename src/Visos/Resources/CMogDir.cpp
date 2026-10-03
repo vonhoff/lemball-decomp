@@ -7,9 +7,6 @@
 #include "CMogloadArena.h"
 #include "CRawRead.h"
 
-#include <new.h>
-#include <string.h>
-
 // GLOBAL: LEMBALL 0x004a1d78
 int g_emptyChunkIndex = -1;
 

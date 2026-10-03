@@ -12,8 +12,8 @@
 #include "Visos/Messaging/CBasePacketBuff.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
-#include <memory.h>
 #include <new.h>
+#include <string.h>
 #pragma intrinsic(memcpy)
 
 extern "C" unsigned long __stdcall timeGetTime(void);

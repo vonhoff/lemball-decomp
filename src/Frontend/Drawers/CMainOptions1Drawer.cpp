@@ -9,7 +9,6 @@
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBigBitmap.h"
 

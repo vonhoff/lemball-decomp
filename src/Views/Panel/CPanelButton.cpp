@@ -22,11 +22,8 @@
 #include "Visos/Foundation/CVSSize.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CDepressedButton.h"
-#include "Visos/Graphics/CGWnd.h"
 #include "Visos/Graphics/CPVGWnd.h"
 #include "Visos/Graphics/CSolidRect.h"
-
-#include <memory.h>
 
 class CRemap;
 class CResANIM;

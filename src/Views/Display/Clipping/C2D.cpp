@@ -2,9 +2,7 @@
 
 #include "../../Target/ObjectClipGrid.h"
 #include "../../Target/SpriteGroundLookup.h"
-#include "AI/Base/tCoord3d.h"
 #include "AI/Navigation/CAI.h"
-#include "AI/Objects/LiftEndpointRecord.h"
 #include "Control/Game/GameMain.h"
 #include "Map/Base/CMap.h"
 #include "Visos/Foundation/CFixed.h"

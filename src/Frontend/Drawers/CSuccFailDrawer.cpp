@@ -8,7 +8,6 @@
 #include "../../Visos/Foundation/CArena.h"
 #include "../../Visos/Foundation/CTextManager.h"
 #include "../../Visos/Foundation/CVSOStream.h"
-#include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Base/CBaseFrontendProcess.h"
@@ -17,13 +16,8 @@
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-#include "../../Network/Game/CNetworkManager.h"
-#include "../../Network/Messages/CNetworkGameMessage.h"
 #include "../../Visos/Graphics/CBigBitmap.h"
-#include "../../Visos/Network/CConnect.h"
-#include "../../Visos/Resources/CResFONT.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
-#include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CoordPair.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
 #include "Views/Sound/SoundEffects.h"
@@ -34,11 +28,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CPVGWnd.h"
 
-#include <string.h>
-
 class CGWnd;
-
-#pragma intrinsic(strcpy, strlen)
 
 // GLOBAL: LEMBALL 0x0049fcb4
 char g_szSuccFailCollectedAllFlags[] = "You collected all the flags!";

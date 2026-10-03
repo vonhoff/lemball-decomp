@@ -13,7 +13,6 @@
 #include "Visos/Target/System/CPlatformServices.h"
 
 #include <ctype.h>
-#include <memory.h>
 #include <new.h>
 #include <stdlib.h>
 #include <string.h>

@@ -15,8 +15,6 @@
 #include "Visos/Graphics/CGWnd.h"
 #include "Visos/Resources/CResBase.h"
 
-#include <new.h>
-
 class CPVGWnd;
 
 // FUNCTION: LEMBALL 0x0044c270

@@ -8,8 +8,6 @@
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
-#include "Map/Ground/CGround.h"
-#include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x0041c630

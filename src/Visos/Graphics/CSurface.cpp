@@ -15,7 +15,6 @@
 #include "CBitmap.h"
 #include "CCircle.h"
 #include "CClipRect.h"
-#include "CCopyColourToBackBuff.h"
 #include "CCopyToBackBuff.h"
 #include "CFilledCircle.h"
 #include "CGDIDevice.h"
@@ -27,7 +26,6 @@
 #include "CZBuffClear.h"
 #include "CZRLE.h"
 
-#include <new.h>
 #include <stdlib.h>
 #include <string.h>
 

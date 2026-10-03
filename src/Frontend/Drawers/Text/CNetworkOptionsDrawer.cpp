@@ -1,39 +1,20 @@
 #include "../CNetworkOptionsDrawer.h"
 
-#include "../../../Control/Game/CGameStatus.h"
 #include "../../../Network/Game/CNetworkManager.h"
 #include "../../../Network/Messages/CNetworkGameMessage.h"
-#include "../../../Views/Display/CMain2DDisplay.h"
-#include "../../../Views/Sound/CSoundView.h"
-#include "../../../Visos/Foundation/CString.h"
 #include "../../../Visos/Foundation/CTextManager.h"
-#include "../../../Visos/Foundation/VsTime.h"
-#include "../../../Visos/Graphics/CBasePalManager.h"
-#include "../../../Visos/Graphics/CGWnd.h"
-#include "../../../Visos/Graphics/CHotAreaList.h"
 #include "../../../Visos/Network/CConnect.h"
 #include "../../../Visos/Network/CNetworkAddress.h"
 #include "../../../Visos/Resources/CResFONT.h"
-#include "../../../Visos/Resources/Manifest.h"
-#include "../../Controls/CHiliteController.h"
 #include "../../Processes/CNetworkOptionsProc.h"
-#include "../../Support/CEditString.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/CBaseFrontendProcess.h"
-#include "Frontend/Base/FlowProcesses.h"
-#include "Frontend/Support/CEntryHandler.h"
-#include "Views/Sound/SoundEffects.h"
 #include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Graphics/CBaseRemap.h"
 
 #include <string.h>
 
 class CRemap;
-
-#pragma intrinsic(strcpy)
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

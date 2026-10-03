@@ -4,7 +4,7 @@
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
 
-#include <memory.h>
+#include <string.h>
 
 inline CVSOStream& operator<<(CVSOStream& p_stream, unsigned short p_value)
 {

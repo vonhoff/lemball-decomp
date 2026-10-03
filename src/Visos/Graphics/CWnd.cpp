@@ -11,7 +11,6 @@
 #include "../Target/Graphics/CGraphicsDriver.h"
 #include "../Target/Graphics/CGraphicsState.h"
 #include "../Target/System/CPlatformServices.h"
-#include "CCursor.h"
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"

@@ -1,27 +1,10 @@
 #include "../CGunController.h"
 
 #include "../../../Views/Sound/CSoundView.h"
-#include "../../../Visos/Animation/CPlayThruAnim.h"
-#include "../../../Visos/Foundation/CBaseQueue.h"
-#include "../../../Visos/Foundation/CVSPoint.h"
 #include "../../../Visos/Foundation/VsTime.h"
-#include "../../../Visos/Graphics/CGDI.h"
-#include "../../../Visos/Graphics/CGraphicButton.h"
-#include "../../../Visos/Graphics/CSurface.h"
-#include "../../../Visos/Resources/Manifest.h"
-#include "../../Windows/CSpriteWindow.h"
-#include "../../Windows/CTrackWindow.h"
-#include "../CGunButtons.h"
-#include "../CTrackerButton.h"
 #include "Frontend/Controls/GunControllerJunction.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
-#include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/CVSSize.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Graphics/CClipRect.h"
-#include "Visos/Graphics/CGWnd.h"
 
 #include <stdlib.h>
 

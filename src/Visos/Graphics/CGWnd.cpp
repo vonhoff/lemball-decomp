@@ -1,7 +1,6 @@
 #include "CGWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "../Resources/CResPALETTE.h"
 #include "../Target/Graphics/CGraphicsDriver.h"
 #include "../Target/Graphics/CGraphicsState.h"
 #include "CCursor.h"
@@ -9,7 +8,6 @@
 #include "CGDIDevice.h"
 #include "CSurface.h"
 
-#include <new.h>
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x0043a510

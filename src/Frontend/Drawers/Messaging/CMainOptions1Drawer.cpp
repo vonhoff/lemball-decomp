@@ -2,16 +2,11 @@
 
 #include "../../../Control/Game/CGameStatus.h"
 #include "../../../Frontend/Base/CBaseFrontendProcess.h"
-#include "../../../Frontend/Controls/CGunController.h"
 #include "../../../Views/Display/CMain2DDisplay.h"
-#include "../../../Visos/Resources/CResBITMAP.h"
-#include "../../../Visos/Resources/Manifest.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CBigBitmap.h"
 
 class CGWnd;
 

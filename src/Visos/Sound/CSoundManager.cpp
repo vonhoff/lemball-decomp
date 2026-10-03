@@ -5,10 +5,6 @@
 #include "CBaseSoundDevice.h"
 #include "CPVMusicDevice.h"
 
-#include <string.h>
-
-#pragma intrinsic(strcat)
-
 struct SoundDeviceDispatch {
 	virtual void Delete(int p_delete) = 0;
 	virtual void Slot04() = 0;

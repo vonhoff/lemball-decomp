@@ -3,7 +3,6 @@
 #include "../../Animation/CBaseStat.h"
 #include "../CMBlock.h"
 #include "../CVSOStream.h"
-#include "Visos/Foundation/CCritical.h"
 
 // FUNCTION: LEMBALL 0x00459d70
 bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_description)

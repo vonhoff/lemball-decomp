@@ -1,36 +1,12 @@
 #include "../CPreviewDrawer.h"
 
-#include "../../../Control/Game/CGameStatus.h"
-#include "../../../Control/Level/CLevelLoader.h"
-#include "../../../Control/Support/tPreviewData.h"
-#include "../../../Views/Display/CMain2DDisplay.h"
-#include "../../../Visos/Animation/CAnimsManager.h"
-#include "../../../Visos/Animation/CRepeatAnim.h"
-#include "../../../Visos/Foundation/CTextManager.h"
 #include "../../../Visos/Graphics/CBasePalManager.h"
-#include "../../../Visos/Resources/CResBITMAP.h"
-#include "../../../Visos/Resources/CResFONT.h"
 #include "../../../Visos/Resources/CResPALETTE.h"
 #include "../../../Visos/Resources/Manifest.h"
-#include "../../Base/CBaseFrontendProcess.h"
-#include "../../Controls/CHiliteController.h"
-#include "Frontend/Base/CBaseFrontendDrawer.h"
-#include "Frontend/Base/FlowProcesses.h"
-#include "Frontend/Support/CoordPair.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSSize.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBaseRemap.h"
-#include "Visos/Graphics/CBigBitmap.h"
-
-#include <new.h>
-#include <string.h>
 
 class CGWnd;
 class CRemap;
-
-#pragma intrinsic(strcpy, strlen)
 
 #define PREVIEW_BUTTON_MESSAGE_GO 0xacef000c
 #define PREVIEW_BUTTON_MESSAGE_RETURN 0xacef000d

@@ -1,14 +1,10 @@
 #include "CArena.h"
 
-#include "../Animation/CBaseStat.h"
 #include "CMBlock.h"
 #include "CVSOStream.h"
 #include "Visos/Foundation/CCritical.h"
 
 #include <string.h>
-
-#pragma intrinsic(memset)
-#pragma intrinsic(memcpy)
 
 // FUNCTION: LEMBALL 0x004599f0
 CArena::CArena(unsigned long p_arenaSize, char* p_description, class CArena* p_parentArena, class CArena* p_arenaLink)

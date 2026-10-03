@@ -2,17 +2,10 @@
 
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
-#include "AI/Base/CGlobalGameObject.h"
-#include "AI/Base/ObjectActions.h"
-#include "AI/Base/ObjectTypes.h"
 #include "AI/Base/tCoord3d.h"
-#include "Control/Game/CGame.h"
-#include "Control/Game/GameTime.h"
 #include "Map/Base/CMap.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
-#include "Visos/Network/CConnect.h"
 
 extern unsigned short g_wMovingLiftCount;
 

@@ -5,8 +5,6 @@
 #include "Visos/Foundation/CVSOStream.h"
 #include "Visos/Foundation/VsInit.h"
 
-#include <new.h>
-
 extern "C" __declspec(dllimport) void* __stdcall GlobalAlloc(unsigned int p_flags, unsigned int p_bytes);
 extern "C" __declspec(dllimport) void* __stdcall GlobalLock(void* p_mem);
 extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(void* p_mem);

@@ -2,10 +2,6 @@
 
 #include "Visos/Messaging/CBroadcastMessage.h"
 
-#include <string.h>
-
-#pragma intrinsic(strlen)
-
 // FUNCTION: LEMBALL 0x0045f4f0
 CMessOKConnect::CMessOKConnect(const char* p_header) : CBroadcastMessage(p_header)
 {

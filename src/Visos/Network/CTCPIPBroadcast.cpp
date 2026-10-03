@@ -12,7 +12,6 @@
 #include "Visos/Network/CTCPIPRWSocket.h"
 #include "Visos/Network/CTCPIPReadSocket.h"
 
-#include <memory.h>
 #include <new.h>
 #include <string.h>
 

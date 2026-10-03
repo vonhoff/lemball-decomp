@@ -14,7 +14,6 @@
 #include "Visos/Network/CReadSocket.h"
 #include "Visos/Network/CWriteSocket.h"
 
-#include <memory.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy, strlen)

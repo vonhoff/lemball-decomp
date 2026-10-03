@@ -3,8 +3,6 @@
 #include "Visos/Graphics/CPaletteManager.h"
 #include "Visos/Resources/ResourceTypeList.h"
 
-#include <new.h>
-
 // FUNCTION: LEMBALL 0x0045b900
 bool _RES_Init()
 {

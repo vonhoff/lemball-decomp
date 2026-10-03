@@ -1,21 +1,5 @@
 #include "../CGameObject.h"
 
-#include "../../../Control/Game/CGame.h"
-#include "../../../Control/Game/GameTime.h"
-#include "../../../Map/Base/CMap.h"
-#include "../../../Visos/Foundation/CVSMath.h"
-#include "../../Navigation/CAI.h"
-#include "../../Navigation/CAiDestinationEntry.h"
-#include "../../Navigation/CAiDestinationList.h"
-#include "../../Navigation/CMaze.h"
-#include "../../Navigation/CMover.h"
-#include "../CPt3.h"
-#include "../Solution.h"
-
-#include <string.h>
-
-#pragma intrinsic(memcpy, memset)
-
 // FUNCTION: LEMBALL 0x004166d0
 short CollectUnusedObjectIds(unsigned short* p_ids, int p_capacity)
 {
