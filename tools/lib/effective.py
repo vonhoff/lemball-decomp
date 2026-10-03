@@ -2,6 +2,7 @@
 
 import re
 import struct
+from dataclasses import dataclass
 
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.compare.asm.parse import ParseAsm
@@ -10,9 +11,29 @@ from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtual
 from reccmp.types import EntityType
 
 from . import BUILD
-from .compare_flags import normalize_compare_branches
+from .compare_flags import (
+    control_flow_targets, indirect_jumps_use_tables, normalize_compare_branches,
+    prefix_overwrites_flags,
+)
 
 EFFECTIVE_JSON = BUILD / "effective.json"
+
+
+@dataclass
+class AssemblySignature:
+    size: int
+    instructions: list
+    guarded_comparisons: list
+
+    def matches(self, other):
+        """Keep strict identity independent of optional comparison proofs."""
+        return other is not None and self.size == other.size and (
+            self.instructions == other.instructions or self.guarded_comparisons == other.guarded_comparisons
+        )
+
+
+def _relative_instructions(asm, start):
+    return [(address - start if address is not None else None, line) for address, line in asm]
 
 
 def _instruction_ends(sections, start, size):
@@ -64,17 +85,6 @@ def _table_padding(sections, tables):
     return padding
 
 
-def _indirect_jumps_use_tables(instructions, tables):
-    """Unknown computed jumps could reach otherwise unused padding."""
-    for _, _, mnemonic, operands in instructions:
-        if mnemonic != "jmp" or operands.startswith("0x"):
-            continue
-        table = re.fullmatch(r"dword ptr \[(?:e[a-z]{2}\*4 \+ )?(0x[0-9a-f]+)]", operands)
-        if table is None or tables.get(int(table[1], 16)) != SectionType.ADDR_TAB:
-            return False
-    return True
-
-
 def _valid_control_flow(sections, ends, start, size):
     """Keep internal transfers on code boundaries and out of table padding."""
     instructions = [inst for section in sections if section.type == SectionType.CODE
@@ -83,10 +93,7 @@ def _valid_control_flow(sections, ends, start, size):
                      for _, target in section.contents}
     if not table_targets <= ends.keys():
         return False
-    targets = table_targets | {start}
-    for _, _, mnemonic, operands in instructions:
-        if re.fullmatch(r"call|j\w+|loop\w*", mnemonic) and operands.startswith("0x"):
-            targets.add(int(operands, 16))
+    targets = control_flow_targets(sections, {inst[0]: inst for inst in instructions}) | {start}
     if any(start <= target < start + size and target not in ends for target in targets):
         return False
     tables = {section.contents[0][0]: section.type for section in sections
@@ -94,10 +101,10 @@ def _valid_control_flow(sections, ends, start, size):
     padding = _table_padding(sections, tables)
     if padding is None or padding & targets:
         return False
-    return not padding or _indirect_jumps_use_tables(instructions, tables)
+    return not padding or indirect_jumps_use_tables(instructions, tables)
 
 
-def _comparison_signature(asm, sections, start, size):
+def _comparison_signature(asm, sections, start, size, check_call):
     """Capture verified operands and offsets before upstream assertion fixups."""
     ends = _instruction_ends(sections, start, size)
     if ends is None or any("<OFFSET" in line for _, line in asm):
@@ -108,8 +115,8 @@ def _comparison_signature(asm, sections, start, size):
         jump = re.fullmatch(r"(?:j\w+|loop\w*) (-?0x[0-9a-f]+)", line)
         if jump and ends[address] + int(jump[1], 16) not in ends:
             return None
-    asm = normalize_compare_branches(asm, sections)
-    return size, [(address - start if address is not None else None, line) for address, line in asm]
+    guarded = normalize_compare_branches(asm, sections, check_call)
+    return AssemblySignature(size, _relative_instructions(asm, start), _relative_instructions(guarded, start))
 
 
 class ThunkParseAsm(ParseAsm):
@@ -124,7 +131,7 @@ class ThunkParseAsm(ParseAsm):
             return self.local_tables[addr]
         return super().lookup(addr, exact=exact, indirect=indirect)
 
-    def _thunk_name(self, address):
+    def _thunk_target(self, address):
         if address in self.targets:
             return None
         try:
@@ -134,12 +141,24 @@ class ThunkParseAsm(ParseAsm):
         if len(raw) != 5 or raw[0] != 0xe9:
             return None
         target = address + 5 + struct.unpack_from("<i", raw, 1)[0]
-        return self.lookup(target, exact=True) if target in self.targets else None
+        return target if target in self.targets else None
+
+    def _call_overwrites_flags(self, address):
+        """Inspect a paired callee, resolving at most one verified E9 thunk."""
+        target = self._thunk_target(address) or address
+        if target not in self.targets:
+            return False
+        try:
+            data = self.image.read(target, 32)
+        except (InvalidVirtualAddressError, InvalidVirtualReadError):
+            return False
+        return prefix_overwrites_flags(bytes(data), target)
 
     def sanitize(self, inst):
         _, _, mnemonic, operands = inst
         if mnemonic in ("call", "jmp") and operands.startswith("0x"):
-            name = self._thunk_name(int(operands, 16))
+            target = self._thunk_target(int(operands, 16))
+            name = self.lookup(target, exact=True) if target is not None else None
             if name is not None:
                 # E9 changes only EIP; ordinary function pointers retain their identity.
                 self.used_thunk = True
@@ -156,7 +175,7 @@ class ThunkParseAsm(ParseAsm):
             if section.type != SectionType.CODE and section.contents
         }
         asm = super().parse_asm(data, start_addr)
-        self.signature = _comparison_signature(asm, sections, start_addr, len(data))
+        self.signature = _comparison_signature(asm, sections, start_addr, len(data), self._call_overwrites_flags)
         return asm
 
 
@@ -181,9 +200,11 @@ def additional_effective_matches(engine, comparisons):
                 or comparison.accuracy == 1 or comparison.is_effective_match):
             continue
         comparator.compare_function(match)
-        if (original.signature is not None and original.signature == rebuilt.signature
+        if (original.signature is not None and original.signature.matches(rebuilt.signature)
                 and (original.used_thunk or rebuilt.used_thunk)):
             matches[match.orig_addr] = ("verified jump thunk target",)
+            if original.signature.instructions != rebuilt.signature.instructions:
+                matches[match.orig_addr] += ("verified comparison operands and flag lifetimes",)
     return matches
 
 

@@ -94,7 +94,61 @@ def patch_body(image, start, offset, replacement):
     image.read = patched
 
 
+def callee_fixture(original_prefix, rebuilt_prefix=None):
+    original = "3bc7 7200 e8f22f0000 c3"
+    rebuilt = "3bf8 7700 e8f22f0000 c3"
+    comparator, match = fixture(original, rebuilt)
+    for image, target, prefix in (
+        (comparator.orig_bin, 0x4015, original_prefix),
+        (comparator.recomp_bin, 0x5000, original_prefix if rebuilt_prefix is None else rebuilt_prefix),
+    ):
+        read = image.read
+        image.read = lambda address, size, read=read, target=target, prefix=prefix: (
+            bytes.fromhex(prefix)[:size] if address == target else read(address, size)
+        )
+    return comparator, match
+
+
+def comparison_switch_fixture(table_enters_branch=False):
+    tails = []
+    for start, compare_branch in ((0x1000, "3bc7 7203"), (0x2000, "3bf8 7703")):
+        tail = bytes.fromhex("83f801 7711 ff2485") + struct.pack("<I", start + 32)
+        tail += bytes.fromhex(compare_branch + " 39c0c3 39c0c3 39c0c3 9090")
+        tail += struct.pack("<II", start + (19 if table_enters_branch else 17), start + 27)
+        tails.append(tail.hex())
+    comparator, match = fixture(*tails)
+    for image in (comparator.orig_bin, comparator.recomp_bin):
+        image.is_relocated_addr = lambda _address: True
+    return comparator, match
+
+
 class ThunkTests(unittest.TestCase):
+    def test_paired_callee_prefix_can_prove_flags_are_overwritten(self):
+        for prefix in ("83ec04 c3", "8b4108 83f803 c3", "39c0 c3"):
+            with self.subTest(prefix=prefix):
+                self.assertTrue(compare(*callee_fixture(prefix)))
+
+    def test_both_callee_prefixes_must_overwrite_flags_before_observing_them(self):
+        for prefix in ("c3", "11c0 39c0 c3", "9c 39c0 c3", "40 c3", "0f",
+                       "e800000000 39c0 c3", "ebfe", "ffe0", "90" * 32 + "39c0 c3"):
+            for original, rebuilt in ((prefix, "39c0c3"), ("39c0c3", prefix)):
+                with self.subTest(original=original, rebuilt=rebuilt):
+                    self.assertEqual(compare(*callee_fixture(original, rebuilt)), {})
+
+    def test_unreadable_callee_prefix_cannot_prove_flag_lifetime(self):
+        comparator, match = callee_fixture("39c0c3")
+        read = comparator.recomp_bin.read
+        def unreadable(address, size):
+            if address == 0x5000:
+                raise InvalidVirtualAddressError(address)
+            return read(address, size)
+        comparator.recomp_bin.read = unreadable
+        self.assertEqual(compare(comparator, match), {})
+
+    def test_switch_dispatch_must_not_enter_the_guarded_branch(self):
+        self.assertTrue(compare(*comparison_switch_fixture()))
+        self.assertEqual(compare(*comparison_switch_fixture(table_enters_branch=True)), {})
+
     def test_reversed_comparison_requires_matching_condition_and_dead_flags(self):
         for original, rebuilt in (("72", "77"), ("76", "73"), ("7c", "7f"),
                                   ("7e", "7d"), ("74", "74"), ("75", "75")):
