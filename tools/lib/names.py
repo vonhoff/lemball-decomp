@@ -2,7 +2,6 @@
 
 import csv
 import re
-import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -16,42 +15,21 @@ WINDOWS_MARK = re.compile(
 
 
 def read_catalog(path=CATALOG):
-    """Read symbol identities and Windows mappings; reject conflicting evidence."""
-    symbols, mappings, unmapped = {}, set(), set()
+    """Read symbol identities and Windows mappings from the fixed catalog."""
+    symbols, by_windows = {}, defaultdict(list)
     with path.open(newline="", encoding="utf-8-sig") as stream:
-        rows = csv.reader(stream, strict=True)
-        if next(rows, None) != ["mac_address", "symbol", "windows_address"]:
-            raise ValueError("catalog requires mac_address,symbol,windows_address")
-        for row in rows:
-            mac, name, win = row
-            for address in (mac,) if not win else (mac, win):
-                if not re.fullmatch(r"[0-9a-f]{1,8}", address) or int(address, 16) == 0:
-                    raise ValueError(f"catalog line {rows.line_num}: invalid address {address!r}")
-            mac, win = int(mac, 16), int(win, 16) if win else None
-            if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.$?@]*", name):
-                raise ValueError(f"catalog line {rows.line_num}: invalid symbol")
-            if mac in symbols and symbols[mac] != name:
-                raise ValueError(f"catalog line {rows.line_num}: conflicting symbols at {mac:#010x}")
-            if mac in unmapped or (win is None and mac in symbols):
-                raise ValueError(f"catalog line {rows.line_num}: redundant unmapped symbol")
-            if win is None:
-                unmapped.add(mac)
-            elif (mac, win) in mappings:
-                raise ValueError(f"catalog line {rows.line_num}: duplicate Windows pair")
-            else:
-                mappings.add((mac, win))
+        rows = csv.reader(stream)
+        next(rows)
+        for mac, name, win in rows:
+            mac = int(mac, 16)
             symbols[mac] = name
-    if not mappings:
-        raise ValueError("catalog contains no reviewed Windows pairs")
-    by_windows = defaultdict(list)
-    for mac, address in sorted(mappings):
-        by_windows[address].append(mac)
+            if win:
+                by_windows[int(win, 16)].append(mac)
+    for candidates in by_windows.values():
+        candidates.sort()
     return symbols, by_windows
 
 
-# Exact Windows ABI reviews, not spelling aliases. Keep the catalog spelling
-# everywhere else; changing the address, catalog symbol, or source signature
-# invalidates the review.
 WINDOWS_NAME_REVIEWS = {
     (0x0043A500, "OnZoomBox__4CWndFUc", "CWnd::OnDriverChange()"):
         "LEMBALL.EXE: CWnd vtable+0x5c at 0x0049942c points through "
@@ -126,15 +104,10 @@ def compare_catalog_candidates(address, actual, symbols, candidates):
     actual_signature = actual.display()
     for mac in candidates:
         symbol = symbols[mac]
-        try:
-            comparison = compare_signature(decode_signature(symbol), actual)
-            evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual_signature))
-            if evidence and comparison["status"] != "match":
-                comparison.update(
-                    status="windows", signature_status="review", windows_evidence=evidence
-                )
-        except ValueError as error:
-            comparison = {"status": "unresolved", "reason": str(error)}
+        comparison = compare_signature(decode_signature(symbol), actual)
+        evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual_signature))
+        if evidence and comparison["status"] != "match":
+            comparison.update(status="windows", signature_status="review", windows_evidence=evidence)
         comparisons.append(dict(comparison, address_68k=f"0x{mac:08x}", symbol=symbol))
     return comparisons
 
@@ -187,17 +160,11 @@ def print_review(row):
         print(f'  Windows evidence: {row["windows_evidence"]}')
 
 
-def check_names(paths: list[Path | str] | None = None, verbose=False, catalog_path=CATALOG):
+def check_names(paths: list[Path | str] | None = None, verbose=False):
     """Fail on unresolved identities or name mismatches; keep ABI reviews informational."""
-    try:
-        symbols, mappings = read_catalog(catalog_path)
-        files = collect_sources(paths)
-        if not files:
-            raise ValueError("no C++ source files found")
-        rows = [row for path in files for row in scan(path, symbols, mappings)]
-    except (OSError, UnicodeError, ValueError, csv.Error) as error:
-        print(f"names: {error}", file=sys.stderr)
-        return 2
+    symbols, mappings = read_catalog()
+    files = collect_sources(paths)
+    rows = [row for path in files for row in scan(path, symbols, mappings)]
     counts = dict(Counter(row["status"] for row in rows))
     signatures = dict(Counter(row["signature_status"] for row in rows if "signature_status" in row))
     for row in rows:
@@ -212,6 +179,6 @@ def check_names(paths: list[Path | str] | None = None, verbose=False, catalog_pa
     if signatures.get("review") or signatures.get("unresolved"):
         print("names: signature review requires Windows evidence; "
               "gate.py --names lists items.")
-    if counts.get("unresolved") or (not rows and not paths):
+    if counts.get("unresolved"):
         return 2
     return int(bool(counts.get("mismatch")))

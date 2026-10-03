@@ -2,7 +2,7 @@
 
 import re
 import struct
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.compare.asm.parse import ParseAsm
@@ -180,11 +180,8 @@ class ThunkParseAsm(ParseAsm):
 
 
 def additional_effective_matches(engine, comparisons):
-    upstream = engine.function_comparator
-    comparator = FunctionComparator(
-        upstream.db, upstream.lines_db, upstream.orig_bin, upstream.recomp_bin,
-        upstream.report, upstream.types,
-    )
+    upstream: FunctionComparator = engine.function_comparator
+    comparator = replace(upstream)
     functions = list(upstream.db.get_matches_by_type(EntityType.FUNCTION))
     original = ThunkParseAsm(
         upstream.orig_bin, {entity.orig_addr for entity in functions}, comparator.orig_sanitize,
@@ -196,7 +193,7 @@ def additional_effective_matches(engine, comparisons):
     matches = {}
     for match in engine.get_functions():
         comparison = comparisons.get(match.orig_addr)
-        if (comparison is None or not comparison.is_function() or comparison.is_stub
+        if (comparison is None or comparison.is_stub
                 or comparison.accuracy == 1 or comparison.is_effective_match):
             continue
         comparator.compare_function(match)

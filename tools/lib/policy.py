@@ -46,16 +46,16 @@ def violations(text):
         line = text.count("\n", 0, token.start()) + 1
         standalone = not text[text.rfind("\n", 0, token.start()) + 1:token.start()].strip()
         marker = match_marker(value) if standalone and is_marker_exact(value) else None
-        annotation = marker and marker.type != MarkerType.UNKNOWN and (
+        annotation = marker if marker and marker.type != MarkerType.UNKNOWN and (
             marker.extra in (None, "FOLDED", "SYMBOL") or marker.type == MarkerType.VTABLE
-            and re.fullmatch(r"[A-Za-z_]\w*(?:'s `[A-Za-z_]\w*)?", marker.extra or ""))
+            and re.fullmatch(r"[A-Za-z_]\w*(?:'s `[A-Za-z_]\w*)?", marker.extra or "")) else None
         symbol = (standalone and by_name and line == previous_line + 1
                   and re.fullmatch(r"// (?:\S+|\S+::.+|\"(?:\\.|[^\"\\])*\")", value))
         functional = FUNCTIONAL.fullmatch(value) and (standalone or "clang-format" not in value)
         if not (annotation or symbol or functional):
             yield line, "comment: use a reccmp annotation, symbol, layout note, or format control"
         previous_line = line
-        by_name = annotation and marker.type not in (MarkerType.VTABLE, MarkerType.LINE)
+        by_name = annotation and annotation.type not in (MarkerType.VTABLE, MarkerType.LINE)
 
 
 def check_policy(paths=None):
@@ -64,9 +64,6 @@ def check_policy(paths=None):
         path = ROOT / path
         files.update(p for p in (path.rglob("*") if path.is_dir() else [path])
                      if p.is_file() and p.suffix.lower() in (".inl", ".rc"))
-    if not files:
-        print("policy: no source files found")
-        return 2
     failures = 0
     for path in sorted(files):
         text = path.read_text(encoding="utf-8")

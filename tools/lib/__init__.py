@@ -23,25 +23,15 @@ def mask_comments_and_strings(text: str) -> str:
     return TOKENS.sub(lambda m: re.sub(r"[^\n]", " ", m[0]), text)
 
 
-def brace_ends(code: str) -> dict[int, int]:
-    """Map opening brace index to closing brace index."""
+def delimiter_ends(code: str, opening: str, closing: str) -> dict[int, int]:
+    """Map each opening delimiter to its matching closing delimiter."""
     ends, stack = {}, []
     for pos, char in enumerate(code):
-        if char == "{":
+        if char == opening:
             stack.append(pos)
-        elif char == "}" and stack:
+        elif char == closing and stack:
             ends[stack.pop()] = pos
     return ends
-
-
-def parenthesis_end(code: str, opening: int) -> int | None:
-    """Find the closing parenthesis for a known '('; return None if unclosed."""
-    depth = 0
-    for pos in range(opening, len(code)):
-        depth += (code[pos] == "(") - (code[pos] == ")")
-        if depth == 0:
-            return pos
-    return None
 
 
 def collect_sources(paths=None):
@@ -52,5 +42,4 @@ def load_engine():
     from reccmp.compare import Compare
     from reccmp.project.detect import RecCmpProject
     target = RecCmpProject.from_directory(BUILD).get("LEMBALL")
-    engine = Compare.from_target(target)
-    return target, engine
+    return target, Compare.from_target(target)

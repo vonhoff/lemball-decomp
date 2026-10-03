@@ -6,7 +6,7 @@ CodeWarrior grammar: https://github.com/encounter/cwdemangle (CC0).
 import re
 from dataclasses import dataclass
 
-from . import TYPE_DEF, brace_ends, parenthesis_end
+from . import TYPE_DEF, delimiter_ends
 
 METHOD_NAMES = {
     "__ct": "<constructor>", "__dt": "<destructor>",
@@ -202,9 +202,15 @@ def normalize_integer_words(words):
 def canonical_type(text):
     """Normalize spelling, preserving pointee constness and integer distinctions."""
     text = re.sub(r"\b(?:class|struct|enum|register)\s+", "", text).strip()
-    function = function_parameter_type(text)
-    if function is not None:
-        return function
+    if match := FUNCTION_PARAMETER.fullmatch(text):
+        if re.search(r"\b__(?:cdecl|stdcall|fastcall|thiscall|vectorcall)\b", match["result"]):
+            raise ValueError("callback calling convention needs review")
+        result = canonical_type(match["result"])
+        raw = match["parameters"].strip()
+        parameters = () if raw in ("", "void") else tuple(parameter_type(p) for p in split_parameters(raw))
+        if "void" in parameters or "..." in parameters[:-1]:
+            raise ValueError("invalid callback parameter sequence")
+        return f"{result} ({match['indirection']})({', '.join(parameters)})"
     # Complex declarators require a real type resolver. Never claim equivalence.
     if any(char in text for char in "()[]<>"):
         raise ValueError("complex parameter declarator needs review")
@@ -226,27 +232,11 @@ def canonical_type(text):
     return "".join(parts)
 
 
-def function_parameter_type(text):
-    """Read ordinary free-function pointers/references without guessing ABI qualifiers."""
-    match = FUNCTION_PARAMETER.fullmatch(text)
-    if not match:
-        return None
-    if re.search(r"\b__(?:cdecl|stdcall|fastcall|thiscall|vectorcall)\b", match["result"]):
-        raise ValueError("callback calling convention needs review")
-    result = canonical_type(match["result"])
-    raw = match["parameters"].strip()
-    parameters = () if raw in ("", "void") else tuple(parameter_type(p) for p in split_parameters(raw))
-    if "void" in parameters or "..." in parameters[:-1]:
-        raise ValueError("invalid callback parameter sequence")
-    return f"{result} ({match['indirection']})({', '.join(parameters)})"
-
-
 def parameter_type(text):
     # Defaults and parameter identifiers are not signature evidence.
     text = split_parameters(text, "=")[0]
-    function = function_parameter_type(text)
-    if function is not None:
-        return function
+    if FUNCTION_PARAMETER.fullmatch(text):
+        return canonical_type(text)
     array = re.search(r"\s*\[(?:\d+)?]\s*$", text)
     if array:
         text = text[:array.start()]
@@ -264,13 +254,9 @@ def parameter_type(text):
 
 
 def class_ranges(code):
-    ends = brace_ends(code)
-    result = []
-    for match in TYPE_DEF.finditer(code):
-        opening = match.end() - 1
-        if opening in ends:
-            result.append((opening, ends[opening], match["name"]))
-    return result
+    ends = delimiter_ends(code, "{", "}")
+    return [(opening, ends[opening], match["name"]) for match in TYPE_DEF.finditer(code)
+            if (opening := match.end() - 1) in ends]
 
 
 def adjacent_signature(code, offset, ranges):
@@ -290,7 +276,7 @@ def adjacent_signature(code, offset, ranges):
         method = "<constructor>"
     elif owner and method == "~" + leaf:
         method = "<destructor>"
-    closing = parenthesis_end(declaration, match.end() - 1)
+    closing = delimiter_ends(declaration, "(", ")").get(match.end() - 1)
     if closing is None:
         raise ValueError("unclosed function parameters")
     raw = declaration[match.end():closing].strip()

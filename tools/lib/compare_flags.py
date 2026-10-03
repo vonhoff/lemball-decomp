@@ -18,18 +18,6 @@ FLAG_PRESERVERS = {"mov", "movsx", "movzx", "lea", "push", "pop", "nop"}
 FLAG_NONREADERS = FLAG_PRESERVERS | LOGICAL_WRITERS | {"shl", "shr", "sar"}
 
 
-def _flag_successors(instruction, only_auxiliary):
-    """Follow only transfers that cannot observe the still-unproven flags."""
-    address, size, mnemonic, operands = instruction
-    if mnemonic == "jmp" and operands.startswith("0x"):
-        return (int(operands, 16),)
-    if only_auxiliary and mnemonic in REVERSED_BRANCH:
-        return address + size, int(operands, 16)
-    if mnemonic in FLAG_NONREADERS:
-        return (address + size,)
-    return ()
-
-
 def _flags_overwritten(instructions, address, check_call=None):
     """Require a full arithmetic-flag write before any other use or exit."""
     pending = [(address, False)]
@@ -39,8 +27,7 @@ def _flags_overwritten(instructions, address, check_call=None):
         if address not in instructions or (address, only_auxiliary) in visited:
             return False
         visited.add((address, only_auxiliary))
-        instruction = instructions[address]
-        _, _, mnemonic, operands = instruction
+        _, size, mnemonic, operands = instructions[address]
         if mnemonic in FLAG_WRITERS:
             continue
         if mnemonic == "call" and operands.startswith("0x"):
@@ -48,8 +35,13 @@ def _flags_overwritten(instructions, address, check_call=None):
                 return False
             continue
         only_auxiliary |= mnemonic in LOGICAL_WRITERS
-        successors = _flag_successors(instruction, only_auxiliary)
-        if not successors:
+        if mnemonic == "jmp" and operands.startswith("0x"):
+            successors = (int(operands, 16),)
+        elif only_auxiliary and mnemonic in REVERSED_BRANCH:
+            successors = address + size, int(operands, 16)
+        elif mnemonic in FLAG_NONREADERS:
+            successors = (address + size,)
+        else:
             return False
         pending.extend((successor, only_auxiliary) for successor in successors)
     return True
@@ -83,26 +75,18 @@ def prefix_overwrites_flags(data, start):
     return _flags_overwritten(instructions, start)
 
 
-def _comparison_operands(operands: str, line: str) -> list[str] | None:
-    """Accept register/register or register/memory operands without ambiguous commas."""
-    raw = operands.split(", ")
-    normalized = line.removeprefix("cmp ").split(", ")
-    if len(raw) != 2 or len(normalized) != 2:
-        return None
-    if not any(REGISTER.fullmatch(operand) for operand in raw):
-        return None
-    if not all(REGISTER.fullmatch(operand) or MEMORY.fullmatch(operand) for operand in raw):
-        return None
-    return normalized
-
-
 def _guarded_pair(instruction, instructions, targets, check_call, lines) -> tuple[list[str], tuple] | None:
     """Accept CMP/Jcc pairs with one entry and dead outgoing flags."""
     address, size, mnemonic, operands = instruction
     if mnemonic != "cmp":
         return None
-    compared = _comparison_operands(operands, lines[address])
-    if compared is None:
+    raw = operands.split(", ")
+    compared = lines[address].removeprefix("cmp ").split(", ")
+    if len(raw) != 2 or len(compared) != 2:
+        return None
+    if not any(REGISTER.fullmatch(operand) for operand in raw):
+        return None
+    if not all(REGISTER.fullmatch(operand) or MEMORY.fullmatch(operand) for operand in raw):
         return None
     branch = instructions.get(address + size)
     if branch is None or branch[0] in targets or branch[2] not in REVERSED_BRANCH:
@@ -128,10 +112,8 @@ def normalize_compare_branches(asm, sections, check_call=None):
         pair = _guarded_pair(instruction, instructions, targets, check_call, lines)
         if pair is None:
             continue
-        operands: list[str] = pair[0]
-        branch = pair[1]
+        operands, branch = pair
         ordered = sorted(operands)
-        # A distinct marker requires the flag-lifetime proof on both sides.
         replacements[address] = "guarded-cmp " + ", ".join(ordered)
         displacement = lines[branch[0]].partition(" ")[2]
         mnemonic = branch[2] if operands == ordered else REVERSED_BRANCH[branch[2]]
