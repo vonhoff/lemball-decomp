@@ -111,7 +111,9 @@ bool CPaintGun::Process()
 			Action(ACTION_RUNNING);
 		}
 		else if (m_lastMovementTick < g_dwGameTick) {
-			AICOORD position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
+			int y = m_position.m_yFixed;
+			int z = m_position.m_zFixed;
+			AICOORD position(m_position.m_xFixed, y, z + 0x8000);
 			AICOORD start(position);
 			AICOORD target(position);
 			int coordinate;
