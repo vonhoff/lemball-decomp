@@ -32,8 +32,21 @@ def _instruction_ends(sections, start, size):
     return ends if cursor == start + size else None
 
 
+def _is_alignment_instruction(instruction):
+    """Recognize the compiler's NOP and register-identity padding forms."""
+    _, _, mnemonic, operands = instruction
+    if mnemonic == "nop":
+        return True
+    if mnemonic not in ("mov", "lea"):
+        return False
+    destination, _, source = operands.partition(", ")
+    if not re.fullmatch(r"e(?:ax|bx|cx|dx|si|di|sp|bp)", destination):
+        return False
+    return source == (destination if mnemonic == "mov" else f"[{destination}]")
+
+
 def _table_padding(sections, tables):
-    """Find NOPs after terminal instructions; reject fallthrough into tables."""
+    """Find alignment after terminal instructions; reject fallthrough into tables."""
     padding = set()
     for section in sections:
         if section.type != SectionType.CODE or not section.contents:
@@ -42,7 +55,7 @@ def _table_padding(sections, tables):
         if last[0] + last[1] not in tables:
             continue
         index = len(section.contents) - 1
-        while index >= 0 and section.contents[index][2] == "nop":
+        while index >= 0 and _is_alignment_instruction(section.contents[index]):
             padding.add(section.contents[index][0])
             index -= 1
         if index < 0 or section.contents[index][2] not in ("ret", "jmp"):

@@ -55,8 +55,8 @@ def compare(comparator, match, **flags):
 
 def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
                    indices=b"\x00\x01", rebuilt_indices=None, suffix=b"",
-                   branch_to_table=False, fallthrough=False, padding=0, branch_to_padding=False):
-    table_offset = (39 if indexed else 32) + padding
+                   branch_to_table=False, fallthrough=False, padding=b"", branch_to_padding=False):
+    table_offset = (39 if indexed else 32) + len(padding)
     targets = targets or ((24, 27) if indexed else (17, 20))
     tails = []
     for start, destinations, index_bytes in (
@@ -64,10 +64,10 @@ def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
         (0x2000, targets if rebuilt_targets is None else rebuilt_targets,
          indices if rebuilt_indices is None else rebuilt_indices),
     ):
-        default_offset = table_offset - padding - 6
+        default_offset = table_offset - len(padding) - 6
         branch_target = table_offset if branch_to_table else default_offset
         if branch_to_padding:
-            branch_target = table_offset - padding
+            branch_target = table_offset - len(padding)
         displacement = branch_target - 10
         tail = bytes.fromhex("83f80177") + bytes([displacement])
         if indexed:
@@ -75,7 +75,7 @@ def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
         tail += bytes.fromhex("ff2485") + struct.pack("<I", start + table_offset)
         tail += bytes.fromhex("31c0c3 b801000000c3 b802000000")
         tail += b"\x90" if fallthrough else b"\xc3"
-        tail += b"\x90" * padding
+        tail += padding
         tail += b"".join(struct.pack("<I", start + offset) for offset in destinations)
         tails.append((tail + (index_bytes if indexed else b"") + suffix).hex())
     comparator, match = fixture(*tails)
@@ -202,18 +202,21 @@ class ThunkTests(unittest.TestCase):
         self.assertEqual(compare(*switch_fixture(fallthrough=True)), {})
 
     def test_switch_alignment_padding_must_be_unreachable_and_identical(self):
-        for padding in (1, 2, 3):
+        for padding in (b"\x90", b"\x90" * 2, b"\x90" * 3, b"\x8b\xff", b"\x8d\x09"):
             with self.subTest(padding=padding):
                 self.assertTrue(compare(*switch_fixture(padding=padding)))
                 self.assertEqual(compare(*switch_fixture(padding=padding, branch_to_padding=True)), {})
                 self.assertEqual(compare(*switch_fixture(padding=padding, targets=(32, 20))), {})
                 self.assertEqual(compare(*switch_fixture(padding=padding, fallthrough=True)), {})
-        comparator, match = switch_fixture(padding=1)
+        comparator, match = switch_fixture(padding=b"\x90")
         patch_body(comparator.recomp_bin, 0x2000, 32, b"\xcc")
         self.assertEqual(compare(comparator, match), {})
+        for padding in (b"\x8b\xc1", b"\x8d\x49\x01"):
+            with self.subTest(changed_register=padding):
+                self.assertEqual(compare(*switch_fixture(padding=padding)), {})
 
     def test_unknown_computed_jumps_cannot_prove_padding_unreachable(self):
-        comparator, match = switch_fixture(padding=1)
+        comparator, match = switch_fixture(padding=b"\x90")
         patch_body(comparator.orig_bin, 0x1000, 17, b"\xff\xe0\x90")  # jmp eax; nop
         patch_body(comparator.recomp_bin, 0x2000, 17, b"\xff\xe0\x90")
         self.assertEqual(compare(comparator, match), {})
