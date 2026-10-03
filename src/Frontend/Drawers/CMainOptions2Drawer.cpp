@@ -109,17 +109,20 @@ void CMainOptions2Drawer::Load()
 		animationsAnim = &g_dwMainOptions2AnimIds[8];
 	}
 
-	for (i = 0; i < 1; i++) {
+	i = 0;
+	int remaining = 1;
+	do {
 		CResBITMAP* background = m_backgroundBitmap;
 		m_primitiveBundle[i].m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) background->m_x) / 2);
 		m_primitiveBundle[i].m_primitive.m_y = 0;
 		m_primitiveBundle[i].m_primitive.m_resource = background;
 		m_primitiveBundle[i].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 		m_primitiveBundle[i].m_primitive.m_remap = 0;
-	}
+		i++;
+	} while (--remaining);
 
-	CGunController** gunController = &m_gunController;
 	storage = operator new(sizeof(CGunController));
+	CGunController** gunController = &m_gunController;
 	if (storage == 0) {
 		*gunController = 0;
 	}
