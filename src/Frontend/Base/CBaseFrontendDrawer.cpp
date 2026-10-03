@@ -150,14 +150,14 @@ void CBaseFrontendDrawer::Setup()
 			m_hiliteController->m_active = 0;
 		}
 		switch (m_flowProcess) {
-		case 4:
+		case FLOW_PREVIEW:
 			desiredState = 1;
 			break;
-		case 5:
+		case FLOW_GAMEPLAY:
 			desiredState = 3;
 			break;
-		case 0xe:
-		case 0xf:
+		case FLOW_SUCCESS:
+		case FLOW_FAILURE:
 			desiredState = 2;
 			break;
 		}

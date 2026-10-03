@@ -42,7 +42,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	MMRESULT result;
 	union {
 		unsigned int m_downsample;
-		char m_errorText[0x100];
+		char m_errorText[MAXERRORLENGTH];
 	} work;
 
 	memcpy(&patchHeader, p_patch, sizeof(patchHeader));
@@ -68,13 +68,13 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 		work.m_downsample = 1;
 		length >>= 1;
 	}
-	m_sampleHandle = GlobalAlloc(0x2002, length);
+	m_sampleHandle = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, length);
 	if (m_sampleHandle == 0) {
 		*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave data ";
 		*g_pErrorOutput << patchHeader.m_name << "\n";
 		return;
 	}
-	m_headerHandle = GlobalAlloc(0x2002, 0x20);
+	m_headerHandle = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, sizeof(WAVEHDR));
 	if (m_headerHandle == 0) {
 		*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave Header ";
 		*g_pErrorOutput << patchHeader.m_name << "\n";
@@ -146,28 +146,28 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 			} while (--length != 0);
 		}
 	}
-	format.wFormatTag = 1;
+	format.wFormatTag = WAVE_FORMAT_PCM;
 	if (p_stereo == 1) {
 		format.nChannels = 2;
 	}
 	else {
 		format.nChannels = 1;
 	}
-	format.wBitsPerSample = 0x10;
+	format.wBitsPerSample = PCM_SAMPLE_BITS_16;
 	if (p_use16Bit != 1) {
-		format.wBitsPerSample = 8;
+		format.wBitsPerSample = PCM_SAMPLE_BITS_8;
 	}
 	format.nSamplesPerSec = p_sampleRate;
 	format.cbSize = 0;
 	format.nBlockAlign = (unsigned short) ((format.wBitsPerSample * format.nChannels) / 8);
 	format.nAvgBytesPerSec = p_sampleRate * (unsigned int) format.nChannels;
-	if (format.wBitsPerSample == 0x10) {
+	if (format.wBitsPerSample == PCM_SAMPLE_BITS_16) {
 		format.nAvgBytesPerSec *= 2;
 	}
-	result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, WAVE_FORMAT_QUERY);
+	result = waveOutOpen(&m_waveOut, WAVE_MAPPER, &format, 0, 0, WAVE_FORMAT_QUERY);
 	if (result != 0) {
 		*g_pErrorOutput << "Error! Sound System cannot support Wave Format!\n";
-		waveOutGetErrorTextA(result, work.m_errorText, 0x100);
+		waveOutGetErrorTextA(result, work.m_errorText, sizeof(work.m_errorText));
 		*g_pErrorOutput << work.m_errorText << "\n";
 		*g_pErrorOutput << "Wave Format:\n";
 		*g_pErrorOutput << "Samples/Sec: " << format.nSamplesPerSec << "\n";
@@ -176,24 +176,24 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 		*g_pErrorOutput << "Type       : " << format.wBitsPerSample << " bit\n";
 		return;
 	}
-	result = waveOutOpen(&m_waveOut, 0xffffffff, &format, 0, 0, 0);
+	result = waveOutOpen(&m_waveOut, WAVE_MAPPER, &format, 0, 0, 0);
 	if (result != 0) {
 		*g_pErrorOutput << "Error! Sound System cannot open Wave Device!\n";
-		waveOutGetErrorTextA(result, work.m_errorText, 0x100);
+		waveOutGetErrorTextA(result, work.m_errorText, sizeof(work.m_errorText));
 		*g_pErrorOutput << work.m_errorText << "\n";
 		return;
 	}
-	result = waveOutPrepareHeader(m_waveOut, m_waveHeader, 0x20);
+	result = waveOutPrepareHeader(m_waveOut, m_waveHeader, sizeof(*m_waveHeader));
 	if (result != 0) {
 		*g_pErrorOutput << "Error! Sound System cannot prepare Wave Header!\n";
-		waveOutGetErrorTextA(result, work.m_errorText, 0x100);
+		waveOutGetErrorTextA(result, work.m_errorText, sizeof(work.m_errorText));
 		*g_pErrorOutput << work.m_errorText << "\n";
 		return;
 	}
 	result = waveOutClose(m_waveOut);
 	if (result != 0) {
 		*g_pErrorOutput << "Error! Sound System cannot close Wave Device!\n";
-		waveOutGetErrorTextA(result, work.m_errorText, 0x100);
+		waveOutGetErrorTextA(result, work.m_errorText, sizeof(work.m_errorText));
 		*g_pErrorOutput << work.m_errorText << "\n";
 		return;
 	}
@@ -206,9 +206,9 @@ CWaveEffect::~CWaveEffect()
 	MMRESULT result;
 
 	if (m_prepared == 1) {
-		result = waveOutUnprepareHeader(m_waveOut, m_waveHeader, 0x20);
+		result = waveOutUnprepareHeader(m_waveOut, m_waveHeader, sizeof(*m_waveHeader));
 		if (result != 0) {
-			waveOutUnprepareHeader(m_waveOut, m_waveHeader, 0x20);
+			waveOutUnprepareHeader(m_waveOut, m_waveHeader, sizeof(*m_waveHeader));
 		}
 		GlobalUnlock(m_sampleHandle);
 		GlobalFree(m_sampleHandle);

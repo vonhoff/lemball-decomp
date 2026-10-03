@@ -29,12 +29,12 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 		m_idleDeadline = timeGetTime() + 20000;
 		switch (p_message->m_code) {
 		case 0xacef0001:
-			m_returnState = 3;
+			m_returnState = FLOW_MAIN_OPTIONS_2;
 			m_quitYet = 1;
 			g_nFrontendAutoFlowToggle = 1;
 			return true;
 		case 0xacef00a4:
-			m_returnState = 0x10;
+			m_returnState = FLOW_PASSWORD;
 			m_quitYet = 1;
 			g_nFrontendAutoFlowToggle = 1;
 			return true;
@@ -50,10 +50,10 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 			m_quitYet = 1;
 			g_nFrontendAutoFlowToggle = 1;
 			if (p_message->m_code == 0xacef00a6) {
-				m_returnState = 4;
+				m_returnState = FLOW_PREVIEW;
 			}
 			else {
-				m_returnState = 0xc;
+				m_returnState = FLOW_NETWORK_OPTIONS;
 			}
 			return true;
 		}

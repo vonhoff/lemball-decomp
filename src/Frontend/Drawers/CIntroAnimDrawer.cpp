@@ -22,9 +22,9 @@ CIntroAnimDrawer::CIntroAnimDrawer(CMain2DDisplay* p_display,
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_INTRO_ANIM, 0, 0, 0, 0, 0)
 {
 	m_completionSequence = p_completionSequence;
-	m_nextFlow = 0xe;
+	m_nextFlow = FLOW_SUCCESS;
 	if (p_completionSequence == 0) {
-		m_nextFlow = 2;
+		m_nextFlow = FLOW_MAIN_OPTIONS_1;
 	}
 	m_started = 0;
 	m_startCountdown = 10;

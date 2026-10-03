@@ -9,6 +9,8 @@
 
 #include <string.h>
 
+#define MCI_ERROR_TEXT_CAPACITY 128
+
 // GLOBAL: LEMBALL 0x004aa228
 static CMciMusicDevice* g_pActiveMciMusicDevice;
 
@@ -27,7 +29,7 @@ static const char g_szMciMusicWindow[] = "HLMusicWindow";
 // FUNCTION: LEMBALL 0x0047e900
 static LRESULT CALLBACK MciMusicWindowProc(HWND p_hwnd, UINT p_message, WPARAM p_wParam, LPARAM p_lParam)
 {
-	if (p_message == 0x3b9 && p_wParam == 1) {
+	if (p_message == MM_MCINOTIFY && p_wParam == MCI_NOTIFY_SUCCESSFUL) {
 		g_pActiveMciMusicDevice->Resume(g_nPreparedMciMusicTrackHandle);
 	}
 	return DefWindowProcA(p_hwnd, p_message, p_wParam, p_lParam);
@@ -39,7 +41,7 @@ CMciMusicDevice::CMciMusicDevice()
 	WNDCLASSA windowClass;
 	MCI_OPEN_PARMS openParms;
 	MCIERROR error;
-	char errorText[0x80];
+	char errorText[MCI_ERROR_TEXT_CAPACITY];
 
 	m_preparedHandle = 0;
 	g_nPreparedMciMusicTrackHandle = 0;
@@ -50,7 +52,7 @@ CMciMusicDevice::CMciMusicDevice()
 	memset(&openParms, 0, sizeof(openParms));
 	openParms.lpstrDeviceType = g_szMciSequencerDevice;
 	openParms.lpstrElementName = 0;
-	error = mciSendCommandA(0, 0x803, 0x2000, (DWORD) &openParms);
+	error = mciSendCommandA(0, MCI_OPEN, MCI_OPEN_TYPE, (DWORD) &openParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     HL Midi Device Not Found.\n";
@@ -60,14 +62,14 @@ CMciMusicDevice::CMciMusicDevice()
 	}
 	m_deviceId = openParms.wDeviceID;
 	m_available = 1;
-	mciSendCommandA(m_deviceId, 0x804, 0, 0);
+	mciSendCommandA(m_deviceId, MCI_CLOSE, 0, 0);
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
 	windowClass.hIcon = 0;
 	windowClass.hCursor = 0;
 	windowClass.hbrBackground = 0;
-	windowClass.style = 3;
+	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpfnWndProc = MciMusicWindowProc;
 	windowClass.lpszMenuName = g_szMciMusicWindow;
 	windowClass.lpszClassName = g_szMciMusicWindow;
@@ -76,10 +78,10 @@ CMciMusicDevice::CMciMusicDevice()
 									 g_szMciMusicWindow,
 									 g_szMciMusicWindow,
 									 0,
-									 (int) 0x80000000,
-									 (int) 0x80000000,
-									 (int) 0x80000000,
-									 (int) 0x80000000,
+									 CW_USEDEFAULT,
+									 CW_USEDEFAULT,
+									 CW_USEDEFAULT,
+									 CW_USEDEFAULT,
 									 0,
 									 0,
 									 (HINSTANCE) g_pApplicationInstance,
@@ -122,7 +124,7 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 		name->LoadData();
 	}
 	name->m_directUseCount++;
-	openParms.lpstrDeviceType = (LPCSTR) 0x20b;
+	openParms.lpstrDeviceType = (LPCSTR) MCI_DEVTYPE_SEQUENCER;
 	CString musicName;
 	if (m_usePathPrefix != 0) {
 		musicName = m_path;
@@ -151,11 +153,11 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	}
 	fullPath += musicName;
 	openParms.lpstrElementName = fullPath;
-	error = mciSendCommandA(0, 0x803, 0x3200, (DWORD) &openParms);
+	error = mciSendCommandA(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID | MCI_OPEN_ELEMENT, (DWORD) &openParms);
 	name->m_directUseCount--;
 	name->UnLoad();
 	if (error != 0) {
-		char errorText[0x80];
+		char errorText[MCI_ERROR_TEXT_CAPACITY];
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Prepare Music (Open) " << fullPath << "!\n";
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
@@ -165,9 +167,9 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	}
 	m_deviceId = openParms.wDeviceID;
 	MCI_SEEK_PARMS seekParms;
-	error = mciSendCommandA(m_deviceId, 0x807, 0x100, (DWORD) &seekParms);
+	error = mciSendCommandA(m_deviceId, MCI_SEEK, MCI_SEEK_TO_START, (DWORD) &seekParms);
 	if (error != 0) {
-		char errorText[0x80];
+		char errorText[MCI_ERROR_TEXT_CAPACITY];
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Prepare Music (Seek)!\n";
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
@@ -175,10 +177,10 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 		g_nPreparedMciMusicTrackHandle = 0;
 		return;
 	}
-	setParms.dwTimeFormat = 0;
-	error = mciSendCommandA(m_deviceId, 0x80d, 0x400, (DWORD) &setParms);
+	setParms.dwTimeFormat = MCI_FORMAT_MILLISECONDS;
+	error = mciSendCommandA(m_deviceId, MCI_SET, MCI_SET_TIME_FORMAT, (DWORD) &setParms);
 	if (error != 0) {
-		char errorText[0x80];
+		char errorText[MCI_ERROR_TEXT_CAPACITY];
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Prepare Music! (Time)\n";
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
@@ -204,7 +206,7 @@ void CMciMusicDevice::Free(unsigned long p_handle)
 	if (m_playing == 1) {
 		*g_pErrorOutput << "Error! Must stop music before closing...\n";
 	}
-	mciSendCommandA(m_deviceId, 0x804, 0, 0);
+	mciSendCommandA(m_deviceId, MCI_CLOSE, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0047eee0
@@ -213,7 +215,7 @@ void CMciMusicDevice::Play(unsigned long p_handle)
 	MCI_SEEK_PARMS seekParms;
 	MCI_PLAY_PARMS playParms;
 	MCIERROR error;
-	char errorText[0x80];
+	char errorText[MCI_ERROR_TEXT_CAPACITY];
 
 	if (p_handle == 0) {
 		*g_pErrorOutput << "Error Call to Play Music (HL) with Invalid Handle!\n";
@@ -225,7 +227,7 @@ void CMciMusicDevice::Play(unsigned long p_handle)
 		*g_pErrorOutput << "Error! Play Command (HL) While already playing!\n";
 	}
 	seekParms.dwTo = 0;
-	error = mciSendCommandA(m_deviceId, 0x807, 0x100, (DWORD) &seekParms);
+	error = mciSendCommandA(m_deviceId, MCI_SEEK, MCI_SEEK_TO_START, (DWORD) &seekParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Play Music (Seek)! (HL)\n";
@@ -233,7 +235,7 @@ void CMciMusicDevice::Play(unsigned long p_handle)
 		return;
 	}
 	playParms.dwCallback = (DWORD) m_notifyWindow;
-	error = mciSendCommandA(m_deviceId, 0x806, 1, (DWORD) &playParms);
+	error = mciSendCommandA(m_deviceId, MCI_PLAY, MCI_NOTIFY, (DWORD) &playParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Play Music (Play)! (HL)\n";
@@ -249,7 +251,7 @@ void CMciMusicDevice::Play(unsigned long p_handle)
 void CMciMusicDevice::Stop(unsigned long p_handle)
 {
 	MCIERROR error;
-	char errorText[0x80];
+	char errorText[MCI_ERROR_TEXT_CAPACITY];
 
 	if (p_handle == 0) {
 		*g_pErrorOutput << "Error Call to Stop Music (HL) with Invalid Handle!\n";
@@ -261,7 +263,7 @@ void CMciMusicDevice::Stop(unsigned long p_handle)
 		*g_pErrorOutput << "Error! Stop Command (HL) when not playing!\n";
 		return;
 	}
-	error = mciSendCommandA(m_deviceId, 0x808, 0, 0);
+	error = mciSendCommandA(m_deviceId, MCI_STOP, 0, 0);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Stop Music! (HL)\n";
@@ -276,7 +278,7 @@ void CMciMusicDevice::Pause(unsigned long p_handle)
 {
 	MCI_STATUS_PARMS statusParms;
 	MCIERROR error;
-	char errorText[0x80];
+	char errorText[MCI_ERROR_TEXT_CAPACITY];
 
 	if (p_handle == 0) {
 		*g_pErrorOutput << "Error Call to Pause Music (HL) with Invalid Handle!\n";
@@ -284,15 +286,15 @@ void CMciMusicDevice::Pause(unsigned long p_handle)
 	if (m_preparedHandle != p_handle) {
 		*g_pErrorOutput << "Error Call to Pause (HL) with unknown Handle!\n";
 	}
-	statusParms.dwItem = 2;
-	error = mciSendCommandA(m_deviceId, 0x814, 0x100, (DWORD) &statusParms);
+	statusParms.dwItem = MCI_STATUS_POSITION;
+	error = mciSendCommandA(m_deviceId, MCI_STATUS, MCI_STATUS_ITEM, (DWORD) &statusParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Get Position for Pause! (HL)\n";
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 	}
 	m_pausePosition = statusParms.dwReturn;
-	error = mciSendCommandA(m_deviceId, 0x808, 0, 0);
+	error = mciSendCommandA(m_deviceId, MCI_STOP, 0, 0);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Stop Music! (HL)\n";
@@ -310,7 +312,7 @@ void CMciMusicDevice::Resume(unsigned long p_handle)
 	MCI_SEEK_PARMS seekParms;
 	MCI_PLAY_PARMS playParms;
 	MCIERROR error;
-	char errorText[0x80];
+	char errorText[MCI_ERROR_TEXT_CAPACITY];
 
 	if (p_handle == 0) {
 		*g_pErrorOutput << "Error Call to Resume Music (HL) with Invalid Handle!\n";
@@ -319,7 +321,7 @@ void CMciMusicDevice::Resume(unsigned long p_handle)
 		*g_pErrorOutput << "Error Call to Resume (HL) with unknown Handle!\n";
 	}
 	seekParms.dwTo = 0;
-	error = mciSendCommandA(m_deviceId, 0x807, 0x100, (DWORD) &seekParms);
+	error = mciSendCommandA(m_deviceId, MCI_SEEK, MCI_SEEK_TO_START, (DWORD) &seekParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Restart Music (Seek)! (HL)\n";
@@ -327,7 +329,7 @@ void CMciMusicDevice::Resume(unsigned long p_handle)
 		return;
 	}
 	playParms.dwCallback = (DWORD) m_notifyWindow;
-	error = mciSendCommandA(m_deviceId, 0x806, 1, (DWORD) &playParms);
+	error = mciSendCommandA(m_deviceId, MCI_PLAY, MCI_NOTIFY, (DWORD) &playParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     Unable to Restart Music (Play)! (HL)\n";

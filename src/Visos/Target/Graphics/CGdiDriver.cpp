@@ -62,8 +62,8 @@ bool CGdiDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 
 	info = (BITMAPINFO*) p_bitmapInfo;
 	info->bmiHeader.biPlanes = 1;
-	info->bmiHeader.biSize = 0x28;
-	info->bmiHeader.biCompression = 0;
+	info->bmiHeader.biSize = sizeof(info->bmiHeader);
+	info->bmiHeader.biCompression = BI_RGB;
 	info->bmiHeader.biSizeImage = 0;
 	info->bmiHeader.biXPelsPerMeter = 0;
 	info->bmiHeader.biYPelsPerMeter = 0;

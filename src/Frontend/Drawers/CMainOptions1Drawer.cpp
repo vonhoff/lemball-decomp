@@ -209,7 +209,7 @@ void CMainOptions1Drawer::Processing()
 		status->m_level = status->m_lastLevels[0];
 		status->m_skill = 0;
 		m_quitYet = 1;
-		m_returnState = 4;
+		m_returnState = FLOW_PREVIEW;
 	}
 	now = timeGetTime();
 	if (m_display->IsWindowValid() == 0 || m_display->IsFocusWindow() == 0) {
@@ -221,10 +221,10 @@ void CMainOptions1Drawer::Processing()
 	}
 	m_quitYet = 1;
 	if (g_nFrontendAutoFlowToggle == 0 && g_nAnimationsDisabled == 0) {
-		m_returnState = 1;
+		m_returnState = FLOW_INTRO_ANIM;
 		g_nFrontendAutoFlowToggle = 1;
 		return;
 	}
-	m_returnState = 0x13;
+	m_returnState = FLOW_DEMO;
 	g_nFrontendAutoFlowToggle = 0;
 }

@@ -7,6 +7,9 @@
 #include <mmsystem.h>
 // clang-format on
 
+#define PCM_SAMPLE_BITS_8 8
+#define PCM_SAMPLE_BITS_16 16
+
 // SIZE 0x18
 class CWaveEffect {
 public:

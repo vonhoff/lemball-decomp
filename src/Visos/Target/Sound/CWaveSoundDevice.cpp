@@ -6,6 +6,12 @@
 
 #include <new.h>
 
+#define WAVE_LOW_SAMPLE_RATE 11025
+#define WAVE_HIGH_SAMPLE_RATE 22050
+#define WAVE_DEVICE_RETRY_LIMIT 500
+#define WAVE_RESULT_UNSET 0xffff
+#define WAVE_FULL_VOLUME 0xffffffff
+
 // FUNCTION: LEMBALL 0x0047c880
 CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 {
@@ -22,7 +28,7 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	m_stereo = 0;
 	m_use16Bit = 0;
 	m_unk0x18 = 0;
-	m_deviceId = 0xffffffff;
+	m_deviceId = WAVE_MAPPER;
 	m_sampleRate = 0;
 	for (unsigned int i = 0; i < 8; i++) {
 		m_channelState[i] = 0xffffffff;
@@ -46,33 +52,33 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 			return;
 		}
 		if (waveOutGetDevCapsA(deviceId, &m_caps, sizeof(WAVEOUTCAPSA)) == 0) {
-			if ((m_caps.dwFormats & 1) == 1) {
+			if ((m_caps.dwFormats & WAVE_FORMAT_1M08) == WAVE_FORMAT_1M08) {
 				m_available = 1;
 				m_deviceId = deviceId;
 				m_use16Bit = 0;
-				m_sampleRate = 0x2b11;
+				m_sampleRate = WAVE_LOW_SAMPLE_RATE;
 			}
-			if ((m_caps.dwFormats & 4) != 0) {
+			if ((m_caps.dwFormats & WAVE_FORMAT_1M16) != 0) {
 				m_use16Bit = 1;
 				m_available = 1;
-				m_sampleRate = 0x2b11;
+				m_sampleRate = WAVE_LOW_SAMPLE_RATE;
 				m_deviceId = deviceId;
 			}
-			if ((m_caps.dwFormats & 0x10) != 0) {
+			if ((m_caps.dwFormats & WAVE_FORMAT_2M08) != 0) {
 				m_available = 1;
 				m_deviceId = deviceId;
 				m_use16Bit = 0;
-				m_sampleRate = 0x5622;
+				m_sampleRate = WAVE_HIGH_SAMPLE_RATE;
 			}
-			if ((m_caps.dwFormats & 0x40) != 0) {
+			if ((m_caps.dwFormats & WAVE_FORMAT_2M16) != 0) {
 				m_use16Bit = 1;
 				m_available = 1;
-				m_sampleRate = 0x5622;
+				m_sampleRate = WAVE_HIGH_SAMPLE_RATE;
 				m_deviceId = deviceId;
 			}
 		}
 		if (m_sampleRate != 0) {
-			m_waveFormat.wFormatTag = 1;
+			m_waveFormat.wFormatTag = WAVE_FORMAT_PCM;
 			if (m_stereo == 1) {
 				m_waveFormat.nChannels = 2;
 			}
@@ -80,10 +86,10 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 				m_waveFormat.nChannels = 1;
 			}
 			if (m_use16Bit == 1) {
-				m_waveFormat.wBitsPerSample = 0x10;
+				m_waveFormat.wBitsPerSample = PCM_SAMPLE_BITS_16;
 			}
 			else {
-				m_waveFormat.wBitsPerSample = 8;
+				m_waveFormat.wBitsPerSample = PCM_SAMPLE_BITS_8;
 			}
 			m_waveFormat.nSamplesPerSec = m_sampleRate;
 			m_waveFormat.nAvgBytesPerSec = 1;
@@ -123,7 +129,7 @@ char* CWaveSoundDevice::GetInfo()
 int CWaveSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
 	MMRESULT result;
-	char errorText[0x100];
+	char errorText[MAXERRORLENGTH];
 
 	if (p_music == 1) {
 		return (int) m_musicDevice;
@@ -132,12 +138,12 @@ int CWaveSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigne
 		result = waveOutOpen(&m_waveOut, m_deviceId, &m_waveFormat, 0, 0, 0);
 		if (result != 0) {
 			*g_pErrorOutput << "Error! Windows Effect device cannot be opened!\n";
-			waveOutGetErrorTextA(result, errorText, 0x100);
+			waveOutGetErrorTextA(result, errorText, sizeof(errorText));
 			*g_pErrorOutput << errorText << "\n";
 		}
-		if ((m_caps.dwSupport & 4) != 0) {
+		if ((m_caps.dwSupport & WAVECAPS_VOLUME) != 0) {
 			waveOutGetVolume(m_waveOut, &m_savedVolume);
-			waveOutSetVolume(m_waveOut, 0xffffffff);
+			waveOutSetVolume(m_waveOut, WAVE_FULL_VOLUME);
 		}
 		if (result == 0) {
 			m_available = 1;
@@ -178,44 +184,44 @@ int CWaveSoundDevice::Close()
 {
 	MMRESULT result;
 	unsigned int tries;
-	char errorText[0x100];
+	char errorText[MAXERRORLENGTH];
 
 	if (m_waveOut != 0) {
-		result = 0xffff;
+		result = WAVE_RESULT_UNSET;
 		tries = 0;
 		do {
-			if (tries >= 500) {
+			if (tries >= WAVE_DEVICE_RETRY_LIMIT) {
 				break;
 			}
 			result = waveOutReset(m_waveOut);
 			tries = tries + 1;
 		} while (result != 0);
-		if (tries == 500) {
+		if (tries == WAVE_DEVICE_RETRY_LIMIT) {
 			*g_pErrorOutput << "Error Shutting Down Wave Device : ";
 			*g_pErrorOutput << GetInfo() << ".\n";
 			*g_pErrorOutput << "System may be unstable!\n";
-			waveOutGetErrorTextA(result, errorText, 0x100);
+			waveOutGetErrorTextA(result, errorText, sizeof(errorText));
 			*g_pErrorOutput << errorText << "\n";
 			return 0;
 		}
-		if ((m_caps.dwSupport & 4) != 0) {
+		if ((m_caps.dwSupport & WAVECAPS_VOLUME) != 0) {
 			waveOutSetVolume(m_waveOut, m_savedVolume);
 		}
 		if (m_waveOut != 0) {
-			result = 0xffff;
+			result = WAVE_RESULT_UNSET;
 			tries = 0;
 			do {
-				if (tries >= 500) {
+				if (tries >= WAVE_DEVICE_RETRY_LIMIT) {
 					break;
 				}
 				result = waveOutClose(m_waveOut);
 				tries = tries + 1;
 			} while (result != 0);
-			if (tries == 500) {
+			if (tries == WAVE_DEVICE_RETRY_LIMIT) {
 				*g_pErrorOutput << "Error Closing Down Wave Device : ";
 				*g_pErrorOutput << GetInfo() << ".\n";
 				*g_pErrorOutput << "System may be unstable!\n";
-				waveOutGetErrorTextA(result, errorText, 0x100);
+				waveOutGetErrorTextA(result, errorText, sizeof(errorText));
 				*g_pErrorOutput << errorText << "\n";
 				return 0;
 			}
@@ -253,23 +259,23 @@ int CWaveSoundDevice::StopAllEffects()
 {
 	MMRESULT result;
 	unsigned int tries;
-	char errorText[0x100];
+	char errorText[MAXERRORLENGTH];
 
 	if (m_waveOut != 0) {
-		result = 0xffff;
+		result = WAVE_RESULT_UNSET;
 		tries = 0;
 		do {
-			if (tries >= 500) {
+			if (tries >= WAVE_DEVICE_RETRY_LIMIT) {
 				break;
 			}
 			result = waveOutReset(m_waveOut);
 			tries = tries + 1;
 		} while (result != 0);
-		if (tries == 500) {
+		if (tries == WAVE_DEVICE_RETRY_LIMIT) {
 			*g_pErrorOutput << "Error stopping playback in device : ";
 			*g_pErrorOutput << GetInfo() << ".\n";
 			*g_pErrorOutput << "System may be unstable!\n";
-			waveOutGetErrorTextA(result, errorText, 0x100);
+			waveOutGetErrorTextA(result, errorText, sizeof(errorText));
 			*g_pErrorOutput << errorText << "\n";
 			return 0;
 		}
@@ -309,7 +315,7 @@ int CWaveSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_hand
 	for (unsigned int i = 0; i < m_channelCount; i++) {
 		if (m_effectUsed[i] == 0) {
 			Close();
-			storage = operator new(0x18);
+			storage = operator new(sizeof(CWaveEffect));
 			if (storage == 0) {
 				m_effects[i] = 0;
 			}
@@ -451,7 +457,7 @@ unsigned char CWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned sh
 				if (result != 0) {
 					*g_pErrorOutput << "waveOutReset errored: " << (unsigned int) result << "\n";
 				}
-				result = waveOutWrite(m_waveOut, m_effects[i]->m_waveHeader, 0x20);
+				result = waveOutWrite(m_waveOut, m_effects[i]->m_waveHeader, sizeof(*m_effects[i]->m_waveHeader));
 				if (result != 0) {
 					*g_pErrorOutput << "waveOutWrite (play effect) errored: " << (unsigned int) result << "\n";
 				}

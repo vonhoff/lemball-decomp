@@ -25,11 +25,15 @@ bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)
 {
 	m_address = (CNetworkAddress*) operator new(strlen(p_remoteName) + 1);
 	strcpy((char*) m_address, p_remoteName);
-	m_asyncBuffer = (char*) operator new(0x400);
+	m_asyncBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
 	m_name = (char*) operator new(strlen(p_localName) + 1);
 	strcpy(m_name, p_localName);
 	m_writeReady = 1;
-	m_asyncRequest = WSAAsyncGetHostByName(m_windowHandle, 0x440, p_localName, m_asyncBuffer, 0x400);
+	m_asyncRequest = WSAAsyncGetHostByName(m_windowHandle,
+										   TCPIP_MESSAGE_LOCAL_HOST_RESOLVED,
+										   p_localName,
+										   m_asyncBuffer,
+										   MAXGETHOSTSTRUCT);
 	if (m_asyncRequest == 0) {
 		SocketError();
 		return false;
@@ -54,8 +58,12 @@ void CTCPIPConnect::GotHost(int p_failed)
 		m_port = (short) atoi((char*) m_address);
 		if (m_port == 0) {
 			m_writeReady = 1;
-			m_asyncRequest =
-				WSAAsyncGetServByName(m_windowHandle, 0x442, (const char*) m_address, "TCP", m_asyncBuffer, 0x400);
+			m_asyncRequest = WSAAsyncGetServByName(m_windowHandle,
+												   TCPIP_MESSAGE_SERVICE_RESOLVED,
+												   (const char*) m_address,
+												   "TCP",
+												   m_asyncBuffer,
+												   MAXGETHOSTSTRUCT);
 			if (m_asyncRequest == 0) {
 				SocketError();
 				return;
@@ -95,7 +103,7 @@ void CTCPIPConnect::InitSocket()
 {
 	unsigned long nonBlocking;
 
-	m_socketHandle = socket(2, 2, 0);
+	m_socketHandle = socket(AF_INET, SOCK_DGRAM, 0);
 	if (m_socketHandle == -1) {
 		SocketError();
 		return;
@@ -114,14 +122,14 @@ void CTCPIPConnect::Listen(CNetworkAddress* p_address)
 
 	InitSocket();
 	SetDestAddr(p_address);
-	address.m_family = 2;
+	address.m_family = AF_INET;
 	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
 	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
 	if (bind(m_socketHandle, &address, sizeof(address)) == -1) {
 		SocketError();
 		return;
 	}
-	if (WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 3) == -1) {
+	if (WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) == -1) {
 		SocketError();
 		return;
 	}
@@ -138,14 +146,14 @@ void CTCPIPConnect::Connect()
 	TcpIpSocketAddress address;
 
 	InitSocket();
-	address.m_family = 2;
+	address.m_family = AF_INET;
 	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
 	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
 	if (bind(m_socketHandle, &address, sizeof(address)) == -1) {
 		SocketError();
 		return;
 	}
-	if (WSAAsyncSelect(m_socketHandle, m_windowHandle, 0x443, 3) == -1) {
+	if (WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) == -1) {
 		SocketError();
 		return;
 	}
@@ -161,16 +169,16 @@ int CTCPIPConnect::Process(unsigned int p_message, unsigned int p_wParam, long p
 
 	if (m_killRequested == 0) {
 		switch (p_message) {
-		case 0x440:
+		case TCPIP_MESSAGE_LOCAL_HOST_RESOLVED:
 			result = OnNameResolved(p_wParam, p_lParam, &m_asyncBuffer);
-			if (result != 0xe) {
-				GotHost(result == 2);
+			if (result != NAME_LOOKUP_ERROR_HANDLED) {
+				GotHost(result == NAME_LOOKUP_FAILED);
 			}
 			return 0;
-		case 0x442:
+		case TCPIP_MESSAGE_SERVICE_RESOLVED:
 			result = OnNameResolved(p_wParam, p_lParam, &m_asyncBuffer);
-			if (result != 0xe) {
-				HandleServiceLookupResult(result == 2);
+			if (result != NAME_LOOKUP_ERROR_HANDLED) {
+				HandleServiceLookupResult(result == NAME_LOOKUP_FAILED);
 			}
 			return 0;
 		default:
