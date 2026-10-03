@@ -87,6 +87,12 @@ void CBall::StartMovement(unsigned int p_direction)
 // FUNCTION: LEMBALL 0x00421870
 bool CBall::Move()
 {
+	unsigned short groundZ;
+	int groundX;
+	int groundY;
+	CAI* ai;
+	CGameObject* hit;
+	CGameObject* object;
 	int elapsed = (int) (g_dwGameTick - m_lastMovementTick);
 	int duration = m_moveDurationTicks;
 	int blockX;
@@ -106,13 +112,12 @@ bool CBall::Move()
 	map = g_pMap;
 	blockX = x >> 4;
 	blockY = y >> 4;
-	unsigned short groundZ;
 	if (x < 0 || y < 0 || map->m_ground.m_width <= blockX || map->m_ground.m_height <= blockY) {
 		groundZ = 0;
 	}
 	else {
-		int groundX = x & 0xf;
-		int groundY = y & 0xf;
+		groundX = x & 0xf;
+		groundY = y & 0xf;
 		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
 	}
 	z = groundZ;
@@ -120,15 +125,14 @@ bool CBall::Move()
 	CPt3 point;
 	point.m_x = x;
 	point.m_y = y;
-	CAI* ai = g_pAI;
+	ai = g_pAI;
 	point.m_z = z;
 	ai->m_collisionExclude = this;
 	ai->m_collisionPoint = point;
 	ai->m_collisionIndex = 0;
-	CGameObject* hit;
 	if (ai->m_objectCount > 0) {
 		do {
-			CGameObject* object = ai->m_objects[ai->m_collisionIndex];
+			object = ai->m_objects[ai->m_collisionIndex];
 			if (ai->m_collisionExclude != object && object->Collision(ai->m_collisionPoint)) {
 				hit = ai->m_objects[ai->m_collisionIndex];
 				ai->m_collisionIndex++;
