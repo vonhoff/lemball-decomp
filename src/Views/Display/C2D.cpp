@@ -233,8 +233,9 @@ void C2D::ShutDown()
 		delete m_padToButton;
 	}
 	g_pMasterInputQueue->Detach(this, 0);
-	if (m_display->m_lifecycleRefs == 1) {
-		m_display->m_hotAreaList->RemoveFromList(this);
+	CMain2DDisplay& display = *m_display;
+	if (display.m_lifecycleRefs == 1) {
+		display.m_hotAreaList->RemoveFromList(this);
 	}
 	operator delete(m_zBuffer);
 	operator delete(m_viewData);
@@ -266,10 +267,6 @@ void C2D::ShutDown()
 	}
 	m_display->m_gdi->m_renderTarget->SetWorldWidth(0);
 	CVSRect rect;
-	rect.m_x = 0;
-	rect.m_y = 0;
-	rect.m_width = 0;
-	rect.m_height = 0;
 	m_display->SetInnerWindow(rect);
 }
 
