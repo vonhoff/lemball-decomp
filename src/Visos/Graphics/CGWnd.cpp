@@ -228,7 +228,8 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 					m_refreshX = (unsigned short) paintX;
 				}
 				if ((short) (m_refreshWidth + m_refreshX) < (short) ((unsigned short) paintX + paintWidth)) {
-					m_refreshWidth = (unsigned short) ((paintWidth - m_refreshX) + (unsigned short) paintX);
+					paintWidth = (short) (paintWidth - m_refreshX);
+					m_refreshWidth = (unsigned short) (paintWidth + (unsigned short) paintX);
 				}
 				if (paintY < (short) m_refreshY) {
 					m_refreshHeight = (unsigned short) (m_refreshHeight + (m_refreshY - (unsigned short) paintY));
