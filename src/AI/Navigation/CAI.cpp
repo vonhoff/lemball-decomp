@@ -424,9 +424,10 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 	int apply;
 	eGameStateStages stage;
 
+	const CGameStateMessage& message = *p_message;
 	apply = 0;
-	state = p_message->m_state;
-	stage = p_message->m_stage;
+	state = message.m_state;
+	stage = message.m_stage;
 	*g_pSysOutput << "Received Game State " << (int) state << ", stage " << (int) stage << "\n";
 	switch (stage) {
 	case GAME_STATE_STAGE_REQUEST:
@@ -504,19 +505,19 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 			m_gameStatus = GAME_STATUS_FAILURE;
 			break;
 		case GAME_STATE_7:
-			if ((unsigned int) m_gameTime > p_message->m_levelTime) {
+			if ((unsigned int) m_gameTime > message.m_levelTime) {
 				g_pGameStatus->m_skillState = 4;
 				m_gameStatus = GAME_STATUS_SUCCESS;
 			}
-			else if ((unsigned int) m_gameTime != p_message->m_levelTime) {
+			else if ((unsigned int) m_gameTime != message.m_levelTime) {
 				g_pGameStatus->m_skillState = 4;
 				m_gameStatus = GAME_STATUS_FAILURE;
 			}
-			else if ((unsigned int) m_score > p_message->m_score) {
+			else if ((unsigned int) m_score > message.m_score) {
 				g_pGameStatus->m_skillState = 1;
 				m_gameStatus = GAME_STATUS_SUCCESS;
 			}
-			else if ((unsigned int) m_score < p_message->m_score) {
+			else if ((unsigned int) m_score < message.m_score) {
 				g_pGameStatus->m_skillState = 1;
 				m_gameStatus = GAME_STATUS_FAILURE;
 			}
