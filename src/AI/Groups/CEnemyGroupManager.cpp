@@ -71,6 +71,7 @@ void CEnemyGroupManager::AddEnemyGroup(int p_x,
 									   unsigned short p_waypointStart,
 									   int p_waypointCount)
 {
+	int i;
 	CEnemyGroup* group =
 		new CEnemyGroup(g_pGenericGroupAI, g_pGenericGroupObjectManager, g_pGenericGroupFormationManager);
 	CGenericGroupManager::AddNewGroup(group);
@@ -86,7 +87,7 @@ void CEnemyGroupManager::AddEnemyGroup(int p_x,
 		waypoint->m_waypointIndex = 0;
 		waypoint->m_waypointStep = 1;
 		waypoint->m_waypoints = new unsigned short[p_waypointCount];
-		for (int i = 0; i < p_waypointCount; i++) {
+		for (i = 0; i < p_waypointCount; i++) {
 			waypoint->m_waypoints[i] = (unsigned short) (p_waypointStart + i);
 		}
 		enemy->m_state0Data.m_waypointInformation = waypoint;
